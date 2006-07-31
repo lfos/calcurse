@@ -1,4 +1,4 @@
-/*	$calcurse: custom.h,v 1.1 2006/07/31 21:00:02 culot Exp $	*/
+/*	$calcurse: custom.h,v 1.1.1.1 2006/07/31 21:00:02 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer

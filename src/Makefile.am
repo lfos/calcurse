@@ -1,4 +1,4 @@
-#	$calcurse: Makefile.am,v 1.1 2006/07/31 21:00:02 culot Exp $
+#	$calcurse: Makefile.am,v 1.1.1.1 2006/07/31 21:00:02 culot Exp $
 
 AUTOMAKE_OPTIONS= gnu 
 bin_PROGRAMS= calcurse

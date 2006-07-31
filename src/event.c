@@ -1,4 +1,4 @@
-/*	$calcurse: event.c,v 1.1 2006/07/31 21:00:03 culot Exp $	*/
+/*	$calcurse: event.c,v 1.1.1.1 2006/07/31 21:00:03 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer

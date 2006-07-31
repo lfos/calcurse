@@ -20,7 +20,7 @@
 # Send your feedback or comments to : calcurse@culot.org
 # Calcurse home page : http://culot.org/calcurse
 #
-#        $calcurse: autogen.sh,v 1.1 2006/07/31 21:00:02 culot Exp $
+#        $calcurse: autogen.sh,v 1.1.1.1 2006/07/31 21:00:02 culot Exp $
 #
 #
 # autogen.sh - Generates all the necessary files to build calcurse from
