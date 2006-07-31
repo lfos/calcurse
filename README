@@ -1,0 +1,31 @@
+		README file for the calcurse package
+
+See the file INSTALL for instructions on how to build and install calcurse.
+See the file Changelog for a release history and bug-fix notes.
+See the file TODO for things that still need doing.
+
+Browse the file doc/manual_xx.html (where xx stands for a language
+abbreviation) for narrative descriptions of how to use calcurse.
+
+
+PACKAGE OVERVIEW:
+
+	You should be reading this file in a directory called: calcurse-x.x,
+	where x.x is the current version number. There should be two 
+	subdirectories : 'src' and 'doc'. 
+	Detailed documentation in html format can be found in the 'doc' 
+	directory. Calcurse sources can be found in the 'src' directory.
+
+
+AUTHOR:
+
+	Frederic Culot 
+
+
+CONTRIBUTORS:
+
+	Michael Schulz: calcurse manual german translation.
+
+	See also the 'Thanks' section in doc/manual_xx.html for a list of 
+	people who have contributed by reporting bugs, sending fixes, or 
+	suggesting improvements.

@@ -1,0 +1,14 @@
+#	$calcurse: POTFILES.in,v 1.1 2006/07/31 21:00:03 culot Exp $
+
+# List of source files which contain translatable strings.
+src/apoint.c
+src/args.c
+src/calcurse.c
+src/calendar.c
+src/custom.c
+src/event.c
+src/help.c
+src/io.c
+src/todo.c
+src/utils.c
+src/vars.c

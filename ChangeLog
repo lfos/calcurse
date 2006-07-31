@@ -1,0 +1,606 @@
+27 Jul 2006:
+	back to work after my ibook's logic board crash :(
+	autogen.sh created
+
+25 Jun 2006:
+	app_arg() updated to take recurrent items into account
+	recur_apoint_s2apoint_s() created
+	added help text concerning possible formats to be entered when using 
+	'-h' flag in non-interactive mode
+	fixed a bug related to localtime() which returns a statically
+	allocated structure that can be overwritten by subsequent calls
+	to the function (which was the case with recurrent items) 
+	load_app(), recur_event_scan(), recur_apoint_scan(), recur_item_inday(),
+  	recur_event_write() and recur_apoint_write() updated to take endless 
+	recurrent items into account
+
+24 Jun 2006:
+	cvs keywords added inside source files
+	apoint_sec2str() and display_item_date() modified to take recurrent
+	items into account	
+	day_check_if_item() created
+
+18 Jun 2006:
+	day_store_recur_events() and day_store_recur_apoints() created
+	recur_item_inday() created
+
+17 Jun 2006:
+	day_popup_item() created
+	pointers to number_events_inday and number_apoints_inday passed to
+	day_store_items()
+	day_write_pad() updated to reallocate memory for day_saved_item structure
+
+16 Jun 2006:
+	free_aday() and free_eday() suppressed and replaced by day_free_list()
+	day_store_items() created
+	store_day() updated to call day_store_items()
+	eday_store() and aday_store suppressed and replaced by day_store_events()
+	and day_store_apoints()
+	edayadd() and edayadd() suppressed and replaced by day_add_event()
+	and day_add_apoint()
+	write_app_pad() suppressed and replaced by day_write_pad()
+	day_item_s2apoint_s() created
+
+14 Jun 2006:
+	day.c and day.h created to store processes related to the currently
+	selected day inside calendar (this is to ease the implementation of 
+	recursive items) 
+	src/Makefile.am updated
+
+08 Jun 2006:
+	recur_save_data() created
+	recur_char2def() created	
+
+07 Jun 2006:
+	recur_apoint_scan() and recur_event_scan() created
+	load_app() updated to read recursive events from file
+
+06 Jun 2006:
+	bugfix: Debian Bug Report #369550 regarding the segfault which
+	appeared when calcurse was launched in non-interactive mode without
+	data files
+	recur.h and recur.c added to implement recursive events
+	src/Makefile.am updated
+	recur_event_new()and recur_apoint_new() created
+	recur_def2char(), recur_apoint_write() and recur_event_write() created
+
+15 May 2006: 1.4
+        TODO, README, manpage and manual updated
+	
+13 May 2006:
+	NEWS file updated
+
+11 May 2006:
+	manual_de.html finished : many thanks to Michael Schulz
+	manual_fr.html updated
+	
+08 May 2006:
+	manual_en.html updated
+	bugfix: added test at the end of color_config() to check the need
+	of using colorization or not
+	
+07 May 2006:
+        french translation finished
+	manpage updated
+	
+05 May 2006:
+        added LOCALEDIR definition in configure.ac
+	usage_try() created
+	
+27 Apr 2006:
+	removed VERSION definition from vars.h to only use the one from 
+	configure.ac
+	include config.h added in calcurse.c
+
+26 Apr 2006:
+	updated exit() calls by using EXIT_SUCCESS and EXIT_FAILURE
+	end of source preparation for i18n
+	replaced required confirmation string from 'yes' and 'no' to 'y' and 'n'
+	'gettextization' of source package:
+	  * Makefile.am (SUBDIRS): Add po.
+	  (ACLOCAL_AMFLAGS): New variable.
+	  (EXTRA_DIST): Add config.rpath, mkinstalldirs, m4/ChangeLog.
+	  * configure.ac (AC_OUTPUT): Add po/Makefile.in.
+	
+25 Apr 2006:
+	updated parts related to general config variables to handle i18n:
+	   general config variables type changed to boolean
+	   fill_config_var() created
+	   switch_option() suppressed
+
+23 Apr 2006:
+	progress_bar() modified to better fit the data file structure
+	user_conf_t created to allow translation of configuration variables
+	
+22 Apr 2006:
+	translatable strings marked for i18n
+	manual_de.html added (german translation of calcurse manual,
+	thanks to Michael Schultz)
+
+20 Apr 2006:
+	i18n.h added to prepare for internationalization
+	src/Makefile.am updated
+	
+18 Apr 2006:
+	code cleanup: color_config() simplified
+	
+17 Apr 2006:
+	variable 'colorize' added
+	color number '0' added to be able to run calcurse in black&white
+	even on color terminals
+	
+16 Apr 2006:
+	border_nocolor() created to correctly handle panel borders in
+	non-color terminals
+	'week_begins_on_monday' option added, giving the ability to change
+	the first day of the week (thanks to Joe's remarks)
+	
+09 Apr 2006:
+	bugfix: stderr replaced by stdout in version_arg(), help_arg(), 
+	todo_arg(), app_arg(), date_arg(), arg_print_date(), usage()
+	(thanks go to Soren for reporting that bug)
+
+08 Apr 2006:
+	html manual translated in french (manual_fr.html created)
+
+05 Apr 2006:
+	README file rewritten to take into account the new documentation structure
+
+02 Apr 2006:
+	support for non-color terminals added :
+		window attribute levels defined in vars.h
+		attribute_s structure created in custom.h
+		custom_init_attr(), custom_apply_attr(), and 
+		custom_remove_attr() created in custom.c
+		init_vars() updated in calcurse.c 
+
+30 Mar 2006:
+	doc/ repertory created to contain calcurse documentation and its
+	translations. Makefile.am updated to take the new repertory into
+	account
+
+23 Mar 2006:
+	manual_en.html created, in order to replace the actual documentation
+	contained in the README file
+
+17 Mar 2006: 1.3
+	bugfix: newpad added in init_vars to correct a bug causing core dump on
+	Solaris
+	bugfix: no more wrong event duration when entering end time in [hh:mm]
+	format
+	bugfix: first_todo_onscreen corrected to avoid the disappearing of 
+	todo items
+	updated the copyright text which appears with the -v flag
+	manpage updated
+	README updated
+	online help updated
+	TODO list updated
+
+14 Mar 2006:
+	replaced true and false #define by stdbool.h
+
+13 Mar 2006:
+	online help screens updated
+
+09 Mar 2006:
+	typedef help_page_t added to add a title to each help page
+	help_screen() and write_help_pad() updated to use new help_page_t type
+
+07 Mar 2006:
+	#define true and false added in vars.h
+	online help screens updated
+
+06 Mar 2006:
+	source file headers updated
+
+26 Feb 2006:
+	get_help_lines() created
+	scrollbar added inside help screens
+
+25 Feb 2006:
+	help_screen() updated, now using a pad to display help screens	
+	write_help_pad() created
+
+19 Feb 2006:
+	display structure updated to take into account the scrollbars  
+	previous_item_mark() and next_item_mark() suppressed, scrollbar used instead
+	bugfix: hilt_tod and hilt_app were not updated when deleting an item
+	day_changed variable added and store_day() updated
+	bugfix: pad scrolling was not updated when deleting an item in the
+	appointment panel
+	bugfix: scrollbar length and top position were not correct in some
+	cases 
+	
+18 Feb 2006:
+	enum window_number created
+	bugfix: start and end time now properly displayed when viewing an
+	appointment in popup window
+	bugfix: wrong highlited item when changing day fixed
+	draw_scrollbar() created to display a real bar inside panels instead
+	of 'v' and '^' marks
+	update_todo_panel() and update_app_panel updated to display the scrollbar
+
+16 Feb 2006:
+	del_apoint() updated to take events into account
+
+11 Feb 2006:
+	AC_HEADR_STDBOOL added in configure.ac
+	init_vars() created
+	do_storage variable added to check if we really need to update the
+	appointment panel items inside pad
+	free_aday() and free_eday() created
+	
+09 Feb 2006:
+	pad_s structure created
+	get_item_line(), scroll_pad_down() and scroll_pad_up() created
+
+05 Feb 2006:
+	get_item_line() created
+
+04 Feb 2006:
+	work on the way appointment panel scrolls
+	updated the way appointments are displayed in popup windows
+
+28 Jan 2006:
+	write_app_pad() improved	
+
+26 Jan 2006:
+	improved the windows refresh order in update_windows() 
+
+25 Jan 2006:
+	changed MAX_LENGTH to 512
+	the pad used to display appointments has a fixed length now
+	
+14 Jan 2006:
+	store_day() created to speed up the appointment panel update
+	create_app_pad(), write_app_pad(), show_app_pad() created to
+	improve the way appointment panel scrolls 
+
+10 Jan 2006:
+	added ifndef..define tests at the beggining of .h
+
+08 Jan 2006:
+	added definition of CTRL keys in vars.h
+	added the ability to erase characters with CTRL-H when entering
+	text (to fix a problem reported by Brendan who was not able to
+	delete with its English keyboard)
+
+07 Jan 2006:
+	progress_bar() created in order to see progression while saving 
+	data to file
+	'skip_progress_bar' option added
+	changed color 5 to be yellow on black and color 7 to be black on
+	yellow (this is to draw the newly created progress bar)
+	
+31 Dec 2005:
+	removed the -lpanel that was left in src/Makefile.am
+	README updated
+	add_item() and check_time() modified so that :
+		o an appointment start time can now be entered in both 
+		  hh:mm and h:mm formats
+		o for the appointment end time, either a duration in
+		  minutes or the appointment end time can be entered
+	help_arg() and app_arg() updated to take events into account
+	when running calcurse in non-interactive mode
+	arg_print_date() created to simplify app_arg() structure
+
+27 Dec 2005:
+	work on a better way to handle appointment and todo panels with the
+	use of ncurses scrolling functions
+
+26 Dec 2005:
+	bugfix: fixed compiler warnings, thanks to Uwe
+
+11 Dec 2005:
+	bugfix: fixed the January 0 bug
+	bugfix: current date is no longer highlighted in every year of the
+	future and the past (thanks to Michael for reporting that bug)
+	improved the way items are shown inside popup windows (variable
+	'show_apoint' removed, call to item_in_popup added when 'V' pressed)
+
+10 Dec 2005:
+	update_app_panel() and update_todo_panel() improved
+
+04 Dec 2005:
+	update_app_panel() updated to show events: now events are displayed
+	first in the appointment panel, followed by an horizontal line
+	update_cal_panel() updated to highlight days containing events 
+	in calendar view 
+
+03 Dec 2005:
+	Loading of events implemented: load_app() updated
+		
+30 Nov 2005:
+	Saving of events implemented 
+	
+29 Nov 2005:
+	Continuation of events item implementation
+	add_apts() updated (it is now called add_item) to check if 
+	an appointment or an event is entered
+	
+28 Nov 2005: 
+	Replaced everything related to 'event' by 'apoint' (appointments) 
+	to prepare the incoming event items (meaning all-day long items)
+	event.c and event.h created to deal with events
+	Makefile.am updated
+	
+26 Nov 2005: 1.2
+	Fixed problems with scroller() within the help screen
+	
+20 Nov 2005:
+	Improved the way help screens are refreshed
+	Removed call to doupdate() inside scroller(), to prevent redondancy
+	config_bar() and check_data_files() updated
+	'skip_system_dialogs' option added
+	
+19 Nov 2005:
+	reinit_wins() created to redraw windows after resizing or layout 
+	change
+	redraw_screen() improved and renamed it into get_screen_config()
+	fixed cursor position (did not manage to hide it :-(
+	
+08 Nov 2005:
+	changed all mvprintvw() calls to mvwprintw(), to improve the way
+	calcurse interface is refreshed. 
+	
+06 Nov 2005:
+	Work on window handling :
+		o erase_panel() suppressed because no longer used
+
+05 Nov 2005:
+	Handling of status bar improved :
+		o creation of an ncurses window instead of using stdscr
+		o erase_status_bar() replaced by erase_window_part()
+	cal_error() replaced by status_mesg()
+	
+03 Nov 2005:
+	ncurses library use improved: screen no longer flickers when
+	refreshed
+	
+02 Nov 2005:
+	erase_window_part() written to erase parts of windows
+	
+01 Nov 2005:
+	changed abbreviation for 'Wednesday' from 'Wen' to 'Wed'
+	panel library removed, calcurse does not use it anymore
+	work on the windows refreshing process : update_all() created
+	
+29 Oct 2005: 1.1
+	source code cleaning
+	version 1.1 released
+
+25 Oct 2005:
+	bugfix : Debian Bug Report #335430 regarding the GoTo today
+	function which goes to the day calcurse was started instead of
+	the current day is now fixed
+
+23 Oct 2005:
+	'-c' flag added to allow the use of multiple calendars
+	
+20 Oct 2005:
+	manpage and README file updated
+	configure.ac improved with the help of Michael
+
+19 Oct 2005:
+	'-d' flag added to list appointments for the N upcoming days or
+	for a given day
+
+15 Oct 2005:
+	Cleaning up of the source code so that it follows the K&R style	
+	'-t' flag added to list todos in non interactive mode
+	'-a' flag added to list current day's appointments in non 
+	interactive mode
+
+13 Oct 2005:
+	functions created to handle command-line arguments (written in
+	args.c and args.h)
+	'-h' and -'v' flag added to display help and version in non
+	interactive mode
+
+08 Oct 2005: 1.0 -> first stable release
+	help screen updated
+	manpage and TODO updated
+	
+06 Oct 2005:
+	bugfix : Debian Bug Report #330869 regarding the October 0 which
+	does not exist, is now fixed
+
+05 Oct 2005:
+	default options "auto-save", "confirm-quit", and
+	"confirm-delete" set to "yes"
+
+03 Oct 2005:
+	manpage written
+	README updated
+
+13 Sep 2005: 1.0rc4
+	bugfix release :
+	   o  some people reported a segfault while changing general
+	      options in the config screen, this no longer happens
+	   o  the Makefile was not linking to proper library (-lcurse
+	      instead of -lncurse), this is fixed
+	   o  Calcurse no longer ends while trying to delete an event
+	      which was just created (thanks to Alex's patch)
+	   o  changed date format to be like September 13, 2005 instead
+	      of September, 13 2005 
+
+11 Sep 2005: 1.0rc3 -> first public release 
+	adding of licence header in source files
+
+04 Sep 2005:
+	source code splitted : creation of custom.c, custom.h
+	update of the Makefile
+	layout_config() : previous layout is now saved to restore it if
+	no choice is made
+	color_config() : previous colour is also saved as in
+	layout_config()
+
+31 Aug 2005:
+	source code splitted : creation of vars.c, vars.h, io.c, io.h,
+	help.c, help.h
+	update of the Makefile
+	modification of the cal_error function
+
+30 Aug 2005:
+	source code splitted : creation of calendar.c & calendar.h,
+	update of the Makefile
+
+29 Aug 2005:
+	source code splitted : creation of utils.c & utils.h, update of
+	the Makefile
+
+03 Jul 2005:
+	redraw_screen() created for initialization of screen
+	draw_screen() optimization for slow machine
+
+02 Jul 2005 :
+	help screen updated
+	is_all_digit() created to check if a string is made of digits
+	check_event_time() created to check a new appointment time format
+	bugfixes -> 
+	  when 'G' pressed, no crash when invalid day is entered
+ 	  when 'V' pressed, no crash when no event is highlited
+	  Calcurse is now started in calendar view
+	  scrolling problems fixed in app or todo view
+	  first event is highlited if it is the first time a panel is visited
+	  check if an new appointment format is valid
+	  we can now move from year to year in calendar view
+	  config screen is ok in OpenBSD too now
+	
+26 Jun 2005 : 1.0rc2
+	translation of the Changelog
+	writing of the README file
+	comments in the code
+	use of gnu autotools for building CalCurse package
+	-> CalCurse v1.0rc2
+
+19 Jun 2005 :
+	scroller() improvement : the line is cut at the end of the last word,
+	not in the middle of it, and the 'next page' and 'previous page'
+	function was added
+	bug concerning the event printing in popup windows solved
+
+18 Jun 2005 :
+	help improved
+
+17 Jun 2005 :
+	writing of a function to erase appointments
+
+14 Jun 2005 :
+	writing of a function to erase todo events
+	adding of the confirm_delete variable
+
+12 Jun 2005 :
+	improvement of the status bar, it is now dependant of the terminal
+	size
+	adding of the terminal minimum size test
+	adding of a scrolling function in the ToDo panel if there is more
+	events than the panel lines
+	creation of the ~/.calcurse repertory if it does not exist when
+	CalCurse is launched
+
+04 Jun 2005 :
+	colorization of the selected event
+	view function created to print out an event in a popup window (ok for
+	ToDo events)
+	active panel is now colorized
+
+26 May 2005 :
+	update_todo_panel() now improved :) (3 dots are added at the end of
+	the event if it is longer than the panel size)
+	erase_tod() created to erase the todo panel
+	erase_tod(), erase_app() and erase_cal() linked in one single function
+	: erase_panel()
+	popup() created to print a popup window
+
+25 May 2005 :
+	tries for improving update_todo_panel() :(
+
+18 May 2005 :
+	changing of the status bar (different bars for calendar and other
+	panels)
+
+14 May 2005 :
+	possibility to change the selected panel with TAB key
+
+12 May 2005 :
+	scroller() improved
+
+20 Apr 2005 :
+	scroller() function created
+	help screen improved, with scroller description
+
+10 Apr 2005 :
+	the bug concerning the erasing of calendar lines is solved : a
+	refresh() was missing :(
+	-> CalCurse testing version is now almost over :)
+
+08 Apr 2005:
+	help menu improved, with a description for each possible action in
+	Calcurse
+
+07 Apr 2005 :
+	adding of the auto-save and auto-confirm variables with tests when
+	quitting Calcurse
+	adding of general options in the config menu (auto-save and
+	confirm-quit added)
+	writing of general_config(), print_general_options(), switch_options
+	and print_option_incolor()
+	improvement of functions to read and save user config, to take those
+	two new options into account
+
+02 Apr 2005 : 1.0rc1
+	test function (e key) suppressed
+	add_apts() finished
+	goto_day() finished (we can now enter any day to go to)
+	-> CalCurse v. 1.0rc1 ;)
+
+01 Apr 2005 :
+	work with Alex :
+		ToDo events are put in right order
+		writing of todo.h and todo.c
+		writing of date2sec()
+		improvement of the function to create and print the
+		Appointments, which are now put in right order
+		writing of event_delete_bynum()
+		writing of a function to colorize a day which contains an
+		event
+		improvement of the Makefile
+
+27 Mar 2005 :
+	do_modifs_todo() finished : the ToDo events are now properly erased
+
+06 Mar 2005 :
+	improvements of do_modifs_todo()
+
+05 Mar 2005 :
+	extract_data() created to read the user conf from file
+	extract_todo() becomes extract_data()
+	-> the user config is now properly read
+
+03 Mar 2005 :
+	load_conf() created to load the user config
+
+02 Mar 2005 :
+	improvement of save_cal() to save the user configuration
+	(creation of the file .calcurse/conf, update of check_data_files)
+
+01 Mar 2005 :
+	improvement of do_modifs_todo()
+	writing of the test function (when 'e' is pressed)
+
+27 Feb 2005:
+	layout_config() finished	
+	adding of the GPL licence
+
+26 Feb 2005:
+	adding of the layout variable
+	writing of layout_config() started
+
+25 Feb 2005 :
+	adding of a DEFINE for version number
+	creation of the help page
+	creation of the configuration menu, with color changing for now on
+
+15 Mar 2004:
+	beggining of the project

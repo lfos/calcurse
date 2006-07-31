@@ -1,0 +1,783 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!--
+/*
+ *	$calcurse: manual_en.html,v 1.1 2006/07/31 21:00:04 culot Exp $
+ *
+ * Calcurse - text-based organizer
+ * Copyright (c) 2004-2006 Frederic Culot
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ *
+ * Send your feedback or comments to : calcurse@culot.org
+ * Calcurse home page : http://culot.org/calcurse
+ *
+ */
+-->
+
+<html>
+<head>
+<title>CALCURSE documentation</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+<body bgcolor="white" text="black" link="blue" vlink="navy">
+
+<h1><code>CALCURSE - text-based organizer</code></h1>
+<p>
+<p><hr><p>
+
+<h1>Table of Contents</h1>
+<ul>
+<li><a href="#intro">Introduction</a>
+<li><a href="#overview">Overview</a>
+<ul>
+<li><a href="#overview_history">Creation history</a>
+<li><a href="#overview_features">Important features</a>
+</ul>
+<li><a href="#install">Installation</a>
+<ul>
+<li><a href="#install_requirements">Requirements</a>
+<ul>
+<li><a href="#install_requirements_ncurses"><code>ncurses</code> library</a>
+<li><a href="#install_requirements_gettext"><code>gettext</code> library</a>
+</ul>
+<li><a href="#install_process">Install process</a>
+</ul>
+<li><a href="#basics"><code>calcurse</code> basics</a>
+<ul>
+<li><a href="#basics_invocation">Invocation</a>
+<ul>
+<li><a href="#basics_invocation_commandline">Command line arguments</a>
+<li><a href="#basics_invocation_variable">Environment variable for i18n</a>
+</ul>
+<li><a href="#basics_interface">User interface</a>
+<ul>
+<li><a href="#basics_interface_noninteractive">Non-interactive mode</a>
+<li><a href="#basics_interface_interactive">Interactive mode</a>
+</ul>
+<li><a href="#basics_files"><code>calcurse</code> files</a>
+<li><a href="#basics_help">Online help</a>
+</ul>
+<li><a href="#options">Options</a>
+<ul>
+<li><a href="#options_general">General options</a>
+<li><a href="#options_colors">Color themes</a>
+<li><a href="#options_layout">Layout configuration</a>
+</ul>
+<li><a href="#known_bugs">Known bugs</a>
+<li><a href="#bugs">Reporting bugs and feedback</a>
+<li><a href="#contribute">How to contribute?</a>
+<ul>
+<li><a href="#contribute_documentation">Translating documentation</a>
+<li><a href="#contribute_i18n"><code>calcurse</code> i18n</a>
+<ul>
+<li><a href="#contribute_i18n_overview">Overview</a>
+<li><a href="#contribute_i18n_translator">Translator tasks</a>
+<li><a href="#contribute_i18n_po-files">po-files</a>
+</ul>
+</ul>
+<li><a href="#links">Links</a>
+<ul>
+<li><a href="#links_homepage"><code>calcurse</code> homepage</a>
+<li><a href="#links_list"><code>calcurse</code> announce list</a>
+</ul>
+<li><a href="#thanks">Thanks</a>
+</ul>
+<p><hr><p>
+
+
+<a name="intro"></a><h1>Introduction</a></h1>
+<p>
+	<code>calcurse</code> is a text-based personal organizer 
+	which helps keeping track of events and everyday tasks.  
+	It contains a calendar, a 'todo' list, and puts your 
+	appointments in order. The user interface is configurable, 
+	and one can choose between different color schemes and 
+	layouts. All of the commands are documented within an 
+	online help system.
+
+
+<a name="overview"></a><h1>Overview</h1>
+<a name="overview_history"></a><h2>Creation history</h2>
+<p>
+  	I started thinking about this project when I was finishing 
+	my Ph.D.  in Astrophysics... It started to be a little hard 
+	to organize myself, and I really needed a good tool to help 
+	me in that difficult task ;)<br> 
+	I like programs which use Text User Interfaces, because they 
+	are simple, fast, portable and efficient, so I thought about 
+	working on coding a simple calendar using such an interface. 
+	Moreover, I wanted to go on learning the <code>C</code> 
+	language, which I only used for a while during my undergraduate 
+	studies. So I thought that would be the good project to start 
+	in order to get organized and to learn about a few 
+	<code>C</code> things !  
+	Unfortunately, I finished my Ph.D. before finishing 
+	<code>calcurse</code>, 
+	but anyway, I still wanted to work on it, hoping it would
+	be helpful to other people.  So here it is...<br>
+        <br>
+  	But why 'calcurse' anyway ?  Well, it is simply the 
+	concatenation of 'CALendar' and 'nCURSEs', the name of the 
+	library used to build the user interface.
+
+
+<a name="overview_features"></a><h2>Important features</h2>
+<p>
+        <code>Calcurse</code> is multi-platform and intended to be
+        lightweight, fast and reliable. It is to be used inside a 
+        console or terminal, locally or on a distant machine within 
+        an ssh (or similar) connection. <br>
+        <code>Calcurse</code> can be run in two different modes : 
+        interactive or non-interactive mode. The first mode allows 
+        oneself to view its own personal organizer almost everywhere,
+        thanks to the text-based interface. 
+        The second mode permits to easily build reminders just by adding 
+        <code>calcurse</code> with appropriate command line arguments 
+        inside a cron tab or within a shell init script.<br>
+        Moreover, <code>calcurse</code> was created with the end-user 
+        in mind, and tends to be as friendly as possible. This means 
+        a complete on-line help system, together with having all of 
+        the possible actions displayed at any time inside a status bar. 
+        The user interface is also configurable, and one can choose 
+        between several color and layout combinations.
+
+
+<a name="install"></a><h1>Installation</h1>
+<a name="install_requirements"></a><h2>Requirements</h2>
+<a name="install_requirements_ncurses"></a><h3><code>ncurses</code> library</h3>
+<p>
+	<code>Calcurse</code> requires only a <code>C</code> compiler, such as 
+        <code>cc</code> or <code>gcc</code>, and the <code>ncurses</code>
+        library. 
+        It would be very surprising not to have a valid <code>ncurses</code>
+        library already installed on your computer, but if not, you can 
+        find it at the following url :<br>
+	<pre>
+		http://ftp.gnu.org/pub/gnu/ncurses/
+	</pre>
+
+<a name="install_requirements_gettext"></a><h3><code>gettext</code> library</h3>
+<p>
+        <code>calcurse</code> supports internationalization
+        (<em>i18n</em> hereafter) through the <code>gettext</code>
+        utilities. This means <code>calcurse</code> can produce
+        multi-lingual messages if compiled with native language
+        support (i.e. <em>NLS</em>). However, <em>NLS</em> is
+        optionnal and if you do not want to have support for
+        multi-lingual messages, you can disable this feature.  This is
+        done by giving the <code>--disable-nls</code> option to
+        <code>configure</code> (see section <a
+        href="#install_process">Install process</a>). <br>
+        To check if the <code>gettext</code> utilities are
+        installed on your system, you can search for the
+        <code>libintl.h</code> header file for instance:
+        <pre>
+                locate libintl.h
+        </pre>
+        If this header file is not found, then you can obtain the
+        <code>gettext</code> sources at the following url :<br>
+        <pre>
+                 http://ftp.gnu.org/pub/gnu/gettext/
+        </pre>
+        <u>Note:</u> Even if <code>libintl.h</code> is found on your
+        system, it can be wise to specify its location during the <a
+        href="#install_process">install process</a>, by using the
+        <code>--with-libintl-prefix</code> option with
+        <code>configure</code>. Indeed, the <code>configure</code>
+        could fail to locate this library if installed in an uncommon
+        place.
+ 
+
+<a name="install_process"></a><h2>Install process</h2>
+<p>
+	First you need to gunzip and untar the source archive:
+	<pre>
+	tar zxvf calcurse-1.4.tar.gz
+	</pre>
+  	Once you meet the requirements and have extracted the archive, 
+	the install process is quite simple, and follows the standard 
+	three steps process:
+  	<OL>	
+	<li><code>./configure</code>
+  	<li><code>make</code>
+  	<li><code>make install</code> (may require root privilege)
+	</OL>
+	Use <code>./configure --help</code> to obtain a list of 
+	possible options.
+
+
+<a name="basics"></a><h1><code>calcurse</code> basics</h1>
+<a name="basics_invocation"></a><h2>Invocation</h2>
+<a name="basics_invocation_commandline"></a><h3>Command line arguments</h3>
+<p>
+        <code>calcurse</code> takes the following options from the 
+        command line:
+
+        <dl compact>
+        <dt><code>-a</code>
+	<dd>
+	Print the appointments for the current day and exit.<br>
+        <u>Note:</u> the calendar from which to read the  appointments
+        can be specified using the '-c' flag.<br>
+	<br>
+	<dt><code>-c</code>
+	<dd>
+	Specify the calendar file to use.<br>
+	The default  calendar is <code>~/.calcurse/apts</code> 
+	(see section <a href="#basics_files"><code>calcurse</code> files</a>).<br>
+	<br>
+	<dt><code>-d</code>
+	<dd>
+	Print the appointments for the given date  or  for  the
+        given  number  of upcoming days, depending on the argument
+        format. Two possible formats are supported:
+	<ul>
+	  <li>a date of the form 'mm/dd/yyyy'.
+	  <li>a number 'n'.
+	</ul>
+        In the first  case,  the  appointment  list  for  the
+        specified  date will be returned, while in the second
+        case the appointment list for the 'n'  upcoming  days
+        will be returned.<br>
+        As an example, typing <code>calcurse -d  3</code>  
+	will  display your  appointments  for  today, tomorrow, 
+	and the day after tomorrow.<br>
+        <u>Note:</u> as for the '-a' flag, the calendar  from  
+	which to  read  the appointments can be specified using 
+	the '-c' flag.<br>
+	<br>
+	<dt><code>-h</code>
+	<dd>
+        Print  a  short  help  text  describing  the  supported
+        command-line options, and exit.<br>
+	<br>
+	<dt><code>-t</code>
+	<dd>
+        Print the 'todo' list and exit.<br>
+	<br>
+	<dt><code>-v</code>
+	<dd>
+        Display <code>calcurse</code> version and exit.
+	</DL>
+
+<a name="basics_invocation_variable"></a><h3>Environment variable for i18n</h3>
+<p>
+        <code>calcurse</code> can be compiled with native language
+        support (see <a
+        href="#install_requirements_gettext"><code>gettext</code>
+        library</a>). Thus, if you wish to have messages displayed
+        into your native language, first make sure it is available by
+        looking at the <code>po/LINGUAS</code> file. 
+        This file indicates the set of available languages by showing
+        the two-letters corresponding code (for exemple, <em>fr</em>
+        stands for french).  If you do not find your language, it
+        would be greatly appreciated if you could help translating
+        <code>calcurse</code> (see the <a href="#contribute">How to
+        contribute?</a> section).<br>
+        If your language is available, run
+        <code>calcurse</code> with the following command:
+        <pre>
+                LC_ALL=fr_FR calcurse
+        </pre>
+        where <em>fr_FR</em> is the locale name in this exemple, but
+        should be replaced by the locale corresponding to the desired
+        language.
+
+<a name="basics_interface"></a><h2>User interface</h2>
+<a name="basics_interface_noninteractive"></a><h3>Non-interactive mode</h3>
+<p>
+        When called with at least one of the following arguments:<br>
+        <code>-a</code>, <code>-d</code>, <code>-t</code>, 
+        <code>-h</code>, <code>-v</code><br>
+        <code>calcurse</code> is started in non-interactive mode.
+        This means the desired information will be displayed, and 
+        after that, <code>calcurse</code> simply quits and you are 
+        driven back to the shell prompt.<br>
+        That way, one can add a line such as <code>'calcurse -ta'</code> 
+        in its init config file to display at logon the list of tasks 
+        and appointments scheduled for the current day. 
+
+
+<a name="basics_interface_interactive"></a><h3>Interactive mode</h3>
+<p>
+        When called without any argument or only with the
+        <code>-c</code> option, <code>calcurse</code> is started in
+        interactive mode. In this mode, you are shown an interface
+	containing three different panels which you can browse using 
+        the 'TAB' key, plus a status bar (see figure below).
+        <pre>
+
+ appointment panel---.                                   .---calendar panel
+                     |                                   |  
+                     v                                   v
+ +------------------------------------++----------------------------+
+ |          Appointments              ||          Calendar          |
+ |------------------------------------||----------------------------|
+ |                      April 6, 2006 ||         April 2006         |
+ |                                    ||Mon Tue Wed Thu Fri Sat Sun |
+ |                                    ||                      1   2 |
+ |                                    ||  3   4   5   6   7   8   9 |
+ |                                    || 10  11  12  13  14  15  16 |
+ |                                    || 17  18  19  20  21  22  23 |
+ |                                    || 24  25  26  27  28  29  30 |
+ |                                    ||                            |
+ |                                    |+----------------------------+
+ |                                    |+----------------------------+
+ |                                    ||            ToDo            | todo
+ |                                    ||----------------------------| panel
+ |                                    ||                            |   |
+ |                                    ||                            |   |
+ |                                    ||                            |<--.
+ |                                    ||                            |
+ |                                    ||                            |
+ |                                    ||                            |
+ +------------------------------------++----------------------------+
+ | ? Help     R Redraw    H/L -/+1 Day      G GoTo       C Config   | 
+ | Q Quit     S Save      J/K -/+1 Week   Tab Chg View              |<-. 
+ +------------------------------------------------------------------+  |
+                                                                       |
+                                                                 status bar
+
+        </pre>
+        The first panel represents a calendar which allows to highligth 
+        a particular day, the second one contains the list of the events 
+        and appointments on that day, and the last one contains a list 
+        of tasks to do but which are not assigned to any specific day.  
+	In the bottom line of the screen there is a status bar, which 
+	indicates the possible actions and the corresponding keystrokes.
+        
+
+<a name="basics_files"></a><h2><code>calcurse</code> files</h2>
+<p>
+        The following structure is created in your  <code>$HOME</code>  
+	directory the first time <code>calcurse</code> is run :
+	<pre>
+        $HOME/.calcurse/
+                  |___conf
+                  |___apts
+                  |___todo
+        </pre>
+        The <em>conf</em> file contains the user configuration.<br>
+        The <em>apts</em> file contains  all  of the events and 
+        user's appointments.<br>
+        The <em>todo</em> file contains the todo list.
+
+
+<a name="basics_help"></a><h2>Online help</h2>
+<p>
+        At any time, the built-in help  system  can  be  invoked  by
+        pressing the '?'  key. Once viewing the help screens,
+        informations on a specific command can be  accessed  by  pressing
+        the keystroke corresponding to that command.
+
+<a name="options"></a><h1>Options</h1>
+<p>
+	All of the <code>calcurse</code> parameters are configurable from the 
+	Configuration menu available when pressing 'C'. You are then 
+	driven to a submenu with three possible choices : pressing 'C' 
+	again will lead you to the Color scheme configuration, 
+	pressing 'L' allows you to choose the layout of the main 
+	<code>calcurse</code> screen (in other words, where to put the three 
+	different panels on screen), and last you can choose between
+	different general options by pressing 'G'.
+
+<a name="options_general"></a><h2>General options</h2>
+<p>
+        These options control <code>calcurse</code> general behavior,
+        as described below:
+        <ul>
+        <li><code>auto_save</code>  (default: <em>yes</em>)<br>
+	This option allows to automatically save the user's data 
+	(if set to <em>yes</em>) when quitting.<br>
+	<em>warning:</em> No data will be automatically saved if 
+	<code>auto_save</code> is set to <em>no</em>. This means
+	the user must press 'S' (for saving) in order to retrieve its
+	modifications.<br>
+	<br>
+	<li><code>confirm_quit</code> (default: <em>yes</em>)<br>
+	If set to <em>yes</em>, confirmation is required before 
+	quitting, otherwise pressing 'Q' will cause <code>calcurse</code> 
+	to quit without prompting for user confirmation.<br>
+	<br>
+	<li><code>confirm_delete</code> (default: <em>yes</em>)<br>
+	If this option is set to <em>yes</em>, pressing 'D' for 
+	deleting an item (either a <em>todo</em>, <em>appointment</em>, 
+	or <em>event</em>), will lead to a prompt asking for user 
+	confirmation before removing the selected item from the list. 
+	Otherwise, no confirmation will be needed before deleting the 
+	item.<br>
+	<br>
+	<li><code>skip_system_dialogs</code> (default: <em>no</em>)<br>
+	Setting this option to <em>yes</em> will result in skipping the 
+	system dialogs related to the saving and loading of data. 
+	This can be useful to speed up the input/output processes.<br>
+	<br>
+	<li><code>skip_progress_bar</code> (default: <em>no</em>)<br>
+	If set to <em>yes</em>, this will cause the disappearing of the 
+	progress bar which is usually shown when saving data to file. 
+	If set to <em>no</em>, this bar will be displayed, together with 
+	the name of the file being saved 
+	(see section <a href="#basics_files"><code>calcurse</code> files</a>).<br>
+        <br>
+        <li><code>week_begins_on_monday</code> (default: <em>yes</em>)<br>
+        One can choose between Monday and Sunday as the first day of the
+        week. If the option <em>week_begins_on_monday</em> is set to
+        <em>yes</em>, Monday will be first in the calendar view. Else if
+        the option is set to <em>no</em>, then Sunday will be the first
+        day of the week.
+	</ul>
+
+
+<a name="options_colors"></a><h2>Color themes</h2>
+<p>
+        <code>calcurse</code> color theme is configurable and is to be
+        chosen by typing the number corresponding to the desired
+        theme.  This color will then be applied to the panel borders,
+        to the titles, to the keystrokes, and to general informations
+        displayed inside status bar. A black and white theme is also
+        available, in order to support non-color terminals.<br>
+        <u>Notes:</u> 
+        <ul> 
+        <li> Depending on your terminal type and on the value of the
+        <code>$TERM</code> environnement variable, color could or
+        could not be supported. An error message will appear if you
+        try to change colors whereas your terminal does not support
+        this feature.<br>
+        <br>
+        <li> If you do know your terminal supports colors but could
+        not get <code>calcurse</code> to display them, try to set your
+        <code>$TERM</code> variable to another value (such as
+        <em>xterm-xfree86</em> for instance).
+        </ul>
+
+      
+<a name="options_layout"></a><h2>Layout configuration</h2>
+<p>
+        The layout corresponds to the position of the panels inside
+        <code>calcurse</code> screen. The default layout makes the 
+        calendar panel to be displayed on the top-right corner of the
+        terminal, the todo panel on the bottom-right corner, while the
+        appointment panel is displayed on the left hand-side of the
+        screen (see the figure in section 
+        <a href="#basics_interface_interactive">Interactive mode</a>
+        for an exemple of the default layout).<br>
+        By choosing another layout in the configuration screen, user
+        can customize <code>calcurse</code> appearence to best suit 
+        his needs by placing the different panels where needed.
+
+
+<a name="known_bugs"></a><h1>Known bugs</h1>
+<p>
+        Incorrect highlighting of items appear when using calcurse 
+        black and white theme together with a <code>$TERM</code> 
+        variable set to <em>xterm-color</em>.
+        To fix this bug, and as advised by Thomas E. Dickey 
+        (<code>xterm</code> maintainer), <em>xterm-xfree86</em> 
+        should be used instead of <em>xterm-color</em> to set 
+        the <code>$TERM</code> variable:<br>
+        <blockquote>
+        "The xterm-color value for $TERM is a bad choice for XFree86 xterm
+        because it is commonly used for a terminfo entry which happens to
+        not support bce. Use the xterm-xfree86 entry which is distributed 
+        with XFree86 xterm (or the similar one distributed with ncurses)."
+        </blockquote>
+
+<a name="bugs"></a><h1>Reporting bugs and feedback</h1>
+<p>
+        Please send bug reports and feedback to:
+        <pre>
+        calcurse@culot.org
+        </pre>
+        or to the author:
+        <pre>
+        frederic@culot.org
+        </pre>
+
+<a name="contribute"></a><h1>How to contribute?</h1>
+<p>
+        If you would like to contribute to the project,
+        you can first send your feedback on what you like or dislike,
+        and if there are features you miss in <code>calcurse</code>.
+        For now on, possible contributions concern the translation
+        of <code>calcurse</code> messages and documentation. <br>
+        <br>
+        <u>Note:</u> Any help in getting <code>calcurse</code>
+        internationalized would be very welcomed, but before
+        contributing, send a mail to
+        <code>calcurse-i18n@culot.org</code> to know if someone
+        already started the translation process into your language.
+
+<a name="contribute_documentation"></a><h2>Translating documentation</h2>
+<p>
+        The <em>doc/</em> directory of the source package already
+        contains translated version of <code>calcurse</code>
+        manual. However, if the manual is not yet available into your 
+        native language, it would be appreciated if you could help
+        translating it.<br>
+        To do so, just copy one of the existing manual
+        file to <code>manual_XX.html</code>, where <em>XX</em>
+        identifies your language. Then translate this newly created
+        file and send it to the author (see <a href="#bugs">Reporting
+        bugs and feeback</a>), so that it can be included in the
+        next <code>calcurse</code> release.
+
+<a name="contribute_i18n"></a><h2><code>calcurse</code> i18n</h2>
+<p>
+        As already mentioned, <code>gettext</code> utilities are used
+        by <code>calcurse</code> to produce multi-lingual
+        messages. This section provides informations about how to
+        translate those messages into your native language. However,
+        this howto is deliberately incomplete, focusing on working
+        with <code>gettext</code> for <code>calcurse</code>
+        specifically.  For more comprehensive informations or to grasp
+        the Big Picture of Native Language Support, you should refer
+        to the <code>GNU gettext</code> manual at:
+        <pre>
+                http://www.gnu.org/software/gettext/manual/
+        </pre>
+        Basically, three different people get involved in the
+        translation chain: coders, language coordinator, and
+        translators. After a quick overview of how things work, the
+        translator tasks will be described hereafter.
+
+
+<a name="contribute_i18n_overview"></a><h3>Overview</h3>
+<p>
+        To be able to display texts in the native language of the
+        user, two steps are required: <em>internationalization</em>
+        (i18n) and <em>localization</em> (l10n).  i18n is about making
+        <code>calcurse</code> support multiple languages. It is
+        performed by coders, who will mark translatable texts and
+        provide a way to display them translated at runtime.  l10n is
+        about making the i18n'ed <code>calcurse</code> adapt to the
+        specific language of the user, ie translating the strings
+        previously marked by the developers, and setting the
+        environment correctly for <code>calcurse</code> to use the
+        result of this translation.<br> <br>
+
+        So, translatable strings are first marked by the coders within
+        the <code>C</code> source files, then gathered in a template
+        file (<em>calcurse.pot</em> - the <em>pot</em> extension
+        meaning <em>portable object template</em>). The content of
+        this template file is then merged with the translation files
+        for each language (<em>fr.po</em> for french, for instance -
+        with <em>po</em> standing for <em>portable object</em>, ie
+        meant to be read and edited by humans). A given translation
+        team will take this file, translate its strings, and send it
+        back to the developers. At compilation time, a binary version
+        of this file (for efficiency reasons) will be produced
+        (<em>fr.mo</em> - <em>mo</em> stands for <em>machine
+        object</em>, ie meant to be read by programs), and then
+        installed.  Then <code>calcurse</code> will use this file at
+        runtime, translating the strings according to the locale
+        settings of the user.
+
+
+<a name="contribute_i18n_translator"></a><h3>Translator tasks</h3>
+<p>
+        Suppose someone wants to initiate the translation of a new
+        language. Here are the steps to follow:
+        <ul>
+        <li>First, find out what the locale name is. For instance, for
+        french, it is 'fr_FR', or simply 'fr'. This is the value the
+        user will have to put in his <code>LC_ALL</code> environment
+        variable for software to be translated (see <a
+        href="#basics_invocation_variable">Environment variable for
+        i18n</a>).<br>
+        <br>
+        <li>Then, go into the <em>po/</em> directory, and create a new po-file
+        from the template file using the following command: 
+        <pre>
+                'msginit -i calcurse.pot -o fr.po -l fr --no-translator'
+        </pre>
+        If you do not have <code>msginit</code> installed on your
+        system, simply copy the <em>calcurse.pot</em> file to
+        <em>fr.po</em> and edit the header by hand.<br>
+        Now, having this <em>fr.po</em> file, the translator is ready
+        to begin.
+        </ul>
+
+
+<a name="contribute_i18n_po-files"></a><h3>po-files</h3>
+<p>
+        The format of the po-files is quite simple. Indeed, po-files
+        are made of four things:
+        <ol>
+        <li><em>location lines:</em> tells you where the strings can
+        be seen (name of file and line number), in case you need to
+        see a bit of context.
+        <li><em>msgid lines:</em> the strings to translate.
+        <li><em>msgstr lines:</em> the translated strings.
+        <li><em>lines prefixed with '#':</em> comments (some with a
+        special meaning, as we will see below).
+        </ol>
+        Basically, all you have to do is fill the <em>msgstr</em>
+        lines with the translation of the above <em>msgid</em>
+        line.
+        <p>
+        <u>A few notes:</u>
+        <ul>
+        <li><em>Fuzzy strings</em><br>
+        You will meet strings marked with a <code>"#, fuzzy"</code>
+        comment. <code>calcurse</code> won't use the translations of
+        such strings until you do something about them.  A string
+        being fuzzy means either that the string has already been
+        translated but has since been changed in the sources of the
+        program, or that this is a new string for which
+        <code>gettext</code> made a 'wild guess' for the translation,
+        based on other strings in the file.  It means you have to
+        review the translation. Sometimes, the original string has
+        changed just because a typo has been fixed. In this case, you
+        won't have to change anything. But sometimes, the translation
+        will no longer be accurate and needs to be changed.  Once you
+        are done and happy with the translation, just remove the
+        <code>"#, fuzzy"</code> line, and the translation will be used
+        again in <code>calcurse</code>.<br>
+        <br>
+        <li><em>c-format strings and special sequences</em><br>
+        Some strings have the following comment: <code>"#,
+        c-format"</code>.  This tells that parts of the string to
+        translate have a special meaning for the program, and that you
+        should leave them alone.  For instance, %-sequences, like
+        <code>"%s"</code>. These means that <code>calcurse</code> will
+        replace them with another string. So it is important it
+        remains.  There are also \-sequences, like <code>\n</code> or
+        <code>\t</code>. Leave them, too. The former represents an end
+        of line, the latter a tabulation.<br>
+        <br>
+        <li><em>Translations can be wrapped</em><br>
+        If lines are too long, you can just break them like this:
+        <pre>
+                msgid ""
+                "some very long line"
+                "another line"
+        </pre>
+        <li><em>po-file header</em><br>
+        At the very beginning of the po-file, the first string form a
+        header, where various kind of information has to be filled
+        in. Most important one is the charset. It should resemble
+        <pre>
+                "Content-Type: text/plain; charset=utf-8\n"
+        </pre>
+        You should also fill in the Last-Translator field, so that
+        potential contributors can contact you if they want to join
+        you in the translation team, or have remarks/typo fixes to
+        give about the translations. You can either just give your
+        name/nick, or add an email address, for exemple:
+        <pre>
+                "Last-Translator: Frederic Culot <frederic@culot.org>\n"
+        </pre>
+        <li><em>Comments</em><br>
+        Adding comments (lines begining with the '#' character) can be
+        a good way to point out problems or translation difficulties
+        to proofreaders or other members of your team.<br>
+        <br>
+        <li><em>Strings size</em><br>
+        <code>calcurse</code> is a curses/console program, thus it can
+        be heavily dependant on the terminal size (number of
+        columns). You should think about this when translating. Often,
+        a string must fit into a single line (standard length is 80
+        characters). Don't translate blindly, try to look where your
+        string will be displayed to adapt your translation.<br>
+        <br>
+        <li><em>A few useful tools</em><br>
+        The po-file format is very simple, and the file can be edited
+        with a standard text editor.  But if you prefer, there are few
+        specialized tools you may find convenient for translating:
+           <ul>
+           <li><code>poEdit</code> (<a 
+           href="http://www.poedit.org/" target="_blank">
+           http://www.poedit.org/</a>)
+           <li><code>KBabel</code> (<a
+           href="http://i18n.kde.org/tools/kbabel/" target="_blank">
+           http://i18n.kde.org/tools/kbabel/</a>)
+           <li><code>GTranslator</code> (<a
+           href="http://gtranslator.sourceforge.net/" target="_blank">
+           http://gtranslator.sourceforge.net/</a>)
+           <li><code>Emacs</code> po mode
+           <li><code>Vim</code> po mode
+           </ul>
+        <br>
+        <li><em>And finally</em><br>
+        I hope you'll have fun contributing to a more
+        internationalized world. :) If you have any more questions,
+        don't hesitate to contact me at <em>frederic@culot.org</em>.
+        </ul>
+
+
+<a name="links"></a><h1>Links</h1>
+<p>
+	This section contains links and references that may be of 
+	interest to you.
+
+
+<a name="links_homepage"></a><h2><code>calcurse</code> homepage</h2>
+<p>
+	The <code>calcurse</code> homepage can be found at 
+	<pre>
+	http://culot.org/calcurse
+	</pre>
+
+<a name="links_list"></a><h2><code>calcurse</code> announce list</h2>
+<p>
+	If you are interested in the project and want to be warned 
+	when a new release comes out, you can subscribe to the 
+	<code>calcurse</code> announce list. In doing so, you will 
+        receive an email as soon as a new feature appears in 
+        <code>calcurse</code>.<br>
+	To subscribe to this list, send a message to 
+	<code>calcurse-announce@culot.org</code> with "subscribe" 
+	in the subject field. 
+
+
+<a name="thanks"></a><h1>Thanks</a></h1>
+<p>
+	Its time now to thank other people without whom this program 
+	would not exist! So here is a list of contributing persons I 
+	would like to thank :
+	<ul>
+	<li>Alex for its patches, help and advices with <code>C</code> programming 
+	<li>Gwen for testing and general discussions about how to 
+	improve <code>calcurse</code>
+	<li>Kevin and Ryan for packaging <code>calcurse</code> for Debian
+	<li>Steffen for packaging <code>calcurse</code> for Archlinux
+	<li>Alexandre for packaging <code>calcurse</code> for Mac OsX
+	<li>Joel for its calendar script which inspired <code>calcurse</code> 
+	calendar view 
+        <li>Michael Schulz for the german translation of
+	<code>calcurse</code> manual
+	<li>people who write softwares I like and which inspired me, 
+	especially :
+		<ul>
+		<li><code>vim</code> for the displacement keys
+		<li><code>orpheus</code> and <code>abook</code> for documentation
+		<li><code>pine</code> and <code>aptitude</code> 
+	        for the text user interface
+		</ul>
+	</ul>
+        <br>
+        And last, many many thanks to all of the <code>calcurse</code>
+        users who sent me their feedback.
+
+<hr>
+<small><em>
+Copyright (c) 2004-2006 Fr&eacute;d&eacute;ric Culot<br>
+Calcurse version 1.4 - Last change: May 07, 2006
+<em></small>
+
+
+</body>
+</html>

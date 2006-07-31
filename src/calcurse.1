@@ -1,0 +1,158 @@
+.\" 	$calcurse: calcurse.1,v 1.1 2006/07/31 21:00:03 culot Exp $
+.\"
+.\" Copyright (c) 2004-2006 Frederic Culot
+.\"
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program; if not, write to the Free Software
+.\" Foundation, Inc., 59 Temple Place - Suite 330,
+.\" Boston, MA 02111-1307, USA.
+.\"
+.TH CALCURSE 1 "May 07, 2006" "Version 1.4" "Calcurse Manual"
+.SH NAME
+Calcurse \- text-based organizer
+.PP
+.SH SYNOPSIS
+.B "calcurse "
+[
+.B "-h "
+|
+.B "-v " 
+] [ 
+.B "-at " 
+] [ 
+.B "-d " 
+\fIdate\fP|\fInum\fP ] [ 
+.B "-c "
+\fIfile\fP ]
+.PP
+.SH DESCRIPTION
+Calcurse is a text-based personal organizer which helps keeping track of
+events and everyday tasks. It contains a calendar, a 'todo' list, and
+puts your appointments in order. The user interface is configurable, 
+and one can choose between different color schemes and layouts. 
+All of the commands are documented within an online help system.  
+.PP
+.SH OPTIONS
+The following options are supported:
+.TP
+.B \-a
+Print the appointments and events for the current day and exit. 
+.br
+\fINote:\fP the calendar from which to read the appointments can be specified using
+the '\-c' flag. 
+.TP
+.B \-c
+Specify the calendar file to use. The default calendar is 
+.B "'~/.calcurse/apts'" 
+(see section \fIFILES\fP below).
+.TP
+.B \-d
+Print the appointments and events for the given date or for 
+the given number of upcoming days, depending on the argument format. 
+Two possible formats are supported:
+.RS 9
+.TP 2
+\(bu  a date of the form 'mm/dd/yyyy'. 
+.TP 2
+\(bu  a number 'n'. 
+.RE
+.RS 7
+.LP
+In the first case, the appointments and events list for the specified 
+date will be returned, while in the second case the appointments and events 
+list for the 'n' upcoming days will be returned. 
+.br
+As an example, typing 'calcurse -d 3' will display your appointments 
+and events for today, tomorrow, and the day after tomorrow.   
+.br
+\fINote:\fP as for the '-a' flag, the calendar from which to read the 
+appointments can be specified using the '\-c' flag. 
+.RE
+.TP
+.B \-h
+Print a short help text describing the supported command-line options,
+and then exit. 
+.TP
+.B \-t
+Print the 'todo' list and exit.
+.TP
+.B \-v
+Display calcurse version and exit.
+.SH NOTES
+Calcurse interface contains three different panels (calendar,
+appointment list, and todo list) on which you can perform different
+actions. All the possible actions, together with their associated
+keystrokes, are listed on the status bar. This status bar
+takes place at the bottom of the screen.
+.PP
+At any time, the built-in help system can be invoked by pressing the '?'
+key. Once viewing the help screens, informations on a specific command
+can be accessed by pressing the keystroke corresponding to that command.
+.PP
+.SH CONFIGURATION
+The calcurse options can be changed from the configuration menu (shown
+when 'C' is hit). Three possible categories are to be chosen from : the
+color scheme, the layout (the location of the three panels on the
+screen), and more general options (such as automatic save before
+quitting). All of these options are detailed in the configuration menu.
+.PP
+.SH FILES
+The following structure is created in your $HOME directory the first
+time calcurse is run :
+.PP
+.HP 10
+$HOME/.calcurse/
+.br
+|___conf 
+.br
+|___apts 
+.br
+|___todo
+.PP
+The \fIconf\fP file contains the user configuration. The \fIapts\fP 
+file contains all of the user's appointments, and the \fItodo\fP 
+file contains the todo list.
+.PP
+.SH LICENCE
+Copyright (c) 2004-2006 by Frederic Culot. 
+.br
+This software is released under the GNU General Public License. Please
+read the COPYING file for more information. 
+.PP
+.SH BUGS
+Incorrect highlighting of items appear when using calcurse black and
+white theme together with a \fB$TERM\fP variable set to
+\fIxterm-color\fP. 
+To fix this bug, and as advised by Thomas E. Dickey (xterm maintainer),
+\fIxterm-xfree86\fP should be used instead of \fIxterm-color\fP to set 
+the \fB$TERM\fP variable:
+    "The xterm-color value for $TERM is a bad choice for XFree86 
+     xterm because it is commonly used for a terminfo entry which 
+     happens to not support bce. Use the xterm-xfree86 entry 
+     which is distributed with XFree86 xterm (or the similar one 
+     distributed with ncurses)."
+.PP
+If you find other bugs, please send a report to calcurse@culot.org or to the
+author, below.
+.PP
+.SH AUTHOR
+\fBFrederic Culot\fP <frederic@culot.org>.
+.PP
+.SH SEE ALSO
+ncurses(3), gettext(3)
+.br
+Calcurse home page : http://culot.org/calcurse/
+.br
+Calcurse manual found in the doc/ directory of the source package, or
+at:
+http://culot.org/calcurse/manual.html

@@ -1,0 +1,104 @@
+[15 May 2006]
+Version 1.4
+- New features:
+  * Support for i18n added
+  
+  * Support for non-color terminals added
+
+  * Option added to choose which day is the first of the week 
+    (monday or sunday)
+
+  * Documentation improved, with translated html manuals
+
+- Bugfixes:
+  * When confirmation is requested, it is now done by pressing 
+    'y' or 'n' instead of 'yes' or 'no'
+
+- Translation:
+  * french translation 
+
+  * french and german manuals
+
+
+[17 Mar 2006]
+Version 1.3
+- New features:
+  * Adding of all-day long events                                             
+  
+  * Many GUI improvements:                                                    
+        o better scrolling (with the use of ncurses pad functions)          
+        o scrollbars added                                                  
+        o progress bar added                                                
+
+  * Appointment duration can now be entered either in minutes or in           
+    hh:mm format
+
+- Bugfixes:
+  * January 0 bug fixed                                                       
+  
+  * Current day is no longer highlighted in every year of the future          
+    and the past (thanks to Michael for reporting that bug)                   
+
+  * Fixed compiler warnings (thanks to Uwe for reporting this)                
+
+  * Removed -lpanel link during compilation                                   
+
+  * Characters can now be erased with CTRL-H (to fix a problem                
+    reported by Brendan)
+
+
+[26 Nov 2005]
+Version 1.2
+- New features:
+  * An option was added to skip system dialogs                                
+  
+  * Configure script was improved
+
+- Bugfixes:
+  * Ncurses library use improved: screen refreshing is faster,                
+    windows do not flicker anymore when updated, and memory                     
+    footprint is much smaller                                                   
+  
+  * Changed abbreviation for 'Wednesday' from 'Wen' to 'Wed'
+
+
+[29 Oct 2005]
+Version 1.1
+- New features:
+  * Command-line options which allows to display appointments and             
+    todo list without entering the interactive mode                           
+
+  * Manpage and documentation updated                                         
+
+  * Configure script improved
+
+- Bugfixes:
+  * Debian Bug Report #335430 regarding the GoTo today function               
+    is now fixed
+
+
+[08 Oct 2005]
+Version 1.0       First stable release
+- New features:
+  * Calcurse now comes with a manpage
+
+- Bugfixes:
+  * Debian Bug Report #330869 regarding the October 0 which does not          
+    exist is now fixed                                                        
+  
+  * Default options "auto-save", "confirm-quit", and                          
+    "confirm-delete" were set to 'yes'
+
+
+[11 Sep 2005]
+Version 1.0rc3    Firtst public release
+
+
+[26 Jun 2005]
+Version 1.0rc2
+beta version
+
+
+[02 Apr 2005]
+Version 1.0rc1
+beta version
