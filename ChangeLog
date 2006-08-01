@@ -1,3 +1,9 @@
+01 Aug 2006:
+	day.h: MAX_TYPES added
+	day_erase_item() created
+	del_apoint() renamed to del_item and updated to take recurrent
+	items into account 
+
 27 Jul 2006:
 	back to work after my ibook's logic board crash :(
 	autogen.sh created
