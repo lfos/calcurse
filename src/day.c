@@ -1,4 +1,4 @@
-/*	$calcurse: day.c,v 1.1 2006/07/31 21:00:03 culot Exp $	*/
+/*	$calcurse: day.c,v 1.2 2006/08/01 20:35:44 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -359,4 +359,54 @@ void day_popup_item(void)
 			return 1;
 
 	return 0;
+}
+
+/*
+ * In order to erase an item, we need to count first the number of
+ * items for each type (in order: recurrent events, events, 
+ * recurrent appointments and appointments) and then to test the
+ * type of the item to be deleted.
+ */
+int day_erase_item(long date, int item_number) {
+	int i;
+	int ch = 0;
+	int nb_item[MAX_TYPES - 1];
+	struct day_item_s *p;
+	char *erase_warning =
+		_("This item is recurrent. "
+		  "Delete (a)ll occurences or just this (o)ne ?");
+	char *erase_choice =
+		_("[a/o] ");
+
+	for (i = 0; i < MAX_TYPES; i++) 
+		nb_item[i] = 0;
+
+	p = day_items_ptr;
+	for (i = 1; i < item_number; i++) {
+		nb_item[p->type - 1]++;
+		p = p->next;
+	}	
+
+	switch (p->type) {
+	case RECUR_EVNT:
+	case RECUR_APPT:
+		while ( (ch != 'a') && (ch != 'o')) {
+			status_mesg(erase_warning, erase_choice);
+			ch = wgetch(swin);
+		}
+		if (ch == 'a') {
+		} else if (ch == 'o') {
+		}
+		break;
+	
+	case EVNT:
+		event_delete_bynum(date, nb_item[EVNT - 1]);
+		break;
+
+	case APPT:
+		apoint_delete_bynum(date, nb_item[APPT - 1]);
+		break;
+	}
+
+	return p->type;
 }
