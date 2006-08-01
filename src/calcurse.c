@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.1 2006/07/31 21:00:02 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.2 2006/08/01 20:36:29 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -107,7 +107,7 @@ void update_windows(int surrounded_window);
 void general_config(void);
 void print_general_options(WINDOW *win);
 void print_option_incolor(WINDOW *win, bool option, int pos_x, int pos_y);
-void del_apoint(void);
+void del_item(void);
 
 /*
  * Calcurse  is  a text-based personal organizer which helps keeping track
@@ -309,7 +309,7 @@ int main(int argc, char **argv)
 
 		case 'D':
 		case 'd':	/* Delete an item */
-			del_apoint();
+			del_item();
 			do_storage = true;
 			break;
 
@@ -768,7 +768,7 @@ void print_option_incolor(WINDOW *win, bool option, int pos_y, int pos_x)
 }
 
   /* Delete an event from the ToDo or Appointment lists */
-void del_apoint(void)
+void del_item(void)
 {
 	char *choices = "[y/n] ";
 	char *del_app_str = _("Do you really want to delete this item ?");
@@ -779,6 +779,7 @@ void del_apoint(void)
 	bool go_for_todo_del = false;
 	int to_be_removed = 0;
 	int answer = 0;
+	int deleted_item_type = 0;
 	
 	/* delete an appointment */
 	if (which_pan == APPOINTMENT && hilt_app != 0) {
@@ -799,17 +800,20 @@ void del_apoint(void)
 		
 		if (go_for_deletion) {
 			if (nb_items != 0) {
-				if (hilt_app <= number_events_inday) { 
-					event_delete_bynum(date, hilt_app - 1);
+				deleted_item_type = day_erase_item(date, hilt_app);
+				if (deleted_item_type == EVNT || 
+				    deleted_item_type == RECUR_EVNT) {
 					number_events_inday--;
 					to_be_removed = 1;
-				} else {
-					apoint_delete_bynum(date, 
-							hilt_app - 
-							number_events_inday - 1);
+				} else if (deleted_item_type == APPT ||
+				    deleted_item_type == RECUR_APPT) {
 					number_apoints_inday--;
 					to_be_removed = 3;
-				}
+				} else { /* NOTREACHED */
+					fputs(_("FATAL ERROR in del_item: no such type\n"), stderr);
+					exit(EXIT_FAILURE);
+				}	
+
 				if (hilt_app > 1) --hilt_app;
 				if (apad->first_onscreen >= to_be_removed)
 					apad->first_onscreen = 
