@@ -1,3 +1,11 @@
+02 Aug 2006:
+	bugfix: Debian bug #377543 fixed, thanks to Neil for reporting it
+	recur_event_erase(), recur_apoint_erase() and recur_write_exc() created
+	recur_event_write() and recur_apoint_write() updated to call
+	    recur_writ_exc() if there are exceptions to be written
+	day_erase_item() and del_item() updated
+	ESCAPE key definition added
+
 01 Aug 2006:
 	day.h: MAX_TYPES added
 	day_erase_item() created
