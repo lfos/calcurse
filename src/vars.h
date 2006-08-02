@@ -1,4 +1,4 @@
-/*	$calcurse: vars.h,v 1.1 2006/07/31 21:00:03 culot Exp $	*/
+/*	$calcurse: vars.h,v 1.2 2006/08/02 21:20:47 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -38,6 +38,7 @@
 #define MAX_LENGTH	512
 
 #define CTRL(x)         ((x) & 0x1f)
+#define ESCAPE		27
 
 #define ATTR_FALSE	0
 #define ATTR_TRUE	1
