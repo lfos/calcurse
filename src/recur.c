@@ -1,4 +1,4 @@
-/*	$calcurse: recur.c,v 1.1 2006/07/31 21:00:03 culot Exp $	*/
+/*	$calcurse: recur.c,v 1.2 2006/08/02 21:19:11 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -46,7 +46,6 @@ struct recur_apoint_s *recur_apoint_new(char *mesg, long start, long dur,
 	struct recur_apoint_s *o, **i;
 	o = (struct recur_apoint_s *) malloc(sizeof(struct recur_apoint_s));
 	o->rpt = (struct rpt_s *) malloc(sizeof(struct rpt_s));
-	o->exc = (struct days_s *) malloc(sizeof(struct days_s));
 	o->mesg = (char *) malloc(strlen(mesg) + 1);
 	strcpy(o->mesg, mesg);
 	o->start = start;
@@ -73,7 +72,6 @@ struct recur_event_s *recur_event_new(char *mesg, long day, int id,
 	struct recur_event_s *o, **i;
 	o = (struct recur_event_s *) malloc(sizeof(struct recur_event_s));
 	o->rpt = (struct rpt_s *) malloc(sizeof(struct rpt_s));
-	o->exc = (struct days_s *) malloc(sizeof(struct days_s));
 	o->mesg = (char *) malloc(strlen(mesg) + 1);
 	strcpy(o->mesg, mesg);
 	o->day = day;
@@ -141,6 +139,25 @@ int recur_char2def(char type){
 	return recur_def;
 }
 
+/* Write days for which recurrent items should not be repeated. */
+void recur_write_exc(struct days_s *exc, FILE *f) {
+	struct days_s *day;
+	struct tm *lt;
+	time_t t;
+	int st_mon, st_day, st_year;
+	int end_mon, end_day, end_year;
+
+	for (day = exc; day != 0; day = exc->next) {
+		t = exc->st;
+		lt = localtime(&t);
+		st_mon = lt->tm_mon + 1;
+		st_day = lt->tm_mday;
+		st_year = lt->tm_year + 1900;
+		fprintf(f, " !%02u/%02u/%04u",
+			st_mon, st_day, st_year);	
+	}
+}
+
 /* Writting of a recursive appointment into file. */
 void recur_apoint_write(struct recur_apoint_s *o, FILE *f)
 {
@@ -161,14 +178,16 @@ void recur_apoint_write(struct recur_apoint_s *o, FILE *f)
 
 	t = o->rpt->until;
 	if (t == 0) { /* We have an endless recurrent appointment. */
-		fprintf(f, " {%d%c} |%s\n", o->rpt->freq, 
-			recur_def2char(o->rpt->type), o->mesg);
+		fprintf(f, " {%d%c", o->rpt->freq, 
+			recur_def2char(o->rpt->type)); 
+		if (o->exc != 0) recur_write_exc(o->exc, f);
+		fprintf(f, "} |%s\n", o->mesg);
 	} else {
 		lt = localtime(&t);
-		fprintf(f, " {%d%c -> %02u/%02u/%04u} |%s\n",
+		fprintf(f, " {%d%c -> %02u/%02u/%04u",
 			o->rpt->freq, recur_def2char(o->rpt->type),
-			lt->tm_mon + 1, lt->tm_mday, 1900 + lt->tm_year,
-			o->mesg);
+			lt->tm_mon + 1, lt->tm_mday, 1900 + lt->tm_year);
+		fprintf("} |%s\n", o->mesg);
 	}
 }
 
@@ -179,7 +198,7 @@ void recur_event_write(struct recur_event_s *o, FILE *f)
 	time_t t;
 	int st_mon, st_day, st_year;
 	int end_mon, end_day, end_year;
-
+	
 	t = o->day;
 	lt = localtime(&t);
 	st_mon = lt->tm_mon + 1;
@@ -187,19 +206,23 @@ void recur_event_write(struct recur_event_s *o, FILE *f)
 	st_year = lt->tm_year + 1900;
 	t = o->rpt->until;
 	if (t == 0) { /* We have an endless recurrent event. */
-		fprintf(f, "%02u/%02u/%04u [%d] {%d%c} %s\n",
+		fprintf(f, "%02u/%02u/%04u [%d] {%d%c",
 			st_mon, st_day, st_year, o->id, o->rpt->freq,
-			recur_def2char(o->rpt->type), o->mesg);
+			recur_def2char(o->rpt->type));
+		if (o->exc != 0) recur_write_exc(o->exc, f);
+		fprintf("} %s\n", o->mesg);
 	} else {
 		lt = localtime(&t);
 		end_mon = lt->tm_mon + 1;
 		end_day = lt->tm_mday;
 		end_year = lt->tm_year + 1900;
-		fprintf(f, "%02u/%02u/%04u [%d] {%d%c -> %02u/%02u/%04u} %s\n",
+		fprintf(f, "%02u/%02u/%04u [%d] {%d%c -> %02u/%02u/%04u",
 			st_mon, st_day, st_year, o->id, 
 			o->rpt->freq, recur_def2char(o->rpt->type),
-			end_mon, end_day, end_year, o->mesg);
-	}
+			end_mon, end_day, end_year);
+		if (o->exc != 0) recur_write_exc(o->exc, f);
+		fprintf(f, "} %s\n", o->mesg);
+	}		
 }
 
 /* Load the recursive appointment description */
@@ -353,3 +376,102 @@ struct apoint_s *recur_apoint_s2apoint_s(struct recur_apoint_s *p)
 	a->mesg = p->mesg;
 	return a;
 }
+
+/* 
+ * Delete a recurrent event from the list (if delete_whole is not null),
+ * or delete only one occurence of the recurrent event. 
+ */
+void recur_event_erase(long start, unsigned num, unsigned delete_whole)
+{
+        unsigned n;
+        struct recur_event_s *i, **iptr;
+	struct days_s *o, **j;
+
+        n = 0;
+        iptr = &recur_elist;
+        for (i = recur_elist; i != 0; i = i->next) {
+                if (recur_item_inday(i->day, i->rpt->type,
+			i->rpt->freq, i->rpt->until, start)) {
+                        if (n == num) {
+				if (delete_whole) {
+                                	*iptr = i->next;
+                                	free(i->mesg);
+					free(i->rpt);
+					free(i->exc);
+                                	free(i);
+                                	return;
+				} else {
+					o = (struct days_s *) 
+					    malloc(sizeof(struct days_s));
+					o->st = start;
+					j = &i->exc;
+					for (;;) {
+						if(*j==0 || (*j)->st > start) {
+							o->next = *j;
+							*j = o;
+							break;
+						}
+						j = &(*j)->next;
+					}
+					return;
+				}
+                        }
+                        n++;
+                }
+                iptr = &i->next;
+        }
+        /* NOTREACHED */
+        fputs(_("FATAL ERROR in recur_event_erase: no such event\n"),
+		stderr);
+        exit(EXIT_FAILURE);
+}
+
+/*
+ * Delete a recurrent appointment from the list (if delete_whole is not null),
+ * or delete only one occurence of the recurrent appointment. 
+ */
+void recur_apoint_erase(long start, unsigned num, unsigned delete_whole)
+{
+        unsigned n;
+        struct recur_apoint_s *i, **iptr;
+	struct days_s *o, **j;
+
+        n = 0;
+        iptr = &recur_alist;
+        for (i = recur_alist; i != 0; i = i->next) {
+                if (recur_item_inday(i->start, i->rpt->type,
+			i->rpt->freq, i->rpt->until, start)) {
+                        if (n == num) {
+				if (delete_whole) {
+					*iptr = i->next;
+					free(i->mesg);
+					free(i->rpt);
+					free(i->exc);
+					free(i);
+					return;
+				} else {
+					o = (struct days_s *) 
+					    malloc(sizeof(struct days_s));
+					o->st = start;
+					j = &i->exc;
+					for (;;) {
+						if(*j==0 || (*j)->st > start) {
+							o->next = *j;
+							*j = o;
+							break;
+						}
+						j = &(*j)->next;
+					}
+					return;
+				}
+			}
+                        n++;
+                }
+                iptr = &i->next;
+        }
+        /* NOTREACHED */
+        fputs(_("FATAL ERROR in recur_apoint_erase: no such appointment\n"),
+		stderr);
+        exit(EXIT_FAILURE);
+}
+
