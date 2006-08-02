@@ -1,4 +1,4 @@
-/*	$calcurse: day.c,v 1.2 2006/08/01 20:35:44 culot Exp $	*/
+/*	$calcurse: day.c,v 1.3 2006/08/02 21:20:19 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -371,6 +371,7 @@ int day_erase_item(long date, int item_number) {
 	int i;
 	int ch = 0;
 	int nb_item[MAX_TYPES - 1];
+	unsigned delete_whole;
 	struct day_item_s *p;
 	char *erase_warning =
 		_("This item is recurrent. "
@@ -387,25 +388,31 @@ int day_erase_item(long date, int item_number) {
 		p = p->next;
 	}	
 
-	switch (p->type) {
-	case RECUR_EVNT:
-	case RECUR_APPT:
-		while ( (ch != 'a') && (ch != 'o')) {
+	if (p->type == EVNT) {
+		event_delete_bynum(date, nb_item[EVNT - 1]);
+	} else if (p->type == APPT) {
+		apoint_delete_bynum(date, nb_item[APPT - 1]);
+	} else {
+		while ( (ch != 'a') && (ch != 'o') && (ch != ESCAPE)) {
 			status_mesg(erase_warning, erase_choice);
 			ch = wgetch(swin);
 		}
-		if (ch == 'a') {
-		} else if (ch == 'o') {
-		}
-		break;
-	
-	case EVNT:
-		event_delete_bynum(date, nb_item[EVNT - 1]);
-		break;
 
-	case APPT:
-		apoint_delete_bynum(date, nb_item[APPT - 1]);
-		break;
+		if (ch == 'a') {
+			delete_whole = 1;
+		} else if (ch == 'o') {
+			delete_whole = 0;
+		} else {
+			return 0;
+		}
+		
+		if (p->type == RECUR_EVNT) {
+			recur_event_erase(date, nb_item[RECUR_EVNT - 1], 
+				delete_whole);
+		} else {
+			recur_apoint_erase(date, nb_item[RECUR_APPT - 1],
+				delete_whole);
+		}
 	}
 
 	return p->type;
