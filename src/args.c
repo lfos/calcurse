@@ -1,4 +1,4 @@
-/*	$calcurse: args.c,v 1.1 2006/07/31 21:00:03 culot Exp $	*/
+/*	$calcurse: args.c,v 1.2 2006/08/02 17:51:38 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -366,9 +366,9 @@ int
 check_date(char *date)
 {
 	int ok = 0;
-	char month[] = "  ";
-	char day[] = "  ";
-	char year[] = "    ";
+	char month[3] = "";
+	char day[3] = "";
+	char year[5] = "";
 	if ( 
 			(strlen(date) == 10) &
 			(isdigit(date[0]) != 0) &
