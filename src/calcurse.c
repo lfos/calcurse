@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.2 2006/08/01 20:36:29 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.3 2006/08/02 21:21:08 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -777,7 +777,7 @@ void del_item(void)
 	int nb_items = number_apoints_inday + number_events_inday;
 	bool go_for_deletion = false;
 	bool go_for_todo_del = false;
-	int to_be_removed = 0;
+	int to_be_removed;
 	int answer = 0;
 	int deleted_item_type = 0;
 	
@@ -809,6 +809,8 @@ void del_item(void)
 				    deleted_item_type == RECUR_APPT) {
 					number_apoints_inday--;
 					to_be_removed = 3;
+				} else if (deleted_item_type == 0) {
+					to_be_removed = 0;		
 				} else { /* NOTREACHED */
 					fputs(_("FATAL ERROR in del_item: no such type\n"), stderr);
 					exit(EXIT_FAILURE);
