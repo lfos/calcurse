@@ -1,4 +1,4 @@
-/*	$calcurse: args.c,v 1.2 2006/08/02 17:51:38 culot Exp $	*/
+/*	$calcurse: args.c,v 1.3 2006/08/06 14:36:14 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -225,8 +225,8 @@ int app_arg(int add_line, int year, int month, int day, long date)
  	 * that date. 
 	 */
 	for (re = recur_elist; re != 0; re = re->next) {
-		if (recur_item_inday(re->day, re->rpt->type, re->rpt->freq,
-			re->rpt->until, today)) {
+		if (recur_item_inday(re->day, re->exc, re->rpt->type, 
+			re->rpt->freq, re->rpt->until, today)) {
 			app_found = 1;
 			if (add_line) {
 				fputs("\n", stdout);
@@ -259,8 +259,8 @@ int app_arg(int add_line, int year, int month, int day, long date)
 
  	 /* Same process is performed but this time on the appointments. */
 	for (ra = recur_alist; ra != 0; ra = ra->next) {
-		if (recur_item_inday(ra->start, ra->rpt->type, ra->rpt->freq,
-			ra->rpt->until, today)) {
+		if (recur_item_inday(ra->start, ra->exc, ra->rpt->type, 
+			ra->rpt->freq, ra->rpt->until, today)) {
 			app_found = 1;
 			if (add_line) {
 				fputs("\n",stdout);
