@@ -1,3 +1,8 @@
+06 Aug 2006:
+	recur_item_inday() updated to take non-repeated days into account
+	recur_repeat_item() and day_get_item() created
+	'R' menu key added to repeat an event or an appointment
+
 02 Aug 2006:
 	bugfix: Debian bug #377543 fixed, thanks to Neil for reporting it
 	recur_event_erase(), recur_apoint_erase() and recur_write_exc() created
