@@ -1,4 +1,4 @@
-/*	$calcurse: help.c,v 1.1 2006/07/31 21:00:03 culot Exp $	*/
+/*	$calcurse: help.c,v 1.2 2006/08/06 14:39:46 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -90,6 +90,7 @@ void help_screen(int which_pan, int colr)
 	help_page_t help_goto;
 	help_page_t help_delete;
 	help_page_t help_add;
+	help_page_t help_repeat;
 	help_page_t help_config;
 	help_page_t help_credits;
 
@@ -111,7 +112,7 @@ void help_screen(int which_pan, int colr)
 
 	help_redraw.title = _("Redraw:\n");
 	help_redraw.text  =
-    _("Pressing 'R' redraws the Calcurse panels.\n\n"
+    _("Pressing CTRL-L redraws the Calcurse panels.\n\n"
     "You might want to use this function when you resize your terminal\n"
     "screen for example, and you want Calcurse to take into account the new\n"
     "size of the terminal.\n\n"
@@ -216,6 +217,12 @@ void help_screen(int which_pan, int colr)
     "       o do not forget to save the calendar data to retrieve the new\n"
     "         event next time you launch Calcurse.");
 
+	help_repeat.title = _("Repeat:\n");
+	help_repeat.text  =
+    _("Pressing 'R' allows you to repeat an item in either the ToDo or\n"
+    "Appointment list, depending on which panel is selected when you\n"
+    "press 'R'.\n");
+
 	help_config.title = _("Config:\n");
 	help_config.text  =
     _("Pressing 'C' leads to the configuration submenu, from which you can\n"
@@ -254,16 +261,6 @@ void help_screen(int which_pan, int colr)
 	sprintf(label, _("CalCurse %s | help"), VERSION);
 	win_show(help_win, label);
 
-	/* Display the main help screen. */
-/*	nl = write_help_pad(help_pad, help_main.title, help_main.text, pad_width);
-	status_bar(which_pan, colr, col, 2);
-        wmove(swin, 0, 0);
-	wnoutrefresh(help_win);
-	pnoutrefresh(help_pad, first_line, 0, pad_offset, pad_offset, 
-			help_row - 2, help_col - pad_offset);
-        doupdate();
-*/
-
 	/* Display the help screen related to user input. */
 	while ( ch != 'q' ) {
                 erase_window_part(help_win, 1, title_lines, 
@@ -284,7 +281,7 @@ void help_screen(int which_pan, int colr)
 			nl = write_help_pad(help_pad, help_main.title,
 					help_main.text, pad_width);
 			break;
-		case 'r':
+		case CTRL('l'):
 			first_line = 0;
 			nl = write_help_pad(help_pad, help_redraw.title,
 					help_redraw.text, pad_width);
@@ -329,6 +326,11 @@ void help_screen(int which_pan, int colr)
 			first_line = 0;
 			nl = write_help_pad(help_pad, help_config.title,
 					help_config.text, pad_width);
+			break;
+		case 'r':
+			first_line = 0;
+			nl = write_help_pad(help_pad, help_repeat.title,
+					help_repeat.text, pad_width);
 			break;
 
 		case 'v':
