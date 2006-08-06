@@ -1,4 +1,4 @@
-/*	$calcurse: recur.c,v 1.2 2006/08/02 21:19:11 culot Exp $	*/
+/*	$calcurse: recur.c,v 1.3 2006/08/06 14:30:46 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -35,6 +35,8 @@
 #include "apoint.h"
 #include "event.h"
 #include "recur.h"
+#include "day.h"
+#include "vars.h"
 
 struct recur_apoint_s *recur_alist;
 struct recur_event_s *recur_elist;
@@ -187,7 +189,7 @@ void recur_apoint_write(struct recur_apoint_s *o, FILE *f)
 		fprintf(f, " {%d%c -> %02u/%02u/%04u",
 			o->rpt->freq, recur_def2char(o->rpt->type),
 			lt->tm_mon + 1, lt->tm_mday, 1900 + lt->tm_year);
-		fprintf("} |%s\n", o->mesg);
+		fprintf(f,"} |%s\n", o->mesg);
 	}
 }
 
@@ -210,7 +212,7 @@ void recur_event_write(struct recur_event_s *o, FILE *f)
 			st_mon, st_day, st_year, o->id, o->rpt->freq,
 			recur_def2char(o->rpt->type));
 		if (o->exc != 0) recur_write_exc(o->exc, f);
-		fprintf("} %s\n", o->mesg);
+		fprintf(f,"} %s\n", o->mesg);
 	} else {
 		lt = localtime(&t);
 		end_mon = lt->tm_mon + 1;
@@ -326,17 +328,22 @@ void recur_save_data(FILE *f)
 }
 
 /* Check if the recurrent item belongs to the selected day. */
-unsigned recur_item_inday(long item_start, int rpt_type, int rpt_freq,
-			  long rpt_until, long day_start)
+unsigned recur_item_inday(long item_start, struct days_s *item_exc,
+				int rpt_type, int rpt_freq,
+			  	long rpt_until, long day_start)
 {
 	const int DAYINSEC = 86400; 
 	long day_end = day_start + DAYINSEC;
 	int inday = 0;
 	struct tm *lt;
+	struct days_s *exc;
 	time_t t;
 	char *error = 
 		_("FATAL ERROR in recur_item_inday: unknown item type\n");
 
+	for (exc = item_exc; exc != 0; exc = exc->next)
+		if (exc->st < day_end && exc->st >= day_start) 
+			return 0;
 	if (rpt_until == 0) /* we have an endless recurrent item */
 		rpt_until = day_end;
 	while (item_start <= day_end && item_start <= rpt_until) {
@@ -390,7 +397,7 @@ void recur_event_erase(long start, unsigned num, unsigned delete_whole)
         n = 0;
         iptr = &recur_elist;
         for (i = recur_elist; i != 0; i = i->next) {
-                if (recur_item_inday(i->day, i->rpt->type,
+                if (recur_item_inday(i->day, i->exc, i->rpt->type,
 			i->rpt->freq, i->rpt->until, start)) {
                         if (n == num) {
 				if (delete_whole) {
@@ -439,7 +446,7 @@ void recur_apoint_erase(long start, unsigned num, unsigned delete_whole)
         n = 0;
         iptr = &recur_alist;
         for (i = recur_alist; i != 0; i = i->next) {
-                if (recur_item_inday(i->start, i->rpt->type,
+                if (recur_item_inday(i->start, i->exc, i->rpt->type,
 			i->rpt->freq, i->rpt->until, start)) {
                         if (n == num) {
 				if (delete_whole) {
@@ -475,3 +482,101 @@ void recur_apoint_erase(long start, unsigned num, unsigned delete_whole)
         exit(EXIT_FAILURE);
 }
 
+/*
+ * Ask user for repetition characteristics:
+ * 	o repetition type: daily, weekly, monthly, yearly
+ *	o repetition frequence: every X days, weeks, ...
+ *	o repetition end date
+ * and then delete the selected item to recreate it as a recurrent one
+ */
+void recur_repeat_item(int sel_year, int sel_month, int sel_day, 
+    int item_nb, int colr) {
+	int i, ch = 0;
+	int valid_date = 0, date_entered = 0;
+	int year = 0, month = 0, day = 0;
+	char user_input[MAX_LENGTH];
+	char *mesg_type_1 = 
+	_("Enter the repetition type: (D)aily, (W)eekly, (M)onthly, (Y)early");
+	char *mesg_type_2 = _("[D/W/M/Y] ");
+	char *mesg_freq_1 =
+	_("Enter the repetition frequence:");
+	char *mesg_until_1 = 
+	_("Enter the ending date: [mm/dd/yyyy] or '0' for an endless repetition");
+	char *mesg_wrong_1 = _("The entered date is not valid.");
+	char *mesg_wrong_2 =
+	_("Possible formats are [mm/dd/yyyy] or '0' for an endless repetetition");
+	char *wrong_type_1 = _("This item is already a repeated one.");
+	char *wrong_type_2 = _("Press [ENTER] to continue.");
+	int type = 0, freq = 0, id;
+	struct day_item_s *p; 
+	struct recur_apoint_s *ra;
+	struct recur_event_s *re;
+	long until, date;
+
+	p = day_get_item(item_nb);
+	if (p->type != APPT && p->type != EVNT) {
+		status_mesg(wrong_type_1, wrong_type_2);
+		return;
+	}
+
+	while ( (ch != 'D') && (ch != 'W') && (ch != 'M') 
+	    && (ch != 'Y') && (ch != ESCAPE) ) {
+		status_mesg(mesg_type_1, mesg_type_2);
+		ch = wgetch(swin);	 		
+		ch = toupper(ch);
+	}
+	if (ch == ESCAPE) {
+		return;
+	} else {
+		type = recur_char2def(ch);
+		ch = 0;
+	}
+
+	status_mesg(mesg_freq_1, "");
+	getstring(swin, colr, user_input, 0, 1);
+	if (strlen(user_input) != 0) {
+		freq = atoi(user_input);
+		strcpy(user_input, "");
+	} else {
+		return;
+	}
+
+	while (!date_entered) {
+		status_mesg(mesg_until_1, "");
+		getstring(swin, colr, user_input, 0, 1);
+		if (strlen(user_input) != 0) {
+			if (strlen(user_input) == 1 && 
+			    strncmp(user_input, "0", 1) == 0 )  {
+				until = 0;
+				date_entered = 1;
+			} else { 
+				valid_date = check_date(user_input);
+				if (valid_date) {
+					sscanf(user_input, "%d / %d / %d", 
+						&month, &day, &year);	
+					until = date2sec(year, month, day, 0, 0);
+					date_entered = 1;
+				} else {
+					status_mesg(mesg_wrong_1, mesg_wrong_2);
+					date_entered = 0;
+				}
+			}
+		} else {
+			return;
+		}
+	}
+	
+	date = date2sec(sel_year, sel_month, sel_day, 0, 0);
+	day_erase_item(date, item_nb);
+	if (p->type == EVNT) {
+		re = recur_event_new(p->mesg, p->start, p->evnt_id, 
+			type, freq, until);
+	} else if (p->type = APPT) {
+		ra = recur_apoint_new(p->mesg, p->start, p->appt_dur, 
+			type, freq, until);
+	} else { /* NOTREACHED */
+		fputs(_("FATAL ERROR in recur_repeat_item: wrong item type\n"),
+			stderr);
+		exit(EXIT_FAILURE);
+	}
+} 
