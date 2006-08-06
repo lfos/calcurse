@@ -1,4 +1,4 @@
-/*	$calcurse: day.c,v 1.3 2006/08/02 21:20:19 culot Exp $	*/
+/*	$calcurse: day.c,v 1.4 2006/08/06 14:36:53 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -102,7 +102,7 @@ int day_store_recur_events(long date)
 	int e_nb = 0;
 
 	for (j = recur_elist; j != 0; j = j->next) {
-		if (recur_item_inday(j->day, j->rpt->type, j->rpt->freq,
+		if (recur_item_inday(j->day, j->exc, j->rpt->type, j->rpt->freq,
 			j->rpt->until, date)) {
 			e_nb++;
 			ptr = day_add_event(RECUR_EVNT, j->mesg, j->day, j->id);
@@ -149,7 +149,7 @@ int day_store_recur_apoints(long date)
 	int a_nb = 0;
 
 	for (j = recur_alist; j != 0; j = j->next) {
-		if (recur_item_inday(j->start, j->rpt->type, j->rpt->freq,
+		if (recur_item_inday(j->start, j->exc, j->rpt->type, j->rpt->freq,
 			j->rpt->until, date)) {
 			a_nb++;
 			ptr = day_add_apoint(RECUR_APPT, j->mesg, j->start, j->dur);
@@ -341,13 +341,13 @@ void day_popup_item(void)
 	const long date = date2sec(year, month, day, 0, 0);
 
 	for (re = recur_elist; re != 0; re = re->next)
-		if (recur_item_inday(re->day, re->rpt->type, re->rpt->freq,
-			re->rpt->until, date))
+		if (recur_item_inday(re->day, re->exc, re->rpt->type, 
+			re->rpt->freq, re->rpt->until, date))
 			return 1;
 	
 	for (ra = recur_alist; ra != 0; ra = ra->next)
-		if (recur_item_inday(ra->start, ra->rpt->type, ra->rpt->freq,
-			ra->rpt->until, date))
+		if (recur_item_inday(ra->start, ra->exc, ra->rpt->type, 
+			ra->rpt->freq, ra->rpt->until, date))
 			return 1;
 
 	for (e = eventlist; e != 0; e = e->next)
@@ -416,4 +416,17 @@ int day_erase_item(long date, int item_number) {
 	}
 
 	return p->type;
+}
+
+/* Returns a structure containing the selected item. */
+struct day_item_s *day_get_item(int item_number)
+{
+	struct day_item_s *o;
+	int i;
+	
+	o = day_items_ptr;
+	for (i = 1; i < item_number; i++) {
+		o = o->next;
+	}
+	return o;
 }
