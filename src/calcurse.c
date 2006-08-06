@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.3 2006/08/02 21:21:08 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.4 2006/08/06 14:38:05 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -236,8 +236,7 @@ int main(int argc, char **argv)
 			}
 			break;
 
-		case 'R':
-		case 'r':	
+		case CTRL('L'):
                         reinit_wins();
 			break;
 
@@ -311,6 +310,11 @@ int main(int argc, char **argv)
 		case 'd':	/* Delete an item */
 			del_item();
 			do_storage = true;
+			break;
+
+		case 'R':
+		case 'r':
+			recur_repeat_item(sel_year, sel_month, sel_day, hilt_app, colr);
 			break;
 
 		case '?':	/* Online help system */
