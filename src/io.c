@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.1 2006/07/31 21:00:03 culot Exp $	*/
+/*	$calcurse: io.c,v 1.2 2006/08/16 20:13:07 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -240,6 +240,7 @@ void load_app()
 	FILE *data_file;
 	int c, is_appointment, is_event, is_recursive;
         struct tm start, end, until, *lt;
+	struct days_s *exc = NULL;
         time_t t;
         int id = 0;
 	int freq;
@@ -315,11 +316,23 @@ void load_app()
 					c = getc(data_file); // useless '|'
 			} else if (c == '-') {
 				ungetc(c, data_file);
-				fscanf(data_file, " -> %u / %u / %u } ",
+				fscanf(data_file, " -> %u / %u / %u ",
 					&until.tm_mon, &until.tm_mday, 
 					&until.tm_year);
+				c = getc(data_file);
+				if (c == '!') {
+					ungetc(c, data_file);
+					exc = recur_exc_scan(data_file);
+					fscanf(data_file, "} ");
+				} else {
+					ungetc(c, data_file);
+					fscanf(data_file, "} ");
+				}
 				if (is_appointment) 
-					c = getc(data_file); // useless '|'
+					fscanf(data_file, " | "); // useless '|'
+			} else if (c == '!') {
+				ungetc(c, data_file);
+				exc = recur_exc_scan(data_file);			
 			} else { /* NOT REACHED */
 				fputs(error, stderr);
 				exit(EXIT_FAILURE);
@@ -336,14 +349,14 @@ void load_app()
 		if (is_appointment) {
 			if (is_recursive) {
 				recur_apoint_scan(data_file, start, end,
-					type, freq, until);
+					type, freq, until, exc);
 			} else {
 				apoint_scan(data_file, start, end);
 			}
 		} else if (is_event) {
 			if (is_recursive) {
 				recur_event_scan(data_file, start, id,
-					type, freq, until);
+					type, freq, until, exc);
 			} else {
 				event_scan(data_file, start, id);
 			}
