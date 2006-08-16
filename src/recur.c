@@ -1,4 +1,4 @@
-/*	$calcurse: recur.c,v 1.3 2006/08/06 14:30:46 culot Exp $	*/
+/*	$calcurse: recur.c,v 1.4 2006/08/16 20:14:32 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -43,18 +43,20 @@ struct recur_event_s *recur_elist;
 
 /* Insert a new recursive appointment in the general linked list */
 struct recur_apoint_s *recur_apoint_new(char *mesg, long start, long dur, 
-	int type, int freq, long until)
+	int type, int freq, long until, struct days_s *except)
 {
 	struct recur_apoint_s *o, **i;
 	o = (struct recur_apoint_s *) malloc(sizeof(struct recur_apoint_s));
 	o->rpt = (struct rpt_s *) malloc(sizeof(struct rpt_s));
 	o->mesg = (char *) malloc(strlen(mesg) + 1);
+	o->exc = (struct days_s *) malloc(sizeof(struct days_s));
 	strcpy(o->mesg, mesg);
 	o->start = start;
 	o->dur = dur;
 	o->rpt->type = type;
 	o->rpt->freq = freq;
 	o->rpt->until = until;
+	o->exc = except;
 	i = &recur_alist;
 	for (;;) {
 		if (*i == 0 || (*i)->start > start) {
@@ -69,18 +71,20 @@ struct recur_apoint_s *recur_apoint_new(char *mesg, long start, long dur,
 
 /* Insert a new recursive event in the general linked list */
 struct recur_event_s *recur_event_new(char *mesg, long day, int id, 
-	int type, int freq, long until)
+	int type, int freq, long until, struct days_s *except)
 {
 	struct recur_event_s *o, **i;
 	o = (struct recur_event_s *) malloc(sizeof(struct recur_event_s));
 	o->rpt = (struct rpt_s *) malloc(sizeof(struct rpt_s));
 	o->mesg = (char *) malloc(strlen(mesg) + 1);
+	o->exc = (struct days_s *) malloc(sizeof(struct days_s));
 	strcpy(o->mesg, mesg);
 	o->day = day;
 	o->id = id;
 	o->rpt->type = type;
 	o->rpt->freq = freq;
 	o->rpt->until = until;
+	o->exc = except;
 	i = &recur_elist;
 	for (;;) {
 		if (*i == 0 || (*i)->day > day) {
@@ -189,6 +193,7 @@ void recur_apoint_write(struct recur_apoint_s *o, FILE *f)
 		fprintf(f, " {%d%c -> %02u/%02u/%04u",
 			o->rpt->freq, recur_def2char(o->rpt->type),
 			lt->tm_mon + 1, lt->tm_mday, 1900 + lt->tm_year);
+		if (o->exc != 0) recur_write_exc(o->exc, f);
 		fprintf(f,"} |%s\n", o->mesg);
 	}
 }
@@ -229,7 +234,7 @@ void recur_event_write(struct recur_event_s *o, FILE *f)
 
 /* Load the recursive appointment description */
 struct recur_apoint_s *recur_apoint_scan(FILE * f, struct tm start, 
-	struct tm end, char type, int freq, struct tm until)
+	struct tm end, char type, int freq, struct tm until, struct days_s *exc)
 {
 	struct tm *lt;
 	char buf[MESG_MAXSIZE], *nl;
@@ -272,12 +277,12 @@ struct recur_apoint_s *recur_apoint_scan(FILE * f, struct tm start,
 	}
       
 	return recur_apoint_new(buf, tstart, tend - tstart, 
-		recur_char2def(type), freq, tuntil);
+		recur_char2def(type), freq, tuntil, exc);
 }
 
 /* Load the recursive events from file */
 struct recur_event_s *recur_event_scan(FILE * f, struct tm start, int id, 
-	char type, int freq, struct tm until)
+	char type, int freq, struct tm until, struct days_s *exc)
 {
 	struct tm *lt;
 	char buf[MESG_MAXSIZE], *nl;
@@ -312,7 +317,8 @@ struct recur_event_s *recur_event_scan(FILE * f, struct tm start, int id,
 		exit(EXIT_FAILURE);
 	}
 	
-	return recur_event_new(buf, tstart, id, recur_char2def(type), freq, tuntil);
+	return recur_event_new(buf, tstart, id, recur_char2def(type), 
+		freq, tuntil, exc);
 }
 
 /* Write recursive items to file. */
@@ -570,13 +576,48 @@ void recur_repeat_item(int sel_year, int sel_month, int sel_day,
 	day_erase_item(date, item_nb);
 	if (p->type == EVNT) {
 		re = recur_event_new(p->mesg, p->start, p->evnt_id, 
-			type, freq, until);
-	} else if (p->type = APPT) {
+			type, freq, until, NULL);
+	} else if (p->type == APPT) {
 		ra = recur_apoint_new(p->mesg, p->start, p->appt_dur, 
-			type, freq, until);
+			type, freq, until, NULL);
 	} else { /* NOTREACHED */
 		fputs(_("FATAL ERROR in recur_repeat_item: wrong item type\n"),
 			stderr);
 		exit(EXIT_FAILURE);
 	}
 } 
+
+/* 
+ * Read days for which recurrent items must not be repeated
+ * (such days are called exceptions).
+ */
+struct days_s *recur_exc_scan(FILE *data_file)
+{
+	int c = 0;
+	struct tm *lt, day;
+	time_t t;
+	struct days_s *exc_head, *exc;
+
+	exc_head = NULL;
+	t = time(NULL);
+	lt = localtime(&t);
+	day = *lt;
+	while ((c = getc(data_file)) == '!') {
+		ungetc(c, data_file);
+		if (fscanf( data_file, "!%u / %u / %u ",
+		    &day.tm_mon, &day.tm_mday, &day.tm_year) != 3) {	
+			fputs(_("FATAL ERROR in recur_exc_scan: "
+				"syntax error in the item date\n"), stderr);
+			exit(EXIT_FAILURE);
+		}
+		day.tm_sec = 0;
+		day.tm_isdst = -1;
+		day.tm_year -= 1900;
+		day.tm_mon--;
+		exc = (struct days_s *) malloc(sizeof(struct days_s));
+		exc->st = mktime(&day);
+		exc->next = exc_head;
+		exc_head = exc;
+	}
+	return exc_head;
+}
