@@ -1,4 +1,4 @@
-/*	$calcurse: recur.h,v 1.3 2006/08/06 14:35:22 culot Exp $	*/
+/*	$calcurse: recur.h,v 1.4 2006/08/16 20:13:39 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -68,18 +68,19 @@ extern struct recur_apoint_s *recur_alist;
 extern struct recur_event_s *recur_elist;
 
 struct recur_apoint_s *recur_apoint_new(char *mesg, long start, long duration,
-	int type, int freq, long until); 
+	int type, int freq, long until, struct days_s *except); 
 struct recur_event_s *recur_event_new(char *mesg, long day, int id, 
-	int type, int freq, long until);
+	int type, int freq, long until, struct days_s *except);
 char recur_def2char(int define);
 int recur_char2def(char type);
 void recur_write_exc(struct days_s *exc, FILE * f);
 void recur_apoint_write(struct recur_apoint_s *o, FILE * f);
 void recur_event_write(struct recur_event_s *o, FILE * f);
 struct recur_apoint_s *recur_apoint_scan(FILE * f, struct tm start,
-	struct tm end, char type, int freq, struct tm until);
+	struct tm end, char type, int freq, 
+	struct tm until, struct days_s *exc);
 struct recur_event_s *recur_event_scan(FILE * f, struct tm start, int id, 
-	char type, int freq, struct tm until);
+	char type, int freq, struct tm until, struct days_s *exc);
 void recur_save_data(FILE *f);
 unsigned recur_item_inday(long item_start, struct days_s *item_exc, int rpt_type, 
 			int rpt_freq, long rpt_until, long day_start);
@@ -88,5 +89,6 @@ void recur_event_erase(long start, unsigned num, unsigned delete_whole);
 void recur_apoint_erase(long start, unsigned num, unsigned delete_whole);
 void recur_repeat_item(int sel_year, int sel_month, int sel_day, 
 	int item_nb, int colr);
+struct days_s *recur_exc_scan(FILE *data_file);
 
 #endif /* CALCURSE_RECUR_H */
