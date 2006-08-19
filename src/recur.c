@@ -1,4 +1,4 @@
-/*	$calcurse: recur.c,v 1.4 2006/08/16 20:14:32 culot Exp $	*/
+/*	$calcurse: recur.c,v 1.5 2006/08/19 14:59:50 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -147,20 +147,18 @@ int recur_char2def(char type){
 
 /* Write days for which recurrent items should not be repeated. */
 void recur_write_exc(struct days_s *exc, FILE *f) {
-	struct days_s *day;
 	struct tm *lt;
 	time_t t;
 	int st_mon, st_day, st_year;
-	int end_mon, end_day, end_year;
 
-	for (day = exc; day != 0; day = exc->next) {
-		t = exc->st;
+	while (exc) {
+		t = exc->st; 
 		lt = localtime(&t);
 		st_mon = lt->tm_mon + 1;
 		st_day = lt->tm_mday;
 		st_year = lt->tm_year + 1900;
-		fprintf(f, " !%02u/%02u/%04u",
-			st_mon, st_day, st_year);	
+		fprintf(f, " !%02u/%02u/%04u", st_mon, st_day, st_year);
+		exc = exc->next;
 	}
 }
 
@@ -506,6 +504,8 @@ void recur_repeat_item(int sel_year, int sel_month, int sel_day,
 	char *mesg_type_2 = _("[D/W/M/Y] ");
 	char *mesg_freq_1 =
 	_("Enter the repetition frequence:");
+	char *mesg_wrong_freq =
+	_("The frequence you entered is not valid.");
 	char *mesg_until_1 = 
 	_("Enter the ending date: [mm/dd/yyyy] or '0' for an endless repetition");
 	char *mesg_wrong_1 = _("The entered date is not valid.");
@@ -538,13 +538,19 @@ void recur_repeat_item(int sel_year, int sel_month, int sel_day,
 		ch = 0;
 	}
 
-	status_mesg(mesg_freq_1, "");
-	getstring(swin, colr, user_input, 0, 1);
-	if (strlen(user_input) != 0) {
-		freq = atoi(user_input);
-		strcpy(user_input, "");
-	} else {
-		return;
+	while (freq == 0) {
+		status_mesg(mesg_freq_1, "");
+		getstring(swin, colr, user_input, 0, 1);
+		if (strlen(user_input) != 0) {
+			freq = atoi(user_input);
+			if (freq == 0) {
+				status_mesg(mesg_wrong_freq, wrong_type_2);
+				wgetch(swin);
+			}
+			strcpy(user_input, "");
+		} else {
+			return;
+		}
 	}
 
 	while (!date_entered) {
