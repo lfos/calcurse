@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.4 2006/08/06 14:38:05 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.5 2006/08/19 15:01:13 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -961,6 +961,7 @@ void add_item(void)
                                                            12, 0),
                                                    Id);
 		}
+		hilt_app++;
 		update_app_panel(sel_year, sel_month, sel_day);
 	}
 	erase_window_part(swin, 0, 0, nc_bar, nl_bar);
