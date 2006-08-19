@@ -1,3 +1,12 @@
+19 Aug 2006:
+	bugfix: in io.c, a bug could cause a fatal error when loading from file
+	an endless recurrent item with non-repeated days 
+	bugfix: in recur.c, fixed a bug which could result in an infinite loop
+	when saving multiple days 
+	bugfix: in calcurse.c, a newly created appointment or event is now
+	correctly highlighted
+	recur_repeat_item() updated to check if the frequence is valid	
+
 16 Aug 2006:
 	recur_exc_scan() created
 	recur_event_new() and recur_apoint_new() updated to take non-repeated
@@ -35,7 +44,7 @@
 	allocated structure that can be overwritten by subsequent calls
 	to the function (which was the case with recurrent items) 
 	load_app(), recur_event_scan(), recur_apoint_scan(), recur_item_inday(),
-  	recur_event_write() and recur_apoint_write() updated to take endless 
+	recur_event_write() and recur_apoint_write() updated to take endless 
 	recurrent items into account
 
 24 Jun 2006:
