@@ -1,3 +1,6 @@
+21 Aug 2006:
+	English and German translation added
+
 19 Aug 2006:
 	bugfix: in io.c, a bug could cause a fatal error when loading from file
 	an endless recurrent item with non-repeated days 
