@@ -1,3 +1,7 @@
+22 Aug 2006:
+	recur.c: compilation warnings corrected
+	calcurse.c: screen refreshing process ameliorated in add_item()
+
 21 Aug 2006:
 	English and German translation added
 
