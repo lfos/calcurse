@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.5 2006/08/19 15:01:13 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.6 2006/08/22 21:06:24 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -46,6 +46,7 @@
 #include "day.h"
 #include "apoint.h"
 #include "event.h"
+#include "recur.h"
 #include "todo.h"
 #include "args.h"
 
@@ -962,11 +963,8 @@ void add_item(void)
                                                    Id);
 		}
 		hilt_app++;
-		update_app_panel(sel_year, sel_month, sel_day);
 	}
 	erase_window_part(swin, 0, 0, nc_bar, nl_bar);
-	status_bar(which_pan, colr, nc_bar, nl_bar);
-	doupdate();
 }
 
 /* Updates the ToDo panel */
