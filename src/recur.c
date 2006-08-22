@@ -1,4 +1,4 @@
-/*	$calcurse: recur.c,v 1.5 2006/08/19 14:59:50 culot Exp $	*/
+/*	$calcurse: recur.c,v 1.6 2006/08/22 21:05:35 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -27,6 +27,7 @@
 #include <ncurses.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include <sys/types.h>
 #include <time.h>
 
@@ -35,6 +36,7 @@
 #include "apoint.h"
 #include "event.h"
 #include "recur.h"
+#include "args.h"
 #include "day.h"
 #include "vars.h"
 
@@ -495,7 +497,7 @@ void recur_apoint_erase(long start, unsigned num, unsigned delete_whole)
  */
 void recur_repeat_item(int sel_year, int sel_month, int sel_day, 
     int item_nb, int colr) {
-	int i, ch = 0;
+	int ch = 0;
 	int valid_date = 0, date_entered = 0;
 	int year = 0, month = 0, day = 0;
 	char user_input[MAX_LENGTH];
@@ -513,7 +515,7 @@ void recur_repeat_item(int sel_year, int sel_month, int sel_day,
 	_("Possible formats are [mm/dd/yyyy] or '0' for an endless repetetition");
 	char *wrong_type_1 = _("This item is already a repeated one.");
 	char *wrong_type_2 = _("Press [ENTER] to continue.");
-	int type = 0, freq = 0, id;
+	int type = 0, freq = 0;
 	struct day_item_s *p; 
 	struct recur_apoint_s *ra;
 	struct recur_event_s *re;
