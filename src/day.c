@@ -1,4 +1,4 @@
-/*	$calcurse: day.c,v 1.4 2006/08/06 14:36:53 culot Exp $	*/
+/*	$calcurse: day.c,v 1.5 2006/08/23 19:41:34 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -249,7 +249,7 @@ void day_write_pad(long date, int width, int length, int incolor, int colr)
 	if (day_saved_item == NULL) {
 		day_saved_item = (struct day_saved_item_s *) 
 			malloc(sizeof(struct day_saved_item_s));	
-		day_saved_item->mesg = (char *) malloc(1);
+		day_saved_item->mesg = (char *) malloc(sizeof(char));
 	} 
 
 	for (p = day_items_ptr; p != 0; p = p->next) {
@@ -259,9 +259,6 @@ void day_write_pad(long date, int width, int length, int incolor, int colr)
 			item_number++;		
 			if (item_number - incolor == 0) {
 				day_saved_item->type = p->type;
-				day_saved_item->mesg = (char *)
-					realloc(day_saved_item->mesg,
-						strlen(p->mesg) + 1);
 				day_saved_item->mesg = p->mesg;
 			}
 			display_item(apad->ptrwin, item_number - incolor, p->mesg, 
@@ -279,9 +276,6 @@ void day_write_pad(long date, int width, int length, int incolor, int colr)
 			item_number++;
 			if (item_number - incolor == 0) {
 				day_saved_item->type = p->type;
-				day_saved_item->mesg = (char *)
-					realloc(day_saved_item->mesg,
-						strlen(p->mesg) + 1);
 				day_saved_item->mesg = p->mesg;
 				apoint_sec2str(day_item_s2apoint_s(p), 
 					p->type, date,
@@ -370,7 +364,7 @@ void day_popup_item(void)
 int day_erase_item(long date, int item_number) {
 	int i;
 	int ch = 0;
-	int nb_item[MAX_TYPES - 1];
+	int nb_item[MAX_TYPES];
 	unsigned delete_whole;
 	struct day_item_s *p;
 	char *erase_warning =
@@ -379,7 +373,7 @@ int day_erase_item(long date, int item_number) {
 	char *erase_choice =
 		_("[a/o] ");
 
-	for (i = 0; i < MAX_TYPES; i++) 
+	for (i = 0; i < MAX_TYPES; i++)
 		nb_item[i] = 0;
 
 	p = day_items_ptr;
