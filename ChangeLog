@@ -1,3 +1,8 @@
+23 Aug 2006:
+	independant status bar created for the todo panel
+	bugfix: memory allocation problem in day.c
+	online help text updated for the repeat and delete commands
+
 22 Aug 2006:
 	recur.c: compilation warnings corrected
 	calcurse.c: screen refreshing process ameliorated in add_item()
