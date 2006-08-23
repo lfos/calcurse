@@ -1,4 +1,4 @@
-/*	$calcurse: help.c,v 1.2 2006/08/06 14:39:46 culot Exp $	*/
+/*	$calcurse: help.c,v 1.3 2006/08/23 19:43:04 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -183,6 +183,9 @@ void help_screen(int which_pan, int colr)
     "\nDepending on which panel is selected when you press the delete key,\n"
     "the hilighted item of either the ToDo or Appointment list will be \n"
     "removed from this list.\n"
+    "\nIf the item to be deleted is recurrent, you will be asked if you\n"
+    "wish to suppress all of the item occurences or just the one you\n"
+    "selected.\n"
     "\nIf the general option 'confirm_delete' is set to 'YES', then you will\n"
     "be asked for confirmation before deleting the selected event.\n"
     "Do not forget to save the calendar data to retrieve the modifications\n"
@@ -219,9 +222,26 @@ void help_screen(int which_pan, int colr)
 
 	help_repeat.title = _("Repeat:\n");
 	help_repeat.text  =
-    _("Pressing 'R' allows you to repeat an item in either the ToDo or\n"
-    "Appointment list, depending on which panel is selected when you\n"
-    "press 'R'.\n");
+    _("Pressing 'R' allows you to repeat an event or an appointment. You must\n"
+    "first select the item to be repeated by moving inside the appointment\n"
+    "panel. Then pressing 'R' will lead you to a set of three questions, with\n"
+    "which you will be able to specify the repetition characteristics:\n\n"
+    "  o        type: you can choose between a daily, weekly, monthly or\n"
+    "                 yearly repetition by pressing 'D', 'W', 'M' or 'Y'\n"
+    "                 respectively.\n\n"
+    "  o   frequence: this indicates how often the item shall be repeated.\n"
+    "                 For example, if you want to remember an anniversary,\n"
+    "                 choose a 'yearly' repetition with a frequence of '1',\n"
+    "                 which means it must be repeated every year. Another\n"
+    "                 example: if you go to the restaurant every two days,\n"
+    "                 choose a 'daily' repetition with a frequence of '2'.\n\n" 
+    "  o ending date: this specifies when to stop repeating the selected\n"
+    "                 event or appointment. To indicate an endless \n"
+    "                 repetition, enter '0' and the item will be repeated\n"
+    "                 forever.\n"
+    "\nNote: the 'Repeat' and 'Delete' command can be mixed to create\n"
+    "        complicated configurations, as it is possible to delete only\n"
+    "        one occurence of a repeated item."); 
 
 	help_config.title = _("Config:\n");
 	help_config.text  =
