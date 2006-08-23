@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.2 2006/08/06 14:38:50 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.3 2006/08/23 19:44:25 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -353,7 +353,9 @@ void status_bar(int which_pan, int colr, int nc_bar, int nl_bar)
 	len_oth_itm = len_let + spc_lad + len_des + spc_bet_oth_itm;
 
 	erase_window_part(swin, 0, 0, nc_bar, nl_bar);
-	if (which_pan == 0) {
+	switch (which_pan) {
+
+	case 0: /* CALENDAR */
 		custom_apply_attr(swin, ATTR_HIGHEST);
 		mvwprintw(swin, 0, 0, "  ?");
 		mvwprintw(swin, 1, 0, "  Q");
@@ -382,7 +384,9 @@ void status_bar(int which_pan, int colr, int nc_bar, int nl_bar)
 			 _("Chg View"));
 		mvwprintw(swin, 0, 4 * len_cal_itm + len_let + spc_lad,
 			 _("Config"));
-	} else {
+		break;
+
+	case 1: /* APPOINTMENT */
 		custom_apply_attr(swin, ATTR_HIGHEST);
 		mvwprintw(swin, 0, 0, "  ?");
 		mvwprintw(swin, 1, 0, "  Q");
@@ -420,7 +424,46 @@ void status_bar(int which_pan, int colr, int nc_bar, int nl_bar)
 			 _("View"));
 		mvwprintw(swin, 1, 5 * len_oth_itm + len_let + spc_lad,
 			 _("Config"));
+		break;
+
+	case 2: /* TODO */
+		custom_apply_attr(swin, ATTR_HIGHEST);
+		mvwprintw(swin, 0, 0, "  ?");
+		mvwprintw(swin, 1, 0, "  Q");
+		mvwprintw(swin, 0, len_oth_itm, " ^L");
+		mvwprintw(swin, 1, len_oth_itm, "  S");
+		mvwprintw(swin, 0, 2 * len_oth_itm, "J/K");
+		mvwprintw(swin, 1, 2 * len_oth_itm, "Tab");
+		mvwprintw(swin, 0, 3 * len_oth_itm, "  A");
+		mvwprintw(swin, 1, 3 * len_oth_itm, "  D");
+		mvwprintw(swin, 0, 4 * len_oth_itm, "  G");
+		mvwprintw(swin, 1, 4 * len_oth_itm, "  V");
+		mvwprintw(swin, 0, 5 * len_oth_itm, "  C");
+		custom_remove_attr(swin, ATTR_HIGHEST);
+		wnoutrefresh(swin);
+
+		mvwprintw(swin, 0, len_let + spc_lad, _("Help"));
+		mvwprintw(swin, 1, len_let + spc_lad, _("Quit"));
+		mvwprintw(swin, 0, len_oth_itm + len_let + spc_lad,
+			 _("Redraw"));
+		mvwprintw(swin, 1, len_oth_itm + len_let + spc_lad, _("Save"));
+		mvwprintw(swin, 0, 2 * len_oth_itm + len_let + spc_lad,
+			 _("Up/Down"));
+		mvwprintw(swin, 1, 2 * len_oth_itm + len_let + spc_lad,
+			 _("Chg View"));
+		mvwprintw(swin, 0, 3 * len_oth_itm + len_let + spc_lad,
+			 _("Add Item"));
+		mvwprintw(swin, 1, 3 * len_oth_itm + len_let + spc_lad,
+			 _("Del Item"));
+		mvwprintw(swin, 0, 4 * len_oth_itm + len_let + spc_lad,
+			_("GoTo"));
+		mvwprintw(swin, 1, 4 * len_oth_itm + len_let + spc_lad,
+			_( "View"));
+		mvwprintw(swin, 0, 5 * len_oth_itm + len_let + spc_lad,
+			 _("Config"));
+		break;
 	}
+
 	wnoutrefresh(swin);
 }
 
