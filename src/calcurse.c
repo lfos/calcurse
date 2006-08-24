@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.6 2006/08/22 21:06:24 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.7 2006/08/24 20:13:22 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -303,8 +303,9 @@ int main(int argc, char **argv)
 			if (which_pan == APPOINTMENT) {
 				add_item();
 				do_storage = true;
+			} else if (which_pan == TODO) {
+				add_todo();
 			}
-			if (which_pan == TODO) add_todo();
 			break;
 
 		case 'D':
@@ -315,7 +316,9 @@ int main(int argc, char **argv)
 
 		case 'R':
 		case 'r':
-			recur_repeat_item(sel_year, sel_month, sel_day, hilt_app, colr);
+			if (which_pan == APPOINTMENT)
+				recur_repeat_item(sel_year, sel_month, 
+					sel_day, hilt_app, colr);
 			break;
 
 		case '?':	/* Online help system */
@@ -962,7 +965,7 @@ void add_item(void)
                                                            12, 0),
                                                    Id);
 		}
-		hilt_app++;
+		if (hilt_app == 0) hilt_app++;
 	}
 	erase_window_part(swin, 0, 0, nc_bar, nl_bar);
 }
