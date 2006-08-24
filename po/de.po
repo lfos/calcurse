@@ -1,4 +1,4 @@
-# 	$calcurse: de.po,v 1.2 2006/08/21 16:45:06 culot Exp $
+# 	$calcurse: de.po,v 1.3 2006/08/24 20:43:24 culot Exp $
 #
 # German translations for calcurse package.
 # Copyright (C) 2006 Michael Schulz <bloodshower@web.de>
@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse 1.4\n"
 "Report-Msgid-Bugs-To: frederic@culot.org\n"
-"POT-Creation-Date: 2006-08-16 21:35+0200\n"
+"POT-Creation-Date: 2006-08-24 22:00+0200\n"
 "PO-Revision-Date: 2006-07-07 18:54GMT\n"
 "Last-Translator: Michael Schulz <bloodshower@web.de>\n"
 "Language-Team:  Michael Schulz <bloodshower@web.de>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: src/apoint.c:138
+#: src/apoint.c:138 src/recur.c:275
 msgid "FATAL ERROR in apoint_scan: date error in the appointment\n"
 msgstr "SCHWERER FEHLER in apoint_scan: Termin hat fehlerhafte Zeit\n"
 
@@ -112,7 +112,7 @@ msgstr "Verwendung: calcurse [-h | -v] [-at] [-d Datum|Nr] [-c Datei]\n"
 msgid "Try 'calcurse -h' for more information.\n"
 msgstr "Versuche 'calcurse -h', um weitere Informationen zu erhalten.\n"
 
-#: src/calcurse.c:126
+#: src/calcurse.c:127
 msgid ""
 "Sorry, colors are not supported by your terminal\n"
 "(Press [ENTER] to continue)"
@@ -120,11 +120,11 @@ msgstr ""
 "Farben werden von Ihrem Terminal nicht unterstützt.\n"
 "([EINGABE]-Taste um fortzufahren)"
 
-#: src/calcurse.c:128
+#: src/calcurse.c:129
 msgid "Do you really want to quit ?"
 msgstr "Möchten Sie wirklich das Programm beenden ?"
 
-#: src/calcurse.c:199
+#: src/calcurse.c:200
 msgid ""
 "Please resize your terminal screen\n"
 "(to at least 80x24),\n"
@@ -134,167 +134,167 @@ msgstr ""
 "(Mindestgröße 80x24),\n"
 "und starten Sie calcurse neu.\n"
 
-#: src/calcurse.c:259
+#: src/calcurse.c:260
 msgid "To do :"
 msgstr "Aufgaben :"
 
-#: src/calcurse.c:534
+#: src/calcurse.c:538
 msgid "FATAL ERROR in update_windows: no window selected\n"
 msgstr "SCHWERER FEHLER in update_windows: kein Fenster gewählt\n"
 
-#: src/calcurse.c:614
+#: src/calcurse.c:618
 #, c-format
 msgid "Calendar"
 msgstr "Kalender"
 
-#: src/calcurse.c:617
+#: src/calcurse.c:621
 #, c-format
 msgid "Appointments"
 msgstr "Termine"
 
-#: src/calcurse.c:620
+#: src/calcurse.c:624
 #, c-format
 msgid "ToDo"
 msgstr "Aufgaben"
 
-#: src/calcurse.c:652
+#: src/calcurse.c:656
 msgid "Enter an option number to change its value [Q to quit] "
 msgstr ""
 "Bitte eine Optionsnummer eingeben, um den Wert zu ändern [Q um zu beenden]"
 
-#: src/calcurse.c:658
+#: src/calcurse.c:662
 #, c-format
 msgid "CalCurse %s | general options"
 msgstr "CalCurse %s | allgemeine Optionen"
 
-#: src/calcurse.c:695
+#: src/calcurse.c:699
 msgid "auto_save = "
 msgstr "automatisch_speichern = "
 
-#: src/calcurse.c:696
+#: src/calcurse.c:700
 msgid "confirm_quit = "
 msgstr "Beenden_bestätigen = "
 
-#: src/calcurse.c:697
+#: src/calcurse.c:701
 msgid "confirm_delete = "
 msgstr "Löschen_bestätigen = "
 
-#: src/calcurse.c:698
+#: src/calcurse.c:702
 msgid "skip_system_dialogs = "
 msgstr "überspringe_Systemdialoge = "
 
-#: src/calcurse.c:699
+#: src/calcurse.c:703
 msgid "skip_progress_bar = "
 msgstr "überspringe_Fortschrittsanzeige = "
 
-#: src/calcurse.c:700
+#: src/calcurse.c:704
 msgid "week_begins_on_monday = "
 msgstr "Woche_beginnt_am_Montag = "
 
-#: src/calcurse.c:709
+#: src/calcurse.c:713
 msgid "(if set to YES, automatic save is done when quitting)"
 msgstr "(wenn auf YES gesetzt, wird automatisch beim Beenden gespeichert)"
 
-#: src/calcurse.c:715
+#: src/calcurse.c:719
 msgid "(if set to YES, confirmation is required before quitting)"
 msgstr ""
 "(wenn auf YES gesetzt, ist eine Bestätigung erforderlich, wenn das Programm "
 "beendet wird)"
 
-#: src/calcurse.c:721
+#: src/calcurse.c:725
 msgid "(if set to YES, confirmation is required before deleting an event)"
 msgstr ""
 "(wenn auf YES gesetzt, ist eine Bestätigung erforderlich, wenn ein Ereignis "
 "gelöscht wird)"
 
-#: src/calcurse.c:727
+#: src/calcurse.c:731
 msgid ""
 "(if set to YES, messages about loaded and saved data will not be displayed)"
 msgstr ""
 "(wenn auf YES gesetzt, werden Mitteilungen über geladene und gespeicherte "
 "Daten nicht angezeigt)"
 
-#: src/calcurse.c:733
+#: src/calcurse.c:737
 msgid "(if set to YES, progress bar will not be displayed when saving data)"
 msgstr ""
 "(wenn auf YES gesetzt, wird die Fortschrittsanzeige nicht angezeigt, wenn "
 "Daten gespeicht werden)"
 
-#: src/calcurse.c:739
+#: src/calcurse.c:743
 msgid "(if set to YES, monday is the first day of the week, else it is sunday)"
 msgstr ""
 "(wenn auf YES gesetzt, ist Montag der erste Wochentag, ansonsten der Sonntag)"
 
-#: src/calcurse.c:754
+#: src/calcurse.c:758
 msgid "yes"
 msgstr "ja"
 
-#: src/calcurse.c:757
+#: src/calcurse.c:761
 msgid "no"
 msgstr "nein"
 
-#: src/calcurse.c:761
+#: src/calcurse.c:765
 msgid "option not defined - Problem in print_option_incolor()"
 msgstr "Option nicht definiert - Problem in print_option_incolor()"
 
-#: src/calcurse.c:778
+#: src/calcurse.c:782
 msgid "Do you really want to delete this item ?"
 msgstr "Möchten Sie wirklich diesen Eintrag löschen ?"
 
-#: src/calcurse.c:779
+#: src/calcurse.c:783
 msgid "Do you really want to delete this task ?"
 msgstr "Möchten Sie wirklich diese Aufgabe löschen ?"
 
-#: src/calcurse.c:819
+#: src/calcurse.c:823
 #, fuzzy
 msgid "FATAL ERROR in del_item: no such type\n"
 msgstr "SCHWERER FEHLER in todo_delete_bynum: Aufgabe nicht gefunden\n"
 
-#: src/calcurse.c:857
+#: src/calcurse.c:861
 msgid "Enter the new ToDo item : "
 msgstr "Geben Sie die neue Aufgabe ein : "
 
-#: src/calcurse.c:878
+#: src/calcurse.c:882
 msgid ""
 "Enter start time ([hh:mm] or [h:mm]), leave blank for an all-day event : "
 msgstr ""
 "Geben Sie den Beginn ein ([SS:MM] oder [S:MM]), lassen Sie die Felder frei "
 "für ein tägliches Ereignis:"
 
-#: src/calcurse.c:879
+#: src/calcurse.c:883
 msgid "Enter end time ([hh:mm] or [h:mm]) or duration (in minutes) : "
 msgstr "Geben Sie das Ende ein ([SS:MM] oder [S:MM]) oder Dauer (in Minuten) :"
 
-#: src/calcurse.c:880
+#: src/calcurse.c:884
 msgid "Enter description :"
 msgstr "Geben Sie eine Beschreibung ein :"
 
-#: src/calcurse.c:881
+#: src/calcurse.c:885
 msgid "You entered an invalid start time, should be [h:mm] or [hh:mm]"
 msgstr ""
 "Sie gaben eine ungülitige Startzeit ein, die Zeit sollte das Format [S:MM] "
 "oder [SS:MM] haben"
 
-#: src/calcurse.c:882
+#: src/calcurse.c:886
 msgid "You entered an invalid end time, should be [h:mm] or [hh:mm] or [mm]"
 msgstr ""
 "Sie gaben eine ungültige Endzeit an, die Zeit sollte das Format [S:MM] oder "
 "[SS:MM] oder [MM] haben"
 
-#: src/calcurse.c:883
+#: src/calcurse.c:887
 msgid "Press [Enter] to continue"
 msgstr "[EINGABE]-Taste um fortzufahren"
 
-#: src/calcurse.c:1085
+#: src/calcurse.c:1087
 msgid "Failed to open config file"
 msgstr "Kann die Konfigurationsdatei nicht öffnen"
 
-#: src/calcurse.c:1086 src/calendar.c:192 src/io.c:134 src/io.c:377
-#: src/io.c:448
+#: src/calcurse.c:1088 src/calendar.c:192 src/io.c:134 src/io.c:378
+#: src/io.c:449
 msgid "Press [ENTER] to continue"
 msgstr "[EINGABE]-Taste um fortzufahren"
 
-#: src/calcurse.c:1162
+#: src/calcurse.c:1164
 msgid "FATAL ERROR in fill_config_var: wrong configuration variable format.\n"
 msgstr ""
 "SCHWERER FEHLER in fill_config_var: falsches Format der "
@@ -348,6 +348,27 @@ msgstr "Wählen Sie eine Nummer für das Farbschema (Q zum Beenden) :"
 #: src/custom.c:158
 msgid "([>0<] for black & white)"
 msgstr "([>O<]) für schwarz & weiß)"
+
+#: src/day.c:312
+#, fuzzy
+msgid "FATAL ERROR in day_popup_item: unknown item type\n"
+msgstr "SCHWERER FEHLER in todo_delete_bynum: Aufgabe nicht gefunden\n"
+
+#: src/day.c:315
+msgid "Event :"
+msgstr "Ereignisse :"
+
+#: src/day.c:319
+msgid "Appointment :"
+msgstr "Termin :"
+
+#: src/day.c:371
+msgid "This item is recurrent. Delete (a)ll occurences or just this (o)ne ?"
+msgstr ""
+
+#: src/day.c:374
+msgid "[a/o] "
+msgstr ""
 
 #: src/event.c:106
 msgid "FATAL ERROR in event_scan: date error in the event\n"
@@ -577,12 +598,17 @@ msgid "Delete:\n"
 msgstr "Löschen:\n"
 
 #: src/help.c:182
+#, fuzzy
 msgid ""
 "Pressing 'D' deletes an element in the ToDo or Appointment list.\n"
 "\n"
 "Depending on which panel is selected when you press the delete key,\n"
 "the hilighted item of either the ToDo or Appointment list will be \n"
 "removed from this list.\n"
+"\n"
+"If the item to be deleted is recurrent, you will be asked if you\n"
+"wish to suppress all of the item occurences or just the one you\n"
+"selected.\n"
 "\n"
 "If the general option 'confirm_delete' is set to 'YES', then you will\n"
 "be asked for confirmation before deleting the selected event.\n"
@@ -601,11 +627,11 @@ msgstr ""
 "Vergessen Sie nicht die Kalenderdaten abzuspeichern, um die Veränderungen\n"
 "beim nächsten Start von Calcurse wieder zu erhalten."
 
-#: src/help.c:191
+#: src/help.c:194
 msgid "Add:\n"
 msgstr "Hinzufügen:\n"
 
-#: src/help.c:193
+#: src/help.c:196
 msgid ""
 "Pressing 'A' allows you to add an item in either the ToDo or Appointment\n"
 "list, depending on which panel is selected when you press 'A'.\n"
@@ -665,23 +691,44 @@ msgstr ""
 "        o versäumen Sie nicht Ihre Kalenderdaten abzuspeichern, wenn Sie\n"
 "          beim nächsten Start von Calcurse Ihre Eingaben behalten möchten."
 
-#: src/help.c:220
+#: src/help.c:223
 #, fuzzy
 msgid "Repeat:\n"
 msgstr "Neu zeichnen:\n"
 
-#: src/help.c:222
+#: src/help.c:225
 msgid ""
-"Pressing 'R' allows you to repeat an item in either the ToDo or\n"
-"Appointment list, depending on which panel is selected when you\n"
-"press 'R'.\n"
+"Pressing 'R' allows you to repeat an event or an appointment. You must\n"
+"first select the item to be repeated by moving inside the appointment\n"
+"panel. Then pressing 'R' will lead you to a set of three questions, with\n"
+"which you will be able to specify the repetition characteristics:\n"
+"\n"
+"  o        type: you can choose between a daily, weekly, monthly or\n"
+"                 yearly repetition by pressing 'D', 'W', 'M' or 'Y'\n"
+"                 respectively.\n"
+"\n"
+"  o   frequence: this indicates how often the item shall be repeated.\n"
+"                 For example, if you want to remember an anniversary,\n"
+"                 choose a 'yearly' repetition with a frequence of '1',\n"
+"                 which means it must be repeated every year. Another\n"
+"                 example: if you go to the restaurant every two days,\n"
+"                 choose a 'daily' repetition with a frequence of '2'.\n"
+"\n"
+"  o ending date: this specifies when to stop repeating the selected\n"
+"                 event or appointment. To indicate an endless \n"
+"                 repetition, enter '0' and the item will be repeated\n"
+"                 forever.\n"
+"\n"
+"Note: the 'Repeat' and 'Delete' command can be mixed to create\n"
+"        complicated configurations, as it is possible to delete only\n"
+"        one occurence of a repeated item."
 msgstr ""
 
-#: src/help.c:226
+#: src/help.c:246
 msgid "Config:\n"
 msgstr "Einstellung:\n"
 
-#: src/help.c:228
+#: src/help.c:248
 msgid ""
 "Pressing 'C' leads to the configuration submenu, from which you can\n"
 "select between color, layout, and general options.\n"
@@ -711,11 +758,11 @@ msgstr ""
 "Vergessen Sie bitte nicht Ihre Kalenderdaten abzuspeichern, um sie beim\n"
 "nächsten Start von Calcurse wieder zu erhalten."
 
-#: src/help.c:238
+#: src/help.c:258
 msgid "Calcurse - text-based organizer"
 msgstr "Calcurse - textbasierender Terminkalender"
 
-#: src/help.c:240
+#: src/help.c:260
 msgid ""
 "Copyright (c) 2004-2006 Frederic Culot\n"
 "\n"
@@ -749,7 +796,7 @@ msgstr ""
 "Senden Sie Ihre Kritik oder Kommentare an : calcurse@culot.org\n"
 "Calcurse Homepage : http://culot.org/calcurse"
 
-#: src/help.c:261
+#: src/help.c:281
 #, c-format
 msgid "CalCurse %s | help"
 msgstr "Calcurse %s | Hilfe"
@@ -797,25 +844,96 @@ msgid "FATAL ERROR in load_app: no event nor appointment found\n"
 msgstr ""
 "SCHWERER FEHLER in load_app: weder ein Ereignis noch ein Termin gefunden\n"
 
-#: src/io.c:376
+#: src/io.c:377
 msgid "Failed to open todo file"
 msgstr "AUfgabendatei kann nicht geöffnet werden"
 
-#: src/io.c:446
+#: src/io.c:447
 msgid "Welcome to Calcurse. Missing data files were created."
 msgstr "Willkommen zu Calcurse. Nicht vorhandene Benutzerdaten werden erzeugt."
 
-#: src/io.c:447
+#: src/io.c:448
 msgid "Data files found. Data will be loaded now."
 msgstr "Benutzerdaten gefunden. Daten werden geladen."
 
-#: src/io.c:463
+#: src/io.c:464
 msgid "Saving..."
 msgstr "Speicher..."
 
-#: src/io.c:464
+#: src/io.c:465
 msgid "Loading..."
 msgstr "Lade..."
+
+#: src/recur.c:316
+#, fuzzy
+msgid "FATAL ERROR in recur_event_scan: date error in the event\n"
+msgstr "SCHWERER FEHLER in event_scan: fehlerhafte Zeit für das Ereignis\n"
+
+#: src/recur.c:348
+#, fuzzy
+msgid "FATAL ERROR in recur_item_inday: unknown item type\n"
+msgstr "SCHWERER FEHLER in todo_delete_bynum: Aufgabe nicht gefunden\n"
+
+#: src/recur.c:437
+#, fuzzy
+msgid "FATAL ERROR in recur_event_erase: no such event\n"
+msgstr ""
+"SCHWERER FEHLER in event_delete_bynum: kein solches Ereignis vorhanden\n"
+
+#: src/recur.c:486
+#, fuzzy
+msgid "FATAL ERROR in recur_apoint_erase: no such appointment\n"
+msgstr "SCHWERER FEHLER in apoint_delete_bynum: kein solcher Termin gefunden\n"
+
+#: src/recur.c:505
+msgid "Enter the repetition type: (D)aily, (W)eekly, (M)onthly, (Y)early"
+msgstr ""
+
+#: src/recur.c:506
+msgid "[D/W/M/Y] "
+msgstr ""
+
+#: src/recur.c:508
+msgid "Enter the repetition frequence:"
+msgstr ""
+
+#: src/recur.c:510
+#, fuzzy
+msgid "The frequence you entered is not valid."
+msgstr "Den Tag, den Sie eingaben, ist ungültig"
+
+#: src/recur.c:512
+msgid "Enter the ending date: [mm/dd/yyyy] or '0' for an endless repetition"
+msgstr ""
+
+#: src/recur.c:513
+#, fuzzy
+msgid "The entered date is not valid."
+msgstr "Den Tag, den Sie eingaben, ist ungültig"
+
+#: src/recur.c:515
+#, fuzzy
+msgid "Possible formats are [mm/dd/yyyy] or '0' for an endless repetetition"
+msgstr "Mögliche Formate für das Argument sind : 'TT/MM/JJJJ' oder 'n'\n"
+
+#: src/recur.c:516
+msgid "This item is already a repeated one."
+msgstr ""
+
+#: src/recur.c:517
+#, fuzzy
+msgid "Press [ENTER] to continue."
+msgstr "[EINGABE]-Taste um fortzufahren"
+
+#: src/recur.c:593
+#, fuzzy
+msgid "FATAL ERROR in recur_repeat_item: wrong item type\n"
+msgstr "SCHWERER FEHLER in todo_delete_bynum: Aufgabe nicht gefunden\n"
+
+#: src/recur.c:618
+#, fuzzy
+msgid "FATAL ERROR in recur_exc_scan: syntax error in the item date\n"
+msgstr "SCHWERER FEHLER in load_app: syntaktischer Fehler im Datumseintrag\n"
 
 #: src/todo.c:78
 msgid "FATAL ERROR in todo_delete_bynum: no such todo\n"
@@ -833,67 +951,67 @@ msgstr "-- Betätige 'N' um zur nächsten Seite zu gelangen --"
 msgid "-- Press 'P' for previous page --"
 msgstr "-- Betätige 'P' um zur letzten Seite zu gelangen --"
 
-#: src/utils.c:370 src/utils.c:402
+#: src/utils.c:372 src/utils.c:406 src/utils.c:445
 msgid "Help"
 msgstr "Hilfe"
 
-#: src/utils.c:371 src/utils.c:403
+#: src/utils.c:373 src/utils.c:407 src/utils.c:446
 msgid "Quit"
 msgstr "Beenden"
 
-#: src/utils.c:373 src/utils.c:405
+#: src/utils.c:375 src/utils.c:409 src/utils.c:448
 msgid "Redraw"
 msgstr "Neu zeichnen"
 
-#: src/utils.c:374 src/utils.c:406
+#: src/utils.c:376 src/utils.c:410 src/utils.c:449
 msgid "Save"
 msgstr "Speichern"
 
-#: src/utils.c:376
+#: src/utils.c:378
 msgid "-/+1 Day"
 msgstr "-/+1 Tag"
 
-#: src/utils.c:378
+#: src/utils.c:380
 msgid "-/+1 Week"
 msgstr "-/+ Woche"
 
-#: src/utils.c:380 src/utils.c:418
+#: src/utils.c:382 src/utils.c:422 src/utils.c:459
 msgid "GoTo"
 msgstr "Gehe zu"
 
-#: src/utils.c:382 src/utils.c:410
+#: src/utils.c:384 src/utils.c:414 src/utils.c:453
 msgid "Chg View"
 msgstr "Ändere Ansicht"
 
-#: src/utils.c:384 src/utils.c:422
+#: src/utils.c:386 src/utils.c:426 src/utils.c:463
 msgid "Config"
 msgstr "Einstellung"
 
-#: src/utils.c:408
+#: src/utils.c:412 src/utils.c:451
 msgid "Up/Down"
 msgstr "Auf/Ab"
 
-#: src/utils.c:412
+#: src/utils.c:416 src/utils.c:455
 msgid "Add Item"
 msgstr "Eintrag hinzufügen"
 
-#: src/utils.c:414
+#: src/utils.c:418 src/utils.c:457
 msgid "Del Item"
 msgstr "Eintrag löschen"
 
-#: src/utils.c:416
+#: src/utils.c:420
 msgid "Repeat"
 msgstr ""
 
-#: src/utils.c:420
+#: src/utils.c:424 src/utils.c:461
 msgid "View"
 msgstr "Ansicht"
 
-#: src/utils.c:448
+#: src/utils.c:491
 msgid "FATAL ERROR in date2sec: failure in mktime\n"
 msgstr "SCHWERER FEHLER in date2sec: Fehler in mktime\n"
 
-#: src/utils.c:571
+#: src/utils.c:614
 msgid "Appointment"
 msgstr "Termin"
 
@@ -972,9 +1090,3 @@ msgstr "Fre"
 #: src/vars.c:63
 msgid "Sat"
 msgstr "Sam"
-
-#~ msgid "Event :"
-#~ msgstr "Ereignisse :"
-
-#~ msgid "Appointment :"
-#~ msgstr "Termin :"
