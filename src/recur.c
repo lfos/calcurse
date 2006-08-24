@@ -1,4 +1,4 @@
-/*	$calcurse: recur.c,v 1.6 2006/08/22 21:05:35 culot Exp $	*/
+/*	$calcurse: recur.c,v 1.7 2006/08/24 20:12:21 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -524,6 +524,7 @@ void recur_repeat_item(int sel_year, int sel_month, int sel_day,
 	p = day_get_item(item_nb);
 	if (p->type != APPT && p->type != EVNT) {
 		status_mesg(wrong_type_1, wrong_type_2);
+		ch = wgetch(swin);
 		return;
 	}
 
