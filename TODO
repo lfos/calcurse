@@ -8,48 +8,29 @@ priority. Feel free to send me an email (see the AUTHORS file) if you
 would like to see a feature added in Calcurse which does not appear in
 this list.
 
--------------------------------------------------------------
-Recur:
-	o ecrire routines pour demander a l'utilisateur de rentrer les
-	evenements recursifs
-
-	o lorsque j'ai à la fois des évenements et des rdv récurrents, ils ne
-	sont pas affichés dans le bon ordre, et il n'y a pas de traits entre
-	chaque
-
-	o implémenter la suppression des elements recursifs
-
-	o mettre à jour les fichiers po/
-	
-	o tagger les fichiers avec marqueurs CVS
-
-	o rajouter dans les remerciements du manuel 
-	les personnes qui me font les autres
-	paquets calcurse
--------------------------------------------------------------
-
 
 High
 ----
-  o  Implement recursive events and appointments
-  o  Add a cron interface to get noticed of events by mail
+  o  Implement TODO priorities
+  o  Allow the exchange of todo and appointment panels
   o  Add a week view in the calendar panel
-  o  Add a clock to show current time and date 
-  
+  o  Add a clock to show current time and date with an alarm 
+  o  Add export capabilities to create xml files 
+  o  Add ability to edit items, and to store multiple-lines descriptions
+ 
 
 Average
 -------
   o  Add import capabilities to read ical files inside calcurse
-  o  Add export capabilities to create html (or other format) files 
   o  Accept dates entered in other formats such as d/m/yyyy or d/m/yy,
      make the date format user configurable
+  o  Add shortcuts which would apply everywhere (for exemple A to add an
+     appointment even if you are in the calendar panel)
   o  Make keys user configurable
 
 
 Low
 ---
-  o  Add shortcuts which would apply everywhere (for exemple A to add an
-     appointment even if you are in the calendar panel)
   o  Add 't' alias for 'g - Enter'
   o  Create external calendars which would contain hollydays and such (in ics
      format, as in mozilla sunbird)..
