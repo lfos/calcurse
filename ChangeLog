@@ -1,3 +1,9 @@
+24 Aug 2006:
+	bugfix in recur.c: forgot to wait for user's key pressed...
+	repeat command disabled for todo panel
+	switched to version number 1.5 in configure.ac and manpage
+	html manuals thanks section updated
+
 23 Aug 2006:
 	independant status bar created for the todo panel
 	bugfix: memory allocation problem in day.c
