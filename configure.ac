@@ -1,10 +1,10 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 #
-#	$calcurse: configure.ac,v 1.1 2006/07/31 21:00:02 culot Exp $
+#	$calcurse: configure.ac,v 1.2 2006/08/24 20:11:26 culot Exp $
 
 AC_PREREQ(2.59)
-AC_INIT(calcurse, 1.4, frederic@culot.org)
+AC_INIT(calcurse, 1.5, frederic@culot.org)
 AM_INIT_AUTOMAKE
 AM_GNU_GETTEXT([external])
 AC_CONFIG_SRCDIR([src/calcurse.c])
