@@ -1,3 +1,7 @@
+25 Aug 2006:
+	io.c: fixed a data format bug in load_app()
+	day.c: events and appointments are now sorted properly	
+
 24 Aug 2006:
 	bugfix in recur.c: forgot to wait for user's key pressed...
 	repeat command disabled for todo panel
