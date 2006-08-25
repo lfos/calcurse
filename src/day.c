@@ -1,4 +1,4 @@
-/*	$calcurse: day.c,v 1.5 2006/08/23 19:41:34 culot Exp $	*/
+/*	$calcurse: day.c,v 1.6 2006/08/25 19:50:08 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -195,7 +195,7 @@ struct day_item_s *day_add_event(int type, char *mesg, long day, int id)
 	o->evnt_id = id;
 	i = &day_items_ptr;
 	for (;;) {
-		if (*i == 0 || (*i)->start > day) {
+		if (*i == 0) {
 			o->next = *i;
 			*i = o;
 			break;
@@ -209,6 +209,8 @@ struct day_item_s *day_add_event(int type, char *mesg, long day, int id)
 struct day_item_s *day_add_apoint(int type, char *mesg, long start, long dur)
 {
 	struct day_item_s *o, **i;
+	int insert_item = 0;
+
 	o = (struct day_item_s *) malloc(sizeof(struct day_item_s));
 	o->mesg = (char *) malloc(strlen(mesg) + 1);
 	strcpy(o->mesg, mesg);
@@ -218,7 +220,13 @@ struct day_item_s *day_add_apoint(int type, char *mesg, long start, long dur)
 	o->evnt_id = 0;
 	i = &day_items_ptr;
 	for (;;) {
-		if (*i == 0 || (*i)->start > start) {
+		if (*i == 0) {
+			insert_item = 1;
+		} else if ( ((*i)->start > start) && 
+		    ((*i)->type >= type) ) {
+			insert_item = 1;
+		}	
+		if (insert_item) {
 			o->next = *i;
 			*i = o;
 			break;
@@ -253,7 +261,6 @@ void day_write_pad(long date, int width, int length, int incolor, int colr)
 	} 
 
 	for (p = day_items_ptr; p != 0; p = p->next) {
-
 		/* First print the events for current day. */
 		if (p->type < RECUR_APPT) {
 			item_number++;		
