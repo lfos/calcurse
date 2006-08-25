@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.3 2006/08/19 14:57:46 culot Exp $	*/
+/*	$calcurse: io.c,v 1.4 2006/08/25 19:49:13 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -332,7 +332,9 @@ void load_app()
 					fscanf(data_file, " | "); // useless '|'
 			} else if (c == '!') { // endless item with exceptions
 				ungetc(c, data_file);
-				exc = recur_exc_scan(data_file);			
+				exc = recur_exc_scan(data_file);
+				if (is_appointment) 
+					fscanf(data_file, " | "); // useless '|'
 				until.tm_year = 0;
 			} else { /* NOT REACHED */
 				fputs(error, stderr);
