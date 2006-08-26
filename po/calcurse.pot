@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: frederic@culot.org\n"
-"POT-Creation-Date: 2006-08-24 22:00+0200\n"
+"POT-Creation-Date: 2006-08-26 17:44+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -241,8 +241,8 @@ msgstr ""
 msgid "Failed to open config file"
 msgstr ""
 
-#: src/calcurse.c:1088 src/calendar.c:192 src/io.c:134 src/io.c:378
-#: src/io.c:449
+#: src/calcurse.c:1088 src/calendar.c:192 src/io.c:134 src/io.c:380
+#: src/io.c:451
 msgid "Press [ENTER] to continue"
 msgstr ""
 
@@ -298,23 +298,23 @@ msgstr ""
 msgid "([>0<] for black & white)"
 msgstr ""
 
-#: src/day.c:312
+#: src/day.c:319
 msgid "FATAL ERROR in day_popup_item: unknown item type\n"
 msgstr ""
 
-#: src/day.c:315
+#: src/day.c:322
 msgid "Event :"
 msgstr ""
 
-#: src/day.c:319
+#: src/day.c:326
 msgid "Appointment :"
 msgstr ""
 
-#: src/day.c:371
+#: src/day.c:378
 msgid "This item is recurrent. Delete (a)ll occurences or just this (o)ne ?"
 msgstr ""
 
-#: src/day.c:374
+#: src/day.c:381
 msgid "[a/o] "
 msgstr ""
 
@@ -639,23 +639,23 @@ msgstr ""
 msgid "FATAL ERROR in load_app: no event nor appointment found\n"
 msgstr ""
 
-#: src/io.c:377
+#: src/io.c:379
 msgid "Failed to open todo file"
 msgstr ""
 
-#: src/io.c:447
+#: src/io.c:449
 msgid "Welcome to Calcurse. Missing data files were created."
 msgstr ""
 
-#: src/io.c:448
+#: src/io.c:450
 msgid "Data files found. Data will be loaded now."
 msgstr ""
 
-#: src/io.c:464
+#: src/io.c:466
 msgid "Saving..."
 msgstr ""
 
-#: src/io.c:465
+#: src/io.c:467
 msgid "Loading..."
 msgstr ""
 
