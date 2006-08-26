@@ -1,4 +1,4 @@
-# 	$calcurse: fr.po,v 1.3 2006/08/24 20:43:41 culot Exp $
+# 	$calcurse: fr.po,v 1.4 2006/08/26 16:41:04 culot Exp $
 #
 # French translations for calcurse package.
 # Copyright (C) 2006 Frederic Culot <frederic@culot.org>
@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse 1.4\n"
 "Report-Msgid-Bugs-To: frederic@culot.org\n"
-"POT-Creation-Date: 2006-08-24 12:06+0000\n"
+"POT-Creation-Date: 2006-08-26 17:44+0200\n"
 "PO-Revision-Date: 2006-05-13 14:37+0200\n"
 "Last-Translator: Frederic Culot <frederic@culot.org>\n"
 "Language-Team: French <calcurse-i18n@culot.org>\n"
@@ -282,8 +282,8 @@ msgstr "Appuyez sur [ENTREE] pour continuer"
 msgid "Failed to open config file"
 msgstr "Impossible d'ouvrir le fichier de configuration"
 
-#: src/calcurse.c:1088 src/calendar.c:192 src/io.c:134 src/io.c:378
-#: src/io.c:449
+#: src/calcurse.c:1088 src/calendar.c:192 src/io.c:134 src/io.c:380
+#: src/io.c:451
 msgid "Press [ENTER] to continue"
 msgstr "Appuyez sur [ENTREE] pour continuer"
 
@@ -344,26 +344,26 @@ msgstr ""
 msgid "([>0<] for black & white)"
 msgstr "([>O<]) pour noir & blanc)"
 
-#: src/day.c:312
+#: src/day.c:319
 #, fuzzy
 msgid "FATAL ERROR in day_popup_item: unknown item type\n"
 msgstr "ERREUR FATALE dans todo_delete_by_num: aucune tâche correspondante\n"
 
-#: src/day.c:315
+#: src/day.c:322
 msgid "Event :"
 msgstr "Evénement :"
 
-#: src/day.c:319
+#: src/day.c:326
 msgid "Appointment :"
 msgstr "Rendez-vous :"
 
-#: src/day.c:371
+#: src/day.c:378
 msgid "This item is recurrent. Delete (a)ll occurences or just this (o)ne ?"
 msgstr ""
 "Cet élément est récurrent. Effacer (a) toutes les occurences ou (o) celle-"
 "ci ?"
 
-#: src/day.c:374
+#: src/day.c:381
 msgid "[a/o] "
 msgstr "[a/o]"
 
@@ -709,7 +709,7 @@ msgstr ""
 #: src/help.c:223
 #, fuzzy
 msgid "Repeat:\n"
-msgstr "Retracer:\n"
+msgstr "Répéter:\n"
 
 #: src/help.c:225
 msgid ""
@@ -882,23 +882,23 @@ msgstr "ERREUR FATALE dans load_app: mauvais format de date\n"
 msgid "FATAL ERROR in load_app: no event nor appointment found\n"
 msgstr "ERREUR FATALE dans load_app: aucun évenement ou rendez-vous trouvé\n"
 
-#: src/io.c:377
+#: src/io.c:379
 msgid "Failed to open todo file"
 msgstr "Problème d'ouverture du fichier des tâches"
 
-#: src/io.c:447
+#: src/io.c:449
 msgid "Welcome to Calcurse. Missing data files were created."
 msgstr "Bienvenue dans Calcurse. Les fichiers manquants ont été créés."
 
-#: src/io.c:448
+#: src/io.c:450
 msgid "Data files found. Data will be loaded now."
 msgstr "Fichiers de données trouvés. Les données seront chargées."
 
-#: src/io.c:464
+#: src/io.c:466
 msgid "Saving..."
 msgstr "Enregistrement..."
 
-#: src/io.c:465
+#: src/io.c:467
 msgid "Loading..."
 msgstr "Chargement..."
 
@@ -1127,4 +1127,3 @@ msgstr "Ven"
 #: src/vars.c:63
 msgid "Sat"
 msgstr "Sam"
-
