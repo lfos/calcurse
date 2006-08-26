@@ -1,3 +1,20 @@
+[26 Aug 2006]
+Version 1.5
+- New features:
+  * Support for recurrent events and appointments added
+
+- Bugfixes:
+  * Debian Bug Report #369550, #377543
+
+  * fixed the compiler linking problem with libintl
+    on systems which do not provide intl support within libc
+
+- Translation:
+  * german translation provided by Michael Schulz
+
+  * english translation provided by Neil Williams
+
+
 [15 May 2006]
 Version 1.4
 - New features:
