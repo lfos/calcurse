@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.7 2006/08/24 20:13:22 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.8 2006/08/30 17:46:02 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -97,7 +97,6 @@ void get_date(void);
 void init_vars(int colr);
 void init_wins(void), reinit_wins(void);
 void add_item(void);
-void add_todo(void);
 void load_conf(void);
 bool fill_config_var(char *string);
 void update_todo_panel(void);
@@ -304,7 +303,9 @@ int main(int argc, char **argv)
 				add_item();
 				do_storage = true;
 			} else if (which_pan == TODO) {
-				add_todo();
+				nb_tod = todo_new_item(nb_tod, colr);
+				if (hilt_tod == 0 && nb_tod == 1)
+					hilt_tod++;
 			}
 			break;
 
@@ -316,7 +317,7 @@ int main(int argc, char **argv)
 
 		case 'R':
 		case 'r':
-			if (which_pan == APPOINTMENT)
+			if (which_pan == APPOINTMENT && hilt_app != 0)
 				recur_repeat_item(sel_year, sel_month, 
 					sel_day, hilt_app, colr);
 			break;
@@ -853,24 +854,6 @@ void del_item(void)
 			if (hilt_tod > 1) hilt_tod--;
 		}
 	}
-}
-
-  /* Add an item in the ToDo list */
-void add_todo(void)
-{
-	char *mesg = _("Enter the new ToDo item : ");
-	char todo_input[500];
-
-	status_mesg(mesg, "");
-	getstring(swin, colr, todo_input, 0, 1);
-	if (strlen(todo_input) != 0) {
-		todo_insert(todo_input);
-		++nb_tod;
-		update_todo_panel();
-	}
-	erase_window_part(swin, 0, 0, nc_bar, nl_bar);
-	status_bar(which_pan, colr, nc_bar, nl_bar);
-	doupdate();
 }
 
 /* 
