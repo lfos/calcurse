@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.4 2006/08/25 19:49:13 culot Exp $	*/
+/*	$calcurse: io.c,v 1.5 2006/08/30 17:49:45 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -200,7 +200,7 @@ save_cal(bool auto_save, bool confirm_quit,
 	        status_mesg(access_pb, ""); 
 	else {
 		for (i = todolist; i != 0; i = i->next)
-			fprintf(data_file, "%s\n", i->mesg);
+			fprintf(data_file, "[%d] %s\n", i->id, i->mesg);
 		fclose(data_file);
 	}
 
@@ -378,7 +378,9 @@ load_todo(int colr)
 	FILE *data_file;
 	char *mesg_line1 = _("Failed to open todo file");
 	char *mesg_line2 = _("Press [ENTER] to continue");
+	char *nl;
 	int nb_tod = 0;
+	int c, id;
 	char buf[100], e_todo[100];
 
 	data_file = fopen(path_todo, "r");
@@ -387,11 +389,22 @@ load_todo(int colr)
 		wgetch(swin);
 	}
 	for (;;) {
-		if (fgets(buf, 99, data_file) == NULL) {
+		c = getc(data_file);
+		if (c == EOF) {
 			break;
+		} else if (c == '[') { /* new style with id */
+			fscanf(data_file, "%d] ", &id);
+		} else {
+			id = 9;
+			ungetc(c, data_file);
+		}
+		fgets(buf, MAX_LENGTH, data_file);
+		nl = strchr(buf, '\n');
+		if (nl) {
+			*nl = '\0';
 		}
 		extract_data(e_todo, buf, strlen(buf));
-		todo_add(e_todo);
+		todo_add(e_todo, id);
 		++nb_tod;
 	}
 	fclose(data_file);
