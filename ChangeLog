@@ -1,3 +1,12 @@
+30 Aug 2006:
+	'id' added to todo_s structure
+	load_todo() and save_cal() updated to take this id into account
+	moved add_todo() from calcurse.c to todo_new_item() in todo.c
+	bugfix: pressing 'R' while no item was selected caused a segfault.
+	Thanks to Chris for reporting that bug
+
+26 Aug 2006: 1.5
+
 25 Aug 2006:
 	io.c: fixed a data format bug in load_app()
 	day.c: events and appointments are now sorted properly	
