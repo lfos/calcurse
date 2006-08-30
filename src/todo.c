@@ -1,4 +1,4 @@
-/*	$calcurse: todo.c,v 1.1 2006/07/31 21:00:03 culot Exp $	*/
+/*	$calcurse: todo.c,v 1.2 2006/08/30 17:48:41 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -28,10 +28,28 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "vars.h"
+#include "utils.h"
 #include "i18n.h"
 #include "todo.h"
 
 struct todo_s *todolist;
+
+/* Add an item in the todo list. */
+int todo_new_item(int total, int colr)
+{
+	char *mesg = _("Enter the new ToDo item : ");
+	char todo_input[MAX_LENGTH];
+
+	status_mesg(mesg, "");
+	getstring(swin, colr, todo_input, 0, 1);
+	if (strlen(todo_input) != 0) {
+		todo_insert(todo_input);
+		total++;
+	}
+
+	return total;
+}
 
 struct todo_s *todo_insert(char *mesg)
 {
@@ -44,12 +62,13 @@ struct todo_s *todo_insert(char *mesg)
 	return o;
 }
 
-struct todo_s *todo_add(char *mesg)
+struct todo_s *todo_add(char *mesg, int id)
 {
 	struct todo_s *o, **i;
 	o = (struct todo_s *) malloc(sizeof(struct todo_s));
 	o->mesg = (char *) malloc(strlen(mesg) + 1);
 	strcpy(o->mesg, mesg);
+	o->id = id;
 	for (i = &todolist; *i != 0; i = &(*i)->next) {
 	}
 	o->next = *i;
