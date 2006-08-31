@@ -1,4 +1,4 @@
-/*	$calcurse: todo.h,v 1.2 2006/08/30 17:47:35 culot Exp $	*/
+/*	$calcurse: todo.h,v 1.3 2006/08/31 18:49:05 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -36,8 +36,10 @@ struct todo_s {
 extern struct todo_s *todolist;
 
 int todo_new_item(int total, int colr); 
-struct todo_s *todo_insert(char *mesg);
 struct todo_s *todo_add(char *mesg, int id);
 void todo_delete_bynum(unsigned num);
+struct todo_s *todo_get_item(int item_number);
+int todo_get_position(struct todo_s *i);
+int todo_chg_priority(int action, int item_num);
 
 #endif /* CALCURSE_TODO_H */
