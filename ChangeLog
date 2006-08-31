@@ -1,3 +1,11 @@
+31 Aug 2006:
+	todo_chg_priority(), todo_get_item() and todo_get_position() created
+	todo_insert() suppressed
+	todo_new_item() updated to ask for priority
+	todo_add() updated to sort items by priority order
+	update_todo_panel() updated to display todo priority
+	'+/-' menu added to handle todo priorities
+
 30 Aug 2006:
 	'id' added to todo_s structure
 	load_todo() and save_cal() updated to take this id into account
