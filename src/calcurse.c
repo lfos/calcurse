@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.8 2006/08/30 17:46:02 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.9 2006/08/31 18:46:09 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -320,6 +320,12 @@ int main(int argc, char **argv)
 			if (which_pan == APPOINTMENT && hilt_app != 0)
 				recur_repeat_item(sel_year, sel_month, 
 					sel_day, hilt_app, colr);
+			break;
+	
+		case '+':
+		case '-':
+			if (which_pan == TODO && hilt_tod != 0)
+				hilt_tod = todo_chg_priority(ch, hilt_tod);
 			break;
 
 		case '?':	/* Online help system */
@@ -965,6 +971,7 @@ void update_todo_panel(void)
 	int todo_lines = 1;
 	int max_items = nl_tod - 4;
 	int incolor = -1;
+	char mesg[MAX_LENGTH] = "";
 
 	/* Print todo item in the panel. */
 	erase_window_part(twin, 1, title_lines, nc_tod - 2, nl_tod - 2);
@@ -974,7 +981,9 @@ void update_todo_panel(void)
 		incolor = num_todo - hilt_tod;
 		if (incolor == 0) saved_t_mesg = i->mesg; 
 		if (t_realpos >= 0 && t_realpos < max_items) {
-			display_item(twin, incolor, i->mesg,
+			sprintf(mesg, "%d. ", i->id);	
+			strncat(mesg, i->mesg, strlen(i->mesg));
+			display_item(twin, incolor, mesg,
 					len, y_offset, x_offset);
 			y_offset = y_offset + todo_lines;	
 		}
