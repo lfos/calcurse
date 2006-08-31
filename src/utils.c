@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.3 2006/08/23 19:44:25 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.4 2006/08/31 18:50:17 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -436,9 +436,10 @@ void status_bar(int which_pan, int colr, int nc_bar, int nl_bar)
 		mvwprintw(swin, 1, 2 * len_oth_itm, "Tab");
 		mvwprintw(swin, 0, 3 * len_oth_itm, "  A");
 		mvwprintw(swin, 1, 3 * len_oth_itm, "  D");
-		mvwprintw(swin, 0, 4 * len_oth_itm, "  G");
+		mvwprintw(swin, 0, 4 * len_oth_itm, "+/-");
 		mvwprintw(swin, 1, 4 * len_oth_itm, "  V");
-		mvwprintw(swin, 0, 5 * len_oth_itm, "  C");
+		mvwprintw(swin, 0, 5 * len_oth_itm, "  G");
+		mvwprintw(swin, 1, 5 * len_oth_itm, "  C");
 		custom_remove_attr(swin, ATTR_HIGHEST);
 		wnoutrefresh(swin);
 
@@ -456,10 +457,12 @@ void status_bar(int which_pan, int colr, int nc_bar, int nl_bar)
 		mvwprintw(swin, 1, 3 * len_oth_itm + len_let + spc_lad,
 			 _("Del Item"));
 		mvwprintw(swin, 0, 4 * len_oth_itm + len_let + spc_lad,
-			_("GoTo"));
+			_("Priority"));
 		mvwprintw(swin, 1, 4 * len_oth_itm + len_let + spc_lad,
 			_( "View"));
 		mvwprintw(swin, 0, 5 * len_oth_itm + len_let + spc_lad,
+			 _("GoTo"));
+		mvwprintw(swin, 1, 5 * len_oth_itm + len_let + spc_lad,
 			 _("Config"));
 		break;
 	}
