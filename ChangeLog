@@ -1,3 +1,11 @@
+02 Sep 2006:
+	help text added for the 'Priority' function and updated for the 'Add'
+	function
+	todo_get_position(): fixed a possible infinite loop
+	calcurse.c: improved the ToDo panel scrolling while changing item priority
+	fixed a bug in day_write_pad() which could cause a misplacement of the
+	line between events and appointments
+
 31 Aug 2006:
 	todo_chg_priority(), todo_get_item() and todo_get_position() created
 	todo_insert() suppressed
