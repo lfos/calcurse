@@ -1,4 +1,4 @@
-/*	$calcurse: help.c,v 1.3 2006/08/23 19:43:04 culot Exp $	*/
+/*	$calcurse: help.c,v 1.4 2006/09/02 09:03:07 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -90,6 +90,7 @@ void help_screen(int which_pan, int colr)
 	help_page_t help_goto;
 	help_page_t help_delete;
 	help_page_t help_add;
+	help_page_t help_priority;
 	help_page_t help_repeat;
 	help_page_t help_config;
 	help_page_t help_credits;
@@ -195,8 +196,12 @@ void help_screen(int which_pan, int colr)
 	help_add.text  =
     _("Pressing 'A' allows you to add an item in either the ToDo or Appointment\n"
     "list, depending on which panel is selected when you press 'A'.\n"
-    "\nTo enter a new item in the TODO list, you only need to enter the\n"
-    "description of this new item.\n"
+    "\nTo enter a new item in the TODO list, you will need first to enter the\n"
+    "description of this new item. Then you will be asked to specify the todo\n"
+    "priority. This priority is represented by a number going from 9 for the\n"
+    "lowest priority, to 1 for the highest one. It is still possible to\n" 
+    "change the item priority afterwards, by using the '+/-' keys inside the\n"
+    "todo panel.\n"
     "\nIf the APPOINTMENT panel is selected while pressing 'A', you will be\n"
     "able to enter either a new appointment or a new all-day long event.\n"
     "To enter a new event, press [ENTER] instead of the item start time, and\n"
@@ -219,6 +224,20 @@ void help_screen(int which_pan, int colr)
     "         added.\n"
     "       o do not forget to save the calendar data to retrieve the new\n"
     "         event next time you launch Calcurse.");
+
+	help_priority.title = _("Priority:\n");
+	help_priority.text  =
+    _("Pressing '+' or '-' allows you to change the priority of the currently\n"
+    "selected item in the ToDo list. Priorities are represented by the number\n"
+    "appearing in front of the todo description. This number goes from 9 for\n"
+    "the lowest priority to 1 for the highest priority. Todo having higher\n"
+    "priorities are placed first (at the top) inside the todo panel.\n\n"
+    "If you want to raise the priority of a todo item, you need to press '+'.\n"
+    "In doing so, the number in front of this item will decrease, meaning its\n"
+    "priority increases. The item position inside the todo panel may change,\n"
+    "depending on the priority of the items above it.\n\n"
+    "At the opposite, to lower a todo priority, press '-'. The todo position\n"
+    "may also change depending on the priority of the items below."); 
 
 	help_repeat.title = _("Repeat:\n");
 	help_repeat.text  =
@@ -357,6 +376,13 @@ void help_screen(int which_pan, int colr)
 			first_line = 0;
 			nl = write_help_pad(help_pad, help_view.title,
 					help_view.text, pad_width);
+			break;
+
+		case '+':
+		case '-':
+			first_line = 0;
+			nl = write_help_pad(help_pad, help_priority.title,
+				help_priority.text, pad_width);
 			break;
 
 		case 9:
