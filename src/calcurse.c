@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.9 2006/08/31 18:46:09 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.10 2006/09/02 13:36:41 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -324,8 +324,15 @@ int main(int argc, char **argv)
 	
 		case '+':
 		case '-':
-			if (which_pan == TODO && hilt_tod != 0)
+			if (which_pan == TODO && hilt_tod != 0) {
 				hilt_tod = todo_chg_priority(ch, hilt_tod);
+				if (hilt_tod < first_todo_onscreen)
+					first_todo_onscreen = hilt_tod;
+				else if (hilt_tod - first_todo_onscreen >=
+				    nl_tod - 4)
+					first_todo_onscreen = hilt_tod 
+					    - nl_tod + 5;	
+			}
 			break;
 
 		case '?':	/* Online help system */
@@ -450,7 +457,7 @@ int main(int argc, char **argv)
 					++hilt_tod;
 					if (hilt_tod - first_todo_onscreen ==
 					    nl_tod - 4)
-						++first_todo_onscreen;
+						first_todo_onscreen++;
 				}
 			}
 			break;
@@ -875,8 +882,8 @@ void add_item(void)
 	char *format_message_2 = _("You entered an invalid end time, should be [h:mm] or [hh:mm] or [mm]");
         char *enter_str = _("Press [Enter] to continue");
 	int Id;
-        char item_time[500];
-	char item_mesg[500];
+        char item_time[MAX_LENGTH];
+	char item_mesg[MAX_LENGTH];
 	long apoint_duration;
 	struct apoint_s *apoint_pointeur;
         struct event_s *event_pointeur;
@@ -885,7 +892,7 @@ void add_item(void)
         int is_appointment = 1;
 
 	/* Get the starting time */
-	strcpy(item_time, "     ");
+	strncpy(item_time, "     ", 6);
 	while (check_time(item_time) == 0) {
                 status_mesg(mesg_1, "");
 		getstring(swin, colr, item_time, 0, 1);
@@ -904,7 +911,7 @@ void add_item(void)
          * corresponding item.
          */
         if (is_appointment){ /* Get the appointment duration */
-                strcpy(item_time, " ");
+                strncpy(item_time, "     ", 6);
                 while (check_time(item_time) == 0) {
                         status_mesg(mesg_2, "");
                         getstring(swin, colr, item_time, 0, 1);
