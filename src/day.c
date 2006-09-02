@@ -1,4 +1,4 @@
-/*	$calcurse: day.c,v 1.6 2006/08/25 19:50:08 culot Exp $	*/
+/*	$calcurse: day.c,v 1.7 2006/09/02 13:31:47 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -248,7 +248,7 @@ void day_write_pad(long date, int width, int length, int incolor, int colr)
 	struct day_item_s *p;
 	int line, item_number, max_pos;
 	const int x_pos = 0;
-	bool draw_line = true;
+	bool draw_line = false;
 
 	line = item_number = 0;
 	max_pos = length;
@@ -271,6 +271,7 @@ void day_write_pad(long date, int width, int length, int incolor, int colr)
 			display_item(apad->ptrwin, item_number - incolor, p->mesg, 
 			width - 4, line, x_pos);
 			line++;
+			draw_line = true;
 		} else {
 			/* Draw a line between events and appointments. */
 			if (line > 0 && draw_line){
