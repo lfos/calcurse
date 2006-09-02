@@ -1,4 +1,4 @@
-/*	$calcurse: todo.c,v 1.3 2006/08/31 18:47:54 culot Exp $	*/
+/*	$calcurse: todo.c,v 1.4 2006/09/02 09:20:35 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -120,15 +120,23 @@ struct todo_s *todo_get_item(int item_number)
  */
 int todo_get_position(struct todo_s *i)
 {
-	struct todo_s *o = todolist;
-	int n = 1;
+	struct todo_s *o;
+	int n = 1, found = 0;
 	
-	for (;;) {
-		if (o == i) break;
-		o = o->next;
+	for (o = todolist; o; o = o->next) {
+		if (o == i) {
+			found = 1;
+			break;
+		}
 		n++;
 	}
-	return n; 
+	if (found) {
+		return n;	
+	} else {
+		fputs(_("FATAL ERROR in todo_get_position: todo not found\n"), 
+			stderr);
+		exit(EXIT_FAILURE);
+	} 
 }
 
 /* Change an item priority by pressing '+' or '-' inside TODO panel. */
