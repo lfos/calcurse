@@ -1,4 +1,4 @@
-/*	$calcurse: custom.c,v 1.1 2006/07/31 21:00:02 culot Exp $	*/
+/*	$calcurse: custom.c,v 1.2 2006/09/03 17:53:26 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -108,9 +108,11 @@ int layout_config(int layout, int colr)
 {
 	int ch, old_layout;
 	char *layout_mesg = _("Pick the desired layout on next screen [press ENTER]");
-	char *choice_mesg = _("('A'= Appointment panel, 'c'= calendar panel, 't'= todo panel)");
-	char *layout_up_mesg   = _("   |Ac|      |At|      |cA|      |tA|");
-	char *layout_down_mesg = _("[1]|At|   [2]|Ac|   [3]|tA|   [4]|cA|");
+	char *choice_mesg = _("('A'= Appointment panel, 'C'= calendar panel, 'T'= todo panel)");
+	char *layout_up_mesg   = 
+	_("    AC       AT       CA       TA       TC       TA       CT       AT");
+	char *layout_down_mesg = 
+	_(" [1]AT    [2]AC    [3]TA    [4]CA    [5]TA    [6]TC    [7]AT    [8]CT");
 
 	old_layout = layout;
 	status_mesg(layout_mesg, choice_mesg);
@@ -119,18 +121,8 @@ int layout_config(int layout, int colr)
 	wnoutrefresh(swin);
 	doupdate();
 	while ((ch = wgetch(swin)) != 'q') {
-		switch (ch) {
-		case '1':
-			layout = 1;
-			return layout;
-		case '2':
-			layout = 2;
-			return layout;
-		case '3':
-			layout = 3;
-			return layout;
-		case '4':
-			layout = 4;
+		if ( ch <= '8' && ch >= '1' ) {
+			layout = ch - '0';
 			return layout;
 		}
 	}
