@@ -1,4 +1,4 @@
-# 	$calcurse: fr.po,v 1.5 2006/09/03 10:13:07 culot Exp $
+# 	$calcurse: fr.po,v 1.6 2006/09/03 17:50:34 culot Exp $
 #
 # French translations for calcurse package.
 # Copyright (C) 2006 Frederic Culot <frederic@culot.org>
@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse 1.4\n"
 "Report-Msgid-Bugs-To: frederic@culot.org\n"
-"POT-Creation-Date: 2006-09-03 11:04+0200\n"
+"POT-Creation-Date: 2006-09-03 19:05+0200\n"
 "PO-Revision-Date: 2006-05-13 14:37+0200\n"
 "Last-Translator: Frederic Culot <frederic@culot.org>\n"
 "Language-Team: French <calcurse-i18n@culot.org>\n"
@@ -144,144 +144,144 @@ msgstr "Tâche :"
 msgid "FATAL ERROR in update_windows: no window selected\n"
 msgstr "ERREUR FATALE dans update_windows: aucune fenêtre séléctionnée\n"
 
-#: src/calcurse.c:632
+#: src/calcurse.c:655
 #, c-format
 msgid "Calendar"
 msgstr "Calendrier"
 
-#: src/calcurse.c:635
+#: src/calcurse.c:658
 #, c-format
 msgid "Appointments"
 msgstr "Rendez-vous"
 
-#: src/calcurse.c:638
+#: src/calcurse.c:661
 #, c-format
 msgid "ToDo"
 msgstr "Tâches"
 
-#: src/calcurse.c:670
+#: src/calcurse.c:693
 msgid "Enter an option number to change its value [Q to quit] "
 msgstr "Entrez un numéro d'option pour changer sa valeur [Q pour quitter] "
 
-#: src/calcurse.c:676
+#: src/calcurse.c:699
 #, c-format
 msgid "CalCurse %s | general options"
 msgstr "CalCurse %s | options générales"
 
-#: src/calcurse.c:713
+#: src/calcurse.c:736
 msgid "auto_save = "
 msgstr "sauvegarde_automatique = "
 
-#: src/calcurse.c:714
+#: src/calcurse.c:737
 msgid "confirm_quit = "
 msgstr "confirmer_pour_quitter = "
 
-#: src/calcurse.c:715
+#: src/calcurse.c:738
 msgid "confirm_delete = "
 msgstr "confirmer_pour_effacer = "
 
-#: src/calcurse.c:716
+#: src/calcurse.c:739
 msgid "skip_system_dialogs = "
 msgstr "masquer_messages_système = "
 
-#: src/calcurse.c:717
+#: src/calcurse.c:740
 msgid "skip_progress_bar = "
 msgstr "masquer_barre_progression = "
 
-#: src/calcurse.c:718
+#: src/calcurse.c:741
 msgid "week_begins_on_monday = "
 msgstr "semaine_commence_lundi = "
 
-#: src/calcurse.c:727
+#: src/calcurse.c:750
 msgid "(if set to YES, automatic save is done when quitting)"
 msgstr ""
 "(si fixé à OUI, une sauvegarde est automatiquement effectuée en quittant)"
 
-#: src/calcurse.c:733
+#: src/calcurse.c:756
 msgid "(if set to YES, confirmation is required before quitting)"
 msgstr "(si fixé à OUI, il est nécessaire de confirmer pour quitter)"
 
-#: src/calcurse.c:739
+#: src/calcurse.c:762
 msgid "(if set to YES, confirmation is required before deleting an event)"
 msgstr ""
 "(si fixé à OUI, il est nécessaire de confirmer pour effacer un élement)"
 
-#: src/calcurse.c:745
+#: src/calcurse.c:768
 msgid ""
 "(if set to YES, messages about loaded and saved data will not be displayed)"
 msgstr "(si fixé à OUI, les messages d'accès fichiers ne seront pas affichés)"
 
-#: src/calcurse.c:751
+#: src/calcurse.c:774
 msgid "(if set to YES, progress bar will not be displayed when saving data)"
 msgstr "(si fixé à OUI, la barre ne sera pas affichée lors des sauvegardes)"
 
-#: src/calcurse.c:757
+#: src/calcurse.c:780
 msgid "(if set to YES, monday is the first day of the week, else it is sunday)"
 msgstr ""
 "(si fixé à OUI, la semaine débute le lundi, sinon elle débute le dimanche)"
 
-#: src/calcurse.c:772
+#: src/calcurse.c:795
 msgid "yes"
 msgstr "oui"
 
-#: src/calcurse.c:775
+#: src/calcurse.c:798
 msgid "no"
 msgstr "non"
 
-#: src/calcurse.c:779
+#: src/calcurse.c:802
 msgid "option not defined - Problem in print_option_incolor()"
 msgstr "Problème dans print_option_incolor(): option non définié"
 
-#: src/calcurse.c:796
+#: src/calcurse.c:819
 msgid "Do you really want to delete this item ?"
 msgstr "Voulez-vous vraiment effacer cet élement ?"
 
-#: src/calcurse.c:797
+#: src/calcurse.c:820
 msgid "Do you really want to delete this task ?"
 msgstr "Voulez-vous vraiment effacer cette tâche ?"
 
-#: src/calcurse.c:837
+#: src/calcurse.c:860
 msgid "FATAL ERROR in del_item: no such type\n"
 msgstr "ERREUR FATALE dans todo_delete_by_num: aucune tâche correspondante\n"
 
-#: src/calcurse.c:878
+#: src/calcurse.c:901
 msgid ""
 "Enter start time ([hh:mm] or [h:mm]), leave blank for an all-day event : "
 msgstr ""
 "Entrez l'heure de début ([hh:mm] ou [h:mm]), laissez vide pour toute la "
 "journée:"
 
-#: src/calcurse.c:879
+#: src/calcurse.c:902
 msgid "Enter end time ([hh:mm] or [h:mm]) or duration (in minutes) : "
 msgstr "Entrez l'heure de fin ([hh:mm] ou [h:mm]) ou la durée (en minutes):"
 
-#: src/calcurse.c:880
+#: src/calcurse.c:903
 msgid "Enter description :"
 msgstr "Entrez la description :"
 
-#: src/calcurse.c:881
+#: src/calcurse.c:904
 msgid "You entered an invalid start time, should be [h:mm] or [hh:mm]"
 msgstr "Erreur dans le format de l'heure de début: doit être [h:mm] ou [hh:mm]"
 
-#: src/calcurse.c:882
+#: src/calcurse.c:905
 msgid "You entered an invalid end time, should be [h:mm] or [hh:mm] or [mm]"
 msgstr ""
 "Erreur dans le format de l'heure de fin: doit être [h:mm] ou [hh:mm] ou [mm]"
 
-#: src/calcurse.c:883
+#: src/calcurse.c:906
 msgid "Press [Enter] to continue"
 msgstr "Appuyez sur [ENTREE] pour continuer"
 
-#: src/calcurse.c:1086
+#: src/calcurse.c:1109
 msgid "Failed to open config file"
 msgstr "Impossible d'ouvrir le fichier de configuration"
 
-#: src/calcurse.c:1087 src/calendar.c:192 src/io.c:134 src/io.c:380
+#: src/calcurse.c:1110 src/calendar.c:192 src/io.c:134 src/io.c:380
 #: src/io.c:464
 msgid "Press [ENTER] to continue"
 msgstr "Appuyez sur [ENTREE] pour continuer"
 
-#: src/calcurse.c:1163
+#: src/calcurse.c:1186
 msgid "FATAL ERROR in fill_config_var: wrong configuration variable format.\n"
 msgstr ""
 "ERREUR FATALE dans fill_config_var: mauvais format dans la variable de "
@@ -316,25 +316,25 @@ msgid "Pick the desired layout on next screen [press ENTER]"
 msgstr "Choisissez la disposition voulue dans l'écran suivant [pressez ENTREE]"
 
 #: src/custom.c:111
-msgid "('A'= Appointment panel, 'c'= calendar panel, 't'= todo panel)"
+msgid "('A'= Appointment panel, 'C'= calendar panel, 'T'= todo panel)"
 msgstr ""
-"('R'= panneau Rendez-vous, 'c'= panneau Calendrier, 't'= panneau Tâches)"
-
-#: src/custom.c:112
-msgid "   |Ac|      |At|      |cA|      |tA|"
-msgstr "   |Rc|      |Rt|      |cR|      |tR|"
+"('R'= panneau Rendez-vous, 'C'= panneau Calendrier, 'T'= panneau Tâches)"
 
 #: src/custom.c:113
-msgid "[1]|At|   [2]|Ac|   [3]|tA|   [4]|cA|"
-msgstr "[1]|Rt|   [2]|Rc|   [3]|tR|   [4]|cR|"
+msgid "    AC       AT       CA       TA       TC       TA       CT       AT"
+msgstr "    RC       RT       CR       TR       TC       TR       CT       RT"
 
-#: src/custom.c:148
+#: src/custom.c:115
+msgid " [1]AT    [2]AC    [3]TA    [4]CA    [5]TA    [6]TC    [7]AT    [8]CT"
+msgstr " [1]RT    [2]RC    [3]TR    [4]CR    [5]TR    [6]TC    [7]RT    [8]CT"
+
+#: src/custom.c:140
 msgid "Pick the number corresponding to the color scheme (Q to exit) :"
 msgstr ""
 "Choississez le numéro correspondant au thème graphique voulu (Q pour "
 "quitter) :"
 
-#: src/custom.c:158
+#: src/custom.c:150
 msgid "([>0<] for black & white)"
 msgstr "([>O<]) pour noir & blanc)"
 
@@ -1168,3 +1168,9 @@ msgstr "Ven"
 #: src/vars.c:63
 msgid "Sat"
 msgstr "Sam"
+
+#~ msgid "   |Ac|      |At|      |cA|      |tA|"
+#~ msgstr "   |Rc|      |Rt|      |cR|      |tR|"
+
+#~ msgid "[1]|At|   [2]|Ac|   [3]|tA|   [4]|cA|"
+#~ msgstr "[1]|Rt|   [2]|Rc|   [3]|tR|   [4]|cR|"
