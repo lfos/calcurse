@@ -1,6 +1,9 @@
 03 Sep 2006:
 	todo_args() updated to display priorities
 	fr.po: new entries translated and fixed 'fuzzy' translations
+	layout_config() improved, and new layout configurations added
+	get_screen_config() updated to take new layouts into account
+	TODO list updated
 
 02 Sep 2006:
 	help text added for the 'Priority' function and updated for the 'Add'
