@@ -1,4 +1,4 @@
-/*	$calcurse: args.c,v 1.3 2006/08/06 14:36:14 culot Exp $	*/
+/*	$calcurse: args.c,v 1.4 2006/09/03 09:01:25 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -188,11 +188,13 @@ void todo_arg(int colr)
 {
 	struct todo_s *i;
 	int nb_tod;
+	char priority[MAX_LENGTH] = "";
 
 	nb_tod = load_todo(colr);
 	fputs(_("to do:\n"),stdout);
 	for (i = todolist; i != 0; i = i->next) {
-		fputs(" - ",stdout);
+		sprintf(priority, "%d. ", i->id);	
+		fputs(priority,stdout);
 		fputs(i->mesg,stdout);
 		fputs("\n",stdout);
 	}
