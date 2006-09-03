@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.10 2006/09/02 13:36:41 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.11 2006/09/03 17:52:06 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -571,15 +571,22 @@ void get_screen_config(void)
 	getmaxyx(stdscr, row, col);
 
 	/* window size definition */
+	nl_bar = 2; y_bar = row - nl_bar;
+	nc_bar = col; x_bar = 0;
 	nl_cal = 12;
 	nc_cal = 30;
-	nc_app = col - nc_cal;
-	nl_app = row - 2;
-	nc_tod = nc_cal;
-	nl_tod = row - (nl_cal + 2);
-	nl_app = row - 2;
-	nl_bar = 2; y_bar = row - 2;
-	nc_bar = col; x_bar = 0;
+
+	if (layout <= 4) { /* APPOINTMENT is the biggest panel */
+		nc_app = col - nc_cal;
+		nl_app = row - nl_bar;
+		nc_tod = nc_cal;
+		nl_tod = row - (nl_cal + nl_bar);
+	} else { /* TODO is the biggest panel */
+		nc_tod = col - nc_cal;
+		nl_tod = row - nl_bar;
+		nc_app = nc_cal;
+		nl_app = row - (nl_cal + nl_bar);
+	}
 
 	/* defining the layout */
 	switch (layout) {
@@ -598,6 +605,22 @@ void get_screen_config(void)
 	case 4:
 		y_app = 0; x_tod = 0; y_tod = 0; x_cal = 0;
 		x_app = nc_cal; y_cal = nl_tod;
+		break;
+	case 5:
+		y_tod = 0; x_tod = 0; y_cal = 0;
+		y_app = nl_cal; x_app = nc_tod; x_cal = nc_tod;
+		break;
+	case 6:
+		y_tod = 0; x_tod = 0; y_app = 0;
+		x_app = nc_tod; x_cal = nc_tod; y_cal = nl_app;
+		break;
+	case 7:
+		y_tod = 0; x_app = 0; x_cal = 0; y_cal = 0;
+		x_tod = nc_cal; y_app = nl_cal;
+		break;
+	case 8:
+		y_tod = 0; x_app = 0; x_cal = 0; y_app = 0;
+		x_tod = nc_cal; y_cal = nl_app;
 		break;
 	}
 }
@@ -1053,7 +1076,7 @@ void update_app_panel(int year, int month, int day)
 	wnoutrefresh(awin);
 	pnoutrefresh(apad->ptrwin, apad->first_onscreen, 0, 
 		y_app + title_lines + 1, x_app + bordr, 
-		y_app + nl_app - 2*bordr, x_app + nc_app - 2*bordr);
+		y_app + nl_app - 2*bordr, x_app + nc_app - 3*bordr);
 }
 
 /*
