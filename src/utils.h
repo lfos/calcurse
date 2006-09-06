@@ -1,4 +1,4 @@
-/*	$calcurse: utils.h,v 1.1 2006/07/31 21:00:03 culot Exp $	*/
+/*	$calcurse: utils.h,v 1.2 2006/09/06 17:08:08 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -27,6 +27,23 @@
 #ifndef CALCURSE_UTILS_H
 #define CALCURSE_UTILS_H
 
+#define MAX(x,y) 	((x)>(y)?(x):(y))
+#define MIN(x,y) 	((x)<(y)?(x):(y))
+
+#define NB_CAL_CMDS	15 /* number of commands while in cal view */
+#define NB_APP_CMDS	18 /* same thing while in appointment view */ 
+#define NB_TOD_CMDS	18 /* same thing while in todo view */
+#define TOTAL_CMDS	NB_CAL_CMDS + NB_APP_CMDS + NB_TOD_CMDS
+#define NB_PANELS	3  /* 3 panels: CALENDAR, APPOINTMENT, TODO */
+#define CMDS_PER_LINE	6  /* max number of commands per line */
+#define KEY_LENGTH	4  /* length of each keybinding + one space */
+#define LABEL_LENGTH	8  /* length of command description */
+
+typedef struct { /* structure defining a keybinding */
+	char *key; 
+	char *label;
+} binding_t;
+
 void status_mesg(char *mesg_line1, char *mesg_line2);
 void erase_window_part(WINDOW *win, int first_col, int first_row, 
                        int last_col, int last_row);
@@ -51,5 +68,7 @@ void item_in_popup(char *saved_a_start, char *saved_a_end, char *msg,
 void win_show(WINDOW * win, char *label);
 void display_item(WINDOW *win, int incolor, char *msg, 
 		int len, int y, int x);
+void reset_status_page(void);
+void other_status_page(int panel);
 
 #endif /* CALCURSE_UTILS_H */
