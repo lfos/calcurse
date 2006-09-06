@@ -1,4 +1,4 @@
-/*	$calcurse: help.c,v 1.4 2006/09/02 09:03:07 culot Exp $	*/
+/*	$calcurse: help.c,v 1.5 2006/09/06 17:10:44 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -82,7 +82,6 @@ void help_screen(int which_pan, int colr)
 	int first_line = 0, nl = 0;
 	
 	help_page_t help_main;
-	help_page_t help_redraw;
 	help_page_t help_save;
 	help_page_t help_displacement;
 	help_page_t help_view;
@@ -93,6 +92,8 @@ void help_screen(int which_pan, int colr)
 	help_page_t help_priority;
 	help_page_t help_repeat;
 	help_page_t help_config;
+	help_page_t help_general;
+	help_page_t help_other;
 	help_page_t help_credits;
 
 	help_main.title = 
@@ -110,15 +111,6 @@ void help_screen(int which_pan, int colr)
     "                 panel, you will be shown a short description of the\n"
     "                 corresponding action.\n\n"
     "       Credits:  Press '@' for credits.");
-
-	help_redraw.title = _("Redraw:\n");
-	help_redraw.text  =
-    _("Pressing CTRL-L redraws the Calcurse panels.\n\n"
-    "You might want to use this function when you resize your terminal\n"
-    "screen for example, and you want Calcurse to take into account the new\n"
-    "size of the terminal.\n\n"
-    "This function can also be useful when garbage appears in the display,\n"
-    "and you want to clean it.");
 
 	help_save.title = _("Save:\n");
     	help_save.text  =
@@ -274,6 +266,33 @@ void help_screen(int which_pan, int colr)
     "\nDo not forget to save the calendar data to retrieve your configuration\n"
     "next time you launch Calcurse.");
 
+	help_general.title = _("General keybindings:\n");
+	help_general.text  =
+    _("Some of the keybindings apply whatever panel is selected. They are\n"
+    "called general keybinding and involve the <CONTROL> key, which is\n"
+    "represented by the '^' sign in the status bar panel. For example,\n"
+    "'^A' means you need to press <CONTROL> and 'A' simultaneously to\n"
+    "activate the command. Here is the list of all the general keybindings,\n"
+    "together with their corresponding action:\n\n"
+    " '^R' : Redraw function -> redraws calcurse panels, this is useful if\n"
+    "                           you resize your terminal screen or when\n"
+    "                           garbage appears inside the display\n"
+    " '^A' : Add Appointment -> add an appointment or an event\n"
+    " '^T' : Add ToDo        -> add a todo\n"
+    " '^H' : -1 Day          -> move to previous day\n"
+    " '^L' : +1 Day          -> move to next day\n"
+    " '^K' : -1 Week         -> move to previous week\n"
+    " '^J' : +1 Week         -> move to next week");
+
+	help_other.title = _("OtherCmd:\n");
+	help_other.text  =
+    _("Pressing 'O' allows you to switch between status bar help pages.\n"
+    "Because the terminal screen is too narrow to display all of the\n"
+    "available commands, you need to press 'O' to see the next set of\n"
+    "commands together with their keybindings.\n"
+    "Once the last status bar page is reached, pressing 'O' another time\n"
+    "leads you back to the first page.");
+
 	help_credits.title = _("Calcurse - text-based organizer");
 	help_credits.text  =
     _("Copyright (c) 2004-2006 Frederic Culot\n"
@@ -307,11 +326,11 @@ void help_screen(int which_pan, int colr)
 
 		switch (ch) {
 		
-		case CTRL('N') :
+		case CTRL('n') :
 			if (nl > first_line + text_lines) first_line++;
 			break;
 
-		case CTRL('P') :
+		case CTRL('p') :
 			if (first_line > 0) first_line--;
 			break;
 
@@ -320,10 +339,16 @@ void help_screen(int which_pan, int colr)
 			nl = write_help_pad(help_pad, help_main.title,
 					help_main.text, pad_width);
 			break;
+		case CTRL('r'):
+		case CTRL('a'):
+		case CTRL('t'):
+		case CTRL('h'):
+		case CTRL('j'):
+		case CTRL('k'):
 		case CTRL('l'):
 			first_line = 0;
-			nl = write_help_pad(help_pad, help_redraw.title,
-					help_redraw.text, pad_width);
+			nl = write_help_pad(help_pad, help_general.title,
+					help_general.text, pad_width);
 			break;
 		case 's':
 			first_line = 0;
@@ -365,6 +390,11 @@ void help_screen(int which_pan, int colr)
 			first_line = 0;
 			nl = write_help_pad(help_pad, help_config.title,
 					help_config.text, pad_width);
+			break;
+		case 'o':
+			first_line = 0;
+			nl = write_help_pad(help_pad, help_other.title,
+					help_other.text, pad_width);
 			break;
 		case 'r':
 			first_line = 0;
@@ -417,6 +447,7 @@ void help_screen(int which_pan, int colr)
 				help_row - 2, help_col - pad_offset);
                 doupdate();
                 ch = wgetch(swin);
+		ch = tolower(ch);
 	}
 	delwin(help_pad);
 	delwin(help_win);
