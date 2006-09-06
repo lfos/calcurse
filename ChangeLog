@@ -1,3 +1,13 @@
+06 Sep 2006:
+	status_bar() rewritten from scratch to allow more than one page
+	of keybindings
+	reset_status_page() and other_status_page() created
+	'O' keybinding added to switch between status bar pages
+	added general keybindings which apply whatever panel is selected
+	(^A, ^T, ^H, ^J, ^K, ^L)
+	changed the redraw keybinding from ^L to ^R
+	added help pages concerning the general bindings and the 'O' command
+
 03 Sep 2006:
 	todo_args() updated to display priorities
 	fr.po: new entries translated and fixed 'fuzzy' translations
