@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.11 2006/09/03 17:52:06 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.12 2006/09/06 17:12:15 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -171,6 +171,7 @@ int main(int argc, char **argv)
 
 	init_vars(colr);
 	init_wins();
+	reset_status_page();
 	update_windows(which_pan);
 
 	/* 
@@ -207,6 +208,7 @@ int main(int argc, char **argv)
 		switch (ch) {
 
 		case 9:	/* The TAB key was hit. */
+			reset_status_page();
 			/* Save previously highlighted event. */
 			if (which_pan == TODO) {
 				sav_hilt_tod = hilt_tod;
@@ -236,8 +238,13 @@ int main(int argc, char **argv)
 			}
 			break;
 
-		case CTRL('L'):
+		case CTRL('R'):
                         reinit_wins();
+			break;
+
+		case 'O':
+		case 'o':
+			other_status_page(which_pan);
 			break;
 
 		case 'G':
@@ -297,12 +304,14 @@ int main(int argc, char **argv)
                         update_windows(which_pan);
 			break;
 
+		case CTRL('A'):
+		case CTRL('T'):
 		case 'A':
 		case 'a':	/* Add an item */
-			if (which_pan == APPOINTMENT) {
+			if (which_pan == APPOINTMENT || ch == CTRL('A')) {
 				add_item();
 				do_storage = true;
-			} else if (which_pan == TODO) {
+			} else if (which_pan == TODO || ch == CTRL('T')) {
 				nb_tod = todo_new_item(nb_tod, colr);
 				if (hilt_tod == 0 && nb_tod == 1)
 					hilt_tod++;
@@ -351,7 +360,8 @@ int main(int argc, char **argv)
 		case (261):	/* right arrow */
 		case ('L'):
 		case ('l'):
-			if (which_pan == CALENDAR) {
+		case CTRL('L'):
+			if (which_pan == CALENDAR || ch == CTRL('L')) {
 				do_storage = true;
 				day_changed = true;
 				if ((sel_day == 31) & (sel_month == 12))
@@ -372,7 +382,8 @@ int main(int argc, char **argv)
 		case (260):	/* left arrow */
 		case ('H'):
 		case ('h'):
-			if (which_pan == CALENDAR) {
+		case CTRL('H'):
+			if (which_pan == CALENDAR || ch == CTRL('H')) {
 				do_storage = true;
 				day_changed = true;
 				if ((sel_day == 1) & (sel_month == 1))
@@ -393,7 +404,8 @@ int main(int argc, char **argv)
 		case (259):	/* up arrow */
 		case ('K'):
 		case ('k'):
-			if (which_pan == CALENDAR) {
+		case CTRL('K'):
+			if (which_pan == CALENDAR || ch == CTRL('K')) {
 				do_storage = true;
 				day_changed = true;
 				if ((sel_day <= 7) & (sel_month == 1))
@@ -427,7 +439,8 @@ int main(int argc, char **argv)
 		case (258):	/* down arrow */
 		case ('J'):
 		case ('j'):
-			if (which_pan == CALENDAR) {
+		case CTRL('J'):
+			if (which_pan == CALENDAR || ch == CTRL('J')) {
 				do_storage = true;
 				day_changed = true;
 				if ((sel_day > days[sel_month - 1] - 7) & 
