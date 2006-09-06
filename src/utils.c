@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.4 2006/08/31 18:50:17 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.5 2006/09/06 17:09:36 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -38,6 +38,7 @@
 #include "custom.h"
 #include "vars.h"
 
+static unsigned status_page;
 
 /* 
  * Print a message in the status bar.
@@ -325,148 +326,70 @@ void scroller(WINDOW *win, char *mesg, int x, int y, int nb_row, int nb_col)
         wnoutrefresh(swin);
 }
 
-/* Draws the status bar */
+/* 
+ * Draws the status bar. 
+ * To add a keybinding, insert it in the 'keys' and 'labels' tables,
+ * and update the NB_CAL_CMDS, NB_APP_CMDS or NB_TOD_CMDS defines 
+ * in utils.h, depending on which panel the added keybind is assigned to.
+ */
 void status_bar(int which_pan, int colr, int nc_bar, int nl_bar)
 {
-	int nb_item_cal, nb_item_oth;
-	int len_let, len_des, spc_lad;
-	int spc_bet_cal_itm, spc_bet_oth_itm;
-	int len_cal_itm, len_oth_itm;
+	int cmd_length, space_between_cmds, start, end, i, j = 0;
+	const int pos[NB_PANELS + 1] = 
+		{0, NB_CAL_CMDS, NB_CAL_CMDS + NB_APP_CMDS, TOTAL_CMDS};
 
-	nb_item_cal = 10;	/* max item number to display in status bar */
-	nb_item_cal = ceil(nb_item_cal / 2);	/* two lines to display items */
-	nb_item_oth = 12;
-	nb_item_oth = ceil(nb_item_oth / 2);
-	len_let = 3;
-	len_des = 8;
-	spc_lad = 1;
+	binding_t help = { "  ?", N_("Help") };
+	binding_t quit = { "  Q", N_("Quit") };
+	binding_t save = { "  S", N_("Save") };
+	binding_t add  = { "  A", N_("Add Item") };
+	binding_t del  = { "  D", N_("Del Item") };
+	binding_t day  = { "H/L", N_("-+1 Day") };
+	binding_t week = { "K/J", N_("-+1 Week") };
+	binding_t updn = { "K/J", N_("Up/Down") };
+	binding_t rept = { "  R", N_("Repeat") };
+	binding_t prio = { "+/-", N_("Priority") };
+	binding_t tab  = { "Tab", N_("Chg View") };	
+	binding_t togo = { "  G", N_("Go to") };
+	binding_t conf = { "  C", N_("Config") };
+	binding_t view = { "  V", N_("View") };
+	binding_t draw = { " ^R", N_("Redraw") };
+	binding_t appt = { " ^A", N_("Add Appt") };
+	binding_t todo = { " ^T", N_("Add Todo") };
+	binding_t eday = { "^HL", N_("-+1 Day") };
+	binding_t ewek = { "^KJ", N_("-+1 Week") };
+	binding_t othr = { "  O", N_("OtherCmd") }; 
 
-	spc_bet_cal_itm =
-	    floor((col -
-		   nb_item_cal * (len_let + len_des +
-				  spc_lad)) / nb_item_cal);
-	spc_bet_oth_itm =
-	    floor((col -
-		   nb_item_oth * (len_let + len_des +
-				  spc_lad)) / nb_item_oth);
-	len_cal_itm = len_let + spc_lad + len_des + spc_bet_cal_itm;
-	len_oth_itm = len_let + spc_lad + len_des + spc_bet_oth_itm;
+	binding_t *binding[TOTAL_CMDS] = {
+	/* calendar keys */
+		&help, &quit, &save, &togo, &day, &week, &tab, &conf, &draw, 
+		&appt, &todo, &othr, &eday, &ewek, &othr, 
+	/* appointment keys */
+		&help, &quit, &save, &togo, &add, &del, &view, &rept, &updn, 
+		&tab, &conf, &othr, &draw, &appt, &todo, &eday, &ewek, &othr,
+	/* todo keys */
+		&help, &quit, &save, &togo, &add, &del, &view, &prio, &updn, 
+		&tab, &conf, &othr, &draw, &appt, &todo, &eday, &ewek, &othr };
+		
+	/* Total length of a command. */
+	cmd_length = KEY_LENGTH + LABEL_LENGTH; 
+	space_between_cmds = floor(col / CMDS_PER_LINE - cmd_length);
+	cmd_length += space_between_cmds;
 
+	/* Drawing the keybinding with attribute and label without. */
 	erase_window_part(swin, 0, 0, nc_bar, nl_bar);
-	switch (which_pan) {
-
-	case 0: /* CALENDAR */
+	start = pos[which_pan] + 2*CMDS_PER_LINE*(status_page - 1);
+	end = MIN(start + 2*CMDS_PER_LINE, pos[which_pan + 1]);
+	for (i = start; i < end; i += 2) {
 		custom_apply_attr(swin, ATTR_HIGHEST);
-		mvwprintw(swin, 0, 0, "  ?");
-		mvwprintw(swin, 1, 0, "  Q");
-		mvwprintw(swin, 0, len_cal_itm, " ^L");
-		mvwprintw(swin, 1, len_cal_itm, "  S");
-		mvwprintw(swin, 0, 2 * len_cal_itm, "H/L");
-		mvwprintw(swin, 1, 2 * len_cal_itm, "J/K");
-		mvwprintw(swin, 0, 3 * len_cal_itm, "  G");
-		mvwprintw(swin, 1, 3 * len_cal_itm, "Tab");
-		mvwprintw(swin, 0, 4 * len_cal_itm, "  C");
+		mvwprintw(swin, 0, j*cmd_length, binding[i]->key);
+		if (i + 1 != end) 
+		  mvwprintw(swin, 1, j*cmd_length, binding[i+1]->key);
 		custom_remove_attr(swin, ATTR_HIGHEST);
-		wnoutrefresh(swin);
-
-		mvwprintw(swin, 0, len_let + spc_lad, _("Help"));
-		mvwprintw(swin, 1, len_let + spc_lad, _("Quit"));
-		mvwprintw(swin, 0, len_cal_itm + len_let + spc_lad,
-			 _("Redraw"));
-		mvwprintw(swin, 1, len_cal_itm + len_let + spc_lad, _("Save"));
-		mvwprintw(swin, 0, 2 * len_cal_itm + len_let + spc_lad,
-			 _("-/+1 Day"));
-		mvwprintw(swin, 1, 2 * len_cal_itm + len_let + spc_lad,
-			 _("-/+1 Week"));
-		mvwprintw(swin, 0, 3 * len_cal_itm + len_let + spc_lad,
-			 _("GoTo"));
-		mvwprintw(swin, 1, 3 * len_cal_itm + len_let + spc_lad,
-			 _("Chg View"));
-		mvwprintw(swin, 0, 4 * len_cal_itm + len_let + spc_lad,
-			 _("Config"));
-		break;
-
-	case 1: /* APPOINTMENT */
-		custom_apply_attr(swin, ATTR_HIGHEST);
-		mvwprintw(swin, 0, 0, "  ?");
-		mvwprintw(swin, 1, 0, "  Q");
-		mvwprintw(swin, 0, len_oth_itm, " ^L");
-		mvwprintw(swin, 1, len_oth_itm, "  S");
-		mvwprintw(swin, 0, 2 * len_oth_itm, "J/K");
-		mvwprintw(swin, 1, 2 * len_oth_itm, "Tab");
-		mvwprintw(swin, 0, 3 * len_oth_itm, "  A");
-		mvwprintw(swin, 1, 3 * len_oth_itm, "  D");
-		mvwprintw(swin, 0, 4 * len_oth_itm, "  R");
-		mvwprintw(swin, 1, 4 * len_oth_itm, "  G");
-		mvwprintw(swin, 0, 5 * len_oth_itm, "  V");
-		mvwprintw(swin, 1, 5 * len_oth_itm, "  C");
-		custom_remove_attr(swin, ATTR_HIGHEST);
-		wnoutrefresh(swin);
-
-		mvwprintw(swin, 0, len_let + spc_lad, _("Help"));
-		mvwprintw(swin, 1, len_let + spc_lad, _("Quit"));
-		mvwprintw(swin, 0, len_oth_itm + len_let + spc_lad,
-			 _("Redraw"));
-		mvwprintw(swin, 1, len_oth_itm + len_let + spc_lad, _("Save"));
-		mvwprintw(swin, 0, 2 * len_oth_itm + len_let + spc_lad,
-			 _("Up/Down"));
-		mvwprintw(swin, 1, 2 * len_oth_itm + len_let + spc_lad,
-			 _("Chg View"));
-		mvwprintw(swin, 0, 3 * len_oth_itm + len_let + spc_lad,
-			 _("Add Item"));
-		mvwprintw(swin, 1, 3 * len_oth_itm + len_let + spc_lad,
-			 _("Del Item"));
-		mvwprintw(swin, 0, 4 * len_oth_itm + len_let + spc_lad,
-			_("Repeat"));
-		mvwprintw(swin, 1, 4 * len_oth_itm + len_let + spc_lad,
-			_( "GoTo"));
-		mvwprintw(swin, 0, 5 * len_oth_itm + len_let + spc_lad,
-			 _("View"));
-		mvwprintw(swin, 1, 5 * len_oth_itm + len_let + spc_lad,
-			 _("Config"));
-		break;
-
-	case 2: /* TODO */
-		custom_apply_attr(swin, ATTR_HIGHEST);
-		mvwprintw(swin, 0, 0, "  ?");
-		mvwprintw(swin, 1, 0, "  Q");
-		mvwprintw(swin, 0, len_oth_itm, " ^L");
-		mvwprintw(swin, 1, len_oth_itm, "  S");
-		mvwprintw(swin, 0, 2 * len_oth_itm, "J/K");
-		mvwprintw(swin, 1, 2 * len_oth_itm, "Tab");
-		mvwprintw(swin, 0, 3 * len_oth_itm, "  A");
-		mvwprintw(swin, 1, 3 * len_oth_itm, "  D");
-		mvwprintw(swin, 0, 4 * len_oth_itm, "+/-");
-		mvwprintw(swin, 1, 4 * len_oth_itm, "  V");
-		mvwprintw(swin, 0, 5 * len_oth_itm, "  G");
-		mvwprintw(swin, 1, 5 * len_oth_itm, "  C");
-		custom_remove_attr(swin, ATTR_HIGHEST);
-		wnoutrefresh(swin);
-
-		mvwprintw(swin, 0, len_let + spc_lad, _("Help"));
-		mvwprintw(swin, 1, len_let + spc_lad, _("Quit"));
-		mvwprintw(swin, 0, len_oth_itm + len_let + spc_lad,
-			 _("Redraw"));
-		mvwprintw(swin, 1, len_oth_itm + len_let + spc_lad, _("Save"));
-		mvwprintw(swin, 0, 2 * len_oth_itm + len_let + spc_lad,
-			 _("Up/Down"));
-		mvwprintw(swin, 1, 2 * len_oth_itm + len_let + spc_lad,
-			 _("Chg View"));
-		mvwprintw(swin, 0, 3 * len_oth_itm + len_let + spc_lad,
-			 _("Add Item"));
-		mvwprintw(swin, 1, 3 * len_oth_itm + len_let + spc_lad,
-			 _("Del Item"));
-		mvwprintw(swin, 0, 4 * len_oth_itm + len_let + spc_lad,
-			_("Priority"));
-		mvwprintw(swin, 1, 4 * len_oth_itm + len_let + spc_lad,
-			_( "View"));
-		mvwprintw(swin, 0, 5 * len_oth_itm + len_let + spc_lad,
-			 _("GoTo"));
-		mvwprintw(swin, 1, 5 * len_oth_itm + len_let + spc_lad,
-			 _("Config"));
-		break;
+		mvwprintw(swin,0,j*cmd_length+KEY_LENGTH,binding[i]->label); 
+		if (i + 1 != end) 
+		  mvwprintw(swin,1,j*cmd_length+KEY_LENGTH,binding[i+1]->label);
+		j++;
 	}
-
 	wnoutrefresh(swin);
 }
 
@@ -660,4 +583,34 @@ void display_item(WINDOW *win, int incolor, char *msg, int len,
 	}
 	if (incolor == 0) 
 		custom_remove_attr(win, ATTR_HIGHEST);
+}
+
+/* Reset the status bar page. */
+void reset_status_page(void)
+{
+	status_page = 1;	
+}
+
+/* Update the status bar page number to display other commands. */
+void other_status_page(int panel)
+{
+	int nb_item, max_page;
+
+	switch (panel) {
+	case 0:
+		nb_item = NB_CAL_CMDS;
+		break;
+	case 1:
+		nb_item = NB_APP_CMDS;
+		break;
+	case 2:
+		nb_item = NB_TOD_CMDS;
+		break;
+	}
+	max_page = ceil( nb_item / (2*CMDS_PER_LINE) ) + 1;
+	if (status_page < max_page) {
+		status_page++;
+	} else {	
+		status_page = 1;
+	}
 }
