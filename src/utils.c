@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.5 2006/09/06 17:09:36 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.6 2006/09/07 13:25:16 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -338,26 +338,26 @@ void status_bar(int which_pan, int colr, int nc_bar, int nl_bar)
 	const int pos[NB_PANELS + 1] = 
 		{0, NB_CAL_CMDS, NB_CAL_CMDS + NB_APP_CMDS, TOTAL_CMDS};
 
-	binding_t help = { "  ?", N_("Help") };
-	binding_t quit = { "  Q", N_("Quit") };
-	binding_t save = { "  S", N_("Save") };
-	binding_t add  = { "  A", N_("Add Item") };
-	binding_t del  = { "  D", N_("Del Item") };
-	binding_t day  = { "H/L", N_("-+1 Day") };
-	binding_t week = { "K/J", N_("-+1 Week") };
-	binding_t updn = { "K/J", N_("Up/Down") };
-	binding_t rept = { "  R", N_("Repeat") };
-	binding_t prio = { "+/-", N_("Priority") };
-	binding_t tab  = { "Tab", N_("Chg View") };	
-	binding_t togo = { "  G", N_("Go to") };
-	binding_t conf = { "  C", N_("Config") };
-	binding_t view = { "  V", N_("View") };
-	binding_t draw = { " ^R", N_("Redraw") };
-	binding_t appt = { " ^A", N_("Add Appt") };
-	binding_t todo = { " ^T", N_("Add Todo") };
-	binding_t eday = { "^HL", N_("-+1 Day") };
-	binding_t ewek = { "^KJ", N_("-+1 Week") };
-	binding_t othr = { "  O", N_("OtherCmd") }; 
+	binding_t help = { "  ?", _("Help") };
+	binding_t quit = { "  Q", _("Quit") };
+	binding_t save = { "  S", _("Save") };
+	binding_t add  = { "  A", _("Add Item") };
+	binding_t del  = { "  D", _("Del Item") };
+	binding_t day  = { "H/L", _("-+1 Day") };
+	binding_t week = { "K/J", _("-+1 Week") };
+	binding_t updn = { "K/J", _("Up/Down") };
+	binding_t rept = { "  R", _("Repeat") };
+	binding_t prio = { "+/-", _("Priority") };
+	binding_t tab  = { "Tab", _("Chg View") };	
+	binding_t togo = { "  G", _("Go to") };
+	binding_t conf = { "  C", _("Config") };
+	binding_t view = { "  V", _("View") };
+	binding_t draw = { " ^R", _("Redraw") };
+	binding_t appt = { " ^A", _("Add Appt") };
+	binding_t todo = { " ^T", _("Add Todo") };
+	binding_t eday = { "^HL", _("-+1 Day") };
+	binding_t ewek = { "^KJ", _("-+1 Week") };
+	binding_t othr = { "  O", _("OtherCmd") }; 
 
 	binding_t *binding[TOTAL_CMDS] = {
 	/* calendar keys */
