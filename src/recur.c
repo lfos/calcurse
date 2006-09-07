@@ -1,4 +1,4 @@
-/*	$calcurse: recur.c,v 1.7 2006/08/24 20:12:21 culot Exp $	*/
+/*	$calcurse: recur.c,v 1.8 2006/09/07 14:08:55 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -515,6 +515,8 @@ void recur_repeat_item(int sel_year, int sel_month, int sel_day,
 	_("Possible formats are [mm/dd/yyyy] or '0' for an endless repetetition");
 	char *wrong_type_1 = _("This item is already a repeated one.");
 	char *wrong_type_2 = _("Press [ENTER] to continue.");
+	char *mesg_older   = 
+	_("Sorry, the date you entered is older than the item start time.");
 	int type = 0, freq = 0;
 	struct day_item_s *p; 
 	struct recur_apoint_s *ra;
@@ -570,7 +572,14 @@ void recur_repeat_item(int sel_year, int sel_month, int sel_day,
 					sscanf(user_input, "%d / %d / %d", 
 						&month, &day, &year);	
 					until = date2sec(year, month, day, 0, 0);
-					date_entered = 1;
+					if (until < p->start) {
+						status_mesg(mesg_older,
+							wrong_type_2);
+						wgetch(swin);
+						date_entered = 0;
+					} else {
+						date_entered = 1;
+					}
 				} else {
 					status_mesg(mesg_wrong_1, mesg_wrong_2);
 					date_entered = 0;
