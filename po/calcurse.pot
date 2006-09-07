@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: frederic@culot.org\n"
-"POT-Creation-Date: 2006-09-06 20:26+0200\n"
+"POT-Creation-Date: 2006-09-07 16:10+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -754,11 +754,15 @@ msgstr ""
 msgid "Press [ENTER] to continue."
 msgstr ""
 
-#: src/recur.c:593
+#: src/recur.c:519
+msgid "Sorry, the date you entered is older than the item start time."
+msgstr ""
+
+#: src/recur.c:602
 msgid "FATAL ERROR in recur_repeat_item: wrong item type\n"
 msgstr ""
 
-#: src/recur.c:618
+#: src/recur.c:627
 msgid "FATAL ERROR in recur_exc_scan: syntax error in the item date\n"
 msgstr ""
 
