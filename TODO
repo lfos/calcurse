@@ -23,8 +23,6 @@ Average
   o  Add import capabilities to read ical files inside calcurse
   o  Accept dates entered in other formats such as d/m/yyyy or d/m/yy,
      make the date format user configurable
-  o  Add shortcuts which would apply everywhere (for exemple A to add an
-     appointment even if you are in the calendar panel)
   o  Make keys user configurable
 
 
