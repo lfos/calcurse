@@ -1,3 +1,11 @@
+07 Sep 2006:
+	fixed a bug which prevented status bar keybindings from being
+	translated
+	bugfix in recur_repeat_item(): the repeated end date can no longer be
+	older than the item start time. Thanks Chris for reporting that bug
+	french translation updated
+	TODO list updated
+
 06 Sep 2006:
 	status_bar() rewritten from scratch to allow more than one page
 	of keybindings
