@@ -1,3 +1,6 @@
+08 Sep 2006:
+	fixed a bug appearing when trying to delete a newly repeated item	
+
 07 Sep 2006:
 	fixed a bug which prevented status bar keybindings from being
 	translated
