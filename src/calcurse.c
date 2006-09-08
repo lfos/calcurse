@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.12 2006/09/06 17:12:15 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.13 2006/09/08 09:47:17 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -329,6 +329,7 @@ int main(int argc, char **argv)
 			if (which_pan == APPOINTMENT && hilt_app != 0)
 				recur_repeat_item(sel_year, sel_month, 
 					sel_day, hilt_app, colr);
+				do_storage = true;
 			break;
 	
 		case '+':
