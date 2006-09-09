@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.13 2006/09/08 09:47:17 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.14 2006/09/09 20:09:43 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -49,6 +49,7 @@
 #include "recur.h"
 #include "todo.h"
 #include "args.h"
+#include "notify.h"
 
 
 /* Variables for calendar */
@@ -87,8 +88,9 @@ bool week_begins_on_monday;
 /* 
  * Variables to handle calcurse windows 
  */ 
-int x_cal, y_cal, x_app, y_app, x_tod, y_tod, x_bar, y_bar;
-int nl_cal, nc_cal, nl_app, nc_app, nl_tod, nc_tod, nl_bar, nc_bar;
+int x_cal, y_cal, x_app, y_app, x_tod, y_tod, x_bar, y_bar, x_not, y_not;
+int nl_cal, nc_cal, nl_app, nc_app, nl_tod, nc_tod;
+int nl_bar, nc_bar, nl_not, nc_not;
 int which_pan = 0;
 enum window_number {CALENDAR, APPOINTMENT, TODO};
 
@@ -171,6 +173,7 @@ int main(int argc, char **argv)
 
 	init_vars(colr);
 	init_wins();
+	notify_init_bar(nl_not, nc_not, y_not, x_not);
 	reset_status_page();
 	update_windows(which_pan);
 
@@ -572,6 +575,7 @@ void update_windows(int surrounded_window)
 			 sel_year, sel_day, day, month, year,
                          week_begins_on_monday);
 	status_bar(surrounded_window, colr, nc_bar, nl_bar);
+	notify_update_bar();
         wmove(swin, 0, 0);
 	doupdate();
 }
@@ -584,22 +588,24 @@ void get_screen_config(void)
 	/* Get the screen configuration */
 	getmaxyx(stdscr, row, col);
 
-	/* window size definition */
-	nl_bar = 2; y_bar = row - nl_bar;
-	nc_bar = col; x_bar = 0;
+	/* fixed values for status, notification bars and calendar */
+	nl_bar = 2; nc_bar = col;
+	y_bar = row - nl_bar; x_bar = 0;
+	nl_not = 1; nc_not = col;
+	y_not = y_bar - 1; x_not = 0;
 	nl_cal = 12;
 	nc_cal = 30;
 
 	if (layout <= 4) { /* APPOINTMENT is the biggest panel */
 		nc_app = col - nc_cal;
-		nl_app = row - nl_bar;
+		nl_app = row - (nl_bar + nl_not);
 		nc_tod = nc_cal;
-		nl_tod = row - (nl_cal + nl_bar);
+		nl_tod = row - (nl_cal + nl_bar + nl_not);
 	} else { /* TODO is the biggest panel */
 		nc_tod = col - nc_cal;
-		nl_tod = row - nl_bar;
+		nl_tod = row - (nl_bar + nl_not);
 		nc_app = nc_cal;
-		nl_app = row - (nl_cal + nl_bar);
+		nl_app = row - (nl_cal + nl_bar + nl_not);
 	}
 
 	/* defining the layout */
@@ -696,6 +702,7 @@ void reinit_wins(void)
         delwin(twin);
         get_screen_config();
         init_wins();
+	notify_reinit_bar(nl_not, nc_not, y_not, x_not);
         update_windows(which_pan);
 }
 
