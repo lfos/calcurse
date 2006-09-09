@@ -1,4 +1,4 @@
-/*	$calcurse: help.c,v 1.5 2006/09/06 17:10:44 culot Exp $	*/
+/*	$calcurse: help.c,v 1.6 2006/09/09 20:06:47 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -73,7 +73,7 @@ void help_screen(int which_pan, int colr)
 	WINDOW *help_pad = NULL;
 	char label[80];
 	int ch = '?';
-	int help_row = row - 2;	//size of the help window
+	int help_row = row - 3;	//size of the help window
 	int help_col = col;
         int title_lines = 3;
 	int pad_offset = 4;
