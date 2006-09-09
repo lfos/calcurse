@@ -1,3 +1,17 @@
+09 Sep 2006:
+	src/Makefile.am updated to take notify.h and .c into account, and link
+	to lpthread added
+	configure.ac: added test for pthread library and switched to 1.6
+	help window size updated to take notification bar into account
+	notify.h and notify.c created, with the following routines:
+	notify_init_bar(), notify_reinit_bar(), notify_update_bar(),
+	notify_extract_aptsfile(), notify_thread_sub()
+	Makefile.am updated to add the spanish manual
+	spanish manual and translations added, many thanks to Jose for 
+	providing them
+	manuals updated (thanks section)
+	
+
 08 Sep 2006:
 	fixed a bug appearing when trying to delete a newly repeated item	
 
