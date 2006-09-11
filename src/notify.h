@@ -1,4 +1,4 @@
-/*	$calcurse: notify.h,v 1.1 2006/09/09 20:15:06 culot Exp $	*/
+/*	$calcurse: notify.h,v 1.2 2006/09/11 13:37:53 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -37,13 +37,21 @@ struct notify_vars_s {
 	char *apts_file;
 	char time[NOTIFY_FIELD_LENGTH];
 	char date[NOTIFY_FIELD_LENGTH];
-	pthread_mutex_t mut;
+	pthread_mutex_t mutex;
+};
+
+struct notify_app_s {
+	long time;
+	char txt[NOTIFY_FIELD_LENGTH];
+	pthread_mutex_t mutex;
 };
 
 void notify_init_bar(int l, int c, int y, int x);
 void notify_reinit_bar(int l, int c, int y, int x);
 void notify_update_bar(void);
 void notify_extract_aptsfile(void);
-void *notify_thread_sub(void *arg);
+void *notify_thread_time(void *arg);
+void notify_check_next_app(void);
+void *notify_thread_app(void *time);
 
 #endif /* CALCURSE_NOTIFY_H */
