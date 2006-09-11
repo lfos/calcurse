@@ -1,3 +1,10 @@
+11 Sep 2006:
+	small bugfixes in es.po
+	DAYINSEC moved from recur.c to vars.h
+	apoint_check_next() created
+	recur_apoint_check_next() created
+	notify_check_next_app() and notify_thread_app() created
+
 09 Sep 2006:
 	src/Makefile.am updated to take notify.h and .c into account, and link
 	to lpthread added
@@ -11,7 +18,6 @@
 	providing them
 	manuals updated (thanks section)
 	
-
 08 Sep 2006:
 	fixed a bug appearing when trying to delete a newly repeated item	
 
