@@ -1,4 +1,4 @@
-/*	$calcurse: notify.c,v 1.1 2006/09/09 20:15:34 culot Exp $	*/
+/*	$calcurse: notify.c,v 1.2 2006/09/11 13:38:56 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -28,11 +28,15 @@
 #include <pthread.h>
 #include <time.h>
 
+#include "i18n.h"
 #include "custom.h"
 #include "vars.h"
+#include "recur.h"
+#include "apoint.h"
 #include "notify.h"
 
 static struct notify_vars_s *notify = NULL;
+static struct notify_app_s *notify_app = NULL;
 
 /* 
  * Create the notification bar, by initializing all the variables and 
@@ -41,13 +45,15 @@ static struct notify_vars_s *notify = NULL;
  */
 void notify_init_bar(int l, int c, int y, int x)
 {
-	pthread_t notify_thread;
-
+	pthread_t notify_t_time;
+	
 	notify = (struct notify_vars_s *) malloc(sizeof(struct notify_vars_s));	
-	pthread_mutex_init(&notify->mut, NULL);
+	notify_app = (struct notify_app_s *) malloc(sizeof(struct notify_app_s));
+	pthread_mutex_init(&notify->mutex, NULL);
+	pthread_mutex_init(&notify_app->mutex, NULL);
 	notify->win = newwin(l, c, y, x);
 	notify_extract_aptsfile();
-	pthread_create(&notify_thread, NULL, notify_thread_sub, NULL);
+	pthread_create(&notify_t_time, NULL, notify_thread_time, NULL);
 }
 
 /* 
@@ -66,12 +72,13 @@ void notify_reinit_bar(int l, int c, int y, int x)
  */
 void notify_update_bar(void)
 {
-	int file_pos, date_pos;
+	int file_pos, date_pos, app_pos;
 	
 	date_pos = 3;
-	file_pos = date_pos + 2*NOTIFY_FIELD_LENGTH;
+	file_pos = date_pos + strlen(notify->date) + strlen(notify->time) + 9;
+	app_pos = file_pos + strlen(notify->apts_file) + 9;
 
-	pthread_mutex_lock(&notify->mut);
+	pthread_mutex_lock(&notify->mutex);
 
 	custom_apply_attr(notify->win, ATTR_HIGHEST);
 	wattron(notify->win, A_UNDERLINE | A_REVERSE);
@@ -79,11 +86,14 @@ void notify_update_bar(void)
 	mvwprintw(notify->win, 0, date_pos, "[ %s | %s ]", 
 		notify->date, notify->time);
 	mvwprintw(notify->win, 0, file_pos, "(%s)", notify->apts_file);
+	pthread_mutex_lock(&notify_app->mutex);
+	mvwprintw(notify->win, 0, app_pos, ">%s<", notify_app->txt);
+	pthread_mutex_unlock(&notify_app->mutex);
 	wattroff(notify->win, A_UNDERLINE | A_REVERSE);
 	custom_remove_attr(notify->win, ATTR_HIGHEST);
 	wrefresh(notify->win);
 
-	pthread_mutex_unlock(&notify->mut);
+	pthread_mutex_unlock(&notify->mutex);
 }
 
 /* Extract the appointment file name from the complete file path. */
@@ -94,7 +104,7 @@ void notify_extract_aptsfile(void)
 }
 
 /* Update the notication bar content */
-void *notify_thread_sub(void *arg)
+void *notify_thread_time(void *arg)
 {
 	unsigned thread_sleep = 1;
 	struct tm *ntime;
@@ -105,12 +115,49 @@ void *notify_thread_sub(void *arg)
 	for (;;) {
 		ntimer = time(NULL);
 		ntime = localtime(&ntimer);
-		pthread_mutex_lock(&notify->mut);
+		pthread_mutex_lock(&notify->mutex);
 		strftime(notify->time, NOTIFY_FIELD_LENGTH, time_format, ntime);
 		strftime(notify->date, NOTIFY_FIELD_LENGTH, date_format, ntime);
+		pthread_mutex_unlock(&notify->mutex);
 		notify_update_bar();
-		pthread_mutex_unlock(&notify->mut);
 		sleep(thread_sleep);
 	}
+	pthread_exit((void*) 0);
+}
+
+/* Launch the thread notify_thread_app to look for next appointment. */
+void notify_check_next_app(void)
+{
+	pthread_t notify_t_app;
+
+	pthread_create(&notify_t_app, NULL, notify_thread_app, NULL);
+	return;
+}
+
+/* Look for the next appointment within the next 24 hours. */
+void *notify_thread_app(void *arg)
+{
+	struct notify_app_s *tmp_app;
+	char *no_app = _("no app. within 24h");
+	time_t current_time;
+
+	current_time = time(NULL);
+
+	/* Use a temporary structure not to lock the mutex for a too
+	 * long time while looking for next appointment. */
+	tmp_app = (struct notify_app_s *) malloc(sizeof(struct notify_app_s));
+	tmp_app->time = current_time + DAYINSEC;
+	strncpy(tmp_app->txt, no_app, strlen(no_app));
+	tmp_app = recur_apoint_check_next(tmp_app, current_time);
+	tmp_app = apoint_check_next(tmp_app, current_time);
+
+	pthread_mutex_lock(&notify_app->mutex);
+	notify_app->time = tmp_app->time;
+	strncpy(notify_app->txt, tmp_app->txt, strlen(tmp_app->txt) + 1);
+	pthread_mutex_unlock(&notify_app->mutex);
+
+	free(tmp_app);
+	notify_update_bar();
+
 	pthread_exit((void*) 0);
 }
