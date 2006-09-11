@@ -1,4 +1,4 @@
-/*	$calcurse: apoint.c,v 1.1 2006/07/31 21:00:03 culot Exp $	*/
+/*	$calcurse: apoint.c,v 1.2 2006/09/11 13:42:57 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -37,6 +37,7 @@
 #include "day.h"
 #include "custom.h"
 #include "utils.h"
+#include "notify.h"
 
 struct apoint_s *apointlist;
 
@@ -232,4 +233,34 @@ void scroll_pad_up(int item_nb, int nb_events_inday)
 	item_first_line = get_item_line(item_nb, nb_events_inday);
 	if (item_first_line < apad->first_onscreen)
 		apad->first_onscreen = item_first_line;
+}
+
+/*
+ * Look in the appointment list if we have an item which starts before the item
+ * stored in the notify_app structure (which is the next item to be notified).
+ */
+struct notify_app_s *apoint_check_next(struct notify_app_s *app, long start)
+{
+	struct apoint_s *i;
+
+	if (!apointlist) 
+		return app;
+	for (i = apointlist; i != 0; i = i->next) { 
+		if (i->start > app->time) {
+			return app;
+		} else {
+			if (i->start > start) {
+				app->time = i->start;	
+				if (strlen(i->mesg) < NOTIFY_FIELD_LENGTH) {
+					strncpy(app->txt, i->mesg, 
+						strlen(i->mesg) + 1);
+				} else {
+					strncpy(app->txt, i->mesg, 
+						NOTIFY_FIELD_LENGTH-3);	
+					strncat(app->txt, "..", 2);
+				}
+			} 
+		}
+	}
+	return app;
 }
