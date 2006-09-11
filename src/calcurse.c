@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.14 2006/09/09 20:09:43 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.15 2006/09/11 13:43:42 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -187,6 +187,7 @@ int main(int argc, char **argv)
 	custom_init_attr(colr);
 	nb_tod = load_todo(colr);	
 	load_app();
+	notify_check_next_app();
 	get_screen_config();
         reinit_wins();
         startup_screen(skip_system_dialogs, no_data_file, colr);
