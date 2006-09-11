@@ -1,4 +1,4 @@
-/*	$calcurse: recur.c,v 1.9 2006/09/11 13:16:39 culot Exp $	*/
+/*	$calcurse: recur.c,v 1.10 2006/09/11 13:34:48 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -36,6 +36,7 @@
 #include "apoint.h"
 #include "event.h"
 #include "recur.h"
+#include "notify.h"
 #include "args.h"
 #include "day.h"
 #include "vars.h"
@@ -637,4 +638,35 @@ struct days_s *recur_exc_scan(FILE *data_file)
 		exc_head = exc;
 	}
 	return exc_head;
+}
+
+/*
+ * Look in the appointment list if we have an item which starts before the item
+ * stored in the notify_app structure (which is the next item to be notified).
+ */
+struct notify_app_s *recur_apoint_check_next(
+	struct notify_app_s *app, long start)
+{
+	struct recur_apoint_s *i;
+
+	if (!recur_alist) 
+		return app;
+	for (i = recur_alist; i != 0; i = i->next) { 
+		if (i->start > app->time) {
+			return app;
+		} else {
+			if (i->start > start) {
+				app->time = i->start;	
+				if (strlen(i->mesg) < NOTIFY_FIELD_LENGTH) {
+					strncpy(app->txt, i->mesg, 
+						strlen(i->mesg) + 1);
+				} else {
+					strncpy(app->txt, i->mesg, 
+						NOTIFY_FIELD_LENGTH-3);	
+					strncat(app->txt, "..", 2);
+				}
+			} 
+		}
+	}
+	return app;
 }
