@@ -1,4 +1,4 @@
-/*	$calcurse: recur.c,v 1.8 2006/09/07 14:08:55 culot Exp $	*/
+/*	$calcurse: recur.c,v 1.9 2006/09/11 13:16:39 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -338,7 +338,6 @@ unsigned recur_item_inday(long item_start, struct days_s *item_exc,
 				int rpt_type, int rpt_freq,
 			  	long rpt_until, long day_start)
 {
-	const int DAYINSEC = 86400; 
 	long day_end = day_start + DAYINSEC;
 	int inday = 0;
 	struct tm *lt;
