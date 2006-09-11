@@ -1,4 +1,4 @@
-/*	$calcurse: apoint.h,v 1.1 2006/07/31 21:00:03 culot Exp $	*/
+/*	$calcurse: apoint.h,v 1.2 2006/09/11 13:42:16 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -28,6 +28,7 @@
 #define CALCURSE_APOINT_H
 
 #include <ncurses.h>
+#include "notify.h"
 
 #define HRMIN_SIZE 6
 #define MESG_MAXSIZE 256
@@ -52,5 +53,6 @@ void display_item_date(WINDOW *win, int color, struct apoint_s *i,
 int get_item_line(int item_nb, int nb_events_inday);
 void scroll_pad_down(int item_nb, int nb_events_inday, int win_length);
 void scroll_pad_up(int item_nb, int nb_events_inday);
+struct notify_app_s *apoint_check_next(struct notify_app_s *app, long start);
 
 #endif /* CALCURSE_APOINT_H */
