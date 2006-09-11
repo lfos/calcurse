@@ -1,4 +1,4 @@
-#	$calcurse: es.po,v 1.1 2006/09/09 20:41:36 culot Exp $
+#	$calcurse: es.po,v 1.2 2006/09/11 13:09:52 culot Exp $
 #
 # Spanish translations for calcurse package.
 # Copyright (c) Jose Lopez <testinground@gmail.com> 2006 Free Software Foundation, Inc.
@@ -10,11 +10,11 @@ msgstr ""
 "Project-Id-Version: Calcurse 1.6\n"
 "Report-Msgid-Bugs-To: frederic@culot.org\n"
 "POT-Creation-Date: 2006-09-03 19:05+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2006-09-10 08:06+0200\n"
 "Last-Translator: Jose Lopez <testinground@gmail.com>\n"
 "Language-Team: Jose Lopez <testinground@gmail.com>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: src/apoint.c:138 src/recur.c:275
@@ -38,7 +38,7 @@ msgstr ""
 #: src/args.c:151 src/args.c:178
 #, c-format
 msgid "Calcurse %s - text-based organizer\n"
-msgstr " Calcurse %s - organizador basado en modo texto\n""
+msgstr " Calcurse %s - organizador basado en modo texto\n"
 
 #: src/args.c:163
 msgid ""
@@ -347,7 +347,7 @@ msgstr "ERROR FATAL en event_scan: error en la fecha del evento\n"
 
 #: src/event.c:133
 msgid "FATAL ERROR in event_delete_bynum: no such event\n"
-msgstr "ERROR FATAL en event_delete_bynum: no existe ese tipo"
+msgstr "ERROR FATAL en event_delete_bynum: no existe ese tipo\n"
 
 #: src/help.c:99
 msgid "       Welcome to Calcurse. This is the main help screen.\n"
@@ -411,7 +411,7 @@ msgstr ""
 "adapte al nuevo tamaño del terminal.\n"
 "\n"
 "Esta funcion puede ser tambien util cuando aparece basura en la\n"
-"pantalla y quieres limpiarla.\n"
+"pantalla y quieres limpiarla."
 
 #: src/help.c:123
 msgid "Save:\n"
@@ -655,7 +655,7 @@ msgstr ""
 "         EVENTO' o 'TAREA PENDIENTE', sin introducir ninguna descripcion, no se\n"
 "         añadira ningun elemento a la lista.\n"
 " 	o No olvides guardar los datos del calendario antes de salir para mantener\n"
-"         las modificaciones la proxima vez que inicies Calcurse.\n"  
+"         las modificaciones la proxima vez que inicies Calcurse."  
 
 #: src/help.c:228
 msgid "Priority:\n"
