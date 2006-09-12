@@ -1,4 +1,4 @@
-/*	$calcurse: recur.h,v 1.5 2006/09/11 13:34:19 culot Exp $	*/
+/*	$calcurse: recur.h,v 1.6 2006/09/12 14:59:41 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -47,14 +47,19 @@ struct rpt_s {
 	long until;	/* ending date for repeated event */
 };
 
-struct recur_apoint_s {
-	struct recur_apoint_s *next;
+typedef struct recur_apoint_llist_node {
+	struct recur_apoint_llist_node *next;
 	struct rpt_s *rpt;	/* information about repetition */
 	struct days_s *exc;	/* days when the item should not be repeated */
 	long start;		/* beggining of the appointment */
 	long dur;		/* duration of the appointment */
 	char *mesg;		/* appointment description */
-};
+} recur_apoint_llist_node_t;
+
+typedef struct recur_apoint_llist {
+	recur_apoint_llist_node_t *root;
+	pthread_mutex_t mutex;
+} recur_apoint_llist_t;
 
 struct recur_event_s {
 	struct recur_event_s *next;
@@ -65,19 +70,20 @@ struct recur_event_s {
 	char *mesg;		/* event description */
 };
 
-extern struct recur_apoint_s *recur_alist;
+extern recur_apoint_llist_t *recur_alist_p;
 extern struct recur_event_s *recur_elist;
 
-struct recur_apoint_s *recur_apoint_new(char *mesg, long start, long duration,
+int recur_apoint_llist_init(void);
+recur_apoint_llist_node_t *recur_apoint_new(char *mesg, long start, long duration,
 	int type, int freq, long until, struct days_s *except); 
 struct recur_event_s *recur_event_new(char *mesg, long day, int id, 
 	int type, int freq, long until, struct days_s *except);
 char recur_def2char(int define);
 int recur_char2def(char type);
 void recur_write_exc(struct days_s *exc, FILE * f);
-void recur_apoint_write(struct recur_apoint_s *o, FILE * f);
+void recur_apoint_write(recur_apoint_llist_node_t *o, FILE * f);
 void recur_event_write(struct recur_event_s *o, FILE * f);
-struct recur_apoint_s *recur_apoint_scan(FILE * f, struct tm start,
+recur_apoint_llist_node_t *recur_apoint_scan(FILE * f, struct tm start,
 	struct tm end, char type, int freq, 
 	struct tm until, struct days_s *exc);
 struct recur_event_s *recur_event_scan(FILE * f, struct tm start, int id, 
@@ -85,7 +91,8 @@ struct recur_event_s *recur_event_scan(FILE * f, struct tm start, int id,
 void recur_save_data(FILE *f);
 unsigned recur_item_inday(long item_start, struct days_s *item_exc, int rpt_type, 
 			int rpt_freq, long rpt_until, long day_start);
-struct apoint_s *recur_apoint_s2apoint_s(struct recur_apoint_s *p);
+apoint_llist_node_t *recur_apoint_s2apoint_s(
+	recur_apoint_llist_node_t *p);
 void recur_event_erase(long start, unsigned num, unsigned delete_whole);
 void recur_apoint_erase(long start, unsigned num, unsigned delete_whole);
 void recur_repeat_item(int sel_year, int sel_month, int sel_day, 
