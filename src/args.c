@@ -1,4 +1,4 @@
-/*	$calcurse: args.c,v 1.4 2006/09/03 09:01:25 culot Exp $	*/
+/*	$calcurse: args.c,v 1.5 2006/09/12 15:02:42 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -209,8 +209,8 @@ int app_arg(int add_line, int year, int month, int day, long date)
 {
 	struct recur_event_s *re;
 	struct event_s *j;
-	struct recur_apoint_s *ra;
-	struct apoint_s *i;
+	recur_apoint_llist_node_t *ra;
+	apoint_llist_node_t *i;
 	long today;
 	bool print_date = true;
 	int  app_found = 0;
@@ -260,7 +260,8 @@ int app_arg(int add_line, int year, int month, int day, long date)
 	}
 
  	 /* Same process is performed but this time on the appointments. */
-	for (ra = recur_alist; ra != 0; ra = ra->next) {
+	pthread_mutex_lock(&(recur_alist_p->mutex));
+	for (ra = recur_alist_p->root; ra != 0; ra = ra->next) {
 		if (recur_item_inday(ra->start, ra->exc, ra->rpt->type, 
 			ra->rpt->freq, ra->rpt->until, today)) {
 			app_found = 1;
@@ -282,8 +283,10 @@ int app_arg(int add_line, int year, int month, int day, long date)
 			fputs(ra->mesg,stdout); fputs("\n",stdout);
 		}
 	}
+	pthread_mutex_unlock(&(recur_alist_p->mutex));
 
-	for (i = apointlist; i != 0; i = i->next) {
+	pthread_mutex_lock(&(alist_p->mutex));
+	for (i = alist_p->root; i != 0; i = i->next) {
 		if (apoint_inday(i, today)) {
 			app_found = 1;
 			if (add_line) {
@@ -303,6 +306,8 @@ int app_arg(int add_line, int year, int month, int day, long date)
 			fputs(i->mesg,stdout); fputs("\n",stdout);
 		}	
 	}
+	pthread_mutex_unlock(&(alist_p->mutex));
+
 	return app_found;
 }
 
