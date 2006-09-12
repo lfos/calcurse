@@ -1,4 +1,4 @@
-/*	$calcurse: recur.c,v 1.10 2006/09/11 13:34:48 culot Exp $	*/
+/*	$calcurse: recur.c,v 1.11 2006/09/12 15:01:21 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -41,15 +41,26 @@
 #include "day.h"
 #include "vars.h"
 
-struct recur_apoint_s *recur_alist;
+recur_apoint_llist_t *recur_alist_p;
 struct recur_event_s *recur_elist;
 
+int recur_apoint_llist_init(void)
+{
+	recur_alist_p = (recur_apoint_llist_t *) 
+		malloc(sizeof(recur_apoint_llist_t)); 
+	recur_alist_p->root = NULL;
+	pthread_mutex_init(&(recur_alist_p->mutex), NULL);
+
+	return 0;
+}
+
 /* Insert a new recursive appointment in the general linked list */
-struct recur_apoint_s *recur_apoint_new(char *mesg, long start, long dur, 
+recur_apoint_llist_node_t *recur_apoint_new(char *mesg, long start, long dur, 
 	int type, int freq, long until, struct days_s *except)
 {
-	struct recur_apoint_s *o, **i;
-	o = (struct recur_apoint_s *) malloc(sizeof(struct recur_apoint_s));
+	recur_apoint_llist_node_t *o, **i;
+	o = (recur_apoint_llist_node_t *) 
+		malloc(sizeof(recur_apoint_llist_node_t));
 	o->rpt = (struct rpt_s *) malloc(sizeof(struct rpt_s));
 	o->mesg = (char *) malloc(strlen(mesg) + 1);
 	o->exc = (struct days_s *) malloc(sizeof(struct days_s));
@@ -60,7 +71,9 @@ struct recur_apoint_s *recur_apoint_new(char *mesg, long start, long dur,
 	o->rpt->freq = freq;
 	o->rpt->until = until;
 	o->exc = except;
-	i = &recur_alist;
+
+	pthread_mutex_lock(&(recur_alist_p->mutex));
+	i = &recur_alist_p->root;
 	for (;;) {
 		if (*i == 0 || (*i)->start > start) {
 			o->next = *i;
@@ -69,6 +82,8 @@ struct recur_apoint_s *recur_apoint_new(char *mesg, long start, long dur,
 		}
 		i = &(*i)->next;
 	}
+	pthread_mutex_unlock(&(recur_alist_p->mutex));
+
 	return o;
 }
 
@@ -166,7 +181,7 @@ void recur_write_exc(struct days_s *exc, FILE *f) {
 }
 
 /* Writting of a recursive appointment into file. */
-void recur_apoint_write(struct recur_apoint_s *o, FILE *f)
+void recur_apoint_write(recur_apoint_llist_node_t *o, FILE *f)
 {
 	struct tm *lt;
 	time_t t;
@@ -234,7 +249,7 @@ void recur_event_write(struct recur_event_s *o, FILE *f)
 }
 
 /* Load the recursive appointment description */
-struct recur_apoint_s *recur_apoint_scan(FILE * f, struct tm start, 
+recur_apoint_llist_node_t *recur_apoint_scan(FILE * f, struct tm start, 
 	struct tm end, char type, int freq, struct tm until, struct days_s *exc)
 {
 	struct tm *lt;
@@ -326,12 +341,15 @@ struct recur_event_s *recur_event_scan(FILE * f, struct tm start, int id,
 void recur_save_data(FILE *f)
 {
 	struct recur_event_s *re;
-	struct recur_apoint_s *ra;
+	recur_apoint_llist_node_t *ra;
 
 	for (re = recur_elist; re != 0; re = re->next)
 		recur_event_write(re, f);
-	for (ra = recur_alist; ra != 0; ra = ra->next)
+
+	pthread_mutex_lock(&(recur_alist_p->mutex));
+	for (ra = recur_alist_p->root; ra != 0; ra = ra->next)
 		recur_apoint_write(ra, f);
+	pthread_mutex_unlock(&(recur_alist_p->mutex));
 }
 
 /* Check if the recurrent item belongs to the selected day. */
@@ -377,12 +395,16 @@ unsigned recur_item_inday(long item_start, struct days_s *item_exc,
 	return inday;
 }
 
-/* Returns a structure of type apoint_s given a structure of type recur_apoint_s */
-struct apoint_s *recur_apoint_s2apoint_s(struct recur_apoint_s *p)
+/* 
+ * Returns a structure of type aopint_llist_t given a structure of type 
+ * recur_apoint_s 
+ */
+apoint_llist_node_t *recur_apoint_s2apoint_s(
+	recur_apoint_llist_node_t *p)
 {
-	struct apoint_s *a;
+	apoint_llist_node_t *a;
 
-	a = (struct apoint_s *) malloc(sizeof(struct apoint_s));
+	a = (apoint_llist_node_t *) malloc(sizeof(apoint_llist_node_t));
 	a->mesg = (char *) malloc(strlen(p->mesg) + 1);
 	a->start = p->start;
 	a->dur = p->dur;
@@ -446,12 +468,14 @@ void recur_event_erase(long start, unsigned num, unsigned delete_whole)
 void recur_apoint_erase(long start, unsigned num, unsigned delete_whole)
 {
         unsigned n;
-        struct recur_apoint_s *i, **iptr;
+        recur_apoint_llist_node_t *i, **iptr;
 	struct days_s *o, **j;
 
         n = 0;
-        iptr = &recur_alist;
-        for (i = recur_alist; i != 0; i = i->next) {
+
+	pthread_mutex_lock(&(recur_alist_p->mutex));
+        iptr = &recur_alist_p->root;
+        for (i = recur_alist_p->root; i != 0; i = i->next) {
                 if (recur_item_inday(i->start, i->exc, i->rpt->type,
 			i->rpt->freq, i->rpt->until, start)) {
                         if (n == num) {
@@ -461,6 +485,8 @@ void recur_apoint_erase(long start, unsigned num, unsigned delete_whole)
 					free(i->rpt);
 					free(i->exc);
 					free(i);
+					pthread_mutex_unlock(
+						&(recur_alist_p->mutex));
 					return;
 				} else {
 					o = (struct days_s *) 
@@ -475,6 +501,8 @@ void recur_apoint_erase(long start, unsigned num, unsigned delete_whole)
 						}
 						j = &(*j)->next;
 					}
+					pthread_mutex_unlock(
+						&(recur_alist_p->mutex));
 					return;
 				}
 			}
@@ -519,7 +547,7 @@ void recur_repeat_item(int sel_year, int sel_month, int sel_day,
 	_("Sorry, the date you entered is older than the item start time.");
 	int type = 0, freq = 0;
 	struct day_item_s *p; 
-	struct recur_apoint_s *ra;
+	recur_apoint_llist_node_t *ra;
 	struct recur_event_s *re;
 	long until, date;
 
@@ -647,12 +675,12 @@ struct days_s *recur_exc_scan(FILE *data_file)
 struct notify_app_s *recur_apoint_check_next(
 	struct notify_app_s *app, long start)
 {
-	struct recur_apoint_s *i;
+	recur_apoint_llist_node_t *i;
 
-	if (!recur_alist) 
-		return app;
-	for (i = recur_alist; i != 0; i = i->next) { 
+	pthread_mutex_lock(&(recur_alist_p->mutex));
+	for (i = recur_alist_p->root; i != 0; i = i->next) { 
 		if (i->start > app->time) {
+			pthread_mutex_unlock(&(recur_alist_p->mutex));
 			return app;
 		} else {
 			if (i->start > start) {
@@ -668,5 +696,7 @@ struct notify_app_s *recur_apoint_check_next(
 			} 
 		}
 	}
+	pthread_mutex_unlock(&(recur_alist_p->mutex));
+
 	return app;
 }
