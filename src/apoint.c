@@ -1,4 +1,4 @@
-/*	$calcurse: apoint.c,v 1.2 2006/09/11 13:42:57 culot Exp $	*/
+/*	$calcurse: apoint.c,v 1.3 2006/09/12 14:57:06 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -39,29 +39,43 @@
 #include "utils.h"
 #include "notify.h"
 
-struct apoint_s *apointlist;
+apoint_llist_t *alist_p;
 
-struct apoint_s *apoint_new(char *mesg, long start, long dur)
+int apoint_llist_init(void)
 {
-	struct apoint_s *o, **i;
-	o = (struct apoint_s *) malloc(sizeof(struct apoint_s));
+	alist_p = (apoint_llist_t *) malloc(sizeof(apoint_llist_t));
+	alist_p->root = NULL;
+	pthread_mutex_init(&(alist_p->mutex), NULL);
+
+	return 0;
+}
+
+apoint_llist_node_t *apoint_new(char *mesg, long start, long dur)
+{
+	apoint_llist_node_t *o, **i;
+
+	o = (apoint_llist_node_t *) malloc(sizeof(apoint_llist_node_t));
 	o->mesg = (char *) malloc(strlen(mesg) + 1);
 	strcpy(o->mesg, mesg);
 	o->start = start;
 	o->dur = dur;
-	i = &apointlist;
+
+	pthread_mutex_lock(&(alist_p->mutex));
+	i = &alist_p->root;
 	for (;;) {
 		if (*i == 0 || (*i)->start > start) {
 			o->next = *i;
 			*i = o;
 			break;
-		}
+		}	
 		i = &(*i)->next;
 	}
+	pthread_mutex_unlock(&(alist_p->mutex));
+
 	return o;
 }
 
-unsigned apoint_inday(struct apoint_s *i, long start)
+unsigned apoint_inday(apoint_llist_node_t *i, long start)
 {
 	if (i->start <= start + 3600 * 24 && i->start + i->dur > start) {
 		return 1;
@@ -69,7 +83,8 @@ unsigned apoint_inday(struct apoint_s *i, long start)
 	return 0;
 }
 
-void apoint_sec2str(struct apoint_s *o, int type, long day, char *start, char *end)
+void apoint_sec2str(apoint_llist_node_t *o, 
+	int type, long day, char *start, char *end)
 {
 	struct tm *lt;
 	time_t t;
@@ -92,7 +107,7 @@ void apoint_sec2str(struct apoint_s *o, int type, long day, char *start, char *e
 	}
 }
 
-void apoint_write(struct apoint_s *o, FILE * f)
+void apoint_write(apoint_llist_node_t *o, FILE * f)
 {
 	struct tm *lt;
 	time_t t;
@@ -110,7 +125,7 @@ void apoint_write(struct apoint_s *o, FILE * f)
 		lt->tm_hour, lt->tm_min, o->mesg);
 }
 
-struct apoint_s *apoint_scan(FILE * f, struct tm start, struct tm end)
+apoint_llist_node_t *apoint_scan(FILE * f, struct tm start, struct tm end)
 {
 	struct tm *lt;
 	char buf[MESG_MAXSIZE], *nl;
@@ -145,22 +160,27 @@ struct apoint_s *apoint_scan(FILE * f, struct tm start, struct tm end)
 void apoint_delete_bynum(long start, unsigned num)
 {
 	unsigned n;
-	struct apoint_s *i, **iptr;
+	apoint_llist_node_t *i, **iptr;
 
 	n = 0;
-	iptr = &apointlist;
-	for (i = apointlist; i != 0; i = i->next) {
+
+	pthread_mutex_lock(&(alist_p->mutex));
+	iptr = &alist_p->root;
+	for (i = alist_p->root; i != 0; i = i->next) {
 		if (apoint_inday(i, start)) {
 			if (n == num) {
 				*iptr = i->next;
 				free(i->mesg);
 				free(i);
+				pthread_mutex_unlock(&(alist_p->mutex));
 				return;
 			}
 			n++;
 		}
 		iptr = &i->next;
 	}
+	pthread_mutex_unlock(&(alist_p->mutex));
+
 	/* NOTREACHED */
 	fputs(_("FATAL ERROR in apoint_delete_bynum: no such appointment\n"), stderr);
 	exit(EXIT_FAILURE);
@@ -169,7 +189,7 @@ void apoint_delete_bynum(long start, unsigned num)
 /* 
  * Print an item date in the appointment panel.
  */
-void display_item_date(WINDOW *win, int incolor, struct apoint_s *i,
+void display_item_date(WINDOW *win, int incolor, apoint_llist_node_t *i,
 			int type, long date, int y, int x)
 {
 	char a_st[100], a_end[100];
@@ -241,12 +261,12 @@ void scroll_pad_up(int item_nb, int nb_events_inday)
  */
 struct notify_app_s *apoint_check_next(struct notify_app_s *app, long start)
 {
-	struct apoint_s *i;
+	apoint_llist_node_t *i;
 
-	if (!apointlist) 
-		return app;
-	for (i = apointlist; i != 0; i = i->next) { 
+	pthread_mutex_lock(&(alist_p->mutex));
+	for (i = alist_p->root; i != 0; i = i->next) { 
 		if (i->start > app->time) {
+			pthread_mutex_unlock(&(alist_p->mutex));
 			return app;
 		} else {
 			if (i->start > start) {
@@ -262,5 +282,7 @@ struct notify_app_s *apoint_check_next(struct notify_app_s *app, long start)
 			} 
 		}
 	}
+	pthread_mutex_unlock(&(alist_p->mutex));
+
 	return app;
 }
