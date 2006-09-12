@@ -1,3 +1,10 @@
+12 Sep 2006:
+	implementation of a mutex lock to protect the appointment linked lists
+	from race conditions
+	apoint_llist_init() and recur_apoint_llist_init() created
+	several routines in apoint.c and recur.c updated to take those new lists
+	structure into account	
+
 11 Sep 2006:
 	small bugfixes in es.po
 	DAYINSEC moved from recur.c to vars.h
