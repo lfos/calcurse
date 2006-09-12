@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.15 2006/09/11 13:43:42 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.16 2006/09/12 15:08:21 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -136,6 +136,10 @@ int main(int argc, char **argv)
         textdomain (PACKAGE);
 #endif /* ENABLE_NLS */
 		
+	/* Thread-safe data structure init */
+	apoint_llist_init();
+	recur_apoint_llist_init();
+
 	/* 
 	 * Begin by parsing and handling command line arguments.
 	 * The data path is also initialized here.
@@ -930,7 +934,7 @@ void add_item(void)
         char item_time[MAX_LENGTH];
 	char item_mesg[MAX_LENGTH];
 	long apoint_duration;
-	struct apoint_s *apoint_pointeur;
+	apoint_llist_node_t *apoint_pointeur;
         struct event_s *event_pointeur;
 	unsigned heures, minutes;
 	unsigned end_h, end_m;
