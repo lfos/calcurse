@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.5 2006/08/30 17:49:45 culot Exp $	*/
+/*	$calcurse: io.c,v 1.6 2006/09/12 15:04:16 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -125,7 +125,7 @@ save_cal(bool auto_save, bool confirm_quit,
 {
 	FILE *data_file;
 	struct event_s *k;
-	struct apoint_s *j;
+	apoint_llist_node_t *j;
 	struct todo_s *i;
 	char *access_pb = _("Problems accessing data file ...");
 	char *config_txt =
@@ -215,8 +215,12 @@ save_cal(bool auto_save, bool confirm_quit,
 	        status_mesg(access_pb, "");
 	else {
 		recur_save_data(data_file);
-		for (j = apointlist; j != 0; j = j->next)
+
+		pthread_mutex_lock(&(alist_p->mutex));
+		for (j = alist_p->root; j != 0; j = j->next)
 			apoint_write(j, data_file);
+		pthread_mutex_unlock(&(alist_p->mutex));
+
 		for (k = eventlist; k != 0; k = k->next)
 			event_write(k, data_file);
 		fclose(data_file);
