@@ -1,4 +1,4 @@
-/*	$calcurse: day.c,v 1.7 2006/09/02 13:31:47 culot Exp $	*/
+/*	$calcurse: day.c,v 1.8 2006/09/12 15:05:20 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -138,23 +138,25 @@ int day_store_events(long date)
 /* 
  * Store the recurrent apoints for the selected day in structure pointed
  * by day_items_ptr. This is done by copying the appointments
- * from the general structure pointed by recur_alist to the structure
- * dedicated to the selected day. 
+ * from the general structure pointed by recur_alist_p->root to the 
+ * structure dedicated to the selected day. 
  * Returns the number of recurrent appointments for the selected day.
  */
 int day_store_recur_apoints(long date)
 {
-	struct recur_apoint_s *j;
+	recur_apoint_llist_node_t *j;
 	struct day_item_s *ptr;
 	int a_nb = 0;
 
-	for (j = recur_alist; j != 0; j = j->next) {
+	pthread_mutex_lock(&(recur_alist_p->mutex));
+	for (j = recur_alist_p->root; j != 0; j = j->next) {
 		if (recur_item_inday(j->start, j->exc, j->rpt->type, j->rpt->freq,
 			j->rpt->until, date)) {
 			a_nb++;
 			ptr = day_add_apoint(RECUR_APPT, j->mesg, j->start, j->dur);
 		}	
 	}
+	pthread_mutex_unlock(&(recur_alist_p->mutex));
 
 	return a_nb;
 }
@@ -162,22 +164,24 @@ int day_store_recur_apoints(long date)
 /* 
  * Store the apoints for the selected day in structure pointed
  * by day_items_ptr. This is done by copying the appointments
- * from the general structure pointed by apointlist to the structure
- * dedicated to the selected day. 
+ * from the general structure pointed by alist_p->root to the 
+ * structure dedicated to the selected day. 
  * Returns the number of appointments for the selected day.
  */
 int day_store_apoints(long date)
 {
-	struct apoint_s *j;
+	apoint_llist_node_t *j;
 	struct day_item_s *ptr;
 	int a_nb = 0;
 
-	for (j = apointlist; j != 0; j = j->next) {
+	pthread_mutex_lock(&(alist_p->mutex));
+	for (j = alist_p->root; j != 0; j = j->next) {
 		if (apoint_inday(j, date)) {
 			a_nb++;
 			ptr = day_add_apoint(APPT, j->mesg, j->start, j->dur);
 		}	
 	}
+	pthread_mutex_unlock(&(alist_p->mutex));
 
 	return a_nb;
 }
@@ -223,7 +227,7 @@ struct day_item_s *day_add_apoint(int type, char *mesg, long start, long dur)
 		if (*i == 0) {
 			insert_item = 1;
 		} else if ( ((*i)->start > start) && 
-		    ((*i)->type >= type) ) {
+		    ((*i)->type > EVNT) ) {
 			insert_item = 1;
 		}	
 		if (insert_item) {
@@ -300,12 +304,15 @@ void day_write_pad(long date, int width, int length, int incolor, int colr)
 	}
 }
 
-/* Returns a structure of type apoint_s given a structure of type day_item_s */
-struct apoint_s *day_item_s2apoint_s(struct day_item_s *p)
+/*
+ * Returns a structure of type apoint_llist_node_t given a structure of type 
+ * day_item_s 
+ */
+apoint_llist_node_t *day_item_s2apoint_s(struct day_item_s *p)
 {
-	struct apoint_s *a;
+	apoint_llist_node_t *a;
 
-	a = (struct apoint_s *) malloc(sizeof(struct apoint_s));
+	a = (apoint_llist_node_t *) malloc(sizeof(apoint_llist_node_t));
 	a->mesg = (char *) malloc(strlen(p->mesg) + 1);
 	a->start = p->start;
 	a->dur = p->appt_dur;
@@ -337,9 +344,9 @@ void day_popup_item(void)
  */
  int day_check_if_item(int year, int month, int day) {
 	struct recur_event_s  *re;
-	struct recur_apoint_s *ra;
+	recur_apoint_llist_node_t *ra;
 	struct event_s *e;
-	struct apoint_s *a;
+	apoint_llist_node_t *a;
 	const long date = date2sec(year, month, day, 0, 0);
 
 	for (re = recur_elist; re != 0; re = re->next)
@@ -347,18 +354,27 @@ void day_popup_item(void)
 			re->rpt->freq, re->rpt->until, date))
 			return 1;
 	
-	for (ra = recur_alist; ra != 0; ra = ra->next)
+	pthread_mutex_lock(&(recur_alist_p->mutex));
+	for (ra = recur_alist_p->root; ra != 0; ra = ra->next)
 		if (recur_item_inday(ra->start, ra->exc, ra->rpt->type, 
-			ra->rpt->freq, ra->rpt->until, date))
-			return 1;
+			ra->rpt->freq, ra->rpt->until, date)) {
+				pthread_mutex_unlock(
+					&(recur_alist_p->mutex));
+				return 1;
+		}
+	pthread_mutex_unlock(&(recur_alist_p->mutex));
 
 	for (e = eventlist; e != 0; e = e->next)
 		if (event_inday(e, date))
 			return 1;
 
-	for (a = apointlist; a != 0; a = a->next)
-		if (apoint_inday(a, date)) 
+	pthread_mutex_lock(&(alist_p->mutex));
+	for (a = alist_p->root; a != 0; a = a->next)
+		if (apoint_inday(a, date)) {
+			pthread_mutex_unlock(&(alist_p->mutex));
 			return 1;
+		}
+	pthread_mutex_unlock(&(alist_p->mutex));
 
 	return 0;
 }
