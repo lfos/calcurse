@@ -1,4 +1,4 @@
-/*	$calcurse: apoint.h,v 1.2 2006/09/11 13:42:16 culot Exp $	*/
+/*	$calcurse: apoint.h,v 1.3 2006/09/12 14:55:29 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -33,22 +33,29 @@
 #define HRMIN_SIZE 6
 #define MESG_MAXSIZE 256
 
-struct apoint_s {
-	struct apoint_s *next;
+typedef struct apoint_llist_node {
+	struct apoint_llist_node *next;
 	long start;		/* seconds since 1 jan 1970 */
 	long dur;		/* duration of the appointment in seconds */
 	char *mesg;
-};
+} apoint_llist_node_t;
 
-extern struct apoint_s *apointlist;
+typedef struct apoint_llist {
+	apoint_llist_node_t *root;
+	pthread_mutex_t mutex;
+} apoint_llist_t;
 
-struct apoint_s *apoint_new(char *, long, long);
-unsigned apoint_inday(struct apoint_s *o, long start);
-void apoint_sec2str(struct apoint_s *o, int type, long day, char *start, char *end);
-void apoint_write(struct apoint_s *o, FILE * f);
-struct apoint_s *apoint_scan(FILE * f, struct tm start, struct tm end);
+extern apoint_llist_t *alist_p;
+
+int apoint_llist_init(void);
+apoint_llist_node_t *apoint_new(char *, long, long);
+unsigned apoint_inday(apoint_llist_node_t *o, long start);
+void apoint_sec2str(apoint_llist_node_t *o, 
+	int type, long day, char *start, char *end);
+void apoint_write(apoint_llist_node_t *o, FILE * f);
+apoint_llist_node_t *apoint_scan(FILE * f, struct tm start, struct tm end);
 void apoint_delete_bynum(long start, unsigned num);
-void display_item_date(WINDOW *win, int color, struct apoint_s *i,
+void display_item_date(WINDOW *win, int color, apoint_llist_node_t *i,
 		int type, long date, int y, int x);
 int get_item_line(int item_nb, int nb_events_inday);
 void scroll_pad_down(int item_nb, int nb_events_inday, int win_length);
