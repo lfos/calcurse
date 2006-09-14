@@ -1,4 +1,4 @@
-/*	$calcurse: recur.c,v 1.11 2006/09/12 15:01:21 culot Exp $	*/
+/*	$calcurse: recur.c,v 1.12 2006/09/14 14:57:06 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -276,8 +276,8 @@ recur_apoint_llist_node_t *recur_apoint_scan(FILE * f, struct tm start,
 	tend = mktime(&end);
 
 	if (until.tm_year != 0) {
-		until.tm_hour = 12;
-        	until.tm_min = 0;
+		until.tm_hour = 23;
+        	until.tm_min = 59;
 		until.tm_sec =  0;
 		until.tm_isdst = -1;
 		until.tm_year -= 1900;
@@ -370,9 +370,9 @@ unsigned recur_item_inday(long item_start, struct days_s *item_exc,
 			return 0;
 	if (rpt_until == 0) /* we have an endless recurrent item */
 		rpt_until = day_end;
-	while (item_start <= day_end && item_start <= rpt_until) {
+	while (item_start <= day_end && item_start < rpt_until) {
 		if (item_start < day_end && item_start >= day_start) {
-			inday = 1;
+			inday = item_start;
 			break;
 		}
 		t = item_start;
@@ -390,26 +390,9 @@ unsigned recur_item_inday(long item_start, struct days_s *item_exc,
 			exit(EXIT_FAILURE);
 		}
 		item_start = date2sec(lt->tm_year + 1900, lt->tm_mon + 1, 
-			lt->tm_mday, 0, 0);
+			lt->tm_mday, lt->tm_hour, lt->tm_min);
 	}	
 	return inday;
-}
-
-/* 
- * Returns a structure of type aopint_llist_t given a structure of type 
- * recur_apoint_s 
- */
-apoint_llist_node_t *recur_apoint_s2apoint_s(
-	recur_apoint_llist_node_t *p)
-{
-	apoint_llist_node_t *a;
-
-	a = (apoint_llist_node_t *) malloc(sizeof(apoint_llist_node_t));
-	a->mesg = (char *) malloc(strlen(p->mesg) + 1);
-	a->start = p->start;
-	a->dur = p->dur;
-	a->mesg = p->mesg;
-	return a;
 }
 
 /* 
@@ -418,11 +401,10 @@ apoint_llist_node_t *recur_apoint_s2apoint_s(
  */
 void recur_event_erase(long start, unsigned num, unsigned delete_whole)
 {
-        unsigned n;
+        unsigned n = 0;
         struct recur_event_s *i, **iptr;
 	struct days_s *o, **j;
 
-        n = 0;
         iptr = &recur_elist;
         for (i = recur_elist; i != 0; i = i->next) {
                 if (recur_item_inday(i->day, i->exc, i->rpt->type,
@@ -467,11 +449,10 @@ void recur_event_erase(long start, unsigned num, unsigned delete_whole)
  */
 void recur_apoint_erase(long start, unsigned num, unsigned delete_whole)
 {
-        unsigned n;
+        unsigned n = 0;
         recur_apoint_llist_node_t *i, **iptr;
 	struct days_s *o, **j;
-
-        n = 0;
+	int need_check_notify = 0;
 
 	pthread_mutex_lock(&(recur_alist_p->mutex));
         iptr = &recur_alist_p->root;
@@ -479,6 +460,7 @@ void recur_apoint_erase(long start, unsigned num, unsigned delete_whole)
                 if (recur_item_inday(i->start, i->exc, i->rpt->type,
 			i->rpt->freq, i->rpt->until, start)) {
                         if (n == num) {
+				need_check_notify = notify_same_recur_item(i);
 				if (delete_whole) {
 					*iptr = i->next;
 					free(i->mesg);
@@ -487,6 +469,8 @@ void recur_apoint_erase(long start, unsigned num, unsigned delete_whole)
 					free(i);
 					pthread_mutex_unlock(
 						&(recur_alist_p->mutex));
+					if (need_check_notify)
+						notify_check_next_app();
 					return;
 				} else {
 					o = (struct days_s *) 
@@ -503,6 +487,8 @@ void recur_apoint_erase(long start, unsigned num, unsigned delete_whole)
 					}
 					pthread_mutex_unlock(
 						&(recur_alist_p->mutex));
+					if (need_check_notify)
+						notify_check_next_app();
 					return;
 				}
 			}
@@ -626,6 +612,7 @@ void recur_repeat_item(int sel_year, int sel_month, int sel_day,
 	} else if (p->type == APPT) {
 		ra = recur_apoint_new(p->mesg, p->start, p->appt_dur, 
 			type, freq, until, NULL);
+		notify_check_repeated(ra);
 	} else { /* NOTREACHED */
 		fputs(_("FATAL ERROR in recur_repeat_item: wrong item type\n"),
 			stderr);
@@ -673,9 +660,10 @@ struct days_s *recur_exc_scan(FILE *data_file)
  * stored in the notify_app structure (which is the next item to be notified).
  */
 struct notify_app_s *recur_apoint_check_next(
-	struct notify_app_s *app, long start)
+	struct notify_app_s *app, long start, long day)
 {
 	recur_apoint_llist_node_t *i;
+	long real_recur_start_time;
 
 	pthread_mutex_lock(&(recur_alist_p->mutex));
 	for (i = recur_alist_p->root; i != 0; i = i->next) { 
@@ -683,8 +671,11 @@ struct notify_app_s *recur_apoint_check_next(
 			pthread_mutex_unlock(&(recur_alist_p->mutex));
 			return app;
 		} else {
-			if (i->start > start) {
-				app->time = i->start;	
+			real_recur_start_time = recur_item_inday(
+			    i->start, i->exc, i->rpt->type, i->rpt->freq,
+			    i->rpt->until, day);
+			if (real_recur_start_time > start) {
+				app->time = real_recur_start_time;	
 				if (strlen(i->mesg) < NOTIFY_FIELD_LENGTH) {
 					strncpy(app->txt, i->mesg, 
 						strlen(i->mesg) + 1);
@@ -693,6 +684,7 @@ struct notify_app_s *recur_apoint_check_next(
 						NOTIFY_FIELD_LENGTH-3);	
 					strncat(app->txt, "..", 2);
 				}
+				app->got_app = 1;
 			} 
 		}
 	}
