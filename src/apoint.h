@@ -1,4 +1,4 @@
-/*	$calcurse: apoint.h,v 1.3 2006/09/12 14:55:29 culot Exp $	*/
+/*	$calcurse: apoint.h,v 1.4 2006/09/14 15:06:54 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -61,5 +61,6 @@ int get_item_line(int item_nb, int nb_events_inday);
 void scroll_pad_down(int item_nb, int nb_events_inday, int win_length);
 void scroll_pad_up(int item_nb, int nb_events_inday);
 struct notify_app_s *apoint_check_next(struct notify_app_s *app, long start);
+apoint_llist_node_t *apoint_recur_s2apoint_s(recur_apoint_llist_node_t *p);
 
 #endif /* CALCURSE_APOINT_H */
