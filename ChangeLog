@@ -1,3 +1,14 @@
+14 Sep 2006:
+	fixed a bug which caused the recurrent appointments not to show up in
+	the notify-bar
+	added the time left before next appointment inside notify-bar
+	fixed a bug in recur_item_inday() which caused the appointments to have 
+	a wrong start time when repeated
+	bugfix: no more deletion of the wrong recurrent appointment
+	today() created
+	notify_check_added(), notify_check_repeated() and notify_same_item(),
+	notify_same_recur_item() created
+
 12 Sep 2006:
 	implementation of a mutex lock to protect the appointment linked lists
 	from race conditions
