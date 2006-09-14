@@ -1,4 +1,4 @@
-/*	$calcurse: day.c,v 1.8 2006/09/12 15:05:20 culot Exp $	*/
+/*	$calcurse: day.c,v 1.9 2006/09/14 15:10:26 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -146,14 +146,17 @@ int day_store_recur_apoints(long date)
 {
 	recur_apoint_llist_node_t *j;
 	struct day_item_s *ptr;
-	int a_nb = 0;
+	long real_start;
+	int a_nb = 0, n = 0;
 
 	pthread_mutex_lock(&(recur_alist_p->mutex));
 	for (j = recur_alist_p->root; j != 0; j = j->next) {
-		if (recur_item_inday(j->start, j->exc, j->rpt->type, j->rpt->freq,
-			j->rpt->until, date)) {
+		if (real_start = recur_item_inday(j->start, j->exc, 
+		    j->rpt->type, j->rpt->freq, j->rpt->until, date)) {
 			a_nb++;
-			ptr = day_add_apoint(RECUR_APPT, j->mesg, j->start, j->dur);
+			ptr = day_add_apoint(
+			    RECUR_APPT, j->mesg, real_start, j->dur, n);
+			n++;
 		}	
 	}
 	pthread_mutex_unlock(&(recur_alist_p->mutex));
@@ -178,7 +181,7 @@ int day_store_apoints(long date)
 	for (j = alist_p->root; j != 0; j = j->next) {
 		if (apoint_inday(j, date)) {
 			a_nb++;
-			ptr = day_add_apoint(APPT, j->mesg, j->start, j->dur);
+			ptr = day_add_apoint(APPT, j->mesg, j->start, j->dur, 0);
 		}	
 	}
 	pthread_mutex_unlock(&(alist_p->mutex));
@@ -195,6 +198,7 @@ struct day_item_s *day_add_event(int type, char *mesg, long day, int id)
 	strcpy(o->mesg, mesg);
 	o->type = type;
 	o->appt_dur = 0;
+	o->appt_pos = 0;
 	o->start = day;
 	o->evnt_id = id;
 	i = &day_items_ptr;
@@ -210,7 +214,8 @@ struct day_item_s *day_add_event(int type, char *mesg, long day, int id)
 }
 
 /* Add an appointment in the current day list. */
-struct day_item_s *day_add_apoint(int type, char *mesg, long start, long dur)
+struct day_item_s *day_add_apoint(int type, char *mesg, long start, long dur, 
+	int real_pos)
 {
 	struct day_item_s *o, **i;
 	int insert_item = 0;
@@ -220,6 +225,7 @@ struct day_item_s *day_add_apoint(int type, char *mesg, long start, long dur)
 	strcpy(o->mesg, mesg);
 	o->start = start;
 	o->appt_dur = dur;
+	o->appt_pos = real_pos;
 	o->type = type;
 	o->evnt_id = 0;
 	i = &day_items_ptr;
@@ -428,8 +434,7 @@ int day_erase_item(long date, int item_number) {
 			recur_event_erase(date, nb_item[RECUR_EVNT - 1], 
 				delete_whole);
 		} else {
-			recur_apoint_erase(date, nb_item[RECUR_APPT - 1],
-				delete_whole);
+			recur_apoint_erase(date, p->appt_pos, delete_whole);
 		}
 	}
 
