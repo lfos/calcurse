@@ -1,4 +1,4 @@
-/*	$calcurse: recur.h,v 1.6 2006/09/12 14:59:41 culot Exp $	*/
+/*	$calcurse: recur.h,v 1.7 2006/09/14 14:55:27 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -91,14 +91,12 @@ struct recur_event_s *recur_event_scan(FILE * f, struct tm start, int id,
 void recur_save_data(FILE *f);
 unsigned recur_item_inday(long item_start, struct days_s *item_exc, int rpt_type, 
 			int rpt_freq, long rpt_until, long day_start);
-apoint_llist_node_t *recur_apoint_s2apoint_s(
-	recur_apoint_llist_node_t *p);
 void recur_event_erase(long start, unsigned num, unsigned delete_whole);
 void recur_apoint_erase(long start, unsigned num, unsigned delete_whole);
 void recur_repeat_item(int sel_year, int sel_month, int sel_day, 
 	int item_nb, int colr);
 struct days_s *recur_exc_scan(FILE *data_file);
 struct notify_app_s *recur_apoint_check_next(
-	struct notify_app_s *app, long start);
+	struct notify_app_s *app, long start, long day);
 
 #endif /* CALCURSE_RECUR_H */
