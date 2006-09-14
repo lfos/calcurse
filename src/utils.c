@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.6 2006/09/07 13:25:16 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.7 2006/09/14 14:53:16 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -613,4 +613,21 @@ void other_status_page(int panel)
 	} else {	
 		status_page = 1;
 	}
+}
+
+long today(void)
+{
+	struct tm *lt;
+	time_t current_time;
+	long current_day;
+	int year, month, day;
+
+	current_time = time(NULL);
+	lt = localtime(&current_time);
+	month = lt->tm_mon + 1;
+	day = lt->tm_mday;
+	year = lt->tm_year + 1900;
+	current_day = date2sec(year, month, day, 0, 0);	
+
+	return current_day;
 }
