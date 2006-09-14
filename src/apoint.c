@@ -1,4 +1,4 @@
-/*	$calcurse: apoint.c,v 1.3 2006/09/12 14:57:06 culot Exp $	*/
+/*	$calcurse: apoint.c,v 1.4 2006/09/14 15:08:08 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -38,6 +38,7 @@
 #include "custom.h"
 #include "utils.h"
 #include "notify.h"
+#include "recur.h"
 
 apoint_llist_t *alist_p;
 
@@ -160,19 +161,22 @@ apoint_llist_node_t *apoint_scan(FILE * f, struct tm start, struct tm end)
 void apoint_delete_bynum(long start, unsigned num)
 {
 	unsigned n;
+	int need_check_notify = 0;
 	apoint_llist_node_t *i, **iptr;
 
 	n = 0;
-
+	
 	pthread_mutex_lock(&(alist_p->mutex));
 	iptr = &alist_p->root;
 	for (i = alist_p->root; i != 0; i = i->next) {
 		if (apoint_inday(i, start)) {
 			if (n == num) {
+				need_check_notify = notify_same_item(i->start);	 
 				*iptr = i->next;
 				free(i->mesg);
 				free(i);
 				pthread_mutex_unlock(&(alist_p->mutex));
+				if (need_check_notify) notify_check_next_app();
 				return;
 			}
 			n++;
@@ -279,10 +283,28 @@ struct notify_app_s *apoint_check_next(struct notify_app_s *app, long start)
 						NOTIFY_FIELD_LENGTH-3);	
 					strncat(app->txt, "..", 2);
 				}
+				app->got_app = 1;
 			} 
 		}
 	}
 	pthread_mutex_unlock(&(alist_p->mutex));
 
 	return app;
+}
+
+/* 
+ * Returns a structure of type aopint_llist_t given a structure of type 
+ * recur_apoint_s 
+ */
+apoint_llist_node_t *apoint_recur_s2apoint_s(
+	recur_apoint_llist_node_t *p)
+{
+	apoint_llist_node_t *a;
+
+	a = (apoint_llist_node_t *) malloc(sizeof(apoint_llist_node_t));
+	a->mesg = (char *) malloc(strlen(p->mesg) + 1);
+	a->start = p->start;
+	a->dur = p->dur;
+	a->mesg = p->mesg;
+	return a;
 }
