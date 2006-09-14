@@ -1,4 +1,4 @@
-/*	$calcurse: notify.c,v 1.2 2006/09/11 13:38:56 culot Exp $	*/
+/*	$calcurse: notify.c,v 1.3 2006/09/14 15:05:34 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -29,11 +29,12 @@
 #include <time.h>
 
 #include "i18n.h"
+#include "utils.h"
 #include "custom.h"
 #include "vars.h"
-#include "recur.h"
 #include "apoint.h"
 #include "notify.h"
+#include "recur.h"
 
 static struct notify_vars_s *notify = NULL;
 static struct notify_app_s *notify_app = NULL;
@@ -73,6 +74,7 @@ void notify_reinit_bar(int l, int c, int y, int x)
 void notify_update_bar(void)
 {
 	int file_pos, date_pos, app_pos;
+	int time_left, hours_left, minutes_left;
 	
 	date_pos = 3;
 	file_pos = date_pos + strlen(notify->date) + strlen(notify->time) + 9;
@@ -86,9 +88,26 @@ void notify_update_bar(void)
 	mvwprintw(notify->win, 0, date_pos, "[ %s | %s ]", 
 		notify->date, notify->time);
 	mvwprintw(notify->win, 0, file_pos, "(%s)", notify->apts_file);
+
 	pthread_mutex_lock(&notify_app->mutex);
-	mvwprintw(notify->win, 0, app_pos, ">%s<", notify_app->txt);
+	if (notify_app->got_app) {
+		time_left = notify_app->time - notify->time_in_sec; 
+		if (time_left > 0) {
+			hours_left = (time_left / 3600);
+			minutes_left = (time_left - hours_left*3600) / 60;
+			mvwprintw(notify->win, 0, app_pos, 
+			    "> %02d:%02d :: %s <", 
+			    hours_left, minutes_left, notify_app->txt);
+		} else {
+			notify_app->got_app = 0;
+			pthread_mutex_unlock(&notify_app->mutex);
+			pthread_mutex_unlock(&notify->mutex);
+			notify_check_next_app();
+			return;
+		}
+	}
 	pthread_mutex_unlock(&notify_app->mutex);
+
 	wattroff(notify->win, A_UNDERLINE | A_REVERSE);
 	custom_remove_attr(notify->win, ATTR_HIGHEST);
 	wrefresh(notify->win);
@@ -106,7 +125,8 @@ void notify_extract_aptsfile(void)
 /* Update the notication bar content */
 void *notify_thread_time(void *arg)
 {
-	unsigned thread_sleep = 1;
+	unsigned thread_sleep = 1, check_app = 60;
+	int elapse = 0, got_app = 0;
 	struct tm *ntime;
 	time_t ntimer;
 	char *time_format = "%T";
@@ -116,11 +136,20 @@ void *notify_thread_time(void *arg)
 		ntimer = time(NULL);
 		ntime = localtime(&ntimer);
 		pthread_mutex_lock(&notify->mutex);
+		notify->time_in_sec = ntimer;
 		strftime(notify->time, NOTIFY_FIELD_LENGTH, time_format, ntime);
 		strftime(notify->date, NOTIFY_FIELD_LENGTH, date_format, ntime);
 		pthread_mutex_unlock(&notify->mutex);
 		notify_update_bar();
 		sleep(thread_sleep);
+		elapse += thread_sleep;
+		if (elapse >= check_app) {
+			elapse = 0;
+			pthread_mutex_lock(&notify_app->mutex);
+			got_app = notify_app->got_app;
+			pthread_mutex_unlock(&notify_app->mutex);
+			if (!got_app) notify_check_next_app();
+		}
 	}
 	pthread_exit((void*) 0);
 }
@@ -138,7 +167,6 @@ void notify_check_next_app(void)
 void *notify_thread_app(void *arg)
 {
 	struct notify_app_s *tmp_app;
-	char *no_app = _("no app. within 24h");
 	time_t current_time;
 
 	current_time = time(NULL);
@@ -147,17 +175,100 @@ void *notify_thread_app(void *arg)
 	 * long time while looking for next appointment. */
 	tmp_app = (struct notify_app_s *) malloc(sizeof(struct notify_app_s));
 	tmp_app->time = current_time + DAYINSEC;
-	strncpy(tmp_app->txt, no_app, strlen(no_app));
-	tmp_app = recur_apoint_check_next(tmp_app, current_time);
+	tmp_app->got_app = 0;
+	tmp_app = recur_apoint_check_next(tmp_app, current_time, today());
 	tmp_app = apoint_check_next(tmp_app, current_time);
 
 	pthread_mutex_lock(&notify_app->mutex);
-	notify_app->time = tmp_app->time;
-	strncpy(notify_app->txt, tmp_app->txt, strlen(tmp_app->txt) + 1);
+	if (tmp_app->got_app) {
+		notify_app->got_app = 1;
+		notify_app->time = tmp_app->time;
+		strncpy(notify_app->txt, tmp_app->txt, strlen(tmp_app->txt)+1);
+	} else {
+		notify_app->got_app = 0;
+	}
 	pthread_mutex_unlock(&notify_app->mutex);
 
 	free(tmp_app);
 	notify_update_bar();
 
 	pthread_exit((void*) 0);
+}
+
+/* Check if the newly created appointment is to be notified. */
+void notify_check_added(char *mesg, long start)
+{
+	time_t current_time;
+	int update_notify = 0;
+	long gap;
+
+	current_time = time(NULL);
+	pthread_mutex_lock(&notify_app->mutex);
+	if (!notify_app->got_app) {
+		gap = start - current_time;
+		if (gap >= 0 && gap <= DAYINSEC) update_notify = 1;
+	} else if (start < notify_app->time && start >= current_time) {
+		update_notify = 1;
+	}
+	if (update_notify) {
+		notify_app->got_app = 1;
+		notify_app->time = start;
+		strncpy(notify_app->txt, mesg, strlen(mesg) + 1);	
+	}
+	pthread_mutex_unlock(&notify_app->mutex);
+	notify_update_bar();
+}
+
+/* Check if the newly repeated appointment is to be notified. */
+void notify_check_repeated(recur_apoint_llist_node_t *i)
+{
+	long real_app_time;
+	int update_notify = 0;
+	time_t current_time;
+
+	current_time = time(NULL);
+	pthread_mutex_lock(&notify_app->mutex);
+	if (real_app_time = recur_item_inday(i->start, i->exc, i->rpt->type,
+	    i->rpt->freq, i->rpt->until, today()) > current_time) {
+		if (!notify_app->got_app) {
+			if (real_app_time - current_time <= DAYINSEC) 
+				update_notify = 1;
+		} else if (real_app_time < notify_app->time) {
+			update_notify = 1;
+		}
+	}
+	if (update_notify) {
+		notify_app->got_app = 1;
+		notify_app->time = real_app_time;
+		strncpy(notify_app->txt, i->mesg, strlen(i->mesg) + 1);	
+	}
+	pthread_mutex_unlock(&notify_app->mutex);
+	notify_update_bar();
+}
+
+int notify_same_item(long time)
+{
+	int same = 0;
+	
+	pthread_mutex_lock(&(notify_app->mutex));
+	if (notify_app->got_app && notify_app->time == time)
+		same = 1;
+	pthread_mutex_unlock(&(notify_app->mutex));
+
+	return same;
+}
+
+int notify_same_recur_item(recur_apoint_llist_node_t *i)
+{
+	int same = 0;
+	long item_start = 0;
+
+	item_start = recur_item_inday(i->start, i->exc, i->rpt->type,
+		i->rpt->freq, i->rpt->until, today());
+	pthread_mutex_lock(&notify_app->mutex);
+	if (notify_app->got_app && item_start == notify_app->time)
+		same = 1;
+	pthread_mutex_unlock(&(notify_app->mutex));
+
+	return same;
 }
