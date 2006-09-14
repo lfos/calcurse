@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.16 2006/09/12 15:08:21 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.17 2006/09/14 14:52:37 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -36,6 +36,7 @@
 #include <math.h>
 #include <locale.h>
 
+#include "apoint.h"
 #include "i18n.h"
 #include "io.h"
 #include "help.h"
@@ -44,7 +45,6 @@
 #include "utils.h"
 #include "vars.h"
 #include "day.h"
-#include "apoint.h"
 #include "event.h"
 #include "recur.h"
 #include "todo.h"
@@ -933,7 +933,7 @@ void add_item(void)
 	int Id;
         char item_time[MAX_LENGTH];
 	char item_mesg[MAX_LENGTH];
-	long apoint_duration;
+	long apoint_duration, apoint_start;
 	apoint_llist_node_t *apoint_pointeur;
         struct event_s *event_pointeur;
 	unsigned heures, minutes;
@@ -996,11 +996,11 @@ void add_item(void)
 	if (strlen(item_mesg) != 0) {
                 if (is_appointment){
 		// insert the appointment in list
+		apoint_start = date2sec(sel_year, sel_month, sel_day,
+			heures, minutes);
 		apoint_pointeur =
-		    apoint_new(item_mesg,
-			      date2sec(sel_year, sel_month, sel_day,
-				       heures, minutes),
-			      min2sec(apoint_duration));
+		    apoint_new(item_mesg, apoint_start, min2sec(apoint_duration));
+		notify_check_added(item_mesg, apoint_start);
                 // insert the event in list
                 } else {
                         event_pointeur = event_new(item_mesg, date2sec(
