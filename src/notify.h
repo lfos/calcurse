@@ -1,4 +1,4 @@
-/*	$calcurse: notify.h,v 1.2 2006/09/11 13:37:53 culot Exp $	*/
+/*	$calcurse: notify.h,v 1.3 2006/09/14 14:59:32 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -30,10 +30,14 @@
 #include <ncurses.h>
 #include <pthread.h>
 
+#include "apoint.h"
+#include "recur.h"
+
 #define NOTIFY_FIELD_LENGTH	20
 
 struct notify_vars_s {
 	WINDOW *win;
+	long time_in_sec;
 	char *apts_file;
 	char time[NOTIFY_FIELD_LENGTH];
 	char date[NOTIFY_FIELD_LENGTH];
@@ -43,6 +47,7 @@ struct notify_vars_s {
 struct notify_app_s {
 	long time;
 	char txt[NOTIFY_FIELD_LENGTH];
+	int got_app;
 	pthread_mutex_t mutex;
 };
 
@@ -53,5 +58,9 @@ void notify_extract_aptsfile(void);
 void *notify_thread_time(void *arg);
 void notify_check_next_app(void);
 void *notify_thread_app(void *time);
+void notify_check_added(char *mesg, long start);
+void notify_check_repeated(recur_apoint_llist_node_t *i);
+int notify_same_item(long time);
+int notify_same_recur_item(recur_apoint_llist_node_t *i);
 
 #endif /* CALCURSE_NOTIFY_H */
