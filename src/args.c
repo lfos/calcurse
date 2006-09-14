@@ -1,4 +1,4 @@
-/*	$calcurse: args.c,v 1.5 2006/09/12 15:02:42 culot Exp $	*/
+/*	$calcurse: args.c,v 1.6 2006/09/14 14:51:20 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -273,7 +273,7 @@ int app_arg(int add_line, int year, int month, int day, long date)
 				arg_print_date(today);
 				print_date = false;
 			}
-			apoint_sec2str(recur_apoint_s2apoint_s(ra),
+			apoint_sec2str(apoint_recur_s2apoint_s(ra),
 				RECUR_APPT, today, apoint_start_time,
 				apoint_end_time);
 			fputs(" - ",stdout);
