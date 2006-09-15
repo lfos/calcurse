@@ -1,4 +1,4 @@
-/*	$calcurse: vars.h,v 1.3 2006/09/11 13:12:32 culot Exp $	*/
+/*	$calcurse: vars.h,v 1.4 2006/09/15 15:37:45 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -28,6 +28,7 @@
 #define CALCURSE_VARS_H
 
 #include <ncurses.h> 
+#include <pthread.h>
 #include <stdbool.h>
 
 #define DIR_NAME	".calcurse"
@@ -57,6 +58,14 @@ struct pad_s {
 	WINDOW *ptrwin;		/* pointer to the pad window */
 };
 
+struct nbar_s {		
+	int show;		/* display or hide the notify-bar */
+	int cntdwn;		/* warn when time left before next app < cntdwn */  
+	char *datefmt;		/* format for displaying date */
+	char *timefmt;		/* format for displaying time */
+	pthread_mutex_t mutex;
+};
+
 extern int col, row;
 extern bool colorize;
 extern int days[12];
@@ -68,5 +77,6 @@ extern char path_apts[MAX_LENGTH];
 extern char path_conf[MAX_LENGTH];
 extern WINDOW *awin, *cwin, *twin, *swin;
 extern struct pad_s *apad;
+extern struct nbar_s *nbar;
 
 #endif /* CALCURSE_VARS_H */
