@@ -1,4 +1,4 @@
-/*	$calcurse: custom.c,v 1.2 2006/09/03 17:53:26 culot Exp $	*/
+/*	$calcurse: custom.c,v 1.3 2006/09/15 15:43:54 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -91,12 +91,14 @@ void config_bar()
 	mvwprintw(swin, 1, 2, "G");
 	mvwprintw(swin, 0, 2 + spc, "L");
 	mvwprintw(swin, 1, 2 + spc, "C");
+	mvwprintw(swin, 0, 2 + 2*spc, "N");
 	custom_remove_attr(swin, ATTR_HIGHEST);
 
 	mvwprintw(swin, 0, 2 + smlspc, _("Exit"));
 	mvwprintw(swin, 1, 2 + smlspc, _("General"));
 	mvwprintw(swin, 0, 2 + spc + smlspc, _("Layout"));
 	mvwprintw(swin, 1, 2 + spc + smlspc, _("Color"));
+	mvwprintw(swin, 0, 2 + 2*spc + smlspc, _("Notify"));
 	
 	wnoutrefresh(swin);
         wmove(swin, 0, 0);
