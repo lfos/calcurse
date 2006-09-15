@@ -1,4 +1,4 @@
-/*	$calcurse: notify.c,v 1.3 2006/09/14 15:05:34 culot Exp $	*/
+/*	$calcurse: notify.c,v 1.4 2006/09/15 15:42:22 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -38,7 +38,19 @@
 
 static struct notify_vars_s *notify = NULL;
 static struct notify_app_s *notify_app = NULL;
+static pthread_t notify_t_main;
 
+/* Return 1 if we need to display the notify-bar, else 0. */
+int notify_bar(void)
+{
+	int display_bar = 0;
+
+	pthread_mutex_lock(&nbar->mutex);
+	display_bar = (nbar->show) ? 1 : 0;
+	pthread_mutex_unlock(&nbar->mutex);
+	
+	return display_bar;
+}
 /* 
  * Create the notification bar, by initializing all the variables and 
  * creating the notification window (l is the number of lines, c the
@@ -46,15 +58,27 @@ static struct notify_app_s *notify_app = NULL;
  */
 void notify_init_bar(int l, int c, int y, int x)
 {
-	pthread_t notify_t_time;
-	
 	notify = (struct notify_vars_s *) malloc(sizeof(struct notify_vars_s));	
 	notify_app = (struct notify_app_s *) malloc(sizeof(struct notify_app_s));
 	pthread_mutex_init(&notify->mutex, NULL);
 	pthread_mutex_init(&notify_app->mutex, NULL);
 	notify->win = newwin(l, c, y, x);
 	notify_extract_aptsfile();
-	pthread_create(&notify_t_time, NULL, notify_thread_time, NULL);
+}
+
+/* Launch the notify-bar main thread. */
+void notify_start_main_thread(void) 
+{
+	pthread_create(&notify_t_main, NULL, notify_main_thread, NULL);
+	notify_check_next_app();
+	return;
+}
+
+/* Stop the notify-bar main thread. */
+void notify_stop_main_thread(void)
+{
+	pthread_cancel(notify_t_main);
+	return;
 }
 
 /* 
@@ -95,9 +119,15 @@ void notify_update_bar(void)
 		if (time_left > 0) {
 			hours_left = (time_left / 3600);
 			minutes_left = (time_left - hours_left*3600) / 60;
+			pthread_mutex_lock(&nbar->mutex);
+			if (time_left < nbar->cntdwn) 
+				wattron(notify->win, A_BLINK);
 			mvwprintw(notify->win, 0, app_pos, 
 			    "> %02d:%02d :: %s <", 
 			    hours_left, minutes_left, notify_app->txt);
+			if (time_left < nbar->cntdwn)
+				wattroff(notify->win, A_BLINK);
+			pthread_mutex_unlock(&nbar->mutex);
 		} else {
 			notify_app->got_app = 0;
 			pthread_mutex_unlock(&notify_app->mutex);
@@ -123,22 +153,22 @@ void notify_extract_aptsfile(void)
 }
 
 /* Update the notication bar content */
-void *notify_thread_time(void *arg)
+void *notify_main_thread(void *arg)
 {
 	unsigned thread_sleep = 1, check_app = 60;
 	int elapse = 0, got_app = 0;
 	struct tm *ntime;
 	time_t ntimer;
-	char *time_format = "%T";
-	char *date_format = "%a %F";
 
 	for (;;) {
 		ntimer = time(NULL);
 		ntime = localtime(&ntimer);
 		pthread_mutex_lock(&notify->mutex);
 		notify->time_in_sec = ntimer;
-		strftime(notify->time, NOTIFY_FIELD_LENGTH, time_format, ntime);
-		strftime(notify->date, NOTIFY_FIELD_LENGTH, date_format, ntime);
+		pthread_mutex_lock(&nbar->mutex);
+		strftime(notify->time, NOTIFY_FIELD_LENGTH, nbar->timefmt, ntime);
+		strftime(notify->date, NOTIFY_FIELD_LENGTH, nbar->datefmt, ntime);
+		pthread_mutex_unlock(&nbar->mutex);
 		pthread_mutex_unlock(&notify->mutex);
 		notify_update_bar();
 		sleep(thread_sleep);
