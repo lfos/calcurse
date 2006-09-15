@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.6 2006/09/12 15:04:16 culot Exp $	*/
+/*	$calcurse: io.c,v 1.7 2006/09/15 15:43:03 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -25,6 +25,7 @@
  */
 
 #include <ncurses.h>
+#include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -190,6 +191,30 @@ save_cal(bool auto_save, bool confirm_quit,
 			"\n# This is the layout of the calendar (1 to 4) :\n");
 		fprintf(data_file, "layout=\n");
 		fprintf(data_file, "%d\n", layout);
+
+		// notify-bar user settings
+		pthread_mutex_lock(&nbar->mutex);
+		fprintf(data_file,
+			"\n# If this option is set to yes, notify-bar will be displayed :\n");
+		fprintf(data_file, "notify-bar_show=\n");
+		fprintf(data_file, "%s\n", (nbar->show) ? "yes" : "no");
+		
+		fprintf(data_file,
+			"\n# Format of the date to be displayed inside notify-bar :\n");
+		fprintf(data_file, "notify-bar_date=\n");
+		fprintf(data_file, "%s\n", nbar->datefmt);
+
+		fprintf(data_file,
+			"\n# Format of the time to be displayed inside notify-bar :\n");
+		fprintf(data_file, "notify-bar_clock=\n");
+		fprintf(data_file, "%s\n", nbar->timefmt);
+
+		fprintf(data_file,
+			"\n# Warn user if he has an appointment within next 'notify-bar_warning' seconds :\n");
+		fprintf(data_file, "notify-bar_warning=\n");
+		fprintf(data_file, "%d\n", nbar->cntdwn);
+		pthread_mutex_unlock(&nbar->mutex);
+
 		fclose(data_file);
 	}
 
