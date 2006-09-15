@@ -1,4 +1,4 @@
-/*	$calcurse: help.c,v 1.6 2006/09/09 20:06:47 culot Exp $	*/
+/*	$calcurse: help.c,v 1.7 2006/09/15 15:41:20 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -35,6 +35,8 @@
 #include "custom.h"
 #include "vars.h"
 #include "utils.h"
+#include "apoint.h"
+#include "notify.h"
 
 /* 
  * Write the desired help text inside the help pad, and return the number
@@ -73,7 +75,7 @@ void help_screen(int which_pan, int colr)
 	WINDOW *help_pad = NULL;
 	char label[80];
 	int ch = '?';
-	int help_row = row - 3;	//size of the help window
+	int help_row;
 	int help_col = col;
         int title_lines = 3;
 	int pad_offset = 4;
@@ -313,6 +315,7 @@ void help_screen(int which_pan, int colr)
 	 * Create the help window and panel. The panel is used to make
 	 * the scrolling faster.
 	 */
+	help_row = (notify_bar()) ? row - 3 : row - 2; 
 	help_win = newwin(help_row, help_col, 0, 0);
 	help_pad = newpad(MAX_LENGTH, pad_width);
 	box(help_win, 0, 0);
