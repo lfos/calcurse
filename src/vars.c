@@ -1,4 +1,4 @@
-/*	$calcurse: vars.c,v 1.1 2006/07/31 21:00:03 culot Exp $	*/
+/*	$calcurse: vars.c,v 1.2 2006/09/15 15:38:14 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -83,3 +83,6 @@ WINDOW *awin = NULL, *cwin = NULL, *twin = NULL, *swin = NULL;
 
 /* Variable to handle pads. */
 struct pad_s *apad;
+
+/* Variable to store notify-bar settings. */
+struct nbar_s *nbar;
