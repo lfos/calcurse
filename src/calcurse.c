@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.17 2006/09/14 14:52:37 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.18 2006/09/15 15:40:20 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -29,6 +29,7 @@
 #endif /* HAVE_CONFIG_H */
 
 #include <ncurses.h>	
+#include <pthread.h>
 #include <time.h>
 #include <string.h>
 #include <stdlib.h>
@@ -97,6 +98,7 @@ enum window_number {CALENDAR, APPOINTMENT, TODO};
 /* External functions */
 void get_date(void);
 void init_vars(int colr);
+void init_notify_bar(void);
 void init_wins(void), reinit_wins(void);
 void add_item(void);
 void load_conf(void);
@@ -106,8 +108,8 @@ void update_app_panel(int yeat, int month, int day);
 void store_day(int year, int month, int day, bool day_changed);
 void get_screen_config(void);
 void update_windows(int surrounded_window);
-void general_config(void);
-void print_general_options(WINDOW *win);
+void general_config(void), config_notify_bar(void);
+void print_general_options(WINDOW *win), print_notify_options(WINDOW *win);
 void print_option_incolor(WINDOW *win, bool option, int pos_x, int pos_y);
 void del_item(void);
 
@@ -153,6 +155,7 @@ int main(int argc, char **argv)
 	noecho();		/* controls echoing of typed chars */
 	curs_set(0);		/* make cursor invisible */
         get_date();
+	init_notify_bar();
 	get_screen_config();
 	
         /* Check if terminal supports color. */
@@ -191,7 +194,7 @@ int main(int argc, char **argv)
 	custom_init_attr(colr);
 	nb_tod = load_todo(colr);	
 	load_app();
-	notify_check_next_app();
+	if (notify_bar()) notify_start_main_thread();
 	get_screen_config();
         reinit_wins();
         startup_screen(skip_system_dialogs, no_data_file, colr);
@@ -303,6 +306,10 @@ int main(int argc, char **argv)
 				case 'G':
 				case 'g':
 					general_config();
+					break;
+				case 'N':
+				case 'n':
+					config_notify_bar();
 					break;
 				}
                                 reinit_wins();
@@ -551,6 +558,22 @@ void init_vars(int colr)
 	custom_init_attr(colr);
 }
 
+/* Notify-bar init */
+void init_notify_bar(void)
+{
+	char *time_format = "%T";
+	char *date_format = "%a %F";
+
+	nbar = (struct nbar_s *) malloc(sizeof(struct nbar_s));
+	nbar->datefmt = (char *) malloc(sizeof(char));
+	nbar->timefmt = (char *) malloc(sizeof(char));
+	pthread_mutex_init(&nbar->mutex, NULL);
+	nbar->show = 1;
+	nbar->cntdwn = 300; 
+	strncpy(nbar->datefmt, date_format, strlen(date_format) + 1); 
+	strncpy(nbar->timefmt, time_format, strlen(time_format) + 1);
+}
+
 /* 
  * Update all of the three windows and put a border around the
  * selected window.
@@ -580,7 +603,7 @@ void update_windows(int surrounded_window)
 			 sel_year, sel_day, day, month, year,
                          week_begins_on_monday);
 	status_bar(surrounded_window, colr, nc_bar, nl_bar);
-	notify_update_bar();
+	if (notify_bar()) notify_update_bar();
         wmove(swin, 0, 0);
 	doupdate();
 }
@@ -596,8 +619,12 @@ void get_screen_config(void)
 	/* fixed values for status, notification bars and calendar */
 	nl_bar = 2; nc_bar = col;
 	y_bar = row - nl_bar; x_bar = 0;
-	nl_not = 1; nc_not = col;
-	y_not = y_bar - 1; x_not = 0;
+	if (notify_bar()) {
+		nl_not = 1; nc_not = col;
+		y_not = y_bar - 1; x_not = 0;
+	} else {
+		nl_not = nc_not = y_not = x_not = 0;
+	}
 	nl_cal = 12;
 	nc_cal = 30;
 
@@ -707,7 +734,7 @@ void reinit_wins(void)
         delwin(twin);
         get_screen_config();
         init_wins();
-	notify_reinit_bar(nl_not, nc_not, y_not, x_not);
+	if (notify_bar()) notify_reinit_bar(nl_not, nc_not, y_not, x_not);
         update_windows(which_pan);
 }
 
@@ -717,10 +744,11 @@ void general_config(void)
 	WINDOW *conf_win;
 	char label[80];
 	char *number_str = _("Enter an option number to change its value [Q to quit] ");
-	int ch;
+	int ch, win_row;
 
 	clear();
-	conf_win = newwin(row - 2, col, 0, 0);
+	win_row = (notify_bar()) ? row - 3 : row - 2;
+	conf_win = newwin(win_row, col, 0, 0);
 	box(conf_win, 0, 0);
 	sprintf(label, _("CalCurse %s | general options"), VERSION);
 	win_show(conf_win, label);
@@ -751,6 +779,78 @@ void general_config(void)
                         break;
 		}
 		print_general_options(conf_win);
+	}
+	delwin(conf_win);
+}
+
+/* Configuration for the notify-bar */
+void config_notify_bar(void)
+{
+	WINDOW *conf_win;
+	char label[80];
+	char buf[MAX_LENGTH];
+	char *number_str = _("Enter an option number to change its value [Q to quit] ");
+	char *date_str = 
+		_("Enter the date format (see 'man 3 strftime' for possible formats) ");
+	char *time_str = 
+		_("Enter the time format (see 'man 3 strftime' for possible formats) ");
+	char *count_str = 
+		_("Enter the number of seconds from which to warn before an appointment");
+	int ch = 0 , win_row, change_win = 1;
+
+	win_row = (notify_bar()) ? row - 3 : row - 2;
+	sprintf(label, _("CalCurse %s | notify-bar options"), VERSION);
+	while (ch != 'q') {
+		if (change_win) {
+			clear();
+			conf_win = newwin(win_row, col, 0, 0);
+			box(conf_win, 0, 0);
+			win_show(conf_win, label);
+		}
+		status_mesg(number_str, "");
+		print_notify_options(conf_win);
+		ch = wgetch(swin);
+
+		switch (ch) {
+		case '1':	
+			pthread_mutex_lock(&nbar->mutex);
+			nbar->show = !nbar->show;
+			pthread_mutex_unlock(&nbar->mutex);
+			notify_stop_main_thread();
+			if (notify_bar()) {
+				notify_start_main_thread();
+				win_row = row - 3;
+			} else {
+				win_row = row - 2;
+			}
+			delwin(conf_win);
+			change_win = 1;
+			break;
+		case '2':
+			status_mesg(date_str, "");
+			getstring(swin, colr, buf, 0, 1);
+			pthread_mutex_lock(&nbar->mutex);
+			strncpy(nbar->datefmt, buf, strlen(buf) + 1);
+			pthread_mutex_unlock(&nbar->mutex);
+			change_win = 0;
+			break;
+		case '3':
+			status_mesg(time_str, "");
+			getstring(swin, colr, buf, 0, 1);
+			pthread_mutex_lock(&nbar->mutex);
+			strncpy(nbar->timefmt, buf, strlen(buf) + 1);
+			pthread_mutex_unlock(&nbar->mutex);
+			change_win = 0;
+			break;
+                case '4':
+			status_mesg(count_str, "");
+			getstring(swin, colr, buf, 0, 1);
+			pthread_mutex_lock(&nbar->mutex);
+			nbar->cntdwn = atoi(buf);
+			pthread_mutex_unlock(&nbar->mutex);
+			change_win = 0;
+                        break;
+		}
 	}
 	delwin(conf_win);
 }
@@ -805,6 +905,52 @@ void print_general_options(WINDOW *win)
 	mvwprintw(win, y_pos + 16, x_pos,
                   _("(if set to YES, monday is the first day of the week, else it is sunday)"));
 
+	wmove(swin, 1, 0);
+	wnoutrefresh(win);
+	doupdate();
+}
+
+/* prints options related to the notify-bar */
+void print_notify_options(WINDOW *win)
+{
+	int x_pos, y_pos;
+	char *option1 = _("notify-bar_show = ");
+	char *option2 = _("notify-bar_date = ");
+	char *option3 = _("notify-bar_clock = ");
+        char *option4 = _("notify-bar_warning = ");
+
+	x_pos = 3;
+	y_pos = 4;
+
+	pthread_mutex_lock(&nbar->mutex);
+	mvwprintw(win, y_pos, x_pos, "[1] %s      ", option1);
+	print_option_incolor(win, nbar->show, y_pos,
+			     x_pos + 4 + strlen(option1));
+	mvwprintw(win, y_pos + 1, x_pos,
+		 _("(if set to YES, notify-bar will be displayed)"));
+
+	mvwprintw(win, y_pos + 3, x_pos, "[2] %s      ", option2);
+	custom_apply_attr(win, ATTR_HIGHEST);
+	mvwprintw(win, y_pos + 3, x_pos + 4 + strlen(option2), "%s", nbar->datefmt);
+	custom_remove_attr(win, ATTR_HIGHEST);
+	mvwprintw(win, y_pos + 4, x_pos,
+		 _("(Format of the date to be displayed inside notify-bar)"));
+
+	mvwprintw(win, y_pos + 6, x_pos, "[3] %s      ", option3);
+	custom_apply_attr(win, ATTR_HIGHEST);
+	mvwprintw(win, y_pos + 6, x_pos + 4 + strlen(option3), "%s", nbar->timefmt);
+	custom_remove_attr(win, ATTR_HIGHEST);
+	mvwprintw(win, y_pos + 7, x_pos,
+		 _("(Format of the time to be displayed inside notify-bar)"));
+        
+	mvwprintw(win, y_pos + 9, x_pos, "[4] %s      ", option4);
+	custom_apply_attr(win, ATTR_HIGHEST);
+	mvwprintw(win, y_pos + 9, x_pos + 4 + strlen(option4), "%d", nbar->cntdwn);
+	custom_remove_attr(win, ATTR_HIGHEST);
+	mvwprintw(win, y_pos + 10, x_pos,
+		 _("(Warn user if he has an appointment within next 'notify-bar_warning' seconds)"));
+
+	pthread_mutex_unlock(&nbar->mutex);
 	wmove(swin, 1, 0);
 	wnoutrefresh(win);
 	doupdate();
@@ -1145,6 +1291,7 @@ void load_conf(void)
 		wgetch(swin);
 	}
 	var = 0;
+	pthread_mutex_lock(&nbar->mutex);
 	for (;;) {
 		if (fgets(buf, 99, data_file) == NULL) {
 			break;
@@ -1181,6 +1328,19 @@ void load_conf(void)
 		} else if (var == 8) {
 			layout = atoi(e_conf);
 			var = 0;
+		} else if (var == 9) {
+			nbar->show = 
+				fill_config_var(e_conf);
+			var = 0;
+		} else if (var == 10) {
+			strncpy(nbar->datefmt, e_conf, strlen(e_conf) + 1);
+			var = 0;
+		} else if (var == 11) {
+			strncpy(nbar->timefmt, e_conf, strlen(e_conf) + 1);
+			var = 0;
+		} else if (var == 12) {
+			nbar->cntdwn = atoi(e_conf);
+			var = 0;
 		}
 		if (strncmp(e_conf, "auto_save=", 10) == 0)
 			var = 1;
@@ -1198,8 +1358,17 @@ void load_conf(void)
 			var = 7;
 		else if (strncmp(e_conf, "layout=", 7) == 0)
 			var = 8;
+		else if (strncmp(e_conf, "notify-bar_show=", 16) ==0)
+			var = 9;
+		else if (strncmp(e_conf, "notify-bar_date=", 16) ==0)
+			var = 10;
+		else if (strncmp(e_conf, "notify-bar_clock=", 17) ==0)
+			var = 11;
+		else if (strncmp(e_conf, "notify-bar_warning=", 19) ==0)
+			var = 12;
 	}
 	fclose(data_file);
+	pthread_mutex_unlock(&nbar->mutex);
 	erase_window_part(swin, 0, 0, nc_bar, nl_bar);
 }
 
