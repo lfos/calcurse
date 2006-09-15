@@ -1,3 +1,12 @@
+15 Sep 2006:
+	nbar_s structure created to store notify-bar settings
+	save_cal() and load_conf() updated to write and read the user
+	configuration concerning the notify-bar
+	init_var(), help_screen() and config_bar() updated
+	config_notify_bar(), print_notify_options(), init_notify_bar(), 
+	notify_bar(), notify_start_main_thread() and notify_stop_main_thread()
+	created
+
 14 Sep 2006:
 	fixed a bug which caused the recurrent appointments not to show up in
 	the notify-bar
