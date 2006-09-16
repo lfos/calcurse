@@ -1,3 +1,14 @@
+16 Sep 2006:
+	'-n' flag implemented
+	parse_args(), help_arg() and usage() updated
+	next_arg(), now() created
+	manpage updated
+	notify_app_s structure updated
+	apoint_check_next(), recur_apoint_check_next() and recur_repeat_item() 
+	updated
+	config_notify_bar() and print_notify_options() improved
+	mycpy() created
+
 15 Sep 2006:
 	nbar_s structure created to store notify-bar settings
 	save_cal() and load_conf() updated to write and read the user
