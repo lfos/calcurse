@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.7 2006/09/14 14:53:16 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.8 2006/09/16 09:09:39 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -615,6 +615,7 @@ void other_status_page(int panel)
 	}
 }
 
+/* Returns the beginning of current day in seconds from 1900. */
 long today(void)
 {
 	struct tm *lt;
@@ -630,4 +631,13 @@ long today(void)
 	current_day = date2sec(year, month, day, 0, 0);	
 
 	return current_day;
+}
+
+/* Returns the current time in seconds. */
+long now(void)
+{
+	time_t current_time;
+
+	current_time = time(NULL);
+	return current_time;
 }
