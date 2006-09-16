@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.8 2006/09/16 09:09:39 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.9 2006/09/16 15:25:52 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -640,4 +640,15 @@ long now(void)
 
 	current_time = time(NULL);
 	return current_time;
+}
+
+/* Copy a string */
+char *mycpy(const char *src)
+{
+	char *string = malloc(strlen(src) + 1);
+	
+	if (string != NULL) 
+		return strcpy(string, src);
+	else
+		return NULL;
 }
