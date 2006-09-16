@@ -1,4 +1,4 @@
-.\" 	$calcurse: calcurse.1,v 1.2 2006/08/24 20:17:04 culot Exp $
+.\" 	$calcurse: calcurse.1,v 1.3 2006/09/16 09:06:15 culot Exp $
 .\"
 .\" Copyright (c) 2004-2006 Frederic Culot
 .\"
@@ -17,7 +17,7 @@
 .\" Foundation, Inc., 59 Temple Place - Suite 330,
 .\" Boston, MA 02111-1307, USA.
 .\"
-.TH CALCURSE 1 "May 07, 2006" "Version 1.5" "Calcurse Manual"
+.TH CALCURSE 1 "September 16, 2006" "Version 1.6" "Calcurse Manual"
 .SH NAME
 Calcurse \- text-based organizer
 .PP
@@ -28,7 +28,7 @@ Calcurse \- text-based organizer
 |
 .B "-v " 
 ] [ 
-.B "-at " 
+.B "-ant " 
 ] [ 
 .B "-d " 
 \fIdate\fP|\fInum\fP ] [ 
@@ -83,6 +83,14 @@ appointments can be specified using the '\-c' flag.
 Print a short help text describing the supported command-line options,
 and then exit. 
 .TP
+.B \-n
+Print the next appointment within upcoming 24 hours and exit.
+The indicated time is the number of hours and minutes left before this
+appointment.
+.br
+\fINote:\fP the calendar from which to read the appointments can be specified using
+the '\-c' flag.
+.TP
 .B \-t
 Print the 'todo' list and exit.
 .TP
@@ -136,11 +144,12 @@ white theme together with a \fB$TERM\fP variable set to
 To fix this bug, and as advised by Thomas E. Dickey (xterm maintainer),
 \fIxterm-xfree86\fP should be used instead of \fIxterm-color\fP to set 
 the \fB$TERM\fP variable:
-    "The xterm-color value for $TERM is a bad choice for XFree86 
-     xterm because it is commonly used for a terminfo entry which 
-     happens to not support bce. Use the xterm-xfree86 entry 
-     which is distributed with XFree86 xterm (or the similar one 
-     distributed with ncurses)."
+    "The xterm-color value for $TERM is a bad choice for 
+     XFree86 xterm because it is commonly used for a 
+     terminfo entry which happens to not support bce. 
+     Use the xterm-xfree86 entry which is distributed 
+     with XFree86 xterm (or the similar one distributed 
+     with ncurses)."
 .PP
 If you find other bugs, please send a report to calcurse@culot.org or to the
 author, below.
