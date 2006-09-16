@@ -1,4 +1,4 @@
-/*	$calcurse: notify.c,v 1.4 2006/09/15 15:42:22 culot Exp $	*/
+/*	$calcurse: notify.c,v 1.5 2006/09/16 15:24:34 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -97,14 +97,17 @@ void notify_reinit_bar(int l, int c, int y, int x)
  */
 void notify_update_bar(void)
 {
-	int file_pos, date_pos, app_pos;
+	const int space = 3;
+	int file_pos, date_pos, app_pos, txt_max_len, too_long = 0;
 	int time_left, hours_left, minutes_left;
+	char buf[MAX_LENGTH];
 	
-	date_pos = 3;
-	file_pos = date_pos + strlen(notify->date) + strlen(notify->time) + 9;
-	app_pos = file_pos + strlen(notify->apts_file) + 9;
-
+	date_pos = space;
 	pthread_mutex_lock(&notify->mutex);
+
+	file_pos = strlen(notify->date) + strlen(notify->time) + 7 + 2*space;
+	app_pos = file_pos + strlen(notify->apts_file) + 2 + space;
+	txt_max_len = col - (app_pos + 12 + space);
 
 	custom_apply_attr(notify->win, ATTR_HIGHEST);
 	wattron(notify->win, A_UNDERLINE | A_REVERSE);
@@ -115,6 +118,11 @@ void notify_update_bar(void)
 
 	pthread_mutex_lock(&notify_app->mutex);
 	if (notify_app->got_app) {
+		if (strlen(notify_app->txt) > txt_max_len) {
+			too_long = 1;
+			strncpy(buf, notify_app->txt, txt_max_len - 3);
+			buf[txt_max_len - 3] = '\0';
+		}
 		time_left = notify_app->time - notify->time_in_sec; 
 		if (time_left > 0) {
 			hours_left = (time_left / 3600);
@@ -122,9 +130,15 @@ void notify_update_bar(void)
 			pthread_mutex_lock(&nbar->mutex);
 			if (time_left < nbar->cntdwn) 
 				wattron(notify->win, A_BLINK);
-			mvwprintw(notify->win, 0, app_pos, 
-			    "> %02d:%02d :: %s <", 
-			    hours_left, minutes_left, notify_app->txt);
+			if (too_long) 	
+				mvwprintw(notify->win, 0, app_pos, 
+			            "> %02d:%02d :: %s.. <", 
+			            hours_left, minutes_left, buf);
+			else
+				mvwprintw(notify->win, 0, app_pos, 
+			            "> %02d:%02d :: %s <", 
+			            hours_left, minutes_left, 
+				    notify_app->txt);
 			if (time_left < nbar->cntdwn)
 				wattroff(notify->win, A_BLINK);
 			pthread_mutex_unlock(&nbar->mutex);
@@ -213,7 +227,7 @@ void *notify_thread_app(void *arg)
 	if (tmp_app->got_app) {
 		notify_app->got_app = 1;
 		notify_app->time = tmp_app->time;
-		strncpy(notify_app->txt, tmp_app->txt, strlen(tmp_app->txt)+1);
+		notify_app->txt = mycpy(tmp_app->txt);
 	} else {
 		notify_app->got_app = 0;
 	}
@@ -243,7 +257,7 @@ void notify_check_added(char *mesg, long start)
 	if (update_notify) {
 		notify_app->got_app = 1;
 		notify_app->time = start;
-		strncpy(notify_app->txt, mesg, strlen(mesg) + 1);	
+		notify_app->txt = mycpy(mesg);	
 	}
 	pthread_mutex_unlock(&notify_app->mutex);
 	notify_update_bar();
@@ -270,7 +284,7 @@ void notify_check_repeated(recur_apoint_llist_node_t *i)
 	if (update_notify) {
 		notify_app->got_app = 1;
 		notify_app->time = real_app_time;
-		strncpy(notify_app->txt, i->mesg, strlen(i->mesg) + 1);	
+		notify_app->txt = mycpy(i->mesg);	
 	}
 	pthread_mutex_unlock(&notify_app->mutex);
 	notify_update_bar();
