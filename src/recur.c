@@ -1,4 +1,4 @@
-/*	$calcurse: recur.c,v 1.12 2006/09/14 14:57:06 culot Exp $	*/
+/*	$calcurse: recur.c,v 1.13 2006/09/16 15:23:05 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -460,7 +460,8 @@ void recur_apoint_erase(long start, unsigned num, unsigned delete_whole)
                 if (recur_item_inday(i->start, i->exc, i->rpt->type,
 			i->rpt->freq, i->rpt->until, start)) {
                         if (n == num) {
-				need_check_notify = notify_same_recur_item(i);
+				if (notify_bar())
+					need_check_notify = notify_same_recur_item(i);
 				if (delete_whole) {
 					*iptr = i->next;
 					free(i->mesg);
@@ -612,7 +613,7 @@ void recur_repeat_item(int sel_year, int sel_month, int sel_day,
 	} else if (p->type == APPT) {
 		ra = recur_apoint_new(p->mesg, p->start, p->appt_dur, 
 			type, freq, until, NULL);
-		notify_check_repeated(ra);
+		if (notify_bar()) notify_check_repeated(ra);
 	} else { /* NOTREACHED */
 		fputs(_("FATAL ERROR in recur_repeat_item: wrong item type\n"),
 			stderr);
@@ -676,14 +677,7 @@ struct notify_app_s *recur_apoint_check_next(
 			    i->rpt->until, day);
 			if (real_recur_start_time > start) {
 				app->time = real_recur_start_time;	
-				if (strlen(i->mesg) < NOTIFY_FIELD_LENGTH) {
-					strncpy(app->txt, i->mesg, 
-						strlen(i->mesg) + 1);
-				} else {
-					strncpy(app->txt, i->mesg, 
-						NOTIFY_FIELD_LENGTH-3);	
-					strncat(app->txt, "..", 2);
-				}
+				app->txt = mycpy(i->mesg);
 				app->got_app = 1;
 			} 
 		}
