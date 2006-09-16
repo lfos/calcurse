@@ -1,4 +1,4 @@
-/*	$calcurse: utils.h,v 1.3 2006/09/14 14:53:24 culot Exp $	*/
+/*	$calcurse: utils.h,v 1.4 2006/09/16 09:10:06 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -71,5 +71,6 @@ void display_item(WINDOW *win, int incolor, char *msg,
 void reset_status_page(void);
 void other_status_page(int panel);
 long today(void);
+long now(void);
 
 #endif /* CALCURSE_UTILS_H */
