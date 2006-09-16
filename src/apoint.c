@@ -1,4 +1,4 @@
-/*	$calcurse: apoint.c,v 1.4 2006/09/14 15:08:08 culot Exp $	*/
+/*	$calcurse: apoint.c,v 1.5 2006/09/16 15:22:20 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -171,7 +171,8 @@ void apoint_delete_bynum(long start, unsigned num)
 	for (i = alist_p->root; i != 0; i = i->next) {
 		if (apoint_inday(i, start)) {
 			if (n == num) {
-				need_check_notify = notify_same_item(i->start);	 
+				if (notify_bar()) 
+					need_check_notify = notify_same_item(i->start);	 
 				*iptr = i->next;
 				free(i->mesg);
 				free(i);
@@ -275,14 +276,7 @@ struct notify_app_s *apoint_check_next(struct notify_app_s *app, long start)
 		} else {
 			if (i->start > start) {
 				app->time = i->start;	
-				if (strlen(i->mesg) < NOTIFY_FIELD_LENGTH) {
-					strncpy(app->txt, i->mesg, 
-						strlen(i->mesg) + 1);
-				} else {
-					strncpy(app->txt, i->mesg, 
-						NOTIFY_FIELD_LENGTH-3);	
-					strncat(app->txt, "..", 2);
-				}
+				app->txt = mycpy(i->mesg);
 				app->got_app = 1;
 			} 
 		}
