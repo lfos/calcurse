@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.18 2006/09/15 15:40:20 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.19 2006/09/16 15:23:48 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -929,26 +929,26 @@ void print_notify_options(WINDOW *win)
 	mvwprintw(win, y_pos + 1, x_pos,
 		 _("(if set to YES, notify-bar will be displayed)"));
 
-	mvwprintw(win, y_pos + 3, x_pos, "[2] %s      ", option2);
+	mvwprintw(win, y_pos + 3, x_pos, "[2] %s                       ", option2);
 	custom_apply_attr(win, ATTR_HIGHEST);
 	mvwprintw(win, y_pos + 3, x_pos + 4 + strlen(option2), "%s", nbar->datefmt);
 	custom_remove_attr(win, ATTR_HIGHEST);
 	mvwprintw(win, y_pos + 4, x_pos,
 		 _("(Format of the date to be displayed inside notify-bar)"));
 
-	mvwprintw(win, y_pos + 6, x_pos, "[3] %s      ", option3);
+	mvwprintw(win, y_pos + 6, x_pos, "[3] %s                       ", option3);
 	custom_apply_attr(win, ATTR_HIGHEST);
 	mvwprintw(win, y_pos + 6, x_pos + 4 + strlen(option3), "%s", nbar->timefmt);
 	custom_remove_attr(win, ATTR_HIGHEST);
 	mvwprintw(win, y_pos + 7, x_pos,
 		 _("(Format of the time to be displayed inside notify-bar)"));
         
-	mvwprintw(win, y_pos + 9, x_pos, "[4] %s      ", option4);
+	mvwprintw(win, y_pos + 9, x_pos, "[4] %s                       ", option4);
 	custom_apply_attr(win, ATTR_HIGHEST);
 	mvwprintw(win, y_pos + 9, x_pos + 4 + strlen(option4), "%d", nbar->cntdwn);
 	custom_remove_attr(win, ATTR_HIGHEST);
 	mvwprintw(win, y_pos + 10, x_pos,
-		 _("(Warn user if he has an appointment within next 'notify-bar_warning' seconds)"));
+		 _("(Warn user if an appointment is within next 'notify-bar_warning' seconds)"));
 
 	pthread_mutex_unlock(&nbar->mutex);
 	wmove(swin, 1, 0);
@@ -1146,7 +1146,7 @@ void add_item(void)
 			heures, minutes);
 		apoint_pointeur =
 		    apoint_new(item_mesg, apoint_start, min2sec(apoint_duration));
-		notify_check_added(item_mesg, apoint_start);
+		if (notify_bar()) notify_check_added(item_mesg, apoint_start);
                 // insert the event in list
                 } else {
                         event_pointeur = event_new(item_mesg, date2sec(
