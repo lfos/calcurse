@@ -1,4 +1,4 @@
-/*	$calcurse: args.c,v 1.6 2006/09/14 14:51:20 culot Exp $	*/
+/*	$calcurse: args.c,v 1.7 2006/09/16 09:08:21 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -44,6 +44,7 @@
 #include "day.h"
 #include "todo.h"
 #include "io.h"
+#include "notify.h"
 
 /* 
  * Parse the command-line arguments and call the appropriate
@@ -53,12 +54,13 @@ int parse_args(int argc, char **argv, int colr)
 {
 	int ch, add_line = 0;
 	int unknown_flag = 0, app_found = 0;
-	int aflag = 0, cflag = 0, dflag = 0, vflag = 0, hflag = 0, tflag = 0;
+	int aflag = 0, cflag = 0, dflag = 0, vflag = 0; 
+	int hflag = 0, tflag = 0, nflag = 0;
 	int non_interactive = 0, multiple_flag = 0, load_data = 0;
 	int no_file = 1;
 	char *ddate = "", *cfile = NULL;
 
-	while ((ch = getopt(argc, argv, "hvtad:c:")) != -1) {
+	while ((ch = getopt(argc, argv, "hvntad:c:")) != -1) {
 		switch (ch) {
 		case 'a':
 			aflag = 1;
@@ -79,6 +81,11 @@ int parse_args(int argc, char **argv, int colr)
 			break;
 		case 'h':
 			hflag = 1;
+			break;
+		case 'n':
+			nflag = 1;
+			multiple_flag++;
+			load_data++;
 			break;
 		case 't':
 			tflag = 1;
@@ -115,11 +122,15 @@ int parse_args(int argc, char **argv, int colr)
 			if (load_data) {
 				io_init(cfile);
 				no_file = check_data_files();
-				if (dflag || aflag) 
+				if (dflag || aflag || nflag)  
 					load_app(colr);
 			}
 			if (tflag) {
 				todo_arg(colr);
+				non_interactive = 1;
+			}
+			if (nflag) {
+				next_arg();
 				non_interactive = 1;
 			}
 			if (dflag) {
@@ -170,6 +181,8 @@ void help_arg()
 		"  -d <date|num>	print events and appointments for <date> "
 		"or <num> upcoming\n\t\tdays and exit. Possible formats are: "
 		"'mm/dd/yyyy' or 'n'.\n"
+		"  -n  		print next appointment within upcoming 24 hours "
+		"and exit.\n"
 		"  -t		print todo list and exit.\n"
 	    	"\nFor more information, type '?' from within Calcurse, "
 		"or read the manpage.\n"
@@ -197,6 +210,32 @@ void todo_arg(int colr)
 		fputs(priority,stdout);
 		fputs(i->mesg,stdout);
 		fputs("\n",stdout);
+	}
+}
+
+/* Print the next appointment within the upcoming 24 hours. */
+void next_arg(void)
+{
+	struct notify_app_s *next_app;
+	long current_time;
+	int time_left, hours_left, min_left;
+	char mesg[MAX_LENGTH];
+
+	current_time = now();
+	next_app = (struct notify_app_s *) malloc(sizeof(struct notify_app_s));
+	next_app->time = current_time + DAYINSEC;
+	next_app->got_app = 0;
+	next_app = recur_apoint_check_next(next_app, current_time, today());
+	next_app = apoint_check_next(next_app, current_time);
+	time_left = next_app->time - current_time;
+	if (time_left > 0 && time_left < DAYINSEC) {
+		hours_left = (time_left / 3600);
+		min_left = (time_left - hours_left*3600) / 60;
+		fputs(_("next appointment:\n"), stdout);
+		sprintf(mesg, "   [%02d:%02d] %s\n", hours_left, min_left, 
+			next_app->txt);
+		fputs(mesg, stdout);
+		fputs("\n", stdout);
 	}
 }
 
@@ -424,7 +463,7 @@ void arg_print_date(long date)
 void usage()
 {
         char *arg_usage = 
-                _("Usage: calcurse [-h | -v] [-at] [-d date|num] [-c file]\n");
+                _("Usage: calcurse [-h | -v] [-ant] [-d date|num] [-c file]\n");
 	
         fputs(arg_usage, stdout);
 }
