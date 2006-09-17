@@ -1,3 +1,9 @@
+17 Sep 2006:
+	config_notify_bar() improved
+	getstring() improved to check for escape sequence
+	help_screen() updated
+	french translation updated
+
 16 Sep 2006:
 	'-n' flag implemented
 	parse_args(), help_arg() and usage() updated
