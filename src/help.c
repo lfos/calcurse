@@ -1,4 +1,4 @@
-/*	$calcurse: help.c,v 1.7 2006/09/15 15:41:20 culot Exp $	*/
+/*	$calcurse: help.c,v 1.8 2006/09/17 11:16:37 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -265,6 +265,7 @@ void help_screen(int which_pan, int colr)
     "words where to place the three different panels on the screen.\n"
     "\nThe general options submenu brings a screen with the different options\n"
     "which modifies the way Calcurse interacts with the user.\n"
+    "\nThe notify submenu allows you to change the notify-bar settings.\n"
     "\nDo not forget to save the calendar data to retrieve your configuration\n"
     "next time you launch Calcurse.");
 
