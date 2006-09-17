@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.19 2006/09/16 15:23:48 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.20 2006/09/17 10:43:54 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -795,7 +795,7 @@ void config_notify_bar(void)
 	char *time_str = 
 		_("Enter the time format (see 'man 3 strftime' for possible formats) ");
 	char *count_str = 
-		_("Enter the number of seconds from which to warn before an appointment");
+		_("Enter the number of seconds (0 not to be warned before an appointment)");
 	int ch = 0 , win_row, change_win = 1;
 
 	win_row = (notify_bar()) ? row - 3 : row - 2;
@@ -829,25 +829,31 @@ void config_notify_bar(void)
 		case '2':
 			status_mesg(date_str, "");
 			getstring(swin, colr, buf, 0, 1);
-			pthread_mutex_lock(&nbar->mutex);
-			strncpy(nbar->datefmt, buf, strlen(buf) + 1);
-			pthread_mutex_unlock(&nbar->mutex);
+			if (strlen(buf) != 0) {
+				pthread_mutex_lock(&nbar->mutex);
+				strncpy(nbar->datefmt, buf, strlen(buf) + 1);
+				pthread_mutex_unlock(&nbar->mutex);
+			}
 			change_win = 0;
 			break;
 		case '3':
 			status_mesg(time_str, "");
 			getstring(swin, colr, buf, 0, 1);
-			pthread_mutex_lock(&nbar->mutex);
-			strncpy(nbar->timefmt, buf, strlen(buf) + 1);
-			pthread_mutex_unlock(&nbar->mutex);
+			if (strlen(buf) != 0 ) {
+				pthread_mutex_lock(&nbar->mutex);
+				strncpy(nbar->timefmt, buf, strlen(buf) + 1);
+				pthread_mutex_unlock(&nbar->mutex);
+			}
 			change_win = 0;
 			break;
                 case '4':
 			status_mesg(count_str, "");
 			getstring(swin, colr, buf, 0, 1);
-			pthread_mutex_lock(&nbar->mutex);
-			nbar->cntdwn = atoi(buf);
-			pthread_mutex_unlock(&nbar->mutex);
+			if (strlen(buf) != 0) {
+				pthread_mutex_lock(&nbar->mutex);
+				nbar->cntdwn = atoi(buf);
+				pthread_mutex_unlock(&nbar->mutex);
+			}
 			change_win = 0;
                         break;
 		}
