@@ -1,4 +1,4 @@
-/*	$calcurse: help.c,v 1.8 2006/09/17 11:16:37 culot Exp $	*/
+/*	$calcurse: help.c,v 1.9 2006/09/17 18:24:39 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -75,11 +75,10 @@ void help_screen(int which_pan, int colr)
 	WINDOW *help_pad = NULL;
 	char label[80];
 	int ch = '?';
-	int help_row;
+	int help_row, text_lines;
 	int help_col = col;
         int title_lines = 3;
 	int pad_offset = 4;
-	int text_lines = help_row - (pad_offset + 1);
 	int pad_width = help_col - 2*pad_offset + 1; 
 	int first_line = 0, nl = 0;
 	
@@ -317,6 +316,7 @@ void help_screen(int which_pan, int colr)
 	 * the scrolling faster.
 	 */
 	help_row = (notify_bar()) ? row - 3 : row - 2; 
+	text_lines = help_row - (pad_offset + 1);
 	help_win = newwin(help_row, help_col, 0, 0);
 	help_pad = newpad(MAX_LENGTH, pad_width);
 	box(help_win, 0, 0);
@@ -439,6 +439,8 @@ void help_screen(int which_pan, int colr)
 			int highend = (int) (ratio * first_line);
 			int sbar_top = highend + title_lines + 1;
 
+			if ((sbar_top + sbar_length) > help_row - 1)
+				sbar_length = help_row - 1 -sbar_top;
 			draw_scrollbar(help_win, sbar_top, help_col - 2,
 					sbar_length, title_lines + 1, 
 					help_row - 1, true);
