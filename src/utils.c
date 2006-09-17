@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.9 2006/09/16 15:25:52 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.10 2006/09/17 10:45:06 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -146,6 +146,9 @@ int start_x, start_y;
 				waddch(win, ' ');
 				wmove(win, start_y, start_x + charcount);
 			}
+		} else if (ch == ESCAPE) {
+			*string = NULL;
+			return;
 		} else {
 			*string++ = ch;
 			charcount++;
