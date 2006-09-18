@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <!--
 /*
- *	$calcurse: manual_en.html,v 1.3 2006/09/09 20:32:33 culot Exp $
+ *	$calcurse: manual_en.html,v 1.4 2006/09/18 14:22:44 culot Exp $
  *
  * Calcurse - text-based organizer
  * Copyright (c) 2004-2006 Frederic Culot
@@ -75,6 +75,7 @@
 <li><a href="#options_general">General options</a>
 <li><a href="#options_colors">Color themes</a>
 <li><a href="#options_layout">Layout configuration</a>
+<li><a href="#options_notify">Notify-bar settings</a>
 </ul>
 <li><a href="#known_bugs">Known bugs</a>
 <li><a href="#bugs">Reporting bugs and feedback</a>
@@ -205,7 +206,7 @@
 <p>
 	First you need to gunzip and untar the source archive:
 	<pre>
-	tar zxvf calcurse-1.5.tar.gz
+	tar zxvf calcurse-1.6.tar.gz
 	</pre>
   	Once you meet the requirements and have extracted the archive, 
 	the install process is quite simple, and follows the standard 
@@ -264,6 +265,10 @@
         Print  a  short  help  text  describing  the  supported
         command-line options, and exit.<br>
 	<br>
+	<dt><code>-n</code>
+	<dd>
+        Print the next appointment within next 24 hours and exit.<br>
+	<br>
 	<dt><code>-t</code>
 	<dd>
         Print the 'todo' list and exit.<br>
@@ -294,14 +299,23 @@
         </pre>
         where <em>fr_FR</em> is the locale name in this exemple, but
         should be replaced by the locale corresponding to the desired
-        language.
+        language.<br>
+	You should also specify the charset to be used, because in some
+	cases the accents and such are not displayed correctly. 
+	This charset is indicated at the beginning of the po file 
+	corresponding to the desired language. For instance, you can see 
+	in the fr.po file that it uses the iso-8859-1 charset, so you 
+	could run <code>calcurse</code> using the following command:
+	<pre>
+		LC_ALL=fr_FR.ISO8859-1 calcurse
+	</pre>
 
 <a name="basics_interface"></a><h2>User interface</h2>
 <a name="basics_interface_noninteractive"></a><h3>Non-interactive mode</h3>
 <p>
         When called with at least one of the following arguments:<br>
-        <code>-a</code>, <code>-d</code>, <code>-t</code>, 
-        <code>-h</code>, <code>-v</code><br>
+        <code>-a</code>, <code>-d</code>, <code>-h</code>, 
+        <code>-n</code>, <code>-t</code>, <code>-v</code><br>
         <code>calcurse</code> is started in non-interactive mode.
         This means the desired information will be displayed, and 
         after that, <code>calcurse</code> simply quits and you are 
@@ -317,7 +331,8 @@
         <code>-c</code> option, <code>calcurse</code> is started in
         interactive mode. In this mode, you are shown an interface
 	containing three different panels which you can browse using 
-        the 'TAB' key, plus a status bar (see figure below).
+        the 'TAB' key, plus a notification bar and a status bar 
+	(see figure below).
         <pre>
 
  appointment panel---.                                   .---calendar panel
@@ -340,13 +355,13 @@
  |                                    ||----------------------------| panel
  |                                    ||                            |   |
  |                                    ||                            |   |
- |                                    ||                            |<--.
- |                                    ||                            |
- |                                    ||                            |
+ |                                    ||                            |&lt;--.
  |                                    ||                            |
  +------------------------------------++----------------------------+
+ |---[ Mon 2006-11-22 | 10:11:43 ]---(apts)----&gt; 01:20 :: lunch &lt;---|&lt;--.
+ +------------------------------------------------------------------+ notify-bar
  | ? Help     R Redraw    H/L -/+1 Day      G GoTo       C Config   | 
- | Q Quit     S Save      J/K -/+1 Week   Tab Chg View              |<-. 
+ | Q Quit     S Save      J/K -/+1 Week   Tab Chg View              |&lt;-. 
  +------------------------------------------------------------------+  |
                                                                        |
                                                                  status bar
@@ -356,9 +371,14 @@
         a particular day, the second one contains the list of the events 
         and appointments on that day, and the last one contains a list 
         of tasks to do but which are not assigned to any specific day.  
-	In the bottom line of the screen there is a status bar, which 
+	At the very bottom of the screen there is a status bar, which 
 	indicates the possible actions and the corresponding keystrokes.
-        
+        Just above this status bar is the notify-bar, which indicates
+	from left to right : the current date, the current time, the 
+	calendar file currently in use (apts on the above example, which
+	is the default calendar file, see the following section), and 
+	the next appointment within the upcoming 24 hours. Here it says
+	that it will be lunch time in one hour and twenty minutes.
 
 <a name="basics_files"></a><h2><code>calcurse</code> files</h2>
 <p>
@@ -387,12 +407,13 @@
 <p>
 	All of the <code>calcurse</code> parameters are configurable from the 
 	Configuration menu available when pressing 'C'. You are then 
-	driven to a submenu with three possible choices : pressing 'C' 
+	driven to a submenu with four possible choices : pressing 'C' 
 	again will lead you to the Color scheme configuration, 
 	pressing 'L' allows you to choose the layout of the main 
 	<code>calcurse</code> screen (in other words, where to put the three 
-	different panels on screen), and last you can choose between
-	different general options by pressing 'G'.
+	different panels on screen), pressing 'G' permits you to choose between
+	different general options, and last you can modify the notify-bar
+	settings by pressing 'N'.
 
 <a name="options_general"></a><h2>General options</h2>
 <p>
@@ -477,6 +498,34 @@
         By choosing another layout in the configuration screen, user
         can customize <code>calcurse</code> appearence to best suit 
         his needs by placing the different panels where needed.
+
+
+<a name="options_notify"></a><h2>Notify-bar settings</h2>
+<p>
+	The following options are used to modify the notify-bar behavior:
+	<ul>
+	<li><code>notify-bar_show</code> (default: <em>yes</em>)<br>
+	This option indicates if you want the notify-bar to be displayed
+	or not.<br> 
+	<br>
+	<li><code>notify-bar_date</code> (default: <em>%a %F</em>)<br>
+	With this option, you can specify the format to be used to 
+	display the current date inside the notification bar. You can
+	see all of the possible formats by typing <tt>man 3 strftime</tt>
+	inside a terminal.<br>
+	<br>
+	<li><code>notify-bar_time</code> (default: <em>%T</em>)<br>
+	With this option, you can specify the format to be used to 
+	display the current time inside the notification bar. You can
+	see all of the possible formats by typing <tt>man 3 strftime</tt>
+	inside a terminal.<br>
+	<br>
+	<li><code>notify-bar_warning</code> (default: <em>300</em>)<br>
+	When there is an appointment within the next 'notify-bar_warning'
+	seconds, the display of that appointment inside the notify-bar 
+	starts to blink. That way, the user is warned and knows there
+	will be soon an upcoming appointment.	
+	</ul> 
 
 
 <a name="known_bugs"></a><h1>Known bugs</h1>
@@ -678,7 +727,7 @@
         give about the translations. You can either just give your
         name/nick, or add an email address, for exemple:
         <pre>
-                "Last-Translator: Frederic Culot <frederic@culot.org>\n"
+                "Last-Translator: Frederic Culot &lt;frederic@culot.org&gt;\n"
         </pre>
         <li><em>Comments</em><br>
         Adding comments (lines begining with the '#' character) can be
@@ -778,7 +827,7 @@
 <hr>
 <small><em>
 Copyright (c) 2004-2006 Fr&eacute;d&eacute;ric Culot<br>
-Calcurse version 1.5 - Last change: August 24, 2006
+Calcurse version 1.6 - Last change: September 18, 2006
 <em></small>
 
 
