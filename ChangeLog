@@ -1,3 +1,9 @@
+18 Sep 2006:
+	added test on warning time interval in config_notify_bar() 	
+	print_general_options() modified to print text one line upper
+	bugfix: pressing enter no longer switches to next week in calendar panel
+	english manual updated
+
 17 Sep 2006:
 	config_notify_bar() improved
 	getstring() improved to check for escape sequence
