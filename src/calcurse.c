@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.20 2006/09/17 10:43:54 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.21 2006/09/18 08:53:02 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -216,7 +216,7 @@ int main(int argc, char **argv)
 
 		/* Get user input. */
 		ch = wgetch(swin);
-		switch (ch) {
+		if (ch != 10) switch (ch) {
 
 		case 9:	/* The TAB key was hit. */
 			reset_status_page();
@@ -849,7 +849,8 @@ void config_notify_bar(void)
                 case '4':
 			status_mesg(count_str, "");
 			getstring(swin, colr, buf, 0, 1);
-			if (strlen(buf) != 0) {
+			if (strlen(buf) != 0 && is_all_digit(buf) &&
+			    atoi(buf) >= 0 && atoi(buf) <= DAYINSEC) {
 				pthread_mutex_lock(&nbar->mutex);
 				nbar->cntdwn = atoi(buf);
 				pthread_mutex_unlock(&nbar->mutex);
@@ -873,7 +874,7 @@ void print_general_options(WINDOW *win)
         char *option6 = _("week_begins_on_monday = ");
 
 	x_pos = 3;
-	y_pos = 4;
+	y_pos = 3;
 
 	mvwprintw(win, y_pos, x_pos, "[1] %s      ", option1);
 	print_option_incolor(win, auto_save, y_pos,
