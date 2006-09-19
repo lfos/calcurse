@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <!--
 /*
- *	$calcurse: manual_fr.html,v 1.3 2006/09/09 20:32:55 culot Exp $
+ *	$calcurse: manual_fr.html,v 1.4 2006/09/19 08:57:44 culot Exp $
  *
  * Calcurse - text-based organizer
  * Copyright (c) 2004-2006 Frederic Culot
@@ -75,6 +75,7 @@
 <li><a href="#options_general">Options g&eacute;n&eacute;rales</a>
 <li><a href="#options_colors">Th&egrave;mes graphiques</a>
 <li><a href="#options_layout">Disposition des panneaux</a>
+<li><a href="#options_notify">Réglages de la barre de notification</a>
 </ul>
 <li><a href="#known_bugs">Bogues connus</a>
 <li><a href="#bugs">Rapporter les bogues et commentaires</a>
@@ -226,7 +227,7 @@
         Vous devez tout d'abord d&eacute;compresser l'archive source de la
         mani&egrave;re suivante :
 	<pre>
-	tar zxvf calcurse-1.5.tar.gz
+	tar zxvf calcurse-1.6.tar.gz
 	</pre>
         Une fois que vous remplissez tous les pr&eacute;-requis n&eacute;cessaires &agrave;
         l'installation, le processus de compilation est simple et suit
@@ -287,6 +288,11 @@
 	Affiche l'aide d&eacute;crivant les options en ligne de commande,
 	puis quitte.<br>
 	<br>
+	<dt><code>-n</code>
+	<dd>
+	Affiche le rendez-vous suivant dans les prochaines 24 heures, puis
+	quitte.<br>
+	<br>
 	<dt><code>-t</code>
 	<dd>
 	Affiche la liste des 'todo', puis quitte.<br>
@@ -321,15 +327,24 @@ pour l'i18n</h3>
         </pre>
         o&ugrave; <em>fr_FR</em> doit &ecirc;tre remplac&eacute; par
         la <em>locale</em> (code de la langue suivi du code pays)
-        correspondant &agrave; la traduction voulue.
-
+        correspondant &agrave; la traduction voulue.<br>
+	Il est également recommandé de spécifier le codage à utiliser,
+	car dans certains cas des problèmes d'afficahge des accents
+	peuvent survenir. Ce codage est indiqué au début du fichier po
+	correspondant à la langue voulue. Par exemple, vous pouvez
+	remarquer dans le fichier fr.po que le codage utilisé est
+	iso-8859-1. Vous pouvez donc le préciser au lancement de 
+	<code>calcurse</code>:
+	<pre>
+		LC_ALL=fr_FR.ISO8859-1 calcurse
+	</pre>
 
 <a name="basics_interface"></a><h2>Interface utilisateur</h2>
 <a name="basics_interface_noninteractive"></a><h3>Mode non-interactif</h3>
 <p>
         Lorsque il est appel&eacute; avec au moins un des arguments suivants:<br>
-        <code>-a</code>, <code>-d</code>, <code>-t</code>, 
-        <code>-h</code>, <code>-v</code><br>
+        <code>-a</code>, <code>-d</code>, <code>-h</code>, 
+        <code>-n</code>, <code>-t</code>, <code>-v</code><br>
         <code>calcurse</code> est lanc&eacute; en mode non-interactif.
         Cela signifie que l'information demand&eacute;e sera affich&eacute;e,
         puis <code>calcurse</code> quittera et vous serez ramen&eacute;
@@ -348,7 +363,8 @@ pour l'i18n</h3>
         en mode interactif. Dans ce mode s'affiche une interface qui
         contient trois panneaux diff&eacute;rents, qu'il est possible de 
         s&eacute;lectionner cycliquement en utilisant la touche 'TAB', ainsi
-        que d'une barre de status (voir la figure ci-dessous).
+        que d'une barre de notification et une autre de status 
+	(voir la figure ci-dessous).
         <pre>
 
  panneau rendez-vous---.                             .---panneau calendrier
@@ -371,13 +387,13 @@ pour l'i18n</h3>
  |                                    ||----------------------------| tâches à
  |                                    ||                            |  faire
  |                                    ||                            |   |
- |                                    ||                            |<--.
- |                                    ||                            |
- |                                    ||                            |
+ |                                    ||                            |&lt;--.
  |                                    ||                            |
  +------------------------------------++----------------------------+
- | ? Aide     R Retracer  H/L -+1 Jour      G Aller à    C Config   | 
- | Q Quitter  S Sauver    J/K -+1 Sem.    Tab Chg vue               |<-. 
+ |---[ Lun 22-11-2006 | 18:11:43 ]---(apts)----&gt; 01:20 :: dîner &lt;---|&lt;--.
+ +------------------------------------------------------------------+ barre de
+ | ? Aide     R Retracer  H/L -+1 Jour      G Aller à    C Config   |    notification 
+ | Q Quitter  S Sauver    J/K -+1 Sem.    Tab Chg vue               |&lt;-. 
  +------------------------------------------------------------------+  |
                                                                        |
                                                                barre de status
@@ -388,10 +404,16 @@ pour l'i18n</h3>
         une liste d'&eacute;v&egrave;nements et les rendez-vous du jour, et le dernier
         contient une liste des t&acirc;ches &agrave; faire, mais qui ne sont pas
         assign&eacute;e &agrave; une journ&eacute;e en particulier.
-        En bas de l'&eacute;cran on retrouve une barre de status, qui indique
+        Tout en bas de l'&eacute;cran on retrouve une barre de status, qui indique
         les actions possibles en fonction du contexte, ainsi que la
         touche qui doit &ecirc;tre press&eacute;e pour effectuer cette action.
-
+	Juste au dessus de cette barre se trouve la barre de notification, qui
+	indique les informations suivantes, de gauche à droite : la date du jour,
+	l'heure courante, le fichier calendrier actuellement ouvert (il s'agit
+	de apts dans la copie d'écran, qui est le fichier par défaut, comme indiqué
+	dans la section suivante), et le premier rendez-vous programmé dans les 
+	prochaines 24 heures. Dans cet exemple, il s'agit d'un dîner qui aura lieu
+	dans une heure et vingt minutes.
 
 <a name="basics_files"></a><h2>Fichiers</h2>
 <p>
@@ -428,8 +450,9 @@ pour l'i18n</h3>
         au menu de s&eacute;lection des couleurs de l'interface, appuyer sur
         'L' permet de choisir parmis diff&eacute;rents emplacements pour les 
         panneaux de la fen&ecirc;tre principale de <code>calcurse</code>,
-        et enfin les options g&eacute;n&eacute;rales peuvent &ecirc;tre fix&eacute;es en pressant
-        'G'.
+	appuyer sur 'G' vous permet de fixer les options générales, et enfin
+        les paramètres de la barre de notification peuvent &ecirc;tre fix&eacute;es 
+	en appuyant sur 'N'.
 
 
 <a name="options_general"></a><h2>Options g&eacute;n&eacute;rales</h2>
@@ -527,6 +550,33 @@ pour l'i18n</h3>
         En choisissant une autre disposition pour les &eacute;l&eacute;ments composants
         la fen&ecirc;tre de <code>calcurse</code>, l'utilisateur peut adapter
         &agrave; ses besoins l'interface du programme.
+
+<a name="options_notify"></a><h2>Réglages de la barre de notification</h2>
+<p>
+	Les options suivantes permettent de modifier les réglages de la
+	barre de notification:
+	<ul>
+	<li><code>barre-notification_afficher</code> (valeur par défaut: <em>oui</em>)<br>
+	Cette option indique si la barre de notification doit être affichée ou pas.<br>
+	<br>
+	<li><code>barre-notification_date</code> (valeur par défaut: <em>%a %F</em>)<br>
+	Avec cette option, il vous est possible de spécifier le format qui
+	doit être utilisé pour afficher la date du jour dans la barre de 
+	notification. Les différents formats possibles sont visibles en
+	tapant la commande suivante dans un terminal: <tt>man 3 strftime</tt>.<br>
+	<br>
+	<li><code>barre-notification_heure</code> (valeur par défaut: <em>%T</em>)<br>
+	Avec cette option, il vous est possible de spécifier le format qui
+	doit être utilisé pour afficher l'heure courante dans la barre de 
+	notification. Les différents formats possibles sont visibles en
+	tapant la commande suivante dans un terminal: <tt>man 3 strftime</tt>.<br>
+	<br>
+	<li><code>barre-notification_alerte</code> (valeur par défaut: <em>300</em>)<br>
+	Si l'utilisateur a programmé un rendez-vous dans les prochaines 'barre-notification_alerte'
+	secondes, l'affichage de ce rendez-vous clignotera dans la barre de notification.
+	De cette manière, l'utilisateur sera alerté et saura que l'heure du rendez-vous
+	approche.
+	</ul>
 
 
 <a name="known_bugs"></a><h1>Bogues connus</h1>
@@ -785,7 +835,7 @@ pour l'i18n</h3>
         possible de rajouter son adresse de courrier
         &eacute;lectronique, par exemple:
         <pre>
-                "Last-Translator: Frederic Culot <frederic@culot.org>\n"
+                "Last-Translator: Frederic Culot &lt;frederic@culot.org&gt;\n"
         </pre>
         <li><em>Commentaires</em><br>
         Ajouter des commentaires (lignes commen&ccedil;ant par '#')
@@ -894,7 +944,7 @@ pour l'i18n</h3>
 <hr>
 <small><em>
 Copyright (c) 2004-2006 Fr&eacute;d&eacute;ric Culot<br>
-Calcurse version 1.5 - Derni&egrave;re modification: 24 Aout 2006
+Calcurse version 1.6 - Derni&egrave;re modification: 19 Septembre 2006
 <em></small>
 
 
