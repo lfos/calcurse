@@ -1,3 +1,6 @@
+19 Sep 2006:
+	french, german and spanish manuals updated
+
 18 Sep 2006:
 	added test on warning time interval in config_notify_bar() 	
 	print_general_options() modified to print text one line upper
