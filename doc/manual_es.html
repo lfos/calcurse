@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <!--
 /*
- *	$calcurse: manual_es.html,v 1.2 2006/09/19 12:13:17 culot Exp $
+ *	$calcurse: manual_es.html,v 1.3 2006/09/22 08:41:11 culot Exp $
  *
  * Calcurse - text-based organizer
  * Copyright (c) 2004-2006 Frederic Culot
@@ -74,7 +74,7 @@
 <li><a href="#options_general">Opciones generales</a>
 <li><a href="#options_colors">Color (temas)</a>
 <li><a href="#options_layout">Configuración de la disposición</a>
-<li><a href="#options_notify"><font color="green">Notify-bar settings</font></a>
+<li><a href="#options_notify">Ajustes de la barra de notificaciones</a>
 </ul>
 <li><a href="#known_bugs">Bugs conocidos</a>
 <li><a href="#bugs">Informar de bugs y comentarios</a>
@@ -260,9 +260,9 @@
         Imprime un breve texto de ayuda describiendo las opciones soportadas en la
 	linea de comando y sale.<br>
 	<br>
-	<dt><code><font color="green">-n</font></code>
+	<dt><code>-n</code>
 	<dd>
-	<font color="green">Print the next appointment within next 24 hours and exit.</font><br>
+	Imprime las citas para las próximas 24 horas y sale.<br>
 	<br>
 	<dt><code>-t</code>
 	<dd>
@@ -280,27 +280,25 @@
         </a>). Así, si quieres ver los mensajes en tu lengua nativa, primero comprueba 
 	que esta disponible mirando en el fichero <code>po/LINGUAS</code>. 
         Este fichero indica la lista de lenguas disponibles mostrando el código de dos 
-        letras correspondiente (por ejemplo, <em>fr</em> sería para francés).  
+        letras correspondiente (por ejemplo, <em>es</em> sería para español).  
 	Si no encuentras tu lengua, tu ayuda seria muy apreciada si pudieses traducir 
         <code>calcurse</code> (ver la sección <a href="#contribute">¿Como puedo ayudar?</a>.<br>
         Si tu lengua esta disponible, arranca <code>calcurse</code> con el siguiente comando:
         <pre>
-                LC_ALL=fr_FR calcurse
+                LC_ALL=es_ES calcurse
         </pre>
-        donde <em>fr_FR</em> es el nombre locale en este ejemplo, pero puede ser remplazado
+        donde <em>es_ES</em> es el nombre locale en este ejemplo, pero puede ser remplazado
         por el locale correspondiente a la lengua deseada.<br>
-	<font color="green">
-	You should also specify the charset to be used, because in some
-	cases the accents and such are not displayed correctly. 
-	This charset is indicated at the beginning of the po file 
-	corresponding to the desired language. For instance, you can see 
-	in the fr.po file that it uses the iso-8859-1 charset, so you 
-	could run <code>calcurse</code> using the following command:
+	Debes especificar también tipo de caracteres 'charset' que se usara porque en
+	algunos casos los acentos podrían no mostrarse correctamente. 
+	Este tipo de caracteres o 'charset' esta indicado al principio del archivo po 
+	correspondiente al lenguaje deseado. Como puedes ver en el archivo es.po
+	se usa el tipo de caracteres iso-8859-1, entonces puedes iniciar <code>calcurse</code>
+	utilizando el siguiente comando:
 	<pre>
-		LC_ALL=fr_FR.ISO8859-1 calcurse
+		LC_ALL=es_ES.ISO8859-1 calcurse
 	</pre>
-	</font>
-
+	
 
 
 <a name="basics_interface"></a><h2>Interfaz de usuario</h2>
@@ -325,9 +323,8 @@
         <code>-c</code>, <code>calcurse</code> arranca en modo interactivo.
         En este modo, se muestra una interfaz conteniendo tres 
 	paneles diferentes por los cuales puedes navegar usando la tecla 
-        'TAB' (tabulador), 
-	<font color="green">plus a notification bar</font>
-	mas una barra de estado (ver la figura de abajo).
+        'TAB' (tabulador), mas una barra de notificaciones, mas una barra 
+	de estado (ver la figura de abajo).
         <pre>
 
    panel de citas y eventos ---.                         .--- panel de calendario
@@ -353,10 +350,10 @@
  |                                    ||                            |&lt;--.
  |                                    ||                            |
  +------------------------------------++----------------------------+
- |---[ Mon 2006-11-22 | 10:11:43 ]---(apts)----&gt; 01:20 :: lunch &lt;---|&lt;--.
- +------------------------------------------------------------------+ <font color="green">notify-bar</font>
+ |---[ Lun 6-4-2006 | 10:11:43 ]---(citas)----&gt; 01:20 :: comida &lt;---|&lt;--.
+ +------------------------------------------------------------------+ barra de notificaciones
  | ? Ayuda    R Redibujar    H/L -/+1 Dia      G Ir a    C Config   | 
- | Q Salir    S Guardar      J/K -/+1 Semana   Tab Cabiar vista     |&lt;-. 
+ | Q Salir    S Guardar      J/K -/+1 Semana   Tab Cambiar vista    |&lt;-. 
  +------------------------------------------------------------------+  |
                                                                        |
                                                                  barra de estado
@@ -368,15 +365,13 @@
         de tareas pendientes (ToDo) pero que no están asignadas a ningún día especifico.  
 	En la parte inferior de la pantalla hay una barra de estado, que 
 	indica las posibles acciones y sus correspondientes atajos de teclado.
-        <font color="green">
-        Just above this status bar is the notify-bar, which indicates
-	from left to right : the current date, the current time, the 
-	calendar file currently in use (apts on the above example, which
-	is the default calendar file, see the following section), and 
-	the next appointment within the upcoming 24 hours. Here it says
-	that it will be lunch time in one hour and twenty minutes.
-	</font>
-
+        Justo encima de esta barra de estado esta la barra de notificaciones, que indica
+	de izquierda a derecha : la fecha actual, la hora actual, el archivo de 
+	calendario actualmente en uso (en el ejemplo de arriba, el de citas, que es
+	el fichero de calendario por defecto, ver la sección siguiente), y la 
+	cita mas cercana para las proximas 24 horas. En el ejemplo seria una comida 
+	dentro de una hora y 20 minutos.
+	
 
 
 <a name="basics_files"></a><h2>Archivos de <code>calcurse</code></h2>
@@ -493,34 +488,29 @@
         modificar la apariencia de <code>calcurse</code> que mejor se adapte a sus
         necesidades colocando los diferentes paneles donde los necesite.
 
-<a name="options_notify"></a><h2><font color="green">Notify-bar settings</font></h2>
+<a name="options_notify"></a><h2>Ajustes de la barra de notificaciones</h2>
 <p>
-<font color="green">
-	The following options are used to modify the notify-bar behavior:
+	Las siguientes opciones se usan para modificar el comportamiento de la barra de notificaciones:
 	<ul>
-	<li><code>notify-bar_show</code> (default: <em>yes</em>)<br>
-	This option indicates if you want the notify-bar to be displayed
-	or not.<br> 
+	<li><code>mostrar-barra-de-notificaciones</code> (por defecto: <em>si</em>)<br>
+	Esta opción indica si quieres que se muestre la barra de notificaciones o no.<br> 
 	<br>
-	<li><code>notify-bar_date</code> (default: <em>%a %F</em>)<br>
-	With this option, you can specify the format to be used to 
-	display the current date inside the notification bar. You can
-	see all of the possible formats by typing <tt>man 3 strftime</tt>
-	inside a terminal.<br>
+	<li><code>fecha_barra-notificaciones</code> (por defecto: <em>%a %F</em>)<br>
+	Con esta opcion puedes especificar el formato que se usara para mostrar la fecha 
+	actual dentro de la barra de notificaciones. Puedes ver todos los formatos posibles
+	tecleando <tt>man 3 strftime</tt> en un terminal.<br>
 	<br>
-	<li><code>notify-bar_time</code> (default: <em>%T</em>)<br>
-	With this option, you can specify the format to be used to 
-	display the current time inside the notification bar. You can
-	see all of the possible formats by typing <tt>man 3 strftime</tt>
-	inside a terminal.<br>
+	<li><code>hora_barra-notificaciones</code> (por defecto: <em>%T</em>)<br>
+	Con esta opcion puedes especificar el formato que se usara para mostrar la  
+	hora actual dentro de la barra de notificaciones. Puedes ver todos los formatos 
+	posibles tecleando <tt>man 3 strftime</tt> dentro de un terminal.<br>
 	<br>
-	<li><code>notify-bar_warning</code> (default: <em>300</em>)<br>
-	When there is an appointment within the next 'notify-bar_warning'
-	seconds, the display of that appointment inside the notify-bar 
-	starts to blink. That way, the user is warned and knows there
-	will be soon an upcoming appointment.	
+	<li><code>alarma_barra-notificaciones</code> (por defecto: <em>300</em>)<br>
+	Cuando tienes una cita dentro de los siguientes 'alarma_barra-notificaciones'
+	segundos, la referencia a esa cita dentro de la barra de notificaciones 
+	comienza a parpadear. De esta forma, se alerta al usuario y este sabe que
+	detro de poco tiene una cita.	
 	</ul> 
-</font>
 
 
 <a name="known_bugs"></a><h1>Bugs conocidos</h1>
@@ -649,7 +639,7 @@
         <li><em>lineas de localización:</em> te dicen donde están las sentencias 
         (nombre del archivo y numero de linea), en caso de que necesites un poco 
         mas de contexto.
-        <li><em>limeas msgid:</em> las sentencias a traducir.
+        <li><em>lineas msgid:</em> las sentencias a traducir.
         <li><em>lineas msgstr:</em> las sentencias traducidas.
         <li><em>lineas con prefijo '#':</em> comentarios (algunos con un significado 
         especial, como veremos más abajo).
@@ -679,12 +669,12 @@
         c-format"</code>.  Esto te esta diciendo que partes de la sentencia a traducir
         tienen un significado especial para el programa, puede ser que la sentencia 
         contenga alguna variable, como por ejemplo % , si ves algo como esto <code>"%s"</code>, 
-        eso quiere decir que el programa remplazara esta variable por algun valor o por otra
+        eso quiere decir que el programa remplazara esta variable por algún valor o por otra
         sentencia. En ese caso, puedes traducir el resto de la sentencia pero sin modificar las 
         variables que pueda contener. También hay sentencias  que contienen \ ,  como por ejemplo
         <code>\n</code> o <code>\t</code>, lo primero significa un final de linea y 
-        lo otro una tabulación, asi pues, puedes traducir la sentencia pero con cuidado de no
-        modificar estos simbolos.<br>
+        lo otro una tabulación, así pues, puedes traducir la sentencia pero con cuidado de no
+        modificar estos símbolos.<br>
         <br>
         <li><em>Las traducciones pueden ser excesivamente largas</em><br>
         Si las lineas son demasiado largas, pueden ser partidas de la siguiente forma:
@@ -780,7 +770,7 @@
 	<li>Joel por su script del calendario que inspiro la vista de calendario de <code>calcurse</code> 
 	<li>Michael Schulz por la traducción al alemán de <code>calcurse</code> y su manual
 	<li>Neil Williams por la traducción al ingles
-	<li>Jose Lopez por la traduccion al Español de <code>calcurse</code> y su manual
+	<li>José López por la traducción al Español de <code>calcurse</code> y su manual
 	<li>a la gente que ha escrito softwares que me gustan y que me inspiraron, especialmente :
 		<ul>
 		<li><code>vim</code> por las teclas de desplazamiento
@@ -796,7 +786,7 @@
 <hr>
 <small><em>
 Copyright (c) 2004-2006 Fr&eacute;d&eacute;ric Culot<br>
-Traducido al Español por Jose Lopez
+Traducido al Español por José López
 <code>&lt;testinground.at.gmail.dot.com&gt;</code><br>
 Calcurse version 1.6 - Last change: September 19, 2006
 <em></small>
