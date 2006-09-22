@@ -1,4 +1,4 @@
-#	$calcurse: Makefile.am,v 1.2 2006/09/09 20:04:23 culot Exp $
+#	$calcurse: Makefile.am,v 1.3 2006/09/22 13:12:06 culot Exp $
 
 AUTOMAKE_OPTIONS= gnu 
 bin_PROGRAMS= calcurse
@@ -10,5 +10,8 @@ calcurse_SOURCES= calcurse.c apoint.c event.c todo.c utils.c\
 			day.h recur.h notify.h
 LIBS= -lncurses -lpthread -lm
 LDADD= @LTLIBINTL@
+datadir= @datadir@
+localedir= $(datadir)/locale
+DEFS= -DLOCALEDIR=\"$(localedir)\" @DEFS@
 man_MANS= calcurse.1
 EXTRA_DIST= calcurse.1

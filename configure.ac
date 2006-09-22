@@ -1,7 +1,7 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 #
-#	$calcurse: configure.ac,v 1.3 2006/09/09 20:00:16 culot Exp $
+#	$calcurse: configure.ac,v 1.4 2006/09/22 13:11:35 culot Exp $
 
 AC_PREREQ(2.59)
 AC_INIT(calcurse, 1.6, frederic@culot.org)
@@ -44,9 +44,5 @@ AC_FUNC_MALLOC
 AC_FUNC_MKTIME
 AC_FUNC_STRFTIME
 AC_CHECK_FUNCS([floor mkdir strchr])
-
-# Define LOCALEDIR
-AC_DEFINE_UNQUOTED(LOCALEDIR, "${prefix}/share/locale",
-        [The directory in which locale data will be stored]) 
 
 AC_OUTPUT(Makefile src/Makefile po/Makefile.in po/Makefile)
