@@ -1,4 +1,4 @@
-#	$calcurse: es.po,v 1.2 2006/09/11 13:09:52 culot Exp $
+# 	$calcurse: es.po,v 1.3 2006/09/25 07:29:48 culot Exp $
 #
 # Spanish translations for calcurse package.
 # Copyright (c) Jose Lopez <testinground@gmail.com> 2006 Free Software Foundation, Inc.
@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Calcurse 1.6\n"
 "Report-Msgid-Bugs-To: frederic@culot.org\n"
-"POT-Creation-Date: 2006-09-03 19:05+0200\n"
+"POT-Creation-Date: 2006-09-19 14:37+0200\n"
 "PO-Revision-Date: 2006-09-10 08:06+0200\n"
 "Last-Translator: Jose Lopez <testinground@gmail.com>\n"
 "Language-Team: Jose Lopez <testinground@gmail.com>\n"
@@ -17,15 +17,15 @@ msgstr ""
 "Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/apoint.c:138 src/recur.c:275
+#: src/apoint.c:155 src/recur.c:291
 msgid "FATAL ERROR in apoint_scan: date error in the appointment\n"
 msgstr "ERROR FATAL en apoint_scan: error en la fecha de la cita\n"
 
-#: src/apoint.c:164
+#: src/apoint.c:190
 msgid "FATAL ERROR in apoint_delete_bynum: no such appointment\n"
 msgstr "ERROR FATAL en apoint_delete_bynum: no existe la cita\n"
 
-#: src/args.c:148
+#: src/args.c:159
 msgid ""
 "\n"
 "Copyright (c) 2004-2006 Frederic Culot.\n"
@@ -35,12 +35,12 @@ msgstr ""
 "Copyright (c) 2004-2006 Frederic Culot.\n"
 "Esto es software libre; ver codigo fuente para las condiciones de copia.\n"
 
-#: src/args.c:151 src/args.c:178
+#: src/args.c:162 src/args.c:191
 #, c-format
 msgid "Calcurse %s - text-based organizer\n"
 msgstr " Calcurse %s - organizador basado en modo texto\n"
 
-#: src/args.c:163
+#: src/args.c:174
 msgid ""
 "\n"
 "Miscellaneous:\n"
@@ -54,6 +54,7 @@ msgid ""
 "  -a \t\tprint events and appointments for current day and exit.\n"
 "  -d <date|num>\tprint events and appointments for <date> or <num> upcoming\n"
 "\t\tdays and exit. Possible formats are: 'mm/dd/yyyy' or 'n'.\n"
+"  -n  \t\tprint next appointment within upcoming 24 hours and exit.\n"
 "  -t\t\tprint todo list and exit.\n"
 "\n"
 "For more information, type '?' from within Calcurse, or read the manpage.\n"
@@ -70,43 +71,51 @@ msgstr ""
 "  -a \t\tmuestra los eventos y citas para el dia actual y sale.\n"
 "  -d <fecha|numero>\tmuestra los eventos y citas para la <fecha> dada o los\n"
 "\t\tproximos <numero> dias y sale. Admite los formatos 'mm/dd/aaaa' o 'n'.\n"
+"  -n  \t\tmuestra las citas para las proximas 24 horas y sale.\n"
 "  -t\t\tmuestra la lista de tareas pendientes y sale.\n"
-"Para mas informacion, pulsa '?' dentro de Calcurse, o lee la pagina del man.\n"
-"Enviar los emails con informes de 'bugs' y comentarios a <calcurse@culot.org>.\n"
- 
-#: src/args.c:194
-msgid "to do:\n"
-msgstr "Por hacer:\n"
+"\n"
+"Para mas informacion, pulsa '?' dentro de Calcurse, o lee la pagina del "
+"man.\n"
+"Informes de errores y comentarios a <calcurse@culot.org>.\n"
 
-#: src/args.c:352
+#: src/args.c:207
+msgid "to do:\n"
+msgstr "Tareas pendientes:\n"
+
+#: src/args.c:234
+msgid "next appointment:\n"
+msgstr "Proxima cita:\n"
+
+#: src/args.c:396
 msgid "Argument to the '-d' flag is not valid\n"
 msgstr "El argumento pasado a la opcion -d no es valido\n"
 
-#: src/args.c:353
+#: src/args.c:397
 msgid "Possible argument formats are : 'mm/dd/yyyy' or 'n'\n"
 msgstr "Los formatos posibles para este argumento son: 'mm/dd/aaaa' o 'n'\n"
 
-#: src/args.c:354
+#: src/args.c:398
 msgid ""
 "\n"
 "For more information, type '?' from within Calcurse, or read the manpage.\n"
 msgstr ""
 "\n"
-"Para mas informacion, pulsa '?' dentro de Calcurse, o lee la pagina del man.\n"
+"Para mas informacion, pulsa '?' dentro de Calcurse, o lee la pagina del "
+"man.\n"
 
-#: src/args.c:356
+#: src/args.c:400
 msgid "Mail bug reports and suggestions to <calcurse@culot.org>.\n"
-msgstr "Los emails con informes de 'bugs'o comentarios a <calcurse@culot.org>.\n"
+msgstr "Informes de errores o comentarios a <calcurse@culot.org>.\n"
 
-#: src/args.c:422
-msgid "Usage: calcurse [-h | -v] [-at] [-d date|num] [-c file]\n"
-msgstr "Uso: calcurse [-h] | -v] [-at] [-d fecha|numero] [-c archivo]\n"
+#: src/args.c:466
+msgid "Usage: calcurse [-h | -v] [-ant] [-d date|num] [-c file]\n"
+msgstr "Uso: calcurse [-h] | -v] [-ant] [-d fecha|numero] [-c archivo]\n"
 
-#: src/args.c:430
+#: src/args.c:474
 msgid "Try 'calcurse -h' for more information.\n"
 msgstr "Prueba con 'calcurse -h' para mas informacion.\n"
 
-#: src/calcurse.c:126
+#: src/calcurse.c:130
 msgid ""
 "Sorry, colors are not supported by your terminal\n"
 "(Press [ENTER] to continue)"
@@ -114,11 +123,11 @@ msgstr ""
 "Lo siento, tu terminal no soporta colores\n"
 "(Pulsa [INTRO] para continuar)"
 
-#: src/calcurse.c:128
+#: src/calcurse.c:132
 msgid "Do you really want to quit ?"
 msgstr "¿Estas seguro de que quieres salir?"
 
-#: src/calcurse.c:199
+#: src/calcurse.c:211
 msgid ""
 "Please resize your terminal screen\n"
 "(to at least 80x24),\n"
@@ -128,148 +137,211 @@ msgstr ""
 "de tu terminal (como minimo a 80x24),\n"
 "y reinicia calcurse.\n"
 
-#: src/calcurse.c:259
+#: src/calcurse.c:277
 msgid "To do :"
-msgstr "Por hacer :"
+msgstr "Tareas pendientes :"
 
-#: src/calcurse.c:552
+#: src/calcurse.c:597
 msgid "FATAL ERROR in update_windows: no window selected\n"
 msgstr "ERROR FATAL en update_windows: no hay ventana seleccionada\n"
 
-#: src/calcurse.c:655
+#: src/calcurse.c:707
 #, c-format
 msgid "Calendar"
 msgstr "Calendario"
 
-#: src/calcurse.c:658
+#: src/calcurse.c:710
 #, c-format
 msgid "Appointments"
 msgstr "Citas y eventos"
 
-#: src/calcurse.c:661
+#: src/calcurse.c:713
 #, c-format
 msgid "ToDo"
 msgstr "Tareas pendientes"
 
-#: src/calcurse.c:693
+#: src/calcurse.c:746 src/calcurse.c:792
 msgid "Enter an option number to change its value [Q to quit] "
 msgstr "Introduce un numero para cambiar su valor [Q para salir] "
 
-#: src/calcurse.c:699
+#: src/calcurse.c:753
 #, c-format
 msgid "CalCurse %s | general options"
 msgstr "Calcurse %s | opciones generales"
 
-#: src/calcurse.c:736
+#: src/calcurse.c:794
+msgid "Enter the date format (see 'man 3 strftime' for possible formats) "
+msgstr ""
+"Introduce el formato de la fecha (ver 'man 3 strftime' para los formatos "
+"posibles) "
+
+#: src/calcurse.c:796
+msgid "Enter the time format (see 'man 3 strftime' for possible formats) "
+msgstr ""
+"Introduce el formato de la hora (ver 'man 3 strftime' para los formtos "
+"posibles) "
+
+#: src/calcurse.c:798
+msgid "Enter the number of seconds (0 not to be warned before an appointment)"
+msgstr ""
+"Introduce el numero de segundos (con 0 no se avisara antes de una cita)"
+
+#: src/calcurse.c:802
+#, c-format
+msgid "CalCurse %s | notify-bar options"
+msgstr "Calcurse %s | opciones de la barra de notificaciones"
+
+#: src/calcurse.c:869
 msgid "auto_save = "
 msgstr " auto_guardar = "
 
-#: src/calcurse.c:737
+#: src/calcurse.c:870
 msgid "confirm_quit = "
 msgstr "confirmar_salir = "
 
-#: src/calcurse.c:738
+#: src/calcurse.c:871
 msgid "confirm_delete = "
 msgstr "confirmar_borrar = "
 
-#: src/calcurse.c:739
+#: src/calcurse.c:872
 msgid "skip_system_dialogs = "
 msgstr "saltar_dialogos_sistema = "
 
-#: src/calcurse.c:740
+#: src/calcurse.c:873
 msgid "skip_progress_bar = "
 msgstr "saltar_barra_progreso = "
 
-#: src/calcurse.c:741
+#: src/calcurse.c:874
 msgid "week_begins_on_monday = "
 msgstr "empezar_semana_en_lunes = "
 
-#: src/calcurse.c:750
+#: src/calcurse.c:883
 msgid "(if set to YES, automatic save is done when quitting)"
 msgstr "(si se fija en SI, se guardan automaticamente los datos al salir)"
 
-#: src/calcurse.c:756
+#: src/calcurse.c:889
 msgid "(if set to YES, confirmation is required before quitting)"
 msgstr "(si se fija en SI, se requiere confirmacion antes de salir)"
 
-#: src/calcurse.c:762
+#: src/calcurse.c:895
 msgid "(if set to YES, confirmation is required before deleting an event)"
 msgstr "(si se fija en SI, se requiere confirmacion antes de borrar un evento)"
 
-#: src/calcurse.c:768
+#: src/calcurse.c:901
 msgid ""
 "(if set to YES, messages about loaded and saved data will not be displayed)"
-msgstr "(si se fija en SI, no se mostraran los mensajes sobre la carga y guardado\n"
-"de los datos)"
+msgstr ""
+"(si se fija en SI, no se mostraran los mensajes sobre la carga y guardado de "
+"los datos)"
 
-#: src/calcurse.c:774
+#: src/calcurse.c:907
 msgid "(if set to YES, progress bar will not be displayed when saving data)"
-msgstr "(si se fija en SI, no se mostrara la barra de progreso al salvar los datos)"
+msgstr ""
+"(si se fija en SI, no se mostrara la barra de progreso al salvar los datos)"
 
-#: src/calcurse.c:780
+#: src/calcurse.c:913
 msgid "(if set to YES, monday is the first day of the week, else it is sunday)"
-msgstr "(si se fija en SI, el Lunes sera el primer dia de la semana, sino el Domingo)"
+msgstr ""
+"(si se fija en SI, el Lunes sera el primer dia de la semana, sino el Domingo)"
 
-#: src/calcurse.c:795
+#: src/calcurse.c:924
+msgid "notify-bar_show = "
+msgstr "mostrar-barra-notificaciones = "
+
+#: src/calcurse.c:925
+msgid "notify-bar_date = "
+msgstr "fecha_barra-notificaciones = "
+
+#: src/calcurse.c:926
+msgid "notify-bar_clock = "
+msgstr "hora_barra-notificaciones = "
+
+#: src/calcurse.c:927
+msgid "notify-bar_warning = "
+msgstr "alarma_barra-notificaciones = "
+
+#: src/calcurse.c:937
+msgid "(if set to YES, notify-bar will be displayed)"
+msgstr "(si se fija en SI, se mostrara la barra de notificaciones)"
+
+#: src/calcurse.c:944
+msgid "(Format of the date to be displayed inside notify-bar)"
+msgstr "(Formato de la fecha dentro de la barra de notificaciones)"
+
+#: src/calcurse.c:951
+msgid "(Format of the time to be displayed inside notify-bar)"
+msgstr "(Formato de la hora dentro de la barra de notificaciones)"
+
+#: src/calcurse.c:958
+msgid ""
+"(Warn user if an appointment is within next 'notify-bar_warning' seconds)"
+msgstr ""
+"(Te avisa de que tienes una cita en los proximos 'alarma_barra-"
+"notificaciones' segundos)"
+
+#: src/calcurse.c:974
 msgid "yes"
 msgstr "si"
 
-#: src/calcurse.c:798
+#: src/calcurse.c:977
 msgid "no"
 msgstr "no"
 
-#: src/calcurse.c:802
+#: src/calcurse.c:981
 msgid "option not defined - Problem in print_option_incolor()"
 msgstr "opcion no definida - Problema en print_option_incolor()"
 
-#: src/calcurse.c:819
+#: src/calcurse.c:998
 msgid "Do you really want to delete this item ?"
 msgstr "¿Seguro que quieres borrar este elemento?"
 
-#: src/calcurse.c:820
+#: src/calcurse.c:999
 msgid "Do you really want to delete this task ?"
 msgstr "¿Seguro que quieres borrar esta tarea?"
 
-#: src/calcurse.c:860
+#: src/calcurse.c:1039
 msgid "FATAL ERROR in del_item: no such type\n"
 msgstr "ERROR FATAL en del_item: no exite ese tipo\n"
 
-#: src/calcurse.c:901
+#: src/calcurse.c:1080
 msgid ""
 "Enter start time ([hh:mm] or [h:mm]), leave blank for an all-day event : "
-msgstr "Introduce la hora de inicio ([hh:mm]) o ([h:mm]), dejalo en blanco para un\n"
-"evento de todo el dia :"
+msgstr ""
+"¿ Hora de inicio ? ([hh:mm]), ([h:mm]) o <ENTER> para un evento de todo el "
+"dia :"
 
-#: src/calcurse.c:902
+#: src/calcurse.c:1081
 msgid "Enter end time ([hh:mm] or [h:mm]) or duration (in minutes) : "
 msgstr "Introduce la hora final ([hh:mm]) o ([h:mm]) o duracion (en minutos) :"
 
-#: src/calcurse.c:903
+#: src/calcurse.c:1082
 msgid "Enter description :"
 msgstr "Introduce la descripcion :"
 
-#: src/calcurse.c:904
+#: src/calcurse.c:1083
 msgid "You entered an invalid start time, should be [h:mm] or [hh:mm]"
-msgstr "Has introducido una fecha de inicio no valida, debe ser [h:mm] o [hh:mm]"
+msgstr ""
+"Has introducido una fecha de inicio no valida, debe ser [h:mm] o [hh:mm]"
 
-#: src/calcurse.c:905
+#: src/calcurse.c:1084
 msgid "You entered an invalid end time, should be [h:mm] or [hh:mm] or [mm]"
-msgstr "Has introducido una hora final no valida, debe ser [h:mm] o [hh:mm] o [mm]"
+msgstr ""
+"Has introducido una hora final no valida, debe ser [h:mm] o [hh:mm] o [mm]"
 
-#: src/calcurse.c:906
+#: src/calcurse.c:1085
 msgid "Press [Enter] to continue"
 msgstr "Pulsa [INTRO] para continuar"
 
-#: src/calcurse.c:1109
+#: src/calcurse.c:1288
 msgid "Failed to open config file"
 msgstr "Fallo al abrir el fichero de configuradion (config)"
 
-#: src/calcurse.c:1110 src/calendar.c:192 src/io.c:134 src/io.c:380
-#: src/io.c:464
+#: src/calcurse.c:1289 src/calendar.c:192 src/io.c:135 src/io.c:409
+#: src/io.c:493
 msgid "Press [ENTER] to continue"
 msgstr "Pulsa [INTRO] para continuar"
 
-#: src/calcurse.c:1186
+#: src/calcurse.c:1388
 msgid "FATAL ERROR in fill_config_var: wrong configuration variable format.\n"
 msgstr "ERROR FATAL en fill_config_var: formato de la variable erroneo.\n"
 
@@ -281,65 +353,72 @@ msgstr "El dia que has introducido no es valido"
 msgid "Enter the day to go to [ENTER for today] : dd/mm/yyyy"
 msgstr "Introduce el dia al que deseas ir [INTRO para hoy] : dd/mm/aaaa"
 
-#: src/custom.c:96
+#: src/custom.c:97
 msgid "Exit"
 msgstr "Salir"
 
-#: src/custom.c:97
+#: src/custom.c:98
 msgid "General"
 msgstr "General"
 
-#: src/custom.c:98
+#: src/custom.c:99
 msgid "Layout"
 msgstr "Disposicion"
 
-#: src/custom.c:99
+#: src/custom.c:100
 msgid "Color"
 msgstr "Color"
 
-#: src/custom.c:110
+#: src/custom.c:101
+msgid "Notify"
+msgstr "Notificaciones"
+
+#: src/custom.c:112
 msgid "Pick the desired layout on next screen [press ENTER]"
 msgstr "Selecciona la disposicion deseada en la proxima pantalla [pulsa INTRO]"
 
-#: src/custom.c:111
+#: src/custom.c:113
 msgid "('A'= Appointment panel, 'C'= calendar panel, 'T'= todo panel)"
 msgstr "('E'= citas y Eventos, 'C'= Calendario, 'T'= Tareas pendientes)"
 
-#: src/custom.c:113
-msgid "    AC       AT       CA       TA       TC       TA       CT       AT"
-msgstr "    EC       ET       CE       TE       TC       TE       CT       ET" 
-
 #: src/custom.c:115
+msgid "    AC       AT       CA       TA       TC       TA       CT       AT"
+msgstr "    EC       ET       CE       TE       TC       TE       CT       ET"
+
+#: src/custom.c:117
 msgid " [1]AT    [2]AC    [3]TA    [4]CA    [5]TA    [6]TC    [7]AT    [8]CT"
 msgstr " [1]ET    [2]EC     [3]TE   [4]CE    [5]TE    [6]TC    [7]ET    [8]CT"
 
-#: src/custom.c:140
+#: src/custom.c:142
 msgid "Pick the number corresponding to the color scheme (Q to exit) :"
-msgstr "Selecciona el numero correspondiente al esquema de color (Q para salir)"
+msgstr ""
+"Selecciona el numero correspondiente al esquema de color (Q para salir)"
 
-#: src/custom.c:150
+#: src/custom.c:152
 msgid "([>0<] for black & white)"
 msgstr "([>0<] para blanco y negro)"
 
-#: src/day.c:320
+#: src/day.c:333
 msgid "FATAL ERROR in day_popup_item: unknown item type\n"
 msgstr "ERROR FATAL en day_popup_item:  no existe ese tipo\n"
 
-#: src/day.c:323
+#: src/day.c:336
 msgid "Event :"
 msgstr "Evento :"
 
-#: src/day.c:327
+#: src/day.c:340
 msgid "Appointment :"
 msgstr "Cita :"
 
-#: src/day.c:379
+#: src/day.c:401
 msgid "This item is recurrent. Delete (a)ll occurences or just this (o)ne ?"
-msgstr "Este evento es recurrente. ¿Borrar (t)odas las recurrencias o solo (u)na ?"
+msgstr ""
+"Este evento es recurrente. ¿ Borrar todas las recurrencias (a) o solo esta "
+"(o) ?"
 
-#: src/day.c:382
+#: src/day.c:404
 msgid "[a/o] "
-msgstr "[t/u] "
+msgstr "[a/o] "
 
 #: src/event.c:106
 msgid "FATAL ERROR in event_scan: date error in the event\n"
@@ -349,11 +428,11 @@ msgstr "ERROR FATAL en event_scan: error en la fecha del evento\n"
 msgid "FATAL ERROR in event_delete_bynum: no such event\n"
 msgstr "ERROR FATAL en event_delete_bynum: no existe ese tipo\n"
 
-#: src/help.c:99
+#: src/help.c:101
 msgid "       Welcome to Calcurse. This is the main help screen.\n"
 msgstr "       Bienvenid@ a Calcurse. Esta es la pantalla de ayuda inicial.\n"
 
-#: src/help.c:101
+#: src/help.c:103
 msgid ""
 " Moving around:  Press CTRL-P or CTRL-N to scroll text upward or\n"
 "                 downward inside help screens, if necessary.\n"
@@ -376,48 +455,28 @@ msgstr ""
 "                            si lo necesitas.\n"
 "\n"
 "         Salir de la ayuda: Cuando acabes, pulsa 'Q' para salir de la\n"
-"                            ayuda y volver a la pantalla inicial de Calcurse.\n"
+"                            ayuda y volver a la pantalla inicial de "
+"Calcurse.\n"
 "\n"
 "            Temas de ayuda: En la parte de abajo de esta pantalla puedes\n"
-"                            ver un panel con diferentes campos, representados\n"
+"                            ver un panel con diferentes campos, "
+"representados\n"
 "                            por una letra y un breve titulo.\n"
-"                            Este panel contiene todas las acciones disponibles\n"
+"                            Este panel contiene todas las acciones "
+"disponibles\n"
 "                            que puedes realizar al usar Calcurse.\n"
 "                            Pulsando cada una de las letras que aparecen en\n"
-"                            este panel, se te mostrara una breve descripcion\n"
+"                            este panel, se te mostrara una breve "
+"descripcion\n"
 "                            de su correspondiente accion.\n"
 "\n"
 "                  Creditos: Pulsa @ para ver los creditos."
 
-#: src/help.c:114
-msgid "Redraw:\n"
-msgstr "Redibujar:\n"
-
 #: src/help.c:116
-msgid ""
-"Pressing CTRL-L redraws the Calcurse panels.\n"
-"\n"
-"You might want to use this function when you resize your terminal\n"
-"screen for example, and you want Calcurse to take into account the new\n"
-"size of the terminal.\n"
-"\n"
-"This function can also be useful when garbage appears in the display,\n"
-"and you want to clean it."
-msgstr ""
-"Pulsando CTRL-L se redibujan los paneles de Calcurse.\n"
-"\n"
-"Puedes necesitar usar esta funcion por ejemplo, cuando cambias el\n"
-"tamaño de la pantalla de tu terminal y quieres que Calcurse se\n"
-"adapte al nuevo tamaño del terminal.\n"
-"\n"
-"Esta funcion puede ser tambien util cuando aparece basura en la\n"
-"pantalla y quieres limpiarla."
-
-#: src/help.c:123
 msgid "Save:\n"
 msgstr "Guardar:\n"
 
-#: src/help.c:125
+#: src/help.c:118
 msgid ""
 "Pressing 'S' saves the Calcurse data.\n"
 "\n"
@@ -440,13 +499,13 @@ msgstr ""
 "        \\ ~/.calcurse/todo -> los datos relativos a la lista ToDo\n"
 "\n"
 "En el menu de configuracion, puedes elegir guardar los datos\n"
-"de Calcurse automaticamente antes de salir." 
+"de Calcurse automaticamente antes de salir."
 
-#: src/help.c:135
+#: src/help.c:128
 msgid "Displacement keys:\n"
 msgstr "Teclas de desplazamiento:\n"
 
-#: src/help.c:137
+#: src/help.c:130
 msgid ""
 "You can use either 'H','J','K','L' or the arrow keys '<','v','^','>'\n"
 "to move into the calendar.\n"
@@ -469,21 +528,20 @@ msgstr ""
 "El siguiente esquema explica como :\n"
 "\n"
 "                      moverte a la semana anterior\n"
-"                              K ^  \n"
-"  moverte al dia anterior  H <       > L  moverte al dia siguiente\n"
-"                              J v  \n"
+"                              K ^\n"
+"  moverte al dia anterior  H <     > L  moverte al dia siguiente\n"
+"                              J v\n"
 "                      moverte a la semana siguiente\n"
 "\n"
 "Cuando esta seleccionado el panel de citas y eventos o el panel de tareas\n"
 "pendientes (respectivamente K o flecha arriba, y J o flecha abajo) te\n"
 "permite seleccionar un elemento de esas listas."
 
-#: src/help.c:149
+#: src/help.c:142
 msgid "View:\n"
 msgstr "Ver:\n"
 
-
-#: src/help.c:151
+#: src/help.c:144
 msgid ""
 "Pressing 'V' allows you to view the item you select in either the ToDo\n"
 "or Appointment panel.\n"
@@ -505,11 +563,11 @@ msgstr ""
 "al final aparece '...'. Para poder leer la descripcion completa, solo pulsa\n"
 "'V' y aparecera una nueva ventana que contendra el evento completo."
 
-#: src/help.c:161
+#: src/help.c:154
 msgid "Tab:\n"
 msgstr "Tab:\n"
 
-#: src/help.c:163
+#: src/help.c:156
 msgid ""
 "Pressing 'Tab' allows you to switch between panels.\n"
 "The panel currently in use has its border colorized.\n"
@@ -526,16 +584,17 @@ msgstr ""
 "Pulsando 'Tab'(tabulador) te permite cambiar de un panel a otro.\n"
 "El panel actualmente en uso tendra sus bordes coloreados.\n"
 "\n"
-"Algunas acciones solo pueden hacerse si esta seleccionado el panel correcto.\n"
+"Algunas acciones solo pueden hacerse si esta seleccionado el panel "
+"correcto.\n"
 "Por ejemplo, si quieres añadir una nueva tarea a la lista de tareas\n"
 "pendientes, primero debes cambiar a ese panel pulsando la tecla 'Tab'\n"
 "(tabulador). Asi siempre sabes que accion puede realizarse en cada panel."
 
-#: src/help.c:173
+#: src/help.c:166
 msgid "Goto:\n"
 msgstr "Ir a:\n"
 
-#: src/help.c:175
+#: src/help.c:168
 msgid ""
 "Pressing 'G' allows you to jump to a specific day in the calendar.\n"
 "\n"
@@ -547,15 +606,15 @@ msgstr ""
 "Pulsando 'G' te permite saltar a un dia concreto en el calendario.\n"
 "\n"
 "Usando esta opcion, no necesitas moverte hasta ese dia usando las teclas\n"
-"de desplazamiento dentro del panel de calendario."
-"Si pulsas [INTRO] sin especificar una fecha, Calcurse comprueba la fecha\n"
-"actual del sistema y te llevara hasta esa fecha." 
+"de desplazamiento dentro del panel de calendario.Si pulsas [INTRO] sin\n"
+"especificar una fecha, Calcurse comprueba la fecha actual del sistema y\n"
+"te llevara hasta esa fecha."
 
-#: src/help.c:181
+#: src/help.c:174
 msgid "Delete:\n"
 msgstr "Borrar:\n"
 
-#: src/help.c:183
+#: src/help.c:176
 msgid ""
 "Pressing 'D' deletes an element in the ToDo or Appointment list.\n"
 "\n"
@@ -581,13 +640,13 @@ msgstr ""
 "Si la opcion general 'confirmar_borrar' esta fijada en 'SI', entonces se\n"
 "te pedira confirmacion antes de borrar el evento seleccionado.\n"
 "No olvides salvar los datos del calendario antes de salir para mantener\n"
-"las modificaciones la proxima vez que inicies Calcurse." 
+"las modificaciones la proxima vez que inicies Calcurse."
 
-#: src/help.c:195
+#: src/help.c:188
 msgid "Add:\n"
 msgstr "Añadir:\n"
 
-#: src/help.c:197
+#: src/help.c:190
 msgid ""
 "Pressing 'A' allows you to add an item in either the ToDo or Appointment\n"
 "list, depending on which panel is selected when you press 'A'.\n"
@@ -629,39 +688,49 @@ msgstr ""
 "al pulsar 'A'.\n"
 "\n"
 "Para introducir un nuevo elemento a la lista del panel de tareas pendientes\n"
-"Primero necesitaras introducir la descripcion de este nuevo elemento,\n"
+"primero necesitaras introducir la descripcion de este nuevo elemento,\n"
 "entoces se te pedira que especifiques la prioridad. Esta prioridad esta\n"
-"representada por un numero que va desde el 9, que representa la prioridad mas\n"
+"representada por un numero que va desde el 9, que representa la prioridad "
+"mas\n"
 "baja, hasta el 1 que seria la mas alta. Es posible cambiar esta prioridad\n"
-"posteriormente pulsando las teclas '+/-' dentro del panel de tareas pendientes.\n"
+"posteriormente pulsando las teclas '+/-' dentro del panel de tareas "
+"pendientes.\n"
 "\n"
-"Si cuando pulses 'Á' tienes seleccionado el panel de citas y eventos, podras\n"
+"Si cuando pulses 'Á' tienes seleccionado el panel de citas y eventos, "
+"podras\n"
 "introducir una nueva cita o un evento para todo el dia. Si es un evento,\n"
-"pulsa [INTRO] en vez de la fecha de inicio e introduce la descripcion del evento.\n"
+"pulsa [INTRO] en vez de la fecha de inicio e introduce la descripcion del "
+"evento.\n"
 "Para introducir una nueva cita a la lista del panel de citas y eventos,\n"
 "necesitaras introducir sucesivamente la hora de comienzo de la cita, la\n"
-"duracion de la cita (puedes especificarla en minutos o poniendo la hora final\n"
+"duracion de la cita (puedes especificarla en minutos o poniendo la hora "
+"final\n"
 "en el formato [hh:mm] o [h:mm]), y la descripcion de la misma.\n"
 "\n"
-"El dia seleccionado para la cita o evento es el que esta seleccionado en ese\n"
+"El dia seleccionado para la cita o evento es el que esta seleccionado en "
+"ese\n"
 "momento en el calendario, asi que necesitaras primero moverte hasta el dia\n"
-"deseado antes de pulsar 'A' ."
-"\n"
+"deseado antes de pulsar 'A' .\n"
 "Notas:\n"
-"       o si una cita se prolonga durante varios dias seguidos, este evento sera\n"
-"         indicado en todos los dias correspondientes y la hora inicial o final\n"
+"       o si una cita se prolonga durante varios dias seguidos, este evento "
+"sera\n"
+"         indicado en todos los dias correspondientes y la hora inicial o "
+"final\n"
 "         sera remplazada por '..' si el evento no empieza o acaba ese dia.\n"
-"       o si pulsas [INTRO] al ser preguntado por la descripcion de una 'CITA O\n"
-"         EVENTO' o 'TAREA PENDIENTE', sin introducir ninguna descripcion, no se\n"
+"       o si pulsas [INTRO] al ser preguntado por la descripcion de una 'CITA "
+"O\n"
+"         EVENTO' o 'TAREA PENDIENTE', sin introducir ninguna descripcion, no "
+"se\n"
 "         añadira ningun elemento a la lista.\n"
-" 	o No olvides guardar los datos del calendario antes de salir para mantener\n"
-"         las modificaciones la proxima vez que inicies Calcurse."  
+" \to No olvides guardar los datos del calendario antes de salir para "
+"mantener\n"
+"         las modificaciones la proxima vez que inicies Calcurse."
 
-#: src/help.c:228
+#: src/help.c:221
 msgid "Priority:\n"
 msgstr "Prioridad:\n"
 
-#: src/help.c:230
+#: src/help.c:223
 msgid ""
 "Pressing '+' or '-' allows you to change the priority of the currently\n"
 "selected item in the ToDo list. Priorities are represented by the number\n"
@@ -694,11 +763,11 @@ msgstr ""
 "La posicion de la tarea puede tambien variar dependiendo de los elementos\n"
 "que tenga por debajo."
 
-#: src/help.c:242
+#: src/help.c:235
 msgid "Repeat:\n"
 msgstr "Repetir:\n"
 
-#: src/help.c:244
+#: src/help.c:237
 msgid ""
 "Pressing 'R' allows you to repeat an event or an appointment. You must\n"
 "first select the item to be repeated by moving inside the appointment\n"
@@ -750,12 +819,12 @@ msgstr ""
 "Nota: los comandos 'Repetir' y 'Borrar' pueden mezclarse para crear\n"
 "      configuraciones complicadas, es posible borrar una recurrencia\n"
 "      o un elemento repetido."
-        
-#: src/help.c:265
+
+#: src/help.c:258
 msgid "Config:\n"
 msgstr "Config:\n"
 
-#: src/help.c:267
+#: src/help.c:260
 msgid ""
 "Pressing 'C' leads to the configuration submenu, from which you can\n"
 "select between color, layout, and general options.\n"
@@ -768,11 +837,14 @@ msgid ""
 "The general options submenu brings a screen with the different options\n"
 "which modifies the way Calcurse interacts with the user.\n"
 "\n"
+"The notify submenu allows you to change the notify-bar settings.\n"
+"\n"
 "Do not forget to save the calendar data to retrieve your configuration\n"
 "next time you launch Calcurse."
 msgstr ""
 "Pulsando 'C' seras conducido al submenu de configuracion, desde donde\n"
-"podras seleccionar entre color, disposicion y opciones generales.\n"
+"podras seleccionar entre color, disposicion, opciones generales y "
+"notificaciones.\n"
 "\n"
 "En el submenu de color puedes elegir el tema de color.\n"
 "\n"
@@ -783,14 +855,79 @@ msgstr ""
 "El submenu de opciones generales tiene una pantalla con las diferentes\n"
 "opciones que modifican la forma en que Calcurse interactua con el usuario.\n"
 "\n"
+"El submenu de notificaciones te permite cambiar la configuracion de la "
+"barra\n"
+"de notificaciones\n"
+"\n"
 "No olvides guardar los datos del calendario para mantener tu configuracion\n"
 "la proxima vez que inicies Calcurse."
 
-#: src/help.c:277
+#: src/help.c:271
+msgid "General keybindings:\n"
+msgstr "Teclas generales\n"
+
+#: src/help.c:273
+msgid ""
+"Some of the keybindings apply whatever panel is selected. They are\n"
+"called general keybinding and involve the <CONTROL> key, which is\n"
+"represented by the '^' sign in the status bar panel. For example,\n"
+"'^A' means you need to press <CONTROL> and 'A' simultaneously to\n"
+"activate the command. Here is the list of all the general keybindings,\n"
+"together with their corresponding action:\n"
+"\n"
+" '^R' : Redraw function -> redraws calcurse panels, this is useful if\n"
+"                           you resize your terminal screen or when\n"
+"                           garbage appears inside the display\n"
+" '^A' : Add Appointment -> add an appointment or an event\n"
+" '^T' : Add ToDo        -> add a todo\n"
+" '^H' : -1 Day          -> move to previous day\n"
+" '^L' : +1 Day          -> move to next day\n"
+" '^K' : -1 Week         -> move to previous week\n"
+" '^J' : +1 Week         -> move to next week"
+msgstr ""
+"Algunas teclas pueden utilizarse independientemente del panel que este\n"
+"seleccionado. Estas se llaman teclas generales e involucran a la tecla\n"
+"<CONTROL>, representada por el simbolo '^' en el panel de la barra de\n"
+"estado. Por ejemplo una '^A' significa que tienes que pulsar <CONTROL> y\n"
+"'A' simultaneamente para activar el comando. Esta es una lista de todas las\n"
+"teclas generales con su correspondiente accion:\n"
+"\n"
+" '^R' : Funcion redibujado -> redibuja los paneles de Calcurse, esto es\n"
+"                              util si redimensionas la pantalla de tu "
+"terminal\n"
+"                              o cuando aparece basura en la pantalla.\n"
+" '^A' : Añadir una Cita    -> añadir una cita o evento\n"
+" '^T' : Añadir tarea       -> añadir una tarea pendiente\n"
+" '^H' : -1 Dia             -> moverte al dia anterior\n"
+" '^L' : +1 Dia             -> moverte al dia siguiente\n"
+" '^K' : -1 Semana          -> moverte a la semana anterior\n"
+" '^J' : +1 Semana          -> moverte a la semana siguiente"
+
+#: src/help.c:289
+msgid "OtherCmd:\n"
+msgstr "Otros comandos\n"
+
+#: src/help.c:291
+msgid ""
+"Pressing 'O' allows you to switch between status bar help pages.\n"
+"Because the terminal screen is too narrow to display all of the\n"
+"available commands, you need to press 'O' to see the next set of\n"
+"commands together with their keybindings.\n"
+"Once the last status bar page is reached, pressing 'O' another time\n"
+"leads you back to the first page."
+msgstr ""
+"Pulsando 'O' te permite navegar entre las paginas de ayuda de la barra\n"
+"de estado. Puesto que la pantalla del terminal es demasiado estrecha para\n"
+"mostrar todos los comandos disponibles, necesitaras pulsar 'O' para ver el\n"
+"proximo grupo de comandos junto con sus atajos de teclado correspondientes.\n"
+"Una vez alcances la ultima pagina de la barra de estado, pulsa 'O' de nuevo\n"
+"para volver a la primera pagina."
+
+#: src/help.c:298
 msgid "Calcurse - text-based organizer"
 msgstr "Calcurse - organizador basado en modo texto"
 
-#: src/help.c:279
+#: src/help.c:300
 msgid ""
 "Copyright (c) 2004-2006 Frederic Culot\n"
 "\n"
@@ -813,7 +950,8 @@ msgstr ""
 "Este programa es software libre; puedes redistribuirlo y/o modificarlo\n"
 "bajo los terminos de la Licencia Publica General GNU como se publico por\n"
 "la Free Software Foundation (Fundacion para el Software Libre); cualquier\n"
-"version 2 de la licencia, o (segun tu eleccion) cualquier version posterior.\n"
+"version 2 de la licencia, o (segun tu eleccion) cualquier version "
+"posterior.\n"
 "\n"
 "Este programa se distribuye con la esperanza de que pueda ser util, pero\n"
 "SIN NINGUNA GARANTIA; incluso sin la garantia implicita de COMERCIALIZACION\n"
@@ -824,130 +962,141 @@ msgstr ""
 "Envia tus impresiones y comentarios a: calcurse@culot.org\n"
 "Pagina web de Calcurse : http://culot.org/calcurse"
 
-#: src/help.c:300
+#: src/help.c:323
 #, c-format
 msgid "CalCurse %s | help"
 msgstr "Calcurse %s | ayuda"
 
-#: src/io.c:77
+#: src/io.c:78
 #, c-format
 msgid "%s does not exist, create it now [y or n] ? "
 msgstr "%s no existe, crearlo ahora [y o n] ?"
 
-#: src/io.c:82 src/io.c:99
+#: src/io.c:83 src/io.c:100
 #, c-format
 msgid "aborting...\n"
 msgstr "abortando...\n"
 
-#: src/io.c:93
+#: src/io.c:94
 #, c-format
 msgid "%s successfully created\n"
 msgstr "%s creado con exito\n"
 
-#: src/io.c:94
+#: src/io.c:95
 #, c-format
 msgid "starting interactive mode...\n"
 msgstr "arrancando modo interactivo...\n"
 
-#: src/io.c:130
+#: src/io.c:131
 msgid "Problems accessing data file ..."
 msgstr "Problemas al acceder al fichero de datos..."
 
-#: src/io.c:133
+#: src/io.c:134
 msgid "The data files were successfully saved"
 msgstr "Los archivos de datos se han salvado con exito"
 
-#: src/io.c:249
+#: src/io.c:278
 msgid "FATAL ERROR in load_app: wrong format in the appointment or event\n"
 msgstr "ERROR FATAL en load_app: formato incorrecto en la cita o evento\n"
 
-#: src/io.c:268
+#: src/io.c:297
 msgid "FATAL ERROR in load_app: syntax error in the item date\n"
 msgstr "ERROR FATAL en load_app: error de sintaxis en la fecha del elemento\n"
 
-#: src/io.c:283
+#: src/io.c:312
 msgid "FATAL ERROR in load_app: no event nor appointment found\n"
 msgstr "ERROR FATAL en load_app: no se encontro cita ni evento\n"
 
-#: src/io.c:379
+#: src/io.c:408
 msgid "Failed to open todo file"
 msgstr "Fallo al abrir el archivo del ToDo"
 
-#: src/io.c:462
+#: src/io.c:491
 msgid "Welcome to Calcurse. Missing data files were created."
 msgstr "Bienvenid@ a Calcurse. Se crearon los archivos de datos que faltaban."
 
-#: src/io.c:463
+#: src/io.c:492
 msgid "Data files found. Data will be loaded now."
 msgstr "Archivos de datos encontrados. Ahora se cargaran los datos."
 
-#: src/io.c:479
+#: src/io.c:508
 msgid "Saving..."
 msgstr "Guardando..."
 
-#: src/io.c:480
+#: src/io.c:509
 msgid "Loading..."
 msgstr "Cargando..."
 
-#: src/recur.c:316
+#: src/recur.c:332
 msgid "FATAL ERROR in recur_event_scan: date error in the event\n"
 msgstr "ERROR FATAL en recur_event_scan: error de fecha en el evento\n"
 
-#: src/recur.c:348
+#: src/recur.c:366
 msgid "FATAL ERROR in recur_item_inday: unknown item type\n"
 msgstr "ERROR FATAL en recur_item_inday: tipo de elemento desconocido\n"
 
-#: src/recur.c:437
+#: src/recur.c:441
 msgid "FATAL ERROR in recur_event_erase: no such event\n"
 msgstr "ERROR FATAL en recur_event_erase: no existe el evento\n"
 
-#: src/recur.c:486
+#: src/recur.c:501
 msgid "FATAL ERROR in recur_apoint_erase: no such appointment\n"
 msgstr "ERROR FATAL en recur_apoint_erase: no existe esa cita\n"
 
-#: src/recur.c:505
+#: src/recur.c:520
 msgid "Enter the repetition type: (D)aily, (W)eekly, (M)onthly, (Y)early"
-msgstr "Introduce el tipo de repeticion: [D] diario, [W] semanal, [M] mensual, [Y] anual"
+msgstr ""
+"Introduce el tipo de repeticion: [D] diario, [W] semanal, [M] mensual, [Y] "
+"anual"
 
-#: src/recur.c:506
+#: src/recur.c:521
 msgid "[D/W/M/Y] "
 msgstr "[D/W/M/Y] "
 
-#: src/recur.c:508
+#: src/recur.c:523
 msgid "Enter the repetition frequence:"
 msgstr "Introduce la frecuencia de repeticion:"
 
-#: src/recur.c:510
+#: src/recur.c:525
 msgid "The frequence you entered is not valid."
 msgstr "La frecuencia que has introducido no es valida."
 
-#: src/recur.c:512
+#: src/recur.c:527
 msgid "Enter the ending date: [mm/dd/yyyy] or '0' for an endless repetition"
-msgstr "Introduce la fecha final: [mm/dd/aaaa] o '0' para una repeticion infinita"
+msgstr ""
+"Introduce la fecha final: [mm/dd/aaaa] o '0' para una repeticion infinita"
 
-#: src/recur.c:513
+#: src/recur.c:528
 msgid "The entered date is not valid."
 msgstr "La fecha introducida no es valida."
 
-#: src/recur.c:515
+#: src/recur.c:530
 msgid "Possible formats are [mm/dd/yyyy] or '0' for an endless repetetition"
-msgstr "Los formatos posibles son [mm/dd/aaaa] o '0' para una repeticion infinita"
+msgstr ""
+"Los formatos posibles son [mm/dd/aaaa] o '0' para una repeticion infinita"
 
-#: src/recur.c:516
+#: src/recur.c:531
 msgid "This item is already a repeated one."
 msgstr "Este elemento es ya un elemento repetido."
 
-#: src/recur.c:517
+#: src/recur.c:532
 msgid "Press [ENTER] to continue."
 msgstr "Pulsa [INTRO] para continuar."
 
-#: src/recur.c:593
+#: src/recur.c:534
+msgid "Sorry, the date you entered is older than the item start time."
+msgstr ""
+"Lo siento, la fecha que has introducido es anterior a la de inicio del "
+"elemento."
+
+#: src/recur.c:618
 msgid "FATAL ERROR in recur_repeat_item: wrong item type\n"
 msgstr "ERROR FATAL en recur_repeat_item: tipo de elemento erroneo\n"
 
-#: src/recur.c:618
+#: src/recur.c:643
 msgid "FATAL ERROR in recur_exc_scan: syntax error in the item date\n"
-msgstr "ERROR FATAL en recur_exc_scan: error de sintaxis en la fecha del elemento\n"
+msgstr ""
+"ERROR FATAL en recur_exc_scan: error de sintaxis en la fecha del elemento\n"
 
 #: src/todo.c:42
 msgid "Enter the new ToDo item : "
@@ -955,7 +1104,8 @@ msgstr "Introduce una nueva tarea pendiente :"
 
 #: src/todo.c:44
 msgid "Enter the ToDo priority [1 (highest) - 9 (lowest)] :"
-msgstr "Introduce la prioridad de la tarea [1 (la mas alta) - 9 (la mas baja) :"
+msgstr ""
+"Introduce la prioridad de la tarea [1 (la mas alta) - 9 (la mas baja) :"
 
 #: src/todo.c:100
 msgid "FATAL ERROR in todo_delete_bynum: no such todo\n"
@@ -969,83 +1119,95 @@ msgstr "ERROR FATAL en todo_get_position: tarea no encontrada\n"
 msgid "FATAL ERROR in todo_chg_priority: no such action\n"
 msgstr "ERROR FATAL en todo_chg_priority: no existe esa accion\n"
 
-#: src/utils.c:76
+#: src/utils.c:77
 msgid "Press any key to continue..."
 msgstr "Pulsa cualquier tecla para continuar..."
 
-#: src/utils.c:234
+#: src/utils.c:238
 msgid "-- Press 'N' for next page --"
 msgstr "-- Pulsa 'N' para la proxima pagina --"
 
-#: src/utils.c:235
+#: src/utils.c:239
 msgid "-- Press 'P' for previous page --"
 msgstr "-- Pulsa 'P' para la pagina siguiente --"
 
-#: src/utils.c:372 src/utils.c:406 src/utils.c:446
+#: src/utils.c:344
 msgid "Help"
 msgstr "Ayuda"
 
-#: src/utils.c:373 src/utils.c:407 src/utils.c:447
+#: src/utils.c:345
 msgid "Quit"
 msgstr "Salir"
 
-#: src/utils.c:375 src/utils.c:409 src/utils.c:449
-msgid "Redraw"
-msgstr "Redibujar"
-
-#: src/utils.c:376 src/utils.c:410 src/utils.c:450
+#: src/utils.c:346
 msgid "Save"
 msgstr "Guardar"
 
-#: src/utils.c:378
-msgid "-/+1 Day"
-msgstr "-/+1 Dia"
-
-#: src/utils.c:380
-msgid "-/+1 Week"
-msgstr "-/+1 Semana"
-
-#: src/utils.c:382 src/utils.c:422 src/utils.c:464
-msgid "GoTo"
-msgstr "Ir a"
-
-#: src/utils.c:384 src/utils.c:414 src/utils.c:454
-msgid "Chg View"
-msgstr "Cambiar vista"
-
-#: src/utils.c:386 src/utils.c:426 src/utils.c:466
-msgid "Config"
-msgstr "Config"
-
-#: src/utils.c:412 src/utils.c:452
-msgid "Up/Down"
-msgstr "Arriba/Abajo"
-
-#: src/utils.c:416 src/utils.c:456
+#: src/utils.c:347
 msgid "Add Item"
 msgstr "Añadir elemento"
 
-#: src/utils.c:418 src/utils.c:458
+#: src/utils.c:348
 msgid "Del Item"
 msgstr "Borrar elemento"
 
-#: src/utils.c:420
+#: src/utils.c:349 src/utils.c:361
+msgid "-+1 Day"
+msgstr "-+1 Dia"
+
+#: src/utils.c:350 src/utils.c:362
+msgid "-+1 Week"
+msgstr "-+1 Semana"
+
+#: src/utils.c:351
+msgid "Up/Down"
+msgstr "Arriba/Abajo"
+
+#: src/utils.c:352
 msgid "Repeat"
 msgstr "Repetir"
 
-#: src/utils.c:424 src/utils.c:462
-msgid "View"
-msgstr "Vista"
-
-#: src/utils.c:460
+#: src/utils.c:353
 msgid "Priority"
 msgstr "Prioridad"
 
-#: src/utils.c:494
+#: src/utils.c:354
+msgid "Chg View"
+msgstr "Cambiar vista"
+
+#: src/utils.c:355
+msgid "Go to"
+msgstr "Ir a"
+
+#: src/utils.c:356
+msgid "Config"
+msgstr "Config"
+
+#: src/utils.c:357
+msgid "View"
+msgstr "Vista"
+
+#: src/utils.c:358
+msgid "Redraw"
+msgstr "Redibujar"
+
+#: src/utils.c:359
+msgid "Add Appt"
+msgstr "Añadir Cita"
+
+#: src/utils.c:360
+msgid "Add Todo"
+msgstr "Añadir tarea"
+
+#: src/utils.c:363
+msgid "OtherCmd"
+msgstr "Otros comandos"
+
+#: src/utils.c:420
 msgid "FATAL ERROR in date2sec: failure in mktime\n"
 msgstr "ERROR FATAL en date2sec: fallo en mktime\n"
 
-#: src/utils.c:617
+#: src/utils.c:543
 msgid "Appointment"
 msgstr "Cita"
 
@@ -1125,3 +1287,27 @@ msgstr "Vie"
 msgid "Sat"
 msgstr "Sab"
 
+#~ msgid "Redraw:\n"
+#~ msgstr "Redibujar:\n"
+
+#~ msgid ""
+#~ "Pressing CTRL-L redraws the Calcurse panels.\n"
+#~ "\n"
+#~ "You might want to use this function when you resize your terminal\n"
+#~ "screen for example, and you want Calcurse to take into account the new\n"
+#~ "size of the terminal.\n"
+#~ "\n"
+#~ "This function can also be useful when garbage appears in the display,\n"
+#~ "and you want to clean it."
+#~ msgstr ""
+#~ "Pulsando CTRL-L se redibujan los paneles de Calcurse.\n"
+#~ "\n"
+#~ "Puedes necesitar usar esta funcion por ejemplo, cuando cambias el\n"
+#~ "tamaño de la pantalla de tu terminal y quieres que Calcurse se\n"
+#~ "adapte al nuevo tamaño del terminal.\n"
+#~ "\n"
+#~ "Esta funcion puede ser tambien util cuando aparece basura en la\n"
+#~ "pantalla y quieres limpiarla."
+
+#~ msgid "GoTo"
+#~ msgstr "Ir a"
