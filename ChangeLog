@@ -1,3 +1,6 @@
+25 Sep 2006:
+	spanish translation and manual updated by Jose Lopez
+
 22 Sep 2006:
 	spanish manual updated by Jose Lopez
 	bugfix: LOCALEDIR is now defined in src/Makefile.am instead of
