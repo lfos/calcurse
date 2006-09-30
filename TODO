@@ -11,16 +11,17 @@ this list.
 
 High
 ----
-  o  Add a week view in the calendar panel
-  o  Add a clock to show current time and date with an alarm 
+  o  Add import capabilities to read ical files inside calcurse
   o  Add export capabilities to create xml files 
+  o  Create external calendars which would contain hollydays and such (in ics
+     format)
+  o  Add a week view in the calendar panel
   o  Add ability to edit items, and to store multiple-lines descriptions
  
 
 Average
 -------
   o  Improve the '-d' option by adding more date formats
-  o  Add import capabilities to read ical files inside calcurse
   o  Accept dates entered in other formats such as d/m/yyyy or d/m/yy,
      make the date format user configurable
   o  Make keys user configurable
@@ -29,8 +30,6 @@ Average
 Low
 ---
   o  Add 't' alias for 'g - Enter'
-  o  Create external calendars which would contain hollydays and such (in ics
-     format, as in mozilla sunbird)..
   o  All status bars should be terminal-size dependant (config_bar is not)
   o  Improve check_event_time() using sscanf as in goto_day()
   o  Get rid of the scroller() function
