@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.21 2006/09/18 08:53:02 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.22 2006/09/30 09:18:21 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -216,7 +216,7 @@ int main(int argc, char **argv)
 
 		/* Get user input. */
 		ch = wgetch(swin);
-		if (ch != 10) switch (ch) {
+		switch (ch) {
 
 		case 9:	/* The TAB key was hit. */
 			reset_status_page();
