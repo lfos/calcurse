@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.22 2006/09/30 09:18:21 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.23 2006/09/30 14:23:07 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -1095,7 +1095,7 @@ void add_item(void)
 
 	/* Get the starting time */
 	strncpy(item_time, "     ", 6);
-	while (check_time(item_time) == 0) {
+	while (check_time(item_time) != 1) {
                 status_mesg(mesg_1, "");
 		getstring(swin, colr, item_time, 0, 1);
 		if (strlen(item_time) == 0){
