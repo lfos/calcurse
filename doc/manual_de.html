@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <!--
 /*
- *	$calcurse: manual_de.html,v 1.4 2006/09/19 09:38:10 culot Exp $
+ *	$calcurse: manual_de.html,v 1.5 2006/10/01 18:00:57 culot Exp $
  *
  * Calcurse - text-based organizer
  * Copyright (c) 2004-2006 Frederic Culot
@@ -34,7 +34,7 @@
 </head>
 <body bgcolor="white" text="black" link="blue" vlink="navy">
 
-<h1><code>CALCURSE - textbasierender Terminkalender</code></h1>
+<h1><code>CALCURSE - textbasierter Terminkalender</code></h1>
 <p>
 <p><hr><p>
 
@@ -48,7 +48,7 @@
 </ul>
 <li><a href="#install">Installation</a>
 <ul>
-<li><a href="#install_requirements">Vorraussetzungen</a>
+<li><a href="#install_requirements">Voraussetzungen</a>
 <ul>
 <li><a href="#install_requirements_ncurses"><code>ncurses</code> Bibliothek</a>
 <li><a href="#install_requirements_gettext"><code>gettext</code> Bibliothek</a>
@@ -75,7 +75,7 @@
 <li><a href="#options_general">Allgemeine Optionen</a>
 <li><a href="#options_colors">Einstellen der Terminalfarben</a>
 <li><a href="#options_layout">Einstellen des Layouts</a>
-<li><a href="#options_notify"><font color="green">Notify-bar settings</font></a>
+<li><a href="#options_notify">Einstellen der Benachrichtigungszeile</a>
 </ul>
 <li><a href="#known_bugs">Bekannte Fehler</a>
 <li><a href="#bugs">Mitteilung von Fehlern und Anregungen</a>
@@ -101,11 +101,11 @@
 
 <a name="intro"></a><h1>Einleitung</a></h1>
 <p>
-<code>calcurse</code> ist ein textbasierender pers&ouml;nlicher Terminkalender, der
+<code>calcurse</code> ist ein textbasierter pers&ouml;nlicher Terminkalender, der
 Ihnen bei der Organisation von Terminen und t&auml;glichen Aufgaben
 hilft. Er beinhaltet einen Kalender sowie eine 'todo'-Liste, die Ihre
-Termine ordnet. Das Benutzer-Interface ist einstellbar. Terminalfarben
-und Layout lassen sich individuell anpassen. Alle Kommandos sind
+Termine ordnen. Die Terminalfarben und das Layout des Benutzer-Interfaces 
+lassen sich individuell anpassen. Alle Kommandos sind
 dokumentiert und k&ouml;nnen zur Laufzeit jederzeit erfragt werden.
 
 
@@ -138,10 +138,10 @@ der Bibliothek die f&uuml;r das Benutzer-Interface verwendet wird.
 <code>Calcurse</code> ist portabel und setzt sich zum Ziel klein,
 schnell und sicher zu sein. Es ist auf einer Konsole oder einem
 Terminal zu verwenden, entweder lokal oder auf einem entfernten System
-mithilfe einer ssh-Verbindung (oder &auml;hnlichem).<br>
+mithilfe einer ssh-Verbindung (oder &Auml;hnlichem).<br>
 <code>Calcurse</code> kann in zwei unterschiedlichen Modi gestartet
-werden: ein interaktiver und nicht-interaktiver Modus. Der erste Modus
-erzeugt Dank des textbasierenden Interfaces die Ansicht eines eigenen
+werden: Im interaktiven und im nicht-interaktiven Modus. Der erste Modus
+erzeugt Dank des textbasierten Interfaces die Ansicht eines eigenen
 pers&ouml;nlichen Terminkalenders. Mit dem zweiten Modus ist es m&ouml;glich
 sich ein Erinnerungstool (Reminder) zu erstellen, wenn
 <code>calcurse</code> mit den entsprechenden Argumenten in 'cron tab'
@@ -149,7 +149,7 @@ oder einem 'init script' eingebunden wird.<br>
 Dar&uuml;ber hinaus ist <code>calcurse</code> f&uuml;r Benutzer erstellt worden,
 mit der Absicht so benutzerfreundlich wie m&ouml;glich zu sein. Das
 bedeutet, dass eine komplette Onlinehilfe im Programm zu Verf&uuml;gung
-steht, sowie alle m&ouml;gliche Aktionen zu jeder Zeit in einer Statuszeile
+steht, sowie alle m&ouml;gliche Aktionen jederzeit in einer Statuszeile
 ersichtlich sind.  Das Benutzer-Interface ist ebenfalls
 einstellbar. Ebenso kann man verschiedene Textfarben und Layouts
 w&auml;hlen.
@@ -161,8 +161,8 @@ w&auml;hlen.
 <p>
 <code>Calcurse</code> ben&ouml;tigt einen C-Compiler wie etwa
 <code>cc</code> oder <code>gcc</code>. Ferner wird die
-ncurses-Bibliothek ben&ouml;tigt, dass aber auf den meisten Unix-Systemen
-verf&uuml;gbar sein sollte. Falls nicht, kann es von folgender URL herunter
+ncurses-Bibliothek ben&ouml;tigt, die jedoch auf den meisten Unix-Systemen
+verf&uuml;gbar sein sollte. Falls nicht, k&ouml;nnen Sie sie von folgender URL herunter
 laden:<br>
 <pre>
                 http://ftp.gnu.org/pub/gnu/ncurses/
@@ -177,14 +177,18 @@ laden:<br>
         erzeugen kann, wenn es mit der entsprechenden Sprachunterst&uuml;tzung
         kompiliert wurde (z.B. <em>NLS</em>).
         Dennoch, <em>NLS</em> ist optional und wenn keine mehrsprachigen Mitteilungen
-        gew&uuml;nscht sind, kann diese Eigenschaft abgestellt werden. Einfach die Option                  <code>--disable-nls</code> dem <code>configure</code> Skript &uuml;bergeben
-        (siehe Abschnitt <ahref="#install_process">Installationsprozess</a>). <br>
+        gew&uuml;nscht sind, kann diese Eigenschaft abgestellt werden. 
+	Rufen Sie hierzu einfach das <code>configure</code> Skript mit der Option
+        <code>--disable-nls</code> auf (siehe Abschnitt <ahref="#install_process">
+	Installationsprozess</a>). <br>
+
         Um zu &uuml;berpr&uuml;fen, ob <code>gettext</code> auf dem System installiert ist,
         kann man nach der <code>libintl.h</code> Datei suchen:
         <pre>
                 locate libintl.h
         </pre>
-        Wenn diese Datei nicht gefunden wird, kann <code>gettext</code> von folgender                 URL herunter geladen werden:<br>
+        Wurde diese Datei nicht gefunden, kann <code>gettext</code> von folgender URL herunter 
+	geladen werden:<br>
         <pre>
                  http://ftp.gnu.org/pub/gnu/gettext/
         </pre>
@@ -200,15 +204,15 @@ Als erstes m&uuml;ssen die Dateien entpackt werden:
 <pre>
         tar zxvf calcurse-1.6.tar.gz
 </pre>
-Wenn Sie die Voraussetzungen erf&uuml;llen und das Archiv entpackt
-vorliegen, sind nur noch die drei &uuml;blichen Schritte erforderlich:
+Ist diese Voraussetzung erf&uuml;llt und das Archiv entpackt,
+sind nur noch die drei &uuml;blichen Schritte erforderlich:
 <OL>
         <li><code>./configure</code>
           <li><code>make</code>
           <li><code>make install</code> (mit Root-Rechten)
 </OL>
-Benutzen Sie <code>./configure --help</code> um eine Liste mit den
-verf&uuml;gbaren Optionen zu erhalten.
+Rufen Sie <code>./configure --help</code> auf, um die 
+verf&uuml;gbaren Optionen aufgelistet zu bekommen.
 
 
 <a name="basics"></a><h1><code>calcurse</code> Grundlagen</h1>
@@ -219,9 +223,9 @@ verf&uuml;gbaren Optionen zu erhalten.
 
 <dl compact>
 <dt><code>-a</code>
-<dd>Gibt die Termine eines anzugebenen Tags aus.<br>
-<u>Beachte:</u> Die Kalender-Datei, von der die Termine gelesen
-werden sollen, kann mit mithilfe der -c Option angegeben werden.<br>
+<dd>Gibt die Termine des heutigen Tags aus.<br>
+<u>Beachte:</u> Die Kalender-Datei, aus der die Termine gelesen
+werden sollen, kann mit mit Hilfe der -c Option angegeben werden.<br>
 <br>
 <dt><code>-c</code>
 <dd>
@@ -231,26 +235,26 @@ Abschnitt: <a href="#basics_files"><code>calcurse</code> Dateien</a>).<br>
 <br>
 <dt><code>-d</code>
 <dd>
-Gibt die Termine eines angegebenen Datums aus oder gibt alle Termine
-der anzugebenen nachfolgenden Tage aus. Somit sind zwei m&ouml;gliche
-Formate m&ouml;glich:
+Gibt die Termine eines angegebenen Datums oder alle Termine der 
+anzugebenden nachfolgenden Tage aus. Somit sind zwei Formate m&ouml;glich:
 <ul>
 <li>Datum: 'MM/TT/JJJJ' (Monat, Tag, Jahr).
 <li>Anzahl der Tage: 'n'.
 </ul>
-Im ersten Fall wird eine Liste mit allen Terminen des anzugebenen
+Im ersten Fall wird eine Liste mit allen Terminen des angegebenen
 Datums ausgegeben. Der zweite Fall listet alle folgenden Termine auf,
 die in den n&auml;chsten 'n' Tagen zu erledigen sind.<br>
-Beispiel: die Eingabe <code>calcurse -d 3</code> gibt alle Termine von
-heute, morgen und &uuml;bermorgen aus.<br>
+Beispiel: Die Eingabe <code>calcurse -d 3</code> gibt alle Termine des
+heutigen und der beiden folgenden Tage aus.<br>
 <br>
 <dt><code>-h</code>
 <dd>
-Gibt eine Hilfe zu den Unterst&uuml;tzten Optionen aus.<br>
+Gibt eine Hilfe zu den unterst&uuml;tzten Optionen aus.<br>
 <br>
-<dt><code><font color="green">-n</font></code>
+<dt><code>-n</code>
 <dd>
-<font color="green">Print the next appointment within next 24 hours and exit.</font><br>
+Gibt den Termin aus, der innerhalb der kommenden 24 Stunden als 
+n&auml;chstes stattfindet.<br>
 <br>
 <dt><code>-t</code>
 <dd>
@@ -265,35 +269,31 @@ Gibt die aktuelle Version von Calcurse aus.
 <a name="basics_invocation_variable"></a><h3>Umgebungsvariable f&uuml;r i18n</h3>
 <p>
 
-        <code>calcurse</code> kann mit einer Unterst&uuml;tzung f&uuml;r die Muttersprache
+        <code>calcurse</code> kann mit Unterst&uuml;tzung f&uuml;r verschiedene Sprachen
         kompiliert werden (siehe <a
         href="#install_requirements_gettext"><code>gettext</code>
-        Bibliothek</a>). Wenn Meldungen in der Muttersprache gew&uuml;nscht sind,
-        sollte zunacht gepr&uuml;ft werden, ob die <code>po/LINGUAS</code> Datei verf&uuml;gbar ist.
+        Bibliothek</a>). Um Meldungen in anderen Sprachen zu erhalten,
+        sollte zun&auml;chst gepr&uuml;ft werden, ob die <code>po/LINGUAS</code> Datei verf&uuml;gbar ist.
         Diese Datei zeigt alle verf&uuml;gbaren Sprachen durch
-        zweibuchstabige K&uuml;rzel an (z. B., <em>fr</em>
-        steht f&uuml;r franz&ouml;sisch). Wenn Ihre Sprache nicht aufgef&uuml;hrt ist, w&auml;re es
-        nat&uuml;rlich grossartig, wenn Sie sich an der &Uuml;bersetzung von <code>calcurse</code>
+        zweibuchstabige K&uuml;rzel an (beispielsweise steht <em>fr</em>
+        f&uuml;r Franz&ouml;sisch). Ist Ihre Muttersprache nicht aufgef&uuml;hrt, w&auml;re es
+        nat&uuml;rlich gro&szlig;artig, wenn Sie sich an der &Uuml;bersetzung von <code>calcurse</code>
         in andere Sprachen beteiligen k&ouml;nnten (siehe Abschnitt <a href="#contribute">Wie kann
         ich einen Beitrag leisten?</a>).<br>
-        Wenn Ihre Sprache verf&uuml;gbar ist, starten Sie
-        <code>calcurse</code> mit dem folgenden Aufruf:
+        Wird Ihre Sprache bereits unterst&uuml;tzt, k&ouml;nnen Sie
+        <code>calcurse</code> mit dem folgenden Aufruf starten:
         <pre>
                 LC_ALL=fr_FR calcurse
         </pre>
         wobei <em>fr_FR</em> der Name der gew&uuml;nschten Spracheausgabe ist und durch
         das K&uuml;rzel Ihrer Sprache ersetzt werden kann.<br>
-	<font color="green">
-	You should also specify the charset to be used, because in some
-	cases the accents and such are not displayed correctly. 
-	This charset is indicated at the beginning of the po file 
-	corresponding to the desired language. For instance, you can see 
-	in the fr.po file that it uses the iso-8859-1 charset, so you 
-	could run <code>calcurse</code> using the following command:
+	Zus&auml;tzlich sollten Sie den verwendeten Zeichensatz angeben, da in einigen F&auml;llen Sonderzeichen wie etwa Akzente und Umlaute nicht korrekt dargestellt werden.
+	Auf den der entsprechende Sprache gew&uuml;nschten Zeichensatz wird am Anfang der po-Datei hingewiesen. 
+	Der Datei fr.po k&ouml;nnen Sie beispielsweise entnehmen, dass der Zeichensatz iso-8859-1 verwendet wird.
+	Sie k&ouml;nnten <code>calcurse</code> folgenderma&szlig;en aufrufen:
 	<pre>
 		LC_ALL=fr_FR.ISO8859-1 calcurse
 	</pre>
-	</font>
 
 
 <a name="basics_interface"></a><h2>Benutzer-Interface</h2>
@@ -305,18 +305,18 @@ Wird <code>calcurse</code> mit den Optionen:<br>
 gestartet, wird das Programm im nicht-interaktiven Modus
 ausgef&uuml;hrt. Das bedeutet, dass die gew&uuml;nschten Informationen
 ausgegeben werden und das Programm anschlie&szlig;end sofort wieder beendet
-wird.  So ist es m&ouml;glich mit dem Aufruf <code>calcurse -ta</code> eine
-Liste aller Termine eines bestimmten Tages zu erhalten.
+wird. Durch das Einbinden von <code>calcurse -ta</code> in eine init config 
+Datei ist es beispielsweise m&ouml;glich, sich seine zu erledigenden Aufgaben 
+und alle Termine des heutigen Tages beim Logon anzeigen zu lassen.
 
 
 <a name="basics_interface_interactive"></a><h3>Interaktiver Modus</h3>
 <p>
-Ohne Angabe einer Option oder nur die Option -c startet
+Wird keine, oder nur Option -c angegeben, startet
 <code>calcurse</code> im interaktiven Modus. In diesem Modus erh&auml;lt
-man ein Interface mit drei unterschiedlichen Panels, die mit der
-'TAB'-Taste angesteuert werden k&ouml;nnen, 
-<font color="green">plus a notification bar</font>
-sowie eine Status-Zeile (siehe unten).
+man ein Interface mit drei unterschiedlichen Panels, einer 
+Benachrichtigungszeile, sowie einer Status-Zeile (siehe unten).
+Die einzelnen Panels lassen sich durch die 'TAB'-Taste ansteuern.
 <pre>
 
       Termin-Panel---.                                   .---Kalender-Panel
@@ -325,8 +325,8 @@ sowie eine Status-Zeile (siehe unten).
  +------------------------------------++----------------------------+
  |          Termine                   ||          Kalender          |
  |------------------------------------||----------------------------|
- |                      6. April 2006 ||         April 2006         |
- |                                    ||Mon Die Mit Don Frei Sam Son|
+ |                    6. Oktober 2006 ||       September 2006       |
+ |                                    || Mo  Di  Mi  Do  Fr  Sa  So |
  |                                    ||                      1   2 |
  |                                    ||  3   4   5   6   7   8   9 |
  |                                    || 10  11  12  13  14  15  16 |
@@ -335,17 +335,17 @@ sowie eine Status-Zeile (siehe unten).
  |                                    ||                            |
  |                                    |+----------------------------+
  |                                    |+----------------------------+
- |                                    ||        Zu erledigen        | todo-
+ |                                    ||          Aufgaben          | todo-
  |                                    ||----------------------------| Panel
  |                                    ||                            |   |
  |                                    ||                            |   |
  |                                    ||                            |&lt;--.
  |                                    ||                            |
  +------------------------------------++----------------------------+
- |---[ Mon 2006-11-22 | 10:11:43 ]---(apts)----&gt; 01:20 :: lunch &lt;---|&lt;--.
- +------------------------------------------------------------------+ <font color="green">notify-bar</font>
- | ? Hilfe  R Neu zeichnen  H/L -/+1 Tag  G Gehe zu  C Einstellung  |
- | Q Verlassen   S Speichern   J/K -/+1 Woche   Tab ändere Ansicht  |&lt;-.
+ |---[ So 2006-10-01 | 10:11:43 ]---(apts)----&gt; 01:20 :: lunch  &lt;---|&lt;--.
+ +------------------------------------------------------------------+ Benachrichtigungszeile
+ | ? Hilfe     S Speichern H/L -/+1 Tag    Tab &auml;ndere Ansicht       |
+ | Q Beenden   G Gehe zu   J/K -/+1 Woche   C Einstellung           |&lt;-.
  +------------------------------------------------------------------+  |
                                                                        |
                                                                  Statuszeile
@@ -358,20 +358,19 @@ anzeigt. Das todo-Panel dagegen zeigt eine Liste mit den zu
 erledigenden Aufgaben, die keinem bestimmten Tage zugeordnet sind.
 Die letzten beiden Zeilen des Interfaces zeigen die Status-Zeile, die
 &uuml;ber die m&ouml;glichen Befehle und ihre entsprechenden Tasten informiert.
-<font color="green">
-        Just above this status bar is the notify-bar, which indicates
-	from left to right : the current date, the current time, the 
-	calendar file currently in use (apts on the above example, which
-	is the default calendar file, see the following section), and 
-	the next appointment within the upcoming 24 hours. Here it says
-	that it will be lunch time in one hour and twenty minutes.
-</font>
+Direkt &uuml;ber der Statuszeile befindet sich die Benachrichtigungszeile, die 
+von links nach rechts gesehen die folgenden Elemente anzeigt: Das aktuelle Datum, 
+die aktuelle Uhrzeit, die momentan verwendete Kalenderdatei (im obigen Beispiel 
+die standardm&auml;&szlig;ig verwendete Kalenderdatei apts [Vergleiche hierzu 
+den folgenden Abschnitt]) und der n&auml;chste Termin, der in den kommenden 24 
+Stunden ansteht. Im Beispiel ist dies der Termin lunch, der in 1 Stunde und 
+zwanzig Minuten beginnt.
 
 <a name="basics_files"></a><h2><code>calcurse</code> Dateien</h2>
 <p>
 
 Die folgende Verzeichnisstruktur wird im $HOME-Verzeichnis angelegt,
-wenn <code>calcurse</code> das erste mal gestartet wird:
+wenn <code>calcurse</code> das erste Mal gestartet wird:
 <pre>
         $HOME/.calcurse/
                   |___conf
@@ -394,54 +393,55 @@ entsprechenden Taste des Befehls aufgerufen werden.
 
 <a name="options"></a><h1>Optionen</h1>
 <p>
-Alle <code>calcurse</code> Parameter sind im Konfigurationsmen&uuml;
-einstellbar. Dr&uuml;cke Sie dazu die 'C'-Taste. Ein weiteres Untermen&uuml;
-erscheint mit drei weiteren Auswahlpunkten: Ein erneutes Bet&auml;tigen der
-'C'-Taste f&uuml;hrt zur Farbeinstellung, die 'L'-Taste erlaubt die Auswahl
-eines anderen Layouts, das heisst die Anordnung der drei Panel kann
-hier ge&auml;ndert werden. Mit der 'G'-Taste gelangt man zur Auswahl
-allgemeiner Optionen.
-<font color="green">Last you can modify the notify-bar
-settings by pressing 'N'.
-</font>
+S&auml;mtliche in <code>calcurse</code> ver&auml;nderbaren Parameter lassen sich 
+Konfigurationsmen&uuml; einstellen. Dr&uuml;cken Sie hierzu die Taste 'C'. 
+Daraufhin erscheint ein Untermen&uuml; mit vier weiteren Wahlm&ouml;glichkeiten: 
+Das erneute Bet&auml;tigen von 'C' f&uuml;hrt Sie zu den Farbeinstellungen und 
+&uuml;ber 'L' gelangen Sie in ein Untermen&uuml;, in dem Sie die Anordnung der 
+drei Panel &auml;ndern k&ouml;nnen. Dr&uuml;cken Sie 'G' um ins Auswahlmen&uuml; 
+der allgemeinen Optionen zu gelangen. Zu guter Letzt k&ouml;nnen Sie die 
+Einstellungen der Benachrichtigungszeile &auml;ndern, indem Sie die Taste 'N' 
+bet&auml;tigen.
 
 <a name="options_general"></a><h1>Allgemeine Optionen</h1>
 <p>
-Diese Optionen steuert das allgemeine Verhalten von
-<code>calcurse</code> wie im folgenden beschrieben wird:
+Die im Folgenden beschriebenen Optionen steuern <code>calcurse</code>s 
+allgemeines Verhalten.
 <ul>
-<li><code>auto_save</code> (Voreinstellung: <em>yes</em>)<br>
-Diese Option erlaubt es die Benutzerdaten automatisch beim Verlassen
-zu speichern.  Warnung: Es werden keine Daten gespeichert, wenn die
-auto_save Option auf <em>no</em> gesetzt wird. Das bedeutet, dass der Benutzer
-'s' bet&auml;tigen muss, wenn Eingaben gespeichert werden sollen.<br>
+<li><code>automatisches_Speichern</code> (Voreinstellung: <em>ja</em>)<br>
+Ist diese Option aktiviert, werden die Benutzerdaten automatisch beim 
+Verlassen gespeichert. Warnung: Beim Verlassen werden keine Daten gespeichert, 
+wenn <em>automatisches_Speichern</em> auf <em>nein</em> gesetzt wurde. Um Ihre 
+Eingaben dennoch zu speichern, m&uuml;ssen Sie als Nutzer die Taste 'S' 
+bet&auml;tigen.<br>
 <br>
-<li><code>confirm_quit</code> (Vorenstellung: <em>yes</em>)<br>
-Wenn diese Option auf <em>yes</em> eingestellt ist, wird nachgefragt, ob das
-Programm wirklich beenden werden soll. Ist die Option auf <em>no</em> gestellt,
-wird das Programm durch Eingabe von 'Q' ohne Nachfrage sofort beendet.<br>
+<li><code>Beenden_best&auml;tigen</code> (Voreinstellung: <em>ja</em>)<br>
+Wenn <em>ja</em> eingestellt worden ist, wird nachgefragt, ob das
+Programm wirklich beenden werden soll. Wurde <em>nein</em> gew&auml;hlt,
+wird das Programm durch die Eingabe von 'Q' ohne Nachfrage sofort beendet.<br>
 <br>
-<li><code>confirm_delete</code> (Voreinstellung: <em>yes</em>)<br>
-Ist diese Option auf <em>yes</em> eingestellt, fragt das Programm nach, ob ein
+<li><code>L&ouml;schen_best&auml;tigen</code> (Voreinstellung: <em>ja</em>)<br>
+Wurde <em>ja</em> eingestellt, fragt das Programm nach, ob ein
 Eintrag wirklich gel&ouml;scht werden soll (entweder ein todo-Eintrag oder
-ein Termin). Ist confirm_delete auf <em>no</em>, wird durch Bet&auml;tigung der
-'D'-Taste ohne Nachfrage gel&ouml;scht.<br>
+ein Termin). Wurde <em>nein</em> gew&auml;hlt, wird beim Dr&uuml;cken von 'D' 
+ohne Nachfrage gel&ouml;scht.<br>
 <br>
-<li><code>skip_system_dialogs</code> (Voreinstellung: <em>no</em>)<br>
-Durch setzen auf <em>yes</em> werden die Dialoge beim Speichern und
+<li><code>Systemdialoge_&uuml;berspringen</code> (Voreinstellung: <em>nein</em>)<br>
+Durch Setzen auf <em>ja</em> werden die Dialoge beim Speichern und
 Laden umgangen. N&uuml;tzlich, wenn es mal schnell gehen muss.<br>
 <br>
-<li><code>skip_progress_bar</code> (Voreinstellung: <em>no</em>)<br>
-Wenn auf <em>yes</em> gesetzt ist, erscheint der Zustandsbalken nicht
-mehr, der gew&ouml;hnlich angezeigt wird, wenn Daten gespeichert
-werden. Ist diese Option auf <em>yes</em> eingestellt, erscheint ein
-Zustandsbalken zusammen mit dem Namen der zu speichernden Datei (siehe
-Abschnitt <a href="#basics_files">Calcurse Dateien</a>).<br>
+<li><code>Fortschrittsanzeige_&uuml;berspringen</code> (Voreinstellung: <em>nein</em>)<br>
+Wird diese Option aktiviert, wird die beim Speichern von Daten normalerweise 
+erscheinende Fortschrittsanzeige nicht mehr angezeigt.
+Ist diese Option auf <em>nein</em> gesetzt, werden ein
+Zustandsbalken und der Name der zu speichernden Datei (siehe
+Abschnitt <a href="#basics_files">Calcurse Dateien</a>) angezeigt.<br>
 <br>
-<li><code>week_begins_on_monday</code> (Voreinstellung: <em>yes</em>)<br>
-Es ist möglich zwischen Montag und Sonntag als ersten Wochentag zu wählen.
-Wird die Option <em>week_begins_on_monday</em> auf yes gesetzt, erscheint Montag als 
-erster Wochentag. Ist diese Option auf no gesetzt, beginnt die Woche mit Sonntag.
+<li><code>Wochenbeginn_am_Montag</code> (Voreinstellung: <em>ja</em>)<br>
+Es ist m&ouml;glich zwischen Montag und Sonntag als ersten Tag der Woche 
+zu w&auml;hlen. Wird die Option auf <em>ja</em> gesetzt, wird Montag 
+als erster Tag der Woche festgelegt. Ist <em>nein</em> gew&auml;hlt, 
+beginnt die Woche sonntags.
 </ul>
 
 
@@ -450,18 +450,21 @@ erster Wochentag. Ist diese Option auf no gesetzt, beginnt die Woche mit Sonntag
 Die verwendeten Textfarben k&ouml;nnen nach eigenen Vorlieben eingestellt
 werden. Durch Bet&auml;tigung der entsprechenden Taste kann die gew&uuml;nschte
 Farbkombination ausgew&auml;hlt werden. Die gew&auml;hlte Farbkombination werden
-dem Rahmen, dem Titel und der Status-Zeilen zugeordnet.
+dem Rahmen, dem Titel und der Status-Zeile zugewiesen.
 
-        Eine schwarz/weiss Kombination ist ebenfalls verf&uuml;gbar, um Terminals ohne Farben zu                   unterst&uuml;tzen.<br>
+        Eine schwarz/wei&szlig; Kombination ist ebenfalls verf&uuml;gbar, um 
+	Terminals ohne Farben zu unterst&uuml;tzen.<br>
         <u>Beachte:</u>
         <ul>
-        <li> In Abh&auml;ngigkeit des verwendeten Terminals und dem zugeordneten Wert der                         Umgebungsvariable <code>$TERM</code> werden Farben unterst&uuml;tzt oder nicht.
-        Eine Fehlermeldung erscheint, wenn versucht wird die Farben zu &auml;ndern obwohl
-        das Terminal keine Farben unterst&uuml;tzt.<br>
+        <li> Der Farbunterst&uuml;tzung ist vom verwendeten Terminal und des der 
+	Umgebungsvariablen <code>$TERM</code> zugewiesenen Werts abh&auml;ngig.
+        Es erscheint eine Fehlermeldung, wenn versucht wird die Farbeinstellung 
+	zu &auml;ndern, obwohl das Terminal keine Farben unterst&uuml;tzt.<br>
         <br>
-        <li> Wenn sie sicher sind, dass ihr Terminal Farben darstellen kann aber keine Farben
-        in <code>calcurse</code> erscheinen, versuchen sie die <code>$TERM</code> Variable
-        auf einen anderen Wert zu setzen (wie etwa <em>xterm-xfree86</em>).
+        <li> Wenn sie sicher sind, dass ihr Terminal Farben darstellen kann,  
+        in <code>calcurse</code> aber keine Farben erscheinen, versuchen Sie 
+	die <code>$TERM</code> Variable auf einen anderen Wert zu setzen 
+	(etwa <em>xterm-xfree86</em>).
         </ul>
 
 
@@ -470,54 +473,51 @@ dem Rahmen, dem Titel und der Status-Zeilen zugeordnet.
 Das Layout bezieht sich auf die Positionen der einzelnen Panel. Das
 Standard-Layout zeigt das Kalender-Panel in der oberen linken Ecke des
 Terminals, das todo-Panel befindet sich in der unteren rechten Ecke
-und das Termin-Panel auf der linken Seite des Terminals (siehe die
-Zeichnung im Abschnitt <a
-href="#basics_interface_interactive">Interaktiver Modus</a>, die das
-Beispiel des Standard-Layouts zeigt).<br>
+und das Termin-Panel auf der linken Seite des Terminals (vgl. die
+im Abschnitt <a href="#basics_interface_interactive">Interaktiver Modus</a> 
+dargestellte Zeichnung des Standard-Layouts).<br>
 Durch Auswahl eines anderen Layouts kann der Benutzer das
-Erscheinungsbild von <code>calcurse</code> nach seinen W&uuml;nschen
-anpassen.
+Erscheinungsbild von <code>calcurse</code> seinen eigenen W&uuml;nschen
+entsprechend anpassen.
 
 
-<a name="options_notify"></a><h2><font color="green">Notify-bar settings</font></h2>
+<a name="options_notify"></a><h2>Benachrichtigungszeile einstellen</h2>
 <p>
-<font color="green">
-	The following options are used to modify the notify-bar behavior:
+	Folgende Optionen &auml;ndern das Verhalten der Benachrichtigungszeile:
 	<ul>
-	<li><code>notify-bar_show</code> (default: <em>yes</em>)<br>
-	This option indicates if you want the notify-bar to be displayed
-	or not.<br> 
+	<li><code>Benachrichtigungszeile_anzeigen</code> (Voreinstellung: <em>ja</em>)<br>
+	Mit dieser Option legen Sie fest, ob die Benachrichtigungszeile anzeigt werden soll. <br>
 	<br>
-	<li><code>notify-bar_date</code> (default: <em>%a %F</em>)<br>
-	With this option, you can specify the format to be used to 
-	display the current date inside the notification bar. You can
-	see all of the possible formats by typing <tt>man 3 strftime</tt>
-	inside a terminal.<br>
+	<li><code>Benachrichtigungszeile_Datum</code> (Voreinstellung: <em>%a %F</em>)<br>
+	Hiermit kann das Format festgelegt werden, wie das aktuelle Datum innerhalb 
+	der Benachrichtigungszeile angezeigt werden soll. 
+	Die m&ouml;glichen Formatdefinitionen k&ouml;nnen Sie sich durch die Eingabe 
+	von <tt>man 3 strftime</tt> auf der Kommandozeile anzeigen lassen.<br>
 	<br>
-	<li><code>notify-bar_time</code> (default: <em>%T</em>)<br>
-	With this option, you can specify the format to be used to 
-	display the current time inside the notification bar. You can
-	see all of the possible formats by typing <tt>man 3 strftime</tt>
-	inside a terminal.<br>
+	<li><code>Benachrichtigungszeile_Uhrzeit</code> (Voreinstellung: <em>%T</em>)<br>
+	Hiermit kann das Format festgelegt werden, wie die aktuelle Uhrzeit 
+	innerhalb der Benachrichtigungszeile angezeigt werden soll. 
+	Die m&ouml;glichen Formatdefinitionen k&ouml;nnen Sie sich durch die 
+	Eingabe von <tt>man 3 strftime</tt> auf der Kommandozeile anzeigen 
+	lassen.<br>
 	<br>
-	<li><code>notify-bar_warning</code> (default: <em>300</em>)<br>
-	When there is an appointment within the next 'notify-bar_warning'
-	seconds, the display of that appointment inside the notify-bar 
-	starts to blink. That way, the user is warned and knows there
-	will be soon an upcoming appointment.	
+	<li><code>Benachrichtigungszeile_Alarm</code> (Voreinstellung: <em>300</em>)<br>
+	Beginnt ein Termin innerhalb der n&auml;chsten, in 'Benachrichtigungszeile_Alarm' 
+	festgelegten Sekunden, wird der Termin innerhalb der Benachrichtigungszeile 
+	blinkend dargestellt. Auf diese Weise wird der Nutzer auf einen baldigen Termin 
+	hingewiesen.
 	</ul> 
-</font>
 
 
 <a name="known_bugs"></a><h1>Bekannte Fehler</h1>
 <p>
 
-      Es kommt vor, dass W&ouml;rter bei Verwendung der schwarz/weiss Farbkombination
-         falsch hervorgehoben werden, wenn die <code>$TERM</code>
-        Variable auf <em>xterm-color</em> gesetzt ist.
-        Um diesen Fehler zu umgehen, sollte nach Aussage von
-        Thomas E. Dickey (zust&auml;ndig f&uuml;r das <code>xterm</code>),
-        <em>xterm-xfree86</em> an Stelle f&uuml;r <em>xterm-color</em> als
+        Es kommt vor, dass W&ouml;rter bei Verwendung der schwarz/wei&szlig;en 
+	Farbkombination falsch hervorgehoben werden, wenn die 
+	<code>$TERM</code> Variable auf <em>xterm-color</em> gesetzt ist.
+        Um diesen Fehler zu vermeiden, sollte nach Aussage von
+        Thomas E. Dickey (zust&auml;ndig f&uuml;r <code>xterm</code>),
+         <em>xterm-xfree86</em> an Stelle f&uuml;r <em>xterm-color</em> als 
         <code>$TERM</code> Variable gesetzt werden:<br>
         <blockquote>
         "The xterm-color value for $TERM is a bad choice for XFree86 xterm
@@ -530,11 +530,11 @@ anpassen.
 
 <a name="bugs"></a><h1>Mitteilung von Fehlern und Anregungen</h1>
 <p>
-Bitte mailt Fehler oder auch Anregungen an:
+Bitte mailen Sie Fehler oder auch Anregungen an:
 <pre>
         calcurse@culot.org
 </pre>
-oder an den Autor:
+Oder an den Autor:
 <pre>
         frederic@culot.org
 </pre>
@@ -543,45 +543,51 @@ oder an den Autor:
 <a name="contribute"></a><h1>Wie kann ich einen Beitrag leisten?</h1>
 <p>
 Wenn Sie gerne dieses Projekt unterst&uuml;tzen m&ouml;chten, k&ouml;nnen Sie mir
-zuerst eine kurze R&uuml;ckmeldung geben. Was finden Sie gut an diesem
-Programm oder was k&ouml;nnte besser sein. Gibt es vielleicht Programmeigenschaften,
-die Sie vermissen? Teilen Sie es mir mit!<br>
+zuerst eine kurze R&uuml;ckmeldung geben. Was finden Sie an diesem Programm gut 
+oder was k&ouml;nnte besser sein? Gibt es vielleicht Programmeigenschaften, die 
+Sie vermissen? Teilen Sie sie mir mit!<br>
 
-      Von nun an ist es auch m&ouml;glich sich an der &Uuml;bersetzung der Prgrammmitteilungen
-      und der Dokumentation von <code>calcurse</code> zu beteiligen. <br>
+Von nun an ist es auch m&ouml;glich, sich an der &Uuml;bersetzung der Programmmitteilungen
+und der Dokumentation von <code>calcurse</code> zu beteiligen. <br>
         <br>
         <u>Beachte:</u> Jegliche Unterst&uuml;tzung <code>calcurse</code>
-        in andere Sprachen zu &uuml;bersetzen ist sehr willkommen. Doch bevor Sie beginnen, sollten
-        Sie eine Mail an <code>calcurse-i18n@culot.org</code> senden, um zu erfahren, ob jemand
-        die &Uuml;bersetzung in Ihrer Sprache schon begonnen hat.
+        in andere Sprachen zu &uuml;bersetzen ist sehr willkommen. Bevor Sie beginnen, sollten
+        Sie jedoch eine E-Mail an <code>calcurse-i18n@culot.org</code> senden: So erfahren Sie, 
+	ob jemand die &Uuml;bersetzung in Ihrer Sprache schon begonnen hat.
 
 
 
 <a name="contribute_documentation"></a><h2>&Uuml;bersetzung der Dokumentation</h2>
 <p>
 
-        Das <em>doc/</em> Verzeichnis des Source-Packets enth&auml;lt bereits
-        &uuml;besetzte Versionen der <code>calcurse</code> Anleitung.
-        Wenn eine &Uuml;bersetzung in Ihrer Sprache noch nicht vorhanden ist,
-        w&auml;re es grossartig, wenn Sie eine solche erstellen k&ouml;nnten.<br>
+        Das <em>doc/</em> Verzeichnis des Quellcodearchivs enth&auml;lt bereits
+        &uuml;bersetzte Versionen des <code>calcurse</code> Handbuchs.
+        Ist eine &Uuml;bersetzung in Ihrer Sprache noch nicht vorhanden,
+        w&auml;re es gro&szlig;artig, wenn Sie eine solche erstellen k&ouml;nnten.<br>
         Kopieren Sie dazu eine der vorhandenen Version mit dem Dateinamen
          <code>manual_XX.html</code>, wobei <em>XX</em>
-        das entsprechende K&uuml;rzel Ihrer Sprache ist. Anschliessend &uuml;bersetzen Sie diese
-        Datei und senden Sie dann an den Author (siehe <a href="#bugs">Mitteilung von Fehlern und             Anregungen</a>), so dass Ihre &Uuml;bersetzung f&uuml;r die n&auml;chste Ausgabe von                                           <code>calcurse</code> ins Packet integriert werden kann.
+        das entsprechende K&uuml;rzel Ihrer Sprache ist.  &Uuml;bersetzen Sie diese
+	Datei anschlie&szlig;end und senden Sie sie dann an den Autor 
+	(siehe <a href="#bugs">Mitteilung von Fehlern und Anregungen</a>), damit Ihre 
+	&Uuml;bersetzung der n&auml;chsten <code>calcurse</code> Version 
+	hinzugef&uuml;gt werden kann.
 
 <a name="contribute_i18n"></a><h2><code>calcurse</code> i18n</h2>
 <p>
-        Wie bereits erw&auml;hnt, verwendet <code>calcurse</code> die <code>gettext</code>                         Utilities um mehrsprachige Programmmitteilungen zu erzeugen.
-        Dieser Abschnitt informiert dar&uuml;ber, wie Programmmitteilungen in Ihrer Muttersprache
-        &uuml;bersetzt werden. Dieses howto zur &Uuml;bersetzung von <code>calcurse</code> mit                            <code>gettext</code> ist nat&uuml;rlich nur ein Einstieg und wohl zu kurz. Um umfassendere Informationen
-        zu erhalten und sich die weite Welt der Sprach&uuml;bersetzung f&uuml;r Software zu erschliessen,
-        sollten Sie die Seite der <code>GNU gettext</code> Anleitung besuchen:
+        Wie bereits erw&auml;hnt, verwendet <code>calcurse</code> die <code>gettext</code>
+	Utilities um mehrsprachige Programmmitteilungen zu erzeugen.
+        Dieser Abschnitt informiert Sie dar&uuml;ber, wie Programmmitteilungen in Ihre 
+	Muttersprache &uuml;bersetzt werden. Dieses Howto zur &Uuml;bersetzung von 
+	<code>calcurse</code> mittels <code>gettext</code> ist nat&uuml;rlich nur als Einstieg 
+	gedacht und mit Absicht recht knapp gehalten. Um umfassendere Informationen
+        zu erhalten und sich die gro&szlig;e weite Welt der Internationalisierung von Software zu
+	erschlie&szlig;en, sollten Sie die Seite der <code>GNU gettext</code>-Anleitung besuchen:
         <pre>
                 http://www.gnu.org/software/gettext/manual/
         </pre>
-        Eigentlich sind drei verschiedene Entwickler an der &Uuml;bersetzung beteiligt:
+        An der &Uuml;bersetzung sind im Grunde drei verschiedene Entwickler beteiligt:
         Programmierer, Sprachkoordinator und &Uuml;bersetzer.
-        Nach einem kurzen &Uuml;berblick, wie so etwas funktioniert, werden anschliessend die
+        Nach einem kurzen &Uuml;berblick, wie so etwas funktioniert, werden anschlie&szlig;end die
         Aufgaben des &Uuml;bersetzers beschrieben.
 
 
@@ -590,116 +596,137 @@ die Sie vermissen? Teilen Sie es mir mit!<br>
 Um Text in der Muttersprache des Benutzers erscheinen zu lassen, sind zwei Schritte n&ouml;tig:
  <em>Internationalisierung</em>
         (i18n) und <em>Lokalisierung</em> (l10n).
-        Bei der i18n geht es darum ein Buch f&uuml;r mehrere Sprachen vorzubereiten.
-        Das wird vom Programmierer durchgef&uuml;hrt, der die zu &uuml;bersetzenden Texte markiert
-        und es somit erm&ouml;glicht, dass zur Laufzeit des Programms der Text &uuml;bersetzt erscheint.
-        Bei der l10n geht es darum, dem i18n markierten Pragramm <code>calcurse</code> die                    entsprechende &Uuml;bersetzung des Benutzers zukommen zu lassen. Die zuvor vom Programmierer
-        markierten Texte werden durch das richtige Setzen der Umgebung f&uuml;r                                    <code>calcurse</code> &uuml;bersetzt.<br>
+        Bei der i18n geht es darum, <code>calcurse</code> auf die Unterst&uuml;tzung mehrerer 
+	Sprachen vorzubereiten. Dies ist die Aufgabe des Programmierers, der die zu 
+	&uuml;bersetzenden Texte markiert und andererseits sicherstellen muss, dass zur Laufzeit 
+	des Programms der &uuml;bersetzt Text erscheint.
+        Bei der l10n geht es darum, dem bereits internationalisierten - also i18n markierten - 
+	<code>calcurse</code> die entsprechende &Uuml;bersetzung des Benutzers zur Verf&uuml;gung 
+	zu stellen. 
+	Gem&auml;&szlig; den Umgebungsvariablen ersetzt <code>calcurse</code> die zuvor vom 
+	Programmierer markierten Texte durch die entsprechenden &Uuml;bersetzungen.<br>
         <br>
 
-        Also, die zu &uuml;bersetzenden Texte werden zun&auml;chst vom Programmierer in                                 der <code>C</code> Source-Datei markiert und in einer Template
-        Datei (<em>calcurse.pot</em> - die <em>pot</em> Dateierweiterung bedeutet
-        <em>portable object template</em>) gesammelt.
-        Der Inhalt dieser Template Datei wird dann mit den Dateien, die die &Uuml;bersetzungen enthalten
-        (<em>fr.po</em> f&uuml;r franz&ouml;sisch, hier steht <em>po</em> f&uuml;r <em>portable object</em>,
-        dieses Format kann man lesen und ver&auml;ndern),
-        zusammengef&uuml;hrt. Ein &Uuml;bersetzer kann diese Datei dazu &ouml;ffnen, die enthaltenen Texte &uuml;bersetzen
+	Die zu &uuml;bersetzenden Texte werden also zun&auml;chst vom Programmierer im
+        <code>C</code>-Quellcode markiert und in einem Template (<em>calcurse.pot</em> - 
+	die Dateierweiterung <em>pot</em> steht f&uuml;r <em>portable object template</em>) 
+	gesammelt. Anschlie&szlig;end wird der Inhalt dieses Templates mit den Dateien, die 
+	die &Uuml;bersetzungen enthalten zusammengef&uuml;hrt (<em>fr.po</em> enth&auml;lt 
+	beispielsweise die Franz&ouml;sische &Uuml;bersetzung (<em>po</em> steht hierbei 
+	f&uuml;r <em>portable object</em>, also ein von Menschen les- und ver&auml;nderbares 
+	Dateiformat),
+        Der &Uuml;bersetzer kann diese Datei &ouml;ffnen, die enthaltenen Texte &uuml;bersetzen
         und sie dann an den Programmierer zur&uuml;ck senden.
-        Wenn das Programm kompiliert wird, erzeugt der Kompiler (aus Gr&uuml;nden der Effizienz)
-        eine bin&auml;re Version dieser Datei (<em>fr.mo</em> - <em>mo</em> steht f&uuml;r <em>machine
-        object</em>, dieses Format kann nur von Programmen gelesen werden), die dann installiert              wird. <code>calcurse</code> nutzt diese Datei zur Laufzeit, um die
-        Texte in Abh&auml;ngigkeit zur lokalen Einstellung des Benutzers zu &uuml;bersetzen.
+        Wird das Programm compiliert, erzeugt der Compiler (aus Gr&uuml;nden der Effizienz)
+        eine bin&auml;re Version dieser Datei, die sp&auml;ter installiert wird (<em>fr.mo</em> 
+	- <em>mo</em> steht f&uuml;r <em>machine object</em>; dieses Format kann nur von 
+	Programmen gelesen werden). <code>calcurse</code> nutzt diese Datei zur Laufzeit, 
+	um die Texte in Abh&auml;ngigkeit der lokalen Einstellungen des Benutzers zu 
+	&uuml;bersetzen.
 
 
 <a name="contribute_i18n_translator"></a><h3>Aufgaben des &Uuml;bersetzers</h3>
 <p>
-        Wenn Sie mit der &Uuml;bersetzung in eine neue Sprache beginnen m&ouml;chte sind hier die Schritte dazu:
+        Wenn Sie mit der &Uuml;bersetzung in eine neue Sprache beginnen m&ouml;chten, 
+	finden Sie hierzu die n&ouml;tigen Schritte:
         <ul>
-        <li>Finden Sie zun&auml;chst heraus, wie die K&uuml;rzel der Sprache definiert sind.
-        Beispielsweise sind die K&uuml;rzel f&uuml;r die franz&ouml;sische 'fr_FR', oder einfacher
-        'fr'. Das ist der Wert, den der Benutzer als Umgebungsvariable <code>LC_ALL</code> f&uuml;r die Programme               setzen muss (siehe <a href="#basics_invocation_variable">Umgebungsvariable f&uuml;r i18n</a>).<br>
+        <li>Finden Sie zun&auml;chst das K&uuml;rzel Ihrer Sprache heraus.
+            Beispielsweise ist das K&uuml;rzel f&uuml;r Franz&ouml;sisch 'fr_FR', oder 
+            einfach nur 'fr'. Diesen Wert muss der Benutzer der Umgebungsvariablen 
+	    <code>LC_ALL</code> zuweisen, um die Software &uuml;bersetzt starten zu k&ouml;nnen 
+	    (siehe <a href="#basics_invocation_variable">Umgebungsvariable f&uuml;r i18n</a>).<br>
         <br>
-        <li>Wechseln Sie dann ins <em>po/</em> Verzeichnis und erzeugen Sie eine neue po-Datei aus der Template Datei mit folgendem Aufruf:
+        <li>Wechseln Sie dann ins <em>po/</em> Verzeichnis und erzeugen Sie aus dem Template 
+	    mit dem folgendem Aufruf eine neue po-Datei:
         <pre>
                 'msginit -i calcurse.pot -o fr.po -l fr --no-translator'
         </pre>
-        Wenn <code>msginit</code> nicht auf Ihrem System installiert ist, kopieren Sie einfach die Datei <em>calcurse.pot</em> nach <em>fr.po</em> und &auml;nderen Sie den Dateikopf manuel.<br>
-        Wenn die Datei <em>fr.po</em> erstellt ist, kann mit der eigentlichen &Uuml;bersetzung begonnen              werden.
+	Sollte <code>msginit</code> nicht auf Ihrem System installiert sein, kopieren Sie einfach 
+	die Datei <em>calcurse.pot</em> nach <em>fr.po</em> und &auml;nderen Sie den Inhalt am 
+	Anfang der Datei von Hand.<br>
+        Wurde die Datei <em>fr.po</em> erstellt, kann mit der eigentlichen &Uuml;bersetzung 
+	begonnen werden.
         </ul>
 
 
 <a name="contribute_i18n_po-files"></a><h3>po-Dateien</h3>
 <p>
-        Das Format der po-Dateien ist relativ einfach. po-Dateien bestehen aus f&uuml;nf Teilen:
+        Das Format der po-Dateien ist relativ einfach. po-Dateien gliedern sich in lediglich 
+	vier Bestandteile:
         <ol>
-        <li><em>location Zeilen:</em> geben an, wo sich der Text befindet (Name der Datei und                      Zeilennummer).
-        <li><em>msgid Zeilen:</em> der zu &uuml;bersetzende Text.
+        <li><em>location Zeilen:</em> geben an, wo sich der Text befindet (Name der Datei und Zeilennummer).
+        <li><em>msgid Zeilen:</em> der ursprüngliche, also zu &uuml;bersetzende Text.
         <li><em>msgstr Zeilen:</em> der &uuml;bersetzte Text.
         <li><em>Zeilen, die mit '#' beginnen:</em> Kommentare (einige mit spezieller Bedeutung,
         wie wir weiter unten noch sehen werden).
         </ol>
-        &Uuml;bersetzen Sie die <em>msgid</em> Zeilen und tragen Sie den &uuml;bersetzten Text in die mit
-        <em>msgstr</em> gekennzeichneten Zeilen ein.
+        &Uuml;bersetzen Sie die <em>msgid</em> Zeilen und tragen Sie den &uuml;bersetzten Text in die 
+	sich direkt darunterbefindlichen, mit <em>msgstr</em> gekennzeichneten Zeilen ein.
         <p>
         <u>Einige Anmerkungen:</u>
         <ul>
         <li><em>Fuzzy Texte</em><br>
-        Einige Texte sind mit <code>"#, fuzzy"</code>
-        kommentiert. <code>calcurse</code> nutzt derart markierte Texte nicht.
-        Ein Text, der als fuzzy markiert ist, deutet entweder darauf hin, dass
+        Einige Texte sind mit <code>"#, fuzzy"</code> kommentiert. <code>calcurse</code> nutzt 
+	derart markierte Texte nicht. Ein als fuzzy markierter Text deutet entweder darauf hin, dass
         der Text schon &uuml;bersetzt wurde, aber die Stelle im Programmcode ver&auml;ndert wurde, oder
-        aber es handelt sich um einen neuen Text, f&uuml;r welchen <code>gettext</code> eine sog. 'wild            guess' vornimmt, also selbst eine &Uuml;bersetzung versucht.
-        Das beduetet, die &Uuml;bersetzung sollte noch einmal &uuml;berarbeitet werden.
-        Manchmal wurde der Originaltext ver&auml;ndert, weil ein Rechtschreibfehler korrigiert                     wurde. In einem solchen Fall muss nichts ver&auml;ndert werden.
-        Manchmal ist die &Uuml;bersetzung aber nicht optimal gelungen und muss dann ver&auml;ndert werden.
-        Wenn die &Uuml;bersetzung fertig ist, entferne die <code>"#, fuzzy"</code> Zeilen. Die &Uuml;bersetzung
-        wird wieder in <code>calcurse</code> verwendet.<br>
+        aber es handelt sich um einen neuen Text, f&uuml;r welchen <code>gettext</code> eine sog. 'wild 
+	guess' vornimmt, also selbst eine &Uuml;bersetzung versucht.
+        Das bedeutet, die &Uuml;bersetzung sollte noch einmal &uuml;berarbeitet werden.
+        Manchmal wurde der Originaltext ver&auml;ndert, weil ein Rechtschreibfehler korrigiert wurde. 
+	In einem solchen Fall muss nichts ge&auml;ndert werden.
+        Mitunter ist die &Uuml;bersetzung aber nicht mehr passend oder schlichtweg falsch und muss 
+	abge&auml;ndert werden.
+	Entfernen Sie die <code>"#, fuzzy"</code>-Zeilen, wenn Sie mit Ihrer &Uuml;bersetzung fertig 
+	sind, damit <code>calcurse</code> die übersetzten Zeilen wieder verwendet und anzeigt.<br>
         <br>
-        <li><em>c-Format Texte and besondere Sequenzen</em><br>
+        <li><em>c-Format Texte und besondere Sequenzen</em><br>
         Einige Texte haben folgende Kommentare: <code>"#,
         c-format"</code>.
-        Dieser Kommentar bedeutet, dass Teile dieses Textes eine besondere Bedeutung haben
-        und dieser Text unver&auml;ndert bleiben werden sollte.
-        Beispielsweise die %-Sequenzen, wie <code>"%s"</code>.
-        Diese bedeuten, dass <code>calcurse</code> dort Text einf&uuml;gen wird.
-        Es ist also wichtig, diese nicht zu ver&auml;ndern.
-        Ebenso kommen \-Sequenzen vor, wie <code>\n</code> oder
-        <code>\t</code>. Auch nicht ver&auml;ndern.
-        Das erste stellt das Zeilenende dar, das zweite eine Tabulation.<br>
+        Dieser Kommentar weist darauf hin, dass Teile dieses Textes eine besondere Bedeutung 
+	haben und dieser Text nicht ver&auml;ndert werden sollte.
+        Beispielsweise bedeuten die %-Sequenzen, wie <code>"%s"</code>, dass <code>calcurse</code> 
+	dort Text einf&uuml;gen wird. Es ist also wichtig, diese nicht zu ver&auml;ndern.
+        Ebenso kommen \-Sequenzen , wie etwa <code>\n</code> oder <code>\t</code> vor. Bitte 
+	nehmen Sie auch hier keine Ver&auml;nderungen vor. Erstere stellt das Zeilenende dar, 
+	letztere einen Tabulator.<br>
         <br>
         <li><em>&Uuml;bersetzungen k&ouml;nnen in Bl&ouml;cke geschrieben werden</em><br>
-        Wenn Zeilen zu lang werden, k&ouml;nnen sie auf mehrere verteilt werden:
+        Sollten Zeilen zu lang werden, k&ouml;nnen sie auf mehrere verteilt werden:
         <pre>
                 msgid ""
                 "some very long line"
                 "another line"
         </pre>
-        <li><em>po-Dateikopf</em><br>
-        Ganz zu Anfang einer po-Datei befindet sich der Kopf. Dort stehen einige Informationen.
-        Die wichtigste Information dort ist der Zeichensatz. Er sollte diesem &auml;hnlich sein
+        <li><em>po-Header</em><br>
+        Ganz zu Anfang einer po-Datei befindet sich der Header, der einige Informationen enthält.
+        Die wichtigste Information ist der Zeichensatz. Er sollte diesem &auml;hnlich sein
         <pre>
                 "Content-Type: text/plain; charset=utf-8\n"
         </pre>
 
-        Auch das &Uuml;bersetzer-Feld sollte ausgef&uuml;llt sein, damit andere potentielle Mitstreiter, die sich an der &Uuml;bersetzung beteiligen wollen, Kontakt mit Ihnen aufnehmen k&ouml;nnen. Ebenso k&ouml;nnen von anderen entdeckte Fehler an den &Uuml;bersetzer gemeldet werden. Man kann entweder seinen Namen oder seine Mail dort angeben:
+        Auch das &Uuml;bersetzer-Feld sollte ausgef&uuml;llt sein, damit potentielle Mitstreiter, 
+	die sich an der &Uuml;bersetzung beteiligen wollen, mit Ihnen Kontakt aufnehmen k&ouml;nnen. 
+	Ebenso k&ouml;nnen von anderen entdeckte Fehler an den &Uuml;bersetzer gemeldet werden. Geben
+	Sie Ihren Namen an, oder tragen Sie Ihre E-Mail-Adresse ein. Zum Beispiel folgendermaßen:
         <pre>
                 "Last-Translator: Frederic Culot &lt;frederic@culot.org&gt;\n"
         </pre>
         <li><em>Kommentare</em><br>
-        Das Hinzuf&uuml;gen von Kommentaren (Zeilen beginnen mit dem '#' Zeichen) ist eine gute M&ouml;glichkeit
-        Probleme und &Uuml;bersetzungsschwierigkeiten besser zu l&ouml;sen. Die &Uuml;bersetzungsarbeit wird besser
-        lesbar.<br>
+        Das Hinzuf&uuml;gen von Kommentaren (Zeilen beginnen mit dem '#' Zeichen) ist eine gute 
+	M&ouml;glichkeit, um Probleme und &Uuml;bersetzungsschwierigkeiten anderen besser 
+	mitteilen zu k&ouml;nnen.<br>
         <br>
         <li><em>L&auml;ngen der Texte</em><br>
-        <code>calcurse</code>
-        ist ein curses/Konsolen Programm und kann somit von der Gr&ouml;sse des Terminals (Anzahl der
-        Zeilen) abh&auml;ngen. Dies sollte bei der &Uuml;bersetzung ber&uuml;cksichtigt werden.
-        H&auml;ufig m&uuml;ssen Texte in eine Zeile passen (Standardl&auml;nge ist 80 Zeichen).
-        &Uuml;bersetzen Sie nicht blind, versuchen Sie herauszufinden, wo der Text erscheint um die                &Uuml;bersetzung richtig anzupassen.
+        <code>calcurse</code> ist ein curses/Konsolen Programm und ist somit stark von der 
+	Gr&ouml;&szlig;e des Terminals (Anzahl der Spalten) abh&auml;ngig. Dies sollte bei 
+	der &Uuml;bersetzung ber&uuml;cksichtigt werden. H&auml;ufig m&uuml;ssen Texte in 
+	eine einzige Zeile passen (Standardl&auml;nge ist 80 Zeichen).
+        &Uuml;bersetzen Sie nicht blindlings darauf los! Versuchen Sie herauszufinden, wo der 
+	Text angezeigt wird, um die &Uuml;bersetzung entsprechend anzupassen.
         <br>
         <br>
         <li><em>Ein paar n&uuml;tzliche Programme</em><br>
-        Das po-Dateiformat ist sehr einfach und kann mit einem Editor ge&auml;ndert werden.
+        Das po-Dateiformat ist sehr einfach und kann mit jedem Standard-Editor bearbeitet werden.
         Es gibt aber auch einige spezielle Tools die das Erstellen und &Auml;nder der po-Dateien
         vereinfachen:
            <ul>
@@ -718,8 +745,8 @@ Um Text in der Muttersprache des Benutzers erscheinen zu lassen, sind zwei Schri
         <br>
         <li><em>Zu Schluss noch</em><br>
         Ich hoffe es wird Ihnen Freude bereiten, wenn Sie sich an diesem Projekt und
-        seiner Internationalisierung beteiligen :). Wenn noch Fragen offen sind,
-        scheuen Sie sich nicht mir eine Mail zu schreiben, <em>frederic@culot.org</em>.
+        seiner Internationalisierung beteiligen :). Bitte scheuen Sie sich nicht, mir 
+	eine E-Mail, <em>frederic@culot.org</em>, zu schreiben, sollten noch Fragen offen sein.
         </ul>
 
 
@@ -739,13 +766,14 @@ Die Internetseite des Projekts <code>calcurse</code> lautet:
 
 <a name="links_list"></a><h2><code>calcurse</code> Ank&uuml;ndigungsliste</h2>
 <p>
-Wenn Interesse an Calcurse besteht und Sie gerne &uuml;ber Neuerscheinungen
-informiert werden m&ouml;chten, k&ouml;nnen Sie gerne auf eine Liste gesetzt
-werden, die Sie per Mail &uuml;ber die neusten Eigenschaften von
-<code>calcurse</code> informiert, sobald ein neuer Release
-erscheint.<br>
-Um sich in die Liste eintragen zu lassen, senden Sie eine Mail an
-<ode>calcurse-announce@culot.org</code> mit "subscribe" im Betreff.
+Wenn Sie an <code>calcurse</code> Interesse gefunden haben und Sie gerne 
+&uuml;ber Neuerscheinungen informiert werden m&ouml;chten, k&ouml;nnen Sie sich 
+gerne in <code>calcurse</code>s Ankündigungsliste eintragen. 
+
+Sobald eine neue Version ver&ouml;ffentlicht wird, werden Sie per E-Mail &uuml;ber 
+die neusten Eigenschaften von <code>calcurse</code> informiert<br>
+Um sich in die Liste einzutragen, schicken Sie einfach eine E-Mail mit dem Betreff 
+"subscribe" an <code>calcurse-announce@culot.org</code>.
 
 
 <a name="thanks"></a><h1>Danksagungen</h1>
@@ -755,14 +783,14 @@ die dieses Projekt nicht m&ouml;glich gewesen w&auml;re. Hier ist die Liste
 derjenigen, denen ich Danke sagen m&ouml;chte:
 <ul>
 <li>Alex f&uuml;r die Patches, Hilfen und Erl&auml;uterungen zur <code>C</code> Programmierung.
-<li>Gwen f&uuml;rs Testen und Anregungen, wie <code>calcurse</code> verbessert werden kann.
+<li>Gwen f&uuml;rs Testen und die Anregungen, wie <code>calcurse</code> verbessert werden kann.
 <li>Kevin und Ryan f&uuml;r das Binary-Packet auf Debian.
 <li>Steffen f&uuml;r das Binary-Packet auf Archlinux
 <li>Alexandre f&uuml;r das Binary-Packet auf Mac OsX.
-<li>Joel f&uuml;r sein Kalender-Skript das mich zum Calcurse-Layout inspiriert hat.
-<li>Michael Schulz f&uuml;r die deutsche &uuml;bersetzung der Dokumentation 
-<li>Jose Lopez f&uuml;r die spanish &uuml;bersetzung der Dokumentation
-<li>Neil Williams f&uuml;r die english &uuml;bersetzung
+<li>Joel f&uuml;r sein Kalender-Skript, das mich zum Calcurse-Layout inspiriert hat.
+<li>Michael Schulz und Chris M. f&uuml;r die &Uuml;bersetzung der Dokumentation ins Deutsche.
+<li>Jose Lopez f&uuml;r die &Uuml;bersetzung der Dokumentation ins Spanische.
+<li>Neil Williams f&uuml;r die &Uuml;bersetzung ins Englische.
 <li>Leute die Programme geschrieben haben, die ich mag und mich inspiriert haben, insbesondere :
 <ul>
 <li><code>vim</code> f&uuml;r die Befehlssteuerung
@@ -778,7 +806,7 @@ Benutzer, die mir Ihr Feedback mitgeteilt haben.
 <small><em>
 Copyright (c) 2004-2006 Fr&eacute;d&eacute;ric Culot<br>
 German translation by Michael Schulz <code>&lt;bloodshower.at.web.dot.de&gt;</code><br>
-Calcurse version 1.6 - Last change: September 19, 2006
+Calcurse version 1.6 - Last change: October 1, 2006
 <em></small>
 
 
