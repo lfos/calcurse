@@ -1,3 +1,11 @@
+01 Oct 2006: 1.6
+	german manual and translation updated by Chris M.
+	bugfix: CTRL-J now works properly
+	bugfix: a number of minutes can no longer be entered while creating a
+	new appointment
+	TODO list updated
+	NEWS file updated
+
 25 Sep 2006:
 	spanish translation and manual updated by Jose Lopez
 
@@ -87,7 +95,7 @@
 	fixed a bug which prevented status bar keybindings from being
 	translated
 	bugfix in recur_repeat_item(): the repeated end date can no longer be
-	older than the item start time. Thanks Chris for reporting that bug
+	before the item start time. Thanks Chris for reporting that bug
 	french translation updated
 	TODO list updated
 
