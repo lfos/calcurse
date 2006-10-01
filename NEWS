@@ -1,3 +1,30 @@
+[01 Oct 2006]
+Version 1.6
+- New features:
+  * Notification-bar implemented, which indicates current date and time,
+    the calendar file in use and the next upcoming appointment together with the
+    time left before it
+
+  * '-n' flag added to get notified of the next appointment within upcoming 24
+    hours
+
+  * Support for todo priorities added
+
+  * New screen layouts added to make the todo panel the largest one
+
+  * General keybindings implemented, which apply whatever panel is selected
+
+- Bugfixes:
+  * The repeated end date can no longer be before the item start date 
+
+  * Fixed a possible conflict in the LOCALEDIR variable definition
+
+- Translation:
+  * spanish translation and manual provided by Jose Lopez
+
+  * german translation and manual updated by Christoph M.
+
+
 [26 Aug 2006]
 Version 1.5
 - New features:
