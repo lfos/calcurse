@@ -1,3 +1,8 @@
+16 Oct 2006:
+	bugfix: when creating a recurrent item, the entered end-date is now
+	included again	
+	'-t' flag now takes a priority number for argument
+
 01 Oct 2006: 1.6
 	german manual and translation updated by Chris M.
 	bugfix: CTRL-J now works properly
