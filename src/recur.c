@@ -1,4 +1,4 @@
-/*	$calcurse: recur.c,v 1.13 2006/09/16 15:23:05 culot Exp $	*/
+/*	$calcurse: recur.c,v 1.14 2006/10/16 13:33:44 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -358,7 +358,7 @@ unsigned recur_item_inday(long item_start, struct days_s *item_exc,
 			  	long rpt_until, long day_start)
 {
 	long day_end = day_start + DAYINSEC;
-	int inday = 0;
+	unsigned inday = 0;
 	struct tm *lt;
 	struct days_s *exc;
 	time_t t;
@@ -370,7 +370,7 @@ unsigned recur_item_inday(long item_start, struct days_s *item_exc,
 			return 0;
 	if (rpt_until == 0) /* we have an endless recurrent item */
 		rpt_until = day_end;
-	while (item_start <= day_end && item_start < rpt_until) {
+	while (item_start <= day_end && item_start <= rpt_until) {
 		if (item_start < day_end && item_start >= day_start) {
 			inday = item_start;
 			break;
@@ -512,6 +512,8 @@ void recur_apoint_erase(long start, unsigned num, unsigned delete_whole)
  */
 void recur_repeat_item(int sel_year, int sel_month, int sel_day, 
     int item_nb, int colr) {
+	struct tm *lt;
+	time_t t;
 	int ch = 0;
 	int valid_date = 0, date_entered = 0;
 	int year = 0, month = 0, day = 0;
@@ -586,7 +588,9 @@ void recur_repeat_item(int sel_year, int sel_month, int sel_day,
 				if (valid_date) {
 					sscanf(user_input, "%d / %d / %d", 
 						&month, &day, &year);	
-					until = date2sec(year, month, day, 0, 0);
+					t = p->start; lt = localtime(&t);
+					until = date2sec(year, month, day, 
+						lt->tm_hour, lt->tm_min);
 					if (until < p->start) {
 						status_mesg(mesg_older,
 							wrong_type_2);
