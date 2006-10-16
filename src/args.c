@@ -1,4 +1,4 @@
-/*	$calcurse: args.c,v 1.7 2006/09/16 09:08:21 culot Exp $	*/
+/*	$calcurse: args.c,v 1.8 2006/10/16 15:48:30 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -58,9 +58,9 @@ int parse_args(int argc, char **argv, int colr)
 	int hflag = 0, tflag = 0, nflag = 0;
 	int non_interactive = 0, multiple_flag = 0, load_data = 0;
 	int no_file = 1;
-	char *ddate = "", *cfile = NULL;
+	char *ddate = "", *cfile = NULL, *tnum = NULL;
 
-	while ((ch = getopt(argc, argv, "hvntad:c:")) != -1) {
+	while ((ch = getopt(argc, argv, "hvnat:d:c:")) != -1) {
 		switch (ch) {
 		case 'a':
 			aflag = 1;
@@ -92,6 +92,7 @@ int parse_args(int argc, char **argv, int colr)
 			multiple_flag++;
 			load_data++;
 			add_line = 1;
+			tnum = optarg;
 			break;
 		case 'v':
 			vflag = 1;
@@ -108,7 +109,7 @@ int parse_args(int argc, char **argv, int colr)
 	if (argc >= 1) {	/* incorrect arguments */
 		usage();
                 usage_try();
-		return 1;
+		return EXIT_FAILURE;
 	} else {
 		if (unknown_flag) {
 			non_interactive = 1;
@@ -126,7 +127,7 @@ int parse_args(int argc, char **argv, int colr)
 					load_app(colr);
 			}
 			if (tflag) {
-				todo_arg(colr);
+			todo_arg(atoi(tnum), colr);
 				non_interactive = 1;
 			}
 			if (nflag) {
@@ -183,7 +184,12 @@ void help_arg()
 		"'mm/dd/yyyy' or 'n'.\n"
 		"  -n  		print next appointment within upcoming 24 hours "
 		"and exit.\n"
-		"  -t		print todo list and exit.\n"
+		"  -t [num]	print todo list and exit. "
+		"If the optional number [num] is \n"
+		"\t\tgiven, then only the todos having a priority equal to [num]\n" 
+		"\t\twill be returned.\n"
+		"\t\tnote: the priority number must be between 1 (highest) and\n"
+		"\t\t9 (lowest)\n"
 	    	"\nFor more information, type '?' from within Calcurse, "
 		"or read the manpage.\n"
 	    	"Mail bug reports and suggestions to <calcurse@culot.org>.\n");
@@ -195,21 +201,33 @@ void help_arg()
 }
 
 /*
- * Print todo list and exit.
+ * Print todo list and exit. If a priority number is given (say not equal to
+ * zero), then only todo items that have this priority will be displayed.
  */
-void todo_arg(int colr)
+int todo_arg(int priority, int colr)
 {
 	struct todo_s *i;
-	int nb_tod;
-	char priority[MAX_LENGTH] = "";
+	int nb_tod, title = 1;
+	char priority_str[MAX_LENGTH] = "";
 
-	nb_tod = load_todo(colr);
-	fputs(_("to do:\n"),stdout);
-	for (i = todolist; i != 0; i = i->next) {
-		sprintf(priority, "%d. ", i->id);	
-		fputs(priority,stdout);
-		fputs(i->mesg,stdout);
-		fputs("\n",stdout);
+	if (priority >= 9 || priority <= 0) {
+		usage();
+		usage_try();
+		return EXIT_FAILURE;
+	} else {
+		nb_tod = load_todo(colr);
+		for (i = todolist; i != 0; i = i->next) {
+			if (priority == 0 || i->id == priority) {
+				if (title) {
+					fputs(_("to do:\n"),stdout);
+					title = 0;
+				}
+				sprintf(priority_str, "%d. ", i->id);	
+				fputs(priority_str,stdout);
+				fputs(i->mesg,stdout);
+				fputs("\n",stdout);
+			}
+		}
 	}
 }
 
@@ -463,7 +481,7 @@ void arg_print_date(long date)
 void usage()
 {
         char *arg_usage = 
-                _("Usage: calcurse [-h | -v] [-ant] [-d date|num] [-c file]\n");
+                _("Usage: calcurse [-h | -v] [-an] [-t [num]] [-d date|num] [-c file]\n");
 	
         fputs(arg_usage, stdout);
 }
