@@ -1,3 +1,8 @@
+17 Oct 2006:
+	parse_args() modified to use getopt_long() instead of getopt, to make
+	the '-t' priority number optional, and to allow the use of long options 
+	configure.ac: check for getopt.h header file added
+
 16 Oct 2006:
 	bugfix: when creating a recurrent item, the entered end-date is now
 	included again	
