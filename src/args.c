@@ -1,4 +1,4 @@
-/*	$calcurse: args.c,v 1.8 2006/10/16 15:48:30 culot Exp $	*/
+/*	$calcurse: args.c,v 1.9 2006/10/17 14:38:21 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -31,7 +31,7 @@
 #include <ctype.h>
 #include <stdbool.h>
 #include <sys/types.h>
-#include <unistd.h>
+#include <getopt.h>
 #include <time.h>
 
 #include "i18n.h"
@@ -54,13 +54,34 @@ int parse_args(int argc, char **argv, int colr)
 {
 	int ch, add_line = 0;
 	int unknown_flag = 0, app_found = 0;
-	int aflag = 0, cflag = 0, dflag = 0, vflag = 0; 
-	int hflag = 0, tflag = 0, nflag = 0;
+	/* Command-line flags */
+	int aflag = 0;	/* -a: print appointments for current day */
+	int cflag = 0;	/* -c: specify the calendar file to use */
+	int dflag = 0;	/* -d: print appointments for a specified days */
+	int hflag = 0;	/* -h: print help text */
+	int nflag = 0;	/* -n: print next appointment */
+	int tflag = 0;	/* -t: print todo list */
+	int vflag = 0;	/* -v: print version number */
+  
+	int tnum = 0;
 	int non_interactive = 0, multiple_flag = 0, load_data = 0;
 	int no_file = 1;
-	char *ddate = "", *cfile = NULL, *tnum = NULL;
+	char *ddate = "", *cfile = NULL;
 
-	while ((ch = getopt(argc, argv, "hvnat:d:c:")) != -1) {
+	static char *optstr = "hvnat::d:c:";
+
+	struct option longopts[] = {
+		{"appointment", no_argument, NULL, 'a'},
+		{"calendar", required_argument, NULL, 'c'},
+		{"day", required_argument, NULL, 'd'},
+		{"help", no_argument, NULL, 'h'},
+		{"next", no_argument, NULL, 'n'},
+		{"todo", optional_argument, NULL, 't'},
+		{"version", no_argument, NULL, 'v'},
+		{NULL, no_argument, NULL, 0}
+	};
+
+	while ((ch = getopt_long(argc, argv, optstr, longopts, NULL)) != -1) {
 		switch (ch) {
 		case 'a':
 			aflag = 1;
@@ -92,12 +113,20 @@ int parse_args(int argc, char **argv, int colr)
 			multiple_flag++;
 			load_data++;
 			add_line = 1;
-			tnum = optarg;
+			if (optarg != NULL) {
+				tnum = atoi(optarg);
+				if (tnum < 1 || tnum > 9) {
+					usage();
+					usage_try();
+					return EXIT_FAILURE;
+				}
+			} else
+				tnum = 0;
 			break;
 		case 'v':
 			vflag = 1;
 			break;
-		default:
+		default: /* NOTREACHED */
 			usage();
                         usage_try();
 			unknown_flag = 1;
@@ -106,6 +135,7 @@ int parse_args(int argc, char **argv, int colr)
 	}
 	argc -= optind;
 	argv += optind;
+
 	if (argc >= 1) {	/* incorrect arguments */
 		usage();
                 usage_try();
@@ -127,7 +157,7 @@ int parse_args(int argc, char **argv, int colr)
 					load_app(colr);
 			}
 			if (tflag) {
-			todo_arg(atoi(tnum), colr);
+			todo_arg(tnum, colr);
 				non_interactive = 1;
 			}
 			if (nflag) {
@@ -184,7 +214,7 @@ void help_arg()
 		"'mm/dd/yyyy' or 'n'.\n"
 		"  -n  		print next appointment within upcoming 24 hours "
 		"and exit.\n"
-		"  -t [num]	print todo list and exit. "
+		"  -t[num]	print todo list and exit. "
 		"If the optional number [num] is \n"
 		"\t\tgiven, then only the todos having a priority equal to [num]\n" 
 		"\t\twill be returned.\n"
@@ -210,23 +240,17 @@ int todo_arg(int priority, int colr)
 	int nb_tod, title = 1;
 	char priority_str[MAX_LENGTH] = "";
 
-	if (priority >= 9 || priority <= 0) {
-		usage();
-		usage_try();
-		return EXIT_FAILURE;
-	} else {
-		nb_tod = load_todo(colr);
-		for (i = todolist; i != 0; i = i->next) {
-			if (priority == 0 || i->id == priority) {
-				if (title) {
-					fputs(_("to do:\n"),stdout);
-					title = 0;
-				}
-				sprintf(priority_str, "%d. ", i->id);	
-				fputs(priority_str,stdout);
-				fputs(i->mesg,stdout);
-				fputs("\n",stdout);
+	nb_tod = load_todo(colr);
+	for (i = todolist; i != 0; i = i->next) {
+		if (priority == 0 || i->id == priority) {
+			if (title) {
+				fputs(_("to do:\n"),stdout);
+				title = 0;
 			}
+			sprintf(priority_str, "%d. ", i->id);	
+			fputs(priority_str,stdout);
+			fputs(i->mesg,stdout);
+			fputs("\n",stdout);
 		}
 	}
 }
@@ -481,7 +505,7 @@ void arg_print_date(long date)
 void usage()
 {
         char *arg_usage = 
-                _("Usage: calcurse [-h | -v] [-an] [-t [num]] [-d date|num] [-c file]\n");
+                _("Usage: calcurse [-h | -v] [-an] [-t[num]] [-d date|num] [-c file]\n");
 	
         fputs(arg_usage, stdout);
 }
