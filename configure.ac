@@ -1,7 +1,7 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 #
-#	$calcurse: configure.ac,v 1.4 2006/09/22 13:11:35 culot Exp $
+#	$calcurse: configure.ac,v 1.5 2006/10/17 14:37:00 culot Exp $
 
 AC_PREREQ(2.59)
 AC_INIT(calcurse, 1.6, frederic@culot.org)
@@ -31,7 +31,7 @@ AC_CHECK_HEADERS([pthread.h], [
 
 # Checks for header files.
 AC_HEADER_STDC
-AC_CHECK_HEADERS([stdlib.h string.h sys/time.h time.h stdio.h unistd.h \
+AC_CHECK_HEADERS([stdlib.h string.h sys/time.h time.h stdio.h unistd.h getopt.h\
 sys/types.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
