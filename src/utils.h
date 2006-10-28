@@ -1,4 +1,4 @@
-/*	$calcurse: utils.h,v 1.6 2006/10/28 09:54:00 culot Exp $	*/
+/*	$calcurse: utils.h,v 1.7 2006/10/28 13:13:18 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -72,7 +72,7 @@ void draw_scrollbar(WINDOW *win, int y, int x, int length,
 void item_in_popup(char *saved_a_start, char *saved_a_end, char *msg, 
 		char *pop_title);
 void win_show(WINDOW * win, char *label);
-void display_item(WINDOW *win, int incolor, char *msg, 
+void display_item(WINDOW *win, int incolor, char *msg, int recur,
 		int len, int y, int x);
 void reset_status_page(void);
 void other_status_page(int panel);
