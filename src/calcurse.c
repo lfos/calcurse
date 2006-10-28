@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.24 2006/10/28 10:32:29 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.25 2006/10/28 13:11:21 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -1189,7 +1189,7 @@ void update_todo_panel(void)
 		if (t_realpos >= 0 && t_realpos < max_items) {
 			sprintf(mesg, "%d. ", i->id);	
 			strncat(mesg, i->mesg, strlen(i->mesg));
-			display_item(twin, incolor, mesg,
+			display_item(twin, incolor, mesg, 0, 
 					len, y_offset, x_offset);
 			y_offset = y_offset + todo_lines;	
 		}
