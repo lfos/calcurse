@@ -1,4 +1,4 @@
-/*	$calcurse: apoint.c,v 1.5 2006/09/16 15:22:20 culot Exp $	*/
+/*	$calcurse: apoint.c,v 1.6 2006/10/28 13:09:59 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -198,12 +198,17 @@ void display_item_date(WINDOW *win, int incolor, apoint_llist_node_t *i,
 			int type, long date, int y, int x)
 {
 	char a_st[100], a_end[100];
+	int recur = 0;
 
 	apoint_sec2str(i, type, date, a_st, a_end);
-
+	if (type == RECUR_EVNT || type == RECUR_APPT)
+		recur = 1;
 	if (incolor == 0) 
 		custom_apply_attr(win, ATTR_HIGHEST);
-	mvwprintw(win, y, x, " - %s -> %s", a_st, a_end);
+	if (recur)
+		mvwprintw(win, y, x, " * %s -> %s", a_st, a_end);
+	else
+		mvwprintw(win, y, x, " - %s -> %s", a_st, a_end);
 	if (incolor == 0) 
 		custom_remove_attr(awin, ATTR_HIGHEST);
 }
