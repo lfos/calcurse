@@ -1,4 +1,4 @@
-/*	$calcurse: day.c,v 1.9 2006/09/14 15:10:26 culot Exp $	*/
+/*	$calcurse: day.c,v 1.10 2006/10/28 13:12:30 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -256,7 +256,7 @@ struct day_item_s *day_add_apoint(int type, char *mesg, long start, long dur,
 void day_write_pad(long date, int width, int length, int incolor, int colr)
 {
 	struct day_item_s *p;
-	int line, item_number, max_pos;
+	int line, item_number, max_pos, recur;
 	const int x_pos = 0;
 	bool draw_line = false;
 
@@ -271,6 +271,10 @@ void day_write_pad(long date, int width, int length, int incolor, int colr)
 	} 
 
 	for (p = day_items_ptr; p != 0; p = p->next) {
+		if (p->type == RECUR_EVNT || p->type == RECUR_APPT)
+			recur = 1;
+		else
+			recur = 0;
 		/* First print the events for current day. */
 		if (p->type < RECUR_APPT) {
 			item_number++;		
@@ -279,13 +283,13 @@ void day_write_pad(long date, int width, int length, int incolor, int colr)
 				day_saved_item->mesg = p->mesg;
 			}
 			display_item(apad->ptrwin, item_number - incolor, p->mesg, 
-			width - 4, line, x_pos);
+				recur, width - 5, line, x_pos);
 			line++;
 			draw_line = true;
 		} else {
 			/* Draw a line between events and appointments. */
 			if (line > 0 && draw_line){
-				wmove(apad->ptrwin, line, x_pos);
+				wmove(apad->ptrwin, line, 0);
 				whline(apad->ptrwin, 0, width);
 				draw_line = false;
 			}
@@ -304,7 +308,7 @@ void day_write_pad(long date, int width, int length, int incolor, int colr)
 				day_item_s2apoint_s(p), p->type, date, 
 				line + 1, x_pos);	
 			display_item(apad->ptrwin, item_number - incolor, p->mesg,
-			width - 6, line + 2, x_pos + 2);
+				0, width - 6, line + 2, x_pos + 2);
 			line = line + 3;
 		}
 	}
