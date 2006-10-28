@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.10 2006/09/17 10:45:06 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.11 2006/10/28 09:57:07 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -116,49 +116,160 @@ print_in_middle(WINDOW * win, int starty, int startx, int width, char *string)
 	custom_remove_attr(win, ATTR_HIGHEST);
 }
 
+/* Delete a character at the given position in string. */
+void del_char(int pos, char *str)
+{
+	str += pos;
+	for (; *str; ++str)
+		*str = *(str + 1);
+	*str = 0;
+}
+
+/* Add a character at the given position in string. */
+char *add_char(int pos, int ch, char *str)
+{
+	int new, buf;
+
+	str += pos;
+	buf = *str; 
+	*str++ = ch; 
+	new = buf;
+	for (; *str; ++str) {
+		buf = *str;
+		*str = new;
+		new = buf;
+	}	
+	*str++ = new;
+	return str;
+}
+
+/* 
+ * Draw the cursor at the correct position in string.
+ * As echoing is not set, we need to know the string we are working on to 
+ * handle display correctly.
+ */
+void showcursor(WINDOW *win, int y, int pos, char *str, int l, int offset)
+{
+	char *nc;
+
+	nc = str + pos;
+	wmove(win, y, pos - offset);
+	(pos >= l) ? waddch(win, SPC|A_REVERSE) : waddch(win, *nc|A_REVERSE);
+}
+
+/* Print the string at the desired position. */
+void showstring(WINDOW *win, int y, int x, char *str, int len, int pos)
+{
+	const int rec = 30, border = 3;
+	const int max_col = col - border, max_len = max_col - rec;
+	int page, max_page, offset, c = 0;
+	char *orig;
+
+	orig = str;
+	max_page = (len - rec) / max_len;
+ 	page = (pos - rec) / max_len;
+	offset = page * max_len;
+	str += offset;
+	mvwaddnstr(win, y, x, str, MIN(len, max_col));
+	wclrtoeol(win);
+	if (page > 0 && page < max_page) {
+		c = '*';
+	} else if (page > 0) {
+		c = '<';
+	} else if (page < max_page) {
+		c = '>';
+	} else
+		c = 0;
+	mvwprintw(win, y, col - 1, "%c", c);
+	showcursor(win, y, pos, orig, len, offset);
+}
+
 /* 
  * Getstring allows to get user input and to print it on a window,
- * even if noecho() is on.
+ * even if noecho() is on. This function is also used to modify an existing
+ * text (the variable string can be non-NULL).
+ * We need to do the echoing manually because of the multi-threading
+ * environment, otherwise the cursor would move from place to place without
+ * control.
  */
-void getstring(win, colr, string, start_x, start_y)
-WINDOW *win;
-int colr;
-char *string;
-int start_x, start_y;
+int getstring(WINDOW *win, int colr, char *string, int x, int y)
 {
-	int ch;
-	int charcount = 0;
+	int ch, newpos, len = 0;
+	char *orig;
 
+	orig = string;
 	custom_apply_attr(win, ATTR_HIGHEST);
-	if (start_x != -1)
-		wmove(win, start_y, start_x);
-
+	for (; *string; ++string, ++len);
+	newpos = x + len;
+	showstring(win, y, x, orig, len, newpos);
+	
 	while ((ch = wgetch(win)) != '\n') {
-	        if ((ch == KEY_BACKSPACE) || 
-				(ch == 330) ||
-				(ch == 263) || 
-				(ch == 127) ||
-				(ch == CTRL('H')) ) {
-			if (charcount > 0) {
-				string--;
-				charcount--;
-				wmove(win, start_y, start_x + charcount);
-				waddch(win, ' ');
-				wmove(win, start_y, start_x + charcount);
+	
+		switch (ch) {
+
+		case KEY_BACKSPACE: 	/* delete one character */
+		case 330:
+		case 127:
+		case CTRL('H'):
+			if (len > 0) { 
+				--newpos; --len;
+				if (newpos >= x + len)
+					--string;
+				else  /* to be deleted inside string */
+					del_char(newpos, orig);
 			}
-		} else if (ch == ESCAPE) {
-			*string = NULL;
-			return;
-		} else {
-			*string++ = ch;
-			charcount++;
-			waddch(win, ch);
+			break;
+
+		case CTRL('D'):		/* delete next character */
+			--len;
+			del_char(newpos, orig);
+			break;
+
+		case CTRL('K'):		/* delete to end-of-line */
+			string = orig + newpos;
+			for (; *string; ++string)
+				*string = 0;
+			len -= (len - newpos);
+			break;
+
+		case CTRL('A'): 	/* go to begginning of string */
+			newpos = x;
+			break;
+
+		case CTRL('E'): 	/* go to end of string */
+			newpos = x + len;
+			break;
+
+		case KEY_LEFT: 		/* move one char backward  */
+		case CTRL('B'):
+			if (newpos > x) newpos--;
+			break;
+	
+		case KEY_RIGHT: 	/* move one char forward */
+		case CTRL('F'):
+			if (newpos < len) newpos++; 
+			break;
+		
+		case ESCAPE: 		/* cancel editing */
+			return 1;	
+			break;
+
+		default: 		/* insert one character */
+			if (len < MAX_LENGTH - 1) {
+				if (newpos >= len)
+					*string++ = ch;
+				else  	// char is to be inserted inside string	
+					string = add_char(newpos, ch, orig);	
+				++len; ++newpos;
+			}
+
 		}
+		showstring(win, y, x, orig, len, newpos);
 		doupdate();
 	}
 	*string = 0;
 	custom_remove_attr(win, ATTR_HIGHEST);
-	return;
+	return 0;
 }
 
 /* checks if a string is only made of digits */
