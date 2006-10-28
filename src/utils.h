@@ -1,4 +1,4 @@
-/*	$calcurse: utils.h,v 1.5 2006/09/16 15:25:36 culot Exp $	*/
+/*	$calcurse: utils.h,v 1.6 2006/10/28 09:54:00 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -30,6 +30,8 @@
 #define MAX(x,y) 	((x)>(y)?(x):(y))
 #define MIN(x,y) 	((x)<(y)?(x):(y))
 
+#define SPC		32 /* ASCII code for white space */
+
 #define NB_CAL_CMDS	15 /* number of commands while in cal view */
 #define NB_APP_CMDS	18 /* same thing while in appointment view */ 
 #define NB_TOD_CMDS	18 /* same thing while in todo view */
@@ -50,7 +52,11 @@ void erase_window_part(WINDOW *win, int first_col, int first_row,
 WINDOW *popup(int pop_row, int pop_col,
 	      int pop_y, int pop_x, char *pop_lab);
 void print_in_middle(WINDOW *win, int starty, int startx, int width, char *string);
-void getstring(WINDOW *win, int colr, char *string, int start_x, int start_y);
+void del_char(int pos, char *str);
+char *add_char(int pos, int ch, char *str);
+void showcursor(WINDOW *win, int y, int pos, char *str, int l, int offset);
+void showstring(WINDOW *win, int y, int x, char *str, int len, int pos);
+int getstring(WINDOW *win, int colr, char *string, int x, int y);
 int is_all_digit(char *string);
 void border_color(WINDOW *window, int bcolr);
 void border_nocolor(WINDOW *window);
