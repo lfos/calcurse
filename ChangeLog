@@ -1,3 +1,11 @@
+28 Oct 2006:
+	getstring() improved to allow the modification of an existing string
+	showstring(), showcursor(), add_char() and delete_char() created 	
+	getstring() calls in todo_new_item(), recur_repeat_item(),
+	goto_day(), config_notify_bar() and add_item() updated
+	display_item(), display_item_date() and day_write_pad() updated to add
+	an asterisk in front of recurrent items 
+
 17 Oct 2006:
 	parse_args() modified to use getopt_long() instead of getopt, to make
 	the '-t' priority number optional, and to allow the use of long options 
