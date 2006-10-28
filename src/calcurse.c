@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.23 2006/09/30 14:23:07 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.24 2006/10/28 10:32:29 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -809,6 +809,7 @@ void config_notify_bar(void)
 		}
 		status_mesg(number_str, "");
 		print_notify_options(conf_win);
+		strcpy(buf, "");
 		ch = wgetch(swin);
 
 		switch (ch) {
@@ -828,8 +829,7 @@ void config_notify_bar(void)
 			break;
 		case '2':
 			status_mesg(date_str, "");
-			getstring(swin, colr, buf, 0, 1);
-			if (strlen(buf) != 0) {
+			if (getstring(swin, colr, buf, 0, 1) == 0) {
 				pthread_mutex_lock(&nbar->mutex);
 				strncpy(nbar->datefmt, buf, strlen(buf) + 1);
 				pthread_mutex_unlock(&nbar->mutex);
@@ -838,8 +838,7 @@ void config_notify_bar(void)
 			break;
 		case '3':
 			status_mesg(time_str, "");
-			getstring(swin, colr, buf, 0, 1);
-			if (strlen(buf) != 0 ) {
+			if (getstring(swin, colr, buf, 0, 1) == 0 ) {
 				pthread_mutex_lock(&nbar->mutex);
 				strncpy(nbar->timefmt, buf, strlen(buf) + 1);
 				pthread_mutex_unlock(&nbar->mutex);
@@ -848,9 +847,9 @@ void config_notify_bar(void)
 			break;
                 case '4':
 			status_mesg(count_str, "");
-			getstring(swin, colr, buf, 0, 1);
-			if (strlen(buf) != 0 && is_all_digit(buf) &&
-			    atoi(buf) >= 0 && atoi(buf) <= DAYINSEC) {
+			if (getstring(swin, colr, buf, 0, 1) == 0 && 
+			    is_all_digit(buf) && atoi(buf) >= 0 && 
+			    atoi(buf) <= DAYINSEC) {
 				pthread_mutex_lock(&nbar->mutex);
 				nbar->cntdwn = atoi(buf);
 				pthread_mutex_unlock(&nbar->mutex);
@@ -1084,8 +1083,8 @@ void add_item(void)
 	char *format_message_2 = _("You entered an invalid end time, should be [h:mm] or [hh:mm] or [mm]");
         char *enter_str = _("Press [Enter] to continue");
 	int Id;
-        char item_time[MAX_LENGTH];
-	char item_mesg[MAX_LENGTH];
+        char item_time[MAX_LENGTH] = "";
+	char item_mesg[MAX_LENGTH] = "";
 	long apoint_duration, apoint_start;
 	apoint_llist_node_t *apoint_pointeur;
         struct event_s *event_pointeur;
@@ -1094,18 +1093,18 @@ void add_item(void)
         int is_appointment = 1;
 
 	/* Get the starting time */
-	strncpy(item_time, "     ", 6);
 	while (check_time(item_time) != 1) {
                 status_mesg(mesg_1, "");
-		getstring(swin, colr, item_time, 0, 1);
-		if (strlen(item_time) == 0){
-                        is_appointment = 0;
-			break;	
-                } else if (check_time(item_time) != 1) {
-                        status_mesg(format_message_1, enter_str);
-			wgetch(swin);
-		} else
-			sscanf(item_time, "%u:%u", &heures, &minutes);
+		if (getstring(swin, colr, item_time, 0, 1) == 0) {
+			if (strlen(item_time) == 0){
+				is_appointment = 0;
+				break;	
+			} else if (check_time(item_time) != 1) {
+				status_mesg(format_message_1, enter_str);
+				wgetch(swin);
+			} else
+				sscanf(item_time, "%u:%u", &heures, &minutes);
+		}
 	}
         /* 
          * Check if an event or appointment is entered, 
@@ -1113,11 +1112,10 @@ void add_item(void)
          * corresponding item.
          */
         if (is_appointment){ /* Get the appointment duration */
-                strncpy(item_time, "     ", 6);
+                strcpy(item_time, "");
                 while (check_time(item_time) == 0) {
                         status_mesg(mesg_2, "");
-                        getstring(swin, colr, item_time, 0, 1);
-                        if (strlen(item_time) == 0)
+                        if (getstring(swin, colr, item_time, 0, 1) != 0)
                                 return;	//nothing entered, cancel adding of event
 			else if (check_time(item_time) == 0) {
                                 status_mesg(format_message_2, enter_str);
@@ -1145,8 +1143,7 @@ void add_item(void)
         }
 	// get the item description
         status_mesg(mesg_3, "");
-	getstring(swin, colr, item_mesg, 0, 1);
-	if (strlen(item_mesg) != 0) {
+	if (getstring(swin, colr, item_mesg, 0, 1) == 0) {
                 if (is_appointment){
 		// insert the appointment in list
 		apoint_start = date2sec(sel_year, sel_month, sel_day,
