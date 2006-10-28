@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.11 2006/10/28 09:57:07 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.12 2006/10/28 13:14:03 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -681,19 +681,25 @@ void win_show(WINDOW * win, char *label)
 /* 
  * Print an item description in the corresponding panel window.
  */
-void display_item(WINDOW *win, int incolor, char *msg, int len, 
-			int y, int x)
+void display_item(WINDOW *win, int incolor, char *msg, int recur, 
+			int len, int y, int x)
 {
 	char buf[len];
 
 	if (incolor == 0) 
 		custom_apply_attr(win, ATTR_HIGHEST);
 	if (strlen(msg) < len) {
-		mvwprintw(win, y, x, "%s", msg);
+		if (recur)
+			mvwprintw(win, y, x, "*%s", msg);
+		else
+			mvwprintw(win, y, x, " %s", msg);
 	} else {
 		strncpy(buf, msg, len - 1);
 		buf[len - 1] = '\0';
-		mvwprintw(win, y, x, "%s...", buf);
+		if (recur)
+			mvwprintw(win, y, x, "*%s...", buf);
+		else
+			mvwprintw(win, y, x, " %s...", buf);
 	}
 	if (incolor == 0) 
 		custom_remove_attr(win, ATTR_HIGHEST);
