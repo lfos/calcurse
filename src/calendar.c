@@ -1,4 +1,4 @@
-/*	$calcurse: calendar.c,v 1.1 2006/07/31 21:00:02 culot Exp $	*/
+/*	$calcurse: calendar.c,v 1.2 2006/10/28 10:33:15 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -194,8 +194,7 @@ goto_day(int colr, int day, int month, int year,
 
 	while (wrong_day != 1) {
 		status_mesg(request_date, "");
-		getstring(swin, colr, selected_day, 0, 1);
-		if (strlen(selected_day) == 0)	// go to today
+		if (getstring(swin, colr, selected_day, 0, 1) == 0)	// go to today
 		{
 			*sel_day = day;
 			*sel_month = month;
