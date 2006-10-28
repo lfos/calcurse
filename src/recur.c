@@ -1,4 +1,4 @@
-/*	$calcurse: recur.c,v 1.14 2006/10/16 13:33:44 culot Exp $	*/
+/*	$calcurse: recur.c,v 1.15 2006/10/28 10:34:33 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -517,7 +517,7 @@ void recur_repeat_item(int sel_year, int sel_month, int sel_day,
 	int ch = 0;
 	int valid_date = 0, date_entered = 0;
 	int year = 0, month = 0, day = 0;
-	char user_input[MAX_LENGTH];
+	char user_input[MAX_LENGTH] = "";
 	char *mesg_type_1 = 
 	_("Enter the repetition type: (D)aily, (W)eekly, (M)onthly, (Y)early");
 	char *mesg_type_2 = _("[D/W/M/Y] ");
@@ -562,8 +562,7 @@ void recur_repeat_item(int sel_year, int sel_month, int sel_day,
 
 	while (freq == 0) {
 		status_mesg(mesg_freq_1, "");
-		getstring(swin, colr, user_input, 0, 1);
-		if (strlen(user_input) != 0) {
+		if (getstring(swin, colr, user_input, 0, 1) == 0) {
 			freq = atoi(user_input);
 			if (freq == 0) {
 				status_mesg(mesg_wrong_freq, wrong_type_2);
@@ -577,8 +576,7 @@ void recur_repeat_item(int sel_year, int sel_month, int sel_day,
 
 	while (!date_entered) {
 		status_mesg(mesg_until_1, "");
-		getstring(swin, colr, user_input, 0, 1);
-		if (strlen(user_input) != 0) {
+		if (getstring(swin, colr, user_input, 0, 1) == 0) {
 			if (strlen(user_input) == 1 && 
 			    strncmp(user_input, "0", 1) == 0 )  {
 				until = 0;
