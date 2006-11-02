@@ -1,4 +1,4 @@
-/*	$calcurse: recur.c,v 1.15 2006/10/28 10:34:33 culot Exp $	*/
+/*	$calcurse: recur.c,v 1.16 2006/11/02 13:43:10 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -562,7 +562,7 @@ void recur_repeat_item(int sel_year, int sel_month, int sel_day,
 
 	while (freq == 0) {
 		status_mesg(mesg_freq_1, "");
-		if (getstring(swin, colr, user_input, 0, 1) == 0) {
+		if (getstring(swin, colr, user_input, MAX_LENGTH, 0, 1) == 0) {
 			freq = atoi(user_input);
 			if (freq == 0) {
 				status_mesg(mesg_wrong_freq, wrong_type_2);
@@ -576,7 +576,7 @@ void recur_repeat_item(int sel_year, int sel_month, int sel_day,
 
 	while (!date_entered) {
 		status_mesg(mesg_until_1, "");
-		if (getstring(swin, colr, user_input, 0, 1) == 0) {
+		if (getstring(swin, colr, user_input, 11, 0, 1) == 0) {
 			if (strlen(user_input) == 1 && 
 			    strncmp(user_input, "0", 1) == 0 )  {
 				until = 0;
