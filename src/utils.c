@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.12 2006/10/28 13:14:03 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.13 2006/11/02 13:40:50 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -128,19 +128,16 @@ void del_char(int pos, char *str)
 /* Add a character at the given position in string. */
 char *add_char(int pos, int ch, char *str)
 {
-	int new, buf;
+	int len;
+	char *buf;
 
 	str += pos;
-	buf = *str; 
-	*str++ = ch; 
-	new = buf;
-	for (; *str; ++str) {
-		buf = *str;
-		*str = new;
-		new = buf;
-	}	
-	*str++ = new;
-	return str;
+	len = strlen(str) + 1;
+	buf = (char *) malloc(len);
+	(void)memcpy(buf, str, len);
+	*str++ = ch;
+	(void)memcpy(str, buf, len);
+	return (str += len);
 }
 
 /* 
@@ -192,14 +189,14 @@ void showstring(WINDOW *win, int y, int x, char *str, int len, int pos)
  * environment, otherwise the cursor would move from place to place without
  * control.
  */
-int getstring(WINDOW *win, int colr, char *string, int x, int y)
+int getstring(WINDOW *win, int colr, char *str, int l, int x, int y)
 {
 	int ch, newpos, len = 0;
 	char *orig;
 
-	orig = string;
+	orig = str;
 	custom_apply_attr(win, ATTR_HIGHEST);
-	for (; *string; ++string, ++len);
+	for (; *str; ++str, ++len);
 	newpos = x + len;
 	showstring(win, y, x, orig, len, newpos);
 	
@@ -214,7 +211,7 @@ int getstring(WINDOW *win, int colr, char *string, int x, int y)
 			if (len > 0) { 
 				--newpos; --len;
 				if (newpos >= x + len)
-					--string;
+					--str;
 				else  /* to be deleted inside string */
 					del_char(newpos, orig);
 			}
@@ -226,9 +223,9 @@ int getstring(WINDOW *win, int colr, char *string, int x, int y)
 			break;
 
 		case CTRL('K'):		/* delete to end-of-line */
-			string = orig + newpos;
-			for (; *string; ++string)
-				*string = 0;
+			str = orig + newpos;
+			for (; *str; ++str)
+				*str = 0;
 			len -= (len - newpos);
 			break;
 
@@ -255,11 +252,11 @@ int getstring(WINDOW *win, int colr, char *string, int x, int y)
 			break;
 
 		default: 		/* insert one character */
-			if (len < MAX_LENGTH - 1) {
+			if (len < l - 1) {
 				if (newpos >= len)
-					*string++ = ch;
+					*str++ = ch;
 				else  	// char is to be inserted inside string	
-					string = add_char(newpos, ch, orig);	
+					str = add_char(newpos, ch, orig);	
 				++len; ++newpos;
 			}
 
@@ -267,9 +264,28 @@ int getstring(WINDOW *win, int colr, char *string, int x, int y)
 		showstring(win, y, x, orig, len, newpos);
 		doupdate();
 	}
-	*string = 0;
+	*str = 0;
 	custom_remove_attr(win, ATTR_HIGHEST);
 	return 0;
+}
+
+/* Update an already existing string. */
+void updatestring(WINDOW *win, int colr, char **str, int x, int y) {
+	char *newstr;
+	int len;
+
+	newstr = (char *) malloc(MAX_LENGTH);	
+	(void)memcpy(newstr, *str, strlen(*str) + 1);
+	if (getstring(win, colr, newstr, MAX_LENGTH, x, y) == 0) {
+		len = strlen(newstr) + 1;
+		if ((*str = (char *) realloc(*str, len)) == NULL) {
+			/* NOTREACHED */
+			fputs(_("FATAL ERROR in updatestring: out of memory\n"),
+				stderr);
+			exit(EXIT_FAILURE);
+		} else
+			(void)memcpy(*str, newstr, len);
+	} 	
 }
 
 /* checks if a string is only made of digits */
