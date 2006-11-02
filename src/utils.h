@@ -1,4 +1,4 @@
-/*	$calcurse: utils.h,v 1.7 2006/10/28 13:13:18 culot Exp $	*/
+/*	$calcurse: utils.h,v 1.8 2006/11/02 13:39:36 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -56,7 +56,8 @@ void del_char(int pos, char *str);
 char *add_char(int pos, int ch, char *str);
 void showcursor(WINDOW *win, int y, int pos, char *str, int l, int offset);
 void showstring(WINDOW *win, int y, int x, char *str, int len, int pos);
-int getstring(WINDOW *win, int colr, char *string, int x, int y);
+int getstring(WINDOW *win, int colr, char *str, int l, int x, int y);
+void updatestring(WINDOW *win, int colr, char **str, int x, int y);
 int is_all_digit(char *string);
 void border_color(WINDOW *window, int bcolr);
 void border_nocolor(WINDOW *window);
