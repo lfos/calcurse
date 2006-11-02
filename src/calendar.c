@@ -1,4 +1,4 @@
-/*	$calcurse: calendar.c,v 1.2 2006/10/28 10:33:15 culot Exp $	*/
+/*	$calcurse: calendar.c,v 1.3 2006/11/02 13:42:48 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -185,7 +185,8 @@ void
 goto_day(int colr, int day, int month, int year,
 	 int *sel_day, int *sel_month, int *sel_year)
 {
-	char selected_day[50] = "";
+#define LDAY 11
+	char selected_day[LDAY] = "";
 	int dday, dmonth, dyear;
 	int wrong_day = 0;
 	char *mesg_line1 = _("The day you entered is not valid");
@@ -194,8 +195,8 @@ goto_day(int colr, int day, int month, int year,
 
 	while (wrong_day != 1) {
 		status_mesg(request_date, "");
-		if (getstring(swin, colr, selected_day, 0, 1) == 0)	// go to today
-		{
+		if (getstring(swin, colr, selected_day, LDAY, 0, 1) == 0) {
+		// go to today
 			*sel_day = day;
 			*sel_month = month;
 			*sel_year = year;
