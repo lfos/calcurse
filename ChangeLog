@@ -1,3 +1,9 @@
+02 Nov 2006:
+	getstring() modified to take the max string length as an argument
+	updatestring() and todo_edit_item() created	
+	add_char() simplified, using memcpy()
+	'E' key added to edit already existing items
+
 28 Oct 2006:
 	getstring() improved to allow the modification of an existing string
 	showstring(), showcursor(), add_char() and delete_char() created 	
