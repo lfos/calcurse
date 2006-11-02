@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.25 2006/10/28 13:11:21 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.26 2006/11/02 13:41:45 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -330,6 +330,14 @@ int main(int argc, char **argv)
 				nb_tod = todo_new_item(nb_tod, colr);
 				if (hilt_tod == 0 && nb_tod == 1)
 					hilt_tod++;
+			}
+			break;
+
+		case 'E':
+		case 'e':	/* Edit an existing item */
+			if (which_pan == APPOINTMENT) {
+			} else if (which_pan == TODO) {
+				todo_edit_item(hilt_tod, colr);
 			}
 			break;
 
@@ -829,7 +837,7 @@ void config_notify_bar(void)
 			break;
 		case '2':
 			status_mesg(date_str, "");
-			if (getstring(swin, colr, buf, 0, 1) == 0) {
+			if (getstring(swin, colr, buf, MAX_LENGTH, 0, 1) == 0) {
 				pthread_mutex_lock(&nbar->mutex);
 				strncpy(nbar->datefmt, buf, strlen(buf) + 1);
 				pthread_mutex_unlock(&nbar->mutex);
@@ -838,7 +846,7 @@ void config_notify_bar(void)
 			break;
 		case '3':
 			status_mesg(time_str, "");
-			if (getstring(swin, colr, buf, 0, 1) == 0 ) {
+			if (getstring(swin, colr, buf, MAX_LENGTH, 0, 1) == 0 ) {
 				pthread_mutex_lock(&nbar->mutex);
 				strncpy(nbar->timefmt, buf, strlen(buf) + 1);
 				pthread_mutex_unlock(&nbar->mutex);
@@ -847,7 +855,7 @@ void config_notify_bar(void)
 			break;
                 case '4':
 			status_mesg(count_str, "");
-			if (getstring(swin, colr, buf, 0, 1) == 0 && 
+			if (getstring(swin, colr, buf, MAX_LENGTH, 0, 1) == 0 && 
 			    is_all_digit(buf) && atoi(buf) >= 0 && 
 			    atoi(buf) <= DAYINSEC) {
 				pthread_mutex_lock(&nbar->mutex);
@@ -1076,6 +1084,7 @@ void del_item(void)
  */
 void add_item(void)
 {
+#define LTIME 6
 	char *mesg_1 = _("Enter start time ([hh:mm] or [h:mm]), leave blank for an all-day event : ");
 	char *mesg_2 = _("Enter end time ([hh:mm] or [h:mm]) or duration (in minutes) : ");
 	char *mesg_3 = _("Enter description :");
@@ -1083,7 +1092,7 @@ void add_item(void)
 	char *format_message_2 = _("You entered an invalid end time, should be [h:mm] or [hh:mm] or [mm]");
         char *enter_str = _("Press [Enter] to continue");
 	int Id;
-        char item_time[MAX_LENGTH] = "";
+        char item_time[LTIME] = "";
 	char item_mesg[MAX_LENGTH] = "";
 	long apoint_duration, apoint_start;
 	apoint_llist_node_t *apoint_pointeur;
@@ -1095,7 +1104,7 @@ void add_item(void)
 	/* Get the starting time */
 	while (check_time(item_time) != 1) {
                 status_mesg(mesg_1, "");
-		if (getstring(swin, colr, item_time, 0, 1) == 0) {
+		if (getstring(swin, colr, item_time, LTIME, 0, 1) == 0) {
 			if (strlen(item_time) == 0){
 				is_appointment = 0;
 				break;	
@@ -1115,7 +1124,7 @@ void add_item(void)
                 strcpy(item_time, "");
                 while (check_time(item_time) == 0) {
                         status_mesg(mesg_2, "");
-                        if (getstring(swin, colr, item_time, 0, 1) != 0)
+                        if (getstring(swin, colr, item_time, LTIME, 0, 1) != 0)
                                 return;	//nothing entered, cancel adding of event
 			else if (check_time(item_time) == 0) {
                                 status_mesg(format_message_2, enter_str);
@@ -1143,7 +1152,7 @@ void add_item(void)
         }
 	// get the item description
         status_mesg(mesg_3, "");
-	if (getstring(swin, colr, item_mesg, 0, 1) == 0) {
+	if (getstring(swin, colr, item_mesg, MAX_LENGTH, 0, 1) == 0) {
                 if (is_appointment){
 		// insert the appointment in list
 		apoint_start = date2sec(sel_year, sel_month, sel_day,
