@@ -1,4 +1,4 @@
-/*	$calcurse: todo.c,v 1.5 2006/10/28 10:35:55 culot Exp $	*/
+/*	$calcurse: todo.c,v 1.6 2006/11/02 13:43:36 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -45,7 +45,7 @@ int todo_new_item(int total, int colr)
 	char todo_input[MAX_LENGTH] = "";
 
 	status_mesg(mesg, "");
-	if (getstring(swin, colr, todo_input, 0, 1) == 0) {
+	if (getstring(swin, colr, todo_input, 2, 0, 1) == 0) {
 		while ( (ch < '1') || (ch > '9') ) {
 			status_mesg(mesg_id, "");
 			ch = wgetch(swin);
@@ -165,4 +165,15 @@ int todo_chg_priority(int action, int item_num)
 		new_position = item_num;
 	}
 	return new_position;
+}
+
+/* Edit the description of an already existing todo item. */
+void todo_edit_item(int item_num, int colr)
+{
+	struct todo_s *i;
+	char *mesg = _("Enter the new ToDo description :");	
+
+	status_mesg(mesg, "");
+	i = todo_get_item(item_num);
+	updatestring(swin, colr, &i->mesg, 0, 1);
 }
