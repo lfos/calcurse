@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.13 2006/11/02 13:40:50 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.14 2006/11/28 15:28:43 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -129,14 +129,11 @@ void del_char(int pos, char *str)
 char *add_char(int pos, int ch, char *str)
 {
 	int len;
-	char *buf;
 
 	str += pos;
 	len = strlen(str) + 1;
-	buf = (char *) malloc(len);
-	(void)memcpy(buf, str, len);
-	*str++ = ch;
-	(void)memcpy(str, buf, len);
+	memmove(str + 1, str, len);
+	*str = ch;
 	return (str += len);
 }
 
