@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.26 2006/11/02 13:41:45 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.27 2006/11/30 14:47:04 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -335,10 +335,10 @@ int main(int argc, char **argv)
 
 		case 'E':
 		case 'e':	/* Edit an existing item */
-			if (which_pan == APPOINTMENT) {
-			} else if (which_pan == TODO) {
+			if (which_pan == APPOINTMENT)
+				day_edit_item(hilt_app, colr);
+			else if (which_pan == TODO)
 				todo_edit_item(hilt_tod, colr);
-			}
 			break;
 
 		case 'D':
