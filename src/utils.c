@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.14 2006/11/28 15:28:43 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.15 2006/11/30 08:13:03 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -455,9 +455,9 @@ void scroller(WINDOW *win, char *mesg, int x, int y, int nb_row, int nb_col)
 
 /* 
  * Draws the status bar. 
- * To add a keybinding, insert it in the 'keys' and 'labels' tables,
- * and update the NB_CAL_CMDS, NB_APP_CMDS or NB_TOD_CMDS defines 
- * in utils.h, depending on which panel the added keybind is assigned to.
+ * To add a keybinding, insert a new binding_t item, add it in the *binding
+ * table, and update the NB_CAL_CMDS, NB_APP_CMDS or NB_TOD_CMDS defines in
+ * utils.h, depending on which panel the added keybind is assigned to.
  */
 void status_bar(int which_pan, int colr, int nc_bar, int nl_bar)
 {
@@ -470,6 +470,7 @@ void status_bar(int which_pan, int colr, int nc_bar, int nl_bar)
 	binding_t save = { "  S", _("Save") };
 	binding_t add  = { "  A", _("Add Item") };
 	binding_t del  = { "  D", _("Del Item") };
+	binding_t edit = { "  E", _("Edit Itm") };
 	binding_t day  = { "H/L", _("-+1 Day") };
 	binding_t week = { "K/J", _("-+1 Week") };
 	binding_t updn = { "K/J", _("Up/Down") };
@@ -491,11 +492,14 @@ void status_bar(int which_pan, int colr, int nc_bar, int nl_bar)
 		&help, &quit, &save, &togo, &day, &week, &tab, &conf, &draw, 
 		&appt, &todo, &othr, &eday, &ewek, &othr, 
 	/* appointment keys */
-		&help, &quit, &save, &togo, &add, &del, &view, &rept, &updn, 
-		&tab, &conf, &othr, &draw, &appt, &todo, &eday, &ewek, &othr,
+		&help, &quit, &save, &togo, &add, &del, &edit, &view, &rept, 
+		&updn, &tab, &othr, &conf, &draw, &appt, &todo, &eday, &ewek, 
+		&othr,
 	/* todo keys */
-		&help, &quit, &save, &togo, &add, &del, &view, &prio, &updn, 
-		&tab, &conf, &othr, &draw, &appt, &todo, &eday, &ewek, &othr };
+		&help, &quit, &save, &togo, &add, &del, &edit, &view, &prio, 
+		&updn, &tab, &othr, &conf, &draw, &appt, &todo, &eday, &ewek, 
+		&othr 
+	};
 		
 	/* Total length of a command. */
 	cmd_length = KEY_LENGTH + LABEL_LENGTH; 
