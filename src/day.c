@@ -1,4 +1,4 @@
-/*	$calcurse: day.c,v 1.10 2006/10/28 13:12:30 culot Exp $	*/
+/*	$calcurse: day.c,v 1.11 2006/11/30 14:39:10 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -387,6 +387,42 @@ void day_popup_item(void)
 	pthread_mutex_unlock(&(alist_p->mutex));
 
 	return 0;
+}
+
+/* Edit an already existing item. */
+void day_edit_item(int item_num, int colr)
+{
+	struct day_item_s *p;
+	int ch = 0;
+	char *msg_norecur =
+	_("Edit: (1)Start time, (2)End time or (3)Description?");
+	char *choice_norecur = "[1/2/3] ";
+	char *msg_recur =
+	_("Edit: (1)Start time, (2)End time, (3)Description or (4)Repetition?");
+	char *choice_recur = "[1/2/3/4] ";
+
+	p = day_get_item(item_num);
+	if (p->type == APPT || p->type == EVNT) {
+		status_mesg(msg_norecur, choice_norecur);
+		while (ch != '1' && ch != '2' && ch != '3') 
+			ch = wgetch(swin);
+	} else {
+		status_mesg(msg_recur, choice_recur);
+		while (ch != '1' && ch != '2' && ch != '3' && ch != '4')
+			ch = wgetch(swin);
+	}
+	switch (ch) {
+	case '1':
+mvwprintw(swin, 0, 0, "date de debut:%d", p->start);wgetch(swin);
+		break;
+	case '2':
+		break;
+	case '3':
+		updatestring(swin, colr, &p->mesg, 0, 1);
+		break;
+	case '4':
+		break;
+	}
 }
 
 /*
