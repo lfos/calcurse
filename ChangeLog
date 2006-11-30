@@ -1,3 +1,7 @@
+30 Nov 2006:
+	'Edit Itm' command added in the status bar
+	day_edit_item() created
+
 28 Nov 2006:
 	add_char() modified to use memmove() instead of memcpy()
 
