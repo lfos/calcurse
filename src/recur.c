@@ -1,4 +1,4 @@
-/*	$calcurse: recur.c,v 1.16 2006/11/02 13:43:10 culot Exp $	*/
+/*	$calcurse: recur.c,v 1.17 2006/12/08 08:42:43 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -608,7 +608,7 @@ void recur_repeat_item(int sel_year, int sel_month, int sel_day,
 	}
 	
 	date = date2sec(sel_year, sel_month, sel_day, 0, 0);
-	day_erase_item(date, item_nb);
+	day_erase_item(date, item_nb, 0);
 	if (p->type == EVNT) {
 		re = recur_event_new(p->mesg, p->start, p->evnt_id, 
 			type, freq, until, NULL);
@@ -687,4 +687,46 @@ struct notify_app_s *recur_apoint_check_next(
 	pthread_mutex_unlock(&(recur_alist_p->mutex));
 
 	return app;
+}
+
+/* Returns a structure containing the selected recurrent appointment. */
+recur_apoint_llist_node_t *recur_get_apoint(long date, int num)
+{
+	recur_apoint_llist_node_t *o;
+	int n = 0;
+	
+	pthread_mutex_lock(&(recur_alist_p->mutex));
+	for (o = recur_alist_p->root; o != 0; o = o->next) {
+		if (recur_item_inday(o->start, o->exc, o->rpt->type,
+			o->rpt->freq, o->rpt->until, date)) {
+			if (n == num) {
+				pthread_mutex_unlock(&(recur_alist_p->mutex));
+				return o;	
+			}	
+			n++;
+		}
+	}
+	/* NOTREACHED */
+	fputs(_("FATAL ERROR in recur_get_apoint: no such item\n"), stderr);
+	exit(EXIT_FAILURE);
+}
+
+/* Returns a structure containing the selected recurrent event. */
+struct recur_event_s *recur_get_event(long date, int num)
+{
+	struct recur_event_s *o;
+	int n = 0;
+	
+	for (o = recur_elist; o != 0; o = o->next) {
+		if (recur_item_inday(o->day, o->exc, o->rpt->type,
+			o->rpt->freq, o->rpt->until, date)) {
+			if (n == num) {
+				return o;	
+			}	
+			n++;
+		}
+	}
+	/* NOTREACHED */
+	fputs(_("FATAL ERROR in recur_get_event: no such item\n"), stderr);
+	exit(EXIT_FAILURE);
 }
