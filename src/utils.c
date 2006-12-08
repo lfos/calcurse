@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.15 2006/11/30 08:13:03 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.16 2006/12/08 08:36:58 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -28,6 +28,7 @@
 #include <time.h>	
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <ctype.h>
 #include <stdbool.h>
 #include <sys/types.h>
@@ -550,6 +551,60 @@ long date2sec(unsigned year, unsigned month, unsigned day, unsigned hour,
 		exit(EXIT_FAILURE);
 	}
 	return tstart;
+}
+
+/* Return a string containing the hour of a given date in seconds. */
+char *date_sec2hour_str(long sec)
+{
+	const int TIME_LEN = 6;
+	struct tm *lt;
+	time_t t;
+	char *timestr;
+	
+	t = sec;
+	lt = localtime(&t);
+	timestr = (char *) malloc(TIME_LEN);
+	snprintf(timestr, TIME_LEN, "%02u:%02u", lt->tm_hour, lt->tm_min);
+	return timestr;
+}
+
+/* Return a string containing the date, given a date in seconds. */
+char *date_sec2date_str(long sec)
+{
+	const int DATE_LEN = 11;
+	struct tm *lt;
+	time_t t;
+	char *datestr;
+	
+	t = sec;
+	lt = localtime(&t);
+	datestr = (char *) malloc(DATE_LEN);
+	snprintf(datestr, DATE_LEN, "%02u/%02u/%04u", lt->tm_mon + 1, 
+		lt->tm_mday, lt->tm_year + 1900);
+	return datestr;
+}
+
+/* 
+ * Return a long containing the date which is updated taking into account
+ * the new time and date entered by the user.
+ */
+long update_time_in_date(long date, unsigned hr, unsigned mn)
+{
+	struct tm *lt;
+	time_t t, new_date;
+
+	t = date;
+	lt = localtime(&t);
+	lt->tm_hour = hr;
+	lt->tm_min = mn;
+	new_date = mktime(lt);
+	if (new_date == -1) { /* NOTREACHED */
+		fputs(
+		_("FATAL ERROR in update_time_in_date: failure in mktime\n"), 
+			stderr);
+		exit(EXIT_FAILURE);
+	}
+	return new_date;
 }
 
 /* 
