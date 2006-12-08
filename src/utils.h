@@ -1,4 +1,4 @@
-/*	$calcurse: utils.h,v 1.9 2006/11/30 08:12:23 culot Exp $	*/
+/*	$calcurse: utils.h,v 1.10 2006/12/08 08:35:55 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -65,6 +65,9 @@ void scroller(WINDOW *win, char *, int x, int y, int nb_row, int nb_col);
 void status_bar(int which_pan, int colr, int nc_bar, int nl_bar);
 long date2sec(unsigned year, unsigned month, unsigned day, unsigned hour,
 	      unsigned min);
+char *date_sec2hour_str(long sec);
+char *date_sec2date_str(long sec);
+long update_time_in_date(long date, unsigned hr, unsigned min);
 long get_sec_date(int year, int month, int day);
 long min2sec(unsigned minutes);
 int check_time(char *string);
