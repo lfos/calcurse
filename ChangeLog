@@ -1,3 +1,14 @@
+08 Dec 2006:
+	day_edit_item() finished, day_edit_time() created and day_erase_item()
+	updated	to add the 'force_erase' flag
+	recur_get_event() and recur_get_apoint() created
+	datesec2str() changed to date_sec2hour_str(), and date_sec2date_str()
+	created
+	update_time_in_date() created
+
+01 Dec 2006:
+	datesec2str() created
+
 30 Nov 2006:
 	'Edit Itm' command added in the status bar
 	day_edit_item() created
