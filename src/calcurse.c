@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.27 2006/11/30 14:47:04 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.28 2006/12/08 08:41:41 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -336,9 +336,11 @@ int main(int argc, char **argv)
 		case 'E':
 		case 'e':	/* Edit an existing item */
 			if (which_pan == APPOINTMENT)
-				day_edit_item(hilt_app, colr);
+				day_edit_item(sel_year, sel_month, sel_day,
+					hilt_app, colr);
 			else if (which_pan == TODO)
 				todo_edit_item(hilt_tod, colr);
+			do_storage = true;
 			break;
 
 		case 'D':
@@ -1031,7 +1033,8 @@ void del_item(void)
 		
 		if (go_for_deletion) {
 			if (nb_items != 0) {
-				deleted_item_type = day_erase_item(date, hilt_app);
+				deleted_item_type = 
+					day_erase_item(date, hilt_app, 0);
 				if (deleted_item_type == EVNT || 
 				    deleted_item_type == RECUR_EVNT) {
 					number_events_inday--;
