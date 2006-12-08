@@ -1,4 +1,4 @@
-/*	$calcurse: day.c,v 1.11 2006/11/30 14:39:10 culot Exp $	*/
+/*	$calcurse: day.c,v 1.12 2006/12/08 08:40:19 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -28,6 +28,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
+#include <ctype.h>
 #include <stdbool.h>
 #include <time.h>
 
@@ -38,6 +39,7 @@
 #include "recur.h"
 #include "day.h"
 #include "vars.h"
+#include "args.h"
 
 static struct day_item_s *day_items_ptr;
 static struct day_saved_item_s *day_saved_item = NULL;
@@ -390,38 +392,219 @@ void day_popup_item(void)
 }
 
 /* Edit an already existing item. */
-void day_edit_item(int item_num, int colr)
+void day_edit_item(int year, int month, int day, int item_num, int colr)
 {
+#define STRT	'1'
+#define END	'2'
+#define DESC	'3'
+#define REPT	'4'
 	struct day_item_s *p;
-	int ch = 0;
+	struct recur_event_s *re;
+	struct rpt_s *rpt;
+	struct tm *lt;
+	time_t t;
+	recur_apoint_llist_node_t *ra, *ra_new;
+	long newtime = 0;
+	const long date = date2sec(year, month, day, 0, 0);
+	int i, ch = 0, valid_date = 0, newfreq = 0, date_entered = 0;
+	int newmonth, newday, newyear;
+	int nb_item[MAX_TYPES];
+	unsigned hr, mn;
+	char *timestr, *typestr, *freqstr;
 	char *msg_norecur =
 	_("Edit: (1)Start time, (2)End time or (3)Description?");
 	char *choice_norecur = "[1/2/3] ";
 	char *msg_recur =
 	_("Edit: (1)Start time, (2)End time, (3)Description or (4)Repetition?");
+	char *msg_event_recur =
+	_("Edit: (1)Description or (2)Repetition?");
 	char *choice_recur = "[1/2/3/4] ";
+	char *choice_event_recur = "[1/2] ";
+	char *mesg_wrong_date = _("The entered date is not valid.");
+	char *mesg_possible_fmts = 
+	_("Possible formats are [mm/dd/yyyy] or '0' for an endless repetetition");
+	char *error_msg =
+	_("Invalid time: start time must be before end time!");
+        char *enter_str = _("Press [Enter] to continue");
+	char *mesg_desc = _("Enter the new item description:");
+	char *mesg_type_1 = 
+	_("Enter the new repetition type: (D)aily, (W)eekly, (M)onthly, (Y)early");
+	char *mesg_type_2 = _("[D/W/M/Y] ");
+	char *mesg_freq_1 = _("Enter the new repetition frequence:");
+	char *mesg_wrong_freq = _("The frequence you entered is not valid.");
+	char *mesg_until_1 = 
+	_("Enter the new ending date: [mm/dd/yyyy] or '0'");
 
-	p = day_get_item(item_num);
-	if (p->type == APPT || p->type == EVNT) {
-		status_mesg(msg_norecur, choice_norecur);
-		while (ch != '1' && ch != '2' && ch != '3') 
-			ch = wgetch(swin);
-	} else {
-		status_mesg(msg_recur, choice_recur);
-		while (ch != '1' && ch != '2' && ch != '3' && ch != '4')
-			ch = wgetch(swin);
+	for (i = 0; i < MAX_TYPES; i++)
+		nb_item[i] = 0;
+	p = day_items_ptr;
+	for (i = 1; i < item_num; i++) {
+		nb_item[p->type - 1]++;
+		p = p->next;
 	}
+	p = day_get_item(item_num);
+
+	switch (p->type) {
+	case RECUR_EVNT:
+		rpt = (struct rpt_s *) malloc(sizeof(struct rpt_s));
+		re = recur_get_event(date, nb_item[RECUR_EVNT - 1]);
+		rpt = re->rpt;
+		status_mesg(msg_event_recur, choice_event_recur);
+		while (ch != STRT && ch != END)
+			ch = wgetch(swin);
+		ch += 2;
+		break;
+	case EVNT:
+		ch = DESC;
+		break;
+	case RECUR_APPT:
+		rpt = (struct rpt_s *) malloc(sizeof(struct rpt_s));
+		ra = recur_get_apoint(date, nb_item[RECUR_APPT - 1]);
+		rpt = ra->rpt;
+		status_mesg(msg_recur, choice_recur);
+		while (ch != STRT && ch != END && ch != DESC && ch != REPT)
+			ch = wgetch(swin);
+		break;
+	case APPT:
+		status_mesg(msg_norecur, choice_norecur);
+		while (ch != STRT && ch != END && ch != DESC) 
+			ch = wgetch(swin);
+		break;
+	}
+
 	switch (ch) {
-	case '1':
-mvwprintw(swin, 0, 0, "date de debut:%d", p->start);wgetch(swin);
+	case STRT:
+		while (!valid_date) {
+			timestr = day_edit_time(p->start, colr);
+			sscanf(timestr, "%u:%u", &hr, &mn);
+			newtime = update_time_in_date(p->start, hr, mn);
+			if (newtime < p->start + p->appt_dur) {
+				p->start = newtime;
+				valid_date = 1;
+			} else {
+				status_mesg(error_msg, enter_str);
+				wgetch(swin);	
+			}
+		}
 		break;
-	case '2':
+	case END:
+		while (!valid_date) {
+			timestr = day_edit_time(
+				p->start + p->appt_dur, colr);
+			sscanf(timestr, "%u:%u", &hr, &mn);
+			newtime = update_time_in_date(
+				p->start + p->appt_dur, hr, mn);
+			if (newtime > p->start) {
+				p->appt_dur = newtime - p->start; 
+				valid_date = 1;
+			} else {
+				status_mesg(error_msg, enter_str);
+				wgetch(swin);
+			}
+		}
 		break;
-	case '3':
+	case DESC:
+		status_mesg(mesg_desc, "");
 		updatestring(swin, colr, &p->mesg, 0, 1);
 		break;
-	case '4':
+	case REPT:
+		while ( (ch != 'D') && (ch != 'W') && (ch != 'M') 
+		    && (ch != 'Y') && (ch != ESCAPE) ) {
+			status_mesg(mesg_type_1, mesg_type_2);
+			typestr = (char *) malloc(sizeof(char)); 
+			*typestr = recur_def2char(rpt->type);
+			updatestring(swin, colr, &typestr, 0, 1);
+			ch = toupper(*typestr);
+		}
+		if (ch == ESCAPE)
+			return;
+		else
+			rpt->type = recur_char2def(ch);
+		while (newfreq == 0) {
+			status_mesg(mesg_freq_1, "");
+			freqstr = (char *) malloc(MAX_LENGTH); 
+			sprintf(freqstr, "%d", rpt->freq);
+			updatestring(swin, colr, &freqstr, 0, 1);
+			newfreq = atoi(freqstr);
+			if (newfreq == 0) {
+				status_mesg(mesg_wrong_freq, enter_str);
+				wgetch(swin);
+			} else
+				rpt->freq = newfreq;
+		}
+		while (!date_entered) {
+			status_mesg(mesg_until_1, "");
+			timestr = date_sec2date_str(rpt->until);
+			updatestring(swin, colr, &timestr, 0, 1);
+			if (strlen(timestr) == 1 && 
+			    strncmp(timestr, "0", 1) == 0 )  {
+				rpt->until = 0;
+				date_entered = 1;
+			} else { 
+				valid_date = check_date(timestr);
+				if (valid_date) {
+					sscanf(timestr, "%d / %d / %d", 
+						&newmonth, &newday, &newyear);	
+					t = p->start; lt = localtime(&t);
+					rpt->until = date2sec(
+						newyear, newmonth, newday, 
+						lt->tm_hour, lt->tm_min);
+					if (rpt->until < p->start) {
+						status_mesg(error_msg,
+							enter_str);
+						wgetch(swin);
+						date_entered = 0;
+					} else
+						date_entered = 1;
+				} else {
+					status_mesg(mesg_wrong_date, 
+						mesg_possible_fmts);
+					wgetch(swin);
+					date_entered = 0;
+				}
+			}
+		}
 		break;
+	}
+	day_erase_item(date, item_num, 1);
+
+	switch (p->type) {
+	case RECUR_EVNT:
+		recur_event_new(p->mesg, p->start, p->evnt_id, 
+			rpt->type, rpt->freq, rpt->until, NULL);
+		break;
+	case EVNT:
+		event_new(p->mesg, p->start, p->evnt_id);
+		break;
+	case RECUR_APPT:
+		ra_new = recur_apoint_new(p->mesg, p->start, p->appt_dur, 
+			rpt->type, rpt->freq, rpt->until, NULL);
+		if (notify_bar()) notify_check_repeated(ra_new);
+		break;
+	case APPT:
+		apoint_new(p->mesg, p->start, p->appt_dur);
+		if (notify_bar()) notify_check_added(p->mesg, p->start);
+		break;
+	}
+}
+
+/* Request the user to enter a new time. */
+char *day_edit_time(long time, int colr) {
+	char *timestr;
+	char *msg_time = _("Enter the new time ([hh:mm] or [h:mm]) : ");
+        char *enter_str = _("Press [Enter] to continue");
+	char *fmt_msg = 
+	_("You entered an invalid time, should be [h:mm] or [hh:mm]");
+
+	while (1) {
+		status_mesg(msg_time, "");
+		timestr = date_sec2hour_str(time);
+		updatestring(swin, colr, &timestr, 0, 1);
+		if (check_time(timestr) != 1 || strlen(timestr) == 0) {
+			status_mesg(fmt_msg, enter_str);
+			wgetch(swin);
+		} else
+			return timestr;
 	}
 }
 
@@ -431,7 +614,7 @@ mvwprintw(swin, 0, 0, "date de debut:%d", p->start);wgetch(swin);
  * recurrent appointments and appointments) and then to test the
  * type of the item to be deleted.
  */
-int day_erase_item(long date, int item_number) {
+int day_erase_item(long date, int item_number, int force_erase) {
 	int i;
 	int ch = 0;
 	int nb_item[MAX_TYPES];
@@ -443,15 +626,15 @@ int day_erase_item(long date, int item_number) {
 	char *erase_choice =
 		_("[a/o] ");
 
+	if (force_erase) 
+		ch = 'a';
 	for (i = 0; i < MAX_TYPES; i++)
 		nb_item[i] = 0;
-
 	p = day_items_ptr;
 	for (i = 1; i < item_number; i++) {
 		nb_item[p->type - 1]++;
 		p = p->next;
 	}	
-
 	if (p->type == EVNT) {
 		event_delete_bynum(date, nb_item[EVNT - 1]);
 	} else if (p->type == APPT) {
@@ -461,7 +644,6 @@ int day_erase_item(long date, int item_number) {
 			status_mesg(erase_warning, erase_choice);
 			ch = wgetch(swin);
 		}
-
 		if (ch == 'a') {
 			delete_whole = 1;
 		} else if (ch == 'o') {
@@ -469,7 +651,6 @@ int day_erase_item(long date, int item_number) {
 		} else {
 			return 0;
 		}
-		
 		if (p->type == RECUR_EVNT) {
 			recur_event_erase(date, nb_item[RECUR_EVNT - 1], 
 				delete_whole);
@@ -477,7 +658,6 @@ int day_erase_item(long date, int item_number) {
 			recur_apoint_erase(date, p->appt_pos, delete_whole);
 		}
 	}
-
 	return p->type;
 }
 
