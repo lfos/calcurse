@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.28 2006/12/08 08:41:41 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.29 2006/12/10 14:52:50 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -566,6 +566,11 @@ void init_vars(int colr)
 
 	// Attribute definitions for color and non-color terminals
 	custom_init_attr(colr);
+	
+	// Start at the current date
+	sel_year = year;
+	sel_month = month;
+	sel_day = day;
 }
 
 /* Notify-bar init */
@@ -702,9 +707,6 @@ void get_date(void)
 	month = atoi(current_month);
 	day = atoi(current_day);
 	year = atoi(current_year);
-	sel_year = year;
-	sel_month = month;
-	sel_day = day;
 }
 
 /* Create all the windows */
