@@ -1,3 +1,7 @@
+10 Dec 2006:
+	help screen added for the 'Edit Item' command
+	date format modified for the 'Go To' command 
+
 08 Dec 2006:
 	day_edit_item() finished, day_edit_time() created and day_erase_item()
 	updated	to add the 'force_erase' flag
