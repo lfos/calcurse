@@ -1,4 +1,4 @@
-/*	$calcurse: help.c,v 1.9 2006/09/17 18:24:39 culot Exp $	*/
+/*	$calcurse: help.c,v 1.10 2006/12/10 14:50:53 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -90,6 +90,7 @@ void help_screen(int which_pan, int colr)
 	help_page_t help_goto;
 	help_page_t help_delete;
 	help_page_t help_add;
+	help_page_t help_edit;
 	help_page_t help_priority;
 	help_page_t help_repeat;
 	help_page_t help_config;
@@ -217,6 +218,23 @@ void help_screen(int which_pan, int colr)
     "         added.\n"
     "       o do not forget to save the calendar data to retrieve the new\n"
     "         event next time you launch Calcurse.");
+
+	help_edit.title = _("Edit Item:\n");
+	help_edit.text  =
+    _("Pressing 'E' allows you to edit the item which is currently selected.\n"
+    "Depending on the item type (appointment, event, or todo), and if it is\n"
+    "repeated or not, you will be asked to choose one of the item properties\n"
+    "to modify. An item property is one of the following: the start time, the\n"
+    "end time, the description, or the item repetition.\n"
+    "Once you have chosen the property you want to modify, you will be shown\n"
+    "its actual value, and you will be able to change it as you like.\n"
+    "\nNotes:\n"
+    "       o if you choose to edit the item repetition properties, you will\n"
+    "         be asked to re-enter all of the repetition characteristics\n"
+    "         (repetition type, frequence, and ending date). Moreover, the\n"
+    "         previous data concerning the deleted occurences will be lost.\n"
+    "       o do not forget to save the calendar data to retrieve the\n"
+    "         modified properties next time you launch Calcurse.");
 
 	help_priority.title = _("Priority:\n");
 	help_priority.text  =
@@ -388,6 +406,12 @@ void help_screen(int which_pan, int colr)
 			first_line = 0;
 			nl = write_help_pad(help_pad, help_delete.title,
 					help_delete.text, pad_width);
+			break;
+		
+		case 'e':
+			first_line = 0;
+			nl = write_help_pad(help_pad, help_edit.title,
+					help_edit.text, pad_width); 
 			break;
 
 		case 'c':
