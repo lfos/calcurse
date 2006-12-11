@@ -1,4 +1,4 @@
-/*	$calcurse: args.c,v 1.9 2006/10/17 14:38:21 culot Exp $	*/
+/*	$calcurse: args.c,v 1.10 2006/12/11 09:36:47 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -202,27 +202,31 @@ void help_arg()
 {
 	char htitle[50];
 	char *htext =
-		_("\nMiscellaneous:\n"
-		"  -h		print this help and exit.\n"
-		"  -v		print calcurse version and exit.\n"
-		"\nOptions:\n"
-		"  -c <file>	specify the calendar <file> to use.\n"
-		"\nNon-interactive:\n"
-		"  -a 		print events and appointments for current day and exit.\n"
-		"  -d <date|num>	print events and appointments for <date> "
-		"or <num> upcoming\n\t\tdays and exit. Possible formats are: "
-		"'mm/dd/yyyy' or 'n'.\n"
-		"  -n  		print next appointment within upcoming 24 hours "
-		"and exit.\n"
-		"  -t[num]	print todo list and exit. "
-		"If the optional number [num] is \n"
-		"\t\tgiven, then only the todos having a priority equal to [num]\n" 
-		"\t\twill be returned.\n"
-		"\t\tnote: the priority number must be between 1 (highest) and\n"
-		"\t\t9 (lowest)\n"
-	    	"\nFor more information, type '?' from within Calcurse, "
-		"or read the manpage.\n"
-	    	"Mail bug reports and suggestions to <calcurse@culot.org>.\n");
+	_("\nMiscellaneous:\n"
+	"  -h, --help\n"
+	"	print this help and exit.\n"
+	"\n  -v, --version\n"
+	"	print calcurse version and exit.\n"
+	"\nFiles:\n"
+	"  -c <file>, --calendar <file>\n"
+	"	specify the calendar <file> to use.\n"
+	"\nNon-interactive:\n"
+	"  -a, --appointment\n"
+	" 	print events and appointments for current day and exit.\n"
+	"\n  -d <date|num>, --day <date|num>\n"
+	"	print events and appointments for <date> or <num> upcoming days and"
+	"\n\texit. Possible formats are: 'mm/dd/yyyy' or 'n'.\n"
+	"\n  -n, --next\n"
+	"  	print next appointment within upcoming 24 hours "
+	"and exit. Also given\n\tis the remaining time before this "
+	"next appointment.\n"
+	"\n  -t[num], --todo[=num]\n"
+	"	print todo list and exit. If the optional number [num] is given,\n"
+	"\tthen only todos having a priority equal to [num] will be returned.\n"
+	"\tnote: priority number must be between 1 (highest) and 9 (lowest).\n"
+    	"\nFor more information, type '?' from within Calcurse, "
+	"or read the manpage.\n"
+    	"Mail bug reports and suggestions to <calcurse@culot.org>.\n");
 
 	sprintf(htitle, _("Calcurse %s - text-based organizer\n"), VERSION);
 	fputs(htitle, stdout);
