@@ -1,3 +1,7 @@
+11 Dec 2006:
+	help_arg() updated to take long options into account
+	manpage updated
+
 10 Dec 2006:
 	help screen added for the 'Edit Item' command
 	date format modified for the 'Go To' command 
