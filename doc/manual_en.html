@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <!--
 /*
- *	$calcurse: manual_en.html,v 1.4 2006/09/18 14:22:44 culot Exp $
+ *	$calcurse: manual_en.html,v 1.5 2006/12/12 14:18:21 culot Exp $
  *
  * Calcurse - text-based organizer
  * Copyright (c) 2004-2006 Frederic Culot
@@ -93,6 +93,7 @@
 <ul>
 <li><a href="#links_homepage"><code>calcurse</code> homepage</a>
 <li><a href="#links_list"><code>calcurse</code> announce list</a>
+<li><a href="#links_rss"><code>calcurse</code> RSS feed</a>
 </ul>
 <li><a href="#thanks">Thanks</a>
 </ul>
@@ -206,7 +207,7 @@
 <p>
 	First you need to gunzip and untar the source archive:
 	<pre>
-	tar zxvf calcurse-1.6.tar.gz
+	tar zxvf calcurse-1.7.tar.gz
 	</pre>
   	Once you meet the requirements and have extracted the archive, 
 	the install process is quite simple, and follows the standard 
@@ -225,22 +226,23 @@
 <a name="basics_invocation_commandline"></a><h3>Command line arguments</h3>
 <p>
         <code>calcurse</code> takes the following options from the 
-        command line:
+        command line (both short and long options are supported):
+	<p>
 
         <dl compact>
-        <dt><code>-a</code>
+        <dt><code>-a, --appointment</code>
 	<dd>
-	Print the appointments for the current day and exit.<br>
+	Print the appointments and events for the current day and exit.<br>
         <u>Note:</u> the calendar from which to read the  appointments
         can be specified using the '-c' flag.<br>
 	<br>
-	<dt><code>-c</code>
+	<dt><code>-c &lt;file&gt;, --calendar &lt;file&gt;</code>
 	<dd>
 	Specify the calendar file to use.<br>
 	The default  calendar is <code>~/.calcurse/apts</code> 
 	(see section <a href="#basics_files"><code>calcurse</code> files</a>).<br>
 	<br>
-	<dt><code>-d</code>
+	<dt><code>-d &lt;date|num&gt;, --day &lt;date|num&gt;</code>
 	<dd>
 	Print the appointments for the given date  or  for  the
         given  number  of upcoming days, depending on the argument
@@ -260,20 +262,28 @@
 	which to  read  the appointments can be specified using 
 	the '-c' flag.<br>
 	<br>
-	<dt><code>-h</code>
+	<dt><code>-h, --help</code>
 	<dd>
         Print  a  short  help  text  describing  the  supported
         command-line options, and exit.<br>
 	<br>
-	<dt><code>-n</code>
+	<dt><code>-n, --next</code>
 	<dd>
-        Print the next appointment within next 24 hours and exit.<br>
+        Print the next appointment within upcoming 24 hours and exit.<br>
+	The indicated time is the number of hours and minutes left 
+	before this appointment.<br>
+	<u>Note:</u> the calendar from which to read the appointments
+	can be specified using the '-c' flag.<br>
 	<br>
-	<dt><code>-t</code>
+	<dt><code>-t[num], --todo[=num]</code>
 	<dd>
-        Print the 'todo' list and exit.<br>
+        Print the 'todo' list and exit. If the optional number
+	<code>num</code> is given, then only todos having a priority
+	equal to <code>num</code> will be returned.<br>
+	<u>Note:</u> proprity number must be between 1 (highest) and
+	9 (lowest).<br>
 	<br>
-	<dt><code>-v</code>
+	<dt><code>-v, --version</code>
 	<dd>
         Display <code>calcurse</code> version and exit.
 	</DL>
@@ -791,6 +801,15 @@
 	<code>calcurse-announce@culot.org</code> with "subscribe" 
 	in the subject field. 
 
+<a name="links_rss"></a><h2><code>calcurse</code> RSS feed</h2>
+<p>
+	Another possibility to get warned when new releases come out
+	is to follow the RSS feed at:
+	<pre>
+	http://culot.org/calcurse/news_rss.xml
+	</pre>
+	This RSS feed is updated each time a new version of calcurse is
+	available, describing newly added features.
 
 <a name="thanks"></a><h1>Thanks</a></h1>
 <p>
@@ -801,12 +820,19 @@
 	<li>Alex for its patches, help and advices with <code>C</code> programming 
 	<li>Gwen for testing and general discussions about how to 
 	improve <code>calcurse</code>
-	<li>Kevin and Ryan for packaging <code>calcurse</code> for Debian
+	<li>Herbert for packaging <code>calcurse</code> for FreeBSD
+	<li>Zul for packaging <code>calcurse</code> for NetBSD
+	<li>Wain for packaging <code>calcurse</code> for Archlinux
+	<li>Kevin, Ryan, and fEnIo for packaging <code>calcurse</code> for Debian
+	and Ubuntu
 	<li>Steffen for packaging <code>calcurse</code> for Archlinux
-	<li>Alexandre for packaging <code>calcurse</code> for Mac OsX
+	<li>Pascal for packaging <code>calcurse</code> for Slackware
+	<li>Alexandre and Markus for packaging <code>calcurse</code> for Mac OsX
+	and Darwin
+	<li>Igor for packaging <code>calcurse</code> for ALT Linux
 	<li>Joel for its calendar script which inspired <code>calcurse</code> 
 	calendar view 
-        <li>Michael Schulz for the german translation of
+        <li>Michael Schulz and Chris M. for the german translation of
 	<code>calcurse</code> and its manual
 	<li>Jose Lopez for the spanish translation of
 	<code>calcurse</code> and its manual
@@ -827,7 +853,7 @@
 <hr>
 <small><em>
 Copyright (c) 2004-2006 Fr&eacute;d&eacute;ric Culot<br>
-Calcurse version 1.6 - Last change: September 18, 2006
+Calcurse version 1.7 - Last change: December 12, 2006
 <em></small>
 
 
