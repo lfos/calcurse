@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <!--
 /*
- *	$calcurse: manual_fr.html,v 1.4 2006/09/19 08:57:44 culot Exp $
+ *	$calcurse: manual_fr.html,v 1.5 2006/12/12 14:18:06 culot Exp $
  *
  * Calcurse - text-based organizer
  * Copyright (c) 2004-2006 Frederic Culot
@@ -93,6 +93,7 @@
 <ul>
 <li><a href="#links_homepage">Site internet de <code>calcurse</code></a>
 <li><a href="#links_list">Liste de diffusion de <code>calcurse</code></a>
+<li><a href="#links_rss">Flux RSS</a>
 </ul>
 <li><a href="#thanks">Remerciements</a>
 </ul>
@@ -227,7 +228,7 @@
         Vous devez tout d'abord d&eacute;compresser l'archive source de la
         mani&egrave;re suivante :
 	<pre>
-	tar zxvf calcurse-1.6.tar.gz
+	tar zxvf calcurse-1.7.tar.gz
 	</pre>
         Une fois que vous remplissez tous les pr&eacute;-requis n&eacute;cessaires &agrave;
         l'installation, le processus de compilation est simple et suit
@@ -247,23 +248,25 @@
 <a name="basics_invocation_commandline"></a><h3>Arguments en ligne de commande</h3>
 <p>
         Lors de son appel en ligne de commande, <code>calcurse</code> 
-        accepte les arguments suivants :
+        accepte les arguments suivants (les arguments courts ou longs sont
+	support&eacute;s) :
+	<p>
 
         <dl compact>
-        <dt><code>-a</code>
+        <dt><code>-a, --appointment</code>
 	<dd>
 	Affiche les rendez-vous pour la date du jour, puis quitte.<br>
 	<u>Remarque:</u> le calendrier &agrave; utiliser peut &ecirc;tre 
 	sp&eacute;cifi&eacute; en utilisant l'option '-c'.<br>
 	<br>
-	<dt><code>-c</code>
+	<dt><code>-c &lt;fichier&gt;, --calendar &lt;fichier&gt;</code>
 	<dd>
 	Sp&eacute;cifie le fichier calendrier &agrave; uiliser.<br>
 	Le calendrier par d&eacute;faut est celui contenu dans 
 	<code>~/.calcurse/apts</code> 
 	(voir la section <a href="#basics_files">Fichiers</a>).<br>
 	<br>
-	<dt><code>-d</code>
+	<dt><code>-d &lt;date|num&gt;, --day &lt;date|num&gt;</code>
 	<dd>
 	Affiche les rendez-vous pour la date ou pour le nombre de
 	jours indiqu&eacute;s, suivant le format de l'argument. Deux 
@@ -283,21 +286,31 @@
 	contenant le calendrier &agrave; lire peut &ecirc;tre sp&eacute;cifi&eacute; en
 	utilisant l'option '-c'.<br>
 	<br>
-	<dt><code>-h</code>
+	<dt><code>-h, --help</code>
 	<dd>
 	Affiche l'aide d&eacute;crivant les options en ligne de commande,
 	puis quitte.<br>
 	<br>
-	<dt><code>-n</code>
+	<dt><code>-n, --next</code>
 	<dd>
 	Affiche le rendez-vous suivant dans les prochaines 24 heures, puis
 	quitte.<br>
+	Le temps indiqu&eacute; repr&eacute;sente le nombre d'heures et de
+	minutes restantes avant le rendez-vous.<br>
+	<u>remarque:</u> le fichier contenant le calendrier &agrave; lire peut
+	&ecirc;tre sp&eacute;cifi&eacute; en utilisant l'option '-c'.<br>
 	<br>
-	<dt><code>-t</code>
+	<dt><code>-t[num], --todo[=num]</code>
 	<dd>
-	Affiche la liste des 'todo', puis quitte.<br>
+	Affiche la liste des 'todo', puis quitte. Si le nombre optionnel
+	<code>num</code> est indiqu&eacute;, alors uniquement les t&acirc;ches
+	ayant une priorit&eacute; &eacute;gale &agrave; <code>num</code> seront
+	affich&eacute;es.<br>
+	<u>remarque:</u> <code>num</code> doit &ecirc;tre compris entre 1
+	(priorit&eacute; la plus grande) et 9 (priorit&eacute; la moins
+	grande).<br>
 	<br>
-	<dt><code>-v</code>
+	<dt><code>-v, --version</code>
 	<dd>
 	Affiche la version de <code>calcurse</code>, puis quitte.
 	</DL>
@@ -906,6 +919,17 @@ pour l'i18n</h3>
 	<code>calcurse-announce@culot.org</code> avec "subscribe" dans
 	le sujet du m&eacute;l.
 
+<a name="links_rss"></a><h2>Flux RSS</h2>
+<p>
+	Une autre possibilit&eacute; pour &ecirc;tre pr&eacute;venu lorsqu'une
+	nouvelle version de <code>calcurse</code> est disponible est de
+	s'abonner au flux RSS suivant :
+	<pre>
+	http://culot.org/calcurse/news_rss.xml
+	</pre>
+	Ce flux RSS est mis &agrave; jour d&egrave;s qu'une nouvelle version de
+	<code>calcurse</code> est diffus&eacute;e, et indique quelles sont les
+	modifications qui ont &eacute;t&eacute; apport&eacute;es.
 
 <a name="thanks"></a><h1>Remerciements</a></h1>
 <p>
@@ -916,15 +940,23 @@ pour l'i18n</h3>
 	<code>C</code>
 	<li>Gwen pour les tests et les discussions sur la mani&egrave;re d'am&eacute;liorer 
 	<code>calcurse</code>
-	<li>Kevin et Ryan pour la maintenance du paquet <code>calcurse</code>
-	pour Debian
+	<li>Herbert pour la maintenance du paquet <code>calcurse</code> pour
+	FreeBSD
+	<li>Zul pour la maintenance du paquet <code>calcurse</code> pour
+	NetBSD
+	<li>Kevin, Ryan, et fEnIo pour la maintenance du paquet <code>calcurse</code>
+	pour Debian et Ubuntu
 	<li>Steffen pour la maintenance du paquet <code>calcurse</code> pour
 	Archlinux
+	<li>Pascal pour la maintenance du paquet <code>calcurse</code> pour
+	Slackware
 	<li>Alexandre pour la maintenance du paquet <code>calcurse</code> pour
-	Mac OsX
+	Mac OsX et Darwin
+	<li>Igor pour la maintenance du paquet <code>calcurse</code> pour
+	ALT Linux
 	<li>Joel pour son script de calendrier qui a inspir&eacute; celui de
 	<code>calcurse</code>
-        <li>Michael Schulz pour la traduction allemande de <code>calcurse</code>
+        <li>Michael Schulz et Chris M. pour la traduction allemande de <code>calcurse</code>
 	et de son manuel
 	<li>Jose Lopez pour la traduction espagnole de <code>calcurse</code>
 	et de son manuel
@@ -944,7 +976,7 @@ pour l'i18n</h3>
 <hr>
 <small><em>
 Copyright (c) 2004-2006 Fr&eacute;d&eacute;ric Culot<br>
-Calcurse version 1.6 - Derni&egrave;re modification: 19 Septembre 2006
+Calcurse version 1.7 - Derni&egrave;re modification: 20 D&eacute;cembre 2006
 <em></small>
 
 
