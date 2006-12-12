@@ -1,4 +1,4 @@
-/*	$calcurse: help.c,v 1.10 2006/12/10 14:50:53 culot Exp $	*/
+/*	$calcurse: help.c,v 1.11 2006/12/12 14:16:38 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -269,9 +269,12 @@ void help_screen(int which_pan, int colr)
     "                 event or appointment. To indicate an endless \n"
     "                 repetition, enter '0' and the item will be repeated\n"
     "                 forever.\n"
-    "\nNote: the 'Repeat' and 'Delete' command can be mixed to create\n"
-    "        complicated configurations, as it is possible to delete only\n"
-    "        one occurence of a repeated item."); 
+    "\nNotes:\n"
+    "       o repeated items are marked with an '*' inside the appointment\n"
+    "         panel, to be easily recognizable from non-repeated ones.\n"
+    "       o the 'Repeat' and 'Delete' command can be mixed to create\n"
+    "         complicated configurations, as it is possible to delete only\n"
+    "         one occurence of a repeated item."); 
 
 	help_config.title = _("Config:\n");
 	help_config.text  =
