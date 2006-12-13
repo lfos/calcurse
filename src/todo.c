@@ -1,4 +1,4 @@
-/*	$calcurse: todo.c,v 1.6 2006/11/02 13:43:36 culot Exp $	*/
+/*	$calcurse: todo.c,v 1.7 2006/12/13 09:32:22 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -45,7 +45,7 @@ int todo_new_item(int total, int colr)
 	char todo_input[MAX_LENGTH] = "";
 
 	status_mesg(mesg, "");
-	if (getstring(swin, colr, todo_input, 2, 0, 1) == 0) {
+	if (getstring(swin, colr, todo_input, MAX_LENGTH, 0, 1) == 0) {
 		while ( (ch < '1') || (ch > '9') ) {
 			status_mesg(mesg_id, "");
 			ch = wgetch(swin);
