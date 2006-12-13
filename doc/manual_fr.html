@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <!--
 /*
- *	$calcurse: manual_fr.html,v 1.5 2006/12/12 14:18:06 culot Exp $
+ *	$calcurse: manual_fr.html,v 1.6 2006/12/13 09:30:30 culot Exp $
  *
  * Calcurse - text-based organizer
  * Copyright (c) 2004-2006 Frederic Culot
@@ -416,10 +416,10 @@ pour l'i18n</h3>
         s&eacute;lectionner un jour en particulier. Le second panneau contient
         une liste d'&eacute;v&egrave;nements et les rendez-vous du jour, et le dernier
         contient une liste des t&acirc;ches &agrave; faire, mais qui ne sont pas
-        assign&eacute;e &agrave; une journ&eacute;e en particulier.
+        assign&eacute;e &agrave; une journ&eacute;e en particulier.<br>
         Tout en bas de l'&eacute;cran on retrouve une barre de status, qui indique
         les actions possibles en fonction du contexte, ainsi que la
-        touche qui doit &ecirc;tre press&eacute;e pour effectuer cette action.
+        touche qui doit &ecirc;tre press&eacute;e pour effectuer cette action.<br>
 	Juste au dessus de cette barre se trouve la barre de notification, qui
 	indique les informations suivantes, de gauche à droite : la date du jour,
 	l'heure courante, le fichier calendrier actuellement ouvert (il s'agit
@@ -427,6 +427,31 @@ pour l'i18n</h3>
 	dans la section suivante), et le premier rendez-vous programmé dans les 
 	prochaines 24 heures. Dans cet exemple, il s'agit d'un dîner qui aura lieu
 	dans une heure et vingt minutes.
+	<p>
+	<u>Remarque:</u> Certaines actions, comme editer ou ajouter un
+	el&eacute;ment, n&eacute;cessitent de renseigner du texte par 
+	l'interm&eacute;diaire de l'&eacute;diteur de ligne de commande
+	fournit avec <code>calcurse</code>.<br>
+	Dans cet &eacute;diteur, si la ligne de commande est plus longue que la 
+	largeur de l'&eacute;cran, le caract&egrave;re '&gt;', '*', ou '&lt;'
+	sera rajout&eacute; dans la derni&egrave;re colonne si il reste du texte
+	apr&egrave;s, avant et apr&egrave;s, ou avant la position courante,
+	respectivement. La ligne d&eacute;file horizontalement si
+	n&eacute;cessaire.<br>
+	De plus, il existe des combinaisons de touches pour
+	effectuer certaines actions courantes utiles lors de l'&eacute;dition
+	de textes. Voici ces raccourcis:<br>
+	<ul>
+	<li><b>^a</b>: d&eacute;placer le curseur au d&eacute;but de la ligne
+	<li><b>^b</b>: d&eacute;placer le curseur d'une position en arri&egrave;re
+	<li><b>^d</b>: effacer le caract&egrave;re suivant
+	<li><b>^e</b>: d&eacute;placer le curseur en fin de ligne
+	<li><b>^f</b>: d&eacute;placer le curseur d'une position en avant
+	<li><b>^h</b>: effacer le caract&egrave;re pr&eacute;c&eacute;dent
+	<li><b>^k</b>: effacer le texte depuis la position courante
+	jusqu'&agrave; la fin de la ligne
+	<li><b>ESCAPE</b>: annuler l'&eacute;dition du texte courant
+	</ul>
 
 <a name="basics_files"></a><h2>Fichiers</h2>
 <p>

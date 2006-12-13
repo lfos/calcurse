@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <!--
 /*
- *	$calcurse: manual_en.html,v 1.5 2006/12/12 14:18:21 culot Exp $
+ *	$calcurse: manual_en.html,v 1.6 2006/12/13 09:30:11 culot Exp $
  *
  * Calcurse - text-based organizer
  * Copyright (c) 2004-2006 Frederic Culot
@@ -377,18 +377,40 @@
                                                                  status bar
 
         </pre>
-        The first panel represents a calendar which allows to highligth 
+        The first panel represents a calendar which allows to highlight 
         a particular day, the second one contains the list of the events 
         and appointments on that day, and the last one contains a list 
-        of tasks to do but which are not assigned to any specific day.  
+        of tasks to do but which are not assigned to any specific day.<br>
 	At the very bottom of the screen there is a status bar, which 
-	indicates the possible actions and the corresponding keystrokes.
+	indicates the possible actions and the corresponding keystrokes.<br>
         Just above this status bar is the notify-bar, which indicates
 	from left to right : the current date, the current time, the 
 	calendar file currently in use (apts on the above example, which
 	is the default calendar file, see the following section), and 
 	the next appointment within the upcoming 24 hours. Here it says
 	that it will be lunch time in one hour and twenty minutes.
+	<p>
+	<u>Note:</u> Some actions, such as editing or adding an item,
+	require to type in some text. This is done with the help of 
+	the built-in input line editor.<br>
+	Within this editor, if a line is longer than the screen width,
+	a '&gt;', '*', or '&lt;' character is displayed in the last
+	column indicating that there are more character after, before and 
+	after, or before the current position, respectively. The line is
+	scrolled horizontally as necessary.<br>
+	Moreover, some editing commands are bound to particular control
+	characters. Hereafter are indicated the available editing commands
+	('^' stands for the control key):<br>
+	<ul>
+	<li><b>^a</b>: moves the cursor to the beginning of the input line
+	<li><b>^b</b>: moves the cursor backward
+	<li><b>^d</b>: deletes one character forward
+	<li><b>^e</b>: moves the cursor to the end of the input line
+	<li><b>^f</b>: moves the cursor forward
+	<li><b>^h</b>: deletes one character backward
+	<li><b>^k</b>: deletes the input from the cursor to the end of the line
+	<li><b>ESCAPE</b>: cancels the editing
+	</ul> 	
 
 <a name="basics_files"></a><h2><code>calcurse</code> files</h2>
 <p>
