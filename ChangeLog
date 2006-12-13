@@ -1,3 +1,11 @@
+13 Dec 2006:
+	bugfix: call to getstring() corrected in todo_new_item()
+	documentation  about the built-in input line editor added in html
+	manuals
+	item_in_popup() improved to replace the scroller() function by an
+	ncurses pad
+	scroller() function suppressed
+
 12 Dec 2006:
 	english and french html manuals updated
 	help screen updated for repeat command
