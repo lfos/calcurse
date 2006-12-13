@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.16 2006/12/08 08:36:58 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.17 2006/12/13 09:34:09 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -350,110 +350,6 @@ void border_nocolor(WINDOW * window)
 	wnoutrefresh(window);
 }
 
- /* prints and scroll text in a window */
-void scroller(WINDOW *win, char *mesg, int x, int y, int nb_row, int nb_col)
-{
-	int x_offset = 3;
-	int y_offset = 3;
-	int text_len = nb_col - 2 * x_offset;
-	int text_max_row = nb_row - 3;
-	int nlin, i, j, k;
-	int last_blank_i, last_blank_j;
-	char buf[] = " ";
-	char *next_mesg = _("-- Press 'N' for next page --");
-	char *prev_mesg = _("-- Press 'P' for previous page --");
-	int ch;
-	int which_page;		//first page : 0, second page : 1
-
-	i = 0;			//position in the message
-	j = 0;			//x position on the current line
-	nlin = 1;		//line number 
-	last_blank_j = 0;
-	last_blank_i = 0;
-	which_page = 0;
-
-	while (i <= strlen(mesg)) {
-                if ((i == strlen(mesg)) & (which_page == 1)) {
-			// we have finished writing text and we are on second page
-			custom_apply_attr(win, ATTR_HIGHEST);
-			mvwprintw(win, nb_row - 2,
-				 nb_col - (strlen(prev_mesg) + 2), "%s",
-				 prev_mesg);
-			custom_remove_attr(win, ATTR_HIGHEST);
-                        wmove(swin, 0, 0);
-			wnoutrefresh(win);
-                        wnoutrefresh(swin);
-                        doupdate();
-			ch = wgetch(win);
-			if ( (ch == 'P') | (ch == 'p') ) {
-				erase_window_part(win, y + 1, x + 3, nb_col - 2, nb_row - 2);
-				nlin = 1;
-				j = 0;
-				i = 0;
-				which_page = 0;
-			} else {	//erase last line and exit next-prev page mode
-				for (k = 1; k < nb_col - 2; k++)
-					mvwprintw(win, nb_row - 2, k, " ");
-				break;
-			}
-		}
-		if (nlin == text_max_row - 2) {	// we reach the last line
-			custom_apply_attr(win, ATTR_HIGHEST);
-			mvwprintw(win, nb_row - 2,
-				 nb_col - (strlen(next_mesg) + 2), "%s",
-				 next_mesg);
-			custom_remove_attr(win, ATTR_HIGHEST);
-                        wmove(swin, 0, 0);
-			wnoutrefresh(win);
-                        wnoutrefresh(swin);
-                        doupdate();
-			ch = wgetch(win);
-			if ( (ch == 'N') | (ch == 'n') ) {
-				erase_window_part(win, y + 1, x + 3, nb_col - 2, nb_row - 2);
-				nlin = 1;
-				j = 0;
-				which_page = 1;
-			} else {
-				for (k = 1; k < nb_col - 2; k++)
-					mvwprintw(win, nb_row - 2, k, " ");
-				break;
-			}
-		}
-		//write text
-		strncpy(buf, mesg + i, 1);
-		i++;
-		j++;
-		if ((strncmp(buf, "§", 1) == 0)) {	//§ is the character for a new line
-			buf[0] = '\0';
-			mvwprintw(win, x + x_offset + nlin, y + y_offset + j,
-				 "%s", buf);
-			nlin++;
-			j = 0;
-		} else {
-			if (j == text_len - 1) {	// if we reach the terminal border
-				for (k = last_blank_j; k <= text_len - 1;
-				     k++)
-					mvwprintw(win, x + x_offset + nlin,
-						 y + y_offset + k, " ");
-				nlin++;
-				i = last_blank_i;
-				j = 0;
-			} else {
-				if ((strncmp(buf, " ", 1) == 0))	//space between words
-				{
-					last_blank_j = j;	//save position
-					last_blank_i = i;
-				}
-				mvwprintw(win, x + x_offset + nlin,
-					 y + y_offset + j, "%s", buf);
-			}
-		}
-        }
-        wmove(swin, 0, 0);
-        wnoutrefresh(win);
-        wnoutrefresh(swin);
-}
-
 /* 
  * Draws the status bar. 
  * To add a keybinding, insert a new binding_t item, add it in the *binding
@@ -720,17 +616,23 @@ void draw_scrollbar(WINDOW *win, int y, int x, int length,
 void item_in_popup(char *saved_a_start, char *saved_a_end, char *msg, 
 		char *pop_title)
 {
-	WINDOW *popup_win;
+	WINDOW *popup_win, *pad;
+	const int margin_left = 4, margin_top = 4;
+	const int winl = row - 5, winw = col - margin_left;
+	const int padl = winl - 2, padw = winw - margin_left; 
 
-	popup_win = popup(row - 4, col - 2, 1, 1, pop_title);
+	pad = newpad(padl, padw);
+	popup_win = popup(winl, winw, 1, 2, pop_title);
 	if (strncmp(pop_title, _("Appointment"), 11) == 0) {
-		mvwprintw(popup_win, 4, 4, " - %s -> %s", 
+		mvwprintw(popup_win, margin_top, margin_left, "- %s -> %s",
 				saved_a_start, saved_a_end);
 	}
-	scroller(popup_win, msg, 1, 1, row - 4, col - 2);
+	mvwprintw(pad, 0, margin_left, "%s", msg);
 	wmove(swin, 0, 0);
+	pnoutrefresh(pad, 0, 0, margin_top + 2, margin_left, padl, winw);
 	doupdate();
 	wgetch(popup_win);
+	delwin(pad);
 	delwin(popup_win);
 }
 
