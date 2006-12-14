@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.17 2006/12/13 09:34:09 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.18 2006/12/14 08:28:21 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -268,22 +268,25 @@ int getstring(WINDOW *win, int colr, char *str, int l, int x, int y)
 }
 
 /* Update an already existing string. */
-void updatestring(WINDOW *win, int colr, char **str, int x, int y) {
+int updatestring(WINDOW *win, int colr, char **str, int x, int y) {
 	char *newstr;
-	int len;
+	int escape, len = strlen(*str) + 1;
 
 	newstr = (char *) malloc(MAX_LENGTH);	
-	(void)memcpy(newstr, *str, strlen(*str) + 1);
-	if (getstring(win, colr, newstr, MAX_LENGTH, x, y) == 0) {
+	(void)memcpy(newstr, *str, len);
+	escape = getstring(win, colr, newstr, MAX_LENGTH, x, y);
+	if (!escape) {
 		len = strlen(newstr) + 1;
 		if ((*str = (char *) realloc(*str, len)) == NULL) {
 			/* NOTREACHED */
 			fputs(_("FATAL ERROR in updatestring: out of memory\n"),
 				stderr);
 			exit(EXIT_FAILURE);
-		} else
+		} else 
 			(void)memcpy(*str, newstr, len);
 	} 	
+	free(newstr);
+	return escape;
 }
 
 /* checks if a string is only made of digits */
