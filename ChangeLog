@@ -1,3 +1,10 @@
+14 Dec 2006:
+	improvements in the memory deallocation in day_edit_item(),
+	updatestring(), next_arg()
+	updatestring() now returns a value indicating if there was a canceling
+	when modifying text	
+	TODO file updated
+
 13 Dec 2006:
 	bugfix: call to getstring() corrected in todo_new_item()
 	documentation  about the built-in input line editor added in html
