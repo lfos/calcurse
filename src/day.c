@@ -1,4 +1,4 @@
-/*	$calcurse: day.c,v 1.12 2006/12/08 08:40:19 culot Exp $	*/
+/*	$calcurse: day.c,v 1.13 2006/12/14 08:26:24 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -406,7 +406,7 @@ void day_edit_item(int year, int month, int day, int item_num, int colr)
 	recur_apoint_llist_node_t *ra, *ra_new;
 	long newtime = 0;
 	const long date = date2sec(year, month, day, 0, 0);
-	int i, ch = 0, valid_date = 0, newfreq = 0, date_entered = 0;
+	int cancel, i, ch = 0, valid_date = 0, newfreq = 0, date_entered = 0;
 	int newmonth, newday, newyear;
 	int nb_item[MAX_TYPES];
 	unsigned hr, mn;
@@ -446,7 +446,6 @@ void day_edit_item(int year, int month, int day, int item_num, int colr)
 
 	switch (p->type) {
 	case RECUR_EVNT:
-		rpt = (struct rpt_s *) malloc(sizeof(struct rpt_s));
 		re = recur_get_event(date, nb_item[RECUR_EVNT - 1]);
 		rpt = re->rpt;
 		status_mesg(msg_event_recur, choice_event_recur);
@@ -458,7 +457,6 @@ void day_edit_item(int year, int month, int day, int item_num, int colr)
 		ch = DESC;
 		break;
 	case RECUR_APPT:
-		rpt = (struct rpt_s *) malloc(sizeof(struct rpt_s));
 		ra = recur_get_apoint(date, nb_item[RECUR_APPT - 1]);
 		rpt = ra->rpt;
 		status_mesg(msg_recur, choice_recur);
@@ -477,6 +475,7 @@ void day_edit_item(int year, int month, int day, int item_num, int colr)
 		while (!valid_date) {
 			timestr = day_edit_time(p->start, colr);
 			sscanf(timestr, "%u:%u", &hr, &mn);
+			free(timestr);
 			newtime = update_time_in_date(p->start, hr, mn);
 			if (newtime < p->start + p->appt_dur) {
 				p->start = newtime;
@@ -492,6 +491,7 @@ void day_edit_item(int year, int month, int day, int item_num, int colr)
 			timestr = day_edit_time(
 				p->start + p->appt_dur, colr);
 			sscanf(timestr, "%u:%u", &hr, &mn);
+			free(timestr);
 			newtime = update_time_in_date(
 				p->start + p->appt_dur, hr, mn);
 			if (newtime > p->start) {
@@ -509,33 +509,40 @@ void day_edit_item(int year, int month, int day, int item_num, int colr)
 		break;
 	case REPT:
 		while ( (ch != 'D') && (ch != 'W') && (ch != 'M') 
-		    && (ch != 'Y') && (ch != ESCAPE) ) {
+		    && (ch != 'Y') ) {
 			status_mesg(mesg_type_1, mesg_type_2);
 			typestr = (char *) malloc(sizeof(char)); 
 			*typestr = recur_def2char(rpt->type);
-			updatestring(swin, colr, &typestr, 0, 1);
+			cancel = updatestring(swin, colr, &typestr, 0, 1);
 			ch = toupper(*typestr);
+			free(typestr);
+			if (cancel)
+				return;
 		}
-		if (ch == ESCAPE)
-			return;
-		else
-			rpt->type = recur_char2def(ch);
 		while (newfreq == 0) {
 			status_mesg(mesg_freq_1, "");
 			freqstr = (char *) malloc(MAX_LENGTH); 
 			sprintf(freqstr, "%d", rpt->freq);
-			updatestring(swin, colr, &freqstr, 0, 1);
+			cancel = updatestring(swin, colr, &freqstr, 0, 1);
 			newfreq = atoi(freqstr);
-			if (newfreq == 0) {
-				status_mesg(mesg_wrong_freq, enter_str);
-				wgetch(swin);
-			} else
-				rpt->freq = newfreq;
+			free(freqstr);
+			if (cancel)	
+				return;
+			else {
+				if (newfreq == 0) {
+					status_mesg(mesg_wrong_freq, enter_str);
+					wgetch(swin);
+				}
+			}
 		}
 		while (!date_entered) {
 			status_mesg(mesg_until_1, "");
 			timestr = date_sec2date_str(rpt->until);
-			updatestring(swin, colr, &timestr, 0, 1);
+			cancel = updatestring(swin, colr, &timestr, 0, 1);
+			if (cancel) {
+				free(timestr);
+				return;
+			}
 			if (strlen(timestr) == 1 && 
 			    strncmp(timestr, "0", 1) == 0 )  {
 				rpt->until = 0;
@@ -564,6 +571,9 @@ void day_edit_item(int year, int month, int day, int item_num, int colr)
 				}
 			}
 		}
+		free(timestr);
+		rpt->freq = newfreq;
+		rpt->type = recur_char2def(ch);
 		break;
 	}
 	day_erase_item(date, item_num, 1);
