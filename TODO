@@ -16,7 +16,6 @@ High
   o  Create external calendars which would contain hollydays and such (in ics
      format)
   o  Add a week view in the calendar panel
-  o  Add ability to edit items, and to store multiple-lines descriptions
  
 
 Average
@@ -25,6 +24,9 @@ Average
   o  Accept dates entered in other formats such as d/m/yyyy or d/m/yy,
      make the date format user configurable
   o  Make keys user configurable
+  o  Add searching capabilities with support for regex
+  o  Allow the creation of sub-todos (divide todos into different tasks)
+  o  Make the color themes more configurable
 
 
 Low
@@ -32,4 +34,3 @@ Low
   o  Add 't' alias for 'g - Enter'
   o  All status bars should be terminal-size dependant (config_bar is not)
   o  Improve check_event_time() using sscanf as in goto_day()
-  o  Get rid of the scroller() function
