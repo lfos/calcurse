@@ -1,4 +1,4 @@
-/*	$calcurse: day.c,v 1.13 2006/12/14 08:26:24 culot Exp $	*/
+/*	$calcurse: day.c,v 1.14 2006/12/15 15:29:16 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -153,8 +153,8 @@ int day_store_recur_apoints(long date)
 
 	pthread_mutex_lock(&(recur_alist_p->mutex));
 	for (j = recur_alist_p->root; j != 0; j = j->next) {
-		if (real_start = recur_item_inday(j->start, j->exc, 
-		    j->rpt->type, j->rpt->freq, j->rpt->until, date)) {
+		if ((real_start = recur_item_inday(j->start, j->exc, 
+		    j->rpt->type, j->rpt->freq, j->rpt->until, date)) ){
 			a_nb++;
 			ptr = day_add_apoint(
 			    RECUR_APPT, j->mesg, real_start, j->dur, n);
@@ -197,7 +197,7 @@ struct day_item_s *day_add_event(int type, char *mesg, long day, int id)
 	struct day_item_s *o, **i;
 	o = (struct day_item_s *) malloc(sizeof(struct day_item_s));
 	o->mesg = (char *) malloc(strlen(mesg) + 1);
-	strcpy(o->mesg, mesg);
+	strncpy(o->mesg, mesg, strlen(mesg) + 1);
 	o->type = type;
 	o->appt_dur = 0;
 	o->appt_pos = 0;
@@ -224,7 +224,7 @@ struct day_item_s *day_add_apoint(int type, char *mesg, long start, long dur,
 
 	o = (struct day_item_s *) malloc(sizeof(struct day_item_s));
 	o->mesg = (char *) malloc(strlen(mesg) + 1);
-	strcpy(o->mesg, mesg);
+	strncpy(o->mesg, mesg, strlen(mesg) + 1);
 	o->start = start;
 	o->appt_dur = dur;
 	o->appt_pos = real_pos;
@@ -522,7 +522,7 @@ void day_edit_item(int year, int month, int day, int item_num, int colr)
 		while (newfreq == 0) {
 			status_mesg(mesg_freq_1, "");
 			freqstr = (char *) malloc(MAX_LENGTH); 
-			sprintf(freqstr, "%d", rpt->freq);
+			snprintf(freqstr, MAX_LENGTH, "%d", rpt->freq);
 			cancel = updatestring(swin, colr, &freqstr, 0, 1);
 			newfreq = atoi(freqstr);
 			free(freqstr);
