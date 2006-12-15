@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.18 2006/12/14 08:28:21 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.19 2006/12/15 15:33:46 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -76,13 +76,13 @@ WINDOW * popup(int pop_row, int pop_col,
 	    int pop_y, int pop_x, char *pop_lab)
 {
 	char *txt_pop = _("Press any key to continue...");
-	char label[80];
+	char label[MAX_LENGTH];
 	WINDOW *popup_win;
 
 	popup_win = newwin(pop_row, pop_col, pop_y, pop_x);
 	custom_apply_attr(popup_win, ATTR_HIGHEST);
 	box(popup_win, 0, 0);
-	sprintf(label, "%s", pop_lab);
+	snprintf(label, MAX_LENGTH, "%s", pop_lab);
 	win_show(popup_win, label);
 	mvwprintw(popup_win, pop_row - 2, pop_col - (strlen(txt_pop) + 1), "%s",
 		 txt_pop);
@@ -745,7 +745,7 @@ char *mycpy(const char *src)
 	char *string = malloc(strlen(src) + 1);
 	
 	if (string != NULL) 
-		return strcpy(string, src);
+		return strncpy(string, src, strlen(src) + 1);
 	else
 		return NULL;
 }
