@@ -1,4 +1,4 @@
-/*	$calcurse: help.c,v 1.11 2006/12/12 14:16:38 culot Exp $	*/
+/*	$calcurse: help.c,v 1.12 2006/12/15 15:28:05 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -28,6 +28,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <ctype.h>
 #include <sys/types.h>
 
 #include "i18n.h"
@@ -73,7 +74,7 @@ void help_screen(int which_pan, int colr)
 {
 	WINDOW *help_win = NULL;
 	WINDOW *help_pad = NULL;
-	char label[80];
+	char label[MAX_LENGTH];
 	int ch = '?';
 	int help_row, text_lines;
 	int help_col = col;
@@ -341,7 +342,7 @@ void help_screen(int which_pan, int colr)
 	help_win = newwin(help_row, help_col, 0, 0);
 	help_pad = newpad(MAX_LENGTH, pad_width);
 	box(help_win, 0, 0);
-	sprintf(label, _("CalCurse %s | help"), VERSION);
+	snprintf(label, MAX_LENGTH, _("CalCurse %s | help"), VERSION);
 	win_show(help_win, label);
 
 	/* Display the help screen related to user input. */
