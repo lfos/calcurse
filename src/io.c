@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.7 2006/09/15 15:43:03 culot Exp $	*/
+/*	$calcurse: io.c,v 1.8 2006/12/15 15:31:46 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -410,7 +410,7 @@ load_todo(int colr)
 	char *nl;
 	int nb_tod = 0;
 	int c, id;
-	char buf[100], e_todo[100];
+	char buf[MAX_LENGTH], e_todo[MAX_LENGTH];
 
 	data_file = fopen(path_todo, "r");
 	if (data_file == NULL) {
