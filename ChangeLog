@@ -1,3 +1,7 @@
+15 Dec 2006:
+	TODO file updated: one more thing to improve...
+	small bugfixes
+
 14 Dec 2006:
 	improvements in the memory deallocation in day_edit_item(),
 	updatestring(), next_arg()
