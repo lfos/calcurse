@@ -1,4 +1,4 @@
-/*	$calcurse: notify.c,v 1.5 2006/09/16 15:24:34 culot Exp $	*/
+/*	$calcurse: notify.c,v 1.6 2006/12/15 15:27:27 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -27,6 +27,9 @@
 #include <ncurses.h>
 #include <pthread.h>
 #include <time.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
 #include "i18n.h"
 #include "utils.h"
@@ -272,8 +275,8 @@ void notify_check_repeated(recur_apoint_llist_node_t *i)
 
 	current_time = time(NULL);
 	pthread_mutex_lock(&notify_app->mutex);
-	if (real_app_time = recur_item_inday(i->start, i->exc, i->rpt->type,
-	    i->rpt->freq, i->rpt->until, today()) > current_time) {
+	if ((real_app_time = recur_item_inday(i->start, i->exc, i->rpt->type,
+	    i->rpt->freq, i->rpt->until, today()) > current_time)) {
 		if (!notify_app->got_app) {
 			if (real_app_time - current_time <= DAYINSEC) 
 				update_notify = 1;
