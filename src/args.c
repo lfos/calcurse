@@ -1,4 +1,4 @@
-/*	$calcurse: args.c,v 1.11 2006/12/14 08:29:33 culot Exp $	*/
+/*	$calcurse: args.c,v 1.12 2006/12/15 15:32:39 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -157,7 +157,7 @@ int parse_args(int argc, char **argv, int colr)
 					load_app(colr);
 			}
 			if (tflag) {
-			todo_arg(tnum, colr);
+				todo_arg(tnum, colr);
 				non_interactive = 1;
 			}
 			if (nflag) {
@@ -185,12 +185,13 @@ int parse_args(int argc, char **argv, int colr)
  */
 void version_arg()
 {
-	char vtitle[50];
+	char vtitle[MAX_LENGTH];
 	char *vtext =
 	    _("\nCopyright (c) 2004-2006 Frederic Culot.\n"
 	    "This is free software; see the source for copying conditions.\n");
 
-	sprintf(vtitle, _("Calcurse %s - text-based organizer\n"), VERSION);
+	snprintf(vtitle, MAX_LENGTH, 
+		_("Calcurse %s - text-based organizer\n"), VERSION);
 	fputs(vtitle, stdout);
 	fputs(vtext, stdout);
 }
@@ -200,7 +201,7 @@ void version_arg()
  */
 void help_arg()
 {
-	char htitle[50];
+	char htitle[MAX_LENGTH];
 	char *htext =
 	_("\nMiscellaneous:\n"
 	"  -h, --help\n"
@@ -228,7 +229,8 @@ void help_arg()
 	"or read the manpage.\n"
     	"Mail bug reports and suggestions to <calcurse@culot.org>.\n");
 
-	sprintf(htitle, _("Calcurse %s - text-based organizer\n"), VERSION);
+	snprintf(htitle, MAX_LENGTH, 
+		_("Calcurse %s - text-based organizer\n"), VERSION);
 	fputs(htitle, stdout);
         usage();
 	fputs(htext, stdout);
@@ -238,7 +240,7 @@ void help_arg()
  * Print todo list and exit. If a priority number is given (say not equal to
  * zero), then only todo items that have this priority will be displayed.
  */
-int todo_arg(int priority, int colr)
+void todo_arg(int priority, int colr)
 {
 	struct todo_s *i;
 	int nb_tod, title = 1;
@@ -251,7 +253,7 @@ int todo_arg(int priority, int colr)
 				fputs(_("to do:\n"),stdout);
 				title = 0;
 			}
-			sprintf(priority_str, "%d. ", i->id);	
+			snprintf(priority_str, MAX_LENGTH, "%d. ", i->id);
 			fputs(priority_str,stdout);
 			fputs(i->mesg,stdout);
 			fputs("\n",stdout);
@@ -278,8 +280,8 @@ void next_arg(void)
 		hours_left = (time_left / 3600);
 		min_left = (time_left - hours_left*3600) / 60;
 		fputs(_("next appointment:\n"), stdout);
-		sprintf(mesg, "   [%02d:%02d] %s\n", hours_left, min_left, 
-			next_app->txt);
+		snprintf(mesg, MAX_LENGTH, "   [%02d:%02d] %s\n", 
+			hours_left, min_left, next_app->txt);
 		fputs(mesg, stdout);
 		fputs("\n", stdout);
 	}
@@ -493,14 +495,14 @@ check_date(char *date)
  */
 void arg_print_date(long date) 
 {
-		char date_str[30];
+		char date_str[MAX_LENGTH];
 		time_t t;
 		struct tm *lt;
 
 		t = date;
 		lt = localtime(&t);
-		sprintf(date_str,"%02u/%02u/%04u",lt->tm_mon+1, 
-		    lt->tm_mday, 1900+lt->tm_year);
+		snprintf(date_str, MAX_LENGTH, "%02u/%02u/%04u",
+			lt->tm_mon+1, lt->tm_mday, 1900+lt->tm_year);
 		fputs(date_str,stdout);
 		fputs(":\n",stdout);
 }
