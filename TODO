@@ -27,6 +27,7 @@ Average
   o  Add searching capabilities with support for regex
   o  Allow the creation of sub-todos (divide todos into different tasks)
   o  Make the color themes more configurable
+  o  Improve handling of window resizing with the help of signals
 
 
 Low
