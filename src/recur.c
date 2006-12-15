@@ -1,4 +1,4 @@
-/*	$calcurse: recur.c,v 1.17 2006/12/08 08:42:43 culot Exp $	*/
+/*	$calcurse: recur.c,v 1.18 2006/12/15 15:26:05 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -64,7 +64,7 @@ recur_apoint_llist_node_t *recur_apoint_new(char *mesg, long start, long dur,
 	o->rpt = (struct rpt_s *) malloc(sizeof(struct rpt_s));
 	o->mesg = (char *) malloc(strlen(mesg) + 1);
 	o->exc = (struct days_s *) malloc(sizeof(struct days_s));
-	strcpy(o->mesg, mesg);
+	strncpy(o->mesg, mesg, strlen(mesg) + 1);
 	o->start = start;
 	o->dur = dur;
 	o->rpt->type = type;
@@ -96,7 +96,7 @@ struct recur_event_s *recur_event_new(char *mesg, long day, int id,
 	o->rpt = (struct rpt_s *) malloc(sizeof(struct rpt_s));
 	o->mesg = (char *) malloc(strlen(mesg) + 1);
 	o->exc = (struct days_s *) malloc(sizeof(struct days_s));
-	strcpy(o->mesg, mesg);
+	strncpy(o->mesg, mesg, strlen(mesg) + 1);
 	o->day = day;
 	o->id = id;
 	o->rpt->type = type;
@@ -568,7 +568,7 @@ void recur_repeat_item(int sel_year, int sel_month, int sel_day,
 				status_mesg(mesg_wrong_freq, wrong_type_2);
 				wgetch(swin);
 			}
-			strcpy(user_input, "");
+			user_input[0] = '\0';
 		} else {
 			return;
 		}

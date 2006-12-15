@@ -1,4 +1,4 @@
-/*	$calcurse: apoint.c,v 1.6 2006/10/28 13:09:59 culot Exp $	*/
+/*	$calcurse: apoint.c,v 1.7 2006/12/15 15:25:09 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -57,7 +57,7 @@ apoint_llist_node_t *apoint_new(char *mesg, long start, long dur)
 
 	o = (apoint_llist_node_t *) malloc(sizeof(apoint_llist_node_t));
 	o->mesg = (char *) malloc(strlen(mesg) + 1);
-	strcpy(o->mesg, mesg);
+	strncpy(o->mesg, mesg, strlen(mesg) + 1);
 	o->start = start;
 	o->dur = dur;
 
@@ -91,7 +91,7 @@ void apoint_sec2str(apoint_llist_node_t *o,
 	time_t t;
 
 	if (o->start < day && type == APPT) {
-		strcpy(start, "..:..");
+		strncpy(start, "..:..", 6);
 	} else {
 		t = o->start;
 		lt = localtime(&t);
@@ -99,7 +99,7 @@ void apoint_sec2str(apoint_llist_node_t *o,
 			 lt->tm_min);
 	}
 	if (o->start + o->dur > day + 24 * 3600 && type == APPT) {
-		strcpy(end, "..:..");
+		strncpy(end, "..:..", 6);
 	} else {
 		t = o->start + o->dur;
 		lt = localtime(&t);

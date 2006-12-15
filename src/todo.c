@@ -1,4 +1,4 @@
-/*	$calcurse: todo.c,v 1.7 2006/12/13 09:32:22 culot Exp $	*/
+/*	$calcurse: todo.c,v 1.8 2006/12/15 15:25:50 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -63,7 +63,7 @@ struct todo_s *todo_add(char *mesg, int id)
 	struct todo_s *o, **i;
 	o = (struct todo_s *) malloc(sizeof(struct todo_s));
 	o->mesg = (char *) malloc(strlen(mesg) + 1);
-	strcpy(o->mesg, mesg);
+	strncpy(o->mesg, mesg, strlen(mesg) + 1);
 	o->id = id;
 	i = &todolist;
 	for (;;) {

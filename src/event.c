@@ -1,4 +1,4 @@
-/*	$calcurse: event.c,v 1.1 2006/07/31 21:00:03 culot Exp $	*/
+/*	$calcurse: event.c,v 1.2 2006/12/15 15:25:28 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -42,7 +42,7 @@ struct event_s *event_new(char *mesg, long day, int id)
 	struct event_s *o, **i;
 	o = (struct event_s *) malloc(sizeof(struct event_s));
 	o->mesg = (char *) malloc(strlen(mesg) + 1);
-	strcpy(o->mesg, mesg);
+	strncpy(o->mesg, mesg, strlen(mesg) + 1);
 	o->day = day;
 	o->id = id;
 	i = &eventlist;
