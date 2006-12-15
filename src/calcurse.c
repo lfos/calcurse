@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.29 2006/12/10 14:52:50 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.30 2006/12/15 15:26:57 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -236,7 +236,7 @@ int main(int argc, char **argv)
 			/* Select the event to highlight. */
 			if (which_pan == APPOINTMENT) {
 				if ((sav_hilt_app == 0) 
-					& ( (number_events_inday + 
+					&& ( (number_events_inday + 
 						number_apoints_inday) != 0))
 					hilt_app = 1;
 				else
@@ -716,13 +716,13 @@ void init_wins(void)
 	
 	/* Create the three main windows plus the status bar. */
 	cwin = newwin(nl_cal, nc_cal, y_cal, x_cal);
-	sprintf(label, _("Calendar"));
+	snprintf(label, 9, _("Calendar"));
 	win_show(cwin, label);
 	awin = newwin(nl_app, nc_app, y_app, x_app);
-	sprintf(label, _("Appointments"));
+	snprintf(label, 13, _("Appointments"));
 	win_show(awin, label);
 	twin = newwin(nl_tod, nc_tod, y_tod, x_tod);
-	sprintf(label, _("ToDo"));
+	snprintf(label, 5, _("ToDo"));
 	win_show(twin, label);
 	swin = newwin(nl_bar, nc_bar, y_bar, x_bar);
 
@@ -754,7 +754,7 @@ void reinit_wins(void)
 void general_config(void)
 {
 	WINDOW *conf_win;
-	char label[80];
+	char label[MAX_LENGTH];
 	char *number_str = _("Enter an option number to change its value [Q to quit] ");
 	int ch, win_row;
 
@@ -762,7 +762,7 @@ void general_config(void)
 	win_row = (notify_bar()) ? row - 3 : row - 2;
 	conf_win = newwin(win_row, col, 0, 0);
 	box(conf_win, 0, 0);
-	sprintf(label, _("CalCurse %s | general options"), VERSION);
+	snprintf(label, MAX_LENGTH, _("CalCurse %s | general options"), VERSION);
 	win_show(conf_win, label);
 	status_mesg(number_str, "");
 	print_general_options(conf_win);
@@ -799,7 +799,7 @@ void general_config(void)
 void config_notify_bar(void)
 {
 	WINDOW *conf_win;
-	char label[80];
+	char label[MAX_LENGTH];
 	char buf[MAX_LENGTH];
 	char *number_str = _("Enter an option number to change its value [Q to quit] ");
 	char *date_str = 
@@ -811,7 +811,7 @@ void config_notify_bar(void)
 	int ch = 0 , win_row, change_win = 1;
 
 	win_row = (notify_bar()) ? row - 3 : row - 2;
-	sprintf(label, _("CalCurse %s | notify-bar options"), VERSION);
+	snprintf(label, MAX_LENGTH, _("CalCurse %s | notify-bar options"), VERSION);
 	while (ch != 'q') {
 		if (change_win) {
 			clear();
@@ -821,7 +821,7 @@ void config_notify_bar(void)
 		}
 		status_mesg(number_str, "");
 		print_notify_options(conf_win);
-		strcpy(buf, "");
+		buf[0] = '\0';
 		ch = wgetch(swin);
 
 		switch (ch) {
@@ -1126,7 +1126,7 @@ void add_item(void)
          * corresponding item.
          */
         if (is_appointment){ /* Get the appointment duration */
-                strcpy(item_time, "");
+		item_time[0] = '\0';
                 while (check_time(item_time) == 0) {
                         status_mesg(mesg_2, "");
                         if (getstring(swin, colr, item_time, LTIME, 0, 1) != 0)
@@ -1201,7 +1201,7 @@ void update_todo_panel(void)
 		incolor = num_todo - hilt_tod;
 		if (incolor == 0) saved_t_mesg = i->mesg; 
 		if (t_realpos >= 0 && t_realpos < max_items) {
-			sprintf(mesg, "%d. ", i->id);	
+			snprintf(mesg, MAX_LENGTH, "%d. ", i->id);	
 			strncat(mesg, i->mesg, strlen(i->mesg));
 			display_item(twin, incolor, mesg, 0, 
 					len, y_offset, x_offset);
