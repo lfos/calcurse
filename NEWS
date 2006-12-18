@@ -1,3 +1,24 @@
+[18 Dec 2006]
+Version 1.7_beta
+This is a beta version available on request. Testers and translators welcomed !
+- New features:
+  * 'Edit Item' command implemented to be able to modify an already existing
+    item
+
+  * Long command-line options are now accepted
+
+  * '-t' flag now takes a priority number as optional argument 
+
+  * Repeated items are now marked with an '*' to be recognizable from normal
+    items
+
+- Bugfixes:
+  * When creating a recurrent item, the end-date is included again in the
+    repetition
+
+  * Date format corrected in 'Go To' command
+
+
 [01 Oct 2006]
 Version 1.6
 - New features:
