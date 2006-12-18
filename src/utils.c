@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.19 2006/12/15 15:33:46 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.20 2006/12/18 09:30:28 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -222,8 +222,7 @@ int getstring(WINDOW *win, int colr, char *str, int l, int x, int y)
 
 		case CTRL('K'):		/* delete to end-of-line */
 			str = orig + newpos;
-			for (; *str; ++str)
-				*str = 0;
+			*str = 0;
 			len -= (len - newpos);
 			break;
 
