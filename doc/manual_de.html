@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <!--
 /*
- *	$calcurse: manual_de.html,v 1.5 2006/10/01 18:00:57 culot Exp $
+ *	$calcurse: manual_de.html,v 1.6 2006/12/18 11:03:42 culot Exp $
  *
  * Calcurse - text-based organizer
  * Copyright (c) 2004-2006 Frederic Culot
@@ -93,6 +93,7 @@
 <ul>
 <li><a href="#links_homepage"><code>calcurse</code> Internetseite</a>
 <li><a href="#links_list"><code>calcurse</code> Ank&uuml;ndigungsliste</a>
+<li><a href="#links_rss"><font color="green"><code>calcurse</code> RSS
 </ul>
 <li><a href="#thanks">Danksagungen</a>
 </ul>
@@ -202,7 +203,7 @@ laden:<br>
 <p>
 Als erstes m&uuml;ssen die Dateien entpackt werden:
 <pre>
-        tar zxvf calcurse-1.6.tar.gz
+        tar zxvf calcurse-1.7.tar.gz
 </pre>
 Ist diese Voraussetzung erf&uuml;llt und das Archiv entpackt,
 sind nur noch die drei &uuml;blichen Schritte erforderlich:
@@ -219,21 +220,22 @@ verf&uuml;gbaren Optionen aufgelistet zu bekommen.
 <a name="basics_invocation"></a><h2>Programmaufruf</h2>
 <a name="basics_invocation_commandline"></a><h3>Programmargumente</h3>
 <p>
-<code>Calcurse</code> kann mit folgenden Optionen aufgerufen werden:
+<code>Calcurse</code> kann mit folgenden Optionen aufgerufen werden
+<font color="green">(both short and long options are supported)</font>:
 
 <dl compact>
-<dt><code>-a</code>
+<dt><code>-a, --appointment</code>
 <dd>Gibt die Termine des heutigen Tags aus.<br>
 <u>Beachte:</u> Die Kalender-Datei, aus der die Termine gelesen
 werden sollen, kann mit mit Hilfe der -c Option angegeben werden.<br>
 <br>
-<dt><code>-c</code>
+<dt><code>-c &lt;file&gt;, --calendar &lt;file&gt;</code>
 <dd>
 Gibt die zu lesende Kalender-Datei an.<br>
 Der Standardkalender ist <code>~/.calcurse/apts</code> (beachte auch
 Abschnitt: <a href="#basics_files"><code>calcurse</code> Dateien</a>).<br>
 <br>
-<dt><code>-d</code>
+<dt><code>-d &lt;date|num&gt;, --day &lt;date|num&gt;</code>
 <dd>
 Gibt die Termine eines angegebenen Datums oder alle Termine der 
 anzugebenden nachfolgenden Tage aus. Somit sind zwei Formate m&ouml;glich:
@@ -247,20 +249,31 @@ die in den n&auml;chsten 'n' Tagen zu erledigen sind.<br>
 Beispiel: Die Eingabe <code>calcurse -d 3</code> gibt alle Termine des
 heutigen und der beiden folgenden Tage aus.<br>
 <br>
-<dt><code>-h</code>
+<dt><code>-h, --help</code>
 <dd>
 Gibt eine Hilfe zu den unterst&uuml;tzten Optionen aus.<br>
 <br>
-<dt><code>-n</code>
+<dt><code>-n, --next</code>
 <dd>
 Gibt den Termin aus, der innerhalb der kommenden 24 Stunden als 
 n&auml;chstes stattfindet.<br>
+<font color="green">
+	The indicated time is the number of hours and minutes left 
+	before this appointment.<br>
+	<u>Note:</u> the calendar from which to read the appointments
+	can be specified using the '-c' flag.</font><br>
 <br>
-<dt><code>-t</code>
+<dt><code>-t[num], --todo[=num]</code>
 <dd>
 Gibt die 'todo' Liste aus.<br>
+<font color="green">
+	if the optional number
+	<code>num</code> is given, then only todos having a priority
+	equal to <code>num</code> will be returned.<br>
+	<u>Note:</u> proprity number must be between 1 (highest) and
+	9 (lowest).</font><br>
 <br>
-<dt><code>-v</code>
+<dt><code>-v, --version</code>
 <dd>
 Gibt die aktuelle Version von Calcurse aus.
 </dl>
@@ -355,9 +368,10 @@ Die einzelnen Panels lassen sich durch die 'TAB'-Taste ansteuern.
 Das Kalender-Panel hebt den gew&uuml;nschten Tag farblich hervor, w&auml;hrend
 das Termin-Panel die Liste mit Terminen des angesteuerten Tags
 anzeigt. Das todo-Panel dagegen zeigt eine Liste mit den zu
-erledigenden Aufgaben, die keinem bestimmten Tage zugeordnet sind.
+erledigenden Aufgaben, die keinem bestimmten Tage zugeordnet sind.<br>
 Die letzten beiden Zeilen des Interfaces zeigen die Status-Zeile, die
-&uuml;ber die m&ouml;glichen Befehle und ihre entsprechenden Tasten informiert.
+&uuml;ber die m&ouml;glichen Befehle und ihre entsprechenden Tasten
+informiert.<br>
 Direkt &uuml;ber der Statuszeile befindet sich die Benachrichtigungszeile, die 
 von links nach rechts gesehen die folgenden Elemente anzeigt: Das aktuelle Datum, 
 die aktuelle Uhrzeit, die momentan verwendete Kalenderdatei (im obigen Beispiel 
@@ -365,6 +379,30 @@ die standardm&auml;&szlig;ig verwendete Kalenderdatei apts [Vergleiche hierzu
 den folgenden Abschnitt]) und der n&auml;chste Termin, der in den kommenden 24 
 Stunden ansteht. Im Beispiel ist dies der Termin lunch, der in 1 Stunde und 
 zwanzig Minuten beginnt.
+<p>
+<font color="green">
+<u>Note:</u> Some actions, such as editing or adding an item,
+	require to type in some text. This is done with the help of 
+	the built-in input line editor.<br>
+	Within this editor, if a line is longer than the screen width,
+	a '&gt;', '*', or '&lt;' character is displayed in the last
+	column indicating that there are more character after, before and 
+	after, or before the current position, respectively. The line is
+	scrolled horizontally as necessary.<br>
+	Moreover, some editing commands are bound to particular control
+	characters. Hereafter are indicated the available editing commands
+	('^' stands for the control key):<br>
+	<ul>
+	<li><b>^a</b>: moves the cursor to the beginning of the input line
+	<li><b>^b</b>: moves the cursor backward
+	<li><b>^d</b>: deletes one character forward
+	<li><b>^e</b>: moves the cursor to the end of the input line
+	<li><b>^f</b>: moves the cursor forward
+	<li><b>^h</b>: deletes one character backward
+	<li><b>^k</b>: deletes the input from the cursor to the end of the line
+	<li><b>ESCAPE</b>: cancels the editing
+	</ul>
+</font>
 
 <a name="basics_files"></a><h2><code>calcurse</code> Dateien</h2>
 <p>
@@ -775,6 +813,17 @@ die neusten Eigenschaften von <code>calcurse</code> informiert<br>
 Um sich in die Liste einzutragen, schicken Sie einfach eine E-Mail mit dem Betreff 
 "subscribe" an <code>calcurse-announce@culot.org</code>.
 
+<a name="links_rss"></a><h2><font color="green"><code>calcurse</code> RSS feed</font></h2>
+<p>
+<font color="green">
+	Another possibility to get warned when new releases come out
+	is to follow the RSS feed at:
+	<pre>
+	http://culot.org/calcurse/news_rss.xml
+	</pre>
+	This RSS feed is updated each time a new version of calcurse is
+	available, describing newly added features.
+</font>
 
 <a name="thanks"></a><h1>Danksagungen</h1>
 <p>
@@ -784,9 +833,14 @@ derjenigen, denen ich Danke sagen m&ouml;chte:
 <ul>
 <li>Alex f&uuml;r die Patches, Hilfen und Erl&auml;uterungen zur <code>C</code> Programmierung.
 <li>Gwen f&uuml;rs Testen und die Anregungen, wie <code>calcurse</code> verbessert werden kann.
-<li>Kevin und Ryan f&uuml;r das Binary-Packet auf Debian.
+<li><font color="green">Herbert for packaging <code>calcurse</code> for FreeBSD</font>
+<li><font color="green">Zul for packaging <code>calcurse</code> for NetBSD</font>
+<li><font color="green">Wain for packaging <code>calcurse</code> for Archlinux</font>
+<li>Kevin, Ryan, und fEnIo f&uuml;r das Binary-Packet auf Debian und Ubuntu.
 <li>Steffen f&uuml;r das Binary-Packet auf Archlinux
-<li>Alexandre f&uuml;r das Binary-Packet auf Mac OsX.
+<li><font color="green">Pascal for packaging <code>calcurse</code> for Slackware</font>
+<li>Alexandre f&uuml;r das Binary-Packet auf Mac OsX und Darwin.
+<li><font color="green">Igor for packaging <code>calcurse</code> for ALT Linux</font>
 <li>Joel f&uuml;r sein Kalender-Skript, das mich zum Calcurse-Layout inspiriert hat.
 <li>Michael Schulz und Chris M. f&uuml;r die &Uuml;bersetzung der Dokumentation ins Deutsche.
 <li>Jose Lopez f&uuml;r die &Uuml;bersetzung der Dokumentation ins Spanische.
@@ -805,8 +859,9 @@ Benutzer, die mir Ihr Feedback mitgeteilt haben.
 <hr>
 <small><em>
 Copyright (c) 2004-2006 Fr&eacute;d&eacute;ric Culot<br>
-German translation by Michael Schulz <code>&lt;bloodshower.at.web.dot.de&gt;</code><br>
-Calcurse version 1.6 - Last change: October 1, 2006
+German translation by Michael Schulz
+<code>&lt;bloodshower.at.web.dot.de&gt;</code>, and Chris.<br>
+Calcurse version 1.7 - Last change: December 20, 2006
 <em></small>
 
 

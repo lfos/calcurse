@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <!--
 /*
- *	$calcurse: manual_es.html,v 1.4 2006/09/25 07:26:32 culot Exp $
+ *	$calcurse: manual_es.html,v 1.5 2006/12/18 11:03:52 culot Exp $
  *
  * Calcurse - text-based organizer
  * Copyright (c) 2004-2006 Frederic Culot
@@ -92,6 +92,8 @@
 <ul>
 <li><a href="#links_homepage">Pagina web de <code>calcurse</code></a>
 <li><a href="#links_list">Lista de anuncios de <code>calcurse</code></a>
+<li><a href="#links_rss"><font color="green"><code>calcurse</code> RSS
+feed</font></a>
 </ul>
 <li><a href="#thanks">Gracias a ...</a>
 </ul>
@@ -205,7 +207,7 @@
 <p>
 	Primero necesitas descomprimir ( gunzip  y  untar) el archivo fuente:
 	<pre>
-	tar zxvf calcurse-1.6.tar.gz
+	tar zxvf calcurse-1.7.tar.gz
 	</pre>
   	Una vez has resuelto los requisitos y has extraído el archivo, 
 	el proceso de instalación es muy simple y sigue los tres pasos habituales:
@@ -223,22 +225,23 @@
 <a name="basics_invocation_commandline"></a><h3>Argumentos de la linea de comando</h3>
 <p>
         <code>calcurse</code> acepta las siguientes opciones en la 
-        linea de comando:
+        linea de comando <font color="green">(both short and long options are supported
+	)</font>:
 
         <dl compact>
-        <dt><code>-a</code>
+        <dt><code>-a, --appointment</code>
 	<dd>
 	Imprime las citas y eventos para el día actual y sale.<br>
         <u>Nota:</u> el calendario desde donde leerán 
         puede ser especificado usando la opción '-c' .<br>
 	<br>
-	<dt><code>-c</code>
+	<dt><code>-c &lt;file&gt;, --calendar &lt;file&gt;</code>
 	<dd>
 	Especifica el archivo de calendario a usar.<br>
 	El calendario por defecto es <code>~/.calcurse/apts</code> 
 	(ver la sección <a href="#basics_files">Archivos de <code>calcurse</code></a>).<br>
 	<br>
-	<dt><code>-d</code>
+	<dt><code>-d &lt;date|num&gt;, --day &lt;date|num&gt;</code>
 	<dd>
 	Imprime las citas y eventos para la fecha dada o para el numero dado de días 
         próximos, dependiendo del formato del argumento.
@@ -255,20 +258,31 @@
         <u>Nota:</u>al igual que para la opción '-a' , el calendario desde donde se   
 	leerán puede ser especificado usando la opción '-c' .<br>
 	<br>
-	<dt><code>-h</code>
+	<dt><code>-h, --help</code>
 	<dd>
         Imprime un breve texto de ayuda describiendo las opciones soportadas en la
 	linea de comando y sale.<br>
 	<br>
-	<dt><code>-n</code>
+	<dt><code>-n, --next</code>
 	<dd>
 	Imprime las citas para las próximas 24 horas y sale.<br>
+	<font color="green">
+	The indicated time is the number of hours and minutes left 
+	before this appointment.<br>
+	<u>Note:</u> the calendar from which to read the appointments
+	can be specified using the '-c' flag.</font><br>
 	<br>
-	<dt><code>-t</code>
+	<dt><code>-t[num], --todo[=num]</code>
 	<dd>
         Imprime la lista de tareas pendientes ('ToDo') y sale.<br>
+	<font color="green">
+	if the optional number
+	<code>num</code> is given, then only todos having a priority
+	equal to <code>num</code> will be returned.<br>
+	<u>Note:</u> proprity number must be between 1 (highest) and
+	9 (lowest).</font><br>
 	<br>
-	<dt><code>-v</code>
+	<dt><code>-v, --version</code>
 	<dd>
         Muestra la versión de <code>calcurse</code> y sale.
 	</DL>
@@ -362,17 +376,41 @@
         El primer panel representa un calendario que permite iluminar un 
         día en particular, el segundo contiene la lista de citas y eventos 
         pertenecientes a ese día, y el ultimo contiene una lista 
-        de tareas pendientes (ToDo) pero que no están asignadas a ningún día especifico.  
+        de tareas pendientes (ToDo) pero que no están asignadas a ningún día 
+	especifico.<br>  
 	En la parte inferior de la pantalla hay una barra de estado, que 
-	indica las posibles acciones y sus correspondientes atajos de teclado.
+	indica las posibles acciones y sus correspondientes atajos de
+	teclado.<br>
         Justo encima de esta barra de estado esta la barra de notificaciones, que indica
 	de izquierda a derecha : la fecha actual, la hora actual, el archivo de 
 	calendario actualmente en uso (en el ejemplo de arriba, el de citas, que es
 	el fichero de calendario por defecto, ver la sección siguiente), y la 
 	cita mas cercana para las proximas 24 horas. En el ejemplo seria una comida 
 	dentro de una hora y 20 minutos.
-	
-
+	<p>
+	<font color="green">
+	<u>Note:</u> Some actions, such as editing or adding an item,
+	require to type in some text. This is done with the help of 
+	the built-in input line editor.<br>
+	Within this editor, if a line is longer than the screen width,
+	a '&gt;', '*', or '&lt;' character is displayed in the last
+	column indicating that there are more character after, before and 
+	after, or before the current position, respectively. The line is
+	scrolled horizontally as necessary.<br>
+	Moreover, some editing commands are bound to particular control
+	characters. Hereafter are indicated the available editing commands
+	('^' stands for the control key):<br>
+	<ul>
+	<li><b>^a</b>: moves the cursor to the beginning of the input line
+	<li><b>^b</b>: moves the cursor backward
+	<li><b>^d</b>: deletes one character forward
+	<li><b>^e</b>: moves the cursor to the end of the input line
+	<li><b>^f</b>: moves the cursor forward
+	<li><b>^h</b>: deletes one character backward
+	<li><b>^k</b>: deletes the input from the cursor to the end of the line
+	<li><b>ESCAPE</b>: cancels the editing
+	</ul>
+	</font>
 
 <a name="basics_files"></a><h2>Archivos de <code>calcurse</code></h2>
 <p>
@@ -755,6 +793,17 @@
 	<code>calcurse-announce@culot.org</code> poniendo "subscribe" 
 	en el asunto. 
 
+<a name="links_rss"></a><h2><font color="green"><code>calcurse</code> RSS feed</font></h2>
+<p>
+<font color="green">
+	Another possibility to get warned when new releases come out
+	is to follow the RSS feed at:
+	<pre>
+	http://culot.org/calcurse/news_rss.xml
+	</pre>
+	This RSS feed is updated each time a new version of calcurse is
+	available, describing newly added features.
+</font>
 
 <a name="thanks"></a><h1>Gracias a ...</a></h1>
 <p>
@@ -764,11 +813,18 @@
 	<ul>
 	<li>Alex por sus patches, ayuda y notas con la programación <code>C</code> 
 	<li>Gwen por probarlo y las discusiones sobre como mejorar <code>calcurse</code>
-	<li>Kevin and Ryan por hacer el paquete para <code>calcurse</code> para Debian
+	<li><font color="green">Herbert for packaging <code>calcurse</code> for FreeBSD</font>
+	<li><font color="green">Zul for packaging <code>calcurse</code> for NetBSD</font>
+	<li><font color="green">Wain for packaging <code>calcurse</code> for Archlinux</font>
+	<li>Kevin, Ryan, y fEnIo por hacer el paquete para <code>calcurse</code>
+	para Debian y Ubuntu
 	<li>Steffen por hacer el paquete <code>calcurse</code> para Archlinux
-	<li>Alexandre por hacer el paquete <code>calcurse</code> para Mac OsX
+	<li><font color="green">Pascal for packaging <code>calcurse</code> for Slackware</font>
+	<li>Alexandre por hacer el paquete <code>calcurse</code> para Mac OsX y
+	Darwin
+	<li><font color="green">Igor for packaging <code>calcurse</code> for ALT Linux</font>
 	<li>Joel por su script del calendario que inspiro la vista de calendario de <code>calcurse</code> 
-	<li>Michael Schulz por la traducción al alemán de <code>calcurse</code> y su manual
+	<li>Michael Schulz y Chris M. por la traducción al alemán de <code>calcurse</code> y su manual
 	<li>Neil Williams por la traducción al ingles
 	<li>José López por la traducción al Español de <code>calcurse</code> y su manual
 	<li>a la gente que ha escrito softwares que me gustan y que me inspiraron, especialmente :
@@ -788,7 +844,7 @@
 Copyright (c) 2004-2006 Fr&eacute;d&eacute;ric Culot<br>
 Traducido al Español por José López
 <code>&lt;testinground.at.gmail.dot.com&gt;</code><br>
-Calcurse version 1.6 - Last change: September 19, 2006
+Calcurse version 1.7 - Last change: December 20, 2006
 <em></small>
 
 
