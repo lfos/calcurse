@@ -1,6 +1,9 @@
 19 Dec 2006:
 	bugfix in init_wins(): max label length is now MAX_LENGTH
+	bugfix in day_edit_item(): end time does not change if start time is
+	edited
 	fr.po: french translation updated
+	README updated
 
 18 Dec 2006: 1.7_beta
 	bugfix in getstring(): CTRL-K now works properly
