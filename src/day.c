@@ -1,4 +1,4 @@
-/*	$calcurse: day.c,v 1.14 2006/12/15 15:29:16 culot Exp $	*/
+/*	$calcurse: day.c,v 1.15 2006/12/19 10:29:36 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -478,6 +478,7 @@ void day_edit_item(int year, int month, int day, int item_num, int colr)
 			free(timestr);
 			newtime = update_time_in_date(p->start, hr, mn);
 			if (newtime < p->start + p->appt_dur) {
+				p->appt_dur -= (newtime - p->start);
 				p->start = newtime;
 				valid_date = 1;
 			} else {
