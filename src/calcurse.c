@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.30 2006/12/15 15:26:57 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.31 2006/12/19 08:14:02 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -712,17 +712,17 @@ void get_date(void)
 /* Create all the windows */
 void init_wins(void)
 {
-	char label[80];
+	char label[MAX_LENGTH];
 	
 	/* Create the three main windows plus the status bar. */
 	cwin = newwin(nl_cal, nc_cal, y_cal, x_cal);
-	snprintf(label, 9, _("Calendar"));
+	snprintf(label, MAX_LENGTH, _("Calendar"));
 	win_show(cwin, label);
 	awin = newwin(nl_app, nc_app, y_app, x_app);
-	snprintf(label, 13, _("Appointments"));
+	snprintf(label, MAX_LENGTH, _("Appointments"));
 	win_show(awin, label);
 	twin = newwin(nl_tod, nc_tod, y_tod, x_tod);
-	snprintf(label, 5, _("ToDo"));
+	snprintf(label, MAX_LENGTH, _("ToDo"));
 	win_show(twin, label);
 	swin = newwin(nl_bar, nc_bar, y_bar, x_bar);
 
