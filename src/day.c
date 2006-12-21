@@ -1,4 +1,4 @@
-/*	$calcurse: day.c,v 1.15 2006/12/19 10:29:36 culot Exp $	*/
+/*	$calcurse: day.c,v 1.16 2006/12/21 14:58:18 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -310,7 +310,7 @@ void day_write_pad(long date, int width, int length, int incolor, int colr)
 				day_item_s2apoint_s(p), p->type, date, 
 				line + 1, x_pos);	
 			display_item(apad->ptrwin, item_number - incolor, p->mesg,
-				0, width - 6, line + 2, x_pos + 2);
+				0, width - 7, line + 2, x_pos + 2);
 			line = line + 3;
 		}
 	}
