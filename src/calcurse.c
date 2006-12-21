@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.31 2006/12/19 08:14:02 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.32 2006/12/21 14:57:47 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -1183,7 +1183,7 @@ void add_item(void)
 void update_todo_panel(void)
 {
 	struct todo_s *i;
-	int len = nc_tod - 5;
+	int len = nc_tod - 6;
 	int num_todo = 0;
 	int y_offset = 3, x_offset = 1;
 	int t_realpos = -1;
