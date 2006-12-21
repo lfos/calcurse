@@ -1,3 +1,6 @@
+21 Dec 2006:
+	display adjustments in day_write_pad() and update_todo_panel()
+
 19 Dec 2006:
 	bugfix in init_wins(): max label length is now MAX_LENGTH
 	bugfix in day_edit_item(): end time does not change if start time is
