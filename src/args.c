@@ -1,4 +1,4 @@
-/*	$calcurse: args.c,v 1.12 2006/12/15 15:32:39 culot Exp $	*/
+/*	$calcurse: args.c,v 1.13 2007/01/05 08:48:23 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -283,7 +283,6 @@ void next_arg(void)
 		snprintf(mesg, MAX_LENGTH, "   [%02d:%02d] %s\n", 
 			hours_left, min_left, next_app->txt);
 		fputs(mesg, stdout);
-		fputs("\n", stdout);
 	}
 	free(next_app->txt);
 	free(next_app);
