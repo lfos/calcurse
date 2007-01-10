@@ -1,3 +1,11 @@
+10 Jan 2007:
+	German manual and translation updated, many thanks to Chris M.
+	bugfix: Edit command no longer crashes when trying to edit an unexisting
+	item
+	bugfix: pressing 'CTRL-T' while inside appointment panel no longers
+	create an appointment but a todo, as expected
+	better checking of the entered date in goto_day()
+
 05 Jan 2006:
 	newline suppressed in next_arg()
 
