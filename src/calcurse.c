@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.32 2006/12/21 14:57:47 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.33 2007/01/10 13:44:49 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -319,14 +319,23 @@ int main(int argc, char **argv)
                         update_windows(which_pan);
 			break;
 
-		case CTRL('A'):
-		case CTRL('T'):
+		case CTRL('A'):	/* Add an app, whatever panel selected */
+			add_item();
+			do_storage = true;
+			break;
+
+		case CTRL('T'):	/* Add a todo, whatever panel selected */
+			nb_tod = todo_new_item(nb_tod, colr);
+			if (hilt_tod == 0 && nb_tod == 1)
+				hilt_tod++;
+			break;
+
 		case 'A':
 		case 'a':	/* Add an item */
-			if (which_pan == APPOINTMENT || ch == CTRL('A')) {
+			if (which_pan == APPOINTMENT) {
 				add_item();
 				do_storage = true;
-			} else if (which_pan == TODO || ch == CTRL('T')) {
+			} else if (which_pan == TODO) {
 				nb_tod = todo_new_item(nb_tod, colr);
 				if (hilt_tod == 0 && nb_tod == 1)
 					hilt_tod++;
@@ -335,10 +344,10 @@ int main(int argc, char **argv)
 
 		case 'E':
 		case 'e':	/* Edit an existing item */
-			if (which_pan == APPOINTMENT)
+			if (which_pan == APPOINTMENT && hilt_app != 0)
 				day_edit_item(sel_year, sel_month, sel_day,
 					hilt_app, colr);
-			else if (which_pan == TODO)
+			else if (which_pan == TODO && hilt_tod != 0)
 				todo_edit_item(hilt_tod, colr);
 			do_storage = true;
 			break;
@@ -1057,6 +1066,7 @@ void del_item(void)
 					apad->first_onscreen = 
 						apad->first_onscreen -
 						to_be_removed;
+				if (nb_items == 1) hilt_app = 0;
 			}
 		}
 
@@ -1079,6 +1089,7 @@ void del_item(void)
 			todo_delete_bynum(hilt_tod - 1);
 			nb_tod--;
 			if (hilt_tod > 1) hilt_tod--;
+			if (nb_tod == 0) hilt_tod = 0;
 		}
 	}
 }
