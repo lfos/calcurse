@@ -1,4 +1,4 @@
-/*	$calcurse: calendar.c,v 1.4 2006/12/10 14:51:41 culot Exp $	*/
+/*	$calcurse: calendar.c,v 1.5 2007/01/10 13:43:51 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -188,25 +188,28 @@ goto_day(int colr, int day, int month, int year,
 #define LDAY 11
 	char selected_day[LDAY] = "";
 	int dday, dmonth, dyear;
-	int wrong_day = 0;
+	int wrong_day = 1;
 	char *mesg_line1 = _("The day you entered is not valid");
 	char *mesg_line2 = _("Press [ENTER] to continue");
 	char *request_date = _("Enter the day to go to [ENTER for today] : mm/dd/yyyy");
 
-	while (wrong_day != 1) {
+	while (wrong_day) {
 		status_mesg(request_date, "");
 		if (getstring(swin, colr, selected_day, LDAY, 0, 1) == 1)
 			return;
 		else {
 			if (strlen(selected_day) == 0) {
 			// go to today
+				wrong_day = 0;
 				*sel_day = day;
 				*sel_month = month;
 				*sel_year = year;
-				break;
+			} else if (strlen(selected_day) != LDAY - 1) {
+				wrong_day = 1;	
 			} else {
 				sscanf(selected_day, "%u/%u/%u", 
 					&dmonth, &dday, &dyear);
+				wrong_day = 0;
 				//check if the entered day is correct
 				if ((dday <= 0) | (dday >= 32))
 					wrong_day = 1;
@@ -219,11 +222,11 @@ goto_day(int colr, int day, int month, int year,
 					*sel_day = dday;
 					*sel_month = dmonth;
 					*sel_year = dyear;
-				} else {
-					status_mesg(mesg_line1, mesg_line2);
-					wgetch(swin);
-				}
-				break;
+				} 
+			}
+			if (wrong_day) {
+				status_mesg(mesg_line1, mesg_line2);
+				wgetch(swin);
 			}
 		}
 	}
