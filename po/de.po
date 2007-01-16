@@ -1,4 +1,4 @@
-# 	$calcurse: de.po,v 1.5 2007/01/10 09:56:07 culot Exp $
+# 	$calcurse: de.po,v 1.6 2007/01/16 08:14:22 culot Exp $
 #
 # German translations for calcurse package.
 # Copyright (C) 2006 Michael Schulz <bloodshower@web.de>
@@ -501,7 +501,7 @@ msgstr ""
 
 #: src/day.c:605
 msgid "Enter the new time ([hh:mm] or [h:mm]) : "
-msgstr "Neuer Uhrzeit: ([HH:MM] oder [H:MM]):"
+msgstr "Neue Uhrzeit: ([HH:MM] oder [H:MM]):"
 
 #: src/day.c:608
 msgid "You entered an invalid time, should be [h:mm] or [hh:mm]"
