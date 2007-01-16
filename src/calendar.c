@@ -1,8 +1,8 @@
-/*	$calcurse: calendar.c,v 1.5 2007/01/10 13:43:51 culot Exp $	*/
+/*	$calcurse: calendar.c,v 1.6 2007/01/16 07:50:59 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2006 Frederic Culot
+ * Copyright (c) 2004-2007 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -195,7 +195,8 @@ goto_day(int colr, int day, int month, int year,
 
 	while (wrong_day) {
 		status_mesg(request_date, "");
-		if (getstring(swin, colr, selected_day, LDAY, 0, 1) == 1)
+		if (getstring(swin, colr, selected_day, LDAY, 0, 1) == 
+			GETSTRING_ESC)
 			return;
 		else {
 			if (strlen(selected_day) == 0) {

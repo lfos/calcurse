@@ -1,8 +1,8 @@
-/*	$calcurse: recur.c,v 1.18 2006/12/15 15:26:05 culot Exp $	*/
+/*	$calcurse: recur.c,v 1.19 2007/01/16 07:51:47 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2006 Frederic Culot
+ * Copyright (c) 2004-2007 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -562,21 +562,22 @@ void recur_repeat_item(int sel_year, int sel_month, int sel_day,
 
 	while (freq == 0) {
 		status_mesg(mesg_freq_1, "");
-		if (getstring(swin, colr, user_input, MAX_LENGTH, 0, 1) == 0) {
+		if (getstring(swin, colr, user_input, MAX_LENGTH, 0, 1) == 
+			GETSTRING_VALID) {
 			freq = atoi(user_input);
 			if (freq == 0) {
 				status_mesg(mesg_wrong_freq, wrong_type_2);
 				wgetch(swin);
 			}
 			user_input[0] = '\0';
-		} else {
+		} else
 			return;
-		}
 	}
 
 	while (!date_entered) {
 		status_mesg(mesg_until_1, "");
-		if (getstring(swin, colr, user_input, 11, 0, 1) == 0) {
+		if (getstring(swin, colr, user_input, 11, 0, 1) == 
+			GETSTRING_VALID) {
 			if (strlen(user_input) == 1 && 
 			    strncmp(user_input, "0", 1) == 0 )  {
 				until = 0;
@@ -602,9 +603,8 @@ void recur_repeat_item(int sel_year, int sel_month, int sel_day,
 					date_entered = 0;
 				}
 			}
-		} else {
+		} else
 			return;
-		}
 	}
 	
 	date = date2sec(sel_year, sel_month, sel_day, 0, 0);

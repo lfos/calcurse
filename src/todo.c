@@ -1,8 +1,8 @@
-/*	$calcurse: todo.c,v 1.8 2006/12/15 15:25:50 culot Exp $	*/
+/*	$calcurse: todo.c,v 1.9 2007/01/16 07:52:29 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2006 Frederic Culot
+ * Copyright (c) 2004-2007 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,7 +45,8 @@ int todo_new_item(int total, int colr)
 	char todo_input[MAX_LENGTH] = "";
 
 	status_mesg(mesg, "");
-	if (getstring(swin, colr, todo_input, MAX_LENGTH, 0, 1) == 0) {
+	if (getstring(swin, colr, todo_input, MAX_LENGTH, 0, 1) == 
+		GETSTRING_VALID) {
 		while ( (ch < '1') || (ch > '9') ) {
 			status_mesg(mesg_id, "");
 			ch = wgetch(swin);

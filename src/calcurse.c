@@ -1,8 +1,8 @@
-/*	$calcurse: calcurse.c,v 1.33 2007/01/10 13:44:49 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.34 2007/01/16 07:49:54 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2006 Frederic Culot
+ * Copyright (c) 2004-2007 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -850,7 +850,8 @@ void config_notify_bar(void)
 			break;
 		case '2':
 			status_mesg(date_str, "");
-			if (getstring(swin, colr, buf, MAX_LENGTH, 0, 1) == 0) {
+			if (getstring(swin, colr, buf, MAX_LENGTH, 0, 1) ==
+				GETSTRING_VALID) {
 				pthread_mutex_lock(&nbar->mutex);
 				strncpy(nbar->datefmt, buf, strlen(buf) + 1);
 				pthread_mutex_unlock(&nbar->mutex);
@@ -859,7 +860,8 @@ void config_notify_bar(void)
 			break;
 		case '3':
 			status_mesg(time_str, "");
-			if (getstring(swin, colr, buf, MAX_LENGTH, 0, 1) == 0 ) {
+			if (getstring(swin, colr, buf, MAX_LENGTH, 0, 1) == 
+				GETSTRING_VALID) {
 				pthread_mutex_lock(&nbar->mutex);
 				strncpy(nbar->timefmt, buf, strlen(buf) + 1);
 				pthread_mutex_unlock(&nbar->mutex);
@@ -868,9 +870,9 @@ void config_notify_bar(void)
 			break;
                 case '4':
 			status_mesg(count_str, "");
-			if (getstring(swin, colr, buf, MAX_LENGTH, 0, 1) == 0 && 
-			    is_all_digit(buf) && atoi(buf) >= 0 && 
-			    atoi(buf) <= DAYINSEC) {
+			if (getstring(swin, colr, buf, MAX_LENGTH, 0, 1) == 
+				GETSTRING_VALID && is_all_digit(buf) && 
+				atoi(buf) >= 0 && atoi(buf) <= DAYINSEC) {
 				pthread_mutex_lock(&nbar->mutex);
 				nbar->cntdwn = atoi(buf);
 				pthread_mutex_unlock(&nbar->mutex);
@@ -1120,7 +1122,8 @@ void add_item(void)
 	/* Get the starting time */
 	while (check_time(item_time) != 1) {
                 status_mesg(mesg_1, "");
-		if (getstring(swin, colr, item_time, LTIME, 0, 1) == 0) {
+		if (getstring(swin, colr, item_time, LTIME, 0, 1) != 
+			GETSTRING_ESC) {
 			if (strlen(item_time) == 0){
 				is_appointment = 0;
 				break;	
@@ -1129,7 +1132,8 @@ void add_item(void)
 				wgetch(swin);
 			} else
 				sscanf(item_time, "%u:%u", &heures, &minutes);
-		}
+		} else
+			return;
 	}
         /* 
          * Check if an event or appointment is entered, 
@@ -1140,7 +1144,8 @@ void add_item(void)
 		item_time[0] = '\0';
                 while (check_time(item_time) == 0) {
                         status_mesg(mesg_2, "");
-                        if (getstring(swin, colr, item_time, LTIME, 0, 1) != 0)
+                        if (getstring(swin, colr, item_time, LTIME, 0, 1) != 
+				GETSTRING_VALID)
                                 return;	//nothing entered, cancel adding of event
 			else if (check_time(item_time) == 0) {
                                 status_mesg(format_message_2, enter_str);
@@ -1168,7 +1173,8 @@ void add_item(void)
         }
 	// get the item description
         status_mesg(mesg_3, "");
-	if (getstring(swin, colr, item_mesg, MAX_LENGTH, 0, 1) == 0) {
+	if (getstring(swin, colr, item_mesg, MAX_LENGTH, 0, 1) == 
+		GETSTRING_VALID) {
                 if (is_appointment){
 		// insert the appointment in list
 		apoint_start = date2sec(sel_year, sel_month, sel_day,
