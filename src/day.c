@@ -1,8 +1,8 @@
-/*	$calcurse: day.c,v 1.16 2006/12/21 14:58:18 culot Exp $	*/
+/*	$calcurse: day.c,v 1.17 2007/01/16 07:53:39 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2006 Frederic Culot
+ * Copyright (c) 2004-2007 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -449,9 +449,12 @@ void day_edit_item(int year, int month, int day, int item_num, int colr)
 		re = recur_get_event(date, nb_item[RECUR_EVNT - 1]);
 		rpt = re->rpt;
 		status_mesg(msg_event_recur, choice_event_recur);
-		while (ch != STRT && ch != END)
+		while (ch != STRT && ch != END && ch != ESCAPE)
 			ch = wgetch(swin);
-		ch += 2;
+		if (ch == ESCAPE)
+			return;
+		else
+			ch += 2;
 		break;
 	case EVNT:
 		ch = DESC;
@@ -460,13 +463,18 @@ void day_edit_item(int year, int month, int day, int item_num, int colr)
 		ra = recur_get_apoint(date, nb_item[RECUR_APPT - 1]);
 		rpt = ra->rpt;
 		status_mesg(msg_recur, choice_recur);
-		while (ch != STRT && ch != END && ch != DESC && ch != REPT)
+		while (ch != STRT && ch != END && ch != DESC && 
+			ch != REPT && ch != ESCAPE)
 			ch = wgetch(swin);
+		if (ch == ESCAPE)
+			return;
 		break;
 	case APPT:
 		status_mesg(msg_norecur, choice_norecur);
-		while (ch != STRT && ch != END && ch != DESC) 
+		while (ch != STRT && ch != END && ch != DESC && ch != ESCAPE) 
 			ch = wgetch(swin);
+		if (ch == ESCAPE)
+			return;
 		break;
 	}
 
