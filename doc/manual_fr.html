@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <!--
 /*
- *	$calcurse: manual_fr.html,v 1.7 2007/01/16 11:23:28 culot Exp $
+ *	$calcurse: manual_fr.html,v 1.8 2007/01/16 15:19:48 culot Exp $
  *
  * Calcurse - text-based organizer
  * Copyright (c) 2004-2007 Frederic Culot
@@ -165,7 +165,7 @@
         la pr&eacute;sence d'une aide en ligne exhaustive, ainsi que le rappel de
         toutes les commandes possibles dans la barre de status.
         L'interface utilisateur est &eacute;galement configurable, et l'on peut
-        choisir parmis de nombreuses combinaisons possibles de couleurs
+        choisir parmi de nombreuses combinaisons possibles de couleurs
         et de positions des fen&ecirc;tres.
 
 
@@ -190,7 +190,7 @@
         <code>gettext</code> pour le support de l'internationalisation
         (not&eacute; <em>i18n</em> ci-apr&egrave;s).
         Cela signifie que <code>calcurse</code> peut fournir des
-        messages multilingues si il est compil&eacute; avec le support
+        messages multilingues s'il est compil&eacute; avec le support
         NLS (<em>Native Language Support</em> - <em>Support de Langage
         Natif</em>). Cependant, ce support est optionnel et si vous
         n'avez pas besoin de la traduction des messages
@@ -261,7 +261,7 @@
 	<br>
 	<dt><code>-c &lt;fichier&gt;, --calendar &lt;fichier&gt;</code>
 	<dd>
-	Sp&eacute;cifie le fichier calendrier &agrave; uiliser.<br>
+	Sp&eacute;cifie le fichier calendrier &agrave; utiliser.<br>
 	Le calendrier par d&eacute;faut est celui contenu dans 
 	<code>~/.calcurse/apts</code> 
 	(voir la section <a href="#basics_files">Fichiers</a>).<br>
@@ -342,7 +342,7 @@ pour l'i18n</h3>
         la <em>locale</em> (code de la langue suivi du code pays)
         correspondant &agrave; la traduction voulue.<br>
 	Il est également recommandé de spécifier le codage à utiliser,
-	car dans certains cas des problèmes d'afficahge des accents
+	car dans certains cas des problèmes d'affichage des accents
 	peuvent survenir. Ce codage est indiqué au début du fichier po
 	correspondant à la langue voulue. Par exemple, vous pouvez
 	remarquer dans le fichier fr.po que le codage utilisé est
@@ -362,7 +362,7 @@ pour l'i18n</h3>
         Cela signifie que l'information demand&eacute;e sera affich&eacute;e,
         puis <code>calcurse</code> quittera et vous serez ramen&eacute;
         au prompt de l'interpr&eacute;teur de commandes.<br>
-        De ce mani&egrave;re, il est possible de rajouter une ligne telle
+        De cette mani&egrave;re, il est possible de rajouter une ligne telle
         que <code>'calcurse --todo --appointment'</code> dans le fichier d'initialisation
         de son environnement, afin de faire s'afficher &agrave; chaque
         d&eacute;but de session la liste des t&acirc;ches &agrave; faire et des rendez-vous
@@ -416,11 +416,11 @@ pour l'i18n</h3>
         s&eacute;lectionner un jour en particulier. Le second panneau contient
         une liste d'&eacute;v&egrave;nements et les rendez-vous du jour, et le dernier
         contient une liste des t&acirc;ches &agrave; faire, mais qui ne sont pas
-        assign&eacute;e &agrave; une journ&eacute;e en particulier.<br>
+        assignées &agrave; une journ&eacute;e en particulier.<br>
         Tout en bas de l'&eacute;cran on retrouve une barre de status, qui indique
         les actions possibles en fonction du contexte, ainsi que la
         touche qui doit &ecirc;tre press&eacute;e pour effectuer cette action.<br>
-	Juste au dessus de cette barre se trouve la barre de notification, qui
+	Juste au-dessus de cette barre se trouve la barre de notification, qui
 	indique les informations suivantes, de gauche à droite : la date du jour,
 	l'heure courante, le fichier calendrier actuellement ouvert (il s'agit
 	de apts dans la copie d'écran, qui est le fichier par défaut, comme indiqué
@@ -428,13 +428,13 @@ pour l'i18n</h3>
 	prochaines 24 heures. Dans cet exemple, il s'agit d'un dîner qui aura lieu
 	dans une heure et vingt minutes.
 	<p>
-	<u>Remarque:</u> Certaines actions, comme editer ou ajouter un
+	<u>Remarque:</u> Certaines actions, comme éditer ou ajouter un
 	el&eacute;ment, n&eacute;cessitent de renseigner du texte par 
 	l'interm&eacute;diaire de l'&eacute;diteur de ligne de commande
 	fournit avec <code>calcurse</code>.<br>
 	Dans cet &eacute;diteur, si la ligne de commande est plus longue que la 
 	largeur de l'&eacute;cran, le caract&egrave;re '&gt;', '*', ou '&lt;'
-	sera rajout&eacute; dans la derni&egrave;re colonne si il reste du texte
+	sera rajout&eacute; dans la derni&egrave;re colonne s'il reste du texte
 	apr&egrave;s, avant et apr&egrave;s, ou avant la position courante,
 	respectivement. La ligne d&eacute;file horizontalement si
 	n&eacute;cessaire.<br>
@@ -444,7 +444,7 @@ pour l'i18n</h3>
 	<ul>
 	<li><b>^a</b>: d&eacute;placer le curseur au d&eacute;but de la ligne
 	<li><b>^b</b>: d&eacute;placer le curseur d'une position en arri&egrave;re
-	<li><b>^d</b>: effacer le caract&egrave;re suivant
+	<li><b>^d</b>: effacer le caract&egrave;re sous le curseur
 	<li><b>^e</b>: d&eacute;placer le curseur en fin de ligne
 	<li><b>^f</b>: d&eacute;placer le curseur d'une position en avant
 	<li><b>^h</b>: effacer le caract&egrave;re pr&eacute;c&eacute;dent
@@ -465,14 +465,14 @@ pour l'i18n</h3>
                   |___todo
         </pre>
         Le fichier <em>conf</em> contient la configuration de l'utilisateur.<br>
-        Le fichier <em>apts</em> contient tous les &eacute;venements ainsi que
+        Le fichier <em>apts</em> contient tous les événements ainsi que
         les rendez-vous de l'utilisateur.<br>
         Le fichier <em>todo</em> contient la liste des t&acirc;ches &agrave; effectuer.
 
 
 <a name="basics_help"></a><h2>Aide en ligne</h2>
 <p>
-        A n'importe quel moment, le syst&egrave;me d'aide en ligne peut &ecirc;tre
+        &Agrave; n'importe quel moment, le syst&egrave;me d'aide en ligne peut &ecirc;tre
         appel&eacute; en pressant la touche '?'. Une fois rentr&eacute; dans l'aide,
         les informations sur une commande sp&eacute;cifique peuvent &ecirc;tre
         obtenues en appuyant sur la touche correspondant &agrave; cette 
@@ -486,10 +486,10 @@ pour l'i18n</h3>
         sur 'C'. L'utilisateur se voit alors pr&eacute;sent&eacute; un second menu
         avec trois choix possibles : appuyer &agrave; nouveau sur 'C' am&egrave;ne 
         au menu de s&eacute;lection des couleurs de l'interface, appuyer sur
-        'L' permet de choisir parmis diff&eacute;rents emplacements pour les 
+        'L' permet de choisir parmi diff&eacute;rents emplacements pour les 
         panneaux de la fen&ecirc;tre principale de <code>calcurse</code>,
 	appuyer sur 'G' vous permet de fixer les options générales, et enfin
-        les paramètres de la barre de notification peuvent &ecirc;tre fix&eacute;es 
+        les paramètres de la barre de notification peuvent &ecirc;tre fixés 
 	en appuyant sur 'N'.
 
 
@@ -531,7 +531,7 @@ pour l'i18n</h3>
 	<li><code>masquer_barre_progression</code> (valeur par d&eacute;faut: <em>non</em>)<br>
 	Si elle est fix&eacute;e &agrave; <em>oui</em>, cette option provoque la 
 	disparition de la barre de progression qui est normalement charg&eacute;e
-	d'indiquer l'&eacute;t&acirc;t d'avancement de l'enregistrement des fichiers
+	d'indiquer l'état d'avancement de l'enregistrement des fichiers
 	de donn&eacute;es. Si cette option est fix&eacute;e &agrave; <em>non</em>, cette barre
 	sera affich&eacute;e, en m&ecirc;me temps que le nom du fichier de donn&eacute;es
 	actuellement en cours d'&eacute;criture 
@@ -653,7 +653,7 @@ pour l'i18n</h3>
 <a name="contribute"></a><h1>Comment contribuer?</h1>
 <p>
         Si vous d&eacute;sirez contribuer au projet, vous pouvez tout d'abord
-        envoyer vos commentaires sur ce qui vous plais ou d&eacute;plais ou sur
+        envoyer vos commentaires sur ce qui vous plaît ou déplaît ou sur
         ce qui vous manque dans <code>calcurse</code>.<br>
         Pour le moment, les contributions possibles concernent 
         la traduction des messages de <code>calcurse</code> ainsi que
@@ -716,7 +716,7 @@ pour l'i18n</h3>
         l'<em>internationalisation</em> (i18n), et la
         <em>localisation</em> (l10n).
         l'i18n permet &agrave; <code>calcurse</code> d'&ecirc;tre
-        multilingues. C'est un processus qui est mis en place par les
+        multilingue. C'est un processus qui est mis en place par les
         programmeurs, qui marquent les phrases &agrave; traduire au
         sein du code source, et qui fournissent les outils pour que
         ces phrases soient traduites automatiquement pendant le
@@ -741,7 +741,7 @@ pour l'i18n</h3>
         <em>portable object</em>, objet portable - qui peut &ecirc;tre
         lu par les humains). Le traducteur devra se servir de ce
         fichier, et traduira les phrases qu'il contient, puis
-        l'enverra auw d&eacute;veloppeurs. Ensuite, au niveau de la
+        l'enverra aux d&eacute;veloppeurs. Ensuite, au niveau de la
         compilation du programme, une version binaire de ce fichier
         sera produite (pour des raisons d'efficacit&eacute;), puis
         install&eacute;e. Cette version binaire a pour extension
@@ -749,7 +749,7 @@ pour l'i18n</h3>
         object</em> - objet machine, c'est-&agrave;-dire qui peut
         &ecirc;tre lu par le programme. Pour finir,
         <code>calcurse</code> se servira de ce fichier <em>mo</em>
-        lors de son execution pour traduire les phrases dans la langue
+        lors de son exécution pour traduire les phrases dans la langue
         de l'utilisateur.
 
 
@@ -778,7 +778,7 @@ pour l'i18n</h3>
         </pre>
         Si vous n'avez pas <code>msginit</code> install&eacute; sur
         votre syst&egrave;me, vous pouvez plus simplement copier
-        <em>calcurse.pot</em> en <em>fr.po</em> par exemple, et editer
+        <em>calcurse.pot</em> en <em>fr.po</em> par exemple, et éditer
         l'en-t&ecirc;te du fichier nouvellement cr&eacute;&eacute;
         manuellement.<br>
         Maintenant, ayant &agrave; disposition ce fichier
@@ -805,7 +805,7 @@ pour l'i18n</h3>
         </ol>
         Pour r&eacute;sumer, un traducteur doit simplement remplir les
         champs <em>msgstr</em> avec la traduction des lignes
-        trouv&eacute;es juste au dessus dans la partie <em>msgid</em>.
+        trouv&eacute;es juste au-dessus dans la partie <em>msgid</em>.
         <p>
         <u>Remarques:</u>
         <ul>
@@ -819,7 +819,7 @@ pour l'i18n</h3>
         &eacute;t&eacute; traduite mais qu'elle a depuis
         &eacute;t&eacute; chang&eacute;e dans le source du programme, 
         ou bien que <em>gettext</em> a effectu&eacute; lui-m&ecirc;me
-        uen traduction, en se basant sur une phrase similaire. Cela
+        une traduction, en se basant sur une phrase similaire. Cela
         implique donc que vous devez v&eacute;rifier la traduction.
         Parfois, la phrase originale a chang&eacute; suite &agrave;
         une correction de faute de frappe. Dans ce cas, vous n'aurez
@@ -841,7 +841,7 @@ pour l'i18n</h3>
         remplacera ces s&eacute;quences par d'autres expressions. Il
         est donc important de ne pas les modifier. Il existe
         &eacute;galement des s&eacute;quences contenant des
-        <em>/</em>, comme <code>\n</code> ou <code>\t</code>. Il ne
+        <em>\</em>, comme <code>\n</code> ou <code>\t</code>. Il ne
         faut pas les modifier non plus. En effet, la premi&egrave;re
         s&eacute;quence repr&eacute;sente une fin de ligne, et la
         deuxi&egrave;me une tabulation.<br>
@@ -859,7 +859,7 @@ pour l'i18n</h3>
         premi&egrave;re phrase forme un en-t&ecirc;te o&ugrave;
         diff&eacute;rentes informations doivent &ecirc;tre
         renseign&eacute;es. La plus importante est le jeu de
-        caract&egrave;s utilis&eacute;. Cette information devrait
+        caractères utilis&eacute;. Cette information devrait
         ressembler &agrave;        
         <pre>
                 "Content-Type: text/plain; charset=utf-8\n"
@@ -911,8 +911,8 @@ pour l'i18n</h3>
            <li><code>Vim</code> et son mode <em>po</em>
            </ul>
         <br>
-        <li><em>Finallement...</em><br>
-        J'&eacute;sp&egrave;re que vous prendrez plaisir &agrave;
+        <li><em>Finalement...</em><br>
+        J'espère que vous prendrez plaisir &agrave;
         contribuer &agrave; l'internationalisation du monde des
         logiciels libres. :) Si vous avez d'autres questions
         concernant ce processus, n'h&eacute;sitez pas &agrave; me
@@ -996,7 +996,7 @@ pour l'i18n</h3>
 		</ul>
 	</ul>
         Et pour terminer, un tr&egrave;s grand merci &agrave; tous les utilisateurs de
-	<code>calcurse</code> qui m'ont fait parvenir leur commentaires.
+	<code>calcurse</code> qui m'ont fait parvenir leurs commentaires.
 
 <hr>
 <small><em>
