@@ -1,8 +1,8 @@
-/*	$calcurse: utils.c,v 1.20 2006/12/18 09:30:28 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.21 2007/01/16 07:55:18 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2006 Frederic Culot
+ * Copyright (c) 2004-2007 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -245,7 +245,7 @@ int getstring(WINDOW *win, int colr, char *str, int l, int x, int y)
 			break;
 		
 		case ESCAPE: 		/* cancel editing */
-			return 1;	
+			return GETSTRING_ESC;	
 			break;
 
 		default: 		/* insert one character */
@@ -263,7 +263,7 @@ int getstring(WINDOW *win, int colr, char *str, int l, int x, int y)
 	}
 	*str = 0;
 	custom_remove_attr(win, ATTR_HIGHEST);
-	return 0;
+	return (len == 0 ? GETSTRING_RET : GETSTRING_VALID);
 }
 
 /* Update an already existing string. */
