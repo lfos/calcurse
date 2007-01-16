@@ -1,8 +1,8 @@
-/*	$calcurse: help.c,v 1.12 2006/12/15 15:28:05 culot Exp $	*/
+/*	$calcurse: help.c,v 1.13 2007/01/16 11:11:47 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2006 Frederic Culot
+ * Copyright (c) 2004-2007 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -319,7 +319,7 @@ void help_screen(int which_pan, int colr)
 
 	help_credits.title = _("Calcurse - text-based organizer");
 	help_credits.text  =
-    _("Copyright (c) 2004-2006 Frederic Culot\n"
+    _("Copyright (c) 2004-2007 Frederic Culot\n"
     "\n"
     "This program is free software; you can redistribute it and/or modify\n"
     "it under the terms of the GNU General Public License as published by\n"

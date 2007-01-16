@@ -1,8 +1,8 @@
-/*	$calcurse: args.c,v 1.13 2007/01/05 08:48:23 culot Exp $	*/
+/*	$calcurse: args.c,v 1.14 2007/01/16 11:11:47 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2006 Frederic Culot
+ * Copyright (c) 2004-2007 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -187,7 +187,7 @@ void version_arg()
 {
 	char vtitle[MAX_LENGTH];
 	char *vtext =
-	    _("\nCopyright (c) 2004-2006 Frederic Culot.\n"
+	    _("\nCopyright (c) 2004-2007 Frederic Culot.\n"
 	    "This is free software; see the source for copying conditions.\n");
 
 	snprintf(vtitle, MAX_LENGTH, 
