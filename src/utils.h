@@ -1,8 +1,8 @@
-/*	$calcurse: utils.h,v 1.12 2006/12/14 08:28:56 culot Exp $	*/
+/*	$calcurse: utils.h,v 1.13 2007/01/16 07:56:24 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2006 Frederic Culot
+ * Copyright (c) 2004-2007 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,6 +40,10 @@
 #define CMDS_PER_LINE	6  /* max number of commands per line */
 #define KEY_LENGTH	4  /* length of each keybinding + one space */
 #define LABEL_LENGTH	8  /* length of command description */
+
+#define GETSTRING_VALID	0  /* value returned by getstring() if text is valid */
+#define GETSTRING_ESC	1  /* user pressed escape to cancel editing */
+#define GETSTRING_RET	2  /* return was pressed without entering any text */
 
 typedef struct { /* structure defining a keybinding */
 	char *key; 
