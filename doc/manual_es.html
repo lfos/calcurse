@@ -1,10 +1,10 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <!--
 /*
- *	$calcurse: manual_es.html,v 1.5 2006/12/18 11:03:52 culot Exp $
+ *	$calcurse: manual_es.html,v 1.6 2007/01/17 19:04:22 culot Exp $
  *
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2006 Frederic Culot
+ * Copyright (c) 2004-2007 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -92,8 +92,7 @@
 <ul>
 <li><a href="#links_homepage">Pagina web de <code>calcurse</code></a>
 <li><a href="#links_list">Lista de anuncios de <code>calcurse</code></a>
-<li><a href="#links_rss"><font color="green"><code>calcurse</code> RSS
-feed</font></a>
+<li><a href="#links_rss"><code>calcurse</code> RSS feed</a>
 </ul>
 <li><a href="#thanks">Gracias a ...</a>
 </ul>
@@ -225,8 +224,7 @@ feed</font></a>
 <a name="basics_invocation_commandline"></a><h3>Argumentos de la linea de comando</h3>
 <p>
         <code>calcurse</code> acepta las siguientes opciones en la 
-        linea de comando <font color="green">(both short and long options are supported
-	)</font>:
+        linea de comando (ambas opciones, cortas y largas estan soportadas):
 
         <dl compact>
         <dt><code>-a, --appointment</code>
@@ -266,21 +264,15 @@ feed</font></a>
 	<dt><code>-n, --next</code>
 	<dd>
 	Imprime las citas para las próximas 24 horas y sale.<br>
-	<font color="green">
-	The indicated time is the number of hours and minutes left 
-	before this appointment.<br>
-	<u>Note:</u> the calendar from which to read the appointments
-	can be specified using the '-c' flag.</font><br>
+	El tiempo indicado es el numero de horas y minutos que faltan hasta la proxima cita.<br>
+	<u>Nota:</u> el calendario desde donde se leeran las citas puede ser especificado usando la opcion '-c'.<br>
 	<br>
 	<dt><code>-t[num], --todo[=num]</code>
 	<dd>
         Imprime la lista de tareas pendientes ('ToDo') y sale.<br>
-	<font color="green">
-	if the optional number
-	<code>num</code> is given, then only todos having a priority
-	equal to <code>num</code> will be returned.<br>
-	<u>Note:</u> proprity number must be between 1 (highest) and
-	9 (lowest).</font><br>
+	Si se especifica la opcion <code>numero</code>, se mostraran todas las tareas pendientes que tengan la prioridad
+	igual a <code>numero</code>.<br>
+	<u>Nota:</u> la prioridad debe ser desde 1 (la mas alta) hasta 9 (la mas baja).<br>
 	<br>
 	<dt><code>-v, --version</code>
 	<dd>
@@ -325,7 +317,8 @@ feed</font></a>
         Esto significa que se mostrara la información deseada, y 
         después de esto, <code>calcurse</code> simplemente se cierra y eres 
         de nuevo devuelto al prompt del shell.<br>
-        De esta forma, uno puede añadir una linea como <code>'calcurse -ta'</code> 
+        De esta forma, uno puede añadir una linea como 
+	<code>'calcurse --todo --appointment'</code> 
         en el archivo de inicialización de su entorno gráfico (X o consola) para ver, 
         cuando entras en el sistema; la lista de tareas, citas y eventos programadas para el día actual.
         
@@ -388,30 +381,26 @@ feed</font></a>
 	cita mas cercana para las proximas 24 horas. En el ejemplo seria una comida 
 	dentro de una hora y 20 minutos.
 	<p>
-	<font color="green">
-	<u>Note:</u> Some actions, such as editing or adding an item,
-	require to type in some text. This is done with the help of 
-	the built-in input line editor.<br>
-	Within this editor, if a line is longer than the screen width,
-	a '&gt;', '*', or '&lt;' character is displayed in the last
-	column indicating that there are more character after, before and 
-	after, or before the current position, respectively. The line is
-	scrolled horizontally as necessary.<br>
-	Moreover, some editing commands are bound to particular control
-	characters. Hereafter are indicated the available editing commands
-	('^' stands for the control key):<br>
+	<u>Nota:</u> Algunas acciones, como editar o añadir un elemento,
+	requieren teclear algo de texto. Esto se hace con la ayuda del editor incorporado.<br>
+	Dentro de este editor, si una linea es mas larga que el ancho de la pantalla,
+	se mostrara un caracter como '&gt;', '*', o '&lt;' al final de la columna
+	indicando que hay mas caracteres despues, antes y despues, o antes de la posicion actual, respectivamente.
+	La linea se movera horizontalmente si es necesario.<br>
+	Por otra parte, hay algunos caracteres que se utilizan para editar.
+	Aqui se indican los comandos de edicion disponibles 
+	('^' significa la tecla "control"):<br>
 	<ul>
-	<li><b>^a</b>: moves the cursor to the beginning of the input line
-	<li><b>^b</b>: moves the cursor backward
-	<li><b>^d</b>: deletes one character forward
-	<li><b>^e</b>: moves the cursor to the end of the input line
-	<li><b>^f</b>: moves the cursor forward
-	<li><b>^h</b>: deletes one character backward
-	<li><b>^k</b>: deletes the input from the cursor to the end of the line
-	<li><b>ESCAPE</b>: cancels the editing
+	<li><b>^a</b>: mueve el cursor al principio de la linea
+	<li><b>^b</b>: mueve el cursor para atras
+	<li><b>^d</b>: borra un caracter por delante
+	<li><b>^e</b>: mueve el cursor al final de la linea
+	<li><b>^f</b>: mueve el cursor para alante
+	<li><b>^h</b>: borra un caracter hacia atras
+	<li><b>^k</b>: borra desde el cursor hasta el final de la linea
+	<li><b>ESCAPE</b>: cancela la edicion
 	</ul>
-	</font>
-
+	
 <a name="basics_files"></a><h2>Archivos de <code>calcurse</code></h2>
 <p>
         La siguiente estructura se crea en tu directorio <code>$HOME</code>  
@@ -793,17 +782,16 @@ feed</font></a>
 	<code>calcurse-announce@culot.org</code> poniendo "subscribe" 
 	en el asunto. 
 
-<a name="links_rss"></a><h2><font color="green"><code>calcurse</code> RSS feed</font></h2>
+<a name="links_rss"></a><h2><code>calcurse</code> RSS feed</h2>
 <p>
-<font color="green">
-	Another possibility to get warned when new releases come out
-	is to follow the RSS feed at:
+	Otra posibilidad para enterarte de cuando aparecen nuevas versiones de Calcurse
+	es seguir el RSS feed en:
 	<pre>
 	http://culot.org/calcurse/news_rss.xml
 	</pre>
-	This RSS feed is updated each time a new version of calcurse is
-	available, describing newly added features.
-</font>
+	Este RSS feed es actualizado cada vez que hay una nueva version de Calcurse disponible
+	describiendo las nuevas caracteristicas.
+
 
 <a name="thanks"></a><h1>Gracias a ...</a></h1>
 <p>
@@ -813,16 +801,16 @@ feed</font></a>
 	<ul>
 	<li>Alex por sus patches, ayuda y notas con la programación <code>C</code> 
 	<li>Gwen por probarlo y las discusiones sobre como mejorar <code>calcurse</code>
-	<li><font color="green">Herbert for packaging <code>calcurse</code> for FreeBSD</font>
-	<li><font color="green">Zul for packaging <code>calcurse</code> for NetBSD</font>
-	<li><font color="green">Wain for packaging <code>calcurse</code> for Archlinux</font>
+	<li>Herbert por hacer el paquete <code>calcurse</code> para FreeBSD
+	<li>Zul por hacer el paquete <code>calcurse</code> para NetBSD
+	<li>Wain por hacer el paquete <code>calcurse</code> para Archlinux
 	<li>Kevin, Ryan, y fEnIo por hacer el paquete para <code>calcurse</code>
 	para Debian y Ubuntu
 	<li>Steffen por hacer el paquete <code>calcurse</code> para Archlinux
-	<li><font color="green">Pascal for packaging <code>calcurse</code> for Slackware</font>
+	<li>Pascal por hacer el paquete <code>calcurse</code> para Slackware
 	<li>Alexandre por hacer el paquete <code>calcurse</code> para Mac OsX y
 	Darwin
-	<li><font color="green">Igor for packaging <code>calcurse</code> for ALT Linux</font>
+	<li>Igor por hacer el paquete <code>calcurse</code> para ALT Linux
 	<li>Joel por su script del calendario que inspiro la vista de calendario de <code>calcurse</code> 
 	<li>Michael Schulz y Chris M. por la traducción al alemán de <code>calcurse</code> y su manual
 	<li>Neil Williams por la traducción al ingles
@@ -841,10 +829,10 @@ feed</font></a>
 
 <hr>
 <small><em>
-Copyright (c) 2004-2006 Fr&eacute;d&eacute;ric Culot<br>
+Copyright (c) 2004-2007 Fr&eacute;d&eacute;ric Culot<br>
 Traducido al Español por José López
 <code>&lt;testinground.at.gmail.dot.com&gt;</code><br>
-Calcurse version 1.7 - Last change: December 20, 2006
+Calcurse version 1.7 - Last change: January 17, 2007
 <em></small>
 
 
