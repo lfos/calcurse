@@ -1,3 +1,6 @@
+17 Jan 2007:
+	Spanish manual and translation updated, many thanks to Jose
+
 16 Jan 2007:
 	better handling of the values returned by getstring(): user canceling
 	now properly taken into account
