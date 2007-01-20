@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: frederic@culot.org\n"
-"POT-Creation-Date: 2006-12-18 11:48+0100\n"
+"POT-Creation-Date: 2007-01-16 11:45+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,7 +27,7 @@ msgstr ""
 #: src/args.c:190
 msgid ""
 "\n"
-"Copyright (c) 2004-2006 Frederic Culot.\n"
+"Copyright (c) 2004-2007 Frederic Culot.\n"
 "This is free software; see the source for copying conditions.\n"
 msgstr ""
 
@@ -79,29 +79,29 @@ msgstr ""
 msgid "next appointment:\n"
 msgstr ""
 
-#: src/args.c:446
+#: src/args.c:445
 msgid "Argument to the '-d' flag is not valid\n"
 msgstr ""
 
-#: src/args.c:447
+#: src/args.c:446
 msgid "Possible argument formats are : 'mm/dd/yyyy' or 'n'\n"
 msgstr ""
 
-#: src/args.c:448
+#: src/args.c:447
 msgid ""
 "\n"
 "For more information, type '?' from within Calcurse, or read the manpage.\n"
 msgstr ""
 
-#: src/args.c:450
+#: src/args.c:449
 msgid "Mail bug reports and suggestions to <calcurse@culot.org>.\n"
 msgstr ""
 
-#: src/args.c:516
+#: src/args.c:515
 msgid "Usage: calcurse [-h | -v] [-an] [-t[num]] [-d date|num] [-c file]\n"
 msgstr ""
 
-#: src/args.c:524
+#: src/args.c:523
 msgid "Try 'calcurse -h' for more information.\n"
 msgstr ""
 
@@ -126,192 +126,192 @@ msgstr ""
 msgid "To do :"
 msgstr ""
 
-#: src/calcurse.c:612
+#: src/calcurse.c:621
 msgid "FATAL ERROR in update_windows: no window selected\n"
 msgstr ""
 
-#: src/calcurse.c:719
+#: src/calcurse.c:728
 #, c-format
 msgid "Calendar"
 msgstr ""
 
-#: src/calcurse.c:722
+#: src/calcurse.c:731
 #, c-format
 msgid "Appointments"
 msgstr ""
 
-#: src/calcurse.c:725
+#: src/calcurse.c:734
 #, c-format
 msgid "ToDo"
 msgstr ""
 
-#: src/calcurse.c:758 src/calcurse.c:804
+#: src/calcurse.c:767 src/calcurse.c:813
 msgid "Enter an option number to change its value [Q to quit] "
 msgstr ""
 
-#: src/calcurse.c:765
+#: src/calcurse.c:774
 #, c-format
 msgid "CalCurse %s | general options"
 msgstr ""
 
-#: src/calcurse.c:806
+#: src/calcurse.c:815
 msgid "Enter the date format (see 'man 3 strftime' for possible formats) "
 msgstr ""
 
-#: src/calcurse.c:808
+#: src/calcurse.c:817
 msgid "Enter the time format (see 'man 3 strftime' for possible formats) "
 msgstr ""
 
-#: src/calcurse.c:810
+#: src/calcurse.c:819
 msgid "Enter the number of seconds (0 not to be warned before an appointment)"
 msgstr ""
 
-#: src/calcurse.c:814
+#: src/calcurse.c:823
 #, c-format
 msgid "CalCurse %s | notify-bar options"
 msgstr ""
 
-#: src/calcurse.c:880
+#: src/calcurse.c:891
 msgid "auto_save = "
 msgstr ""
 
-#: src/calcurse.c:881
+#: src/calcurse.c:892
 msgid "confirm_quit = "
 msgstr ""
 
-#: src/calcurse.c:882
+#: src/calcurse.c:893
 msgid "confirm_delete = "
 msgstr ""
 
-#: src/calcurse.c:883
+#: src/calcurse.c:894
 msgid "skip_system_dialogs = "
 msgstr ""
 
-#: src/calcurse.c:884
+#: src/calcurse.c:895
 msgid "skip_progress_bar = "
 msgstr ""
 
-#: src/calcurse.c:885
+#: src/calcurse.c:896
 msgid "week_begins_on_monday = "
 msgstr ""
 
-#: src/calcurse.c:894
+#: src/calcurse.c:905
 msgid "(if set to YES, automatic save is done when quitting)"
 msgstr ""
 
-#: src/calcurse.c:900
+#: src/calcurse.c:911
 msgid "(if set to YES, confirmation is required before quitting)"
 msgstr ""
 
-#: src/calcurse.c:906
+#: src/calcurse.c:917
 msgid "(if set to YES, confirmation is required before deleting an event)"
 msgstr ""
 
-#: src/calcurse.c:912
+#: src/calcurse.c:923
 msgid ""
 "(if set to YES, messages about loaded and saved data will not be displayed)"
 msgstr ""
 
-#: src/calcurse.c:918
+#: src/calcurse.c:929
 msgid "(if set to YES, progress bar will not be displayed when saving data)"
 msgstr ""
 
-#: src/calcurse.c:924
+#: src/calcurse.c:935
 msgid "(if set to YES, monday is the first day of the week, else it is sunday)"
 msgstr ""
 
-#: src/calcurse.c:935
+#: src/calcurse.c:946
 msgid "notify-bar_show = "
 msgstr ""
 
-#: src/calcurse.c:936
+#: src/calcurse.c:947
 msgid "notify-bar_date = "
 msgstr ""
 
-#: src/calcurse.c:937
+#: src/calcurse.c:948
 msgid "notify-bar_clock = "
 msgstr ""
 
-#: src/calcurse.c:938
+#: src/calcurse.c:949
 msgid "notify-bar_warning = "
 msgstr ""
 
-#: src/calcurse.c:948
+#: src/calcurse.c:959
 msgid "(if set to YES, notify-bar will be displayed)"
 msgstr ""
 
-#: src/calcurse.c:955
+#: src/calcurse.c:966
 msgid "(Format of the date to be displayed inside notify-bar)"
 msgstr ""
 
-#: src/calcurse.c:962
+#: src/calcurse.c:973
 msgid "(Format of the time to be displayed inside notify-bar)"
 msgstr ""
 
-#: src/calcurse.c:969
+#: src/calcurse.c:980
 msgid ""
 "(Warn user if an appointment is within next 'notify-bar_warning' seconds)"
 msgstr ""
 
-#: src/calcurse.c:985
+#: src/calcurse.c:996
 msgid "yes"
 msgstr ""
 
-#: src/calcurse.c:988
+#: src/calcurse.c:999
 msgid "no"
 msgstr ""
 
-#: src/calcurse.c:992
+#: src/calcurse.c:1003
 msgid "option not defined - Problem in print_option_incolor()"
 msgstr ""
 
-#: src/calcurse.c:1009
+#: src/calcurse.c:1020
 msgid "Do you really want to delete this item ?"
 msgstr ""
 
-#: src/calcurse.c:1010
+#: src/calcurse.c:1021
 msgid "Do you really want to delete this task ?"
 msgstr ""
 
-#: src/calcurse.c:1051
+#: src/calcurse.c:1062
 msgid "FATAL ERROR in del_item: no such type\n"
 msgstr ""
 
-#: src/calcurse.c:1093
+#: src/calcurse.c:1106
 msgid ""
 "Enter start time ([hh:mm] or [h:mm]), leave blank for an all-day event : "
 msgstr ""
 
-#: src/calcurse.c:1094
+#: src/calcurse.c:1107
 msgid "Enter end time ([hh:mm] or [h:mm]) or duration (in minutes) : "
 msgstr ""
 
-#: src/calcurse.c:1095
+#: src/calcurse.c:1108
 msgid "Enter description :"
 msgstr ""
 
-#: src/calcurse.c:1096
+#: src/calcurse.c:1109
 msgid "You entered an invalid start time, should be [h:mm] or [hh:mm]"
 msgstr ""
 
-#: src/calcurse.c:1097
+#: src/calcurse.c:1110
 msgid "You entered an invalid end time, should be [h:mm] or [hh:mm] or [mm]"
 msgstr ""
 
-#: src/calcurse.c:1098 src/day.c:428 src/day.c:605
+#: src/calcurse.c:1111 src/day.c:428 src/day.c:614
 msgid "Press [Enter] to continue"
 msgstr ""
 
-#: src/calcurse.c:1299
+#: src/calcurse.c:1316
 msgid "Failed to open config file"
 msgstr ""
 
-#: src/calcurse.c:1300 src/calendar.c:193 src/io.c:135 src/io.c:409
+#: src/calcurse.c:1317 src/calendar.c:193 src/io.c:135 src/io.c:409
 #: src/io.c:493
 msgid "Press [ENTER] to continue"
 msgstr ""
 
-#: src/calcurse.c:1399
+#: src/calcurse.c:1416
 msgid "FATAL ERROR in fill_config_var: wrong configuration variable format.\n"
 msgstr ""
 
@@ -427,19 +427,19 @@ msgstr ""
 msgid "Enter the new ending date: [mm/dd/yyyy] or '0'"
 msgstr ""
 
-#: src/day.c:604
+#: src/day.c:613
 msgid "Enter the new time ([hh:mm] or [h:mm]) : "
 msgstr ""
 
-#: src/day.c:607
+#: src/day.c:616
 msgid "You entered an invalid time, should be [h:mm] or [hh:mm]"
 msgstr ""
 
-#: src/day.c:634
+#: src/day.c:643
 msgid "This item is recurrent. Delete (a)ll occurences or just this (o)ne ?"
 msgstr ""
 
-#: src/day.c:637
+#: src/day.c:646
 msgid "[a/o] "
 msgstr ""
 
@@ -777,7 +777,7 @@ msgstr ""
 
 #: src/help.c:322
 msgid ""
-"Copyright (c) 2004-2006 Frederic Culot\n"
+"Copyright (c) 2004-2007 Frederic Culot\n"
 "\n"
 "This program is free software; you can redistribute it and/or modify\n"
 "it under the terms of the GNU General Public License as published by\n"
@@ -923,19 +923,19 @@ msgstr ""
 msgid "Enter the ToDo priority [1 (highest) - 9 (lowest)] :"
 msgstr ""
 
-#: src/todo.c:99
+#: src/todo.c:100
 msgid "FATAL ERROR in todo_delete_bynum: no such todo\n"
 msgstr ""
 
-#: src/todo.c:135
+#: src/todo.c:136
 msgid "FATAL ERROR in todo_get_position: todo not found\n"
 msgstr ""
 
-#: src/todo.c:157
+#: src/todo.c:158
 msgid "FATAL ERROR in todo_chg_priority: no such action\n"
 msgstr ""
 
-#: src/todo.c:174
+#: src/todo.c:175
 msgid "Enter the new ToDo description :"
 msgstr ""
 
