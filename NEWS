@@ -1,6 +1,5 @@
-[18 Dec 2006]
-Version 1.7_beta
-This is a beta version available on request. Testers and translators welcomed !
+[20 Jan 2007]
+Version 1.7
 - New features:
   * 'Edit Item' command implemented to be able to modify an already existing
     item
@@ -17,6 +16,10 @@ This is a beta version available on request. Testers and translators welcomed !
     repetition
 
   * Date format corrected in 'Go To' command
+
+
+[18 Dec 2006]
+Version 1.7_beta   beta version available on request. 
 
 
 [01 Oct 2006]
