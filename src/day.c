@@ -1,4 +1,4 @@
-/*	$calcurse: day.c,v 1.17 2007/01/16 07:53:39 culot Exp $	*/
+/*	$calcurse: day.c,v 1.18 2007/02/24 17:37:51 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -157,7 +157,8 @@ int day_store_recur_apoints(long date)
 		    j->rpt->type, j->rpt->freq, j->rpt->until, date)) ){
 			a_nb++;
 			ptr = day_add_apoint(
-			    RECUR_APPT, j->mesg, real_start, j->dur, n);
+			    RECUR_APPT, j->mesg, real_start, j->dur, 
+			    j->state, n);
 			n++;
 		}	
 	}
@@ -183,7 +184,8 @@ int day_store_apoints(long date)
 	for (j = alist_p->root; j != 0; j = j->next) {
 		if (apoint_inday(j, date)) {
 			a_nb++;
-			ptr = day_add_apoint(APPT, j->mesg, j->start, j->dur, 0);
+			ptr = day_add_apoint(APPT, j->mesg, j->start, j->dur, 
+			    j->state, 0);
 		}	
 	}
 	pthread_mutex_unlock(&(alist_p->mutex));
@@ -217,7 +219,7 @@ struct day_item_s *day_add_event(int type, char *mesg, long day, int id)
 
 /* Add an appointment in the current day list. */
 struct day_item_s *day_add_apoint(int type, char *mesg, long start, long dur, 
-	int real_pos)
+	char state, int real_pos)
 {
 	struct day_item_s *o, **i;
 	int insert_item = 0;
@@ -228,6 +230,7 @@ struct day_item_s *day_add_apoint(int type, char *mesg, long start, long dur,
 	o->start = start;
 	o->appt_dur = dur;
 	o->appt_pos = real_pos;
+	o->state = state;
 	o->type = type;
 	o->evnt_id = 0;
 	i = &day_items_ptr;
@@ -326,6 +329,7 @@ apoint_llist_node_t *day_item_s2apoint_s(struct day_item_s *p)
 
 	a = (apoint_llist_node_t *) malloc(sizeof(apoint_llist_node_t));
 	a->mesg = (char *) malloc(strlen(p->mesg) + 1);
+	a->state = p->state;
 	a->start = p->start;
 	a->dur = p->appt_dur;
 	a->mesg = p->mesg;
@@ -406,9 +410,8 @@ void day_edit_item(int year, int month, int day, int item_num, int colr)
 	recur_apoint_llist_node_t *ra, *ra_new;
 	long newtime = 0;
 	const long date = date2sec(year, month, day, 0, 0);
-	int cancel, i, ch = 0, valid_date = 0, newfreq = 0, date_entered = 0;
+	int cancel, ch = 0, valid_date = 0, newfreq = 0, date_entered = 0;
 	int newmonth, newday, newyear;
-	int nb_item[MAX_TYPES];
 	unsigned hr, mn;
 	char *timestr, *typestr, *freqstr;
 	char *msg_norecur =
@@ -435,18 +438,12 @@ void day_edit_item(int year, int month, int day, int item_num, int colr)
 	char *mesg_until_1 = 
 	_("Enter the new ending date: [mm/dd/yyyy] or '0'");
 
-	for (i = 0; i < MAX_TYPES; i++)
-		nb_item[i] = 0;
-	p = day_items_ptr;
-	for (i = 1; i < item_num; i++) {
-		nb_item[p->type - 1]++;
-		p = p->next;
-	}
 	p = day_get_item(item_num);
 
 	switch (p->type) {
 	case RECUR_EVNT:
-		re = recur_get_event(date, nb_item[RECUR_EVNT - 1]);
+		re = recur_get_event(date, 
+		    day_item_nb(date, item_num, RECUR_EVNT));
 		rpt = re->rpt;
 		status_mesg(msg_event_recur, choice_event_recur);
 		while (ch != STRT && ch != END && ch != ESCAPE)
@@ -460,7 +457,8 @@ void day_edit_item(int year, int month, int day, int item_num, int colr)
 		ch = DESC;
 		break;
 	case RECUR_APPT:
-		ra = recur_get_apoint(date, nb_item[RECUR_APPT - 1]);
+		ra = recur_get_apoint(date, 
+		    day_item_nb(date, item_num, RECUR_APPT));
 		rpt = ra->rpt;
 		status_mesg(msg_recur, choice_recur);
 		while (ch != STRT && ch != END && ch != DESC && 
@@ -597,11 +595,11 @@ void day_edit_item(int year, int month, int day, int item_num, int colr)
 		break;
 	case RECUR_APPT:
 		ra_new = recur_apoint_new(p->mesg, p->start, p->appt_dur, 
-			rpt->type, rpt->freq, rpt->until, NULL);
+			p->state, rpt->type, rpt->freq, rpt->until, NULL);
 		if (notify_bar()) notify_check_repeated(ra_new);
 		break;
 	case APPT:
-		apoint_new(p->mesg, p->start, p->appt_dur);
+		apoint_new(p->mesg, p->start, p->appt_dur, p->state);
 		if (notify_bar()) notify_check_added(p->mesg, p->start);
 		break;
 	}
@@ -634,9 +632,7 @@ char *day_edit_time(long time, int colr) {
  * type of the item to be deleted.
  */
 int day_erase_item(long date, int item_number, int force_erase) {
-	int i;
 	int ch = 0;
-	int nb_item[MAX_TYPES];
 	unsigned delete_whole;
 	struct day_item_s *p;
 	char *erase_warning =
@@ -647,17 +643,13 @@ int day_erase_item(long date, int item_number, int force_erase) {
 
 	if (force_erase) 
 		ch = 'a';
-	for (i = 0; i < MAX_TYPES; i++)
-		nb_item[i] = 0;
-	p = day_items_ptr;
-	for (i = 1; i < item_number; i++) {
-		nb_item[p->type - 1]++;
-		p = p->next;
-	}	
+
+	p = day_get_item(item_number);
+	
 	if (p->type == EVNT) {
-		event_delete_bynum(date, nb_item[EVNT - 1]);
+		event_delete_bynum(date, day_item_nb(date, item_number, EVNT));
 	} else if (p->type == APPT) {
-		apoint_delete_bynum(date, nb_item[APPT - 1]);
+		apoint_delete_bynum(date, day_item_nb(date, item_number, APPT));
 	} else {
 		while ( (ch != 'a') && (ch != 'o') && (ch != ESCAPE)) {
 			status_mesg(erase_warning, erase_choice);
@@ -671,8 +663,9 @@ int day_erase_item(long date, int item_number, int force_erase) {
 			return 0;
 		}
 		if (p->type == RECUR_EVNT) {
-			recur_event_erase(date, nb_item[RECUR_EVNT - 1], 
-				delete_whole);
+			recur_event_erase(date, 
+			    day_item_nb(date, item_number, RECUR_EVNT), 
+			    delete_whole);
 		} else {
 			recur_apoint_erase(date, p->appt_pos, delete_whole);
 		}
@@ -691,4 +684,24 @@ struct day_item_s *day_get_item(int item_number)
 		o = o->next;
 	}
 	return o;
+}
+
+/* Returns the real item number, given its type. */
+int
+day_item_nb(long date, int day_num, int type)
+{
+	int i, nb_item[MAX_TYPES];
+	struct day_item_s *p;
+
+	for (i = 0; i < MAX_TYPES; i++)
+		nb_item[i] = 0;
+
+	p = day_items_ptr;
+
+	for (i = 1; i < day_num; i++) {
+		nb_item[p->type - 1]++;
+		p = p->next;
+	}
+
+	return (nb_item[type - 1]);
 }
