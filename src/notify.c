@@ -1,4 +1,4 @@
-/*	$calcurse: notify.c,v 1.6 2006/12/15 15:27:27 culot Exp $	*/
+/*	$calcurse: notify.c,v 1.7 2007/02/24 17:38:40 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -85,7 +85,7 @@ void notify_stop_main_thread(void)
 }
 
 /* 
- * The calcurse window geometry as changed so we need to reset the 
+ * The calcurse window geometry has changed so we need to reset the 
  * notification window. 
  */
 void notify_reinit_bar(int l, int c, int y, int x)
