@@ -1,8 +1,8 @@
-/*	$calcurse: io.c,v 1.8 2006/12/15 15:31:46 culot Exp $	*/
+/*	$calcurse: io.c,v 1.9 2007/02/24 17:34:18 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2006 Frederic Culot
+ * Copyright (c) 2004-2007 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -147,72 +147,77 @@ save_cal(bool auto_save, bool confirm_quit,
 		fprintf(data_file, "%s\n", config_txt);
 
 		fprintf(data_file,
-			"# If this option is set to yes, automatic save is done when quitting\n");
+		    "# If this option is set to yes, automatic save is done when quitting\n");
 		fprintf(data_file, "auto_save=\n");
 		fprintf(data_file, "%s\n", 
 			(auto_save) ? "yes" : "no");
 
 		fprintf(data_file,
-			"\n# If this option is set to yes, confirmation is required before quitting\n");
+		    "\n# If this option is set to yes, confirmation is required before quitting\n");
 		fprintf(data_file, "confirm_quit=\n");
 		fprintf(data_file, "%s\n", 
 			(confirm_quit) ? "yes" : "no");
 
 		fprintf(data_file,
-			"\n# If this option is set to yes, confirmation is required before deleting an event\n");
+		    "\n# If this option is set to yes, confirmation is required before deleting an event\n");
 		fprintf(data_file, "confirm_delete=\n");
 		fprintf(data_file, "%s\n", 
 			(confirm_delete) ? "yes" : "no");
 
 		fprintf(data_file,
-			"\n# If this option is set to yes, messages about loaded and saved data will not be displayed\n");
+		    "\n# If this option is set to yes, messages about loaded and saved data will not be displayed\n");
 		fprintf(data_file, "skip_system_dialogs=\n");
 		fprintf(data_file, "%s\n", 
 			(skip_system_dialogs) ? "yes" : "no");
 
 		fprintf(data_file,
-			"\n# If this option is set to yes, progress bar appearing when saving data will not be displayed\n");
+		    "\n# If this option is set to yes, progress bar appearing when saving data will not be displayed\n");
 		fprintf(data_file, "skip_progress_bar=\n");
 		fprintf(data_file, "%s\n", 
 			(skip_progress_bar) ? "yes" : "no");
 
 		fprintf(data_file,
-			"\n# If this option is set to yes, monday is the first day of the week, else it is sunday\n");
+		    "\n# If this option is set to yes, monday is the first day of the week, else it is sunday\n");
 		fprintf(data_file, "week_begins_on_monday=\n");
 		fprintf(data_file, "%s\n", 
 			(week_begins_on_monday) ? "yes" : "no");
 
 		fprintf(data_file,
-			"\n# This is the color theme used for menus (1 to 8) :\n");
+		    "\n# This is the color theme used for menus (1 to 8) :\n");
 		fprintf(data_file, "color-theme=\n");
 		fprintf(data_file, "%d\n", colr);
 
 		fprintf(data_file,
-			"\n# This is the layout of the calendar (1 to 4) :\n");
+		    "\n# This is the layout of the calendar (1 to 4) :\n");
 		fprintf(data_file, "layout=\n");
 		fprintf(data_file, "%d\n", layout);
 
-		// notify-bar user settings
 		pthread_mutex_lock(&nbar->mutex);
 		fprintf(data_file,
-			"\n# If this option is set to yes, notify-bar will be displayed :\n");
+		    "\n# If this option is set to yes, notify-bar will be displayed :\n");
 		fprintf(data_file, "notify-bar_show=\n");
 		fprintf(data_file, "%s\n", (nbar->show) ? "yes" : "no");
 		
 		fprintf(data_file,
-			"\n# Format of the date to be displayed inside notify-bar :\n");
+		    "\n# Format of the date to be displayed inside notify-bar :\n");
 		fprintf(data_file, "notify-bar_date=\n");
 		fprintf(data_file, "%s\n", nbar->datefmt);
 
 		fprintf(data_file,
-			"\n# Format of the time to be displayed inside notify-bar :\n");
+		    "\n# Format of the time to be displayed inside notify-bar :\n");
 		fprintf(data_file, "notify-bar_clock=\n");
 		fprintf(data_file, "%s\n", nbar->timefmt);
 
 		fprintf(data_file,
-			"\n# Warn user if he has an appointment within next 'notify-bar_warning' seconds :\n");
+		    "\n# Warn user if he has an appointment within next 'notify-bar_warning' seconds :\n");
 		fprintf(data_file, "notify-bar_warning=\n");
 		fprintf(data_file, "%d\n", nbar->cntdwn);
+
+		fprintf(data_file,
+		    "\n# Command used to notify user of an upcoming appointment :\n");
+		fprintf(data_file, "notify-bar_command=\n");
+		fprintf(data_file, "%s\n", nbar->cmd);
+
 		pthread_mutex_unlock(&nbar->mutex);
 
 		fclose(data_file);
@@ -273,7 +278,7 @@ void load_app()
         time_t t;
         int id = 0;
 	int freq;
-	char type;
+	char type, state;
 	char *error = 
 		_("FATAL ERROR in load_app: wrong format in the appointment or event\n");
 
@@ -335,14 +340,12 @@ void load_app()
 			ungetc(c, data_file);
 			is_recursive = 1;
 			fscanf(data_file, "{ %d%c ", &freq, &type);
-			/* Check if we have an endless recurrent item. */
+
 			c = getc(data_file);
-			if (c == '}') {
+			if (c == '}') { /* endless recurrent item */
 				ungetc(c, data_file);
 				fscanf(data_file, "} ");
 				until.tm_year = 0;	
-				if (is_appointment) 
-					c = getc(data_file); // useless '|'
 			} else if (c == '-') {
 				ungetc(c, data_file);
 				fscanf(data_file, " -> %u / %u / %u ",
@@ -357,33 +360,37 @@ void load_app()
 					ungetc(c, data_file);
 					fscanf(data_file, "} ");
 				}
-				if (is_appointment) 
-					fscanf(data_file, " | "); // useless '|'
 			} else if (c == '!') { // endless item with exceptions
 				ungetc(c, data_file);
 				exc = recur_exc_scan(data_file);
-				if (is_appointment) 
-					fscanf(data_file, " | "); // useless '|'
 				until.tm_year = 0;
 			} else { /* NOT REACHED */
 				fputs(error, stderr);
 				exit(EXIT_FAILURE);
 			}
-		} else {
-			if (is_event) // if appointment we have a useless '|' 
-				ungetc(c, data_file);
-		}
+		} else 
+			ungetc(c, data_file);
 
 		/*
 		 * Last: read the item description and load it into its
 		 * corresponding linked list, depending on the item type.
 		 */
 		if (is_appointment) {
+			c = getc(data_file);
+			if (c == '!') {
+				ungetc(c, data_file);
+				fscanf(data_file, "! ");
+				state |= APOINT_NOTIFY;
+			} else {
+				ungetc(c, data_file);
+				fscanf(data_file, "| ");
+				state = 0L;
+			}
 			if (is_recursive) {
 				recur_apoint_scan(data_file, start, end,
-					type, freq, until, exc);
+				    type, freq, until, exc, state);
 			} else {
-				apoint_scan(data_file, start, end);
+				apoint_scan(data_file, start, end, state);
 			}
 		} else if (is_event) {
 			if (is_recursive) {
