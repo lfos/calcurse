@@ -1,4 +1,4 @@
-/*	$calcurse: vars.h,v 1.4 2006/09/15 15:37:45 culot Exp $	*/
+/*	$calcurse: vars.h,v 1.5 2007/02/24 17:33:42 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -59,10 +59,12 @@ struct pad_s {
 };
 
 struct nbar_s {		
-	int show;		/* display or hide the notify-bar */
-	int cntdwn;		/* warn when time left before next app < cntdwn */  
-	char *datefmt;		/* format for displaying date */
-	char *timefmt;		/* format for displaying time */
+	int show;			/* display or hide the notify-bar */
+	int cntdwn;			/* warn when time left before next app
+					 * becomes lesser than cntdwn */  
+	char datefmt[MAX_LENGTH];	/* format for displaying date */
+	char timefmt[MAX_LENGTH];	/* format for displaying time */
+	char cmd[MAX_LENGTH];		/* notification command */
 	pthread_mutex_t mutex;
 };
 
