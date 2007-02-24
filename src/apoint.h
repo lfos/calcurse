@@ -1,8 +1,8 @@
-/*	$calcurse: apoint.h,v 1.4 2006/09/14 15:06:54 culot Exp $	*/
+/*	$calcurse: apoint.h,v 1.5 2007/02/24 17:35:00 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2006 Frederic Culot
+ * Copyright (c) 2004-2007 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,10 +33,15 @@
 #define HRMIN_SIZE 6
 #define MESG_MAXSIZE 256
 
+#define APOINT_NULL		0x0
+#define APOINT_NOTIFY		0x1	/* Item needs to be notified */
+#define APOINT_NOTIFIED		0x2	/* Item was already notified */
+
 typedef struct apoint_llist_node {
 	struct apoint_llist_node *next;
 	long start;		/* seconds since 1 jan 1970 */
 	long dur;		/* duration of the appointment in seconds */
+	char state;		/* 8 bits to store item state */
 	char *mesg;
 } apoint_llist_node_t;
 
@@ -48,12 +53,13 @@ typedef struct apoint_llist {
 extern apoint_llist_t *alist_p;
 
 int apoint_llist_init(void);
-apoint_llist_node_t *apoint_new(char *, long, long);
+apoint_llist_node_t *apoint_new(char *, long, long, char state);
 unsigned apoint_inday(apoint_llist_node_t *o, long start);
 void apoint_sec2str(apoint_llist_node_t *o, 
 	int type, long day, char *start, char *end);
 void apoint_write(apoint_llist_node_t *o, FILE * f);
-apoint_llist_node_t *apoint_scan(FILE * f, struct tm start, struct tm end);
+apoint_llist_node_t *apoint_scan(FILE * f, struct tm start, struct tm end,
+    char state);
 void apoint_delete_bynum(long start, unsigned num);
 void display_item_date(WINDOW *win, int color, apoint_llist_node_t *i,
 		int type, long date, int y, int x);
@@ -62,5 +68,6 @@ void scroll_pad_down(int item_nb, int nb_events_inday, int win_length);
 void scroll_pad_up(int item_nb, int nb_events_inday);
 struct notify_app_s *apoint_check_next(struct notify_app_s *app, long start);
 apoint_llist_node_t *apoint_recur_s2apoint_s(recur_apoint_llist_node_t *p);
+void apoint_switch_notify(int year, int month, int day, int item_num);
 
 #endif /* CALCURSE_APOINT_H */
