@@ -1,8 +1,8 @@
-/*	$calcurse: apoint.c,v 1.7 2006/12/15 15:25:09 culot Exp $	*/
+/*	$calcurse: apoint.c,v 1.8 2007/02/24 17:37:08 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2006 Frederic Culot
+ * Copyright (c) 2004-2007 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,13 +51,15 @@ int apoint_llist_init(void)
 	return 0;
 }
 
-apoint_llist_node_t *apoint_new(char *mesg, long start, long dur)
+apoint_llist_node_t *
+apoint_new(char *mesg, long start, long dur, char state)
 {
 	apoint_llist_node_t *o, **i;
 
 	o = (apoint_llist_node_t *) malloc(sizeof(apoint_llist_node_t));
 	o->mesg = (char *) malloc(strlen(mesg) + 1);
 	strncpy(o->mesg, mesg, strlen(mesg) + 1);
+	o->state = state;
 	o->start = start;
 	o->dur = dur;
 
@@ -108,7 +110,8 @@ void apoint_sec2str(apoint_llist_node_t *o,
 	}
 }
 
-void apoint_write(apoint_llist_node_t *o, FILE * f)
+void 
+apoint_write(apoint_llist_node_t *o, FILE * f)
 {
 	struct tm *lt;
 	time_t t;
@@ -116,17 +119,25 @@ void apoint_write(apoint_llist_node_t *o, FILE * f)
 	t = o->start;
 	lt = localtime(&t);
 	fprintf(f, "%02u/%02u/%04u @ %02u:%02u",
-		lt->tm_mon + 1, lt->tm_mday, 1900 + lt->tm_year,
-		lt->tm_hour, lt->tm_min);
+	    lt->tm_mon + 1, lt->tm_mday, 1900 + lt->tm_year,
+	    lt->tm_hour, lt->tm_min);
 
 	t = o->start + o->dur;
 	lt = localtime(&t);
-	fprintf(f, " -> %02u/%02u/%04u @ %02u:%02u |%s\n",
-		lt->tm_mon + 1, lt->tm_mday, 1900 + lt->tm_year,
-		lt->tm_hour, lt->tm_min, o->mesg);
+	fprintf(f, " -> %02u/%02u/%04u @ %02u:%02u ",
+	    lt->tm_mon + 1, lt->tm_mday, 1900 + lt->tm_year,
+	    lt->tm_hour, lt->tm_min);
+	
+	if (o->state & APOINT_NOTIFY)
+		fprintf(f, "!");
+	else
+		fprintf(f, "|");
+
+	fprintf(f, "%s\n", o->mesg);
 }
 
-apoint_llist_node_t *apoint_scan(FILE * f, struct tm start, struct tm end)
+apoint_llist_node_t *
+apoint_scan(FILE * f, struct tm start, struct tm end, char state)
 {
 	struct tm *lt;
 	char buf[MESG_MAXSIZE], *nl;
@@ -155,7 +166,7 @@ apoint_llist_node_t *apoint_scan(FILE * f, struct tm start, struct tm end)
 		fputs(_("FATAL ERROR in apoint_scan: date error in the appointment\n"), stderr);
 		exit(EXIT_FAILURE);
 	}
-	return apoint_new(buf, tstart, tend - tstart);
+	return apoint_new(buf, tstart, tend - tstart, state);
 }
 
 void apoint_delete_bynum(long start, unsigned num)
@@ -206,9 +217,15 @@ void display_item_date(WINDOW *win, int incolor, apoint_llist_node_t *i,
 	if (incolor == 0) 
 		custom_apply_attr(win, ATTR_HIGHEST);
 	if (recur)
-		mvwprintw(win, y, x, " * %s -> %s", a_st, a_end);
+		if (i->state & APOINT_NOTIFY)
+			mvwprintw(win, y, x, " *!%s -> %s", a_st, a_end);
+		else
+			mvwprintw(win, y, x, " * %s -> %s", a_st, a_end);
 	else
-		mvwprintw(win, y, x, " - %s -> %s", a_st, a_end);
+		if (i->state & APOINT_NOTIFY)
+			mvwprintw(win, y, x, " -!%s -> %s", a_st, a_end);
+		else
+			mvwprintw(win, y, x, " - %s -> %s", a_st, a_end);
 	if (incolor == 0) 
 		custom_remove_attr(awin, ATTR_HIGHEST);
 }
@@ -292,7 +309,7 @@ struct notify_app_s *apoint_check_next(struct notify_app_s *app, long start)
 }
 
 /* 
- * Returns a structure of type aopint_llist_t given a structure of type 
+ * Returns a structure of type apoint_llist_t given a structure of type 
  * recur_apoint_s 
  */
 apoint_llist_node_t *apoint_recur_s2apoint_s(
@@ -306,4 +323,60 @@ apoint_llist_node_t *apoint_recur_s2apoint_s(
 	a->dur = p->dur;
 	a->mesg = p->mesg;
 	return a;
+}
+
+/*
+ * Switch notification state.
+ */
+void
+apoint_switch_notify(int year, int month, int day, int item_num)
+{
+	apoint_llist_node_t *apoint;
+	struct day_item_s *p;
+	long date;
+	int apoint_nb, n, need_chk_notify;
+
+	p = day_get_item(item_num);
+	if (p->type != APPT && p->type != RECUR_APPT)
+		return;
+	
+	date = date2sec(year, month, day, 0, 0);
+
+	if (p->type == RECUR_APPT) {
+		recur_apoint_switch_notify(date, p->appt_pos);
+		return;
+	} else if (p->type == APPT)
+		apoint_nb = day_item_nb(date, item_num, APPT);
+		
+	n = 0;
+	need_chk_notify = 0;
+	pthread_mutex_lock(&(alist_p->mutex));
+
+	for (apoint = alist_p->root; apoint != 0; apoint = apoint->next) {
+		if (apoint_inday(apoint, date)) {
+			if (n == apoint_nb) {
+				apoint->state ^= APOINT_NOTIFY;	
+				if (notify_bar()) {
+					if (apoint->state & APOINT_NOTIFY)
+						notify_check_added(apoint->mesg,
+						    apoint->start);
+					else
+						need_chk_notify = 
+						    notify_same_item(
+						        apoint->start);	 
+				}
+				pthread_mutex_unlock(&(alist_p->mutex));
+				if (need_chk_notify) 
+					notify_check_next_app();
+				return;
+			}
+			n++;
+		}
+	}
+	pthread_mutex_unlock(&(alist_p->mutex));
+
+	/* NOTREACHED */
+	fputs(_("FATAL ERROR in apoint_switch_notify: no such appointment\n"), 
+	    stderr);
+	exit(EXIT_FAILURE);
 }
