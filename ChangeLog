@@ -1,3 +1,14 @@
+24 Feb 2007:
+	'!' command added, to switch appointment notification state
+	init_notify_bar(), config_notify_bar() and print_notify_options()
+	modified to add the notification command option
+	apoint_switch_notify() and recur_apoint_switch_notify() created		
+	day_item_nb() created
+	save_cal(), recur_apoint_write(), and apoint_write() updated 
+	to save item state to disk
+	load_app(), load_conf(), apoint_scan(), recur_apoint_scan(), 
+	apoint_new() and recur_apoint_new() updated to read item state
+
 20 Jan 2007: 1.7
 	TODO list updated
 	NEWS file updated
