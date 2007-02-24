@@ -1,4 +1,4 @@
-/*	$calcurse: recur.c,v 1.19 2007/01/16 07:51:47 culot Exp $	*/
+/*	$calcurse: recur.c,v 1.20 2007/02/24 17:36:27 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -55,8 +55,9 @@ int recur_apoint_llist_init(void)
 }
 
 /* Insert a new recursive appointment in the general linked list */
-recur_apoint_llist_node_t *recur_apoint_new(char *mesg, long start, long dur, 
-	int type, int freq, long until, struct days_s *except)
+recur_apoint_llist_node_t *
+recur_apoint_new(char *mesg, long start, long dur, char state, int type, 
+    int freq, long until, struct days_s *except)
 {
 	recur_apoint_llist_node_t *o, **i;
 	o = (recur_apoint_llist_node_t *) 
@@ -66,6 +67,7 @@ recur_apoint_llist_node_t *recur_apoint_new(char *mesg, long start, long dur,
 	o->exc = (struct days_s *) malloc(sizeof(struct days_s));
 	strncpy(o->mesg, mesg, strlen(mesg) + 1);
 	o->start = start;
+	o->state = state;
 	o->dur = dur;
 	o->rpt->type = type;
 	o->rpt->freq = freq;
@@ -181,7 +183,8 @@ void recur_write_exc(struct days_s *exc, FILE *f) {
 }
 
 /* Writting of a recursive appointment into file. */
-void recur_apoint_write(recur_apoint_llist_node_t *o, FILE *f)
+void 
+recur_apoint_write(recur_apoint_llist_node_t *o, FILE *f)
 {
 	struct tm *lt;
 	time_t t;
@@ -189,28 +192,34 @@ void recur_apoint_write(recur_apoint_llist_node_t *o, FILE *f)
 	t = o->start;
 	lt = localtime(&t);
 	fprintf(f, "%02u/%02u/%04u @ %02u:%02u",
-		lt->tm_mon + 1, lt->tm_mday, 1900 + lt->tm_year,
-		lt->tm_hour, lt->tm_min);
+	    lt->tm_mon + 1, lt->tm_mday, 1900 + lt->tm_year,
+	    lt->tm_hour, lt->tm_min);
 
 	t = o->start + o->dur;
 	lt = localtime(&t);
 	fprintf(f, " -> %02u/%02u/%04u @ %02u:%02u",
-		lt->tm_mon + 1, lt->tm_mday, 1900 + lt->tm_year,
-		lt->tm_hour, lt->tm_min);
+	    lt->tm_mon + 1, lt->tm_mday, 1900 + lt->tm_year,
+	    lt->tm_hour, lt->tm_min);
 
 	t = o->rpt->until;
 	if (t == 0) { /* We have an endless recurrent appointment. */
 		fprintf(f, " {%d%c", o->rpt->freq, 
-			recur_def2char(o->rpt->type)); 
-		if (o->exc != 0) recur_write_exc(o->exc, f);
+		    recur_def2char(o->rpt->type)); 
+		if (o->exc != 0) 
+			recur_write_exc(o->exc, f);
 		fprintf(f, "} |%s\n", o->mesg);
 	} else {
 		lt = localtime(&t);
 		fprintf(f, " {%d%c -> %02u/%02u/%04u",
-			o->rpt->freq, recur_def2char(o->rpt->type),
-			lt->tm_mon + 1, lt->tm_mday, 1900 + lt->tm_year);
-		if (o->exc != 0) recur_write_exc(o->exc, f);
-		fprintf(f,"} |%s\n", o->mesg);
+		    o->rpt->freq, recur_def2char(o->rpt->type),
+		    lt->tm_mon + 1, lt->tm_mday, 1900 + lt->tm_year);
+		if (o->exc != 0) 
+			recur_write_exc(o->exc, f);
+		if (o->state & APOINT_NOTIFY)
+			fprintf(f, "} !");
+		else
+			fprintf(f, "} |");
+		fprintf(f, "%s\n", o->mesg);
 	}
 }
 
@@ -249,8 +258,9 @@ void recur_event_write(struct recur_event_s *o, FILE *f)
 }
 
 /* Load the recursive appointment description */
-recur_apoint_llist_node_t *recur_apoint_scan(FILE * f, struct tm start, 
-	struct tm end, char type, int freq, struct tm until, struct days_s *exc)
+recur_apoint_llist_node_t *
+recur_apoint_scan(FILE * f, struct tm start, struct tm end, char type, 
+    int freq, struct tm until, struct days_s *exc, char state)
 {
 	struct tm *lt;
 	char buf[MESG_MAXSIZE], *nl;
@@ -293,7 +303,7 @@ recur_apoint_llist_node_t *recur_apoint_scan(FILE * f, struct tm start,
 	}
       
 	return recur_apoint_new(buf, tstart, tend - tstart, 
-		recur_char2def(type), freq, tuntil, exc);
+		state, recur_char2def(type), freq, tuntil, exc);
 }
 
 /* Load the recursive events from file */
@@ -613,7 +623,7 @@ void recur_repeat_item(int sel_year, int sel_month, int sel_day,
 		re = recur_event_new(p->mesg, p->start, p->evnt_id, 
 			type, freq, until, NULL);
 	} else if (p->type == APPT) {
-		ra = recur_apoint_new(p->mesg, p->start, p->appt_dur, 
+		ra = recur_apoint_new(p->mesg, p->start, p->appt_dur, p->state,
 			type, freq, until, NULL);
 		if (notify_bar()) notify_check_repeated(ra);
 	} else { /* NOTREACHED */
@@ -729,4 +739,42 @@ struct recur_event_s *recur_get_event(long date, int num)
 	/* NOTREACHED */
 	fputs(_("FATAL ERROR in recur_get_event: no such item\n"), stderr);
 	exit(EXIT_FAILURE);
+}
+
+/* Switch recurrent item notification state. */
+void
+recur_apoint_switch_notify(long date, int recur_nb)
+{
+	int n, need_chk_notify;
+	recur_apoint_llist_node_t *o;
+
+	n = 0;
+	need_chk_notify = 0;
+
+	pthread_mutex_lock(&(recur_alist_p->mutex));
+	for (o = recur_alist_p->root; o != 0; o = o->next) {
+		if (recur_item_inday(o->start, o->exc, o->rpt->type,
+			o->rpt->freq, o->rpt->until, date)) {
+			if (n == recur_nb) {
+				o->state ^= APOINT_NOTIFY;	
+				if (notify_bar()) {
+					if (o->state & APOINT_NOTIFY)
+						notify_check_repeated(o);
+					else
+						need_chk_notify = 
+						    notify_same_recur_item(o);
+				}
+				pthread_mutex_unlock(&(recur_alist_p->mutex));
+				if (need_chk_notify)
+					notify_check_next_app();
+				return;
+			}	
+			n++;
+		}
+	}
+	/* NOTREACHED */
+	fputs(_("FATAL ERROR in recur_apoint_switch_notify: no such item\n"), 
+	    stderr);
+	exit(EXIT_FAILURE);
+	
 }
