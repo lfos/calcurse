@@ -1,4 +1,4 @@
-/*	$calcurse: apoint.c,v 1.8 2007/02/24 17:37:08 culot Exp $	*/
+/*	$calcurse: apoint.c,v 1.9 2007/02/25 19:31:44 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -286,7 +286,8 @@ void scroll_pad_up(int item_nb, int nb_events_inday)
  * Look in the appointment list if we have an item which starts before the item
  * stored in the notify_app structure (which is the next item to be notified).
  */
-struct notify_app_s *apoint_check_next(struct notify_app_s *app, long start)
+struct notify_app_s *
+apoint_check_next(struct notify_app_s *app, long start)
 {
 	apoint_llist_node_t *i;
 
@@ -299,6 +300,7 @@ struct notify_app_s *apoint_check_next(struct notify_app_s *app, long start)
 			if (i->start > start) {
 				app->time = i->start;	
 				app->txt = mycpy(i->mesg);
+				app->state = i->state;
 				app->got_app = 1;
 			} 
 		}
@@ -356,15 +358,11 @@ apoint_switch_notify(int year, int month, int day, int item_num)
 		if (apoint_inday(apoint, date)) {
 			if (n == apoint_nb) {
 				apoint->state ^= APOINT_NOTIFY;	
-				if (notify_bar()) {
-					if (apoint->state & APOINT_NOTIFY)
-						notify_check_added(apoint->mesg,
-						    apoint->start);
-					else
-						need_chk_notify = 
-						    notify_same_item(
-						        apoint->start);	 
-				}
+
+				if (notify_bar())
+					notify_check_added(apoint->mesg,
+					    apoint->start, apoint->state);
+
 				pthread_mutex_unlock(&(alist_p->mutex));
 				if (need_chk_notify) 
 					notify_check_next_app();
