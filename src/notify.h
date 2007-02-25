@@ -1,8 +1,8 @@
-/*	$calcurse: notify.h,v 1.5 2006/09/16 15:25:11 culot Exp $	*/
+/*	$calcurse: notify.h,v 1.6 2007/02/25 19:29:20 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2006 Frederic Culot
+ * Copyright (c) 2004-2007 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,6 +49,7 @@ struct notify_app_s {
 	long time;
 	int got_app;
 	char *txt;
+	char state;
 	pthread_mutex_t mutex;
 };
 
@@ -59,12 +60,12 @@ void notify_stop_main_thread(void);
 void notify_reinit_bar(int l, int c, int y, int x);
 void notify_update_bar(void);
 void notify_extract_aptsfile(void);
-void *notify_main_thread(void *arg);
 void notify_check_next_app(void);
-void *notify_thread_app(void *time);
-void notify_check_added(char *mesg, long start);
+void notify_check_added(char *mesg, long start, char state);
 void notify_check_repeated(recur_apoint_llist_node_t *i);
 int notify_same_item(long time);
 int notify_same_recur_item(recur_apoint_llist_node_t *i);
+void notify_launch_cmd(char *cmd, char *shell);
+void notify_catch_children(void);
 
 #endif /* CALCURSE_NOTIFY_H */
