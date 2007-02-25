@@ -1,4 +1,4 @@
-/*	$calcurse: day.c,v 1.18 2007/02/24 17:37:51 culot Exp $	*/
+/*	$calcurse: day.c,v 1.19 2007/02/25 19:32:53 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -596,11 +596,13 @@ void day_edit_item(int year, int month, int day, int item_num, int colr)
 	case RECUR_APPT:
 		ra_new = recur_apoint_new(p->mesg, p->start, p->appt_dur, 
 			p->state, rpt->type, rpt->freq, rpt->until, NULL);
-		if (notify_bar()) notify_check_repeated(ra_new);
+		if (notify_bar()) 
+			notify_check_repeated(ra_new);
 		break;
 	case APPT:
 		apoint_new(p->mesg, p->start, p->appt_dur, p->state);
-		if (notify_bar()) notify_check_added(p->mesg, p->start);
+		if (notify_bar()) 
+			notify_check_added(p->mesg, p->start, p->state);
 		break;
 	}
 }
