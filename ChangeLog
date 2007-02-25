@@ -1,3 +1,10 @@
+25 Feb 2007:
+	init_notify_bar() updated to get user shell
+	notify_launch_cmd() created to launch user-defined command by forking a
+	new process
+	notify_catch_children() and notify_thread_children() created to avoid
+	zombie processes when launching user-defined command
+
 24 Feb 2007:
 	'!' command added, to switch appointment notification state
 	init_notify_bar(), config_notify_bar() and print_notify_options()
