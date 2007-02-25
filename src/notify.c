@@ -1,8 +1,8 @@
-/*	$calcurse: notify.c,v 1.7 2007/02/24 17:38:40 culot Exp $	*/
+/*	$calcurse: notify.c,v 1.8 2007/02/25 19:30:33 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2006 Frederic Culot
+ * Copyright (c) 2004-2007 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/wait.h>
 
 #include "i18n.h"
 #include "utils.h"
@@ -42,6 +43,7 @@
 static struct notify_vars_s *notify = NULL;
 static struct notify_app_s *notify_app = NULL;
 static pthread_t notify_t_main;
+static pthread_t notify_t_children;
 
 /* Return 1 if we need to display the notify-bar, else 0. */
 int notify_bar(void)
@@ -67,14 +69,6 @@ void notify_init_bar(int l, int c, int y, int x)
 	pthread_mutex_init(&notify_app->mutex, NULL);
 	notify->win = newwin(l, c, y, x);
 	notify_extract_aptsfile();
-}
-
-/* Launch the notify-bar main thread. */
-void notify_start_main_thread(void) 
-{
-	pthread_create(&notify_t_main, NULL, notify_main_thread, NULL);
-	notify_check_next_app();
-	return;
 }
 
 /* Stop the notify-bar main thread. */
@@ -144,6 +138,14 @@ void notify_update_bar(void)
 				    notify_app->txt);
 			if (time_left < nbar->cntdwn)
 				wattroff(notify->win, A_BLINK);
+
+			if (time_left < nbar->cntdwn && 
+			    (notify_app->state & APOINT_NOTIFY) &&
+			    !(notify_app->state & APOINT_NOTIFIED)) {
+				notify_app->state |= APOINT_NOTIFIED;
+				notify_launch_cmd(nbar->cmd, nbar->shell);
+			}
+
 			pthread_mutex_unlock(&nbar->mutex);
 		} else {
 			notify_app->got_app = 0;
@@ -170,7 +172,8 @@ void notify_extract_aptsfile(void)
 }
 
 /* Update the notication bar content */
-void *notify_main_thread(void *arg)
+static void *
+notify_main_thread(void *arg)
 {
 	unsigned thread_sleep = 1, check_app = 60;
 	int elapse = 0, got_app = 0;
@@ -201,17 +204,9 @@ void *notify_main_thread(void *arg)
 	pthread_exit((void*) 0);
 }
 
-/* Launch the thread notify_thread_app to look for next appointment. */
-void notify_check_next_app(void)
-{
-	pthread_t notify_t_app;
-
-	pthread_create(&notify_t_app, NULL, notify_thread_app, NULL);
-	return;
-}
-
 /* Look for the next appointment within the next 24 hours. */
-void *notify_thread_app(void *arg)
+static void *
+notify_thread_app(void *arg)
 {
 	struct notify_app_s *tmp_app;
 	time_t current_time;
@@ -231,6 +226,7 @@ void *notify_thread_app(void *arg)
 		notify_app->got_app = 1;
 		notify_app->time = tmp_app->time;
 		notify_app->txt = mycpy(tmp_app->txt);
+		notify_app->state = tmp_app->state;
 	} else {
 		notify_app->got_app = 0;
 	}
@@ -242,8 +238,33 @@ void *notify_thread_app(void *arg)
 	pthread_exit((void*) 0);
 }
 
+/* 
+ * Catch return values from children (user-defined notification commands).
+ * This is needed to avoid zombie processes running on system.
+ */
+static void *
+notify_thread_children(void *arg)
+{
+	for (;;) {
+		waitpid(WAIT_MYPGRP, NULL, WNOHANG);
+		sleep(1);
+	}
+
+	pthread_exit((void *)0);
+}
+
+/* Launch the thread notify_thread_app to look for next appointment. */
+void notify_check_next_app(void)
+{
+	pthread_t notify_t_app;
+
+	pthread_create(&notify_t_app, NULL, notify_thread_app, NULL);
+	return;
+}
+
 /* Check if the newly created appointment is to be notified. */
-void notify_check_added(char *mesg, long start)
+void 
+notify_check_added(char *mesg, long start, char state)
 {
 	time_t current_time;
 	int update_notify = 0;
@@ -253,21 +274,26 @@ void notify_check_added(char *mesg, long start)
 	pthread_mutex_lock(&notify_app->mutex);
 	if (!notify_app->got_app) {
 		gap = start - current_time;
-		if (gap >= 0 && gap <= DAYINSEC) update_notify = 1;
+		if (gap >= 0 && gap <= DAYINSEC) 
+			update_notify = 1;
 	} else if (start < notify_app->time && start >= current_time) {
 		update_notify = 1;
-	}
+	} else if (start == notify_app->time && state != notify_app->state)
+		update_notify = 1;
+
 	if (update_notify) {
 		notify_app->got_app = 1;
 		notify_app->time = start;
 		notify_app->txt = mycpy(mesg);	
+		notify_app->state = state;
 	}
 	pthread_mutex_unlock(&notify_app->mutex);
 	notify_update_bar();
 }
 
 /* Check if the newly repeated appointment is to be notified. */
-void notify_check_repeated(recur_apoint_llist_node_t *i)
+void 
+notify_check_repeated(recur_apoint_llist_node_t *i)
 {
 	long real_app_time;
 	int update_notify = 0;
@@ -280,14 +306,18 @@ void notify_check_repeated(recur_apoint_llist_node_t *i)
 		if (!notify_app->got_app) {
 			if (real_app_time - current_time <= DAYINSEC) 
 				update_notify = 1;
-		} else if (real_app_time < notify_app->time) {
+		} else if (real_app_time < notify_app->time && 
+		    real_app_time >= current_time) {
 			update_notify = 1;
-		}
+		} else if (real_app_time == notify_app->time &&
+		    i->state != notify_app->state)
+			update_notify = 1;
 	}
 	if (update_notify) {
 		notify_app->got_app = 1;
 		notify_app->time = real_app_time;
 		notify_app->txt = mycpy(i->mesg);	
+		notify_app->state = i->state;
 	}
 	pthread_mutex_unlock(&notify_app->mutex);
 	notify_update_bar();
@@ -318,4 +348,45 @@ int notify_same_recur_item(recur_apoint_llist_node_t *i)
 	pthread_mutex_unlock(&(notify_app->mutex));
 
 	return same;
+}
+
+/* Launch user defined command as a notification. */
+void
+notify_launch_cmd(char *cmd, char *shell)
+{
+	int pid;
+
+	pid = fork();
+	
+	if (pid < 0) {
+		fputs(_("FATAL ERROR in notify_launch_cmd: could not fork\n"), 
+		    stderr);
+		exit(EXIT_FAILURE);
+	} else if (pid == 0) { /* Child: launch user defined command */
+		if (execlp(shell, shell, "-c", cmd, (char *)NULL) < 0)
+			fputs(_("FATAL ERROR in notify_launch_cmd: could not "
+			    "launch user command\n"), stderr);
+		exit(EXIT_FAILURE);
+	}
+}
+
+/* Launch the notify-bar main thread. */
+void 
+notify_start_main_thread(void) 
+{
+	pthread_create(&notify_t_main, NULL, notify_main_thread, NULL);
+	notify_check_next_app();
+	return;
+}
+
+/* 
+ * Launch the catch_children thread. 
+ * This is useful to avoid zombie processes when launching user-defined command
+ * to get notified.
+ */
+void 
+notify_catch_children(void) 
+{
+	pthread_create(&notify_t_children, NULL, notify_thread_children, NULL);
+	return;
 }
