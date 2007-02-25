@@ -1,4 +1,4 @@
-/*	$calcurse: recur.c,v 1.20 2007/02/24 17:36:27 culot Exp $	*/
+/*	$calcurse: recur.c,v 1.21 2007/02/25 19:31:08 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -672,8 +672,8 @@ struct days_s *recur_exc_scan(FILE *data_file)
  * Look in the appointment list if we have an item which starts before the item
  * stored in the notify_app structure (which is the next item to be notified).
  */
-struct notify_app_s *recur_apoint_check_next(
-	struct notify_app_s *app, long start, long day)
+struct notify_app_s *
+recur_apoint_check_next(struct notify_app_s *app, long start, long day)
 {
 	recur_apoint_llist_node_t *i;
 	long real_recur_start_time;
@@ -690,6 +690,7 @@ struct notify_app_s *recur_apoint_check_next(
 			if (real_recur_start_time > start) {
 				app->time = real_recur_start_time;	
 				app->txt = mycpy(i->mesg);
+				app->state = i->state;
 				app->got_app = 1;
 			} 
 		}
@@ -757,13 +758,10 @@ recur_apoint_switch_notify(long date, int recur_nb)
 			o->rpt->freq, o->rpt->until, date)) {
 			if (n == recur_nb) {
 				o->state ^= APOINT_NOTIFY;	
-				if (notify_bar()) {
-					if (o->state & APOINT_NOTIFY)
-						notify_check_repeated(o);
-					else
-						need_chk_notify = 
-						    notify_same_recur_item(o);
-				}
+
+				if (notify_bar())
+					notify_check_repeated(o);
+
 				pthread_mutex_unlock(&(recur_alist_p->mutex));
 				if (need_chk_notify)
 					notify_check_next_app();
