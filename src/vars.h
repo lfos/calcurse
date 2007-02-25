@@ -1,8 +1,8 @@
-/*	$calcurse: vars.h,v 1.5 2007/02/24 17:33:42 culot Exp $	*/
+/*	$calcurse: vars.h,v 1.6 2007/02/25 19:28:44 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2006 Frederic Culot
+ * Copyright (c) 2004-2007 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,6 +65,7 @@ struct nbar_s {
 	char datefmt[MAX_LENGTH];	/* format for displaying date */
 	char timefmt[MAX_LENGTH];	/* format for displaying time */
 	char cmd[MAX_LENGTH];		/* notification command */
+	char *shell;			/* user shell to launch notif. cmd */
 	pthread_mutex_t mutex;
 };
 
