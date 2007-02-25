@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.35 2007/02/24 17:32:55 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.36 2007/02/25 19:32:30 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -195,7 +195,9 @@ int main(int argc, char **argv)
 	custom_init_attr(colr);
 	nb_tod = load_todo(colr);	
 	load_app();
-	if (notify_bar()) notify_start_main_thread();
+	notify_catch_children();
+	if (notify_bar()) 
+		notify_start_main_thread();
 	get_screen_config();
         reinit_wins();
         startup_screen(skip_system_dialogs, no_data_file, colr);
@@ -595,7 +597,7 @@ void init_notify_bar(void)
 {
 	char *time_format = "%T";
 	char *date_format = "%a %F";
-	char *cmd = "calcurse --next | mail name@domain.com";
+	char *cmd = "printf '\\a'";
 
 	nbar = (struct nbar_s *) malloc(sizeof(struct nbar_s));
 	pthread_mutex_init(&nbar->mutex, NULL);
@@ -604,6 +606,9 @@ void init_notify_bar(void)
 	strncpy(nbar->datefmt, date_format, strlen(date_format) + 1); 
 	strncpy(nbar->timefmt, time_format, strlen(time_format) + 1);
 	strncpy(nbar->cmd, cmd, strlen(cmd) + 1);
+
+	if ((nbar->shell = getenv("SHELL")) == NULL)
+		nbar->shell = "/bin/sh"; 
 }
 
 /* 
@@ -984,7 +989,8 @@ print_notify_options(WINDOW *win, int col)
 		char value[MAX_LENGTH];
 	} opt[NB_OPT];
 
-	int i, y, x, l, x_pos, y_pos, x_offset, y_offset, maxcol;
+	int i, y, x, l, x_pos, y_pos, x_offset, y_offset, maxcol, maxlen;
+	char buf[MAX_LENGTH];
 
 	x_pos = 3;
 	x_offset = 4;
@@ -1033,10 +1039,18 @@ print_notify_options(WINDOW *win, int col)
 		l = strlen(opt[i].name);
 		y = y_pos + i * y_offset;
 		x = x_pos + x_offset + l;
+		maxlen = maxcol - x - 2;
+
 		mvwprintw(win, y, x_pos, "[%d] %s", i + 1, opt[i].name);
 		erase_window_part(win, x, y, maxcol, y);
 		custom_apply_attr(win, ATTR_HIGHEST);
-		mvwprintw(win, y, x, "%s", opt[i].value); 
+		if (strlen(opt[i].value) < maxlen)
+			mvwprintw(win, y, x, "%s", opt[i].value);
+		else {
+			strncpy(buf, opt[i].value, maxlen - 1);
+			buf[maxlen - 1] = '\0';
+			mvwprintw(win, y, x, "%s...", buf);
+		}
 		custom_remove_attr(win, ATTR_HIGHEST);
 		mvwprintw(win, y + 1, x_pos, opt[i].desc);
 	}
@@ -1242,7 +1256,7 @@ void add_item(void)
 			apoint_pointeur = apoint_new(item_mesg, apoint_start,
 			    min2sec(apoint_duration), 0L);
 			if (notify_bar()) 
-				notify_check_added(item_mesg, apoint_start);
+				notify_check_added(item_mesg, apoint_start, 0L);
                 } else 
                         event_pointeur = event_new(item_mesg, date2sec(
 			    sel_year, sel_month, sel_day, 12, 0), Id);
