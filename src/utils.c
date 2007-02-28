@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.21 2007/01/16 07:55:18 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.22 2007/02/28 21:29:05 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -216,8 +216,14 @@ int getstring(WINDOW *win, int colr, char *str, int l, int x, int y)
 			break;
 
 		case CTRL('D'):		/* delete next character */
-			--len;
-			del_char(newpos, orig);
+			if (newpos != (x + len)) {
+				--len;
+				if (newpos >= x + len)
+					--str;
+				else
+					del_char(newpos, orig);
+			} else
+				printf("\a");
 			break;
 
 		case CTRL('K'):		/* delete to end-of-line */
