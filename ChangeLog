@@ -1,3 +1,7 @@
+28 Feb 2007:
+	bugfix: CTRL-D problems while editing items fixed
+	Thanks Toucouch for reporting this bug
+
 25 Feb 2007:
 	init_notify_bar() updated to get user shell
 	notify_launch_cmd() created to launch user-defined command by forking a
