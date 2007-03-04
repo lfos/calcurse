@@ -1,3 +1,11 @@
+04 Mar 2007:
+	color_config() rewritten and changed to custom_color_config(), to allow
+	more color choices and the use of terminal's default background color
+	custom_load_color() created
+	border_color() and border_nocolor() updated to take into account new
+	color definitions 
+	update_windows() updated to avoid the use of the 'colr' variable
+
 28 Feb 2007:
 	bugfix: CTRL-D problems while editing items fixed
 	Thanks Toucouch for reporting this bug
