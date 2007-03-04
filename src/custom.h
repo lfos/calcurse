@@ -1,8 +1,8 @@
-/*	$calcurse: custom.h,v 1.1 2006/07/31 21:00:02 culot Exp $	*/
+/*	$calcurse: custom.h,v 1.2 2007/03/04 16:11:20 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2006 Frederic Culot
+ * Copyright (c) 2004-2007 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,16 +27,31 @@
 #ifndef CALCURSE_CUSTOM_H
 #define CALCURSE_CUSTOM_H
 
+#define NBUSERCOLORS	6
+
+enum { /* Color pairs */
+	COLR_RED = 1,
+	COLR_GREEN,
+	COLR_YELLOW,
+	COLR_BLUE,
+	COLR_MAGENTA,
+	COLR_CYAN,
+	COLR_DEFAULT,
+	COLR_HIGH,
+	COLR_CUSTOM
+};
+
 struct attribute_s {
 	int color[7];
 	int nocolor[7];
 };
 
-void custom_init_attr(int colr);
+void custom_init_attr(void);
 void custom_apply_attr(WINDOW *win, int attr_num);
 void custom_remove_attr(WINDOW *win, int attr_num);
 void config_bar();
 int layout_config(int layout, int colr);
-int color_config(int colr);
+void custom_color_config(int notify_bar);
+void custom_load_color(char *color, int background);
 
 #endif /* CALCURSE_CUSTOM_H */
