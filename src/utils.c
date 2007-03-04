@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.22 2007/02/28 21:29:05 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.23 2007/03/04 16:13:43 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -312,13 +312,14 @@ int is_all_digit(char *string)
 }
 
 /* draw panel border in color */
-void border_color(WINDOW * window, int bcolr)
+void 
+border_color(WINDOW *window)
 {
         int color_attr    = A_BOLD;
         int no_color_attr = A_BOLD;
 
         if (colorize) {
-                wattron(window, color_attr | COLOR_PAIR(bcolr));
+                wattron(window, color_attr | COLOR_PAIR(COLR_CUSTOM));
                 box(window, 0, 0);
         } else {
                 wattron(window, no_color_attr);
@@ -326,7 +327,7 @@ void border_color(WINDOW * window, int bcolr)
         }
 
 	if (colorize) {
-                wattroff(window, color_attr | COLOR_PAIR(bcolr));
+                wattroff(window, color_attr | COLOR_PAIR(COLR_CUSTOM));
         } else {
                 wattroff(window, no_color_attr);
         }
@@ -335,14 +336,14 @@ void border_color(WINDOW * window, int bcolr)
 }
 
 /* draw panel border without any color */
-void border_nocolor(WINDOW * window)
+void 
+border_nocolor(WINDOW *window)
 {
-        int colr = 9;
         int color_attr   = A_BOLD;
         int no_color_attr = A_DIM;
 
         if (colorize) {
-                wattron(window, color_attr | COLOR_PAIR(colr));
+                wattron(window, color_attr | COLOR_PAIR(COLR_DEFAULT));
         } else {
                 wattron(window, no_color_attr);
         }
@@ -350,7 +351,7 @@ void border_nocolor(WINDOW * window)
         box(window, 0, 0);
         
         if (colorize) {
-                wattroff(window, color_attr | COLOR_PAIR(colr));
+                wattroff(window, color_attr | COLOR_PAIR(COLR_DEFAULT));
         } else {
                 wattroff(window, no_color_attr);
         } 
