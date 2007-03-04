@@ -1,8 +1,8 @@
-/*	$calcurse: custom.c,v 1.3 2006/09/15 15:43:54 culot Exp $	*/
+/*	$calcurse: custom.c,v 1.4 2007/03/04 16:12:18 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2006 Frederic Culot
+ * Copyright (c) 2004-2007 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,8 @@
  */
 
 #include <ncurses.h>
+#include <string.h>
+#include <stdlib.h>
 
 #include "i18n.h"
 #include "utils.h"
@@ -41,15 +43,16 @@ static struct attribute_s attr;
  * ATTR_LOW are for days inside calendar panel which contains an event
  * ATTR_LOWEST are for current day inside calendar panel
  */
-void custom_init_attr(int colr)
+void 
+custom_init_attr(void)
 {
-	attr.color[ATTR_HIGHEST]   = COLOR_PAIR(colr);
-	attr.color[ATTR_HIGH]      = COLOR_PAIR(6);
-	attr.color[ATTR_MIDDLE]    = COLOR_PAIR(1);
-	attr.color[ATTR_LOW]       = COLOR_PAIR(4);
-	attr.color[ATTR_LOWEST]    = COLOR_PAIR(5);
-	attr.color[ATTR_TRUE]      = COLOR_PAIR(2);
-	attr.color[ATTR_FALSE]     = COLOR_PAIR(1);
+	attr.color[ATTR_HIGHEST]   = COLOR_PAIR(COLR_CUSTOM);
+	attr.color[ATTR_HIGH]      = COLOR_PAIR(COLR_HIGH);
+	attr.color[ATTR_MIDDLE]    = COLOR_PAIR(COLR_RED);
+	attr.color[ATTR_LOW]       = COLOR_PAIR(COLR_CYAN);
+	attr.color[ATTR_LOWEST]    = COLOR_PAIR(COLR_YELLOW);
+	attr.color[ATTR_TRUE]      = COLOR_PAIR(COLR_GREEN);
+	attr.color[ATTR_FALSE]     = COLOR_PAIR(COLR_RED);
 
 	attr.nocolor[ATTR_HIGHEST] = A_BOLD;
 	attr.nocolor[ATTR_HIGH]    = A_REVERSE;
@@ -132,41 +135,258 @@ int layout_config(int layout, int colr)
 	return layout;
 }
 
-/* Choose the color theme */
-int color_config(int colr)
+/* Color theme configuration. */
+void
+custom_color_config(int notify_bar)
 {
-        int ascii2dec = 48;
-	int i, ch, old_colr;
-        int max_colors = 9;
-        int spc = 6;
-        char *choose_color = _("Pick the number corresponding to the color scheme "
-                "(Q to exit) :");
+#define SIZE  	(2 * (NBUSERCOLORS + 1))
+#define CURSOR	(32 | A_REVERSE)
+#define SPACE	(32)
+#define MARK	(88)
 
-	old_colr = colr;
-	erase_window_part(swin, 0, 0, col, 2);
-	for (i = 1; i < max_colors; i++) {
-		wattron(swin, COLOR_PAIR(i));
-		mvwprintw(swin, 1, (i - 1) * spc, "[>%d<]", i);
-		wattroff(swin, COLOR_PAIR(i));
+	enum {
+		YPOS,
+		XPOS,
+		NBPOS
+	};
+	WINDOW *conf_win;
+	char label[MAX_LENGTH];
+	char *choose_color_1 = 
+	    _("Use 'X' or SPACE to select a color, "
+	    "'H/L' 'J/K' or arrow keys to move");
+	char *choose_color_2 =
+            _("('0' for no color, 'Q' to exit) :");
+	char *bar = "          ";
+	char *box = "[ ]";
+	char *default_txt = _("(terminal's default)");
+	int i, y, x_fore, x_back, x_offset, y_offset, spc;
+	int win_row, box_len, bar_len, ch, cursor;
+	int pos[SIZE][NBPOS];
+	short colr_fore, colr_back;
+	int mark_fore, mark_back;
+	int colr[SIZE] = {
+	    COLR_RED, COLR_GREEN, COLR_YELLOW, COLR_BLUE, 
+	    COLR_MAGENTA, COLR_CYAN, COLR_DEFAULT,
+	    COLR_RED, COLR_GREEN, COLR_YELLOW, COLR_BLUE, 
+	    COLR_MAGENTA, COLR_CYAN, COLR_DEFAULT};
+
+	bar_len = strlen(bar);
+	box_len = strlen(box);
+	x_offset = 5;
+	y_offset = 3;
+	y = 5;
+	spc = (col - 2 * bar_len - 2 * box_len - 6) / 3;
+	x_fore = spc;
+	x_back = 2 * spc + box_len + x_offset + bar_len;
+
+	for (i = 0; i < NBUSERCOLORS + 1; i++) {
+		pos[i][YPOS] = y + y_offset * (i + 1);
+		pos[NBUSERCOLORS + i + 1][YPOS] = y + y_offset * (i + 1);
+		pos[i][XPOS] = x_fore;
+		pos[NBUSERCOLORS + i + 1][XPOS] = x_back;
 	}
-        mvwprintw(swin, 1, 50, _("([>0<] for black & white)"));
-	custom_apply_attr(swin, ATTR_HIGHEST);
-	mvwprintw(swin, 0, 0, choose_color);
-	custom_remove_attr(swin, ATTR_HIGHEST);
+	
+	clear();
+	win_row = (notify_bar) ? row - 3 : row - 2;
+	conf_win = newwin(win_row, col, 0, 0);
+	snprintf(label, MAX_LENGTH, _("CalCurse %s | color theme"), VERSION);
+	win_show(conf_win, label);
+	status_mesg(choose_color_1, choose_color_2);
+
+	wattron(conf_win, COLOR_PAIR(COLR_CUSTOM));
+	mvwprintw(conf_win, y, x_fore + x_offset, _("Foreground"));
+	mvwprintw(conf_win, y, x_back + x_offset, _("Background"));
+	wattroff(conf_win, COLOR_PAIR(COLR_CUSTOM));
+
+	for (i = 0; i < SIZE - 1; i++) {
+		mvwprintw(conf_win, pos[i][YPOS], pos[i][XPOS], box);
+		wattron(conf_win, COLOR_PAIR(colr[i]) | A_REVERSE);
+		mvwprintw(conf_win, pos[i][YPOS], 
+		    pos[i][XPOS] + x_offset, bar);
+		wattroff(conf_win, COLOR_PAIR(colr[i]) | A_REVERSE);
+	}
+
+	/* Terminal's default color */
+	i = SIZE - 1;
+	mvwprintw(conf_win, pos[i][YPOS], pos[i][XPOS], box);
+	wattron(conf_win, COLOR_PAIR(colr[i]));
+	mvwprintw(conf_win, pos[i][YPOS], 
+	    pos[i][XPOS] + x_offset, bar);
+	wattroff(conf_win, COLOR_PAIR(colr[i]));
+	mvwprintw(conf_win, pos[NBUSERCOLORS][YPOS] + 1,
+	    pos[NBUSERCOLORS][XPOS] + x_offset, default_txt);
+	mvwprintw(conf_win, pos[SIZE - 1][YPOS] + 1,
+	    pos[SIZE - 1][XPOS] + x_offset, default_txt);
+
+	/* Retrieve the actual color theme. */
+	pair_content(COLR_CUSTOM, &colr_fore, &colr_back);
+
+	mark_fore = NBUSERCOLORS;
+	mark_back = SIZE - 1;
+	for (i = 0; i < NBUSERCOLORS + 1; i++) {
+		if (colr_fore == colr[i])
+			mark_fore = i;
+		if (colr_back == colr[NBUSERCOLORS + 1 + i])
+			mark_back = NBUSERCOLORS + 1 + i;
+	}
+
+	mvwaddch(conf_win, pos[mark_fore][YPOS], 
+	    pos[mark_fore][XPOS] + 1, MARK);
+	mvwaddch(conf_win, pos[mark_back][YPOS], 
+	    pos[mark_back][XPOS] + 1, MARK);
+	cursor = 0;
+	mvwaddch(conf_win, pos[cursor][YPOS], pos[cursor][XPOS] + 1,
+	    CURSOR);
 	wnoutrefresh(swin);
+	wnoutrefresh(conf_win);
 	doupdate();
+
+	colorize = true;
 	while ((ch = wgetch(swin)) != 'q') {
-                ch = ch - ascii2dec;
-                if ( (ch > 0) && (ch <= max_colors) ) {
-                        colorize = true;
-                        return ch;
-                } else if (ch == 0) {
-                        colorize = false;
-                        return 0;
-                } else {
-                        colr = old_colr;
-                }
-        }
-        if (colr == 0) colorize = false;
-        return colr;
+		mvwaddch(conf_win, pos[cursor][YPOS], pos[cursor][XPOS] + 1,
+		    SPACE);
+		mvwaddch(conf_win, pos[mark_fore][YPOS], 
+		    pos[mark_fore][XPOS] + 1, SPACE);
+		mvwaddch(conf_win, pos[mark_back][YPOS], 
+		    pos[mark_back][XPOS] + 1, SPACE);
+
+		switch (ch) {
+		
+		case SPACE:
+		case 'X':
+		case 'x':
+			if (cursor > NBUSERCOLORS)
+				mark_back = cursor;
+			else
+				mark_fore = cursor;
+			break;
+
+		case 258:
+		case 'J':
+		case 'j':
+			if (cursor < SIZE - 1)
+				++cursor;
+			break;
+
+		case 259:
+		case 'K':
+		case 'k':
+			if (cursor > 0)
+				--cursor;
+			break;
+
+		case 260:
+		case 'H':
+		case 'h':
+			if (cursor > NBUSERCOLORS)
+				cursor -= (NBUSERCOLORS + 1);
+			break;
+
+		case 261:
+		case 'L':
+		case 'l':
+			if (cursor <= NBUSERCOLORS)
+				cursor += (NBUSERCOLORS + 1);
+			break;
+
+		case '0':
+			colorize = false;
+			break;
+		}
+
+		pair_content(colr[mark_fore], &colr_fore, 0L);
+		if (colr_fore == 255)
+			colr_fore = -1;
+		pair_content(colr[mark_back], &colr_back, 0L);
+		if (colr_back == 255)
+			colr_back = -1;
+		init_pair(COLR_CUSTOM, colr_fore, colr_back);
+
+		status_mesg(choose_color_1, choose_color_2);
+		mvwaddch(conf_win, pos[mark_fore][YPOS], 
+		    pos[mark_fore][XPOS] + 1, MARK);
+		mvwaddch(conf_win, pos[mark_back][YPOS], 
+		    pos[mark_back][XPOS] + 1, MARK);
+		mvwaddch(conf_win, pos[cursor][YPOS], pos[cursor][XPOS] + 1,
+		    CURSOR);
+		wnoutrefresh(swin);
+		wnoutrefresh(conf_win);
+		doupdate();
+	}
+
+	delwin(conf_win);
+}
+
+/* 
+ * Load user color theme from file. 
+ * Need to handle calcurse versions prior to 1.8, where colors where handled
+ * differently (number between 1 and 8).
+ */
+void
+custom_load_color(char *color, int background)
+{
+	int len, color_num;
+
+	len = strlen(color);
+
+	if (len > 1) { 
+		/* New version configuration */
+		if (!strncmp(color, "red", 3))
+			init_pair(COLR_CUSTOM, COLR_RED, background);
+		else if (!strncmp(color, "green", 5))
+			init_pair(COLR_CUSTOM, COLR_GREEN, background);
+		else if (!strncmp(color, "yellow", 6))
+			init_pair(COLR_CUSTOM, COLR_YELLOW, background);
+		else if (!strncmp(color, "blue", 4))
+			init_pair(COLR_CUSTOM, COLR_BLUE, background);
+		else if (!strncmp(color, "magenta", 7))
+			init_pair(COLR_CUSTOM, COLR_MAGENTA, background);
+		else if (!strncmp(color, "cyan", 4))
+			init_pair(COLR_CUSTOM, COLR_CYAN, background);
+
+	} else if (len > 0 && len < 2) { 
+		/* Old version configuration */
+		color_num = atoi(color);	
+
+		switch (color_num) {
+		case 0:
+			colorize = false;
+			break;
+		case 1:
+			init_pair(COLR_CUSTOM, COLOR_RED, background);
+			break;
+		case 2:
+			init_pair(COLR_CUSTOM, COLOR_GREEN, background);
+			break;
+		case 3:
+			init_pair(COLR_CUSTOM, COLOR_BLUE, background);
+			break;
+		case 4:
+			init_pair(COLR_CUSTOM, COLOR_CYAN, background);
+			break;
+		case 5:
+			init_pair(COLR_CUSTOM, COLOR_YELLOW, background);
+			break;
+		case 6:
+			init_pair(COLR_CUSTOM, COLOR_BLACK, COLR_GREEN);
+			break;
+		case 7:
+			init_pair(COLR_CUSTOM, COLOR_BLACK, COLR_YELLOW);
+			break;
+		case 8:
+			init_pair(COLR_CUSTOM, COLOR_RED, COLR_BLUE);
+			break;
+		default:
+			/* NOTREACHED */
+			fputs(_("FATAL ERROR in custom_load_color: "
+			    "wrong color number.\n"), stderr);
+			exit(EXIT_FAILURE);
+		}
+
+	} else {
+		/* NOTREACHED */
+		fputs(_("FATAL ERROR in custom_load_color: "
+			"wrong configuration variable format.\n"), stderr);
+		exit(EXIT_FAILURE);
+	}
 }
