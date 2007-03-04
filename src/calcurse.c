@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.36 2007/02/25 19:32:30 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.37 2007/03/04 16:14:31 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -97,11 +97,11 @@ enum window_number {CALENDAR, APPOINTMENT, TODO};
 
 /* External functions */
 void get_date(void);
-void init_vars(int colr);
+void init_vars();
 void init_notify_bar(void);
 void init_wins(void), reinit_wins(void);
 void add_item(void);
-void load_conf(void);
+void load_conf(int background);
 bool fill_config_var(char *string);
 void update_todo_panel(void);
 void update_app_panel(int yeat, int month, int day);
@@ -123,13 +123,13 @@ void del_item(void);
  */
 int main(int argc, char **argv)
 {
-	int ch;
+	int ch, background, foreground;
 	int non_interactive;
 	bool do_storage = false;
 	bool day_changed = false;
         char *no_color_support = 
-                _("Sorry, colors are not supported by your terminal\n"
-                "(Press [ENTER] to continue)");
+            _("Sorry, colors are not supported by your terminal\n"
+            "(Press [ENTER] to continue)");
 	char *quit_message = _("Do you really want to quit ?");
 	char choices[] = "[y/n] ";
 
@@ -148,7 +148,8 @@ int main(int argc, char **argv)
 	 * The data path is also initialized here.
 	 */
 	non_interactive = parse_args(argc, argv, colr);
-	if (non_interactive) return EXIT_SUCCESS;
+	if (non_interactive) 
+		return EXIT_SUCCESS;
 
 	/* Begin of interactive mode with ncurses interface. */
 	initscr();		/* start the curses mode */
@@ -162,24 +163,32 @@ int main(int argc, char **argv)
         /* Check if terminal supports color. */
 	if (has_colors()) {
                 colorize = true;
+		background = COLOR_BLACK;
+		foreground = COLOR_WHITE;
 		start_color();
 
-		/* Color assignment */
-		init_pair(1, COLOR_RED, COLOR_BLACK);
-		init_pair(2, COLOR_GREEN, COLOR_BLACK);
-		init_pair(3, COLOR_BLUE, COLOR_BLACK);
-		init_pair(4, COLOR_CYAN, COLOR_BLACK);
-		init_pair(5, COLOR_YELLOW, COLOR_BLACK);
-		init_pair(6, COLOR_BLACK, COLOR_GREEN);
-		init_pair(7, COLOR_BLACK, COLOR_YELLOW);
-		init_pair(8, COLOR_RED, COLOR_BLUE);
-		init_pair(9, COLOR_WHITE, COLOR_BLACK);
-	} else {
-                colorize = false;
-		use_default_colors();
-        }
+#ifdef NCURSES_VERSION
+		if (use_default_colors() != ERR) {
+			background = -1;
+			foreground = -1;
+		}
+#endif /* NCURSES_VERSION */
 
-	init_vars(colr);
+		/* Color assignment */
+		init_pair(COLR_RED, COLOR_RED, background);
+		init_pair(COLR_GREEN, COLOR_GREEN, background);
+		init_pair(COLR_YELLOW, COLOR_YELLOW, background);
+		init_pair(COLR_BLUE, COLOR_BLUE, background);
+		init_pair(COLR_MAGENTA, COLOR_MAGENTA, background);
+		init_pair(COLR_CYAN, COLOR_CYAN, background);
+		init_pair(COLR_DEFAULT, foreground, background);
+		init_pair(COLR_HIGH, COLOR_BLACK, COLOR_GREEN);
+		init_pair(COLR_CUSTOM, COLOR_RED, background);
+
+	} else
+                colorize = false;
+
+	init_vars();
 	init_wins();
 	notify_init_bar(nl_not, nc_not, y_not, x_not);
 	reset_status_page();
@@ -191,8 +200,7 @@ int main(int argc, char **argv)
 	 * the todo list, appointments and events.
 	 */
 	no_data_file = check_data_files();
-	load_conf();
-	custom_init_attr(colr);
+	load_conf(background);
 	nb_tod = load_todo(colr);	
 	load_app();
 	notify_catch_children();
@@ -290,8 +298,8 @@ int main(int argc, char **argv)
 				case 'c':
                                         if (has_colors()) {
                                                 colorize = true;
-                                                colr = color_config(colr); 
-                                                custom_init_attr(colr);
+                                                custom_color_config(
+						    notify_bar()); 
                                         } else {
                                                 colorize = false;
                                                 erase_window_part(swin, 0, 0,
@@ -504,14 +512,16 @@ int main(int argc, char **argv)
 				} else /* next week */
 					sel_day = sel_day + 7;
 			} else {
-				if ((which_pan == APPOINTMENT) & (hilt_app < number_events_inday + number_apoints_inday))
-				{
+				if ((which_pan == APPOINTMENT) && 
+				    (hilt_app < number_events_inday + 
+				    number_apoints_inday)) {
 					hilt_app++;
 					scroll_pad_down(hilt_app, 
 							number_events_inday,
 							nl_app);
 				}
-				if ((which_pan == TODO) & (hilt_tod < nb_tod)) {
+				if ((which_pan == TODO) && 
+				    (hilt_tod < nb_tod)) {
 					++hilt_tod;
 					if (hilt_tod - first_todo_onscreen ==
 					    nl_tod - 4)
@@ -566,7 +576,7 @@ int main(int argc, char **argv)
 /*
  * Variables init 
  */
-void init_vars(int colr)
+void init_vars()
 {
 	// Variables for user configuration
 	confirm_quit = true; 
@@ -584,7 +594,7 @@ void init_vars(int colr)
 	apad->ptrwin = newpad(apad->length, apad->width);
 
 	// Attribute definitions for color and non-color terminals
-	custom_init_attr(colr);
+	custom_init_attr();
 	
 	// Start at the current date
 	sel_year = year;
@@ -615,32 +625,43 @@ void init_notify_bar(void)
  * Update all of the three windows and put a border around the
  * selected window.
  */
-void update_windows(int surrounded_window)
+void 
+update_windows(int surrounded_window)
 {
-	if (surrounded_window == CALENDAR) {	
-		border_color(cwin, colr);
+	switch (surrounded_window) {
+
+	case CALENDAR:
+		border_color(cwin);
 		border_nocolor(awin);
 		border_nocolor(twin);
-	} else if (surrounded_window == APPOINTMENT) {
-		border_color(awin, colr);
+		break;
+
+	case APPOINTMENT:
+		border_color(awin);
 		border_nocolor(cwin);
 		border_nocolor(twin);
-	} else if (surrounded_window == TODO) {
-		border_color(twin, colr);
+		break;
+
+	case TODO:
+		border_color(twin);
 		border_nocolor(awin);
 		border_nocolor(cwin);
-	} else { 
-		/* NOTREACHED */
+		break;
+
+	default:
 		fputs(_("FATAL ERROR in update_windows: no window selected\n"),stderr);
 		exit(EXIT_FAILURE);
+		/* NOTREACHED */
 	}
+
 	update_app_panel(sel_year, sel_month, sel_day);	
 	update_todo_panel();
 	update_cal_panel(cwin, nl_cal, nc_cal, sel_month,
-			 sel_year, sel_day, day, month, year,
-                         week_begins_on_monday);
+	    sel_year, sel_day, day, month, year,
+            week_begins_on_monday);
 	status_bar(surrounded_window, colr, nc_bar, nl_bar);
-	if (notify_bar()) notify_update_bar();
+	if (notify_bar()) 
+		notify_update_bar();
         wmove(swin, 0, 0);
 	doupdate();
 }
@@ -1381,7 +1402,8 @@ void store_day(int year, int month, int day, bool day_changed)
 }
 
 /* Load the user configuration */
-void load_conf(void)
+void 
+load_conf(int background)
 {
 	FILE *data_file;
 	char *mesg_line1 = _("Failed to open config file");
@@ -1428,8 +1450,7 @@ void load_conf(void)
 				fill_config_var(e_conf);
                         var = 0;
 		} else if (var == 7) {
-			colr = atoi(e_conf);
-			if (colr == 0) colorize = false;
+			custom_load_color(e_conf, background);
                         var = 0;
 		} else if (var == 8) {
 			layout = atoi(e_conf);
