@@ -1,4 +1,4 @@
-/*	$calcurse: calendar.c,v 1.6 2007/01/16 07:50:59 culot Exp $	*/
+/*	$calcurse: calendar.c,v 1.7 2007/03/10 15:54:59 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -182,8 +182,8 @@ long ymd_to_scalar(unsigned annee, unsigned mois, unsigned jour)
  * sel_day, sel_month and sel_year represent the day given back.
  */
 void
-goto_day(int colr, int day, int month, int year,
-	 int *sel_day, int *sel_month, int *sel_year)
+goto_day(int day, int month, int year, int *sel_day, int *sel_month, 
+    int *sel_year)
 {
 #define LDAY 11
 	char selected_day[LDAY] = "";
@@ -195,8 +195,7 @@ goto_day(int colr, int day, int month, int year,
 
 	while (wrong_day) {
 		status_mesg(request_date, "");
-		if (getstring(swin, colr, selected_day, LDAY, 0, 1) == 
-			GETSTRING_ESC)
+		if (getstring(swin, selected_day, LDAY, 0, 1) == GETSTRING_ESC)
 			return;
 		else {
 			if (strlen(selected_day) == 0) {

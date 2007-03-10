@@ -1,8 +1,8 @@
-/*	$calcurse: args.h,v 1.4 2006/12/15 15:33:05 culot Exp $	*/
+/*	$calcurse: args.h,v 1.5 2007/03/10 15:54:25 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2006 Frederic Culot
+ * Copyright (c) 2004-2007 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,10 +29,10 @@
 
 void usage();
 void usage_try();
-int parse_args(int argc, char **argv, int colr);
+int parse_args(int argc, char **argv);
 void version_arg();
 void help_arg();
-void todo_arg(int priority, int colr);
+void todo_arg(int priority);
 void next_arg(void);
 int app_arg(int add_line, int year, int month, int day, long date);
 void date_arg(char *ddate, int add_line);

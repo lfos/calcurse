@@ -1,8 +1,8 @@
-/*	$calcurse: io.h,v 1.1 2006/07/31 21:00:03 culot Exp $	*/
+/*	$calcurse: io.h,v 1.2 2007/03/10 15:56:56 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2006 Frederic Culot
+ * Copyright (c) 2004-2007 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,14 +29,13 @@
 
 void io_init(char *cfile);
 void extract_data(char *dst_data, const char *org, int len);
-void save_cal(bool auto_save, bool confirm_quit, 
-	 bool confirm_delete, bool skip_system_dialogs, 
-         bool skip_progress_bar, bool week_begins_on_monday, 
-	 int colr, int layout);
-void load_app();
-int load_todo(int colr);
-int check_data_files();
-void startup_screen(bool skip_dialogs, int no_data_file, int colr);
+void save_cal(bool auto_save, bool confirm_quit, bool confirm_delete, 
+    bool skip_system_dialogs, bool skip_progress_bar, 
+    bool week_begins_on_monday, int layout);
+void load_app(void);
+int load_todo(void);
+int check_data_files(void);
+void startup_screen(bool skip_dialogs, int no_data_file);
 void progress_bar(bool save, int progress);
 
 #endif /* CALCURSE_IO_H */

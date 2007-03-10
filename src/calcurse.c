@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.37 2007/03/04 16:14:31 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.38 2007/03/10 15:54:24 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -76,7 +76,7 @@ int first_todo_onscreen = 1;
 char *saved_t_mesg;
 
 /* Variables for user configuration */
-int colr = 1, layout = 1;
+int layout = 1;
 int no_data_file = 1;
 int really_quit = 0;
 bool confirm_quit;
@@ -147,7 +147,7 @@ int main(int argc, char **argv)
 	 * Begin by parsing and handling command line arguments.
 	 * The data path is also initialized here.
 	 */
-	non_interactive = parse_args(argc, argv, colr);
+	non_interactive = parse_args(argc, argv);
 	if (non_interactive) 
 		return EXIT_SUCCESS;
 
@@ -201,14 +201,14 @@ int main(int argc, char **argv)
 	 */
 	no_data_file = check_data_files();
 	load_conf(background);
-	nb_tod = load_todo(colr);	
+	nb_tod = load_todo();	
 	load_app();
 	notify_catch_children();
 	if (notify_bar()) 
 		notify_start_main_thread();
 	get_screen_config();
         reinit_wins();
-        startup_screen(skip_system_dialogs, no_data_file, colr);
+        startup_screen(skip_system_dialogs, no_data_file);
 	store_day(year, month, day, day_changed);
 	update_windows(CALENDAR);
 
@@ -273,8 +273,8 @@ int main(int argc, char **argv)
 		case 'g':	/* Goto function */
 			erase_window_part(swin, 0, 0, nc_bar, nl_bar);
 			get_date();
-			goto_day(colr, day, month, year,
-				 &sel_day, &sel_month, &sel_year);
+			goto_day(day, month, year, &sel_day, &sel_month, 
+			    &sel_year);
 			do_storage = true;
 			day_changed = true;
 			break;
@@ -312,7 +312,7 @@ int main(int argc, char **argv)
 					break;
 				case 'L':
 				case 'l':
-					layout = layout_config(layout, colr);
+					layout = layout_config(layout);
 					break;
 				case 'G':
 				case 'g':
@@ -336,7 +336,7 @@ int main(int argc, char **argv)
 			break;
 
 		case CTRL('T'):	/* Add a todo, whatever panel selected */
-			nb_tod = todo_new_item(nb_tod, colr);
+			nb_tod = todo_new_item(nb_tod);
 			if (hilt_tod == 0 && nb_tod == 1)
 				hilt_tod++;
 			break;
@@ -347,7 +347,7 @@ int main(int argc, char **argv)
 				add_item();
 				do_storage = true;
 			} else if (which_pan == TODO) {
-				nb_tod = todo_new_item(nb_tod, colr);
+				nb_tod = todo_new_item(nb_tod);
 				if (hilt_tod == 0 && nb_tod == 1)
 					hilt_tod++;
 			}
@@ -357,9 +357,9 @@ int main(int argc, char **argv)
 		case 'e':	/* Edit an existing item */
 			if (which_pan == APPOINTMENT && hilt_app != 0)
 				day_edit_item(sel_year, sel_month, sel_day,
-					hilt_app, colr);
+				    hilt_app);
 			else if (which_pan == TODO && hilt_tod != 0)
-				todo_edit_item(hilt_tod, colr);
+				todo_edit_item(hilt_tod);
 			do_storage = true;
 			break;
 
@@ -373,7 +373,7 @@ int main(int argc, char **argv)
 		case 'r':
 			if (which_pan == APPOINTMENT && hilt_app != 0)
 				recur_repeat_item(sel_year, sel_month, 
-					sel_day, hilt_app, colr);
+					sel_day, hilt_app);
 				do_storage = true;
 			break;
 
@@ -398,16 +398,15 @@ int main(int argc, char **argv)
 			break;
 
 		case '?':	/* Online help system */
-			status_bar(which_pan, colr, nc_bar, nl_bar);
-			help_screen(which_pan, colr);
+			status_bar(which_pan, nc_bar, nl_bar);
+			help_screen(which_pan);
 			break;
 
 		case 'S':
 		case 's':	/* Save function */
-			save_cal(auto_save, confirm_quit,
-				 confirm_delete, skip_system_dialogs,
-				 skip_progress_bar, week_begins_on_monday,
-                                 colr, layout);
+			save_cal(auto_save, confirm_quit, confirm_delete, 
+			    skip_system_dialogs, skip_progress_bar, 
+			    week_begins_on_monday, layout);
 			break;
 
 		case (261):	/* right arrow */
@@ -533,11 +532,9 @@ int main(int argc, char **argv)
 		case ('Q'):	/* Quit calcurse :-( */
 		case ('q'):
 			if (auto_save)
-				save_cal(auto_save,confirm_quit,
-					 confirm_delete, skip_system_dialogs,
-					 skip_progress_bar, 
-                                         week_begins_on_monday, 
-                                         colr, layout);
+				save_cal(auto_save,confirm_quit, confirm_delete,
+				    skip_system_dialogs, skip_progress_bar,
+				    week_begins_on_monday, layout);
 			if (confirm_quit) {
 				status_mesg(_(quit_message), choices);
 				ch = wgetch(swin);
@@ -659,7 +656,7 @@ update_windows(int surrounded_window)
 	update_cal_panel(cwin, nl_cal, nc_cal, sel_month,
 	    sel_year, sel_day, day, month, year,
             week_begins_on_monday);
-	status_bar(surrounded_window, colr, nc_bar, nl_bar);
+	status_bar(surrounded_window, nc_bar, nl_bar);
 	if (notify_bar()) 
 		notify_update_bar();
         wmove(swin, 0, 0);
@@ -892,7 +889,7 @@ config_notify_bar(void)
 			pthread_mutex_lock(&nbar->mutex);
 			strncpy(buf, nbar->datefmt, strlen(nbar->datefmt) + 1);
 			pthread_mutex_unlock(&nbar->mutex);
-			if (updatestring(swin, colr, &buf, 0, 1) == 0) {
+			if (updatestring(swin, &buf, 0, 1) == 0) {
 				pthread_mutex_lock(&nbar->mutex);
 				strncpy(nbar->datefmt, buf, strlen(buf) + 1);
 				pthread_mutex_unlock(&nbar->mutex);
@@ -904,7 +901,7 @@ config_notify_bar(void)
 			pthread_mutex_lock(&nbar->mutex);
 			strncpy(buf, nbar->timefmt, strlen(nbar->timefmt) + 1);
 			pthread_mutex_unlock(&nbar->mutex);
-			if (updatestring(swin, colr, &buf, 0, 1) == 0) {
+			if (updatestring(swin, &buf, 0, 1) == 0) {
 				pthread_mutex_lock(&nbar->mutex);
 				strncpy(nbar->timefmt, buf, strlen(buf) + 1);
 				pthread_mutex_unlock(&nbar->mutex);
@@ -916,7 +913,7 @@ config_notify_bar(void)
 			pthread_mutex_lock(&nbar->mutex);
 			printf(buf, "%d", nbar->cntdwn);
 			pthread_mutex_unlock(&nbar->mutex);
-			if (updatestring(swin, colr, &buf, 0, 1) == 0 && 
+			if (updatestring(swin, &buf, 0, 1) == 0 && 
 				is_all_digit(buf) && 
 				atoi(buf) >= 0 && atoi(buf) <= DAYINSEC) {
 				pthread_mutex_lock(&nbar->mutex);
@@ -930,7 +927,7 @@ config_notify_bar(void)
 			pthread_mutex_lock(&nbar->mutex);
 			strncpy(buf, nbar->cmd, strlen(nbar->cmd) + 1);
 			pthread_mutex_unlock(&nbar->mutex);
-			if (updatestring(swin, colr, &buf, 0, 1) == 0) {
+			if (updatestring(swin, &buf, 0, 1) == 0) {
 				pthread_mutex_lock(&nbar->mutex);
 				strncpy(nbar->cmd, buf, strlen(buf) + 1);
 				pthread_mutex_unlock(&nbar->mutex);
@@ -1219,7 +1216,7 @@ void add_item(void)
 	/* Get the starting time */
 	while (check_time(item_time) != 1) {
                 status_mesg(mesg_1, "");
-		if (getstring(swin, colr, item_time, LTIME, 0, 1) != 
+		if (getstring(swin, item_time, LTIME, 0, 1) != 
 			GETSTRING_ESC) {
 			if (strlen(item_time) == 0){
 				is_appointment = 0;
@@ -1241,7 +1238,7 @@ void add_item(void)
 		item_time[0] = '\0';
                 while (check_time(item_time) == 0) {
                         status_mesg(mesg_2, "");
-                        if (getstring(swin, colr, item_time, LTIME, 0, 1) != 
+                        if (getstring(swin, item_time, LTIME, 0, 1) != 
 				GETSTRING_VALID)
                                 return;	//nothing entered, cancel adding of event
 			else if (check_time(item_time) == 0) {
@@ -1269,7 +1266,7 @@ void add_item(void)
                 Id = 1;
 
         status_mesg(mesg_3, "");
-	if (getstring(swin, colr, item_mesg, MAX_LENGTH, 0, 1) == 
+	if (getstring(swin, item_mesg, MAX_LENGTH, 0, 1) == 
 		GETSTRING_VALID) {
                 if (is_appointment) {
 			apoint_start = date2sec(sel_year, sel_month, sel_day,
@@ -1349,7 +1346,7 @@ void update_app_panel(int year, int month, int day)
 	title_xpos = nc_app - (strlen(_(monthnames[sel_month - 1])) + 11);
 	if (sel_day < 10) title_xpos++;
 	date = date2sec(year, month, day, 0, 0);
-	day_write_pad(date, app_width, app_length, hilt_app, colr);
+	day_write_pad(date, app_width, app_length, hilt_app);
 
 	/* Print current date in the top right window corner. */
 	erase_window_part(awin, 1, title_lines, nc_app - 2, nl_app - 2);

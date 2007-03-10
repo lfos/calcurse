@@ -1,4 +1,4 @@
-/*	$calcurse: day.c,v 1.19 2007/02/25 19:32:53 culot Exp $	*/
+/*	$calcurse: day.c,v 1.20 2007/03/10 15:55:25 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -258,7 +258,8 @@ struct day_item_s *day_add_apoint(int type, char *mesg, long start, long dur,
  * structure (pointed by day_saved_item), to be later displayed in a
  * popup window if requested.
  */
-void day_write_pad(long date, int width, int length, int incolor, int colr)
+void 
+day_write_pad(long date, int width, int length, int incolor)
 {
 	struct day_item_s *p;
 	int line, item_number, max_pos, recur;
@@ -396,7 +397,8 @@ void day_popup_item(void)
 }
 
 /* Edit an already existing item. */
-void day_edit_item(int year, int month, int day, int item_num, int colr)
+void 
+day_edit_item(int year, int month, int day, int item_num)
 {
 #define STRT	'1'
 #define END	'2'
@@ -479,7 +481,7 @@ void day_edit_item(int year, int month, int day, int item_num, int colr)
 	switch (ch) {
 	case STRT:
 		while (!valid_date) {
-			timestr = day_edit_time(p->start, colr);
+			timestr = day_edit_time(p->start);
 			sscanf(timestr, "%u:%u", &hr, &mn);
 			free(timestr);
 			newtime = update_time_in_date(p->start, hr, mn);
@@ -496,7 +498,7 @@ void day_edit_item(int year, int month, int day, int item_num, int colr)
 	case END:
 		while (!valid_date) {
 			timestr = day_edit_time(
-				p->start + p->appt_dur, colr);
+				p->start + p->appt_dur);
 			sscanf(timestr, "%u:%u", &hr, &mn);
 			free(timestr);
 			newtime = update_time_in_date(
@@ -512,7 +514,7 @@ void day_edit_item(int year, int month, int day, int item_num, int colr)
 		break;
 	case DESC:
 		status_mesg(mesg_desc, "");
-		updatestring(swin, colr, &p->mesg, 0, 1);
+		updatestring(swin, &p->mesg, 0, 1);
 		break;
 	case REPT:
 		while ( (ch != 'D') && (ch != 'W') && (ch != 'M') 
@@ -520,7 +522,7 @@ void day_edit_item(int year, int month, int day, int item_num, int colr)
 			status_mesg(mesg_type_1, mesg_type_2);
 			typestr = (char *) malloc(sizeof(char)); 
 			*typestr = recur_def2char(rpt->type);
-			cancel = updatestring(swin, colr, &typestr, 0, 1);
+			cancel = updatestring(swin, &typestr, 0, 1);
 			ch = toupper(*typestr);
 			free(typestr);
 			if (cancel)
@@ -530,7 +532,7 @@ void day_edit_item(int year, int month, int day, int item_num, int colr)
 			status_mesg(mesg_freq_1, "");
 			freqstr = (char *) malloc(MAX_LENGTH); 
 			snprintf(freqstr, MAX_LENGTH, "%d", rpt->freq);
-			cancel = updatestring(swin, colr, &freqstr, 0, 1);
+			cancel = updatestring(swin, &freqstr, 0, 1);
 			newfreq = atoi(freqstr);
 			free(freqstr);
 			if (cancel)	
@@ -545,7 +547,7 @@ void day_edit_item(int year, int month, int day, int item_num, int colr)
 		while (!date_entered) {
 			status_mesg(mesg_until_1, "");
 			timestr = date_sec2date_str(rpt->until);
-			cancel = updatestring(swin, colr, &timestr, 0, 1);
+			cancel = updatestring(swin, &timestr, 0, 1);
 			if (cancel) {
 				free(timestr);
 				return;
@@ -608,7 +610,8 @@ void day_edit_item(int year, int month, int day, int item_num, int colr)
 }
 
 /* Request the user to enter a new time. */
-char *day_edit_time(long time, int colr) {
+char *
+day_edit_time(long time) {
 	char *timestr;
 	char *msg_time = _("Enter the new time ([hh:mm] or [h:mm]) : ");
         char *enter_str = _("Press [Enter] to continue");
@@ -618,7 +621,7 @@ char *day_edit_time(long time, int colr) {
 	while (1) {
 		status_mesg(msg_time, "");
 		timestr = date_sec2hour_str(time);
-		updatestring(swin, colr, &timestr, 0, 1);
+		updatestring(swin, &timestr, 0, 1);
 		if (check_time(timestr) != 1 || strlen(timestr) == 0) {
 			status_mesg(fmt_msg, enter_str);
 			wgetch(swin);

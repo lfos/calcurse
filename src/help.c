@@ -1,4 +1,4 @@
-/*	$calcurse: help.c,v 1.13 2007/01/16 11:11:47 culot Exp $	*/
+/*	$calcurse: help.c,v 1.14 2007/03/10 15:55:25 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -43,7 +43,8 @@
  * Write the desired help text inside the help pad, and return the number
  * of lines that were written. 
  * */
-int write_help_pad(WINDOW *win, char *title, char *text, int pad_width)
+int 
+write_help_pad(WINDOW *win, char *title, char *text, int pad_width)
 {
 	int nl_title = 0;
 	int nl_text = 0;
@@ -58,7 +59,8 @@ int write_help_pad(WINDOW *win, char *title, char *text, int pad_width)
 	return nl_text + nl_title;
 }
 
-int get_help_lines(char *text)
+int 
+get_help_lines(char *text)
 {
 	int i;
 	int nl = 0;
@@ -70,7 +72,8 @@ int get_help_lines(char *text)
 }
 
 /* Draws the help screen */
-void help_screen(int which_pan, int colr)
+void 
+help_screen(int which_pan)
 {
 	WINDOW *help_win = NULL;
 	WINDOW *help_pad = NULL;

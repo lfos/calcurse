@@ -1,4 +1,4 @@
-/*	$calcurse: recur.c,v 1.21 2007/02/25 19:31:08 culot Exp $	*/
+/*	$calcurse: recur.c,v 1.22 2007/03/10 15:55:25 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -520,8 +520,10 @@ void recur_apoint_erase(long start, unsigned num, unsigned delete_whole)
  *	o repetition end date
  * and then delete the selected item to recreate it as a recurrent one
  */
-void recur_repeat_item(int sel_year, int sel_month, int sel_day, 
-    int item_nb, int colr) {
+void 
+recur_repeat_item(int sel_year, int sel_month, int sel_day, 
+    int item_nb) 
+{
 	struct tm *lt;
 	time_t t;
 	int ch = 0;
@@ -572,8 +574,8 @@ void recur_repeat_item(int sel_year, int sel_month, int sel_day,
 
 	while (freq == 0) {
 		status_mesg(mesg_freq_1, "");
-		if (getstring(swin, colr, user_input, MAX_LENGTH, 0, 1) == 
-			GETSTRING_VALID) {
+		if (getstring(swin, user_input, MAX_LENGTH, 0, 1) == 
+		    GETSTRING_VALID) {
 			freq = atoi(user_input);
 			if (freq == 0) {
 				status_mesg(mesg_wrong_freq, wrong_type_2);
@@ -586,8 +588,7 @@ void recur_repeat_item(int sel_year, int sel_month, int sel_day,
 
 	while (!date_entered) {
 		status_mesg(mesg_until_1, "");
-		if (getstring(swin, colr, user_input, 11, 0, 1) == 
-			GETSTRING_VALID) {
+		if (getstring(swin, user_input, 11, 0, 1) == GETSTRING_VALID) {
 			if (strlen(user_input) == 1 && 
 			    strncmp(user_input, "0", 1) == 0 )  {
 				until = 0;

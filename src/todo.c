@@ -1,4 +1,4 @@
-/*	$calcurse: todo.c,v 1.9 2007/01/16 07:52:29 culot Exp $	*/
+/*	$calcurse: todo.c,v 1.10 2007/03/10 15:54:59 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -36,7 +36,8 @@
 struct todo_s *todolist;
 
 /* Request user to enter a new todo item. */
-int todo_new_item(int total, int colr)
+int 
+todo_new_item(int total)
 {
 	int ch = 0;
 	char *mesg = _("Enter the new ToDo item : ");
@@ -45,7 +46,7 @@ int todo_new_item(int total, int colr)
 	char todo_input[MAX_LENGTH] = "";
 
 	status_mesg(mesg, "");
-	if (getstring(swin, colr, todo_input, MAX_LENGTH, 0, 1) == 
+	if (getstring(swin, todo_input, MAX_LENGTH, 0, 1) == 
 		GETSTRING_VALID) {
 		while ( (ch < '1') || (ch > '9') ) {
 			status_mesg(mesg_id, "");
@@ -59,7 +60,8 @@ int todo_new_item(int total, int colr)
 }
 
 /* Add an item in the todo linked list. */
-struct todo_s *todo_add(char *mesg, int id)
+struct todo_s *
+todo_add(char *mesg, int id)
 {
 	struct todo_s *o, **i;
 	o = (struct todo_s *) malloc(sizeof(struct todo_s));
@@ -79,7 +81,8 @@ struct todo_s *todo_add(char *mesg, int id)
 }
 
 /* Delete an item from the todo linked list. */
-void todo_delete_bynum(unsigned num)
+void 
+todo_delete_bynum(unsigned num)
 {
 	unsigned n;
 	struct todo_s *i, **iptr;
@@ -102,7 +105,8 @@ void todo_delete_bynum(unsigned num)
 }
 
 /* Returns a structure containing the selected item. */
-struct todo_s *todo_get_item(int item_number)
+struct todo_s *
+todo_get_item(int item_number)
 {
 	struct todo_s *o;
 	int i;
@@ -118,7 +122,8 @@ struct todo_s *todo_get_item(int item_number)
  * Returns the position into the linked list corresponding to the
  * given todo_s item.
  */
-int todo_get_position(struct todo_s *i)
+int 
+todo_get_position(struct todo_s *i)
 {
 	struct todo_s *o;
 	int n = 1, found = 0;
@@ -140,7 +145,8 @@ int todo_get_position(struct todo_s *i)
 }
 
 /* Change an item priority by pressing '+' or '-' inside TODO panel. */
-int todo_chg_priority(int action, int item_num)
+int 
+todo_chg_priority(int action, int item_num)
 {
 	struct todo_s *backup;
 	char backup_mesg[MAX_LENGTH];
@@ -169,12 +175,13 @@ int todo_chg_priority(int action, int item_num)
 }
 
 /* Edit the description of an already existing todo item. */
-void todo_edit_item(int item_num, int colr)
+void 
+todo_edit_item(int item_num)
 {
 	struct todo_s *i;
 	char *mesg = _("Enter the new ToDo description :");	
 
 	status_mesg(mesg, "");
 	i = todo_get_item(item_num);
-	updatestring(swin, colr, &i->mesg, 0, 1);
+	updatestring(swin, &i->mesg, 0, 1);
 }

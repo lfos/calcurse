@@ -1,8 +1,8 @@
-/*	$calcurse: calendar.h,v 1.1 2006/07/31 21:00:02 culot Exp $	*/
+/*	$calcurse: calendar.h,v 1.2 2007/03/10 15:54:59 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2006 Frederic Culot
+ * Copyright (c) 2004-2007 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,13 +29,11 @@
 
 #include <stdbool.h>
 
-void update_cal_panel(WINDOW *cwin, int nl_cal,
-		      int nc_cal, int sel_month, int sel_year, int sel_day,
-		      int day, int month, int year,
-                      bool monday_first);
+void update_cal_panel(WINDOW *cwin, int nl_cal, int nc_cal, int sel_month, 
+    int sel_year, int sel_day, int day, int month, int year, bool monday_first);
 int isBissextile(unsigned);
 long ymd_to_scalar(unsigned, unsigned, unsigned);
-void goto_day(int colr, int day, int month, int year,
-	      int *sel_day, int *sel_month, int *sel_year);
+void goto_day(int day, int month, int year, int *sel_day, int *sel_month, 
+    int *sel_year);
 
 #endif /* CALCURSE_CALENDAR_H */

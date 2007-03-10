@@ -1,4 +1,4 @@
-/*	$calcurse: args.c,v 1.14 2007/01/16 11:11:47 culot Exp $	*/
+/*	$calcurse: args.c,v 1.15 2007/03/10 15:54:25 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -50,7 +50,7 @@
  * Parse the command-line arguments and call the appropriate
  * routines to handle those arguments. Also initialize the data paths.
  */
-int parse_args(int argc, char **argv, int colr)
+int parse_args(int argc, char **argv)
 {
 	int ch, add_line = 0;
 	int unknown_flag = 0, app_found = 0;
@@ -154,10 +154,10 @@ int parse_args(int argc, char **argv, int colr)
 				io_init(cfile);
 				no_file = check_data_files();
 				if (dflag || aflag || nflag)  
-					load_app(colr);
+					load_app();
 			}
 			if (tflag) {
-				todo_arg(tnum, colr);
+				todo_arg(tnum);
 				non_interactive = 1;
 			}
 			if (nflag) {
@@ -240,13 +240,13 @@ void help_arg()
  * Print todo list and exit. If a priority number is given (say not equal to
  * zero), then only todo items that have this priority will be displayed.
  */
-void todo_arg(int priority, int colr)
+void todo_arg(int priority)
 {
 	struct todo_s *i;
 	int nb_tod, title = 1;
 	char priority_str[MAX_LENGTH] = "";
 
-	nb_tod = load_todo(colr);
+	nb_tod = load_todo();
 	for (i = todolist; i != 0; i = i->next) {
 		if (priority == 0 || i->id == priority) {
 			if (title) {
