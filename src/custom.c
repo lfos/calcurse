@@ -1,4 +1,4 @@
-/*	$calcurse: custom.c,v 1.4 2007/03/04 16:12:18 culot Exp $	*/
+/*	$calcurse: custom.c,v 1.5 2007/03/10 15:58:20 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -82,7 +82,8 @@ void custom_remove_attr(WINDOW *win, int attr_num)
 }
 
 /* Draws the configuration bar */
-void config_bar()
+void 
+config_bar(void)
 {
 	int smlspc, spc;
 
@@ -109,7 +110,8 @@ void config_bar()
 }
 
 /* Choose the layout */
-int layout_config(int layout, int colr)
+int 
+layout_config(int layout)
 {
 	int ch, old_layout;
 	char *layout_mesg = _("Pick the desired layout on next screen [press ENTER]");
@@ -325,24 +327,57 @@ custom_color_config(int notify_bar)
 void
 custom_load_color(char *color, int background)
 {
-	int len, color_num;
+#define AWAITED_COLORS	2
+
+	int i, len, color_num;
+	char c[AWAITED_COLORS][MAX_LENGTH];
+	int colr[AWAITED_COLORS];
+	const char *wrong_color_number =
+	    _("FATAL ERROR in custom_load_color: wrong color number.\n");
+	const char *wrong_color_name =
+	    _("FATAL ERROR in custom_load_color: wrong color name.\n");
+	const char *wrong_variable_format =
+	    _("FATAL ERROR in custom_load_color: " 
+	    "wrong configuration variable format.\n");
 
 	len = strlen(color);
 
 	if (len > 1) { 
 		/* New version configuration */
-		if (!strncmp(color, "red", 3))
-			init_pair(COLR_CUSTOM, COLR_RED, background);
-		else if (!strncmp(color, "green", 5))
-			init_pair(COLR_CUSTOM, COLR_GREEN, background);
-		else if (!strncmp(color, "yellow", 6))
-			init_pair(COLR_CUSTOM, COLR_YELLOW, background);
-		else if (!strncmp(color, "blue", 4))
-			init_pair(COLR_CUSTOM, COLR_BLUE, background);
-		else if (!strncmp(color, "magenta", 7))
-			init_pair(COLR_CUSTOM, COLR_MAGENTA, background);
-		else if (!strncmp(color, "cyan", 4))
-			init_pair(COLR_CUSTOM, COLR_CYAN, background);
+		if (sscanf(color, "%s on %s", c[0], c[1]) != AWAITED_COLORS) {
+			fputs(_("FATAL ERROR in custom_load_color: "
+			    "missing colors in config file.\n"), stderr);
+			exit(EXIT_FAILURE);
+			/* NOTREACHED */
+		};
+
+		for (i = 0; i < AWAITED_COLORS; i++) {
+			if (!strncmp(c[i], "black", 5))
+				colr[i] = COLOR_BLACK;
+			else if (!strncmp(c[i], "red", 3))
+				colr[i] = COLOR_RED;
+			else if (!strncmp(c[i], "green", 5))
+				colr[i] = COLOR_GREEN;
+			else if (!strncmp(c[i], "yellow", 6))
+				colr[i] = COLOR_YELLOW;
+			else if (!strncmp(c[i], "blue", 4))
+				colr[i] = COLOR_BLUE;
+			else if (!strncmp(c[i], "magenta", 7))
+				colr[i] = COLOR_MAGENTA;
+			else if (!strncmp(c[i], "cyan", 4))
+				colr[i] = COLOR_CYAN;
+			else if (!strncmp(c[i], "white", 5))
+				colr[i] = COLOR_WHITE;
+			else if (!strncmp(c[i], "default", 7))
+				colr[i] = background;
+			else {
+				fputs(wrong_color_name, stderr);
+				exit(EXIT_FAILURE);
+				/* NOTREACHED */
+			}
+		}
+		
+		init_pair(COLR_CUSTOM, colr[0], colr[1]);
 
 	} else if (len > 0 && len < 2) { 
 		/* Old version configuration */
@@ -377,16 +412,61 @@ custom_load_color(char *color, int background)
 			init_pair(COLR_CUSTOM, COLOR_RED, COLR_BLUE);
 			break;
 		default:
-			/* NOTREACHED */
-			fputs(_("FATAL ERROR in custom_load_color: "
-			    "wrong color number.\n"), stderr);
+			fputs(wrong_color_number, stderr);
 			exit(EXIT_FAILURE);
+			/* NOTREACHED */
 		}
 
 	} else {
-		/* NOTREACHED */
-		fputs(_("FATAL ERROR in custom_load_color: "
-			"wrong configuration variable format.\n"), stderr);
+		fputs(wrong_variable_format, stderr);
 		exit(EXIT_FAILURE);
+		/* NOTREACHED */
 	}
+}
+
+/* 
+ * Return a string defining the color theme in the form:
+ *       foreground color 'on' background color
+ * in order to dump this data in the configuration file.
+ * Color numbers follow the ncurses library definitions. 
+ */
+void
+custom_color_theme_name(char *theme_name)
+{
+#define MAXCOLORS	8
+#define NBCOLORS	2
+#define DEFAULTCOLOR	255
+
+	int i; 
+	short color[NBCOLORS];
+	char *color_name[NBCOLORS];
+	char *default_color = "default";
+	char *name[MAXCOLORS] = {
+	    "black", 
+	    "red", 
+	    "green", 
+	    "yellow",
+	    "blue",
+	    "magenta",
+	    "cyan",
+	    "white"};	
+	const char *error_txt =
+	    _("FATAL ERROR in custom_color_theme_name: unknown color\n");
+
+	pair_content(COLR_CUSTOM, &color[0], &color[1]);
+
+	for (i = 0; i < NBCOLORS; i++) {
+		if (color[i] == DEFAULTCOLOR)
+			color_name[i] = default_color;
+		else if (color[i] >= 0 && color[i] <= MAXCOLORS)
+			color_name[i] = name[color[i]];
+		else {
+			fputs(error_txt, stderr);
+			exit(EXIT_FAILURE);
+			/* NOTREACHED */
+		}
+	}
+
+	snprintf(theme_name, MAX_LENGTH, "%s on %s", color_name[0],
+	    color_name[1]);
 }
