@@ -1,4 +1,4 @@
-/*	$calcurse: utils.h,v 1.14 2007/03/04 16:13:09 culot Exp $	*/
+/*	$calcurse: utils.h,v 1.15 2007/03/10 16:45:56 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -52,22 +52,21 @@ typedef struct { /* structure defining a keybinding */
 
 void status_mesg(char *mesg_line1, char *mesg_line2);
 void erase_window_part(WINDOW *win, int first_col, int first_row, 
-                       int last_col, int last_row);
-WINDOW *popup(int pop_row, int pop_col,
-	      int pop_y, int pop_x, char *pop_lab);
+    int last_col, int last_row);
+WINDOW *popup(int pop_row, int pop_col, int pop_y, int pop_x, char *pop_lab);
 void print_in_middle(WINDOW *win, int starty, int startx, int width, char *string);
 void del_char(int pos, char *str);
 char *add_char(int pos, int ch, char *str);
 void showcursor(WINDOW *win, int y, int pos, char *str, int l, int offset);
 void showstring(WINDOW *win, int y, int x, char *str, int len, int pos);
-int getstring(WINDOW *win, int colr, char *str, int l, int x, int y);
-int updatestring(WINDOW *win, int colr, char **str, int x, int y);
+int getstring(WINDOW *win, char *str, int l, int x, int y);
+int updatestring(WINDOW *win, char **str, int x, int y);
 int is_all_digit(char *string);
 void border_color(WINDOW *window);
 void border_nocolor(WINDOW *window);
-void status_bar(int which_pan, int colr, int nc_bar, int nl_bar);
+void status_bar(int which_pan, int nc_bar, int nl_bar);
 long date2sec(unsigned year, unsigned month, unsigned day, unsigned hour,
-	      unsigned min);
+    unsigned min);
 char *date_sec2hour_str(long sec);
 char *date_sec2date_str(long sec);
 long update_time_in_date(long date, unsigned hr, unsigned min);
@@ -75,12 +74,12 @@ long get_sec_date(int year, int month, int day);
 long min2sec(unsigned minutes);
 int check_time(char *string);
 void draw_scrollbar(WINDOW *win, int y, int x, int length, 
-		int bar_top, int bar_bottom, bool hilt);
+    int bar_top, int bar_bottom, bool hilt);
 void item_in_popup(char *saved_a_start, char *saved_a_end, char *msg, 
-		char *pop_title);
+    char *pop_title);
 void win_show(WINDOW * win, char *label);
 void display_item(WINDOW *win, int incolor, char *msg, int recur,
-		int len, int y, int x);
+    int len, int y, int x);
 void reset_status_page(void);
 void other_status_page(int panel);
 long today(void);

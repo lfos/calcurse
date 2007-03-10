@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.23 2007/03/04 16:13:43 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.24 2007/03/10 16:45:56 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -187,7 +187,8 @@ void showstring(WINDOW *win, int y, int x, char *str, int len, int pos)
  * environment, otherwise the cursor would move from place to place without
  * control.
  */
-int getstring(WINDOW *win, int colr, char *str, int l, int x, int y)
+int 
+getstring(WINDOW *win, char *str, int l, int x, int y)
 {
 	int ch, newpos, len = 0;
 	char *orig;
@@ -273,13 +274,15 @@ int getstring(WINDOW *win, int colr, char *str, int l, int x, int y)
 }
 
 /* Update an already existing string. */
-int updatestring(WINDOW *win, int colr, char **str, int x, int y) {
+int 
+updatestring(WINDOW *win, char **str, int x, int y) 
+{
 	char *newstr;
 	int escape, len = strlen(*str) + 1;
 
 	newstr = (char *) malloc(MAX_LENGTH);	
 	(void)memcpy(newstr, *str, len);
-	escape = getstring(win, colr, newstr, MAX_LENGTH, x, y);
+	escape = getstring(win, newstr, MAX_LENGTH, x, y);
 	if (!escape) {
 		len = strlen(newstr) + 1;
 		if ((*str = (char *) realloc(*str, len)) == NULL) {
@@ -365,7 +368,8 @@ border_nocolor(WINDOW *window)
  * table, and update the NB_CAL_CMDS, NB_APP_CMDS or NB_TOD_CMDS defines in
  * utils.h, depending on which panel the added keybind is assigned to.
  */
-void status_bar(int which_pan, int colr, int nc_bar, int nl_bar)
+void 
+status_bar(int which_pan, int nc_bar, int nl_bar)
 {
 	int cmd_length, space_between_cmds, start, end, i, j = 0;
 	const int pos[NB_PANELS + 1] = 
