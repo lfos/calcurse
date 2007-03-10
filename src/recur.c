@@ -1,4 +1,4 @@
-/*	$calcurse: recur.c,v 1.22 2007/03/10 15:55:25 culot Exp $	*/
+/*	$calcurse: recur.c,v 1.23 2007/03/10 16:48:19 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -362,47 +362,90 @@ void recur_save_data(FILE *f)
 	pthread_mutex_unlock(&(recur_alist_p->mutex));
 }
 
-/* Check if the recurrent item belongs to the selected day. */
-unsigned recur_item_inday(long item_start, struct days_s *item_exc,
-				int rpt_type, int rpt_freq,
-			  	long rpt_until, long day_start)
+/* 
+ * Check if the recurrent item belongs to the selected day,
+ * and if yes, return the real start time.
+ * This function was improved thanks to Tony's patch.
+ */
+unsigned 
+recur_item_inday(long item_start, struct days_s *item_exc,
+    int rpt_type, int rpt_freq, long rpt_until, long day_start)
 {
-	long day_end = day_start + DAYINSEC;
-	unsigned inday = 0;
+#define YEARSTODAYS(x)	((x) * 365L + (x) / 4 - (x) / 100 + (x) / 400) 	
+
+	long day_end;
 	struct tm *lt;
+	int day_month, day_year, day_yday, day_mday, diff;
 	struct days_s *exc;
 	time_t t;
 	char *error = 
 		_("FATAL ERROR in recur_item_inday: unknown item type\n");
 
+	day_end = day_start + DAYINSEC;
+	t = day_start;
+	lt = localtime(&t);
+	day_month = lt->tm_mon;
+	day_year = lt->tm_year;
+	day_yday = lt->tm_yday;
+	day_mday = lt->tm_mday;
+	
 	for (exc = item_exc; exc != 0; exc = exc->next)
 		if (exc->st < day_end && exc->st >= day_start) 
 			return 0;
+
 	if (rpt_until == 0) /* we have an endless recurrent item */
 		rpt_until = day_end;
-	while (item_start <= day_end && item_start <= rpt_until) {
-		if (item_start < day_end && item_start >= day_start) {
-			inday = item_start;
+
+	if (item_start > day_end || rpt_until < day_start) 
+		return 0;
+
+	t = item_start;
+	lt = localtime(&t);
+
+	switch (rpt_type) {
+		case RECUR_DAILY:
+			diff = (YEARSTODAYS(lt->tm_year) + lt->tm_yday) -
+			    (YEARSTODAYS(day_year) + day_yday);
+			if (diff % rpt_freq != 0)
+				return 0;
+			lt->tm_mday = day_mday;
+			lt->tm_mon = day_month;
+			lt->tm_year = day_year;
 			break;
-		}
-		t = item_start;
-		lt = localtime(&t);
-		if (rpt_type == RECUR_DAILY) {
-			lt->tm_mday += rpt_freq;
-		} else if (rpt_type == RECUR_WEEKLY) {
-			lt->tm_mday += rpt_freq * 7;
-		} else if (rpt_type == RECUR_MONTHLY) {
-			lt->tm_mon += rpt_freq;
-		} else if (rpt_type == RECUR_YEARLY) {
-			lt->tm_year += rpt_freq;
-		} else { /* NOT REACHED */
+		case RECUR_WEEKLY:
+			diff = (YEARSTODAYS(lt->tm_year) + lt->tm_yday) -
+			    (YEARSTODAYS(day_year) + day_yday);
+			if (diff % (rpt_freq*7) != 0)
+				return 0;
+			lt->tm_mday = day_mday;
+			lt->tm_mon = day_month;
+			lt->tm_year = day_year;
+			break;
+		case RECUR_MONTHLY:
+			diff = ((day_year - lt->tm_year) * 12) +
+			    (day_month - lt->tm_mon);
+			if (diff % rpt_freq != 0)
+				return 0;
+			lt->tm_mon = day_month;
+			lt->tm_year = day_year;
+			break;
+		case RECUR_YEARLY:
+			diff = day_year - lt->tm_year;
+			if (diff % rpt_freq != 0)
+				return 0;
+			lt->tm_year = day_year;
+			break;
+		default:
 			fputs(error, stderr);
 			exit(EXIT_FAILURE);
-		}
-		item_start = date2sec(lt->tm_year + 1900, lt->tm_mon + 1, 
-			lt->tm_mday, lt->tm_hour, lt->tm_min);
-	}	
-	return inday;
+	}
+	item_start = date2sec(lt->tm_year + 1900, lt->tm_mon + 1, 
+		lt->tm_mday, lt->tm_hour, lt->tm_min);
+
+	if (item_start < day_end && item_start >= day_start)
+		return item_start;
+	else
+		return 0;
 }
 
 /* 
