@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.9 2007/02/24 17:34:18 culot Exp $	*/
+/*	$calcurse: io.c,v 1.10 2007/03/10 15:56:32 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -119,15 +119,15 @@ void extract_data(char *dst_data, const char *org, int len)
 
 /* Save the calendar data */
 void
-save_cal(bool auto_save, bool confirm_quit, 
-	 bool confirm_delete, bool skip_system_dialogs, 
-         bool skip_progress_bar, bool week_begins_on_monday, 
-	 int colr, int layout)
+save_cal(bool auto_save, bool confirm_quit, bool confirm_delete, 
+    bool skip_system_dialogs, bool skip_progress_bar, 
+    bool week_begins_on_monday, int layout)
 {
 	FILE *data_file;
 	struct event_s *k;
 	apoint_llist_node_t *j;
 	struct todo_s *i;
+	char theme_name[MAX_LENGTH];
 	char *access_pb = _("Problems accessing data file ...");
 	char *config_txt =
 	    "#\n# Calcurse configuration file\n#\n# This file sets the configuration options used by Calcurse. These\n# options are usually set from within Calcurse. A line beginning with \n# a space or tab is considered to be a continuation of the previous line.\n# For a variable to be unset its value must be blank.\n# To set a variable to the empty string its value should be \"\".\n# Lines beginning with \"#\" are comments, and ignored by Calcurse.\n";
@@ -135,15 +135,19 @@ save_cal(bool auto_save, bool confirm_quit,
 	char *enter = _("Press [ENTER] to continue");
 	bool save = true, show_bar = false;
 
-	if (!skip_progress_bar) show_bar = true;
+	if (!skip_progress_bar) 
+		show_bar = true;
 
 	/* Save the user configuration. */
 	
-	if (show_bar) progress_bar(save, 1);
+	if (show_bar) 
+		progress_bar(save, 1);
 	data_file = fopen(path_conf, "w");
 	if (data_file == (FILE *) 0)
                 status_mesg(access_pb, "");
 	else {
+		custom_color_theme_name(theme_name);
+
 		fprintf(data_file, "%s\n", config_txt);
 
 		fprintf(data_file,
@@ -183,12 +187,12 @@ save_cal(bool auto_save, bool confirm_quit,
 			(week_begins_on_monday) ? "yes" : "no");
 
 		fprintf(data_file,
-		    "\n# This is the color theme used for menus (1 to 8) :\n");
+		    "\n# This is the color theme used for menus :\n");
 		fprintf(data_file, "color-theme=\n");
-		fprintf(data_file, "%d\n", colr);
+		fprintf(data_file, "%s\n", theme_name);
 
 		fprintf(data_file,
-		    "\n# This is the layout of the calendar (1 to 4) :\n");
+		    "\n# This is the layout of the calendar :\n");
 		fprintf(data_file, "layout=\n");
 		fprintf(data_file, "%d\n", layout);
 
@@ -269,7 +273,8 @@ save_cal(bool auto_save, bool confirm_quit,
  * and then load either: a new appointment, a new event, or a new
  * recursive item (which can also be either an event or an appointment).
  */ 
-void load_app()
+void 
+load_app(void)
 {
 	FILE *data_file;
 	int c, is_appointment, is_event, is_recursive;
@@ -409,7 +414,7 @@ void load_app()
 
 /* Load the todo data */
 int
-load_todo(int colr)
+load_todo(void)
 {
 	FILE *data_file;
 	char *mesg_line1 = _("Failed to open todo file");
@@ -448,7 +453,8 @@ load_todo(int colr)
 }
 
 /* Checks if data files exist. If not, create them */
-int check_data_files()
+int 
+check_data_files(void)
 {
 	FILE *data_file;
 	int no_data_file;
@@ -493,23 +499,26 @@ int check_data_files()
 }
 
 /* Draw the startup screen */
-void startup_screen(bool skip_dialogs, int no_data_file, int colr)
+void 
+startup_screen(bool skip_dialogs, int no_data_file)
 {
-	char *welcome_mesg = _("Welcome to Calcurse. Missing data files were created.");
+	char *welcome_mesg = 
+	    _("Welcome to Calcurse. Missing data files were created.");
 	char *data_mesg = _("Data files found. Data will be loaded now.");
 	char *enter = _("Press [ENTER] to continue");
 
 	if (no_data_file != 0) {
-	  status_mesg(welcome_mesg, enter);
-          wgetch(swin);
-	} else if (!skip_dialogs){
-                        status_mesg(data_mesg, enter);
-                        wgetch(swin);
+		status_mesg(welcome_mesg, enter);
+		wgetch(swin);
+	} else if (!skip_dialogs) {
+		status_mesg(data_mesg, enter);
+		wgetch(swin);
 	}
 }
 
 /* Draw a progress bar while saving or loading data. */
-void progress_bar(bool save, int progress)
+void 
+progress_bar(bool save, int progress)
 {
 	int i, nbd = 4;
 	char *mesg_sav  = _("Saving...");
