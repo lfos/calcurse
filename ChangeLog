@@ -1,3 +1,11 @@
+10 Mar 2007:
+	global variable 'colr' suppressed
+	save_cal() modified to save new version of user-defined color theme
+	custom_color_theme_name() created to return color theme name
+	custom_load_color() updated to load new version of user-defined color
+	theme
+	recur_item_inday() improved, thanks to Tony's patch
+
 04 Mar 2007:
 	color_config() rewritten and changed to custom_color_config(), to allow
 	more color choices and the use of terminal's default background color
