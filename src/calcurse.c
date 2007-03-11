@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.38 2007/03/10 15:54:24 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.39 2007/03/11 15:21:06 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -407,6 +407,11 @@ int main(int argc, char **argv)
 			save_cal(auto_save, confirm_quit, confirm_delete, 
 			    skip_system_dialogs, skip_progress_bar, 
 			    week_begins_on_monday, layout);
+			break;
+
+		case 'X':
+		case 'x':	/* Export function */
+			io_export_data(IO_EXPORT_INTERACTIVE);
 			break;
 
 		case (261):	/* right arrow */
