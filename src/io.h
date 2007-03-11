@@ -1,4 +1,4 @@
-/*	$calcurse: io.h,v 1.2 2007/03/10 15:56:56 culot Exp $	*/
+/*	$calcurse: io.h,v 1.3 2007/03/11 15:23:14 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -27,6 +27,12 @@
 #ifndef CALCURSE_IO_H
 #define CALCURSE_IO_H
 
+typedef enum {
+	IO_EXPORT_NONINTERACTIVE,
+	IO_EXPORT_INTERACTIVE,
+	IO_EXPORT_NBMODES
+} export_mode_t;
+
 void io_init(char *cfile);
 void extract_data(char *dst_data, const char *org, int len);
 void save_cal(bool auto_save, bool confirm_quit, bool confirm_delete, 
@@ -37,5 +43,6 @@ int load_todo(void);
 int check_data_files(void);
 void startup_screen(bool skip_dialogs, int no_data_file);
 void progress_bar(bool save, int progress);
+void io_export_data(export_mode_t mode);
 
 #endif /* CALCURSE_IO_H */
