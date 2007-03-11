@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.10 2007/03/10 15:56:32 culot Exp $	*/
+/*	$calcurse: io.c,v 1.11 2007/03/11 15:22:39 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -45,6 +45,99 @@
 #include "recur.h"
 #include "io.h"
 #include "vars.h"
+
+static FILE *io_get_export_stream(void);
+static void io_export_header(FILE *stream);
+static void io_export_footer(FILE *stream);
+static void io_export_apoints(FILE *stream);
+static void io_export_todo(FILE *stream);
+
+/* Ask user for a file name to export data to. */
+FILE *
+io_get_export_stream(void)
+{
+	FILE *stream;
+	char *home, *stream_name;
+	char *question =
+	    _("Choose the file used to export calcurse data:");
+	char *wrong_name = 
+	    _("The file cannot be accessed, please enter another file name.");
+	char *press_enter =
+	    _("Press [ENTER] to continue.");
+
+	stream = NULL;
+	stream_name = (char *)malloc(MAX_LENGTH);
+	home = getenv("HOME");
+	if (home == NULL)
+		home = ".";
+	snprintf(stream_name, MAX_LENGTH, "%s/calcurse.ics", home);
+	
+	while (stream == NULL) {
+		status_mesg(question, "");
+		updatestring(swin, &stream_name, 0, 1);
+		stream = fopen(stream_name, "w");
+		if (stream == NULL) {
+			status_mesg(wrong_name, press_enter);
+			wgetch(swin);
+		}
+	}
+	free(stream_name);
+	
+	return (stream);
+} 
+
+/* Export header. */
+void
+io_export_header(FILE *stream)
+{
+	fprintf(stream, "BEGIN:VCALENDAR\n");
+	fprintf(stream, "PROID:-//calcurse/ical//NONSGML 1.0//EN\n");
+	fprintf(stream, "VERSION:2.0\n");	
+}
+
+/* Export footer. */
+void
+io_export_footer(FILE *stream)
+{
+	fprintf(stream, "END:VCALENDAR\n");
+}
+
+/* Export appointments. */
+void
+io_export_apoints(FILE *stream)
+{
+	apoint_llist_node_t *i;
+	struct tm *lt;
+	time_t t;
+	
+	pthread_mutex_lock(&(alist_p->mutex));
+	for (i = alist_p->root; i != 0; i = i->next) { 
+		t = i->start;
+		lt = localtime(&t);
+		fprintf(stream, "BEGIN:VEVENT\n");
+		fprintf(stream, "DTSTART:%04d%02d%02dT%02d%02d%02d\n",
+		    lt->tm_year + 1900, lt->tm_mon + 1, lt->tm_mday,
+		    lt->tm_hour, lt->tm_min, lt->tm_sec);
+		fprintf(stream, "DURATION:P%ldS\n", i->dur);
+		fprintf(stream, "SUMMARY:%s\n", i->mesg);
+		fprintf(stream, "END:VEVENT\n");
+	}
+	pthread_mutex_unlock(&(alist_p->mutex));
+}
+
+/* Export todo items. */
+void
+io_export_todo(FILE *stream)
+{
+	struct todo_s *i;	
+
+	for (i = todolist; i != 0; i = i->next) {
+		fprintf(stream, "BEGIN:VTODO\n");
+		fprintf(stream, "PRIORITY:%d\n", i->id);
+		fprintf(stream, "SUMMARY:%s\n", i->mesg);
+		fprintf(stream, "END:VTODO\n");
+	}
+}
 
 /* 
  * Initialization of data paths. The argument cfile is the variable
@@ -555,4 +648,39 @@ progress_bar(bool save, int progress)
 	wmove(swin, 0, 0);
 	wrefresh(swin);
 	usleep(sleep_time); 
+}
+
+/* Export calcurse data. */
+void
+io_export_data(export_mode_t mode)
+{
+	FILE *stream;
+	char *wrong_mode = 
+		_("FATAL ERROR in io_export_data: wrong export mode\n");
+
+	switch (mode) {
+	case IO_EXPORT_NONINTERACTIVE:
+		stream = stdout;
+		break;
+	case IO_EXPORT_INTERACTIVE:
+		stream = io_get_export_stream();
+		break;
+	default:
+	  	fputs(wrong_mode, stderr);
+		exit(EXIT_FAILURE);
+		/* NOTREACHED */
+	}
+
+	io_export_header(stream);
+/*
+	io_export_recur_event(stream);
+	io_export_events(stream);
+	io_export_recur_apoints(stream);
+*/
+	io_export_apoints(stream);
+	io_export_todo(stream);
+	io_export_footer(stream);
+
+	if (stream != stdout)
+		fclose(stream);
 }
