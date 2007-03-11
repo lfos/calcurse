@@ -1,3 +1,8 @@
+11 Mar 2007:
+	'X' command added, to export data in iCal format
+	io_export_data(), io_get_export_stream(), io_export_header(),
+	io_export_footer(), io_export_todo(), io_export_apoints() created
+
 10 Mar 2007:
 	global variable 'colr' suppressed
 	save_cal() modified to save new version of user-defined color theme
