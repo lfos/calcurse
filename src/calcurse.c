@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.39 2007/03/11 15:21:06 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.40 2007/03/17 16:33:49 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -411,7 +411,8 @@ int main(int argc, char **argv)
 
 		case 'X':
 		case 'x':	/* Export function */
-			io_export_data(IO_EXPORT_INTERACTIVE);
+			io_export_data(IO_EXPORT_INTERACTIVE,
+			    skip_system_dialogs, skip_progress_bar);
 			break;
 
 		case (261):	/* right arrow */
@@ -1038,7 +1039,7 @@ print_notify_options(WINDOW *win, int col)
 	    MAX_LENGTH);
 	strncpy(opt[WARN].desc, 
 	    _("(Warn user if an appointment is within next 'notify-bar_warning'"
-	    "seconds)"),
+	    " seconds)"),
 	    MAX_LENGTH);
 	strncpy(opt[CMD].desc, 
 	    _("(Command used to notify user of an upcoming appointment)"),
