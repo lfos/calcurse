@@ -1,3 +1,14 @@
+17 Mar 2007:
+	HOURINSEC and MININSEC defined
+	io_export_events(), io_export_recur_events() and
+	io_export_recur_apoints() created
+	io_recur_type() and io_export_valarm() created
+	progress_bar() updated to display a bar when exporting data
+
+12 Mar 2007:
+	date_sec2ical_datetime() and date_sec2ical_date() created
+	io_export_apoints() updated to call date_sec2ical_datetime()
+
 11 Mar 2007:
 	'X' command added, to export data in iCal format
 	io_export_data(), io_get_export_stream(), io_export_header(),
