@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.11 2007/03/11 15:22:39 culot Exp $	*/
+/*	$calcurse: io.c,v 1.12 2007/03/17 16:55:27 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -46,11 +46,89 @@
 #include "io.h"
 #include "vars.h"
 
+typedef enum {
+	PROGRESS_BAR_SAVE,
+	PROGRESS_BAR_LOAD,
+	PROGRESS_BAR_EXPORT
+} progress_bar_t;
+
+static void progress_bar(progress_bar_t type, int progress);
 static FILE *io_get_export_stream(void);
+static void io_export_valarm(FILE *stream);
 static void io_export_header(FILE *stream);
 static void io_export_footer(FILE *stream);
+static void io_export_recur_events(FILE *stream);
+static void io_export_events(FILE *stream);
 static void io_export_apoints(FILE *stream);
 static void io_export_todo(FILE *stream);
+static char *io_recur_type(int type);
+
+/* Draw a progress bar while saving, loading or exporting data. */
+void 
+progress_bar(progress_bar_t type, int progress)
+{
+#define SLEEPTIME	125000
+#define STEPS		3
+#define LABELENGTH	15
+
+	int i, step;
+	char *mesg_sav  = _("Saving...");
+	char *mesg_load = _("Loading...");
+	char *mesg_export = _("Exporting...");
+	char *barchar = "|";
+	char file[STEPS][LABELENGTH] = {
+	    "[    conf    ]", 
+	    "[    todo    ]", 
+	    "[    apts    ]"
+	}; 
+	char data[STEPS][LABELENGTH] = {
+	    "[   events   ]",
+	    "[appointments]",
+	    "[    todo    ]"
+	};
+	int ipos = LABELENGTH + 2;
+	int epos[STEPS];
+	
+	/* progress bar length init. */
+	ipos = LABELENGTH + 2;
+	step = floor(col / (STEPS + 1));
+	for (i = 0; i < STEPS - 1; i++)
+		epos[i] = (i + 2) * step;
+	epos[STEPS - 1] = col - 2;
+
+	switch (type) {
+	case PROGRESS_BAR_SAVE:
+		status_mesg(mesg_sav, file[progress]);
+		break;
+	case PROGRESS_BAR_LOAD:
+		status_mesg(mesg_load, file[progress]);
+		break;
+	case PROGRESS_BAR_EXPORT:
+		status_mesg(mesg_export, data[progress]);
+		break;
+	}
+
+	/* Draw the progress bar. */
+	mvwprintw(swin, 1, ipos, barchar);
+	mvwprintw(swin, 1, epos[STEPS], barchar);
+	custom_apply_attr(swin, ATTR_HIGHEST);
+	for (i = ipos + 1; i < epos[progress]; i++)
+		mvwaddch(swin, 1, i, ' ' | A_REVERSE);
+	custom_remove_attr(swin, ATTR_HIGHEST);
+	wmove(swin, 0, 0);
+	wrefresh(swin);
+	usleep(SLEEPTIME); 
+}
+
+/* Return the recurrence type to dump in iCal format. */
+char *
+io_recur_type(int type)
+{
+ 	char *recur_type[RECUR_TYPES] = 
+	    { "", "DAILY", "WEEKLY", "MONTHLY", "YEARLY" };
+	
+	return (recur_type[type]);
+}	
 
 /* Ask user for a file name to export data to. */
 FILE *
@@ -86,12 +164,25 @@ io_get_export_stream(void)
 	return (stream);
 } 
 
+/* iCal alarm notification. */
+void
+io_export_valarm(FILE *stream)
+{
+	fprintf(stream, "BEGIN:VALARM\n");
+	pthread_mutex_lock(&nbar->mutex);
+	fprintf(stream, "TRIGGER:-P%dS\n", nbar->cntdwn);
+	pthread_mutex_unlock(&nbar->mutex);
+	fprintf(stream, "ACTION:DISPLAY\n");
+	fprintf(stream, "END:VALARM\n");
+}
+
 /* Export header. */
 void
 io_export_header(FILE *stream)
 {
 	fprintf(stream, "BEGIN:VCALENDAR\n");
-	fprintf(stream, "PROID:-//calcurse/ical//NONSGML 1.0//EN\n");
+	fprintf(stream, "PRODID:-//calcurse//NONSGML v%s//EN\n",
+	    VERSION);
 	fprintf(stream, "VERSION:2.0\n");	
 }
 
@@ -102,24 +193,117 @@ io_export_footer(FILE *stream)
 	fprintf(stream, "END:VCALENDAR\n");
 }
 
+/* Export recurrent events. */
+void
+io_export_recur_events(FILE *stream)
+{
+	struct recur_event_s *i;
+	struct days_s *day;
+	char ical_date[MAX_LENGTH];
+
+	for (i = recur_elist; i != 0; i = i->next) { 
+		date_sec2ical_date(i->day, ical_date);
+		fprintf(stream, "BEGIN:VEVENT\n");
+		fprintf(stream, "DTSTART:%s\n", ical_date);
+		fprintf(stream, "RRULE:FREQ=%s;INTERVAL=%d",
+		    io_recur_type(i->rpt->type), i->rpt->freq);
+
+		if (i->rpt->until != 0) {
+			date_sec2ical_date(i->rpt->until, ical_date);
+			fprintf(stream, ";UNTIL=%s\n", ical_date);
+		} else
+			fprintf(stream, "\n");
+
+		if (i->exc != NULL) {
+			date_sec2ical_date(i->exc->st, ical_date);
+			fprintf(stream, "EXDATE:%s", ical_date);
+			for (day = i->exc->next; day; day = day->next) {
+				date_sec2ical_date(day->st, ical_date);
+				fprintf(stream, ",%s", ical_date);
+			}
+			fprintf(stream, "\n");
+		}	
+
+		fprintf(stream, "SUMMARY:%s\n", i->mesg);
+		fprintf(stream, "END:VEVENT\n");
+	}
+}
+
+/* Export events. */
+void
+io_export_events(FILE *stream)
+{
+	struct event_s *i;
+	char ical_date[MAX_LENGTH];
+	
+	for (i = eventlist; i != 0; i = i->next) { 
+		date_sec2ical_date(i->day, ical_date);
+		fprintf(stream, "BEGIN:VEVENT\n");
+		fprintf(stream, "DTSTART:%s\n", ical_date);
+		fprintf(stream, "SUMMARY:%s\n", i->mesg);
+		fprintf(stream, "END:VEVENT\n");
+	}
+}
+
+/* Export recurrent appointments. */
+void
+io_export_recur_apoints(FILE *stream)
+{
+	recur_apoint_llist_node_t *i;
+	struct days_s *day;
+	char ical_datetime[MAX_LENGTH];
+	char ical_date[MAX_LENGTH];
+	
+	pthread_mutex_lock(&(recur_alist_p->mutex));
+	for (i = recur_alist_p->root; i != 0; i = i->next) { 
+		date_sec2ical_datetime(i->start, ical_datetime);
+		fprintf(stream, "BEGIN:VEVENT\n");
+		fprintf(stream, "DTSTART:%s\n", ical_datetime);
+		fprintf(stream, "DURATION:P%ldS\n", i->dur);
+		fprintf(stream, "RRULE:FREQ=%s;INTERVAL=%d",
+		    io_recur_type(i->rpt->type), i->rpt->freq);
+
+		if (i->rpt->until != 0) {
+			date_sec2ical_date(i->rpt->until + HOURINSEC, 
+			    ical_date);
+			fprintf(stream, ";UNTIL=%s\n", ical_date);
+		} else
+			fprintf(stream, "\n");
+
+		if (i->exc != NULL) {
+			date_sec2ical_date(i->exc->st, ical_date);
+			fprintf(stream, "EXDATE:%s", ical_date);
+			for (day = i->exc->next; day; day = day->next) {
+				date_sec2ical_date(day->st, ical_date);
+				fprintf(stream, ",%s", ical_date);
+			}
+			fprintf(stream, "\n");
+		}	
+
+		fprintf(stream, "SUMMARY:%s\n", i->mesg);
+		if (i->state & APOINT_NOTIFY)
+			io_export_valarm(stream);
+		fprintf(stream, "END:VEVENT\n");
+	}
+	pthread_mutex_unlock(&(recur_alist_p->mutex));
+}
+
 /* Export appointments. */
 void
 io_export_apoints(FILE *stream)
 {
 	apoint_llist_node_t *i;
-	struct tm *lt;
-	time_t t;
+	char ical_datetime[MAX_LENGTH];
 	
 	pthread_mutex_lock(&(alist_p->mutex));
 	for (i = alist_p->root; i != 0; i = i->next) { 
-		t = i->start;
-		lt = localtime(&t);
+		date_sec2ical_datetime(i->start, ical_datetime);
 		fprintf(stream, "BEGIN:VEVENT\n");
-		fprintf(stream, "DTSTART:%04d%02d%02dT%02d%02d%02d\n",
-		    lt->tm_year + 1900, lt->tm_mon + 1, lt->tm_mday,
-		    lt->tm_hour, lt->tm_min, lt->tm_sec);
+		fprintf(stream, "DTSTART:%s\n", ical_datetime);
 		fprintf(stream, "DURATION:P%ldS\n", i->dur);
 		fprintf(stream, "SUMMARY:%s\n", i->mesg);
+		if (i->state & APOINT_NOTIFY)
+			io_export_valarm(stream);
 		fprintf(stream, "END:VEVENT\n");
 	}
 	pthread_mutex_unlock(&(alist_p->mutex));
@@ -226,7 +410,7 @@ save_cal(bool auto_save, bool confirm_quit, bool confirm_delete,
 	    "#\n# Calcurse configuration file\n#\n# This file sets the configuration options used by Calcurse. These\n# options are usually set from within Calcurse. A line beginning with \n# a space or tab is considered to be a continuation of the previous line.\n# For a variable to be unset its value must be blank.\n# To set a variable to the empty string its value should be \"\".\n# Lines beginning with \"#\" are comments, and ignored by Calcurse.\n";
 	char *save_success = _("The data files were successfully saved");
 	char *enter = _("Press [ENTER] to continue");
-	bool save = true, show_bar = false;
+	bool show_bar = false;
 
 	if (!skip_progress_bar) 
 		show_bar = true;
@@ -234,7 +418,7 @@ save_cal(bool auto_save, bool confirm_quit, bool confirm_delete,
 	/* Save the user configuration. */
 	
 	if (show_bar) 
-		progress_bar(save, 1);
+		progress_bar(PROGRESS_BAR_SAVE, 0);
 	data_file = fopen(path_conf, "w");
 	if (data_file == (FILE *) 0)
                 status_mesg(access_pb, "");
@@ -321,7 +505,7 @@ save_cal(bool auto_save, bool confirm_quit, bool confirm_delete,
 	}
 
 	/* Save the todo data file. */
-	if (show_bar) progress_bar(save, 2);
+	if (show_bar) progress_bar(PROGRESS_BAR_SAVE, 1);
 	data_file = fopen(path_todo, "w");
 	if (data_file == (FILE *) 0)
 	        status_mesg(access_pb, ""); 
@@ -336,7 +520,7 @@ save_cal(bool auto_save, bool confirm_quit, bool confirm_delete,
          * appointments first, and then the events. 
 	 * Recursive items are written first.
          */
-	if (show_bar) progress_bar(save, 3);
+	if (show_bar) progress_bar(PROGRESS_BAR_SAVE, 2);
 	data_file = fopen(path_apts, "w");
 	if (data_file == (FILE *) 0)
 	        status_mesg(access_pb, "");
@@ -609,54 +793,15 @@ startup_screen(bool skip_dialogs, int no_data_file)
 	}
 }
 
-/* Draw a progress bar while saving or loading data. */
-void 
-progress_bar(bool save, int progress)
-{
-	int i, nbd = 4;
-	char *mesg_sav  = _("Saving...");
-	char *mesg_load = _("Loading...");
-	char *barchar = "|";
-	char *data[4] = {
-		"[            ]",
-		"[    conf    ]", 
-		"[    todo    ]", 
-		"[    apts    ]"}; 
-	int ipos = strlen(data[1]) + 2;
-	int epos[4];
-	int sleep_time = 125000;
-	
-	/* progress bar length init. */
-	epos[0] = floor(col / nbd);
-	epos[1] = 2*epos[0]; 
-	epos[2] = 3*epos[0];
-	epos[3] = col - 2;
-
-	/* Display which data is being saved. */
-	if (save) 
-		status_mesg(mesg_sav, data[progress]);
-	else
-		status_mesg(mesg_load, data[progress]);
-
-	/* Draw the progress bar. */
-	mvwprintw(swin, 1, ipos, barchar);
-	mvwprintw(swin, 1, epos[nbd - 1], barchar);
-	custom_apply_attr(swin, ATTR_HIGHEST);
-	for (i = ipos + 1; i < epos[progress]; i++)
-		mvwaddch(swin, 1, i, ' ' | A_REVERSE);
-	custom_remove_attr(swin, ATTR_HIGHEST);
-	wmove(swin, 0, 0);
-	wrefresh(swin);
-	usleep(sleep_time); 
-}
-
 /* Export calcurse data. */
 void
-io_export_data(export_mode_t mode)
+io_export_data(export_mode_t mode, bool skip_dialogs, bool skip_bar)
 {
 	FILE *stream;
 	char *wrong_mode = 
 		_("FATAL ERROR in io_export_data: wrong export mode\n");
+	char *success = _("The data were successfully exported");
+	char *enter = _("Press [ENTER] to continue");
 
 	switch (mode) {
 	case IO_EXPORT_NONINTERACTIVE:
@@ -672,15 +817,28 @@ io_export_data(export_mode_t mode)
 	}
 
 	io_export_header(stream);
-/*
-	io_export_recur_event(stream);
+
+	if (!skip_bar)
+		progress_bar(PROGRESS_BAR_EXPORT, 0);
+	io_export_recur_events(stream);
 	io_export_events(stream);
+
+	if (!skip_bar)
+		progress_bar(PROGRESS_BAR_EXPORT, 1);
 	io_export_recur_apoints(stream);
-*/
 	io_export_apoints(stream);
+
+	if (!skip_bar)
+		progress_bar(PROGRESS_BAR_EXPORT, 2);
 	io_export_todo(stream);
+
 	io_export_footer(stream);
 
 	if (stream != stdout)
 		fclose(stream);
+
+	if (!skip_dialogs) {
+		status_mesg(success, enter);
+		wgetch(swin);
+	}
 }
