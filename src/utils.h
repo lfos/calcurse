@@ -1,4 +1,4 @@
-/*	$calcurse: utils.h,v 1.15 2007/03/10 16:45:56 culot Exp $	*/
+/*	$calcurse: utils.h,v 1.16 2007/03/17 16:43:25 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -69,6 +69,8 @@ long date2sec(unsigned year, unsigned month, unsigned day, unsigned hour,
     unsigned min);
 char *date_sec2hour_str(long sec);
 char *date_sec2date_str(long sec);
+void date_sec2ical_date(long sec, char *ical_date);
+void date_sec2ical_datetime(long sec, char *ical_date);
 long update_time_in_date(long date, unsigned hr, unsigned min);
 long get_sec_date(int year, int month, int day);
 long min2sec(unsigned minutes);
