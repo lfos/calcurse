@@ -1,4 +1,4 @@
-/*	$calcurse: vars.h,v 1.6 2007/02/25 19:28:44 culot Exp $	*/
+/*	$calcurse: vars.h,v 1.7 2007/03/17 16:38:03 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -50,6 +50,8 @@
 #define ATTR_HIGHEST	6
 
 #define DAYINSEC  	86400 
+#define HOURINSEC	3600
+#define MININSEC	60
 
 struct pad_s {
 	int width;
