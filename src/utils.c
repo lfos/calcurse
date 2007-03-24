@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.25 2007/03/17 16:43:48 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.26 2007/03/24 23:12:35 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -375,40 +375,42 @@ status_bar(int which_pan, int nc_bar, int nl_bar)
 	const int pos[NB_PANELS + 1] = 
 		{0, NB_CAL_CMDS, NB_CAL_CMDS + NB_APP_CMDS, TOTAL_CMDS};
 
-	binding_t help = { "  ?", _("Help") };
-	binding_t quit = { "  Q", _("Quit") };
-	binding_t save = { "  S", _("Save") };
-	binding_t add  = { "  A", _("Add Item") };
-	binding_t del  = { "  D", _("Del Item") };
-	binding_t edit = { "  E", _("Edit Itm") };
-	binding_t day  = { "H/L", _("-+1 Day") };
-	binding_t week = { "K/J", _("-+1 Week") };
-	binding_t updn = { "K/J", _("Up/Down") };
-	binding_t rept = { "  R", _("Repeat") };
-	binding_t prio = { "+/-", _("Priority") };
-	binding_t tab  = { "Tab", _("Chg View") };	
-	binding_t togo = { "  G", _("Go to") };
-	binding_t conf = { "  C", _("Config") };
-	binding_t view = { "  V", _("View") };
-	binding_t draw = { " ^R", _("Redraw") };
-	binding_t appt = { " ^A", _("Add Appt") };
-	binding_t todo = { " ^T", _("Add Todo") };
-	binding_t eday = { "^HL", _("-+1 Day") };
-	binding_t ewek = { "^KJ", _("-+1 Week") };
-	binding_t othr = { "  O", _("OtherCmd") }; 
+	binding_t help   = { "  ?", _("Help") };
+	binding_t quit   = { "  Q", _("Quit") };
+	binding_t save   = { "  S", _("Save") };
+	binding_t export = { "  X", _("Export") };
+	binding_t add    = { "  A", _("Add Item") };
+	binding_t del    = { "  D", _("Del Item") };
+	binding_t edit   = { "  E", _("Edit Itm") };
+	binding_t flag   = { "  !", _("Flag Itm") };
+	binding_t day    = { "H/L", _("-+1 Day") };
+	binding_t week   = { "K/J", _("-+1 Week") };
+	binding_t updn   = { "K/J", _("Up/Down") };
+	binding_t rept   = { "  R", _("Repeat") };
+	binding_t prio   = { "+/-", _("Priority") };
+	binding_t tab    = { "Tab", _("Chg View") };	
+	binding_t togo   = { "  G", _("Go to") };
+	binding_t conf   = { "  C", _("Config") };
+	binding_t view   = { "  V", _("View") };
+	binding_t draw   = { " ^R", _("Redraw") };
+	binding_t appt   = { " ^A", _("Add Appt") };
+	binding_t todo   = { " ^T", _("Add Todo") };
+	binding_t eday   = { "^HL", _("-+1 Day") };
+	binding_t ewek   = { "^KJ", _("-+1 Week") };
+	binding_t othr   = { "  O", _("OtherCmd") }; 
 
 	binding_t *binding[TOTAL_CMDS] = {
 	/* calendar keys */
-		&help, &quit, &save, &togo, &day, &week, &tab, &conf, &draw, 
-		&appt, &todo, &othr, &eday, &ewek, &othr, 
+		&help, &quit, &save, &export, &day, &week, &tab, &togo, &appt, 
+		&todo, &conf, &othr, &eday, &ewek, &draw, &othr, 
 	/* appointment keys */
-		&help, &quit, &save, &togo, &add, &del, &edit, &view, &rept, 
-		&updn, &tab, &othr, &conf, &draw, &appt, &todo, &eday, &ewek, 
-		&othr,
+		&help, &quit, &save, &export, &add, &del, &edit, &view, &rept, 
+		&updn, &flag, &othr, &conf, &togo, &appt, &todo, &eday, &ewek, 
+		&tab, &draw, &othr,
 	/* todo keys */
-		&help, &quit, &save, &togo, &add, &del, &edit, &view, &prio, 
-		&updn, &tab, &othr, &conf, &draw, &appt, &todo, &eday, &ewek, 
-		&othr 
+		&help, &quit, &save, &export, &add, &del, &edit, &view, &prio, 
+		&updn, &tab, &othr, &conf, &togo, &appt, &todo, &eday, &ewek, 
+		&draw, &othr 
 	};
 		
 	/* Total length of a command. */
