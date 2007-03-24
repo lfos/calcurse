@@ -1,4 +1,4 @@
-/*	$calcurse: args.h,v 1.5 2007/03/10 15:54:25 culot Exp $	*/
+/*	$calcurse: args.h,v 1.6 2007/03/24 23:14:00 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -27,9 +27,11 @@
 #ifndef CALCURSE_ARGS_H
 #define CALCURSE_ARGS_H
 
+#include "vars.h"
+
 void usage();
 void usage_try();
-int parse_args(int argc, char **argv);
+int parse_args(int argc, char **argv, conf_t *conf);
 void version_arg();
 void help_arg();
 void todo_arg(int priority);
