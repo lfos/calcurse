@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.12 2007/03/17 16:55:27 culot Exp $	*/
+/*	$calcurse: io.c,v 1.13 2007/03/24 23:20:49 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -44,7 +44,6 @@
 #include "apoint.h"
 #include "recur.h"
 #include "io.h"
-#include "vars.h"
 
 typedef enum {
 	PROGRESS_BAR_SAVE,
@@ -384,7 +383,8 @@ io_init(char *cfile)
 }
 
   /* get data from file */
-void extract_data(char *dst_data, const char *org, int len)
+void 
+io_extract_data(char *dst_data, const char *org, int len)
 {
 	for (;;) {
 		if (*org == '\n' || *org == '\0')
@@ -396,9 +396,7 @@ void extract_data(char *dst_data, const char *org, int len)
 
 /* Save the calendar data */
 void
-save_cal(bool auto_save, bool confirm_quit, bool confirm_delete, 
-    bool skip_system_dialogs, bool skip_progress_bar, 
-    bool week_begins_on_monday, int layout)
+io_save_cal(conf_t *conf, int layout)
 {
 	FILE *data_file;
 	struct event_s *k;
@@ -412,7 +410,7 @@ save_cal(bool auto_save, bool confirm_quit, bool confirm_delete,
 	char *enter = _("Press [ENTER] to continue");
 	bool show_bar = false;
 
-	if (!skip_progress_bar) 
+	if (!conf->skip_progress_bar) 
 		show_bar = true;
 
 	/* Save the user configuration. */
@@ -430,38 +428,36 @@ save_cal(bool auto_save, bool confirm_quit, bool confirm_delete,
 		fprintf(data_file,
 		    "# If this option is set to yes, automatic save is done when quitting\n");
 		fprintf(data_file, "auto_save=\n");
-		fprintf(data_file, "%s\n", 
-			(auto_save) ? "yes" : "no");
+		fprintf(data_file, "%s\n", (conf->auto_save) ? "yes" : "no");
 
 		fprintf(data_file,
 		    "\n# If this option is set to yes, confirmation is required before quitting\n");
 		fprintf(data_file, "confirm_quit=\n");
-		fprintf(data_file, "%s\n", 
-			(confirm_quit) ? "yes" : "no");
+		fprintf(data_file, "%s\n", (conf->confirm_quit) ? "yes" : "no");
 
 		fprintf(data_file,
 		    "\n# If this option is set to yes, confirmation is required before deleting an event\n");
 		fprintf(data_file, "confirm_delete=\n");
 		fprintf(data_file, "%s\n", 
-			(confirm_delete) ? "yes" : "no");
+			(conf->confirm_delete) ? "yes" : "no");
 
 		fprintf(data_file,
 		    "\n# If this option is set to yes, messages about loaded and saved data will not be displayed\n");
 		fprintf(data_file, "skip_system_dialogs=\n");
 		fprintf(data_file, "%s\n", 
-			(skip_system_dialogs) ? "yes" : "no");
+			(conf->skip_system_dialogs) ? "yes" : "no");
 
 		fprintf(data_file,
 		    "\n# If this option is set to yes, progress bar appearing when saving data will not be displayed\n");
 		fprintf(data_file, "skip_progress_bar=\n");
 		fprintf(data_file, "%s\n", 
-			(skip_progress_bar) ? "yes" : "no");
+			(conf->skip_progress_bar) ? "yes" : "no");
 
 		fprintf(data_file,
 		    "\n# If this option is set to yes, monday is the first day of the week, else it is sunday\n");
 		fprintf(data_file, "week_begins_on_monday=\n");
 		fprintf(data_file, "%s\n", 
-			(week_begins_on_monday) ? "yes" : "no");
+			(conf->week_begins_on_monday) ? "yes" : "no");
 
 		fprintf(data_file,
 		    "\n# This is the color theme used for menus :\n");
@@ -539,7 +535,7 @@ save_cal(bool auto_save, bool confirm_quit, bool confirm_delete,
  
 
 	/* Print a message telling data were saved */
-        if (!skip_system_dialogs){
+        if (!conf->skip_system_dialogs) {
                 status_mesg(save_success, enter);
                 wgetch(swin);
         }
@@ -721,7 +717,7 @@ load_todo(void)
 		if (nl) {
 			*nl = '\0';
 		}
-		extract_data(e_todo, buf, strlen(buf));
+		io_extract_data(e_todo, buf, strlen(buf));
 		todo_add(e_todo, id);
 		++nb_tod;
 	}
@@ -795,7 +791,7 @@ startup_screen(bool skip_dialogs, int no_data_file)
 
 /* Export calcurse data. */
 void
-io_export_data(export_mode_t mode, bool skip_dialogs, bool skip_bar)
+io_export_data(export_mode_t mode, conf_t *conf)
 {
 	FILE *stream;
 	char *wrong_mode = 
@@ -818,17 +814,17 @@ io_export_data(export_mode_t mode, bool skip_dialogs, bool skip_bar)
 
 	io_export_header(stream);
 
-	if (!skip_bar)
+	if (!conf->skip_progress_bar && mode == IO_EXPORT_INTERACTIVE)
 		progress_bar(PROGRESS_BAR_EXPORT, 0);
 	io_export_recur_events(stream);
 	io_export_events(stream);
 
-	if (!skip_bar)
+	if (!conf->skip_progress_bar && mode == IO_EXPORT_INTERACTIVE)
 		progress_bar(PROGRESS_BAR_EXPORT, 1);
 	io_export_recur_apoints(stream);
 	io_export_apoints(stream);
 
-	if (!skip_bar)
+	if (!conf->skip_progress_bar && mode == IO_EXPORT_INTERACTIVE)
 		progress_bar(PROGRESS_BAR_EXPORT, 2);
 	io_export_todo(stream);
 
@@ -837,7 +833,7 @@ io_export_data(export_mode_t mode, bool skip_dialogs, bool skip_bar)
 	if (stream != stdout)
 		fclose(stream);
 
-	if (!skip_dialogs) {
+	if (!conf->skip_system_dialogs && mode == IO_EXPORT_INTERACTIVE) {
 		status_mesg(success, enter);
 		wgetch(swin);
 	}
