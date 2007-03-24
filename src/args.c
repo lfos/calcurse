@@ -1,4 +1,4 @@
-/*	$calcurse: args.c,v 1.15 2007/03/10 15:54:25 culot Exp $	*/
+/*	$calcurse: args.c,v 1.16 2007/03/24 23:13:22 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -35,9 +35,9 @@
 #include <time.h>
 
 #include "i18n.h"
+#include "custom.h"
 #include "utils.h"
 #include "args.h"
-#include "vars.h"
 #include "event.h"
 #include "apoint.h"
 #include "recur.h"
@@ -50,7 +50,8 @@
  * Parse the command-line arguments and call the appropriate
  * routines to handle those arguments. Also initialize the data paths.
  */
-int parse_args(int argc, char **argv)
+int 
+parse_args(int argc, char **argv, conf_t *conf)
 {
 	int ch, add_line = 0;
 	int unknown_flag = 0, app_found = 0;
@@ -62,23 +63,25 @@ int parse_args(int argc, char **argv)
 	int nflag = 0;	/* -n: print next appointment */
 	int tflag = 0;	/* -t: print todo list */
 	int vflag = 0;	/* -v: print version number */
+	int xflag = 0;  /* -x: export data to iCalendar format */
   
 	int tnum = 0;
 	int non_interactive = 0, multiple_flag = 0, load_data = 0;
 	int no_file = 1;
 	char *ddate = "", *cfile = NULL;
 
-	static char *optstr = "hvnat::d:c:";
+	static char *optstr = "hvnaxt::d:c:";
 
 	struct option longopts[] = {
-		{"appointment", no_argument, NULL, 'a'},
-		{"calendar", required_argument, NULL, 'c'},
-		{"day", required_argument, NULL, 'd'},
-		{"help", no_argument, NULL, 'h'},
-		{"next", no_argument, NULL, 'n'},
-		{"todo", optional_argument, NULL, 't'},
-		{"version", no_argument, NULL, 'v'},
-		{NULL, no_argument, NULL, 0}
+	    {"appointment", no_argument, NULL, 'a'},
+	    {"calendar", required_argument, NULL, 'c'},
+	    {"day", required_argument, NULL, 'd'},
+	    {"help", no_argument, NULL, 'h'},
+	    {"next", no_argument, NULL, 'n'},
+	    {"todo", optional_argument, NULL, 't'},
+	    {"version", no_argument, NULL, 'v'},
+	    {"export", no_argument, NULL, 'x'},	
+	    {NULL, no_argument, NULL, 0}
 	};
 
 	while ((ch = getopt_long(argc, argv, optstr, longopts, NULL)) != -1) {
@@ -88,17 +91,17 @@ int parse_args(int argc, char **argv)
 			multiple_flag++;
 			load_data++;
 			break;
-		case 'd':
-			dflag = 1;
-			multiple_flag++;
-			load_data++;
-			ddate = optarg;
-			break;
 		case 'c':
 			cflag = 1;
 			multiple_flag++;
 			load_data++;
 			cfile = optarg;
+			break;
+		case 'd':
+			dflag = 1;
+			multiple_flag++;
+			load_data++;
+			ddate = optarg;
 			break;
 		case 'h':
 			hflag = 1;
@@ -126,11 +129,17 @@ int parse_args(int argc, char **argv)
 		case 'v':
 			vflag = 1;
 			break;
-		default: /* NOTREACHED */
+		case 'x':
+			xflag = 1;
+			multiple_flag++;
+			load_data++;
+			break;
+		default:
 			usage();
                         usage_try();
 			unknown_flag = 1;
 			non_interactive = 1;
+			/* NOTREACHED */
 		}
 	}
 	argc -= optind;
@@ -153,8 +162,15 @@ int parse_args(int argc, char **argv)
 			if (load_data) {
 				io_init(cfile);
 				no_file = check_data_files();
-				if (dflag || aflag || nflag)  
+				if (dflag || aflag || nflag || xflag)  
 					load_app();
+			}
+			if (xflag) {
+				notify_init_vars();
+				custom_load_conf(conf, 0, 0, 0, 0);
+				io_export_data(IO_EXPORT_NONINTERACTIVE, conf);
+				non_interactive = 1;
+				return (non_interactive);
 			}
 			if (tflag) {
 				todo_arg(tnum);
@@ -176,7 +192,7 @@ int parse_args(int argc, char **argv)
 			io_init(cfile);
 			no_file = check_data_files();
 		}
-		return non_interactive;
+		return (non_interactive);
 	}
 }
 
