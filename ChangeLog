@@ -1,3 +1,17 @@
+24 Mar 2007:
+	TODO updated
+	online help updated to add the export and flag command
+	'-x' flag added in parse_args() to export data in non-interactive mode
+	init_notify_bar() moved from calcurse.c to notify_init_vars()
+	load_conf() moved from calcurse.c to custom_load_conf()
+	fill_config_var() moved from calcurse.c to custom.c
+	extract_data() renamed to io_extract_data() and save_cal() to
+	io_save_cal()
+	conf_t type created
+
+19 Mar 2007:
+	status_bar() updated to add 'X' and '!' keybindings
+
 17 Mar 2007:
 	HOURINSEC and MININSEC defined
 	io_export_events(), io_export_recur_events() and
