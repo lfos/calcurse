@@ -1,4 +1,4 @@
-/*	$calcurse: custom.h,v 1.3 2007/03/10 15:57:27 culot Exp $	*/
+/*	$calcurse: custom.h,v 1.4 2007/03/24 23:19:15 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -27,6 +27,8 @@
 #ifndef CALCURSE_CUSTOM_H
 #define CALCURSE_CUSTOM_H
 
+#include "vars.h"
+
 #define NBUSERCOLORS	6
 
 enum { /* Color pairs */
@@ -49,6 +51,8 @@ struct attribute_s {
 void custom_init_attr(void);
 void custom_apply_attr(WINDOW *win, int attr_num);
 void custom_remove_attr(WINDOW *win, int attr_num);
+void custom_load_conf(conf_t *conf, int background, int layout, int nc_bar, 
+    int nl_bar);
 void config_bar(void);
 int layout_config(int layout);
 void custom_color_config(int notify_bar);
