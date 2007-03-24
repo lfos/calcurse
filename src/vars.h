@@ -1,4 +1,4 @@
-/*	$calcurse: vars.h,v 1.7 2007/03/17 16:38:03 culot Exp $	*/
+/*	$calcurse: vars.h,v 1.8 2007/03/24 23:22:16 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -70,6 +70,16 @@ struct nbar_s {
 	char *shell;			/* user shell to launch notif. cmd */
 	pthread_mutex_t mutex;
 };
+
+/* General configuration variables */
+typedef struct {
+	bool auto_save;
+	bool confirm_quit;
+	bool confirm_delete;
+	bool skip_system_dialogs;
+	bool skip_progress_bar;
+	bool week_begins_on_monday;
+} conf_t;
 
 extern int col, row;
 extern bool colorize;
