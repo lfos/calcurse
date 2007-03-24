@@ -1,4 +1,4 @@
-/*	$calcurse: custom.c,v 1.5 2007/03/10 15:58:20 culot Exp $	*/
+/*	$calcurse: custom.c,v 1.6 2007/03/24 23:18:52 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -29,11 +29,26 @@
 #include <stdlib.h>
 
 #include "i18n.h"
+#include "io.h"
 #include "utils.h"
 #include "custom.h"
-#include "vars.h"
 
 static struct attribute_s attr;
+static bool fill_config_var(char *string);
+
+bool 
+fill_config_var(char *string) 
+{
+	if (strncmp(string, "yes", 3) == 0)
+		return (true);
+	else if (strncmp(string, "no", 2) == 0)
+		return (false);
+	else {
+		fputs(_("FATAL ERROR in fill_config_var: "
+			"wrong configuration variable format.\n"), stderr);
+		return (EXIT_FAILURE);
+	}
+}
 
 /* 
  * Define window attributes (for both color and non-color terminals):
@@ -64,7 +79,8 @@ custom_init_attr(void)
 }
 
 /* Apply window attribute */
-void custom_apply_attr(WINDOW *win, int attr_num)
+void 
+custom_apply_attr(WINDOW *win, int attr_num)
 {
 	if (colorize)
 		wattron(win, attr.color[attr_num]);
@@ -73,12 +89,117 @@ void custom_apply_attr(WINDOW *win, int attr_num)
 }
 
 /* Remove window attribute */
-void custom_remove_attr(WINDOW *win, int attr_num)
+void 
+custom_remove_attr(WINDOW *win, int attr_num)
 {
 	if (colorize)
 		wattroff(win, attr.color[attr_num]);
 	else
 		wattroff(win, attr.nocolor[attr_num]);
+}
+
+/* Load the user configuration. */
+void 
+custom_load_conf(conf_t *conf, int background, int layout, int nc_bar, 
+    int nl_bar)
+{
+	FILE *data_file;
+	char *mesg_line1 = _("Failed to open config file");
+	char *mesg_line2 = _("Press [ENTER] to continue");
+	char buf[100], e_conf[100];
+	int var;
+
+	data_file = fopen(path_conf, "r");
+	if (data_file == NULL) {
+		status_mesg(mesg_line1, mesg_line2);
+                wnoutrefresh(swin);
+                doupdate();
+		wgetch(swin);
+	}
+	var = 0;
+	pthread_mutex_lock(&nbar->mutex);
+	for (;;) {
+		if (fgets(buf, 99, data_file) == NULL) {
+			break;
+		}
+		io_extract_data(e_conf, buf, strlen(buf));
+		if (var == 1) {
+			conf->auto_save =
+			    fill_config_var(e_conf);
+			var = 0;
+		} else if (var == 2) {
+			conf->confirm_quit =
+			    fill_config_var(e_conf);
+			var = 0;
+		} else if (var == 3) {
+			conf->confirm_delete =
+			    fill_config_var(e_conf);
+			var = 0;
+		} else if (var == 4) {
+			conf->skip_system_dialogs = 
+			    fill_config_var(e_conf);
+			var = 0;
+		} else if (var == 5) {
+			conf->skip_progress_bar = 
+			    fill_config_var(e_conf);
+			var = 0;
+                } else if (var == 6) {
+			conf->week_begins_on_monday =
+			    fill_config_var(e_conf);
+                        var = 0;
+		} else if (var == 7) {
+			custom_load_color(e_conf, background);
+                        var = 0;
+		} else if (var == 8) {
+			layout = atoi(e_conf);
+			var = 0;
+		} else if (var == 9) {
+			nbar->show = 
+			    fill_config_var(e_conf);
+			var = 0;
+		} else if (var == 10) {
+			strncpy(nbar->datefmt, e_conf, strlen(e_conf) + 1);
+			var = 0;
+		} else if (var == 11) {
+			strncpy(nbar->timefmt, e_conf, strlen(e_conf) + 1);
+			var = 0;
+		} else if (var == 12) {
+			nbar->cntdwn = atoi(e_conf);
+			var = 0;
+		} else if (var == 13) {
+			strncpy(nbar->cmd, e_conf, strlen(e_conf) + 1);
+			var = 0;
+		}
+		if (strncmp(e_conf, "auto_save=", 10) == 0)
+			var = 1;
+		else if (strncmp(e_conf, "confirm_quit=", 13) == 0)
+			var = 2;
+		else if (strncmp(e_conf, "confirm_delete=", 15) == 0)
+			var = 3;
+                else if (strncmp(e_conf, "skip_system_dialogs=", 20) == 0)
+                        var = 4;
+		else if (strncmp(e_conf, "skip_progress_bar=", 18) == 0)
+			var = 5;
+                else if (strncmp(e_conf, "week_begins_on_monday=", 23) == 0)
+                        var = 6;
+		else if (strncmp(e_conf, "color-theme=", 12) == 0)
+			var = 7;
+		else if (strncmp(e_conf, "layout=", 7) == 0)
+			var = 8;
+		else if (strncmp(e_conf, "notify-bar_show=", 16) ==0)
+			var = 9;
+		else if (strncmp(e_conf, "notify-bar_date=", 16) ==0)
+			var = 10;
+		else if (strncmp(e_conf, "notify-bar_clock=", 17) ==0)
+			var = 11;
+		else if (strncmp(e_conf, "notify-bar_warning=", 19) ==0)
+			var = 12;
+		else if (strncmp(e_conf, "notify-bar_command=", 19) ==0)
+			var = 13;
+	}
+	fclose(data_file);
+	pthread_mutex_unlock(&nbar->mutex);
+	erase_window_part(swin, 0, 0, nc_bar, nl_bar);
 }
 
 /* Draws the configuration bar */
