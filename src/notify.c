@@ -1,4 +1,4 @@
-/*	$calcurse: notify.c,v 1.8 2007/02/25 19:30:33 culot Exp $	*/
+/*	$calcurse: notify.c,v 1.9 2007/03/24 23:17:09 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -46,7 +46,8 @@ static pthread_t notify_t_main;
 static pthread_t notify_t_children;
 
 /* Return 1 if we need to display the notify-bar, else 0. */
-int notify_bar(void)
+int 
+notify_bar(void)
 {
 	int display_bar = 0;
 
@@ -56,12 +57,34 @@ int notify_bar(void)
 	
 	return display_bar;
 }
+
+/* Initialize the nbar variable used to store notification options. */
+void 
+notify_init_vars(void)
+{
+	char *time_format = "%T";
+	char *date_format = "%a %F";
+	char *cmd = "printf '\\a'";
+
+	nbar = (struct nbar_s *) malloc(sizeof(struct nbar_s));
+	pthread_mutex_init(&nbar->mutex, NULL);
+	nbar->show = 1;
+	nbar->cntdwn = 300; 
+	strncpy(nbar->datefmt, date_format, strlen(date_format) + 1); 
+	strncpy(nbar->timefmt, time_format, strlen(time_format) + 1);
+	strncpy(nbar->cmd, cmd, strlen(cmd) + 1);
+
+	if ((nbar->shell = getenv("SHELL")) == NULL)
+		nbar->shell = "/bin/sh"; 
+}
+
 /* 
  * Create the notification bar, by initializing all the variables and 
  * creating the notification window (l is the number of lines, c the
  * number of columns, y and x are its coordinates). 
  */
-void notify_init_bar(int l, int c, int y, int x)
+void 
+notify_init_bar(int l, int c, int y, int x)
 {
 	notify = (struct notify_vars_s *) malloc(sizeof(struct notify_vars_s));	
 	notify_app = (struct notify_app_s *) malloc(sizeof(struct notify_app_s));
@@ -72,7 +95,8 @@ void notify_init_bar(int l, int c, int y, int x)
 }
 
 /* Stop the notify-bar main thread. */
-void notify_stop_main_thread(void)
+void 
+notify_stop_main_thread(void)
 {
 	pthread_cancel(notify_t_main);
 	return;
@@ -82,7 +106,8 @@ void notify_stop_main_thread(void)
  * The calcurse window geometry has changed so we need to reset the 
  * notification window. 
  */
-void notify_reinit_bar(int l, int c, int y, int x)
+void 
+notify_reinit_bar(int l, int c, int y, int x)
 {
 	delwin(notify->win);
 	notify->win = newwin(l, c, y, x);
@@ -92,7 +117,8 @@ void notify_reinit_bar(int l, int c, int y, int x)
  * Update the notification bar. This is useful when changing color theme
  * for example.
  */
-void notify_update_bar(void)
+void 
+notify_update_bar(void)
 {
 	const int space = 3;
 	int file_pos, date_pos, app_pos, txt_max_len, too_long = 0;
@@ -165,7 +191,8 @@ void notify_update_bar(void)
 }
 
 /* Extract the appointment file name from the complete file path. */
-void notify_extract_aptsfile(void)
+void 
+notify_extract_aptsfile(void)
 {
 	notify->apts_file = strrchr(path_apts, '/');
 	notify->apts_file++;
@@ -254,7 +281,8 @@ notify_thread_children(void *arg)
 }
 
 /* Launch the thread notify_thread_app to look for next appointment. */
-void notify_check_next_app(void)
+void 
+notify_check_next_app(void)
 {
 	pthread_t notify_t_app;
 
@@ -323,7 +351,8 @@ notify_check_repeated(recur_apoint_llist_node_t *i)
 	notify_update_bar();
 }
 
-int notify_same_item(long time)
+int 
+notify_same_item(long time)
 {
 	int same = 0;
 	
@@ -335,7 +364,8 @@ int notify_same_item(long time)
 	return same;
 }
 
-int notify_same_recur_item(recur_apoint_llist_node_t *i)
+int 
+notify_same_recur_item(recur_apoint_llist_node_t *i)
 {
 	int same = 0;
 	long item_start = 0;
