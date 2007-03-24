@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.40 2007/03/17 16:33:49 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.41 2007/03/24 23:15:59 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -79,12 +79,6 @@ char *saved_t_mesg;
 int layout = 1;
 int no_data_file = 1;
 int really_quit = 0;
-bool confirm_quit;
-bool confirm_delete;
-bool auto_save;
-bool skip_system_dialogs;
-bool skip_progress_bar;
-bool week_begins_on_monday;
 
 /* 
  * Variables to handle calcurse windows 
@@ -96,23 +90,22 @@ int which_pan = 0;
 enum window_number {CALENDAR, APPOINTMENT, TODO};
 
 /* External functions */
-void get_date(void);
-void init_vars();
-void init_notify_bar(void);
-void init_wins(void), reinit_wins(void);
-void add_item(void);
-void load_conf(int background);
-bool fill_config_var(char *string);
-void update_todo_panel(void);
-void update_app_panel(int yeat, int month, int day);
-void store_day(int year, int month, int day, bool day_changed);
-void get_screen_config(void);
-void update_windows(int surrounded_window);
-void general_config(void), config_notify_bar(void);
-void print_general_options(WINDOW *win); 
-void print_notify_options(WINDOW *win, int col);
-void print_option_incolor(WINDOW *win, bool option, int pos_x, int pos_y);
-void del_item(void);
+static void get_date(void);
+static void init_vars(conf_t *conf);
+static void init_wins(void);
+static void reinit_wins(conf_t *conf);
+static void add_item(void);
+static void update_todo_panel(void);
+static void update_app_panel(int yeat, int month, int day);
+static void store_day(int year, int month, int day, bool day_changed);
+static void get_screen_config(void);
+static void update_windows(int surrounded_window, conf_t *conf);
+static void general_config(conf_t *conf);
+static void config_notify_bar(void);
+static void print_general_options(WINDOW *win, conf_t *conf); 
+static void print_notify_options(WINDOW *win, int col);
+static void print_option_incolor(WINDOW *win, bool option, int pos_x, int pos_y);
+static void del_item(conf_t *conf);
 
 /*
  * Calcurse  is  a text-based personal organizer which helps keeping track
@@ -123,6 +116,7 @@ void del_item(void);
  */
 int main(int argc, char **argv)
 {
+	conf_t conf;
 	int ch, background, foreground;
 	int non_interactive;
 	bool do_storage = false;
@@ -147,9 +141,9 @@ int main(int argc, char **argv)
 	 * Begin by parsing and handling command line arguments.
 	 * The data path is also initialized here.
 	 */
-	non_interactive = parse_args(argc, argv);
+	non_interactive = parse_args(argc, argv, &conf);
 	if (non_interactive) 
-		return EXIT_SUCCESS;
+		return (EXIT_SUCCESS);
 
 	/* Begin of interactive mode with ncurses interface. */
 	initscr();		/* start the curses mode */
@@ -157,7 +151,7 @@ int main(int argc, char **argv)
 	noecho();		/* controls echoing of typed chars */
 	curs_set(0);		/* make cursor invisible */
         get_date();
-	init_notify_bar();
+	notify_init_vars();
 	get_screen_config();
 	
         /* Check if terminal supports color. */
@@ -188,11 +182,11 @@ int main(int argc, char **argv)
 	} else
                 colorize = false;
 
-	init_vars();
+	init_vars(&conf);
 	init_wins();
 	notify_init_bar(nl_not, nc_not, y_not, x_not);
 	reset_status_page();
-	update_windows(which_pan);
+	update_windows(which_pan, &conf);
 
 	/* 
 	 * Read the data from files : first the user
@@ -200,17 +194,17 @@ int main(int argc, char **argv)
 	 * the todo list, appointments and events.
 	 */
 	no_data_file = check_data_files();
-	load_conf(background);
+	custom_load_conf(&conf, background, layout, nc_bar, nl_bar);
 	nb_tod = load_todo();	
 	load_app();
 	notify_catch_children();
 	if (notify_bar()) 
 		notify_start_main_thread();
 	get_screen_config();
-        reinit_wins();
-        startup_screen(skip_system_dialogs, no_data_file);
+        reinit_wins(&conf);
+        startup_screen(conf.skip_system_dialogs, no_data_file);
 	store_day(year, month, day, day_changed);
-	update_windows(CALENDAR);
+	update_windows(CALENDAR, &conf);
 
 	/* User input */
 	for (;;) {
@@ -261,7 +255,7 @@ int main(int argc, char **argv)
 			break;
 
 		case CTRL('R'):
-                        reinit_wins();
+                        reinit_wins(&conf);
 			break;
 
 		case 'O':
@@ -316,18 +310,18 @@ int main(int argc, char **argv)
 					break;
 				case 'G':
 				case 'g':
-					general_config();
+					general_config(&conf);
 					break;
 				case 'N':
 				case 'n':
 					config_notify_bar();
 					break;
 				}
-                                reinit_wins();
+                                reinit_wins(&conf);
 				erase_window_part(swin, 0, 0, nc_bar, nl_bar);
 				config_bar();
 			}
-                        update_windows(which_pan);
+                        update_windows(which_pan, &conf);
 			break;
 
 		case CTRL('A'):	/* Add an app, whatever panel selected */
@@ -365,7 +359,7 @@ int main(int argc, char **argv)
 
 		case 'D':
 		case 'd':	/* Delete an item */
-			del_item();
+			del_item(&conf);
 			do_storage = true;
 			break;
 
@@ -404,15 +398,12 @@ int main(int argc, char **argv)
 
 		case 'S':
 		case 's':	/* Save function */
-			save_cal(auto_save, confirm_quit, confirm_delete, 
-			    skip_system_dialogs, skip_progress_bar, 
-			    week_begins_on_monday, layout);
+			io_save_cal(&conf, layout); 
 			break;
 
 		case 'X':
 		case 'x':	/* Export function */
-			io_export_data(IO_EXPORT_INTERACTIVE,
-			    skip_system_dialogs, skip_progress_bar);
+			io_export_data(IO_EXPORT_INTERACTIVE, &conf);
 			break;
 
 		case (261):	/* right arrow */
@@ -537,11 +528,10 @@ int main(int argc, char **argv)
 
 		case ('Q'):	/* Quit calcurse :-( */
 		case ('q'):
-			if (auto_save)
-				save_cal(auto_save,confirm_quit, confirm_delete,
-				    skip_system_dialogs, skip_progress_bar,
-				    week_begins_on_monday, layout);
-			if (confirm_quit) {
+			if (conf.auto_save)
+				io_save_cal(&conf, layout);
+
+			if (conf.confirm_quit) {
 				status_mesg(_(quit_message), choices);
 				ch = wgetch(swin);
 				if ( ch == 'y' ) {
@@ -568,7 +558,7 @@ int main(int argc, char **argv)
 				day_changed = !day_changed;
 			}
 		}
-		update_windows(which_pan);
+		update_windows(which_pan, &conf);
 	}
 }	/* end of interactive mode */
 
@@ -579,15 +569,15 @@ int main(int argc, char **argv)
 /*
  * Variables init 
  */
-void init_vars()
+void init_vars(conf_t *conf)
 {
 	// Variables for user configuration
-	confirm_quit = true; 
-	confirm_delete = true; 
-	auto_save = true;
-	skip_system_dialogs = false;
-	skip_progress_bar = false;
-	week_begins_on_monday = true;
+	conf->confirm_quit = true; 
+	conf->confirm_delete = true; 
+	conf->auto_save = true;
+	conf->skip_system_dialogs = false;
+	conf->skip_progress_bar = false;
+	conf->week_begins_on_monday = true;
 
 	// Pad structure for scrolling text inside the appointment panel
 	apad = (struct pad_s *) malloc(sizeof(struct pad_s));
@@ -605,31 +595,12 @@ void init_vars()
 	sel_day = day;
 }
 
-/* Notify-bar init */
-void init_notify_bar(void)
-{
-	char *time_format = "%T";
-	char *date_format = "%a %F";
-	char *cmd = "printf '\\a'";
-
-	nbar = (struct nbar_s *) malloc(sizeof(struct nbar_s));
-	pthread_mutex_init(&nbar->mutex, NULL);
-	nbar->show = 1;
-	nbar->cntdwn = 300; 
-	strncpy(nbar->datefmt, date_format, strlen(date_format) + 1); 
-	strncpy(nbar->timefmt, time_format, strlen(time_format) + 1);
-	strncpy(nbar->cmd, cmd, strlen(cmd) + 1);
-
-	if ((nbar->shell = getenv("SHELL")) == NULL)
-		nbar->shell = "/bin/sh"; 
-}
-
 /* 
  * Update all of the three windows and put a border around the
  * selected window.
  */
 void 
-update_windows(int surrounded_window)
+update_windows(int surrounded_window, conf_t *conf)
 {
 	switch (surrounded_window) {
 
@@ -652,7 +623,8 @@ update_windows(int surrounded_window)
 		break;
 
 	default:
-		fputs(_("FATAL ERROR in update_windows: no window selected\n"),stderr);
+		fputs(_("FATAL ERROR in update_windows: no window selected\n"),
+		    stderr);
 		exit(EXIT_FAILURE);
 		/* NOTREACHED */
 	}
@@ -660,8 +632,8 @@ update_windows(int surrounded_window)
 	update_app_panel(sel_year, sel_month, sel_day);	
 	update_todo_panel();
 	update_cal_panel(cwin, nl_cal, nc_cal, sel_month,
-	    sel_year, sel_day, day, month, year,
-            week_begins_on_monday);
+	    sel_year, sel_day, day, month, year, 
+	    conf->week_begins_on_monday);
 	status_bar(surrounded_window, nc_bar, nl_bar);
 	if (notify_bar()) 
 		notify_update_bar();
@@ -783,7 +755,7 @@ void init_wins(void)
  * Delete the existing windows and recreate them with their new
  * size and placement.
  */
-void reinit_wins(void)
+void reinit_wins(conf_t *conf)
 {
         clear();
         delwin(swin);
@@ -792,12 +764,13 @@ void reinit_wins(void)
         delwin(twin);
         get_screen_config();
         init_wins();
-	if (notify_bar()) notify_reinit_bar(nl_not, nc_not, y_not, x_not);
-        update_windows(which_pan);
+	if (notify_bar()) 
+		notify_reinit_bar(nl_not, nc_not, y_not, x_not);
+        update_windows(which_pan, conf);
 }
 
 /* General configuration */
-void general_config(void)
+void general_config(conf_t *conf)
 {
 	WINDOW *conf_win;
 	char label[MAX_LENGTH];
@@ -811,32 +784,32 @@ void general_config(void)
 	snprintf(label, MAX_LENGTH, _("CalCurse %s | general options"), VERSION);
 	win_show(conf_win, label);
 	status_mesg(number_str, "");
-	print_general_options(conf_win);
+	print_general_options(conf_win, conf);
 	while ((ch = wgetch(swin)) != 'q') {
 		switch (ch) {
 		case '1':	
-			auto_save = !auto_save;
+			conf->auto_save = !conf->auto_save;
 			break;
 		case '2':
-			confirm_quit = !confirm_quit;
+			conf->confirm_quit = !conf->confirm_quit;
 			break;
 		case '3':
-			confirm_delete = !confirm_delete;
+			conf->confirm_delete = !conf->confirm_delete;
 			break;
                 case '4':
-                        skip_system_dialogs =
-				!skip_system_dialogs;
+                        conf->skip_system_dialogs =
+				!conf->skip_system_dialogs;
                         break;
 		case '5':
-			skip_progress_bar = 
-				!skip_progress_bar;
+			conf->skip_progress_bar = 
+				!conf->skip_progress_bar;
 			break;
                 case '6':
-                        week_begins_on_monday = 
-				!week_begins_on_monday;
+                        conf->week_begins_on_monday = 
+				!conf->week_begins_on_monday;
                         break;
 		}
-		print_general_options(conf_win);
+		print_general_options(conf_win, conf);
 	}
 	delwin(conf_win);
 }
@@ -947,7 +920,7 @@ config_notify_bar(void)
 }
 
 /* prints the general options */
-void print_general_options(WINDOW *win)
+void print_general_options(WINDOW *win, conf_t *conf)
 {
 	int x_pos, y_pos;
 	char *option1 = _("auto_save = ");
@@ -961,37 +934,37 @@ void print_general_options(WINDOW *win)
 	y_pos = 3;
 
 	mvwprintw(win, y_pos, x_pos, "[1] %s      ", option1);
-	print_option_incolor(win, auto_save, y_pos,
+	print_option_incolor(win, conf->auto_save, y_pos,
 			     x_pos + 4 + strlen(option1));
 	mvwprintw(win, y_pos + 1, x_pos,
 		 _("(if set to YES, automatic save is done when quitting)"));
 
 	mvwprintw(win, y_pos + 3, x_pos, "[2] %s      ", option2);
-	print_option_incolor(win, confirm_quit, y_pos + 3,
+	print_option_incolor(win, conf->confirm_quit, y_pos + 3,
 			     x_pos + 4 + strlen(option2));
 	mvwprintw(win, y_pos + 4, x_pos,
 		 _("(if set to YES, confirmation is required before quitting)"));
 
 	mvwprintw(win, y_pos + 6, x_pos, "[3] %s      ", option3);
-	print_option_incolor(win, confirm_delete, y_pos + 6,
+	print_option_incolor(win, conf->confirm_delete, y_pos + 6,
 			     x_pos + 4 + strlen(option3));
 	mvwprintw(win, y_pos + 7, x_pos,
 		 _("(if set to YES, confirmation is required before deleting an event)"));
         
 	mvwprintw(win, y_pos + 9, x_pos, "[4] %s      ", option4);
-	print_option_incolor(win, skip_system_dialogs, y_pos + 9,
+	print_option_incolor(win, conf->skip_system_dialogs, y_pos + 9,
 			     x_pos + 4 + strlen(option4));
 	mvwprintw(win, y_pos + 10, x_pos,
 		 _("(if set to YES, messages about loaded and saved data will not be displayed)"));
 
 	mvwprintw(win, y_pos + 12, x_pos, "[5] %s      ", option5);
-	print_option_incolor(win, skip_progress_bar , y_pos + 12,
+	print_option_incolor(win, conf->skip_progress_bar , y_pos + 12,
 			     x_pos + 4 + strlen(option5));
 	mvwprintw(win, y_pos + 13, x_pos,
 		 _("(if set to YES, progress bar will not be displayed when saving data)"));
 
 	mvwprintw(win, y_pos + 15, x_pos, "[6] %s      ", option6);
-	print_option_incolor(win, week_begins_on_monday , y_pos + 15,
+	print_option_incolor(win, conf->week_begins_on_monday , y_pos + 15,
 			     x_pos + 4 + strlen(option6));
 	mvwprintw(win, y_pos + 16, x_pos,
                   _("(if set to YES, monday is the first day of the week, else it is sunday)"));
@@ -1114,7 +1087,7 @@ void print_option_incolor(WINDOW *win, bool option, int pos_y, int pos_x)
 }
 
   /* Delete an event from the ToDo or Appointment lists */
-void del_item(void)
+void del_item(conf_t *conf)
 {
 	char *choices = "[y/n] ";
 	char *del_app_str = _("Do you really want to delete this item ?");
@@ -1131,7 +1104,7 @@ void del_item(void)
 	if (which_pan == APPOINTMENT && hilt_app != 0) {
 		date = date2sec(sel_year, sel_month, sel_day, 0, 0);
 		
-		if (confirm_delete) {
+		if (conf->confirm_delete) {
 			status_mesg(del_app_str, choices);		
 			answer = wgetch(swin);
 			if ( (answer == 'y') && (nb_items != 0) )
@@ -1174,7 +1147,7 @@ void del_item(void)
 
 	/* delete a todo */
 	} else if (which_pan == TODO && hilt_tod != 0) {
-		if (confirm_delete) {
+		if (conf->confirm_delete) {
 			status_mesg(del_todo_str, choices);
 			answer = wgetch(swin);
 			if ( (answer == 'y') && (nb_tod > 0) ) {
@@ -1402,119 +1375,4 @@ void store_day(int year, int month, int day, bool day_changed)
 	/* Create the new pad with its new length. */
 	if (day_changed) apad->first_onscreen = 0;
 	apad->ptrwin = newpad(apad->length, apad->width);
-}
-
-/* Load the user configuration */
-void 
-load_conf(int background)
-{
-	FILE *data_file;
-	char *mesg_line1 = _("Failed to open config file");
-	char *mesg_line2 = _("Press [ENTER] to continue");
-	char buf[100], e_conf[100];
-	int var;
-
-	data_file = fopen(path_conf, "r");
-	if (data_file == NULL) {
-		status_mesg(mesg_line1, mesg_line2);
-                wnoutrefresh(swin);
-                doupdate();
-		wgetch(swin);
-	}
-	var = 0;
-	pthread_mutex_lock(&nbar->mutex);
-	for (;;) {
-		if (fgets(buf, 99, data_file) == NULL) {
-			break;
-		}
-		extract_data(e_conf, buf, strlen(buf));
-		if (var == 1) {
-			auto_save =
-				fill_config_var(e_conf);
-			var = 0;
-		} else if (var == 2) {
-			confirm_quit =
-				fill_config_var(e_conf);
-			var = 0;
-		} else if (var == 3) {
-			confirm_delete =
-				fill_config_var(e_conf);
-			var = 0;
-		} else if (var == 4) {
-			skip_system_dialogs = 
-				fill_config_var(e_conf);
-			var = 0;
-		} else if (var == 5) {
-			skip_progress_bar = 
-				fill_config_var(e_conf);
-			var = 0;
-                } else if (var == 6) {
-			week_begins_on_monday =
-				fill_config_var(e_conf);
-                        var = 0;
-		} else if (var == 7) {
-			custom_load_color(e_conf, background);
-                        var = 0;
-		} else if (var == 8) {
-			layout = atoi(e_conf);
-			var = 0;
-		} else if (var == 9) {
-			nbar->show = 
-				fill_config_var(e_conf);
-			var = 0;
-		} else if (var == 10) {
-			strncpy(nbar->datefmt, e_conf, strlen(e_conf) + 1);
-			var = 0;
-		} else if (var == 11) {
-			strncpy(nbar->timefmt, e_conf, strlen(e_conf) + 1);
-			var = 0;
-		} else if (var == 12) {
-			nbar->cntdwn = atoi(e_conf);
-			var = 0;
-		} else if (var == 13) {
-			strncpy(nbar->cmd, e_conf, strlen(e_conf) + 1);
-			var = 0;
-		}
-		if (strncmp(e_conf, "auto_save=", 10) == 0)
-			var = 1;
-		else if (strncmp(e_conf, "confirm_quit=", 13) == 0)
-			var = 2;
-		else if (strncmp(e_conf, "confirm_delete=", 15) == 0)
-			var = 3;
-                else if (strncmp(e_conf, "skip_system_dialogs=", 20) == 0)
-                        var = 4;
-		else if (strncmp(e_conf, "skip_progress_bar=", 18) == 0)
-			var = 5;
-                else if (strncmp(e_conf, "week_begins_on_monday=", 23) == 0)
-                        var = 6;
-		else if (strncmp(e_conf, "color-theme=", 12) == 0)
-			var = 7;
-		else if (strncmp(e_conf, "layout=", 7) == 0)
-			var = 8;
-		else if (strncmp(e_conf, "notify-bar_show=", 16) ==0)
-			var = 9;
-		else if (strncmp(e_conf, "notify-bar_date=", 16) ==0)
-			var = 10;
-		else if (strncmp(e_conf, "notify-bar_clock=", 17) ==0)
-			var = 11;
-		else if (strncmp(e_conf, "notify-bar_warning=", 19) ==0)
-			var = 12;
-		else if (strncmp(e_conf, "notify-bar_command=", 19) ==0)
-			var = 13;
-	}
-	fclose(data_file);
-	pthread_mutex_unlock(&nbar->mutex);
-	erase_window_part(swin, 0, 0, nc_bar, nl_bar);
-}
-
-bool fill_config_var (char *string) {
-	if (strncmp(string, "yes", 3) == 0)
-		return true;
-	else if (strncmp(string, "no", 2) == 0)
-		return false;
-	else {
-		fputs(_("FATAL ERROR in fill_config_var: "
-			"wrong configuration variable format.\n"), stderr);
-		return EXIT_FAILURE;
-	}
 }
