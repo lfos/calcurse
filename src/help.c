@@ -1,4 +1,4 @@
-/*	$calcurse: help.c,v 1.14 2007/03/10 15:55:25 culot Exp $	*/
+/*	$calcurse: help.c,v 1.15 2007/03/24 23:19:48 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -88,6 +88,7 @@ help_screen(int which_pan)
 	
 	help_page_t help_main;
 	help_page_t help_save;
+	help_page_t help_export;
 	help_page_t help_displacement;
 	help_page_t help_view;
 	help_page_t help_tab;
@@ -97,6 +98,7 @@ help_screen(int which_pan)
 	help_page_t help_edit;
 	help_page_t help_priority;
 	help_page_t help_repeat;
+	help_page_t help_flag;
 	help_page_t help_config;
 	help_page_t help_general;
 	help_page_t help_other;
@@ -121,7 +123,7 @@ help_screen(int which_pan)
 	help_save.title = _("Save:\n");
     	help_save.text  =
     _("Pressing 'S' saves the Calcurse data.\n\n"
-    "The data is splitted into three different files which contains :"
+    "The data is splitted into three different files which contain :"
     "\n\n"
     "        /  ~/.calcurse/conf -> the user configuration\n"
     "        |                      (layout, color, general options)\n"
@@ -129,6 +131,15 @@ help_screen(int which_pan)
     "        \\  ~/.calcurse/todo -> the data related to the todo list\n"
     "\nIn the config menu, you can choose to save the Calcurse data\n"
     "automatically before quitting.");
+
+	help_export.title = _("Export:\n");
+	help_export.text  =
+    _("Pressing 'X' exports the Calcurse data to iCalendar format.\n\n"
+    "You first need to specify the file to which the data will be exported.\n"
+    "By default, this file is:\n\n"
+    "     ~/calcurse.ics\n\n"
+    "All of the calcurse data are exported, in the following order:\n"
+    "events, appointments, todos.\n");
 
 	help_displacement.title = _("Displacement keys:\n");
     	help_displacement.text  =
@@ -280,6 +291,16 @@ help_screen(int which_pan)
     "         complicated configurations, as it is possible to delete only\n"
     "         one occurence of a repeated item."); 
 
+	help_flag.title   = _("Flag Item:\n");
+	help_flag.text    =
+    _("Pressing '!' toggles an appointment's 'important' flag.\n\n"
+    "If an item is flagged as important, an exclamation mark appears in front\n"
+    "of it, and you will be warned if time gets closed to the appointment\n"
+    "start time.\n"
+    "To customize the way one gets notified, the configuration submenu lets\n"
+    "you choose the command launched to warn user of an upcoming appointment,\n"
+    "and how long before it he gets notified.");
+
 	help_config.title = _("Config:\n");
 	help_config.text  =
     _("Pressing 'C' leads to the configuration submenu, from which you can\n"
@@ -351,23 +372,32 @@ help_screen(int which_pan)
 	/* Display the help screen related to user input. */
 	while ( ch != 'q' ) {
                 erase_window_part(help_win, 1, title_lines, 
-                                  help_col - 2, help_row - 2);
+                    help_col - 2, help_row - 2);
 
 		switch (ch) {
 		
 		case CTRL('n') :
-			if (nl > first_line + text_lines) first_line++;
+			if (nl > first_line + text_lines) 
+				first_line++;
 			break;
 
 		case CTRL('p') :
-			if (first_line > 0) first_line--;
+			if (first_line > 0) 
+				first_line--;
 			break;
 
 		case '?':
 			first_line = 0;
 			nl = write_help_pad(help_pad, help_main.title,
-					help_main.text, pad_width);
+			    help_main.text, pad_width);
 			break;
+
+		case '!':
+			first_line = 0;
+			nl = write_help_pad(help_pad, help_flag.title,
+			    help_flag.text, pad_width);
+			break;
+
 		case CTRL('r'):
 		case CTRL('a'):
 		case CTRL('t'):
@@ -377,13 +407,21 @@ help_screen(int which_pan)
 		case CTRL('l'):
 			first_line = 0;
 			nl = write_help_pad(help_pad, help_general.title,
-					help_general.text, pad_width);
+			    help_general.text, pad_width);
 			break;
+
 		case 's':
 			first_line = 0;
 			nl = write_help_pad(help_pad, help_save.title,
-					help_save.text, pad_width);
+			    help_save.text, pad_width);
 			break;
+
+		case 'x':
+			first_line = 0;
+			nl = write_help_pad(help_pad, help_export.title,
+			    help_export.text, pad_width);
+			break;
+
 		case 'h':
 		case 'l':
 		case 'j':
@@ -394,72 +432,74 @@ help_screen(int which_pan)
 		case 261:
 			first_line = 0;
 			nl = write_help_pad(help_pad, help_displacement.title,
-					help_displacement.text, pad_width);
+			    help_displacement.text, pad_width);
 			break;
 
 		case 'a':
 			first_line = 0;
 			nl = write_help_pad(help_pad, help_add.title,
-					help_add.text, pad_width);
+			    help_add.text, pad_width);
 			break;
 
 		case 'g':
 			first_line = 0;
 			nl = write_help_pad(help_pad, help_goto.title,
-					help_goto.text, pad_width);
+			    help_goto.text, pad_width);
 			break;
 
 		case 'd':
 			first_line = 0;
 			nl = write_help_pad(help_pad, help_delete.title,
-					help_delete.text, pad_width);
+			    help_delete.text, pad_width);
 			break;
 		
 		case 'e':
 			first_line = 0;
 			nl = write_help_pad(help_pad, help_edit.title,
-					help_edit.text, pad_width); 
+			    help_edit.text, pad_width); 
 			break;
 
 		case 'c':
 			first_line = 0;
 			nl = write_help_pad(help_pad, help_config.title,
-					help_config.text, pad_width);
+			    help_config.text, pad_width);
 			break;
+
 		case 'o':
 			first_line = 0;
 			nl = write_help_pad(help_pad, help_other.title,
-					help_other.text, pad_width);
+			    help_other.text, pad_width);
 			break;
+
 		case 'r':
 			first_line = 0;
 			nl = write_help_pad(help_pad, help_repeat.title,
-					help_repeat.text, pad_width);
+			    help_repeat.text, pad_width);
 			break;
 
 		case 'v':
 			first_line = 0;
 			nl = write_help_pad(help_pad, help_view.title,
-					help_view.text, pad_width);
+			    help_view.text, pad_width);
 			break;
 
 		case '+':
 		case '-':
 			first_line = 0;
 			nl = write_help_pad(help_pad, help_priority.title,
-				help_priority.text, pad_width);
+			    help_priority.text, pad_width);
 			break;
 
 		case 9:
 			first_line = 0;
 			nl = write_help_pad(help_pad, help_tab.title,
-					help_tab.text, pad_width);
+			    help_tab.text, pad_width);
 			break;
 
 		case '@':
 			first_line = 0;
 			nl = write_help_pad(help_pad, help_credits.title,
-					help_credits.text, pad_width); 
+			    help_credits.text, pad_width); 
 			break;
 		}
 
@@ -473,19 +513,18 @@ help_screen(int which_pan)
 			if ((sbar_top + sbar_length) > help_row - 1)
 				sbar_length = help_row - 1 -sbar_top;
 			draw_scrollbar(help_win, sbar_top, help_col - 2,
-					sbar_length, title_lines + 1, 
-					help_row - 1, true);
+			    sbar_length, title_lines + 1, help_row - 1, true);
 		}
 
                 wmove(swin, 0, 0);
 		wnoutrefresh(help_win);
-		pnoutrefresh(help_pad, first_line, 0, 
-				pad_offset, pad_offset, 
-				help_row - 2, help_col - pad_offset);
+		pnoutrefresh(help_pad, first_line, 0, pad_offset, pad_offset, 
+		    help_row - 2, help_col - pad_offset);
                 doupdate();
                 ch = wgetch(swin);
 		ch = tolower(ch);
 	}
+
 	delwin(help_pad);
 	delwin(help_win);
 }
