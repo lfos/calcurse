@@ -1,4 +1,4 @@
-/*	$calcurse: help.c,v 1.15 2007/03/24 23:19:48 culot Exp $	*/
+/*	$calcurse: help.c,v 1.16 2007/04/04 19:38:18 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -26,6 +26,7 @@
 
 #include <ncurses.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
@@ -51,7 +52,7 @@ write_help_pad(WINDOW *win, char *title, char *text, int pad_width)
 	
 	nl_text = get_help_lines(text);
 	nl_title = get_help_lines(title);
-	erase_window_part(win, 0, 0, MAX_LENGTH, pad_width);
+	erase_window_part(win, 0, 0, BUFSIZ, pad_width);
 	custom_apply_attr(win, ATTR_HIGHEST);
 	mvwprintw(win, 0, 0, "%s", title);
 	custom_remove_attr(win, ATTR_HIGHEST);
@@ -77,7 +78,7 @@ help_screen(int which_pan)
 {
 	WINDOW *help_win = NULL;
 	WINDOW *help_pad = NULL;
-	char label[MAX_LENGTH];
+	char label[BUFSIZ];
 	int ch = '?';
 	int help_row, text_lines;
 	int help_col = col;
@@ -364,9 +365,9 @@ help_screen(int which_pan)
 	help_row = (notify_bar()) ? row - 3 : row - 2; 
 	text_lines = help_row - (pad_offset + 1);
 	help_win = newwin(help_row, help_col, 0, 0);
-	help_pad = newpad(MAX_LENGTH, pad_width);
+	help_pad = newpad(BUFSIZ, pad_width);
 	box(help_win, 0, 0);
-	snprintf(label, MAX_LENGTH, _("CalCurse %s | help"), VERSION);
+	snprintf(label, BUFSIZ, _("CalCurse %s | help"), VERSION);
 	win_show(help_win, label);
 
 	/* Display the help screen related to user input. */

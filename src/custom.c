@@ -1,4 +1,4 @@
-/*	$calcurse: custom.c,v 1.6 2007/03/24 23:18:52 culot Exp $	*/
+/*	$calcurse: custom.c,v 1.7 2007/04/04 19:38:18 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -27,6 +27,7 @@
 #include <ncurses.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "i18n.h"
 #include "io.h"
@@ -273,7 +274,7 @@ custom_color_config(int notify_bar)
 		NBPOS
 	};
 	WINDOW *conf_win;
-	char label[MAX_LENGTH];
+	char label[BUFSIZ];
 	char *choose_color_1 = 
 	    _("Use 'X' or SPACE to select a color, "
 	    "'H/L' 'J/K' or arrow keys to move");
@@ -312,7 +313,7 @@ custom_color_config(int notify_bar)
 	clear();
 	win_row = (notify_bar) ? row - 3 : row - 2;
 	conf_win = newwin(win_row, col, 0, 0);
-	snprintf(label, MAX_LENGTH, _("CalCurse %s | color theme"), VERSION);
+	snprintf(label, BUFSIZ, _("CalCurse %s | color theme"), VERSION);
 	win_show(conf_win, label);
 	status_mesg(choose_color_1, choose_color_2);
 
@@ -451,7 +452,7 @@ custom_load_color(char *color, int background)
 #define AWAITED_COLORS	2
 
 	int i, len, color_num;
-	char c[AWAITED_COLORS][MAX_LENGTH];
+	char c[AWAITED_COLORS][BUFSIZ];
 	int colr[AWAITED_COLORS];
 	const char *wrong_color_number =
 	    _("FATAL ERROR in custom_load_color: wrong color number.\n");
@@ -588,6 +589,6 @@ custom_color_theme_name(char *theme_name)
 		}
 	}
 
-	snprintf(theme_name, MAX_LENGTH, "%s on %s", color_name[0],
+	snprintf(theme_name, BUFSIZ, "%s on %s", color_name[0],
 	    color_name[1]);
 }

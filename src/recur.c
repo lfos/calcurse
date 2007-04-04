@@ -1,4 +1,4 @@
-/*	$calcurse: recur.c,v 1.23 2007/03/10 16:48:19 culot Exp $	*/
+/*	$calcurse: recur.c,v 1.24 2007/04/04 19:38:18 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -26,6 +26,7 @@
 
 #include <ncurses.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 #include <ctype.h>
 #include <sys/types.h>
@@ -121,7 +122,9 @@ struct recur_event_s *recur_event_new(char *mesg, long day, int id,
  * Correspondance between the defines on recursive type, 
  * and the letter to be written in file. 
  */
-char recur_def2char(int define){
+char 
+recur_def2char(int define)
+{
 	char recur_char;
 
 	switch (define) {
@@ -138,7 +141,8 @@ char recur_def2char(int define){
 		recur_char = 'Y';
 		break;
 	}
-	return recur_char;
+
+	return (recur_char);
 }
 
 /* 
@@ -572,7 +576,7 @@ recur_repeat_item(int sel_year, int sel_month, int sel_day,
 	int ch = 0;
 	int valid_date = 0, date_entered = 0;
 	int year = 0, month = 0, day = 0;
-	char user_input[MAX_LENGTH] = "";
+	char user_input[BUFSIZ] = "";
 	char *mesg_type_1 = 
 	_("Enter the repetition type: (D)aily, (W)eekly, (M)onthly, (Y)early");
 	char *mesg_type_2 = _("[D/W/M/Y] ");
@@ -617,7 +621,7 @@ recur_repeat_item(int sel_year, int sel_month, int sel_day,
 
 	while (freq == 0) {
 		status_mesg(mesg_freq_1, "");
-		if (getstring(swin, user_input, MAX_LENGTH, 0, 1) == 
+		if (getstring(swin, user_input, BUFSIZ, 0, 1) == 
 		    GETSTRING_VALID) {
 			freq = atoi(user_input);
 			if (freq == 0) {

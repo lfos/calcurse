@@ -1,4 +1,4 @@
-/*	$calcurse: day.h,v 1.10 2007/03/10 15:55:25 culot Exp $	*/
+/*	$calcurse: day.h,v 1.11 2007/04/04 19:41:27 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -27,6 +27,8 @@
 #ifndef CALCURSE_DAY_H
 #define CALCURSE_DAY_H
 
+#include <stdio.h>
+
 #include "vars.h"
 #include "apoint.h"
 
@@ -49,8 +51,8 @@ struct day_item_s {
 };
 
 struct day_saved_item_s {
-	char start[MAX_LENGTH]; 
-	char end[MAX_LENGTH];
+	char start[BUFSIZ]; 
+	char end[BUFSIZ];
 	char state;
 	char type ;
 	char *mesg;

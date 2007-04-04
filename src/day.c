@@ -1,4 +1,4 @@
-/*	$calcurse: day.c,v 1.20 2007/03/10 15:55:25 culot Exp $	*/
+/*	$calcurse: day.c,v 1.21 2007/04/04 19:38:18 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -404,6 +404,7 @@ day_edit_item(int year, int month, int day, int item_num)
 #define END	'2'
 #define DESC	'3'
 #define REPT	'4'
+
 	struct day_item_s *p;
 	struct recur_event_s *re;
 	struct rpt_s *rpt;
@@ -520,7 +521,7 @@ day_edit_item(int year, int month, int day, int item_num)
 		while ( (ch != 'D') && (ch != 'W') && (ch != 'M') 
 		    && (ch != 'Y') ) {
 			status_mesg(mesg_type_1, mesg_type_2);
-			typestr = (char *) malloc(sizeof(char)); 
+			typestr = (char *)malloc(sizeof(char) * 2);
 			*typestr = recur_def2char(rpt->type);
 			cancel = updatestring(swin, &typestr, 0, 1);
 			ch = toupper(*typestr);
@@ -530,8 +531,8 @@ day_edit_item(int year, int month, int day, int item_num)
 		}
 		while (newfreq == 0) {
 			status_mesg(mesg_freq_1, "");
-			freqstr = (char *) malloc(MAX_LENGTH); 
-			snprintf(freqstr, MAX_LENGTH, "%d", rpt->freq);
+			freqstr = (char *) malloc(BUFSIZ); 
+			snprintf(freqstr, BUFSIZ, "%d", rpt->freq);
 			cancel = updatestring(swin, &freqstr, 0, 1);
 			newfreq = atoi(freqstr);
 			free(freqstr);
@@ -553,7 +554,7 @@ day_edit_item(int year, int month, int day, int item_num)
 				return;
 			}
 			if (strlen(timestr) == 1 && 
-			    strncmp(timestr, "0", 1) == 0 )  {
+			    strncmp(timestr, "0", 1) == 0 ) {
 				rpt->until = 0;
 				date_entered = 1;
 			} else { 

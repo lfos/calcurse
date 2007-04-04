@@ -1,4 +1,4 @@
-/*	$calcurse: vars.h,v 1.8 2007/03/24 23:22:16 culot Exp $	*/
+/*	$calcurse: vars.h,v 1.9 2007/04/04 19:38:18 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -30,17 +30,15 @@
 #include <ncurses.h> 
 #include <pthread.h>
 #include <stdbool.h>
+#include <stdio.h>
 
 #define DIR_NAME	".calcurse"
 #define TODO_PATH 	".calcurse/todo"
 #define APTS_PATH	".calcurse/apts"
 #define CONF_PATH	".calcurse/conf"
 
-#define MAX_LENGTH	512
-
 #define CTRL(x)         ((x) & 0x1f)
 #define ESCAPE		27
-
 #define ATTR_FALSE	0
 #define ATTR_TRUE	1
 #define ATTR_LOWEST	2
@@ -64,9 +62,9 @@ struct nbar_s {
 	int show;			/* display or hide the notify-bar */
 	int cntdwn;			/* warn when time left before next app
 					 * becomes lesser than cntdwn */  
-	char datefmt[MAX_LENGTH];	/* format for displaying date */
-	char timefmt[MAX_LENGTH];	/* format for displaying time */
-	char cmd[MAX_LENGTH];		/* notification command */
+	char datefmt[BUFSIZ];		/* format for displaying date */
+	char timefmt[BUFSIZ];		/* format for displaying time */
+	char cmd[BUFSIZ];		/* notification command */
 	char *shell;			/* user shell to launch notif. cmd */
 	pthread_mutex_t mutex;
 };
@@ -86,10 +84,10 @@ extern bool colorize;
 extern int days[12];
 extern char *monthnames[12];
 extern char *daynames[8];
-extern char path_dir[MAX_LENGTH];
-extern char path_todo[MAX_LENGTH];
-extern char path_apts[MAX_LENGTH];
-extern char path_conf[MAX_LENGTH];
+extern char path_dir[BUFSIZ];
+extern char path_todo[BUFSIZ];
+extern char path_apts[BUFSIZ];
+extern char path_conf[BUFSIZ];
 extern WINDOW *awin, *cwin, *twin, *swin;
 extern struct pad_s *apad;
 extern struct nbar_s *nbar;

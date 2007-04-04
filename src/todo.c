@@ -1,4 +1,4 @@
-/*	$calcurse: todo.c,v 1.10 2007/03/10 15:54:59 culot Exp $	*/
+/*	$calcurse: todo.c,v 1.11 2007/04/04 19:38:18 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -43,10 +43,10 @@ todo_new_item(int total)
 	char *mesg = _("Enter the new ToDo item : ");
 	char *mesg_id = 
 		_("Enter the ToDo priority [1 (highest) - 9 (lowest)] :");
-	char todo_input[MAX_LENGTH] = "";
+	char todo_input[BUFSIZ] = "";
 
 	status_mesg(mesg, "");
-	if (getstring(swin, todo_input, MAX_LENGTH, 0, 1) == 
+	if (getstring(swin, todo_input, BUFSIZ, 0, 1) == 
 		GETSTRING_VALID) {
 		while ( (ch < '1') || (ch > '9') ) {
 			status_mesg(mesg_id, "");
@@ -149,7 +149,7 @@ int
 todo_chg_priority(int action, int item_num)
 {
 	struct todo_s *backup;
-	char backup_mesg[MAX_LENGTH];
+	char backup_mesg[BUFSIZ];
 	int backup_id;
 	int do_chg = 1, new_position;
 

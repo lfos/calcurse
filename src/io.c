@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.13 2007/03/24 23:20:49 culot Exp $	*/
+/*	$calcurse: io.c,v 1.14 2007/04/04 19:38:18 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -143,11 +143,11 @@ io_get_export_stream(void)
 	    _("Press [ENTER] to continue.");
 
 	stream = NULL;
-	stream_name = (char *)malloc(MAX_LENGTH);
+	stream_name = (char *)malloc(BUFSIZ);
 	home = getenv("HOME");
 	if (home == NULL)
 		home = ".";
-	snprintf(stream_name, MAX_LENGTH, "%s/calcurse.ics", home);
+	snprintf(stream_name, BUFSIZ, "%s/calcurse.ics", home);
 	
 	while (stream == NULL) {
 		status_mesg(question, "");
@@ -198,7 +198,7 @@ io_export_recur_events(FILE *stream)
 {
 	struct recur_event_s *i;
 	struct days_s *day;
-	char ical_date[MAX_LENGTH];
+	char ical_date[BUFSIZ];
 
 	for (i = recur_elist; i != 0; i = i->next) { 
 		date_sec2ical_date(i->day, ical_date);
@@ -233,7 +233,7 @@ void
 io_export_events(FILE *stream)
 {
 	struct event_s *i;
-	char ical_date[MAX_LENGTH];
+	char ical_date[BUFSIZ];
 	
 	for (i = eventlist; i != 0; i = i->next) { 
 		date_sec2ical_date(i->day, ical_date);
@@ -250,8 +250,8 @@ io_export_recur_apoints(FILE *stream)
 {
 	recur_apoint_llist_node_t *i;
 	struct days_s *day;
-	char ical_datetime[MAX_LENGTH];
-	char ical_date[MAX_LENGTH];
+	char ical_datetime[BUFSIZ];
+	char ical_date[BUFSIZ];
 	
 	pthread_mutex_lock(&(recur_alist_p->mutex));
 	for (i = recur_alist_p->root; i != 0; i = i->next) { 
@@ -292,7 +292,7 @@ void
 io_export_apoints(FILE *stream)
 {
 	apoint_llist_node_t *i;
-	char ical_datetime[MAX_LENGTH];
+	char ical_datetime[BUFSIZ];
 	
 	pthread_mutex_lock(&(alist_p->mutex));
 	for (i = alist_p->root; i != 0; i = i->next) { 
@@ -333,21 +333,21 @@ io_init(char *cfile)
 {
 	FILE *data_file;
 	char *home;
-	char apts_file[MAX_LENGTH] = "";
+	char apts_file[BUFSIZ] = "";
 	int ch;
 
 	home = getenv("HOME");
 	if (home == NULL) {
 		home = ".";
 	}
-	snprintf(path_dir, MAX_LENGTH, "%s/" DIR_NAME, home);
-	snprintf(path_todo, MAX_LENGTH, "%s/" TODO_PATH, home);
-	snprintf(path_conf, MAX_LENGTH, "%s/" CONF_PATH, home);
+	snprintf(path_dir, BUFSIZ, "%s/" DIR_NAME, home);
+	snprintf(path_todo, BUFSIZ, "%s/" TODO_PATH, home);
+	snprintf(path_conf, BUFSIZ, "%s/" CONF_PATH, home);
 	if (cfile == NULL) {
-		snprintf(path_apts, MAX_LENGTH, "%s/" APTS_PATH, home);
+		snprintf(path_apts, BUFSIZ, "%s/" APTS_PATH, home);
 	} else {
-		snprintf(apts_file, MAX_LENGTH, "%s", cfile);
-		strncpy(path_apts, apts_file, MAX_LENGTH);
+		snprintf(apts_file, BUFSIZ, "%s", cfile);
+		strncpy(path_apts, apts_file, BUFSIZ);
 		/* check if the file exists, otherwise create it */
 		data_file = fopen(path_apts, "r");
 		if (data_file == NULL) {
@@ -402,7 +402,7 @@ io_save_cal(conf_t *conf, int layout)
 	struct event_s *k;
 	apoint_llist_node_t *j;
 	struct todo_s *i;
-	char theme_name[MAX_LENGTH];
+	char theme_name[BUFSIZ];
 	char *access_pb = _("Problems accessing data file ...");
 	char *config_txt =
 	    "#\n# Calcurse configuration file\n#\n# This file sets the configuration options used by Calcurse. These\n# options are usually set from within Calcurse. A line beginning with \n# a space or tab is considered to be a continuation of the previous line.\n# For a variable to be unset its value must be blank.\n# To set a variable to the empty string its value should be \"\".\n# Lines beginning with \"#\" are comments, and ignored by Calcurse.\n";
@@ -695,7 +695,7 @@ load_todo(void)
 	char *nl;
 	int nb_tod = 0;
 	int c, id;
-	char buf[MAX_LENGTH], e_todo[MAX_LENGTH];
+	char buf[BUFSIZ], e_todo[BUFSIZ];
 
 	data_file = fopen(path_todo, "r");
 	if (data_file == NULL) {
@@ -712,7 +712,7 @@ load_todo(void)
 			id = 9;
 			ungetc(c, data_file);
 		}
-		fgets(buf, MAX_LENGTH, data_file);
+		fgets(buf, BUFSIZ, data_file);
 		nl = strchr(buf, '\n');
 		if (nl) {
 			*nl = '\0';
