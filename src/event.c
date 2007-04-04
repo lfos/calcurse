@@ -1,8 +1,8 @@
-/*	$calcurse: event.c,v 1.2 2006/12/15 15:25:28 culot Exp $	*/
+/*	$calcurse: event.c,v 1.3 2007/04/04 19:37:14 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2006 Frederic Culot
+ * Copyright (c) 2004-2007 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,7 @@
 #include <sys/types.h>
 #include <time.h>
 
+#include "vars.h"
 #include "i18n.h"
 #include "event.h"
 #include "utils.h"
@@ -37,7 +38,8 @@
 struct event_s *eventlist;
 
 /* Create a new event */
-struct event_s *event_new(char *mesg, long day, int id)
+struct event_s *
+event_new(char *mesg, long day, int id)
 {
 	struct event_s *o, **i;
 	o = (struct event_s *) malloc(sizeof(struct event_s));
@@ -58,16 +60,18 @@ struct event_s *event_new(char *mesg, long day, int id)
 }
 
 /* Check if the event belongs to the selected day */
-unsigned event_inday(struct event_s *i, long start)
+unsigned 
+event_inday(struct event_s *i, long start)
 {
-	if (i->day <= start + 3600 * 24 && i->day > start) {
+	if (i->day <= start + DAYINSEC && i->day > start) {
 		return 1;
 	}
 	return 0;
 }
 
 /* Write to file the event in user-friendly format */
-void event_write(struct event_s *o, FILE * f)
+void 
+event_write(struct event_s *o, FILE * f)
 {
 	struct tm *lt;
 	time_t t;
@@ -79,7 +83,8 @@ void event_write(struct event_s *o, FILE * f)
 }
 
 /* Load the events from file */
-struct event_s *event_scan(FILE * f, struct tm start, int id)
+struct event_s *
+event_scan(FILE * f, struct tm start, int id)
 {
 	struct tm *lt;
 	char buf[MESG_MAXSIZE], *nl;
@@ -110,7 +115,8 @@ struct event_s *event_scan(FILE * f, struct tm start, int id)
 }
 
 /* Delete an event from the list */
-void event_delete_bynum(long start, unsigned num)
+void 
+event_delete_bynum(long start, unsigned num)
 {
 	unsigned n;
 	struct event_s *i, **iptr;

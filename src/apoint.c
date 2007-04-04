@@ -1,4 +1,4 @@
-/*	$calcurse: apoint.c,v 1.9 2007/02/25 19:31:44 culot Exp $	*/
+/*	$calcurse: apoint.c,v 1.10 2007/04/04 19:35:09 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -78,16 +78,18 @@ apoint_new(char *mesg, long start, long dur, char state)
 	return o;
 }
 
-unsigned apoint_inday(apoint_llist_node_t *i, long start)
+unsigned 
+apoint_inday(apoint_llist_node_t *i, long start)
 {
-	if (i->start <= start + 3600 * 24 && i->start + i->dur > start) {
+	if (i->start <= start + DAYINSEC && i->start + i->dur > start) {
 		return 1;
 	}
 	return 0;
 }
 
-void apoint_sec2str(apoint_llist_node_t *o, 
-	int type, long day, char *start, char *end)
+void 
+apoint_sec2str(apoint_llist_node_t *o, int type, long day, char *start, 
+    char *end)
 {
 	struct tm *lt;
 	time_t t;
@@ -100,7 +102,7 @@ void apoint_sec2str(apoint_llist_node_t *o,
 		snprintf(start, HRMIN_SIZE, "%02u:%02u", lt->tm_hour,
 			 lt->tm_min);
 	}
-	if (o->start + o->dur > day + 24 * 3600 && type == APPT) {
+	if (o->start + o->dur > day + DAYINSEC && type == APPT) {
 		strncpy(end, "..:..", 6);
 	} else {
 		t = o->start + o->dur;
