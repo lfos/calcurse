@@ -1,3 +1,10 @@
+04 Apr 2007:
+	MAX_LENGTH replaced by stdio.h's BUFSIZ
+	use of MININSEC and DAYINSEC defines
+	bugfix: typestr size corrected in day_edit_item()
+	bugfix: 01/01/1970 is not returned anymore if 0 is given to
+		date_sec2date_str() 
+
 24 Mar 2007:
 	TODO updated
 	online help updated to add the export and flag command
@@ -636,7 +643,7 @@
 	improve the way appointment panel scrolls 
 
 10 Jan 2006:
-	added ifndef..define tests at the beggining of .h
+	added ifndef..define tests at the beginning of .h
 
 08 Jan 2006:
 	added definition of CTRL keys in vars.h
@@ -982,4 +989,4 @@
 	creation of the configuration menu, with color changing for now on
 
 15 Mar 2004:
-	beggining of the project
+	beginning of the project
