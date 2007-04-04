@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.26 2007/03/24 23:12:35 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.27 2007/04/04 19:42:43 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -76,13 +76,13 @@ WINDOW * popup(int pop_row, int pop_col,
 	    int pop_y, int pop_x, char *pop_lab)
 {
 	char *txt_pop = _("Press any key to continue...");
-	char label[MAX_LENGTH];
+	char label[BUFSIZ];
 	WINDOW *popup_win;
 
 	popup_win = newwin(pop_row, pop_col, pop_y, pop_x);
 	custom_apply_attr(popup_win, ATTR_HIGHEST);
 	box(popup_win, 0, 0);
-	snprintf(label, MAX_LENGTH, "%s", pop_lab);
+	snprintf(label, BUFSIZ, "%s", pop_lab);
 	win_show(popup_win, label);
 	mvwprintw(popup_win, pop_row - 2, pop_col - (strlen(txt_pop) + 1), "%s",
 		 txt_pop);
@@ -280,9 +280,9 @@ updatestring(WINDOW *win, char **str, int x, int y)
 	char *newstr;
 	int escape, len = strlen(*str) + 1;
 
-	newstr = (char *) malloc(MAX_LENGTH);	
+	newstr = (char *) malloc(BUFSIZ);	
 	(void)memcpy(newstr, *str, len);
-	escape = getstring(win, newstr, MAX_LENGTH, x, y);
+	escape = getstring(win, newstr, BUFSIZ, x, y);
 	if (!escape) {
 		len = strlen(newstr) + 1;
 		if ((*str = (char *) realloc(*str, len)) == NULL) {
@@ -480,19 +480,26 @@ char *date_sec2hour_str(long sec)
 }
 
 /* Return a string containing the date, given a date in seconds. */
-char *date_sec2date_str(long sec)
+char *
+date_sec2date_str(long sec)
 {
-	const int DATE_LEN = 11;
+	const int DATELEN = 11;
 	struct tm *lt;
 	time_t t;
 	char *datestr;
 	
-	t = sec;
-	lt = localtime(&t);
-	datestr = (char *) malloc(DATE_LEN);
-	snprintf(datestr, DATE_LEN, "%02u/%02u/%04u", lt->tm_mon + 1, 
-		lt->tm_mday, lt->tm_year + 1900);
-	return datestr;
+	datestr = (char *)malloc(sizeof(char) * DATELEN);
+
+	if (sec == 0)
+		snprintf(datestr, DATELEN, "0");
+	else {
+		t = sec;
+		lt = localtime(&t);
+		snprintf(datestr, DATELEN, "%02u/%02u/%04u", lt->tm_mon + 1,
+		    lt->tm_mday, lt->tm_year + 1900);
+	}
+
+	return (datestr);
 }
 
 /* 
@@ -580,9 +587,10 @@ get_sec_date(int year, int month, int day)
 	return long_date;
 }
 
-long min2sec(unsigned minutes)
+long 
+min2sec(unsigned minutes)
 {
-	return minutes * 60;
+	return (minutes * MININSEC);
 }
 
 /* 
@@ -593,52 +601,45 @@ long min2sec(unsigned minutes)
  * [h:mm] or [hh:mm] format, and 2 if the entered time is correct and entered
  * in [mm] format.
  */
-int check_time(char *string)
+int 
+check_time(char *string)
 {
 	int ok = 0;
 	char hour[] = "  ";
 	char minutes[] = "  ";
 
-	if (			// format test [MM]
-		   ((strlen(string) == 2) || (strlen(string) == 3)) &
-		   (isdigit(string[0]) != 0) &
-		   (isdigit(string[1]) != 0) 
-	    ) {			// check if we have a valid time
+	if (((strlen(string) == 2) || (strlen(string) == 3)) &&
+ 	    (isdigit(string[0]) != 0) && (isdigit(string[1]) != 0)) {
+
 		strncpy(minutes, string, 2);
-		if ( atoi(minutes) >= 0)
-			ok = 2;
-	}
-	
-	else if (		// format test [H:MM]
-		   (strlen(string) == 4) &
-		   (isdigit(string[0]) != 0) &
-		   (isdigit(string[2]) != 0) &
-		   (isdigit(string[3]) != 0) & (string[1] == ':')
-	    ) {			// check if we have a valid time
+		if (atoi(minutes) >= 0)
+			
+			ok = 2; /* [MM] format */
+
+	} else if ((strlen(string) == 4) && (isdigit(string[0]) != 0) &&
+	    (isdigit(string[2]) != 0) && (isdigit(string[3]) != 0) && 
+	    (string[1] == ':')) {
+
 		strncpy(hour, string, 1);
 		strncpy(minutes, string + 2, 2);
-		if ((atoi(hour) <= 24) & (atoi(hour) >=
-					  0) & (atoi(minutes) <
-						60) & (atoi(minutes) >= 0))
-			ok = 1;
-	}
+		if ((atoi(hour) <= 24) && (atoi(hour) >= 0) && 
+		    (atoi(minutes) < MININSEC) && (atoi(minutes) >= 0))
 
-	else if (		//format test [HH:MM]
-		   (strlen(string) == 5) &
-		   (isdigit(string[0]) != 0) &
-		   (isdigit(string[1]) != 0) &
-		   (isdigit(string[3]) != 0) &
-		   (isdigit(string[4]) != 0) & (string[2] == ':')
-	    ) {			// check if we have a valid time
+			ok = 1; /* [H:MM] format */
+
+	} else if ((strlen(string) == 5) && (isdigit(string[0]) != 0) &&
+	    (isdigit(string[1]) != 0) && (isdigit(string[3]) != 0) &&
+	    (isdigit(string[4]) != 0) && (string[2] == ':')) {		
+
 		strncpy(hour, string, 2);
 		strncpy(minutes, string + 3, 2);
-		if ((atoi(hour) <= 24) & (atoi(hour) >=
-					  0) & (atoi(minutes) <
-						60) & (atoi(minutes) >= 0))
-			ok = 1;
+		if ((atoi(hour) <= 24) && (atoi(hour) >= 0) && 
+		    (atoi(minutes) < MININSEC) && (atoi(minutes) >= 0))
+
+			ok = 1; /* [HH:MM] format */
 	}
 	
-	return ok;
+	return (ok);
 }
 
 /*
