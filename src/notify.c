@@ -1,4 +1,4 @@
-/*	$calcurse: notify.c,v 1.9 2007/03/24 23:17:09 culot Exp $	*/
+/*	$calcurse: notify.c,v 1.10 2007/04/04 19:41:57 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -28,6 +28,7 @@
 #include <pthread.h>
 #include <time.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 #include <unistd.h>
 #include <sys/wait.h>
@@ -123,7 +124,7 @@ notify_update_bar(void)
 	const int space = 3;
 	int file_pos, date_pos, app_pos, txt_max_len, too_long = 0;
 	int time_left, hours_left, minutes_left;
-	char buf[MAX_LENGTH];
+	char buf[BUFSIZ];
 	
 	date_pos = space;
 	pthread_mutex_lock(&notify->mutex);
@@ -148,8 +149,9 @@ notify_update_bar(void)
 		}
 		time_left = notify_app->time - notify->time_in_sec; 
 		if (time_left > 0) {
-			hours_left = (time_left / 3600);
-			minutes_left = (time_left - hours_left*3600) / 60;
+			hours_left = (time_left / HOURINSEC);
+			minutes_left = (time_left - hours_left * DAYINSEC) / 
+			    MININSEC;
 			pthread_mutex_lock(&nbar->mutex);
 			if (time_left < nbar->cntdwn) 
 				wattron(notify->win, A_BLINK);
@@ -202,10 +204,14 @@ notify_extract_aptsfile(void)
 static void *
 notify_main_thread(void *arg)
 {
-	unsigned thread_sleep = 1, check_app = 60;
-	int elapse = 0, got_app = 0;
+	const unsigned thread_sleep = 1;
+	const unsigned check_app = MININSEC;
+	int elapse= 0, got_app = 0;
 	struct tm *ntime;
 	time_t ntimer;
+
+	elapse = 0;
+	got_app = 0;
 
 	for (;;) {
 		ntimer = time(NULL);

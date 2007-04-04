@@ -1,4 +1,4 @@
-/*	$calcurse: args.c,v 1.16 2007/03/24 23:13:22 culot Exp $	*/
+/*	$calcurse: args.c,v 1.17 2007/04/04 19:40:28 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -201,12 +201,12 @@ parse_args(int argc, char **argv, conf_t *conf)
  */
 void version_arg()
 {
-	char vtitle[MAX_LENGTH];
+	char vtitle[BUFSIZ];
 	char *vtext =
 	    _("\nCopyright (c) 2004-2007 Frederic Culot.\n"
 	    "This is free software; see the source for copying conditions.\n");
 
-	snprintf(vtitle, MAX_LENGTH, 
+	snprintf(vtitle, BUFSIZ, 
 		_("Calcurse %s - text-based organizer\n"), VERSION);
 	fputs(vtitle, stdout);
 	fputs(vtext, stdout);
@@ -217,7 +217,7 @@ void version_arg()
  */
 void help_arg()
 {
-	char htitle[MAX_LENGTH];
+	char htitle[BUFSIZ];
 	char *htext =
 	_("\nMiscellaneous:\n"
 	"  -h, --help\n"
@@ -245,7 +245,7 @@ void help_arg()
 	"or read the manpage.\n"
     	"Mail bug reports and suggestions to <calcurse@culot.org>.\n");
 
-	snprintf(htitle, MAX_LENGTH, 
+	snprintf(htitle, BUFSIZ, 
 		_("Calcurse %s - text-based organizer\n"), VERSION);
 	fputs(htitle, stdout);
         usage();
@@ -260,7 +260,7 @@ void todo_arg(int priority)
 {
 	struct todo_s *i;
 	int nb_tod, title = 1;
-	char priority_str[MAX_LENGTH] = "";
+	char priority_str[BUFSIZ] = "";
 
 	nb_tod = load_todo();
 	for (i = todolist; i != 0; i = i->next) {
@@ -269,7 +269,7 @@ void todo_arg(int priority)
 				fputs(_("to do:\n"),stdout);
 				title = 0;
 			}
-			snprintf(priority_str, MAX_LENGTH, "%d. ", i->id);
+			snprintf(priority_str, BUFSIZ, "%d. ", i->id);
 			fputs(priority_str,stdout);
 			fputs(i->mesg,stdout);
 			fputs("\n",stdout);
@@ -278,12 +278,13 @@ void todo_arg(int priority)
 }
 
 /* Print the next appointment within the upcoming 24 hours. */
-void next_arg(void)
+void 
+next_arg(void)
 {
 	struct notify_app_s *next_app;
 	long current_time;
 	int time_left, hours_left, min_left;
-	char mesg[MAX_LENGTH];
+	char mesg[BUFSIZ];
 
 	current_time = now();
 	next_app = (struct notify_app_s *) malloc(sizeof(struct notify_app_s));
@@ -293,10 +294,10 @@ void next_arg(void)
 	next_app = apoint_check_next(next_app, current_time);
 	time_left = next_app->time - current_time;
 	if (time_left > 0 && time_left < DAYINSEC) {
-		hours_left = (time_left / 3600);
-		min_left = (time_left - hours_left*3600) / 60;
+		hours_left = (time_left / HOURINSEC);
+		min_left = (time_left - hours_left * HOURINSEC) / MININSEC;
 		fputs(_("next appointment:\n"), stdout);
-		snprintf(mesg, MAX_LENGTH, "   [%02d:%02d] %s\n", 
+		snprintf(mesg, BUFSIZ, "   [%02d:%02d] %s\n", 
 			hours_left, min_left, next_app->txt);
 		fputs(mesg, stdout);
 	}
@@ -510,13 +511,13 @@ check_date(char *date)
  */
 void arg_print_date(long date) 
 {
-		char date_str[MAX_LENGTH];
+		char date_str[BUFSIZ];
 		time_t t;
 		struct tm *lt;
 
 		t = date;
 		lt = localtime(&t);
-		snprintf(date_str, MAX_LENGTH, "%02u/%02u/%04u",
+		snprintf(date_str, BUFSIZ, "%02u/%02u/%04u",
 			lt->tm_mon+1, lt->tm_mday, 1900+lt->tm_year);
 		fputs(date_str,stdout);
 		fputs(":\n",stdout);
