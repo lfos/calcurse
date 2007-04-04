@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.41 2007/03/24 23:15:59 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.42 2007/04/04 19:41:00 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -36,6 +36,7 @@
 #include <stdbool.h>
 #include <math.h>
 #include <locale.h>
+#include <stdio.h>
 
 #include "apoint.h"
 #include "i18n.h"
@@ -730,17 +731,17 @@ void get_date(void)
 /* Create all the windows */
 void init_wins(void)
 {
-	char label[MAX_LENGTH];
+	char label[BUFSIZ];
 	
 	/* Create the three main windows plus the status bar. */
 	cwin = newwin(nl_cal, nc_cal, y_cal, x_cal);
-	snprintf(label, MAX_LENGTH, _("Calendar"));
+	snprintf(label, BUFSIZ, _("Calendar"));
 	win_show(cwin, label);
 	awin = newwin(nl_app, nc_app, y_app, x_app);
-	snprintf(label, MAX_LENGTH, _("Appointments"));
+	snprintf(label, BUFSIZ, _("Appointments"));
 	win_show(awin, label);
 	twin = newwin(nl_tod, nc_tod, y_tod, x_tod);
-	snprintf(label, MAX_LENGTH, _("ToDo"));
+	snprintf(label, BUFSIZ, _("ToDo"));
 	win_show(twin, label);
 	swin = newwin(nl_bar, nc_bar, y_bar, x_bar);
 
@@ -773,7 +774,7 @@ void reinit_wins(conf_t *conf)
 void general_config(conf_t *conf)
 {
 	WINDOW *conf_win;
-	char label[MAX_LENGTH];
+	char label[BUFSIZ];
 	char *number_str = _("Enter an option number to change its value [Q to quit] ");
 	int ch, win_row;
 
@@ -781,7 +782,7 @@ void general_config(conf_t *conf)
 	win_row = (notify_bar()) ? row - 3 : row - 2;
 	conf_win = newwin(win_row, col, 0, 0);
 	box(conf_win, 0, 0);
-	snprintf(label, MAX_LENGTH, _("CalCurse %s | general options"), VERSION);
+	snprintf(label, BUFSIZ, _("CalCurse %s | general options"), VERSION);
 	win_show(conf_win, label);
 	status_mesg(number_str, "");
 	print_general_options(conf_win, conf);
@@ -819,7 +820,7 @@ void
 config_notify_bar(void)
 {
 	WINDOW *conf_win;
-	char label[MAX_LENGTH];
+	char label[BUFSIZ];
 	char *buf;
 	char *number_str = 
 	    _("Enter an option number to change its value [Q to quit] ");
@@ -832,9 +833,9 @@ config_notify_bar(void)
 	char *cmd_str = _("Enter the notification command ");
 	int ch = 0 , win_row, change_win = 1;
 
-	buf = (char *)malloc(MAX_LENGTH);
+	buf = (char *)malloc(BUFSIZ);
 	win_row = (notify_bar()) ? row - 3 : row - 2;
-	snprintf(label, MAX_LENGTH, 
+	snprintf(label, BUFSIZ, 
 	    _("CalCurse %s | notify-bar options"), VERSION);
 
 	while (ch != 'q') {
@@ -981,13 +982,13 @@ print_notify_options(WINDOW *win, int col)
 	enum {SHOW, DATE, CLOCK, WARN, CMD, NB_OPT};
 
 	struct opt_s {
-		char name[MAX_LENGTH];
-		char desc[MAX_LENGTH];
-		char value[MAX_LENGTH];
+		char name[BUFSIZ];
+		char desc[BUFSIZ];
+		char value[BUFSIZ];
 	} opt[NB_OPT];
 
 	int i, y, x, l, x_pos, y_pos, x_offset, y_offset, maxcol, maxlen;
-	char buf[MAX_LENGTH];
+	char buf[BUFSIZ];
 
 	x_pos = 3;
 	x_offset = 4;
@@ -995,35 +996,35 @@ print_notify_options(WINDOW *win, int col)
 	y_offset = 3;
 	maxcol = col - 2;
 
-	strncpy(opt[SHOW].name, _("notify-bar_show = "), MAX_LENGTH);
-	strncpy(opt[DATE].name, _("notify-bar_date = "), MAX_LENGTH);
-	strncpy(opt[CLOCK].name, _("notify-bar_clock = "), MAX_LENGTH);
-	strncpy(opt[WARN].name, _("notify-bar_warning = "), MAX_LENGTH);
-	strncpy(opt[CMD].name, _("notify-bar_command = "), MAX_LENGTH);
+	strncpy(opt[SHOW].name, _("notify-bar_show = "), BUFSIZ);
+	strncpy(opt[DATE].name, _("notify-bar_date = "), BUFSIZ);
+	strncpy(opt[CLOCK].name, _("notify-bar_clock = "), BUFSIZ);
+	strncpy(opt[WARN].name, _("notify-bar_warning = "), BUFSIZ);
+	strncpy(opt[CMD].name, _("notify-bar_command = "), BUFSIZ);
 
 	strncpy(opt[SHOW].desc, 
 	    _("(if set to YES, notify-bar will be displayed)"), 
-	    MAX_LENGTH);
+	    BUFSIZ);
 	strncpy(opt[DATE].desc, 
 	    _("(Format of the date to be displayed inside notify-bar)"), 
-	    MAX_LENGTH);
+	    BUFSIZ);
 	strncpy(opt[CLOCK].desc, 
 	    _("(Format of the time to be displayed inside notify-bar)"),
-	    MAX_LENGTH);
+	    BUFSIZ);
 	strncpy(opt[WARN].desc, 
 	    _("(Warn user if an appointment is within next 'notify-bar_warning'"
 	    " seconds)"),
-	    MAX_LENGTH);
+	    BUFSIZ);
 	strncpy(opt[CMD].desc, 
 	    _("(Command used to notify user of an upcoming appointment)"),
-	    MAX_LENGTH);
+	    BUFSIZ);
 
 	pthread_mutex_lock(&nbar->mutex);
 
-	strncpy(opt[DATE].value, nbar->datefmt, MAX_LENGTH);
-	strncpy(opt[CLOCK].value, nbar->timefmt, MAX_LENGTH);
-	snprintf(opt[WARN].value, MAX_LENGTH, "%d", nbar->cntdwn);
-	strncpy(opt[CMD].value, nbar->cmd, MAX_LENGTH);
+	strncpy(opt[DATE].value, nbar->datefmt, BUFSIZ);
+	strncpy(opt[CLOCK].value, nbar->timefmt, BUFSIZ);
+	snprintf(opt[WARN].value, BUFSIZ, "%d", nbar->cntdwn);
+	strncpy(opt[CMD].value, nbar->cmd, BUFSIZ);
 
 	l = strlen(opt[SHOW].name);
 	x = x_pos + x_offset + l;
@@ -1184,7 +1185,7 @@ void add_item(void)
         char *enter_str = _("Press [Enter] to continue");
 	int Id;
         char item_time[LTIME] = "";
-	char item_mesg[MAX_LENGTH] = "";
+	char item_mesg[BUFSIZ] = "";
 	long apoint_duration, apoint_start;
 	apoint_llist_node_t *apoint_pointeur;
         struct event_s *event_pointeur;
@@ -1231,12 +1232,16 @@ void add_item(void)
 							&end_h, &end_m);
 					if (end_h < heures){
 						apoint_duration = 
-							(60 - minutes + end_m) +
-							(24 + end_h - (heures + 1))*60;
+						    MININSEC - minutes + end_m
+						    + 
+						    (24 + end_h - (heures + 1))
+						    * MININSEC;
 					} else {
 						apoint_duration = 
-							(60 - minutes + end_m) + 
-							(end_h - (heures + 1))*60;
+							MININSEC - minutes + 
+							end_m + 
+							(end_h - (heures + 1)) * 
+							MININSEC;
 					}
 				}
 			}	
@@ -1245,7 +1250,7 @@ void add_item(void)
                 Id = 1;
 
         status_mesg(mesg_3, "");
-	if (getstring(swin, item_mesg, MAX_LENGTH, 0, 1) == 
+	if (getstring(swin, item_mesg, BUFSIZ, 0, 1) == 
 		GETSTRING_VALID) {
                 if (is_appointment) {
 			apoint_start = date2sec(sel_year, sel_month, sel_day,
@@ -1276,7 +1281,7 @@ void update_todo_panel(void)
 	int todo_lines = 1;
 	int max_items = nl_tod - 4;
 	int incolor = -1;
-	char mesg[MAX_LENGTH] = "";
+	char mesg[BUFSIZ] = "";
 
 	/* Print todo item in the panel. */
 	erase_window_part(twin, 1, title_lines, nc_tod - 2, nl_tod - 2);
@@ -1286,7 +1291,7 @@ void update_todo_panel(void)
 		incolor = num_todo - hilt_tod;
 		if (incolor == 0) saved_t_mesg = i->mesg; 
 		if (t_realpos >= 0 && t_realpos < max_items) {
-			snprintf(mesg, MAX_LENGTH, "%d. ", i->id);	
+			snprintf(mesg, BUFSIZ, "%d. ", i->id);	
 			strncat(mesg, i->mesg, strlen(i->mesg));
 			display_item(twin, incolor, mesg, 0, 
 					len, y_offset, x_offset);
