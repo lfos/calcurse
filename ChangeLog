@@ -1,3 +1,15 @@
+14 Apr 2007:
+	bugfixes:
+	    wrong define used in notify_update_bar()
+	    recurrent appointment description is now loaded correctly while the
+	    item contains exceptions
+	    item state is now saved for endless recurrent appointments
+	    correct item is now highligthed when changing day inside appointment
+	    panel with CTRL keys
+	notify_catch_children() and notify_thread_children() suppressed, because
+	zombie processes are now catched using signals
+	sigchld_handler() and init_sighandler() created
+
 04 Apr 2007:
 	MAX_LENGTH replaced by stdio.h's BUFSIZ
 	use of MININSEC and DAYINSEC defines
