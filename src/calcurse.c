@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.42 2007/04/04 19:41:00 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.43 2007/04/14 18:43:03 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -28,7 +28,10 @@
 #include <config.h>
 #endif /* HAVE_CONFIG_H */
 
+#include <sys/types.h>
+#include <sys/wait.h>
 #include <ncurses.h>	
+#include <signal.h>
 #include <pthread.h>
 #include <time.h>
 #include <string.h>
@@ -91,6 +94,8 @@ int which_pan = 0;
 enum window_number {CALENDAR, APPOINTMENT, TODO};
 
 /* External functions */
+static void sigchld_handler(int sig);
+static void init_sighandler(struct sigaction *sa);
 static void get_date(void);
 static void init_vars(conf_t *conf);
 static void init_wins(void);
@@ -120,6 +125,7 @@ int main(int argc, char **argv)
 	conf_t conf;
 	int ch, background, foreground;
 	int non_interactive;
+	struct sigaction sigact;
 	bool do_storage = false;
 	bool day_changed = false;
         char *no_color_support = 
@@ -147,10 +153,11 @@ int main(int argc, char **argv)
 		return (EXIT_SUCCESS);
 
 	/* Begin of interactive mode with ncurses interface. */
-	initscr();		/* start the curses mode */
-	cbreak();		/* control chars generate a signal */
-	noecho();		/* controls echoing of typed chars */
-	curs_set(0);		/* make cursor invisible */
+	init_sighandler(&sigact);	/* signal handling init */
+	initscr();			/* start the curses mode */
+	cbreak();			/* control chars generate a signal */
+	noecho();			/* controls echoing of typed chars */
+	curs_set(0);			/* make cursor invisible */
         get_date();
 	notify_init_vars();
 	get_screen_config();
@@ -198,7 +205,6 @@ int main(int argc, char **argv)
 	custom_load_conf(&conf, background, layout, nc_bar, nl_bar);
 	nb_tod = load_todo();	
 	load_app();
-	notify_catch_children();
 	if (notify_bar()) 
 		notify_start_main_thread();
 	get_screen_config();
@@ -557,6 +563,10 @@ int main(int argc, char **argv)
 			if (day_changed) {
 				sav_hilt_app = 0;
 				day_changed = !day_changed;
+				if ((which_pan == APPOINTMENT) && 
+				    (number_events_inday + number_apoints_inday
+				    != 0))
+					hilt_app = 1;
 			}
 		}
 		update_windows(which_pan, &conf);
@@ -566,6 +576,32 @@ int main(int argc, char **argv)
 /* 
  * EXTERNAL FUNCTIONS
  */
+
+/* 
+ * Catch return values from children (user-defined notification commands).
+ * This is needed to avoid zombie processes running on system.
+ */
+void
+sigchld_handler(int sig)
+{
+	while (waitpid(WAIT_MYPGRP, NULL, WNOHANG) > 0)
+		;
+}
+
+/* Signal handling init. */
+void
+init_sighandler(struct sigaction *sa)
+{
+	sa->sa_handler = sigchld_handler;
+	sa->sa_flags = 0;
+	sigemptyset(&sa->sa_mask);
+
+	if (sigaction(SIGCHLD, sa, NULL) != 0) {
+		fprintf(stderr, 
+		    "FATAL ERROR: signal handling could not be initialized\n");
+		exit (EXIT_FAILURE);
+	}
+}
 
 /*
  * Variables init 
