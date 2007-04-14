@@ -1,4 +1,4 @@
-/*	$calcurse: notify.c,v 1.10 2007/04/04 19:41:57 culot Exp $	*/
+/*	$calcurse: notify.c,v 1.11 2007/04/14 18:44:53 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -31,7 +31,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
-#include <sys/wait.h>
 
 #include "i18n.h"
 #include "utils.h"
@@ -44,7 +43,6 @@
 static struct notify_vars_s *notify = NULL;
 static struct notify_app_s *notify_app = NULL;
 static pthread_t notify_t_main;
-static pthread_t notify_t_children;
 
 /* Return 1 if we need to display the notify-bar, else 0. */
 int 
@@ -124,6 +122,7 @@ notify_update_bar(void)
 	const int space = 3;
 	int file_pos, date_pos, app_pos, txt_max_len, too_long = 0;
 	int time_left, hours_left, minutes_left;
+	int blinking;
 	char buf[BUFSIZ];
 	
 	date_pos = space;
@@ -147,13 +146,21 @@ notify_update_bar(void)
 			strncpy(buf, notify_app->txt, txt_max_len - 3);
 			buf[txt_max_len - 3] = '\0';
 		}
+		
 		time_left = notify_app->time - notify->time_in_sec; 
 		if (time_left > 0) {
 			hours_left = (time_left / HOURINSEC);
-			minutes_left = (time_left - hours_left * DAYINSEC) / 
+			minutes_left = (time_left - hours_left * HOURINSEC) / 
 			    MININSEC;
 			pthread_mutex_lock(&nbar->mutex);
-			if (time_left < nbar->cntdwn) 
+
+			if (time_left < nbar->cntdwn &&
+			    (notify_app->state & APOINT_NOTIFY))
+				blinking = 1;
+			else
+				blinking = 0;
+
+			if (blinking)
 				wattron(notify->win, A_BLINK);
 			if (too_long) 	
 				mvwprintw(notify->win, 0, app_pos, 
@@ -164,16 +171,14 @@ notify_update_bar(void)
 			            "> %02d:%02d :: %s <", 
 			            hours_left, minutes_left, 
 				    notify_app->txt);
-			if (time_left < nbar->cntdwn)
+			if (blinking)
 				wattroff(notify->win, A_BLINK);
 
-			if (time_left < nbar->cntdwn && 
-			    (notify_app->state & APOINT_NOTIFY) &&
+			if (blinking && 
 			    !(notify_app->state & APOINT_NOTIFIED)) {
 				notify_app->state |= APOINT_NOTIFIED;
 				notify_launch_cmd(nbar->cmd, nbar->shell);
 			}
-
 			pthread_mutex_unlock(&nbar->mutex);
 		} else {
 			notify_app->got_app = 0;
@@ -269,21 +274,6 @@ notify_thread_app(void *arg)
 	notify_update_bar();
 
 	pthread_exit((void*) 0);
-}
-
-/* 
- * Catch return values from children (user-defined notification commands).
- * This is needed to avoid zombie processes running on system.
- */
-static void *
-notify_thread_children(void *arg)
-{
-	for (;;) {
-		waitpid(WAIT_MYPGRP, NULL, WNOHANG);
-		sleep(1);
-	}
-
-	pthread_exit((void *)0);
 }
 
 /* Launch the thread notify_thread_app to look for next appointment. */
@@ -412,17 +402,5 @@ notify_start_main_thread(void)
 {
 	pthread_create(&notify_t_main, NULL, notify_main_thread, NULL);
 	notify_check_next_app();
-	return;
-}
-
-/* 
- * Launch the catch_children thread. 
- * This is useful to avoid zombie processes when launching user-defined command
- * to get notified.
- */
-void 
-notify_catch_children(void) 
-{
-	pthread_create(&notify_t_children, NULL, notify_thread_children, NULL);
 	return;
 }
