@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.14 2007/04/04 19:38:18 culot Exp $	*/
+/*	$calcurse: io.c,v 1.15 2007/04/14 18:46:12 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -633,7 +633,7 @@ load_app(void)
 				if (c == '!') {
 					ungetc(c, data_file);
 					exc = recur_exc_scan(data_file);
-					fscanf(data_file, "} ");
+					c = getc(data_file);
 				} else {
 					ungetc(c, data_file);
 					fscanf(data_file, "} ");
@@ -641,6 +641,7 @@ load_app(void)
 			} else if (c == '!') { // endless item with exceptions
 				ungetc(c, data_file);
 				exc = recur_exc_scan(data_file);
+				c = getc(data_file);
 				until.tm_year = 0;
 			} else { /* NOT REACHED */
 				fputs(error, stderr);
@@ -657,11 +658,11 @@ load_app(void)
 			c = getc(data_file);
 			if (c == '!') {
 				ungetc(c, data_file);
-				fscanf(data_file, "! ");
+				fscanf(data_file, " ! ");
 				state |= APOINT_NOTIFY;
 			} else {
 				ungetc(c, data_file);
-				fscanf(data_file, "| ");
+				fscanf(data_file, " | ");
 				state = 0L;
 			}
 			if (is_recursive) {
