@@ -1,4 +1,4 @@
-/*	$calcurse: recur.c,v 1.24 2007/04/04 19:38:18 culot Exp $	*/
+/*	$calcurse: recur.c,v 1.25 2007/04/14 18:46:54 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -209,22 +209,19 @@ recur_apoint_write(recur_apoint_llist_node_t *o, FILE *f)
 	if (t == 0) { /* We have an endless recurrent appointment. */
 		fprintf(f, " {%d%c", o->rpt->freq, 
 		    recur_def2char(o->rpt->type)); 
-		if (o->exc != 0) 
-			recur_write_exc(o->exc, f);
-		fprintf(f, "} |%s\n", o->mesg);
 	} else {
 		lt = localtime(&t);
 		fprintf(f, " {%d%c -> %02u/%02u/%04u",
 		    o->rpt->freq, recur_def2char(o->rpt->type),
 		    lt->tm_mon + 1, lt->tm_mday, 1900 + lt->tm_year);
-		if (o->exc != 0) 
-			recur_write_exc(o->exc, f);
-		if (o->state & APOINT_NOTIFY)
-			fprintf(f, "} !");
-		else
-			fprintf(f, "} |");
-		fprintf(f, "%s\n", o->mesg);
 	}
+	if (o->exc != 0) 
+		recur_write_exc(o->exc, f);
+	if (o->state & APOINT_NOTIFY)
+		fprintf(f, "} !");
+	else
+		fprintf(f, "} |");
+	fprintf(f, "%s\n", o->mesg);
 }
 
 /* Writting of a recursive event into file. */
