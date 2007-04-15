@@ -1,3 +1,27 @@
+[15 Apr 2007]
+Version 1.8_beta   beta version available on request. 
+- New features:
+  * The command launched to notify user of an upcoming appointment is now
+    configurable, so that user can get warned by mail or by playing a tune for
+    example
+
+  * Color theme configuration menu was completely redesigned, with support for
+    default terminal's color added
+
+  * 'Export' command implemented, to be able to save calcurse data in iCalendar
+    format. The '--export' command line argument was also implemented to be able
+    to use this feature in non-interactive mode.
+
+  * 'Flag Item' command implemented to mark appointments as 'important' so that
+    user gets notified before they arrive
+
+- Bugfixes:
+  * Fixed a possible problem while editing an item description and using CTRL-D
+    to delete last character
+
+  * 01/01/1970 is not returned anymore when editing an item endless repetition
+
+
 [20 Jan 2007]
 Version 1.7
 - New features:
