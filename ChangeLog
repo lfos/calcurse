@@ -1,3 +1,10 @@
+15 Apr 2007: 1.8_beta
+	help_arg() updated to display help for the -export argument
+	usage() updated
+	manpage updated
+	english manual updated
+	configure.ac updated to check for new header files
+
 14 Apr 2007:
 	bugfixes:
 	    wrong define used in notify_update_bar()
