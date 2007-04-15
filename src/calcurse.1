@@ -1,6 +1,6 @@
-.\" 	$calcurse: calcurse.1,v 1.4 2006/12/11 09:37:47 culot Exp $
+.\" 	$calcurse: calcurse.1,v 1.5 2007/04/15 12:37:47 culot Exp $
 .\"
-.\" Copyright (c) 2004-2006 Frederic Culot
+.\" Copyright (c) 2004-2007 Frederic Culot
 .\"
 .\" This program is free software; you can redistribute it and/or modify
 .\" it under the terms of the GNU General Public License as published by
@@ -17,26 +17,24 @@
 .\" Foundation, Inc., 59 Temple Place - Suite 330,
 .\" Boston, MA 02111-1307, USA.
 .\"
-.TH CALCURSE 1 "December 10, 2006" "Version 1.7" "Calcurse Manual"
+.fam C
+.TH CALCURSE 1 "April 15, 2007" "Version 1.8" "Calcurse Manual"
 .SH NAME
 Calcurse \- text-based organizer
-.PP
 .SH SYNOPSIS
 .B "calcurse "
-[\fB-h\fP|\fB-v\fP] [\fB-an\fP] [\fB-t\fP[\fInum\fP]]
+[\fB-h\fP|\fB-v\fP] [\fB-x\fP] [\fB-an\fP] [\fB-t\fP[\fInum\fP]]
 [\fB-d\fP \fIdate\fP|\fInum\fP] [\fB-c\fP \fIfile\fP]
-.PP
 .SH DESCRIPTION
-Calcurse is a text-based personal organizer which helps keeping track of
-events and everyday tasks. It contains a calendar, a 'todo' list, and
-puts your appointments in order. The user interface is configurable, 
-and one can choose between different color schemes and layouts. 
+Calcurse is a text-based calendar and scheduling application. It helps
+keeping track of events, appointments and everyday tasks. 
+A configurable notification system reminds user of upcoming deadlines,
+and the curses based interface can be customized to suit user needs.
 All of the commands are documented within an online help system.  
-.PP
 .SH OPTIONS
 The following options are supported:
 .TP
-.B -a, --appointment
+\fB-a\fP, \fB--appointment\fP
 Print the appointments and events for the current day and exit. 
 .br
 \fINote:\fP the calendar from which to read the appointments can be specified using
@@ -70,11 +68,11 @@ and events for today, tomorrow, and the day after tomorrow.
 appointments can be specified using the '\-c' flag. 
 .RE
 .TP
-\fB-h\fP, \fB--help\f
+\fB-h\fP, \fB--help\fP
 Print a short help text describing the supported command-line options,
 and then exit. 
 .TP
-\fB-n\fP, \fB--next\f
+\fB-n\fP, \fB--next\fP
 Print the next appointment within upcoming 24 hours and exit.
 The indicated time is the number of hours and minutes left before this
 appointment.
@@ -88,8 +86,17 @@ then only todos having a priority equal to \fInum\fP will be returned.
 .br
 \fINote:\fP priority number must be between 1 (highest) and 9 (lowest).
 .TP
-\fB-v\fP, \fB--version\f
+\fB-v\fP, \fB--version\fP
 Display calcurse version and exit.
+.TP
+\fB-x\fP, \fB--export\fP
+Export user data to iCalendar format. Events, appointments and
+todos are converted and echoed to stdout.
+.br
+\fINote:\fP redirect standard output to export data to a file,
+by issuing a command such as: 
+.br
+.B    $ calcurse --export > my_data.ics
 .SH NOTES
 Calcurse interface contains three different panels (calendar,
 appointment list, and todo list) on which you can perform different
@@ -100,14 +107,13 @@ takes place at the bottom of the screen.
 At any time, the built-in help system can be invoked by pressing the '?'
 key. Once viewing the help screens, informations on a specific command
 can be accessed by pressing the keystroke corresponding to that command.
-.PP
 .SH CONFIGURATION
 The calcurse options can be changed from the configuration menu (shown
-when 'C' is hit). Three possible categories are to be chosen from : the
+when 'C' is hit). Four possible categories are to be chosen from : the
 color scheme, the layout (the location of the three panels on the
-screen), and more general options (such as automatic save before
-quitting). All of these options are detailed in the configuration menu.
-.PP
+screen), notification options, and more general options (such as automatic 
+save before quitting). 
+All of these options are detailed in the configuration menu.
 .SH FILES
 The following structure is created in your $HOME directory the first
 time calcurse is run :
@@ -124,13 +130,11 @@ $HOME/.calcurse/
 The \fIconf\fP file contains the user configuration. The \fIapts\fP 
 file contains all of the user's appointments, and the \fItodo\fP 
 file contains the todo list.
-.PP
 .SH LICENCE
-Copyright (c) 2004-2006 by Frederic Culot. 
+Copyright (c) 2004-2007 by Frederic Culot. 
 .br
 This software is released under the GNU General Public License. Please
 read the COPYING file for more information. 
-.PP
 .SH BUGS
 Incorrect highlighting of items appear when using calcurse black and
 white theme together with a \fB$TERM\fP variable set to
@@ -147,10 +151,8 @@ the \fB$TERM\fP variable:
 .PP
 If you find other bugs, please send a report to calcurse@culot.org or to the
 author, below.
-.PP
 .SH AUTHOR
 \fBFrederic Culot\fP <frederic@culot.org>.
-.PP
 .SH SEE ALSO
 ncurses(3), gettext(3)
 .br
