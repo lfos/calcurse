@@ -1,10 +1,10 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 #
-#	$calcurse: configure.ac,v 1.8 2007/01/16 10:55:43 culot Exp $
+#	$calcurse: configure.ac,v 1.9 2007/04/15 12:34:59 culot Exp $
 
 AC_PREREQ(2.59)
-AC_INIT(calcurse, 1.7, frederic@culot.org)
+AC_INIT(calcurse, 1.8_beta, frederic@culot.org)
 AM_INIT_AUTOMAKE
 AM_GNU_GETTEXT([external])
 AC_CONFIG_SRCDIR([src/calcurse.c])
@@ -32,7 +32,7 @@ AC_CHECK_HEADERS([pthread.h], [
 # Checks for header files.
 AC_HEADER_STDC
 AC_CHECK_HEADERS([stdlib.h string.h sys/time.h time.h stdio.h unistd.h getopt.h \
-sys/types.h])
+sys/types.h ctype.h getopt.h sys/wait.h signal.h math.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
