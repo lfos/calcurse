@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <!--
 /*
- *	$calcurse: manual_en.html,v 1.7 2007/01/16 11:23:28 culot Exp $
+ *	$calcurse: manual_en.html,v 1.8 2007/04/15 12:35:42 culot Exp $
  *
  * Calcurse - text-based organizer
  * Copyright (c) 2004-2007 Frederic Culot
@@ -102,14 +102,13 @@
 
 <a name="intro"></a><h1>Introduction</a></h1>
 <p>
-	<code>calcurse</code> is a text-based personal organizer 
-	which helps keeping track of events and everyday tasks.  
-	It contains a calendar, a 'todo' list, and puts your 
-	appointments in order. The user interface is configurable, 
-	and one can choose between different color schemes and 
-	layouts. All of the commands are documented within an 
-	online help system.
-
+<font color="green">
+<code>calcurse</code> is a text-based calendar and scheduling application. It helps
+keeping track of events, appointments and everyday tasks. 
+A configurable notification system reminds user of upcoming deadlines,
+and the curses based interface can be customized to suit user needs.
+All of the commands are documented within an online help system.  
+</font>
 
 <a name="overview"></a><h1>Overview</h1>
 <a name="overview_history"></a><h2>Creation history</h2>
@@ -155,7 +154,10 @@
         the possible actions displayed at any time inside a status bar. 
         The user interface is also configurable, and one can choose 
         between several color and layout combinations.
-
+	<font color="green">
+	Last, a configurable notification system reminds user of upcoming
+	appointments. 
+	</font>
 
 <a name="install"></a><h1>Installation</h1>
 <a name="install_requirements"></a><h2>Requirements</h2>
@@ -207,7 +209,7 @@
 <p>
 	First you need to gunzip and untar the source archive:
 	<pre>
-	tar zxvf calcurse-1.7.tar.gz
+	tar zxvf <font color="green">calcurse-1.8</font>.tar.gz
 	</pre>
   	Once you meet the requirements and have extracted the archive, 
 	the install process is quite simple, and follows the standard 
@@ -285,7 +287,19 @@
 	<br>
 	<dt><code>-v, --version</code>
 	<dd>
-        Display <code>calcurse</code> version and exit.
+	Display <code>calcurse</code> version and exit.<br>
+	<br>
+	<font color="green">
+	<dt><code>-x, --export</code>
+	<dd>
+	Export user data to iCalendar format. Events, appointments and
+	todos are converted and echoed to stdout.<br>
+	<u>Note:</u> redirect standard output to export data to a file,
+	by issuing a command such as:
+	<pre>
+	        $ calcurse --export > my_data.ics
+	</pre>
+	</font>
 	</DL>
 
 <a name="basics_invocation_variable"></a><h3>Environment variable for i18n</h3>
@@ -325,7 +339,8 @@
 <p>
         When called with at least one of the following arguments:<br>
         <code>-a</code>, <code>-d</code>, <code>-h</code>, 
-        <code>-n</code>, <code>-t</code>, <code>-v</code><br>
+	<code>-n</code>, <code>-t</code>, <code>-v</code>,
+	<code><font color="green">-x</font></code><br>
         <code>calcurse</code> is started in non-interactive mode.
         This means the desired information will be displayed, and 
         after that, <code>calcurse</code> simply quits and you are 
@@ -497,9 +512,17 @@
 
 <a name="options_colors"></a><h2>Color themes</h2>
 <p>
-        <code>calcurse</code> color theme is configurable and is to be
-        chosen by typing the number corresponding to the desired
-        theme.  This color will then be applied to the panel borders,
+	<font color="green">
+	<code>calcurse</code> color theme can be customized to suit user's 
+	needs. To change the default theme, the configuration page
+	displays possible choices for foreground and background colors.
+	Using arrows or calcurse displacement keys to move, and 'X' or space
+	to select a color, user can preview the theme which will be applied.
+	It is possible to keep the terminal's default colors by selecting the
+       corresponding choice in the list.	
+</font>
+	<p>
+        The chosen color theme will then be applied to the panel borders,
         to the titles, to the keystrokes, and to general informations
         displayed inside status bar. A black and white theme is also
         available, in order to support non-color terminals.<br>
@@ -554,10 +577,35 @@
 	inside a terminal.<br>
 	<br>
 	<li><code>notify-bar_warning</code> (default: <em>300</em>)<br>
-	When there is an appointment within the next 'notify-bar_warning'
+	When there is an appointment 
+	<font color="green"> which is flagged as 'important'</font>
+	within the next 'notify-bar_warning'
 	seconds, the display of that appointment inside the notify-bar 
-	starts to blink. That way, the user is warned and knows there
-	will be soon an upcoming appointment.	
+	starts to blink. 
+	<font color="green">
+	Moreover, the command defined by the <em>notify-bar_command</em>
+	option will be launched.
+	</font>
+	That way, the user is warned and knows there
+	will be soon an upcoming appointment.
+	<br>
+	<br>
+	<li><font color="green">
+	<code>notify-bar_command</code> (default: <em>printf '\a'</em>)<br>
+	This option indicates which command is to be launched when there is an
+	upcoming appointment flagged as 'important'. This command will be
+	passed to the user's shell which will interpret it. To know what shell
+	must be used, the content of the <code>$SHELL</code> environment variable
+	is used. If this variable is not set, <code>/bin/sh</code> is used
+	instead.<br>
+	<u>Example:</u> Say the <code>mail</code> command is available on
+	the user's system, one can use the following command to get notified by
+	mail of an upcoming appointment (the appointment description will also
+	be mentioned in the mail body):
+	<pre>
+		calcurse --next | mail -s "[calcurse] upcoming appointment!" user@host.com
+	</pre>
+	</font>
 	</ul> 
 
 
@@ -860,6 +908,8 @@
 	<li>Jose Lopez for the spanish translation of
 	<code>calcurse</code> and its manual
 	<li>Neil Williams for the english translation
+	<li><font color="green">Tony for its patch which helped improving the
+	recur_item_inday() function</font>
 	<li>people who write softwares I like and which inspired me, 
 	especially :
 		<ul>
@@ -876,7 +926,7 @@
 <hr>
 <small><em>
 Copyright (c) 2004-2007 Fr&eacute;d&eacute;ric Culot<br>
-Calcurse version 1.7 - Last change: January 16, 2007
+Calcurse version 1.8 - Last change: April 15, 2007
 <em></small>
 
 
