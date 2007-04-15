@@ -1,4 +1,4 @@
-/*	$calcurse: args.c,v 1.17 2007/04/04 19:40:28 culot Exp $	*/
+/*	$calcurse: args.c,v 1.18 2007/04/15 12:38:29 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -241,6 +241,11 @@ void help_arg()
 	"	print todo list and exit. If the optional number [num] is given,\n"
 	"\tthen only todos having a priority equal to [num] will be returned.\n"
 	"\tnote: priority number must be between 1 (highest) and 9 (lowest).\n"
+	"\n  -x, --export\n"
+	"	export user data to iCalendar format. Events, appointments and\n"
+	"\ttodos are converted and echoed to stdout.\n"
+	"\tnote: redirect standard output to export data to a file,\n"
+	"\tby issuing a command such as: calcurse --export > my_data.ics\n"
     	"\nFor more information, type '?' from within Calcurse, "
 	"or read the manpage.\n"
     	"Mail bug reports and suggestions to <calcurse@culot.org>.\n");
@@ -529,7 +534,7 @@ void arg_print_date(long date)
 void usage()
 {
         char *arg_usage = 
-                _("Usage: calcurse [-h | -v] [-an] [-t[num]] [-d date|num] [-c file]\n");
+                _("Usage: calcurse [-h|-v] [-x] [-an] [-t[num]] [-d date|num] [-c file]\n");
 	
         fputs(arg_usage, stdout);
 }
