@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.43 2007/04/14 18:43:03 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.44 2007/04/21 15:11:20 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -298,7 +298,6 @@ int main(int argc, char **argv)
 				case 'C':
 				case 'c':
                                         if (has_colors()) {
-                                                colorize = true;
                                                 custom_color_config(
 						    notify_bar()); 
                                         } else {
