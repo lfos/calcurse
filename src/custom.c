@@ -1,4 +1,4 @@
-/*	$calcurse: custom.c,v 1.7 2007/04/04 19:38:18 culot Exp $	*/
+/*	$calcurse: custom.c,v 1.8 2007/04/21 15:12:32 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -29,10 +29,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "custom.h"
 #include "i18n.h"
 #include "io.h"
 #include "utils.h"
-#include "custom.h"
+#include "apoint.h"
 
 static struct attribute_s attr;
 static bool fill_config_var(char *string);
@@ -280,10 +281,12 @@ custom_color_config(int notify_bar)
 	    "'H/L' 'J/K' or arrow keys to move");
 	char *choose_color_2 =
             _("('0' for no color, 'Q' to exit) :");
+	char *fore_txt = _("Foreground");
+	char *back_txt = _("Background");
 	char *bar = "          ";
 	char *box = "[ ]";
 	char *default_txt = _("(terminal's default)");
-	int i, y, x_fore, x_back, x_offset, y_offset, spc;
+	int i, y, x_fore, x_back, x_offset, x_spc, y_spc;
 	int win_row, box_len, bar_len, ch, cursor;
 	int pos[SIZE][NBPOS];
 	short colr_fore, colr_back;
@@ -297,15 +300,15 @@ custom_color_config(int notify_bar)
 	bar_len = strlen(bar);
 	box_len = strlen(box);
 	x_offset = 5;
-	y_offset = 3;
-	y = 5;
-	spc = (col - 2 * bar_len - 2 * box_len - 6) / 3;
-	x_fore = spc;
-	x_back = 2 * spc + box_len + x_offset + bar_len;
+	y = 3;
+	x_spc = (col - 2 * bar_len - 2 * box_len - 6) / 3;
+	y_spc = (row - 8) / (NBUSERCOLORS + 1);
+	x_fore = x_spc;
+	x_back = 2 * x_spc + box_len + x_offset + bar_len;
 
 	for (i = 0; i < NBUSERCOLORS + 1; i++) {
-		pos[i][YPOS] = y + y_offset * (i + 1);
-		pos[NBUSERCOLORS + i + 1][YPOS] = y + y_offset * (i + 1);
+		pos[i][YPOS] = y + y_spc * (i + 1);
+		pos[NBUSERCOLORS + i + 1][YPOS] = y + y_spc * (i + 1);
 		pos[i][XPOS] = x_fore;
 		pos[NBUSERCOLORS + i + 1][XPOS] = x_back;
 	}
@@ -317,10 +320,10 @@ custom_color_config(int notify_bar)
 	win_show(conf_win, label);
 	status_mesg(choose_color_1, choose_color_2);
 
-	wattron(conf_win, COLOR_PAIR(COLR_CUSTOM));
-	mvwprintw(conf_win, y, x_fore + x_offset, _("Foreground"));
-	mvwprintw(conf_win, y, x_back + x_offset, _("Background"));
-	wattroff(conf_win, COLOR_PAIR(COLR_CUSTOM));
+	custom_apply_attr(conf_win, ATTR_HIGHEST);
+	mvwprintw(conf_win, y, x_fore + x_offset, fore_txt);
+	mvwprintw(conf_win, y, x_back + x_offset, back_txt);
+	custom_remove_attr(conf_win, ATTR_HIGHEST);
 
 	for (i = 0; i < SIZE - 1; i++) {
 		mvwprintw(conf_win, pos[i][YPOS], pos[i][XPOS], box);
@@ -342,22 +345,27 @@ custom_color_config(int notify_bar)
 	mvwprintw(conf_win, pos[SIZE - 1][YPOS] + 1,
 	    pos[SIZE - 1][XPOS] + x_offset, default_txt);
 
-	/* Retrieve the actual color theme. */
-	pair_content(COLR_CUSTOM, &colr_fore, &colr_back);
 
-	mark_fore = NBUSERCOLORS;
-	mark_back = SIZE - 1;
-	for (i = 0; i < NBUSERCOLORS + 1; i++) {
-		if (colr_fore == colr[i])
-			mark_fore = i;
-		if (colr_back == colr[NBUSERCOLORS + 1 + i])
-			mark_back = NBUSERCOLORS + 1 + i;
+	if (colorize) {
+		/* Retrieve the actual color theme. */
+		pair_content(COLR_CUSTOM, &colr_fore, &colr_back);
+
+		for (i = 0; i < NBUSERCOLORS + 1; i++) {
+			if (colr_fore == colr[i])
+				mark_fore = i;
+			if (colr_back == colr[NBUSERCOLORS + 1 + i])
+				mark_back = NBUSERCOLORS + 1 + i;
+		}
+		mvwaddch(conf_win, pos[mark_fore][YPOS], 
+		    pos[mark_fore][XPOS] + 1, MARK);
+		mvwaddch(conf_win, pos[mark_back][YPOS], 
+		    pos[mark_back][XPOS] + 1, MARK);
+
+	} else {
+		mark_fore = NBUSERCOLORS;
+		mark_back = SIZE - 1;
 	}
 
-	mvwaddch(conf_win, pos[mark_fore][YPOS], 
-	    pos[mark_fore][XPOS] + 1, MARK);
-	mvwaddch(conf_win, pos[mark_back][YPOS], 
-	    pos[mark_back][XPOS] + 1, MARK);
 	cursor = 0;
 	mvwaddch(conf_win, pos[cursor][YPOS], pos[cursor][XPOS] + 1,
 	    CURSOR);
@@ -365,20 +373,22 @@ custom_color_config(int notify_bar)
 	wnoutrefresh(conf_win);
 	doupdate();
 
-	colorize = true;
 	while ((ch = wgetch(swin)) != 'q') {
 		mvwaddch(conf_win, pos[cursor][YPOS], pos[cursor][XPOS] + 1,
 		    SPACE);
-		mvwaddch(conf_win, pos[mark_fore][YPOS], 
-		    pos[mark_fore][XPOS] + 1, SPACE);
-		mvwaddch(conf_win, pos[mark_back][YPOS], 
-		    pos[mark_back][XPOS] + 1, SPACE);
+		if (colorize) {
+			mvwaddch(conf_win, pos[mark_fore][YPOS], 
+			    pos[mark_fore][XPOS] + 1, SPACE);
+			mvwaddch(conf_win, pos[mark_back][YPOS], 
+			    pos[mark_back][XPOS] + 1, SPACE);
+		}
 
 		switch (ch) {
 		
 		case SPACE:
 		case 'X':
 		case 'x':
+			colorize = true;
 			if (cursor > NBUSERCOLORS)
 				mark_back = cursor;
 			else
@@ -418,24 +428,33 @@ custom_color_config(int notify_bar)
 			break;
 		}
 
-		pair_content(colr[mark_fore], &colr_fore, 0L);
-		if (colr_fore == 255)
-			colr_fore = -1;
-		pair_content(colr[mark_back], &colr_back, 0L);
-		if (colr_back == 255)
-			colr_back = -1;
-		init_pair(COLR_CUSTOM, colr_fore, colr_back);
+		if (colorize) {
+			pair_content(colr[mark_fore], &colr_fore, 0L);
+			if (colr_fore == 255)
+				colr_fore = -1;
+			pair_content(colr[mark_back], &colr_back, 0L);
+			if (colr_back == 255)
+				colr_back = -1;
+			init_pair(COLR_CUSTOM, colr_fore, colr_back);
 
+			mvwaddch(conf_win, pos[mark_fore][YPOS], 
+			    pos[mark_fore][XPOS] + 1, MARK);
+			mvwaddch(conf_win, pos[mark_back][YPOS], 
+			    pos[mark_back][XPOS] + 1, MARK);
+		}
+		custom_apply_attr(conf_win, ATTR_HIGHEST);
+		mvwprintw(conf_win, y, x_fore + x_offset, fore_txt);
+		mvwprintw(conf_win, y, x_back + x_offset, back_txt);
+		custom_remove_attr(conf_win, ATTR_HIGHEST);
+		mvwaddch(conf_win, pos[cursor][YPOS], 
+		    pos[cursor][XPOS] + 1, CURSOR);
 		status_mesg(choose_color_1, choose_color_2);
-		mvwaddch(conf_win, pos[mark_fore][YPOS], 
-		    pos[mark_fore][XPOS] + 1, MARK);
-		mvwaddch(conf_win, pos[mark_back][YPOS], 
-		    pos[mark_back][XPOS] + 1, MARK);
-		mvwaddch(conf_win, pos[cursor][YPOS], pos[cursor][XPOS] + 1,
-		    CURSOR);
+		print_in_middle(conf_win, 1, 0, col, label);
 		wnoutrefresh(swin);
 		wnoutrefresh(conf_win);
 		doupdate();
+		if (notify_bar) 
+			notify_update_bar();
 	}
 
 	delwin(conf_win);
@@ -575,20 +594,22 @@ custom_color_theme_name(char *theme_name)
 	const char *error_txt =
 	    _("FATAL ERROR in custom_color_theme_name: unknown color\n");
 
-	pair_content(COLR_CUSTOM, &color[0], &color[1]);
-
-	for (i = 0; i < NBCOLORS; i++) {
-		if (color[i] == DEFAULTCOLOR)
-			color_name[i] = default_color;
-		else if (color[i] >= 0 && color[i] <= MAXCOLORS)
-			color_name[i] = name[color[i]];
-		else {
-			fputs(error_txt, stderr);
-			exit(EXIT_FAILURE);
-			/* NOTREACHED */
+	if (!colorize)
+		snprintf(theme_name, BUFSIZ, "0");
+	else {
+		pair_content(COLR_CUSTOM, &color[0], &color[1]);
+		for (i = 0; i < NBCOLORS; i++) {
+			if (color[i] == DEFAULTCOLOR)
+				color_name[i] = default_color;
+			else if (color[i] >= 0 && color[i] <= MAXCOLORS)
+				color_name[i] = name[color[i]];
+			else {
+				fputs(error_txt, stderr);
+				exit(EXIT_FAILURE);
+				/* NOTREACHED */
+			}
 		}
+		snprintf(theme_name, BUFSIZ, "%s on %s", color_name[0],
+		    color_name[1]);
 	}
-
-	snprintf(theme_name, BUFSIZ, "%s on %s", color_name[0],
-	    color_name[1]);
 }

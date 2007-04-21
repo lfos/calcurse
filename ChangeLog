@@ -1,3 +1,8 @@
+21 Apr 2007:
+	custom_color_config() modified to take terminal's vertical length into
+	account
+	custom_color_theme_name() updated to handle colorless theme
+
 15 Apr 2007: 1.8_beta
 	help_arg() updated to display help for the -export argument
 	usage() updated
