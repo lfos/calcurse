@@ -1,3 +1,7 @@
+22 Apr 2007:
+	custom_color_theme_name() updated to handle ncurses different returned
+	values (depending on if ncurses was compiled with --enable-ext-funcs)
+
 21 Apr 2007:
 	custom_color_config() modified to take terminal's vertical length into
 	account
