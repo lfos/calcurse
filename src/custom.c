@@ -1,4 +1,4 @@
-/*	$calcurse: custom.c,v 1.8 2007/04/21 15:12:32 culot Exp $	*/
+/*	$calcurse: custom.c,v 1.9 2007/04/22 16:25:36 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -264,10 +264,12 @@ layout_config(int layout)
 void
 custom_color_config(int notify_bar)
 {
-#define SIZE  	(2 * (NBUSERCOLORS + 1))
-#define CURSOR	(32 | A_REVERSE)
-#define SPACE	(32)
-#define MARK	(88)
+#define SIZE  			(2 * (NBUSERCOLORS + 1))
+#define CURSOR			(32 | A_REVERSE)
+#define SPACE			32
+#define MARK			88
+#define DEFAULTCOLOR		255
+#define DEFAULTCOLOR_EXT	-1
 
 	enum {
 		YPOS,
@@ -350,12 +352,22 @@ custom_color_config(int notify_bar)
 		/* Retrieve the actual color theme. */
 		pair_content(COLR_CUSTOM, &colr_fore, &colr_back);
 
-		for (i = 0; i < NBUSERCOLORS + 1; i++) {
-			if (colr_fore == colr[i])
-				mark_fore = i;
-			if (colr_back == colr[NBUSERCOLORS + 1 + i])
-				mark_back = NBUSERCOLORS + 1 + i;
-		}
+		if ((colr_fore == DEFAULTCOLOR) ||
+		    (colr_fore == DEFAULTCOLOR_EXT))
+			mark_fore = NBUSERCOLORS;
+		else
+			for (i = 0; i < NBUSERCOLORS; i++)
+				if (colr_fore == colr[i])
+					mark_fore = i;
+
+		if ((colr_back == DEFAULTCOLOR) ||
+		    (colr_back == DEFAULTCOLOR_EXT))
+			mark_back = SIZE - 1;
+		else
+			for (i = 0; i < NBUSERCOLORS; i++)
+				if (colr_back == colr[NBUSERCOLORS + 1 + i])
+					mark_back = NBUSERCOLORS + 1 + i;
+
 		mvwaddch(conf_win, pos[mark_fore][YPOS], 
 		    pos[mark_fore][XPOS] + 1, MARK);
 		mvwaddch(conf_win, pos[mark_back][YPOS], 
@@ -570,13 +582,16 @@ custom_load_color(char *color, int background)
  *       foreground color 'on' background color
  * in order to dump this data in the configuration file.
  * Color numbers follow the ncurses library definitions. 
+ * If ncurses library was compiled with --enable-ext-funcs,
+ * then default color is -1.
  */
 void
 custom_color_theme_name(char *theme_name)
 {
-#define MAXCOLORS	8
-#define NBCOLORS	2
-#define DEFAULTCOLOR	255
+#define MAXCOLORS		8
+#define NBCOLORS		2
+#define DEFAULTCOLOR		255
+#define DEFAULTCOLOR_EXT	-1
 
 	int i; 
 	short color[NBCOLORS];
@@ -599,7 +614,8 @@ custom_color_theme_name(char *theme_name)
 	else {
 		pair_content(COLR_CUSTOM, &color[0], &color[1]);
 		for (i = 0; i < NBCOLORS; i++) {
-			if (color[i] == DEFAULTCOLOR)
+			if ((color[i] == DEFAULTCOLOR) || 
+			    (color[i] == DEFAULTCOLOR_EXT))
 				color_name[i] = default_color;
 			else if (color[i] >= 0 && color[i] <= MAXCOLORS)
 				color_name[i] = name[color[i]];
