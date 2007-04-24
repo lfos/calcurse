@@ -1,3 +1,8 @@
+24 Apr 2007:
+	custom_color_config() made more robust regarding values returned by
+	pair_content()
+	Many thanks to Herbert for reporting bugs related to color configuration
+
 22 Apr 2007:
 	custom_color_theme_name() updated to handle ncurses different returned
 	values (depending on if ncurses was compiled with --enable-ext-funcs)

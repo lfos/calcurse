@@ -1,4 +1,4 @@
-/*	$calcurse: custom.c,v 1.9 2007/04/22 16:25:36 culot Exp $	*/
+/*	$calcurse: custom.c,v 1.10 2007/04/24 17:23:00 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -299,6 +299,8 @@ custom_color_config(int notify_bar)
 	    COLR_RED, COLR_GREEN, COLR_YELLOW, COLR_BLUE, 
 	    COLR_MAGENTA, COLR_CYAN, COLR_DEFAULT};
 
+	mark_fore = NBUSERCOLORS;
+	mark_back = SIZE - 1;
 	bar_len = strlen(bar);
 	box_len = strlen(box);
 	x_offset = 5;
@@ -356,7 +358,7 @@ custom_color_config(int notify_bar)
 		    (colr_fore == DEFAULTCOLOR_EXT))
 			mark_fore = NBUSERCOLORS;
 		else
-			for (i = 0; i < NBUSERCOLORS; i++)
+			for (i = 0; i < NBUSERCOLORS + 1; i++)
 				if (colr_fore == colr[i])
 					mark_fore = i;
 
@@ -364,7 +366,7 @@ custom_color_config(int notify_bar)
 		    (colr_back == DEFAULTCOLOR_EXT))
 			mark_back = SIZE - 1;
 		else
-			for (i = 0; i < NBUSERCOLORS; i++)
+			for (i = 0; i < NBUSERCOLORS + 1; i++)
 				if (colr_back == colr[NBUSERCOLORS + 1 + i])
 					mark_back = NBUSERCOLORS + 1 + i;
 
@@ -372,10 +374,6 @@ custom_color_config(int notify_bar)
 		    pos[mark_fore][XPOS] + 1, MARK);
 		mvwaddch(conf_win, pos[mark_back][YPOS], 
 		    pos[mark_back][XPOS] + 1, MARK);
-
-	} else {
-		mark_fore = NBUSERCOLORS;
-		mark_back = SIZE - 1;
 	}
 
 	cursor = 0;
