@@ -1,3 +1,16 @@
+06 May 2007:
+	make use of memmove in del_char()
+	layout variable added to conf_t type
+	code cleanup in custom_load_con()
+	bugfixes:
+	    layout is now correctly restored (thanks Jose for reporting that
+	    bug)
+	    getstring() now properly handles erasing of characters
+	    apad width is now correctly updated when changing layout
+	    notify bar init sequence modified to avoid a possible segfault
+	    right part of progress bar now properly displayed
+	    item ending time is now assigned to correct day in day_edit_item()
+
 24 Apr 2007:
 	custom_color_config() made more robust regarding values returned by
 	pair_content()
