@@ -1,4 +1,4 @@
-/*	$calcurse: custom.h,v 1.4 2007/03/24 23:19:15 culot Exp $	*/
+/*	$calcurse: custom.h,v 1.5 2007/05/06 13:31:09 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -43,6 +43,24 @@ enum { /* Color pairs */
 	COLR_CUSTOM
 };
 
+enum { /* Configuration variables */
+	CUSTOM_CONF_NOVARIABLE,
+	CUSTOM_CONF_AUTOSAVE,
+	CUSTOM_CONF_CONFIRMQUIT,
+	CUSTOM_CONF_CONFIRMDELETE,
+	CUSTOM_CONF_SKIPSYSTEMDIALOGS,
+	CUSTOM_CONF_SKIPPROGRESSBAR,
+	CUSTOM_CONF_WEEKBEGINSONMONDAY,
+	CUSTOM_CONF_COLORTHEME,
+	CUSTOM_CONF_LAYOUT,
+	CUSTOM_CONF_NOTIFYBARSHOW,
+	CUSTOM_CONF_NOTIFYBARDATE,
+	CUSTOM_CONF_NOTIFYBARCLOCK,
+	CUSTOM_CONF_NOTIFYBARWARNING,
+	CUSTOM_CONF_NOTIFYBARCOMMAND,
+	CUSTOM_CONF_VARIABLES
+};
+
 struct attribute_s {
 	int color[7];
 	int nocolor[7];
@@ -51,8 +69,7 @@ struct attribute_s {
 void custom_init_attr(void);
 void custom_apply_attr(WINDOW *win, int attr_num);
 void custom_remove_attr(WINDOW *win, int attr_num);
-void custom_load_conf(conf_t *conf, int background, int layout, int nc_bar, 
-    int nl_bar);
+void custom_load_conf(conf_t *conf, int background, int nc_bar, int nl_bar);
 void config_bar(void);
 int layout_config(int layout);
 void custom_color_config(int notify_bar);
