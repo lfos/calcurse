@@ -1,4 +1,4 @@
-/*	$calcurse: custom.c,v 1.10 2007/04/24 17:23:00 culot Exp $	*/
+/*	$calcurse: custom.c,v 1.11 2007/05/06 13:31:31 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -102,8 +102,7 @@ custom_remove_attr(WINDOW *win, int attr_num)
 
 /* Load the user configuration. */
 void 
-custom_load_conf(conf_t *conf, int background, int layout, int nc_bar, 
-    int nl_bar)
+custom_load_conf(conf_t *conf, int background, int nc_bar, int nl_bar)
 {
 	FILE *data_file;
 	char *mesg_line1 = _("Failed to open config file");
@@ -125,79 +124,95 @@ custom_load_conf(conf_t *conf, int background, int layout, int nc_bar,
 			break;
 		}
 		io_extract_data(e_conf, buf, strlen(buf));
-		if (var == 1) {
-			conf->auto_save =
-			    fill_config_var(e_conf);
+
+		switch (var) {
+		case CUSTOM_CONF_NOVARIABLE:
+			break;
+		case CUSTOM_CONF_AUTOSAVE:
+			conf->auto_save = fill_config_var(e_conf);
 			var = 0;
-		} else if (var == 2) {
-			conf->confirm_quit =
-			    fill_config_var(e_conf);
+			break;
+		case CUSTOM_CONF_CONFIRMQUIT:
+			conf->confirm_quit = fill_config_var(e_conf);
 			var = 0;
-		} else if (var == 3) {
-			conf->confirm_delete =
-			    fill_config_var(e_conf);
+			break;
+		case CUSTOM_CONF_CONFIRMDELETE:
+			conf->confirm_delete = fill_config_var(e_conf);
 			var = 0;
-		} else if (var == 4) {
-			conf->skip_system_dialogs = 
-			    fill_config_var(e_conf);
+			break;
+		case CUSTOM_CONF_SKIPSYSTEMDIALOGS:
+			conf->skip_system_dialogs = fill_config_var(e_conf);
 			var = 0;
-		} else if (var == 5) {
-			conf->skip_progress_bar = 
-			    fill_config_var(e_conf);
+			break;
+		case CUSTOM_CONF_SKIPPROGRESSBAR:
+			conf->skip_progress_bar = fill_config_var(e_conf);
 			var = 0;
-                } else if (var == 6) {
-			conf->week_begins_on_monday =
-			    fill_config_var(e_conf);
+			break;
+		case CUSTOM_CONF_WEEKBEGINSONMONDAY:
+			conf->week_begins_on_monday = fill_config_var(e_conf);
                         var = 0;
-		} else if (var == 7) {
+			break;
+		case CUSTOM_CONF_COLORTHEME:
 			custom_load_color(e_conf, background);
                         var = 0;
-		} else if (var == 8) {
-			layout = atoi(e_conf);
+			break;
+		case CUSTOM_CONF_LAYOUT:
+			conf->layout = atoi(e_conf);
 			var = 0;
-		} else if (var == 9) {
-			nbar->show = 
-			    fill_config_var(e_conf);
+			break;
+		case CUSTOM_CONF_NOTIFYBARSHOW:
+			nbar->show = fill_config_var(e_conf);
 			var = 0;
-		} else if (var == 10) {
+			break;
+		case CUSTOM_CONF_NOTIFYBARDATE:
 			strncpy(nbar->datefmt, e_conf, strlen(e_conf) + 1);
 			var = 0;
-		} else if (var == 11) {
+			break;
+		case CUSTOM_CONF_NOTIFYBARCLOCK:
 			strncpy(nbar->timefmt, e_conf, strlen(e_conf) + 1);
 			var = 0;
-		} else if (var == 12) {
+			break;
+		case CUSTOM_CONF_NOTIFYBARWARNING:
 			nbar->cntdwn = atoi(e_conf);
 			var = 0;
-		} else if (var == 13) {
+			break;
+		case CUSTOM_CONF_NOTIFYBARCOMMAND:
 			strncpy(nbar->cmd, e_conf, strlen(e_conf) + 1);
 			var = 0;
+			break;
+		default:
+			fputs(_("FATAL ERROR in custom_load_conf: "
+			    "configuration variable unknown.\n"), stderr);
+			exit(EXIT_FAILURE);
+			/* NOTREACHED */
 		}
+
 		if (strncmp(e_conf, "auto_save=", 10) == 0)
-			var = 1;
+			var = CUSTOM_CONF_AUTOSAVE;
 		else if (strncmp(e_conf, "confirm_quit=", 13) == 0)
-			var = 2;
+			var = CUSTOM_CONF_CONFIRMQUIT;
 		else if (strncmp(e_conf, "confirm_delete=", 15) == 0)
-			var = 3;
+			var = CUSTOM_CONF_CONFIRMDELETE;
                 else if (strncmp(e_conf, "skip_system_dialogs=", 20) == 0)
-                        var = 4;
+                        var = CUSTOM_CONF_SKIPSYSTEMDIALOGS;
 		else if (strncmp(e_conf, "skip_progress_bar=", 18) == 0)
-			var = 5;
+			var = CUSTOM_CONF_SKIPPROGRESSBAR;
                 else if (strncmp(e_conf, "week_begins_on_monday=", 23) == 0)
-                        var = 6;
+                        var = CUSTOM_CONF_WEEKBEGINSONMONDAY;
 		else if (strncmp(e_conf, "color-theme=", 12) == 0)
-			var = 7;
+			var = CUSTOM_CONF_COLORTHEME;
 		else if (strncmp(e_conf, "layout=", 7) == 0)
-			var = 8;
+			var = CUSTOM_CONF_LAYOUT;
 		else if (strncmp(e_conf, "notify-bar_show=", 16) ==0)
-			var = 9;
+			var = CUSTOM_CONF_NOTIFYBARSHOW;
 		else if (strncmp(e_conf, "notify-bar_date=", 16) ==0)
-			var = 10;
+			var = CUSTOM_CONF_NOTIFYBARDATE;
 		else if (strncmp(e_conf, "notify-bar_clock=", 17) ==0)
-			var = 11;
+			var = CUSTOM_CONF_NOTIFYBARCLOCK;
 		else if (strncmp(e_conf, "notify-bar_warning=", 19) ==0)
-			var = 12;
+			var = CUSTOM_CONF_NOTIFYBARWARNING;
 		else if (strncmp(e_conf, "notify-bar_command=", 19) ==0)
-			var = 13;
+			var = CUSTOM_CONF_NOTIFYBARCOMMAND;
 	}
 	fclose(data_file);
 	pthread_mutex_unlock(&nbar->mutex);
