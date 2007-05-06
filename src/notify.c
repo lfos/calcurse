@@ -1,4 +1,4 @@
-/*	$calcurse: notify.c,v 1.11 2007/04/14 18:44:53 culot Exp $	*/
+/*	$calcurse: notify.c,v 1.12 2007/05/06 13:29:51 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -89,6 +89,7 @@ notify_init_bar(int l, int c, int y, int x)
 	notify_app = (struct notify_app_s *) malloc(sizeof(struct notify_app_s));
 	pthread_mutex_init(&notify->mutex, NULL);
 	pthread_mutex_init(&notify_app->mutex, NULL);
+	notify_app->got_app = 0;
 	notify->win = newwin(l, c, y, x);
 	notify_extract_aptsfile();
 }
@@ -236,7 +237,8 @@ notify_main_thread(void *arg)
 			pthread_mutex_lock(&notify_app->mutex);
 			got_app = notify_app->got_app;
 			pthread_mutex_unlock(&notify_app->mutex);
-			if (!got_app) notify_check_next_app();
+			if (!got_app) 
+				notify_check_next_app();
 		}
 	}
 	pthread_exit((void*) 0);
