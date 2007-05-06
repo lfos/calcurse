@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.15 2007/04/14 18:46:12 culot Exp $	*/
+/*	$calcurse: io.c,v 1.16 2007/05/06 13:32:17 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -109,7 +109,7 @@ progress_bar(progress_bar_t type, int progress)
 
 	/* Draw the progress bar. */
 	mvwprintw(swin, 1, ipos, barchar);
-	mvwprintw(swin, 1, epos[STEPS], barchar);
+	mvwprintw(swin, 1, epos[STEPS - 1], barchar);
 	custom_apply_attr(swin, ATTR_HIGHEST);
 	for (i = ipos + 1; i < epos[progress]; i++)
 		mvwaddch(swin, 1, i, ' ' | A_REVERSE);
@@ -396,7 +396,7 @@ io_extract_data(char *dst_data, const char *org, int len)
 
 /* Save the calendar data */
 void
-io_save_cal(conf_t *conf, int layout)
+io_save_cal(conf_t *conf)
 {
 	FILE *data_file;
 	struct event_s *k;
@@ -467,7 +467,7 @@ io_save_cal(conf_t *conf, int layout)
 		fprintf(data_file,
 		    "\n# This is the layout of the calendar :\n");
 		fprintf(data_file, "layout=\n");
-		fprintf(data_file, "%d\n", layout);
+		fprintf(data_file, "%d\n", conf->layout);
 
 		pthread_mutex_lock(&nbar->mutex);
 		fprintf(data_file,
