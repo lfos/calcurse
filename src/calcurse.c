@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.44 2007/04/21 15:11:20 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.45 2007/05/06 13:29:10 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -79,11 +79,6 @@ int nb_tod = 0, hilt_tod = 0, sav_hilt_tod;
 int first_todo_onscreen = 1;
 char *saved_t_mesg;
 
-/* Variables for user configuration */
-int layout = 1;
-int no_data_file = 1;
-int really_quit = 0;
-
 /* 
  * Variables to handle calcurse windows 
  */ 
@@ -104,7 +99,7 @@ static void add_item(void);
 static void update_todo_panel(void);
 static void update_app_panel(int yeat, int month, int day);
 static void store_day(int year, int month, int day, bool day_changed);
-static void get_screen_config(void);
+static void get_screen_config(conf_t *conf);
 static void update_windows(int surrounded_window, conf_t *conf);
 static void general_config(conf_t *conf);
 static void config_notify_bar(void);
@@ -125,6 +120,7 @@ int main(int argc, char **argv)
 	conf_t conf;
 	int ch, background, foreground;
 	int non_interactive;
+	int no_data_file = 1;
 	struct sigaction sigact;
 	bool do_storage = false;
 	bool day_changed = false;
@@ -160,7 +156,7 @@ int main(int argc, char **argv)
 	curs_set(0);			/* make cursor invisible */
         get_date();
 	notify_init_vars();
-	get_screen_config();
+	get_screen_config(&conf);
 	
         /* Check if terminal supports color. */
 	if (has_colors()) {
@@ -194,7 +190,6 @@ int main(int argc, char **argv)
 	init_wins();
 	notify_init_bar(nl_not, nc_not, y_not, x_not);
 	reset_status_page();
-	update_windows(which_pan, &conf);
 
 	/* 
 	 * Read the data from files : first the user
@@ -202,12 +197,14 @@ int main(int argc, char **argv)
 	 * the todo list, appointments and events.
 	 */
 	no_data_file = check_data_files();
-	custom_load_conf(&conf, background, layout, nc_bar, nl_bar);
+	custom_load_conf(&conf, background, nc_bar, nl_bar);
 	nb_tod = load_todo();	
 	load_app();
-	if (notify_bar()) 
+	if (notify_bar()) {
 		notify_start_main_thread();
-	get_screen_config();
+		notify_check_next_app();
+	}
+	get_screen_config(&conf);
         reinit_wins(&conf);
         startup_screen(conf.skip_system_dialogs, no_data_file);
 	store_day(year, month, day, day_changed);
@@ -263,6 +260,7 @@ int main(int argc, char **argv)
 
 		case CTRL('R'):
                         reinit_wins(&conf);
+			do_storage = true;
 			break;
 
 		case 'O':
@@ -312,7 +310,8 @@ int main(int argc, char **argv)
 					break;
 				case 'L':
 				case 'l':
-					layout = layout_config(layout);
+					conf.layout = 
+					    layout_config(conf.layout);
 					break;
 				case 'G':
 				case 'g':
@@ -324,6 +323,7 @@ int main(int argc, char **argv)
 					break;
 				}
                                 reinit_wins(&conf);
+				do_storage = true;
 				erase_window_part(swin, 0, 0, nc_bar, nl_bar);
 				config_bar();
 			}
@@ -404,7 +404,7 @@ int main(int argc, char **argv)
 
 		case 'S':
 		case 's':	/* Save function */
-			io_save_cal(&conf, layout); 
+			io_save_cal(&conf); 
 			break;
 
 		case 'X':
@@ -535,7 +535,7 @@ int main(int argc, char **argv)
 		case ('Q'):	/* Quit calcurse :-( */
 		case ('q'):
 			if (conf.auto_save)
-				io_save_cal(&conf, layout);
+				io_save_cal(&conf);
 
 			if (conf.confirm_quit) {
 				status_mesg(_(quit_message), choices);
@@ -614,13 +614,12 @@ void init_vars(conf_t *conf)
 	conf->skip_system_dialogs = false;
 	conf->skip_progress_bar = false;
 	conf->week_begins_on_monday = true;
+	conf->layout = 1;
 
 	// Pad structure for scrolling text inside the appointment panel
 	apad = (struct pad_s *) malloc(sizeof(struct pad_s));
-	apad->width = nc_app - 3;
 	apad->length = 1;
 	apad->first_onscreen = 0;
-	apad->ptrwin = newpad(apad->length, apad->width);
 
 	// Attribute definitions for color and non-color terminals
 	custom_init_attr();
@@ -680,7 +679,7 @@ update_windows(int surrounded_window, conf_t *conf)
 /* 
  * Get the screen size and recalculate the windows configurations.
  */
-void get_screen_config(void)
+void get_screen_config(conf_t *conf)
 {
 	/* Get the screen configuration */
 	getmaxyx(stdscr, row, col);
@@ -697,7 +696,7 @@ void get_screen_config(void)
 	nl_cal = 12;
 	nc_cal = 30;
 
-	if (layout <= 4) { /* APPOINTMENT is the biggest panel */
+	if (conf->layout <= 4) { /* APPOINTMENT is the biggest panel */
 		nc_app = col - nc_cal;
 		nl_app = row - (nl_bar + nl_not);
 		nc_tod = nc_cal;
@@ -710,7 +709,7 @@ void get_screen_config(void)
 	}
 
 	/* defining the layout */
-	switch (layout) {
+	switch (conf->layout) {
 	case 1:
 		y_app = 0; x_app = 0; y_cal = 0;
 		x_tod = nc_app; y_tod = nl_cal; x_cal = nc_app;
@@ -746,8 +745,6 @@ void get_screen_config(void)
 	}
 }
 
-
-
 /* Get current date */
 void get_date(void)
 {
@@ -768,13 +765,18 @@ void init_wins(void)
 {
 	char label[BUFSIZ];
 	
-	/* Create the three main windows plus the status bar. */
+	/* 
+	 * Create the three main windows plus the status bar and the pad used to
+	 * display appointments and event. 
+	 */
 	cwin = newwin(nl_cal, nc_cal, y_cal, x_cal);
 	snprintf(label, BUFSIZ, _("Calendar"));
 	win_show(cwin, label);
 	awin = newwin(nl_app, nc_app, y_app, x_app);
 	snprintf(label, BUFSIZ, _("Appointments"));
 	win_show(awin, label);
+	apad->width = nc_app - 3;
+	apad->ptrwin = newpad(apad->length, apad->width);
 	twin = newwin(nl_tod, nc_tod, y_tod, x_tod);
 	snprintf(label, BUFSIZ, _("ToDo"));
 	win_show(twin, label);
@@ -797,8 +799,9 @@ void reinit_wins(conf_t *conf)
         delwin(swin);
         delwin(cwin);
         delwin(awin);
+	delwin(apad->ptrwin);
         delwin(twin);
-        get_screen_config();
+        get_screen_config(conf);
         init_wins();
 	if (notify_bar()) 
 		notify_reinit_bar(nl_not, nc_not, y_not, x_not);
