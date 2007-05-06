@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.27 2007/04/04 19:42:43 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.28 2007/05/06 13:27:51 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -120,10 +120,11 @@ print_in_middle(WINDOW * win, int starty, int startx, int width, char *string)
 /* Delete a character at the given position in string. */
 void del_char(int pos, char *str)
 {
+	int len;
+
 	str += pos;
-	for (; *str; ++str)
-		*str = *(str + 1);
-	*str = 0;
+	len = strlen(str) + 1;
+	memmove(str, str + 1, len);
 }
 
 /* Add a character at the given position in string. */
@@ -195,7 +196,8 @@ getstring(WINDOW *win, char *str, int l, int x, int y)
 
 	orig = str;
 	custom_apply_attr(win, ATTR_HIGHEST);
-	for (; *str; ++str, ++len);
+	for (; *str; ++str, ++len)
+		;
 	newpos = x + len;
 	showstring(win, y, x, orig, len, newpos);
 	
@@ -243,22 +245,26 @@ getstring(WINDOW *win, char *str, int l, int x, int y)
 
 		case KEY_LEFT: 		/* move one char backward  */
 		case CTRL('B'):
-			if (newpos > x) newpos--;
+			if (newpos > x) 
+				newpos--;
 			break;
 	
 		case KEY_RIGHT: 	/* move one char forward */
 		case CTRL('F'):
-			if (newpos < len) newpos++; 
+			if (newpos < len) 
+				newpos++; 
 			break;
 		
 		case ESCAPE: 		/* cancel editing */
-			return GETSTRING_ESC;	
+			return (GETSTRING_ESC);	
 			break;
 
 		default: 		/* insert one character */
 			if (len < l - 1) {
-				if (newpos >= len)
+				if (newpos >= len) {
+					str = orig + newpos;
 					*str++ = ch;
+				}
 				else  	// char is to be inserted inside string	
 					str = add_char(newpos, ch, orig);	
 				++len; ++newpos;
