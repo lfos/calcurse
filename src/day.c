@@ -1,4 +1,4 @@
-/*	$calcurse: day.c,v 1.21 2007/04/04 19:38:18 culot Exp $	*/
+/*	$calcurse: day.c,v 1.22 2007/05/06 13:33:06 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -502,15 +502,11 @@ day_edit_item(int year, int month, int day, int item_num)
 				p->start + p->appt_dur);
 			sscanf(timestr, "%u:%u", &hr, &mn);
 			free(timestr);
-			newtime = update_time_in_date(
-				p->start + p->appt_dur, hr, mn);
-			if (newtime > p->start) {
-				p->appt_dur = newtime - p->start; 
-				valid_date = 1;
-			} else {
-				status_mesg(error_msg, enter_str);
-				wgetch(swin);
-			}
+			newtime = update_time_in_date(p->start, hr, mn);
+			p->appt_dur = (newtime > p->start) ? 
+			    newtime - p->start : 
+			    DAYINSEC + newtime - p->start;
+			valid_date = 1;
 		}
 		break;
 	case DESC:
