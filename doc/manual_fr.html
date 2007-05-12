@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <!--
 /*
- *	$calcurse: manual_fr.html,v 1.8 2007/01/16 15:19:48 culot Exp $
+ *	$calcurse: manual_fr.html,v 1.9 2007/05/12 15:14:19 culot Exp $
  *
  * Calcurse - text-based organizer
  * Copyright (c) 2004-2007 Frederic Culot
@@ -102,17 +102,15 @@
 
 <a name="intro"></a><h1>Introduction</a></h1>
 <p>
-        <code>calcurse</code> est un organiseur personnel en mode texte,
-        qui a pour but de g&eacute;rer les rendez-vous et les t&acirc;ches
-        &agrave; faire. Il est compos&eacute; d'un calendrier, d'une 
-        liste de t&acirc;ches, et classe les rendez-vous.
-        L'interface utilisateur est configurable, et l'on peut
-        choisir entre diff&eacute;rents th&egrave;mes graphiques (couleur et
-        disposition des &eacute;lements de l'interface).
-        Toutes les commandes sont document&eacute;es dans un syst&egrave;me
-        d'aide en ligne.
-
-
+<code>calcurse</code> est un logiciel composé d'un calendrier et d'un organiseur
+personnel en mode texte. Il permet de stocker les évènements et rendez-vous,
+ainsi qu'une liste de tâches à effectuer. Un système de notification,
+entièrement configurable par l'utilisateur, permet d'être prévenu lorsque
+l'heure d'un rendez-vous approche. L'interface utilisateur est elle aussi
+configurable, et peut s'adapter aux besoins de chacun. Enfin, un système d'aide
+en ligne permet d'obtenir des renseignements sur toutes les commandes
+disponibles.
+	
 <a name="overview"></a><h1>Aper&ccedil;u du logiciel</h1>
 <a name="overview_history"></a><h2>Origine de Calcurse</h2>
 <p>
@@ -167,7 +165,9 @@
         L'interface utilisateur est &eacute;galement configurable, et l'on peut
         choisir parmi de nombreuses combinaisons possibles de couleurs
         et de positions des fen&ecirc;tres.
-
+	Enfin, le système de notification est entièrement configurable,
+	l'utilisateur peut donc choisir la manière dont il veut être prévenu de
+	l'approche d'un rendez-vous.
 
 <a name="install"></a><h1>Installation</h1>
 <a name="install_requirements"></a><h2>Pr&eacute;-requis</h2>
@@ -228,7 +228,7 @@
         Vous devez tout d'abord d&eacute;compresser l'archive source de la
         mani&egrave;re suivante :
 	<pre>
-	tar zxvf calcurse-1.7.tar.gz
+	tar zxvf calcurse-1.8.tar.gz
 	</pre>
         Une fois que vous remplissez tous les pr&eacute;-requis n&eacute;cessaires &agrave;
         l'installation, le processus de compilation est simple et suit
@@ -312,7 +312,19 @@
 	<br>
 	<dt><code>-v, --version</code>
 	<dd>
-	Affiche la version de <code>calcurse</code>, puis quitte.
+	Affiche la version de <code>calcurse</code>, puis quitte.<br>
+	<br>
+	<dt><code>-x, --export</code>
+	<dd>
+	Exporte les données utilisateur au format iCalendar. Les évènements,
+	rendez-vous et tâches sont convertis et imprimés sur la sortie
+	standard.<br>
+	<u>Note:</u> afin de sauvegarder les données exportées dans un fichier,
+	il est nécessaire de rediriger la sortie standard en utilisant une
+	commande comme celle-ci:
+	<pre>
+	        $ calcurse --export > mon_fichier.ics
+	</pre>
 	</DL>
 
 
@@ -357,7 +369,7 @@ pour l'i18n</h3>
 <p>
         Lorsque il est appel&eacute; avec au moins un des arguments suivants:<br>
         <code>-a</code>, <code>-d</code>, <code>-h</code>, 
-        <code>-n</code>, <code>-t</code>, <code>-v</code><br>
+	<code>-n</code>, <code>-t</code>, <code>-v</code>, <code>-x</code><br>
         <code>calcurse</code> est lanc&eacute; en mode non-interactif.
         Cela signifie que l'information demand&eacute;e sera affich&eacute;e,
         puis <code>calcurse</code> quittera et vous serez ramen&eacute;
@@ -548,10 +560,16 @@ pour l'i18n</h3>
 
 
 <a name="options_colors"></a><h2>Th&egrave;mes graphiques</h2>
-<p>
-        Le th&egrave;me graphique de <code>calcurse</code> est
-        configurable et doit &ecirc;tre choisi en appuyant sur le
-        num&eacute;ro correspond &agrave; la couleur voulue. Cette
+	<p>Le thème graphique de <code>calcurse</code> peut être adapté aux besoins de
+	l'utilisateur. Pour changer les options par défaut, la page de configuration
+	permet de sélectionner la couleur voulue pour l'interface (premier plan et
+	fond). L'utilisateur doit pour cela se déplacer sur la bonne couleur en
+	utilisant les touches flèches ou les touches de déplacement par défaut, et
+	appuyer sur 'X' ou la barre d'espace pour sélectionner la couleur. Il est
+	également possible de conserver la couleur par défaut du terminal de
+	l'utilisateur en sélectionnant le choix corresondant dans la liste.
+	<p>
+        Cette
         couleur est alors appliqu&eacute;e &agrave; la bordure des
         panneaux, aux titres, aux combinaisons de touches, et aux
         informations g&eacute;n&eacute;rales affich&eacute;es dans la
@@ -611,9 +629,31 @@ pour l'i18n</h3>
 	<br>
 	<li><code>barre-notification_alerte</code> (valeur par défaut: <em>300</em>)<br>
 	Si l'utilisateur a programmé un rendez-vous dans les prochaines 'barre-notification_alerte'
-	secondes, l'affichage de ce rendez-vous clignotera dans la barre de notification.
+	secondes, et qu'il a marqué celui-ci comme étant important, 
+	l'affichage de ce rendez-vous clignotera dans la barre de notification.
+	De plus, la commande définie par <em>barre-notification_commande</em>
+	sera executée.
 	De cette manière, l'utilisateur sera alerté et saura que l'heure du rendez-vous
-	approche.
+	approche.<br>
+	<br>
+	<li><code>barre-notification_commande</code> (valeur par défaut:
+	<em>printf '\a'</em>)<br>
+	Cette option indique la commande qui sera lancée lorsque l'heure d'un
+	rendez-vous approchera, et que ce rendez-vous a été marqué comme
+	'important'. La commande spécifiée par cette option sera passée au shell
+	de l'utilisateur, qui l'interpretera. Pour savoir quel shell doit être
+	utilisé, <code>calcurse</code> lit le contenu de la variable
+	d'environnement <code>$SHELL</code>, et si cette variable est vide, la
+	commande sera passée à <code>/bin/sh</code>.<br>
+	<u>Exemple:</u> Supposons que le programme <code>mail</code> soit
+	disponible sur l'ordinateur de l'utilisateur, celui-ci peut indiquer la
+	commande suivante afin d'être prévenu par mail lorsqu'un rendez-vous
+	approche (la description de ce rendez-vous sera également mentionnée
+	dans le corps du mail):
+	<pre>
+		calcurse --next | mail -s "[calcurse] nouveau rendez-vous!" user@host.com
+	</pre>
+	</font>
 	</ul>
 
 
@@ -986,6 +1026,8 @@ pour l'i18n</h3>
 	<li>Jose Lopez pour la traduction espagnole de <code>calcurse</code>
 	et de son manuel
 	<li>Neil Williams pour la traduction anglaise
+	<li>Tony pour son patch qui a permis d'améliorer la fonction
+	recur_item_inday()
 	<li>les personnes qui &eacute;crivent des logiciels que j'appr&eacute;cie et qui
 	m'ont inspir&eacute; lors de la conception de ce projet, en particulier :
 		<ul>
@@ -1001,7 +1043,7 @@ pour l'i18n</h3>
 <hr>
 <small><em>
 Copyright (c) 2004-2007 Fr&eacute;d&eacute;ric Culot<br>
-Calcurse version 1.7 - Derni&egrave;re modification: 16 Janvier 2007 
+Calcurse version 1.8 - Derni&egrave;re modification: 12 Mai 2007 
 <em></small>
 
 
