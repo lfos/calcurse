@@ -1,3 +1,6 @@
+12 May 2007:
+	English and French html manuals updated
+
 06 May 2007:
 	make use of memmove in del_char()
 	layout variable added to conf_t type
