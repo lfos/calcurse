@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <!--
 /*
- *	$calcurse: manual_de.html,v 1.8 2007/01/16 11:23:28 culot Exp $
+ *	$calcurse: manual_de.html,v 1.9 2007/05/22 17:23:14 culot Exp $
  *
  * Calcurse - text-based organizer
  * Copyright (c) 2004-2007 Frederic Culot
@@ -102,6 +102,14 @@
 
 <a name="intro"></a><h1>Einleitung</a></h1>
 <p>
+<font color="green">
+<code>calcurse</code> is a text-based calendar and scheduling application. It helps
+keeping track of events, appointments and everyday tasks. 
+A configurable notification system reminds user of upcoming deadlines,
+and the curses based interface can be customized to suit user needs.
+All of the commands are documented within an online help system.  
+</font>
+<p>
 <code>calcurse</code> ist ein textbasierter pers&ouml;nlicher Terminkalender, der
 Ihnen bei der Organisation von Terminen und t&auml;glichen Aufgaben
 hilft. Er beinhaltet einen Kalender sowie eine 'todo'-Liste, die Ihre
@@ -154,7 +162,10 @@ steht, sowie alle m&ouml;gliche Aktionen jederzeit in einer Statuszeile
 ersichtlich sind.  Das Benutzer-Interface ist ebenfalls
 einstellbar. Ebenso kann man verschiedene Textfarben und Layouts
 w&auml;hlen.
-
+	<font color="green">
+	Last, a configurable notification system reminds user of upcoming
+	appointments. 
+	</font>
 
 <a name="install"></a><h1>Installation</h1>
 <a name="install_requirements"></a><h2>Voraussetzungen</h2>
@@ -206,7 +217,7 @@ laden:<br>
 <p>
 Als erstes m&uuml;ssen die Dateien entpackt werden:
 <pre>
-        tar zxvf calcurse-1.7.tar.gz
+        tar zxvf calcurse-1.8.tar.gz
 </pre>
 Ist diese Voraussetzung erf&uuml;llt und das Archiv entpackt,
 sind nur noch die drei &uuml;blichen Schritte erforderlich:
@@ -275,7 +286,19 @@ Gibt die 'todo' Liste aus.<br>
 <br>
 <dt><code>-v, --version</code>
 <dd>
-Gibt die aktuelle Version von Calcurse aus.
+Gibt die aktuelle Version von Calcurse aus.<br>
+<br>
+	<font color="green">
+	<dt><code>-x, --export</code>
+	<dd>
+	Export user data to iCalendar format. Events, appointments and
+	todos are converted and echoed to stdout.<br>
+	<u>Note:</u> redirect standard output to export data to a file,
+	by issuing a command such as:
+	<pre>
+	        $ calcurse --export > my_data.ics
+	</pre>
+	</font>
 </dl>
 
 
@@ -316,7 +339,7 @@ Gibt die aktuelle Version von Calcurse aus.
 <p>
 Wird <code>calcurse</code> mit den Optionen:<br>
 <code>-a</code>, <code>-d</code>, <code>-h</code>,
-<code>-n</code>, <code>-t</code>, <code>-v</code><br>
+<code>-n</code>, <code>-t</code>, <code>-v</code>, <code>-x</code><br>
 gestartet, wird das Programm im nicht-interaktiven Modus
 ausgef&uuml;hrt. Das bedeutet, dass die gew&uuml;nschten Informationen
 ausgegeben werden und das Programm anschlie&szlig;end sofort wieder beendet
@@ -487,6 +510,16 @@ beginnt die Woche sonntags.
 
 <a name="options_colors"></a><h2>Textfarben einstellen</h2>
 <p>
+	<font color="green">
+	<code>calcurse</code> color theme can be customized to suit user's 
+	needs. To change the default theme, the configuration page
+	displays possible choices for foreground and background colors.
+	Using arrows or calcurse displacement keys to move, and 'X' or space
+	to select a color, user can preview the theme which will be applied.
+	It is possible to keep the terminal's default colors by selecting the
+       corresponding choice in the list.	
+</font>
+<p>
 Die verwendeten Textfarben k&ouml;nnen nach eigenen Vorlieben eingestellt
 werden. Durch Bet&auml;tigung der entsprechenden Taste kann die gew&uuml;nschte
 Farbkombination ausgew&auml;hlt werden. Die gew&auml;hlte Farbkombination werden
@@ -546,6 +579,27 @@ entsprechend anpassen.
 	festgelegten Sekunden, wird der Termin innerhalb der Benachrichtigungszeile 
 	blinkend dargestellt. Auf diese Weise wird der Nutzer auf einen baldigen Termin 
 	hingewiesen.
+	<font color="green">
+	Moreover, the command defined by the <em>notify-bar_command</em>
+	option will be launched.
+	</font>
+	<br><br>
+	<li><font color="green">
+	<code>notify-bar_command</code> (default: <em>printf '\a'</em>)<br>
+	This option indicates which command is to be launched when there is an
+	upcoming appointment flagged as 'important'. This command will be
+	passed to the user's shell which will interpret it. To know what shell
+	must be used, the content of the <code>$SHELL</code> environment variable
+	is used. If this variable is not set, <code>/bin/sh</code> is used
+	instead.<br>
+	<u>Example:</u> Say the <code>mail</code> command is available on
+	the user's system, one can use the following command to get notified by
+	mail of an upcoming appointment (the appointment description will also
+	be mentioned in the mail body):
+	<pre>
+		calcurse --next | mail -s "[calcurse] upcoming appointment!" user@host.com
+	</pre>
+	</font>
 	</ul> 
 
 
@@ -846,6 +900,8 @@ derjenigen, denen ich Danke sagen m&ouml;chte:
 <li>Michael Schulz und Chris M. f&uuml;r die &Uuml;bersetzung der Dokumentation ins Deutsche.
 <li>Jose Lopez f&uuml;r die &Uuml;bersetzung der Dokumentation ins Spanische.
 <li>Neil Williams f&uuml;r die &Uuml;bersetzung ins Englische.
+	<li><font color="green">Tony for its patch which helped improving the
+	recur_item_inday() function</font>
 <li>Leute die Programme geschrieben haben, die ich mag und mich inspiriert haben, insbesondere:
 <ul>
 <li><code>vim</code> f&uuml;r die Befehlssteuerung
@@ -862,8 +918,8 @@ Benutzer, die mir Ihr Feedback mitgeteilt haben.
 Copyright (c) 2004-2007 Fr&eacute;d&eacute;ric Culot<br>
 German translation by Michael Schulz
 <code>&lt;bloodshower.at.web.dot.de&gt;</code>, and Chris.<br>
-Calcurse version 1.7 - Last change: January 16, 2007
-<em></small>
+Calcurse version 1.8 - Last change: April 25, 2007
+</em></small>
 
 
 </body>
