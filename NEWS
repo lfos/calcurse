@@ -1,5 +1,5 @@
-[15 Apr 2007]
-Version 1.8_beta   beta version available on request. 
+[22 May 2007]
+Version 1.8
 - New features:
   * The command launched to notify user of an upcoming appointment is now
     configurable, so that user can get warned by mail or by playing a tune for
@@ -20,6 +20,10 @@ Version 1.8_beta   beta version available on request.
     to delete last character
 
   * 01/01/1970 is not returned anymore when editing an item endless repetition
+
+
+[15 Apr 2007]
+Version 1.8_beta   beta version available on request. 
 
 
 [20 Jan 2007]
