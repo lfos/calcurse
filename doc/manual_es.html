@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <!--
 /*
- *	$calcurse: manual_es.html,v 1.6 2007/01/17 19:04:22 culot Exp $
+ *	$calcurse: manual_es.html,v 1.7 2007/05/22 17:27:14 culot Exp $
  *
  * Calcurse - text-based organizer
  * Copyright (c) 2004-2007 Frederic Culot
@@ -101,13 +101,11 @@
 
 <a name="intro"></a><h1>Introducción</a></h1>
 <p>
-	<code>calcurse</code> es un organizador personal que te 
-	ayuda a mantener un seguimiento de tus eventos y tareas diarias.
-	Contiene un calendario, una lista de tareas pendientes (ToDo) y mantiene
-	tus citas de forma ordenada. La interfaz de usuario es  
-	configurable y puedes elegir entre diferentes esquemas de 
-	color y disposiciones. Todos los comandos están documentados a 
-	través de un sistema de ayuda en linea.
+	<code>calcurse</code> es un calendario y organizador de tareas personal basado en
+	modo texto. Te ayuda a mantener un seguimiento de tus eventos, citas  y tareas diarias.
+	Un sistema de notificacion recuerda al usuario sus proximas citas y la interfaz de 
+	usuario basanda en ncurses puede ser personalizada para cubrir las necesidades del usuario.
+	Todos los comandos están documentados a	través de un sistema de ayuda en linea.
 
 
 <a name="overview"></a><h1>Descripción</h1>
@@ -154,8 +152,8 @@
 	las posibles acciones visualizadas en todo momento en la barra de
 	estado. La interfaz de usuario también es configurable y uno puede
 	elegir entre combinaciones de colores y disposiciones.
+	Finalmente, un sistema de notificacion recuerda al usuario sus proximas citas.
 	
-
 
 <a name="install"></a><h1>Instalación</h1>
 <a name="install_requirements"></a><h2>Requerimientos</h2>
@@ -206,7 +204,7 @@
 <p>
 	Primero necesitas descomprimir ( gunzip  y  untar) el archivo fuente:
 	<pre>
-	tar zxvf calcurse-1.7.tar.gz
+	tar zxvf calcurse-1.8.tar.gz
 	</pre>
   	Una vez has resuelto los requisitos y has extraído el archivo, 
 	el proceso de instalación es muy simple y sigue los tres pasos habituales:
@@ -276,8 +274,17 @@
 	<br>
 	<dt><code>-v, --version</code>
 	<dd>
-        Muestra la versión de <code>calcurse</code> y sale.
-	</DL>
+	Muestra la versión de <code>calcurse</code> y sale.<br>
+	<br>
+	<dt><code>-x, --export</code>
+	<dd>
+	Exporta los datos del usuario a un formato iCalendar. Citas, eventos y tareas pendientes son convertidos y
+	mostrados en patalla.<br>
+	<u>Nota:</u> redirecciona la salida standard para exportar los datos a un archivo usando 
+	un comando como este:
+	<pre>
+	        $ calcurse --export > my_data.ics
+	</pre>
 
 <a name="basics_invocation_variable"></a><h3>Variable de entorno para i18n</h3>
 <p>
@@ -312,7 +319,7 @@
 <p>
         Cuando es llamado por lo menos con uno de los siguientes argumentos:<br>
         <code>-a</code>, <code>-d</code>, <code>-h</code>, 
-        <code>-n</code>, <code>-t</code>, <code>-v</code><br>
+	<code>-n</code>, <code>-t</code>, <code>-v</code>, <code>-x</code><br>
         <code>calcurse</code> arranca en modo no-interactivo.
         Esto significa que se mostrara la información deseada, y 
         después de esto, <code>calcurse</code> simplemente se cierra y eres 
@@ -483,12 +490,15 @@
 
 <a name="options_colors"></a><h2>Color (temas)</h2>
 <p>
-        El tema de color de <code>calcurse</code> es configurable 
-        y puede elegirse tecleando el numero correspondiente  al tema deseado.
-        Este color puede entonces ser aplicado a los bordes del panel,
-        a los títulos, a los atajos de teclado, y a las informaciones generales 
-        mostradas en el interior de la barra de estado. También esta disponible 
-        un tema en blanco y negro para los terminales que no soportan colores.<br>
+        El tema de color de <code>calcurse</code> puede se  configurado para 
+	cubrir las necesidades del usuario. Para cambiar el tema por defecto, la
+	pagina de configuracion muestra las posibles opciones para el color de fondo
+	y del texto.
+	Usando las teclas de las flechas o las teclas de desplazamiento de calcurse
+	para moverse y 'X'o la barra espaciadora para seleccionar el color, el usuario
+	puede previsualizar el tema que se aplicara.
+	Tambien es posible mantener los colores por defecto del terminal seleccionando
+	la opcion correspondiente en la lista.
         <u>Notas:</u> 
         <ul> 
         <li> Dependiendo de tu tipo de terminal y del valor de la variable de 
@@ -535,8 +545,21 @@
 	<li><code>alarma_barra-notificaciones</code> (por defecto: <em>300</em>)<br>
 	Cuando tienes una cita dentro de los siguientes 'alarma_barra-notificaciones'
 	segundos, la referencia a esa cita dentro de la barra de notificaciones 
-	comienza a parpadear. De esta forma, se alerta al usuario y este sabe que
-	detro de poco tiene una cita.	
+	comienza a parpadear. 
+	Además, se lanzara el comando definido por la opcion <em>comando_barra-notificaciones</em>.
+	De esta forma, se alerta al usuario y este sabe que
+	detro de poco tiene una cita.<br><br>
+	<li><code>comando_barra-notificaciones</code> (por defecto: <em>printf '\a'</em>)<br>
+	Esta opcion indica que comando se lanzara cuando haya una cita proxima marcada como
+	"inportante". Este comando sera pasado al shell del usuario que lo interpretara.
+	Para saber que tipo de shell debe usarse, se utilizara el contenido dela variable de 
+	entorno <code>$SHELL</code>. Si esta variable no esta seleccionada, se usara <code>/bin/sh</code>.<br>
+	<u>Ejemplo:</u> Digamos que el comando <code>mail</code> esta disponible en el sistema del usuario, uno
+	puede usar este comando para ser notificado por correo electronico cuando se acerque la cita  
+	(la descripcion de la cita se mencionara en el cuerpo del mensaje):
+	<pre>
+		calcurse --next | mail -s "[calcurse] upcoming appointment!" user@host.com
+	</pre>
 	</ul> 
 
 
@@ -814,6 +837,7 @@
 	<li>Joel por su script del calendario que inspiro la vista de calendario de <code>calcurse</code> 
 	<li>Michael Schulz y Chris M. por la traducción al alemán de <code>calcurse</code> y su manual
 	<li>Neil Williams por la traducción al ingles
+	<li>Tony por el patch que me ha ayudado a implementar la funcion recur_item_inday()
 	<li>José López por la traducción al Español de <code>calcurse</code> y su manual
 	<li>a la gente que ha escrito softwares que me gustan y que me inspiraron, especialmente :
 		<ul>
@@ -832,8 +856,8 @@
 Copyright (c) 2004-2007 Fr&eacute;d&eacute;ric Culot<br>
 Traducido al Español por José López
 <code>&lt;testinground.at.gmail.dot.com&gt;</code><br>
-Calcurse version 1.7 - Last change: January 17, 2007
-<em></small>
+Calcurse version 1.8 - Last change: April 25, 2007
+</em></small>
 
 
 </body>
