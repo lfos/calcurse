@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.28 2007/05/06 13:27:51 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.29 2007/07/01 17:50:53 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -442,8 +442,8 @@ status_bar(int which_pan, int nc_bar, int nl_bar)
 	wnoutrefresh(swin);
 }
 
-long date2sec(unsigned year, unsigned month, unsigned day, unsigned hour,
-	      unsigned min)
+long 
+date2sec(date_t day, unsigned hour, unsigned min)
 {
 	struct tm start, *lt;
 	time_t tstart, t;
@@ -452,9 +452,9 @@ long date2sec(unsigned year, unsigned month, unsigned day, unsigned hour,
 	lt = localtime(&t);
 	start = *lt;
 
-	start.tm_mon = month;
-	start.tm_mday = day;
-	start.tm_year = year;
+	start.tm_mon = day.mm;
+	start.tm_mday = day.dd;
+	start.tm_year = day.yyyy;
 	start.tm_hour = hour;
 	start.tm_min = min;
 	start.tm_sec = 0;
@@ -463,11 +463,14 @@ long date2sec(unsigned year, unsigned month, unsigned day, unsigned hour,
 	start.tm_mon--;
 	tstart = mktime(&start);
 	if (tstart == -1) {
-		fputs(_("FATAL ERROR in date2sec: failure in mktime\n"), stderr);
-		fprintf(stderr, "%u %u %u %u %u\n", year, month, day, hour, min);
+		fputs(_("FATAL ERROR in date2sec: failure in mktime\n"), 
+		    stderr);
+		fprintf(stderr, "%u %u %u %u %u\n", day.yyyy, day.mm, day.dd, 
+		    hour, min);
 		exit(EXIT_FAILURE);
 	}
-	return tstart;
+
+	return (tstart);
 }
 
 /* Return a string containing the hour of a given date in seconds. */
@@ -571,25 +574,26 @@ long update_time_in_date(long date, unsigned hr, unsigned mn)
  * If no date is entered, current date is chosen.
  */
 long
-get_sec_date(int year, int month, int day)
+get_sec_date(date_t date)
 {
 	struct tm *ptrtime;
 	time_t timer;
 	long long_date;
-	char current_day[3], current_month[3] ,current_year[5];
+	char current_day[] = "dd ";
+	char current_month[] = "mm ";
+	char current_year[] = "yyyy ";
 
-	if (year == 0 && month == 0 && day == 0) {
+	if (date.yyyy == 0 && date.mm == 0 && date.dd == 0) {
 		timer = time(NULL);
 		ptrtime = localtime(&timer);
-		strftime(current_day, 3, "%d", ptrtime);
-		strftime(current_month, 3, "%m", ptrtime);
-		strftime(current_year, 5, "%Y", ptrtime);
-		month = atoi(current_month);
-		day = atoi(current_day);
-		year = atoi(current_year);
-		
+		strftime(current_day, strlen(current_day), "%d", ptrtime);
+		strftime(current_month, strlen(current_month), "%m", ptrtime);
+		strftime(current_year, strlen(current_year), "%Y", ptrtime);
+		date.mm = atoi(current_month);
+		date.dd = atoi(current_day);
+		date.yyyy = atoi(current_year);
 	} 
-	long_date = date2sec(year, month, day, 0, 0);
+	long_date = date2sec(date, 0, 0);
 	return long_date;
 }
 
@@ -767,19 +771,20 @@ void other_status_page(int panel)
 }
 
 /* Returns the beginning of current day in seconds from 1900. */
-long today(void)
+long 
+get_today(void)
 {
 	struct tm *lt;
 	time_t current_time;
 	long current_day;
-	int year, month, day;
+	date_t day;
 
 	current_time = time(NULL);
 	lt = localtime(&current_time);
-	month = lt->tm_mon + 1;
-	day = lt->tm_mday;
-	year = lt->tm_year + 1900;
-	current_day = date2sec(year, month, day, 0, 0);	
+	day.mm = lt->tm_mon + 1;
+	day.dd = lt->tm_mday;
+	day.yyyy = lt->tm_year + 1900;
+	current_day = date2sec(day, 0, 0);	
 
 	return current_day;
 }

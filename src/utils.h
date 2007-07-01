@@ -1,4 +1,4 @@
-/*	$calcurse: utils.h,v 1.17 2007/03/24 23:12:35 culot Exp $	*/
+/*	$calcurse: utils.h,v 1.18 2007/07/01 17:50:53 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -27,6 +27,8 @@
 #ifndef CALCURSE_UTILS_H
 #define CALCURSE_UTILS_H
 
+#include "calendar.h"
+
 #define MAX(x,y) 	((x)>(y)?(x):(y))
 #define MIN(x,y) 	((x)<(y)?(x):(y))
 
@@ -50,42 +52,37 @@ typedef struct { /* structure defining a keybinding */
 	char *label;
 } binding_t;
 
-void status_mesg(char *mesg_line1, char *mesg_line2);
-void erase_window_part(WINDOW *win, int first_col, int first_row, 
-    int last_col, int last_row);
-WINDOW *popup(int pop_row, int pop_col, int pop_y, int pop_x, char *pop_lab);
-void print_in_middle(WINDOW *win, int starty, int startx, int width, char *string);
-void del_char(int pos, char *str);
-char *add_char(int pos, int ch, char *str);
-void showcursor(WINDOW *win, int y, int pos, char *str, int l, int offset);
-void showstring(WINDOW *win, int y, int x, char *str, int len, int pos);
-int getstring(WINDOW *win, char *str, int l, int x, int y);
-int updatestring(WINDOW *win, char **str, int x, int y);
-int is_all_digit(char *string);
-void border_color(WINDOW *window);
-void border_nocolor(WINDOW *window);
-void status_bar(int which_pan, int nc_bar, int nl_bar);
-long date2sec(unsigned year, unsigned month, unsigned day, unsigned hour,
-    unsigned min);
-char *date_sec2hour_str(long sec);
-char *date_sec2date_str(long sec);
-void date_sec2ical_date(long sec, char *ical_date);
-void date_sec2ical_datetime(long sec, char *ical_date);
-long update_time_in_date(long date, unsigned hr, unsigned min);
-long get_sec_date(int year, int month, int day);
-long min2sec(unsigned minutes);
-int check_time(char *string);
-void draw_scrollbar(WINDOW *win, int y, int x, int length, 
-    int bar_top, int bar_bottom, bool hilt);
-void item_in_popup(char *saved_a_start, char *saved_a_end, char *msg, 
-    char *pop_title);
-void win_show(WINDOW * win, char *label);
-void display_item(WINDOW *win, int incolor, char *msg, int recur,
-    int len, int y, int x);
-void reset_status_page(void);
-void other_status_page(int panel);
-long today(void);
-long now(void);
-char *mycpy(const char *src);
+void 	status_mesg(char *, char *);
+void 	erase_window_part(WINDOW *, int, int, int, int);
+WINDOW *popup(int, int, int, int, char *);
+void 	print_in_middle(WINDOW *, int, int, int, char *);
+void 	del_char(int, char *);
+char   *add_char(int, int, char *);
+void 	showcursor(WINDOW *, int, int, char *, int, int);
+void 	showstring(WINDOW *, int, int, char *, int, int);
+int 	getstring(WINDOW *, char *, int, int, int);
+int 	updatestring(WINDOW *, char **, int, int);
+int 	is_all_digit(char *);
+void 	border_color(WINDOW *);
+void 	border_nocolor(WINDOW *);
+void 	status_bar(int, int, int);
+long 	date2sec(date_t, unsigned, unsigned);
+char   *date_sec2hour_str(long);
+char   *date_sec2date_str(long);
+void 	date_sec2ical_date(long, char *);
+void 	date_sec2ical_datetime(long, char *);
+long 	update_time_in_date(long, unsigned, unsigned);
+long 	get_sec_date(date_t);
+long 	min2sec(unsigned);
+int 	check_time(char *);
+void 	draw_scrollbar(WINDOW *, int, int, int, int, int, bool);
+void 	item_in_popup(char *, char *, char *, char *);
+void 	win_show(WINDOW *, char *);
+void 	display_item(WINDOW *, int, char *, int, int, int, int);
+void 	reset_status_page(void);
+void 	other_status_page(int);
+long 	get_today(void);
+long 	now(void);
+char   *mycpy(const char *);
 
 #endif /* CALCURSE_UTILS_H */
