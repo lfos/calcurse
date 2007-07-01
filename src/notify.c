@@ -1,4 +1,4 @@
-/*	$calcurse: notify.c,v 1.12 2007/05/06 13:29:51 culot Exp $	*/
+/*	$calcurse: notify.c,v 1.13 2007/07/01 17:57:05 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -258,7 +258,7 @@ notify_thread_app(void *arg)
 	tmp_app = (struct notify_app_s *) malloc(sizeof(struct notify_app_s));
 	tmp_app->time = current_time + DAYINSEC;
 	tmp_app->got_app = 0;
-	tmp_app = recur_apoint_check_next(tmp_app, current_time, today());
+	tmp_app = recur_apoint_check_next(tmp_app, current_time, get_today());
 	tmp_app = apoint_check_next(tmp_app, current_time);
 
 	pthread_mutex_lock(&notify_app->mutex);
@@ -328,7 +328,7 @@ notify_check_repeated(recur_apoint_llist_node_t *i)
 	current_time = time(NULL);
 	pthread_mutex_lock(&notify_app->mutex);
 	if ((real_app_time = recur_item_inday(i->start, i->exc, i->rpt->type,
-	    i->rpt->freq, i->rpt->until, today()) > current_time)) {
+	    i->rpt->freq, i->rpt->until, get_today()) > current_time)) {
 		if (!notify_app->got_app) {
 			if (real_app_time - current_time <= DAYINSEC) 
 				update_notify = 1;
@@ -369,7 +369,7 @@ notify_same_recur_item(recur_apoint_llist_node_t *i)
 	long item_start = 0;
 
 	item_start = recur_item_inday(i->start, i->exc, i->rpt->type,
-		i->rpt->freq, i->rpt->until, today());
+		i->rpt->freq, i->rpt->until, get_today());
 	pthread_mutex_lock(&notify_app->mutex);
 	if (notify_app->got_app && item_start == notify_app->time)
 		same = 1;
