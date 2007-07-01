@@ -1,4 +1,4 @@
-/*	$calcurse: custom.c,v 1.11 2007/05/06 13:31:31 culot Exp $	*/
+/*	$calcurse: custom.c,v 1.12 2007/07/01 17:59:14 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -29,6 +29,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "calendar.h"
 #include "custom.h"
 #include "i18n.h"
 #include "io.h"
@@ -36,9 +37,8 @@
 #include "apoint.h"
 
 static struct attribute_s attr;
-static bool fill_config_var(char *string);
 
-bool 
+static bool 
 fill_config_var(char *string) 
 {
 	if (strncmp(string, "yes", 3) == 0)
@@ -149,7 +149,10 @@ custom_load_conf(conf_t *conf, int background, int nc_bar, int nl_bar)
 			var = 0;
 			break;
 		case CUSTOM_CONF_WEEKBEGINSONMONDAY:
-			conf->week_begins_on_monday = fill_config_var(e_conf);
+			if (fill_config_var(e_conf))
+				calendar_set_first_day_of_week(MONDAY);
+			else
+				calendar_set_first_day_of_week(SUNDAY);
                         var = 0;
 			break;
 		case CUSTOM_CONF_COLORTHEME:
