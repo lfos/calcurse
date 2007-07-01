@@ -1,4 +1,4 @@
-/*	$calcurse: vars.h,v 1.10 2007/05/06 13:30:14 culot Exp $	*/
+/*	$calcurse: vars.h,v 1.11 2007/07/01 17:42:47 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -76,7 +76,6 @@ typedef struct {
 	bool confirm_delete;
 	bool skip_system_dialogs;
 	bool skip_progress_bar;
-	bool week_begins_on_monday;
 	int layout;
 } conf_t;
 
