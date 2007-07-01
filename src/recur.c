@@ -1,4 +1,4 @@
-/*	$calcurse: recur.c,v 1.25 2007/04/14 18:46:54 culot Exp $	*/
+/*	$calcurse: recur.c,v 1.26 2007/07/01 17:53:42 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -374,6 +374,7 @@ recur_item_inday(long item_start, struct days_s *item_exc,
 {
 #define YEARSTODAYS(x)	((x) * 365L + (x) / 4 - (x) / 100 + (x) / 400) 	
 
+	date_t start_date;
 	long day_end;
 	struct tm *lt;
 	int day_month, day_year, day_yday, day_mday, diff;
@@ -440,8 +441,10 @@ recur_item_inday(long item_start, struct days_s *item_exc,
 			fputs(error, stderr);
 			exit(EXIT_FAILURE);
 	}
-	item_start = date2sec(lt->tm_year + 1900, lt->tm_mon + 1, 
-		lt->tm_mday, lt->tm_hour, lt->tm_min);
+	start_date.dd = lt->tm_mday;
+	start_date.mm = lt->tm_mon + 1;
+	start_date.yyyy = lt->tm_year + 1900;
+	item_start = date2sec(start_date, lt->tm_hour, lt->tm_min);
 
 	if (item_start < day_end && item_start >= day_start)
 		return item_start;
@@ -565,14 +568,14 @@ void recur_apoint_erase(long start, unsigned num, unsigned delete_whole)
  * and then delete the selected item to recreate it as a recurrent one
  */
 void 
-recur_repeat_item(int sel_year, int sel_month, int sel_day, 
-    int item_nb) 
+recur_repeat_item(int item_nb) 
 {
 	struct tm *lt;
 	time_t t;
 	int ch = 0;
 	int valid_date = 0, date_entered = 0;
 	int year = 0, month = 0, day = 0;
+	date_t until_date;
 	char user_input[BUFSIZ] = "";
 	char *mesg_type_1 = 
 	_("Enter the repetition type: (D)aily, (W)eekly, (M)onthly, (Y)early");
@@ -643,8 +646,11 @@ recur_repeat_item(int sel_year, int sel_month, int sel_day,
 					sscanf(user_input, "%d / %d / %d", 
 						&month, &day, &year);	
 					t = p->start; lt = localtime(&t);
-					until = date2sec(year, month, day, 
-						lt->tm_hour, lt->tm_min);
+					until_date.dd = day;
+					until_date.mm = month;
+					until_date.yyyy = year;
+					until = date2sec(until_date,
+					    lt->tm_hour, lt->tm_min);
 					if (until < p->start) {
 						status_mesg(mesg_older,
 							wrong_type_2);
@@ -662,7 +668,7 @@ recur_repeat_item(int sel_year, int sel_month, int sel_day,
 			return;
 	}
 	
-	date = date2sec(sel_year, sel_month, sel_day, 0, 0);
+	date = calendar_get_slctd_day_sec();
 	day_erase_item(date, item_nb, 0);
 	if (p->type == EVNT) {
 		re = recur_event_new(p->mesg, p->start, p->evnt_id, 
