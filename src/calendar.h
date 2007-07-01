@@ -1,4 +1,4 @@
-/*	$calcurse: calendar.h,v 1.2 2007/03/10 15:54:59 culot Exp $	*/
+/*	$calcurse: calendar.h,v 1.3 2007/07/01 17:46:13 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -29,11 +29,41 @@
 
 #include <stdbool.h>
 
-void update_cal_panel(WINDOW *cwin, int nl_cal, int nc_cal, int sel_month, 
-    int sel_year, int sel_day, int day, int month, int year, bool monday_first);
-int isBissextile(unsigned);
-long ymd_to_scalar(unsigned, unsigned, unsigned);
-void goto_day(int day, int month, int year, int *sel_day, int *sel_month, 
-    int *sel_year);
+#define	CALHEIGHT	12
+#define	CALWIDTH	30
+
+typedef enum { /* days of week */
+	SUNDAY,
+	MONDAY,
+	TUESDAY,
+	WEDNESDAY,
+	THURSDAY,
+	FRIDAY,
+	SATURDAY,
+	WDAYS
+} wday_t;
+
+typedef struct {
+	unsigned dd; 
+	unsigned mm;
+       	unsigned yyyy;
+} date_t;
+
+void	calendar_start_date_thread(void);
+void	calendar_stop_date_thread(void);
+void	calendar_set_current_date(void);
+void	calendar_set_first_day_of_week(wday_t);
+void	calendar_change_first_day_of_week(void);
+bool	calendar_week_begins_on_monday(void);
+void	calendar_store_current_date(date_t *);
+void	calendar_init_slctd_day(void);
+date_t *calendar_get_slctd_day(void);
+long	calendar_get_slctd_day_sec(void);
+void 	calendar_update_panel(WINDOW *);
+void	calendar_change_day(void);
+void	calendar_move_right(void);
+void	calendar_move_left(void);
+void	calendar_move_up(void);
+void	calendar_move_down(void);
 
 #endif /* CALCURSE_CALENDAR_H */
