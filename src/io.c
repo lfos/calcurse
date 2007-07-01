@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.16 2007/05/06 13:32:17 culot Exp $	*/
+/*	$calcurse: io.c,v 1.17 2007/07/01 17:57:57 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -44,6 +44,7 @@
 #include "apoint.h"
 #include "recur.h"
 #include "io.h"
+#include "calendar.h"
 
 typedef enum {
 	PROGRESS_BAR_SAVE,
@@ -457,7 +458,7 @@ io_save_cal(conf_t *conf)
 		    "\n# If this option is set to yes, monday is the first day of the week, else it is sunday\n");
 		fprintf(data_file, "week_begins_on_monday=\n");
 		fprintf(data_file, "%s\n", 
-			(conf->week_begins_on_monday) ? "yes" : "no");
+			(calendar_week_begins_on_monday()) ? "yes" : "no");
 
 		fprintf(data_file,
 		    "\n# This is the color theme used for menus :\n");
