@@ -1,4 +1,4 @@
-/*	$calcurse: apoint.h,v 1.5 2007/02/24 17:35:00 culot Exp $	*/
+/*	$calcurse: apoint.h,v 1.6 2007/07/01 17:54:33 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -28,7 +28,9 @@
 #define CALCURSE_APOINT_H
 
 #include <ncurses.h>
+
 #include "notify.h"
+#include "vars.h"
 
 #define HRMIN_SIZE 6
 #define MESG_MAXSIZE 256
@@ -52,22 +54,21 @@ typedef struct apoint_llist {
 
 extern apoint_llist_t *alist_p;
 
-int apoint_llist_init(void);
-apoint_llist_node_t *apoint_new(char *, long, long, char state);
-unsigned apoint_inday(apoint_llist_node_t *o, long start);
-void apoint_sec2str(apoint_llist_node_t *o, 
-	int type, long day, char *start, char *end);
-void apoint_write(apoint_llist_node_t *o, FILE * f);
-apoint_llist_node_t *apoint_scan(FILE * f, struct tm start, struct tm end,
-    char state);
-void apoint_delete_bynum(long start, unsigned num);
-void display_item_date(WINDOW *win, int color, apoint_llist_node_t *i,
-		int type, long date, int y, int x);
-int get_item_line(int item_nb, int nb_events_inday);
-void scroll_pad_down(int item_nb, int nb_events_inday, int win_length);
-void scroll_pad_up(int item_nb, int nb_events_inday);
-struct notify_app_s *apoint_check_next(struct notify_app_s *app, long start);
-apoint_llist_node_t *apoint_recur_s2apoint_s(recur_apoint_llist_node_t *p);
-void apoint_switch_notify(int year, int month, int day, int item_num);
+int 			apoint_llist_init(void);
+apoint_llist_node_t    *apoint_new(char *, long, long, char);
+unsigned 		apoint_inday(apoint_llist_node_t *, long);
+void 			apoint_sec2str(apoint_llist_node_t *, int, long, 
+			    char *, char *);
+void 			apoint_write(apoint_llist_node_t *, FILE *);
+apoint_llist_node_t    *apoint_scan(FILE *, struct tm, struct tm, char);
+void 			apoint_delete_bynum(long, unsigned);
+void 			display_item_date(WINDOW *, int, apoint_llist_node_t *,
+			    int, long, int, int);
+int 			get_item_line(int, int);
+void 			scroll_pad_down(int, int, int);
+void 			scroll_pad_up(int, int);
+struct notify_app_s    *apoint_check_next(struct notify_app_s *, long);
+apoint_llist_node_t    *apoint_recur_s2apoint_s(recur_apoint_llist_node_t *);
+void 			apoint_switch_notify(int);
 
 #endif /* CALCURSE_APOINT_H */

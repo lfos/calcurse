@@ -1,4 +1,4 @@
-/*	$calcurse: apoint.c,v 1.10 2007/04/04 19:35:09 culot Exp $	*/
+/*	$calcurse: apoint.c,v 1.11 2007/07/01 17:54:33 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -39,6 +39,7 @@
 #include "utils.h"
 #include "notify.h"
 #include "recur.h"
+#include "calendar.h"
 
 apoint_llist_t *alist_p;
 
@@ -333,7 +334,7 @@ apoint_llist_node_t *apoint_recur_s2apoint_s(
  * Switch notification state.
  */
 void
-apoint_switch_notify(int year, int month, int day, int item_num)
+apoint_switch_notify(int item_num)
 {
 	apoint_llist_node_t *apoint;
 	struct day_item_s *p;
@@ -344,7 +345,7 @@ apoint_switch_notify(int year, int month, int day, int item_num)
 	if (p->type != APPT && p->type != RECUR_APPT)
 		return;
 	
-	date = date2sec(year, month, day, 0, 0);
+	date = calendar_get_slctd_day_sec();
 
 	if (p->type == RECUR_APPT) {
 		recur_apoint_switch_notify(date, p->appt_pos);
