@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.45 2007/05/06 13:29:10 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.46 2007/07/01 17:40:38 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -31,6 +31,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <ncurses.h>	
+#include <unistd.h>
 #include <signal.h>
 #include <pthread.h>
 #include <time.h>
@@ -57,17 +58,6 @@
 #include "notify.h"
 
 
-/* Variables for calendar */
-struct tm *ptrtime;
-time_t timer;
-char current_day[3];
-char current_month[3];
-char current_year[5];
-char current_time[15];
-char cal_date[30];
-int year, month, day;
-int sel_year, sel_month, sel_day;
-
 /* Variables for appointments */
 int number_apoints_inday;
 int number_events_inday;
@@ -79,26 +69,21 @@ int nb_tod = 0, hilt_tod = 0, sav_hilt_tod;
 int first_todo_onscreen = 1;
 char *saved_t_mesg;
 
-/* 
- * Variables to handle calcurse windows 
- */ 
+/* Variables to handle calcurse windows */
 int x_cal, y_cal, x_app, y_app, x_tod, y_tod, x_bar, y_bar, x_not, y_not;
-int nl_cal, nc_cal, nl_app, nc_app, nl_tod, nc_tod;
+int nl_app, nc_app, nl_tod, nc_tod;
 int nl_bar, nc_bar, nl_not, nc_not;
 int which_pan = 0;
 enum window_number {CALENDAR, APPOINTMENT, TODO};
 
 /* External functions */
-static void sigchld_handler(int sig);
-static void init_sighandler(struct sigaction *sa);
-static void get_date(void);
 static void init_vars(conf_t *conf);
 static void init_wins(void);
 static void reinit_wins(conf_t *conf);
 static void add_item(void);
 static void update_todo_panel(void);
-static void update_app_panel(int yeat, int month, int day);
-static void store_day(int year, int month, int day, bool day_changed);
+static void update_app_panel(void);
+static void store_day(date_t *, bool);
 static void get_screen_config(conf_t *conf);
 static void update_windows(int surrounded_window, conf_t *conf);
 static void general_config(conf_t *conf);
@@ -108,6 +93,34 @@ static void print_notify_options(WINDOW *win, int col);
 static void print_option_incolor(WINDOW *win, bool option, int pos_x, int pos_y);
 static void del_item(conf_t *conf);
 
+
+/* 
+ * Catch return values from children (user-defined notification commands).
+ * This is needed to avoid zombie processes running on system.
+ */
+static void
+sigchld_handler(int sig)
+{
+	while (waitpid(WAIT_MYPGRP, NULL, WNOHANG) > 0)
+		;
+}
+
+/* Signal handling init. */
+static void
+init_sighandler(struct sigaction *sa)
+{
+	sa->sa_handler = sigchld_handler;
+	sa->sa_flags = 0;
+	sigemptyset(&sa->sa_mask);
+
+	if (sigaction(SIGCHLD, sa, NULL) != 0) {
+		fprintf(stderr, 
+		    "FATAL ERROR: signal handling could not be initialized\n");
+		exit (EXIT_FAILURE);
+	}
+}
+
+
 /*
  * Calcurse  is  a text-based personal organizer which helps keeping track
  * of events and everyday tasks. It contains a calendar, a 'todo' list,
@@ -115,7 +128,8 @@ static void del_item(conf_t *conf);
  * and one can choose between different color schemes and layouts. 
  * All of the commands are documented within an online help system.
  */
-int main(int argc, char **argv)
+int 
+main(int argc, char **argv)
 {
 	conf_t conf;
 	int ch, background, foreground;
@@ -154,7 +168,7 @@ int main(int argc, char **argv)
 	cbreak();			/* control chars generate a signal */
 	noecho();			/* controls echoing of typed chars */
 	curs_set(0);			/* make cursor invisible */
-        get_date();
+        calendar_set_current_date();
 	notify_init_vars();
 	get_screen_config(&conf);
 	
@@ -207,8 +221,9 @@ int main(int argc, char **argv)
 	get_screen_config(&conf);
         reinit_wins(&conf);
         startup_screen(conf.skip_system_dialogs, no_data_file);
-	store_day(year, month, day, day_changed);
+	store_day(0, day_changed);
 	update_windows(CALENDAR, &conf);
+	calendar_start_date_thread();
 
 	/* User input */
 	for (;;) {
@@ -271,9 +286,8 @@ int main(int argc, char **argv)
 		case 'G':
 		case 'g':	/* Goto function */
 			erase_window_part(swin, 0, 0, nc_bar, nl_bar);
-			get_date();
-			goto_day(day, month, year, &sel_day, &sel_month, 
-			    &sel_year);
+			calendar_set_current_date();
+			calendar_change_day();
 			do_storage = true;
 			day_changed = true;
 			break;
@@ -356,8 +370,7 @@ int main(int argc, char **argv)
 		case 'E':
 		case 'e':	/* Edit an existing item */
 			if (which_pan == APPOINTMENT && hilt_app != 0)
-				day_edit_item(sel_year, sel_month, sel_day,
-				    hilt_app);
+				day_edit_item(hilt_app);
 			else if (which_pan == TODO && hilt_tod != 0)
 				todo_edit_item(hilt_tod);
 			do_storage = true;
@@ -372,15 +385,13 @@ int main(int argc, char **argv)
 		case 'R':
 		case 'r':
 			if (which_pan == APPOINTMENT && hilt_app != 0)
-				recur_repeat_item(sel_year, sel_month, 
-					sel_day, hilt_app);
+				recur_repeat_item(hilt_app);
 				do_storage = true;
 			break;
 
 		case '!':
 			if (which_pan == APPOINTMENT && hilt_app != 0)
-				apoint_switch_notify(sel_year, sel_month, 
-					sel_day, hilt_app);
+				apoint_switch_notify(hilt_app);
 				do_storage = true;
 			break;
 	
@@ -419,18 +430,7 @@ int main(int argc, char **argv)
 			if (which_pan == CALENDAR || ch == CTRL('L')) {
 				do_storage = true;
 				day_changed = true;
-				if ((sel_day == 31) & (sel_month == 12))
-				{ /* goto next year */
-					sel_day = 0;
-					sel_month = 1;
-					sel_year++;
-				}
-				if (sel_day == days[sel_month - 1])
-				{ /* goto next month */
-					sel_month = sel_month + 1;
-					sel_day = 1;
-				} else
-					sel_day = sel_day + 1;
+				calendar_move_right();
 			}
 			break;
 
@@ -441,18 +441,7 @@ int main(int argc, char **argv)
 			if (which_pan == CALENDAR || ch == CTRL('H')) {
 				do_storage = true;
 				day_changed = true;
-				if ((sel_day == 1) & (sel_month == 1))
-				{ /* goto previous year */
-					sel_day = 32;
-					sel_month = 12;
-					sel_year--;
-				}
-				if (sel_day == 1)
-				{ /* goto previous month */
-					sel_day = days[sel_month - 2];
-					sel_month = sel_month - 1;
-				} else
-					sel_day = sel_day - 1;
+				calendar_move_left();
 			}
 			break;
 
@@ -463,27 +452,15 @@ int main(int argc, char **argv)
 			if (which_pan == CALENDAR || ch == CTRL('K')) {
 				do_storage = true;
 				day_changed = true;
-				if ((sel_day <= 7) & (sel_month == 1))
-				{ /* goto previous year */
-					sel_day = 31 - (7 - sel_day);
-					sel_month = 12;
-					sel_year--;
-					break;
-				}
-				if (sel_day <= 7)
-				{ /* goto previous month */
-					sel_day = days[sel_month - 2] -
-					    	  (7 - sel_day);
-					sel_month = sel_month - 1;
-				} else /* previous week */
-					sel_day = sel_day - 7;
+				calendar_move_up();
 			} else {
-				if ((which_pan == APPOINTMENT) & (hilt_app > 1)) {
+				if ((which_pan == APPOINTMENT) && 
+				    (hilt_app > 1)) {
 					hilt_app--;
 					scroll_pad_up(hilt_app, 
-							number_events_inday); 
-				}
-				if ((which_pan == TODO) & (hilt_tod > 1)) {
+		    			    number_events_inday); 
+				} else if ((which_pan == TODO) && 
+				    (hilt_tod > 1)) {
 					hilt_tod--;
 					if (hilt_tod < first_todo_onscreen)
 						first_todo_onscreen--;
@@ -498,21 +475,7 @@ int main(int argc, char **argv)
 			if (which_pan == CALENDAR || ch == CTRL('J')) {
 				do_storage = true;
 				day_changed = true;
-				if ((sel_day > days[sel_month - 1] - 7) & 
-				   (sel_month == 12))
-				{ /* next year */
-					sel_day = (7 - (31 - sel_day));
-					sel_month = 1;
-					sel_year++;
-					break;
-				}
-				if (sel_day > days[sel_month - 1] - 7)
-				{ /* next month */
-					sel_day = (7 - (days[sel_month - 1] -
-					      	   sel_day));
-					sel_month = sel_month + 1;
-				} else /* next week */
-					sel_day = sel_day + 7;
+				calendar_move_down();
 			} else {
 				if ((which_pan == APPOINTMENT) && 
 				    (hilt_app < number_events_inday + 
@@ -532,7 +495,7 @@ int main(int argc, char **argv)
 			}
 			break;
 
-		case ('Q'):	/* Quit calcurse :-( */
+		case ('Q'):	/* Quit calcurse :( */
 		case ('q'):
 			if (conf.auto_save)
 				io_save_cal(&conf);
@@ -543,7 +506,8 @@ int main(int argc, char **argv)
 				if ( ch == 'y' ) {
 					endwin();
                                         erase();
-					return EXIT_SUCCESS;
+					calendar_stop_date_thread();
+					return (EXIT_SUCCESS);
 				} else {
 					erase_window_part(swin, 0, 0, nc_bar, nl_bar);
 					break;
@@ -551,13 +515,14 @@ int main(int argc, char **argv)
 			} else {
 				endwin();
                                 erase();
-				return EXIT_SUCCESS;
+				calendar_stop_date_thread();
+				return (EXIT_SUCCESS);
 			}
 			break;
 
 		}	/* end case statement */
 		if (do_storage) {
-			store_day(sel_year, sel_month, sel_day, day_changed);
+			store_day(calendar_get_slctd_day(), day_changed);
 			do_storage = !do_storage;
 			if (day_changed) {
 				sav_hilt_app = 0;
@@ -576,58 +541,32 @@ int main(int argc, char **argv)
  * EXTERNAL FUNCTIONS
  */
 
-/* 
- * Catch return values from children (user-defined notification commands).
- * This is needed to avoid zombie processes running on system.
- */
-void
-sigchld_handler(int sig)
-{
-	while (waitpid(WAIT_MYPGRP, NULL, WNOHANG) > 0)
-		;
-}
-
-/* Signal handling init. */
-void
-init_sighandler(struct sigaction *sa)
-{
-	sa->sa_handler = sigchld_handler;
-	sa->sa_flags = 0;
-	sigemptyset(&sa->sa_mask);
-
-	if (sigaction(SIGCHLD, sa, NULL) != 0) {
-		fprintf(stderr, 
-		    "FATAL ERROR: signal handling could not be initialized\n");
-		exit (EXIT_FAILURE);
-	}
-}
-
 /*
  * Variables init 
  */
-void init_vars(conf_t *conf)
+void 
+init_vars(conf_t *conf)
 {
-	// Variables for user configuration
+	/* Variables for user configuration */
 	conf->confirm_quit = true; 
 	conf->confirm_delete = true; 
 	conf->auto_save = true;
 	conf->skip_system_dialogs = false;
 	conf->skip_progress_bar = false;
-	conf->week_begins_on_monday = true;
 	conf->layout = 1;
 
-	// Pad structure for scrolling text inside the appointment panel
+	calendar_set_first_day_of_week(MONDAY);
+
+	/* Pad structure to scroll text inside the appointment panel */
 	apad = (struct pad_s *) malloc(sizeof(struct pad_s));
 	apad->length = 1;
 	apad->first_onscreen = 0;
 
-	// Attribute definitions for color and non-color terminals
+	/* Attribute definitions for color and non-color terminals */
 	custom_init_attr();
 	
-	// Start at the current date
-	sel_year = year;
-	sel_month = month;
-	sel_day = day;
+	/* Start at the current date */
+	calendar_init_slctd_day();
 }
 
 /* 
@@ -664,11 +603,9 @@ update_windows(int surrounded_window, conf_t *conf)
 		/* NOTREACHED */
 	}
 
-	update_app_panel(sel_year, sel_month, sel_day);	
+	update_app_panel();	
 	update_todo_panel();
-	update_cal_panel(cwin, nl_cal, nc_cal, sel_month,
-	    sel_year, sel_day, day, month, year, 
-	    conf->week_begins_on_monday);
+	calendar_update_panel(cwin);
 	status_bar(surrounded_window, nc_bar, nl_bar);
 	if (notify_bar()) 
 		notify_update_bar();
@@ -693,26 +630,24 @@ void get_screen_config(conf_t *conf)
 	} else {
 		nl_not = nc_not = y_not = x_not = 0;
 	}
-	nl_cal = 12;
-	nc_cal = 30;
 
 	if (conf->layout <= 4) { /* APPOINTMENT is the biggest panel */
-		nc_app = col - nc_cal;
+		nc_app = col - CALWIDTH;
 		nl_app = row - (nl_bar + nl_not);
-		nc_tod = nc_cal;
-		nl_tod = row - (nl_cal + nl_bar + nl_not);
+		nc_tod = CALWIDTH;
+		nl_tod = row - (CALHEIGHT + nl_bar + nl_not);
 	} else { /* TODO is the biggest panel */
-		nc_tod = col - nc_cal;
+		nc_tod = col - CALWIDTH;
 		nl_tod = row - (nl_bar + nl_not);
-		nc_app = nc_cal;
-		nl_app = row - (nl_cal + nl_bar + nl_not);
+		nc_app = CALWIDTH;
+		nl_app = row - (CALHEIGHT + nl_bar + nl_not);
 	}
 
 	/* defining the layout */
 	switch (conf->layout) {
 	case 1:
 		y_app = 0; x_app = 0; y_cal = 0;
-		x_tod = nc_app; y_tod = nl_cal; x_cal = nc_app;
+		x_tod = nc_app; y_tod = CALHEIGHT; x_cal = nc_app;
 		break;
 	case 2:
 		y_app = 0; x_app = 0; y_tod = 0;
@@ -720,15 +655,15 @@ void get_screen_config(conf_t *conf)
 		break;
 	case 3:
 		y_app = 0; x_tod = 0; x_cal = 0; y_cal = 0;
-		x_app = nc_cal; y_tod = nl_cal;
+		x_app = CALWIDTH; y_tod = CALHEIGHT;
 		break;
 	case 4:
 		y_app = 0; x_tod = 0; y_tod = 0; x_cal = 0;
-		x_app = nc_cal; y_cal = nl_tod;
+		x_app = CALWIDTH; y_cal = nl_tod;
 		break;
 	case 5:
 		y_tod = 0; x_tod = 0; y_cal = 0;
-		y_app = nl_cal; x_app = nc_tod; x_cal = nc_tod;
+		y_app = CALHEIGHT; x_app = nc_tod; x_cal = nc_tod;
 		break;
 	case 6:
 		y_tod = 0; x_tod = 0; y_app = 0;
@@ -736,28 +671,13 @@ void get_screen_config(conf_t *conf)
 		break;
 	case 7:
 		y_tod = 0; x_app = 0; x_cal = 0; y_cal = 0;
-		x_tod = nc_cal; y_app = nl_cal;
+		x_tod = CALWIDTH; y_app = CALHEIGHT;
 		break;
 	case 8:
 		y_tod = 0; x_app = 0; x_cal = 0; y_app = 0;
-		x_tod = nc_cal; y_cal = nl_app;
+		x_tod = CALWIDTH; y_cal = nl_app;
 		break;
 	}
-}
-
-/* Get current date */
-void get_date(void)
-{
-	timer = time(NULL);
-	ptrtime = localtime(&timer);
-	strftime(current_time, 15, "%H:%M%p", ptrtime);
-	strftime(cal_date, 30, "%a %B %Y", ptrtime);
-	strftime(current_day, 3, "%d", ptrtime);
-	strftime(current_month, 3, "%m", ptrtime);
-	strftime(current_year, 5, "%Y", ptrtime);
-	month = atoi(current_month);
-	day = atoi(current_day);
-	year = atoi(current_year);
 }
 
 /* Create all the windows */
@@ -769,7 +689,7 @@ void init_wins(void)
 	 * Create the three main windows plus the status bar and the pad used to
 	 * display appointments and event. 
 	 */
-	cwin = newwin(nl_cal, nc_cal, y_cal, x_cal);
+	cwin = newwin(CALHEIGHT, CALWIDTH, y_cal, x_cal);
 	snprintf(label, BUFSIZ, _("Calendar"));
 	win_show(cwin, label);
 	awin = newwin(nl_app, nc_app, y_app, x_app);
@@ -844,8 +764,7 @@ void general_config(conf_t *conf)
 				!conf->skip_progress_bar;
 			break;
                 case '6':
-                        conf->week_begins_on_monday = 
-				!conf->week_begins_on_monday;
+			calendar_change_first_day_of_week();
                         break;
 		}
 		print_general_options(conf_win, conf);
@@ -1003,7 +922,7 @@ void print_general_options(WINDOW *win, conf_t *conf)
 		 _("(if set to YES, progress bar will not be displayed when saving data)"));
 
 	mvwprintw(win, y_pos + 15, x_pos, "[6] %s      ", option6);
-	print_option_incolor(win, conf->week_begins_on_monday , y_pos + 15,
+	print_option_incolor(win, calendar_week_begins_on_monday(), y_pos + 15,
 			     x_pos + 4 + strlen(option6));
 	mvwprintw(win, y_pos + 16, x_pos,
                   _("(if set to YES, monday is the first day of the week, else it is sunday)"));
@@ -1141,7 +1060,7 @@ void del_item(conf_t *conf)
 	
 	/* delete an appointment */
 	if (which_pan == APPOINTMENT && hilt_app != 0) {
-		date = date2sec(sel_year, sel_month, sel_day, 0, 0);
+		date = calendar_get_slctd_day_sec();
 		
 		if (conf->confirm_delete) {
 			status_mesg(del_app_str, choices);		
@@ -1291,15 +1210,16 @@ void add_item(void)
 	if (getstring(swin, item_mesg, BUFSIZ, 0, 1) == 
 		GETSTRING_VALID) {
                 if (is_appointment) {
-			apoint_start = date2sec(sel_year, sel_month, sel_day,
-			    heures, minutes);
+			apoint_start = 
+			    date2sec(*calendar_get_slctd_day(), heures, 
+			    minutes);
 			apoint_pointeur = apoint_new(item_mesg, apoint_start,
 			    min2sec(apoint_duration), 0L);
 			if (notify_bar()) 
 				notify_check_added(item_mesg, apoint_start, 0L);
                 } else 
-                        event_pointeur = event_new(item_mesg, date2sec(
-			    sel_year, sel_month, sel_day, 12, 0), Id);
+                        event_pointeur = event_new(item_mesg, 
+			    date2sec(*calendar_get_slctd_day(), 12, 0), Id);
 
 		if (hilt_app == 0) 
 			hilt_app++;
@@ -1355,7 +1275,8 @@ void update_todo_panel(void)
 }
 
 /* Updates the Appointment panel */
-void update_app_panel(int year, int month, int day)
+void 
+update_app_panel(void)
 {
 	int title_xpos;
 	int bordr = 1;
@@ -1363,18 +1284,22 @@ void update_app_panel(int year, int month, int day)
 	int app_width = nc_app - bordr;
 	int app_length = nl_app - bordr - title_lines;
 	long date;
+	date_t current_date, slctd_date;
 
 	/* variable inits */
-	title_xpos = nc_app - (strlen(_(monthnames[sel_month - 1])) + 11);
-	if (sel_day < 10) title_xpos++;
-	date = date2sec(year, month, day, 0, 0);
+	slctd_date = *calendar_get_slctd_day();
+	title_xpos = nc_app - (strlen(_(monthnames[slctd_date.mm - 1])) + 11);
+	if (slctd_date.dd < 10) 
+		title_xpos++;
+	calendar_store_current_date(&current_date);
+	date = date2sec(current_date, 0, 0);
 	day_write_pad(date, app_width, app_length, hilt_app);
 
 	/* Print current date in the top right window corner. */
 	erase_window_part(awin, 1, title_lines, nc_app - 2, nl_app - 2);
 	custom_apply_attr(awin, ATTR_HIGHEST);
 	mvwprintw(awin, title_lines, title_xpos, "%s %d, %d",
-			 _(monthnames[sel_month - 1]), sel_day, sel_year);
+	    _(monthnames[slctd_date.mm - 1]), slctd_date.dd, slctd_date.yyyy);
 	custom_remove_attr(awin, ATTR_HIGHEST);
 	
 	/* Draw the scrollbar if necessary. */
@@ -1399,13 +1324,21 @@ void update_app_panel(int year, int month, int day)
 
 /*
  * Store the events and appointments for the selected day, and write
- * those items in a pad.
- * This is useful to speed up the appointment panel update.
+ * those items in a pad. If selected day is null, then store items for current
+ * day. This is useful to speed up the appointment panel update.
  */
-void store_day(int year, int month, int day, bool day_changed)
+void 
+store_day(date_t *slctd_date, bool day_changed)
 {
 	long date;
-	date = date2sec(year, month, day, 0, 0);
+	date_t day;
+
+	if (slctd_date) 
+		day = *slctd_date;
+	else
+		calendar_store_current_date(&day);
+
+	date = date2sec(day, 0, 0);
 
 	/* Inits */
 	if (apad->length != 0)
@@ -1416,6 +1349,7 @@ void store_day(int year, int month, int day, bool day_changed)
 		&number_events_inday, &number_apoints_inday);
 
 	/* Create the new pad with its new length. */
-	if (day_changed) apad->first_onscreen = 0;
+	if (day_changed) 
+		apad->first_onscreen = 0;
 	apad->ptrwin = newpad(apad->length, apad->width);
 }
