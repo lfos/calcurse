@@ -1,4 +1,4 @@
-/*	$calcurse: calendar.c,v 1.7 2007/03/10 15:54:59 culot Exp $	*/
+/*	$calcurse: calendar.c,v 1.8 2007/07/01 17:48:50 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -25,9 +25,12 @@
  */
 
 #include <ncurses.h>
+#include <pthread.h>
+#include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
+#include <stdbool.h>
 #include <time.h>
 
 #include "i18n.h"
@@ -39,16 +42,165 @@
 #include "vars.h"
 #include "utils.h"
 
-static unsigned months_to_days(unsigned);
-static long years_to_days(unsigned);
+static date_t		today, slctd_day;
+static bool		week_begins_on_monday;
+static pthread_mutex_t 	date_thread_mutex = PTHREAD_MUTEX_INITIALIZER;
+static pthread_t 	calendar_t_date;
 
-  /* Load the calendar */
-void
-update_cal_panel(WINDOW *cwin, int nl_cal,
-		 int nc_cal, int sel_month, int sel_year, int sel_day,
-		 int day, int month, int year,
-                 bool monday_first)
+
+/* Thread needed to update current date in calendar. */
+static void *
+calendar_date_thread(void *arg)
 {
+	time_t now, tomorrow;
+
+	for (;;) {
+		tomorrow = (time_t)(get_today() + DAYINSEC);
+
+		while ((now = time(NULL)) < tomorrow) {
+			sleep(tomorrow - now);
+		}
+
+		calendar_set_current_date();
+		calendar_update_panel(cwin);
+	}
+
+	pthread_exit((void*) 0);
+}
+
+/* Launch the calendar date thread. */
+void 
+calendar_start_date_thread(void) 
+{
+	pthread_create(&calendar_t_date, NULL, calendar_date_thread, NULL);
+	return;
+}
+
+/* Stop the calendar date thread. */
+void 
+calendar_stop_date_thread(void)
+{
+	pthread_cancel(calendar_t_date);
+	return;
+}
+
+/* Set static variable today to current date */
+void 
+calendar_set_current_date(void)
+{
+	time_t	  timer;
+	struct tm *tm;
+
+	timer = time(NULL);
+	tm = localtime(&timer);
+
+	pthread_mutex_lock(&date_thread_mutex);
+	today.dd = tm->tm_mday;
+	today.mm = tm->tm_mon + 1;
+	today.yyyy = tm->tm_year + 1900;
+	pthread_mutex_unlock(&date_thread_mutex);
+}
+
+/* Needed to display sunday or monday as the first day of week in calendar. */
+void
+calendar_set_first_day_of_week(wday_t first_day)
+{
+	switch (first_day) {
+	case SUNDAY:
+		week_begins_on_monday = false;
+		break;
+	case MONDAY:
+		week_begins_on_monday = true;
+		break;
+	default:
+		fputs(_("ERROR in calendar_set_first_day_of_week\n"), stderr);
+		week_begins_on_monday = false; 
+		/* NOTREACHED */
+	}
+}
+
+/* Swap first day of week in calendar. */
+void
+calendar_change_first_day_of_week(void)
+{
+	week_begins_on_monday = !week_begins_on_monday;
+}
+
+/* Return true if week begins on monday, false otherwise. */
+bool
+calendar_week_begins_on_monday(void)
+{
+	return (week_begins_on_monday);
+}
+
+/* Fill in the given variable with the current date. */
+void
+calendar_store_current_date(date_t *date)
+{
+	pthread_mutex_lock(&date_thread_mutex);
+	*date = today;
+	pthread_mutex_unlock(&date_thread_mutex);
+}
+
+/* This is to start at the current date in calendar. */
+void
+calendar_init_slctd_day(void)
+{
+	calendar_store_current_date(&slctd_day);
+}
+
+/* Return the selected day in calendar */
+date_t *
+calendar_get_slctd_day(void)
+{
+	return (&slctd_day);
+}
+
+/* Returned value represents the selected day in calendar (in seconds) */
+long
+calendar_get_slctd_day_sec(void)
+{
+	return (date2sec(slctd_day, 0, 0));
+}
+
+static int 
+isBissextile(unsigned year)
+{
+	return (year % 400 == 0 || (year % 4 == 0 && year % 100 != 0));
+}
+
+static unsigned 
+months_to_days(unsigned month)
+{
+	return ((month * 3057 - 3007) / 100);
+}
+
+
+static long 
+years_to_days(unsigned year)
+{
+	return (year * 365L + year / 4 - year / 100 + year / 400);
+}
+
+static long 
+ymd_to_scalar(unsigned year, unsigned month, unsigned day)
+{
+	long scalar;
+
+	scalar = day + months_to_days(month);
+	if (month > 2)
+		scalar -= isBissextile(year) ? 1 : 2;
+	year--;
+	scalar += years_to_days(year);
+
+	return (scalar);
+}
+
+/* Function used to display the calendar panel. */
+void
+calendar_update_panel(WINDOW *cwin)
+{
+	date_t current_day, check_day;
 	int c_day, c_day_1, day_1_sav, numdays, j;
 	unsigned yr, mo;
 	int ofs_x, ofs_y;
@@ -56,142 +208,128 @@ update_cal_panel(WINDOW *cwin, int nl_cal,
 	int title_lines = 3;
         int sunday_first = 0;
 
-	// Inits
-	erase_window_part(cwin, 1, title_lines, nc_cal - 2, nl_cal - 2);
-	mo = sel_month;
-	yr = sel_year;
-        if (!monday_first) sunday_first = 1;
+	/* inits */
+	calendar_store_current_date(&current_day);
+	erase_window_part(cwin, 1, title_lines, CALWIDTH - 2, CALHEIGHT - 2);
+	mo = slctd_day.mm;
+	yr = slctd_day.yyyy;
+        if (!calendar_week_begins_on_monday()) 
+		sunday_first = 1;
 	
-	// Offset for centering calendar in window
-	ofs_y = 2 + (nl_cal - 9) / 2;
-	ofs_x = (nc_cal - 27) / 2;
+	/* offset for centering calendar in window */
+	ofs_y = 2 + (CALHEIGHT - 9) / 2;
+	ofs_x = (CALWIDTH - 27) / 2;
 
-
-	//checking the number of days in february
+	/* checking the number of days in february */
 	numdays = days[mo - 1];
 	if (2 == mo && isBissextile(yr))
 		++numdays;
 
-	//the first calendar day will be monday or sunday, depending on the
-        //value of week_begins_on_monday
-	c_day_1 = (int) ((ymd_to_scalar(yr, mo, 1 + sunday_first) 
-                          - (long) 1) % 7L);
+	/*
+	 * the first calendar day will be monday or sunday, depending on
+         * 'week_begins_on_monday' value
+	 */
+	c_day_1 = 
+	    (int)((ymd_to_scalar(yr, mo, 1 + sunday_first) - (long)1) % 7L);
 
-	//Write the current month and year on top of the calendar
+	/* Write the current month and year on top of the calendar */
 	custom_apply_attr(cwin, ATTR_HIGH);
 	mvwprintw(cwin, ofs_y,
-		 (nc_cal - (strlen(_(monthnames[mo - 1])) + 5)) / 2,
-		 "%s %d", _(monthnames[mo - 1]), sel_year);
+	    (CALWIDTH - (strlen(_(monthnames[mo - 1])) + 5)) / 2,
+	    "%s %d", _(monthnames[mo - 1]), slctd_day.yyyy);
 	custom_remove_attr(cwin, ATTR_HIGH);
 	++ofs_y;
 
-	//prints the days, with regards to the first day of the week
+	/* print the days, with regards to the first day of the week */
 	custom_apply_attr(cwin, ATTR_HIGH);
 	for (j = 0; j < 7; j++) {
 		mvwprintw(cwin, ofs_y, ofs_x + 4 * j, "%s", 
-                          _(daynames[1 + j - sunday_first]));
+		    _(daynames[1 + j - sunday_first]));
 	}
 	custom_remove_attr(cwin, ATTR_HIGH);
 
 	day_1_sav = (c_day_1 + 1) * 3 + c_day_1 - 7;
 
 	for (c_day = 1; c_day <= numdays; ++c_day, ++c_day_1, c_day_1 %= 7) {
-		//check if the day contains an event or an appointment
-		item_this_day = day_check_if_item(sel_year, sel_month, c_day);
+		check_day.dd = c_day;
+		check_day.mm = slctd_day.mm;
+		check_day.yyyy = slctd_day.yyyy;
+
+		/* check if the day contains an event or an appointment */
+		item_this_day = 
+		    day_check_if_item(check_day);
 
 		/* Go to next line, the week is over. */
 		if (!c_day_1 && 1 != c_day) {	
 			++ofs_y;
 			ofs_x = 2 - day_1_sav - 4 * c_day - 1;
 		}
+
 		/* This is today, so print it in yellow. */
-		if (c_day == day && month == sel_month 
-				&& year == sel_year && day != sel_day)
-		{
+		if (c_day == current_day.dd && current_day.mm == slctd_day.mm 
+    		    && current_day.yyyy == slctd_day.yyyy && 
+		    current_day.dd != slctd_day.dd) {
+
 			custom_apply_attr(cwin, ATTR_LOWEST);
 			mvwprintw(cwin, ofs_y + 1,
-				 ofs_x + day_1_sav + 4 * c_day + 1, "%2d",
-				 c_day);
+			    ofs_x + day_1_sav + 4 * c_day + 1, "%2d", c_day);
 			custom_remove_attr(cwin, ATTR_LOWEST);
-		} else if (c_day == sel_day && ( (day != sel_day) | 
-				(month != sel_month) | (year != sel_year) ))	
+
+		} else if (c_day == slctd_day.dd && 
+		    ( (current_day.dd != slctd_day.dd) || 
+		      (current_day.mm != slctd_day.mm) 
+		      || (current_day.yyyy != slctd_day.yyyy))) {
+
 			/* This is the selected day, print it in red. */
-		{
 			custom_apply_attr(cwin, ATTR_MIDDLE);
 			mvwprintw(cwin, ofs_y + 1,
-				 ofs_x + day_1_sav + 4 * c_day + 1, "%2d",
-				 c_day);
+		   	    ofs_x + day_1_sav + 4 * c_day + 1, "%2d", c_day);
 			custom_remove_attr(cwin, ATTR_MIDDLE);
-		} else if (c_day == sel_day && day == sel_day && month == sel_month && year == sel_year)	//today is the selected day
-		{
+
+		} else if (c_day == slctd_day.dd && 
+		    current_day.dd == slctd_day.dd && 
+		    current_day.mm == slctd_day.mm && 
+		    current_day.yyyy == slctd_day.yyyy) {
+			
+			/* today is the selected day */
 			custom_apply_attr(cwin, ATTR_MIDDLE);
 			mvwprintw(cwin, ofs_y + 1,
-				 ofs_x + day_1_sav + 4 * c_day + 1, "%2d",
-				 c_day);
+		   	    ofs_x + day_1_sav + 4 * c_day + 1, "%2d", c_day);
 			custom_remove_attr(cwin, ATTR_MIDDLE);
+
 		} else if (item_this_day) {
 			custom_apply_attr(cwin, ATTR_LOW);
 			mvwprintw(cwin, ofs_y + 1,
-				 ofs_x + day_1_sav + 4 * c_day + 1, "%2d",
-				 c_day);
+		   	    ofs_x + day_1_sav + 4 * c_day + 1, "%2d", c_day);
 			custom_remove_attr(cwin, ATTR_LOW);
-		}
-
-		else		// otherwise, print normal days in black
+		} else		
+			/* otherwise, print normal days in black */
 			mvwprintw(cwin, ofs_y + 1,
-				 ofs_x + day_1_sav + 4 * c_day + 1, "%2d",
-				 c_day);
+			    ofs_x + day_1_sav + 4 * c_day + 1, "%2d", c_day);
 
 	}
 	wnoutrefresh(cwin);
-}
-
-int isBissextile(unsigned annee)
-{
-	return annee % 400 == 0 || (annee % 4 == 0 && annee % 100 != 0);
-}
-
-// convertion functions
-unsigned months_to_days(unsigned mois)
-{
-	return (mois * 3057 - 3007) / 100;
-}
-
-
-long years_to_days(unsigned annee)
-{
-	return annee * 365L + annee / 4 - annee / 100 + annee / 400;
-}
-
-long ymd_to_scalar(unsigned annee, unsigned mois, unsigned jour)
-{
-	long scalaire;
-	scalaire = jour + months_to_days(mois);
-	if (mois > 2)
-		scalaire -= isBissextile(annee) ? 1 : 2;
-	annee--;
-	scalaire += years_to_days(annee);
-	return scalaire;
 }
 
 /* 
  * Ask for a date to jump to, then check the correctness of that date
  * and jump to it.
  * If the entered date is empty, automatically jump to the current date.
- * day, month, year are the current day given to that routine, and
- * sel_day, sel_month and sel_year represent the day given back.
+ * today is the current day given to that routine, and slctd_day is updated 
+ * with the newly selected date.
  */
 void
-goto_day(int day, int month, int year, int *sel_day, int *sel_month, 
-    int *sel_year)
+calendar_change_day(void)
 {
 #define LDAY 11
 	char selected_day[LDAY] = "";
+	date_t today;
 	int dday, dmonth, dyear;
 	int wrong_day = 1;
 	char *mesg_line1 = _("The day you entered is not valid");
 	char *mesg_line2 = _("Press [ENTER] to continue");
-	char *request_date = _("Enter the day to go to [ENTER for today] : mm/dd/yyyy");
+	char *request_date = 
+	    _("Enter the day to go to [ENTER for today] : mm/dd/yyyy");
 
 	while (wrong_day) {
 		status_mesg(request_date, "");
@@ -199,36 +337,106 @@ goto_day(int day, int month, int year, int *sel_day, int *sel_month,
 			return;
 		else {
 			if (strlen(selected_day) == 0) {
-			// go to today
+				calendar_store_current_date(&today);
+
+				/* go to today */
 				wrong_day = 0;
-				*sel_day = day;
-				*sel_month = month;
-				*sel_year = year;
+				slctd_day.dd = today.dd;
+				slctd_day.mm = today.mm;
+				slctd_day.yyyy = today.yyyy;
+
 			} else if (strlen(selected_day) != LDAY - 1) {
+
 				wrong_day = 1;	
+
 			} else {
+
 				sscanf(selected_day, "%u/%u/%u", 
-					&dmonth, &dday, &dyear);
+			    	    &dmonth, &dday, &dyear);
 				wrong_day = 0;
-				//check if the entered day is correct
-				if ((dday <= 0) | (dday >= 32))
+
+				/* basic check on entered date */
+				if ((dday <= 0) || (dday >= 32) || 
+				    (dmonth <= 0) || (dmonth >= 13) || 
+				    (dyear <= 0) || (dyear >= 3000))
 					wrong_day = 1;
-				if ((dmonth <= 0) | (dmonth >= 13))
-					wrong_day = 1;
-				if ((dyear <= 0) | (dyear >= 3000))
-					wrong_day = 1;
-				//go to chosen day
+
+				/* go to chosen day */
 				if (wrong_day != 1) {
-					*sel_day = dday;
-					*sel_month = dmonth;
-					*sel_year = dyear;
+					slctd_day.dd = dday;
+					slctd_day.mm = dmonth;
+					slctd_day.yyyy = dyear;
 				} 
 			}
+
 			if (wrong_day) {
 				status_mesg(mesg_line1, mesg_line2);
 				wgetch(swin);
 			}
 		}
 	}
+
 	return;
+}
+
+/* Move to next day, next month or next year in calendar. */
+void
+calendar_move_right(void)
+{
+	if ((slctd_day.dd == 31) && (slctd_day.mm == 12)) {
+		slctd_day.dd = 0;
+		slctd_day.mm = 1;
+		slctd_day.yyyy++; 
+	} else if (slctd_day.dd == days[slctd_day.mm - 1]) { 
+		slctd_day.mm++;
+		slctd_day.dd = 1;
+	} else
+		slctd_day.dd++;
+}
+
+/* Move to previous day, previous month or previous year in calendar. */
+void
+calendar_move_left(void)
+{
+	if ((slctd_day.dd == 1) && (slctd_day.mm == 1)) { 
+		slctd_day.dd = 32;
+		slctd_day.mm = 12;
+		slctd_day.yyyy--;
+	} else if (slctd_day.dd == 1) { 
+		slctd_day.dd = days[slctd_day.mm - 2];
+		slctd_day.mm--;
+	} else
+		slctd_day.dd--;
+}
+
+/* Move to previous week, previous month or previous year in calendar. */
+void
+calendar_move_up(void)
+{
+	if ((slctd_day.dd <= 7) && (slctd_day.mm == 1)) { 
+		slctd_day.dd = 31 - (7 - slctd_day.dd);
+		slctd_day.mm = 12;
+		slctd_day.yyyy--;
+	} else if (slctd_day.dd <= 7) { 
+		slctd_day.dd = days[slctd_day.mm - 2] -
+		    (7 - slctd_day.dd);
+		slctd_day.mm--;
+	} else 
+		slctd_day.dd -= 7;
+}
+
+/* Move to next week, next month or next year in calendar. */
+void
+calendar_move_down(void)
+{
+	if ((slctd_day.dd > days[slctd_day.mm - 1] - 7)
+	    && (slctd_day.mm == 12)) { 
+		slctd_day.dd = (7 - (31 - slctd_day.dd));
+		slctd_day.mm = 1;
+		slctd_day.yyyy++;
+	} else if (slctd_day.dd > days[slctd_day.mm - 1] - 7) { 
+		slctd_day.dd = (7 - (days[slctd_day.mm - 1] - slctd_day.dd));
+		slctd_day.mm++;
+	} else 
+		slctd_day.dd += 7;
 }
