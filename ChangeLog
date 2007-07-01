@@ -1,3 +1,21 @@
+01 Jul 2007:
+	bugfix: calendar_date_thread implemented to check for day changes
+		(thanks Jupp for reporting the problem)
+	code cleanup: global variables today and slctd_day moved to calendar.c
+		and date_t type created
+	several routines created in calendar.c: calendar_store_current_date(),
+		calendar_get_slctd_day(), calendar_get_slctd_day_sec(),
+		calendar_init_slctd_day(), calendar_move_up(),
+		calendar_move_down(), calendar_move_left(),
+		calendar_move_right(), calendar_set_first_day_of_week(),
+		calendar_change_first_day_of_week(),
+		calendar_week_begins_on_monday()
+
+12 Jun 2007:
+	Thread implemented to regularly check for day changes (thanks Jupp for
+	reporting the problem) 
+	code cleanup in get_date() to get rid of global variables
+
 22 May 2007: 1.8
 	NEWS file updated
 	html manuals updated
