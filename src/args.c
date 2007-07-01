@@ -1,4 +1,4 @@
-/*	$calcurse: args.c,v 1.19 2007/05/06 13:24:45 culot Exp $	*/
+/*	$calcurse: args.c,v 1.20 2007/07/01 17:55:39 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -184,7 +184,9 @@ parse_args(int argc, char **argv, conf_t *conf)
 				date_arg(ddate, add_line);
 				non_interactive = 1;
 			} else if (aflag) {
-				app_found = app_arg(add_line,0,0,0,0);
+				date_t day;
+				day.dd = day.mm = day.yyyy = 0;
+				app_found = app_arg(add_line,day,0);
 				non_interactive = 1;
 			}
 		} else {
@@ -295,7 +297,7 @@ next_arg(void)
 	next_app = (struct notify_app_s *) malloc(sizeof(struct notify_app_s));
 	next_app->time = current_time + DAYINSEC;
 	next_app->got_app = 0;
-	next_app = recur_apoint_check_next(next_app, current_time, today());
+	next_app = recur_apoint_check_next(next_app, current_time, get_today());
 	next_app = apoint_check_next(next_app, current_time);
 	time_left = next_app->time - current_time;
 	if (time_left > 0 && time_left < DAYINSEC) {
@@ -312,10 +314,10 @@ next_arg(void)
 
 /*
  * Print appointments for given day and exit.
- * If no year, month, and day is given, the given date is used.
+ * If no day is given, the given date is used.
  * If there is also no date given, current date is considered.
  */
-int app_arg(int add_line, int year, int month, int day, long date)
+int app_arg(int add_line, date_t day, long date)
 {
 	struct recur_event_s *re;
 	struct event_s *j;
@@ -327,9 +329,10 @@ int app_arg(int add_line, int year, int month, int day, long date)
 	char apoint_start_time[100];
 	char apoint_end_time[100];
 	
-	if (date == 0) {
-		today = get_sec_date(year, month, day);
-	} else today = date;
+	if (date == 0)
+		today = get_sec_date(day);
+	else 
+		today = date;
 
 	/* 
 	 * Calculate and print the selected date if there is an event for
@@ -428,12 +431,16 @@ int app_arg(int add_line, int year, int month, int day, long date)
 void date_arg(char *ddate, int add_line)
 {
 	int i;
-	int year = 0, month = 0, day = 0;
+	date_t day;
 	int numdays = 0, num_digit = 0;
 	int arg_len = 0, app_found = 0;
 	int date_valid = 0;
 	long today, ind;
 	int sec_in_day = 86400;
+
+	day.dd = 0;
+	day.mm = 0;
+	day.yyyy = 0;
 
 	/* 
 	 * Check (with the argument length) if a date or a number of days 
@@ -442,31 +449,36 @@ void date_arg(char *ddate, int add_line)
 	arg_len = strlen(ddate);
 	if (arg_len <= 4) { 		/* a number of days was entered */
 		for (i = 0; i <= arg_len-1; i++) { 
-			if (isdigit(ddate[i])) num_digit++;	
+			if (isdigit(ddate[i])) 
+				num_digit++;	
 		}
-		if (num_digit == arg_len) numdays = atoi(ddate);
+		if (num_digit == arg_len) 
+			numdays = atoi(ddate);
 
 		/* 
 		 * Get current date, and print appointments for each day
  		 * in the chosen interval. app_found and add_line are used
  		 * to format the output correctly. 
 		 */
-		today = get_sec_date(year, month, day);
+		today = get_sec_date(day);
 		ind = today;
 		for (i = 0; i < numdays; i++) {
-			app_found = app_arg(add_line, 0, 0, 0, ind);
+			app_found = app_arg(add_line, day, ind);
 			add_line = app_found;
 			ind = ind + sec_in_day;
 		}
 	} else {			/* a date was entered */
 		date_valid = check_date(ddate);
 		if (date_valid) {
-			sscanf(ddate, "%d / %d / %d", &month, &day, &year);
-			app_found = app_arg(add_line, year, month, day, 0);
+			sscanf(ddate, "%d / %d / %d", &day.mm, &day.dd, &day.yyyy);
+			app_found = app_arg(add_line, day, 0);
 		} else {
-			fputs(_("Argument to the '-d' flag is not valid\n"),stdout);
-			fputs(_("Possible argument formats are : 'mm/dd/yyyy' or 'n'\n"),stdout);
-			fputs(_("\nFor more information, type '?' from within Calcurse, or read the manpage.\n"),stdout);
+			fputs(_("Argument to the '-d' flag is not valid\n"),
+			    stdout);
+			fputs(_("Possible argument formats are : 'mm/dd/yyyy' or 'n'\n"),
+			    stdout);
+			fputs(_("\nFor more information, type '?' from within Calcurse, or read the manpage.\n"),
+			    stdout);
 			fputs
 	    (_("Mail bug reports and suggestions to <calcurse@culot.org>.\n"),
 	     stdout);
