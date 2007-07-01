@@ -1,4 +1,4 @@
-/*	$calcurse: day.c,v 1.22 2007/05/06 13:33:06 culot Exp $	*/
+/*	$calcurse: day.c,v 1.23 2007/07/01 17:52:45 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -359,12 +359,12 @@ void day_popup_item(void)
  * Need to know if there is an item for the current selected day inside
  * calendar. This is used to put the correct colors inside calendar panel.
  */
- int day_check_if_item(int year, int month, int day) {
+ int day_check_if_item(date_t day) {
 	struct recur_event_s  *re;
 	recur_apoint_llist_node_t *ra;
 	struct event_s *e;
 	apoint_llist_node_t *a;
-	const long date = date2sec(year, month, day, 0, 0);
+	const long date = date2sec(day, 0, 0);
 
 	for (re = recur_elist; re != 0; re = re->next)
 		if (recur_item_inday(re->day, re->exc, re->rpt->type, 
@@ -398,7 +398,7 @@ void day_popup_item(void)
 
 /* Edit an already existing item. */
 void 
-day_edit_item(int year, int month, int day, int item_num)
+day_edit_item(int item_num)
 {
 #define STRT	'1'
 #define END	'2'
@@ -410,9 +410,9 @@ day_edit_item(int year, int month, int day, int item_num)
 	struct rpt_s *rpt;
 	struct tm *lt;
 	time_t t;
+	date_t new_date;
 	recur_apoint_llist_node_t *ra, *ra_new;
-	long newtime = 0;
-	const long date = date2sec(year, month, day, 0, 0);
+	long date, newtime = 0;
 	int cancel, ch = 0, valid_date = 0, newfreq = 0, date_entered = 0;
 	int newmonth, newday, newyear;
 	unsigned hr, mn;
@@ -442,6 +442,7 @@ day_edit_item(int year, int month, int day, int item_num)
 	_("Enter the new ending date: [mm/dd/yyyy] or '0'");
 
 	p = day_get_item(item_num);
+	date = calendar_get_slctd_day_sec();
 
 	switch (p->type) {
 	case RECUR_EVNT:
@@ -559,8 +560,10 @@ day_edit_item(int year, int month, int day, int item_num)
 					sscanf(timestr, "%d / %d / %d", 
 						&newmonth, &newday, &newyear);	
 					t = p->start; lt = localtime(&t);
-					rpt->until = date2sec(
-						newyear, newmonth, newday, 
+					new_date.dd = newday;
+					new_date.mm = newmonth;
+					new_date.yyyy = newyear;
+					rpt->until = date2sec(new_date,
 						lt->tm_hour, lt->tm_min);
 					if (rpt->until < p->start) {
 						status_mesg(error_msg,

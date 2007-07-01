@@ -1,4 +1,4 @@
-/*	$calcurse: day.h,v 1.11 2007/04/04 19:41:27 culot Exp $	*/
+/*	$calcurse: day.h,v 1.12 2007/07/01 17:52:45 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -29,7 +29,7 @@
 
 #include <stdio.h>
 
-#include "vars.h"
+#include "calendar.h"
 #include "apoint.h"
 
 #define MAX_TYPES	4
@@ -58,23 +58,22 @@ struct day_saved_item_s {
 	char *mesg;
 };
 
-int day_store_items(long date, int *pnb_events, int *pnb_apoints);
-void day_free_list(void);
-int day_store_recur_events(long date);
-int day_store_events(long date);
-int day_store_recur_apoints(long date);
-int day_store_apoints(long date);
-struct day_item_s *day_add_event(int type, char *mesg, long day, int id);
-struct day_item_s *day_add_apoint(int type, char *mesg, long start, long dur,
-    char state, int real_pos);
-void day_write_pad(long date, int width, int length, int incolor);
-apoint_llist_node_t *day_item_s2apoint_s(struct day_item_s *p);
-void day_popup_item(void);
-int day_check_if_item(int year, int month, int day);
-void day_edit_item(int year, int month, int day, int item_num);
-char *day_edit_time(long time);
-int day_erase_item(long date, int item_number, int force_erase);
-struct day_item_s *day_get_item(int item_number);
-int day_item_nb(long date, int day_num, int type);
+int 			day_store_items(long, int *, int *);
+void 			day_free_list(void);
+int 			day_store_recur_events(long);
+int 			day_store_events(long);
+int 			day_store_recur_apoints(long);
+int 			day_store_apoints(long);
+struct day_item_s      *day_add_event(int, char *, long, int);
+struct day_item_s      *day_add_apoint(int, char *, long, long, char, int);
+void 			day_write_pad(long, int, int, int);
+apoint_llist_node_t    *day_item_s2apoint_s(struct day_item_s *);
+void 			day_popup_item(void);
+int	 		day_check_if_item(date_t);
+void 			day_edit_item(int);
+char 		       *day_edit_time(long);
+int 			day_erase_item(long, int, int);
+struct day_item_s      *day_get_item(int);
+int 			day_item_nb(long, int, int);
 
 #endif /* CALCURSE_DAY_H */
