@@ -1,4 +1,4 @@
-/*	$calcurse: args.c,v 1.20 2007/07/01 17:55:39 culot Exp $	*/
+/*	$calcurse: args.c,v 1.21 2007/07/20 18:26:16 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -69,6 +69,7 @@ parse_args(int argc, char **argv, conf_t *conf)
 	int non_interactive = 0, multiple_flag = 0, load_data = 0;
 	int no_file = 1;
 	char *ddate = "", *cfile = NULL;
+	window_t win;
 
 	static char *optstr = "hvnaxt::d:c:";
 
@@ -167,7 +168,9 @@ parse_args(int argc, char **argv, conf_t *conf)
 			}
 			if (xflag) {
 				notify_init_vars();
-				custom_load_conf(conf, 0, 0, 0);
+				win.h = 0;
+				win.w = 0;
+				custom_load_conf(conf, 0, &win);
 				io_export_data(IO_EXPORT_NONINTERACTIVE, conf);
 				non_interactive = 1;
 				return (non_interactive);
