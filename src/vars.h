@@ -1,4 +1,4 @@
-/*	$calcurse: vars.h,v 1.11 2007/07/01 17:42:47 culot Exp $	*/
+/*	$calcurse: vars.h,v 1.12 2007/07/20 19:09:07 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -51,6 +51,15 @@
 #define HOURINSEC	3600
 #define MININSEC	60
 
+enum window_e {
+	CALENDAR, 
+	APPOINTMENT, 
+	TODO,
+	NOTIFY,
+	STATUS,
+	NBWINS
+};
+
 struct pad_s {
 	int width;
 	int length;
@@ -78,6 +87,14 @@ typedef struct {
 	bool skip_progress_bar;
 	int layout;
 } conf_t;
+
+/* Window properties */
+typedef struct {
+	unsigned w;	/* width */
+	unsigned h;	/* height */
+	int	 x;	/* x position */
+	int	 y;	/* y position */
+} window_t;
 
 extern int col, row;
 extern bool colorize;
