@@ -1,3 +1,10 @@
+20 Jul 2007:
+	store_day() moved to day_process_storage()
+	enum window_number moved to vars.h and became window_e
+	window_t type created in vars.h
+	day_items_nb_t added in day.h
+	several routines updated to make use of the newly created window_t type
+
 01 Jul 2007:
 	bugfix: calendar_date_thread implemented to check for day changes
 		(thanks Jupp for reporting the problem)
