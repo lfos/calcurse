@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.29 2007/07/01 17:50:53 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.30 2007/07/20 19:18:09 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -375,7 +375,7 @@ border_nocolor(WINDOW *window)
  * utils.h, depending on which panel the added keybind is assigned to.
  */
 void 
-status_bar(int which_pan, int nc_bar, int nl_bar)
+status_bar(int which_pan, window_t *win)
 {
 	int cmd_length, space_between_cmds, start, end, i, j = 0;
 	const int pos[NB_PANELS + 1] = 
@@ -425,7 +425,7 @@ status_bar(int which_pan, int nc_bar, int nl_bar)
 	cmd_length += space_between_cmds;
 
 	/* Drawing the keybinding with attribute and label without. */
-	erase_window_part(swin, 0, 0, nc_bar, nl_bar);
+	erase_window_part(swin, 0, 0, win->w, win->h);
 	start = pos[which_pan] + 2*CMDS_PER_LINE*(status_page - 1);
 	end = MIN(start + 2*CMDS_PER_LINE, pos[which_pan + 1]);
 	for (i = start; i < end; i += 2) {

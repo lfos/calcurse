@@ -1,4 +1,4 @@
-/*	$calcurse: utils.h,v 1.18 2007/07/01 17:50:53 culot Exp $	*/
+/*	$calcurse: utils.h,v 1.19 2007/07/20 19:19:56 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -28,6 +28,7 @@
 #define CALCURSE_UTILS_H
 
 #include "calendar.h"
+#include "vars.h"
 
 #define MAX(x,y) 	((x)>(y)?(x):(y))
 #define MIN(x,y) 	((x)<(y)?(x):(y))
@@ -65,7 +66,7 @@ int 	updatestring(WINDOW *, char **, int, int);
 int 	is_all_digit(char *);
 void 	border_color(WINDOW *);
 void 	border_nocolor(WINDOW *);
-void 	status_bar(int, int, int);
+void 	status_bar(int, window_t *);
 long 	date2sec(date_t, unsigned, unsigned);
 char   *date_sec2hour_str(long);
 char   *date_sec2date_str(long);
