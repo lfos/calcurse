@@ -1,4 +1,4 @@
-/*	$calcurse: day.h,v 1.12 2007/07/01 17:52:45 culot Exp $	*/
+/*	$calcurse: day.h,v 1.13 2007/07/20 19:07:02 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -39,6 +39,11 @@
 #define RECUR_APPT	3
 #define APPT		4
 
+typedef struct {
+	unsigned nb_events;
+	unsigned nb_apoints; 
+} day_items_nb_t;
+
 struct day_item_s {
 	struct day_item_s *next;
 	long start;		/* seconds since 1 jan 1970 */
@@ -58,6 +63,7 @@ struct day_saved_item_s {
 	char *mesg;
 };
 
+day_items_nb_t 	       *day_process_storage(date_t *, bool, day_items_nb_t *);
 int 			day_store_items(long, int *, int *);
 void 			day_free_list(void);
 int 			day_store_recur_events(long);
