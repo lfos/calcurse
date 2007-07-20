@@ -1,4 +1,4 @@
-/*	$calcurse: day.c,v 1.23 2007/07/01 17:52:45 culot Exp $	*/
+/*	$calcurse: day.c,v 1.24 2007/07/20 19:05:19 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -43,6 +43,41 @@
 
 static struct day_item_s *day_items_ptr;
 static struct day_saved_item_s *day_saved_item = NULL;
+
+
+/*
+ * Store the events and appointments for the selected day, and write
+ * those items in a pad. If selected day is null, then store items for current
+ * day. This is useful to speed up the appointment panel update.
+ */
+day_items_nb_t *
+day_process_storage(date_t *slctd_date, bool day_changed, day_items_nb_t *inday)
+{
+	long date;
+	date_t day;
+
+	if (slctd_date) 
+		day = *slctd_date;
+	else
+		calendar_store_current_date(&day);
+
+	date = date2sec(day, 0, 0);
+
+	/* Inits */
+	if (apad->length != 0)
+		delwin(apad->ptrwin);
+
+	/* Store the events and appointments (recursive and normal items). */
+	apad->length = day_store_items(date, 
+		&inday->nb_events, &inday->nb_apoints);
+
+	/* Create the new pad with its new length. */
+	if (day_changed) 
+		apad->first_onscreen = 0;
+	apad->ptrwin = newpad(apad->length, apad->width);
+
+	return (inday);
+}
 
 /* 
  * Store all of the items to be displayed for the selected day.
