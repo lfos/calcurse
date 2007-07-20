@@ -1,4 +1,4 @@
-/*	$calcurse: custom.c,v 1.12 2007/07/01 17:59:14 culot Exp $	*/
+/*	$calcurse: custom.c,v 1.13 2007/07/20 19:14:33 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -102,7 +102,7 @@ custom_remove_attr(WINDOW *win, int attr_num)
 
 /* Load the user configuration. */
 void 
-custom_load_conf(conf_t *conf, int background, int nc_bar, int nl_bar)
+custom_load_conf(conf_t *conf, int background, window_t *win)
 {
 	FILE *data_file;
 	char *mesg_line1 = _("Failed to open config file");
@@ -219,7 +219,7 @@ custom_load_conf(conf_t *conf, int background, int nc_bar, int nl_bar)
 	}
 	fclose(data_file);
 	pthread_mutex_unlock(&nbar->mutex);
-	erase_window_part(swin, 0, 0, nc_bar, nl_bar);
+	erase_window_part(swin, 0, 0, win->w, win->h);
 }
 
 /* Draws the configuration bar */
