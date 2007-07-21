@@ -1,4 +1,4 @@
-/*	$calcurse: apoint.h,v 1.6 2007/07/01 17:54:33 culot Exp $	*/
+/*	$calcurse: apoint.h,v 1.7 2007/07/21 19:35:14 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -30,6 +30,7 @@
 #include <ncurses.h>
 
 #include "notify.h"
+#include "recur.h"
 #include "vars.h"
 
 #define HRMIN_SIZE 6
@@ -56,6 +57,8 @@ extern apoint_llist_t *alist_p;
 
 int 			apoint_llist_init(void);
 apoint_llist_node_t    *apoint_new(char *, long, long, char);
+void			apoint_add(int *hilt_app);
+void			apoint_delete(conf_t *, unsigned *, unsigned *, int *);
 unsigned 		apoint_inday(apoint_llist_node_t *, long);
 void 			apoint_sec2str(apoint_llist_node_t *, int, long, 
 			    char *, char *);
@@ -70,5 +73,6 @@ void 			scroll_pad_up(int, int);
 struct notify_app_s    *apoint_check_next(struct notify_app_s *, long);
 apoint_llist_node_t    *apoint_recur_s2apoint_s(recur_apoint_llist_node_t *);
 void 			apoint_switch_notify(int);
+void			apoint_update_panel(window_t *, int, int);
 
 #endif /* CALCURSE_APOINT_H */

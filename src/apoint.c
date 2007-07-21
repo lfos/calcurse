@@ -1,4 +1,4 @@
-/*	$calcurse: apoint.c,v 1.11 2007/07/01 17:54:33 culot Exp $	*/
+/*	$calcurse: apoint.c,v 1.12 2007/07/21 19:35:14 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -78,6 +78,171 @@ apoint_new(char *mesg, long start, long dur, char state)
 
 	return o;
 }
+
+/* 
+ * Add an item in either the appointment or the event list,
+ * depending if the start time is entered or not.
+ */
+void 
+apoint_add(int *hilt_app)
+{
+#define LTIME 6
+	char *mesg_1 = _("Enter start time ([hh:mm] or [h:mm]), leave blank for an all-day event : ");
+	char *mesg_2 = _("Enter end time ([hh:mm] or [h:mm]) or duration (in minutes) : ");
+	char *mesg_3 = _("Enter description :");
+	char *format_message_1 = _("You entered an invalid start time, should be [h:mm] or [hh:mm]");
+	char *format_message_2 = _("You entered an invalid end time, should be [h:mm] or [hh:mm] or [mm]");
+        char *enter_str = _("Press [Enter] to continue");
+	int Id;
+        char item_time[LTIME] = "";
+	char item_mesg[BUFSIZ] = "";
+	long apoint_duration, apoint_start;
+	apoint_llist_node_t *apoint_pointeur;
+        struct event_s *event_pointeur;
+	unsigned heures, minutes;
+	unsigned end_h, end_m;
+        int is_appointment = 1;
+
+	/* Get the starting time */
+	while (check_time(item_time) != 1) {
+                status_mesg(mesg_1, "");
+		if (getstring(swin, item_time, LTIME, 0, 1) != 
+			GETSTRING_ESC) {
+			if (strlen(item_time) == 0){
+				is_appointment = 0;
+				break;	
+			} else if (check_time(item_time) != 1) {
+				status_mesg(format_message_1, enter_str);
+				wgetch(swin);
+			} else
+				sscanf(item_time, "%u:%u", &heures, &minutes);
+		} else
+			return;
+	}
+        /* 
+         * Check if an event or appointment is entered, 
+         * depending on the starting time, and record the 
+         * corresponding item.
+         */
+        if (is_appointment){ /* Get the appointment duration */
+		item_time[0] = '\0';
+                while (check_time(item_time) == 0) {
+                        status_mesg(mesg_2, "");
+                        if (getstring(swin, item_time, LTIME, 0, 1) != 
+				GETSTRING_VALID)
+                                return;	//nothing entered, cancel adding of event
+			else if (check_time(item_time) == 0) {
+                                status_mesg(format_message_2, enter_str);
+                                wgetch(swin);
+                        } else {
+				if (check_time(item_time) == 2)
+                                	apoint_duration = atoi(item_time);
+				else if (check_time(item_time) == 1) {
+					sscanf(item_time, "%u:%u", 
+							&end_h, &end_m);
+					if (end_h < heures){
+						apoint_duration = 
+						    MININSEC - minutes + end_m
+						    + 
+						    (24 + end_h - (heures + 1))
+						    * MININSEC;
+					} else {
+						apoint_duration = 
+							MININSEC - minutes + 
+							end_m + 
+							(end_h - (heures + 1)) * 
+							MININSEC;
+					}
+				}
+			}	
+                }
+        } else  /* Insert the event Id */
+                Id = 1;
+
+        status_mesg(mesg_3, "");
+	if (getstring(swin, item_mesg, BUFSIZ, 0, 1) == 
+		GETSTRING_VALID) {
+                if (is_appointment) {
+			apoint_start = 
+			    date2sec(*calendar_get_slctd_day(), heures, 
+			    minutes);
+			apoint_pointeur = apoint_new(item_mesg, apoint_start,
+			    min2sec(apoint_duration), 0L);
+			if (notify_bar()) 
+				notify_check_added(item_mesg, apoint_start, 0L);
+                } else 
+                        event_pointeur = event_new(item_mesg, 
+			    date2sec(*calendar_get_slctd_day(), 12, 0), Id);
+
+		if (*hilt_app == 0) 
+			(*hilt_app)++;
+	}
+	erase_status_bar();
+}
+
+/* Delete an item from the appointment list. */
+void 
+apoint_delete(conf_t *conf, unsigned *nb_events, unsigned *nb_apoints, 
+    int *hilt_app)
+{
+	char *choices = "[y/n] ";
+	char *del_app_str = _("Do you really want to delete this item ?");
+	long date;
+	int nb_items = *nb_apoints + *nb_events;
+	bool go_for_deletion = false;
+	int to_be_removed;
+	int answer = 0;
+	int deleted_item_type = 0;
+
+	date = calendar_get_slctd_day_sec();
+	
+	if (conf->confirm_delete) {
+		status_mesg(del_app_str, choices);		
+		answer = wgetch(swin);
+		if ( (answer == 'y') && (nb_items != 0) )
+			go_for_deletion = true;
+		else {
+			erase_status_bar();
+			return;
+		}
+	} else 
+		if (nb_items != 0) 
+			go_for_deletion = true;
+	
+	if (go_for_deletion) {
+		if (nb_items != 0) {
+			deleted_item_type = 
+				day_erase_item(date, *hilt_app, 0);
+			if (deleted_item_type == EVNT || 
+			    deleted_item_type == RECUR_EVNT) {
+				(*nb_events)--;
+				to_be_removed = 1;
+			} else if (deleted_item_type == APPT ||
+			    deleted_item_type == RECUR_APPT) {
+				(*nb_apoints)--;
+				to_be_removed = 3;
+			} else if (deleted_item_type == 0) {
+				to_be_removed = 0;		
+			} else {
+				fputs(_("FATAL ERROR in apoint_delete: no such type\n"), 
+				    stderr);
+				exit(EXIT_FAILURE);
+				/* NOTREACHED */
+			}	
+
+			if (*hilt_app > 1) 
+				(*hilt_app)--;
+			if (apad->first_onscreen >= to_be_removed)
+				apad->first_onscreen = 
+					apad->first_onscreen -
+					to_be_removed;
+			if (nb_items == 1) 
+				*hilt_app = 0;
+		}
+	}
+}
+
+
 
 unsigned 
 apoint_inday(apoint_llist_node_t *i, long start)
@@ -380,4 +545,51 @@ apoint_switch_notify(int item_num)
 	fputs(_("FATAL ERROR in apoint_switch_notify: no such appointment\n"), 
 	    stderr);
 	exit(EXIT_FAILURE);
+}
+
+/* Updates the Appointment panel */
+void 
+apoint_update_panel(window_t *winapp, int hilt_app, int which_pan)
+{
+	int title_xpos;
+	int bordr = 1;
+	int title_lines = 3;
+	int app_width = winapp->w - bordr;
+	int app_length = winapp->h - bordr - title_lines;
+	long date;
+	date_t slctd_date;
+
+	/* variable inits */
+	slctd_date = *calendar_get_slctd_day();
+	title_xpos = winapp->w - (strlen(_(monthnames[slctd_date.mm - 1])) + 11);
+	if (slctd_date.dd < 10) 
+		title_xpos++;
+	date = date2sec(slctd_date, 0, 0);
+	day_write_pad(date, app_width, app_length, hilt_app);
+
+	/* Print current date in the top right window corner. */
+	erase_window_part(awin, 1, title_lines, winapp->w - 2, winapp->h - 2);
+	custom_apply_attr(awin, ATTR_HIGHEST);
+	mvwprintw(awin, title_lines, title_xpos, "%s %d, %d",
+	    _(monthnames[slctd_date.mm - 1]), slctd_date.dd, slctd_date.yyyy);
+	custom_remove_attr(awin, ATTR_HIGHEST);
+	
+	/* Draw the scrollbar if necessary. */
+	if ((apad->length >= app_length)||(apad->first_onscreen > 0)) {
+		float ratio = ((float) app_length) / ((float) apad->length);
+		int sbar_length = (int) (ratio * app_length);
+		int highend = (int) (ratio * apad->first_onscreen);
+		bool hilt_bar = (which_pan == APPOINTMENT) ? true : false;
+		int sbar_top = highend + title_lines + 1;
+		
+		if ((sbar_top + sbar_length) > winapp->h - 1)
+			sbar_length = winapp->h - 1 - sbar_top;
+		draw_scrollbar(awin, sbar_top, winapp->w - 2, sbar_length, 
+				title_lines + 1, winapp->h - 1, hilt_bar);
+	}
+
+	wnoutrefresh(awin);
+	pnoutrefresh(apad->ptrwin, apad->first_onscreen, 0, 
+	    winapp->y + title_lines + 1, winapp->x + bordr, 
+    	    winapp->y + winapp->h - 2*bordr, winapp->x + winapp->w - 3*bordr);
 }
