@@ -1,4 +1,4 @@
-/*	$calcurse: help.c,v 1.16 2007/04/04 19:38:18 culot Exp $	*/
+/*	$calcurse: help.c,v 1.17 2007/07/21 19:36:05 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -39,6 +39,7 @@
 #include "utils.h"
 #include "apoint.h"
 #include "notify.h"
+#include "wins.h"
 
 /* 
  * Write the desired help text inside the help pad, and return the number
@@ -368,7 +369,7 @@ help_screen(int which_pan)
 	help_pad = newpad(BUFSIZ, pad_width);
 	box(help_win, 0, 0);
 	snprintf(label, BUFSIZ, _("CalCurse %s | help"), VERSION);
-	win_show(help_win, label);
+	wins_show(help_win, label);
 
 	/* Display the help screen related to user input. */
 	while ( ch != 'q' ) {
