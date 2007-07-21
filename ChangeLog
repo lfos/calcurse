@@ -1,3 +1,16 @@
+21 Jul 2007:
+	wins.c and wins.h created to store windows handling related routines
+	window handling routines moved to wins.c and wins.h
+	erase_status_bar() created
+	several routines moved from calcurse.c to more appropriate source files:
+		update_app_panel() moved to apoint_update_panel()
+		update_todo_panel() moved to todo_update_panel()
+		add_item() moved to apoint_add()
+		del_item() split into apoint_delete() and todo_delete()
+		init_vars() moved to vars_init()
+		print_notify_options() moved to notify_print_options()
+		config_notify_bar() moved to notify_config_bar()
+
 20 Jul 2007:
 	store_day() moved to day_process_storage()
 	enum window_number moved to vars.h and became window_e
