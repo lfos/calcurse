@@ -1,4 +1,4 @@
-/*	$calcurse: todo.c,v 1.11 2007/04/04 19:38:18 culot Exp $	*/
+/*	$calcurse: todo.c,v 1.12 2007/07/21 19:35:40 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -79,6 +79,40 @@ todo_add(char *mesg, int id)
 	}
 	return o;
 }
+
+/* Delete an item from the ToDo list. */
+void 
+todo_delete(conf_t *conf, int *nb_tod, int *hilt_tod)
+{
+	char *choices = "[y/n] ";
+	char *del_todo_str = _("Do you really want to delete this task ?");
+	bool go_for_todo_del = false;
+	int answer = 0;
+	
+	if (conf->confirm_delete) {
+		status_mesg(del_todo_str, choices);
+		answer = wgetch(swin);
+		if ( (answer == 'y') && (*nb_tod > 0) ) {
+			go_for_todo_del = true;
+		} else {
+			erase_status_bar();
+			return;
+		}
+	} else 
+		if (*nb_tod > 0) 
+			go_for_todo_del = true;
+
+	if (go_for_todo_del) {
+		todo_delete_bynum(*hilt_tod - 1);
+		(*nb_tod)--;
+		if (*hilt_tod > 1) 
+			(*hilt_tod)--;
+		if (*nb_tod == 0) 
+			*hilt_tod = 0;
+	}
+}
+
+
 
 /* Delete an item from the todo linked list. */
 void 
@@ -184,4 +218,54 @@ todo_edit_item(int item_num)
 	status_mesg(mesg, "");
 	i = todo_get_item(item_num);
 	updatestring(swin, &i->mesg, 0, 1);
+}
+
+/* Updates the ToDo panel. */
+void 
+todo_update_panel(window_t *wintod, int hilt_tod, int nb_tod, int which_pan,
+    int first_todo_onscreen, char **saved_t_mesg)
+{
+	struct todo_s *i;
+	int len = wintod->w - 6;
+	int num_todo = 0;
+	int y_offset = 3, x_offset = 1;
+	int t_realpos = -1;
+	int title_lines = 3;
+	int todo_lines = 1;
+	int max_items = wintod->h - 4;
+	int incolor = -1;
+	char mesg[BUFSIZ] = "";
+
+	/* Print todo item in the panel. */
+	erase_window_part(twin, 1, title_lines, wintod->w - 2, wintod->h - 2);
+	for (i = todolist; i != 0; i = i->next) {
+		num_todo++;
+		t_realpos = num_todo - first_todo_onscreen;
+		incolor = num_todo - hilt_tod;
+		if (incolor == 0) 
+			*saved_t_mesg = i->mesg; 
+		if (t_realpos >= 0 && t_realpos < max_items) {
+			snprintf(mesg, BUFSIZ, "%d. ", i->id);	
+			strncat(mesg, i->mesg, strlen(i->mesg));
+			display_item(twin, incolor, mesg, 0, 
+					len, y_offset, x_offset);
+			y_offset = y_offset + todo_lines;	
+		}
+	}
+
+	/* Draw the scrollbar if necessary. */
+	if (nb_tod > max_items){
+		float ratio = ((float) max_items) / ((float) nb_tod);
+		int sbar_length = (int) (ratio * (max_items + 1)); 
+		int highend = (int) (ratio * first_todo_onscreen);
+		bool hilt_bar = (which_pan == TODO) ? true : false;
+		int sbar_top = highend + title_lines;
+	
+		if ((sbar_top + sbar_length) > wintod->h - 1)
+			sbar_length = wintod->h - 1 - sbar_top;
+		draw_scrollbar(twin, sbar_top, wintod->w - 2, 
+	    	    sbar_length, title_lines, wintod->h - 1, hilt_bar);
+	}
+	
+	wnoutrefresh(twin);
 }
