@@ -1,4 +1,4 @@
-/*	$calcurse: vars.c,v 1.2 2006/09/15 15:38:14 culot Exp $	*/
+/*	$calcurse: vars.c,v 1.3 2007/07/21 19:30:55 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -24,7 +24,11 @@
  *
  */
 
+#include <stdlib.h>
+
 #include "i18n.h"
+#include "calendar.h"
+#include "custom.h"
 #include "vars.h"
 
 /*
@@ -86,3 +90,32 @@ struct pad_s *apad;
 
 /* Variable to store notify-bar settings. */
 struct nbar_s *nbar;
+
+
+/*
+ * Variables init 
+ */
+void 
+vars_init(conf_t *conf)
+{
+	/* Variables for user configuration */
+	conf->confirm_quit = true; 
+	conf->confirm_delete = true; 
+	conf->auto_save = true;
+	conf->skip_system_dialogs = false;
+	conf->skip_progress_bar = false;
+	conf->layout = 1;
+
+	calendar_set_first_day_of_week(MONDAY);
+
+	/* Pad structure to scroll text inside the appointment panel */
+	apad = (struct pad_s *) malloc(sizeof(struct pad_s));
+	apad->length = 1;
+	apad->first_onscreen = 0;
+
+	/* Attribute definitions for color and non-color terminals */
+	custom_init_attr();
+	
+	/* Start at the current date */
+	calendar_init_slctd_day();
+}
