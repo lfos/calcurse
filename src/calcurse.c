@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.47 2007/07/20 19:03:11 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.48 2007/07/21 19:32:26 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -42,7 +42,6 @@
 #include <locale.h>
 #include <stdio.h>
 
-#include "apoint.h"
 #include "i18n.h"
 #include "io.h"
 #include "help.h"
@@ -50,6 +49,8 @@
 #include "custom.h"
 #include "utils.h"
 #include "vars.h"
+#include "wins.h"
+#include "apoint.h"
 #include "day.h"
 #include "event.h"
 #include "recur.h"
@@ -69,25 +70,6 @@ char *saved_t_mesg;
 
 /* Variables to handle calcurse windows */
 int which_pan = 0;
-
-/* External functions */
-static void init_vars(conf_t *conf);
-static void init_wins(window_t *, window_t *, window_t *, window_t *);
-static void reinit_wins(conf_t *conf, window_t *, window_t *, window_t *, 
-    window_t *, window_t *);
-static void add_item(window_t *winbar);
-static void update_todo_panel(window_t *wintod);
-static void update_app_panel(window_t *winapp);
-static void get_screen_config(conf_t *conf, window_t *, window_t *, window_t *,
-		window_t *, window_t *);
-static void update_windows(int surrounded_window, conf_t *conf, window_t *,
-    window_t *, window_t *);
-static void general_config(conf_t *conf);
-static void config_notify_bar(void);
-static void print_general_options(WINDOW *win, conf_t *conf); 
-static void print_notify_options(WINDOW *win, int col);
-static void print_option_incolor(WINDOW *win, bool option, int pos_x, int pos_y);
-static void del_item(conf_t *conf, day_items_nb_t *inday, window_t *winbar);
 
 
 /* 
@@ -168,7 +150,7 @@ main(int argc, char **argv)
 	curs_set(0);			/* make cursor invisible */
         calendar_set_current_date();
 	notify_init_vars();
-	get_screen_config(&conf, &win[STATUS], &win[NOTIFY], &win[APPOINTMENT],
+	wins_get_config(&conf, &win[STATUS], &win[NOTIFY], &win[APPOINTMENT],
 	    &win[TODO], &win[CALENDAR]);
 	
         /* Check if terminal supports color. */
@@ -199,8 +181,8 @@ main(int argc, char **argv)
 	} else
                 colorize = false;
 
-	init_vars(&conf);
-	init_wins(&win[CALENDAR], &win[APPOINTMENT], &win[TODO], &win[STATUS]);
+	vars_init(&conf);
+	wins_init(&win[CALENDAR], &win[APPOINTMENT], &win[TODO], &win[STATUS]);
 	notify_init_bar(&win[NOTIFY]);
 	reset_status_page();
 
@@ -210,21 +192,26 @@ main(int argc, char **argv)
 	 * the todo list, appointments and events.
 	 */
 	no_data_file = check_data_files();
-	custom_load_conf(&conf, background, &win[STATUS]);
+	custom_load_conf(&conf, background);
+	erase_status_bar();
 	nb_tod = load_todo();	
 	load_app();
 	if (notify_bar()) {
 		notify_start_main_thread();
 		notify_check_next_app();
 	}
-	get_screen_config(&conf, &win[STATUS], &win[NOTIFY], &win[APPOINTMENT],
+	wins_get_config(&conf, &win[STATUS], &win[NOTIFY], &win[APPOINTMENT],
 	    &win[TODO], &win[CALENDAR]);
-        reinit_wins(&conf, &win[STATUS], &win[APPOINTMENT], &win[TODO], 
-	    &win[CALENDAR], &win[NOTIFY]);
+        wins_reinit(&conf, which_pan, &win[STATUS], &win[APPOINTMENT], 
+	    &win[TODO], &win[CALENDAR], &win[NOTIFY]);
+	wins_update(which_pan, &conf, &win[STATUS], 
+	    &win[APPOINTMENT], &win[TODO], hilt_app, hilt_tod,
+	    which_pan, nb_tod, first_todo_onscreen, saved_t_mesg);
         startup_screen(conf.skip_system_dialogs, no_data_file);
 	inday = *day_process_storage(0, day_changed, &inday);
-	update_windows(CALENDAR, &conf, &win[STATUS], &win[APPOINTMENT], 
-	    &win[TODO]);
+	wins_update(CALENDAR, &conf, &win[STATUS], &win[APPOINTMENT], 
+	    &win[TODO], hilt_app, hilt_tod, which_pan, nb_tod,
+	    first_todo_onscreen, saved_t_mesg);
 	calendar_start_date_thread();
 
 	/* User input */
@@ -276,8 +263,13 @@ main(int argc, char **argv)
 			break;
 
 		case CTRL('R'):
-                        reinit_wins(&conf, &win[STATUS], &win[APPOINTMENT], 
-			    &win[TODO], &win[CALENDAR], &win[NOTIFY]);
+                        wins_reinit(&conf, which_pan, &win[STATUS], 
+			    &win[APPOINTMENT], &win[TODO], &win[CALENDAR], 
+			    &win[NOTIFY]);
+			wins_update(which_pan, &conf, &win[STATUS], 
+			    &win[APPOINTMENT], &win[TODO], hilt_app, hilt_tod,
+			    which_pan, nb_tod, first_todo_onscreen, 
+			    saved_t_mesg);
 			do_storage = true;
 			break;
 
@@ -288,8 +280,7 @@ main(int argc, char **argv)
 
 		case 'G':
 		case 'g':	/* Goto function */
-			erase_window_part(swin, 0, 0, win[STATUS].w, 
-			    win[STATUS].h);
+			erase_status_bar();
 			calendar_set_current_date();
 			calendar_change_day();
 			do_storage = true;
@@ -307,8 +298,7 @@ main(int argc, char **argv)
 
 		case 'C':
 		case 'c':	/* Configuration menu */
-			erase_window_part(swin, 0, 0, win[STATUS].w, 
-			    win[STATUS].h);
+			erase_status_bar();
 			config_bar();
 			while ((ch = wgetch(swin)) != 'q') {
 				switch (ch) {
@@ -319,9 +309,7 @@ main(int argc, char **argv)
 						    notify_bar()); 
                                         } else {
                                                 colorize = false;
-                                                erase_window_part(swin, 0, 0,
-						    win[STATUS].w, 
-						    win[STATUS].h);
+						erase_status_bar();
                                                 mvwprintw(swin, 0, 0, 
                                                           _(no_color_support));
                                                 wgetch(swin);
@@ -334,27 +322,32 @@ main(int argc, char **argv)
 					break;
 				case 'G':
 				case 'g':
-					general_config(&conf);
+					custom_general_config(&conf);
 					break;
 				case 'N':
 				case 'n':
-					config_notify_bar();
+					notify_config_bar();
 					break;
 				}
-                                reinit_wins(&conf, &win[STATUS], 
+                                wins_reinit(&conf, which_pan, &win[STATUS], 
 				    &win[APPOINTMENT], &win[TODO], 
 				    &win[CALENDAR], &win[NOTIFY]);
+				wins_update(which_pan, &conf, &win[STATUS], 
+				    &win[APPOINTMENT], &win[TODO], hilt_app,
+				    hilt_tod, which_pan, nb_tod, 
+				    first_todo_onscreen, saved_t_mesg);
 				do_storage = true;
-				erase_window_part(swin, 0, 0, win[STATUS].w, 
-				    win[STATUS].h);
+				erase_status_bar();
 				config_bar();
 			}
-                        update_windows(which_pan, &conf, &win[STATUS], 
-			    &win[APPOINTMENT], &win[TODO]);
+                        wins_update(which_pan, &conf, &win[STATUS], 
+			    &win[APPOINTMENT], &win[TODO], hilt_app, hilt_tod,
+			    which_pan, nb_tod, first_todo_onscreen, 
+			    saved_t_mesg);
 			break;
 
 		case CTRL('A'):	/* Add an app, whatever panel selected */
-			add_item(&win[STATUS]);
+			apoint_add(&hilt_app);
 			do_storage = true;
 			break;
 
@@ -367,7 +360,7 @@ main(int argc, char **argv)
 		case 'A':
 		case 'a':	/* Add an item */
 			if (which_pan == APPOINTMENT) {
-				add_item(&win[STATUS]);
+				apoint_add(&hilt_app);
 				do_storage = true;
 			} else if (which_pan == TODO) {
 				nb_tod = todo_new_item(nb_tod);
@@ -387,7 +380,11 @@ main(int argc, char **argv)
 
 		case 'D':
 		case 'd':	/* Delete an item */
-			del_item(&conf, &inday, &win[STATUS]);
+			if (which_pan == APPOINTMENT && hilt_app != 0)
+				apoint_delete(&conf, &inday.nb_events, 
+				    &inday.nb_apoints, &hilt_app);
+			else if (which_pan == TODO && hilt_tod != 0)
+				todo_delete(&conf, &nb_tod, &hilt_tod);
 			do_storage = true;
 			break;
 
@@ -418,7 +415,7 @@ main(int argc, char **argv)
 			break;
 
 		case '?':	/* Online help system */
-			status_bar(which_pan, &win[STATUS]);
+			status_bar(which_pan);
 			help_screen(which_pan);
 			break;
 
@@ -518,8 +515,7 @@ main(int argc, char **argv)
 					calendar_stop_date_thread();
 					return (EXIT_SUCCESS);
 				} else {
-					erase_window_part(swin, 0, 0, 
-					    win[STATUS].w, win[STATUS].h);
+					erase_status_bar();
 					break;
 				}
 			} else {
@@ -543,837 +539,8 @@ main(int argc, char **argv)
 					hilt_app = 1;
 			}
 		}
-		update_windows(which_pan, &conf, &win[STATUS], 
-		    &win[APPOINTMENT], &win[TODO]);
+		wins_update(which_pan, &conf, &win[STATUS], 
+		    &win[APPOINTMENT], &win[TODO], hilt_app, hilt_tod, 
+		    which_pan, nb_tod, first_todo_onscreen, saved_t_mesg);
 	}
 }	/* end of interactive mode */
-
-/* 
- * EXTERNAL FUNCTIONS
- */
-
-/*
- * Variables init 
- */
-void 
-init_vars(conf_t *conf)
-{
-	/* Variables for user configuration */
-	conf->confirm_quit = true; 
-	conf->confirm_delete = true; 
-	conf->auto_save = true;
-	conf->skip_system_dialogs = false;
-	conf->skip_progress_bar = false;
-	conf->layout = 1;
-
-	calendar_set_first_day_of_week(MONDAY);
-
-	/* Pad structure to scroll text inside the appointment panel */
-	apad = (struct pad_s *) malloc(sizeof(struct pad_s));
-	apad->length = 1;
-	apad->first_onscreen = 0;
-
-	/* Attribute definitions for color and non-color terminals */
-	custom_init_attr();
-	
-	/* Start at the current date */
-	calendar_init_slctd_day();
-}
-
-/* 
- * Update all of the three windows and put a border around the
- * selected window.
- */
-void 
-update_windows(int surrounded_window, conf_t *conf, window_t *winbar, 
-    window_t *winapp, window_t *wintod)
-{
-	switch (surrounded_window) {
-
-	case CALENDAR:
-		border_color(cwin);
-		border_nocolor(awin);
-		border_nocolor(twin);
-		break;
-
-	case APPOINTMENT:
-		border_color(awin);
-		border_nocolor(cwin);
-		border_nocolor(twin);
-		break;
-
-	case TODO:
-		border_color(twin);
-		border_nocolor(awin);
-		border_nocolor(cwin);
-		break;
-
-	default:
-		fputs(_("FATAL ERROR in update_windows: no window selected\n"),
-		    stderr);
-		exit(EXIT_FAILURE);
-		/* NOTREACHED */
-	}
-
-	update_app_panel(winapp);	
-	update_todo_panel(wintod);
-	calendar_update_panel(cwin);
-	status_bar(surrounded_window, winbar);
-	if (notify_bar()) 
-		notify_update_bar();
-        wmove(swin, 0, 0);
-	doupdate();
-}
-
-/* 
- * Get the screen size and recalculate the windows configurations.
- */
-void get_screen_config(conf_t *conf, window_t *status, window_t *notify, 
-    window_t *apts, window_t *todo, window_t *calr)
-{
-	/* Get the screen configuration */
-	getmaxyx(stdscr, row, col);
-
-	/* fixed values for status, notification bars and calendar */
-	status->h = 2;
-	status->w = col;
-	status->y = row - status->h;
-	status->x = 0;
-
-	if (notify_bar()) {
-		notify->h = 1;
-		notify->w = col;
-		notify->y = status->y - 1;
-		notify->x = 0;
-	} else {
-		notify->h = 0;
-		notify->w = 0;
-		notify->y = 0;
-		notify->x = 0;
-	}
-
-	if (conf->layout <= 4) { /* APPOINTMENT is the biggest panel */
-		apts->w = col - CALWIDTH;
-		apts->h = row - (status->h + notify->h);
-		todo->w = CALWIDTH;
-		todo->h = row - (CALHEIGHT + status->h + notify->h);
-	} else { 		/* TODO is the biggest panel */
-		todo->w = col - CALWIDTH;
-		todo->h = row - (status->h + notify->h);
-		apts->w = CALWIDTH;
-		apts->h = row - (CALHEIGHT + status->h + notify->h);
-	}
-
-	/* defining the layout */
-	switch (conf->layout) {
-	case 1:
-		apts->y = 0;
-		apts->x = 0;
-		calr->y = 0;
-		todo->x = apts->w;
-		todo->y = CALHEIGHT;
-		calr->x = apts->w;
-		break;
-	case 2:
-		apts->y = 0;
-		apts->x = 0;
-		todo->y = 0;
-		todo->x = apts->w;
-		calr->x = apts->w;
-		calr->y = todo->h;
-		break;
-	case 3:
-		apts->y = 0;
-		todo->x = 0;
-		calr->x = 0;
-		calr->y = 0;
-		apts->x = CALWIDTH;
-		todo->y = CALHEIGHT;
-		break;
-	case 4:
-		apts->y = 0;
-		todo->x = 0;
-		todo->y = 0;
-		calr->x = 0;
-		apts->x = CALWIDTH;
-		calr->y = todo->h;
-		break;
-	case 5:
-		todo->y = 0;
-		todo->x = 0;
-		calr->y = 0;
-		apts->y = CALHEIGHT;
-		apts->x = todo->w;
-		calr->x = todo->w;
-		break;
-	case 6:
-		todo->y = 0;
-		todo->x = 0;
-		apts->y = 0;
-		apts->x = todo->w;
-		calr->x = todo->w;
-		calr->y = apts->h;
-		break;
-	case 7:
-		todo->y = 0;
-		apts->x = 0;
-		calr->x = 0;
-		calr->y = 0;
-		todo->x = CALWIDTH;
-		apts->y = CALHEIGHT;
-		break;
-	case 8:
-		todo->y = 0;
-		apts->x = 0;
-		calr->x = 0;
-		apts->y = 0;
-		todo->x = CALWIDTH;
-		calr->y = apts->h;
-		break;
-	}
-}
-
-/* Create all the windows */
-void init_wins(window_t *wincal, window_t *winapp, window_t *wintod, 
-    window_t *winbar)
-{
-	char label[BUFSIZ];
-	
-	/* 
-	 * Create the three main windows plus the status bar and the pad used to
-	 * display appointments and event. 
-	 */
-	cwin = newwin(CALHEIGHT, CALWIDTH, wincal->y, wincal->x);
-	snprintf(label, BUFSIZ, _("Calendar"));
-	win_show(cwin, label);
-	awin = newwin(winapp->h, winapp->w, winapp->y, winapp->x);
-	snprintf(label, BUFSIZ, _("Appointments"));
-	win_show(awin, label);
-	apad->width = winapp->w - 3;
-	apad->ptrwin = newpad(apad->length, apad->width);
-	twin = newwin(wintod->h, wintod->w, wintod->y, wintod->x);
-	snprintf(label, BUFSIZ, _("ToDo"));
-	win_show(twin, label);
-	swin = newwin(winbar->h, winbar->w, winbar->y, winbar->x);
-
-	/* Enable function keys (i.e. arrow keys) in those windows */
-        keypad(swin, TRUE);
-        keypad(twin, TRUE);
-        keypad(awin, TRUE);
-        keypad(cwin, TRUE);
-}
-
-/* 
- * Delete the existing windows and recreate them with their new
- * size and placement.
- */
-void reinit_wins(conf_t *conf, window_t *winbar, window_t *winapp, 
-    window_t *wintod, window_t *wincal, window_t *winnot)
-{
-        clear();
-        delwin(swin);
-        delwin(cwin);
-        delwin(awin);
-	delwin(apad->ptrwin);
-        delwin(twin);
-        get_screen_config(conf, winbar, winnot, winapp, wintod, wincal);
-        init_wins(wincal, winapp, wintod, winbar);
-	if (notify_bar()) 
-		notify_reinit_bar(winnot->h, winnot->w, winnot->y, winnot->x);
-        update_windows(which_pan, conf, winbar, winapp, wintod);
-}
-
-/* General configuration */
-void general_config(conf_t *conf)
-{
-	WINDOW *conf_win;
-	char label[BUFSIZ];
-	char *number_str = _("Enter an option number to change its value [Q to quit] ");
-	int ch, win_row;
-
-	clear();
-	win_row = (notify_bar()) ? row - 3 : row - 2;
-	conf_win = newwin(win_row, col, 0, 0);
-	box(conf_win, 0, 0);
-	snprintf(label, BUFSIZ, _("CalCurse %s | general options"), VERSION);
-	win_show(conf_win, label);
-	status_mesg(number_str, "");
-	print_general_options(conf_win, conf);
-	while ((ch = wgetch(swin)) != 'q') {
-		switch (ch) {
-		case '1':	
-			conf->auto_save = !conf->auto_save;
-			break;
-		case '2':
-			conf->confirm_quit = !conf->confirm_quit;
-			break;
-		case '3':
-			conf->confirm_delete = !conf->confirm_delete;
-			break;
-                case '4':
-                        conf->skip_system_dialogs =
-				!conf->skip_system_dialogs;
-                        break;
-		case '5':
-			conf->skip_progress_bar = 
-				!conf->skip_progress_bar;
-			break;
-                case '6':
-			calendar_change_first_day_of_week();
-                        break;
-		}
-		print_general_options(conf_win, conf);
-	}
-	delwin(conf_win);
-}
-
-/* Notify-bar configuration. */
-void 
-config_notify_bar(void)
-{
-	WINDOW *conf_win;
-	char label[BUFSIZ];
-	char *buf;
-	char *number_str = 
-	    _("Enter an option number to change its value [Q to quit] ");
-	char *date_str = 
-	    _("Enter the date format (see 'man 3 strftime' for possible formats) ");
-	char *time_str = 
-	    _("Enter the time format (see 'man 3 strftime' for possible formats) ");
-	char *count_str = 
-	    _("Enter the number of seconds (0 not to be warned before an appointment)");
-	char *cmd_str = _("Enter the notification command ");
-	int ch = 0 , win_row, change_win = 1;
-
-	buf = (char *)malloc(BUFSIZ);
-	win_row = (notify_bar()) ? row - 3 : row - 2;
-	snprintf(label, BUFSIZ, 
-	    _("CalCurse %s | notify-bar options"), VERSION);
-
-	while (ch != 'q') {
-		if (change_win) {
-			conf_win = newwin(win_row, col, 0, 0);
-			box(conf_win, 0, 0);
-			win_show(conf_win, label);
-		}
-		status_mesg(number_str, "");
-		print_notify_options(conf_win, col);
-		*buf = '\0';
-		ch = wgetch(swin);
-
-		switch (ch) {
-		case '1':	
-			pthread_mutex_lock(&nbar->mutex);
-			nbar->show = !nbar->show;
-			pthread_mutex_unlock(&nbar->mutex);
-			notify_stop_main_thread();
-			if (notify_bar()) {
-				notify_start_main_thread();
-				win_row = row - 3;
-			} else {
-				win_row = row - 2;
-			}
-			delwin(conf_win);
-			change_win = 1;
-			break;
-		case '2':
-			status_mesg(date_str, "");
-			pthread_mutex_lock(&nbar->mutex);
-			strncpy(buf, nbar->datefmt, strlen(nbar->datefmt) + 1);
-			pthread_mutex_unlock(&nbar->mutex);
-			if (updatestring(swin, &buf, 0, 1) == 0) {
-				pthread_mutex_lock(&nbar->mutex);
-				strncpy(nbar->datefmt, buf, strlen(buf) + 1);
-				pthread_mutex_unlock(&nbar->mutex);
-			}
-			change_win = 0;
-			break;
-		case '3':
-			status_mesg(time_str, "");
-			pthread_mutex_lock(&nbar->mutex);
-			strncpy(buf, nbar->timefmt, strlen(nbar->timefmt) + 1);
-			pthread_mutex_unlock(&nbar->mutex);
-			if (updatestring(swin, &buf, 0, 1) == 0) {
-				pthread_mutex_lock(&nbar->mutex);
-				strncpy(nbar->timefmt, buf, strlen(buf) + 1);
-				pthread_mutex_unlock(&nbar->mutex);
-			}
-			change_win = 0;
-			break;
-                case '4':
-			status_mesg(count_str, "");
-			pthread_mutex_lock(&nbar->mutex);
-			printf(buf, "%d", nbar->cntdwn);
-			pthread_mutex_unlock(&nbar->mutex);
-			if (updatestring(swin, &buf, 0, 1) == 0 && 
-				is_all_digit(buf) && 
-				atoi(buf) >= 0 && atoi(buf) <= DAYINSEC) {
-				pthread_mutex_lock(&nbar->mutex);
-				nbar->cntdwn = atoi(buf);
-				pthread_mutex_unlock(&nbar->mutex);
-			}
-			change_win = 0;
-                        break;
-		case '5':
-			status_mesg(cmd_str, "");
-			pthread_mutex_lock(&nbar->mutex);
-			strncpy(buf, nbar->cmd, strlen(nbar->cmd) + 1);
-			pthread_mutex_unlock(&nbar->mutex);
-			if (updatestring(swin, &buf, 0, 1) == 0) {
-				pthread_mutex_lock(&nbar->mutex);
-				strncpy(nbar->cmd, buf, strlen(buf) + 1);
-				pthread_mutex_unlock(&nbar->mutex);
-			}
-			change_win = 0;
-                        break;
-		}
-	}
-	free(buf);
-	delwin(conf_win);
-}
-
-/* prints the general options */
-void print_general_options(WINDOW *win, conf_t *conf)
-{
-	int x_pos, y_pos;
-	char *option1 = _("auto_save = ");
-	char *option2 = _("confirm_quit = ");
-	char *option3 = _("confirm_delete = ");
-        char *option4 = _("skip_system_dialogs = ");
-	char *option5 = _("skip_progress_bar = ");
-        char *option6 = _("week_begins_on_monday = ");
-
-	x_pos = 3;
-	y_pos = 3;
-
-	mvwprintw(win, y_pos, x_pos, "[1] %s      ", option1);
-	print_option_incolor(win, conf->auto_save, y_pos,
-			     x_pos + 4 + strlen(option1));
-	mvwprintw(win, y_pos + 1, x_pos,
-		 _("(if set to YES, automatic save is done when quitting)"));
-
-	mvwprintw(win, y_pos + 3, x_pos, "[2] %s      ", option2);
-	print_option_incolor(win, conf->confirm_quit, y_pos + 3,
-			     x_pos + 4 + strlen(option2));
-	mvwprintw(win, y_pos + 4, x_pos,
-		 _("(if set to YES, confirmation is required before quitting)"));
-
-	mvwprintw(win, y_pos + 6, x_pos, "[3] %s      ", option3);
-	print_option_incolor(win, conf->confirm_delete, y_pos + 6,
-			     x_pos + 4 + strlen(option3));
-	mvwprintw(win, y_pos + 7, x_pos,
-		 _("(if set to YES, confirmation is required before deleting an event)"));
-        
-	mvwprintw(win, y_pos + 9, x_pos, "[4] %s      ", option4);
-	print_option_incolor(win, conf->skip_system_dialogs, y_pos + 9,
-			     x_pos + 4 + strlen(option4));
-	mvwprintw(win, y_pos + 10, x_pos,
-		 _("(if set to YES, messages about loaded and saved data will not be displayed)"));
-
-	mvwprintw(win, y_pos + 12, x_pos, "[5] %s      ", option5);
-	print_option_incolor(win, conf->skip_progress_bar , y_pos + 12,
-			     x_pos + 4 + strlen(option5));
-	mvwprintw(win, y_pos + 13, x_pos,
-		 _("(if set to YES, progress bar will not be displayed when saving data)"));
-
-	mvwprintw(win, y_pos + 15, x_pos, "[6] %s      ", option6);
-	print_option_incolor(win, calendar_week_begins_on_monday(), y_pos + 15,
-			     x_pos + 4 + strlen(option6));
-	mvwprintw(win, y_pos + 16, x_pos,
-                  _("(if set to YES, monday is the first day of the week, else it is sunday)"));
-
-	wmove(swin, 1, 0);
-	wnoutrefresh(win);
-	doupdate();
-}
-
-/* Print options related to the notify-bar. */
-void 
-print_notify_options(WINDOW *win, int col)
-{
-	enum {SHOW, DATE, CLOCK, WARN, CMD, NB_OPT};
-
-	struct opt_s {
-		char name[BUFSIZ];
-		char desc[BUFSIZ];
-		char value[BUFSIZ];
-	} opt[NB_OPT];
-
-	int i, y, x, l, x_pos, y_pos, x_offset, y_offset, maxcol, maxlen;
-	char buf[BUFSIZ];
-
-	x_pos = 3;
-	x_offset = 4;
-	y_pos = 4;
-	y_offset = 3;
-	maxcol = col - 2;
-
-	strncpy(opt[SHOW].name, _("notify-bar_show = "), BUFSIZ);
-	strncpy(opt[DATE].name, _("notify-bar_date = "), BUFSIZ);
-	strncpy(opt[CLOCK].name, _("notify-bar_clock = "), BUFSIZ);
-	strncpy(opt[WARN].name, _("notify-bar_warning = "), BUFSIZ);
-	strncpy(opt[CMD].name, _("notify-bar_command = "), BUFSIZ);
-
-	strncpy(opt[SHOW].desc, 
-	    _("(if set to YES, notify-bar will be displayed)"), 
-	    BUFSIZ);
-	strncpy(opt[DATE].desc, 
-	    _("(Format of the date to be displayed inside notify-bar)"), 
-	    BUFSIZ);
-	strncpy(opt[CLOCK].desc, 
-	    _("(Format of the time to be displayed inside notify-bar)"),
-	    BUFSIZ);
-	strncpy(opt[WARN].desc, 
-	    _("(Warn user if an appointment is within next 'notify-bar_warning'"
-	    " seconds)"),
-	    BUFSIZ);
-	strncpy(opt[CMD].desc, 
-	    _("(Command used to notify user of an upcoming appointment)"),
-	    BUFSIZ);
-
-	pthread_mutex_lock(&nbar->mutex);
-
-	strncpy(opt[DATE].value, nbar->datefmt, BUFSIZ);
-	strncpy(opt[CLOCK].value, nbar->timefmt, BUFSIZ);
-	snprintf(opt[WARN].value, BUFSIZ, "%d", nbar->cntdwn);
-	strncpy(opt[CMD].value, nbar->cmd, BUFSIZ);
-
-	l = strlen(opt[SHOW].name);
-	x = x_pos + x_offset + l;
-	mvwprintw(win, y_pos, x_pos, "[1] %s", opt[SHOW].name);
-	erase_window_part(win, x, y_pos, maxcol, y_pos);
-	print_option_incolor(win, nbar->show, y_pos, x);
-	mvwprintw(win, y_pos + 1, x_pos, opt[SHOW].desc);
-
-	for (i = 1; i < NB_OPT; i++) {
-		l = strlen(opt[i].name);
-		y = y_pos + i * y_offset;
-		x = x_pos + x_offset + l;
-		maxlen = maxcol - x - 2;
-
-		mvwprintw(win, y, x_pos, "[%d] %s", i + 1, opt[i].name);
-		erase_window_part(win, x, y, maxcol, y);
-		custom_apply_attr(win, ATTR_HIGHEST);
-		if (strlen(opt[i].value) < maxlen)
-			mvwprintw(win, y, x, "%s", opt[i].value);
-		else {
-			strncpy(buf, opt[i].value, maxlen - 1);
-			buf[maxlen - 1] = '\0';
-			mvwprintw(win, y, x, "%s...", buf);
-		}
-		custom_remove_attr(win, ATTR_HIGHEST);
-		mvwprintw(win, y + 1, x_pos, opt[i].desc);
-	}
-
-	pthread_mutex_unlock(&nbar->mutex);
-	wmove(swin, 1, 0);
-	wnoutrefresh(win);
-	doupdate();
-}
-
-/* print the option value with appropriate color */
-void print_option_incolor(WINDOW *win, bool option, int pos_y, int pos_x)
-{
-	int color;
-	char *option_value;
-
-	if (option == true) {
-		color = ATTR_TRUE;
-		option_value = _("yes");
-	} else if (option == false) {
-		color = ATTR_FALSE;
-		option_value = _("no");
-	} else {
-		erase_window_part(win, 0, 0, col, row - 2);
-		mvwprintw(win, 1, 1,
-			 _("option not defined - Problem in print_option_incolor()"));
-		wnoutrefresh(win);
-		doupdate();
-		wgetch(win);
-		exit(EXIT_FAILURE);
-	}
-	custom_apply_attr(win, color);
-	mvwprintw(win, pos_y, pos_x, "%s", option_value);
-	custom_remove_attr(win, color);
-	wnoutrefresh(win);
-	doupdate();
-}
-
-  /* Delete an event from the ToDo or Appointment lists */
-void del_item(conf_t *conf, day_items_nb_t *inday, window_t *winbar)
-{
-	char *choices = "[y/n] ";
-	char *del_app_str = _("Do you really want to delete this item ?");
-	char *del_todo_str = _("Do you really want to delete this task ?");
-	long date;
-	int nb_items = inday->nb_apoints + inday->nb_events;
-	bool go_for_deletion = false;
-	bool go_for_todo_del = false;
-	int to_be_removed;
-	int answer = 0;
-	int deleted_item_type = 0;
-	
-	/* delete an appointment */
-	if (which_pan == APPOINTMENT && hilt_app != 0) {
-		date = calendar_get_slctd_day_sec();
-		
-		if (conf->confirm_delete) {
-			status_mesg(del_app_str, choices);		
-			answer = wgetch(swin);
-			if ( (answer == 'y') && (nb_items != 0) )
-				go_for_deletion = true;
-			else {
-				erase_window_part(swin, 0, 0, winbar->w, 
-				    winbar->h);
-				return;
-			}
-		} else 
-			if (nb_items != 0) 
-				go_for_deletion = true;
-		
-		if (go_for_deletion) {
-			if (nb_items != 0) {
-				deleted_item_type = 
-					day_erase_item(date, hilt_app, 0);
-				if (deleted_item_type == EVNT || 
-				    deleted_item_type == RECUR_EVNT) {
-					inday->nb_events--;
-					to_be_removed = 1;
-				} else if (deleted_item_type == APPT ||
-				    deleted_item_type == RECUR_APPT) {
-					inday->nb_apoints--;
-					to_be_removed = 3;
-				} else if (deleted_item_type == 0) {
-					to_be_removed = 0;		
-				} else { /* NOTREACHED */
-					fputs(_("FATAL ERROR in del_item: no such type\n"), stderr);
-					exit(EXIT_FAILURE);
-				}	
-
-				if (hilt_app > 1) --hilt_app;
-				if (apad->first_onscreen >= to_be_removed)
-					apad->first_onscreen = 
-						apad->first_onscreen -
-						to_be_removed;
-				if (nb_items == 1) hilt_app = 0;
-			}
-		}
-
-	/* delete a todo */
-	} else if (which_pan == TODO && hilt_tod != 0) {
-		if (conf->confirm_delete) {
-			status_mesg(del_todo_str, choices);
-			answer = wgetch(swin);
-			if ( (answer == 'y') && (nb_tod > 0) ) {
-				go_for_todo_del = true;
-			} else {
-				erase_window_part(swin, 0, 0, winbar->w, 
-				    winbar->h);
-				return;
-			}
-		} else 
-			if (nb_tod > 0) 
-				go_for_todo_del = true;
-
-		if (go_for_todo_del) {
-			todo_delete_bynum(hilt_tod - 1);
-			nb_tod--;
-			if (hilt_tod > 1) hilt_tod--;
-			if (nb_tod == 0) hilt_tod = 0;
-		}
-	}
-}
-
-/* 
- * Add an item in either the appointment or the event list,
- * depending if the start time is entered or not.
- */
-void add_item(window_t *winbar)
-{
-#define LTIME 6
-	char *mesg_1 = _("Enter start time ([hh:mm] or [h:mm]), leave blank for an all-day event : ");
-	char *mesg_2 = _("Enter end time ([hh:mm] or [h:mm]) or duration (in minutes) : ");
-	char *mesg_3 = _("Enter description :");
-	char *format_message_1 = _("You entered an invalid start time, should be [h:mm] or [hh:mm]");
-	char *format_message_2 = _("You entered an invalid end time, should be [h:mm] or [hh:mm] or [mm]");
-        char *enter_str = _("Press [Enter] to continue");
-	int Id;
-        char item_time[LTIME] = "";
-	char item_mesg[BUFSIZ] = "";
-	long apoint_duration, apoint_start;
-	apoint_llist_node_t *apoint_pointeur;
-        struct event_s *event_pointeur;
-	unsigned heures, minutes;
-	unsigned end_h, end_m;
-        int is_appointment = 1;
-
-	/* Get the starting time */
-	while (check_time(item_time) != 1) {
-                status_mesg(mesg_1, "");
-		if (getstring(swin, item_time, LTIME, 0, 1) != 
-			GETSTRING_ESC) {
-			if (strlen(item_time) == 0){
-				is_appointment = 0;
-				break;	
-			} else if (check_time(item_time) != 1) {
-				status_mesg(format_message_1, enter_str);
-				wgetch(swin);
-			} else
-				sscanf(item_time, "%u:%u", &heures, &minutes);
-		} else
-			return;
-	}
-        /* 
-         * Check if an event or appointment is entered, 
-         * depending on the starting time, and record the 
-         * corresponding item.
-         */
-        if (is_appointment){ /* Get the appointment duration */
-		item_time[0] = '\0';
-                while (check_time(item_time) == 0) {
-                        status_mesg(mesg_2, "");
-                        if (getstring(swin, item_time, LTIME, 0, 1) != 
-				GETSTRING_VALID)
-                                return;	//nothing entered, cancel adding of event
-			else if (check_time(item_time) == 0) {
-                                status_mesg(format_message_2, enter_str);
-                                wgetch(swin);
-                        } else {
-				if (check_time(item_time) == 2)
-                                	apoint_duration = atoi(item_time);
-				else if (check_time(item_time) == 1) {
-					sscanf(item_time, "%u:%u", 
-							&end_h, &end_m);
-					if (end_h < heures){
-						apoint_duration = 
-						    MININSEC - minutes + end_m
-						    + 
-						    (24 + end_h - (heures + 1))
-						    * MININSEC;
-					} else {
-						apoint_duration = 
-							MININSEC - minutes + 
-							end_m + 
-							(end_h - (heures + 1)) * 
-							MININSEC;
-					}
-				}
-			}	
-                }
-        } else  /* Insert the event Id */
-                Id = 1;
-
-        status_mesg(mesg_3, "");
-	if (getstring(swin, item_mesg, BUFSIZ, 0, 1) == 
-		GETSTRING_VALID) {
-                if (is_appointment) {
-			apoint_start = 
-			    date2sec(*calendar_get_slctd_day(), heures, 
-			    minutes);
-			apoint_pointeur = apoint_new(item_mesg, apoint_start,
-			    min2sec(apoint_duration), 0L);
-			if (notify_bar()) 
-				notify_check_added(item_mesg, apoint_start, 0L);
-                } else 
-                        event_pointeur = event_new(item_mesg, 
-			    date2sec(*calendar_get_slctd_day(), 12, 0), Id);
-
-		if (hilt_app == 0) 
-			hilt_app++;
-	}
-	erase_window_part(swin, 0, 0, winbar->w, winbar->h);
-}
-
-/* Updates the ToDo panel */
-void update_todo_panel(window_t *wintod)
-{
-	struct todo_s *i;
-	int len = wintod->w - 6;
-	int num_todo = 0;
-	int y_offset = 3, x_offset = 1;
-	int t_realpos = -1;
-	int title_lines = 3;
-	int todo_lines = 1;
-	int max_items = wintod->h - 4;
-	int incolor = -1;
-	char mesg[BUFSIZ] = "";
-
-	/* Print todo item in the panel. */
-	erase_window_part(twin, 1, title_lines, wintod->w - 2, wintod->h - 2);
-	for (i = todolist; i != 0; i = i->next) {
-		num_todo++;
-		t_realpos = num_todo - first_todo_onscreen;
-		incolor = num_todo - hilt_tod;
-		if (incolor == 0) saved_t_mesg = i->mesg; 
-		if (t_realpos >= 0 && t_realpos < max_items) {
-			snprintf(mesg, BUFSIZ, "%d. ", i->id);	
-			strncat(mesg, i->mesg, strlen(i->mesg));
-			display_item(twin, incolor, mesg, 0, 
-					len, y_offset, x_offset);
-			y_offset = y_offset + todo_lines;	
-		}
-	}
-
-	/* Draw the scrollbar if necessary. */
-	if (nb_tod > max_items){
-		float ratio = ((float) max_items) / ((float) nb_tod);
-		int sbar_length = (int) (ratio * (max_items + 1)); 
-		int highend = (int) (ratio * first_todo_onscreen);
-		bool hilt_bar = (which_pan == TODO) ? true : false;
-		int sbar_top = highend + title_lines;
-	
-		if ((sbar_top + sbar_length) > wintod->h - 1)
-			sbar_length = wintod->h - 1 - sbar_top;
-		draw_scrollbar(twin, sbar_top, wintod->w - 2, 
-	    	    sbar_length, title_lines, wintod->h - 1, hilt_bar);
-	}
-	
-	wnoutrefresh(twin);
-}
-
-/* Updates the Appointment panel */
-void 
-update_app_panel(window_t *winapp)
-{
-	int title_xpos;
-	int bordr = 1;
-	int title_lines = 3;
-	int app_width = winapp->w - bordr;
-	int app_length = winapp->h - bordr - title_lines;
-	long date;
-	date_t slctd_date;
-
-	/* variable inits */
-	slctd_date = *calendar_get_slctd_day();
-	title_xpos = winapp->w - (strlen(_(monthnames[slctd_date.mm - 1])) + 11);
-	if (slctd_date.dd < 10) 
-		title_xpos++;
-	date = date2sec(slctd_date, 0, 0);
-	day_write_pad(date, app_width, app_length, hilt_app);
-
-	/* Print current date in the top right window corner. */
-	erase_window_part(awin, 1, title_lines, winapp->w - 2, winapp->h - 2);
-	custom_apply_attr(awin, ATTR_HIGHEST);
-	mvwprintw(awin, title_lines, title_xpos, "%s %d, %d",
-	    _(monthnames[slctd_date.mm - 1]), slctd_date.dd, slctd_date.yyyy);
-	custom_remove_attr(awin, ATTR_HIGHEST);
-	
-	/* Draw the scrollbar if necessary. */
-	if ((apad->length >= app_length)||(apad->first_onscreen > 0)) {
-		float ratio = ((float) app_length) / ((float) apad->length);
-		int sbar_length = (int) (ratio * app_length);
-		int highend = (int) (ratio * apad->first_onscreen);
-		bool hilt_bar = (which_pan == APPOINTMENT) ? true : false;
-		int sbar_top = highend + title_lines + 1;
-		
-		if ((sbar_top + sbar_length) > winapp->h - 1)
-			sbar_length = winapp->h - 1 - sbar_top;
-		draw_scrollbar(awin, sbar_top, winapp->w - 2, sbar_length, 
-				title_lines + 1, winapp->h - 1, hilt_bar);
-	}
-
-	wnoutrefresh(awin);
-	pnoutrefresh(apad->ptrwin, apad->first_onscreen, 0, 
-	    winapp->y + title_lines + 1, winapp->x + bordr, 
-    	    winapp->y + winapp->h - 2*bordr, winapp->x + winapp->w - 3*bordr);
-}
