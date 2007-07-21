@@ -1,4 +1,4 @@
-/*	$calcurse: custom.c,v 1.13 2007/07/20 19:14:33 culot Exp $	*/
+/*	$calcurse: custom.c,v 1.14 2007/07/21 19:34:07 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -33,6 +33,7 @@
 #include "custom.h"
 #include "i18n.h"
 #include "io.h"
+#include "wins.h"
 #include "utils.h"
 #include "apoint.h"
 
@@ -102,7 +103,7 @@ custom_remove_attr(WINDOW *win, int attr_num)
 
 /* Load the user configuration. */
 void 
-custom_load_conf(conf_t *conf, int background, window_t *win)
+custom_load_conf(conf_t *conf, int background)
 {
 	FILE *data_file;
 	char *mesg_line1 = _("Failed to open config file");
@@ -219,7 +220,6 @@ custom_load_conf(conf_t *conf, int background, window_t *win)
 	}
 	fclose(data_file);
 	pthread_mutex_unlock(&nbar->mutex);
-	erase_window_part(swin, 0, 0, win->w, win->h);
 }
 
 /* Draws the configuration bar */
@@ -339,7 +339,7 @@ custom_color_config(int notify_bar)
 	win_row = (notify_bar) ? row - 3 : row - 2;
 	conf_win = newwin(win_row, col, 0, 0);
 	snprintf(label, BUFSIZ, _("CalCurse %s | color theme"), VERSION);
-	win_show(conf_win, label);
+	wins_show(conf_win, label);
 	status_mesg(choose_color_1, choose_color_2);
 
 	custom_apply_attr(conf_win, ATTR_HIGHEST);
@@ -644,4 +644,105 @@ custom_color_theme_name(char *theme_name)
 		snprintf(theme_name, BUFSIZ, "%s on %s", color_name[0],
 		    color_name[1]);
 	}
+}
+
+/* Prints the general options. */
+static void 
+custom_print_general_options(WINDOW *win, conf_t *conf)
+{
+	int x_pos, y_pos;
+	char *option1 = _("auto_save = ");
+	char *option2 = _("confirm_quit = ");
+	char *option3 = _("confirm_delete = ");
+        char *option4 = _("skip_system_dialogs = ");
+	char *option5 = _("skip_progress_bar = ");
+        char *option6 = _("week_begins_on_monday = ");
+
+	x_pos = 3;
+	y_pos = 3;
+
+	mvwprintw(win, y_pos, x_pos, "[1] %s      ", option1);
+	print_option_incolor(win, conf->auto_save, y_pos,
+			     x_pos + 4 + strlen(option1));
+	mvwprintw(win, y_pos + 1, x_pos,
+		 _("(if set to YES, automatic save is done when quitting)"));
+
+	mvwprintw(win, y_pos + 3, x_pos, "[2] %s      ", option2);
+	print_option_incolor(win, conf->confirm_quit, y_pos + 3,
+			     x_pos + 4 + strlen(option2));
+	mvwprintw(win, y_pos + 4, x_pos,
+		 _("(if set to YES, confirmation is required before quitting)"));
+
+	mvwprintw(win, y_pos + 6, x_pos, "[3] %s      ", option3);
+	print_option_incolor(win, conf->confirm_delete, y_pos + 6,
+			     x_pos + 4 + strlen(option3));
+	mvwprintw(win, y_pos + 7, x_pos,
+		 _("(if set to YES, confirmation is required before deleting an event)"));
+        
+	mvwprintw(win, y_pos + 9, x_pos, "[4] %s      ", option4);
+	print_option_incolor(win, conf->skip_system_dialogs, y_pos + 9,
+			     x_pos + 4 + strlen(option4));
+	mvwprintw(win, y_pos + 10, x_pos,
+		 _("(if set to YES, messages about loaded and saved data will not be displayed)"));
+
+	mvwprintw(win, y_pos + 12, x_pos, "[5] %s      ", option5);
+	print_option_incolor(win, conf->skip_progress_bar , y_pos + 12,
+			     x_pos + 4 + strlen(option5));
+	mvwprintw(win, y_pos + 13, x_pos,
+		 _("(if set to YES, progress bar will not be displayed when saving data)"));
+
+	mvwprintw(win, y_pos + 15, x_pos, "[6] %s      ", option6);
+	print_option_incolor(win, calendar_week_begins_on_monday(), y_pos + 15,
+			     x_pos + 4 + strlen(option6));
+	mvwprintw(win, y_pos + 16, x_pos,
+                  _("(if set to YES, monday is the first day of the week, else it is sunday)"));
+
+	wmove(swin, 1, 0);
+	wnoutrefresh(win);
+	doupdate();
+}
+
+/* General configuration. */
+void 
+custom_general_config(conf_t *conf)
+{
+	WINDOW *conf_win;
+	char label[BUFSIZ];
+	char *number_str = _("Enter an option number to change its value [Q to quit] ");
+	int ch, win_row;
+
+	clear();
+	win_row = (notify_bar()) ? row - 3 : row - 2;
+	conf_win = newwin(win_row, col, 0, 0);
+	box(conf_win, 0, 0);
+	snprintf(label, BUFSIZ, _("CalCurse %s | general options"), VERSION);
+	wins_show(conf_win, label);
+	status_mesg(number_str, "");
+	custom_print_general_options(conf_win, conf);
+	while ((ch = wgetch(swin)) != 'q') {
+		switch (ch) {
+		case '1':	
+			conf->auto_save = !conf->auto_save;
+			break;
+		case '2':
+			conf->confirm_quit = !conf->confirm_quit;
+			break;
+		case '3':
+			conf->confirm_delete = !conf->confirm_delete;
+			break;
+                case '4':
+                        conf->skip_system_dialogs =
+				!conf->skip_system_dialogs;
+                        break;
+		case '5':
+			conf->skip_progress_bar = 
+				!conf->skip_progress_bar;
+			break;
+                case '6':
+			calendar_change_first_day_of_week();
+                        break;
+		}
+		custom_print_general_options(conf_win, conf);
+	}
+	delwin(conf_win);
 }
