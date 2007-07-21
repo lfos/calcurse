@@ -1,4 +1,4 @@
-/*	$calcurse: utils.h,v 1.19 2007/07/20 19:19:56 culot Exp $	*/
+/*	$calcurse: utils.h,v 1.20 2007/07/21 19:33:24 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -54,6 +54,7 @@ typedef struct { /* structure defining a keybinding */
 } binding_t;
 
 void 	status_mesg(char *, char *);
+void	erase_status_bar(void);
 void 	erase_window_part(WINDOW *, int, int, int, int);
 WINDOW *popup(int, int, int, int, char *);
 void 	print_in_middle(WINDOW *, int, int, int, char *);
@@ -66,7 +67,7 @@ int 	updatestring(WINDOW *, char **, int, int);
 int 	is_all_digit(char *);
 void 	border_color(WINDOW *);
 void 	border_nocolor(WINDOW *);
-void 	status_bar(int, window_t *);
+void 	status_bar(int);
 long 	date2sec(date_t, unsigned, unsigned);
 char   *date_sec2hour_str(long);
 char   *date_sec2date_str(long);
@@ -78,12 +79,12 @@ long 	min2sec(unsigned);
 int 	check_time(char *);
 void 	draw_scrollbar(WINDOW *, int, int, int, int, int, bool);
 void 	item_in_popup(char *, char *, char *, char *);
-void 	win_show(WINDOW *, char *);
 void 	display_item(WINDOW *, int, char *, int, int, int, int);
 void 	reset_status_page(void);
 void 	other_status_page(int);
 long 	get_today(void);
 long 	now(void);
 char   *mycpy(const char *);
+void 	print_option_incolor(WINDOW *, bool, int, int);
 
 #endif /* CALCURSE_UTILS_H */

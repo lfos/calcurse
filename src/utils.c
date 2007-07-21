@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.30 2007/07/20 19:18:09 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.31 2007/07/21 19:33:24 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -36,6 +36,7 @@
 
 #include "i18n.h"
 #include "utils.h"
+#include "wins.h"
 #include "custom.h"
 #include "vars.h"
 
@@ -45,14 +46,21 @@ static unsigned status_page;
  * Print a message in the status bar.
  * Message texts for first line and second line are to be provided.
  */
-
-void status_mesg(char *mesg_line1, char *mesg_line2)
+void 
+status_mesg(char *mesg_line1, char *mesg_line2)
 {
 	erase_window_part(swin, 0, 0, col, 2);
 	custom_apply_attr(swin, ATTR_HIGHEST);
 	mvwprintw(swin, 0, 0, mesg_line1);
 	mvwprintw(swin, 1, 0, mesg_line2);
 	custom_remove_attr(swin, ATTR_HIGHEST);
+}
+
+/* Erase status bar. */
+void
+erase_status_bar(void)
+{
+	erase_window_part(swin, 0, 0, col, STATUSHEIGHT);
 }
 
 /* 
@@ -83,7 +91,7 @@ WINDOW * popup(int pop_row, int pop_col,
 	custom_apply_attr(popup_win, ATTR_HIGHEST);
 	box(popup_win, 0, 0);
 	snprintf(label, BUFSIZ, "%s", pop_lab);
-	win_show(popup_win, label);
+	wins_show(popup_win, label);
 	mvwprintw(popup_win, pop_row - 2, pop_col - (strlen(txt_pop) + 1), "%s",
 		 txt_pop);
 	custom_remove_attr(popup_win, ATTR_HIGHEST);
@@ -375,7 +383,7 @@ border_nocolor(WINDOW *window)
  * utils.h, depending on which panel the added keybind is assigned to.
  */
 void 
-status_bar(int which_pan, window_t *win)
+status_bar(int which_pan)
 {
 	int cmd_length, space_between_cmds, start, end, i, j = 0;
 	const int pos[NB_PANELS + 1] = 
@@ -425,7 +433,7 @@ status_bar(int which_pan, window_t *win)
 	cmd_length += space_between_cmds;
 
 	/* Drawing the keybinding with attribute and label without. */
-	erase_window_part(swin, 0, 0, win->w, win->h);
+	erase_status_bar();
 	start = pos[which_pan] + 2*CMDS_PER_LINE*(status_page - 1);
 	end = MIN(start + 2*CMDS_PER_LINE, pos[which_pan + 1]);
 	for (i = start; i < end; i += 2) {
@@ -697,22 +705,6 @@ void item_in_popup(char *saved_a_start, char *saved_a_end, char *msg,
 	delwin(popup_win);
 }
 
-/* Show the window with a border and a label */
-void win_show(WINDOW * win, char *label)
-{
-	int startx, starty, height, width;
-
-	getbegyx(win, starty, startx);
-	getmaxyx(win, height, width);
-
-	box(win, 0, 0);
-	mvwaddch(win, 2, 0, ACS_LTEE);
-	mvwhline(win, 2, 1, ACS_HLINE, width - 2);
-	mvwaddch(win, 2, width - 1, ACS_RTEE);
-
-	print_in_middle(win, 1, 0, width, label);
-}
-
 /* 
  * Print an item description in the corresponding panel window.
  */
@@ -807,4 +799,33 @@ char *mycpy(const char *src)
 		return strncpy(string, src, strlen(src) + 1);
 	else
 		return NULL;
+}
+
+/* Print the given option value with appropriate color. */
+void 
+print_option_incolor(WINDOW *win, bool option, int pos_y, int pos_x)
+{
+	int color;
+	char *option_value;
+
+	if (option == true) {
+		color = ATTR_TRUE;
+		option_value = _("yes");
+	} else if (option == false) {
+		color = ATTR_FALSE;
+		option_value = _("no");
+	} else {
+		erase_window_part(win, 0, 0, col, row - 2);
+		mvwprintw(win, 1, 1,
+		    _("option not defined - Problem in print_option_incolor()"));
+		wnoutrefresh(win);
+		doupdate();
+		wgetch(win);
+		exit(EXIT_FAILURE);
+	}
+	custom_apply_attr(win, color);
+	mvwprintw(win, pos_y, pos_x, "%s", option_value);
+	custom_remove_attr(win, color);
+	wnoutrefresh(win);
+	doupdate();
 }
