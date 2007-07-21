@@ -1,4 +1,4 @@
-/*	$calcurse: notify.c,v 1.14 2007/07/20 19:10:51 culot Exp $	*/
+/*	$calcurse: notify.c,v 1.15 2007/07/21 19:36:45 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -39,6 +39,7 @@
 #include "apoint.h"
 #include "notify.h"
 #include "recur.h"
+#include "wins.h"
 
 static struct notify_vars_s *notify = NULL;
 static struct notify_app_s *notify_app = NULL;
@@ -406,4 +407,193 @@ notify_start_main_thread(void)
 	pthread_create(&notify_t_main, NULL, notify_main_thread, NULL);
 	notify_check_next_app();
 	return;
+}
+
+/* Print options related to the notify-bar. */
+static void 
+notify_print_options(WINDOW *win, int col)
+{
+	enum {SHOW, DATE, CLOCK, WARN, CMD, NB_OPT};
+
+	struct opt_s {
+		char name[BUFSIZ];
+		char desc[BUFSIZ];
+		char value[BUFSIZ];
+	} opt[NB_OPT];
+
+	int i, y, x, l, x_pos, y_pos, x_offset, y_offset, maxcol, maxlen;
+	char buf[BUFSIZ];
+
+	x_pos = 3;
+	x_offset = 4;
+	y_pos = 4;
+	y_offset = 3;
+	maxcol = col - 2;
+
+	strncpy(opt[SHOW].name, _("notify-bar_show = "), BUFSIZ);
+	strncpy(opt[DATE].name, _("notify-bar_date = "), BUFSIZ);
+	strncpy(opt[CLOCK].name, _("notify-bar_clock = "), BUFSIZ);
+	strncpy(opt[WARN].name, _("notify-bar_warning = "), BUFSIZ);
+	strncpy(opt[CMD].name, _("notify-bar_command = "), BUFSIZ);
+
+	strncpy(opt[SHOW].desc, 
+	    _("(if set to YES, notify-bar will be displayed)"), 
+	    BUFSIZ);
+	strncpy(opt[DATE].desc, 
+	    _("(Format of the date to be displayed inside notify-bar)"), 
+	    BUFSIZ);
+	strncpy(opt[CLOCK].desc, 
+	    _("(Format of the time to be displayed inside notify-bar)"),
+	    BUFSIZ);
+	strncpy(opt[WARN].desc, 
+	    _("(Warn user if an appointment is within next 'notify-bar_warning'"
+	    " seconds)"),
+	    BUFSIZ);
+	strncpy(opt[CMD].desc, 
+	    _("(Command used to notify user of an upcoming appointment)"),
+	    BUFSIZ);
+
+	pthread_mutex_lock(&nbar->mutex);
+
+	strncpy(opt[DATE].value, nbar->datefmt, BUFSIZ);
+	strncpy(opt[CLOCK].value, nbar->timefmt, BUFSIZ);
+	snprintf(opt[WARN].value, BUFSIZ, "%d", nbar->cntdwn);
+	strncpy(opt[CMD].value, nbar->cmd, BUFSIZ);
+
+	l = strlen(opt[SHOW].name);
+	x = x_pos + x_offset + l;
+	mvwprintw(win, y_pos, x_pos, "[1] %s", opt[SHOW].name);
+	erase_window_part(win, x, y_pos, maxcol, y_pos);
+	print_option_incolor(win, nbar->show, y_pos, x);
+	mvwprintw(win, y_pos + 1, x_pos, opt[SHOW].desc);
+
+	for (i = 1; i < NB_OPT; i++) {
+		l = strlen(opt[i].name);
+		y = y_pos + i * y_offset;
+		x = x_pos + x_offset + l;
+		maxlen = maxcol - x - 2;
+
+		mvwprintw(win, y, x_pos, "[%d] %s", i + 1, opt[i].name);
+		erase_window_part(win, x, y, maxcol, y);
+		custom_apply_attr(win, ATTR_HIGHEST);
+		if (strlen(opt[i].value) < maxlen)
+			mvwprintw(win, y, x, "%s", opt[i].value);
+		else {
+			strncpy(buf, opt[i].value, maxlen - 1);
+			buf[maxlen - 1] = '\0';
+			mvwprintw(win, y, x, "%s...", buf);
+		}
+		custom_remove_attr(win, ATTR_HIGHEST);
+		mvwprintw(win, y + 1, x_pos, opt[i].desc);
+	}
+
+	pthread_mutex_unlock(&nbar->mutex);
+	wmove(swin, 1, 0);
+	wnoutrefresh(win);
+	doupdate();
+}
+
+/* Notify-bar configuration. */
+void 
+notify_config_bar(void)
+{
+	WINDOW *conf_win;
+	char label[BUFSIZ];
+	char *buf;
+	char *number_str = 
+	    _("Enter an option number to change its value [Q to quit] ");
+	char *date_str = 
+	    _("Enter the date format (see 'man 3 strftime' for possible formats) ");
+	char *time_str = 
+	    _("Enter the time format (see 'man 3 strftime' for possible formats) ");
+	char *count_str = 
+	    _("Enter the number of seconds (0 not to be warned before an appointment)");
+	char *cmd_str = _("Enter the notification command ");
+	int ch = 0 , win_row, change_win = 1;
+
+	buf = (char *)malloc(BUFSIZ);
+	win_row = (notify_bar()) ? row - 3 : row - 2;
+	snprintf(label, BUFSIZ, 
+	    _("CalCurse %s | notify-bar options"), VERSION);
+
+	while (ch != 'q') {
+		if (change_win) {
+			conf_win = newwin(win_row, col, 0, 0);
+			box(conf_win, 0, 0);
+			wins_show(conf_win, label);
+		}
+		status_mesg(number_str, "");
+		notify_print_options(conf_win, col);
+		*buf = '\0';
+		ch = wgetch(swin);
+
+		switch (ch) {
+		case '1':	
+			pthread_mutex_lock(&nbar->mutex);
+			nbar->show = !nbar->show;
+			pthread_mutex_unlock(&nbar->mutex);
+			notify_stop_main_thread();
+			if (notify_bar()) {
+				notify_start_main_thread();
+				win_row = row - 3;
+			} else {
+				win_row = row - 2;
+			}
+			delwin(conf_win);
+			change_win = 1;
+			break;
+		case '2':
+			status_mesg(date_str, "");
+			pthread_mutex_lock(&nbar->mutex);
+			strncpy(buf, nbar->datefmt, strlen(nbar->datefmt) + 1);
+			pthread_mutex_unlock(&nbar->mutex);
+			if (updatestring(swin, &buf, 0, 1) == 0) {
+				pthread_mutex_lock(&nbar->mutex);
+				strncpy(nbar->datefmt, buf, strlen(buf) + 1);
+				pthread_mutex_unlock(&nbar->mutex);
+			}
+			change_win = 0;
+			break;
+		case '3':
+			status_mesg(time_str, "");
+			pthread_mutex_lock(&nbar->mutex);
+			strncpy(buf, nbar->timefmt, strlen(nbar->timefmt) + 1);
+			pthread_mutex_unlock(&nbar->mutex);
+			if (updatestring(swin, &buf, 0, 1) == 0) {
+				pthread_mutex_lock(&nbar->mutex);
+				strncpy(nbar->timefmt, buf, strlen(buf) + 1);
+				pthread_mutex_unlock(&nbar->mutex);
+			}
+			change_win = 0;
+			break;
+                case '4':
+			status_mesg(count_str, "");
+			pthread_mutex_lock(&nbar->mutex);
+			printf(buf, "%d", nbar->cntdwn);
+			pthread_mutex_unlock(&nbar->mutex);
+			if (updatestring(swin, &buf, 0, 1) == 0 && 
+				is_all_digit(buf) && 
+				atoi(buf) >= 0 && atoi(buf) <= DAYINSEC) {
+				pthread_mutex_lock(&nbar->mutex);
+				nbar->cntdwn = atoi(buf);
+				pthread_mutex_unlock(&nbar->mutex);
+			}
+			change_win = 0;
+                        break;
+		case '5':
+			status_mesg(cmd_str, "");
+			pthread_mutex_lock(&nbar->mutex);
+			strncpy(buf, nbar->cmd, strlen(nbar->cmd) + 1);
+			pthread_mutex_unlock(&nbar->mutex);
+			if (updatestring(swin, &buf, 0, 1) == 0) {
+				pthread_mutex_lock(&nbar->mutex);
+				strncpy(nbar->cmd, buf, strlen(buf) + 1);
+				pthread_mutex_unlock(&nbar->mutex);
+			}
+			change_win = 0;
+                        break;
+		}
+	}
+	free(buf);
+	delwin(conf_win);
 }

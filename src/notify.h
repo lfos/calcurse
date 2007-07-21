@@ -1,4 +1,4 @@
-/*	$calcurse: notify.h,v 1.8 2007/07/20 19:12:34 culot Exp $	*/
+/*	$calcurse: notify.h,v 1.9 2007/07/21 19:36:45 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -53,20 +53,21 @@ struct notify_app_s {
 	pthread_mutex_t mutex;
 };
 
-int notify_bar(void);
-void notify_init_vars(void);
-void notify_init_bar(window_t *);
-void notify_start_main_thread(void);
-void notify_stop_main_thread(void);
-void notify_reinit_bar(int l, int c, int y, int x);
-void notify_update_bar(void);
-void notify_extract_aptsfile(void);
-void notify_check_next_app(void);
-void notify_check_added(char *mesg, long start, char state);
-void notify_check_repeated(recur_apoint_llist_node_t *i);
-int notify_same_item(long time);
-int notify_same_recur_item(recur_apoint_llist_node_t *i);
-void notify_launch_cmd(char *cmd, char *shell);
-void notify_catch_children(void);
+int 	notify_bar(void);
+void 	notify_init_vars(void);
+void 	notify_init_bar(window_t *);
+void 	notify_start_main_thread(void);
+void 	notify_stop_main_thread(void);
+void 	notify_reinit_bar(int, int, int, int);
+void 	notify_update_bar(void);
+void 	notify_extract_aptsfile(void);
+void 	notify_check_next_app(void);
+void 	notify_check_added(char *, long, char);
+void 	notify_check_repeated(recur_apoint_llist_node_t *);
+int 	notify_same_item(long);
+int 	notify_same_recur_item(recur_apoint_llist_node_t *);
+void 	notify_launch_cmd(char *, char *);
+void 	notify_catch_children(void);
+void 	notify_config_bar(void);
 
 #endif /* CALCURSE_NOTIFY_H */
