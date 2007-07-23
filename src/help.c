@@ -1,4 +1,4 @@
-/*	$calcurse: help.c,v 1.17 2007/07/21 19:36:05 culot Exp $	*/
+/*	$calcurse: help.c,v 1.18 2007/07/23 19:29:34 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -75,7 +75,7 @@ get_help_lines(char *text)
 
 /* Draws the help screen */
 void 
-help_screen(int which_pan)
+help_screen(void)
 {
 	WINDOW *help_win = NULL;
 	WINDOW *help_pad = NULL;
