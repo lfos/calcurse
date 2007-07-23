@@ -1,3 +1,10 @@
+22 Jul 2007:
+	exit_calcurse() created
+	wins_slctd_init(), wins_slctd_set(), wins_slctd_next() 
+	and wins_slctd() created
+	sigs.c and sigs.h created to store signal handling routines
+	which_pan global variable suppressed
+
 21 Jul 2007:
 	wins.c and wins.h created to store windows handling related routines
 	window handling routines moved to wins.c and wins.h
