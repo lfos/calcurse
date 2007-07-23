@@ -1,4 +1,4 @@
-/*	$calcurse: notify.h,v 1.9 2007/07/21 19:36:45 culot Exp $	*/
+/*	$calcurse: notify.h,v 1.10 2007/07/23 19:30:04 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -30,7 +30,7 @@
 #include <ncurses.h>
 #include <pthread.h>
 
-#include "vars.h"
+#include "wins.h"
 #include "apoint.h"
 #include "recur.h"
 

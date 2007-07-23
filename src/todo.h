@@ -1,4 +1,4 @@
-/*	$calcurse: todo.h,v 1.6 2007/07/21 19:35:40 culot Exp $	*/
+/*	$calcurse: todo.h,v 1.7 2007/07/23 19:30:17 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -26,6 +26,8 @@
 
 #ifndef CALCURSE_TODO_H
 #define CALCURSE_TODO_H
+
+#include "wins.h"
 
 struct todo_s {
 	struct todo_s *next;
