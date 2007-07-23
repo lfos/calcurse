@@ -1,4 +1,4 @@
-/*	$calcurse: utils.h,v 1.20 2007/07/21 19:33:24 culot Exp $	*/
+/*	$calcurse: utils.h,v 1.21 2007/07/23 19:26:38 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -53,6 +53,7 @@ typedef struct { /* structure defining a keybinding */
 	char *label;
 } binding_t;
 
+void	exit_calcurse(void);
 void 	status_mesg(char *, char *);
 void	erase_status_bar(void);
 void 	erase_window_part(WINDOW *, int, int, int, int);
@@ -67,7 +68,7 @@ int 	updatestring(WINDOW *, char **, int, int);
 int 	is_all_digit(char *);
 void 	border_color(WINDOW *);
 void 	border_nocolor(WINDOW *);
-void 	status_bar(int);
+void 	status_bar(void);
 long 	date2sec(date_t, unsigned, unsigned);
 char   *date_sec2hour_str(long);
 char   *date_sec2date_str(long);

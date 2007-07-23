@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.31 2007/07/21 19:33:24 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.32 2007/07/23 19:26:38 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -41,6 +41,16 @@
 #include "vars.h"
 
 static unsigned status_page;
+
+/* General routine to exit calcurse properly. */
+void 
+exit_calcurse(void)
+{
+	endwin();
+	erase();
+	calendar_stop_date_thread();
+	exit(EXIT_SUCCESS);
+}
 
 /* 
  * Print a message in the status bar.
@@ -383,8 +393,9 @@ border_nocolor(WINDOW *window)
  * utils.h, depending on which panel the added keybind is assigned to.
  */
 void 
-status_bar(int which_pan)
+status_bar(void)
 {
+	window_e which_pan;
 	int cmd_length, space_between_cmds, start, end, i, j = 0;
 	const int pos[NB_PANELS + 1] = 
 		{0, NB_CAL_CMDS, NB_CAL_CMDS + NB_APP_CMDS, TOTAL_CMDS};
@@ -434,6 +445,7 @@ status_bar(int which_pan)
 
 	/* Drawing the keybinding with attribute and label without. */
 	erase_status_bar();
+	which_pan = wins_slctd();
 	start = pos[which_pan] + 2*CMDS_PER_LINE*(status_page - 1);
 	end = MIN(start + 2*CMDS_PER_LINE, pos[which_pan + 1]);
 	for (i = start; i < end; i += 2) {
