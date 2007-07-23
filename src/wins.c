@@ -1,4 +1,4 @@
-/*	$Id: wins.c,v 1.1 2007/07/21 19:37:44 culot Exp $	*/
+/*	$Id: wins.c,v 1.2 2007/07/23 19:28:37 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -34,6 +34,39 @@
 #include "utils.h"
 #include "todo.h"
 #include "wins.h"
+
+static window_e 	slctd_win;
+
+/* Initialize the selected window in calcurse's interface. */
+void
+wins_slctd_init(void)
+{
+	wins_slctd_set(CALENDAR);
+}
+
+/* Returns an enum which corresponds to the window which is selected. */
+window_e
+wins_slctd(void)
+{
+	return (slctd_win);
+}
+
+/* Sets the selected window. */
+void
+wins_slctd_set(window_e window)
+{
+	slctd_win = window;
+}
+
+/* TAB key was hit in the interface, need to select next window. */
+void
+wins_slctd_next(void)
+{
+	if (slctd_win == TODO)
+		slctd_win = CALENDAR;
+	else
+		slctd_win++;
+}
 
 /* Create all the windows. */
 void 
@@ -71,7 +104,7 @@ wins_init(window_t *wincal, window_t *winapp, window_t *wintod,
  * size and placement.
  */
 void 
-wins_reinit(conf_t *conf, int which_pan, window_t *winbar, window_t *winapp, 
+wins_reinit(conf_t *conf, window_t *winbar, window_t *winapp, 
     window_t *wintod, window_t *wincal, window_t *winnot)
 {
         clear();
@@ -217,11 +250,11 @@ wins_get_config(conf_t *conf, window_t *status, window_t *notify,
  * selected window.
  */
 void 
-wins_update(int surrounded_window, conf_t *conf, window_t *winbar, 
-    window_t *winapp, window_t *wintod, int hilt_app, int hilt_tod,
-    int which_pan, int nb_tod, int first_todo_onscreen, char *saved_t_mesg)
+wins_update(conf_t *conf, window_t *winbar, window_t *winapp, window_t *wintod,
+    int hilt_app, int hilt_tod, int nb_tod, int first_todo_onscreen, 
+    char **saved_t_mesg)
 {
-	switch (surrounded_window) {
+	switch (slctd_win) {
 
 	case CALENDAR:
 		border_color(cwin);
@@ -248,11 +281,11 @@ wins_update(int surrounded_window, conf_t *conf, window_t *winbar,
 		/* NOTREACHED */
 	}
 
-	apoint_update_panel(winapp, hilt_app, which_pan);
-	todo_update_panel(wintod, hilt_tod, nb_tod, which_pan, 
-	    first_todo_onscreen, &saved_t_mesg);
+	apoint_update_panel(winapp, hilt_app, slctd_win);
+	todo_update_panel(wintod, hilt_tod, nb_tod, slctd_win, 
+	    first_todo_onscreen, saved_t_mesg);
 	calendar_update_panel(cwin);
-	status_bar(surrounded_window);
+	status_bar();
 	if (notify_bar()) 
 		notify_update_bar();
         wmove(swin, 0, 0);

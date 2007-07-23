@@ -1,4 +1,4 @@
-/*	$Id: wins.h,v 1.1 2007/07/21 19:37:44 culot Exp $	*/
+/*	$Id: wins.h,v 1.2 2007/07/23 19:28:37 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -29,13 +29,34 @@
 
 #include "vars.h"
 
-void 	wins_init(window_t *, window_t *, window_t *, window_t *);
-void 	wins_reinit(conf_t *conf, int, window_t *, window_t *, window_t *, 
-	    window_t *, window_t *);
-void 	wins_show(WINDOW *, char *);
-void 	wins_get_config(conf_t *conf, window_t *, window_t *, window_t *,
-	    window_t *, window_t *);
-void 	wins_update(int surrounded_window, conf_t *conf, window_t *,
-	    window_t *, window_t *, int, int, int, int, int, char *);
+typedef enum {
+	CALENDAR, 
+	APPOINTMENT, 
+	TODO,
+	NOTIFY,
+	STATUS,
+	NBWINS
+} window_e;
+
+/* Window properties */
+typedef struct {
+	unsigned w;	/* width */
+	unsigned h;	/* height */
+	int	 x;	/* x position */
+	int	 y;	/* y position */
+} window_t;
+
+void		wins_slctd_init(void);
+window_e	wins_slctd(void);
+void		wins_slctd_set(window_e);
+void		wins_slctd_next(void);
+void 		wins_init(window_t *, window_t *, window_t *, window_t *);
+void 		wins_reinit(conf_t *conf, window_t *, window_t *, window_t *,
+		    window_t *, window_t *);
+void 		wins_show(WINDOW *, char *);
+void 		wins_get_config(conf_t *conf, window_t *, window_t *, 
+		    window_t *, window_t *, window_t *);
+void 		wins_update(conf_t *conf, window_t *, window_t *, window_t *, 
+		    int, int, int, int, char **);
 
 #endif /* CALCURSE_WINS_H */
