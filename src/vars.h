@@ -1,4 +1,4 @@
-/*	$calcurse: vars.h,v 1.13 2007/07/21 19:30:25 culot Exp $	*/
+/*	$calcurse: vars.h,v 1.14 2007/07/23 19:27:28 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -53,15 +53,6 @@
 
 #define STATUSHEIGHT	2
 
-enum window_e {
-	CALENDAR, 
-	APPOINTMENT, 
-	TODO,
-	NOTIFY,
-	STATUS,
-	NBWINS
-};
-
 struct pad_s {
 	int width;
 	int length;
@@ -89,14 +80,6 @@ typedef struct {
 	bool skip_progress_bar;
 	int layout;
 } conf_t;
-
-/* Window properties */
-typedef struct {
-	unsigned w;	/* width */
-	unsigned h;	/* height */
-	int	 x;	/* x position */
-	int	 y;	/* y position */
-} window_t;
 
 extern int 		col, row;
 extern bool 		colorize;
