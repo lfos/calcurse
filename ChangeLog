@@ -1,3 +1,6 @@
+26 Jul 2007:
+	global variables suppressed in calcurse.c
+
 22 Jul 2007:
 	exit_calcurse() created
 	wins_slctd_init(), wins_slctd_set(), wins_slctd_next() 
