@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.49 2007/07/23 19:25:54 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.50 2007/07/26 20:35:58 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -60,16 +60,6 @@
 #include "notify.h"
 
 
-/* Global variables for appointments */
-int first_app_onscreen = 0;
-int hilt_app = 0, sav_hilt_app;
-
-/* Global variables for todo list */
-int nb_tod = 0, hilt_tod = 0, sav_hilt_tod;
-int first_todo_onscreen = 1;
-char *saved_t_mesg;
-
-
 /*
  * Calcurse  is  a text-based personal organizer which helps keeping track
  * of events and everyday tasks. It contains a calendar, a 'todo' list,
@@ -86,9 +76,16 @@ main(int argc, char **argv)
 	int ch, background, foreground;
 	int non_interactive;
 	int no_data_file = 1;
+	int first_todo_onscreen = 1;
+	int hilt_app = 0;
+	int hilt_tod = 0;
+	int nb_tod = 0;
+	int sav_hilt_app = 0;
+	int sav_hilt_tod = 0;
 	struct sigaction sigact;
 	bool do_storage = false;
 	bool day_changed = false;
+	char *saved_t_mesg;
         char *no_color_support = 
             _("Sorry, colors are not supported by your terminal\n"
             "(Press [ENTER] to continue)");
