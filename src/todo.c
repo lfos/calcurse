@@ -1,4 +1,4 @@
-/*	$calcurse: todo.c,v 1.12 2007/07/21 19:35:40 culot Exp $	*/
+/*	$calcurse: todo.c,v 1.13 2007/07/28 13:11:42 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -24,11 +24,9 @@
  *
  */
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include "vars.h"
 #include "utils.h"
 #include "i18n.h"
 #include "todo.h"
@@ -80,6 +78,30 @@ todo_add(char *mesg, int id)
 	return o;
 }
 
+/* Delete an item from the todo linked list. */
+static void 
+todo_delete_bynum(unsigned num)
+{
+	unsigned n;
+	struct todo_s *i, **iptr;
+
+	n = 0;
+	iptr = &todolist;
+	for (i = todolist; i != 0; i = i->next) {
+		if (n == num) {
+			*iptr = i->next;
+			free(i->mesg);
+			free(i);
+			return;
+		}
+		iptr = &i->next;
+		n++;
+	}
+	/* NOTREACHED */
+	fputs(_("FATAL ERROR in todo_delete_bynum: no such todo\n"), stderr);
+	exit(EXIT_FAILURE);
+}
+
 /* Delete an item from the ToDo list. */
 void 
 todo_delete(conf_t *conf, int *nb_tod, int *hilt_tod)
@@ -112,51 +134,11 @@ todo_delete(conf_t *conf, int *nb_tod, int *hilt_tod)
 	}
 }
 
-
-
-/* Delete an item from the todo linked list. */
-void 
-todo_delete_bynum(unsigned num)
-{
-	unsigned n;
-	struct todo_s *i, **iptr;
-
-	n = 0;
-	iptr = &todolist;
-	for (i = todolist; i != 0; i = i->next) {
-		if (n == num) {
-			*iptr = i->next;
-			free(i->mesg);
-			free(i);
-			return;
-		}
-		iptr = &i->next;
-		n++;
-	}
-	/* NOTREACHED */
-	fputs(_("FATAL ERROR in todo_delete_bynum: no such todo\n"), stderr);
-	exit(EXIT_FAILURE);
-}
-
-/* Returns a structure containing the selected item. */
-struct todo_s *
-todo_get_item(int item_number)
-{
-	struct todo_s *o;
-	int i;
-	
-	o = todolist;
-	for (i = 1; i < item_number; i++) {
-		o = o->next;
-	}
-	return o;
-}
-
 /* 
  * Returns the position into the linked list corresponding to the
  * given todo_s item.
  */
-int 
+static int 
 todo_get_position(struct todo_s *i)
 {
 	struct todo_s *o;
@@ -176,6 +158,20 @@ todo_get_position(struct todo_s *i)
 			stderr);
 		exit(EXIT_FAILURE);
 	} 
+}
+
+/* Returns a structure containing the selected item. */
+static struct todo_s *
+todo_get_item(int item_number)
+{
+	struct todo_s *o;
+	int i;
+	
+	o = todolist;
+	for (i = 1; i < item_number; i++) {
+		o = o->next;
+	}
+	return o;
 }
 
 /* Change an item priority by pressing '+' or '-' inside TODO panel. */

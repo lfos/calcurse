@@ -1,4 +1,4 @@
-/*	$calcurse: recur.c,v 1.26 2007/07/01 17:53:42 culot Exp $	*/
+/*	$calcurse: recur.c,v 1.27 2007/07/28 13:11:42 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -24,9 +24,7 @@
  *
  */
 
-#include <ncurses.h>
 #include <stdlib.h>
-#include <stdio.h>
 #include <string.h>
 #include <ctype.h>
 #include <sys/types.h>
@@ -34,13 +32,9 @@
 
 #include "i18n.h"
 #include "utils.h"
-#include "apoint.h"
-#include "event.h"
-#include "recur.h"
 #include "notify.h"
-#include "args.h"
 #include "day.h"
-#include "vars.h"
+#include "recur.h"
 
 recur_apoint_llist_t *recur_alist_p;
 struct recur_event_s *recur_elist;
@@ -170,7 +164,8 @@ int recur_char2def(char type){
 }
 
 /* Write days for which recurrent items should not be repeated. */
-void recur_write_exc(struct days_s *exc, FILE *f) {
+static void 
+recur_write_exc(struct days_s *exc, FILE *f) {
 	struct tm *lt;
 	time_t t;
 	int st_mon, st_day, st_year;
@@ -184,78 +179,6 @@ void recur_write_exc(struct days_s *exc, FILE *f) {
 		fprintf(f, " !%02u/%02u/%04u", st_mon, st_day, st_year);
 		exc = exc->next;
 	}
-}
-
-/* Writting of a recursive appointment into file. */
-void 
-recur_apoint_write(recur_apoint_llist_node_t *o, FILE *f)
-{
-	struct tm *lt;
-	time_t t;
-
-	t = o->start;
-	lt = localtime(&t);
-	fprintf(f, "%02u/%02u/%04u @ %02u:%02u",
-	    lt->tm_mon + 1, lt->tm_mday, 1900 + lt->tm_year,
-	    lt->tm_hour, lt->tm_min);
-
-	t = o->start + o->dur;
-	lt = localtime(&t);
-	fprintf(f, " -> %02u/%02u/%04u @ %02u:%02u",
-	    lt->tm_mon + 1, lt->tm_mday, 1900 + lt->tm_year,
-	    lt->tm_hour, lt->tm_min);
-
-	t = o->rpt->until;
-	if (t == 0) { /* We have an endless recurrent appointment. */
-		fprintf(f, " {%d%c", o->rpt->freq, 
-		    recur_def2char(o->rpt->type)); 
-	} else {
-		lt = localtime(&t);
-		fprintf(f, " {%d%c -> %02u/%02u/%04u",
-		    o->rpt->freq, recur_def2char(o->rpt->type),
-		    lt->tm_mon + 1, lt->tm_mday, 1900 + lt->tm_year);
-	}
-	if (o->exc != 0) 
-		recur_write_exc(o->exc, f);
-	if (o->state & APOINT_NOTIFY)
-		fprintf(f, "} !");
-	else
-		fprintf(f, "} |");
-	fprintf(f, "%s\n", o->mesg);
-}
-
-/* Writting of a recursive event into file. */
-void recur_event_write(struct recur_event_s *o, FILE *f)
-{
-	struct tm *lt;
-	time_t t;
-	int st_mon, st_day, st_year;
-	int end_mon, end_day, end_year;
-	
-	t = o->day;
-	lt = localtime(&t);
-	st_mon = lt->tm_mon + 1;
-	st_day = lt->tm_mday;
-	st_year = lt->tm_year + 1900;
-	t = o->rpt->until;
-	if (t == 0) { /* We have an endless recurrent event. */
-		fprintf(f, "%02u/%02u/%04u [%d] {%d%c",
-			st_mon, st_day, st_year, o->id, o->rpt->freq,
-			recur_def2char(o->rpt->type));
-		if (o->exc != 0) recur_write_exc(o->exc, f);
-		fprintf(f,"} %s\n", o->mesg);
-	} else {
-		lt = localtime(&t);
-		end_mon = lt->tm_mon + 1;
-		end_day = lt->tm_mday;
-		end_year = lt->tm_year + 1900;
-		fprintf(f, "%02u/%02u/%04u [%d] {%d%c -> %02u/%02u/%04u",
-			st_mon, st_day, st_year, o->id, 
-			o->rpt->freq, recur_def2char(o->rpt->type),
-			end_mon, end_day, end_year);
-		if (o->exc != 0) recur_write_exc(o->exc, f);
-		fprintf(f, "} %s\n", o->mesg);
-	}		
 }
 
 /* Load the recursive appointment description */
@@ -346,6 +269,79 @@ struct recur_event_s *recur_event_scan(FILE * f, struct tm start, int id,
 	
 	return recur_event_new(buf, tstart, id, recur_char2def(type), 
 		freq, tuntil, exc);
+}
+
+/* Writting of a recursive appointment into file. */
+static void 
+recur_apoint_write(recur_apoint_llist_node_t *o, FILE *f)
+{
+	struct tm *lt;
+	time_t t;
+
+	t = o->start;
+	lt = localtime(&t);
+	fprintf(f, "%02u/%02u/%04u @ %02u:%02u",
+	    lt->tm_mon + 1, lt->tm_mday, 1900 + lt->tm_year,
+	    lt->tm_hour, lt->tm_min);
+
+	t = o->start + o->dur;
+	lt = localtime(&t);
+	fprintf(f, " -> %02u/%02u/%04u @ %02u:%02u",
+	    lt->tm_mon + 1, lt->tm_mday, 1900 + lt->tm_year,
+	    lt->tm_hour, lt->tm_min);
+
+	t = o->rpt->until;
+	if (t == 0) { /* We have an endless recurrent appointment. */
+		fprintf(f, " {%d%c", o->rpt->freq, 
+		    recur_def2char(o->rpt->type)); 
+	} else {
+		lt = localtime(&t);
+		fprintf(f, " {%d%c -> %02u/%02u/%04u",
+		    o->rpt->freq, recur_def2char(o->rpt->type),
+		    lt->tm_mon + 1, lt->tm_mday, 1900 + lt->tm_year);
+	}
+	if (o->exc != 0) 
+		recur_write_exc(o->exc, f);
+	if (o->state & APOINT_NOTIFY)
+		fprintf(f, "} !");
+	else
+		fprintf(f, "} |");
+	fprintf(f, "%s\n", o->mesg);
+}
+
+/* Writting of a recursive event into file. */
+static void 
+recur_event_write(struct recur_event_s *o, FILE *f)
+{
+	struct tm *lt;
+	time_t t;
+	int st_mon, st_day, st_year;
+	int end_mon, end_day, end_year;
+	
+	t = o->day;
+	lt = localtime(&t);
+	st_mon = lt->tm_mon + 1;
+	st_day = lt->tm_mday;
+	st_year = lt->tm_year + 1900;
+	t = o->rpt->until;
+	if (t == 0) { /* We have an endless recurrent event. */
+		fprintf(f, "%02u/%02u/%04u [%d] {%d%c",
+			st_mon, st_day, st_year, o->id, o->rpt->freq,
+			recur_def2char(o->rpt->type));
+		if (o->exc != 0) recur_write_exc(o->exc, f);
+		fprintf(f,"} %s\n", o->mesg);
+	} else {
+		lt = localtime(&t);
+		end_mon = lt->tm_mon + 1;
+		end_day = lt->tm_mday;
+		end_year = lt->tm_year + 1900;
+		fprintf(f, "%02u/%02u/%04u [%d] {%d%c -> %02u/%02u/%04u",
+			st_mon, st_day, st_year, o->id, 
+			o->rpt->freq, recur_def2char(o->rpt->type),
+			end_mon, end_day, end_year);
+		if (o->exc != 0) recur_write_exc(o->exc, f);
+		fprintf(f, "} %s\n", o->mesg);
+	}		
 }
 
 /* Write recursive items to file. */

@@ -1,4 +1,4 @@
-/*	$calcurse: event.h,v 1.1 2006/07/31 21:00:03 culot Exp $	*/
+/*	$calcurse: event.h,v 1.2 2007/07/28 13:11:42 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -40,9 +40,9 @@ struct event_s {
 extern struct event_s *eventlist;
 
 struct event_s *event_new(char *, long, int);
-unsigned event_inday(struct event_s *o, long start);
-void event_write(struct event_s *o, FILE * f);
-struct event_s *event_scan(FILE * f, struct tm start, int id);
-void event_delete_bynum(long start, unsigned num);
+unsigned 	event_inday(struct event_s *, long);
+void 		event_write(struct event_s *, FILE *);
+struct event_s *event_scan(FILE *, struct tm, int);
+void 		event_delete_bynum(long, unsigned);
 
 #endif /* CALCURSE_EVENT_H */

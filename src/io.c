@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.17 2007/07/01 17:57:57 culot Exp $	*/
+/*	$calcurse: io.c,v 1.18 2007/07/28 13:11:42 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -24,13 +24,8 @@
  *
  */
 
-#include <ncurses.h>
-#include <pthread.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
-#include <sys/types.h>
 #include <sys/stat.h>
 #include <time.h>
 #include <math.h>
@@ -42,9 +37,7 @@
 #include "todo.h"
 #include "event.h"
 #include "apoint.h"
-#include "recur.h"
 #include "io.h"
-#include "calendar.h"
 
 typedef enum {
 	PROGRESS_BAR_SAVE,
@@ -548,7 +541,7 @@ io_save_cal(conf_t *conf)
  * recursive item (which can also be either an event or an appointment).
  */ 
 void 
-load_app(void)
+io_load_app(void)
 {
 	FILE *data_file;
 	int c, is_appointment, is_event, is_recursive;
@@ -559,7 +552,7 @@ load_app(void)
 	int freq;
 	char type, state;
 	char *error = 
-		_("FATAL ERROR in load_app: wrong format in the appointment or event\n");
+		_("FATAL ERROR in io_load_app: wrong format in the appointment or event\n");
 
         t = time(NULL);
         lt = localtime(&t);
@@ -578,7 +571,7 @@ load_app(void)
                  */
                 if (fscanf(data_file, "%u / %u / %u ", 
                            &start.tm_mon, &start.tm_mday, &start.tm_year) != 3) {
-                        fputs(_("FATAL ERROR in load_app: "
+                        fputs(_("FATAL ERROR in io_load_app: "
 				"syntax error in the item date\n"), stderr);
                         exit(EXIT_FAILURE);
                 }
@@ -593,7 +586,7 @@ load_app(void)
                 else if (c == '[')
                         is_event = 1;
                 else {
-                        fputs(_("FATAL ERROR in load_app: "
+                        fputs(_("FATAL ERROR in io_load_app: "
 				"no event nor appointment found\n"), stderr);
                         exit(EXIT_FAILURE);
                 }
@@ -689,7 +682,7 @@ load_app(void)
 
 /* Load the todo data */
 int
-load_todo(void)
+io_load_todo(void)
 {
 	FILE *data_file;
 	char *mesg_line1 = _("Failed to open todo file");
@@ -729,7 +722,7 @@ load_todo(void)
 
 /* Checks if data files exist. If not, create them */
 int 
-check_data_files(void)
+io_check_data_files(void)
 {
 	FILE *data_file;
 	int no_data_file;
@@ -775,7 +768,7 @@ check_data_files(void)
 
 /* Draw the startup screen */
 void 
-startup_screen(bool skip_dialogs, int no_data_file)
+io_startup_screen(bool skip_dialogs, int no_data_file)
 {
 	char *welcome_mesg = 
 	    _("Welcome to Calcurse. Missing data files were created.");

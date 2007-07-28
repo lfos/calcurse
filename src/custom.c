@@ -1,4 +1,4 @@
-/*	$calcurse: custom.c,v 1.14 2007/07/21 19:34:07 culot Exp $	*/
+/*	$calcurse: custom.c,v 1.15 2007/07/28 13:11:42 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -24,16 +24,12 @@
  *
  */
 
-#include <ncurses.h>
 #include <string.h>
 #include <stdlib.h>
-#include <stdio.h>
 
-#include "calendar.h"
 #include "custom.h"
 #include "i18n.h"
 #include "io.h"
-#include "wins.h"
 #include "utils.h"
 #include "apoint.h"
 
@@ -50,6 +46,111 @@ fill_config_var(char *string)
 		fputs(_("FATAL ERROR in fill_config_var: "
 			"wrong configuration variable format.\n"), stderr);
 		return (EXIT_FAILURE);
+	}
+}
+
+/* 
+ * Load user color theme from file. 
+ * Need to handle calcurse versions prior to 1.8, where colors where handled
+ * differently (number between 1 and 8).
+ */
+static void
+custom_load_color(char *color, int background)
+{
+#define AWAITED_COLORS	2
+
+	int i, len, color_num;
+	char c[AWAITED_COLORS][BUFSIZ];
+	int colr[AWAITED_COLORS];
+	const char *wrong_color_number =
+	    _("FATAL ERROR in custom_load_color: wrong color number.\n");
+	const char *wrong_color_name =
+	    _("FATAL ERROR in custom_load_color: wrong color name.\n");
+	const char *wrong_variable_format =
+	    _("FATAL ERROR in custom_load_color: " 
+	    "wrong configuration variable format.\n");
+
+	len = strlen(color);
+
+	if (len > 1) { 
+		/* New version configuration */
+		if (sscanf(color, "%s on %s", c[0], c[1]) != AWAITED_COLORS) {
+			fputs(_("FATAL ERROR in custom_load_color: "
+			    "missing colors in config file.\n"), stderr);
+			exit(EXIT_FAILURE);
+			/* NOTREACHED */
+		};
+
+		for (i = 0; i < AWAITED_COLORS; i++) {
+			if (!strncmp(c[i], "black", 5))
+				colr[i] = COLOR_BLACK;
+			else if (!strncmp(c[i], "red", 3))
+				colr[i] = COLOR_RED;
+			else if (!strncmp(c[i], "green", 5))
+				colr[i] = COLOR_GREEN;
+			else if (!strncmp(c[i], "yellow", 6))
+				colr[i] = COLOR_YELLOW;
+			else if (!strncmp(c[i], "blue", 4))
+				colr[i] = COLOR_BLUE;
+			else if (!strncmp(c[i], "magenta", 7))
+				colr[i] = COLOR_MAGENTA;
+			else if (!strncmp(c[i], "cyan", 4))
+				colr[i] = COLOR_CYAN;
+			else if (!strncmp(c[i], "white", 5))
+				colr[i] = COLOR_WHITE;
+			else if (!strncmp(c[i], "default", 7))
+				colr[i] = background;
+			else {
+				fputs(wrong_color_name, stderr);
+				exit(EXIT_FAILURE);
+				/* NOTREACHED */
+			}
+		}
+		
+		init_pair(COLR_CUSTOM, colr[0], colr[1]);
+
+	} else if (len > 0 && len < 2) { 
+		/* Old version configuration */
+		color_num = atoi(color);	
+
+		switch (color_num) {
+		case 0:
+			colorize = false;
+			break;
+		case 1:
+			init_pair(COLR_CUSTOM, COLOR_RED, background);
+			break;
+		case 2:
+			init_pair(COLR_CUSTOM, COLOR_GREEN, background);
+			break;
+		case 3:
+			init_pair(COLR_CUSTOM, COLOR_BLUE, background);
+			break;
+		case 4:
+			init_pair(COLR_CUSTOM, COLOR_CYAN, background);
+			break;
+		case 5:
+			init_pair(COLR_CUSTOM, COLOR_YELLOW, background);
+			break;
+		case 6:
+			init_pair(COLR_CUSTOM, COLOR_BLACK, COLR_GREEN);
+			break;
+		case 7:
+			init_pair(COLR_CUSTOM, COLOR_BLACK, COLR_YELLOW);
+			break;
+		case 8:
+			init_pair(COLR_CUSTOM, COLOR_RED, COLR_BLUE);
+			break;
+		default:
+			fputs(wrong_color_number, stderr);
+			exit(EXIT_FAILURE);
+			/* NOTREACHED */
+		}
+
+	} else {
+		fputs(wrong_variable_format, stderr);
+		exit(EXIT_FAILURE);
+		/* NOTREACHED */
 	}
 }
 
@@ -486,111 +587,6 @@ custom_color_config(int notify_bar)
 	}
 
 	delwin(conf_win);
-}
-
-/* 
- * Load user color theme from file. 
- * Need to handle calcurse versions prior to 1.8, where colors where handled
- * differently (number between 1 and 8).
- */
-void
-custom_load_color(char *color, int background)
-{
-#define AWAITED_COLORS	2
-
-	int i, len, color_num;
-	char c[AWAITED_COLORS][BUFSIZ];
-	int colr[AWAITED_COLORS];
-	const char *wrong_color_number =
-	    _("FATAL ERROR in custom_load_color: wrong color number.\n");
-	const char *wrong_color_name =
-	    _("FATAL ERROR in custom_load_color: wrong color name.\n");
-	const char *wrong_variable_format =
-	    _("FATAL ERROR in custom_load_color: " 
-	    "wrong configuration variable format.\n");
-
-	len = strlen(color);
-
-	if (len > 1) { 
-		/* New version configuration */
-		if (sscanf(color, "%s on %s", c[0], c[1]) != AWAITED_COLORS) {
-			fputs(_("FATAL ERROR in custom_load_color: "
-			    "missing colors in config file.\n"), stderr);
-			exit(EXIT_FAILURE);
-			/* NOTREACHED */
-		};
-
-		for (i = 0; i < AWAITED_COLORS; i++) {
-			if (!strncmp(c[i], "black", 5))
-				colr[i] = COLOR_BLACK;
-			else if (!strncmp(c[i], "red", 3))
-				colr[i] = COLOR_RED;
-			else if (!strncmp(c[i], "green", 5))
-				colr[i] = COLOR_GREEN;
-			else if (!strncmp(c[i], "yellow", 6))
-				colr[i] = COLOR_YELLOW;
-			else if (!strncmp(c[i], "blue", 4))
-				colr[i] = COLOR_BLUE;
-			else if (!strncmp(c[i], "magenta", 7))
-				colr[i] = COLOR_MAGENTA;
-			else if (!strncmp(c[i], "cyan", 4))
-				colr[i] = COLOR_CYAN;
-			else if (!strncmp(c[i], "white", 5))
-				colr[i] = COLOR_WHITE;
-			else if (!strncmp(c[i], "default", 7))
-				colr[i] = background;
-			else {
-				fputs(wrong_color_name, stderr);
-				exit(EXIT_FAILURE);
-				/* NOTREACHED */
-			}
-		}
-		
-		init_pair(COLR_CUSTOM, colr[0], colr[1]);
-
-	} else if (len > 0 && len < 2) { 
-		/* Old version configuration */
-		color_num = atoi(color);	
-
-		switch (color_num) {
-		case 0:
-			colorize = false;
-			break;
-		case 1:
-			init_pair(COLR_CUSTOM, COLOR_RED, background);
-			break;
-		case 2:
-			init_pair(COLR_CUSTOM, COLOR_GREEN, background);
-			break;
-		case 3:
-			init_pair(COLR_CUSTOM, COLOR_BLUE, background);
-			break;
-		case 4:
-			init_pair(COLR_CUSTOM, COLOR_CYAN, background);
-			break;
-		case 5:
-			init_pair(COLR_CUSTOM, COLOR_YELLOW, background);
-			break;
-		case 6:
-			init_pair(COLR_CUSTOM, COLOR_BLACK, COLR_GREEN);
-			break;
-		case 7:
-			init_pair(COLR_CUSTOM, COLOR_BLACK, COLR_YELLOW);
-			break;
-		case 8:
-			init_pair(COLR_CUSTOM, COLOR_RED, COLR_BLUE);
-			break;
-		default:
-			fputs(wrong_color_number, stderr);
-			exit(EXIT_FAILURE);
-			/* NOTREACHED */
-		}
-
-	} else {
-		fputs(wrong_variable_format, stderr);
-		exit(EXIT_FAILURE);
-		/* NOTREACHED */
-	}
 }
 
 /* 

@@ -1,4 +1,4 @@
-/*	$calcurse: apoint.c,v 1.12 2007/07/21 19:35:14 culot Exp $	*/
+/*	$calcurse: apoint.c,v 1.13 2007/07/28 13:11:42 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -24,7 +24,6 @@
  *
  */
 
-#include <ncurses.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
@@ -403,7 +402,8 @@ void display_item_date(WINDOW *win, int incolor, apoint_llist_node_t *i,
  * the appointment panel. This is to help the appointment scroll function 
  * to place beggining of the pad correctly.
  */
-int get_item_line(int item_nb, int nb_events_inday)
+static int 
+get_item_line(int item_nb, int nb_events_inday)
 {
 	int separator = 2;
 	int line = 0;

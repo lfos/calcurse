@@ -1,4 +1,4 @@
-/*	$calcurse: vars.h,v 1.14 2007/07/23 19:27:28 culot Exp $	*/
+/*	$calcurse: vars.h,v 1.15 2007/07/28 13:11:43 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -30,7 +30,6 @@
 #include <ncurses.h> 
 #include <pthread.h>
 #include <stdbool.h>
-#include <stdio.h>
 
 #define DIR_NAME	".calcurse"
 #define TODO_PATH 	".calcurse/todo"

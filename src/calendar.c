@@ -1,4 +1,4 @@
-/*	$calcurse: calendar.c,v 1.8 2007/07/01 17:48:50 culot Exp $	*/
+/*	$calcurse: calendar.c,v 1.9 2007/07/28 13:11:42 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -24,13 +24,10 @@
  *
  */
 
-#include <ncurses.h>
-#include <pthread.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
-#include <stdbool.h>
 #include <time.h>
 
 #include "i18n.h"

@@ -1,4 +1,4 @@
-/*	$calcurse: day.h,v 1.13 2007/07/20 19:07:02 culot Exp $	*/
+/*	$calcurse: day.h,v 1.14 2007/07/28 13:11:42 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -27,10 +27,7 @@
 #ifndef CALCURSE_DAY_H
 #define CALCURSE_DAY_H
 
-#include <stdio.h>
-
 #include "calendar.h"
-#include "apoint.h"
 
 #define MAX_TYPES	4
 
@@ -64,20 +61,10 @@ struct day_saved_item_s {
 };
 
 day_items_nb_t 	       *day_process_storage(date_t *, bool, day_items_nb_t *);
-int 			day_store_items(long, int *, int *);
-void 			day_free_list(void);
-int 			day_store_recur_events(long);
-int 			day_store_events(long);
-int 			day_store_recur_apoints(long);
-int 			day_store_apoints(long);
-struct day_item_s      *day_add_event(int, char *, long, int);
-struct day_item_s      *day_add_apoint(int, char *, long, long, char, int);
 void 			day_write_pad(long, int, int, int);
-apoint_llist_node_t    *day_item_s2apoint_s(struct day_item_s *);
 void 			day_popup_item(void);
 int	 		day_check_if_item(date_t);
 void 			day_edit_item(int);
-char 		       *day_edit_time(long);
 int 			day_erase_item(long, int, int);
 struct day_item_s      *day_get_item(int);
 int 			day_item_nb(long, int, int);

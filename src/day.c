@@ -1,4 +1,4 @@
-/*	$calcurse: day.c,v 1.24 2007/07/20 19:05:19 culot Exp $	*/
+/*	$calcurse: day.c,v 1.25 2007/07/28 13:11:42 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -24,26 +24,235 @@
  *
  */
 
-#include <ncurses.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
 #include <ctype.h>
-#include <stdbool.h>
 #include <time.h>
 
 #include "i18n.h"
 #include "utils.h"
 #include "apoint.h"
 #include "event.h"
-#include "recur.h"
 #include "day.h"
-#include "vars.h"
-#include "args.h"
 
-static struct day_item_s *day_items_ptr;
-static struct day_saved_item_s *day_saved_item = NULL;
+static struct day_item_s 	*day_items_ptr;
+static struct day_saved_item_s 	*day_saved_item = NULL;
 
+/* Free the current day linked list containing the events and appointments. */
+static void 
+day_free_list(void)
+{
+	struct day_item_s *p, *q;
+
+	for (p = day_items_ptr; p != 0; p = q) {
+		q = p->next;
+		free(p->mesg);
+		free(p);
+	}
+	day_items_ptr = NULL;
+}
+
+/* Add an event in the current day list */
+static struct day_item_s *
+day_add_event(int type, char *mesg, long day, int id)
+{
+	struct day_item_s *o, **i;
+	o = (struct day_item_s *) malloc(sizeof(struct day_item_s));
+	o->mesg = (char *) malloc(strlen(mesg) + 1);
+	strncpy(o->mesg, mesg, strlen(mesg) + 1);
+	o->type = type;
+	o->appt_dur = 0;
+	o->appt_pos = 0;
+	o->start = day;
+	o->evnt_id = id;
+	i = &day_items_ptr;
+	for (;;) {
+		if (*i == 0) {
+			o->next = *i;
+			*i = o;
+			break;
+		}
+		i = &(*i)->next;
+	}
+	return o;
+}
+
+/* Add an appointment in the current day list. */
+static struct day_item_s *
+day_add_apoint(int type, char *mesg, long start, long dur, char state, 
+    int real_pos)
+{
+	struct day_item_s *o, **i;
+	int insert_item = 0;
+
+	o = (struct day_item_s *) malloc(sizeof(struct day_item_s));
+	o->mesg = (char *) malloc(strlen(mesg) + 1);
+	strncpy(o->mesg, mesg, strlen(mesg) + 1);
+	o->start = start;
+	o->appt_dur = dur;
+	o->appt_pos = real_pos;
+	o->state = state;
+	o->type = type;
+	o->evnt_id = 0;
+	i = &day_items_ptr;
+	for (;;) {
+		if (*i == 0) {
+			insert_item = 1;
+		} else if ( ((*i)->start > start) && 
+		    ((*i)->type > EVNT) ) {
+			insert_item = 1;
+		}	
+		if (insert_item) {
+			o->next = *i;
+			*i = o;
+			break;
+		}
+		i = &(*i)->next;
+	}
+	return o;
+}
+
+/* 
+ * Store the events for the selected day in structure pointed
+ * by day_items_ptr. This is done by copying the events 
+ * from the general structure pointed by eventlist to the structure
+ * dedicated to the selected day. 
+ * Returns the number of events for the selected day.
+ */
+static int 
+day_store_events(long date)
+{
+	struct event_s *j;
+	struct day_item_s *ptr;
+	int e_nb = 0;
+
+	for (j = eventlist; j != 0; j = j->next) {
+		if (event_inday(j, date)) {
+			e_nb++;
+			ptr = day_add_event(EVNT, j->mesg, j->day, j->id);
+		}	
+	}
+
+	return e_nb;
+}
+
+/* 
+ * Store the recurrent events for the selected day in structure pointed
+ * by day_items_ptr. This is done by copying the recurrent events 
+ * from the general structure pointed by recur_elist to the structure
+ * dedicated to the selected day. 
+ * Returns the number of recurrent events for the selected day.
+ */
+static int 
+day_store_recur_events(long date)
+{
+	struct recur_event_s *j;
+	struct day_item_s *ptr;
+	int e_nb = 0;
+
+	for (j = recur_elist; j != 0; j = j->next) {
+		if (recur_item_inday(j->day, j->exc, j->rpt->type, j->rpt->freq,
+			j->rpt->until, date)) {
+			e_nb++;
+			ptr = day_add_event(RECUR_EVNT, j->mesg, j->day, j->id);
+		}	
+	}
+
+	return e_nb;
+}
+
+/* 
+ * Store the apoints for the selected day in structure pointed
+ * by day_items_ptr. This is done by copying the appointments
+ * from the general structure pointed by alist_p->root to the 
+ * structure dedicated to the selected day. 
+ * Returns the number of appointments for the selected day.
+ */
+static int 
+day_store_apoints(long date)
+{
+	apoint_llist_node_t *j;
+	struct day_item_s *ptr;
+	int a_nb = 0;
+
+	pthread_mutex_lock(&(alist_p->mutex));
+	for (j = alist_p->root; j != 0; j = j->next) {
+		if (apoint_inday(j, date)) {
+			a_nb++;
+			ptr = day_add_apoint(APPT, j->mesg, j->start, j->dur, 
+			    j->state, 0);
+		}	
+	}
+	pthread_mutex_unlock(&(alist_p->mutex));
+
+	return a_nb;
+}
+
+/* 
+ * Store the recurrent apoints for the selected day in structure pointed
+ * by day_items_ptr. This is done by copying the appointments
+ * from the general structure pointed by recur_alist_p->root to the 
+ * structure dedicated to the selected day. 
+ * Returns the number of recurrent appointments for the selected day.
+ */
+static int 
+day_store_recur_apoints(long date)
+{
+	recur_apoint_llist_node_t *j;
+	struct day_item_s *ptr;
+	long real_start;
+	int a_nb = 0, n = 0;
+
+	pthread_mutex_lock(&(recur_alist_p->mutex));
+	for (j = recur_alist_p->root; j != 0; j = j->next) {
+		if ((real_start = recur_item_inday(j->start, j->exc, 
+		    j->rpt->type, j->rpt->freq, j->rpt->until, date)) ){
+			a_nb++;
+			ptr = day_add_apoint(
+			    RECUR_APPT, j->mesg, real_start, j->dur, 
+			    j->state, n);
+			n++;
+		}	
+	}
+	pthread_mutex_unlock(&(recur_alist_p->mutex));
+
+	return a_nb;
+}
+
+/* 
+ * Store all of the items to be displayed for the selected day.
+ * Items are of four types: recursive events, normal events, 
+ * recursive appointments and normal appointments.
+ * The items are stored in the linked list pointed by *day_items_ptr
+ * and the length of the new pad to write is returned.
+ * The number of events and appointments in the current day are also updated.
+ */
+static int 
+day_store_items(long date, int *pnb_events, int *pnb_apoints)
+{
+	int pad_length;
+	int nb_events, nb_recur_events;
+	int nb_apoints, nb_recur_apoints;
+
+	pad_length = nb_events = nb_apoints = 0;
+	nb_recur_events = nb_recur_apoints = 0;
+
+	if (day_items_ptr != 0)
+		day_free_list();
+	nb_recur_events = day_store_recur_events(date);
+	nb_events = day_store_events(date);
+	*pnb_events = nb_events;
+	nb_recur_apoints = day_store_recur_apoints(date);
+	nb_apoints = day_store_apoints(date);
+	*pnb_apoints = nb_apoints;
+	pad_length = nb_recur_events + nb_events + 1 + 
+		3*(nb_recur_apoints + nb_apoints);
+	*pnb_apoints += nb_recur_apoints;
+	*pnb_events += nb_recur_events;
+
+	return pad_length;
+}
 
 /*
  * Store the events and appointments for the selected day, and write
@@ -79,211 +288,22 @@ day_process_storage(date_t *slctd_date, bool day_changed, day_items_nb_t *inday)
 	return (inday);
 }
 
-/* 
- * Store all of the items to be displayed for the selected day.
- * Items are of four types: recursive events, normal events, 
- * recursive appointments and normal appointments.
- * The items are stored in the linked list pointed by *day_items_ptr
- * and the length of the new pad to write is returned.
- * The number of events and appointments in the current day are also updated.
+/*
+ * Returns a structure of type apoint_llist_node_t given a structure of type 
+ * day_item_s 
  */
-int day_store_items(long date, int *pnb_events, int *pnb_apoints)
+static apoint_llist_node_t *
+day_item_s2apoint_s(struct day_item_s *p)
 {
-	int pad_length;
-	int nb_events, nb_recur_events;
-	int nb_apoints, nb_recur_apoints;
+	apoint_llist_node_t *a;
 
-	pad_length = nb_events = nb_apoints = 0;
-	nb_recur_events = nb_recur_apoints = 0;
-
-	if (day_items_ptr != 0)
-		day_free_list();
-	nb_recur_events = day_store_recur_events(date);
-	nb_events = day_store_events(date);
-	*pnb_events = nb_events;
-	nb_recur_apoints = day_store_recur_apoints(date);
-	nb_apoints = day_store_apoints(date);
-	*pnb_apoints = nb_apoints;
-	pad_length = nb_recur_events + nb_events + 1 + 
-		3*(nb_recur_apoints + nb_apoints);
-	*pnb_apoints += nb_recur_apoints;
-	*pnb_events += nb_recur_events;
-
-	return pad_length;
-}
-
-/* Free the current day linked list containing the events and appointments. */
-void day_free_list(void)
-{
-	struct day_item_s *p, *q;
-
-	for (p = day_items_ptr; p != 0; p = q) {
-		q = p->next;
-		free(p->mesg);
-		free(p);
-	}
-	day_items_ptr = NULL;
-}
-
-/* 
- * Store the recurrent events for the selected day in structure pointed
- * by day_items_ptr. This is done by copying the recurrent events 
- * from the general structure pointed by recur_elist to the structure
- * dedicated to the selected day. 
- * Returns the number of recurrent events for the selected day.
- */
-int day_store_recur_events(long date)
-{
-	struct recur_event_s *j;
-	struct day_item_s *ptr;
-	int e_nb = 0;
-
-	for (j = recur_elist; j != 0; j = j->next) {
-		if (recur_item_inday(j->day, j->exc, j->rpt->type, j->rpt->freq,
-			j->rpt->until, date)) {
-			e_nb++;
-			ptr = day_add_event(RECUR_EVNT, j->mesg, j->day, j->id);
-		}	
-	}
-
-	return e_nb;
-}
-
-/* 
- * Store the events for the selected day in structure pointed
- * by day_items_ptr. This is done by copying the events 
- * from the general structure pointed by eventlist to the structure
- * dedicated to the selected day. 
- * Returns the number of events for the selected day.
- */
-int day_store_events(long date)
-{
-	struct event_s *j;
-	struct day_item_s *ptr;
-	int e_nb = 0;
-
-	for (j = eventlist; j != 0; j = j->next) {
-		if (event_inday(j, date)) {
-			e_nb++;
-			ptr = day_add_event(EVNT, j->mesg, j->day, j->id);
-		}	
-	}
-
-	return e_nb;
-}
-
-/* 
- * Store the recurrent apoints for the selected day in structure pointed
- * by day_items_ptr. This is done by copying the appointments
- * from the general structure pointed by recur_alist_p->root to the 
- * structure dedicated to the selected day. 
- * Returns the number of recurrent appointments for the selected day.
- */
-int day_store_recur_apoints(long date)
-{
-	recur_apoint_llist_node_t *j;
-	struct day_item_s *ptr;
-	long real_start;
-	int a_nb = 0, n = 0;
-
-	pthread_mutex_lock(&(recur_alist_p->mutex));
-	for (j = recur_alist_p->root; j != 0; j = j->next) {
-		if ((real_start = recur_item_inday(j->start, j->exc, 
-		    j->rpt->type, j->rpt->freq, j->rpt->until, date)) ){
-			a_nb++;
-			ptr = day_add_apoint(
-			    RECUR_APPT, j->mesg, real_start, j->dur, 
-			    j->state, n);
-			n++;
-		}	
-	}
-	pthread_mutex_unlock(&(recur_alist_p->mutex));
-
-	return a_nb;
-}
-
-/* 
- * Store the apoints for the selected day in structure pointed
- * by day_items_ptr. This is done by copying the appointments
- * from the general structure pointed by alist_p->root to the 
- * structure dedicated to the selected day. 
- * Returns the number of appointments for the selected day.
- */
-int day_store_apoints(long date)
-{
-	apoint_llist_node_t *j;
-	struct day_item_s *ptr;
-	int a_nb = 0;
-
-	pthread_mutex_lock(&(alist_p->mutex));
-	for (j = alist_p->root; j != 0; j = j->next) {
-		if (apoint_inday(j, date)) {
-			a_nb++;
-			ptr = day_add_apoint(APPT, j->mesg, j->start, j->dur, 
-			    j->state, 0);
-		}	
-	}
-	pthread_mutex_unlock(&(alist_p->mutex));
-
-	return a_nb;
-}
-
-/* Add an event in the current day list */
-struct day_item_s *day_add_event(int type, char *mesg, long day, int id)
-{
-	struct day_item_s *o, **i;
-	o = (struct day_item_s *) malloc(sizeof(struct day_item_s));
-	o->mesg = (char *) malloc(strlen(mesg) + 1);
-	strncpy(o->mesg, mesg, strlen(mesg) + 1);
-	o->type = type;
-	o->appt_dur = 0;
-	o->appt_pos = 0;
-	o->start = day;
-	o->evnt_id = id;
-	i = &day_items_ptr;
-	for (;;) {
-		if (*i == 0) {
-			o->next = *i;
-			*i = o;
-			break;
-		}
-		i = &(*i)->next;
-	}
-	return o;
-}
-
-/* Add an appointment in the current day list. */
-struct day_item_s *day_add_apoint(int type, char *mesg, long start, long dur, 
-	char state, int real_pos)
-{
-	struct day_item_s *o, **i;
-	int insert_item = 0;
-
-	o = (struct day_item_s *) malloc(sizeof(struct day_item_s));
-	o->mesg = (char *) malloc(strlen(mesg) + 1);
-	strncpy(o->mesg, mesg, strlen(mesg) + 1);
-	o->start = start;
-	o->appt_dur = dur;
-	o->appt_pos = real_pos;
-	o->state = state;
-	o->type = type;
-	o->evnt_id = 0;
-	i = &day_items_ptr;
-	for (;;) {
-		if (*i == 0) {
-			insert_item = 1;
-		} else if ( ((*i)->start > start) && 
-		    ((*i)->type > EVNT) ) {
-			insert_item = 1;
-		}	
-		if (insert_item) {
-			o->next = *i;
-			*i = o;
-			break;
-		}
-		i = &(*i)->next;
-	}
-	return o;
+	a = (apoint_llist_node_t *) malloc(sizeof(apoint_llist_node_t));
+	a->mesg = (char *) malloc(strlen(p->mesg) + 1);
+	a->state = p->state;
+	a->start = p->start;
+	a->dur = p->appt_dur;
+	a->mesg = p->mesg;
+	return a;
 }
 
 /* 
@@ -355,23 +375,6 @@ day_write_pad(long date, int width, int length, int incolor)
 	}
 }
 
-/*
- * Returns a structure of type apoint_llist_node_t given a structure of type 
- * day_item_s 
- */
-apoint_llist_node_t *day_item_s2apoint_s(struct day_item_s *p)
-{
-	apoint_llist_node_t *a;
-
-	a = (apoint_llist_node_t *) malloc(sizeof(apoint_llist_node_t));
-	a->mesg = (char *) malloc(strlen(p->mesg) + 1);
-	a->state = p->state;
-	a->start = p->start;
-	a->dur = p->appt_dur;
-	a->mesg = p->mesg;
-	return a;
-}
-
 /* Display an item inside a popup window. */
 void day_popup_item(void)
 {
@@ -429,6 +432,27 @@ void day_popup_item(void)
 	pthread_mutex_unlock(&(alist_p->mutex));
 
 	return 0;
+}
+
+/* Request the user to enter a new time. */
+static char *
+day_edit_time(long time) {
+	char *timestr;
+	char *msg_time = _("Enter the new time ([hh:mm] or [h:mm]) : ");
+        char *enter_str = _("Press [Enter] to continue");
+	char *fmt_msg = 
+	_("You entered an invalid time, should be [h:mm] or [hh:mm]");
+
+	while (1) {
+		status_mesg(msg_time, "");
+		timestr = date_sec2hour_str(time);
+		updatestring(swin, &timestr, 0, 1);
+		if (check_time(timestr) != 1 || strlen(timestr) == 0) {
+			status_mesg(fmt_msg, enter_str);
+			wgetch(swin);
+		} else
+			return timestr;
+	}
 }
 
 /* Edit an already existing item. */
@@ -641,27 +665,6 @@ day_edit_item(int item_num)
 		if (notify_bar()) 
 			notify_check_added(p->mesg, p->start, p->state);
 		break;
-	}
-}
-
-/* Request the user to enter a new time. */
-char *
-day_edit_time(long time) {
-	char *timestr;
-	char *msg_time = _("Enter the new time ([hh:mm] or [h:mm]) : ");
-        char *enter_str = _("Press [Enter] to continue");
-	char *fmt_msg = 
-	_("You entered an invalid time, should be [h:mm] or [hh:mm]");
-
-	while (1) {
-		status_mesg(msg_time, "");
-		timestr = date_sec2hour_str(time);
-		updatestring(swin, &timestr, 0, 1);
-		if (check_time(timestr) != 1 || strlen(timestr) == 0) {
-			status_mesg(fmt_msg, enter_str);
-			wgetch(swin);
-		} else
-			return timestr;
 	}
 }
 

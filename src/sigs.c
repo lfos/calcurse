@@ -1,4 +1,4 @@
-/*	$Id: sigs.c,v 1.1 2007/07/23 19:31:12 culot Exp $	*/
+/*	$Id: sigs.c,v 1.2 2007/07/28 13:11:42 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -26,14 +26,10 @@
 
 #include <sys/types.h>
 #include <sys/wait.h>
-#include <ncurses.h>
 #include <stdlib.h>
-#include <stdio.h>
 #include <signal.h>
 
 #include "i18n.h"
-#include "utils.h"
-#include "wins.h"
 #include "vars.h"
 
 /* 

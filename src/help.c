@@ -1,4 +1,4 @@
-/*	$calcurse: help.c,v 1.18 2007/07/23 19:29:34 culot Exp $	*/
+/*	$calcurse: help.c,v 1.19 2007/07/28 13:11:42 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -24,28 +24,35 @@
  *
  */
 
-#include <ncurses.h>
 #include <stdlib.h>
-#include <stdio.h>
 #include <string.h>
-#include <stdbool.h>
 #include <ctype.h>
 #include <sys/types.h>
 
 #include "i18n.h"
 #include "help.h"
 #include "custom.h"
-#include "vars.h"
 #include "utils.h"
-#include "apoint.h"
 #include "notify.h"
-#include "wins.h"
+
+/* Returns the number of lines in an help text. */
+static int 
+get_help_lines(char *text)
+{
+	int i;
+	int nl = 0;
+
+	for (i = 0; text[i]; i++) {
+		if (text[i] == '\n') nl++;
+	}
+	return nl + 1;
+}
 
 /* 
  * Write the desired help text inside the help pad, and return the number
  * of lines that were written. 
- * */
-int 
+ */
+static int 
 write_help_pad(WINDOW *win, char *title, char *text, int pad_width)
 {
 	int nl_title = 0;
@@ -59,18 +66,6 @@ write_help_pad(WINDOW *win, char *title, char *text, int pad_width)
 	custom_remove_attr(win, ATTR_HIGHEST);
 	mvwprintw(win, nl_title, 0, "%s", text);
 	return nl_text + nl_title;
-}
-
-int 
-get_help_lines(char *text)
-{
-	int i;
-	int nl = 0;
-
-	for (i = 0; text[i]; i++) {
-		if (text[i] == '\n') nl++;
-	}
-	return nl + 1;
 }
 
 /* Draws the help screen */

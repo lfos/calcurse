@@ -1,4 +1,4 @@
-/*	$calcurse: event.c,v 1.3 2007/04/04 19:37:14 culot Exp $	*/
+/*	$calcurse: event.c,v 1.4 2007/07/28 13:11:42 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -24,7 +24,6 @@
  *
  */
 
-#include <ncurses.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
@@ -33,7 +32,6 @@
 #include "vars.h"
 #include "i18n.h"
 #include "event.h"
-#include "utils.h"
 
 struct event_s *eventlist;
 

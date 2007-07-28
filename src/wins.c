@@ -1,4 +1,4 @@
-/*	$Id: wins.c,v 1.2 2007/07/23 19:28:37 culot Exp $	*/
+/*	$Id: wins.c,v 1.3 2007/07/28 13:11:43 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -24,15 +24,13 @@
  *
  */
 
-#include <ncurses.h>
 #include <stdlib.h>
 
 #include "i18n.h"
-#include "vars.h"
-#include "calendar.h"
 #include "notify.h"
 #include "utils.h"
 #include "todo.h"
+#include "custom.h"
 #include "wins.h"
 
 static window_e 	slctd_win;
@@ -243,6 +241,54 @@ wins_get_config(conf_t *conf, window_t *status, window_t *notify,
 		calr->y = apts->h;
 		break;
 	}
+}
+
+/* draw panel border in color */
+static void 
+border_color(WINDOW *window)
+{
+        int color_attr    = A_BOLD;
+        int no_color_attr = A_BOLD;
+
+        if (colorize) {
+                wattron(window, color_attr | COLOR_PAIR(COLR_CUSTOM));
+                box(window, 0, 0);
+        } else {
+                wattron(window, no_color_attr);
+                box(window, 0, 0);
+        }
+
+	if (colorize) {
+                wattroff(window, color_attr | COLOR_PAIR(COLR_CUSTOM));
+        } else {
+                wattroff(window, no_color_attr);
+        }
+
+	wnoutrefresh(window);
+}
+
+/* draw panel border without any color */
+static void 
+border_nocolor(WINDOW *window)
+{
+        int color_attr   = A_BOLD;
+        int no_color_attr = A_DIM;
+
+        if (colorize) {
+                wattron(window, color_attr | COLOR_PAIR(COLR_DEFAULT));
+        } else {
+                wattron(window, no_color_attr);
+        }
+        
+        box(window, 0, 0);
+        
+        if (colorize) {
+                wattroff(window, color_attr | COLOR_PAIR(COLR_DEFAULT));
+        } else {
+                wattroff(window, no_color_attr);
+        } 
+
+	wnoutrefresh(window);
 }
 
 /* 

@@ -1,4 +1,4 @@
-/*	$calcurse: notify.c,v 1.15 2007/07/21 19:36:45 culot Exp $	*/
+/*	$calcurse: notify.c,v 1.16 2007/07/28 13:11:42 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -24,22 +24,15 @@
  *
  */
 
-#include <ncurses.h>
-#include <pthread.h>
 #include <time.h>
 #include <stdlib.h>
-#include <stdio.h>
 #include <string.h>
 #include <unistd.h>
 
 #include "i18n.h"
 #include "utils.h"
 #include "custom.h"
-#include "vars.h"
-#include "apoint.h"
 #include "notify.h"
-#include "recur.h"
-#include "wins.h"
 
 static struct notify_vars_s *notify = NULL;
 static struct notify_app_s *notify_app = NULL;
@@ -78,6 +71,14 @@ notify_init_vars(void)
 		nbar->shell = "/bin/sh"; 
 }
 
+/* Extract the appointment file name from the complete file path. */
+static void 
+extract_aptsfile(void)
+{
+	notify->apts_file = strrchr(path_apts, '/');
+	notify->apts_file++;
+}
+
 /* 
  * Create the notification bar, by initializing all the variables and 
  * creating the notification window (l is the number of lines, c the
@@ -93,7 +94,7 @@ notify_init_bar(window_t *win)
 	pthread_mutex_init(&notify_app->mutex, NULL);
 	notify_app->got_app = 0;
 	notify->win = newwin(win->h, win->w, win->y, win->x);
-	notify_extract_aptsfile();
+	extract_aptsfile();
 }
 
 /* Stop the notify-bar main thread. */
@@ -113,6 +114,26 @@ notify_reinit_bar(int l, int c, int y, int x)
 {
 	delwin(notify->win);
 	notify->win = newwin(l, c, y, x);
+}
+
+/* Launch user defined command as a notification. */
+static void
+launch_cmd(char *cmd, char *shell)
+{
+	int pid;
+
+	pid = fork();
+	
+	if (pid < 0) {
+		fputs(_("FATAL ERROR in launch_cmd: could not fork\n"), 
+		    stderr);
+		exit(EXIT_FAILURE);
+	} else if (pid == 0) { /* Child: launch user defined command */
+		if (execlp(shell, shell, "-c", cmd, (char *)NULL) < 0)
+			fputs(_("FATAL ERROR in launch_cmd: could not "
+			    "launch user command\n"), stderr);
+		exit(EXIT_FAILURE);
+	}
 }
 
 /* 
@@ -180,7 +201,7 @@ notify_update_bar(void)
 			if (blinking && 
 			    !(notify_app->state & APOINT_NOTIFIED)) {
 				notify_app->state |= APOINT_NOTIFIED;
-				notify_launch_cmd(nbar->cmd, nbar->shell);
+				launch_cmd(nbar->cmd, nbar->shell);
 			}
 			pthread_mutex_unlock(&nbar->mutex);
 		} else {
@@ -198,14 +219,6 @@ notify_update_bar(void)
 	wrefresh(notify->win);
 
 	pthread_mutex_unlock(&notify->mutex);
-}
-
-/* Extract the appointment file name from the complete file path. */
-void 
-notify_extract_aptsfile(void)
-{
-	notify->apts_file = strrchr(path_apts, '/');
-	notify->apts_file++;
 }
 
 /* Update the notication bar content */
@@ -378,26 +391,6 @@ notify_same_recur_item(recur_apoint_llist_node_t *i)
 	pthread_mutex_unlock(&(notify_app->mutex));
 
 	return same;
-}
-
-/* Launch user defined command as a notification. */
-void
-notify_launch_cmd(char *cmd, char *shell)
-{
-	int pid;
-
-	pid = fork();
-	
-	if (pid < 0) {
-		fputs(_("FATAL ERROR in notify_launch_cmd: could not fork\n"), 
-		    stderr);
-		exit(EXIT_FAILURE);
-	} else if (pid == 0) { /* Child: launch user defined command */
-		if (execlp(shell, shell, "-c", cmd, (char *)NULL) < 0)
-			fputs(_("FATAL ERROR in notify_launch_cmd: could not "
-			    "launch user command\n"), stderr);
-		exit(EXIT_FAILURE);
-	}
 }
 
 /* Launch the notify-bar main thread. */

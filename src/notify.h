@@ -1,4 +1,4 @@
-/*	$calcurse: notify.h,v 1.10 2007/07/23 19:30:04 culot Exp $	*/
+/*	$calcurse: notify.h,v 1.11 2007/07/28 13:11:42 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -26,9 +26,6 @@
 
 #ifndef CALCURSE_NOTIFY_H
 #define CALCURSE_NOTIFY_H
-
-#include <ncurses.h>
-#include <pthread.h>
 
 #include "wins.h"
 #include "apoint.h"
@@ -60,14 +57,11 @@ void 	notify_start_main_thread(void);
 void 	notify_stop_main_thread(void);
 void 	notify_reinit_bar(int, int, int, int);
 void 	notify_update_bar(void);
-void 	notify_extract_aptsfile(void);
 void 	notify_check_next_app(void);
 void 	notify_check_added(char *, long, char);
 void 	notify_check_repeated(recur_apoint_llist_node_t *);
 int 	notify_same_item(long);
 int 	notify_same_recur_item(recur_apoint_llist_node_t *);
-void 	notify_launch_cmd(char *, char *);
-void 	notify_catch_children(void);
 void 	notify_config_bar(void);
 
 #endif /* CALCURSE_NOTIFY_H */

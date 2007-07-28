@@ -1,4 +1,4 @@
-/*	$calcurse: apoint.h,v 1.7 2007/07/21 19:35:14 culot Exp $	*/
+/*	$calcurse: apoint.h,v 1.8 2007/07/28 13:11:42 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -26,8 +26,6 @@
 
 #ifndef CALCURSE_APOINT_H
 #define CALCURSE_APOINT_H
-
-#include <ncurses.h>
 
 #include "notify.h"
 #include "recur.h"
@@ -67,7 +65,6 @@ apoint_llist_node_t    *apoint_scan(FILE *, struct tm, struct tm, char);
 void 			apoint_delete_bynum(long, unsigned);
 void 			display_item_date(WINDOW *, int, apoint_llist_node_t *,
 			    int, long, int, int);
-int 			get_item_line(int, int);
 void 			scroll_pad_down(int, int, int);
 void 			scroll_pad_up(int, int);
 struct notify_app_s    *apoint_check_next(struct notify_app_s *, long);

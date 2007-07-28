@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.50 2007/07/26 20:35:58 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.51 2007/07/28 13:11:42 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -160,11 +160,11 @@ main(int argc, char **argv)
 	 * configuration (the display is then updated), and then
 	 * the todo list, appointments and events.
 	 */
-	no_data_file = check_data_files();
+	no_data_file = io_check_data_files();
 	custom_load_conf(&conf, background);
 	erase_status_bar();
-	nb_tod = load_todo();	
-	load_app();
+	nb_tod = io_load_todo();	
+	io_load_app();
 	if (notify_bar()) {
 		notify_start_main_thread();
 		notify_check_next_app();
@@ -175,7 +175,7 @@ main(int argc, char **argv)
 	    &win[TODO], &win[CALENDAR], &win[NOTIFY]);
 	wins_update(&conf, &win[STATUS], &win[APPOINTMENT], &win[TODO], 
 	    hilt_app, hilt_tod, nb_tod, first_todo_onscreen, &saved_t_mesg);
-        startup_screen(conf.skip_system_dialogs, no_data_file);
+        io_startup_screen(conf.skip_system_dialogs, no_data_file);
 	inday = *day_process_storage(0, day_changed, &inday);
 	wins_slctd_set(CALENDAR);
 	wins_update(&conf, &win[STATUS], &win[APPOINTMENT], &win[TODO], 

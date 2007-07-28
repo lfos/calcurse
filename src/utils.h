@@ -1,4 +1,4 @@
-/*	$calcurse: utils.h,v 1.21 2007/07/23 19:26:38 culot Exp $	*/
+/*	$calcurse: utils.h,v 1.22 2007/07/28 13:11:43 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -28,7 +28,6 @@
 #define CALCURSE_UTILS_H
 
 #include "calendar.h"
-#include "vars.h"
 
 #define MAX(x,y) 	((x)>(y)?(x):(y))
 #define MIN(x,y) 	((x)<(y)?(x):(y))
@@ -59,15 +58,9 @@ void	erase_status_bar(void);
 void 	erase_window_part(WINDOW *, int, int, int, int);
 WINDOW *popup(int, int, int, int, char *);
 void 	print_in_middle(WINDOW *, int, int, int, char *);
-void 	del_char(int, char *);
-char   *add_char(int, int, char *);
-void 	showcursor(WINDOW *, int, int, char *, int, int);
-void 	showstring(WINDOW *, int, int, char *, int, int);
 int 	getstring(WINDOW *, char *, int, int, int);
 int 	updatestring(WINDOW *, char **, int, int);
 int 	is_all_digit(char *);
-void 	border_color(WINDOW *);
-void 	border_nocolor(WINDOW *);
 void 	status_bar(void);
 long 	date2sec(date_t, unsigned, unsigned);
 char   *date_sec2hour_str(long);
@@ -76,6 +69,7 @@ void 	date_sec2ical_date(long, char *);
 void 	date_sec2ical_datetime(long, char *);
 long 	update_time_in_date(long, unsigned, unsigned);
 long 	get_sec_date(date_t);
+int	check_date(char *);
 long 	min2sec(unsigned);
 int 	check_time(char *);
 void 	draw_scrollbar(WINDOW *, int, int, int, int, int, bool);

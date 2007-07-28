@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.32 2007/07/23 19:26:38 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.33 2007/07/28 13:11:43 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -24,21 +24,17 @@
  *
  */
 
-#include <ncurses.h>
 #include <time.h>	
 #include <string.h>
 #include <stdlib.h>
-#include <stdio.h>
 #include <ctype.h>
-#include <stdbool.h>
 #include <sys/types.h>
 #include <math.h>
 
 #include "i18n.h"
-#include "utils.h"
 #include "wins.h"
 #include "custom.h"
-#include "vars.h"
+#include "utils.h"
 
 static unsigned status_page;
 
@@ -135,34 +131,13 @@ print_in_middle(WINDOW * win, int starty, int startx, int width, char *string)
 	custom_remove_attr(win, ATTR_HIGHEST);
 }
 
-/* Delete a character at the given position in string. */
-void del_char(int pos, char *str)
-{
-	int len;
-
-	str += pos;
-	len = strlen(str) + 1;
-	memmove(str, str + 1, len);
-}
-
-/* Add a character at the given position in string. */
-char *add_char(int pos, int ch, char *str)
-{
-	int len;
-
-	str += pos;
-	len = strlen(str) + 1;
-	memmove(str + 1, str, len);
-	*str = ch;
-	return (str += len);
-}
-
 /* 
  * Draw the cursor at the correct position in string.
  * As echoing is not set, we need to know the string we are working on to 
  * handle display correctly.
  */
-void showcursor(WINDOW *win, int y, int pos, char *str, int l, int offset)
+static void 
+showcursor(WINDOW *win, int y, int pos, char *str, int l, int offset)
 {
 	char *nc;
 
@@ -172,7 +147,8 @@ void showcursor(WINDOW *win, int y, int pos, char *str, int l, int offset)
 }
 
 /* Print the string at the desired position. */
-void showstring(WINDOW *win, int y, int x, char *str, int len, int pos)
+static void 
+showstring(WINDOW *win, int y, int x, char *str, int len, int pos)
 {
 	const int rec = 30, border = 3;
 	const int max_col = col - border, max_len = max_col - rec;
@@ -196,6 +172,30 @@ void showstring(WINDOW *win, int y, int x, char *str, int len, int pos)
 		c = 0;
 	mvwprintw(win, y, col - 1, "%c", c);
 	showcursor(win, y, pos, orig, len, offset);
+}
+
+/* Delete a character at the given position in string. */
+static void 
+del_char(int pos, char *str)
+{
+	int len;
+
+	str += pos;
+	len = strlen(str) + 1;
+	memmove(str, str + 1, len);
+}
+
+/* Add a character at the given position in string. */
+static char *
+add_char(int pos, int ch, char *str)
+{
+	int len;
+
+	str += pos;
+	len = strlen(str) + 1;
+	memmove(str + 1, str, len);
+	*str = ch;
+	return (str += len);
 }
 
 /* 
@@ -336,54 +336,6 @@ int is_all_digit(char *string)
 	if (digit == strlen(string))
 		all_digit = 1;
 	return all_digit;
-}
-
-/* draw panel border in color */
-void 
-border_color(WINDOW *window)
-{
-        int color_attr    = A_BOLD;
-        int no_color_attr = A_BOLD;
-
-        if (colorize) {
-                wattron(window, color_attr | COLOR_PAIR(COLR_CUSTOM));
-                box(window, 0, 0);
-        } else {
-                wattron(window, no_color_attr);
-                box(window, 0, 0);
-        }
-
-	if (colorize) {
-                wattroff(window, color_attr | COLOR_PAIR(COLR_CUSTOM));
-        } else {
-                wattroff(window, no_color_attr);
-        }
-
-	wnoutrefresh(window);
-}
-
-/* draw panel border without any color */
-void 
-border_nocolor(WINDOW *window)
-{
-        int color_attr   = A_BOLD;
-        int no_color_attr = A_DIM;
-
-        if (colorize) {
-                wattron(window, color_attr | COLOR_PAIR(COLR_DEFAULT));
-        } else {
-                wattron(window, no_color_attr);
-        }
-        
-        box(window, 0, 0);
-        
-        if (colorize) {
-                wattroff(window, color_attr | COLOR_PAIR(COLR_DEFAULT));
-        } else {
-                wattroff(window, no_color_attr);
-        } 
-
-	wnoutrefresh(window);
 }
 
 /* 
@@ -615,6 +567,43 @@ get_sec_date(date_t date)
 	} 
 	long_date = date2sec(date, 0, 0);
 	return long_date;
+}
+
+/*
+ * Check if the entered date is of a valid format.
+ * First check the format by itself, and then check the 
+ * numbers correctness.
+ */
+int
+check_date(char *date)
+{
+	int ok = 0;
+	char month[3] = "";
+	char day[3] = "";
+	char year[5] = "";
+	if ( 
+			(strlen(date) == 10) &
+			(isdigit(date[0]) != 0) &
+			(isdigit(date[1]) != 0) &
+			(date[2] == '/') &
+			(isdigit(date[3]) != 0) &
+			(isdigit(date[4]) != 0) &
+			(date[5] == '/') &
+			(isdigit(date[6])!=0) & (isdigit(date[7])!=0) & 
+			(isdigit(date[8])!=0) & (isdigit(date[9])!=0)
+	) {
+		strncpy(month, date, 2);
+		strncpy(day, date + 3, 2);
+		strncpy(year, date + 6, 4);
+		if ( (atoi(month) <= 12) & 
+		     (atoi(month) >= 1)  &
+		     (atoi(day) <= 31) &
+		     (atoi(day) >= 1) &
+		     (atoi(year) <= 9999) &
+		     (atoi(year) > 1))
+		ok = 1;		
+	}
+	return ok;
 }
 
 long 

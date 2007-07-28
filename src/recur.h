@@ -1,4 +1,4 @@
-/*	$calcurse: recur.h,v 1.12 2007/07/01 17:53:42 culot Exp $	*/
+/*	$calcurse: recur.h,v 1.13 2007/07/28 13:11:42 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -26,10 +26,6 @@
 
 #ifndef CALCURSE_RECUR_H
 #define CALCURSE_RECUR_H
-
-#include "apoint.h"
-#include "notify.h"
-#include "vars.h"
 
 typedef enum { RECUR_NO,
 	RECUR_DAILY,
@@ -84,11 +80,6 @@ struct recur_event_s	       *recur_event_new(char *, long, int, int, int,
 				    long, struct days_s *);
 char 				recur_def2char(int);
 int 				recur_char2def(char);
-void 				recur_write_exc(struct days_s *, FILE *);
-void 				recur_apoint_write(recur_apoint_llist_node_t *,
-				    FILE *);
-void 				recur_event_write(struct recur_event_s *, 
-				    FILE *);
 recur_apoint_llist_node_t      *recur_apoint_scan(FILE *, struct tm, struct tm,
 				    char, int, struct tm, struct days_s *, 
 				    char);
