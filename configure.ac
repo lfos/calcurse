@@ -1,48 +1,86 @@
-#                                               -*- Autoconf -*-
-# Process this file with autoconf to produce a configure script.
-#
-#	$calcurse: configure.ac,v 1.10 2007/05/22 18:02:49 culot Exp $
+#	$calcurse: configure.ac,v 1.11 2007/07/28 15:04:52 culot Exp $
 
+#-------------------------------------------------------------------------------
+#                                                                           Init
+#-------------------------------------------------------------------------------
 AC_PREREQ(2.59)
-AC_INIT(calcurse, 1.8, frederic@culot.org)
+AC_INIT(calcurse, 1.9_beta, frederic@culot.org)
 AM_INIT_AUTOMAKE
 AM_GNU_GETTEXT([external])
 AC_CONFIG_SRCDIR([src/calcurse.c])
 AC_CONFIG_HEADER([config.h])
-
-# Checks for programs.
+#-------------------------------------------------------------------------------
+#                                                         Checks for system type
+#-------------------------------------------------------------------------------
+AC_CANONICAL_HOST
+#-------------------------------------------------------------------------------
+#                                                            Checks for programs
+#-------------------------------------------------------------------------------
 AC_PROG_CC
-
-# Checks for ncurses.
+#-------------------------------------------------------------------------------
+#                                                        Checks for header files
+#-------------------------------------------------------------------------------
+AC_HEADER_STDC
+AC_CHECK_HEADERS([ctype.h getopt.h locale.h math.h signal.h stdbool.h stdio.h  \
+		  stdlib.h string.h sys/stat.h sys/types.h sys/wait.h time.h   \
+		  unistd.h])
+#-------------------------------------------------------------------------------
+#                                                         Checks for system libs
+#-------------------------------------------------------------------------------
 AC_CHECK_HEADERS([ncurses.h], [
     AC_CHECK_LIB(ncurses, initscr, [
 	LIBS="$LIBS -lncurses"
-	AC_DEFINE(HAVE_LIBNCURSES, 1, [Define to 1 if you have the 'ncurses' library (-lncurses).])
-    ], AC_MSG_ERROR(The ncurses library is required in order to build the program!))
-], AC_MSG_ERROR(The ncurses header is required in order to build the program!))
+	AC_DEFINE(HAVE_LIBNCURSES, 1, 
+		  [Define to 1 if you have the 'ncurses' library (-lncurses).])
+    ], 
+    AC_MSG_ERROR(The ncurses library is required in order to build calcurse!))
+], AC_MSG_ERROR(The ncurses header is required in order to build calcurse!))
 
-# Checks for pthread.
 AC_CHECK_HEADERS([pthread.h], [
     AC_CHECK_LIB(pthread, pthread_create, [
 	LIBS="$LIBS -lpthread"
-	AC_DEFINE(HAVE_LIBNCURSES, 1, [Define to 1 if you have the 'pthread' library (-lpthread).])
-    ], AC_MSG_ERROR(The pthread library is required in order to build the program!))
-], AC_MSG_ERROR(The pthread header is required in order to build the program!))
+	AC_DEFINE(HAVE_LIBNCURSES, 1, 
+		  [Define to 1 if you have the 'pthread' library (-lpthread).])
+    ], 
+    AC_MSG_ERROR(The pthread library is required in order to build calcurse!))
+], AC_MSG_ERROR(The pthread header is required in order to build calcurse!))
 
-# Checks for header files.
-AC_HEADER_STDC
-AC_CHECK_HEADERS([stdlib.h string.h sys/time.h time.h stdio.h unistd.h getopt.h \
-sys/types.h ctype.h getopt.h sys/wait.h signal.h math.h])
-
-# Checks for typedefs, structures, and compiler characteristics.
-AC_C_CONST
-AC_STRUCT_TM
-AC_HEADER_STDBOOL
-
-# Checks for library functions.
-AC_FUNC_MALLOC
-AC_FUNC_MKTIME
-AC_FUNC_STRFTIME
-AC_CHECK_FUNCS([floor mkdir strchr])
-
+AC_CHECK_HEADERS([math.h], [
+    AC_CHECK_LIB(m, exp, [
+	LIBS="$LIBS -lm"
+	AC_DEFINE(HAVE_LIBMATH, 1, 
+		  [Define to 1 if you have the 'math' library (-lm).])
+    ], 
+    AC_MSG_ERROR(The math library is required in order to build calcurse!))
+], AC_MSG_ERROR(The math header is required in order to build calcurse!))
+#-------------------------------------------------------------------------------
+#                                                            Compilation options
+#-------------------------------------------------------------------------------
+CFLAGS="-O2 -Wall -g"
+#-------------------------------------------------------------------------------
+#                                                               Create Makefiles
+#-------------------------------------------------------------------------------
 AC_OUTPUT(Makefile src/Makefile po/Makefile.in po/Makefile)
+#-------------------------------------------------------------------------------
+#                                                                        Summary
+#-------------------------------------------------------------------------------
+echo
+echo "========================================================================"
+echo "$PACKAGE is configured as follows."
+echo "Please check that this configuration matches your expectations."
+echo "Also give a look at the config.h file to check for preprocessor symbols."
+echo
+echo "Host system type   : $host"
+echo
+echo "Options used to compile and link:"
+echo "  PREFIX           = $prefix"
+echo "  VERSION          = $PACKAGE_VERSION"
+echo "  CC               = $CC"
+echo "  CFLAGS           = $CFLAGS"
+echo "  CPPFLAGS         = $CPPFLAGS"
+echo "  DEFS             = $DEFS"
+echo "  LD               = $LD"
+echo "  LDFLAGS          = $LDFLAGS"
+echo "  LIBS             = $LIBS"
+echo "========================================================================"
+echo 
