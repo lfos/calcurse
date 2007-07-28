@@ -1,3 +1,11 @@
+28 Jul 2007:
+	Dutch manual and po file added, many thanks to Jeremy Roon
+	configure.ac, Makefile.am and src/Makefile.am improved
+	unuseful headers removed
+	some functions became static
+	check_date() moved to utils.c
+	border_color() and border_nocolor() moved to wins.c
+
 26 Jul 2007:
 	global variables suppressed in calcurse.c
 
