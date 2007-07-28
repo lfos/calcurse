@@ -1,0 +1,916 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//NL">
+<!--
+/*
+ *	$calcurse: manual_nl.html,v 1.1 2007/07/28 13:28:12 culot Exp $
+ *
+ * Calcurse - text-based organizer
+ * Copyright (c) 2004-2007 Frederic Culot
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ *
+ * Send your feedback or comments to : calcurse@culot.org
+ * Calcurse home page : http://culot.org/calcurse
+ *
+ */
+-->
+
+<html>
+<head>
+<title>CALCURSE documentatie</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+<body bgcolor="white" text="black" link="blue" vlink="navy">
+
+<h1><code>CALCURSE - tekst-gebaseerde organizer</code></h1>
+<p>
+<p><hr><p>
+
+<h1>Inhoudsopgave</h1>
+<ul>
+<li><a href="#intro">Introductie</a>
+<li><a href="#overview">Overzicht</a>
+<ul>
+<li><a href="#overview_history">Inleiding</a>
+<li><a href="#overview_features">Belangrijke kenmerken</a>
+</ul>
+<li><a href="#install">Installatie</a>
+<ul>
+<li><a href="#install_requirements">Afhankelijkheden</a>
+<ul>
+<li><a href="#install_requirements_ncurses"><code>ncurses</code> bibliotheek</a>
+<li><a href="#install_requirements_gettext"><code>gettext</code> bibliotheek</a>
+</ul>
+<li><a href="#install_process">Installatieprocedure</a>
+</ul>
+<li><a href="#basics"><code>calcurse</code> basis</a>
+<ul>
+<li><a href="#basics_invocation">Calcurse starten</a>
+<ul>
+<li><a href="#basics_invocation_commandline">Commandoregel-opties</a>
+<li><a href="#basics_invocation_variable">Omgevingsvariabele voor i18n</a>
+</ul>
+<li><a href="#basics_interface">Gebruikers-interface</a>
+<ul>
+<li><a href="#basics_interface_noninteractive">Niet-interactieve modus</a>
+<li><a href="#basics_interface_interactive">Interactieve modus</a>
+</ul>
+<li><a href="#basics_files"><code>calcurse</code> bestanden</a>
+<li><a href="#basics_help">Online hulp</a>
+</ul>
+<li><a href="#options">Opties</a>
+<ul>
+<li><a href="#options_general">Algemene opties</a>
+<li><a href="#options_colors">Kleurenschema's</a>
+<li><a href="#options_layout">Layout configuratie</a>
+<li><a href="#options_notify">Informatiebalk instellingen</a>
+</ul>
+<li><a href="#known_bugs">Bekende bugs</a>
+<li><a href="#bugs">Rapporteren bugs en aanmerkingen</a>
+<li><a href="#contribute">Hoe kan ik mee helpen?</a>
+<ul>
+<li><a href="#contribute_documentation">Vertalen van documentatie</a>
+<li><a href="#contribute_i18n"><code>calcurse</code> i18n</a>
+<ul>
+<li><a href="#contribute_i18n_overview">Overzicht</a>
+<li><a href="#contribute_i18n_translator">Vertaal stappen</a>
+<li><a href="#contribute_i18n_po-files">Po-bestanden</a>
+</ul>
+</ul>
+<li><a href="#links">Links</a>
+<ul>
+<li><a href="#links_homepage"><code>Calcurse</code> homepage</a>
+<li><a href="#links_list"><code>Calcurse</code> nieuws lijst</a>
+<li><a href="#links_rss"><code>Calcurse</code> RSS feed</a>
+</ul>
+<li><a href="#thanks">Dankwoord</a>
+</ul>
+<p><hr><p>
+
+
+<a name="intro"></a><h1>Introductie</a></h1>
+<p>
+	<code>calcurse</code> is een tekstgebaseerde kalender en planner. Het
+	helpt om overzicht te houden over afspraken en alledaagse taken. Een
+	aan te passen meldingssysteem herinnert de gebruiker aan komende
+	deadlines, en de curses-gebaseerde interface kan aangepast worden aan
+	de wensen van de gebruiker. Alle commando's zijn gedocumenteerd in een
+	online hulpsysteem.
+
+<a name="overview"></a><h1>Overzicht</h1>
+<a name="overview_history"></a><h2>Inleiding</h2>
+<p>
+	Ik begon te denken aan dit project toen ik bijna afgestudeerd was in
+	de astrofysica... Het werd moeilijk om alles georganiseerd te houden
+	en ik had behoefte aan een goed hulpmiddel om me daar bij te helpen.
+	:)<br>
+
+	Ik hou van programma's die gebruik maken van de tekst-interface, omdat
+	ze simpel, snel, overdraagbaar en efficient zijn, dus ik dacht eraan
+	om een simpele tekst-interface kalender te programmeren. Ook wilde ik
+	graag verder leren programmeren in de programmeertaal <code>C</code>,
+	welke ik alleen in mijn vooropleiding had gebruikt. Zodoende zou ik
+	dus leren programmeren in <code>C</code>, en mijn zaakjes voor elkaar
+	krijgen.
+	Helaas studeerde ik af voordat ik klaar was met <code>calcurse</code>,
+	maar ik was nog steeds geboeid door het project, in de hoop dat het
+	ook voor anderen een handig programma zou zijn. En hier is dan het
+	resultaat...<br>
+	<br>
+	Waarom de naam 'calcurse', vraagt u zich af? Het is simpelweg een
+	samentrekking van 'CALendar' en 'nCURSEs', de naam van de bibliotheek
+	die gebruikt wordt om de gebruikers-interface aan te sturen.
+
+<a name="overview_features"></a><h2>Belangrijke kenmerken</h2>
+<p>
+	<code>Calcurse</code> is multi-platform, neemt weinig systeembronnen
+	in beslag, en is snel en betrouwbaar. Het moet gebruikt worden binnen
+	een console of terminal, lokaal of op een aparte computer door middel
+	van een connectie met een programma zoals ssh.<br>
+
+	<code>Calcurse</code> kan op twee verschillende manieren gebruikt
+	worden: interactieve of niet-interactieve modus. De eerste modus zorgt
+	er voor dat men zijn eigen agenda bijna overal kan bekijken, dankzij
+	de tekst-gebaseerde interface.  Met de tweede modus, kan men makkelijk
+	met geheugensteuntjes werken door <code>calcurse</code> met de juiste
+	commandoregel-opties in een cron tab of shell init script te
+	zetten.<br> Bovendien, is <code>calcurse</code> geschreven met de
+	eindgebruiker in gedachten, en is dus zo gebruikersvriendelijk
+	mogelijk. Dit betekent dat er een volledige hulp-functie is, en de
+	beschikbare acties altijd op het scherm staan in de statusbalk. De
+	gebruikers-interface is ook aan te passen, en men kan tussen
+	verschillende kleurenschema's en layout-combinaties kiezen. En als
+	laatste, is er het configurabele meldingssysteem, dat gebruikers
+	verwittigt van op handen zijnde afspraken.
+
+
+<a name="install"></a><h1>Installatie</h1>
+<a name="install_requirements"></a><h2>Benodigheden</h2>
+<a name="install_requirements_ncurses"></a><h3><code>ncurses</code> bibliotheek</h3>
+<p>
+	<code>Calcurse</code> maakt alleen gebruik van een <code>C</code>
+	compiler, zoals <code>cc</code> of <code>gcc</code>, en de
+	<code>ncurses</code> bibliotheek.  Het is onwaarschijnlijk dat er nog
+	geen juiste versie van <code>ncurses</code> op uw computer staat, maar
+	indien het niet zo is, is het via de volgende url te vinden:<br>
+	<pre>
+		http://ftp.gnu.org/pub/gnu/ncurses/
+	</pre>
+
+<a name="install_requirements_gettext"></a><h3><code>gettext</code> bibliotheek</h3>
+<p>
+	<code>calcurse</code> ondersteunt internationalisatie (<em>i18n</em>
+	genoemd hierna) door middel van <code>gettext</code>.  Dit betekent
+	dat <code>calcurse</code> berichten in verschillende talen kan
+	weergeven, indien gecompileerd met native language support
+	(<em>NLS</em>).  <em>NLS</em> is optioneel en als het niet nodig is,
+	kan het uitgeschakeld worden. Dit wordt gedaan door
+	<code>--disable-nls</code> als optie mee te geven aan
+	<code>configure</code> (zie sectie <a
+	href="#install_process">Installatieprocedure</a>). <br> Om te zien of
+	gettext op het systeem aanwezig is, kan er gezocht worden naar het
+	<code>libintl.h</code> header bestand b.v.:
+        <pre>
+                locate libintl.h
+        </pre>
+	Indien het header bestand niet gevonden wordt, kan het via de volgende
+	url verkregen worden:<br>
+        <pre>
+                 http://ftp.gnu.org/pub/gnu/gettext/
+        </pre>
+	<u>Noot:</u> Zelfs als <code>libintl.h</code> gevonden wordt, is het
+	misschien beter om de lokatie van het bestand tijdens de <a
+	href="#install_process">Installatieprocedure</a>) mee te geven aan
+	<code>configure</code> door middel van
+	<code>--with-libintl-prefix</code>. Het zou kunnen, dat
+	<code>configure</code> de bibliotheek niet kan vinden, als het op een
+	niet-gangbare plaats ge&iuml;nstalleerd is.
+ 
+
+<a name="install_process"></a><h2>Installatieprocedure</h2>
+<p>
+	Als eerste moet het volgende archief uitgepakt worden met gunzip en
+	untar:
+	<pre>
+	tar zxvf calcurse-1.8.tar.gz
+	</pre>
+	Zodra de benodigde pakketten ge&iuml;nstalleerd zijn en het archief
+	uitgepakt is, is de installatieprocedure vrij simpel, via de
+	standaard drie stappen:
+  	<OL>	
+	<li><code>./configure</code>
+  	<li><code>make</code>
+  	<li><code>make install</code> (mogelijk root privileges nodig)
+	</OL>
+	Typ <code>./configure --help</code> om een lijst te zien van mogelijke
+	opties.
+
+
+<a name="basics"></a><h1><code>calcurse</code> basis</h1>
+<a name="basics_invocation"></a><h2>Het aanroepen van calcurse</h2>
+<a name="basics_invocation_commandline"></a><h3>Commandoregel-opties</h3>
+<p>
+	<code>calcurse</code> accepteert de volgende opties op de
+	commandoregel (zowel korte en lange opties worden ondersteund):
+	<p>
+
+        <dl compact>
+        <dt><code>-a, --appointment</code>
+	<dd>
+	Geeft de afspraken van vandaag weer en verlaat het programma.<br>
+	<u>Noot:</u> de te gebruiken kalender waaruit de afspraken gelezen
+	moeten worden, kan gekozen worden met de '-c' vlag.<br>
+	<br>
+	<dt><code>-c &lt;file&gt;, --calendar &lt;file&gt;</code>
+	<dd>
+	Kies het te gebruiken kalenderbestand.<br> De standaardkalender is
+	<code>~/.calcurse/apts</code> (zie sectie <a
+	href="#basics_files"><code>calcurse</code> bestanden</a>).<br>
+	<br>
+	<dt><code>-d &lt;date|num&gt;, --day &lt;date|num&gt;</code>
+	<dd>
+	Geef de afspraken weer van de gegeven datum of van het gegeven aantal
+	komende dagen, afhankelijk van de opties. Er zijn twee mogelijkheden:
+	<ul>
+	  <li>een datum zoals volgt 'mm/dd/yyyy'.
+	  <li>een nummer 'n'.
+	</ul>
+	In het eerste geval, wordt een lijst met afspraken voor de gegeven
+	datum weergegeven, terwijl in het tweede geval, een lijst met
+	afspraken voor de komende 'n' aantal dagen wordt weergegeven.<br>
+	Als je bijvoorbeeld <code>calcurse -d 3</code> intypt, zullen de
+	afpraken voor vandaag, morgen en overmorgen worden weergegeven.<br>
+	<u>Noot:</u> Net zoals bij de '-a' vlag, kan de te gebruiken kalender
+	worden gekozen met de '-c' vlag.<br>
+	<br>
+	<dt><code>-h, --help</code>
+	<dd>
+	Geeft een korte hulptekst weer, met de ondersteunde
+	commandoregel-opties en verlaat het programma.<br>
+	<br>
+	<dt><code>-n, --next</code>
+	<dd>
+	Geeft de eerstvolgende afspraak weer die binnen 24 uur valt en verlaat
+	het programma.<br>
+	De weergegeven tijd is het aantal uren en minuten tot de afspraak.<br>
+	<u>Noot:</u> de te gebruiken kalender met de afspraken, kan gekozen
+	worden met de '-c' vlag.<br>
+	<br>
+	<dt><code>-t[num], --todo[=num]</code>
+	<dd>
+	Geef de 'todo' lijst weer en verlaat het programma. Als het optionele
+	nummer <code>num</code> wordt meegegeven, zullen alleen de todo's met
+	de prioriteit gelijk aan <code>num</code> worden weergegeven.<br>
+	<u>Noot:</u> het nummer van de prioriteit moet liggen tussen 1
+	(hoogste) en 9 (laagste).<br>
+	<br>
+	<dt><code>-v, --version</code>
+	<dd>
+	Geeft het versienummer van <code>calcurse</code> weer en verlaat het
+	programma.
+	<br>
+	<dt><code>-x, --export</code>
+	<dd>
+	Exporteert de data van de gebruiker naar het iCalender-formaat.
+	Gebeurtenissen, afspraken en taken worden geconverteerd en naar stdout
+	gezonden.<br>
+	<u>Noot:</u> Om de data te exporteren naar een bestand, kan men de
+	standaard output omleiden met een commando zoals:
+	<pre>
+	        $ calcurse --export > my_data.ics
+	</pre>
+	</DL>
+
+<a name="basics_invocation_variable"></a><h3>Omgevingsvariabele voor i18n</h3>
+<p>
+	<code>calcurse</code> kan gecompileerd worden met native language
+	support (zie <a
+	href="#install_requirements_gettext"><code>gettext</code>
+	bibliotheek</a>). Als je berichten wilt zien in je moedertaal, kijk
+	dan eerst na of het beschikbaar is door naar het
+	<code>po/LINGUAS</code> bestand te kijken.  Dit bestand geeft de
+	beschikbare talen weer door middel van twee letters. (Voorbeeld,
+	<em>fr</em> duidt frans aan). Indien je je taal niet vindt, zouden we
+	het op prijs stellen, als je meehelpt met het vertalen van
+	<code>calcurse</code> (zie <a href="#contribute">Hoe kan ik
+	helpen?</a>).<br>
+	Als je taal beschikbaar is, start <code>calcurse</code> met het
+	volgende commando:
+        <pre>
+                LC_ALL=fr_FR calcurse
+        </pre>
+	waar <em>fr_FR</em> de locale naam van dit voorbeeld is, maar
+	veranderd moet worden naar de locale van de gewenste taal.<br>
+	De te gebruiken karakterset zou ook gespecificeerd moeten worden,
+	omdat anders in bepaalde gevallen de accenten en dergelijke niet
+	correct weergegeven worden. De karakterset wordt gekozen in het begin
+	van het po bestand, dat overeenkomt met de gewenste taal. Je kan
+	bijvoorbeeld in het fr.po bestand zien dat het gebruik maakt van de
+	iso-8859-1 karakterset, dus om <code>calcurse</code> te starten, kan
+	het volgende commando worden gebruikt:
+	<pre>
+		LC_ALL=fr_FR.ISO8859-1 calcurse
+	</pre>
+
+<a name="basics_interface"></a><h2>Gebruikers-interface</h2>
+<a name="basics_interface_noninteractive"></a><h3>Niet-interactieve modus</h3>
+<p>
+	<code>calcurse</code> wordt in niet-interactieve modus gestart, als
+	ten minste een van de volgende opties wordt gebruikt:<br>
+	<code>-a</code>, <code>-d</code>, <code>-h</code>, <code>-n</code>,
+	<code>-t</code>, <code>-v</code><br>
+	Dit betekent dat de gewenste informatie wordt getoond, en dat daarna
+	<code>calcurse</code> simpelweg wordt verlaten en men weer terug is
+	bij de shell prompt.<br>
+	Op deze manier, kan men een regel zoals <code>'calcurse --todo
+	--appointment'</code> in zijn init config bestand zetten, zodat
+	bij het inloggen de takenlijst en afspraken van vandaag worden
+	weergegeven.
+
+<a name="basics_interface_interactive"></a><h3>Interactieve modus</h3>
+<p>
+	Als <code>calcurse</code> zonder opties of alleen met de
+	<code>-c</code> optie wordt aangeroepen, wordt <code>calcurse</code>
+	in interactieve modus gestart. In deze modus, wordt er een interface
+	getoond, dat drie verschillende panels (panelen) bevat, waartussen je
+	kan schakelen door middel van de 'TAB' toets, een notify-bar
+	(informatiebalk), en een statusbar (statusbalk) (zie onderstaand
+	figuur).
+        <pre>
+
+   afspraken panel---.                                   .---kalender panel
+                     |                                   |  
+                     v                                   v
+ +------------------------------------++----------------------------+
+ |          Afspraken                 ||          Kalender          |
+ |------------------------------------||----------------------------|
+ |                      April 6, 2006 ||         April 2006         |
+ |                                    || Ma  Di  Wo  Do  Vr  Za  Zo |
+ |                                    ||                      1   2 |
+ |                                    ||  3   4   5   6   7   8   9 |
+ |                                    || 10  11  12  13  14  15  16 |
+ |                                    || 17  18  19  20  21  22  23 |
+ |                                    || 24  25  26  27  28  29  30 |
+ |                                    ||                            |
+ |                                    |+----------------------------+
+ |                                    |+----------------------------+
+ |                                    ||            Taken           | taken
+ |                                    ||----------------------------| panel
+ |                                    ||                            |   |
+ |                                    ||                            |   |
+ |                                    ||                            |&lt;--.
+ |                                    ||                            |
+ +------------------------------------++----------------------------+
+ |---[  Ma 2006-11-22 | 10:11:43 ]---(apts)----&gt; 01:20 :: lunch &lt;---|&lt;--.
+ +------------------------------------------------------------------+ informatie
+ | ? Help     R Herteken  H/L -/+1 Dag      G Ga Naar    C Config   | balk
+ | Q Einde    S Opslaan   J/K -/+1 Week   Tab Schakelen             |&lt;-. 
+ +------------------------------------------------------------------+  |
+                                                                       |
+                                                                 statusbalk
+
+        </pre>
+	Het eerste panel geeft een kalender weer, die het mogelijk maakt om
+	een bepaalde datum te kiezen. Het tweede panel bevat de afspraken en
+	gebeurtenissen van die dag. Het laatste panel bevat een lijst met
+	taken (todo's) die nog moeten gebeuren, maar niet aan een bepaalde dag
+	zijn toegewezen.<br>
+	Aan de onderkant van het scherm is de statusbalk, die de mogelijke
+	acties en de daarbij horende toetscombinaties weergeeft.<br>
+	Net boven de statusbalk is de informatiebalk, die van links naar
+	rechts het volgende toont: de huidige datum, de huidige tijd, het
+	kalenderbestand dat in gebruik is (apts in het bovenstaand voorbeeld,
+	dat het standaardkalender bestand is, zie de volgende sectie), en de
+	volgende afspraak binnen 24 uur. In het voorbeeld staat dat het over
+	een uur en twintig minuten tijd is voor de lunch.
+	<p>
+	<u>Noot:</u> Voor sommige acties, zoals het bewerken of toevoegen van
+	een item, is het nodig dat er tekst wordt ingevoerd. Dit wordt gedaan
+	met de hulp van de ingebouwde editor.<br>
+	Als een regel met tekst langer is dan de breedte van het scherm, wordt
+	er in de editor een '&gt;', '*', or '&lt;' karakter getoond in de
+	laatste kolom, wat aanduid dat er respectievelijk meer karakters
+	achter, voor en achter, of voor de huidige positie staan.  De
+	tekstregel schuift horizontaal mee als het nodig is.<br>
+	Sommige bewerkingscommando's zijn gebonden aan speciale controle
+	karakters. Hierna zijn de beschikbare bewerkingscommando's weergegeven
+	('^' staat voor de control-toets):<br>
+	<ul>
+	<li><b>^a</b>: verplaats de cursor naar het begin van de invoerregel
+	<li><b>^b</b>: verplaats de cursor terug
+	<li><b>^d</b>: verwijder een karakter voorwaarts
+	<li><b>^e</b>: verplaats de cursor naar het einde van de invoerregel
+	<li><b>^f</b>: verplaats de cursor voorwaarts
+	<li><b>^h</b>: verwijder een karakter terug
+	<li><b>^k</b>: verwijder de invoer vanaf de cursor naar het einde van
+	de regel
+	<li><b>ESCAPE</b>: annuleert het bewerken
+	</ul> 	
+
+<a name="basics_files"></a><h2><code>calcurse</code> bestanden</h2>
+<p>
+	De volgende structuur wordt in je <code>$HOME</code> directory
+	aangemaakt, als <code>calcurse</code> voor de eerste keer wordt
+	gestart:
+	<pre>
+        $HOME/.calcurse/
+                  |___conf
+                  |___apts
+                  |___todo
+        </pre>
+        Het <em>conf</em> bestand bevat de configuratie van de gebruiker.<br>
+	Het <em>apts</em> bestand bevat alle gebeurtenissen en afspraken van
+	de gebruiker.<br>
+        Het <em>todo</em> bestand bevat de todo lijst.
+
+
+<a name="basics_help"></a><h2>Online hulp</h2>
+<p>
+	De ingebouwde hulp kan waar nodig aangeroepen worden door middel van
+	de '?' toets. Tijdens het gebruik van de hulpschermen kan een
+	specifiek commando opgevraagd worden door op de toetscombinatie te
+	drukken van dat commando.
+
+<a name="options"></a><h1>Opties</h1>
+<p>
+	Alle opties van <code>calcurse</code> zijn aan te passen vanuit het
+	Configuratie menu. Als je op 'C' drukt, kom je in een submenu met 4
+	keuzes: Druk opnieuw 'C' om naar de configuratie van de
+	kleurenschema's te gaan, druk op 'L' om naar de hoofdindeling van
+	<code>calcurse</code> te gaan (in andere woorden, waar de 3 panels op
+	het scherm komen), druk op 'G' om een aantal algemene opties in te
+	stellen, en als laatste kan de informatiebalk worden aangepast worden
+	met de toets 'N'.
+
+<a name="options_general"></a><h2>Algemene opties</h2>
+<p>
+	Met de volgende opties kan <code>calcurse</code> naar wens ingesteld
+	worden:
+        <ul>
+	<li><code>automatisch_opslaan</code> (standaard: <em>ja</em>)<br> Door
+	deze optie wordt de data van de gebruiker automatisch opgeslagen
+	(indien ingesteld op <em>ja</em>) bij het afsluiten.<br>
+	<em>Let op:</em>De data wordt niet automatisch opgeslagen als
+	<code>automatisch_opslaan</code> ingesteld is op <em>nee</em>. Dit
+	betekent dat de gebruiker op 'S' moet drukken om de gewijzigde data te
+	bewaren.<br>
+	<br>
+	<li><code>einde_bevestigen</code> (standaard: <em>ja</em>)<br>
+	Bij het be&euml;indigen van <code>calcurse</code>, zal er om een
+	bevestiging worden gevraagd, als de optie op <em>ja</em> is ingesteld.
+	Zoniet, dan zal <code>calcurse</code> zonder bevestigingsvraag
+	eindigen, als er op 'Q' wordt gedrukt.<br>
+	<br>
+	<li><code>bevestig_verwijderen</code> (standaard: <em>ja</em>)<br>
+
+	Als deze optie op <em>ja</em> is ingesteld, zal er om een bevestiging
+	gevraagd worden voor het wissen van een item door middel van een
+	toetsdruk op 'D' (dit kan een <em>todo</em>, <em>afspraak</em>, of
+	<em>gebeurtenis</em> zijn. Anders zal er geen bevestiging nodig zijn
+	voor het wissen van een item.<br>
+	<br>
+	<li><code>overslaan_systeem_dialoog</code> (standaard:
+	<em>nee</em>)<br>
+	Als deze optie ingesteld is op <em>ja</em> zullen de systeem dialogen
+	gerelateerd aan het opslaan en laden van data worden overgeslagen. Dit
+	zorgt ervoor dat <code>calcurse</code> sneller opstart en afsluit.<br>
+	<br>
+	<li><code>overslaan_progressie_balk</code> (standaard:
+	<em>nee</em>)<br>
+	Indien ingesteld op <em>ja</em>, zal deze optie er voor zorgen dat de
+	progressie balk, die normaal gesproken getoond wordt bij het opslaan
+	van data naar bestand, verdwijnt. Ingesteld op <em>ja></em>, wordt de
+	progressie balk getoond samen met de bestandsnaam. (zie sectie <a
+	href="#basics_files"><code>calcurse</code> bestanden</a>).<br>
+	<br>
+	<li><code>week_begint_op_maandag</code> (standaard: <em>ja</em>)<br>
+	Er kan gekozen worden tussen maandag en zondag als de eerste dag van
+	de week. Als <em>week_begint_op_maandag</em> ingesteld is op
+	<em>ja</em>, dan zal maandag als eerste staan in het kalender
+	overzicht. Anders staat zondag als eerste dag van de week.
+	</ul>
+
+
+<a name="options_colors"></a><h2>Kleurenschema's</h2>
+<p>
+	De kleurenschema's van <code>calcurse</code> zijn aan te passen aan de
+	wensen van de gebruiker. Om het standaard schema te wijzigen, zijn er
+	in het configuratiescherm de mogelijke opties weergegeven voor voor-
+	en achtergrondkleuren. Door met de pijltjes-toetsen of de
+	<code>calcurse</code>-toetsen de cursor te verplaatsen, en met 'X' of
+	spatie een kleur te selecteren, kan de gebruiker de kleur toegepast
+	zien. Het is ook mogelijk om de standaard kleuren van de terminal te
+	gebruiken. Selecteer hiervoor de corresponderende optie.
+	<p>
+	De kleuren van de randen, titels, toetshulp, en algemene informatie
+	binnen de statusbalk zullen worden aangepast. Er is ook een zwart-wit
+	schema, voor terminals die geen kleuren ondersteunen.<br>
+        <u>Noot:</u> 
+        <ul> 
+	<li> Afhankelijk van het type terminal en van de <code>$TERM</code>
+	omgevingsvariabele, is het mogelijk dat kleur wel of niet wordt
+	ondersteund. Indien gepoogd wordt de kleuren te veranderen, terwijl de
+	terminal geen kleuren ondersteund, zal er een foutbericht
+	verschijnen.<br>
+        <br>
+	<li> Als bekend is dat de terminal kleuren ondersteund, maar niet
+	getoond worden door <code>calcurse</code>, probeerd dan om de waarde
+	van de <code>$TERM</code> variabele te veranderen in iets anders
+	(zoals bijvoorbeeld <em>xterm-xfree86</em>)
+        </ul>
+
+      
+<a name="options_layout"></a><h2>Layout configuratie</h2>
+<p>
+	De layout stelt de positie van de panels van <code>calcurse</code> in.
+	Bij de standaard layout is de positie van het kalender panel in de
+	terminal rechtsboven, het todo-panel rechtsonder, en het afspraken
+	panel wordt aan de linkerkant van het scherm getoond (zie het figuur
+	in sectie <a href="#basics_interface_interactive">Interactieve
+	modus</a> voor een voorbeeld van de standaard layout).<br>
+	Door een andere layout te kiezen in het configuratie scherm, kan de
+	gebruiker <code>calcurse</code> zo het beste aan zijn behoeftes
+	aanpassen.
+
+<a name="options_notify"></a><h2>Informatiebalk instellingen</h2>
+<p>
+	De volgende opties stelt het gedrag van de informatiebalk in:
+	<ul>
+	<li><code>informatiebalk_toon</code> (standaard: <em>ja</em>)<br>
+	Deze optie stelt in of de informatiebalk getoond wordt op het scherm
+	of niet.<br>
+	<br>
+	<li><code>informatiebalk_datum</code> (standaard: <em>%a %F</em>)<br>
+	Door middel van deze optie, kan ingesteld worden hoe de datum wordt
+	weergegeven in de informatiebalk. Alle mogelijkheden kunnen gezien
+	worden door <tt>man 3 strftime</tt> in de terminal te typen.<br>
+	<br>
+	<li><code>informatiebalk_tijd</code> (standaard: <em>%T</em>)<br>
+	Door middel van deze optie, kan insteld worden hoe de huidige tijd
+	wordt weergegeven in de informatiebalk.  weergegeven in de
+	informatiebalk. Alle mogelijkheden kunnen gezien worden door <tt>man 3
+	strftime</tt> in de terminal te typen.<br>
+	<br>
+	<li><code>informatiebalk_waarschuwing</code> (standaard:
+	<em>300</em>)<br>
+	Indien een afspraak binnen de tijd valt die is ingesteld in
+	'informatiebalk_waarschuwing', begint de weergave van die boodschap te
+	knipperen. Zo wordt de gebruiker gewaarschuwd, dat er een op handen
+	zijnde afspraak is. Bovendien zal het commando uitgevoerd worden dat
+	is gedefinieerd door informatiebalk_commando.<br>
+	<br>
+	<li><code>informatiebalk_commando</code> (standaard:
+	<em>printf '\a'</em>)<br>
+	Deze optie geeft het commando weer dat wordt uitgevoerd wanneer er een
+	op handen zijnde afspraak is, die gemarkeerd is als 'belangrijk'. Het
+	commando zal naar de shell van de gebruiker gestuurd worden, waar het
+	door de shell uitgevoerd wordt. Om van de gewenste shell gebruik te
+	maken, wordt gebruik gemaakt van de <code>$SHELL</code>
+	omgevingsvariabele. Er wordt gebruik gemaakt van <code>/bin/sh</code>,
+	indien de variabele leeg is.<br>
+	<u>Voorbeeld:</u> Stel dat het commando <code>mail</code> uit te
+	voeren is op het systeem van de gebruiker. Men kan dan het volgende
+	commando gebruiken om op de hoogte gesteld te worden van een op handen
+	zijnde afspraak (de beschrijving van de afspraak zal ook te zien zijn
+	in de body van de mail):
+	<pre>
+		calcurse --next | mail -s "[calcurse] upcoming appointment!" user@host.com
+	</pre>
+	</ul> 
+
+<a name="bekende_bugs"></a><h1>bekende bugs</h1>
+<p>
+	Wanneer <code>calcurse</code> gebruikt maakt van een zwart-wit schema
+	terwijl de <code>$TERM</code> variabele is ingesteld op
+	<em>xterm-color</em>, zullen er verkeerde items gemarkeerd worden.
+	Gebruik om deze bug op te lossen, <em>xterm-xfree86</em> in plaats van
+	<em>xterm-color</em> in de variabele <code>$TERM</code>,
+	adviseert Thomas E. Dickey (<code>xterm</code> maintainer):
+        <blockquote>
+	"De waarde van xterm-color voor $TERM is geen goede keuze voor XFree86
+	xterm, omdat het vaak gebruikt wordt voor een optie in terminfo, dat
+	bce niet ondersteunt. Maak gebruik van de xterm-xfree86 optie die met
+	de xterm van XFree86 wordt gedistribueerd (of eenzelfde die wordt
+	gedistribueerd met ncurses)."
+        </blockquote>
+
+<a name="bugs"></a><h1>Het melden van bugs en aanmerkingen</h1>
+<p>
+	Meldt bugs en aanmerkingen alstublieft aan:
+        <pre>
+        calcurse@culot.org
+        </pre>
+        Of aan de auteur:
+        <pre>
+        frederic@culot.org
+        </pre>
+
+<a name="contribute"></a><h1>Hoe kan ik helpen?</h1>
+<p>
+	Mocht je mee willen helpen aan het project, dan kan je ten eerste
+	laten weten wat je wel en niet goed vindt, en of er nog dingen zijn
+	die je mist in <code>calcurse</code>.
+	Ook wordt het vertalen van <code>calcurse</code> berichten en
+	documentatie zeer gewaardeerd.<br>
+        <br>
+	<u>Noot:</u> Alle hulp bij het 'internationaliseren' van
+	<code>calcurse</code> wordt zeer op prijs gesteld, maar voordat je
+	begint, mail dan eerst naar <code>calcurse-i18n@culot.org</code>, om
+	te weten te komen of iemand anders al met een vertaling naar jouw taal
+	bezig is.
+
+<a name="contribute_documentation"></a><h2>Vertalen van de documentatie</h2>
+<p>
+	De <em>doc/</em> directory van het bronpakket bevat alle vertalingen
+	van de handleidingen van <code>calcurse</code>. Als de handleiding van
+	je moedertaal echter nog niet aanwezig is, wordt het zeer op prijs
+	gesteld als je kunt helpen met de vertaling.<br>
+	Kopieer eenvoudig de bestaande handleiding naar
+	<code>manual_XX.html</code>, waar <em>XX</em> de code is van je taal.
+	Vertaal dan het zojuist aangemaakte bestand en zend het naar de
+	auteur (zie <a href="#bugs">Het melden van bugs en aanmerkingen</a>),
+	zodat het bij de volgende versie van <code>calcurse</code> gevoegd can
+	worden.
+
+<a name="contribute_i18n"></a><h2><code>calcurse</code> i18n</h2>
+<p>
+	Zoals eerder gezegd, maakt <code>calcurse</code> gebruikt van
+	<code>gettext</code> om berichten weer te geven in meerdere talen.
+	Deze sectie informeert hoe de berichten te vertalen in je moedertaal.
+	Deze howto is echter met opzet incompleet, en verlegt de focus op het
+	werken met <code>gettext</code> voor <code>calcurse</code>. Voor meer
+	gespecificeerde informatie of om het grotere geheel te begrijpen, is
+	er de <code>GNU gettext</code> handleiding:
+        <pre>
+                http://www.gnu.org/software/gettext/manual/
+        </pre>
+	In principe, zijn er drie verschillende mensen bezig in de
+	vertaalketen: programmeurs, de vertaal co&ouml;rdinator, en de vertalers.
+	Na in vogelvlucht uit te leggen hoe dingen werken, zal de taak van de
+	vertaler beschreven worden.
+
+<a name="contribute_i18n_overview"></a><h3>Overzicht</h3>
+<p>
+	Om het mogelijk te maken om teksten weer te geven in de taal van de
+	gebruiker, zijn er twee stappen vereist: <em>internationalisatie</em>
+	(i18n) en <em>localisatie</em> (l10n). i18n zorgt ervoor dat
+	<code>calcurse</code> meerdere talen ondersteund. De programmeurs
+	markeren de te vertalen tekst (strings genaamd) en bieden een manier
+	aan om deze direct te vertalen als <code>calcurse</code> gestart is.
+	l10n zorgt ervoor dat de i18n-de <code>calcurse</code> zich instelt op
+	de taal van de gebruiker, dus worden de door de programmeurs
+	gemarkeerde strings vertaald, en wordt de omgeving correct ingesteld,
+	zodat <code>calcurse</code> gebruik kan maken van de vertaling.<br>
+	<br>
+
+	Dus, de te vertalen strings worden eerst gemarkeerd door de
+	programmeurs binnen in de <code>C</code> broncode, dan worden ze
+	verzameld in een sjabloon bestand (<em>calcurse.pot</em> - de
+	<em>pot</em> extensie staat voor <em>portable object template</em>,
+	wat zoiets als overdraagbaar object sjabloon betekent). De inhoud van
+	deze sjabloonbestanden worden dan samengevoegd met de vertaalbestanden
+	van elke taal (<em>fr.po</em> voor frans, bijvoorbeeld - waar
+	<em>po</em> voor <em>portable object</em> staat, dus bedoeld om
+	gelezen en gewijzigd te worden door mensen). Dit bestand wordt door een
+	vertaalteam vertaald, en verzonden naar de ontwikkelaars. Bij het
+	compileren wordt voor efficientie een binaire versie van dit bestand
+	gemaakt (<em>fr.mo</em> - <em>mo</em> staat voor <em>machine
+	object</em>, dus met als doel gelezen te worden door programma's), en
+	ge&iuml;nstalleerd. <code>calcurse</code> gebruikt dit bestand dan, om de
+	strings te vertalen volgende de instellingen van de locale van de
+	gebruiker.
+	
+
+<a name="contribute_i18n_translator"></a><h3>Taken van de vertaler</h3>
+<p>
+	Stel dat iemand met het vertalen naar een nieuwe taal wil beginnen.
+	Dan zijn dit de stappen die gevolgd moeten worden:
+        <ul>
+	<li>Vindt eerst uit wat de naam van de locale is. Voor frans
+	bijvoorbeeld is het 'fr_FR', of simpelweg 'fr'. Dit is de waarde die
+	in de omgevingsvariabele <code>LC_ALL</code> moet staan om software te
+	vertalen (zie <a href="#basics_invocation_variable">De i18n
+	omgevingsvariabele</a>).<br>
+        <br>
+	<li>Ga dan naar de <em>po/</em> directory, en maak nieuwe
+	po-bestanden aan met het volgende commando:
+        <pre>
+                'msginit -i calcurse.pot -o fr.po -l fr --no-translator'
+        </pre>
+	Indien <code>msginit</code> niet aanwezig is op het systeem, kopieer
+	dan simpelweg het <em>calcurse.pot</em> bestand en hernoem het naar
+	bijvoorbeeld <em>fr.po</em> en wijzig de header handmatig.<br>
+	Nu <em>fr.po</em> aangemaakt is, kan de vertaler beginnen.
+        </ul>
+
+
+<a name="contribute_i18n_po-files"></a><h3>po-bestanden</h3>
+<p>
+	De indeling van de po-bestanden is vrij simpel. Po-bestanden bestaan
+	uit vier onderdelen:
+        <ol>
+	<li><em>locatie regels:</em> informeert waar de strings gevonden
+	kunnen worden (bestandsnaam en regelnummer), in het geval dat je het
+	een beetje in context wilt zien.
+        <li><em>msgid regels:</em> de te vertalen strings.
+        <li><em>msgstr regels:</em> de vertaalde strings.
+	<li><em>regels met een '#' ervoor:</em> commentaar (sommige met een
+	speciale betekenis, zoals we verderop zullen zien).
+        </ol>
+	Eigenlijk, hoef je alleen de <em>msgstr</em> regels te vullen met de
+	vertaling van bovenstaande <em>msgid</em> regels.
+        <p>
+        <u>Een paar aanmerkingen:</u>
+        <ul>
+        <li><em>Fuzzy strings</em><br>
+	Wanneer je een string tegenkomt die gemarkeerd is met <code>"#,
+	fuzzy"</code>, zal <code>calcurse</code> de vertaling niet gebruiken
+	totdat je iets verandert. 'Fuzzy' betekent dat de string al vertaald
+	is, maar sindsdien is veranderd in de broncode van het programma, of
+	dat het een nieuwe string is, waar <code>gettext</code> zelf een ruwe
+	vertaling van heeft gemaakt, gebaseerd op andere strings in het
+	bestand. Het komt erop neer dat je de vertaling moet nakijken. Soms is
+	er een kleine verandering in de originele string, omdat er een typfout
+	is verbeterd. In dit geval hoeft er niets te veranderen. Maar het kan
+	ook zo zijn dat de vertaling niet juist meer is, en een verandering
+	noodzakelijk is. Als de vertaling weer in orde is, wis dan de regel
+	met <code>"#, fuzzy"</code>, en dan zal de vertaling weer gebruikt
+	worden in <code>calcurse</code>.<br>
+        <br>
+        <li><em>c-format strings en speciale tekens</em><br>
+	Sommige string hebben het volgende commentaar: <code>"#,
+	c-format"</code>. Dit betekent dat een deel van de te vertalen string
+	een speciale betekenis heeft voor het programma, en niet veranderd mag
+	worden. Bijvoorbeeld, het teken %, gebruikt als <code>"%s"</code>. Dit
+	betekent dat <code>calcurse</code> dit teken zal vervangen met een
+	andere string. Het is dus belangrijk dat het niet verwijderd wordt. Er
+	zijn ook andere tekens zoals \, gebruikt als <code>\n</code> of
+	<code>\t</code>. Verander ook deze niet. Het zijn respectievelijk
+	tekens voor einde-van-de-regel, en een tab.<br>
+        <br>
+        <li><em>Vertalingen mogen afgebroken worden</em><br>
+	Zodra een regel te lang wordt, kan je hem splitsen als volgt:
+        <pre>
+                msgid ""
+                "een hele lange regel"
+                "de volgende regel"
+        </pre>
+        <li><em>het begin van het po-bestand</em><br>
+	Aan het begin van het po-bestand, vormt de eerste string de 'header',
+	waar verschillende soorten informatie kan worden ingevuld. Het
+	belangrijkste is de karakterset. Het zou er als volgt uit moeten zien:
+        <pre>
+                "Content-Type: text/plain; charset=utf-8\n"
+        </pre>
+	Het is ook belangrijk dat het Last-Translator veld wordt ingevuld,
+	zodat nieuwe vertalers zich bij je kunnen aanmelden, of dat mensen
+	contact kunnen opnemen als ze aanvullingen hebben of typfouten
+	gevonden hebben. Je kan zowel een naam/bijnaam, of email adres
+	invulllen, zoals bijvoorbeeld:
+        <pre>
+                "Last-Translator: Frederic Culot &lt;frederic@culot.org&gt;\n"
+        </pre>
+        <li><em>Commentaar</em><br>
+	Het toevoegen van commentaar (regels die beginnen met het karakter
+	'#', is een juiste manier om problemen met vertalingen te markeren
+	voor proeflezers of andere vertalers.<br>
+        <br>
+        <li><em>De lengte van strings</em><br>
+	<code>calcurse</code> is een curses/console programma, dus het is nauw
+	verbonden met het aantal kolommen dat de terminal gebruikt. Dit is
+	iets om in gedachten te houden bij het vertalen. Vaak moet een string
+	op een enkele regel passen. Het beste is dus om niet zomaar de strings
+	te vertalen, maar om eerst te kijken waar ze weergegeven worden in het
+	programma, en pas dan te vertalen.<br>
+        <br>
+        <li><em>Een paar nuttige hulpmiddelen</em><br>
+	Het po-bestandsformaat is vrij simpel, en het bestand kan gewijzigd
+	worden met een standaard tekst-editor. Maar er zijn een paar
+	gespecialiseerde hulpmiddelen, die je misschien handig vindt bij het
+	vertalen:
+           <ul>
+           <li><code>poEdit</code> (<a 
+           href="http://www.poedit.org/" target="_blank">
+           http://www.poedit.org/</a>)
+           <li><code>KBabel</code> (<a
+           href="http://i18n.kde.org/tools/kbabel/" target="_blank">
+           http://i18n.kde.org/tools/kbabel/</a>)
+           <li><code>GTranslator</code> (<a
+           href="http://gtranslator.sourceforge.net/" target="_blank">
+           http://gtranslator.sourceforge.net/</a>)
+           <li><code>Emacs</code> po mode
+           <li><code>Vim</code> po mode
+           </ul>
+        <br>
+        <li><em>En als laatste</em><br>
+	Ik hoop dat je het leuk vindt om bij te dragen aan een
+	'ge&iuml;nternationaliseerde' wereld. :) Mocht je nog vragen hebben,
+	schroom dat niet om contact met me op te nemen via
+	<em>frederic@culot.org</em>.  </ul>
+
+
+<a name="links"></a><h1>Links</h1>
+<p>
+	
+	Deze sectie bevat links en referenties welke je misschien interesseren.
+
+
+<a name="links_homepage"></a><h2><code>calcurse</code> homepage</h2>
+<p>
+	De <code>calcurse</code> homepage is hier te vinden:
+	<pre>
+	http://culot.org/calcurse
+	</pre>
+
+<a name="links_list"></a><h2><code>calcurse</code> mededelingenlijst</h2>
+<p>
+	Mocht je interesse hebben in het project, en op de hoogte wilt worden
+	gehouden als er een nieuwe versie uitkomt, kan je jezelf inschrijven
+	op de <code>calcurse</code> mededelingenlijst. Je ontvangt dan een
+	email zodra er iets nieuws is in <code>calcurse</code>.<br>
+	Om je in te schrijven, zend dan een email naar
+	<code>calcurse-announce@culot.org</code> met "subscribe" 
+	ingevuld bij 'onderwerp'.
+
+<a name="links_rss"></a><h2><code>calcurse</code> RSS feed</h2>
+<p>
+	Nog een mogelijkheid om op de hoogte te blijven over nieuwe versies
+	is om de RSS feed te volgen:
+	<pre>
+	http://culot.org/calcurse/news_rss.xml
+	</pre>
+	Deze RSS feed wordt iedere keer vernieuwd als er een nieuwe versie van
+	calcurse beschikbaar is, waarbij ook de nieuwe opties beschreven
+	worden. 
+
+<a name="thanks"></a><h1>Dankwoord</a></h1>
+<p>
+	Het is tijd om de mensen te bedanken, zonder wie dit programma niet
+	zou bestaan! Hier is een lijst met mensen die ik graag wil bedanken:
+	<ul>
+	<li>Alex voor zijn patches, hulp en advies met het programmeren in
+	<code>C</code> 
+	<li>Gwen voor het testen en voor de discussies om
+	<code>calcurse</code> te verbeteren
+	<li>Herbert voor het maken van een pakket voor <code>calcurse</code>
+	voor FreeBSD 
+	<li>Zul voor het maken van een pakket voor <code>calcurse</code> voor
+	NetBSD
+	<li>Wain voor het maken van een pakket voor <code>calcurse</code> voor
+	Archlinux
+	<li>Kevin, Ryan, en fEnIo voor het maken van een pakket voor
+	<code>calcurse</code> voor Debian en Ubuntu
+	<li>Steffen voor het maken van een pakket voor <code>calcurse</code>
+	voor Archlinux
+	<li>Pascal voor het maken van een pakket voor <code>calcurse</code>
+	voor Slackware
+	<li>Alexandre en Markus voor het maken van een pakket voor
+	<code>calcurse</code> voor Mac OsX en Darwin
+	<li>Igor voor het maken van een pakket voor <code>calcurse</code> for
+	ALT Linux
+	<li>Joel voor zijn kalender script waarop de kalenderview van
+	<code>calcurse</code> ge&iuml;nspireerd is
+	<li>Michael Schulz en Chris M. voor de duitse vertaling van
+	<code>calcurse</code> en handleiding
+	<li>Jose Lopez voor de spaanse vertaling van <code>calcurse</code> en
+	handleiding
+	<li>Neil Williams voor de engelse vertaling
+	<li>Tony voor zijn patch die de recur_item_inday functie verbeterde.
+	<li>Jeremy Roon voor de nederlandse vertaling van
+	<code>calcurse</code> en handleiding
+	<li>en de mensen die de software geschreven hebben die ik goed vind
+	en mij ge&iuml;nspireerd hebben zoals:
+		<ul>
+		<li><code>vim</code> voor de toetsen die de cursor verplaatsen
+		<li><code>orpheus</code> en <code>abook</code> voor de
+		documentatie
+		<li><code>pine</code> en <code>aptitude</code> 
+	        voor de tekstinterface
+		</ul>
+	</ul>
+        <br>
+	En als laatste wil ik graag de mensen bedanken die
+	<code>calcurse</code> gebruiken, en mij aanvullingen en opbouwende
+	kritiek stuurden.
+
+<hr>
+<small><em>
+Copyright (c) 2004-2007 Fr&eacute;d&eacute;ric Culot<br>
+Calcurse version 1.7 - Last change: January 16, 2007
+<em></small>
+
+
+</body>
+</html>
