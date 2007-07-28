@@ -1,0 +1,1554 @@
+# 	$calcurse: nl.po,v 1.1 2007/07/28 13:33:59 culot Exp $
+#
+# Dutch translations for calcurse package.
+# Copyright (C) 2007 Jeremy Roon <p.roon@chello.nl>
+# This file is distributed under the same license as the calcurse package.
+# Frederic Culot <frederic@culot.org>, 2006-2007.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: calcurse 1.8\n"
+"Report-Msgid-Bugs-To: frederic@culot.org\n"
+"POT-Creation-Date: 2007-07-28 15:20+0200\n"
+"PO-Revision-Date: 2007-01-06 13:52+0200\n"
+"Last-Translator: Jeremy Roon\n"
+"Language-Team:  Jeremy Roon <p.roon@chello.nl>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: src/apoint.c:89
+msgid ""
+"Enter start time ([hh:mm] or [h:mm]), leave blank for an all-day event : "
+msgstr ""
+"Voer aanvangstijd in ([hh:mm] of [h:mm]), laat leeg voor de gehele dag:"
+
+#: src/apoint.c:90
+msgid "Enter end time ([hh:mm] or [h:mm]) or duration (in minutes) : "
+msgstr "Voer de eindtijd in ([hh:mm] of [h:mm]) of duur (in minuten) :"
+
+#: src/apoint.c:91
+msgid "Enter description :"
+msgstr "Voer beschrijving in :"
+
+#: src/apoint.c:92
+msgid "You entered an invalid start time, should be [h:mm] or [hh:mm]"
+msgstr "De aanvangstijd is ongeldig! Formaat kan [h:mm] of [hh:mm] zijn"
+
+#: src/apoint.c:93
+msgid "You entered an invalid end time, should be [h:mm] or [hh:mm] or [mm]"
+msgstr "De eindtijd is ongeldig! Formaat kan [h:mm] of [hh:mm] of [mm] zijn"
+
+#: src/apoint.c:94 src/day.c:442 src/day.c:493
+msgid "Press [Enter] to continue"
+msgstr "Druk op [Enter] om door te gaan)"
+
+#: src/apoint.c:188
+msgid "Do you really want to delete this item ?"
+msgstr "Wilt u werkelijk dit item wissen ?"
+
+#: src/apoint.c:226
+#, fuzzy
+msgid "FATAL ERROR in apoint_delete: no such type\n"
+msgstr "FATALE FOUT in del_item: Type niet gevonden\n"
+
+#: src/apoint.c:333 src/recur.c:225
+msgid "FATAL ERROR in apoint_scan: date error in the appointment\n"
+msgstr "FATALE FOUT in apoint_scan: datafout in de afspraak\n"
+
+#: src/apoint.c:368
+msgid "FATAL ERROR in apoint_delete_bynum: no such appointment\n"
+msgstr "FATALE FOUT in apoint_delete_bynum: Afspraak bestaat niet\n"
+
+#: src/apoint.c:545
+msgid "FATAL ERROR in apoint_switch_notify: no such appointment\n"
+msgstr "FATALE FOUT in apoint_switch_notify: Afspraak bestaat niet\n"
+
+#: src/args.c:51
+msgid "Usage: calcurse [-h|-v] [-x] [-an] [-t[num]] [-d date|num] [-c file]\n"
+msgstr ""
+"Gebruik: calcurse [-h | -v] [-x] [-an] [-t[nr]] [-d datum|nr] [-c bestand]\n"
+
+#: src/args.c:60
+msgid "Try 'calcurse -h' for more information.\n"
+msgstr "Gebruik 'calcurse -h', voor meer informatie.\n"
+
+#: src/args.c:73
+msgid ""
+"\n"
+"Copyright (c) 2004-2007 Frederic Culot.\n"
+"This is free software; see the source for copying conditions.\n"
+msgstr ""
+"\n"
+"Copyright (c) 2004-2007 Frederic Culot.\n"
+"Dit is vrije Software; kijk in de broncode voor kopieervoorwaarden.\n"
+
+#: src/args.c:77 src/args.c:122
+#, c-format
+msgid "Calcurse %s - text-based organizer\n"
+msgstr "Calcurse %s - tekst-gebaseerde organizer\n"
+
+#: src/args.c:90
+msgid ""
+"\n"
+"Miscellaneous:\n"
+"  -h, --help\n"
+"\tprint this help and exit.\n"
+"\n"
+"  -v, --version\n"
+"\tprint calcurse version and exit.\n"
+"\n"
+"Files:\n"
+"  -c <file>, --calendar <file>\n"
+"\tspecify the calendar <file> to use.\n"
+"\n"
+"Non-interactive:\n"
+"  -a, --appointment\n"
+" \tprint events and appointments for current day and exit.\n"
+"\n"
+"  -d <date|num>, --day <date|num>\n"
+"\tprint events and appointments for <date> or <num> upcoming days and\n"
+"\texit. Possible formats are: 'mm/dd/yyyy' or 'n'.\n"
+"\n"
+"  -n, --next\n"
+"  \tprint next appointment within upcoming 24 hours and exit. Also given\n"
+"\tis the remaining time before this next appointment.\n"
+"\n"
+"  -t[num], --todo[=num]\n"
+"\tprint todo list and exit. If the optional number [num] is given,\n"
+"\tthen only todos having a priority equal to [num] will be returned.\n"
+"\tnote: priority number must be between 1 (highest) and 9 (lowest).\n"
+"\n"
+"  -x, --export\n"
+"\texport user data to iCalendar format. Events, appointments and\n"
+"\ttodos are converted and echoed to stdout.\n"
+"\tnote: redirect standard output to export data to a file,\n"
+"\tby issuing a command such as: calcurse --export > my_data.ics\n"
+"\n"
+"For more information, type '?' from within Calcurse, or read the manpage.\n"
+"Mail bug reports and suggestions to <calcurse@culot.org>.\n"
+msgstr ""
+"\n"
+"Diversen:\n"
+"  -h, --hulp\n"
+"\tGeeft deze hulp weer en verlaat het programma.\n"
+"\n"
+"  -v, --versie\n"
+" \tGeeft de actuele programmaversie weer en verlaat het programma.\n"
+"\n"
+"Bestanden:\n"
+"  -c <bestand>, --calendar <bestand>\n"
+"\tGeeft het te gebruiken kalender <bestand> weer.\n"
+"\n"
+"Niet-interactief:\n"
+"  -a, --appointment\n"
+"\tGeeft de afspraak van vandaag weer en verlaat het programma.\n"
+"\n"
+"  -d <datum|nr>, --day <datum|nr>\n"
+"\tGeeft alle afspraken voor de <datum> of de <nr> volgende dagen weer\n"
+"\ten verlaat het programma. Mogelijke opties: 'mm/dd/jjjj' of 'n'.\n"
+"\n"
+"  -n, --next\n"
+"\tGeeft de volgende afspraak binnen de komende 24 uur weer, en verlaat het\n"
+"\tprogramma. Ook wordt de tijd tot die afspraak weergegeven.\n"
+"  -t[nr], --todo[=nr]\n"
+"\tGeeft de takenlijst weer en verlaat het programma. Als het optionele\n"
+"\targument [nr] wordt gegeven, zullen alleen de taken met de prioriteit\n"
+"\tgelijk aan [nr] worden getoond.\n"
+"\tLet op: De prioriteit moet tussen 1 (hoogste) en 9 (laagste) liggen.\n"
+"\n"
+"  -x, --export\n"
+"\texporteert gebruikersdata naar het iCalender formaat. Afspraken,\n"
+"\tgebeurtenissen en taken worden geconverteerd en naar stdout gezonden.\n"
+"\tNoot: Met het volgende commando, wordt de output omgeleid en\n"
+"\topgeslagen in een bestand: calcurse --export > my_data.ics\n"
+"\n"
+"Typ '?' in Calcurse voor meer informatie, of lees de man-pagina.\n"
+"Mail a.u.b. foutrapporten en suggesties naar <calcurse@culot.org>.\n"
+
+#: src/args.c:143
+msgid "to do:\n"
+msgstr "Taken:\n"
+
+#: src/args.c:173
+msgid "next appointment:\n"
+msgstr "Volgende afspraak :\n"
+
+#: src/args.c:363
+msgid "Argument to the '-d' flag is not valid\n"
+msgstr "Argument van '-d' is niet geldig.\n"
+
+#: src/args.c:365
+msgid "Possible argument formats are : 'mm/dd/yyyy' or 'n'\n"
+msgstr "Mogelijke formaatopties zijn : 'mm/dd/jjjj' of 'n'\n"
+
+#: src/args.c:367
+msgid ""
+"\n"
+"For more information, type '?' from within Calcurse, or read the manpage.\n"
+msgstr ""
+"\n"
+"Typ '?' in Calcurse voor meer informatie, of lees de man-pagina.\n"
+
+#: src/args.c:370
+msgid "Mail bug reports and suggestions to <calcurse@culot.org>.\n"
+msgstr "Mail foutrapporten en suggesties naar <calcurse@culot.org>.\n"
+
+#: src/calcurse.c:90
+msgid ""
+"Sorry, colors are not supported by your terminal\n"
+"(Press [ENTER] to continue)"
+msgstr ""
+"Helaas wordt kleur niet door uw terminal ondersteund.\n"
+"(druk op [ENTER] om door te gaan)"
+
+#: src/calcurse.c:92
+msgid "Do you really want to quit ?"
+msgstr "Wilt u werkelijk het programma verlaten?"
+
+#: src/calcurse.c:192
+msgid ""
+"Please resize your terminal screen\n"
+"(to at least 80x24),\n"
+"and restart calcurse.\n"
+msgstr ""
+"Wijzig a.u.b. de terminalgrootte\n"
+"(minstens 80x24),\n"
+"en herstart calcurse.\n"
+
+#: src/calcurse.c:269
+msgid "To do :"
+msgstr "Taken :"
+
+#: src/calendar.c:113
+msgid "ERROR in calendar_set_first_day_of_week\n"
+msgstr ""
+
+#: src/calendar.c:326
+msgid "The day you entered is not valid"
+msgstr "De ingevoerde datum is ongeldig"
+
+#: src/calendar.c:327 src/custom.c:211 src/io.c:404 src/io.c:689 src/io.c:776
+#: src/io.c:795
+msgid "Press [ENTER] to continue"
+msgstr "Druk op [ENTER] om door te gaan)"
+
+#: src/calendar.c:329
+msgid "Enter the day to go to [ENTER for today] : mm/dd/yyyy"
+msgstr "Gewenste datum?: [ENTER voor vandaag] : mm/dd/jjjj"
+
+#: src/custom.c:46
+msgid "FATAL ERROR in fill_config_var: wrong configuration variable format.\n"
+msgstr "FATALE FOUT in fill_config_var: fout formaat configuratievariabele.\n"
+
+#: src/custom.c:66
+msgid "FATAL ERROR in custom_load_color: wrong color number.\n"
+msgstr "FATALE FOUT in custom_load_color: ongeldig kleurnummer.\n"
+
+#: src/custom.c:68
+msgid "FATAL ERROR in custom_load_color: wrong color name.\n"
+msgstr "FATALE FOUT in custom_load_color: ongeldige kleurnaam.\n"
+
+#: src/custom.c:70
+msgid ""
+"FATAL ERROR in custom_load_color: wrong configuration variable format.\n"
+msgstr ""
+"FATALE FOUT in custom_load_color: ongeldig formaat configuratievariabele.\n"
+
+#: src/custom.c:78
+msgid "FATAL ERROR in custom_load_color: missing colors in config file.\n"
+msgstr ""
+"FATALE FOUT in custom_load_color: ontbrekende kleuren configuratiebestand.\n"
+
+#: src/custom.c:210
+msgid "Failed to open config file"
+msgstr "Kan het configuratiebestand niet openen"
+
+#: src/custom.c:289
+msgid "FATAL ERROR in custom_load_conf: configuration variable unknown.\n"
+msgstr "FATALE FOUT in custom_load_conf: onbekende configuratievariabele.\n"
+
+#: src/custom.c:343
+msgid "Exit"
+msgstr "Einde"
+
+#: src/custom.c:344
+msgid "General"
+msgstr "Algemeen"
+
+#: src/custom.c:345
+msgid "Layout"
+msgstr "Layout"
+
+#: src/custom.c:346
+msgid "Color"
+msgstr "Kleur"
+
+#: src/custom.c:347
+msgid "Notify"
+msgstr "Info"
+
+#: src/custom.c:359
+msgid "Pick the desired layout on next screen [press ENTER]"
+msgstr "Kies de gewenste layout in het volgende venster [druk op ENTER]"
+
+#: src/custom.c:360
+msgid "('A'= Appointment panel, 'C'= calendar panel, 'T'= todo panel)"
+msgstr "('A'= Afspraken panel, 'K'= Kalender panel, 'T'= taken panel)"
+
+#: src/custom.c:362
+msgid "    AC       AT       CA       TA       TC       TA       CT       AT"
+msgstr "    AK       AT       KA       TA       TK       TA       KT       AT"
+
+#: src/custom.c:364
+msgid " [1]AT    [2]AC    [3]TA    [4]CA    [5]TA    [6]TC    [7]AT    [8]CT"
+msgstr " [1]AT    [2]AK    [3]TA    [4]KA    [5]TA    [6]TK    [7]AT    [8]KT"
+
+#: src/custom.c:401
+msgid "Use 'X' or SPACE to select a color, 'H/L' 'J/K' or arrow keys to move"
+msgstr ""
+"'X' of SPATIE voor kleurselectie, 'h/l' 'j/k' of pijltjes verplaatsen cursor"
+
+#: src/custom.c:404
+msgid "('0' for no color, 'Q' to exit) :"
+msgstr "('0' voor geen kleur, 'Q' voor einde) :"
+
+#: src/custom.c:405
+msgid "Foreground"
+msgstr "Voorgrond"
+
+#: src/custom.c:406
+msgid "Background"
+msgstr "Achtergrond"
+
+#: src/custom.c:409
+msgid "(terminal's default)"
+msgstr "standaard van terminal"
+
+#: src/custom.c:442
+#, c-format
+msgid "CalCurse %s | color theme"
+msgstr "Calcurse %s | kleurschema"
+
+#: src/custom.c:622
+msgid "FATAL ERROR in custom_color_theme_name: unknown color\n"
+msgstr "FATALE FOUT in custom_color_theme_name: kleur onbekend\n"
+
+#: src/custom.c:650
+msgid "auto_save = "
+msgstr "automatisch_opslaan = "
+
+#: src/custom.c:651
+msgid "confirm_quit = "
+msgstr "einde_bevestigen = "
+
+#: src/custom.c:652
+msgid "confirm_delete = "
+msgstr "bevestig_verwijderen= "
+
+#: src/custom.c:653
+msgid "skip_system_dialogs = "
+msgstr "overslaan_systeem_dialoog = "
+
+#: src/custom.c:654
+msgid "skip_progress_bar = "
+msgstr "overslaan_progressie_balk = "
+
+#: src/custom.c:655
+msgid "week_begins_on_monday = "
+msgstr "week_begint_op_maandag = "
+
+#: src/custom.c:664
+msgid "(if set to YES, automatic save is done when quitting)"
+msgstr "(Bij JA, wordt er automatisch opgeslagen bij einde programma)"
+
+#: src/custom.c:670
+msgid "(if set to YES, confirmation is required before quitting)"
+msgstr "(Bij JA, wordt er een bevestiging gevraagd bij eindigen programma"
+
+#: src/custom.c:676
+msgid "(if set to YES, confirmation is required before deleting an event)"
+msgstr "(Bij JA, is een bevestiging nodig voor het wissen van een gebeurtenis)"
+
+#: src/custom.c:682
+msgid ""
+"(if set to YES, messages about loaded and saved data will not be displayed)"
+msgstr ""
+"(Bij JA, worden geen mededelingen getoond bij het laden/opslaan van data)"
+
+#: src/custom.c:688
+msgid "(if set to YES, progress bar will not be displayed when saving data)"
+msgstr "(Bij JA, wordt geen progressiebalk getoond bij het opslaan van data)"
+
+#: src/custom.c:694
+msgid "(if set to YES, monday is the first day of the week, else it is sunday)"
+msgstr "(Bij JA, is maandag de eerste weekdag, anders zondag)"
+
+#: src/custom.c:707 src/notify.c:497
+msgid "Enter an option number to change its value [Q to quit] "
+msgstr "Geef een nummer om de waarde te veranderen [Q om te stoppen]"
+
+#: src/custom.c:714
+#, c-format
+msgid "CalCurse %s | general options"
+msgstr "CalCurse %s | algemene Opties"
+
+#: src/day.c:382
+msgid "FATAL ERROR in day_popup_item: unknown item type\n"
+msgstr "FATALE FOUT in day_popup_item: onbekend itemtype\n"
+
+#: src/day.c:385
+msgid "Event :"
+msgstr "Gebeurtenis :"
+
+#: src/day.c:389
+msgid "Appointment :"
+msgstr "Afspraak :"
+
+#: src/day.c:441
+msgid "Enter the new time ([hh:mm] or [h:mm]) : "
+msgstr "Voer nieuwe tijd in: ([hh:mm] of [h:mm]):"
+
+#: src/day.c:444
+msgid "You entered an invalid time, should be [h:mm] or [hh:mm]"
+msgstr "Ongeldige tijd ingevoerd! Mogelijke formaten zijn: [h:mm] of [hh:mm]"
+
+#: src/day.c:480
+msgid "Edit: (1)Start time, (2)End time or (3)Description?"
+msgstr "Wijzig: (1)Aanvang (2)Einde of (3)Beschrijving?"
+
+#: src/day.c:483
+msgid "Edit: (1)Start time, (2)End time, (3)Description or (4)Repetition?"
+msgstr "Wijzig: (1)Aanvang (2)Einde (3)Beschrijving of (4)Herhaling"
+
+#: src/day.c:485
+msgid "Edit: (1)Description or (2)Repetition?"
+msgstr "Wijzig: (1)Beschrijving of (2)Herhaling"
+
+#: src/day.c:488 src/recur.c:585
+msgid "The entered date is not valid."
+msgstr "De ingevoerde datum is ongeldig."
+
+#: src/day.c:490 src/recur.c:587
+msgid "Possible formats are [mm/dd/yyyy] or '0' for an endless repetetition"
+msgstr "Mogelijk formaat is: [mm/dd/jjjj] of '0' voor oneindig."
+
+#: src/day.c:492
+msgid "Invalid time: start time must be before end time!"
+msgstr "Ongeldige tijd: aanvangstijd moet voor eindtijd zijn!"
+
+#: src/day.c:494
+msgid "Enter the new item description:"
+msgstr "Voer een nieuwe beschrijving in:"
+
+#: src/day.c:496
+msgid "Enter the new repetition type: (D)aily, (W)eekly, (M)onthly, (Y)early"
+msgstr ""
+"Voer type herhaling in: (D)agelijks, (W)ekelijks, (M)aandelijks, (Y) "
+"jaarlijks"
+
+#: src/day.c:497 src/recur.c:578
+msgid "[D/W/M/Y] "
+msgstr "[D/W/M/Y]"
+
+#: src/day.c:498
+msgid "Enter the new repetition frequence:"
+msgstr "Voer herhalingsinterval in:"
+
+#: src/day.c:499 src/recur.c:582
+msgid "The frequence you entered is not valid."
+msgstr "Het ingevoerde interval is ongeldig."
+
+#: src/day.c:501
+msgid "Enter the new ending date: [mm/dd/yyyy] or '0'"
+msgstr "Nieuw einde van de herhaling: [mm/dd/jjjj] of '0' voor oneindig"
+
+#: src/day.c:682
+msgid "This item is recurrent. Delete (a)ll occurences or just this (o)ne ?"
+msgstr ""
+"Dit is een herhalende afspraak. (a)lle afspraken of alleen (o) deze wissen ?"
+
+#: src/day.c:685
+msgid "[a/o] "
+msgstr "[a/o]"
+
+#: src/event.c:109
+msgid "FATAL ERROR in event_scan: date error in the event\n"
+msgstr "FATALE FOUT in event_scan: datumfout in afspraak\n"
+
+#: src/event.c:137
+msgid "FATAL ERROR in event_delete_bynum: no such event\n"
+msgstr "FATALE FOUT in event_delete_bynum: Gebeurtenis bestaat niet\n"
+
+#: src/help.c:105
+msgid "       Welcome to Calcurse. This is the main help screen.\n"
+msgstr "       Welkom in Calcurse. Dit is het centrale hulpscherm.\n"
+
+#: src/help.c:107
+msgid ""
+" Moving around:  Press CTRL-P or CTRL-N to scroll text upward or\n"
+"                 downward inside help screens, if necessary.\n"
+"\n"
+"     Exit help:  When finished, press 'Q' to exit help and go back\n"
+"                 to the main Calcurse screen.\n"
+"\n"
+"    Help topic:  At the bottom of this screen you can see a panel\n"
+"                 with different fields, represented by a letter and\n"
+"                 a short title. This panel contains all the available\n"
+"                 actions you can perform when using Calcurse.\n"
+"                 By pressing one of the letters appearing in this\n"
+"                 panel, you will be shown a short description of the\n"
+"                 corresponding action.\n"
+"\n"
+"       Credits:  Press '@' for credits."
+msgstr ""
+"      Navigeren:  Gebruik CTRL-P of CTRL-N om de tekst zonodig op of\n"
+"                  neer te scrollen in het hulpvenster.\n"
+"\n"
+"  Hulp verlaten:  Druk op 'Q' om het hulpvenster te verlaten.\n"
+"\n"
+" Hulp-onderwerp:  Aan de onderkant van dit venster, is een panel met ver-\n"
+"                  schillende velden, weergegeven door een letter en een\n"
+"                  korte titel. Dit panel bevat al de beschikbare acties\n"
+"                  die mogelijk zijn in het gebruik van Calcurse.\n"
+"                  Door op een van de letters te drukken in dit panel, zal\n"
+"                  er een korte beschrijving van de corresponderende actie\n"
+"                  verschijnen.\n"
+"\n"
+"        Auteurs:  Druk op '@' om de auteurs van Calcurse te zien."
+
+#: src/help.c:120
+msgid "Save:\n"
+msgstr "Opslaan:\n"
+
+#: src/help.c:122
+msgid ""
+"Pressing 'S' saves the Calcurse data.\n"
+"\n"
+"The data is splitted into three different files which contain :\n"
+"\n"
+"        /  ~/.calcurse/conf -> the user configuration\n"
+"        |                      (layout, color, general options)\n"
+"        |  ~/.calcurse/apts -> the data related to the appointments\n"
+"        \\  ~/.calcurse/todo -> the data related to the todo list\n"
+"\n"
+"In the config menu, you can choose to save the Calcurse data\n"
+"automatically before quitting."
+msgstr ""
+"Door 'S' te drukken, wordt de data van Calcurse opgeslagen.\n"
+"\n"
+"De data wordt in drie verschillende bestanden opgeslagen :\n"
+"\n"
+"       /  ~/.calcurse/conf -> gebruikersinstellingen\n"
+"       |                      (Layout, kleur, alg. Opties)\n"
+"       |  ~/.calcurse/apts -> afspraken\n"
+"       \\  ~/.calcurse/todo -> taken\n"
+"\n"
+"In het venster instellingen kan een optie gekozen worden, \n"
+"die de data automatisch opslaat bij het verlaten van Calcurse."
+
+#: src/help.c:132
+msgid "Export:\n"
+msgstr "Exporteren:\n"
+
+#: src/help.c:134
+msgid ""
+"Pressing 'X' exports the Calcurse data to iCalendar format.\n"
+"\n"
+"You first need to specify the file to which the data will be exported.\n"
+"By default, this file is:\n"
+"\n"
+"     ~/calcurse.ics\n"
+"\n"
+"All of the calcurse data are exported, in the following order:\n"
+"events, appointments, todos.\n"
+msgstr ""
+"Druk op 'X' om Calcurse data naar iCalendar formaat te exporteren.\n"
+"\n"
+"Geef eerst het bestand aan, waarnaar de data wordt geëxporteerd.\n"
+"Het standaardbestand is:\n"
+"\n"
+"     ~/calcurse.ics\n"
+"\n"
+"Alle data wordt geëxporteerd, in deze volgorde:\n"
+"gebeurtenissen, afspraken, taken.\n"
+
+#: src/help.c:141
+msgid "Displacement keys:\n"
+msgstr "Navigatietoetsen:\n"
+
+#: src/help.c:143
+msgid ""
+"You can use either 'H','J','K','L' or the arrow keys '<','v','^','>'\n"
+"to move into the calendar.\n"
+"\n"
+"The following scheme explains how :\n"
+"\n"
+"                      move to previous week\n"
+"                              K ^  \n"
+"  move to previous day   H <       > L   move to next day\n"
+"                              J v  \n"
+"                       move to next week\n"
+"\n"
+"When the Appointment or ToDo panel is selected, the up and down keys\n"
+"(respectively K or up arrow, and J or down arrow) allows you to select\n"
+"an item from those lists."
+msgstr ""
+"Met de toetsen 'h','j','k','l' of de pijltjestoetsen \n"
+"'<','v','^',>' kan men zich door de kalender verplaatsen.\n"
+"\n"
+"Het volgende schema verduidelijkt hoe :\n"
+"\n"
+"                  naar de vorige week\n"
+"                          k ^  \n"
+"naar de vorige dag   h <       > l   naar de volgende dag\n"
+"                          j v  \n"
+"                  naar de volgende week\n"
+"\n"
+"Wanneer het afspraken of taken panel is geselecteerd, kan je met\n"
+"de op-en-neer toetsen (resp. k of pijl-omhoog, en j of pijl-beneden)\n"
+"een item uit de lijst kiezen."
+
+#: src/help.c:155
+msgid "View:\n"
+msgstr "Bekijk:\n"
+
+#: src/help.c:157
+msgid ""
+"Pressing 'V' allows you to view the item you select in either the ToDo\n"
+"or Appointment panel.\n"
+"\n"
+"This is usefull when an event description is longer than the available\n"
+"space to display it. If that is the case, the description will be\n"
+"shortened and its end replaced by '...'. To be able to read the entire\n"
+"description, just press 'V' and a popup window will appear, containing\n"
+"the whole event.\n"
+"\n"
+"Press any key to close the popup window and go back to the main\n"
+"Calcurse screen."
+msgstr ""
+"Met de toets 'V' bekijk je het geselecteerde item in het \n"
+"taken of afsprakenpanel.\n"
+"\n"
+"Dit is nuttig, als de beschrijving van de gebeurtenis langer is als de\n"
+"beschikbare plaats in de terminal. In dit geval, zal de beschrijving \n"
+"afgekort worden en het einde vervangen worden door '...'. Om de rest \n"
+"van de beschrijving te zien, gebruikt men de toets 'V'. In een venster \n"
+"wordt dan de volledige beschrijving weergegeven.\n"
+"\n"
+"Druk op een willekeurige toets om dit venster te sluiten en terug te \n"
+"keren naar het standaard Calcurse venster."
+
+#: src/help.c:167
+msgid "Tab:\n"
+msgstr "Tab:\n"
+
+#: src/help.c:169
+msgid ""
+"Pressing 'Tab' allows you to switch between panels.\n"
+"The panel currently in use has its border colorized.\n"
+"\n"
+"Some actions are possible only if the right panel is selected.\n"
+"For example, if you want to add a task in the TODO list, you need first\n"
+"to press the 'Tab' key to get the TODO panel selected. Then you can\n"
+"press 'A' to add your item.\n"
+"\n"
+"Notice that at the bottom of the screen the list of possible actions\n"
+"change while pressing 'Tab', so you always know what action can be\n"
+"performed on the selected panel."
+msgstr ""
+"De 'Tab'-toets verplaatst de focus tussen de panels.\n"
+"Het actieve panel heeft een gekleurd kader.\n"
+"\n"
+"Sommige acties zijn alleen mogelijk, als het juiste panel actief is.\n"
+"Als je bv. een taak toe wilt voegen, zal je eerst met 'Tab' het \n"
+"taken-panel moeten activeren. Pas dan kun je met 'A' een item toevoegen.\n"
+"\n"
+"Merk op dat aan de onderkant van het venster, de lijst met mogelijke \n"
+"acties mee verandert, zodat altijd te zien is, welke acties gedaan kunnen \n"
+"worden in het actieve panel."
+
+#: src/help.c:179
+msgid "Goto:\n"
+msgstr "Ga naar:\n"
+
+#: src/help.c:181
+msgid ""
+"Pressing 'G' allows you to jump to a specific day in the calendar.\n"
+"\n"
+"Using this command, you do not need to travel to that day using\n"
+"the displacement keys inside the calendar panel.\n"
+"If you hit [ENTER] without specifying any date, Calcurse checks the\n"
+"system current date and you will be taken to that date."
+msgstr ""
+"Met de 'G'-toets, gaat men naar een specifieke datum in de kalender.\n"
+"\n"
+"Door dit commando, is het niet nodig naar de datum te gaan met behulp \n"
+"van de verplaatsingstoetsen in het kalenderpanel.\n"
+"Indien men op [ENTER] drukt zonder een datum te geven, zal Calcurse \n"
+"naar de huidige dag gaan die op het systeem is insteld."
+
+#: src/help.c:187
+msgid "Delete:\n"
+msgstr "Wissen:\n"
+
+#: src/help.c:189
+msgid ""
+"Pressing 'D' deletes an element in the ToDo or Appointment list.\n"
+"\n"
+"Depending on which panel is selected when you press the delete key,\n"
+"the hilighted item of either the ToDo or Appointment list will be \n"
+"removed from this list.\n"
+"\n"
+"If the item to be deleted is recurrent, you will be asked if you\n"
+"wish to suppress all of the item occurences or just the one you\n"
+"selected.\n"
+"\n"
+"If the general option 'confirm_delete' is set to 'YES', then you will\n"
+"be asked for confirmation before deleting the selected event.\n"
+"Do not forget to save the calendar data to retrieve the modifications\n"
+"next time you launch Calcurse."
+msgstr ""
+"De 'D'-toets wist een element uit de taken- of afsprakenlijst.\n"
+"\n"
+"Afhankelijk van het geactiveerde panel, zal het gemarkeerde item van \n"
+"of de taken- of afsprakelijst worden gewist.\n"
+"\n"
+"Als het te wissen item recursief is, zal er gevraagd worden of alle \n"
+"recursieve items, of alleen het geselecteerde item gewist moet worden.\n"
+"\n"
+"Als de algemene optie 'bevestigen_verwijderen' op 'JA' staat, zal er \n"
+"om een bevestiging gevraagd worden bij het wissen van een gebeurtenis.\n"
+"Vergeet niet om de kalenderdata op te slaan, als je de veranderingen \n"
+"wilt behouden."
+
+#: src/help.c:201
+msgid "Add:\n"
+msgstr "Toevoegen:\n"
+
+#: src/help.c:203
+msgid ""
+"Pressing 'A' allows you to add an item in either the ToDo or Appointment\n"
+"list, depending on which panel is selected when you press 'A'.\n"
+"\n"
+"To enter a new item in the TODO list, you will need first to enter the\n"
+"description of this new item. Then you will be asked to specify the todo\n"
+"priority. This priority is represented by a number going from 9 for the\n"
+"lowest priority, to 1 for the highest one. It is still possible to\n"
+"change the item priority afterwards, by using the '+/-' keys inside the\n"
+"todo panel.\n"
+"\n"
+"If the APPOINTMENT panel is selected while pressing 'A', you will be\n"
+"able to enter either a new appointment or a new all-day long event.\n"
+"To enter a new event, press [ENTER] instead of the item start time, and\n"
+"just fill in the event description.\n"
+"To enter a new appointment to be added in the APPOINTMENT list, you\n"
+"will need to enter successively the time at which the appointment\n"
+"begins, the appointment length (either by specifying the duration in\n"
+"minutes, or the end time in [hh:mm] or [h:mm] format), and the\n"
+"description of the event.\n"
+"\n"
+"The day at which occurs the event or appointment is the day currently\n"
+"selected in the calendar, so you need to move to the desired day before\n"
+"pressing 'A'.\n"
+"\n"
+"Notes:\n"
+"       o if an appointment lasts for such a long time that it continues\n"
+"         on the next days, this event will be indicated on all the\n"
+"         corresponding days, and the beginning or ending hour will be\n"
+"         replaced by '..' if the event does not begin or end on the day.\n"
+"       o if you only press [ENTER] at the APPOINTMENT or TODO event\n"
+"         description prompt, without any description, no item will be\n"
+"         added.\n"
+"       o do not forget to save the calendar data to retrieve the new\n"
+"         event next time you launch Calcurse."
+msgstr ""
+"Je kunt zowel een taak als afspraak toevoegen met de 'A'-toets, \n"
+"afhankelijk in welk panel je staat als je op 'A' drukt.\n"
+"\n"
+"Bij het toevoegen van een taak, wordt er eerst om een beschrijving \n"
+"gevraagd. Dan zal er om de prioriteit gevraagd worden. De prioriteit \n"
+"wordt door middel van een nummer weergegeven. Het nummer ligt tussen \n"
+"9 (laagste prioriteit) en 1 (hoogste prioriteit. Het is altijd mogelijk \n"
+"om naderhand de prioriteit te veranderen, dmv de '+/-'-toetsen, in \n"
+"het takenpanel.\n"
+"\n"
+"Als je op 'A' drukt met het AFSPRAKEN-panel geselecteerd, kan je een \n"
+"nieuwe afspraak of gebeurtenis van een dag lang toevoegen. Druk op \n"
+"[ENTER] bij de aanvangstijd om een nieuwe gebeurtenis toe te voegen en \n"
+"vul dan de beschrijving van de gebeurtenis in.\n"
+"Om een nieuwe afspraak toe te voegen aan de AFSRPAKEN-lijst, zal je \n"
+"achtereenvolgens de aanvangstijd van de afspraak, en de lengte van de \n"
+"afspraak (ofwel door de duur in minuten, of door de eindtijd in [hh:mm] \n"
+"of [h:mm] formaat) in moeten voeren.\n"
+"\n"
+"De afspraak of gebeurtenis wordt aan de geselecteerde dag in de kalender \n"
+"toegewezen, dus selecteer eerst de gewenste dag voordat je op 'A' drukt.\n"
+"Opmerking:\n"
+"        o Als een afspraak meerdere dagen duurt, dan zal op de dagen, \n"
+"          dat de afspraak niet begint of eindigt, de aanvangs- \n"
+"          of eindtijd worden aangegeven met '..'.\n"
+"        o Er wordt geen AFSPRAAK of TAAK toegevoegd als bij de vraag om \n"
+"          de beschrijving hiervan alleen op [ENTER] wordt gedrukt.\n"
+"        o vergeet niet kalenderdata op te slaan, als de nieuwe items voor\n"
+"          de volgende start van Calcurse behouden moeten blijven."
+
+#: src/help.c:234
+msgid "Edit Item:\n"
+msgstr "Item wijzigen:\n"
+
+#: src/help.c:236
+msgid ""
+"Pressing 'E' allows you to edit the item which is currently selected.\n"
+"Depending on the item type (appointment, event, or todo), and if it is\n"
+"repeated or not, you will be asked to choose one of the item properties\n"
+"to modify. An item property is one of the following: the start time, the\n"
+"end time, the description, or the item repetition.\n"
+"Once you have chosen the property you want to modify, you will be shown\n"
+"its actual value, and you will be able to change it as you like.\n"
+"\n"
+"Notes:\n"
+"       o if you choose to edit the item repetition properties, you will\n"
+"         be asked to re-enter all of the repetition characteristics\n"
+"         (repetition type, frequence, and ending date). Moreover, the\n"
+"         previous data concerning the deleted occurences will be lost.\n"
+"       o do not forget to save the calendar data to retrieve the\n"
+"         modified properties next time you launch Calcurse."
+msgstr ""
+"Het huidige geselecteerde item kan met 'E' worden gewijzigd.\n"
+"Afhankelijke van het type item (afspraak, gebeurtenis of taak), en of \n"
+"het herhaald wordt of niet, zal om een van de te wijzigen eigenschappen \n"
+"van het item gevraagd worden. Die eigenschappen zijn: aanvangstijd, \n"
+"eindtijd, beschrijving, of de herhaling van het item.\n"
+"Als eenmaal de gewenste eigenschap is gekozen, dan zal de actuele waarde \n"
+"weergegeven worden. Deze waarde kan dan naar wens gewijzigd worden.\n"
+"\n"
+"Opmerking:\n"
+"       o Bij het wijzigen van de herhalings-eigenschappen, zullen alle \n"
+"         waardes opnieuw ingevoerd moeten worden (type herhaling, \n"
+"         interval en einddatum).\n"
+"         Let op: De vorige data van de gewiste herhalingen zal verloren \n"
+"         gaan.\n"
+"       o vergeet niet kalenderdata op te slaan, als de nieuwe items voor\n"
+"         de volgende start van Calcurse behouden moeten blijven."
+
+#: src/help.c:251
+msgid "Priority:\n"
+msgstr "Prioriteit:\n"
+
+#: src/help.c:253
+msgid ""
+"Pressing '+' or '-' allows you to change the priority of the currently\n"
+"selected item in the ToDo list. Priorities are represented by the number\n"
+"appearing in front of the todo description. This number goes from 9 for\n"
+"the lowest priority to 1 for the highest priority. Todo having higher\n"
+"priorities are placed first (at the top) inside the todo panel.\n"
+"\n"
+"If you want to raise the priority of a todo item, you need to press '+'.\n"
+"In doing so, the number in front of this item will decrease, meaning its\n"
+"priority increases. The item position inside the todo panel may change,\n"
+"depending on the priority of the items above it.\n"
+"\n"
+"At the opposite, to lower a todo priority, press '-'. The todo position\n"
+"may also change depending on the priority of the items below."
+msgstr ""
+"De prioriteit van het geselecteerde item in de takenlijst is te \n"
+"wijzigen door op '+' of '-' te drukken. Prioriteiten worden \n"
+"aangegeven door een nummer dat voor de taak staat. Het nummer ligt \n"
+"tussen 9 voor laagste en 1 voor de hoogste prioriteit. Taken met een \n"
+"hogere prioriteit worden bovenin de lijst weergegeven.\n"
+"\n"
+"Druk op '+' om de prioriteit van een taak te verhogen. Het nummer van de \n"
+"taak zal lager worden, wat betekent dat de prioriteit is verhoogt. De \n"
+"plaats van de taak in de lijst zou kunnen veranderen, afhankelijk van de \n"
+"prioriteiten van de bovenstaande taken.\n"
+"\n"
+"Het tegenovergestelde, het verlagen van de prioriteit, bereikt men door op \n"
+"'-' te drukken. Ook hier kan de plaats van de taak veranderen, afhankelijk \n"
+"van de prioriteiten van de onderstaande taken."
+
+#: src/help.c:265
+msgid "Repeat:\n"
+msgstr "Herhalen:\n"
+
+#: src/help.c:267
+msgid ""
+"Pressing 'R' allows you to repeat an event or an appointment. You must\n"
+"first select the item to be repeated by moving inside the appointment\n"
+"panel. Then pressing 'R' will lead you to a set of three questions, with\n"
+"which you will be able to specify the repetition characteristics:\n"
+"\n"
+"  o        type: you can choose between a daily, weekly, monthly or\n"
+"                 yearly repetition by pressing 'D', 'W', 'M' or 'Y'\n"
+"                 respectively.\n"
+"\n"
+"  o   frequence: this indicates how often the item shall be repeated.\n"
+"                 For example, if you want to remember an anniversary,\n"
+"                 choose a 'yearly' repetition with a frequence of '1',\n"
+"                 which means it must be repeated every year. Another\n"
+"                 example: if you go to the restaurant every two days,\n"
+"                 choose a 'daily' repetition with a frequence of '2'.\n"
+"\n"
+"  o ending date: this specifies when to stop repeating the selected\n"
+"                 event or appointment. To indicate an endless \n"
+"                 repetition, enter '0' and the item will be repeated\n"
+"                 forever.\n"
+"\n"
+"Notes:\n"
+"       o repeated items are marked with an '*' inside the appointment\n"
+"         panel, to be easily recognizable from non-repeated ones.\n"
+"       o the 'Repeat' and 'Delete' command can be mixed to create\n"
+"         complicated configurations, as it is possible to delete only\n"
+"         one occurence of a repeated item."
+msgstr ""
+"Door op 'R' te drukken, is het mogelijk om een afspraak of gebeurtenis \n"
+"te laten herhalen. Selecteer ten eerste het item dat herhaald moet \n"
+"worden in de afsprakenlijst. Na het drukken op 'R', worden er drie \n"
+"vragen gesteld, waarmee je de eigenschappen van de herhaling instelt:\n"
+"\n"
+"  o        type: Kies uit dagelijkse, wekelijkse, maandelijkse of \n"
+"                 jaarlijkse herhaling door respectievelijk 'D', 'W', \n"
+"                 'M' of 'J' in te voeren.\n"
+"\n"
+"  o    interval: Hiermee wordt aangegeven, hoe vaak het item herhaald \n"
+"                 zal worden. Als je bijvoorbeeld een verjaardag wilt \n"
+"                 onthouden, kies dan voor een 'jaarlijkse' herhaling \n"
+"                 met een interval van '1'. Een ander voorbeeld: Stel dat \n"
+"                 je een keer in de twee dagen naar het restaurant gaat. \n"
+"                 Kies dan 'dagelijks' met een interval van '2'.\n"
+"\n"
+"  o   Einddatum: Dit bepaald wanneer gestopt moet worden met het item te \n"
+"                 herhalen. Voer hier '0' in om het item oneindig te \n"
+"                 laten herhalen.\n"
+"\n"
+"Opmerking:\n"
+"       o Herhaalde afspraken zijn met een '*' gemarkeerd in het \n"
+"         afsprakenpanel, zodat ze makkelijk te onderscheiden zijn van \n"
+"         afspraken zonder herhaling.\n"
+"       o Door 'Herhalen' en 'Wissen' te combineren kunnen complexe \n"
+"         schema's gemaakt worden, omdat het mogelijk is om slechts \n"
+"         een herhaling van meerdere herhaalde items te wissen."
+
+#: src/help.c:291
+msgid "Flag Item:\n"
+msgstr "Vlag Item:\n"
+
+#: src/help.c:293
+msgid ""
+"Pressing '!' toggles an appointment's 'important' flag.\n"
+"\n"
+"If an item is flagged as important, an exclamation mark appears in front\n"
+"of it, and you will be warned if time gets closed to the appointment\n"
+"start time.\n"
+"To customize the way one gets notified, the configuration submenu lets\n"
+"you choose the command launched to warn user of an upcoming appointment,\n"
+"and how long before it he gets notified."
+msgstr ""
+"Door de '!'-toets zet je de 'belangrijk'-vlag aan of uit.\n"
+"\n"
+"Als een item als belanrijk is gemarkeerd staat er een uitroepteken voor, \n"
+"en zal er een melding verschijnen als de aanvangstijd van de afspraak \n"
+"bijna is bereikt.\n"
+"In het configuratie submenu kan je instellen welk commando wordt gestart \n"
+"om de gebruiker te waarschuwen over de op handen zijnde afspraak, en hoe \n"
+"lang van te voren dit gebeurt."
+
+#: src/help.c:301
+msgid "Config:\n"
+msgstr "Instellingen:\n"
+
+#: src/help.c:303
+msgid ""
+"Pressing 'C' leads to the configuration submenu, from which you can\n"
+"select between color, layout, and general options.\n"
+"\n"
+"The color submenu lets you choose the color theme.\n"
+"\n"
+"The layout submenu lets you choose the Calcurse screen layout, in other\n"
+"words where to place the three different panels on the screen.\n"
+"\n"
+"The general options submenu brings a screen with the different options\n"
+"which modifies the way Calcurse interacts with the user.\n"
+"\n"
+"The notify submenu allows you to change the notify-bar settings.\n"
+"\n"
+"Do not forget to save the calendar data to retrieve your configuration\n"
+"next time you launch Calcurse."
+msgstr ""
+"De 'C'-toets toont het configuratie submenu, waar gekozen kan worden \n"
+"tussen kleur, layout, en standaard instellingen.\n"
+"\n"
+"In het kleur submenu kan het kleurschema gekozen worden.\n"
+"\n"
+"In het layout submenu kan de indeling van het Calcurse scherm worden \n"
+"gekozen, dus waar de drie panels geplaatst worden.\n"
+"\n"
+"In het standaardinstellingen submenu staan verscheidene opties, die \n"
+"bepalen hoe Calcurse bepaalde zaken regelt.\n"
+"\n"
+"In het informatiebalk submenu staan de instellingen van de informatiebalk.\n"
+"\n"
+"Vergeet niet kalenderdata op te slaan, als de nieuwe configuratie voor\n"
+"de volgende start van Calcurse behouden moeten blijven."
+
+#: src/help.c:314
+msgid "General keybindings:\n"
+msgstr "Algemene toetsen:\n"
+
+#: src/help.c:316
+msgid ""
+"Some of the keybindings apply whatever panel is selected. They are\n"
+"called general keybinding and involve the <CONTROL> key, which is\n"
+"represented by the '^' sign in the status bar panel. For example,\n"
+"'^A' means you need to press <CONTROL> and 'A' simultaneously to\n"
+"activate the command. Here is the list of all the general keybindings,\n"
+"together with their corresponding action:\n"
+"\n"
+" '^R' : Redraw function -> redraws calcurse panels, this is useful if\n"
+"                           you resize your terminal screen or when\n"
+"                           garbage appears inside the display\n"
+" '^A' : Add Appointment -> add an appointment or an event\n"
+" '^T' : Add ToDo        -> add a todo\n"
+" '^H' : -1 Day          -> move to previous day\n"
+" '^L' : +1 Day          -> move to next day\n"
+" '^K' : -1 Week         -> move to previous week\n"
+" '^J' : +1 Week         -> move to next week"
+msgstr ""
+"De werking van toetsen hangt af van welk panel is geselecteerd. \n"
+"Deze worden algemene toetsen genoemt, en worden samen met de \n"
+"<CONTROL>-toets gebruikt, welke weer wordt aangeduidt met '^' in de \n"
+"statusbalk. Bijvoorbeeld: '^A' betekent dat je tegelijk <CONTROL> en \n"
+"'A' indrukt om het commando uit te voeren. Hier volgt een lijst met \n"
+"alle algemene toetsbindingen samen met de corresponderende actie:\n"
+"\n"
+" '^R' : Scherm verver-     -> Geeft de panels opnieuw weer, nuttig als \n"
+"        sen                   de terminalgrootte verandert of als er \n"
+"                              iets niet goed wordt weergegeven\n"
+" '^A' : Afsrpaak toevoegen -> Voegt een afspraak of gebeurtenis toe\n"
+" '^T' : Taak toevoegen     -> Voegt een taak toe\n"
+" '^H' : -1 dag             -> Ga naar de vorige dag\n"
+" '^L' : +1 dag             -> Ga naar de volgende dag\n"
+" '^K' : -1 week            -> Ga naar de vorige week\n"
+" '^J' : +1 week            -> Ga naar de volgende week"
+
+#: src/help.c:332
+msgid "OtherCmd:\n"
+msgstr "AndereCmd:\n"
+
+#: src/help.c:334
+msgid ""
+"Pressing 'O' allows you to switch between status bar help pages.\n"
+"Because the terminal screen is too narrow to display all of the\n"
+"available commands, you need to press 'O' to see the next set of\n"
+"commands together with their keybindings.\n"
+"Once the last status bar page is reached, pressing 'O' another time\n"
+"leads you back to the first page."
+msgstr ""
+"Met de 'O'-toets kan er tussen de verschillende hulpschermen \n"
+"geschakeld worden. Omdat de terminalgrootte te klein is om alle \n"
+"commando's weer te geven, kun je met 'O' de volgende serie \n"
+"comando's zien, samen met de toetsen.\n"
+"Zodra het laatste scherm is bereikt, ga je naar het eerste scherm \n"
+"terug, als er weer op 'O' wordt gedrukt."
+
+#: src/help.c:341
+msgid "Calcurse - text-based organizer"
+msgstr "Calcurse - tekst-gebaseerde organizer"
+
+#: src/help.c:343
+msgid ""
+"Copyright (c) 2004-2007 Frederic Culot\n"
+"\n"
+"This program is free software; you can redistribute it and/or modify\n"
+"it under the terms of the GNU General Public License as published by\n"
+"the Free Software Foundation; either version 2 of the License, or\n"
+"(at your option) any later version.\n"
+"\n"
+"This program is distributed in the hope that it will be useful,\n"
+"but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
+"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
+"GNU General Public License for more details.\n"
+"\n"
+"\n"
+"Send your feedback or comments to : calcurse@culot.org\n"
+"Calcurse home page : http://culot.org/calcurse"
+msgstr ""
+"Copyright (c) 2004-2007 Frederic Culot\n"
+"\n"
+"Dit programma is vrije Software; Het mag zowel gedistribueerd en/of \n"
+"gewijzigd worden binnen het kader van de GNU General Public License, \n"
+"zoals gepubliceerd door de Free Software Foundation; ofwel versie 2 van \n"
+"de licentie of (desgewenst) elke volgende versie.\n"
+"\n"
+"Dit programma wordt verspreid in de hoop dat het nuttig is, maar ZONDER \n"
+"ELKE GARANTIE; zelfs zonder de impliciete garantie van een programma \n"
+"dat klaar is voor de verkoop of BEDOELD VOOR EEN SPECIFIEK DOEL. Zie de \n"
+"GNU General Public License voor nadere details.\n"
+"\n"
+"\n"
+"Zendt kritiek of commentaar aan : calcurse@culot.org\n"
+"Calcurse Homepage : http://culot.org/calcurse"
+
+#: src/help.c:366
+#, c-format
+msgid "CalCurse %s | help"
+msgstr "Calcurse %s | Hulp"
+
+#: src/io.c:68
+msgid "Saving..."
+msgstr "Opslaan..."
+
+#: src/io.c:69
+msgid "Loading..."
+msgstr "Laden..."
+
+#: src/io.c:70
+msgid "Exporting..."
+msgstr "Exporteren..."
+
+#: src/io.c:133
+msgid "Choose the file used to export calcurse data:"
+msgstr "Kies het bestand om calcurse data naar te exporteren:"
+
+#: src/io.c:135
+msgid "The file cannot be accessed, please enter another file name."
+msgstr "Het bestand is ontoegankelijk, kies een andere bestandsnaam."
+
+#: src/io.c:137 src/recur.c:589
+msgid "Press [ENTER] to continue."
+msgstr "[ENTER]-toets om door te gaan."
+
+#: src/io.c:348
+#, c-format
+msgid "%s does not exist, create it now [y or n] ? "
+msgstr "%s bestaat niet, nu aanmaken [j of n] ? "
+
+#: src/io.c:353 src/io.c:370
+#, c-format
+msgid "aborting...\n"
+msgstr "afbreken...\n"
+
+#: src/io.c:364
+#, c-format
+msgid "%s successfully created\n"
+msgstr "%s met succes aangemaakt\n"
+
+#: src/io.c:365
+#, c-format
+msgid "starting interactive mode...\n"
+msgstr "interactieve modus gestart...\n"
+
+#: src/io.c:400
+msgid "Problems accessing data file ..."
+msgstr "Probleem bij benaderen databestand ..."
+
+#: src/io.c:403
+msgid "The data files were successfully saved"
+msgstr "De databestanden zijn met succes opgeslagen"
+
+#: src/io.c:555
+#, fuzzy
+msgid "FATAL ERROR in io_load_app: wrong format in the appointment or event\n"
+msgstr "FATALE FOUT in load_app: fout formaat in afspraak/gebeurtenis\n"
+
+#: src/io.c:574
+#, fuzzy
+msgid "FATAL ERROR in io_load_app: syntax error in the item date\n"
+msgstr "FATALE FOUT in load_app: fout in syntax itemdatum\n"
+
+#: src/io.c:589
+#, fuzzy
+msgid "FATAL ERROR in io_load_app: no event nor appointment found\n"
+msgstr "FATALE FOUT in load_app: geen afspraak/gebeurtenis gevonden\n"
+
+#: src/io.c:688
+msgid "Failed to open todo file"
+msgstr "Kan takenbestand niet openen"
+
+#: src/io.c:774
+msgid "Welcome to Calcurse. Missing data files were created."
+msgstr "Welkom bij Calcurse. De missende databestanden zijn aangemaakt."
+
+#: src/io.c:775
+msgid "Data files found. Data will be loaded now."
+msgstr "Databestanden gevonden. Data wordt geladen."
+
+#: src/io.c:793
+msgid "FATAL ERROR in io_export_data: wrong export mode\n"
+msgstr "FATALE FOUT in io_export_data: verkeerde export modus\n"
+
+#: src/io.c:794
+msgid "The data were successfully exported"
+msgstr "De data is met succes geëxporteerd"
+
+#: src/notify.c:128
+#, fuzzy
+msgid "FATAL ERROR in launch_cmd: could not fork\n"
+msgstr "FATALE FOUT in notify_launch_cmd: probleem met fork\n"
+
+#: src/notify.c:133
+#, fuzzy
+msgid "FATAL ERROR in launch_cmd: could not launch user command\n"
+msgstr ""
+"FATALE FOUT in notify_launch_cmd: kan gebruikerscommando niet starten\n"
+
+#: src/notify.c:426
+msgid "notify-bar_show = "
+msgstr "informatiebalk_toon = "
+
+#: src/notify.c:427
+msgid "notify-bar_date = "
+msgstr "informatiebalk_datum = "
+
+#: src/notify.c:428
+msgid "notify-bar_clock = "
+msgstr "informatiebalk_tijd= "
+
+#: src/notify.c:429
+msgid "notify-bar_warning = "
+msgstr "informatiebalk_waarschuwing = "
+
+#: src/notify.c:430
+msgid "notify-bar_command = "
+msgstr "informatiebalk_commando = "
+
+#: src/notify.c:433
+msgid "(if set to YES, notify-bar will be displayed)"
+msgstr "(Bij JA, wordt de informatiebalk weergegeven)"
+
+#: src/notify.c:436
+msgid "(Format of the date to be displayed inside notify-bar)"
+msgstr "(Formaat van de datum in de informatiebalk.)"
+
+#: src/notify.c:439
+msgid "(Format of the time to be displayed inside notify-bar)"
+msgstr "(Formaat van de tijd in de informatiebalk.)"
+
+#: src/notify.c:442
+msgid ""
+"(Warn user if an appointment is within next 'notify-bar_warning' seconds)"
+msgstr ""
+"Meldt gebruiker dat er een afspraak binnen 'informatiebalk_waarschuwing' "
+"seconden is"
+
+#: src/notify.c:446
+msgid "(Command used to notify user of an upcoming appointment)"
+msgstr "(Commando dat melding geeft van op handen zijnde afspraak)"
+
+#: src/notify.c:499
+msgid "Enter the date format (see 'man 3 strftime' for possible formats) "
+msgstr "Geef het formaat van de datum (zie 'man 3 strftime')"
+
+#: src/notify.c:501
+msgid "Enter the time format (see 'man 3 strftime' for possible formats) "
+msgstr "Geef het formaat van de tijd (zie 'man 3 strftime')"
+
+#: src/notify.c:503
+msgid "Enter the number of seconds (0 not to be warned before an appointment)"
+msgstr "Geef het aantal seconden (0 voor geen waarschuwing voor een afspraak)."
+
+#: src/notify.c:504
+msgid "Enter the notification command "
+msgstr "Geef het meldingscommando "
+
+#: src/notify.c:510
+#, c-format
+msgid "CalCurse %s | notify-bar options"
+msgstr "CalCurse %s | Informatiebalk-opties"
+
+#: src/recur.c:266
+msgid "FATAL ERROR in recur_event_scan: date error in the event\n"
+msgstr "FATALE FOUT in recur_event_scan: datumfout in de gebeurtenis\n"
+
+#: src/recur.c:380
+msgid "FATAL ERROR in recur_item_inday: unknown item type\n"
+msgstr "FATALE FOUT in recur_item_inday: type item onbekend\n"
+
+#: src/recur.c:494
+msgid "FATAL ERROR in recur_event_erase: no such event\n"
+msgstr "FATALE FOUT in recur_event_erase: gebeurtenis bestaat niet\n"
+
+#: src/recur.c:554
+msgid "FATAL ERROR in recur_apoint_erase: no such appointment\n"
+msgstr "FATALE FOUT in recur_apoint_erase: afspraak bestaat niet\n"
+
+#: src/recur.c:577
+msgid "Enter the repetition type: (D)aily, (W)eekly, (M)onthly, (Y)early"
+msgstr "Type herhaling: (D)agelijks, (W)ekelijks, (M)aandelijks, (Y) jaarlijks"
+
+#: src/recur.c:580
+msgid "Enter the repetition frequence:"
+msgstr "Geef de herhalingsinterval:"
+
+#: src/recur.c:584
+msgid "Enter the ending date: [mm/dd/yyyy] or '0' for an endless repetition"
+msgstr "Geef einddatum: [mm/dd/jjjj] of '0' voor oneindige herhaling"
+
+#: src/recur.c:588
+msgid "This item is already a repeated one."
+msgstr "Dit item wordt al herhaald."
+
+#: src/recur.c:591
+msgid "Sorry, the date you entered is older than the item start time."
+msgstr "Sorry, de ingevoerde datum is ouder dan de aanvangstijd."
+
+#: src/recur.c:677
+msgid "FATAL ERROR in recur_repeat_item: wrong item type\n"
+msgstr "FATALE FOUT in recur_repeat_item: fout item type\n"
+
+#: src/recur.c:702
+msgid "FATAL ERROR in recur_exc_scan: syntax error in the item date\n"
+msgstr "FATALE FOUT in recur_exc_scan: fout in syntax itemdatum\n"
+
+#: src/recur.c:768
+msgid "FATAL ERROR in recur_get_apoint: no such item\n"
+msgstr "FATALE FOUT in recur_get_apoint: item bestaat niet\n"
+
+#: src/recur.c:788
+msgid "FATAL ERROR in recur_get_event: no such item\n"
+msgstr "FATALE FOUT in recur_get_event: item bestaat niet\n"
+
+#: src/recur.c:821
+msgid "FATAL ERROR in recur_apoint_switch_notify: no such item\n"
+msgstr "FATALE FOUT in recur_apoint_switch_notify: item bestaat niet\n"
+
+#: src/todo.c:41
+msgid "Enter the new ToDo item : "
+msgstr "Voer de nieuwe taak in : "
+
+#: src/todo.c:43
+msgid "Enter the ToDo priority [1 (highest) - 9 (lowest)] :"
+msgstr "Geef taakprioriteit [1 (hoogste) - 9 (laagste)] :"
+
+#: src/todo.c:101
+msgid "FATAL ERROR in todo_delete_bynum: no such todo\n"
+msgstr "FATALE FOUT in todo_delete_bynum: taak bestaat niet\n"
+
+#: src/todo.c:110
+msgid "Do you really want to delete this task ?"
+msgstr "Wilt u werkelijk deze taak wissen ?"
+
+#: src/todo.c:157
+msgid "FATAL ERROR in todo_get_position: todo not found\n"
+msgstr "FATALE FOUT in todo_get_position: taak bestaat niet\n"
+
+#: src/todo.c:194
+msgid "FATAL ERROR in todo_chg_priority: no such action\n"
+msgstr "FATALE FOUT in todo_chg_priority: actie bestaat niet\n"
+
+#: src/todo.c:212
+msgid "Enter the new ToDo description :"
+msgstr "Voer de nieuwe taakbeschrijving in : "
+
+#: src/utils.c:92
+msgid "Press any key to continue..."
+msgstr "Druk op een toets om door te gaan..."
+
+#: src/utils.c:314
+msgid "FATAL ERROR in updatestring: out of memory\n"
+msgstr "FATALE FOUT in updatestring: te weinig geheugen\n"
+
+#: src/utils.c:355
+msgid "Help"
+msgstr "Hulp"
+
+#: src/utils.c:356
+msgid "Quit"
+msgstr "Einde"
+
+#: src/utils.c:357
+msgid "Save"
+msgstr "Opslaan"
+
+#: src/utils.c:358
+msgid "Export"
+msgstr "Exporteren"
+
+#: src/utils.c:359
+msgid "Add Item"
+msgstr "Item toevoegen"
+
+#: src/utils.c:360
+msgid "Del Item"
+msgstr "Item wissen"
+
+#: src/utils.c:361
+msgid "Edit Itm"
+msgstr "Wijzig Itm"
+
+#: src/utils.c:362
+msgid "Flag Itm"
+msgstr "Vlag Itm"
+
+#: src/utils.c:363 src/utils.c:375
+msgid "-+1 Day"
+msgstr "-/+1 Dag"
+
+#: src/utils.c:364 src/utils.c:376
+msgid "-+1 Week"
+msgstr "-/+ Week"
+
+#: src/utils.c:365
+msgid "Up/Down"
+msgstr "Op/Neer"
+
+#: src/utils.c:366
+msgid "Repeat"
+msgstr "Herhalen"
+
+#: src/utils.c:367
+msgid "Priority"
+msgstr "Prioriteit"
+
+#: src/utils.c:368
+msgid "Chg View"
+msgstr "Wzg focus"
+
+#: src/utils.c:369
+msgid "Go to"
+msgstr "Ga naar"
+
+#: src/utils.c:370
+msgid "Config"
+msgstr "Config"
+
+#: src/utils.c:371
+msgid "View"
+msgstr "Bekijken"
+
+#: src/utils.c:372
+msgid "Redraw"
+msgstr "Ververs"
+
+#: src/utils.c:373
+msgid "Add Appt"
+msgstr "Nieuwe Afspr"
+
+#: src/utils.c:374
+msgid "Add Todo"
+msgstr "Nieuwe Taak"
+
+#: src/utils.c:377
+msgid "OtherCmd"
+msgstr "AnderCmd"
+
+#: src/utils.c:438
+msgid "FATAL ERROR in date2sec: failure in mktime\n"
+msgstr "FATALE FOUT in date2sec: fout in mktime\n"
+
+#: src/utils.c:537
+msgid "FATAL ERROR in update_time_in_date: failure in mktime\n"
+msgstr "FATALE FOUT in update_time_in_date: fout in mktime\n"
+
+#: src/utils.c:696
+msgid "Appointment"
+msgstr "Afspraak"
+
+#: src/utils.c:814
+msgid "yes"
+msgstr "ja"
+
+#: src/utils.c:817
+msgid "no"
+msgstr "nee"
+
+#: src/utils.c:821
+msgid "option not defined - Problem in print_option_incolor()"
+msgstr "Optie ongedefinieerd - Probleem in print_option_incolor()"
+
+#: src/vars.c:47
+msgid "January"
+msgstr "januari"
+
+#: src/vars.c:48
+msgid "February"
+msgstr "februari"
+
+#: src/vars.c:49
+msgid "March"
+msgstr "maart"
+
+#: src/vars.c:50
+msgid "April"
+msgstr "april"
+
+#: src/vars.c:51
+msgid "May"
+msgstr "mei"
+
+#: src/vars.c:52
+msgid "June"
+msgstr "juni"
+
+#: src/vars.c:53
+msgid "July"
+msgstr "juli"
+
+#: src/vars.c:54
+msgid "August"
+msgstr "augustus"
+
+#: src/vars.c:55
+msgid "September"
+msgstr "september"
+
+#: src/vars.c:56
+msgid "October"
+msgstr "oktober"
+
+#: src/vars.c:57
+msgid "November"
+msgstr "november"
+
+#: src/vars.c:58
+msgid "December"
+msgstr "december"
+
+#: src/vars.c:61 src/vars.c:68
+msgid "Sun"
+msgstr " zo"
+
+#: src/vars.c:62
+msgid "Mon"
+msgstr " ma"
+
+#: src/vars.c:63
+msgid "Tue"
+msgstr " di"
+
+#: src/vars.c:64
+msgid "Wed"
+msgstr " wo"
+
+#: src/vars.c:65
+msgid "Thu"
+msgstr " do"
+
+#: src/vars.c:66
+msgid "Fri"
+msgstr " vr"
+
+#: src/vars.c:67
+msgid "Sat"
+msgstr " za"
+
+#: src/wins.c:81
+#, c-format
+msgid "Calendar"
+msgstr "Kalender"
+
+#: src/wins.c:84
+#, c-format
+msgid "Appointments"
+msgstr "Afspraken"
+
+#: src/wins.c:89
+#, c-format
+msgid "ToDo"
+msgstr "Taken"
+
+#: src/wins.c:324
+#, fuzzy
+msgid "FATAL ERROR in wins_update: no window selected\n"
+msgstr "Fatale fout in update_windows: geen venster geselecteerd\n"
