@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.51 2007/07/28 13:11:42 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.52 2007/07/29 20:59:09 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -28,33 +28,16 @@
 #include <config.h>
 #endif /* HAVE_CONFIG_H */
 
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <ncurses.h>	
-#include <unistd.h>
-#include <signal.h>
-#include <pthread.h>
-#include <time.h>
-#include <string.h>
 #include <stdlib.h>
-#include <stdbool.h>
-#include <math.h>
-#include <locale.h>
-#include <stdio.h>
+#include <signal.h>
 
 #include "i18n.h"
 #include "io.h"
 #include "help.h"
-#include "calendar.h"
 #include "custom.h"
 #include "utils.h"
-#include "vars.h"
 #include "sigs.h"
-#include "wins.h"
-#include "apoint.h"
 #include "day.h"
-#include "event.h"
-#include "recur.h"
 #include "todo.h"
 #include "args.h"
 #include "notify.h"
@@ -146,8 +129,10 @@ main(int argc, char **argv)
 		init_pair(COLR_HIGH, COLOR_BLACK, COLOR_GREEN);
 		init_pair(COLR_CUSTOM, COLOR_RED, background);
 
-	} else
+	} else {
                 colorize = false;
+		background = COLOR_BLACK;
+	}
 
 	vars_init(&conf);
 	wins_init(&win[CALENDAR], &win[APPOINTMENT], &win[TODO], &win[STATUS]);

@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.18 2007/07/28 13:11:42 culot Exp $	*/
+/*	$calcurse: io.c,v 1.19 2007/07/29 20:59:09 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -550,7 +550,7 @@ io_load_app(void)
         time_t t;
         int id = 0;
 	int freq;
-	char type, state;
+	char type, state = 0L;
 	char *error = 
 		_("FATAL ERROR in io_load_app: wrong format in the appointment or event\n");
 

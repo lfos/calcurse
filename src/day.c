@@ -1,4 +1,4 @@
-/*	$calcurse: day.c,v 1.25 2007/07/28 13:11:42 culot Exp $	*/
+/*	$calcurse: day.c,v 1.26 2007/07/29 20:59:09 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -229,7 +229,7 @@ day_store_recur_apoints(long date)
  * The number of events and appointments in the current day are also updated.
  */
 static int 
-day_store_items(long date, int *pnb_events, int *pnb_apoints)
+day_store_items(long date, unsigned *pnb_events, unsigned *pnb_apoints)
 {
 	int pad_length;
 	int nb_events, nb_recur_events;
@@ -466,7 +466,7 @@ day_edit_item(int item_num)
 
 	struct day_item_s *p;
 	struct recur_event_s *re;
-	struct rpt_s *rpt;
+	struct rpt_s *rpt = 0L;
 	struct tm *lt;
 	time_t t;
 	date_t new_date;

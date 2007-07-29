@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.33 2007/07/28 13:11:43 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.34 2007/07/29 20:59:09 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -743,17 +743,21 @@ void reset_status_page(void)
 void other_status_page(int panel)
 {
 	int nb_item, max_page;
+	char *error = _("FATAL ERROR in other_status_page: unknown panel\n");
 
 	switch (panel) {
-	case 0:
+	case CALENDAR:
 		nb_item = NB_CAL_CMDS;
 		break;
-	case 1:
+	case APPOINTMENT:
 		nb_item = NB_APP_CMDS;
 		break;
-	case 2:
+	case TODO:
 		nb_item = NB_TOD_CMDS;
 		break;
+	default:
+		fputs(error, stderr);
+		exit(EXIT_FAILURE);
 	}
 	max_page = ceil( nb_item / (2*CMDS_PER_LINE) ) + 1;
 	if (status_page < max_page) {

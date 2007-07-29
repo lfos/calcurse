@@ -1,4 +1,4 @@
-/*	$calcurse: apoint.c,v 1.13 2007/07/28 13:11:42 culot Exp $	*/
+/*	$calcurse: apoint.c,v 1.14 2007/07/29 20:59:09 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -92,10 +92,10 @@ apoint_add(int *hilt_app)
 	char *format_message_1 = _("You entered an invalid start time, should be [h:mm] or [hh:mm]");
 	char *format_message_2 = _("You entered an invalid end time, should be [h:mm] or [hh:mm] or [mm]");
         char *enter_str = _("Press [Enter] to continue");
-	int Id;
+	int Id = 1;
         char item_time[LTIME] = "";
 	char item_mesg[BUFSIZ] = "";
-	long apoint_duration, apoint_start;
+	long apoint_duration = 0, apoint_start;
 	apoint_llist_node_t *apoint_pointeur;
         struct event_s *event_pointeur;
 	unsigned heures, minutes;
@@ -504,7 +504,7 @@ apoint_switch_notify(int item_num)
 	apoint_llist_node_t *apoint;
 	struct day_item_s *p;
 	long date;
-	int apoint_nb, n, need_chk_notify;
+	int apoint_nb = 0, n, need_chk_notify;
 
 	p = day_get_item(item_num);
 	if (p->type != APPT && p->type != RECUR_APPT)

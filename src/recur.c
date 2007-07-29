@@ -1,4 +1,4 @@
-/*	$calcurse: recur.c,v 1.27 2007/07/28 13:11:42 culot Exp $	*/
+/*	$calcurse: recur.c,v 1.28 2007/07/29 20:59:09 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -117,23 +117,27 @@ struct recur_event_s *recur_event_new(char *mesg, long day, int id,
  * and the letter to be written in file. 
  */
 char 
-recur_def2char(int define)
+recur_def2char(recur_types_t define)
 {
 	char recur_char;
+	char *error = _("FATAL ERROR in recur_def2char: unknown recur type\n");
 
 	switch (define) {
-	case 1:
+	case RECUR_DAILY:
 		recur_char = 'D';
 		break;	
-	case 2:
+	case RECUR_WEEKLY:
 		recur_char = 'W';
 		break;
-	case 3:
+	case RECUR_MONTHLY:
 		recur_char = 'M';
 		break;
-	case 4:
+	case RECUR_YEARLY:
 		recur_char = 'Y';
 		break;
+	default:
+		fputs(error, stderr);
+		exit(EXIT_FAILURE);
 	}
 
 	return (recur_char);
@@ -145,6 +149,7 @@ recur_def2char(int define)
  */
 int recur_char2def(char type){
 	int recur_def;
+	char *error = _("FATAL ERROR in recur_char2def: unknown char\n");
 
 	switch (type) {
 	case 'D':
@@ -159,8 +164,11 @@ int recur_char2def(char type){
 	case 'Y':
 		recur_def = RECUR_YEARLY;
 		break;
+	default:
+		fputs(error, stderr);
+		exit(EXIT_FAILURE);
 	}
-	return recur_def;
+	return (recur_def);
 }
 
 /* Write days for which recurrent items should not be repeated. */

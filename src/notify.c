@@ -1,4 +1,4 @@
-/*	$calcurse: notify.c,v 1.16 2007/07/28 13:11:42 culot Exp $	*/
+/*	$calcurse: notify.c,v 1.17 2007/07/29 20:59:09 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -490,7 +490,7 @@ notify_print_options(WINDOW *win, int col)
 void 
 notify_config_bar(void)
 {
-	WINDOW *conf_win;
+	WINDOW *conf_win = 0L;
 	char label[BUFSIZ];
 	char *buf;
 	char *number_str = 

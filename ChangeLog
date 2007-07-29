@@ -1,3 +1,6 @@
+29 Jul 2007:
+	compiler warnings fixed
+
 28 Jul 2007:
 	Dutch manual and po file added, many thanks to Jeremy Roon
 	configure.ac, Makefile.am and src/Makefile.am improved
