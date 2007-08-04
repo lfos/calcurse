@@ -3,6 +3,7 @@
 	aerror() and ierror() created to improve error handling while in ncurses
 	mode
 	exit_calcurse() updated to take exit code as argument
+	memory leak fixed in day_item_s2apoint_s()
 
 29 Jul 2007:
 	compiler warnings fixed

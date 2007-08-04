@@ -1,4 +1,4 @@
-/*	$calcurse: day.c,v 1.27 2007/08/04 14:34:03 culot Exp $	*/
+/*	$calcurse: day.c,v 1.28 2007/08/04 15:11:47 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -292,18 +292,13 @@ day_process_storage(date_t *slctd_date, bool day_changed, day_items_nb_t *inday)
  * Returns a structure of type apoint_llist_node_t given a structure of type 
  * day_item_s 
  */
-static apoint_llist_node_t *
-day_item_s2apoint_s(struct day_item_s *p)
+static void
+day_item_s2apoint_s(apoint_llist_node_t *a, struct day_item_s *p)
 {
-	apoint_llist_node_t *a;
-
-	a = (apoint_llist_node_t *) malloc(sizeof(apoint_llist_node_t));
-	a->mesg = (char *) malloc(strlen(p->mesg) + 1);
 	a->state = p->state;
 	a->start = p->start;
 	a->dur = p->appt_dur;
 	a->mesg = p->mesg;
-	return a;
 }
 
 /* 
@@ -317,6 +312,7 @@ void
 day_write_pad(long date, int width, int length, int incolor)
 {
 	struct day_item_s *p;
+	apoint_llist_node_t a;
 	int line, item_number, max_pos, recur;
 	const int x_pos = 0;
 	bool draw_line = false;
@@ -357,17 +353,15 @@ day_write_pad(long date, int width, int length, int incolor)
 
 			/* Last print the appointments for current day. */
 			item_number++;
+			day_item_s2apoint_s(&a, p);
 			if (item_number - incolor == 0) {
 				day_saved_item->type = p->type;
 				day_saved_item->mesg = p->mesg;
-				apoint_sec2str(day_item_s2apoint_s(p), 
-					p->type, date,
-					day_saved_item->start,
-					day_saved_item->end);
+				apoint_sec2str(&a, p->type, date,
+				    day_saved_item->start, day_saved_item->end);
 			}
 			display_item_date(apad->ptrwin, item_number - incolor, 
-				day_item_s2apoint_s(p), p->type, date, 
-				line + 1, x_pos);	
+				&a, p->type, date, line + 1, x_pos);	
 			display_item(apad->ptrwin, item_number - incolor, p->mesg,
 				0, width - 7, line + 2, x_pos + 2);
 			line = line + 3;
