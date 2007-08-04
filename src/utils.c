@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.34 2007/07/29 20:59:09 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.35 2007/08/04 14:33:02 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -40,12 +40,51 @@ static unsigned status_page;
 
 /* General routine to exit calcurse properly. */
 void 
-exit_calcurse(void)
+exit_calcurse(int status)
 {
 	endwin();
 	erase();
 	calendar_stop_date_thread();
-	exit(EXIT_SUCCESS);
+	exit(status);
+}
+
+/* Function to exit on internal error. */
+void
+ierror(const char *errmsg)
+{
+	WINDOW *errwin;
+	char *label = _("INTERNAL ERROR");
+	char *exitmsg = _("calcurse will now exit...");
+	char *reportmsg = _("Please report the following bug:");
+	const int winrow = 10;
+	const int wincol = col - 2;
+	const int msglen = wincol - 2;
+	char msg[msglen];
+
+	strncpy(msg, errmsg, msglen);
+	errwin = newwin(winrow, wincol, (row - winrow) / 2, (col - wincol) / 2);
+	custom_apply_attr(errwin, ATTR_HIGHEST);
+	box(errwin, 0, 0);
+	wins_show(errwin, label);
+	mvwprintw(errwin, 3, 1, reportmsg);
+	mvwprintw(errwin, 5, (wincol - strlen(msg)) / 2, "%s", msg);
+	mvwprintw(errwin, winrow - 2, wincol - strlen(exitmsg) - 1, "%s", 
+	    exitmsg);
+	custom_remove_attr(errwin, ATTR_HIGHEST);
+	wrefresh(errwin);
+	wgetch(errwin);
+	exit_calcurse(EXIT_FAILURE);
+}
+
+/* Function to handle an assertion failure. */
+void
+aerror(const char *file, int line, const char *assertion)
+{
+	char errmsg[BUFSIZ];
+
+	snprintf(errmsg, BUFSIZ,
+	    "assert \"%s\" failed: file \"%s\", line %d", assertion, file, line);
+	ierror(errmsg);
 }
 
 /* 
@@ -311,9 +350,7 @@ updatestring(WINDOW *win, char **str, int x, int y)
 		len = strlen(newstr) + 1;
 		if ((*str = (char *) realloc(*str, len)) == NULL) {
 			/* NOTREACHED */
-			fputs(_("FATAL ERROR in updatestring: out of memory\n"),
-				stderr);
-			exit(EXIT_FAILURE);
+			ierror(_("FATAL ERROR in updatestring: out of memory"));
 		} else 
 			(void)memcpy(*str, newstr, len);
 	} 	
@@ -532,13 +569,9 @@ long update_time_in_date(long date, unsigned hr, unsigned mn)
 	lt->tm_hour = hr;
 	lt->tm_min = mn;
 	new_date = mktime(lt);
-	if (new_date == -1) { /* NOTREACHED */
-		fputs(
-		_("FATAL ERROR in update_time_in_date: failure in mktime\n"), 
-			stderr);
-		exit(EXIT_FAILURE);
-	}
-	return new_date;
+	ASSERT(new_date != -1);
+
+	return (new_date);
 }
 
 /* 
@@ -742,7 +775,7 @@ void reset_status_page(void)
 /* Update the status bar page number to display other commands. */
 void other_status_page(int panel)
 {
-	int nb_item, max_page;
+	int nb_item = 0, max_page;
 	char *error = _("FATAL ERROR in other_status_page: unknown panel\n");
 
 	switch (panel) {
@@ -756,8 +789,7 @@ void other_status_page(int panel)
 		nb_item = NB_TOD_CMDS;
 		break;
 	default:
-		fputs(error, stderr);
-		exit(EXIT_FAILURE);
+		ierror(error);
 	}
 	max_page = ceil( nb_item / (2*CMDS_PER_LINE) ) + 1;
 	if (status_page < max_page) {
@@ -810,23 +842,18 @@ char *mycpy(const char *src)
 void 
 print_option_incolor(WINDOW *win, bool option, int pos_y, int pos_x)
 {
-	int color;
-	char *option_value;
+	int color = 0;
+	char option_value[BUFSIZ] = "";
 
 	if (option == true) {
 		color = ATTR_TRUE;
-		option_value = _("yes");
+		strncpy(option_value, _("yes"), BUFSIZ);
 	} else if (option == false) {
 		color = ATTR_FALSE;
-		option_value = _("no");
+		strncpy(option_value, _("no"), BUFSIZ);
 	} else {
-		erase_window_part(win, 0, 0, col, row - 2);
-		mvwprintw(win, 1, 1,
+		ierror(
 		    _("option not defined - Problem in print_option_incolor()"));
-		wnoutrefresh(win);
-		doupdate();
-		wgetch(win);
-		exit(EXIT_FAILURE);
 	}
 	custom_apply_attr(win, color);
 	mvwprintw(win, pos_y, pos_x, "%s", option_value);
