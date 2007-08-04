@@ -1,4 +1,4 @@
-/*	$calcurse: notify.c,v 1.17 2007/07/29 20:59:09 culot Exp $	*/
+/*	$calcurse: notify.c,v 1.18 2007/08/04 14:34:03 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -124,16 +124,12 @@ launch_cmd(char *cmd, char *shell)
 
 	pid = fork();
 	
-	if (pid < 0) {
-		fputs(_("FATAL ERROR in launch_cmd: could not fork\n"), 
-		    stderr);
-		exit(EXIT_FAILURE);
-	} else if (pid == 0) { /* Child: launch user defined command */
+	if (pid < 0)
+		ierror(_("FATAL ERROR in launch_cmd: could not fork"));
+	else if (pid == 0) /* Child: launch user defined command */
 		if (execlp(shell, shell, "-c", cmd, (char *)NULL) < 0)
-			fputs(_("FATAL ERROR in launch_cmd: could not "
-			    "launch user command\n"), stderr);
-		exit(EXIT_FAILURE);
-	}
+			ierror(_("FATAL ERROR in launch_cmd: could not "
+			    "launch user command"));
 }
 
 /* 

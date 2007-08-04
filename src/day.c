@@ -1,4 +1,4 @@
-/*	$calcurse: day.c,v 1.26 2007/07/29 20:59:09 culot Exp $	*/
+/*	$calcurse: day.c,v 1.27 2007/08/04 14:34:03 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -387,10 +387,9 @@ void day_popup_item(void)
 		day_saved_item->type == RECUR_APPT)
 		item_in_popup(day_saved_item->start, day_saved_item->end,
 			day_saved_item->mesg, _("Appointment :"));
-	else { /* NOT REACHED */
-		fputs(error, stderr);
-		exit(EXIT_FAILURE);
-	}
+	else
+		ierror(error);
+		/* NOTREACHED */
 }
 
 /* 

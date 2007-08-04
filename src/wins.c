@@ -1,4 +1,4 @@
-/*	$Id: wins.c,v 1.3 2007/07/28 13:11:43 culot Exp $	*/
+/*	$Id: wins.c,v 1.4 2007/08/04 14:34:03 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -321,9 +321,7 @@ wins_update(conf_t *conf, window_t *winbar, window_t *winapp, window_t *wintod,
 		break;
 
 	default:
-		fputs(_("FATAL ERROR in wins_update: no window selected\n"),
-		    stderr);
-		exit(EXIT_FAILURE);
+		ierror(_("FATAL ERROR in wins_update: no window selected\n"));
 		/* NOTREACHED */
 	}
 

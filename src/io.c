@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.19 2007/07/29 20:59:09 culot Exp $	*/
+/*	$calcurse: io.c,v 1.20 2007/08/04 14:34:03 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -45,19 +45,9 @@ typedef enum {
 	PROGRESS_BAR_EXPORT
 } progress_bar_t;
 
-static void progress_bar(progress_bar_t type, int progress);
-static FILE *io_get_export_stream(void);
-static void io_export_valarm(FILE *stream);
-static void io_export_header(FILE *stream);
-static void io_export_footer(FILE *stream);
-static void io_export_recur_events(FILE *stream);
-static void io_export_events(FILE *stream);
-static void io_export_apoints(FILE *stream);
-static void io_export_todo(FILE *stream);
-static char *io_recur_type(int type);
 
 /* Draw a progress bar while saving, loading or exporting data. */
-void 
+static void 
 progress_bar(progress_bar_t type, int progress)
 {
 #define SLEEPTIME	125000
@@ -114,7 +104,7 @@ progress_bar(progress_bar_t type, int progress)
 }
 
 /* Return the recurrence type to dump in iCal format. */
-char *
+static char *
 io_recur_type(int type)
 {
  	char *recur_type[RECUR_TYPES] = 
@@ -124,7 +114,7 @@ io_recur_type(int type)
 }	
 
 /* Ask user for a file name to export data to. */
-FILE *
+static FILE *
 io_get_export_stream(void)
 {
 	FILE *stream;
@@ -158,7 +148,7 @@ io_get_export_stream(void)
 } 
 
 /* iCal alarm notification. */
-void
+static void
 io_export_valarm(FILE *stream)
 {
 	fprintf(stream, "BEGIN:VALARM\n");
@@ -170,7 +160,7 @@ io_export_valarm(FILE *stream)
 }
 
 /* Export header. */
-void
+static void
 io_export_header(FILE *stream)
 {
 	fprintf(stream, "BEGIN:VCALENDAR\n");
@@ -180,14 +170,14 @@ io_export_header(FILE *stream)
 }
 
 /* Export footer. */
-void
+static void
 io_export_footer(FILE *stream)
 {
 	fprintf(stream, "END:VCALENDAR\n");
 }
 
 /* Export recurrent events. */
-void
+static void
 io_export_recur_events(FILE *stream)
 {
 	struct recur_event_s *i;
@@ -223,7 +213,7 @@ io_export_recur_events(FILE *stream)
 }
 
 /* Export events. */
-void
+static void
 io_export_events(FILE *stream)
 {
 	struct event_s *i;
@@ -239,7 +229,7 @@ io_export_events(FILE *stream)
 }
 
 /* Export recurrent appointments. */
-void
+static void
 io_export_recur_apoints(FILE *stream)
 {
 	recur_apoint_llist_node_t *i;
@@ -282,7 +272,7 @@ io_export_recur_apoints(FILE *stream)
 }
 
 /* Export appointments. */
-void
+static void
 io_export_apoints(FILE *stream)
 {
 	apoint_llist_node_t *i;
@@ -303,7 +293,7 @@ io_export_apoints(FILE *stream)
 }
 
 /* Export todo items. */
-void
+static void
 io_export_todo(FILE *stream)
 {
 	struct todo_s *i;	

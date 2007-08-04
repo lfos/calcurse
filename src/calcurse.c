@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.52 2007/07/29 20:59:09 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.53 2007/08/04 14:34:03 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -472,13 +472,13 @@ main(int argc, char **argv)
 				status_mesg(_(quit_message), choices);
 				ch = wgetch(swin);
 				if ( ch == 'y' )
-					exit_calcurse();
+					exit_calcurse(EXIT_SUCCESS);
 				else {
 					erase_status_bar();
 					break;
 				}
 			} else
-				exit_calcurse();
+				exit_calcurse(EXIT_SUCCESS);
 			break;
 		}
 
