@@ -1,4 +1,4 @@
-/*	$calcurse: utils.h,v 1.22 2007/07/28 13:11:43 culot Exp $	*/
+/*	$calcurse: utils.h,v 1.23 2007/08/04 14:32:31 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -32,6 +32,10 @@
 #define MAX(x,y) 	((x)>(y)?(x):(y))
 #define MIN(x,y) 	((x)<(y)?(x):(y))
 
+#define ASSERT(e) do {							\
+	((e) ? (void)0 : aerror(__FILE__, __LINE__, #e));		\
+} while (0)
+
 #define SPC		32 /* ASCII code for white space */
 
 #define NB_CAL_CMDS	16 /* number of commands while in cal view */
@@ -52,7 +56,9 @@ typedef struct { /* structure defining a keybinding */
 	char *label;
 } binding_t;
 
-void	exit_calcurse(void);
+void	exit_calcurse(int);
+void	ierror(const char *);
+void	aerror(const char *, int, const char *);
 void 	status_mesg(char *, char *);
 void	erase_status_bar(void);
 void 	erase_window_part(WINDOW *, int, int, int, int);
