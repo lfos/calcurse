@@ -1,4 +1,4 @@
-/*	$calcurse: apoint.c,v 1.15 2007/08/04 14:34:03 culot Exp $	*/
+/*	$calcurse: apoint.c,v 1.16 2007/08/12 13:08:03 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -557,7 +557,7 @@ apoint_update_panel(window_t *winapp, int hilt_app, int which_pan)
 
 	/* variable inits */
 	slctd_date = *calendar_get_slctd_day();
-	title_xpos = winapp->w - (strlen(_(monthnames[slctd_date.mm - 1])) + 11);
+	title_xpos = winapp->w - (strlen(_(monthnames[slctd_date.mm - 1])) + 16);
 	if (slctd_date.dd < 10) 
 		title_xpos++;
 	date = date2sec(slctd_date, 0, 0);
@@ -566,8 +566,9 @@ apoint_update_panel(window_t *winapp, int hilt_app, int which_pan)
 	/* Print current date in the top right window corner. */
 	erase_window_part(awin, 1, title_lines, winapp->w - 2, winapp->h - 2);
 	custom_apply_attr(awin, ATTR_HIGHEST);
-	mvwprintw(awin, title_lines, title_xpos, "%s %d, %d",
-	    _(monthnames[slctd_date.mm - 1]), slctd_date.dd, slctd_date.yyyy);
+	mvwprintw(awin, title_lines, title_xpos, "%s  %s %d, %d",
+	   calendar_get_pom(date), _(monthnames[slctd_date.mm - 1]), 
+	   slctd_date.dd, slctd_date.yyyy);
 	custom_remove_attr(awin, ATTR_HIGHEST);
 	
 	/* Draw the scrollbar if necessary. */
