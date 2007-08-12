@@ -1,4 +1,4 @@
-/*	$calcurse: calendar.h,v 1.5 2007/07/28 13:11:42 culot Exp $	*/
+/*	$calcurse: calendar.h,v 1.6 2007/08/12 13:09:37 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -42,7 +42,7 @@ typedef enum { /* days of week */
 	FRIDAY,
 	SATURDAY,
 	WDAYS
-} wday_t;
+} wday_e;
 
 typedef struct {
 	unsigned dd; 
@@ -50,10 +50,19 @@ typedef struct {
        	unsigned yyyy;
 } date_t;
 
+typedef enum {
+	NO_POM,
+	FIRST_QUARTER,
+	FULL_MOON,
+	LAST_QUARTER,
+	NEW_MOON,
+	MOON_PHASES
+} pom_e;
+
 void	calendar_start_date_thread(void);
 void	calendar_stop_date_thread(void);
 void	calendar_set_current_date(void);
-void	calendar_set_first_day_of_week(wday_t);
+void	calendar_set_first_day_of_week(wday_e);
 void	calendar_change_first_day_of_week(void);
 bool	calendar_week_begins_on_monday(void);
 void	calendar_store_current_date(date_t *);
@@ -66,5 +75,6 @@ void	calendar_move_right(void);
 void	calendar_move_left(void);
 void	calendar_move_up(void);
 void	calendar_move_down(void);
+char   *calendar_get_pom(time_t);
 
 #endif /* CALCURSE_CALENDAR_H */
