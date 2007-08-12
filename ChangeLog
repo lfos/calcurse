@@ -1,3 +1,9 @@
+12 Aug 2007:
+	Moon phase calculation added
+	calendar_get_pom(), pom(), potm(), dotr() and adj360 added, based on the
+	OpenBSD version of pom(6)
+	TODO list updated
+
 04 Aug 2007:
 	ASSERT macro created
 	aerror() and ierror() created to improve error handling while in ncurses
