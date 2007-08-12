@@ -1,4 +1,4 @@
-/*	$calcurse: calendar.c,v 1.9 2007/07/28 13:11:42 culot Exp $	*/
+/*	$calcurse: calendar.c,v 1.10 2007/08/12 13:09:02 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -29,6 +29,7 @@
 #include <string.h>
 #include <sys/types.h>
 #include <time.h>
+#include <math.h>
 
 #include "i18n.h"
 #include "day.h"
@@ -38,6 +39,21 @@
 #include "custom.h"
 #include "vars.h"
 #include "utils.h"
+
+#ifndef M_PI
+#define	M_PI	  3.14159265358979323846
+#endif
+
+#define	EPOCH	  90
+#define	EPSILONg  279.403303	/* solar ecliptic long at EPOCH */
+#define	RHOg	  282.768422	/* solar ecliptic long of perigee at EPOCH */
+#define	ECCEN	  0.016713	/* solar orbit eccentricity */
+#define	lzero	  318.351648	/* lunar mean long at EPOCH */
+#define	Pzero	  36.340410	/* lunar mean long of perigee at EPOCH */
+#define	Nzero	  318.510107	/* lunar mean long of node at EPOCH */
+#define TM_YEAR_BASE	1900
+
+#define isleap(y) ((((y) % 4) == 0 && ((y) % 100) != 0) || ((y) % 400) == 0)
 
 static date_t		today, slctd_day;
 static bool		week_begins_on_monday;
@@ -100,7 +116,7 @@ calendar_set_current_date(void)
 
 /* Needed to display sunday or monday as the first day of week in calendar. */
 void
-calendar_set_first_day_of_week(wday_t first_day)
+calendar_set_first_day_of_week(wday_e first_day)
 {
 	switch (first_day) {
 	case SUNDAY:
@@ -436,4 +452,164 @@ calendar_move_down(void)
 		slctd_day.mm++;
 	} else 
 		slctd_day.dd += 7;
+}
+
+/*
+ * The pom, potm, dotr, adj360 are used to compute the current 
+ * phase of the moon.
+ * The code is based on the OpenBSD version of pom(6).
+ * Below is reported the copyright notice.
+ */
+/*
+ * Copyright (c) 1989, 1993
+ *	The Regents of the University of California.  All rights reserved.
+ *
+ * This code is derived from software posted to USENET.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. Neither the name of the University nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
+ *    without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ */
+
+/*
+ * dtor --
+ *	convert degrees to radians
+ */
+static double
+dtor(double deg)
+{
+	return(deg * M_PI / 180);
+}
+
+/*
+ * adj360 --
+ *	adjust value so 0 <= deg <= 360
+ */
+static void
+adj360(double *deg)
+{
+	for (;;)
+		if (*deg < 0.0)
+			*deg += 360.0;
+		else if (*deg > 360.0)
+			*deg -= 360.0;
+		else
+			break;
+}
+
+/*
+ * potm --
+ *	return phase of the moon
+ */
+static double
+potm(double days)
+{
+	double N, Msol, Ec, LambdaSol, l, Mm, Ev, Ac, A3, Mmprime;
+	double A4, lprime, V, ldprime, D, Nm;
+
+	N = 360.0 * days / 365.242191;				/* sec 46 #3 */
+	adj360(&N);
+	Msol = N + EPSILONg - RHOg;				/* sec 46 #4 */
+	adj360(&Msol);
+	Ec = 360 / M_PI * ECCEN * sin(dtor(Msol));		/* sec 46 #5 */
+	LambdaSol = N + Ec + EPSILONg;				/* sec 46 #6 */
+	adj360(&LambdaSol);
+	l = 13.1763966 * days + lzero;				/* sec 65 #4 */
+	adj360(&l);
+	Mm = l - (0.1114041 * days) - Pzero;			/* sec 65 #5 */
+	adj360(&Mm);
+	Nm = Nzero - (0.0529539 * days);			/* sec 65 #6 */
+	adj360(&Nm);
+	Ev = 1.2739 * sin(dtor(2*(l - LambdaSol) - Mm));	/* sec 65 #7 */
+	Ac = 0.1858 * sin(dtor(Msol));				/* sec 65 #8 */
+	A3 = 0.37 * sin(dtor(Msol));
+	Mmprime = Mm + Ev - Ac - A3;				/* sec 65 #9 */
+	Ec = 6.2886 * sin(dtor(Mmprime));			/* sec 65 #10 */
+	A4 = 0.214 * sin(dtor(2 * Mmprime));			/* sec 65 #11 */
+	lprime = l + Ev + Ec - Ac + A4;				/* sec 65 #12 */
+	V = 0.6583 * sin(dtor(2 * (lprime - LambdaSol)));	/* sec 65 #13 */
+	ldprime = lprime + V;					/* sec 65 #14 */
+	D = ldprime - LambdaSol;				/* sec 67 #2 */
+	return(50.0 * (1 - cos(dtor(D))));			/* sec 67 #3 */
+}
+
+/*
+ * Phase of the Moon.  Calculates the current phase of the moon.
+ * Based on routines from `Practical Astronomy with Your Calculator',
+ * by Duffett-Smith.  Comments give the section from the book that
+ * particular piece of code was adapted from.
+ *
+ * -- Keith E. Brandt  VIII 1984
+ *
+ * Updated to the Third Edition of Duffett-Smith's book, IX 1998
+ *
+ */
+static double
+pom(time_t tmpt)
+{
+	struct tm *GMT;
+	double days;
+	int cnt;
+	pom_e pom;
+
+	pom = NO_POM;
+	GMT = gmtime(&tmpt);
+	days = (GMT->tm_yday + 1) + ((GMT->tm_hour +
+	    (GMT->tm_min / 60.0) + (GMT->tm_sec / 3600.0)) / 24.0);
+	for (cnt = EPOCH; cnt < GMT->tm_year; ++cnt)
+		days += isleap(cnt + TM_YEAR_BASE) ? 366 : 365;
+	/* Selected time could be before EPOCH */
+	for (cnt = GMT->tm_year; cnt < EPOCH; ++cnt)
+		days -= isleap(cnt + TM_YEAR_BASE) ? 366 : 365;
+
+	return (potm(days));
+}
+
+/*
+ * Return a pictogram representing the current phase of the moon.
+ * Careful: date is the selected day in calendar at 00:00, so it represents
+ * the phase of the moon for previous day.
+ */
+char *
+calendar_get_pom(time_t date)
+{
+	char *pom_pict[MOON_PHASES] = {"   ", "|) ", "(|)", "(| ", " | "};
+	pom_e phase = NO_POM;
+	double pom_today, relative_pom, pom_yesterday, pom_tomorrow;
+	const double half = 50.0;
+	
+	pom_yesterday = pom(date);
+	pom_today = pom(date + DAYINSEC);
+	relative_pom = abs(pom_today - half);
+	pom_tomorrow = pom(date + 2 * DAYINSEC);
+	if (pom_today > pom_yesterday && pom_today > pom_tomorrow)
+		phase = FULL_MOON;
+	else if (pom_today < pom_yesterday && pom_today < pom_tomorrow)
+		phase = NEW_MOON;
+	else if (relative_pom < abs(pom_yesterday - half) &&
+	    relative_pom < abs(pom_tomorrow - half))
+			phase = (pom_tomorrow > pom_today) ?
+			    FIRST_QUARTER : LAST_QUARTER;
+
+	return (pom_pict[phase]);
 }
