@@ -1,3 +1,17 @@
+15 Aug 2007:
+	handling of SIGWINCH added
+	wins_prop(), wins_layout(), wins_set_layout() and wins_reset() added
+	apoint_hilt(), apoint_hilt_set(), apoint_hilt_decrease() and
+	apoint_hilt_increase() added
+	scroll_pad_down() and scroll_pad_up() moved to apoint_scroll_pad_down()
+	and apoint_scroll_pad_up() 
+	todo_hilt(), todo_hilt_set(), todo_hilt_decrease(), 
+	todo_hilt_increase(), todo_saved_mesg(), todo_nb(), todo_set_nb(), 
+	todo_set_first(), todo_first_increase(), todo_first_decrease(), and 
+	todo_hilt_pos() added
+	layout is not part of conf_t type anymore, and becomes a static variable
+	in wins.c
+	
 12 Aug 2007:
 	Moon phase calculation added
 	calendar_get_pom(), pom(), potm(), dotr() and adj360 added, based on the
