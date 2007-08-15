@@ -1,4 +1,4 @@
-/*	$Id: wins.c,v 1.4 2007/08/04 14:34:03 culot Exp $	*/
+/*	$Id: wins.c,v 1.5 2007/08/15 15:31:52 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -34,6 +34,22 @@
 #include "wins.h"
 
 static window_e 	slctd_win;
+static window_t 	win[NBWINS]; 
+static int		layout;
+
+/* Get the current layout. */
+int
+wins_layout(void)
+{
+	return (layout);
+}
+
+/* Set the current layout. */
+void
+wins_set_layout(int nb)
+{
+	layout = nb;
+}
 
 /* Initialize the selected window in calcurse's interface. */
 void
@@ -66,10 +82,36 @@ wins_slctd_next(void)
 		slctd_win++;
 }
 
+/* Return one property of the given window. */
+int
+wins_prop(window_e window, winprop_e property)
+{
+	int prop = 0;
+
+	switch (property) {
+	case WIDTH:
+		prop = (int)win[window].w;
+		break;
+	case HEIGHT:
+		prop = (int)win[window].h;
+		break;
+	case XPOS:
+		prop = win[window].x;
+		break;
+	case YPOS:
+		prop = win[window].y;
+		break;
+	default:
+		ierror(_("FATAL ERROR in wins_prop: property unknown\n"));
+		/* NOTREACHED */
+	}
+
+	return (prop);
+}
+
 /* Create all the windows. */
 void 
-wins_init(window_t *wincal, window_t *winapp, window_t *wintod, 
-    window_t *winbar)
+wins_init(void)
 {
 	char label[BUFSIZ];
 	
@@ -77,18 +119,20 @@ wins_init(window_t *wincal, window_t *winapp, window_t *wintod,
 	 * Create the three main windows plus the status bar and the pad used to
 	 * display appointments and event. 
 	 */
-	cwin = newwin(CALHEIGHT, CALWIDTH, wincal->y, wincal->x);
+	cwin = newwin(CALHEIGHT, CALWIDTH, win[CALENDAR].y, win[CALENDAR].x);
 	snprintf(label, BUFSIZ, _("Calendar"));
 	wins_show(cwin, label);
-	awin = newwin(winapp->h, winapp->w, winapp->y, winapp->x);
+	awin = newwin(win[APPOINTMENT].h, win[APPOINTMENT].w, 
+	    win[APPOINTMENT].y, win[APPOINTMENT].x);
 	snprintf(label, BUFSIZ, _("Appointments"));
 	wins_show(awin, label);
-	apad->width = winapp->w - 3;
+	apad->width = win[APPOINTMENT].w - 3;
 	apad->ptrwin = newpad(apad->length, apad->width);
-	twin = newwin(wintod->h, wintod->w, wintod->y, wintod->x);
+	twin = newwin(win[TODO].h, win[TODO].w, win[TODO].y, win[TODO].x);
 	snprintf(label, BUFSIZ, _("ToDo"));
 	wins_show(twin, label);
-	swin = newwin(winbar->h, winbar->w, winbar->y, winbar->x);
+	swin = newwin(win[STATUS].h, win[STATUS].w, win[STATUS].y, 
+	    win[STATUS].x);
 
 	/* Enable function keys (i.e. arrow keys) in those windows */
         keypad(swin, TRUE);
@@ -102,19 +146,18 @@ wins_init(window_t *wincal, window_t *winapp, window_t *wintod,
  * size and placement.
  */
 void 
-wins_reinit(conf_t *conf, window_t *winbar, window_t *winapp, 
-    window_t *wintod, window_t *wincal, window_t *winnot)
+wins_reinit(void)
 {
-        clear();
         delwin(swin);
         delwin(cwin);
         delwin(awin);
 	delwin(apad->ptrwin);
         delwin(twin);
-        wins_get_config(conf, winbar, winnot, winapp, wintod, wincal);
-        wins_init(wincal, winapp, wintod, winbar);
+        wins_get_config();
+        wins_init();
 	if (notify_bar()) 
-		notify_reinit_bar(winnot->h, winnot->w, winnot->y, winnot->x);
+		notify_reinit_bar(win[NOTIFY].h, win[NOTIFY].w, win[NOTIFY].y, 
+		    win[NOTIFY].x);
 }
 
 /* Show the window with a border and a label. */
@@ -138,107 +181,107 @@ wins_show(WINDOW * win, char *label)
  * Get the screen size and recalculate the windows configurations.
  */
 void 
-wins_get_config(conf_t *conf, window_t *status, window_t *notify, 
-    window_t *apts, window_t *todo, window_t *calr)
+wins_get_config(void)
 {
 	/* Get the screen configuration */
 	getmaxyx(stdscr, row, col);
 
 	/* fixed values for status, notification bars and calendar */
-	status->h = STATUSHEIGHT;
-	status->w = col;
-	status->y = row - status->h;
-	status->x = 0;
+	win[STATUS].h = STATUSHEIGHT;
+	win[STATUS].w = col;
+	win[STATUS].y = row - win[STATUS].h;
+	win[STATUS].x = 0;
 
 	if (notify_bar()) {
-		notify->h = 1;
-		notify->w = col;
-		notify->y = status->y - 1;
-		notify->x = 0;
+		win[NOTIFY].h = 1;
+		win[NOTIFY].w = col;
+		win[NOTIFY].y = win[STATUS].y - 1;
+		win[NOTIFY].x = 0;
 	} else {
-		notify->h = 0;
-		notify->w = 0;
-		notify->y = 0;
-		notify->x = 0;
+		win[NOTIFY].h = 0;
+		win[NOTIFY].w = 0;
+		win[NOTIFY].y = 0;
+		win[NOTIFY].x = 0;
 	}
 
-	if (conf->layout <= 4) { /* APPOINTMENT is the biggest panel */
-		apts->w = col - CALWIDTH;
-		apts->h = row - (status->h + notify->h);
-		todo->w = CALWIDTH;
-		todo->h = row - (CALHEIGHT + status->h + notify->h);
+	if (layout <= 4) { /* APPOINTMENT is the biggest panel */
+		win[APPOINTMENT].w = col - CALWIDTH;
+		win[APPOINTMENT].h = row - (win[STATUS].h + win[NOTIFY].h);
+		win[TODO].w = CALWIDTH;
+		win[TODO].h = row - (CALHEIGHT + win[STATUS].h + win[NOTIFY].h);
 	} else { 		/* TODO is the biggest panel */
-		todo->w = col - CALWIDTH;
-		todo->h = row - (status->h + notify->h);
-		apts->w = CALWIDTH;
-		apts->h = row - (CALHEIGHT + status->h + notify->h);
+		win[TODO].w = col - CALWIDTH;
+		win[TODO].h = row - (win[STATUS].h + win[NOTIFY].h);
+		win[APPOINTMENT].w = CALWIDTH;
+		win[APPOINTMENT].h = row - (CALHEIGHT + win[STATUS].h + 
+		    win[NOTIFY].h);
 	}
 
 	/* defining the layout */
-	switch (conf->layout) {
+	switch (layout) {
 	case 1:
-		apts->y = 0;
-		apts->x = 0;
-		calr->y = 0;
-		todo->x = apts->w;
-		todo->y = CALHEIGHT;
-		calr->x = apts->w;
+		win[APPOINTMENT].y = 0;
+		win[APPOINTMENT].x = 0;
+		win[CALENDAR].y = 0;
+		win[TODO].x = win[APPOINTMENT].w;
+		win[TODO].y = CALHEIGHT;
+		win[CALENDAR].x = win[APPOINTMENT].w;
 		break;
 	case 2:
-		apts->y = 0;
-		apts->x = 0;
-		todo->y = 0;
-		todo->x = apts->w;
-		calr->x = apts->w;
-		calr->y = todo->h;
+		win[APPOINTMENT].y = 0;
+		win[APPOINTMENT].x = 0;
+		win[TODO].y = 0;
+		win[TODO].x = win[APPOINTMENT].w;
+		win[CALENDAR].x = win[APPOINTMENT].w;
+		win[CALENDAR].y = win[TODO].h;
 		break;
 	case 3:
-		apts->y = 0;
-		todo->x = 0;
-		calr->x = 0;
-		calr->y = 0;
-		apts->x = CALWIDTH;
-		todo->y = CALHEIGHT;
+		win[APPOINTMENT].y = 0;
+		win[TODO].x = 0;
+		win[CALENDAR].x = 0;
+		win[CALENDAR].y = 0;
+		win[APPOINTMENT].x = CALWIDTH;
+		win[TODO].y = CALHEIGHT;
 		break;
 	case 4:
-		apts->y = 0;
-		todo->x = 0;
-		todo->y = 0;
-		calr->x = 0;
-		apts->x = CALWIDTH;
-		calr->y = todo->h;
+		win[APPOINTMENT].y = 0;
+		win[TODO].x = 0;
+		win[TODO].y = 0;
+		win[CALENDAR].x = 0;
+		win[APPOINTMENT].x = CALWIDTH;
+		win[CALENDAR].y = win[TODO].h;
 		break;
 	case 5:
-		todo->y = 0;
-		todo->x = 0;
-		calr->y = 0;
-		apts->y = CALHEIGHT;
-		apts->x = todo->w;
-		calr->x = todo->w;
+		win[TODO].y = 0;
+		win[TODO].x = 0;
+		win[CALENDAR].y = 0;
+		win[APPOINTMENT].y = CALHEIGHT;
+		win[APPOINTMENT].x = win[TODO].w;
+		win[CALENDAR].x = win[TODO].w;
 		break;
 	case 6:
-		todo->y = 0;
-		todo->x = 0;
-		apts->y = 0;
-		apts->x = todo->w;
-		calr->x = todo->w;
-		calr->y = apts->h;
+		win[TODO].y = 0;
+		win[TODO].x = 0;
+		win[APPOINTMENT].y = 0;
+		win[APPOINTMENT].x = win[TODO].w;
+		win[CALENDAR].x = win[TODO].w;
+		win[CALENDAR].y = win[APPOINTMENT].h;
 		break;
 	case 7:
-		todo->y = 0;
-		apts->x = 0;
-		calr->x = 0;
-		calr->y = 0;
-		todo->x = CALWIDTH;
-		apts->y = CALHEIGHT;
+		win[TODO].y = 0;
+		win[APPOINTMENT].x = 0;
+		win[CALENDAR].x = 0;
+		win[CALENDAR].y = 0;
+		win[TODO].x = CALWIDTH;
+		win[APPOINTMENT].y = CALHEIGHT;
 		break;
 	case 8:
-		todo->y = 0;
-		apts->x = 0;
-		calr->x = 0;
-		apts->y = 0;
-		todo->x = CALWIDTH;
-		calr->y = apts->h;
+		win[TODO].y = 0;
+		win[APPOINTMENT].x = 0;
+		win[CALENDAR].x = 0;
+		win[APPOINTMENT].y = 0;
+		win[TODO].x = CALWIDTH;
+		win[CALENDAR].y = win[APPOINTMENT].h;
 		break;
 	}
 }
@@ -296,9 +339,7 @@ border_nocolor(WINDOW *window)
  * selected window.
  */
 void 
-wins_update(conf_t *conf, window_t *winbar, window_t *winapp, window_t *wintod,
-    int hilt_app, int hilt_tod, int nb_tod, int first_todo_onscreen, 
-    char **saved_t_mesg)
+wins_update(void)
 {
 	switch (slctd_win) {
 
@@ -325,13 +366,23 @@ wins_update(conf_t *conf, window_t *winbar, window_t *winapp, window_t *wintod,
 		/* NOTREACHED */
 	}
 
-	apoint_update_panel(winapp, hilt_app, slctd_win);
-	todo_update_panel(wintod, hilt_tod, nb_tod, slctd_win, 
-	    first_todo_onscreen, saved_t_mesg);
+	apoint_update_panel(&win[APPOINTMENT], slctd_win);
+	todo_update_panel(&win[TODO], slctd_win);
 	calendar_update_panel(cwin);
 	status_bar();
 	if (notify_bar()) 
 		notify_update_bar();
         wmove(swin, 0, 0);
 	doupdate();
+}
+
+/* Reset the screen, needed when resizing terminal for example. */
+void
+wins_reset(void)
+{
+	endwin();
+	refresh();
+	curs_set(0);
+	wins_reinit();
+	wins_update();
 }
