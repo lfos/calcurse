@@ -1,4 +1,4 @@
-/*	$calcurse: args.c,v 1.23 2007/07/28 13:11:42 culot Exp $	*/
+/*	$calcurse: args.c,v 1.24 2007/08/15 15:36:49 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -133,10 +133,10 @@ static void
 todo_arg(int priority)
 {
 	struct todo_s *i;
-	int nb_tod, title = 1;
+	int title = 1;
 	char priority_str[BUFSIZ] = "";
 
-	nb_tod = io_load_todo();
+	io_load_todo();
 	for (i = todolist; i != 0; i = i->next) {
 		if (priority == 0 || i->id == priority) {
 			if (title) {
