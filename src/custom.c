@@ -1,4 +1,4 @@
-/*	$calcurse: custom.c,v 1.15 2007/07/28 13:11:42 culot Exp $	*/
+/*	$calcurse: custom.c,v 1.16 2007/08/15 15:37:53 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -262,7 +262,7 @@ custom_load_conf(conf_t *conf, int background)
                         var = 0;
 			break;
 		case CUSTOM_CONF_LAYOUT:
-			conf->layout = atoi(e_conf);
+			wins_set_layout(atoi(e_conf));
 			var = 0;
 			break;
 		case CUSTOM_CONF_NOTIFYBARSHOW:
@@ -352,10 +352,10 @@ config_bar(void)
 }
 
 /* Choose the layout */
-int 
-layout_config(int layout)
+void 
+layout_config(void)
 {
-	int ch, old_layout;
+	int ch;
 	char *layout_mesg = _("Pick the desired layout on next screen [press ENTER]");
 	char *choice_mesg = _("('A'= Appointment panel, 'C'= calendar panel, 'T'= todo panel)");
 	char *layout_up_mesg   = 
@@ -363,7 +363,6 @@ layout_config(int layout)
 	char *layout_down_mesg = 
 	_(" [1]AT    [2]AC    [3]TA    [4]CA    [5]TA    [6]TC    [7]AT    [8]CT");
 
-	old_layout = layout;
 	status_mesg(layout_mesg, choice_mesg);
 	wgetch(swin);
 	status_mesg(layout_up_mesg, layout_down_mesg);
@@ -371,12 +370,10 @@ layout_config(int layout)
 	doupdate();
 	while ((ch = wgetch(swin)) != 'q') {
 		if ( ch <= '8' && ch >= '1' ) {
-			layout = ch - '0';
-			return layout;
+			wins_set_layout(ch - '0');
+			return;
 		}
 	}
-	layout = old_layout;
-	return layout;
 }
 
 /* Color theme configuration. */
