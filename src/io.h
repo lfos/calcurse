@@ -1,4 +1,4 @@
-/*	$calcurse: io.h,v 1.7 2007/07/28 13:11:42 culot Exp $	*/
+/*	$calcurse: io.h,v 1.8 2007/08/15 15:36:27 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -39,7 +39,7 @@ void 	io_init(char *);
 void 	io_extract_data(char *, const char *, int);
 void 	io_save_cal(conf_t *); 
 void 	io_load_app(void);
-int 	io_load_todo(void);
+void 	io_load_todo(void);
 int 	io_check_data_files(void);
 void 	io_startup_screen(bool, int);
 void 	io_export_data(export_mode_t, conf_t *);

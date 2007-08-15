@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.20 2007/08/04 14:34:03 culot Exp $	*/
+/*	$calcurse: io.c,v 1.21 2007/08/15 15:36:27 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -451,7 +451,7 @@ io_save_cal(conf_t *conf)
 		fprintf(data_file,
 		    "\n# This is the layout of the calendar :\n");
 		fprintf(data_file, "layout=\n");
-		fprintf(data_file, "%d\n", conf->layout);
+		fprintf(data_file, "%d\n", wins_layout());
 
 		pthread_mutex_lock(&nbar->mutex);
 		fprintf(data_file,
@@ -671,7 +671,7 @@ io_load_app(void)
 }
 
 /* Load the todo data */
-int
+void
 io_load_todo(void)
 {
 	FILE *data_file;
@@ -707,7 +707,7 @@ io_load_todo(void)
 		++nb_tod;
 	}
 	fclose(data_file);
-	return nb_tod;
+	todo_set_nb(nb_tod);
 }
 
 /* Checks if data files exist. If not, create them */
