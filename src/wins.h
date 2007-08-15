@@ -1,4 +1,4 @@
-/*	$Id: wins.h,v 1.2 2007/07/23 19:28:37 culot Exp $	*/
+/*	$Id: wins.h,v 1.3 2007/08/15 15:32:33 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -38,6 +38,14 @@ typedef enum {
 	NBWINS
 } window_e;
 
+typedef enum {
+	WIDTH,
+	HEIGHT,
+	XPOS,
+	YPOS,
+	NBPROPS
+} winprop_e;
+
 /* Window properties */
 typedef struct {
 	unsigned w;	/* width */
@@ -46,17 +54,18 @@ typedef struct {
 	int	 y;	/* y position */
 } window_t;
 
+int		wins_layout(void);
+void		wins_set_layout(int);
 void		wins_slctd_init(void);
 window_e	wins_slctd(void);
 void		wins_slctd_set(window_e);
 void		wins_slctd_next(void);
-void 		wins_init(window_t *, window_t *, window_t *, window_t *);
-void 		wins_reinit(conf_t *conf, window_t *, window_t *, window_t *,
-		    window_t *, window_t *);
+int		wins_prop(window_e, winprop_e);
+void 		wins_init(void);
+void 		wins_reinit(void);
 void 		wins_show(WINDOW *, char *);
-void 		wins_get_config(conf_t *conf, window_t *, window_t *, 
-		    window_t *, window_t *, window_t *);
-void 		wins_update(conf_t *conf, window_t *, window_t *, window_t *, 
-		    int, int, int, int, char **);
+void 		wins_get_config(void);
+void 		wins_update(void);
+void		wins_reset(void);
 
 #endif /* CALCURSE_WINS_H */
