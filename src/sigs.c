@@ -1,4 +1,4 @@
-/*	$Id: sigs.c,v 1.2 2007/07/28 13:11:42 culot Exp $	*/
+/*	$Id: sigs.c,v 1.3 2007/08/15 15:30:17 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -31,12 +31,13 @@
 
 #include "i18n.h"
 #include "vars.h"
+#include "wins.h"
 
 /* 
  * General signal handling routine.
  * Catch return values from children (user-defined notification commands).
  * This is needed to avoid zombie processes running on system.
- * Also catch CTRL-C (SIGINT) to exit properly.
+ * Also catch CTRL-C (SIGINT), and SIGWINCH to resize screen automatically.
  */
 static void
 signal_handler(int sig)
@@ -45,6 +46,9 @@ signal_handler(int sig)
 	case SIGCHLD:
 		while (waitpid(WAIT_MYPGRP, NULL, WNOHANG) > 0)
 			;
+		break;
+	case SIGWINCH:
+		wins_reset();
 		break;
 	}
 }
@@ -57,6 +61,14 @@ sigs_init(struct sigaction *sa)
 	sa->sa_flags = 0;
 	sigemptyset(&sa->sa_mask);
 	if (sigaction(SIGCHLD, sa, NULL) != 0) {
+		perror("sigaction");
+		exit(EXIT_FAILURE);
+	}
+
+	sa->sa_handler = signal_handler;
+	sa->sa_flags = 0;
+	sigemptyset(&sa->sa_mask);
+	if (sigaction(SIGWINCH, sa, NULL) != 0) {
 		perror("sigaction");
 		exit(EXIT_FAILURE);
 	}
