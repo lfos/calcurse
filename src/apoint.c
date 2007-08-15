@@ -1,4 +1,4 @@
-/*	$calcurse: apoint.c,v 1.16 2007/08/12 13:08:03 culot Exp $	*/
+/*	$calcurse: apoint.c,v 1.17 2007/08/15 15:33:54 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -41,6 +41,7 @@
 #include "calendar.h"
 
 apoint_llist_t *alist_p;
+static int	hilt = 0;
 
 int apoint_llist_init(void)
 {
@@ -49,6 +50,32 @@ int apoint_llist_init(void)
 	pthread_mutex_init(&(alist_p->mutex), NULL);
 
 	return 0;
+}
+
+/* Sets which appointment is highlighted. */
+void
+apoint_hilt_set(int highlighted)
+{
+	hilt = highlighted;
+}
+
+void
+apoint_hilt_decrease(void)
+{
+	hilt--;
+}
+
+void
+apoint_hilt_increase(void)
+{
+	hilt++;
+}
+
+/* Return which appointment is highlighted. */
+int
+apoint_hilt(void)
+{
+	return (hilt);
 }
 
 apoint_llist_node_t *
@@ -83,7 +110,7 @@ apoint_new(char *mesg, long start, long dur, char state)
  * depending if the start time is entered or not.
  */
 void 
-apoint_add(int *hilt_app)
+apoint_add(void)
 {
 #define LTIME 6
 	char *mesg_1 = _("Enter start time ([hh:mm] or [h:mm]), leave blank for an all-day event : ");
@@ -173,16 +200,15 @@ apoint_add(int *hilt_app)
                         event_pointeur = event_new(item_mesg, 
 			    date2sec(*calendar_get_slctd_day(), 12, 0), Id);
 
-		if (*hilt_app == 0) 
-			(*hilt_app)++;
+		if (hilt == 0) 
+			hilt++;
 	}
 	erase_status_bar();
 }
 
 /* Delete an item from the appointment list. */
 void 
-apoint_delete(conf_t *conf, unsigned *nb_events, unsigned *nb_apoints, 
-    int *hilt_app)
+apoint_delete(conf_t *conf, unsigned *nb_events, unsigned *nb_apoints)
 {
 	char *choices = "[y/n] ";
 	char *del_app_str = _("Do you really want to delete this item ?");
@@ -212,7 +238,7 @@ apoint_delete(conf_t *conf, unsigned *nb_events, unsigned *nb_apoints,
 	if (go_for_deletion) {
 		if (nb_items != 0) {
 			deleted_item_type = 
-				day_erase_item(date, *hilt_app, 0);
+				day_erase_item(date, hilt, 0);
 			if (deleted_item_type == EVNT || 
 			    deleted_item_type == RECUR_EVNT) {
 				(*nb_events)--;
@@ -227,14 +253,14 @@ apoint_delete(conf_t *conf, unsigned *nb_events, unsigned *nb_apoints,
 				ierror(errmsg);
 				/* NOTREACHED */
 
-			if (*hilt_app > 1) 
-				(*hilt_app)--;
+			if (hilt > 1) 
+				hilt--;
 			if (apad->first_onscreen >= to_be_removed)
 				apad->first_onscreen = 
 					apad->first_onscreen -
 					to_be_removed;
 			if (nb_items == 1) 
-				*hilt_app = 0;
+				hilt = 0;
 		}
 	}
 }
@@ -417,15 +443,15 @@ get_item_line(int item_nb, int nb_events_inday)
  * Update (if necessary) the first displayed pad line to make the
  * appointment panel scroll down next time pnoutrefresh is called. 
  */
-void scroll_pad_down(int item_nb, int nb_events_inday, int win_length) 
+void apoint_scroll_pad_down(int nb_events_inday, int win_length) 
 {
 	int pad_last_line = 0;
 	int item_first_line = 0, item_last_line = 0;
 	int borders = 6;
 	int awin_length = win_length - borders;
 
-	item_first_line = get_item_line(item_nb, nb_events_inday);
-	if (item_nb < nb_events_inday)
+	item_first_line = get_item_line(hilt, nb_events_inday);
+	if (hilt < nb_events_inday)
 		item_last_line = item_first_line;
 	else
 		item_last_line = item_first_line + 1;
@@ -438,11 +464,11 @@ void scroll_pad_down(int item_nb, int nb_events_inday, int win_length)
  * Update (if necessary) the first displayed pad line to make the
  * appointment panel scroll up next time pnoutrefresh is called. 
  */
-void scroll_pad_up(int item_nb, int nb_events_inday)
+void apoint_scroll_pad_up(int nb_events_inday)
 {
 	int item_first_line = 0;
 
-	item_first_line = get_item_line(item_nb, nb_events_inday);
+	item_first_line = get_item_line(hilt, nb_events_inday);
 	if (item_first_line < apad->first_onscreen)
 		apad->first_onscreen = item_first_line;
 }
@@ -496,14 +522,14 @@ apoint_llist_node_t *apoint_recur_s2apoint_s(
  * Switch notification state.
  */
 void
-apoint_switch_notify(int item_num)
+apoint_switch_notify(void)
 {
 	apoint_llist_node_t *apoint;
 	struct day_item_s *p;
 	long date;
 	int apoint_nb = 0, n, need_chk_notify;
 
-	p = day_get_item(item_num);
+	p = day_get_item(hilt);
 	if (p->type != APPT && p->type != RECUR_APPT)
 		return;
 	
@@ -513,7 +539,7 @@ apoint_switch_notify(int item_num)
 		recur_apoint_switch_notify(date, p->appt_pos);
 		return;
 	} else if (p->type == APPT)
-		apoint_nb = day_item_nb(date, item_num, APPT);
+		apoint_nb = day_item_nb(date, hilt, APPT);
 		
 	n = 0;
 	need_chk_notify = 0;
@@ -545,7 +571,7 @@ apoint_switch_notify(int item_num)
 
 /* Updates the Appointment panel */
 void 
-apoint_update_panel(window_t *winapp, int hilt_app, int which_pan)
+apoint_update_panel(window_t *winapp, int which_pan)
 {
 	int title_xpos;
 	int bordr = 1;
@@ -561,7 +587,7 @@ apoint_update_panel(window_t *winapp, int hilt_app, int which_pan)
 	if (slctd_date.dd < 10) 
 		title_xpos++;
 	date = date2sec(slctd_date, 0, 0);
-	day_write_pad(date, app_width, app_length, hilt_app);
+	day_write_pad(date, app_width, app_length, hilt);
 
 	/* Print current date in the top right window corner. */
 	erase_window_part(awin, 1, title_lines, winapp->w - 2, winapp->h - 2);

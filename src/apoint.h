@@ -1,4 +1,4 @@
-/*	$calcurse: apoint.h,v 1.8 2007/07/28 13:11:42 culot Exp $	*/
+/*	$calcurse: apoint.h,v 1.9 2007/08/15 15:33:54 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -54,9 +54,13 @@ typedef struct apoint_llist {
 extern apoint_llist_t *alist_p;
 
 int 			apoint_llist_init(void);
+void			apoint_hilt_set(int);
+void			apoint_hilt_decrease(void);
+void			apoint_hilt_increase(void);
+int			apoint_hilt(void);
 apoint_llist_node_t    *apoint_new(char *, long, long, char);
-void			apoint_add(int *hilt_app);
-void			apoint_delete(conf_t *, unsigned *, unsigned *, int *);
+void			apoint_add(void);
+void			apoint_delete(conf_t *, unsigned *, unsigned *);
 unsigned 		apoint_inday(apoint_llist_node_t *, long);
 void 			apoint_sec2str(apoint_llist_node_t *, int, long, 
 			    char *, char *);
@@ -65,11 +69,11 @@ apoint_llist_node_t    *apoint_scan(FILE *, struct tm, struct tm, char);
 void 			apoint_delete_bynum(long, unsigned);
 void 			display_item_date(WINDOW *, int, apoint_llist_node_t *,
 			    int, long, int, int);
-void 			scroll_pad_down(int, int, int);
-void 			scroll_pad_up(int, int);
+void 			apoint_scroll_pad_down(int, int);
+void 			apoint_scroll_pad_up(int);
 struct notify_app_s    *apoint_check_next(struct notify_app_s *, long);
 apoint_llist_node_t    *apoint_recur_s2apoint_s(recur_apoint_llist_node_t *);
-void 			apoint_switch_notify(int);
-void			apoint_update_panel(window_t *, int, int);
+void 			apoint_switch_notify(void);
+void			apoint_update_panel(window_t *, int);
 
 #endif /* CALCURSE_APOINT_H */
