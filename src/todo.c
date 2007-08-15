@@ -1,4 +1,4 @@
-/*	$calcurse: todo.c,v 1.13 2007/07/28 13:11:42 culot Exp $	*/
+/*	$calcurse: todo.c,v 1.14 2007/08/15 15:35:25 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -31,11 +31,91 @@
 #include "i18n.h"
 #include "todo.h"
 
-struct todo_s *todolist;
+struct todo_s  *todolist;
+static int	hilt = 0;
+static int	todos = 0;
+static int	first = 1;
+static char    *msgsav;
+
+/* Sets which todo is highlighted. */
+void
+todo_hilt_set(int highlighted)
+{
+	hilt = highlighted;
+}
+
+void
+todo_hilt_decrease(void)
+{
+	hilt--;
+}
+
+void
+todo_hilt_increase(void)
+{
+	hilt++;
+}
+
+/* Return which todo is highlighted. */
+int
+todo_hilt(void)
+{
+	return (hilt);
+}
+
+/* Return the number of todos. */
+int
+todo_nb(void)
+{
+	return (todos);
+}
+
+/* Set the number of todos. */
+void
+todo_set_nb(int nb)
+{
+	todos = nb;
+}
+
+/* Set which one is the first todo to be displayed. */
+void
+todo_set_first(int nb)
+{
+	first = nb;
+}
+
+void
+todo_first_increase(void)
+{
+	first++;
+}
+
+void
+todo_first_decrease(void)
+{
+	first--;
+}
+
+/* 
+ * Return the position of the hilghlighted item, relative to the first one
+ * displayed. 
+ */ 
+int
+todo_hilt_pos(void)
+{
+	return (hilt - first);
+}
+
+/* Return the last visited todo. */
+char *
+todo_saved_mesg(void)
+{
+	return (msgsav);
+}
 
 /* Request user to enter a new todo item. */
-int 
-todo_new_item(int total)
+void 
+todo_new_item(void)
 {
 	int ch = 0;
 	char *mesg = _("Enter the new ToDo item : ");
@@ -51,10 +131,8 @@ todo_new_item(int total)
 			ch = wgetch(swin);
 		}
 		todo_add(todo_input, ch - '0');
-		total++;
+		todos++;
 	}
-
-	return total;
 }
 
 /* Add an item in the todo linked list. */
@@ -104,7 +182,7 @@ todo_delete_bynum(unsigned num)
 
 /* Delete an item from the ToDo list. */
 void 
-todo_delete(conf_t *conf, int *nb_tod, int *hilt_tod)
+todo_delete(conf_t *conf)
 {
 	char *choices = "[y/n] ";
 	char *del_todo_str = _("Do you really want to delete this task ?");
@@ -114,23 +192,25 @@ todo_delete(conf_t *conf, int *nb_tod, int *hilt_tod)
 	if (conf->confirm_delete) {
 		status_mesg(del_todo_str, choices);
 		answer = wgetch(swin);
-		if ( (answer == 'y') && (*nb_tod > 0) ) {
+		if ( (answer == 'y') && (todos > 0) ) {
 			go_for_todo_del = true;
 		} else {
 			erase_status_bar();
 			return;
 		}
 	} else 
-		if (*nb_tod > 0) 
+		if (todos > 0) 
 			go_for_todo_del = true;
 
 	if (go_for_todo_del) {
-		todo_delete_bynum(*hilt_tod - 1);
-		(*nb_tod)--;
-		if (*hilt_tod > 1) 
-			(*hilt_tod)--;
-		if (*nb_tod == 0) 
-			*hilt_tod = 0;
+		todo_delete_bynum(hilt - 1);
+		todos--;
+		if (hilt > 1) 
+			hilt--;
+		if (todos == 0) 
+			hilt = 0;
+		if (hilt - first < 0)
+			first--;
 	}
 }
 
@@ -175,15 +255,15 @@ todo_get_item(int item_number)
 }
 
 /* Change an item priority by pressing '+' or '-' inside TODO panel. */
-int 
-todo_chg_priority(int action, int item_num)
+void
+todo_chg_priority(int action)
 {
 	struct todo_s *backup;
 	char backup_mesg[BUFSIZ];
 	int backup_id;
-	int do_chg = 1, new_position;
+	int do_chg = 1;
 
-	backup = todo_get_item(item_num);
+	backup = todo_get_item(hilt);
 	strncpy(backup_mesg, backup->mesg, strlen(backup->mesg) + 1);
 	backup_id = backup->id;
 	if (action == '+') {
@@ -195,31 +275,27 @@ todo_chg_priority(int action, int item_num)
 			stderr);
 	}	
 	if (do_chg) {
-		todo_delete_bynum(item_num - 1);
+		todo_delete_bynum(hilt - 1);
 		backup = todo_add(backup_mesg, backup_id);
-		new_position = todo_get_position(backup);	
-	} else {
-		new_position = item_num;
-	}
-	return new_position;
+		hilt = todo_get_position(backup);	
+	} 
 }
 
 /* Edit the description of an already existing todo item. */
 void 
-todo_edit_item(int item_num)
+todo_edit_item(void)
 {
 	struct todo_s *i;
 	char *mesg = _("Enter the new ToDo description :");	
 
 	status_mesg(mesg, "");
-	i = todo_get_item(item_num);
+	i = todo_get_item(hilt);
 	updatestring(swin, &i->mesg, 0, 1);
 }
 
 /* Updates the ToDo panel. */
 void 
-todo_update_panel(window_t *wintod, int hilt_tod, int nb_tod, int which_pan,
-    int first_todo_onscreen, char **saved_t_mesg)
+todo_update_panel(window_t *wintod, int which_pan)
 {
 	struct todo_s *i;
 	int len = wintod->w - 6;
@@ -236,10 +312,10 @@ todo_update_panel(window_t *wintod, int hilt_tod, int nb_tod, int which_pan,
 	erase_window_part(twin, 1, title_lines, wintod->w - 2, wintod->h - 2);
 	for (i = todolist; i != 0; i = i->next) {
 		num_todo++;
-		t_realpos = num_todo - first_todo_onscreen;
-		incolor = num_todo - hilt_tod;
+		t_realpos = num_todo - first;
+		incolor = num_todo - hilt;
 		if (incolor == 0) 
-			*saved_t_mesg = i->mesg; 
+			msgsav = i->mesg; 
 		if (t_realpos >= 0 && t_realpos < max_items) {
 			snprintf(mesg, BUFSIZ, "%d. ", i->id);	
 			strncat(mesg, i->mesg, strlen(i->mesg));
@@ -250,10 +326,10 @@ todo_update_panel(window_t *wintod, int hilt_tod, int nb_tod, int which_pan,
 	}
 
 	/* Draw the scrollbar if necessary. */
-	if (nb_tod > max_items){
-		float ratio = ((float) max_items) / ((float) nb_tod);
+	if (todos > max_items){
+		float ratio = ((float) max_items) / ((float) todos);
 		int sbar_length = (int) (ratio * (max_items + 1)); 
-		int highend = (int) (ratio * first_todo_onscreen);
+		int highend = (int) (ratio * first);
 		bool hilt_bar = (which_pan == TODO) ? true : false;
 		int sbar_top = highend + title_lines;
 	
