@@ -1,4 +1,4 @@
-/*	$calcurse: notify.c,v 1.18 2007/08/04 14:34:03 culot Exp $	*/
+/*	$calcurse: notify.c,v 1.19 2007/08/15 15:33:01 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -85,7 +85,7 @@ extract_aptsfile(void)
  * number of columns, y and x are its coordinates). 
  */
 void 
-notify_init_bar(window_t *win)
+notify_init_bar(void)
 {
 	notify = (struct notify_vars_s *) malloc(sizeof(struct notify_vars_s));	
 	notify_app = (struct notify_app_s *) 
@@ -93,7 +93,9 @@ notify_init_bar(window_t *win)
 	pthread_mutex_init(&notify->mutex, NULL);
 	pthread_mutex_init(&notify_app->mutex, NULL);
 	notify_app->got_app = 0;
-	notify->win = newwin(win->h, win->w, win->y, win->x);
+	notify->win = newwin(wins_prop(NOTIFY, HEIGHT), 
+	    wins_prop(NOTIFY, WIDTH), wins_prop(NOTIFY, YPOS), 
+	    wins_prop(NOTIFY, XPOS));
 	extract_aptsfile();
 }
 
