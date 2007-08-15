@@ -1,4 +1,4 @@
-/*	$calcurse: day.c,v 1.28 2007/08/04 15:11:47 culot Exp $	*/
+/*	$calcurse: day.c,v 1.29 2007/08/15 15:37:10 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -450,7 +450,7 @@ day_edit_time(long time) {
 
 /* Edit an already existing item. */
 void 
-day_edit_item(int item_num)
+day_edit_item(void)
 {
 #define STRT	'1'
 #define END	'2'
@@ -467,6 +467,7 @@ day_edit_item(int item_num)
 	long date, newtime = 0;
 	int cancel, ch = 0, valid_date = 0, newfreq = 0, date_entered = 0;
 	int newmonth, newday, newyear;
+	int item_num;
 	unsigned hr, mn;
 	char *timestr, *typestr, *freqstr;
 	char *msg_norecur =
@@ -493,6 +494,7 @@ day_edit_item(int item_num)
 	char *mesg_until_1 = 
 	_("Enter the new ending date: [mm/dd/yyyy] or '0'");
 
+	item_num = apoint_hilt();
 	p = day_get_item(item_num);
 	date = calendar_get_slctd_day_sec();
 
