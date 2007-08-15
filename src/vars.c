@@ -1,4 +1,4 @@
-/*	$calcurse: vars.c,v 1.3 2007/07/21 19:30:55 culot Exp $	*/
+/*	$calcurse: vars.c,v 1.4 2007/08/15 15:36:05 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -29,6 +29,7 @@
 #include "i18n.h"
 #include "calendar.h"
 #include "custom.h"
+#include "wins.h"
 #include "vars.h"
 
 /*
@@ -104,7 +105,7 @@ vars_init(conf_t *conf)
 	conf->auto_save = true;
 	conf->skip_system_dialogs = false;
 	conf->skip_progress_bar = false;
-	conf->layout = 1;
+	wins_set_layout(1);
 
 	calendar_set_first_day_of_week(MONDAY);
 
