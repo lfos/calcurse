@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.53 2007/08/04 14:34:03 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.54 2007/08/15 15:29:52 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -54,21 +54,15 @@ int
 main(int argc, char **argv)
 {
 	conf_t conf;
-	window_t win[NBWINS]; 
 	day_items_nb_t inday;
 	int ch, background, foreground;
 	int non_interactive;
 	int no_data_file = 1;
-	int first_todo_onscreen = 1;
-	int hilt_app = 0;
-	int hilt_tod = 0;
-	int nb_tod = 0;
 	int sav_hilt_app = 0;
 	int sav_hilt_tod = 0;
 	struct sigaction sigact;
 	bool do_storage = false;
 	bool day_changed = false;
-	char *saved_t_mesg;
         char *no_color_support = 
             _("Sorry, colors are not supported by your terminal\n"
             "(Press [ENTER] to continue)");
@@ -101,8 +95,7 @@ main(int argc, char **argv)
 	curs_set(0);			/* make cursor invisible */
         calendar_set_current_date();
 	notify_init_vars();
-	wins_get_config(&conf, &win[STATUS], &win[NOTIFY], &win[APPOINTMENT],
-	    &win[TODO], &win[CALENDAR]);
+	wins_get_config();
 	
         /* Check if terminal supports color. */
 	if (has_colors()) {
@@ -135,9 +128,9 @@ main(int argc, char **argv)
 	}
 
 	vars_init(&conf);
-	wins_init(&win[CALENDAR], &win[APPOINTMENT], &win[TODO], &win[STATUS]);
+	wins_init();
 	wins_slctd_init();
-	notify_init_bar(&win[NOTIFY]);
+	notify_init_bar();
 	reset_status_page();
 
 	/* 
@@ -148,23 +141,18 @@ main(int argc, char **argv)
 	no_data_file = io_check_data_files();
 	custom_load_conf(&conf, background);
 	erase_status_bar();
-	nb_tod = io_load_todo();	
+	io_load_todo();	
 	io_load_app();
 	if (notify_bar()) {
 		notify_start_main_thread();
 		notify_check_next_app();
 	}
-	wins_get_config(&conf, &win[STATUS], &win[NOTIFY], &win[APPOINTMENT],
-	    &win[TODO], &win[CALENDAR]);
-        wins_reinit(&conf, &win[STATUS], &win[APPOINTMENT], 
-	    &win[TODO], &win[CALENDAR], &win[NOTIFY]);
-	wins_update(&conf, &win[STATUS], &win[APPOINTMENT], &win[TODO], 
-	    hilt_app, hilt_tod, nb_tod, first_todo_onscreen, &saved_t_mesg);
+        wins_reinit();
+	wins_update();
         io_startup_screen(conf.skip_system_dialogs, no_data_file);
 	inday = *day_process_storage(0, day_changed, &inday);
 	wins_slctd_set(CALENDAR);
-	wins_update(&conf, &win[STATUS], &win[APPOINTMENT], &win[TODO], 
-	    hilt_app, hilt_tod, nb_tod, first_todo_onscreen, &saved_t_mesg);
+	wins_update();
 	calendar_start_date_thread();
 
 	/* User input */
@@ -189,12 +177,12 @@ main(int argc, char **argv)
 			/* Save previously highlighted event. */
 			switch (wins_slctd()) {
 			case TODO:
-				sav_hilt_tod = hilt_tod;
-				hilt_tod = 0;
+				sav_hilt_tod = todo_hilt();
+				todo_hilt_set(0);
 				break;
 			case APPOINTMENT:
-				sav_hilt_app = hilt_app;
-				hilt_app = 0;
+				sav_hilt_app = apoint_hilt();
+				apoint_hilt_set(0);
 				break;
 			default:
 				break;
@@ -204,17 +192,17 @@ main(int argc, char **argv)
 			/* Select the event to highlight. */
 			switch (wins_slctd()) {
 			case TODO:
-				if ((sav_hilt_tod == 0) && (nb_tod != 0))
-					hilt_tod = 1;
+				if ((sav_hilt_tod == 0) && (todo_nb() != 0))
+					todo_hilt_set(1);
 				else
-					hilt_tod = sav_hilt_tod;
+					todo_hilt_set(sav_hilt_tod);
 				break;
 			case APPOINTMENT:
 				if ((sav_hilt_app == 0) && 
 				    ((inday.nb_events + inday.nb_apoints) != 0))
-					hilt_app = 1;
+					apoint_hilt_set(1);
 				else
-					hilt_app = sav_hilt_app;
+					apoint_hilt_set(sav_hilt_app);
 				break;
 			default:
 				break;
@@ -222,12 +210,7 @@ main(int argc, char **argv)
 			break;
 
 		case CTRL('R'):
-                        wins_reinit(&conf, &win[STATUS], 
-			    &win[APPOINTMENT], &win[TODO], &win[CALENDAR], 
-			    &win[NOTIFY]);
-			wins_update(&conf, &win[STATUS], &win[APPOINTMENT], 
-			    &win[TODO], hilt_app, hilt_tod, 
-			    nb_tod, first_todo_onscreen, &saved_t_mesg);
+			wins_reset();
 			do_storage = true;
 			break;
 
@@ -247,10 +230,11 @@ main(int argc, char **argv)
 
 		case 'V':
 		case 'v':	/* View function */
-			if ((wins_slctd() == APPOINTMENT) && (hilt_app != 0))
+			if ((wins_slctd() == APPOINTMENT) && 
+			    (apoint_hilt() != 0))
 				day_popup_item();
-			else if ((wins_slctd() == TODO) && (hilt_tod != 0)) 
-				item_in_popup(NULL, NULL, saved_t_mesg,
+			else if ((wins_slctd() == TODO) && (todo_hilt() != 0)) 
+				item_in_popup(NULL, NULL, todo_saved_mesg(),
 						_("To do :"));
 			break;
 
@@ -275,8 +259,7 @@ main(int argc, char **argv)
 					break;
 				case 'L':
 				case 'l':
-					conf.layout = 
-					    layout_config(conf.layout);
+					layout_config();
 					break;
 				case 'G':
 				case 'g':
@@ -287,44 +270,37 @@ main(int argc, char **argv)
 					notify_config_bar();
 					break;
 				}
-                                wins_reinit(&conf, &win[STATUS], 
-				    &win[APPOINTMENT], &win[TODO], 
-				    &win[CALENDAR], &win[NOTIFY]);
-				wins_update(&conf, &win[STATUS], 
-				    &win[APPOINTMENT], &win[TODO], hilt_app,
-				    hilt_tod, nb_tod, 
-				    first_todo_onscreen, &saved_t_mesg);
+                                wins_reinit();
+				wins_update();
 				do_storage = true;
 				erase_status_bar();
 				config_bar();
 			}
-                        wins_update(&conf, &win[STATUS], &win[APPOINTMENT], 
-			    &win[TODO], hilt_app, hilt_tod, nb_tod, 
-			    first_todo_onscreen, &saved_t_mesg);
+                        wins_update();
 			break;
 
 		case CTRL('A'):	/* Add an app, whatever panel selected */
-			apoint_add(&hilt_app);
+			apoint_add();
 			do_storage = true;
 			break;
 
 		case CTRL('T'):	/* Add a todo, whatever panel selected */
-			nb_tod = todo_new_item(nb_tod);
-			if (hilt_tod == 0 && nb_tod == 1)
-				hilt_tod++;
+			todo_new_item();
+			if (todo_hilt() == 0 && todo_nb() == 1)
+				todo_hilt_increase();
 			break;
 
 		case 'A':
 		case 'a':	/* Add an item */
 			switch (wins_slctd()) {
 			case APPOINTMENT:
-				apoint_add(&hilt_app);
+				apoint_add();
 				do_storage = true;
 				break;
 			case TODO:
-				nb_tod = todo_new_item(nb_tod);
-				if (hilt_tod == 0 && nb_tod == 1)
-					hilt_tod++;
+				todo_new_item();
+				if (todo_hilt() == 0 && todo_nb() == 1)
+					todo_hilt_increase();
 				break;
 			default:
 				break;
@@ -333,46 +309,49 @@ main(int argc, char **argv)
 
 		case 'E':
 		case 'e':	/* Edit an existing item */
-			if (wins_slctd() == APPOINTMENT && hilt_app != 0)
-				day_edit_item(hilt_app);
-			else if (wins_slctd() == TODO && hilt_tod != 0)
-				todo_edit_item(hilt_tod);
+			if (wins_slctd() == APPOINTMENT && apoint_hilt() != 0)
+				day_edit_item();
+			else if (wins_slctd() == TODO && todo_hilt() != 0)
+				todo_edit_item();
 			do_storage = true;
 			break;
 
 		case 'D':
 		case 'd':	/* Delete an item */
-			if (wins_slctd() == APPOINTMENT && hilt_app != 0)
+			if (wins_slctd() == APPOINTMENT && 
+			    apoint_hilt() != 0)
 				apoint_delete(&conf, &inday.nb_events, 
-				    &inday.nb_apoints, &hilt_app);
-			else if (wins_slctd() == TODO && hilt_tod != 0)
-				todo_delete(&conf, &nb_tod, &hilt_tod);
+				    &inday.nb_apoints);
+			else if (wins_slctd() == TODO && todo_hilt() != 0)
+				todo_delete(&conf);
 			do_storage = true;
 			break;
 
 		case 'R':
 		case 'r':
-			if (wins_slctd() == APPOINTMENT && hilt_app != 0)
-				recur_repeat_item(hilt_app);
+			if (wins_slctd() == APPOINTMENT && 
+			    apoint_hilt() != 0)
+				recur_repeat_item();
 				do_storage = true;
 			break;
 
 		case '!':
-			if (wins_slctd() == APPOINTMENT && hilt_app != 0)
-				apoint_switch_notify(hilt_app);
+			if (wins_slctd() == APPOINTMENT && 
+			    apoint_hilt() != 0)
+				apoint_switch_notify();
 				do_storage = true;
 			break;
 	
 		case '+':
 		case '-':
-			if (wins_slctd() == TODO && hilt_tod != 0) {
-				hilt_tod = todo_chg_priority(ch, hilt_tod);
-				if (hilt_tod < first_todo_onscreen)
-					first_todo_onscreen = hilt_tod;
-				else if (hilt_tod - first_todo_onscreen >=
-				    win[TODO].h - 4)
-					first_todo_onscreen = hilt_tod 
-					    - win[TODO].h + 5;	
+			if (wins_slctd() == TODO && todo_hilt() != 0) {
+				todo_chg_priority(ch);
+				if (todo_hilt_pos() < 0)
+					todo_set_first(todo_hilt());
+				else if (todo_hilt_pos() >=
+				    wins_prop(TODO, HEIGHT) - 4)
+					todo_set_first(todo_hilt() - 
+					    wins_prop(TODO, HEIGHT) + 5);
 			}
 			break;
 
@@ -423,15 +402,14 @@ main(int argc, char **argv)
 				calendar_move_up();
 			} else {
 				if ((wins_slctd() == APPOINTMENT) && 
-				    (hilt_app > 1)) {
-					hilt_app--;
-					scroll_pad_up(hilt_app, 
-		    			    inday.nb_events); 
+				    (apoint_hilt() > 1)) {
+					apoint_hilt_decrease();
+					apoint_scroll_pad_up(inday.nb_events);
 				} else if ((wins_slctd() == TODO) && 
-				    (hilt_tod > 1)) {
-					hilt_tod--;
-					if (hilt_tod < first_todo_onscreen)
-						first_todo_onscreen--;
+				    (todo_hilt() > 1)) {
+					todo_hilt_decrease();
+					if (todo_hilt_pos() < 0)
+						todo_first_decrease();
 				}
 			}
 			break;
@@ -446,19 +424,18 @@ main(int argc, char **argv)
 				calendar_move_down();
 			} else {
 				if ((wins_slctd() == APPOINTMENT) && 
-				    (hilt_app < inday.nb_events + 
+				    (apoint_hilt() < inday.nb_events + 
 				    inday.nb_apoints)) {
-					hilt_app++;
-					scroll_pad_down(hilt_app, 
-					    inday.nb_events, 
-					    win[APPOINTMENT].h);
+					apoint_hilt_increase();
+					apoint_scroll_pad_down(inday.nb_events,
+					    wins_prop(APPOINTMENT, HEIGHT));
 				}
 				if ((wins_slctd() == TODO) && 
-				    (hilt_tod < nb_tod)) {
-					++hilt_tod;
-					if (hilt_tod - first_todo_onscreen ==
-					    win[TODO].h - 4)
-						first_todo_onscreen++;
+				    (todo_hilt() < todo_nb())) {
+					todo_hilt_increase();
+					if (todo_hilt_pos() ==
+					    wins_prop(TODO, HEIGHT) - 4)
+						todo_first_increase();
 				}
 			}
 			break;
@@ -491,12 +468,10 @@ main(int argc, char **argv)
 				day_changed = !day_changed;
 				if ((wins_slctd() == APPOINTMENT) && 
 				    (inday.nb_events + inday.nb_apoints != 0))
-					hilt_app = 1;
+					apoint_hilt_set(1);
 			}
 		}
 
-		wins_update(&conf, &win[STATUS], &win[APPOINTMENT], 
-		    &win[TODO], hilt_app, hilt_tod, nb_tod, 
-		    first_todo_onscreen, &saved_t_mesg);
+		wins_update();
 	}
 }
