@@ -1,4 +1,4 @@
-/*	$calcurse: recur.c,v 1.28 2007/07/29 20:59:09 culot Exp $	*/
+/*	$calcurse: recur.c,v 1.29 2007/08/15 15:37:31 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -572,7 +572,7 @@ void recur_apoint_erase(long start, unsigned num, unsigned delete_whole)
  * and then delete the selected item to recreate it as a recurrent one
  */
 void 
-recur_repeat_item(int item_nb) 
+recur_repeat_item(void) 
 {
 	struct tm *lt;
 	time_t t;
@@ -598,11 +598,13 @@ recur_repeat_item(int item_nb)
 	char *mesg_older   = 
 	_("Sorry, the date you entered is older than the item start time.");
 	int type = 0, freq = 0;
+	int item_nb;
 	struct day_item_s *p; 
 	recur_apoint_llist_node_t *ra;
 	struct recur_event_s *re;
 	long until, date;
 
+	item_nb = apoint_hilt();
 	p = day_get_item(item_nb);
 	if (p->type != APPT && p->type != EVNT) {
 		status_mesg(wrong_type_1, wrong_type_2);
