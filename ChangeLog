@@ -1,3 +1,12 @@
+19 Aug 2007:
+	wins_reset() updated to handle notification bar reset
+	no more check for terminal size in main loop
+	bugfix: avoid core when trying to load a calendar file from current
+		directory
+	manuals updated with part related to moon phase calculation
+	french translation updated
+	TODO and README files updated
+
 15 Aug 2007:
 	handling of SIGWINCH added
 	wins_prop(), wins_layout(), wins_set_layout() and wins_reset() added
