@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.54 2007/08/15 15:29:52 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.55 2007/08/19 13:15:55 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -143,11 +143,11 @@ main(int argc, char **argv)
 	erase_status_bar();
 	io_load_todo();	
 	io_load_app();
+        wins_reinit();
 	if (notify_bar()) {
 		notify_start_main_thread();
 		notify_check_next_app();
-	}
-        wins_reinit();
+	}	
 	wins_update();
         io_startup_screen(conf.skip_system_dialogs, no_data_file);
 	inday = *day_process_storage(0, day_changed, &inday);
@@ -158,16 +158,6 @@ main(int argc, char **argv)
 	/* User input */
 	for (;;) {
 		
-		/* Check terminal size. */
-		getmaxyx(stdscr, row, col);
-		if ((col < 80) | (row < 24)) {
-		        endwin();
-			fputs(_("Please resize your terminal screen\n"
-				"(to at least 80x24),\n"
-				"and restart calcurse.\n"), stderr);
-			return (EXIT_FAILURE);
-		}
-
 		/* Get user input. */
 		ch = wgetch(swin);
 		switch (ch) {
