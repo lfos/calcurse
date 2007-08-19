@@ -1,4 +1,4 @@
-/*	$Id: wins.c,v 1.5 2007/08/15 15:31:52 culot Exp $	*/
+/*	$Id: wins.c,v 1.6 2007/08/19 13:15:18 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -380,9 +380,15 @@ wins_update(void)
 void
 wins_reset(void)
 {
+	if (notify_bar())
+		notify_stop_main_thread();
 	endwin();
 	refresh();
 	curs_set(0);
 	wins_reinit();
+	if (notify_bar()) {
+		notify_start_main_thread();
+		notify_check_next_app();
+	}
 	wins_update();
 }
