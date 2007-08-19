@@ -1,4 +1,4 @@
-/*	$calcurse: notify.c,v 1.19 2007/08/15 15:33:01 culot Exp $	*/
+/*	$calcurse: notify.c,v 1.20 2007/08/19 13:16:45 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -75,8 +75,15 @@ notify_init_vars(void)
 static void 
 extract_aptsfile(void)
 {
-	notify->apts_file = strrchr(path_apts, '/');
-	notify->apts_file++;
+	char *file;
+
+	file = strrchr(path_apts, '/');
+	if (!file)
+		notify->apts_file = path_apts;
+	else {
+		notify->apts_file = file;
+		notify->apts_file++;
+	}
 }
 
 /* 
