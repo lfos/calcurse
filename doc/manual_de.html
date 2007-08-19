@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <!--
 /*
- *	$calcurse: manual_de.html,v 1.10 2007/07/28 13:28:45 culot Exp $
+ *	$calcurse: manual_de.html,v 1.11 2007/08/19 13:19:37 culot Exp $
  *
  * Calcurse - text-based organizer
  * Copyright (c) 2004-2007 Frederic Culot
@@ -217,7 +217,7 @@ laden:<br>
 <p>
 Als erstes m&uuml;ssen die Dateien entpackt werden:
 <pre>
-        tar zxvf calcurse-1.8.tar.gz
+        tar zxvf calcurse-1.9.tar.gz
 </pre>
 Ist diese Voraussetzung erf&uuml;llt und das Archiv entpackt,
 sind nur noch die drei &uuml;blichen Schritte erforderlich:
@@ -363,7 +363,7 @@ Die einzelnen Panels lassen sich durch die 'TAB'-Taste ansteuern.
  +------------------------------------++----------------------------+
  |          Termine                   ||          Kalender          |
  |------------------------------------||----------------------------|
- |                      6. April 2006 ||         April 2006         |
+ |                 (|)  6. April 2006 ||         April 2006         |
  |                                    || Mo  Di  Mi  Do  Fr  Sa  So |
  |                                    ||                      1   2 |
  |                                    ||  3   4   5   6   7   8   9 |
@@ -394,6 +394,21 @@ Das Kalender-Panel hebt den gew&uuml;nschten Tag farblich hervor, w&auml;hrend
 das Termin-Panel die Liste mit Terminen des angesteuerten Tags
 anzeigt. Das todo-Panel dagegen zeigt eine Liste mit den zu
 erledigenden Aufgaben, die keinem bestimmten Tage zugeordnet sind.<br>
+<font color="green">
+	In the appointment panel, one can notice the <em>'(|)'</em> sign 
+	just in front of the date. This indicates the current phase of the moon.
+	Depending on which is the current phase, the following signs can be
+	seen:
+	<ul>
+		<li>'<b>  |) </b>': first quarter</li>
+		<li>'<b> (|) </b>': full moon</li>
+		<li>'<b>  (| </b>': last quarter</li>
+		<li>'<b>  |  </b>': new moon</li>
+		<li>no sign: phase of the moon does not correspond to any of
+		the above ones</li>
+	</ul>
+</font>
+<p>
 Die letzten beiden Zeilen des Interfaces zeigen die Status-Zeile, die
 &uuml;ber die m&ouml;glichen Befehle und ihre entsprechenden Tasten
 informiert.<br>
@@ -919,7 +934,7 @@ Benutzer, die mir Ihr Feedback mitgeteilt haben.
 Copyright (c) 2004-2007 Fr&eacute;d&eacute;ric Culot<br>
 German translation by Michael Schulz
 <code>&lt;bloodshower.at.web.dot.de&gt;</code>, and Chris.<br>
-Calcurse version 1.8 - Last change: April 25, 2007
+Calcurse version 1.9 - Last change: Aug 18, 2007
 </em></small>
 
 

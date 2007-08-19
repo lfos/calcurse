@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <!--
 /*
- *	$calcurse: manual_en.html,v 1.11 2007/07/28 13:28:45 culot Exp $
+ *	$calcurse: manual_en.html,v 1.12 2007/08/19 13:19:37 culot Exp $
  *
  * Calcurse - text-based organizer
  * Copyright (c) 2004-2007 Frederic Culot
@@ -205,7 +205,7 @@ All of the commands are documented within an online help system.
 <p>
 	First you need to gunzip and untar the source archive:
 	<pre>
-	tar zxvf calcurse-1.8.tar.gz
+	tar zxvf calcurse-1.9.tar.gz
 	</pre>
   	Once you meet the requirements and have extracted the archive, 
 	the install process is quite simple, and follows the standard 
@@ -361,7 +361,7 @@ All of the commands are documented within an online help system.
  +------------------------------------++----------------------------+
  |          Appointments              ||          Calendar          |
  |------------------------------------||----------------------------|
- |                      April 6, 2006 ||         April 2006         |
+ |                 (|)  April 6, 2006 ||         April 2006         |
  |                                    ||Mon Tue Wed Thu Fri Sat Sun |
  |                                    ||                      1   2 |
  |                                    ||  3   4   5   6   7   8   9 |
@@ -391,6 +391,19 @@ All of the commands are documented within an online help system.
         a particular day, the second one contains the list of the events 
         and appointments on that day, and the last one contains a list 
         of tasks to do but which are not assigned to any specific day.<br>
+	In the appointment panel, one can notice the <em>'(|)'</em> sign 
+	just in front of the date. This indicates the current phase of the moon.
+	Depending on which is the current phase, the following signs can be
+	seen:
+	<ul>
+		<li>'<b>  |) </b>': first quarter</li>
+		<li>'<b> (|) </b>': full moon</li>
+		<li>'<b>  (| </b>': last quarter</li>
+		<li>'<b>  |  </b>': new moon</li>
+		<li>no sign: phase of the moon does not correspond to any of
+		the above ones</li>
+	</ul>
+	<p>
 	At the very bottom of the screen there is a status bar, which 
 	indicates the possible actions and the corresponding keystrokes.<br>
         Just above this status bar is the notify-bar, which indicates
@@ -915,7 +928,7 @@ All of the commands are documented within an online help system.
 <hr>
 <small><em>
 Copyright (c) 2004-2007 Fr&eacute;d&eacute;ric Culot<br>
-Calcurse version 1.8 - Last change: April 15, 2007
+Calcurse version 1.9 - Last change: August 18, 2007
 </em></small>
 
 </body>
