@@ -1,3 +1,6 @@
+31 Aug 2007: 1.9_beta
+	NEWS file updated
+
 19 Aug 2007:
 	wins_reset() updated to handle notification bar reset
 	no more check for terminal size in main loop

@@ -1,3 +1,21 @@
+[31 Aug 2007]
+Version 1.9_beta   beta version available on request.
+- New features:
+  * Moon phase calculation added
+
+  * Automatic redraw is now performed when resizing terminal
+
+  * Major code cleanup release, error and signal handling improved
+
+- Bugfixes:
+  * Current day is now automatically updated in the calendar panel
+
+  * No more problem when trying to load a calendar from current directory
+
+- Translation:
+  * Dutch translation and manual provided by Jeremy Roon
+
+
 [22 May 2007]
 Version 1.8
 - New features:
@@ -187,7 +205,7 @@ Version 1.0       First stable release
 
 
 [11 Sep 2005]
-Version 1.0rc3    Firtst public release
+Version 1.0rc3    First public release
 
 
 [26 Jun 2005]
