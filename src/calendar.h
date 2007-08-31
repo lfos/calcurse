@@ -1,4 +1,4 @@
-/*	$calcurse: calendar.h,v 1.6 2007/08/12 13:09:37 culot Exp $	*/
+/*	$calcurse: calendar.h,v 1.7 2007/08/31 19:41:24 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -29,6 +29,7 @@
 
 #include <ncurses.h>
 #include <stdbool.h>
+#include <time.h>
 
 #define	CALHEIGHT	12
 #define	CALWIDTH	30
