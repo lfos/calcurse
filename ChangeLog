@@ -1,3 +1,6 @@
+01 Sep 2007:
+	bugfix: shift in date_arg(), thanks Herbert for reporting this bug
+
 31 Aug 2007: 1.9_beta
 	NEWS file updated
 

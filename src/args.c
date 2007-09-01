@@ -1,4 +1,4 @@
-/*	$calcurse: args.c,v 1.24 2007/08/15 15:36:49 culot Exp $	*/
+/*	$calcurse: args.c,v 1.25 2007/09/01 21:26:12 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -203,7 +203,7 @@ arg_print_date(long date)
  * If there is also no date given, current date is considered.
  */
 static int 
-app_arg(int add_line, date_t day, long date)
+app_arg(int add_line, date_t *day, long date)
 {
 	struct recur_event_s *re;
 	struct event_s *j;
@@ -216,7 +216,7 @@ app_arg(int add_line, date_t day, long date)
 	char apoint_end_time[100];
 	
 	if (date == 0)
-		today = get_sec_date(day);
+		today = get_sec_date(*day);
 	else 
 		today = date;
 
@@ -322,12 +322,7 @@ date_arg(char *ddate, int add_line)
 	int numdays = 0, num_digit = 0;
 	int arg_len = 0, app_found = 0;
 	int date_valid = 0;
-	long today, ind;
-	int sec_in_day = 86400;
-
-	day.dd = 0;
-	day.mm = 0;
-	day.yyyy = 0;
+	long ind;
 
 	/* 
 	 * Check (with the argument length) if a date or a number of days 
@@ -347,18 +342,17 @@ date_arg(char *ddate, int add_line)
  		 * in the chosen interval. app_found and add_line are used
  		 * to format the output correctly. 
 		 */
-		today = get_sec_date(day);
-		ind = today;
+		ind = get_today();
 		for (i = 0; i < numdays; i++) {
-			app_found = app_arg(add_line, day, ind);
+			app_found = app_arg(add_line, 0L, ind);
 			add_line = app_found;
-			ind = ind + sec_in_day;
+			ind += DAYINSEC + MININSEC;
 		}
 	} else {			/* a date was entered */
 		date_valid = check_date(ddate);
 		if (date_valid) {
 			sscanf(ddate, "%d / %d / %d", &day.mm, &day.dd, &day.yyyy);
-			app_found = app_arg(add_line, day, 0);
+			app_found = app_arg(add_line, &day, 0);
 		} else {
 			fputs(_("Argument to the '-d' flag is not valid\n"),
 			    stdout);
@@ -513,7 +507,7 @@ parse_args(int argc, char **argv, conf_t *conf)
 			} else if (aflag) {
 				date_t day;
 				day.dd = day.mm = day.yyyy = 0;
-				app_found = app_arg(add_line,day,0);
+				app_found = app_arg(add_line, &day, 0);
 				non_interactive = 1;
 			}
 		} else {
