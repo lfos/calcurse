@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.21 2007/08/15 15:36:27 culot Exp $	*/
+/*	$calcurse: io.c,v 1.22 2007/09/16 15:41:53 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -128,10 +128,10 @@ io_get_export_stream(void)
 
 	stream = NULL;
 	stream_name = (char *)malloc(BUFSIZ);
-	home = getenv("HOME");
-	if (home == NULL)
-		home = ".";
-	snprintf(stream_name, BUFSIZ, "%s/calcurse.ics", home);
+	if ((home = getenv("HOME")) != NULL)
+		snprintf(stream_name, BUFSIZ, "%s/calcurse.ics", home);
+	else
+		snprintf(stream_name, BUFSIZ, "/tmp/calcurse.ics");
 	
 	while (stream == NULL) {
 		status_mesg(question, "");
