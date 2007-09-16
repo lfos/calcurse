@@ -1,4 +1,4 @@
-#	$calcurse: configure.ac,v 1.11 2007/07/28 15:04:52 culot Exp $
+#	$calcurse: configure.ac,v 1.12 2007/09/16 15:40:05 culot Exp $
 
 #-------------------------------------------------------------------------------
 #                                                                           Init
@@ -39,7 +39,7 @@ AC_CHECK_HEADERS([ncurses.h], [
 AC_CHECK_HEADERS([pthread.h], [
     AC_CHECK_LIB(pthread, pthread_create, [
 	LIBS="$LIBS -lpthread"
-	AC_DEFINE(HAVE_LIBNCURSES, 1, 
+	AC_DEFINE(HAVE_LIBPTHREAD, 1, 
 		  [Define to 1 if you have the 'pthread' library (-lpthread).])
     ], 
     AC_MSG_ERROR(The pthread library is required in order to build calcurse!))
