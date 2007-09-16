@@ -1,3 +1,11 @@
+16 Sep 2007:
+	bugfix: wrong symbol used for pthread library in configure.ac (thanks
+	Michael for noticing this bug)
+	keypad() used in popup() routine, to avoid possible unwanted
+	interactions (status bar could change for example when viewing an 
+	item description and pressing an arrow key)
+	export to /tmp/calcurse.ics is now performed in case $HOME is not set
+
 01 Sep 2007:
 	bugfix: shift in date_arg(), thanks Herbert for reporting this bug
 
