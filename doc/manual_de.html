@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <!--
 /*
- *	$calcurse: manual_de.html,v 1.11 2007/08/19 13:19:37 culot Exp $
+ *	$calcurse: manual_de.html,v 1.12 2007/10/07 17:14:56 culot Exp $
  *
  * Calcurse - text-based organizer
  * Copyright (c) 2004-2007 Frederic Culot
@@ -102,21 +102,13 @@
 
 <a name="intro"></a><h1>Einleitung</a></h1>
 <p>
-<font color="green">
-<code>calcurse</code> is a text-based calendar and scheduling application. It helps
-keeping track of events, appointments and everyday tasks. 
-A configurable notification system reminds user of upcoming deadlines,
-and the curses based interface can be customized to suit user needs.
-All of the commands are documented within an online help system.  
-</font>
-<p>
-<code>calcurse</code> ist ein textbasierter pers&ouml;nlicher Terminkalender, der
-Ihnen bei der Organisation von Terminen und t&auml;glichen Aufgaben
-hilft. Er beinhaltet einen Kalender sowie eine 'todo'-Liste, die Ihre
-Termine ordnen. Die Terminalfarben und das Layout des Benutzer-Interfaces 
-lassen sich individuell anpassen. Alle Kommandos sind
-dokumentiert und k&ouml;nnen zur Laufzeit jederzeit erfragt werden.
-
+<code>calcurse</code> ist ein
+textbasierender Kalender, der Ihnen bei der Organisation von
+Ereignissen, Terminen und t&auml;glichen Aufgaben hilft. Ein
+konfigurierbares Notitzsystem erinnert Benutzer an bevorstehende
+Termine. Die curses basierende Benutzeroberflache kann auf eigene die
+Bed&uuml;rfnisse angepa&szlig;t werden. Alle Programmbefehle sind in
+einem online Hilfesystem dokumentiert.
 
 <a name="overview"></a><h1>&Uuml;berblick</h1>
 <a name="overview_history"></a><h2>Anlass</h2>
@@ -161,11 +153,8 @@ bedeutet, dass eine komplette Onlinehilfe im Programm zu Verf&uuml;gung
 steht, sowie alle m&ouml;gliche Aktionen jederzeit in einer Statuszeile
 ersichtlich sind.  Das Benutzer-Interface ist ebenfalls
 einstellbar. Ebenso kann man verschiedene Textfarben und Layouts
-w&auml;hlen.
-	<font color="green">
-	Last, a configurable notification system reminds user of upcoming
-	appointments. 
-	</font>
+w&auml;hlen. Ein konfigurierbares Notizsystem erinnert den Benutzer 
+an bevorstehende Termine.
 
 <a name="install"></a><h1>Installation</h1>
 <a name="install_requirements"></a><h2>Voraussetzungen</h2>
@@ -288,17 +277,16 @@ Gibt die 'todo' Liste aus.<br>
 <dd>
 Gibt die aktuelle Version von Calcurse aus.<br>
 <br>
-	<font color="green">
 	<dt><code>-x, --export</code>
 	<dd>
-	Export user data to iCalendar format. Events, appointments and
-	todos are converted and echoed to stdout.<br>
-	<u>Note:</u> redirect standard output to export data to a file,
-	by issuing a command such as:
+	Exportiert Benutzerdaten in das iCalendar-Format. Ereignisse,
+	Termine und Aufgaben werden konvertiert und nach stdout
+	ausgegeben.<br>
+	<u>Beachte:</u> leiten Sie die Ausgabe in eine Datei,
+	etwa wie im folgenden Beispiel: 
 	<pre>
 	        $ calcurse --export > my_data.ics
 	</pre>
-	</font>
 </dl>
 
 
@@ -394,20 +382,18 @@ Das Kalender-Panel hebt den gew&uuml;nschten Tag farblich hervor, w&auml;hrend
 das Termin-Panel die Liste mit Terminen des angesteuerten Tags
 anzeigt. Das todo-Panel dagegen zeigt eine Liste mit den zu
 erledigenden Aufgaben, die keinem bestimmten Tage zugeordnet sind.<br>
-<font color="green">
-	In the appointment panel, one can notice the <em>'(|)'</em> sign 
-	just in front of the date. This indicates the current phase of the moon.
-	Depending on which is the current phase, the following signs can be
-	seen:
+	Im Termin-Panel kann man <em>'(|)'</em> Symbol vor das
+Datum setzen. Dies zeigt die aktuelle Mondfase. Je nach Mondfase
+k&ouml;nnen die folgenden Symbole erscheinen:
 	<ul>
-		<li>'<b>  |) </b>': first quarter</li>
-		<li>'<b> (|) </b>': full moon</li>
-		<li>'<b>  (| </b>': last quarter</li>
-		<li>'<b>  |  </b>': new moon</li>
-		<li>no sign: phase of the moon does not correspond to any of
-		the above ones</li>
+
+		<li>'<b>  |) </b>': Halbmond, erste H&auml;lfte</li>
+		<li>'<b> (|) </b>': Vollmond</li>
+		<li>'<b>  (| </b>': Halbmond, letzte H&auml;lfte</li>
+		<li>'<b>  |  </b>': Neumond</li>
+		<li>Kein Symbol: die Mondfase ist keinem der oberen
+		zuzuordnen</li>
 	</ul>
-</font>
 <p>
 Die letzten beiden Zeilen des Interfaces zeigen die Status-Zeile, die
 &uuml;ber die m&ouml;glichen Befehle und ihre entsprechenden Tasten
@@ -525,23 +511,14 @@ beginnt die Woche sonntags.
 
 <a name="options_colors"></a><h2>Textfarben einstellen</h2>
 <p>
-	<font color="green">
-	<code>calcurse</code> color theme can be customized to suit user's 
-	needs. To change the default theme, the configuration page
-	displays possible choices for foreground and background colors.
-	Using arrows or calcurse displacement keys to move, and 'X' or space
-	to select a color, user can preview the theme which will be applied.
-	It is possible to keep the terminal's default colors by selecting the
-       corresponding choice in the list.	
-</font>
+<code>calcurse</code> Textfarben k&ouml;nnen nach eigenen
+Vorlieben eingestellt werden. Um die Standartfarben zu wechseln,
+zeigt die Konfigurationsseite m&ouml;gliche Farbwerte f&uuml;r
+Vordergrund und Hintergrund. Benutze die Pfeiltasten zum bewegen und
+'X' bzw. die Leertaste um eine Farbe zu w&auml;hlen. Benutzer k&ouml;nnen
+das gew&auml;hlte Farbschema vorher betrachten. Die Liste enth&auml;lt
+auch den Eintrag f&uuml;r die Standartfarben des Terminals.
 <p>
-Die verwendeten Textfarben k&ouml;nnen nach eigenen Vorlieben eingestellt
-werden. Durch Bet&auml;tigung der entsprechenden Taste kann die gew&uuml;nschte
-Farbkombination ausgew&auml;hlt werden. Die gew&auml;hlte Farbkombination werden
-dem Rahmen, dem Titel und der Status-Zeile zugewiesen.
-
-        Eine schwarz/wei&szlig; Kombination ist ebenfalls verf&uuml;gbar, um 
-	Terminals ohne Farben zu unterst&uuml;tzen.<br>
         <u>Beachte:</u>
         <ul>
         <li> Der Farbunterst&uuml;tzung ist vom verwendeten Terminal und des der 
@@ -594,27 +571,26 @@ entsprechend anpassen.
 	festgelegten Sekunden, wird der Termin innerhalb der Benachrichtigungszeile 
 	blinkend dargestellt. Auf diese Weise wird der Nutzer auf einen baldigen Termin 
 	hingewiesen.
-	<font color="green">
-	Moreover, the command defined by the <em>notify-bar_command</em>
-	option will be launched.
-	</font>
+	Au&szlig;erdem wird der Befehl, der durch
+	<em>Benachrichtigungszeile_Befehl</em> definiert ist, ausgef&uuml;hrt.
 	<br><br>
-	<li><font color="green">
-	<code>notify-bar_command</code> (default: <em>printf '\a'</em>)<br>
-	This option indicates which command is to be launched when there is an
-	upcoming appointment flagged as 'important'. This command will be
-	passed to the user's shell which will interpret it. To know what shell
-	must be used, the content of the <code>$SHELL</code> environment variable
-	is used. If this variable is not set, <code>/bin/sh</code> is used
-	instead.<br>
-	<u>Example:</u> Say the <code>mail</code> command is available on
-	the user's system, one can use the following command to get notified by
-	mail of an upcoming appointment (the appointment description will also
-	be mentioned in the mail body):
+	<li>
+		<code>Benachrichtigungszeile_Befehl</code>
+		(Voreinstellungt: <em>printf '\a'</em>)<br>
+		Diese Option zeigt an, welcher Befehl ausgef&uuml;hrt wird, 
+		wenn ein bevorstehender Termin durch 'wichtig' gekennzeichnet ist. 
+		Dieser Befehl wird auf dem Terminal des Benutzers ausgef&uuml;hrt. 
+		Die <code>$SHELL</code> Umgebungsvariable wird bei der Wahl des 
+		richtigen Terminals ber&uuml;cksichtigt. Ist diese Variable nicht 
+		gesetzt, wird stattdessen <code>/bin/sh</code> zur Ausf&uuml;hrung 
+		gew&auml;hlt.<br>
+		<u>Beispiel:</u> Der <code>mail</code> Befehl ist auf dem System 
+		des Benutzer verf&uuml;gbar. Man kann den folgenden Befehl benutzen, 
+		um an bevorstehende Termine erinnert zu werden (die Beschreibung 
+		des Termins wird ebenso ber&uuml;cksichtigt im Mailkopf):
 	<pre>
 		calcurse --next | mail -s "[calcurse] upcoming appointment!" user@host.com
 	</pre>
-	</font>
 	</ul> 
 
 
@@ -915,8 +891,8 @@ derjenigen, denen ich Danke sagen m&ouml;chte:
 <li>Michael Schulz und Chris M. f&uuml;r die &Uuml;bersetzung der Dokumentation ins Deutsche.
 <li>Jose Lopez f&uuml;r die &Uuml;bersetzung der Dokumentation ins Spanische.
 <li>Neil Williams f&uuml;r die &Uuml;bersetzung ins Englische.
-	<li><font color="green">Tony for its patch which helped improving the
-	recur_item_inday() function</font>
+<li>Tony f&uuml;r seine Patches, welche die Funktion 
+recur_item_inday() verbessern half 
 <li>Jeremy Roon f&uuml;r die &Uuml;bersetzung ins Dutch.
 <li>Leute die Programme geschrieben haben, die ich mag und mich inspiriert haben, insbesondere:
 <ul>
@@ -934,7 +910,7 @@ Benutzer, die mir Ihr Feedback mitgeteilt haben.
 Copyright (c) 2004-2007 Fr&eacute;d&eacute;ric Culot<br>
 German translation by Michael Schulz
 <code>&lt;bloodshower.at.web.dot.de&gt;</code>, and Chris.<br>
-Calcurse version 1.9 - Last change: Aug 18, 2007
+Calcurse version 1.9 - Last change: Oct 07, 2007
 </em></small>
 
 
