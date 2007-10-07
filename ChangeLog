@@ -1,3 +1,7 @@
+07 Oct 2007:
+	handling of SIGWINCH improved
+	German manual and translation updated, many thanks to Michael Schulz
+
 16 Sep 2007:
 	bugfix: wrong symbol used for pthread library in configure.ac (thanks
 	Michael for noticing this bug)
