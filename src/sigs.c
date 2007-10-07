@@ -1,4 +1,4 @@
-/*	$Id: sigs.c,v 1.3 2007/08/15 15:30:17 culot Exp $	*/
+/*	$Id: sigs.c,v 1.4 2007/10/07 17:13:10 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -48,7 +48,8 @@ signal_handler(int sig)
 			;
 		break;
 	case SIGWINCH:
-		wins_reset();
+		clearok(curscr, TRUE);
+		ungetch(KEY_RESIZE);
 		break;
 	}
 }

@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.55 2007/08/19 13:15:55 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.56 2007/10/07 17:13:10 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -62,6 +62,7 @@ main(int argc, char **argv)
 	int sav_hilt_tod = 0;
 	struct sigaction sigact;
 	bool do_storage = false;
+	bool do_update = true;
 	bool day_changed = false;
         char *no_color_support = 
             _("Sorry, colors are not supported by your terminal\n"
@@ -157,10 +158,21 @@ main(int argc, char **argv)
 
 	/* User input */
 	for (;;) {
-		
-		/* Get user input. */
+
+		do_update = true;
 		ch = wgetch(swin);
+
 		switch (ch) {
+
+		case ERR:
+			do_update = false;
+			break;
+
+		case CTRL('R'):
+		case KEY_RESIZE:
+			do_update = false;
+			wins_reset();
+			break;
 
 		case 9:	/* The TAB key was hit. */
 			reset_status_page();
@@ -197,11 +209,6 @@ main(int argc, char **argv)
 			default:
 				break;
 			}
-			break;
-
-		case CTRL('R'):
-			wins_reset();
-			do_storage = true;
 			break;
 
 		case 'O':
@@ -447,6 +454,10 @@ main(int argc, char **argv)
 			} else
 				exit_calcurse(EXIT_SUCCESS);
 			break;
+
+		default:
+			do_update = false;
+			break;
 		}
 
 		if (do_storage) {
@@ -461,7 +472,7 @@ main(int argc, char **argv)
 					apoint_hilt_set(1);
 			}
 		}
-
-		wins_update();
+		if (do_update)
+			wins_update();
 	}
 }
