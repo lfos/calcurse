@@ -1,3 +1,8 @@
+08 Oct 2007:
+	Dutch manual and translation updated, many thanks to Jeremy
+	bugfix: possible problem when using -n flag without any upcoming
+	appointment (thanks Herbert for reporting this problem)
+
 07 Oct 2007:
 	handling of SIGWINCH improved
 	German manual and translation updated, many thanks to Michael Schulz
