@@ -1,4 +1,4 @@
-# 	$calcurse: nl.po,v 1.1 2007/07/28 13:33:59 culot Exp $
+# 	$calcurse: nl.po,v 1.2 2007/10/08 20:42:15 culot Exp $
 #
 # Dutch translations for calcurse package.
 # Copyright (C) 2007 Jeremy Roon <p.roon@chello.nl>
@@ -7,9 +7,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: calcurse 1.8\n"
+"Project-Id-Version: calcurse 1.9\n"
 "Report-Msgid-Bugs-To: frederic@culot.org\n"
-"POT-Creation-Date: 2007-07-28 15:20+0200\n"
+"POT-Creation-Date: 2007-10-07 19:09+0200\n"
 "PO-Revision-Date: 2007-01-06 13:52+0200\n"
 "Last-Translator: Jeremy Roon\n"
 "Language-Team:  Jeremy Roon <p.roon@chello.nl>\n"
@@ -18,52 +18,51 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: src/apoint.c:89
+#: src/apoint.c:116
 msgid ""
 "Enter start time ([hh:mm] or [h:mm]), leave blank for an all-day event : "
 msgstr ""
 "Voer aanvangstijd in ([hh:mm] of [h:mm]), laat leeg voor de gehele dag:"
 
-#: src/apoint.c:90
+#: src/apoint.c:117
 msgid "Enter end time ([hh:mm] or [h:mm]) or duration (in minutes) : "
 msgstr "Voer de eindtijd in ([hh:mm] of [h:mm]) of duur (in minuten) :"
 
-#: src/apoint.c:91
+#: src/apoint.c:118
 msgid "Enter description :"
 msgstr "Voer beschrijving in :"
 
-#: src/apoint.c:92
+#: src/apoint.c:119
 msgid "You entered an invalid start time, should be [h:mm] or [hh:mm]"
 msgstr "De aanvangstijd is ongeldig! Formaat kan [h:mm] of [hh:mm] zijn"
 
-#: src/apoint.c:93
+#: src/apoint.c:120
 msgid "You entered an invalid end time, should be [h:mm] or [hh:mm] or [mm]"
 msgstr "De eindtijd is ongeldig! Formaat kan [h:mm] of [hh:mm] of [mm] zijn"
 
-#: src/apoint.c:94 src/day.c:442 src/day.c:493
+#: src/apoint.c:121 src/day.c:435 src/day.c:487
 msgid "Press [Enter] to continue"
 msgstr "Druk op [Enter] om door te gaan)"
 
-#: src/apoint.c:188
+#: src/apoint.c:214
 msgid "Do you really want to delete this item ?"
 msgstr "Wilt u werkelijk dit item wissen ?"
 
-#: src/apoint.c:226
-#, fuzzy
+#: src/apoint.c:215
 msgid "FATAL ERROR in apoint_delete: no such type\n"
-msgstr "FATALE FOUT in del_item: Type niet gevonden\n"
+msgstr "FATALE FOUT in apoint_delete: Type bestaat niet\n"
 
-#: src/apoint.c:333 src/recur.c:225
+#: src/apoint.c:357 src/recur.c:233
 msgid "FATAL ERROR in apoint_scan: date error in the appointment\n"
 msgstr "FATALE FOUT in apoint_scan: datafout in de afspraak\n"
 
-#: src/apoint.c:368
-msgid "FATAL ERROR in apoint_delete_bynum: no such appointment\n"
-msgstr "FATALE FOUT in apoint_delete_bynum: Afspraak bestaat niet\n"
+#: src/apoint.c:392
+msgid "FATAL ERROR in apoint_delete_bynum: no such appointment"
+msgstr "FATALE FOUT in apoint_delete_bynum: Afspraak bestaat niet"
 
-#: src/apoint.c:545
-msgid "FATAL ERROR in apoint_switch_notify: no such appointment\n"
-msgstr "FATALE FOUT in apoint_switch_notify: Afspraak bestaat niet\n"
+#: src/apoint.c:569
+msgid "FATAL ERROR in apoint_switch_notify: no such appointment"
+msgstr "FATALE FOUT in apoint_switch_notify: Afspraak bestaat niet"
 
 #: src/args.c:51
 msgid "Usage: calcurse [-h|-v] [-x] [-an] [-t[num]] [-d date|num] [-c file]\n"
@@ -175,15 +174,15 @@ msgstr "Taken:\n"
 msgid "next appointment:\n"
 msgstr "Volgende afspraak :\n"
 
-#: src/args.c:363
+#: src/args.c:357
 msgid "Argument to the '-d' flag is not valid\n"
 msgstr "Argument van '-d' is niet geldig.\n"
 
-#: src/args.c:365
+#: src/args.c:359
 msgid "Possible argument formats are : 'mm/dd/yyyy' or 'n'\n"
 msgstr "Mogelijke formaatopties zijn : 'mm/dd/jjjj' of 'n'\n"
 
-#: src/args.c:367
+#: src/args.c:361
 msgid ""
 "\n"
 "For more information, type '?' from within Calcurse, or read the manpage.\n"
@@ -191,11 +190,11 @@ msgstr ""
 "\n"
 "Typ '?' in Calcurse voor meer informatie, of lees de man-pagina.\n"
 
-#: src/args.c:370
+#: src/args.c:364
 msgid "Mail bug reports and suggestions to <calcurse@culot.org>.\n"
 msgstr "Mail foutrapporten en suggesties naar <calcurse@culot.org>.\n"
 
-#: src/calcurse.c:90
+#: src/calcurse.c:68
 msgid ""
 "Sorry, colors are not supported by your terminal\n"
 "(Press [ENTER] to continue)"
@@ -203,38 +202,28 @@ msgstr ""
 "Helaas wordt kleur niet door uw terminal ondersteund.\n"
 "(druk op [ENTER] om door te gaan)"
 
-#: src/calcurse.c:92
+#: src/calcurse.c:70
 msgid "Do you really want to quit ?"
 msgstr "Wilt u werkelijk het programma verlaten?"
 
-#: src/calcurse.c:192
-msgid ""
-"Please resize your terminal screen\n"
-"(to at least 80x24),\n"
-"and restart calcurse.\n"
-msgstr ""
-"Wijzig a.u.b. de terminalgrootte\n"
-"(minstens 80x24),\n"
-"en herstart calcurse.\n"
-
-#: src/calcurse.c:269
+#: src/calcurse.c:235
 msgid "To do :"
 msgstr "Taken :"
 
-#: src/calendar.c:113
+#: src/calendar.c:129
 msgid "ERROR in calendar_set_first_day_of_week\n"
-msgstr ""
+msgstr "FOUT in calender_set_first_day_of_week\n"
 
-#: src/calendar.c:326
+#: src/calendar.c:342
 msgid "The day you entered is not valid"
 msgstr "De ingevoerde datum is ongeldig"
 
-#: src/calendar.c:327 src/custom.c:211 src/io.c:404 src/io.c:689 src/io.c:776
-#: src/io.c:795
+#: src/calendar.c:343 src/custom.c:211 src/io.c:394 src/io.c:679 src/io.c:766
+#: src/io.c:785
 msgid "Press [ENTER] to continue"
 msgstr "Druk op [ENTER] om door te gaan)"
 
-#: src/calendar.c:329
+#: src/calendar.c:345
 msgid "Enter the day to go to [ENTER for today] : mm/dd/yyyy"
 msgstr "Gewenste datum?: [ENTER voor vandaag] : mm/dd/jjjj"
 
@@ -305,171 +294,171 @@ msgstr "    AK       AT       KA       TA       TK       TA       KT       AT"
 msgid " [1]AT    [2]AC    [3]TA    [4]CA    [5]TA    [6]TC    [7]AT    [8]CT"
 msgstr " [1]AT    [2]AK    [3]TA    [4]KA    [5]TA    [6]TK    [7]AT    [8]KT"
 
-#: src/custom.c:401
+#: src/custom.c:398
 msgid "Use 'X' or SPACE to select a color, 'H/L' 'J/K' or arrow keys to move"
 msgstr ""
 "'X' of SPATIE voor kleurselectie, 'h/l' 'j/k' of pijltjes verplaatsen cursor"
 
-#: src/custom.c:404
+#: src/custom.c:401
 msgid "('0' for no color, 'Q' to exit) :"
 msgstr "('0' voor geen kleur, 'Q' voor einde) :"
 
-#: src/custom.c:405
+#: src/custom.c:402
 msgid "Foreground"
 msgstr "Voorgrond"
 
-#: src/custom.c:406
+#: src/custom.c:403
 msgid "Background"
 msgstr "Achtergrond"
 
-#: src/custom.c:409
+#: src/custom.c:406
 msgid "(terminal's default)"
 msgstr "standaard van terminal"
 
-#: src/custom.c:442
+#: src/custom.c:439
 #, c-format
 msgid "CalCurse %s | color theme"
 msgstr "Calcurse %s | kleurschema"
 
-#: src/custom.c:622
+#: src/custom.c:619
 msgid "FATAL ERROR in custom_color_theme_name: unknown color\n"
 msgstr "FATALE FOUT in custom_color_theme_name: kleur onbekend\n"
 
-#: src/custom.c:650
+#: src/custom.c:647
 msgid "auto_save = "
 msgstr "automatisch_opslaan = "
 
-#: src/custom.c:651
+#: src/custom.c:648
 msgid "confirm_quit = "
 msgstr "einde_bevestigen = "
 
-#: src/custom.c:652
+#: src/custom.c:649
 msgid "confirm_delete = "
 msgstr "bevestig_verwijderen= "
 
-#: src/custom.c:653
+#: src/custom.c:650
 msgid "skip_system_dialogs = "
 msgstr "overslaan_systeem_dialoog = "
 
-#: src/custom.c:654
+#: src/custom.c:651
 msgid "skip_progress_bar = "
 msgstr "overslaan_progressie_balk = "
 
-#: src/custom.c:655
+#: src/custom.c:652
 msgid "week_begins_on_monday = "
 msgstr "week_begint_op_maandag = "
 
-#: src/custom.c:664
+#: src/custom.c:661
 msgid "(if set to YES, automatic save is done when quitting)"
 msgstr "(Bij JA, wordt er automatisch opgeslagen bij einde programma)"
 
-#: src/custom.c:670
+#: src/custom.c:667
 msgid "(if set to YES, confirmation is required before quitting)"
 msgstr "(Bij JA, wordt er een bevestiging gevraagd bij eindigen programma"
 
-#: src/custom.c:676
+#: src/custom.c:673
 msgid "(if set to YES, confirmation is required before deleting an event)"
 msgstr "(Bij JA, is een bevestiging nodig voor het wissen van een gebeurtenis)"
 
-#: src/custom.c:682
+#: src/custom.c:679
 msgid ""
 "(if set to YES, messages about loaded and saved data will not be displayed)"
 msgstr ""
 "(Bij JA, worden geen mededelingen getoond bij het laden/opslaan van data)"
 
-#: src/custom.c:688
+#: src/custom.c:685
 msgid "(if set to YES, progress bar will not be displayed when saving data)"
 msgstr "(Bij JA, wordt geen progressiebalk getoond bij het opslaan van data)"
 
-#: src/custom.c:694
+#: src/custom.c:691
 msgid "(if set to YES, monday is the first day of the week, else it is sunday)"
 msgstr "(Bij JA, is maandag de eerste weekdag, anders zondag)"
 
-#: src/custom.c:707 src/notify.c:497
+#: src/custom.c:704 src/notify.c:502
 msgid "Enter an option number to change its value [Q to quit] "
 msgstr "Geef een nummer om de waarde te veranderen [Q om te stoppen]"
 
-#: src/custom.c:714
+#: src/custom.c:711
 #, c-format
 msgid "CalCurse %s | general options"
 msgstr "CalCurse %s | algemene Opties"
 
-#: src/day.c:382
+#: src/day.c:376
 msgid "FATAL ERROR in day_popup_item: unknown item type\n"
 msgstr "FATALE FOUT in day_popup_item: onbekend itemtype\n"
 
-#: src/day.c:385
+#: src/day.c:379
 msgid "Event :"
 msgstr "Gebeurtenis :"
 
-#: src/day.c:389
+#: src/day.c:383
 msgid "Appointment :"
 msgstr "Afspraak :"
 
-#: src/day.c:441
+#: src/day.c:434
 msgid "Enter the new time ([hh:mm] or [h:mm]) : "
 msgstr "Voer nieuwe tijd in: ([hh:mm] of [h:mm]):"
 
-#: src/day.c:444
+#: src/day.c:437
 msgid "You entered an invalid time, should be [h:mm] or [hh:mm]"
 msgstr "Ongeldige tijd ingevoerd! Mogelijke formaten zijn: [h:mm] of [hh:mm]"
 
-#: src/day.c:480
+#: src/day.c:474
 msgid "Edit: (1)Start time, (2)End time or (3)Description?"
 msgstr "Wijzig: (1)Aanvang (2)Einde of (3)Beschrijving?"
 
-#: src/day.c:483
+#: src/day.c:477
 msgid "Edit: (1)Start time, (2)End time, (3)Description or (4)Repetition?"
 msgstr "Wijzig: (1)Aanvang (2)Einde (3)Beschrijving of (4)Herhaling"
 
-#: src/day.c:485
+#: src/day.c:479
 msgid "Edit: (1)Description or (2)Repetition?"
 msgstr "Wijzig: (1)Beschrijving of (2)Herhaling"
 
-#: src/day.c:488 src/recur.c:585
+#: src/day.c:482 src/recur.c:593
 msgid "The entered date is not valid."
 msgstr "De ingevoerde datum is ongeldig."
 
-#: src/day.c:490 src/recur.c:587
+#: src/day.c:484 src/recur.c:595
 msgid "Possible formats are [mm/dd/yyyy] or '0' for an endless repetetition"
 msgstr "Mogelijk formaat is: [mm/dd/jjjj] of '0' voor oneindig."
 
-#: src/day.c:492
+#: src/day.c:486
 msgid "Invalid time: start time must be before end time!"
 msgstr "Ongeldige tijd: aanvangstijd moet voor eindtijd zijn!"
 
-#: src/day.c:494
+#: src/day.c:488
 msgid "Enter the new item description:"
 msgstr "Voer een nieuwe beschrijving in:"
 
-#: src/day.c:496
+#: src/day.c:490
 msgid "Enter the new repetition type: (D)aily, (W)eekly, (M)onthly, (Y)early"
 msgstr ""
 "Voer type herhaling in: (D)agelijks, (W)ekelijks, (M)aandelijks, (Y) "
 "jaarlijks"
 
-#: src/day.c:497 src/recur.c:578
+#: src/day.c:491 src/recur.c:586
 msgid "[D/W/M/Y] "
 msgstr "[D/W/M/Y]"
 
-#: src/day.c:498
+#: src/day.c:492
 msgid "Enter the new repetition frequence:"
 msgstr "Voer herhalingsinterval in:"
 
-#: src/day.c:499 src/recur.c:582
+#: src/day.c:493 src/recur.c:590
 msgid "The frequence you entered is not valid."
 msgstr "Het ingevoerde interval is ongeldig."
 
-#: src/day.c:501
+#: src/day.c:495
 msgid "Enter the new ending date: [mm/dd/yyyy] or '0'"
 msgstr "Nieuw einde van de herhaling: [mm/dd/jjjj] of '0' voor oneindig"
 
-#: src/day.c:682
+#: src/day.c:677
 msgid "This item is recurrent. Delete (a)ll occurences or just this (o)ne ?"
 msgstr ""
 "Dit is een herhalende afspraak. (a)lle afspraken of alleen (o) deze wissen ?"
 
-#: src/day.c:685
+#: src/day.c:680
 msgid "[a/o] "
 msgstr "[a/o]"
 
@@ -1095,460 +1084,489 @@ msgstr ""
 msgid "CalCurse %s | help"
 msgstr "Calcurse %s | Hulp"
 
-#: src/io.c:68
+#: src/io.c:58
 msgid "Saving..."
 msgstr "Opslaan..."
 
-#: src/io.c:69
+#: src/io.c:59
 msgid "Loading..."
 msgstr "Laden..."
 
-#: src/io.c:70
+#: src/io.c:60
 msgid "Exporting..."
 msgstr "Exporteren..."
 
-#: src/io.c:133
+#: src/io.c:123
 msgid "Choose the file used to export calcurse data:"
 msgstr "Kies het bestand om calcurse data naar te exporteren:"
 
-#: src/io.c:135
+#: src/io.c:125
 msgid "The file cannot be accessed, please enter another file name."
 msgstr "Het bestand is ontoegankelijk, kies een andere bestandsnaam."
 
-#: src/io.c:137 src/recur.c:589
+#: src/io.c:127 src/recur.c:597
 msgid "Press [ENTER] to continue."
 msgstr "[ENTER]-toets om door te gaan."
 
-#: src/io.c:348
+#: src/io.c:338
 #, c-format
 msgid "%s does not exist, create it now [y or n] ? "
 msgstr "%s bestaat niet, nu aanmaken [j of n] ? "
 
-#: src/io.c:353 src/io.c:370
+#: src/io.c:343 src/io.c:360
 #, c-format
 msgid "aborting...\n"
 msgstr "afbreken...\n"
 
-#: src/io.c:364
+#: src/io.c:354
 #, c-format
 msgid "%s successfully created\n"
 msgstr "%s met succes aangemaakt\n"
 
-#: src/io.c:365
+#: src/io.c:355
 #, c-format
 msgid "starting interactive mode...\n"
 msgstr "interactieve modus gestart...\n"
 
-#: src/io.c:400
+#: src/io.c:390
 msgid "Problems accessing data file ..."
 msgstr "Probleem bij benaderen databestand ..."
 
-#: src/io.c:403
+#: src/io.c:393
 msgid "The data files were successfully saved"
 msgstr "De databestanden zijn met succes opgeslagen"
 
-#: src/io.c:555
-#, fuzzy
+#: src/io.c:545
 msgid "FATAL ERROR in io_load_app: wrong format in the appointment or event\n"
-msgstr "FATALE FOUT in load_app: fout formaat in afspraak/gebeurtenis\n"
+msgstr "FATALE FOUT in io_load_app: fout formaat in afspraak of gebeurtenis\n"
 
-#: src/io.c:574
-#, fuzzy
+#: src/io.c:564
 msgid "FATAL ERROR in io_load_app: syntax error in the item date\n"
-msgstr "FATALE FOUT in load_app: fout in syntax itemdatum\n"
+msgstr "FATALE FOUT in io_load_app: fout in syntax itemdatum\n"
 
-#: src/io.c:589
-#, fuzzy
+#: src/io.c:579
 msgid "FATAL ERROR in io_load_app: no event nor appointment found\n"
-msgstr "FATALE FOUT in load_app: geen afspraak/gebeurtenis gevonden\n"
+msgstr "FATALE FOUT in io_load_app: geen afspraak/gebeurtenis gevonden\n"
 
-#: src/io.c:688
+#: src/io.c:678
 msgid "Failed to open todo file"
 msgstr "Kan takenbestand niet openen"
 
-#: src/io.c:774
+#: src/io.c:764
 msgid "Welcome to Calcurse. Missing data files were created."
 msgstr "Welkom bij Calcurse. De missende databestanden zijn aangemaakt."
 
-#: src/io.c:775
+#: src/io.c:765
 msgid "Data files found. Data will be loaded now."
 msgstr "Databestanden gevonden. Data wordt geladen."
 
-#: src/io.c:793
+#: src/io.c:783
 msgid "FATAL ERROR in io_export_data: wrong export mode\n"
 msgstr "FATALE FOUT in io_export_data: verkeerde export modus\n"
 
-#: src/io.c:794
+#: src/io.c:784
 msgid "The data were successfully exported"
 msgstr "De data is met succes geëxporteerd"
 
-#: src/notify.c:128
-#, fuzzy
-msgid "FATAL ERROR in launch_cmd: could not fork\n"
-msgstr "FATALE FOUT in notify_launch_cmd: probleem met fork\n"
+#: src/notify.c:137
+msgid "FATAL ERROR in launch_cmd: could not fork"
+msgstr "FATALE FOUT in launch_cmd: probleem met fork"
 
-#: src/notify.c:133
-#, fuzzy
-msgid "FATAL ERROR in launch_cmd: could not launch user command\n"
-msgstr ""
-"FATALE FOUT in notify_launch_cmd: kan gebruikerscommando niet starten\n"
+#: src/notify.c:140
+msgid "FATAL ERROR in launch_cmd: could not launch user command"
+msgstr "FATALE FOUT in launch_cmd: kan gebruikerscommando niet starten"
 
-#: src/notify.c:426
+#: src/notify.c:431
 msgid "notify-bar_show = "
 msgstr "informatiebalk_toon = "
 
-#: src/notify.c:427
+#: src/notify.c:432
 msgid "notify-bar_date = "
 msgstr "informatiebalk_datum = "
 
-#: src/notify.c:428
+#: src/notify.c:433
 msgid "notify-bar_clock = "
 msgstr "informatiebalk_tijd= "
 
-#: src/notify.c:429
+#: src/notify.c:434
 msgid "notify-bar_warning = "
 msgstr "informatiebalk_waarschuwing = "
 
-#: src/notify.c:430
+#: src/notify.c:435
 msgid "notify-bar_command = "
 msgstr "informatiebalk_commando = "
 
-#: src/notify.c:433
+#: src/notify.c:438
 msgid "(if set to YES, notify-bar will be displayed)"
 msgstr "(Bij JA, wordt de informatiebalk weergegeven)"
 
-#: src/notify.c:436
+#: src/notify.c:441
 msgid "(Format of the date to be displayed inside notify-bar)"
 msgstr "(Formaat van de datum in de informatiebalk.)"
 
-#: src/notify.c:439
+#: src/notify.c:444
 msgid "(Format of the time to be displayed inside notify-bar)"
 msgstr "(Formaat van de tijd in de informatiebalk.)"
 
-#: src/notify.c:442
+#: src/notify.c:447
 msgid ""
 "(Warn user if an appointment is within next 'notify-bar_warning' seconds)"
 msgstr ""
 "Meldt gebruiker dat er een afspraak binnen 'informatiebalk_waarschuwing' "
 "seconden is"
 
-#: src/notify.c:446
+#: src/notify.c:451
 msgid "(Command used to notify user of an upcoming appointment)"
 msgstr "(Commando dat melding geeft van op handen zijnde afspraak)"
 
-#: src/notify.c:499
+#: src/notify.c:504
 msgid "Enter the date format (see 'man 3 strftime' for possible formats) "
 msgstr "Geef het formaat van de datum (zie 'man 3 strftime')"
 
-#: src/notify.c:501
+#: src/notify.c:506
 msgid "Enter the time format (see 'man 3 strftime' for possible formats) "
 msgstr "Geef het formaat van de tijd (zie 'man 3 strftime')"
 
-#: src/notify.c:503
+#: src/notify.c:508
 msgid "Enter the number of seconds (0 not to be warned before an appointment)"
 msgstr "Geef het aantal seconden (0 voor geen waarschuwing voor een afspraak)."
 
-#: src/notify.c:504
+#: src/notify.c:509
 msgid "Enter the notification command "
 msgstr "Geef het meldingscommando "
 
-#: src/notify.c:510
+#: src/notify.c:515
 #, c-format
 msgid "CalCurse %s | notify-bar options"
 msgstr "CalCurse %s | Informatiebalk-opties"
 
-#: src/recur.c:266
+#: src/recur.c:123
+msgid "FATAL ERROR in recur_def2char: unknown recur type\n"
+msgstr "FATALE FOUT in recur_def2char: herhaal type onbekend\n"
+
+#: src/recur.c:152
+msgid "FATAL ERROR in recur_char2def: unknown char\n"
+msgstr "FATALE FOUT in recur_char2def: onbekend karakter\n"
+
+#: src/recur.c:274
 msgid "FATAL ERROR in recur_event_scan: date error in the event\n"
 msgstr "FATALE FOUT in recur_event_scan: datumfout in de gebeurtenis\n"
 
-#: src/recur.c:380
+#: src/recur.c:388
 msgid "FATAL ERROR in recur_item_inday: unknown item type\n"
 msgstr "FATALE FOUT in recur_item_inday: type item onbekend\n"
 
-#: src/recur.c:494
+#: src/recur.c:502
 msgid "FATAL ERROR in recur_event_erase: no such event\n"
 msgstr "FATALE FOUT in recur_event_erase: gebeurtenis bestaat niet\n"
 
-#: src/recur.c:554
+#: src/recur.c:562
 msgid "FATAL ERROR in recur_apoint_erase: no such appointment\n"
 msgstr "FATALE FOUT in recur_apoint_erase: afspraak bestaat niet\n"
 
-#: src/recur.c:577
+#: src/recur.c:585
 msgid "Enter the repetition type: (D)aily, (W)eekly, (M)onthly, (Y)early"
 msgstr "Type herhaling: (D)agelijks, (W)ekelijks, (M)aandelijks, (Y) jaarlijks"
 
-#: src/recur.c:580
+#: src/recur.c:588
 msgid "Enter the repetition frequence:"
 msgstr "Geef de herhalingsinterval:"
 
-#: src/recur.c:584
+#: src/recur.c:592
 msgid "Enter the ending date: [mm/dd/yyyy] or '0' for an endless repetition"
 msgstr "Geef einddatum: [mm/dd/jjjj] of '0' voor oneindige herhaling"
 
-#: src/recur.c:588
+#: src/recur.c:596
 msgid "This item is already a repeated one."
 msgstr "Dit item wordt al herhaald."
 
-#: src/recur.c:591
+#: src/recur.c:599
 msgid "Sorry, the date you entered is older than the item start time."
 msgstr "Sorry, de ingevoerde datum is ouder dan de aanvangstijd."
 
-#: src/recur.c:677
+#: src/recur.c:687
 msgid "FATAL ERROR in recur_repeat_item: wrong item type\n"
 msgstr "FATALE FOUT in recur_repeat_item: fout item type\n"
 
-#: src/recur.c:702
+#: src/recur.c:712
 msgid "FATAL ERROR in recur_exc_scan: syntax error in the item date\n"
 msgstr "FATALE FOUT in recur_exc_scan: fout in syntax itemdatum\n"
 
-#: src/recur.c:768
+#: src/recur.c:778
 msgid "FATAL ERROR in recur_get_apoint: no such item\n"
 msgstr "FATALE FOUT in recur_get_apoint: item bestaat niet\n"
 
-#: src/recur.c:788
+#: src/recur.c:798
 msgid "FATAL ERROR in recur_get_event: no such item\n"
 msgstr "FATALE FOUT in recur_get_event: item bestaat niet\n"
 
-#: src/recur.c:821
+#: src/recur.c:831
 msgid "FATAL ERROR in recur_apoint_switch_notify: no such item\n"
 msgstr "FATALE FOUT in recur_apoint_switch_notify: item bestaat niet\n"
 
-#: src/todo.c:41
+#: src/todo.c:121
 msgid "Enter the new ToDo item : "
 msgstr "Voer de nieuwe taak in : "
 
-#: src/todo.c:43
+#: src/todo.c:123
 msgid "Enter the ToDo priority [1 (highest) - 9 (lowest)] :"
 msgstr "Geef taakprioriteit [1 (hoogste) - 9 (laagste)] :"
 
-#: src/todo.c:101
+#: src/todo.c:179
 msgid "FATAL ERROR in todo_delete_bynum: no such todo\n"
 msgstr "FATALE FOUT in todo_delete_bynum: taak bestaat niet\n"
 
-#: src/todo.c:110
+#: src/todo.c:188
 msgid "Do you really want to delete this task ?"
 msgstr "Wilt u werkelijk deze taak wissen ?"
 
-#: src/todo.c:157
+#: src/todo.c:237
 msgid "FATAL ERROR in todo_get_position: todo not found\n"
 msgstr "FATALE FOUT in todo_get_position: taak bestaat niet\n"
 
-#: src/todo.c:194
+#: src/todo.c:274
 msgid "FATAL ERROR in todo_chg_priority: no such action\n"
 msgstr "FATALE FOUT in todo_chg_priority: actie bestaat niet\n"
 
-#: src/todo.c:212
+#: src/todo.c:289
 msgid "Enter the new ToDo description :"
 msgstr "Voer de nieuwe taakbeschrijving in : "
 
-#: src/utils.c:92
+#: src/utils.c:56
+msgid "INTERNAL ERROR"
+msgstr "INTERNE FOUT"
+
+#: src/utils.c:57
+msgid "calcurse will now exit..."
+msgstr "calcurse eindigt nu..."
+
+#: src/utils.c:58
+msgid "Please report the following bug:"
+msgstr "Rapporteer aub de volgende fout:"
+
+#: src/utils.c:131
 msgid "Press any key to continue..."
 msgstr "Druk op een toets om door te gaan..."
 
-#: src/utils.c:314
-msgid "FATAL ERROR in updatestring: out of memory\n"
-msgstr "FATALE FOUT in updatestring: te weinig geheugen\n"
+#: src/utils.c:354
+msgid "FATAL ERROR in updatestring: out of memory"
+msgstr "FATALE FOUT in updatestring: te weinig geheugen"
 
-#: src/utils.c:355
+#: src/utils.c:393
 msgid "Help"
 msgstr "Hulp"
 
-#: src/utils.c:356
+#: src/utils.c:394
 msgid "Quit"
 msgstr "Einde"
 
-#: src/utils.c:357
+#: src/utils.c:395
 msgid "Save"
 msgstr "Opslaan"
 
-#: src/utils.c:358
+#: src/utils.c:396
 msgid "Export"
 msgstr "Exporteren"
 
-#: src/utils.c:359
+#: src/utils.c:397
 msgid "Add Item"
 msgstr "Item toevoegen"
 
-#: src/utils.c:360
+#: src/utils.c:398
 msgid "Del Item"
 msgstr "Item wissen"
 
-#: src/utils.c:361
+#: src/utils.c:399
 msgid "Edit Itm"
 msgstr "Wijzig Itm"
 
-#: src/utils.c:362
+#: src/utils.c:400
 msgid "Flag Itm"
 msgstr "Vlag Itm"
 
-#: src/utils.c:363 src/utils.c:375
+#: src/utils.c:401 src/utils.c:413
 msgid "-+1 Day"
 msgstr "-/+1 Dag"
 
-#: src/utils.c:364 src/utils.c:376
+#: src/utils.c:402 src/utils.c:414
 msgid "-+1 Week"
 msgstr "-/+ Week"
 
-#: src/utils.c:365
+#: src/utils.c:403
 msgid "Up/Down"
 msgstr "Op/Neer"
 
-#: src/utils.c:366
+#: src/utils.c:404
 msgid "Repeat"
 msgstr "Herhalen"
 
-#: src/utils.c:367
+#: src/utils.c:405
 msgid "Priority"
 msgstr "Prioriteit"
 
-#: src/utils.c:368
+#: src/utils.c:406
 msgid "Chg View"
 msgstr "Wzg focus"
 
-#: src/utils.c:369
+#: src/utils.c:407
 msgid "Go to"
 msgstr "Ga naar"
 
-#: src/utils.c:370
+#: src/utils.c:408
 msgid "Config"
 msgstr "Config"
 
-#: src/utils.c:371
+#: src/utils.c:409
 msgid "View"
 msgstr "Bekijken"
 
-#: src/utils.c:372
+#: src/utils.c:410
 msgid "Redraw"
 msgstr "Ververs"
 
-#: src/utils.c:373
+#: src/utils.c:411
 msgid "Add Appt"
 msgstr "Nieuwe Afspr"
 
-#: src/utils.c:374
+#: src/utils.c:412
 msgid "Add Todo"
 msgstr "Nieuwe Taak"
 
-#: src/utils.c:377
+#: src/utils.c:415
 msgid "OtherCmd"
 msgstr "AnderCmd"
 
-#: src/utils.c:438
+#: src/utils.c:476
 msgid "FATAL ERROR in date2sec: failure in mktime\n"
 msgstr "FATALE FOUT in date2sec: fout in mktime\n"
 
-#: src/utils.c:537
-msgid "FATAL ERROR in update_time_in_date: failure in mktime\n"
-msgstr "FATALE FOUT in update_time_in_date: fout in mktime\n"
-
-#: src/utils.c:696
+#: src/utils.c:730
 msgid "Appointment"
 msgstr "Afspraak"
 
-#: src/utils.c:814
+#: src/utils.c:780
+msgid "FATAL ERROR in other_status_page: unknown panel\n"
+msgstr "FATALE FOUT in other_status_page: onbekend panel\n"
+
+#: src/utils.c:851
 msgid "yes"
 msgstr "ja"
 
-#: src/utils.c:817
+#: src/utils.c:854
 msgid "no"
 msgstr "nee"
 
-#: src/utils.c:821
+#: src/utils.c:857
 msgid "option not defined - Problem in print_option_incolor()"
 msgstr "Optie ongedefinieerd - Probleem in print_option_incolor()"
 
-#: src/vars.c:47
+#: src/vars.c:48
 msgid "January"
 msgstr "januari"
 
-#: src/vars.c:48
+#: src/vars.c:49
 msgid "February"
 msgstr "februari"
 
-#: src/vars.c:49
+#: src/vars.c:50
 msgid "March"
 msgstr "maart"
 
-#: src/vars.c:50
+#: src/vars.c:51
 msgid "April"
 msgstr "april"
 
-#: src/vars.c:51
+#: src/vars.c:52
 msgid "May"
 msgstr "mei"
 
-#: src/vars.c:52
+#: src/vars.c:53
 msgid "June"
 msgstr "juni"
 
-#: src/vars.c:53
+#: src/vars.c:54
 msgid "July"
 msgstr "juli"
 
-#: src/vars.c:54
+#: src/vars.c:55
 msgid "August"
 msgstr "augustus"
 
-#: src/vars.c:55
+#: src/vars.c:56
 msgid "September"
 msgstr "september"
 
-#: src/vars.c:56
+#: src/vars.c:57
 msgid "October"
 msgstr "oktober"
 
-#: src/vars.c:57
+#: src/vars.c:58
 msgid "November"
 msgstr "november"
 
-#: src/vars.c:58
+#: src/vars.c:59
 msgid "December"
 msgstr "december"
 
-#: src/vars.c:61 src/vars.c:68
+#: src/vars.c:62 src/vars.c:69
 msgid "Sun"
 msgstr " zo"
 
-#: src/vars.c:62
+#: src/vars.c:63
 msgid "Mon"
 msgstr " ma"
 
-#: src/vars.c:63
+#: src/vars.c:64
 msgid "Tue"
 msgstr " di"
 
-#: src/vars.c:64
+#: src/vars.c:65
 msgid "Wed"
 msgstr " wo"
 
-#: src/vars.c:65
+#: src/vars.c:66
 msgid "Thu"
 msgstr " do"
 
-#: src/vars.c:66
+#: src/vars.c:67
 msgid "Fri"
 msgstr " vr"
 
-#: src/vars.c:67
+#: src/vars.c:68
 msgid "Sat"
 msgstr " za"
 
-#: src/wins.c:81
+#: src/wins.c:105
+msgid "FATAL ERROR in wins_prop: property unknown\n"
+msgstr "FATALE FOUT in wins_prop: onbekende eigenschap\n"
+
+#: src/wins.c:123
 #, c-format
 msgid "Calendar"
 msgstr "Kalender"
 
-#: src/wins.c:84
+#: src/wins.c:127
 #, c-format
 msgid "Appointments"
 msgstr "Afspraken"
 
-#: src/wins.c:89
+#: src/wins.c:132
 #, c-format
 msgid "ToDo"
 msgstr "Taken"
 
-#: src/wins.c:324
-#, fuzzy
+#: src/wins.c:365
 msgid "FATAL ERROR in wins_update: no window selected\n"
-msgstr "Fatale fout in update_windows: geen venster geselecteerd\n"
+msgstr "Fatale fout in wins_update: geen venster geselecteerd\n"
+
+#~ msgid ""
+#~ "Please resize your terminal screen\n"
+#~ "(to at least 80x24),\n"
+#~ "and restart calcurse.\n"
+#~ msgstr ""
+#~ "Wijzig a.u.b. de terminalgrootte\n"
+#~ "(minstens 80x24),\n"
+#~ "en herstart calcurse.\n"
+
+#~ msgid "FATAL ERROR in update_time_in_date: failure in mktime\n"
+#~ msgstr "FATALE FOUT in update_time_in_date: fout in mktime\n"
