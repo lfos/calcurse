@@ -1,4 +1,4 @@
-/*	$calcurse: args.c,v 1.26 2007/10/08 20:44:03 culot Exp $	*/
+/*	$calcurse: args.c,v 1.27 2007/10/16 19:09:18 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -155,29 +155,29 @@ todo_arg(int priority)
 static void 
 next_arg(void)
 {
-	struct notify_app_s *next_app;
-	long current_time;
+	struct notify_app_s next_app;
+	const long current_time = now();
 	int time_left, hours_left, min_left;
 	char mesg[BUFSIZ];
 
-	current_time = now();
-	next_app = (struct notify_app_s *) malloc(sizeof(struct notify_app_s));
-	next_app->time = current_time + DAYINSEC;
-	next_app->got_app = 0;
-	next_app = recur_apoint_check_next(next_app, current_time, get_today());
-	next_app = apoint_check_next(next_app, current_time);
-	time_left = next_app->time - current_time;
-	if (time_left > 0 && time_left < DAYINSEC) {
+	next_app.time = current_time + DAYINSEC;
+	next_app.got_app = 0;
+	next_app.txt = NULL;
+
+	next_app = *recur_apoint_check_next(&next_app, current_time, 
+	    get_today());
+	next_app = *apoint_check_next(&next_app, current_time);
+
+	if (next_app.got_app) {
+		time_left = next_app.time - current_time;
 		hours_left = (time_left / HOURINSEC);
 		min_left = (time_left - hours_left * HOURINSEC) / MININSEC;
 		fputs(_("next appointment:\n"), stdout);
 		snprintf(mesg, BUFSIZ, "   [%02d:%02d] %s\n", 
-			hours_left, min_left, next_app->txt);
+		    hours_left, min_left, next_app.txt);
 		fputs(mesg, stdout);
+		free(next_app.txt);
 	}
-	if (next_app->txt)
-		free(next_app->txt);
-	free(next_app);
 }
 
 /* 
@@ -323,7 +323,8 @@ date_arg(char *ddate, int add_line)
 	int numdays = 0, num_digit = 0;
 	int arg_len = 0, app_found = 0;
 	int date_valid = 0;
-	long ind;
+	static struct tm t;
+	time_t timer;
 
 	/* 
 	 * Check (with the argument length) if a date or a number of days 
@@ -343,11 +344,17 @@ date_arg(char *ddate, int add_line)
  		 * in the chosen interval. app_found and add_line are used
  		 * to format the output correctly. 
 		 */
-		ind = get_today();
+		timer = time(NULL);
+		t = *localtime(&timer);
+
 		for (i = 0; i < numdays; i++) {
-			app_found = app_arg(add_line, 0L, ind);
+			day.dd = t.tm_mday;
+			day.mm = t.tm_mon + 1;
+			day.yyyy = t.tm_year + 1900;
+			app_found = app_arg(add_line, &day, 0);
 			add_line = app_found;
-			ind += DAYINSEC + MININSEC;
+			t.tm_mday++;
+			mktime(&t);
 		}
 	} else {			/* a date was entered */
 		date_valid = check_date(ddate);
