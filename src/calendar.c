@@ -1,4 +1,4 @@
-/*	$calcurse: calendar.c,v 1.10 2007/08/12 13:09:02 culot Exp $	*/
+/*	$calcurse: calendar.c,v 1.11 2007/10/16 19:11:10 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -339,7 +339,8 @@ calendar_change_day(void)
 	date_t today;
 	int dday, dmonth, dyear;
 	int wrong_day = 1;
-	char *mesg_line1 = _("The day you entered is not valid");
+	char *mesg_line1 = 
+	    _("The day you entered is not valid (should be between 01/01/1902 and 12/31/2037)");
 	char *mesg_line2 = _("Press [ENTER] to continue");
 	char *request_date = 
 	    _("Enter the day to go to [ENTER for today] : mm/dd/yyyy");
@@ -371,7 +372,7 @@ calendar_change_day(void)
 				/* basic check on entered date */
 				if ((dday <= 0) || (dday >= 32) || 
 				    (dmonth <= 0) || (dmonth >= 13) || 
-				    (dyear <= 0) || (dyear >= 3000))
+				    (dyear <= 1901) || (dyear >= 2038))
 					wrong_day = 1;
 
 				/* go to chosen day */
@@ -396,7 +397,10 @@ calendar_change_day(void)
 void
 calendar_move_right(void)
 {
-	if ((slctd_day.dd == 31) && (slctd_day.mm == 12)) {
+	if ((slctd_day.dd == 31) && (slctd_day.mm == 12) && 
+	    (slctd_day.yyyy == 2037))
+		return;
+	else if ((slctd_day.dd == 31) && (slctd_day.mm == 12)) {
 		slctd_day.dd = 0;
 		slctd_day.mm = 1;
 		slctd_day.yyyy++; 
@@ -411,7 +415,10 @@ calendar_move_right(void)
 void
 calendar_move_left(void)
 {
-	if ((slctd_day.dd == 1) && (slctd_day.mm == 1)) { 
+	if ((slctd_day.dd == 1) && (slctd_day.mm == 1) &&
+	    (slctd_day.yyyy == 1902))
+		return;
+	else if ((slctd_day.dd == 1) && (slctd_day.mm == 1)) { 
 		slctd_day.dd = 32;
 		slctd_day.mm = 12;
 		slctd_day.yyyy--;
@@ -426,7 +433,10 @@ calendar_move_left(void)
 void
 calendar_move_up(void)
 {
-	if ((slctd_day.dd <= 7) && (slctd_day.mm == 1)) { 
+	if ((slctd_day.dd <= 7) && (slctd_day.mm == 1) &&
+	    (slctd_day.yyyy == 1902))
+		return;
+	else if ((slctd_day.dd <= 7) && (slctd_day.mm == 1)) { 
 		slctd_day.dd = 31 - (7 - slctd_day.dd);
 		slctd_day.mm = 12;
 		slctd_day.yyyy--;
@@ -442,7 +452,11 @@ calendar_move_up(void)
 void
 calendar_move_down(void)
 {
+
 	if ((slctd_day.dd > days[slctd_day.mm - 1] - 7)
+	    && (slctd_day.mm == 12) && (slctd_day.yyyy == 2037))
+	       return;	
+	else if ((slctd_day.dd > days[slctd_day.mm - 1] - 7)
 	    && (slctd_day.mm == 12)) { 
 		slctd_day.dd = (7 - (31 - slctd_day.dd));
 		slctd_day.mm = 1;
