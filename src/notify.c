@@ -1,4 +1,4 @@
-/*	$calcurse: notify.c,v 1.20 2007/08/19 13:16:45 culot Exp $	*/
+/*	$calcurse: notify.c,v 1.21 2007/10/16 19:14:40 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -530,11 +530,11 @@ notify_config_bar(void)
 			pthread_mutex_lock(&nbar->mutex);
 			nbar->show = !nbar->show;
 			pthread_mutex_unlock(&nbar->mutex);
-			notify_stop_main_thread();
 			if (notify_bar()) {
 				notify_start_main_thread();
 				win_row = row - 3;
 			} else {
+				notify_stop_main_thread();
 				win_row = row - 2;
 			}
 			delwin(conf_win);
