@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.56 2007/10/07 17:13:10 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.57 2007/10/21 13:42:34 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -152,7 +152,7 @@ main(int argc, char **argv)
 	wins_update();
         io_startup_screen(conf.skip_system_dialogs, no_data_file);
 	inday = *day_process_storage(0, day_changed, &inday);
-	wins_slctd_set(CALENDAR);
+	wins_slctd_set(CAL);
 	wins_update();
 	calendar_start_date_thread();
 
@@ -160,7 +160,7 @@ main(int argc, char **argv)
 	for (;;) {
 
 		do_update = true;
-		ch = wgetch(swin);
+		ch = wgetch(win[STA].p);
 
 		switch (ch) {
 
@@ -178,11 +178,11 @@ main(int argc, char **argv)
 			reset_status_page();
 			/* Save previously highlighted event. */
 			switch (wins_slctd()) {
-			case TODO:
+			case TOD:
 				sav_hilt_tod = todo_hilt();
 				todo_hilt_set(0);
 				break;
-			case APPOINTMENT:
+			case APP:
 				sav_hilt_app = apoint_hilt();
 				apoint_hilt_set(0);
 				break;
@@ -193,13 +193,13 @@ main(int argc, char **argv)
 
 			/* Select the event to highlight. */
 			switch (wins_slctd()) {
-			case TODO:
+			case TOD:
 				if ((sav_hilt_tod == 0) && (todo_nb() != 0))
 					todo_hilt_set(1);
 				else
 					todo_hilt_set(sav_hilt_tod);
 				break;
-			case APPOINTMENT:
+			case APP:
 				if ((sav_hilt_app == 0) && 
 				    ((inday.nb_events + inday.nb_apoints) != 0))
 					apoint_hilt_set(1);
@@ -227,31 +227,29 @@ main(int argc, char **argv)
 
 		case 'V':
 		case 'v':	/* View function */
-			if ((wins_slctd() == APPOINTMENT) && 
-			    (apoint_hilt() != 0))
+			if ((wins_slctd() == APP) && (apoint_hilt() != 0))
 				day_popup_item();
-			else if ((wins_slctd() == TODO) && (todo_hilt() != 0)) 
+			else if ((wins_slctd() == TOD) && (todo_hilt() != 0)) 
 				item_in_popup(NULL, NULL, todo_saved_mesg(),
-						_("To do :"));
+				    _("To do :"));
 			break;
 
 		case 'C':
 		case 'c':	/* Configuration menu */
 			erase_status_bar();
 			config_bar();
-			while ((ch = wgetch(swin)) != 'q') {
+			while ((ch = wgetch(win[STA].p)) != 'q') {
 				switch (ch) {
 				case 'C':
 				case 'c':
-                                        if (has_colors()) {
-                                                custom_color_config(
-						    notify_bar()); 
-                                        } else {
+                                        if (has_colors())
+                                                custom_color_config();
+					else {
                                                 colorize = false;
 						erase_status_bar();
-                                                mvwprintw(swin, 0, 0, 
-                                                          _(no_color_support));
-                                                wgetch(swin);
+                                                mvwprintw(win[STA].p, 0, 0, 
+						    _(no_color_support));
+                                                wgetch(win[STA].p);
                                         }
 					break;
 				case 'L':
@@ -267,7 +265,7 @@ main(int argc, char **argv)
 					notify_config_bar();
 					break;
 				}
-                                wins_reinit();
+                                wins_reset();
 				wins_update();
 				do_storage = true;
 				erase_status_bar();
@@ -290,11 +288,11 @@ main(int argc, char **argv)
 		case 'A':
 		case 'a':	/* Add an item */
 			switch (wins_slctd()) {
-			case APPOINTMENT:
+			case APP:
 				apoint_add();
 				do_storage = true;
 				break;
-			case TODO:
+			case TOD:
 				todo_new_item();
 				if (todo_hilt() == 0 && todo_nb() == 1)
 					todo_hilt_increase();
@@ -306,49 +304,45 @@ main(int argc, char **argv)
 
 		case 'E':
 		case 'e':	/* Edit an existing item */
-			if (wins_slctd() == APPOINTMENT && apoint_hilt() != 0)
+			if (wins_slctd() == APP && apoint_hilt() != 0)
 				day_edit_item();
-			else if (wins_slctd() == TODO && todo_hilt() != 0)
+			else if (wins_slctd() == TOD && todo_hilt() != 0)
 				todo_edit_item();
 			do_storage = true;
 			break;
 
 		case 'D':
 		case 'd':	/* Delete an item */
-			if (wins_slctd() == APPOINTMENT && 
-			    apoint_hilt() != 0)
+			if (wins_slctd() == APP && apoint_hilt() != 0)
 				apoint_delete(&conf, &inday.nb_events, 
 				    &inday.nb_apoints);
-			else if (wins_slctd() == TODO && todo_hilt() != 0)
+			else if (wins_slctd() == TOD && todo_hilt() != 0)
 				todo_delete(&conf);
 			do_storage = true;
 			break;
 
 		case 'R':
 		case 'r':
-			if (wins_slctd() == APPOINTMENT && 
-			    apoint_hilt() != 0)
+			if (wins_slctd() == APP && apoint_hilt() != 0)
 				recur_repeat_item();
 				do_storage = true;
 			break;
 
 		case '!':
-			if (wins_slctd() == APPOINTMENT && 
-			    apoint_hilt() != 0)
+			if (wins_slctd() == APP && apoint_hilt() != 0)
 				apoint_switch_notify();
 				do_storage = true;
 			break;
 	
 		case '+':
 		case '-':
-			if (wins_slctd() == TODO && todo_hilt() != 0) {
+			if (wins_slctd() == TOD && todo_hilt() != 0) {
 				todo_chg_priority(ch);
 				if (todo_hilt_pos() < 0)
 					todo_set_first(todo_hilt());
-				else if (todo_hilt_pos() >=
-				    wins_prop(TODO, HEIGHT) - 4)
+				else if (todo_hilt_pos() >= win[TOD].h - 4)
 					todo_set_first(todo_hilt() - 
-					    wins_prop(TODO, HEIGHT) + 5);
+					    win[TOD].h + 5);
 			}
 			break;
 
@@ -371,7 +365,7 @@ main(int argc, char **argv)
 		case ('L'):
 		case ('l'):
 		case CTRL('L'):
-			if (wins_slctd() == CALENDAR || ch == CTRL('L')) {
+			if (wins_slctd() == CAL || ch == CTRL('L')) {
 				do_storage = true;
 				day_changed = true;
 				calendar_move_right();
@@ -382,7 +376,7 @@ main(int argc, char **argv)
 		case ('H'):
 		case ('h'):
 		case CTRL('H'):
-			if (wins_slctd() == CALENDAR || ch == CTRL('H')) {
+			if (wins_slctd() == CAL || ch == CTRL('H')) {
 				do_storage = true;
 				day_changed = true;
 				calendar_move_left();
@@ -393,16 +387,16 @@ main(int argc, char **argv)
 		case ('K'):
 		case ('k'):
 		case CTRL('K'):
-			if (wins_slctd() == CALENDAR || ch == CTRL('K')) {
+			if (wins_slctd() == CAL || ch == CTRL('K')) {
 				do_storage = true;
 				day_changed = true;
 				calendar_move_up();
 			} else {
-				if ((wins_slctd() == APPOINTMENT) && 
+				if ((wins_slctd() == APP) && 
 				    (apoint_hilt() > 1)) {
 					apoint_hilt_decrease();
 					apoint_scroll_pad_up(inday.nb_events);
-				} else if ((wins_slctd() == TODO) && 
+				} else if ((wins_slctd() == TOD) && 
 				    (todo_hilt() > 1)) {
 					todo_hilt_decrease();
 					if (todo_hilt_pos() < 0)
@@ -415,23 +409,22 @@ main(int argc, char **argv)
 		case ('J'):
 		case ('j'):
 		case CTRL('J'):
-			if (wins_slctd() == CALENDAR || ch == CTRL('J')) {
+			if (wins_slctd() == CAL || ch == CTRL('J')) {
 				do_storage = true;
 				day_changed = true;
 				calendar_move_down();
 			} else {
-				if ((wins_slctd() == APPOINTMENT) && 
+				if ((wins_slctd() == APP) && 
 				    (apoint_hilt() < inday.nb_events + 
 				    inday.nb_apoints)) {
 					apoint_hilt_increase();
 					apoint_scroll_pad_down(inday.nb_events,
-					    wins_prop(APPOINTMENT, HEIGHT));
+					    win[APP].h);
 				}
-				if ((wins_slctd() == TODO) && 
+				if ((wins_slctd() == TOD) && 
 				    (todo_hilt() < todo_nb())) {
 					todo_hilt_increase();
-					if (todo_hilt_pos() ==
-					    wins_prop(TODO, HEIGHT) - 4)
+					if (todo_hilt_pos() == win[TOD].h - 4)
 						todo_first_increase();
 				}
 			}
@@ -444,7 +437,7 @@ main(int argc, char **argv)
 
 			if (conf.confirm_quit) {
 				status_mesg(_(quit_message), choices);
-				ch = wgetch(swin);
+				ch = wgetch(win[STA].p);
 				if ( ch == 'y' )
 					exit_calcurse(EXIT_SUCCESS);
 				else {
@@ -467,7 +460,7 @@ main(int argc, char **argv)
 			if (day_changed) {
 				sav_hilt_app = 0;
 				day_changed = !day_changed;
-				if ((wins_slctd() == APPOINTMENT) && 
+				if ((wins_slctd() == APP) && 
 				    (inday.nb_events + inday.nb_apoints != 0))
 					apoint_hilt_set(1);
 			}

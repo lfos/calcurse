@@ -1,4 +1,4 @@
-/*	$calcurse: todo.c,v 1.14 2007/08/15 15:35:25 culot Exp $	*/
+/*	$calcurse: todo.c,v 1.15 2007/10/21 13:42:34 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -124,11 +124,11 @@ todo_new_item(void)
 	char todo_input[BUFSIZ] = "";
 
 	status_mesg(mesg, "");
-	if (getstring(swin, todo_input, BUFSIZ, 0, 1) == 
+	if (getstring(win[STA].p, todo_input, BUFSIZ, 0, 1) == 
 		GETSTRING_VALID) {
 		while ( (ch < '1') || (ch > '9') ) {
 			status_mesg(mesg_id, "");
-			ch = wgetch(swin);
+			ch = wgetch(win[STA].p);
 		}
 		todo_add(todo_input, ch - '0');
 		todos++;
@@ -191,7 +191,7 @@ todo_delete(conf_t *conf)
 	
 	if (conf->confirm_delete) {
 		status_mesg(del_todo_str, choices);
-		answer = wgetch(swin);
+		answer = wgetch(win[STA].p);
 		if ( (answer == 'y') && (todos > 0) ) {
 			go_for_todo_del = true;
 		} else {
@@ -290,7 +290,7 @@ todo_edit_item(void)
 
 	status_mesg(mesg, "");
 	i = todo_get_item(hilt);
-	updatestring(swin, &i->mesg, 0, 1);
+	updatestring(win[STA].p, &i->mesg, 0, 1);
 }
 
 /* Updates the ToDo panel. */
@@ -309,7 +309,8 @@ todo_update_panel(window_t *wintod, int which_pan)
 	char mesg[BUFSIZ] = "";
 
 	/* Print todo item in the panel. */
-	erase_window_part(twin, 1, title_lines, wintod->w - 2, wintod->h - 2);
+	erase_window_part(win[TOD].p, 1, title_lines, wintod->w - 2, 
+	    wintod->h - 2);
 	for (i = todolist; i != 0; i = i->next) {
 		num_todo++;
 		t_realpos = num_todo - first;
@@ -319,7 +320,7 @@ todo_update_panel(window_t *wintod, int which_pan)
 		if (t_realpos >= 0 && t_realpos < max_items) {
 			snprintf(mesg, BUFSIZ, "%d. ", i->id);	
 			strncat(mesg, i->mesg, strlen(i->mesg));
-			display_item(twin, incolor, mesg, 0, 
+			display_item(win[TOD].p, incolor, mesg, 0, 
 					len, y_offset, x_offset);
 			y_offset = y_offset + todo_lines;	
 		}
@@ -330,14 +331,14 @@ todo_update_panel(window_t *wintod, int which_pan)
 		float ratio = ((float) max_items) / ((float) todos);
 		int sbar_length = (int) (ratio * (max_items + 1)); 
 		int highend = (int) (ratio * first);
-		bool hilt_bar = (which_pan == TODO) ? true : false;
+		bool hilt_bar = (which_pan == TOD) ? true : false;
 		int sbar_top = highend + title_lines;
 	
 		if ((sbar_top + sbar_length) > wintod->h - 1)
 			sbar_length = wintod->h - 1 - sbar_top;
-		draw_scrollbar(twin, sbar_top, wintod->w - 2, 
+		draw_scrollbar(win[TOD].p, sbar_top, wintod->w - 2, 
 	    	    sbar_length, title_lines, wintod->h - 1, hilt_bar);
 	}
 	
-	wnoutrefresh(twin);
+	wnoutrefresh(win[TOD].p);
 }

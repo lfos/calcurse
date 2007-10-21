@@ -1,4 +1,4 @@
-/*	$calcurse: day.c,v 1.29 2007/08/15 15:37:10 culot Exp $	*/
+/*	$calcurse: day.c,v 1.30 2007/10/21 13:42:34 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -439,10 +439,10 @@ day_edit_time(long time) {
 	while (1) {
 		status_mesg(msg_time, "");
 		timestr = date_sec2hour_str(time);
-		updatestring(swin, &timestr, 0, 1);
+		updatestring(win[STA].p, &timestr, 0, 1);
 		if (check_time(timestr) != 1 || strlen(timestr) == 0) {
 			status_mesg(fmt_msg, enter_str);
-			wgetch(swin);
+			wgetch(win[STA].p);
 		} else
 			return timestr;
 	}
@@ -505,7 +505,7 @@ day_edit_item(void)
 		rpt = re->rpt;
 		status_mesg(msg_event_recur, choice_event_recur);
 		while (ch != STRT && ch != END && ch != ESCAPE)
-			ch = wgetch(swin);
+			ch = wgetch(win[STA].p);
 		if (ch == ESCAPE)
 			return;
 		else
@@ -521,14 +521,14 @@ day_edit_item(void)
 		status_mesg(msg_recur, choice_recur);
 		while (ch != STRT && ch != END && ch != DESC && 
 			ch != REPT && ch != ESCAPE)
-			ch = wgetch(swin);
+			ch = wgetch(win[STA].p);
 		if (ch == ESCAPE)
 			return;
 		break;
 	case APPT:
 		status_mesg(msg_norecur, choice_norecur);
 		while (ch != STRT && ch != END && ch != DESC && ch != ESCAPE) 
-			ch = wgetch(swin);
+			ch = wgetch(win[STA].p);
 		if (ch == ESCAPE)
 			return;
 		break;
@@ -547,7 +547,7 @@ day_edit_item(void)
 				valid_date = 1;
 			} else {
 				status_mesg(error_msg, enter_str);
-				wgetch(swin);	
+				wgetch(win[STA].p);	
 			}
 		}
 		break;
@@ -566,7 +566,7 @@ day_edit_item(void)
 		break;
 	case DESC:
 		status_mesg(mesg_desc, "");
-		updatestring(swin, &p->mesg, 0, 1);
+		updatestring(win[STA].p, &p->mesg, 0, 1);
 		break;
 	case REPT:
 		while ( (ch != 'D') && (ch != 'W') && (ch != 'M') 
@@ -574,7 +574,7 @@ day_edit_item(void)
 			status_mesg(mesg_type_1, mesg_type_2);
 			typestr = (char *)malloc(sizeof(char) * 2);
 			*typestr = recur_def2char(rpt->type);
-			cancel = updatestring(swin, &typestr, 0, 1);
+			cancel = updatestring(win[STA].p, &typestr, 0, 1);
 			ch = toupper(*typestr);
 			free(typestr);
 			if (cancel)
@@ -584,7 +584,7 @@ day_edit_item(void)
 			status_mesg(mesg_freq_1, "");
 			freqstr = (char *) malloc(BUFSIZ); 
 			snprintf(freqstr, BUFSIZ, "%d", rpt->freq);
-			cancel = updatestring(swin, &freqstr, 0, 1);
+			cancel = updatestring(win[STA].p, &freqstr, 0, 1);
 			newfreq = atoi(freqstr);
 			free(freqstr);
 			if (cancel)	
@@ -592,14 +592,14 @@ day_edit_item(void)
 			else {
 				if (newfreq == 0) {
 					status_mesg(mesg_wrong_freq, enter_str);
-					wgetch(swin);
+					wgetch(win[STA].p);
 				}
 			}
 		}
 		while (!date_entered) {
 			status_mesg(mesg_until_1, "");
 			timestr = date_sec2date_str(rpt->until);
-			cancel = updatestring(swin, &timestr, 0, 1);
+			cancel = updatestring(win[STA].p, &timestr, 0, 1);
 			if (cancel) {
 				free(timestr);
 				return;
@@ -622,14 +622,14 @@ day_edit_item(void)
 					if (rpt->until < p->start) {
 						status_mesg(error_msg,
 							enter_str);
-						wgetch(swin);
+						wgetch(win[STA].p);
 						date_entered = 0;
 					} else
 						date_entered = 1;
 				} else {
 					status_mesg(mesg_wrong_date, 
 						mesg_possible_fmts);
-					wgetch(swin);
+					wgetch(win[STA].p);
 					date_entered = 0;
 				}
 			}
@@ -691,7 +691,7 @@ int day_erase_item(long date, int item_number, int force_erase) {
 	} else {
 		while ( (ch != 'a') && (ch != 'o') && (ch != ESCAPE)) {
 			status_mesg(erase_warning, erase_choice);
-			ch = wgetch(swin);
+			ch = wgetch(win[STA].p);
 		}
 		if (ch == 'a') {
 			delete_whole = 1;

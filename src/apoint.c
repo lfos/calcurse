@@ -1,4 +1,4 @@
-/*	$calcurse: apoint.c,v 1.17 2007/08/15 15:33:54 culot Exp $	*/
+/*	$calcurse: apoint.c,v 1.18 2007/10/21 13:42:34 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -132,14 +132,14 @@ apoint_add(void)
 	/* Get the starting time */
 	while (check_time(item_time) != 1) {
                 status_mesg(mesg_1, "");
-		if (getstring(swin, item_time, LTIME, 0, 1) != 
+		if (getstring(win[STA].p, item_time, LTIME, 0, 1) != 
 			GETSTRING_ESC) {
 			if (strlen(item_time) == 0){
 				is_appointment = 0;
 				break;	
 			} else if (check_time(item_time) != 1) {
 				status_mesg(format_message_1, enter_str);
-				wgetch(swin);
+				wgetch(win[STA].p);
 			} else
 				sscanf(item_time, "%u:%u", &heures, &minutes);
 		} else
@@ -154,12 +154,12 @@ apoint_add(void)
 		item_time[0] = '\0';
                 while (check_time(item_time) == 0) {
                         status_mesg(mesg_2, "");
-                        if (getstring(swin, item_time, LTIME, 0, 1) != 
+                        if (getstring(win[STA].p, item_time, LTIME, 0, 1) != 
 				GETSTRING_VALID)
                                 return;	//nothing entered, cancel adding of event
 			else if (check_time(item_time) == 0) {
                                 status_mesg(format_message_2, enter_str);
-                                wgetch(swin);
+                                wgetch(win[STA].p);
                         } else {
 				if (check_time(item_time) == 2)
                                 	apoint_duration = atoi(item_time);
@@ -186,7 +186,7 @@ apoint_add(void)
                 Id = 1;
 
         status_mesg(mesg_3, "");
-	if (getstring(swin, item_mesg, BUFSIZ, 0, 1) == 
+	if (getstring(win[STA].p, item_mesg, BUFSIZ, 0, 1) == 
 		GETSTRING_VALID) {
                 if (is_appointment) {
 			apoint_start = 
@@ -224,7 +224,7 @@ apoint_delete(conf_t *conf, unsigned *nb_events, unsigned *nb_apoints)
 	
 	if (conf->confirm_delete) {
 		status_mesg(del_app_str, choices);		
-		answer = wgetch(swin);
+		answer = wgetch(win[STA].p);
 		if ( (answer == 'y') && (nb_items != 0) )
 			go_for_deletion = true;
 		else {
@@ -417,7 +417,7 @@ void display_item_date(WINDOW *win, int incolor, apoint_llist_node_t *i,
 		else
 			mvwprintw(win, y, x, " - %s -> %s", a_st, a_end);
 	if (incolor == 0) 
-		custom_remove_attr(awin, ATTR_HIGHEST);
+		custom_remove_attr(win, ATTR_HIGHEST);
 }
 
 /*
@@ -590,28 +590,29 @@ apoint_update_panel(window_t *winapp, int which_pan)
 	day_write_pad(date, app_width, app_length, hilt);
 
 	/* Print current date in the top right window corner. */
-	erase_window_part(awin, 1, title_lines, winapp->w - 2, winapp->h - 2);
-	custom_apply_attr(awin, ATTR_HIGHEST);
-	mvwprintw(awin, title_lines, title_xpos, "%s  %s %d, %d",
+	erase_window_part(win[APP].p, 1, title_lines, winapp->w - 2, 
+	    winapp->h - 2);
+	custom_apply_attr(win[APP].p, ATTR_HIGHEST);
+	mvwprintw(win[APP].p, title_lines, title_xpos, "%s  %s %d, %d",
 	   calendar_get_pom(date), _(monthnames[slctd_date.mm - 1]), 
 	   slctd_date.dd, slctd_date.yyyy);
-	custom_remove_attr(awin, ATTR_HIGHEST);
+	custom_remove_attr(win[APP].p, ATTR_HIGHEST);
 	
 	/* Draw the scrollbar if necessary. */
 	if ((apad->length >= app_length)||(apad->first_onscreen > 0)) {
 		float ratio = ((float) app_length) / ((float) apad->length);
 		int sbar_length = (int) (ratio * app_length);
 		int highend = (int) (ratio * apad->first_onscreen);
-		bool hilt_bar = (which_pan == APPOINTMENT) ? true : false;
+		bool hilt_bar = (which_pan == APP) ? true : false;
 		int sbar_top = highend + title_lines + 1;
 		
 		if ((sbar_top + sbar_length) > winapp->h - 1)
 			sbar_length = winapp->h - 1 - sbar_top;
-		draw_scrollbar(awin, sbar_top, winapp->w - 2, sbar_length, 
+		draw_scrollbar(win[APP].p, sbar_top, winapp->w - 2, sbar_length,
 				title_lines + 1, winapp->h - 1, hilt_bar);
 	}
 
-	wnoutrefresh(awin);
+	wnoutrefresh(win[APP].p);
 	pnoutrefresh(apad->ptrwin, apad->first_onscreen, 0, 
 	    winapp->y + title_lines + 1, winapp->x + bordr, 
     	    winapp->y + winapp->h - 2*bordr, winapp->x + winapp->w - 3*bordr);

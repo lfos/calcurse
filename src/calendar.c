@@ -1,4 +1,4 @@
-/*	$calcurse: calendar.c,v 1.11 2007/10/16 19:11:10 culot Exp $	*/
+/*	$calcurse: calendar.c,v 1.12 2007/10/21 13:42:34 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -75,7 +75,7 @@ calendar_date_thread(void *arg)
 		}
 
 		calendar_set_current_date();
-		calendar_update_panel(cwin);
+		calendar_update_panel(win[CAL].p);
 	}
 
 	pthread_exit((void*) 0);
@@ -347,7 +347,8 @@ calendar_change_day(void)
 
 	while (wrong_day) {
 		status_mesg(request_date, "");
-		if (getstring(swin, selected_day, LDAY, 0, 1) == GETSTRING_ESC)
+		if (getstring(win[STA].p, selected_day, LDAY, 0, 1) == 
+		    GETSTRING_ESC)
 			return;
 		else {
 			if (strlen(selected_day) == 0) {
@@ -385,7 +386,7 @@ calendar_change_day(void)
 
 			if (wrong_day) {
 				status_mesg(mesg_line1, mesg_line2);
-				wgetch(swin);
+				wgetch(win[STA].p);
 			}
 		}
 	}

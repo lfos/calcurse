@@ -1,4 +1,4 @@
-/*	$calcurse: recur.c,v 1.29 2007/08/15 15:37:31 culot Exp $	*/
+/*	$calcurse: recur.c,v 1.30 2007/10/21 13:42:34 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -608,14 +608,14 @@ recur_repeat_item(void)
 	p = day_get_item(item_nb);
 	if (p->type != APPT && p->type != EVNT) {
 		status_mesg(wrong_type_1, wrong_type_2);
-		ch = wgetch(swin);
+		ch = wgetch(win[STA].p);
 		return;
 	}
 
 	while ( (ch != 'D') && (ch != 'W') && (ch != 'M') 
 	    && (ch != 'Y') && (ch != ESCAPE) ) {
 		status_mesg(mesg_type_1, mesg_type_2);
-		ch = wgetch(swin);	 		
+		ch = wgetch(win[STA].p);	 		
 		ch = toupper(ch);
 	}
 	if (ch == ESCAPE) {
@@ -627,12 +627,12 @@ recur_repeat_item(void)
 
 	while (freq == 0) {
 		status_mesg(mesg_freq_1, "");
-		if (getstring(swin, user_input, BUFSIZ, 0, 1) == 
+		if (getstring(win[STA].p, user_input, BUFSIZ, 0, 1) == 
 		    GETSTRING_VALID) {
 			freq = atoi(user_input);
 			if (freq == 0) {
 				status_mesg(mesg_wrong_freq, wrong_type_2);
-				wgetch(swin);
+				wgetch(win[STA].p);
 			}
 			user_input[0] = '\0';
 		} else
@@ -641,7 +641,8 @@ recur_repeat_item(void)
 
 	while (!date_entered) {
 		status_mesg(mesg_until_1, "");
-		if (getstring(swin, user_input, 11, 0, 1) == GETSTRING_VALID) {
+		if (getstring(win[STA].p, user_input, 11, 0, 1) == 
+		    GETSTRING_VALID) {
 			if (strlen(user_input) == 1 && 
 			    strncmp(user_input, "0", 1) == 0 )  {
 				until = 0;
@@ -660,7 +661,7 @@ recur_repeat_item(void)
 					if (until < p->start) {
 						status_mesg(mesg_older,
 							wrong_type_2);
-						wgetch(swin);
+						wgetch(win[STA].p);
 						date_entered = 0;
 					} else {
 						date_entered = 1;

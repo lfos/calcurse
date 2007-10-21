@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.36 2007/09/16 15:40:53 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.37 2007/10/21 13:42:34 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -94,25 +94,24 @@ aerror(const char *file, int line, const char *assertion)
 void 
 status_mesg(char *mesg_line1, char *mesg_line2)
 {
-	erase_window_part(swin, 0, 0, col, 2);
-	custom_apply_attr(swin, ATTR_HIGHEST);
-	mvwprintw(swin, 0, 0, mesg_line1);
-	mvwprintw(swin, 1, 0, mesg_line2);
-	custom_remove_attr(swin, ATTR_HIGHEST);
+	erase_window_part(win[STA].p, 0, 0, col, 2);
+	custom_apply_attr(win[STA].p, ATTR_HIGHEST);
+	mvwprintw(win[STA].p, 0, 0, mesg_line1);
+	mvwprintw(win[STA].p, 1, 0, mesg_line2);
+	custom_remove_attr(win[STA].p, ATTR_HIGHEST);
 }
 
 /* Erase status bar. */
 void
 erase_status_bar(void)
 {
-	erase_window_part(swin, 0, 0, col, STATUSHEIGHT);
+	erase_window_part(win[STA].p, 0, 0, col, STATUSHEIGHT);
 }
 
-/* 
- * Erase part of a window 
- */
-void erase_window_part(WINDOW *win, int first_col, int first_row,
-			int last_col, int last_row)
+/* Erase part of a window. */
+void 
+erase_window_part(WINDOW *win, int first_col, int first_row, int last_col, 
+    int last_row)
 {
 	int c, r;
 
@@ -148,7 +147,7 @@ WINDOW * popup(int pop_row, int pop_col,
 
 /* prints in middle of a panel */
 void
-print_in_middle(WINDOW * win, int starty, int startx, int width, char *string)
+print_in_middle(WINDOW *win, int starty, int startx, int width, char *string)
 {
 	int length, x, y;
 	float temp;
@@ -436,20 +435,23 @@ status_bar(void)
 	/* Drawing the keybinding with attribute and label without. */
 	erase_status_bar();
 	which_pan = wins_slctd();
-	start = pos[which_pan] + 2*CMDS_PER_LINE*(status_page - 1);
-	end = MIN(start + 2*CMDS_PER_LINE, pos[which_pan + 1]);
+	start = pos[which_pan] + 2 * CMDS_PER_LINE * (status_page - 1);
+	end = MIN(start + 2 * CMDS_PER_LINE, pos[which_pan + 1]);
 	for (i = start; i < end; i += 2) {
-		custom_apply_attr(swin, ATTR_HIGHEST);
-		mvwprintw(swin, 0, j*cmd_length, binding[i]->key);
+		custom_apply_attr(win[STA].p, ATTR_HIGHEST);
+		mvwprintw(win[STA].p, 0, j * cmd_length, binding[i]->key);
 		if (i + 1 != end) 
-		  mvwprintw(swin, 1, j*cmd_length, binding[i+1]->key);
-		custom_remove_attr(swin, ATTR_HIGHEST);
-		mvwprintw(swin,0,j*cmd_length+KEY_LENGTH,binding[i]->label); 
+			mvwprintw(win[STA].p, 1, j * cmd_length, 
+			    binding[i+1]->key);
+		custom_remove_attr(win[STA].p, ATTR_HIGHEST);
+		mvwprintw(win[STA].p, 0 , j * cmd_length + KEY_LENGTH,
+		    binding[i]->label); 
 		if (i + 1 != end) 
-		  mvwprintw(swin,1,j*cmd_length+KEY_LENGTH,binding[i+1]->label);
+			mvwprintw(win[STA].p, 1, j * cmd_length + KEY_LENGTH,
+			    binding[i+1]->label);
 		j++;
 	}
-	wnoutrefresh(swin);
+	wnoutrefresh(win[STA].p);
 }
 
 long 
@@ -732,7 +734,7 @@ void item_in_popup(char *saved_a_start, char *saved_a_end, char *msg,
 				saved_a_start, saved_a_end);
 	}
 	mvwprintw(pad, 0, margin_left, "%s", msg);
-	wmove(swin, 0, 0);
+	wmove(win[STA].p, 0, 0);
 	pnoutrefresh(pad, 0, 0, margin_top + 2, margin_left, padl, winw);
 	doupdate();
 	wgetch(popup_win);
@@ -780,13 +782,13 @@ void other_status_page(int panel)
 	char *error = _("FATAL ERROR in other_status_page: unknown panel\n");
 
 	switch (panel) {
-	case CALENDAR:
+	case CAL:
 		nb_item = NB_CAL_CMDS;
 		break;
-	case APPOINTMENT:
+	case APP:
 		nb_item = NB_APP_CMDS;
 		break;
-	case TODO:
+	case TOD:
 		nb_item = NB_TOD_CMDS;
 		break;
 	default:

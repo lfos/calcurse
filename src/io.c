@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.22 2007/09/16 15:41:53 culot Exp $	*/
+/*	$calcurse: io.c,v 1.23 2007/10/21 13:42:34 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -92,14 +92,14 @@ progress_bar(progress_bar_t type, int progress)
 	}
 
 	/* Draw the progress bar. */
-	mvwprintw(swin, 1, ipos, barchar);
-	mvwprintw(swin, 1, epos[STEPS - 1], barchar);
-	custom_apply_attr(swin, ATTR_HIGHEST);
+	mvwprintw(win[STA].p, 1, ipos, barchar);
+	mvwprintw(win[STA].p, 1, epos[STEPS - 1], barchar);
+	custom_apply_attr(win[STA].p, ATTR_HIGHEST);
 	for (i = ipos + 1; i < epos[progress]; i++)
-		mvwaddch(swin, 1, i, ' ' | A_REVERSE);
-	custom_remove_attr(swin, ATTR_HIGHEST);
-	wmove(swin, 0, 0);
-	wrefresh(swin);
+		mvwaddch(win[STA].p, 1, i, ' ' | A_REVERSE);
+	custom_remove_attr(win[STA].p, ATTR_HIGHEST);
+	wmove(win[STA].p, 0, 0);
+	wrefresh(win[STA].p);
 	usleep(SLEEPTIME); 
 }
 
@@ -135,11 +135,11 @@ io_get_export_stream(void)
 	
 	while (stream == NULL) {
 		status_mesg(question, "");
-		updatestring(swin, &stream_name, 0, 1);
+		updatestring(win[STA].p, &stream_name, 0, 1);
 		stream = fopen(stream_name, "w");
 		if (stream == NULL) {
 			status_mesg(wrong_name, press_enter);
-			wgetch(swin);
+			wgetch(win[STA].p);
 		}
 	}
 	free(stream_name);
@@ -521,7 +521,7 @@ io_save_cal(conf_t *conf)
 	/* Print a message telling data were saved */
         if (!conf->skip_system_dialogs) {
                 status_mesg(save_success, enter);
-                wgetch(swin);
+                wgetch(win[STA].p);
         }
 }
 
@@ -685,7 +685,7 @@ io_load_todo(void)
 	data_file = fopen(path_todo, "r");
 	if (data_file == NULL) {
 		status_mesg(mesg_line1, mesg_line2);
-		wgetch(swin);
+		wgetch(win[STA].p);
 	}
 	for (;;) {
 		c = getc(data_file);
@@ -767,10 +767,10 @@ io_startup_screen(bool skip_dialogs, int no_data_file)
 
 	if (no_data_file != 0) {
 		status_mesg(welcome_mesg, enter);
-		wgetch(swin);
+		wgetch(win[STA].p);
 	} else if (!skip_dialogs) {
 		status_mesg(data_mesg, enter);
-		wgetch(swin);
+		wgetch(win[STA].p);
 	}
 }
 
@@ -820,6 +820,6 @@ io_export_data(export_mode_t mode, conf_t *conf)
 
 	if (!conf->skip_system_dialogs && mode == IO_EXPORT_INTERACTIVE) {
 		status_mesg(success, enter);
-		wgetch(swin);
+		wgetch(win[STA].p);
 	}
 }
