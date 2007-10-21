@@ -1,4 +1,4 @@
-/*	$calcurse: custom.c,v 1.16 2007/08/15 15:37:53 culot Exp $	*/
+/*	$calcurse: custom.c,v 1.17 2007/10/21 13:41:02 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -215,9 +215,9 @@ custom_load_conf(conf_t *conf, int background)
 	data_file = fopen(path_conf, "r");
 	if (data_file == NULL) {
 		status_mesg(mesg_line1, mesg_line2);
-                wnoutrefresh(swin);
+                wnoutrefresh(win[STA].p);
                 doupdate();
-		wgetch(swin);
+		wgetch(win[STA].p);
 	}
 	var = 0;
 	pthread_mutex_lock(&nbar->mutex);
@@ -332,22 +332,22 @@ config_bar(void)
 	smlspc = 2;
 	spc = 15;
 
-	custom_apply_attr(swin, ATTR_HIGHEST);
-	mvwprintw(swin, 0, 2, "Q");
-	mvwprintw(swin, 1, 2, "G");
-	mvwprintw(swin, 0, 2 + spc, "L");
-	mvwprintw(swin, 1, 2 + spc, "C");
-	mvwprintw(swin, 0, 2 + 2*spc, "N");
-	custom_remove_attr(swin, ATTR_HIGHEST);
+	custom_apply_attr(win[STA].p, ATTR_HIGHEST);
+	mvwprintw(win[STA].p, 0, 2, "Q");
+	mvwprintw(win[STA].p, 1, 2, "G");
+	mvwprintw(win[STA].p, 0, 2 + spc, "L");
+	mvwprintw(win[STA].p, 1, 2 + spc, "C");
+	mvwprintw(win[STA].p, 0, 2 + 2*spc, "N");
+	custom_remove_attr(win[STA].p, ATTR_HIGHEST);
 
-	mvwprintw(swin, 0, 2 + smlspc, _("Exit"));
-	mvwprintw(swin, 1, 2 + smlspc, _("General"));
-	mvwprintw(swin, 0, 2 + spc + smlspc, _("Layout"));
-	mvwprintw(swin, 1, 2 + spc + smlspc, _("Color"));
-	mvwprintw(swin, 0, 2 + 2*spc + smlspc, _("Notify"));
+	mvwprintw(win[STA].p, 0, 2 + smlspc, _("Exit"));
+	mvwprintw(win[STA].p, 1, 2 + smlspc, _("General"));
+	mvwprintw(win[STA].p, 0, 2 + spc + smlspc, _("Layout"));
+	mvwprintw(win[STA].p, 1, 2 + spc + smlspc, _("Color"));
+	mvwprintw(win[STA].p, 0, 2 + 2*spc + smlspc, _("Notify"));
 	
-	wnoutrefresh(swin);
-        wmove(swin, 0, 0);
+	wnoutrefresh(win[STA].p);
+        wmove(win[STA].p, 0, 0);
 	doupdate();
 }
 
@@ -364,11 +364,11 @@ layout_config(void)
 	_(" [1]AT    [2]AC    [3]TA    [4]CA    [5]TA    [6]TC    [7]AT    [8]CT");
 
 	status_mesg(layout_mesg, choice_mesg);
-	wgetch(swin);
+	wgetch(win[STA].p);
 	status_mesg(layout_up_mesg, layout_down_mesg);
-	wnoutrefresh(swin);
+	wnoutrefresh(win[STA].p);
 	doupdate();
-	while ((ch = wgetch(swin)) != 'q') {
+	while ((ch = wgetch(win[STA].p)) != 'q') {
 		if ( ch <= '8' && ch >= '1' ) {
 			wins_set_layout(ch - '0');
 			return;
@@ -376,145 +376,194 @@ layout_config(void)
 	}
 }
 
-/* Color theme configuration. */
+/* 
+ * Create a configuration window and initialize status and notification bar 
+ * (useful in case of window resize).
+ */
 void
-custom_color_config(int notify_bar)
+custom_confwin_init(window_t *confwin, char *label)
 {
-#define SIZE  			(2 * (NBUSERCOLORS + 1))
+        wins_get_config();
+	confwin->h = (notify_bar()) ? row - 3 : row - 2;
+	confwin->p = newwin(confwin->h, col, 0, 0);
+	box(confwin->p, 0, 0);
+	wins_show(confwin->p, label);
+	delwin(win[STA].p);
+	win[STA].p = newwin(win[STA].h, win[STA].w, win[STA].y, 
+	    win[STA].x);
+	keypad(win[STA].p, TRUE);
+	if (notify_bar()) {
+		notify_reinit_bar(win[NOT].h, win[NOT].w, 
+		    win[NOT].y, win[NOT].x);
+		notify_update_bar();
+	}
+}
+
+/* 
+ * Used to display available colors in color configuration menu.
+ * This is useful for window resizing.
+ */
+static void
+display_color_config(window_t *cwin, int *mark_fore, int *mark_back, 
+    int cursor, int need_reset, int theme_changed)
+{
+#define	SIZE 			(2 * (NBUSERCOLORS + 1))
+#define DEFAULTCOLOR		255
+#define DEFAULTCOLOR_EXT	-1
 #define CURSOR			(32 | A_REVERSE)
 #define SPACE			32
 #define MARK			88
-#define DEFAULTCOLOR		255
-#define DEFAULTCOLOR_EXT	-1
 
-	enum {
-		YPOS,
-		XPOS,
-		NBPOS
-	};
-	WINDOW *conf_win;
-	char label[BUFSIZ];
-	char *choose_color_1 = 
-	    _("Use 'X' or SPACE to select a color, "
-	    "'H/L' 'J/K' or arrow keys to move");
-	char *choose_color_2 =
-            _("('0' for no color, 'Q' to exit) :");
 	char *fore_txt = _("Foreground");
 	char *back_txt = _("Background");
+	char *default_txt = _("(terminal's default)");
 	char *bar = "          ";
 	char *box = "[ ]";
-	char *default_txt = _("(terminal's default)");
-	int i, y, x_fore, x_back, x_offset, x_spc, y_spc;
-	int win_row, box_len, bar_len, ch, cursor;
+	char *choose_color_1 = _("Use 'X' or SPACE to select a color, "
+	    "'H/L' 'J/K' or arrow keys to move");
+	char *choose_color_2 = _("('0' for no color, 'Q' to exit) :");
+	char label[BUFSIZ];
+	const unsigned Y = 3;
+	const unsigned XOFST = 5;
+	const unsigned YSPC = (row - 8) / (NBUSERCOLORS + 1);
+	const unsigned BARSIZ = strlen(bar);
+	const unsigned BOXSIZ = strlen(box);
+	const unsigned XSPC = (col - 2 * BARSIZ - 2 * BOXSIZ - 6) / 3;
+	const unsigned XFORE = XSPC;
+	const unsigned XBACK = 2 * XSPC + BOXSIZ + XOFST + BARSIZ;
+	enum {YPOS, XPOS, NBPOS};
+	unsigned i;
 	int pos[SIZE][NBPOS];
 	short colr_fore, colr_back;
-	int mark_fore, mark_back;
 	int colr[SIZE] = {
 	    COLR_RED, COLR_GREEN, COLR_YELLOW, COLR_BLUE, 
 	    COLR_MAGENTA, COLR_CYAN, COLR_DEFAULT,
 	    COLR_RED, COLR_GREEN, COLR_YELLOW, COLR_BLUE, 
-	    COLR_MAGENTA, COLR_CYAN, COLR_DEFAULT};
-
-	mark_fore = NBUSERCOLORS;
-	mark_back = SIZE - 1;
-	bar_len = strlen(bar);
-	box_len = strlen(box);
-	x_offset = 5;
-	y = 3;
-	x_spc = (col - 2 * bar_len - 2 * box_len - 6) / 3;
-	y_spc = (row - 8) / (NBUSERCOLORS + 1);
-	x_fore = x_spc;
-	x_back = 2 * x_spc + box_len + x_offset + bar_len;
+	    COLR_MAGENTA, COLR_CYAN, COLR_DEFAULT
+	};
 
 	for (i = 0; i < NBUSERCOLORS + 1; i++) {
-		pos[i][YPOS] = y + y_spc * (i + 1);
-		pos[NBUSERCOLORS + i + 1][YPOS] = y + y_spc * (i + 1);
-		pos[i][XPOS] = x_fore;
-		pos[NBUSERCOLORS + i + 1][XPOS] = x_back;
+		pos[i][YPOS] = Y + YSPC * (i + 1);
+		pos[NBUSERCOLORS + i + 1][YPOS] = Y + YSPC * (i + 1);
+		pos[i][XPOS] = XFORE;
+		pos[NBUSERCOLORS + i + 1][XPOS] = XBACK;
 	}
-	
-	clear();
-	win_row = (notify_bar) ? row - 3 : row - 2;
-	conf_win = newwin(win_row, col, 0, 0);
-	snprintf(label, BUFSIZ, _("CalCurse %s | color theme"), VERSION);
-	wins_show(conf_win, label);
-	status_mesg(choose_color_1, choose_color_2);
 
-	custom_apply_attr(conf_win, ATTR_HIGHEST);
-	mvwprintw(conf_win, y, x_fore + x_offset, fore_txt);
-	mvwprintw(conf_win, y, x_back + x_offset, back_txt);
-	custom_remove_attr(conf_win, ATTR_HIGHEST);
+	if (need_reset) {
+		delwin(cwin->p);
+		snprintf(label, BUFSIZ, _("CalCurse %s | color theme"), 
+		    VERSION);
+		custom_confwin_init(cwin, label);
+	}
 
+	if (colorize) {
+		if (theme_changed) {
+			pair_content(colr[*mark_fore], &colr_fore, 0L);
+			if (colr_fore == 255)
+				colr_fore = -1;
+			pair_content(colr[*mark_back], &colr_back, 0L);
+			if (colr_back == 255)
+				colr_back = -1;
+			init_pair(COLR_CUSTOM, colr_fore, colr_back);
+		} else {
+			/* Retrieve the actual color theme. */
+			pair_content(COLR_CUSTOM, &colr_fore, &colr_back);
+
+			if ((colr_fore == DEFAULTCOLOR) ||
+			    (colr_fore == DEFAULTCOLOR_EXT))
+				*mark_fore = NBUSERCOLORS;
+			else
+				for (i = 0; i < NBUSERCOLORS + 1; i++)
+					if (colr_fore == colr[i])
+						*mark_fore = i;
+
+			if ((colr_back == DEFAULTCOLOR) ||
+			    (colr_back == DEFAULTCOLOR_EXT))
+				*mark_back = SIZE - 1;
+			else
+				for (i = 0; i < NBUSERCOLORS + 1; i++)
+					if (colr_back == 
+					    colr[NBUSERCOLORS + 1 + i])
+						*mark_back = 
+						    NBUSERCOLORS + 1 + i;
+		}
+	}
+
+	/* color boxes */
 	for (i = 0; i < SIZE - 1; i++) {
-		mvwprintw(conf_win, pos[i][YPOS], pos[i][XPOS], box);
-		wattron(conf_win, COLOR_PAIR(colr[i]) | A_REVERSE);
-		mvwprintw(conf_win, pos[i][YPOS], 
-		    pos[i][XPOS] + x_offset, bar);
-		wattroff(conf_win, COLOR_PAIR(colr[i]) | A_REVERSE);
+		mvwprintw(cwin->p, pos[i][YPOS], pos[i][XPOS], box);
+		wattron(cwin->p, COLOR_PAIR(colr[i]) | A_REVERSE);
+		mvwprintw(cwin->p, pos[i][YPOS], pos[i][XPOS] + XOFST, bar);
+		wattroff(cwin->p, COLOR_PAIR(colr[i]) | A_REVERSE);
 	}
 
 	/* Terminal's default color */
 	i = SIZE - 1;
-	mvwprintw(conf_win, pos[i][YPOS], pos[i][XPOS], box);
-	wattron(conf_win, COLOR_PAIR(colr[i]));
-	mvwprintw(conf_win, pos[i][YPOS], 
-	    pos[i][XPOS] + x_offset, bar);
-	wattroff(conf_win, COLOR_PAIR(colr[i]));
-	mvwprintw(conf_win, pos[NBUSERCOLORS][YPOS] + 1,
-	    pos[NBUSERCOLORS][XPOS] + x_offset, default_txt);
-	mvwprintw(conf_win, pos[SIZE - 1][YPOS] + 1,
-	    pos[SIZE - 1][XPOS] + x_offset, default_txt);
+	mvwprintw(cwin->p, pos[i][YPOS], pos[i][XPOS], box);
+	wattron(cwin->p, COLOR_PAIR(colr[i]));
+	mvwprintw(cwin->p, pos[i][YPOS], pos[i][XPOS] + XOFST, bar);
+	wattroff(cwin->p, COLOR_PAIR(colr[i]));
+	mvwprintw(cwin->p, pos[NBUSERCOLORS][YPOS] + 1,
+	    pos[NBUSERCOLORS][XPOS] + XOFST, default_txt);
+	mvwprintw(cwin->p, pos[SIZE - 1][YPOS] + 1,
+	    pos[SIZE - 1][XPOS] + XOFST, default_txt);
 
+	custom_apply_attr(cwin->p, ATTR_HIGHEST);
+	mvwprintw(cwin->p, Y, XFORE + XOFST, fore_txt);
+	mvwprintw(cwin->p, Y, XBACK + XOFST, back_txt);
+	custom_remove_attr(cwin->p, ATTR_HIGHEST);
 
 	if (colorize) {
-		/* Retrieve the actual color theme. */
-		pair_content(COLR_CUSTOM, &colr_fore, &colr_back);
-
-		if ((colr_fore == DEFAULTCOLOR) ||
-		    (colr_fore == DEFAULTCOLOR_EXT))
-			mark_fore = NBUSERCOLORS;
-		else
-			for (i = 0; i < NBUSERCOLORS + 1; i++)
-				if (colr_fore == colr[i])
-					mark_fore = i;
-
-		if ((colr_back == DEFAULTCOLOR) ||
-		    (colr_back == DEFAULTCOLOR_EXT))
-			mark_back = SIZE - 1;
-		else
-			for (i = 0; i < NBUSERCOLORS + 1; i++)
-				if (colr_back == colr[NBUSERCOLORS + 1 + i])
-					mark_back = NBUSERCOLORS + 1 + i;
-
-		mvwaddch(conf_win, pos[mark_fore][YPOS], 
-		    pos[mark_fore][XPOS] + 1, MARK);
-		mvwaddch(conf_win, pos[mark_back][YPOS], 
-		    pos[mark_back][XPOS] + 1, MARK);
+		mvwaddch(cwin->p, pos[*mark_fore][YPOS], 
+		    pos[*mark_fore][XPOS] + 1, MARK);
+		mvwaddch(cwin->p, pos[*mark_back][YPOS], 
+		    pos[*mark_back][XPOS] + 1, MARK);
 	}
 
-	cursor = 0;
-	mvwaddch(conf_win, pos[cursor][YPOS], pos[cursor][XPOS] + 1,
-	    CURSOR);
-	wnoutrefresh(swin);
-	wnoutrefresh(conf_win);
+	mvwaddch(cwin->p, pos[cursor][YPOS], pos[cursor][XPOS] + 1, CURSOR);
+	status_mesg(choose_color_1, choose_color_2);
+	wnoutrefresh(win[STA].p);
+	wnoutrefresh(cwin->p);
 	doupdate();
+	if (notify_bar()) 
+		notify_update_bar();
+}
 
-	while ((ch = wgetch(swin)) != 'q') {
-		mvwaddch(conf_win, pos[cursor][YPOS], pos[cursor][XPOS] + 1,
-		    SPACE);
-		if (colorize) {
-			mvwaddch(conf_win, pos[mark_fore][YPOS], 
-			    pos[mark_fore][XPOS] + 1, SPACE);
-			mvwaddch(conf_win, pos[mark_back][YPOS], 
-			    pos[mark_back][XPOS] + 1, SPACE);
-		}
+/* Color theme configuration. */
+void
+custom_color_config(void)
+{
+	window_t conf_win;
+	int ch, cursor, need_reset, theme_changed;
+	int mark_fore, mark_back;
+
+	mark_fore = NBUSERCOLORS;
+	mark_back = SIZE - 1;
+	clear();
+	cursor = 0;
+	need_reset = 1;
+	theme_changed = 0;
+	display_color_config(&conf_win, &mark_fore, &mark_back, cursor, 
+	    need_reset, theme_changed);
+
+	while ((ch = wgetch(win[STA].p)) != 'q') {
+		need_reset = 0;
+		theme_changed = 0;
 
 		switch (ch) {
-		
+		case KEY_RESIZE:
+			endwin();
+			refresh();
+			curs_set(0);
+			need_reset = 1;
+			break;
+
 		case SPACE:
 		case 'X':
 		case 'x':
 			colorize = true;
+			need_reset = 1;
+			theme_changed = 1;
 			if (cursor > NBUSERCOLORS)
 				mark_back = cursor;
 			else
@@ -551,39 +600,13 @@ custom_color_config(int notify_bar)
 
 		case '0':
 			colorize = false;
+			need_reset = 1;
 			break;
 		}
-
-		if (colorize) {
-			pair_content(colr[mark_fore], &colr_fore, 0L);
-			if (colr_fore == 255)
-				colr_fore = -1;
-			pair_content(colr[mark_back], &colr_back, 0L);
-			if (colr_back == 255)
-				colr_back = -1;
-			init_pair(COLR_CUSTOM, colr_fore, colr_back);
-
-			mvwaddch(conf_win, pos[mark_fore][YPOS], 
-			    pos[mark_fore][XPOS] + 1, MARK);
-			mvwaddch(conf_win, pos[mark_back][YPOS], 
-			    pos[mark_back][XPOS] + 1, MARK);
-		}
-		custom_apply_attr(conf_win, ATTR_HIGHEST);
-		mvwprintw(conf_win, y, x_fore + x_offset, fore_txt);
-		mvwprintw(conf_win, y, x_back + x_offset, back_txt);
-		custom_remove_attr(conf_win, ATTR_HIGHEST);
-		mvwaddch(conf_win, pos[cursor][YPOS], 
-		    pos[cursor][XPOS] + 1, CURSOR);
-		status_mesg(choose_color_1, choose_color_2);
-		print_in_middle(conf_win, 1, 0, col, label);
-		wnoutrefresh(swin);
-		wnoutrefresh(conf_win);
-		doupdate();
-		if (notify_bar) 
-			notify_update_bar();
+		display_color_config(&conf_win, &mark_fore, &mark_back, cursor,
+		    need_reset, theme_changed);
 	}
-
-	delwin(conf_win);
+	delwin(conf_win.p);
 }
 
 /* 
@@ -641,7 +664,7 @@ custom_color_theme_name(char *theme_name)
 
 /* Prints the general options. */
 static void 
-custom_print_general_options(WINDOW *win, conf_t *conf)
+custom_print_general_options(WINDOW *optwin, conf_t *conf)
 {
 	int x_pos, y_pos;
 	char *option1 = _("auto_save = ");
@@ -654,44 +677,44 @@ custom_print_general_options(WINDOW *win, conf_t *conf)
 	x_pos = 3;
 	y_pos = 3;
 
-	mvwprintw(win, y_pos, x_pos, "[1] %s      ", option1);
-	print_option_incolor(win, conf->auto_save, y_pos,
+	mvwprintw(optwin, y_pos, x_pos, "[1] %s      ", option1);
+	print_option_incolor(optwin, conf->auto_save, y_pos,
 			     x_pos + 4 + strlen(option1));
-	mvwprintw(win, y_pos + 1, x_pos,
+	mvwprintw(optwin, y_pos + 1, x_pos,
 		 _("(if set to YES, automatic save is done when quitting)"));
 
-	mvwprintw(win, y_pos + 3, x_pos, "[2] %s      ", option2);
-	print_option_incolor(win, conf->confirm_quit, y_pos + 3,
+	mvwprintw(optwin, y_pos + 3, x_pos, "[2] %s      ", option2);
+	print_option_incolor(optwin, conf->confirm_quit, y_pos + 3,
 			     x_pos + 4 + strlen(option2));
-	mvwprintw(win, y_pos + 4, x_pos,
+	mvwprintw(optwin, y_pos + 4, x_pos,
 		 _("(if set to YES, confirmation is required before quitting)"));
 
-	mvwprintw(win, y_pos + 6, x_pos, "[3] %s      ", option3);
-	print_option_incolor(win, conf->confirm_delete, y_pos + 6,
+	mvwprintw(optwin, y_pos + 6, x_pos, "[3] %s      ", option3);
+	print_option_incolor(optwin, conf->confirm_delete, y_pos + 6,
 			     x_pos + 4 + strlen(option3));
-	mvwprintw(win, y_pos + 7, x_pos,
+	mvwprintw(optwin, y_pos + 7, x_pos,
 		 _("(if set to YES, confirmation is required before deleting an event)"));
         
-	mvwprintw(win, y_pos + 9, x_pos, "[4] %s      ", option4);
-	print_option_incolor(win, conf->skip_system_dialogs, y_pos + 9,
+	mvwprintw(optwin, y_pos + 9, x_pos, "[4] %s      ", option4);
+	print_option_incolor(optwin, conf->skip_system_dialogs, y_pos + 9,
 			     x_pos + 4 + strlen(option4));
-	mvwprintw(win, y_pos + 10, x_pos,
+	mvwprintw(optwin, y_pos + 10, x_pos,
 		 _("(if set to YES, messages about loaded and saved data will not be displayed)"));
 
-	mvwprintw(win, y_pos + 12, x_pos, "[5] %s      ", option5);
-	print_option_incolor(win, conf->skip_progress_bar , y_pos + 12,
+	mvwprintw(optwin, y_pos + 12, x_pos, "[5] %s      ", option5);
+	print_option_incolor(optwin, conf->skip_progress_bar , y_pos + 12,
 			     x_pos + 4 + strlen(option5));
-	mvwprintw(win, y_pos + 13, x_pos,
+	mvwprintw(optwin, y_pos + 13, x_pos,
 		 _("(if set to YES, progress bar will not be displayed when saving data)"));
 
-	mvwprintw(win, y_pos + 15, x_pos, "[6] %s      ", option6);
-	print_option_incolor(win, calendar_week_begins_on_monday(), y_pos + 15,
+	mvwprintw(optwin, y_pos + 15, x_pos, "[6] %s      ", option6);
+	print_option_incolor(optwin, calendar_week_begins_on_monday(), y_pos + 15,
 			     x_pos + 4 + strlen(option6));
-	mvwprintw(win, y_pos + 16, x_pos,
+	mvwprintw(optwin, y_pos + 16, x_pos,
                   _("(if set to YES, monday is the first day of the week, else it is sunday)"));
 
-	wmove(swin, 1, 0);
-	wnoutrefresh(win);
+	wmove(win[STA].p, 1, 0);
+	wnoutrefresh(optwin);
 	doupdate();
 }
 
@@ -699,21 +722,34 @@ custom_print_general_options(WINDOW *win, conf_t *conf)
 void 
 custom_general_config(conf_t *conf)
 {
-	WINDOW *conf_win;
-	char label[BUFSIZ];
+	window_t conf_win;
 	char *number_str = _("Enter an option number to change its value [Q to quit] ");
-	int ch, win_row;
+	int ch;
+	char label[BUFSIZ];
 
 	clear();
-	win_row = (notify_bar()) ? row - 3 : row - 2;
-	conf_win = newwin(win_row, col, 0, 0);
-	box(conf_win, 0, 0);
 	snprintf(label, BUFSIZ, _("CalCurse %s | general options"), VERSION);
-	wins_show(conf_win, label);
+	custom_confwin_init(&conf_win, label);
 	status_mesg(number_str, "");
-	custom_print_general_options(conf_win, conf);
-	while ((ch = wgetch(swin)) != 'q') {
+	custom_print_general_options(conf_win.p, conf);
+	while ((ch = wgetch(win[STA].p)) != 'q') {
 		switch (ch) {
+		case KEY_RESIZE:
+			endwin();
+			refresh();
+			curs_set(0);
+			delwin(conf_win.p);
+			custom_confwin_init(&conf_win, label);
+			delwin(win[STA].p);
+			win[STA].p = newwin(win[STA].h, win[STA].w, win[STA].y, 
+			    win[STA].x);
+			keypad(win[STA].p, TRUE);
+			if (notify_bar()) {
+				notify_reinit_bar(win[NOT].h, win[NOT].w, 
+				    win[NOT].y, win[NOT].x);
+				notify_update_bar();
+			}
+			break;
 		case '1':	
 			conf->auto_save = !conf->auto_save;
 			break;
@@ -735,7 +771,8 @@ custom_general_config(conf_t *conf)
 			calendar_change_first_day_of_week();
                         break;
 		}
-		custom_print_general_options(conf_win, conf);
+		status_mesg(number_str, "");
+		custom_print_general_options(conf_win.p, conf);
 	}
-	delwin(conf_win);
+	delwin(conf_win.p);
 }
