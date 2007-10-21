@@ -1,4 +1,4 @@
-/*	$calcurse: custom.h,v 1.9 2007/08/15 15:37:53 culot Exp $	*/
+/*	$calcurse: custom.h,v 1.10 2007/10/21 13:41:29 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -28,6 +28,7 @@
 #define CALCURSE_CUSTOM_H
 
 #include "vars.h"
+#include "wins.h"
 
 #define NBUSERCOLORS	6
 
@@ -72,8 +73,9 @@ void 	custom_remove_attr(WINDOW *, int);
 void 	custom_load_conf(conf_t *, int);
 void 	config_bar(void);
 void 	layout_config(void);
-void 	custom_color_config(int);
+void 	custom_color_config(void);
 void 	custom_color_theme_name(char *);
+void	custom_confwin_init(window_t *, char *);
 void 	custom_general_config(conf_t *);
 
 #endif /* CALCURSE_CUSTOM_H */
