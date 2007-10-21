@@ -1,3 +1,18 @@
+21 Oct 2007:
+	window_t structure updated to store WINDOW pointer
+	window_e enum updated to shorten names, winprop_e and wins_prop()
+	suppressed
+	cwin, awin, twin, swin variables suppressed
+	help_screen() updated to make automatic resize available inside help
+	screens (thanks Sebastian for reporting the problem)
+	help_wins_reset(), help_wins_init(), help_wins_reinit() and 
+	wanted_page() created
+	help_pages_e enum added
+	custom_general_config() and notify_config_bar() updated to handle 
+	basic window resizing
+	custom_confwin_init() and display_color_config() created
+	custom_color_config() rewritten
+
 14 Oct 2007:
 	next_arg() rewritten, date_arg() improved
 	bugfix: wins_reset() modified to avoid blank screen when resizing
