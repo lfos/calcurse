@@ -1,4 +1,4 @@
-/*	$calcurse: notify.c,v 1.21 2007/10/16 19:14:40 culot Exp $	*/
+/*	$calcurse: notify.c,v 1.22 2007/10/21 13:41:51 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -100,9 +100,7 @@ notify_init_bar(void)
 	pthread_mutex_init(&notify->mutex, NULL);
 	pthread_mutex_init(&notify_app->mutex, NULL);
 	notify_app->got_app = 0;
-	notify->win = newwin(wins_prop(NOTIFY, HEIGHT), 
-	    wins_prop(NOTIFY, WIDTH), wins_prop(NOTIFY, YPOS), 
-	    wins_prop(NOTIFY, XPOS));
+	notify->win = newwin(win[NOT].h, win[NOT].w, win[NOT].y, win[NOT].x);
 	extract_aptsfile();
 }
 
@@ -409,7 +407,7 @@ notify_start_main_thread(void)
 
 /* Print options related to the notify-bar. */
 static void 
-notify_print_options(WINDOW *win, int col)
+notify_print_options(WINDOW *optwin, int col)
 {
 	enum {SHOW, DATE, CLOCK, WARN, CMD, NB_OPT};
 
@@ -460,10 +458,10 @@ notify_print_options(WINDOW *win, int col)
 
 	l = strlen(opt[SHOW].name);
 	x = x_pos + x_offset + l;
-	mvwprintw(win, y_pos, x_pos, "[1] %s", opt[SHOW].name);
-	erase_window_part(win, x, y_pos, maxcol, y_pos);
-	print_option_incolor(win, nbar->show, y_pos, x);
-	mvwprintw(win, y_pos + 1, x_pos, opt[SHOW].desc);
+	mvwprintw(optwin, y_pos, x_pos, "[1] %s", opt[SHOW].name);
+	erase_window_part(optwin, x, y_pos, maxcol, y_pos);
+	print_option_incolor(optwin, nbar->show, y_pos, x);
+	mvwprintw(optwin, y_pos + 1, x_pos, opt[SHOW].desc);
 
 	for (i = 1; i < NB_OPT; i++) {
 		l = strlen(opt[i].name);
@@ -471,23 +469,23 @@ notify_print_options(WINDOW *win, int col)
 		x = x_pos + x_offset + l;
 		maxlen = maxcol - x - 2;
 
-		mvwprintw(win, y, x_pos, "[%d] %s", i + 1, opt[i].name);
-		erase_window_part(win, x, y, maxcol, y);
-		custom_apply_attr(win, ATTR_HIGHEST);
+		mvwprintw(optwin, y, x_pos, "[%d] %s", i + 1, opt[i].name);
+		erase_window_part(optwin, x, y, maxcol, y);
+		custom_apply_attr(optwin, ATTR_HIGHEST);
 		if (strlen(opt[i].value) < maxlen)
-			mvwprintw(win, y, x, "%s", opt[i].value);
+			mvwprintw(optwin, y, x, "%s", opt[i].value);
 		else {
 			strncpy(buf, opt[i].value, maxlen - 1);
 			buf[maxlen - 1] = '\0';
-			mvwprintw(win, y, x, "%s...", buf);
+			mvwprintw(optwin, y, x, "%s...", buf);
 		}
-		custom_remove_attr(win, ATTR_HIGHEST);
-		mvwprintw(win, y + 1, x_pos, opt[i].desc);
+		custom_remove_attr(optwin, ATTR_HIGHEST);
+		mvwprintw(optwin, y + 1, x_pos, opt[i].desc);
 	}
 
 	pthread_mutex_unlock(&nbar->mutex);
-	wmove(swin, 1, 0);
-	wnoutrefresh(win);
+	wmove(win[STA].p, 1, 0);
+	wnoutrefresh(optwin);
 	doupdate();
 }
 
@@ -495,7 +493,7 @@ notify_print_options(WINDOW *win, int col)
 void 
 notify_config_bar(void)
 {
-	WINDOW *conf_win = 0L;
+	window_t conf_win;
 	char label[BUFSIZ];
 	char *buf;
 	char *number_str = 
@@ -507,37 +505,37 @@ notify_config_bar(void)
 	char *count_str = 
 	    _("Enter the number of seconds (0 not to be warned before an appointment)");
 	char *cmd_str = _("Enter the notification command ");
-	int ch = 0 , win_row, change_win = 1;
+	int ch = 0 , change_win = 1;
 
 	buf = (char *)malloc(BUFSIZ);
-	win_row = (notify_bar()) ? row - 3 : row - 2;
-	snprintf(label, BUFSIZ, 
-	    _("CalCurse %s | notify-bar options"), VERSION);
+	snprintf(label, BUFSIZ, _("CalCurse %s | notify-bar options"), VERSION);
+	custom_confwin_init(&conf_win, label);
 
 	while (ch != 'q') {
-		if (change_win) {
-			conf_win = newwin(win_row, col, 0, 0);
-			box(conf_win, 0, 0);
-			wins_show(conf_win, label);
-		}
+		if (change_win)
+			custom_confwin_init(&conf_win, label);
 		status_mesg(number_str, "");
-		notify_print_options(conf_win, col);
+		notify_print_options(conf_win.p, col);
 		*buf = '\0';
-		ch = wgetch(swin);
+		ch = wgetch(win[STA].p);
 
 		switch (ch) {
+		case KEY_RESIZE:
+			endwin();
+			refresh();
+			curs_set(0);
+			delwin(conf_win.p);
+			custom_confwin_init(&conf_win, label);
+			break;
 		case '1':	
 			pthread_mutex_lock(&nbar->mutex);
 			nbar->show = !nbar->show;
 			pthread_mutex_unlock(&nbar->mutex);
-			if (notify_bar()) {
+			if (notify_bar())
 				notify_start_main_thread();
-				win_row = row - 3;
-			} else {
+			else
 				notify_stop_main_thread();
-				win_row = row - 2;
-			}
-			delwin(conf_win);
+			delwin(conf_win.p);
 			change_win = 1;
 			break;
 		case '2':
@@ -545,7 +543,7 @@ notify_config_bar(void)
 			pthread_mutex_lock(&nbar->mutex);
 			strncpy(buf, nbar->datefmt, strlen(nbar->datefmt) + 1);
 			pthread_mutex_unlock(&nbar->mutex);
-			if (updatestring(swin, &buf, 0, 1) == 0) {
+			if (updatestring(win[STA].p, &buf, 0, 1) == 0) {
 				pthread_mutex_lock(&nbar->mutex);
 				strncpy(nbar->datefmt, buf, strlen(buf) + 1);
 				pthread_mutex_unlock(&nbar->mutex);
@@ -557,7 +555,7 @@ notify_config_bar(void)
 			pthread_mutex_lock(&nbar->mutex);
 			strncpy(buf, nbar->timefmt, strlen(nbar->timefmt) + 1);
 			pthread_mutex_unlock(&nbar->mutex);
-			if (updatestring(swin, &buf, 0, 1) == 0) {
+			if (updatestring(win[STA].p, &buf, 0, 1) == 0) {
 				pthread_mutex_lock(&nbar->mutex);
 				strncpy(nbar->timefmt, buf, strlen(buf) + 1);
 				pthread_mutex_unlock(&nbar->mutex);
@@ -569,7 +567,7 @@ notify_config_bar(void)
 			pthread_mutex_lock(&nbar->mutex);
 			printf(buf, "%d", nbar->cntdwn);
 			pthread_mutex_unlock(&nbar->mutex);
-			if (updatestring(swin, &buf, 0, 1) == 0 && 
+			if (updatestring(win[STA].p, &buf, 0, 1) == 0 && 
 				is_all_digit(buf) && 
 				atoi(buf) >= 0 && atoi(buf) <= DAYINSEC) {
 				pthread_mutex_lock(&nbar->mutex);
@@ -583,7 +581,7 @@ notify_config_bar(void)
 			pthread_mutex_lock(&nbar->mutex);
 			strncpy(buf, nbar->cmd, strlen(nbar->cmd) + 1);
 			pthread_mutex_unlock(&nbar->mutex);
-			if (updatestring(swin, &buf, 0, 1) == 0) {
+			if (updatestring(win[STA].p, &buf, 0, 1) == 0) {
 				pthread_mutex_lock(&nbar->mutex);
 				strncpy(nbar->cmd, buf, strlen(buf) + 1);
 				pthread_mutex_unlock(&nbar->mutex);
@@ -593,5 +591,5 @@ notify_config_bar(void)
 		}
 	}
 	free(buf);
-	delwin(conf_win);
+	delwin(conf_win.p);
 }
