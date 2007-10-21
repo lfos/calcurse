@@ -1,4 +1,4 @@
-/*	$Id: wins.c,v 1.7 2007/10/16 19:15:43 culot Exp $	*/
+/*	$Id: wins.c,v 1.8 2007/10/21 13:39:49 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -33,8 +33,10 @@
 #include "custom.h"
 #include "wins.h"
 
+/* Variables to handle calcurse windows. */
+window_t win[NBWINS];
+
 static window_e 	slctd_win;
-static window_t 	win[NBWINS]; 
 static int		layout;
 
 /* Get the current layout. */
@@ -55,7 +57,7 @@ wins_set_layout(int nb)
 void
 wins_slctd_init(void)
 {
-	wins_slctd_set(CALENDAR);
+	wins_slctd_set(CAL);
 }
 
 /* Returns an enum which corresponds to the window which is selected. */
@@ -76,37 +78,10 @@ wins_slctd_set(window_e window)
 void
 wins_slctd_next(void)
 {
-	if (slctd_win == TODO)
-		slctd_win = CALENDAR;
+	if (slctd_win == TOD)
+		slctd_win = CAL;
 	else
 		slctd_win++;
-}
-
-/* Return one property of the given window. */
-int
-wins_prop(window_e window, winprop_e property)
-{
-	int prop = 0;
-
-	switch (property) {
-	case WIDTH:
-		prop = (int)win[window].w;
-		break;
-	case HEIGHT:
-		prop = (int)win[window].h;
-		break;
-	case XPOS:
-		prop = win[window].x;
-		break;
-	case YPOS:
-		prop = win[window].y;
-		break;
-	default:
-		ierror(_("FATAL ERROR in wins_prop: property unknown\n"));
-		/* NOTREACHED */
-	}
-
-	return (prop);
 }
 
 /* Create all the windows. */
@@ -119,26 +94,27 @@ wins_init(void)
 	 * Create the three main windows plus the status bar and the pad used to
 	 * display appointments and event. 
 	 */
-	cwin = newwin(CALHEIGHT, CALWIDTH, win[CALENDAR].y, win[CALENDAR].x);
+	win[CAL].p = newwin(CALHEIGHT, CALWIDTH, win[CAL].y, win[CAL].x);
 	snprintf(label, BUFSIZ, _("Calendar"));
-	wins_show(cwin, label);
-	awin = newwin(win[APPOINTMENT].h, win[APPOINTMENT].w, 
-	    win[APPOINTMENT].y, win[APPOINTMENT].x);
+	wins_show(win[CAL].p, label);
+
+	win[APP].p = newwin(win[APP].h, win[APP].w, win[APP].y, win[APP].x);
 	snprintf(label, BUFSIZ, _("Appointments"));
-	wins_show(awin, label);
-	apad->width = win[APPOINTMENT].w - 3;
+	wins_show(win[APP].p, label);
+	apad->width = win[APP].w - 3;
 	apad->ptrwin = newpad(apad->length, apad->width);
-	twin = newwin(win[TODO].h, win[TODO].w, win[TODO].y, win[TODO].x);
+
+	win[TOD].p = newwin(win[TOD].h, win[TOD].w, win[TOD].y, win[TOD].x);
 	snprintf(label, BUFSIZ, _("ToDo"));
-	wins_show(twin, label);
-	swin = newwin(win[STATUS].h, win[STATUS].w, win[STATUS].y, 
-	    win[STATUS].x);
+	wins_show(win[TOD].p, label);
+
+	win[STA].p = newwin(win[STA].h, win[STA].w, win[STA].y, win[STA].x);
 
 	/* Enable function keys (i.e. arrow keys) in those windows */
-        keypad(swin, TRUE);
-        keypad(twin, TRUE);
-        keypad(awin, TRUE);
-        keypad(cwin, TRUE);
+        keypad(win[CAL].p, TRUE);
+        keypad(win[APP].p, TRUE);
+        keypad(win[TOD].p, TRUE);
+        keypad(win[STA].p, TRUE);
 }
 
 /* 
@@ -148,16 +124,16 @@ wins_init(void)
 void 
 wins_reinit(void)
 {
-        delwin(swin);
-        delwin(cwin);
-        delwin(awin);
+        delwin(win[STA].p);
+        delwin(win[CAL].p);
+        delwin(win[APP].p);
 	delwin(apad->ptrwin);
-        delwin(twin);
+        delwin(win[TOD].p);
         wins_get_config();
         wins_init();
 	if (notify_bar()) 
-		notify_reinit_bar(win[NOTIFY].h, win[NOTIFY].w, win[NOTIFY].y, 
-		    win[NOTIFY].x);
+		notify_reinit_bar(win[NOT].h, win[NOT].w, win[NOT].y, 
+		    win[NOT].x);
 }
 
 /* Show the window with a border and a label. */
@@ -187,101 +163,100 @@ wins_get_config(void)
 	getmaxyx(stdscr, row, col);
 
 	/* fixed values for status, notification bars and calendar */
-	win[STATUS].h = STATUSHEIGHT;
-	win[STATUS].w = col;
-	win[STATUS].y = row - win[STATUS].h;
-	win[STATUS].x = 0;
+	win[STA].h = STATUSHEIGHT;
+	win[STA].w = col;
+	win[STA].y = row - win[STA].h;
+	win[STA].x = 0;
 
 	if (notify_bar()) {
-		win[NOTIFY].h = 1;
-		win[NOTIFY].w = col;
-		win[NOTIFY].y = win[STATUS].y - 1;
-		win[NOTIFY].x = 0;
+		win[NOT].h = 1;
+		win[NOT].w = col;
+		win[NOT].y = win[STA].y - 1;
+		win[NOT].x = 0;
 	} else {
-		win[NOTIFY].h = 0;
-		win[NOTIFY].w = 0;
-		win[NOTIFY].y = 0;
-		win[NOTIFY].x = 0;
+		win[NOT].h = 0;
+		win[NOT].w = 0;
+		win[NOT].y = 0;
+		win[NOT].x = 0;
 	}
 
 	if (layout <= 4) { /* APPOINTMENT is the biggest panel */
-		win[APPOINTMENT].w = col - CALWIDTH;
-		win[APPOINTMENT].h = row - (win[STATUS].h + win[NOTIFY].h);
-		win[TODO].w = CALWIDTH;
-		win[TODO].h = row - (CALHEIGHT + win[STATUS].h + win[NOTIFY].h);
+		win[APP].w = col - CALWIDTH;
+		win[APP].h = row - (win[STA].h + win[NOT].h);
+		win[TOD].w = CALWIDTH;
+		win[TOD].h = row - (CALHEIGHT + win[STA].h + win[NOT].h);
 	} else { 		/* TODO is the biggest panel */
-		win[TODO].w = col - CALWIDTH;
-		win[TODO].h = row - (win[STATUS].h + win[NOTIFY].h);
-		win[APPOINTMENT].w = CALWIDTH;
-		win[APPOINTMENT].h = row - (CALHEIGHT + win[STATUS].h + 
-		    win[NOTIFY].h);
+		win[TOD].w = col - CALWIDTH;
+		win[TOD].h = row - (win[STA].h + win[NOT].h);
+		win[APP].w = CALWIDTH;
+		win[APP].h = row - (CALHEIGHT + win[STA].h + win[NOT].h);
 	}
 
 	/* defining the layout */
 	switch (layout) {
 	case 1:
-		win[APPOINTMENT].y = 0;
-		win[APPOINTMENT].x = 0;
-		win[CALENDAR].y = 0;
-		win[TODO].x = win[APPOINTMENT].w;
-		win[TODO].y = CALHEIGHT;
-		win[CALENDAR].x = win[APPOINTMENT].w;
+		win[APP].y = 0;
+		win[APP].x = 0;
+		win[CAL].y = 0;
+		win[TOD].x = win[APP].w;
+		win[TOD].y = CALHEIGHT;
+		win[CAL].x = win[APP].w;
 		break;
 	case 2:
-		win[APPOINTMENT].y = 0;
-		win[APPOINTMENT].x = 0;
-		win[TODO].y = 0;
-		win[TODO].x = win[APPOINTMENT].w;
-		win[CALENDAR].x = win[APPOINTMENT].w;
-		win[CALENDAR].y = win[TODO].h;
+		win[APP].y = 0;
+		win[APP].x = 0;
+		win[TOD].y = 0;
+		win[TOD].x = win[APP].w;
+		win[CAL].x = win[APP].w;
+		win[CAL].y = win[TOD].h;
 		break;
 	case 3:
-		win[APPOINTMENT].y = 0;
-		win[TODO].x = 0;
-		win[CALENDAR].x = 0;
-		win[CALENDAR].y = 0;
-		win[APPOINTMENT].x = CALWIDTH;
-		win[TODO].y = CALHEIGHT;
+		win[APP].y = 0;
+		win[TOD].x = 0;
+		win[CAL].x = 0;
+		win[CAL].y = 0;
+		win[APP].x = CALWIDTH;
+		win[TOD].y = CALHEIGHT;
 		break;
 	case 4:
-		win[APPOINTMENT].y = 0;
-		win[TODO].x = 0;
-		win[TODO].y = 0;
-		win[CALENDAR].x = 0;
-		win[APPOINTMENT].x = CALWIDTH;
-		win[CALENDAR].y = win[TODO].h;
+		win[APP].y = 0;
+		win[TOD].x = 0;
+		win[TOD].y = 0;
+		win[CAL].x = 0;
+		win[APP].x = CALWIDTH;
+		win[CAL].y = win[TOD].h;
 		break;
 	case 5:
-		win[TODO].y = 0;
-		win[TODO].x = 0;
-		win[CALENDAR].y = 0;
-		win[APPOINTMENT].y = CALHEIGHT;
-		win[APPOINTMENT].x = win[TODO].w;
-		win[CALENDAR].x = win[TODO].w;
+		win[TOD].y = 0;
+		win[TOD].x = 0;
+		win[CAL].y = 0;
+		win[APP].y = CALHEIGHT;
+		win[APP].x = win[TOD].w;
+		win[CAL].x = win[TOD].w;
 		break;
 	case 6:
-		win[TODO].y = 0;
-		win[TODO].x = 0;
-		win[APPOINTMENT].y = 0;
-		win[APPOINTMENT].x = win[TODO].w;
-		win[CALENDAR].x = win[TODO].w;
-		win[CALENDAR].y = win[APPOINTMENT].h;
+		win[TOD].y = 0;
+		win[TOD].x = 0;
+		win[APP].y = 0;
+		win[APP].x = win[TOD].w;
+		win[CAL].x = win[TOD].w;
+		win[CAL].y = win[APP].h;
 		break;
 	case 7:
-		win[TODO].y = 0;
-		win[APPOINTMENT].x = 0;
-		win[CALENDAR].x = 0;
-		win[CALENDAR].y = 0;
-		win[TODO].x = CALWIDTH;
-		win[APPOINTMENT].y = CALHEIGHT;
+		win[TOD].y = 0;
+		win[APP].x = 0;
+		win[CAL].x = 0;
+		win[CAL].y = 0;
+		win[TOD].x = CALWIDTH;
+		win[APP].y = CALHEIGHT;
 		break;
 	case 8:
-		win[TODO].y = 0;
-		win[APPOINTMENT].x = 0;
-		win[CALENDAR].x = 0;
-		win[APPOINTMENT].y = 0;
-		win[TODO].x = CALWIDTH;
-		win[CALENDAR].y = win[APPOINTMENT].h;
+		win[TOD].y = 0;
+		win[APP].x = 0;
+		win[CAL].x = 0;
+		win[APP].y = 0;
+		win[TOD].x = CALWIDTH;
+		win[CAL].y = win[APP].h;
 		break;
 	}
 }
@@ -343,22 +318,22 @@ wins_update(void)
 {
 	switch (slctd_win) {
 
-	case CALENDAR:
-		border_color(cwin);
-		border_nocolor(awin);
-		border_nocolor(twin);
+	case CAL:
+		border_color(win[CAL].p);
+		border_nocolor(win[APP].p);
+		border_nocolor(win[TOD].p);
 		break;
 
-	case APPOINTMENT:
-		border_color(awin);
-		border_nocolor(cwin);
-		border_nocolor(twin);
+	case APP:
+		border_color(win[APP].p);
+		border_nocolor(win[CAL].p);
+		border_nocolor(win[TOD].p);
 		break;
 
-	case TODO:
-		border_color(twin);
-		border_nocolor(awin);
-		border_nocolor(cwin);
+	case TOD:
+		border_color(win[TOD].p);
+		border_nocolor(win[APP].p);
+		border_nocolor(win[CAL].p);
 		break;
 
 	default:
@@ -366,13 +341,13 @@ wins_update(void)
 		/* NOTREACHED */
 	}
 
-	apoint_update_panel(&win[APPOINTMENT], slctd_win);
-	todo_update_panel(&win[TODO], slctd_win);
-	calendar_update_panel(cwin);
+	apoint_update_panel(&win[APP], slctd_win);
+	todo_update_panel(&win[TOD], slctd_win);
+	calendar_update_panel(win[CAL].p);
 	status_bar();
 	if (notify_bar()) 
 		notify_update_bar();
-        wmove(swin, 0, 0);
+        wmove(win[STA].p, 0, 0);
 	doupdate();
 }
 
