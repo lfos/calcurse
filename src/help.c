@@ -1,4 +1,4 @@
-/*	$calcurse: help.c,v 1.19 2007/07/28 13:11:42 culot Exp $	*/
+/*	$calcurse: help.c,v 1.20 2007/10/21 13:37:30 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -35,6 +35,28 @@
 #include "utils.h"
 #include "notify.h"
 
+typedef enum {
+	HELP_MAIN,
+	HELP_SAVE,
+	HELP_EXPORT,
+	HELP_DISPLACEMENT,
+	HELP_VIEW,
+	HELP_TAB,
+	HELP_GOTO,
+	HELP_DELETE,
+	HELP_ADD,
+	HELP_EDIT,
+	HELP_PRIORITY,
+	HELP_REPEAT,
+	HELP_FLAG,
+	HELP_CONFIG,
+	HELP_GENERAL,
+	HELP_OTHER,
+	HELP_CREDITS,
+	HELPSCREENS,
+	NOPAGE
+} help_pages_e;
+
 /* Returns the number of lines in an help text. */
 static int 
 get_help_lines(char *text)
@@ -53,57 +75,187 @@ get_help_lines(char *text)
  * of lines that were written. 
  */
 static int 
-write_help_pad(WINDOW *win, char *title, char *text, int pad_width)
+write_help_pad(window_t *win, help_page_t *hpage)
 {
 	int nl_title = 0;
 	int nl_text = 0;
 	
-	nl_text = get_help_lines(text);
-	nl_title = get_help_lines(title);
-	erase_window_part(win, 0, 0, BUFSIZ, pad_width);
-	custom_apply_attr(win, ATTR_HIGHEST);
-	mvwprintw(win, 0, 0, "%s", title);
-	custom_remove_attr(win, ATTR_HIGHEST);
-	mvwprintw(win, nl_title, 0, "%s", text);
-	return nl_text + nl_title;
+	nl_text = get_help_lines(hpage->text);
+	nl_title = get_help_lines(hpage->title);
+	erase_window_part(win->p, 0, 0, BUFSIZ, win->w);
+	custom_apply_attr(win->p, ATTR_HIGHEST);
+	mvwprintw(win->p, 0, 0, "%s", hpage->title);
+	custom_remove_attr(win->p, ATTR_HIGHEST);
+	mvwprintw(win->p, nl_title, 0, "%s", hpage->text);
+	return (nl_text + nl_title);
+}
+
+/* 
+ * Create and init help screen and its pad, which is used to make the scrolling
+ * faster. 
+ */
+static void
+help_wins_init(window_t *hwin, window_t *hpad, const int PADOFFSET)
+{
+	char label[BUFSIZ];
+
+	hwin->h = (notify_bar()) ? row - 3 : row - 2;
+	hwin->p = newwin(hwin->h, col, 0, 0);
+	hpad->w = col - 2 * PADOFFSET + 1; 
+	hpad->p = newpad(BUFSIZ, hpad->w);
+	box(hwin->p, 0, 0);
+	snprintf(label, BUFSIZ, _("CalCurse %s | help"), VERSION);
+	wins_show(hwin->p, label);
+}
+
+/* 
+ * Delete the existing windows and recreate them with their new
+ * size and placement.
+ */
+static void 
+help_wins_reinit(window_t *hwin, window_t *hpad, const int PADOFFSET)
+{
+        delwin(hpad->p);
+        delwin(hwin->p);
+        wins_get_config();
+        help_wins_init(hwin, hpad, PADOFFSET);
+}
+
+/* Reset the screen, needed when resizing terminal for example. */
+static void
+help_wins_reset(window_t *hwin, window_t *hpad, const int PADOFFSET)
+{
+	endwin();
+	refresh();
+	curs_set(0);
+        delwin(win[STA].p);
+	help_wins_reinit(hwin, hpad, PADOFFSET);
+	win[STA].p = newwin(win[STA].h, win[STA].w, win[STA].y, win[STA].x);
+        keypad(win[STA].p, TRUE);
+	if (notify_bar()) 
+		notify_reinit_bar(win[NOT].h, win[NOT].w, win[NOT].y, 
+		    win[NOT].x);
+	status_bar();
+	if (notify_bar()) 
+		notify_update_bar();
+}
+
+/* Association between a key pressed and its corresponding help page. */
+static int
+wanted_page(int ch)
+{
+	int page;
+
+	switch (ch) {
+
+	case '?':
+		page = HELP_MAIN;
+		break;
+
+	case '!':
+		page = HELP_FLAG;
+		break;
+
+	case CTRL('r'):
+	case CTRL('a'):
+	case CTRL('t'):
+	case CTRL('h'):
+	case CTRL('j'):
+	case CTRL('k'):
+	case CTRL('l'):
+		page = HELP_GENERAL;
+		break;
+
+	case 's':
+		page = HELP_SAVE;
+		break;
+
+	case 'x':
+		page = HELP_EXPORT;
+		break;
+
+	case 'h':
+	case 'l':
+	case 'j':
+	case 'k':
+	case 259:
+	case 258:
+	case 260:
+	case 261:
+		page = HELP_DISPLACEMENT;
+		break;
+
+	case 'a':
+		page = HELP_ADD;
+		break;
+
+	case 'g':
+		page = HELP_GOTO;
+		break;
+
+	case 'd':
+		page = HELP_DELETE;
+		break;
+
+	case 'e':
+		page = HELP_EDIT;
+		break;
+
+	case 'c':
+		page = HELP_CONFIG;
+		break;
+
+	case 'o':
+		page = HELP_OTHER;
+		break;
+
+	case 'r':
+		page = HELP_REPEAT;
+		break;
+
+	case 'v':
+		page = HELP_VIEW;
+		break;
+
+	case '+':
+	case '-':
+		page = HELP_PRIORITY;
+		break;
+
+	case 9:
+		page = HELP_TAB;
+		break;
+
+	case '@':
+		page = HELP_CREDITS;
+		break;	
+
+	default:
+		page = NOPAGE;
+		break;
+	}
+
+	return (page);
 }
 
 /* Draws the help screen */
 void 
 help_screen(void)
 {
-	WINDOW *help_win = NULL;
-	WINDOW *help_pad = NULL;
-	char label[BUFSIZ];
+	window_t hwin;
+	window_t hpad;
+	const int PADOFFSET = 4;
+        const int TITLELINES = 3;
 	int ch = '?';
-	int help_row, text_lines;
-	int help_col = col;
-        int title_lines = 3;
-	int pad_offset = 4;
-	int pad_width = help_col - 2*pad_offset + 1; 
+	int text_lines;
 	int first_line = 0, nl = 0;
-	
-	help_page_t help_main;
-	help_page_t help_save;
-	help_page_t help_export;
-	help_page_t help_displacement;
-	help_page_t help_view;
-	help_page_t help_tab;
-	help_page_t help_goto;
-	help_page_t help_delete;
-	help_page_t help_add;
-	help_page_t help_edit;
-	help_page_t help_priority;
-	help_page_t help_repeat;
-	help_page_t help_flag;
-	help_page_t help_config;
-	help_page_t help_general;
-	help_page_t help_other;
-	help_page_t help_credits;
+	int page, oldpage;
+	int need_resize;
+	help_page_t hscr[HELPSCREENS];
 
-	help_main.title = 
+	hscr[HELP_MAIN].title = 
      _("       Welcome to Calcurse. This is the main help screen.\n");
-	help_main.text  =
+	hscr[HELP_MAIN].text  =
     _(" Moving around:  Press CTRL-P or CTRL-N to scroll text upward or\n"
     "                 downward inside help screens, if necessary.\n\n"
     "     Exit help:  When finished, press 'Q' to exit help and go back\n"
@@ -117,8 +269,8 @@ help_screen(void)
     "                 corresponding action.\n\n"
     "       Credits:  Press '@' for credits.");
 
-	help_save.title = _("Save:\n");
-    	help_save.text  =
+	hscr[HELP_SAVE].title = _("Save:\n");
+    	hscr[HELP_SAVE].text  =
     _("Pressing 'S' saves the Calcurse data.\n\n"
     "The data is splitted into three different files which contain :"
     "\n\n"
@@ -129,8 +281,8 @@ help_screen(void)
     "\nIn the config menu, you can choose to save the Calcurse data\n"
     "automatically before quitting.");
 
-	help_export.title = _("Export:\n");
-	help_export.text  =
+	hscr[HELP_EXPORT].title = _("Export:\n");
+	hscr[HELP_EXPORT].text  =
     _("Pressing 'X' exports the Calcurse data to iCalendar format.\n\n"
     "You first need to specify the file to which the data will be exported.\n"
     "By default, this file is:\n\n"
@@ -138,8 +290,8 @@ help_screen(void)
     "All of the calcurse data are exported, in the following order:\n"
     "events, appointments, todos.\n");
 
-	help_displacement.title = _("Displacement keys:\n");
-    	help_displacement.text  =
+	hscr[HELP_DISPLACEMENT].title = _("Displacement keys:\n");
+    	hscr[HELP_DISPLACEMENT].text  =
     _("You can use either 'H','J','K','L' or the arrow keys '<','v','^','>'\n"
     "to move into the calendar.\n\n"
     "The following scheme explains how :\n\n"
@@ -152,8 +304,8 @@ help_screen(void)
     "(respectively K or up arrow, and J or down arrow) allows you to select\n"
     "an item from those lists.");
 
-	help_view.title = _("View:\n");
-    	help_view.text  =
+	hscr[HELP_VIEW].title = _("View:\n");
+    	hscr[HELP_VIEW].text  =
     _("Pressing 'V' allows you to view the item you select in either the ToDo\n"
     "or Appointment panel.\n"
     "\nThis is usefull when an event description is longer than the available\n"
@@ -164,8 +316,8 @@ help_screen(void)
     "\nPress any key to close the popup window and go back to the main\n"
     "Calcurse screen.");
 
-	help_tab.title = _("Tab:\n");
-	help_tab.text  =
+	hscr[HELP_TAB].title = _("Tab:\n");
+	hscr[HELP_TAB].text  =
     _("Pressing 'Tab' allows you to switch between panels.\n"
     "The panel currently in use has its border colorized.\n"
     "\nSome actions are possible only if the right panel is selected.\n"
@@ -176,16 +328,16 @@ help_screen(void)
     "change while pressing 'Tab', so you always know what action can be\n"
     "performed on the selected panel.");
 
-	help_goto.title = _("Goto:\n");
-	help_goto.text  =
+	hscr[HELP_GOTO].title = _("Goto:\n");
+	hscr[HELP_GOTO].text  =
     _("Pressing 'G' allows you to jump to a specific day in the calendar.\n"
     "\nUsing this command, you do not need to travel to that day using\n"
     "the displacement keys inside the calendar panel.\n"
     "If you hit [ENTER] without specifying any date, Calcurse checks the\n"
     "system current date and you will be taken to that date.");
 
-	help_delete.title = _("Delete:\n");
-	help_delete.text  =
+	hscr[HELP_DELETE].title = _("Delete:\n");
+	hscr[HELP_DELETE].text  =
     _("Pressing 'D' deletes an element in the ToDo or Appointment list.\n"
     "\nDepending on which panel is selected when you press the delete key,\n"
     "the hilighted item of either the ToDo or Appointment list will be \n"
@@ -198,8 +350,8 @@ help_screen(void)
     "Do not forget to save the calendar data to retrieve the modifications\n"
     "next time you launch Calcurse.");
 
-	help_add.title = _("Add:\n");
-	help_add.text  =
+	hscr[HELP_ADD].title = _("Add:\n");
+	hscr[HELP_ADD].text  =
     _("Pressing 'A' allows you to add an item in either the ToDo or Appointment\n"
     "list, depending on which panel is selected when you press 'A'.\n"
     "\nTo enter a new item in the TODO list, you will need first to enter the\n"
@@ -231,8 +383,8 @@ help_screen(void)
     "       o do not forget to save the calendar data to retrieve the new\n"
     "         event next time you launch Calcurse.");
 
-	help_edit.title = _("Edit Item:\n");
-	help_edit.text  =
+	hscr[HELP_EDIT].title = _("Edit Item:\n");
+	hscr[HELP_EDIT].text  =
     _("Pressing 'E' allows you to edit the item which is currently selected.\n"
     "Depending on the item type (appointment, event, or todo), and if it is\n"
     "repeated or not, you will be asked to choose one of the item properties\n"
@@ -248,8 +400,8 @@ help_screen(void)
     "       o do not forget to save the calendar data to retrieve the\n"
     "         modified properties next time you launch Calcurse.");
 
-	help_priority.title = _("Priority:\n");
-	help_priority.text  =
+	hscr[HELP_PRIORITY].title = _("Priority:\n");
+	hscr[HELP_PRIORITY].text  =
     _("Pressing '+' or '-' allows you to change the priority of the currently\n"
     "selected item in the ToDo list. Priorities are represented by the number\n"
     "appearing in front of the todo description. This number goes from 9 for\n"
@@ -262,8 +414,8 @@ help_screen(void)
     "At the opposite, to lower a todo priority, press '-'. The todo position\n"
     "may also change depending on the priority of the items below."); 
 
-	help_repeat.title = _("Repeat:\n");
-	help_repeat.text  =
+	hscr[HELP_REPEAT].title = _("Repeat:\n");
+	hscr[HELP_REPEAT].text  =
     _("Pressing 'R' allows you to repeat an event or an appointment. You must\n"
     "first select the item to be repeated by moving inside the appointment\n"
     "panel. Then pressing 'R' will lead you to a set of three questions, with\n"
@@ -288,8 +440,8 @@ help_screen(void)
     "         complicated configurations, as it is possible to delete only\n"
     "         one occurence of a repeated item."); 
 
-	help_flag.title   = _("Flag Item:\n");
-	help_flag.text    =
+	hscr[HELP_FLAG].title   = _("Flag Item:\n");
+	hscr[HELP_FLAG].text    =
     _("Pressing '!' toggles an appointment's 'important' flag.\n\n"
     "If an item is flagged as important, an exclamation mark appears in front\n"
     "of it, and you will be warned if time gets closed to the appointment\n"
@@ -298,8 +450,8 @@ help_screen(void)
     "you choose the command launched to warn user of an upcoming appointment,\n"
     "and how long before it he gets notified.");
 
-	help_config.title = _("Config:\n");
-	help_config.text  =
+	hscr[HELP_CONFIG].title = _("Config:\n");
+	hscr[HELP_CONFIG].text  =
     _("Pressing 'C' leads to the configuration submenu, from which you can\n"
     "select between color, layout, and general options.\n"
     "\nThe color submenu lets you choose the color theme.\n"
@@ -311,8 +463,8 @@ help_screen(void)
     "\nDo not forget to save the calendar data to retrieve your configuration\n"
     "next time you launch Calcurse.");
 
-	help_general.title = _("General keybindings:\n");
-	help_general.text  =
+	hscr[HELP_GENERAL].title = _("General keybindings:\n");
+	hscr[HELP_GENERAL].text  =
     _("Some of the keybindings apply whatever panel is selected. They are\n"
     "called general keybinding and involve the <CONTROL> key, which is\n"
     "represented by the '^' sign in the status bar panel. For example,\n"
@@ -329,8 +481,8 @@ help_screen(void)
     " '^K' : -1 Week         -> move to previous week\n"
     " '^J' : +1 Week         -> move to next week");
 
-	help_other.title = _("OtherCmd:\n");
-	help_other.text  =
+	hscr[HELP_OTHER].title = _("OtherCmd:\n");
+	hscr[HELP_OTHER].text  =
     _("Pressing 'O' allows you to switch between status bar help pages.\n"
     "Because the terminal screen is too narrow to display all of the\n"
     "available commands, you need to press 'O' to see the next set of\n"
@@ -338,8 +490,8 @@ help_screen(void)
     "Once the last status bar page is reached, pressing 'O' another time\n"
     "leads you back to the first page.");
 
-	help_credits.title = _("Calcurse - text-based organizer");
-	help_credits.text  =
+	hscr[HELP_CREDITS].title = _("Calcurse - text-based organizer");
+	hscr[HELP_CREDITS].text  =
     _("Copyright (c) 2004-2007 Frederic Culot\n"
     "\n"
     "This program is free software; you can redistribute it and/or modify\n"
@@ -354,27 +506,25 @@ help_screen(void)
     "Send your feedback or comments to : calcurse@culot.org\n"
     "Calcurse home page : http://culot.org/calcurse");
 
-	/* 
-	 * Create the help window and panel. The panel is used to make
-	 * the scrolling faster.
-	 */
-	help_row = (notify_bar()) ? row - 3 : row - 2; 
-	text_lines = help_row - (pad_offset + 1);
-	help_win = newwin(help_row, help_col, 0, 0);
-	help_pad = newpad(BUFSIZ, pad_width);
-	box(help_win, 0, 0);
-	snprintf(label, BUFSIZ, _("CalCurse %s | help"), VERSION);
-	wins_show(help_win, label);
+	need_resize = 0;
+	page = oldpage = HELP_MAIN;
+	help_wins_init(&hwin, &hpad, PADOFFSET);
 
 	/* Display the help screen related to user input. */
 	while ( ch != 'q' ) {
-                erase_window_part(help_win, 1, title_lines, 
-                    help_col - 2, help_row - 2);
+                erase_window_part(hwin.p, 1, TITLELINES, col - 2, hwin.h - 2);
 
 		switch (ch) {
-		
+	
+		case KEY_RESIZE:
+			help_wins_reset(&hwin, &hpad, PADOFFSET);
+			first_line = 0;
+			nl = write_help_pad(&hpad, &hscr[oldpage]);
+			need_resize = 1;
+			break;
+
 		case CTRL('n') :
-			if (nl > first_line + text_lines) 
+			if (nl > (first_line + hwin.h - (PADOFFSET + 1)))
 				first_line++;
 			break;
 
@@ -383,145 +533,41 @@ help_screen(void)
 				first_line--;
 			break;
 
-		case '?':
-			first_line = 0;
-			nl = write_help_pad(help_pad, help_main.title,
-			    help_main.text, pad_width);
-			break;
-
-		case '!':
-			first_line = 0;
-			nl = write_help_pad(help_pad, help_flag.title,
-			    help_flag.text, pad_width);
-			break;
-
-		case CTRL('r'):
-		case CTRL('a'):
-		case CTRL('t'):
-		case CTRL('h'):
-		case CTRL('j'):
-		case CTRL('k'):
-		case CTRL('l'):
-			first_line = 0;
-			nl = write_help_pad(help_pad, help_general.title,
-			    help_general.text, pad_width);
-			break;
-
-		case 's':
-			first_line = 0;
-			nl = write_help_pad(help_pad, help_save.title,
-			    help_save.text, pad_width);
-			break;
-
-		case 'x':
-			first_line = 0;
-			nl = write_help_pad(help_pad, help_export.title,
-			    help_export.text, pad_width);
-			break;
-
-		case 'h':
-		case 'l':
-		case 'j':
-		case 'k':
-		case 259:
-		case 258:
-		case 260:
-		case 261:
-			first_line = 0;
-			nl = write_help_pad(help_pad, help_displacement.title,
-			    help_displacement.text, pad_width);
-			break;
-
-		case 'a':
-			first_line = 0;
-			nl = write_help_pad(help_pad, help_add.title,
-			    help_add.text, pad_width);
-			break;
-
-		case 'g':
-			first_line = 0;
-			nl = write_help_pad(help_pad, help_goto.title,
-			    help_goto.text, pad_width);
-			break;
-
-		case 'd':
-			first_line = 0;
-			nl = write_help_pad(help_pad, help_delete.title,
-			    help_delete.text, pad_width);
-			break;
-		
-		case 'e':
-			first_line = 0;
-			nl = write_help_pad(help_pad, help_edit.title,
-			    help_edit.text, pad_width); 
-			break;
-
-		case 'c':
-			first_line = 0;
-			nl = write_help_pad(help_pad, help_config.title,
-			    help_config.text, pad_width);
-			break;
-
-		case 'o':
-			first_line = 0;
-			nl = write_help_pad(help_pad, help_other.title,
-			    help_other.text, pad_width);
-			break;
-
-		case 'r':
-			first_line = 0;
-			nl = write_help_pad(help_pad, help_repeat.title,
-			    help_repeat.text, pad_width);
-			break;
-
-		case 'v':
-			first_line = 0;
-			nl = write_help_pad(help_pad, help_view.title,
-			    help_view.text, pad_width);
-			break;
-
-		case '+':
-		case '-':
-			first_line = 0;
-			nl = write_help_pad(help_pad, help_priority.title,
-			    help_priority.text, pad_width);
-			break;
-
-		case 9:
-			first_line = 0;
-			nl = write_help_pad(help_pad, help_tab.title,
-			    help_tab.text, pad_width);
-			break;
-
-		case '@':
-			first_line = 0;
-			nl = write_help_pad(help_pad, help_credits.title,
-			    help_credits.text, pad_width); 
+		default:
+			page = wanted_page(ch);
+			if (page != NOPAGE) {
+				first_line = 0;
+				nl = write_help_pad(&hpad, &hscr[page]);
+				oldpage = page;
+			}
 			break;
 		}
 
 		/* Draw the scrollbar if necessary. */
-		if (nl > text_lines){
+		text_lines = hwin.h - (PADOFFSET + 1);
+		if (nl > text_lines) {
 			float ratio = ((float) text_lines + 1) / ((float) nl);
 			int sbar_length = (int) (ratio * text_lines);
 			int highend = (int) (ratio * first_line);
-			int sbar_top = highend + title_lines + 1;
+			int sbar_top = highend + TITLELINES + 1;
 
-			if ((sbar_top + sbar_length) > help_row - 1)
-				sbar_length = help_row - 1 -sbar_top;
-			draw_scrollbar(help_win, sbar_top, help_col - 2,
-			    sbar_length, title_lines + 1, help_row - 1, true);
+			if ((sbar_top + sbar_length) > hwin.h - 1)
+				sbar_length = hwin.h - 1 - sbar_top;
+			draw_scrollbar(hwin.p, sbar_top, col - 2,
+			    sbar_length, TITLELINES + 1, hwin.h - 1, true);
 		}
 
-                wmove(swin, 0, 0);
-		wnoutrefresh(help_win);
-		pnoutrefresh(help_pad, first_line, 0, pad_offset, pad_offset, 
-		    help_row - 2, help_col - pad_offset);
+                wmove(win[STA].p, 0, 0);
+		wnoutrefresh(hwin.p);
+		pnoutrefresh(hpad.p, first_line, 0, PADOFFSET, PADOFFSET, 
+		    hwin.h - 2, col - PADOFFSET);
                 doupdate();
-                ch = wgetch(swin);
+                ch = wgetch(win[STA].p);
 		ch = tolower(ch);
 	}
 
-	delwin(help_pad);
-	delwin(help_win);
+	delwin(hpad.p);
+	delwin(hwin.p);
+	if (need_resize)
+		wins_reset();
 }
