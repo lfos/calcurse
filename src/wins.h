@@ -1,4 +1,4 @@
-/*	$Id: wins.h,v 1.3 2007/08/15 15:32:33 culot Exp $	*/
+/*	$Id: wins.h,v 1.4 2007/10/21 13:39:07 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -30,29 +30,24 @@
 #include "vars.h"
 
 typedef enum {
-	CALENDAR, 
-	APPOINTMENT, 
-	TODO,
-	NOTIFY,
-	STATUS,
+	CAL, 
+	APP, 
+	TOD,
+	NOT,
+	STA,
 	NBWINS
 } window_e;
 
-typedef enum {
-	WIDTH,
-	HEIGHT,
-	XPOS,
-	YPOS,
-	NBPROPS
-} winprop_e;
-
 /* Window properties */
 typedef struct {
+	WINDOW	*p;	/* pointer to window */
 	unsigned w;	/* width */
 	unsigned h;	/* height */
 	int	 x;	/* x position */
 	int	 y;	/* y position */
 } window_t;
+
+extern window_t         win[NBWINS];
 
 int		wins_layout(void);
 void		wins_set_layout(int);
@@ -60,7 +55,6 @@ void		wins_slctd_init(void);
 window_e	wins_slctd(void);
 void		wins_slctd_set(window_e);
 void		wins_slctd_next(void);
-int		wins_prop(window_e, winprop_e);
 void 		wins_init(void);
 void 		wins_reinit(void);
 void 		wins_show(WINDOW *, char *);
