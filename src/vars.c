@@ -1,4 +1,4 @@
-/*	$calcurse: vars.c,v 1.4 2007/08/15 15:36:05 culot Exp $	*/
+/*	$calcurse: vars.c,v 1.5 2007/10/21 13:40:13 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -76,15 +76,6 @@ char path_dir[] = "";
 char path_todo[] = "";
 char path_apts[] = "";
 char path_conf[] = "";
-
-/* 
- * Variables to handle calcurse windows: 
- * cwin = calendar window
- * awin = appointment window
- * twin = todo window
- * swin = status bar window
- */
-WINDOW *awin = NULL, *cwin = NULL, *twin = NULL, *swin = NULL;
 
 /* Variable to handle pads. */
 struct pad_s *apad;

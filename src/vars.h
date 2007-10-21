@@ -1,4 +1,4 @@
-/*	$calcurse: vars.h,v 1.16 2007/08/15 15:36:05 culot Exp $	*/
+/*	$calcurse: vars.h,v 1.17 2007/10/21 13:40:13 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -88,7 +88,6 @@ extern char 		path_dir[BUFSIZ];
 extern char 		path_todo[BUFSIZ];
 extern char 		path_apts[BUFSIZ];
 extern char 		path_conf[BUFSIZ];
-extern WINDOW  	       *awin, *cwin, *twin, *swin;
 extern struct pad_s    *apad;
 extern struct nbar_s   *nbar;
 
