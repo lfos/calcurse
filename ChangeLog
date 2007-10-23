@@ -1,3 +1,7 @@
+22 Oct 2007: 1.9
+	TODO and NEWS files updated
+	po files updated
+
 21 Oct 2007:
 	window_t structure updated to store WINDOW pointer
 	window_e enum updated to shorten names, winprop_e and wins_prop()

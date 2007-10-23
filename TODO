@@ -11,6 +11,7 @@ this list.
 
 High
 ----
+  o  Add the possibility to attach notes to events, todos and appointments
   o  Add import capabilities to read ical files inside calcurse
   o  Create external calendars which would contain hollydays and such (in ics
      format)
@@ -32,5 +33,4 @@ Low
 ---
   o  Add 't' alias for 'g - Enter'
   o  All status bars should be terminal-size dependant (config_bar is not)
-  o  Improve check_event_time() using sscanf as in goto_day()
   o  Make use of CSS for html documentation 
