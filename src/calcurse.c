@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.57 2007/10/21 13:42:34 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.58 2007/12/10 18:56:08 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -368,7 +368,7 @@ main(int argc, char **argv)
 			if (wins_slctd() == CAL || ch == CTRL('L')) {
 				do_storage = true;
 				day_changed = true;
-				calendar_move_right();
+				calendar_move(RIGHT);
 			}
 			break;
 
@@ -379,7 +379,7 @@ main(int argc, char **argv)
 			if (wins_slctd() == CAL || ch == CTRL('H')) {
 				do_storage = true;
 				day_changed = true;
-				calendar_move_left();
+				calendar_move(LEFT);
 			}
 			break;
 
@@ -390,7 +390,7 @@ main(int argc, char **argv)
 			if (wins_slctd() == CAL || ch == CTRL('K')) {
 				do_storage = true;
 				day_changed = true;
-				calendar_move_up();
+				calendar_move(UP);
 			} else {
 				if ((wins_slctd() == APP) && 
 				    (apoint_hilt() > 1)) {
@@ -412,7 +412,7 @@ main(int argc, char **argv)
 			if (wins_slctd() == CAL || ch == CTRL('J')) {
 				do_storage = true;
 				day_changed = true;
-				calendar_move_down();
+				calendar_move(DOWN);
 			} else {
 				if ((wins_slctd() == APP) && 
 				    (apoint_hilt() < inday.nb_events + 

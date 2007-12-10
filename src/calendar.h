@@ -1,4 +1,4 @@
-/*	$calcurse: calendar.h,v 1.7 2007/08/31 19:41:24 culot Exp $	*/
+/*	$calcurse: calendar.h,v 1.8 2007/12/10 19:00:45 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -60,6 +60,14 @@ typedef enum {
 	MOON_PHASES
 } pom_e;
 
+typedef enum {
+	UP,
+	DOWN,
+	LEFT,
+	RIGHT,
+	MOVES
+} move_t;
+
 void	calendar_start_date_thread(void);
 void	calendar_stop_date_thread(void);
 void	calendar_set_current_date(void);
@@ -72,10 +80,7 @@ date_t *calendar_get_slctd_day(void);
 long	calendar_get_slctd_day_sec(void);
 void 	calendar_update_panel(WINDOW *);
 void	calendar_change_day(void);
-void	calendar_move_right(void);
-void	calendar_move_left(void);
-void	calendar_move_up(void);
-void	calendar_move_down(void);
+void	calendar_move(move_t);
 char   *calendar_get_pom(time_t);
 
 #endif /* CALCURSE_CALENDAR_H */
