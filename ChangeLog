@@ -1,3 +1,10 @@
+09 Dec 2007:
+	bugfix in recur_item_inday(): leap years should now be properly handled
+	calendar_move_up(), calendar_move_down(), calendar_move_left(),
+	calendar_move_right() were modified to properly handle leap years
+	and gathered together into calendar_move()
+	date_change() added
+	
 22 Oct 2007: 1.9
 	TODO and NEWS files updated
 	po files updated
