@@ -1,4 +1,4 @@
-/*	$calcurse: vars.h,v 1.17 2007/10/21 13:40:13 culot Exp $	*/
+/*	$calcurse: vars.h,v 1.18 2007/12/10 19:04:08 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -49,6 +49,7 @@
 #define DAYINSEC  	86400 
 #define HOURINSEC	3600
 #define MININSEC	60
+#define WEEKINDAYS	7
 
 #define STATUSHEIGHT	2
 
