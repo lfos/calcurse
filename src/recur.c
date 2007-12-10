@@ -1,4 +1,4 @@
-/*	$calcurse: recur.c,v 1.30 2007/10/21 13:42:34 culot Exp $	*/
+/*	$calcurse: recur.c,v 1.31 2007/12/10 19:03:23 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -376,12 +376,9 @@ unsigned
 recur_item_inday(long item_start, struct days_s *item_exc,
     int rpt_type, int rpt_freq, long rpt_until, long day_start)
 {
-#define YEARSTODAYS(x)	((x) * 365L + (x) / 4 - (x) / 100 + (x) / 400) 	
-
 	date_t start_date;
-	long day_end;
-	struct tm *lt;
-	int day_month, day_year, day_yday, day_mday, diff;
+	long day_end, diff;
+	struct tm lt_item, lt_day;
 	struct days_s *exc;
 	time_t t;
 	char *error = 
@@ -389,12 +386,8 @@ recur_item_inday(long item_start, struct days_s *item_exc,
 
 	day_end = day_start + DAYINSEC;
 	t = day_start;
-	lt = localtime(&t);
-	day_month = lt->tm_mon;
-	day_year = lt->tm_year;
-	day_yday = lt->tm_yday;
-	day_mday = lt->tm_mday;
-	
+	lt_day = *localtime(&t);
+
 	for (exc = item_exc; exc != 0; exc = exc->next)
 		if (exc->st < day_end && exc->st >= day_start) 
 			return 0;
@@ -402,53 +395,59 @@ recur_item_inday(long item_start, struct days_s *item_exc,
 	if (rpt_until == 0) /* we have an endless recurrent item */
 		rpt_until = day_end;
 
-	if (item_start > day_end || rpt_until < day_start) 
+	if (item_start > day_end || rpt_until < day_start)
 		return 0;
 
 	t = item_start;
-	lt = localtime(&t);
+	lt_item = *localtime(&t);
+
+	/* For proper calculation, both items must start at same time. */
+	day_start += (lt_item.tm_hour * HOURINSEC + lt_item.tm_min * MININSEC +
+	    lt_item.tm_sec);
 
 	switch (rpt_type) {
-		case RECUR_DAILY:
-			diff = (YEARSTODAYS(lt->tm_year) + lt->tm_yday) -
-			    (YEARSTODAYS(day_year) + day_yday);
+	case RECUR_DAILY:
+		diff = (long)difftime((time_t)day_start, (time_t)item_start);
+		if (diff % (rpt_freq * DAYINSEC) != 0)
+			return 0;
+		lt_item.tm_mday = lt_day.tm_mday;
+		lt_item.tm_mon = lt_day.tm_mon;
+		lt_item.tm_year = lt_day.tm_year;
+		break;
+	case RECUR_WEEKLY:
+		if (lt_item.tm_wday != lt_day.tm_wday)
+			return 0;
+		else {
+			diff = ((lt_day.tm_yday - lt_item.tm_yday) / WEEKINDAYS);
 			if (diff % rpt_freq != 0)
 				return 0;
-			lt->tm_mday = day_mday;
-			lt->tm_mon = day_month;
-			lt->tm_year = day_year;
-			break;
-		case RECUR_WEEKLY:
-			diff = (YEARSTODAYS(lt->tm_year) + lt->tm_yday) -
-			    (YEARSTODAYS(day_year) + day_yday);
-			if (diff % (rpt_freq*7) != 0)
-				return 0;
-			lt->tm_mday = day_mday;
-			lt->tm_mon = day_month;
-			lt->tm_year = day_year;
-			break;
-		case RECUR_MONTHLY:
-			diff = ((day_year - lt->tm_year) * 12) +
-			    (day_month - lt->tm_mon);
-			if (diff % rpt_freq != 0)
-				return 0;
-			lt->tm_mon = day_month;
-			lt->tm_year = day_year;
-			break;
-		case RECUR_YEARLY:
-			diff = day_year - lt->tm_year;
-			if (diff % rpt_freq != 0)
-				return 0;
-			lt->tm_year = day_year;
-			break;
-		default:
-			fputs(error, stderr);
-			exit(EXIT_FAILURE);
+		}
+		lt_item.tm_mday = lt_day.tm_mday;
+		lt_item.tm_mon = lt_day.tm_mon;
+		lt_item.tm_year = lt_day.tm_year;
+		break;
+	case RECUR_MONTHLY:
+		diff = ((lt_day.tm_year - lt_item.tm_year) * 12) +
+		    (lt_day.tm_mon - lt_item.tm_mon);
+		if (diff % rpt_freq != 0)
+			return 0;
+		lt_item.tm_mon = lt_day.tm_mon;
+		lt_item.tm_year = lt_day.tm_year;
+		break;
+	case RECUR_YEARLY:
+		diff = lt_day.tm_year - lt_item.tm_year;
+		if (diff % rpt_freq != 0)
+			return 0;
+		lt_item.tm_year = lt_day.tm_year;
+		break;
+	default:
+		fputs(error, stderr);
+		exit(EXIT_FAILURE);
 	}
-	start_date.dd = lt->tm_mday;
-	start_date.mm = lt->tm_mon + 1;
-	start_date.yyyy = lt->tm_year + 1900;
-	item_start = date2sec(start_date, lt->tm_hour, lt->tm_min);
+	start_date.dd = lt_item.tm_mday;
+	start_date.mm = lt_item.tm_mon + 1;
+	start_date.yyyy = lt_item.tm_year + 1900;
+	item_start = date2sec(start_date, lt_item.tm_hour, lt_item.tm_min);
 
 	if (item_start < day_end && item_start >= day_start)
 		return item_start;
