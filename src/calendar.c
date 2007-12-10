@@ -1,4 +1,4 @@
-/*	$calcurse: calendar.c,v 1.12 2007/10/21 13:42:34 culot Exp $	*/
+/*	$calcurse: calendar.c,v 1.13 2007/12/10 18:59:48 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -394,79 +394,73 @@ calendar_change_day(void)
 	return;
 }
 
-/* Move to next day, next month or next year in calendar. */
-void
-calendar_move_right(void)
-{
-	if ((slctd_day.dd == 31) && (slctd_day.mm == 12) && 
-	    (slctd_day.yyyy == 2037))
-		return;
-	else if ((slctd_day.dd == 31) && (slctd_day.mm == 12)) {
-		slctd_day.dd = 0;
-		slctd_day.mm = 1;
-		slctd_day.yyyy++; 
-	} else if (slctd_day.dd == days[slctd_day.mm - 1]) { 
-		slctd_day.mm++;
-		slctd_day.dd = 1;
-	} else
-		slctd_day.dd++;
+/* 
+ * Used to change date by adding a certain amount of days or weeks.
+ * Returns 0 on success, 1 otherwise.
+ */
+int
+date_change(struct tm *date, int delta_month, int delta_day)
+{ 		
+	struct tm t;
+
+	t = *date;
+	t.tm_mon += delta_month;
+	t.tm_mday += delta_day;
+
+	if (mktime(&t) == -1)
+		return (1);
+	else {
+		*date = t;
+		return (0);
+	}
 }
 
-/* Move to previous day, previous month or previous year in calendar. */
 void
-calendar_move_left(void)
+calendar_move(move_t move) 
 {
-	if ((slctd_day.dd == 1) && (slctd_day.mm == 1) &&
-	    (slctd_day.yyyy == 1902))
-		return;
-	else if ((slctd_day.dd == 1) && (slctd_day.mm == 1)) { 
-		slctd_day.dd = 32;
-		slctd_day.mm = 12;
-		slctd_day.yyyy--;
-	} else if (slctd_day.dd == 1) { 
-		slctd_day.dd = days[slctd_day.mm - 2];
-		slctd_day.mm--;
-	} else
-		slctd_day.dd--;
-}
+	int ret;
+	struct tm t;
+	
+	memset(&t, 0, sizeof(struct tm));
+	t.tm_mday = slctd_day.dd;
+	t.tm_mon = slctd_day.mm - 1;
+	t.tm_year = slctd_day.yyyy - 1900;
 
-/* Move to previous week, previous month or previous year in calendar. */
-void
-calendar_move_up(void)
-{
-	if ((slctd_day.dd <= 7) && (slctd_day.mm == 1) &&
-	    (slctd_day.yyyy == 1902))
-		return;
-	else if ((slctd_day.dd <= 7) && (slctd_day.mm == 1)) { 
-		slctd_day.dd = 31 - (7 - slctd_day.dd);
-		slctd_day.mm = 12;
-		slctd_day.yyyy--;
-	} else if (slctd_day.dd <= 7) { 
-		slctd_day.dd = days[slctd_day.mm - 2] -
-		    (7 - slctd_day.dd);
-		slctd_day.mm--;
-	} else 
-		slctd_day.dd -= 7;
-}
+	switch (move) {
+	case UP:
+		if ((slctd_day.dd <= 7) && (slctd_day.mm == 1) &&
+		    (slctd_day.yyyy == 1902))
+			return;
+		ret = date_change(&t, 0, -WEEKINDAYS);
+		break;
+	case DOWN:
+		if ((slctd_day.dd > days[slctd_day.mm - 1] - 7)
+		    && (slctd_day.mm == 12) && (slctd_day.yyyy == 2037))
+			return;	
+		ret = date_change(&t, 0, WEEKINDAYS);
+		break;
+	case LEFT:
+		if ((slctd_day.dd == 1) && (slctd_day.mm == 1) &&
+		    (slctd_day.yyyy == 1902))
+			return;
+		ret = date_change(&t, 0, -1);
+		break;
+	case RIGHT:
+		if ((slctd_day.dd == 31) && (slctd_day.mm == 12) && 
+		    (slctd_day.yyyy == 2037))
+			return;
+		ret = date_change(&t, 0, 1);
+		break;
+	default:
+		ret = 1;
+		/* NOTREACHED */
+	}
 
-/* Move to next week, next month or next year in calendar. */
-void
-calendar_move_down(void)
-{
-
-	if ((slctd_day.dd > days[slctd_day.mm - 1] - 7)
-	    && (slctd_day.mm == 12) && (slctd_day.yyyy == 2037))
-	       return;	
-	else if ((slctd_day.dd > days[slctd_day.mm - 1] - 7)
-	    && (slctd_day.mm == 12)) { 
-		slctd_day.dd = (7 - (31 - slctd_day.dd));
-		slctd_day.mm = 1;
-		slctd_day.yyyy++;
-	} else if (slctd_day.dd > days[slctd_day.mm - 1] - 7) { 
-		slctd_day.dd = (7 - (days[slctd_day.mm - 1] - slctd_day.dd));
-		slctd_day.mm++;
-	} else 
-		slctd_day.dd += 7;
+	if (ret == 0) {
+		slctd_day.dd = t.tm_mday;
+		slctd_day.mm = t.tm_mon + 1;
+		slctd_day.yyyy = t.tm_year + 1900;
+	}
 }
 
 /*
