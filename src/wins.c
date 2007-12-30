@@ -1,4 +1,4 @@
-/*	$Id: wins.c,v 1.8 2007/10/21 13:39:49 culot Exp $	*/
+/*	$Id: wins.c,v 1.9 2007/12/30 16:27:59 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -337,7 +337,8 @@ wins_update(void)
 		break;
 
 	default:
-		ierror(_("FATAL ERROR in wins_update: no window selected\n"));
+		ierror(_("FATAL ERROR in wins_update: no window selected\n"),
+		    IERROR_FATAL);
 		/* NOTREACHED */
 	}
 
@@ -360,4 +361,32 @@ wins_reset(void)
 	curs_set(0);
 	wins_reinit();
 	wins_update();
+}
+
+/*
+ * While inside interactive mode, launch the external command cmd on the given
+ * file.
+ */
+void
+wins_launch_external(const char *file, const char *cmd)
+{
+	char *p;
+	
+	if (asprintf(&p, "%s %s", cmd, file) == -1)
+		return;
+
+	if (notify_bar())
+		notify_stop_main_thread();
+	def_prog_mode();
+	endwin();
+	clear();
+	refresh();
+	system(p);
+	reset_prog_mode();
+	clearok(curscr, TRUE);
+	curs_set(0);
+	refresh();
+	if (notify_bar())
+		notify_start_main_thread();
+	free(p);
 }

@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.23 2007/10/21 13:42:34 culot Exp $	*/
+/*	$calcurse: io.c,v 1.24 2007/12/30 16:27:59 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -30,6 +30,7 @@
 #include <time.h>
 #include <math.h>
 #include <unistd.h>
+#include <errno.h>
 
 #include "i18n.h"
 #include "utils.h"
@@ -327,6 +328,7 @@ io_init(char *cfile)
 	snprintf(path_dir, BUFSIZ, "%s/" DIR_NAME, home);
 	snprintf(path_todo, BUFSIZ, "%s/" TODO_PATH, home);
 	snprintf(path_conf, BUFSIZ, "%s/" CONF_PATH, home);
+	snprintf(path_notes, BUFSIZ, "%s/" NOTES_DIR, home);
 	if (cfile == NULL) {
 		snprintf(path_apts, BUFSIZ, "%s/" APTS_PATH, home);
 	} else {
@@ -485,13 +487,19 @@ io_save_cal(conf_t *conf)
 	}
 
 	/* Save the todo data file. */
-	if (show_bar) progress_bar(PROGRESS_BAR_SAVE, 1);
+	if (show_bar) 
+		progress_bar(PROGRESS_BAR_SAVE, 1);
 	data_file = fopen(path_todo, "w");
 	if (data_file == (FILE *) 0)
 	        status_mesg(access_pb, ""); 
 	else {
-		for (i = todolist; i != 0; i = i->next)
-			fprintf(data_file, "[%d] %s\n", i->id, i->mesg);
+		for (i = todolist; i != 0; i = i->next) {
+			if (i->note != NULL)
+				fprintf(data_file, "[%d]>%s %s\n", i->id, 
+				    i->note, i->mesg);
+			else
+				fprintf(data_file, "[%d] %s\n", i->id, i->mesg);
+		}
 		fclose(data_file);
 	}
 
@@ -680,7 +688,7 @@ io_load_todo(void)
 	char *nl;
 	int nb_tod = 0;
 	int c, id;
-	char buf[BUFSIZ], e_todo[BUFSIZ];
+	char buf[BUFSIZ], e_todo[BUFSIZ], note[NOTESIZ + 1];
 
 	data_file = fopen(path_todo, "r");
 	if (data_file == NULL) {
@@ -692,68 +700,91 @@ io_load_todo(void)
 		if (c == EOF) {
 			break;
 		} else if (c == '[') { /* new style with id */
-			fscanf(data_file, "%d] ", &id);
+			fscanf(data_file, "%d]", &id);
 		} else {
 			id = 9;
 			ungetc(c, data_file);
 		}
+		/* Now read the attached note, if any. */
+		c = getc(data_file);
+		if (c == '>') {
+			fgets(note, NOTESIZ + 1, data_file);
+			note[NOTESIZ] = '\0';
+			fprintf(stderr, "note: [%s]\n", note);
+			getc(data_file);
+		} else
+			note[0] = '\0';
+		/* Then read todo description. */
 		fgets(buf, BUFSIZ, data_file);
 		nl = strchr(buf, '\n');
 		if (nl) {
 			*nl = '\0';
 		}
 		io_extract_data(e_todo, buf, strlen(buf));
-		todo_add(e_todo, id);
+		todo_add(e_todo, id, note);
 		++nb_tod;
 	}
 	fclose(data_file);
 	todo_set_nb(nb_tod);
 }
 
-/* Checks if data files exist. If not, create them */
+static void
+check_directory(char *dir, int *missing)
+{
+	errno = 0;
+	if (mkdir(dir, 0700) != 0) {
+		if (errno != EEXIST) {
+			fprintf(stderr, 
+			    _("FATAL ERROR: could not create %s: %s\n"),
+			    dir, strerror(errno));
+			exit(EXIT_FAILURE);
+		}
+	} else
+		(*missing)++;
+}
+
+static void
+check_file(char *file, int *missing)
+{
+	FILE *fd;
+
+	errno = 0;
+	if ((fd = fopen(file, "r")) == NULL) {
+		(*missing)++;
+		if ((fd = fopen(file, "w")) == NULL) {
+			fprintf(stderr, 
+			    _("FATAL ERROR: could not create %s: %s\n"),
+			    file, strerror(errno));
+			exit(EXIT_FAILURE);
+		}
+	}
+	fclose(fd);
+}
+
+/* 
+ * Checks if data files exist. If not, create them. 
+ * The following structure has to be created:
+ *
+ *	$HOME/.calcurse/
+ *                 |
+ *                 +--- notes/
+ *                 |___ conf
+ *                 |___ apts
+ *                 |___ todo
+ */
 int 
 io_check_data_files(void)
 {
-	FILE *data_file;
-	int no_data_file;
+	int missing;
 
-	no_data_file = 0;
-	/* Create the calcurse repertory if not present. */
-	mkdir(path_dir, 0700);
-
-	data_file = fopen(path_todo, "r");
-	if (data_file == NULL) {
-		no_data_file++;
-		data_file = fopen(path_todo, "w");
-		if (data_file == NULL) {
-			perror(path_todo);
-			return no_data_file;
-		}
-	}
-	fclose(data_file);
-
-	data_file = fopen(path_apts, "r");
-	if (data_file == NULL) {
-		no_data_file++;
-		data_file = fopen(path_apts, "w");
-		if (data_file == NULL) {
-			perror(path_apts);
-			return no_data_file;
-		}
-	}
-	fclose(data_file);
-
-	data_file = fopen(path_conf, "r");
-	if (data_file == NULL) {
-		no_data_file++;
-		data_file = fopen(path_conf, "w");
-		if (data_file == NULL) {
-			perror(path_conf);
-			return no_data_file;
-		}
-	}
-	fclose(data_file);
-        return no_data_file;
+	missing = 0;
+	errno = 0;
+	check_directory(path_dir, &missing);
+	check_directory(path_notes, &missing);
+	check_file(path_todo, &missing);
+	check_file(path_apts, &missing);
+	check_file(path_conf, &missing);
+        return (missing);
 }
 
 /* Draw the startup screen */

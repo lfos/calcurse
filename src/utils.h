@@ -1,4 +1,4 @@
-/*	$calcurse: utils.h,v 1.23 2007/08/04 14:32:31 culot Exp $	*/
+/*	$calcurse: utils.h,v 1.24 2007/12/30 16:27:59 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -56,8 +56,13 @@ typedef struct { /* structure defining a keybinding */
 	char *label;
 } binding_t;
 
+typedef enum {
+	IERROR_FATAL,
+	IERROR_WARN
+} ierror_sev_e;
+
 void	exit_calcurse(int);
-void	ierror(const char *);
+void	ierror(const char *, ierror_sev_e);
 void	aerror(const char *, int, const char *);
 void 	status_mesg(char *, char *);
 void	erase_status_bar(void);
@@ -80,12 +85,13 @@ long 	min2sec(unsigned);
 int 	check_time(char *);
 void 	draw_scrollbar(WINDOW *, int, int, int, int, int, bool);
 void 	item_in_popup(char *, char *, char *, char *);
-void 	display_item(WINDOW *, int, char *, int, int, int, int);
 void 	reset_status_page(void);
 void 	other_status_page(int);
 long 	get_today(void);
 long 	now(void);
 char   *mycpy(const char *);
+long	mystrtol(const char *);
 void 	print_option_incolor(WINDOW *, bool, int, int);
+char   *new_tempfile(const char *, int);
 
 #endif /* CALCURSE_UTILS_H */

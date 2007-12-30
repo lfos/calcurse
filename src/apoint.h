@@ -1,4 +1,4 @@
-/*	$calcurse: apoint.h,v 1.9 2007/08/15 15:33:54 culot Exp $	*/
+/*	$calcurse: apoint.h,v 1.10 2007/12/30 16:27:58 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -44,6 +44,7 @@ typedef struct apoint_llist_node {
 	long dur;		/* duration of the appointment in seconds */
 	char state;		/* 8 bits to store item state */
 	char *mesg;
+	char *note;
 } apoint_llist_node_t;
 
 typedef struct apoint_llist {
@@ -67,13 +68,13 @@ void 			apoint_sec2str(apoint_llist_node_t *, int, long,
 void 			apoint_write(apoint_llist_node_t *, FILE *);
 apoint_llist_node_t    *apoint_scan(FILE *, struct tm, struct tm, char);
 void 			apoint_delete_bynum(long, unsigned);
-void 			display_item_date(WINDOW *, int, apoint_llist_node_t *,
-			    int, long, int, int);
 void 			apoint_scroll_pad_down(int, int);
 void 			apoint_scroll_pad_up(int);
 struct notify_app_s    *apoint_check_next(struct notify_app_s *, long);
 apoint_llist_node_t    *apoint_recur_s2apoint_s(recur_apoint_llist_node_t *);
 void 			apoint_switch_notify(void);
 void			apoint_update_panel(window_t *, int);
+void			apoint_edit_note(void);
+void			apoint_view_note(void);
 
 #endif /* CALCURSE_APOINT_H */

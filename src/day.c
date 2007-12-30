@@ -1,4 +1,4 @@
-/*	$calcurse: day.c,v 1.30 2007/10/21 13:42:34 culot Exp $	*/
+/*	$calcurse: day.c,v 1.31 2007/12/30 16:27:59 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -34,6 +34,7 @@
 #include "utils.h"
 #include "apoint.h"
 #include "event.h"
+#include "custom.h"
 #include "day.h"
 
 static struct day_item_s 	*day_items_ptr;
@@ -302,6 +303,63 @@ day_item_s2apoint_s(apoint_llist_node_t *a, struct day_item_s *p)
 }
 
 /* 
+ * Print an item date in the appointment panel.
+ */
+static void 
+display_item_date(int incolor, apoint_llist_node_t *i, int type, long date, 
+    int y, int x)
+{
+	WINDOW *win;
+	char a_st[100], a_end[100];
+	int recur = 0;
+
+	win = apad->ptrwin;
+	apoint_sec2str(i, type, date, a_st, a_end);
+	if (type == RECUR_EVNT || type == RECUR_APPT)
+		recur = 1;
+	if (incolor == 0) 
+		custom_apply_attr(win, ATTR_HIGHEST);
+	if (recur)
+		if (i->state & APOINT_NOTIFY)
+			mvwprintw(win, y, x, " *!%s -> %s", a_st, a_end);
+		else
+			mvwprintw(win, y, x, " * %s -> %s", a_st, a_end);
+	else
+		if (i->state & APOINT_NOTIFY)
+			mvwprintw(win, y, x, " -!%s -> %s", a_st, a_end);
+		else
+			mvwprintw(win, y, x, " - %s -> %s", a_st, a_end);
+	if (incolor == 0) 
+		custom_remove_attr(win, ATTR_HIGHEST);
+}
+
+/* 
+ * Print an item description in the corresponding panel window.
+ */
+static void 
+display_item(int incolor, char *msg, int recur, int note, int len, int y, int x)
+{
+	WINDOW *win;
+	int ch_recur, ch_note;
+	char buf[len];
+
+	win = apad->ptrwin;
+	ch_recur = (recur) ? '*' : ' ';
+	ch_note = (note) ? '>' : ' ';
+	if (incolor == 0) 
+		custom_apply_attr(win, ATTR_HIGHEST);
+	if (strlen(msg) < len)
+		mvwprintw(win, y, x, " %c%c%s", ch_recur, ch_note, msg);
+	else {
+		strncpy(buf, msg, len - 1);
+		buf[len - 1] = '\0';
+		mvwprintw(win, y, x, " %c%c%s...", ch_recur, ch_note, buf);
+	}
+	if (incolor == 0) 
+		custom_remove_attr(win, ATTR_HIGHEST);
+}
+
+/* 
  * Write the appointments and events for the selected day in a pad.
  * An horizontal line is drawn between events and appointments, and the
  * item selected by user is highlighted. This item is also saved inside
@@ -339,8 +397,8 @@ day_write_pad(long date, int width, int length, int incolor)
 				day_saved_item->type = p->type;
 				day_saved_item->mesg = p->mesg;
 			}
-			display_item(apad->ptrwin, item_number - incolor, p->mesg, 
-				recur, width - 5, line, x_pos);
+			display_item(item_number - incolor, p->mesg, recur, 0, 
+			    width - 7, line, x_pos);
 			line++;
 			draw_line = true;
 		} else {
@@ -360,10 +418,10 @@ day_write_pad(long date, int width, int length, int incolor)
 				apoint_sec2str(&a, p->type, date,
 				    day_saved_item->start, day_saved_item->end);
 			}
-			display_item_date(apad->ptrwin, item_number - incolor, 
-				&a, p->type, date, line + 1, x_pos);	
-			display_item(apad->ptrwin, item_number - incolor, p->mesg,
-				0, width - 7, line + 2, x_pos + 2);
+			display_item_date(item_number - incolor, &a, p->type, 
+			    date, line + 1, x_pos);	
+			display_item(item_number - incolor, p->mesg, 0, 0, 
+			    width - 7, line + 2, x_pos);
 			line = line + 3;
 		}
 	}
@@ -382,7 +440,7 @@ void day_popup_item(void)
 		item_in_popup(day_saved_item->start, day_saved_item->end,
 			day_saved_item->mesg, _("Appointment :"));
 	else
-		ierror(error);
+		ierror(error, IERROR_FATAL);
 		/* NOTREACHED */
 }
 

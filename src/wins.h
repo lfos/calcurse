@@ -1,4 +1,4 @@
-/*	$Id: wins.h,v 1.4 2007/10/21 13:39:07 culot Exp $	*/
+/*	$Id: wins.h,v 1.5 2007/12/30 16:27:59 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -61,5 +61,6 @@ void 		wins_show(WINDOW *, char *);
 void 		wins_get_config(void);
 void 		wins_update(void);
 void		wins_reset(void);
+void		wins_launch_external(const char *, const char *);
 
 #endif /* CALCURSE_WINS_H */

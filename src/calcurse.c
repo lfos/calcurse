@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.58 2007/12/10 18:56:08 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.59 2007/12/30 16:27:58 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -344,6 +344,24 @@ main(int argc, char **argv)
 					todo_set_first(todo_hilt() - 
 					    win[TOD].h + 5);
 			}
+			break;
+
+		case 'N':
+		case 'n':	
+			/* Attach a note to an item, create it if necessary */
+			if (wins_slctd() == APP && apoint_hilt() != 0)
+				apoint_edit_note();
+			else if (wins_slctd() == TOD && todo_hilt() != 0)
+				todo_edit_note(conf.editor);
+			do_storage = true;
+			break;
+
+		case '>':	
+			/* View a note previously attached to an item */
+			if (wins_slctd() == APP && apoint_hilt() != 0)
+				apoint_view_note();
+			else if (wins_slctd() == TOD && todo_hilt() != 0)
+				todo_view_note(conf.pager);
 			break;
 
 		case '?':	/* Online help system */

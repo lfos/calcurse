@@ -1,4 +1,4 @@
-/*	$calcurse: apoint.c,v 1.18 2007/10/21 13:42:34 culot Exp $	*/
+/*	$calcurse: apoint.c,v 1.19 2007/12/30 16:27:58 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -250,7 +250,7 @@ apoint_delete(conf_t *conf, unsigned *nb_events, unsigned *nb_apoints)
 			} else if (deleted_item_type == 0) {
 				to_be_removed = 0;		
 			} else
-				ierror(errmsg);
+				ierror(errmsg, IERROR_FATAL);
 				/* NOTREACHED */
 
 			if (hilt > 1) 
@@ -264,8 +264,6 @@ apoint_delete(conf_t *conf, unsigned *nb_events, unsigned *nb_apoints)
 		}
 	}
 }
-
-
 
 unsigned 
 apoint_inday(apoint_llist_node_t *i, long start)
@@ -389,35 +387,8 @@ void apoint_delete_bynum(long start, unsigned num)
 	pthread_mutex_unlock(&(alist_p->mutex));
 
 	/* NOTREACHED */
-	ierror(_("FATAL ERROR in apoint_delete_bynum: no such appointment"));
-}
-
-/* 
- * Print an item date in the appointment panel.
- */
-void display_item_date(WINDOW *win, int incolor, apoint_llist_node_t *i,
-			int type, long date, int y, int x)
-{
-	char a_st[100], a_end[100];
-	int recur = 0;
-
-	apoint_sec2str(i, type, date, a_st, a_end);
-	if (type == RECUR_EVNT || type == RECUR_APPT)
-		recur = 1;
-	if (incolor == 0) 
-		custom_apply_attr(win, ATTR_HIGHEST);
-	if (recur)
-		if (i->state & APOINT_NOTIFY)
-			mvwprintw(win, y, x, " *!%s -> %s", a_st, a_end);
-		else
-			mvwprintw(win, y, x, " * %s -> %s", a_st, a_end);
-	else
-		if (i->state & APOINT_NOTIFY)
-			mvwprintw(win, y, x, " -!%s -> %s", a_st, a_end);
-		else
-			mvwprintw(win, y, x, " - %s -> %s", a_st, a_end);
-	if (incolor == 0) 
-		custom_remove_attr(win, ATTR_HIGHEST);
+	ierror(_("FATAL ERROR in apoint_delete_bynum: no such appointment"),
+	    IERROR_FATAL);
 }
 
 /*
@@ -566,7 +537,8 @@ apoint_switch_notify(void)
 
 	/* NOTREACHED */
 	ierror(
-	    _("FATAL ERROR in apoint_switch_notify: no such appointment"));
+	    _("FATAL ERROR in apoint_switch_notify: no such appointment"),
+	    IERROR_FATAL);
 }
 
 /* Updates the Appointment panel */
@@ -616,4 +588,18 @@ apoint_update_panel(window_t *winapp, int which_pan)
 	pnoutrefresh(apad->ptrwin, apad->first_onscreen, 0, 
 	    winapp->y + title_lines + 1, winapp->x + bordr, 
     	    winapp->y + winapp->h - 2*bordr, winapp->x + winapp->w - 3*bordr);
+}
+
+/* Attach a note to an appointment or event */
+void 
+apoint_edit_note(void)
+{
+
+}
+
+/* View a note previously attached to an appointment or event */
+void 
+apoint_view_note(void)
+{
+
 }

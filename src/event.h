@@ -1,4 +1,4 @@
-/*	$calcurse: event.h,v 1.2 2007/07/28 13:11:42 culot Exp $	*/
+/*	$calcurse: event.h,v 1.3 2007/12/30 16:27:59 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -35,6 +35,7 @@ struct event_s {
 	int id;	        /* event identifier */
         long day;	/* seconds since 1 jan 1970 */
 	char *mesg;
+	char *note;
 };
 
 extern struct event_s *eventlist;

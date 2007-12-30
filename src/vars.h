@@ -1,4 +1,4 @@
-/*	$calcurse: vars.h,v 1.18 2007/12/10 19:04:08 culot Exp $	*/
+/*	$calcurse: vars.h,v 1.19 2007/12/30 16:27:59 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -35,6 +35,7 @@
 #define TODO_PATH 	".calcurse/todo"
 #define APTS_PATH	".calcurse/apts"
 #define CONF_PATH	".calcurse/conf"
+#define NOTES_DIR	".calcurse/notes/"
 
 #define CTRL(x)         ((x) & 0x1f)
 #define ESCAPE		27
@@ -52,6 +53,7 @@
 #define WEEKINDAYS	7
 
 #define STATUSHEIGHT	2
+#define	NOTESIZ		10
 
 struct pad_s {
 	int width;
@@ -78,6 +80,8 @@ typedef struct {
 	bool confirm_delete;
 	bool skip_system_dialogs;
 	bool skip_progress_bar;
+	char *editor;
+	char *pager;
 } conf_t;
 
 extern int 		col, row;
@@ -89,6 +93,7 @@ extern char 		path_dir[BUFSIZ];
 extern char 		path_todo[BUFSIZ];
 extern char 		path_apts[BUFSIZ];
 extern char 		path_conf[BUFSIZ];
+extern char		path_notes[BUFSIZ];
 extern struct pad_s    *apad;
 extern struct nbar_s   *nbar;
 

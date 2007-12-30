@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.37 2007/10/21 13:42:34 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.38 2007/12/30 16:27:59 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -27,9 +27,11 @@
 #include <time.h>	
 #include <string.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <ctype.h>
 #include <sys/types.h>
 #include <math.h>
+#include <errno.h>
 
 #include "i18n.h"
 #include "wins.h"
@@ -50,7 +52,7 @@ exit_calcurse(int status)
 
 /* Function to exit on internal error. */
 void
-ierror(const char *errmsg)
+ierror(const char *errmsg, ierror_sev_e sev)
 {
 	WINDOW *errwin;
 	char *label = _("INTERNAL ERROR");
@@ -66,14 +68,17 @@ ierror(const char *errmsg)
 	custom_apply_attr(errwin, ATTR_HIGHEST);
 	box(errwin, 0, 0);
 	wins_show(errwin, label);
-	mvwprintw(errwin, 3, 1, reportmsg);
+	if (sev == IERROR_FATAL)
+		mvwprintw(errwin, 3, 1, reportmsg);
 	mvwprintw(errwin, 5, (wincol - strlen(msg)) / 2, "%s", msg);
-	mvwprintw(errwin, winrow - 2, wincol - strlen(exitmsg) - 1, "%s", 
-	    exitmsg);
+	if (sev == IERROR_FATAL)
+		mvwprintw(errwin, winrow - 2, wincol - strlen(exitmsg) - 1, "%s", 
+		    exitmsg);
 	custom_remove_attr(errwin, ATTR_HIGHEST);
 	wrefresh(errwin);
 	wgetch(errwin);
-	exit_calcurse(EXIT_FAILURE);
+	if (sev == IERROR_FATAL)
+		exit_calcurse(EXIT_FAILURE);
 }
 
 /* Function to handle an assertion failure. */
@@ -84,7 +89,7 @@ aerror(const char *file, int line, const char *assertion)
 
 	snprintf(errmsg, BUFSIZ,
 	    "assert \"%s\" failed: file \"%s\", line %d", assertion, file, line);
-	ierror(errmsg);
+	ierror(errmsg, IERROR_FATAL);
 }
 
 /* 
@@ -94,7 +99,7 @@ aerror(const char *file, int line, const char *assertion)
 void 
 status_mesg(char *mesg_line1, char *mesg_line2)
 {
-	erase_window_part(win[STA].p, 0, 0, col, 2);
+	erase_status_bar();
 	custom_apply_attr(win[STA].p, ATTR_HIGHEST);
 	mvwprintw(win[STA].p, 0, 0, mesg_line1);
 	mvwprintw(win[STA].p, 1, 0, mesg_line2);
@@ -350,7 +355,8 @@ updatestring(WINDOW *win, char **str, int x, int y)
 		len = strlen(newstr) + 1;
 		if ((*str = (char *) realloc(*str, len)) == NULL) {
 			/* NOTREACHED */
-			ierror(_("FATAL ERROR in updatestring: out of memory"));
+			ierror(_("FATAL ERROR in updatestring: out of memory"),
+			    IERROR_FATAL);
 		} else 
 			(void)memcpy(*str, newstr, len);
 	} 	
@@ -742,33 +748,6 @@ void item_in_popup(char *saved_a_start, char *saved_a_end, char *msg,
 	delwin(popup_win);
 }
 
-/* 
- * Print an item description in the corresponding panel window.
- */
-void display_item(WINDOW *win, int incolor, char *msg, int recur, 
-			int len, int y, int x)
-{
-	char buf[len];
-
-	if (incolor == 0) 
-		custom_apply_attr(win, ATTR_HIGHEST);
-	if (strlen(msg) < len) {
-		if (recur)
-			mvwprintw(win, y, x, "*%s", msg);
-		else
-			mvwprintw(win, y, x, " %s", msg);
-	} else {
-		strncpy(buf, msg, len - 1);
-		buf[len - 1] = '\0';
-		if (recur)
-			mvwprintw(win, y, x, "*%s...", buf);
-		else
-			mvwprintw(win, y, x, " %s...", buf);
-	}
-	if (incolor == 0) 
-		custom_remove_attr(win, ATTR_HIGHEST);
-}
-
 /* Reset the status bar page. */
 void reset_status_page(void)
 {
@@ -792,7 +771,7 @@ void other_status_page(int panel)
 		nb_item = NB_TOD_CMDS;
 		break;
 	default:
-		ierror(error);
+		ierror(error, IERROR_FATAL);
 	}
 	max_page = ceil( nb_item / (2*CMDS_PER_LINE) ) + 1;
 	if (status_page < max_page) {
@@ -841,6 +820,26 @@ char *mycpy(const char *src)
 		return NULL;
 }
 
+long
+mystrtol(const char *str)
+{
+	char *ep;
+	long lval;
+	const char *not_a_number = 
+	    _("FATAL ERROR in mystrtol: could not convert string");
+	const char *out_of_range =
+	    _("FATAL ERROR in mystrtol: number is out of range");
+
+	errno = 0;
+	lval = strtol(str, &ep, 10);
+	if (str[0] == '\0' || *ep != '\0')
+		ierror(not_a_number, IERROR_FATAL);
+	if (errno == ERANGE && (lval == LONG_MAX || lval == LONG_MIN))
+		ierror(out_of_range, IERROR_FATAL);
+
+	return (lval);
+}
+
 /* Print the given option value with appropriate color. */
 void 
 print_option_incolor(WINDOW *win, bool option, int pos_y, int pos_x)
@@ -856,11 +855,48 @@ print_option_incolor(WINDOW *win, bool option, int pos_y, int pos_x)
 		strncpy(option_value, _("no"), BUFSIZ);
 	} else {
 		ierror(
-		    _("option not defined - Problem in print_option_incolor()"));
+		    _("option not defined - Problem in print_option_incolor()"),
+		    IERROR_FATAL);
 	}
 	custom_apply_attr(win, color);
 	mvwprintw(win, pos_y, pos_x, "%s", option_value);
 	custom_remove_attr(win, color);
 	wnoutrefresh(win);
 	doupdate();
+}
+
+/* 
+ * Create a new unique file, and return a newly allocated string which contains
+ * the random part of the file name. 
+ */
+char *
+new_tempfile(const char *prefix, int trailing_len)
+{
+	char fullname[BUFSIZ];
+	int prefix_len, fd;
+	FILE *file;
+
+	if (prefix == NULL)
+		return (NULL);
+	
+	prefix_len = strlen(prefix);
+	if (prefix_len + trailing_len >= BUFSIZ)
+		return (NULL);
+	memcpy(fullname, prefix, prefix_len);
+	memset(fullname + prefix_len, 'X', trailing_len);
+	fullname[prefix_len + trailing_len] = '\0';
+	if ((fd = mkstemp(fullname)) == -1 ||
+	    (file = fdopen(fd, "w+")) == NULL) {
+		if (fd != -1) {
+			unlink(fullname);
+			close(fd);
+		}
+		ierror(
+		    _("FATAL ERROR: temporary file could not be created!"),
+		    IERROR_WARN);
+		return (NULL);
+	}
+	fclose(file);
+
+	return (strdup(fullname + prefix_len));
 }

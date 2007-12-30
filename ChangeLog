@@ -1,3 +1,9 @@
+30 Dec 2007:
+	Ability to attach notes to todo items added
+	Call to an external editor or pager to edit/view notes implemented
+	'N' and '>' keystrokes added to edit or view notes
+	ierror() function improved
+	
 09 Dec 2007:
 	bugfix in recur_item_inday(): leap years should now be properly handled
 	calendar_move_up(), calendar_move_down(), calendar_move_left(),

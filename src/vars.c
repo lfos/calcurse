@@ -1,4 +1,4 @@
-/*	$calcurse: vars.c,v 1.5 2007/10/21 13:40:13 culot Exp $	*/
+/*	$calcurse: vars.c,v 1.6 2007/12/30 16:27:59 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -76,6 +76,7 @@ char path_dir[] = "";
 char path_todo[] = "";
 char path_apts[] = "";
 char path_conf[] = "";
+char path_notes[] = "";
 
 /* Variable to handle pads. */
 struct pad_s *apad;
@@ -90,12 +91,30 @@ struct nbar_s *nbar;
 void 
 vars_init(conf_t *conf)
 {
+	char *PATH_VI = "/usr/bin/vi";
+	char *PATH_LESS = "/usr/bin/less";
+	char *ed, *pg;
+
 	/* Variables for user configuration */
 	conf->confirm_quit = true; 
 	conf->confirm_delete = true; 
 	conf->auto_save = true;
 	conf->skip_system_dialogs = false;
 	conf->skip_progress_bar = false;
+
+	/* Default external editor and pager */
+	ed = getenv("VISUAL");
+	if (ed == NULL || ed[0] == '\0')
+		ed = getenv("EDITOR");
+	if (ed == NULL || ed[0] == '\0')
+		ed = PATH_VI;
+	conf->editor = ed;
+
+	pg = getenv("PAGER");
+	if (pg == NULL || pg[0] == '\0')
+		pg = PATH_LESS;
+	conf->pager = pg;
+
 	wins_set_layout(1);
 
 	calendar_set_first_day_of_week(MONDAY);

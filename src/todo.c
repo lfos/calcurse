@@ -1,4 +1,4 @@
-/*	$calcurse: todo.c,v 1.15 2007/10/21 13:42:34 culot Exp $	*/
+/*	$calcurse: todo.c,v 1.16 2007/12/30 16:27:59 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -28,6 +28,7 @@
 #include <string.h>
 
 #include "utils.h"
+#include "custom.h"
 #include "i18n.h"
 #include "todo.h"
 
@@ -130,20 +131,21 @@ todo_new_item(void)
 			status_mesg(mesg_id, "");
 			ch = wgetch(win[STA].p);
 		}
-		todo_add(todo_input, ch - '0');
+		todo_add(todo_input, ch - '0', NULL);
 		todos++;
 	}
 }
 
 /* Add an item in the todo linked list. */
 struct todo_s *
-todo_add(char *mesg, int id)
+todo_add(char *mesg, int id, char *note)
 {
 	struct todo_s *o, **i;
 	o = (struct todo_s *) malloc(sizeof(struct todo_s));
 	o->mesg = (char *) malloc(strlen(mesg) + 1);
 	strncpy(o->mesg, mesg, strlen(mesg) + 1);
 	o->id = id;
+	o->note = (note != NULL && note[0] != '\0') ? strdup(note) : NULL;
 	i = &todolist;
 	for (;;) {
 		if (*i == 0 || (*i)->id > id) {
@@ -169,6 +171,8 @@ todo_delete_bynum(unsigned num)
 		if (n == num) {
 			*iptr = i->next;
 			free(i->mesg);
+			if (i->note != NULL)
+				free(i->note);
 			free(i);
 			return;
 		}
@@ -261,11 +265,13 @@ todo_chg_priority(int action)
 	struct todo_s *backup;
 	char backup_mesg[BUFSIZ];
 	int backup_id;
+	char backup_note[NOTESIZ + 1];
 	int do_chg = 1;
 
 	backup = todo_get_item(hilt);
 	strncpy(backup_mesg, backup->mesg, strlen(backup->mesg) + 1);
 	backup_id = backup->id;
+	strncpy(backup_note, backup->note, NOTESIZ + 1);
 	if (action == '+') {
 		(backup_id > 1) ? backup_id-- : do_chg--;
 	} else if (action == '-') {
@@ -276,7 +282,7 @@ todo_chg_priority(int action)
 	}	
 	if (do_chg) {
 		todo_delete_bynum(hilt - 1);
-		backup = todo_add(backup_mesg, backup_id);
+		backup = todo_add(backup_mesg, backup_id, backup_note);
 		hilt = todo_get_position(backup);	
 	} 
 }
@@ -293,12 +299,36 @@ todo_edit_item(void)
 	updatestring(win[STA].p, &i->mesg, 0, 1);
 }
 
+/* Display todo items in the corresponding panel. */
+static void
+display_todo_item(int incolor, char *msg, int prio, int note, int len, int y,
+    int x)
+{
+	WINDOW *w;
+	int ch_note;
+	char buf[len];
+
+	w = win[TOD].p;
+	ch_note = (note) ? '>' : '.';
+	if (incolor == 0) 
+		custom_apply_attr(w, ATTR_HIGHEST);
+	if (strlen(msg) < len)
+		mvwprintw(w, y, x, "%d%c %s", prio, ch_note, msg);
+	else {
+		strncpy(buf, msg, len - 1);
+		buf[len - 1] = '\0';
+		mvwprintw(w, y, x, "%d%c %s...", prio, ch_note, buf);
+	}
+	if (incolor == 0) 
+		custom_remove_attr(w, ATTR_HIGHEST);
+}
+
 /* Updates the ToDo panel. */
 void 
 todo_update_panel(window_t *wintod, int which_pan)
 {
 	struct todo_s *i;
-	int len = wintod->w - 6;
+	int len = wintod->w - 8;
 	int num_todo = 0;
 	int y_offset = 3, x_offset = 1;
 	int t_realpos = -1;
@@ -306,7 +336,6 @@ todo_update_panel(window_t *wintod, int which_pan)
 	int todo_lines = 1;
 	int max_items = wintod->h - 4;
 	int incolor = -1;
-	char mesg[BUFSIZ] = "";
 
 	/* Print todo item in the panel. */
 	erase_window_part(win[TOD].p, 1, title_lines, wintod->w - 2, 
@@ -318,10 +347,8 @@ todo_update_panel(window_t *wintod, int which_pan)
 		if (incolor == 0) 
 			msgsav = i->mesg; 
 		if (t_realpos >= 0 && t_realpos < max_items) {
-			snprintf(mesg, BUFSIZ, "%d. ", i->id);	
-			strncat(mesg, i->mesg, strlen(i->mesg));
-			display_item(win[TOD].p, incolor, mesg, 0, 
-					len, y_offset, x_offset);
+			display_todo_item(incolor, i->mesg, i->id,
+			    (i->note != NULL) ? 1 : 0, len, y_offset, x_offset);
 			y_offset = y_offset + todo_lines;	
 		}
 	}
@@ -341,4 +368,38 @@ todo_update_panel(window_t *wintod, int which_pan)
 	}
 	
 	wnoutrefresh(win[TOD].p);
+}
+
+/* Attach a note to a todo */
+void 
+todo_edit_note(char *editor)
+{
+	struct todo_s *i;
+	char fullname[BUFSIZ];
+	char *filename;
+
+	i = todo_get_item(hilt);
+	if (i->note == NULL) {
+		if ((filename = new_tempfile(path_notes, NOTESIZ))
+		    != NULL)
+			i->note = filename;
+		else
+			return;
+	}
+	snprintf(fullname, BUFSIZ, "%s%s", path_notes, i->note);
+	wins_launch_external(fullname, editor);
+}
+
+/* View a note previously attached to a todo */
+void 
+todo_view_note(char *pager)
+{
+	struct todo_s *i;
+	char fullname[BUFSIZ];
+
+	i = todo_get_item(hilt);
+	if (i->note == NULL)
+		return;
+	snprintf(fullname, BUFSIZ, "%s%s", path_notes, i->note);
+	wins_launch_external(fullname, pager);
 }
