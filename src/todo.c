@@ -1,4 +1,4 @@
-/*	$calcurse: todo.c,v 1.16 2007/12/30 16:27:59 culot Exp $	*/
+/*	$calcurse: todo.c,v 1.17 2007/12/31 17:37:53 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -26,6 +26,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "utils.h"
 #include "custom.h"
@@ -37,6 +38,20 @@ static int	hilt = 0;
 static int	todos = 0;
 static int	first = 1;
 static char    *msgsav;
+
+/* Returns a structure containing the selected item. */
+static struct todo_s *
+todo_get_item(int item_number)
+{
+	struct todo_s *o;
+	int i;
+	
+	o = todolist;
+	for (i = 1; i < item_number; i++) {
+		o = o->next;
+	}
+	return o;
+}
 
 /* Sets which todo is highlighted. */
 void
@@ -158,6 +173,40 @@ todo_add(char *mesg, int id, char *note)
 	return o;
 }
 
+/* Delete a note previously attached to a todo item. */
+static void 
+todo_delete_note_bynum(unsigned num)
+{
+	unsigned n;
+	struct todo_s *i, **iptr;
+	char fullname[BUFSIZ];
+
+	n = 0;
+	iptr = &todolist;
+	for (i = todolist; i != 0; i = i->next) {
+		if (n == num) {
+			if (i->note == NULL)
+				ierror(
+				   _("FATAL ERROR in todo_delete_note_bynum: "
+				   "no note attached\n"), IERROR_FATAL);
+			snprintf(fullname, BUFSIZ, "%s%s", path_notes, i->note);
+			if (unlink(fullname) != 0)
+				ierror(
+				   _("FATAL ERROR in todo_delete_note_bynum: "
+				   "could not remove note\n"), IERROR_FATAL);
+			free(i->note);
+			i->note = NULL;
+			return;
+		}
+		iptr = &i->next;
+		n++;
+	}
+	/* NOTREACHED */
+	ierror(_("FATAL ERROR in todo_delete_note_bynum: no such todo\n"),
+	    IERROR_FATAL);
+	exit(EXIT_FAILURE);
+}
+
 /* Delete an item from the todo linked list. */
 static void 
 todo_delete_bynum(unsigned num)
@@ -180,7 +229,8 @@ todo_delete_bynum(unsigned num)
 		n++;
 	}
 	/* NOTREACHED */
-	fputs(_("FATAL ERROR in todo_delete_bynum: no such todo\n"), stderr);
+	ierror(_("FATAL ERROR in todo_delete_bynum: no such todo\n"), 
+	    IERROR_FATAL);
 	exit(EXIT_FAILURE);
 }
 
@@ -190,8 +240,13 @@ todo_delete(conf_t *conf)
 {
 	char *choices = "[y/n] ";
 	char *del_todo_str = _("Do you really want to delete this task ?");
+	char *erase_warning =
+		_("This item has a note attached to it. "
+		  "Delete (t)odo or just its (n)ote ?");
+	char *erase_choice =
+		_("[t/n] ");
 	bool go_for_todo_del = false;
-	int answer = 0;
+	int answer = 0, has_note;
 	
 	if (conf->confirm_delete) {
 		status_mesg(del_todo_str, choices);
@@ -206,7 +261,23 @@ todo_delete(conf_t *conf)
 		if (todos > 0) 
 			go_for_todo_del = true;
 
-	if (go_for_todo_del) {
+	if (go_for_todo_del == false) {
+		erase_status_bar();
+		return;
+	}
+
+	answer = 0;
+	has_note = (todo_get_item(hilt)->note != NULL) ? 1 : 0;
+	if (has_note == 0)
+		answer = 't';
+	
+	while (answer != 't' && answer != 'n' && answer != ESCAPE) {
+		status_mesg(erase_warning, erase_choice);
+		answer = wgetch(win[STA].p);
+	}
+	
+	switch (answer) {
+	case 't':
 		todo_delete_bynum(hilt - 1);
 		todos--;
 		if (hilt > 1) 
@@ -215,6 +286,13 @@ todo_delete(conf_t *conf)
 			hilt = 0;
 		if (hilt - first < 0)
 			first--;
+		break;
+	case 'n':
+		todo_delete_note_bynum(hilt - 1);
+		break;
+	default:
+		erase_status_bar();
+		return;
 	}
 }
 
@@ -242,20 +320,6 @@ todo_get_position(struct todo_s *i)
 			stderr);
 		exit(EXIT_FAILURE);
 	} 
-}
-
-/* Returns a structure containing the selected item. */
-static struct todo_s *
-todo_get_item(int item_number)
-{
-	struct todo_s *o;
-	int i;
-	
-	o = todolist;
-	for (i = 1; i < item_number; i++) {
-		o = o->next;
-	}
-	return o;
 }
 
 /* Change an item priority by pressing '+' or '-' inside TODO panel. */
