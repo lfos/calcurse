@@ -1,4 +1,4 @@
-/*	$calcurse: todo.c,v 1.17 2007/12/31 17:37:53 culot Exp $	*/
+/*	$calcurse: todo.c,v 1.18 2008/01/13 12:40:45 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -179,7 +179,6 @@ todo_delete_note_bynum(unsigned num)
 {
 	unsigned n;
 	struct todo_s *i, **iptr;
-	char fullname[BUFSIZ];
 
 	n = 0;
 	iptr = &todolist;
@@ -189,13 +188,7 @@ todo_delete_note_bynum(unsigned num)
 				ierror(
 				   _("FATAL ERROR in todo_delete_note_bynum: "
 				   "no note attached\n"), IERROR_FATAL);
-			snprintf(fullname, BUFSIZ, "%s%s", path_notes, i->note);
-			if (unlink(fullname) != 0)
-				ierror(
-				   _("FATAL ERROR in todo_delete_note_bynum: "
-				   "could not remove note\n"), IERROR_FATAL);
-			free(i->note);
-			i->note = NULL;
+			erase_note(&i->note);
 			return;
 		}
 		iptr = &i->next;
@@ -221,7 +214,7 @@ todo_delete_bynum(unsigned num)
 			*iptr = i->next;
 			free(i->mesg);
 			if (i->note != NULL)
-				free(i->note);
+				erase_note(&i->note);
 			free(i);
 			return;
 		}

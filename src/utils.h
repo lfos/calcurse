@@ -1,8 +1,8 @@
-/*	$calcurse: utils.h,v 1.24 2007/12/30 16:27:59 culot Exp $	*/
+/*	$calcurse: utils.h,v 1.25 2008/01/13 12:40:45 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2007 Frederic Culot
+ * Copyright (c) 2004-2008 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -93,5 +93,6 @@ char   *mycpy(const char *);
 long	mystrtol(const char *);
 void 	print_option_incolor(WINDOW *, bool, int, int);
 char   *new_tempfile(const char *, int);
+void	erase_note(char **);
 
 #endif /* CALCURSE_UTILS_H */

@@ -1,8 +1,8 @@
-/*	$calcurse: day.h,v 1.15 2007/08/15 15:37:10 culot Exp $	*/
+/*	$calcurse: day.h,v 1.16 2008/01/13 12:40:45 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2007 Frederic Culot
+ * Copyright (c) 2004-2008 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,6 +50,7 @@ struct day_item_s {
 	int appt_pos;		/* real position in recurrent list */
 	char state;		/* appointment state */
 	char *mesg;		/* item description */
+	char *note;		/* note attached to item */
 };
 
 struct day_saved_item_s {
@@ -68,5 +69,7 @@ void 			day_edit_item(void);
 int 			day_erase_item(long, int, int);
 struct day_item_s      *day_get_item(int);
 int 			day_item_nb(long, int, int);
+void			day_edit_note(char *);
+void			day_view_note(char *);
 
 #endif /* CALCURSE_DAY_H */

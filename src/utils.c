@@ -1,8 +1,8 @@
-/*	$calcurse: utils.c,v 1.38 2007/12/30 16:27:59 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.39 2008/01/13 12:40:45 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2007 Frederic Culot
+ * Copyright (c) 2004-2008 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -899,4 +899,21 @@ new_tempfile(const char *prefix, int trailing_len)
 	fclose(file);
 
 	return (strdup(fullname + prefix_len));
+}
+
+/* Erase a note previously attached to a todo, event or appointment. */
+void
+erase_note(char **note)
+{
+	char fullname[BUFSIZ];
+
+	if (*note == NULL)
+		ierror(_("FATAL ERROR in erase_note: null pointer!\n"),
+		    IERROR_FATAL);
+	snprintf(fullname, BUFSIZ, "%s%s", path_notes, *note);
+	if (unlink(fullname) != 0)
+		ierror(_("FATAL ERROR in erase_note: could not remove note\n"), 
+		    IERROR_FATAL);
+	free(*note);
+	*note = NULL;
 }

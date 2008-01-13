@@ -1,8 +1,8 @@
-/*	$calcurse: apoint.h,v 1.10 2007/12/30 16:27:58 culot Exp $	*/
+/*	$calcurse: apoint.h,v 1.11 2008/01/13 12:40:45 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2007 Frederic Culot
+ * Copyright (c) 2004-2008 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,22 +59,20 @@ void			apoint_hilt_set(int);
 void			apoint_hilt_decrease(void);
 void			apoint_hilt_increase(void);
 int			apoint_hilt(void);
-apoint_llist_node_t    *apoint_new(char *, long, long, char);
+apoint_llist_node_t    *apoint_new(char *, char *, long, long, char);
 void			apoint_add(void);
 void			apoint_delete(conf_t *, unsigned *, unsigned *);
 unsigned 		apoint_inday(apoint_llist_node_t *, long);
 void 			apoint_sec2str(apoint_llist_node_t *, int, long, 
 			    char *, char *);
 void 			apoint_write(apoint_llist_node_t *, FILE *);
-apoint_llist_node_t    *apoint_scan(FILE *, struct tm, struct tm, char);
-void 			apoint_delete_bynum(long, unsigned);
+apoint_llist_node_t    *apoint_scan(FILE *, struct tm, struct tm, char, char *);
+void 			apoint_delete_bynum(long, unsigned, int);
 void 			apoint_scroll_pad_down(int, int);
 void 			apoint_scroll_pad_up(int);
 struct notify_app_s    *apoint_check_next(struct notify_app_s *, long);
 apoint_llist_node_t    *apoint_recur_s2apoint_s(recur_apoint_llist_node_t *);
 void 			apoint_switch_notify(void);
 void			apoint_update_panel(window_t *, int);
-void			apoint_edit_note(void);
-void			apoint_view_note(void);
 
 #endif /* CALCURSE_APOINT_H */

@@ -1,8 +1,8 @@
-/*	$calcurse: io.c,v 1.24 2007/12/30 16:27:59 culot Exp $	*/
+/*	$calcurse: io.c,v 1.25 2008/01/13 12:40:45 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2007 Frederic Culot
+ * Copyright (c) 2004-2008 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -508,7 +508,8 @@ io_save_cal(conf_t *conf)
          * appointments first, and then the events. 
 	 * Recursive items are written first.
          */
-	if (show_bar) progress_bar(PROGRESS_BAR_SAVE, 2);
+	if (show_bar) 
+		progress_bar(PROGRESS_BAR_SAVE, 2);
 	data_file = fopen(path_apts, "w");
 	if (data_file == (FILE *) 0)
 	        status_mesg(access_pb, "");
@@ -549,6 +550,7 @@ io_load_app(void)
         int id = 0;
 	int freq;
 	char type, state = 0L;
+	char note[NOTESIZ + 1], *notep;
 	char *error = 
 		_("FATAL ERROR in io_load_app: wrong format in the appointment or event\n");
 
@@ -642,6 +644,18 @@ io_load_app(void)
 		} else 
 			ungetc(c, data_file);
 
+		/* Check if a note is attached to the item. */
+		c = getc(data_file);
+		if (c == '>') {
+			fgets(note, NOTESIZ + 1, data_file);
+			note[NOTESIZ] = '\0';
+			notep = strdup(note);
+			getc(data_file);
+		} else {
+			notep = NULL;
+			ungetc(c, data_file);
+		}
+
 		/*
 		 * Last: read the item description and load it into its
 		 * corresponding linked list, depending on the item type.
@@ -659,16 +673,16 @@ io_load_app(void)
 			}
 			if (is_recursive) {
 				recur_apoint_scan(data_file, start, end,
-				    type, freq, until, exc, state);
+				    type, freq, until, notep, exc, state);
 			} else {
-				apoint_scan(data_file, start, end, state);
+				apoint_scan(data_file, start, end, state, notep);
 			}
 		} else if (is_event) {
 			if (is_recursive) {
-				recur_event_scan(data_file, start, id,
-					type, freq, until, exc);
+				recur_event_scan(data_file, start, id, type, 
+				    freq, until, notep, exc);
 			} else {
-				event_scan(data_file, start, id);
+				event_scan(data_file, start, id, notep);
 			}
 		} else { /* NOT REACHED */
 			fputs(error, stderr);
@@ -710,7 +724,6 @@ io_load_todo(void)
 		if (c == '>') {
 			fgets(note, NOTESIZ + 1, data_file);
 			note[NOTESIZ] = '\0';
-			fprintf(stderr, "note: [%s]\n", note);
 			getc(data_file);
 		} else
 			note[0] = '\0';

@@ -1,8 +1,8 @@
-/*	$calcurse: recur.h,v 1.15 2007/08/15 15:37:31 culot Exp $	*/
+/*	$calcurse: recur.h,v 1.16 2008/01/13 12:40:45 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2007 Frederic Culot
+ * Copyright (c) 2004-2008 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,6 +54,7 @@ typedef struct recur_apoint_llist_node {
 	long dur;		/* duration of the appointment */
 	char state;		/* 8 bits to store item state */
 	char *mesg;		/* appointment description */
+	char *note;		/* note attached to appointment */
 } recur_apoint_llist_node_t;
 
 typedef struct recur_apoint_llist {
@@ -68,28 +69,30 @@ struct recur_event_s {
 	int id;			/* event type */
 	long day;		/* day at which event occurs */
 	char *mesg;		/* event description */
+	char *note;		/* note attached to event */
 };
 
 extern recur_apoint_llist_t *recur_alist_p;
 extern struct recur_event_s *recur_elist;
 
 int 				recur_apoint_llist_init(void);
-recur_apoint_llist_node_t      *recur_apoint_new(char *, long, long, char, int,
-				    int, long, struct days_s *); 
-struct recur_event_s	       *recur_event_new(char *, long, int, int, int, 
-				    long, struct days_s *);
+recur_apoint_llist_node_t      *recur_apoint_new(char *, char *, long, long, 
+				    char, int, int, long, struct days_s *); 
+struct recur_event_s	       *recur_event_new(char *, char *, long, int, int, 
+				    int, long, struct days_s *);
 char 				recur_def2char(recur_types_t);
 int 				recur_char2def(char);
 recur_apoint_llist_node_t      *recur_apoint_scan(FILE *, struct tm, struct tm,
-				    char, int, struct tm, struct days_s *, 
-				    char);
+				    char, int, struct tm, char *, 
+				    struct days_s *, char);
 struct recur_event_s 	       *recur_event_scan(FILE *, struct tm, int, char, 
-				    int, struct tm, struct days_s *);
+				    int, struct tm, char *, struct days_s *);
 void 				recur_save_data(FILE *);
 unsigned 			recur_item_inday(long, struct days_s *, int, 
 				    int, long, long);
-void 				recur_event_erase(long, unsigned, unsigned);
-void 				recur_apoint_erase(long, unsigned, unsigned);
+void 				recur_event_erase(long, unsigned, unsigned, int);
+void 				recur_apoint_erase(long, unsigned, unsigned, 
+				    int);
 void 				recur_repeat_item(void);
 struct days_s 		       *recur_exc_scan(FILE *);
 struct notify_app_s 	       *recur_apoint_check_next(struct notify_app_s *,

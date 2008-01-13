@@ -1,8 +1,8 @@
-/*	$calcurse: event.c,v 1.4 2007/07/28 13:11:42 culot Exp $	*/
+/*	$calcurse: event.c,v 1.5 2008/01/13 12:40:45 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2007 Frederic Culot
+ * Copyright (c) 2004-2008 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,13 +31,14 @@
 
 #include "vars.h"
 #include "i18n.h"
+#include "utils.h"
 #include "event.h"
 
 struct event_s *eventlist;
 
 /* Create a new event */
 struct event_s *
-event_new(char *mesg, long day, int id)
+event_new(char *mesg, char *note, long day, int id)
 {
 	struct event_s *o, **i;
 	o = (struct event_s *) malloc(sizeof(struct event_s));
@@ -45,6 +46,7 @@ event_new(char *mesg, long day, int id)
 	strncpy(o->mesg, mesg, strlen(mesg) + 1);
 	o->day = day;
 	o->id = id;
+	o->note = note;
 	i = &eventlist;
 	for (;;) {
 		if (*i == 0 || (*i)->day > day) {
@@ -76,13 +78,16 @@ event_write(struct event_s *o, FILE * f)
 
 	t = o->day;
 	lt = localtime(&t);
-	fprintf(f, "%02u/%02u/%04u [%d] %s\n",
-		lt->tm_mon + 1, lt->tm_mday, 1900 + lt->tm_year, o->id, o->mesg);
+	fprintf(f, "%02u/%02u/%04u [%d] ",
+	    lt->tm_mon + 1, lt->tm_mday, 1900 + lt->tm_year, o->id);
+	if (o->note != NULL)
+		fprintf(f, ">%s ", o->note); 
+	fprintf(f, "%s\n", o->mesg);
 }
 
 /* Load the events from file */
 struct event_s *
-event_scan(FILE * f, struct tm start, int id)
+event_scan(FILE * f, struct tm start, int id, char *note)
 {
 	struct tm *lt;
 	char buf[MESG_MAXSIZE], *nl;
@@ -109,12 +114,12 @@ event_scan(FILE * f, struct tm start, int id)
 		fputs(_("FATAL ERROR in event_scan: date error in the event\n"), stderr);
 		exit(EXIT_FAILURE);
 	}
-	return event_new(buf, tstart, id);
+	return (event_new(buf, note, tstart, id));
 }
 
 /* Delete an event from the list */
 void 
-event_delete_bynum(long start, unsigned num)
+event_delete_bynum(long start, unsigned num, int only_note)
 {
 	unsigned n;
 	struct event_s *i, **iptr;
@@ -124,9 +129,15 @@ event_delete_bynum(long start, unsigned num)
 	for (i = eventlist; i != 0; i = i->next) {
 		if (event_inday(i, start)) {
 			if (n == num) {
-				*iptr = i->next;
-				free(i->mesg);
-				free(i);
+				if (only_note)
+					erase_note(&i->note);
+				else {
+					*iptr = i->next;
+					free(i->mesg);
+					if (i->note != NULL)
+						erase_note(&i->note);
+					free(i);
+				}
 				return;
 			}
 			n++;

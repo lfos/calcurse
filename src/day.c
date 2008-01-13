@@ -1,8 +1,8 @@
-/*	$calcurse: day.c,v 1.31 2007/12/30 16:27:59 culot Exp $	*/
+/*	$calcurse: day.c,v 1.32 2008/01/13 12:40:45 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2007 Frederic Culot
+ * Copyright (c) 2004-2008 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,12 +56,13 @@ day_free_list(void)
 
 /* Add an event in the current day list */
 static struct day_item_s *
-day_add_event(int type, char *mesg, long day, int id)
+day_add_event(int type, char *mesg, char *note, long day, int id)
 {
 	struct day_item_s *o, **i;
 	o = (struct day_item_s *) malloc(sizeof(struct day_item_s));
 	o->mesg = (char *) malloc(strlen(mesg) + 1);
 	strncpy(o->mesg, mesg, strlen(mesg) + 1);
+	o->note = note;
 	o->type = type;
 	o->appt_dur = 0;
 	o->appt_pos = 0;
@@ -81,8 +82,8 @@ day_add_event(int type, char *mesg, long day, int id)
 
 /* Add an appointment in the current day list. */
 static struct day_item_s *
-day_add_apoint(int type, char *mesg, long start, long dur, char state, 
-    int real_pos)
+day_add_apoint(int type, char *mesg, char *note, long start, long dur, 
+    char state, int real_pos)
 {
 	struct day_item_s *o, **i;
 	int insert_item = 0;
@@ -90,6 +91,7 @@ day_add_apoint(int type, char *mesg, long start, long dur, char state,
 	o = (struct day_item_s *) malloc(sizeof(struct day_item_s));
 	o->mesg = (char *) malloc(strlen(mesg) + 1);
 	strncpy(o->mesg, mesg, strlen(mesg) + 1);
+	o->note = note;
 	o->start = start;
 	o->appt_dur = dur;
 	o->appt_pos = real_pos;
@@ -131,7 +133,8 @@ day_store_events(long date)
 	for (j = eventlist; j != 0; j = j->next) {
 		if (event_inday(j, date)) {
 			e_nb++;
-			ptr = day_add_event(EVNT, j->mesg, j->day, j->id);
+			ptr = day_add_event(EVNT, j->mesg, j->note, j->day, 
+			    j->id);
 		}	
 	}
 
@@ -154,9 +157,10 @@ day_store_recur_events(long date)
 
 	for (j = recur_elist; j != 0; j = j->next) {
 		if (recur_item_inday(j->day, j->exc, j->rpt->type, j->rpt->freq,
-			j->rpt->until, date)) {
+		    j->rpt->until, date)) {
 			e_nb++;
-			ptr = day_add_event(RECUR_EVNT, j->mesg, j->day, j->id);
+			ptr = day_add_event(RECUR_EVNT, j->mesg, j->note, 
+			    j->day, j->id);
 		}	
 	}
 
@@ -181,8 +185,8 @@ day_store_apoints(long date)
 	for (j = alist_p->root; j != 0; j = j->next) {
 		if (apoint_inday(j, date)) {
 			a_nb++;
-			ptr = day_add_apoint(APPT, j->mesg, j->start, j->dur, 
-			    j->state, 0);
+			ptr = day_add_apoint(APPT, j->mesg, j->note, j->start, 
+			    j->dur, j->state, 0);
 		}	
 	}
 	pthread_mutex_unlock(&(alist_p->mutex));
@@ -210,9 +214,8 @@ day_store_recur_apoints(long date)
 		if ((real_start = recur_item_inday(j->start, j->exc, 
 		    j->rpt->type, j->rpt->freq, j->rpt->until, date)) ){
 			a_nb++;
-			ptr = day_add_apoint(
-			    RECUR_APPT, j->mesg, real_start, j->dur, 
-			    j->state, n);
+			ptr = day_add_apoint(RECUR_APPT, j->mesg, j->note,
+			    real_start, j->dur, j->state, n);
 			n++;
 		}	
 	}
@@ -397,8 +400,8 @@ day_write_pad(long date, int width, int length, int incolor)
 				day_saved_item->type = p->type;
 				day_saved_item->mesg = p->mesg;
 			}
-			display_item(item_number - incolor, p->mesg, recur, 0, 
-			    width - 7, line, x_pos);
+			display_item(item_number - incolor, p->mesg, recur,
+			    (p->note != NULL) ? 1 : 0, width - 7, line, x_pos);
 			line++;
 			draw_line = true;
 		} else {
@@ -420,9 +423,10 @@ day_write_pad(long date, int width, int length, int incolor)
 			}
 			display_item_date(item_number - incolor, &a, p->type, 
 			    date, line + 1, x_pos);	
-			display_item(item_number - incolor, p->mesg, 0, 0, 
-			    width - 7, line + 2, x_pos);
-			line = line + 3;
+			display_item(item_number - incolor, p->mesg, 0, 
+			    (p->note != NULL) ? 1 : 0, width - 7, line + 2, 
+			    x_pos);
+			line += 3;
 		}
 	}
 }
@@ -448,7 +452,7 @@ void day_popup_item(void)
  * Need to know if there is an item for the current selected day inside
  * calendar. This is used to put the correct colors inside calendar panel.
  */
- int day_check_if_item(date_t day) {
+int day_check_if_item(date_t day) {
 	struct recur_event_s  *re;
 	recur_apoint_llist_node_t *ra;
 	struct event_s *e;
@@ -485,9 +489,41 @@ void day_popup_item(void)
 	return 0;
 }
 
+/* Update an existing item. */
+static void update_item(long date, int item_num, struct day_item_s *p, 
+    struct rpt_s *rpt)
+{
+	recur_apoint_llist_node_t *ra_new;
+
+	day_erase_item(date, item_num, 1);
+
+	switch (p->type) {
+	case RECUR_EVNT:
+		recur_event_new(p->mesg, p->note, p->start, p->evnt_id,
+			rpt->type, rpt->freq, rpt->until, NULL);
+		break;
+	case EVNT:
+		event_new(p->mesg, p->note, p->start, p->evnt_id);
+		break;
+	case RECUR_APPT:
+		ra_new = recur_apoint_new(p->mesg, p->note, p->start, 
+		    p->appt_dur, p->state, rpt->type, rpt->freq, rpt->until, 
+		    NULL);
+		if (notify_bar()) 
+			notify_check_repeated(ra_new);
+		break;
+	case APPT:
+		apoint_new(p->mesg, p->note, p->start, p->appt_dur, p->state);
+		if (notify_bar()) 
+			notify_check_added(p->mesg, p->start, p->state);
+		break;
+	}
+}
+
 /* Request the user to enter a new time. */
 static char *
-day_edit_time(long time) {
+day_edit_time(long time)
+{
 	char *timestr;
 	char *msg_time = _("Enter the new time ([hh:mm] or [h:mm]) : ");
         char *enter_str = _("Press [Enter] to continue");
@@ -521,7 +557,7 @@ day_edit_item(void)
 	struct tm *lt;
 	time_t t;
 	date_t new_date;
-	recur_apoint_llist_node_t *ra, *ra_new;
+	recur_apoint_llist_node_t *ra;
 	long date, newtime = 0;
 	int cancel, ch = 0, valid_date = 0, newfreq = 0, date_entered = 0;
 	int newmonth, newday, newyear;
@@ -697,28 +733,7 @@ day_edit_item(void)
 		rpt->type = recur_char2def(ch);
 		break;
 	}
-	day_erase_item(date, item_num, 1);
-
-	switch (p->type) {
-	case RECUR_EVNT:
-		recur_event_new(p->mesg, p->start, p->evnt_id, 
-			rpt->type, rpt->freq, rpt->until, NULL);
-		break;
-	case EVNT:
-		event_new(p->mesg, p->start, p->evnt_id);
-		break;
-	case RECUR_APPT:
-		ra_new = recur_apoint_new(p->mesg, p->start, p->appt_dur, 
-			p->state, rpt->type, rpt->freq, rpt->until, NULL);
-		if (notify_bar()) 
-			notify_check_repeated(ra_new);
-		break;
-	case APPT:
-		apoint_new(p->mesg, p->start, p->appt_dur, p->state);
-		if (notify_bar()) 
-			notify_check_added(p->mesg, p->start, p->state);
-		break;
-	}
+	update_item(date, item_num, p, rpt);
 }
 
 /*
@@ -727,26 +742,48 @@ day_edit_item(void)
  * recurrent appointments and appointments) and then to test the
  * type of the item to be deleted.
  */
-int day_erase_item(long date, int item_number, int force_erase) {
-	int ch = 0;
-	unsigned delete_whole;
+int 
+day_erase_item(long date, int item_number, int force_erase) 
+{
 	struct day_item_s *p;
 	char *erase_warning =
 		_("This item is recurrent. "
 		  "Delete (a)ll occurences or just this (o)ne ?");
-	char *erase_choice =
-		_("[a/o] ");
+	char *note_warning =
+		_("This item has a note attached to it. "
+		  "Delete (i)tem or just its (n)ote ?");
+	char *note_choice = _("[i/n] ");
+	char *erase_choice = _("[a/o] ");
+	int ch = 0, only_note, has_note, ans = 0;
+	unsigned delete_whole;
 
-	if (force_erase) 
+	p = day_get_item(item_number);	
+	if (force_erase) {
 		ch = 'a';
-
-	p = day_get_item(item_number);
-	
-	if (p->type == EVNT) {
-		event_delete_bynum(date, day_item_nb(date, item_number, EVNT));
-	} else if (p->type == APPT) {
-		apoint_delete_bynum(date, day_item_nb(date, item_number, APPT));
+		only_note = 0;
 	} else {
+		has_note = (p->note != NULL ) ? 1 : 0;
+		if (has_note == 0)
+			ans = 'i';
+		while (ans != 'i' && ans != 'n') {
+			status_mesg(note_warning, note_choice);
+			ans = wgetch(win[STA].p);
+		}
+		if (ans == 'i')
+			only_note = 0;
+		else
+			only_note = 1;
+	}
+
+	if (p->type == EVNT) {
+		event_delete_bynum(date, day_item_nb(date, item_number, EVNT),
+		    only_note);
+	} else if (p->type == APPT) {
+		apoint_delete_bynum(date, day_item_nb(date, item_number, APPT),
+		    only_note);
+	} else {
+		if (only_note)
+			ch = 'a';
 		while ( (ch != 'a') && (ch != 'o') && (ch != ESCAPE)) {
 			status_mesg(erase_warning, erase_choice);
 			ch = wgetch(win[STA].p);
@@ -761,12 +798,13 @@ int day_erase_item(long date, int item_number, int force_erase) {
 		if (p->type == RECUR_EVNT) {
 			recur_event_erase(date, 
 			    day_item_nb(date, item_number, RECUR_EVNT), 
-			    delete_whole);
+			    delete_whole, only_note);
 		} else {
-			recur_apoint_erase(date, p->appt_pos, delete_whole);
+			recur_apoint_erase(date, p->appt_pos, delete_whole, 
+			    only_note);
 		}
 	}
-	return p->type;
+	return (p->type);
 }
 
 /* Returns a structure containing the selected item. */
@@ -800,4 +838,61 @@ day_item_nb(long date, int day_num, int type)
 	}
 
 	return (nb_item[type - 1]);
+}
+
+/* Attach a note to an appointment or event. */
+void
+day_edit_note(char *editor)
+{
+	struct day_item_s *p;
+	recur_apoint_llist_node_t *ra;
+	struct recur_event_s *re;
+	struct rpt_s *rpt;
+	char fullname[BUFSIZ];
+	char *filename;
+	long date;
+	int item_num;
+
+	item_num = apoint_hilt();
+	p = day_get_item(item_num);
+	if (p->note == NULL) {
+		if ((filename = new_tempfile(path_notes, NOTESIZ))
+		    != NULL)
+			p->note = filename;
+		else
+			return;
+	}
+	snprintf(fullname, BUFSIZ, "%s%s", path_notes, p->note);
+	wins_launch_external(fullname, editor);
+
+	date = calendar_get_slctd_day_sec();
+	switch (p->type) {
+	case RECUR_EVNT:
+		re = recur_get_event(date, 
+		    day_item_nb(date, item_num, RECUR_EVNT));
+		rpt = re->rpt;
+		break;
+	case RECUR_APPT:
+		ra = recur_get_apoint(date, 
+		    day_item_nb(date, item_num, RECUR_APPT));
+		rpt = ra->rpt;
+		break;
+	default:
+		rpt = NULL;
+	}
+	update_item(date, item_num, p, rpt);
+}
+
+/* View a note previously attached to an appointment or event */
+void 
+day_view_note(char *pager)
+{
+	struct day_item_s *p;
+	char fullname[BUFSIZ];
+
+	p = day_get_item(apoint_hilt());
+	if (p->note == NULL)
+		return;
+	snprintf(fullname, BUFSIZ, "%s%s", path_notes, p->note);
+	wins_launch_external(fullname, pager);
 }

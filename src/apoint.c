@@ -1,8 +1,8 @@
-/*	$calcurse: apoint.c,v 1.19 2007/12/30 16:27:58 culot Exp $	*/
+/*	$calcurse: apoint.c,v 1.20 2008/01/13 12:40:45 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2007 Frederic Culot
+ * Copyright (c) 2004-2008 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,7 +43,8 @@
 apoint_llist_t *alist_p;
 static int	hilt = 0;
 
-int apoint_llist_init(void)
+int 
+apoint_llist_init(void)
 {
 	alist_p = (apoint_llist_t *) malloc(sizeof(apoint_llist_t));
 	alist_p->root = NULL;
@@ -79,13 +80,14 @@ apoint_hilt(void)
 }
 
 apoint_llist_node_t *
-apoint_new(char *mesg, long start, long dur, char state)
+apoint_new(char *mesg, char *note, long start, long dur, char state)
 {
 	apoint_llist_node_t *o, **i;
 
 	o = (apoint_llist_node_t *) malloc(sizeof(apoint_llist_node_t));
 	o->mesg = (char *) malloc(strlen(mesg) + 1);
 	strncpy(o->mesg, mesg, strlen(mesg) + 1);
+	o->note = note;
 	o->state = state;
 	o->start = start;
 	o->dur = dur;
@@ -192,12 +194,12 @@ apoint_add(void)
 			apoint_start = 
 			    date2sec(*calendar_get_slctd_day(), heures, 
 			    minutes);
-			apoint_pointeur = apoint_new(item_mesg, apoint_start,
+			apoint_pointeur = apoint_new(item_mesg, 0L, apoint_start,
 			    min2sec(apoint_duration), 0L);
 			if (notify_bar()) 
 				notify_check_added(item_mesg, apoint_start, 0L);
                 } else 
-                        event_pointeur = event_new(item_mesg, 
+                        event_pointeur = event_new(item_mesg, 0L,
 			    date2sec(*calendar_get_slctd_day(), 12, 0), Id);
 
 		if (hilt == 0) 
@@ -317,6 +319,9 @@ apoint_write(apoint_llist_node_t *o, FILE * f)
 	    lt->tm_mon + 1, lt->tm_mday, 1900 + lt->tm_year,
 	    lt->tm_hour, lt->tm_min);
 	
+	if (o->note != NULL)
+		fprintf(f, ">%s ", o->note);
+
 	if (o->state & APOINT_NOTIFY)
 		fprintf(f, "!");
 	else
@@ -326,7 +331,7 @@ apoint_write(apoint_llist_node_t *o, FILE * f)
 }
 
 apoint_llist_node_t *
-apoint_scan(FILE * f, struct tm start, struct tm end, char state)
+apoint_scan(FILE * f, struct tm start, struct tm end, char state, char *note)
 {
 	struct tm *lt;
 	char buf[MESG_MAXSIZE], *nl;
@@ -355,29 +360,37 @@ apoint_scan(FILE * f, struct tm start, struct tm end, char state)
 		fputs(_("FATAL ERROR in apoint_scan: date error in the appointment\n"), stderr);
 		exit(EXIT_FAILURE);
 	}
-	return apoint_new(buf, tstart, tend - tstart, state);
+	return (apoint_new(buf, note, tstart, tend - tstart, state));
 }
 
-void apoint_delete_bynum(long start, unsigned num)
+void 
+apoint_delete_bynum(long start, unsigned num, int only_note)
 {
 	unsigned n;
 	int need_check_notify = 0;
 	apoint_llist_node_t *i, **iptr;
 
-	n = 0;
-	
+	n = 0;	
 	pthread_mutex_lock(&(alist_p->mutex));
 	iptr = &alist_p->root;
 	for (i = alist_p->root; i != 0; i = i->next) {
 		if (apoint_inday(i, start)) {
 			if (n == num) {
-				if (notify_bar()) 
-					need_check_notify = notify_same_item(i->start);	 
-				*iptr = i->next;
-				free(i->mesg);
-				free(i);
-				pthread_mutex_unlock(&(alist_p->mutex));
-				if (need_check_notify) notify_check_next_app();
+				if (only_note)
+					erase_note(&i->note);
+				else {
+					if (notify_bar()) 
+						need_check_notify = 
+						    notify_same_item(i->start);
+					*iptr = i->next;
+					free(i->mesg);
+					if (i->note != NULL)
+						erase_note(&i->note);
+					free(i);
+					pthread_mutex_unlock(&(alist_p->mutex));
+					if (need_check_notify) 
+						notify_check_next_app();
+				}
 				return;
 			}
 			n++;
@@ -414,7 +427,8 @@ get_item_line(int item_nb, int nb_events_inday)
  * Update (if necessary) the first displayed pad line to make the
  * appointment panel scroll down next time pnoutrefresh is called. 
  */
-void apoint_scroll_pad_down(int nb_events_inday, int win_length) 
+void 
+apoint_scroll_pad_down(int nb_events_inday, int win_length) 
 {
 	int pad_last_line = 0;
 	int item_first_line = 0, item_last_line = 0;
@@ -435,7 +449,8 @@ void apoint_scroll_pad_down(int nb_events_inday, int win_length)
  * Update (if necessary) the first displayed pad line to make the
  * appointment panel scroll up next time pnoutrefresh is called. 
  */
-void apoint_scroll_pad_up(int nb_events_inday)
+void 
+apoint_scroll_pad_up(int nb_events_inday)
 {
 	int item_first_line = 0;
 
@@ -476,8 +491,8 @@ apoint_check_next(struct notify_app_s *app, long start)
  * Returns a structure of type apoint_llist_t given a structure of type 
  * recur_apoint_s 
  */
-apoint_llist_node_t *apoint_recur_s2apoint_s(
-	recur_apoint_llist_node_t *p)
+apoint_llist_node_t *
+apoint_recur_s2apoint_s(recur_apoint_llist_node_t *p)
 {
 	apoint_llist_node_t *a;
 
@@ -588,18 +603,4 @@ apoint_update_panel(window_t *winapp, int which_pan)
 	pnoutrefresh(apad->ptrwin, apad->first_onscreen, 0, 
 	    winapp->y + title_lines + 1, winapp->x + bordr, 
     	    winapp->y + winapp->h - 2*bordr, winapp->x + winapp->w - 3*bordr);
-}
-
-/* Attach a note to an appointment or event */
-void 
-apoint_edit_note(void)
-{
-
-}
-
-/* View a note previously attached to an appointment or event */
-void 
-apoint_view_note(void)
-{
-
 }

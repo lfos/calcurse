@@ -1,8 +1,8 @@
-/*	$calcurse: calcurse.c,v 1.59 2007/12/30 16:27:58 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.60 2008/01/13 12:40:45 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2007 Frederic Culot
+ * Copyright (c) 2004-2008 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -350,7 +350,7 @@ main(int argc, char **argv)
 		case 'n':	
 			/* Attach a note to an item, create it if necessary */
 			if (wins_slctd() == APP && apoint_hilt() != 0)
-				apoint_edit_note();
+				day_edit_note(conf.editor);
 			else if (wins_slctd() == TOD && todo_hilt() != 0)
 				todo_edit_note(conf.editor);
 			do_storage = true;
@@ -359,7 +359,7 @@ main(int argc, char **argv)
 		case '>':	
 			/* View a note previously attached to an item */
 			if (wins_slctd() == APP && apoint_hilt() != 0)
-				apoint_view_note();
+				day_view_note(conf.pager);
 			else if (wins_slctd() == TOD && todo_hilt() != 0)
 				todo_view_note(conf.pager);
 			break;
