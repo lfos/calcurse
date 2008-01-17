@@ -1,4 +1,4 @@
-/*	$calcurse: day.c,v 1.32 2008/01/13 12:40:45 culot Exp $	*/
+/*	$calcurse: day.c,v 1.33 2008/01/17 19:35:42 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -432,7 +432,8 @@ day_write_pad(long date, int width, int length, int incolor)
 }
 
 /* Display an item inside a popup window. */
-void day_popup_item(void)
+void 
+day_popup_item(void)
 {
 	char *error = 
 		_("FATAL ERROR in day_popup_item: unknown item type\n");
@@ -452,7 +453,9 @@ void day_popup_item(void)
  * Need to know if there is an item for the current selected day inside
  * calendar. This is used to put the correct colors inside calendar panel.
  */
-int day_check_if_item(date_t day) {
+int 
+day_check_if_item(date_t day) 
+{
 	struct recur_event_s  *re;
 	recur_apoint_llist_node_t *ra;
 	struct event_s *e;
@@ -490,8 +493,8 @@ int day_check_if_item(date_t day) {
 }
 
 /* Update an existing item. */
-static void update_item(long date, int item_num, struct day_item_s *p, 
-    struct rpt_s *rpt)
+static void 
+update_item(long date, int item_num, struct day_item_s *p, struct rpt_s *rpt)
 {
 	recur_apoint_llist_node_t *ra_new;
 
@@ -546,10 +549,11 @@ day_edit_time(long time)
 void 
 day_edit_item(void)
 {
-#define STRT	'1'
-#define END	'2'
-#define DESC	'3'
-#define REPT	'4'
+#define SINGLECHAR	2
+#define STRT		'1'
+#define END		'2'
+#define DESC		'3'
+#define REPT		'4'
 
 	struct day_item_s *p;
 	struct recur_event_s *re;
@@ -666,8 +670,9 @@ day_edit_item(void)
 		while ( (ch != 'D') && (ch != 'W') && (ch != 'M') 
 		    && (ch != 'Y') ) {
 			status_mesg(mesg_type_1, mesg_type_2);
-			typestr = (char *)malloc(sizeof(char) * 2);
-			*typestr = recur_def2char(rpt->type);
+			typestr = (char *)malloc(sizeof(char) * SINGLECHAR);
+			snprintf(typestr, SINGLECHAR, "%c",
+			    recur_def2char(rpt->type));
 			cancel = updatestring(win[STA].p, &typestr, 0, 1);
 			ch = toupper(*typestr);
 			free(typestr);

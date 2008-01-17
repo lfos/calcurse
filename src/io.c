@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.25 2008/01/13 12:40:45 culot Exp $	*/
+/*	$calcurse: io.c,v 1.26 2008/01/17 19:35:42 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -126,6 +126,7 @@ io_get_export_stream(void)
 	    _("The file cannot be accessed, please enter another file name.");
 	char *press_enter =
 	    _("Press [ENTER] to continue.");
+	int cancel;
 
 	stream = NULL;
 	stream_name = (char *)malloc(BUFSIZ);
@@ -136,7 +137,11 @@ io_get_export_stream(void)
 	
 	while (stream == NULL) {
 		status_mesg(question, "");
-		updatestring(win[STA].p, &stream_name, 0, 1);
+		cancel = updatestring(win[STA].p, &stream_name, 0, 1);
+		if (cancel) {
+			free(stream_name);
+			return (NULL);
+		}
 		stream = fopen(stream_name, "w");
 		if (stream == NULL) {
 			status_mesg(wrong_name, press_enter);
@@ -840,6 +845,9 @@ io_export_data(export_mode_t mode, conf_t *conf)
 		exit(EXIT_FAILURE);
 		/* NOTREACHED */
 	}
+
+	if (stream == NULL)
+		return;
 
 	io_export_header(stream);
 

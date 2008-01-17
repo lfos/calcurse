@@ -1,3 +1,9 @@
+17 Jan 2008:
+	exit_calcurse() improved: screen is now cleared completely when
+	calcurse exits
+	io_export_data() improved: it is now possible to cancel calendar export
+	bugfix in day_edit_item(): null-terminating character missing
+	
 13 Jan 2008:
 	Ability to attach notes to appointments and events added
 	

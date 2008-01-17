@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.39 2008/01/13 12:40:45 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.40 2008/01/17 19:35:42 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -45,7 +45,8 @@ void
 exit_calcurse(int status)
 {
 	endwin();
-	erase();
+	clear();
+	refresh();
 	calendar_stop_date_thread();
 	exit(status);
 }
