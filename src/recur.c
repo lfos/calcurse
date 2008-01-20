@@ -1,4 +1,4 @@
-/*	$calcurse: recur.c,v 1.32 2008/01/13 12:40:45 culot Exp $	*/
+/*	$calcurse: recur.c,v 1.33 2008/01/20 10:45:39 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -51,7 +51,7 @@ recur_apoint_llist_init(void)
 }
 
 /* Insert a new recursive appointment in the general linked list */
-recur_apoint_llist_node_t *
+static recur_apoint_llist_node_t *
 recur_apoint_new(char *mesg, char *note, long start, long dur, char state, 
     int type, int freq, long until, struct days_s *except)
 {
@@ -62,7 +62,7 @@ recur_apoint_new(char *mesg, char *note, long start, long dur, char state,
 	o->mesg = (char *) malloc(strlen(mesg) + 1);
 	o->exc = (struct days_s *) malloc(sizeof(struct days_s));
 	strncpy(o->mesg, mesg, strlen(mesg) + 1);
-	o->note = note;
+	o->note = (note != NULL) ? strdup(note) : NULL;
 	o->start = start;
 	o->state = state;
 	o->dur = dur;
@@ -87,7 +87,7 @@ recur_apoint_new(char *mesg, char *note, long start, long dur, char state,
 }
 
 /* Insert a new recursive event in the general linked list */
-struct recur_event_s *
+static struct recur_event_s *
 recur_event_new(char *mesg, char *note, long day, int id, int type, int freq, 
     long until, struct days_s *except)
 {
@@ -95,7 +95,7 @@ recur_event_new(char *mesg, char *note, long day, int id, int type, int freq,
 	o = (struct recur_event_s *) malloc(sizeof(struct recur_event_s));
 	o->rpt = (struct rpt_s *) malloc(sizeof(struct rpt_s));
 	o->mesg = (char *) malloc(strlen(mesg) + 1);
-	o->note = note;
+	o->note = (note != NULL) ? strdup(note) : NULL;
 	o->exc = (struct days_s *) malloc(sizeof(struct days_s));
 	strncpy(o->mesg, mesg, strlen(mesg) + 1);
 	o->day = day;
@@ -278,7 +278,8 @@ struct tm until, char *note, struct days_s *exc)
 	}
 	tstart = mktime(&start);
 	if ( (tstart == -1) || (tuntil == -1) ) {
-		fputs(_("FATAL ERROR in recur_event_scan: date error in the event\n"), stderr);
+		fputs(_("FATAL ERROR in recur_event_scan: "
+		    "date error in the event\n"), stderr);
 		exit(EXIT_FAILURE);
 	}
 	
@@ -473,7 +474,8 @@ recur_item_inday(long item_start, struct days_s *item_exc, int rpt_type,
  * or delete only one occurence of the recurrent event. 
  */
 void 
-recur_event_erase(long start, unsigned num, unsigned delete_whole, int only_note)
+recur_event_erase(long start, unsigned num, unsigned delete_whole, 
+    erase_flag_e flag)
 {
         unsigned n = 0;
         struct recur_event_s *i, **iptr;
@@ -485,15 +487,14 @@ recur_event_erase(long start, unsigned num, unsigned delete_whole, int only_note
 			i->rpt->freq, i->rpt->until, start)) {
                         if (n == num) {
 				if (delete_whole) {
-					if (only_note)
-						erase_note(&i->note);
+					if (flag == ERASE_FORCE_ONLY_NOTE)
+						erase_note(&i->note, flag);
 					else {
 						*iptr = i->next;
 						free(i->mesg);
 						free(i->rpt);
 						free(i->exc);
-						if (i->note != NULL)
-							erase_note(&i->note);
+						erase_note(&i->note, flag);
 						free(i);
 					}
                                 	return;
@@ -529,7 +530,7 @@ recur_event_erase(long start, unsigned num, unsigned delete_whole, int only_note
  */
 void 
 recur_apoint_erase(long start, unsigned num, unsigned delete_whole, 
-    int only_note)
+    erase_flag_e flag)
 {
         unsigned n = 0;
         recur_apoint_llist_node_t *i, **iptr;
@@ -542,19 +543,19 @@ recur_apoint_erase(long start, unsigned num, unsigned delete_whole,
                 if (recur_item_inday(i->start, i->exc, i->rpt->type,
 		    i->rpt->freq, i->rpt->until, start)) {
                         if (n == num) {
-				if (notify_bar() && only_note != 0)
+				if (notify_bar() && 
+				    flag != ERASE_FORCE_ONLY_NOTE)
 					need_check_notify = 
 					    notify_same_recur_item(i);
 				if (delete_whole) {
-					if (only_note)
-						erase_note(&i->note);
+					if (flag == ERASE_FORCE_ONLY_NOTE)
+						erase_note(&i->note, flag);
 					else {
 						*iptr = i->next;
 						free(i->mesg);
 						free(i->rpt);
 						free(i->exc);
-						if (i->note != NULL)
-							erase_note(&i->note);
+						erase_note(&i->note, flag);
 						free(i);
 						pthread_mutex_unlock(
 						    &(recur_alist_p->mutex));
@@ -704,7 +705,6 @@ recur_repeat_item(void)
 	}
 	
 	date = calendar_get_slctd_day_sec();
-	day_erase_item(date, item_nb, 0);
 	if (p->type == EVNT) {
 		re = recur_event_new(p->mesg, p->note, p->start, p->evnt_id,
 			type, freq, until, NULL);
@@ -718,6 +718,7 @@ recur_repeat_item(void)
 			stderr);
 		exit(EXIT_FAILURE);
 	}
+	day_erase_item(date, item_nb, ERASE_FORCE_KEEP_NOTE);
 } 
 
 /* 

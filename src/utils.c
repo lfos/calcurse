@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.40 2008/01/17 19:35:42 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.41 2008/01/20 10:45:39 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -44,9 +44,9 @@ static unsigned status_page;
 void 
 exit_calcurse(int status)
 {
-	endwin();
 	clear();
 	refresh();
+	endwin();
 	calendar_stop_date_thread();
 	exit(status);
 }
@@ -569,7 +569,8 @@ date_sec2ical_datetime(long sec, char *ical_datetime)
  * Return a long containing the date which is updated taking into account
  * the new time and date entered by the user.
  */
-long update_time_in_date(long date, unsigned hr, unsigned mn)
+long 
+update_time_in_date(long date, unsigned hr, unsigned mn)
 {
 	struct tm *lt;
 	time_t t, new_date;
@@ -904,17 +905,18 @@ new_tempfile(const char *prefix, int trailing_len)
 
 /* Erase a note previously attached to a todo, event or appointment. */
 void
-erase_note(char **note)
+erase_note(char **note, erase_flag_e flag)
 {
 	char fullname[BUFSIZ];
+	char *errmsg = _("FATAL ERROR in erase_note: could not remove note\n");
 
 	if (*note == NULL)
-		ierror(_("FATAL ERROR in erase_note: null pointer!\n"),
-		    IERROR_FATAL);
-	snprintf(fullname, BUFSIZ, "%s%s", path_notes, *note);
-	if (unlink(fullname) != 0)
-		ierror(_("FATAL ERROR in erase_note: could not remove note\n"), 
-		    IERROR_FATAL);
+		return;
+	if (flag != ERASE_FORCE_KEEP_NOTE) {
+		snprintf(fullname, BUFSIZ, "%s%s", path_notes, *note);
+		if (unlink(fullname) != 0)
+			ierror(errmsg, IERROR_FATAL);
+	}
 	free(*note);
 	*note = NULL;
 }

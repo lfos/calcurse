@@ -1,3 +1,8 @@
+20 Jan 2008:
+	day_edit_item() rewritten so that there is no need to first delete
+	the item and then recreate it
+	event_get() and apoint_get() added
+	
 17 Jan 2008:
 	exit_calcurse() improved: screen is now cleared completely when
 	calcurse exits

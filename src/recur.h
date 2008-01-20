@@ -1,4 +1,4 @@
-/*	$calcurse: recur.h,v 1.16 2008/01/13 12:40:45 culot Exp $	*/
+/*	$calcurse: recur.h,v 1.17 2008/01/20 10:45:39 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -76,10 +76,6 @@ extern recur_apoint_llist_t *recur_alist_p;
 extern struct recur_event_s *recur_elist;
 
 int 				recur_apoint_llist_init(void);
-recur_apoint_llist_node_t      *recur_apoint_new(char *, char *, long, long, 
-				    char, int, int, long, struct days_s *); 
-struct recur_event_s	       *recur_event_new(char *, char *, long, int, int, 
-				    int, long, struct days_s *);
 char 				recur_def2char(recur_types_t);
 int 				recur_char2def(char);
 recur_apoint_llist_node_t      *recur_apoint_scan(FILE *, struct tm, struct tm,
@@ -90,9 +86,10 @@ struct recur_event_s 	       *recur_event_scan(FILE *, struct tm, int, char,
 void 				recur_save_data(FILE *);
 unsigned 			recur_item_inday(long, struct days_s *, int, 
 				    int, long, long);
-void 				recur_event_erase(long, unsigned, unsigned, int);
+void 				recur_event_erase(long, unsigned, unsigned, 
+				    erase_flag_e);
 void 				recur_apoint_erase(long, unsigned, unsigned, 
-				    int);
+				    erase_flag_e);
 void 				recur_repeat_item(void);
 struct days_s 		       *recur_exc_scan(FILE *);
 struct notify_app_s 	       *recur_apoint_check_next(struct notify_app_s *,

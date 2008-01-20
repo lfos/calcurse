@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.26 2008/01/17 19:35:42 culot Exp $	*/
+/*	$calcurse: io.c,v 1.27 2008/01/20 10:45:38 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -654,7 +654,7 @@ io_load_app(void)
 		if (c == '>') {
 			fgets(note, NOTESIZ + 1, data_file);
 			note[NOTESIZ] = '\0';
-			notep = strdup(note);
+			notep = note;
 			getc(data_file);
 		} else {
 			notep = NULL;
@@ -680,7 +680,8 @@ io_load_app(void)
 				recur_apoint_scan(data_file, start, end,
 				    type, freq, until, notep, exc, state);
 			} else {
-				apoint_scan(data_file, start, end, state, notep);
+				apoint_scan(data_file, start, end, state, 
+				    notep);
 			}
 		} else if (is_event) {
 			if (is_recursive) {

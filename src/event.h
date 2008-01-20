@@ -1,4 +1,4 @@
-/*	$calcurse: event.h,v 1.4 2008/01/13 12:40:45 culot Exp $	*/
+/*	$calcurse: event.h,v 1.5 2008/01/20 10:45:38 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -27,6 +27,8 @@
 #ifndef CALCURSE_EVENT_H
 #define CALCURSE_EVENT_H
 
+#include "utils.h"
+
 #define HRMIN_SIZE 6
 #define MESG_MAXSIZE 256
 
@@ -44,6 +46,7 @@ struct event_s *event_new(char *, char *, long, int);
 unsigned 	event_inday(struct event_s *, long);
 void 		event_write(struct event_s *, FILE *);
 struct event_s *event_scan(FILE *, struct tm, int, char *);
-void 		event_delete_bynum(long, unsigned, int);
+struct event_s *event_get(long, int);
+void 		event_delete_bynum(long, unsigned, erase_flag_e);
 
 #endif /* CALCURSE_EVENT_H */

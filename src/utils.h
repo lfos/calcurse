@@ -1,4 +1,4 @@
-/*	$calcurse: utils.h,v 1.25 2008/01/13 12:40:45 culot Exp $	*/
+/*	$calcurse: utils.h,v 1.26 2008/01/20 10:45:39 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -61,6 +61,13 @@ typedef enum {
 	IERROR_WARN
 } ierror_sev_e;
 
+typedef enum {
+	ERASE_DONT_FORCE,
+	ERASE_FORCE,
+	ERASE_FORCE_KEEP_NOTE,
+	ERASE_FORCE_ONLY_NOTE
+} erase_flag_e;
+
 void	exit_calcurse(int);
 void	ierror(const char *, ierror_sev_e);
 void	aerror(const char *, int, const char *);
@@ -93,6 +100,6 @@ char   *mycpy(const char *);
 long	mystrtol(const char *);
 void 	print_option_incolor(WINDOW *, bool, int, int);
 char   *new_tempfile(const char *, int);
-void	erase_note(char **);
+void	erase_note(char **, erase_flag_e);
 
 #endif /* CALCURSE_UTILS_H */

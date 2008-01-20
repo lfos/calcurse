@@ -1,4 +1,4 @@
-/*	$calcurse: event.c,v 1.5 2008/01/13 12:40:45 culot Exp $	*/
+/*	$calcurse: event.c,v 1.6 2008/01/20 10:45:38 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -31,7 +31,6 @@
 
 #include "vars.h"
 #include "i18n.h"
-#include "utils.h"
 #include "event.h"
 
 struct event_s *eventlist;
@@ -46,7 +45,7 @@ event_new(char *mesg, char *note, long day, int id)
 	strncpy(o->mesg, mesg, strlen(mesg) + 1);
 	o->day = day;
 	o->id = id;
-	o->note = note;
+	o->note = (note != NULL) ? strdup(note) : NULL;
 	i = &eventlist;
 	for (;;) {
 		if (*i == 0 || (*i)->day > day) {
@@ -117,9 +116,29 @@ event_scan(FILE * f, struct tm start, int id, char *note)
 	return (event_new(buf, note, tstart, id));
 }
 
-/* Delete an event from the list */
+/* Retrieve an event from the list, given the day and item position. */
+struct event_s *
+event_get(long day, int pos)
+{
+	struct event_s *o;
+	int n;
+
+	n = 0;
+	for (o = eventlist; o; o = o->next) {
+		if (event_inday(o, day)) {
+			if (n == pos)
+				return o;
+			n++;
+		}
+	}
+	/* NOTREACHED */
+	fputs(_("FATAL ERROR in event_get: no such item\n"), stderr);
+	exit(EXIT_FAILURE);
+}
+
+/* Delete an event from the list. */
 void 
-event_delete_bynum(long start, unsigned num, int only_note)
+event_delete_bynum(long start, unsigned num, erase_flag_e flag)
 {
 	unsigned n;
 	struct event_s *i, **iptr;
@@ -129,13 +148,12 @@ event_delete_bynum(long start, unsigned num, int only_note)
 	for (i = eventlist; i != 0; i = i->next) {
 		if (event_inday(i, start)) {
 			if (n == num) {
-				if (only_note)
-					erase_note(&i->note);
+				if (flag == ERASE_FORCE_ONLY_NOTE)
+					erase_note(&i->note, flag);
 				else {
 					*iptr = i->next;
 					free(i->mesg);
-					if (i->note != NULL)
-						erase_note(&i->note);
+					erase_note(&i->note, flag);
 					free(i);
 				}
 				return;

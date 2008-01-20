@@ -1,4 +1,4 @@
-/*	$calcurse: todo.c,v 1.18 2008/01/13 12:40:45 culot Exp $	*/
+/*	$calcurse: todo.c,v 1.19 2008/01/20 10:45:39 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -188,7 +188,7 @@ todo_delete_note_bynum(unsigned num)
 				ierror(
 				   _("FATAL ERROR in todo_delete_note_bynum: "
 				   "no note attached\n"), IERROR_FATAL);
-			erase_note(&i->note);
+			erase_note(&i->note, ERASE_FORCE_ONLY_NOTE);
 			return;
 		}
 		iptr = &i->next;
@@ -214,7 +214,7 @@ todo_delete_bynum(unsigned num)
 			*iptr = i->next;
 			free(i->mesg);
 			if (i->note != NULL)
-				erase_note(&i->note);
+				erase_note(&i->note, ERASE_FORCE);
 			free(i);
 			return;
 		}

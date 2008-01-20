@@ -1,4 +1,4 @@
-/*	$calcurse: apoint.c,v 1.20 2008/01/13 12:40:45 culot Exp $	*/
+/*	$calcurse: apoint.c,v 1.21 2008/01/20 10:45:38 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -35,7 +35,6 @@
 #include "apoint.h"
 #include "day.h"
 #include "custom.h"
-#include "utils.h"
 #include "notify.h"
 #include "recur.h"
 #include "calendar.h"
@@ -87,7 +86,7 @@ apoint_new(char *mesg, char *note, long start, long dur, char state)
 	o = (apoint_llist_node_t *) malloc(sizeof(apoint_llist_node_t));
 	o->mesg = (char *) malloc(strlen(mesg) + 1);
 	strncpy(o->mesg, mesg, strlen(mesg) + 1);
-	o->note = note;
+	o->note = (note != NULL) ? strdup(note) : NULL;
 	o->state = state;
 	o->start = start;
 	o->dur = dur;
@@ -240,7 +239,7 @@ apoint_delete(conf_t *conf, unsigned *nb_events, unsigned *nb_apoints)
 	if (go_for_deletion) {
 		if (nb_items != 0) {
 			deleted_item_type = 
-				day_erase_item(date, hilt, 0);
+				day_erase_item(date, hilt, ERASE_DONT_FORCE);
 			if (deleted_item_type == EVNT || 
 			    deleted_item_type == RECUR_EVNT) {
 				(*nb_events)--;
@@ -363,8 +362,28 @@ apoint_scan(FILE * f, struct tm start, struct tm end, char state, char *note)
 	return (apoint_new(buf, note, tstart, tend - tstart, state));
 }
 
+/* Retrieve an appointment from the list, given the day and item position. */
+apoint_llist_node_t *
+apoint_get(long day, int pos)
+{
+	apoint_llist_node_t *o;
+	int n;
+
+	n = 0;
+	for (o = alist_p->root; o; o = o->next) {
+		if (apoint_inday(o, day)) {
+			if (n == pos)
+				return o;
+			n++;
+		}
+	}
+	/* NOTREACHED */
+	fputs(_("FATAL ERROR in apoint_get: no such item\n"), stderr);
+	exit(EXIT_FAILURE);
+}
+
 void 
-apoint_delete_bynum(long start, unsigned num, int only_note)
+apoint_delete_bynum(long start, unsigned num, erase_flag_e flag)
 {
 	unsigned n;
 	int need_check_notify = 0;
@@ -376,16 +395,15 @@ apoint_delete_bynum(long start, unsigned num, int only_note)
 	for (i = alist_p->root; i != 0; i = i->next) {
 		if (apoint_inday(i, start)) {
 			if (n == num) {
-				if (only_note)
-					erase_note(&i->note);
+				if (flag == ERASE_FORCE_ONLY_NOTE)
+					erase_note(&i->note, flag);
 				else {
 					if (notify_bar()) 
 						need_check_notify = 
 						    notify_same_item(i->start);
 					*iptr = i->next;
 					free(i->mesg);
-					if (i->note != NULL)
-						erase_note(&i->note);
+					erase_note(&i->note, flag);
 					free(i);
 					pthread_mutex_unlock(&(alist_p->mutex));
 					if (need_check_notify) 
