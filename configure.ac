@@ -1,10 +1,10 @@
-#	$calcurse: configure.ac,v 1.13 2007/10/23 17:50:55 culot Exp $
+#	$calcurse: configure.ac,v 1.14 2008/01/26 10:02:01 culot Exp $
 
 #-------------------------------------------------------------------------------
 #                                                                           Init
 #-------------------------------------------------------------------------------
 AC_PREREQ(2.59)
-AC_INIT(calcurse, 1.9, frederic@culot.org)
+AC_INIT(calcurse, 2.0_beta, frederic@culot.org)
 AM_INIT_AUTOMAKE
 AM_GNU_GETTEXT([external])
 AC_CONFIG_SRCDIR([src/calcurse.c])
@@ -23,7 +23,7 @@ AC_PROG_CC
 AC_HEADER_STDC
 AC_CHECK_HEADERS([ctype.h getopt.h locale.h math.h signal.h stdbool.h stdio.h  \
 		  stdlib.h string.h sys/stat.h sys/types.h sys/wait.h time.h   \
-		  unistd.h])
+		  unistd.h errno.h])
 #-------------------------------------------------------------------------------
 #                                                         Checks for system libs
 #-------------------------------------------------------------------------------
@@ -38,9 +38,9 @@ AC_CHECK_HEADERS([ncurses.h], [
 
 AC_CHECK_HEADERS([pthread.h], [
     AC_CHECK_LIB(pthread, pthread_create, [
-	LIBS="$LIBS -lpthread"
+	LIBS="$LIBS -pthread"
 	AC_DEFINE(HAVE_LIBPTHREAD, 1, 
-		  [Define to 1 if you have the 'pthread' library (-lpthread).])
+		  [Define to 1 if you have the 'pthread' library (-pthread).])
     ], 
     AC_MSG_ERROR(The pthread library is required in order to build calcurse!))
 ], AC_MSG_ERROR(The pthread header is required in order to build calcurse!))
