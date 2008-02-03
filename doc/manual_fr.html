@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <!--
 /*
- *	$calcurse: manual_fr.html,v 1.12 2007/08/19 13:19:37 culot Exp $
+ *	$calcurse: manual_fr.html,v 1.13 2008/02/03 11:13:21 culot Exp $
  *
  * Calcurse - text-based organizer
  * Copyright (c) 2004-2007 Frederic Culot
@@ -31,76 +31,93 @@
 <head>
 <title>documentation de CALCURSE</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<style type="text/css" media="all">
+	@import url(manual.css);
+</style>
 </head>
-<body bgcolor="white" text="black" link="blue" vlink="navy">
+<body>
 
-<h1><code>CALCURSE - organiseur en mode texte</code></h1>
-<p>
-<p><hr><p>
+<div id="mainContent">
 
-<h1>Table des mati&egrave;res</h1>
+<h1 id="title">
+<span class="main">CALCURSE - organiseur en mode texte</span></h1>
+
+<div class="warn">
+<h1>Résumé</h1> Ce manuel présente l'ensemble des fonctionnalités du
+logiciel <code>calcurse</code> et la manière dont on peut les
+utiliser. La procédure d'installation du programme depuis ses sources
+est tout d'abord décrite, ainsi que les différentes façon dont
+<code>calcurse</code> peut être lancé. L'interface du programme est
+ensuite présentée, avec l'ensemble des options qui permettent la
+configuration du logiciel. Sont enfin expliquées les procédures à suivre
+pour faire remonter les bogues et pour contribuer au développement de
+<code>calcurse</code>.
+</div>
+
+<div id="toc">
+<h1>Table des matières</h1>
 <ul>
-<li><a href="#intro">Introduction</a>
-<li><a href="#overview">Aper&ccedil;u du logiciel</a>
-<ul>
-<li><a href="#overview_history">Origine de Calcurse</a>
-<li><a href="#overview_features">Caract&eacute;ristiques importantes</a>
+    <li><a href="#intro">1. Introduction</a>
+    <li><a href="#overview">2. Aperçu du logiciel</a>
+    <ul>
+    	<li><a href="#overview_history">2.1 Origine de Calcurse</a>
+	<li><a href="#overview_features">2.2 Caractéristiques importantes</a>
+    </ul>
+    <li><a href="#install">3. Installation</a>
+    <ul>
+    	<li><a href="#install_requirements">3.1 Pré-requis</a>
+	<ul>
+	    <li><a href="#install_requirements_ncurses">3.1.1 Librairie <code>ncurses</code></a>
+	    <li><a href="#install_requirements_gettext">3.2.2 Librairie <code>gettext</code></a>
+	</ul>
+	<li><a href="#install_process">3.2 Processus d'installation</a>
+    </ul>
+    <li><a href="#basics">4. Présentation générale</a>
+    <ul>
+        <li><a href="#basics_invocation">4.1 Invocation</a>
+	<ul>
+	    <li><a href="#basics_invocation_commandline">4.1.1 Arguments en ligne de commande</a>
+	    <li><a href="#basics_invocation_variable">4.1.2 Variable d'environnement pour l'i18n</a>
+	</ul>
+	<li><a href="#basics_interface">4.2 Interface utilisateur</a>
+	<ul>
+	    <li><a href="#basics_interface_noninteractive">4.2.1 Mode non-interactif</a>
+	    <li><a href="#basics_interface_interactive">4.2.2 Mode Interactif</a>
+	</ul>
+	<li><a href="#basics_files">4.3 Fichiers</a>
+	<li><a href="#basics_help">4.4 Aide en ligne</a>
+    </ul>
+    <li><a href="#options">5. Options</a>
+    <ul>
+        <li><a href="#options_general">5.1 Options générales</a>
+	<li><a href="#options_colors">5.2 Thèmes graphiques</a>
+	<li><a href="#options_layout">5.3 Disposition des panneaux</a>
+	<li><a href="#options_notify">5.4 Réglages de la barre de notification</a>
+    </ul>
+    <li><a href="#known_bugs">6. Bogues connus</a>
+    <li><a href="#bugs">7. Rapporter les bogues et commentaires</a>
+    <li><a href="#contribute">8. Comment contribuer?</a>
+    <ul>
+        <li><a href="#contribute_documentation">8.1 Traduction de la documentation</a>
+	<li><a href="#contribute_i18n">8.2 Traduction de <code>calcurse</code></a>
+	<ul>
+	    <li><a href="#contribute_i18n_overview">8.2.1 Aperçu</a>
+	    <li><a href="#contribute_i18n_translator">8.2.2 Etapes de la traducion</a>
+	    <li><a href="#contribute_i18n_po-files">8.2.3 Fichiers <code>po</code></a>
+	</ul>
+    </ul>
+    <li><a href="#links">9. Liens</a>
+    <ul>
+        <li><a href="#links_homepage">9.1 Site internet de <code>calcurse</code></a>
+	<li><a href="#links_list">9.2 Liste de diffusion de <code>calcurse</code></a>
+	<li><a href="#links_rss">9.3 Flux RSS</a>
+    </ul>
+    <li><a href="#thanks">10. Remerciements</a>
 </ul>
-<li><a href="#install">Installation</a>
-<ul>
-<li><a href="#install_requirements">Pr&eacute;-requis</a>
-<ul>
-<li><a href="#install_requirements_ncurses">Librairie <code>ncurses</code></a>
-<li><a href="#install_requirements_gettext">Librairie <code>gettext</code></a>
-</ul>
-<li><a href="#install_process">Processus d'installation</a>
-</ul>
-<li><a href="#basics">Pr&eacute;sentation g&eacute;n&eacute;rale</a>
-<ul>
-<li><a href="#basics_invocation">Invocation</a>
-<ul>
-<li><a href="#basics_invocation_commandline">Arguments en ligne de commande</a>
-<li><a href="#basics_invocation_variable">Variable d'environnement pour l'i18n</a>
-</ul>
-<li><a href="#basics_interface">Interface utilisateur</a>
-<ul>
-<li><a href="#basics_interface_noninteractive">Mode non-interactif</a>
-<li><a href="#basics_interface_interactive">Mode Interactif</a>
-</ul>
-<li><a href="#basics_files">Fichiers</a>
-<li><a href="#basics_help">Aide en ligne</a>
-</ul>
-<li><a href="#options">Options</a>
-<ul>
-<li><a href="#options_general">Options g&eacute;n&eacute;rales</a>
-<li><a href="#options_colors">Th&egrave;mes graphiques</a>
-<li><a href="#options_layout">Disposition des panneaux</a>
-<li><a href="#options_notify">Réglages de la barre de notification</a>
-</ul>
-<li><a href="#known_bugs">Bogues connus</a>
-<li><a href="#bugs">Rapporter les bogues et commentaires</a>
-<li><a href="#contribute">Comment contribuer?</a>
-<ul>
-<li><a href="#contribute_documentation">Traduction de la documentation</a>
-<li><a href="#contribute_i18n">Traduction de <code>calcurse</code></a>
-<ul>
-<li><a href="#contribute_i18n_overview">Aper&ccedil;u</a>
-<li><a href="#contribute_i18n_translator">Etapes de la traducion</a>
-<li><a href="#contribute_i18n_po-files">Fichiers <em>po</em></a>
-</ul>
-</ul>
-<li><a href="#links">Liens</a>
-<ul>
-<li><a href="#links_homepage">Site internet de <code>calcurse</code></a>
-<li><a href="#links_list">Liste de diffusion de <code>calcurse</code></a>
-<li><a href="#links_rss">Flux RSS</a>
-</ul>
-<li><a href="#thanks">Remerciements</a>
-</ul>
-<p><hr><p>
+</div>
 
 
-<a name="intro"></a><h1>Introduction</a></h1>
+<h1>1. Introduction<a name="intro"></a></h1>
 <p>
 <code>calcurse</code> est un logiciel composé d'un calendrier et d'un organiseur
 personnel en mode texte. Il permet de stocker les évènements et rendez-vous,
@@ -110,286 +127,297 @@ l'heure d'un rendez-vous approche. L'interface utilisateur est elle aussi
 configurable, et peut s'adapter aux besoins de chacun. Enfin, un système d'aide
 en ligne permet d'obtenir des renseignements sur toutes les commandes
 disponibles.
+</p>
 	
-<a name="overview"></a><h1>Aper&ccedil;u du logiciel</h1>
-<a name="overview_history"></a><h2>Origine de Calcurse</h2>
+<h1>2. Aperçu du logiciel<a name="overview"></a></h1>
+<h2>2.1 Origine de Calcurse<a name="overview_history"></a></h2>
 <p>
-        J'ai commenc&eacute; &agrave; penser &agrave; ce projet &agrave; la fin de mon doctorat
-        en astrophysique... Je commen&ccedil;ais en effet &agrave; avoir de plus
-        en plus de mal &agrave; m'organiser, et j'avais vraiment besoin d'un
-        bon outil pour m'aider dans cette t&acirc;che difficile ;)<br>
-        D'autre part, j'appr&eacute;cie beaucoup les logiciels qui font
-        appel &agrave; des Interfaces en Mode Texte, parce que je les trouve
-        plus simples, plus rapides, plus portables et plus efficaces.
-        J'ai alors commenc&eacute; &agrave; programmer un calendrier rudimentaire
-        qui utilisait une interface de ce type.
-        En plus de cela, je voulais am&eacute;liorer mes connaissances en
-        <code>C</code>, langage de programmation que je n'avais 
-        utilis&eacute; jusqu'alors que dans le cadre de petits projets pendant
-        mes &eacute;tudes. J'ai donc pens&eacute; que ce serait une bonne chose de me
-        lancer dans ce projet, puisque cela me permettrait &agrave; la fois de
-        mieux m'organiser, et d'apprendre &agrave; mieux programmer en 
-        <code>C</code>!
+        J'ai commencé à penser à ce projet à la fin de mon doctorat
+        en astrophysique... Je commençais en effet à avoir de plus
+        en plus de mal à m'organiser, et j'avais vraiment besoin d'un
+        bon outil pour m'aider dans cette tâche difficile ;)
+</p>
+<p>
+        D'autre part, j'apprécie beaucoup les logiciels qui font appel
+        à des Interfaces en Mode Texte, parce que je les trouve plus
+        simples, plus rapides, plus portables et plus efficaces.  J'ai
+        alors commencé à programmer un calendrier rudimentaire qui
+        utilisait une interface de ce type.  En plus de cela, je
+        voulais améliorer mes connaissances en <code>C</code>, langage
+        de programmation que je n'avais utilisé jusqu'alors que dans
+        le cadre de petits projets pendant mes études. J'ai donc pensé
+        que ce serait une bonne chose de me lancer dans ce projet,
+        puisque cela me permettrait à la fois de mieux m'organiser, et
+        d'apprendre à mieux programmer en <code>C</code>!
+</p>
+<p>
         Malheureusement, j'ai obtenu mon doctorat avant de terminer
-        <code>calcurse</code>, mais j'ai tout de m&ecirc;me voulu continuer 
-	&agrave; travailler
-        sur ce projet, en esp&eacute;rant que ce programme serait utile &agrave; 
-        d'autres personnes. Voil&agrave; comment est n&eacute; 
-	<code>calcurse</code>...<br>
-        <br>
-        Mais au fait, pourquoi 'calcurse' ? Et bien ce nom provient
-        simplement de la concat&eacute;nation de 'CALendrier' et de 'nCURSEs',
-        qui est le nom de la librairie utilis&eacute;e pour construire
-        l'interface utilisateur.
-
-
-<a name="overview_features"></a><h2>Caract&eacute;ristiques importantes</h2>
+        <code>calcurse</code>, mais j'ai tout de même voulu continuer
+        à travailler sur ce projet, en espérant que ce
+        programme serait utile à d'autres
+        personnes. Voilà comment est né
+        <code>calcurse</code>...
+</p>
 <p>
-        <code>Calcurse</code> est multi-plateformes et est con&ccedil;u pour
-        &ecirc;tre l&eacute;ger, rapide et fiable. Il doit &ecirc;tre utilis&eacute; dans un
+	Mais au fait, pourquoi 'calcurse' ? Et bien ce nom provient
+        simplement de la concaténation de 'CALendrier' et de
+        'nCURSEs', qui est le nom de la librairie utilisée pour
+        construire l'interface utilisateur.
+</p>
+
+<h2>2.2 Caractéristiques importantes<a name="overview_features"></a></h2>
+<p>
+        <code>Calcurse</code> est multi-plateformes et est conçu pour
+        être léger, rapide et fiable. Il doit être utilisé dans un
         terminal ou une console, soit localement ou bien sur une 
         machine distante par l'intermediaire d'une liaison ssh (ou 
-        similaire).<br>
-        <code>Calcurse</code> peut &ecirc;tre lanc&eacute; dans deux modes diff&eacute;rents:
+        similaire).
+</p>
+<p>
+        <code>Calcurse</code> peut être lancé dans deux modes différents:
         soit interactif, soit non-interactif. Le premier mode permet
         de visualiser son organiseur personnel pratiquement sous
-        n'importe quel environnement, gr&acirc;ce &agrave; l'interface en mode texte.
-        Le deuxi&egrave;me mode permet de cr&eacute;er facilement des penses-b&ecirc;te en
-        ajoutant <code>calcurse</code> avec les arguments appropri&eacute;s dans
-        la table cron ou dans le script d'initialisation du shell.<br>
-        De plus, <code>calcurse</code> a &eacute;t&eacute; cr&eacute;&eacute; en prenant en compte
-        l'utilisateur final &agrave; chaque &eacute;tape de sa conception, c'est-&agrave;-dire
-        en essayant d'&ecirc;tre le plus intuitif possible. Cela implique
-        la pr&eacute;sence d'une aide en ligne exhaustive, ainsi que le rappel de
-        toutes les commandes possibles dans la barre de status.
-        L'interface utilisateur est &eacute;galement configurable, et l'on peut
-        choisir parmi de nombreuses combinaisons possibles de couleurs
-        et de positions des fen&ecirc;tres.
-	Enfin, le système de notification est entièrement configurable,
-	l'utilisateur peut donc choisir la manière dont il veut être prévenu de
-	l'approche d'un rendez-vous.
-
-<a name="install"></a><h1>Installation</h1>
-<a name="install_requirements"></a><h2>Pr&eacute;-requis</h2>
-<a name="install_requirements_ncurses"></a><h3>Librairie <code>ncurses</code></h3>
+        n'importe quel environnement, grâce à l'interface en mode texte.
+        Le deuxième mode permet de créer facilement des penses-bête en
+        ajoutant <code>calcurse</code> avec les arguments appropriés dans
+        la table cron ou dans le script d'initialisation du shell.
+</p>
 <p>
-        L'installation de <code>Calcurse</code> ne n&eacute;cessite qu'un 
+        De plus, <code>calcurse</code> a été créé en prenant en compte
+        l'utilisateur final à chaque étape de sa conception,
+        c'est-à-dire en essayant d'être le plus intuitif
+        possible. Cela implique la présence d'une aide en ligne
+        exhaustive, ainsi que le rappel de toutes les commandes
+        possibles dans la barre de status.  L'interface utilisateur
+        est également configurable, et l'on peut choisir parmi de
+        nombreuses combinaisons possibles de couleurs et de positions
+        des fenêtres.  Enfin, le système de notification est
+        entièrement configurable, l'utilisateur peut donc choisir la
+        manière dont il veut être prévenu de l'approche d'un
+        rendez-vous.
+</p>
+
+<h1>3. Installation<a name="install"></a></h1>
+<h2>3.1 Pré-requis<a name="install_requirements"></a></h2>
+<h3>3.1.1 Librairie <code>ncurses</code><a name="install_requirements_ncurses"></a></h3>
+<p>
+        L'installation de <code>Calcurse</code> ne nécessite qu'un 
         compilateur <code>C</code>, comme <code>cc</code> ou <code>gcc</code>, 
         et la librairie <code>ncurses</code>.
-        Il serait tr&egrave;s surprenant que vous n'ayez pas d&eacute;j&agrave; la librairie 
-        <code>ncurses</code> d'install&eacute;e sur votre machine, mais si
-        c'est le cas, vous pourrez la trouver &agrave; l'adresse suivante :<br>
-	<pre>
-		http://ftp.gnu.org/pub/gnu/ncurses/
-	</pre>
+        Il serait très surprenant que vous n'ayez pas déjà la librairie 
+        <code>ncurses</code> d'installée sur votre machine, mais si
+        c'est le cas, vous pourrez la trouver à l'adresse suivante :
+</p>
+<pre>http://ftp.gnu.org/pub/gnu/ncurses/</pre>
 
 
-<a name="install_requirements_gettext"></a><h3>Librairie <code>gettext</code></h3>
+<h3>3.1.2 Librairie <code>gettext</code><a name="install_requirements_gettext"></a></h3>
 <p>
         <code>calcurse</code> s'aide de la librairie
         <code>gettext</code> pour le support de l'internationalisation
-        (not&eacute; <em>i18n</em> ci-apr&egrave;s).
-        Cela signifie que <code>calcurse</code> peut fournir des
-        messages multilingues s'il est compil&eacute; avec le support
-        NLS (<em>Native Language Support</em> - <em>Support de Langage
-        Natif</em>). Cependant, ce support est optionnel et si vous
-        n'avez pas besoin de la traduction des messages
-        affich&eacute;s, vous pouvez s&eacute;sactiver cette option. 
-        La d&eacute;sactivation du support <em>NLS</em> s'effectue en
-        passant l'option <code>--disable-nls</code> &agrave;
-        <code>configure</code> (voir la section <a
-        href="#install_process">Processus d'Installation</a>). <br>
-        Pour v&eacute;rifier que les utilitaires <code>gettext</code>
-        sont bien install&eacute;s sur votre systs&egrave;me, vous
-        pouvez par exemple v&eacute;rifier la pr&eacute;sence du
-        fichier <code>libintl.h</code> en tapant :
-        <pre>
-                locate libintl.h
-        </pre>
-        Dans l'&eacute;ventualit&eacute; o&ugrave; ce fichier ne
-        serait pas trouv&eacute;, vous pouvez obtenir les sources de
-        <code>gettext</code> &agrave; l'adresse suivante :<br>
-        <pre>
-                 http://ftp.gnu.org/pub/gnu/gettext/
-        </pre>
-        <u>Remarque:</u> M&ecirc;me si <code>libintl.h</code> est bien
-        localis&eacute; par la commande pr&eacute;c&eacute;dente, il
-        peut &ecirc;tre utile de sp&eacute;cifier son emplacement au
+        (noté <em>i18n</em> ci-après).  Cela signifie que
+        <code>calcurse</code> peut fournir des messages multilingues
+        s'il est compilé avec le support NLS (<span class="emp">Native
+        Language Support</span> - <span class="emp">Support de Langage
+        Natif</span>). 
+</p>
+<p>
+	Cependant, ce support est optionnel et si vous n'avez pas
+        besoin de la traduction des messages affichés, vous pouvez
+        désactiver cette option.  La désactivation du support
+        <span class="emp">NLS</span> s'effectue en passant l'option
+        <code>--disable-nls</code> à <code>configure</code>
+        (voir la section <a href="#install_process">Processus
+        d'Installation</a>).
+</p>
+<p>
+	Pour vérifier que les utilitaires <code>gettext</code> sont
+        bien installés sur votre systsème, vous pouvez
+        par exemple vérifier la présence du fichier
+        <code>libintl.h</code> en tapant : </p>
+	<pre>locate libintl.h</pre>
+<p>
+	Dans l'éventualité où ce fichier ne serait pas trouvé,
+        vous pouvez obtenir les sources de <code>gettext</code>
+        à l'adresse suivante :</p> 
+	<pre>http://ftp.gnu.org/pub/gnu/gettext/</pre>
+<p>
+	<p class="rq"><span class="valorise">Remarque :</span> Même si
+        <code>libintl.h</code> est bien localisé par la commande
+        précédente, il peut être utile de spécifier son emplacement au
         moment de lancer le <a href="#install_process">processus
         d'installation</a>, en passant l'option
         <code>--with-libintl-prefix</code> au script
-        <code>configure</code>. En effet, ce script pourrait
-        ne pas trouver le fichier <code>libintl.h</code> si celui-ci 
-        n'est pas install&eacute; dans un endroit usuel.
+        <code>configure</code>. En effet, ce script pourrait ne pas
+        trouver le fichier <code>libintl.h</code> si celui-ci n'est
+        pas installé dans un endroit usuel.</p>
 
 
-<a name="install_process"></a><h2>Processus d'installation</h2>
+<h2>3.2 Processus d'installation<a name="install_process"></a></h2>
 <p>
-        Vous devez tout d'abord d&eacute;compresser l'archive source de la
-        mani&egrave;re suivante :
-	<pre>
-	tar zxvf calcurse-1.9.tar.gz
-	</pre>
-        Une fois que vous remplissez tous les pr&eacute;-requis n&eacute;cessaires &agrave;
+        Vous devez tout d'abord décompresser l'archive source de la
+        manière suivante :</p>
+	<pre>tar zxvf calcurse-1.9.tar.gz</pre>
+<p>
+        Une fois que vous remplissez tous les pré-requis nécessaires à
         l'installation, le processus de compilation est simple et suit
-        les trois &eacute;tapes usuelles :
-  	<OL>	
+        les trois étapes usuelles :</p>
+  	<ol>	
 	<li><code>./configure</code>
   	<li><code>make</code>
-  	<li><code>make install</code> (peut n&eacute;cessiter les privil&egrave;ges 
+  	<li><code>make install</code> (peut nécessiter les privilèges 
 	super-utilisateur)
-	</OL>
+	</ol>
+<p>
 	Vous pouvez obtenir la liste des options possibles en tapant 
         <code>./configure --help</code>.
+</p>
 
 
-<a name="basics"></a><h1>Pr&eacute;sentation g&eacute;n&eacute;rale</h1>
-<a name="basics_invocation"></a><h2>Invocation</h2>
-<a name="basics_invocation_commandline"></a><h3>Arguments en ligne de commande</h3>
+<h1>4. Présentation générale<a name="basics"></a></h1>
+<h2>4.1 Invocation<a name="basics_invocation"></a></h2>
+<h3>4.2 Arguments en ligne de commande<a name="basics_invocation_commandline"></a></h3>
 <p>
-        Lors de son appel en ligne de commande, <code>calcurse</code> 
-        accepte les arguments suivants (les arguments courts ou longs sont
-	support&eacute;s) :
+        Lors de son appel en ligne de commande, <code>calcurse</code>
+        accepte les arguments suivants (les arguments courts ou longs
+        sont supportés) :</p>
 	<p>
 
-        <dl compact>
-        <dt><code>-a, --appointment</code>
+        <dl>
+		<dt><code>-a, --appointment</code></dt>
+	<dd> Affiche les rendez-vous pour la date du jour, puis quitte.
+	<p class="rq"><span class="valorise">Remarque:</span> le calendrier à utiliser peut être 
+	spécifié en utilisant l'option '-c'.</p>
+	</dd>
+	<dt><code>-c &lt;fichier&gt;, --calendar &lt;fichier&gt;</code></dt>
 	<dd>
-	Affiche les rendez-vous pour la date du jour, puis quitte.<br>
-	<u>Remarque:</u> le calendrier &agrave; utiliser peut &ecirc;tre 
-	sp&eacute;cifi&eacute; en utilisant l'option '-c'.<br>
-	<br>
-	<dt><code>-c &lt;fichier&gt;, --calendar &lt;fichier&gt;</code>
-	<dd>
-	Sp&eacute;cifie le fichier calendrier &agrave; utiliser.<br>
-	Le calendrier par d&eacute;faut est celui contenu dans 
+	Spécifie le fichier calendrier à utiliser.
+	Le calendrier par défaut est celui contenu dans 
 	<code>~/.calcurse/apts</code> 
-	(voir la section <a href="#basics_files">Fichiers</a>).<br>
-	<br>
-	<dt><code>-d &lt;date|num&gt;, --day &lt;date|num&gt;</code>
+	(voir la section <a href="#basics_files">Fichiers</a>).
+	</dd>
+	<dt><code>-d &lt;date|num&gt;, --day &lt;date|num&gt;</code></dt>
 	<dd>
 	Affiche les rendez-vous pour la date ou pour le nombre de
-	jours indiqu&eacute;s, suivant le format de l'argument. Deux 
-	formats diff&eacute;rents sont accept&eacute;s :
+	jours indiqués, suivant le format de l'argument. Deux 
+	formats différents sont acceptés :
 	<ul>
-	  <li>une date sous la forme 'mm/jj/aaaa'.
-	  <li>un nombre 'n'.
+		<li>une date sous la forme 'mm/jj/aaaa'.</li>
+		<li>un nombre 'n'.</li>
 	</ul>
 	Dans le premier cas, la liste des rendez-vous pour la
-	date sp&eacute;cifi&eacute;e sera affich&eacute;e, alors que dans le
-	deuxi&egrave;me cas, la liste des rendez-vous pour les 'n'
-	jours &agrave; venir sera retourn&eacute;e.<br>
+	date spécifiée sera affichée, alors que dans le
+	deuxième cas, la liste des rendez-vous pour les 'n'
+	jours à venir sera retournée.<br>
 	Par exemple, taper <code>calcurse -d  3</code> fera
 	s'afficher les rendez-vous pour aujourd'hui, demain
-	et apr&egrave;s-demain.<br>
-	<u>Remarque:</u> comme pour l'option '-a', le fichier
-	contenant le calendrier &agrave; lire peut &ecirc;tre sp&eacute;cifi&eacute; en
-	utilisant l'option '-c'.<br>
-	<br>
-	<dt><code>-h, --help</code>
+	et après-demain.
+	<p class="rq"><span class="valorise">Remarque:</span> 
+	comme pour l'option '-a', le fichier contenant le calendrier
+	à lire peut être spécifié en utilisant l'option '-c'.</p>
+	</dd>
+	<dt><code>-h, --help</code></dt>
 	<dd>
-	Affiche l'aide d&eacute;crivant les options en ligne de commande,
-	puis quitte.<br>
-	<br>
-	<dt><code>-n, --next</code>
+	Affiche l'aide décrivant les options en ligne de commande,
+	puis quitte.</dd>
+	<dt><code>-n, --next</code></dt>
 	<dd>
 	Affiche le rendez-vous suivant dans les prochaines 24 heures, puis
-	quitte.<br>
-	Le temps indiqu&eacute; repr&eacute;sente le nombre d'heures et de
-	minutes restantes avant le rendez-vous.<br>
-	<u>remarque:</u> le fichier contenant le calendrier &agrave; lire peut
-	&ecirc;tre sp&eacute;cifi&eacute; en utilisant l'option '-c'.<br>
-	<br>
-	<dt><code>-t[num], --todo[=num]</code>
+	quitte.
+	Le temps indiqué représente le nombre d'heures et de
+	minutes restantes avant le rendez-vous.
+	<p class="rq"><span class="valorise">remarque:</span>
+	le fichier contenant le calendrier à lire peut
+	être spécifié en utilisant l'option '-c'.</p>
+	</dd>
+	<dt><code>-t[num], --todo[=num]</code></dt>
 	<dd>
 	Affiche la liste des 'todo', puis quitte. Si le nombre optionnel
-	<code>num</code> est indiqu&eacute;, alors uniquement les t&acirc;ches
-	ayant une priorit&eacute; &eacute;gale &agrave; <code>num</code> seront
-	affich&eacute;es.<br>
-	<u>remarque:</u> <code>num</code> doit &ecirc;tre compris entre 1
-	(priorit&eacute; la plus grande) et 9 (priorit&eacute; la moins
-	grande).<br>
-	<br>
-	<dt><code>-v, --version</code>
+	<code>num</code> est indiqué, alors uniquement les tâches
+	ayant une priorité égale à <code>num</code> seront
+	affichées.
+	<p class="rq"><span class="valorise">Remarque:</span>
+	<code>num</code> doit être compris entre 1
+	(priorité la plus grande) et 9 (priorité la moins
+	grande).</p>
+	</dd>
+	<dt><code>-v, --version</code></dt>
 	<dd>
-	Affiche la version de <code>calcurse</code>, puis quitte.<br>
-	<br>
-	<dt><code>-x, --export</code>
+	Affiche la version de <code>calcurse</code>, puis quitte.
+	</dd>
+	<dt><code>-x, --export</code></dt>
 	<dd>
 	Exporte les données utilisateur au format iCalendar. Les évènements,
 	rendez-vous et tâches sont convertis et imprimés sur la sortie
-	standard.<br>
-	<u>Note:</u> afin de sauvegarder les données exportées dans un fichier,
+	standard.
+	<p class="rq"><span class="valorise">Note:</span>
+	afin de sauvegarder les données exportées dans un fichier,
 	il est nécessaire de rediriger la sortie standard en utilisant une
 	commande comme celle-ci:
-	<pre>
-	        $ calcurse --export > mon_fichier.ics
-	</pre>
-	</DL>
+	<code>$ calcurse --export &gt; mon_fichier.ics</code></p>
+	</dd>
+	</dl>
 
 
-<a name="basics_invocation_variable"></a><h3>Variable d'environnement
-pour l'i18n</h3>
+<h3>4.2.1 Variable d'environnement pour l'i18n<a name="basics_invocation_variable"></a></h3>
 <p>
-        <code>calcurse</code> peut &ecirc;tre compil&eacute; avec le
-        support <em>NLS</em> (voir <a
+        <code>calcurse</code> peut être compilé avec le support
+        <span class="emp">NLS</span> (voir <a
         href="#install_requirements_gettext">Librairie
         <code>gettext</code></a>). Ainsi, si vous voulez que les
-        messages affich&eacute;s apparaissent dans votre langue
-        natale, assurez-vous tout d'abord que celle-ci est
-        pr&eacute;sente dans le fichier <code>po/LINGUAS</code>. 
-        Ce fichier indique toutes les traductions disponibles par
-        l'interm&eacute;diaire d'un code de deux lettres (par exemple,
-        <em>fr</em> repr&eacute;sente le fran&ccedil;ais). Si vous ne
-        trouvez pas votre langue, il serait tr&egrave;s
-        appr&eacute;ci&eacute; que vous apportiez votre aide pour
+        messages affichés apparaissent dans votre langue natale,
+        assurez-vous tout d'abord que celle-ci est présente dans le
+        fichier <code>po/LINGUAS</code>.  Ce fichier indique toutes
+        les traductions disponibles par l'intermédiaire d'un code de
+        deux lettres (par exemple, <span class="emp">fr</span>
+        représente le français). Si vous ne trouvez pas votre langue,
+        il serait très apprécié que vous apportiez votre aide pour
         traduire <code>calcurse</code> (voir la partie <a
-        href="#contribute">Comment contribuer?</a>).<br>
-        Si votre langue est disponible, lancez <code>calcurse</code>
-        en utilisant la commande suivante :
-        <pre>
-                LC_ALL=fr_FR calcurse
-        </pre>
-        o&ugrave; <em>fr_FR</em> doit &ecirc;tre remplac&eacute; par
-        la <em>locale</em> (code de la langue suivi du code pays)
-        correspondant &agrave; la traduction voulue.<br>
+        href="#contribute">Comment contribuer?</a>).</p> 
+<p>
+	Si votre langue est disponible, lancez <code>calcurse</code>
+        en utilisant la commande suivante : </p>
+	<pre> LC_ALL=fr_FR calcurse</pre>
+	<p>où <span class="emp">fr_FR</span> doit être remplacé par la
+        <span class="emp">locale</span> (code de la langue suivi du
+        code pays) correspondant à la traduction voulue.</p> 
+<p>
 	Il est également recommandé de spécifier le codage à utiliser,
-	car dans certains cas des problèmes d'affichage des accents
-	peuvent survenir. Ce codage est indiqué au début du fichier po
-	correspondant à la langue voulue. Par exemple, vous pouvez
-	remarquer dans le fichier fr.po que le codage utilisé est
-	iso-8859-1. Vous pouvez donc le préciser au lancement de 
-	<code>calcurse</code>:
-	<pre>
-		LC_ALL=fr_FR.ISO8859-1 calcurse
-	</pre>
+        car dans certains cas des problèmes d'affichage des accents
+        peuvent survenir. Ce codage est indiqué au début du fichier po
+        correspondant à la langue voulue. Par exemple, vous pouvez
+        remarquer dans le fichier fr.po que le codage utilisé est
+        iso-8859-1. Vous pouvez donc le préciser au lancement de
+        <code>calcurse</code>:</p>
+	<pre>LC_ALL=fr_FR.ISO8859-1 calcurse</pre>
 
-<a name="basics_interface"></a><h2>Interface utilisateur</h2>
-<a name="basics_interface_noninteractive"></a><h3>Mode non-interactif</h3>
+<h2>4.2 Interface utilisateur<a name="basics_interface"></a></h2>
+<h3>4.2.1 Mode non-interactif<a name="basics_interface_noninteractive"></a></h3>
 <p>
-        Lorsque il est appel&eacute; avec au moins un des arguments suivants:<br>
+        Lorsque il est appelé avec au moins un des arguments suivants:
         <code>-a</code>, <code>-d</code>, <code>-h</code>, 
-	<code>-n</code>, <code>-t</code>, <code>-v</code>, <code>-x</code><br>
-        <code>calcurse</code> est lanc&eacute; en mode non-interactif.
-        Cela signifie que l'information demand&eacute;e sera affich&eacute;e,
-        puis <code>calcurse</code> quittera et vous serez ramen&eacute;
-        au prompt de l'interpr&eacute;teur de commandes.<br>
-        De cette mani&egrave;re, il est possible de rajouter une ligne telle
-        que <code>'calcurse --todo --appointment'</code> dans le fichier d'initialisation
-        de son environnement, afin de faire s'afficher &agrave; chaque
-        d&eacute;but de session la liste des t&acirc;ches &agrave; faire et des rendez-vous
-        planifi&eacute;s pour la journ&eacute;e.
-
-
-<a name="basics_interface_interactive"></a><h3>Mode interactif</h3>
+	<code>-n</code>, <code>-t</code>, <code>-v</code>, <code>-x</code>,
+        <code>calcurse</code> est lancé en mode non-interactif.
+        Cela signifie que l'information demandée sera affichée,
+        puis <code>calcurse</code> quittera et vous serez ramené
+        au prompt de l'interpréteur de commandes.</p>
 <p>
-        Lorsqu'il est appel&eacute; sans aucun argument ou uniquement avec 
-        l'option <code>'-c'</code>, <code>calcurse</code> est lanc&eacute;
+        De cette manière, il est possible de rajouter une ligne telle
+        que <code>'calcurse --todo --appointment'</code> dans le fichier d'initialisation
+        de son environnement, afin de faire s'afficher à chaque
+        début de session la liste des tâches à faire et des rendez-vous
+	planifiés pour la journée.</p>
+
+
+<h3>4.2.2 Mode interactif<a name="basics_interface_interactive"></a></h3>
+<p>
+        Lorsqu'il est appelé sans aucun argument ou uniquement avec 
+        l'option <code>'-c'</code>, <code>calcurse</code> est lancé
         en mode interactif. Dans ce mode s'affiche une interface qui
-        contient trois panneaux diff&eacute;rents, qu'il est possible de 
-        s&eacute;lectionner cycliquement en utilisant la touche 'TAB', ainsi
+        contient trois panneaux différents, qu'il est possible de 
+        sélectionner cycliquement en utilisant la touche 'TAB', ainsi
         que d'une barre de notification et une autre de status 
-	(voir la figure ci-dessous).
+	(voir la figure ci-dessous).<p>
         <pre>
 
  panneau rendez-vous---.                             .---panneau calendrier
@@ -423,643 +451,666 @@ pour l'i18n</h3>
                                                                        |
                                                                barre de status
 
-        </pre>
-        Le premier panneau repr&eacute;sente un calendrier qui permet de 
-        s&eacute;lectionner un jour en particulier. Le second panneau contient
-        une liste d'&eacute;v&egrave;nements et les rendez-vous du jour, et le dernier
-        contient une liste des t&acirc;ches &agrave; faire, mais qui ne sont pas
-	assignées &agrave; une journ&eacute;e en particulier.<br>
-	On peut remarquer dans le panneau des rendez-vous le signe <em>'(|)'</em>
+	</pre>
+<p>
+        Le premier panneau représente un calendrier qui permet de 
+        sélectionner un jour en particulier. Le second panneau contient
+        une liste d'évènements et les rendez-vous du jour, et le dernier
+        contient une liste des tâches à faire, mais qui ne sont pas
+	assignées à une journée en particulier.</p>
+<p>
+	On peut remarquer dans le panneau des rendez-vous le signe 
+	<span class="emp">'(|)'</span>
 	placé juste devant la date. Ce signe représente la phase de la lune.
 	En fonction de la phase actuelle de celle-ci, un des signes suivants
-	peut-être indiqué :
-	<ul>
-		<li>'<b>  |) </b>': premier quartier</li>
-		<li>'<b> (|) </b>': pleine lune</li>
-		<li>'<b>  (| </b>': dernier quartier</li>
-		<li>'<b>  |  </b>': nouvelle lune</li>
-		<li>aucun signe: la phase actuelle de la lune ne correspond à
-		aucune des phases ci-dessus</li>
-	</ul>
+	peut-être indiqué :</p>
+	<dl class="compact">
+		<dt>'<code>  |) </code>':</dt>
+		<dd>premier quartier</dd>
+		<dt>'<code> (|) </code>':</dt>
+	       	<dd>pleine lune</dd>
+		<dt>'<code>  (| </code>':</dt>
+		<dd>dernier quartier</dd>
+		<dt>'<code>  |  </code>':</dt>
+		<dd>nouvelle lune</dd>
+		<dt>aucun signe:</dt> 
+		<dd>la phase actuelle de la lune ne correspond à
+		aucune des phases ci-dessus</dd>
+	</dl>
 	<p>
-        Tout en bas de l'&eacute;cran on retrouve une barre de status, qui indique
+        Tout en bas de l'écran on retrouve une barre de status, qui indique
         les actions possibles en fonction du contexte, ainsi que la
-        touche qui doit &ecirc;tre press&eacute;e pour effectuer cette action.<br>
+	touche qui doit être pressée pour effectuer cette action.</p>
+	<p>
 	Juste au-dessus de cette barre se trouve la barre de notification, qui
 	indique les informations suivantes, de gauche à droite : la date du jour,
 	l'heure courante, le fichier calendrier actuellement ouvert (il s'agit
 	de apts dans la copie d'écran, qui est le fichier par défaut, comme indiqué
 	dans la section suivante), et le premier rendez-vous programmé dans les 
 	prochaines 24 heures. Dans cet exemple, il s'agit d'un dîner qui aura lieu
-	dans une heure et vingt minutes.
+	dans une heure et vingt minutes.</p>
+	<p class="rq"><span class="valorise">Remarque:</span>
+	Certaines actions, comme éditer ou ajouter un
+	elément, nécessitent de renseigner du texte par 
+	l'intermédiaire de l'éditeur de ligne de commande
+	fournit avec <code>calcurse</code>.</p>
 	<p>
-	<u>Remarque:</u> Certaines actions, comme éditer ou ajouter un
-	el&eacute;ment, n&eacute;cessitent de renseigner du texte par 
-	l'interm&eacute;diaire de l'&eacute;diteur de ligne de commande
-	fournit avec <code>calcurse</code>.<br>
-	Dans cet &eacute;diteur, si la ligne de commande est plus longue que la 
-	largeur de l'&eacute;cran, le caract&egrave;re '&gt;', '*', ou '&lt;'
-	sera rajout&eacute; dans la derni&egrave;re colonne s'il reste du texte
-	apr&egrave;s, avant et apr&egrave;s, ou avant la position courante,
-	respectivement. La ligne d&eacute;file horizontalement si
-	n&eacute;cessaire.<br>
+	Dans cet éditeur, si la ligne de commande est plus longue que la 
+	largeur de l'écran, le caractère '&gt;', '*', ou '&lt;'
+	sera rajouté dans la dernière colonne s'il reste du texte
+	après, avant et après, ou avant la position courante,
+	respectivement. La ligne défile horizontalement si
+	nécessaire.</p>
+	<p>
 	De plus, il existe des combinaisons de touches pour
-	effectuer certaines actions courantes utiles lors de l'&eacute;dition
-	de textes. Voici ces raccourcis:<br>
-	<ul>
-	<li><b>^a</b>: d&eacute;placer le curseur au d&eacute;but de la ligne
-	<li><b>^b</b>: d&eacute;placer le curseur d'une position en arri&egrave;re
-	<li><b>^d</b>: effacer le caract&egrave;re sous le curseur
-	<li><b>^e</b>: d&eacute;placer le curseur en fin de ligne
-	<li><b>^f</b>: d&eacute;placer le curseur d'une position en avant
-	<li><b>^h</b>: effacer le caract&egrave;re pr&eacute;c&eacute;dent
-	<li><b>^k</b>: effacer le texte depuis la position courante
-	jusqu'&agrave; la fin de la ligne
-	<li><b>ESCAPE</b>: annuler l'&eacute;dition du texte courant
-	</ul>
+	effectuer certaines actions courantes utiles lors de l'édition
+	de textes. Voici ces raccourcis:</p>
+	<dl class="compact">
+		<dt><code>^a</code>:</dt>
+		<dd>déplacer le curseur au début de la ligne</dd>
+		<dt><code>^b</code>:</dt>
+		<dd>déplacer le curseur d'une position en arrière</dd>
+		<dt><code>^d</code>:</dt>
+		<dd>effacer le caractère sous le curseur</dd>
+		<dt><code>^e</code>:</dt>
+		<dd>déplacer le curseur en fin de ligne</dd>
+		<dt><code>^f</code>:</dt>
+		<dd>déplacer le curseur d'une position en avant</dd>
+		<dt><code>^h</code>:</dt>
+		<dd>effacer le caractère précédent</dd>
+		<dt><code>^k</code>:</dt>
+		<dd>effacer le texte depuis la position courante
+		jusqu'à la fin de la ligne</dd>
+		<dt><code>ESC</code>:</dt> 
+		<dd>annuler l'édition du texte courant</dd>
+	</dl>
 
-<a name="basics_files"></a><h2>Fichiers</h2>
+<h2>4.3 Fichiers<a name="basics_files"></a></h2>
 <p>
-        La structure de fichiers suivante est cr&eacute;&eacute;e dans le r&eacute;pertoire
-        <code>$HOME</code> de l'utilisateur la premi&egrave;re fois que 
-        <code>calcurse</code> est lanc&eacute; :
+        La structure de fichiers suivante est créée dans le répertoire
+        <code>$HOME</code> de l'utilisateur la première fois que 
+	<code>calcurse</code> est lancé :</p>
 	<pre>
-        $HOME/.calcurse/
-                  |___conf
-                  |___apts
-                  |___todo
-        </pre>
-        Le fichier <em>conf</em> contient la configuration de l'utilisateur.<br>
-        Le fichier <em>apts</em> contient tous les événements ainsi que
-        les rendez-vous de l'utilisateur.<br>
-        Le fichier <em>todo</em> contient la liste des t&acirc;ches &agrave; effectuer.
+$HOME/.calcurse/
+           |___conf
+           |___apts
+           |___todo
+	</pre>
+	<dl class="compact">
+		<dt><code>conf</code>:</dt>
+		<dd>ce fichier contient la configuration de l'utilisateur</dd>
+		<dt><code>apts</code>:</dt>
+		<dd>ce fichier contient tous les événements ainsi que les 
+		rendez-vous de l'utilisateur</dd>
+		<dt><code>todo</code>:</dt>
+		<dd>ce fichier contient la liste des tâches à effectuer.  </dd>
+	</dl>
 
-
-<a name="basics_help"></a><h2>Aide en ligne</h2>
+<h2>4.4 Aide en ligne<a name="basics_help"></a></h2>
 <p>
-        &Agrave; n'importe quel moment, le syst&egrave;me d'aide en ligne peut &ecirc;tre
-        appel&eacute; en pressant la touche '?'. Une fois rentr&eacute; dans l'aide,
-        les informations sur une commande sp&eacute;cifique peuvent &ecirc;tre
-        obtenues en appuyant sur la touche correspondant &agrave; cette 
+        A n'importe quel moment, le système d'aide en ligne peut être
+        appelé en pressant la touche '?'. Une fois rentré dans l'aide,
+        les informations sur une commande spécifique peuvent être
+        obtenues en appuyant sur la touche correspondant à cette 
         commande.
+	</p>
 
-
-<a name="options"></a><h1>Options</h1>
+<h1>5. Options<a name="options"></a></h1>
 <p>
-        Tous les param&egrave;tres de <code>calcurse</code> sont configurables
-        &agrave; partir du menu <em>Configuration</em>, accessible en appuyant
-        sur 'C'. L'utilisateur se voit alors pr&eacute;sent&eacute; un second menu
-        avec trois choix possibles : appuyer &agrave; nouveau sur 'C' am&egrave;ne 
-        au menu de s&eacute;lection des couleurs de l'interface, appuyer sur
-        'L' permet de choisir parmi diff&eacute;rents emplacements pour les 
-        panneaux de la fen&ecirc;tre principale de <code>calcurse</code>,
+        Tous les paramètres de <code>calcurse</code> sont configurables
+        à partir du menu <code>Configuration</code>, accessible en appuyant
+        sur 'C'. L'utilisateur se voit alors présenté un second menu
+        avec trois choix possibles : appuyer à nouveau sur 'C' amène 
+        au menu de sélection des couleurs de l'interface, appuyer sur
+        'L' permet de choisir parmi différents emplacements pour les 
+        panneaux de la fenêtre principale de <code>calcurse</code>,
 	appuyer sur 'G' vous permet de fixer les options générales, et enfin
-        les paramètres de la barre de notification peuvent &ecirc;tre fixés 
-	en appuyant sur 'N'.
+        les paramètres de la barre de notification peuvent être fixés 
+	en appuyant sur 'N'.</p>
 
 
-<a name="options_general"></a><h2>Options g&eacute;n&eacute;rales</h2>
+<h2>5.1 Options générales<a name="options_general"></a></h2>
 <p>
-        Ces options contr&ocirc;lent le comportement g&eacute;n&eacute;ral de
-        <code>calcurse</code>, comme d&eacute;crit ci-dessous :
-        <ul>
-        <li><code>sauvegarde_automatique</code>  (valeur par d&eacute;faut: <em>oui</em>)<br>
-	Cette option permet de sauvegarder automatiquement les
-	donn&eacute;es de l'utilisateur avant de quitter, si elle est
-	fix&eacute;e &agrave; <em>oui</em>.<br>
-	<em>attention:</em> Aucune donn&eacute;e ne sera automatiquement
-	sauvegard&eacute;e si cette variable est fix&eacute;e &agrave; <em>non</em>.
-	Cela signifie que l'utilisateur doit appuyer sur 'S'
-	(pour sauvegarder) pour retrouver ses modifications au prochain
-	lancement de <code>calcurse</code>.<br>
-	<br>
-	<li><code>confirmer_pour_quitter</code> (valeur par d&eacute;faut: <em>oui</em>)<br>
-	Si cette option est fix&eacute;e &agrave; <em>oui</em>, la confirmation 
-	de l'utilisateur est n&eacute;cessaire avant de pouvoir quitter.
-	Autrement, appuyer sur 'Q' provoquera l'arr&ecirc;t de 
-	<code>calcurse</code> sans demander confirmation.<br>
-	<br>
-	<li><code>confirmer_pour_effacer</code> (valeur par d&eacute;faut: <em>oui</em>)<br>
-	Si cette option est fix&eacute;e &agrave; <em>oui</em>, appuyer sur 'D'
-	pour effacer un &eacute;lement (soit une t&acirc;che, un rendez-vous ou bien
-	un &eacute;venement) provoquera l'apparition d'un message demandant
-	la confirmation de l'utilisateur avant d'effacer cet &eacute;lement.
-	Si cette option est fix&eacute;e &agrave; <em>non</em>, aucune confirmation
-	ne sera demand&eacute;e avant l'effacement d'un &eacute;lement.<br>
-	<br>
-	<li><code>masquer_messages_syst&egrave;me</code> (valeur par d&eacute;faut: <em>non</em>)<br>
-	Fixer cette option &agrave; <em>oui</em> provoque la disparition des
-	messages relatifs aux enregistrements ou lectures des fichiers
-	de donn&eacute;es. Ceci peut &ecirc;tre utile pour acc&eacute;lerer les processus
-	d'entr&eacute;es/sorties.<br>
-	<br>
-	<li><code>masquer_barre_progression</code> (valeur par d&eacute;faut: <em>non</em>)<br>
-	Si elle est fix&eacute;e &agrave; <em>oui</em>, cette option provoque la 
-	disparition de la barre de progression qui est normalement charg&eacute;e
-	d'indiquer l'état d'avancement de l'enregistrement des fichiers
-	de donn&eacute;es. Si cette option est fix&eacute;e &agrave; <em>non</em>, cette barre
-	sera affich&eacute;e, en m&ecirc;me temps que le nom du fichier de donn&eacute;es
-	actuellement en cours d'&eacute;criture 
-	(voir la section <a href="#basics_files">Fichiers</a>).<br>
-        <br>
-        <li><code>semaine_commence_lundi</code> (valeur par d&eacute;faut: <em>oui</em>)<br>
-        Il est possible dans <code>calcurse</code> d'indiquer quel est le premier
-        jour de la semaine, &agrave; savoir soit le lundi, soit le dimanche.
-        Si l'option <em>semaine_commence_lundi</em> est fix&eacute;e &agrave;
-        <em>oui</em>, les semaines du calendrier commenceront le lundi.
-        Par contre si cette option est fix&eacute;e &agrave; <em>non</em>,
-        les semaines d&eacute;buteront le dimanche.
-        </ul>
+        Ces options contrôlent le comportement général de
+	<code>calcurse</code>, comme décrit ci-dessous :</p>
+        <dl>
+        	<dt><code>sauvegarde_automatique</code>  
+		  (valeur par défaut: <code>oui</code>)</dt>
+		<dd>Cette option permet de sauvegarder automatiquement 
+		  les données de l'utilisateur avant de quitter, si elle est
+		  fixée à <code>oui</code>.
+		  <p class="rq"><span class="valorise">attention:</span>
+		    Aucune donnée ne sera automatiquement
+		    sauvegardée si cette variable est fixée à <code>non</code>.
+		    Cela signifie que l'utilisateur doit appuyer sur 'S'
+		    (pour sauvegarder) pour retrouver ses modifications au prochain
+		    lancement de <code>calcurse</code>.
+		</dd>
+		<dt><code>confirmer_pour_quitter</code> 
+		  (valeur par défaut: <code>oui</code>)</dt>
+		<dd>Si cette option est fixée à <code>oui</code>, la confirmation 
+		  de l'utilisateur est nécessaire avant de pouvoir quitter.
+		  Autrement, appuyer sur 'Q' provoquera l'arrêt de 
+		  <code>calcurse</code> sans demander confirmation.
+		</dd>
+		<dt><code>confirmer_pour_effacer</code> 
+		  (valeur par défaut: <code>oui</code>)</dt>
+		<dd>Si cette option est fixée à <code>oui</code>, appuyer sur 'D'
+		  pour effacer un élement (soit une tâche, un rendez-vous ou bien
+		  un évenement) provoquera l'apparition d'un message demandant
+		  la confirmation de l'utilisateur avant d'effacer cet élement.
+		  Si cette option est fixée à <code>non</code>, aucune confirmation
+		  ne sera demandée avant l'effacement d'un élement.
+		</dd>
+		<dt><code>masquer_messages_système</code> 
+		  (valeur par défaut: <code>non</code>)</dt>
+		<dd>Fixer cette option à <code>oui</code> provoque la disparition des
+		  messages relatifs aux enregistrements ou lectures des fichiers
+		  de données. Ceci peut être utile pour accélerer les processus
+		  d'entrées/sorties.
+		</dd>
+		<dt><code>masquer_barre_progression</code> 
+		  (valeur par défaut: <code>non</code>)</dt>
+		<dd>Si elle est fixée à <code>oui</code>, cette option provoque la 
+		  disparition de la barre de progression qui est normalement chargée
+		  d'indiquer l'état d'avancement de l'enregistrement des fichiers
+		  de données. Si cette option est fixée à <code>non</code>, cette barre
+		  sera affichée, en même temps que le nom du fichier de données
+		  actuellement en cours d'écriture 
+		  (voir la section <a href="#basics_files">Fichiers</a>).
+		</dd>
+		<dt><code>semaine_commence_lundi</code> 
+		  (valeur par défaut: <code>oui</code>)</dt>
+		<dd>Il est possible dans <code>calcurse</code> d'indiquer quel est le 
+		  premier jour de la semaine, à savoir soit le lundi, soit le dimanche.
+		  Si l'option <code>semaine_commence_lundi</code> est fixée à
+		  <code>oui</code>, les semaines du calendrier commenceront le lundi.
+		  Par contre si cette option est fixée à <code>non</code>,
+		  les semaines débuteront le dimanche.</dd>
+        </dl>
 
 
-<a name="options_colors"></a><h2>Th&egrave;mes graphiques</h2>
-	<p>Le thème graphique de <code>calcurse</code> peut être adapté aux besoins de
+<h2>5.2 Thèmes graphiques<a name="options_colors"></a></h2>
+<p>
+	Le thème graphique de <code>calcurse</code> peut être adapté aux besoins de
 	l'utilisateur. Pour changer les options par défaut, la page de configuration
 	permet de sélectionner la couleur voulue pour l'interface (premier plan et
 	fond). L'utilisateur doit pour cela se déplacer sur la bonne couleur en
 	utilisant les touches flèches ou les touches de déplacement par défaut, et
 	appuyer sur 'X' ou la barre d'espace pour sélectionner la couleur. Il est
 	également possible de conserver la couleur par défaut du terminal de
-	l'utilisateur en sélectionnant le choix corresondant dans la liste.
-	<p>
-        Cette
-        couleur est alors appliqu&eacute;e &agrave; la bordure des
+	l'utilisateur en sélectionnant le choix corresondant dans la liste.</p>
+<p>
+        Cette couleur est alors appliquée à la bordure des
         panneaux, aux titres, aux combinaisons de touches, et aux
-        informations g&eacute;n&eacute;rales affich&eacute;es dans la
-        barre de status. Un th&egrave;me en noir et blanc est
-        &eacute;galement disponible, afin de supporter les terminaux
-        monochromes.<br>
-        <u>Remarques:</u>
-        <ul>
-        <li> Suivant le type de terminal que vous utilisez, et suivant
+        informations générales affichées dans la
+        barre de status. Un thème en noir et blanc est
+        également disponible, afin de supporter les terminaux
+        monochromes.
+	<p class="rq"><span class="valorise">Remarque:</span>
+        Suivant le type de terminal que vous utilisez, et suivant
         la valeur de la variable d'environnement <code>$TERM</code>,
-        la couleur peut &ecirc;tre support&eacute;e ou non. Un message
-        d'erreur appara&icirc;tra si vous essayez d'appliquer un
-        th&egrave;me graphique en couleur alors que votre terminal est
-        monochrome.<br>
-        <br>
-        <li> Si vous savez que votre terminal supporte les couleurs
+        la couleur peut être supportée ou non. Un message
+        d'erreur apparaîtra si vous essayez d'appliquer un
+        thème graphique en couleur alors que votre terminal est
+        monochrome. Si vous savez que votre terminal supporte les couleurs
         mais que <code>calcurse</code> ne veut pas les afficher,
         essayez de changer la valeur de la variable d'environnement
         <code>$TERM</code> (appliquez par exemple la valeur
         <em>xterm-xfree86</em>).
-        </ul>
-
+	</p>
       
-<a name="options_layout"></a><h2>Disposition des panneaux</h2>
+<h2>5.3 Disposition des panneaux<a name="options_layout"></a></h2>
 <p>
-        La disposition des panneaux &agrave; l'int&eacute;rieur de la fen&ecirc;tre de
-        <code>calcurse</code> peut &ecirc;tre param&eacute;tr&eacute;e. Par d&eacute;faut, le
-        panneau contenant le calendrier se situe en haut &agrave; droite de
-        la fen&ecirc;tre, le panneau contenant la liste des t&acirc;ches est situ&eacute;
-        en bas &agrave; droite, et le panneau contenant les rendez-vous se
-        trouve sur la partie gauche de l'&eacute;cran (voir la figure dans la
+        La disposition des panneaux à l'intérieur de la fenêtre de
+        <code>calcurse</code> peut être paramétrée. Par défaut, le
+        panneau contenant le calendrier se situe en haut à droite de
+        la fenêtre, le panneau contenant la liste des tâches est situé
+        en bas à droite, et le panneau contenant les rendez-vous se
+        trouve sur la partie gauche de l'écran (voir la figure dans la
         section <a href="#basics_interface_interactive">Mode interactif</a>
-        pour un exemple de la disposition par d&eacute;faut).<br>
-        En choisissant une autre disposition pour les &eacute;l&eacute;ments composants
-        la fen&ecirc;tre de <code>calcurse</code>, l'utilisateur peut adapter
-        &agrave; ses besoins l'interface du programme.
+        pour un exemple de la disposition par défaut).
+        En choisissant une autre disposition pour les éléments composants
+        la fenêtre de <code>calcurse</code>, l'utilisateur peut adapter
+        à ses besoins l'interface du programme.</p>
 
-<a name="options_notify"></a><h2>Réglages de la barre de notification</h2>
+<h2>5.4 Réglages de la barre de notification<a name="options_notify"></a></h2>
 <p>
 	Les options suivantes permettent de modifier les réglages de la
-	barre de notification:
-	<ul>
-	<li><code>barre-notification_afficher</code> (valeur par défaut: <em>oui</em>)<br>
-	Cette option indique si la barre de notification doit être affichée ou pas.<br>
-	<br>
-	<li><code>barre-notification_date</code> (valeur par défaut: <em>%a %F</em>)<br>
-	Avec cette option, il vous est possible de spécifier le format qui
-	doit être utilisé pour afficher la date du jour dans la barre de 
-	notification. Les différents formats possibles sont visibles en
-	tapant la commande suivante dans un terminal: <tt>man 3 strftime</tt>.<br>
-	<br>
-	<li><code>barre-notification_heure</code> (valeur par défaut: <em>%T</em>)<br>
-	Avec cette option, il vous est possible de spécifier le format qui
-	doit être utilisé pour afficher l'heure courante dans la barre de 
-	notification. Les différents formats possibles sont visibles en
-	tapant la commande suivante dans un terminal: <tt>man 3 strftime</tt>.<br>
-	<br>
-	<li><code>barre-notification_alerte</code> (valeur par défaut: <em>300</em>)<br>
-	Si l'utilisateur a programmé un rendez-vous dans les prochaines 'barre-notification_alerte'
-	secondes, et qu'il a marqué celui-ci comme étant important, 
-	l'affichage de ce rendez-vous clignotera dans la barre de notification.
-	De plus, la commande définie par <em>barre-notification_commande</em>
-	sera executée.
-	De cette manière, l'utilisateur sera alerté et saura que l'heure du rendez-vous
-	approche.<br>
-	<br>
-	<li><code>barre-notification_commande</code> (valeur par défaut:
-	<em>printf '\a'</em>)<br>
-	Cette option indique la commande qui sera lancée lorsque l'heure d'un
-	rendez-vous approchera, et que ce rendez-vous a été marqué comme
-	'important'. La commande spécifiée par cette option sera passée au shell
-	de l'utilisateur, qui l'interpretera. Pour savoir quel shell doit être
-	utilisé, <code>calcurse</code> lit le contenu de la variable
-	d'environnement <code>$SHELL</code>, et si cette variable est vide, la
-	commande sera passée à <code>/bin/sh</code>.<br>
-	<u>Exemple:</u> Supposons que le programme <code>mail</code> soit
-	disponible sur l'ordinateur de l'utilisateur, celui-ci peut indiquer la
-	commande suivante afin d'être prévenu par mail lorsqu'un rendez-vous
-	approche (la description de ce rendez-vous sera également mentionnée
-	dans le corps du mail):
-	<pre>
-		calcurse --next | mail -s "[calcurse] nouveau rendez-vous!" user@host.com
-	</pre>
-	</font>
-	</ul>
+	barre de notification:</p>
+	<dl>
+		<dt><code>barre-notification_afficher</code> 
+		  (valeur par défaut: <code>oui</code>)</dt>
+		<dd>Cette option indique si la barre de notification doit être 
+		  affichée ou pas.</dd>
+		<dt><code>barre-notification_date</code> 
+		  (valeur par défaut: <code>%a %F</code>)</dt>
+		<dd>Avec cette option, il vous est possible de spécifier le format qui
+		  doit être utilisé pour afficher la date du jour dans la barre de 
+		  notification. Les différents formats possibles sont visibles en
+		  tapant la commande suivante dans un terminal: <code>man 3 strftime</code>.
+		  </dd>
+		<dt><code>barre-notification_heure</code> 
+		  (valeur par défaut: <code>%T</code>)</dt>
+		<dd>Avec cette option, il vous est possible de spécifier le format qui
+		  doit être utilisé pour afficher l'heure courante dans la barre de 
+		  notification. Les différents formats possibles sont visibles en
+		  tapant la commande suivante dans un terminal: <code>man 3 strftime</code>.
+		  </dd>
+		<dt><code>barre-notification_alerte</code> 
+		  (valeur par défaut: <code>300</code>)</dt>
+		<dd>Si l'utilisateur a programmé un rendez-vous dans les prochaines 
+		  'barre-notification_alerte' secondes, et qu'il a marqué celui-ci 
+		  comme étant important, l'affichage de ce rendez-vous clignotera dans 
+		  la barre de notification.
+		  De plus, la commande définie par <code>barre-notification_commande</code>
+		  sera executée.
+		  De cette manière, l'utilisateur sera alerté et saura que l'heure du rendez-vous
+		  approche.</dd>
+		<dt><code>barre-notification_commande</code> 
+		  (valeur par défaut: <code>printf '\a'</code>)</dt>
+		<dd>Cette option indique la commande qui sera lancée lorsque l'heure d'un
+		  rendez-vous approchera, et que ce rendez-vous a été marqué comme
+		  'important'. La commande spécifiée par cette option sera passée au shell
+		  de l'utilisateur, qui l'interpretera. Pour savoir quel shell doit être
+		  utilisé, <code>calcurse</code> lit le contenu de la variable
+		  d'environnement <code>$SHELL</code>, et si cette variable est vide, la
+		  commande sera passée à <code>/bin/sh</code>.
+		<p class="rq"><span class="valorise">Exemple:</span>
+		Supposons que le programme <code>mail</code> soit
+		  disponible sur l'ordinateur de l'utilisateur, celui-ci peut indiquer la
+		  commande suivante afin d'être prévenu par mail lorsqu'un rendez-vous
+		  approche (la description de ce rendez-vous sera également mentionnée
+		  dans le corps du mail):</p>
+		  <code>
+calcurse --next | mail -s "[calcurse] nouveau rendez-vous!" user@host.com
+		  </code>
+		  </dd>
+	</dl>
 
-
-<a name="known_bugs"></a><h1>Bogues connus</h1>
+<h1>6. Bogues connus<a name="known_bugs"></a></h1>
 <p>
-        Une coloration incorrecte des objets peut r&eacute;sulter
-        d'une utilisation conjointe d'un th&egrave;me graphique en
+        Une coloration incorrecte des objets peut résulter
+        d'une utilisation conjointe d'un thème graphique en
         noir et blanc et d'une variable <code>$TERM</code>
-        fix&eacute;e &agrave; <em>xterm-color</em>.  Pour supprimer ce
+        fixée à <code>xterm-color</code>.  Pour supprimer ce
         bogue, et comme le conseille Thomas E. Dickey (le
-        r&eacute;sponsable du projet <code>xterm</code>),
-        <em>xterm-xfree86</em> devrait &ecirc;tre assign&eacute;
-        &agrave; la variable <code>$TERM</code> en lieu et place de
-        <em>xterm-color</em> :
-        <blockquote>
+        résponsable du projet <code>xterm</code>),
+        <code>xterm-xfree86</code> devrait être assigné
+        à la variable <code>$TERM</code> en lieu et place de
+        <code>xterm-color</code> :</p>
+        <blockquote class="rq">
         "La valeur xterm-color pour la variable $TERM est un mauvais
         choix pour les terminaux XFree86 parce qu'elle est couramment
-        utilis&eacute;e pour les entr&eacute;es terminfo qui ne
-        supportent pas bce. Utilisez plut&ocirc;t l'entr&eacute;e
-        xterm-xfree86 qui est distribu&eacute;e avec le xterm
-        d'XFree86 (ou par celui, similaire, distribu&eacute; avec ncurses)."
+        utilisée pour les entrées terminfo qui ne
+        supportent pas bce. Utilisez plut&ocirc;t l'entrée
+        xterm-xfree86 qui est distribuée avec le xterm
+        d'XFree86 (ou par celui, similaire, distribué avec ncurses)."
         </blockquote>
 
 
-<a name="bugs"></a><h1>Rapporter les bogues et commentaires</h1>
+<h1>7. Rapporter les bogues et commentaires<a name="bugs"></a></h1>
 <p>
-        Merci de renvoyer vos rapports de bogues et vos commentaires &agrave; 
-        l'adresse suivante :
-        <pre>
-        calcurse@culot.org
-        </pre>
-        ou directement &agrave; l'auteur :
-        <pre>
-        frederic@culot.org
-        </pre>
+        Merci de renvoyer vos rapports de bogues et vos commentaires à 
+        l'adresse suivante :</p>
+        <pre>calcurse@culot.org </pre>
+<p>
+        ou directement à l'auteur :</p>
+        <pre>frederic@culot.org </pre>
 
-<a name="contribute"></a><h1>Comment contribuer?</h1>
+<h1>8. Comment contribuer?<a name="contribute"></a></h1>
 <p>
-        Si vous d&eacute;sirez contribuer au projet, vous pouvez tout d'abord
+        Si vous désirez contribuer au projet, vous pouvez tout d'abord
         envoyer vos commentaires sur ce qui vous plaît ou déplaît ou sur
-        ce qui vous manque dans <code>calcurse</code>.<br>
+        ce qui vous manque dans <code>calcurse</code>.
         Pour le moment, les contributions possibles concernent 
         la traduction des messages de <code>calcurse</code> ainsi que
-        de la documentation.<br>
-        <br>
-        <u>Remarque:</u> toute contribution &agrave; la traduction de
-        <code>calcurse</code> serait tr&egrave;s
-        appr&eacute;ci&eacute;e, mais avant tout, envoyez un mail
-        &agrave; <code>calcurse-i18n@culot.org</code> pour savoir si
-        quelqu'un a d&eacute;j&agrave; commenc&eacute; le processus de
-        traduction dans votre langue.
+        de la documentation.</p>
+	<p class="rq"><span class="valorise">Remarque:</span>
+        toute contribution à la traduction de
+        <code>calcurse</code> serait très
+        appréciée, mais avant tout, envoyez un mail
+        à <code>calcurse-i18n@culot.org</code> pour savoir si
+        quelqu'un a déjà commencé le processus de
+        traduction dans votre langue.</p>
 
 
-<a name="contribute_documentation"></a><h2>Traduction de la documentation</h2>
+<h2>8.1 Traduction de la documentation<a name="contribute_documentation"></a></h2>
 <p>
-        Le r&eacute;pertoire <em>doc/</em> du paquet source contient
-        d&eacute;j&agrave; des versions traduites de la documentation.
+        Le répertoire <code>doc/</code> du paquet source contient
+        déjà des versions traduites de la documentation.
         Cependant, si celle-ci n'est pas encore disponible dans votre
-        langue, votre aide pour sa traduction serait tr&egrave;s
-        appr&eacute;ci&eacute;e.<br>
-        Pour cela, il suffit de copier un des fichiers existant et de
-        renommer cette copie en <code>manual_XX.html</code>, o&ugrave;
-        <em>XX</em> repr&eacute;sente votre langue. Il faut ensuite
-        traduire ce fichier nouvellement cr&eacute;&eacute; et de
-        l'envoyer &agrave; l'auteur (voir <a href="#bugs">Rapporter
-        les bogues et commentaires</a>), pour qu'il soit inclus dans
-        la prochaine version de <code>calcurse</code>.
-
-
-<a name="contribute_i18n"></a><h2>Traduction de <code>calcurse</code></h2>
+        langue, votre aide pour sa traduction serait très
+        appréciée.</p>
 <p>
-        Comme mentionn&eacute; plus haut, les utilitaires
-        <code>gettext</code> sont utilis&eacute;s par
+        Pour cela, il suffit de copier un des fichiers existant et de
+        renommer cette copie en <code>manual_XX.html</code>, où
+        <code>XX</code> représente votre langue. Il faut ensuite
+        traduire ce fichier nouvellement créé et de
+        l'envoyer à l'auteur (voir <a href="#bugs">Rapporter
+        les bogues et commentaires</a>), pour qu'il soit inclus dans
+        la prochaine version de <code>calcurse</code>.</p>
+
+
+<h2>8.2 Traduction de <code>calcurse</code><a name="contribute_i18n"></a></h2>
+<p>
+        Comme mentionné plus haut, les utilitaires
+        <code>gettext</code> sont utilisés par
         <code>calcurse</code> pour produire des messages
         multilingues. Cette section explique comment traduire ces
         messages dans votre langue. Cependant, cette notice est
-        d&eacute;lib&eacute;r&eacute;ment incompl&egrave;te,
+        délibérément incomplète,
         puisqu'elle ne se concentre que sur l'utilisation de
         <code>gettext</code> avec <code>calcurse</code>. Pour avoir
         une vision plus large du Support de Langage Natif
-        (<em>NLS</em>), il est pr&eacute;f&eacute;rable de se
-        r&eacute;f&eacute;rer au manuel de <code>GNU gettext</code>
-        que l'on peut trouver &agrave; l'adresse suivante :
-        <pre>
-                http://www.gnu.org/software/gettext/manual/
-        </pre>
-        Pour r&eacute;sumer, trois cat&eacute;gories de personnes sont
-        impliqu&eacute;es dans la cha&icirc;ne de traduction : les
+        (<code>NLS</code>), il est préférable de se
+        référer au manuel de <code>GNU gettext</code>
+        que l'on peut trouver à l'adresse suivante :</p>
+        <pre>http://www.gnu.org/software/gettext/manual/</pre>
+<p>
+        Pour résumer, trois catégories de personnes sont
+        impliquées dans la chaîne de traduction : les
         programmeurs, les coordinateurs de la traduction, et les
-        traducteurs. Apr&egrave;s un rapide aper&ccedil;u de la
-        mani&egrave;re de proc&eacute;der pour traduire le logiciel,
-        nous d&eacute;crirons plus en d&eacute;tails les t&acirc;ches du
-        traducteur. 
+        traducteurs. Après un rapide aperçu de la
+        manière de procéder pour traduire le logiciel,
+        nous décrirons plus en détails les tâches du
+        traducteur.</p>
 
 
-<a name="contribute_i18n_overview"></a><h3>Aper&ccedil;u</h3>
+<h3>8.2.1 Aperçu<a name="contribute_i18n_overview"></a></h3>
 <p>
         Afin de pouvoir afficher du texte dans la langue natale de
-        l'utilisateur, deux &eacute;tapes sont n&eacute;cessaires :
-        l'<em>internationalisation</em> (i18n), et la
-        <em>localisation</em> (l10n).
-        l'i18n permet &agrave; <code>calcurse</code> d'&ecirc;tre
+        l'utilisateur, deux étapes sont nécessaires :
+        l'<code>internationalisation</code> (i18n), et la
+        <code>localisation</code> (l10n).</p>
+<p>
+        L'i18n permet à <code>calcurse</code> d'être
         multilingue. C'est un processus qui est mis en place par les
-        programmeurs, qui marquent les phrases &agrave; traduire au
+        programmeurs, qui marquent les phrases à traduire au
         sein du code source, et qui fournissent les outils pour que
         ces phrases soient traduites automatiquement pendant le
-        d&eacute;roulement du programme.        
-        La l10n correspond quant &agrave; elle au processus qui permet
-        &agrave; <code>calcurse</code> de s'adapter &agrave; la langue
-        de l'utilisateur. C'est-&agrave;-dire qu'il traduit les
-        phrases pr&eacute;c&eacute;demment marqu&eacute;e par les
+        déroulement du programme.</p>
+<p>
+        La l10n correspond quant à elle au processus qui permet
+        à <code>calcurse</code> de s'adapter à la langue
+        de l'utilisateur. C'est-à-dire qu'il traduit les
+        phrases précédemment marquée par les
         programmeurs, et qu'il fixe correctement les variables
         d'environnement afin que <code>calcurse</code> puisse utiliser
-        les r&eacute;sultats de cette traduction.<br> 
-        <br>
+        les résultats de cette traduction.</p>
+<p>
         Ainsi, les phrases traduisibles sont tout d'abord
-        marqu&eacute;es par les programmeurs dans le code source, puis
-        rassembl&eacute;es dans un fichier r&eacute;f&eacute;rence
-        (<code>calcurse.pot</code> - l'extension <em>pot</em> signifiant
-        <em>portable object template</em>, objet portable de
-        r&eacute;f&eacute;rence). Le contenu de ce fichier est alors
-        associ&eacute; aux fichiers contenant la traduction pour
-        chacune des diff&eacute;rentes langues (fichier <em>fr.po</em>
-        pour le fran&ccedil;ais par exemple - <em>po</em> siginifiant
-        <em>portable object</em>, objet portable - qui peut &ecirc;tre
+        marquées par les programmeurs dans le code source, puis
+        rassemblées dans un fichier référence
+        (<code>calcurse.pot</code> - l'extension <code>pot</code> signifiant
+        <code>portable object template</code>, objet portable de
+        référence). Le contenu de ce fichier est alors
+        associé aux fichiers contenant la traduction pour
+        chacune des différentes langues (fichier <code>fr.po</code>
+        pour le français par exemple - <code>po</code> siginifiant
+        <code>portable object</code>, objet portable - qui peut être
         lu par les humains). Le traducteur devra se servir de ce
         fichier, et traduira les phrases qu'il contient, puis
-        l'enverra aux d&eacute;veloppeurs. Ensuite, au niveau de la
+        l'enverra aux développeurs. Ensuite, au niveau de la
         compilation du programme, une version binaire de ce fichier
-        sera produite (pour des raisons d'efficacit&eacute;), puis
-        install&eacute;e. Cette version binaire a pour extension
-        <em>.mo</em>, o&ugrave; <em>mo</em> signifie <em>machine
-        object</em> - objet machine, c'est-&agrave;-dire qui peut
-        &ecirc;tre lu par le programme. Pour finir,
-        <code>calcurse</code> se servira de ce fichier <em>mo</em>
+        sera produite (pour des raisons d'efficacité), puis
+        installée. Cette version binaire a pour extension
+        <code>.mo</code>, où <code>mo</code> signifie <code>machine
+        object</code> - objet machine, c'est-à-dire qui peut
+        être lu par le programme. Pour finir,
+        <code>calcurse</code> se servira de ce fichier <code>mo</code>
         lors de son exécution pour traduire les phrases dans la langue
-        de l'utilisateur.
+        de l'utilisateur.</p>
 
 
-<a name="contribute_i18n_translator"></a><h3>Etapes de la traduction</h3>
+<h3>8.2.2 Etapes de la traduction<a name="contribute_i18n_translator"></a></h3>
 <p>
         Supposons que quelqu'un veuille commencer une traduction dans
-        une nouvelle langue. Voici les &eacute;tapes &agrave; suivre
-        pour ce faire :
+        une nouvelle langue. Voici les étapes à suivre
+        pour ce faire :</p>
         <ul>
-        <li>Premi&egrave;rement, trouver quel est le nom de la locale
-        correspondant &agrave; la langue &agrave; traduire. Par
-        exemple, pour le fran&ccedil;ais, il s'agit de 'fr_FR', ou
+        <li>Premièrement, trouver quel est le nom de la locale
+        correspondant à la langue à traduire. Par
+        exemple, pour le français, il s'agit de 'fr_FR', ou
         simplement 'fr'. C'est cette valleur que l'utilisateur devra
         mettre dans la variable d'environnement <code>LC_ALL</code>
         pour obtenir la version traduite du logiciel (voir <a
-
         href="#basics_invocation_variable">Variable d'environnement
-        pour l'i18n</a>).<br>
-        <br>
-        <li>Ensuite, il faut se rendre dans le r&eacute;pertoire
-        <em>po/</em>, et cr&eacute;er un nouveau fichier <em>.po</em>
-        &agrave; partir du fichier de r&eacute;f&eacute;rence en
-        utilisant la commande suivante :
-        <pre>
+        pour l'i18n</a>).</li>
+        <li>Ensuite, il faut se rendre dans le répertoire
+        <code>po/</code>, et créer un nouveau fichier <code>.po</code>
+        à partir du fichier de référence en utilisant la commande suivante :
+        <code>
                 'msginit -i calcurse.pot -o fr.po -l fr --no-translator'
-        </pre>
-        Si vous n'avez pas <code>msginit</code> install&eacute; sur
-        votre syst&egrave;me, vous pouvez plus simplement copier
-        <em>calcurse.pot</em> en <em>fr.po</em> par exemple, et éditer
-        l'en-t&ecirc;te du fichier nouvellement cr&eacute;&eacute;
-        manuellement.<br>
-        Maintenant, ayant &agrave; disposition ce fichier
-        <em>fr.po</em>, la traduction peut commencer.
-        </ul>
-
-
-<a name="contribute_i18n_po-files"></a><h3>Fichiers <em>po</em></h3>
+        </code>
+        Si vous n'avez pas <code>msginit</code> installé sur
+        votre système, vous pouvez plus simplement copier
+        <code>calcurse.pot</code> en <code>fr.po</code> par exemple, et éditer
+        l'en-tête du fichier nouvellement créé
+        manuellement.</li>
+	</ul>
 <p>
-        Le format des fichiers <em>po</em> est assez simple. En effet,
-        ils ne contiennent que quatre &eacute;l&eacute;ments
-        diff&eacute;rents :
+        Maintenant, ayant à disposition ce fichier
+        <code>fr.po</code>, la traduction peut commencer.</p>
+
+
+<h3>8.2.3 Fichiers <code>po</code><a name="contribute_i18n_po-files"></a></h3>
+<p>
+        Le format des fichiers <code>po</code> est assez simple. En effet,
+        ils ne contiennent que quatre éléments
+        différents :</p>
         <ol>
-        <li><em>ligne d'emplacement:</em> renseigne sur l'emplacement
+        <li><code>ligne d'emplacement:</code> renseigne sur l'emplacement
         de la phrase dans le fichier source (donne le nom du fichier
-        ainsi que le num&eacute;ro de ligne), afin de retrouver
-        simplement le contexte d'o&ugrave; est issu la phrase &agrave;
-        traduire. 
-        <li><em>ligne msgid:</em> indique la phrase &agrave; traduire.
-        <li><em>ligne msgstr:</em> ligne indiquant la phrase traduite.
-        <li><em>lignes commen&ccedil;ant par '#'</em>: indiquent des
-        commentaires (certains ont une signification sp&eacute;ciale,
-        comme nous le verrons plus tard).
+        ainsi que le numéro de ligne), afin de retrouver
+        simplement le contexte d'où est issu la phrase à
+        traduire.</li>
+        <li><code>ligne msgid:</code> indique la phrase à traduire.</li>
+        <li><code>ligne msgstr:</code> ligne indiquant la phrase traduite.</li>
+        <li><code>lignes commençant par '#'</code>: indiquent des
+        commentaires (certains ont une signification spéciale,
+        comme nous le verrons plus tard).</li>
         </ol>
-        Pour r&eacute;sumer, un traducteur doit simplement remplir les
-        champs <em>msgstr</em> avec la traduction des lignes
-        trouv&eacute;es juste au-dessus dans la partie <em>msgid</em>.
-        <p>
-        <u>Remarques:</u>
-        <ul>
-        <li><em>Phrases marqu&eacute;es Fuzzy</em><br>
-        Vous pourrez rencontrer des phrases commen&ccedil;ant par le
+<p>
+        Pour résumer, un traducteur doit simplement remplir les
+        champs <code>msgstr</code> avec la traduction des lignes
+        trouvées juste au-dessus dans la partie <code>msgid</code>.</p>
+<p>
+        <span class="valorise">Remarques:</span>
+        <dl>
+        <dt><code>Phrases marquées Fuzzy</code></dt>
+        <dd>Vous pourrez rencontrer des phrases commençant par le
         commentaire <code>"#, fuzzy"</code>.
         <code>calcurse</code> n'utilisera pas les traductions
-        commen&ccedil;ant par ce commentaire, &agrave; moins que vous
+        commençant par ce commentaire, à moins que vous
         ne transformiez ces phrases. En effet, le commentaire
-        <em>fuzzy</em> signifie que la phrase a d&eacute;j&agrave;
-        &eacute;t&eacute; traduite mais qu'elle a depuis
-        &eacute;t&eacute; chang&eacute;e dans le source du programme, 
-        ou bien que <em>gettext</em> a effectu&eacute; lui-m&ecirc;me
+        <code>fuzzy</code> signifie que la phrase a déjà
+        été traduite mais qu'elle a depuis
+        été changée dans le source du programme, 
+        ou bien que <code>gettext</code> a effectué lui-même
         une traduction, en se basant sur une phrase similaire. Cela
-        implique donc que vous devez v&eacute;rifier la traduction.
-        Parfois, la phrase originale a chang&eacute; suite &agrave;
+        implique donc que vous devez vérifier la traduction.
+        Parfois, la phrase originale a changé suite à
         une correction de faute de frappe. Dans ce cas, vous n'aurez
         pas besoin de modifier la traduction. Mais dans d'autres cas,
-        cette traduction peut ne plus &ecirc;tre valable et
-        n&eacute;cessitera alors une mise &agrave; jour. Une fois
-        cette mise &agrave; jour effectu&eacute;e, vous pouvez
+        cette traduction peut ne plus être valable et
+        nécessitera alors une mise à jour. Une fois
+        cette mise à jour effectuée, vous pouvez
         supprimer 
         le commentaire <code>"#, fuzzy"</code>, et la traduction sera
-        alors &agrave; nouveau prise en compte par <code>calcurse</code>.<br>
-        <br>
-        <li><em>Lignes au format C et s&eacute;quences sp&eacute;ciales</em><br>
-        Certaines phrases ont le commentaire suivant: <code>"#,
+        alors à nouveau prise en compte par <code>calcurse</code>.</dd>
+        <dt><code>Lignes au format C et séquences spéciales</code></dt>
+        <dd>Certaines phrases ont le commentaire suivant: <code>"#,
         c-format"</code>. Cela signifie que des parties du texte
-        &agrave; traduire ont une signification particuli&egrave;re
+        à traduire ont une signification particuli&egrave;re
         pour le programme, et qu'il ne faut pas les modifier. Par
-        exemple, les s&eacute;quences contenant des <em>%</em>, comme 
+        exemple, les séquences contenant des <code>%</code>, comme 
         <code>"%s"</code>. Cela signifie que <code>calcurse</code>
-        remplacera ces s&eacute;quences par d'autres expressions. Il
+        remplacera ces séquences par d'autres expressions. Il
         est donc important de ne pas les modifier. Il existe
-        &eacute;galement des s&eacute;quences contenant des
-        <em>\</em>, comme <code>\n</code> ou <code>\t</code>. Il ne
-        faut pas les modifier non plus. En effet, la premi&egrave;re
-        s&eacute;quence repr&eacute;sente une fin de ligne, et la
-        deuxi&egrave;me une tabulation.<br>
-        <br>
-        <li><em>D&eacute;coupage des traductions</em><br>
-        Si certaines lignes sont trop longues, il est possible de
-        d&eacute;couper les phrases comme dans l'exemple ci-apr&egrave;s:
+        également des séquences contenant des
+        <code>\</code>, comme <code>\n</code> ou <code>\t</code>. Il ne
+        faut pas les modifier non plus. En effet, la première
+        séquence représente une fin de ligne, et la
+        deuxième une tabulation.</dd>
+        <dt><code>Découpage des traductions</code></dt>
+        <dd>Si certaines lignes sont trop longues, il est possible de
+        découper les phrases comme dans l'exemple ci-après:
         <pre>
-                msgid ""
-                "une ligne très longue"
-                "une autre ligne"
-        </pre>
-        <li><em>En-t&ecirc;te des fichiers po</em><br>
-        Au tout d&eacute;but du fichier <em>po</em>, la
-        premi&egrave;re phrase forme un en-t&ecirc;te o&ugrave;
-        diff&eacute;rentes informations doivent &ecirc;tre
-        renseign&eacute;es. La plus importante est le jeu de
-        caractères utilis&eacute;. Cette information devrait
-        ressembler &agrave;        
+msgid ""
+"une ligne très longue"
+"une autre ligne"
+        </pre></dd>
+        <dt><code>En-tête des fichiers po</code></dt>
+        <dd>Au tout début du fichier <code>po</code>, la
+        première phrase forme un en-tête où
+        différentes informations doivent être
+        renseignées. La plus importante est le jeu de
+        caractères utilisé. Cette information devrait
+        ressembler à
         <pre>
-                "Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
         </pre>
-        Il est &eacute;galement n&eacute;cessaire de remplir le champ
-        <em>Last-Translator</em> - <em>Dernier Traducteur</em>, afin
+        Il est également nécessaire de remplir le champ
+        <code>Last-Translator</code> - <code>Dernier Traducteur</code>, afin
         que d'autres traducteurs potentiels puissent se mettre en
-        relation avec la derni&egrave;re personne ayant
-        retouch&eacute; le fichier. De cette mani&egrave;re, il est
+        relation avec la dernière personne ayant
+        retouché le fichier. De cette manière, il est
         plus simple de coordonner les efforts de traduction. Il est
         possible de rajouter son adresse de courrier
-        &eacute;lectronique, par exemple:
+        électronique, par exemple:
         <pre>
-                "Last-Translator: Frederic Culot &lt;frederic@culot.org&gt;\n"
-        </pre>
-        <li><em>Commentaires</em><br>
-        Ajouter des commentaires (lignes commen&ccedil;ant par '#')
-        peut &ecirc;tre un bon moyen de signaler des probl&egrave;mes ou
-        difficult&eacute;s de traduction aux autres traducteurs.<br>
-        <br>
-        <li><em>Taille des phrases</em><br>
-        <code>calcurse</code> est un programme comportant une
-        interface console/curses, il d&eacute;pend donc de la taille
-        du terminal utilis&eacute; (plus particuli&egrave;rement du
+"Last-Translator: Frederic Culot &lt;frederic@culot.org&gt;\n"
+        </pre></dd>
+        <dt><code>Commentaires</code></dt>
+        <dd>Ajouter des commentaires (lignes commençant par '#')
+        peut être un bon moyen de signaler des problèmes ou
+        difficultés de traduction aux autres traducteurs.</dd>
+        <dt><code>Taille des phrases</code></dt>
+        <dd><code>calcurse</code> est un programme comportant une
+        interface console/curses, il dépend donc de la taille
+        du terminal utilisé (plus particulièrement du
         nombre de colonnes). Il est important de garder ceci en
-        m&eacute;moire au moment de la traduction. Souvent, la phrase
-        &agrave; traduire doit tenir dans une seule ligne (soit en
-        g&eacute;n&eacute;ral 80 caract&egrave;res). Il faut en tenir
-        compte, et essayer de voir o&ugrave; la phrase sera
-        plac&eacute;e pour adapter sa traduction.<br>
-        <br>
-        <li><em>Quelques outils utiles</em><br>
-        Le format des fichiers <em>po</em> est relativement simple, et
-        ils peuvent &ecirc;tre modifi&eacute;s avec un &eacute;diteur
-        de texte standard. Mais il est &eacute;galement possible 
-        d'utiliser des outils sp&eacute;cialis&eacute;s pour cette
-        t&acirc;che:
+        mémoire au moment de la traduction. Souvent, la phrase
+        à traduire doit tenir dans une seule ligne (soit en
+        général 80 caractères). Il faut en tenir
+        compte, et essayer de voir où la phrase sera
+        placée pour adapter sa traduction.</dd>
+        <dt><code>Quelques outils utiles</code></dt>
+        <dd>Le format des fichiers <code>po</code> est relativement simple, et
+        ils peuvent être modifiés avec un éditeur
+        de texte standard. Mais il est également possible 
+        d'utiliser des outils spécialisés pour cette
+        tâche:
            <ul>
            <li><code>poEdit</code> (<a 
            href="http://www.poedit.org/" target="_blank">
-           http://www.poedit.org/</a>)
+           http://www.poedit.org/</a>)</li>
            <li><code>KBabel</code> (<a
            href="http://i18n.kde.org/tools/kbabel/" target="_blank">
-           http://i18n.kde.org/tools/kbabel/</a>)
+           http://i18n.kde.org/tools/kbabel/</a>)</li>
            <li><code>GTranslator</code> (<a
            href="http://gtranslator.sourceforge.net/" target="_blank">
-           http://gtranslator.sourceforge.net/</a>)
-           <li><code>Emacs</code> et son mode <em>po</em>
-           <li><code>Vim</code> et son mode <em>po</em>
+           http://gtranslator.sourceforge.net/</a>)</li>
+           <li><code>Emacs</code> et son mode <code>po</code></li>
+           <li><code>Vim</code> et son mode <code>po</code></li>
            </ul>
-        <br>
-        <li><em>Finalement...</em><br>
-        J'espère que vous prendrez plaisir &agrave;
-        contribuer &agrave; l'internationalisation du monde des
+	</dd>
+        <dt><code>Finalement...</code></dt>
+        <dd>J'espère que vous prendrez plaisir à
+        contribuer à l'internationalisation du monde des
         logiciels libres. :) Si vous avez d'autres questions
-        concernant ce processus, n'h&eacute;sitez pas &agrave; me
-        contacter &agrave; l'adresse <em>frederic@culot.org</em>.
-        </ul>        
+        concernant ce processus, n'hésitez pas à me
+        contacter à l'adresse <code>frederic .à. culot .point. org</code>.</dd>
+        </dl>
 
 
-<a name="links"></a><h1>Liens</h1>
+<h1>9. Liens<a name="links"></a></h1>
 <p>
 	Cette section contient des liens en relation avec 
-	<code>calcurse</code> qui peuvent vous &ecirc;tre utiles.
+	<code>calcurse</code> qui peuvent vous être utiles.</p>
 
 
-<a name="links_homepage"></a><h2>Site internet de <code>calcurse</code></h2>
+<h2>9.1 Site internet de <code>calcurse</code><a name="links_homepage"></a></h2>
 <p>
-	La page web de <code>calcurse</code> est &agrave; l'adresse suivante : 
-	<pre>
-	http://culot.org/calcurse
-	</pre>
+	La page web de <code>calcurse</code> est à l'adresse suivante :</p> 
+	<pre>http://culot.org/calcurse</pre>
 
-<a name="links_list"></a><h2>Liste de diffusion de <code>calcurse</code></h2>
+<h2>9.2 Liste de diffusion de <code>calcurse</code><a name="links_list"></a></h2>
 <p>
-	Si vous &ecirc;tes interess&eacute; par ce projet et que vous souhaitez
-	&ecirc;tre pr&eacute;venu lorsqu'une nouvelle version est diffus&eacute;e, vous
-	pouvez souscrire &agrave; la liste de diffusion de <code>calcurse</code>.
-	De cette mani&egrave;re, vous recevrez un m&eacute;l d&egrave;s qu'une nouvelle
-	version est disponible.<br>
-	Pour souscrire &agrave; cette liste, envoyez un message &agrave; l'adresse
-	<code>calcurse-announce@culot.org</code> avec "subscribe" dans
-	le sujet du m&eacute;l.
+	Si vous êtes interessé par ce projet et que vous souhaitez
+	être prévenu lorsqu'une nouvelle version est diffusée, vous
+	pouvez souscrire à la liste de diffusion de <code>calcurse</code>.
+	De cette manière, vous recevrez un mél dès qu'une nouvelle
+	version est disponible.</p>
+<p>
+	Pour souscrire à cette liste, envoyez un message à l'adresse
+	<code>calcurse-announce .à. culot .point. org</code> avec "subscribe" dans
+	le sujet du mél.</p>
 
-<a name="links_rss"></a><h2>Flux RSS</h2>
+<h2>9.3 Flux RSS<a name="links_rss"></a></h2>
 <p>
-	Une autre possibilit&eacute; pour &ecirc;tre pr&eacute;venu lorsqu'une
+	Une autre possibilité pour être prévenu lorsqu'une
 	nouvelle version de <code>calcurse</code> est disponible est de
-	s'abonner au flux RSS suivant :
-	<pre>
-	http://culot.org/calcurse/news_rss.xml
-	</pre>
-	Ce flux RSS est mis &agrave; jour d&egrave;s qu'une nouvelle version de
-	<code>calcurse</code> est diffus&eacute;e, et indique quelles sont les
-	modifications qui ont &eacute;t&eacute; apport&eacute;es.
+	s'abonner au flux RSS suivant :</p>
+	<pre>http://culot.org/calcurse/news_rss.xml</pre>
+<p>
+	Ce flux RSS est mis à jour dès qu'une nouvelle version de
+	<code>calcurse</code> est diffusée, et indique quelles sont les
+	modifications qui ont été apportées.</p>
 
-<a name="thanks"></a><h1>Remerciements</a></h1>
+<h1>10. Remerciements</a><a name="thanks"></a></h1>
 <p>
 	Je voudrais remercier ici toutes les personnes sans qui ce projet
 	n'aurait jamais pu voir le jour! En particulier :
 	<ul>
 	<li>Alex pour ses patches, aides et conseils sur la programmation en 
-	<code>C</code>
-	<li>Gwen pour les tests et les discussions sur la mani&egrave;re d'am&eacute;liorer 
-	<code>calcurse</code>
+	<code>C</code></li>
+	<li>Gwen pour les tests et les discussions sur la mani&egrave;re d'améliorer 
+	<code>calcurse</code></li>
 	<li>Herbert pour la maintenance du paquet <code>calcurse</code> pour
-	FreeBSD
+	FreeBSD</li>
 	<li>Zul pour la maintenance du paquet <code>calcurse</code> pour
-	NetBSD
+	NetBSD</li>
 	<li>Kevin, Ryan, et fEnIo pour la maintenance du paquet <code>calcurse</code>
-	pour Debian et Ubuntu
+	pour Debian et Ubuntu</li>
 	<li>Steffen pour la maintenance du paquet <code>calcurse</code> pour
-	Archlinux
+	Archlinux</li>
 	<li>Pascal pour la maintenance du paquet <code>calcurse</code> pour
-	Slackware
+	Slackware</li>
 	<li>Alexandre pour la maintenance du paquet <code>calcurse</code> pour
-	Mac OsX et Darwin
+	Mac OsX et Darwin</li>
 	<li>Igor pour la maintenance du paquet <code>calcurse</code> pour
-	ALT Linux
-	<li>Joel pour son script de calendrier qui a inspir&eacute; celui de
-	<code>calcurse</code>
+	ALT Linux</li>
+	<li>Joel pour son script de calendrier qui a inspiré celui de
+	<code>calcurse</code></li>
         <li>Michael Schulz et Chris M. pour la traduction allemande de <code>calcurse</code>
-	et de son manuel
+	et de son manuel</li>
 	<li>Jose Lopez pour la traduction espagnole de <code>calcurse</code>
-	et de son manuel
-	<li>Neil Williams pour la traduction anglaise
+	et de son manuel</li>
+	<li>Neil Williams pour la traduction anglaise</li>
 	<li>Tony pour son patch qui a permis d'améliorer la fonction
-	recur_item_inday()
-	<li>Jeremy Roon pour la traduction en Néerlandais
-	<li>les personnes qui &eacute;crivent des logiciels que j'appr&eacute;cie et qui
-	m'ont inspir&eacute; lors de la conception de ce projet, en particulier :
+	recur_item_inday()</li>
+	<li>Jeremy Roon pour la traduction en Néerlandais</li>
+	<li>les personnes qui écrivent des logiciels que j'apprécie et qui
+	m'ont inspiré lors de la conception de ce projet, en particulier:
 		<ul>
-		<li><code>vim</code> pour les touches de d&eacute;placement
-		<li><code>orpheus</code> et <code>abook</code> pour la documentation
-		<li><code>pine</code> et <code>aptitude</code> 
-	        pour l'interface en mode texte
-		</ul>
+		<li><code>vim</code> pour les touches de déplacement</li>
+		<li><code>orpheus</code> et <code>abook</code> pour la documentation</li>
+		<li><code>pine</code> et <code>aptitude</code>
+	        pour l'interface en mode texte</li>
+		</ul></li>
 	</ul>
-        Et pour terminer, un tr&egrave;s grand merci &agrave; tous les utilisateurs de
-	<code>calcurse</code> qui m'ont fait parvenir leurs commentaires.
+</p>
+<p>
+        Et pour terminer, un très grand merci à tous les utilisateurs de
+	<code>calcurse</code> qui m'ont fait parvenir leurs commentaires.</p>
 
-<hr>
-<small><em>
-Copyright (c) 2004-2007 Fr&eacute;d&eacute;ric Culot<br>
-Calcurse version 1.9 - Derni&egrave;re modification: 18 Août 2007 
-</em></small>
-
+<div class="footer">
+	Copyright (c) 2004-2008 Frédéric Culot<br>
+	Calcurse version 2.0 - Dernière modification: 31 Janvier 2008<br>
+</div>
+</div>
 
 </body>
 </html>

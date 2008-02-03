@@ -1,3 +1,7 @@
+03 Feb 2008:
+	doc/manual.css added
+	doc/manual_fr.html updated to make use of css style sheet
+	
 26 Jan 2008:
 	configure.ac updated: linking against pthread instead of lpthread
 	(thanks ajacoutot@)
