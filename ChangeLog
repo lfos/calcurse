@@ -1,5 +1,9 @@
 10 Feb 2008:
 	manuals updated to make use of css style sheet
+	memory leak fixed in notify_thread_app()
+	check for limits.h header added
+	asprintf() call replaced in wins_launch_external() as it is not
+	fully portable
 	
 03 Feb 2008:
 	doc/manual.css added

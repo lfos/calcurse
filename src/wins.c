@@ -1,4 +1,4 @@
-/*	$Id: wins.c,v 1.9 2007/12/30 16:27:59 culot Exp $	*/
+/*	$Id: wins.c,v 1.10 2008/02/10 16:29:50 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -25,6 +25,7 @@
  */
 
 #include <stdlib.h>
+#include <string.h>
 
 #include "i18n.h"
 #include "notify.h"
@@ -371,10 +372,14 @@ void
 wins_launch_external(const char *file, const char *cmd)
 {
 	char *p;
-	
-	if (asprintf(&p, "%s %s", cmd, file) == -1)
-		return;
+	int len;
 
+	len = strlen(file) + strlen(cmd) + 1;
+	p = (char *)malloc(sizeof(char) * len);
+	if (snprintf(p, len, "%s %s", cmd, file) == -1) {
+		free(p);
+		return;
+	}
 	if (notify_bar())
 		notify_stop_main_thread();
 	def_prog_mode();

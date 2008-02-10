@@ -1,4 +1,4 @@
-/*	$calcurse: notify.c,v 1.23 2007/12/30 16:27:59 culot Exp $	*/
+/*	$calcurse: notify.c,v 1.24 2008/02/10 16:29:50 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -278,6 +278,7 @@ notify_thread_app(void *arg)
 	tmp_app = (struct notify_app_s *) malloc(sizeof(struct notify_app_s));
 	tmp_app->time = current_time + DAYINSEC;
 	tmp_app->got_app = 0;
+	tmp_app->txt = NULL;
 	tmp_app = recur_apoint_check_next(tmp_app, current_time, get_today());
 	tmp_app = apoint_check_next(tmp_app, current_time);
 
@@ -292,6 +293,8 @@ notify_thread_app(void *arg)
 	}
 	pthread_mutex_unlock(&notify_app->mutex);
 
+	if (tmp_app->txt != NULL)
+		free(tmp_app->txt);
 	free(tmp_app);
 	notify_update_bar();
 

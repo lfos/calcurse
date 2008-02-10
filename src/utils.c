@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.41 2008/01/20 10:45:39 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.42 2008/02/10 16:29:50 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -27,6 +27,7 @@
 #include <time.h>	
 #include <string.h>
 #include <stdlib.h>
+#include <limits.h>
 #include <unistd.h>
 #include <ctype.h>
 #include <sys/types.h>
