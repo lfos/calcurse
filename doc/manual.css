@@ -1,4 +1,4 @@
-/*	$Id: manual.css,v 1.1 2008/02/03 11:13:21 culot Exp $	*/
+/*	$Id: manual.css,v 1.2 2008/02/10 11:33:23 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -240,6 +240,10 @@ a {
 	margin-bottom:		0;
 	margin-left:		0;
 	padding-left:		1cm;
+}
+
+div.todo {
+	color:		green;	
 }
 
 div.warn {
