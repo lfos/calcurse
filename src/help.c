@@ -1,4 +1,4 @@
-/*	$calcurse: help.c,v 1.20 2007/10/21 13:37:30 culot Exp $	*/
+/*	$calcurse: help.c,v 1.21 2008/02/11 21:26:00 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -46,6 +46,8 @@ typedef enum {
 	HELP_DELETE,
 	HELP_ADD,
 	HELP_EDIT,
+	HELP_ENOTE,
+	HELP_VNOTE,
 	HELP_PRIORITY,
 	HELP_REPEAT,
 	HELP_FLAG,
@@ -199,6 +201,14 @@ wanted_page(int ch)
 
 	case 'e':
 		page = HELP_EDIT;
+		break;
+
+	case 'n':
+		page = HELP_ENOTE;
+		break;
+
+	case '>':
+		page = HELP_VNOTE;
 		break;
 
 	case 'c':
@@ -399,6 +409,43 @@ help_screen(void)
     "         previous data concerning the deleted occurences will be lost.\n"
     "       o do not forget to save the calendar data to retrieve the\n"
     "         modified properties next time you launch Calcurse.");
+
+	hscr[HELP_ENOTE].title = _("EditNote:\n");
+	hscr[HELP_ENOTE].text  =
+    _("Pressing 'N' allows you to attach a note to any type of item, or to\n"
+    "edit an already existing note.\n"
+    "This feature is useful if you do not have enough space to store all\n"
+    "of your item description, or if you would like to add sub-tasks to an\n"
+    "already existing todo item for example.\n"
+    "Before pressing the 'N' key, you first need to highlight the item you\n"
+    "want the note to be attached to. Then you will be driven to an\n"
+    "external editor to edit your note. This editor is chosen the following\n"
+    "way:\n"
+    "       o if the 'VISUAL' environment variable is set, then this will be\n"
+    "         the default editor to be called.\n"
+    "       o if 'VISUAL' is not set, then the 'EDITOR' environment variable\n"
+    "         will be used as the default editor.\n"
+    "       o if none of the above environment variables is set, then\n"
+    "         '/usr/bin/vi' will be used.\n"
+    "\nOnce the item note is edited and saved, quit your favorite editor.\n"
+    "You will then go back to Calcurse, and the '>' sign will appear in front\n"
+    "of the highlighted item, meaning there is a note attached to it.");
+
+	hscr[HELP_VNOTE].title = _("ViewNote:\n");
+	hscr[HELP_VNOTE].text  =
+    _("Pressing the '>' key allows you to view a note which was previously\n"
+    "attached to an item (an item which owns a note has a '>' sign in front\n"
+    "of it). This command only permits to view the note, not to\n"
+    "edit it (to do so, use the 'EditNote' command, using the 'N' key).\n"
+    "Once you highlighted an item with a note attached to it, and the 'N' key\n"
+    "was pressed, you will be driven to an external pager to view that note.\n"
+    "The default pager is chosen the following way:\n"
+    "       o if the 'PAGER' environment variable is set, then this will be\n"
+    "         the default viewer to be called.\n"
+    "       o if the above environment variable is not set, then\n"
+    "         '/usr/bin/less' will be used.\n"
+    "As for the 'N' key, quit the pager and you will be driven back to\n"
+    "Calcurse.");
 
 	hscr[HELP_PRIORITY].title = _("Priority:\n");
 	hscr[HELP_PRIORITY].text  =

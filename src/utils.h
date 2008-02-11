@@ -1,4 +1,4 @@
-/*	$calcurse: utils.h,v 1.26 2008/01/20 10:45:39 culot Exp $	*/
+/*	$calcurse: utils.h,v 1.27 2008/02/11 21:26:01 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -39,8 +39,8 @@
 #define SPC		32 /* ASCII code for white space */
 
 #define NB_CAL_CMDS	16 /* number of commands while in cal view */
-#define NB_APP_CMDS	21 /* same thing while in appointment view */ 
-#define NB_TOD_CMDS	20 /* same thing while in todo view */
+#define NB_APP_CMDS	23 /* same thing while in appointment view */ 
+#define NB_TOD_CMDS	22 /* same thing while in todo view */
 #define TOTAL_CMDS	NB_CAL_CMDS + NB_APP_CMDS + NB_TOD_CMDS
 #define NB_PANELS	3  /* 3 panels: CALENDAR, APPOINTMENT, TODO */
 #define CMDS_PER_LINE	6  /* max number of commands per line */

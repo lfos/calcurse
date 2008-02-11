@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.42 2008/02/10 16:29:50 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.43 2008/02/11 21:26:01 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -417,6 +417,8 @@ status_bar(void)
 	binding_t draw   = { " ^R", _("Redraw") };
 	binding_t appt   = { " ^A", _("Add Appt") };
 	binding_t todo   = { " ^T", _("Add Todo") };
+	binding_t enote  = { "  N", _("EditNote") };
+	binding_t vnote  = { "  >", _("ViewNote") };
 	binding_t eday   = { "^HL", _("-+1 Day") };
 	binding_t ewek   = { "^KJ", _("-+1 Week") };
 	binding_t othr   = { "  O", _("OtherCmd") }; 
@@ -427,12 +429,12 @@ status_bar(void)
 		&todo, &conf, &othr, &eday, &ewek, &draw, &othr, 
 	/* appointment keys */
 		&help, &quit, &save, &export, &add, &del, &edit, &view, &rept, 
-		&updn, &flag, &othr, &conf, &togo, &appt, &todo, &eday, &ewek, 
-		&tab, &draw, &othr,
+		&updn, &flag, &othr, &enote, &vnote, &appt, &todo, &eday, &ewek, 
+		&conf, &togo, &tab, &draw, &othr,
 	/* todo keys */
 		&help, &quit, &save, &export, &add, &del, &edit, &view, &prio, 
-		&updn, &tab, &othr, &conf, &togo, &appt, &todo, &eday, &ewek, 
-		&draw, &othr 
+		&updn, &tab, &othr, &enote, &vnote, &appt, &todo, &eday, &ewek, 
+		&conf, &togo, &draw, &othr 
 	};
 		
 	/* Total length of a command. */

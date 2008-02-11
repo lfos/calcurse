@@ -1,3 +1,9 @@
+11 Feb 2008:
+	TODO list updated
+	status bar updated to display the new 'N' (edit note) and '>'
+	(view note) keybindings
+	online help pages added for 'N' and '>' keybindings
+	
 10 Feb 2008:
 	manuals updated to make use of css style sheet
 	memory leak fixed in notify_thread_app()

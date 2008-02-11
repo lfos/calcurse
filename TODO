@@ -11,7 +11,6 @@ this list.
 
 High
 ----
-  o  Add the possibility to attach notes to events, todos and appointments
   o  Add import capabilities to read ical files inside calcurse
   o  Create external calendars which would contain hollydays and such (in ics
      format)
@@ -26,11 +25,9 @@ Average
      make the date format user configurable
   o  Make keys user configurable
   o  Add searching capabilities with support for regex
-  o  Allow the creation of sub-todos (divide todos into different tasks)
 
 
 Low
 ---
   o  Add 't' alias for 'g - Enter'
   o  All status bars should be terminal-size dependant (config_bar is not)
-  o  Make use of CSS for html documentation 
