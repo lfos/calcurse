@@ -1,4 +1,4 @@
-/*	$Id: wins.c,v 1.10 2008/02/10 16:29:50 culot Exp $	*/
+/*	$Id: wins.c,v 1.11 2008/02/13 19:44:37 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -374,7 +374,8 @@ wins_launch_external(const char *file, const char *cmd)
 	char *p;
 	int len;
 
-	len = strlen(file) + strlen(cmd) + 1;
+	len = strlen(file) + strlen(cmd) + 2; /* Beware of space between cmd and
+						 file. */
 	p = (char *)malloc(sizeof(char) * len);
 	if (snprintf(p, len, "%s %s", cmd, file) == -1) {
 		free(p);

@@ -1,4 +1,4 @@
-/*	$calcurse: vars.h,v 1.19 2007/12/30 16:27:59 culot Exp $	*/
+/*	$calcurse: vars.h,v 1.20 2008/02/13 19:44:37 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -53,7 +53,7 @@
 #define WEEKINDAYS	7
 
 #define STATUSHEIGHT	2
-#define	NOTESIZ		10
+#define	NOTESIZ		6
 
 struct pad_s {
 	int width;

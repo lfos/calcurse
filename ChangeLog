@@ -1,3 +1,10 @@
+13 Feb 2008:
+	manpage updated
+	NOTESIZ shortened to be 6 characters long, as only 6 'X' are
+	used in the glibc version of mkstemp(3).
+	bugfix: wrong calculated len in wins_launch_external(), which
+	lead to erroneus note file name
+	
 11 Feb 2008:
 	TODO list updated
 	status bar updated to display the new 'N' (edit note) and '>'

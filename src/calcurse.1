@@ -1,6 +1,6 @@
-.\" 	$calcurse: calcurse.1,v 1.6 2007/08/19 13:04:36 culot Exp $
+.\" 	$calcurse: calcurse.1,v 1.7 2008/02/13 19:44:37 culot Exp $
 .\"
-.\" Copyright (c) 2004-2007 Frederic Culot
+.\" Copyright (c) 2004-2008 Frederic Culot
 .\"
 .\" This program is free software; you can redistribute it and/or modify
 .\" it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 .\" Boston, MA 02111-1307, USA.
 .\"
 .fam C
-.TH CALCURSE 1 "August 18, 2007" "Version 1.9" "Calcurse Manual"
+.TH CALCURSE 1 "February 13, 2008" "Version 2.0" "Calcurse Manual"
 .SH NAME
 Calcurse \- text-based organizer
 .SH SYNOPSIS
@@ -121,20 +121,37 @@ time calcurse is run :
 .HP 10
 $HOME/.calcurse/
 .br
+|___notes/
+.br
 |___conf 
 .br
 |___apts 
 .br
 |___todo
 .PP
-The \fIconf\fP file contains the user configuration. The \fIapts\fP 
-file contains all of the user's appointments, and the \fItodo\fP 
-file contains the todo list.
-.SH LICENCE
-Copyright (c) 2004-2007 by Frederic Culot. 
+The \fInotes\fP subdirectory contains descriptions of the notes 
+which are attached to appointments, events or todos. One text file is
+created per note, whose name is built using mkstemp(3) and should be
+unique, but with no relation with the corresponding item's description.
 .br
-This software is released under the GNU General Public License. Please
-read the COPYING file for more information. 
+The \fIconf\fP file contains the user configuration. The \fIapts\fP 
+file contains all of the user's appointments and events, and the 
+\fItodo\fP file contains the todo list.
+.SH ENVIRONMENT
+This section describes the environment variables that affect how
+calcurse operates. 
+.TP 4
+\fBVISUAL\fP 
+Specifies the external editor to use for writing notes.
+.TP 4
+\fBEDITOR\fP
+If the \fIVISUAL\fP environment variable is not set, then \fIEDITOR\fP 
+will be used as the default external editor. If none of those variables
+are set, then \fI/usr/bin/vi\fP is used instead.
+.TP 4
+\fBPAGER\fP
+Specifies the default viewer to be used for reading notes. If this variable
+is not set, then \fI/usr/bin/less\fP is used.
 .SH BUGS
 Incorrect highlighting of items appear when using calcurse black and
 white theme together with a \fB$TERM\fP variable set to
@@ -151,13 +168,18 @@ the \fB$TERM\fP variable:
 .PP
 If you find other bugs, please send a report to calcurse@culot.org or to the
 author, below.
-.SH AUTHOR
-\fBFrederic Culot\fP <frederic@culot.org>.
 .SH SEE ALSO
-ncurses(3), gettext(3)
+vi(1), less(1), ncurses(3), mkstemp(3)
 .br
 Calcurse home page : http://culot.org/calcurse/
 .br
-Calcurse manual found in the doc/ directory of the source package, or
-at:
-http://culot.org/calcurse/manual.html
+Calcurse complete manual, translated in many languages and maintained in
+html format, can be found in the doc/ directory of the source package, 
+or at: http://culot.org/calcurse/manual.html
+.SH AUTHOR
+\fBFrederic Culot\fP <frederic@culot.org>.
+.SH COPYRIGHT
+Copyright (c) 2004-2008 by Frederic Culot. 
+.br
+This software is released under the GNU General Public License. Please
+read the COPYING file for more information. 
