@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <!--
 /*
- *	$calcurse: manual_fr.html,v 1.14 2008/02/10 11:33:24 culot Exp $
+ *	$calcurse: manual_fr.html,v 1.15 2008/02/14 20:07:43 culot Exp $
  *
  * Calcurse - text-based organizer
  * Copyright (c) 2004-2008 Frederic Culot
@@ -78,6 +78,7 @@ pour faire remonter les bogues et pour contribuer au développement de
 	<ul>
 	    <li><a href="#basics_invocation_commandline">4.1.1 Arguments en ligne de commande</a></li>
 	    <li><a href="#basics_invocation_variable">4.1.2 Variable d'environnement pour l'i18n</a></li>
+	    <li><a href="#basics_invocation_environment">4.1.3 Autres variables d'environnement</a></li>
 	</ul></li>
 	<li><a href="#basics_interface">4.2 Interface utilisateur</a>
 	<ul>
@@ -393,6 +394,28 @@ disponibles.
         <code>calcurse</code>:</p>
 	<pre>LC_ALL=fr_FR.ISO8859-1 calcurse</pre>
 
+<h3>4.1.3 Autres variables d'environnement<a name="basics_invocation_environment"></a></h3>
+<p>
+	Les variables d'environnement suivantes agissent sur le comportement de
+	<code>calcurse</code>:</p>
+        <dl>
+	    <dt><code>VISUAL</code></dt>
+	    <dd>Indique l'éditeur externe qui sera utilisé pour rédiger des notes.
+	    </dd>
+	    <dt><code>EDITOR</code></dt>
+	    <dd>Si la variable d'environnement <code>VISUAL</code> n'est pas
+	    renseignée, l'éditeur externe qui sera utilisé par défaut est celui
+	    contenu dans la variable <code>EDITOR</code>. Si aucune de ces deux
+	    variables n'est renseignée, alors <code>/usr/bin/vi</code> sera
+	    appelé par défaut.
+	    </dd>
+	    <dt><code>PAGER</code></dt>
+	    <dd>Indique le visualiseur utilisé par défaut pour consulter les
+	    notes. Si cette variable n'est pas renseignée, alors 
+	    <code>/usr/bin/less</code> sera utilisé.
+	    </dd>
+	</dl>
+
 <h2>4.2 Interface utilisateur<a name="basics_interface"></a></h2>
 <h3>4.2.1 Mode non-interactif<a name="basics_interface_noninteractive"></a></h3>
 <p>
@@ -536,11 +559,19 @@ disponibles.
 	<code>calcurse</code> est lancé :</p>
 	<pre>
 $HOME/.calcurse/
+           |___notes/
            |___conf
            |___apts
            |___todo
 	</pre>
 	<dl class="compact">
+		<dt><code>notes/</code>:</dt>
+		<dd>ce sous-répertoire contient la description des notes
+		rattachées aux rendez-vous, événements ou tâches. Un fichier
+		texte est créé par note, et son nom est construit à l'aide de
+		la fonction mkstemp(3). Ainsi, l'unicité de ce nom est assurée,
+		mais il n'a pas de relation avec l'élément auquel la note est
+		rattachée.</dd>
 		<dt><code>conf</code>:</dt>
 		<dd>ce fichier contient la configuration de l'utilisateur</dd>
 		<dt><code>apts</code>:</dt>
@@ -1117,7 +1148,7 @@ msgid ""
 
 <div class="footer">
 	Copyright (c) 2004-2008 Frédéric Culot<br>
-	Calcurse version 2.0 - Dernière modification: 06 Février 2008<br>
+	Calcurse version 2.0 - Dernière modification: 14 Février 2008<br>
 </div>
 </div>
 
