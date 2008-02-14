@@ -1,4 +1,4 @@
-/*	$Id: sigs.h,v 1.1 2007/07/23 19:31:12 culot Exp $	*/
+/*	$calcurse: sigs.h,v 1.2 2008/02/14 20:20:23 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer

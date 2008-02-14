@@ -1,4 +1,4 @@
-/*	$Id: wins.c,v 1.11 2008/02/13 19:44:37 culot Exp $	*/
+/*	$calcurse: wins.c,v 1.12 2008/02/14 20:20:23 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
