@@ -1,4 +1,4 @@
-/*	$calcurse: custom.c,v 1.17 2007/10/21 13:41:02 culot Exp $	*/
+/*	$calcurse: custom.c,v 1.18 2008/02/16 13:14:04 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -450,7 +450,8 @@ display_color_config(window_t *cwin, int *mark_fore, int *mark_back,
 	}
 
 	if (need_reset) {
-		delwin(cwin->p);
+		if (cwin->p != NULL)
+			delwin(cwin->p);
 		snprintf(label, BUFSIZ, _("CalCurse %s | color theme"), 
 		    VERSION);
 		custom_confwin_init(cwin, label);
@@ -543,6 +544,7 @@ custom_color_config(void)
 	cursor = 0;
 	need_reset = 1;
 	theme_changed = 0;
+	conf_win.p = NULL;
 	display_color_config(&conf_win, &mark_fore, &mark_back, cursor, 
 	    need_reset, theme_changed);
 
