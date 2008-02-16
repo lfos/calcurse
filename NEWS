@@ -1,3 +1,18 @@
+[16 Feb 2008]
+Version 2.0_beta   beta version available for testing.
+- New features:
+  * Ability to attach notes to appointments, events and todos added
+
+  * Call to an external editor/pager to edit/view notes implemented
+
+  * Documentation improved, with the use of a css style sheet in html manuals
+
+- Bugfixes:
+  * Leap years are now properly handled
+
+  * configure.ac updated to link against pthread and not lpthread
+
+
 [23 Oct 2007]
 Version 1.9
 - New features:

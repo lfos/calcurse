@@ -1,3 +1,9 @@
+16 Feb 2008: 2.0_beta
+	bugfix: check for null pointer added when drawing color
+	configuration window (which could remain invisible otherwise)
+	calcurse.pot updated for version 2.0
+	NEWS file updated
+	
 14 Feb 2008:
 	html manuals updated with parts related to notes
 	
