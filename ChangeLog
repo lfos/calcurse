@@ -1,3 +1,7 @@
+02 Mar 2008: 2.0
+	NEWS and po files updated
+	Dutch manual and translation updated, thanks Jeremy
+	
 16 Feb 2008: 2.0_beta
 	bugfix: check for null pointer added when drawing color
 	configuration window (which could remain invisible otherwise)

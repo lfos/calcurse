@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//NL">
 <!--
 /*
- *	$calcurse: manual_nl.html,v 1.5 2008/02/14 20:07:43 culot Exp $
+ *	$calcurse: manual_nl.html,v 1.6 2008/03/02 08:50:17 culot Exp $
  *
  * Calcurse - text-based organizer
  * Copyright (c) 2004-2008 Frederic Culot
@@ -43,14 +43,13 @@
 <span class="main">CALCURSE - tekst-gebaseerde organizer</span></h1>
 
 <div class="warn">
-<div class="todo">
-<h1>Abstract</h1> This manual describes <code>calcurse</code> functionnalities,
-and how to use them. The installation from source is first described, together
-with the available command line arguments. The user interface
-is then presented, with all of the customizable options that change
-<code>calcurse</code> behavior. Last, bug reporting procedure is explained, as
-well as the way one can contribute to <code>calcurse</code> development.
-</div>
+<h1>Abstract</h1> Deze handleiding beschrijft de functionaliteit van calcurse
+en hoe die te gebruiken. Als eerste wordt de installatie vanaf de broncode
+beschreven, samen met de commandoregel-argumenten. Daarna, wordt de interface
+met alle instellingen die de werking van <code>calcurse</code> wijzigen,
+besproken. Als laatste wordt zowel de procedure van het melden van fouten in
+<code>calcurse</code> uitgelegd, alsook de manier waarop men kan meehelpen om
+<code>calcurse</code> te verbeteren. 
 </div>
 
 <div id="toc">
@@ -77,8 +76,7 @@ well as the way one can contribute to <code>calcurse</code> development.
 	<ul>
 	    <li><a href="#basics_invocation_commandline">4.1.1 Commandoregel-opties</a></li>
 	    <li><a href="#basics_invocation_variable">4.1.2 Omgevingsvariabele voor i18n</a></li>
-	    <li><a href="#basics_invocation_environment"><span class="todo">4.1.3 Other environment
-	    variables</span></a></li>
+	    <li><a href="#basics_invocation_environment">4.1.3 Andere omgevingsvariabelen</a></li>
 	</ul></li>
 	<li><a href="#basics_interface">4.2 Gebruikers-interface</a>
 	<ul>
@@ -356,27 +354,26 @@ well as the way one can contribute to <code>calcurse</code> development.
 	het volgende commando worden gebruikt:</p>
 	<pre>LC_ALL=fr_FR.ISO8859-1 calcurse</pre>
 
-<div class="todo">
-<h3>4.1.3 Other environment variables<a name="basics_invocation_environment"></a></h3>
+<h3>4.1.3 Andere omgevingsvariabelen<a name="basics_invocation_environment"></a></h3>
 <p>
-	The following environment variables affect the way <code>calcurse</code>
-	operates:</p>
+	De volgende omgevingsvariabelen bepalen hoe <code>calcurse</code> werkt:</p>
         <dl>
 	    <dt><code>VISUAL</code></dt>
-	    <dd>Specifies the external editor to use for writing notes.
+	    <dd>Specificeert welke externe editor wordt gebruikt voor het
+	    schrijven van een noot.
 	    </dd>
 	    <dt><code>EDITOR</code></dt>
-	    <dd>If the <code>VISUAL</code> environment variable 
-	    is not set, then <code>EDITOR</code> will be used as 
-	    the default external editor. If none of those variables are set, 
-	    then <code>/usr/bin/vi</code> is used instead.
+	    <dd>als de <code>VISUAL</code> omgevingsvariabele niet is ingesteld, 
+	    zal de inhoud van <code>EDITOR</code> worden gebruikt voor het
+	    bepalen van de externe editor. Als beide variabelen niet zijn 
+	    ingesteld zal <code>/usr/bin/vi</code> worden gebruikt.
 	    </dd>
 	    <dt><code>PAGER</code></dt>
-	    <dd>Specifies the default viewer to be used for reading notes. 
-	    If this variable is not set, then <code>/usr/bin/less</code> is used.
+	    <dd>Specificeert met welk programma een noot wordt weergegeven.
+	    Als de variabele leeg is, zal <code>/usr/bin/less</code> gebruikt
+	    worden.
 	    </dd>
 	</dl>
-</div>
 
 <h2>4.2 Gebruikers-interface<a name="basics_interface"></a></h2>
 <h3>4.2.1 Niet-interactieve modus<a name="basics_interface_noninteractive"></a></h3>
@@ -521,16 +518,18 @@ $HOME/.calcurse/
         </pre>
 	<dl class="compact">
 		<dt><code>notes/</code>:</dt>
-		<dd><span class="todo">this subdirectory contains descriptions of the notes 
-		which are attached to appointments, events or todos. One text file is
-		created per note, whose name is built using mkstemp(3) and should be
-		unique, but with no relation with the corresponding item's description.</span></dd>
+		<dd>deze subdirectory bevat de beschrijvingen van de noten die
+		zijn bijgesloten bij afspraken, gebeurtenissen of taken. Voor
+		elke noot wordt er een tekstbestand aangemaakt. Dit bestand
+		heeft een unieke naam dat bepaald wordt door mkstemp(3). Deze
+		naam heeft echter geen enkel verband met de beschrijving van
+		het corresponderende item.</dd>
 		<dt><code>conf</code>:</dt>
 		<dd>bevat de configuratie van de gebruiker.</dd>
 		<dt><code>apts</code>:</dt
 		<dd>bevat alle gebeurtenissen en afspraken van de gebruiker.</dd>
 		<dt><code>todo</code>:</dt>
-		<dd>bevat de todo lijst.</dd>
+		<dd>bevat de takenlijst.</dd>
 	</dl>
 
 <h2>4.4 Online hulp<a name="basics_help"></a></h2>
