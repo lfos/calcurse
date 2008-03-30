@@ -1,4 +1,4 @@
-#	$calcurse: Makefile.am,v 1.4 2008/03/02 18:38:28 culot Exp $
+#	$calcurse: Makefile.am,v 1.5 2008/03/30 10:50:29 culot Exp $
 
 AUTOMAKE_OPTIONS= gnu 
 
@@ -16,4 +16,5 @@ EXTRA_DIST = \
 	     doc/manual_fr.html \
 	     doc/manual_de.html \
 	     doc/manual_es.html \
-	     doc/manual_nl.html
+	     doc/manual_nl.html \
+             doc/manual_it.html
