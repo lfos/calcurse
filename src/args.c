@@ -1,4 +1,4 @@
-/*	$calcurse: args.c,v 1.27 2007/10/16 19:09:18 culot Exp $	*/
+/*	$calcurse: args.c,v 1.28 2008/04/04 21:30:12 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -238,7 +238,7 @@ app_arg(int add_line, date_t *day, long date)
 				arg_print_date(today);
 				print_date = false;
 			}
-			fputs(" o ", stdout);
+			fputs(" * ", stdout);
 			fputs(re->mesg, stdout); fputs("\n", stdout);
 		}
 	}
@@ -254,7 +254,7 @@ app_arg(int add_line, date_t *day, long date)
 				arg_print_date(today);
 				print_date = false;
 			}
-			fputs(" o ",stdout);
+			fputs(" * ",stdout);
 			fputs(j->mesg,stdout); fputs("\n",stdout);
 		}	
 	}
@@ -352,7 +352,8 @@ date_arg(char *ddate, int add_line)
 			day.mm = t.tm_mon + 1;
 			day.yyyy = t.tm_year + 1900;
 			app_found = app_arg(add_line, &day, 0);
-			add_line = app_found;
+			if (app_found) 
+				add_line = 1;
 			t.tm_mday++;
 			mktime(&t);
 		}
