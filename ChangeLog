@@ -1,3 +1,12 @@
+04 Apr 2008:
+	'o' sign no longer used to display events in non-interactive mode
+	(that was annoying because it means 'about' in Polish, thanks fEnIo for
+	reporting the problem)
+	bugfix: correct number of lines now skipped when displaying
+	appointments using '-d' option (thanks Tony for reporting the bug)
+	bugfix: no more segfault when changing a todo item priority which
+	did not have any notes attached to it (fixes Debian Bug #469297)
+	
 30 Mar 2008:
 	Italian manual added, many thanks to Leandro Noferini
 	
