@@ -1,4 +1,4 @@
-/*	$calcurse: todo.c,v 1.19 2008/01/20 10:45:39 culot Exp $	*/
+/*	$calcurse: todo.c,v 1.20 2008/04/04 21:31:20 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -202,7 +202,7 @@ todo_delete_note_bynum(unsigned num)
 
 /* Delete an item from the todo linked list. */
 static void 
-todo_delete_bynum(unsigned num)
+todo_delete_bynum(unsigned num, erase_flag_e flag)
 {
 	unsigned n;
 	struct todo_s *i, **iptr;
@@ -214,7 +214,7 @@ todo_delete_bynum(unsigned num)
 			*iptr = i->next;
 			free(i->mesg);
 			if (i->note != NULL)
-				erase_note(&i->note, ERASE_FORCE);
+				erase_note(&i->note, flag);
 			free(i);
 			return;
 		}
@@ -271,7 +271,7 @@ todo_delete(conf_t *conf)
 	
 	switch (answer) {
 	case 't':
-		todo_delete_bynum(hilt - 1);
+		todo_delete_bynum(hilt - 1, ERASE_FORCE);
 		todos--;
 		if (hilt > 1) 
 			hilt--;
@@ -328,17 +328,20 @@ todo_chg_priority(int action)
 	backup = todo_get_item(hilt);
 	strncpy(backup_mesg, backup->mesg, strlen(backup->mesg) + 1);
 	backup_id = backup->id;
-	strncpy(backup_note, backup->note, NOTESIZ + 1);
+	if (backup->note)
+		strncpy(backup_note, backup->note, NOTESIZ + 1);
+	else
+		backup_note[0] = '\0';
 	if (action == '+') {
 		(backup_id > 1) ? backup_id-- : do_chg--;
 	} else if (action == '-') {
 		(backup_id < 9) ? backup_id++ : do_chg--;
 	} else { /* NOTREACHED */
 		fputs(_("FATAL ERROR in todo_chg_priority: no such action\n"),
-			stderr);
+		    stderr);
 	}	
 	if (do_chg) {
-		todo_delete_bynum(hilt - 1);
+		todo_delete_bynum(hilt - 1, ERASE_FORCE_KEEP_NOTE);
 		backup = todo_add(backup_mesg, backup_id, backup_note);
 		hilt = todo_get_position(backup);	
 	} 
