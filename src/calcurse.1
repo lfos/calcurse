@@ -1,4 +1,4 @@
-.\" 	$calcurse: calcurse.1,v 1.7 2008/02/13 19:44:37 culot Exp $
+.\" 	$calcurse: calcurse.1,v 1.8 2008/04/05 15:02:56 culot Exp $
 .\"
 .\" Copyright (c) 2004-2008 Frederic Culot
 .\"
@@ -18,12 +18,12 @@
 .\" Boston, MA 02111-1307, USA.
 .\"
 .fam C
-.TH CALCURSE 1 "February 13, 2008" "Version 2.0" "Calcurse Manual"
+.TH CALCURSE 1 "April 05, 2008" "Version 2.1" "Calcurse Manual"
 .SH NAME
 Calcurse \- text-based organizer
 .SH SYNOPSIS
 .B "calcurse "
-[\fB-h\fP|\fB-v\fP] [\fB-x\fP] [\fB-an\fP] [\fB-t\fP[\fInum\fP]]
+[\fB-h\fP|\fB-v\fP] [\fB-x\fP] [\fB-N\fP] [\fB-an\fP] [\fB-t\fP[\fInum\fP]]
 [\fB-d\fP \fIdate\fP|\fInum\fP] [\fB-c\fP \fIfile\fP]
 .SH DESCRIPTION
 Calcurse is a text-based calendar and scheduling application. It helps
@@ -79,6 +79,10 @@ appointment.
 .br
 \fINote:\fP the calendar from which to read the appointments can be specified using
 the '\-c' flag.
+.TP
+\fB-N\fP, \fB--note\fP
+When used with the '-a' or '-t' flag, also print note content
+if one is associated with the displayed item.
 .TP
 \fB-t\fP[num], \fB--todo\fP[=num]
 Print the 'todo' list and exit. If the optional number \fInum\fP is given,
