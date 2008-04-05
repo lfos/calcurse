@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <!--
 /*
- *	$calcurse: manual_en.html,v 1.15 2008/03/30 10:39:15 culot Exp $
+ *	$calcurse: manual_en.html,v 1.16 2008/04/05 15:42:13 culot Exp $
  *
  * Calcurse - text-based organizer
  * Copyright (c) 2004-2008 Frederic Culot
@@ -230,7 +230,7 @@ All of the commands are documented within an online help system.
 <h2>3.2 Install process<a name="install_process"></a></h2>
 <p>
 	First you need to gunzip and untar the source archive:</p>
-	<pre>tar zxvf calcurse-2.0.tar.gz</pre>
+	<pre>tar zxvf calcurse-2.1.tar.gz</pre>
 <p>
   	Once you meet the requirements and have extracted the archive, 
 	the install process is quite simple, and follows the standard 
@@ -301,6 +301,11 @@ All of the commands are documented within an online help system.
 	    <p class="rq"><span class="valorise">Note:</span> the calendar 
 	    from which to read the appointments can be specified using the 
 	    '-c' flag.</p>
+	    </dd>
+	    <dt><code>-N, --note</code></dt>
+	    <dd>
+	    When used with the '-a' or '-t' flag, also print note content
+	    if one is associated with the displayed item.
 	    </dd>
 	    <dt><code>-t[num], --todo[=num]</code></dt>
 	    <dd>
@@ -994,6 +999,7 @@ msgid ""
 	<li>Tony for its patch which helped improving the
 	recur_item_inday() function</li>
 	<li>Jeremy Roon for the dutch translation</li>
+	<li>Erik Saule for its patch implementing the '-N' flag</li>
 	<li>people who write softwares I like and which inspired me, 
 	especially :
 		<ul>
@@ -1010,7 +1016,7 @@ msgid ""
 
 <div class="footer">
 	Copyright (c) 2004-2008 Fr&eacute;d&eacute;ric Culot<br>
-	Calcurse version 2.0 - Last change: March 30, 2008<br>
+	Calcurse version 2.1 - Last change: April 05, 2008<br>
 </div>
 </div>
 

@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <!--
 /*
- *	$calcurse: manual_de.html,v 1.15 2008/03/30 10:39:15 culot Exp $
+ *	$calcurse: manual_de.html,v 1.16 2008/04/05 15:42:13 culot Exp $
  *
  * Calcurse - text-based organizer
  * Copyright (c) 2004-2008 Frederic Culot
@@ -232,7 +232,7 @@ laden:</p>
 <h2>3.2 Installationsprozess<a name="install_process"></a></h2>
 <p>
 Als erstes m&uuml;ssen die Dateien entpackt werden:</p>
-<pre>tar zxvf calcurse-2.0.tar.gz</pre>
+<pre>tar zxvf calcurse-2.1.tar.gz</pre>
 <p>
 Ist diese Voraussetzung erf&uuml;llt und das Archiv entpackt,
 sind nur noch die drei &uuml;blichen Schritte erforderlich:</p>
@@ -290,6 +290,13 @@ Es werden sowohl kurze als auch lange Optionsangaben unterst&uuml;tzt.</p>
     <p class="rq"><span class="valorise">Beachte:</span>
     Die Kalender-Datei, aus der die Termine gelesen
     werden sollen, kann mit mit Hilfe der '-c' Option angegeben werden.</p>
+    </dd>
+    <dt><code>-N, --note</code></dt>
+    <dd>
+    <div class="todo">
+    When used with the '-a' or '-t' flag, also print note content
+    if one is associated with the displayed item.
+    </div>
     </dd>
     <dt><code>-t[num], --todo[=num]</code></dt>
     <dd>Gibt die 'todo' Liste aus.
@@ -940,6 +947,7 @@ derjenigen, denen ich Danke sagen m&ouml;chte:
 <li>Tony f&uuml;r seine Patches, welche die Funktion
 recur_item_inday() verbessern half </li>
 <li>Jeremy Roon f&uuml;r die &Uuml;bersetzung ins Dutch.</li>
+<li><div class="todo">Erik Saule for its patch implementing the '-N' flag</div></li>
 <li>Leute die Programme geschrieben haben, die ich mag und mich inspiriert haben, insbesondere:
     <ul>
     <li><code>vim</code> f&uuml;r die Befehlssteuerung</li>
@@ -956,7 +964,7 @@ Benutzer, die mir Ihr Feedback mitgeteilt haben.</p>
 	Copyright (c) 2004-2008 Fr&eacute;d&eacute;ric Culot<br>
 	German translation by Michael Schulz
 	<code>&lt;bloodshower .at. web .dot. de&gt;</code>, and Chris.<br>
-	Calcurse version 2.0 - Last change: March 30, 2008<br>
+	Calcurse version 2.1 - Last change: April 05, 2008<br>
 </div>
 </div>
 
