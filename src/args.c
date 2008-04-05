@@ -1,4 +1,4 @@
-/*	$calcurse: args.c,v 1.29 2008/04/05 10:21:51 culot Exp $	*/
+/*	$calcurse: args.c,v 1.30 2008/04/05 14:55:59 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -48,7 +48,7 @@ static void
 usage()
 {
         char *arg_usage = 
-	    _("Usage: calcurse [-h|-v] [-x] [-an] [-t[num]] [-d date|num] [-c file]\n");
+	    _("Usage: calcurse [-h|-v] [-x] [-N] [-an] [-t[num]] [-d date|num] [-c file]\n");
 	
         fputs(arg_usage, stdout);
 }
@@ -105,13 +105,13 @@ help_arg()
 	"  	print next appointment within upcoming 24 hours "
 	"and exit. Also given\n\tis the remaining time before this "
 	"next appointment.\n"
+        "\n  -N, --note\n"
+        "	when used with the '-a' or '-t' flag, also print note content\n"
+	"	if one is associated with the displayed item.\n"
 	"\n  -t[num], --todo[=num]\n"
 	"	print todo list and exit. If the optional number [num] is given,\n"
 	"\tthen only todos having a priority equal to [num] will be returned.\n"
 	"\tnote: priority number must be between 1 (highest) and 9 (lowest).\n"
-        "\n  -N, --note\n"
-        "	when used with the '-a' or '-t' flag, also print note content\n"
-	"       if one is associated with the displayed item.\n"
 	"\n  -x, --export\n"
 	"	export user data to iCalendar format. Events, appointments and\n"
 	"\ttodos are converted and echoed to stdout.\n"
