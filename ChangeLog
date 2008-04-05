@@ -1,3 +1,8 @@
+05 Apr 2008:
+	'-N' flag added, which allows the display of note contents in 
+	non-interactive mode (many thanks to Erik Saule for submiting 
+	this patch)
+	
 04 Apr 2008:
 	'o' sign no longer used to display events in non-interactive mode
 	(that was annoying because it means 'about' in Polish, thanks fEnIo for

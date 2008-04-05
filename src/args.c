@@ -1,4 +1,4 @@
-/*	$calcurse: args.c,v 1.28 2008/04/04 21:30:12 culot Exp $	*/
+/*	$calcurse: args.c,v 1.29 2008/04/05 10:21:51 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -109,6 +109,9 @@ help_arg()
 	"	print todo list and exit. If the optional number [num] is given,\n"
 	"\tthen only todos having a priority equal to [num] will be returned.\n"
 	"\tnote: priority number must be between 1 (highest) and 9 (lowest).\n"
+        "\n  -N, --note\n"
+        "	when used with the '-a' or '-t' flag, also print note content\n"
+	"       if one is associated with the displayed item.\n"
 	"\n  -x, --export\n"
 	"	export user data to iCalendar format. Events, appointments and\n"
 	"\ttodos are converted and echoed to stdout.\n"
@@ -126,11 +129,52 @@ help_arg()
 }
 
 /*
+ * Display note contents if one is asociated with the currently displayed item
+ * (to be used together with the '-a' or '-t' flag in non-interactive mode).
+ * Each line begins with nbtab tabs.
+ * Print "No note file found", if the notefile does not exists.
+ * 
+ * (patch submitted by Erik Saule).
+ */
+static void 
+print_notefile(FILE *out, char *filename, int nbtab)
+{
+	char path_to_notefile[BUFSIZ];
+	FILE *notefile;
+	char linestarter[BUFSIZ] = "";
+	char buffer[BUFSIZ];
+	int i;
+	int printlinestarter = 1;
+
+	for (i = 0; i < nbtab; i++)
+		strcat(linestarter, "\t");
+ 
+	snprintf(path_to_notefile, BUFSIZ, "%s/%s", path_notes, filename);
+	notefile = fopen(path_to_notefile, "r");
+	if (notefile) {
+		while (fgets(buffer, BUFSIZ, notefile) != NULL) {
+			if (printlinestarter) {
+				fputs(linestarter,out);
+				printlinestarter = 0;
+			}
+			fputs(buffer, out);
+			if (buffer[strlen(buffer) - 1] == '\n')
+				printlinestarter = 1;
+		}
+		fputs("\n", out);
+		fclose(notefile);
+	} else {
+		fputs(linestarter, out);
+		fputs(_("No note file found\n"), out);
+	}
+}
+
+/*
  * Print todo list and exit. If a priority number is given (say not equal to
  * zero), then only todo items that have this priority will be displayed.
  */
 static void 
-todo_arg(int priority)
+todo_arg(int priority, int print_note)
 {
 	struct todo_s *i;
 	int title = 1;
@@ -144,9 +188,11 @@ todo_arg(int priority)
 				title = 0;
 			}
 			snprintf(priority_str, BUFSIZ, "%d. ", i->id);
-			fputs(priority_str,stdout);
-			fputs(i->mesg,stdout);
-			fputs("\n",stdout);
+			fputs(priority_str, stdout);
+			fputs(i->mesg, stdout);
+			fputs("\n", stdout);
+			if (print_note && i->note)
+				print_notefile(stdout, i->note, 1);
 		}
 	}
 }
@@ -204,7 +250,7 @@ arg_print_date(long date)
  * If there is also no date given, current date is considered.
  */
 static int 
-app_arg(int add_line, date_t *day, long date)
+app_arg(int add_line, date_t *day, long date, int print_note)
 {
 	struct recur_event_s *re;
 	struct event_s *j;
@@ -240,6 +286,8 @@ app_arg(int add_line, date_t *day, long date)
 			}
 			fputs(" * ", stdout);
 			fputs(re->mesg, stdout); fputs("\n", stdout);
+			if (print_note && re->note)
+				print_notefile(stdout, re->note, 2);
 		}
 	}
 
@@ -254,8 +302,11 @@ app_arg(int add_line, date_t *day, long date)
 				arg_print_date(today);
 				print_date = false;
 			}
-			fputs(" * ",stdout);
-			fputs(j->mesg,stdout); fputs("\n",stdout);
+			fputs(" * ", stdout);
+			fputs(j->mesg, stdout); 
+			fputs("\n", stdout);
+			if (print_note && j->note)
+				print_notefile(stdout, j->note, 2);
 		}	
 	}
 
@@ -276,11 +327,15 @@ app_arg(int add_line, date_t *day, long date)
 			apoint_sec2str(apoint_recur_s2apoint_s(ra),
 				RECUR_APPT, today, apoint_start_time,
 				apoint_end_time);
-			fputs(" - ",stdout);
-			fputs(apoint_start_time,stdout);
-			fputs(" -> ",stdout);
-			fputs(apoint_end_time,stdout); fputs("\n\t",stdout);
-			fputs(ra->mesg,stdout); fputs("\n",stdout);
+			fputs(" - ", stdout);
+			fputs(apoint_start_time, stdout);
+			fputs(" -> ", stdout);
+			fputs(apoint_end_time, stdout); 
+			fputs("\n\t", stdout);
+			fputs(ra->mesg, stdout); 
+			fputs("\n", stdout);
+			if (print_note && ra->note)
+				print_notefile(stdout, ra->note, 2);
 		}
 	}
 	pthread_mutex_unlock(&(recur_alist_p->mutex));
@@ -299,11 +354,15 @@ app_arg(int add_line, date_t *day, long date)
 			}
 			apoint_sec2str(i, APPT, today, apoint_start_time,
 					apoint_end_time);
-			fputs(" - ",stdout);
-			fputs(apoint_start_time,stdout);
-			fputs(" -> ",stdout);
-			fputs(apoint_end_time,stdout); fputs("\n\t",stdout);
-			fputs(i->mesg,stdout); fputs("\n",stdout);
+			fputs(" - ", stdout);
+			fputs(apoint_start_time, stdout);
+			fputs(" -> ", stdout);
+			fputs(apoint_end_time, stdout); 
+			fputs("\n\t", stdout);
+			fputs(i->mesg, stdout); 
+			fputs("\n", stdout);
+			if (print_note && i->note)
+				print_notefile(stdout, i->note, 2);
 		}	
 	}
 	pthread_mutex_unlock(&(alist_p->mutex));
@@ -316,7 +375,7 @@ app_arg(int add_line, date_t *day, long date)
  * days.
  */
 static void 
-date_arg(char *ddate, int add_line)
+date_arg(char *ddate, int add_line, int print_note)
 {
 	int i;
 	date_t day;
@@ -351,7 +410,7 @@ date_arg(char *ddate, int add_line)
 			day.dd = t.tm_mday;
 			day.mm = t.tm_mon + 1;
 			day.yyyy = t.tm_year + 1900;
-			app_found = app_arg(add_line, &day, 0);
+			app_found = app_arg(add_line, &day, 0, print_note);
 			if (app_found) 
 				add_line = 1;
 			t.tm_mday++;
@@ -361,7 +420,7 @@ date_arg(char *ddate, int add_line)
 		date_valid = check_date(ddate);
 		if (date_valid) {
 			sscanf(ddate, "%d / %d / %d", &day.mm, &day.dd, &day.yyyy);
-			app_found = app_arg(add_line, &day, 0);
+			app_found = app_arg(add_line, &day, 0, print_note);
 		} else {
 			fputs(_("Argument to the '-d' flag is not valid\n"),
 			    stdout);
@@ -391,6 +450,7 @@ parse_args(int argc, char **argv, conf_t *conf)
 	int dflag = 0;	/* -d: print appointments for a specified days */
 	int hflag = 0;	/* -h: print help text */
 	int nflag = 0;	/* -n: print next appointment */
+	int Nflag = 0;  /* -N: also print note content with apps and todos */
 	int tflag = 0;	/* -t: print todo list */
 	int vflag = 0;	/* -v: print version number */
 	int xflag = 0;  /* -x: export data to iCalendar format */
@@ -400,7 +460,7 @@ parse_args(int argc, char **argv, conf_t *conf)
 	int no_file = 1;
 	char *ddate = "", *cfile = NULL;
 
-	static char *optstr = "hvnaxt::d:c:";
+	static char *optstr = "hvnNaxt::d:c:";
 
 	struct option longopts[] = {
 	    {"appointment", no_argument, NULL, 'a'},
@@ -408,6 +468,7 @@ parse_args(int argc, char **argv, conf_t *conf)
 	    {"day", required_argument, NULL, 'd'},
 	    {"help", no_argument, NULL, 'h'},
 	    {"next", no_argument, NULL, 'n'},
+	    {"note", no_argument, NULL, 'N'},
 	    {"todo", optional_argument, NULL, 't'},
 	    {"version", no_argument, NULL, 'v'},
 	    {"export", no_argument, NULL, 'x'},	
@@ -440,6 +501,9 @@ parse_args(int argc, char **argv, conf_t *conf)
 			nflag = 1;
 			multiple_flag++;
 			load_data++;
+			break;
+		case 'N':
+			Nflag = 1;
 			break;
 		case 't':
 			tflag = 1;
@@ -503,7 +567,7 @@ parse_args(int argc, char **argv, conf_t *conf)
 				return (non_interactive);
 			}
 			if (tflag) {
-				todo_arg(tnum);
+				todo_arg(tnum, Nflag);
 				non_interactive = 1;
 			}
 			if (nflag) {
@@ -511,12 +575,12 @@ parse_args(int argc, char **argv, conf_t *conf)
 				non_interactive = 1;
 			}
 			if (dflag) {
-				date_arg(ddate, add_line);
+				date_arg(ddate, add_line, Nflag);
 				non_interactive = 1;
 			} else if (aflag) {
 				date_t day;
 				day.dd = day.mm = day.yyyy = 0;
-				app_found = app_arg(add_line, &day, 0);
+				app_found = app_arg(add_line, &day, 0, Nflag);
 				non_interactive = 1;
 			}
 		} else {
