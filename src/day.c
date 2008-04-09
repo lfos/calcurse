@@ -1,4 +1,4 @@
-/*	$calcurse: day.c,v 1.34 2008/01/20 10:45:38 culot Exp $	*/
+/*	$calcurse: day.c,v 1.35 2008/04/09 20:38:29 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -564,11 +564,12 @@ update_desc(char **desc)
 }
 
 static void
-update_rept(struct rpt_s **rpt, const long start)
+update_rept(struct rpt_s **rpt, const long start, conf_t *conf)
 {
 	const int SINGLECHAR = 2;
-	int ch, cancel, newfreq, date_entered, valid_date;
+	int ch, cancel, newfreq, date_entered;
 	long newuntil;
+        char outstr[BUFSIZ];
 	char *typstr, *freqstr, *timstr;
 	char *msg_rpt_type = 
 	    _("Enter the new repetition type: (D)aily, (W)eekly, "
@@ -578,8 +579,8 @@ update_rept(struct rpt_s **rpt, const long start)
 	char *msg_wrong_time =
 	    _("Invalid time: start time must be before end time!");
 	char *msg_wrong_date = _("The entered date is not valid.");
-	char *msg_fmts = _("Possible formats are [mm/dd/yyyy] or '0' "
-	    "for an endless repetetition");
+	char *msg_fmts = "Possible formats are [%s] or '0' "
+	    "for an endless repetetition";
         char *msg_enter = _("Press [Enter] to continue");
 
 	do {
@@ -615,9 +616,10 @@ update_rept(struct rpt_s **rpt, const long start)
 	} while (newfreq == 0);
 
 	do {
-		status_mesg(_("Enter the new ending date: [mm/dd/yyyy] or '0'"),
-		    "");
-		timstr = date_sec2date_str((*rpt)->until);
+		snprintf(outstr, BUFSIZ, "Enter the new ending date: [%s] or '0'",
+				DATEFMT_DESC(conf->input_datefmt));
+		status_mesg(_(outstr), "");
+		timstr = date_sec2date_str((*rpt)->until, DATEFMT(conf->input_datefmt));
 		cancel = updatestring(win[STA].p, &timstr, 0, 1);
 		if (cancel) {
 			free(timstr);
@@ -632,10 +634,8 @@ update_rept(struct rpt_s **rpt, const long start)
 			date_t new_date;
 			int newmonth, newday, newyear;
 
-			valid_date = check_date(timstr);
-			if (valid_date) {
-				sscanf(timstr, "%d / %d / %d", 
-				    &newmonth, &newday, &newyear);	
+			if (parse_date(timstr, conf->input_datefmt,
+					&newyear, &newmonth, &newday)) {
 				t = start; 
 				lt = localtime(&t);
 				new_date.dd = newday;
@@ -650,7 +650,9 @@ update_rept(struct rpt_s **rpt, const long start)
 				} else
 					date_entered = 1;
 			} else {
-				status_mesg(msg_wrong_date, msg_fmts);
+				snprintf(outstr, BUFSIZ, msg_fmts,
+						DATEFMT_DESC(conf->input_datefmt));
+				status_mesg(msg_wrong_date, _(outstr));
 				wgetch(win[STA].p);
 				date_entered = 0;
 			}
@@ -665,7 +667,7 @@ update_rept(struct rpt_s **rpt, const long start)
 
 /* Edit an already existing item. */
 void 
-day_edit_item(void)
+day_edit_item(conf_t *conf)
 {
 #define STRT		'1'
 #define END		'2'
@@ -698,7 +700,7 @@ day_edit_item(void)
 			update_desc(&re->mesg);
 			break;
 		case '2':
-			update_rept(&re->rpt, re->day);
+			update_rept(&re->rpt, re->day, conf);
 			break;
 		default:
 			return;
@@ -727,7 +729,7 @@ day_edit_item(void)
 			update_desc(&ra->mesg);
 			break;
 		case REPT:
-			update_rept(&ra->rpt, ra->start);
+			update_rept(&ra->rpt, ra->start, conf);
 			break;
 		case ESCAPE:
 			return;

@@ -1,8 +1,8 @@
-/*	$calcurse: custom.h,v 1.10 2007/10/21 13:41:29 culot Exp $	*/
+/*	$calcurse: custom.h,v 1.11 2008/04/09 20:38:29 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2007 Frederic Culot
+ * Copyright (c) 2004-2008 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,6 +59,8 @@ enum { /* Configuration variables */
 	CUSTOM_CONF_NOTIFYBARCLOCK,
 	CUSTOM_CONF_NOTIFYBARWARNING,
 	CUSTOM_CONF_NOTIFYBARCOMMAND,
+	CUSTOM_CONF_OUTPUTDATEFMT,
+	CUSTOM_CONF_INPUTDATEFMT,
 	CUSTOM_CONF_VARIABLES
 };
 

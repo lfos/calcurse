@@ -1,3 +1,8 @@
+09 Apr 2008:
+	Tony's patch concerning date format configuration imported, many
+	thanks to him
+	TODO list updated
+	
 05 Apr 2008:
 	'-N' flag added, which allows the display of note contents in 
 	non-interactive mode (many thanks to Erik Saule for submiting 

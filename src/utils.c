@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.43 2008/02/11 21:26:01 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.44 2008/04/09 20:38:29 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -512,22 +512,20 @@ char *date_sec2hour_str(long sec)
 
 /* Return a string containing the date, given a date in seconds. */
 char *
-date_sec2date_str(long sec)
+date_sec2date_str(long sec, char *datefmt)
 {
-	const int DATELEN = 11;
 	struct tm *lt;
 	time_t t;
 	char *datestr;
 	
-	datestr = (char *)malloc(sizeof(char) * DATELEN);
+	datestr = (char *)malloc(sizeof(char) * BUFSIZ);
 
 	if (sec == 0)
-		snprintf(datestr, DATELEN, "0");
+		snprintf(datestr, BUFSIZ, "0");
 	else {
 		t = sec;
 		lt = localtime(&t);
-		snprintf(datestr, DATELEN, "%02u/%02u/%04u", lt->tm_mon + 1,
-		    lt->tm_mday, lt->tm_year + 1900);
+		strftime(datestr, BUFSIZ, datefmt, lt);
 	}
 
 	return (datestr);
@@ -614,43 +612,6 @@ get_sec_date(date_t date)
 	} 
 	long_date = date2sec(date, 0, 0);
 	return long_date;
-}
-
-/*
- * Check if the entered date is of a valid format.
- * First check the format by itself, and then check the 
- * numbers correctness.
- */
-int
-check_date(char *date)
-{
-	int ok = 0;
-	char month[3] = "";
-	char day[3] = "";
-	char year[5] = "";
-	if ( 
-			(strlen(date) == 10) &
-			(isdigit(date[0]) != 0) &
-			(isdigit(date[1]) != 0) &
-			(date[2] == '/') &
-			(isdigit(date[3]) != 0) &
-			(isdigit(date[4]) != 0) &
-			(date[5] == '/') &
-			(isdigit(date[6])!=0) & (isdigit(date[7])!=0) & 
-			(isdigit(date[8])!=0) & (isdigit(date[9])!=0)
-	) {
-		strncpy(month, date, 2);
-		strncpy(day, date + 3, 2);
-		strncpy(year, date + 6, 4);
-		if ( (atoi(month) <= 12) & 
-		     (atoi(month) >= 1)  &
-		     (atoi(day) <= 31) &
-		     (atoi(day) >= 1) &
-		     (atoi(year) <= 9999) &
-		     (atoi(year) > 1))
-		ok = 1;		
-	}
-	return ok;
 }
 
 long 
@@ -922,4 +883,47 @@ erase_note(char **note, erase_flag_e flag)
 	}
 	free(*note);
 	*note = NULL;
+}
+/*
+ * Convert a string containing a date into three integers containing the year,
+ * month and day.
+ * Returns 1 if sucessfully converted or 0 if the string is an invalid date.
+ */
+int parse_date(char *date_string, int datefmt,
+		int *year, int *month, int *day) {
+	int in1, in2, in3;
+	int lyear, lmonth, lday;
+	if (date_string == NULL) 
+		return 0;
+	if (sscanf(date_string, "%d / %d / %d", &in1, &in2, &in3) < 3 ) 
+		return 0;
+	switch (datefmt) {
+		case 1:
+			lmonth = in1;
+			lday = in2;
+			lyear = in3;
+			break;
+		case 2:
+			lday = in1;
+			lmonth = in2;
+			lyear = in3;
+			break;
+		case 3:
+			lyear = in1;
+			lmonth = in2;
+			lday = in3;
+			break;
+		default:
+			return (0);
+	}
+	if (lyear < 1 || lyear > 9999 || lmonth < 1 || lmonth > 12 ||
+			lday < 1 || lday > 31) 
+		return 0;
+	if (year != NULL) 
+		*year = lyear;
+	if (month != NULL) 
+		*month = lmonth;
+	if (day != NULL) 
+		*day = lday;
+	return (1);
 }

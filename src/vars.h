@@ -1,8 +1,8 @@
-/*	$calcurse: vars.h,v 1.20 2008/02/13 19:44:37 culot Exp $	*/
+/*	$calcurse: vars.h,v 1.21 2008/04/09 20:38:29 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2007 Frederic Culot
+ * Copyright (c) 2004-2008 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,6 +55,12 @@
 #define STATUSHEIGHT	2
 #define	NOTESIZ		6
 
+#define DATEFMT(datefmt) (datefmt == 1 ? "%m/%d/%Y" : \
+		(datefmt == 2 ? "%d/%m/%Y" : "%Y/%m/%d"))
+
+#define DATEFMT_DESC(datefmt) (datefmt == 1 ? _("mm/dd/yyyy") : \
+		(datefmt == 2 ? _("dd/mm/yyyy") : _("yyyy/mm/dd")))
+
 struct pad_s {
 	int width;
 	int length;
@@ -82,6 +88,8 @@ typedef struct {
 	bool skip_progress_bar;
 	char *editor;
 	char *pager;
+	char output_datefmt[BUFSIZ];		/* format for displaying date */
+	int input_datefmt;					/* format for reading date */
 } conf_t;
 
 extern int 		col, row;

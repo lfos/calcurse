@@ -1,8 +1,8 @@
-/*	$calcurse: args.c,v 1.30 2008/04/05 14:55:59 culot Exp $	*/
+/*	$calcurse: args.c,v 1.31 2008/04/09 20:38:29 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2007 Frederic Culot
+ * Copyright (c) 2004-2008 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -230,7 +230,7 @@ next_arg(void)
  * Print the date on stdout.
  */
 static void 
-arg_print_date(long date) 
+arg_print_date(long date, conf_t *conf) 
 {
 		char date_str[BUFSIZ];
 		time_t t;
@@ -238,8 +238,7 @@ arg_print_date(long date)
 
 		t = date;
 		lt = localtime(&t);
-		snprintf(date_str, BUFSIZ, "%02u/%02u/%04u",
-			lt->tm_mon+1, lt->tm_mday, 1900+lt->tm_year);
+		strftime(date_str, BUFSIZ, conf->output_datefmt, lt);
 		fputs(date_str,stdout);
 		fputs(":\n",stdout);
 }
@@ -250,7 +249,7 @@ arg_print_date(long date)
  * If there is also no date given, current date is considered.
  */
 static int 
-app_arg(int add_line, date_t *day, long date, int print_note)
+app_arg(int add_line, date_t *day, long date, int print_note, conf_t *conf)
 {
 	struct recur_event_s *re;
 	struct event_s *j;
@@ -281,7 +280,7 @@ app_arg(int add_line, date_t *day, long date, int print_note)
 				add_line = 0;
 			}
 			if (print_date) {
-				arg_print_date(today);
+				arg_print_date(today, conf);
 				print_date = false;
 			}
 			fputs(" * ", stdout);
@@ -299,7 +298,7 @@ app_arg(int add_line, date_t *day, long date, int print_note)
 				add_line = 0;
 			}
 			if (print_date) {
-				arg_print_date(today);
+				arg_print_date(today, conf);
 				print_date = false;
 			}
 			fputs(" * ", stdout);
@@ -321,7 +320,7 @@ app_arg(int add_line, date_t *day, long date, int print_note)
 				add_line = 0;
 			}
 			if (print_date) {
-				arg_print_date(today);
+				arg_print_date(today, conf);
 				print_date = false;
 			}
 			apoint_sec2str(apoint_recur_s2apoint_s(ra),
@@ -349,7 +348,7 @@ app_arg(int add_line, date_t *day, long date, int print_note)
 				add_line = 0;
 			}
 			if (print_date) {
-				arg_print_date(today);
+				arg_print_date(today, conf);
 				print_date = false;
 			}
 			apoint_sec2str(i, APPT, today, apoint_start_time,
@@ -375,13 +374,12 @@ app_arg(int add_line, date_t *day, long date, int print_note)
  * days.
  */
 static void 
-date_arg(char *ddate, int add_line, int print_note)
+date_arg(char *ddate, int add_line, int print_note, conf_t *conf)
 {
 	int i;
 	date_t day;
 	int numdays = 0, num_digit = 0;
 	int arg_len = 0, app_found = 0;
-	int date_valid = 0;
 	static struct tm t;
 	time_t timer;
 
@@ -410,22 +408,23 @@ date_arg(char *ddate, int add_line, int print_note)
 			day.dd = t.tm_mday;
 			day.mm = t.tm_mon + 1;
 			day.yyyy = t.tm_year + 1900;
-			app_found = app_arg(add_line, &day, 0, print_note);
+			app_found = app_arg(add_line, &day, 0, print_note, conf);
 			if (app_found) 
 				add_line = 1;
 			t.tm_mday++;
 			mktime(&t);
 		}
 	} else {			/* a date was entered */
-		date_valid = check_date(ddate);
-		if (date_valid) {
-			sscanf(ddate, "%d / %d / %d", &day.mm, &day.dd, &day.yyyy);
-			app_found = app_arg(add_line, &day, 0, print_note);
+		if (parse_date(ddate, conf->input_datefmt,
+			&day.yyyy, &day.mm, &day.dd)) {
+			app_found = app_arg(add_line, &day, 0, print_note, conf);
 		} else {
 			fputs(_("Argument to the '-d' flag is not valid\n"),
 			    stdout);
-			fputs(_("Possible argument formats are : 'mm/dd/yyyy' or 'n'\n"),
-			    stdout);
+			char outstr[BUFSIZ];
+			snprintf(outstr, BUFSIZ, "Possible argument format are: '%s' or 'n'\n",
+				    DATEFMT_DESC(conf->input_datefmt));
+			fputs(_(outstr), stdout);
 			fputs(_("\nFor more information, type '?' from within Calcurse, or read the manpage.\n"),
 			    stdout);
 			fputs
@@ -575,12 +574,18 @@ parse_args(int argc, char **argv, conf_t *conf)
 				non_interactive = 1;
 			}
 			if (dflag) {
-				date_arg(ddate, add_line, Nflag);
+				notify_init_vars();
+				vars_init(conf);
+				custom_load_conf(conf, 0);
+				date_arg(ddate, add_line, Nflag, conf);
 				non_interactive = 1;
 			} else if (aflag) {
 				date_t day;
 				day.dd = day.mm = day.yyyy = 0;
-				app_found = app_arg(add_line, &day, 0, Nflag);
+				notify_init_vars();
+				vars_init(conf);
+				custom_load_conf(conf, 0);
+				app_found = app_arg(add_line, &day, 0, Nflag, conf);
 				non_interactive = 1;
 			}
 		} else {

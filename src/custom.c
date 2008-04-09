@@ -1,8 +1,8 @@
-/*	$calcurse: custom.c,v 1.18 2008/02/16 13:14:04 culot Exp $	*/
+/*	$calcurse: custom.c,v 1.19 2008/04/09 20:38:29 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2007 Frederic Culot
+ * Copyright (c) 2004-2008 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -285,7 +285,18 @@ custom_load_conf(conf_t *conf, int background)
 			strncpy(nbar->cmd, e_conf, strlen(e_conf) + 1);
 			var = 0;
 			break;
-		default:
+		case CUSTOM_CONF_OUTPUTDATEFMT:
+			if (e_conf[0] != '\0') 
+				strncpy(conf->output_datefmt, e_conf, strlen(e_conf) + 1);
+			var = 0;
+			break;
+		case CUSTOM_CONF_INPUTDATEFMT:
+			conf->input_datefmt = atoi(e_conf);
+			if (conf->input_datefmt < 1 || conf->input_datefmt > 3)
+				conf->input_datefmt = 1;
+			var = 0;
+			break;
+ 		default:
 			fputs(_("FATAL ERROR in custom_load_conf: "
 			    "configuration variable unknown.\n"), stderr);
 			exit(EXIT_FAILURE);
@@ -318,6 +329,10 @@ custom_load_conf(conf_t *conf, int background)
 			var = CUSTOM_CONF_NOTIFYBARWARNING;
 		else if (strncmp(e_conf, "notify-bar_command=", 19) ==0)
 			var = CUSTOM_CONF_NOTIFYBARCOMMAND;
+		else if (strncmp(e_conf, "output_datefmt=", 12) ==0)
+			var = CUSTOM_CONF_OUTPUTDATEFMT;
+		else if (strncmp(e_conf, "input_datefmt=", 12) ==0)
+			var = CUSTOM_CONF_INPUTDATEFMT;
 	}
 	fclose(data_file);
 	pthread_mutex_unlock(&nbar->mutex);
@@ -675,6 +690,8 @@ custom_print_general_options(WINDOW *optwin, conf_t *conf)
         char *option4 = _("skip_system_dialogs = ");
 	char *option5 = _("skip_progress_bar = ");
         char *option6 = _("week_begins_on_monday = ");
+	char *option7 = _("output_datefmt = ");
+	char *option8 = _("input_datefmt = ");
 
 	x_pos = 3;
 	y_pos = 3;
@@ -715,6 +732,22 @@ custom_print_general_options(WINDOW *optwin, conf_t *conf)
 	mvwprintw(optwin, y_pos + 16, x_pos,
                   _("(if set to YES, monday is the first day of the week, else it is sunday)"));
 
+	mvwprintw(optwin, y_pos + 18, x_pos, "[7] %s      ", option7);
+	custom_apply_attr(optwin, ATTR_HIGHEST);
+	mvwprintw(optwin, y_pos + 18, x_pos + 4 + strlen(option7), "%s",
+		conf->output_datefmt);
+	custom_remove_attr(optwin, ATTR_HIGHEST);
+	mvwprintw(optwin, y_pos + 19, x_pos,
+		_("(Format of the date to be displayed in non-interactive mode)"));
+
+	mvwprintw(optwin, y_pos + 21, x_pos, "[8] %s      ", option8);
+	custom_apply_attr(optwin, ATTR_HIGHEST);
+	mvwprintw(optwin, y_pos + 21, x_pos + 4 + strlen(option7), "%d",
+		conf->input_datefmt);
+	custom_remove_attr(optwin, ATTR_HIGHEST);
+	mvwprintw(optwin, y_pos + 22, x_pos,
+		_("(Format to be used when entering a date: 1-mm/dd/yyyy, 2-dd/mm/yyyy, 3-yyyy/mm/dd)"));
+
 	wmove(win[STA].p, 1, 0);
 	wnoutrefresh(optwin);
 	doupdate();
@@ -726,8 +759,13 @@ custom_general_config(conf_t *conf)
 {
 	window_t conf_win;
 	char *number_str = _("Enter an option number to change its value [Q to quit] ");
+	char *output_datefmt_str =
+		_("Enter the date format (see 'man 3 strftime' for possible formats) ");
+	char *input_datefmt_str =
+		_("Enter the date format (1-mm/dd/yyyy, 2-dd/mm/yyyy, 3-yyyy/mm/dd) ");
 	int ch;
 	char label[BUFSIZ];
+	char *buf = (char *) malloc(BUFSIZ);
 
 	clear();
 	snprintf(label, BUFSIZ, _("CalCurse %s | general options"), VERSION);
@@ -772,9 +810,26 @@ custom_general_config(conf_t *conf)
                 case '6':
 			calendar_change_first_day_of_week();
                         break;
+		case '7':
+			status_mesg(output_datefmt_str, "");
+			strncpy(buf, conf->output_datefmt, strlen(conf->output_datefmt) + 1);
+			if (updatestring(win[STA].p, &buf, 0, 1) == 0) {
+				strncpy(conf->output_datefmt, buf, strlen(buf) + 1);
+			}
+			status_mesg(number_str, "");
+			break;
+		case '8':
+			status_mesg(input_datefmt_str, "");
+			if (updatestring(win[STA].p, &buf, 0, 1) == 0) {
+				int val = atoi(buf);
+				if (val >= 1 && val <= 3) conf->input_datefmt = val;
+			}
+			status_mesg(number_str, "");
+		break;
 		}
 		status_mesg(number_str, "");
 		custom_print_general_options(conf_win.p, conf);
 	}
+	free(buf);
 	delwin(conf_win.p);
 }

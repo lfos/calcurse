@@ -1,8 +1,8 @@
-/*	$calcurse: calendar.h,v 1.8 2007/12/10 19:00:45 culot Exp $	*/
+/*	$calcurse: calendar.h,v 1.9 2008/04/09 20:38:29 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2007 Frederic Culot
+ * Copyright (c) 2004-2008 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -79,7 +79,7 @@ void	calendar_init_slctd_day(void);
 date_t *calendar_get_slctd_day(void);
 long	calendar_get_slctd_day_sec(void);
 void 	calendar_update_panel(WINDOW *);
-void	calendar_change_day(void);
+void	calendar_change_day(int datefmt);
 void	calendar_move(move_t);
 char   *calendar_get_pom(time_t);
 

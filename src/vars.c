@@ -1,8 +1,8 @@
-/*	$calcurse: vars.c,v 1.6 2007/12/30 16:27:59 culot Exp $	*/
+/*	$calcurse: vars.c,v 1.7 2008/04/09 20:38:29 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2006 Frederic Culot
+ * Copyright (c) 2004-2008 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@
  */
 
 #include <stdlib.h>
+#include <string.h>
 
 #include "i18n.h"
 #include "calendar.h"
@@ -101,6 +102,8 @@ vars_init(conf_t *conf)
 	conf->auto_save = true;
 	conf->skip_system_dialogs = false;
 	conf->skip_progress_bar = false;
+	strncpy(conf->output_datefmt, "%D", 3);
+	conf->input_datefmt = 1;
 
 	/* Default external editor and pager */
 	ed = getenv("VISUAL");

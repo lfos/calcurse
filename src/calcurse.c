@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.60 2008/01/13 12:40:45 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.61 2008/04/09 20:38:29 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -220,7 +220,7 @@ main(int argc, char **argv)
 		case 'g':	/* Goto function */
 			erase_status_bar();
 			calendar_set_current_date();
-			calendar_change_day();
+			calendar_change_day(conf.input_datefmt);
 			do_storage = true;
 			day_changed = true;
 			break;
@@ -305,7 +305,7 @@ main(int argc, char **argv)
 		case 'E':
 		case 'e':	/* Edit an existing item */
 			if (wins_slctd() == APP && apoint_hilt() != 0)
-				day_edit_item();
+				day_edit_item(&conf);
 			else if (wins_slctd() == TOD && todo_hilt() != 0)
 				todo_edit_item();
 			do_storage = true;
@@ -324,7 +324,7 @@ main(int argc, char **argv)
 		case 'R':
 		case 'r':
 			if (wins_slctd() == APP && apoint_hilt() != 0)
-				recur_repeat_item();
+				recur_repeat_item(&conf);
 				do_storage = true;
 			break;
 

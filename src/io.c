@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.27 2008/01/20 10:45:38 culot Exp $	*/
+/*	$calcurse: io.c,v 1.28 2008/04/09 20:38:29 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -485,6 +485,16 @@ io_save_cal(conf_t *conf)
 		    "\n# Command used to notify user of an upcoming appointment :\n");
 		fprintf(data_file, "notify-bar_command=\n");
 		fprintf(data_file, "%s\n", nbar->cmd);
+
+   		fprintf(data_file,
+			"\n# Format of the date to be displayed in non-interactive mode :\n");
+		fprintf(data_file, "output_datefmt=\n");
+		fprintf(data_file, "%s\n", conf->output_datefmt);
+
+		fprintf(data_file,
+			"\n# Format to be used when entering a date (1-mm/dd/yyyy, 2-dd/mm/yyyy, 3-yyyy/mm/dd) :\n");
+		fprintf(data_file, "input_datefmt=\n");
+		fprintf(data_file, "%d\n", conf->input_datefmt);
 
 		pthread_mutex_unlock(&nbar->mutex);
 

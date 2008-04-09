@@ -21,8 +21,6 @@ High
 Average
 -------
   o  Improve the '-d' option by adding more date formats
-  o  Accept dates entered in other formats such as d/m/yyyy or d/m/yy,
-     make the date format user configurable
   o  Make keys user configurable
   o  Add searching capabilities with support for regex
 

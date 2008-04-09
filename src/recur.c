@@ -1,4 +1,4 @@
-/*	$calcurse: recur.c,v 1.33 2008/01/20 10:45:39 culot Exp $	*/
+/*	$calcurse: recur.c,v 1.34 2008/04/09 20:38:29 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -601,14 +601,15 @@ recur_apoint_erase(long start, unsigned num, unsigned delete_whole,
  * and then delete the selected item to recreate it as a recurrent one
  */
 void 
-recur_repeat_item(void)
+recur_repeat_item(conf_t *conf)
 {
 	struct tm *lt;
 	time_t t;
 	int ch = 0;
-	int valid_date = 0, date_entered = 0;
+	int date_entered = 0;
 	int year = 0, month = 0, day = 0;
 	date_t until_date;
+        char outstr[BUFSIZ];
 	char user_input[BUFSIZ] = "";
 	char *mesg_type_1 = 
 	_("Enter the repetition type: (D)aily, (W)eekly, (M)onthly, (Y)early");
@@ -618,10 +619,10 @@ recur_repeat_item(void)
 	char *mesg_wrong_freq =
 	_("The frequence you entered is not valid.");
 	char *mesg_until_1 = 
-	_("Enter the ending date: [mm/dd/yyyy] or '0' for an endless repetition");
+	_("Enter the ending date: [%s] or '0' for an endless repetition");
 	char *mesg_wrong_1 = _("The entered date is not valid.");
 	char *mesg_wrong_2 =
-	_("Possible formats are [mm/dd/yyyy] or '0' for an endless repetetition");
+	_("Possible formats are [%s] or '0' for an endless repetetition");
 	char *wrong_type_1 = _("This item is already a repeated one.");
 	char *wrong_type_2 = _("Press [ENTER] to continue.");
 	char *mesg_older   = 
@@ -669,18 +670,18 @@ recur_repeat_item(void)
 	}
 
 	while (!date_entered) {
-		status_mesg(mesg_until_1, "");
-		if (getstring(win[STA].p, user_input, 11, 0, 1) == 
+		snprintf(outstr, BUFSIZ, mesg_until_1,
+				DATEFMT_DESC(conf->input_datefmt));
+		status_mesg(_(outstr), "");
+		if (getstring(win[STA].p, user_input, BUFSIZ, 0, 1) == 
 		    GETSTRING_VALID) {
 			if (strlen(user_input) == 1 && 
 			    strncmp(user_input, "0", 1) == 0 )  {
 				until = 0;
 				date_entered = 1;
 			} else { 
-				valid_date = check_date(user_input);
-				if (valid_date) {
-					sscanf(user_input, "%d / %d / %d", 
-						&month, &day, &year);	
+				if (parse_date(user_input, conf->input_datefmt,
+						&year, &month, &day)) {
 					t = p->start; lt = localtime(&t);
 					until_date.dd = day;
 					until_date.mm = month;
@@ -696,7 +697,10 @@ recur_repeat_item(void)
 						date_entered = 1;
 					}
 				} else {
-					status_mesg(mesg_wrong_1, mesg_wrong_2);
+					snprintf(outstr, BUFSIZ, mesg_wrong_2,
+							DATEFMT_DESC(conf->input_datefmt));
+					status_mesg(mesg_wrong_1, _(outstr));
+					wgetch(win[STA].p);
 					date_entered = 0;
 				}
 			}

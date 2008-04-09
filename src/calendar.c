@@ -1,8 +1,8 @@
-/*	$calcurse: calendar.c,v 1.13 2007/12/10 18:59:48 culot Exp $	*/
+/*	$calcurse: calendar.c,v 1.14 2008/04/09 20:38:29 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2007 Frederic Culot
+ * Copyright (c) 2004-2008 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -332,10 +332,11 @@ calendar_update_panel(WINDOW *cwin)
  * with the newly selected date.
  */
 void
-calendar_change_day(void)
+calendar_change_day(int datefmt)
 {
 #define LDAY 11
 	char selected_day[LDAY] = "";
+        char outstr[BUFSIZ];
 	date_t today;
 	int dday, dmonth, dyear;
 	int wrong_day = 1;
@@ -343,10 +344,12 @@ calendar_change_day(void)
 	    _("The day you entered is not valid (should be between 01/01/1902 and 12/31/2037)");
 	char *mesg_line2 = _("Press [ENTER] to continue");
 	char *request_date = 
-	    _("Enter the day to go to [ENTER for today] : mm/dd/yyyy");
+	    "Enter the day to go to [ENTER for today] : %s";
 
 	while (wrong_day) {
-		status_mesg(request_date, "");
+          snprintf(outstr, BUFSIZ, request_date,
+                   DATEFMT_DESC(datefmt));
+		status_mesg(_(outstr), "");
 		if (getstring(win[STA].p, selected_day, LDAY, 0, 1) == 
 		    GETSTRING_ESC)
 			return;
@@ -364,24 +367,15 @@ calendar_change_day(void)
 
 				wrong_day = 1;	
 
-			} else {
+			} else if (parse_date(selected_day, datefmt,
+				   &dyear, &dmonth, &dday)) {
 
-				sscanf(selected_day, "%u/%u/%u", 
-			    	    &dmonth, &dday, &dyear);
 				wrong_day = 0;
 
-				/* basic check on entered date */
-				if ((dday <= 0) || (dday >= 32) || 
-				    (dmonth <= 0) || (dmonth >= 13) || 
-				    (dyear <= 1901) || (dyear >= 2038))
-					wrong_day = 1;
-
 				/* go to chosen day */
-				if (wrong_day != 1) {
-					slctd_day.dd = dday;
-					slctd_day.mm = dmonth;
-					slctd_day.yyyy = dyear;
-				} 
+				slctd_day.dd = dday;
+				slctd_day.mm = dmonth;
+				slctd_day.yyyy = dyear;
 			}
 
 			if (wrong_day) {

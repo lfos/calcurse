@@ -1,4 +1,4 @@
-/*	$calcurse: utils.h,v 1.27 2008/02/11 21:26:01 culot Exp $	*/
+/*	$calcurse: utils.h,v 1.28 2008/04/09 20:38:29 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -82,12 +82,11 @@ int 	is_all_digit(char *);
 void 	status_bar(void);
 long 	date2sec(date_t, unsigned, unsigned);
 char   *date_sec2hour_str(long);
-char   *date_sec2date_str(long);
+char   *date_sec2date_str(long, char *);
 void 	date_sec2ical_date(long, char *);
 void 	date_sec2ical_datetime(long, char *);
 long 	update_time_in_date(long, unsigned, unsigned);
 long 	get_sec_date(date_t);
-int	check_date(char *);
 long 	min2sec(unsigned);
 int 	check_time(char *);
 void 	draw_scrollbar(WINDOW *, int, int, int, int, int, bool);
@@ -101,5 +100,6 @@ long	mystrtol(const char *);
 void 	print_option_incolor(WINDOW *, bool, int, int);
 char   *new_tempfile(const char *, int);
 void	erase_note(char **, erase_flag_e);
+int parse_date(char *, int, int *, int *, int *);
 
 #endif /* CALCURSE_UTILS_H */
