@@ -1,8 +1,8 @@
-/*	$calcurse: todo.h,v 1.10 2007/12/30 16:27:59 culot Exp $	*/
+/*	$calcurse: todo.h,v 1.11 2008/04/12 21:14:03 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2007 Frederic Culot
+ * Copyright (c) 2004-2008 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,33 +29,34 @@
 
 #include "wins.h"
 
-struct todo_s {
-	struct todo_s  *next;
-	char 	       *mesg;
-	int 		id;
-	char 	       *note;
+struct todo_s
+{
+  struct todo_s *next;
+  char          *mesg;
+  int            id;
+  char          *note;
 };
 
 extern struct todo_s *todolist;
 
-void		todo_hilt_set(int);
-void		todo_hilt_decrease(void);
-void		todo_hilt_increase(void);
-int		todo_hilt(void);
-int		todo_nb(void);
-void		todo_set_nb(int);
-void		todo_set_first(int);
-void		todo_first_increase(void);
-void		todo_first_decrease(void);
-int		todo_hilt_pos(void);
-char	       *todo_saved_mesg(void);
-void 		todo_new_item(void); 
-struct todo_s  *todo_add(char *, int, char *);
-void		todo_delete(conf_t *);
-void 		todo_chg_priority(int);
-void 		todo_edit_item(void);
-void		todo_update_panel(window_t *, int);
-void		todo_edit_note(char *);
-void		todo_view_note(char *);
+void           todo_hilt_set (int);
+void           todo_hilt_decrease (void);
+void           todo_hilt_increase (void);
+int            todo_hilt (void);
+int            todo_nb (void);
+void           todo_set_nb (int);
+void           todo_set_first (int);
+void           todo_first_increase (void);
+void           todo_first_decrease (void);
+int            todo_hilt_pos (void);
+char          *todo_saved_mesg (void);
+void           todo_new_item (void);
+struct todo_s *todo_add (char *, int, char *);
+void           todo_delete (conf_t *);
+void           todo_chg_priority (int);
+void           todo_edit_item (void);
+void           todo_update_panel (window_t *, int);
+void           todo_edit_note (char *);
+void           todo_view_note (char *);
 
 #endif /* CALCURSE_TODO_H */

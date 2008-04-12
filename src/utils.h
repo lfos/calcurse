@@ -1,4 +1,4 @@
-/*	$calcurse: utils.h,v 1.28 2008/04/09 20:38:29 culot Exp $	*/
+/*	$calcurse: utils.h,v 1.29 2008/04/12 21:14:03 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -36,70 +36,76 @@
 	((e) ? (void)0 : aerror(__FILE__, __LINE__, #e));		\
 } while (0)
 
-#define SPC		32 /* ASCII code for white space */
+#define SPC		32	/* ASCII code for white space */
 
-#define NB_CAL_CMDS	16 /* number of commands while in cal view */
-#define NB_APP_CMDS	23 /* same thing while in appointment view */ 
-#define NB_TOD_CMDS	22 /* same thing while in todo view */
+#define NB_CAL_CMDS	16	/* number of commands while in cal view */
+#define NB_APP_CMDS	23	/* same thing while in appointment view */
+#define NB_TOD_CMDS	22	/* same thing while in todo view */
 #define TOTAL_CMDS	NB_CAL_CMDS + NB_APP_CMDS + NB_TOD_CMDS
-#define NB_PANELS	3  /* 3 panels: CALENDAR, APPOINTMENT, TODO */
-#define CMDS_PER_LINE	6  /* max number of commands per line */
-#define KEY_LENGTH	4  /* length of each keybinding + one space */
-#define LABEL_LENGTH	8  /* length of command description */
+#define NB_PANELS	3	/* 3 panels: CALENDAR, APPOINTMENT, TODO */
+#define CMDS_PER_LINE	6	/* max number of commands per line */
+#define KEY_LENGTH	4	/* length of each keybinding + one space */
+#define LABEL_LENGTH	8	/* length of command description */
 
-#define GETSTRING_VALID	0  /* value returned by getstring() if text is valid */
-#define GETSTRING_ESC	1  /* user pressed escape to cancel editing */
-#define GETSTRING_RET	2  /* return was pressed without entering any text */
+#define GETSTRING_VALID	0	/* value returned by getstring() if text is valid */
+#define GETSTRING_ESC	1	/* user pressed escape to cancel editing */
+#define GETSTRING_RET	2	/* return was pressed without entering any text */
 
-typedef struct { /* structure defining a keybinding */
-	char *key; 
-	char *label;
-} binding_t;
+typedef struct
+{				/* structure defining a keybinding */
+  char *key;
+  char *label;
+}
+binding_t;
 
-typedef enum {
-	IERROR_FATAL,
-	IERROR_WARN
-} ierror_sev_e;
+typedef enum
+{
+  IERROR_FATAL,
+  IERROR_WARN
+}
+ierror_sev_e;
 
-typedef enum {
-	ERASE_DONT_FORCE,
-	ERASE_FORCE,
-	ERASE_FORCE_KEEP_NOTE,
-	ERASE_FORCE_ONLY_NOTE
-} erase_flag_e;
+typedef enum
+{
+  ERASE_DONT_FORCE,
+  ERASE_FORCE,
+  ERASE_FORCE_KEEP_NOTE,
+  ERASE_FORCE_ONLY_NOTE
+}
+erase_flag_e;
 
-void	exit_calcurse(int);
-void	ierror(const char *, ierror_sev_e);
-void	aerror(const char *, int, const char *);
-void 	status_mesg(char *, char *);
-void	erase_status_bar(void);
-void 	erase_window_part(WINDOW *, int, int, int, int);
-WINDOW *popup(int, int, int, int, char *);
-void 	print_in_middle(WINDOW *, int, int, int, char *);
-int 	getstring(WINDOW *, char *, int, int, int);
-int 	updatestring(WINDOW *, char **, int, int);
-int 	is_all_digit(char *);
-void 	status_bar(void);
-long 	date2sec(date_t, unsigned, unsigned);
-char   *date_sec2hour_str(long);
-char   *date_sec2date_str(long, char *);
-void 	date_sec2ical_date(long, char *);
-void 	date_sec2ical_datetime(long, char *);
-long 	update_time_in_date(long, unsigned, unsigned);
-long 	get_sec_date(date_t);
-long 	min2sec(unsigned);
-int 	check_time(char *);
-void 	draw_scrollbar(WINDOW *, int, int, int, int, int, bool);
-void 	item_in_popup(char *, char *, char *, char *);
-void 	reset_status_page(void);
-void 	other_status_page(int);
-long 	get_today(void);
-long 	now(void);
-char   *mycpy(const char *);
-long	mystrtol(const char *);
-void 	print_option_incolor(WINDOW *, bool, int, int);
-char   *new_tempfile(const char *, int);
-void	erase_note(char **, erase_flag_e);
-int parse_date(char *, int, int *, int *, int *);
+void    exit_calcurse (int);
+void    ierror (const char *, ierror_sev_e);
+void    aerror (const char *, int, const char *);
+void    status_mesg (char *, char *);
+void    erase_status_bar (void);
+void    erase_window_part (WINDOW *, int, int, int, int);
+WINDOW *popup (int, int, int, int, char *);
+void    print_in_middle (WINDOW *, int, int, int, char *);
+int     getstring (WINDOW *, char *, int, int, int);
+int     updatestring (WINDOW *, char **, int, int);
+int     is_all_digit (char *);
+void    status_bar (void);
+long    date2sec (date_t, unsigned, unsigned);
+char   *date_sec2hour_str (long);
+char   *date_sec2date_str (long, char *);
+void    date_sec2ical_date (long, char *);
+void    date_sec2ical_datetime (long, char *);
+long    update_time_in_date (long, unsigned, unsigned);
+long    get_sec_date (date_t);
+long    min2sec (unsigned);
+int     check_time (char *);
+void    draw_scrollbar (WINDOW *, int, int, int, int, int, bool);
+void    item_in_popup (char *, char *, char *, char *);
+void    reset_status_page (void);
+void    other_status_page (int);
+long    get_today (void);
+long    now (void);
+char   *mycpy (const char *);
+long    mystrtol (const char *);
+void    print_option_incolor (WINDOW *, bool, int, int);
+char   *new_tempfile (const char *, int);
+void    erase_note (char **, erase_flag_e);
+int     parse_date (char *, int, int *, int *, int *);
 
 #endif /* CALCURSE_UTILS_H */

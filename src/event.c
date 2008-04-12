@@ -1,4 +1,4 @@
-/*	$calcurse: event.c,v 1.6 2008/01/20 10:45:38 culot Exp $	*/
+/*	$calcurse: event.c,v 1.7 2008/04/12 21:14:03 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -37,132 +37,144 @@ struct event_s *eventlist;
 
 /* Create a new event */
 struct event_s *
-event_new(char *mesg, char *note, long day, int id)
+event_new (char *mesg, char *note, long day, int id)
 {
-	struct event_s *o, **i;
-	o = (struct event_s *) malloc(sizeof(struct event_s));
-	o->mesg = (char *) malloc(strlen(mesg) + 1);
-	strncpy(o->mesg, mesg, strlen(mesg) + 1);
-	o->day = day;
-	o->id = id;
-	o->note = (note != NULL) ? strdup(note) : NULL;
-	i = &eventlist;
-	for (;;) {
-		if (*i == 0 || (*i)->day > day) {
-			o->next = *i;
-			*i = o;
-			break;
-		}
-		i = &(*i)->next;
+  struct event_s *o, **i;
+  o = (struct event_s *) malloc (sizeof (struct event_s));
+  o->mesg = (char *) malloc (strlen (mesg) + 1);
+  strncpy (o->mesg, mesg, strlen (mesg) + 1);
+  o->day = day;
+  o->id = id;
+  o->note = (note != NULL) ? strdup (note) : NULL;
+  i = &eventlist;
+  for (;;)
+    {
+      if (*i == 0 || (*i)->day > day)
+	{
+	  o->next = *i;
+	  *i = o;
+	  break;
 	}
-	return o;
+      i = &(*i)->next;
+    }
+  return (o);
 }
 
 /* Check if the event belongs to the selected day */
-unsigned 
-event_inday(struct event_s *i, long start)
+unsigned
+event_inday (struct event_s *i, long start)
 {
-	if (i->day <= start + DAYINSEC && i->day > start) {
-		return 1;
-	}
-	return 0;
+  if (i->day <= start + DAYINSEC && i->day > start)
+    {
+      return (1);
+    }
+  return (0);
 }
 
 /* Write to file the event in user-friendly format */
-void 
-event_write(struct event_s *o, FILE * f)
+void
+event_write (struct event_s *o, FILE *f)
 {
-	struct tm *lt;
-	time_t t;
+  struct tm *lt;
+  time_t t;
 
-	t = o->day;
-	lt = localtime(&t);
-	fprintf(f, "%02u/%02u/%04u [%d] ",
-	    lt->tm_mon + 1, lt->tm_mday, 1900 + lt->tm_year, o->id);
-	if (o->note != NULL)
-		fprintf(f, ">%s ", o->note); 
-	fprintf(f, "%s\n", o->mesg);
+  t = o->day;
+  lt = localtime (&t);
+  fprintf (f, "%02u/%02u/%04u [%d] ", lt->tm_mon + 1, lt->tm_mday,
+           1900 + lt->tm_year, o->id);
+  if (o->note != NULL)
+    fprintf (f, ">%s ", o->note);
+  fprintf (f, "%s\n", o->mesg);
 }
 
 /* Load the events from file */
 struct event_s *
-event_scan(FILE * f, struct tm start, int id, char *note)
+event_scan (FILE *f, struct tm start, int id, char *note)
 {
-	struct tm *lt;
-	char buf[MESG_MAXSIZE], *nl;
-	time_t tstart, t;
+  struct tm *lt;
+  char buf[MESG_MAXSIZE], *nl;
+  time_t tstart, t;
 
-	t = time(NULL);
-	lt = localtime(&t);
+  t = time (NULL);
+  lt = localtime (&t);
 
-        /* Read the event description */
-	fgets(buf, MESG_MAXSIZE, f);
-	nl = strchr(buf, '\n');
-	if (nl) {
-		*nl = '\0';
-	}
-        start.tm_hour = 12;
-        start.tm_min = 0;
-	start.tm_sec =  0;
-	start.tm_isdst = -1;
-	start.tm_year -= 1900;
-	start.tm_mon--;
+  /* Read the event description */
+  fgets (buf, MESG_MAXSIZE, f);
+  nl = strchr (buf, '\n');
+  if (nl)
+    {
+      *nl = '\0';
+    }
+  start.tm_hour = 12;
+  start.tm_min = 0;
+  start.tm_sec = 0;
+  start.tm_isdst = -1;
+  start.tm_year -= 1900;
+  start.tm_mon--;
 
-	tstart = mktime(&start);
-	if (tstart == -1) {
-		fputs(_("FATAL ERROR in event_scan: date error in the event\n"), stderr);
-		exit(EXIT_FAILURE);
-	}
-	return (event_new(buf, note, tstart, id));
+  tstart = mktime (&start);
+  if (tstart == -1)
+    {
+      fputs (_("FATAL ERROR in event_scan: date error in the event\n"),
+	     stderr);
+      exit (EXIT_FAILURE);
+    }
+  return (event_new (buf, note, tstart, id));
 }
 
 /* Retrieve an event from the list, given the day and item position. */
 struct event_s *
-event_get(long day, int pos)
+event_get (long day, int pos)
 {
-	struct event_s *o;
-	int n;
+  struct event_s *o;
+  int n;
 
-	n = 0;
-	for (o = eventlist; o; o = o->next) {
-		if (event_inday(o, day)) {
-			if (n == pos)
-				return o;
-			n++;
-		}
+  n = 0;
+  for (o = eventlist; o; o = o->next)
+    {
+      if (event_inday (o, day))
+	{
+	  if (n == pos)
+	    return o;
+	  n++;
 	}
-	/* NOTREACHED */
-	fputs(_("FATAL ERROR in event_get: no such item\n"), stderr);
-	exit(EXIT_FAILURE);
+    }
+  /* NOTREACHED */
+  fputs (_("FATAL ERROR in event_get: no such item\n"), stderr);
+  exit (EXIT_FAILURE);
 }
 
 /* Delete an event from the list. */
-void 
-event_delete_bynum(long start, unsigned num, erase_flag_e flag)
+void
+event_delete_bynum (long start, unsigned num, erase_flag_e flag)
 {
-	unsigned n;
-	struct event_s *i, **iptr;
+  unsigned n;
+  struct event_s *i, **iptr;
 
-	n = 0;
-	iptr = &eventlist;
-	for (i = eventlist; i != 0; i = i->next) {
-		if (event_inday(i, start)) {
-			if (n == num) {
-				if (flag == ERASE_FORCE_ONLY_NOTE)
-					erase_note(&i->note, flag);
-				else {
-					*iptr = i->next;
-					free(i->mesg);
-					erase_note(&i->note, flag);
-					free(i);
-				}
-				return;
-			}
-			n++;
+  n = 0;
+  iptr = &eventlist;
+  for (i = eventlist; i != 0; i = i->next)
+    {
+      if (event_inday (i, start))
+	{
+	  if (n == num)
+	    {
+	      if (flag == ERASE_FORCE_ONLY_NOTE)
+		erase_note (&i->note, flag);
+	      else
+		{
+		  *iptr = i->next;
+		  free (i->mesg);
+		  erase_note (&i->note, flag);
+		  free (i);
 		}
-		iptr = &i->next;
+	      return;
+	    }
+	  n++;
 	}
-	/* NOTREACHED */
-	fputs(_("FATAL ERROR in event_delete_bynum: no such event\n"), stderr);
-	exit(EXIT_FAILURE);
+      iptr = &i->next;
+    }
+  /* NOTREACHED */
+  fputs (_("FATAL ERROR in event_delete_bynum: no such event\n"), stderr);
+  exit (EXIT_FAILURE);
 }

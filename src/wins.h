@@ -1,8 +1,8 @@
-/*	$calcurse: wins.h,v 1.6 2008/02/14 20:20:23 culot Exp $	*/
+/*	$calcurse: wins.h,v 1.7 2008/04/12 21:14:03 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2007 Frederic Culot
+ * Copyright (c) 2007-2008 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,38 +29,42 @@
 
 #include "vars.h"
 
-typedef enum {
-	CAL, 
-	APP, 
-	TOD,
-	NOT,
-	STA,
-	NBWINS
-} window_e;
+typedef enum
+{
+  CAL,
+  APP,
+  TOD,
+  NOT,
+  STA,
+  NBWINS
+}
+window_e;
 
 /* Window properties */
-typedef struct {
-	WINDOW	*p;	/* pointer to window */
-	unsigned w;	/* width */
-	unsigned h;	/* height */
-	int	 x;	/* x position */
-	int	 y;	/* y position */
-} window_t;
+typedef struct
+{
+  WINDOW   *p;			/* pointer to window */
+  unsigned  w;			/* width */
+  unsigned  h;			/* height */
+  int       x;			/* x position */
+  int       y;			/* y position */
+}
+window_t;
 
-extern window_t         win[NBWINS];
+extern window_t win[NBWINS];
 
-int		wins_layout(void);
-void		wins_set_layout(int);
-void		wins_slctd_init(void);
-window_e	wins_slctd(void);
-void		wins_slctd_set(window_e);
-void		wins_slctd_next(void);
-void 		wins_init(void);
-void 		wins_reinit(void);
-void 		wins_show(WINDOW *, char *);
-void 		wins_get_config(void);
-void 		wins_update(void);
-void		wins_reset(void);
-void		wins_launch_external(const char *, const char *);
+int      wins_layout (void);
+void     wins_set_layout (int);
+void     wins_slctd_init (void);
+window_e wins_slctd (void);
+void     wins_slctd_set (window_e);
+void     wins_slctd_next (void);
+void     wins_init (void);
+void     wins_reinit (void);
+void     wins_show (WINDOW *, char *);
+void     wins_get_config (void);
+void     wins_update (void);
+void     wins_reset (void);
+void     wins_launch_external (const char *, const char *);
 
 #endif /* CALCURSE_WINS_H */

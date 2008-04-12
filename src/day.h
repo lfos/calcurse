@@ -1,4 +1,4 @@
-/*	$calcurse: day.h,v 1.18 2008/04/09 20:38:29 culot Exp $	*/
+/*	$calcurse: day.h,v 1.19 2008/04/12 21:14:03 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -38,40 +38,44 @@
 #define RECUR_APPT	3
 #define APPT		4
 
-typedef struct {
-	unsigned nb_events;
-	unsigned nb_apoints; 
-} day_items_nb_t;
+typedef struct
+{
+  unsigned nb_events;
+  unsigned nb_apoints;
+}
+day_items_nb_t;
 
-struct day_item_s {
-	struct day_item_s *next;
-	long start;		/* seconds since 1 jan 1970 */
-	long appt_dur;		/* appointment duration in seconds */
-	int type;		/* (recursive or normal) event or appointment */
-	int evnt_id;		/* event identifier */
-	int appt_pos;		/* real position in recurrent list */
-	char state;		/* appointment state */
-	char *mesg;		/* item description */
-	char *note;		/* note attached to item */
+struct day_item_s
+{
+  struct day_item_s *next;
+  long               start;	/* seconds since 1 jan 1970 */
+  long               appt_dur;  /* appointment duration in seconds */
+  int                type;	/* (recursive or normal) event or appointment */
+  int                evnt_id;   /* event identifier */
+  int                appt_pos;  /* real position in recurrent list */
+  char               state;	/* appointment state */
+  char              *mesg;	/* item description */
+  char              *note;	/* note attached to item */
 };
 
-struct day_saved_item_s {
-	char start[BUFSIZ]; 
-	char end[BUFSIZ];
-	char state;
-	char type ;
-	char *mesg;
+struct day_saved_item_s
+{
+  char  start[BUFSIZ];
+  char  end[BUFSIZ];
+  char  state;
+  char  type;
+  char *mesg;
 };
 
-day_items_nb_t 	       *day_process_storage(date_t *, bool, day_items_nb_t *);
-void 			day_write_pad(long, int, int, int);
-void 			day_popup_item(void);
-int	 		day_check_if_item(date_t);
-void 			day_edit_item(conf_t *);
-int 			day_erase_item(long, int, erase_flag_e);
-struct day_item_s      *day_get_item(int);
-int 			day_item_nb(long, int, int);
-void			day_edit_note(char *);
-void			day_view_note(char *);
+day_items_nb_t    *day_process_storage (date_t *, bool, day_items_nb_t *);
+void               day_write_pad (long, int, int, int);
+void               day_popup_item (void);
+int                day_check_if_item (date_t);
+void               day_edit_item (conf_t *);
+int                day_erase_item (long, int, erase_flag_e);
+struct day_item_s *day_get_item (int);
+int                day_item_nb (long, int, int);
+void               day_edit_note (char *);
+void               day_view_note (char *);
 
 #endif /* CALCURSE_DAY_H */

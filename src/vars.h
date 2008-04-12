@@ -1,4 +1,4 @@
-/*	$calcurse: vars.h,v 1.21 2008/04/09 20:38:29 culot Exp $	*/
+/*	$calcurse: vars.h,v 1.22 2008/04/12 21:14:03 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -27,7 +27,7 @@
 #ifndef CALCURSE_VARS_H
 #define CALCURSE_VARS_H
 
-#include <ncurses.h> 
+#include <ncurses.h>
 #include <pthread.h>
 #include <stdbool.h>
 
@@ -47,7 +47,7 @@
 #define ATTR_HIGH	5
 #define ATTR_HIGHEST	6
 
-#define DAYINSEC  	86400 
+#define DAYINSEC  	86400
 #define HOURINSEC	3600
 #define MININSEC	60
 #define WEEKINDAYS	7
@@ -61,50 +61,54 @@
 #define DATEFMT_DESC(datefmt) (datefmt == 1 ? _("mm/dd/yyyy") : \
 		(datefmt == 2 ? _("dd/mm/yyyy") : _("yyyy/mm/dd")))
 
-struct pad_s {
-	int width;
-	int length;
-	int first_onscreen;	/* first line to be displayed inside window */
-	WINDOW *ptrwin;		/* pointer to the pad window */
+struct pad_s
+{
+  int     width;
+  int     length;
+  int     first_onscreen;	/* first line to be displayed inside window */
+  WINDOW *ptrwin;		/* pointer to the pad window */
 };
 
-struct nbar_s {		
-	int show;			/* display or hide the notify-bar */
-	int cntdwn;			/* warn when time left before next app
-					 * becomes lesser than cntdwn */  
-	char datefmt[BUFSIZ];		/* format for displaying date */
-	char timefmt[BUFSIZ];		/* format for displaying time */
-	char cmd[BUFSIZ];		/* notification command */
-	char *shell;			/* user shell to launch notif. cmd */
-	pthread_mutex_t mutex;
+struct nbar_s
+{
+  int              show;	     /* display or hide the notify-bar */
+  int              cntdwn;	     /* warn when time left before next app
+				      * becomes lesser than cntdwn */
+  char             datefmt[BUFSIZ];  /* format for displaying date */
+  char             timefmt[BUFSIZ];  /* format for displaying time */
+  char             cmd[BUFSIZ];	     /* notification command */
+  char            *shell;	     /* user shell to launch notif. cmd */
+  pthread_mutex_t  mutex;
 };
 
 /* General configuration variables */
-typedef struct {
-	bool auto_save;
-	bool confirm_quit;
-	bool confirm_delete;
-	bool skip_system_dialogs;
-	bool skip_progress_bar;
-	char *editor;
-	char *pager;
-	char output_datefmt[BUFSIZ];		/* format for displaying date */
-	int input_datefmt;					/* format for reading date */
-} conf_t;
+typedef struct
+{
+  bool  auto_save;
+  bool  confirm_quit;
+  bool  confirm_delete;
+  bool  skip_system_dialogs;
+  bool  skip_progress_bar;
+  char *editor;
+  char *pager;
+  char  output_datefmt[BUFSIZ];	/* format for displaying date */
+  int   input_datefmt;		/* format for reading date */
+}
+conf_t;
 
-extern int 		col, row;
-extern bool 		colorize;
-extern int 		days[12];
-extern char            *monthnames[12];
-extern char            *daynames[8];
-extern char 		path_dir[BUFSIZ];
-extern char 		path_todo[BUFSIZ];
-extern char 		path_apts[BUFSIZ];
-extern char 		path_conf[BUFSIZ];
-extern char		path_notes[BUFSIZ];
-extern struct pad_s    *apad;
-extern struct nbar_s   *nbar;
+extern int            col, row;
+extern bool           colorize;
+extern int            days[12];
+extern char          *monthnames[12];
+extern char          *daynames[8];
+extern char           path_dir[BUFSIZ];
+extern char           path_todo[BUFSIZ];
+extern char           path_apts[BUFSIZ];
+extern char           path_conf[BUFSIZ];
+extern char           path_notes[BUFSIZ];
+extern struct pad_s  *apad;
+extern struct nbar_s *nbar;
 
-void			vars_init(conf_t *conf);
+void vars_init (conf_t *conf);
 
 #endif /* CALCURSE_VARS_H */

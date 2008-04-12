@@ -1,8 +1,8 @@
-/*	$calcurse: notify.h,v 1.12 2007/08/15 15:33:01 culot Exp $	*/
+/*	$calcurse: notify.h,v 1.13 2008/04/12 21:14:03 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2007 Frederic Culot
+ * Copyright (c) 2004-2008 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,35 +33,37 @@
 
 #define NOTIFY_FIELD_LENGTH	25
 
-struct notify_vars_s {
-	WINDOW *win;
-	long time_in_sec;
-	char *apts_file;
-	char time[NOTIFY_FIELD_LENGTH];
-	char date[NOTIFY_FIELD_LENGTH];
-	pthread_mutex_t mutex;
+struct notify_vars_s
+{
+  WINDOW *win;
+  long time_in_sec;
+  char *apts_file;
+  char time[NOTIFY_FIELD_LENGTH];
+  char date[NOTIFY_FIELD_LENGTH];
+  pthread_mutex_t mutex;
 };
 
-struct notify_app_s {
-	long time;
-	int got_app;
-	char *txt;
-	char state;
-	pthread_mutex_t mutex;
+struct notify_app_s
+{
+  long time;
+  int got_app;
+  char *txt;
+  char state;
+  pthread_mutex_t mutex;
 };
 
-int 	notify_bar(void);
-void 	notify_init_vars(void);
-void 	notify_init_bar(void);
-void 	notify_start_main_thread(void);
-void 	notify_stop_main_thread(void);
-void 	notify_reinit_bar(int, int, int, int);
-void 	notify_update_bar(void);
-void 	notify_check_next_app(void);
-void 	notify_check_added(char *, long, char);
-void 	notify_check_repeated(recur_apoint_llist_node_t *);
-int 	notify_same_item(long);
-int 	notify_same_recur_item(recur_apoint_llist_node_t *);
-void 	notify_config_bar(void);
+int  notify_bar (void);
+void notify_init_vars (void);
+void notify_init_bar (void);
+void notify_start_main_thread (void);
+void notify_stop_main_thread (void);
+void notify_reinit_bar (int, int, int, int);
+void notify_update_bar (void);
+void notify_check_next_app (void);
+void notify_check_added (char *, long, char);
+void notify_check_repeated (recur_apoint_llist_node_t *);
+int  notify_same_item (long);
+int  notify_same_recur_item (recur_apoint_llist_node_t *);
+void notify_config_bar (void);
 
 #endif /* CALCURSE_NOTIFY_H */

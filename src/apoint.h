@@ -1,4 +1,4 @@
-/*	$calcurse: apoint.h,v 1.12 2008/01/20 10:45:38 culot Exp $	*/
+/*	$calcurse: apoint.h,v 1.13 2008/04/12 21:14:03 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -39,42 +39,46 @@
 #define APOINT_NOTIFY		0x1	/* Item needs to be notified */
 #define APOINT_NOTIFIED		0x2	/* Item was already notified */
 
-typedef struct apoint_llist_node {
-	struct apoint_llist_node *next;
-	long start;		/* seconds since 1 jan 1970 */
-	long dur;		/* duration of the appointment in seconds */
-	char state;		/* 8 bits to store item state */
-	char *mesg;
-	char *note;
-} apoint_llist_node_t;
+typedef struct apoint_llist_node
+{
+  struct apoint_llist_node *next;
+  long start;			/* seconds since 1 jan 1970 */
+  long dur;			/* duration of the appointment in seconds */
+  char state;			/* 8 bits to store item state */
+  char *mesg;
+  char *note;
+}
+apoint_llist_node_t;
 
-typedef struct apoint_llist {
-	apoint_llist_node_t *root;
-	pthread_mutex_t mutex;
-} apoint_llist_t;
+typedef struct apoint_llist
+{
+  apoint_llist_node_t *root;
+  pthread_mutex_t mutex;
+}
+apoint_llist_t;
 
 extern apoint_llist_t *alist_p;
 
-int 			apoint_llist_init(void);
-void			apoint_hilt_set(int);
-void			apoint_hilt_decrease(void);
-void			apoint_hilt_increase(void);
-int			apoint_hilt(void);
-apoint_llist_node_t    *apoint_new(char *, char *, long, long, char);
-void			apoint_add(void);
-void			apoint_delete(conf_t *, unsigned *, unsigned *);
-unsigned 		apoint_inday(apoint_llist_node_t *, long);
-void 			apoint_sec2str(apoint_llist_node_t *, int, long, 
-			    char *, char *);
-void 			apoint_write(apoint_llist_node_t *, FILE *);
-apoint_llist_node_t    *apoint_scan(FILE *, struct tm, struct tm, char, char *);
-apoint_llist_node_t    *apoint_get(long, int);
-void 			apoint_delete_bynum(long, unsigned, erase_flag_e);
-void 			apoint_scroll_pad_down(int, int);
-void 			apoint_scroll_pad_up(int);
-struct notify_app_s    *apoint_check_next(struct notify_app_s *, long);
-apoint_llist_node_t    *apoint_recur_s2apoint_s(recur_apoint_llist_node_t *);
-void 			apoint_switch_notify(void);
-void			apoint_update_panel(window_t *, int);
+int                  apoint_llist_init (void);
+void                 apoint_hilt_set (int);
+void                 apoint_hilt_decrease (void);
+void                 apoint_hilt_increase (void);
+int                  apoint_hilt (void);
+apoint_llist_node_t *apoint_new (char *, char *, long, long, char);
+void                 apoint_add (void);
+void                 apoint_delete (conf_t *, unsigned *, unsigned *);
+unsigned             apoint_inday (apoint_llist_node_t *, long);
+void                 apoint_sec2str (apoint_llist_node_t *, int, long, char *,
+                                     char *);
+void                 apoint_write (apoint_llist_node_t *, FILE *);
+apoint_llist_node_t *apoint_scan (FILE *, struct tm, struct tm, char, char *);
+apoint_llist_node_t *apoint_get (long, int);
+void                 apoint_delete_bynum (long, unsigned, erase_flag_e);
+void                 apoint_scroll_pad_down (int, int);
+void                 apoint_scroll_pad_up (int);
+struct notify_app_s *apoint_check_next (struct notify_app_s *, long);
+apoint_llist_node_t *apoint_recur_s2apoint_s (recur_apoint_llist_node_t *);
+void                 apoint_switch_notify (void);
+void                 apoint_update_panel (window_t *, int);
 
 #endif /* CALCURSE_APOINT_H */

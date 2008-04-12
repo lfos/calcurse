@@ -1,8 +1,8 @@
-/*	$calcurse: io.h,v 1.8 2007/08/15 15:36:27 culot Exp $	*/
+/*	$calcurse: io.h,v 1.9 2008/04/12 21:14:03 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2007 Frederic Culot
+ * Copyright (c) 2004-2008 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,19 +29,21 @@
 
 #include "vars.h"
 
-typedef enum {
-	IO_EXPORT_NONINTERACTIVE,
-	IO_EXPORT_INTERACTIVE,
-	IO_EXPORT_NBMODES
-} export_mode_t;
+typedef enum
+{
+  IO_EXPORT_NONINTERACTIVE,
+  IO_EXPORT_INTERACTIVE,
+  IO_EXPORT_NBMODES
+}
+export_mode_t;
 
-void 	io_init(char *);
-void 	io_extract_data(char *, const char *, int);
-void 	io_save_cal(conf_t *); 
-void 	io_load_app(void);
-void 	io_load_todo(void);
-int 	io_check_data_files(void);
-void 	io_startup_screen(bool, int);
-void 	io_export_data(export_mode_t, conf_t *);
+void io_init (char *);
+void io_extract_data (char *, const char *, int);
+void io_save_cal (conf_t *);
+void io_load_app (void);
+void io_load_todo (void);
+int  io_check_data_files (void);
+void io_startup_screen (bool, int);
+void io_export_data (export_mode_t, conf_t *);
 
 #endif /* CALCURSE_IO_H */

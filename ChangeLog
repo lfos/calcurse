@@ -1,3 +1,7 @@
+12 Apr 2008:
+	Yet another style for source code. GNU style now used (I am fed up
+	with tabs...)
+	
 09 Apr 2008:
 	Tony's patch concerning date format configuration imported, many
 	thanks to him

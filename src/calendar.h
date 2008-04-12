@@ -1,4 +1,4 @@
-/*	$calcurse: calendar.h,v 1.9 2008/04/09 20:38:29 culot Exp $	*/
+/*	$calcurse: calendar.h,v 1.10 2008/04/12 21:14:03 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -34,53 +34,61 @@
 #define	CALHEIGHT	12
 #define	CALWIDTH	30
 
-typedef enum { /* days of week */
-	SUNDAY,
-	MONDAY,
-	TUESDAY,
-	WEDNESDAY,
-	THURSDAY,
-	FRIDAY,
-	SATURDAY,
-	WDAYS
-} wday_e;
+typedef enum
+{				/* days of week */
+  SUNDAY,
+  MONDAY,
+  TUESDAY,
+  WEDNESDAY,
+  THURSDAY,
+  FRIDAY,
+  SATURDAY,
+  WDAYS
+}
+wday_e;
 
-typedef struct {
-	unsigned dd; 
-	unsigned mm;
-       	unsigned yyyy;
-} date_t;
+typedef struct
+{
+  unsigned dd;
+  unsigned mm;
+  unsigned yyyy;
+}
+date_t;
 
-typedef enum {
-	NO_POM,
-	FIRST_QUARTER,
-	FULL_MOON,
-	LAST_QUARTER,
-	NEW_MOON,
-	MOON_PHASES
-} pom_e;
+typedef enum
+{
+  NO_POM,
+  FIRST_QUARTER,
+  FULL_MOON,
+  LAST_QUARTER,
+  NEW_MOON,
+  MOON_PHASES
+}
+pom_e;
 
-typedef enum {
-	UP,
-	DOWN,
-	LEFT,
-	RIGHT,
-	MOVES
-} move_t;
+typedef enum
+{
+  UP,
+  DOWN,
+  LEFT,
+  RIGHT,
+  MOVES
+}
+move_t;
 
-void	calendar_start_date_thread(void);
-void	calendar_stop_date_thread(void);
-void	calendar_set_current_date(void);
-void	calendar_set_first_day_of_week(wday_e);
-void	calendar_change_first_day_of_week(void);
-bool	calendar_week_begins_on_monday(void);
-void	calendar_store_current_date(date_t *);
-void	calendar_init_slctd_day(void);
-date_t *calendar_get_slctd_day(void);
-long	calendar_get_slctd_day_sec(void);
-void 	calendar_update_panel(WINDOW *);
-void	calendar_change_day(int datefmt);
-void	calendar_move(move_t);
-char   *calendar_get_pom(time_t);
+void    calendar_start_date_thread (void);
+void    calendar_stop_date_thread (void);
+void    calendar_set_current_date (void);
+void    calendar_set_first_day_of_week (wday_e);
+void    calendar_change_first_day_of_week (void);
+bool    calendar_week_begins_on_monday (void);
+void    calendar_store_current_date (date_t *);
+void    calendar_init_slctd_day (void);
+date_t *calendar_get_slctd_day (void);
+long    calendar_get_slctd_day_sec (void);
+void    calendar_update_panel (WINDOW *);
+void    calendar_change_day (int);
+void    calendar_move (move_t);
+char   *calendar_get_pom (time_t);
 
 #endif /* CALCURSE_CALENDAR_H */

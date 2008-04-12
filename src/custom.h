@@ -1,4 +1,4 @@
-/*	$calcurse: custom.h,v 1.11 2008/04/09 20:38:29 culot Exp $	*/
+/*	$calcurse: custom.h,v 1.12 2008/04/12 21:14:03 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -32,52 +32,55 @@
 
 #define NBUSERCOLORS	6
 
-enum { /* Color pairs */
-	COLR_RED = 1,
-	COLR_GREEN,
-	COLR_YELLOW,
-	COLR_BLUE,
-	COLR_MAGENTA,
-	COLR_CYAN,
-	COLR_DEFAULT,
-	COLR_HIGH,
-	COLR_CUSTOM
+enum
+{				/* Color pairs */
+  COLR_RED = 1,
+  COLR_GREEN,
+  COLR_YELLOW,
+  COLR_BLUE,
+  COLR_MAGENTA,
+  COLR_CYAN,
+  COLR_DEFAULT,
+  COLR_HIGH,
+  COLR_CUSTOM
 };
 
-enum { /* Configuration variables */
-	CUSTOM_CONF_NOVARIABLE,
-	CUSTOM_CONF_AUTOSAVE,
-	CUSTOM_CONF_CONFIRMQUIT,
-	CUSTOM_CONF_CONFIRMDELETE,
-	CUSTOM_CONF_SKIPSYSTEMDIALOGS,
-	CUSTOM_CONF_SKIPPROGRESSBAR,
-	CUSTOM_CONF_WEEKBEGINSONMONDAY,
-	CUSTOM_CONF_COLORTHEME,
-	CUSTOM_CONF_LAYOUT,
-	CUSTOM_CONF_NOTIFYBARSHOW,
-	CUSTOM_CONF_NOTIFYBARDATE,
-	CUSTOM_CONF_NOTIFYBARCLOCK,
-	CUSTOM_CONF_NOTIFYBARWARNING,
-	CUSTOM_CONF_NOTIFYBARCOMMAND,
-	CUSTOM_CONF_OUTPUTDATEFMT,
-	CUSTOM_CONF_INPUTDATEFMT,
-	CUSTOM_CONF_VARIABLES
+enum
+{				/* Configuration variables */
+  CUSTOM_CONF_NOVARIABLE,
+  CUSTOM_CONF_AUTOSAVE,
+  CUSTOM_CONF_CONFIRMQUIT,
+  CUSTOM_CONF_CONFIRMDELETE,
+  CUSTOM_CONF_SKIPSYSTEMDIALOGS,
+  CUSTOM_CONF_SKIPPROGRESSBAR,
+  CUSTOM_CONF_WEEKBEGINSONMONDAY,
+  CUSTOM_CONF_COLORTHEME,
+  CUSTOM_CONF_LAYOUT,
+  CUSTOM_CONF_NOTIFYBARSHOW,
+  CUSTOM_CONF_NOTIFYBARDATE,
+  CUSTOM_CONF_NOTIFYBARCLOCK,
+  CUSTOM_CONF_NOTIFYBARWARNING,
+  CUSTOM_CONF_NOTIFYBARCOMMAND,
+  CUSTOM_CONF_OUTPUTDATEFMT,
+  CUSTOM_CONF_INPUTDATEFMT,
+  CUSTOM_CONF_VARIABLES
 };
 
-struct attribute_s {
-	int color[7];
-	int nocolor[7];
+struct attribute_s
+{
+  int color[7];
+  int nocolor[7];
 };
 
-void 	custom_init_attr(void);
-void 	custom_apply_attr(WINDOW *, int);
-void 	custom_remove_attr(WINDOW *, int);
-void 	custom_load_conf(conf_t *, int);
-void 	config_bar(void);
-void 	layout_config(void);
-void 	custom_color_config(void);
-void 	custom_color_theme_name(char *);
-void	custom_confwin_init(window_t *, char *);
-void 	custom_general_config(conf_t *);
+void custom_init_attr (void);
+void custom_apply_attr (WINDOW *, int);
+void custom_remove_attr (WINDOW *, int);
+void custom_load_conf (conf_t *, int);
+void config_bar (void);
+void layout_config (void);
+void custom_color_config (void);
+void custom_color_theme_name (char *);
+void custom_confwin_init (window_t *, char *);
+void custom_general_config (conf_t *);
 
 #endif /* CALCURSE_CUSTOM_H */

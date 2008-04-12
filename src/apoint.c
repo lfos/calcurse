@@ -1,4 +1,4 @@
-/*	$calcurse: apoint.c,v 1.21 2008/01/20 10:45:38 culot Exp $	*/
+/*	$calcurse: apoint.c,v 1.22 2008/04/12 21:14:03 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -40,386 +40,420 @@
 #include "calendar.h"
 
 apoint_llist_t *alist_p;
-static int	hilt = 0;
+static int hilt = 0;
 
-int 
-apoint_llist_init(void)
+int
+apoint_llist_init (void)
 {
-	alist_p = (apoint_llist_t *) malloc(sizeof(apoint_llist_t));
-	alist_p->root = NULL;
-	pthread_mutex_init(&(alist_p->mutex), NULL);
+  alist_p = (apoint_llist_t *) malloc (sizeof (apoint_llist_t));
+  alist_p->root = NULL;
+  pthread_mutex_init (&(alist_p->mutex), NULL);
 
-	return 0;
+  return (0);
 }
 
 /* Sets which appointment is highlighted. */
 void
-apoint_hilt_set(int highlighted)
+apoint_hilt_set (int highlighted)
 {
-	hilt = highlighted;
+  hilt = highlighted;
 }
 
 void
-apoint_hilt_decrease(void)
+apoint_hilt_decrease (void)
 {
-	hilt--;
+  hilt--;
 }
 
 void
-apoint_hilt_increase(void)
+apoint_hilt_increase (void)
 {
-	hilt++;
+  hilt++;
 }
 
 /* Return which appointment is highlighted. */
 int
-apoint_hilt(void)
+apoint_hilt (void)
 {
-	return (hilt);
+  return (hilt);
 }
 
 apoint_llist_node_t *
-apoint_new(char *mesg, char *note, long start, long dur, char state)
+apoint_new (char *mesg, char *note, long start, long dur, char state)
 {
-	apoint_llist_node_t *o, **i;
+  apoint_llist_node_t *o, **i;
 
-	o = (apoint_llist_node_t *) malloc(sizeof(apoint_llist_node_t));
-	o->mesg = (char *) malloc(strlen(mesg) + 1);
-	strncpy(o->mesg, mesg, strlen(mesg) + 1);
-	o->note = (note != NULL) ? strdup(note) : NULL;
-	o->state = state;
-	o->start = start;
-	o->dur = dur;
+  o = (apoint_llist_node_t *) malloc (sizeof (apoint_llist_node_t));
+  o->mesg = (char *) malloc (strlen (mesg) + 1);
+  strncpy (o->mesg, mesg, strlen (mesg) + 1);
+  o->note = (note != NULL) ? strdup (note) : NULL;
+  o->state = state;
+  o->start = start;
+  o->dur = dur;
 
-	pthread_mutex_lock(&(alist_p->mutex));
-	i = &alist_p->root;
-	for (;;) {
-		if (*i == 0 || (*i)->start > start) {
-			o->next = *i;
-			*i = o;
-			break;
-		}	
-		i = &(*i)->next;
+  pthread_mutex_lock (&(alist_p->mutex));
+  i = &alist_p->root;
+  for (;;)
+    {
+      if (*i == 0 || (*i)->start > start)
+	{
+	  o->next = *i;
+	  *i = o;
+	  break;
 	}
-	pthread_mutex_unlock(&(alist_p->mutex));
+      i = &(*i)->next;
+    }
+  pthread_mutex_unlock (&(alist_p->mutex));
 
-	return o;
+  return (o);
 }
 
 /* 
  * Add an item in either the appointment or the event list,
  * depending if the start time is entered or not.
  */
-void 
-apoint_add(void)
+void
+apoint_add (void)
 {
 #define LTIME 6
-	char *mesg_1 = _("Enter start time ([hh:mm] or [h:mm]), leave blank for an all-day event : ");
-	char *mesg_2 = _("Enter end time ([hh:mm] or [h:mm]) or duration (in minutes) : ");
-	char *mesg_3 = _("Enter description :");
-	char *format_message_1 = _("You entered an invalid start time, should be [h:mm] or [hh:mm]");
-	char *format_message_2 = _("You entered an invalid end time, should be [h:mm] or [hh:mm] or [mm]");
-        char *enter_str = _("Press [Enter] to continue");
-	int Id = 1;
-        char item_time[LTIME] = "";
-	char item_mesg[BUFSIZ] = "";
-	long apoint_duration = 0, apoint_start;
-	apoint_llist_node_t *apoint_pointeur;
-        struct event_s *event_pointeur;
-	unsigned heures, minutes;
-	unsigned end_h, end_m;
-        int is_appointment = 1;
+  char *mesg_1 =
+    _("Enter start time ([hh:mm] or [h:mm]), "
+      "leave blank for an all-day event : ");
+  char *mesg_2 =
+    _("Enter end time ([hh:mm] or [h:mm]) or duration (in minutes) : ");
+  char *mesg_3 = _("Enter description :");
+  char *format_message_1 =
+    _("You entered an invalid start time, should be [h:mm] or [hh:mm]");
+  char *format_message_2 =
+    _("You entered an invalid end time, should be [h:mm] or [hh:mm] or [mm]");
+  char *enter_str = _("Press [Enter] to continue");
+  int Id = 1;
+  char item_time[LTIME] = "";
+  char item_mesg[BUFSIZ] = "";
+  long apoint_duration = 0, apoint_start;
+  apoint_llist_node_t *apoint_pointeur;
+  struct event_s *event_pointeur;
+  unsigned heures, minutes;
+  unsigned end_h, end_m;
+  int is_appointment = 1;
 
-	/* Get the starting time */
-	while (check_time(item_time) != 1) {
-                status_mesg(mesg_1, "");
-		if (getstring(win[STA].p, item_time, LTIME, 0, 1) != 
-			GETSTRING_ESC) {
-			if (strlen(item_time) == 0){
-				is_appointment = 0;
-				break;	
-			} else if (check_time(item_time) != 1) {
-				status_mesg(format_message_1, enter_str);
-				wgetch(win[STA].p);
-			} else
-				sscanf(item_time, "%u:%u", &heures, &minutes);
-		} else
-			return;
+  /* Get the starting time */
+  while (check_time (item_time) != 1)
+    {
+      status_mesg (mesg_1, "");
+      if (getstring (win[STA].p, item_time, LTIME, 0, 1) != GETSTRING_ESC)
+	{
+	  if (strlen (item_time) == 0)
+	    {
+	      is_appointment = 0;
+	      break;
+	    }
+	  else if (check_time (item_time) != 1)
+	    {
+	      status_mesg (format_message_1, enter_str);
+	      wgetch (win[STA].p);
+	    }
+	  else
+	    sscanf (item_time, "%u:%u", &heures, &minutes);
 	}
-        /* 
-         * Check if an event or appointment is entered, 
-         * depending on the starting time, and record the 
-         * corresponding item.
-         */
-        if (is_appointment){ /* Get the appointment duration */
-		item_time[0] = '\0';
-                while (check_time(item_time) == 0) {
-                        status_mesg(mesg_2, "");
-                        if (getstring(win[STA].p, item_time, LTIME, 0, 1) != 
-				GETSTRING_VALID)
-                                return;	//nothing entered, cancel adding of event
-			else if (check_time(item_time) == 0) {
-                                status_mesg(format_message_2, enter_str);
-                                wgetch(win[STA].p);
-                        } else {
-				if (check_time(item_time) == 2)
-                                	apoint_duration = atoi(item_time);
-				else if (check_time(item_time) == 1) {
-					sscanf(item_time, "%u:%u", 
-							&end_h, &end_m);
-					if (end_h < heures){
-						apoint_duration = 
-						    MININSEC - minutes + end_m
-						    + 
-						    (24 + end_h - (heures + 1))
-						    * MININSEC;
-					} else {
-						apoint_duration = 
-							MININSEC - minutes + 
-							end_m + 
-							(end_h - (heures + 1)) * 
-							MININSEC;
-					}
-				}
-			}	
-                }
-        } else  /* Insert the event Id */
-                Id = 1;
-
-        status_mesg(mesg_3, "");
-	if (getstring(win[STA].p, item_mesg, BUFSIZ, 0, 1) == 
-		GETSTRING_VALID) {
-                if (is_appointment) {
-			apoint_start = 
-			    date2sec(*calendar_get_slctd_day(), heures, 
-			    minutes);
-			apoint_pointeur = apoint_new(item_mesg, 0L, apoint_start,
-			    min2sec(apoint_duration), 0L);
-			if (notify_bar()) 
-				notify_check_added(item_mesg, apoint_start, 0L);
-                } else 
-                        event_pointeur = event_new(item_mesg, 0L,
-			    date2sec(*calendar_get_slctd_day(), 12, 0), Id);
-
-		if (hilt == 0) 
-			hilt++;
+      else
+	return;
+    }
+  /* 
+   * Check if an event or appointment is entered, 
+   * depending on the starting time, and record the 
+   * corresponding item.
+   */
+  if (is_appointment)
+    {				/* Get the appointment duration */
+      item_time[0] = '\0';
+      while (check_time (item_time) == 0)
+	{
+	  status_mesg (mesg_2, "");
+	  if (getstring (win[STA].p, item_time, LTIME, 0, 1) != GETSTRING_VALID)
+	    return;		//nothing entered, cancel adding of event
+	  else if (check_time (item_time) == 0)
+	    {
+	      status_mesg (format_message_2, enter_str);
+	      wgetch (win[STA].p);
+	    }
+	  else
+	    {
+	      if (check_time (item_time) == 2)
+		apoint_duration = atoi (item_time);
+	      else if (check_time (item_time) == 1)
+		{
+		  sscanf (item_time, "%u:%u", &end_h, &end_m);
+		  if (end_h < heures)
+		    {
+		      apoint_duration = MININSEC - minutes + end_m
+                        + (24 + end_h - (heures + 1)) * MININSEC;
+		    }
+		  else
+		    {
+		      apoint_duration = MININSEC - minutes
+                        + end_m + (end_h - (heures + 1)) * MININSEC;
+		    }
+		}
+	    }
 	}
-	erase_status_bar();
+    }
+  else				/* Insert the event Id */
+    Id = 1;
+
+  status_mesg (mesg_3, "");
+  if (getstring (win[STA].p, item_mesg, BUFSIZ, 0, 1) == GETSTRING_VALID)
+    {
+      if (is_appointment)
+	{
+	  apoint_start = date2sec (*calendar_get_slctd_day (), heures, minutes);
+	  apoint_pointeur = apoint_new (item_mesg, 0L, apoint_start,
+					min2sec (apoint_duration), 0L);
+	  if (notify_bar ())
+	    notify_check_added (item_mesg, apoint_start, 0L);
+	}
+      else
+	event_pointeur = event_new (item_mesg, 0L,
+				    date2sec (*calendar_get_slctd_day (), 12,
+					      0), Id);
+
+      if (hilt == 0)
+	hilt++;
+    }
+  erase_status_bar ();
 }
 
 /* Delete an item from the appointment list. */
-void 
-apoint_delete(conf_t *conf, unsigned *nb_events, unsigned *nb_apoints)
+void
+apoint_delete (conf_t *conf, unsigned *nb_events, unsigned *nb_apoints)
 {
-	char *choices = "[y/n] ";
-	char *del_app_str = _("Do you really want to delete this item ?");
-	const char *errmsg = _("FATAL ERROR in apoint_delete: no such type\n");
-	long date;
-	int nb_items = *nb_apoints + *nb_events;
-	bool go_for_deletion = false;
-	int to_be_removed = 0;
-	int answer = 0;
-	int deleted_item_type = 0;
+  char *choices = "[y/n] ";
+  char *del_app_str = _("Do you really want to delete this item ?");
+  const char *errmsg = _("FATAL ERROR in apoint_delete: no such type\n");
+  long date;
+  int nb_items = *nb_apoints + *nb_events;
+  bool go_for_deletion = false;
+  int to_be_removed = 0;
+  int answer = 0;
+  int deleted_item_type = 0;
 
-	date = calendar_get_slctd_day_sec();
-	
-	if (conf->confirm_delete) {
-		status_mesg(del_app_str, choices);		
-		answer = wgetch(win[STA].p);
-		if ( (answer == 'y') && (nb_items != 0) )
-			go_for_deletion = true;
-		else {
-			erase_status_bar();
-			return;
-		}
-	} else 
-		if (nb_items != 0) 
-			go_for_deletion = true;
-	
-	if (go_for_deletion) {
-		if (nb_items != 0) {
-			deleted_item_type = 
-				day_erase_item(date, hilt, ERASE_DONT_FORCE);
-			if (deleted_item_type == EVNT || 
-			    deleted_item_type == RECUR_EVNT) {
-				(*nb_events)--;
-				to_be_removed = 1;
-			} else if (deleted_item_type == APPT ||
-			    deleted_item_type == RECUR_APPT) {
-				(*nb_apoints)--;
-				to_be_removed = 3;
-			} else if (deleted_item_type == 0) {
-				to_be_removed = 0;		
-			} else
-				ierror(errmsg, IERROR_FATAL);
-				/* NOTREACHED */
+  date = calendar_get_slctd_day_sec ();
 
-			if (hilt > 1) 
-				hilt--;
-			if (apad->first_onscreen >= to_be_removed)
-				apad->first_onscreen = 
-					apad->first_onscreen -
-					to_be_removed;
-			if (nb_items == 1) 
-				hilt = 0;
-		}
+  if (conf->confirm_delete)
+    {
+      status_mesg (del_app_str, choices);
+      answer = wgetch (win[STA].p);
+      if ((answer == 'y') && (nb_items != 0))
+	go_for_deletion = true;
+      else
+	{
+	  erase_status_bar ();
+	  return;
 	}
+    }
+  else if (nb_items != 0)
+    go_for_deletion = true;
+
+  if (go_for_deletion)
+    {
+      if (nb_items != 0)
+	{
+	  deleted_item_type = day_erase_item (date, hilt, ERASE_DONT_FORCE);
+	  if (deleted_item_type == EVNT || deleted_item_type == RECUR_EVNT)
+	    {
+	      (*nb_events)--;
+	      to_be_removed = 1;
+	    }
+	  else if (deleted_item_type == APPT || deleted_item_type == RECUR_APPT)
+	    {
+	      (*nb_apoints)--;
+	      to_be_removed = 3;
+	    }
+	  else if (deleted_item_type == 0)
+	    {
+	      to_be_removed = 0;
+	    }
+	  else
+	    ierror (errmsg, IERROR_FATAL);
+	  /* NOTREACHED */
+
+	  if (hilt > 1)
+	    hilt--;
+	  if (apad->first_onscreen >= to_be_removed)
+	    apad->first_onscreen = apad->first_onscreen - to_be_removed;
+	  if (nb_items == 1)
+	    hilt = 0;
+	}
+    }
 }
 
-unsigned 
-apoint_inday(apoint_llist_node_t *i, long start)
+unsigned
+apoint_inday (apoint_llist_node_t *i, long start)
 {
-	if (i->start <= start + DAYINSEC && i->start + i->dur > start) {
-		return 1;
-	}
-	return 0;
+  if (i->start <= start + DAYINSEC && i->start + i->dur > start)
+    {
+      return (1);
+    }
+  return (0);
 }
 
-void 
-apoint_sec2str(apoint_llist_node_t *o, int type, long day, char *start, 
-    char *end)
+void
+apoint_sec2str (apoint_llist_node_t *o, int type, long day, char *start,
+		char *end)
 {
-	struct tm *lt;
-	time_t t;
+  struct tm *lt;
+  time_t t;
 
-	if (o->start < day && type == APPT) {
-		strncpy(start, "..:..", 6);
-	} else {
-		t = o->start;
-		lt = localtime(&t);
-		snprintf(start, HRMIN_SIZE, "%02u:%02u", lt->tm_hour,
-			 lt->tm_min);
-	}
-	if (o->start + o->dur > day + DAYINSEC && type == APPT) {
-		strncpy(end, "..:..", 6);
-	} else {
-		t = o->start + o->dur;
-		lt = localtime(&t);
-		snprintf(end, HRMIN_SIZE, "%02u:%02u", lt->tm_hour,
-			 lt->tm_min);
-	}
+  if (o->start < day && type == APPT)
+    {
+      strncpy (start, "..:..", 6);
+    }
+  else
+    {
+      t = o->start;
+      lt = localtime (&t);
+      snprintf (start, HRMIN_SIZE, "%02u:%02u", lt->tm_hour, lt->tm_min);
+    }
+  if (o->start + o->dur > day + DAYINSEC && type == APPT)
+    {
+      strncpy (end, "..:..", 6);
+    }
+  else
+    {
+      t = o->start + o->dur;
+      lt = localtime (&t);
+      snprintf (end, HRMIN_SIZE, "%02u:%02u", lt->tm_hour, lt->tm_min);
+    }
 }
 
-void 
-apoint_write(apoint_llist_node_t *o, FILE * f)
+void
+apoint_write (apoint_llist_node_t *o, FILE *f)
 {
-	struct tm *lt;
-	time_t t;
+  struct tm *lt;
+  time_t t;
 
-	t = o->start;
-	lt = localtime(&t);
-	fprintf(f, "%02u/%02u/%04u @ %02u:%02u",
-	    lt->tm_mon + 1, lt->tm_mday, 1900 + lt->tm_year,
-	    lt->tm_hour, lt->tm_min);
+  t = o->start;
+  lt = localtime (&t);
+  fprintf (f, "%02u/%02u/%04u @ %02u:%02u",
+	   lt->tm_mon + 1, lt->tm_mday, 1900 + lt->tm_year, lt->tm_hour,
+           lt->tm_min);
 
-	t = o->start + o->dur;
-	lt = localtime(&t);
-	fprintf(f, " -> %02u/%02u/%04u @ %02u:%02u ",
-	    lt->tm_mon + 1, lt->tm_mday, 1900 + lt->tm_year,
-	    lt->tm_hour, lt->tm_min);
-	
-	if (o->note != NULL)
-		fprintf(f, ">%s ", o->note);
+  t = o->start + o->dur;
+  lt = localtime (&t);
+  fprintf (f, " -> %02u/%02u/%04u @ %02u:%02u ",
+	   lt->tm_mon + 1, lt->tm_mday, 1900 + lt->tm_year, lt->tm_hour,
+           lt->tm_min);
 
-	if (o->state & APOINT_NOTIFY)
-		fprintf(f, "!");
-	else
-		fprintf(f, "|");
+  if (o->note != NULL)
+    fprintf (f, ">%s ", o->note);
 
-	fprintf(f, "%s\n", o->mesg);
+  if (o->state & APOINT_NOTIFY)
+    fprintf (f, "!");
+  else
+    fprintf (f, "|");
+
+  fprintf (f, "%s\n", o->mesg);
 }
 
 apoint_llist_node_t *
-apoint_scan(FILE * f, struct tm start, struct tm end, char state, char *note)
+apoint_scan (FILE *f, struct tm start, struct tm end, char state, char *note)
 {
-	struct tm *lt;
-	char buf[MESG_MAXSIZE], *nl;
-	time_t tstart, tend, t;
+  struct tm *lt;
+  char buf[MESG_MAXSIZE], *nl;
+  time_t tstart, tend, t;
 
-	t = time(NULL);
-	lt = localtime(&t);
+  t = time (NULL);
+  lt = localtime (&t);
 
-        /* Read the appointment description */
-	fgets(buf, MESG_MAXSIZE, f);
-	nl = strchr(buf, '\n');
-	if (nl) {
-		*nl = '\0';
-	}
+  /* Read the appointment description */
+  fgets (buf, MESG_MAXSIZE, f);
+  nl = strchr (buf, '\n');
+  if (nl)
+    {
+      *nl = '\0';
+    }
 
-	start.tm_sec = end.tm_sec = 0;
-	start.tm_isdst = end.tm_isdst = -1;
-	start.tm_year -= 1900;
-	start.tm_mon--;
-	end.tm_year -= 1900;
-	end.tm_mon--;
+  start.tm_sec = end.tm_sec = 0;
+  start.tm_isdst = end.tm_isdst = -1;
+  start.tm_year -= 1900;
+  start.tm_mon--;
+  end.tm_year -= 1900;
+  end.tm_mon--;
 
-	tstart = mktime(&start);
-	tend = mktime(&end);
-	if (tstart == -1 || tend == -1 || tstart > tend) {
-		fputs(_("FATAL ERROR in apoint_scan: date error in the appointment\n"), stderr);
-		exit(EXIT_FAILURE);
-	}
-	return (apoint_new(buf, note, tstart, tend - tstart, state));
+  tstart = mktime (&start);
+  tend = mktime (&end);
+  if (tstart == -1 || tend == -1 || tstart > tend)
+    {
+      fputs (_("FATAL ERROR in apoint_scan: date error in the appointment\n"),
+	     stderr);
+      exit (EXIT_FAILURE);
+    }
+  return (apoint_new (buf, note, tstart, tend - tstart, state));
 }
 
 /* Retrieve an appointment from the list, given the day and item position. */
 apoint_llist_node_t *
-apoint_get(long day, int pos)
+apoint_get (long day, int pos)
 {
-	apoint_llist_node_t *o;
-	int n;
+  apoint_llist_node_t *o;
+  int n;
 
-	n = 0;
-	for (o = alist_p->root; o; o = o->next) {
-		if (apoint_inday(o, day)) {
-			if (n == pos)
-				return o;
-			n++;
-		}
+  n = 0;
+  for (o = alist_p->root; o; o = o->next)
+    {
+      if (apoint_inday (o, day))
+	{
+	  if (n == pos)
+	    return (o);
+	  n++;
 	}
-	/* NOTREACHED */
-	fputs(_("FATAL ERROR in apoint_get: no such item\n"), stderr);
-	exit(EXIT_FAILURE);
+    }
+  /* NOTREACHED */
+  fputs (_("FATAL ERROR in apoint_get: no such item\n"), stderr);
+  exit (EXIT_FAILURE);
 }
 
-void 
-apoint_delete_bynum(long start, unsigned num, erase_flag_e flag)
+void
+apoint_delete_bynum (long start, unsigned num, erase_flag_e flag)
 {
-	unsigned n;
-	int need_check_notify = 0;
-	apoint_llist_node_t *i, **iptr;
+  unsigned n;
+  int need_check_notify = 0;
+  apoint_llist_node_t *i, **iptr;
 
-	n = 0;	
-	pthread_mutex_lock(&(alist_p->mutex));
-	iptr = &alist_p->root;
-	for (i = alist_p->root; i != 0; i = i->next) {
-		if (apoint_inday(i, start)) {
-			if (n == num) {
-				if (flag == ERASE_FORCE_ONLY_NOTE)
-					erase_note(&i->note, flag);
-				else {
-					if (notify_bar()) 
-						need_check_notify = 
-						    notify_same_item(i->start);
-					*iptr = i->next;
-					free(i->mesg);
-					erase_note(&i->note, flag);
-					free(i);
-					pthread_mutex_unlock(&(alist_p->mutex));
-					if (need_check_notify) 
-						notify_check_next_app();
-				}
-				return;
-			}
-			n++;
+  n = 0;
+  pthread_mutex_lock (&(alist_p->mutex));
+  iptr = &alist_p->root;
+  for (i = alist_p->root; i != 0; i = i->next)
+    {
+      if (apoint_inday (i, start))
+	{
+	  if (n == num)
+	    {
+	      if (flag == ERASE_FORCE_ONLY_NOTE)
+		erase_note (&i->note, flag);
+	      else
+		{
+		  if (notify_bar ())
+		    need_check_notify = notify_same_item (i->start);
+		  *iptr = i->next;
+		  free (i->mesg);
+		  erase_note (&i->note, flag);
+		  free (i);
+		  pthread_mutex_unlock (&(alist_p->mutex));
+		  if (need_check_notify)
+		    notify_check_next_app ();
 		}
-		iptr = &i->next;
+	      return;
+	    }
+	  n++;
 	}
-	pthread_mutex_unlock(&(alist_p->mutex));
+      iptr = &i->next;
+    }
+  pthread_mutex_unlock (&(alist_p->mutex));
 
-	/* NOTREACHED */
-	ierror(_("FATAL ERROR in apoint_delete_bynum: no such appointment"),
-	    IERROR_FATAL);
+  /* NOTREACHED */
+  ierror (_("FATAL ERROR in apoint_delete_bynum: no such appointment"),
+	  IERROR_FATAL);
 }
 
 /*
@@ -427,54 +461,54 @@ apoint_delete_bynum(long start, unsigned num, erase_flag_e flag)
  * the appointment panel. This is to help the appointment scroll function 
  * to place beggining of the pad correctly.
  */
-static int 
-get_item_line(int item_nb, int nb_events_inday)
+static int
+get_item_line (int item_nb, int nb_events_inday)
 {
-	int separator = 2;
-	int line = 0;
-	
-	if (item_nb <= nb_events_inday)
-		line = item_nb - 1;
-	else 
-		line = nb_events_inday + separator + 
-			(item_nb - (nb_events_inday + 1))*3 - 1;	
-	return line;
+  int separator = 2;
+  int line = 0;
+
+  if (item_nb <= nb_events_inday)
+    line = item_nb - 1;
+  else
+    line = nb_events_inday + separator
+      + (item_nb - (nb_events_inday + 1)) * 3 - 1;
+  return line;
 }
 
 /* 
  * Update (if necessary) the first displayed pad line to make the
  * appointment panel scroll down next time pnoutrefresh is called. 
  */
-void 
-apoint_scroll_pad_down(int nb_events_inday, int win_length) 
+void
+apoint_scroll_pad_down (int nb_events_inday, int win_length)
 {
-	int pad_last_line = 0;
-	int item_first_line = 0, item_last_line = 0;
-	int borders = 6;
-	int awin_length = win_length - borders;
+  int pad_last_line = 0;
+  int item_first_line = 0, item_last_line = 0;
+  int borders = 6;
+  int awin_length = win_length - borders;
 
-	item_first_line = get_item_line(hilt, nb_events_inday);
-	if (hilt < nb_events_inday)
-		item_last_line = item_first_line;
-	else
-		item_last_line = item_first_line + 1;
-	pad_last_line = apad->first_onscreen + awin_length;
-	if (item_last_line >= pad_last_line)
-		apad->first_onscreen = item_last_line - awin_length;
+  item_first_line = get_item_line (hilt, nb_events_inday);
+  if (hilt < nb_events_inday)
+    item_last_line = item_first_line;
+  else
+    item_last_line = item_first_line + 1;
+  pad_last_line = apad->first_onscreen + awin_length;
+  if (item_last_line >= pad_last_line)
+    apad->first_onscreen = item_last_line - awin_length;
 }
 
 /* 
  * Update (if necessary) the first displayed pad line to make the
  * appointment panel scroll up next time pnoutrefresh is called. 
  */
-void 
-apoint_scroll_pad_up(int nb_events_inday)
+void
+apoint_scroll_pad_up (int nb_events_inday)
 {
-	int item_first_line = 0;
+  int item_first_line = 0;
 
-	item_first_line = get_item_line(hilt, nb_events_inday);
-	if (item_first_line < apad->first_onscreen)
-		apad->first_onscreen = item_first_line;
+  item_first_line = get_item_line (hilt, nb_events_inday);
+  if (item_first_line < apad->first_onscreen)
+    apad->first_onscreen = item_first_line;
 }
 
 /*
@@ -482,27 +516,32 @@ apoint_scroll_pad_up(int nb_events_inday)
  * stored in the notify_app structure (which is the next item to be notified).
  */
 struct notify_app_s *
-apoint_check_next(struct notify_app_s *app, long start)
+apoint_check_next (struct notify_app_s *app, long start)
 {
-	apoint_llist_node_t *i;
+  apoint_llist_node_t *i;
 
-	pthread_mutex_lock(&(alist_p->mutex));
-	for (i = alist_p->root; i != 0; i = i->next) { 
-		if (i->start > app->time) {
-			pthread_mutex_unlock(&(alist_p->mutex));
-			return app;
-		} else {
-			if (i->start > start) {
-				app->time = i->start;	
-				app->txt = mycpy(i->mesg);
-				app->state = i->state;
-				app->got_app = 1;
-			} 
-		}
+  pthread_mutex_lock (&(alist_p->mutex));
+  for (i = alist_p->root; i != 0; i = i->next)
+    {
+      if (i->start > app->time)
+	{
+	  pthread_mutex_unlock (&(alist_p->mutex));
+	  return (app);
 	}
-	pthread_mutex_unlock(&(alist_p->mutex));
+      else
+	{
+	  if (i->start > start)
+	    {
+	      app->time = i->start;
+	      app->txt = mycpy (i->mesg);
+	      app->state = i->state;
+	      app->got_app = 1;
+	    }
+	}
+    }
+  pthread_mutex_unlock (&(alist_p->mutex));
 
-	return app;
+  return (app);
 }
 
 /* 
@@ -510,115 +549,120 @@ apoint_check_next(struct notify_app_s *app, long start)
  * recur_apoint_s 
  */
 apoint_llist_node_t *
-apoint_recur_s2apoint_s(recur_apoint_llist_node_t *p)
+apoint_recur_s2apoint_s (recur_apoint_llist_node_t *p)
 {
-	apoint_llist_node_t *a;
+  apoint_llist_node_t *a;
 
-	a = (apoint_llist_node_t *) malloc(sizeof(apoint_llist_node_t));
-	a->mesg = (char *) malloc(strlen(p->mesg) + 1);
-	a->start = p->start;
-	a->dur = p->dur;
-	a->mesg = p->mesg;
-	return a;
+  a = (apoint_llist_node_t *) malloc (sizeof (apoint_llist_node_t));
+  a->mesg = (char *) malloc (strlen (p->mesg) + 1);
+  a->start = p->start;
+  a->dur = p->dur;
+  a->mesg = p->mesg;
+  return (a);
 }
 
 /*
  * Switch notification state.
  */
 void
-apoint_switch_notify(void)
+apoint_switch_notify (void)
 {
-	apoint_llist_node_t *apoint;
-	struct day_item_s *p;
-	long date;
-	int apoint_nb = 0, n, need_chk_notify;
+  apoint_llist_node_t *apoint;
+  struct day_item_s *p;
+  long date;
+  int apoint_nb = 0, n, need_chk_notify;
 
-	p = day_get_item(hilt);
-	if (p->type != APPT && p->type != RECUR_APPT)
-		return;
-	
-	date = calendar_get_slctd_day_sec();
+  p = day_get_item (hilt);
+  if (p->type != APPT && p->type != RECUR_APPT)
+    return;
 
-	if (p->type == RECUR_APPT) {
-		recur_apoint_switch_notify(date, p->appt_pos);
-		return;
-	} else if (p->type == APPT)
-		apoint_nb = day_item_nb(date, hilt, APPT);
-		
-	n = 0;
-	need_chk_notify = 0;
-	pthread_mutex_lock(&(alist_p->mutex));
+  date = calendar_get_slctd_day_sec ();
 
-	for (apoint = alist_p->root; apoint != 0; apoint = apoint->next) {
-		if (apoint_inday(apoint, date)) {
-			if (n == apoint_nb) {
-				apoint->state ^= APOINT_NOTIFY;	
+  if (p->type == RECUR_APPT)
+    {
+      recur_apoint_switch_notify (date, p->appt_pos);
+      return;
+    }
+  else if (p->type == APPT)
+    apoint_nb = day_item_nb (date, hilt, APPT);
 
-				if (notify_bar())
-					notify_check_added(apoint->mesg,
-					    apoint->start, apoint->state);
+  n = 0;
+  need_chk_notify = 0;
+  pthread_mutex_lock (&(alist_p->mutex));
 
-				pthread_mutex_unlock(&(alist_p->mutex));
-				if (need_chk_notify) 
-					notify_check_next_app();
-				return;
-			}
-			n++;
-		}
+  for (apoint = alist_p->root; apoint != 0; apoint = apoint->next)
+    {
+      if (apoint_inday (apoint, date))
+	{
+	  if (n == apoint_nb)
+	    {
+	      apoint->state ^= APOINT_NOTIFY;
+	      if (notify_bar ())
+                {
+                  notify_check_added (apoint->mesg, apoint->start,
+                                      apoint->state);
+                }
+	      pthread_mutex_unlock (&(alist_p->mutex));
+	      if (need_chk_notify)
+		notify_check_next_app ();
+	      return;
+	    }
+	  n++;
 	}
-	pthread_mutex_unlock(&(alist_p->mutex));
+    }
+  pthread_mutex_unlock (&(alist_p->mutex));
 
-	/* NOTREACHED */
-	ierror(
-	    _("FATAL ERROR in apoint_switch_notify: no such appointment"),
-	    IERROR_FATAL);
+  /* NOTREACHED */
+  ierror (_("FATAL ERROR in apoint_switch_notify: no such appointment"),
+	  IERROR_FATAL);
 }
 
 /* Updates the Appointment panel */
-void 
-apoint_update_panel(window_t *winapp, int which_pan)
+void
+apoint_update_panel (window_t *winapp, int which_pan)
 {
-	int title_xpos;
-	int bordr = 1;
-	int title_lines = 3;
-	int app_width = winapp->w - bordr;
-	int app_length = winapp->h - bordr - title_lines;
-	long date;
-	date_t slctd_date;
+  int title_xpos;
+  int bordr = 1;
+  int title_lines = 3;
+  int app_width = winapp->w - bordr;
+  int app_length = winapp->h - bordr - title_lines;
+  long date;
+  date_t slctd_date;
 
-	/* variable inits */
-	slctd_date = *calendar_get_slctd_day();
-	title_xpos = winapp->w - (strlen(_(monthnames[slctd_date.mm - 1])) + 16);
-	if (slctd_date.dd < 10) 
-		title_xpos++;
-	date = date2sec(slctd_date, 0, 0);
-	day_write_pad(date, app_width, app_length, hilt);
+  /* variable inits */
+  slctd_date = *calendar_get_slctd_day ();
+  title_xpos = winapp->w - (strlen (_(monthnames[slctd_date.mm - 1])) + 16);
+  if (slctd_date.dd < 10)
+    title_xpos++;
+  date = date2sec (slctd_date, 0, 0);
+  day_write_pad (date, app_width, app_length, hilt);
 
-	/* Print current date in the top right window corner. */
-	erase_window_part(win[APP].p, 1, title_lines, winapp->w - 2, 
-	    winapp->h - 2);
-	custom_apply_attr(win[APP].p, ATTR_HIGHEST);
-	mvwprintw(win[APP].p, title_lines, title_xpos, "%s  %s %d, %d",
-	   calendar_get_pom(date), _(monthnames[slctd_date.mm - 1]), 
-	   slctd_date.dd, slctd_date.yyyy);
-	custom_remove_attr(win[APP].p, ATTR_HIGHEST);
-	
-	/* Draw the scrollbar if necessary. */
-	if ((apad->length >= app_length)||(apad->first_onscreen > 0)) {
-		float ratio = ((float) app_length) / ((float) apad->length);
-		int sbar_length = (int) (ratio * app_length);
-		int highend = (int) (ratio * apad->first_onscreen);
-		bool hilt_bar = (which_pan == APP) ? true : false;
-		int sbar_top = highend + title_lines + 1;
-		
-		if ((sbar_top + sbar_length) > winapp->h - 1)
-			sbar_length = winapp->h - 1 - sbar_top;
-		draw_scrollbar(win[APP].p, sbar_top, winapp->w - 2, sbar_length,
-				title_lines + 1, winapp->h - 1, hilt_bar);
-	}
+  /* Print current date in the top right window corner. */
+  erase_window_part (win[APP].p, 1, title_lines, winapp->w - 2, winapp->h - 2);
+  custom_apply_attr (win[APP].p, ATTR_HIGHEST);
+  mvwprintw (win[APP].p, title_lines, title_xpos, "%s  %s %d, %d",
+	     calendar_get_pom (date), _(monthnames[slctd_date.mm - 1]),
+	     slctd_date.dd, slctd_date.yyyy);
+  custom_remove_attr (win[APP].p, ATTR_HIGHEST);
 
-	wnoutrefresh(win[APP].p);
-	pnoutrefresh(apad->ptrwin, apad->first_onscreen, 0, 
-	    winapp->y + title_lines + 1, winapp->x + bordr, 
-    	    winapp->y + winapp->h - 2*bordr, winapp->x + winapp->w - 3*bordr);
+  /* Draw the scrollbar if necessary. */
+  if ((apad->length >= app_length) || (apad->first_onscreen > 0))
+    {
+      float ratio = ((float) app_length) / ((float) apad->length);
+      int sbar_length = (int) (ratio * app_length);
+      int highend = (int) (ratio * apad->first_onscreen);
+      bool hilt_bar = (which_pan == APP) ? true : false;
+      int sbar_top = highend + title_lines + 1;
+
+      if ((sbar_top + sbar_length) > winapp->h - 1)
+	sbar_length = winapp->h - 1 - sbar_top;
+      draw_scrollbar (win[APP].p, sbar_top, winapp->w - 2, sbar_length,
+		      title_lines + 1, winapp->h - 1, hilt_bar);
+    }
+
+  wnoutrefresh (win[APP].p);
+  pnoutrefresh (apad->ptrwin, apad->first_onscreen, 0,
+		winapp->y + title_lines + 1, winapp->x + bordr,
+		winapp->y + winapp->h - 2 * bordr,
+		winapp->x + winapp->w - 3 * bordr);
 }

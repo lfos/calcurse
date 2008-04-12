@@ -1,4 +1,4 @@
-/*	$calcurse: vars.c,v 1.7 2008/04/09 20:38:29 culot Exp $	*/
+/*	$calcurse: vars.c,v 1.8 2008/04/12 21:14:03 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -45,29 +45,31 @@ bool colorize = false;
  * variables to store calendar names
  */
 int days[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
-char *monthnames[12] =
-    { N_("January"), 
-      N_("February"), 
-      N_("March"), 
-      N_("April"), 
-      N_("May"), 
-      N_("June"),
-      N_("July"), 
-      N_("August"), 
-      N_("September"), 
-      N_("October"), 
-      N_("November"), 
-      N_("December") };
+char *monthnames[12] = {
+  N_("January"),
+  N_("February"),
+  N_("March"),
+  N_("April"),
+  N_("May"),
+  N_("June"),
+  N_("July"),
+  N_("August"),
+  N_("September"),
+  N_("October"),
+  N_("November"),
+  N_("December")
+};
 
-char *daynames[8] =
-    { N_("Sun"), 
-      N_("Mon"), 
-      N_("Tue"), 
-      N_("Wed"), 
-      N_("Thu"), 
-      N_("Fri"), 
-      N_("Sat"), 
-      N_("Sun") };
+char *daynames[8] = {
+  N_("Sun"),
+  N_("Mon"),
+  N_("Tue"),
+  N_("Wed"),
+  N_("Thu"),
+  N_("Fri"),
+  N_("Sat"),
+  N_("Sun")
+};
 
 /* 
  * variables to store data path names, which are initialized in
@@ -85,51 +87,50 @@ struct pad_s *apad;
 /* Variable to store notify-bar settings. */
 struct nbar_s *nbar;
 
-
 /*
  * Variables init 
  */
-void 
-vars_init(conf_t *conf)
+void
+vars_init (conf_t *conf)
 {
-	char *PATH_VI = "/usr/bin/vi";
-	char *PATH_LESS = "/usr/bin/less";
-	char *ed, *pg;
+  char *PATH_VI = "/usr/bin/vi";
+  char *PATH_LESS = "/usr/bin/less";
+  char *ed, *pg;
 
-	/* Variables for user configuration */
-	conf->confirm_quit = true; 
-	conf->confirm_delete = true; 
-	conf->auto_save = true;
-	conf->skip_system_dialogs = false;
-	conf->skip_progress_bar = false;
-	strncpy(conf->output_datefmt, "%D", 3);
-	conf->input_datefmt = 1;
+  /* Variables for user configuration */
+  conf->confirm_quit = true;
+  conf->confirm_delete = true;
+  conf->auto_save = true;
+  conf->skip_system_dialogs = false;
+  conf->skip_progress_bar = false;
+  strncpy (conf->output_datefmt, "%D", 3);
+  conf->input_datefmt = 1;
 
-	/* Default external editor and pager */
-	ed = getenv("VISUAL");
-	if (ed == NULL || ed[0] == '\0')
-		ed = getenv("EDITOR");
-	if (ed == NULL || ed[0] == '\0')
-		ed = PATH_VI;
-	conf->editor = ed;
+  /* Default external editor and pager */
+  ed = getenv ("VISUAL");
+  if (ed == NULL || ed[0] == '\0')
+    ed = getenv ("EDITOR");
+  if (ed == NULL || ed[0] == '\0')
+    ed = PATH_VI;
+  conf->editor = ed;
 
-	pg = getenv("PAGER");
-	if (pg == NULL || pg[0] == '\0')
-		pg = PATH_LESS;
-	conf->pager = pg;
+  pg = getenv ("PAGER");
+  if (pg == NULL || pg[0] == '\0')
+    pg = PATH_LESS;
+  conf->pager = pg;
 
-	wins_set_layout(1);
+  wins_set_layout (1);
 
-	calendar_set_first_day_of_week(MONDAY);
+  calendar_set_first_day_of_week (MONDAY);
 
-	/* Pad structure to scroll text inside the appointment panel */
-	apad = (struct pad_s *) malloc(sizeof(struct pad_s));
-	apad->length = 1;
-	apad->first_onscreen = 0;
+  /* Pad structure to scroll text inside the appointment panel */
+  apad = (struct pad_s *) malloc (sizeof (struct pad_s));
+  apad->length = 1;
+  apad->first_onscreen = 0;
 
-	/* Attribute definitions for color and non-color terminals */
-	custom_init_attr();
-	
-	/* Start at the current date */
-	calendar_init_slctd_day();
+  /* Attribute definitions for color and non-color terminals */
+  custom_init_attr ();
+
+  /* Start at the current date */
+  calendar_init_slctd_day ();
 }

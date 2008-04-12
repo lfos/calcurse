@@ -1,8 +1,8 @@
-/*	$calcurse: sigs.h,v 1.2 2008/02/14 20:20:23 culot Exp $	*/
+/*	$calcurse: sigs.h,v 1.3 2008/04/12 21:14:03 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2007 Frederic Culot
+ * Copyright (c) 2007-2008 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,6 @@
 #ifndef CALCURSE_SIGS_H
 #define CALCURSE_SIGS_H
 
-void	sigs_init(struct sigaction *);
+void sigs_init (struct sigaction *);
 
 #endif /* CALCURSE_SIGS_H */

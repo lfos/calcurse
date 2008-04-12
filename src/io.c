@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.28 2008/04/09 20:38:29 culot Exp $	*/
+/*	$calcurse: io.c,v 1.29 2008/04/12 21:14:03 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -40,276 +40,291 @@
 #include "apoint.h"
 #include "io.h"
 
-typedef enum {
-	PROGRESS_BAR_SAVE,
-	PROGRESS_BAR_LOAD,
-	PROGRESS_BAR_EXPORT
-} progress_bar_t;
+typedef enum
+{
+  PROGRESS_BAR_SAVE,
+  PROGRESS_BAR_LOAD,
+  PROGRESS_BAR_EXPORT
+}
+progress_bar_t;
 
 
 /* Draw a progress bar while saving, loading or exporting data. */
-static void 
-progress_bar(progress_bar_t type, int progress)
+static void
+progress_bar (progress_bar_t type, int progress)
 {
 #define SLEEPTIME	125000
 #define STEPS		3
 #define LABELENGTH	15
 
-	int i, step;
-	char *mesg_sav  = _("Saving...");
-	char *mesg_load = _("Loading...");
-	char *mesg_export = _("Exporting...");
-	char *barchar = "|";
-	char file[STEPS][LABELENGTH] = {
-	    "[    conf    ]", 
-	    "[    todo    ]", 
-	    "[    apts    ]"
-	}; 
-	char data[STEPS][LABELENGTH] = {
-	    "[   events   ]",
-	    "[appointments]",
-	    "[    todo    ]"
-	};
-	int ipos = LABELENGTH + 2;
-	int epos[STEPS];
-	
-	/* progress bar length init. */
-	ipos = LABELENGTH + 2;
-	step = floor(col / (STEPS + 1));
-	for (i = 0; i < STEPS - 1; i++)
-		epos[i] = (i + 2) * step;
-	epos[STEPS - 1] = col - 2;
+  int i, step;
+  char *mesg_sav = _("Saving...");
+  char *mesg_load = _("Loading...");
+  char *mesg_export = _("Exporting...");
+  char *barchar = "|";
+  char file[STEPS][LABELENGTH] = {
+    "[    conf    ]",
+    "[    todo    ]",
+    "[    apts    ]"
+  };
+  char data[STEPS][LABELENGTH] = {
+    "[   events   ]",
+    "[appointments]",
+    "[    todo    ]"
+  };
+  int ipos = LABELENGTH + 2;
+  int epos[STEPS];
 
-	switch (type) {
-	case PROGRESS_BAR_SAVE:
-		status_mesg(mesg_sav, file[progress]);
-		break;
-	case PROGRESS_BAR_LOAD:
-		status_mesg(mesg_load, file[progress]);
-		break;
-	case PROGRESS_BAR_EXPORT:
-		status_mesg(mesg_export, data[progress]);
-		break;
-	}
+  /* progress bar length init. */
+  ipos = LABELENGTH + 2;
+  step = floor (col / (STEPS + 1));
+  for (i = 0; i < STEPS - 1; i++)
+    epos[i] = (i + 2) * step;
+  epos[STEPS - 1] = col - 2;
 
-	/* Draw the progress bar. */
-	mvwprintw(win[STA].p, 1, ipos, barchar);
-	mvwprintw(win[STA].p, 1, epos[STEPS - 1], barchar);
-	custom_apply_attr(win[STA].p, ATTR_HIGHEST);
-	for (i = ipos + 1; i < epos[progress]; i++)
-		mvwaddch(win[STA].p, 1, i, ' ' | A_REVERSE);
-	custom_remove_attr(win[STA].p, ATTR_HIGHEST);
-	wmove(win[STA].p, 0, 0);
-	wrefresh(win[STA].p);
-	usleep(SLEEPTIME); 
+  switch (type)
+    {
+    case PROGRESS_BAR_SAVE:
+      status_mesg (mesg_sav, file[progress]);
+      break;
+    case PROGRESS_BAR_LOAD:
+      status_mesg (mesg_load, file[progress]);
+      break;
+    case PROGRESS_BAR_EXPORT:
+      status_mesg (mesg_export, data[progress]);
+      break;
+    }
+
+  /* Draw the progress bar. */
+  mvwprintw (win[STA].p, 1, ipos, barchar);
+  mvwprintw (win[STA].p, 1, epos[STEPS - 1], barchar);
+  custom_apply_attr (win[STA].p, ATTR_HIGHEST);
+  for (i = ipos + 1; i < epos[progress]; i++)
+    mvwaddch (win[STA].p, 1, i, ' ' | A_REVERSE);
+  custom_remove_attr (win[STA].p, ATTR_HIGHEST);
+  wmove (win[STA].p, 0, 0);
+  wrefresh (win[STA].p);
+  usleep (SLEEPTIME);
 }
 
 /* Return the recurrence type to dump in iCal format. */
 static char *
-io_recur_type(int type)
+io_recur_type (int type)
 {
- 	char *recur_type[RECUR_TYPES] = 
-	    { "", "DAILY", "WEEKLY", "MONTHLY", "YEARLY" };
-	
-	return (recur_type[type]);
-}	
+  char *recur_type[RECUR_TYPES] =
+      { "", "DAILY", "WEEKLY", "MONTHLY", "YEARLY" };
+
+  return (recur_type[type]);
+}
 
 /* Ask user for a file name to export data to. */
 static FILE *
-io_get_export_stream(void)
+io_get_export_stream (void)
 {
-	FILE *stream;
-	char *home, *stream_name;
-	char *question =
-	    _("Choose the file used to export calcurse data:");
-	char *wrong_name = 
-	    _("The file cannot be accessed, please enter another file name.");
-	char *press_enter =
-	    _("Press [ENTER] to continue.");
-	int cancel;
+  FILE *stream;
+  char *home, *stream_name;
+  char *question = _("Choose the file used to export calcurse data:");
+  char *wrong_name =
+    _("The file cannot be accessed, please enter another file name.");
+  char *press_enter = _("Press [ENTER] to continue.");
+  int cancel;
 
-	stream = NULL;
-	stream_name = (char *)malloc(BUFSIZ);
-	if ((home = getenv("HOME")) != NULL)
-		snprintf(stream_name, BUFSIZ, "%s/calcurse.ics", home);
-	else
-		snprintf(stream_name, BUFSIZ, "/tmp/calcurse.ics");
-	
-	while (stream == NULL) {
-		status_mesg(question, "");
-		cancel = updatestring(win[STA].p, &stream_name, 0, 1);
-		if (cancel) {
-			free(stream_name);
-			return (NULL);
-		}
-		stream = fopen(stream_name, "w");
-		if (stream == NULL) {
-			status_mesg(wrong_name, press_enter);
-			wgetch(win[STA].p);
-		}
+  stream = NULL;
+  stream_name = (char *) malloc (BUFSIZ);
+  if ((home = getenv ("HOME")) != NULL)
+    snprintf (stream_name, BUFSIZ, "%s/calcurse.ics", home);
+  else
+    snprintf (stream_name, BUFSIZ, "/tmp/calcurse.ics");
+
+  while (stream == NULL)
+    {
+      status_mesg (question, "");
+      cancel = updatestring (win[STA].p, &stream_name, 0, 1);
+      if (cancel)
+	{
+	  free (stream_name);
+	  return (NULL);
 	}
-	free(stream_name);
-	
-	return (stream);
-} 
+      stream = fopen (stream_name, "w");
+      if (stream == NULL)
+	{
+	  status_mesg (wrong_name, press_enter);
+	  wgetch (win[STA].p);
+	}
+    }
+  free (stream_name);
+
+  return (stream);
+}
 
 /* iCal alarm notification. */
 static void
-io_export_valarm(FILE *stream)
+io_export_valarm (FILE *stream)
 {
-	fprintf(stream, "BEGIN:VALARM\n");
-	pthread_mutex_lock(&nbar->mutex);
-	fprintf(stream, "TRIGGER:-P%dS\n", nbar->cntdwn);
-	pthread_mutex_unlock(&nbar->mutex);
-	fprintf(stream, "ACTION:DISPLAY\n");
-	fprintf(stream, "END:VALARM\n");
+  fprintf (stream, "BEGIN:VALARM\n");
+  pthread_mutex_lock (&nbar->mutex);
+  fprintf (stream, "TRIGGER:-P%dS\n", nbar->cntdwn);
+  pthread_mutex_unlock (&nbar->mutex);
+  fprintf (stream, "ACTION:DISPLAY\n");
+  fprintf (stream, "END:VALARM\n");
 }
 
 /* Export header. */
 static void
-io_export_header(FILE *stream)
+io_export_header (FILE *stream)
 {
-	fprintf(stream, "BEGIN:VCALENDAR\n");
-	fprintf(stream, "PRODID:-//calcurse//NONSGML v%s//EN\n",
-	    VERSION);
-	fprintf(stream, "VERSION:2.0\n");	
+  fprintf (stream, "BEGIN:VCALENDAR\n");
+  fprintf (stream, "PRODID:-//calcurse//NONSGML v%s//EN\n", VERSION);
+  fprintf (stream, "VERSION:2.0\n");
 }
 
 /* Export footer. */
 static void
-io_export_footer(FILE *stream)
+io_export_footer (FILE *stream)
 {
-	fprintf(stream, "END:VCALENDAR\n");
+  fprintf (stream, "END:VCALENDAR\n");
 }
 
 /* Export recurrent events. */
 static void
-io_export_recur_events(FILE *stream)
+io_export_recur_events (FILE *stream)
 {
-	struct recur_event_s *i;
-	struct days_s *day;
-	char ical_date[BUFSIZ];
+  struct recur_event_s *i;
+  struct days_s *day;
+  char ical_date[BUFSIZ];
 
-	for (i = recur_elist; i != 0; i = i->next) { 
-		date_sec2ical_date(i->day, ical_date);
-		fprintf(stream, "BEGIN:VEVENT\n");
-		fprintf(stream, "DTSTART:%s\n", ical_date);
-		fprintf(stream, "RRULE:FREQ=%s;INTERVAL=%d",
-		    io_recur_type(i->rpt->type), i->rpt->freq);
+  for (i = recur_elist; i != 0; i = i->next)
+    {
+      date_sec2ical_date (i->day, ical_date);
+      fprintf (stream, "BEGIN:VEVENT\n");
+      fprintf (stream, "DTSTART:%s\n", ical_date);
+      fprintf (stream, "RRULE:FREQ=%s;INTERVAL=%d",
+	       io_recur_type (i->rpt->type), i->rpt->freq);
 
-		if (i->rpt->until != 0) {
-			date_sec2ical_date(i->rpt->until, ical_date);
-			fprintf(stream, ";UNTIL=%s\n", ical_date);
-		} else
-			fprintf(stream, "\n");
-
-		if (i->exc != NULL) {
-			date_sec2ical_date(i->exc->st, ical_date);
-			fprintf(stream, "EXDATE:%s", ical_date);
-			for (day = i->exc->next; day; day = day->next) {
-				date_sec2ical_date(day->st, ical_date);
-				fprintf(stream, ",%s", ical_date);
-			}
-			fprintf(stream, "\n");
-		}	
-
-		fprintf(stream, "SUMMARY:%s\n", i->mesg);
-		fprintf(stream, "END:VEVENT\n");
+      if (i->rpt->until != 0)
+	{
+	  date_sec2ical_date (i->rpt->until, ical_date);
+	  fprintf (stream, ";UNTIL=%s\n", ical_date);
 	}
+      else
+	fprintf (stream, "\n");
+
+      if (i->exc != NULL)
+	{
+	  date_sec2ical_date (i->exc->st, ical_date);
+	  fprintf (stream, "EXDATE:%s", ical_date);
+	  for (day = i->exc->next; day; day = day->next)
+	    {
+	      date_sec2ical_date (day->st, ical_date);
+	      fprintf (stream, ",%s", ical_date);
+	    }
+	  fprintf (stream, "\n");
+	}
+
+      fprintf (stream, "SUMMARY:%s\n", i->mesg);
+      fprintf (stream, "END:VEVENT\n");
+    }
 }
 
 /* Export events. */
 static void
-io_export_events(FILE *stream)
+io_export_events (FILE *stream)
 {
-	struct event_s *i;
-	char ical_date[BUFSIZ];
-	
-	for (i = eventlist; i != 0; i = i->next) { 
-		date_sec2ical_date(i->day, ical_date);
-		fprintf(stream, "BEGIN:VEVENT\n");
-		fprintf(stream, "DTSTART:%s\n", ical_date);
-		fprintf(stream, "SUMMARY:%s\n", i->mesg);
-		fprintf(stream, "END:VEVENT\n");
-	}
+  struct event_s *i;
+  char ical_date[BUFSIZ];
+
+  for (i = eventlist; i != 0; i = i->next)
+    {
+      date_sec2ical_date (i->day, ical_date);
+      fprintf (stream, "BEGIN:VEVENT\n");
+      fprintf (stream, "DTSTART:%s\n", ical_date);
+      fprintf (stream, "SUMMARY:%s\n", i->mesg);
+      fprintf (stream, "END:VEVENT\n");
+    }
 }
 
 /* Export recurrent appointments. */
 static void
-io_export_recur_apoints(FILE *stream)
+io_export_recur_apoints (FILE *stream)
 {
-	recur_apoint_llist_node_t *i;
-	struct days_s *day;
-	char ical_datetime[BUFSIZ];
-	char ical_date[BUFSIZ];
-	
-	pthread_mutex_lock(&(recur_alist_p->mutex));
-	for (i = recur_alist_p->root; i != 0; i = i->next) { 
-		date_sec2ical_datetime(i->start, ical_datetime);
-		fprintf(stream, "BEGIN:VEVENT\n");
-		fprintf(stream, "DTSTART:%s\n", ical_datetime);
-		fprintf(stream, "DURATION:P%ldS\n", i->dur);
-		fprintf(stream, "RRULE:FREQ=%s;INTERVAL=%d",
-		    io_recur_type(i->rpt->type), i->rpt->freq);
+  recur_apoint_llist_node_t *i;
+  struct days_s *day;
+  char ical_datetime[BUFSIZ];
+  char ical_date[BUFSIZ];
 
-		if (i->rpt->until != 0) {
-			date_sec2ical_date(i->rpt->until + HOURINSEC, 
-			    ical_date);
-			fprintf(stream, ";UNTIL=%s\n", ical_date);
-		} else
-			fprintf(stream, "\n");
+  pthread_mutex_lock (&(recur_alist_p->mutex));
+  for (i = recur_alist_p->root; i != 0; i = i->next)
+    {
+      date_sec2ical_datetime (i->start, ical_datetime);
+      fprintf (stream, "BEGIN:VEVENT\n");
+      fprintf (stream, "DTSTART:%s\n", ical_datetime);
+      fprintf (stream, "DURATION:P%ldS\n", i->dur);
+      fprintf (stream, "RRULE:FREQ=%s;INTERVAL=%d",
+	       io_recur_type (i->rpt->type), i->rpt->freq);
 
-		if (i->exc != NULL) {
-			date_sec2ical_date(i->exc->st, ical_date);
-			fprintf(stream, "EXDATE:%s", ical_date);
-			for (day = i->exc->next; day; day = day->next) {
-				date_sec2ical_date(day->st, ical_date);
-				fprintf(stream, ",%s", ical_date);
-			}
-			fprintf(stream, "\n");
-		}	
-
-		fprintf(stream, "SUMMARY:%s\n", i->mesg);
-		if (i->state & APOINT_NOTIFY)
-			io_export_valarm(stream);
-		fprintf(stream, "END:VEVENT\n");
+      if (i->rpt->until != 0)
+	{
+	  date_sec2ical_date (i->rpt->until + HOURINSEC, ical_date);
+	  fprintf (stream, ";UNTIL=%s\n", ical_date);
 	}
-	pthread_mutex_unlock(&(recur_alist_p->mutex));
+      else
+	fprintf (stream, "\n");
+
+      if (i->exc != NULL)
+	{
+	  date_sec2ical_date (i->exc->st, ical_date);
+	  fprintf (stream, "EXDATE:%s", ical_date);
+	  for (day = i->exc->next; day; day = day->next)
+	    {
+	      date_sec2ical_date (day->st, ical_date);
+	      fprintf (stream, ",%s", ical_date);
+	    }
+	  fprintf (stream, "\n");
+	}
+
+      fprintf (stream, "SUMMARY:%s\n", i->mesg);
+      if (i->state & APOINT_NOTIFY)
+	io_export_valarm (stream);
+      fprintf (stream, "END:VEVENT\n");
+    }
+  pthread_mutex_unlock (&(recur_alist_p->mutex));
 }
 
 /* Export appointments. */
 static void
-io_export_apoints(FILE *stream)
+io_export_apoints (FILE *stream)
 {
-	apoint_llist_node_t *i;
-	char ical_datetime[BUFSIZ];
-	
-	pthread_mutex_lock(&(alist_p->mutex));
-	for (i = alist_p->root; i != 0; i = i->next) { 
-		date_sec2ical_datetime(i->start, ical_datetime);
-		fprintf(stream, "BEGIN:VEVENT\n");
-		fprintf(stream, "DTSTART:%s\n", ical_datetime);
-		fprintf(stream, "DURATION:P%ldS\n", i->dur);
-		fprintf(stream, "SUMMARY:%s\n", i->mesg);
-		if (i->state & APOINT_NOTIFY)
-			io_export_valarm(stream);
-		fprintf(stream, "END:VEVENT\n");
-	}
-	pthread_mutex_unlock(&(alist_p->mutex));
+  apoint_llist_node_t *i;
+  char ical_datetime[BUFSIZ];
+
+  pthread_mutex_lock (&(alist_p->mutex));
+  for (i = alist_p->root; i != 0; i = i->next)
+    {
+      date_sec2ical_datetime (i->start, ical_datetime);
+      fprintf (stream, "BEGIN:VEVENT\n");
+      fprintf (stream, "DTSTART:%s\n", ical_datetime);
+      fprintf (stream, "DURATION:P%ldS\n", i->dur);
+      fprintf (stream, "SUMMARY:%s\n", i->mesg);
+      if (i->state & APOINT_NOTIFY)
+	io_export_valarm (stream);
+      fprintf (stream, "END:VEVENT\n");
+    }
+  pthread_mutex_unlock (&(alist_p->mutex));
 }
 
 /* Export todo items. */
 static void
-io_export_todo(FILE *stream)
+io_export_todo (FILE *stream)
 {
-	struct todo_s *i;	
+  struct todo_s *i;
 
-	for (i = todolist; i != 0; i = i->next) {
-		fprintf(stream, "BEGIN:VTODO\n");
-		fprintf(stream, "PRIORITY:%d\n", i->id);
-		fprintf(stream, "SUMMARY:%s\n", i->mesg);
-		fprintf(stream, "END:VTODO\n");
-	}
+  for (i = todolist; i != 0; i = i->next)
+    {
+      fprintf (stream, "BEGIN:VTODO\n");
+      fprintf (stream, "PRIORITY:%d\n", i->id);
+      fprintf (stream, "SUMMARY:%s\n", i->mesg);
+      fprintf (stream, "END:VTODO\n");
+    }
 }
 
 /* 
@@ -319,475 +334,550 @@ io_export_todo(FILE *stream)
  * is created.
  */
 void
-io_init(char *cfile)
+io_init (char *cfile)
 {
-	FILE *data_file;
-	char *home;
-	char apts_file[BUFSIZ] = "";
-	int ch;
+  FILE *data_file;
+  char *home;
+  char apts_file[BUFSIZ] = "";
+  int ch;
 
-	home = getenv("HOME");
-	if (home == NULL) {
-		home = ".";
-	}
-	snprintf(path_dir, BUFSIZ, "%s/" DIR_NAME, home);
-	snprintf(path_todo, BUFSIZ, "%s/" TODO_PATH, home);
-	snprintf(path_conf, BUFSIZ, "%s/" CONF_PATH, home);
-	snprintf(path_notes, BUFSIZ, "%s/" NOTES_DIR, home);
-	if (cfile == NULL) {
-		snprintf(path_apts, BUFSIZ, "%s/" APTS_PATH, home);
-	} else {
-		snprintf(apts_file, BUFSIZ, "%s", cfile);
-		strncpy(path_apts, apts_file, BUFSIZ);
-		/* check if the file exists, otherwise create it */
-		data_file = fopen(path_apts, "r");
-		if (data_file == NULL) {
-			printf(_("%s does not exist, create it now [y or n] ? "), path_apts);
-			ch = getchar();
-			switch (ch) {
-				case 'N':
-				case 'n':
-					printf(_("aborting...\n"));
-					exit(EXIT_FAILURE);
-					break;
+  home = getenv ("HOME");
+  if (home == NULL)
+    {
+      home = ".";
+    }
+  snprintf (path_dir, BUFSIZ, "%s/" DIR_NAME, home);
+  snprintf (path_todo, BUFSIZ, "%s/" TODO_PATH, home);
+  snprintf (path_conf, BUFSIZ, "%s/" CONF_PATH, home);
+  snprintf (path_notes, BUFSIZ, "%s/" NOTES_DIR, home);
+  if (cfile == NULL)
+    {
+      snprintf (path_apts, BUFSIZ, "%s/" APTS_PATH, home);
+    }
+  else
+    {
+      snprintf (apts_file, BUFSIZ, "%s", cfile);
+      strncpy (path_apts, apts_file, BUFSIZ);
+      /* check if the file exists, otherwise create it */
+      data_file = fopen (path_apts, "r");
+      if (data_file == NULL)
+	{
+	  printf (_("%s does not exist, create it now [y or n] ? "), path_apts);
+	  ch = getchar ();
+	  switch (ch)
+	    {
+	    case 'N':
+	    case 'n':
+	      printf (_("aborting...\n"));
+	      exit (EXIT_FAILURE);
+	      break;
 
-				case 'Y':
-				case 'y':
-					data_file = fopen(path_apts, "w");
-					if (data_file == NULL) {
-						perror(path_apts);
-						exit(EXIT_FAILURE);
-					} else {
-						printf(_("%s successfully created\n"),path_apts);
-						printf(_("starting interactive mode...\n"));
-					}
-					break;
-
-				default:
-					printf(_("aborting...\n"));
-					exit(EXIT_FAILURE);
-					break;
-			} 
+	    case 'Y':
+	    case 'y':
+	      data_file = fopen (path_apts, "w");
+	      if (data_file == NULL)
+		{
+		  perror (path_apts);
+		  exit (EXIT_FAILURE);
 		}
-		fclose(data_file);
+	      else
+		{
+		  printf (_("%s successfully created\n"), path_apts);
+		  printf (_("starting interactive mode...\n"));
+		}
+	      break;
+
+	    default:
+	      printf (_("aborting...\n"));
+	      exit (EXIT_FAILURE);
+	      break;
+	    }
 	}
+      fclose (data_file);
+    }
 }
 
   /* get data from file */
-void 
-io_extract_data(char *dst_data, const char *org, int len)
+void
+io_extract_data (char *dst_data, const char *org, int len)
 {
-	for (;;) {
-		if (*org == '\n' || *org == '\0')
-			break;
-		*dst_data++ = *org++;
-	}
-	*dst_data = '\0';
+  for (;;)
+    {
+      if (*org == '\n' || *org == '\0')
+	break;
+      *dst_data++ = *org++;
+    }
+  *dst_data = '\0';
 }
 
 /* Save the calendar data */
 void
-io_save_cal(conf_t *conf)
+io_save_cal (conf_t *conf)
 {
-	FILE *data_file;
-	struct event_s *k;
-	apoint_llist_node_t *j;
-	struct todo_s *i;
-	char theme_name[BUFSIZ];
-	char *access_pb = _("Problems accessing data file ...");
-	char *config_txt =
-	    "#\n# Calcurse configuration file\n#\n# This file sets the configuration options used by Calcurse. These\n# options are usually set from within Calcurse. A line beginning with \n# a space or tab is considered to be a continuation of the previous line.\n# For a variable to be unset its value must be blank.\n# To set a variable to the empty string its value should be \"\".\n# Lines beginning with \"#\" are comments, and ignored by Calcurse.\n";
-	char *save_success = _("The data files were successfully saved");
-	char *enter = _("Press [ENTER] to continue");
-	bool show_bar = false;
+  FILE *data_file;
+  struct event_s *k;
+  apoint_llist_node_t *j;
+  struct todo_s *i;
+  char theme_name[BUFSIZ];
+  char *access_pb = _("Problems accessing data file ...");
+  char *config_txt =
+    "#\n"
+    "# Calcurse configuration file\n#\n"
+    "# This file sets the configuration options used by Calcurse. These\n"
+    "# options are usually set from within Calcurse. A line beginning with \n"
+    "# a space or tab is considered to be a continuation of the previous "
+    "line.\n"
+    "# For a variable to be unset its value must be blank.\n"
+    "# To set a variable to the empty string its value should be \"\".\n"
+    "# Lines beginning with \"#\" are comments, and ignored by Calcurse.\n";
+  char *save_success = _("The data files were successfully saved");
+  char *enter = _("Press [ENTER] to continue");
+  bool show_bar = false;
 
-	if (!conf->skip_progress_bar) 
-		show_bar = true;
+  if (!conf->skip_progress_bar)
+    show_bar = true;
 
-	/* Save the user configuration. */
-	
-	if (show_bar) 
-		progress_bar(PROGRESS_BAR_SAVE, 0);
-	data_file = fopen(path_conf, "w");
-	if (data_file == (FILE *) 0)
-                status_mesg(access_pb, "");
-	else {
-		custom_color_theme_name(theme_name);
+  /* Save the user configuration. */
 
-		fprintf(data_file, "%s\n", config_txt);
+  if (show_bar)
+    progress_bar (PROGRESS_BAR_SAVE, 0);
+  data_file = fopen (path_conf, "w");
+  if (data_file == (FILE *) 0)
+    status_mesg (access_pb, "");
+  else
+    {
+      custom_color_theme_name (theme_name);
 
-		fprintf(data_file,
-		    "# If this option is set to yes, automatic save is done when quitting\n");
-		fprintf(data_file, "auto_save=\n");
-		fprintf(data_file, "%s\n", (conf->auto_save) ? "yes" : "no");
+      fprintf (data_file, "%s\n", config_txt);
 
-		fprintf(data_file,
-		    "\n# If this option is set to yes, confirmation is required before quitting\n");
-		fprintf(data_file, "confirm_quit=\n");
-		fprintf(data_file, "%s\n", (conf->confirm_quit) ? "yes" : "no");
+      fprintf (data_file,
+	       "# If this option is set to yes, "
+               "automatic save is done when quitting\n");
+      fprintf (data_file, "auto_save=\n");
+      fprintf (data_file, "%s\n", (conf->auto_save) ? "yes" : "no");
 
-		fprintf(data_file,
-		    "\n# If this option is set to yes, confirmation is required before deleting an event\n");
-		fprintf(data_file, "confirm_delete=\n");
-		fprintf(data_file, "%s\n", 
-			(conf->confirm_delete) ? "yes" : "no");
+      fprintf (data_file,
+	       "\n# If this option is set to yes, "
+               "confirmation is required before quitting\n");
+      fprintf (data_file, "confirm_quit=\n");
+      fprintf (data_file, "%s\n", (conf->confirm_quit) ? "yes" : "no");
 
-		fprintf(data_file,
-		    "\n# If this option is set to yes, messages about loaded and saved data will not be displayed\n");
-		fprintf(data_file, "skip_system_dialogs=\n");
-		fprintf(data_file, "%s\n", 
-			(conf->skip_system_dialogs) ? "yes" : "no");
+      fprintf (data_file,
+	       "\n# If this option is set to yes, "
+               "confirmation is required before deleting an event\n");
+      fprintf (data_file, "confirm_delete=\n");
+      fprintf (data_file, "%s\n", (conf->confirm_delete) ? "yes" : "no");
 
-		fprintf(data_file,
-		    "\n# If this option is set to yes, progress bar appearing when saving data will not be displayed\n");
-		fprintf(data_file, "skip_progress_bar=\n");
-		fprintf(data_file, "%s\n", 
-			(conf->skip_progress_bar) ? "yes" : "no");
+      fprintf (data_file,
+	       "\n# If this option is set to yes, "
+               "messages about loaded and saved data will not be displayed\n");
+      fprintf (data_file, "skip_system_dialogs=\n");
+      fprintf (data_file, "%s\n", (conf->skip_system_dialogs) ? "yes" : "no");
 
-		fprintf(data_file,
-		    "\n# If this option is set to yes, monday is the first day of the week, else it is sunday\n");
-		fprintf(data_file, "week_begins_on_monday=\n");
-		fprintf(data_file, "%s\n", 
-			(calendar_week_begins_on_monday()) ? "yes" : "no");
+      fprintf (data_file,
+	       "\n# If this option is set to yes, progress bar appearing "
+               "when saving data will not be displayed\n");
+      fprintf (data_file, "skip_progress_bar=\n");
+      fprintf (data_file, "%s\n", (conf->skip_progress_bar) ? "yes" : "no");
 
-		fprintf(data_file,
-		    "\n# This is the color theme used for menus :\n");
-		fprintf(data_file, "color-theme=\n");
-		fprintf(data_file, "%s\n", theme_name);
+      fprintf (data_file,
+	       "\n# If this option is set to yes, "
+               "monday is the first day of the week, else it is sunday\n");
+      fprintf (data_file, "week_begins_on_monday=\n");
+      fprintf (data_file, "%s\n",
+	       (calendar_week_begins_on_monday ())? "yes" : "no");
 
-		fprintf(data_file,
-		    "\n# This is the layout of the calendar :\n");
-		fprintf(data_file, "layout=\n");
-		fprintf(data_file, "%d\n", wins_layout());
+      fprintf (data_file, "\n# This is the color theme used for menus :\n");
+      fprintf (data_file, "color-theme=\n");
+      fprintf (data_file, "%s\n", theme_name);
 
-		pthread_mutex_lock(&nbar->mutex);
-		fprintf(data_file,
-		    "\n# If this option is set to yes, notify-bar will be displayed :\n");
-		fprintf(data_file, "notify-bar_show=\n");
-		fprintf(data_file, "%s\n", (nbar->show) ? "yes" : "no");
-		
-		fprintf(data_file,
-		    "\n# Format of the date to be displayed inside notify-bar :\n");
-		fprintf(data_file, "notify-bar_date=\n");
-		fprintf(data_file, "%s\n", nbar->datefmt);
+      fprintf (data_file, "\n# This is the layout of the calendar :\n");
+      fprintf (data_file, "layout=\n");
+      fprintf (data_file, "%d\n", wins_layout ());
 
-		fprintf(data_file,
-		    "\n# Format of the time to be displayed inside notify-bar :\n");
-		fprintf(data_file, "notify-bar_clock=\n");
-		fprintf(data_file, "%s\n", nbar->timefmt);
+      pthread_mutex_lock (&nbar->mutex);
+      fprintf (data_file,
+	       "\n# If this option is set to yes, "
+               "notify-bar will be displayed :\n");
+      fprintf (data_file, "notify-bar_show=\n");
+      fprintf (data_file, "%s\n", (nbar->show) ? "yes" : "no");
 
-		fprintf(data_file,
-		    "\n# Warn user if he has an appointment within next 'notify-bar_warning' seconds :\n");
-		fprintf(data_file, "notify-bar_warning=\n");
-		fprintf(data_file, "%d\n", nbar->cntdwn);
+      fprintf (data_file,
+	       "\n# Format of the date to be displayed inside notify-bar :\n");
+      fprintf (data_file, "notify-bar_date=\n");
+      fprintf (data_file, "%s\n", nbar->datefmt);
 
-		fprintf(data_file,
-		    "\n# Command used to notify user of an upcoming appointment :\n");
-		fprintf(data_file, "notify-bar_command=\n");
-		fprintf(data_file, "%s\n", nbar->cmd);
+      fprintf (data_file,
+	       "\n# Format of the time to be displayed inside notify-bar :\n");
+      fprintf (data_file, "notify-bar_clock=\n");
+      fprintf (data_file, "%s\n", nbar->timefmt);
 
-   		fprintf(data_file,
-			"\n# Format of the date to be displayed in non-interactive mode :\n");
-		fprintf(data_file, "output_datefmt=\n");
-		fprintf(data_file, "%s\n", conf->output_datefmt);
+      fprintf (data_file,
+	       "\n# Warn user if he has an appointment within next "
+               "'notify-bar_warning' seconds :\n");
+      fprintf (data_file, "notify-bar_warning=\n");
+      fprintf (data_file, "%d\n", nbar->cntdwn);
 
-		fprintf(data_file,
-			"\n# Format to be used when entering a date (1-mm/dd/yyyy, 2-dd/mm/yyyy, 3-yyyy/mm/dd) :\n");
-		fprintf(data_file, "input_datefmt=\n");
-		fprintf(data_file, "%d\n", conf->input_datefmt);
+      fprintf (data_file,
+	       "\n# Command used to notify user of "
+               "an upcoming appointment :\n");
+      fprintf (data_file, "notify-bar_command=\n");
+      fprintf (data_file, "%s\n", nbar->cmd);
 
-		pthread_mutex_unlock(&nbar->mutex);
+      fprintf (data_file,
+	       "\n# Format of the date to be displayed "
+               "in non-interactive mode :\n");
+      fprintf (data_file, "output_datefmt=\n");
+      fprintf (data_file, "%s\n", conf->output_datefmt);
 
-		fclose(data_file);
+      fprintf (data_file,
+	       "\n# Format to be used when entering a date "
+               "(1-mm/dd/yyyy, 2-dd/mm/yyyy, 3-yyyy/mm/dd) :\n");
+      fprintf (data_file, "input_datefmt=\n");
+      fprintf (data_file, "%d\n", conf->input_datefmt);
+
+      pthread_mutex_unlock (&nbar->mutex);
+
+      fclose (data_file);
+    }
+
+  /* Save the todo data file. */
+  if (show_bar)
+    progress_bar (PROGRESS_BAR_SAVE, 1);
+  data_file = fopen (path_todo, "w");
+  if (data_file == (FILE *) 0)
+    status_mesg (access_pb, "");
+  else
+    {
+      for (i = todolist; i != 0; i = i->next)
+	{
+	  if (i->note != NULL)
+	    fprintf (data_file, "[%d]>%s %s\n", i->id, i->note, i->mesg);
+	  else
+	    fprintf (data_file, "[%d] %s\n", i->id, i->mesg);
 	}
+      fclose (data_file);
+    }
 
-	/* Save the todo data file. */
-	if (show_bar) 
-		progress_bar(PROGRESS_BAR_SAVE, 1);
-	data_file = fopen(path_todo, "w");
-	if (data_file == (FILE *) 0)
-	        status_mesg(access_pb, ""); 
-	else {
-		for (i = todolist; i != 0; i = i->next) {
-			if (i->note != NULL)
-				fprintf(data_file, "[%d]>%s %s\n", i->id, 
-				    i->note, i->mesg);
-			else
-				fprintf(data_file, "[%d] %s\n", i->id, i->mesg);
-		}
-		fclose(data_file);
-	}
+  /* 
+   * Save the apts data file, which contains the 
+   * appointments first, and then the events. 
+   * Recursive items are written first.
+   */
+  if (show_bar)
+    progress_bar (PROGRESS_BAR_SAVE, 2);
+  data_file = fopen (path_apts, "w");
+  if (data_file == (FILE *) 0)
+    status_mesg (access_pb, "");
+  else
+    {
+      recur_save_data (data_file);
 
-	/* 
-         * Save the apts data file, which contains the 
-         * appointments first, and then the events. 
-	 * Recursive items are written first.
-         */
-	if (show_bar) 
-		progress_bar(PROGRESS_BAR_SAVE, 2);
-	data_file = fopen(path_apts, "w");
-	if (data_file == (FILE *) 0)
-	        status_mesg(access_pb, "");
-	else {
-		recur_save_data(data_file);
+      pthread_mutex_lock (&(alist_p->mutex));
+      for (j = alist_p->root; j != 0; j = j->next)
+	apoint_write (j, data_file);
+      pthread_mutex_unlock (&(alist_p->mutex));
 
-		pthread_mutex_lock(&(alist_p->mutex));
-		for (j = alist_p->root; j != 0; j = j->next)
-			apoint_write(j, data_file);
-		pthread_mutex_unlock(&(alist_p->mutex));
+      for (k = eventlist; k != 0; k = k->next)
+	event_write (k, data_file);
+      fclose (data_file);
+    }
 
-		for (k = eventlist; k != 0; k = k->next)
-			event_write(k, data_file);
-		fclose(data_file);
-	}
- 
-
-	/* Print a message telling data were saved */
-        if (!conf->skip_system_dialogs) {
-                status_mesg(save_success, enter);
-                wgetch(win[STA].p);
-        }
+  /* Print a message telling data were saved */
+  if (!conf->skip_system_dialogs)
+    {
+      status_mesg (save_success, enter);
+      wgetch (win[STA].p);
+    }
 }
 
 /* 
  * Check what type of data is written in the appointment file, 
  * and then load either: a new appointment, a new event, or a new
  * recursive item (which can also be either an event or an appointment).
- */ 
-void 
-io_load_app(void)
+ */
+void
+io_load_app (void)
 {
-	FILE *data_file;
-	int c, is_appointment, is_event, is_recursive;
-        struct tm start, end, until, *lt;
-	struct days_s *exc = NULL;
-        time_t t;
-        int id = 0;
-	int freq;
-	char type, state = 0L;
-	char note[NOTESIZ + 1], *notep;
-	char *error = 
-		_("FATAL ERROR in io_load_app: wrong format in the appointment or event\n");
+  FILE *data_file;
+  int c, is_appointment, is_event, is_recursive;
+  struct tm start, end, until, *lt;
+  struct days_s *exc = NULL;
+  time_t t;
+  int id = 0;
+  int freq;
+  char type, state = 0L;
+  char note[NOTESIZ + 1], *notep;
+  char *error =
+    _("FATAL ERROR in io_load_app: wrong format in the appointment or event\n");
 
-        t = time(NULL);
-        lt = localtime(&t);
-        start = end = until = *lt;
-	
-	data_file = fopen(path_apts, "r");
-	for (;;) {
-                is_appointment = is_event = is_recursive = 0;
-		c = getc(data_file);
-		if (c == EOF)
-			break;
-		ungetc(c, data_file);
+  t = time (NULL);
+  lt = localtime (&t);
+  start = end = until = *lt;
 
-                /* Read the date first: it is common to both events
-                 * and appointments. 
-                 */
-                if (fscanf(data_file, "%u / %u / %u ", 
-                           &start.tm_mon, &start.tm_mday, &start.tm_year) != 3) {
-                        fputs(_("FATAL ERROR in io_load_app: "
-				"syntax error in the item date\n"), stderr);
-                        exit(EXIT_FAILURE);
-                }
+  data_file = fopen (path_apts, "r");
+  for (;;)
+    {
+      is_appointment = is_event = is_recursive = 0;
+      c = getc (data_file);
+      if (c == EOF)
+	break;
+      ungetc (c, data_file);
 
-                /* Read the next character : if it is an '@' then we have
-                 * an appointment, else if it is an '[' we have en event.
-                 */
-                c = getc(data_file);
-
-                if (c == '@')
-                        is_appointment = 1;
-                else if (c == '[')
-                        is_event = 1;
-                else {
-                        fputs(_("FATAL ERROR in io_load_app: "
-				"no event nor appointment found\n"), stderr);
-                        exit(EXIT_FAILURE);
-                }
-                ungetc(c, data_file);
-
-                /* Read the remaining informations. */
-                if (is_appointment) {
-                        fscanf(data_file, "@ %u : %u -> %u / %u / %u @ %u : %u ",
-                               &start.tm_hour, &start.tm_min,
-                               &end.tm_mon, &end.tm_mday, &end.tm_year,
-                               &end.tm_hour, &end.tm_min); 
-                } else if (is_event) {
-                        fscanf(data_file, "[%d] ", &id);
-                } else { /* NOT REACHED */
-                  	fputs(error, stderr);
-			exit(EXIT_FAILURE);
-                }
-		
-		/* Check if we have a recursive item. */
-		c = getc(data_file);
-
-		if (c == '{') {
-			ungetc(c, data_file);
-			is_recursive = 1;
-			fscanf(data_file, "{ %d%c ", &freq, &type);
-
-			c = getc(data_file);
-			if (c == '}') { /* endless recurrent item */
-				ungetc(c, data_file);
-				fscanf(data_file, "} ");
-				until.tm_year = 0;	
-			} else if (c == '-') {
-				ungetc(c, data_file);
-				fscanf(data_file, " -> %u / %u / %u ",
-					&until.tm_mon, &until.tm_mday, 
-					&until.tm_year);
-				c = getc(data_file);
-				if (c == '!') {
-					ungetc(c, data_file);
-					exc = recur_exc_scan(data_file);
-					c = getc(data_file);
-				} else {
-					ungetc(c, data_file);
-					fscanf(data_file, "} ");
-				}
-			} else if (c == '!') { // endless item with exceptions
-				ungetc(c, data_file);
-				exc = recur_exc_scan(data_file);
-				c = getc(data_file);
-				until.tm_year = 0;
-			} else { /* NOT REACHED */
-				fputs(error, stderr);
-				exit(EXIT_FAILURE);
-			}
-		} else 
-			ungetc(c, data_file);
-
-		/* Check if a note is attached to the item. */
-		c = getc(data_file);
-		if (c == '>') {
-			fgets(note, NOTESIZ + 1, data_file);
-			note[NOTESIZ] = '\0';
-			notep = note;
-			getc(data_file);
-		} else {
-			notep = NULL;
-			ungetc(c, data_file);
-		}
-
-		/*
-		 * Last: read the item description and load it into its
-		 * corresponding linked list, depending on the item type.
-		 */
-		if (is_appointment) {
-			c = getc(data_file);
-			if (c == '!') {
-				ungetc(c, data_file);
-				fscanf(data_file, " ! ");
-				state |= APOINT_NOTIFY;
-			} else {
-				ungetc(c, data_file);
-				fscanf(data_file, " | ");
-				state = 0L;
-			}
-			if (is_recursive) {
-				recur_apoint_scan(data_file, start, end,
-				    type, freq, until, notep, exc, state);
-			} else {
-				apoint_scan(data_file, start, end, state, 
-				    notep);
-			}
-		} else if (is_event) {
-			if (is_recursive) {
-				recur_event_scan(data_file, start, id, type, 
-				    freq, until, notep, exc);
-			} else {
-				event_scan(data_file, start, id, notep);
-			}
-		} else { /* NOT REACHED */
-			fputs(error, stderr);
-			exit(EXIT_FAILURE);	
-		}
+      /* Read the date first: it is common to both events
+       * and appointments. 
+       */
+      if (fscanf (data_file, "%u / %u / %u ",
+		  &start.tm_mon, &start.tm_mday, &start.tm_year) != 3)
+	{
+	  fputs (_("FATAL ERROR in io_load_app: "
+		   "syntax error in the item date\n"), stderr);
+	  exit (EXIT_FAILURE);
 	}
-	fclose(data_file);
+
+      /* Read the next character : if it is an '@' then we have
+       * an appointment, else if it is an '[' we have en event.
+       */
+      c = getc (data_file);
+
+      if (c == '@')
+	is_appointment = 1;
+      else if (c == '[')
+	is_event = 1;
+      else
+	{
+	  fputs (_("FATAL ERROR in io_load_app: "
+		   "no event nor appointment found\n"), stderr);
+	  exit (EXIT_FAILURE);
+	}
+      ungetc (c, data_file);
+
+      /* Read the remaining informations. */
+      if (is_appointment)
+	{
+	  fscanf (data_file, "@ %u : %u -> %u / %u / %u @ %u : %u ",
+		  &start.tm_hour, &start.tm_min,
+		  &end.tm_mon, &end.tm_mday, &end.tm_year,
+		  &end.tm_hour, &end.tm_min);
+	}
+      else if (is_event)
+	{
+	  fscanf (data_file, "[%d] ", &id);
+	}
+      else
+	{			/* NOT REACHED */
+	  fputs (error, stderr);
+	  exit (EXIT_FAILURE);
+	}
+
+      /* Check if we have a recursive item. */
+      c = getc (data_file);
+
+      if (c == '{')
+	{
+	  ungetc (c, data_file);
+	  is_recursive = 1;
+	  fscanf (data_file, "{ %d%c ", &freq, &type);
+
+	  c = getc (data_file);
+	  if (c == '}')
+	    {			/* endless recurrent item */
+	      ungetc (c, data_file);
+	      fscanf (data_file, "} ");
+	      until.tm_year = 0;
+	    }
+	  else if (c == '-')
+	    {
+	      ungetc (c, data_file);
+	      fscanf (data_file, " -> %u / %u / %u ",
+		      &until.tm_mon, &until.tm_mday, &until.tm_year);
+	      c = getc (data_file);
+	      if (c == '!')
+		{
+		  ungetc (c, data_file);
+		  exc = recur_exc_scan (data_file);
+		  c = getc (data_file);
+		}
+	      else
+		{
+		  ungetc (c, data_file);
+		  fscanf (data_file, "} ");
+		}
+	    }
+	  else if (c == '!')
+	    {			// endless item with exceptions
+	      ungetc (c, data_file);
+	      exc = recur_exc_scan (data_file);
+	      c = getc (data_file);
+	      until.tm_year = 0;
+	    }
+	  else
+	    {			/* NOT REACHED */
+	      fputs (error, stderr);
+	      exit (EXIT_FAILURE);
+	    }
+	}
+      else
+	ungetc (c, data_file);
+
+      /* Check if a note is attached to the item. */
+      c = getc (data_file);
+      if (c == '>')
+	{
+	  fgets (note, NOTESIZ + 1, data_file);
+	  note[NOTESIZ] = '\0';
+	  notep = note;
+	  getc (data_file);
+	}
+      else
+	{
+	  notep = NULL;
+	  ungetc (c, data_file);
+	}
+
+      /*
+       * Last: read the item description and load it into its
+       * corresponding linked list, depending on the item type.
+       */
+      if (is_appointment)
+	{
+	  c = getc (data_file);
+	  if (c == '!')
+	    {
+	      ungetc (c, data_file);
+	      fscanf (data_file, " ! ");
+	      state |= APOINT_NOTIFY;
+	    }
+	  else
+	    {
+	      ungetc (c, data_file);
+	      fscanf (data_file, " | ");
+	      state = 0L;
+	    }
+	  if (is_recursive)
+	    {
+	      recur_apoint_scan (data_file, start, end,
+				 type, freq, until, notep, exc, state);
+	    }
+	  else
+	    {
+	      apoint_scan (data_file, start, end, state, notep);
+	    }
+	}
+      else if (is_event)
+	{
+	  if (is_recursive)
+	    {
+	      recur_event_scan (data_file, start, id, type,
+				freq, until, notep, exc);
+	    }
+	  else
+	    {
+	      event_scan (data_file, start, id, notep);
+	    }
+	}
+      else
+	{			/* NOT REACHED */
+	  fputs (error, stderr);
+	  exit (EXIT_FAILURE);
+	}
+    }
+  fclose (data_file);
 }
 
 /* Load the todo data */
 void
-io_load_todo(void)
+io_load_todo (void)
 {
-	FILE *data_file;
-	char *mesg_line1 = _("Failed to open todo file");
-	char *mesg_line2 = _("Press [ENTER] to continue");
-	char *nl;
-	int nb_tod = 0;
-	int c, id;
-	char buf[BUFSIZ], e_todo[BUFSIZ], note[NOTESIZ + 1];
+  FILE *data_file;
+  char *mesg_line1 = _("Failed to open todo file");
+  char *mesg_line2 = _("Press [ENTER] to continue");
+  char *nl;
+  int nb_tod = 0;
+  int c, id;
+  char buf[BUFSIZ], e_todo[BUFSIZ], note[NOTESIZ + 1];
 
-	data_file = fopen(path_todo, "r");
-	if (data_file == NULL) {
-		status_mesg(mesg_line1, mesg_line2);
-		wgetch(win[STA].p);
+  data_file = fopen (path_todo, "r");
+  if (data_file == NULL)
+    {
+      status_mesg (mesg_line1, mesg_line2);
+      wgetch (win[STA].p);
+    }
+  for (;;)
+    {
+      c = getc (data_file);
+      if (c == EOF)
+	{
+	  break;
 	}
-	for (;;) {
-		c = getc(data_file);
-		if (c == EOF) {
-			break;
-		} else if (c == '[') { /* new style with id */
-			fscanf(data_file, "%d]", &id);
-		} else {
-			id = 9;
-			ungetc(c, data_file);
-		}
-		/* Now read the attached note, if any. */
-		c = getc(data_file);
-		if (c == '>') {
-			fgets(note, NOTESIZ + 1, data_file);
-			note[NOTESIZ] = '\0';
-			getc(data_file);
-		} else
-			note[0] = '\0';
-		/* Then read todo description. */
-		fgets(buf, BUFSIZ, data_file);
-		nl = strchr(buf, '\n');
-		if (nl) {
-			*nl = '\0';
-		}
-		io_extract_data(e_todo, buf, strlen(buf));
-		todo_add(e_todo, id, note);
-		++nb_tod;
+      else if (c == '[')
+	{			/* new style with id */
+	  fscanf (data_file, "%d]", &id);
 	}
-	fclose(data_file);
-	todo_set_nb(nb_tod);
+      else
+	{
+	  id = 9;
+	  ungetc (c, data_file);
+	}
+      /* Now read the attached note, if any. */
+      c = getc (data_file);
+      if (c == '>')
+	{
+	  fgets (note, NOTESIZ + 1, data_file);
+	  note[NOTESIZ] = '\0';
+	  getc (data_file);
+	}
+      else
+	note[0] = '\0';
+      /* Then read todo description. */
+      fgets (buf, BUFSIZ, data_file);
+      nl = strchr (buf, '\n');
+      if (nl)
+	{
+	  *nl = '\0';
+	}
+      io_extract_data (e_todo, buf, strlen (buf));
+      todo_add (e_todo, id, note);
+      ++nb_tod;
+    }
+  fclose (data_file);
+  todo_set_nb (nb_tod);
 }
 
 static void
-check_directory(char *dir, int *missing)
+check_directory (char *dir, int *missing)
 {
-	errno = 0;
-	if (mkdir(dir, 0700) != 0) {
-		if (errno != EEXIST) {
-			fprintf(stderr, 
-			    _("FATAL ERROR: could not create %s: %s\n"),
-			    dir, strerror(errno));
-			exit(EXIT_FAILURE);
-		}
-	} else
-		(*missing)++;
+  errno = 0;
+  if (mkdir (dir, 0700) != 0)
+    {
+      if (errno != EEXIST)
+	{
+	  fprintf (stderr, _("FATAL ERROR: could not create %s: %s\n"),
+		   dir, strerror (errno));
+	  exit (EXIT_FAILURE);
+	}
+    }
+  else
+    (*missing)++;
 }
 
 static void
-check_file(char *file, int *missing)
+check_file (char *file, int *missing)
 {
-	FILE *fd;
+  FILE *fd;
 
-	errno = 0;
-	if ((fd = fopen(file, "r")) == NULL) {
-		(*missing)++;
-		if ((fd = fopen(file, "w")) == NULL) {
-			fprintf(stderr, 
-			    _("FATAL ERROR: could not create %s: %s\n"),
-			    file, strerror(errno));
-			exit(EXIT_FAILURE);
-		}
+  errno = 0;
+  if ((fd = fopen (file, "r")) == NULL)
+    {
+      (*missing)++;
+      if ((fd = fopen (file, "w")) == NULL)
+	{
+	  fprintf (stderr, _("FATAL ERROR: could not create %s: %s\n"),
+		   file, strerror (errno));
+	  exit (EXIT_FAILURE);
 	}
-	fclose(fd);
+    }
+  fclose (fd);
 }
 
 /* 
@@ -801,88 +891,92 @@ check_file(char *file, int *missing)
  *                 |___ apts
  *                 |___ todo
  */
-int 
-io_check_data_files(void)
+int
+io_check_data_files (void)
 {
-	int missing;
+  int missing;
 
-	missing = 0;
-	errno = 0;
-	check_directory(path_dir, &missing);
-	check_directory(path_notes, &missing);
-	check_file(path_todo, &missing);
-	check_file(path_apts, &missing);
-	check_file(path_conf, &missing);
-        return (missing);
+  missing = 0;
+  errno = 0;
+  check_directory (path_dir, &missing);
+  check_directory (path_notes, &missing);
+  check_file (path_todo, &missing);
+  check_file (path_apts, &missing);
+  check_file (path_conf, &missing);
+  return (missing);
 }
 
 /* Draw the startup screen */
-void 
-io_startup_screen(bool skip_dialogs, int no_data_file)
+void
+io_startup_screen (bool skip_dialogs, int no_data_file)
 {
-	char *welcome_mesg = 
-	    _("Welcome to Calcurse. Missing data files were created.");
-	char *data_mesg = _("Data files found. Data will be loaded now.");
-	char *enter = _("Press [ENTER] to continue");
+  char *welcome_mesg =
+    _("Welcome to Calcurse. Missing data files were created.");
+  char *data_mesg = _("Data files found. Data will be loaded now.");
+  char *enter = _("Press [ENTER] to continue");
 
-	if (no_data_file != 0) {
-		status_mesg(welcome_mesg, enter);
-		wgetch(win[STA].p);
-	} else if (!skip_dialogs) {
-		status_mesg(data_mesg, enter);
-		wgetch(win[STA].p);
-	}
+  if (no_data_file != 0)
+    {
+      status_mesg (welcome_mesg, enter);
+      wgetch (win[STA].p);
+    }
+  else if (!skip_dialogs)
+    {
+      status_mesg (data_mesg, enter);
+      wgetch (win[STA].p);
+    }
 }
 
 /* Export calcurse data. */
 void
-io_export_data(export_mode_t mode, conf_t *conf)
+io_export_data (export_mode_t mode, conf_t *conf)
 {
-	FILE *stream;
-	char *wrong_mode = 
-		_("FATAL ERROR in io_export_data: wrong export mode\n");
-	char *success = _("The data were successfully exported");
-	char *enter = _("Press [ENTER] to continue");
+  FILE *stream;
+  char *wrong_mode = _("FATAL ERROR in io_export_data: wrong export mode\n");
+  char *success = _("The data were successfully exported");
+  char *enter = _("Press [ENTER] to continue");
 
-	switch (mode) {
-	case IO_EXPORT_NONINTERACTIVE:
-		stream = stdout;
-		break;
-	case IO_EXPORT_INTERACTIVE:
-		stream = io_get_export_stream();
-		break;
-	default:
-	  	fputs(wrong_mode, stderr);
-		exit(EXIT_FAILURE);
-		/* NOTREACHED */
-	}
+  switch (mode)
+    {
+    case IO_EXPORT_NONINTERACTIVE:
+      stream = stdout;
+      break;
+    case IO_EXPORT_INTERACTIVE:
+      stream = io_get_export_stream ();
+      break;
+    default:
+      fputs (wrong_mode, stderr);
+      exit (EXIT_FAILURE);
+      /* NOTREACHED */
+    }
 
-	if (stream == NULL)
-		return;
+  if (stream == NULL)
+    return;
 
-	io_export_header(stream);
+  io_export_header (stream);
 
-	if (!conf->skip_progress_bar && mode == IO_EXPORT_INTERACTIVE)
-		progress_bar(PROGRESS_BAR_EXPORT, 0);
-	io_export_recur_events(stream);
-	io_export_events(stream);
+  if (!conf->skip_progress_bar && mode == IO_EXPORT_INTERACTIVE)
+    progress_bar (PROGRESS_BAR_EXPORT, 0);
+  io_export_recur_events (stream);
+  io_export_events (stream);
 
-	if (!conf->skip_progress_bar && mode == IO_EXPORT_INTERACTIVE)
-		progress_bar(PROGRESS_BAR_EXPORT, 1);
-	io_export_recur_apoints(stream);
-	io_export_apoints(stream);
+  if (!conf->skip_progress_bar && mode == IO_EXPORT_INTERACTIVE)
+    progress_bar (PROGRESS_BAR_EXPORT, 1);
+  io_export_recur_apoints (stream);
+  io_export_apoints (stream);
 
-	if (!conf->skip_progress_bar && mode == IO_EXPORT_INTERACTIVE)
-		progress_bar(PROGRESS_BAR_EXPORT, 2);
-	io_export_todo(stream);
+  if (!conf->skip_progress_bar && mode == IO_EXPORT_INTERACTIVE)
+    progress_bar (PROGRESS_BAR_EXPORT, 2);
+  io_export_todo (stream);
 
-	io_export_footer(stream);
+  io_export_footer (stream);
 
-	if (stream != stdout)
-		fclose(stream);
+  if (stream != stdout)
+    fclose (stream);
 
-	if (!conf->skip_system_dialogs && mode == IO_EXPORT_INTERACTIVE) {
-		status_mesg(success, enter);
-		wgetch(win[STA].p);
-	}
+  if (!conf->skip_system_dialogs && mode == IO_EXPORT_INTERACTIVE)
+    {
+      status_mesg (success, enter);
+      wgetch (win[STA].p);
+    }
 }

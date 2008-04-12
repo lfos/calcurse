@@ -1,4 +1,4 @@
-/*	$calcurse: i18n.h,v 1.1 2006/07/31 21:00:03 culot Exp $	*/
+/*	$calcurse: i18n.h,v 1.2 2008/04/12 21:14:03 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -32,23 +32,23 @@
 #endif /* HAVE_CONFIG_H */
 
 #if ENABLE_NLS
- #include <libintl.h>
- #undef _
- #define _(String) gettext(String)
- #ifdef gettext_noop
-  #define N_(String) gettext_noop(String)
- #else
-  #define N_(String) (String)
- #endif
+#include <libintl.h>
+#undef _
+#define _(String) gettext(String)
+#ifdef gettext_noop
+#define N_(String) gettext_noop(String)
+#else
+#define N_(String) (String)
+#endif
 #else /* NLS disabled */
- #define _(String) (String)
- #define N_(String) (String)
- #define textdomain(String) (String)
- #define gettext(String) (String)
- #define dgettext(String) (String)
- #define dcgettext(String) (String)
- #define bindtextdomain(String) (String)
- #define bind_textdomain_codeset(Domain,Codeset) (Codeset)
+#define _(String) (String)
+#define N_(String) (String)
+#define textdomain(String) (String)
+#define gettext(String) (String)
+#define dgettext(String) (String)
+#define dcgettext(String) (String)
+#define bindtextdomain(String) (String)
+#define bind_textdomain_codeset(Domain,Codeset) (Codeset)
 #endif /* ENABLE_NLS */
 
 #endif /* CALCURSE_I18N_H */

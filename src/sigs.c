@@ -1,8 +1,8 @@
-/*	$calcurse: sigs.c,v 1.5 2008/02/14 20:20:23 culot Exp $	*/
+/*	$calcurse: sigs.c,v 1.6 2008/04/12 21:14:03 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2007 Frederic Culot
+ * Copyright (c) 2007-2008 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,45 +40,49 @@
  * Also catch CTRL-C (SIGINT), and SIGWINCH to resize screen automatically.
  */
 static void
-signal_handler(int sig)
+signal_handler (int sig)
 {
-	switch (sig) {
-	case SIGCHLD:
-		while (waitpid(WAIT_MYPGRP, NULL, WNOHANG) > 0)
-			;
-		break;
-	case SIGWINCH:
-		clearok(curscr, TRUE);
-		ungetch(KEY_RESIZE);
-		break;
-	}
+  switch (sig)
+    {
+    case SIGCHLD:
+      while (waitpid (WAIT_MYPGRP, NULL, WNOHANG) > 0)
+	;
+      break;
+    case SIGWINCH:
+      clearok (curscr, TRUE);
+      ungetch (KEY_RESIZE);
+      break;
+    }
 }
 
 /* Signal handling init. */
 void
-sigs_init(struct sigaction *sa)
+sigs_init (struct sigaction *sa)
 {
-	sa->sa_handler = signal_handler;
-	sa->sa_flags = 0;
-	sigemptyset(&sa->sa_mask);
-	if (sigaction(SIGCHLD, sa, NULL) != 0) {
-		perror("sigaction");
-		exit(EXIT_FAILURE);
-	}
+  sa->sa_handler = signal_handler;
+  sa->sa_flags = 0;
+  sigemptyset (&sa->sa_mask);
+  if (sigaction (SIGCHLD, sa, NULL) != 0)
+    {
+      perror ("sigaction");
+      exit (EXIT_FAILURE);
+    }
 
-	sa->sa_handler = signal_handler;
-	sa->sa_flags = 0;
-	sigemptyset(&sa->sa_mask);
-	if (sigaction(SIGWINCH, sa, NULL) != 0) {
-		perror("sigaction");
-		exit(EXIT_FAILURE);
-	}
+  sa->sa_handler = signal_handler;
+  sa->sa_flags = 0;
+  sigemptyset (&sa->sa_mask);
+  if (sigaction (SIGWINCH, sa, NULL) != 0)
+    {
+      perror ("sigaction");
+      exit (EXIT_FAILURE);
+    }
 
-	sa->sa_handler = SIG_IGN; 
-	sa->sa_flags = 0;
-	sigemptyset(&(sa->sa_mask));
-	if (sigaction(SIGINT, sa, NULL) != 0) {
-		perror("sigaction");
-		exit(EXIT_FAILURE);
-	}
+  sa->sa_handler = SIG_IGN;
+  sa->sa_flags = 0;
+  sigemptyset (&(sa->sa_mask));
+  if (sigaction (SIGINT, sa, NULL) != 0)
+    {
+      perror ("sigaction");
+      exit (EXIT_FAILURE);
+    }
 }
