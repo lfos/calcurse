@@ -1,4 +1,4 @@
-/*	$calcurse: wins.c,v 1.13 2008/04/12 21:14:03 culot Exp $	*/
+/*	$calcurse: wins.c,v 1.14 2008/04/18 17:53:31 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -116,6 +116,54 @@ wins_init (void)
   keypad (win[APP].p, TRUE);
   keypad (win[TOD].p, TRUE);
   keypad (win[STA].p, TRUE);
+}
+
+/* 
+ * Create a new window and its associated pad, which is used to make the
+ * scrolling faster.
+ */
+void
+wins_scrollwin_init (scrollwin_t *sw)
+{
+  ASSERT (sw != NULL);
+  sw->win.p = newwin (sw->win.h, sw->win.w, sw->win.y, sw->win.x);
+  sw->pad.p = newpad (sw->pad.h, sw->pad.w);
+  sw->first_visible_line = 0;
+  sw->total_lines = 0;
+}
+
+/* Free an already created scrollwin. */
+void
+wins_scrollwin_delete (scrollwin_t *sw)
+{
+  ASSERT (sw != NULL);
+  delwin(sw->win.p);
+  delwin(sw->pad.p);
+}
+
+/* Display a scrolling window. */
+void
+wins_scrollwin_display (scrollwin_t *sw)
+{
+  const int visible_lines = sw->win.h - sw->pad.x;
+  
+  if (sw->total_lines > visible_lines)
+    {
+      float ratio = ((float) visible_lines) / ((float) sw->total_lines);
+      int sbar_length = (int) (ratio * visible_lines);
+      int highend = (int) (ratio * sw->first_visible_line);
+      int sbar_top = highend + sw->pad.y + 1;
+
+      if ((sbar_top + sbar_length) > sw->win.h - 1)
+        sbar_length = sw->win.h - sbar_top;
+      draw_scrollbar (sw->win.p, sbar_top, sw->win.w + sw->win.x - 2,
+                      sbar_length, sw->pad.y + 1, sw->win.h - 1, true);
+    }
+  wmove (win[STA].p, 0, 0);
+  wnoutrefresh (sw->win.p);
+  pnoutrefresh (sw->pad.p, sw->first_visible_line, 0, sw->pad.y, sw->pad.x,
+                sw->win.h - sw->pad.y + 1, sw->win.w - sw->win.x);
+  doupdate ();
 }
 
 /* 

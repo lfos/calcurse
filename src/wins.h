@@ -1,4 +1,4 @@
-/*	$calcurse: wins.h,v 1.7 2008/04/12 21:14:03 culot Exp $	*/
+/*	$calcurse: wins.h,v 1.8 2008/04/18 17:53:31 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -40,7 +40,7 @@ typedef enum
 }
 window_e;
 
-/* Window properties */
+/* Generic window structure. */
 typedef struct
 {
   WINDOW   *p;			/* pointer to window */
@@ -48,23 +48,35 @@ typedef struct
   unsigned  h;			/* height */
   int       x;			/* x position */
   int       y;			/* y position */
-}
-window_t;
+} window_t;
+
+/* Generic scrolling window structure. */
+typedef struct
+{
+  window_t  win;
+  window_t  pad;
+  unsigned  first_visible_line;
+  unsigned  total_lines;
+  char      label[BUFSIZ];
+} scrollwin_t;
 
 extern window_t win[NBWINS];
 
-int      wins_layout (void);
-void     wins_set_layout (int);
-void     wins_slctd_init (void);
-window_e wins_slctd (void);
-void     wins_slctd_set (window_e);
-void     wins_slctd_next (void);
-void     wins_init (void);
-void     wins_reinit (void);
-void     wins_show (WINDOW *, char *);
-void     wins_get_config (void);
-void     wins_update (void);
-void     wins_reset (void);
-void     wins_launch_external (const char *, const char *);
+int          wins_layout (void);
+void         wins_set_layout (int);
+void         wins_slctd_init (void);
+window_e     wins_slctd (void);
+void         wins_slctd_set (window_e);
+void         wins_slctd_next (void);
+void         wins_init (void);
+void         wins_scrollwin_init (scrollwin_t *);
+void         wins_scrollwin_delete (scrollwin_t *);
+void         wins_scrollwin_display (scrollwin_t *);
+void         wins_reinit (void);
+void         wins_show (WINDOW *, char *);
+void         wins_get_config (void);
+void         wins_update (void);
+void         wins_reset (void);
+void         wins_launch_external (const char *, const char *);
 
 #endif /* CALCURSE_WINS_H */

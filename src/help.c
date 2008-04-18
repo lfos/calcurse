@@ -1,4 +1,4 @@
-/*	$calcurse: help.c,v 1.22 2008/04/12 21:14:03 culot Exp $	*/
+/*	$calcurse: help.c,v 1.23 2008/04/18 17:53:31 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -256,15 +256,12 @@ wanted_page (int ch)
 void
 help_screen (void)
 {
-  window_t hwin;
-  window_t hpad;
+  scrollwin_t hwin;
   const int PADOFFSET = 4;
   const int TITLELINES = 3;
-  int ch = '?';
-  int text_lines;
-  int first_line = 0, nl = 0;
-  int page, oldpage;
   int need_resize;
+  int ch = '?';
+  int page, oldpage;
   help_page_t hscr[HELPSCREENS];
 
   hscr[HELP_MAIN].title =
@@ -560,71 +557,62 @@ help_screen (void)
       "Send your feedback or comments to : calcurse@culot.org\n"
       "Calcurse home page : http://culot.org/calcurse");
 
-  need_resize = 0;
-  page = oldpage = HELP_MAIN;
-  help_wins_init (&hwin, &hpad, PADOFFSET);
+  hwin.win.x = 0;
+  hwin.win.y = 0;
+  hwin.win.h = (notify_bar ()) ? row - 3 : row - 2;
+  hwin.win.w = col;
 
+  hwin.pad.x = PADOFFSET;
+  hwin.pad.y = TITLELINES;
+  hwin.pad.h = BUFSIZ;
+  hwin.pad.w = col - 2 * PADOFFSET + 1;
+
+  snprintf (hwin.label, BUFSIZ, _("Calcurse %s | help"), VERSION);
+  wins_scrollwin_init (&hwin);
+  wins_show (hwin.win.p, hwin.label);
+  page = oldpage = HELP_MAIN;
+  need_resize = 0;
+  
   /* Display the help screen related to user input. */
   while (ch != 'q')
     {
-      erase_window_part (hwin.p, 1, TITLELINES, col - 2, hwin.h - 2);
-
+      erase_window_part (hwin.win.p, 1, TITLELINES, col - 2,
+                         hwin.win.h - 2);
       switch (ch)
 	{
 	case KEY_RESIZE:
-	  help_wins_reset (&hwin, &hpad, PADOFFSET);
-	  first_line = 0;
-	  nl = write_help_pad (&hpad, &hscr[oldpage]);
+	  help_wins_reset (&hwin.win, &hwin.pad, PADOFFSET);
+	  hwin.first_visible_line = 0;
+	  hwin.total_lines = write_help_pad (&hwin.pad, &hscr[oldpage]);
 	  need_resize = 1;
 	  break;
 
 	case CTRL ('n'):
-	  if (nl > (first_line + hwin.h - (PADOFFSET + 1)))
-	    first_line++;
+	  if (hwin.total_lines
+              > (hwin.first_visible_line + hwin.win.h - hwin.pad.x))
+	    hwin.first_visible_line++;
 	  break;
 
 	case CTRL ('p'):
-	  if (first_line > 0)
-	    first_line--;
+	  if (hwin.first_visible_line > 0)
+	    hwin.first_visible_line--;
 	  break;
 
 	default:
 	  page = wanted_page (ch);
 	  if (page != NOPAGE)
 	    {
-	      first_line = 0;
-	      nl = write_help_pad (&hpad, &hscr[page]);
+	      hwin.first_visible_line = 0;
+	      hwin.total_lines = write_help_pad (&hwin.pad, &hscr[page]);
 	      oldpage = page;
 	    }
 	  break;
 	}
-
-      /* Draw the scrollbar if necessary. */
-      text_lines = hwin.h - (PADOFFSET + 1);
-      if (nl > text_lines)
-	{
-	  float ratio = ((float) text_lines + 1) / ((float) nl);
-	  int sbar_length = (int) (ratio * text_lines);
-	  int highend = (int) (ratio * first_line);
-	  int sbar_top = highend + TITLELINES + 1;
-
-	  if ((sbar_top + sbar_length) > hwin.h - 1)
-	    sbar_length = hwin.h - 1 - sbar_top;
-	  draw_scrollbar (hwin.p, sbar_top, col - 2,
-			  sbar_length, TITLELINES + 1, hwin.h - 1, true);
-	}
-
-      wmove (win[STA].p, 0, 0);
-      wnoutrefresh (hwin.p);
-      pnoutrefresh (hpad.p, first_line, 0, PADOFFSET, PADOFFSET,
-		    hwin.h - 2, col - PADOFFSET);
-      doupdate ();
+      wins_scrollwin_display (&hwin);
       ch = wgetch (win[STA].p);
       ch = tolower (ch);
     }
-
-  delwin (hpad.p);
-  delwin (hwin.p);
+  wins_scrollwin_delete (&hwin);
   if (need_resize)
     wins_reset ();
 }
