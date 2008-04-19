@@ -1,4 +1,4 @@
-/*	$calcurse: wins.c,v 1.15 2008/04/19 09:22:14 culot Exp $	*/
+/*	$calcurse: wins.c,v 1.16 2008/04/19 21:05:15 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -196,7 +196,7 @@ wins_reinit (void)
   wins_get_config ();
   wins_init ();
   if (notify_bar ())
-    notify_reinit_bar (win[NOT].h, win[NOT].w, win[NOT].y, win[NOT].x);
+    notify_reinit_bar ();
 }
 
 /* Show the window with a border and a label. */
@@ -419,8 +419,8 @@ wins_update (void)
       /* NOTREACHED */
     }
 
-  apoint_update_panel (&win[APP], slctd_win);
-  todo_update_panel (&win[TOD], slctd_win);
+  apoint_update_panel (slctd_win);
+  todo_update_panel (slctd_win);
   calendar_update_panel (win[CAL].p);
   status_bar ();
   if (notify_bar ())

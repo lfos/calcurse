@@ -1,4 +1,4 @@
-/*	$calcurse: help.c,v 1.24 2008/04/19 09:22:14 culot Exp $	*/
+/*	$calcurse: help.c,v 1.25 2008/04/19 21:05:15 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -101,17 +101,24 @@ write_help_pad (window_t *win, help_page_t *hpage)
  * faster. 
  */
 static void
-help_wins_init (window_t *hwin, window_t *hpad, const int PADOFFSET)
+help_wins_init (scrollwin_t *hwin)
 {
-  char label[BUFSIZ];
+  const int PADOFFSET = 4;
+  const int TITLELINES = 3;
 
-  hwin->h = (notify_bar ())? row - 3 : row - 2;
-  hwin->p = newwin (hwin->h, col, 0, 0);
-  hpad->w = col - 2 * PADOFFSET + 1;
-  hpad->p = newpad (BUFSIZ, hpad->w);
-  box (hwin->p, 0, 0);
-  snprintf (label, BUFSIZ, _("CalCurse %s | help"), VERSION);
-  wins_show (hwin->p, label);
+  hwin->win.x = 0;
+  hwin->win.y = 0;
+  hwin->win.h = (notify_bar ()) ? row - 3 : row - 2;
+  hwin->win.w = col;
+
+  hwin->pad.x = PADOFFSET;
+  hwin->pad.y = TITLELINES;
+  hwin->pad.h = BUFSIZ;
+  hwin->pad.w = col - 2 * PADOFFSET + 1;
+
+  snprintf (hwin->label, BUFSIZ, _("Calcurse %s | help"), VERSION);
+  wins_scrollwin_init (hwin);
+  wins_show (hwin->win.p, hwin->label);
 }
 
 /* 
@@ -119,27 +126,26 @@ help_wins_init (window_t *hwin, window_t *hpad, const int PADOFFSET)
  * size and placement.
  */
 static void
-help_wins_reinit (window_t *hwin, window_t *hpad, const int PADOFFSET)
+help_wins_reinit (scrollwin_t *hwin)
 {
-  delwin (hpad->p);
-  delwin (hwin->p);
+  wins_scrollwin_delete (hwin);
   wins_get_config ();
-  help_wins_init (hwin, hpad, PADOFFSET);
+  help_wins_init (hwin);
 }
 
 /* Reset the screen, needed when resizing terminal for example. */
 static void
-help_wins_reset (window_t *hwin, window_t *hpad, const int PADOFFSET)
+help_wins_reset (scrollwin_t *hwin)
 {
   endwin ();
   refresh ();
   curs_set (0);
   delwin (win[STA].p);
-  help_wins_reinit (hwin, hpad, PADOFFSET);
+  help_wins_reinit (hwin);
   win[STA].p = newwin (win[STA].h, win[STA].w, win[STA].y, win[STA].x);
   keypad (win[STA].p, TRUE);
   if (notify_bar ())
-    notify_reinit_bar (win[NOT].h, win[NOT].w, win[NOT].y, win[NOT].x);
+    notify_reinit_bar ();
   status_bar ();
   if (notify_bar ())
     notify_update_bar ();
@@ -257,8 +263,6 @@ void
 help_screen (void)
 {
   scrollwin_t hwin;
-  const int PADOFFSET = 4;
-  const int TITLELINES = 3;
   int need_resize;
   int ch = '?';
   int page, oldpage;
@@ -557,19 +561,7 @@ help_screen (void)
       "Send your feedback or comments to : calcurse@culot.org\n"
       "Calcurse home page : http://culot.org/calcurse");
 
-  hwin.win.x = 0;
-  hwin.win.y = 0;
-  hwin.win.h = (notify_bar ()) ? row - 3 : row - 2;
-  hwin.win.w = col;
-
-  hwin.pad.x = PADOFFSET;
-  hwin.pad.y = TITLELINES;
-  hwin.pad.h = BUFSIZ;
-  hwin.pad.w = col - 2 * PADOFFSET + 1;
-
-  snprintf (hwin.label, BUFSIZ, _("Calcurse %s | help"), VERSION);
-  wins_scrollwin_init (&hwin);
-  wins_show (hwin.win.p, hwin.label);
+  help_wins_init (&hwin);
   page = oldpage = HELP_MAIN;
   need_resize = 0;
   
@@ -581,7 +573,8 @@ help_screen (void)
       switch (ch)
 	{
 	case KEY_RESIZE:
-	  help_wins_reset (&hwin.win, &hwin.pad, PADOFFSET);
+          wins_get_config ();
+	  help_wins_reset (&hwin);
 	  hwin.first_visible_line = 0;
 	  hwin.total_lines = write_help_pad (&hwin.pad, &hscr[oldpage]);
 	  need_resize = 1;

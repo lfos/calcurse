@@ -1,4 +1,4 @@
-/*	$calcurse: apoint.c,v 1.22 2008/04/12 21:14:03 culot Exp $	*/
+/*	$calcurse: apoint.c,v 1.23 2008/04/19 21:05:15 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -84,8 +84,7 @@ apoint_new (char *mesg, char *note, long start, long dur, char state)
   apoint_llist_node_t *o, **i;
 
   o = (apoint_llist_node_t *) malloc (sizeof (apoint_llist_node_t));
-  o->mesg = (char *) malloc (strlen (mesg) + 1);
-  strncpy (o->mesg, mesg, strlen (mesg) + 1);
+  o->mesg = strdup (mesg);
   o->note = (note != NULL) ? strdup (note) : NULL;
   o->state = state;
   o->start = start;
@@ -619,26 +618,27 @@ apoint_switch_notify (void)
 
 /* Updates the Appointment panel */
 void
-apoint_update_panel (window_t *winapp, int which_pan)
+apoint_update_panel (int which_pan)
 {
   int title_xpos;
   int bordr = 1;
   int title_lines = 3;
-  int app_width = winapp->w - bordr;
-  int app_length = winapp->h - bordr - title_lines;
+  int app_width = win[APP].w - bordr;
+  int app_length = win[APP].h - bordr - title_lines;
   long date;
   date_t slctd_date;
 
   /* variable inits */
   slctd_date = *calendar_get_slctd_day ();
-  title_xpos = winapp->w - (strlen (_(monthnames[slctd_date.mm - 1])) + 16);
+  title_xpos = win[APP].w - (strlen (_(monthnames[slctd_date.mm - 1])) + 16);
   if (slctd_date.dd < 10)
     title_xpos++;
   date = date2sec (slctd_date, 0, 0);
   day_write_pad (date, app_width, app_length, hilt);
 
   /* Print current date in the top right window corner. */
-  erase_window_part (win[APP].p, 1, title_lines, winapp->w - 2, winapp->h - 2);
+  erase_window_part (win[APP].p, 1, title_lines, win[APP].w - 2,
+                     win[APP].h - 2);
   custom_apply_attr (win[APP].p, ATTR_HIGHEST);
   mvwprintw (win[APP].p, title_lines, title_xpos, "%s  %s %d, %d",
 	     calendar_get_pom (date), _(monthnames[slctd_date.mm - 1]),
@@ -654,15 +654,15 @@ apoint_update_panel (window_t *winapp, int which_pan)
       bool hilt_bar = (which_pan == APP) ? true : false;
       int sbar_top = highend + title_lines + 1;
 
-      if ((sbar_top + sbar_length) > winapp->h - 1)
-	sbar_length = winapp->h - 1 - sbar_top;
-      draw_scrollbar (win[APP].p, sbar_top, winapp->w - 2, sbar_length,
-		      title_lines + 1, winapp->h - 1, hilt_bar);
+      if ((sbar_top + sbar_length) > win[APP].h - 1)
+	sbar_length = win[APP].h - 1 - sbar_top;
+      draw_scrollbar (win[APP].p, sbar_top, win[APP].w - 2, sbar_length,
+		      title_lines + 1, win[APP].h - 1, hilt_bar);
     }
 
   wnoutrefresh (win[APP].p);
   pnoutrefresh (apad->ptrwin, apad->first_onscreen, 0,
-		winapp->y + title_lines + 1, winapp->x + bordr,
-		winapp->y + winapp->h - 2 * bordr,
-		winapp->x + winapp->w - 3 * bordr);
+		win[APP].y + title_lines + 1, win[APP].x + bordr,
+		win[APP].y + win[APP].h - 2 * bordr,
+		win[APP].x + win[APP].w - 3 * bordr);
 }

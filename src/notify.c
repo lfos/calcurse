@@ -1,4 +1,4 @@
-/*	$calcurse: notify.c,v 1.25 2008/04/12 21:14:03 culot Exp $	*/
+/*	$calcurse: notify.c,v 1.26 2008/04/19 21:05:15 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -117,10 +117,10 @@ notify_stop_main_thread (void)
  * notification window. 
  */
 void
-notify_reinit_bar (int l, int c, int y, int x)
+notify_reinit_bar (void)
 {
   delwin (notify->win);
-  notify->win = newwin (l, c, y, x);
+  notify->win = newwin (win[NOT].h, win[NOT].w, win[NOT].y, win[NOT].x);
 }
 
 /* Launch user defined command as a notification. */

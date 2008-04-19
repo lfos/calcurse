@@ -1,4 +1,4 @@
-/*	$calcurse: todo.c,v 1.21 2008/04/12 21:14:03 culot Exp $	*/
+/*	$calcurse: todo.c,v 1.22 2008/04/19 21:05:15 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -158,8 +158,7 @@ todo_add (char *mesg, int id, char *note)
 {
   struct todo_s *o, **i;
   o = (struct todo_s *) malloc (sizeof (struct todo_s));
-  o->mesg = (char *) malloc (strlen (mesg) + 1);
-  strncpy (o->mesg, mesg, strlen (mesg) + 1);
+  o->mesg = strdup (mesg);
   o->id = id;
   o->note = (note != NULL && note[0] != '\0') ? strdup (note) : NULL;
   i = &todolist;
@@ -407,20 +406,21 @@ display_todo_item (int incolor, char *msg, int prio, int note, int len, int y,
 
 /* Updates the ToDo panel. */
 void
-todo_update_panel (window_t *wintod, int which_pan)
+todo_update_panel (int which_pan)
 {
   struct todo_s *i;
-  int len = wintod->w - 8;
+  int len = win[TOD].w - 8;
   int num_todo = 0;
   int y_offset = 3, x_offset = 1;
   int t_realpos = -1;
   int title_lines = 3;
   int todo_lines = 1;
-  int max_items = wintod->h - 4;
+  int max_items = win[TOD].h - 4;
   int incolor = -1;
 
   /* Print todo item in the panel. */
-  erase_window_part (win[TOD].p, 1, title_lines, wintod->w - 2, wintod->h - 2);
+  erase_window_part (win[TOD].p, 1, title_lines, win[TOD].w - 2,
+                     win[TOD].h - 2);
   for (i = todolist; i != 0; i = i->next)
     {
       num_todo++;
@@ -446,10 +446,10 @@ todo_update_panel (window_t *wintod, int which_pan)
       bool hilt_bar = (which_pan == TOD) ? true : false;
       int sbar_top = highend + title_lines;
 
-      if ((sbar_top + sbar_length) > wintod->h - 1)
-	sbar_length = wintod->h - 1 - sbar_top;
-      draw_scrollbar (win[TOD].p, sbar_top, wintod->w - 2,
-		      sbar_length, title_lines, wintod->h - 1, hilt_bar);
+      if ((sbar_top + sbar_length) > win[TOD].h - 1)
+	sbar_length = win[TOD].h - 1 - sbar_top;
+      draw_scrollbar (win[TOD].p, sbar_top, win[TOD].w - 2,
+		      sbar_length, title_lines, win[TOD].h - 1, hilt_bar);
     }
 
   wnoutrefresh (win[TOD].p);

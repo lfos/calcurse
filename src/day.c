@@ -1,4 +1,4 @@
-/*	$calcurse: day.c,v 1.36 2008/04/12 21:14:03 culot Exp $	*/
+/*	$calcurse: day.c,v 1.37 2008/04/19 21:05:15 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -91,8 +91,7 @@ day_add_apoint (int type, char *mesg, char *note, long start, long dur,
   int insert_item = 0;
 
   o = (struct day_item_s *) malloc (sizeof (struct day_item_s));
-  o->mesg = (char *) malloc (strlen (mesg) + 1);
-  strncpy (o->mesg, mesg, strlen (mesg) + 1);
+  o->mesg = strdup (mesg);
   o->note = note;
   o->start = start;
   o->appt_dur = dur;
@@ -398,9 +397,7 @@ day_write_pad (long date, int width, int length, int incolor)
   /* Initialize the structure used to store highlited item. */
   if (day_saved_item == NULL)
     {
-      day_saved_item = (struct day_saved_item_s *)
-	  malloc (sizeof (struct day_saved_item_s));
-      day_saved_item->mesg = (char *) malloc (sizeof (char));
+      day_saved_item = malloc (sizeof (struct day_saved_item_s));
     }
 
   for (p = day_items_ptr; p != 0; p = p->next)

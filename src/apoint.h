@@ -1,4 +1,4 @@
-/*	$calcurse: apoint.h,v 1.13 2008/04/12 21:14:03 culot Exp $	*/
+/*	$calcurse: apoint.h,v 1.14 2008/04/19 21:05:15 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -79,6 +79,6 @@ void                 apoint_scroll_pad_up (int);
 struct notify_app_s *apoint_check_next (struct notify_app_s *, long);
 apoint_llist_node_t *apoint_recur_s2apoint_s (recur_apoint_llist_node_t *);
 void                 apoint_switch_notify (void);
-void                 apoint_update_panel (window_t *, int);
+void                 apoint_update_panel (int);
 
 #endif /* CALCURSE_APOINT_H */

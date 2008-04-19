@@ -1,4 +1,4 @@
-/*	$calcurse: custom.c,v 1.21 2008/04/19 09:22:14 culot Exp $	*/
+/*	$calcurse: custom.c,v 1.22 2008/04/19 21:05:15 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -423,7 +423,7 @@ custom_confwin_init (window_t *confwin, char *label)
   keypad (win[STA].p, TRUE);
   if (notify_bar ())
     {
-      notify_reinit_bar (win[NOT].h, win[NOT].w, win[NOT].y, win[NOT].x);
+      notify_reinit_bar ();
       notify_update_bar ();
     }
 }
@@ -827,8 +827,7 @@ custom_general_config (conf_t *conf)
 	  keypad (win[STA].p, TRUE);
 	  if (notify_bar ())
 	    {
-	      notify_reinit_bar (win[NOT].h, win[NOT].w, win[NOT].y,
-                                 win[NOT].x);
+	      notify_reinit_bar ();
 	      notify_update_bar ();
 	    }
 	  break;
