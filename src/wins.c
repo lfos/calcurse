@@ -1,4 +1,4 @@
-/*	$calcurse: wins.c,v 1.14 2008/04/18 17:53:31 culot Exp $	*/
+/*	$calcurse: wins.c,v 1.15 2008/04/19 09:22:14 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -145,7 +145,7 @@ wins_scrollwin_delete (scrollwin_t *sw)
 void
 wins_scrollwin_display (scrollwin_t *sw)
 {
-  const int visible_lines = sw->win.h - sw->pad.x;
+  const int visible_lines = sw->win.h - sw->pad.y - 1;
   
   if (sw->total_lines > visible_lines)
     {
@@ -164,6 +164,21 @@ wins_scrollwin_display (scrollwin_t *sw)
   pnoutrefresh (sw->pad.p, sw->first_visible_line, 0, sw->pad.y, sw->pad.x,
                 sw->win.h - sw->pad.y + 1, sw->win.w - sw->win.x);
   doupdate ();
+}
+
+void
+wins_scrollwin_up (scrollwin_t *sw)
+{
+  if (sw->first_visible_line > 0)
+    sw->first_visible_line--;
+}
+
+void
+wins_scrollwin_down (scrollwin_t *sw)
+{
+  if (sw->total_lines
+      > (sw->first_visible_line + sw->win.h - sw->pad.y - 1))
+    sw->first_visible_line++;
 }
 
 /* 

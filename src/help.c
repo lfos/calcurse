@@ -1,4 +1,4 @@
-/*	$calcurse: help.c,v 1.23 2008/04/18 17:53:31 culot Exp $	*/
+/*	$calcurse: help.c,v 1.24 2008/04/19 09:22:14 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -576,7 +576,7 @@ help_screen (void)
   /* Display the help screen related to user input. */
   while (ch != 'q')
     {
-      erase_window_part (hwin.win.p, 1, TITLELINES, col - 2,
+      erase_window_part (hwin.win.p, 1, hwin.pad.y, col - 2,
                          hwin.win.h - 2);
       switch (ch)
 	{
@@ -588,14 +588,11 @@ help_screen (void)
 	  break;
 
 	case CTRL ('n'):
-	  if (hwin.total_lines
-              > (hwin.first_visible_line + hwin.win.h - hwin.pad.x))
-	    hwin.first_visible_line++;
+          wins_scrollwin_down (&hwin);
 	  break;
 
 	case CTRL ('p'):
-	  if (hwin.first_visible_line > 0)
-	    hwin.first_visible_line--;
+          wins_scrollwin_up (&hwin);
 	  break;
 
 	default:

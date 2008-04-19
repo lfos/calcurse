@@ -1,4 +1,4 @@
-/*	$calcurse: wins.h,v 1.8 2008/04/18 17:53:31 culot Exp $	*/
+/*	$calcurse: wins.h,v 1.9 2008/04/19 09:22:14 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -72,6 +72,8 @@ void         wins_init (void);
 void         wins_scrollwin_init (scrollwin_t *);
 void         wins_scrollwin_delete (scrollwin_t *);
 void         wins_scrollwin_display (scrollwin_t *);
+void         wins_scrollwin_up (scrollwin_t *);
+void         wins_scrollwin_down (scrollwin_t *);
 void         wins_reinit (void);
 void         wins_show (WINDOW *, char *);
 void         wins_get_config (void);

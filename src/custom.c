@@ -1,4 +1,4 @@
-/*	$calcurse: custom.c,v 1.20 2008/04/12 21:14:03 culot Exp $	*/
+/*	$calcurse: custom.c,v 1.21 2008/04/19 09:22:14 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -702,89 +702,95 @@ custom_color_theme_name (char *theme_name)
 }
 
 /* Prints the general options. */
-static void
-custom_print_general_options (WINDOW *optwin, conf_t *conf)
+static int
+print_general_options (WINDOW *win, conf_t *conf)
 {
-  int x_pos, y_pos;
-  char *option1 = _("auto_save = ");
-  char *option2 = _("confirm_quit = ");
-  char *option3 = _("confirm_delete = ");
-  char *option4 = _("skip_system_dialogs = ");
-  char *option5 = _("skip_progress_bar = ");
-  char *option6 = _("week_begins_on_monday = ");
-  char *option7 = _("output_datefmt = ");
-  char *option8 = _("input_datefmt = ");
-
-  x_pos = 3;
-  y_pos = 3;
-
-  mvwprintw (optwin, y_pos, x_pos, "[1] %s      ", option1);
-  print_option_incolor (optwin, conf->auto_save, y_pos,
-			x_pos + 4 + strlen (option1));
-  mvwprintw (optwin, y_pos + 1, x_pos,
+  const int XPOS = 1;
+  const int YOFF = 3;
+  int y;
+  char *opt1 = _("auto_save = ");
+  char *opt2 = _("confirm_quit = ");
+  char *opt3 = _("confirm_delete = ");
+  char *opt4 = _("skip_system_dialogs = ");
+  char *opt5 = _("skip_progress_bar = ");
+  char *opt6 = _("week_begins_on_monday = ");
+  char *opt7 = _("output_datefmt = ");
+  char *opt8 = _("input_datefmt = ");
+  
+  y = 0;
+  mvwprintw (win, y, XPOS, "[1] %s      ", opt1);
+  print_option_incolor (win, conf->auto_save, y, XPOS + 4 + strlen (opt1));
+  mvwprintw (win, y + 1, XPOS,
 	     _("(if set to YES, automatic save is done when quitting)"));
-
-  mvwprintw (optwin, y_pos + 3, x_pos, "[2] %s      ", option2);
-  print_option_incolor (optwin, conf->confirm_quit, y_pos + 3,
-			x_pos + 4 + strlen (option2));
-  mvwprintw (optwin, y_pos + 4, x_pos,
+  y += YOFF;
+  mvwprintw (win, y, XPOS, "[2] %s      ", opt2);
+  print_option_incolor (win, conf->confirm_quit, y, XPOS + 4 + strlen (opt2));
+  mvwprintw (win, y + 1, XPOS,
 	     _("(if set to YES, confirmation is required before quitting)"));
-
-  mvwprintw (optwin, y_pos + 6, x_pos, "[3] %s      ", option3);
-  print_option_incolor (optwin, conf->confirm_delete, y_pos + 6,
-			x_pos + 4 + strlen (option3));
-  mvwprintw (optwin, y_pos + 7, x_pos,
+  y += YOFF;
+  mvwprintw (win, y, XPOS, "[3] %s      ", opt3);
+  print_option_incolor (win, conf->confirm_delete, y, XPOS + 4 + strlen (opt3));
+  mvwprintw (win, y + 1, XPOS,
 	     _("(if set to YES, confirmation is required "
                "before deleting an event)"));
-
-  mvwprintw (optwin, y_pos + 9, x_pos, "[4] %s      ", option4);
-  print_option_incolor (optwin, conf->skip_system_dialogs, y_pos + 9,
-			x_pos + 4 + strlen (option4));
-  mvwprintw (optwin, y_pos + 10, x_pos,
+  y += YOFF;
+  mvwprintw (win, y, XPOS, "[4] %s      ", opt4);
+  print_option_incolor (win, conf->skip_system_dialogs, y,
+			XPOS + 4 + strlen (opt4));
+  mvwprintw (win, y + 1, XPOS,
 	     _("(if set to YES, messages about loaded "
                "and saved data will not be displayed)"));
-
-  mvwprintw (optwin, y_pos + 12, x_pos, "[5] %s      ", option5);
-  print_option_incolor (optwin, conf->skip_progress_bar, y_pos + 12,
-			x_pos + 4 + strlen (option5));
-  mvwprintw (optwin, y_pos + 13, x_pos,
+  y += YOFF;
+  mvwprintw (win, y, XPOS, "[5] %s      ", opt5);
+  print_option_incolor (win, conf->skip_progress_bar, y,
+			XPOS + 4 + strlen (opt5));
+  mvwprintw (win, y + 1, XPOS,
 	     _("(if set to YES, progress bar will not be displayed "
                 "when saving data)"));
-
-  mvwprintw (optwin, y_pos + 15, x_pos, "[6] %s      ", option6);
-  print_option_incolor (optwin, calendar_week_begins_on_monday (), y_pos + 15,
-			x_pos + 4 + strlen (option6));
-  mvwprintw (optwin, y_pos + 16, x_pos,
+  y += YOFF;
+  mvwprintw (win, y, XPOS, "[6] %s      ", opt6);
+  print_option_incolor (win, calendar_week_begins_on_monday (), y,
+			XPOS + 4 + strlen (opt6));
+  mvwprintw (win, y + 1, XPOS,
 	     _("(if set to YES, monday is the first day of the week, "
                "else it is sunday)"));
-
-  mvwprintw (optwin, y_pos + 18, x_pos, "[7] %s      ", option7);
-  custom_apply_attr (optwin, ATTR_HIGHEST);
-  mvwprintw (optwin, y_pos + 18, x_pos + 4 + strlen (option7), "%s",
-	     conf->output_datefmt);
-  custom_remove_attr (optwin, ATTR_HIGHEST);
-  mvwprintw (optwin, y_pos + 19, x_pos,
+  y += YOFF;
+  mvwprintw (win, y, XPOS, "[7] %s      ", opt7);
+  custom_apply_attr (win, ATTR_HIGHEST);
+  mvwprintw (win, y, XPOS + 4 + strlen (opt7), "%s", conf->output_datefmt);
+  custom_remove_attr (win, ATTR_HIGHEST);
+  mvwprintw (win, y + 1, XPOS,
 	     _("(Format of the date to be displayed in non-interactive mode)"));
+  y += YOFF;
+  mvwprintw (win, y, XPOS, "[8] %s      ", opt8);
+  custom_apply_attr (win, ATTR_HIGHEST);
+  mvwprintw (win, y, XPOS + 4 + strlen (opt8), "%d", conf->input_datefmt);
+  custom_remove_attr (win, ATTR_HIGHEST);
+  mvwprintw (win, y + 1, XPOS, _("(Format to be used when entering a date: "));
+  mvwprintw (win, y + 2, XPOS, _(" 1-mm/dd/yyyy, 2-dd/mm/yyyy, 3-yyyy/mm/dd)"));
 
-  mvwprintw (optwin, y_pos + 21, x_pos, "[8] %s      ", option8);
-  custom_apply_attr (optwin, ATTR_HIGHEST);
-  mvwprintw (optwin, y_pos + 21, x_pos + 4 + strlen (option7), "%d",
-	     conf->input_datefmt);
-  custom_remove_attr (optwin, ATTR_HIGHEST);
-  mvwprintw (optwin, y_pos + 22, x_pos,
-	     _("(Format to be used when entering a date: "
-               "1-mm/dd/yyyy, 2-dd/mm/yyyy, 3-yyyy/mm/dd)"));
-
-  wmove (win[STA].p, 1, 0);
-  wnoutrefresh (optwin);
-  doupdate ();
+  return (y + 3);
 }
 
+static void
+general_conf_set_scrsize (scrollwin_t *sw)
+{
+  sw->win.x = 0;
+  sw->win.y = 0;
+  sw->win.h = (notify_bar ()) ? row - 3 : row - 2;
+  sw->win.w = col;
+
+  sw->pad.x = 1;
+  sw->pad.y = 3;
+  sw->pad.h = BUFSIZ;
+  sw->pad.w = col - 2 * sw->pad.x - 1;
+}
+                          
 /* General configuration. */
 void
 custom_general_config (conf_t *conf)
 {
-  window_t conf_win;
+  scrollwin_t cwin;
   char *number_str =
     _("Enter an option number to change its value [Q to quit] ");
   char *output_datefmt_str =
@@ -792,24 +798,29 @@ custom_general_config (conf_t *conf)
   char *input_datefmt_str =
     _("Enter the date format (1-mm/dd/yyyy, 2-dd/mm/yyyy, 3-yyyy/mm/dd) ");
   int ch;
-  char label[BUFSIZ];
   char *buf = (char *) malloc (BUFSIZ);
 
   clear ();
-  snprintf (label, BUFSIZ, _("CalCurse %s | general options"), VERSION);
-  custom_confwin_init (&conf_win, label);
+  general_conf_set_scrsize (&cwin);
+  snprintf (cwin.label, BUFSIZ, _("CalCurse %s | general options"), VERSION);
+  wins_scrollwin_init (&cwin);
+  wins_show (cwin.win.p, cwin.label);
   status_mesg (number_str, "");
-  custom_print_general_options (conf_win.p, conf);
+  cwin.total_lines = print_general_options (cwin.pad.p, conf);
+  wins_scrollwin_display (&cwin);
+
   while ((ch = wgetch (win[STA].p)) != 'q')
     {
       switch (ch)
 	{
 	case KEY_RESIZE:
-	  endwin ();
-	  refresh ();
-	  curs_set (0);
-	  delwin (conf_win.p);
-	  custom_confwin_init (&conf_win, label);
+          wins_get_config ();
+          wins_reset ();
+	  wins_scrollwin_delete (&cwin);
+	  wins_scrollwin_init (&cwin);
+          general_conf_set_scrsize (&cwin);
+          wins_show (cwin.win.p, cwin.label);
+	  cwin.first_visible_line = 0;          
 	  delwin (win[STA].p);
 	  win[STA].p = newwin (win[STA].h, win[STA].w, win[STA].y,
 			       win[STA].x);
@@ -820,6 +831,12 @@ custom_general_config (conf_t *conf)
                                  win[NOT].x);
 	      notify_update_bar ();
 	    }
+	  break;
+        case CTRL ('n'):
+          wins_scrollwin_down (&cwin);
+	  break;
+	case CTRL ('p'):
+          wins_scrollwin_up (&cwin);
 	  break;
 	case '1':
 	  conf->auto_save = !conf->auto_save;
@@ -861,8 +878,9 @@ custom_general_config (conf_t *conf)
 	  break;
 	}
       status_mesg (number_str, "");
-      custom_print_general_options (conf_win.p, conf);
+      cwin.total_lines = print_general_options (cwin.pad.p, conf);
+      wins_scrollwin_display (&cwin);
     }
   free (buf);
-  delwin (conf_win.p);
+  wins_scrollwin_delete (&cwin);
 }
