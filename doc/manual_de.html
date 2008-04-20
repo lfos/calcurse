@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <!--
 /*
- *	$calcurse: manual_de.html,v 1.16 2008/04/05 15:42:13 culot Exp $
+ *	$calcurse: manual_de.html,v 1.17 2008/04/20 12:43:13 culot Exp $
  *
  * Calcurse - text-based organizer
  * Copyright (c) 2004-2008 Frederic Culot
@@ -582,6 +582,28 @@ allgemeines Verhalten.</p>
     zu w&auml;hlen. Wird die Option auf <span class="emp">ja</span> gesetzt, wird Montag 
     als erster Tag der Woche festgelegt. Ist <span class="emp">nein</span> gew&auml;hlt, 
     beginnt die Woche sonntags.</dd>
+
+    <div class="todo">
+    <dt><code>output_datefmt</code>
+    (default: <span class="emp">%D</span>)</dt>
+    <dd>This option indicates the format to be used when displaying dates
+    in non-interactive mode. Using the default values, dates are displayed the
+    following way: <span class="emp">mm/dd/aa</span>.
+    You can see all of the possible formats by typing <code>man 3 strftime</code>
+    inside a terminal.</dd>
+
+    <dt><code>input_datefmt</code>
+    (default: <span class="emp">1</span>)</dt>
+    <dd>This option indicates the format that will be used to enter dates in
+    <span class="emp">calcurse</span>. Three choices are available:
+    <ol>
+      <li>mm/dd/yyyy</li>
+      <li>dd/mm/yyyy</li>
+      <li>yyyy/mm/dd</li>
+    </ol>
+    </dd>
+    </div>
+
 </dl>
 
 
@@ -945,7 +967,8 @@ derjenigen, denen ich Danke sagen m&ouml;chte:
 <li>Neil Williams f&uuml;r die &Uuml;bersetzung ins Englische.</li>
 <li>Leandro Noferini f&uuml;r die &Uuml;bersetzung ins Italienisches.</li>
 <li>Tony f&uuml;r seine Patches, welche die Funktion
-recur_item_inday() verbessern half </li>
+recur_item_inday() verbessern half 
+<span class="todo">, and for implementing the date format configuration options</span></li>
 <li>Jeremy Roon f&uuml;r die &Uuml;bersetzung ins Dutch.</li>
 <li><div class="todo">Erik Saule for its patch implementing the '-N' flag</div></li>
 <li>Leute die Programme geschrieben haben, die ich mag und mich inspiriert haben, insbesondere:
@@ -964,7 +987,7 @@ Benutzer, die mir Ihr Feedback mitgeteilt haben.</p>
 	Copyright (c) 2004-2008 Fr&eacute;d&eacute;ric Culot<br>
 	German translation by Michael Schulz
 	<code>&lt;bloodshower .at. web .dot. de&gt;</code>, and Chris.<br>
-	Calcurse version 2.1 - Last change: April 05, 2008<br>
+	Calcurse version 2.1 - Last change: April 20, 2008<br>
 </div>
 </div>
 

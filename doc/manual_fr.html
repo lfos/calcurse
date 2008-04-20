@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <!--
 /*
- *	$calcurse: manual_fr.html,v 1.17 2008/04/05 15:42:13 culot Exp $
+ *	$calcurse: manual_fr.html,v 1.18 2008/04/20 12:43:13 culot Exp $
  *
  * Calcurse - text-based organizer
  * Copyright (c) 2004-2008 Frederic Culot
@@ -669,7 +669,26 @@ $HOME/.calcurse/
 		  Si l'option <code>semaine_commence_lundi</code> est fixée à
 		  <span class="emp">oui</span>, les semaines du calendrier commenceront le lundi.
 		  Par contre si cette option est fixée à <span class="emp">non</span>,
-		  les semaines débuteront le dimanche.</dd>
+		  les semaines débuteront le dimanche.
+                </dd>
+                <dt><code>format_date_sortie</code>
+                  (valeur par défaut: <span class="emp">%D</span>)</dt>
+                <dd>Indique le format qui sera utilisé pour afficher les dates en mode
+                  non-interactif. Par défaut, les dates sont affichées comme suit :
+                  <span class="emp">mm/jj/aa</span>. 
+                  Les différents formats disponibles sont visibles en
+                  tapant la commande suivante dans un terminal: <code>man 3 strftime</code>.
+                </dd>
+                <dt><code>format_date_entrée</code>
+                  (valeur par défaut: <span class="emp">1</span>)</dt>
+                <dd>Indique le format qui sera utilisé pour entrer les dates dans 
+                  <span class="emp">calcurse</span>. Trois choix sont possibles :
+                  <ol>
+                  <li>mm/jj/aaaa</li>
+                  <li>jj/mm/aaaa</li>
+                  <li>aaaa/mm/jj</li>
+                  </ol>
+                </dd>
         </dl>
 
 
@@ -1136,7 +1155,8 @@ msgid ""
 	et de son manuel</li>
 	<li>Neil Williams pour la traduction anglaise</li>
 	<li>Tony pour son patch qui a permis d'améliorer la fonction
-	recur_item_inday()</li>
+	recur_item_inday(), et pour l'implémentation des options de configuration
+        concernant les formats de date</li>
 	<li>Jeremy Roon pour la traduction en Néerlandais</li>
 	<li>Leandro Noferini pour la traduction en Italien</li>
 	<li>Erik Saule pour son patch qui a permis d'implémenter l'option '-N'
@@ -1157,7 +1177,7 @@ msgid ""
 
 <div class="footer">
 	Copyright (c) 2004-2008 Frédéric Culot<br>
-	Calcurse version 2.1 - Dernière modification: 05 Avril 2008<br>
+	Calcurse version 2.1 - Dernière modification: 20 Avril 2008<br>
 </div>
 </div>
 

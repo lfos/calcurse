@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <!--
 /*
- *	$calcurse: manual_es.html,v 1.13 2008/04/05 15:42:13 culot Exp $
+ *	$calcurse: manual_es.html,v 1.14 2008/04/20 12:43:13 culot Exp $
  *
  * Calcurse - text-based organizer
  * Copyright (c) 2004-2008 Frederic Culot
@@ -604,6 +604,27 @@ $HOME/.calcurse/
 	    Por el contrario, si esta opción esta fijada en <span class="emp">no</span>, entonces el Domingo
 	    será el primer día de la semana.
 	    </dd>
+
+            <div class="todo">
+            <dt><code>output_datefmt</code>
+            (default: <span class="emp">%D</span>)</dt>
+            <dd>This option indicates the format to be used when displaying dates
+            in non-interactive mode. Using the default values, dates are displayed the
+            following way: <span class="emp">mm/dd/aa</span>.
+            You can see all of the possible formats by typing <code>man 3 strftime</code>
+            inside a terminal.</dd>
+            <dt><code>input_datefmt</code>
+            (default: <span class="emp">1</span>)</dt>
+            <dd>This option indicates the format that will be used to enter dates in
+            <span class="emp">calcurse</span>. Three choices are available:
+            <ol>
+              <li>mm/dd/yyyy</li>
+              <li>dd/mm/yyyy</li>
+              <li>yyyy/mm/dd</li>
+              </ol>
+            </dd>
+            </div>
+
         </dl>
 
 <h2>5.2 Color (temas)<a name="options_colors"></a></h2>
@@ -960,7 +981,8 @@ msgid ""
 	<li>Joel por su script del calendario que inspiro la vista de calendario de <code>calcurse</code> </li>
 	<li>Michael Schulz y Chris M. por la traducción al alemán de <code>calcurse</code> y su manual</li>
 	<li>Neil Williams por la traducción al ingles</li>
-	<li>Tony por el patch que me ha ayudado a implementar la funcion recur_item_inday()</li>
+	<li>Tony por el patch que me ha ayudado a implementar la funcion recur_item_inday()
+        <span class="todo">, and for implementing the date format configuration options</span></li>
 	<li>José López por la traducción al Español de <code>calcurse</code> y su manual</li>
 	<li>Jeremy Roon por la traducción al holandes</li>
 	<li>Leandro Noferini por la traducción al italiano</li>
@@ -982,7 +1004,7 @@ msgid ""
 	Copyright (c) 2004-2008 Fr&eacute;d&eacute;ric Culot<br>
 	Traducido al Español por José López
 	<code>&lt;testinground .at. gmail .dot. com&gt;</code><br>
-	Calcurse version 2.1 - Last change: April 05, 2008<br>
+	Calcurse version 2.1 - Last change: April 20, 2008<br>
 </div>
 </div>
 

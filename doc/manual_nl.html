@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//NL">
 <!--
 /*
- *	$calcurse: manual_nl.html,v 1.8 2008/04/05 15:42:13 culot Exp $
+ *	$calcurse: manual_nl.html,v 1.9 2008/04/20 12:43:13 culot Exp $
  *
  * Calcurse - text-based organizer
  * Copyright (c) 2004-2008 Frederic Culot
@@ -611,6 +611,27 @@ $HOME/.calcurse/
 		<span class="emp">ja</span>, dan zal maandag als eerste staan in het kalender
 		overzicht. Anders staat zondag als eerste dag van de week.
 		</dd>
+
+                <div class="todo">
+                <dt><code>output_datefmt</code>
+                (default: <span class="emp">%D</span>)</dt>
+                <dd>This option indicates the format to be used when displaying dates
+                in non-interactive mode. Using the default values, dates are displayed the
+                following way: <span class="emp">mm/dd/aa</span>.
+                You can see all of the possible formats by typing <code>man 3 strftime</code>
+                inside a terminal.</dd>
+                <dt><code>input_datefmt</code>
+                (default: <span class="emp">1</span>)</dt>
+                <dd>This option indicates the format that will be used to enter dates in
+                <span class="emp">calcurse</span>. Three choices are available:
+                <ol>
+                  <li>mm/dd/yyyy</li>
+                  <li>dd/mm/yyyy</li>
+                  <li>yyyy/mm/dd</li>
+                  </ol>
+                </dd>
+                </div>
+
 	</dl>
 
 <h2>5.2 Kleurenschema's<a name="options_colors"></a></h2>
@@ -984,7 +1005,8 @@ msgid ""
 	handleiding</li>
 	<li>Neil Williams voor de engelse vertaling</li>
 	<li>Leandro Noferini voor de italian vertaling</li>
-	<li>Tony voor zijn patch die de recur_item_inday functie verbeterde.</li>
+	<li>Tony voor zijn patch die de recur_item_inday functie verbeterde
+        <span class="todo">, and for implementing the date format configuration options</span></li>
 	<li>Jeremy Roon voor de nederlandse vertaling van
 	<code>calcurse</code> en handleiding</li>
 	<li><div class="todo">Erik Saule for its patch implementing the '-N' flag</div></li>
@@ -1006,7 +1028,7 @@ msgid ""
 
 <div class="footer">
 	Copyright (c) 2004-2008 Fr&eacute;d&eacute;ric Culot<br>
-	Calcurse version 2.1 - Last change: April 05, 2008<br>
+	Calcurse version 2.1 - Last change: April 20, 2008<br>
 </div>
 </div>
 
