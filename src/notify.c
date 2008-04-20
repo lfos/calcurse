@@ -1,4 +1,4 @@
-/*	$calcurse: notify.c,v 1.26 2008/04/19 21:05:15 culot Exp $	*/
+/*	$calcurse: notify.c,v 1.27 2008/04/20 13:49:39 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -267,27 +267,26 @@ notify_main_thread (void *arg)
 static void *
 notify_thread_app (void *arg)
 {
-  struct notify_app_s *tmp_app;
+  struct notify_app_s tmp_app;
   time_t current_time;
 
   current_time = time (NULL);
 
   /* Use a temporary structure not to lock the mutex for a too
    * long time while looking for next appointment. */
-  tmp_app = (struct notify_app_s *) malloc (sizeof (struct notify_app_s));
-  tmp_app->time = current_time + DAYINSEC;
-  tmp_app->got_app = 0;
-  tmp_app->txt = NULL;
-  tmp_app = recur_apoint_check_next (tmp_app, current_time, get_today ());
-  tmp_app = apoint_check_next (tmp_app, current_time);
+  tmp_app.time = current_time + DAYINSEC;
+  tmp_app.got_app = 0;
+  tmp_app.txt = NULL;
+  tmp_app = *recur_apoint_check_next (&tmp_app, current_time, get_today ());
+  tmp_app = *apoint_check_next (&tmp_app, current_time);
 
   pthread_mutex_lock (&notify_app->mutex);
-  if (tmp_app->got_app)
+  if (tmp_app.got_app)
     {
       notify_app->got_app = 1;
-      notify_app->time = tmp_app->time;
-      notify_app->txt = mycpy (tmp_app->txt);
-      notify_app->state = tmp_app->state;
+      notify_app->time = tmp_app.time;
+      notify_app->txt = mycpy (tmp_app.txt);
+      notify_app->state = tmp_app.state;
     }
   else
     {
@@ -295,9 +294,8 @@ notify_thread_app (void *arg)
     }
   pthread_mutex_unlock (&notify_app->mutex);
 
-  if (tmp_app->txt != NULL)
-    free (tmp_app->txt);
-  free (tmp_app);
+  if (tmp_app.txt != NULL)
+    free (tmp_app.txt);
   notify_update_bar ();
 
   pthread_exit ((void *) 0);
