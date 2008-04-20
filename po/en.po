@@ -1,4 +1,4 @@
-# 	$calcurse: en.po,v 1.6 2008/03/02 08:50:17 culot Exp $
+# 	$calcurse: en.po,v 1.7 2008/04/20 13:52:06 culot Exp $
 #
 # English/GB translation of calcurse.
 # Copyright (C) 2006 Copyright (c) Frederic Culot <frederic@culot.org>
@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse 1.4\n"
 "Report-Msgid-Bugs-To: frederic@culot.org\n"
-"POT-Creation-Date: 2008-02-16 12:26+0100\n"
+"POT-Creation-Date: 2008-04-20 11:16+0200\n"
 "PO-Revision-Date: 2006-07-03 00:05+0100\n"
 "Last-Translator: Neil Williams <linux@codehelp.co.uk>\n"
 "Language-Team: English/GB <en_GB@li.org>\n"
@@ -19,86 +19,87 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/apoint.c:117
+#: src/apoint.c:119
 msgid ""
 "Enter start time ([hh:mm] or [h:mm]), leave blank for an all-day event : "
 msgstr ""
 "Enter start time ([hh:mm] or [h:mm]), leave blank for an all-day event : "
 
-#: src/apoint.c:118
+#: src/apoint.c:122
 msgid "Enter end time ([hh:mm] or [h:mm]) or duration (in minutes) : "
 msgstr "Enter end time ([hh:mm] or [h:mm]) or duration (in minutes) : "
 
-#: src/apoint.c:119
+#: src/apoint.c:123
 msgid "Enter description :"
 msgstr "Enter description :"
 
-#: src/apoint.c:120
+#: src/apoint.c:125
 msgid "You entered an invalid start time, should be [h:mm] or [hh:mm]"
 msgstr "You entered an invalid start time, should be [h:mm] or [hh:mm]"
 
-#: src/apoint.c:121
+#: src/apoint.c:127
 msgid "You entered an invalid end time, should be [h:mm] or [hh:mm] or [mm]"
 msgstr "You entered an invalid end time, should be [h:mm] or [hh:mm] or [mm]"
 
-#: src/apoint.c:122 src/day.c:500 src/day.c:525 src/day.c:583
+#: src/apoint.c:128 src/day.c:518 src/day.c:544 src/day.c:605
 msgid "Press [Enter] to continue"
 msgstr "Press [Enter] to continue"
 
-#: src/apoint.c:215
+#: src/apoint.c:230
 msgid "Do you really want to delete this item ?"
 msgstr "Do you really want to delete this item ?"
 
-#: src/apoint.c:216
+#: src/apoint.c:231
 #, fuzzy
 msgid "FATAL ERROR in apoint_delete: no such type\n"
 msgstr "FATAL ERROR in todo_delete_bynum: no such todo\n"
 
-#: src/apoint.c:359 src/recur.c:239
+#: src/apoint.c:386 src/recur.c:252
 msgid "FATAL ERROR in apoint_scan: date error in the appointment\n"
 msgstr "FATAL ERROR in apoint_scan: date error in the appointment\n"
 
-#: src/apoint.c:381
+#: src/apoint.c:411
 #, fuzzy
 msgid "FATAL ERROR in apoint_get: no such item\n"
 msgstr "FATAL ERROR in todo_delete_bynum: no such todo\n"
 
-#: src/apoint.c:421
+#: src/apoint.c:454
 #, fuzzy
 msgid "FATAL ERROR in apoint_delete_bynum: no such appointment"
 msgstr "FATAL ERROR in apoint_delete_bynum: no such appointment\n"
 
-#: src/apoint.c:573
+#: src/apoint.c:615
 #, fuzzy
 msgid "FATAL ERROR in apoint_switch_notify: no such appointment"
 msgstr "FATAL ERROR in apoint_delete_bynum: no such appointment\n"
 
 #: src/args.c:51
 #, fuzzy
-msgid "Usage: calcurse [-h|-v] [-x] [-an] [-t[num]] [-d date|num] [-c file]\n"
+msgid ""
+"Usage: calcurse [-h|-v] [-x] [-N] [-an] [-t[num]] [-d date|num] [-c file]\n"
 msgstr "Usage: calcurse [-h | -v] [-at] [-d date|num] [-c file]\n"
 
-#: src/args.c:60
+#: src/args.c:59
 msgid "Try 'calcurse -h' for more information.\n"
 msgstr "Try 'calcurse -h' for more information.\n"
 
-#: src/args.c:73
+#: src/args.c:71
 #, fuzzy
 msgid ""
 "\n"
-"Copyright (c) 2004-2007 Frederic Culot.\n"
+"Copyright (c) 2004-2008 Frederic Culot.\n"
 "This is free software; see the source for copying conditions.\n"
 msgstr ""
 "\n"
 "Copyright (c) 2004-2006 Frederic Culot.\n"
 "This is free software; see the source for copying conditions.\n"
 
-#: src/args.c:77 src/args.c:122
+#: src/args.c:74 src/args.c:121
 #, c-format
 msgid "Calcurse %s - text-based organizer\n"
 msgstr "Calcurse %s - text-based organizer\n"
 
-#: src/args.c:90
+#: src/args.c:87
 #, fuzzy
 msgid ""
 "\n"
@@ -124,6 +125,10 @@ msgid ""
 "  -n, --next\n"
 "  \tprint next appointment within upcoming 24 hours and exit. Also given\n"
 "\tis the remaining time before this next appointment.\n"
+"\n"
+"  -N, --note\n"
+"\twhen used with the '-a' or '-t' flag, also print note content\n"
+"\tif one is associated with the displayed item.\n"
 "\n"
 "  -t[num], --todo[=num]\n"
 "\tprint todo list and exit. If the optional number [num] is given,\n"
@@ -156,24 +161,24 @@ msgstr ""
 "For more information, type '?' from within Calcurse, or read the manpage.\n"
 "Mail bug reports and suggestions to <calcurse@culot.org>.\n"
 
-#: src/args.c:143
+#: src/args.c:169
+msgid "No note file found\n"
+msgstr ""
+
+#: src/args.c:191
 msgid "to do:\n"
 msgstr "to do:\n"
 
-#: src/args.c:175
+#: src/args.c:225
 #, fuzzy
 msgid "next appointment:\n"
 msgstr "Appointment :"
 
-#: src/args.c:365
+#: src/args.c:449
 msgid "Argument to the '-d' flag is not valid\n"
 msgstr "Argument to the '-d' flag is not valid\n"
 
-#: src/args.c:367
-msgid "Possible argument formats are : 'mm/dd/yyyy' or 'n'\n"
-msgstr "Possible argument formats are : 'mm/dd/yyyy' or 'n'\n"
-
-#: src/args.c:369
+#: src/args.c:455
 msgid ""
 "\n"
 "For more information, type '?' from within Calcurse, or read the manpage.\n"
@@ -181,7 +186,7 @@ msgstr ""
 "\n"
 "For more information, type '?' from within Calcurse, or read the manpage.\n"
 
-#: src/args.c:372
+#: src/args.c:458
 msgid "Mail bug reports and suggestions to <calcurse@culot.org>.\n"
 msgstr "Mail bug reports and suggestions to <calcurse@culot.org>.\n"
 
@@ -197,304 +202,318 @@ msgstr ""
 msgid "Do you really want to quit ?"
 msgstr "Do you really want to quit ?"
 
-#: src/calcurse.c:234
+#: src/calcurse.c:239
 msgid "To do :"
 msgstr "To do :"
 
-#: src/calendar.c:129
+#: src/calendar.c:132
 msgid "ERROR in calendar_set_first_day_of_week\n"
 msgstr ""
 
-#: src/calendar.c:343
+#: src/calendar.c:347
 msgid ""
 "The day you entered is not valid (should be between 01/01/1902 and "
 "12/31/2037)"
 msgstr ""
 
-#: src/calendar.c:344 src/custom.c:211 src/io.c:401 src/io.c:707 src/io.c:816
-#: src/io.c:835
+#: src/calendar.c:349 src/custom.c:218 src/io.c:434 src/io.c:794 src/io.c:916
+#: src/io.c:937
 msgid "Press [ENTER] to continue"
 msgstr "Press [ENTER] to continue"
 
-#: src/calendar.c:346
-#, fuzzy
-msgid "Enter the day to go to [ENTER for today] : mm/dd/yyyy"
-msgstr "Enter the day to go to [ENTER for today] : dd/mm/yyyy"
-
-#: src/custom.c:46
+#: src/custom.c:47
 msgid "FATAL ERROR in fill_config_var: wrong configuration variable format.\n"
 msgstr "FATAL ERROR in fill_config_var: wrong configuration variable format.\n"
 
-#: src/custom.c:66
+#: src/custom.c:67
 #, fuzzy
 msgid "FATAL ERROR in custom_load_color: wrong color number.\n"
 msgstr "FATAL ERROR in fill_config_var: wrong configuration variable format.\n"
 
-#: src/custom.c:68
+#: src/custom.c:69
 #, fuzzy
 msgid "FATAL ERROR in custom_load_color: wrong color name.\n"
 msgstr "FATAL ERROR in load_app: wrong format in the appointment or event\n"
 
-#: src/custom.c:70
+#: src/custom.c:71
 #, fuzzy
 msgid ""
 "FATAL ERROR in custom_load_color: wrong configuration variable format.\n"
 msgstr "FATAL ERROR in fill_config_var: wrong configuration variable format.\n"
 
-#: src/custom.c:78
+#: src/custom.c:81
 msgid "FATAL ERROR in custom_load_color: missing colors in config file.\n"
 msgstr ""
 
-#: src/custom.c:210
+#: src/custom.c:217
 msgid "Failed to open config file"
 msgstr "Failed to open config file"
 
-#: src/custom.c:289
+#: src/custom.c:311
 #, fuzzy
 msgid "FATAL ERROR in custom_load_conf: configuration variable unknown.\n"
 msgstr "FATAL ERROR in fill_config_var: wrong configuration variable format.\n"
 
-#: src/custom.c:343
+#: src/custom.c:369
 msgid "Exit"
 msgstr "Exit"
 
-#: src/custom.c:344
+#: src/custom.c:370
 msgid "General"
 msgstr "General"
 
-#: src/custom.c:345
+#: src/custom.c:371
 msgid "Layout"
 msgstr "Layout"
 
-#: src/custom.c:346
+#: src/custom.c:372
 msgid "Color"
 msgstr "Colour"
 
-#: src/custom.c:347
+#: src/custom.c:373
 msgid "Notify"
 msgstr ""
 
-#: src/custom.c:359
+#: src/custom.c:386
 msgid "Pick the desired layout on next screen [press ENTER]"
 msgstr "Pick the desired layout on next screen [press ENTER]"
 
-#: src/custom.c:360
+#: src/custom.c:388
 #, fuzzy
 msgid "('A'= Appointment panel, 'C'= calendar panel, 'T'= todo panel)"
 msgstr "('A'= Appointment panel, 'c'= calendar panel, 't'= todo panel)"
 
-#: src/custom.c:362
+#: src/custom.c:390
 msgid "    AC       AT       CA       TA       TC       TA       CT       AT"
 msgstr ""
 
-#: src/custom.c:364
+#: src/custom.c:392
 msgid " [1]AT    [2]AC    [3]TA    [4]CA    [5]TA    [6]TC    [7]AT    [8]CT"
 msgstr ""
 
-#: src/custom.c:417
+#: src/custom.c:446
 msgid "Foreground"
 msgstr ""
 
-#: src/custom.c:418
+#: src/custom.c:447
 msgid "Background"
 msgstr ""
 
-#: src/custom.c:419
+#: src/custom.c:448
 msgid "(terminal's default)"
 msgstr ""
 
-#: src/custom.c:422
+#: src/custom.c:451
 msgid "Use 'X' or SPACE to select a color, 'H/L' 'J/K' or arrow keys to move"
 msgstr ""
 
-#: src/custom.c:424
+#: src/custom.c:453
 msgid "('0' for no color, 'Q' to exit) :"
 msgstr ""
 
-#: src/custom.c:455
+#: src/custom.c:487
 #, fuzzy, c-format
 msgid "CalCurse %s | color theme"
 msgstr "CalCurse %s | help"
 
-#: src/custom.c:644
+#: src/custom.c:680
 #, fuzzy
 msgid "FATAL ERROR in custom_color_theme_name: unknown color\n"
 msgstr "FATAL ERROR in todo_delete_bynum: no such todo\n"
 
-#: src/custom.c:672
+#: src/custom.c:711
 msgid "auto_save = "
 msgstr "auto_save = "
 
-#: src/custom.c:673
+#: src/custom.c:712
 msgid "confirm_quit = "
 msgstr "confirm_quit = "
 
-#: src/custom.c:674
+#: src/custom.c:713
 msgid "confirm_delete = "
 msgstr "confirm_delete = "
 
-#: src/custom.c:675
+#: src/custom.c:714
 msgid "skip_system_dialogs = "
 msgstr "skip_system_dialogues = "
 
-#: src/custom.c:676
+#: src/custom.c:715
 msgid "skip_progress_bar = "
 msgstr "skip_progress_bar = "
 
-#: src/custom.c:677
+#: src/custom.c:716
 msgid "week_begins_on_monday = "
 msgstr "week_begins_on_monday = "
 
-#: src/custom.c:686
+#: src/custom.c:717
+msgid "output_datefmt = "
+msgstr ""
+
+#: src/custom.c:718
+msgid "input_datefmt = "
+msgstr ""
+
+#: src/custom.c:724
 msgid "(if set to YES, automatic save is done when quitting)"
 msgstr "(if set to YES, automatic save is done when quitting)"
 
-#: src/custom.c:692
+#: src/custom.c:729
 msgid "(if set to YES, confirmation is required before quitting)"
 msgstr "(if set to YES, confirmation is required before quitting)"
 
-#: src/custom.c:698
+#: src/custom.c:734
 msgid "(if set to YES, confirmation is required before deleting an event)"
 msgstr "(if set to YES, confirmation is required before deleting an event)"
 
-#: src/custom.c:704
+#: src/custom.c:741
 msgid ""
 "(if set to YES, messages about loaded and saved data will not be displayed)"
 msgstr ""
 "(if set to YES, messages about loaded and saved data will not be displayed)"
 
-#: src/custom.c:710
+#: src/custom.c:748
 msgid "(if set to YES, progress bar will not be displayed when saving data)"
 msgstr "(if set to YES, progress bar will not be displayed when saving data)"
 
-#: src/custom.c:716
+#: src/custom.c:755
 msgid "(if set to YES, monday is the first day of the week, else it is sunday)"
 msgstr ""
 "(if set to YES, monday is the first day of the week, otherwise it is sunday)"
 
-#: src/custom.c:728 src/notify.c:505
+#: src/custom.c:763
+msgid "(Format of the date to be displayed in non-interactive mode)"
+msgstr ""
+
+#: src/custom.c:769
+msgid "(Format to be used when entering a date: "
+msgstr ""
+
+#: src/custom.c:770
+msgid " 1-mm/dd/yyyy, 2-dd/mm/yyyy, 3-yyyy/mm/dd)"
+msgstr ""
+
+#: src/custom.c:795 src/notify.c:522
 msgid "Enter an option number to change its value [Q to quit] "
 msgstr "Enter an option number to change its value [Q to quit] "
 
-#: src/custom.c:733
+#: src/custom.c:797 src/notify.c:524
+msgid "Enter the date format (see 'man 3 strftime' for possible formats) "
+msgstr ""
+
+#: src/custom.c:799
+msgid "Enter the date format (1-mm/dd/yyyy, 2-dd/mm/yyyy, 3-yyyy/mm/dd) "
+msgstr ""
+
+#: src/custom.c:805
 #, c-format
 msgid "CalCurse %s | general options"
 msgstr "CalCurse %s | general options"
 
-#: src/day.c:438
+#: src/day.c:456
 #, fuzzy
 msgid "FATAL ERROR in day_popup_item: unknown item type\n"
 msgstr "FATAL ERROR in todo_delete_bynum: no such todo\n"
 
-#: src/day.c:441
+#: src/day.c:459
 msgid "Event :"
 msgstr "Event :"
 
-#: src/day.c:445
+#: src/day.c:462
 msgid "Appointment :"
 msgstr "Appointment :"
 
-#: src/day.c:499
+#: src/day.c:517
 #, fuzzy
 msgid "Enter the new time ([hh:mm] or [h:mm]) : "
 msgstr "Enter end time ([hh:mm] or [h:mm]) or duration (in minutes) : "
 
-#: src/day.c:502
+#: src/day.c:519
 #, fuzzy
 msgid "You entered an invalid time, should be [h:mm] or [hh:mm]"
 msgstr "You entered an invalid start time, should be [h:mm] or [hh:mm]"
 
-#: src/day.c:524 src/day.c:579
+#: src/day.c:543 src/day.c:601
 msgid "Invalid time: start time must be before end time!"
 msgstr ""
 
-#: src/day.c:562
+#: src/day.c:585
 #, fuzzy
 msgid "Enter the new item description:"
 msgstr "Enter description :"
 
-#: src/day.c:574
+#: src/day.c:597
 msgid "Enter the new repetition type: (D)aily, (W)eekly, (M)onthly, (Y)early"
 msgstr ""
 
-#: src/day.c:576 src/recur.c:615
+#: src/day.c:599 src/recur.c:651
 msgid "[D/W/M/Y] "
 msgstr ""
 
-#: src/day.c:577 src/recur.c:619
+#: src/day.c:600 src/recur.c:653
 #, fuzzy
 msgid "The frequence you entered is not valid."
 msgstr "The day you entered is not valid"
 
-#: src/day.c:580 src/recur.c:622
+#: src/day.c:602 src/recur.c:656
 #, fuzzy
 msgid "The entered date is not valid."
 msgstr "The day you entered is not valid"
 
-#: src/day.c:581 src/recur.c:624
-#, fuzzy
-msgid "Possible formats are [mm/dd/yyyy] or '0' for an endless repetetition"
-msgstr "Possible argument formats are : 'mm/dd/yyyy' or 'n'\n"
-
-#: src/day.c:600
+#: src/day.c:628
 msgid "Enter the new repetition frequence:"
 msgstr ""
 
-#: src/day.c:618
-msgid "Enter the new ending date: [mm/dd/yyyy] or '0'"
-msgstr ""
-
-#: src/day.c:692
+#: src/day.c:737
 msgid "Edit: (1)Description or (2)Repetition?"
 msgstr ""
 
-#: src/day.c:714
+#: src/day.c:758
 msgid "Edit: (1)Start time, (2)End time, (3)Description or (4)Repetition?"
 msgstr ""
 
-#: src/day.c:738
+#: src/day.c:783
 msgid "Edit: (1)Start time, (2)End time or (3)Description?"
 msgstr ""
 
-#: src/day.c:770
+#: src/day.c:816
 msgid "This item is recurrent. Delete (a)ll occurences or just this (o)ne ?"
 msgstr ""
 
-#: src/day.c:773
+#: src/day.c:819
 msgid "This item has a note attached to it. Delete (i)tem or just its (n)ote ?"
 msgstr ""
 
-#: src/day.c:775
+#: src/day.c:821
 msgid "[i/n] "
 msgstr ""
 
-#: src/day.c:776
+#: src/day.c:822
 msgid "[a/o] "
 msgstr ""
 
-#: src/event.c:113
+#: src/event.c:118
 msgid "FATAL ERROR in event_scan: date error in the event\n"
 msgstr "FATAL ERROR in event_scan: date error in the event\n"
 
-#: src/event.c:135
+#: src/event.c:143
 #, fuzzy
 msgid "FATAL ERROR in event_get: no such item\n"
 msgstr "FATAL ERROR in event_delete_bynum: no such event\n"
 
-#: src/event.c:166
+#: src/event.c:178
 msgid "FATAL ERROR in event_delete_bynum: no such event\n"
 msgstr "FATAL ERROR in event_delete_bynum: no such event\n"
 
-#: src/help.c:109
-#, c-format
-msgid "CalCurse %s | help"
+#: src/help.c:119
+#, fuzzy, c-format
+msgid "Calcurse %s | help"
 msgstr "CalCurse %s | help"
 
-#: src/help.c:267
+#: src/help.c:272
 msgid "       Welcome to Calcurse. This is the main help screen.\n"
 msgstr "       Welcome to Calcurse. This is the main help screen.\n"
 
-#: src/help.c:269
+#: src/help.c:274
 msgid ""
 " Moving around:  Press CTRL-P or CTRL-N to scroll text upward or\n"
 "                 downward inside help screens, if necessary.\n"
@@ -528,11 +547,11 @@ msgstr ""
 "\n"
 "       Credits:  Press '@' for credits."
 
-#: src/help.c:282
+#: src/help.c:287
 msgid "Save:\n"
 msgstr "Save:\n"
 
-#: src/help.c:284
+#: src/help.c:289
 #, fuzzy
 msgid ""
 "Pressing 'S' saves the Calcurse data.\n"
@@ -559,11 +578,11 @@ msgstr ""
 "In the config menu, you can choose to save the Calcurse data\n"
 "automatically before quitting."
 
-#: src/help.c:294
+#: src/help.c:299
 msgid "Export:\n"
 msgstr ""
 
-#: src/help.c:296
+#: src/help.c:301
 msgid ""
 "Pressing 'X' exports the Calcurse data to iCalendar format.\n"
 "\n"
@@ -576,11 +595,11 @@ msgid ""
 "events, appointments, todos.\n"
 msgstr ""
 
-#: src/help.c:303
+#: src/help.c:308
 msgid "Displacement keys:\n"
 msgstr "Displacement keys:\n"
 
-#: src/help.c:305
+#: src/help.c:310
 msgid ""
 "You can use either 'H','J','K','L' or the arrow keys '<','v','^','>'\n"
 "to move into the calendar.\n"
@@ -612,17 +631,18 @@ msgstr ""
 "(respectively K or up arrow, and J or down arrow) allows you to select\n"
 "an item from those lists."
 
-#: src/help.c:317
+#: src/help.c:322
 msgid "View:\n"
 msgstr "View:\n"
 
-#: src/help.c:319
+#: src/help.c:324
+#, fuzzy
 msgid ""
 "Pressing 'V' allows you to view the item you select in either the ToDo\n"
 "or Appointment panel.\n"
 "\n"
 "This is usefull when an event description is longer than the available\n"
-"space to display it. If that is the case, the description will be\n"
+" space to display it. If that is the case, the description will be\n"
 "shortened and its end replaced by '...'. To be able to read the entire\n"
 "description, just press 'V' and a popup window will appear, containing\n"
 "the whole event.\n"
@@ -642,11 +662,11 @@ msgstr ""
 "Press any key to close the popup window and go back to the main\n"
 "Calcurse screen."
 
-#: src/help.c:329
+#: src/help.c:335
 msgid "Tab:\n"
 msgstr "Tab:\n"
 
-#: src/help.c:331
+#: src/help.c:337
 msgid ""
 "Pressing 'Tab' allows you to switch between panels.\n"
 "The panel currently in use has its border colorized.\n"
@@ -672,11 +692,11 @@ msgstr ""
 "change while pressing 'Tab', so you always know what action can be\n"
 "performed on the selected panel."
 
-#: src/help.c:341
+#: src/help.c:347
 msgid "Goto:\n"
 msgstr "Goto:\n"
 
-#: src/help.c:343
+#: src/help.c:349
 msgid ""
 "Pressing 'G' allows you to jump to a specific day in the calendar.\n"
 "\n"
@@ -692,11 +712,11 @@ msgstr ""
 "If you hit [ENTER] without specifying any date, Calcurse checks the\n"
 "system current date and you will be taken to that date."
 
-#: src/help.c:349
+#: src/help.c:355
 msgid "Delete:\n"
 msgstr "Delete:\n"
 
-#: src/help.c:351
+#: src/help.c:357
 #, fuzzy
 msgid ""
 "Pressing 'D' deletes an element in the ToDo or Appointment list.\n"
@@ -725,11 +745,11 @@ msgstr ""
 "Do not forget to save the calendar data to retrieve the modifications\n"
 "next time you launch Calcurse."
 
-#: src/help.c:363
+#: src/help.c:369
 msgid "Add:\n"
 msgstr "Add:\n"
 
-#: src/help.c:365
+#: src/help.c:371
 #, fuzzy
 msgid ""
 "Pressing 'A' allows you to add an item in either the ToDo or Appointment\n"
@@ -757,15 +777,15 @@ msgid ""
 "pressing 'A'.\n"
 "\n"
 "Notes:\n"
-"       o if an appointment lasts for such a long time that it continues\n"
-"         on the next days, this event will be indicated on all the\n"
-"         corresponding days, and the beginning or ending hour will be\n"
-"         replaced by '..' if the event does not begin or end on the day.\n"
-"       o if you only press [ENTER] at the APPOINTMENT or TODO event\n"
-"         description prompt, without any description, no item will be\n"
-"         added.\n"
-"       o do not forget to save the calendar data to retrieve the new\n"
-"         event next time you launch Calcurse."
+"     o if an appointment lasts for such a long time that it continues\n"
+"       on the next days, this event will be indicated on all the\n"
+"       corresponding days, and the beginning or ending hour will be\n"
+"       replaced by '..' if the event does not begin or end on the day.\n"
+"     o if you only press [ENTER] at the APPOINTMENT or TODO event\n"
+"       description prompt, without any description, no item will be\n"
+"       added.\n"
+"     o do not forget to save the calendar data to retrieve the new\n"
+"       event next time you launch Calcurse."
 msgstr ""
 "Pressing 'A' allows you to add an item in either the ToDo or Appointment\n"
 "list, depending on which panel is selected when you press 'A'.\n"
@@ -798,12 +818,12 @@ msgstr ""
 "       o do not forget to save the calendar data to retrieve the new\n"
 "         event next time you launch Calcurse."
 
-#: src/help.c:396
+#: src/help.c:401
 #, fuzzy
 msgid "Edit Item:\n"
 msgstr "Add Item"
 
-#: src/help.c:398
+#: src/help.c:403
 msgid ""
 "Pressing 'E' allows you to edit the item which is currently selected.\n"
 "Depending on the item type (appointment, event, or todo), and if it is\n"
@@ -814,20 +834,20 @@ msgid ""
 "its actual value, and you will be able to change it as you like.\n"
 "\n"
 "Notes:\n"
-"       o if you choose to edit the item repetition properties, you will\n"
-"         be asked to re-enter all of the repetition characteristics\n"
-"         (repetition type, frequence, and ending date). Moreover, the\n"
-"         previous data concerning the deleted occurences will be lost.\n"
-"       o do not forget to save the calendar data to retrieve the\n"
-"         modified properties next time you launch Calcurse."
+"     o if you choose to edit the item repetition properties, you will\n"
+"       be asked to re-enter all of the repetition characteristics\n"
+"       (repetition type, frequence, and ending date). Moreover, the\n"
+"       previous data concerning the deleted occurences will be lost.\n"
+"     o do not forget to save the calendar data to retrieve the\n"
+"       modified properties next time you launch Calcurse."
 msgstr ""
 
-#: src/help.c:413
+#: src/help.c:418
 #, fuzzy
 msgid "EditNote:\n"
 msgstr "Add Item"
 
-#: src/help.c:415
+#: src/help.c:420
 msgid ""
 "Pressing 'N' allows you to attach a note to any type of item, or to\n"
 "edit an already existing note.\n"
@@ -838,45 +858,45 @@ msgid ""
 "want the note to be attached to. Then you will be driven to an\n"
 "external editor to edit your note. This editor is chosen the following\n"
 "way:\n"
-"       o if the 'VISUAL' environment variable is set, then this will be\n"
-"         the default editor to be called.\n"
-"       o if 'VISUAL' is not set, then the 'EDITOR' environment variable\n"
-"         will be used as the default editor.\n"
-"       o if none of the above environment variables is set, then\n"
-"         '/usr/bin/vi' will be used.\n"
+"     o if the 'VISUAL' environment variable is set, then this will be\n"
+"       the default editor to be called.\n"
+"     o if 'VISUAL' is not set, then the 'EDITOR' environment variable\n"
+"       will be used as the default editor.\n"
+"     o if none of the above environment variables is set, then\n"
+"       '/usr/bin/vi' will be used.\n"
 "\n"
 "Once the item note is edited and saved, quit your favorite editor.\n"
 "You will then go back to Calcurse, and the '>' sign will appear in front\n"
 "of the highlighted item, meaning there is a note attached to it."
 msgstr ""
 
-#: src/help.c:434
+#: src/help.c:439
 #, fuzzy
 msgid "ViewNote:\n"
 msgstr "View:\n"
 
-#: src/help.c:436
+#: src/help.c:441
 msgid ""
 "Pressing the '>' key allows you to view a note which was previously\n"
 "attached to an item (an item which owns a note has a '>' sign in front\n"
 "of it). This command only permits to view the note, not to\n"
 "edit it (to do so, use the 'EditNote' command, using the 'N' key).\n"
-"Once you highlighted an item with a note attached to it, and the 'N' key\n"
+"Once you highlighted an item with a note attached to it, and the '>' key\n"
 "was pressed, you will be driven to an external pager to view that note.\n"
 "The default pager is chosen the following way:\n"
-"       o if the 'PAGER' environment variable is set, then this will be\n"
-"         the default viewer to be called.\n"
-"       o if the above environment variable is not set, then\n"
-"         '/usr/bin/less' will be used.\n"
+"     o if the 'PAGER' environment variable is set, then this will be\n"
+"       the default viewer to be called.\n"
+"     o if the above environment variable is not set, then\n"
+"       '/usr/bin/less' will be used.\n"
 "As for the 'N' key, quit the pager and you will be driven back to\n"
 "Calcurse."
 msgstr ""
 
-#: src/help.c:450
+#: src/help.c:456
 msgid "Priority:\n"
 msgstr ""
 
-#: src/help.c:452
+#: src/help.c:458
 msgid ""
 "Pressing '+' or '-' allows you to change the priority of the currently\n"
 "selected item in the ToDo list. Priorities are represented by the number\n"
@@ -893,12 +913,12 @@ msgid ""
 "may also change depending on the priority of the items below."
 msgstr ""
 
-#: src/help.c:464
+#: src/help.c:472
 #, fuzzy
 msgid "Repeat:\n"
 msgstr "Redraw:\n"
 
-#: src/help.c:466
+#: src/help.c:474
 msgid ""
 "Pressing 'R' allows you to repeat an event or an appointment. You must\n"
 "first select the item to be repeated by moving inside the appointment\n"
@@ -929,12 +949,12 @@ msgid ""
 "         one occurence of a repeated item."
 msgstr ""
 
-#: src/help.c:490
+#: src/help.c:498
 #, fuzzy
 msgid "Flag Item:\n"
 msgstr "Add Item"
 
-#: src/help.c:492
+#: src/help.c:500
 msgid ""
 "Pressing '!' toggles an appointment's 'important' flag.\n"
 "\n"
@@ -946,11 +966,11 @@ msgid ""
 "and how long before it he gets notified."
 msgstr ""
 
-#: src/help.c:500
+#: src/help.c:508
 msgid "Config:\n"
 msgstr "Config:\n"
 
-#: src/help.c:502
+#: src/help.c:510
 #, fuzzy
 msgid ""
 "Pressing 'C' leads to the configuration submenu, from which you can\n"
@@ -983,11 +1003,11 @@ msgstr ""
 "Do not forget to save the calendar data to retrieve your configuration\n"
 "next time you launch Calcurse."
 
-#: src/help.c:513
+#: src/help.c:521
 msgid "General keybindings:\n"
 msgstr ""
 
-#: src/help.c:515
+#: src/help.c:523
 msgid ""
 "Some of the keybindings apply whatever panel is selected. They are\n"
 "called general keybinding and involve the <CONTROL> key, which is\n"
@@ -1007,11 +1027,11 @@ msgid ""
 " '^J' : +1 Week         -> move to next week"
 msgstr ""
 
-#: src/help.c:531
+#: src/help.c:539
 msgid "OtherCmd:\n"
 msgstr ""
 
-#: src/help.c:533
+#: src/help.c:541
 msgid ""
 "Pressing 'O' allows you to switch between status bar help pages.\n"
 "Because the terminal screen is too narrow to display all of the\n"
@@ -1021,14 +1041,14 @@ msgid ""
 "leads you back to the first page."
 msgstr ""
 
-#: src/help.c:540
+#: src/help.c:548
 msgid "Calcurse - text-based organizer"
 msgstr "Calcurse - text-based organizer"
 
-#: src/help.c:542
+#: src/help.c:550
 #, fuzzy
 msgid ""
-"Copyright (c) 2004-2007 Frederic Culot\n"
+"Copyright (c) 2004-2008 Frederic Culot\n"
 "\n"
 "This program is free software; you can redistribute it and/or modify\n"
 "it under the terms of the GNU General Public License as published by\n"
@@ -1060,98 +1080,98 @@ msgstr ""
 "Send your feedback or comments to : calcurse@culot.org\n"
 "Calcurse home page : http://culot.org/calcurse"
 
-#: src/io.c:59
+#: src/io.c:61
 msgid "Saving..."
 msgstr "Saving..."
 
-#: src/io.c:60
+#: src/io.c:62
 msgid "Loading..."
 msgstr "Loading..."
 
-#: src/io.c:61
+#: src/io.c:63
 #, fuzzy
 msgid "Exporting..."
 msgstr "aborting...\n"
 
-#: src/io.c:124
+#: src/io.c:126
 msgid "Choose the file used to export calcurse data:"
 msgstr ""
 
-#: src/io.c:126
+#: src/io.c:128
 msgid "The file cannot be accessed, please enter another file name."
 msgstr ""
 
-#: src/io.c:128 src/recur.c:626
+#: src/io.c:129 src/recur.c:660
 #, fuzzy
 msgid "Press [ENTER] to continue."
 msgstr "Press [ENTER] to continue"
 
-#: src/io.c:345
+#: src/io.c:365
 #, c-format
 msgid "%s does not exist, create it now [y or n] ? "
 msgstr "%s does not exist, create it now [y or n] ? "
 
-#: src/io.c:350 src/io.c:367
+#: src/io.c:371 src/io.c:391
 #, c-format
 msgid "aborting...\n"
 msgstr "aborting...\n"
 
-#: src/io.c:361
+#: src/io.c:385
 #, c-format
 msgid "%s successfully created\n"
 msgstr "%s successfully created\n"
 
-#: src/io.c:362
+#: src/io.c:386
 #, c-format
 msgid "starting interactive mode...\n"
 msgstr "starting interactive mode...\n"
 
-#: src/io.c:397
+#: src/io.c:422
 msgid "Problems accessing data file ..."
 msgstr "Problems accessing data file ..."
 
-#: src/io.c:400
+#: src/io.c:433
 msgid "The data files were successfully saved"
 msgstr "The data files were successfully saved"
 
-#: src/io.c:560
+#: src/io.c:612
 #, fuzzy
 msgid "FATAL ERROR in io_load_app: wrong format in the appointment or event\n"
 msgstr "FATAL ERROR in load_app: wrong format in the appointment or event\n"
 
-#: src/io.c:579
+#: src/io.c:633
 #, fuzzy
 msgid "FATAL ERROR in io_load_app: syntax error in the item date\n"
 msgstr "FATAL ERROR in load_app: syntax error in the item date\n"
 
-#: src/io.c:594
+#: src/io.c:649
 #, fuzzy
 msgid "FATAL ERROR in io_load_app: no event nor appointment found\n"
 msgstr "FATAL ERROR in load_app: no event nor appointment found\n"
 
-#: src/io.c:706
+#: src/io.c:793
 msgid "Failed to open todo file"
 msgstr "Failed to open todo file"
 
-#: src/io.c:757 src/io.c:775
+#: src/io.c:855 src/io.c:875
 #, fuzzy, c-format
 msgid "FATAL ERROR: could not create %s: %s\n"
 msgstr "FATAL ERROR in todo_delete_bynum: no such todo\n"
 
-#: src/io.c:814
+#: src/io.c:914
 msgid "Welcome to Calcurse. Missing data files were created."
 msgstr "Welcome to Calcurse. Missing data files were created."
 
-#: src/io.c:815
+#: src/io.c:915
 msgid "Data files found. Data will be loaded now."
 msgstr "Data files found. Data will be loaded now."
 
-#: src/io.c:833
+#: src/io.c:935
 #, fuzzy
 msgid "FATAL ERROR in io_export_data: wrong export mode\n"
 msgstr "FATAL ERROR in todo_delete_bynum: no such todo\n"
 
-#: src/io.c:834
+#: src/io.c:936
 #, fuzzy
 msgid "The data were successfully exported"
 msgstr "The data files were successfully saved"
@@ -1161,150 +1181,152 @@ msgstr "The data files were successfully saved"
 msgid "FATAL ERROR in launch_cmd: could not fork"
 msgstr "FATAL ERROR in todo_delete_bynum: no such todo\n"
 
-#: src/notify.c:139
+#: src/notify.c:138
 #, fuzzy
 msgid "FATAL ERROR in launch_cmd: could not launch user command"
 msgstr "FATAL ERROR in todo_delete_bynum: no such todo\n"
 
-#: src/notify.c:434
+#: src/notify.c:451
 msgid "notify-bar_show = "
 msgstr ""
 
-#: src/notify.c:435
+#: src/notify.c:452
 msgid "notify-bar_date = "
 msgstr ""
 
-#: src/notify.c:436
+#: src/notify.c:453
 msgid "notify-bar_clock = "
 msgstr ""
 
-#: src/notify.c:437
+#: src/notify.c:454
 msgid "notify-bar_warning = "
 msgstr ""
 
-#: src/notify.c:438
+#: src/notify.c:455
 msgid "notify-bar_command = "
 msgstr ""
 
-#: src/notify.c:441
+#: src/notify.c:458
 #, fuzzy
 msgid "(if set to YES, notify-bar will be displayed)"
 msgstr "(if set to YES, progress bar will not be displayed when saving data)"
 
-#: src/notify.c:444
+#: src/notify.c:460
 msgid "(Format of the date to be displayed inside notify-bar)"
 msgstr ""
 
-#: src/notify.c:447
+#: src/notify.c:463
 msgid "(Format of the time to be displayed inside notify-bar)"
 msgstr ""
 
-#: src/notify.c:450
+#: src/notify.c:466
 msgid ""
 "(Warn user if an appointment is within next 'notify-bar_warning' seconds)"
 msgstr ""
 
-#: src/notify.c:454
+#: src/notify.c:469
 msgid "(Command used to notify user of an upcoming appointment)"
 msgstr ""
 
-#: src/notify.c:507
-msgid "Enter the date format (see 'man 3 strftime' for possible formats) "
-msgstr ""
-
-#: src/notify.c:509
+#: src/notify.c:526
 msgid "Enter the time format (see 'man 3 strftime' for possible formats) "
 msgstr ""
 
-#: src/notify.c:511
+#: src/notify.c:528
 msgid "Enter the number of seconds (0 not to be warned before an appointment)"
 msgstr ""
 
-#: src/notify.c:512
+#: src/notify.c:529
 msgid "Enter the notification command "
 msgstr ""
 
-#: src/notify.c:516
+#: src/notify.c:533
 #, fuzzy, c-format
 msgid "CalCurse %s | notify-bar options"
 msgstr "CalCurse %s | general options"
 
-#: src/recur.c:127
+#: src/recur.c:131
 #, fuzzy
 msgid "FATAL ERROR in recur_def2char: unknown recur type\n"
 msgstr "FATAL ERROR in todo_delete_bynum: no such todo\n"
 
-#: src/recur.c:158
+#: src/recur.c:163
 #, fuzzy
 msgid "FATAL ERROR in recur_char2def: unknown char\n"
 msgstr "FATAL ERROR in todo_delete_bynum: no such todo\n"
 
-#: src/recur.c:281
+#: src/recur.c:299
 #, fuzzy
 msgid "FATAL ERROR in recur_event_scan: date error in the event\n"
 msgstr "FATAL ERROR in event_scan: date error in the event\n"
 
-#: src/recur.c:399
+#: src/recur.c:421
 #, fuzzy
 msgid "FATAL ERROR in recur_item_inday: unknown item type\n"
 msgstr "FATAL ERROR in todo_delete_bynum: no such todo\n"
 
-#: src/recur.c:522
+#: src/recur.c:554
 #, fuzzy
 msgid "FATAL ERROR in recur_event_erase: no such event\n"
 msgstr "FATAL ERROR in event_delete_bynum: no such event\n"
 
-#: src/recur.c:591
+#: src/recur.c:626
 #, fuzzy
 msgid "FATAL ERROR in recur_apoint_erase: no such appointment\n"
 msgstr "FATAL ERROR in apoint_delete_bynum: no such appointment\n"
 
-#: src/recur.c:614
+#: src/recur.c:650
 msgid "Enter the repetition type: (D)aily, (W)eekly, (M)onthly, (Y)early"
 msgstr ""
 
-#: src/recur.c:617
+#: src/recur.c:652
 msgid "Enter the repetition frequence:"
 msgstr ""
 
-#: src/recur.c:621
-msgid "Enter the ending date: [mm/dd/yyyy] or '0' for an endless repetition"
-msgstr ""
+#: src/recur.c:655
+#, fuzzy, c-format
+msgid "Enter the ending date: [%s] or '0' for an endless repetition"
+msgstr "Possible argument formats are : 'mm/dd/yyyy' or 'n'\n"
 
-#: src/recur.c:625
+#: src/recur.c:658
+#, fuzzy, c-format
+msgid "Possible formats are [%s] or '0' for an endless repetetition"
+msgstr "Possible argument formats are : 'mm/dd/yyyy' or 'n'\n"
+
+#: src/recur.c:659
 msgid "This item is already a repeated one."
 msgstr ""
 
-#: src/recur.c:628
+#: src/recur.c:662
 msgid "Sorry, the date you entered is older than the item start time."
 msgstr ""
 
-#: src/recur.c:717
+#: src/recur.c:776
 #, fuzzy
 msgid "FATAL ERROR in recur_repeat_item: wrong item type\n"
 msgstr "FATAL ERROR in todo_delete_bynum: no such todo\n"
 
-#: src/recur.c:744
+#: src/recur.c:805
 #, fuzzy
 msgid "FATAL ERROR in recur_exc_scan: syntax error in the item date\n"
 msgstr "FATAL ERROR in load_app: syntax error in the item date\n"
 
-#: src/recur.c:811
+#: src/recur.c:880
 #, fuzzy
 msgid "FATAL ERROR in recur_get_apoint: no such item\n"
 msgstr "FATAL ERROR in apoint_delete_bynum: no such appointment\n"
 
-#: src/recur.c:832
+#: src/recur.c:904
 #, fuzzy
 msgid "FATAL ERROR in recur_get_event: no such item\n"
 msgstr "FATAL ERROR in event_delete_bynum: no such event\n"
 
-#: src/recur.c:865
+#: src/recur.c:940
 #, fuzzy
 msgid "FATAL ERROR in recur_apoint_switch_notify: no such item\n"
 msgstr "FATAL ERROR in apoint_delete_bynum: no such appointment\n"
 
-#: src/todo.c:137
+#: src/todo.c:138
 msgid "Enter the new ToDo item : "
 msgstr "Enter the new ToDo item : "
 
@@ -1312,43 +1334,43 @@ msgstr "Enter the new ToDo item : "
 msgid "Enter the ToDo priority [1 (highest) - 9 (lowest)] :"
 msgstr ""
 
-#: src/todo.c:189
+#: src/todo.c:192
 #, fuzzy
 msgid "FATAL ERROR in todo_delete_note_bynum: no note attached\n"
 msgstr "FATAL ERROR in todo_delete_bynum: no such todo\n"
 
-#: src/todo.c:198
+#: src/todo.c:201
 #, fuzzy
 msgid "FATAL ERROR in todo_delete_note_bynum: no such todo\n"
 msgstr "FATAL ERROR in todo_delete_bynum: no such todo\n"
 
-#: src/todo.c:225
+#: src/todo.c:230
 msgid "FATAL ERROR in todo_delete_bynum: no such todo\n"
 msgstr "FATAL ERROR in todo_delete_bynum: no such todo\n"
 
-#: src/todo.c:235
+#: src/todo.c:240
 msgid "Do you really want to delete this task ?"
 msgstr "Do you really want to delete this task ?"
 
-#: src/todo.c:237
+#: src/todo.c:242
 msgid "This item has a note attached to it. Delete (t)odo or just its (n)ote ?"
 msgstr ""
 
-#: src/todo.c:240
+#: src/todo.c:244
 msgid "[t/n] "
 msgstr ""
 
-#: src/todo.c:312
+#: src/todo.c:328
 #, fuzzy
 msgid "FATAL ERROR in todo_get_position: todo not found\n"
 msgstr "FATAL ERROR in todo_delete_bynum: no such todo\n"
 
-#: src/todo.c:337
+#: src/todo.c:360
 #, fuzzy
 msgid "FATAL ERROR in todo_chg_priority: no such action\n"
 msgstr "FATAL ERROR in todo_delete_bynum: no such todo\n"
 
-#: src/todo.c:352
+#: src/todo.c:375
 #, fuzzy
 msgid "Enter the new ToDo description :"
 msgstr "Enter the new ToDo item : "
@@ -1365,232 +1387,232 @@ msgstr ""
 msgid "Please report the following bug:"
 msgstr ""
 
-#: src/utils.c:137
+#: src/utils.c:140
 msgid "Press any key to continue..."
 msgstr "Press any key to continue..."
 
-#: src/utils.c:360
+#: src/utils.c:378
 #, fuzzy
 msgid "FATAL ERROR in updatestring: out of memory"
 msgstr "FATAL ERROR in update_windows: no window selected\n"
 
-#: src/utils.c:400
+#: src/utils.c:420
 msgid "Help"
 msgstr "Help"
 
-#: src/utils.c:401
+#: src/utils.c:421
 msgid "Quit"
 msgstr "Quit"
 
-#: src/utils.c:402
+#: src/utils.c:422
 msgid "Save"
 msgstr "Save"
 
-#: src/utils.c:403
+#: src/utils.c:423
 msgid "Export"
 msgstr ""
 
-#: src/utils.c:404
+#: src/utils.c:424
 msgid "Add Item"
 msgstr "Add Item"
 
-#: src/utils.c:405
+#: src/utils.c:425
 msgid "Del Item"
 msgstr "Del Item"
 
-#: src/utils.c:406
+#: src/utils.c:426
 #, fuzzy
 msgid "Edit Itm"
 msgstr "Add Item"
 
-#: src/utils.c:407
+#: src/utils.c:427
 #, fuzzy
 msgid "Flag Itm"
 msgstr "Del Item"
 
-#: src/utils.c:408 src/utils.c:422
+#: src/utils.c:428 src/utils.c:442
 #, fuzzy
 msgid "-+1 Day"
 msgstr "-/+1 Day"
 
-#: src/utils.c:409 src/utils.c:423
+#: src/utils.c:429 src/utils.c:443
 #, fuzzy
 msgid "-+1 Week"
 msgstr "-/+1 Week"
 
-#: src/utils.c:410
+#: src/utils.c:430
 msgid "Up/Down"
 msgstr "Up/Down"
 
-#: src/utils.c:411
+#: src/utils.c:431
 msgid "Repeat"
 msgstr ""
 
-#: src/utils.c:412
+#: src/utils.c:432
 msgid "Priority"
 msgstr ""
 
-#: src/utils.c:413
+#: src/utils.c:433
 msgid "Chg View"
 msgstr "Chg View"
 
-#: src/utils.c:414
+#: src/utils.c:434
 #, fuzzy
 msgid "Go to"
 msgstr "Goto:\n"
 
-#: src/utils.c:415
+#: src/utils.c:435
 msgid "Config"
 msgstr "Config"
 
-#: src/utils.c:416
+#: src/utils.c:436
 msgid "View"
 msgstr "View"
 
-#: src/utils.c:417
+#: src/utils.c:437
 msgid "Redraw"
 msgstr "Redraw"
 
-#: src/utils.c:418
+#: src/utils.c:438
 #, fuzzy
 msgid "Add Appt"
 msgstr "Add Item"
 
-#: src/utils.c:419
+#: src/utils.c:439
 msgid "Add Todo"
 msgstr ""
 
-#: src/utils.c:420
+#: src/utils.c:440
 #, fuzzy
 msgid "EditNote"
 msgstr "Add Item"
 
-#: src/utils.c:421
+#: src/utils.c:441
 #, fuzzy
 msgid "ViewNote"
 msgstr "View"
 
-#: src/utils.c:424
+#: src/utils.c:444
 msgid "OtherCmd"
 msgstr ""
 
-#: src/utils.c:488
+#: src/utils.c:509
 msgid "FATAL ERROR in date2sec: failure in mktime\n"
 msgstr "FATAL ERROR in date2sec: failure in mktime\n"
 
-#: src/utils.c:743
+#: src/utils.c:725
 msgid "Appointment"
 msgstr "Appointment"
 
-#: src/utils.c:766
+#: src/utils.c:751
 #, fuzzy
 msgid "FATAL ERROR in other_status_page: unknown panel\n"
 msgstr "FATAL ERROR in todo_delete_bynum: no such todo\n"
 
-#: src/utils.c:834
+#: src/utils.c:825
 #, fuzzy
 msgid "FATAL ERROR in mystrtol: could not convert string"
 msgstr "FATAL ERROR in todo_delete_bynum: no such todo\n"
 
-#: src/utils.c:836
+#: src/utils.c:827
 #, fuzzy
 msgid "FATAL ERROR in mystrtol: number is out of range"
 msgstr "FATAL ERROR in update_windows: no window selected\n"
 
-#: src/utils.c:857
+#: src/utils.c:849
 msgid "yes"
 msgstr "yes"
 
-#: src/utils.c:860
+#: src/utils.c:854
 msgid "no"
 msgstr "no"
 
-#: src/utils.c:863
+#: src/utils.c:858
 msgid "option not defined - Problem in print_option_incolor()"
 msgstr "option not defined - Problem in print_option_incolor()"
 
-#: src/utils.c:900
+#: src/utils.c:895
 msgid "FATAL ERROR: temporary file could not be created!"
 msgstr ""
 
-#: src/utils.c:914
+#: src/utils.c:909
 #, fuzzy
 msgid "FATAL ERROR in erase_note: could not remove note\n"
 msgstr "FATAL ERROR in todo_delete_bynum: no such todo\n"
 
-#: src/vars.c:48
+#: src/vars.c:49
 msgid "January"
 msgstr "January"
 
-#: src/vars.c:49
+#: src/vars.c:50
 msgid "February"
 msgstr "February"
 
-#: src/vars.c:50
+#: src/vars.c:51
 msgid "March"
 msgstr "March"
 
-#: src/vars.c:51
+#: src/vars.c:52
 msgid "April"
 msgstr "April"
 
-#: src/vars.c:52
+#: src/vars.c:53
 msgid "May"
 msgstr "May"
 
-#: src/vars.c:53
+#: src/vars.c:54
 msgid "June"
 msgstr "June"
 
-#: src/vars.c:54
+#: src/vars.c:55
 msgid "July"
 msgstr "July"
 
-#: src/vars.c:55
+#: src/vars.c:56
 msgid "August"
 msgstr "August"
 
-#: src/vars.c:56
+#: src/vars.c:57
 msgid "September"
 msgstr "September"
 
-#: src/vars.c:57
+#: src/vars.c:58
 msgid "October"
 msgstr "October"
 
-#: src/vars.c:58
+#: src/vars.c:59
 msgid "November"
 msgstr "November"
 
-#: src/vars.c:59
+#: src/vars.c:60
 msgid "December"
 msgstr "December"
 
-#: src/vars.c:62 src/vars.c:69
+#: src/vars.c:64 src/vars.c:71
 msgid "Sun"
 msgstr "Sun"
 
-#: src/vars.c:63
+#: src/vars.c:65
 msgid "Mon"
 msgstr "Mon"
 
-#: src/vars.c:64
+#: src/vars.c:66
 msgid "Tue"
 msgstr "Tue"
 
-#: src/vars.c:65
+#: src/vars.c:67
 msgid "Wed"
 msgstr "Wed"
 
-#: src/vars.c:66
+#: src/vars.c:68
 msgid "Thu"
 msgstr "Thu"
 
-#: src/vars.c:67
+#: src/vars.c:69
 msgid "Fri"
 msgstr "Fri"
 
-#: src/vars.c:68
+#: src/vars.c:70
 msgid "Sat"
 msgstr "Sat"
 
@@ -1609,10 +1631,20 @@ msgstr "Appointments"
 msgid "ToDo"
 msgstr "ToDo"
 
-#: src/wins.c:341
+#: src/wins.c:417
 #, fuzzy
 msgid "FATAL ERROR in wins_update: no window selected\n"
 msgstr "FATAL ERROR in update_windows: no window selected\n"
+
+#~ msgid "CalCurse %s | help"
+#~ msgstr "CalCurse %s | help"
+
+#~ msgid "Possible argument formats are : 'mm/dd/yyyy' or 'n'\n"
+#~ msgstr "Possible argument formats are : 'mm/dd/yyyy' or 'n'\n"
+
+#, fuzzy
+#~ msgid "Enter the day to go to [ENTER for today] : mm/dd/yyyy"
+#~ msgstr "Enter the day to go to [ENTER for today] : dd/mm/yyyy"
 
 #, fuzzy
 #~ msgid "FATAL ERROR in wins_prop: property unknown\n"
