@@ -1,4 +1,4 @@
-/*	$calcurse: help.c,v 1.25 2008/04/19 21:05:15 culot Exp $	*/
+/*	$calcurse: help.c,v 1.26 2008/04/20 09:33:09 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -442,7 +442,7 @@ help_screen (void)
       "attached to an item (an item which owns a note has a '>' sign in front\n"
       "of it). This command only permits to view the note, not to\n"
       "edit it (to do so, use the 'EditNote' command, using the 'N' key).\n"
-      "Once you highlighted an item with a note attached to it, and the 'N' key"
+      "Once you highlighted an item with a note attached to it, and the '>' key"
       "\nwas pressed, you will be driven to an external pager to view that "
       "note.\n"
       "The default pager is chosen the following way:\n"
