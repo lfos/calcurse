@@ -1,4 +1,4 @@
-/*	$calcurse: args.c,v 1.33 2008/04/19 21:05:15 culot Exp $	*/
+/*	$calcurse: args.c,v 1.34 2008/04/20 12:54:05 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -143,7 +143,7 @@ print_notefile (FILE *out, char *filename, int nbtab)
   int printlinestarter = 1;
 
   for (i = 0; i < nbtab; i++)
-    strcat (linestarter, "\t");
+    snprintf(linestarter, BUFSIZ, "%s\t", linestarter);
 
   snprintf (path_to_notefile, BUFSIZ, "%s/%s", path_notes, filename);
   notefile = fopen (path_to_notefile, "r");
