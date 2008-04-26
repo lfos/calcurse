@@ -1,4 +1,4 @@
-# 	$calcurse: es.po,v 1.8 2008/04/20 13:52:06 culot Exp $
+# 	$calcurse: es.po,v 1.9 2008/04/26 15:35:26 culot Exp $
 #
 # Spanish translations for calcurse package.
 # Copyright (c) Jose Lopez <testinground@gmail.com> 2006 Free Software Foundation, Inc.
@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Calcurse 1.8\n"
 "Report-Msgid-Bugs-To: frederic@culot.org\n"
-"POT-Creation-Date: 2008-04-20 11:16+0200\n"
+"POT-Creation-Date: 2008-04-26 17:33+0200\n"
 "PO-Revision-Date: 2006-09-10 08:06+0200\n"
 "Last-Translator: Jose Lopez <testinground@gmail.com>\n"
 "Language-Team: Jose Lopez <testinground@gmail.com>\n"
@@ -230,7 +230,7 @@ msgstr ""
 msgid "Do you really want to quit ?"
 msgstr "¿Estas seguro de que quieres salir?"
 
-#: src/calcurse.c:239
+#: src/calcurse.c:236
 msgid "To do :"
 msgstr "Tareas pendientes :"
 
@@ -425,11 +425,11 @@ msgstr ""
 msgid " 1-mm/dd/yyyy, 2-dd/mm/yyyy, 3-yyyy/mm/dd)"
 msgstr ""
 
-#: src/custom.c:795 src/notify.c:522
+#: src/custom.c:795 src/notify.c:520
 msgid "Enter an option number to change its value [Q to quit] "
 msgstr "Introduce un numero para cambiar su valor [Q para salir] "
 
-#: src/custom.c:797 src/notify.c:524
+#: src/custom.c:797 src/notify.c:522
 msgid "Enter the date format (see 'man 3 strftime' for possible formats) "
 msgstr ""
 "Introduce el formato de la fecha (ver 'man 3 strftime' para los formatos\n"
@@ -1331,64 +1331,64 @@ msgstr "ERROR FATAL en notify_launch_cmd: could not fork\n"
 msgid "FATAL ERROR in launch_cmd: could not launch user command"
 msgstr "ERROR FATAL in notify_launch_cmd: no se puede lanzar el comando\n"
 
-#: src/notify.c:451
+#: src/notify.c:449
 msgid "notify-bar_show = "
 msgstr "mostrar-barra-notificaciones = "
 
-#: src/notify.c:452
+#: src/notify.c:450
 msgid "notify-bar_date = "
 msgstr "fecha_barra-notificaciones = "
 
-#: src/notify.c:453
+#: src/notify.c:451
 msgid "notify-bar_clock = "
 msgstr "hora_barra-notificaciones = "
 
-#: src/notify.c:454
+#: src/notify.c:452
 msgid "notify-bar_warning = "
 msgstr "alarma_barra-notificaciones = "
 
-#: src/notify.c:455
+#: src/notify.c:453
 msgid "notify-bar_command = "
 msgstr "comando_barra-notificaciones = "
 
-#: src/notify.c:458
+#: src/notify.c:456
 msgid "(if set to YES, notify-bar will be displayed)"
 msgstr "(si se fija en SI, se mostrara la barra de notificaciones)"
 
-#: src/notify.c:460
+#: src/notify.c:458
 msgid "(Format of the date to be displayed inside notify-bar)"
 msgstr "(Formato de la fecha dentro de la barra de notificaciones)"
 
-#: src/notify.c:463
+#: src/notify.c:461
 msgid "(Format of the time to be displayed inside notify-bar)"
 msgstr "(Formato de la hora dentro de la barra de notificaciones)"
 
-#: src/notify.c:466
+#: src/notify.c:464
 msgid ""
 "(Warn user if an appointment is within next 'notify-bar_warning' seconds)"
 msgstr ""
 "(Alarma de cita en los proximos 'alarma_barra-notificaciones' segundos)"
 
-#: src/notify.c:469
+#: src/notify.c:467
 msgid "(Command used to notify user of an upcoming appointment)"
 msgstr "(Comando usado para notificar al usuario una cita proxima)"
 
-#: src/notify.c:526
+#: src/notify.c:524
 msgid "Enter the time format (see 'man 3 strftime' for possible formats) "
 msgstr ""
 "Introduce el formato de la hora (ver 'man 3 strftime' para los formatos\n"
 "posibles) "
 
-#: src/notify.c:528
+#: src/notify.c:526
 msgid "Enter the number of seconds (0 not to be warned before an appointment)"
 msgstr ""
 "Introduce el numero de segundos (con 0 no se avisara antes de una cita)"
 
-#: src/notify.c:529
+#: src/notify.c:527
 msgid "Enter the notification command "
 msgstr "Introduce el comando de notificacion"
 
-#: src/notify.c:533
+#: src/notify.c:531
 #, c-format
 msgid "CalCurse %s | notify-bar options"
 msgstr "Calcurse %s | opciones de la barra de notificaciones"

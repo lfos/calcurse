@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.62 2008/04/12 21:14:03 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.63 2008/04/26 15:35:26 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -150,10 +150,7 @@ main (int argc, char **argv)
   io_load_app ();
   wins_reinit ();
   if (notify_bar ())
-    {
       notify_start_main_thread ();
-      notify_check_next_app ();
-    }
   wins_update ();
   io_startup_screen (conf.skip_system_dialogs, no_data_file);
   inday = *day_process_storage (0, day_changed, &inday);

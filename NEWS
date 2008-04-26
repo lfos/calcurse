@@ -1,3 +1,19 @@
+[26 Apr 2008]
+Version 2.1_beta   beta version available for testing.
+- New features:
+  * '--note' command line argument added which allows the display of note
+    contents in non-interactive mode (patch submitted by Erik Saule)
+
+  * It is now possible to configure date formats used in calcurse interactive
+    and non-interactive modes (patch submitted by Tony)
+
+- Bugfixes:
+  * Debian Bug Report #469297
+
+- Translation:
+  * Italian manual provided by Leandro Noferini
+
+
 [02 Mar 2008]
 Version 2.0
 - New features:

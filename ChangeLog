@@ -1,229 +1,378 @@
-20 Apr 2008:
-	fr.po updated
-	correction done in the '>' command help text
-	html manuals updated with date format configuration options
+2008-04-26  Frederic Culot  <frederic@culot.org>
+
+	* === Released 2.1_beta ===
 	
-19 Apr 2008:
-	scrollbar added in general configuration menu
-	some memory leaks fixed using valgrind
-	minor code cleanup
+	* NEWS: update
+
+	* ChangeLog: format changed
+
+	* src/calcurse.c: unuseful call to notify_check_next_app
+	suppressed
 	
-18 Apr 2008:
-	Generic functions to handle scrolling windows created
+2008-04-20  Frederic Culot  <frederic@culot.org>
+
+	* po/fr.po: updates
+
+	* src/help.c: correction done in the '>' command help text
+
+	* doc/*.html: html manuals updated with date format configuration
+	options
+
+2008-04-19  Frederic Culot  <frederic@culot.org>
+
+	* src/custom.c: scrollbar added in general configuration menu
 	
-12 Apr 2008:
-	Yet another style for source code. GNU style now used (I am fed up
-	with tabs...)
-	
-09 Apr 2008:
-	Tony's patch concerning date format configuration imported, many
+	* some memory leaks fixed using valgrind
+
+	* minor code cleanup
+
+2008-04-18  Frederic Culot  <frederic@culot.org>	
+
+	* Generic functions to handle scrolling windows created
+
+2008-04-12  Frederic Culot  <frederic@culot.org>
+
+	* src/*: Yet another style for source code. GNU style now used (I
+	am fed up with tabs...)
+
+2008-04-09  Frederic Culot  <frederic@culot.org>
+
+	* Tony's patch concerning date format configuration imported, many
 	thanks to him
-	TODO list updated
-	
-05 Apr 2008:
-	'-N' flag added, which allows the display of note contents in 
+
+	* TODO: list updated
+
+2008-04-05  Frederic Culot  <frederic@culot.org>
+
+	* '-N' flag added, which allows the display of note contents in 
 	non-interactive mode (many thanks to Erik Saule for submiting 
 	this patch)
-	manpage and manuals updated
 	
-04 Apr 2008:
-	'o' sign no longer used to display events in non-interactive mode
-	(that was annoying because it means 'about' in Polish, thanks fEnIo for
-	reporting the problem)
-	bugfix: correct number of lines now skipped when displaying
+	* src/calcurse.1: updates
+	* doc/*.html: updates
+
+2008-04-04  Frederic Culot  <frederic@culot.org>
+
+	* 'o' sign no longer used to display events in non-interactive mode
+	(that was annoying because it means 'about' in Polish, thanks
+	fEnIo for reporting the problem)
+	
+	* bugfix: correct number of lines now skipped when displaying
 	appointments using '-d' option (thanks Tony for reporting the bug)
-	bugfix: no more segfault when changing a todo item priority which
+	
+	* bugfix: no more segfault when changing a todo item priority which
 	did not have any notes attached to it (fixes Debian Bug #469297)
+
+2008-03-30  Frederic Culot  <frederic@culot.org>
+
+	* doc/manual_it.html: Italian manual added, many thanks to Leandro
+	Noferini
+
+2008-03-02  Frederic Culot  <frederic@culot.org>
 	
-30 Mar 2008:
-	Italian manual added, many thanks to Leandro Noferini
+	* === Released 2.0 ===	
+
+	* NEWS: update
+
+	* po/*.po: updates
 	
-02 Mar 2008: 2.0
-	NEWS and po files updated
-	Dutch manual and translation updated, thanks Jeremy
-	
-16 Feb 2008: 2.0_beta
-	bugfix: check for null pointer added when drawing color
+	* doc/manual_nl.html
+	* po/nl.po: Dutch manual and translation updated, thanks Jeremy
+
+2008-02-16  Frederic Culot  <frederic@culot.org>
+
+	* === Released 2.0_beta ===
+
+	* bugfix: check for null pointer added when drawing color
 	configuration window (which could remain invisible otherwise)
-	calcurse.pot updated for version 2.0
-	NEWS file updated
 	
-14 Feb 2008:
-	html manuals updated with parts related to notes
+	* po/calcurse.pot: updates for version 2.0
 	
-13 Feb 2008:
-	manpage updated
-	NOTESIZ shortened to be 6 characters long, as only 6 'X' are
+	* NEWS: update
+
+2008-02-14  Frederic Culot  <frederic@culot.org>
+
+	* doc/*.html: manuals updated with parts related to notes
+
+2008-02-13  Frederic Culot  <frederic@culot.org>
+
+	* src/calcurse.1: manpage updated
+
+	* NOTESIZ shortened to be 6 characters long, as only 6 'X' are
 	used in the glibc version of mkstemp(3).
-	bugfix: wrong calculated len in wins_launch_external(), which
-	lead to erroneus note file name
 	
-11 Feb 2008:
-	TODO list updated
-	status bar updated to display the new 'N' (edit note) and '>'
-	(view note) keybindings
-	online help pages added for 'N' and '>' keybindings
+	* src/wins.c (wins_launch_external): fixed a wrong calculated len
+	which lead to erroneus note file name
+
+2008-02-11  Frederic Culot  <frederic@culot.org>
+
+	* TODO: list updated
+
+	* src/utils.c: status bar updated to display the new 'N' (edit
+	note) and '>' (view note) keybindings
 	
-10 Feb 2008:
-	manuals updated to make use of css style sheet
-	memory leak fixed in notify_thread_app()
-	check for limits.h header added
-	asprintf() call replaced in wins_launch_external() as it is not
-	fully portable
+	* src/help.c: online help pages added for 'N' and '>' keybindings
+
+2008-02-10  Frederic Culot  <frederic@culot.org>
+
+	* doc/*.html: manuals updated to make use of css style sheet
 	
-03 Feb 2008:
-	doc/manual.css added
-	doc/manual_fr.html updated to make use of css style sheet
+	* src/notify.c (notify_thread_app): memory leak fixed
+
+	* configure.ac: check for limits.h header added
+
+	* src/wins.c (wins_launch_external): asprintf() call replaced as
+	it is not fully portable
 	
-26 Jan 2008:
-	configure.ac updated: linking against pthread instead of lpthread
+2008-02-03  Frederic Culot  <frederic@culot.org>
+
+	* doc/manual.css: css style sheet added for manuals
+
+	* doc/manual_fr.html: update to make use of css style sheet
+
+2008-01-26  Frederic Culot  <frederic@culot.org>
+
+	* configure.ac: linking against pthread instead of lpthread
 	(thanks ajacoutot@)
 	check for errno.h presence added
-	
-20 Jan 2008:
-	day_edit_item() rewritten so that there is no need to first delete
-	the item and then recreate it
-	event_get() and apoint_get() added
-	
-17 Jan 2008:
-	exit_calcurse() improved: screen is now cleared completely when
-	calcurse exits
-	io_export_data() improved: it is now possible to cancel calendar export
-	bugfix in day_edit_item(): null-terminating character missing
-	
-13 Jan 2008:
-	Ability to attach notes to appointments and events added
-	
-31 Dec 2007:
-	Notes attached to todos can now be suppressed
-	
-30 Dec 2007:
-	Ability to attach notes to todo items added
-	Call to an external editor or pager to edit/view notes implemented
-	'N' and '>' keystrokes added to edit or view notes
-	ierror() function improved
-	
-09 Dec 2007:
-	bugfix in recur_item_inday(): leap years should now be properly handled
-	calendar_move_up(), calendar_move_down(), calendar_move_left(),
-	calendar_move_right() were modified to properly handle leap years
-	and gathered together into calendar_move()
-	date_change() added
-	
-22 Oct 2007: 1.9
-	TODO and NEWS files updated
-	po files updated
 
-21 Oct 2007:
-	window_t structure updated to store WINDOW pointer
+2008-01-20  Frederic Culot  <frederic@culot.org>
+
+	* src/day.c (day_edit_item): complete rewrite so that there is no
+	need to first delete the item and then recreate it
+
+	* src/event.c (event_get): new function
+	* src/apoint.c (apoint_get): new function
+
+2008-01-17  Frederic Culot  <frederic@culot.org>
+
+	* src/utils.c (exit_calcurse): screen is now cleared completely
+	when calcurse exits
+
+	* src/io.c (io_export_data): it is now possible to cancel calendar
+	export
+
+	* src/day.c (day_edit_item): null-terminating character missing
+
+2008-01-13  Frederic Culot  <frederic@culot.org>
+
+	* Ability to attach notes to appointments and events added
+
+2007-12-31  Frederic Culot  <frederic@culot.org>
+
+	* Notes attached to todos can now be suppressed
+
+2008-12-30  Frederic Culot  <frederic@culot.org>
+
+	* src/todo.c: Ability to attach notes to todo items added
+
+	* Call to an external editor or pager to edit/view notes implemented
+
+	* 'N' and '>' keystrokes added to edit or view notes
+
+	* src/utils.h (ierror): function improved
+
+2007-12-09  Frederic Culot  <frederic@culot.org>
+
+	* src/recur.c (recur_item_inday): leap years should now
+	be properly handled
+	
+	* src/calendar.c (calendar_move_up, calendar_move_down)
+	(calendar_move_left, calendar_move_right): modifications to
+	properly handle leap years and gathered together into
+	calendar_move()
+	
+	* src/calendar.c (date_change): new function
+
+2007-10-22  Frederic Culot  <frederic@culot.org>
+
+	* === Released 1.9 ===
+
+	* TODO:
+	* NEWS: updates
+
+	* po/*.po: updates
+
+2007-10-21  Frederic Culot  <frederic@culot.org>
+
+	* src/wins.h: window_t structure updated to store WINDOW pointer
 	window_e enum updated to shorten names, winprop_e and wins_prop()
 	suppressed
 	cwin, awin, twin, swin variables suppressed
-	help_screen() updated to make automatic resize available inside help
-	screens (thanks Sebastian for reporting the problem)
-	help_wins_reset(), help_wins_init(), help_wins_reinit() and 
-	wanted_page() created
-	help_pages_e enum added
-	custom_general_config() and notify_config_bar() updated to handle 
-	basic window resizing
-	custom_confwin_init() and display_color_config() created
-	custom_color_config() rewritten
 
-14 Oct 2007:
-	next_arg() rewritten, date_arg() improved
-	bugfix: wins_reset() modified to avoid blank screen when resizing
-	under Linux
-	fixed a possible problem in notify_config_bar(): no need to stop
-	thread if it was not started before
-	calendar_change_day() and calendar_move_*() updated to prevent user 
-	from entering an unsupported date
+	* src/help.c (help_screen): update to make automatic resize
+	available inside help screens (thanks Sebastian for reporting the
+	problem)
+	* src/help.c (help_wins_reset, help_wins_init, help_wins_reinit)
+	(wanted_page): new functions
+	* src/help.c: help_pages_e enum added
 
-08 Oct 2007:
-	Dutch manual and translation updated, many thanks to Jeremy
-	bugfix: possible problem when using -n flag without any upcoming
+	* src/custom.c (custom_general_config):
+	* src/notify.c (notify_config_bar): updates to handle basic window
+	resizing
+	
+	* src/custom.c (custom_confwin_init, display_color_config): new
+	functions
+
+	* src/custom.c (custom_color_config): rewrite
+
+2007-10-14  Frederic Culot  <frederic@culot.org>
+
+	* src/args.c (next_arg): rewrite
+	* src/args.c (date_arg): improvements
+
+	* src/wins.c (wins_reset): avoid blank screen when resizing under
+	Linux
+	
+	* src/notify.c (notify_config_bar) no need to stop thread if it
+	was not started before
+	
+	* src/calendar.c (calendar_change_day, calendar_move_*): prevent
+	user from entering an unsupported date
+
+2007-10-08  Frederic Culot  <frederic@culot.org>
+
+	* doc/manual_nl.html:
+	* po/nl.po: Dutch manual and translation updated, many thanks to
+	Jeremy
+	
+	* bugfix: possible problem when using -n flag without any upcoming
 	appointment (thanks Herbert for reporting this problem)
 
-07 Oct 2007:
-	handling of SIGWINCH improved
-	German manual and translation updated, many thanks to Michael Schulz
+2007-10-07  Frederic Culot  <frederic@culot.org>
 
-16 Sep 2007:
-	bugfix: wrong symbol used for pthread library in configure.ac (thanks
-	Michael for noticing this bug)
-	keypad() used in popup() routine, to avoid possible unwanted
-	interactions (status bar could change for example when viewing an 
-	item description and pressing an arrow key)
-	export to /tmp/calcurse.ics is now performed in case $HOME is not set
+	* src/sigs.c: handling of SIGWINCH improved
 
-01 Sep 2007:
-	bugfix: shift in date_arg(), thanks Herbert for reporting this bug
+	* doc/manual_de.html:
+	* po/de.po: German manual and translation updated, many thanks to
+	Michael Schulz
 
-31 Aug 2007: 1.9_beta
-	NEWS file updated
+2007-09-16  Frederic Culot  <frederic@culot.org>
 
-19 Aug 2007:
-	wins_reset() updated to handle notification bar reset
-	no more check for terminal size in main loop
-	bugfix: avoid core when trying to load a calendar file from current
-		directory
-	manuals updated with part related to moon phase calculation
-	french translation updated
-	TODO and README files updated
-
-15 Aug 2007:
-	handling of SIGWINCH added
-	wins_prop(), wins_layout(), wins_set_layout() and wins_reset() added
-	apoint_hilt(), apoint_hilt_set(), apoint_hilt_decrease() and
-	apoint_hilt_increase() added
-	scroll_pad_down() and scroll_pad_up() moved to apoint_scroll_pad_down()
-	and apoint_scroll_pad_up() 
-	todo_hilt(), todo_hilt_set(), todo_hilt_decrease(), 
-	todo_hilt_increase(), todo_saved_mesg(), todo_nb(), todo_set_nb(), 
-	todo_set_first(), todo_first_increase(), todo_first_decrease(), and 
-	todo_hilt_pos() added
-	layout is not part of conf_t type anymore, and becomes a static variable
-	in wins.c
+	* configure.ac: bugfix: wrong symbol used for pthread library
+	(thanks Michael for noticing this bug)
 	
-12 Aug 2007:
-	Moon phase calculation added
-	calendar_get_pom(), pom(), potm(), dotr() and adj360 added, based on the
-	OpenBSD version of pom(6)
-	TODO list updated
+	* src/utils.c (popup): keypad() used, to avoid possible unwanted
+	interactions (status bar could change for example when viewing an
+	item description and pressing an arrow key)
+	
+	* export to /tmp/calcurse.ics is now performed in case $HOME is
+	not set
 
-04 Aug 2007:
-	ASSERT macro created
-	aerror() and ierror() created to improve error handling while in ncurses
-	mode
-	exit_calcurse() updated to take exit code as argument
-	memory leak fixed in day_item_s2apoint_s()
+2007-09-01  Frederic Culot  <frederic@culot.org>
 
-29 Jul 2007:
-	compiler warnings fixed
+	* src/args.c (date_arg): fixed a shift in date_arg(), thanks
+	Herbert for reporting this bug
 
-28 Jul 2007:
-	Dutch manual and po file added, many thanks to Jeremy Roon
-	configure.ac, Makefile.am and src/Makefile.am improved
-	unuseful headers removed
+2007-08-31  Frederic Culot  <frederic@culot.org>
+
+	* === Released 1.9_beta ===
+
+	* NEWS: update
+
+2007-08-19  Frederic Culot  <frederic@culot.org>
+
+	* src/wins.c (wins_reset): update to handle notification bar reset
+
+	* src/calcurse.c: no more check for terminal size in main loop
+	
+	* src/io.c: avoid core when trying to load a calendar file from
+	current directory
+
+	* doc/*.html: manuals updated with part related to moon phase
+	calculation
+
+	* po/fr.po: french translation updated
+
+	* TODO:
+	* README: updates
+
+2007-08-15  Frederic Culot  <frederic@culot.org>
+
+	* src/sigs.c: handling of SIGWINCH added
+
+	* src/wins.c (wins_prop, wins_layout, wins_set_layout)
+	(wins_reset): new functions
+	layout is not part of conf_t type anymore, and becomes a static
+	variable in wins.c
+
+	* src/apoint.c (apoint_hilt, apoint_hilt_set)
+	(apoint_hilt_decrease, apoint_hilt_increase): new functions
+	scroll_pad_down and scroll_pad_up moved to apoint_scroll_pad_down
+	and apoint_scroll_pad_up
+	
+	* src/todo.c (todo_hilt, todo_hilt_set, todo_hilt_decrease)
+	(todo_hilt_increase, todo_saved_mesg, todo_nb, todo_set_nb)
+	(todo_set_first, todo_first_increase, todo_first_decrease)
+	(todo_hilt_pos): new functions
+
+2007-08-12  Frederic Culot  <frederic@culot.org>
+
+	* Moon phase calculation added
+
+	* src/calendar.c (calendar_get_pom, pom, potm, dotr, adj360):
+	new functions added, based on the OpenBSD version of pom(6)
+	
+	* TODO: list updated
+
+2007-08-04  Frederic Culot  <frederic@culot.org>
+
+	* src/utils.h: ASSERT macro created
+	* src/utils.h (aerror, ierror) new functions created to improve
+	error handling while in ncurses mode
+	
+	* src/utils.c (exit_calcurse): update to take exit code as
+	argument
+	
+	* src/day.c (day_item_s2apoint_s): memory leak fixed
+
+2007-07-29  Frederic Culot  <frederic@culot.org>
+
+	* compiler warnings fixed
+
+2007-07-28  Frederic Culot  <frederic@culot.org>
+
+	* doc/manual_nl.html:
+	* po/nl.po: Dutch manual and po file added, many thanks to Jeremy
+	Roon
+	
+	* configure.ac:
+	* Makefile.am:
+	* src/Makefile.am: various improvements
+	
+	* src/*: unuseful headers removed
 	some functions became static
-	check_date() moved to utils.c
-	border_color() and border_nocolor() moved to wins.c
 
-26 Jul 2007:
-	global variables suppressed in calcurse.c
+	* src/utils.c (check_date):  moved to utils.c
+	
+	* src/wins.c (border_color, border_nocolor): moved to wins.c
 
-22 Jul 2007:
-	exit_calcurse() created
-	wins_slctd_init(), wins_slctd_set(), wins_slctd_next() 
-	and wins_slctd() created
-	sigs.c and sigs.h created to store signal handling routines
-	which_pan global variable suppressed
+2007-07-26  Frederic Culot  <frederic@culot.org>
 
-21 Jul 2007:
-	wins.c and wins.h created to store windows handling related routines
+	* src/calcurse.c: global variables suppressed
+
+2007-07-22  Frederic Culot  <frederic@culot.org>
+
+	* src/utils.c (exit_calcurse): new function
+
+	* src/wins.c (wins_slctd_init, wins_slctd_set, wins_slctd_next)
+	(wins_slctd): new functions
+	
+	* src/sigs.[ch]: new files to store signal handling routines
+
+	* src/calcurse.c: which_pan global variable suppressed
+
+2007-07-21  Frederic Culot  <frederic@culot.org>
+
+	* src/wins.[ch]: new files to store windows handling related
+	routines
 	window handling routines moved to wins.c and wins.h
-	erase_status_bar() created
-	several routines moved from calcurse.c to more appropriate source files:
-		update_app_panel() moved to apoint_update_panel()
+	
+	* src/utils.c (erase_status_bar): new function
+	
+	* several routines moved from calcurse.c to more appropriate
+	source files:
+	        update_app_panel() moved to apoint_update_panel()
 		update_todo_panel() moved to todo_update_panel()
 		add_item() moved to apoint_add()
 		del_item() split into apoint_delete() and todo_delete()
@@ -231,888 +380,1378 @@
 		print_notify_options() moved to notify_print_options()
 		config_notify_bar() moved to notify_config_bar()
 
-20 Jul 2007:
-	store_day() moved to day_process_storage()
-	enum window_number moved to vars.h and became window_e
-	window_t type created in vars.h
-	day_items_nb_t added in day.h
-	several routines updated to make use of the newly created window_t type
+2007-07-20  Frederic Culot  <frederic@culot.org>
 
-01 Jul 2007:
-	bugfix: calendar_date_thread implemented to check for day changes
-		(thanks Jupp for reporting the problem)
-	code cleanup: global variables today and slctd_day moved to calendar.c
-		and date_t type created
-	several routines created in calendar.c: calendar_store_current_date(),
-		calendar_get_slctd_day(), calendar_get_slctd_day_sec(),
-		calendar_init_slctd_day(), calendar_move_up(),
-		calendar_move_down(), calendar_move_left(),
-		calendar_move_right(), calendar_set_first_day_of_week(),
-		calendar_change_first_day_of_week(),
-		calendar_week_begins_on_monday()
+	* src/day.c (day_process_storage): store_day moved to
+	day_process_storage
+	
+	* src/vars.h: enum window_number moved to vars.h and became
+	window_e
+	window_t type created
 
-12 Jun 2007:
-	Thread implemented to regularly check for day changes (thanks Jupp for
-	reporting the problem) 
-	code cleanup in get_date() to get rid of global variables
+	* src/day.h: day_items_nb_t added
 
-22 May 2007: 1.8
-	NEWS file updated
-	html manuals updated
-	po files updated
+	* src/*: several routines updated to make use of the newly created
+	window_t type
 
-12 May 2007:
-	English and French html manuals updated
+2007-07-01  Frederic Culot  <frederic@culot.org>
 
-06 May 2007:
-	make use of memmove in del_char()
-	layout variable added to conf_t type
-	code cleanup in custom_load_con()
-	bugfixes:
-	    layout is now correctly restored (thanks Jose for reporting that
-	    bug)
+	* src/calendar.c (calendar_date_thread): new function to check for
+	day changes (thanks Jupp for reporting the problem)
+	
+	* src/calendar.[ch]: code cleanup: global variables today and
+	slctd_day moved to calendar.c and date_t type created
+	
+	* src/calendar.c (calendar_store_current_date)
+	(calendar_get_slctd_day, calendar_get_slctd_day_sec)
+	(calendar_init_slctd_day, calendar_move_up, calendar_move_down)
+	(calendar_move_left, calendar_move_right)
+	(calendar_set_first_day_of_week)
+	(calendar_change_first_day_of_week)
+	(calendar_week_begins_on_monday): new functions
+
+2007-05-22  Frederic Culot  <frederic@culot.org>
+
+	* === Released 1.8 ===
+
+	* NEWS: 
+	* doc/*.html:
+	* po/*.po: updates
+
+2007-05-12  Frederic Culot  <frederic@culot.org>
+
+	* doc/manual_fr.html:
+	* doc/manual_en.html: French and English manuals updated
+
+2007-05-06  Frederic Culot  <frederic@culot.org>
+
+	* src/utils.c (del_char): make use of memmove
+	
+	* src/vars.h: layout variable added to conf_t type
+
+	* src/custom.c (custom_load_conf): code cleanup
+	
+	* bugfixes:
+	    layout is now correctly restored (thanks Jose for reporting
+	    that bug)
 	    getstring() now properly handles erasing of characters
 	    apad width is now correctly updated when changing layout
 	    notify bar init sequence modified to avoid a possible segfault
 	    right part of progress bar now properly displayed
 	    item ending time is now assigned to correct day in day_edit_item()
 
-24 Apr 2007:
-	custom_color_config() made more robust regarding values returned by
-	pair_content()
-	Many thanks to Herbert for reporting bugs related to color configuration
+2007-04-24  Frederic Culot  <frederic@culot.org>
 
-22 Apr 2007:
-	custom_color_theme_name() updated to handle ncurses different returned
-	values (depending on if ncurses was compiled with --enable-ext-funcs)
+	* src/custom.c (custom_color_config): made more robust regarding
+	values returned by pair_content()
+	Many thanks to Herbert for reporting bugs related to color
+	configuration
 
-21 Apr 2007:
-	custom_color_config() modified to take terminal's vertical length into
-	account
-	custom_color_theme_name() updated to handle colorless theme
+2007-04-22  Frederic Culot  <frederic@culot.org>
 
-15 Apr 2007: 1.8_beta
-	help_arg() updated to display help for the -export argument
-	usage() updated
-	manpage updated
-	english manual updated
-	configure.ac updated to check for new header files
+	* src/custom.c (custom_color_theme_name): update to handle ncurses
+	different returned values (depending on if ncurses was compiled
+	with --enable-ext-funcs)
 
-14 Apr 2007:
-	bugfixes:
+2007-04-21  Frederic Culot  <frederic@culot.org>
+
+	* src/custom.c (custom_color_config): modified to take terminal's
+	vertical length into account
+	
+	* src/custom.c (custom_color_theme_name): update to handle
+	colorless theme
+
+2007-04-15  Frederic Culot  <frederic@culot.org>
+
+	* === Released 1.8_beta ===
+
+	* src/args.c (help_arg): updated to display help for the --export
+	argument
+	
+	* src/args.c (usage): update
+	
+	* src/calcurse.1: manpage updated
+	
+	* doc/manual_en.html: english manual updated
+	
+	* configure.ac: updated to check for new header files
+
+2007-04-14  Frederic Culot  <frederic@culot.org>
+
+	* bugfixes:
 	    wrong define used in notify_update_bar()
 	    recurrent appointment description is now loaded correctly while the
 	    item contains exceptions
 	    item state is now saved for endless recurrent appointments
 	    correct item is now highligthed when changing day inside appointment
 	    panel with CTRL keys
-	notify_catch_children() and notify_thread_children() suppressed, because
-	zombie processes are now catched using signals
-	sigchld_handler() and init_sighandler() created
 
-04 Apr 2007:
-	MAX_LENGTH replaced by stdio.h's BUFSIZ
+	* src/notify.c (notify_catch_children, notify_thread_children):
+	function suppressed, because zombie processes are now catched
+	using signals
+	* src/calcurse.c (sigchld_handler, init_sighandler): new functions
+
+2007-04-04  Frederic Culot  <frederic@culot.org>
+
+	* src/*: MAX_LENGTH replaced by stdio.h's BUFSIZ
 	use of MININSEC and DAYINSEC defines
-	bugfix: typestr size corrected in day_edit_item()
-	bugfix: 01/01/1970 is not returned anymore if 0 is given to
-		date_sec2date_str() 
 
-24 Mar 2007:
-	TODO updated
-	online help updated to add the export and flag command
-	'-x' flag added in parse_args() to export data in non-interactive mode
-	init_notify_bar() moved from calcurse.c to notify_init_vars()
-	load_conf() moved from calcurse.c to custom_load_conf()
+	* src/day.c (day_edit_item): typestr size corrected
+	
+	* src/utils.c (date_sec2date_str): bugfix: 01/01/1970 is not
+	returned anymore if 0 is given to date_sec2date_str() 
+
+2007-03-24  Frederic Culot  <frederic@culot.org>
+
+	* TODO: update
+
+	* src/help.c: online help updated to add the export and flag
+	command
+	
+	* src/args.c (parse_args): '-x' flag added to export data in
+	non-interactive mode
+	
+	* src/notify.c (notify_init_vars): init_notify_bar() moved from
+	calcurse.c to notify_init_vars()
+	
+	* src/custom.c (custom_load_conf): load_conf() moved from
+	calcurse.c to custom_load_conf()
 	fill_config_var() moved from calcurse.c to custom.c
-	extract_data() renamed to io_extract_data() and save_cal() to
-	io_save_cal()
-	conf_t type created
+	
+	* src/io.c (io_extract_data, io_save_cal): extract_data() renamed
+	to io_extract_data() and save_cal() to io_save_cal()
+	
+	* src/vars.h: conf_t type created
 
-19 Mar 2007:
-	status_bar() updated to add 'X' and '!' keybindings
+2007-03-19  Frederic Culot  <frederic@culot.org>
 
-17 Mar 2007:
-	HOURINSEC and MININSEC defined
-	io_export_events(), io_export_recur_events() and
-	io_export_recur_apoints() created
-	io_recur_type() and io_export_valarm() created
-	progress_bar() updated to display a bar when exporting data
+	* src/utils.c (status_bar): update to add 'X' and '!' keybindings
 
-12 Mar 2007:
-	date_sec2ical_datetime() and date_sec2ical_date() created
-	io_export_apoints() updated to call date_sec2ical_datetime()
+2007-03-17  Frederic Culot  <frederic@culot.org>
 
-11 Mar 2007:
-	'X' command added, to export data in iCal format
-	io_export_data(), io_get_export_stream(), io_export_header(),
-	io_export_footer(), io_export_todo(), io_export_apoints() created
+	* src/vars.h: HOURINSEC and MININSEC defined
 
-10 Mar 2007:
-	global variable 'colr' suppressed
-	save_cal() modified to save new version of user-defined color theme
-	custom_color_theme_name() created to return color theme name
-	custom_load_color() updated to load new version of user-defined color
-	theme
-	recur_item_inday() improved, thanks to Tony's patch
+	* src/io.c (io_export_events, io_export_recur_events)
+	(io_export_recur_apoints, io_recur_type, io_export_valarm): new
+	functions
 
-04 Mar 2007:
-	color_config() rewritten and changed to custom_color_config(), to allow
-	more color choices and the use of terminal's default background color
-	custom_load_color() created
-	border_color() and border_nocolor() updated to take into account new
+	* src/io.c (progress_bar): update to display a bar when exporting
+	data
+	
+2007-03-12  Frederic Culot  <frederic@culot.org>
+
+	* src/utils.c (date_sec2ical_datetime, date_sec2ical_date): new
+	functions
+
+	* src/io.c (io_export_apoints): update to call
+	date_sec2ical_datetime()
+	
+2007-03-11  Frederic Culot  <frederic@culot.org>
+
+	* src/calcurse.c: 'X' command added, to export data in iCal format
+	
+	* src/io.c (io_export_data, io_get_export_stream)
+	(io_export_header, io_export_footer, io_export_todo)
+	(io_export_apoints): new functions
+	
+2007-03-10  Frederic Culot  <frederic@culot.org>
+
+	* src/calcurse.c: global variable 'colr' suppressed
+	
+	* src/io.c (save_cal): modified to save new version of
+	user-defined color theme
+	
+	* src/custom.c (custom_color_theme_name): new function to return
+	color theme name
+	
+	* src/custom.c (custom_load_color): update to load new version of
+	user-defined color theme
+
+	* src/recur.c (recur_item_inday): improved, thanks to Tony's patch
+
+2007-03-04  Frederic Culot  <frederic@culot.org>
+
+	* src/custom.c (custom_color_config): color_config() rewritten and
+	changed to custom_color_config(), to allow more color choices and
+	the use of terminal's default background color
+	
+	* src/custom.c (custom_load_color): new function
+	
+	* border_color() and border_nocolor() updated to take into account new
 	color definitions 
 	update_windows() updated to avoid the use of the 'colr' variable
+	
+2007-02-28  Frederic Culot  <frederic@culot.org>
 
-28 Feb 2007:
-	bugfix: CTRL-D problems while editing items fixed
+	* bugfix: CTRL-D problems while editing items fixed
 	Thanks Toucouch for reporting this bug
 
-25 Feb 2007:
-	init_notify_bar() updated to get user shell
-	notify_launch_cmd() created to launch user-defined command by forking a
-	new process
-	notify_catch_children() and notify_thread_children() created to avoid
-	zombie processes when launching user-defined command
+2007-02-25  Frederic Culot  <frederic@culot.org>
 
-24 Feb 2007:
-	'!' command added, to switch appointment notification state
-	init_notify_bar(), config_notify_bar() and print_notify_options()
+	* src/notify.c (init_notify_bar): update to get user shell
+
+	* src/notify.c (notify_launch_cmd): new function to launch
+	user-defined command by forking a new process
+	
+	* src/notify.c (notify_catch_children, notify_thread_children):
+	new functions to avoid zombie processes when launching
+	user-defined command
+	
+2007-02-24  Frederic Culot  <frederic@culot.org>
+
+	* src/calcurse.c: '!' command added, to switch appointment
+	notification state
+	
+	* init_notify_bar(), config_notify_bar() and print_notify_options()
 	modified to add the notification command option
-	apoint_switch_notify() and recur_apoint_switch_notify() created		
-	day_item_nb() created
-	save_cal(), recur_apoint_write(), and apoint_write() updated 
+
+	* src/apoint.c (apoint_switch_notify): new function
+
+	* src/recur.c (recur_apoint_switch_notify): new function
+
+	* src/day.c (day_item_nb): new function
+	
+	* save_cal(), recur_apoint_write(), and apoint_write() updated 
 	to save item state to disk
-	load_app(), load_conf(), apoint_scan(), recur_apoint_scan(), 
+	
+	* load_app(), load_conf(), apoint_scan(), recur_apoint_scan(), 
 	apoint_new() and recur_apoint_new() updated to read item state
 
-20 Jan 2007: 1.7
-	TODO list updated
-	NEWS file updated
+2007-01-20  Frederic Culot  <frederic@culot.org>
 
-17 Jan 2007:
-	Spanish manual and translation updated, many thanks to Jose
+	* === Released 1.7 ===
 
-16 Jan 2007:
-	better handling of the values returned by getstring(): user canceling
-	now properly taken into account
-	German translation updated
-	TODO file updated
-	calcurse version updated to 1.7 and copyright extended to 2007
-	bugfix: html manuals updated because 'calcurse -ta' cannot be used any
-	longer
+	* TODO: list updated
+	
+	* NEWS: file updated
 
-10 Jan 2007:
-	German manual and translation updated, many thanks to Chris M.
-	bugfix: Edit command no longer crashes when trying to edit an unexisting
-	item
-	bugfix: pressing 'CTRL-T' while inside appointment panel no longers
-	create an appointment but a todo, as expected
-	better checking of the entered date in goto_day()
+2007-01-17  Frederic Culot  <frederic@culot.org>
 
-05 Jan 2006:
-	newline suppressed in next_arg()
+	* doc/manual_es.html:
+	* po/es.po: Spanish manual and translation updated, many thanks to
+	Jose
+	
+2007-01-16  Frederic Culot  <frederic@culot.org>
 
-21 Dec 2006:
-	display adjustments in day_write_pad() and update_todo_panel()
+	* src/utils.c (getstring): better handling of return values to
+	take into account user canceling
 
-19 Dec 2006:
-	bugfix in init_wins(): max label length is now MAX_LENGTH
-	bugfix in day_edit_item(): end time does not change if start time is
-	edited
-	fr.po: french translation updated
-	README updated
+	* po/de.po: German translation updated
 
-18 Dec 2006: 1.7_beta
-	bugfix in getstring(): CTRL-K now works properly
+	* TODO: file updated
+	
+	* calcurse version updated to 1.7 and copyright extended to 2007
+	
+	* doc/*.html: html manuals updated because 'calcurse -ta' cannot
+	be used any longer
 
-15 Dec 2006:
-	TODO file updated: one more thing to improve...
-	small bugfixes
+2007-01-10  Frederic Culot  <frederic@culot.org>
 
-14 Dec 2006:
-	improvements in the memory deallocation in day_edit_item(),
+	* doc/manual_de.html:
+	* po/de.po: German manual and translation updated, many thanks to
+	Chris M.
+	
+	* bugfix: Edit command no longer crashes when trying to edit an
+	unexisting item
+	
+	* bugfix: pressing 'CTRL-T' while inside appointment panel no
+	longers create an appointment but a todo, as expected
+	
+	* src/calendar.c (goto_day): better checking of the entered date
+
+2006-01-05  Frederic Culot  <frederic@culot.org>
+
+	* src/args.c (next_arg): newline suppressed
+
+2006-12-21  Frederic Culot  <frederic@culot.org>
+
+	* src/day.c (day_write_pad): 
+	* src/calcurse.c (update_todo_panel): display adjustments
+
+2006-12-19  Frederic Culot  <frederic@culot.org>
+
+	* bugfix in init_wins(): max label length is now MAX_LENGTH
+
+	* src/day.c (day_edit_item): bugfix: end time does not change if
+	start time is edited
+	
+	* po/fr.po: french translation updated
+	
+	* README: update
+
+2006-12-18  Frederic Culot  <frederic@culot.org>
+
+	* === Released 1.7_beta ===
+	
+	* src/utils.c (getstring): CTRL-K now works properly
+
+2006-12-15  Frederic Culot  <frederic@culot.org>
+
+	* TODO: file updated: one more thing to improve...
+	
+	* small bugfixes
+
+2006-12-14  Frederic Culot  <frederic@culot.org>
+
+	* improvements in the memory deallocation in day_edit_item(),
 	updatestring(), next_arg()
-	updatestring() now returns a value indicating if there was a canceling
-	when modifying text	
-	TODO file updated
 
-13 Dec 2006:
-	bugfix: call to getstring() corrected in todo_new_item()
-	documentation  about the built-in input line editor added in html
-	manuals
-	item_in_popup() improved to replace the scroller() function by an
-	ncurses pad
+	* src/utils.c (updatestring): now returns a value indicating if
+	there was a canceling when modifying text
+	
+	* TODO: update
+
+2006-12-13  Frederic Culot  <frederic@culot.org>
+
+	* src/todo.c (todo_new_item): call to getstring() corrected
+	
+	* doc/*.html: documentation about the built-in input line editor
+	added
+
+	* src/utils.c (item_in_popup): improved to replace the scroller()
+	function by an ncurses pad
 	scroller() function suppressed
 
-12 Dec 2006:
-	english and french html manuals updated
-	help screen updated for repeat command
+2006-12-12  Frederic Culot  <frederic@culot.org>
 
-11 Dec 2006:
-	help_arg() updated to take long options into account
-	manpage updated
+	* doc/manual_en.html:
+	* doc/manual_fr.html: english and french html manuals updated
+	
+	* src/help.c: help screen updated for repeat command
 
-10 Dec 2006:
-	help screen added for the 'Edit Item' command
-	date format modified for the 'Go To' command 
+2006-12-11  Frederic Culot  <frederic@culot.org>
 
-08 Dec 2006:
-	day_edit_item() finished, day_edit_time() created and day_erase_item()
-	updated	to add the 'force_erase' flag
-	recur_get_event() and recur_get_apoint() created
-	datesec2str() changed to date_sec2hour_str(), and date_sec2date_str()
-	created
+	* src/help.c (help_arg): updated to take long options into account
+	
+	* src/calcurse.1: manpage updated
+
+2006-12-10  Frederic Culot  <frederic@culot.org>
+
+	* src/help.c: help screen added for the 'Edit Item' command
+	
+	* date format modified for the 'Go To' command 
+
+2006-12-08  Frederic Culot  <frederic@culot.org>
+
+	* src/day.c (day_edit_item): finished
+	* src/day.c (day_edit_time): new function
+	* src/day.c (day_erase_item): updated to add the 'force_erase'
+	flag
+	
+	* src/recur.c (recur_get_event, recur_get_apoint): new functions
+	
+	* datesec2str() changed to date_sec2hour_str(), and
+	date_sec2date_str() created
 	update_time_in_date() created
 
-01 Dec 2006:
-	datesec2str() created
+2006-12-01  Frederic Culot  <frederic@culot.org>
 
-30 Nov 2006:
-	'Edit Itm' command added in the status bar
-	day_edit_item() created
+	* datesec2str() created
 
-28 Nov 2006:
-	add_char() modified to use memmove() instead of memcpy()
+2006-11-30  Frederic Culot  <frederic@culot.org>
 
-02 Nov 2006:
-	getstring() modified to take the max string length as an argument
-	updatestring() and todo_edit_item() created	
-	add_char() simplified, using memcpy()
-	'E' key added to edit already existing items
+	* 'Edit Itm' command added in the status bar
 
-28 Oct 2006:
-	getstring() improved to allow the modification of an existing string
-	showstring(), showcursor(), add_char() and delete_char() created 	
-	getstring() calls in todo_new_item(), recur_repeat_item(),
-	goto_day(), config_notify_bar() and add_item() updated
-	display_item(), display_item_date() and day_write_pad() updated to add
-	an asterisk in front of recurrent items 
+	* src/day.c (day_edit_item): new function
 
-17 Oct 2006:
-	parse_args() modified to use getopt_long() instead of getopt, to make
-	the '-t' priority number optional, and to allow the use of long options 
-	configure.ac: check for getopt.h header file added
+2006-11-28  Frederic Culot  <frederic@culot.org>
 
-16 Oct 2006:
-	bugfix: when creating a recurrent item, the entered end-date is now
-	included again	
-	'-t' flag now takes a priority number for argument
+	* add_char() modified to use memmove() instead of memcpy()
 
-01 Oct 2006: 1.6
-	german manual and translation updated by Chris M.
-	bugfix: CTRL-J now works properly
-	bugfix: a number of minutes can no longer be entered while creating a
-	new appointment
-	TODO list updated
-	NEWS file updated
+2006-11-02  Frederic Culot  <frederic@culot.org>
 
-25 Sep 2006:
-	spanish translation and manual updated by Jose Lopez
-
-22 Sep 2006:
-	spanish manual updated by Jose Lopez
-	bugfix: LOCALEDIR is now defined in src/Makefile.am instead of
-	configure.ac, to prevent from conflicting definitions. Thanks to Jose
-	for reporting that bug.
-
-19 Sep 2006:
-	french, german and spanish manuals updated
-
-18 Sep 2006:
-	added test on warning time interval in config_notify_bar() 	
-	print_general_options() modified to print text one line upper
-	bugfix: pressing enter no longer switches to next week in calendar panel
-	english manual updated
-
-17 Sep 2006:
-	config_notify_bar() improved
-	getstring() improved to check for escape sequence
-	help_screen() updated
-	french translation updated
-
-16 Sep 2006:
-	'-n' flag implemented
-	parse_args(), help_arg() and usage() updated
-	next_arg(), now() created
-	manpage updated
-	notify_app_s structure updated
-	apoint_check_next(), recur_apoint_check_next() and recur_repeat_item() 
-	updated
-	config_notify_bar() and print_notify_options() improved
-	mycpy() created
-
-15 Sep 2006:
-	nbar_s structure created to store notify-bar settings
-	save_cal() and load_conf() updated to write and read the user
-	configuration concerning the notify-bar
-	init_var(), help_screen() and config_bar() updated
-	config_notify_bar(), print_notify_options(), init_notify_bar(), 
-	notify_bar(), notify_start_main_thread() and notify_stop_main_thread()
-	created
-
-14 Sep 2006:
-	fixed a bug which caused the recurrent appointments not to show up in
-	the notify-bar
-	added the time left before next appointment inside notify-bar
-	fixed a bug in recur_item_inday() which caused the appointments to have 
-	a wrong start time when repeated
-	bugfix: no more deletion of the wrong recurrent appointment
-	today() created
-	notify_check_added(), notify_check_repeated() and notify_same_item(),
-	notify_same_recur_item() created
-
-12 Sep 2006:
-	implementation of a mutex lock to protect the appointment linked lists
-	from race conditions
-	apoint_llist_init() and recur_apoint_llist_init() created
-	several routines in apoint.c and recur.c updated to take those new lists
-	structure into account	
-
-11 Sep 2006:
-	small bugfixes in es.po
-	DAYINSEC moved from recur.c to vars.h
-	apoint_check_next() created
-	recur_apoint_check_next() created
-	notify_check_next_app() and notify_thread_app() created
-
-09 Sep 2006:
-	src/Makefile.am updated to take notify.h and .c into account, and link
-	to lpthread added
-	configure.ac: added test for pthread library and switched to 1.6
-	help window size updated to take notification bar into account
-	notify.h and notify.c created, with the following routines:
-	notify_init_bar(), notify_reinit_bar(), notify_update_bar(),
-	notify_extract_aptsfile(), notify_thread_sub()
-	Makefile.am updated to add the spanish manual
-	spanish manual and translations added, many thanks to Jose for 
-	providing them
-	manuals updated (thanks section)
+	* getstring() modified to take the max string length as an
+	argument
 	
-08 Sep 2006:
-	fixed a bug appearing when trying to delete a newly repeated item	
+	* updatestring() and todo_edit_item() created
+	
+	* add_char() simplified, using memcpy()
+	
+	* 'E' key added to edit already existing items
 
-07 Sep 2006:
-	fixed a bug which prevented status bar keybindings from being
+2006-10-28  Frederic Culot  <frederic@culot.org>
+
+	* getstring() improved to allow the modification of an existing
+	string
+	
+	* showstring(), showcursor(), add_char() and delete_char() created
+	
+	* getstring() calls in todo_new_item(), recur_repeat_item(),
+	goto_day(), config_notify_bar() and add_item() updated
+	
+	* display_item(), display_item_date() and day_write_pad() updated
+	to add an asterisk in front of recurrent items 
+
+2006-10-17  Frederic Culot  <frederic@culot.org>
+
+	* src/args.c (parse_args): use of getopt_long() instead of getopt,
+	to make the '-t' priority number optional, and to allow the use of
+	long options 
+	
+	* configure.ac: check for getopt.h header file added
+
+2006-10-16  Frederic Culot  <frederic@culot.org>
+
+	* bugfix: when creating a recurrent item, the entered end-date is
+	now included again
+	
+	* '-t' flag now takes a priority number for argument
+
+2006-10-01  Frederic Culot  <frederic@culot.org>
+
+	* === Released 1.6 ===
+	
+	* doc/manual_de.html:
+	* po/de.po: german manual and translation updated by Chris M.
+	
+	* bugfix: CTRL-J now works properly
+
+	* bugfix: a number of minutes can no longer be entered while
+	creating a new appointment
+	
+	* TODO: list updated
+
+	* NEWS: file updated
+
+2006-09-25  Frederic Culot  <frederic@culot.org>
+
+	* doc/manual_es.html:
+	* po/es.po: spanish translation and manual updated by Jose Lopez
+
+2006-09-22  Frederic Culot  <frederic@culot.org>
+
+	* doc/manual_es.html: spanish manual updated by Jose Lopez
+	
+	* src/Makefile.am: bugfix: LOCALEDIR is now defined in
+	src/Makefile.am instead of configure.ac, to prevent from
+	conflicting definitions. Thanks to Jose for reporting that bug.
+	
+2006-09-19  Frederic Culot  <frederic@culot.org>
+
+	* doc/manual_fr.html:
+	* doc/manual_de.html:
+	* doc/manual_es.html: french, german and spanish manuals updated
+
+2006-09-18  Frederic Culot  <frederic@culot.org>
+
+	* added test on warning time interval in config_notify_bar()
+	
+	* print_general_options() modified to print text one line upper
+	
+	* bugfix: pressing enter no longer switches to next week in
+	calendar panel
+	
+	* doc/manual_en.html: update
+
+2006-09-17  Frederic Culot  <frederic@culot.org>
+
+	* config_notify_bar() improved
+
+	* getstring() improved to check for escape sequence
+
+	* src/help.c (help_screen): update
+	
+	* po/fr.po: french translation updated
+
+2006-09-16  Frederic Culot  <frederic@culot.org>
+
+	* '-n' flag implemented
+
+	* src/args.c (parse_args, help_arg, usage): updates
+
+	* next_arg(), now() created
+
+	* src/calcurse.1: manpage updated
+	
+	* notify_app_s structure updated
+
+	* apoint_check_next(), recur_apoint_check_next() and
+	recur_repeat_item() updated
+	
+	* config_notify_bar() and print_notify_options() improved
+	
+	* src/utils.c (mycpy): new function
+
+2006-09-15  Frederic Culot  <frederic@culot.org>
+
+	* nbar_s structure created to store notify-bar settings
+	
+	* save_cal() and load_conf() updated to write and read the user
+	configuration concerning the notify-bar
+	
+	* init_var(), help_screen() and config_bar() updated
+	
+	* config_notify_bar(), print_notify_options(), init_notify_bar(),
+	notify_bar(), notify_start_main_thread() and
+	notify_stop_main_thread() created
+	
+2006-09-14  Frederic Culot  <frederic@culot.org>
+
+	* fixed a bug which caused the recurrent appointments not to show
+	up in the notify-bar
+	
+	* added the time left before next appointment inside notify-bar
+	
+	* fixed a bug in recur_item_inday() which caused the appointments
+	to have a wrong start time when repeated
+	
+	* bugfix: no more deletion of the wrong recurrent appointment
+	
+	* today() created
+	
+	* notify_check_added(), notify_check_repeated() and
+	notify_same_item(), notify_same_recur_item() created
+
+2006-09-12  Frederic Culot  <frederic@culot.org>
+
+	* implementation of a mutex lock to protect the appointment linked
+	lists from race conditions
+	
+	* src/apoint.c (apoint_llist_init): new function
+
+	* src/recur.c (recur_apoint_llist_init): new function
+
+	* several routines in apoint.c and recur.c updated to take those
+	new lists structure into account	
+
+2006-09-11  Frederic Culot  <frederic@culot.org>
+
+	* po/es.po: small bugfixes
+	
+	* src/vars.h: DAYINSEC moved from recur.c to vars.h
+	
+	* src/apoint.c (apoint_check_next): new function
+
+	* src/recur.c (recur_apoint_check_next): new function
+
+	* src/notify.c (notify_check_next_app, notify_thread_app): new
+	functions
+
+2006-09-09  Frederic Culot  <frederic@culot.org>
+
+	* src/Makefile.am: update to take notify.h and .c into account,
+	and link to lpthread added
+	
+	* configure.ac: added test for pthread library and switched to 1.6
+	
+	* help window size updated to take notification bar into account
+	
+	* src/notify.[ch]: new files
+
+	* src/notify.c (notify_init_bar, notify_reinit_bar)
+	(notify_update_bar, notify_extract_aptsfile, notify_thread_sub):
+	new functions
+	
+	* Makefile.am: updated to add the spanish manual
+	
+	* doc/manual_es.html:
+	* po/es.po: spanish manual and translations added, many thanks to
+	Jose for providing them
+	
+	* doc/*.html: manuals updated (thanks section)
+
+2006-09-08  Frederic Culot  <frederic@culot.org>
+
+	* fixed a bug appearing when trying to delete a newly repeated
+	item
+	
+2006-09-07  Frederic Culot  <frederic@culot.org>
+
+	* fixed a bug which prevented status bar keybindings from being
 	translated
-	bugfix in recur_repeat_item(): the repeated end date can no longer be
-	before the item start time. Thanks Chris for reporting that bug
-	french translation updated
-	TODO list updated
+	
+	* src/recur.c (recur_repeat_item): the repeated end date can no
+	longer be before the item start time. Thanks Chris for reporting
+	that bug
+	
+	* po/fr.po: french translation updated
+	
+	* TODO: list updated
 
-06 Sep 2006:
-	status_bar() rewritten from scratch to allow more than one page
-	of keybindings
-	reset_status_page() and other_status_page() created
-	'O' keybinding added to switch between status bar pages
-	added general keybindings which apply whatever panel is selected
+2006-09-06  Frederic Culot  <frederic@culot.org>
+
+	* src/utils.c (status_bar): rewritten from scratch to allow more
+	than one page of keybindings
+	* src/utils.c (reset_status_page, other_status_page): new
+	functions
+	
+	* src/calcurse.c: 'O' keybinding added to switch between status
+	bar pages
+
+	* general keybindings added which apply whatever panel is selected
 	(^A, ^T, ^H, ^J, ^K, ^L)
-	changed the redraw keybinding from ^L to ^R
-	added help pages concerning the general bindings and the 'O' command
+	
+	* changed the redraw keybinding from ^L to ^R
 
-03 Sep 2006:
-	todo_args() updated to display priorities
-	fr.po: new entries translated and fixed 'fuzzy' translations
-	layout_config() improved, and new layout configurations added
-	get_screen_config() updated to take new layouts into account
-	TODO list updated
+	* src/help.c: added help pages concerning the general bindings and
+	the 'O' command
+	
+2006-09-03  Frederic Culot  <frederic@culot.org>
 
-02 Sep 2006:
-	help text added for the 'Priority' function and updated for the 'Add'
-	function
-	todo_get_position(): fixed a possible infinite loop
-	calcurse.c: improved the ToDo panel scrolling while changing item priority
-	fixed a bug in day_write_pad() which could cause a misplacement of the
-	line between events and appointments
+	* src/args.c (todo_args): update to display priorities
 
-31 Aug 2006:
-	todo_chg_priority(), todo_get_item() and todo_get_position() created
-	todo_insert() suppressed
-	todo_new_item() updated to ask for priority
-	todo_add() updated to sort items by priority order
-	update_todo_panel() updated to display todo priority
-	'+/-' menu added to handle todo priorities
+	* po/fr.po: new entries translated and fixed 'fuzzy' translations
+	
+	* layout_config() improved, and new layout configurations added
+	
+	* get_screen_config() updated to take new layouts into account
+	
+	* TODO: list updated
 
-30 Aug 2006:
-	'id' added to todo_s structure
-	load_todo() and save_cal() updated to take this id into account
-	moved add_todo() from calcurse.c to todo_new_item() in todo.c
-	bugfix: pressing 'R' while no item was selected caused a segfault.
-	Thanks to Chris for reporting that bug
+2006-09-02  Frederic Culot  <frederic@culot.org>
 
-26 Aug 2006: 1.5
+	* src/help.c: help text added for the 'Priority' function and
+	updated for the 'Add' function
+	
+	* src/todo.c (todo_get_position): fixed a possible infinite loop
+	
+	* src/calcurse.c: improved the ToDo panel scrolling while changing
+	item priority
+	
+	* src/day.c (day_write_pad): fixed a bug which could cause a
+	misplacement of the line between events and appointments
 
-25 Aug 2006:
-	io.c: fixed a data format bug in load_app()
-	day.c: events and appointments are now sorted properly	
+2006-08-31  Frederic Culot  <frederic@culot.org>
 
-24 Aug 2006:
-	bugfix in recur.c: forgot to wait for user's key pressed...
-	repeat command disabled for todo panel
-	switched to version number 1.5 in configure.ac and manpage
-	html manuals thanks section updated
+	* src/todo.c (todo_chg_priority, todo_get_item)
+	(todo_get_position): new functions
+	* src/todo.c (todo_insert): suppressed
+	* src/todo.c (todo_new_item): updated to ask for priority
+	* src/todo.c (todo_add): updated to sort items by priority order
+	* src/todo.c (update_todo_panel): updated to display todo priority
+	
+	* '+/-' menu added to handle todo priorities
 
-23 Aug 2006:
-	independant status bar created for the todo panel
-	bugfix: memory allocation problem in day.c
-	online help text updated for the repeat and delete commands
+2006-08-30  Frederic Culot  <frederic@culot.org>
 
-22 Aug 2006:
-	recur.c: compilation warnings corrected
-	calcurse.c: screen refreshing process ameliorated in add_item()
+	* 'id' added to todo_s structure
+	* load_todo() and save_cal() updated to take this id into account
 
-21 Aug 2006:
-	English and German translation added
+	* src/todo.c (todo_new_item): moved add_todo() from calcurse.c to
+	todo_new_item()
+	
+	* bugfix: pressing 'R' while no item was selected caused a
+	segfault. Thanks to Chris for reporting that bug
 
-19 Aug 2006:
-	bugfix: in io.c, a bug could cause a fatal error when loading from file
-	an endless recurrent item with non-repeated days 
-	bugfix: in recur.c, fixed a bug which could result in an infinite loop
+2006-08-26  Frederic Culot  <frederic@culot.org>
+
+	* === Released 1.5 ===
+
+2006-08-25  Frederic Culot  <frederic@culot.org>
+
+	* src/io.c (load_app): fixed a data format bug
+	
+	* src/day.c: events and appointments are now sorted properly
+	
+2006-08-24  Frederic Culot  <frederic@culot.org>
+
+	* src/recur.c: forgot to wait for user's key pressed...
+	
+	* repeat command disabled for todo panel
+
+	* configure.ac:
+	* src/calcurse.1: switched to version number 1.5
+	
+	* doc/*.html: manuals thanks section updated
+
+2006-08-23  Frederic Culot  <frederic@culot.org>
+
+	* independant status bar created for the todo panel
+	
+	* src/day.c: fixed a memory allocation problem
+	
+	* src/help.c: online help text updated for the repeat and delete
+	commands
+	
+2006-08-22  Frederic Culot  <frederic@culot.org>
+
+	* src/recur.c: compilation warnings corrected
+	
+	* src/calcurse.c (add_item): screen refreshing process ameliorated
+	
+2006-08-21  Frederic Culot  <frederic@culot.org>
+
+	* po/en.po:
+	* po/de.po: English and German translation added
+	
+2006-08-19  Frederic Culot  <frederic@culot.org>
+
+	* src/io.c: fixed a bug that could cause a fatal error when
+	loading from file an endless recurrent item with non-repeated days 
+	
+	* src/recur.c: fixed a bug which could result in an infinite loop
 	when saving multiple days 
-	bugfix: in calcurse.c, a newly created appointment or event is now
+	
+	* src/calcurse.c: a newly created appointment or event is now
 	correctly highlighted
-	recur_repeat_item() updated to check if the frequence is valid	
+	
+	* src/recur.c (recur_repeat_item): updated to check if the
+	frequence is valid
+	
+2006-08-16  Frederic Culot  <frederic@culot.org>
 
-16 Aug 2006:
-	recur_exc_scan() created
-	recur_event_new() and recur_apoint_new() updated to take non-repeated
-	days into account
+	* src/recur.c (recur_exc_scan): new function
 
-06 Aug 2006:
-	recur_item_inday() updated to take non-repeated days into account
-	recur_repeat_item() and day_get_item() created
-	'R' menu key added to repeat an event or an appointment
+	* src/recur.c (recur_event_new, recur_apoint_new): update to take
+	non-repeated days into account
 
-02 Aug 2006:
-	bugfix: Debian bug #377543 fixed, thanks to Neil for reporting it
-	recur_event_erase(), recur_apoint_erase() and recur_write_exc() created
-	recur_event_write() and recur_apoint_write() updated to call
-	    recur_writ_exc() if there are exceptions to be written
-	day_erase_item() and del_item() updated
-	ESCAPE key definition added
+2006-08-06  Frederic Culot  <frederic@culot.org>
 
-01 Aug 2006:
-	day.h: MAX_TYPES added
-	day_erase_item() created
-	del_apoint() renamed to del_item and updated to take recurrent
+	* src/recur.c (recur_item_inday): update to take non-repeated days
+	into account
+	
+	* src/recur.c (recur_repeat_item, day_get_item): new functions
+	
+	* 'R' menu key added to repeat an event or an appointment
+	
+2006-08-02  Frederic Culot  <frederic@culot.org>
+
+	* bugfix: Debian bug #377543 fixed, thanks to Neil for reporting
+	it
+	
+	* src/recur.c (recur_event_erase, recur_apoint_erase)
+	(recur_write_exc): new functions
+	* src/recur.c (recur_event_write, recur_apoint_write): update to
+	call recur_writ_exc() if there are exceptions to be written
+	
+	* src/day.c (day_erase_item, del_item): updates
+	
+	* ESCAPE key definition added
+
+2006-08-01  Frederic Culot  <frederic@culot.org>
+
+	* src/day.h: MAX_TYPES added
+	
+	* src/day.c (day_erase_item): new function
+
+	* del_apoint() renamed to del_item and updated to take recurrent
 	items into account 
 
-27 Jul 2006:
-	back to work after my ibook's logic board crash :(
-	autogen.sh created
+2006-07-27  Frederic Culot  <frederic@culot.org>
 
-25 Jun 2006:
-	app_arg() updated to take recurrent items into account
-	recur_apoint_s2apoint_s() created
-	added help text concerning possible formats to be entered when using 
-	'-h' flag in non-interactive mode
-	fixed a bug related to localtime() which returns a statically
+	* back to work after my ibook's logic board crash :(
+	
+	* autogen.sh: new file
+
+2006-06-25  Frederic Culot  <frederic@culot.org>
+
+	* src/args.c (app_arg): updated to take recurrent items into
+	account
+	
+	* src/recur.c (recur_apoint_s2apoint_s): new function
+	
+	* added help text concerning possible formats to be entered when
+	using '-h' flag in non-interactive mode
+	
+	* fixed a bug related to localtime() which returns a statically
 	allocated structure that can be overwritten by subsequent calls
-	to the function (which was the case with recurrent items) 
-	load_app(), recur_event_scan(), recur_apoint_scan(), recur_item_inday(),
-	recur_event_write() and recur_apoint_write() updated to take endless 
+	to the function (which was the case with recurrent items)
+	
+	* load_app(), recur_event_scan(), recur_apoint_scan(),
+	recur_item_inday(), recur_event_write() and recur_apoint_write()
+	updated to take endless recurrent items into account
+	
+2006-06-24  Frederic Culot  <frederic@culot.org>
+
+	* cvs keywords added inside source files
+	
+	* apoint_sec2str() and display_item_date() modified to take
 	recurrent items into account
-
-24 Jun 2006:
-	cvs keywords added inside source files
-	apoint_sec2str() and display_item_date() modified to take recurrent
-	items into account	
-	day_check_if_item() created
-
-18 Jun 2006:
-	day_store_recur_events() and day_store_recur_apoints() created
-	recur_item_inday() created
-
-17 Jun 2006:
-	day_popup_item() created
-	pointers to number_events_inday and number_apoints_inday passed to
-	day_store_items()
-	day_write_pad() updated to reallocate memory for day_saved_item structure
-
-16 Jun 2006:
-	free_aday() and free_eday() suppressed and replaced by day_free_list()
-	day_store_items() created
-	store_day() updated to call day_store_items()
-	eday_store() and aday_store suppressed and replaced by day_store_events()
-	and day_store_apoints()
-	edayadd() and edayadd() suppressed and replaced by day_add_event()
-	and day_add_apoint()
-	write_app_pad() suppressed and replaced by day_write_pad()
-	day_item_s2apoint_s() created
-
-14 Jun 2006:
-	day.c and day.h created to store processes related to the currently
-	selected day inside calendar (this is to ease the implementation of 
-	recursive items) 
-	src/Makefile.am updated
-
-08 Jun 2006:
-	recur_save_data() created
-	recur_char2def() created	
-
-07 Jun 2006:
-	recur_apoint_scan() and recur_event_scan() created
-	load_app() updated to read recursive events from file
-
-06 Jun 2006:
-	bugfix: Debian Bug Report #369550 regarding the segfault which
-	appeared when calcurse was launched in non-interactive mode without
-	data files
-	recur.h and recur.c added to implement recursive events
-	src/Makefile.am updated
-	recur_event_new()and recur_apoint_new() created
-	recur_def2char(), recur_apoint_write() and recur_event_write() created
-
-15 May 2006: 1.4
-        TODO, README, manpage and manual updated
 	
-13 May 2006:
-	NEWS file updated
+	* src/day.c (day_check_if_item): new function
+	
+2006-06-18  Frederic Culot  <frederic@culot.org>
 
-11 May 2006:
-	manual_de.html finished : many thanks to Michael Schulz
-	manual_fr.html updated
+	* src/day.c (day_store_recur_events, day_store_recur_apoints): new
+	functions
 	
-08 May 2006:
-	manual_en.html updated
-	bugfix: added test at the end of color_config() to check the need
-	of using colorization or not
+	* src/recur.c (recur_item_inday): new function
 	
-07 May 2006:
-        french translation finished
-	manpage updated
-	
-05 May 2006:
-        added LOCALEDIR definition in configure.ac
-	usage_try() created
-	
-27 Apr 2006:
-	removed VERSION definition from vars.h to only use the one from 
-	configure.ac
-	include config.h added in calcurse.c
+2006-06-17  Frederic Culot  <frederic@culot.org>
 
-26 Apr 2006:
-	updated exit() calls by using EXIT_SUCCESS and EXIT_FAILURE
-	end of source preparation for i18n
-	replaced required confirmation string from 'yes' and 'no' to 'y' and 'n'
-	'gettextization' of source package:
-	  * Makefile.am (SUBDIRS): Add po.
+	* src/day.c (day_popup_item): new function
+
+	* src/day.c (day_store_items): pointers to number_events_inday and
+	number_apoints_inday passed to day_store_items()
+	
+	* src/day.c (day_write_pad): update to reallocate memory for
+	day_saved_item structure
+	
+2006-06-16  Frederic Culot  <frederic@culot.org>
+
+	* src/day.c (day_free_list): free_aday() and free_eday()
+	suppressed and replaced by day_free_list()
+	
+	* src/day.c (day_store_items): new function
+	
+	* store_day() updated to call day_store_items()
+	
+	* src/day.c (day_store_events, day_store_apoints): eday_store()
+	and aday_store suppressed and replaced by day_store_events() and
+	day_store_apoints()
+	
+	* src/day.c (day_add_event, day_add_apoint): edayadd() and
+	edayadd() suppressed and replaced by day_add_event() and
+	day_add_apoint()
+	
+	* src/day.c (day_write_pad): write_app_pad() suppressed and
+	replaced by day_write_pad()
+	
+	* src/day.c (day_item_s2apoint_s): new function
+
+2006-06-14  Frederic Culot  <frederic@culot.org>
+
+	* src/day.[ch]: new files created to store processes related to
+	the currently selected day inside calendar (this is to ease the
+	implementation of recursive items)
+	
+	* src/Makefile.am: update
+
+2006-06-08  Frederic Culot  <frederic@culot.org>
+
+	* src/recur.c (recur_save_data, recur_char2def): new functions
+	
+2006-06-07  Frederic Culot  <frederic@culot.org>
+
+	* src/recur.c (recur_apoint_scan, recur_event_scan): new functions
+	
+	* load_app() updated to read recursive events from file
+
+2006-06-06  Frederic Culot  <frederic@culot.org>
+
+	* bugfix: Debian Bug Report #369550 regarding the segfault which
+	appeared when calcurse was launched in non-interactive mode
+	without data files
+	
+	* src/recur.[ch]: new files added to implement recursive events
+	
+	* src/Makefile.am: update
+	
+	* src/recur.c (recur_event_new, recur_apoint_new, recur_def2char)
+	(recur_apoint_write, recur_event_write): new functions
+
+2006-05-15  Frederic Culot  <frederic@culot.org>
+
+	* === Released 1.4 ===
+	
+	* TODO: 
+	* README: 
+	* src/calcurse.1:
+	* doc/*.html: updates
+
+2006-05-13  Frederic Culot  <frederic@culot.org>
+
+	* NEWS: file updated
+
+2006-05-11  Frederic Culot  <frederic@culot.org>
+
+	* doc/manual_de.html: manual finished, many thanks to Michael
+	Schulz
+	
+	* doc/manual_fr.html: update
+
+2006-05-08  Frederic Culot  <frederic@culot.org>	
+
+	* doc/manual_en.html: update
+	
+	* bugfix: added test at the end of color_config() to check the
+	need of using colorization or not
+	
+2006-05-07  Frederic Culot  <frederic@culot.org>
+
+	* po/fr.po: french translation finished
+	
+	* src/calcurse.1: manpage updated
+	
+2006-06-05  Frederic Culot  <frederic@culot.org>
+
+	* configure.ac: added LOCALEDIR definition
+	
+	* usage_try() created
+
+2006-04-27  Frederic Culot  <frederic@culot.org>
+
+	* configure.ac:
+	* src/vars.h: removed VERSION definition from vars.h to only use
+	the one from configure.ac
+	
+	* src/calcurse.c: include config.h
+	
+2006-04-26  Frederic Culot  <frederic@culot.org>
+
+	* updated exit() calls by using EXIT_SUCCESS and EXIT_FAILURE
+	
+	* end of source preparation for i18n
+	
+	* replaced required confirmation string from 'yes' and 'no' to 'y'
+	and 'n'
+	
+	* 'gettextization' of source package:
+	  Makefile.am (SUBDIRS): Add po.
 	  (ACLOCAL_AMFLAGS): New variable.
 	  (EXTRA_DIST): Add config.rpath, mkinstalldirs, m4/ChangeLog.
-	  * configure.ac (AC_OUTPUT): Add po/Makefile.in.
-	
-25 Apr 2006:
-	updated parts related to general config variables to handle i18n:
+	  configure.ac (AC_OUTPUT): Add po/Makefile.in.
+
+2006-04-25  Frederic Culot  <frederic@culot.org>
+
+	* updated parts related to general config variables to handle
+	i18n:
 	   general config variables type changed to boolean
 	   fill_config_var() created
 	   switch_option() suppressed
 
-23 Apr 2006:
-	progress_bar() modified to better fit the data file structure
-	user_conf_t created to allow translation of configuration variables
-	
-22 Apr 2006:
-	translatable strings marked for i18n
-	manual_de.html added (german translation of calcurse manual,
-	thanks to Michael Schultz)
+2006-04-23  Frederic Culot  <frederic@culot.org>
 
-20 Apr 2006:
-	i18n.h added to prepare for internationalization
-	src/Makefile.am updated
+	* progress_bar() modified to better fit the data file structure
 	
-18 Apr 2006:
-	code cleanup: color_config() simplified
+	* user_conf_t created to allow translation of configuration
+	variables
 	
-17 Apr 2006:
-	variable 'colorize' added
-	color number '0' added to be able to run calcurse in black&white
+2006-04-22  Frederic Culot  <frederic@culot.org>
+
+	* translatable strings marked for i18n
+	
+	* doc/manual_de.html: new manual (german translation of calcurse
+	manual, thanks to Michael Schultz)
+	
+2006-04-20  Frederic Culot  <frederic@culot.org>
+
+	* src/i18n.h: new file added to prepare for internationalization
+	
+	* src/Makefile.am: update
+	
+2006-04-18  Frederic Culot  <frederic@culot.org>
+
+	* code cleanup: color_config() simplified
+	
+2006-04-17  Frederic Culot  <frederic@culot.org>	
+
+	* variable 'colorize' added
+	
+	* color number '0' added to be able to run calcurse in black&white
 	even on color terminals
-	
-16 Apr 2006:
-	border_nocolor() created to correctly handle panel borders in
+
+2006-04-16  Frederic Culot  <frederic@culot.org>
+
+	* border_nocolor() created to correctly handle panel borders in
 	non-color terminals
-	'week_begins_on_monday' option added, giving the ability to change
-	the first day of the week (thanks to Joe's remarks)
 	
-09 Apr 2006:
-	bugfix: stderr replaced by stdout in version_arg(), help_arg(), 
+	* 'week_begins_on_monday' option added, giving the ability to
+	change the first day of the week (thanks to Joe's remarks)
+	
+2006-04-09  Frederic Culot  <frederic@culot.org>	
+
+	* bugfix: stderr replaced by stdout in version_arg(), help_arg(),
 	todo_arg(), app_arg(), date_arg(), arg_print_date(), usage()
 	(thanks go to Soren for reporting that bug)
+	
+2006-04-08  Frederic Culot  <frederic@culot.org>
 
-08 Apr 2006:
-	html manual translated in french (manual_fr.html created)
+	* doc/manual_fr.html: new file containing the french manual
+	translation
 
-05 Apr 2006:
-	README file rewritten to take into account the new documentation structure
+2006-04-05  Frederic Culot  <frederic@culot.org>
 
-02 Apr 2006:
-	support for non-color terminals added :
+	* README: file rewritten to take into account the new
+	documentation structure
+
+2006-04-02  Frederic Culot  <frederic@culot.org>
+
+	* support for non-color terminals added :
 		window attribute levels defined in vars.h
 		attribute_s structure created in custom.h
 		custom_init_attr(), custom_apply_attr(), and 
 		custom_remove_attr() created in custom.c
-		init_vars() updated in calcurse.c 
+		init_vars() updated in calcurse.c
+	
+2006-03-30  Frederic Culot  <frederic@culot.org>
 
-30 Mar 2006:
-	doc/ repertory created to contain calcurse documentation and its
-	translations. Makefile.am updated to take the new repertory into
+	* doc/: repertory created to contain calcurse documentation and
+	its translations. 
+	* Makefile.am: update to take the new repertory into
 	account
 
-23 Mar 2006:
-	manual_en.html created, in order to replace the actual documentation
-	contained in the README file
+2006-03-23  Frederic Culot  <frederic@culot.org>
 
-17 Mar 2006: 1.3
-	bugfix: newpad added in init_vars to correct a bug causing core dump on
-	Solaris
-	bugfix: no more wrong event duration when entering end time in [hh:mm]
-	format
-	bugfix: first_todo_onscreen corrected to avoid the disappearing of 
-	todo items
-	updated the copyright text which appears with the -v flag
-	manpage updated
-	README updated
-	online help updated
-	TODO list updated
-
-14 Mar 2006:
-	replaced true and false #define by stdbool.h
-
-13 Mar 2006:
-	online help screens updated
-
-09 Mar 2006:
-	typedef help_page_t added to add a title to each help page
-	help_screen() and write_help_pad() updated to use new help_page_t type
-
-07 Mar 2006:
-	#define true and false added in vars.h
-	online help screens updated
-
-06 Mar 2006:
-	source file headers updated
-
-26 Feb 2006:
-	get_help_lines() created
-	scrollbar added inside help screens
-
-25 Feb 2006:
-	help_screen() updated, now using a pad to display help screens	
-	write_help_pad() created
-
-19 Feb 2006:
-	display structure updated to take into account the scrollbars  
-	previous_item_mark() and next_item_mark() suppressed, scrollbar used instead
-	bugfix: hilt_tod and hilt_app were not updated when deleting an item
-	day_changed variable added and store_day() updated
-	bugfix: pad scrolling was not updated when deleting an item in the
-	appointment panel
-	bugfix: scrollbar length and top position were not correct in some
-	cases 
+	* manual_en.html: new file created, in order to replace the actual
+	documentation contained in the README file
 	
-18 Feb 2006:
-	enum window_number created
-	bugfix: start and end time now properly displayed when viewing an
-	appointment in popup window
-	bugfix: wrong highlited item when changing day fixed
-	draw_scrollbar() created to display a real bar inside panels instead
-	of 'v' and '^' marks
-	update_todo_panel() and update_app_panel updated to display the scrollbar
+2006-03-17  Frederic Culot  <frederic@culot.org>
 
-16 Feb 2006:
-	del_apoint() updated to take events into account
+	* === Released 1.3 ===
 
-11 Feb 2006:
-	AC_HEADR_STDBOOL added in configure.ac
-	init_vars() created
-	do_storage variable added to check if we really need to update the
-	appointment panel items inside pad
-	free_aday() and free_eday() created
+	* bugfix: newpad added in init_vars to correct a bug causing core
+	dump on Solaris
 	
-09 Feb 2006:
-	pad_s structure created
-	get_item_line(), scroll_pad_down() and scroll_pad_up() created
-
-05 Feb 2006:
-	get_item_line() created
-
-04 Feb 2006:
-	work on the way appointment panel scrolls
-	updated the way appointments are displayed in popup windows
-
-28 Jan 2006:
-	write_app_pad() improved	
-
-26 Jan 2006:
-	improved the windows refresh order in update_windows() 
-
-25 Jan 2006:
-	changed MAX_LENGTH to 512
-	the pad used to display appointments has a fixed length now
+	* bugfix: no more wrong event duration when entering end time in
+	[hh:mm] format
 	
-14 Jan 2006:
-	store_day() created to speed up the appointment panel update
-	create_app_pad(), write_app_pad(), show_app_pad() created to
+	* bugfix: first_todo_onscreen corrected to avoid the disappearing
+	of todo items
+	
+	* updated the copyright text which appears with the -v flag
+	
+	* manpage updated
+	
+	* README updated
+	
+	* online help updated
+	
+	* TODO list updated
+
+2006-03-14  Frederic Culot  <frederic@culot.org>
+
+	* replaced true and false #define by stdbool.h
+
+2006-03-13  Frederic Culot  <frederic@culot.org>
+
+	* online help screens updated
+
+2006-03-09  Frederic Culot  <frederic@culot.org>
+
+	* typedef help_page_t added to add a title to each help page
+	
+	* help_screen() and write_help_pad() updated to use new
+	help_page_t type
+
+2006-03-07  Frederic Culot  <frederic@culot.org>
+
+	* src/var.h: #define true and false added
+	
+	* online help screens updated
+	
+2006-03-06  Frederic Culot  <frederic@culot.org>
+
+	* source file headers updated
+
+2006-02-26  Frederic Culot  <frederic@culot.org>
+
+	* get_help_lines() created
+	
+	* scrollbar added inside help screens
+	
+2006-02-25  Frederic Culot  <frederic@culot.org>
+
+	* help_screen() updated, now using a pad to display help screens
+	
+	* write_help_pad() created
+	
+2006-02-19  Frederic Culot  <frederic@culot.org>
+
+	* display structure updated to take into account the scrollbars
+	
+	* previous_item_mark() and next_item_mark() suppressed, scrollbar
+	used instead
+	
+	* bugfix: hilt_tod and hilt_app were not updated when deleting an
+	item
+	
+	* day_changed variable added and store_day() updated
+	
+	* bugfix: pad scrolling was not updated when deleting an item in
+	the appointment panel
+	
+	* bugfix: scrollbar length and top position were not correct in
+	some cases
+
+2006-02-18  Frederic Culot  <frederic@culot.org>
+
+	* enum window_number created
+	
+	* bugfix: start and end time now properly displayed when viewing
+	an appointment in popup window
+	
+	* bugfix: wrong highlited item when changing day fixed
+	
+	* draw_scrollbar() created to display a real bar inside panels
+	instead of 'v' and '^' marks
+	
+	* update_todo_panel() and update_app_panel updated to display the
+	scrollbar
+	
+2006-02-16  Frederic Culot  <frederic@culot.org>
+
+	* del_apoint() updated to take events into account
+	
+2006-02-11  Frederic Culot  <frederic@culot.org>
+
+	* configure.ac: AC_HEADR_STDBOOL added
+	
+	* init_vars() created
+	
+	* do_storage variable added to check if we really need to update
+	the appointment panel items inside pad
+	
+	* free_aday() and free_eday() created
+	
+2006-02-09  Frederic Culot  <frederic@culot.org>
+
+	* pad_s structure created
+	
+	* get_item_line(), scroll_pad_down() and scroll_pad_up() created
+	
+2006-02-05  Frederic Culot  <frederic@culot.org>
+
+	* get_item_line() created
+
+2006-02-04  Frederic Culot  <frederic@culot.org>
+
+	* work on the way appointment panel scrolls
+	
+	* updated the way appointments are displayed in popup windows
+	
+2006-01-28  Frederic Culot  <frederic@culot.org>
+
+	* write_app_pad() improved
+	
+2006-01-26  Frederic Culot  <frederic@culot.org>
+
+	* improved the windows refresh order in update_windows()
+	
+2006-01-25  Frederic Culot  <frederic@culot.org>
+
+	* changed MAX_LENGTH to 512
+	
+	* the pad used to display appointments has a fixed length now
+	
+2006-01-14  Frederic Culot  <frederic@culot.org>	
+
+	* store_day() created to speed up the appointment panel update
+	
+	* create_app_pad(), write_app_pad(), show_app_pad() created to
 	improve the way appointment panel scrolls 
 
-10 Jan 2006:
-	added ifndef..define tests at the beginning of .h
+2006-01-10  Frederic Culot  <frederic@culot.org>
 
-08 Jan 2006:
-	added definition of CTRL keys in vars.h
-	added the ability to erase characters with CTRL-H when entering
+	* added ifndef..define tests at the beginning of .h
+
+2006-01-08  Frederic Culot  <frederic@culot.org>
+
+	* added definition of CTRL keys in vars.h
+	
+	* added the ability to erase characters with CTRL-H when entering
 	text (to fix a problem reported by Brendan who was not able to
 	delete with its English keyboard)
+	
+2006-01-07  Frederic Culot  <frederic@culot.org>
 
-07 Jan 2006:
-	progress_bar() created in order to see progression while saving 
+	* progress_bar() created in order to see progression while saving
 	data to file
-	'skip_progress_bar' option added
-	changed color 5 to be yellow on black and color 7 to be black on
+	
+	* 'skip_progress_bar' option added
+	
+	* changed color 5 to be yellow on black and color 7 to be black on
 	yellow (this is to draw the newly created progress bar)
 	
-31 Dec 2005:
-	removed the -lpanel that was left in src/Makefile.am
-	README updated
-	add_item() and check_time() modified so that :
-		o an appointment start time can now be entered in both 
+2005-12-31  Frederic Culot  <frederic@culot.org>	
+
+	* src/Makefile.am: removed the -lpanel
+	
+	* README: update
+	
+	* add_item() and check_time() modified so that :
+		o an appointment start time can now be entered in both
 		  hh:mm and h:mm formats
 		o for the appointment end time, either a duration in
 		  minutes or the appointment end time can be entered
-	help_arg() and app_arg() updated to take events into account
+	
+	* help_arg() and app_arg() updated to take events into account
 	when running calcurse in non-interactive mode
-	arg_print_date() created to simplify app_arg() structure
+	
+	* arg_print_date() created to simplify app_arg() structure
+	
+2005-12-27  Frederic Culot  <frederic@culot.org>
 
-27 Dec 2005:
-	work on a better way to handle appointment and todo panels with the
-	use of ncurses scrolling functions
+	* work on a better way to handle appointment and todo panels with
+	the use of ncurses scrolling functions
+	
+2005-12-26  Frederic Culot  <frederic@culot.org>
 
-26 Dec 2005:
-	bugfix: fixed compiler warnings, thanks to Uwe
+	* bugfix: fixed compiler warnings, thanks to Uwe
+	
+2005-12-11  Frederic Culot  <frederic@culot.org>
 
-11 Dec 2005:
-	bugfix: fixed the January 0 bug
-	bugfix: current date is no longer highlighted in every year of the
-	future and the past (thanks to Michael for reporting that bug)
-	improved the way items are shown inside popup windows (variable
-	'show_apoint' removed, call to item_in_popup added when 'V' pressed)
+	* bugfix: fixed the January 0 bug
+	
+	* bugfix: current date is no longer highlighted in every year of
+	the future and the past (thanks to Michael for reporting that bug)
+	
+	* improved the way items are shown inside popup windows (variable
+	'show_apoint' removed, call to item_in_popup added when 'V'
+	pressed)
+	
+2005-12-10  Frederic Culot  <frederic@culot.org>
 
-10 Dec 2005:
-	update_app_panel() and update_todo_panel() improved
+	* update_app_panel() and update_todo_panel() improved
+	
+2005-12-04  Frederic Culot  <frederic@culot.org>
 
-04 Dec 2005:
-	update_app_panel() updated to show events: now events are displayed
-	first in the appointment panel, followed by an horizontal line
-	update_cal_panel() updated to highlight days containing events 
+	* update_app_panel() updated to show events: now events are
+	displayed first in the appointment panel, followed by an
+	horizontal line
+
+	* update_cal_panel() updated to highlight days containing events
 	in calendar view 
 
-03 Dec 2005:
-	Loading of events implemented: load_app() updated
-		
-30 Nov 2005:
-	Saving of events implemented 
+2005-12-03  Frederic Culot  <frederic@culot.org>
+
+	* Loading of events implemented: load_app() updated
 	
-29 Nov 2005:
-	Continuation of events item implementation
-	add_apts() updated (it is now called add_item) to check if 
+2005-11-30  Frederic Culot  <frederic@culot.org>	
+
+	* Saving of events implemented 
+
+2005-11-29  Frederic Culot  <frederic@culot.org>
+
+	* Continuation of events item implementation
+	
+	* add_apts() updated (it is now called add_item) to check if
 	an appointment or an event is entered
 	
-28 Nov 2005: 
-	Replaced everything related to 'event' by 'apoint' (appointments) 
+2005-11-28  Frederic Culot  <frederic@culot.org>
+
+	* Replaced everything related to 'event' by 'apoint'
 	to prepare the incoming event items (meaning all-day long items)
-	event.c and event.h created to deal with events
-	Makefile.am updated
 	
-26 Nov 2005: 1.2
-	Fixed problems with scroller() within the help screen
+	* src/event.[ch]: new files to deal with events
 	
-20 Nov 2005:
-	Improved the way help screens are refreshed
-	Removed call to doupdate() inside scroller(), to prevent redondancy
-	config_bar() and check_data_files() updated
-	'skip_system_dialogs' option added
+	* Makefile.am: update
+
+2005-11-26  Frederic Culot  <frederic@culot.org>
+
+	* === Released 1.2 ===
+
+	* Fixed problems with scroller() within the help screen
 	
-19 Nov 2005:
-	reinit_wins() created to redraw windows after resizing or layout 
+2005-11-20  Frederic Culot  <frederic@culot.org>
+
+	* Improved the way help screens are refreshed
+	
+	* Removed call to doupdate() inside scroller(), to prevent
+	redondancy
+	
+	* config_bar() and check_data_files() updated
+	
+	* 'skip_system_dialogs' option added
+	
+2005-11-19  Frederic Culot  <frederic@culot.org>	
+
+	* reinit_wins() created to redraw windows after resizing or layout
 	change
-	redraw_screen() improved and renamed it into get_screen_config()
-	fixed cursor position (did not manage to hide it :-(
 	
-08 Nov 2005:
-	changed all mvprintvw() calls to mvwprintw(), to improve the way
+	* redraw_screen() improved and renamed it into get_screen_config()
+	
+	* fixed cursor position (did not manage to hide it :-(
+	
+2005-11-08  Frederic Culot  <frederic@culot.org>	
+
+	* changed all mvprintvw() calls to mvwprintw(), to improve the way
 	calcurse interface is refreshed. 
-	
-06 Nov 2005:
-	Work on window handling :
+
+2005-11-06  Frederic Culot  <frederic@culot.org>
+
+	* Work on window handling :
 		o erase_panel() suppressed because no longer used
 
-05 Nov 2005:
-	Handling of status bar improved :
+2005-11-05  Frederic Culot  <frederic@culot.org>
+
+	* Handling of status bar improved :
 		o creation of an ncurses window instead of using stdscr
 		o erase_status_bar() replaced by erase_window_part()
-	cal_error() replaced by status_mesg()
 	
-03 Nov 2005:
-	ncurses library use improved: screen no longer flickers when
-	refreshed
-	
-02 Nov 2005:
-	erase_window_part() written to erase parts of windows
-	
-01 Nov 2005:
-	changed abbreviation for 'Wednesday' from 'Wen' to 'Wed'
-	panel library removed, calcurse does not use it anymore
-	work on the windows refreshing process : update_all() created
-	
-29 Oct 2005: 1.1
-	source code cleaning
-	version 1.1 released
+	* cal_error() replaced by status_mesg()
 
-25 Oct 2005:
-	bugfix : Debian Bug Report #335430 regarding the GoTo today
+2005-11-03  Frederic Culot  <frederic@culot.org>
+
+	* ncurses library use improved: screen no longer flickers when
+	refreshed
+
+2005-11-02  Frederic Culot  <frederic@culot.org>
+
+	* erase_window_part() written to erase parts of windows
+	
+2005-11-01  Frederic Culot  <frederic@culot.org>	
+
+	* changed abbreviation for 'Wednesday' from 'Wen' to 'Wed'
+	
+	* panel library removed, calcurse does not use it anymore
+	
+	* work on the windows refreshing process : update_all() created
+	
+2005-10-29  Frederic Culot  <frederic@culot.org>
+
+	* === Released 1.1 ===	
+
+	* source code cleanup
+
+2005-10-25  Frederic Culot  <frederic@culot.org>
+
+	* bugfix : Debian Bug Report #335430 regarding the GoTo today
 	function which goes to the day calcurse was started instead of
 	the current day is now fixed
 
-23 Oct 2005:
-	'-c' flag added to allow the use of multiple calendars
-	
-20 Oct 2005:
-	manpage and README file updated
-	configure.ac improved with the help of Michael
+2005-10-23  Frederic Culot  <frederic@culot.org>
 
-19 Oct 2005:
-	'-d' flag added to list appointments for the N upcoming days or
+	* '-c' flag added to allow the use of multiple calendars
+
+2005-10-20  Frederic Culot  <frederic@culot.org>
+
+	* src/calcurse.1:
+	* README: updates
+	
+	* configure.ac: improved with the help of Michael
+
+2005-10-19  Frederic Culot  <frederic@culot.org>
+
+	* '-d' flag added to list appointments for the N upcoming days or
 	for a given day
 
-15 Oct 2005:
-	Cleaning up of the source code so that it follows the K&R style	
-	'-t' flag added to list todos in non interactive mode
-	'-a' flag added to list current day's appointments in non 
-	interactive mode
+2005-10-15  Frederic Culot  <frederic@culot.org>
 
-13 Oct 2005:
-	functions created to handle command-line arguments (written in
-	args.c and args.h)
-	'-h' and -'v' flag added to display help and version in non
-	interactive mode
-
-08 Oct 2005: 1.0 -> first stable release
-	help screen updated
-	manpage and TODO updated
+	* Cleaning up of the source code so that it follows the K&R style
 	
-06 Oct 2005:
-	bugfix : Debian Bug Report #330869 regarding the October 0 which
+	* '-t' flag added to list todos in non interactive mode
+	
+	* '-a' flag added to list current day's appointments in non
+	interactive mode
+
+2005-10-13  Frederic Culot  <frederic@culot.org>
+
+	* src/args.[ch]: functions created to handle command-line
+	arguments
+
+	* '-h' and -'v' flag added to display help and version in non
+	interactive mode
+	
+2005-10-08  Frederic Culot  <frederic@culot.org>
+
+	* === Released 1.0 (first stable release) ===		
+
+	* help screen updated
+	
+	* manpage and TODO updated
+	
+2005-10-06  Frederic Culot  <frederic@culot.org>	
+
+	* bugfix : Debian Bug Report #330869 regarding the October 0 which
 	does not exist, is now fixed
 
-05 Oct 2005:
-	default options "auto-save", "confirm-quit", and
+2005-10-05  Frederic Culot  <frederic@culot.org>
+
+	* default options "auto-save", "confirm-quit", and
 	"confirm-delete" set to "yes"
+	
+2005-10-03  Frederic Culot  <frederic@culot.org>
 
-03 Oct 2005:
-	manpage written
-	README updated
+	* manpage written
+	
+	* README updated
+	
+2005-09-13  Frederic Culot  <frederic@culot.org>
 
-13 Sep 2005: 1.0rc4
-	bugfix release :
+	* === Released 1.0rc4 ===	
+
+	* bugfix release :
 	   o  some people reported a segfault while changing general
 	      options in the config screen, this no longer happens
 	   o  the Makefile was not linking to proper library (-lcurse
@@ -1122,183 +1761,264 @@
 	   o  changed date format to be like September 13, 2005 instead
 	      of September, 13 2005 
 
-11 Sep 2005: 1.0rc3 -> first public release 
-	adding of licence header in source files
+2005-09-11  Frederic Culot  <frederic@culot.org>
 
-04 Sep 2005:
-	source code splitted : creation of custom.c, custom.h
-	update of the Makefile
-	layout_config() : previous layout is now saved to restore it if
+	* === Released 1.0rc3 (first public release) ===
+
+	* adding of licence header in source files
+
+2005-09-04  Frederic Culot  <frederic@culot.org>
+
+	* source code splitted : creation of custom.c, custom.h
+
+	* update of the Makefile
+	
+	* layout_config() : previous layout is now saved to restore it if
 	no choice is made
-	color_config() : previous colour is also saved as in
+	
+	* color_config() : previous colour is also saved as in
 	layout_config()
+	
+2005-08-31  Frederic Culot  <frederic@culot.org>
 
-31 Aug 2005:
-	source code splitted : creation of vars.c, vars.h, io.c, io.h,
+	* source code splitted : creation of vars.c, vars.h, io.c, io.h,
 	help.c, help.h
-	update of the Makefile
-	modification of the cal_error function
 
-30 Aug 2005:
-	source code splitted : creation of calendar.c & calendar.h,
-	update of the Makefile
+	* update of the Makefile
+	
+	* modification of the cal_error function
+	
+2005-08-30  Frederic Culot  <frederic@culot.org>
 
-29 Aug 2005:
-	source code splitted : creation of utils.c & utils.h, update of
+	* source code splitted : creation of calendar.c & calendar.h
+
+	* update of the Makefile
+
+2005-08-29  Frederic Culot  <frederic@culot.org>
+
+	* source code splitted : creation of utils.c & utils.h, update of
 	the Makefile
 
-03 Jul 2005:
-	redraw_screen() created for initialization of screen
-	draw_screen() optimization for slow machine
+2005-07-03  Frederic Culot  <frederic@culot.org>
 
-02 Jul 2005 :
-	help screen updated
-	is_all_digit() created to check if a string is made of digits
-	check_event_time() created to check a new appointment time format
-	bugfixes -> 
-	  when 'G' pressed, no crash when invalid day is entered
- 	  when 'V' pressed, no crash when no event is highlited
-	  Calcurse is now started in calendar view
-	  scrolling problems fixed in app or todo view
-	  first event is highlited if it is the first time a panel is visited
-	  check if an new appointment format is valid
-	  we can now move from year to year in calendar view
-	  config screen is ok in OpenBSD too now
+	* redraw_screen() created for initialization of screen
 	
-26 Jun 2005 : 1.0rc2
-	translation of the Changelog
-	writing of the README file
-	comments in the code
-	use of gnu autotools for building CalCurse package
-	-> CalCurse v1.0rc2
+	* draw_screen() optimization for slow machine
+	
+2005-07-02  Frederic Culot  <frederic@culot.org>
 
-19 Jun 2005 :
-	scroller() improvement : the line is cut at the end of the last word,
-	not in the middle of it, and the 'next page' and 'previous page'
-	function was added
-	bug concerning the event printing in popup windows solved
+	* help screen updated
+	
+	* is_all_digit() created to check if a string is made of digits
+	
+	* check_event_time() created to check a new appointment time
+	format
+	
+	* bugfixes:
+	  * when 'G' pressed, no crash when invalid day is entered
+ 	  * when 'V' pressed, no crash when no event is highlited
+	  * Calcurse is now started in calendar view
+	  * scrolling problems fixed in app or todo view
+	  * first event is highlited if it is the first time a panel is
+	  visited
+	  * check if an new appointment format is valid
+	  * we can now move from year to year in calendar view
+	  * config screen is ok in OpenBSD too now
 
-18 Jun 2005 :
-	help improved
+2005-06-26  Frederic Culot  <frederic@culot.org>
 
-17 Jun 2005 :
-	writing of a function to erase appointments
+	* === Version 1.0rc2 ===
 
-14 Jun 2005 :
-	writing of a function to erase todo events
-	adding of the confirm_delete variable
+	* translation of the Changelog
+	
+	* writing of the README file
+	
+	* comments in the code
+	
+	* use of gnu autotools for building CalCurse package
 
-12 Jun 2005 :
-	improvement of the status bar, it is now dependant of the terminal
-	size
-	adding of the terminal minimum size test
-	adding of a scrolling function in the ToDo panel if there is more
-	events than the panel lines
-	creation of the ~/.calcurse repertory if it does not exist when
+2005-06-19  Frederic Culot  <frederic@culot.org>
+
+	* scroller() improvement : the line is cut at the end of the last
+	word, not in the middle of it, and the 'next page' and 'previous
+	page' function was added
+	
+	* bug concerning the event printing in popup windows solved
+
+2005-06-18  Frederic Culot  <frederic@culot.org>
+
+	* help improved
+
+2005-06-17  Frederic Culot  <frederic@culot.org>
+
+	* writing of a function to erase appointments
+
+2005-06-14  Frederic Culot  <frederic@culot.org>
+
+	* writing of a function to erase todo events
+	
+	* adding of the confirm_delete variable
+	
+2005-06-12  Frederic Culot  <frederic@culot.org>
+
+	* improvement of the status bar, it is now dependant of the
+	terminal size
+	
+	* adding of the terminal minimum size test
+	
+	* adding of a scrolling function in the ToDo panel if there is
+	more events than the panel lines
+	
+	* creation of the ~/.calcurse repertory if it does not exist when
 	CalCurse is launched
 
-04 Jun 2005 :
-	colorization of the selected event
-	view function created to print out an event in a popup window (ok for
-	ToDo events)
-	active panel is now colorized
+2005-06-04  Frederic Culot  <frederic@culot.org>
 
-26 May 2005 :
-	update_todo_panel() now improved :) (3 dots are added at the end of
-	the event if it is longer than the panel size)
-	erase_tod() created to erase the todo panel
-	erase_tod(), erase_app() and erase_cal() linked in one single function
-	: erase_panel()
-	popup() created to print a popup window
+	* colorization of the selected event
+	
+	* view function created to print out an event in a popup window
+	(ok for ToDo events)
+	
+	* active panel is now colorized
+	
+2005-05-26  Frederic Culot  <frederic@culot.org>
 
-25 May 2005 :
-	tries for improving update_todo_panel() :(
+	* update_todo_panel() now improved :) (3 dots are added at the end
+	of the event if it is longer than the panel size)
+	
+	* erase_tod() created to erase the todo panel
+	
+	* erase_tod(), erase_app() and erase_cal() linked in one single
+	function : erase_panel()
+	
+	* popup() created to print a popup window
 
-18 May 2005 :
-	changing of the status bar (different bars for calendar and other
-	panels)
+2005-05-25  Frederic Culot  <frederic@culot.org>
 
-14 May 2005 :
-	possibility to change the selected panel with TAB key
+	* tries for improving update_todo_panel() :(
 
-12 May 2005 :
-	scroller() improved
+2005-05-18  Frederic Culot  <frederic@culot.org>
 
-20 Apr 2005 :
-	scroller() function created
-	help screen improved, with scroller description
+	* changing of the status bar (different bars for calendar and
+	other panels)
+	
+2005-05-14  Frederic Culot  <frederic@culot.org>
 
-10 Apr 2005 :
-	the bug concerning the erasing of calendar lines is solved : a
+	* possibility to change the selected panel with TAB key
+
+2005-05-12  Frederic Culot  <frederic@culot.org>
+
+	* scroller() improved
+	
+2005-04-20  Frederic Culot  <frederic@culot.org>
+
+	* scroller() function created
+
+	* help screen improved, with scroller description
+	
+2005-04-10  Frederic Culot  <frederic@culot.org>
+
+	* the bug concerning the erasing of calendar lines is solved : a
 	refresh() was missing :(
-	-> CalCurse testing version is now almost over :)
+	
+	* -> CalCurse testing version is now almost over :)
 
-08 Apr 2005:
-	help menu improved, with a description for each possible action in
-	Calcurse
+2005-04-08  Frederic Culot  <frederic@culot.org>
 
-07 Apr 2005 :
-	adding of the auto-save and auto-confirm variables with tests when
-	quitting Calcurse
-	adding of general options in the config menu (auto-save and
+	* help menu improved, with a description for each possible action
+	in Calcurse
+
+2005-04-07  Frederic Culot  <frederic@culot.org>
+
+	* adding of the auto-save and auto-confirm variables with tests
+	when quitting Calcurse
+	
+	* adding of general options in the config menu (auto-save and
 	confirm-quit added)
-	writing of general_config(), print_general_options(), switch_options
-	and print_option_incolor()
-	improvement of functions to read and save user config, to take those
-	two new options into account
+	
+	* writing of general_config(), print_general_options(),
+	switch_options and print_option_incolor()
+	
+	* improvement of functions to read and save user config, to take
+	those two new options into account
 
-02 Apr 2005 : 1.0rc1
-	test function (e key) suppressed
-	add_apts() finished
-	goto_day() finished (we can now enter any day to go to)
-	-> CalCurse v. 1.0rc1 ;)
+2005-04-02  Frederic Culot  <frederic@culot.org>
 
-01 Apr 2005 :
-	work with Alex :
-		ToDo events are put in right order
-		writing of todo.h and todo.c
-		writing of date2sec()
-		improvement of the function to create and print the
+	* === Version 1.0rc1 ===
+
+	* test function (e key) suppressed
+	
+	* add_apts() finished
+	
+	* goto_day() finished (we can now enter any day to go to)
+	
+	* -> CalCurse v. 1.0rc1 ;)
+
+2005-04-01  Frederic Culot  <frederic@culot.org>
+
+	* work with Alex :
+		* ToDo events are put in right order
+		* writing of todo.h and todo.c
+		* writing of date2sec()
+		* improvement of the function to create and print the
 		Appointments, which are now put in right order
-		writing of event_delete_bynum()
-		writing of a function to colorize a day which contains an
-		event
-		improvement of the Makefile
+		* writing of event_delete_bynum()
+		* writing of a function to colorize a day which contains
+		an event
+		* improvement of the Makefile
 
-27 Mar 2005 :
-	do_modifs_todo() finished : the ToDo events are now properly erased
+2005-03-27  Frederic Culot  <frederic@culot.org>
 
-06 Mar 2005 :
-	improvements of do_modifs_todo()
+	* do_modifs_todo() finished : the ToDo events are now properly
+	erased
 
-05 Mar 2005 :
-	extract_data() created to read the user conf from file
-	extract_todo() becomes extract_data()
-	-> the user config is now properly read
+2005-03-06  Frederic Culot  <frederic@culot.org>
 
-03 Mar 2005 :
-	load_conf() created to load the user config
+	* improvements of do_modifs_todo()
 
-02 Mar 2005 :
-	improvement of save_cal() to save the user configuration
+2005-03-05  Frederic Culot  <frederic@culot.org>
+
+	* extract_data() created to read the user conf from file
+	
+	* extract_todo() becomes extract_data() -> the user config is now
+	properly read
+	
+2005-03-03  Frederic Culot  <frederic@culot.org>
+
+	* load_conf() created to load the user config
+
+2005-03-02  Frederic Culot  <frederic@culot.org>
+
+	* improvement of save_cal() to save the user configuration
 	(creation of the file .calcurse/conf, update of check_data_files)
+	
+2005-03-01  Frederic Culot  <frederic@culot.org>
 
-01 Mar 2005 :
-	improvement of do_modifs_todo()
-	writing of the test function (when 'e' is pressed)
+	* improvement of do_modifs_todo()
+	
+	* writing of the test function (when 'e' is pressed)
+	
+2005-02-27  Frederic Culot  <frederic@culot.org>
 
-27 Feb 2005:
-	layout_config() finished	
-	adding of the GPL licence
+	* layout_config() finished
+	
+	* adding of the GPL licence
 
-26 Feb 2005:
-	adding of the layout variable
-	writing of layout_config() started
+2005-02-26  Frederic Culot  <frederic@culot.org>
 
-25 Feb 2005 :
-	adding of a DEFINE for version number
-	creation of the help page
-	creation of the configuration menu, with color changing for now on
+	* adding of the layout variable
+	
+	* writing of layout_config() started
 
-15 Mar 2004:
-	beginning of the project
+2005-02-25  Frederic Culot  <frederic@culot.org>
+
+	* adding of a DEFINE for version number
+	
+	* creation of the help page
+	
+	* creation of the configuration menu, with color changing for now
+	on
+	
+2004-03-15  Frederic Culot  <frederic@culot.org>
+
+	* beginning of the project

@@ -1,4 +1,4 @@
-# 	$calcurse: nl.po,v 1.5 2008/04/20 13:52:06 culot Exp $
+# 	$calcurse: nl.po,v 1.6 2008/04/26 15:35:26 culot Exp $
 #
 # Dutch translations for calcurse package.
 # Copyright (C) 2007-2008 Jeremy Roon <p.roon@chello.nl>
@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse 2.0\n"
 "Report-Msgid-Bugs-To: frederic@culot.org\n"
-"POT-Creation-Date: 2008-04-20 11:16+0200\n"
+"POT-Creation-Date: 2008-04-26 17:33+0200\n"
 "PO-Revision-Date: 2007-01-06 13:52+0200\n"
 "Last-Translator: Jeremy Roon\n"
 "Language-Team:  Jeremy Roon <p.roon@chello.nl>\n"
@@ -218,7 +218,7 @@ msgstr ""
 msgid "Do you really want to quit ?"
 msgstr "Wilt u werkelijk het programma verlaten?"
 
-#: src/calcurse.c:239
+#: src/calcurse.c:236
 msgid "To do :"
 msgstr "Taken :"
 
@@ -407,11 +407,11 @@ msgstr ""
 msgid " 1-mm/dd/yyyy, 2-dd/mm/yyyy, 3-yyyy/mm/dd)"
 msgstr ""
 
-#: src/custom.c:795 src/notify.c:522
+#: src/custom.c:795 src/notify.c:520
 msgid "Enter an option number to change its value [Q to quit] "
 msgstr "Geef een nummer om de waarde te veranderen [Q om te stoppen]"
 
-#: src/custom.c:797 src/notify.c:524
+#: src/custom.c:797 src/notify.c:522
 msgid "Enter the date format (see 'man 3 strftime' for possible formats) "
 msgstr "Geef het formaat van de datum (zie 'man 3 strftime')"
 
@@ -1311,62 +1311,62 @@ msgstr "FATALE FOUT in launch_cmd: probleem met fork"
 msgid "FATAL ERROR in launch_cmd: could not launch user command"
 msgstr "FATALE FOUT in launch_cmd: kan gebruikerscommando niet starten"
 
-#: src/notify.c:451
+#: src/notify.c:449
 msgid "notify-bar_show = "
 msgstr "informatiebalk_toon = "
 
-#: src/notify.c:452
+#: src/notify.c:450
 msgid "notify-bar_date = "
 msgstr "informatiebalk_datum = "
 
-#: src/notify.c:453
+#: src/notify.c:451
 msgid "notify-bar_clock = "
 msgstr "informatiebalk_tijd= "
 
-#: src/notify.c:454
+#: src/notify.c:452
 msgid "notify-bar_warning = "
 msgstr "informatiebalk_waarschuwing = "
 
-#: src/notify.c:455
+#: src/notify.c:453
 msgid "notify-bar_command = "
 msgstr "informatiebalk_commando = "
 
-#: src/notify.c:458
+#: src/notify.c:456
 msgid "(if set to YES, notify-bar will be displayed)"
 msgstr "(Bij JA, wordt de informatiebalk weergegeven)"
 
-#: src/notify.c:460
+#: src/notify.c:458
 msgid "(Format of the date to be displayed inside notify-bar)"
 msgstr "(Formaat van de datum in de informatiebalk.)"
 
-#: src/notify.c:463
+#: src/notify.c:461
 msgid "(Format of the time to be displayed inside notify-bar)"
 msgstr "(Formaat van de tijd in de informatiebalk.)"
 
-#: src/notify.c:466
+#: src/notify.c:464
 msgid ""
 "(Warn user if an appointment is within next 'notify-bar_warning' seconds)"
 msgstr ""
 "Meldt gebruiker dat er een afspraak binnen 'informatiebalk_waarschuwing' "
 "seconden is"
 
-#: src/notify.c:469
+#: src/notify.c:467
 msgid "(Command used to notify user of an upcoming appointment)"
 msgstr "(Commando dat melding geeft van op handen zijnde afspraak)"
 
-#: src/notify.c:526
+#: src/notify.c:524
 msgid "Enter the time format (see 'man 3 strftime' for possible formats) "
 msgstr "Geef het formaat van de tijd (zie 'man 3 strftime')"
 
-#: src/notify.c:528
+#: src/notify.c:526
 msgid "Enter the number of seconds (0 not to be warned before an appointment)"
 msgstr "Geef het aantal seconden (0 voor geen waarschuwing voor een afspraak)."
 
-#: src/notify.c:529
+#: src/notify.c:527
 msgid "Enter the notification command "
 msgstr "Geef het meldingscommando "
 
-#: src/notify.c:533
+#: src/notify.c:531
 #, c-format
 msgid "CalCurse %s | notify-bar options"
 msgstr "CalCurse %s | Informatiebalk-opties"
