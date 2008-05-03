@@ -1,4 +1,4 @@
-/*	$calcurse: recur.c,v 1.35 2008/04/12 21:14:03 culot Exp $	*/
+/*	$calcurse: recur.c,v 1.36 2008/05/03 19:54:14 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -60,7 +60,6 @@ recur_apoint_new (char *mesg, char *note, long start, long dur, char state,
       malloc (sizeof (recur_apoint_llist_node_t));
   o->rpt = (struct rpt_s *) malloc (sizeof (struct rpt_s));
   o->mesg = (char *) malloc (strlen (mesg) + 1);
-  o->exc = (struct days_s *) malloc (sizeof (struct days_s));
   strncpy (o->mesg, mesg, strlen (mesg) + 1);
   o->note = (note != NULL) ? strdup (note) : NULL;
   o->start = start;
@@ -98,7 +97,6 @@ recur_event_new (char *mesg, char *note, long day, int id, int type, int freq,
   o->rpt = (struct rpt_s *) malloc (sizeof (struct rpt_s));
   o->mesg = (char *) malloc (strlen (mesg) + 1);
   o->note = (note != NULL) ? strdup (note) : NULL;
-  o->exc = (struct days_s *) malloc (sizeof (struct days_s));
   strncpy (o->mesg, mesg, strlen (mesg) + 1);
   o->day = day;
   o->id = id;
@@ -655,7 +653,7 @@ recur_repeat_item (conf_t *conf)
     _("Enter the ending date: [%s] or '0' for an endless repetition");
   char *mesg_wrong_1 = _("The entered date is not valid.");
   char *mesg_wrong_2 =
-    _("Possible formats are [%s] or '0' for an endless repetetition");
+    _("Possible formats are [%s] or '0' for an endless repetition");
   char *wrong_type_1 = _("This item is already a repeated one.");
   char *wrong_type_2 = _("Press [ENTER] to continue.");
   char *mesg_older =
