@@ -1,4 +1,4 @@
-# 	$calcurse: de.po,v 1.13 2008/04/26 15:35:26 culot Exp $
+# 	$calcurse: de.po,v 1.14 2008/05/03 19:39:13 culot Exp $
 #
 # German translations for calcurse package.
 # Copyright (C) 2006-2007 Michael Schulz <bloodshower@web.de>
@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse 1.9\n"
 "Report-Msgid-Bugs-To: frederic@culot.org\n"
-"POT-Creation-Date: 2008-04-26 17:33+0200\n"
+"POT-Creation-Date: 2008-05-03 21:33+0200\n"
 "PO-Revision-Date: 2007-09-02 18:06+0200\n"
 "Last-Translator: Michael\n"
 "Language-Team:  Michael Schulz <bloodshower@freenet.de>\n"
@@ -1430,7 +1430,7 @@ msgstr "Ende der Wiederholung : [MM/TT/JJJJ] bzw. '0' für keine Begrenzung"
 
 #: src/recur.c:658
 #, fuzzy, c-format
-msgid "Possible formats are [%s] or '0' for an endless repetetition"
+msgid "Possible formats are [%s] or '0' for an endless repetition"
 msgstr "Mögliche Eingaben sind [MM/TT/JJJJ] oder '0' für unbegrenzt."
 
 #: src/recur.c:659

@@ -1,16 +1,16 @@
-# 	$calcurse: nl.po,v 1.6 2008/04/26 15:35:26 culot Exp $
+# 	$calcurse: nl.po,v 1.7 2008/05/03 19:39:13 culot Exp $
 #
 # Dutch translations for calcurse package.
 # Copyright (C) 2007-2008 Jeremy Roon <p.roon@chello.nl>
 # This file is distributed under the same license as the calcurse package.
-# Frederic Culot <frederic@culot.org>, 2006-2007.
+# Frederic Culot <frederic@culot.org>, 2006-2008.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: calcurse 2.0\n"
+"Project-Id-Version: calcurse 2.1\n"
 "Report-Msgid-Bugs-To: frederic@culot.org\n"
 "POT-Creation-Date: 2008-04-26 17:33+0200\n"
-"PO-Revision-Date: 2007-01-06 13:52+0200\n"
+"PO-Revision-Date: 2008-05-03 21:35+0200\n"
 "Last-Translator: Jeremy Roon\n"
 "Language-Team:  Jeremy Roon <p.roon@chello.nl>\n"
 "MIME-Version: 1.0\n"
@@ -69,25 +69,23 @@ msgid "FATAL ERROR in apoint_switch_notify: no such appointment"
 msgstr "FATALE FOUT in apoint_switch_notify: Afspraak bestaat niet"
 
 #: src/args.c:51
-#, fuzzy
 msgid ""
 "Usage: calcurse [-h|-v] [-x] [-N] [-an] [-t[num]] [-d date|num] [-c file]\n"
 msgstr ""
-"Gebruik: calcurse [-h | -v] [-x] [-an] [-t[nr]] [-d datum|nr] [-c bestand]\n"
+"Gebruik:calcurse [-h|-v] [-x] [-N] [-an] [-t[nr]] [-d datum|nr] [-c bestand]\n"
 
 #: src/args.c:59
 msgid "Try 'calcurse -h' for more information.\n"
 msgstr "Gebruik 'calcurse -h', voor meer informatie.\n"
 
 #: src/args.c:71
-#, fuzzy
 msgid ""
 "\n"
 "Copyright (c) 2004-2008 Frederic Culot.\n"
 "This is free software; see the source for copying conditions.\n"
 msgstr ""
 "\n"
-"Copyright (c) 2004-2007 Frederic Culot.\n"
+"Copyright (c) 2004-2008 Frederic Culot.\n"
 "Dit is vrije Software; kijk in de broncode voor kopieervoorwaarden.\n"
 
 #: src/args.c:74 src/args.c:121
@@ -96,7 +94,6 @@ msgid "Calcurse %s - text-based organizer\n"
 msgstr "Calcurse %s - tekst-gebaseerde organizer\n"
 
 #: src/args.c:87
-#, fuzzy
 msgid ""
 "\n"
 "Miscellaneous:\n"
@@ -146,7 +143,7 @@ msgstr ""
 "\tGeeft deze hulp weer en verlaat het programma.\n"
 "\n"
 "  -v, --versie\n"
-" \tGeeft de actuele programmaversie weer en verlaat het programma.\n"
+" \tGeeft de programmaversie weer en verlaat het programma.\n"
 "\n"
 "Bestanden:\n"
 "  -c <bestand>, --calendar <bestand>\n"
@@ -163,6 +160,11 @@ msgstr ""
 "  -n, --next\n"
 "\tGeeft de volgende afspraak binnen de komende 24 uur weer, en verlaat het\n"
 "\tprogramma. Ook wordt de tijd tot die afspraak weergegeven.\n"
+"\n"
+"  -N, --note\n"
+"\tIndien samen gebruikt met '-a' of '-t', wordt ook de inhoud van de noot\n"
+"weergegeven, als deze geassocieerd is met het weergegeven item.\n"
+"\n"
 "  -t[nr], --todo[=nr]\n"
 "\tGeeft de takenlijst weer en verlaat het programma. Als het optionele\n"
 "\targument [nr] wordt gegeven, zullen alleen de taken met de prioriteit\n"
@@ -395,9 +397,8 @@ msgid "(if set to YES, monday is the first day of the week, else it is sunday)"
 msgstr "(Bij JA, is maandag de eerste weekdag, anders zondag)"
 
 #: src/custom.c:763
-#, fuzzy
 msgid "(Format of the date to be displayed in non-interactive mode)"
-msgstr "(Formaat van de datum in de informatiebalk.)"
+msgstr "(Formaat van de datum in niet-interactieve modus)"
 
 #: src/custom.c:769
 msgid "(Format to be used when entering a date: "
@@ -517,7 +518,6 @@ msgid "FATAL ERROR in event_delete_bynum: no such event\n"
 msgstr "FATALE FOUT in event_delete_bynum: Gebeurtenis bestaat niet\n"
 
 #: src/help.c:119
-#, fuzzy, c-format
 msgid "Calcurse %s | help"
 msgstr "Calcurse %s | Hulp"
 
@@ -655,7 +655,6 @@ msgid "View:\n"
 msgstr "Bekijk:\n"
 
 #: src/help.c:324
-#, fuzzy
 msgid ""
 "Pressing 'V' allows you to view the item you select in either the ToDo\n"
 "or Appointment panel.\n"
@@ -769,7 +768,6 @@ msgid "Add:\n"
 msgstr "Toevoegen:\n"
 
 #: src/help.c:371
-#, fuzzy
 msgid ""
 "Pressing 'A' allows you to add an item in either the ToDo or Appointment\n"
 "list, depending on which panel is selected when you press 'A'.\n"
@@ -820,7 +818,7 @@ msgstr ""
 "nieuwe afspraak of gebeurtenis van een dag lang toevoegen. Druk op \n"
 "[ENTER] bij de aanvangstijd om een nieuwe gebeurtenis toe te voegen en \n"
 "vul dan de beschrijving van de gebeurtenis in.\n"
-"Om een nieuwe afspraak toe te voegen aan de AFSRPAKEN-lijst, zal je \n"
+"Om een nieuwe afspraak toe te voegen aan de AFSPRAKEN-lijst, zal je \n"
 "achtereenvolgens de aanvangstijd van de afspraak, en de lengte van de \n"
 "afspraak (ofwel door de duur in minuten, of door de eindtijd in [hh:mm] \n"
 "of [h:mm] formaat) in moeten voeren.\n"
@@ -841,7 +839,6 @@ msgid "Edit Item:\n"
 msgstr "Item wijzigen:\n"
 
 #: src/help.c:403
-#, fuzzy
 msgid ""
 "Pressing 'E' allows you to edit the item which is currently selected.\n"
 "Depending on the item type (appointment, event, or todo), and if it is\n"
@@ -881,7 +878,6 @@ msgid "EditNote:\n"
 msgstr "WzgNoot:\n"
 
 #: src/help.c:420
-#, fuzzy
 msgid ""
 "Pressing 'N' allows you to attach a note to any type of item, or to\n"
 "edit an already existing note.\n"
@@ -911,12 +907,12 @@ msgstr ""
 "Selecteer eerst het item om de noot bij te sluiten, alvorens op 'N' te\n"
 "drukken. Er wordt een externe editor opgestart om uw noot te wijzigen.\n"
 "Welke editor wordt gestart, hangt af van de volgende factoren:\n"
-"\to Indien de 'VISUAL' omgevingsvariabele is ingesteld, dan zal\n"
-"\t  dit de standaard editor zijn die wordt aangeroepen.\n"
-"\to Indien 'VISUAL' niet is ingesteld, wordt de 'EDITOR'\n"
-"\t  omgevingsvariabele gebruikt als standaard editor.\n"
-"\to Als geen van bovenstaande variabelen is ingesteld, zal\n"
-"\t  '/usr/bin/vi' worden gebruikt.\n"
+"     o Indien de 'VISUAL' omgevingsvariabele is ingesteld, dan zal\n"
+"       dit de standaard editor zijn die wordt aangeroepen.\n"
+"     o Indien 'VISUAL' niet is ingesteld, wordt de 'EDITOR'\n"
+"       omgevingsvariabele gebruikt als standaard editor.\n"
+"     o Als geen van bovenstaande variabelen is ingesteld, zal\n"
+"       '/usr/bin/vi' worden gebruikt.\n"
 "\n"
 "Zodra de noot is gewijzigd en opgeslagen, sluit dan de editor af.\n"
 "Je keert dan terug naar Calcurse, en er zal een '>' verschijnen voor\n"
@@ -927,7 +923,6 @@ msgid "ViewNote:\n"
 msgstr "BekijkNoot:\n"
 
 #: src/help.c:441
-#, fuzzy
 msgid ""
 "Pressing the '>' key allows you to view a note which was previously\n"
 "attached to an item (an item which owns a note has a '>' sign in front\n"
@@ -950,10 +945,10 @@ msgstr ""
 "Als je op 'N' drukt, terwijl een item met een noot geselecteerd is, zal\n"
 "de noot weergegeven worden door een externe pager.\n"
 "Welke pager wordt gebruikt, hangt af van het volgende:\n"
-"\to indien de 'PAGER' omgevingsvariabele is ingesteld, zal deze\n"
-"\t  worden gebruikt om de noot weer te geven\n"
-"\to Als de bovenstaande omgevingsvariabele niet is ingesteld, zal\n"
-"\t  er gebruik gemaakt worden van '/usr/bin/less'.\n"
+"     o indien de 'PAGER' omgevingsvariabele is ingesteld, zal deze\n"
+"       worden gebruikt om de noot weer te geven\n"
+"     o Als de bovenstaande omgevingsvariabele niet is ingesteld, zal\n"
+"       er gebruik gemaakt worden van '/usr/bin/less'.\n"
 "Als de pager wordt afgesloten, keer je terug naar Calcurse."
 
 #: src/help.c:456
@@ -1180,7 +1175,6 @@ msgid "Calcurse - text-based organizer"
 msgstr "Calcurse - tekst-gebaseerde organizer"
 
 #: src/help.c:550
-#, fuzzy
 msgid ""
 "Copyright (c) 2004-2008 Frederic Culot\n"
 "\n"
@@ -1198,7 +1192,7 @@ msgid ""
 "Send your feedback or comments to : calcurse@culot.org\n"
 "Calcurse home page : http://culot.org/calcurse"
 msgstr ""
-"Copyright (c) 2004-2007 Frederic Culot\n"
+"Copyright (c) 2004-2008 Frederic Culot\n"
 "\n"
 "Dit programma is vrije Software; Het mag zowel gedistribueerd en/of \n"
 "gewijzigd worden binnen het kader van de GNU General Public License, \n"
@@ -1404,14 +1398,14 @@ msgid "Enter the repetition frequence:"
 msgstr "Geef de herhalingsinterval:"
 
 #: src/recur.c:655
-#, fuzzy, c-format
+#, c-format
 msgid "Enter the ending date: [%s] or '0' for an endless repetition"
-msgstr "Geef einddatum: [mm/dd/jjjj] of '0' voor oneindige herhaling"
+msgstr "Geef einddatum: [%s] of '0' voor oneindige herhaling"
 
 #: src/recur.c:658
-#, fuzzy, c-format
-msgid "Possible formats are [%s] or '0' for an endless repetetition"
-msgstr "Mogelijk formaat is: [mm/dd/jjjj] of '0' voor oneindig."
+#, c-format
+msgid "Possible formats are [%s] or '0' for an endless repetition"
+msgstr "Mogelijk formaat is: [%s] of '0' voor oneindig."
 
 #: src/recur.c:659
 msgid "This item is already a repeated one."

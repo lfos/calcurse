@@ -1,4 +1,4 @@
-# 	$calcurse: fr.po,v 1.19 2008/04/26 15:35:26 culot Exp $
+# 	$calcurse: fr.po,v 1.20 2008/05/03 19:39:13 culot Exp $
 #
 # French translations for calcurse package.
 # Copyright (C) 2004-2008 Frederic Culot <frederic@culot.org>
@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse 2.1\n"
 "Report-Msgid-Bugs-To: frederic@culot.org\n"
-"POT-Creation-Date: 2008-04-26 17:33+0200\n"
-"PO-Revision-Date: 2008-04-20 11:29+0200\n"
+"POT-Creation-Date: 2008-05-03 21:33+0200\n"
+"PO-Revision-Date: 2008-05-03 21:33+0200\n"
 "Last-Translator: Frederic Culot <frederic@culot.org>\n"
 "Language-Team: French <calcurse-i18n@culot.org>\n"
 "MIME-Version: 1.0\n"
@@ -1463,7 +1463,7 @@ msgstr "Entrez la date de fin: [%s] ou '0' pour répéter indéfiniment"
 
 #: src/recur.c:658
 #, c-format
-msgid "Possible formats are [%s] or '0' for an endless repetetition"
+msgid "Possible formats are [%s] or '0' for an endless repetition"
 msgstr "Les formats autorisés sont [%s] ou '0' pour une répétition sans fin"
 
 #: src/recur.c:659

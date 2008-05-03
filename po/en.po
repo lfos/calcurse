@@ -1,4 +1,4 @@
-# 	$calcurse: en.po,v 1.8 2008/04/26 15:35:26 culot Exp $
+# 	$calcurse: en.po,v 1.9 2008/05/03 19:39:13 culot Exp $
 #
 # English/GB translation of calcurse.
 # Copyright (C) 2006 Copyright (c) Frederic Culot <frederic@culot.org>
@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse 1.4\n"
 "Report-Msgid-Bugs-To: frederic@culot.org\n"
-"POT-Creation-Date: 2008-04-26 17:33+0200\n"
+"POT-Creation-Date: 2008-05-03 21:33+0200\n"
 "PO-Revision-Date: 2006-07-03 00:05+0100\n"
 "Last-Translator: Neil Williams <linux@codehelp.co.uk>\n"
 "Language-Team: English/GB <en_GB@li.org>\n"
@@ -1290,7 +1290,7 @@ msgstr "Possible argument formats are : 'mm/dd/yyyy' or 'n'\n"
 
 #: src/recur.c:658
 #, fuzzy, c-format
-msgid "Possible formats are [%s] or '0' for an endless repetetition"
+msgid "Possible formats are [%s] or '0' for an endless repetition"
 msgstr "Possible argument formats are : 'mm/dd/yyyy' or 'n'\n"
 
 #: src/recur.c:659
