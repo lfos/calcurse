@@ -1,5 +1,5 @@
-[26 Apr 2008]
-Version 2.1_beta   beta version available for testing.
+[17 May 2008]
+Version 2.1
 - New features:
   * '--note' command line argument added which allows the display of note
     contents in non-interactive mode (patch submitted by Erik Saule)
@@ -12,6 +12,10 @@ Version 2.1_beta   beta version available for testing.
 
 - Translation:
   * Italian manual provided by Leandro Noferini
+
+
+[26 Apr 2008]
+Version 2.1_beta   beta version available for testing.
 
 
 [02 Mar 2008]

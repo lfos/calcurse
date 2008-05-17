@@ -1,3 +1,9 @@
+2008-05-17  Frederic Culot  <frederic@culot.org>
+
+	* === Released 2.1 ===
+
+	* NEWS: update
+
 2008-05-03  Frederic Culot  <frederic@culot.org>
 
 	* src/recur.c: typo fixed (thanks Jeremy for reporting it)
