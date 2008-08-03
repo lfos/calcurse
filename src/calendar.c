@@ -1,4 +1,4 @@
-/*	$calcurse: calendar.c,v 1.15 2008/04/12 21:14:03 culot Exp $	*/
+/*	$calcurse: calendar.c,v 1.16 2008/08/03 18:41:55 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -327,12 +327,23 @@ calendar_update_panel (WINDOW *cwin)
   wnoutrefresh (cwin);
 }
 
+/* Set the selected day in calendar to current day. */
+void
+calendar_goto_today (void)
+{
+  date_t today;
+
+  calendar_store_current_date (&today);
+  slctd_day.dd = today.dd;
+  slctd_day.mm = today.mm;
+  slctd_day.yyyy = today.yyyy;
+}
+
 /* 
  * Ask for a date to jump to, then check the correctness of that date
  * and jump to it.
  * If the entered date is empty, automatically jump to the current date.
- * today is the current day given to that routine, and slctd_day is updated 
- * with the newly selected date.
+ * slctd_day is updated with the newly selected date.
  */
 void
 calendar_change_day (int datefmt)
@@ -340,7 +351,6 @@ calendar_change_day (int datefmt)
 #define LDAY 11
   char selected_day[LDAY] = "";
   char outstr[BUFSIZ];
-  date_t today;
   int dday, dmonth, dyear;
   int wrong_day = 1;
   char *mesg_line1 =
@@ -359,12 +369,8 @@ calendar_change_day (int datefmt)
 	{
 	  if (strlen (selected_day) == 0)
 	    {
-	      calendar_store_current_date (&today);
-	      /* go to today */
 	      wrong_day = 0;
-	      slctd_day.dd = today.dd;
-	      slctd_day.mm = today.mm;
-	      slctd_day.yyyy = today.yyyy;
+              calendar_goto_today ();
 	    }
 	  else if (strlen (selected_day) != LDAY - 1)
 	    {
@@ -414,7 +420,7 @@ date_change (struct tm *date, int delta_month, int delta_day)
 void
 calendar_move (move_t move)
 {
-  int ret;
+  int ret, days_to_remove, days_to_add;
   struct tm t;
 
   memset (&t, 0, sizeof (struct tm));
@@ -422,6 +428,7 @@ calendar_move (move_t move)
   t.tm_mon = slctd_day.mm - 1;
   t.tm_year = slctd_day.yyyy - 1900;
 
+  ret =  1;
   switch (move)
     {
     case UP:
@@ -447,6 +454,24 @@ calendar_move (move_t move)
 	  && (slctd_day.yyyy == 2037))
 	return;
       ret = date_change (&t, 0, 1);
+      break;
+    case WEEK_START:
+      /* Normalize struct tm to get week day number. */
+      mktime (&t);
+      if (calendar_week_begins_on_monday ())
+        days_to_remove = ((t.tm_wday == 0) ? WEEKINDAYS - 1 : t.tm_wday - 1);
+      else
+        days_to_remove = ((t.tm_wday == 0) ? 0 : t.tm_wday);
+      ret = date_change (&t, 0, 0 - days_to_remove);
+      break;
+    case WEEK_END:
+      mktime (&t);
+      if (calendar_week_begins_on_monday ())
+        days_to_add = ((t.tm_wday == 0) ? 0 : WEEKINDAYS - t.tm_wday);
+      else
+          days_to_add = ((t.tm_wday == 0) ?
+                         WEEKINDAYS - 1 : WEEKINDAYS - 1 - t.tm_wday);
+      ret = date_change (&t, 0, days_to_add);
       break;
     default:
       ret = 1;

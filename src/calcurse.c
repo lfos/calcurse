@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.63 2008/04/26 15:35:26 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.64 2008/08/03 18:41:55 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -219,11 +219,15 @@ main (int argc, char **argv)
 	  other_status_page (wins_slctd ());
 	  break;
 
+        case CTRL ('G'):
 	case 'G':
 	case 'g':		/* Goto function */
 	  erase_status_bar ();
 	  calendar_set_current_date ();
-	  calendar_change_day (conf.input_datefmt);
+          if (ch == CTRL ('G'))
+            calendar_goto_today ();
+          else
+            calendar_change_day (conf.input_datefmt);
 	  do_storage = true;
 	  day_changed = true;
 	  break;
@@ -383,7 +387,7 @@ main (int argc, char **argv)
 	  io_export_data (IO_EXPORT_INTERACTIVE, &conf);
 	  break;
 
-	case (261):		/* right arrow */
+        case KEY_RIGHT:
 	case ('L'):
 	case ('l'):
 	case CTRL ('L'):
@@ -395,7 +399,7 @@ main (int argc, char **argv)
 	    }
 	  break;
 
-	case (260):		/* left arrow */
+        case KEY_LEFT:
 	case ('H'):
 	case ('h'):
 	case CTRL ('H'):
@@ -407,7 +411,7 @@ main (int argc, char **argv)
 	    }
 	  break;
 
-	case (259):		/* up arrow */
+        case KEY_UP:
 	case ('K'):
 	case ('k'):
 	case CTRL ('K'):
@@ -433,7 +437,7 @@ main (int argc, char **argv)
 	    }
 	  break;
 
-	case (258):		/* down arrow */
+        case KEY_DOWN:
 	case ('J'):
 	case ('j'):
 	case CTRL ('J'):
@@ -460,6 +464,24 @@ main (int argc, char **argv)
 	    }
 	  break;
 
+        case '0':
+          if (wins_slctd () == CAL)
+	    {
+	      do_storage = true;
+	      day_changed = true;
+	      calendar_move (WEEK_START);
+	    }
+          break;
+
+        case '$':
+          if (wins_slctd () == CAL)
+	    {
+	      do_storage = true;
+	      day_changed = true;
+	      calendar_move (WEEK_END);
+	    }
+          break;
+          
 	case ('Q'):		/* Quit calcurse :( */
 	case ('q'):
 	  if (conf.auto_save)

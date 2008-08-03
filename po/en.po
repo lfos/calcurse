@@ -1,4 +1,4 @@
-# 	$calcurse: en.po,v 1.9 2008/05/03 19:39:13 culot Exp $
+# 	$calcurse: en.po,v 1.10 2008/08/03 18:41:55 culot Exp $
 #
 # English/GB translation of calcurse.
 # Copyright (C) 2006 Copyright (c) Frederic Culot <frederic@culot.org>
@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse 1.4\n"
 "Report-Msgid-Bugs-To: frederic@culot.org\n"
-"POT-Creation-Date: 2008-05-03 21:33+0200\n"
+"POT-Creation-Date: 2008-05-17 12:15+0200\n"
 "PO-Revision-Date: 2006-07-03 00:05+0100\n"
 "Last-Translator: Neil Williams <linux@codehelp.co.uk>\n"
 "Language-Team: English/GB <en_GB@li.org>\n"
@@ -54,7 +54,7 @@ msgstr "Do you really want to delete this item ?"
 msgid "FATAL ERROR in apoint_delete: no such type\n"
 msgstr "FATAL ERROR in todo_delete_bynum: no such todo\n"
 
-#: src/apoint.c:386 src/recur.c:252
+#: src/apoint.c:386 src/recur.c:250
 msgid "FATAL ERROR in apoint_scan: date error in the appointment\n"
 msgstr "FATAL ERROR in apoint_scan: date error in the appointment\n"
 
@@ -445,16 +445,16 @@ msgstr "Enter description :"
 msgid "Enter the new repetition type: (D)aily, (W)eekly, (M)onthly, (Y)early"
 msgstr ""
 
-#: src/day.c:599 src/recur.c:651
+#: src/day.c:599 src/recur.c:649
 msgid "[D/W/M/Y] "
 msgstr ""
 
-#: src/day.c:600 src/recur.c:653
+#: src/day.c:600 src/recur.c:651
 #, fuzzy
 msgid "The frequence you entered is not valid."
 msgstr "The day you entered is not valid"
 
-#: src/day.c:602 src/recur.c:656
+#: src/day.c:602 src/recur.c:654
 #, fuzzy
 msgid "The entered date is not valid."
 msgstr "The day you entered is not valid"
@@ -1101,7 +1101,7 @@ msgstr ""
 msgid "The file cannot be accessed, please enter another file name."
 msgstr ""
 
-#: src/io.c:129 src/recur.c:660
+#: src/io.c:129 src/recur.c:658
 #, fuzzy
 msgid "Press [ENTER] to continue."
 msgstr "Press [ENTER] to continue"
@@ -1245,83 +1245,83 @@ msgstr ""
 msgid "CalCurse %s | notify-bar options"
 msgstr "CalCurse %s | general options"
 
-#: src/recur.c:131
+#: src/recur.c:129
 #, fuzzy
 msgid "FATAL ERROR in recur_def2char: unknown recur type\n"
 msgstr "FATAL ERROR in todo_delete_bynum: no such todo\n"
 
-#: src/recur.c:163
+#: src/recur.c:161
 #, fuzzy
 msgid "FATAL ERROR in recur_char2def: unknown char\n"
 msgstr "FATAL ERROR in todo_delete_bynum: no such todo\n"
 
-#: src/recur.c:299
+#: src/recur.c:297
 #, fuzzy
 msgid "FATAL ERROR in recur_event_scan: date error in the event\n"
 msgstr "FATAL ERROR in event_scan: date error in the event\n"
 
-#: src/recur.c:421
+#: src/recur.c:419
 #, fuzzy
 msgid "FATAL ERROR in recur_item_inday: unknown item type\n"
 msgstr "FATAL ERROR in todo_delete_bynum: no such todo\n"
 
-#: src/recur.c:554
+#: src/recur.c:552
 #, fuzzy
 msgid "FATAL ERROR in recur_event_erase: no such event\n"
 msgstr "FATAL ERROR in event_delete_bynum: no such event\n"
 
-#: src/recur.c:626
+#: src/recur.c:624
 #, fuzzy
 msgid "FATAL ERROR in recur_apoint_erase: no such appointment\n"
 msgstr "FATAL ERROR in apoint_delete_bynum: no such appointment\n"
 
-#: src/recur.c:650
+#: src/recur.c:648
 msgid "Enter the repetition type: (D)aily, (W)eekly, (M)onthly, (Y)early"
 msgstr ""
 
-#: src/recur.c:652
+#: src/recur.c:650
 msgid "Enter the repetition frequence:"
 msgstr ""
 
-#: src/recur.c:655
+#: src/recur.c:653
 #, fuzzy, c-format
 msgid "Enter the ending date: [%s] or '0' for an endless repetition"
 msgstr "Possible argument formats are : 'mm/dd/yyyy' or 'n'\n"
 
-#: src/recur.c:658
+#: src/recur.c:656
 #, fuzzy, c-format
 msgid "Possible formats are [%s] or '0' for an endless repetition"
 msgstr "Possible argument formats are : 'mm/dd/yyyy' or 'n'\n"
 
-#: src/recur.c:659
+#: src/recur.c:657
 msgid "This item is already a repeated one."
 msgstr ""
 
-#: src/recur.c:662
+#: src/recur.c:660
 msgid "Sorry, the date you entered is older than the item start time."
 msgstr ""
 
-#: src/recur.c:776
+#: src/recur.c:774
 #, fuzzy
 msgid "FATAL ERROR in recur_repeat_item: wrong item type\n"
 msgstr "FATAL ERROR in todo_delete_bynum: no such todo\n"
 
-#: src/recur.c:805
+#: src/recur.c:803
 #, fuzzy
 msgid "FATAL ERROR in recur_exc_scan: syntax error in the item date\n"
 msgstr "FATAL ERROR in load_app: syntax error in the item date\n"
 
-#: src/recur.c:880
+#: src/recur.c:878
 #, fuzzy
 msgid "FATAL ERROR in recur_get_apoint: no such item\n"
 msgstr "FATAL ERROR in apoint_delete_bynum: no such appointment\n"
 
-#: src/recur.c:904
+#: src/recur.c:902
 #, fuzzy
 msgid "FATAL ERROR in recur_get_event: no such item\n"
 msgstr "FATAL ERROR in event_delete_bynum: no such event\n"
 
-#: src/recur.c:940
+#: src/recur.c:938
 #, fuzzy
 msgid "FATAL ERROR in recur_apoint_switch_notify: no such item\n"
 msgstr "FATAL ERROR in apoint_delete_bynum: no such appointment\n"

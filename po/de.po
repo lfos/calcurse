@@ -1,4 +1,4 @@
-# 	$calcurse: de.po,v 1.14 2008/05/03 19:39:13 culot Exp $
+# 	$calcurse: de.po,v 1.15 2008/08/03 18:41:55 culot Exp $
 #
 # German translations for calcurse package.
 # Copyright (C) 2006-2007 Michael Schulz <bloodshower@web.de>
@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse 1.9\n"
 "Report-Msgid-Bugs-To: frederic@culot.org\n"
-"POT-Creation-Date: 2008-05-03 21:33+0200\n"
+"POT-Creation-Date: 2008-05-17 12:15+0200\n"
 "PO-Revision-Date: 2007-09-02 18:06+0200\n"
 "Last-Translator: Michael\n"
 "Language-Team:  Michael Schulz <bloodshower@freenet.de>\n"
@@ -56,7 +56,7 @@ msgstr "Möchten Sie wirklich diesen Eintrag löschen ?"
 msgid "FATAL ERROR in apoint_delete: no such type\n"
 msgstr "SCHWERER FEHLER in apoint_delete: Typ nicht gefunden\n"
 
-#: src/apoint.c:386 src/recur.c:252
+#: src/apoint.c:386 src/recur.c:250
 msgid "FATAL ERROR in apoint_scan: date error in the appointment\n"
 msgstr "SCHWERER FEHLER in apoint_scan: Termin hat fehlerhafte Zeit\n"
 
@@ -482,15 +482,15 @@ msgstr ""
 "Art der neuen Wiederholung: (D) täglich, (W)öchentlich, (M)onatlich, (Y) "
 "jährlich"
 
-#: src/day.c:599 src/recur.c:651
+#: src/day.c:599 src/recur.c:649
 msgid "[D/W/M/Y] "
 msgstr "[T/W/M/J]"
 
-#: src/day.c:600 src/recur.c:653
+#: src/day.c:600 src/recur.c:651
 msgid "The frequence you entered is not valid."
 msgstr "Das eingegebene Intervall ist ungültig."
 
-#: src/day.c:602 src/recur.c:656
+#: src/day.c:602 src/recur.c:654
 msgid "The entered date is not valid."
 msgstr "Das eingegebene Datum ist ungültig."
 
@@ -1247,7 +1247,7 @@ msgstr ""
 "Auf die Datei kann nicht zugegriffen werden, bitte einen anderen Dateinamen "
 "eingeben."
 
-#: src/io.c:129 src/recur.c:660
+#: src/io.c:129 src/recur.c:658
 msgid "Press [ENTER] to continue."
 msgstr "[EINGABE] um fortzufahren."
 
@@ -1389,76 +1389,76 @@ msgstr "Geben Sie den Befehl für Ihre Notiz ein "
 msgid "CalCurse %s | notify-bar options"
 msgstr "CalCurse %s | Optionen der Benachrichtigungszeile"
 
-#: src/recur.c:131
+#: src/recur.c:129
 msgid "FATAL ERROR in recur_def2char: unknown recur type\n"
 msgstr "SCHWERER FEHLER in recur_def2char: unbekannter Typ\n"
 
-#: src/recur.c:163
+#: src/recur.c:161
 msgid "FATAL ERROR in recur_char2def: unknown char\n"
 msgstr "SCHWERER FEHLER in recur_char2def: unbekanntes Zeichen\n"
 
-#: src/recur.c:299
+#: src/recur.c:297
 msgid "FATAL ERROR in recur_event_scan: date error in the event\n"
 msgstr ""
 "SCHWERER FEHLER in recur_event_scan: fehlerhaftes Datum für das Ereignis\n"
 
-#: src/recur.c:421
+#: src/recur.c:419
 msgid "FATAL ERROR in recur_item_inday: unknown item type\n"
 msgstr "SCHWERER FEHLER in recur_item_inday: unbekannter Typ\n"
 
-#: src/recur.c:554
+#: src/recur.c:552
 msgid "FATAL ERROR in recur_event_erase: no such event\n"
 msgstr "SCHWERER FEHLER in recur_event_erase: Ereignis nicht vorhanden\n"
 
-#: src/recur.c:626
+#: src/recur.c:624
 msgid "FATAL ERROR in recur_apoint_erase: no such appointment\n"
 msgstr "SCHWERER FEHLER in recur_apoint_erase: Termin nicht vorhanden\n"
 
-#: src/recur.c:650
+#: src/recur.c:648
 msgid "Enter the repetition type: (D)aily, (W)eekly, (M)onthly, (Y)early"
 msgstr ""
 "Art der Wiederholung: (D) täglich, (W)öchentlich, (M)onatlich, (Y) jährlich"
 
-#: src/recur.c:652
+#: src/recur.c:650
 msgid "Enter the repetition frequence:"
 msgstr "Geben Sie das Wiederholungsintervall an:"
 
-#: src/recur.c:655
+#: src/recur.c:653
 #, fuzzy, c-format
 msgid "Enter the ending date: [%s] or '0' for an endless repetition"
 msgstr "Ende der Wiederholung : [MM/TT/JJJJ] bzw. '0' für keine Begrenzung"
 
-#: src/recur.c:658
+#: src/recur.c:656
 #, fuzzy, c-format
 msgid "Possible formats are [%s] or '0' for an endless repetition"
 msgstr "Mögliche Eingaben sind [MM/TT/JJJJ] oder '0' für unbegrenzt."
 
-#: src/recur.c:659
+#: src/recur.c:657
 msgid "This item is already a repeated one."
 msgstr "Es handelt sich bereits um einen wiederkehrenden Eintrag."
 
-#: src/recur.c:662
+#: src/recur.c:660
 msgid "Sorry, the date you entered is older than the item start time."
 msgstr "Das eingegebene Datum liegt vor dem Anfangszeitpunkt."
 
-#: src/recur.c:776
+#: src/recur.c:774
 msgid "FATAL ERROR in recur_repeat_item: wrong item type\n"
 msgstr "SCHWERER FEHLER in recur_repeat_item: falscher Eintragstyp\n"
 
-#: src/recur.c:805
+#: src/recur.c:803
 msgid "FATAL ERROR in recur_exc_scan: syntax error in the item date\n"
 msgstr ""
 "SCHWERER FEHLER in recur_exc_scan: syntaktischer Fehler im Datumseintrag\n"
 
-#: src/recur.c:880
+#: src/recur.c:878
 msgid "FATAL ERROR in recur_get_apoint: no such item\n"
 msgstr "SCHWERER FEHLER in recur_get_apoint: Eintrag nicht vorhanden\n"
 
-#: src/recur.c:904
+#: src/recur.c:902
 msgid "FATAL ERROR in recur_get_event: no such item\n"
 msgstr "SCHWERER FEHLER in recur_get_event: Eintrag nicht vorhanden\n"
 
-#: src/recur.c:940
+#: src/recur.c:938
 msgid "FATAL ERROR in recur_apoint_switch_notify: no such item\n"
 msgstr ""
 "SCHWERER FEHLER in recur_apoint_switch_notify: Eintrag nicht vorhanden\n"

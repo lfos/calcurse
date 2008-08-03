@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.45 2008/04/12 21:14:03 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.46 2008/08/03 18:41:55 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -442,19 +442,22 @@ status_bar (void)
   binding_t eday = { "^HL", _("-+1 Day") };
   binding_t ewek = { "^KJ", _("-+1 Week") };
   binding_t othr = { "  O", _("OtherCmd") };
+  binding_t today = {" ^G", _("Today") };
+  binding_t weekb = {"  0", _("beg Week") };
+  binding_t weeke = {"  $", _("end Week") };
 
   binding_t *binding[TOTAL_CMDS] = {
     /* calendar keys */
-    &help, &quit, &save, &export, &day, &week, &tab, &togo, &appt,
-    &todo, &conf, &othr, &eday, &ewek, &draw, &othr,
+    &help, &quit, &save, &export, &day, &week, &weekb, &weeke, &tab,
+    &togo, &conf, &othr, &appt, &todo, &eday, &ewek, &draw, &today, &othr,
     /* appointment keys */
     &help, &quit, &save, &export, &add, &del, &edit, &view, &rept,
     &updn, &flag, &othr, &enote, &vnote, &appt, &todo, &eday, &ewek,
-    &conf, &togo, &tab, &draw, &othr,
+    &conf, &togo, &tab, &draw, &today, &othr,
     /* todo keys */
     &help, &quit, &save, &export, &add, &del, &edit, &view, &prio,
     &updn, &tab, &othr, &enote, &vnote, &appt, &todo, &eday, &ewek,
-    &conf, &togo, &draw, &othr
+    &conf, &togo, &draw, &today, &othr
   };
 
   /* Total length of a command. */
@@ -764,15 +767,11 @@ other_status_page (int panel)
     default:
       ierror (error, IERROR_FATAL);
     }
-  max_page = ceil (nb_item / (2 * CMDS_PER_LINE)) + 1;
+  max_page = ceil (nb_item / (2 * CMDS_PER_LINE + 1)) + 1;
   if (status_page < max_page)
-    {
-      status_page++;
-    }
+    status_page++;
   else
-    {
-      status_page = 1;
-    }
+    status_page = 1;
 }
 
 /* Returns the beginning of current day in seconds from 1900. */

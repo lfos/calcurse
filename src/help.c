@@ -1,4 +1,4 @@
-/*	$calcurse: help.c,v 1.26 2008/04/20 09:33:09 culot Exp $	*/
+/*	$calcurse: help.c,v 1.27 2008/08/03 18:41:55 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -175,6 +175,7 @@ wanted_page (int ch)
     case CTRL ('j'):
     case CTRL ('k'):
     case CTRL ('l'):
+    case CTRL ('g'):
       page = HELP_GENERAL;
       break;
 
@@ -186,14 +187,16 @@ wanted_page (int ch)
       page = HELP_EXPORT;
       break;
 
+    case '0':
+    case '$':
     case 'h':
     case 'l':
     case 'j':
     case 'k':
-    case 259:
-    case 258:
-    case 260:
-    case 261:
+    case KEY_UP:
+    case KEY_DOWN:
+    case KEY_RIGHT:
+    case KEY_LEFT:
       page = HELP_DISPLACEMENT;
       break;
 
@@ -315,6 +318,9 @@ help_screen (void)
      "  move to previous day   H <       > L   move to next day\n"
      "                              J v  \n"
      "                       move to next week\n"
+     "\nMoreover, while inside the calendar panel, the '0' (zero) key moves\n"
+     "to the first day of the week, and the '$' key selects the last day of\n"
+     "the week.\n"
      "\nWhen the Appointment or ToDo panel is selected, the up and down keys\n"
      "(respectively K or up arrow, and J or down arrow) allows you to select\n"
      "an item from those lists.");
@@ -350,7 +356,9 @@ help_screen (void)
       "\nUsing this command, you do not need to travel to that day using\n"
       "the displacement keys inside the calendar panel.\n"
       "If you hit [ENTER] without specifying any date, Calcurse checks the\n"
-      "system current date and you will be taken to that date.");
+      "system current date and you will be taken to that date.\n"
+      "\nNotice that pressing ^G (Control + G), whatever panel is\n"
+      "selected, will select current day in the calendar.");
 
   hscr[HELP_DELETE].title = _("Delete:\n");
   hscr[HELP_DELETE].text =
@@ -534,7 +542,8 @@ help_screen (void)
       " '^H' : -1 Day          -> move to previous day\n"
       " '^L' : +1 Day          -> move to next day\n"
       " '^K' : -1 Week         -> move to previous week\n"
-      " '^J' : +1 Week         -> move to next week");
+      " '^J' : +1 Week         -> move to next week\n"
+      " '^G' : Goto today      -> move to current day");
 
   hscr[HELP_OTHER].title = _("OtherCmd:\n");
   hscr[HELP_OTHER].text =

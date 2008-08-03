@@ -1,4 +1,4 @@
-# 	$calcurse: nl.po,v 1.7 2008/05/03 19:39:13 culot Exp $
+# 	$calcurse: nl.po,v 1.8 2008/08/03 18:41:55 culot Exp $
 #
 # Dutch translations for calcurse package.
 # Copyright (C) 2007-2008 Jeremy Roon <p.roon@chello.nl>
@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse 2.1\n"
 "Report-Msgid-Bugs-To: frederic@culot.org\n"
-"POT-Creation-Date: 2008-04-26 17:33+0200\n"
+"POT-Creation-Date: 2008-05-17 12:15+0200\n"
 "PO-Revision-Date: 2008-05-03 21:35+0200\n"
 "Last-Translator: Jeremy Roon\n"
 "Language-Team:  Jeremy Roon <p.roon@chello.nl>\n"
@@ -52,7 +52,7 @@ msgstr "Wilt u werkelijk dit item wissen ?"
 msgid "FATAL ERROR in apoint_delete: no such type\n"
 msgstr "FATALE FOUT in apoint_delete: Type bestaat niet\n"
 
-#: src/apoint.c:386 src/recur.c:252
+#: src/apoint.c:386 src/recur.c:250
 msgid "FATAL ERROR in apoint_scan: date error in the appointment\n"
 msgstr "FATALE FOUT in apoint_scan: datafout in de afspraak\n"
 
@@ -72,7 +72,8 @@ msgstr "FATALE FOUT in apoint_switch_notify: Afspraak bestaat niet"
 msgid ""
 "Usage: calcurse [-h|-v] [-x] [-N] [-an] [-t[num]] [-d date|num] [-c file]\n"
 msgstr ""
-"Gebruik:calcurse [-h|-v] [-x] [-N] [-an] [-t[nr]] [-d datum|nr] [-c bestand]\n"
+"Gebruik:calcurse [-h|-v] [-x] [-N] [-an] [-t[nr]] [-d datum|nr] [-c "
+"bestand]\n"
 
 #: src/args.c:59
 msgid "Try 'calcurse -h' for more information.\n"
@@ -459,15 +460,15 @@ msgstr ""
 "Voer type herhaling in: (D)agelijks, (W)ekelijks, (M)aandelijks, (Y) "
 "jaarlijks"
 
-#: src/day.c:599 src/recur.c:651
+#: src/day.c:599 src/recur.c:649
 msgid "[D/W/M/Y] "
 msgstr "[D/W/M/Y]"
 
-#: src/day.c:600 src/recur.c:653
+#: src/day.c:600 src/recur.c:651
 msgid "The frequence you entered is not valid."
 msgstr "Het ingevoerde interval is ongeldig."
 
-#: src/day.c:602 src/recur.c:656
+#: src/day.c:602 src/recur.c:654
 msgid "The entered date is not valid."
 msgstr "De ingevoerde datum is ongeldig."
 
@@ -518,6 +519,7 @@ msgid "FATAL ERROR in event_delete_bynum: no such event\n"
 msgstr "FATALE FOUT in event_delete_bynum: Gebeurtenis bestaat niet\n"
 
 #: src/help.c:119
+#, c-format
 msgid "Calcurse %s | help"
 msgstr "Calcurse %s | Hulp"
 
@@ -1228,7 +1230,7 @@ msgstr "Kies het bestand om calcurse data naar te exporteren:"
 msgid "The file cannot be accessed, please enter another file name."
 msgstr "Het bestand is ontoegankelijk, kies een andere bestandsnaam."
 
-#: src/io.c:129 src/recur.c:660
+#: src/io.c:129 src/recur.c:658
 msgid "Press [ENTER] to continue."
 msgstr "[ENTER]-toets om door te gaan."
 
@@ -1365,73 +1367,73 @@ msgstr "Geef het meldingscommando "
 msgid "CalCurse %s | notify-bar options"
 msgstr "CalCurse %s | Informatiebalk-opties"
 
-#: src/recur.c:131
+#: src/recur.c:129
 msgid "FATAL ERROR in recur_def2char: unknown recur type\n"
 msgstr "FATALE FOUT in recur_def2char: herhaal type onbekend\n"
 
-#: src/recur.c:163
+#: src/recur.c:161
 msgid "FATAL ERROR in recur_char2def: unknown char\n"
 msgstr "FATALE FOUT in recur_char2def: onbekend karakter\n"
 
-#: src/recur.c:299
+#: src/recur.c:297
 msgid "FATAL ERROR in recur_event_scan: date error in the event\n"
 msgstr "FATALE FOUT in recur_event_scan: datumfout in de gebeurtenis\n"
 
-#: src/recur.c:421
+#: src/recur.c:419
 msgid "FATAL ERROR in recur_item_inday: unknown item type\n"
 msgstr "FATALE FOUT in recur_item_inday: type item onbekend\n"
 
-#: src/recur.c:554
+#: src/recur.c:552
 msgid "FATAL ERROR in recur_event_erase: no such event\n"
 msgstr "FATALE FOUT in recur_event_erase: gebeurtenis bestaat niet\n"
 
-#: src/recur.c:626
+#: src/recur.c:624
 msgid "FATAL ERROR in recur_apoint_erase: no such appointment\n"
 msgstr "FATALE FOUT in recur_apoint_erase: afspraak bestaat niet\n"
 
-#: src/recur.c:650
+#: src/recur.c:648
 msgid "Enter the repetition type: (D)aily, (W)eekly, (M)onthly, (Y)early"
 msgstr "Type herhaling: (D)agelijks, (W)ekelijks, (M)aandelijks, (Y) jaarlijks"
 
-#: src/recur.c:652
+#: src/recur.c:650
 msgid "Enter the repetition frequence:"
 msgstr "Geef de herhalingsinterval:"
 
-#: src/recur.c:655
+#: src/recur.c:653
 #, c-format
 msgid "Enter the ending date: [%s] or '0' for an endless repetition"
 msgstr "Geef einddatum: [%s] of '0' voor oneindige herhaling"
 
-#: src/recur.c:658
+#: src/recur.c:656
 #, c-format
 msgid "Possible formats are [%s] or '0' for an endless repetition"
 msgstr "Mogelijk formaat is: [%s] of '0' voor oneindig."
 
-#: src/recur.c:659
+#: src/recur.c:657
 msgid "This item is already a repeated one."
 msgstr "Dit item wordt al herhaald."
 
-#: src/recur.c:662
+#: src/recur.c:660
 msgid "Sorry, the date you entered is older than the item start time."
 msgstr "Sorry, de ingevoerde datum is ouder dan de aanvangstijd."
 
-#: src/recur.c:776
+#: src/recur.c:774
 msgid "FATAL ERROR in recur_repeat_item: wrong item type\n"
 msgstr "FATALE FOUT in recur_repeat_item: fout item type\n"
 
-#: src/recur.c:805
+#: src/recur.c:803
 msgid "FATAL ERROR in recur_exc_scan: syntax error in the item date\n"
 msgstr "FATALE FOUT in recur_exc_scan: fout in syntax itemdatum\n"
 
-#: src/recur.c:880
+#: src/recur.c:878
 msgid "FATAL ERROR in recur_get_apoint: no such item\n"
 msgstr "FATALE FOUT in recur_get_apoint: item bestaat niet\n"
 
-#: src/recur.c:904
+#: src/recur.c:902
 msgid "FATAL ERROR in recur_get_event: no such item\n"
 msgstr "FATALE FOUT in recur_get_event: item bestaat niet\n"
 
-#: src/recur.c:940
+#: src/recur.c:938
 msgid "FATAL ERROR in recur_apoint_switch_notify: no such item\n"
 msgstr "FATALE FOUT in recur_apoint_switch_notify: item bestaat niet\n"
 

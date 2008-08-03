@@ -1,4 +1,4 @@
-# 	$calcurse: es.po,v 1.10 2008/05/03 19:39:13 culot Exp $
+# 	$calcurse: es.po,v 1.11 2008/08/03 18:41:55 culot Exp $
 #
 # Spanish translations for calcurse package.
 # Copyright (c) Jose Lopez <testinground@gmail.com> 2006 Free Software Foundation, Inc.
@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Calcurse 1.8\n"
 "Report-Msgid-Bugs-To: frederic@culot.org\n"
-"POT-Creation-Date: 2008-05-03 21:33+0200\n"
+"POT-Creation-Date: 2008-05-17 12:15+0200\n"
 "PO-Revision-Date: 2006-09-10 08:06+0200\n"
 "Last-Translator: Jose Lopez <testinground@gmail.com>\n"
 "Language-Team: Jose Lopez <testinground@gmail.com>\n"
@@ -55,7 +55,7 @@ msgstr "¿Seguro que quieres borrar este elemento?"
 msgid "FATAL ERROR in apoint_delete: no such type\n"
 msgstr "ERROR FATAL en del_item: no exite ese tipo\n"
 
-#: src/apoint.c:386 src/recur.c:252
+#: src/apoint.c:386 src/recur.c:250
 msgid "FATAL ERROR in apoint_scan: date error in the appointment\n"
 msgstr "ERROR FATAL en apoint_scan: error en la fecha de la cita\n"
 
@@ -476,15 +476,15 @@ msgstr "Introduce la descripcion del nuevo elemento:"
 msgid "Enter the new repetition type: (D)aily, (W)eekly, (M)onthly, (Y)early"
 msgstr "Tipo de repeticion: (D) diario, (W) semanal, (M) mensual, (Y) anual?"
 
-#: src/day.c:599 src/recur.c:651
+#: src/day.c:599 src/recur.c:649
 msgid "[D/W/M/Y] "
 msgstr "[D/W/M/Y] "
 
-#: src/day.c:600 src/recur.c:653
+#: src/day.c:600 src/recur.c:651
 msgid "The frequence you entered is not valid."
 msgstr "La frecuencia que has introducido no es valida."
 
-#: src/day.c:602 src/recur.c:656
+#: src/day.c:602 src/recur.c:654
 msgid "The entered date is not valid."
 msgstr "La fecha introducida no es valida."
 
@@ -1249,7 +1249,7 @@ msgstr "Elige el archivo que se usara para exportar los datos de Calcurse:"
 msgid "The file cannot be accessed, please enter another file name."
 msgstr "El archivo no es accesible, por favor elige otro nombre de archivo."
 
-#: src/io.c:129 src/recur.c:660
+#: src/io.c:129 src/recur.c:658
 msgid "Press [ENTER] to continue."
 msgstr "Pulsa [INTRO] para continuar."
 
@@ -1393,78 +1393,78 @@ msgstr "Introduce el comando de notificacion"
 msgid "CalCurse %s | notify-bar options"
 msgstr "Calcurse %s | opciones de la barra de notificaciones"
 
-#: src/recur.c:131
+#: src/recur.c:129
 #, fuzzy
 msgid "FATAL ERROR in recur_def2char: unknown recur type\n"
 msgstr "ERROR FATAL en recur_item_inday: tipo de elemento desconocido\n"
 
-#: src/recur.c:163
+#: src/recur.c:161
 #, fuzzy
 msgid "FATAL ERROR in recur_char2def: unknown char\n"
 msgstr "ERROR FATAL en custom_color_theme_name: color desconocido\n"
 
-#: src/recur.c:299
+#: src/recur.c:297
 msgid "FATAL ERROR in recur_event_scan: date error in the event\n"
 msgstr "ERROR FATAL en recur_event_scan: error de fecha en el evento\n"
 
-#: src/recur.c:421
+#: src/recur.c:419
 msgid "FATAL ERROR in recur_item_inday: unknown item type\n"
 msgstr "ERROR FATAL en recur_item_inday: tipo de elemento desconocido\n"
 
-#: src/recur.c:554
+#: src/recur.c:552
 msgid "FATAL ERROR in recur_event_erase: no such event\n"
 msgstr "ERROR FATAL en recur_event_erase: no existe el evento\n"
 
-#: src/recur.c:626
+#: src/recur.c:624
 msgid "FATAL ERROR in recur_apoint_erase: no such appointment\n"
 msgstr "ERROR FATAL en recur_apoint_erase: no existe esa cita\n"
 
-#: src/recur.c:650
+#: src/recur.c:648
 msgid "Enter the repetition type: (D)aily, (W)eekly, (M)onthly, (Y)early"
 msgstr "¿Tipo de repeticion: [D] diario, [W] semanal, [M] mensual, [Y] anual?"
 
-#: src/recur.c:652
+#: src/recur.c:650
 msgid "Enter the repetition frequence:"
 msgstr "Introduce la frecuencia de repeticion:"
 
-#: src/recur.c:655
+#: src/recur.c:653
 #, fuzzy, c-format
 msgid "Enter the ending date: [%s] or '0' for an endless repetition"
 msgstr ""
 "Introduce la fecha final: [mm/dd/aaaa] o '0' para una repeticion infinita"
 
-#: src/recur.c:658
+#: src/recur.c:656
 #, fuzzy, c-format
 msgid "Possible formats are [%s] or '0' for an endless repetition"
 msgstr ""
 "Los formatos posibles son [mm/dd/aaaa] o '0' para una repeticion infinita"
 
-#: src/recur.c:659
+#: src/recur.c:657
 msgid "This item is already a repeated one."
 msgstr "Este elemento es ya un elemento repetido."
 
-#: src/recur.c:662
+#: src/recur.c:660
 msgid "Sorry, the date you entered is older than the item start time."
 msgstr "La fecha que has introducido es anterior a la de inicio del elemento."
 
-#: src/recur.c:776
+#: src/recur.c:774
 msgid "FATAL ERROR in recur_repeat_item: wrong item type\n"
 msgstr "ERROR FATAL en recur_repeat_item: tipo de elemento erroneo\n"
 
-#: src/recur.c:805
+#: src/recur.c:803
 msgid "FATAL ERROR in recur_exc_scan: syntax error in the item date\n"
 msgstr ""
 "ERROR FATAL en recur_exc_scan: error de sintaxis en la fecha del elemento\n"
 
-#: src/recur.c:880
+#: src/recur.c:878
 msgid "FATAL ERROR in recur_get_apoint: no such item\n"
 msgstr "ERROR FATAL en recur_get_apoint: no existe el elemento\n"
 
-#: src/recur.c:904
+#: src/recur.c:902
 msgid "FATAL ERROR in recur_get_event: no such item\n"
 msgstr "ERROR FATAL en recur_get_event: no existe el evento\n"
 
-#: src/recur.c:940
+#: src/recur.c:938
 msgid "FATAL ERROR in recur_apoint_switch_notify: no such item\n"
 msgstr "ERROR FATAL en recur_apoint_switch_notify: no existe el elemento\n"
 

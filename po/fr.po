@@ -1,4 +1,4 @@
-# 	$calcurse: fr.po,v 1.20 2008/05/03 19:39:13 culot Exp $
+# 	$calcurse: fr.po,v 1.21 2008/08/03 18:41:55 culot Exp $
 #
 # French translations for calcurse package.
 # Copyright (C) 2004-2008 Frederic Culot <frederic@culot.org>
@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse 2.1\n"
 "Report-Msgid-Bugs-To: frederic@culot.org\n"
-"POT-Creation-Date: 2008-05-03 21:33+0200\n"
+"POT-Creation-Date: 2008-05-17 12:15+0200\n"
 "PO-Revision-Date: 2008-05-03 21:33+0200\n"
 "Last-Translator: Frederic Culot <frederic@culot.org>\n"
 "Language-Team: French <calcurse-i18n@culot.org>\n"
@@ -54,7 +54,7 @@ msgstr "Voulez-vous vraiment effacer cet élement ?"
 msgid "FATAL ERROR in apoint_delete: no such type\n"
 msgstr "ERREUR FATALE dans apoint_delete: type inconnu\n"
 
-#: src/apoint.c:386 src/recur.c:252
+#: src/apoint.c:386 src/recur.c:250
 msgid "FATAL ERROR in apoint_scan: date error in the appointment\n"
 msgstr ""
 "ERREUR FATALE dans apoint_scan: un rendez-vous contient une date erronée\n"
@@ -477,15 +477,15 @@ msgid "Enter the new repetition type: (D)aily, (W)eekly, (M)onthly, (Y)early"
 msgstr ""
 "Entrez le nouveau type: (D) journ., (W) hebdo., (M) mensuel, (Y) annuel"
 
-#: src/day.c:599 src/recur.c:651
+#: src/day.c:599 src/recur.c:649
 msgid "[D/W/M/Y] "
 msgstr "[D/W/M/Y] "
 
-#: src/day.c:600 src/recur.c:653
+#: src/day.c:600 src/recur.c:651
 msgid "The frequence you entered is not valid."
 msgstr "La fréquence que vous avez entrée n'est pas valide"
 
-#: src/day.c:602 src/recur.c:656
+#: src/day.c:602 src/recur.c:654
 msgid "The entered date is not valid."
 msgstr "Le jour que vous avez entré n'est pas valide."
 
@@ -1283,7 +1283,7 @@ msgstr "Choisissez le fichier dans lequel exporter les données:"
 msgid "The file cannot be accessed, please enter another file name."
 msgstr "Le fichier ne peut être ouvert, veuillez entrer un nouveau nom."
 
-#: src/io.c:129 src/recur.c:660
+#: src/io.c:129 src/recur.c:658
 msgid "Press [ENTER] to continue."
 msgstr "Appuyez sur [ENTREE] pour continuer."
 
@@ -1424,73 +1424,73 @@ msgstr "Entrez la commande de notification"
 msgid "CalCurse %s | notify-bar options"
 msgstr "CalCurse %s | options de la barre de notification"
 
-#: src/recur.c:131
+#: src/recur.c:129
 msgid "FATAL ERROR in recur_def2char: unknown recur type\n"
 msgstr "ERREUR FATALE dans recur_def2char: type inconnu\n"
 
-#: src/recur.c:163
+#: src/recur.c:161
 msgid "FATAL ERROR in recur_char2def: unknown char\n"
 msgstr "ERREUR FATALE dans recur_char2def: caractère inconnu\n"
 
-#: src/recur.c:299
+#: src/recur.c:297
 msgid "FATAL ERROR in recur_event_scan: date error in the event\n"
 msgstr "ERREUR FATALE dans event_scan: date erronée dans l'évenement\n"
 
-#: src/recur.c:421
+#: src/recur.c:419
 msgid "FATAL ERROR in recur_item_inday: unknown item type\n"
 msgstr "ERREUR FATALE dans todo_delete_by_num: aucune tâche correspondante\n"
 
-#: src/recur.c:554
+#: src/recur.c:552
 msgid "FATAL ERROR in recur_event_erase: no such event\n"
 msgstr "ERREUR FATALE dans event_delete_bynum: aucun évenement correspondant\n"
 
-#: src/recur.c:626
+#: src/recur.c:624
 msgid "FATAL ERROR in recur_apoint_erase: no such appointment\n"
 msgstr "ERREUR FATALE dans apoint_delete_bynum: l'élement n'existe pas\n"
 
-#: src/recur.c:650
+#: src/recur.c:648
 msgid "Enter the repetition type: (D)aily, (W)eekly, (M)onthly, (Y)early"
 msgstr "Entrez le type: (D) journ., (W) hebdo., (M) mensuel, (Y) annuel"
 
-#: src/recur.c:652
+#: src/recur.c:650
 msgid "Enter the repetition frequence:"
 msgstr "Entrez la fréquence de répétition:"
 
-#: src/recur.c:655
+#: src/recur.c:653
 #, c-format
 msgid "Enter the ending date: [%s] or '0' for an endless repetition"
 msgstr "Entrez la date de fin: [%s] ou '0' pour répéter indéfiniment"
 
-#: src/recur.c:658
+#: src/recur.c:656
 #, c-format
 msgid "Possible formats are [%s] or '0' for an endless repetition"
 msgstr "Les formats autorisés sont [%s] ou '0' pour une répétition sans fin"
 
-#: src/recur.c:659
+#: src/recur.c:657
 msgid "This item is already a repeated one."
 msgstr "Cet élément est déjà recurrent."
 
-#: src/recur.c:662
+#: src/recur.c:660
 msgid "Sorry, the date you entered is older than the item start time."
 msgstr "La date que vous avez entrée est antérieure à la date de l'élément!"
 
-#: src/recur.c:776
+#: src/recur.c:774
 msgid "FATAL ERROR in recur_repeat_item: wrong item type\n"
 msgstr "ERREUR FATALE dans todo_delete_by_num: aucune tâche correspondante\n"
 
-#: src/recur.c:805
+#: src/recur.c:803
 msgid "FATAL ERROR in recur_exc_scan: syntax error in the item date\n"
 msgstr "ERREUR FATALE dans load_app: mauvais format de date\n"
 
-#: src/recur.c:880
+#: src/recur.c:878
 msgid "FATAL ERROR in recur_get_apoint: no such item\n"
 msgstr "ERREUR FATALE dans recur_get_apoint: l'élement n'existe pas\n"
 
-#: src/recur.c:904
+#: src/recur.c:902
 msgid "FATAL ERROR in recur_get_event: no such item\n"
 msgstr "ERREUR FATALE dans recur_get_event: aucun évenement correspondant\n"
 
-#: src/recur.c:940
+#: src/recur.c:938
 msgid "FATAL ERROR in recur_apoint_switch_notify: no such item\n"
 msgstr ""
 "ERREUR FATALE dans recur_apoint_switch_notify: l'élement n'existe pas\n"

@@ -1,3 +1,13 @@
+2008-08-03  Frederic Culot  <frederic@culot.org>
+
+	* src/calendar.c (calendar_goto_today): new function
+
+	* src/calcurse.c: CTRL-G, '0' and '$' keybindings added
+	* src/help.c (help_screen, wanted_page): help text updated
+	* src/utils.c (status_bar): new bindings added
+	* src/utils.c (other_status_page): fixed a bug in status page
+	number calculation
+	
 2008-05-17  Frederic Culot  <frederic@culot.org>
 
 	* === Released 2.1 ===

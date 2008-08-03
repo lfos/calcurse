@@ -1,4 +1,4 @@
-/*	$calcurse: calendar.h,v 1.10 2008/04/12 21:14:03 culot Exp $	*/
+/*	$calcurse: calendar.h,v 1.11 2008/08/03 18:41:55 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -72,6 +72,8 @@ typedef enum
   DOWN,
   LEFT,
   RIGHT,
+  WEEK_START,
+  WEEK_END,
   MOVES
 }
 move_t;
@@ -87,6 +89,7 @@ void    calendar_init_slctd_day (void);
 date_t *calendar_get_slctd_day (void);
 long    calendar_get_slctd_day_sec (void);
 void    calendar_update_panel (WINDOW *);
+void    calendar_goto_today (void);
 void    calendar_change_day (int);
 void    calendar_move (move_t);
 char   *calendar_get_pom (time_t);
