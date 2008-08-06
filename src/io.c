@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.29 2008/04/12 21:14:03 culot Exp $	*/
+/*	$calcurse: io.c,v 1.30 2008/08/06 17:44:34 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -328,72 +328,86 @@ io_export_todo (FILE *stream)
 }
 
 /* 
- * Initialization of data paths. The argument cfile is the variable
+ * Initialization of data paths. The cfile argument is the variable
  * which contains the calendar file. If none is given, then the default
  * one (~/.calcurse/apts) is taken. If the one given does not exist, it
  * is created.
+ * The datadir argument can be use to specify an alternative data root dir.
  */
 void
-io_init (char *cfile)
+io_init (char *cfile, char *datadir)
 {
   FILE *data_file;
   char *home;
   char apts_file[BUFSIZ] = "";
   int ch;
 
-  home = getenv ("HOME");
-  if (home == NULL)
+  if (datadir != NULL)
     {
-      home = ".";
-    }
-  snprintf (path_dir, BUFSIZ, "%s/" DIR_NAME, home);
-  snprintf (path_todo, BUFSIZ, "%s/" TODO_PATH, home);
-  snprintf (path_conf, BUFSIZ, "%s/" CONF_PATH, home);
-  snprintf (path_notes, BUFSIZ, "%s/" NOTES_DIR, home);
-  if (cfile == NULL)
-    {
-      snprintf (path_apts, BUFSIZ, "%s/" APTS_PATH, home);
+      home = datadir;
+      snprintf (path_dir, BUFSIZ, "%s", home);
+      snprintf (path_todo, BUFSIZ, "%s/" TODO_PATH_NAME, home);
+      snprintf (path_conf, BUFSIZ, "%s/" CONF_PATH_NAME, home);
+      snprintf (path_notes, BUFSIZ, "%s/" NOTES_DIR_NAME, home);
+      snprintf (path_apts, BUFSIZ, "%s/" APTS_PATH_NAME, home);
     }
   else
     {
-      snprintf (apts_file, BUFSIZ, "%s", cfile);
-      strncpy (path_apts, apts_file, BUFSIZ);
-      /* check if the file exists, otherwise create it */
-      data_file = fopen (path_apts, "r");
-      if (data_file == NULL)
-	{
-	  printf (_("%s does not exist, create it now [y or n] ? "), path_apts);
-	  ch = getchar ();
-	  switch (ch)
-	    {
-	    case 'N':
-	    case 'n':
-	      printf (_("aborting...\n"));
-	      exit (EXIT_FAILURE);
-	      break;
+      home = getenv ("HOME");
+      if (home == NULL)
+        {
+          home = ".";
+        }
+      snprintf (path_dir, BUFSIZ, "%s", home);
+      snprintf (path_todo, BUFSIZ, "%s/" TODO_PATH, home);
+      snprintf (path_conf, BUFSIZ, "%s/" CONF_PATH, home);
+      snprintf (path_notes, BUFSIZ, "%s/" NOTES_DIR, home);
+      if (cfile == NULL)
+        {
+          snprintf (path_apts, BUFSIZ, "%s/" APTS_PATH, home);
+        }
+      else
+        {
+          snprintf (apts_file, BUFSIZ, "%s", cfile);
+          strncpy (path_apts, apts_file, BUFSIZ);
+          /* check if the file exists, otherwise create it */
+          data_file = fopen (path_apts, "r");
+          if (data_file == NULL)
+            {
+              printf (_("%s does not exist, create it now [y or n] ? "),
+                      path_apts);
+              ch = getchar ();
+              switch (ch)
+                {
+                case 'N':
+                case 'n':
+                  printf (_("aborting...\n"));
+                  exit (EXIT_FAILURE);
+                  break;
 
-	    case 'Y':
-	    case 'y':
-	      data_file = fopen (path_apts, "w");
-	      if (data_file == NULL)
-		{
-		  perror (path_apts);
-		  exit (EXIT_FAILURE);
-		}
-	      else
-		{
-		  printf (_("%s successfully created\n"), path_apts);
-		  printf (_("starting interactive mode...\n"));
-		}
-	      break;
+                case 'Y':
+                case 'y':
+                  data_file = fopen (path_apts, "w");
+                  if (data_file == NULL)
+                    {
+                      perror (path_apts);
+                      exit (EXIT_FAILURE);
+                    }
+                  else
+                    {
+                      printf (_("%s successfully created\n"), path_apts);
+                      printf (_("starting interactive mode...\n"));
+                    }
+                  break;
 
-	    default:
-	      printf (_("aborting...\n"));
-	      exit (EXIT_FAILURE);
-	      break;
-	    }
-	}
-      fclose (data_file);
+                default:
+                  printf (_("aborting...\n"));
+                  exit (EXIT_FAILURE);
+                  break;
+                }
+            }
+          fclose (data_file);
+        }
     }
 }
 

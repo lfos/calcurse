@@ -1,4 +1,4 @@
-/*	$calcurse: args.c,v 1.34 2008/04/20 12:54:05 culot Exp $	*/
+/*	$calcurse: args.c,v 1.35 2008/08/06 17:44:34 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -48,8 +48,9 @@ static void
 usage ()
 {
   char *arg_usage =
-    _("Usage: calcurse [-h|-v] [-x] [-N] [-an] [-t[num]] [-d date|num] "
-      "[-c file]\n");
+    _("Usage: calcurse [-h|-v] [-x] [-N] [-an] [-t[num]]\n"
+      "                [-d <date>|<num>] [-s[date]] [-r[range]]\n"
+      "                [-c<file> | -D<dir>]\n");
   fputs (arg_usage, stdout);
 }
 
@@ -91,20 +92,30 @@ help_arg ()
       "	print calcurse version and exit.\n"
       "\nFiles:\n"
       "  -c <file>, --calendar <file>\n"
-      "	specify the calendar <file> to use.\n"
+      "	specify the calendar <file> to use (incompatible with '-D').\n"
+      "\n  -D <dir>, --directory <dir>\n"
+      "	specify the data directory to use (incompatible with '-c').\n"
+      "\tIf not specified, the default directory is ~/.calcurse\n"
       "\nNon-interactive:\n"
       "  -a, --appointment\n"
       " 	print events and appointments for current day and exit.\n"
       "\n  -d <date|num>, --day <date|num>\n"
       "	print events and appointments for <date> or <num> upcoming days and"
-      "\n\texit. Possible formats are: 'mm/dd/yyyy' or 'n'.\n"
+      "\n\texit. To specify both a starting date and a range, use the\n"
+      "\t'--startday' and the '--range' option.\n"
       "\n  -n, --next\n"
-      "  	print next appointment within upcoming 24 hours "
+      "	print next appointment within upcoming 24 hours "
       "and exit. Also given\n\tis the remaining time before this "
       "next appointment.\n"
       "\n  -N, --note\n"
       "	when used with the '-a' or '-t' flag, also print note content\n"
       "	if one is associated with the displayed item.\n"
+      "\n  -r[num], --range[=num]\n"
+      "	print events and appointments for the [num] number of days"
+      "\n\tand exit. If no [num] is given, a range of 1 day is considered.\n"
+      "\n  -s[date], --startday[=date]\n"
+      "	print events and appointments from [date] and exit.\n"
+      "\tIf no [date] is given, the current day is considered.\n"
       "\n  -t[num], --todo[=num]\n"
       "	print todo list and exit. If the optional number [num] is given,\n"
       "\tthen only todos having a priority equal to [num] will be returned.\n"
@@ -388,6 +399,40 @@ app_arg (int add_line, date_t *day, long date, int print_note, conf_t *conf)
   return (app_found);
 }
 
+static void
+more_info (void)
+{
+  fputs (_("\nFor more information, type '?' from within Calcurse, "
+           "or read the manpage.\n"), stdout);
+  fputs (_("Mail bug reports and suggestions to "
+           "<calcurse@culot.org>.\n"), stdout);
+}
+
+/* 
+ * For a given date, print appointments for each day
+ * in the chosen interval. app_found and add_line are used
+ * to format the output correctly. 
+ */
+static void
+display_app (struct tm *t, int numdays, int add_line, int print_note,
+             conf_t *conf)
+{
+  int i, app_found;
+  date_t day;
+
+  for (i = 0; i < numdays; i++)
+    {
+      day.dd = t->tm_mday;
+      day.mm = t->tm_mon + 1;
+      day.yyyy = t->tm_year + 1900;
+      app_found = app_arg (add_line, &day, 0, print_note, conf);
+      if (app_found)
+        add_line = 1;
+      t->tm_mday++;
+      mktime (t);
+    }
+}
+
 /*
  * Print appointment for the given date or for the given n upcoming
  * days.
@@ -424,18 +469,7 @@ date_arg (char *ddate, int add_line, int print_note, conf_t *conf)
        */
       timer = time (NULL);
       t = *localtime (&timer);
-
-      for (i = 0; i < numdays; i++)
-	{
-	  day.dd = t.tm_mday;
-	  day.mm = t.tm_mon + 1;
-	  day.yyyy = t.tm_year + 1900;
-	  app_found = app_arg (add_line, &day, 0, print_note, conf);
-	  if (app_found)
-	    add_line = 1;
-	  t.tm_mday++;
-	  mktime (&t);
-	}
+      display_app (&t, numdays, add_line, print_note, conf);
     }
   else
     {				/* a date was entered */
@@ -446,20 +480,80 @@ date_arg (char *ddate, int add_line, int print_note, conf_t *conf)
 	}
       else
 	{
-	  fputs (_("Argument to the '-d' flag is not valid\n"), stdout);
 	  char outstr[BUFSIZ];
+	  fputs (_("Argument to the '-d' flag is not valid\n"), stderr);
 	  snprintf (outstr, BUFSIZ,
 		    "Possible argument format are: '%s' or 'n'\n",
 		    DATEFMT_DESC (conf->input_datefmt));
 	  fputs (_(outstr), stdout);
-	  fputs (_("\nFor more information, type '?' from within Calcurse, "
-                   "or read the manpage.\n"),
-		 stdout);
-	  fputs (_("Mail bug reports and suggestions to "
-                   "<calcurse@culot.org>.\n"), stdout);
+          more_info ();
 	}
     }
 }
+
+/*
+ * Print appointment from the given date 'startday' for the 'range' upcoming
+ * days. 
+ * If no starday is given (NULL), today is considered
+ * If no range is given (NULL), 1 day is considered
+ *
+ * Many thanks to Erik Saule for providing this function.
+ */
+static void
+date_arg_extended (char *startday, char *range, int add_line, int print_note,
+                   conf_t *conf)
+{
+  int i, numdays = 1, error = 0, arg_len = 0;
+  static struct tm t;
+  time_t timer;
+
+  /* 
+   * Check arguments and extract information
+   */
+  if (range != NULL)
+    {
+      arg_len = strlen (range);
+      for (i = 0; i <= arg_len - 1; i++)
+	{
+	  if (!isdigit (range[i]))
+	    error = 1;
+	}
+      if (!error)
+	numdays = atoi (range);
+    }
+  timer = time (NULL);
+  t = *localtime (&timer);
+  if (startday != NULL)
+    {
+      if (parse_date (startday, conf->input_datefmt, (int *)&t.tm_year,
+		      (int *)&t.tm_mon, (int *)&t.tm_mday))
+	{
+	  t.tm_year -= 1900;
+	  t.tm_mon--;
+	  mktime (&t);
+	}
+      else
+	{
+	  error = 1;
+	}
+    }
+  if (!error)
+    {
+      display_app (&t, numdays, add_line, print_note, conf);
+    }
+  else
+    {
+      char outstr[BUFSIZ];
+      fputs (_("Argument is not valid\n"), stderr);
+      snprintf (outstr, BUFSIZ,
+		"Argument format for -s and --startday is: '%s'\n",
+		DATEFMT_DESC (conf->input_datefmt));
+      fputs (_(outstr), stdout);
+      fputs (_("Argument format for -r and --range is: 'n'\n"), stdout);
+      more_info ();
+    }
+}
+
 
 /* 
  * Parse the command-line arguments and call the appropriate
@@ -474,9 +568,12 @@ parse_args (int argc, char **argv, conf_t *conf)
   int aflag = 0;    /* -a: print appointments for current day */
   int cflag = 0;    /* -c: specify the calendar file to use */
   int dflag = 0;    /* -d: print appointments for a specified days */
+  int Dflag = 0;    /* -D: specify data directory to use */
   int hflag = 0;    /* -h: print help text */
   int nflag = 0;    /* -n: print next appointment */
   int Nflag = 0;    /* -N: also print note content with apps and todos */
+  int rflag = 0;    /* -r: specify the range of days to consider */
+  int sflag = 0;    /* -s: specify the first day to consider */
   int tflag = 0;    /* -t: print todo list */
   int vflag = 0;    /* -v: print version number */
   int xflag = 0;    /* -x: export data to iCalendar format */
@@ -484,17 +581,21 @@ parse_args (int argc, char **argv, conf_t *conf)
   int tnum = 0;
   int non_interactive = 0, multiple_flag = 0, load_data = 0;
   int no_file = 1;
-  char *ddate = "", *cfile = NULL;
+  char *ddate = "", *cfile = NULL, *range = NULL, *startday = NULL;
+  char *datadir = NULL;
 
-  static char *optstr = "hvnNaxt::d:c:";
+  static char *optstr = "hvnNaxt::d:c:r:s:D:";
 
   struct option longopts[] = {
     {"appointment", no_argument, NULL, 'a'},
     {"calendar", required_argument, NULL, 'c'},
     {"day", required_argument, NULL, 'd'},
+    {"directory", required_argument, NULL, 'D'},
     {"help", no_argument, NULL, 'h'},
     {"next", no_argument, NULL, 'n'},
     {"note", no_argument, NULL, 'N'},
+    {"range", required_argument, NULL, 'r'},
+    {"startday", required_argument, NULL, 's'},
     {"todo", optional_argument, NULL, 't'},
     {"version", no_argument, NULL, 'v'},
     {"export", no_argument, NULL, 'x'},
@@ -522,6 +623,10 @@ parse_args (int argc, char **argv, conf_t *conf)
 	  load_data++;
 	  ddate = optarg;
 	  break;
+        case 'D':
+          Dflag = 1;
+          datadir = optarg;
+          break;
 	case 'h':
 	  hflag = 1;
 	  break;
@@ -533,6 +638,18 @@ parse_args (int argc, char **argv, conf_t *conf)
 	case 'N':
 	  Nflag = 1;
 	  break;
+        case 'r':
+          rflag = 1;
+          multiple_flag++;
+          load_data++;
+          range = optarg;
+          break;
+        case 's':
+          sflag = 1;
+          multiple_flag++;
+          load_data++;
+          startday = optarg;
+          break;
 	case 't':
 	  tflag = 1;
 	  multiple_flag++;
@@ -577,6 +694,14 @@ parse_args (int argc, char **argv, conf_t *conf)
       return (EXIT_FAILURE);
       /* Incorrect arguments */
     }
+  else if (Dflag && cflag)
+    {
+      fputs (_("Options '-D' and '-c' cannot be used at the same time\n"),
+               stderr);
+      usage ();
+      usage_try ();
+      return (EXIT_FAILURE);
+    }
   else
     {
       if (unknown_flag)
@@ -597,9 +722,9 @@ parse_args (int argc, char **argv, conf_t *conf)
 	{
 	  if (load_data)
 	    {
-	      io_init (cfile);
+	      io_init (cfile, datadir);
 	      no_file = io_check_data_files ();
-	      if (dflag || aflag || nflag || xflag)
+	      if (dflag || aflag || nflag || xflag || rflag || sflag)
 		io_load_app ();
 	    }
 	  if (xflag)
@@ -620,12 +745,15 @@ parse_args (int argc, char **argv, conf_t *conf)
 	      next_arg ();
 	      non_interactive = 1;
 	    }
-	  if (dflag)
+	  if (dflag || rflag || sflag)
 	    {
 	      notify_init_vars ();
 	      vars_init (conf);
 	      custom_load_conf (conf, 0);
-	      date_arg (ddate, add_line, Nflag, conf);
+              if (dflag)
+                date_arg (ddate, add_line, Nflag, conf);
+              if (rflag || sflag)
+                date_arg_extended (startday, range, add_line, Nflag, conf);
 	      non_interactive = 1;
 	    }
 	  else if (aflag)
@@ -642,7 +770,7 @@ parse_args (int argc, char **argv, conf_t *conf)
       else
 	{
 	  non_interactive = 0;
-	  io_init (cfile);
+	  io_init (cfile, datadir);
 	  no_file = io_check_data_files ();
 	}
       return (non_interactive);

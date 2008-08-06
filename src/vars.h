@@ -1,4 +1,4 @@
-/*	$calcurse: vars.h,v 1.22 2008/04/12 21:14:03 culot Exp $	*/
+/*	$calcurse: vars.h,v 1.23 2008/08/06 17:44:34 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -31,11 +31,15 @@
 #include <pthread.h>
 #include <stdbool.h>
 
-#define DIR_NAME	".calcurse"
-#define TODO_PATH 	".calcurse/todo"
-#define APTS_PATH	".calcurse/apts"
-#define CONF_PATH	".calcurse/conf"
-#define NOTES_DIR	".calcurse/notes/"
+#define DIR_NAME         ".calcurse/"
+#define TODO_PATH_NAME   "todo"
+#define APTS_PATH_NAME   "apts"
+#define CONF_PATH_NAME   "conf"
+#define NOTES_DIR_NAME   "notes/"
+#define TODO_PATH        DIR_NAME TODO_PATH_NAME
+#define APTS_PATH        DIR_NAME APTS_PATH_NAME
+#define CONF_PATH        DIR_NAME CONF_PATH_NAME
+#define NOTES_DIR        DIR_NAME NOTES_DIR_NAME
 
 #define CTRL(x)         ((x) & 0x1f)
 #define ESCAPE		27

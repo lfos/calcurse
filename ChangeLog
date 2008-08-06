@@ -1,3 +1,14 @@
+2008-08-06  Frederic Culot  <frederic@culot.org>
+
+	* src/args.c (parse_args, help_arg, usage): '-s', '-r' and '-D'
+	flags added (thanks Erik for submiting the patch)
+	* src/args.c (date_arg_extended, more_info, display_app): new
+	functions to handle '-s' and '-r' flags
+
+	* src/io.c (io_init): handling of '-D' option
+
+	* src/vars.h: new way of defining default paths
+
 2008-08-03  Frederic Culot  <frederic@culot.org>
 
 	* src/calendar.c (calendar_goto_today): new function
