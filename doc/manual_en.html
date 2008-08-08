@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <!--
 /*
- *	$calcurse: manual_en.html,v 1.17 2008/04/20 12:43:13 culot Exp $
+ *	$calcurse: manual_en.html,v 1.18 2008/08/08 14:22:19 culot Exp $
  *
  * Calcurse - text-based organizer
  * Copyright (c) 2004-2008 Frederic Culot
@@ -230,7 +230,7 @@ All of the commands are documented within an online help system.
 <h2>3.2 Install process<a name="install_process"></a></h2>
 <p>
 	First you need to gunzip and untar the source archive:</p>
-	<pre>tar zxvf calcurse-2.1.tar.gz</pre>
+	<pre>tar zxvf calcurse-2.2.tar.gz</pre>
 <p>
   	Once you meet the requirements and have extracted the archive, 
 	the install process is quite simple, and follows the standard 
@@ -289,6 +289,12 @@ All of the commands are documented within an online help system.
 	    flag, the calendar  from which to  read  the appointments 
 	    can be specified using the '-c' flag.</p>
 	    </dd>
+	    <dt><code>-D &lt;dir&gt;, --directory &lt;dir&gt;</code></dt>
+	    <dd>
+            Specify  the  data directory to use. This option is
+            incompatible  with  -c.   If  not  specified,   the
+            default directory is <code>'~/.calcurse/'</code>.
+            </dd>
 	    <dt><code>-h, --help</code></dt>
 	    <dd>
 	    Print  a  short  help  text  describing  the  supported
@@ -307,6 +313,17 @@ All of the commands are documented within an online help system.
 	    When used with the '-a' or '-t' flag, also print note content
 	    if one is associated with the displayed item.
 	    </dd>
+            <dt><code>-r[num], --range[=num]</code></dt>
+            <dd>
+            Print events and appointments for the num number of
+            days and exit. If no num is given, a range of 1 day
+            is considered.
+            </dd>
+            <dt><code>-s[date], --startday[=date]</code></dt>
+            <dd>
+            Print  events  and appointments from date and exit.
+            If no date is given, the current day is considered.
+            </dd>
 	    <dt><code>-t[num], --todo[=num]</code></dt>
 	    <dd>
 	    Print the 'todo' list and exit. If the optional number
@@ -514,7 +531,8 @@ All of the commands are documented within an online help system.
 <h2>4.3 <code>calcurse</code> files<a name="basics_files"></a></h2>
 <p>
         The following structure is created in your <code>$HOME</code>  
-	directory the first time <code>calcurse</code> is run :</p>
+	directory (or in the directory you specified with  the  -D  option)
+        the first time <code>calcurse</code> is run :</p>
 	<pre>
 $HOME/.calcurse/
            |___notes/
@@ -1017,7 +1035,7 @@ msgid ""
 	recur_item_inday() function, and for implementing the date format configuration 
         options</li>
 	<li>Jeremy Roon for the dutch translation</li>
-	<li>Erik Saule for its patch implementing the '-N' flag</li>
+	<li>Erik Saule for its patch implementing the '-N', '-s', '-r' and '-D' flags</li>
 	<li>people who write softwares I like and which inspired me, 
 	especially :
 		<ul>
@@ -1034,7 +1052,7 @@ msgid ""
 
 <div class="footer">
 	Copyright (c) 2004-2008 Fr&eacute;d&eacute;ric Culot<br>
-	Calcurse version 2.1 - Last change: April 20, 2008<br>
+	Calcurse version 2.2 - Last change: August 8, 2008<br>
 </div>
 </div>
 

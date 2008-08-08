@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <!--
 /*
- * $calcurse: manual_it.html,v 1.3 2008/04/20 12:43:13 culot Exp $
+ * $calcurse: manual_it.html,v 1.4 2008/08/08 14:22:19 culot Exp $
  *
  * Calcurse - text-based organizer
  * Copyright (c) 2004-2008 Frederic Culot
@@ -246,7 +246,7 @@ caratteristiche<a name="overview_features"></a></h2>
   Innanzitutto è necessario scompattare l'archivio contenente i
   sorgenti:
 </p>
-	<pre>tar zxvf calcurse-2.1.tar.gz</pre>
+	<pre>tar zxvf calcurse-2.2.tar.gz</pre>
 <p>
   Una volta verificati i requisiti e scompattato l'archivio la
   procedura d'installazione è piuttosto semplice visto che segue i tre
@@ -310,6 +310,16 @@ caratteristiche<a name="overview_features"></a></h2>
 	l'argomento '-a' il calendario dal quale leggere gli
 	appuntamenti può essere specificato con l'argomento '-c'.</p>
     </dd>
+
+	    <dt><code>-D &lt;dir&gt;, --directory &lt;dir&gt;</code></dt>
+	    <dd>
+            <div class="todo">
+            Specify  the  data directory to use. This option is
+            incompatible  with  -c.   If  not  specified,   the
+            default directory is <code>'~/.calcurse/'</code>.
+            </div>
+            </dd>
+
     <dt><code>-h, --help</code></dt>
     <dd>
       Stampa la versione breve del testo che descrive le opzioni della
@@ -333,6 +343,22 @@ caratteristiche<a name="overview_features"></a></h2>
     if one is associated with the displayed item.
     </div>
     </dd>
+
+            <dt><code>-r[num], --range[=num]</code></dt>
+            <dd>
+	    <div class="todo">
+            Print events and appointments for the num number of
+            days and exit. If no num is given, a range of 1 day
+            is considered.
+            </div>
+            </dd>
+            <dt><code>-s[date], --startday[=date]</code></dt>
+            <dd>
+            <div class="todo">
+            Print  events  and appointments from date and exit.
+            If no date is given, the current day is considered.
+            </div>
+            </dd>
 
     <dt><code>-t[num], --todo[=num]</code></dt>
     <dd>
@@ -555,7 +581,9 @@ d'ambiente<a name="basics_invocation_environment"></a></h3>
 <h2>4.3 File di <code>calcurse</code><a name="basics_files"></a></h2>
 <p>
   Al primo avvio di <code>calcurse</code> viene creata nella vostra
-  directory <code>$HOME</code> questa gerarchia di directory:
+  directory <code>$HOME</code> 
+  <div class="todo">(or in the directory you specified with  the  -D  option)</div>
+  questa gerarchia di directory:
 </p>
 <pre>
   $HOME/.calcurse/
@@ -1218,7 +1246,7 @@ d'ambiente<a name="basics_invocation_environment"></a></h3>
     <li>
       Leandro Noferini per la traduzione italiana
     </li>
-    <li><div class="todo">Erik Saule for its patch implementing the '-N' flag</div></li>
+    <li><div class="todo">Erik Saule for its patch implementing the '-N', '-s', '-r' and '-D' flags</div></li>
     <li>
       le persone che hanno scritto software che mi piace e che
       mi ha inspirato, e specialmente:
@@ -1245,7 +1273,7 @@ d'ambiente<a name="basics_invocation_environment"></a></h3>
 
 <div class="footer">
   Copyright (c) 2004-2008 Fr&eacute;d&eacute;ric Culot<br>
-  Calcurse version 2.1 - Last change: April 20, 2008<br>
+  Calcurse version 2.2 - Last change: August 8, 2008<br>
 </div>
 </div>
 

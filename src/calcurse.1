@@ -1,4 +1,4 @@
-.\" 	$calcurse: calcurse.1,v 1.8 2008/04/05 15:02:56 culot Exp $
+.\" 	$calcurse: calcurse.1,v 1.9 2008/08/08 14:22:19 culot Exp $
 .\"
 .\" Copyright (c) 2004-2008 Frederic Culot
 .\"
@@ -18,13 +18,17 @@
 .\" Boston, MA 02111-1307, USA.
 .\"
 .fam C
-.TH CALCURSE 1 "April 05, 2008" "Version 2.1" "Calcurse Manual"
+.TH CALCURSE 1 "August 08, 2008" "Version 2.2" "Calcurse Manual"
 .SH NAME
 Calcurse \- text-based organizer
 .SH SYNOPSIS
 .B "calcurse "
 [\fB-h\fP|\fB-v\fP] [\fB-x\fP] [\fB-N\fP] [\fB-an\fP] [\fB-t\fP[\fInum\fP]]
-[\fB-d\fP \fIdate\fP|\fInum\fP] [\fB-c\fP \fIfile\fP]
+.br
+         [\fB-d\fP <\fIdate\fP>|<\fInum\fP>] [\fB-s\fP[\fIdate\fP]]
+[\fB-r\fP[\fIrange\fP]]
+.br
+         [\fB-c\fP<\fIfile\fP> | \fB-D\fP<\fIdir\fP>]
 .SH DESCRIPTION
 Calcurse is a text-based calendar and scheduling application. It helps
 keeping track of events, appointments and everyday tasks. 
@@ -43,7 +47,7 @@ the '\-c' flag.
 \fB-c\fP <file>, \fB--calendar\fP <file>
 Specify the calendar file to use. The default calendar is 
 .B "'~/.calcurse/apts'" 
-(see section \fIFILES\fP below).
+(see section \fIFILES\fP below). This option is incompatible with \fB-D\fP.
 .TP
 \fB-d\fP <date|num>, \fB--day\fP <date|num>
 Print the appointments and events for the given date or for 
@@ -68,6 +72,11 @@ and events for today, tomorrow, and the day after tomorrow.
 appointments can be specified using the '\-c' flag. 
 .RE
 .TP
+\fB-D\fP <dir>, \fB--directory\fP <dir>
+Specify the data directory to use. This option is incompatible with \fB-c\fP.
+If not specified, the default directory is 
+.B "'~/.calcurse/'" 
+.TP
 \fB-h\fP, \fB--help\fP
 Print a short help text describing the supported command-line options,
 and then exit. 
@@ -83,6 +92,14 @@ the '\-c' flag.
 \fB-N\fP, \fB--note\fP
 When used with the '-a' or '-t' flag, also print note content
 if one is associated with the displayed item.
+.TP
+\fB-r\fP[num], \fB--range\fP[=num]
+Print events and appointments for the \fInum\fP number of days
+and exit. If no \fInum\fP is given, a range of 1 day is considered.
+.TP
+\fB-s\fP[date], \fB--startday\fP[=date]
+Print events and appointments from \fIdate\fP and exit.
+If no \fIdate\fP is given, the current day is considered.
 .TP
 \fB-t\fP[num], \fB--todo\fP[=num]
 Print the 'todo' list and exit. If the optional number \fInum\fP is given,
@@ -119,8 +136,9 @@ screen), notification options, and more general options (such as automatic
 save before quitting). 
 All of these options are detailed in the configuration menu.
 .SH FILES
-The following structure is created in your $HOME directory the first
-time calcurse is run :
+The following structure is created in your $HOME directory 
+(or in the directory you specified with the \fB-D\fP option),
+the first time calcurse is run:
 .PP
 .HP 10
 $HOME/.calcurse/

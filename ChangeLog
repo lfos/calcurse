@@ -1,3 +1,8 @@
+2008-08-08  Frederic Culot  <frederic@culot.org>
+
+	* src/calcurse.1: manpage updated with new command line options
+	* doc/manual_*.html: manuals updated with new command line options
+	
 2008-08-06  Frederic Culot  <frederic@culot.org>
 
 	* src/args.c (parse_args, help_arg, usage): '-s', '-r' and '-D'

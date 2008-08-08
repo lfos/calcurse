@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//NL">
 <!--
 /*
- *	$calcurse: manual_nl.html,v 1.9 2008/04/20 12:43:13 culot Exp $
+ *	$calcurse: manual_nl.html,v 1.10 2008/08/08 14:22:19 culot Exp $
  *
  * Calcurse - text-based organizer
  * Copyright (c) 2004-2008 Frederic Culot
@@ -229,7 +229,7 @@ besproken. Als laatste wordt zowel de procedure van het melden van fouten in
 <p>
 	Als eerste moet het volgende archief uitgepakt worden met gunzip en
 	untar:</p>
-	<pre>tar zxvf calcurse-2.1.tar.gz</pre>
+	<pre>tar zxvf calcurse-2.2.tar.gz</pre>
 <p>
 	Zodra de benodigde pakketten ge&iuml;nstalleerd zijn en het archief
 	uitgepakt is, is de installatieprocedure vrij simpel, via de
@@ -284,6 +284,14 @@ besproken. Als laatste wordt zowel de procedure van het melden van fouten in
 	    Net zoals bij de '-a' vlag, kan de te gebruiken kalender
 	    worden gekozen met de '-c' vlag.</p>
 	    </dd>
+	    <dt><code>-D &lt;dir&gt;, --directory &lt;dir&gt;</code></dt>
+	    <dd>
+            <div class="todo">
+            Specify  the  data directory to use. This option is
+            incompatible  with  -c.   If  not  specified,   the
+            default directory is <code>'~/.calcurse/'</code>.
+            </div>
+            </dd>
 	    <dt><code>-h, --help</code></dt>
 	    <dd>
 	    Geeft een korte hulptekst weer, met de ondersteunde
@@ -305,6 +313,21 @@ besproken. Als laatste wordt zowel de procedure van het melden van fouten in
 	    if one is associated with the displayed item.
 	    </div>
 	    </dd>
+            <dt><code>-r[num], --range[=num]</code></dt>
+            <dd>
+	    <div class="todo">
+            Print events and appointments for the num number of
+            days and exit. If no num is given, a range of 1 day
+            is considered.
+            </div>
+            </dd>
+            <dt><code>-s[date], --startday[=date]</code></dt>
+            <dd>
+            <div class="todo">
+            Print  events  and appointments from date and exit.
+            If no date is given, the current day is considered.
+            </div>
+            </dd>
 	    <dt><code>-t[num], --todo[=num]</code></dt>
 	    <dd>
 	    Geef de 'todo' lijst weer en verlaat het programma. Als het optionele
@@ -514,8 +537,9 @@ besproken. Als laatste wordt zowel de procedure van het melden van fouten in
 <h2>4.3 <code>calcurse</code> bestanden<a name="basics_files"></a></h2>
 <p>
 	De volgende structuur wordt in je <code>$HOME</code> directory
-	aangemaakt, als <code>calcurse</code> voor de eerste keer wordt
-	gestart:</p>
+	aangemaakt, 
+        <div class="todo">(or in the directory you specified with  the  -D  option)</div>
+        als <code>calcurse</code> voor de eerste keer wordt gestart:</p>
 	<pre>
 $HOME/.calcurse/
            |___notes/
@@ -1009,7 +1033,7 @@ msgid ""
         <span class="todo">, and for implementing the date format configuration options</span></li>
 	<li>Jeremy Roon voor de nederlandse vertaling van
 	<code>calcurse</code> en handleiding</li>
-	<li><div class="todo">Erik Saule for its patch implementing the '-N' flag</div></li>
+	<li><div class="todo">Erik Saule for its patch implementing the '-N', '-s', '-r' and '-D' flags</div></li>
 	<li>en de mensen die de software geschreven hebben die ik goed vind
 	en mij ge&iuml;nspireerd hebben zoals:
 		<ul>
@@ -1028,7 +1052,7 @@ msgid ""
 
 <div class="footer">
 	Copyright (c) 2004-2008 Fr&eacute;d&eacute;ric Culot<br>
-	Calcurse version 2.1 - Last change: April 20, 2008<br>
+	Calcurse version 2.2 - Last change: August 8, 2008<br>
 </div>
 </div>
 
