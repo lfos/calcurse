@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.46 2008/08/03 18:41:55 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.47 2008/08/10 09:24:46 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -589,6 +589,44 @@ date_sec2ical_datetime (long sec, char *ical_datetime)
   t = sec;
   lt = localtime (&t);
   strftime (ical_datetime, DATETIMELENGTH, "%Y%m%dT%H%M%S", lt);
+}
+
+/*
+ * At least a generic function to format date...
+ * I promise I will learn how to code someday.
+ */
+void
+date_sec2date_fmt (long sec, const char *fmt, char *datef)
+{
+  struct tm *lt;
+  time_t t;
+
+  t = sec;
+  lt = localtime (&t);
+  strftime (datef, BUFSIZ, fmt, lt);
+}
+
+/* 
+ * Used to change date by adding a certain amount of days or weeks.
+ */
+long
+date_sec_change (long date, int delta_month, int delta_day)
+{
+  struct tm *lt;
+  time_t t;
+  
+  t = date;
+  lt = localtime (&t);
+  lt->tm_mon += delta_month;
+  lt->tm_mday += delta_day;
+  t = mktime (lt);
+  if (t == -1)
+    {
+      fputs (_("FATAL ERROR in date_sec_change: failure in mktime\n"), stderr);
+      exit (EXIT_FAILURE);
+    }
+
+  return t;
 }
 
 /* 

@@ -1,4 +1,4 @@
-/*	$calcurse: recur.c,v 1.36 2008/05/03 19:54:14 culot Exp $	*/
+/*	$calcurse: recur.c,v 1.37 2008/08/10 09:24:46 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -400,6 +400,24 @@ recur_save_data (FILE *f)
   for (ra = recur_alist_p->root; ra != 0; ra = ra->next)
     recur_apoint_write (ra, f);
   pthread_mutex_unlock (&(recur_alist_p->mutex));
+}
+
+/* Given a day as long, check if this day belongs to the list of exceptions for
+ * the considered item.
+ */
+int
+recur_day_is_exc (long day, struct days_s *item_exc)
+{
+  const int NOT_EXC = 0;
+  const int EXC = 1;
+  struct days_s *exc;
+
+  for (exc = item_exc; exc != 0; exc = exc->next)
+    {
+      if (exc->st == day)
+        return EXC;
+    }
+  return NOT_EXC;
 }
 
 /* 
@@ -939,3 +957,4 @@ recur_apoint_switch_notify (long date, int recur_nb)
 	 stderr);
   exit (EXIT_FAILURE);
 }
+

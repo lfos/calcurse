@@ -1,3 +1,26 @@
+2008-08-10  Frederic Culot  <frederic@culot.org>
+
+	* src/calcurse.c: new menu added presenting export format
+	selection
+
+	* src/io.c (io_export_bar, pcal_export_header)
+	(pcal_export_recur_events, pcal_export_events)
+	(pcal_export_recur_apoints, pcal_export_apoints)
+	(pcal_export_todo, pcal_export_footer, foreach_date_dump): new
+	functions
+
+	* src/io.c (io_export_data, get_export_stream)
+	(pcal_dump_event): handling of pcal export
+	
+	* src/io.h: export_type_t type defined
+
+	* src/utils.c (date_sec2date_fmt, date_sec_change): new functions
+
+	* src/calendar.c (calendar_start_of_year, calendar_end_of_year):
+	new functions
+
+	* src/recur.c (recur_day_is_exc): new function
+	
 2008-08-08  Frederic Culot  <frederic@culot.org>
 
 	* src/calcurse.1: manpage updated with new command line options

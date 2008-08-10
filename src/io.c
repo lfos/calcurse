@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.30 2008/08/06 17:44:34 culot Exp $	*/
+/*	$calcurse: io.c,v 1.31 2008/08/10 09:24:46 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -45,9 +45,46 @@ typedef enum
   PROGRESS_BAR_SAVE,
   PROGRESS_BAR_LOAD,
   PROGRESS_BAR_EXPORT
-}
-progress_bar_t;
+} progress_bar_t;
 
+/* Type definition for callbacks to multiple-mode export functions. */
+typedef void (*cb_export_t)(FILE *);
+typedef void (*cb_dump_t)(FILE *, long, long, char *);
+
+/* Static functions used to add export functionalities. */
+static void ical_export_header (FILE *);
+static void ical_export_recur_events (FILE *);
+static void ical_export_events (FILE *);
+static void ical_export_recur_apoints (FILE *);
+static void ical_export_apoints (FILE *);
+static void ical_export_todo (FILE *);
+static void ical_export_footer (FILE *);
+
+static void pcal_export_header (FILE *);
+static void pcal_export_recur_events (FILE *);
+static void pcal_export_events (FILE *);
+static void pcal_export_recur_apoints (FILE *);
+static void pcal_export_apoints (FILE *);
+static void pcal_export_todo (FILE *);
+static void pcal_export_footer (FILE *);
+
+cb_export_t cb_export_header[IO_EXPORT_NBTYPES] =
+  {ical_export_header, pcal_export_header};
+cb_export_t cb_export_recur_events[IO_EXPORT_NBTYPES] =
+  {ical_export_recur_events, pcal_export_recur_events};
+cb_export_t cb_export_events[IO_EXPORT_NBTYPES] =
+  {ical_export_events, pcal_export_events};
+cb_export_t cb_export_recur_apoints[IO_EXPORT_NBTYPES] =
+  {ical_export_recur_apoints, pcal_export_recur_apoints};
+cb_export_t cb_export_apoints[IO_EXPORT_NBTYPES] =
+  {ical_export_apoints, pcal_export_apoints};
+cb_export_t cb_export_todo[IO_EXPORT_NBTYPES] =
+  {ical_export_todo, pcal_export_todo};
+cb_export_t cb_export_footer[IO_EXPORT_NBTYPES] =
+  {ical_export_footer, pcal_export_footer};
+
+static char *ical_recur_type[RECUR_TYPES] =
+  { "", "DAILY", "WEEKLY", "MONTHLY", "YEARLY" };
 
 /* Draw a progress bar while saving, loading or exporting data. */
 static void
@@ -107,34 +144,25 @@ progress_bar (progress_bar_t type, int progress)
   usleep (SLEEPTIME);
 }
 
-/* Return the recurrence type to dump in iCal format. */
-static char *
-io_recur_type (int type)
-{
-  char *recur_type[RECUR_TYPES] =
-      { "", "DAILY", "WEEKLY", "MONTHLY", "YEARLY" };
-
-  return (recur_type[type]);
-}
-
 /* Ask user for a file name to export data to. */
 static FILE *
-io_get_export_stream (void)
+get_export_stream (export_type_t type)
 {
   FILE *stream;
+  int cancel;
   char *home, *stream_name;
   char *question = _("Choose the file used to export calcurse data:");
   char *wrong_name =
     _("The file cannot be accessed, please enter another file name.");
   char *press_enter = _("Press [ENTER] to continue.");
-  int cancel;
+  const char *file_ext[IO_EXPORT_NBTYPES] = {"ical", "txt"};
 
   stream = NULL;
   stream_name = (char *) malloc (BUFSIZ);
   if ((home = getenv ("HOME")) != NULL)
-    snprintf (stream_name, BUFSIZ, "%s/calcurse.ics", home);
+    snprintf (stream_name, BUFSIZ, "%s/calcurse.%s", home, file_ext[type]);
   else
-    snprintf (stream_name, BUFSIZ, "/tmp/calcurse.ics");
+    snprintf (stream_name, BUFSIZ, "/tmp/calcurse.%s", file_ext[type]);
 
   while (stream == NULL)
     {
@@ -157,9 +185,50 @@ io_get_export_stream (void)
   return (stream);
 }
 
+/* Travel through each occurence of an item, and execute the given callback
+ * ( mainly used to export data).
+ */
+static void
+foreach_date_dump (const long date_end, struct rpt_s *rpt, struct days_s *exc,
+                   long item_first_date, long item_dur, char *item_mesg,
+                   cb_dump_t cb_dump, FILE *stream)
+{
+  long date;
+
+  date = item_first_date;
+  while (date <= date_end && date <= rpt->until)
+    {
+      if (!recur_day_is_exc (date, exc))
+        {
+          (*cb_dump)(stream, date, item_dur, item_mesg);
+        }
+      switch (rpt->type)
+        {
+        case RECUR_DAILY:
+          date = date_sec_change (date, 0, rpt->freq);
+          break;
+        case RECUR_WEEKLY:
+          date = date_sec_change (date, 0, rpt->freq * WEEKINDAYS);
+          break;
+        case RECUR_MONTHLY:
+          date = date_sec_change (date, rpt->freq, 0);
+          break;
+        case RECUR_YEARLY:
+          date = date_sec_change (date, rpt->freq * 12, 0);
+          break;
+        default:
+          fputs (_("FATAL ERROR in foreach_date_dump: "
+                   "incoherent repetition type\n"), stderr);
+          exit (EXIT_FAILURE);
+          /* NOTREACHED */
+          break;
+        }
+    }
+}
+
 /* iCal alarm notification. */
 static void
-io_export_valarm (FILE *stream)
+ical_export_valarm (FILE *stream)
 {
   fprintf (stream, "BEGIN:VALARM\n");
   pthread_mutex_lock (&nbar->mutex);
@@ -171,23 +240,41 @@ io_export_valarm (FILE *stream)
 
 /* Export header. */
 static void
-io_export_header (FILE *stream)
+ical_export_header (FILE *stream)
 {
   fprintf (stream, "BEGIN:VCALENDAR\n");
   fprintf (stream, "PRODID:-//calcurse//NONSGML v%s//EN\n", VERSION);
   fprintf (stream, "VERSION:2.0\n");
 }
 
+static void
+pcal_export_header (FILE *stream)
+{
+  fprintf (stream, "# calcurse pcal export\n");
+  fprintf (stream, "\n# =======\n# options\n# =======\n");
+  fprintf (stream, "opt -A -K -l -m -F %s\n",
+           calendar_week_begins_on_monday () ?
+           "Monday" : "Sunday");
+  fprintf (stream, "# Display week number (i.e. 1-52) on every Monday\n");
+  fprintf (stream, "all monday in all  %s %%w\n", _("Week"));
+  fprintf (stream, "\n");
+}
+                 
 /* Export footer. */
 static void
-io_export_footer (FILE *stream)
+ical_export_footer (FILE *stream)
 {
   fprintf (stream, "END:VCALENDAR\n");
 }
 
+static void
+pcal_export_footer (FILE *stream)
+{
+}
+
 /* Export recurrent events. */
 static void
-io_export_recur_events (FILE *stream)
+ical_export_recur_events (FILE *stream)
 {
   struct recur_event_s *i;
   struct days_s *day;
@@ -199,7 +286,7 @@ io_export_recur_events (FILE *stream)
       fprintf (stream, "BEGIN:VEVENT\n");
       fprintf (stream, "DTSTART:%s\n", ical_date);
       fprintf (stream, "RRULE:FREQ=%s;INTERVAL=%d",
-	       io_recur_type (i->rpt->type), i->rpt->freq);
+	       ical_recur_type[i->rpt->type], i->rpt->freq);
 
       if (i->rpt->until != 0)
 	{
@@ -226,9 +313,90 @@ io_export_recur_events (FILE *stream)
     }
 }
 
+/* Format and dump event data to a pcal formatted file. */
+static void
+pcal_dump_event (FILE *stream, long event_date, long event_dur,
+                 char *event_mesg)
+{
+  char pcal_date[BUFSIZ];
+
+  date_sec2date_fmt (event_date, "%b %d", pcal_date);
+  fprintf (stream, "%s  %s\n", pcal_date, event_mesg);
+}
+
+/* Format and dump appointment data to a pcal formatted file. */
+static void
+pcal_dump_apoint (FILE *stream, long apoint_date, long apoint_dur,
+                  char *apoint_mesg)
+{
+  char pcal_date[BUFSIZ], pcal_beg[BUFSIZ], pcal_end[BUFSIZ];
+
+  date_sec2date_fmt (apoint_date, "%b %d", pcal_date);
+  date_sec2date_fmt (apoint_date, "%R", pcal_beg);
+  date_sec2date_fmt (apoint_date + apoint_dur, "%R", pcal_end);
+  fprintf (stream, "%s  ", pcal_date);
+  fprintf (stream, "(%s -> %s) %s\n", pcal_beg, pcal_end, apoint_mesg);
+}
+
+static void
+pcal_export_recur_events (FILE *stream)
+{
+  struct recur_event_s *i;
+  char pcal_date[BUFSIZ];
+
+  fprintf (stream, "\n# =============");
+  fprintf (stream, "\n# Recur. Events");
+  fprintf (stream, "\n# =============\n");
+  fprintf (stream,
+           "# (pcal does not support from..until dates specification\n");
+
+  for (i = recur_elist; i != 0; i = i->next)
+    {
+      if (i->rpt->until == 0 && i->rpt->freq == 1)
+        {
+          switch (i->rpt->type)
+            {
+            case RECUR_DAILY:
+              date_sec2date_fmt (i->day, "%b %d", pcal_date);
+              fprintf (stream, "all day on_or_after %s  %s\n",
+                       pcal_date, i->mesg);
+              break;
+            case RECUR_WEEKLY:
+              date_sec2date_fmt (i->day, "%a", pcal_date);
+              fprintf (stream, "all %s on_or_after ", pcal_date);
+              date_sec2date_fmt (i->day, "%b %d", pcal_date);
+              fprintf (stream, "%s  %s\n", pcal_date, i->mesg);
+              break;
+            case RECUR_MONTHLY:
+              date_sec2date_fmt (i->day, "%d", pcal_date);
+              fprintf (stream, "day on all %s  %s\n", pcal_date, i->mesg);
+              break;
+            case RECUR_YEARLY:
+              date_sec2date_fmt (i->day, "%b %d", pcal_date);
+              fprintf (stream, "%s  %s\n", pcal_date, i->mesg);
+              break;
+            default:
+              fputs (_("FATAL ERROR in pcal_export_recur_events: "
+                       "incoherent repetition type\n"), stderr);
+              exit (EXIT_FAILURE);
+              break;
+            }
+        }
+      else
+        {
+          const long YEAR_START = calendar_start_of_year ();
+          const long YEAR_END = calendar_end_of_year ();
+
+          if (i->day < YEAR_END && i->day > YEAR_START)
+            foreach_date_dump (YEAR_END, i->rpt, i->exc, i->day, 0, i->mesg,
+                               (cb_dump_t) pcal_dump_event, stream);
+        }
+    }
+}
+
 /* Export events. */
 static void
-io_export_events (FILE *stream)
+ical_export_events (FILE *stream)
 {
   struct event_s *i;
   char ical_date[BUFSIZ];
@@ -243,9 +411,20 @@ io_export_events (FILE *stream)
     }
 }
 
+static void
+pcal_export_events (FILE *stream)
+{
+  struct event_s *i;
+  
+  fprintf (stream, "\n# ======\n# Events\n# ======\n");
+  for (i = eventlist; i != 0; i = i->next)
+    pcal_dump_event (stream, i->day, 0, i->mesg);
+  fprintf (stream, "\n");
+}
+     
 /* Export recurrent appointments. */
 static void
-io_export_recur_apoints (FILE *stream)
+ical_export_recur_apoints (FILE *stream)
 {
   recur_apoint_llist_node_t *i;
   struct days_s *day;
@@ -260,7 +439,7 @@ io_export_recur_apoints (FILE *stream)
       fprintf (stream, "DTSTART:%s\n", ical_datetime);
       fprintf (stream, "DURATION:P%ldS\n", i->dur);
       fprintf (stream, "RRULE:FREQ=%s;INTERVAL=%d",
-	       io_recur_type (i->rpt->type), i->rpt->freq);
+	       ical_recur_type[i->rpt->type], i->rpt->freq);
 
       if (i->rpt->until != 0)
 	{
@@ -284,15 +463,76 @@ io_export_recur_apoints (FILE *stream)
 
       fprintf (stream, "SUMMARY:%s\n", i->mesg);
       if (i->state & APOINT_NOTIFY)
-	io_export_valarm (stream);
+	ical_export_valarm (stream);
       fprintf (stream, "END:VEVENT\n");
     }
   pthread_mutex_unlock (&(recur_alist_p->mutex));
 }
 
+static void
+pcal_export_recur_apoints (FILE *stream)
+{
+  recur_apoint_llist_node_t *i;
+  char pcal_date[BUFSIZ], pcal_beg[BUFSIZ], pcal_end[BUFSIZ];
+  
+  fprintf (stream, "\n# ==============");
+  fprintf (stream, "\n# Recur. Apoints");
+  fprintf (stream, "\n# ==============\n");
+  fprintf (stream, 
+           "# (pcal does not support from..until dates specification\n");
+
+  for (i = recur_alist_p->root; i != 0; i = i->next)
+    {
+      if (i->rpt->until == 0 && i->rpt->freq == 1)
+        {
+          date_sec2date_fmt (i->start, "%R", pcal_beg);
+          date_sec2date_fmt (i->start + i->dur, "%R", pcal_end);
+          switch (i->rpt->type)
+            {
+            case RECUR_DAILY:
+              date_sec2date_fmt (i->start, "%b %d", pcal_date);
+              fprintf (stream, "all day on_or_after %s  (%s -> %s) %s\n",
+                       pcal_date, pcal_beg, pcal_end, i->mesg);
+              break;
+            case RECUR_WEEKLY:
+              date_sec2date_fmt (i->start, "%a", pcal_date);
+              fprintf (stream, "all %s on_or_after ", pcal_date);
+              date_sec2date_fmt (i->start, "%b %d", pcal_date);
+              fprintf (stream, "%s  (%s -> %s) %s\n", pcal_date,
+                       pcal_beg, pcal_end, i->mesg);
+              break;
+            case RECUR_MONTHLY:
+              date_sec2date_fmt (i->start, "%d", pcal_date);
+              fprintf (stream, "day on all %s  (%s -> %s) %s\n", pcal_date,
+                       pcal_beg, pcal_end, i->mesg);
+              break;
+            case RECUR_YEARLY:
+              date_sec2date_fmt (i->start, "%b %d", pcal_date);
+              fprintf (stream, "%s  (%s -> %s) %s\n", pcal_date,
+                       pcal_beg, pcal_end, i->mesg);
+              break;
+            default:
+              fputs (_("FATAL ERROR in pcal_export_recur_apoints: "
+                       "incoherent repetition type\n"), stderr);
+              exit (EXIT_FAILURE);
+              break;
+            }
+        }
+      else
+        {
+          const long YEAR_START = calendar_start_of_year ();
+          const long YEAR_END = calendar_end_of_year ();
+
+          if (i->start < YEAR_END && i->start > YEAR_START)
+            foreach_date_dump (YEAR_END, i->rpt, i->exc, i->start, i->dur,
+                               i->mesg, (cb_dump_t)pcal_dump_apoint, stream);
+        }
+    }
+}
+
 /* Export appointments. */
 static void
-io_export_apoints (FILE *stream)
+ical_export_apoints (FILE *stream)
 {
   apoint_llist_node_t *i;
   char ical_datetime[BUFSIZ];
@@ -306,15 +546,28 @@ io_export_apoints (FILE *stream)
       fprintf (stream, "DURATION:P%ldS\n", i->dur);
       fprintf (stream, "SUMMARY:%s\n", i->mesg);
       if (i->state & APOINT_NOTIFY)
-	io_export_valarm (stream);
+	ical_export_valarm (stream);
       fprintf (stream, "END:VEVENT\n");
     }
   pthread_mutex_unlock (&(alist_p->mutex));
 }
 
+static void
+pcal_export_apoints (FILE *stream)
+{
+  fprintf (stream, "\n# ============\n# Appointments\n# ============\n");
+  apoint_llist_node_t *i;
+
+  pthread_mutex_lock (&(alist_p->mutex));
+  for (i = alist_p->root; i != 0; i = i->next)
+      pcal_dump_apoint (stream, i->start, i->dur, i->mesg);
+  pthread_mutex_unlock (&(alist_p->mutex));
+  fprintf (stream, "\n");
+}
+
 /* Export todo items. */
 static void
-io_export_todo (FILE *stream)
+ical_export_todo (FILE *stream)
 {
   struct todo_s *i;
 
@@ -325,6 +578,20 @@ io_export_todo (FILE *stream)
       fprintf (stream, "SUMMARY:%s\n", i->mesg);
       fprintf (stream, "END:VTODO\n");
     }
+}
+
+static void
+pcal_export_todo (FILE *stream)
+{
+  struct todo_s *i;
+
+  fprintf (stream, "#\n# Todos\n#\n");
+  for (i = todolist; i != 0; i = i->next)
+    {
+      fprintf (stream, "note all  ");
+      fprintf (stream, "%d. %s\n", i->id, i->mesg);
+    }
+  fprintf (stream, "\n");
 }
 
 /* 
@@ -943,20 +1210,26 @@ io_startup_screen (bool skip_dialogs, int no_data_file)
 
 /* Export calcurse data. */
 void
-io_export_data (export_mode_t mode, conf_t *conf)
+io_export_data (export_mode_t mode, export_type_t type, conf_t *conf)
 {
   FILE *stream;
   char *wrong_mode = _("FATAL ERROR in io_export_data: wrong export mode\n");
+  char *wrong_type = _("FATAL ERROR in io_export_data: unknown export type\n");
   char *success = _("The data were successfully exported");
   char *enter = _("Press [ENTER] to continue");
 
+  if (type < IO_EXPORT_ICAL || type >= IO_EXPORT_NBTYPES)
+    {
+      fputs (wrong_type, stderr);
+      exit (EXIT_FAILURE);
+    }
   switch (mode)
     {
     case IO_EXPORT_NONINTERACTIVE:
       stream = stdout;
       break;
     case IO_EXPORT_INTERACTIVE:
-      stream = io_get_export_stream ();
+      stream = get_export_stream (type);
       break;
     default:
       fputs (wrong_mode, stderr);
@@ -967,23 +1240,23 @@ io_export_data (export_mode_t mode, conf_t *conf)
   if (stream == NULL)
     return;
 
-  io_export_header (stream);
+  cb_export_header[type] (stream);
 
   if (!conf->skip_progress_bar && mode == IO_EXPORT_INTERACTIVE)
     progress_bar (PROGRESS_BAR_EXPORT, 0);
-  io_export_recur_events (stream);
-  io_export_events (stream);
+  cb_export_recur_events[type] (stream);
+  cb_export_events[type] (stream);
 
   if (!conf->skip_progress_bar && mode == IO_EXPORT_INTERACTIVE)
     progress_bar (PROGRESS_BAR_EXPORT, 1);
-  io_export_recur_apoints (stream);
-  io_export_apoints (stream);
+  cb_export_recur_apoints[type] (stream);
+  cb_export_apoints[type] (stream);
 
   if (!conf->skip_progress_bar && mode == IO_EXPORT_INTERACTIVE)
     progress_bar (PROGRESS_BAR_EXPORT, 2);
-  io_export_todo (stream);
+  cb_export_todo[type] (stream);
 
-  io_export_footer (stream);
+  cb_export_footer[type] (stream);
 
   if (stream != stdout)
     fclose (stream);
@@ -993,4 +1266,28 @@ io_export_data (export_mode_t mode, conf_t *conf)
       status_mesg (success, enter);
       wgetch (win[STA].p);
     }
+}
+
+/* Draws the export format selection bar */
+void
+io_export_bar (void)
+{
+  int smlspc, spc;
+
+  smlspc = 2;
+  spc = 15;
+
+  custom_apply_attr (win[STA].p, ATTR_HIGHEST);
+  mvwprintw (win[STA].p, 0, 2, "Q");
+  mvwprintw (win[STA].p, 1, 2, "I");
+  mvwprintw (win[STA].p, 0, 2 + spc, "P");
+  custom_remove_attr (win[STA].p, ATTR_HIGHEST);
+
+  mvwprintw (win[STA].p, 0, 2 + smlspc, _("Exit"));
+  mvwprintw (win[STA].p, 1, 2 + smlspc, _("Ical"));
+  mvwprintw (win[STA].p, 0, 2 + spc + smlspc, _("Pcal"));
+
+  wnoutrefresh (win[STA].p);
+  wmove (win[STA].p, 0, 0);
+  doupdate ();
 }

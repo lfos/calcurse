@@ -1,4 +1,4 @@
-/*	$calcurse: io.h,v 1.10 2008/08/06 17:44:34 culot Exp $	*/
+/*	$calcurse: io.h,v 1.11 2008/08/10 09:24:46 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -34,8 +34,14 @@ typedef enum
   IO_EXPORT_NONINTERACTIVE,
   IO_EXPORT_INTERACTIVE,
   IO_EXPORT_NBMODES
-}
-export_mode_t;
+} export_mode_t;
+
+typedef enum
+{
+  IO_EXPORT_ICAL,
+  IO_EXPORT_PCAL,
+  IO_EXPORT_NBTYPES
+} export_type_t;
 
 void io_init (char *, char *);
 void io_extract_data (char *, const char *, int);
@@ -44,6 +50,7 @@ void io_load_app (void);
 void io_load_todo (void);
 int  io_check_data_files (void);
 void io_startup_screen (bool, int);
-void io_export_data (export_mode_t, conf_t *);
+void io_export_data (export_mode_t, export_type_t, conf_t *);
+void io_export_bar (void);
 
 #endif /* CALCURSE_IO_H */

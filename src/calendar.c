@@ -1,4 +1,4 @@
-/*	$calcurse: calendar.c,v 1.16 2008/08/03 18:41:55 culot Exp $	*/
+/*	$calcurse: calendar.c,v 1.17 2008/08/10 09:24:46 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -399,7 +399,7 @@ calendar_change_day (int datefmt)
  * Used to change date by adding a certain amount of days or weeks.
  * Returns 0 on success, 1 otherwise.
  */
-int
+static int
 date_change (struct tm *date, int delta_month, int delta_day)
 {
   struct tm t;
@@ -483,6 +483,44 @@ calendar_move (move_t move)
       slctd_day.mm = t.tm_mon + 1;
       slctd_day.yyyy = t.tm_year + 1900;
     }
+}
+
+/* Returns the beginning of current year as a long. */
+long
+calendar_start_of_year (void)
+{
+  time_t timer;
+  struct tm *tm;
+
+  timer = time (NULL);
+  tm = localtime (&timer);
+  tm->tm_mon = 0;
+  tm->tm_mday = 1;
+  tm->tm_hour = 0;
+  tm->tm_min = 0;
+  tm->tm_sec = 0;
+  timer = mktime (tm);
+
+  return (long)timer;
+}
+
+long
+calendar_end_of_year (void)
+{
+  time_t timer;
+  struct tm *tm;
+
+  timer = time (NULL);
+  tm = localtime (&timer);
+  tm->tm_mon = 0;
+  tm->tm_mday = 1;
+  tm->tm_hour = 0;
+  tm->tm_min = 0;
+  tm->tm_sec = 0;
+  tm->tm_year++;
+  timer = mktime (tm);
+
+  return (long)(timer - 1);
 }
 
 /*

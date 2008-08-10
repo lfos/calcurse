@@ -1,4 +1,4 @@
-/*	$calcurse: calendar.h,v 1.11 2008/08/03 18:41:55 culot Exp $	*/
+/*	$calcurse: calendar.h,v 1.12 2008/08/10 09:24:46 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -92,6 +92,8 @@ void    calendar_update_panel (WINDOW *);
 void    calendar_goto_today (void);
 void    calendar_change_day (int);
 void    calendar_move (move_t);
+long    calendar_start_of_year (void);
+long    calendar_end_of_year (void);
 char   *calendar_get_pom (time_t);
 
 #endif /* CALCURSE_CALENDAR_H */

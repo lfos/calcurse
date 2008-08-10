@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.64 2008/08/03 18:41:55 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.65 2008/08/10 09:24:46 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -384,7 +384,28 @@ main (int argc, char **argv)
 
 	case 'X':
 	case 'x':		/* Export function */
-	  io_export_data (IO_EXPORT_INTERACTIVE, &conf);
+          erase_status_bar ();
+          io_export_bar ();
+          while ((ch = wgetch (win[STA].p)) != 'q')
+	    {
+	      switch (ch)
+		{
+		case 'I':
+		case 'i':
+                  io_export_data (IO_EXPORT_INTERACTIVE, IO_EXPORT_ICAL, &conf);
+		  break;
+		case 'P':
+		case 'p':
+                  io_export_data (IO_EXPORT_INTERACTIVE, IO_EXPORT_PCAL, &conf);
+		  break;
+		}
+	      wins_reset ();
+	      wins_update ();
+	      do_storage = true;
+	      erase_status_bar ();
+	      io_export_bar ();
+	    }
+	  wins_update ();
 	  break;
 
         case KEY_RIGHT:
