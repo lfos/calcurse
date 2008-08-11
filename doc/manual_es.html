@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <!--
 /*
- *	$calcurse: manual_es.html,v 1.15 2008/08/08 14:22:19 culot Exp $
+ *	$calcurse: manual_es.html,v 1.16 2008/08/11 18:08:45 culot Exp $
  *
  * Calcurse - text-based organizer
  * Copyright (c) 2004-2008 Frederic Culot
@@ -112,6 +112,7 @@ well as the way one can contribute to <code>calcurse</code> development.
         <li><a href="#links_homepage">9.1 Pagina web de <code>calcurse</code></a></li>
 	<li><a href="#links_list">9.2 Lista de anuncios de <code>calcurse</code></a></li>
 	<li><a href="#links_rss">9.3 <code>calcurse</code> RSS feed</a></li>
+        <li><a href="#links_others"><div class="todo">9.4 Other links</div></a></li>
     </ul></li>
     <li><a href="#thanks">10. Gracias a ...</a></li>
 </ul>
@@ -340,14 +341,20 @@ well as the way one can contribute to <code>calcurse</code> development.
 	    <dd>
 	    Muestra la versión de <code>calcurse</code> y sale.
 	    </dd>
-	    <dt><code>-x, --export</code></dt>
+	    <dt><code>-x[format], --export[=format]</code></dt>
 	    <dd>
-	    Exporta los datos del usuario a un formato iCalendar. Citas, eventos y tareas pendientes son convertidos y
-	    mostrados en patalla.
+            <div class="todo">
+	    Export user data to specified format. Events, appointments and
+	    todos are converted and echoed to stdout.
+            Two possible formats are available: ical and pcal 
+            (see section <a href="#links_others">Links</a> below). 
+            If the optional argument <code>format</code> is not given,
+            ical format is selected by default.
+            </div>  
 	    <p class="rq"><span class="valorise">Nota:</span>
 	    redirecciona la salida standard para exportar los datos a un archivo usando 
 	    un comando como este:
-	    <code>$ calcurse --export > my_data.ics</code></p>
+	    <code>$ calcurse --export > my_data.dat</code></p>
 	    </dd>
 	</dl>
 
@@ -985,6 +992,16 @@ msgid ""
 	Este RSS feed es actualizado cada vez que hay una nueva version de Calcurse disponible
 	describiendo las nuevas caracteristicas.</p>
 
+<h2><div class="todo">9.4 Other links</div><a name="links_others"></a></h2>
+<div class="todo">
+<p>
+        You may want to look at the ical format specification (rfc2445) at:
+        <pre>http://tools.ietf.org/html/rfc2445</pre>
+<p>
+        The pcal project page can be found at:
+        <pre>http://pcal.sourceforge.net/</pre>
+</div>
+
 <h1>10. Gracias a ...<a name="thanks"></a></h1>
 <p>
 	Es la hora de dar las gracias a personas sin las que este programa  
@@ -1028,7 +1045,7 @@ msgid ""
 	Copyright (c) 2004-2008 Fr&eacute;d&eacute;ric Culot<br>
 	Traducido al Español por José López
 	<code>&lt;testinground .at. gmail .dot. com&gt;</code><br>
-	Calcurse version 2.2 - Last change: August 8, 2008<br>
+	Calcurse version 2.2 - Last change: August 11, 2008<br>
 </div>
 </div>
 

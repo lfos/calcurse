@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <!--
 /*
- *	$calcurse: manual_en.html,v 1.18 2008/08/08 14:22:19 culot Exp $
+ *	$calcurse: manual_en.html,v 1.19 2008/08/11 18:08:45 culot Exp $
  *
  * Calcurse - text-based organizer
  * Copyright (c) 2004-2008 Frederic Culot
@@ -109,6 +109,7 @@ well as the way one can contribute to <code>calcurse</code> development.
         <li><a href="#links_homepage">9.1 <code>calcurse</code> homepage</a></li>
 	<li><a href="#links_list">9.2 <code>calcurse</code> announce list</a></li>
 	<li><a href="#links_rss">9.3 <code>calcurse</code> RSS feed</a></li>
+        <li><a href="#links_others">9.4 Other links</a></li>
     </ul></li>
     <li><a href="#thanks">10. Thanks</a></li>
 </ul>
@@ -336,14 +337,18 @@ All of the commands are documented within an online help system.
 	    <dd>
 	    Display <code>calcurse</code> version and exit.
 	    </dd>
-	    <dt><code>-x, --export</code></dt>
+	    <dt><code>-x[format], --export[=format]</code></dt>
 	    <dd>
-	    Export user data to iCalendar format. Events, appointments and
+	    Export user data to specified format. Events, appointments and
 	    todos are converted and echoed to stdout.
+            Two possible formats are available: ical and pcal 
+            (see section <a href="#links_others">Links</a> below). 
+            If the optional argument <code>format</code> is not given,
+            ical format is selected by default.
 	    <p class="rq"><span class="valorise">Note:</span> 
 	    redirect standard output to export data to a file,
 	    by issuing a command such as:
-	    <code>$ calcurse --export &gt; my_data.ics</code></p>
+	    <code>$ calcurse --export &gt; my_data.dat</code></p>
 	    </dd>
 	</dl>
 
@@ -1005,6 +1010,14 @@ msgid ""
 	This RSS feed is updated each time a new version of calcurse is
 	available, describing newly added features.</p>
 
+<h2>9.4 Other links<a name="links_others"></a></h2>
+<p>
+        You may want to look at the ical format specification (rfc2445) at:
+        <pre>http://tools.ietf.org/html/rfc2445</pre>
+<p>
+        The pcal project page can be found at:
+        <pre>http://pcal.sourceforge.net/</pre>
+
 <h1>10. Thanks<a name="thanks"></a></h1>
 <p>
 	Its time now to thank other people without whom this program 
@@ -1052,7 +1065,7 @@ msgid ""
 
 <div class="footer">
 	Copyright (c) 2004-2008 Fr&eacute;d&eacute;ric Culot<br>
-	Calcurse version 2.2 - Last change: August 8, 2008<br>
+	Calcurse version 2.2 - Last change: August 11, 2008<br>
 </div>
 </div>
 

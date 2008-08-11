@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.47 2008/08/10 09:24:46 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.48 2008/08/11 18:08:45 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -556,45 +556,7 @@ date_sec2date_str (long sec, char *datefmt)
   return (datestr);
 }
 
-/* 
- * Return a string containing an iCal date, given a date in 
- * seconds. This is used to build all-day long iCal VEVENT 
- * (calcurse event equivalent).
- */
-void
-date_sec2ical_date (long sec, char *ical_date)
-{
-#define DATELENGTH	9
-
-  struct tm *lt;
-  time_t t;
-
-  t = sec;
-  lt = localtime (&t);
-  strftime (ical_date, DATELENGTH, "%Y%m%d", lt);
-}
-
-/* 
- * Return a string containing an iCal date-time, given a date in 
- * seconds. This is used to build iCal VEVENT (calcurse appointment equivalent). 
- */
-void
-date_sec2ical_datetime (long sec, char *ical_datetime)
-{
-#define DATETIMELENGTH	16
-
-  struct tm *lt;
-  time_t t;
-
-  t = sec;
-  lt = localtime (&t);
-  strftime (ical_datetime, DATETIMELENGTH, "%Y%m%dT%H%M%S", lt);
-}
-
-/*
- * At least a generic function to format date...
- * I promise I will learn how to code someday.
- */
+/* Generic function to format date. */
 void
 date_sec2date_fmt (long sec, const char *fmt, char *datef)
 {

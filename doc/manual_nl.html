@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//NL">
 <!--
 /*
- *	$calcurse: manual_nl.html,v 1.10 2008/08/08 14:22:19 culot Exp $
+ *	$calcurse: manual_nl.html,v 1.11 2008/08/11 18:08:45 culot Exp $
  *
  * Calcurse - text-based organizer
  * Copyright (c) 2004-2008 Frederic Culot
@@ -110,6 +110,7 @@ besproken. Als laatste wordt zowel de procedure van het melden van fouten in
         <li><a href="#links_homepage">9.1 <code>Calcurse</code> homepage</a></li>
 	<li><a href="#links_list">9.2 <code>Calcurse</code> nieuws lijst</a></li>
 	<li><a href="#links_rss">9.3 <code>Calcurse</code> RSS feed</a></li>
+        <li><a href="#links_others"><div class="todo">9.4 Other links</div></a></li>
     </ul></li>
     <li><a href="#thanks">10. Dankwoord</a></li>
 </ul>
@@ -342,15 +343,19 @@ besproken. Als laatste wordt zowel de procedure van het melden van fouten in
 	    Geeft het versienummer van <code>calcurse</code> weer en verlaat het
 	    programma.
 	    </dd>
-	    <dt><code>-x, --export</code></dt>
-	    <dd>
-	    Exporteert de data van de gebruiker naar het iCalender-formaat.
-	    Gebeurtenissen, afspraken en taken worden geconverteerd en naar stdout
-	    gezonden.
+	    <dt><code>-x[format], --export[=format]</code></dt>
+            <dd><div class="todo">
+	    Export user data to specified format. Events, appointments and
+	    todos are converted and echoed to stdout.
+            Two possible formats are available: ical and pcal 
+            (see section <a href="#links_others">Links</a> below). 
+            If the optional argument <code>format</code> is not given,
+            ical format is selected by default.
+            </div>
 	    <p class="rq"><span class="valorise">Noot:</span> 	
 	    Om de data te exporteren naar een bestand, kan men de
 	    standaard output omleiden met een commando zoals:
-	    <code>$ calcurse --export > my_data.ics</code></p>
+	    <code>$ calcurse --export > my_data.dat</code></p>
 	    </dd>
 	</dl>
 
@@ -998,6 +1003,16 @@ msgid ""
 	calcurse beschikbaar is, waarbij ook de nieuwe opties beschreven
 	worden. </p>
 
+<h2><div class="todo">9.4 Other links</div><a name="links_others"></a></h2>
+<div class="todo">
+<p>
+        You may want to look at the ical format specification (rfc2445) at:
+        <pre>http://tools.ietf.org/html/rfc2445</pre>
+<p>
+        The pcal project page can be found at:
+        <pre>http://pcal.sourceforge.net/</pre>
+</div>
+
 <h1>10. Dankwoord<a name="thanks"></a></h1>
 <p>
 	Het is tijd om de mensen te bedanken, zonder wie dit programma niet
@@ -1052,7 +1067,7 @@ msgid ""
 
 <div class="footer">
 	Copyright (c) 2004-2008 Fr&eacute;d&eacute;ric Culot<br>
-	Calcurse version 2.2 - Last change: August 8, 2008<br>
+	Calcurse version 2.2 - Last change: August 11, 2008<br>
 </div>
 </div>
 

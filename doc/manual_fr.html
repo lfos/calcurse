@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <!--
 /*
- *	$calcurse: manual_fr.html,v 1.19 2008/08/08 14:22:19 culot Exp $
+ *	$calcurse: manual_fr.html,v 1.20 2008/08/11 18:08:45 culot Exp $
  *
  * Calcurse - text-based organizer
  * Copyright (c) 2004-2008 Frederic Culot
@@ -112,6 +112,7 @@ pour faire remonter les bogues et pour contribuer au développement de
         <li><a href="#links_homepage">9.1 Site internet de <code>calcurse</code></a></li>
 	<li><a href="#links_list">9.2 Liste de diffusion de <code>calcurse</code></a></li>
 	<li><a href="#links_rss">9.3 Flux RSS</a></li>
+        <li><a href="#links_others">9.4 Autres liens</a></li>
     </ul></li>
     <li><a href="#thanks">10. Remerciements</a></li>
 </ul>
@@ -373,16 +374,20 @@ disponibles.
 	<dd>
 	Affiche la version de <code>calcurse</code>, puis quitte.
 	</dd>
-	<dt><code>-x, --export</code></dt>
+	<dt><code>-x[format], --export[=format]</code></dt>
 	<dd>
-	Exporte les données utilisateur au format iCalendar. Les évènements,
+	Exporte les données utilisateur au format spécifié. Les évènements,
 	rendez-vous et tâches sont convertis et imprimés sur la sortie
-	standard.
+	standard. Deux formats d'export différents sont disponibles : 
+        le format ical et le format pcal (voir la section 
+        <a href="#links_others">Liens</a> ci-dessous).
+        Si l'argument optionnel <code>format</code> n'est pas indiqué par
+        l'utilisateur, alors le format ical sera utilisé par défaut.
 	<p class="rq"><span class="valorise">Note:</span>
 	afin de sauvegarder les données exportées dans un fichier,
 	il est nécessaire de rediriger la sortie standard en utilisant une
 	commande comme celle-ci:
-	<code>$ calcurse --export &gt; mon_fichier.ics</code></p>
+	<code>$ calcurse --export &gt; mon_fichier.dat</code></p>
 	</dd>
 	</dl>
 
@@ -1144,6 +1149,15 @@ msgid ""
 	<code>calcurse</code> est diffusée, et indique quelles sont les
 	modifications qui ont été apportées.</p>
 
+<h2>9.4 Autres liens<a name="links_others"></a></h2>
+<p>
+        La spécification du format ical (rfc2445) peut être trouvée à l'adresse
+        suivante :
+        <pre>http://tools.ietf.org/html/rfc2445</pre>
+<p>
+        La page du projet pcal se trouve quant à elle à l'adresse suivante :
+        <pre>http://pcal.sourceforge.net/</pre>
+
 <h1>10. Remerciements<a name="thanks"></a></h1>
 <p>
 	Je voudrais remercier ici toutes les personnes sans qui ce projet
@@ -1197,7 +1211,7 @@ msgid ""
 
 <div class="footer">
 	Copyright (c) 2004-2008 Frédéric Culot<br>
-	Calcurse version 2.2 - Dernière modification: 8 Aout 2008<br>
+	Calcurse version 2.2 - Dernière modification: 11 Aout 2008<br>
 </div>
 </div>
 

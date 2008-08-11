@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.31 2008/08/10 09:24:46 culot Exp $	*/
+/*	$calcurse: io.c,v 1.32 2008/08/11 18:08:45 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -39,6 +39,9 @@
 #include "event.h"
 #include "apoint.h"
 #include "io.h"
+
+#define ICALDATEFMT      "%Y%m%d"
+#define ICALDATETIMEFMT  "%Y%m%dT%H%M%S"
 
 typedef enum
 {
@@ -282,7 +285,7 @@ ical_export_recur_events (FILE *stream)
 
   for (i = recur_elist; i != 0; i = i->next)
     {
-      date_sec2ical_date (i->day, ical_date);
+      date_sec2date_fmt (i->day, ICALDATEFMT, ical_date);
       fprintf (stream, "BEGIN:VEVENT\n");
       fprintf (stream, "DTSTART:%s\n", ical_date);
       fprintf (stream, "RRULE:FREQ=%s;INTERVAL=%d",
@@ -290,7 +293,7 @@ ical_export_recur_events (FILE *stream)
 
       if (i->rpt->until != 0)
 	{
-	  date_sec2ical_date (i->rpt->until, ical_date);
+	  date_sec2date_fmt (i->rpt->until, ICALDATEFMT, ical_date);
 	  fprintf (stream, ";UNTIL=%s\n", ical_date);
 	}
       else
@@ -298,11 +301,11 @@ ical_export_recur_events (FILE *stream)
 
       if (i->exc != NULL)
 	{
-	  date_sec2ical_date (i->exc->st, ical_date);
+	  date_sec2date_fmt (i->exc->st, ICALDATEFMT, ical_date);
 	  fprintf (stream, "EXDATE:%s", ical_date);
 	  for (day = i->exc->next; day; day = day->next)
 	    {
-	      date_sec2ical_date (day->st, ical_date);
+	      date_sec2date_fmt (day->st, ICALDATEFMT, ical_date);
 	      fprintf (stream, ",%s", ical_date);
 	    }
 	  fprintf (stream, "\n");
@@ -403,7 +406,7 @@ ical_export_events (FILE *stream)
 
   for (i = eventlist; i != 0; i = i->next)
     {
-      date_sec2ical_date (i->day, ical_date);
+      date_sec2date_fmt (i->day, ICALDATEFMT, ical_date);
       fprintf (stream, "BEGIN:VEVENT\n");
       fprintf (stream, "DTSTART:%s\n", ical_date);
       fprintf (stream, "SUMMARY:%s\n", i->mesg);
@@ -434,7 +437,7 @@ ical_export_recur_apoints (FILE *stream)
   pthread_mutex_lock (&(recur_alist_p->mutex));
   for (i = recur_alist_p->root; i != 0; i = i->next)
     {
-      date_sec2ical_datetime (i->start, ical_datetime);
+      date_sec2date_fmt (i->start, ICALDATETIMEFMT, ical_datetime);
       fprintf (stream, "BEGIN:VEVENT\n");
       fprintf (stream, "DTSTART:%s\n", ical_datetime);
       fprintf (stream, "DURATION:P%ldS\n", i->dur);
@@ -443,7 +446,7 @@ ical_export_recur_apoints (FILE *stream)
 
       if (i->rpt->until != 0)
 	{
-	  date_sec2ical_date (i->rpt->until + HOURINSEC, ical_date);
+	  date_sec2date_fmt (i->rpt->until + HOURINSEC, ICALDATEFMT, ical_date);
 	  fprintf (stream, ";UNTIL=%s\n", ical_date);
 	}
       else
@@ -451,11 +454,11 @@ ical_export_recur_apoints (FILE *stream)
 
       if (i->exc != NULL)
 	{
-	  date_sec2ical_date (i->exc->st, ical_date);
+	  date_sec2date_fmt (i->exc->st, ICALDATEFMT, ical_date);
 	  fprintf (stream, "EXDATE:%s", ical_date);
 	  for (day = i->exc->next; day; day = day->next)
 	    {
-	      date_sec2ical_date (day->st, ical_date);
+	      date_sec2date_fmt (day->st, ICALDATEFMT, ical_date);
 	      fprintf (stream, ",%s", ical_date);
 	    }
 	  fprintf (stream, "\n");
@@ -540,7 +543,7 @@ ical_export_apoints (FILE *stream)
   pthread_mutex_lock (&(alist_p->mutex));
   for (i = alist_p->root; i != 0; i = i->next)
     {
-      date_sec2ical_datetime (i->start, ical_datetime);
+      date_sec2date_fmt (i->start, ICALDATETIMEFMT, ical_datetime);
       fprintf (stream, "BEGIN:VEVENT\n");
       fprintf (stream, "DTSTART:%s\n", ical_datetime);
       fprintf (stream, "DURATION:P%ldS\n", i->dur);

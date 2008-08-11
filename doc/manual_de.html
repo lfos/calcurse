@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <!--
 /*
- *	$calcurse: manual_de.html,v 1.18 2008/08/08 14:22:19 culot Exp $
+ *	$calcurse: manual_de.html,v 1.19 2008/08/11 18:08:45 culot Exp $
  *
  * Calcurse - text-based organizer
  * Copyright (c) 2004-2008 Frederic Culot
@@ -112,6 +112,7 @@ well as the way one can contribute to <code>calcurse</code> development.
         <li><a href="#links_homepage">9.1 <code>calcurse</code> Internetseite</a></li>
 	<li><a href="#links_list">9.2 <code>calcurse</code> Ank&uuml;ndigungsliste</a></li>
 	<li><a href="#links_rss">9.3 <code>calcurse</code> RSS</a></li>
+        <li><a href="#links_others"><div class="todo">9.4 Other links</div></a></li>        
     </ul></li>
     <li><a href="#thanks">10. Danksagungen</a></li>
 </ul>
@@ -332,13 +333,18 @@ Es werden sowohl kurze als auch lange Optionsangaben unterst&uuml;tzt.</p>
     <dt><code>-v, --version</code></dt>
     <dd>Gibt die aktuelle Version von Calcurse aus.
     </dd>
-    <dt><code>-x, --export</code></dt>
-    <dd>Exportiert Benutzerdaten in das iCalendar-Format. Ereignisse,
-    Termine und Aufgaben werden konvertiert und nach stdout
-    ausgegeben.
+    <dt><code>-x[format], --export[=format]</code></dt>
+    <dd><div class="todo">
+	    Export user data to specified format. Events, appointments and
+	    todos are converted and echoed to stdout.
+            Two possible formats are available: ical and pcal 
+            (see section <a href="#links_others">Links</a> below). 
+            If the optional argument <code>format</code> is not given,
+            ical format is selected by default.
+    </div>
     <p class="rq"><span class="valorise">Beachte:</span>
     leiten Sie die Ausgabe in eine Datei, etwa wie im folgenden Beispiel: 
-    <code>$ calcurse --export > my_data.ics</code></p>
+    <code>$ calcurse --export > my_data.dat</code></p>
     </dd>
 </dl>
 
@@ -970,6 +976,16 @@ Um sich in die Liste einzutragen, schicken Sie einfach eine E-Mail mit dem Betre
 	der RSS-Feed aktualisiert und enth&auml;lt eine Beschreibung der neu 
 	hinzugekommenen Programmfunktionen.</p>
 
+<h2><div class="todo">9.4 Other links</div><a name="links_others"></a></h2>
+<div class="todo">
+<p>
+        You may want to look at the ical format specification (rfc2445) at:
+        <pre>http://tools.ietf.org/html/rfc2445</pre>
+<p>
+        The pcal project page can be found at:
+        <pre>http://pcal.sourceforge.net/</pre>
+</div>
+
 <h1>10. Danksagungen<a name="thanks"></a></h1>
 <p>
 Folgenden Leuten m&ouml;chte ich gerne f&uuml;r Ihre Unterst&uuml;tzung danken, ohne
@@ -1011,7 +1027,7 @@ Benutzer, die mir Ihr Feedback mitgeteilt haben.</p>
 	Copyright (c) 2004-2008 Fr&eacute;d&eacute;ric Culot<br>
 	German translation by Michael Schulz
 	<code>&lt;bloodshower .at. web .dot. de&gt;</code>, and Chris.<br>
-	Calcurse version 2.2 - Last change: August 8, 2008<br>
+	Calcurse version 2.2 - Last change: August 11, 2008<br>
 </div>
 </div>
 

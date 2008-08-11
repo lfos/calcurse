@@ -1,4 +1,4 @@
-/*	$calcurse: utils.h,v 1.31 2008/08/10 09:24:46 culot Exp $	*/
+/*	$calcurse: utils.h,v 1.32 2008/08/11 18:08:45 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -89,8 +89,6 @@ void    status_bar (void);
 long    date2sec (date_t, unsigned, unsigned);
 char   *date_sec2hour_str (long);
 char   *date_sec2date_str (long, char *);
-void    date_sec2ical_date (long, char *);
-void    date_sec2ical_datetime (long, char *);
 void    date_sec2date_fmt (long, const char *, char *);
 long    date_sec_change (long, int, int);
 long    update_time_in_date (long, unsigned, unsigned);

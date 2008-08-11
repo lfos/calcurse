@@ -1,3 +1,17 @@
+2008-08-11  Frederic Culot  <frederic@culot.org>
+
+	* src/utils.c (date_sec2ical_*): functions replaced by
+	date_sec2date_fmt()
+
+	* src/args.c (parse_args, usage, help_arg): option added to '-x'
+	flag to choose export format
+
+	* src/help.c (help_screen): help text updated with pcal export
+
+	* src/calcurse.1: manpage updated
+
+	* doc/manual_*.html: manuals updated
+	
 2008-08-10  Frederic Culot  <frederic@culot.org>
 
 	* src/calcurse.c: new menu added presenting export format

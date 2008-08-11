@@ -1,4 +1,4 @@
-/*	$calcurse: help.c,v 1.27 2008/08/03 18:41:55 culot Exp $	*/
+/*	$calcurse: help.c,v 1.28 2008/08/11 18:08:45 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -301,10 +301,16 @@ help_screen (void)
 
   hscr[HELP_EXPORT].title = _("Export:\n");
   hscr[HELP_EXPORT].text =
-    _("Pressing 'X' exports the Calcurse data to iCalendar format.\n\n"
+    _("Pressing 'X' leads to the export submenu, from which you can choose\n"
+      "between two different export formats: 'ical' and 'pcal'.\n"
+      "Choosing one of those formats lets you export the Calcurse data to\n"
+      "icalendar or pcal format.\n\n"
       "You first need to specify the file to which the data will be exported.\n"
       "By default, this file is:\n\n"
       "     ~/calcurse.ics\n\n"
+      "for an ical export, and:\n\n"
+      "     ~/calcurse.txt\n\n"
+      "for a pcal export.\n"
       "All of the calcurse data are exported, in the following order:\n"
       "events, appointments, todos.\n");
 

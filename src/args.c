@@ -1,4 +1,4 @@
-/*	$calcurse: args.c,v 1.36 2008/08/10 09:24:46 culot Exp $	*/
+/*	$calcurse: args.c,v 1.37 2008/08/11 18:08:45 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -48,7 +48,7 @@ static void
 usage ()
 {
   char *arg_usage =
-    _("Usage: calcurse [-h|-v] [-x] [-N] [-an] [-t[num]]\n"
+    _("Usage: calcurse [-h|-v] [-N] [-an] [-t[num]] [-x[format]]\n"
       "                [-d <date>|<num>] [-s[date]] [-r[range]]\n"
       "                [-c<file> | -D<dir>]\n");
   fputs (arg_usage, stdout);
@@ -120,11 +120,14 @@ help_arg ()
       "	print todo list and exit. If the optional number [num] is given,\n"
       "\tthen only todos having a priority equal to [num] will be returned.\n"
       "\tnote: priority number must be between 1 (highest) and 9 (lowest).\n"
-      "\n  -x, --export\n"
-      "	export user data to iCalendar format. Events, appointments and\n"
+      "\n  -x[format], --export[=format]\n"
+      "	export user data to the specified format. Events, appointments and\n"
       "\ttodos are converted and echoed to stdout.\n"
+      "\tTwo possible formats are available: 'ical' and 'pcal'.\n"
+      "\tIf the optional argument format is not given, ical format is\n"
+      "\tselected by default.\n"
       "\tnote: redirect standard output to export data to a file,\n"
-      "\tby issuing a command such as: calcurse --export > my_data.ics\n"
+      "\tby issuing a command such as: calcurse --export > calcurse.dat\n"
       "\nFor more information, type '?' from within Calcurse, "
       "or read the manpage.\n"
       "Mail bug reports and suggestions to <calcurse@culot.org>.\n");
@@ -578,13 +581,13 @@ parse_args (int argc, char **argv, conf_t *conf)
   int vflag = 0;    /* -v: print version number */
   int xflag = 0;    /* -x: export data to iCalendar format */
 
-  int tnum = 0;
+  int tnum = 0, xfmt = 0;
   int non_interactive = 0, multiple_flag = 0, load_data = 0;
   int no_file = 1;
   char *ddate = "", *cfile = NULL, *range = NULL, *startday = NULL;
   char *datadir = NULL;
 
-  static char *optstr = "hvnNaxt::d:c:r:s:D:";
+  static char *optstr = "hvnNax::t::d:c:r:s:D:";
 
   struct option longopts[] = {
     {"appointment", no_argument, NULL, 'a'},
@@ -598,7 +601,7 @@ parse_args (int argc, char **argv, conf_t *conf)
     {"startday", required_argument, NULL, 's'},
     {"todo", optional_argument, NULL, 't'},
     {"version", no_argument, NULL, 'v'},
-    {"export", no_argument, NULL, 'x'},
+    {"export", optional_argument, NULL, 'x'},
     {NULL, no_argument, NULL, 0}
   };
 
@@ -675,6 +678,25 @@ parse_args (int argc, char **argv, conf_t *conf)
 	  xflag = 1;
 	  multiple_flag++;
 	  load_data++;
+          if (optarg != NULL)
+            {
+              if (strcmp (optarg, "ical") == 0)
+                xfmt = IO_EXPORT_ICAL;
+              else if (strcmp (optarg, "pcal") == 0)
+                xfmt = IO_EXPORT_PCAL;
+              else
+                {
+                  fputs (_("Argumet for '-x' should be either "
+                           "'ical' or 'pcal'\n"), stderr);
+                  usage ();
+                  usage_try ();
+                  return EXIT_FAILURE;
+                }
+            }
+          else
+            {
+              xfmt = IO_EXPORT_ICAL;
+            }
 	  break;
 	default:
 	  usage ();
@@ -731,7 +753,8 @@ parse_args (int argc, char **argv, conf_t *conf)
 	    {
 	      notify_init_vars ();
 	      custom_load_conf (conf, 0);
-	      io_export_data (IO_EXPORT_NONINTERACTIVE, IO_EXPORT_ICAL, conf);
+              io_load_todo ();
+	      io_export_data (IO_EXPORT_NONINTERACTIVE, xfmt, conf);
 	      non_interactive = 1;
 	      return (non_interactive);
 	    }

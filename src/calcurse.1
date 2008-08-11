@@ -1,4 +1,4 @@
-.\" 	$calcurse: calcurse.1,v 1.9 2008/08/08 14:22:19 culot Exp $
+.\" 	$calcurse: calcurse.1,v 1.10 2008/08/11 18:08:45 culot Exp $
 .\"
 .\" Copyright (c) 2004-2008 Frederic Culot
 .\"
@@ -23,7 +23,8 @@
 Calcurse \- text-based organizer
 .SH SYNOPSIS
 .B "calcurse "
-[\fB-h\fP|\fB-v\fP] [\fB-x\fP] [\fB-N\fP] [\fB-an\fP] [\fB-t\fP[\fInum\fP]]
+[\fB-h\fP|\fB-v\fP] [\fB-N\fP] [\fB-an\fP] [\fB-t\fP[\fInum\fP]]
+[\fB-x\fP[\fIformat\fP]]
 .br
          [\fB-d\fP <\fIdate\fP>|<\fInum\fP>] [\fB-s\fP[\fIdate\fP]]
 [\fB-r\fP[\fIrange\fP]]
@@ -110,14 +111,17 @@ then only todos having a priority equal to \fInum\fP will be returned.
 \fB-v\fP, \fB--version\fP
 Display calcurse version and exit.
 .TP
-\fB-x\fP, \fB--export\fP
-Export user data to iCalendar format. Events, appointments and
-todos are converted and echoed to stdout.
+\fB-x\fP[format], \fB--export\fP[=format]
+Export user data to the specified format. Events, appointments and
+todos are converted and echoed to stdout. Two possible formats are
+available: \fIical\fP and \fIpcal\fP.
+If the optional argument format is not given, ical format is
+selected by default.
 .br
 \fINote:\fP redirect standard output to export data to a file,
 by issuing a command such as: 
 .br
-.B    $ calcurse --export > my_data.ics
+.B    $ calcurse --export > calcurse.dat
 .SH NOTES
 Calcurse interface contains three different panels (calendar,
 appointment list, and todo list) on which you can perform different
@@ -193,7 +197,12 @@ author, below.
 .SH SEE ALSO
 vi(1), less(1), ncurses(3), mkstemp(3)
 .br
-Calcurse home page : http://culot.org/calcurse/
+The ical specification (rfc2445) can be found at:
+http://tools.ietf.org/html/rfc2445
+.br
+The pcal project page: http://pcal.sourceforge.net/
+.br
+Calcurse home page: http://culot.org/calcurse/
 .br
 Calcurse complete manual, translated in many languages and maintained in
 html format, can be found in the doc/ directory of the source package, 
