@@ -1,3 +1,9 @@
+2008-08-12  Frederic Culot  <frederic@culot.org>
+
+	* po/fr.po: translation updated
+
+	* configure.ac: switch to 2.2_beta
+	
 2008-08-11  Frederic Culot  <frederic@culot.org>
 
 	* src/utils.c (date_sec2ical_*): functions replaced by

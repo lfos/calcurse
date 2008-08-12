@@ -1,4 +1,4 @@
-# 	$calcurse: fr.po,v 1.21 2008/08/03 18:41:55 culot Exp $
+# 	$calcurse: fr.po,v 1.22 2008/08/12 15:57:05 culot Exp $
 #
 # French translations for calcurse package.
 # Copyright (C) 2004-2008 Frederic Culot <frederic@culot.org>
@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse 2.1\n"
 "Report-Msgid-Bugs-To: frederic@culot.org\n"
-"POT-Creation-Date: 2008-05-17 12:15+0200\n"
-"PO-Revision-Date: 2008-05-03 21:33+0200\n"
+"POT-Creation-Date: 2008-08-12 17:34+0200\n"
+"PO-Revision-Date: 2008-08-12 17:51+0200\n"
 "Last-Translator: Frederic Culot <frederic@culot.org>\n"
 "Language-Team: French <calcurse-i18n@culot.org>\n"
 "MIME-Version: 1.0\n"
@@ -73,16 +73,19 @@ msgstr "ERREUR FATALE dans apoint_switch_notify: l'élement n'existe pas"
 
 #: src/args.c:51
 msgid ""
-"Usage: calcurse [-h|-v] [-x] [-N] [-an] [-t[num]] [-d date|num] [-c file]\n"
+"Usage: calcurse [-h|-v] [-N] [-an] [-t[num]] [-x[format]]\n"
+"                [-d <date>|<num>] [-s[date]] [-r[range]]\n"
+"                [-c<file> | -D<dir>]\n"
 msgstr ""
-"Utilisation: calcurse [-h|-v] [-x] [-N] [-an] [-t[nb]] [-d date|nb] [-c "
-"fichier]\n"
+"Utilisation: calcurse [-h|-v] [-N] [-an] [-t[num]] [-x[format]]\n"
+"                      [-d <date>|<num>] [-s[date]] [-r[range]]\n"
+"                      [-c<fichier> | -D<dir>]\n"
 
-#: src/args.c:59
+#: src/args.c:60
 msgid "Try 'calcurse -h' for more information.\n"
 msgstr "Tapez 'calcurse -h' pour plus d'informations.\n"
 
-#: src/args.c:71
+#: src/args.c:72
 msgid ""
 "\n"
 "Copyright (c) 2004-2008 Frederic Culot.\n"
@@ -93,12 +96,12 @@ msgstr ""
 "Ceci est un logiciel libre; voir les sources pour les conditions de "
 "diffusion.\n"
 
-#: src/args.c:74 src/args.c:121
+#: src/args.c:75 src/args.c:135
 #, c-format
 msgid "Calcurse %s - text-based organizer\n"
 msgstr "Calcurse %s - organiseur personnel en mode texte\n"
 
-#: src/args.c:87
+#: src/args.c:88
 msgid ""
 "\n"
 "Miscellaneous:\n"
@@ -110,7 +113,11 @@ msgid ""
 "\n"
 "Files:\n"
 "  -c <file>, --calendar <file>\n"
-"\tspecify the calendar <file> to use.\n"
+"\tspecify the calendar <file> to use (incompatible with '-D').\n"
+"\n"
+"  -D <dir>, --directory <dir>\n"
+"\tspecify the data directory to use (incompatible with '-c').\n"
+"\tIf not specified, the default directory is ~/.calcurse\n"
 "\n"
 "Non-interactive:\n"
 "  -a, --appointment\n"
@@ -118,26 +125,38 @@ msgid ""
 "\n"
 "  -d <date|num>, --day <date|num>\n"
 "\tprint events and appointments for <date> or <num> upcoming days and\n"
-"\texit. Possible formats are: 'mm/dd/yyyy' or 'n'.\n"
+"\texit. To specify both a starting date and a range, use the\n"
+"\t'--startday' and the '--range' option.\n"
 "\n"
 "  -n, --next\n"
-"  \tprint next appointment within upcoming 24 hours and exit. Also given\n"
+"\tprint next appointment within upcoming 24 hours and exit. Also given\n"
 "\tis the remaining time before this next appointment.\n"
 "\n"
 "  -N, --note\n"
 "\twhen used with the '-a' or '-t' flag, also print note content\n"
 "\tif one is associated with the displayed item.\n"
 "\n"
+"  -r[num], --range[=num]\n"
+"\tprint events and appointments for the [num] number of days\n"
+"\tand exit. If no [num] is given, a range of 1 day is considered.\n"
+"\n"
+"  -s[date], --startday[=date]\n"
+"\tprint events and appointments from [date] and exit.\n"
+"\tIf no [date] is given, the current day is considered.\n"
+"\n"
 "  -t[num], --todo[=num]\n"
 "\tprint todo list and exit. If the optional number [num] is given,\n"
 "\tthen only todos having a priority equal to [num] will be returned.\n"
 "\tnote: priority number must be between 1 (highest) and 9 (lowest).\n"
 "\n"
-"  -x, --export\n"
-"\texport user data to iCalendar format. Events, appointments and\n"
+"  -x[format], --export[=format]\n"
+"\texport user data to the specified format. Events, appointments and\n"
 "\ttodos are converted and echoed to stdout.\n"
+"\tTwo possible formats are available: 'ical' and 'pcal'.\n"
+"\tIf the optional argument format is not given, ical format is\n"
+"\tselected by default.\n"
 "\tnote: redirect standard output to export data to a file,\n"
-"\tby issuing a command such as: calcurse --export > my_data.ics\n"
+"\tby issuing a command such as: calcurse --export > calcurse.dat\n"
 "\n"
 "For more information, type '?' from within Calcurse, or read the manpage.\n"
 "Mail bug reports and suggestions to <calcurse@culot.org>.\n"
@@ -158,8 +177,8 @@ msgstr ""
 "  -a, --appointment\n"
 " \tafficher les rendez-vous et évenements de la journée et quitter.\n"
 "\n"
-"  -d <date|nb>, --day <date|nb>\n"
-"\tafficher les rendez-vous et évenements pour la <date> ou les <nb>\n"
+"  -d <date|num>, --day <date|num>\n"
+"\tafficher les rendez-vous et évenements pour la <date> ou les <num>\n"
 "\tjours à venir. Les formats possibles sont: 'mm/jj/aaaa' ou 'n'.\n"
 "\n"
 "  -n, --next\n"
@@ -171,6 +190,18 @@ msgstr ""
 "        '-a' ou '-t', les notes associées aux élements seront également\n"
 "        affichées.\n"
 "\n"
+"  -r[num], --range[=num]\n"
+"        afficher les rendez-vous et évenements pour [num] jours puis "
+"quitter.\n"
+"        Si l'option [num] n'est pas donnée, une plage d'un jour est "
+"considérée.\n"
+"\n"
+"  -s[date], --startday[=date]\n"
+"        afficher les rendez-vous et évenements à partir de [date] puis "
+"quitter.\n"
+"        Si aucune [date] n'est indiquée, le jour courant est pris par "
+"défaut.\n"
+"\n"
 "  -t[nb], --todo[=nb]\n"
 "\tafficher la liste des tâches et quitter. Si le nombre optionnel [nb]\n"
 "\test donné, alors seulement les tâches ayant une priorité égale à [nb]\n"
@@ -178,34 +209,33 @@ msgstr ""
 "\tRemarque: [nb] doit être compris entre 1 (priorité la plus grande),\n"
 "\tet 9 (priorité la moins grande).\n"
 "\n"
-"  -x, --export\n"
-"\texporter les données utilisateur au format iCalendar. Les évènements,\n"
+"  -x[format], --export[=format]\n"
+"\texporter les données utilisateur au format spécifié. Les évènements,\n"
 "\trendez-vous et tâches sont convertis et affichés sur la sortie standard.\n"
+"        Deux formats d'export sont possibles : 'ical' et 'pcal'.\n"
+"        Si le format n'est pas spécifié, 'ical' est la valeur prise par "
+"défaut.\n"
 "\tRemarque: pour sauvegarder les données exportées dans un fichier, il\n"
 "\test nécessaire de rediriger la sortie standard comme dans l'exemple\n"
-"\tsuivant: calcurse --export > mon_fichier.ics\n"
+"\tsuivant: calcurse --export > mon_fichier.dat\n"
 "\n"
 "Pour plus d'informations, tapez '?' dans Calcurse, ou lisez la page de "
 "manuel.\n"
 "Envoyez vos rapports de bogues et suggestions à <calcurse@culot.org>.\n"
 
-#: src/args.c:169
+#: src/args.c:183
 msgid "No note file found\n"
 msgstr "Fichier note non trouvé\n"
 
-#: src/args.c:191
+#: src/args.c:205
 msgid "to do:\n"
 msgstr "à faire:\n"
 
-#: src/args.c:225
+#: src/args.c:239
 msgid "next appointment:\n"
 msgstr "prochain rendez-vous:\n"
 
-#: src/args.c:449
-msgid "Argument to the '-d' flag is not valid\n"
-msgstr "L'argument de l'option '-d' n'est pas valide\n"
-
-#: src/args.c:455
+#: src/args.c:408
 msgid ""
 "\n"
 "For more information, type '?' from within Calcurse, or read the manpage.\n"
@@ -214,9 +244,29 @@ msgstr ""
 "Pour plus d'informations, tapez '?' dans Calcurse, ou lisez la page de "
 "manuel.\n"
 
-#: src/args.c:458
+#: src/args.c:410
 msgid "Mail bug reports and suggestions to <calcurse@culot.org>.\n"
 msgstr "Envoyez vos rapports de bogues ou suggestions à <calcurse@culot.org>\n"
+
+#: src/args.c:487
+msgid "Argument to the '-d' flag is not valid\n"
+msgstr "L'argument de l'option '-d' n'est pas valide\n"
+
+#: src/args.c:550
+msgid "Argument is not valid\n"
+msgstr "L'argument n'est pas valide\n"
+
+#: src/args.c:555
+msgid "Argument format for -r and --range is: 'n'\n"
+msgstr "Le format de l'argument pour -r et --range est: 'n'\n"
+
+#: src/args.c:689
+msgid "Argument for '-x' should be either 'ical' or 'pcal'\n"
+msgstr "L'argument pour '-x' doit être soit 'ical' soit 'pcal'\n"
+
+#: src/args.c:721
+msgid "Options '-D' and '-c' cannot be used at the same time\n"
+msgstr "Les options '-D' et '-c' ne peuvent pas être utilisées en même temps\n"
 
 #: src/calcurse.c:68
 msgid ""
@@ -230,7 +280,7 @@ msgstr ""
 msgid "Do you really want to quit ?"
 msgstr "Voulez-vous vraiment quitter ?"
 
-#: src/calcurse.c:236
+#: src/calcurse.c:240
 msgid "To do :"
 msgstr "Tâche :"
 
@@ -238,7 +288,7 @@ msgstr "Tâche :"
 msgid "ERROR in calendar_set_first_day_of_week\n"
 msgstr "ERREUR dans calendar_set_first_day_of_week\n"
 
-#: src/calendar.c:347
+#: src/calendar.c:357
 msgid ""
 "The day you entered is not valid (should be between 01/01/1902 and "
 "12/31/2037)"
@@ -246,8 +296,8 @@ msgstr ""
 "Le jour entré est invalide (il devrait être entre le 01/01/1902 et\n"
 "le 31/12/2037)"
 
-#: src/calendar.c:349 src/custom.c:218 src/io.c:434 src/io.c:794 src/io.c:916
-#: src/io.c:937
+#: src/calendar.c:359 src/custom.c:218 src/io.c:718 src/io.c:1078
+#: src/io.c:1200 src/io.c:1222
 msgid "Press [ENTER] to continue"
 msgstr "Appuyez sur [ENTREE] pour continuer"
 
@@ -284,7 +334,7 @@ msgstr "Impossible d'ouvrir le fichier de configuration"
 msgid "FATAL ERROR in custom_load_conf: configuration variable unknown.\n"
 msgstr "ERREUR FATALE dans custom_load_conf: variable inconnue.\n"
 
-#: src/custom.c:369
+#: src/custom.c:369 src/io.c:1289
 msgid "Exit"
 msgstr "Quitter"
 
@@ -477,15 +527,15 @@ msgid "Enter the new repetition type: (D)aily, (W)eekly, (M)onthly, (Y)early"
 msgstr ""
 "Entrez le nouveau type: (D) journ., (W) hebdo., (M) mensuel, (Y) annuel"
 
-#: src/day.c:599 src/recur.c:649
+#: src/day.c:599 src/recur.c:667
 msgid "[D/W/M/Y] "
 msgstr "[D/W/M/Y] "
 
-#: src/day.c:600 src/recur.c:651
+#: src/day.c:600 src/recur.c:669
 msgid "The frequence you entered is not valid."
 msgstr "La fréquence que vous avez entrée n'est pas valide"
 
-#: src/day.c:602 src/recur.c:654
+#: src/day.c:602 src/recur.c:672
 msgid "The entered date is not valid."
 msgstr "Le jour que vous avez entré n'est pas valide."
 
@@ -542,11 +592,11 @@ msgstr "ERREUR FATALE dans event_delete_bynum: aucun évenement correspondant\n"
 msgid "Calcurse %s | help"
 msgstr "Calcurse %s | aide"
 
-#: src/help.c:272
+#: src/help.c:275
 msgid "       Welcome to Calcurse. This is the main help screen.\n"
 msgstr "       Bienvenue dans Calcurse. Vous êtes dans l'écran principal.\n"
 
-#: src/help.c:274
+#: src/help.c:277
 msgid ""
 " Moving around:  Press CTRL-P or CTRL-N to scroll text upward or\n"
 "                 downward inside help screens, if necessary.\n"
@@ -583,11 +633,11 @@ msgstr ""
 "         Auteurs:  Appuyez sur '@' pour obtenir l'écran présentant les \n"
 "                   auteurs de Calcurse."
 
-#: src/help.c:287
+#: src/help.c:290
 msgid "Save:\n"
 msgstr "Sauvegarde:\n"
 
-#: src/help.c:289
+#: src/help.c:292
 msgid ""
 "Pressing 'S' saves the Calcurse data.\n"
 "\n"
@@ -613,38 +663,54 @@ msgstr ""
 "Dans le menu de configuration, vous pouvez choisir de sauvegarder les\n"
 "données automatiquement avant de quitter."
 
-#: src/help.c:299
+#: src/help.c:302
 msgid "Export:\n"
 msgstr "Exporter:\n"
 
-#: src/help.c:301
+#: src/help.c:304
 msgid ""
-"Pressing 'X' exports the Calcurse data to iCalendar format.\n"
+"Pressing 'X' leads to the export submenu, from which you can choose\n"
+"between two different export formats: 'ical' and 'pcal'.\n"
+"Choosing one of those formats lets you export the Calcurse data to\n"
+"icalendar or pcal format.\n"
 "\n"
 "You first need to specify the file to which the data will be exported.\n"
 "By default, this file is:\n"
 "\n"
 "     ~/calcurse.ics\n"
 "\n"
+"for an ical export, and:\n"
+"\n"
+"     ~/calcurse.txt\n"
+"\n"
+"for a pcal export.\n"
 "All of the calcurse data are exported, in the following order:\n"
 "events, appointments, todos.\n"
 msgstr ""
-"Appuyer sur 'X' permet d'exporter les données de l'utilisateur au format\n"
-"iCalendar.\n"
+"Appuyer sur 'X' vous amène au sous-menu relatif à l'export des données\n"
+"calcurse. A partir de ce sous-menu, vous pouvez sélectionner le format\n"
+"d'export des données, à savoir soit 'ical' soit 'pcal'.\n"
+"Choisir un de ces formats permet d'exporter les données de l'utilisateur \n"
+"au format ialendar ou pcal.\n"
 "\n"
 "Il faut pour cela spécifier le fichier dans lequel enregistrer les\n"
 "données à exporter. Par défaut, ce fichier est le suivant:\n"
 "\n"
 "     ~/calcurse.ics\n"
 "\n"
+"pour un export au format ical, et:\n"
+"\n"
+"     ~/calcurse.txt\n"
+"\n"
+"pour un export au format pcal.\n"
 "Toutes les données utilisateurs seront exportées, dans l'ordre suivant:\n"
 "évenements, rendez-vous, tâches.\n"
 
-#: src/help.c:308
+#: src/help.c:317
 msgid "Displacement keys:\n"
 msgstr "Touches de déplacement:\n"
 
-#: src/help.c:310
+#: src/help.c:319
 msgid ""
 "You can use either 'H','J','K','L' or the arrow keys '<','v','^','>'\n"
 "to move into the calendar.\n"
@@ -656,6 +722,10 @@ msgid ""
 "  move to previous day   H <       > L   move to next day\n"
 "                              J v  \n"
 "                       move to next week\n"
+"\n"
+"Moreover, while inside the calendar panel, the '0' (zero) key moves\n"
+"to the first day of the week, and the '$' key selects the last day of\n"
+"the week.\n"
 "\n"
 "When the Appointment or ToDo panel is selected, the up and down keys\n"
 "(respectively K or up arrow, and J or down arrow) allows you to select\n"
@@ -672,15 +742,19 @@ msgstr ""
 "                              J v  \n"
 "                  aller à la semaine suivante\n"
 "\n"
+"De plus, lorsque le panneau du calendrier est sélectionné, la touche '0'\n"
+"vous permet d'aller au premier jour de la semaine, et la touche '$' vous\n"
+"permet de sélectionner le dernier jour de la semaine.\n"
+"\n"
 "Lorsque le panneau des rendez-vous ou celui des tâches est sélectionné,\n"
 "les touches haut et bas (respectivement K ou flèche haut, et J ou\n"
 "flèche bas) vous permettent de sélectionner un élément de ce panneau."
 
-#: src/help.c:322
+#: src/help.c:334
 msgid "View:\n"
 msgstr "Visualiser:\n"
 
-#: src/help.c:324
+#: src/help.c:336
 msgid ""
 "Pressing 'V' allows you to view the item you select in either the ToDo\n"
 "or Appointment panel.\n"
@@ -707,11 +781,11 @@ msgstr ""
 "la description de l'élément et revenir à l'affichage principal de\n"
 "Calcurse."
 
-#: src/help.c:335
+#: src/help.c:347
 msgid "Tab:\n"
 msgstr "Tabulation:\n"
 
-#: src/help.c:337
+#: src/help.c:349
 msgid ""
 "Pressing 'Tab' allows you to switch between panels.\n"
 "The panel currently in use has its border colorized.\n"
@@ -741,18 +815,21 @@ msgstr ""
 "toujours savoir quelles actions sont accessibles à partir du\n"
 "panneau actuellement sélectionné."
 
-#: src/help.c:347
+#: src/help.c:359
 msgid "Goto:\n"
 msgstr "Aller à:\n"
 
-#: src/help.c:349
+#: src/help.c:361
 msgid ""
 "Pressing 'G' allows you to jump to a specific day in the calendar.\n"
 "\n"
 "Using this command, you do not need to travel to that day using\n"
 "the displacement keys inside the calendar panel.\n"
 "If you hit [ENTER] without specifying any date, Calcurse checks the\n"
-"system current date and you will be taken to that date."
+"system current date and you will be taken to that date.\n"
+"\n"
+"Notice that pressing ^G (Control + G), whatever panel is\n"
+"selected, will select current day in the calendar."
 msgstr ""
 "Appuyer sur 'G' permet de se rendre rapidement à un jour donné dans\n"
 "le calendrier.\n"
@@ -761,13 +838,17 @@ msgstr ""
 "touches de déplacement dans le panneau du calendrier pour se rendre\n"
 "au jour voulu.\n"
 "Si vous appuyez sur [ENTREE] sans spécifier de date, vous serez\n"
-"directement placé à la date du jour."
+"directement placé à la date du jour.\n"
+"\n"
+"Il est à noter que si l'on appuie sur la combinaison de touches ^G \n"
+"(Control + G), le jour courant sera sélectionné dans le calendrier,\n"
+"et ce quelque soit le panneau actif."
 
-#: src/help.c:355
+#: src/help.c:369
 msgid "Delete:\n"
 msgstr "Effacer:\n"
 
-#: src/help.c:357
+#: src/help.c:371
 msgid ""
 "Pressing 'D' deletes an element in the ToDo or Appointment list.\n"
 "\n"
@@ -799,11 +880,11 @@ msgstr ""
 "N'oubliez pas de sauvegarder les données du calendrier pour\n"
 "retrouver vos modifications au prochain lancement de Calcurse."
 
-#: src/help.c:369
+#: src/help.c:383
 msgid "Add:\n"
 msgstr "Ajouter:\n"
 
-#: src/help.c:371
+#: src/help.c:385
 msgid ""
 "Pressing 'A' allows you to add an item in either the ToDo or Appointment\n"
 "list, depending on which panel is selected when you press 'A'.\n"
@@ -876,11 +957,11 @@ msgstr ""
 "          sera annulé.\n"
 "        o N'oubliez pas de sauvegarder vos nouvelles données."
 
-#: src/help.c:401
+#: src/help.c:415
 msgid "Edit Item:\n"
 msgstr "Editer:\n"
 
-#: src/help.c:403
+#: src/help.c:417
 msgid ""
 "Pressing 'E' allows you to edit the item which is currently selected.\n"
 "Depending on the item type (appointment, event, or todo), and if it is\n"
@@ -917,11 +998,11 @@ msgstr ""
 "       o n'oubliez pas de sauvegarder les données du calendrier pour\n"
 "         retrouver vos modifications au prochain lancement de calcurse."
 
-#: src/help.c:418
+#: src/help.c:432
 msgid "EditNote:\n"
 msgstr "Editer:\n"
 
-#: src/help.c:420
+#: src/help.c:434
 msgid ""
 "Pressing 'N' allows you to attach a note to any type of item, or to\n"
 "edit an already existing note.\n"
@@ -964,11 +1045,11 @@ msgstr ""
 "de quitter l'éditeur externe pour revenir à Calcurse. Le signe '>'\n"
 "apparaîtra alors devant l'élement auquel la note a été ajoutée."
 
-#: src/help.c:439
+#: src/help.c:453
 msgid "ViewNote:\n"
 msgstr "Visualiser:\n"
 
-#: src/help.c:441
+#: src/help.c:455
 msgid ""
 "Pressing the '>' key allows you to view a note which was previously\n"
 "attached to an item (an item which owns a note has a '>' sign in front\n"
@@ -1000,11 +1081,11 @@ msgstr ""
 "Comme pour la touche 'N', il faut quitter le visualiseur pour revenir\n"
 "dans Calcurse. "
 
-#: src/help.c:456
+#: src/help.c:470
 msgid "Priority:\n"
 msgstr "Priorité\n"
 
-#: src/help.c:458
+#: src/help.c:472
 msgid ""
 "Pressing '+' or '-' allows you to change the priority of the currently\n"
 "selected item in the ToDo list. Priorities are represented by the number\n"
@@ -1038,11 +1119,11 @@ msgstr ""
 "de l'élément pourra également changer en fonction de la priorité des\n"
 "éléments placés en dessous de lui."
 
-#: src/help.c:472
+#: src/help.c:486
 msgid "Repeat:\n"
 msgstr "Répéter:\n"
 
-#: src/help.c:474
+#: src/help.c:488
 msgid ""
 "Pressing 'R' allows you to repeat an event or an appointment. You must\n"
 "first select the item to be repeated by moving inside the appointment\n"
@@ -1101,11 +1182,11 @@ msgstr ""
 "         possible d'effacer les occurences des éléments répétés une par\n"
 "         une."
 
-#: src/help.c:498
+#: src/help.c:512
 msgid "Flag Item:\n"
 msgstr "Marquer un rendez-vous:\n"
 
-#: src/help.c:500
+#: src/help.c:514
 msgid ""
 "Pressing '!' toggles an appointment's 'important' flag.\n"
 "\n"
@@ -1126,11 +1207,11 @@ msgstr ""
 "de modifier la commande à executer dans le menu de configuration, et de\n"
 "spécifier combien de temps à l'avance cette commande devra être lancée."
 
-#: src/help.c:508
+#: src/help.c:522
 msgid "Config:\n"
 msgstr "Configuration:\n"
 
-#: src/help.c:510
+#: src/help.c:524
 msgid ""
 "Pressing 'C' leads to the configuration submenu, from which you can\n"
 "select between color, layout, and general options.\n"
@@ -1164,11 +1245,11 @@ msgstr ""
 "N'oubliez pas de sauvegarder les données pour retrouver votre\n"
 "configuration au prochain lancement de Calcurse."
 
-#: src/help.c:521
+#: src/help.c:535
 msgid "General keybindings:\n"
 msgstr "Raccourcis clavier globaux:\n"
 
-#: src/help.c:523
+#: src/help.c:537
 msgid ""
 "Some of the keybindings apply whatever panel is selected. They are\n"
 "called general keybinding and involve the <CONTROL> key, which is\n"
@@ -1185,7 +1266,8 @@ msgid ""
 " '^H' : -1 Day          -> move to previous day\n"
 " '^L' : +1 Day          -> move to next day\n"
 " '^K' : -1 Week         -> move to previous week\n"
-" '^J' : +1 Week         -> move to next week"
+" '^J' : +1 Week         -> move to next week\n"
+" '^G' : Goto today      -> move to current day"
 msgstr ""
 "Certains raccourcis clavier s'appliquent quel que soit le panneau\n"
 "sélectionné. Ce sont les raccourcis globaux et ils font appel à\n"
@@ -1202,13 +1284,14 @@ msgstr ""
 " '^H' : -1 Jour         -> aller au jour précédent\n"
 " '^L' : +1 Jour         -> aller au jour suivant\n"
 " '^K' : -1 Sem.         -> aller à la semaine précédente\n"
-" '^J' : +1 Sem.         -> aller à la semaine suivante"
+" '^J' : +1 Sem.         -> aller à la semaine suivante\n"
+" '^G' : Aujourd'hui     -> aller au jour courant"
 
-#: src/help.c:539
+#: src/help.c:554
 msgid "OtherCmd:\n"
 msgstr "Autres Commandes:\n"
 
-#: src/help.c:541
+#: src/help.c:556
 msgid ""
 "Pressing 'O' allows you to switch between status bar help pages.\n"
 "Because the terminal screen is too narrow to display all of the\n"
@@ -1225,11 +1308,11 @@ msgstr ""
 "Une fois que la dernière page a été atteinte, appuyer une nouvelle\n"
 "fois sur 'O' vous ramènera automatiquement à la première page."
 
-#: src/help.c:548
+#: src/help.c:563
 msgid "Calcurse - text-based organizer"
 msgstr "Calcurse - organiseur personnel en mode texte"
 
-#: src/help.c:550
+#: src/help.c:565
 msgid ""
 "Copyright (c) 2004-2008 Frederic Culot\n"
 "\n"
@@ -1263,97 +1346,127 @@ msgstr ""
 "Envoyez vos remarques ou commentaires à : calcurse@culot.org\n"
 "Page web de Calcurse : http://culot.org/calcurse"
 
-#: src/io.c:61
+#: src/io.c:101
 msgid "Saving..."
 msgstr "Enregistrement..."
 
-#: src/io.c:62
+#: src/io.c:102
 msgid "Loading..."
 msgstr "Chargement..."
 
-#: src/io.c:63
+#: src/io.c:103
 msgid "Exporting..."
 msgstr "Export..."
 
-#: src/io.c:126
+#: src/io.c:157
 msgid "Choose the file used to export calcurse data:"
 msgstr "Choisissez le fichier dans lequel exporter les données:"
 
-#: src/io.c:128
+#: src/io.c:159
 msgid "The file cannot be accessed, please enter another file name."
 msgstr "Le fichier ne peut être ouvert, veuillez entrer un nouveau nom."
 
-#: src/io.c:129 src/recur.c:658
+#: src/io.c:160 src/recur.c:676
 msgid "Press [ENTER] to continue."
 msgstr "Appuyez sur [ENTREE] pour continuer."
 
-#: src/io.c:365
+#: src/io.c:223
+msgid "FATAL ERROR in foreach_date_dump: incoherent repetition type\n"
+msgstr "ERREUR FATALE dans foreach_date_dump: type de répétition incohérent\n"
+
+#: src/io.c:262
+msgid "Week"
+msgstr "Semaine"
+
+#: src/io.c:382
+msgid "FATAL ERROR in pcal_export_recur_events: incoherent repetition type\n"
+msgstr ""
+"ERREUR FATALE dans pcal_export_recur_events: type de répétition incohérent\n"
+
+#: src/io.c:518
+msgid "FATAL ERROR in pcal_export_recur_apoints: incoherent repetition type\n"
+msgstr ""
+"ERREUR FATALE dans pcal_export_recur_apoint: type de répétition incohérent\n"
+
+#: src/io.c:647
 #, c-format
 msgid "%s does not exist, create it now [y or n] ? "
 msgstr "%s n'existe pas, le créer maintenant [y ou n] ? "
 
-#: src/io.c:371 src/io.c:391
+#: src/io.c:654 src/io.c:674
 #, c-format
 msgid "aborting...\n"
 msgstr "annulation...\n"
 
-#: src/io.c:385
+#: src/io.c:668
 #, c-format
 msgid "%s successfully created\n"
 msgstr "%s correctement créé\n"
 
-#: src/io.c:386
+#: src/io.c:669
 #, c-format
 msgid "starting interactive mode...\n"
 msgstr "lancement du mode intéractif...\n"
 
-#: src/io.c:422
+#: src/io.c:706
 msgid "Problems accessing data file ..."
 msgstr "Problème d'accession aux fichiers de données ..."
 
-#: src/io.c:433
+#: src/io.c:717
 msgid "The data files were successfully saved"
 msgstr "Les données ont été correctement enregistrées"
 
-#: src/io.c:612
+#: src/io.c:896
 msgid "FATAL ERROR in io_load_app: wrong format in the appointment or event\n"
 msgstr ""
 "ERREUR FATALE dans io_load_app: mauvais format dans le rendez-vous ou "
 "l'évenement\n"
 
-#: src/io.c:633
+#: src/io.c:917
 msgid "FATAL ERROR in io_load_app: syntax error in the item date\n"
 msgstr "ERREUR FATALE dans io_load_app: mauvais format de date\n"
 
-#: src/io.c:649
+#: src/io.c:933
 msgid "FATAL ERROR in io_load_app: no event nor appointment found\n"
 msgstr ""
 "ERREUR FATALE dans io_load_app: aucun évenement ou rendez-vous trouvé\n"
 
-#: src/io.c:793
+#: src/io.c:1077
 msgid "Failed to open todo file"
 msgstr "Problème d'ouverture du fichier des tâches"
 
-#: src/io.c:855 src/io.c:875
+#: src/io.c:1139 src/io.c:1159
 #, c-format
 msgid "FATAL ERROR: could not create %s: %s\n"
 msgstr "ERREUR FATALE: impossibilité de créer %s: %s\n"
 
-#: src/io.c:914
+#: src/io.c:1198
 msgid "Welcome to Calcurse. Missing data files were created."
 msgstr "Bienvenue dans Calcurse. Les fichiers manquants ont été créés."
 
-#: src/io.c:915
+#: src/io.c:1199
 msgid "Data files found. Data will be loaded now."
 msgstr "Fichiers de données trouvés. Les données seront chargées."
 
-#: src/io.c:935
+#: src/io.c:1219
 msgid "FATAL ERROR in io_export_data: wrong export mode\n"
 msgstr "ERREUR FATALE dans io_export_data: mauvais mode d'export\n"
 
-#: src/io.c:936
+#: src/io.c:1220
+msgid "FATAL ERROR in io_export_data: unknown export type\n"
+msgstr "ERREUR FATALE dans io_export_data: mauvais mode d'export\n"
+
+#: src/io.c:1221
 msgid "The data were successfully exported"
 msgstr "Les données ont été correctement exportées"
+
+#: src/io.c:1290
+msgid "Ical"
+msgstr "Ical"
+
+#: src/io.c:1291
+msgid "Pcal"
+msgstr "Pcal"
 
 #: src/notify.c:135
 msgid "FATAL ERROR in launch_cmd: could not fork"
@@ -1436,61 +1549,61 @@ msgstr "ERREUR FATALE dans recur_char2def: caractère inconnu\n"
 msgid "FATAL ERROR in recur_event_scan: date error in the event\n"
 msgstr "ERREUR FATALE dans event_scan: date erronée dans l'évenement\n"
 
-#: src/recur.c:419
+#: src/recur.c:437
 msgid "FATAL ERROR in recur_item_inday: unknown item type\n"
 msgstr "ERREUR FATALE dans todo_delete_by_num: aucune tâche correspondante\n"
 
-#: src/recur.c:552
+#: src/recur.c:570
 msgid "FATAL ERROR in recur_event_erase: no such event\n"
 msgstr "ERREUR FATALE dans event_delete_bynum: aucun évenement correspondant\n"
 
-#: src/recur.c:624
+#: src/recur.c:642
 msgid "FATAL ERROR in recur_apoint_erase: no such appointment\n"
 msgstr "ERREUR FATALE dans apoint_delete_bynum: l'élement n'existe pas\n"
 
-#: src/recur.c:648
+#: src/recur.c:666
 msgid "Enter the repetition type: (D)aily, (W)eekly, (M)onthly, (Y)early"
 msgstr "Entrez le type: (D) journ., (W) hebdo., (M) mensuel, (Y) annuel"
 
-#: src/recur.c:650
+#: src/recur.c:668
 msgid "Enter the repetition frequence:"
 msgstr "Entrez la fréquence de répétition:"
 
-#: src/recur.c:653
+#: src/recur.c:671
 #, c-format
 msgid "Enter the ending date: [%s] or '0' for an endless repetition"
 msgstr "Entrez la date de fin: [%s] ou '0' pour répéter indéfiniment"
 
-#: src/recur.c:656
+#: src/recur.c:674
 #, c-format
 msgid "Possible formats are [%s] or '0' for an endless repetition"
 msgstr "Les formats autorisés sont [%s] ou '0' pour une répétition sans fin"
 
-#: src/recur.c:657
+#: src/recur.c:675
 msgid "This item is already a repeated one."
 msgstr "Cet élément est déjà recurrent."
 
-#: src/recur.c:660
+#: src/recur.c:678
 msgid "Sorry, the date you entered is older than the item start time."
 msgstr "La date que vous avez entrée est antérieure à la date de l'élément!"
 
-#: src/recur.c:774
+#: src/recur.c:792
 msgid "FATAL ERROR in recur_repeat_item: wrong item type\n"
 msgstr "ERREUR FATALE dans todo_delete_by_num: aucune tâche correspondante\n"
 
-#: src/recur.c:803
+#: src/recur.c:821
 msgid "FATAL ERROR in recur_exc_scan: syntax error in the item date\n"
 msgstr "ERREUR FATALE dans load_app: mauvais format de date\n"
 
-#: src/recur.c:878
+#: src/recur.c:896
 msgid "FATAL ERROR in recur_get_apoint: no such item\n"
 msgstr "ERREUR FATALE dans recur_get_apoint: l'élement n'existe pas\n"
 
-#: src/recur.c:902
+#: src/recur.c:920
 msgid "FATAL ERROR in recur_get_event: no such item\n"
 msgstr "ERREUR FATALE dans recur_get_event: aucun évenement correspondant\n"
 
-#: src/recur.c:938
+#: src/recur.c:956
 msgid "FATAL ERROR in recur_apoint_switch_notify: no such item\n"
 msgstr ""
 "ERREUR FATALE dans recur_apoint_switch_notify: l'élement n'existe pas\n"
@@ -1654,43 +1767,59 @@ msgstr "VoirNote"
 msgid "OtherCmd"
 msgstr "Autres"
 
-#: src/utils.c:509
+#: src/utils.c:445
+msgid "Today"
+msgstr "Aujourd."
+
+#: src/utils.c:446
+msgid "beg Week"
+msgstr "deb Sem."
+
+#: src/utils.c:447
+msgid "end Week"
+msgstr "fin Sem."
+
+#: src/utils.c:512
 msgid "FATAL ERROR in date2sec: failure in mktime\n"
 msgstr "ERREUR FATALE dans date2sec: dysfonctionnement dans mktime\n"
 
-#: src/utils.c:725
+#: src/utils.c:587
+msgid "FATAL ERROR in date_sec_change: failure in mktime\n"
+msgstr "ERREUR FATALE dans date_sec_change: dysfonctionnement dans mktime\n"
+
+#: src/utils.c:728
 msgid "Appointment"
 msgstr "Rendez-vous"
 
-#: src/utils.c:751
+#: src/utils.c:754
 msgid "FATAL ERROR in other_status_page: unknown panel\n"
 msgstr "ERREUR FATALE dans other_status_page: panneau inconnu\n"
 
-#: src/utils.c:825
+#: src/utils.c:824
 msgid "FATAL ERROR in mystrtol: could not convert string"
 msgstr "ERREUR FATALE dans mystrtol: impossibilité de convertir la chaîne"
 
-#: src/utils.c:827
+#: src/utils.c:826
 msgid "FATAL ERROR in mystrtol: number is out of range"
 msgstr "ERREUR FATALE dans mystrtol: le nombre est hors plage valide"
 
-#: src/utils.c:849
+#: src/utils.c:848
 msgid "yes"
 msgstr "oui"
 
-#: src/utils.c:854
+#: src/utils.c:853
 msgid "no"
 msgstr "non"
 
-#: src/utils.c:858
+#: src/utils.c:857
 msgid "option not defined - Problem in print_option_incolor()"
 msgstr "Problème dans print_option_incolor(): option non définié"
 
-#: src/utils.c:895
+#: src/utils.c:894
 msgid "FATAL ERROR: temporary file could not be created!"
 msgstr "ERREUR FATALE: le fichier temporaire n'a pu être créé"
 
-#: src/utils.c:909
+#: src/utils.c:908
 msgid "FATAL ERROR in erase_note: could not remove note\n"
 msgstr "ERREUR FATALE dans erase_note: impossibilité de supprimer la note\n"
 
