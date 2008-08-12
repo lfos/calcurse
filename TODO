@@ -27,5 +27,4 @@ Average
 
 Low
 ---
-  o  Add 't' alias for 'g - Enter'
   o  All status bars should be terminal-size dependant (config_bar is not)

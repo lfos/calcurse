@@ -1,3 +1,16 @@
+[12 Aug 2008]
+Version 2.2_beta
+- New features:
+  * pcal export added, to be able to produce nice-looking PostScript output
+
+  * '-s', '-r' and '-D' command line arguments added which allows to use an
+  alternative data directory, and to be more flexible when specifying the range
+  of dates to be considered when displaying appointments and events
+  (thanks Erik for submiting the patch)
+
+  * '^G', '0' and '$' keybindings added to ease movements in calendar
+
+
 [17 May 2008]
 Version 2.1
 - New features:

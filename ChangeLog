@@ -1,8 +1,12 @@
 2008-08-12  Frederic Culot  <frederic@culot.org>
 
+	* === Released 2.2_beta ===
+	
 	* po/fr.po: translation updated
 
-	* configure.ac: switch to 2.2_beta
+	* configure.ac
+	* TODO
+	* NEWS: update for 2.2_beta
 	
 2008-08-11  Frederic Culot  <frederic@culot.org>
 
