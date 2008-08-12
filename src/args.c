@@ -1,4 +1,4 @@
-/*	$calcurse: args.c,v 1.37 2008/08/11 18:08:45 culot Exp $	*/
+/*	$calcurse: args.c,v 1.38 2008/08/12 15:53:17 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -686,7 +686,7 @@ parse_args (int argc, char **argv, conf_t *conf)
                 xfmt = IO_EXPORT_PCAL;
               else
                 {
-                  fputs (_("Argumet for '-x' should be either "
+                  fputs (_("Argument for '-x' should be either "
                            "'ical' or 'pcal'\n"), stderr);
                   usage ();
                   usage_try ();
