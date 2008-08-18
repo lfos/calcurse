@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.32 2008/08/11 18:08:45 culot Exp $	*/
+/*	$calcurse: io.c,v 1.33 2008/08/18 07:30:07 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -189,7 +189,7 @@ get_export_stream (export_type_t type)
 }
 
 /* Travel through each occurence of an item, and execute the given callback
- * ( mainly used to export data).
+ * (mainly used to export data).
  */
 static void
 foreach_date_dump (const long date_end, struct rpt_s *rpt, struct days_s *exc,
@@ -628,7 +628,7 @@ io_init (char *cfile, char *datadir)
         {
           home = ".";
         }
-      snprintf (path_dir, BUFSIZ, "%s", home);
+      snprintf (path_dir, BUFSIZ, "%s/" DIR_NAME, home);
       snprintf (path_todo, BUFSIZ, "%s/" TODO_PATH, home);
       snprintf (path_conf, BUFSIZ, "%s/" CONF_PATH, home);
       snprintf (path_notes, BUFSIZ, "%s/" NOTES_DIR, home);

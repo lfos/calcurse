@@ -1,3 +1,8 @@
+2008-08-18  Frederic Culot  <frederic@culot.org>
+
+	* src/io.c (io_init): wrong data path init fixed (thanks Herbert
+	for reporting it)
+	
 2008-08-12  Frederic Culot  <frederic@culot.org>
 
 	* === Released 2.2_beta ===
