@@ -1,5 +1,5 @@
-[12 Aug 2008]
-Version 2.2_beta
+[28 Aug 2008]
+Version 2.2
 - New features:
   * pcal export added, to be able to produce nice-looking PostScript output
 
@@ -9,6 +9,10 @@ Version 2.2_beta
   (thanks Erik for submiting the patch)
 
   * '^G', '0' and '$' keybindings added to ease movements in calendar
+
+
+[12 Aug 2008]
+Version 2.2_beta   beta version available for testing.
 
 
 [17 May 2008]
