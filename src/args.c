@@ -1,4 +1,4 @@
-/*	$calcurse: args.c,v 1.38 2008/08/12 15:53:17 culot Exp $	*/
+/*	$calcurse: args.c,v 1.39 2008/09/15 20:40:22 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -754,7 +754,7 @@ parse_args (int argc, char **argv, conf_t *conf)
 	      notify_init_vars ();
 	      custom_load_conf (conf, 0);
               io_load_todo ();
-	      io_export_data (IO_EXPORT_NONINTERACTIVE, xfmt, conf);
+	      io_export_data (IO_MODE_NONINTERACTIVE, xfmt, conf);
 	      non_interactive = 1;
 	      return (non_interactive);
 	    }

@@ -1,4 +1,4 @@
-/*	$calcurse: recur.h,v 1.20 2008/08/10 09:24:46 culot Exp $	*/
+/*	$calcurse: recur.h,v 1.21 2008/09/15 20:40:22 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -37,11 +37,11 @@ typedef enum
 }
 recur_types_t;
 
-struct days_s
+typedef struct days_s
 {
   struct days_s *next;
   long           st;	/* beggining of the considered day, in seconds */
-};
+} days_t;
 
 struct rpt_s
 {

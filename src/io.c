@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.33 2008/08/18 07:30:07 culot Exp $	*/
+/*	$calcurse: io.c,v 1.34 2008/09/15 20:40:22 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -43,12 +43,32 @@
 #define ICALDATEFMT      "%Y%m%d"
 #define ICALDATETIMEFMT  "%Y%m%dT%H%M%S"
 
+#define STRING_BUILD(str) {str, sizeof (str) - 1}
+
 typedef enum
 {
   PROGRESS_BAR_SAVE,
   PROGRESS_BAR_LOAD,
   PROGRESS_BAR_EXPORT
 } progress_bar_t;
+
+typedef struct {
+  const char *str;
+  const int len;
+} string_t;
+
+typedef enum {
+  UNDEFINED,
+  APPOINTMENT,
+  EVENT
+} ical_vevent_e;
+
+typedef struct {
+  recur_types_t type;
+  int           freq;
+  long          until;
+  unsigned      count;
+} ical_rpt_t;
 
 /* Type definition for callbacks to multiple-mode export functions. */
 typedef void (*cb_export_t)(FILE *);
@@ -1213,7 +1233,7 @@ io_startup_screen (bool skip_dialogs, int no_data_file)
 
 /* Export calcurse data. */
 void
-io_export_data (export_mode_t mode, export_type_t type, conf_t *conf)
+io_export_data (io_mode_t mode, export_type_t type, conf_t *conf)
 {
   FILE *stream;
   char *wrong_mode = _("FATAL ERROR in io_export_data: wrong export mode\n");
@@ -1228,10 +1248,10 @@ io_export_data (export_mode_t mode, export_type_t type, conf_t *conf)
     }
   switch (mode)
     {
-    case IO_EXPORT_NONINTERACTIVE:
+    case IO_MODE_NONINTERACTIVE:
       stream = stdout;
       break;
-    case IO_EXPORT_INTERACTIVE:
+    case IO_MODE_INTERACTIVE:
       stream = get_export_stream (type);
       break;
     default:
@@ -1245,17 +1265,17 @@ io_export_data (export_mode_t mode, export_type_t type, conf_t *conf)
 
   cb_export_header[type] (stream);
 
-  if (!conf->skip_progress_bar && mode == IO_EXPORT_INTERACTIVE)
+  if (!conf->skip_progress_bar && mode == IO_MODE_INTERACTIVE)
     progress_bar (PROGRESS_BAR_EXPORT, 0);
   cb_export_recur_events[type] (stream);
   cb_export_events[type] (stream);
 
-  if (!conf->skip_progress_bar && mode == IO_EXPORT_INTERACTIVE)
+  if (!conf->skip_progress_bar && mode == IO_MODE_INTERACTIVE)
     progress_bar (PROGRESS_BAR_EXPORT, 1);
   cb_export_recur_apoints[type] (stream);
   cb_export_apoints[type] (stream);
 
-  if (!conf->skip_progress_bar && mode == IO_EXPORT_INTERACTIVE)
+  if (!conf->skip_progress_bar && mode == IO_MODE_INTERACTIVE)
     progress_bar (PROGRESS_BAR_EXPORT, 2);
   cb_export_todo[type] (stream);
 
@@ -1264,7 +1284,7 @@ io_export_data (export_mode_t mode, export_type_t type, conf_t *conf)
   if (stream != stdout)
     fclose (stream);
 
-  if (!conf->skip_system_dialogs && mode == IO_EXPORT_INTERACTIVE)
+  if (!conf->skip_system_dialogs && mode == IO_MODE_INTERACTIVE)
     {
       status_mesg (success, enter);
       wgetch (win[STA].p);
@@ -1293,4 +1313,718 @@ io_export_bar (void)
   wnoutrefresh (win[STA].p);
   wmove (win[STA].p, 0, 0);
   doupdate ();
+}
+
+static void
+ical_chk_header (FILE *fd)
+{
+  const char *icalheader = "BEGIN:VCALENDAR";
+  const int headerlen = strlen (icalheader);
+  char buf[BUFSIZ];
+
+  fgets (buf, BUFSIZ, fd);
+  if (buf == NULL
+      || strncmp (str_toupper (buf), icalheader, headerlen) != 0)
+    {
+      fprintf (stderr, "The ical file seems to be malformed.\n"
+              "Header does not begin with \"%s\". Aborting...\n", icalheader);
+      exit (EXIT_FAILURE);
+    }
+  else
+    {
+      const int AWAITED = 1;
+      float version;
+      int read;
+
+      do
+        {
+          if (fgets (buf, BUFSIZ, fd) == NULL)
+            {
+              fprintf (stderr, "The ical file seems to be malformed.\n"
+                       "iCalendar specification version was not found. "
+                       "Aborting...\n");
+              exit (EXIT_FAILURE);
+            }
+          else
+            read = sscanf (buf, "VERSION:%f", &version);
+        }
+      while (read != AWAITED);
+      fprintf (stdout, "Found ical file, version %.1f\n", version);
+    }
+}
+
+/*
+ * iCalendar date-time format is based on the ISO 8601 complete
+ * representation. It should be something like : DATE 'T' TIME
+ * where DATE is 'YYYYMMDD' and TIME is 'HHMMSS'.
+ * The time and 'T' separator are optional (in the case of an day-long event).
+ *
+ * Optionnaly, if the type pointer is given, specify if it is an event
+ * (no time is given, meaning it is an all-day event), or an appointment
+ * (time is given).
+ *
+ * The timezone is not yet handled by calcurse.
+ */
+static long
+ical_datetime2long (char *datestr, ical_vevent_e *type)
+{
+  const int NOTFOUND = -1, APPOINT_AWAITED = 5, EVENT_AWAITED = 3;
+  date_t date;
+  unsigned hour, min;
+  long datelong;
+
+  if (strchr (datestr, 'T') == NULL)
+    {
+      if (type)
+        *type = EVENT;
+      if (sscanf (datestr, "%04u%02u%02u",
+                  &date.yyyy, &date.mm, &date.dd) != EVENT_AWAITED)
+        datelong = NOTFOUND;
+      else
+        datelong = date2sec (date, 0, 0);
+    }
+  else
+    {
+      if (type)
+        *type = APPOINTMENT;
+      if (sscanf (datestr, "%04u%02u%02uT%02u%02u",
+                  &date.yyyy, &date.mm, &date.dd, &hour, &min)
+          != APPOINT_AWAITED)
+        datelong = NOTFOUND;
+      else
+        datelong = date2sec (date, hour, min);
+    }
+  return datelong;
+}
+
+static long
+ical_durtime2long (char *timestr)
+{
+  long timelong;
+  char *p;
+
+  if ((p = strchr (timestr, 'T')) == NULL)
+    timelong = 0;
+  else
+    {
+      int nbmatch;
+      struct {
+        unsigned hour, min, sec;
+      } time;
+
+      p++;
+      bzero (&time, sizeof time);
+      nbmatch = sscanf (p, "%uH%uM%uS", &time.hour, &time.min, &time.sec);
+      if (nbmatch < 1 || nbmatch > 3)
+        timelong = 0;
+      else
+        timelong = time.hour * HOURINSEC + time.min * MININSEC + time.sec;
+    }
+  return timelong;
+}
+
+/*
+ * Extract from RFC2445:
+ *
+ * Value Name: DURATION
+ *
+ * Purpose: This value type is used to identify properties that contain
+ * duration of time.
+ *
+ * Formal Definition: The value type is defined by the following
+ * notation:
+ *
+ * dur-value  = (["+"] / "-") "P" (dur-date / dur-time / dur-week)
+ * dur-date   = dur-day [dur-time]
+ * dur-time   = "T" (dur-hour / dur-minute / dur-second)
+ * dur-week   = 1*DIGIT "W"
+ * dur-hour   = 1*DIGIT "H" [dur-minute]
+ * dur-minute = 1*DIGIT "M" [dur-second]
+ * dur-second = 1*DIGIT "S"
+ * dur-day    = 1*DIGIT "D"
+ *
+ * Example: A duration of 15 days, 5 hours and 20 seconds would be:
+ * P15DT5H0M20S
+ * A duration of 7 weeks would be:
+ * P7W
+ */
+static long
+ical_dur2long (char *durstr)
+{
+  const int NOTFOUND = -1;
+  long durlong;
+  char *p;
+  struct {
+    unsigned week, day;
+  } date;
+
+  bzero (&date, sizeof date);
+  if ((p = strchr (durstr, 'P')) == NULL)
+    durlong = NOTFOUND;
+  else
+    {
+      p++;
+      if (*p == '-')
+        return NOTFOUND;
+      else if (*p == '+')
+        p++;
+      
+      if (*p == 'T')                                      /* dur-time */
+        durlong = ical_durtime2long (p);
+      else if (sscanf (p, "%uW", &date.week) == 1)        /* dur-week */
+        durlong = date.week * WEEKINDAYS * DAYINSEC;
+      else                                                /* dur-date */
+        {
+          if (sscanf (p, "%uD", &date.day) == 1)
+            {
+              durlong = date.day * DAYINSEC;
+              durlong += ical_durtime2long (p);
+            }
+          else
+            durlong = NOTFOUND;
+        }
+    }
+  return durlong;
+}
+
+/*
+ * Read a recurrence rule from an iCalendar RRULE string.
+ *
+ * Value Name: RECUR
+ *
+ * Purpose: This value type is used to identify properties that contain
+ * a recurrence rule specification.
+ * 
+ * Formal Definition: The value type is defined by the following
+ * notation:
+ *
+ * recur      = "FREQ"=freq *(
+ *
+ * ; either UNTIL or COUNT may appear in a 'recur',
+ * ; but UNTIL and COUNT MUST NOT occur in the same 'recur'
+ *
+ * ( ";" "UNTIL" "=" enddate ) /
+ * ( ";" "COUNT" "=" 1*DIGIT ) /
+ *
+ * ; the rest of these keywords are optional,
+ * ; but MUST NOT occur more than
+ * ; once
+ *
+ * ( ";" "INTERVAL" "=" 1*DIGIT )          /
+ * ( ";" "BYSECOND" "=" byseclist )        /
+ * ( ";" "BYMINUTE" "=" byminlist )        /
+ * ( ";" "BYHOUR" "=" byhrlist )           /
+ * ( ";" "BYDAY" "=" bywdaylist )          /
+ * ( ";" "BYMONTHDAY" "=" bymodaylist )    /
+ * ( ";" "BYYEARDAY" "=" byyrdaylist )     /
+ * ( ";" "BYWEEKNO" "=" bywknolist )       /
+ * ( ";" "BYMONTH" "=" bymolist )          /
+ * ( ";" "BYSETPOS" "=" bysplist )         /
+ * ( ";" "WKST" "=" weekday )              /
+ * ( ";" x-name "=" text )
+ * )
+*/
+static int
+ical_read_rrule (char *rrulestr, ical_rpt_t *rpt, unsigned *noskipped)
+{
+  const int HAS_RECURRENCE = 1, NO_RECURRENCE = 0;
+  const string_t daily = STRING_BUILD ("DAILY");
+  const string_t weekly = STRING_BUILD ("WEEKLY");
+  const string_t monthly = STRING_BUILD ("MONTHLY");
+  const string_t yearly = STRING_BUILD ("YEARLY");
+  unsigned interval;
+  char *p;
+
+  if ((p = strchr (rrulestr, ':')) != NULL)
+    {
+      char freqstr[BUFSIZ], untilstr[BUFSIZ];
+                  
+      p++;
+      if (sscanf (p, "FREQ=%s;", freqstr) != 1)
+        {
+          fprintf (stderr, "Warning: recurrence frequence not found. "
+                   "Skipping...\n");
+          (*noskipped)++;
+          return NO_RECURRENCE;
+        }
+      else
+        {
+          if (strncmp (freqstr, daily.str, daily.len) == 0)
+            rpt->type = RECUR_DAILY;
+          else if (strncmp (freqstr, weekly.str, weekly.len) == 0)
+            rpt->type = RECUR_WEEKLY;
+          else if (strncmp (freqstr, monthly.str, monthly.len) == 0)
+            rpt->type = RECUR_MONTHLY;
+          else if (strncmp (freqstr, yearly.str, yearly.len) == 0)
+            rpt->type = RECUR_YEARLY;
+          else
+            {
+              fprintf (stderr, "Warning: recurrence frequence not recognized. "
+                       "Skipping...\n");
+              (*noskipped)++;
+              return NO_RECURRENCE;
+            }
+        }
+      /*
+        The UNTIL rule part defines a date-time value which bounds the
+        recurrence rule in an inclusive manner.  If not present, and the
+        COUNT rule part is also not present, the RRULE is considered to
+        repeat forever.
+
+        The COUNT rule part defines the number of occurrences at which to
+        range-bound the recurrence.  The "DTSTART" property value, if
+        specified, counts as the first occurrence.
+      */
+      if (sscanf (p, "UNTIL=%s;", untilstr) == 1)
+        {
+          rpt->until = ical_datetime2long (untilstr, NULL);
+        }
+      else
+        {
+          unsigned count;
+                      
+          if (sscanf (p, "COUNT=%u;", &count) != 1)
+            {
+              rpt->until = 0; /* endless repetition */
+            }
+          else
+            {
+              rpt->count = count;
+            }
+        }
+      if (sscanf (p, "INTERVAL=%u;", &interval) == 1)
+        {
+          rpt->freq = interval;
+        }
+    }
+  else
+    {
+      fprintf (stderr, "Warning: recurrence rule malformed. Skipping...\n");
+      (*noskipped)++;
+      return NO_RECURRENCE;
+    }
+  return HAS_RECURRENCE;
+}
+
+static void
+ical_add_exc (days_t **exc_head, long date)
+{
+  if (date == 0)
+    return;
+  else
+    {
+      struct days_s *exc;
+      
+      exc = malloc (sizeof (struct days_s));
+      exc->st = date;
+      exc->next = *exc_head;
+      *exc_head = exc;
+    }
+}
+
+/*
+ * This property defines the list of date/time exceptions for a
+ * recurring calendar component.
+ */
+static days_t *
+ical_read_exdate (char *exstr, unsigned *noskipped)
+{
+  days_t *exc;
+  char *p, *q;
+  long date;
+
+  exc = NULL;
+  if ((p = strchr (exstr, ':')) != NULL)
+    {
+      p++;
+      while ((q = strchr (p, ',')) != NULL)
+        {
+          char buf[BUFSIZ];
+          const int buflen = q - p;
+
+          strncpy (buf, p, buflen);
+          buf[buflen] = '\0';
+          date = ical_datetime2long (buf, NULL);
+          ical_add_exc (&exc, date);
+          p = ++q;
+        }
+      date = ical_datetime2long (p, NULL);
+      ical_add_exc (&exc, date);
+    }
+  else
+    {
+      fprintf (stderr, "Warning: recurrence exception dates malformed. "
+               "Skipping...\n");
+      (*noskipped)++;
+    }
+  return exc;
+}
+
+static char *
+ical_read_note (char *first_line, FILE *fdi, FILE *fdo, unsigned *noskipped)
+{
+  const int CHAR_SPACE = 32, CHAR_TAB = 9;
+  char *p, *note, buf[BUFSIZ];
+  int c;
+
+  /* TODO: creer un fichier temporaire et le renvoyer en fin de methode.
+     Attention a liberer le nom du fichier temporaire si foirade !
+   */
+  note = NULL;
+  if ((p = strchr (first_line, ':')) != NULL)
+    {
+      p++;
+      fprintf (fdo, "%s", p);
+      for (;;)
+        {
+          c = getc (fdi);
+          if (c == CHAR_SPACE || c == CHAR_TAB)
+            {
+              if (fgets (buf, BUFSIZ, fdi) != NULL)
+                {
+                  fprintf (fdo, "%s", buf);
+                }
+              else
+                {
+                  fprintf (stderr, "Warning: could not get entire description. "
+                           "Skipping...\n");
+                  /* Free temporary note name */
+                  return NULL;
+                }
+            }
+          else
+            {
+              ungetc (c, fdi);
+              return NULL; /* Ne pas renvoyer NULL mais le nom du fichier temp! */
+            }
+        }
+    }
+  else
+    {
+      fprintf (stderr, "Warning: description malformed. Skipping...\n");
+      (*noskipped)++;
+      return NULL;
+    }
+}
+
+static void
+ical_read_event (FILE *fdi, FILE *fdo, unsigned *noevents, unsigned *noapoints,
+                 unsigned *noskipped)
+{
+  const int NOTFOUND = -1;
+  const string_t endevent = STRING_BUILD ("END:VEVENT");
+  const string_t summary  = STRING_BUILD ("SUMMARY:");
+  const string_t dtstart  = STRING_BUILD ("DTSTART");
+  const string_t dtend    = STRING_BUILD ("DTEND");
+  const string_t duration = STRING_BUILD ("DURATION:");
+  const string_t rrule    = STRING_BUILD ("RRULE");
+  const string_t exdate   = STRING_BUILD ("EXDATE");
+  const string_t alarm    = STRING_BUILD ("BEGIN:VALARM");
+  const string_t endalarm = STRING_BUILD ("END:VALARM");  
+  const string_t desc     = STRING_BUILD ("DESCRIPTION");
+  ical_vevent_e vevent_type;
+  char *p, buf[BUFSIZ], buf_upper[BUFSIZ];
+  struct {
+    days_t       *exc;
+    ical_rpt_t    rpt;
+    char          mesg[BUFSIZ], *note;
+    long          start, end, dur;
+    int           has_summary, has_alarm, has_recurrence;
+  } vevent;
+  int skip_alarm;
+  
+  vevent_type = UNDEFINED;
+  bzero (&vevent, sizeof vevent);
+  skip_alarm = 0;
+  while (fgets (buf, BUFSIZ, fdi) != NULL)
+    {
+      memcpy (buf_upper, buf, strlen (buf));
+      str_toupper (buf_upper);
+      if (skip_alarm)                          
+        {
+          /* Need to skip VALARM properties because some keywords could
+             interfere, such as DURATION, SUMMARY,.. */
+          if (strncmp (buf_upper, endalarm.str, endalarm.len) == 0)
+            skip_alarm = 0;
+          continue;
+        }
+      if (strncmp (buf_upper, endevent.str, endevent.len) == 0)
+        {
+          if (vevent.has_summary)
+            {
+              switch (vevent_type)
+                {
+                case APPOINTMENT:
+                  if (vevent.start == 0)
+                    {
+                      fprintf (stderr, "Warning: VEVENT appointment has "
+                               "no start time. Skipping...\n");
+                      (*noskipped)++;
+                      return;
+                    }
+                  if (vevent.dur == 0)
+                    {
+                      if (vevent.end == 0)
+                        {
+                          fprintf (stderr, "Warning: could not compute "
+                                   "VEVENT duration (no end time). "
+                                   "Skipping...\n");
+                          (*noskipped)++;
+                          return;
+                        }
+                      else if (vevent.start == vevent.end)
+                        {
+                          vevent_type = EVENT;
+                          (*noevents)++;
+                          ical_store_event (vevent.mesg, vevent.start,
+                                            &vevent.rpt);
+                          return;
+                        }
+                      else
+                        vevent.dur = vevent.start - vevent.end;
+                    }
+                  ical_store_apoint (vevent.mesg, vevent.start, vevent.end,
+                                     vevent.dur, &vevent.rpt);
+                  (*noapoints)++;
+                  break;
+                case EVENT:
+                  ical_store_event (vevent.mesg, vevent.start, &vevent.rpt);
+                  (*noevents)++;
+                  break;
+                case UNDEFINED:
+                  fprintf (stderr, "Warning: VEVENT could not be identified. "
+                           "Skipping...\n");
+                  (*noskipped)++;
+                  return;
+                  break;
+                }                
+            }
+          else
+            {
+              fprintf (stderr,
+                       "Warning: VEVENT has no summary. Skipping...\n");
+              (*noskipped)++;
+            }
+          return;
+        }
+      else
+        {
+          if (strncmp (buf_upper, dtstart.str, dtstart.len) == 0)
+            {
+              if ((p = strchr (buf, ':')) == NULL)
+                vevent.start = NOTFOUND;
+              else
+                vevent.start = ical_datetime2long (++p, &vevent_type);
+              if (vevent.start == NOTFOUND)
+                {
+                  fprintf (stderr,
+                           "Warning: could not retrieve event start time. "
+                           "Skipping...\n");
+                  (*noskipped)++;
+                  return;
+                }
+            }
+          else if (strncmp (buf_upper, dtend.str, dtend.len) == 0)
+            {
+              if ((p = strchr (buf, ':')) == NULL)
+                vevent.end = NOTFOUND;
+              else
+                vevent.end = ical_datetime2long (++p, &vevent_type);
+              if (vevent.end == NOTFOUND)
+                {
+                  fprintf (stderr,
+                           "Warning: could not retrieve event end time. "
+                           "Skipping...\n");
+                  (*noskipped)++;
+                  return;
+                }
+            }
+          else if (strncmp (buf_upper, duration.str, duration.len) == 0)
+            {
+              if ((vevent.dur = ical_dur2long (buf)) <= 0)
+                {
+                  fprintf (stderr,
+                           "Warning: vevent duration malformed. Skipping...\n");
+                  (*noskipped)++;
+                  return;
+                }
+            }
+          else if (strncmp (buf_upper, rrule.str, rrule.len) == 0)
+            {
+              vevent.has_recurrence =
+                ical_read_rrule (buf, &vevent.rpt, noskipped);
+            }
+          else if (strncmp (buf_upper, exdate.str, exdate.len) == 0)
+            {
+              vevent.exc = ical_read_exdate (buf, noskipped);
+            }      
+          else if (strncmp (buf_upper, summary.str, summary.len) == 0)
+            {
+              const int sumlen = strlen (buf) - summary.len - 1;
+              memcpy (vevent.mesg, buf + summary.len, sumlen);
+              vevent.mesg[sumlen - 1] = '\0';
+              vevent.has_summary = 1;
+            }
+          else if (strncmp (buf_upper, alarm.str, alarm.len) == 0)
+            {
+              skip_alarm = 1;
+              vevent.has_alarm = 1;
+            }
+          else if (strncmp (buf_upper, desc.str, desc.len) == 0)
+            {
+              vevent.note = ical_read_note (buf, fdi, fdo, noskipped);
+            }
+        }
+    }
+  fprintf (stderr, "The ical file seems to be malformed.\n"
+           "The end of VEVENT item was not found. Aborting...");
+  exit (EXIT_FAILURE);
+}
+
+static void
+ical_read_todo (FILE *fdi, FILE *fdo, unsigned *notodos, unsigned *noskipped)
+{
+  const string_t endtodo  = STRING_BUILD ("END:VTODO");
+  const string_t summary  = STRING_BUILD ("SUMMARY:");
+  const string_t alarm    = STRING_BUILD ("BEGIN:VALARM");
+  const string_t endalarm = STRING_BUILD ("END:VALARM");
+  const string_t desc     = STRING_BUILD ("DESCRIPTION");
+  const int LOWEST = 9;
+  char buf[BUFSIZ], buf_upper[BUFSIZ];
+  struct {
+    char mesg[BUFSIZ], *note;
+    int has_priority, has_summary, priority;
+  } vtodo;
+  int skip_alarm;
+  
+  bzero (&vtodo, sizeof vtodo);
+  skip_alarm = 0;
+  while (fgets (buf, BUFSIZ, fdi) != NULL)
+    {
+      memcpy (buf_upper, buf, strlen (buf));
+      str_toupper (buf_upper);
+      if (skip_alarm)                          
+        {
+          /* Need to skip VALARM properties because some keywords could
+             interfere, such as DURATION, SUMMARY,.. */
+          if (strncmp (buf_upper, endalarm.str, endalarm.len) == 0)
+            skip_alarm = 0;
+          continue;
+        }
+      if (strncmp (buf_upper, endtodo.str, endtodo.len) == 0)
+        {
+          if (!vtodo.has_priority)
+            vtodo.priority = LOWEST;
+          if (vtodo.has_summary)
+            {
+              ical_store_todo (vtodo.priority, vtodo.mesg);
+              (*notodos)++;
+            }
+          else
+            {
+              fprintf (stderr,
+                       "Warning: VTODO item has no summary. Skipping...\n");
+              (*noskipped)++;
+            }
+          return;
+        }
+      else
+        {
+          int tmpint;
+          
+          if (sscanf (buf_upper, "PRIORITY:%d", &tmpint) == 1)
+            {
+              if (tmpint <= 9 && tmpint >= 1)
+                {
+                  vtodo.priority = tmpint;
+                  vtodo.has_priority = 1;
+                }
+              else
+                {
+                  fprintf (stderr,
+                           "Warning: VTODO item priority is not acceptable\n"
+                           "(must be between 1 and 9 while it is %d).\n",
+                           tmpint);
+                  vtodo.priority = LOWEST;
+                }
+            }
+          else if (strncmp (buf_upper, summary.str, summary.len) == 0)
+            {
+              const int sumlen = strlen (buf) - summary.len - 1;
+              memcpy (vtodo.mesg, buf + summary.len, sumlen);
+              vtodo.mesg[sumlen - 1] = '\0';
+              vtodo.has_summary = 1;
+            }
+          else if (strncmp (buf_upper, alarm.str, alarm.len) == 0)
+            {
+              skip_alarm = 1;
+            }
+          else if (strncmp (buf_upper, desc.str, desc.len) == 0)
+            {
+              vtodo.note = ical_read_note (buf, fdi, fdo, noskipped);
+            }
+        }
+    }
+  fprintf (stderr, "The ical file seems to be malformed.\n"
+           "The end of VTODO item was not found. Aborting...");
+  exit (EXIT_FAILURE);
+}
+
+void
+io_import_data (char *infile, char *outfile, io_mode_t mode, import_type_t type,
+                conf_t *conf)
+{
+  const char *wrong_mode =
+    _("FATAL ERROR in io_import_data: wrong import mode\n");
+  const char *wrong_type =
+    _("FATAL ERROR in io_import_data: unknown import type\n");
+  const char *vevent = "BEGIN:VEVENT";
+  const char *vtodo = "BEGIN:VTODO";
+  char buf[BUFSIZ];
+  FILE *fdi, *fdo, *stream;
+  struct {
+    unsigned events, apoints, todos, lines, skipped;
+  } stats;
+
+  if (type < 0 || type >= IO_IMPORT_NBTYPES)
+    {
+      fputs (wrong_type, stderr);
+      exit (EXIT_FAILURE);
+    }
+  switch (mode)
+    {
+    case IO_MODE_NONINTERACTIVE:
+      stream = stdout;
+      break;
+    case IO_MODE_INTERACTIVE:
+      stream = get_import_stream (type);
+      break;
+    default:
+      fputs (wrong_mode, stderr);
+      exit (EXIT_FAILURE);
+      /* NOTREACHED */
+    }
+  fdi = fopen (infile, "r");
+  exitonerr (fdi != NULL, "Could not open %s", infile);
+  fdo = fopen (outfile, "w");
+  exitonerr (fdo != NULL, "Could not open %s", outfile);
+  ical_chk_header (fdi);
+  bzero (&stats, sizeof stats);
+  while (fgets (buf, BUFSIZ, fdi) != NULL)
+    {
+      stats.lines++;
+      str_toupper (buf);
+      printf ("Number of lines read: %04d "
+              "(apoints: %d / events: %d / todos: %d / skipped: %d)\r",
+              stats.lines, stats.apoints, stats.events, stats.todos,
+              stats.skipped);
+      if (strncmp (buf, vevent, strlen (vevent)) == 0)
+        ical_read_event (fdi, fdo, &stats.events, &stats.apoints,
+                         &stats.skipped);
+      else if (strncmp (buf, vtodo, strlen (vtodo)) == 0)
+        ical_read_todo (fdi, fdo, &stats.todos, &stats.skipped);
+    }
+  printf ("\n");
+  fclose (fdi);
+  fclose (fdo);
 }

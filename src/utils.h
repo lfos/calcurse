@@ -1,4 +1,4 @@
-/*	$calcurse: utils.h,v 1.32 2008/08/11 18:08:45 culot Exp $	*/
+/*	$calcurse: utils.h,v 1.33 2008/09/15 20:40:22 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -107,5 +107,6 @@ void    print_option_incolor (WINDOW *, bool, int, int);
 char   *new_tempfile (const char *, int);
 void    erase_note (char **, erase_flag_e);
 int     parse_date (char *, int, int *, int *, int *);
+char   *str_toupper (char *);
 
 #endif /* CALCURSE_UTILS_H */

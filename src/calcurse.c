@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.65 2008/08/10 09:24:46 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.66 2008/09/15 20:40:22 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -392,11 +392,11 @@ main (int argc, char **argv)
 		{
 		case 'I':
 		case 'i':
-                  io_export_data (IO_EXPORT_INTERACTIVE, IO_EXPORT_ICAL, &conf);
+                  io_export_data (IO_MODE_INTERACTIVE, IO_EXPORT_ICAL, &conf);
 		  break;
 		case 'P':
 		case 'p':
-                  io_export_data (IO_EXPORT_INTERACTIVE, IO_EXPORT_PCAL, &conf);
+                  io_export_data (IO_MODE_INTERACTIVE, IO_EXPORT_PCAL, &conf);
 		  break;
 		}
 	      wins_reset ();

@@ -1,3 +1,16 @@
+2008-09-15  Frederic Culot  <frederic@culot.org>
+
+	* src/io.h: import_type_t added, export_mode_t changed to
+	io_mode_t
+
+	* src/utils.c (str_toupper): new function
+	
+	* src/io.c (ical_chk_header, ical_datetime2long)
+	(ical_durtime2long, ical_durlong, ical_read_rrule, ical_add_exc)
+	(ical_read_exdate, ical_read_note, ical_read_event)
+	(ical_read_todo, io_import_data): new functions to handle
+	icalendar import
+	
 2008-08-28  Frederic Culot  <frederic@culot.org>
 
 	* === Released 2.2 ===

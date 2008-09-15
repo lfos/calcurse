@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.48 2008/08/11 18:08:45 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.49 2008/09/15 20:40:22 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -963,4 +963,14 @@ parse_date (char *date_string, int datefmt, int *year, int *month, int *day)
   if (day != NULL)
     *day = lday;
   return (1);
+}
+
+char *
+str_toupper (char *s)
+{
+  int len;
+
+  for (len = 0; s && s[len]; len++)
+    s[len] = toupper (s[len]);
+  return s;
 }
