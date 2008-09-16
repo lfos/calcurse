@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.34 2008/09/15 20:40:22 culot Exp $	*/
+/*	$calcurse: io.c,v 1.35 2008/09/16 19:41:36 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -38,6 +38,7 @@
 #include "todo.h"
 #include "event.h"
 #include "apoint.h"
+#include "recur.h"
 #include "io.h"
 
 #define ICALDATEFMT      "%Y%m%d"
@@ -1316,6 +1317,56 @@ io_export_bar (void)
 }
 
 static void
+ical_store_todo (int priority, char *mesg, char *note)
+{
+  todo_add (mesg, priority, note);
+}
+
+static void
+ical_store_event (char *mesg, char *note, long day, ical_rpt_t *rpt,
+                  days_t *exc)
+{
+  const int EVENTID = 1;
+  
+  if (rpt != NULL)
+    {
+      recur_event_new (mesg, note, day, EVENTID, rpt->type, rpt->freq,
+                       rpt->until, exc);
+      free (rpt);
+    }
+  else
+    {
+      event_new (mesg, note, day, EVENTID);
+    }
+  free (mesg);
+  if (note)
+    free (note);
+}
+
+static void
+ical_store_apoint (char *mesg, char *note, long start, long dur,
+                   ical_rpt_t *rpt, days_t *exc, int has_alarm)
+{
+  char state = 0L;
+
+  if (has_alarm)
+    state |= APOINT_NOTIFY;
+  if (rpt != NULL)
+    {
+      recur_apoint_new (mesg, note, start, dur, state, rpt->type, rpt->freq,
+                        rpt->until, exc);
+      free (rpt);
+    }
+  else
+    {
+      apoint_new (mesg, note, start, dur, state);
+    }
+  free (mesg);
+  if (note)
+    free (note);
+}
+
+static void
 ical_chk_header (FILE *fd)
 {
   const char *icalheader = "BEGIN:VCALENDAR";
@@ -1524,28 +1575,31 @@ ical_dur2long (char *durstr)
  * ( ";" x-name "=" text )
  * )
 */
-static int
-ical_read_rrule (char *rrulestr, ical_rpt_t *rpt, unsigned *noskipped)
+static ical_rpt_t *
+ical_read_rrule (char *rrulestr, unsigned *noskipped)
 {
-  const int HAS_RECURRENCE = 1, NO_RECURRENCE = 0;
   const string_t daily = STRING_BUILD ("DAILY");
   const string_t weekly = STRING_BUILD ("WEEKLY");
   const string_t monthly = STRING_BUILD ("MONTHLY");
   const string_t yearly = STRING_BUILD ("YEARLY");
   unsigned interval;
+  ical_rpt_t *rpt;
   char *p;
 
+  rpt = NULL;
   if ((p = strchr (rrulestr, ':')) != NULL)
     {
       char freqstr[BUFSIZ], untilstr[BUFSIZ];
                   
       p++;
+      rpt = malloc (sizeof (ical_rpt_t));
       if (sscanf (p, "FREQ=%s;", freqstr) != 1)
         {
           fprintf (stderr, "Warning: recurrence frequence not found. "
                    "Skipping...\n");
           (*noskipped)++;
-          return NO_RECURRENCE;
+          free (rpt);
+          return NULL;
         }
       else
         {
@@ -1562,7 +1616,8 @@ ical_read_rrule (char *rrulestr, ical_rpt_t *rpt, unsigned *noskipped)
               fprintf (stderr, "Warning: recurrence frequence not recognized. "
                        "Skipping...\n");
               (*noskipped)++;
-              return NO_RECURRENCE;
+              free (rpt);
+              return NULL;
             }
         }
       /*
@@ -1601,9 +1656,8 @@ ical_read_rrule (char *rrulestr, ical_rpt_t *rpt, unsigned *noskipped)
     {
       fprintf (stderr, "Warning: recurrence rule malformed. Skipping...\n");
       (*noskipped)++;
-      return NO_RECURRENCE;
     }
-  return HAS_RECURRENCE;
+  return rpt;
 }
 
 static void
@@ -1661,18 +1715,29 @@ ical_read_exdate (char *exstr, unsigned *noskipped)
 }
 
 static char *
-ical_read_note (char *first_line, FILE *fdi, FILE *fdo, unsigned *noskipped)
+ical_read_note (char *first_line, FILE *fdi, unsigned *noskipped)
 {
   const int CHAR_SPACE = 32, CHAR_TAB = 9;
-  char *p, *note, buf[BUFSIZ];
+  char *p, *note, *notename, buf[BUFSIZ], fullnotename[BUFSIZ];
+  FILE *fdo;
   int c;
 
-  /* TODO: creer un fichier temporaire et le renvoyer en fin de methode.
-     Attention a liberer le nom du fichier temporaire si foirade !
-   */
   note = NULL;
   if ((p = strchr (first_line, ':')) != NULL)
     {
+      if ((notename = new_tempfile (path_notes, NOTESIZ)) == NULL)
+        {
+          fprintf (stderr, "Warning: could not create new note file to store "
+                   "description. Aborting...\n");
+          exit (EXIT_FAILURE);
+        }
+      snprintf (fullnotename, BUFSIZ, "%s%s", path_notes, notename);
+      if ((fdo = fopen (fullnotename, "w")) == NULL)
+        {
+          fprintf (stderr, "Warning: could not open %s, Aborting...",
+                   fullnotename);
+          exit (EXIT_FAILURE);
+        }
       p++;
       fprintf (fdo, "%s", p);
       for (;;)
@@ -1688,14 +1753,17 @@ ical_read_note (char *first_line, FILE *fdi, FILE *fdo, unsigned *noskipped)
                 {
                   fprintf (stderr, "Warning: could not get entire description. "
                            "Skipping...\n");
-                  /* Free temporary note name */
+                  fclose (fdo);
+                  erase_note (&notename, ERASE_FORCE);
+                  (*noskipped)++;
                   return NULL;
                 }
             }
           else
             {
               ungetc (c, fdi);
-              return NULL; /* Ne pas renvoyer NULL mais le nom du fichier temp! */
+              fclose (fdo);
+              return notename;
             }
         }
     }
@@ -1708,7 +1776,7 @@ ical_read_note (char *first_line, FILE *fdi, FILE *fdo, unsigned *noskipped)
 }
 
 static void
-ical_read_event (FILE *fdi, FILE *fdo, unsigned *noevents, unsigned *noapoints,
+ical_read_event (FILE *fdi, unsigned *noevents, unsigned *noapoints,
                  unsigned *noskipped)
 {
   const int NOTFOUND = -1;
@@ -1726,10 +1794,10 @@ ical_read_event (FILE *fdi, FILE *fdo, unsigned *noevents, unsigned *noapoints,
   char *p, buf[BUFSIZ], buf_upper[BUFSIZ];
   struct {
     days_t       *exc;
-    ical_rpt_t    rpt;
+    ical_rpt_t   *rpt;
     char          mesg[BUFSIZ], *note;
     long          start, end, dur;
-    int           has_summary, has_alarm, has_recurrence;
+    int           has_summary, has_alarm;
   } vevent;
   int skip_alarm;
   
@@ -1775,20 +1843,23 @@ ical_read_event (FILE *fdi, FILE *fdo, unsigned *noevents, unsigned *noapoints,
                       else if (vevent.start == vevent.end)
                         {
                           vevent_type = EVENT;
+                          ical_store_event (vevent.mesg, vevent.note,
+                                            vevent.start, vevent.rpt,
+                                            vevent.exc);
                           (*noevents)++;
-                          ical_store_event (vevent.mesg, vevent.start,
-                                            &vevent.rpt);
                           return;
                         }
                       else
                         vevent.dur = vevent.start - vevent.end;
                     }
-                  ical_store_apoint (vevent.mesg, vevent.start, vevent.end,
-                                     vevent.dur, &vevent.rpt);
+                  ical_store_apoint (vevent.mesg, vevent.note, vevent.start,
+                                     vevent.dur, vevent.rpt, vevent.exc,
+                                     vevent.has_alarm);
                   (*noapoints)++;
                   break;
                 case EVENT:
-                  ical_store_event (vevent.mesg, vevent.start, &vevent.rpt);
+                  ical_store_event (vevent.mesg, vevent.note, vevent.start,
+                                    vevent.rpt, vevent.exc);
                   (*noevents)++;
                   break;
                 case UNDEFINED:
@@ -1851,8 +1922,7 @@ ical_read_event (FILE *fdi, FILE *fdo, unsigned *noevents, unsigned *noapoints,
             }
           else if (strncmp (buf_upper, rrule.str, rrule.len) == 0)
             {
-              vevent.has_recurrence =
-                ical_read_rrule (buf, &vevent.rpt, noskipped);
+              vevent.rpt = ical_read_rrule (buf, noskipped);
             }
           else if (strncmp (buf_upper, exdate.str, exdate.len) == 0)
             {
@@ -1872,7 +1942,7 @@ ical_read_event (FILE *fdi, FILE *fdo, unsigned *noevents, unsigned *noapoints,
             }
           else if (strncmp (buf_upper, desc.str, desc.len) == 0)
             {
-              vevent.note = ical_read_note (buf, fdi, fdo, noskipped);
+              vevent.note = ical_read_note (buf, fdi, noskipped);
             }
         }
     }
@@ -1882,7 +1952,7 @@ ical_read_event (FILE *fdi, FILE *fdo, unsigned *noevents, unsigned *noapoints,
 }
 
 static void
-ical_read_todo (FILE *fdi, FILE *fdo, unsigned *notodos, unsigned *noskipped)
+ical_read_todo (FILE *fdi, unsigned *notodos, unsigned *noskipped)
 {
   const string_t endtodo  = STRING_BUILD ("END:VTODO");
   const string_t summary  = STRING_BUILD ("SUMMARY:");
@@ -1917,7 +1987,7 @@ ical_read_todo (FILE *fdi, FILE *fdo, unsigned *notodos, unsigned *noskipped)
             vtodo.priority = LOWEST;
           if (vtodo.has_summary)
             {
-              ical_store_todo (vtodo.priority, vtodo.mesg);
+              ical_store_todo (vtodo.priority, vtodo.mesg, vtodo.note);
               (*notodos)++;
             }
           else
@@ -1961,7 +2031,7 @@ ical_read_todo (FILE *fdi, FILE *fdo, unsigned *notodos, unsigned *noskipped)
             }
           else if (strncmp (buf_upper, desc.str, desc.len) == 0)
             {
-              vtodo.note = ical_read_note (buf, fdi, fdo, noskipped);
+              vtodo.note = ical_read_note (buf, fdi, noskipped);
             }
         }
     }
@@ -1970,9 +2040,42 @@ ical_read_todo (FILE *fdi, FILE *fdo, unsigned *notodos, unsigned *noskipped)
   exit (EXIT_FAILURE);
 }
 
+static FILE *
+get_import_stream (export_type_t type)
+{
+  FILE *stream;
+  char *stream_name;
+  char *ask_fname = _("Enter the file name to import data from:");
+  char *wrong_file =
+    _("The file cannot be accessed, please enter another file name.");
+  char *press_enter = _("Press [ENTER] to continue.");
+  int cancel;
+
+  stream = NULL;
+  stream_name = malloc (BUFSIZ);
+  while (stream == NULL)
+    {
+      status_mesg (ask_fname, "");
+      cancel = updatestring (win[STA].p, &stream_name, 0, 1);
+      if (cancel)
+	{
+	  free (stream_name);
+	  return NULL;
+	}
+      stream = fopen (stream_name, "r");
+      if (stream == NULL)
+	{
+	  status_mesg (wrong_file, press_enter);
+	  wgetch (win[STA].p);
+	}
+    }
+  free (stream_name);
+
+  return stream;
+}
+
 void
-io_import_data (char *infile, char *outfile, io_mode_t mode, import_type_t type,
-                conf_t *conf)
+io_import_data (char *infile, io_mode_t mode, import_type_t type, conf_t *conf)
 {
   const char *wrong_mode =
     _("FATAL ERROR in io_import_data: wrong import mode\n");
@@ -1981,7 +2084,7 @@ io_import_data (char *infile, char *outfile, io_mode_t mode, import_type_t type,
   const char *vevent = "BEGIN:VEVENT";
   const char *vtodo = "BEGIN:VTODO";
   char buf[BUFSIZ];
-  FILE *fdi, *fdo, *stream;
+  FILE *fdi, *stream;
   struct {
     unsigned events, apoints, todos, lines, skipped;
   } stats;
@@ -1994,7 +2097,7 @@ io_import_data (char *infile, char *outfile, io_mode_t mode, import_type_t type,
   switch (mode)
     {
     case IO_MODE_NONINTERACTIVE:
-      stream = stdout;
+      stream = stdin;
       break;
     case IO_MODE_INTERACTIVE:
       stream = get_import_stream (type);
@@ -2005,9 +2108,11 @@ io_import_data (char *infile, char *outfile, io_mode_t mode, import_type_t type,
       /* NOTREACHED */
     }
   fdi = fopen (infile, "r");
-  exitonerr (fdi != NULL, "Could not open %s", infile);
-  fdo = fopen (outfile, "w");
-  exitonerr (fdo != NULL, "Could not open %s", outfile);
+  if (fdi == NULL)
+    {
+      fprintf (stderr, "Could not open %s, aborting...", infile);
+      return;
+    }
   ical_chk_header (fdi);
   bzero (&stats, sizeof stats);
   while (fgets (buf, BUFSIZ, fdi) != NULL)
@@ -2019,12 +2124,10 @@ io_import_data (char *infile, char *outfile, io_mode_t mode, import_type_t type,
               stats.lines, stats.apoints, stats.events, stats.todos,
               stats.skipped);
       if (strncmp (buf, vevent, strlen (vevent)) == 0)
-        ical_read_event (fdi, fdo, &stats.events, &stats.apoints,
-                         &stats.skipped);
+        ical_read_event (fdi, &stats.events, &stats.apoints, &stats.skipped);
       else if (strncmp (buf, vtodo, strlen (vtodo)) == 0)
-        ical_read_todo (fdi, fdo, &stats.todos, &stats.skipped);
+        ical_read_todo (fdi, &stats.todos, &stats.skipped);
     }
   printf ("\n");
   fclose (fdi);
-  fclose (fdo);
 }

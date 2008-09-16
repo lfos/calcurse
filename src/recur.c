@@ -1,4 +1,4 @@
-/*	$calcurse: recur.c,v 1.37 2008/08/10 09:24:46 culot Exp $	*/
+/*	$calcurse: recur.c,v 1.38 2008/09/16 19:41:36 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -51,7 +51,7 @@ recur_apoint_llist_init (void)
 }
 
 /* Insert a new recursive appointment in the general linked list */
-static recur_apoint_llist_node_t *
+recur_apoint_llist_node_t *
 recur_apoint_new (char *mesg, char *note, long start, long dur, char state,
 		  int type, int freq, long until, struct days_s *except)
 {
@@ -88,7 +88,7 @@ recur_apoint_new (char *mesg, char *note, long start, long dur, char state,
 }
 
 /* Insert a new recursive event in the general linked list */
-static struct recur_event_s *
+struct recur_event_s *
 recur_event_new (char *mesg, char *note, long day, int id, int type, int freq,
 		 long until, struct days_s *except)
 {
