@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.66 2008/09/15 20:40:22 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.67 2008/09/20 12:47:06 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -382,6 +382,13 @@ main (int argc, char **argv)
 	  io_save_cal (&conf);
 	  break;
 
+        case 'I':
+        case 'i':               /* Import function */
+          erase_status_bar ();
+          io_import_data (IO_MODE_INTERACTIVE, IO_IMPORT_ICAL, &conf);
+          do_storage = true;
+          break;
+          
 	case 'X':
 	case 'x':		/* Export function */
           erase_status_bar ();

@@ -1,4 +1,4 @@
-/*	$calcurse: vars.c,v 1.8 2008/04/12 21:14:03 culot Exp $	*/
+/*	$calcurse: vars.c,v 1.9 2008/09/20 12:47:06 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -40,6 +40,13 @@ int col = 0, row = 0;
 
 /* variable to tell if the terminal supports color */
 bool colorize = false;
+
+/*
+ * To tell if curses interface was launched already or not (in that case
+ * calcurse is running in command-line mode).
+ * This is useful to konw how to display messages on the screen.
+ */
+ui_mode_e ui_mode = UI_CMDLINE;
 
 /*
  * variables to store calendar names

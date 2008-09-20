@@ -1,4 +1,4 @@
-/*	$calcurse: vars.h,v 1.23 2008/08/06 17:44:34 culot Exp $	*/
+/*	$calcurse: vars.h,v 1.24 2008/09/20 12:47:06 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -65,6 +65,12 @@
 #define DATEFMT_DESC(datefmt) (datefmt == 1 ? _("mm/dd/yyyy") : \
 		(datefmt == 2 ? _("dd/mm/yyyy") : _("yyyy/mm/dd")))
 
+typedef enum {
+  UI_CURSES,
+  UI_CMDLINE,
+  UI_MODES
+} ui_mode_e;
+
 struct pad_s
 {
   int     width;
@@ -102,6 +108,7 @@ conf_t;
 
 extern int            col, row;
 extern bool           colorize;
+extern ui_mode_e      ui_mode;
 extern int            days[12];
 extern char          *monthnames[12];
 extern char          *daynames[8];

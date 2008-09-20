@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.49 2008/09/15 20:40:22 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.50 2008/09/20 12:47:06 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -48,6 +48,7 @@ exit_calcurse (int status)
   clear ();
   refresh ();
   endwin ();
+  ui_mode = UI_CMDLINE;
   calendar_stop_date_thread ();
   exit (status);
 }
@@ -93,6 +94,29 @@ aerror (const char *file, int line, const char *assertion)
 	    "assert \"%s\" failed: file \"%s\", line %d", assertion, file,
 	    line);
   ierror (errmsg, IERROR_FATAL);
+}
+
+void
+warnbox (const char *msg)
+{
+  const int WINCOL = col - 2;
+  const int WINROW = 10;
+  const int MSGLEN = WINCOL - 2;
+  WINDOW *warnwin;
+  char displmsg[MSGLEN];
+  
+  if (msg == NULL)
+    return;
+  strncpy (displmsg, msg, MSGLEN);
+  warnwin = popup (WINROW, WINCOL, (row - WINROW) / 2, (col - WINCOL) / 2,
+                   "/!\\");
+  custom_apply_attr (warnwin, ATTR_HIGHEST);
+  mvwprintw (warnwin, 5, (WINCOL - strlen (displmsg)) / 2, "%s", displmsg);
+  custom_remove_attr (warnwin, ATTR_HIGHEST);
+  wrefresh (warnwin);
+  wgetch (warnwin);
+  delwin (warnwin);
+  doupdate ();
 }
 
 /* 

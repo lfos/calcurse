@@ -1,4 +1,4 @@
-/*	$calcurse: wins.c,v 1.16 2008/04/19 21:05:15 culot Exp $	*/
+/*	$calcurse: wins.c,v 1.17 2008/09/20 12:47:06 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -116,6 +116,9 @@ wins_init (void)
   keypad (win[APP].p, TRUE);
   keypad (win[TOD].p, TRUE);
   keypad (win[STA].p, TRUE);
+
+  /* Notify that the curses mode is now launched. */
+  ui_mode = UI_CURSES;
 }
 
 /* 
@@ -463,12 +466,14 @@ wins_launch_external (const char *file, const char *cmd)
     notify_stop_main_thread ();
   def_prog_mode ();
   endwin ();
+  ui_mode = UI_CMDLINE;
   clear ();
   refresh ();
   system (p);
   reset_prog_mode ();
   clearok (curscr, TRUE);
   curs_set (0);
+  ui_mode = UI_CURSES;
   refresh ();
   if (notify_bar ())
     notify_start_main_thread ();

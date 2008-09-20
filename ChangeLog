@@ -1,3 +1,17 @@
+2008-09-20  Frederic Culot  <frederic@culot.org>
+
+	* src/io.c (io_import_data): temporary log file created to store
+	import process report
+
+	* src/io.c (ical_log_init, ical_log): new functions
+
+	* src/utils.c (warnbox): new function
+
+	* src/utils.h: DISPLAY, EXIT, EXIT_IF, RETURN_IF and RETVAL_IF
+	macros defined
+
+	* src/vars.c: global variable ui_mode added
+	
 2008-09-16  Frederic Culot  <frederic@culot.org>
 
 	* src/io.c (ical_read_note): file created to store ical item

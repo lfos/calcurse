@@ -1,4 +1,4 @@
-/*	$calcurse: utils.h,v 1.33 2008/09/15 20:40:22 culot Exp $	*/
+/*	$calcurse: utils.h,v 1.34 2008/09/20 12:47:06 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -31,6 +31,51 @@
 
 #define MAX(x,y) 	((x)>(y)?(x):(y))
 #define MIN(x,y) 	((x)<(y)?(x):(y))
+
+#define DISPLAY(...) do {                                               \
+        char msg[BUFSIZ];                                               \
+                                                                        \
+        snprintf (msg, BUFSIZ, __VA_ARGS__);                            \
+        if (ui_mode == UI_CURSES)                                       \
+          warnbox (msg);                                                \
+        else                                                            \
+          fprintf (stderr, "%s\n", msg);                                \
+} while (0)
+
+#define EXIT(...) do {                                                  \
+          DISPLAY(__VA_ARGS__);                                         \
+          if (ui_mode == UI_CURSES)                                     \
+            exit_calcurse (EXIT_FAILURE);                               \
+          else                                                          \
+            exit (EXIT_FAILURE);                                        \
+} while (0)
+
+#define EXIT_IF(cond, ...) do {                                         \
+        if ((cond))                                                     \
+          {                                                             \
+            DISPLAY(__VA_ARGS__);                                       \
+            if (ui_mode == UI_CURSES)                                   \
+              exit_calcurse (EXIT_FAILURE);                             \
+            else                                                        \
+              exit (EXIT_FAILURE);                                      \
+          }                                                             \
+} while (0)
+
+#define RETURN_IF(cond, ...) do {                                       \
+        if ((cond))                                                     \
+          {                                                             \
+            DISPLAY(__VA_ARGS__);                                       \
+            return;                                                     \
+          }                                                             \
+} while (0)
+
+#define RETVAL_IF(cond, val, ...) do {                                  \
+        if ((cond))                                                     \
+          {                                                             \
+            DISPLAY(__VA_ARGS__);                                       \
+            return (val);                                               \
+          }                                                             \
+} while (0)
 
 #define ASSERT(e) do {							\
 	((e) ? (void)0 : aerror(__FILE__, __LINE__, #e));		\
@@ -77,6 +122,7 @@ erase_flag_e;
 void    exit_calcurse (int);
 void    ierror (const char *, ierror_sev_e);
 void    aerror (const char *, int, const char *);
+void    warnbox (const char *);
 void    status_mesg (char *, char *);
 void    erase_status_bar (void);
 void    erase_window_part (WINDOW *, int, int, int, int);

@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.35 2008/09/16 19:41:36 culot Exp $	*/
+/*	$calcurse: io.c,v 1.36 2008/09/20 12:47:06 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -57,6 +57,12 @@ typedef struct {
   const char *str;
   const int len;
 } string_t;
+
+typedef enum {
+  ICAL_VEVENT,
+  ICAL_VTODO,
+  ICAL_TYPES
+} ical_types_e;
 
 typedef enum {
   UNDEFINED,
@@ -1316,6 +1322,45 @@ io_export_bar (void)
   doupdate ();
 }
 
+/* Print a header to describe import log report format. */
+static void
+ical_log_init (FILE *log, float version)
+{
+  const char *header =
+    "+-------------------------------------------------------------------+\n"
+    "| Calcurse icalendar import log.                                    |\n"
+    "|                                                                   |\n"
+    "| Items imported from icalendar file, version %1.1f                   |\n"
+    "| Some items could not be imported, they are described hereafter.   |\n"
+    "| The log line format is as follows:                                |\n"
+    "|                                                                   |\n"
+    "|       TYPE [LINE]: DESCRIPTION                                    |\n"
+    "|                                                                   |\n"
+    "| where:                                                            |\n"
+    "|  * TYPE represents the item type ('VEVENT' or 'VTODO')            |\n"
+    "|  * LINE is the line in the input stream at which this item begins |\n"
+    "|  * DESCRIPTION indicates why the item could not be imported       |\n"
+    "+-------------------------------------------------------------------+\n\n";
+    
+  fprintf (log, header, version);
+}
+
+/*
+ * Used to build a report of the import process.
+ * The icalendar item for which a problem occurs is mentioned (by giving its
+ * first line inside the icalendar file), together with a message describing the
+ * problem.
+ */
+static void
+ical_log (FILE *log, ical_types_e type, unsigned lineno, char *msg)
+{
+  const char *typestr[ICAL_TYPES] = {"VEVENT", "VTODO"};
+
+  RETURN_IF (type < 0 || type >= ICAL_TYPES,
+             _("ERROR in ical_log: unknown ical type"));
+  fprintf (log, "%s [%d]: %s\n", typestr[type], lineno, msg);
+}
+
 static void
 ical_store_todo (int priority, char *mesg, char *note)
 {
@@ -1338,7 +1383,6 @@ ical_store_event (char *mesg, char *note, long day, ical_rpt_t *rpt,
     {
       event_new (mesg, note, day, EVENTID);
     }
-  free (mesg);
   if (note)
     free (note);
 }
@@ -1361,46 +1405,44 @@ ical_store_apoint (char *mesg, char *note, long start, long dur,
     {
       apoint_new (mesg, note, start, dur, state);
     }
-  free (mesg);
   if (note)
     free (note);
 }
 
-static void
-ical_chk_header (FILE *fd)
+static float
+ical_chk_header (FILE *fd, unsigned *lineno)
 {
-  const char *icalheader = "BEGIN:VCALENDAR";
-  const int headerlen = strlen (icalheader);
+  const int HEADER_MALFORMED = -1;
+  const string_t icalheader = STRING_BUILD ("BEGIN:VCALENDAR");
   char buf[BUFSIZ];
 
   fgets (buf, BUFSIZ, fd);
+  (*lineno)++;
   if (buf == NULL
-      || strncmp (str_toupper (buf), icalheader, headerlen) != 0)
+      || strncmp (str_toupper (buf), icalheader.str, icalheader.len) != 0)
     {
-      fprintf (stderr, "The ical file seems to be malformed.\n"
-              "Header does not begin with \"%s\". Aborting...\n", icalheader);
-      exit (EXIT_FAILURE);
+      return HEADER_MALFORMED;
     }
   else
     {
       const int AWAITED = 1;
-      float version;
+      float version = HEADER_MALFORMED;
       int read;
 
       do
         {
           if (fgets (buf, BUFSIZ, fd) == NULL)
             {
-              fprintf (stderr, "The ical file seems to be malformed.\n"
-                       "iCalendar specification version was not found. "
-                       "Aborting...\n");
-              exit (EXIT_FAILURE);
+              return HEADER_MALFORMED;
             }
           else
-            read = sscanf (buf, "VERSION:%f", &version);
+            {
+              (*lineno)++;
+              read = sscanf (buf, "VERSION:%f", &version);
+            }
         }
       while (read != AWAITED);
-      fprintf (stdout, "Found ical file, version %.1f\n", version);
+      return version;
     }
 }
 
@@ -1522,14 +1564,24 @@ ical_dur2long (char *durstr)
       
       if (*p == 'T')                                      /* dur-time */
         durlong = ical_durtime2long (p);
-      else if (sscanf (p, "%uW", &date.week) == 1)        /* dur-week */
-        durlong = date.week * WEEKINDAYS * DAYINSEC;
-      else                                                /* dur-date */
+      else if (strchr (p, 'W'))                           /* dur-week */
         {
-          if (sscanf (p, "%uD", &date.day) == 1)
+          if (sscanf (p, "%u", &date.week) == 1)
+            durlong = date.week * WEEKINDAYS * DAYINSEC;
+          else
+            durlong = NOTFOUND;
+        }
+      else
+        {
+          if (strchr (p, 'D'))                            /* dur-date */
             {
-              durlong = date.day * DAYINSEC;
-              durlong += ical_durtime2long (p);
+              if (sscanf (p, "%uD", &date.day) == 1)
+                {
+                  durlong = date.day * DAYINSEC;
+                  durlong += ical_durtime2long (p);
+                }
+              else
+                durlong = NOTFOUND;
             }
           else
             durlong = NOTFOUND;
@@ -1576,7 +1628,8 @@ ical_dur2long (char *durstr)
  * )
 */
 static ical_rpt_t *
-ical_read_rrule (char *rrulestr, unsigned *noskipped)
+ical_read_rrule (FILE *log, char *rrulestr, unsigned *noskipped,
+                 const int itemline)
 {
   const string_t daily = STRING_BUILD ("DAILY");
   const string_t weekly = STRING_BUILD ("WEEKLY");
@@ -1595,8 +1648,8 @@ ical_read_rrule (char *rrulestr, unsigned *noskipped)
       rpt = malloc (sizeof (ical_rpt_t));
       if (sscanf (p, "FREQ=%s;", freqstr) != 1)
         {
-          fprintf (stderr, "Warning: recurrence frequence not found. "
-                   "Skipping...\n");
+          ical_log (log, ICAL_VEVENT, itemline,
+                    _("recurrence frequence not found."));
           (*noskipped)++;
           free (rpt);
           return NULL;
@@ -1613,8 +1666,8 @@ ical_read_rrule (char *rrulestr, unsigned *noskipped)
             rpt->type = RECUR_YEARLY;
           else
             {
-              fprintf (stderr, "Warning: recurrence frequence not recognized. "
-                       "Skipping...\n");
+              ical_log (log, ICAL_VEVENT, itemline,
+                        _("recurrence frequence not recognized."));
               (*noskipped)++;
               free (rpt);
               return NULL;
@@ -1640,7 +1693,8 @@ ical_read_rrule (char *rrulestr, unsigned *noskipped)
                       
           if (sscanf (p, "COUNT=%u;", &count) != 1)
             {
-              rpt->until = 0; /* endless repetition */
+              rpt->until = 0;
+              /* endless repetition */
             }
           else
             {
@@ -1651,10 +1705,15 @@ ical_read_rrule (char *rrulestr, unsigned *noskipped)
         {
           rpt->freq = interval;
         }
+      else
+        {
+          rpt->freq = 1;
+          /* default frequence if none specified */
+        }
     }
   else
     {
-      fprintf (stderr, "Warning: recurrence rule malformed. Skipping...\n");
+      ical_log (log, ICAL_VEVENT, itemline, _("recurrence rule malformed."));
       (*noskipped)++;
     }
   return rpt;
@@ -1681,7 +1740,8 @@ ical_add_exc (days_t **exc_head, long date)
  * recurring calendar component.
  */
 static days_t *
-ical_read_exdate (char *exstr, unsigned *noskipped)
+ical_read_exdate (FILE *log, char *exstr, unsigned *noskipped,
+                  const int itemline)
 {
   days_t *exc;
   char *p, *q;
@@ -1707,15 +1767,17 @@ ical_read_exdate (char *exstr, unsigned *noskipped)
     }
   else
     {
-      fprintf (stderr, "Warning: recurrence exception dates malformed. "
-               "Skipping...\n");
+      ical_log (log, ICAL_VEVENT, itemline,
+                _("recurrence exception dates malformed."));
       (*noskipped)++;
     }
   return exc;
 }
 
 static char *
-ical_read_note (char *first_line, FILE *fdi, unsigned *noskipped)
+ical_read_note (char *first_line, FILE *fdi, unsigned *noskipped,
+                unsigned *lineno, ical_vevent_e item_type, const int itemline,
+                FILE *log)
 {
   const int CHAR_SPACE = 32, CHAR_TAB = 9;
   char *p, *note, *notename, buf[BUFSIZ], fullnotename[BUFSIZ];
@@ -1725,19 +1787,14 @@ ical_read_note (char *first_line, FILE *fdi, unsigned *noskipped)
   note = NULL;
   if ((p = strchr (first_line, ':')) != NULL)
     {
-      if ((notename = new_tempfile (path_notes, NOTESIZ)) == NULL)
-        {
-          fprintf (stderr, "Warning: could not create new note file to store "
-                   "description. Aborting...\n");
-          exit (EXIT_FAILURE);
-        }
+      notename = new_tempfile (path_notes, NOTESIZ);
+      EXIT_IF (notename == NULL,
+               _("Warning: could not create new note file to store "
+                 "description. Aborting...\n"));
       snprintf (fullnotename, BUFSIZ, "%s%s", path_notes, notename);
-      if ((fdo = fopen (fullnotename, "w")) == NULL)
-        {
-          fprintf (stderr, "Warning: could not open %s, Aborting...",
-                   fullnotename);
-          exit (EXIT_FAILURE);
-        }
+      fdo = fopen (fullnotename, "w");
+      EXIT_IF (fdo == NULL, _("Warning: could not open %s, Aborting..."),
+               fullnotename);
       p++;
       fprintf (fdo, "%s", p);
       for (;;)
@@ -1747,12 +1804,13 @@ ical_read_note (char *first_line, FILE *fdi, unsigned *noskipped)
             {
               if (fgets (buf, BUFSIZ, fdi) != NULL)
                 {
+                  (*lineno)++;
                   fprintf (fdo, "%s", buf);
                 }
               else
                 {
-                  fprintf (stderr, "Warning: could not get entire description. "
-                           "Skipping...\n");
+                  ical_log (log, item_type, itemline, 
+                            _("could not get entire item description."));
                   fclose (fdo);
                   erase_note (&notename, ERASE_FORCE);
                   (*noskipped)++;
@@ -1769,17 +1827,18 @@ ical_read_note (char *first_line, FILE *fdi, unsigned *noskipped)
     }
   else
     {
-      fprintf (stderr, "Warning: description malformed. Skipping...\n");
+      ical_log (log, item_type, itemline, _("description malformed."));
       (*noskipped)++;
       return NULL;
     }
 }
 
 static void
-ical_read_event (FILE *fdi, unsigned *noevents, unsigned *noapoints,
-                 unsigned *noskipped)
+ical_read_event (FILE *fdi, FILE *log, unsigned *noevents, unsigned *noapoints,
+                 unsigned *noskipped, unsigned *lineno)
 {
   const int NOTFOUND = -1;
+  const int ITEMLINE = *lineno;
   const string_t endevent = STRING_BUILD ("END:VEVENT");
   const string_t summary  = STRING_BUILD ("SUMMARY:");
   const string_t dtstart  = STRING_BUILD ("DTSTART");
@@ -1806,6 +1865,7 @@ ical_read_event (FILE *fdi, unsigned *noevents, unsigned *noapoints,
   skip_alarm = 0;
   while (fgets (buf, BUFSIZ, fdi) != NULL)
     {
+      (*lineno)++;
       memcpy (buf_upper, buf, strlen (buf));
       str_toupper (buf_upper);
       if (skip_alarm)                          
@@ -1825,8 +1885,8 @@ ical_read_event (FILE *fdi, unsigned *noevents, unsigned *noapoints,
                 case APPOINTMENT:
                   if (vevent.start == 0)
                     {
-                      fprintf (stderr, "Warning: VEVENT appointment has "
-                               "no start time. Skipping...\n");
+                      ical_log (log, ICAL_VEVENT, ITEMLINE, 
+                                _("appointment has no start time."));
                       (*noskipped)++;
                       return;
                     }
@@ -1834,9 +1894,9 @@ ical_read_event (FILE *fdi, unsigned *noevents, unsigned *noapoints,
                     {
                       if (vevent.end == 0)
                         {
-                          fprintf (stderr, "Warning: could not compute "
-                                   "VEVENT duration (no end time). "
-                                   "Skipping...\n");
+                          ical_log (log, ICAL_VEVENT, ITEMLINE, 
+                                    _("could not compute duration "
+                                    "(no end time)."));
                           (*noskipped)++;
                           return;
                         }
@@ -1863,8 +1923,8 @@ ical_read_event (FILE *fdi, unsigned *noevents, unsigned *noapoints,
                   (*noevents)++;
                   break;
                 case UNDEFINED:
-                  fprintf (stderr, "Warning: VEVENT could not be identified. "
-                           "Skipping...\n");
+                  ical_log (log, ICAL_VEVENT, ITEMLINE, 
+                            _("item could not be identified."));
                   (*noskipped)++;
                   return;
                   break;
@@ -1872,8 +1932,7 @@ ical_read_event (FILE *fdi, unsigned *noevents, unsigned *noapoints,
             }
           else
             {
-              fprintf (stderr,
-                       "Warning: VEVENT has no summary. Skipping...\n");
+              ical_log (log, ICAL_VEVENT, ITEMLINE, _("item has no summary."));
               (*noskipped)++;
             }
           return;
@@ -1888,9 +1947,8 @@ ical_read_event (FILE *fdi, unsigned *noevents, unsigned *noapoints,
                 vevent.start = ical_datetime2long (++p, &vevent_type);
               if (vevent.start == NOTFOUND)
                 {
-                  fprintf (stderr,
-                           "Warning: could not retrieve event start time. "
-                           "Skipping...\n");
+                  ical_log (log, ICAL_VEVENT, ITEMLINE,
+                            _("could not retrieve event start time."));
                   (*noskipped)++;
                   return;
                 }
@@ -1903,9 +1961,8 @@ ical_read_event (FILE *fdi, unsigned *noevents, unsigned *noapoints,
                 vevent.end = ical_datetime2long (++p, &vevent_type);
               if (vevent.end == NOTFOUND)
                 {
-                  fprintf (stderr,
-                           "Warning: could not retrieve event end time. "
-                           "Skipping...\n");
+                  ical_log (log, ICAL_VEVENT, ITEMLINE,
+                            _("could not retrieve event end time."));
                   (*noskipped)++;
                   return;
                 }
@@ -1914,19 +1971,19 @@ ical_read_event (FILE *fdi, unsigned *noevents, unsigned *noapoints,
             {
               if ((vevent.dur = ical_dur2long (buf)) <= 0)
                 {
-                  fprintf (stderr,
-                           "Warning: vevent duration malformed. Skipping...\n");
+                  ical_log (log, ICAL_VEVENT, ITEMLINE,
+                           _("item duration malformed."));
                   (*noskipped)++;
                   return;
                 }
             }
           else if (strncmp (buf_upper, rrule.str, rrule.len) == 0)
             {
-              vevent.rpt = ical_read_rrule (buf, noskipped);
+              vevent.rpt = ical_read_rrule (log, buf, noskipped, ITEMLINE);
             }
           else if (strncmp (buf_upper, exdate.str, exdate.len) == 0)
             {
-              vevent.exc = ical_read_exdate (buf, noskipped);
+              vevent.exc = ical_read_exdate (log, buf, noskipped, ITEMLINE);
             }      
           else if (strncmp (buf_upper, summary.str, summary.len) == 0)
             {
@@ -1942,17 +1999,19 @@ ical_read_event (FILE *fdi, unsigned *noevents, unsigned *noapoints,
             }
           else if (strncmp (buf_upper, desc.str, desc.len) == 0)
             {
-              vevent.note = ical_read_note (buf, fdi, noskipped);
+              vevent.note = ical_read_note (buf, fdi, noskipped, lineno,
+                                            ICAL_VEVENT, ITEMLINE, log);
             }
         }
     }
-  fprintf (stderr, "The ical file seems to be malformed.\n"
-           "The end of VEVENT item was not found. Aborting...");
-  exit (EXIT_FAILURE);
+  ical_log (log, ICAL_VEVENT, ITEMLINE,
+            _("The ical file seems to be malformed. "
+            "The end of item was not found."));
 }
 
 static void
-ical_read_todo (FILE *fdi, unsigned *notodos, unsigned *noskipped)
+ical_read_todo (FILE *fdi, FILE *log, unsigned *notodos, unsigned *noskipped,
+                unsigned *lineno)
 {
   const string_t endtodo  = STRING_BUILD ("END:VTODO");
   const string_t summary  = STRING_BUILD ("SUMMARY:");
@@ -1960,6 +2019,7 @@ ical_read_todo (FILE *fdi, unsigned *notodos, unsigned *noskipped)
   const string_t endalarm = STRING_BUILD ("END:VALARM");
   const string_t desc     = STRING_BUILD ("DESCRIPTION");
   const int LOWEST = 9;
+  const int ITEMLINE = *lineno;
   char buf[BUFSIZ], buf_upper[BUFSIZ];
   struct {
     char mesg[BUFSIZ], *note;
@@ -1971,6 +2031,7 @@ ical_read_todo (FILE *fdi, unsigned *notodos, unsigned *noskipped)
   skip_alarm = 0;
   while (fgets (buf, BUFSIZ, fdi) != NULL)
     {
+      (*lineno)++;
       memcpy (buf_upper, buf, strlen (buf));
       str_toupper (buf_upper);
       if (skip_alarm)                          
@@ -1992,8 +2053,7 @@ ical_read_todo (FILE *fdi, unsigned *notodos, unsigned *noskipped)
             }
           else
             {
-              fprintf (stderr,
-                       "Warning: VTODO item has no summary. Skipping...\n");
+              ical_log (log, ICAL_VTODO, ITEMLINE, _("item has no summary."));
               (*noskipped)++;
             }
           return;
@@ -2011,10 +2071,9 @@ ical_read_todo (FILE *fdi, unsigned *notodos, unsigned *noskipped)
                 }
               else
                 {
-                  fprintf (stderr,
-                           "Warning: VTODO item priority is not acceptable\n"
-                           "(must be between 1 and 9 while it is %d).\n",
-                           tmpint);
+                  ical_log (log, ICAL_VTODO, ITEMLINE,
+                           _("item priority is not acceptable "
+                           "(must be between 1 and 9)."));
                   vtodo.priority = LOWEST;
                 }
             }
@@ -2031,13 +2090,14 @@ ical_read_todo (FILE *fdi, unsigned *notodos, unsigned *noskipped)
             }
           else if (strncmp (buf_upper, desc.str, desc.len) == 0)
             {
-              vtodo.note = ical_read_note (buf, fdi, noskipped);
+              vtodo.note = ical_read_note (buf, fdi, noskipped, lineno,
+                                           ICAL_VTODO, ITEMLINE, log);
             }
         }
     }
-  fprintf (stderr, "The ical file seems to be malformed.\n"
-           "The end of VTODO item was not found. Aborting...");
-  exit (EXIT_FAILURE);
+  ical_log (log, ICAL_VTODO, ITEMLINE,
+            _("The ical file seems to be malformed. "
+            "The end of item was not found."));
 }
 
 static FILE *
@@ -2053,6 +2113,7 @@ get_import_stream (export_type_t type)
 
   stream = NULL;
   stream_name = malloc (BUFSIZ);
+  bzero (stream_name, BUFSIZ);
   while (stream == NULL)
     {
       status_mesg (ask_fname, "");
@@ -2074,26 +2135,32 @@ get_import_stream (export_type_t type)
   return stream;
 }
 
+/*
+ * Import data from a given stream (either stdin in non-interactive mode, or the
+ * user given file in interactive mode).
+ * A temporary log file is created in /tmp to store the import process report,
+ * and is cleared at the end.
+ */
 void
-io_import_data (char *infile, io_mode_t mode, import_type_t type, conf_t *conf)
+io_import_data (io_mode_t mode, import_type_t type, conf_t *conf)
 {
-  const char *wrong_mode =
-    _("FATAL ERROR in io_import_data: wrong import mode\n");
-  const char *wrong_type =
-    _("FATAL ERROR in io_import_data: unknown import type\n");
-  const char *vevent = "BEGIN:VEVENT";
-  const char *vtodo = "BEGIN:VTODO";
-  char buf[BUFSIZ];
-  FILE *fdi, *stream;
+  const char *logprefix = "/tmp/calcurse_log.";
+  const string_t vevent = STRING_BUILD ("BEGIN:VEVENT");
+  const string_t vtodo = STRING_BUILD ("BEGIN:VTODO");
+  char *success = _("The data were successfully imported");
+  char *enter = _("Press [ENTER] to continue");
+  char *lines_read = _("Number of lines read: %04d ");
+  char *lines_stats =
+    _("(apoints: %d / events: %d / todos: %d / skipped: %d)\r");
+  char *logname, flogname[BUFSIZ], buf[BUFSIZ];
+  FILE *stream = NULL, *logfd;
+  float ical_version;
   struct {
     unsigned events, apoints, todos, lines, skipped;
   } stats;
 
-  if (type < 0 || type >= IO_IMPORT_NBTYPES)
-    {
-      fputs (wrong_type, stderr);
-      exit (EXIT_FAILURE);
-    }
+  EXIT_IF (type < 0 || type >= IO_IMPORT_NBTYPES,
+           _("FATAL ERROR in io_import_data: unknown import type"));
   switch (mode)
     {
     case IO_MODE_NONINTERACTIVE:
@@ -2103,31 +2170,114 @@ io_import_data (char *infile, io_mode_t mode, import_type_t type, conf_t *conf)
       stream = get_import_stream (type);
       break;
     default:
-      fputs (wrong_mode, stderr);
-      exit (EXIT_FAILURE);
+      EXIT (_("FATAL ERROR in io_import_data: wrong import mode"));
       /* NOTREACHED */
     }
-  fdi = fopen (infile, "r");
-  if (fdi == NULL)
-    {
-      fprintf (stderr, "Could not open %s, aborting...", infile);
-      return;
-    }
-  ical_chk_header (fdi);
+
+  if (stream == NULL)
+    return;
+
+  logname = new_tempfile (logprefix, NOTESIZ);
+  RETURN_IF (logname == NULL,
+             _("Warning: could not create new note file to store "
+               "description. Aborting...\n"));
+
+  snprintf (flogname, BUFSIZ, "%s%s", logprefix, logname);
+  logfd = fopen (flogname, "w");
+  RETURN_IF (logfd == NULL, 
+             _("Warning: could not open temporary log file, Aborting..."));
+
   bzero (&stats, sizeof stats);
-  while (fgets (buf, BUFSIZ, fdi) != NULL)
+  ical_version = ical_chk_header (stream, &stats.lines);
+  RETURN_IF (ical_version < 0,
+             _("Warning: ical header malformed, wrong version number. "
+               "Aborting..."));
+
+  ical_log_init (logfd, ical_version);
+  while (fgets (buf, BUFSIZ, stream) != NULL)
     {
       stats.lines++;
       str_toupper (buf);
-      printf ("Number of lines read: %04d "
-              "(apoints: %d / events: %d / todos: %d / skipped: %d)\r",
-              stats.lines, stats.apoints, stats.events, stats.todos,
-              stats.skipped);
-      if (strncmp (buf, vevent, strlen (vevent)) == 0)
-        ical_read_event (fdi, &stats.events, &stats.apoints, &stats.skipped);
-      else if (strncmp (buf, vtodo, strlen (vtodo)) == 0)
-        ical_read_todo (fdi, &stats.todos, &stats.skipped);
+      if (mode == IO_MODE_INTERACTIVE)
+        {
+          char read[BUFSIZ], stat[BUFSIZ];
+
+          snprintf (read, BUFSIZ, lines_read, stats.lines);
+          snprintf (stat, BUFSIZ, lines_stats, stats.apoints, stats.events,
+                    stats.todos, stats.skipped);
+          status_mesg (read, stat);
+        }
+      else
+        {
+          printf (lines_read, stats.lines);
+          printf (lines_stats,
+                  stats.lines, stats.apoints, stats.events, stats.todos,
+                  stats.skipped);
+        }
+      if (strncmp (buf, vevent.str, vevent.len) == 0)
+        {
+          ical_read_event (stream, logfd, &stats.events, &stats.apoints,
+                           &stats.skipped, &stats.lines);
+        }
+      else if (strncmp (buf, vtodo.str, vtodo.len) == 0)
+        {
+          ical_read_todo (stream, logfd, &stats.todos, &stats.skipped,
+                          &stats.lines);
+        }
     }
-  printf ("\n");
-  fclose (fdi);
+  if (stream != stdin)
+    fclose (stream);
+
+  /* User has the choice to look at the log file if some items could not be
+     imported.
+  */
+  fclose (logfd);
+  if (stats.skipped > 0)
+    {
+      char *view_log = _("Some items could not be imported, see log file ?");
+      char *choices = "[y/n] ";
+      int answer;
+      
+      if (mode == IO_MODE_NONINTERACTIVE)
+        {
+          fprintf (stdout, "\n%s %s", view_log, choices);
+          do
+            {
+              answer = scanf ("%d", &answer);
+              if (answer == 'y')
+                {
+                  char cmd[BUFSIZ];
+
+                  snprintf (cmd, BUFSIZ, "%s %s", conf->pager, flogname);
+                  system (cmd);
+                }
+            }
+          while (answer != 'y' && answer != 'n');
+        }
+      else
+        {
+          status_mesg (view_log, choices);
+          do
+            {
+              answer = wgetch (win[STA].p);
+              if (answer == 'y')
+                {
+                  wins_launch_external (flogname, conf->pager);
+                }
+            }
+          while (answer != 'y' && answer != 'n');
+          erase_status_bar ();
+        }
+    }
+  else
+    {
+      if (!conf->skip_system_dialogs && mode == IO_MODE_INTERACTIVE)
+        {
+          status_mesg (success, enter);
+          wgetch (win[STA].p);
+        }
+    }
+  EXIT_IF (unlink (flogname) != 0,
+           _("Warning: could not erase temporary log file, Aborting..."));
+  free (logname);
 }
