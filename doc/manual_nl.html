@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//NL">
 <!--
 /*
- *	$calcurse: manual_nl.html,v 1.11 2008/08/11 18:08:45 culot Exp $
+ *	$calcurse: manual_nl.html,v 1.12 2008/09/21 14:08:59 culot Exp $
  *
  * Calcurse - text-based organizer
  * Copyright (c) 2004-2008 Frederic Culot
@@ -84,7 +84,12 @@ besproken. Als laatste wordt zowel de procedure van het melden van fouten in
 	    <li><a href="#basics_interface_interactive">4.2.2 Interactieve modus</a></li>
 	</ul></li>
 	<li><a href="#basics_files">4.3 <code>calcurse</code> bestanden</a></li>
-	<li><a href="#basics_help">4.4 Online hulp</a></li>
+        <li><a href="#basics_import_export"><span class="todo">4.4 Import/Export capabilities</span></a>
+        <ul>
+            <li><a href="#basics_import"><span class="todo">4.4.1 Import</span></a></li>
+            <li><a href="#basics_export"><span class="todo">4.4.2 Export</span></a></li>
+        </ul></li>
+	<li><a href="#basics_help">4.5 Online hulp</a></li>
     </ul></li>
     <li><a href="#options">5. Opties</a>
     <ul>
@@ -230,7 +235,7 @@ besproken. Als laatste wordt zowel de procedure van het melden van fouten in
 <p>
 	Als eerste moet het volgende archief uitgepakt worden met gunzip en
 	untar:</p>
-	<pre>tar zxvf calcurse-2.2.tar.gz</pre>
+	<pre>tar zxvf calcurse-2.3.tar.gz</pre>
 <p>
 	Zodra de benodigde pakketten ge&iuml;nstalleerd zijn en het archief
 	uitgepakt is, is de installatieprocedure vrij simpel, via de
@@ -298,6 +303,12 @@ besproken. Als laatste wordt zowel de procedure van het melden van fouten in
 	    Geeft een korte hulptekst weer, met de ondersteunde
 	    commandoregel-opties en verlaat het programma.
 	    </dd>
+            <dt><code>-i &lt;file&gt;, --import &lt;file&gt;</code></dt>
+            <dd>
+            <div class="todo">
+            Import the icalendar data contained in <code>file</code>.
+            </div>
+            </dd>
 	    <dt><code>-n, --next</code></dt>
 	    <dd>
 	    Geeft de eerstvolgende afspraak weer die binnen 24 uur valt en verlaat
@@ -568,7 +579,61 @@ $HOME/.calcurse/
 		<dd>bevat de takenlijst.</dd>
 	</dl>
 
-<h2>4.4 Online hulp<a name="basics_help"></a></h2>
+<div class="todo">
+<h2>4.4 Import/Export capabilities<a name="basics_import_export"></a></h2>
+<p>
+        The import and export capabilities offered by <code>calcurse</code>
+        are described below.
+</p>
+
+<h3>4.4.1 Import<a name="basics_import"></a></h3>
+<p>
+        Data in icalendar format as described in the rfc2445 specification
+        (see <a href="#links_others">links</a> section below) can be imported
+        into calcurse. Calcurse ical parser is based on version 2.0 of this 
+        specification, but for now on, only a subset of it is supported.
+</p>
+<p>
+        The following icalendar properties are handled by calcurse:
+        <ul>
+            <li><code>VTODO</code> items:<br>
+            "PRIORITY", "VALARM", "SUMMARY", "DESCRIPTION"</li>
+            <li><code>VEVENT</code> items:<br>
+            "DTSTART", "DTEND", "DURATION", "RRULE", "EXDATE", "VALARM", "SUMMARY",
+            "DESCRIPTION"</li>
+        </ul>
+</p>
+<p>
+        The icalendar "DESCRIPTION" property will be converted into calcurse format
+        by adding a note to the item. If a "VALARM" property is found, the item
+        will be flagged as important and the user will get a notification (this is
+        only applicable to appointments).
+</p>
+<p>
+        Here are the properties that are not implemented:
+        <ul>
+            <li>negative time durations are not taken into account (item is skipped)</li>
+            <li>some recurence frequences are not recognize:<br>
+            "SECONDLY" / "MINUTELY" / "HOURLY"</li>
+            <li>some recurrence keywords are not recognized 
+            (all those starting with 'BY'):<br>
+            "BYSECOND" / "BYMINUTE" / "BYHOUR" / "BYDAY" / "BYMONTHDAY"<br>
+            "BYYEARDAY" / "BYWEEKNO" / "BYMONTH" / "BYSETPOS"<br>
+            plus "WKST"</li>
+            <li>the recurrence exception keyword "EXRULE" is not recognized</li>
+            <li>timezones are not taken into account</li>
+        </ul>
+</p>
+
+<h3>4.4.2 Export<a name="basics_export"></a></h3>
+<p>
+        Two possible export formats are available: <code>ical</code> and 
+        <code>pcal</code> (see section <a href="#links_others">Links</a> below
+        to find out about those formats). 
+</p>
+</div>
+
+<h2>4.5 Online hulp<a name="basics_help"></a></h2>
 <p>
 	De ingebouwde hulp kan waar nodig aangeroepen worden door middel van
 	de '?' toets. Tijdens het gebruik van de hulpschermen kan een
@@ -1066,8 +1131,8 @@ msgid ""
 	kritiek stuurden.</p>
 
 <div class="footer">
-	Copyright (c) 2004-2008 Fr&eacute;d&eacute;ric Culot<br>
-	Calcurse version 2.2 - Last change: August 11, 2008<br>
+	Copyright (c) 2004-2008 Frédéric Culot<br>
+	Calcurse version 2.3 - Last change: September 21, 2008<br>
 </div>
 </div>
 

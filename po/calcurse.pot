@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: frederic@culot.org\n"
-"POT-Creation-Date: 2008-08-12 17:34+0200\n"
+"POT-Creation-Date: 2008-09-21 09:35+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -67,7 +67,7 @@ msgstr ""
 
 #: src/args.c:51
 msgid ""
-"Usage: calcurse [-h|-v] [-N] [-an] [-t[num]] [-x[format]]\n"
+"Usage: calcurse [-h|-v] [-N] [-an] [-t[num]] [-i<file>] [-x[format]]\n"
 "                [-d <date>|<num>] [-s[date]] [-r[range]]\n"
 "                [-c<file> | -D<dir>]\n"
 msgstr ""
@@ -83,7 +83,7 @@ msgid ""
 "This is free software; see the source for copying conditions.\n"
 msgstr ""
 
-#: src/args.c:75 src/args.c:135
+#: src/args.c:75 src/args.c:137
 #, c-format
 msgid "Calcurse %s - text-based organizer\n"
 msgstr ""
@@ -114,6 +114,9 @@ msgid ""
 "\tprint events and appointments for <date> or <num> upcoming days and\n"
 "\texit. To specify both a starting date and a range, use the\n"
 "\t'--startday' and the '--range' option.\n"
+"\n"
+"  -i <file>, --import <file>\n"
+"\timport the icalendar data contained in <file>. \n"
 "\n"
 "  -n, --next\n"
 "\tprint next appointment within upcoming 24 hours and exit. Also given\n"
@@ -149,45 +152,45 @@ msgid ""
 "Mail bug reports and suggestions to <calcurse@culot.org>.\n"
 msgstr ""
 
-#: src/args.c:183
+#: src/args.c:185
 msgid "No note file found\n"
 msgstr ""
 
-#: src/args.c:205
+#: src/args.c:207
 msgid "to do:\n"
 msgstr ""
 
-#: src/args.c:239
+#: src/args.c:241
 msgid "next appointment:\n"
 msgstr ""
 
-#: src/args.c:408
+#: src/args.c:410
 msgid ""
 "\n"
 "For more information, type '?' from within Calcurse, or read the manpage.\n"
 msgstr ""
 
-#: src/args.c:410
+#: src/args.c:412
 msgid "Mail bug reports and suggestions to <calcurse@culot.org>.\n"
 msgstr ""
 
-#: src/args.c:487
+#: src/args.c:489
 msgid "Argument to the '-d' flag is not valid\n"
 msgstr ""
 
-#: src/args.c:550
+#: src/args.c:552
 msgid "Argument is not valid\n"
 msgstr ""
 
-#: src/args.c:555
+#: src/args.c:557
 msgid "Argument format for -r and --range is: 'n'\n"
 msgstr ""
 
-#: src/args.c:689
+#: src/args.c:699
 msgid "Argument for '-x' should be either 'ical' or 'pcal'\n"
 msgstr ""
 
-#: src/args.c:721
+#: src/args.c:731
 msgid "Options '-D' and '-c' cannot be used at the same time\n"
 msgstr ""
 
@@ -215,8 +218,8 @@ msgid ""
 "12/31/2037)"
 msgstr ""
 
-#: src/calendar.c:359 src/custom.c:218 src/io.c:718 src/io.c:1078
-#: src/io.c:1200 src/io.c:1222
+#: src/calendar.c:359 src/custom.c:218 src/io.c:745 src/io.c:1109
+#: src/io.c:1231 src/io.c:1253
 msgid "Press [ENTER] to continue"
 msgstr ""
 
@@ -249,7 +252,7 @@ msgstr ""
 msgid "FATAL ERROR in custom_load_conf: configuration variable unknown.\n"
 msgstr ""
 
-#: src/custom.c:369 src/io.c:1289
+#: src/custom.c:369 src/io.c:1320
 msgid "Exit"
 msgstr ""
 
@@ -488,16 +491,16 @@ msgstr ""
 msgid "FATAL ERROR in event_delete_bynum: no such event\n"
 msgstr ""
 
-#: src/help.c:119
+#: src/help.c:120
 #, c-format
 msgid "Calcurse %s | help"
 msgstr ""
 
-#: src/help.c:275
+#: src/help.c:280
 msgid "       Welcome to Calcurse. This is the main help screen.\n"
 msgstr ""
 
-#: src/help.c:277
+#: src/help.c:282
 msgid ""
 " Moving around:  Press CTRL-P or CTRL-N to scroll text upward or\n"
 "                 downward inside help screens, if necessary.\n"
@@ -516,11 +519,11 @@ msgid ""
 "       Credits:  Press '@' for credits."
 msgstr ""
 
-#: src/help.c:290
+#: src/help.c:295
 msgid "Save:\n"
 msgstr ""
 
-#: src/help.c:292
+#: src/help.c:297
 msgid ""
 "Pressing 'S' saves the Calcurse data.\n"
 "\n"
@@ -535,11 +538,36 @@ msgid ""
 "automatically before quitting."
 msgstr ""
 
-#: src/help.c:302
+#: src/help.c:307
+msgid "Import:\n"
+msgstr ""
+
+#: src/help.c:309
+msgid ""
+"Pressing 'I' allows you to import data from an icalendar file.\n"
+"You are asked to enter the file name from which to load ical items.\n"
+"\n"
+"At the end of the import process, and if the general option\n"
+"'skip_system_dialogs' is not set to 'yes', a report indicating how\n"
+"many items were imported is shown.\n"
+"This report contains the total number of lines read, the number of\n"
+"appointments, events and todo items which were successfully imported,\n"
+"together with the number of items for which problems occured and that\n"
+"were skipped, if any.\n"
+"\n"
+"If one or more items could not be imported, one has the possibility to\n"
+"read the import process report in order to identify which problems\n"
+"occured.\n"
+"In this report is shown one item per line, with the line in the input\n"
+"stream at which this item begins, together with the description of why\n"
+"the item could not be imported.\n"
+msgstr ""
+
+#: src/help.c:325
 msgid "Export:\n"
 msgstr ""
 
-#: src/help.c:304
+#: src/help.c:327
 msgid ""
 "Pressing 'X' leads to the export submenu, from which you can choose\n"
 "between two different export formats: 'ical' and 'pcal'.\n"
@@ -560,11 +588,11 @@ msgid ""
 "events, appointments, todos.\n"
 msgstr ""
 
-#: src/help.c:317
+#: src/help.c:340
 msgid "Displacement keys:\n"
 msgstr ""
 
-#: src/help.c:319
+#: src/help.c:342
 msgid ""
 "You can use either 'H','J','K','L' or the arrow keys '<','v','^','>'\n"
 "to move into the calendar.\n"
@@ -586,11 +614,11 @@ msgid ""
 "an item from those lists."
 msgstr ""
 
-#: src/help.c:334
+#: src/help.c:357
 msgid "View:\n"
 msgstr ""
 
-#: src/help.c:336
+#: src/help.c:359
 msgid ""
 "Pressing 'V' allows you to view the item you select in either the ToDo\n"
 "or Appointment panel.\n"
@@ -605,11 +633,11 @@ msgid ""
 "Calcurse screen."
 msgstr ""
 
-#: src/help.c:347
+#: src/help.c:370
 msgid "Tab:\n"
 msgstr ""
 
-#: src/help.c:349
+#: src/help.c:372
 msgid ""
 "Pressing 'Tab' allows you to switch between panels.\n"
 "The panel currently in use has its border colorized.\n"
@@ -624,11 +652,11 @@ msgid ""
 "performed on the selected panel."
 msgstr ""
 
-#: src/help.c:359
+#: src/help.c:382
 msgid "Goto:\n"
 msgstr ""
 
-#: src/help.c:361
+#: src/help.c:384
 msgid ""
 "Pressing 'G' allows you to jump to a specific day in the calendar.\n"
 "\n"
@@ -641,11 +669,11 @@ msgid ""
 "selected, will select current day in the calendar."
 msgstr ""
 
-#: src/help.c:369
+#: src/help.c:392
 msgid "Delete:\n"
 msgstr ""
 
-#: src/help.c:371
+#: src/help.c:394
 msgid ""
 "Pressing 'D' deletes an element in the ToDo or Appointment list.\n"
 "\n"
@@ -663,11 +691,11 @@ msgid ""
 "next time you launch Calcurse."
 msgstr ""
 
-#: src/help.c:383
+#: src/help.c:406
 msgid "Add:\n"
 msgstr ""
 
-#: src/help.c:385
+#: src/help.c:408
 msgid ""
 "Pressing 'A' allows you to add an item in either the ToDo or Appointment\n"
 "list, depending on which panel is selected when you press 'A'.\n"
@@ -705,11 +733,11 @@ msgid ""
 "       event next time you launch Calcurse."
 msgstr ""
 
-#: src/help.c:415
+#: src/help.c:438
 msgid "Edit Item:\n"
 msgstr ""
 
-#: src/help.c:417
+#: src/help.c:440
 msgid ""
 "Pressing 'E' allows you to edit the item which is currently selected.\n"
 "Depending on the item type (appointment, event, or todo), and if it is\n"
@@ -728,11 +756,11 @@ msgid ""
 "       modified properties next time you launch Calcurse."
 msgstr ""
 
-#: src/help.c:432
+#: src/help.c:455
 msgid "EditNote:\n"
 msgstr ""
 
-#: src/help.c:434
+#: src/help.c:457
 msgid ""
 "Pressing 'N' allows you to attach a note to any type of item, or to\n"
 "edit an already existing note.\n"
@@ -755,11 +783,11 @@ msgid ""
 "of the highlighted item, meaning there is a note attached to it."
 msgstr ""
 
-#: src/help.c:453
+#: src/help.c:476
 msgid "ViewNote:\n"
 msgstr ""
 
-#: src/help.c:455
+#: src/help.c:478
 msgid ""
 "Pressing the '>' key allows you to view a note which was previously\n"
 "attached to an item (an item which owns a note has a '>' sign in front\n"
@@ -776,11 +804,11 @@ msgid ""
 "Calcurse."
 msgstr ""
 
-#: src/help.c:470
+#: src/help.c:493
 msgid "Priority:\n"
 msgstr ""
 
-#: src/help.c:472
+#: src/help.c:495
 msgid ""
 "Pressing '+' or '-' allows you to change the priority of the currently\n"
 "selected item in the ToDo list. Priorities are represented by the number\n"
@@ -797,11 +825,11 @@ msgid ""
 "may also change depending on the priority of the items below."
 msgstr ""
 
-#: src/help.c:486
+#: src/help.c:509
 msgid "Repeat:\n"
 msgstr ""
 
-#: src/help.c:488
+#: src/help.c:511
 msgid ""
 "Pressing 'R' allows you to repeat an event or an appointment. You must\n"
 "first select the item to be repeated by moving inside the appointment\n"
@@ -832,11 +860,11 @@ msgid ""
 "         one occurence of a repeated item."
 msgstr ""
 
-#: src/help.c:512
+#: src/help.c:535
 msgid "Flag Item:\n"
 msgstr ""
 
-#: src/help.c:514
+#: src/help.c:537
 msgid ""
 "Pressing '!' toggles an appointment's 'important' flag.\n"
 "\n"
@@ -848,11 +876,11 @@ msgid ""
 "and how long before it he gets notified."
 msgstr ""
 
-#: src/help.c:522
+#: src/help.c:545
 msgid "Config:\n"
 msgstr ""
 
-#: src/help.c:524
+#: src/help.c:547
 msgid ""
 "Pressing 'C' leads to the configuration submenu, from which you can\n"
 "select between color, layout, and general options.\n"
@@ -871,11 +899,11 @@ msgid ""
 "next time you launch Calcurse."
 msgstr ""
 
-#: src/help.c:535
+#: src/help.c:558
 msgid "General keybindings:\n"
 msgstr ""
 
-#: src/help.c:537
+#: src/help.c:560
 msgid ""
 "Some of the keybindings apply whatever panel is selected. They are\n"
 "called general keybinding and involve the <CONTROL> key, which is\n"
@@ -896,11 +924,11 @@ msgid ""
 " '^G' : Goto today      -> move to current day"
 msgstr ""
 
-#: src/help.c:554
+#: src/help.c:577
 msgid "OtherCmd:\n"
 msgstr ""
 
-#: src/help.c:556
+#: src/help.c:579
 msgid ""
 "Pressing 'O' allows you to switch between status bar help pages.\n"
 "Because the terminal screen is too narrow to display all of the\n"
@@ -910,11 +938,11 @@ msgid ""
 "leads you back to the first page."
 msgstr ""
 
-#: src/help.c:563
+#: src/help.c:586
 msgid "Calcurse - text-based organizer"
 msgstr ""
 
-#: src/help.c:565
+#: src/help.c:588
 msgid ""
 "Copyright (c) 2004-2008 Frederic Culot\n"
 "\n"
@@ -933,121 +961,242 @@ msgid ""
 "Calcurse home page : http://culot.org/calcurse"
 msgstr ""
 
-#: src/io.c:101
+#: src/io.c:128
 msgid "Saving..."
 msgstr ""
 
-#: src/io.c:102
+#: src/io.c:129
 msgid "Loading..."
 msgstr ""
 
-#: src/io.c:103
+#: src/io.c:130
 msgid "Exporting..."
 msgstr ""
 
-#: src/io.c:157
+#: src/io.c:184
 msgid "Choose the file used to export calcurse data:"
 msgstr ""
 
-#: src/io.c:159
+#: src/io.c:186 src/io.c:2114
 msgid "The file cannot be accessed, please enter another file name."
 msgstr ""
 
-#: src/io.c:160 src/recur.c:676
+#: src/io.c:187 src/io.c:2115 src/recur.c:676
 msgid "Press [ENTER] to continue."
 msgstr ""
 
-#: src/io.c:223
+#: src/io.c:250
 msgid "FATAL ERROR in foreach_date_dump: incoherent repetition type\n"
 msgstr ""
 
-#: src/io.c:262
+#: src/io.c:289
 msgid "Week"
 msgstr ""
 
-#: src/io.c:382
+#: src/io.c:409
 msgid "FATAL ERROR in pcal_export_recur_events: incoherent repetition type\n"
 msgstr ""
 
-#: src/io.c:518
+#: src/io.c:545
 msgid "FATAL ERROR in pcal_export_recur_apoints: incoherent repetition type\n"
 msgstr ""
 
-#: src/io.c:647
+#: src/io.c:674
 #, c-format
 msgid "%s does not exist, create it now [y or n] ? "
 msgstr ""
 
-#: src/io.c:654 src/io.c:674
+#: src/io.c:681 src/io.c:701
 #, c-format
 msgid "aborting...\n"
 msgstr ""
 
-#: src/io.c:668
+#: src/io.c:695
 #, c-format
 msgid "%s successfully created\n"
 msgstr ""
 
-#: src/io.c:669
+#: src/io.c:696
 #, c-format
 msgid "starting interactive mode...\n"
 msgstr ""
 
-#: src/io.c:706
+#: src/io.c:733
 msgid "Problems accessing data file ..."
 msgstr ""
 
-#: src/io.c:717
+#: src/io.c:744
 msgid "The data files were successfully saved"
 msgstr ""
 
-#: src/io.c:896
+#: src/io.c:927
 msgid "FATAL ERROR in io_load_app: wrong format in the appointment or event\n"
 msgstr ""
 
-#: src/io.c:917
+#: src/io.c:948
 msgid "FATAL ERROR in io_load_app: syntax error in the item date\n"
 msgstr ""
 
-#: src/io.c:933
+#: src/io.c:964
 msgid "FATAL ERROR in io_load_app: no event nor appointment found\n"
 msgstr ""
 
-#: src/io.c:1077
+#: src/io.c:1108
 msgid "Failed to open todo file"
 msgstr ""
 
-#: src/io.c:1139 src/io.c:1159
+#: src/io.c:1170 src/io.c:1190
 #, c-format
 msgid "FATAL ERROR: could not create %s: %s\n"
 msgstr ""
 
-#: src/io.c:1198
+#: src/io.c:1229
 msgid "Welcome to Calcurse. Missing data files were created."
 msgstr ""
 
-#: src/io.c:1199
+#: src/io.c:1230
 msgid "Data files found. Data will be loaded now."
 msgstr ""
 
-#: src/io.c:1219
+#: src/io.c:1250
 msgid "FATAL ERROR in io_export_data: wrong export mode\n"
 msgstr ""
 
-#: src/io.c:1220
+#: src/io.c:1251
 msgid "FATAL ERROR in io_export_data: unknown export type\n"
 msgstr ""
 
-#: src/io.c:1221
+#: src/io.c:1252
 msgid "The data were successfully exported"
 msgstr ""
 
-#: src/io.c:1290
+#: src/io.c:1321
 msgid "Ical"
 msgstr ""
 
-#: src/io.c:1291
+#: src/io.c:1322
 msgid "Pcal"
+msgstr ""
+
+#: src/io.c:1364
+msgid "ERROR in ical_log: unknown ical type"
+msgstr ""
+
+#: src/io.c:1656
+msgid "recurrence frequence not found."
+msgstr ""
+
+#: src/io.c:1674
+msgid "recurrence frequence not recognized."
+msgstr ""
+
+#: src/io.c:1720
+msgid "recurrence rule malformed."
+msgstr ""
+
+#: src/io.c:1775
+msgid "recurrence exception dates malformed."
+msgstr ""
+
+#: src/io.c:1796 src/io.c:2196
+msgid ""
+"Warning: could not create new note file to store description. Aborting...\n"
+msgstr ""
+
+#: src/io.c:1800
+#, c-format
+msgid "Warning: could not open %s, Aborting..."
+msgstr ""
+
+#: src/io.c:1817
+msgid "could not get entire item description."
+msgstr ""
+
+#: src/io.c:1834
+msgid "description malformed."
+msgstr ""
+
+#: src/io.c:1893
+msgid "appointment has no start time."
+msgstr ""
+
+#: src/io.c:1902
+msgid "could not compute duration (no end time)."
+msgstr ""
+
+#: src/io.c:1931
+msgid "item could not be identified."
+msgstr ""
+
+#: src/io.c:1939 src/io.c:2060
+msgid "item has no summary."
+msgstr ""
+
+#: src/io.c:1955
+msgid "could not retrieve event start time."
+msgstr ""
+
+#: src/io.c:1969
+msgid "could not retrieve event end time."
+msgstr ""
+
+#: src/io.c:1979
+msgid "item duration malformed."
+msgstr ""
+
+#: src/io.c:2012 src/io.c:2103
+msgid "The ical file seems to be malformed. The end of item was not found."
+msgstr ""
+
+#: src/io.c:2079
+msgid "item priority is not acceptable (must be between 1 and 9)."
+msgstr ""
+
+#: src/io.c:2112
+msgid "Enter the file name to import data from:"
+msgstr ""
+
+#: src/io.c:2155
+#, c-format
+msgid "Import process report: %04d lines read "
+msgstr ""
+
+#: src/io.c:2157
+#, c-format
+msgid "%d apps / %d events / %d todos / %d skipped "
+msgstr ""
+
+#: src/io.c:2159
+#, c-format
+msgid "%d apps / %d events / %d todos / %d skipped ([ENTER] to continue)"
+msgstr ""
+
+#: src/io.c:2168
+msgid "FATAL ERROR in io_import_data: unknown import type"
+msgstr ""
+
+#: src/io.c:2174
+msgid "FATAL ERROR: the input file cannot be accessed, Aborting..."
+msgstr ""
+
+#: src/io.c:2181
+msgid "FATAL ERROR in io_import_data: wrong import mode"
+msgstr ""
+
+#: src/io.c:2191
+msgid "Warning: ical header malformed, wrong version number. Aborting..."
+msgstr ""
+
+#: src/io.c:2201
+msgid "Warning: could not open temporary log file, Aborting..."
+msgstr ""
+
+#: src/io.c:2246
+msgid "Some items could not be imported, see log file ?"
+msgstr ""
+
+#: src/io.c:2280
+msgid "Warning: could not erase temporary log file, Aborting..."
 msgstr ""
 
 #: src/notify.c:135
@@ -1230,247 +1379,251 @@ msgstr ""
 msgid "Enter the new ToDo description :"
 msgstr ""
 
-#: src/utils.c:60
+#: src/utils.c:61
 msgid "INTERNAL ERROR"
 msgstr ""
 
-#: src/utils.c:61
+#: src/utils.c:62
 msgid "calcurse will now exit..."
 msgstr ""
 
-#: src/utils.c:62
+#: src/utils.c:63
 msgid "Please report the following bug:"
 msgstr ""
 
-#: src/utils.c:140
+#: src/utils.c:164
 msgid "Press any key to continue..."
 msgstr ""
 
-#: src/utils.c:378
+#: src/utils.c:402
 msgid "FATAL ERROR in updatestring: out of memory"
 msgstr ""
 
-#: src/utils.c:420
+#: src/utils.c:444
 msgid "Help"
 msgstr ""
 
-#: src/utils.c:421
+#: src/utils.c:445
 msgid "Quit"
 msgstr ""
 
-#: src/utils.c:422
+#: src/utils.c:446
 msgid "Save"
 msgstr ""
 
-#: src/utils.c:423
+#: src/utils.c:447
 msgid "Export"
 msgstr ""
 
-#: src/utils.c:424
+#: src/utils.c:448
+msgid "Import"
+msgstr ""
+
+#: src/utils.c:449
 msgid "Add Item"
 msgstr ""
 
-#: src/utils.c:425
+#: src/utils.c:450
 msgid "Del Item"
 msgstr ""
 
-#: src/utils.c:426
+#: src/utils.c:451
 msgid "Edit Itm"
 msgstr ""
 
-#: src/utils.c:427
+#: src/utils.c:452
 msgid "Flag Itm"
 msgstr ""
 
-#: src/utils.c:428 src/utils.c:442
+#: src/utils.c:453 src/utils.c:467
 msgid "-+1 Day"
 msgstr ""
 
-#: src/utils.c:429 src/utils.c:443
+#: src/utils.c:454 src/utils.c:468
 msgid "-+1 Week"
 msgstr ""
 
-#: src/utils.c:430
+#: src/utils.c:455
 msgid "Up/Down"
 msgstr ""
 
-#: src/utils.c:431
+#: src/utils.c:456
 msgid "Repeat"
 msgstr ""
 
-#: src/utils.c:432
+#: src/utils.c:457
 msgid "Priority"
 msgstr ""
 
-#: src/utils.c:433
+#: src/utils.c:458
 msgid "Chg View"
 msgstr ""
 
-#: src/utils.c:434
+#: src/utils.c:459
 msgid "Go to"
 msgstr ""
 
-#: src/utils.c:435
+#: src/utils.c:460
 msgid "Config"
 msgstr ""
 
-#: src/utils.c:436
+#: src/utils.c:461
 msgid "View"
 msgstr ""
 
-#: src/utils.c:437
+#: src/utils.c:462
 msgid "Redraw"
 msgstr ""
 
-#: src/utils.c:438
+#: src/utils.c:463
 msgid "Add Appt"
 msgstr ""
 
-#: src/utils.c:439
+#: src/utils.c:464
 msgid "Add Todo"
 msgstr ""
 
-#: src/utils.c:440
+#: src/utils.c:465
 msgid "EditNote"
 msgstr ""
 
-#: src/utils.c:441
+#: src/utils.c:466
 msgid "ViewNote"
 msgstr ""
 
-#: src/utils.c:444
+#: src/utils.c:469
 msgid "OtherCmd"
 msgstr ""
 
-#: src/utils.c:445
+#: src/utils.c:470
 msgid "Today"
 msgstr ""
 
-#: src/utils.c:446
+#: src/utils.c:471
 msgid "beg Week"
 msgstr ""
 
-#: src/utils.c:447
+#: src/utils.c:472
 msgid "end Week"
 msgstr ""
 
-#: src/utils.c:512
+#: src/utils.c:537
 msgid "FATAL ERROR in date2sec: failure in mktime\n"
 msgstr ""
 
-#: src/utils.c:587
+#: src/utils.c:612
 msgid "FATAL ERROR in date_sec_change: failure in mktime\n"
 msgstr ""
 
-#: src/utils.c:728
+#: src/utils.c:753
 msgid "Appointment"
 msgstr ""
 
-#: src/utils.c:754
+#: src/utils.c:779
 msgid "FATAL ERROR in other_status_page: unknown panel\n"
 msgstr ""
 
-#: src/utils.c:824
+#: src/utils.c:849
 msgid "FATAL ERROR in mystrtol: could not convert string"
 msgstr ""
 
-#: src/utils.c:826
+#: src/utils.c:851
 msgid "FATAL ERROR in mystrtol: number is out of range"
 msgstr ""
 
-#: src/utils.c:848
+#: src/utils.c:873
 msgid "yes"
 msgstr ""
 
-#: src/utils.c:853
+#: src/utils.c:878
 msgid "no"
 msgstr ""
 
-#: src/utils.c:857
+#: src/utils.c:882
 msgid "option not defined - Problem in print_option_incolor()"
 msgstr ""
 
-#: src/utils.c:894
+#: src/utils.c:919
 msgid "FATAL ERROR: temporary file could not be created!"
 msgstr ""
 
-#: src/utils.c:908
+#: src/utils.c:933
 msgid "FATAL ERROR in erase_note: could not remove note\n"
 msgstr ""
 
-#: src/vars.c:49
+#: src/vars.c:56
 msgid "January"
 msgstr ""
 
-#: src/vars.c:50
+#: src/vars.c:57
 msgid "February"
 msgstr ""
 
-#: src/vars.c:51
+#: src/vars.c:58
 msgid "March"
 msgstr ""
 
-#: src/vars.c:52
+#: src/vars.c:59
 msgid "April"
 msgstr ""
 
-#: src/vars.c:53
+#: src/vars.c:60
 msgid "May"
 msgstr ""
 
-#: src/vars.c:54
+#: src/vars.c:61
 msgid "June"
 msgstr ""
 
-#: src/vars.c:55
+#: src/vars.c:62
 msgid "July"
 msgstr ""
 
-#: src/vars.c:56
+#: src/vars.c:63
 msgid "August"
 msgstr ""
 
-#: src/vars.c:57
+#: src/vars.c:64
 msgid "September"
 msgstr ""
 
-#: src/vars.c:58
+#: src/vars.c:65
 msgid "October"
 msgstr ""
 
-#: src/vars.c:59
+#: src/vars.c:66
 msgid "November"
 msgstr ""
 
-#: src/vars.c:60
+#: src/vars.c:67
 msgid "December"
 msgstr ""
 
-#: src/vars.c:64 src/vars.c:71
+#: src/vars.c:71 src/vars.c:78
 msgid "Sun"
 msgstr ""
 
-#: src/vars.c:65
+#: src/vars.c:72
 msgid "Mon"
 msgstr ""
 
-#: src/vars.c:66
+#: src/vars.c:73
 msgid "Tue"
 msgstr ""
 
-#: src/vars.c:67
+#: src/vars.c:74
 msgid "Wed"
 msgstr ""
 
-#: src/vars.c:68
+#: src/vars.c:75
 msgid "Thu"
 msgstr ""
 
-#: src/vars.c:69
+#: src/vars.c:76
 msgid "Fri"
 msgstr ""
 
-#: src/vars.c:70
+#: src/vars.c:77
 msgid "Sat"
 msgstr ""
 
@@ -1489,6 +1642,6 @@ msgstr ""
 msgid "ToDo"
 msgstr ""
 
-#: src/wins.c:417
+#: src/wins.c:420
 msgid "FATAL ERROR in wins_update: no window selected\n"
 msgstr ""

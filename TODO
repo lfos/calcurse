@@ -11,9 +11,6 @@ this list.
 
 High
 ----
-  o  Add import capabilities to read ical files inside calcurse
-  o  Create external calendars which would contain hollydays and such (in ics
-     format)
   o  Add a week view in the calendar panel
   o  Add support for UTF-8
  

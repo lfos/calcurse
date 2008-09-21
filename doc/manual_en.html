@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <!--
 /*
- *	$calcurse: manual_en.html,v 1.19 2008/08/11 18:08:45 culot Exp $
+ *	$calcurse: manual_en.html,v 1.20 2008/09/21 14:08:59 culot Exp $
  *
  * Calcurse - text-based organizer
  * Copyright (c) 2004-2008 Frederic Culot
@@ -83,7 +83,12 @@ well as the way one can contribute to <code>calcurse</code> development.
 	    <li><a href="#basics_interface_interactive">4.2.2 Interactive mode</a></li>
 	</ul></li>
 	<li><a href="#basics_files">4.3 <code>calcurse</code> files</a></li>
-	<li><a href="#basics_help">4.4 Online help</a></li>
+        <li><a href="#basics_import_export">4.4 Import/Export capabilities</a>
+        <ul>
+            <li><a href="#basics_import">4.4.1 Import</a></li>
+            <li><a href="#basics_export">4.4.2 Export</a></li>
+        </ul></li>
+	<li><a href="#basics_help">4.5 Online help</a></li>
     </ul></li>
     <li><a href="#options">5. Options</a>
     <ul>
@@ -231,7 +236,7 @@ All of the commands are documented within an online help system.
 <h2>3.2 Install process<a name="install_process"></a></h2>
 <p>
 	First you need to gunzip and untar the source archive:</p>
-	<pre>tar zxvf calcurse-2.2.tar.gz</pre>
+	<pre>tar zxvf calcurse-2.3.tar.gz</pre>
 <p>
   	Once you meet the requirements and have extracted the archive, 
 	the install process is quite simple, and follows the standard 
@@ -300,6 +305,10 @@ All of the commands are documented within an online help system.
 	    <dd>
 	    Print  a  short  help  text  describing  the  supported
 	    command-line options, and exit.</dd>
+            <dt><code>-i &lt;file&gt;, --import &lt;file&gt;</code></dt>
+            <dd>
+            Import the icalendar data contained in <code>file</code>.
+            </dd>
 	    <dt><code>-n, --next</code></dt>
 	    <dd>
 	    Print the next appointment within upcoming 24 hours and exit.
@@ -559,7 +568,59 @@ $HOME/.calcurse/
 	        <dd>this file contains the todo list</dd>
 	</dl>
 
-<h2>4.4 Online help<a name="basics_help"></a></h2>
+<h2>4.4 Import/Export capabilities<a name="basics_import_export"></a></h2>
+<p>
+        The import and export capabilities offered by <code>calcurse</code>
+        are described below.
+</p>
+
+<h3>4.4.1 Import<a name="basics_import"></a></h3>
+<p>
+        Data in icalendar format as described in the rfc2445 specification
+        (see <a href="#links_others">links</a> section below) can be imported
+        into calcurse. Calcurse ical parser is based on version 2.0 of this 
+        specification, but for now on, only a subset of it is supported.
+</p>
+<p>
+        The following icalendar properties are handled by calcurse:
+        <ul>
+            <li><code>VTODO</code> items:<br>
+            "PRIORITY", "VALARM", "SUMMARY", "DESCRIPTION"</li>
+            <li><code>VEVENT</code> items:<br>
+            "DTSTART", "DTEND", "DURATION", "RRULE", "EXDATE", "VALARM", "SUMMARY",
+            "DESCRIPTION"</li>
+        </ul>
+</p>
+<p>
+        The icalendar "DESCRIPTION" property will be converted into calcurse format
+        by adding a note to the item. If a "VALARM" property is found, the item
+        will be flagged as important and the user will get a notification (this is
+        only applicable to appointments).
+</p>
+<p>
+        Here are the properties that are not implemented:
+        <ul>
+            <li>negative time durations are not taken into account (item is skipped)</li>
+            <li>some recurence frequences are not recognize:<br>
+            "SECONDLY" / "MINUTELY" / "HOURLY"</li>
+            <li>some recurrence keywords are not recognized 
+            (all those starting with 'BY'):<br>
+            "BYSECOND" / "BYMINUTE" / "BYHOUR" / "BYDAY" / "BYMONTHDAY"<br>
+            "BYYEARDAY" / "BYWEEKNO" / "BYMONTH" / "BYSETPOS"<br>
+            plus "WKST"</li>
+            <li>the recurrence exception keyword "EXRULE" is not recognized</li>
+            <li>timezones are not taken into account</li>
+        </ul>
+</p>
+
+<h3>4.4.2 Export<a name="basics_export"></a></h3>
+<p>
+        Two possible export formats are available: <code>ical</code> and 
+        <code>pcal</code> (see section <a href="#links_others">Links</a> below
+        to find out about those formats). 
+</p>
+
+<h2>4.5 Online help<a name="basics_help"></a></h2>
 <p>
         At any time, the built-in help  system  can  be  invoked  by
         pressing the '?'  key. Once viewing the help screens,
@@ -1064,8 +1125,8 @@ msgid ""
         users who sent me their feedback.</p>
 
 <div class="footer">
-	Copyright (c) 2004-2008 Fr&eacute;d&eacute;ric Culot<br>
-	Calcurse version 2.2 - Last change: August 11, 2008<br>
+	Copyright (c) 2004-2008 Frédéric Culot<br>
+	Calcurse version 2.3 - Last change: September 21, 2008<br>
 </div>
 </div>
 

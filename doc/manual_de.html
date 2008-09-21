@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <!--
 /*
- *	$calcurse: manual_de.html,v 1.19 2008/08/11 18:08:45 culot Exp $
+ *	$calcurse: manual_de.html,v 1.20 2008/09/21 14:08:59 culot Exp $
  *
  * Calcurse - text-based organizer
  * Copyright (c) 2004-2008 Frederic Culot
@@ -86,7 +86,12 @@ well as the way one can contribute to <code>calcurse</code> development.
 	    <li><a href="#basics_interface_interactive">4.2.2 Interaktiver Modus</a></li>
 	</ul></li>
 	<li><a href="#basics_files">4.3 <code>calcurse</code> Dateien</a></li>
-	<li><a href="#basics_help">4.4 Onlinehilfe</a></li>
+        <li><a href="#basics_import_export"><span class="todo">4.4 Import/Export capabilities</span></a>
+        <ul>
+            <li><a href="#basics_import"><span class="todo">4.4.1 Import</span></a></li>
+            <li><a href="#basics_export"><span class="todo">4.4.2 Export</span></a></li>
+        </ul></li>
+	<li><a href="#basics_help">4.5 Onlinehilfe</a></li>
     </ul></li>
     <li><a href="#options">5. Optionen</a>
     <ul>
@@ -233,7 +238,7 @@ laden:</p>
 <h2>3.2 Installationsprozess<a name="install_process"></a></h2>
 <p>
 Als erstes m&uuml;ssen die Dateien entpackt werden:</p>
-<pre>tar zxvf calcurse-2.2.tar.gz</pre>
+<pre>tar zxvf calcurse-2.3.tar.gz</pre>
 <p>
 Ist diese Voraussetzung erf&uuml;llt und das Archiv entpackt,
 sind nur noch die drei &uuml;blichen Schritte erforderlich:</p>
@@ -290,6 +295,12 @@ Es werden sowohl kurze als auch lange Optionsangaben unterst&uuml;tzt.</p>
     </dd>
     <dt><code>-h, --help</code></dt>
     <dd>Gibt eine Hilfe zu den unterst&uuml;tzten Optionen aus.
+    </dd>
+    <dt><code>-i &lt;file&gt;, --import &lt;file&gt;</code></dt>
+    <dd>
+    <div class="todo">
+    Import the icalendar data contained in <code>file</code>.
+    </div>
     </dd>
     <dt><code>-n, --next</code></dt>
     <dd>Gibt den Termin aus, der innerhalb der kommenden 24 Stunden als 
@@ -550,7 +561,87 @@ $HOME/.calcurse/
         <dd>Datei enth&auml;lt die todo-Liste.</dd>
 </dl>
 
-<h2>4.4 Online Hilfe<a name="basics_help"></a></h2>
+<h2>4.3 <code>calcurse</code> files<a name="basics_files"></a></h2>
+<p>
+        The following structure is created in your <code>$HOME</code>  
+	directory (or in the directory you specified with  the  -D  option)
+        the first time <code>calcurse</code> is run :</p>
+	<pre>
+$HOME/.calcurse/
+           |___notes/
+           |___conf
+           |___apts
+           |___todo
+        </pre>
+	<dl class="compact">
+		<dt><code>notes/</code>:</dt>
+		<dd>this subdirectory contains descriptions of the notes 
+		which are attached to appointments, events or todos. One text file is
+		created per note, whose name is built using mkstemp(3) and should be
+		unique, but with no relation with the corresponding item's description.</dd>
+		<dt><code>conf</code>:</dt>
+	        <dd>this file contains the user configuration</dd>
+		<dt><code>apts</code>:</dt>
+	        <dd>this file contains  all  of the events and user's appointments</dd>
+		<dt><code>todo</code>:</dt>
+	        <dd>this file contains the todo list</dd>
+	</dl>
+
+<div class="todo">
+<h2>4.4 Import/Export capabilities<a name="basics_import_export"></a></h2>
+<p>
+        The import and export capabilities offered by <code>calcurse</code>
+        are described below.
+</p>
+
+<h3>4.4.1 Import<a name="basics_import"></a></h3>
+<p>
+        Data in icalendar format as described in the rfc2445 specification
+        (see <a href="#links_others">links</a> section below) can be imported
+        into calcurse. Calcurse ical parser is based on version 2.0 of this 
+        specification, but for now on, only a subset of it is supported.
+</p>
+<p>
+        The following icalendar properties are handled by calcurse:
+        <ul>
+            <li><code>VTODO</code> items:<br>
+            "PRIORITY", "VALARM", "SUMMARY", "DESCRIPTION"</li>
+            <li><code>VEVENT</code> items:<br>
+            "DTSTART", "DTEND", "DURATION", "RRULE", "EXDATE", "VALARM", "SUMMARY",
+            "DESCRIPTION"</li>
+        </ul>
+</p>
+<p>
+        The icalendar "DESCRIPTION" property will be converted into calcurse format
+        by adding a note to the item. If a "VALARM" property is found, the item
+        will be flagged as important and the user will get a notification (this is
+        only applicable to appointments).
+</p>
+<p>
+        Here are the properties that are not implemented:
+        <ul>
+            <li>negative time durations are not taken into account (item is skipped)</li>
+            <li>some recurence frequences are not recognize:<br>
+            "SECONDLY" / "MINUTELY" / "HOURLY"</li>
+            <li>some recurrence keywords are not recognized 
+            (all those starting with 'BY'):<br>
+            "BYSECOND" / "BYMINUTE" / "BYHOUR" / "BYDAY" / "BYMONTHDAY"<br>
+            "BYYEARDAY" / "BYWEEKNO" / "BYMONTH" / "BYSETPOS"<br>
+            plus "WKST"</li>
+            <li>the recurrence exception keyword "EXRULE" is not recognized</li>
+            <li>timezones are not taken into account</li>
+        </ul>
+</p>
+
+<h3>4.4.2 Export<a name="basics_export"></a></h3>
+<p>
+        Two possible export formats are available: <code>ical</code> and 
+        <code>pcal</code> (see section <a href="#links_others">Links</a> below
+        to find out about those formats). 
+</p>
+</div>
+
+<h2>4.5 Online Hilfe<a name="basics_help"></a></h2>
 <p>
 Das integrierte Hilfe-System kann jederzeit mit '?' aufgerufen
 werden. Informationen &uuml;ber bestimmte Befehle k&ouml;nnen mit der
@@ -1024,10 +1115,10 @@ Und zuletzt, vielen vielen Dank an alle <code>calcurse</code>
 Benutzer, die mir Ihr Feedback mitgeteilt haben.</p>
 
 <div class="footer">
-	Copyright (c) 2004-2008 Fr&eacute;d&eacute;ric Culot<br>
+	Copyright (c) 2004-2008 Frédéric Culot<br>
 	German translation by Michael Schulz
 	<code>&lt;bloodshower .at. web .dot. de&gt;</code>, and Chris.<br>
-	Calcurse version 2.2 - Last change: August 11, 2008<br>
+	Calcurse version 2.3 - Last change: September 21, 2008<br>
 </div>
 </div>
 

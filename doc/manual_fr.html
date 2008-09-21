@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <!--
 /*
- *	$calcurse: manual_fr.html,v 1.20 2008/08/11 18:08:45 culot Exp $
+ *	$calcurse: manual_fr.html,v 1.21 2008/09/21 14:08:59 culot Exp $
  *
  * Calcurse - text-based organizer
  * Copyright (c) 2004-2008 Frederic Culot
@@ -86,7 +86,12 @@ pour faire remonter les bogues et pour contribuer au développement de
 	    <li><a href="#basics_interface_interactive">4.2.2 Mode Interactif</a></li>
 	</ul></li>
 	<li><a href="#basics_files">4.3 Fichiers</a></li>
-	<li><a href="#basics_help">4.4 Aide en ligne</a></li>
+        <li><a href="#basics_import_export">4.4 Fonctions d'import/export</a>
+        <ul>
+            <li><a href="#basics_import">4.4.1 Import</a></li>
+            <li><a href="#basics_export">4.4.2 Export</a></li>
+        </ul></li>
+	<li><a href="#basics_help">4.5 Aide en ligne</a></li>
     </ul></li>
     <li><a href="#options">5. Options</a>
     <ul>
@@ -259,7 +264,7 @@ disponibles.
 <p>
         Vous devez tout d'abord décompresser l'archive source de la
         manière suivante :</p>
-	<pre>tar zxvf calcurse-2.2.tar.gz</pre>
+	<pre>tar zxvf calcurse-2.3.tar.gz</pre>
 <p>
         Une fois que vous remplissez tous les pré-requis nécessaires à
         l'installation, le processus de compilation est simple et suit
@@ -331,6 +336,11 @@ disponibles.
 	<dd>
 	Affiche l'aide décrivant les options en ligne de commande,
 	puis quitte.</dd>
+        <dt><code>-i &lt;file&gt;, --import &lt;file&gt;</code></dt>
+        <dd>
+        Importe les données au format icalendar contenues dans le fichier 
+        <code>file</code>.
+        </dd>
 	<dt><code>-n, --next</code></dt>
 	<dd>
 	Affiche le rendez-vous suivant dans les prochaines 24 heures, puis
@@ -612,7 +622,62 @@ $HOME/.calcurse/
 		<dd>ce fichier contient la liste des tâches à effectuer</dd>
 	</dl>
 
-<h2>4.4 Aide en ligne<a name="basics_help"></a></h2>
+<h2>4.4 Fonctions d'import/export<a name="basics_import_export"></a></h2>
+<p>
+        Les possibilités offertes par <code>calcurse</code> pour importer et exporter
+        des données sont décrites ci-dessous.
+</p>
+
+<h3>4.4.1 Import<a name="basics_import"></a></h3>
+<p>
+        Les données au format icalendar tel que décrit dans la spécification
+        rfc2445 (voir la section <a href="#links_others">liens</a> ci-dessous)
+        peuvent être importées dans calcurse. L'import ical de calcurse est basé
+        sur la version 2.0 de la norme rfc2445, mais pour le moment, seul un
+        sous-ensemble de cette spécification a été implémenté.
+</p>
+<p>
+        Les propriétés suivantes sont gérées par calcurse:
+        <ul>
+            <li>éléments <code>VTODO</code>:<br>
+            "PRIORITY", "VALARM", "SUMMARY", "DESCRIPTION"</li>
+            <li>éléments <code>VEVENT</code>:<br>
+            "DTSTART", "DTEND", "DURATION", "RRULE", "EXDATE", "VALARM", "SUMMARY",
+            "DESCRIPTION"</li>
+        </ul>
+</p>
+<p>
+        La propriété "DESCRIPTION" du format icalendar sera convertie dans calcurse
+        en ajoutant une note à l'élément. Si une propriété "VALARM" est trouvée,
+        l'élément sera marqué comme étant important et l'utilisateur recevra une
+        notification (ceci ne fonctionne que pour les rendez-vous).
+</p>
+<p>
+        Voici la liste des propriétés qui ne sont pas encore implémentées:
+        <ul>
+            <li>les durées négatives ne sont pas prises en compte (l'élément n'est
+            pas importé)</li>
+            <li>certaines fréquences de répétition ne sont pas reconnues:<br>      
+            "SECONDLY" / "MINUTELY" / "HOURLY"</li>
+            <li>Certains mots-clés liés aux répétitions ne sont pas reconnus
+            (ceux commençant par 'BY'):<br>
+            "BYSECOND" / "BYMINUTE" / "BYHOUR" / "BYDAY" / "BYMONTHDAY"<br>
+            "BYYEARDAY" / "BYWEEKNO" / "BYMONTH" / "BYSETPOS"<br>
+            plus "WKST"</li>
+            <li>le mot-clé "EXRULE" n'est pas reconnu</li>
+            <li>les fuseaux horaires ne sont pas pris en compte</li>
+        </ul>
+</p>
+
+<h3>4.4.2 Export<a name="basics_export"></a></h3>
+<p>
+        Deux formats peuvent êtres utilisés pour l'export des données:
+        <code>ical</code> et <code>pcal</code> (voir la section
+        <a href="#links_others">Liens</a> ci-dessous pour avoir plus d'informations
+        concernant ces formats).
+</p>
+
+<h2>4.5 Aide en ligne<a name="basics_help"></a></h2>
 <p>
         A n'importe quel moment, le système d'aide en ligne peut être
         appelé en pressant la touche '?'. Une fois rentré dans l'aide,
@@ -1211,7 +1276,7 @@ msgid ""
 
 <div class="footer">
 	Copyright (c) 2004-2008 Frédéric Culot<br>
-	Calcurse version 2.2 - Dernière modification: 11 Aout 2008<br>
+	Calcurse version 2.3 - Dernière modification: 21 Septembre 2008<br>
 </div>
 </div>
 

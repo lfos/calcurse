@@ -11,6 +11,15 @@
 	taken into account
 
 	* src/utils.h: DISPLAY macro renamed into ERROR_MSG
+
+	* src/calcurse.1: manpage updated
+
+	* doc/manual_*.html: manuals updated
+
+	* po/fr.po: translation updated
+
+	* configure.ac
+	* TODO: update for 2.3_beta
 	
 2008-09-20  Frederic Culot  <frederic@culot.org>
 

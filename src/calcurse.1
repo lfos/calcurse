@@ -1,4 +1,4 @@
-.\" 	$calcurse: calcurse.1,v 1.10 2008/08/11 18:08:45 culot Exp $
+.\" 	$calcurse: calcurse.1,v 1.11 2008/09/21 14:09:00 culot Exp $
 .\"
 .\" Copyright (c) 2004-2008 Frederic Culot
 .\"
@@ -18,18 +18,20 @@
 .\" Boston, MA 02111-1307, USA.
 .\"
 .fam C
-.TH CALCURSE 1 "August 08, 2008" "Version 2.2" "Calcurse Manual"
+.TH CALCURSE 1 "September 21, 2008" "Version 2.3" "Calcurse Manual"
 .SH NAME
 Calcurse \- text-based organizer
 .SH SYNOPSIS
 .B "calcurse "
 [\fB-h\fP|\fB-v\fP] [\fB-N\fP] [\fB-an\fP] [\fB-t\fP[\fInum\fP]]
-[\fB-x\fP[\fIformat\fP]]
+[\fB-c\fP<\fIfile\fP> | \fB-D\fP<\fIdir\fP>]
 .br
-         [\fB-d\fP <\fIdate\fP>|<\fInum\fP>] [\fB-s\fP[\fIdate\fP]]
-[\fB-r\fP[\fIrange\fP]]
+         [\fB-i\fP<\fIfile\fP>] [\fB-x\fP[\fIformat\fP]]
+[\fB-d\fP <\fIdate\fP>|<\fInum\fP>]
 .br
-         [\fB-c\fP<\fIfile\fP> | \fB-D\fP<\fIdir\fP>]
+         [\fB-s\fP[\fIdate\fP]] [\fB-r\fP[\fIrange\fP]]
+.br
+         
 .SH DESCRIPTION
 Calcurse is a text-based calendar and scheduling application. It helps
 keeping track of events, appointments and everyday tasks. 
@@ -81,6 +83,9 @@ If not specified, the default directory is
 \fB-h\fP, \fB--help\fP
 Print a short help text describing the supported command-line options,
 and then exit. 
+.TP
+\fB-i\fP <file>, \fB--import\fP <file>
+Import the icalendar data contained in \fIfile\fP.
 .TP
 \fB-n\fP, \fB--next\fP
 Print the next appointment within upcoming 24 hours and exit.
