@@ -1,3 +1,17 @@
+2008-09-21  Frederic Culot  <frederic@culot.org>
+
+	* src/utils.c (status_bar): 'I' keybinding added to import data
+
+	* src/help.c (help_screen, wanted_page): import function help text
+	added
+
+	* src/args.c (usage, help_arg, parse_args): import flag added
+
+	* src/io.c (io_save_cal): ui mode (command line or curses mode)
+	taken into account
+
+	* src/utils.h: DISPLAY macro renamed into ERROR_MSG
+	
 2008-09-20  Frederic Culot  <frederic@culot.org>
 
 	* src/io.c (io_import_data): temporary log file created to store

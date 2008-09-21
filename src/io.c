@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.36 2008/09/20 12:47:06 culot Exp $	*/
+/*	$calcurse: io.c,v 1.37 2008/09/21 08:06:43 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -723,7 +723,7 @@ io_extract_data (char *dst_data, const char *org, int len)
 
 /* Save the calendar data */
 void
-io_save_cal (conf_t *conf)
+io_save_cal (io_mode_t mode, conf_t *conf)
 {
   FILE *data_file;
   struct event_s *k;
@@ -745,7 +745,7 @@ io_save_cal (conf_t *conf)
   char *enter = _("Press [ENTER] to continue");
   bool show_bar = false;
 
-  if (!conf->skip_progress_bar)
+  if (mode == IO_MODE_INTERACTIVE && !conf->skip_progress_bar)
     show_bar = true;
 
   /* Save the user configuration. */
@@ -753,8 +753,8 @@ io_save_cal (conf_t *conf)
   if (show_bar)
     progress_bar (PROGRESS_BAR_SAVE, 0);
   data_file = fopen (path_conf, "w");
-  if (data_file == (FILE *) 0)
-    status_mesg (access_pb, "");
+  if (data_file == NULL)
+    ERROR_MSG (access_pb);
   else
     {
       custom_color_theme_name (theme_name);
@@ -806,7 +806,8 @@ io_save_cal (conf_t *conf)
       fprintf (data_file, "layout=\n");
       fprintf (data_file, "%d\n", wins_layout ());
 
-      pthread_mutex_lock (&nbar->mutex);
+      if (mode == IO_MODE_INTERACTIVE)
+        pthread_mutex_lock (&nbar->mutex);
       fprintf (data_file,
 	       "\n# If this option is set to yes, "
                "notify-bar will be displayed :\n");
@@ -847,7 +848,8 @@ io_save_cal (conf_t *conf)
       fprintf (data_file, "input_datefmt=\n");
       fprintf (data_file, "%d\n", conf->input_datefmt);
 
-      pthread_mutex_unlock (&nbar->mutex);
+      if (mode == IO_MODE_INTERACTIVE)
+        pthread_mutex_unlock (&nbar->mutex);
 
       fclose (data_file);
     }
@@ -856,8 +858,8 @@ io_save_cal (conf_t *conf)
   if (show_bar)
     progress_bar (PROGRESS_BAR_SAVE, 1);
   data_file = fopen (path_todo, "w");
-  if (data_file == (FILE *) 0)
-    status_mesg (access_pb, "");
+  if (data_file == NULL)
+    ERROR_MSG (access_pb);
   else
     {
       for (i = todolist; i != 0; i = i->next)
@@ -878,16 +880,18 @@ io_save_cal (conf_t *conf)
   if (show_bar)
     progress_bar (PROGRESS_BAR_SAVE, 2);
   data_file = fopen (path_apts, "w");
-  if (data_file == (FILE *) 0)
-    status_mesg (access_pb, "");
+  if (data_file == NULL)
+    ERROR_MSG (access_pb);
   else
     {
       recur_save_data (data_file);
 
-      pthread_mutex_lock (&(alist_p->mutex));
+      if (mode == IO_MODE_INTERACTIVE)
+        pthread_mutex_lock (&(alist_p->mutex));
       for (j = alist_p->root; j != 0; j = j->next)
 	apoint_write (j, data_file);
-      pthread_mutex_unlock (&(alist_p->mutex));
+      if (mode == IO_MODE_INTERACTIVE)
+        pthread_mutex_unlock (&(alist_p->mutex));
 
       for (k = eventlist; k != 0; k = k->next)
 	event_write (k, data_file);
@@ -895,7 +899,7 @@ io_save_cal (conf_t *conf)
     }
 
   /* Print a message telling data were saved */
-  if (!conf->skip_system_dialogs)
+  if (mode == IO_MODE_INTERACTIVE && !conf->skip_system_dialogs)
     {
       status_mesg (save_success, enter);
       wgetch (win[STA].p);
@@ -2142,16 +2146,17 @@ get_import_stream (export_type_t type)
  * and is cleared at the end.
  */
 void
-io_import_data (io_mode_t mode, import_type_t type, conf_t *conf)
+io_import_data (io_mode_t mode, import_type_t type, conf_t *conf,
+                char *stream_name)
 {
   const char *logprefix = "/tmp/calcurse_log.";
   const string_t vevent = STRING_BUILD ("BEGIN:VEVENT");
   const string_t vtodo = STRING_BUILD ("BEGIN:VTODO");
-  char *success = _("The data were successfully imported");
-  char *enter = _("Press [ENTER] to continue");
-  char *lines_read = _("Number of lines read: %04d ");
+  char *proc_report = _("Import process report: %04d lines read ");
   char *lines_stats =
-    _("(apoints: %d / events: %d / todos: %d / skipped: %d)\r");
+    _("%d apps / %d events / %d todos / %d skipped ");
+  char *lines_stats_interactive =
+    _("%d apps / %d events / %d todos / %d skipped ([ENTER] to continue)");
   char *logname, flogname[BUFSIZ], buf[BUFSIZ];
   FILE *stream = NULL, *logfd;
   float ical_version;
@@ -2164,7 +2169,10 @@ io_import_data (io_mode_t mode, import_type_t type, conf_t *conf)
   switch (mode)
     {
     case IO_MODE_NONINTERACTIVE:
-      stream = stdin;
+      stream = fopen (stream_name, "r");
+      EXIT_IF (stream == NULL,
+               _("FATAL ERROR: the input file cannot be accessed, "
+                 "Aborting..."));
       break;
     case IO_MODE_INTERACTIVE:
       stream = get_import_stream (type);
@@ -2177,43 +2185,26 @@ io_import_data (io_mode_t mode, import_type_t type, conf_t *conf)
   if (stream == NULL)
     return;
 
-  logname = new_tempfile (logprefix, NOTESIZ);
-  RETURN_IF (logname == NULL,
-             _("Warning: could not create new note file to store "
-               "description. Aborting...\n"));
-
-  snprintf (flogname, BUFSIZ, "%s%s", logprefix, logname);
-  logfd = fopen (flogname, "w");
-  RETURN_IF (logfd == NULL, 
-             _("Warning: could not open temporary log file, Aborting..."));
-
   bzero (&stats, sizeof stats);
   ical_version = ical_chk_header (stream, &stats.lines);
   RETURN_IF (ical_version < 0,
              _("Warning: ical header malformed, wrong version number. "
                "Aborting..."));
 
+  logname = new_tempfile (logprefix, NOTESIZ);
+  RETURN_IF (logname == NULL,
+             _("Warning: could not create new note file to store "
+               "description. Aborting...\n"));
+  snprintf (flogname, BUFSIZ, "%s%s", logprefix, logname);
+  logfd = fopen (flogname, "w");
+  RETURN_IF (logfd == NULL, 
+             _("Warning: could not open temporary log file, Aborting..."));
   ical_log_init (logfd, ical_version);
+
   while (fgets (buf, BUFSIZ, stream) != NULL)
     {
       stats.lines++;
       str_toupper (buf);
-      if (mode == IO_MODE_INTERACTIVE)
-        {
-          char read[BUFSIZ], stat[BUFSIZ];
-
-          snprintf (read, BUFSIZ, lines_read, stats.lines);
-          snprintf (stat, BUFSIZ, lines_stats, stats.apoints, stats.events,
-                    stats.todos, stats.skipped);
-          status_mesg (read, stat);
-        }
-      else
-        {
-          printf (lines_read, stats.lines);
-          printf (lines_stats,
-                  stats.lines, stats.apoints, stats.events, stats.todos,
-                  stats.skipped);
-        }
       if (strncmp (buf, vevent.str, vevent.len) == 0)
         {
           ical_read_event (stream, logfd, &stats.events, &stats.apoints,
@@ -2228,6 +2219,24 @@ io_import_data (io_mode_t mode, import_type_t type, conf_t *conf)
   if (stream != stdin)
     fclose (stream);
 
+  if (mode == IO_MODE_INTERACTIVE && !conf->skip_system_dialogs)
+    {
+      char read[BUFSIZ], stat[BUFSIZ];
+
+      snprintf (read, BUFSIZ, proc_report, stats.lines);
+      snprintf (stat, BUFSIZ, lines_stats_interactive, stats.apoints,
+                stats.events, stats.todos, stats.skipped);
+      status_mesg (read, stat);
+      wgetch (win[STA].p);
+    }
+  else if (mode == IO_MODE_NONINTERACTIVE)
+    {
+      printf (proc_report, stats.lines);
+      printf ("\n");
+      printf (lines_stats, stats.lines, stats.apoints, stats.events,
+              stats.todos, stats.skipped);
+    }
+  
   /* User has the choice to look at the log file if some items could not be
      imported.
   */
@@ -2236,45 +2245,35 @@ io_import_data (io_mode_t mode, import_type_t type, conf_t *conf)
     {
       char *view_log = _("Some items could not be imported, see log file ?");
       char *choices = "[y/n] ";
-      int answer;
+      int ans;
       
       if (mode == IO_MODE_NONINTERACTIVE)
         {
-          fprintf (stdout, "\n%s %s", view_log, choices);
-          do
-            {
-              answer = scanf ("%d", &answer);
-              if (answer == 'y')
-                {
-                  char cmd[BUFSIZ];
+          int ans;
 
-                  snprintf (cmd, BUFSIZ, "%s %s", conf->pager, flogname);
-                  system (cmd);
-                }
+          printf ("\n%s %s", view_log, choices);
+          ans = fgetc (stdin);
+          if (ans == 'y')
+            {
+              char cmd[BUFSIZ];
+
+              snprintf (cmd, BUFSIZ, "%s %s", conf->pager, flogname);
+              system (cmd);
             }
-          while (answer != 'y' && answer != 'n');
         }
       else
         {
           status_mesg (view_log, choices);
           do
             {
-              answer = wgetch (win[STA].p);
-              if (answer == 'y')
+              ans = wgetch (win[STA].p);
+              if (ans == 'y')
                 {
                   wins_launch_external (flogname, conf->pager);
                 }
             }
-          while (answer != 'y' && answer != 'n');
+          while (ans != 'y' && ans != 'n');
           erase_status_bar ();
-        }
-    }
-  else
-    {
-      if (!conf->skip_system_dialogs && mode == IO_MODE_INTERACTIVE)
-        {
-          status_mesg (success, enter);
-          wgetch (win[STA].p);
         }
     }
   EXIT_IF (unlink (flogname) != 0,

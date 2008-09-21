@@ -1,4 +1,4 @@
-/*	$calcurse: utils.h,v 1.34 2008/09/20 12:47:06 culot Exp $	*/
+/*	$calcurse: utils.h,v 1.35 2008/09/21 08:06:43 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -32,7 +32,7 @@
 #define MAX(x,y) 	((x)>(y)?(x):(y))
 #define MIN(x,y) 	((x)<(y)?(x):(y))
 
-#define DISPLAY(...) do {                                               \
+#define ERROR_MSG(...) do {                                             \
         char msg[BUFSIZ];                                               \
                                                                         \
         snprintf (msg, BUFSIZ, __VA_ARGS__);                            \
@@ -43,7 +43,7 @@
 } while (0)
 
 #define EXIT(...) do {                                                  \
-          DISPLAY(__VA_ARGS__);                                         \
+          ERROR_MSG(__VA_ARGS__);                                       \
           if (ui_mode == UI_CURSES)                                     \
             exit_calcurse (EXIT_FAILURE);                               \
           else                                                          \
@@ -53,7 +53,7 @@
 #define EXIT_IF(cond, ...) do {                                         \
         if ((cond))                                                     \
           {                                                             \
-            DISPLAY(__VA_ARGS__);                                       \
+            ERROR_MSG(__VA_ARGS__);                                     \
             if (ui_mode == UI_CURSES)                                   \
               exit_calcurse (EXIT_FAILURE);                             \
             else                                                        \
@@ -64,7 +64,7 @@
 #define RETURN_IF(cond, ...) do {                                       \
         if ((cond))                                                     \
           {                                                             \
-            DISPLAY(__VA_ARGS__);                                       \
+            ERROR_MSG(__VA_ARGS__);                                     \
             return;                                                     \
           }                                                             \
 } while (0)
@@ -72,7 +72,7 @@
 #define RETVAL_IF(cond, val, ...) do {                                  \
         if ((cond))                                                     \
           {                                                             \
-            DISPLAY(__VA_ARGS__);                                       \
+            ERROR_MSG(__VA_ARGS__);                                     \
             return (val);                                               \
           }                                                             \
 } while (0)
@@ -83,9 +83,9 @@
 
 #define SPC		32	/* ASCII code for white space */
 
-#define NB_CAL_CMDS	19	/* number of commands while in cal view */
-#define NB_APP_CMDS	24	/* same thing while in appointment view */
-#define NB_TOD_CMDS	23	/* same thing while in todo view */
+#define NB_CAL_CMDS	20	/* number of commands while in cal view */
+#define NB_APP_CMDS	26	/* same thing while in appointment view */
+#define NB_TOD_CMDS	24	/* same thing while in todo view */
 #define TOTAL_CMDS	NB_CAL_CMDS + NB_APP_CMDS + NB_TOD_CMDS
 #define NB_PANELS	3	/* 3 panels: CALENDAR, APPOINTMENT, TODO */
 #define CMDS_PER_LINE	6	/* max number of commands per line */

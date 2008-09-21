@@ -1,4 +1,4 @@
-/*	$calcurse: help.c,v 1.28 2008/08/11 18:08:45 culot Exp $	*/
+/*	$calcurse: help.c,v 1.29 2008/09/21 08:06:43 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -39,6 +39,7 @@ typedef enum
 {
   HELP_MAIN,
   HELP_SAVE,
+  HELP_IMPORT,
   HELP_EXPORT,
   HELP_DISPLACEMENT,
   HELP_VIEW,
@@ -183,6 +184,10 @@ wanted_page (int ch)
       page = HELP_SAVE;
       break;
 
+    case 'i':
+      page = HELP_IMPORT;
+      break;
+      
     case 'x':
       page = HELP_EXPORT;
       break;
@@ -299,6 +304,24 @@ help_screen (void)
       "\nIn the config menu, you can choose to save the Calcurse data\n"
       "automatically before quitting.");
 
+  hscr[HELP_IMPORT].title = _("Import:\n");
+  hscr[HELP_IMPORT].text =
+    _("Pressing 'I' allows you to import data from an icalendar file.\n"
+      "You are asked to enter the file name from which to load ical items.\n\n"
+      "At the end of the import process, and if the general option\n"
+      "'skip_system_dialogs' is not set to 'yes', a report indicating how\n"
+      "many items were imported is shown.\n"
+      "This report contains the total number of lines read, the number of\n"
+      "appointments, events and todo items which were successfully imported,\n"
+      "together with the number of items for which problems occured and that\n"
+      "were skipped, if any.\n\n"
+      "If one or more items could not be imported, one has the possibility to\n"
+      "read the import process report in order to identify which problems\n"
+      "occured.\n"
+      "In this report is shown one item per line, with the line in the input\n"
+      "stream at which this item begins, together with the description of why\n"
+      "the item could not be imported.\n");
+  
   hscr[HELP_EXPORT].title = _("Export:\n");
   hscr[HELP_EXPORT].text =
     _("Pressing 'X' leads to the export submenu, from which you can choose\n"

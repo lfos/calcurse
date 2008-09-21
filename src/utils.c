@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.50 2008/09/20 12:47:06 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.51 2008/09/21 08:06:43 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -445,6 +445,7 @@ status_bar (void)
   binding_t quit = { "  Q", _("Quit") };
   binding_t save = { "  S", _("Save") };
   binding_t export = { "  X", _("Export") };
+  binding_t import = { "  I", _("Import") };  
   binding_t add = { "  A", _("Add Item") };
   binding_t del = { "  D", _("Del Item") };
   binding_t edit = { "  E", _("Edit Itm") };
@@ -472,16 +473,16 @@ status_bar (void)
 
   binding_t *binding[TOTAL_CMDS] = {
     /* calendar keys */
-    &help, &quit, &save, &export, &day, &week, &weekb, &weeke, &tab,
-    &togo, &conf, &othr, &appt, &todo, &eday, &ewek, &draw, &today, &othr,
+    &help, &quit, &save, &tab, &import, &export, &day, &week, &weekb, &weeke,
+    &togo, &othr, &conf, &draw, &appt, &todo, &eday, &ewek, &today, &othr,
     /* appointment keys */
-    &help, &quit, &save, &export, &add, &del, &edit, &view, &rept,
-    &updn, &flag, &othr, &enote, &vnote, &appt, &todo, &eday, &ewek,
-    &conf, &togo, &tab, &draw, &today, &othr,
+    &help, &quit, &save, &tab, &import, &export, &add, &del, &edit, &view,
+    &rept, &othr, &updn, &flag, &enote, &vnote, &appt, &todo, &eday, &ewek,
+    &conf, &togo, &draw, &othr, &today, &othr,
     /* todo keys */
-    &help, &quit, &save, &export, &add, &del, &edit, &view, &prio,
-    &updn, &tab, &othr, &enote, &vnote, &appt, &todo, &eday, &ewek,
-    &conf, &togo, &draw, &today, &othr
+    &help, &quit, &save, &tab, &import, &export, &add, &del, &edit, &view,
+    &prio, &othr, &updn, &conf, &enote, &vnote, &appt, &todo, &eday, &ewek,
+    &togo, &draw, &today, &othr
   };
 
   /* Total length of a command. */

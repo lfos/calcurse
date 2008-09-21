@@ -1,4 +1,4 @@
-/*	$calcurse: custom.c,v 1.22 2008/04/19 21:05:15 culot Exp $	*/
+/*	$calcurse: custom.c,v 1.23 2008/09/21 08:06:43 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -191,7 +191,7 @@ custom_init_attr (void)
 
 /* Apply window attribute */
 void
-custom_apply_attr (WINDOW * win, int attr_num)
+custom_apply_attr (WINDOW *win, int attr_num)
 {
   if (colorize)
     wattron (win, attr.color[attr_num]);
@@ -201,7 +201,7 @@ custom_apply_attr (WINDOW * win, int attr_num)
 
 /* Remove window attribute */
 void
-custom_remove_attr (WINDOW * win, int attr_num)
+custom_remove_attr (WINDOW *win, int attr_num)
 {
   if (colorize)
     wattroff (win, attr.color[attr_num]);
@@ -211,7 +211,7 @@ custom_remove_attr (WINDOW * win, int attr_num)
 
 /* Load the user configuration. */
 void
-custom_load_conf (conf_t * conf, int background)
+custom_load_conf (conf_t *conf, int background)
 {
   FILE *data_file;
   char *mesg_line1 = _("Failed to open config file");

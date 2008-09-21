@@ -1,4 +1,4 @@
-/*	$calcurse: args.c,v 1.39 2008/09/15 20:40:22 culot Exp $	*/
+/*	$calcurse: args.c,v 1.40 2008/09/21 08:06:43 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -48,7 +48,7 @@ static void
 usage ()
 {
   char *arg_usage =
-    _("Usage: calcurse [-h|-v] [-N] [-an] [-t[num]] [-x[format]]\n"
+    _("Usage: calcurse [-h|-v] [-N] [-an] [-t[num]] [-i<file>] [-x[format]]\n"
       "                [-d <date>|<num>] [-s[date]] [-r[range]]\n"
       "                [-c<file> | -D<dir>]\n");
   fputs (arg_usage, stdout);
@@ -103,6 +103,8 @@ help_arg ()
       "	print events and appointments for <date> or <num> upcoming days and"
       "\n\texit. To specify both a starting date and a range, use the\n"
       "\t'--startday' and the '--range' option.\n"
+      "\n  -i <file>, --import <file>\n"
+      "	import the icalendar data contained in <file>. \n"
       "\n  -n, --next\n"
       "	print next appointment within upcoming 24 hours "
       "and exit. Also given\n\tis the remaining time before this "
@@ -573,21 +575,22 @@ parse_args (int argc, char **argv, conf_t *conf)
   int dflag = 0;    /* -d: print appointments for a specified days */
   int Dflag = 0;    /* -D: specify data directory to use */
   int hflag = 0;    /* -h: print help text */
+  int iflag = 0;    /* -i: import data */
   int nflag = 0;    /* -n: print next appointment */
   int Nflag = 0;    /* -N: also print note content with apps and todos */
   int rflag = 0;    /* -r: specify the range of days to consider */
   int sflag = 0;    /* -s: specify the first day to consider */
   int tflag = 0;    /* -t: print todo list */
   int vflag = 0;    /* -v: print version number */
-  int xflag = 0;    /* -x: export data to iCalendar format */
+  int xflag = 0;    /* -x: export data */
 
   int tnum = 0, xfmt = 0;
   int non_interactive = 0, multiple_flag = 0, load_data = 0;
   int no_file = 1;
   char *ddate = "", *cfile = NULL, *range = NULL, *startday = NULL;
-  char *datadir = NULL;
+  char *datadir = NULL, *ifile = NULL;
 
-  static char *optstr = "hvnNax::t::d:c:r:s:D:";
+  static char *optstr = "hvnNax::t::d:c:r:s:D:i:";
 
   struct option longopts[] = {
     {"appointment", no_argument, NULL, 'a'},
@@ -595,6 +598,7 @@ parse_args (int argc, char **argv, conf_t *conf)
     {"day", required_argument, NULL, 'd'},
     {"directory", required_argument, NULL, 'D'},
     {"help", no_argument, NULL, 'h'},
+    {"import", required_argument, NULL, 'i'},
     {"next", no_argument, NULL, 'n'},
     {"note", no_argument, NULL, 'N'},
     {"range", required_argument, NULL, 'r'},
@@ -633,6 +637,12 @@ parse_args (int argc, char **argv, conf_t *conf)
 	case 'h':
 	  hflag = 1;
 	  break;
+        case 'i':
+          iflag = 1;
+          multiple_flag++;
+	  load_data++;
+          ifile = optarg;
+          break;
 	case 'n':
 	  nflag = 1;
 	  multiple_flag++;
@@ -746,9 +756,20 @@ parse_args (int argc, char **argv, conf_t *conf)
 	    {
 	      io_init (cfile, datadir);
 	      no_file = io_check_data_files ();
-	      if (dflag || aflag || nflag || xflag || rflag || sflag)
+	      if (dflag || aflag || nflag || iflag || xflag || rflag || sflag)
 		io_load_app ();
 	    }
+          if (iflag)
+            {
+              notify_init_vars ();
+	      vars_init (conf);              
+              custom_load_conf (conf, 0);
+              io_load_todo ();
+              io_import_data (IO_MODE_NONINTERACTIVE, IO_IMPORT_ICAL, conf,
+                              ifile);
+              io_save_cal (IO_MODE_NONINTERACTIVE, conf);
+              non_interactive = 1;
+            }
 	  if (xflag)
 	    {
 	      notify_init_vars ();
