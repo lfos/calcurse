@@ -1,4 +1,4 @@
-# 	$calcurse: en.po,v 1.12 2008/09/21 14:08:59 culot Exp $
+# 	$calcurse: en.po,v 1.13 2008/09/23 17:31:56 culot Exp $
 #
 # English/GB translation of calcurse.
 # Copyright (C) 2006 Copyright (c) Frederic Culot <frederic@culot.org>
@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse 1.4\n"
 "Report-Msgid-Bugs-To: frederic@culot.org\n"
-"POT-Creation-Date: 2008-09-21 09:35+0200\n"
+"POT-Creation-Date: 2008-09-23 19:21+0200\n"
 "PO-Revision-Date: 2006-07-03 00:05+0100\n"
 "Last-Translator: Neil Williams <linux@codehelp.co.uk>\n"
 "Language-Team: English/GB <en_GB@li.org>\n"
@@ -1178,11 +1178,11 @@ msgstr "aborting...\n"
 msgid "Choose the file used to export calcurse data:"
 msgstr ""
 
-#: src/io.c:186 src/io.c:2114
+#: src/io.c:186 src/io.c:2260
 msgid "The file cannot be accessed, please enter another file name."
 msgstr ""
 
-#: src/io.c:187 src/io.c:2115 src/recur.c:676
+#: src/io.c:187 src/io.c:2261 src/recur.c:676
 #, fuzzy
 msgid "Press [ENTER] to continue."
 msgstr "Press [ENTER] to continue"
@@ -1295,123 +1295,128 @@ msgstr ""
 msgid "ERROR in ical_log: unknown ical type"
 msgstr "FATAL ERROR in todo_delete_bynum: no such todo\n"
 
-#: src/io.c:1656
+#: src/io.c:1786
 msgid "recurrence frequence not found."
 msgstr ""
 
-#: src/io.c:1674
+#: src/io.c:1804
 msgid "recurrence frequence not recognized."
 msgstr ""
 
-#: src/io.c:1720
+#: src/io.c:1853
 msgid "recurrence rule malformed."
 msgstr ""
 
-#: src/io.c:1775
+#: src/io.c:1908
 msgid "recurrence exception dates malformed."
 msgstr ""
 
-#: src/io.c:1796 src/io.c:2196
+#: src/io.c:1927 src/io.c:2342
 msgid ""
 "Warning: could not create new note file to store description. Aborting...\n"
 msgstr ""
 
-#: src/io.c:1800
+#: src/io.c:1931
 #, c-format
 msgid "Warning: could not open %s, Aborting..."
 msgstr ""
 
-#: src/io.c:1817
+#: src/io.c:1938
 #, fuzzy
 msgid "could not get entire item description."
 msgstr "Enter description :"
 
-#: src/io.c:1834
+#: src/io.c:1951
 msgid "description malformed."
 msgstr ""
 
-#: src/io.c:1893
+#: src/io.c:2027
 msgid "appointment has no start time."
 msgstr ""
 
-#: src/io.c:1902
+#: src/io.c:2035
 msgid "could not compute duration (no end time)."
 msgstr ""
 
-#: src/io.c:1931
+#: src/io.c:2054
+msgid "item has a negative duration."
+msgstr ""
+
+#: src/io.c:2071
 msgid "item could not be identified."
 msgstr ""
 
-#: src/io.c:1939 src/io.c:2060
-msgid "item has no summary."
-msgstr ""
+#: src/io.c:2079 src/io.c:2203
+#, fuzzy
+msgid "could not retrieve item summary."
+msgstr "Enter description :"
 
-#: src/io.c:1955
+#: src/io.c:2095
 msgid "could not retrieve event start time."
 msgstr ""
 
-#: src/io.c:1969
+#: src/io.c:2108
 msgid "could not retrieve event end time."
 msgstr ""
 
-#: src/io.c:1979
+#: src/io.c:2117
 msgid "item duration malformed."
 msgstr ""
 
-#: src/io.c:2012 src/io.c:2103
+#: src/io.c:2146 src/io.c:2243
 msgid "The ical file seems to be malformed. The end of item was not found."
 msgstr ""
 
-#: src/io.c:2079
+#: src/io.c:2222
 msgid "item priority is not acceptable (must be between 1 and 9)."
 msgstr ""
 
-#: src/io.c:2112
+#: src/io.c:2258
 msgid "Enter the file name to import data from:"
 msgstr ""
 
-#: src/io.c:2155
+#: src/io.c:2301
 #, c-format
 msgid "Import process report: %04d lines read "
 msgstr ""
 
-#: src/io.c:2157
+#: src/io.c:2303
 #, c-format
 msgid "%d apps / %d events / %d todos / %d skipped "
 msgstr ""
 
-#: src/io.c:2159
+#: src/io.c:2305
 #, c-format
 msgid "%d apps / %d events / %d todos / %d skipped ([ENTER] to continue)"
 msgstr ""
 
-#: src/io.c:2168
+#: src/io.c:2314
 #, fuzzy
 msgid "FATAL ERROR in io_import_data: unknown import type"
 msgstr "FATAL ERROR in todo_delete_bynum: no such todo\n"
 
-#: src/io.c:2174
+#: src/io.c:2320
 msgid "FATAL ERROR: the input file cannot be accessed, Aborting..."
 msgstr ""
 
-#: src/io.c:2181
+#: src/io.c:2327
 #, fuzzy
 msgid "FATAL ERROR in io_import_data: wrong import mode"
 msgstr "FATAL ERROR in todo_delete_bynum: no such todo\n"
 
-#: src/io.c:2191
-msgid "Warning: ical header malformed, wrong version number. Aborting..."
+#: src/io.c:2337
+msgid "Warning: ical header malformed or wrong version number. Aborting..."
 msgstr ""
 
-#: src/io.c:2201
+#: src/io.c:2347
 msgid "Warning: could not open temporary log file, Aborting..."
 msgstr ""
 
-#: src/io.c:2246
+#: src/io.c:2393
 msgid "Some items could not be imported, see log file ?"
 msgstr ""
 
-#: src/io.c:2280
+#: src/io.c:2427
 msgid "Warning: could not erase temporary log file, Aborting..."
 msgstr ""
 

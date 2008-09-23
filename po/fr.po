@@ -1,4 +1,4 @@
-# 	$calcurse: fr.po,v 1.23 2008/09/21 14:08:59 culot Exp $
+# 	$calcurse: fr.po,v 1.24 2008/09/23 17:31:56 culot Exp $
 #
 # French translations for calcurse package.
 # Copyright (C) 2004-2008 Frederic Culot <frederic@culot.org>
@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse 2.1\n"
 "Report-Msgid-Bugs-To: frederic@culot.org\n"
-"POT-Creation-Date: 2008-09-21 09:35+0200\n"
-"PO-Revision-Date: 2008-09-21 16:03+0200\n"
+"POT-Creation-Date: 2008-09-23 19:21+0200\n"
+"PO-Revision-Date: 2008-09-23 19:21+0200\n"
 "Last-Translator: Frederic Culot <frederic@culot.org>\n"
 "Language-Team: French <calcurse-i18n@culot.org>\n"
 "MIME-Version: 1.0\n"
@@ -1412,11 +1412,11 @@ msgstr "Export..."
 msgid "Choose the file used to export calcurse data:"
 msgstr "Choisissez le fichier dans lequel exporter les données:"
 
-#: src/io.c:186 src/io.c:2114
+#: src/io.c:186 src/io.c:2260
 msgid "The file cannot be accessed, please enter another file name."
 msgstr "Le fichier ne peut être ouvert, veuillez entrer un nouveau nom."
 
-#: src/io.c:187 src/io.c:2115 src/recur.c:676
+#: src/io.c:187 src/io.c:2261 src/recur.c:676
 msgid "Press [ENTER] to continue."
 msgstr "Appuyez sur [ENTREE] pour continuer."
 
@@ -1522,125 +1522,129 @@ msgstr "Pcal"
 msgid "ERROR in ical_log: unknown ical type"
 msgstr "ERREUR FATALE dans ical_log: type ical inconnu"
 
-#: src/io.c:1656
+#: src/io.c:1786
 msgid "recurrence frequence not found."
 msgstr "la fréquence de répétition n'a pas été trouvée."
 
-#: src/io.c:1674
+#: src/io.c:1804
 msgid "recurrence frequence not recognized."
 msgstr "la fréquence de répétition est inconnue."
 
-#: src/io.c:1720
+#: src/io.c:1853
 msgid "recurrence rule malformed."
 msgstr "la règle de répétition est mal formée."
 
-#: src/io.c:1775
+#: src/io.c:1908
 msgid "recurrence exception dates malformed."
 msgstr "les dates à ne pas répéter sont mal formées."
 
-#: src/io.c:1796 src/io.c:2196
+#: src/io.c:1927 src/io.c:2342
 msgid ""
 "Warning: could not create new note file to store description. Aborting...\n"
 msgstr ""
 "Impossible de créer une nouvelle note pour enregistrer la déscription. "
 "Abandon...\n"
 
-#: src/io.c:1800
+#: src/io.c:1931
 #, c-format
 msgid "Warning: could not open %s, Aborting..."
 msgstr "Alerte: impossible d'ouvrir %s, abandon..."
 
-#: src/io.c:1817
+#: src/io.c:1938
 msgid "could not get entire item description."
 msgstr "impossible de trouver la description entière de l'élément."
 
-#: src/io.c:1834
+#: src/io.c:1951
 msgid "description malformed."
 msgstr "déscription mal formée."
 
-#: src/io.c:1893
+#: src/io.c:2027
 msgid "appointment has no start time."
 msgstr "le rendez-vous n'a pas de date de début."
 
-#: src/io.c:1902
+#: src/io.c:2035
 msgid "could not compute duration (no end time)."
 msgstr "impossible de calculer la durée (pas de date de fin)."
 
-#: src/io.c:1931
+#: src/io.c:2054
+msgid "item has a negative duration."
+msgstr "L'élément a une durée négative."
+
+#: src/io.c:2071
 msgid "item could not be identified."
 msgstr "L'élément n'a pu être identifié."
 
-#: src/io.c:1939 src/io.c:2060
-msgid "item has no summary."
-msgstr "L'élément n'a pas de résumé."
+#: src/io.c:2079 src/io.c:2203
+msgid "could not retrieve item summary."
+msgstr "impossible de récupérer le résumé de l'évènement."
 
-#: src/io.c:1955
+#: src/io.c:2095
 msgid "could not retrieve event start time."
 msgstr "impossible de récupérer l'heure de début de l'évènement."
 
-#: src/io.c:1969
+#: src/io.c:2108
 msgid "could not retrieve event end time."
 msgstr "impossible de récupérer l'heure de fin de l'évènement."
 
-#: src/io.c:1979
+#: src/io.c:2117
 msgid "item duration malformed."
 msgstr "la durée de l'élément est mal formée."
 
-#: src/io.c:2012 src/io.c:2103
+#: src/io.c:2146 src/io.c:2243
 msgid "The ical file seems to be malformed. The end of item was not found."
 msgstr ""
 "Le fichier ical semble erroné. La fin de l'élément n'a pas été trouvée."
 
-#: src/io.c:2079
+#: src/io.c:2222
 msgid "item priority is not acceptable (must be between 1 and 9)."
 msgstr "La priorité de l'élément est erronée (devrait être entre 1 et 9)."
 
-#: src/io.c:2112
+#: src/io.c:2258
 msgid "Enter the file name to import data from:"
 msgstr "Entrez le nom du fichier depuis lequel importer les données:"
 
-#: src/io.c:2155
+#: src/io.c:2301
 #, c-format
 msgid "Import process report: %04d lines read "
 msgstr "Rapport sur les données importées: %04d lignes lues "
 
-#: src/io.c:2157
+#: src/io.c:2303
 #, c-format
 msgid "%d apps / %d events / %d todos / %d skipped "
 msgstr "%d rdv / %d évnts / %d tâches / %d erronés "
 
-#: src/io.c:2159
+#: src/io.c:2305
 #, c-format
 msgid "%d apps / %d events / %d todos / %d skipped ([ENTER] to continue)"
 msgstr "%d rdv / %d évnts / %d tâches / %d erronés ([ENTREE] pour continuer)"
 
-#: src/io.c:2168
+#: src/io.c:2314
 msgid "FATAL ERROR in io_import_data: unknown import type"
 msgstr "ERREUR FATALE dans io_import_data: mauvais mode d'import"
 
-#: src/io.c:2174
+#: src/io.c:2320
 msgid "FATAL ERROR: the input file cannot be accessed, Aborting..."
 msgstr "ERREUR FATALE: le fichier d'entrée n'a pu être ouvert, abandon..."
 
-#: src/io.c:2181
+#: src/io.c:2327
 msgid "FATAL ERROR in io_import_data: wrong import mode"
 msgstr "ERREUR FATALE dans io_import_data: mauvais mode d'import"
 
-#: src/io.c:2191
-msgid "Warning: ical header malformed, wrong version number. Aborting..."
+#: src/io.c:2337
+msgid "Warning: ical header malformed or wrong version number. Aborting..."
 msgstr ""
-"Attention: l'en-tête ical est mal formé, mauvais numéro de version. "
+"Attention: l'en-tête ical est mal formé ou le numéro de version est mauvais. "
 "Abandon..."
 
-#: src/io.c:2201
+#: src/io.c:2347
 msgid "Warning: could not open temporary log file, Aborting..."
 msgstr "Attention: impossible d'ouvrir le fichier de log, abandon..."
 
-#: src/io.c:2246
+#: src/io.c:2393
 msgid "Some items could not be imported, see log file ?"
 msgstr "Certains éléments n'ont pu être importés, voir le fichier de log ?"
 
-#: src/io.c:2280
+#: src/io.c:2427
 msgid "Warning: could not erase temporary log file, Aborting..."
 msgstr "Attention: impossible d'effacer le fichier de log, abandon..."
 
@@ -2097,6 +2101,9 @@ msgstr "Tâches"
 #: src/wins.c:420
 msgid "FATAL ERROR in wins_update: no window selected\n"
 msgstr "ERREUR FATALE dans wins_update: aucune fenêtre sélectionnée\n"
+
+#~ msgid "item has no summary."
+#~ msgstr "L'élément n'a pas de résumé."
 
 #~ msgid "CalCurse %s | help"
 #~ msgstr "Calcurse %s | aide"

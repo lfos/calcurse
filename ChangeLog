@@ -1,3 +1,14 @@
+2008-09-23  Frederic Culot  <frederic@culot.org>
+
+	* src/io.c: some fixes after ical import tests
+
+	* src/io.c (ical_unfold_content, ical_unformat_line): new
+	functions
+
+	* po/fr.po: translation updated
+
+	* src/utils.c (mem_free): new function
+	
 2008-09-21  Frederic Culot  <frederic@culot.org>
 
 	* src/utils.c (status_bar): 'I' keybinding added to import data

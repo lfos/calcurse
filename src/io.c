@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.37 2008/09/21 08:06:43 culot Exp $	*/
+/*	$calcurse: io.c,v 1.38 2008/09/23 17:31:56 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -1369,6 +1369,8 @@ static void
 ical_store_todo (int priority, char *mesg, char *note)
 {
   todo_add (mesg, priority, note);
+  mem_free (mesg);
+  mem_free (note);
 }
 
 static void
@@ -1381,14 +1383,14 @@ ical_store_event (char *mesg, char *note, long day, ical_rpt_t *rpt,
     {
       recur_event_new (mesg, note, day, EVENTID, rpt->type, rpt->freq,
                        rpt->until, exc);
-      free (rpt);
+      mem_free (rpt);
     }
   else
     {
       event_new (mesg, note, day, EVENTID);
     }
-  if (note)
-    free (note);
+  mem_free (mesg);
+  mem_free (note);
 }
 
 static void
@@ -1403,14 +1405,142 @@ ical_store_apoint (char *mesg, char *note, long start, long dur,
     {
       recur_apoint_new (mesg, note, start, dur, state, rpt->type, rpt->freq,
                         rpt->until, exc);
-      free (rpt);
+      mem_free (rpt);
     }
   else
     {
       apoint_new (mesg, note, start, dur, state);
     }
-  if (note)
-    free (note);
+  mem_free (mesg);
+  mem_free (note);
+}
+
+/*
+ * Returns an allocated string representing the string given in argument once
+ * unformatted. See ical_unfold_content () below.
+ *
+ * Note:
+ * Even if the RFC2445 recommends not to have more than 75 octets on one line of
+ * text, I prefer not to restrict the parsing to this size, thus I use a buffer
+ * of size BUFSIZ.
+ *
+ * Extract from RFC2445:
+ * Lines of text SHOULD NOT be longer than 75 octets, excluding the line
+ * break.
+ */
+static char *
+ical_unformat_line (char *line)
+{
+#define LINE_FEED       0x0a
+#define CARRIAGE_RETURN 0x0d
+  char *p, uline[BUFSIZ];
+  int len;
+
+  if (strlen (line) >= BUFSIZ)
+    return NULL;
+
+  bzero (uline, BUFSIZ);
+  for (len = 0, p = line; *p; p++)
+    {
+      switch (*p)
+        {
+        case LINE_FEED:
+          return strdup (uline);
+        case CARRIAGE_RETURN:
+          break;
+        case '\\':
+          switch (*(p + 1))
+            {
+            case 'n':
+              uline[len++] = '\n';
+              p++;
+              break;
+            case 't':
+              uline[len++] = '\t';
+              p++;
+              break;
+            case ';':
+            case ':':
+            case ',':
+              uline[len++] = *(p + 1);
+              p++;
+              break;
+            default:
+              uline[len++] = *p;
+              break;
+            }
+          break;
+        default:
+          uline[len++] = *p;
+          break;
+        }
+    }
+#undef LINE_FEED
+#undef CARRIAGE_RETURN
+    return NULL;
+}
+  
+/*
+ * Extract from RFC2445:
+ *
+ * When parsing a content line, folded lines MUST first be
+ * unfolded [..] The content information associated with an iCalendar
+ * object is formatted using a syntax similar to that defined by [RFC 2425].
+ */
+static char *
+ical_unfold_content (FILE *fd, char *line, unsigned *lineno)
+{
+  const int CHAR_SPACE = 32, CHAR_TAB = 9;
+  char *content;
+  int c;
+
+  content = ical_unformat_line (line);
+  if (!content)
+    return NULL;
+  
+  for (;;)
+    {
+      c = getc (fd);
+      if (c == CHAR_SPACE || c == CHAR_TAB)
+        {
+          char buf[BUFSIZ];
+          
+          if (fgets (buf, BUFSIZ, fd) != NULL)
+            {
+              char *tmpline, *rline;
+              int newsize;
+              
+              (*lineno)++;
+              tmpline = ical_unformat_line (buf);
+              if (!tmpline)
+                {
+                  mem_free (content);
+                  return NULL;
+                }
+              newsize = strlen (content) + strlen (tmpline) + 1;
+              if ((rline = realloc (content, newsize)) == NULL)
+                {
+                  mem_free (content);
+                  mem_free (tmpline);
+                  return NULL;
+                }
+              content = rline;
+              strncat (content, tmpline, BUFSIZ);
+              mem_free (tmpline);
+            }
+          else
+            {
+              mem_free (content);
+              return NULL;
+              /* Could not get entire item description. */
+            }
+        }
+      else
+        {
+          ungetc (c, fd);
+          return content;
+        }
+    }
 }
 
 static float
@@ -1641,21 +1771,21 @@ ical_read_rrule (FILE *log, char *rrulestr, unsigned *noskipped,
   const string_t yearly = STRING_BUILD ("YEARLY");
   unsigned interval;
   ical_rpt_t *rpt;
-  char *p;
+  char *p, *q;
 
   rpt = NULL;
   if ((p = strchr (rrulestr, ':')) != NULL)
     {
-      char freqstr[BUFSIZ], untilstr[BUFSIZ];
+      char freqstr[BUFSIZ];
                   
       p++;
       rpt = malloc (sizeof (ical_rpt_t));
-      if (sscanf (p, "FREQ=%s;", freqstr) != 1)
+      if (sscanf (p, "FREQ=%s", freqstr) != 1)
         {
           ical_log (log, ICAL_VEVENT, itemline,
                     _("recurrence frequence not found."));
           (*noskipped)++;
-          free (rpt);
+          mem_free (rpt);
           return NULL;
         }
       else
@@ -1673,7 +1803,7 @@ ical_read_rrule (FILE *log, char *rrulestr, unsigned *noskipped,
               ical_log (log, ICAL_VEVENT, itemline,
                         _("recurrence frequence not recognized."));
               (*noskipped)++;
-              free (rpt);
+              mem_free (rpt);
               return NULL;
             }
         }
@@ -1687,15 +1817,18 @@ ical_read_rrule (FILE *log, char *rrulestr, unsigned *noskipped,
         range-bound the recurrence.  The "DTSTART" property value, if
         specified, counts as the first occurrence.
       */
-      if (sscanf (p, "UNTIL=%s;", untilstr) == 1)
+      if ((q = strstr (p, "UNTIL")) != NULL)
         {
-          rpt->until = ical_datetime2long (untilstr, NULL);
+          char *untilstr;
+
+          untilstr = strchr (q, '=');
+          rpt->until = ical_datetime2long (++untilstr, NULL);
         }
       else
         {
           unsigned count;
                       
-          if (sscanf (p, "COUNT=%u;", &count) != 1)
+          if (sscanf (p, "COUNT=%u", &count) != 1)
             {
               rpt->until = 0;
               /* endless repetition */
@@ -1705,7 +1838,7 @@ ical_read_rrule (FILE *log, char *rrulestr, unsigned *noskipped,
               rpt->count = count;
             }
         }
-      if (sscanf (p, "INTERVAL=%u;", &interval) == 1)
+      if (sscanf (p, "INTERVAL=%u", &interval) == 1)
         {
           rpt->freq = interval;
         }
@@ -1778,17 +1911,15 @@ ical_read_exdate (FILE *log, char *exstr, unsigned *noskipped,
   return exc;
 }
 
+/* Return an allocated string containing the name of the newly created note. */
 static char *
 ical_read_note (char *first_line, FILE *fdi, unsigned *noskipped,
                 unsigned *lineno, ical_vevent_e item_type, const int itemline,
                 FILE *log)
 {
-  const int CHAR_SPACE = 32, CHAR_TAB = 9;
-  char *p, *note, *notename, buf[BUFSIZ], fullnotename[BUFSIZ];
+  char *p, *notestr, *notename, fullnotename[BUFSIZ];
   FILE *fdo;
-  int c;
 
-  note = NULL;
   if ((p = strchr (first_line, ':')) != NULL)
     {
       notename = new_tempfile (path_notes, NOTESIZ);
@@ -1800,34 +1931,20 @@ ical_read_note (char *first_line, FILE *fdi, unsigned *noskipped,
       EXIT_IF (fdo == NULL, _("Warning: could not open %s, Aborting..."),
                fullnotename);
       p++;
-      fprintf (fdo, "%s", p);
-      for (;;)
+      notestr = ical_unfold_content (fdi, p, lineno);
+      if (notestr == NULL)
         {
-          c = getc (fdi);
-          if (c == CHAR_SPACE || c == CHAR_TAB)
-            {
-              if (fgets (buf, BUFSIZ, fdi) != NULL)
-                {
-                  (*lineno)++;
-                  fprintf (fdo, "%s", buf);
-                }
-              else
-                {
-                  ical_log (log, item_type, itemline, 
-                            _("could not get entire item description."));
-                  fclose (fdo);
-                  erase_note (&notename, ERASE_FORCE);
-                  (*noskipped)++;
-                  return NULL;
-                }
-            }
-          else
-            {
-              ungetc (c, fdi);
-              fclose (fdo);
-              return notename;
-            }
+          ical_log (log, item_type, itemline, 
+                    _("could not get entire item description."));
+          fclose (fdo);
+          erase_note (&notename, ERASE_FORCE);
+          (*noskipped)++;
+          return NULL;
         }
+      fprintf (fdo, "%s", notestr);
+      fclose (fdo);
+      mem_free (notestr);
+      return notename;
     }
   else
     {
@@ -1835,6 +1952,23 @@ ical_read_note (char *first_line, FILE *fdi, unsigned *noskipped,
       (*noskipped)++;
       return NULL;
     }
+}
+
+/* Returns an allocated string containing the ical item summary. */
+static char *
+
+ical_read_summary (char *first_line, FILE *fdi, unsigned *lineno)
+{
+  char *p, *summary;
+
+  if ((p = strchr (first_line, ':')) != NULL)
+    {
+      p++;
+      summary = ical_unfold_content (fdi, p, lineno);
+      return summary;
+    }
+  else
+    return NULL;
 }
 
 static void
@@ -1858,9 +1992,9 @@ ical_read_event (FILE *fdi, FILE *log, unsigned *noevents, unsigned *noapoints,
   struct {
     days_t       *exc;
     ical_rpt_t   *rpt;
-    char          mesg[BUFSIZ], *note;
+    char         *mesg, *note;
     long          start, end, dur;
-    int           has_summary, has_alarm;
+    int           has_alarm;
   } vevent;
   int skip_alarm;
   
@@ -1882,7 +2016,7 @@ ical_read_event (FILE *fdi, FILE *log, unsigned *noevents, unsigned *noapoints,
         }
       if (strncmp (buf_upper, endevent.str, endevent.len) == 0)
         {
-          if (vevent.has_summary)
+          if (vevent.mesg)
             {
               switch (vevent_type)
                 {
@@ -1891,8 +2025,7 @@ ical_read_event (FILE *fdi, FILE *log, unsigned *noevents, unsigned *noapoints,
                     {
                       ical_log (log, ICAL_VEVENT, ITEMLINE, 
                                 _("appointment has no start time."));
-                      (*noskipped)++;
-                      return;
+                      goto cleanup;
                     }
                   if (vevent.dur == 0)
                     {
@@ -1901,8 +2034,7 @@ ical_read_event (FILE *fdi, FILE *log, unsigned *noevents, unsigned *noapoints,
                           ical_log (log, ICAL_VEVENT, ITEMLINE, 
                                     _("could not compute duration "
                                     "(no end time)."));
-                          (*noskipped)++;
-                          return;
+                          goto cleanup;
                         }
                       else if (vevent.start == vevent.end)
                         {
@@ -1914,7 +2046,15 @@ ical_read_event (FILE *fdi, FILE *log, unsigned *noevents, unsigned *noapoints,
                           return;
                         }
                       else
-                        vevent.dur = vevent.start - vevent.end;
+                        {
+                          vevent.dur = vevent.end - vevent.start;
+                          if (vevent.dur < 0)
+                            {
+                              ical_log (log, ICAL_VEVENT, ITEMLINE,
+                                        _("item has a negative duration."));
+                              goto cleanup;
+                            }
+                        }
                     }
                   ical_store_apoint (vevent.mesg, vevent.note, vevent.start,
                                      vevent.dur, vevent.rpt, vevent.exc,
@@ -1929,15 +2069,15 @@ ical_read_event (FILE *fdi, FILE *log, unsigned *noevents, unsigned *noapoints,
                 case UNDEFINED:
                   ical_log (log, ICAL_VEVENT, ITEMLINE, 
                             _("item could not be identified."));
-                  (*noskipped)++;
-                  return;
+                  goto cleanup;
                   break;
                 }                
             }
           else
             {
-              ical_log (log, ICAL_VEVENT, ITEMLINE, _("item has no summary."));
-              (*noskipped)++;
+              ical_log (log, ICAL_VEVENT, ITEMLINE,
+                        _("could not retrieve item summary."));
+              goto cleanup;
             }
           return;
         }
@@ -1953,8 +2093,7 @@ ical_read_event (FILE *fdi, FILE *log, unsigned *noevents, unsigned *noapoints,
                 {
                   ical_log (log, ICAL_VEVENT, ITEMLINE,
                             _("could not retrieve event start time."));
-                  (*noskipped)++;
-                  return;
+                  goto cleanup;
                 }
             }
           else if (strncmp (buf_upper, dtend.str, dtend.len) == 0)
@@ -1967,8 +2106,7 @@ ical_read_event (FILE *fdi, FILE *log, unsigned *noevents, unsigned *noapoints,
                 {
                   ical_log (log, ICAL_VEVENT, ITEMLINE,
                             _("could not retrieve event end time."));
-                  (*noskipped)++;
-                  return;
+                  goto cleanup;
                 }
             }
           else if (strncmp (buf_upper, duration.str, duration.len) == 0)
@@ -1977,8 +2115,7 @@ ical_read_event (FILE *fdi, FILE *log, unsigned *noevents, unsigned *noapoints,
                 {
                   ical_log (log, ICAL_VEVENT, ITEMLINE,
                            _("item duration malformed."));
-                  (*noskipped)++;
-                  return;
+                  goto cleanup;
                 }
             }
           else if (strncmp (buf_upper, rrule.str, rrule.len) == 0)
@@ -1991,10 +2128,7 @@ ical_read_event (FILE *fdi, FILE *log, unsigned *noevents, unsigned *noapoints,
             }      
           else if (strncmp (buf_upper, summary.str, summary.len) == 0)
             {
-              const int sumlen = strlen (buf) - summary.len - 1;
-              memcpy (vevent.mesg, buf + summary.len, sumlen);
-              vevent.mesg[sumlen - 1] = '\0';
-              vevent.has_summary = 1;
+              vevent.mesg = ical_read_summary (buf, fdi, lineno);
             }
           else if (strncmp (buf_upper, alarm.str, alarm.len) == 0)
             {
@@ -2011,6 +2145,14 @@ ical_read_event (FILE *fdi, FILE *log, unsigned *noevents, unsigned *noapoints,
   ical_log (log, ICAL_VEVENT, ITEMLINE,
             _("The ical file seems to be malformed. "
             "The end of item was not found."));
+
+cleanup:
+  
+  mem_free (vevent.note);
+  mem_free (vevent.mesg);
+  mem_free (vevent.rpt);
+  mem_free (vevent.exc);
+  (*noskipped)++;
 }
 
 static void
@@ -2018,7 +2160,7 @@ ical_read_todo (FILE *fdi, FILE *log, unsigned *notodos, unsigned *noskipped,
                 unsigned *lineno)
 {
   const string_t endtodo  = STRING_BUILD ("END:VTODO");
-  const string_t summary  = STRING_BUILD ("SUMMARY:");
+  const string_t summary  = STRING_BUILD ("SUMMARY");
   const string_t alarm    = STRING_BUILD ("BEGIN:VALARM");
   const string_t endalarm = STRING_BUILD ("END:VALARM");
   const string_t desc     = STRING_BUILD ("DESCRIPTION");
@@ -2026,8 +2168,8 @@ ical_read_todo (FILE *fdi, FILE *log, unsigned *notodos, unsigned *noskipped,
   const int ITEMLINE = *lineno;
   char buf[BUFSIZ], buf_upper[BUFSIZ];
   struct {
-    char mesg[BUFSIZ], *note;
-    int has_priority, has_summary, priority;
+    char *mesg, *note;
+    int has_priority, priority;
   } vtodo;
   int skip_alarm;
   
@@ -2050,15 +2192,16 @@ ical_read_todo (FILE *fdi, FILE *log, unsigned *notodos, unsigned *noskipped,
         {
           if (!vtodo.has_priority)
             vtodo.priority = LOWEST;
-          if (vtodo.has_summary)
+          if (vtodo.mesg)
             {
               ical_store_todo (vtodo.priority, vtodo.mesg, vtodo.note);
               (*notodos)++;
             }
           else
             {
-              ical_log (log, ICAL_VTODO, ITEMLINE, _("item has no summary."));
-              (*noskipped)++;
+              ical_log (log, ICAL_VTODO, ITEMLINE,
+                        _("could not retrieve item summary."));
+              goto cleanup;
             }
           return;
         }
@@ -2083,10 +2226,7 @@ ical_read_todo (FILE *fdi, FILE *log, unsigned *notodos, unsigned *noskipped,
             }
           else if (strncmp (buf_upper, summary.str, summary.len) == 0)
             {
-              const int sumlen = strlen (buf) - summary.len - 1;
-              memcpy (vtodo.mesg, buf + summary.len, sumlen);
-              vtodo.mesg[sumlen - 1] = '\0';
-              vtodo.has_summary = 1;
+              vtodo.mesg = ical_read_summary (buf, fdi, lineno);
             }
           else if (strncmp (buf_upper, alarm.str, alarm.len) == 0)
             {
@@ -2102,6 +2242,12 @@ ical_read_todo (FILE *fdi, FILE *log, unsigned *notodos, unsigned *noskipped,
   ical_log (log, ICAL_VTODO, ITEMLINE,
             _("The ical file seems to be malformed. "
             "The end of item was not found."));
+
+cleanup:
+  
+  mem_free (vtodo.note);
+  mem_free (vtodo.mesg);
+  (*noskipped)++;
 }
 
 static FILE *
@@ -2124,7 +2270,7 @@ get_import_stream (export_type_t type)
       cancel = updatestring (win[STA].p, &stream_name, 0, 1);
       if (cancel)
 	{
-	  free (stream_name);
+	  mem_free (stream_name);
 	  return NULL;
 	}
       stream = fopen (stream_name, "r");
@@ -2134,7 +2280,7 @@ get_import_stream (export_type_t type)
 	  wgetch (win[STA].p);
 	}
     }
-  free (stream_name);
+  mem_free (stream_name);
 
   return stream;
 }
@@ -2188,7 +2334,7 @@ io_import_data (io_mode_t mode, import_type_t type, conf_t *conf,
   bzero (&stats, sizeof stats);
   ical_version = ical_chk_header (stream, &stats.lines);
   RETURN_IF (ical_version < 0,
-             _("Warning: ical header malformed, wrong version number. "
+             _("Warning: ical header malformed or wrong version number. "
                "Aborting..."));
 
   logname = new_tempfile (logprefix, NOTESIZ);
@@ -2233,8 +2379,9 @@ io_import_data (io_mode_t mode, import_type_t type, conf_t *conf,
     {
       printf (proc_report, stats.lines);
       printf ("\n");
-      printf (lines_stats, stats.lines, stats.apoints, stats.events,
-              stats.todos, stats.skipped);
+      printf (lines_stats, stats.apoints, stats.events, stats.todos,
+              stats.skipped);
+      printf ("\n");
     }
   
   /* User has the choice to look at the log file if some items could not be
@@ -2278,5 +2425,5 @@ io_import_data (io_mode_t mode, import_type_t type, conf_t *conf,
     }
   EXIT_IF (unlink (flogname) != 0,
            _("Warning: could not erase temporary log file, Aborting..."));
-  free (logname);
+  mem_free (logname);
 }

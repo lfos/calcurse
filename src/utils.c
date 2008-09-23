@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.51 2008/09/21 08:06:43 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.52 2008/09/23 17:31:57 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -998,4 +998,11 @@ str_toupper (char *s)
   for (len = 0; s && s[len]; len++)
     s[len] = toupper (s[len]);
   return s;
+}
+
+void
+mem_free (void *ptr)
+{
+  if (ptr)
+    free (ptr);
 }
