@@ -1,3 +1,10 @@
+2008-09-24  Frederic Culot  <frederic@culot.org>
+
+	* src/io.c (ical_read_note): do not create note if it has zero
+	length
+
+	* src/io.c (ical_datetime2long): function rewritten
+	
 2008-09-23  Frederic Culot  <frederic@culot.org>
 
 	* src/io.c: some fixes after ical import tests

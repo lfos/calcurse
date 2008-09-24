@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.38 2008/09/23 17:31:56 culot Exp $	*/
+/*	$calcurse: io.c,v 1.39 2008/09/24 19:06:02 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -1595,31 +1595,29 @@ ical_chk_header (FILE *fd, unsigned *lineno)
 static long
 ical_datetime2long (char *datestr, ical_vevent_e *type)
 {
-  const int NOTFOUND = -1, APPOINT_AWAITED = 5, EVENT_AWAITED = 3;
+  const int NOTFOUND = 0, FORMAT_DATE = 3, FORMAT_DATETIME = 5;
   date_t date;
   unsigned hour, min;
   long datelong;
+  int format;
 
-  if (strchr (datestr, 'T') == NULL)
+  format = sscanf (datestr, "%04u%02u%02uT%02u%02u",
+                   &date.yyyy, &date.mm, &date.dd, &hour, &min);
+  if (format == FORMAT_DATE)
     {
       if (type)
         *type = EVENT;
-      if (sscanf (datestr, "%04u%02u%02u",
-                  &date.yyyy, &date.mm, &date.dd) != EVENT_AWAITED)
-        datelong = NOTFOUND;
-      else
-        datelong = date2sec (date, 0, 0);
+      datelong = date2sec (date, 0, 0);
     }
-  else
+  else if (format == FORMAT_DATETIME)
     {
       if (type)
         *type = APPOINTMENT;
-      if (sscanf (datestr, "%04u%02u%02uT%02u%02u",
-                  &date.yyyy, &date.mm, &date.dd, &hour, &min)
-          != APPOINT_AWAITED)
-        datelong = NOTFOUND;
-      else
-        datelong = date2sec (date, hour, min);
+      datelong = date2sec (date, hour, min);
+    }
+  else
+    {
+      datelong = NOTFOUND;
     }
   return datelong;
 }
@@ -1827,7 +1825,7 @@ ical_read_rrule (FILE *log, char *rrulestr, unsigned *noskipped,
       else
         {
           unsigned count;
-                      
+
           if (sscanf (p, "COUNT=%u", &count) != 1)
             {
               rpt->until = 0;
@@ -1941,10 +1939,19 @@ ical_read_note (char *first_line, FILE *fdi, unsigned *noskipped,
           (*noskipped)++;
           return NULL;
         }
-      fprintf (fdo, "%s", notestr);
-      fclose (fdo);
-      mem_free (notestr);
-      return notename;
+      else if (strlen (notestr) == 0)
+        {
+          fclose (fdo);
+          erase_note (&notename, ERASE_FORCE);
+          return NULL;
+        }
+      else
+        {
+          fprintf (fdo, "%s", notestr);
+          fclose (fdo);
+          mem_free (notestr);
+          return notename;
+        }
     }
   else
     {
@@ -1975,7 +1982,6 @@ static void
 ical_read_event (FILE *fdi, FILE *log, unsigned *noevents, unsigned *noapoints,
                  unsigned *noskipped, unsigned *lineno)
 {
-  const int NOTFOUND = -1;
   const int ITEMLINE = *lineno;
   const string_t endevent = STRING_BUILD ("END:VEVENT");
   const string_t summary  = STRING_BUILD ("SUMMARY:");
@@ -2085,11 +2091,9 @@ ical_read_event (FILE *fdi, FILE *log, unsigned *noevents, unsigned *noapoints,
         {
           if (strncmp (buf_upper, dtstart.str, dtstart.len) == 0)
             {
-              if ((p = strchr (buf, ':')) == NULL)
-                vevent.start = NOTFOUND;
-              else
+              if ((p = strchr (buf, ':')) != NULL)
                 vevent.start = ical_datetime2long (++p, &vevent_type);
-              if (vevent.start == NOTFOUND)
+              if (!vevent.start)
                 {
                   ical_log (log, ICAL_VEVENT, ITEMLINE,
                             _("could not retrieve event start time."));
@@ -2098,11 +2102,9 @@ ical_read_event (FILE *fdi, FILE *log, unsigned *noevents, unsigned *noapoints,
             }
           else if (strncmp (buf_upper, dtend.str, dtend.len) == 0)
             {
-              if ((p = strchr (buf, ':')) == NULL)
-                vevent.end = NOTFOUND;
-              else
+              if ((p = strchr (buf, ':')) != NULL)
                 vevent.end = ical_datetime2long (++p, &vevent_type);
-              if (vevent.end == NOTFOUND)
+              if (!vevent.end)
                 {
                   ical_log (log, ICAL_VEVENT, ITEMLINE,
                             _("could not retrieve event end time."));
