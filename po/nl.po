@@ -1,4 +1,4 @@
-# 	$calcurse: nl.po,v 1.11 2008/09/23 17:31:56 culot Exp $
+# 	$calcurse: nl.po,v 1.12 2008/09/29 06:27:53 culot Exp $
 #
 # Dutch translations for calcurse package.
 # Copyright (C) 2007-2008 Jeremy Roon <p.roon@chello.nl>
@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse 2.1\n"
 "Report-Msgid-Bugs-To: frederic@culot.org\n"
-"POT-Creation-Date: 2008-09-23 19:21+0200\n"
+"POT-Creation-Date: 2008-09-28 20:02+0200\n"
 "PO-Revision-Date: 2008-05-03 21:35+0200\n"
 "Last-Translator: Jeremy Roon\n"
 "Language-Team:  Jeremy Roon <p.roon@chello.nl>\n"
@@ -1312,11 +1312,11 @@ msgstr "Exporteren..."
 msgid "Choose the file used to export calcurse data:"
 msgstr "Kies het bestand om calcurse data naar te exporteren:"
 
-#: src/io.c:186 src/io.c:2260
+#: src/io.c:186 src/io.c:2321
 msgid "The file cannot be accessed, please enter another file name."
 msgstr "Het bestand is ontoegankelijk, kies een andere bestandsnaam."
 
-#: src/io.c:187 src/io.c:2261 src/recur.c:676
+#: src/io.c:187 src/io.c:2322 src/recur.c:676
 msgid "Press [ENTER] to continue."
 msgstr "[ENTER]-toets om door te gaan."
 
@@ -1423,130 +1423,130 @@ msgstr ""
 msgid "ERROR in ical_log: unknown ical type"
 msgstr "FATALE FOUT in day_popup_item: onbekend itemtype\n"
 
-#: src/io.c:1786
+#: src/io.c:1823
 msgid "recurrence frequence not found."
 msgstr ""
 
-#: src/io.c:1804
+#: src/io.c:1841
 msgid "recurrence frequence not recognized."
 msgstr ""
 
-#: src/io.c:1853
+#: src/io.c:1906
 msgid "recurrence rule malformed."
 msgstr ""
 
-#: src/io.c:1908
+#: src/io.c:1961
 msgid "recurrence exception dates malformed."
 msgstr ""
 
-#: src/io.c:1927 src/io.c:2342
+#: src/io.c:1980 src/io.c:2403
 msgid ""
 "Warning: could not create new note file to store description. Aborting...\n"
 msgstr ""
 
-#: src/io.c:1931
+#: src/io.c:1984
 #, c-format
 msgid "Warning: could not open %s, Aborting..."
 msgstr ""
 
-#: src/io.c:1938
+#: src/io.c:1991
 #, fuzzy
 msgid "could not get entire item description."
 msgstr "Voer een nieuwe beschrijving in:"
 
-#: src/io.c:1951
+#: src/io.c:2013
 msgid "description malformed."
 msgstr ""
 
-#: src/io.c:2027
+#: src/io.c:2092
 msgid "appointment has no start time."
 msgstr ""
 
-#: src/io.c:2035
+#: src/io.c:2100
 msgid "could not compute duration (no end time)."
 msgstr ""
 
-#: src/io.c:2054
+#: src/io.c:2119
 msgid "item has a negative duration."
 msgstr ""
 
-#: src/io.c:2071
+#: src/io.c:2136
 msgid "item could not be identified."
 msgstr ""
 
-#: src/io.c:2079 src/io.c:2203
+#: src/io.c:2144 src/io.c:2264
 #, fuzzy
 msgid "could not retrieve item summary."
 msgstr "Voer een nieuwe beschrijving in:"
 
-#: src/io.c:2095
+#: src/io.c:2158
 msgid "could not retrieve event start time."
 msgstr ""
 
-#: src/io.c:2108
+#: src/io.c:2169
 msgid "could not retrieve event end time."
 msgstr ""
 
-#: src/io.c:2117
+#: src/io.c:2178
 msgid "item duration malformed."
 msgstr ""
 
-#: src/io.c:2146 src/io.c:2243
+#: src/io.c:2207 src/io.c:2304
 msgid "The ical file seems to be malformed. The end of item was not found."
 msgstr ""
 
-#: src/io.c:2222
+#: src/io.c:2283
 msgid "item priority is not acceptable (must be between 1 and 9)."
 msgstr ""
 
-#: src/io.c:2258
+#: src/io.c:2319
 #, fuzzy
 msgid "Enter the file name to import data from:"
 msgstr "Kies het bestand om calcurse data naar te exporteren:"
 
-#: src/io.c:2301
+#: src/io.c:2362
 #, c-format
 msgid "Import process report: %04d lines read "
 msgstr ""
 
-#: src/io.c:2303
+#: src/io.c:2364
 #, c-format
 msgid "%d apps / %d events / %d todos / %d skipped "
 msgstr ""
 
-#: src/io.c:2305
+#: src/io.c:2366
 #, c-format
 msgid "%d apps / %d events / %d todos / %d skipped ([ENTER] to continue)"
 msgstr ""
 
-#: src/io.c:2314
+#: src/io.c:2375
 #, fuzzy
 msgid "FATAL ERROR in io_import_data: unknown import type"
 msgstr "FATALE FOUT in io_export_data: verkeerde export modus\n"
 
-#: src/io.c:2320
+#: src/io.c:2381
 #, fuzzy
 msgid "FATAL ERROR: the input file cannot be accessed, Aborting..."
 msgstr "FATALE FOUT: tijdelijk bestand kan niet worden aangemaakt!"
 
-#: src/io.c:2327
+#: src/io.c:2388
 #, fuzzy
 msgid "FATAL ERROR in io_import_data: wrong import mode"
 msgstr "FATALE FOUT in io_export_data: verkeerde export modus\n"
 
-#: src/io.c:2337
+#: src/io.c:2398
 msgid "Warning: ical header malformed or wrong version number. Aborting..."
 msgstr ""
 
-#: src/io.c:2347
+#: src/io.c:2408
 msgid "Warning: could not open temporary log file, Aborting..."
 msgstr ""
 
-#: src/io.c:2393
+#: src/io.c:2454
 msgid "Some items could not be imported, see log file ?"
 msgstr ""
 
-#: src/io.c:2427
+#: src/io.c:2488
 msgid "Warning: could not erase temporary log file, Aborting..."
 msgstr ""
 

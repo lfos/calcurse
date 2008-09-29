@@ -1,3 +1,14 @@
+2008-09-29  Frederic Culot  <frederic@culot.org>
+
+	* === Released 2.3_beta ===
+	
+	* NEWS: update for 2.3_beta
+
+	* io.c (ical_read_rrule): interval is now correctly retrieved,
+	wherever it is inside ical RRULE property
+
+	* io.c (ical_compute_rpt_until): new function
+	
 2008-09-24  Frederic Culot  <frederic@culot.org>
 
 	* src/io.c (ical_read_note): do not create note if it has zero

@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.39 2008/09/24 19:06:02 culot Exp $	*/
+/*	$calcurse: io.c,v 1.40 2008/09/29 06:27:53 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -1723,6 +1723,42 @@ ical_dur2long (char *durstr)
 }
 
 /*
+ * Compute the vevent repetition end date from the repetition count.
+ *
+ * Extract from RFC2445:
+ * The COUNT rule part defines the number of occurrences at which to
+ * range-bound the recurrence. The "DTSTART" property value, if specified,
+ * counts as the first occurrence.
+ */
+static long
+ical_compute_rpt_until (long start, ical_rpt_t *rpt)
+{
+  long until;
+
+  switch (rpt->type)
+    {
+    case RECUR_DAILY:
+      until = date_sec_change (start, 0,  rpt->freq * (rpt->count - 1));
+      break;
+    case RECUR_WEEKLY:
+      until = date_sec_change (start, 0,
+                               rpt->freq * WEEKINDAYS * (rpt->count - 1));
+      break;
+    case RECUR_MONTHLY:
+      until = date_sec_change (start, rpt->freq * (rpt->count - 1), 0);
+      break;
+    case RECUR_YEARLY:
+      until = date_sec_change (start, rpt->freq * 12 * (rpt->count - 1), 0);
+      break;
+    default:
+      until = 0;
+      break;
+      /* NOTREACHED */
+    }
+  return until;
+}
+
+/*
  * Read a recurrence rule from an iCalendar RRULE string.
  *
  * Value Name: RECUR
@@ -1767,9 +1803,11 @@ ical_read_rrule (FILE *log, char *rrulestr, unsigned *noskipped,
   const string_t weekly = STRING_BUILD ("WEEKLY");
   const string_t monthly = STRING_BUILD ("MONTHLY");
   const string_t yearly = STRING_BUILD ("YEARLY");
+  const string_t count = STRING_BUILD ("COUNT=");
+  const string_t interv = STRING_BUILD ("INTERVAL=");
   unsigned interval;
   ical_rpt_t *rpt;
-  char *p, *q;
+  char *p;
 
   rpt = NULL;
   if ((p = strchr (rrulestr, ':')) != NULL)
@@ -1778,6 +1816,7 @@ ical_read_rrule (FILE *log, char *rrulestr, unsigned *noskipped,
                   
       p++;
       rpt = malloc (sizeof (ical_rpt_t));
+      bzero (rpt, sizeof (ical_rpt_t));
       if (sscanf (p, "FREQ=%s", freqstr) != 1)
         {
           ical_log (log, ICAL_VEVENT, itemline,
@@ -1815,35 +1854,51 @@ ical_read_rrule (FILE *log, char *rrulestr, unsigned *noskipped,
         range-bound the recurrence.  The "DTSTART" property value, if
         specified, counts as the first occurrence.
       */
-      if ((q = strstr (p, "UNTIL")) != NULL)
+      if ((p = strstr (rrulestr, "UNTIL")) != NULL)
         {
           char *untilstr;
 
-          untilstr = strchr (q, '=');
+          untilstr = strchr (p, '=');
           rpt->until = ical_datetime2long (++untilstr, NULL);
         }
       else
         {
-          unsigned count;
+          unsigned cnt;
+          char *countstr;
 
-          if (sscanf (p, "COUNT=%u", &count) != 1)
+          if ((countstr = strstr (rrulestr, count.str)) != NULL)
             {
-              rpt->until = 0;
-              /* endless repetition */
+              countstr += count.len;
+              if (sscanf (countstr, "%u", &cnt) != 1)
+                {
+                  rpt->until = 0;
+                  /* endless repetition */
+                }
+              else
+                {
+                  rpt->count = cnt;
+                }
+            }
+          else
+            rpt->until = 0;
+        }
+
+      if ((p = strstr (rrulestr, interv.str)) != NULL)
+        {
+          p += interv.len;
+          if (sscanf (p, "%u", &interval) != 1)
+            {
+              rpt->freq = 1;
+              /* default frequence if none specified */
             }
           else
             {
-              rpt->count = count;
+              rpt->freq = interval;
             }
-        }
-      if (sscanf (p, "INTERVAL=%u", &interval) == 1)
-        {
-          rpt->freq = interval;
         }
       else
         {
           rpt->freq = 1;
-          /* default frequence if none specified */
         }
     }
   else
@@ -2024,6 +2079,10 @@ ical_read_event (FILE *fdi, FILE *log, unsigned *noevents, unsigned *noapoints,
         {
           if (vevent.mesg)
             {
+              if (vevent.rpt && vevent.rpt->count)
+                vevent.rpt->until = ical_compute_rpt_until (vevent.start,
+                                                            vevent.rpt);
+              
               switch (vevent_type)
                 {
                 case APPOINTMENT:
