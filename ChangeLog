@@ -1,3 +1,14 @@
+2008-10-15  Frederic Culot  <frederic@culot.org>
+
+	* === Released 2.3 ===
+
+	* doc/manual_nl.html
+	* po/nl.po: Dutch translation and manual updated, thanks Jeremy
+	
+	* NEWS
+	* configure.ac
+	* TODO: update for 2.3
+
 2008-09-29  Frederic Culot  <frederic@culot.org>
 
 	* === Released 2.3_beta ===

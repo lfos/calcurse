@@ -1,4 +1,4 @@
-# 	$calcurse: nl.po,v 1.12 2008/09/29 06:27:53 culot Exp $
+# 	$calcurse: nl.po,v 1.13 2008/10/15 16:15:40 culot Exp $
 #
 # Dutch translations for calcurse package.
 # Copyright (C) 2007-2008 Jeremy Roon <p.roon@chello.nl>
@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: calcurse 2.1\n"
 "Report-Msgid-Bugs-To: frederic@culot.org\n"
 "POT-Creation-Date: 2008-09-28 20:02+0200\n"
-"PO-Revision-Date: 2008-05-03 21:35+0200\n"
+"PO-Revision-Date: 2008-10-14 20:54+0200\n"
 "Last-Translator: Jeremy Roon\n"
 "Language-Team:  Jeremy Roon <p.roon@chello.nl>\n"
 "MIME-Version: 1.0\n"
@@ -69,14 +69,14 @@ msgid "FATAL ERROR in apoint_switch_notify: no such appointment"
 msgstr "FATALE FOUT in apoint_switch_notify: Afspraak bestaat niet"
 
 #: src/args.c:51
-#, fuzzy
 msgid ""
 "Usage: calcurse [-h|-v] [-N] [-an] [-t[num]] [-i<file>] [-x[format]]\n"
 "                [-d <date>|<num>] [-s[date]] [-r[range]]\n"
 "                [-c<file> | -D<dir>]\n"
 msgstr ""
-"Gebruik:calcurse [-h|-v] [-x] [-N] [-an] [-t[nr]] [-d datum|nr] [-c "
-"bestand]\n"
+"Gebruik: calcurse [-h|-v] [-N] [-an] [-t[nr]] [-i<bestand>] [-x[formaat]]\n"
+"\t\t [-d <datum>|<nr>] [-s[datum]] [-r[bereik]]\n"
+"\t\t [-c<bestand> | -D<dir>]\n"
 
 #: src/args.c:60
 msgid "Try 'calcurse -h' for more information.\n"
@@ -98,7 +98,6 @@ msgid "Calcurse %s - text-based organizer\n"
 msgstr "Calcurse %s - tekst-gebaseerde organizer\n"
 
 #: src/args.c:88
-#, fuzzy
 msgid ""
 "\n"
 "Miscellaneous:\n"
@@ -167,11 +166,15 @@ msgstr ""
 "\tGeeft deze hulp weer en verlaat het programma.\n"
 "\n"
 "  -v, --versie\n"
-" \tGeeft de programmaversie weer en verlaat het programma.\n"
+" \tGeeft versie weer en verlaat het programma.\n"
 "\n"
 "Bestanden:\n"
 "  -c <bestand>, --calendar <bestand>\n"
-"\tGeeft het te gebruiken kalender <bestand> weer.\n"
+"\tHet te gebruiken kalender <bestand> (niet gebruiken met '-D'.\n"
+"\n"
+" -D <dir>, --directory <dir>\n"
+"\tDe te gebruiken data directory (niet gebruiken met '-c').\n"
+"\tStandaard is de data directory ~/.calcurse\n"
 "\n"
 "Niet-interactief:\n"
 "  -a, --appointment\n"
@@ -181,6 +184,9 @@ msgstr ""
 "\tGeeft alle afspraken voor de <datum> of de <nr> volgende dagen weer\n"
 "\ten verlaat het programma. Mogelijke opties: 'mm/dd/jjjj' of 'n'.\n"
 "\n"
+" -i <bestand>, --import <bestand>\n"
+"\timporteer de icalendar data uit <bestand>. \n"
+"\n"
 "  -n, --next\n"
 "\tGeeft de volgende afspraak binnen de komende 24 uur weer, en verlaat het\n"
 "\tprogramma. Ook wordt de tijd tot die afspraak weergegeven.\n"
@@ -189,15 +195,26 @@ msgstr ""
 "\tIndien samen gebruikt met '-a' of '-t', wordt ook de inhoud van de noot\n"
 "weergegeven, als deze geassocieerd is met het weergegeven item.\n"
 "\n"
+" -r[nr], --bereik[[=num]\n"
+"\tgeeft gebeurtenissen en afspraken voor [nr] aantal dagen weer en \n"
+"\teindigt. Standaard wordt 1 dag weergegeven, als [nr] niet is gegeven\n"
+"\n"
+" -s[datum], --begindag[=datum]\n"
+"\tgeeft gebeurtenissen en afspraken voor [datum] weer en sluit af.\n"
+"\tAls er geen datum wordt gegeven, wordt de huidige datum gebruikt.\n"
+"\n"
 "  -t[nr], --todo[=nr]\n"
 "\tGeeft de takenlijst weer en verlaat het programma. Als het optionele\n"
 "\targument [nr] wordt gegeven, zullen alleen de taken met de prioriteit\n"
 "\tgelijk aan [nr] worden getoond.\n"
 "\tLet op: De prioriteit moet tussen 1 (hoogste) en 9 (laagste) liggen.\n"
 "\n"
-"  -x, --export\n"
-"\texporteert gebruikersdata naar het iCalender formaat. Afspraken,\n"
+"  -x[formaat], --export[formaat]\n"
+"\texporteert gebruikersdata naar het gekozen formaat. Afspraken,\n"
 "\tgebeurtenissen en taken worden geconverteerd en naar stdout gezonden.\n"
+"\tEr zijn twee mogelijkheden: 'ical' en 'pcal'.\n"
+"\tAls er geen keuze-argument wordt meegegeven, zal ical standaard\n"
+"\tworden geselecteerd.\n"
 "\tNoot: Met het volgende commando, wordt de output omgeleid en\n"
 "\topgeslagen in een bestand: calcurse --export > my_data.ics\n"
 "\n"
@@ -206,7 +223,7 @@ msgstr ""
 
 #: src/args.c:185
 msgid "No note file found\n"
-msgstr ""
+msgstr "Noot-bestand niet gevonden\n"
 
 #: src/args.c:207
 msgid "to do:\n"
@@ -233,21 +250,20 @@ msgid "Argument to the '-d' flag is not valid\n"
 msgstr "Argument van '-d' is niet geldig.\n"
 
 #: src/args.c:552
-#, fuzzy
 msgid "Argument is not valid\n"
-msgstr "Argument van '-d' is niet geldig.\n"
+msgstr "Argument is niet geldig.\n"
 
 #: src/args.c:557
 msgid "Argument format for -r and --range is: 'n'\n"
-msgstr ""
+msgstr "Argument formaat voor -r en --range is: 'n'\n"
 
 #: src/args.c:699
 msgid "Argument for '-x' should be either 'ical' or 'pcal'\n"
-msgstr ""
+msgstr "Argument voor '-x' moet of 'ical' of 'pcal' zijn\n"
 
 #: src/args.c:731
 msgid "Options '-D' and '-c' cannot be used at the same time\n"
-msgstr ""
+msgstr "Opties '-D' en '-c' kunnen niet tegelijk gebruikt worden\n"
 
 #: src/calcurse.c:68
 msgid ""
@@ -405,11 +421,11 @@ msgstr "week_begint_op_maandag = "
 
 #: src/custom.c:717
 msgid "output_datefmt = "
-msgstr ""
+msgstr "output_datefmt = "
 
 #: src/custom.c:718
 msgid "input_datefmt = "
-msgstr ""
+msgstr "input_datefmt = "
 
 #: src/custom.c:724
 msgid "(if set to YES, automatic save is done when quitting)"
@@ -443,11 +459,11 @@ msgstr "(Formaat van de datum in niet-interactieve modus)"
 
 #: src/custom.c:769
 msgid "(Format to be used when entering a date: "
-msgstr ""
+msgstr "Het te gebruiken formaat bij datuminvoer: "
 
 #: src/custom.c:770
 msgid " 1-mm/dd/yyyy, 2-dd/mm/yyyy, 3-yyyy/mm/dd)"
-msgstr ""
+msgstr " 1-mm/dd/yyyy, 2-dd/mm/yyyy, 3-yyyy/mm/dd)"
 
 #: src/custom.c:795 src/notify.c:520
 msgid "Enter an option number to change its value [Q to quit] "
@@ -459,7 +475,7 @@ msgstr "Geef het formaat van de datum (zie 'man 3 strftime')"
 
 #: src/custom.c:799
 msgid "Enter the date format (1-mm/dd/yyyy, 2-dd/mm/yyyy, 3-yyyy/mm/dd) "
-msgstr ""
+msgstr "Voer datumformaat in (1-mm/dd/yyyy, 2-dd/mm/yyyy, 3-yyyy/mm/dd) "
 
 #: src/custom.c:805
 #, c-format
@@ -631,9 +647,8 @@ msgstr ""
 "die de data automatisch opslaat bij het verlaten van Calcurse."
 
 #: src/help.c:307
-#, fuzzy
 msgid "Import:\n"
-msgstr "Exporteren:\n"
+msgstr "Import:\n"
 
 #: src/help.c:309
 msgid ""
@@ -655,13 +670,27 @@ msgid ""
 "stream at which this item begins, together with the description of why\n"
 "the item could not be imported.\n"
 msgstr ""
+"Met de 'I'-toets wordt data van een icalenderbestand geïmporteerd\n"
+"Er wordt om een bestandsnaam met de te importeren ical-data gevraagd.\n"
+"\n"
+"Bij het einde van het importprocess, en als de optie\n"
+"'skip_system_dialogs' op 'nee' staat, zal een rapport getoond worden\n"
+"met hoeveel items werden geïmporteerd.\n"
+"Dit rapport bevat het aantal regels, afspraken, gebeurtenissen en\n"
+"taken die succesvol zijn geïmporteerd, alsook het aantal items\n"
+"waar problemen mee waren, en die zijn overgeslagen.\n"
+"\n"
+"Als een of meer items niet geïmporteerd zijn, is het mogelijk om in\n"
+"het import-process-rapport na te kijken, waar de problemen zich\n"
+"bevinden.\n"
+"In dit rapport is per item met omschrijving te zien waarom het item\n"
+"niet geïmporteerd kon worden.\n"
 
 #: src/help.c:325
 msgid "Export:\n"
-msgstr "Exporteren:\n"
+msgstr "Export:\n"
 
 #: src/help.c:327
-#, fuzzy
 msgid ""
 "Pressing 'X' leads to the export submenu, from which you can choose\n"
 "between two different export formats: 'ical' and 'pcal'.\n"
@@ -681,13 +710,16 @@ msgid ""
 "All of the calcurse data are exported, in the following order:\n"
 "events, appointments, todos.\n"
 msgstr ""
-"Druk op 'X' om Calcurse data naar iCalendar formaat te exporteren.\n"
-"\n"
-"Geef eerst het bestand aan, waarnaar de data wordt geëxporteerd.\n"
+"Druk op 'X' om via een export submenu tussen twee verschillende\n"
+"export formaten te kiezen: 'ical' en 'pcal'.\n"
 "Het standaardbestand is:\n"
 "\n"
 "     ~/calcurse.ics\n"
 "\n"
+"voor ical-export, en:\n"
+"\n"
+"     ~/calcurse.txt\n"
+"voor pcal export.\n"
 "Alle data wordt geëxporteerd, in deze volgorde:\n"
 "gebeurtenissen, afspraken, taken.\n"
 
@@ -696,7 +728,6 @@ msgid "Displacement keys:\n"
 msgstr "Navigatietoetsen:\n"
 
 #: src/help.c:342
-#, fuzzy
 msgid ""
 "You can use either 'H','J','K','L' or the arrow keys '<','v','^','>'\n"
 "to move into the calendar.\n"
@@ -727,6 +758,10 @@ msgstr ""
 "naar de vorige dag   h <       > l   naar de volgende dag\n"
 "                          j v  \n"
 "                  naar de volgende week\n"
+"\n"
+"Bovendien kan men, als men zich in het kalender panel bevindt, met de\n"
+"0-toets naar de eerste dag van de week, en met '$' naar de laatste\n"
+"dag van de week.\n"
 "\n"
 "Wanneer het afspraken of taken panel is geselecteerd, kan je met\n"
 "de op-en-neer toetsen (resp. k of pijl-omhoog, en j of pijl-beneden)\n"
@@ -796,7 +831,6 @@ msgid "Goto:\n"
 msgstr "Ga naar:\n"
 
 #: src/help.c:384
-#, fuzzy
 msgid ""
 "Pressing 'G' allows you to jump to a specific day in the calendar.\n"
 "\n"
@@ -813,7 +847,10 @@ msgstr ""
 "Door dit commando, is het niet nodig naar de datum te gaan met behulp \n"
 "van de verplaatsingstoetsen in het kalenderpanel.\n"
 "Indien men op [ENTER] drukt zonder een datum te geven, zal Calcurse \n"
-"naar de huidige dag gaan die op het systeem is insteld."
+"naar de huidige dag gaan die op het systeem is insteld.\n"
+"\n"
+"Merk op dat met ^G (Control + G), ongeacht welk panel actief is\n"
+"de huidige datum geselecteerd zal worden in de kalender."
 
 #: src/help.c:392
 msgid "Delete:\n"
@@ -1201,7 +1238,6 @@ msgid "General keybindings:\n"
 msgstr "Algemene toetsen:\n"
 
 #: src/help.c:560
-#, fuzzy
 msgid ""
 "Some of the keybindings apply whatever panel is selected. They are\n"
 "called general keybinding and involve the <CONTROL> key, which is\n"
@@ -1236,7 +1272,8 @@ msgstr ""
 " '^H' : -1 dag             -> Ga naar de vorige dag\n"
 " '^L' : +1 dag             -> Ga naar de volgende dag\n"
 " '^K' : -1 week            -> Ga naar de vorige week\n"
-" '^J' : +1 week            -> Ga naar de volgende week"
+" '^J' : +1 week            -> Ga naar de volgende week\n"
+" '^G' : Naar vandaag       -> Ga naar de huidige datum"
 
 #: src/help.c:577
 msgid "OtherCmd:\n"
@@ -1321,24 +1358,20 @@ msgid "Press [ENTER] to continue."
 msgstr "[ENTER]-toets om door te gaan."
 
 #: src/io.c:250
-#, fuzzy
 msgid "FATAL ERROR in foreach_date_dump: incoherent repetition type\n"
-msgstr "FATALE FOUT in recur_item_inday: type item onbekend\n"
+msgstr "FATALE FOUT in foreach_date_dump: incoherent herhalingstype\n"
 
 #: src/io.c:289
-#, fuzzy
 msgid "Week"
-msgstr "-/+ Week"
+msgstr "Week"
 
 #: src/io.c:409
-#, fuzzy
 msgid "FATAL ERROR in pcal_export_recur_events: incoherent repetition type\n"
-msgstr "FATALE FOUT in recur_event_erase: gebeurtenis bestaat niet\n"
+msgstr "FATALE FOUT in pcal_export_recur_events: incoherent herhalingstype\n"
 
 #: src/io.c:545
-#, fuzzy
 msgid "FATAL ERROR in pcal_export_recur_apoints: incoherent repetition type\n"
-msgstr "FATALE FOUT in recur_apoint_erase: afspraak bestaat niet\n"
+msgstr "FATALE FOUT in pcal_export_recur_apoints: incoherent herhalingstype\n"
 
 #: src/io.c:674
 #, c-format
@@ -1402,9 +1435,8 @@ msgid "FATAL ERROR in io_export_data: wrong export mode\n"
 msgstr "FATALE FOUT in io_export_data: verkeerde export modus\n"
 
 #: src/io.c:1251
-#, fuzzy
 msgid "FATAL ERROR in io_export_data: unknown export type\n"
-msgstr "FATALE FOUT in io_export_data: verkeerde export modus\n"
+msgstr "FATALE FOUT in io_export_data: onbekend export type\n"
 
 #: src/io.c:1252
 msgid "The data were successfully exported"
@@ -1412,143 +1444,138 @@ msgstr "De data is met succes geëxporteerd"
 
 #: src/io.c:1321
 msgid "Ical"
-msgstr ""
+msgstr "Ical"
 
 #: src/io.c:1322
 msgid "Pcal"
-msgstr ""
+msgstr "Pcal"
 
 #: src/io.c:1364
-#, fuzzy
 msgid "ERROR in ical_log: unknown ical type"
-msgstr "FATALE FOUT in day_popup_item: onbekend itemtype\n"
+msgstr "FOUT in ical_log: onbekend ical type"
 
 #: src/io.c:1823
 msgid "recurrence frequence not found."
-msgstr ""
+msgstr "herhalingsfrequentie niet gevonden."
 
 #: src/io.c:1841
 msgid "recurrence frequence not recognized."
-msgstr ""
+msgstr "herhalingsfrequentie niet herkend"
 
 #: src/io.c:1906
 msgid "recurrence rule malformed."
-msgstr ""
+msgstr "herhalingsregel onjuist"
 
 #: src/io.c:1961
 msgid "recurrence exception dates malformed."
-msgstr ""
+msgstr "herhaling exceptie datum onjuist"
 
 #: src/io.c:1980 src/io.c:2403
 msgid ""
 "Warning: could not create new note file to store description. Aborting...\n"
 msgstr ""
+"Pas op: kan geen noot-bestand aanmaken. Omschrijving opslaan afgebroken...\n"
 
 #: src/io.c:1984
 #, c-format
 msgid "Warning: could not open %s, Aborting..."
-msgstr ""
+msgstr "Pas op: bestand %s niet te openen. Stoppen..."
 
 #: src/io.c:1991
-#, fuzzy
 msgid "could not get entire item description."
-msgstr "Voer een nieuwe beschrijving in:"
+msgstr "onvolledige item omschrijving"
 
 #: src/io.c:2013
 msgid "description malformed."
-msgstr ""
+msgstr "omschrijving beschadigd"
 
 #: src/io.c:2092
 msgid "appointment has no start time."
-msgstr ""
+msgstr "afspraak heeft geen begintijd."
 
 #: src/io.c:2100
 msgid "could not compute duration (no end time)."
-msgstr ""
+msgstr "kan tijdsduur niet berekenen (geen eindtijd)."
 
 #: src/io.c:2119
 msgid "item has a negative duration."
-msgstr ""
+msgstr "item heeft een negatieve tijdsduur"
 
 #: src/io.c:2136
 msgid "item could not be identified."
-msgstr ""
+msgstr "item onbekend"
 
 #: src/io.c:2144 src/io.c:2264
-#, fuzzy
 msgid "could not retrieve item summary."
-msgstr "Voer een nieuwe beschrijving in:"
+msgstr "kan item onderwerp niet ophalen"
 
 #: src/io.c:2158
 msgid "could not retrieve event start time."
-msgstr ""
+msgstr "kan begintijd van gebeurtenis niet ophalen"
 
 #: src/io.c:2169
 msgid "could not retrieve event end time."
-msgstr ""
+msgstr "kan eindtijd van gebeurtenis niet ophalen"
 
 #: src/io.c:2178
 msgid "item duration malformed."
-msgstr ""
+msgstr "item tijdsduur onjuist"
 
 #: src/io.c:2207 src/io.c:2304
 msgid "The ical file seems to be malformed. The end of item was not found."
-msgstr ""
+msgstr "Ical-bestand oogt onjuist. Het einde van item niet gevonden."
 
 #: src/io.c:2283
 msgid "item priority is not acceptable (must be between 1 and 9)."
-msgstr ""
+msgstr "Prioriteit van item is onjuist (kies nr tussen 1 en 9)"
 
 #: src/io.c:2319
-#, fuzzy
 msgid "Enter the file name to import data from:"
-msgstr "Kies het bestand om calcurse data naar te exporteren:"
+msgstr "Kies het bestand voor het importeren van data:"
 
 #: src/io.c:2362
 #, c-format
 msgid "Import process report: %04d lines read "
-msgstr ""
+msgstr "Import proces rapport: %04d gelezen regels"
 
 #: src/io.c:2364
 #, c-format
 msgid "%d apps / %d events / %d todos / %d skipped "
-msgstr ""
+msgstr "%d afsp / %d geb / %d taken / %d overgeslagen "
 
 #: src/io.c:2366
 #, c-format
 msgid "%d apps / %d events / %d todos / %d skipped ([ENTER] to continue)"
 msgstr ""
+"%d afsp / %d geb / %d taken / %d overgeslagen ([ENTER] om door te gaan)"
 
 #: src/io.c:2375
-#, fuzzy
 msgid "FATAL ERROR in io_import_data: unknown import type"
-msgstr "FATALE FOUT in io_export_data: verkeerde export modus\n"
+msgstr "FATALE FOUT in io_import_data: verkeerd import type"
 
 #: src/io.c:2381
-#, fuzzy
 msgid "FATAL ERROR: the input file cannot be accessed, Aborting..."
-msgstr "FATALE FOUT: tijdelijk bestand kan niet worden aangemaakt!"
+msgstr "FATALE FOUT: invoerbestand niet toegankelijk, Afbreken..."
 
 #: src/io.c:2388
-#, fuzzy
 msgid "FATAL ERROR in io_import_data: wrong import mode"
-msgstr "FATALE FOUT in io_export_data: verkeerde export modus\n"
+msgstr "FATALE FOUT in io_import_data: verkeerde import modus"
 
 #: src/io.c:2398
 msgid "Warning: ical header malformed or wrong version number. Aborting..."
-msgstr ""
+msgstr "Pas op: ical header onjuist of verkeerde versie. Stoppen..."
 
 #: src/io.c:2408
 msgid "Warning: could not open temporary log file, Aborting..."
-msgstr ""
+msgstr "Pas op: kan tijdelijk logbestand niet openen, Stoppen..."
 
 #: src/io.c:2454
 msgid "Some items could not be imported, see log file ?"
-msgstr ""
+msgstr "Enkele items konden niet geïmporteerd worden, log zien?"
 
 #: src/io.c:2488
 msgid "Warning: could not erase temporary log file, Aborting..."
-msgstr ""
+msgstr "Pas op: kan tijdelijk logbestand niet wissen, Stoppen..."
 
 #: src/notify.c:135
 msgid "FATAL ERROR in launch_cmd: could not fork"
@@ -1769,9 +1796,8 @@ msgid "Export"
 msgstr "Export"
 
 #: src/utils.c:448
-#, fuzzy
 msgid "Import"
-msgstr "Export"
+msgstr "Import"
 
 #: src/utils.c:449
 msgid "Add Item"
@@ -1851,26 +1877,23 @@ msgstr "AnderCmd"
 
 #: src/utils.c:470
 msgid "Today"
-msgstr ""
+msgstr "Vandaag"
 
 #: src/utils.c:471
-#, fuzzy
 msgid "beg Week"
-msgstr "-/+ Week"
+msgstr "beg Week"
 
 #: src/utils.c:472
-#, fuzzy
 msgid "end Week"
-msgstr "-/+ Week"
+msgstr "eind Week"
 
 #: src/utils.c:537
 msgid "FATAL ERROR in date2sec: failure in mktime\n"
 msgstr "FATALE FOUT in date2sec: fout in mktime\n"
 
 #: src/utils.c:612
-#, fuzzy
 msgid "FATAL ERROR in date_sec_change: failure in mktime\n"
-msgstr "FATALE FOUT in date2sec: fout in mktime\n"
+msgstr "FATALE FOUT in date_sec_change: fout in mktime\n"
 
 #: src/utils.c:753
 msgid "Appointment"
@@ -2002,33 +2025,3 @@ msgstr "Taken"
 #: src/wins.c:420
 msgid "FATAL ERROR in wins_update: no window selected\n"
 msgstr "Fatale fout in wins_update: geen venster geselecteerd\n"
-
-#~ msgid "CalCurse %s | help"
-#~ msgstr "Calcurse %s | Hulp"
-
-#~ msgid "Possible argument formats are : 'mm/dd/yyyy' or 'n'\n"
-#~ msgstr "Mogelijke formaatopties zijn : 'mm/dd/jjjj' of 'n'\n"
-
-#~ msgid "Enter the day to go to [ENTER for today] : mm/dd/yyyy"
-#~ msgstr "Gewenste datum?: [ENTER voor vandaag] : mm/dd/jjjj"
-
-#~ msgid "Enter the new ending date: [mm/dd/yyyy] or '0'"
-#~ msgstr "Nieuw einde van de herhaling: [mm/dd/jjjj] of '0' voor oneindig"
-
-#~ msgid "FATAL ERROR in wins_prop: property unknown\n"
-#~ msgstr "FATALE FOUT in wins_prop: onbekende eigenschap\n"
-
-#~ msgid "The day you entered is not valid"
-#~ msgstr "De ingevoerde datum is ongeldig"
-
-#~ msgid ""
-#~ "Please resize your terminal screen\n"
-#~ "(to at least 80x24),\n"
-#~ "and restart calcurse.\n"
-#~ msgstr ""
-#~ "Wijzig a.u.b. de terminalgrootte\n"
-#~ "(minstens 80x24),\n"
-#~ "en herstart calcurse.\n"
-
-#~ msgid "FATAL ERROR in update_time_in_date: failure in mktime\n"
-#~ msgstr "FATALE FOUT in update_time_in_date: fout in mktime\n"

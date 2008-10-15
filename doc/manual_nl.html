@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//NL">
 <!--
 /*
- *	$calcurse: manual_nl.html,v 1.12 2008/09/21 14:08:59 culot Exp $
+ *	$calcurse: manual_nl.html,v 1.13 2008/10/15 16:15:40 culot Exp $
  *
  * Calcurse - text-based organizer
  * Copyright (c) 2004-2008 Frederic Culot
@@ -84,10 +84,10 @@ besproken. Als laatste wordt zowel de procedure van het melden van fouten in
 	    <li><a href="#basics_interface_interactive">4.2.2 Interactieve modus</a></li>
 	</ul></li>
 	<li><a href="#basics_files">4.3 <code>calcurse</code> bestanden</a></li>
-        <li><a href="#basics_import_export"><span class="todo">4.4 Import/Export capabilities</span></a>
+        <li><a href="#basics_import_export">4.4 Import/Export mogelijkheden</a>
         <ul>
-            <li><a href="#basics_import"><span class="todo">4.4.1 Import</span></a></li>
-            <li><a href="#basics_export"><span class="todo">4.4.2 Export</span></a></li>
+            <li><a href="#basics_import">4.4.1 Importeren</a></li>
+            <li><a href="#basics_export">4.4.2 Exporteren</a></li>
         </ul></li>
 	<li><a href="#basics_help">4.5 Online hulp</a></li>
     </ul></li>
@@ -115,7 +115,7 @@ besproken. Als laatste wordt zowel de procedure van het melden van fouten in
         <li><a href="#links_homepage">9.1 <code>Calcurse</code> homepage</a></li>
 	<li><a href="#links_list">9.2 <code>Calcurse</code> nieuws lijst</a></li>
 	<li><a href="#links_rss">9.3 <code>Calcurse</code> RSS feed</a></li>
-        <li><a href="#links_others"><div class="todo">9.4 Other links</div></a></li>
+        <li><a href="#links_others">9.4 Links</a></li>
     </ul></li>
     <li><a href="#thanks">10. Dankwoord</a></li>
 </ul>
@@ -292,11 +292,9 @@ besproken. Als laatste wordt zowel de procedure van het melden van fouten in
 	    </dd>
 	    <dt><code>-D &lt;dir&gt;, --directory &lt;dir&gt;</code></dt>
 	    <dd>
-            <div class="todo">
-            Specify  the  data directory to use. This option is
-            incompatible  with  -c.   If  not  specified,   the
-            default directory is <code>'~/.calcurse/'</code>.
-            </div>
+	    Specificeer de te gebruiken directory. Deze optie kan niet samen
+	    met -c gebruikt worden. Als geen directory is gegeven, wordt
+	    standaard <code>'~/.calcurse/'</code> gebruikt.
             </dd>
 	    <dt><code>-h, --help</code></dt>
 	    <dd>
@@ -305,9 +303,7 @@ besproken. Als laatste wordt zowel de procedure van het melden van fouten in
 	    </dd>
             <dt><code>-i &lt;file&gt;, --import &lt;file&gt;</code></dt>
             <dd>
-            <div class="todo">
-            Import the icalendar data contained in <code>file</code>.
-            </div>
+	    Importeer de icalender-data uit <code>file</code>.
             </dd>
 	    <dt><code>-n, --next</code></dt>
 	    <dd>
@@ -320,25 +316,18 @@ besproken. Als laatste wordt zowel de procedure van het melden van fouten in
 	    </dd>
 	    <dt><code>-N, --note</code></dt>
 	    <dd>
-	    <div class="todo">
-    	    When used with the '-a' or '-t' flag, also print note content
-	    if one is associated with the displayed item.
-	    </div>
+	    Indien gebruikt met de '-a' of 't' vlag, wordt ook de inhoud van de
+	    gerelateerde noot weergegeven.
 	    </dd>
             <dt><code>-r[num], --range[=num]</code></dt>
             <dd>
-	    <div class="todo">
-            Print events and appointments for the num number of
-            days and exit. If no num is given, a range of 1 day
-            is considered.
-            </div>
+	    Geeft de gebeurtenissen en afspraken voor num aantal dagen weer.
+	    Als num niet is gegeven wordt een dag gebruikt.
             </dd>
             <dt><code>-s[date], --startday[=date]</code></dt>
             <dd>
-            <div class="todo">
-            Print  events  and appointments from date and exit.
-            If no date is given, the current day is considered.
-            </div>
+	    Print gebeurtenissen en afspraken voor datum en stopt. Als er geen
+	    datum wordt gegeven, wordt de huidige datum gebruikt.
             </dd>
 	    <dt><code>-t[num], --todo[=num]</code></dt>
 	    <dd>
@@ -355,14 +344,12 @@ besproken. Als laatste wordt zowel de procedure van het melden van fouten in
 	    programma.
 	    </dd>
 	    <dt><code>-x[format], --export[=format]</code></dt>
-            <dd><div class="todo">
-	    Export user data to specified format. Events, appointments and
-	    todos are converted and echoed to stdout.
-            Two possible formats are available: ical and pcal 
-            (see section <a href="#links_others">Links</a> below). 
-            If the optional argument <code>format</code> is not given,
-            ical format is selected by default.
-            </div>
+	    Exporteer data van de gebruiker naar een bepaald formaat.
+	    Gebeurtenissen, afspraken en taken worden geconverteerd en naar
+	    stdout gezonden. Er is een keuze uit twee formaten: ical en pcal
+	    (zie sectie <a href="#links_others">Links</a> beneden). Als het
+	    optionele argument <code>formaat</code> niet is gegeven, zal het
+	    ical formaat worden gebruikt.
 	    <p class="rq"><span class="valorise">Noot:</span> 	
 	    Om de data te exporteren naar een bestand, kan men de
 	    standaard output omleiden met een commando zoals:
@@ -553,8 +540,7 @@ besproken. Als laatste wordt zowel de procedure van het melden van fouten in
 <h2>4.3 <code>calcurse</code> bestanden<a name="basics_files"></a></h2>
 <p>
 	De volgende structuur wordt in je <code>$HOME</code> directory
-	aangemaakt, 
-        <div class="todo">(or in the directory you specified with  the  -D  option)</div>
+	aangemaakt, of in de door -D aangeduide directory)
         als <code>calcurse</code> voor de eerste keer wordt gestart:</p>
 	<pre>
 $HOME/.calcurse/
@@ -579,22 +565,22 @@ $HOME/.calcurse/
 		<dd>bevat de takenlijst.</dd>
 	</dl>
 
-<div class="todo">
-<h2>4.4 Import/Export capabilities<a name="basics_import_export"></a></h2>
+<h2>4.4 Import/Export mogelijkheden<a name="basics_import_export"></a></h2>
 <p>
-        The import and export capabilities offered by <code>calcurse</code>
-        are described below.
+	De import en export mogelijkheden van <code>calcurse</code> zijn als
+	volgt:
 </p>
 
 <h3>4.4.1 Import<a name="basics_import"></a></h3>
 <p>
-        Data in icalendar format as described in the rfc2445 specification
-        (see <a href="#links_others">links</a> section below) can be imported
-        into calcurse. Calcurse ical parser is based on version 2.0 of this 
-        specification, but for now on, only a subset of it is supported.
+	Data in icalender formaat, zoals beschrevein in de rfc2445 specificatie
+	(zie <a href="#links_others">links</a> sectie beneden), kan
+	ge&iuml;mporteerd worden in calcurse. De Calcurse ical parser is op
+	versie 2.0 van deze specificatie gebaseerd. Van nu af aan echter, zal
+	alleen een subset worden ondersteund.
 </p>
 <p>
-        The following icalendar properties are handled by calcurse:
+	Hier volgt het icalendar formaat zoals calcurse het gebruikt:
         <ul>
             <li><code>VTODO</code> items:<br>
             "PRIORITY", "VALARM", "SUMMARY", "DESCRIPTION"</li>
@@ -604,34 +590,36 @@ $HOME/.calcurse/
         </ul>
 </p>
 <p>
-        The icalendar "DESCRIPTION" property will be converted into calcurse format
-        by adding a note to the item. If a "VALARM" property is found, the item
-        will be flagged as important and the user will get a notification (this is
-        only applicable to appointments).
+	Het icalender "DESCRIPTION"-veld (omschrijving) zal worden geconverteerd naar
+	het eigen formaat van calcurse, door het toevoegen van een noot. Als
+	een "VALARM"-veld is gevonden, zal het worden gemarkeerd als belangrijk
+	en zal de gebruiker een melding krijgen (alleen bij afspraken).
 </p>
 <p>
-        Here are the properties that are not implemented:
+	Hier zijn de velden die niet worden gebruikt:
         <ul>
-            <li>negative time durations are not taken into account (item is skipped)</li>
-            <li>some recurence frequences are not recognize:<br>
+	    <li>negatief tijdsduur zal niet herkend worden (item wordt
+	    overgeslagen)
+	    </li> <li>sommige herhalings frequenties worden niet
+	    herkend:<br>
             "SECONDLY" / "MINUTELY" / "HOURLY"</li>
-            <li>some recurrence keywords are not recognized 
-            (all those starting with 'BY'):<br>
+	    <li>Sommige herhalingssleutelwoorden worden niet herkend (degene
+	    die starten met 'BY'):<br>
             "BYSECOND" / "BYMINUTE" / "BYHOUR" / "BYDAY" / "BYMONTHDAY"<br>
             "BYYEARDAY" / "BYWEEKNO" / "BYMONTH" / "BYSETPOS"<br>
             plus "WKST"</li>
-            <li>the recurrence exception keyword "EXRULE" is not recognized</li>
-            <li>timezones are not taken into account</li>
-        </ul>
+	    <li>het exceptie herhalingssleutelwoord "EXRULE" wordt niet
+	    herkend</li>
+	    <li>er wordt geen rekening gehouden met timezones</li>
+            </ul>
 </p>
 
 <h3>4.4.2 Export<a name="basics_export"></a></h3>
 <p>
-        Two possible export formats are available: <code>ical</code> and 
-        <code>pcal</code> (see section <a href="#links_others">Links</a> below
-        to find out about those formats). 
+	Twee export formaten zijn voorradig: <code>ical</code> en
+	<code>pcal</code> (zie sectie <a href="#links_others">Links</a> beneden
+	voor meer informatie over deze formaten).
 </p>
-</div>
 
 <h2>4.5 Online hulp<a name="basics_help"></a></h2>
 <p>
@@ -706,26 +694,23 @@ $HOME/.calcurse/
 		overzicht. Anders staat zondag als eerste dag van de week.
 		</dd>
 
-                <div class="todo">
                 <dt><code>output_datefmt</code>
-                (default: <span class="emp">%D</span>)</dt>
-                <dd>This option indicates the format to be used when displaying dates
-                in non-interactive mode. Using the default values, dates are displayed the
-                following way: <span class="emp">mm/dd/aa</span>.
-                You can see all of the possible formats by typing <code>man 3 strftime</code>
-                inside a terminal.</dd>
+                (standaard: <span class="emp">%D</span>)</dt>
+                <dd>Deze optie geeft het te gebruiken formaat aan bij datums in 
+		niet-interactieve modus. Standaard worden de datums als volgt
+		weergegeven: <span class="emp">mm/dd/aa</span>.  Het is
+		mogelijk om alle mogelijke formaten te zien, door <code>man 3
+		strftime</code> in een terminal in te typen.</dd>
                 <dt><code>input_datefmt</code>
-                (default: <span class="emp">1</span>)</dt>
-                <dd>This option indicates the format that will be used to enter dates in
-                <span class="emp">calcurse</span>. Three choices are available:
-                <ol>
+                (standaard: <span class="emp">1</span>)</dt>
+		<dd>Met deze optie wordt het formaat aangeven dat zal worden
+		gebruikt om datums in te voern in <span
+		class="emp">calcurse</span>. Er zijn drie keuzes: <ol>
                   <li>mm/dd/yyyy</li>
                   <li>dd/mm/yyyy</li>
                   <li>yyyy/mm/dd</li>
                   </ol>
                 </dd>
-                </div>
-
 	</dl>
 
 <h2>5.2 Kleurenschema's<a name="options_colors"></a></h2>
@@ -1068,15 +1053,13 @@ msgid ""
 	calcurse beschikbaar is, waarbij ook de nieuwe opties beschreven
 	worden. </p>
 
-<h2><div class="todo">9.4 Other links</div><a name="links_others"></a></h2>
-<div class="todo">
+<h2>9.4 Links<a name="links_others"></a></h2>
 <p>
-        You may want to look at the ical format specification (rfc2445) at:
+	Voor meer informatie over het ical-formaatspecificatie (rfc2445):
         <pre>http://tools.ietf.org/html/rfc2445</pre>
 <p>
-        The pcal project page can be found at:
+	De pcal projectpagina kan hier gevonden worden:
         <pre>http://pcal.sourceforge.net/</pre>
-</div>
 
 <h1>10. Dankwoord<a name="thanks"></a></h1>
 <p>
@@ -1110,10 +1093,12 @@ msgid ""
 	<li>Neil Williams voor de engelse vertaling</li>
 	<li>Leandro Noferini voor de italian vertaling</li>
 	<li>Tony voor zijn patch die de recur_item_inday functie verbeterde
-        <span class="todo">, and for implementing the date format configuration options</span></li>
+	, en voor het implementeren van de datumformaat
+	configuratie-opties</span></li>
 	<li>Jeremy Roon voor de nederlandse vertaling van
 	<code>calcurse</code> en handleiding</li>
-	<li><div class="todo">Erik Saule for its patch implementing the '-N', '-s', '-r' and '-D' flags</div></li>
+	<li>Erik Saule voor zijn patch, waarmee de '-N', '-s', '-r' en '-D'
+	vlaggen zijn ge&iuml;mplementeerd</li>
 	<li>en de mensen die de software geschreven hebben die ik goed vind
 	en mij ge&iuml;nspireerd hebben zoals:
 		<ul>
