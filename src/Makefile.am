@@ -1,11 +1,11 @@
-#	$calcurse: Makefile.am,v 1.6 2007/07/28 15:04:52 culot Exp $
+#	$calcurse: Makefile.am,v 1.7 2008/11/08 19:05:15 culot Exp $
 
 AUTOMAKE_OPTIONS= gnu 
 
 bin_PROGRAMS= calcurse
 
 calcurse_SOURCES= 					\
-	calcurse.c i18n.h				\
+	calcurse.c i18n.h htable.h			\
 	apoint.c apoint.h				\
 	args.c args.h					\
 	calendar.c calendar.h				\
@@ -14,6 +14,7 @@ calcurse_SOURCES= 					\
 	event.c event.h					\
 	help.c help.h					\
 	io.c io.h					\
+	keys.c keys.h                                   \
 	notify.c notify.h				\
 	recur.c recur.h					\
 	sigs.c sigs.h					\
