@@ -1,4 +1,4 @@
-/*	$calcurse: custom.c,v 1.23 2008/09/21 08:06:43 culot Exp $	*/
+/*	$calcurse: custom.c,v 1.24 2008/11/09 20:10:18 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -227,7 +227,7 @@ custom_load_conf (conf_t *conf, int background)
       doupdate ();
       wgetch (win[STA].p);
     }
-  var = 0;
+  var = CUSTOM_CONF_NOVARIABLE;
   pthread_mutex_lock (&nbar->mutex);
   for (;;)
     {

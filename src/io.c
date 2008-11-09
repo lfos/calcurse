@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.40 2008/09/29 06:27:53 culot Exp $	*/
+/*	$calcurse: io.c,v 1.41 2008/11/09 20:10:18 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -31,6 +31,7 @@
 #include <math.h>
 #include <unistd.h>
 #include <errno.h>
+#include <ctype.h>
 
 #include "i18n.h"
 #include "utils.h"
@@ -39,6 +40,8 @@
 #include "event.h"
 #include "apoint.h"
 #include "recur.h"
+#include "keys.h"
+#include "htable.h"
 #include "io.h"
 
 #define ICALDATEFMT      "%Y%m%d"
@@ -76,6 +79,12 @@ typedef struct {
   long          until;
   unsigned      count;
 } ical_rpt_t;
+
+struct ht_keybindings_s {
+  char *label;
+  keys_e key;
+  HTABLE_ENTRY (ht_keybindings_s);
+};
 
 /* Type definition for callbacks to multiple-mode export functions. */
 typedef void (*cb_export_t)(FILE *);
@@ -647,6 +656,7 @@ io_init (char *cfile, char *datadir)
       snprintf (path_conf, BUFSIZ, "%s/" CONF_PATH_NAME, home);
       snprintf (path_notes, BUFSIZ, "%s/" NOTES_DIR_NAME, home);
       snprintf (path_apts, BUFSIZ, "%s/" APTS_PATH_NAME, home);
+      snprintf (path_keys, BUFSIZ, "%s/" KEYS_PATH_NAME, home);      
     }
   else
     {
@@ -658,6 +668,7 @@ io_init (char *cfile, char *datadir)
       snprintf (path_dir, BUFSIZ, "%s/" DIR_NAME, home);
       snprintf (path_todo, BUFSIZ, "%s/" TODO_PATH, home);
       snprintf (path_conf, BUFSIZ, "%s/" CONF_PATH, home);
+      snprintf (path_keys, BUFSIZ, "%s/" KEYS_PATH, home);      
       snprintf (path_notes, BUFSIZ, "%s/" NOTES_DIR, home);
       if (cfile == NULL)
         {
@@ -1160,6 +1171,115 @@ io_load_todo (void)
 }
 
 static void
+load_keys_ht_getkey (struct ht_keybindings_s *data, char **key, int *len)
+{
+  *key = data->label;
+  *len = strlen (data->label);
+}
+
+static int
+load_keys_ht_compare (struct ht_keybindings_s *data1,
+                      struct ht_keybindings_s *data2)
+{
+  const int KEYLEN = strlen (data1->label);
+
+  if (strlen (data2->label) == KEYLEN
+      && !memcmp (data1->label, data2->label, KEYLEN))
+    return 0;
+  else
+    return 1;
+}
+
+static int
+key_to_ascii (char *key)
+{
+  const string_t CONTROL_KEY = STRING_BUILD ("CTRL-");
+  
+  if (strlen (key) == 1)
+    return (int)key[0];
+  else
+    {
+      if (!strncmp (key, CONTROL_KEY.str, CONTROL_KEY.len))
+        return CTRL ((int)key[CONTROL_KEY.len]);
+      else
+        return 0;
+    }
+}
+
+/*
+ * Load user-definable keys from file.
+ * A hash table is used to speed up loading process in avoiding string
+ * comparisons.
+ */
+void
+io_load_keys (void)
+{
+  struct ht_keybindings_s keys[NOKEYS];
+  FILE *keyfp;
+  char buf[BUFSIZ];
+  int i;
+
+#define HSIZE 256
+  HTABLE_HEAD (ht_keybindings, HSIZE, ht_keybindings_s) ht_keys =
+    HTABLE_INITIALIZER (&ht_keys);
+  
+  HTABLE_GENERATE (ht_keybindings, ht_keybindings_s, load_keys_ht_getkey,
+                   load_keys_ht_compare);
+
+  for (i = 0; i < NOKEYS; i++)
+    {
+      keys[i].key = (keys_e)i;
+      keys[i].label = keys_get_label ((keys_e)i);
+      HTABLE_INSERT (ht_keybindings, &ht_keys, &keys[i]);
+    }
+
+  keyfp = fopen (path_keys, "r");
+  while (fgets (buf, BUFSIZ, keyfp) != NULL)
+    {
+      char key_label[BUFSIZ], *p;
+      struct ht_keybindings_s *ht_elm, ht_entry;
+      const int AWAITED = 1;
+
+      for (p = buf; isblank ((int)*p); p++)
+        ;
+      if (p != buf)
+        memmove (buf, p, strlen (p));
+      if (buf[0] == '#')
+        continue;
+      
+      if (sscanf (buf, "%s", key_label) != AWAITED)
+        continue;
+      ht_entry.label = key_label;
+      p = buf + strlen (key_label) + 1;      
+      ht_elm = HTABLE_LOOKUP (ht_keybindings, &ht_keys, &ht_entry);
+      for (;;)
+        {
+          char key_ch[BUFSIZ], tmpbuf[BUFSIZ];
+
+          while (*p == ' ')
+            p++;
+          strncpy (tmpbuf, p, BUFSIZ);
+          if (sscanf (tmpbuf, "%s", key_ch) == AWAITED)
+            {
+              int ch;
+              char *unknown_key = _("Error reading key: %s");
+              
+              ch = key_to_ascii (key_ch);
+              p += strlen (key_ch) + 1;              
+              if (ch == 0)
+                ERROR_MSG (unknown_key);
+              else
+                keys_assign_binding (ch, ht_elm->key);
+            }
+          else
+            break;
+        }
+    }
+  fclose (keyfp);
+#undef HSIZE
+}
+
+static void
 check_directory (char *dir, int *missing)
 {
   errno = 0;
@@ -1218,7 +1338,9 @@ io_check_data_files (void)
   check_file (path_todo, &missing);
   check_file (path_apts, &missing);
   check_file (path_conf, &missing);
-  return (missing);
+  check_file (path_keys, &missing);
+  
+  return missing;
 }
 
 /* Draw the startup screen */

@@ -1,3 +1,10 @@
+2008-11-09  Frederic Culot  <frederic@culot.org>
+
+	* src/io.c (io_load_keys, key_to_ascii): new function
+
+	* src/keys.c (keys_assign_binding, keys_remove_binding)
+	(keys_get_key): new functions
+	
 2008-11-08  Frederic Culot  <frederic@culot.org>
 
 	* src/keys.[ch]: new files to manage user-definable keybindings

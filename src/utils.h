@@ -1,4 +1,4 @@
-/*	$calcurse: utils.h,v 1.36 2008/09/23 17:31:57 culot Exp $	*/
+/*	$calcurse: utils.h,v 1.37 2008/11/09 20:10:18 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -27,7 +27,10 @@
 #ifndef CALCURSE_UTILS_H
 #define CALCURSE_UTILS_H
 
+#include <stdlib.h>
+
 #include "calendar.h"
+#include "vars.h"
 
 #define MAX(x,y) 	((x)>(y)?(x):(y))
 #define MIN(x,y) 	((x)<(y)?(x):(y))

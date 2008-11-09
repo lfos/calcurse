@@ -1,4 +1,4 @@
-/*	$Id: htable.h,v 1.1 2008/11/08 19:05:15 culot Exp $	*/
+/*	$calcurse: htable.h,v 1.2 2008/11/09 20:10:18 culot Exp $	*/
 
 /*
  * Copyright (c) 2008 Frederic Culot <frederic@culot.org>

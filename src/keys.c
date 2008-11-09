@@ -1,4 +1,4 @@
-/*	$calcurse: keys.c,v 1.1 2008/11/08 19:05:15 culot Exp $	*/
+/*	$calcurse: keys.c,v 1.2 2008/11/09 20:10:18 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -26,9 +26,21 @@
 
 #include "i18n.h"
 #include "utils.h"
+#include "htable.h"
 #include "keys.h"
 
-const char *keylabel[NOKEYS] = {
+#define HTKEYSIZE 512
+
+struct keys_s {
+  int    key;
+  keys_e action;
+  HTABLE_ENTRY (keys_s);
+};
+
+static HTABLE_HEAD (ht_keys, HTKEYSIZE, keys_s) ht_keys_action =
+    HTABLE_INITIALIZER (&ht_keys_action);
+
+static char *keylabel[NOKEYS] = {
   "generic-help",
   "generic-quit",
   "generic-save",
@@ -85,10 +97,65 @@ const char *keylabel[NOKEYS] = {
   "config-notify-menu"
 };
 
-char *keys_get_label (keys_e key)
+static void
+ht_getkey (struct keys_s *data, char **key, int *len)
+{
+  *key = (char *)&data->key;
+  *len = sizeof (int);
+}
+
+static int
+ht_compare (struct keys_s *data1, struct keys_s *data2)
+{
+  if (data1->key == data2->key)
+    return 0;
+  else
+    return 1;
+}
+
+HTABLE_GENERATE (ht_keys, keys_s, ht_getkey, ht_compare);
+
+char *
+keys_get_label (keys_e key)
 {
   EXIT_IF (key < 0 || key > NOKEYS,
            _("FATAL ERROR in keys_get_label: key value out of bounds"));
 
-  return keylabel (key);
+  return keylabel[key];
+}
+
+int
+keys_get_key (int pressed)
+{
+  struct keys_s *key, find;
+
+  find.key = pressed;
+  key = HTABLE_LOOKUP (ht_keys, &ht_keys_action, &find);
+
+  if (key)
+    return (int)key->action;
+  else
+    return -1;
+}
+
+void
+keys_assign_binding (int key, keys_e action)
+{
+  struct keys_s *binding;
+
+  binding = malloc (sizeof (struct keys_s));
+  binding->key = key;
+  binding->action = action;
+  HTABLE_INSERT (ht_keys, &ht_keys_action, binding);
+}
+
+void
+key_remove_binding (int key, keys_e action)
+{
+  struct keys_s find, *removed;
+
+  find.key = key;
+  find.action = action;
+  removed = HTABLE_REMOVE (ht_keys, &ht_keys_action, &find);
+  mem_free (removed);
 }

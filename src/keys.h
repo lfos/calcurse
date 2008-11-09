@@ -1,4 +1,4 @@
-/*	$calcurse: keys.h,v 1.1 2008/11/08 19:05:15 culot Exp $	*/
+/*	$calcurse: keys.h,v 1.2 2008/11/09 20:10:18 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -41,7 +41,7 @@ typedef enum
     KEY_GENERIC_REDRAW,
     KEY_GENERIC_ADD_APPT,
     KEY_GENERIC_ADD_TODO,
-    KEY_GENERIC_NEXT_ADY,
+    KEY_GENERIC_NEXT_DAY,
     KEY_GENERIC_PREV_DAY,
     KEY_GENERIC_NEXT_WEEK,
     KEY_GENERIC_PREV_WEEK,
@@ -74,7 +74,7 @@ typedef enum
     KEY_TODO_MOVE_UP,
     KEY_TODO_MOVE_DOWN,
     KEY_TODO_EDIT_NOTE,
-    KEY_TODO_VIEW_BOTE,
+    KEY_TODO_VIEW_NOTE,
 
     KEY_CONFIG_QUIT,
     KEY_CONFIG_GENERAL_MENU,
@@ -86,6 +86,9 @@ typedef enum
   }
 keys_e;
 
-char *keys_get_label (keys_e);
+char   *keys_get_label (keys_e);
+int     keys_get_key (int);
+void    keys_assign_binding (int, keys_e);
+void    key_remove_binding (int, keys_e);
 
 #endif /* CALCURSE_KEYS_H */

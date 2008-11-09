@@ -1,4 +1,4 @@
-/*	$calcurse: todo.c,v 1.22 2008/04/19 21:05:15 culot Exp $	*/
+/*	$calcurse: todo.c,v 1.23 2008/11/09 20:10:18 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -30,6 +30,7 @@
 
 #include "utils.h"
 #include "custom.h"
+#include "keys.h"
 #include "i18n.h"
 #include "todo.h"
 
@@ -347,11 +348,11 @@ todo_chg_priority (int action)
     strncpy (backup_note, backup->note, NOTESIZ + 1);
   else
     backup_note[0] = '\0';
-  if (action == '+')
+  if (action == KEY_TODO_RAISE_PRIORITY)
     {
       (backup_id > 1) ? backup_id-- : do_chg--;
     }
-  else if (action == '-')
+  else if (action == KEY_TODO_LOWER_PRIORITY)
     {
       (backup_id < 9) ? backup_id++ : do_chg--;
     }

@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.68 2008/09/21 08:06:43 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.69 2008/11/09 20:10:18 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -41,7 +41,7 @@
 #include "todo.h"
 #include "args.h"
 #include "notify.h"
-
+#include "keys.h"
 
 /*
  * Calcurse is a text-based personal organizer which helps keeping track
@@ -55,7 +55,7 @@ main (int argc, char **argv)
 {
   conf_t conf;
   day_items_nb_t inday;
-  int ch, background, foreground;
+  int background, foreground;
   int non_interactive;
   int no_data_file = 1;
   int sav_hilt_app = 0;
@@ -146,6 +146,7 @@ main (int argc, char **argv)
   no_data_file = io_check_data_files ();
   custom_load_conf (&conf, background);
   erase_status_bar ();
+  io_load_keys ();
   io_load_todo ();
   io_load_app ();
   wins_reinit ();
@@ -161,23 +162,29 @@ main (int argc, char **argv)
   /* User input */
   for (;;)
     {
+      int ch, key;
+      
       do_update = true;
       ch = wgetch (win[STA].p);
-      switch (ch)
+      key = keys_get_key (ch);
+      if (key == -1)
+        key = ch;
+      
+      switch (key)
 	{
 	case ERR:
 	  do_update = false;
 	  break;
 
-	case CTRL ('R'):
+	case KEY_GENERIC_REDRAW:
 	case KEY_RESIZE:
 	  do_update = false;
 	  wins_reset ();
 	  break;
 
-	case 9:		/* The TAB key was hit. */
+	case KEY_GENERIC_CHANGE_VIEW:
 	  reset_status_page ();
-	  /* Save previously highlighted event. */
+	  /* Need to save the previously highlighted event. */
 	  switch (wins_slctd ())
 	    {
 	    case TOD:
@@ -214,17 +221,15 @@ main (int argc, char **argv)
 	    }
 	  break;
 
-	case 'O':
-	case 'o':
+        case KEY_GENERIC_OTHER_CMD:
 	  other_status_page (wins_slctd ());
 	  break;
 
-        case CTRL ('G'):
-	case 'G':
-	case 'g':		/* Goto function */
+        case KEY_GENERIC_GOTO:
+        case KEY_GENERIC_GOTO_TODAY:
 	  erase_status_bar ();
 	  calendar_set_current_date ();
-          if (ch == CTRL ('G'))
+          if (ch == KEY_GENERIC_GOTO_TODAY)
             calendar_goto_today ();
           else
             calendar_change_day (conf.input_datefmt);
@@ -232,16 +237,15 @@ main (int argc, char **argv)
 	  day_changed = true;
 	  break;
 
-	case 'V':
-	case 'v':		/* View function */
+        case KEY_APT_VIEW_ITEM:
+        case KEY_TODO_VIEW_ITEM:
 	  if ((wins_slctd () == APP) && (apoint_hilt () != 0))
 	    day_popup_item ();
 	  else if ((wins_slctd () == TOD) && (todo_hilt () != 0))
 	    item_in_popup (NULL, NULL, todo_saved_mesg (), _("To do :"));
 	  break;
 
-	case 'C':
-	case 'c':		/* Configuration menu */
+        case KEY_GENERIC_CONFIG_MENU:
 	  erase_status_bar ();
 	  config_bar ();
 	  while ((ch = wgetch (win[STA].p)) != 'q')
@@ -282,19 +286,19 @@ main (int argc, char **argv)
 	  wins_update ();
 	  break;
 
-	case CTRL ('A'):	/* Add an app, whatever panel selected */
+        case KEY_GENERIC_ADD_APPT:
 	  apoint_add ();
 	  do_storage = true;
 	  break;
 
-	case CTRL ('T'):	/* Add a todo, whatever panel selected */
+        case KEY_GENERIC_ADD_TODO:
 	  todo_new_item ();
 	  if (todo_hilt () == 0 && todo_nb () == 1)
 	    todo_hilt_increase ();
 	  break;
 
-	case 'A':
-	case 'a':		/* Add an item */
+        case KEY_APT_ADD_ITEM:
+        case KEY_TODO_ADD_ITEM:
 	  switch (wins_slctd ())
 	    {
 	    case APP:
@@ -311,8 +315,8 @@ main (int argc, char **argv)
 	    }
 	  break;
 
-	case 'E':
-	case 'e':		/* Edit an existing item */
+        case KEY_APT_EDIT_ITEM:
+        case KEY_TODO_EDIT_ITEM:
 	  if (wins_slctd () == APP && apoint_hilt () != 0)
 	    day_edit_item (&conf);
 	  else if (wins_slctd () == TOD && todo_hilt () != 0)
@@ -320,8 +324,8 @@ main (int argc, char **argv)
 	  do_storage = true;
 	  break;
 
-	case 'D':
-	case 'd':		/* Delete an item */
+        case KEY_APT_DEL_ITEM:
+        case KEY_TODO_DEL_ITEM:
 	  if (wins_slctd () == APP && apoint_hilt () != 0)
 	    apoint_delete (&conf, &inday.nb_events, &inday.nb_apoints);
 	  else if (wins_slctd () == TOD && todo_hilt () != 0)
@@ -329,24 +333,23 @@ main (int argc, char **argv)
 	  do_storage = true;
 	  break;
 
-	case 'R':
-	case 'r':
+        case KEY_APT_REPEAT:
 	  if (wins_slctd () == APP && apoint_hilt () != 0)
 	    recur_repeat_item (&conf);
 	  do_storage = true;
 	  break;
 
-	case '!':
+        case KEY_APT_FLAG_ITEM:
 	  if (wins_slctd () == APP && apoint_hilt () != 0)
 	    apoint_switch_notify ();
 	  do_storage = true;
 	  break;
 
-	case '+':
-	case '-':
+        case KEY_TODO_RAISE_PRIORITY:
+        case KEY_TODO_LOWER_PRIORITY:
 	  if (wins_slctd () == TOD && todo_hilt () != 0)
 	    {
-	      todo_chg_priority (ch);
+	      todo_chg_priority (key);
 	      if (todo_hilt_pos () < 0)
 		todo_set_first (todo_hilt ());
 	      else if (todo_hilt_pos () >= win[TOD].h - 4)
@@ -354,9 +357,8 @@ main (int argc, char **argv)
 	    }
 	  break;
 
-	case 'N':
-	case 'n':
-	  /* Attach a note to an item, create it if necessary */
+        case KEY_APT_EDIT_NOTE:
+        case KEY_TODO_EDIT_NOTE:
 	  if (wins_slctd () == APP && apoint_hilt () != 0)
 	    day_edit_note (conf.editor);
 	  else if (wins_slctd () == TOD && todo_hilt () != 0)
@@ -364,33 +366,30 @@ main (int argc, char **argv)
 	  do_storage = true;
 	  break;
 
-	case '>':
-	  /* View a note previously attached to an item */
+        case KEY_APT_VIEW_NOTE:
+        case KEY_TODO_VIEW_NOTE:
 	  if (wins_slctd () == APP && apoint_hilt () != 0)
 	    day_view_note (conf.pager);
 	  else if (wins_slctd () == TOD && todo_hilt () != 0)
 	    todo_view_note (conf.pager);
 	  break;
 
-	case '?':		/* Online help system */
+        case KEY_GENERIC_HELP:
 	  status_bar ();
 	  help_screen ();
 	  break;
 
-	case 'S':
-	case 's':		/* Save function */
+        case KEY_GENERIC_SAVE:
 	  io_save_cal (IO_MODE_INTERACTIVE, &conf);
 	  break;
 
-        case 'I':
-        case 'i':               /* Import function */
+        case KEY_GENERIC_IMPORT:
           erase_status_bar ();
           io_import_data (IO_MODE_INTERACTIVE, IO_IMPORT_ICAL, &conf, NULL);
           do_storage = true;
           break;
           
-	case 'X':
-	case 'x':		/* Export function */
+        case KEY_GENERIC_EXPORT:
           erase_status_bar ();
           io_export_bar ();
           while ((ch = wgetch (win[STA].p)) != 'q')
@@ -415,11 +414,9 @@ main (int argc, char **argv)
 	  wins_update ();
 	  break;
 
-        case KEY_RIGHT:
-	case ('L'):
-	case ('l'):
-	case CTRL ('L'):
-	  if (wins_slctd () == CAL || ch == CTRL ('L'))
+        case KEY_GENERIC_NEXT_DAY:
+        case KEY_CAL_NEXT_DAY:
+	  if (wins_slctd () == CAL || key == KEY_GENERIC_NEXT_DAY)
 	    {
 	      do_storage = true;
 	      day_changed = true;
@@ -427,11 +424,9 @@ main (int argc, char **argv)
 	    }
 	  break;
 
-        case KEY_LEFT:
-	case ('H'):
-	case ('h'):
-	case CTRL ('H'):
-	  if (wins_slctd () == CAL || ch == CTRL ('H'))
+        case KEY_GENERIC_PREV_DAY:
+        case KEY_CAL_PREV_DAY:
+	  if (wins_slctd () == CAL || key == KEY_GENERIC_PREV_DAY)
 	    {
 	      do_storage = true;
 	      day_changed = true;
@@ -439,60 +434,62 @@ main (int argc, char **argv)
 	    }
 	  break;
 
-        case KEY_UP:
-	case ('K'):
-	case ('k'):
-	case CTRL ('K'):
-	  if (wins_slctd () == CAL || ch == CTRL ('K'))
+        case KEY_GENERIC_PREV_WEEK:
+        case KEY_CAL_PREV_WEEK:
+	  if (wins_slctd () == CAL || key == KEY_GENERIC_PREV_WEEK)
 	    {
 	      do_storage = true;
 	      day_changed = true;
 	      calendar_move (UP);
 	    }
-	  else
-	    {
-	      if ((wins_slctd () == APP) && (apoint_hilt () > 1))
-		{
-		  apoint_hilt_decrease ();
-		  apoint_scroll_pad_up (inday.nb_events);
-		}
-	      else if ((wins_slctd () == TOD) && (todo_hilt () > 1))
-		{
-		  todo_hilt_decrease ();
-		  if (todo_hilt_pos () < 0)
-		    todo_first_decrease ();
-		}
-	    }
-	  break;
+          break;
 
-        case KEY_DOWN:
-	case ('J'):
-	case ('j'):
-	case CTRL ('J'):
-	  if (wins_slctd () == CAL || ch == CTRL ('J'))
+        case KEY_GENERIC_NEXT_WEEK:
+        case KEY_CAL_NEXT_WEEK:
+	  if (wins_slctd () == CAL || key == KEY_GENERIC_NEXT_WEEK)
 	    {
 	      do_storage = true;
 	      day_changed = true;
 	      calendar_move (DOWN);
 	    }
-	  else
-	    {
-	      if ((wins_slctd () == APP) &&
-		  (apoint_hilt () < inday.nb_events + inday.nb_apoints))
-		{
-		  apoint_hilt_increase ();
-		  apoint_scroll_pad_down (inday.nb_events, win[APP].h);
-		}
-	      if ((wins_slctd () == TOD) && (todo_hilt () < todo_nb ()))
-		{
-		  todo_hilt_increase ();
-		  if (todo_hilt_pos () == win[TOD].h - 4)
-		    todo_first_increase ();
-		}
-	    }
+          break;
+
+        case KEY_APT_MOVE_UP:
+          if ((wins_slctd () == APP) && (apoint_hilt () > 1))
+            {
+              apoint_hilt_decrease ();
+              apoint_scroll_pad_up (inday.nb_events);
+            }
+          break;
+
+        case KEY_APT_MOVE_DOWN:
+          if ((wins_slctd () == APP) &&
+              (apoint_hilt () < inday.nb_events + inday.nb_apoints))
+            {
+              apoint_hilt_increase ();
+              apoint_scroll_pad_down (inday.nb_events, win[APP].h);
+            }
+          break;
+          
+        case KEY_TODO_MOVE_UP:
+          if ((wins_slctd () == TOD) && (todo_hilt () > 1))
+            {
+              todo_hilt_decrease ();
+              if (todo_hilt_pos () < 0)
+                todo_first_decrease ();
+            }
 	  break;
 
-        case '0':
+        case KEY_TODO_MOVE_DOWN:
+          if ((wins_slctd () == TOD) && (todo_hilt () < todo_nb ()))
+            {
+              todo_hilt_increase ();
+              if (todo_hilt_pos () == win[TOD].h - 4)
+                todo_first_increase ();
+            }
+	  break;
+
+        case KEY_CAL_START_OF_WEEK:
           if (wins_slctd () == CAL)
 	    {
 	      do_storage = true;
@@ -501,7 +498,7 @@ main (int argc, char **argv)
 	    }
           break;
 
-        case '$':
+        case KEY_CAL_END_OF_WEEK:
           if (wins_slctd () == CAL)
 	    {
 	      do_storage = true;
@@ -510,8 +507,7 @@ main (int argc, char **argv)
 	    }
           break;
           
-	case ('Q'):		/* Quit calcurse :( */
-	case ('q'):
+        case KEY_GENERIC_QUIT:          
 	  if (conf.auto_save)
 	    io_save_cal (IO_MODE_INTERACTIVE, &conf);
 
