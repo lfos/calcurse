@@ -1,4 +1,4 @@
-/*	$calcurse: day.c,v 1.37 2008/04/19 21:05:15 culot Exp $	*/
+/*	$calcurse: day.c,v 1.38 2008/11/16 17:42:53 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -34,6 +34,7 @@
 #include "apoint.h"
 #include "event.h"
 #include "custom.h"
+#include "keys.h"
 #include "day.h"
 
 static struct day_item_s *day_items_ptr;
@@ -526,7 +527,7 @@ day_edit_time (long time)
       if (check_time (timestr) != 1 || strlen (timestr) == 0)
 	{
 	  status_mesg (fmt_msg, enter_str);
-	  wgetch (win[STA].p);
+	  keys_getch (win[STA].p);
 	}
       else
 	return (timestr);
@@ -558,7 +559,7 @@ update_start_time (long *start, long *dur)
       else
 	{
 	  status_mesg (msg_wrong_time, msg_enter);
-	  wgetch (win[STA].p);
+	  keys_getch (win[STA].p);
 	  valid_date = 0;
 	}
     }
@@ -641,7 +642,7 @@ update_rept (struct rpt_s **rpt, const long start, conf_t *conf)
 	  if (newfreq == 0)
 	    {
 	      status_mesg (msg_wrong_freq, msg_enter);
-	      wgetch (win[STA].p);
+	      keys_getch (win[STA].p);
 	    }
 	}
     }
@@ -684,7 +685,7 @@ update_rept (struct rpt_s **rpt, const long start, conf_t *conf)
 	      if (newuntil < start)
 		{
 		  status_mesg (msg_wrong_time, msg_enter);
-		  wgetch (win[STA].p);
+		  keys_getch (win[STA].p);
 		  date_entered = 0;
 		}
 	      else
@@ -695,7 +696,7 @@ update_rept (struct rpt_s **rpt, const long start, conf_t *conf)
 	      snprintf (outstr, BUFSIZ, msg_fmts,
 			DATEFMT_DESC (conf->input_datefmt));
 	      status_mesg (msg_wrong_date, _(outstr));
-	      wgetch (win[STA].p);
+	      keys_getch (win[STA].p);
 	      date_entered = 0;
 	    }
 	}
@@ -735,8 +736,8 @@ day_edit_item (conf_t *conf)
     case RECUR_EVNT:
       re = recur_get_event (date, day_item_nb (date, item_num, RECUR_EVNT));
       status_mesg (_("Edit: (1)Description or (2)Repetition?"), "[1/2] ");
-      while (ch != '1' && ch != '2' && ch != ESCAPE)
-	ch = wgetch (win[STA].p);
+      while (ch != '1' && ch != '2' && ch != KEY_GENERIC_ESCAPE)
+	ch = keys_getch (win[STA].p);
       switch (ch)
 	{
 	case '1':
@@ -758,8 +759,8 @@ day_edit_item (conf_t *conf)
       status_mesg (_("Edit: (1)Start time, (2)End time, "
 		     "(3)Description or (4)Repetition?"), "[1/2/3/4] ");
       while (ch != STRT && ch != END && ch != DESC &&
-	     ch != REPT && ch != ESCAPE)
-	ch = wgetch (win[STA].p);
+	     ch != REPT && ch != KEY_GENERIC_ESCAPE)
+	ch = keys_getch (win[STA].p);
       switch (ch)
 	{
 	case STRT:
@@ -774,7 +775,7 @@ day_edit_item (conf_t *conf)
 	case REPT:
 	  update_rept (&ra->rpt, ra->start, conf);
 	  break;
-	case ESCAPE:
+	case KEY_GENERIC_ESCAPE:
 	  return;
 	}
       break;
@@ -782,8 +783,8 @@ day_edit_item (conf_t *conf)
       a = apoint_get (date, day_item_nb (date, item_num, APPT));
       status_mesg (_("Edit: (1)Start time, (2)End time "
 		     "or (3)Description?"), "[1/2/3] ");
-      while (ch != STRT && ch != END && ch != DESC && ch != ESCAPE)
-	ch = wgetch (win[STA].p);
+      while (ch != STRT && ch != END && ch != DESC && ch != KEY_GENERIC_ESCAPE)
+	ch = keys_getch (win[STA].p);
       switch (ch)
 	{
 	case STRT:
@@ -795,7 +796,7 @@ day_edit_item (conf_t *conf)
 	case DESC:
 	  update_desc (&a->mesg);
 	  break;
-	case ESCAPE:
+	case KEY_GENERIC_ESCAPE:
 	  return;
 	}
       break;
@@ -832,7 +833,7 @@ day_erase_item (long date, int item_number, erase_flag_e flag)
       while (ans != 'i' && ans != 'n')
 	{
 	  status_mesg (note_warning, note_choice);
-	  ans = wgetch (win[STA].p);
+	  ans = keys_getch (win[STA].p);
 	}
       if (ans == 'i')
 	flag = ERASE_FORCE;
@@ -851,10 +852,10 @@ day_erase_item (long date, int item_number, erase_flag_e flag)
     {
       if (flag == ERASE_FORCE_ONLY_NOTE)
 	ch = 'a';
-      while ((ch != 'a') && (ch != 'o') && (ch != ESCAPE))
+      while ((ch != 'a') && (ch != 'o') && (ch != KEY_GENERIC_ESCAPE))
 	{
 	  status_mesg (erase_warning, erase_choice);
-	  ch = wgetch (win[STA].p);
+	  ch = keys_getch (win[STA].p);
 	}
       if (ch == 'a')
 	{

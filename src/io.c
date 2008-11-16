@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.41 2008/11/09 20:10:18 culot Exp $	*/
+/*	$calcurse: io.c,v 1.42 2008/11/16 17:42:53 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -47,19 +47,12 @@
 #define ICALDATEFMT      "%Y%m%d"
 #define ICALDATETIMEFMT  "%Y%m%dT%H%M%S"
 
-#define STRING_BUILD(str) {str, sizeof (str) - 1}
-
 typedef enum
 {
   PROGRESS_BAR_SAVE,
   PROGRESS_BAR_LOAD,
   PROGRESS_BAR_EXPORT
 } progress_bar_t;
-
-typedef struct {
-  const char *str;
-  const int len;
-} string_t;
 
 typedef enum {
   ICAL_VEVENT,
@@ -216,7 +209,7 @@ get_export_stream (export_type_t type)
       if (stream == NULL)
 	{
 	  status_mesg (wrong_name, press_enter);
-	  wgetch (win[STA].p);
+	  keys_getch (win[STA].p);
 	}
     }
   free (stream_name);
@@ -913,7 +906,7 @@ io_save_cal (io_mode_t mode, conf_t *conf)
   if (mode == IO_MODE_INTERACTIVE && !conf->skip_system_dialogs)
     {
       status_mesg (save_success, enter);
-      wgetch (win[STA].p);
+      keys_getch (win[STA].p);
     }
 }
 
@@ -1127,7 +1120,7 @@ io_load_todo (void)
   if (data_file == NULL)
     {
       status_mesg (mesg_line1, mesg_line2);
-      wgetch (win[STA].p);
+      keys_getch (win[STA].p);
     }
   for (;;)
     {
@@ -1190,22 +1183,6 @@ load_keys_ht_compare (struct ht_keybindings_s *data1,
     return 1;
 }
 
-static int
-key_to_ascii (char *key)
-{
-  const string_t CONTROL_KEY = STRING_BUILD ("CTRL-");
-  
-  if (strlen (key) == 1)
-    return (int)key[0];
-  else
-    {
-      if (!strncmp (key, CONTROL_KEY.str, CONTROL_KEY.len))
-        return CTRL ((int)key[CONTROL_KEY.len]);
-      else
-        return 0;
-    }
-}
-
 /*
  * Load user-definable keys from file.
  * A hash table is used to speed up loading process in avoiding string
@@ -1214,7 +1191,7 @@ key_to_ascii (char *key)
 void
 io_load_keys (void)
 {
-  struct ht_keybindings_s keys[NOKEYS];
+  struct ht_keybindings_s keys[NBKEYS];
   FILE *keyfp;
   char buf[BUFSIZ];
   int i;
@@ -1226,7 +1203,7 @@ io_load_keys (void)
   HTABLE_GENERATE (ht_keybindings, ht_keybindings_s, load_keys_ht_getkey,
                    load_keys_ht_compare);
 
-  for (i = 0; i < NOKEYS; i++)
+  for (i = 0; i < NBKEYS; i++)
     {
       keys[i].key = (keys_e)i;
       keys[i].label = keys_get_label ((keys_e)i);
@@ -1261,15 +1238,20 @@ io_load_keys (void)
           strncpy (tmpbuf, p, BUFSIZ);
           if (sscanf (tmpbuf, "%s", key_ch) == AWAITED)
             {
-              int ch;
-              char *unknown_key = _("Error reading key: %s");
+              int ch, used;
+              char *unknown_key = _("Error reading key: \"%s\"");
+              char *already_used =
+                _("\"%s\" assigned multiple times in keys file!");
               
-              ch = key_to_ascii (key_ch);
-              p += strlen (key_ch) + 1;              
-              if (ch == 0)
-                ERROR_MSG (unknown_key);
+              if ((ch = keys_str2int (key_ch)) < 0)
+                ERROR_MSG (unknown_key, key_ch);
               else
-                keys_assign_binding (ch, ht_elm->key);
+                {
+                  p += strlen (key_ch) + 1;              
+                  used = keys_assign_binding (ch, ht_elm->key);
+                  if (used)
+                    ERROR_MSG (already_used, key_ch);
+                }
             }
           else
             break;
@@ -1323,23 +1305,29 @@ check_file (char *file, int *missing)
  *                 |
  *                 +--- notes/
  *                 |___ conf
+ *                 |___ keys
  *                 |___ apts
  *                 |___ todo
  */
 int
 io_check_data_files (void)
 {
-  int missing;
+  int missing, missing_keys;
 
-  missing = 0;
+  missing = missing_keys = 0;
   errno = 0;
   check_directory (path_dir, &missing);
   check_directory (path_notes, &missing);
   check_file (path_todo, &missing);
   check_file (path_apts, &missing);
   check_file (path_conf, &missing);
-  check_file (path_keys, &missing);
-  
+  check_file (path_keys, &missing_keys);
+  if (missing_keys)
+    {
+      missing++;
+      keys_dump_defaults (path_keys);
+    }
+
   return missing;
 }
 
@@ -1355,12 +1343,12 @@ io_startup_screen (bool skip_dialogs, int no_data_file)
   if (no_data_file != 0)
     {
       status_mesg (welcome_mesg, enter);
-      wgetch (win[STA].p);
+      keys_getch (win[STA].p);
     }
   else if (!skip_dialogs)
     {
       status_mesg (data_mesg, enter);
-      wgetch (win[STA].p);
+      keys_getch (win[STA].p);
     }
 }
 
@@ -1420,7 +1408,7 @@ io_export_data (io_mode_t mode, export_type_t type, conf_t *conf)
   if (!conf->skip_system_dialogs && mode == IO_MODE_INTERACTIVE)
     {
       status_mesg (success, enter);
-      wgetch (win[STA].p);
+      keys_getch (win[STA].p);
     }
 }
 
@@ -1612,7 +1600,7 @@ ical_unformat_line (char *line)
 static char *
 ical_unfold_content (FILE *fd, char *line, unsigned *lineno)
 {
-  const int CHAR_SPACE = 32, CHAR_TAB = 9;
+  const int CHAR_SPACE = 32;
   char *content;
   int c;
 
@@ -1623,7 +1611,7 @@ ical_unfold_content (FILE *fd, char *line, unsigned *lineno)
   for (;;)
     {
       c = getc (fd);
-      if (c == CHAR_SPACE || c == CHAR_TAB)
+      if (c == CHAR_SPACE || c == TAB)
         {
           char buf[BUFSIZ];
           
@@ -2460,7 +2448,7 @@ get_import_stream (export_type_t type)
       if (stream == NULL)
 	{
 	  status_mesg (wrong_file, press_enter);
-	  wgetch (win[STA].p);
+	  keys_getch (win[STA].p);
 	}
     }
   mem_free (stream_name);
@@ -2556,7 +2544,7 @@ io_import_data (io_mode_t mode, import_type_t type, conf_t *conf,
       snprintf (stat, BUFSIZ, lines_stats_interactive, stats.apoints,
                 stats.events, stats.todos, stats.skipped);
       status_mesg (read, stat);
-      wgetch (win[STA].p);
+      keys_getch (win[STA].p);
     }
   else if (mode == IO_MODE_NONINTERACTIVE)
     {
@@ -2596,7 +2584,7 @@ io_import_data (io_mode_t mode, import_type_t type, conf_t *conf,
           status_mesg (view_log, choices);
           do
             {
-              ans = wgetch (win[STA].p);
+              ans = keys_getch (win[STA].p);
               if (ans == 'y')
                 {
                   wins_launch_external (flogname, conf->pager);

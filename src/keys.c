@@ -1,4 +1,4 @@
-/*	$calcurse: keys.c,v 1.2 2008/11/09 20:10:18 culot Exp $	*/
+/*	$calcurse: keys.c,v 1.3 2008/11/16 17:42:53 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -24,138 +24,277 @@
  *
  */
 
+#include <string.h>
+
 #include "i18n.h"
 #include "utils.h"
-#include "htable.h"
 #include "keys.h"
 
-#define HTKEYSIZE 512
+#define MAXKEYVAL     256
 
-struct keys_s {
-  int    key;
-  keys_e action;
-  HTABLE_ENTRY (keys_s);
+struct keydef_s {
+  char *label;
+  char *binding;
 };
 
-static HTABLE_HEAD (ht_keys, HTKEYSIZE, keys_s) ht_keys_action =
-    HTABLE_INITIALIZER (&ht_keys_action);
+struct key_str_s {
+  char *str;
+  struct key_str_s *next;
+};
 
-static char *keylabel[NOKEYS] = {
-  "generic-help",
-  "generic-quit",
-  "generic-save",
-  "generic-change-view",
-  "generic-import",
-  "generic-export",
+static struct key_str_s *keys[NBKEYS];
 
-  "generic-goto",
-  "generic-other-cmd",
-  "generic-config-menu",
-  "generic-redraw",
+static keys_e actions[MAXKEYVAL];
 
-  "generic-add-appt",
-  "generic-add-todo",
-  "generic-next-ady",
-  "generic-prev-day",
-  "generic-next-week",
-  "generic-prev-week",
-  "generic-goto-today",
+static struct keydef_s keydef[NBKEYS] = {
+  {"generic-escape", "ESC"},
+  {"generic-credits", "@"},
+  {"generic-help", "?"},
+  {"generic-quit", "q Q"},
+  {"generic-save", "s S C-s"},
+  {"generic-change-view", "TAB"},
+  {"generic-import", "i I"},
+  {"generic-export", "x X"},
+  {"generic-goto", "g G"},
+  {"generic-other-cmd", "o O"},
+  {"generic-config-menu", "c C"},
+  {"generic-redraw", "C-r"},
+  {"generic-add-appt", "C-a"},
+  {"generic-add-todo", "C-t"},
+  {"generic-next-day", "C-l"},
+  {"generic-prev-day", "C-h"},
+  {"generic-next-week", "C-j"},
+  {"generic-prev-week", "C-k"},
+  {"generic-scroll-down", "C-n"},
+  {"generic-scroll-up", "C-p"},  
+  {"generic-goto-today", "C-g"},
         
-  "cal-next-day",
-  "cal-prev-day",
-  "cal-next-week",
-  "cal-prev-week",
-  "cal-start-of-week",
-  "cal-end-of-week",
-
-  "apt-add-item",
-  "apt-del-item",
-  "apt-edit-item",
-  "apt-view-item",
-  "apt-flag-item",
-  "apt-repeat",
-  "apt-move-up",
-  "apt-move-down",
-  "apt-edit-note",
-  "apt-view-note",
-
-  "todo-add-item",
-  "todo-del-item",
-  "todo-edit-item",
-  "todo-view-item",
-  "todo-raise-priority",
-  "todo-lower-priority",
-  "todo-move-up",
-  "todo-move-down",
-  "todo-edit-note",
-  "todo-view-bote",
-
-  "config-quit",
-  "config-general-menu",
-  "config-layout-menu",
-  "config-color-menu",
-  "config-notify-menu"
+  {"move-right", "l L"},
+  {"move-left", "h H"},
+  {"move-down", "j J"},
+  {"move-up", "k K"},
+  {"start-of-week", "0"},
+  {"end-of-week", "$"},
+  {"add-item", "a A"},
+  {"del-item", "d D"},
+  {"edit-item", "e E"},
+  {"view-item", "v V"},
+  {"flag-item", "!"},
+  {"repeat", "r R"},
+  {"edit-note", "n N"},
+  {"view-note", ">"},
+  {"raise-priority", "+"},
+  {"lower-priority", "-"},
 };
 
 static void
-ht_getkey (struct keys_s *data, char **key, int *len)
+dump_intro (FILE *fd)
 {
-  *key = (char *)&data->key;
-  *len = sizeof (int);
+  char *intro =
+    _("#\n"
+      "# Calcurse keys configuration file\n#\n"
+      "# This file sets the keybindings used by Calcurse.\n"
+      "# Lines beginning with \"#\" are comments, and ignored by Calcurse.\n"
+      "# To assign a keybinding to an action, this file must contain a line\n"
+      "# with the following syntax:\n#\n"
+      "#        ACTION  KEY1  KEY2  ...  KEYn\n#\n"
+      "# Where ACTION is what will be performed when KEY1, KEY2, ..., or KEYn\n"
+      "# will be pressed.\n"
+      "#\n"
+      "# To define bindings which use the CONTROL key, prefix the key with "
+      "'C-'.\n"
+      "# The escape and horizontal Tab key can be specified using the 'ESC'\n"
+      "# and 'TAB' keyword, respectively.\n");
+
+  fprintf (fd, "%s\n", intro);
 }
 
-static int
-ht_compare (struct keys_s *data1, struct keys_s *data2)
+void
+keys_init (void)
 {
-  if (data1->key == data2->key)
-    return 0;
-  else
-    return 1;
+  int i;
+
+  for (i = 0; i < MAXKEYVAL; i++)
+    actions[i] = KEY_UNDEF;
+  bzero (keys, NBKEYS);
 }
 
-HTABLE_GENERATE (ht_keys, keys_s, ht_getkey, ht_compare);
+void
+keys_dump_defaults (char *file)
+{
+  FILE *fd;
+  int i;
+  
+  fd = fopen (file, "w");
+  EXIT_IF (fd == NULL, _("FATAL ERROR in keys_dump_defaults: "
+                         "could not create default keys file."));
+
+  dump_intro (fd);
+  for (i = 0; i < NBKEYS; i++)
+    fprintf (fd, "%s  %s\n", keydef[i].label, keydef[i].binding);
+  fclose (fd);
+}
 
 char *
 keys_get_label (keys_e key)
 {
-  EXIT_IF (key < 0 || key > NOKEYS,
+  EXIT_IF (key < 0 || key > NBKEYS,
            _("FATAL ERROR in keys_get_label: key value out of bounds"));
 
-  return keylabel[key];
+  return keydef[key].label;
+}
+
+static int
+keys_get_action (int pressed)
+{
+  if (pressed < 0 || pressed > MAXKEYVAL)
+    return -1;
+  else
+    return actions[pressed];
+}
+
+keys_e
+keys_getch (WINDOW *win)
+{
+  int ch;
+  
+  ch = wgetch (win);
+
+  return keys_get_action (ch);
+}
+
+static void
+add_key_str (keys_e action, int key)
+{
+  struct key_str_s *new, **i;
+  
+  if (action < 0 || action > NBKEYS)
+    return;
+
+  new = malloc (sizeof (struct key_str_s));
+  new->str = strdup (keys_int2str (key));
+  new->next = NULL;
+  i = &keys[action];
+  for (;;)
+    {
+      if (*i == NULL)
+        {
+          *i = new;
+          break;
+        }
+      else if ((*i)->next == NULL)
+        {
+          (*i)->next = new;
+          break;
+        }
+      i = &(*i)->next;
+    }
 }
 
 int
-keys_get_key (int pressed)
-{
-  struct keys_s *key, find;
-
-  find.key = pressed;
-  key = HTABLE_LOOKUP (ht_keys, &ht_keys_action, &find);
-
-  if (key)
-    return (int)key->action;
-  else
-    return -1;
-}
-
-void
 keys_assign_binding (int key, keys_e action)
 {
-  struct keys_s *binding;
+  if (key < 0 || key > MAXKEYVAL || actions[key] != KEY_UNDEF)
+    return 1;
+  else
+    {
+      actions[key] =  action;
+      add_key_str (action, key);
+    }
+  
+  return 0;
+}
 
-  binding = malloc (sizeof (struct keys_s));
-  binding->key = key;
-  binding->action = action;
-  HTABLE_INSERT (ht_keys, &ht_keys_action, binding);
+static void
+del_key_str (keys_e action, int key)
+{
+  struct key_str_s *old, **i;
+  char oldstr[BUFSIZ];
+  int oldstrlen;
+  
+  if (action < 0 || action > NBKEYS)
+    return;
+
+  strncpy (oldstr, keys_int2str (key), BUFSIZ);
+  oldstrlen = strlen (oldstr);
+  for (i = &keys[action]; *i; i = &(*i)->next)
+    {
+      if (strlen ((*i)->str) == oldstrlen
+          && !(strncmp ((*i)->str, oldstr, oldstrlen)))
+        {
+          old = (*i);
+          (*i) = old->next;
+          mem_free (old->str);          
+          mem_free (old);
+          break;
+        }
+    }
 }
 
 void
-key_remove_binding (int key, keys_e action)
+keys_remove_binding (int key, keys_e action)
 {
-  struct keys_s find, *removed;
+  if (key < 0 || key > MAXKEYVAL)
+    return;
+  else
+    {
+      actions[key] = KEY_UNDEF;
+      del_key_str (action, key);
+    }
+}
 
-  find.key = key;
-  find.action = action;
-  removed = HTABLE_REMOVE (ht_keys, &ht_keys_action, &find);
-  mem_free (removed);
+int
+keys_str2int (char *key)
+{
+  const string_t CONTROL_KEY = STRING_BUILD ("C-");
+  const string_t TAB_KEY = STRING_BUILD ("TAB");
+  const string_t ESCAPE_KEY = STRING_BUILD ("ESC");  
+
+  if (!key)
+    return -1;
+  if (strlen (key) == 1)
+    return (int)key[0];
+  else
+    {
+      if (!strncmp (key, CONTROL_KEY.str, CONTROL_KEY.len))
+        return CTRL ((int)key[CONTROL_KEY.len]);
+      else if (!strncmp (key, TAB_KEY.str, TAB_KEY.len))
+        return TAB;
+      else if (!strncmp (key, ESCAPE_KEY.str, ESCAPE_KEY.len))
+        return ESCAPE;
+      else
+        return -1;
+    }
+}
+
+char *
+keys_int2str (int key)
+{
+  return keyname (key);
+}
+
+char *
+keys_action_firstkey (keys_e action)
+{
+  return (keys[action] != NULL) ? keys[action]->str : NULL; 
+}
+
+char *
+keys_action_allkeys (keys_e action)
+{
+  static char keystr[BUFSIZ];
+  struct key_str_s *i;
+  const char *SPACE = " ";
+  
+  if (keys[action] == NULL)
+    return NULL;
+  keystr[0] = '\0';  
+  for (i = keys[action]; i; i = i->next)
+    {
+      const int MAXLEN = sizeof (keystr) - 1 - strlen (keystr);
+      strncat (keystr, i->str, MAXLEN - 1);
+      strncat (keystr, SPACE, 1);
+    }
+
+  return keystr;
 }

@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.52 2008/09/23 17:31:57 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.53 2008/11/16 17:42:53 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -37,7 +37,20 @@
 #include "i18n.h"
 #include "wins.h"
 #include "custom.h"
+#include "keys.h"
 #include "utils.h"
+
+#define NB_CAL_CMDS	26	/* number of commands while in cal view */
+#define NB_APP_CMDS	30	/* same thing while in appointment view */
+#define NB_TOD_CMDS	30	/* same thing while in todo view */
+#define TOTAL_CMDS	NB_CAL_CMDS + NB_APP_CMDS + NB_TOD_CMDS
+#define CMDS_PER_LINE	6	/* max number of commands per line */  
+#define KEY_LENGTH	4	/* length of each keybinding + one space */
+
+typedef struct {
+  char    *label;
+  keys_e   action;
+} binding_t;
 
 static unsigned status_page;
 
@@ -79,7 +92,7 @@ ierror (const char *errmsg, ierror_sev_e sev)
 	       exitmsg);
   custom_remove_attr (errwin, ATTR_HIGHEST);
   wrefresh (errwin);
-  wgetch (errwin);
+  keys_getch (errwin);
   if (sev == IERROR_FATAL)
     exit_calcurse (EXIT_FAILURE);
 }
@@ -114,7 +127,7 @@ warnbox (const char *msg)
   mvwprintw (warnwin, 5, (WINCOL - strlen (displmsg)) / 2, "%s", displmsg);
   custom_remove_attr (warnwin, ATTR_HIGHEST);
   wrefresh (warnwin);
-  wgetch (warnwin);
+  keys_getch (warnwin);
   delwin (warnwin);
   doupdate ();
 }
@@ -216,7 +229,9 @@ showcursor (WINDOW *win, int y, int pos, char *str, int l, int offset)
 
   nc = str + pos;
   wmove (win, y, pos - offset);
-  (pos >= l) ? waddch (win, SPC | A_REVERSE) : waddch (win, *nc | A_REVERSE);
+#define SPACE 32
+  (pos >= l) ? waddch (win, SPACE | A_REVERSE) : waddch (win, *nc | A_REVERSE);
+#undef SPACE
 }
 
 /* Print the string at the desired position. */
@@ -356,7 +371,7 @@ getstring (WINDOW *win, char *str, int l, int x, int y)
 	    newpos++;
 	  break;
 
-	case ESCAPE:		/* cancel editing */
+	case KEY_GENERIC_ESCAPE:	/* cancel editing */
 	  return (GETSTRING_ESC);
 	  break;
 
@@ -427,64 +442,98 @@ is_all_digit (char *string)
   return (all_digit);
 }
 
+/* Need this to display keys properly inside status bar. */
+static char *
+format_key (char *key)
+{
+  static char fmtkey[KEY_LENGTH];
+  
+  switch (strlen (key))
+    {
+    case 0:
+      snprintf (fmtkey, KEY_LENGTH, "  ?");
+    case 1:
+      snprintf (fmtkey, KEY_LENGTH, "  %s", key);
+      break;
+    case 2:
+      snprintf (fmtkey, KEY_LENGTH, " %s", key);
+      break;
+    case 3:
+      snprintf (fmtkey, KEY_LENGTH, "%s", key);
+      break;
+    default:
+      snprintf (fmtkey, KEY_LENGTH, "%c%c.", key[0], key[1]);
+      /* NOTREACHED */
+    }
+  return fmtkey;
+}
+
 /* 
  * Draws the status bar. 
  * To add a keybinding, insert a new binding_t item, add it in the *binding
- * table, and update the NB_CAL_CMDS, NB_APP_CMDS or NB_TOD_CMDS defines in
- * utils.h, depending on which panel the added keybind is assigned to.
+ * table, and update the NB_CAL_CMDS, NB_APP_CMDS or NB_TOD_CMDS defines,
+ * depending on which panel the added keybind is assigned to.
  */
 void
 status_bar (void)
 {
+#define NB_PANELS	3	/* 3 panels: CALENDAR, APPOINTMENT, TODO */
   window_e which_pan;
-  int cmd_length, space_between_cmds, start, end, i, j = 0;
+  int cmd_length, space_between_cmds, start, end, i, j;
   const int pos[NB_PANELS + 1] =
       { 0, NB_CAL_CMDS, NB_CAL_CMDS + NB_APP_CMDS, TOTAL_CMDS };
 
-  binding_t help = { "  ?", _("Help") };
-  binding_t quit = { "  Q", _("Quit") };
-  binding_t save = { "  S", _("Save") };
-  binding_t export = { "  X", _("Export") };
-  binding_t import = { "  I", _("Import") };  
-  binding_t add = { "  A", _("Add Item") };
-  binding_t del = { "  D", _("Del Item") };
-  binding_t edit = { "  E", _("Edit Itm") };
-  binding_t flag = { "  !", _("Flag Itm") };
-  binding_t day = { "H/L", _("-+1 Day") };
-  binding_t week = { "K/J", _("-+1 Week") };
-  binding_t updn = { "K/J", _("Up/Down") };
-  binding_t rept = { "  R", _("Repeat") };
-  binding_t prio = { "+/-", _("Priority") };
-  binding_t tab = { "Tab", _("Chg View") };
-  binding_t togo = { "  G", _("Go to") };
-  binding_t conf = { "  C", _("Config") };
-  binding_t view = { "  V", _("View") };
-  binding_t draw = { " ^R", _("Redraw") };
-  binding_t appt = { " ^A", _("Add Appt") };
-  binding_t todo = { " ^T", _("Add Todo") };
-  binding_t enote = { "  N", _("EditNote") };
-  binding_t vnote = { "  >", _("ViewNote") };
-  binding_t eday = { "^HL", _("-+1 Day") };
-  binding_t ewek = { "^KJ", _("-+1 Week") };
-  binding_t othr = { "  O", _("OtherCmd") };
-  binding_t today = {" ^G", _("Today") };
-  binding_t weekb = {"  0", _("beg Week") };
-  binding_t weeke = {"  $", _("end Week") };
-
+  binding_t crdts  = {_("Credits"),  KEY_GENERIC_CREDITS};
+  binding_t help   = {_("Help"),     KEY_GENERIC_HELP};
+  binding_t quit   = {_("Quit"),     KEY_GENERIC_QUIT};
+  binding_t save   = {_("Save"),     KEY_GENERIC_SAVE};
+  binding_t chgvu  = {_("Chg View"), KEY_GENERIC_CHANGE_VIEW};
+  binding_t import = {_("Import"),   KEY_GENERIC_IMPORT};  
+  binding_t export = {_("Export"),   KEY_GENERIC_EXPORT};
+  binding_t togo   = {_("Go to"),    KEY_GENERIC_GOTO};
+  binding_t othr   = {_("OtherCmd"), KEY_GENERIC_OTHER_CMD};
+  binding_t conf   = {_("Config"),   KEY_GENERIC_CONFIG_MENU};  
+  binding_t draw   = {_("Redraw"),   KEY_GENERIC_REDRAW};
+  binding_t appt   = {_("Add Appt"), KEY_GENERIC_ADD_APPT};
+  binding_t todo   = {_("Add Todo"), KEY_GENERIC_ADD_TODO};
+  binding_t gnday  = {_("+1 Day"),   KEY_GENERIC_NEXT_DAY};
+  binding_t gpday  = {_("-1 Day"),   KEY_GENERIC_PREV_DAY};
+  binding_t gnweek = {_("+1 Week"),  KEY_GENERIC_NEXT_WEEK};
+  binding_t gpweek = {_("-1 Week"),  KEY_GENERIC_PREV_WEEK};
+  binding_t today  = {_("Today"),    KEY_GENERIC_GOTO_TODAY};
+  binding_t up     = {_("Up"),       KEY_MOVE_UP};
+  binding_t down   = {_("Down"),     KEY_MOVE_DOWN};  
+  binding_t left   = {_("Left"),     KEY_MOVE_LEFT};
+  binding_t right  = {_("Right"),    KEY_MOVE_RIGHT};  
+  binding_t weekb  = {_("beg Week"), KEY_START_OF_WEEK};
+  binding_t weeke  = {_("end Week"), KEY_END_OF_WEEK};
+  binding_t add    = {_("Add Item"), KEY_ADD_ITEM};
+  binding_t del    = {_("Del Item"), KEY_DEL_ITEM};
+  binding_t edit   = {_("Edit Itm"), KEY_EDIT_ITEM};
+  binding_t view   = {_("View"),     KEY_VIEW_ITEM};  
+  binding_t flag   = {_("Flag Itm"), KEY_FLAG_ITEM};
+  binding_t rept   = {_("Repeat"),   KEY_REPEAT_ITEM};
+  binding_t enote  = {_("EditNote"), KEY_EDIT_NOTE};
+  binding_t vnote  = {_("ViewNote"), KEY_VIEW_NOTE};
+  binding_t rprio  = {_("Prio.+"),   KEY_RAISE_PRIORITY};
+  binding_t lprio  = {_("Prio.-"),   KEY_LOWER_PRIORITY};  
+  
   binding_t *binding[TOTAL_CMDS] = {
     /* calendar keys */
-    &help, &quit, &save, &tab, &import, &export, &day, &week, &weekb, &weeke,
-    &togo, &othr, &conf, &draw, &appt, &todo, &eday, &ewek, &today, &othr,
+    &help, &quit, &save, &chgvu, &import, &export, &up, &down, &left, &right,
+    &togo, &othr, &weekb, &weeke, &conf, &draw, &appt, &todo, &gnday, &gpday,
+    &gnweek, &gpweek, &today, &othr, &crdts, &othr,
     /* appointment keys */
-    &help, &quit, &save, &tab, &import, &export, &add, &del, &edit, &view,
-    &rept, &othr, &updn, &flag, &enote, &vnote, &appt, &todo, &eday, &ewek,
-    &conf, &togo, &draw, &othr, &today, &othr,
+    &help, &quit, &save, &chgvu, &import, &export, &add, &del, &edit, &view,
+    &draw, &othr, &rept, &flag, &enote, &vnote, &up, &down, &gnday, &gpday,
+    &gnweek, &gpweek, &togo, &othr, &today, &conf, &appt, &todo, &crdts, &othr,
     /* todo keys */
-    &help, &quit, &save, &tab, &import, &export, &add, &del, &edit, &view,
-    &prio, &othr, &updn, &conf, &enote, &vnote, &appt, &todo, &eday, &ewek,
-    &togo, &draw, &today, &othr
+    &help, &quit, &save, &chgvu, &import, &export, &add, &del, &edit, &view,
+    &draw, &othr, &rprio, &lprio, &enote, &vnote, &up, &down, &gnday, &gpday,
+    &gnweek, &gpweek, &togo, &othr, &today, &conf, &appt, &todo, &crdts, &othr
   };
 
+#define LABEL_LENGTH	8	/* length of command description */  
   /* Total length of a command. */
   cmd_length = KEY_LENGTH + LABEL_LENGTH;
   space_between_cmds = floor (col / CMDS_PER_LINE - cmd_length);
@@ -495,12 +544,22 @@ status_bar (void)
   which_pan = wins_slctd ();
   start = pos[which_pan] + 2 * CMDS_PER_LINE * (status_page - 1);
   end = MIN (start + 2 * CMDS_PER_LINE, pos[which_pan + 1]);
+  j = 0;
   for (i = start; i < end; i += 2)
     {
+      char key[KEY_LENGTH], *fmtkey;
+
+      strncpy (key, keys_action_firstkey (binding[i]->action), KEY_LENGTH);
+      fmtkey = format_key (key);
       custom_apply_attr (win[STA].p, ATTR_HIGHEST);
-      mvwprintw (win[STA].p, 0, j * cmd_length, binding[i]->key);
+      mvwprintw (win[STA].p, 0, j * cmd_length, fmtkey);
       if (i + 1 != end)
-	mvwprintw (win[STA].p, 1, j * cmd_length, binding[i + 1]->key);
+        {
+          strncpy (key, keys_action_firstkey (binding[i + 1]->action),
+                   KEY_LENGTH);
+          fmtkey = format_key (key);
+          mvwprintw (win[STA].p, 1, j * cmd_length, fmtkey);
+        }
       custom_remove_attr (win[STA].p, ATTR_HIGHEST);
       mvwprintw (win[STA].p, 0, j * cmd_length + KEY_LENGTH,
 		 binding[i]->label);
@@ -510,6 +569,8 @@ status_bar (void)
       j++;
     }
   wnoutrefresh (win[STA].p);
+#undef LABEL_LENGTH
+#undef NB_PANELS
 }
 
 long
@@ -759,7 +820,7 @@ item_in_popup (char *saved_a_start, char *saved_a_end, char *msg,
   wmove (win[STA].p, 0, 0);
   pnoutrefresh (pad, 0, 0, margin_top + 2, margin_left, padl, winw);
   doupdate ();
-  wgetch (popup_win);
+  keys_getch (popup_win);
   delwin (pad);
   delwin (popup_win);
 }
@@ -1003,6 +1064,8 @@ str_toupper (char *s)
 void
 mem_free (void *ptr)
 {
-  if (ptr)
-    free (ptr);
+  if (!ptr)
+    return;
+  free (ptr);
+  ptr = NULL;
 }

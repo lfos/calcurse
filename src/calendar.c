@@ -1,4 +1,4 @@
-/*	$calcurse: calendar.c,v 1.17 2008/08/10 09:24:46 culot Exp $	*/
+/*	$calcurse: calendar.c,v 1.18 2008/11/16 17:42:53 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -35,10 +35,11 @@
 #include "day.h"
 #include "apoint.h"
 #include "event.h"
-#include "calendar.h"
 #include "custom.h"
 #include "vars.h"
+#include "keys.h"
 #include "utils.h"
+#include "calendar.h"
 
 #ifndef M_PI
 #define	M_PI	  3.14159265358979323846
@@ -387,7 +388,7 @@ calendar_change_day (int datefmt)
 	  if (wrong_day)
 	    {
 	      status_mesg (mesg_line1, mesg_line2);
-	      wgetch (win[STA].p);
+	      keys_getch (win[STA].p);
 	    }
 	}
     }

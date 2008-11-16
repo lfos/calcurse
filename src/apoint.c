@@ -1,4 +1,4 @@
-/*	$calcurse: apoint.c,v 1.23 2008/04/19 21:05:15 culot Exp $	*/
+/*	$calcurse: apoint.c,v 1.24 2008/11/16 17:42:53 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -32,12 +32,13 @@
 #include "i18n.h"
 #include "vars.h"
 #include "event.h"
-#include "apoint.h"
 #include "day.h"
 #include "custom.h"
 #include "notify.h"
 #include "recur.h"
+#include "keys.h"
 #include "calendar.h"
+#include "apoint.h"
 
 apoint_llist_t *alist_p;
 static int hilt = 0;
@@ -150,7 +151,7 @@ apoint_add (void)
 	  else if (check_time (item_time) != 1)
 	    {
 	      status_mesg (format_message_1, enter_str);
-	      wgetch (win[STA].p);
+	      keys_getch (win[STA].p);
 	    }
 	  else
 	    sscanf (item_time, "%u:%u", &heures, &minutes);
@@ -174,7 +175,7 @@ apoint_add (void)
 	  else if (check_time (item_time) == 0)
 	    {
 	      status_mesg (format_message_2, enter_str);
-	      wgetch (win[STA].p);
+	      keys_getch (win[STA].p);
 	    }
 	  else
 	    {
@@ -241,7 +242,7 @@ apoint_delete (conf_t *conf, unsigned *nb_events, unsigned *nb_apoints)
   if (conf->confirm_delete)
     {
       status_mesg (del_app_str, choices);
-      answer = wgetch (win[STA].p);
+      answer = keys_getch (win[STA].p);
       if ((answer == 'y') && (nb_items != 0))
 	go_for_deletion = true;
       else

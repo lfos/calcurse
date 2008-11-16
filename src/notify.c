@@ -1,4 +1,4 @@
-/*	$calcurse: notify.c,v 1.27 2008/04/20 13:49:39 culot Exp $	*/
+/*	$calcurse: notify.c,v 1.28 2008/11/16 17:42:53 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -32,6 +32,7 @@
 #include "i18n.h"
 #include "utils.h"
 #include "custom.h"
+#include "keys.h"
 #include "notify.h"
 
 static struct notify_vars_s *notify = NULL;
@@ -538,7 +539,7 @@ notify_config_bar (void)
       status_mesg (number_str, "");
       notify_print_options (conf_win.p, col);
       *buf = '\0';
-      ch = wgetch (win[STA].p);
+      ch = keys_getch (win[STA].p);
 
       switch (ch)
 	{

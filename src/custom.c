@@ -1,4 +1,4 @@
-/*	$calcurse: custom.c,v 1.24 2008/11/09 20:10:18 culot Exp $	*/
+/*	$calcurse: custom.c,v 1.25 2008/11/16 17:42:53 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -31,6 +31,7 @@
 #include "i18n.h"
 #include "io.h"
 #include "utils.h"
+#include "keys.h"
 #include "apoint.h"
 
 static struct attribute_s attr;
@@ -225,7 +226,7 @@ custom_load_conf (conf_t *conf, int background)
       status_mesg (mesg_line1, mesg_line2);
       wnoutrefresh (win[STA].p);
       doupdate ();
-      wgetch (win[STA].p);
+      keys_getch (win[STA].p);
     }
   var = CUSTOM_CONF_NOVARIABLE;
   pthread_mutex_lock (&nbar->mutex);
@@ -392,11 +393,11 @@ layout_config (void)
     _(" [1]AT    [2]AC    [3]TA    [4]CA    [5]TA    [6]TC    [7]AT    [8]CT");
 
   status_mesg (layout_mesg, choice_mesg);
-  wgetch (win[STA].p);
+  keys_getch (win[STA].p);
   status_mesg (layout_up_mesg, layout_down_mesg);
   wnoutrefresh (win[STA].p);
   doupdate ();
-  while ((ch = wgetch (win[STA].p)) != 'q')
+  while ((ch = keys_getch (win[STA].p)) != 'q')
     {
       if (ch <= '8' && ch >= '1')
 	{
@@ -581,7 +582,7 @@ custom_color_config (void)
   display_color_config (&conf_win, &mark_fore, &mark_back, cursor,
 			need_reset, theme_changed);
 
-  while ((ch = wgetch (win[STA].p)) != 'q')
+  while ((ch = keys_getch (win[STA].p)) != 'q')
     {
       need_reset = 0;
       theme_changed = 0;
@@ -809,7 +810,7 @@ custom_general_config (conf_t *conf)
   cwin.total_lines = print_general_options (cwin.pad.p, conf);
   wins_scrollwin_display (&cwin);
 
-  while ((ch = wgetch (win[STA].p)) != 'q')
+  while ((ch = keys_getch (win[STA].p)) != 'q')
     {
       switch (ch)
 	{
@@ -831,10 +832,10 @@ custom_general_config (conf_t *conf)
 	      notify_update_bar ();
 	    }
 	  break;
-        case CTRL ('n'):
+        case KEY_MOVE_DOWN:
           wins_scrollwin_down (&cwin);
 	  break;
-	case CTRL ('p'):
+	case KEY_MOVE_UP:
           wins_scrollwin_up (&cwin);
 	  break;
 	case '1':

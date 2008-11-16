@@ -1,4 +1,4 @@
-/*	$calcurse: vars.h,v 1.25 2008/11/09 20:10:18 culot Exp $	*/
+/*	$calcurse: vars.h,v 1.26 2008/11/16 17:42:53 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -43,8 +43,6 @@
 #define KEYS_PATH        DIR_NAME KEYS_PATH_NAME
 #define NOTES_DIR        DIR_NAME NOTES_DIR_NAME
 
-#define CTRL(x)         ((x) & 0x1f)
-#define ESCAPE		27
 #define ATTR_FALSE	0
 #define ATTR_TRUE	1
 #define ATTR_LOWEST	2

@@ -1,4 +1,4 @@
-/*	$calcurse: vars.c,v 1.10 2008/11/09 20:10:18 culot Exp $	*/
+/*	$calcurse: vars.c,v 1.11 2008/11/16 17:42:53 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -31,6 +31,7 @@
 #include "calendar.h"
 #include "custom.h"
 #include "wins.h"
+#include "keys.h"
 #include "vars.h"
 
 /*

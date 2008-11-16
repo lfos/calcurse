@@ -1,4 +1,4 @@
-/*	$calcurse: help.c,v 1.29 2008/09/21 08:06:43 culot Exp $	*/
+/*	$calcurse: help.c,v 1.30 2008/11/16 17:42:53 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -30,10 +30,11 @@
 #include <sys/types.h>
 
 #include "i18n.h"
-#include "help.h"
 #include "custom.h"
 #include "utils.h"
+#include "keys.h"
 #include "notify.h"
+#include "help.h"
 
 typedef enum
 {
@@ -161,100 +162,96 @@ wanted_page (int ch)
   switch (ch)
     {
 
-    case '?':
+    case KEY_GENERIC_HELP:
       page = HELP_MAIN;
       break;
 
-    case '!':
+    case KEY_FLAG_ITEM:
       page = HELP_FLAG;
       break;
 
-    case CTRL ('r'):
-    case CTRL ('a'):
-    case CTRL ('t'):
-    case CTRL ('h'):
-    case CTRL ('j'):
-    case CTRL ('k'):
-    case CTRL ('l'):
-    case CTRL ('g'):
+    case KEY_GENERIC_REDRAW:
+    case KEY_GENERIC_ADD_APPT:
+    case KEY_GENERIC_ADD_TODO:
+    case KEY_GENERIC_NEXT_DAY:
+    case KEY_GENERIC_PREV_DAY:
+    case KEY_GENERIC_NEXT_WEEK:
+    case KEY_GENERIC_PREV_WEEK:
+    case KEY_GENERIC_GOTO_TODAY:
       page = HELP_GENERAL;
       break;
 
-    case 's':
+    case KEY_GENERIC_SAVE:
       page = HELP_SAVE;
       break;
 
-    case 'i':
+    case KEY_GENERIC_IMPORT:
       page = HELP_IMPORT;
       break;
       
-    case 'x':
+    case KEY_GENERIC_EXPORT:
       page = HELP_EXPORT;
       break;
 
-    case '0':
-    case '$':
-    case 'h':
-    case 'l':
-    case 'j':
-    case 'k':
-    case KEY_UP:
-    case KEY_DOWN:
-    case KEY_RIGHT:
-    case KEY_LEFT:
+    case KEY_END_OF_WEEK:
+    case KEY_START_OF_WEEK:
+    case KEY_MOVE_UP:
+    case KEY_MOVE_DOWN:
+    case KEY_MOVE_RIGHT:
+    case KEY_MOVE_LEFT:
       page = HELP_DISPLACEMENT;
       break;
 
-    case 'a':
+    case KEY_ADD_ITEM:
       page = HELP_ADD;
       break;
 
-    case 'g':
+    case KEY_GENERIC_GOTO:
       page = HELP_GOTO;
       break;
 
-    case 'd':
+    case KEY_DEL_ITEM:
       page = HELP_DELETE;
       break;
 
-    case 'e':
+    case KEY_EDIT_ITEM:
       page = HELP_EDIT;
       break;
 
-    case 'n':
+    case KEY_EDIT_NOTE:
       page = HELP_ENOTE;
       break;
 
-    case '>':
+    case KEY_VIEW_NOTE:
       page = HELP_VNOTE;
       break;
 
-    case 'c':
+    case KEY_GENERIC_CONFIG_MENU:
       page = HELP_CONFIG;
       break;
 
-    case 'o':
+    case KEY_GENERIC_OTHER_CMD:
       page = HELP_OTHER;
       break;
 
-    case 'r':
+    case KEY_REPEAT_ITEM:
       page = HELP_REPEAT;
       break;
 
-    case 'v':
+    case KEY_VIEW_ITEM:
       page = HELP_VIEW;
       break;
 
-    case '+':
-    case '-':
+    case KEY_RAISE_PRIORITY:
+    case KEY_LOWER_PRIORITY:
       page = HELP_PRIORITY;
       break;
 
-    case 9:
+    case KEY_GENERIC_CHANGE_VIEW:
       page = HELP_TAB;
       break;
 
-    case '@':
+    case KEY_GENERIC_CREDITS:
       page = HELP_CREDITS;
       break;
 
@@ -272,7 +269,7 @@ help_screen (void)
 {
   scrollwin_t hwin;
   int need_resize;
-  int ch = '?';
+  int ch = KEY_GENERIC_HELP;
   int page, oldpage;
   help_page_t hscr[HELPSCREENS];
 
@@ -604,7 +601,7 @@ help_screen (void)
   need_resize = 0;
   
   /* Display the help screen related to user input. */
-  while (ch != 'q')
+  while (ch != KEY_GENERIC_QUIT)
     {
       erase_window_part (hwin.win.p, 1, hwin.pad.y, col - 2,
                          hwin.win.h - 2);
@@ -618,11 +615,11 @@ help_screen (void)
 	  need_resize = 1;
 	  break;
 
-	case CTRL ('n'):
+	case KEY_GENERIC_SCROLL_DOWN:
           wins_scrollwin_down (&hwin);
 	  break;
 
-	case CTRL ('p'):
+	case KEY_GENERIC_SCROLL_UP:
           wins_scrollwin_up (&hwin);
 	  break;
 
@@ -637,8 +634,7 @@ help_screen (void)
 	  break;
 	}
       wins_scrollwin_display (&hwin);
-      ch = wgetch (win[STA].p);
-      ch = tolower (ch);
+      ch = keys_getch (win[STA].p);
     }
   wins_scrollwin_delete (&hwin);
   if (need_resize)

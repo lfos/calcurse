@@ -1,4 +1,4 @@
-/*	$calcurse: keys.h,v 1.2 2008/11/09 20:10:18 culot Exp $	*/
+/*	$calcurse: keys.h,v 1.3 2008/11/16 17:42:53 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -27,8 +27,16 @@
 #ifndef CALCURSE_KEYS_H
 #define CALCURSE_KEYS_H
 
+#define CTRLVAL   0x1F
+#define TAB       9
+
+#define CTRL(x)         ((x) & CTRLVAL)
+#define ESCAPE		27
+
 typedef enum
   {
+    KEY_GENERIC_ESCAPE,
+    KEY_GENERIC_CREDITS,
     KEY_GENERIC_HELP,
     KEY_GENERIC_QUIT,
     KEY_GENERIC_SAVE,
@@ -45,50 +53,41 @@ typedef enum
     KEY_GENERIC_PREV_DAY,
     KEY_GENERIC_NEXT_WEEK,
     KEY_GENERIC_PREV_WEEK,
+    KEY_GENERIC_SCROLL_DOWN,
+    KEY_GENERIC_SCROLL_UP,
     KEY_GENERIC_GOTO_TODAY,
         
-    KEY_CAL_NEXT_DAY,
-    KEY_CAL_PREV_DAY,
-    KEY_CAL_NEXT_WEEK,
-    KEY_CAL_PREV_WEEK,
-    KEY_CAL_START_OF_WEEK,
-    KEY_CAL_END_OF_WEEK,
+    KEY_MOVE_RIGHT,
+    KEY_MOVE_LEFT,
+    KEY_MOVE_DOWN,
+    KEY_MOVE_UP,
+    KEY_START_OF_WEEK,
+    KEY_END_OF_WEEK,
+    KEY_ADD_ITEM,
+    KEY_DEL_ITEM,
+    KEY_EDIT_ITEM,
+    KEY_VIEW_ITEM,
+    KEY_FLAG_ITEM,
+    KEY_REPEAT_ITEM,
+    KEY_EDIT_NOTE,
+    KEY_VIEW_NOTE,
+    KEY_RAISE_PRIORITY,
+    KEY_LOWER_PRIORITY,
 
-    KEY_APT_ADD_ITEM,
-    KEY_APT_DEL_ITEM,
-    KEY_APT_EDIT_ITEM,
-    KEY_APT_VIEW_ITEM,
-    KEY_APT_FLAG_ITEM,
-    KEY_APT_REPEAT,
-    KEY_APT_MOVE_UP,
-    KEY_APT_MOVE_DOWN,
-    KEY_APT_EDIT_NOTE,
-    KEY_APT_VIEW_NOTE,
-
-    KEY_TODO_ADD_ITEM,
-    KEY_TODO_DEL_ITEM,
-    KEY_TODO_EDIT_ITEM,
-    KEY_TODO_VIEW_ITEM,
-    KEY_TODO_RAISE_PRIORITY,
-    KEY_TODO_LOWER_PRIORITY,
-    KEY_TODO_MOVE_UP,
-    KEY_TODO_MOVE_DOWN,
-    KEY_TODO_EDIT_NOTE,
-    KEY_TODO_VIEW_NOTE,
-
-    KEY_CONFIG_QUIT,
-    KEY_CONFIG_GENERAL_MENU,
-    KEY_CONFIG_LAYOUT_MENU,
-    KEY_CONFIG_COLOR_MENU,
-    KEY_CONFIG_NOTIFY_MENU,
-
-    NOKEYS
+    NBKEYS,
+    KEY_UNDEF
   }
 keys_e;
 
+void    keys_init (void);
+void    keys_dump_defaults (char *);
 char   *keys_get_label (keys_e);
-int     keys_get_key (int);
-void    keys_assign_binding (int, keys_e);
-void    key_remove_binding (int, keys_e);
+keys_e  keys_getch (WINDOW *win);
+int     keys_assign_binding (int, keys_e);
+void    keys_remove_binding (int, keys_e);
+int     keys_str2int (char *);
+char   *keys_int2str (int);
+char   *keys_action_firstkey (keys_e);
+char   *keys_action_allkeys (keys_e);
 
 #endif /* CALCURSE_KEYS_H */

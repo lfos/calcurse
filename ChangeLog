@@ -1,3 +1,13 @@
+2008-11-16  Frederic Culot  <frederic@culot.org>
+
+	* src/keys.c (keys_dump_defaults, dump_intro, keys_str2int)
+	(keys_int2str, keys_init, add_key_str, del_key_str): new functions
+
+	* src/io.c (key_to_ascii): moved to src/keys.c
+
+	* src/utils.c (status_bar): updated to display user keybindings
+	* src/utils.c (format_key): new function
+
 2008-11-09  Frederic Culot  <frederic@culot.org>
 
 	* src/io.c (io_load_keys, key_to_ascii): new function

@@ -1,4 +1,4 @@
-/*	$calcurse: todo.c,v 1.23 2008/11/09 20:10:18 culot Exp $	*/
+/*	$calcurse: todo.c,v 1.24 2008/11/16 17:42:53 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -146,7 +146,7 @@ todo_new_item (void)
       while ((ch < '1') || (ch > '9'))
 	{
 	  status_mesg (mesg_id, "");
-	  ch = wgetch (win[STA].p);
+	  ch = keys_getch (win[STA].p);
 	}
       todo_add (todo_input, ch - '0', NULL);
       todos++;
@@ -249,7 +249,7 @@ todo_delete (conf_t *conf)
   if (conf->confirm_delete)
     {
       status_mesg (del_todo_str, choices);
-      answer = wgetch (win[STA].p);
+      answer = keys_getch (win[STA].p);
       if ((answer == 'y') && (todos > 0))
 	{
 	  go_for_todo_del = true;
@@ -274,10 +274,10 @@ todo_delete (conf_t *conf)
   if (has_note == 0)
     answer = 't';
 
-  while (answer != 't' && answer != 'n' && answer != ESCAPE)
+  while (answer != 't' && answer != 'n' && answer != KEY_GENERIC_ESCAPE)
     {
       status_mesg (erase_warning, erase_choice);
-      answer = wgetch (win[STA].p);
+      answer = keys_getch (win[STA].p);
     }
 
   switch (answer)
@@ -348,11 +348,11 @@ todo_chg_priority (int action)
     strncpy (backup_note, backup->note, NOTESIZ + 1);
   else
     backup_note[0] = '\0';
-  if (action == KEY_TODO_RAISE_PRIORITY)
+  if (action == KEY_RAISE_PRIORITY)
     {
       (backup_id > 1) ? backup_id-- : do_chg--;
     }
-  else if (action == KEY_TODO_LOWER_PRIORITY)
+  else if (action == KEY_LOWER_PRIORITY)
     {
       (backup_id < 9) ? backup_id++ : do_chg--;
     }

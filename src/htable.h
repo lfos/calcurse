@@ -1,4 +1,4 @@
-/*	$calcurse: htable.h,v 1.2 2008/11/09 20:10:18 culot Exp $	*/
+/*	$Id: htable.h,v 1.3 2008/11/16 17:42:53 culot Exp $	*/
 
 /*
  * Copyright (c) 2008 Frederic Culot <frederic@culot.org>
@@ -152,7 +152,7 @@ name##_HTABLE_INSERT(struct name *head, struct type *elm)                     \
   while ((__bktp = *__bktpp))                                                 \
     {                                                                         \
       if (!(cmp)(elm, __bktp))                                                \
-        return __bktp;                                                        \
+        return NULL;                                                          \
       else                                                                    \
         {                                                                     \
           __pos++;                                                            \

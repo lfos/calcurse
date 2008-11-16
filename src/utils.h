@@ -1,4 +1,4 @@
-/*	$calcurse: utils.h,v 1.37 2008/11/09 20:10:18 culot Exp $	*/
+/*	$calcurse: utils.h,v 1.38 2008/11/16 17:42:53 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -34,6 +34,8 @@
 
 #define MAX(x,y) 	((x)>(y)?(x):(y))
 #define MIN(x,y) 	((x)<(y)?(x):(y))
+
+#define STRING_BUILD(str) {str, sizeof (str) - 1}
 
 #define ERROR_MSG(...) do {                                             \
         char msg[BUFSIZ];                                               \
@@ -84,27 +86,14 @@
 	((e) ? (void)0 : aerror(__FILE__, __LINE__, #e));		\
 } while (0)
 
-#define SPC		32	/* ASCII code for white space */
-
-#define NB_CAL_CMDS	20	/* number of commands while in cal view */
-#define NB_APP_CMDS	26	/* same thing while in appointment view */
-#define NB_TOD_CMDS	24	/* same thing while in todo view */
-#define TOTAL_CMDS	NB_CAL_CMDS + NB_APP_CMDS + NB_TOD_CMDS
-#define NB_PANELS	3	/* 3 panels: CALENDAR, APPOINTMENT, TODO */
-#define CMDS_PER_LINE	6	/* max number of commands per line */
-#define KEY_LENGTH	4	/* length of each keybinding + one space */
-#define LABEL_LENGTH	8	/* length of command description */
-
 #define GETSTRING_VALID	0	/* value returned by getstring() if text is valid */
 #define GETSTRING_ESC	1	/* user pressed escape to cancel editing */
 #define GETSTRING_RET	2	/* return was pressed without entering any text */
 
-typedef struct
-{				/* structure defining a keybinding */
-  char *key;
-  char *label;
-}
-binding_t;
+typedef struct {
+  const char *str;
+  const int len;
+} string_t;
 
 typedef enum
 {
