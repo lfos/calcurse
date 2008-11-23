@@ -1,4 +1,4 @@
-/*	$calcurse: help.h,v 1.5 2008/04/12 21:14:03 culot Exp $	*/
+/*	$calcurse: help.h,v 1.6 2008/11/23 20:38:56 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -27,6 +27,8 @@
 #ifndef CALCURSE_HELP_H
 #define CALCURSE_HELP_H
 
+#include "wins.h"
+
 typedef struct
 {
   char *title;
@@ -35,5 +37,8 @@ typedef struct
 help_page_t;
 
 void help_screen (void);
+void help_wins_init (scrollwin_t *, int, int, int, int);
+void help_wins_reset (scrollwin_t *);
+int  help_write_pad (window_t *, char *, char *);
 
 #endif /* CALCURSE_HELP_H */

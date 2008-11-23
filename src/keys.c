@@ -1,4 +1,4 @@
-/*	$calcurse: keys.c,v 1.3 2008/11/16 17:42:53 culot Exp $	*/
+/*	$calcurse: keys.c,v 1.4 2008/11/23 20:38:56 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -25,9 +25,11 @@
  */
 
 #include <string.h>
+#include <math.h>
 
 #include "i18n.h"
 #include "utils.h"
+#include "custom.h"
 #include "keys.h"
 
 #define MAXKEYVAL     256
@@ -104,7 +106,9 @@ dump_intro (FILE *fd)
       "# To define bindings which use the CONTROL key, prefix the key with "
       "'C-'.\n"
       "# The escape and horizontal Tab key can be specified using the 'ESC'\n"
-      "# and 'TAB' keyword, respectively.\n");
+      "# and 'TAB' keyword, respectively.\n#\n"
+      "# A description of what each ACTION keyword is used for is available\n"
+      "# from calcurse online configuration menu.\n");
 
   fprintf (fd, "%s\n", intro);
 }
@@ -144,7 +148,7 @@ keys_get_label (keys_e key)
   return keydef[key].label;
 }
 
-static int
+keys_e
 keys_get_action (int pressed)
 {
   if (pressed < 0 || pressed > MAXKEYVAL)
@@ -256,7 +260,9 @@ keys_str2int (char *key)
     return (int)key[0];
   else
     {
-      if (!strncmp (key, CONTROL_KEY.str, CONTROL_KEY.len))
+      if (key[0] == '^')
+        return CTRL ((int)key[1]);
+      else if (!strncmp (key, CONTROL_KEY.str, CONTROL_KEY.len))
         return CTRL ((int)key[CONTROL_KEY.len]);
       else if (!strncmp (key, TAB_KEY.str, TAB_KEY.len))
         return TAB;
@@ -270,13 +276,50 @@ keys_str2int (char *key)
 char *
 keys_int2str (int key)
 {
-  return keyname (key);
+  switch (key)
+    {
+    case TAB:
+      return "TAB";
+    case ESCAPE:
+      return "ESC";
+    default:
+      return keyname (key);
+    }
+}
+
+int
+keys_action_count_keys (keys_e action)
+{
+  struct key_str_s *key;
+  int i;
+
+  i = 0;
+  for (key = keys[action]; key; key = key->next)
+    i++;
+
+  return i;
 }
 
 char *
 keys_action_firstkey (keys_e action)
 {
-  return (keys[action] != NULL) ? keys[action]->str : NULL; 
+  return (keys[action] != NULL) ? keys[action]->str : "XXX"; 
+}
+
+char *
+keys_action_nkey (keys_e action, int keynum)
+{
+  struct key_str_s *key;
+  int i;
+
+  i = 0;
+  for (key = keys[action]; key; key = key->next)
+    {
+      if (i == keynum)
+        return key->str;
+      i++;
+    }
+  return (char *)0;
 }
 
 char *
@@ -297,4 +340,175 @@ keys_action_allkeys (keys_e action)
     }
 
   return keystr;
+}
+
+/* Need this to display keys properly inside status bar. */
+static char *
+keys_format_label (char *key, int keylen)
+{
+  static char fmtkey[BUFSIZ];
+  const int len = strlen (key);
+  char *dot = ".";
+  int i;
+
+  if (keylen > BUFSIZ)
+    return (char *)0;
+
+  bzero (fmtkey, sizeof (fmtkey));
+  if (len == 0)
+    snprintf (fmtkey, sizeof (fmtkey), "?");
+  else if (len <= keylen)
+    {
+      for (i = 0; i < keylen - len; i++)
+        fmtkey[i] = ' ';
+      strncat (fmtkey, key, keylen);
+    }
+  else
+    {
+      for (i = 0; i < keylen - 1; i++)
+        fmtkey[i] = key[i];
+      strncat (fmtkey, dot, strlen (dot));
+    }
+  return fmtkey;
+}
+
+void
+keys_display_bindings_bar (WINDOW *win, binding_t **binding, int first_key,
+                           int last_key)
+{
+  int i, j, cmdlen, space_between_cmds;
+
+  /* Total length of a command. */
+  cmdlen =  KEYS_KEYLEN + 1 + KEYS_LABELEN;
+  space_between_cmds = floor (col / KEYS_CMDS_PER_LINE - cmdlen);
+  cmdlen += space_between_cmds;
+  
+  j = 0;
+  erase_status_bar ();
+  for (i = first_key; i < last_key; i += 2)
+    {
+      char key[KEYS_KEYLEN + 1], *fmtkey;
+      const int KEY_POS = j * cmdlen;
+      const int LABEL_POS = j * cmdlen + KEYS_KEYLEN + 1;
+
+      strncpy (key, keys_action_firstkey (binding[i]->action), KEYS_KEYLEN);
+      fmtkey = keys_format_label (key, KEYS_KEYLEN);
+      custom_apply_attr (win, ATTR_HIGHEST);
+      mvwprintw (win, 0, KEY_POS, fmtkey);
+      if (i + 1 != last_key)
+        {
+          strncpy (key, keys_action_firstkey (binding[i + 1]->action),
+                   KEYS_KEYLEN);
+          fmtkey = keys_format_label (key, KEYS_KEYLEN);
+          mvwprintw (win, 1, KEY_POS, fmtkey);
+        }
+      custom_remove_attr (win, ATTR_HIGHEST);
+      mvwprintw (win, 0, LABEL_POS, binding[i]->label);
+      if (i + 1 != last_key)
+	mvwprintw (win, 1, LABEL_POS, binding[i + 1]->label);
+      j++;
+    }
+  wnoutrefresh (win);
+}
+
+/*
+ * Display information about the given key.
+ * (could not add the keys descriptions to keydef variable, because of i18n).
+ */
+void
+keys_popup_info (keys_e key)
+{
+  char *info[NBKEYS];
+  WINDOW *infowin;
+  
+  info[KEY_GENERIC_ESCAPE] =
+    _("Cancel the ongoing action.");
+  info[KEY_GENERIC_CREDITS] =
+    _("Print general information about calcurse's authors, license, etc.");
+  info[KEY_GENERIC_HELP] =
+    _("Display hints whenever some help screens are available.");
+  info[KEY_GENERIC_QUIT] =
+    _("Exit from the current menu, or quit calcurse.");
+  info[KEY_GENERIC_SAVE] =
+    _("Save calcurse data.");
+  info[KEY_GENERIC_CHANGE_VIEW] =
+    _("Select next panel in calcurse main screen.");
+  info[KEY_GENERIC_IMPORT] =
+    _("Import data from an external file.");
+  info[KEY_GENERIC_EXPORT] =
+    _("Export data to a new file format.");
+  info[KEY_GENERIC_GOTO] =
+    _("Select the day to go to.");
+  info[KEY_GENERIC_OTHER_CMD] =
+    _("Show next possible actions inside status bar.");
+  info[KEY_GENERIC_CONFIG_MENU] =
+    _("Enter the configuration menu.");
+  info[KEY_GENERIC_REDRAW] =
+    _("Redraw calcurse's screen.");
+  info[KEY_GENERIC_ADD_APPT] =
+    _("Add an appointment, whichever panel is currently selected.");
+  info[KEY_GENERIC_ADD_TODO] =
+    _("Add a todo item, whichever panel is currently selected.");
+  info[KEY_GENERIC_NEXT_DAY] =
+    _("Move to next day in calendar, whichever panel is currently selected.");
+  info[KEY_GENERIC_PREV_DAY] =
+    _("Move to previous day in calendar, whichever panel is currently "
+      "selected.");
+  info[KEY_GENERIC_NEXT_WEEK] =
+    _("Move to next week in calendar, whichever panel is currently selected.");
+  info[KEY_GENERIC_PREV_WEEK] =
+    _("Move to previous week in calendar, whichever panel is currently "
+      "selected");
+  info[KEY_GENERIC_SCROLL_DOWN] =
+    _("Scroll window down (e.g. when displaying text inside a popup window).");
+  info[KEY_GENERIC_SCROLL_UP] =
+    _("Scroll window up (e.g. when displaying text inside a popup window).");
+  info[KEY_GENERIC_GOTO_TODAY] =
+    _("Go to today, whichever panel is selected.");
+  info[KEY_MOVE_RIGHT] =
+    _("Move to the right.");
+  info[KEY_MOVE_LEFT] =
+    _("Move to the left.");
+  info[KEY_MOVE_DOWN] =
+    _("Move down.");
+  info[KEY_MOVE_UP] =
+    _("Move up.");
+  info[KEY_START_OF_WEEK] =
+    _("Select the first day of the current week when inside the calendar "
+      "panel.");
+  info[KEY_END_OF_WEEK] =
+    _("Select the last day of the current week when inside the calendar "
+      "panel.");
+  info[KEY_ADD_ITEM] =
+    _("Add an item to the currently selected panel.");
+  info[KEY_DEL_ITEM] =
+    _("Delete the currently selected item.");
+  info[KEY_EDIT_ITEM] =
+    _("Edit the currently seleted item.");
+  info[KEY_VIEW_ITEM] =
+    _("Display the currently selected item inside a popup window.");
+  info[KEY_FLAG_ITEM] =
+    _("Flag the currently selected item as important.");
+  info[KEY_REPEAT_ITEM] =
+    _("Repeat an item");
+  info[KEY_EDIT_NOTE] =
+    _("Attach (or edit if one exists) a note to the currently selected item");
+  info[KEY_VIEW_NOTE] =
+    _("View the note attached to the currently selected item.");
+  info[KEY_RAISE_PRIORITY] =
+    _("Raise a task priority inside the todo panel.");
+  info[KEY_LOWER_PRIORITY] =
+    _("Lower a task priority inside the todo panel.");    
+    
+  if (key < 0 || key > NBKEYS)
+    return;
+
+#define WINROW 10
+#define WINCOL (col - 4)
+  infowin = popup (WINROW, WINCOL, (row - WINROW) / 2, (col - WINCOL) / 2,
+                   keydef[key].label, info[key], 1);
+  keys_getch (infowin);
+  delwin (infowin);
+#undef WINROW
+#undef WINCOL
 }

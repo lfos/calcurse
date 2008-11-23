@@ -1,4 +1,38 @@
+2008-11-23  Frederic Culot  <frederic@culot.org>
+
+	* src/keys.c (keys_popup_info, keys_action_count_keys): new
+	function
+
+	* src/utils.c (popup): updated to take a message to be displayed
+	as extra argument
+	
+2008-11-22  Frederic Culot  <frederic@culot.org>
+
+	* src/custom.c (custom_keys_config_bar): new function
+
+	* src/keys.c (keys_display_bindings_bar)
+	(keys_action_nkey): new functions
+
+	* src/utils.c (format_key): moved to keys_format_label
+	
 2008-11-16  Frederic Culot  <frederic@culot.org>
+
+	* src/custom.c (config_bar): renamed into custom_config_bar and
+	updated to display key configuration menu
+
+	* src/custom.c (general_conf_set_scrsize): renamed into
+	conf_set_scrsize
+
+	* src/custom.c (custom_keys_config, print_keys_bindings)
+	(print_key_incolor, print_key_reverse): new functions
+
+	* src/utils.c (print_option_incolor): renamed into
+	print_bool_option_incolor
+
+	* src/wins.c (wins_scrollwin_up, wins_scrollwin_down): amount of
+	lines to be scrolled can now be specified
+	
+2008-11-15  Frederic Culot  <frederic@culot.org>
 
 	* src/keys.c (keys_dump_defaults, dump_intro, keys_str2int)
 	(keys_int2str, keys_init, add_key_str, del_key_str): new functions

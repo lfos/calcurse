@@ -1,4 +1,4 @@
-/*	$calcurse: utils.h,v 1.38 2008/11/16 17:42:53 culot Exp $	*/
+/*	$calcurse: utils.h,v 1.39 2008/11/23 20:38:56 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -118,7 +118,7 @@ void    warnbox (const char *);
 void    status_mesg (char *, char *);
 void    erase_status_bar (void);
 void    erase_window_part (WINDOW *, int, int, int, int);
-WINDOW *popup (int, int, int, int, char *);
+WINDOW *popup (int, int, int, int, char *, char *, int);
 void    print_in_middle (WINDOW *, int, int, int, char *);
 int     getstring (WINDOW *, char *, int, int, int);
 int     updatestring (WINDOW *, char **, int, int);
@@ -141,7 +141,7 @@ long    get_today (void);
 long    now (void);
 char   *mycpy (const char *);
 long    mystrtol (const char *);
-void    print_option_incolor (WINDOW *, bool, int, int);
+void    print_bool_option_incolor (WINDOW *, bool, int, int);
 char   *new_tempfile (const char *, int);
 void    erase_note (char **, erase_flag_e);
 int     parse_date (char *, int, int *, int *, int *);

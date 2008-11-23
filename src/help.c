@@ -1,4 +1,4 @@
-/*	$calcurse: help.c,v 1.30 2008/11/16 17:42:53 culot Exp $	*/
+/*	$calcurse: help.c,v 1.31 2008/11/23 20:38:56 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -82,19 +82,19 @@ get_help_lines (char *text)
  * Write the desired help text inside the help pad, and return the number
  * of lines that were written. 
  */
-static int
-write_help_pad (window_t *win, help_page_t *hpage)
+int
+help_write_pad (window_t *win, char *title, char *text)
 {
   int nl_title = 0;
   int nl_text = 0;
 
-  nl_text = get_help_lines (hpage->text);
-  nl_title = get_help_lines (hpage->title);
+  nl_text = get_help_lines (text);
+  nl_title = get_help_lines (title);
   erase_window_part (win->p, 0, 0, BUFSIZ, win->w);
   custom_apply_attr (win->p, ATTR_HIGHEST);
-  mvwprintw (win->p, 0, 0, "%s", hpage->title);
+  mvwprintw (win->p, 0, 0, "%s", title);
   custom_remove_attr (win->p, ATTR_HIGHEST);
-  mvwprintw (win->p, nl_title, 0, "%s", hpage->text);
+  mvwprintw (win->p, nl_title, 0, "%s", text);
   return (nl_text + nl_title);
 }
 
@@ -102,21 +102,21 @@ write_help_pad (window_t *win, help_page_t *hpage)
  * Create and init help screen and its pad, which is used to make the scrolling
  * faster. 
  */
-static void
-help_wins_init (scrollwin_t *hwin)
+void
+help_wins_init (scrollwin_t *hwin, int x, int y, int h, int w)
 {
   const int PADOFFSET = 4;
   const int TITLELINES = 3;
 
-  hwin->win.x = 0;
-  hwin->win.y = 0;
-  hwin->win.h = (notify_bar ()) ? row - 3 : row - 2;
-  hwin->win.w = col;
+  hwin->win.x = x;
+  hwin->win.y = y;
+  hwin->win.h = h;
+  hwin->win.w = w;
 
   hwin->pad.x = PADOFFSET;
   hwin->pad.y = TITLELINES;
   hwin->pad.h = BUFSIZ;
-  hwin->pad.w = col - 2 * PADOFFSET + 1;
+  hwin->pad.w = hwin->win.w - 2 * PADOFFSET + 1;
 
   snprintf (hwin->label, BUFSIZ, _("Calcurse %s | help"), VERSION);
   wins_scrollwin_init (hwin);
@@ -132,11 +132,11 @@ help_wins_reinit (scrollwin_t *hwin)
 {
   wins_scrollwin_delete (hwin);
   wins_get_config ();
-  help_wins_init (hwin);
+  help_wins_init (hwin, 0, 0, (notify_bar ()) ? row - 3 : row - 2, col);
 }
 
 /* Reset the screen, needed when resizing terminal for example. */
-static void
+void
 help_wins_reset (scrollwin_t *hwin)
 {
   endwin ();
@@ -596,7 +596,7 @@ help_screen (void)
       "Send your feedback or comments to : calcurse@culot.org\n"
       "Calcurse home page : http://culot.org/calcurse");
 
-  help_wins_init (&hwin);
+  help_wins_init (&hwin, 0, 0, (notify_bar ()) ? row - 3 : row - 2, col);
   page = oldpage = HELP_MAIN;
   need_resize = 0;
   
@@ -611,16 +611,17 @@ help_screen (void)
           wins_get_config ();
 	  help_wins_reset (&hwin);
 	  hwin.first_visible_line = 0;
-	  hwin.total_lines = write_help_pad (&hwin.pad, &hscr[oldpage]);
+	  hwin.total_lines = help_write_pad (&hwin.pad, hscr[oldpage].title,
+                                             hscr[oldpage].text);
 	  need_resize = 1;
 	  break;
 
 	case KEY_GENERIC_SCROLL_DOWN:
-          wins_scrollwin_down (&hwin);
+          wins_scrollwin_down (&hwin, 1);
 	  break;
 
 	case KEY_GENERIC_SCROLL_UP:
-          wins_scrollwin_up (&hwin);
+          wins_scrollwin_up (&hwin, 1);
 	  break;
 
 	default:
@@ -628,7 +629,8 @@ help_screen (void)
 	  if (page != NOPAGE)
 	    {
 	      hwin.first_visible_line = 0;
-	      hwin.total_lines = write_help_pad (&hwin.pad, &hscr[page]);
+	      hwin.total_lines = help_write_pad (&hwin.pad, hscr[page].title,
+                                                 hscr[page].text);
 	      oldpage = page;
 	    }
 	  break;

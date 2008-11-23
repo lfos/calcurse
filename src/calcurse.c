@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.70 2008/11/16 17:42:53 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.71 2008/11/23 20:38:56 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -243,7 +243,7 @@ main (int argc, char **argv)
 
         case KEY_GENERIC_CONFIG_MENU:
 	  erase_status_bar ();
-	  config_bar ();
+	  custom_config_bar ();
 	  while ((key = wgetch (win[STA].p)) != 'q')
 	    {
 	      switch (key)
@@ -272,12 +272,16 @@ main (int argc, char **argv)
 		case 'n':
 		  notify_config_bar ();
 		  break;
+                case 'K':
+                case 'k':
+                  custom_keys_config ();
+                  break;
 		}
 	      wins_reset ();
 	      wins_update ();
 	      do_storage = true;
 	      erase_status_bar ();
-	      config_bar ();
+	      custom_config_bar ();
 	    }
 	  wins_update ();
 	  break;

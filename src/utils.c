@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.53 2008/11/16 17:42:53 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.54 2008/11/23 20:38:56 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -45,12 +45,6 @@
 #define NB_TOD_CMDS	30	/* same thing while in todo view */
 #define TOTAL_CMDS	NB_CAL_CMDS + NB_APP_CMDS + NB_TOD_CMDS
 #define CMDS_PER_LINE	6	/* max number of commands per line */  
-#define KEY_LENGTH	4	/* length of each keybinding + one space */
-
-typedef struct {
-  char    *label;
-  keys_e   action;
-} binding_t;
 
 static unsigned status_page;
 
@@ -122,10 +116,7 @@ warnbox (const char *msg)
     return;
   strncpy (displmsg, msg, MSGLEN);
   warnwin = popup (WINROW, WINCOL, (row - WINROW) / 2, (col - WINCOL) / 2,
-                   "/!\\");
-  custom_apply_attr (warnwin, ATTR_HIGHEST);
-  mvwprintw (warnwin, 5, (WINCOL - strlen (displmsg)) / 2, "%s", displmsg);
-  custom_remove_attr (warnwin, ATTR_HIGHEST);
+                   "/!\\", displmsg, 1);
   wrefresh (warnwin);
   keys_getch (warnwin);
   delwin (warnwin);
@@ -172,24 +163,30 @@ erase_window_part (WINDOW *win, int first_col, int first_row, int last_col,
 
 /* draws a popup window */
 WINDOW *
-popup (int pop_row, int pop_col, int pop_y, int pop_x, char *pop_lab)
+popup (int pop_row, int pop_col, int pop_y, int pop_x, char *title, char *msg,
+       int hint)
 {
-  char *txt_pop = _("Press any key to continue...");
+  char *any_key = _("Press any key to continue...");
   char label[BUFSIZ];
   WINDOW *popup_win;
+  const int MSGXPOS = 5;
 
   popup_win = newwin (pop_row, pop_col, pop_y, pop_x);
   keypad (popup_win, TRUE);
   custom_apply_attr (popup_win, ATTR_HIGHEST);
   box (popup_win, 0, 0);
-  snprintf (label, BUFSIZ, "%s", pop_lab);
+  snprintf (label, BUFSIZ, "%s", title);
   wins_show (popup_win, label);
-  mvwprintw (popup_win, pop_row - 2, pop_col - (strlen (txt_pop) + 1), "%s",
-	     txt_pop);
+  if (msg)
+    mvwprintw (popup_win, MSGXPOS, (pop_col - strlen (msg)) / 2, "%s", msg);
+  if (hint)
+    mvwprintw (popup_win, pop_row - 2, pop_col - (strlen (any_key) + 1), "%s",
+               any_key);
   custom_remove_attr (popup_win, ATTR_HIGHEST);
-  wnoutrefresh (popup_win);
+  wrefresh (popup_win);
   doupdate ();
-  return (popup_win);
+  
+  return popup_win;
 }
 
 /* prints in middle of a panel */
@@ -442,32 +439,6 @@ is_all_digit (char *string)
   return (all_digit);
 }
 
-/* Need this to display keys properly inside status bar. */
-static char *
-format_key (char *key)
-{
-  static char fmtkey[KEY_LENGTH];
-  
-  switch (strlen (key))
-    {
-    case 0:
-      snprintf (fmtkey, KEY_LENGTH, "  ?");
-    case 1:
-      snprintf (fmtkey, KEY_LENGTH, "  %s", key);
-      break;
-    case 2:
-      snprintf (fmtkey, KEY_LENGTH, " %s", key);
-      break;
-    case 3:
-      snprintf (fmtkey, KEY_LENGTH, "%s", key);
-      break;
-    default:
-      snprintf (fmtkey, KEY_LENGTH, "%c%c.", key[0], key[1]);
-      /* NOTREACHED */
-    }
-  return fmtkey;
-}
-
 /* 
  * Draws the status bar. 
  * To add a keybinding, insert a new binding_t item, add it in the *binding
@@ -479,7 +450,7 @@ status_bar (void)
 {
 #define NB_PANELS	3	/* 3 panels: CALENDAR, APPOINTMENT, TODO */
   window_e which_pan;
-  int cmd_length, space_between_cmds, start, end, i, j;
+  int start, end;
   const int pos[NB_PANELS + 1] =
       { 0, NB_CAL_CMDS, NB_CAL_CMDS + NB_APP_CMDS, TOTAL_CMDS };
 
@@ -533,44 +504,11 @@ status_bar (void)
     &gnweek, &gpweek, &togo, &othr, &today, &conf, &appt, &todo, &crdts, &othr
   };
 
-#define LABEL_LENGTH	8	/* length of command description */  
-  /* Total length of a command. */
-  cmd_length = KEY_LENGTH + LABEL_LENGTH;
-  space_between_cmds = floor (col / CMDS_PER_LINE - cmd_length);
-  cmd_length += space_between_cmds;
-
   /* Drawing the keybinding with attribute and label without. */
-  erase_status_bar ();
   which_pan = wins_slctd ();
-  start = pos[which_pan] + 2 * CMDS_PER_LINE * (status_page - 1);
-  end = MIN (start + 2 * CMDS_PER_LINE, pos[which_pan + 1]);
-  j = 0;
-  for (i = start; i < end; i += 2)
-    {
-      char key[KEY_LENGTH], *fmtkey;
-
-      strncpy (key, keys_action_firstkey (binding[i]->action), KEY_LENGTH);
-      fmtkey = format_key (key);
-      custom_apply_attr (win[STA].p, ATTR_HIGHEST);
-      mvwprintw (win[STA].p, 0, j * cmd_length, fmtkey);
-      if (i + 1 != end)
-        {
-          strncpy (key, keys_action_firstkey (binding[i + 1]->action),
-                   KEY_LENGTH);
-          fmtkey = format_key (key);
-          mvwprintw (win[STA].p, 1, j * cmd_length, fmtkey);
-        }
-      custom_remove_attr (win[STA].p, ATTR_HIGHEST);
-      mvwprintw (win[STA].p, 0, j * cmd_length + KEY_LENGTH,
-		 binding[i]->label);
-      if (i + 1 != end)
-	mvwprintw (win[STA].p, 1, j * cmd_length + KEY_LENGTH,
-		   binding[i + 1]->label);
-      j++;
-    }
-  wnoutrefresh (win[STA].p);
-#undef LABEL_LENGTH
-#undef NB_PANELS
+  start = pos[which_pan] + 2 * KEYS_CMDS_PER_LINE * (status_page - 1);
+  end = MIN (start + 2 * KEYS_CMDS_PER_LINE, pos[which_pan + 1]);
+  keys_display_bindings_bar (win[STA].p, binding, start, end);
 }
 
 long
@@ -810,7 +748,7 @@ item_in_popup (char *saved_a_start, char *saved_a_end, char *msg,
   const int padl = winl - 2, padw = winw - margin_left;
 
   pad = newpad (padl, padw);
-  popup_win = popup (winl, winw, 1, 2, pop_title);
+  popup_win = popup (winl, winw, 1, 2, pop_title, (char *)0, 1);
   if (strncmp (pop_title, _("Appointment"), 11) == 0)
     {
       mvwprintw (popup_win, margin_top, margin_left, "- %s -> %s",
@@ -923,7 +861,7 @@ mystrtol (const char *str)
 
 /* Print the given option value with appropriate color. */
 void
-print_option_incolor (WINDOW *win, bool option, int pos_y, int pos_x)
+print_bool_option_incolor (WINDOW *win, bool option, int pos_y, int pos_x)
 {
   int color = 0;
   char option_value[BUFSIZ] = "";

@@ -1,4 +1,4 @@
-/*	$calcurse: keys.h,v 1.3 2008/11/16 17:42:53 culot Exp $	*/
+/*	$calcurse: keys.h,v 1.4 2008/11/23 20:38:56 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -28,10 +28,13 @@
 #define CALCURSE_KEYS_H
 
 #define CTRLVAL   0x1F
-#define TAB       9
+#define CTRL(x)                 ((x) & CTRLVAL)
+#define ESCAPE		        27
+#define TAB       		9
 
-#define CTRL(x)         ((x) & CTRLVAL)
-#define ESCAPE		27
+#define KEYS_KEYLEN		3 /* length of each keybinding */  
+#define KEYS_LABELEN		8 /* length of command description */
+#define KEYS_CMDS_PER_LINE	6 /* max number of commands per line */
 
 typedef enum
   {
@@ -79,15 +82,25 @@ typedef enum
   }
 keys_e;
 
+typedef struct {
+  char    *label;
+  keys_e   action;
+} binding_t;
+
 void    keys_init (void);
 void    keys_dump_defaults (char *);
 char   *keys_get_label (keys_e);
+keys_e  keys_get_action (int);
 keys_e  keys_getch (WINDOW *win);
 int     keys_assign_binding (int, keys_e);
 void    keys_remove_binding (int, keys_e);
 int     keys_str2int (char *);
 char   *keys_int2str (int);
+int     keys_action_count_keys (keys_e);
 char   *keys_action_firstkey (keys_e);
+char   *keys_action_nkey (keys_e, int);
 char   *keys_action_allkeys (keys_e);
+void    keys_display_bindings_bar (WINDOW *, binding_t **, int, int);
+void    keys_popup_info (keys_e);
 
 #endif /* CALCURSE_KEYS_H */

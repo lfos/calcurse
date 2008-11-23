@@ -1,4 +1,4 @@
-/*	$calcurse: wins.c,v 1.17 2008/09/20 12:47:06 culot Exp $	*/
+/*	$calcurse: wins.c,v 1.18 2008/11/23 20:38:56 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -170,18 +170,18 @@ wins_scrollwin_display (scrollwin_t *sw)
 }
 
 void
-wins_scrollwin_up (scrollwin_t *sw)
+wins_scrollwin_up (scrollwin_t *sw, int amount)
 {
   if (sw->first_visible_line > 0)
-    sw->first_visible_line--;
+    sw->first_visible_line -= amount;
 }
 
 void
-wins_scrollwin_down (scrollwin_t *sw)
+wins_scrollwin_down (scrollwin_t *sw, int amount)
 {
   if (sw->total_lines
       > (sw->first_visible_line + sw->win.h - sw->pad.y - 1))
-    sw->first_visible_line++;
+    sw->first_visible_line += amount;
 }
 
 /* 

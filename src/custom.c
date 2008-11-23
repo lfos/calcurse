@@ -1,4 +1,4 @@
-/*	$calcurse: custom.c,v 1.25 2008/11/16 17:42:53 culot Exp $	*/
+/*	$calcurse: custom.c,v 1.26 2008/11/23 20:38:56 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -26,6 +26,7 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include <math.h>
 
 #include "custom.h"
 #include "i18n.h"
@@ -352,7 +353,7 @@ custom_load_conf (conf_t *conf, int background)
 
 /* Draws the configuration bar */
 void
-config_bar (void)
+custom_config_bar (void)
 {
   int smlspc, spc;
 
@@ -365,6 +366,7 @@ config_bar (void)
   mvwprintw (win[STA].p, 0, 2 + spc, "L");
   mvwprintw (win[STA].p, 1, 2 + spc, "C");
   mvwprintw (win[STA].p, 0, 2 + 2 * spc, "N");
+  mvwprintw (win[STA].p, 1, 2 + 2 * spc, "K");  
   custom_remove_attr (win[STA].p, ATTR_HIGHEST);
 
   mvwprintw (win[STA].p, 0, 2 + smlspc, _("Exit"));
@@ -372,7 +374,8 @@ config_bar (void)
   mvwprintw (win[STA].p, 0, 2 + spc + smlspc, _("Layout"));
   mvwprintw (win[STA].p, 1, 2 + spc + smlspc, _("Color"));
   mvwprintw (win[STA].p, 0, 2 + 2 * spc + smlspc, _("Notify"));
-
+  mvwprintw (win[STA].p, 1, 2 + 2 * spc + smlspc, _("Keys"));
+  
   wnoutrefresh (win[STA].p);
   wmove (win[STA].p, 0, 0);
   doupdate ();
@@ -720,38 +723,41 @@ print_general_options (WINDOW *win, conf_t *conf)
   
   y = 0;
   mvwprintw (win, y, XPOS, "[1] %s      ", opt1);
-  print_option_incolor (win, conf->auto_save, y, XPOS + 4 + strlen (opt1));
+  print_bool_option_incolor (win, conf->auto_save, y,
+                             XPOS + 4 + strlen (opt1));
   mvwprintw (win, y + 1, XPOS,
 	     _("(if set to YES, automatic save is done when quitting)"));
   y += YOFF;
   mvwprintw (win, y, XPOS, "[2] %s      ", opt2);
-  print_option_incolor (win, conf->confirm_quit, y, XPOS + 4 + strlen (opt2));
+  print_bool_option_incolor (win, conf->confirm_quit, y,
+                             XPOS + 4 + strlen (opt2));
   mvwprintw (win, y + 1, XPOS,
 	     _("(if set to YES, confirmation is required before quitting)"));
   y += YOFF;
   mvwprintw (win, y, XPOS, "[3] %s      ", opt3);
-  print_option_incolor (win, conf->confirm_delete, y, XPOS + 4 + strlen (opt3));
+  print_bool_option_incolor (win, conf->confirm_delete, y,
+                             XPOS + 4 + strlen (opt3));
   mvwprintw (win, y + 1, XPOS,
 	     _("(if set to YES, confirmation is required "
                "before deleting an event)"));
   y += YOFF;
   mvwprintw (win, y, XPOS, "[4] %s      ", opt4);
-  print_option_incolor (win, conf->skip_system_dialogs, y,
-			XPOS + 4 + strlen (opt4));
+  print_bool_option_incolor (win, conf->skip_system_dialogs, y,
+                             XPOS + 4 + strlen (opt4));
   mvwprintw (win, y + 1, XPOS,
 	     _("(if set to YES, messages about loaded "
                "and saved data will not be displayed)"));
   y += YOFF;
   mvwprintw (win, y, XPOS, "[5] %s      ", opt5);
-  print_option_incolor (win, conf->skip_progress_bar, y,
-			XPOS + 4 + strlen (opt5));
+  print_bool_option_incolor (win, conf->skip_progress_bar, y,
+                            XPOS + 4 + strlen (opt5));
   mvwprintw (win, y + 1, XPOS,
 	     _("(if set to YES, progress bar will not be displayed "
                 "when saving data)"));
   y += YOFF;
   mvwprintw (win, y, XPOS, "[6] %s      ", opt6);
-  print_option_incolor (win, calendar_week_begins_on_monday (), y,
-			XPOS + 4 + strlen (opt6));
+  print_bool_option_incolor (win, calendar_week_begins_on_monday (), y,
+                             XPOS + 4 + strlen (opt6));
   mvwprintw (win, y + 1, XPOS,
 	     _("(if set to YES, monday is the first day of the week, "
                "else it is sunday)"));
@@ -770,11 +776,11 @@ print_general_options (WINDOW *win, conf_t *conf)
   mvwprintw (win, y + 1, XPOS, _("(Format to be used when entering a date: "));
   mvwprintw (win, y + 2, XPOS, _(" 1-mm/dd/yyyy, 2-dd/mm/yyyy, 3-yyyy/mm/dd)"));
 
-  return (y + 3);
+  return y + YOFF;
 }
 
 static void
-general_conf_set_scrsize (scrollwin_t *sw)
+conf_set_scrsize (scrollwin_t *sw)
 {
   sw->win.x = 0;
   sw->win.y = 0;
@@ -802,7 +808,7 @@ custom_general_config (conf_t *conf)
   char *buf = (char *) malloc (BUFSIZ);
 
   clear ();
-  general_conf_set_scrsize (&cwin);
+  conf_set_scrsize (&cwin);
   snprintf (cwin.label, BUFSIZ, _("CalCurse %s | general options"), VERSION);
   wins_scrollwin_init (&cwin);
   wins_show (cwin.win.p, cwin.label);
@@ -819,7 +825,7 @@ custom_general_config (conf_t *conf)
           wins_reset ();
 	  wins_scrollwin_delete (&cwin);
 	  wins_scrollwin_init (&cwin);
-          general_conf_set_scrsize (&cwin);
+          conf_set_scrsize (&cwin);
           wins_show (cwin.win.p, cwin.label);
 	  cwin.first_visible_line = 0;          
 	  delwin (win[STA].p);
@@ -833,10 +839,10 @@ custom_general_config (conf_t *conf)
 	    }
 	  break;
         case KEY_MOVE_DOWN:
-          wins_scrollwin_down (&cwin);
+          wins_scrollwin_down (&cwin, 1);
 	  break;
 	case KEY_MOVE_UP:
-          wins_scrollwin_up (&cwin);
+          wins_scrollwin_up (&cwin, 1);
 	  break;
 	case '1':
 	  conf->auto_save = !conf->auto_save;
@@ -883,4 +889,211 @@ custom_general_config (conf_t *conf)
     }
   free (buf);
   wins_scrollwin_delete (&cwin);
+}
+
+
+static void
+print_key_incolor (WINDOW *win, char *option, int pos_y, int pos_x)
+{
+  const int color = ATTR_HIGHEST;
+
+  RETURN_IF (!option, _("Undefined option!"));
+  custom_apply_attr (win, color);
+  mvwprintw (win, pos_y, pos_x, "%s ", option);
+  custom_remove_attr (win, color);
+  wnoutrefresh (win);
+}
+
+static int
+print_keys_bindings (WINDOW *win, int selected_row, int selected_elm, int yoff)
+{
+  const int XPOS = 1;
+  const int EQUALPOS = 23;
+  const int KEYPOS = 25;
+  int noelm, action, y;
+
+  noelm = y = 0;
+  for (action = 0; action < NBKEYS; action++)
+    {
+      char actionstr[BUFSIZ];
+      int nbkeys;
+
+      nbkeys = keys_action_count_keys (action);      
+      snprintf (actionstr, BUFSIZ, "%s", keys_get_label (action));
+      if (action == selected_row)
+        custom_apply_attr (win, ATTR_HIGHEST);
+      mvwprintw (win, y, XPOS, "%s ", actionstr);
+      mvwprintw (win, y, EQUALPOS, "=");
+      if (nbkeys == 0)
+        mvwprintw (win, y, KEYPOS, _("undefined"));        
+      if (action == selected_row)
+        custom_remove_attr (win, ATTR_HIGHEST);
+      if (nbkeys > 0)
+        {
+          if (action == selected_row)
+            {
+              char *key;
+              int pos;
+              
+              pos = KEYPOS;
+              while ((key = keys_action_nkey (action, noelm)) != 0)
+                {
+                  if (noelm == selected_elm)
+                    print_key_incolor (win, key, y, pos);
+                  else
+                    mvwprintw (win, y, pos, "%s ", key);                
+                  noelm++;
+                  pos += strlen (key) + 1;
+                }
+            }
+          else
+            {
+              mvwprintw (win, y, KEYPOS, "%s", keys_action_allkeys (action));
+            }
+        }
+      y += yoff;
+    }
+  
+  return noelm;
+}
+
+static void
+custom_keys_config_bar (void)
+{
+  binding_t quit  = {_("Exit"),     KEY_GENERIC_QUIT};
+  binding_t info  = {_("Key info"), KEY_GENERIC_HELP};
+  binding_t add   = {_("Add key"),  KEY_ADD_ITEM};
+  binding_t del   = {_("Del key"),  KEY_DEL_ITEM};
+  binding_t edit  = {_("Edit key"), KEY_EDIT_ITEM};
+  binding_t up    = {_("Up"),       KEY_MOVE_UP};
+  binding_t down  = {_("Down"),     KEY_MOVE_DOWN};
+  binding_t left  = {_("Prev Key"), KEY_MOVE_LEFT};
+  binding_t right = {_("Next Key"), KEY_MOVE_RIGHT};
+    
+  binding_t *binding[] = {
+    &quit, &info, &add, &del, &edit, &up, &down, &left, &right
+  };
+  int binding_size = sizeof (binding) / sizeof (binding[0]);
+
+  keys_display_bindings_bar (win[STA].p, binding, 0, binding_size);
+}
+
+void
+custom_keys_config (void)
+{
+  scrollwin_t kwin;
+  int selrow, selelm, firstrow, lastrow, nbrowelm, nbdisplayed;
+  int keyval, used;
+  char *keystr;
+  WINDOW *grabwin;
+  const int LINESPERKEY = 2;
+  const int LABELLINES = 3;
+  
+  clear ();
+  conf_set_scrsize (&kwin);
+  nbdisplayed = (kwin.win.h - LABELLINES) / LINESPERKEY;
+  snprintf (kwin.label, BUFSIZ, _("CalCurse %s | keys configuration"), VERSION);
+  wins_scrollwin_init (&kwin);
+  wins_show (kwin.win.p, kwin.label);
+  custom_keys_config_bar ();
+  selrow = selelm = 0;
+  nbrowelm = print_keys_bindings (kwin.pad.p, selrow, selelm, LINESPERKEY);
+  kwin.total_lines = NBKEYS * LINESPERKEY;
+  wins_scrollwin_display (&kwin);
+  firstrow = 0;
+  lastrow = firstrow + nbdisplayed - 1;
+  for (;;)
+    {
+      int ch;
+
+      ch = keys_getch (win[STA].p);
+      switch (ch)
+	{
+        case KEY_MOVE_UP:
+          if (selrow > 0)
+            {
+              selrow--;
+              selelm = 0;
+              if (selrow == firstrow)
+                {
+                  firstrow--;
+                  lastrow--;
+                  wins_scrollwin_up (&kwin, LINESPERKEY);
+                }
+            }
+	  break;
+	case KEY_MOVE_DOWN:
+          if (selrow < NBKEYS - 1)
+            {
+              selrow++;
+              selelm = 0;
+              if (selrow == lastrow)
+                {
+                  firstrow++;
+                  lastrow++;
+                  wins_scrollwin_down (&kwin, LINESPERKEY);
+                }
+            }
+	  break;
+        case KEY_MOVE_LEFT:
+          if (selelm > 0)
+            selelm--;
+          break;
+        case KEY_MOVE_RIGHT:
+          if (selelm < nbrowelm - 1)
+            selelm++;
+          break;
+        case KEY_GENERIC_HELP:
+          keys_popup_info (selrow);
+          break;
+        case KEY_ADD_ITEM:
+#define WINROW 10
+#define WINCOL 50
+          do
+            {
+              grabwin = popup (WINROW, WINCOL, (row - WINROW) / 2,
+                               (col - WINCOL) / 2,
+                               _("Press the key you want to assign to:"),
+                               keys_get_label (selrow), 0);
+              keyval = wgetch (grabwin);
+              used = keys_assign_binding (keyval, selrow);
+              if (used)
+                {
+                  keys_e action;
+                  
+                  action = keys_get_action (keyval);
+                  ERROR_MSG (
+                             _("This key is already in use for %s, "
+                               "please choose another one."),
+                             keys_get_label (action));
+                  werase (kwin.pad.p);
+                  nbrowelm = print_keys_bindings (kwin.pad.p, selrow, selelm,
+                                                  LINESPERKEY);
+                  wins_scrollwin_display (&kwin);
+                }
+              delwin (grabwin);              
+            }
+          while (used);
+          selelm++;
+#undef WINROW
+#undef WINCOL
+          break;
+        case KEY_DEL_ITEM:
+          keystr = keys_action_nkey (selrow, selelm);
+          keyval = keys_str2int (keystr);
+          keys_remove_binding (keyval, selrow);
+          if (selelm > 0)
+            selelm--;
+          break;
+        case KEY_EDIT_ITEM:
+          break;
+        case KEY_GENERIC_QUIT:
+          wins_scrollwin_delete (&kwin);
+          return;
+	}
+      custom_keys_config_bar ();
+      werase (kwin.pad.p);
+      nbrowelm = print_keys_bindings (kwin.pad.p, selrow, selelm, LINESPERKEY);
+      wins_scrollwin_display (&kwin);
+    }
 }

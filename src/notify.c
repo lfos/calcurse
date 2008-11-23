@@ -1,4 +1,4 @@
-/*	$calcurse: notify.c,v 1.28 2008/11/16 17:42:53 culot Exp $	*/
+/*	$calcurse: notify.c,v 1.29 2008/11/23 20:38:56 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -479,7 +479,7 @@ notify_print_options (WINDOW *optwin, int col)
   x = x_pos + x_offset + l;
   mvwprintw (optwin, y_pos, x_pos, "[1] %s", opt[SHOW].name);
   erase_window_part (optwin, x, y_pos, maxcol, y_pos);
-  print_option_incolor (optwin, nbar->show, y_pos, x);
+  print_bool_option_incolor (optwin, nbar->show, y_pos, x);
   mvwprintw (optwin, y_pos + 1, x_pos, opt[SHOW].desc);
 
   for (i = 1; i < NB_OPT; i++)
