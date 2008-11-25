@@ -1,4 +1,4 @@
-/*	$calcurse: keys.h,v 1.4 2008/11/23 20:38:56 culot Exp $	*/
+/*	$calcurse: keys.h,v 1.5 2008/11/25 20:48:58 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -102,5 +102,6 @@ char   *keys_action_nkey (keys_e, int);
 char   *keys_action_allkeys (keys_e);
 void    keys_display_bindings_bar (WINDOW *, binding_t **, int, int);
 void    keys_popup_info (keys_e);
+void    keys_save_bindings (FILE *);
 
 #endif /* CALCURSE_KEYS_H */

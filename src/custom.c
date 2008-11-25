@@ -1,4 +1,4 @@
-/*	$calcurse: custom.c,v 1.26 2008/11/23 20:38:56 culot Exp $	*/
+/*	$calcurse: custom.c,v 1.27 2008/11/25 20:48:58 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -964,14 +964,13 @@ custom_keys_config_bar (void)
   binding_t info  = {_("Key info"), KEY_GENERIC_HELP};
   binding_t add   = {_("Add key"),  KEY_ADD_ITEM};
   binding_t del   = {_("Del key"),  KEY_DEL_ITEM};
-  binding_t edit  = {_("Edit key"), KEY_EDIT_ITEM};
   binding_t up    = {_("Up"),       KEY_MOVE_UP};
   binding_t down  = {_("Down"),     KEY_MOVE_DOWN};
   binding_t left  = {_("Prev Key"), KEY_MOVE_LEFT};
   binding_t right = {_("Next Key"), KEY_MOVE_RIGHT};
     
   binding_t *binding[] = {
-    &quit, &info, &add, &del, &edit, &up, &down, &left, &right
+    &quit, &info, &add, &del, &up, &down, &left, &right
   };
   int binding_size = sizeof (binding) / sizeof (binding[0]);
 
@@ -1084,8 +1083,6 @@ custom_keys_config (void)
           keys_remove_binding (keyval, selrow);
           if (selelm > 0)
             selelm--;
-          break;
-        case KEY_EDIT_ITEM:
           break;
         case KEY_GENERIC_QUIT:
           wins_scrollwin_delete (&kwin);

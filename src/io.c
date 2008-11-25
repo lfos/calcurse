@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.42 2008/11/16 17:42:53 culot Exp $	*/
+/*	$calcurse: io.c,v 1.43 2008/11/25 20:48:58 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -47,12 +47,24 @@
 #define ICALDATEFMT      "%Y%m%d"
 #define ICALDATETIMEFMT  "%Y%m%dT%H%M%S"
 
-typedef enum
-{
+typedef enum {
   PROGRESS_BAR_SAVE,
   PROGRESS_BAR_LOAD,
   PROGRESS_BAR_EXPORT
 } progress_bar_t;
+
+enum {
+  PROGRESS_BAR_CONF,
+  PROGRESS_BAR_TODO,
+  PROGRESS_BAR_APTS,
+  PROGRESS_BAR_KEYS
+};
+
+enum {
+  PROGRESS_BAR_EXPORT_EVENTS,
+  PROGRESS_BAR_EXPORT_APOINTS,
+  PROGRESS_BAR_EXPORT_TODO
+};
 
 typedef enum {
   ICAL_VEVENT,
@@ -123,50 +135,59 @@ static void
 progress_bar (progress_bar_t type, int progress)
 {
 #define SLEEPTIME	125000
-#define STEPS		3
-#define LABELENGTH	15
-
-  int i, step;
+#define NBFILES		4
+#define NBEXPORTED      3
+#define LABELENGTH      15
+  int i, step, steps;
   char *mesg_sav = _("Saving...");
   char *mesg_load = _("Loading...");
   char *mesg_export = _("Exporting...");
+  char *error_msg = _("Internal error while displaying progress bar");
   char *barchar = "|";
-  char file[STEPS][LABELENGTH] = {
+  char *file[NBFILES] = {
     "[    conf    ]",
     "[    todo    ]",
-    "[    apts    ]"
+    "[    apts    ]",
+    "[    keys    ]"
   };
-  char data[STEPS][LABELENGTH] = {
+  char *data[NBEXPORTED] = {
     "[   events   ]",
     "[appointments]",
     "[    todo    ]"
   };
-  int ipos = LABELENGTH + 2;
-  int epos[STEPS];
+  int ipos =  LABELENGTH + 2;
+  int epos[NBFILES];
 
   /* progress bar length init. */
   ipos = LABELENGTH + 2;
-  step = floor (col / (STEPS + 1));
-  for (i = 0; i < STEPS - 1; i++)
+  steps = (type == PROGRESS_BAR_EXPORT) ? NBEXPORTED : NBFILES;
+  step = floor (col / (steps + 1));
+  for (i = 0; i < steps - 1; i++)
     epos[i] = (i + 2) * step;
-  epos[STEPS - 1] = col - 2;
+  epos[steps - 1] = col - 2;
 
   switch (type)
     {
     case PROGRESS_BAR_SAVE:
+      EXIT_IF (progress < 0 || progress > PROGRESS_BAR_KEYS,
+               error_msg);
       status_mesg (mesg_sav, file[progress]);
       break;
     case PROGRESS_BAR_LOAD:
+      EXIT_IF (progress < 0 || progress > PROGRESS_BAR_KEYS,
+               error_msg);
       status_mesg (mesg_load, file[progress]);
       break;
     case PROGRESS_BAR_EXPORT:
+      EXIT_IF (progress < 0 || progress > PROGRESS_BAR_TODO,
+               error_msg);
       status_mesg (mesg_export, data[progress]);
       break;
     }
 
   /* Draw the progress bar. */
   mvwprintw (win[STA].p, 1, ipos, barchar);
-  mvwprintw (win[STA].p, 1, epos[STEPS - 1], barchar);
+  mvwprintw (win[STA].p, 1, epos[steps - 1], barchar);
   custom_apply_attr (win[STA].p, ATTR_HIGHEST);
   for (i = ipos + 1; i < epos[progress]; i++)
     mvwaddch (win[STA].p, 1, i, ' ' | A_REVERSE);
@@ -174,6 +195,10 @@ progress_bar (progress_bar_t type, int progress)
   wmove (win[STA].p, 0, 0);
   wrefresh (win[STA].p);
   usleep (SLEEPTIME);
+#undef SLEEPTIME
+#undef NBFILES
+#undef NBEXPORTED
+#undef LABELENGTH
 }
 
 /* Ask user for a file name to export data to. */
@@ -753,9 +778,8 @@ io_save_cal (io_mode_t mode, conf_t *conf)
     show_bar = true;
 
   /* Save the user configuration. */
-
   if (show_bar)
-    progress_bar (PROGRESS_BAR_SAVE, 0);
+    progress_bar (PROGRESS_BAR_SAVE, PROGRESS_BAR_CONF);
   data_file = fopen (path_conf, "w");
   if (data_file == NULL)
     ERROR_MSG (access_pb);
@@ -860,7 +884,7 @@ io_save_cal (io_mode_t mode, conf_t *conf)
 
   /* Save the todo data file. */
   if (show_bar)
-    progress_bar (PROGRESS_BAR_SAVE, 1);
+    progress_bar (PROGRESS_BAR_SAVE, PROGRESS_BAR_TODO);
   data_file = fopen (path_todo, "w");
   if (data_file == NULL)
     ERROR_MSG (access_pb);
@@ -882,7 +906,7 @@ io_save_cal (io_mode_t mode, conf_t *conf)
    * Recursive items are written first.
    */
   if (show_bar)
-    progress_bar (PROGRESS_BAR_SAVE, 2);
+    progress_bar (PROGRESS_BAR_SAVE, PROGRESS_BAR_APTS);
   data_file = fopen (path_apts, "w");
   if (data_file == NULL)
     ERROR_MSG (access_pb);
@@ -902,6 +926,18 @@ io_save_cal (io_mode_t mode, conf_t *conf)
       fclose (data_file);
     }
 
+  /* Save user-defined keys */
+  if (show_bar)
+    progress_bar (PROGRESS_BAR_SAVE, PROGRESS_BAR_KEYS);
+  data_file = fopen (path_keys, "w");
+  if (data_file == NULL)
+    ERROR_MSG (access_pb);
+  else
+    {
+      keys_save_bindings (data_file);
+      fclose (data_file);
+    }
+  
   /* Print a message telling data were saved */
   if (mode == IO_MODE_INTERACTIVE && !conf->skip_system_dialogs)
     {

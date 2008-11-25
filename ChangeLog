@@ -1,3 +1,9 @@
+2008-11-25  Frederic Culot  <frederic@culot.org>
+
+	* src/io.c (io_save_cal): updated to save user-defined keys
+
+	* src/keys.c (keys_save_bindings): new function
+	
 2008-11-23  Frederic Culot  <frederic@culot.org>
 
 	* src/keys.c (keys_popup_info, keys_action_count_keys): new

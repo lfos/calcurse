@@ -1,4 +1,4 @@
-/*	$calcurse: keys.c,v 1.4 2008/11/23 20:38:56 culot Exp $	*/
+/*	$calcurse: keys.c,v 1.5 2008/11/25 20:48:58 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -511,4 +511,17 @@ keys_popup_info (keys_e key)
   delwin (infowin);
 #undef WINROW
 #undef WINCOL
+}
+
+void
+keys_save_bindings (FILE *fd)
+{
+  int i;
+  
+  EXIT_IF (fd == NULL, _("FATAL ERROR in keys_save_bindings: "
+                         "null file pointer."));
+  dump_intro (fd);
+  for (i = 0; i < NBKEYS; i++)
+    fprintf (fd, "%s  %s\n", keydef[i].label, keys_action_allkeys (i));
+  fclose (fd);
 }
