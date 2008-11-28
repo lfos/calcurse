@@ -1,4 +1,4 @@
-/*	$calcurse: help.c,v 1.31 2008/11/23 20:38:56 culot Exp $	*/
+/*	$calcurse: help.c,v 1.32 2008/11/28 08:46:29 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -82,7 +82,7 @@ get_help_lines (char *text)
  * Write the desired help text inside the help pad, and return the number
  * of lines that were written. 
  */
-int
+static int
 help_write_pad (window_t *win, char *title, char *text)
 {
   int nl_title = 0;
@@ -102,7 +102,7 @@ help_write_pad (window_t *win, char *title, char *text)
  * Create and init help screen and its pad, which is used to make the scrolling
  * faster. 
  */
-void
+static void
 help_wins_init (scrollwin_t *hwin, int x, int y, int h, int w)
 {
   const int PADOFFSET = 4;
@@ -136,7 +136,7 @@ help_wins_reinit (scrollwin_t *hwin)
 }
 
 /* Reset the screen, needed when resizing terminal for example. */
-void
+static void
 help_wins_reset (scrollwin_t *hwin)
 {
   endwin ();
@@ -275,10 +275,10 @@ help_screen (void)
 
   hscr[HELP_MAIN].title =
     _("       Welcome to Calcurse. This is the main help screen.\n");
-  hscr[HELP_MAIN].text =
-    _(" Moving around:  Press CTRL-P or CTRL-N to scroll text upward or\n"
+  snprintf (hscr[HELP_MAIN].text, BUFSIZ,
+    _(" Moving around:  Press '%s' or '%s' to scroll text upward or\n"
       "                 downward inside help screens, if necessary.\n\n"
-      "     Exit help:  When finished, press 'Q' to exit help and go back\n"
+      "     Exit help:  When finished, press '%s' to exit help and go back\n"
       "                 to the main Calcurse screen.\n\n"
       "    Help topic:  At the bottom of this screen you can see a panel\n"
       "                 with different fields, represented by a letter and\n"
@@ -287,23 +287,30 @@ help_screen (void)
       "                 By pressing one of the letters appearing in this\n"
       "                 panel, you will be shown a short description of the\n"
       "                 corresponding action.\n\n"
-      "       Credits:  Press '@' for credits.");
+      "       Credits:  Press '%s' for credits."),
+            keys_action_firstkey (KEY_GENERIC_SCROLL_UP),
+            keys_action_firstkey (KEY_GENERIC_SCROLL_DOWN),
+            keys_action_firstkey (KEY_GENERIC_QUIT),
+            keys_action_firstkey (KEY_GENERIC_CREDITS));
 
   hscr[HELP_SAVE].title = _("Save:\n");
-  hscr[HELP_SAVE].text =
-    _("Pressing 'S' saves the Calcurse data.\n\n"
-      "The data is splitted into three different files which contain :"
+  snprintf (hscr[HELP_SAVE].text, BUFSIZ,
+    _("Pressing '%s' saves the Calcurse data.\n\n"
+      "The data is splitted into four different files which contain :"
       "\n\n"
       "        /  ~/.calcurse/conf -> the user configuration\n"
       "        |                      (layout, color, general options)\n"
       "        |  ~/.calcurse/apts -> the data related to the appointments\n"
-      "        \\  ~/.calcurse/todo -> the data related to the todo list\n"
+      "        |  ~/.calcurse/todo -> the data related to the todo list\n"
+      "        \\ ~/.calcurse/keys -> user-defined keybindings\n"
       "\nIn the config menu, you can choose to save the Calcurse data\n"
-      "automatically before quitting.");
+      "automatically before quitting."),
+            keys_action_firstkey (KEY_GENERIC_SAVE));
+            
 
   hscr[HELP_IMPORT].title = _("Import:\n");
-  hscr[HELP_IMPORT].text =
-    _("Pressing 'I' allows you to import data from an icalendar file.\n"
+  snprintf (hscr[HELP_IMPORT].text, BUFSIZ,
+    _("Pressing '%s' allows you to import data from an icalendar file.\n"
       "You are asked to enter the file name from which to load ical items.\n\n"
       "At the end of the import process, and if the general option\n"
       "'skip_system_dialogs' is not set to 'yes', a report indicating how\n"
@@ -317,11 +324,12 @@ help_screen (void)
       "occured.\n"
       "In this report is shown one item per line, with the line in the input\n"
       "stream at which this item begins, together with the description of why\n"
-      "the item could not be imported.\n");
+      "the item could not be imported.\n"),
+            keys_action_firstkey (KEY_GENERIC_IMPORT));
   
   hscr[HELP_EXPORT].title = _("Export:\n");
-  hscr[HELP_EXPORT].text =
-    _("Pressing 'X' leads to the export submenu, from which you can choose\n"
+  snprintf (hscr[HELP_EXPORT].text, BUFSIZ,
+    _("Pressing '%s' leads to the export submenu, from which you can choose\n"
       "between two different export formats: 'ical' and 'pcal'.\n"
       "Choosing one of those formats lets you export the Calcurse data to\n"
       "icalendar or pcal format.\n\n"
@@ -332,10 +340,11 @@ help_screen (void)
       "     ~/calcurse.txt\n\n"
       "for a pcal export.\n"
       "All of the calcurse data are exported, in the following order:\n"
-      "events, appointments, todos.\n");
+      "events, appointments, todos.\n"),
+            keys_action_firstkey (KEY_GENERIC_EXPORT));
 
   hscr[HELP_DISPLACEMENT].title = _("Displacement keys:\n");
-  hscr[HELP_DISPLACEMENT].text =
+  snprintf (hscr[HELP_DISPLACEMENT].text, BUFSIZ,
     _("You can use either 'H','J','K','L' or the arrow keys '<','v','^','>'\n"
      "to move into the calendar.\n\n"
      "The following scheme explains how :\n\n"
@@ -349,11 +358,11 @@ help_screen (void)
      "the week.\n"
      "\nWhen the Appointment or ToDo panel is selected, the up and down keys\n"
      "(respectively K or up arrow, and J or down arrow) allows you to select\n"
-     "an item from those lists.");
+     "an item from those lists."));
 
   hscr[HELP_VIEW].title = _("View:\n");
-  hscr[HELP_VIEW].text =
-    _("Pressing 'V' allows you to view the item you select in either the ToDo\n"
+  snprintf (hscr[HELP_VIEW].text, BUFSIZ,
+    _("Pressing '%s' allows you to view the item you select in either the ToDo\n"
       "or Appointment panel.\n"
       "\nThis is usefull when an event description is longer than the "
       "available\n space to display it. "
@@ -362,33 +371,40 @@ help_screen (void)
       "description, just press 'V' and a popup window will appear, containing\n"
       "the whole event.\n"
       "\nPress any key to close the popup window and go back to the main\n"
-      "Calcurse screen.");
+      "Calcurse screen."),
+      keys_action_firstkey (KEY_VIEW_ITEM));
 
   hscr[HELP_TAB].title = _("Tab:\n");
-  hscr[HELP_TAB].text =
-    _("Pressing 'Tab' allows you to switch between panels.\n"
+  snprintf (hscr[HELP_TAB].text, BUFSIZ,
+    _("Pressing '%s' allows you to switch between panels.\n"
       "The panel currently in use has its border colorized.\n"
       "\nSome actions are possible only if the right panel is selected.\n"
       "For example, if you want to add a task in the TODO list, you need first"
-      "\nto press the 'Tab' key to get the TODO panel selected. Then you can\n"
-      "press 'A' to add your item.\n"
+      "\nto press the '%s' key to get the TODO panel selected. Then you can\n"
+      "press '%s' to add your item.\n"
       "\nNotice that at the bottom of the screen the list of possible actions\n"
-      "change while pressing 'Tab', so you always know what action can be\n"
-      "performed on the selected panel.");
+      "change while pressing '%s', so you always know what action can be\n"
+      "performed on the selected panel."),
+            keys_action_firstkey (KEY_GENERIC_CHANGE_VIEW),
+            keys_action_firstkey (KEY_GENERIC_CHANGE_VIEW),            
+            keys_action_firstkey (KEY_ADD_ITEM),
+            keys_action_firstkey (KEY_GENERIC_CHANGE_VIEW));
 
   hscr[HELP_GOTO].title = _("Goto:\n");
-  hscr[HELP_GOTO].text =
-    _("Pressing 'G' allows you to jump to a specific day in the calendar.\n"
+  snprintf (hscr[HELP_GOTO].text, BUFSIZ,
+    _("Pressing '%s' allows you to jump to a specific day in the calendar.\n"
       "\nUsing this command, you do not need to travel to that day using\n"
       "the displacement keys inside the calendar panel.\n"
       "If you hit [ENTER] without specifying any date, Calcurse checks the\n"
       "system current date and you will be taken to that date.\n"
-      "\nNotice that pressing ^G (Control + G), whatever panel is\n"
-      "selected, will select current day in the calendar.");
+      "\nNotice that pressing '%s', whatever panel is\n"
+      "selected, will select current day in the calendar."),
+            keys_action_firstkey (KEY_GENERIC_GOTO),
+            keys_action_firstkey (KEY_GENERIC_GOTO_TODAY));
 
   hscr[HELP_DELETE].title = _("Delete:\n");
-  hscr[HELP_DELETE].text =
-    _("Pressing 'D' deletes an element in the ToDo or Appointment list.\n"
+  snprintf (hscr[HELP_DELETE].text, BUFSIZ,
+    _("Pressing '%s' deletes an element in the ToDo or Appointment list.\n"
       "\nDepending on which panel is selected when you press the delete key,\n"
       "the hilighted item of either the ToDo or Appointment list will be \n"
       "removed from this list.\n"
@@ -398,19 +414,20 @@ help_screen (void)
       "\nIf the general option 'confirm_delete' is set to 'YES', then you will"
       "\nbe asked for confirmation before deleting the selected event.\n"
       "Do not forget to save the calendar data to retrieve the modifications\n"
-      "next time you launch Calcurse.");
+      "next time you launch Calcurse."),
+            keys_action_firstkey (KEY_DEL_ITEM));
 
   hscr[HELP_ADD].title = _("Add:\n");
-  hscr[HELP_ADD].text =
-    _("Pressing 'A' allows you to add an item in either the ToDo or Appointment"
-      "\nlist, depending on which panel is selected when you press 'A'.\n"
+  snprintf (hscr[HELP_ADD].text, BUFSIZ,
+    _("Pressing '%s' allows you to add an item in either the ToDo or Appointment"
+      "\nlist, depending on which panel is selected when you press '%s'.\n"
       "\nTo enter a new item in the TODO list, you will need first to enter the"
       "\ndescription of this new item. Then you will be asked to specify the "
       "todo\npriority. This priority is represented by a number going from 9 "
       "for the\nlowest priority, to 1 for the highest one. It is still "
       "possible to\nchange the item priority afterwards, by using the '+/-' "
       "keys inside the\ntodo panel.\n"
-      "\nIf the APPOINTMENT panel is selected while pressing 'A', you will be\n"
+      "\nIf the APPOINTMENT panel is selected while pressing '%s', you will be\n"
       "able to enter either a new appointment or a new all-day long event.\n"
       "To enter a new event, press [ENTER] instead of the item start time, "
       "and\njust fill in the event description.\n"
@@ -421,7 +438,7 @@ help_screen (void)
       "description of the event.\n"
       "\nThe day at which occurs the event or appointment is the day currently"
       "\nselected in the calendar, so you need to move to the desired day "
-      "before\npressing 'A'.\n" "\nNotes:\n"
+      "before\npressing '%s'.\n" "\nNotes:\n"
       "     o if an appointment lasts for such a long time that it continues\n"
       "       on the next days, this event will be indicated on all the\n"
       "       corresponding days, and the beginning or ending hour will be\n"
@@ -430,11 +447,15 @@ help_screen (void)
       "       description prompt, without any description, no item will be\n"
       "       added.\n"
       "     o do not forget to save the calendar data to retrieve the new\n"
-      "       event next time you launch Calcurse.");
+      "       event next time you launch Calcurse."),
+            keys_action_firstkey (KEY_ADD_ITEM),
+            keys_action_firstkey (KEY_ADD_ITEM),
+            keys_action_firstkey (KEY_ADD_ITEM),
+            keys_action_firstkey (KEY_ADD_ITEM));
 
   hscr[HELP_EDIT].title = _("Edit Item:\n");
-  hscr[HELP_EDIT].text =
-    _("Pressing 'E' allows you to edit the item which is currently selected.\n"
+  snprintf (hscr[HELP_EDIT].text, BUFSIZ,
+    _("Pressing '%s' allows you to edit the item which is currently selected.\n"
       "Depending on the item type (appointment, event, or todo), and if it is\n"
       "repeated or not, you will be asked to choose one of the item properties"
       "\nto modify. An item property is one of the following: the start time, "
@@ -447,11 +468,12 @@ help_screen (void)
       "       (repetition type, frequence, and ending date). Moreover, the\n"
       "       previous data concerning the deleted occurences will be lost.\n"
       "     o do not forget to save the calendar data to retrieve the\n"
-      "       modified properties next time you launch Calcurse.");
+      "       modified properties next time you launch Calcurse."),
+            keys_action_firstkey (KEY_EDIT_ITEM));
 
   hscr[HELP_ENOTE].title = _("EditNote:\n");
-  hscr[HELP_ENOTE].text =
-    _("Pressing 'N' allows you to attach a note to any type of item, or to\n"
+  snprintf (hscr[HELP_ENOTE].text, BUFSIZ,
+    _("Pressing '%s' allows you to attach a note to any type of item, or to\n"
       "edit an already existing note.\n"
       "This feature is useful if you do not have enough space to store all\n"
       "of your item description, or if you would like to add sub-tasks to an\n"
@@ -468,15 +490,16 @@ help_screen (void)
       "       '/usr/bin/vi' will be used.\n"
       "\nOnce the item note is edited and saved, quit your favorite editor.\n"
       "You will then go back to Calcurse, and the '>' sign will appear in front"
-      "\nof the highlighted item, meaning there is a note attached to it.");
+      "\nof the highlighted item, meaning there is a note attached to it."),
+    keys_action_firstkey (KEY_EDIT_NOTE));
 
   hscr[HELP_VNOTE].title = _("ViewNote:\n");
-  hscr[HELP_VNOTE].text =
-    _("Pressing the '>' key allows you to view a note which was previously\n"
+  snprintf (hscr[HELP_VNOTE].text, BUFSIZ,
+    _("Pressing the '%s' key allows you to view a note which was previously\n"
       "attached to an item (an item which owns a note has a '>' sign in front\n"
       "of it). This command only permits to view the note, not to\n"
-      "edit it (to do so, use the 'EditNote' command, using the 'N' key).\n"
-      "Once you highlighted an item with a note attached to it, and the '>' key"
+      "edit it (to do so, use the 'EditNote' command, using the '%s' key).\n"
+      "Once you highlighted an item with a note attached to it, and the '%s' key"
       "\nwas pressed, you will be driven to an external pager to view that "
       "note.\n"
       "The default pager is chosen the following way:\n"
@@ -484,31 +507,39 @@ help_screen (void)
       "       the default viewer to be called.\n"
       "     o if the above environment variable is not set, then\n"
       "       '/usr/bin/less' will be used.\n"
-      "As for the 'N' key, quit the pager and you will be driven back to\n"
-      "Calcurse.");
-
+      "As for the '%s' key, quit the pager and you will be driven back to\n"
+      "Calcurse."),
+            keys_action_firstkey (KEY_VIEW_NOTE),
+            keys_action_firstkey (KEY_EDIT_NOTE),
+            keys_action_firstkey (KEY_VIEW_NOTE),
+            keys_action_firstkey (KEY_EDIT_NOTE));
+  
   hscr[HELP_PRIORITY].title = _("Priority:\n");
-  hscr[HELP_PRIORITY].text =
-    _("Pressing '+' or '-' allows you to change the priority of the currently\n"
+  snprintf (hscr[HELP_PRIORITY].text, BUFSIZ,
+    _("Pressing '%s' or '%s' allows you to change the priority of the currently\n"
       "selected item in the ToDo list. Priorities are represented by the "
       "number\nappearing in front of the todo description. This number goes "
       "from 9 for\nthe lowest priority to 1 for the highest priority. "
       "Todo having higher\npriorities are placed first (at the top) inside the "
       "todo panel.\n\n"
       "If you want to raise the priority of a todo item, you need to press "
-      "'+'.\n"
+      "'%s'.\n"
       "In doing so, the number in front of this item will decrease, "
       "meaning its\npriority increases. The item position inside the todo "
       "panel may change,\ndepending on the priority of the items above it.\n\n"
-      "At the opposite, to lower a todo priority, press '-'. The todo position"
-      "\nmay also change depending on the priority of the items below.");
-
+      "At the opposite, to lower a todo priority, press '%s'. The todo position"
+      "\nmay also change depending on the priority of the items below."),
+            keys_action_firstkey (KEY_RAISE_PRIORITY),
+            keys_action_firstkey (KEY_LOWER_PRIORITY),
+            keys_action_firstkey (KEY_RAISE_PRIORITY),            
+            keys_action_firstkey (KEY_LOWER_PRIORITY));
+  
   hscr[HELP_REPEAT].title = _("Repeat:\n");
-  hscr[HELP_REPEAT].text =
-    _("Pressing 'R' allows you to repeat an event or an appointment. You must\n"
+  snprintf (hscr[HELP_REPEAT].text, BUFSIZ,
+    _("Pressing '%s' allows you to repeat an event or an appointment. You must\n"
       "first select the item to be repeated by moving inside the appointment\n"
       "panel. "
-      "Then pressing 'R' will lead you to a set of three questions, with\n"
+      "Then pressing '%s' will lead you to a set of three questions, with\n"
       "which you will be able to specify the repetition characteristics:\n\n"
       "  o        type: you can choose between a daily, weekly, monthly or\n"
       "                 yearly repetition by pressing 'D', 'W', 'M' or 'Y'\n"
@@ -527,33 +558,39 @@ help_screen (void)
       "         panel, to be easily recognizable from non-repeated ones.\n"
       "       o the 'Repeat' and 'Delete' command can be mixed to create\n"
       "         complicated configurations, as it is possible to delete only\n"
-      "         one occurence of a repeated item.");
+      "         one occurence of a repeated item."),
+            keys_action_firstkey (KEY_REPEAT_ITEM),
+            keys_action_firstkey (KEY_REPEAT_ITEM));            
 
   hscr[HELP_FLAG].title = _("Flag Item:\n");
-  hscr[HELP_FLAG].text =
-    _("Pressing '!' toggles an appointment's 'important' flag.\n\n"
+  snprintf (hscr[HELP_FLAG].text, BUFSIZ,
+    _("Pressing '%s' toggles an appointment's 'important' flag.\n\n"
       "If an item is flagged as important, an exclamation mark appears in front"
       "\nof it, and you will be warned if time gets closed to the appointment\n"
       "start time.\n"
       "To customize the way one gets notified, the configuration submenu lets\n"
       "you choose the command launched to warn user of an upcoming appointment,"
-      "\nand how long before it he gets notified.");
+      "\nand how long before it he gets notified."),
+            keys_action_firstkey (KEY_FLAG_ITEM));
 
   hscr[HELP_CONFIG].title = _("Config:\n");
-  hscr[HELP_CONFIG].text =
-    _("Pressing 'C' leads to the configuration submenu, from which you can\n"
-      "select between color, layout, and general options.\n"
+  snprintf (hscr[HELP_CONFIG].text, BUFSIZ,
+    _("Pressing '%s' leads to the configuration submenu, from which you can\n"
+      "select between color, layout, notification and general options, and\n"
+      "you can also configure your keybindings.\n"
       "\nThe color submenu lets you choose the color theme.\n"
       "\nThe layout submenu lets you choose the Calcurse screen layout, in other"
       "\nwords where to place the three different panels on the screen.\n"
       "\nThe general options submenu brings a screen with the different options"
       "\nwhich modifies the way Calcurse interacts with the user.\n"
       "\nThe notify submenu allows you to change the notify-bar settings.\n"
+      "\nThe keys submenu lets you define your own keybindins.\n"
       "\nDo not forget to save the calendar data to retrieve your configuration"
-      "\nnext time you launch Calcurse.");
+      "\nnext time you launch Calcurse."),
+            keys_action_firstkey (KEY_GENERIC_CONFIG_MENU));
 
   hscr[HELP_GENERAL].title = _("General keybindings:\n");
-  hscr[HELP_GENERAL].text =
+  snprintf (hscr[HELP_GENERAL].text, BUFSIZ,
     _("Some of the keybindings apply whatever panel is selected. They are\n"
       "called general keybinding and involve the <CONTROL> key, which is\n"
       "represented by the '^' sign in the status bar panel. For example,\n"
@@ -569,19 +606,22 @@ help_screen (void)
       " '^L' : +1 Day          -> move to next day\n"
       " '^K' : -1 Week         -> move to previous week\n"
       " '^J' : +1 Week         -> move to next week\n"
-      " '^G' : Goto today      -> move to current day");
+      " '^G' : Goto today      -> move to current day"));
 
   hscr[HELP_OTHER].title = _("OtherCmd:\n");
-  hscr[HELP_OTHER].text =
-    _("Pressing 'O' allows you to switch between status bar help pages.\n"
+  snprintf (hscr[HELP_OTHER].text, BUFSIZ,
+    _("Pressing '%s' allows you to switch between status bar help pages.\n"
       "Because the terminal screen is too narrow to display all of the\n"
-      "available commands, you need to press 'O' to see the next set of\n"
+      "available commands, you need to press '%s' to see the next set of\n"
       "commands together with their keybindings.\n"
-      "Once the last status bar page is reached, pressing 'O' another time\n"
-      "leads you back to the first page.");
+      "Once the last status bar page is reached, pressing '%s' another time\n"
+      "leads you back to the first page."),
+            keys_action_firstkey (KEY_GENERIC_OTHER_CMD),
+            keys_action_firstkey (KEY_GENERIC_OTHER_CMD),
+            keys_action_firstkey (KEY_GENERIC_OTHER_CMD));            
 
   hscr[HELP_CREDITS].title = _("Calcurse - text-based organizer");
-  hscr[HELP_CREDITS].text =
+  snprintf (hscr[HELP_CREDITS].text, BUFSIZ,
     _("Copyright (c) 2004-2008 Frederic Culot\n"
       "\n"
       "This program is free software; you can redistribute it and/or modify\n"
@@ -594,7 +634,7 @@ help_screen (void)
       "GNU General Public License for more details.\n"
       "\n\n"
       "Send your feedback or comments to : calcurse@culot.org\n"
-      "Calcurse home page : http://culot.org/calcurse");
+      "Calcurse home page : http://culot.org/calcurse"));
 
   help_wins_init (&hwin, 0, 0, (notify_bar ()) ? row - 3 : row - 2, col);
   page = oldpage = HELP_MAIN;

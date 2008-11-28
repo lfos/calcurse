@@ -1,3 +1,7 @@
+2008-11-26  Frederic Culot  <frederic@culot.org>
+
+	* src/help.c (help_screen): updated to display user-defined keys
+	
 2008-11-25  Frederic Culot  <frederic@culot.org>
 
 	* src/io.c (io_save_cal): updated to save user-defined keys

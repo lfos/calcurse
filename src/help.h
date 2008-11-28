@@ -1,8 +1,8 @@
-/*	$calcurse: help.h,v 1.6 2008/11/23 20:38:56 culot Exp $	*/
+/*	$calcurse: help.h,v 1.7 2008/11/28 08:46:29 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2007 Frederic Culot
+ * Copyright (c) 2004-2008 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,13 +32,10 @@
 typedef struct
 {
   char *title;
-  char *text;
+  char text[BUFSIZ];
 }
 help_page_t;
 
 void help_screen (void);
-void help_wins_init (scrollwin_t *, int, int, int, int);
-void help_wins_reset (scrollwin_t *);
-int  help_write_pad (window_t *, char *, char *);
 
 #endif /* CALCURSE_HELP_H */
