@@ -1,4 +1,4 @@
-/*	$calcurse: help.c,v 1.32 2008/11/28 08:46:29 culot Exp $	*/
+/*	$calcurse: help.c,v 1.33 2008/11/30 20:48:10 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -83,19 +83,21 @@ get_help_lines (char *text)
  * of lines that were written. 
  */
 static int
-help_write_pad (window_t *win, char *title, char *text)
+help_write_pad (window_t *win, char *title, char *text, keys_e action)
 {
-  int nl_title = 0;
-  int nl_text = 0;
+  int nl_title, nl_text;
+  const int nl_bindings = 2;
 
   nl_text = get_help_lines (text);
   nl_title = get_help_lines (title);
   erase_window_part (win->p, 0, 0, BUFSIZ, win->w);
   custom_apply_attr (win->p, ATTR_HIGHEST);
   mvwprintw (win->p, 0, 0, "%s", title);
+  mvwprintw (win->p, nl_title, 0, "key bindings: %s",
+             keys_action_allkeys (action));
   custom_remove_attr (win->p, ATTR_HIGHEST);
-  mvwprintw (win->p, nl_title, 0, "%s", text);
-  return (nl_text + nl_title);
+  mvwprintw (win->p, nl_title + nl_bindings, 0, "%s", text);
+  return nl_text + nl_title + nl_bindings;
 }
 
 /* 
@@ -269,7 +271,7 @@ help_screen (void)
 {
   scrollwin_t hwin;
   int need_resize;
-  int ch = KEY_GENERIC_HELP;
+  keys_e ch = KEY_GENERIC_HELP;
   int page, oldpage;
   help_page_t hscr[HELPSCREENS];
 
@@ -652,7 +654,7 @@ help_screen (void)
 	  help_wins_reset (&hwin);
 	  hwin.first_visible_line = 0;
 	  hwin.total_lines = help_write_pad (&hwin.pad, hscr[oldpage].title,
-                                             hscr[oldpage].text);
+                                             hscr[oldpage].text, ch);
 	  need_resize = 1;
 	  break;
 
@@ -670,7 +672,7 @@ help_screen (void)
 	    {
 	      hwin.first_visible_line = 0;
 	      hwin.total_lines = help_write_pad (&hwin.pad, hscr[page].title,
-                                                 hscr[page].text);
+                                                 hscr[page].text, ch);
 	      oldpage = page;
 	    }
 	  break;

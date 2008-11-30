@@ -1,4 +1,4 @@
-/*	$calcurse: keys.c,v 1.5 2008/11/25 20:48:58 culot Exp $	*/
+/*	$calcurse: keys.c,v 1.6 2008/11/30 20:48:10 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -283,7 +283,7 @@ keys_int2str (int key)
     case ESCAPE:
       return "ESC";
     default:
-      return keyname (key);
+      return (char *)keyname (key);
     }
 }
 
@@ -523,5 +523,4 @@ keys_save_bindings (FILE *fd)
   dump_intro (fd);
   for (i = 0; i < NBKEYS; i++)
     fprintf (fd, "%s  %s\n", keydef[i].label, keys_action_allkeys (i));
-  fclose (fd);
 }
