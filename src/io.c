@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.43 2008/11/25 20:48:58 culot Exp $	*/
+/*	$calcurse: io.c,v 1.44 2008/12/03 19:31:03 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -31,7 +31,6 @@
 #include <math.h>
 #include <unistd.h>
 #include <errno.h>
-#include <ctype.h>
 
 #include "i18n.h"
 #include "utils.h"
@@ -1220,6 +1219,16 @@ load_keys_ht_compare (struct ht_keybindings_s *data1,
 }
 
 /*
+ * isblank(3) is protected by the __BSD_VISIBLE macro and this fails to be
+ * visible in some specific cases. Thus replace it by the following is_blank()
+ * function.
+ */
+static int is_blank (int c)
+{
+  return c == ' ' || c == '\t';
+}
+
+/*
  * Load user-definable keys from file.
  * A hash table is used to speed up loading process in avoiding string
  * comparisons.
@@ -1253,7 +1262,7 @@ io_load_keys (void)
       struct ht_keybindings_s *ht_elm, ht_entry;
       const int AWAITED = 1;
 
-      for (p = buf; isblank ((int)*p); p++)
+      for (p = buf; is_blank ((int)*p); p++)
         ;
       if (p != buf)
         memmove (buf, p, strlen (p));

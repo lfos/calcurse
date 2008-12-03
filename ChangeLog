@@ -1,3 +1,15 @@
+2008-12-03  Frederic Culot  <frederic@culot.org>
+
+	* src/help.c (help_screen): help texts size overflow fixed
+	
+2008-12-02  Frederic Culot  <frederic@culot.org>
+
+	* src/help.c (help_screen): help pages updated
+	
+2008-11-30  Frederic Culot  <frederic@culot.org>
+
+	* src/io.c (is_blank): new function
+	
 2008-11-29  Frederic Culot  <frederic@culot.org>
 
 	* src/help.c (help_write_pad): updated to display key bindings
