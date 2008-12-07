@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.71 2008/11/23 20:38:56 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.72 2008/12/07 09:20:38 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -147,7 +147,7 @@ main (int argc, char **argv)
   no_data_file = io_check_data_files ();
   custom_load_conf (&conf, background);
   erase_status_bar ();
-  io_load_keys ();
+  io_load_keys (conf.pager);
   io_load_todo ();
   io_load_app ();
   wins_reinit ();
@@ -375,29 +375,29 @@ main (int argc, char **argv)
 	  break;
 
         case KEY_GENERIC_SAVE:
-	  io_save_cal (IO_MODE_INTERACTIVE, &conf);
+	  io_save_cal (&conf);
 	  break;
 
         case KEY_GENERIC_IMPORT:
           erase_status_bar ();
-          io_import_data (IO_MODE_INTERACTIVE, IO_IMPORT_ICAL, &conf, NULL);
+          io_import_data (IO_IMPORT_ICAL, &conf, NULL);
           do_storage = true;
           break;
           
         case KEY_GENERIC_EXPORT:
           erase_status_bar ();
           io_export_bar ();
-          while ((key = keys_getch (win[STA].p)) != 'q')
+          while ((key = wgetch (win[STA].p)) != 'q')
 	    {
 	      switch (key)
 		{
 		case 'I':
 		case 'i':
-                  io_export_data (IO_MODE_INTERACTIVE, IO_EXPORT_ICAL, &conf);
+                  io_export_data (IO_EXPORT_ICAL, &conf);
 		  break;
 		case 'P':
 		case 'p':
-                  io_export_data (IO_MODE_INTERACTIVE, IO_EXPORT_PCAL, &conf);
+                  io_export_data (IO_EXPORT_PCAL, &conf);
 		  break;
 		}
 	      wins_reset ();
@@ -492,7 +492,7 @@ main (int argc, char **argv)
           
         case KEY_GENERIC_QUIT:          
 	  if (conf.auto_save)
-	    io_save_cal (IO_MODE_INTERACTIVE, &conf);
+	    io_save_cal (&conf);
 
 	  if (conf.confirm_quit)
 	    {

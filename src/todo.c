@@ -1,4 +1,4 @@
-/*	$calcurse: todo.c,v 1.24 2008/11/16 17:42:53 culot Exp $	*/
+/*	$calcurse: todo.c,v 1.25 2008/12/07 09:20:38 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -146,7 +146,7 @@ todo_new_item (void)
       while ((ch < '1') || (ch > '9'))
 	{
 	  status_mesg (mesg_id, "");
-	  ch = keys_getch (win[STA].p);
+	  ch = wgetch (win[STA].p);
 	}
       todo_add (todo_input, ch - '0', NULL);
       todos++;
@@ -249,7 +249,7 @@ todo_delete (conf_t *conf)
   if (conf->confirm_delete)
     {
       status_mesg (del_todo_str, choices);
-      answer = keys_getch (win[STA].p);
+      answer = wgetch (win[STA].p);
       if ((answer == 'y') && (todos > 0))
 	{
 	  go_for_todo_del = true;
@@ -277,7 +277,7 @@ todo_delete (conf_t *conf)
   while (answer != 't' && answer != 'n' && answer != KEY_GENERIC_ESCAPE)
     {
       status_mesg (erase_warning, erase_choice);
-      answer = keys_getch (win[STA].p);
+      answer = wgetch (win[STA].p);
     }
 
   switch (answer)

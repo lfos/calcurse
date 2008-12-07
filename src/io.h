@@ -1,4 +1,4 @@
-/*	$calcurse: io.h,v 1.16 2008/11/09 20:10:18 culot Exp $	*/
+/*	$calcurse: io.h,v 1.17 2008/12/07 09:20:38 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -29,36 +29,36 @@
 
 #include "vars.h"
 
-typedef enum
-{
-  IO_MODE_NONINTERACTIVE,
-  IO_MODE_INTERACTIVE,
-  IO_NBMODES
-} io_mode_t;
-
-typedef enum
-{
+typedef enum {
   IO_IMPORT_ICAL,
   IO_IMPORT_NBTYPES
 } import_type_t;
 
-typedef enum
-{
+typedef enum {
   IO_EXPORT_ICAL,
   IO_EXPORT_PCAL,
   IO_EXPORT_NBTYPES
 } export_type_t;
 
-void io_init (char *, char *);
-void io_extract_data (char *, const char *, int);
-void io_save_cal (io_mode_t, conf_t *);
-void io_load_app (void);
-void io_load_todo (void);
-void io_load_keys (void);
-int  io_check_data_files (void);
-void io_startup_screen (bool, int);
-void io_export_data (io_mode_t, export_type_t, conf_t *);
-void io_export_bar (void);
-void io_import_data (io_mode_t, import_type_t, conf_t *, char *);
+typedef struct {
+  FILE *fd;
+  char name[BUFSIZ];
+} io_file_t;
 
-#endif /* CALCURSE_IO_H */
+void        io_init (char *, char *);
+void        io_extract_data (char *, const char *, int);
+void        io_save_cal (conf_t *);
+void        io_load_app (void);
+void        io_load_todo (void);
+void        io_load_keys (char *);
+int         io_check_data_files (void);
+void        io_startup_screen (bool, int);
+void        io_export_data (export_type_t, conf_t *);
+void        io_export_bar (void);
+void        io_import_data (import_type_t, conf_t *, char *);
+io_file_t  *io_log_init (void);
+void        io_log_print (io_file_t *, int, char *);
+void        io_log_display (io_file_t *, char *, char *);
+void        io_log_free (io_file_t *);
+
+#endif /* !CALCURSE_IO_H */

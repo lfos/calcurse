@@ -1,4 +1,4 @@
-/*	$calcurse: apoint.c,v 1.24 2008/11/16 17:42:53 culot Exp $	*/
+/*	$calcurse: apoint.c,v 1.25 2008/12/07 09:20:38 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -151,7 +151,7 @@ apoint_add (void)
 	  else if (check_time (item_time) != 1)
 	    {
 	      status_mesg (format_message_1, enter_str);
-	      keys_getch (win[STA].p);
+	      (void)wgetch (win[STA].p);
 	    }
 	  else
 	    sscanf (item_time, "%u:%u", &heures, &minutes);
@@ -175,7 +175,7 @@ apoint_add (void)
 	  else if (check_time (item_time) == 0)
 	    {
 	      status_mesg (format_message_2, enter_str);
-	      keys_getch (win[STA].p);
+	      (void)wgetch (win[STA].p);
 	    }
 	  else
 	    {
@@ -242,7 +242,7 @@ apoint_delete (conf_t *conf, unsigned *nb_events, unsigned *nb_apoints)
   if (conf->confirm_delete)
     {
       status_mesg (del_app_str, choices);
-      answer = keys_getch (win[STA].p);
+      answer = wgetch (win[STA].p);
       if ((answer == 'y') && (nb_items != 0))
 	go_for_deletion = true;
       else

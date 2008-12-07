@@ -1,4 +1,4 @@
-/*	$calcurse: day.c,v 1.38 2008/11/16 17:42:53 culot Exp $	*/
+/*	$calcurse: day.c,v 1.39 2008/12/07 09:20:38 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -527,7 +527,7 @@ day_edit_time (long time)
       if (check_time (timestr) != 1 || strlen (timestr) == 0)
 	{
 	  status_mesg (fmt_msg, enter_str);
-	  keys_getch (win[STA].p);
+	  (void)wgetch (win[STA].p);
 	}
       else
 	return (timestr);
@@ -559,7 +559,7 @@ update_start_time (long *start, long *dur)
       else
 	{
 	  status_mesg (msg_wrong_time, msg_enter);
-	  keys_getch (win[STA].p);
+	  (void)wgetch (win[STA].p);
 	  valid_date = 0;
 	}
     }
@@ -642,7 +642,7 @@ update_rept (struct rpt_s **rpt, const long start, conf_t *conf)
 	  if (newfreq == 0)
 	    {
 	      status_mesg (msg_wrong_freq, msg_enter);
-	      keys_getch (win[STA].p);
+	      (void)wgetch (win[STA].p);
 	    }
 	}
     }
@@ -685,7 +685,7 @@ update_rept (struct rpt_s **rpt, const long start, conf_t *conf)
 	      if (newuntil < start)
 		{
 		  status_mesg (msg_wrong_time, msg_enter);
-		  keys_getch (win[STA].p);
+		  (void)wgetch (win[STA].p);
 		  date_entered = 0;
 		}
 	      else
@@ -696,7 +696,7 @@ update_rept (struct rpt_s **rpt, const long start, conf_t *conf)
 	      snprintf (outstr, BUFSIZ, msg_fmts,
 			DATEFMT_DESC (conf->input_datefmt));
 	      status_mesg (msg_wrong_date, _(outstr));
-	      keys_getch (win[STA].p);
+	      (void)wgetch (win[STA].p);
 	      date_entered = 0;
 	    }
 	}
@@ -737,7 +737,7 @@ day_edit_item (conf_t *conf)
       re = recur_get_event (date, day_item_nb (date, item_num, RECUR_EVNT));
       status_mesg (_("Edit: (1)Description or (2)Repetition?"), "[1/2] ");
       while (ch != '1' && ch != '2' && ch != KEY_GENERIC_ESCAPE)
-	ch = keys_getch (win[STA].p);
+	ch = wgetch (win[STA].p);
       switch (ch)
 	{
 	case '1':
@@ -760,7 +760,7 @@ day_edit_item (conf_t *conf)
 		     "(3)Description or (4)Repetition?"), "[1/2/3/4] ");
       while (ch != STRT && ch != END && ch != DESC &&
 	     ch != REPT && ch != KEY_GENERIC_ESCAPE)
-	ch = keys_getch (win[STA].p);
+	ch = wgetch (win[STA].p);
       switch (ch)
 	{
 	case STRT:
@@ -784,7 +784,7 @@ day_edit_item (conf_t *conf)
       status_mesg (_("Edit: (1)Start time, (2)End time "
 		     "or (3)Description?"), "[1/2/3] ");
       while (ch != STRT && ch != END && ch != DESC && ch != KEY_GENERIC_ESCAPE)
-	ch = keys_getch (win[STA].p);
+	ch = wgetch (win[STA].p);
       switch (ch)
 	{
 	case STRT:
@@ -833,7 +833,7 @@ day_erase_item (long date, int item_number, erase_flag_e flag)
       while (ans != 'i' && ans != 'n')
 	{
 	  status_mesg (note_warning, note_choice);
-	  ans = keys_getch (win[STA].p);
+	  ans = wgetch (win[STA].p);
 	}
       if (ans == 'i')
 	flag = ERASE_FORCE;
@@ -855,7 +855,7 @@ day_erase_item (long date, int item_number, erase_flag_e flag)
       while ((ch != 'a') && (ch != 'o') && (ch != KEY_GENERIC_ESCAPE))
 	{
 	  status_mesg (erase_warning, erase_choice);
-	  ch = keys_getch (win[STA].p);
+	  ch = wgetch (win[STA].p);
 	}
       if (ch == 'a')
 	{

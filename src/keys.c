@@ -1,4 +1,4 @@
-/*	$calcurse: keys.c,v 1.6 2008/11/30 20:48:10 culot Exp $	*/
+/*	$calcurse: keys.c,v 1.7 2008/12/07 09:20:38 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -32,7 +32,7 @@
 #include "custom.h"
 #include "keys.h"
 
-#define MAXKEYVAL     256
+#define MAXKEYVAL   KEY_MAX  /* ncurses defines KEY_MAX as maximum key value */
 
 struct keydef_s {
   char *label;
@@ -106,7 +106,8 @@ dump_intro (FILE *fd)
       "# To define bindings which use the CONTROL key, prefix the key with "
       "'C-'.\n"
       "# The escape and horizontal Tab key can be specified using the 'ESC'\n"
-      "# and 'TAB' keyword, respectively.\n#\n"
+      "# and 'TAB' keyword, respectively. Arrow keys can also be specified\n"
+      "# with the UP, DWN, LFT, RGT keywords.\n#\n"
       "# A description of what each ACTION keyword is used for is available\n"
       "# from calcurse online configuration menu.\n");
 
@@ -252,7 +253,11 @@ keys_str2int (char *key)
 {
   const string_t CONTROL_KEY = STRING_BUILD ("C-");
   const string_t TAB_KEY = STRING_BUILD ("TAB");
-  const string_t ESCAPE_KEY = STRING_BUILD ("ESC");  
+  const string_t ESCAPE_KEY = STRING_BUILD ("ESC");
+  const string_t CURSES_KEY_UP = STRING_BUILD ("UP");
+  const string_t CURSES_KEY_DOWN = STRING_BUILD ("DWN");
+  const string_t CURSES_KEY_LEFT = STRING_BUILD ("LFT");
+  const string_t CURSES_KEY_RIGHT = STRING_BUILD ("RGT");
 
   if (!key)
     return -1;
@@ -268,6 +273,14 @@ keys_str2int (char *key)
         return TAB;
       else if (!strncmp (key, ESCAPE_KEY.str, ESCAPE_KEY.len))
         return ESCAPE;
+      else if (!strncmp (key, CURSES_KEY_UP.str, CURSES_KEY_UP.len))
+        return KEY_UP;
+      else if (!strncmp (key, CURSES_KEY_DOWN.str, CURSES_KEY_DOWN.len))
+        return KEY_DOWN;
+      else if (!strncmp (key, CURSES_KEY_LEFT.str, CURSES_KEY_LEFT.len))
+        return KEY_LEFT;
+      else if (!strncmp (key, CURSES_KEY_RIGHT.str, CURSES_KEY_RIGHT.len))
+        return KEY_RIGHT;
       else
         return -1;
     }
@@ -282,6 +295,14 @@ keys_int2str (int key)
       return "TAB";
     case ESCAPE:
       return "ESC";
+    case KEY_UP:
+      return "UP";
+    case KEY_DOWN:
+      return "DWN";
+    case KEY_LEFT:
+      return "LFT";
+    case KEY_RIGHT:
+      return "RGT";
     default:
       return (char *)keyname (key);
     }

@@ -1,6 +1,22 @@
+2008-12-07  Frederic Culot  <frederic@culot.org>
+
+	* src/keys.c: arrow keys can now also be used to define key
+	bindings
+	
+2008-12-06  Frederic Culot  <frederic@culot.org>
+
+	* src/io.c (io_load_keys): use of a temporary file to log errors
+	when loading user-defined key bindings
+
+	* src/io.c (io_log_init, io_log_dislpay, io_log_free)
+	(io_log_print): new functions
+	
 2008-12-03  Frederic Culot  <frederic@culot.org>
 
 	* src/help.c (help_screen): help texts size overflow fixed
+
+	* src/io.c (io_export_data): progress bar now displayed properly
+	when exporting data
 	
 2008-12-02  Frederic Culot  <frederic@culot.org>
 

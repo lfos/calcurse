@@ -1,4 +1,4 @@
-/*	$calcurse: custom.c,v 1.27 2008/11/25 20:48:58 culot Exp $	*/
+/*	$calcurse: custom.c,v 1.28 2008/12/07 09:20:38 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -396,11 +396,11 @@ layout_config (void)
     _(" [1]AT    [2]AC    [3]TA    [4]CA    [5]TA    [6]TC    [7]AT    [8]CT");
 
   status_mesg (layout_mesg, choice_mesg);
-  keys_getch (win[STA].p);
+  (void)wgetch (win[STA].p);
   status_mesg (layout_up_mesg, layout_down_mesg);
   wnoutrefresh (win[STA].p);
   doupdate ();
-  while ((ch = keys_getch (win[STA].p)) != 'q')
+  while ((ch = wgetch (win[STA].p)) != 'q')
     {
       if (ch <= '8' && ch >= '1')
 	{
@@ -585,7 +585,7 @@ custom_color_config (void)
   display_color_config (&conf_win, &mark_fore, &mark_back, cursor,
 			need_reset, theme_changed);
 
-  while ((ch = keys_getch (win[STA].p)) != 'q')
+  while ((ch = wgetch (win[STA].p)) != 'q')
     {
       need_reset = 0;
       theme_changed = 0;
@@ -611,28 +611,28 @@ custom_color_config (void)
 	    mark_fore = cursor;
 	  break;
 
-	case 258:
+	case KEY_DOWN:
 	case 'J':
 	case 'j':
 	  if (cursor < SIZE - 1)
 	    ++cursor;
 	  break;
 
-	case 259:
+	case KEY_UP:
 	case 'K':
 	case 'k':
 	  if (cursor > 0)
 	    --cursor;
 	  break;
 
-	case 260:
+	case KEY_LEFT:
 	case 'H':
 	case 'h':
 	  if (cursor > NBUSERCOLORS)
 	    cursor -= (NBUSERCOLORS + 1);
 	  break;
 
-	case 261:
+	case KEY_RIGHT:
 	case 'L':
 	case 'l':
 	  if (cursor <= NBUSERCOLORS)
@@ -816,7 +816,7 @@ custom_general_config (conf_t *conf)
   cwin.total_lines = print_general_options (cwin.pad.p, conf);
   wins_scrollwin_display (&cwin);
 
-  while ((ch = keys_getch (win[STA].p)) != 'q')
+  while ((ch = wgetch (win[STA].p)) != 'q')
     {
       switch (ch)
 	{

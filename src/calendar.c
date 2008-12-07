@@ -1,4 +1,4 @@
-/*	$calcurse: calendar.c,v 1.18 2008/11/16 17:42:53 culot Exp $	*/
+/*	$calcurse: calendar.c,v 1.19 2008/12/07 09:20:38 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -388,7 +388,7 @@ calendar_change_day (int datefmt)
 	  if (wrong_day)
 	    {
 	      status_mesg (mesg_line1, mesg_line2);
-	      keys_getch (win[STA].p);
+	      (void)wgetch (win[STA].p);
 	    }
 	}
     }

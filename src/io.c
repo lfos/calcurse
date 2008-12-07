@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.44 2008/12/03 19:31:03 culot Exp $	*/
+/*	$calcurse: io.c,v 1.45 2008/12/07 09:20:38 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -168,18 +168,15 @@ progress_bar (progress_bar_t type, int progress)
   switch (type)
     {
     case PROGRESS_BAR_SAVE:
-      EXIT_IF (progress < 0 || progress > PROGRESS_BAR_KEYS,
-               error_msg);
+      EXIT_IF (progress < 0 || progress > PROGRESS_BAR_KEYS, error_msg);
       status_mesg (mesg_sav, file[progress]);
       break;
     case PROGRESS_BAR_LOAD:
-      EXIT_IF (progress < 0 || progress > PROGRESS_BAR_KEYS,
-               error_msg);
+      EXIT_IF (progress < 0 || progress > PROGRESS_BAR_KEYS, error_msg);
       status_mesg (mesg_load, file[progress]);
       break;
     case PROGRESS_BAR_EXPORT:
-      EXIT_IF (progress < 0 || progress > PROGRESS_BAR_TODO,
-               error_msg);
+      EXIT_IF (progress < 0 || progress > PROGRESS_BAR_EXPORT_TODO, error_msg);
       status_mesg (mesg_export, data[progress]);
       break;
     }
@@ -233,7 +230,7 @@ get_export_stream (export_type_t type)
       if (stream == NULL)
 	{
 	  status_mesg (wrong_name, press_enter);
-	  keys_getch (win[STA].p);
+	  (void)wgetch (win[STA].p);
 	}
     }
   free (stream_name);
@@ -751,7 +748,7 @@ io_extract_data (char *dst_data, const char *org, int len)
 
 /* Save the calendar data */
 void
-io_save_cal (io_mode_t mode, conf_t *conf)
+io_save_cal (conf_t *conf)
 {
   FILE *data_file;
   struct event_s *k;
@@ -773,7 +770,7 @@ io_save_cal (io_mode_t mode, conf_t *conf)
   char *enter = _("Press [ENTER] to continue");
   bool show_bar = false;
 
-  if (mode == IO_MODE_INTERACTIVE && !conf->skip_progress_bar)
+  if (ui_mode == UI_CURSES && !conf->skip_progress_bar)
     show_bar = true;
 
   /* Save the user configuration. */
@@ -833,7 +830,7 @@ io_save_cal (io_mode_t mode, conf_t *conf)
       fprintf (data_file, "layout=\n");
       fprintf (data_file, "%d\n", wins_layout ());
 
-      if (mode == IO_MODE_INTERACTIVE)
+      if (ui_mode == UI_CURSES)
         pthread_mutex_lock (&nbar->mutex);
       fprintf (data_file,
 	       "\n# If this option is set to yes, "
@@ -875,7 +872,7 @@ io_save_cal (io_mode_t mode, conf_t *conf)
       fprintf (data_file, "input_datefmt=\n");
       fprintf (data_file, "%d\n", conf->input_datefmt);
 
-      if (mode == IO_MODE_INTERACTIVE)
+      if (ui_mode == UI_CURSES)
         pthread_mutex_unlock (&nbar->mutex);
 
       fclose (data_file);
@@ -913,11 +910,11 @@ io_save_cal (io_mode_t mode, conf_t *conf)
     {
       recur_save_data (data_file);
 
-      if (mode == IO_MODE_INTERACTIVE)
+      if (ui_mode == UI_CURSES)
         pthread_mutex_lock (&(alist_p->mutex));
       for (j = alist_p->root; j != 0; j = j->next)
 	apoint_write (j, data_file);
-      if (mode == IO_MODE_INTERACTIVE)
+      if (ui_mode == UI_CURSES)
         pthread_mutex_unlock (&(alist_p->mutex));
 
       for (k = eventlist; k != 0; k = k->next)
@@ -938,10 +935,10 @@ io_save_cal (io_mode_t mode, conf_t *conf)
     }
   
   /* Print a message telling data were saved */
-  if (mode == IO_MODE_INTERACTIVE && !conf->skip_system_dialogs)
+  if (ui_mode == UI_CURSES && !conf->skip_system_dialogs)
     {
       status_mesg (save_success, enter);
-      keys_getch (win[STA].p);
+      (void)wgetch (win[STA].p);
     }
 }
 
@@ -1155,7 +1152,7 @@ io_load_todo (void)
   if (data_file == NULL)
     {
       status_mesg (mesg_line1, mesg_line2);
-      keys_getch (win[STA].p);
+      (void)wgetch (win[STA].p);
     }
   for (;;)
     {
@@ -1232,15 +1229,19 @@ static int is_blank (int c)
  * Load user-definable keys from file.
  * A hash table is used to speed up loading process in avoiding string
  * comparisons.
+ * A log file is also built in case some errors were found in the key
+ * configuration file.
  */
 void
-io_load_keys (void)
+io_load_keys (char *pager)
 {
   struct ht_keybindings_s keys[NBKEYS];
   FILE *keyfp;
   char buf[BUFSIZ];
-  int i;
-
+  io_file_t *log;
+  int i, skipped, loaded, line;
+  const int MAX_ERRORS = 5;
+  
 #define HSIZE 256
   HTABLE_HEAD (ht_keybindings, HSIZE, ht_keybindings_s) ht_keys =
     HTABLE_INITIALIZER (&ht_keys);
@@ -1256,24 +1257,51 @@ io_load_keys (void)
     }
 
   keyfp = fopen (path_keys, "r");
+  EXIT_IF (keyfp == NULL,
+           _("FATAL ERROR in io_load_keys: could not find any key file."));
+  log = io_log_init ();
+  skipped = loaded = line = 0;
   while (fgets (buf, BUFSIZ, keyfp) != NULL)
     {
       char key_label[BUFSIZ], *p;
       struct ht_keybindings_s *ht_elm, ht_entry;
       const int AWAITED = 1;
+      int assigned;
 
+      line++;
+      if (skipped > MAX_ERRORS)
+        {
+          char *too_many =
+            _("\nToo many errors while reading configuration file!\n"
+              "Please backup your keys file, remove it from directory, "
+              "and launch calcurse again.\n");
+
+          io_log_print (log, line, too_many);
+          break;
+        }
       for (p = buf; is_blank ((int)*p); p++)
         ;
       if (p != buf)
         memmove (buf, p, strlen (p));
-      if (buf[0] == '#')
+      if (buf[0] == '#' || buf[0] == '\n')
         continue;
       
       if (sscanf (buf, "%s", key_label) != AWAITED)
-        continue;
+        {
+          skipped++;
+          io_log_print (log, line, _("Could not read key label"));
+          continue;
+        }
       ht_entry.label = key_label;
       p = buf + strlen (key_label) + 1;      
       ht_elm = HTABLE_LOOKUP (ht_keybindings, &ht_keys, &ht_entry);
+      if (!ht_elm)
+        {
+          skipped++;
+          io_log_print (log, line, _("Key label not recognized"));
+          continue;
+        }
+      assigned = 0;
       for (;;)
         {
           char key_ch[BUFSIZ], tmpbuf[BUFSIZ];
@@ -1283,26 +1311,58 @@ io_load_keys (void)
           strncpy (tmpbuf, p, BUFSIZ);
           if (sscanf (tmpbuf, "%s", key_ch) == AWAITED)
             {
-              int ch, used;
-              char *unknown_key = _("Error reading key: \"%s\"");
-              char *already_used =
-                _("\"%s\" assigned multiple times in keys file!");
-              
+              int ch;
+                    
               if ((ch = keys_str2int (key_ch)) < 0)
-                ERROR_MSG (unknown_key, key_ch);
+                {
+                  char unknown_key[BUFSIZ];
+
+                  skipped++;
+                  snprintf (unknown_key, BUFSIZ, _("Error reading key: \"%s\""),
+                            key_ch);
+                  io_log_print (log, line, unknown_key);
+                }
               else
                 {
-                  p += strlen (key_ch) + 1;              
+                  int used;
+                  
                   used = keys_assign_binding (ch, ht_elm->key);
                   if (used)
-                    ERROR_MSG (already_used, key_ch);
+                    {
+                      char already_assigned[BUFSIZ];
+
+                      skipped++;
+                      snprintf (already_assigned, BUFSIZ,
+                                _("\"%s\" assigned multiple times!"), key_ch);
+                      io_log_print (log, line, already_assigned);
+                    }
+                  else
+                    assigned++;
                 }
+              p += strlen (key_ch) + 1;
             }
           else
-            break;
+            {
+              if (assigned)
+                loaded++;
+              break;
+            }
         }
     }
   fclose (keyfp);
+  fclose (log->fd);
+  if (skipped > 0)
+    {
+      char *view_log =
+        _("There were some errors when loading keys file, see log file ?");
+      
+      io_log_display (log, view_log, pager);
+    }
+  io_log_free (log);
+  EXIT_IF (skipped > MAX_ERRORS,
+           _("Too many errors while reading keys file, aborting..."));
+  if (loaded < NBKEYS)
+    ERROR_MSG (_("Some actions do not have any associated key bindings!"));
 #undef HSIZE
 }
 
@@ -1388,18 +1448,18 @@ io_startup_screen (bool skip_dialogs, int no_data_file)
   if (no_data_file != 0)
     {
       status_mesg (welcome_mesg, enter);
-      keys_getch (win[STA].p);
+      (void)wgetch (win[STA].p);
     }
   else if (!skip_dialogs)
     {
       status_mesg (data_mesg, enter);
-      keys_getch (win[STA].p);
+      (void)wgetch (win[STA].p);
     }
 }
 
 /* Export calcurse data. */
 void
-io_export_data (io_mode_t mode, export_type_t type, conf_t *conf)
+io_export_data (export_type_t type, conf_t *conf)
 {
   FILE *stream;
   char *wrong_mode = _("FATAL ERROR in io_export_data: wrong export mode\n");
@@ -1412,12 +1472,12 @@ io_export_data (io_mode_t mode, export_type_t type, conf_t *conf)
       fputs (wrong_type, stderr);
       exit (EXIT_FAILURE);
     }
-  switch (mode)
+  switch (ui_mode)
     {
-    case IO_MODE_NONINTERACTIVE:
+    case UI_CMDLINE:
       stream = stdout;
       break;
-    case IO_MODE_INTERACTIVE:
+    case UI_CURSES:
       stream = get_export_stream (type);
       break;
     default:
@@ -1431,18 +1491,18 @@ io_export_data (io_mode_t mode, export_type_t type, conf_t *conf)
 
   cb_export_header[type] (stream);
 
-  if (!conf->skip_progress_bar && mode == IO_MODE_INTERACTIVE)
-    progress_bar (PROGRESS_BAR_EXPORT, 0);
+  if (!conf->skip_progress_bar && ui_mode == UI_CURSES)
+    progress_bar (PROGRESS_BAR_EXPORT, PROGRESS_BAR_EXPORT_EVENTS);
   cb_export_recur_events[type] (stream);
   cb_export_events[type] (stream);
 
-  if (!conf->skip_progress_bar && mode == IO_MODE_INTERACTIVE)
-    progress_bar (PROGRESS_BAR_EXPORT, 1);
+  if (!conf->skip_progress_bar && ui_mode == UI_CURSES)
+    progress_bar (PROGRESS_BAR_EXPORT, PROGRESS_BAR_EXPORT_APOINTS);
   cb_export_recur_apoints[type] (stream);
   cb_export_apoints[type] (stream);
 
-  if (!conf->skip_progress_bar && mode == IO_MODE_INTERACTIVE)
-    progress_bar (PROGRESS_BAR_EXPORT, 2);
+  if (!conf->skip_progress_bar && ui_mode == UI_CURSES)
+    progress_bar (PROGRESS_BAR_EXPORT, PROGRESS_BAR_EXPORT_TODO);
   cb_export_todo[type] (stream);
 
   cb_export_footer[type] (stream);
@@ -1450,10 +1510,10 @@ io_export_data (io_mode_t mode, export_type_t type, conf_t *conf)
   if (stream != stdout)
     fclose (stream);
 
-  if (!conf->skip_system_dialogs && mode == IO_MODE_INTERACTIVE)
+  if (!conf->skip_system_dialogs && ui_mode == UI_CURSES)
     {
       status_mesg (success, enter);
-      keys_getch (win[STA].p);
+      (void)wgetch (win[STA].p);
     }
 }
 
@@ -1500,8 +1560,9 @@ ical_log_init (FILE *log, float version)
     "|  * LINE is the line in the input stream at which this item begins |\n"
     "|  * DESCRIPTION indicates why the item could not be imported       |\n"
     "+-------------------------------------------------------------------+\n\n";
-    
-  fprintf (log, header, version);
+
+  if (log)
+    fprintf (log, header, version);
 }
 
 /*
@@ -1517,7 +1578,8 @@ ical_log (FILE *log, ical_types_e type, unsigned lineno, char *msg)
 
   RETURN_IF (type < 0 || type >= ICAL_TYPES,
              _("ERROR in ical_log: unknown ical type"));
-  fprintf (log, "%s [%d]: %s\n", typestr[type], lineno, msg);
+  if (log)
+    fprintf (log, "%s [%d]: %s\n", typestr[type], lineno, msg);
 }
 
 static void
@@ -2493,7 +2555,7 @@ get_import_stream (export_type_t type)
       if (stream == NULL)
 	{
 	  status_mesg (wrong_file, press_enter);
-	  keys_getch (win[STA].p);
+	  (void)wgetch (win[STA].p);
 	}
     }
   mem_free (stream_name);
@@ -2508,10 +2570,8 @@ get_import_stream (export_type_t type)
  * and is cleared at the end.
  */
 void
-io_import_data (io_mode_t mode, import_type_t type, conf_t *conf,
-                char *stream_name)
+io_import_data (import_type_t type, conf_t *conf, char *stream_name)
 {
-  const char *logprefix = "/tmp/calcurse_log.";
   const string_t vevent = STRING_BUILD ("BEGIN:VEVENT");
   const string_t vtodo = STRING_BUILD ("BEGIN:VTODO");
   char *proc_report = _("Import process report: %04d lines read ");
@@ -2519,8 +2579,9 @@ io_import_data (io_mode_t mode, import_type_t type, conf_t *conf,
     _("%d apps / %d events / %d todos / %d skipped ");
   char *lines_stats_interactive =
     _("%d apps / %d events / %d todos / %d skipped ([ENTER] to continue)");
-  char *logname, flogname[BUFSIZ], buf[BUFSIZ];
-  FILE *stream = NULL, *logfd;
+  char buf[BUFSIZ];
+  FILE *stream = NULL;
+  io_file_t *log;
   float ical_version;
   struct {
     unsigned events, apoints, todos, lines, skipped;
@@ -2528,15 +2589,15 @@ io_import_data (io_mode_t mode, import_type_t type, conf_t *conf,
 
   EXIT_IF (type < 0 || type >= IO_IMPORT_NBTYPES,
            _("FATAL ERROR in io_import_data: unknown import type"));
-  switch (mode)
+  switch (ui_mode)
     {
-    case IO_MODE_NONINTERACTIVE:
+    case UI_CMDLINE:
       stream = fopen (stream_name, "r");
       EXIT_IF (stream == NULL,
                _("FATAL ERROR: the input file cannot be accessed, "
                  "Aborting..."));
       break;
-    case IO_MODE_INTERACTIVE:
+    case UI_CURSES:
       stream = get_import_stream (type);
       break;
     default:
@@ -2553,15 +2614,14 @@ io_import_data (io_mode_t mode, import_type_t type, conf_t *conf,
              _("Warning: ical header malformed or wrong version number. "
                "Aborting..."));
 
-  logname = new_tempfile (logprefix, NOTESIZ);
-  RETURN_IF (logname == NULL,
-             _("Warning: could not create new note file to store "
-               "description. Aborting...\n"));
-  snprintf (flogname, BUFSIZ, "%s%s", logprefix, logname);
-  logfd = fopen (flogname, "w");
-  RETURN_IF (logfd == NULL, 
-             _("Warning: could not open temporary log file, Aborting..."));
-  ical_log_init (logfd, ical_version);
+  log = io_log_init ();
+  if (log == 0)
+    {
+      if (stream != stdin)
+        fclose (stream);
+      return;
+    }
+  ical_log_init (log->fd, ical_version);
 
   while (fgets (buf, BUFSIZ, stream) != NULL)
     {
@@ -2569,19 +2629,19 @@ io_import_data (io_mode_t mode, import_type_t type, conf_t *conf,
       str_toupper (buf);
       if (strncmp (buf, vevent.str, vevent.len) == 0)
         {
-          ical_read_event (stream, logfd, &stats.events, &stats.apoints,
+          ical_read_event (stream, log->fd, &stats.events, &stats.apoints,
                            &stats.skipped, &stats.lines);
         }
       else if (strncmp (buf, vtodo.str, vtodo.len) == 0)
         {
-          ical_read_todo (stream, logfd, &stats.todos, &stats.skipped,
+          ical_read_todo (stream, log->fd, &stats.todos, &stats.skipped,
                           &stats.lines);
         }
     }
   if (stream != stdin)
     fclose (stream);
 
-  if (mode == IO_MODE_INTERACTIVE && !conf->skip_system_dialogs)
+  if (ui_mode == UI_CURSES && !conf->skip_system_dialogs)
     {
       char read[BUFSIZ], stat[BUFSIZ];
 
@@ -2589,9 +2649,9 @@ io_import_data (io_mode_t mode, import_type_t type, conf_t *conf,
       snprintf (stat, BUFSIZ, lines_stats_interactive, stats.apoints,
                 stats.events, stats.todos, stats.skipped);
       status_mesg (read, stat);
-      keys_getch (win[STA].p);
+      (void)wgetch (win[STA].p);
     }
-  else if (mode == IO_MODE_NONINTERACTIVE)
+  else if (ui_mode == UI_CMDLINE)
     {
       printf (proc_report, stats.lines);
       printf ("\n");
@@ -2603,43 +2663,91 @@ io_import_data (io_mode_t mode, import_type_t type, conf_t *conf,
   /* User has the choice to look at the log file if some items could not be
      imported.
   */
-  fclose (logfd);
+  fclose (log->fd);
   if (stats.skipped > 0)
     {
       char *view_log = _("Some items could not be imported, see log file ?");
-      char *choices = "[y/n] ";
-      int ans;
-      
-      if (mode == IO_MODE_NONINTERACTIVE)
-        {
-          int ans;
 
-          printf ("\n%s %s", view_log, choices);
-          ans = fgetc (stdin);
-          if (ans == 'y')
-            {
-              char cmd[BUFSIZ];
+      io_log_display (log, view_log, conf->pager);
+    }
+  io_log_free (log);
+}
 
-              snprintf (cmd, BUFSIZ, "%s %s", conf->pager, flogname);
-              system (cmd);
-            }
-        }
-      else
+io_file_t *
+io_log_init (void)
+{
+  const char *logprefix = "/tmp/calcurse_log.";
+  char *logname;
+  io_file_t *log;
+
+  logname = new_tempfile (logprefix, NOTESIZ);
+  RETVAL_IF (logname == 0, 0,
+             _("Warning: could not create temporary log file, Aborting..."));
+  log = malloc (sizeof (io_file_t));
+  RETVAL_IF (log == 0, 0,
+             _("Warning: could not open temporary log file, Aborting..."));
+  snprintf (log->name, sizeof (log->name), "%s%s", logprefix, logname);
+  mem_free (logname);
+  log->fd = fopen (log->name, "w");
+  if (log->fd == 0)
+    {
+      ERROR_MSG (_("Warning: could not open temporary log file, Aborting..."));
+      mem_free (log);
+      return 0;
+    }
+
+  return log;
+}
+
+void
+io_log_print (io_file_t *log, int line, char *msg)
+{
+  if (log && log->fd)
+    fprintf (log->fd, "[%d]: %s\n", line, msg);
+}
+
+void
+io_log_display (io_file_t *log, char *msg, char *pager)
+{
+  char *choices = "[y/n] ";
+  int ans;
+
+  RETURN_IF (log == 0, _("No log file to display!"));
+  if (ui_mode == UI_CMDLINE)
+    {
+      printf ("\n%s %s", msg, choices);
+      ans = fgetc (stdin);
+      if (ans == 'y')
         {
-          status_mesg (view_log, choices);
-          do
-            {
-              ans = keys_getch (win[STA].p);
-              if (ans == 'y')
-                {
-                  wins_launch_external (flogname, conf->pager);
-                }
-            }
-          while (ans != 'y' && ans != 'n');
-          erase_status_bar ();
+          char cmd[BUFSIZ];
+          
+          snprintf (cmd, BUFSIZ, "%s %s", pager, log->name);
+          system (cmd);
         }
     }
-  EXIT_IF (unlink (flogname) != 0,
-           _("Warning: could not erase temporary log file, Aborting..."));
-  mem_free (logname);
+  else
+    {
+      status_mesg (msg, choices);
+      do
+        {
+          ans = wgetch (win[STA].p);
+          if (ans == 'y')
+            {
+              wins_launch_external (log->name, pager);
+            }
+        }
+      while (ans != 'y' && ans != 'n');
+      erase_status_bar ();
+    }
+}
+
+void
+io_log_free (io_file_t *log)
+{
+  if (!log)
+    return;
+  EXIT_IF (unlink (log->name) != 0,
+           _("Warning: could not erase temporary log file %s, Aborting..."),
+           log->name);
+  mem_free (log);
 }

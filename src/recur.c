@@ -1,4 +1,4 @@
-/*	$calcurse: recur.c,v 1.39 2008/11/16 17:42:53 culot Exp $	*/
+/*	$calcurse: recur.c,v 1.40 2008/12/07 09:20:38 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -689,7 +689,7 @@ recur_repeat_item (conf_t *conf)
   if (p->type != APPT && p->type != EVNT)
     {
       status_mesg (wrong_type_1, wrong_type_2);
-      ch = keys_getch (win[STA].p);
+      ch = wgetch (win[STA].p);
       return;
     }
 
@@ -697,10 +697,10 @@ recur_repeat_item (conf_t *conf)
 	 && (ch != 'Y') && (ch != KEY_GENERIC_ESCAPE))
     {
       status_mesg (mesg_type_1, mesg_type_2);
-      ch = keys_getch (win[STA].p);
+      ch = wgetch (win[STA].p);
       ch = toupper (ch);
     }
-  if (ch == KEY_GENERIC_ESCAPE)
+  if (ch == ESCAPE)
     {
       return;
     }
@@ -719,7 +719,7 @@ recur_repeat_item (conf_t *conf)
 	  if (freq == 0)
 	    {
 	      status_mesg (mesg_wrong_freq, wrong_type_2);
-	      keys_getch (win[STA].p);
+	      (void)wgetch (win[STA].p);
 	    }
 	  user_input[0] = '\0';
 	}
@@ -753,7 +753,7 @@ recur_repeat_item (conf_t *conf)
 		  if (until < p->start)
 		    {
 		      status_mesg (mesg_older, wrong_type_2);
-		      keys_getch (win[STA].p);
+		      (void)wgetch (win[STA].p);
 		      date_entered = 0;
 		    }
 		  else
@@ -766,7 +766,7 @@ recur_repeat_item (conf_t *conf)
 		  snprintf (outstr, BUFSIZ, mesg_wrong_2,
 			    DATEFMT_DESC (conf->input_datefmt));
 		  status_mesg (mesg_wrong_1, _(outstr));
-		  keys_getch (win[STA].p);
+		  (void)wgetch (win[STA].p);
 		  date_entered = 0;
 		}
 	    }

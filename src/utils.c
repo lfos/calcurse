@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.54 2008/11/23 20:38:56 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.55 2008/12/07 09:20:38 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -86,7 +86,7 @@ ierror (const char *errmsg, ierror_sev_e sev)
 	       exitmsg);
   custom_remove_attr (errwin, ATTR_HIGHEST);
   wrefresh (errwin);
-  keys_getch (errwin);
+  (void)wgetch (errwin);
   if (sev == IERROR_FATAL)
     exit_calcurse (EXIT_FAILURE);
 }
@@ -118,7 +118,7 @@ warnbox (const char *msg)
   warnwin = popup (WINROW, WINCOL, (row - WINROW) / 2, (col - WINCOL) / 2,
                    "/!\\", displmsg, 1);
   wrefresh (warnwin);
-  keys_getch (warnwin);
+  (void)wgetch (warnwin);
   delwin (warnwin);
   doupdate ();
 }
@@ -758,7 +758,7 @@ item_in_popup (char *saved_a_start, char *saved_a_end, char *msg,
   wmove (win[STA].p, 0, 0);
   pnoutrefresh (pad, 0, 0, margin_top + 2, margin_left, padl, winw);
   doupdate ();
-  keys_getch (popup_win);
+  (void)wgetch (popup_win);
   delwin (pad);
   delwin (popup_win);
 }
