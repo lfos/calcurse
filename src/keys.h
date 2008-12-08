@@ -1,4 +1,4 @@
-/*	$calcurse: keys.h,v 1.5 2008/11/25 20:48:58 culot Exp $	*/
+/*	$calcurse: keys.h,v 1.6 2008/12/08 19:17:07 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -31,6 +31,7 @@
 #define CTRL(x)                 ((x) & CTRLVAL)
 #define ESCAPE		        27
 #define TAB       		9
+#define SPACE                   32
 
 #define KEYS_KEYLEN		3 /* length of each keybinding */  
 #define KEYS_LABELEN		8 /* length of command description */
@@ -38,7 +39,8 @@
 
 typedef enum
   {
-    KEY_GENERIC_ESCAPE,
+    KEY_GENERIC_CANCEL,
+    KEY_GENERIC_SELECT,
     KEY_GENERIC_CREDITS,
     KEY_GENERIC_HELP,
     KEY_GENERIC_QUIT,
@@ -103,5 +105,6 @@ char   *keys_action_allkeys (keys_e);
 void    keys_display_bindings_bar (WINDOW *, binding_t **, int, int);
 void    keys_popup_info (keys_e);
 void    keys_save_bindings (FILE *);
+int     keys_check_missing_bindings (void);
 
 #endif /* CALCURSE_KEYS_H */

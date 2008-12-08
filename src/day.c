@@ -1,4 +1,4 @@
-/*	$calcurse: day.c,v 1.39 2008/12/07 09:20:38 culot Exp $	*/
+/*	$calcurse: day.c,v 1.40 2008/12/08 19:17:07 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -736,7 +736,7 @@ day_edit_item (conf_t *conf)
     case RECUR_EVNT:
       re = recur_get_event (date, day_item_nb (date, item_num, RECUR_EVNT));
       status_mesg (_("Edit: (1)Description or (2)Repetition?"), "[1/2] ");
-      while (ch != '1' && ch != '2' && ch != KEY_GENERIC_ESCAPE)
+      while (ch != '1' && ch != '2' && ch != KEY_GENERIC_CANCEL)
 	ch = wgetch (win[STA].p);
       switch (ch)
 	{
@@ -759,7 +759,7 @@ day_edit_item (conf_t *conf)
       status_mesg (_("Edit: (1)Start time, (2)End time, "
 		     "(3)Description or (4)Repetition?"), "[1/2/3/4] ");
       while (ch != STRT && ch != END && ch != DESC &&
-	     ch != REPT && ch != KEY_GENERIC_ESCAPE)
+	     ch != REPT && ch != KEY_GENERIC_CANCEL)
 	ch = wgetch (win[STA].p);
       switch (ch)
 	{
@@ -775,7 +775,7 @@ day_edit_item (conf_t *conf)
 	case REPT:
 	  update_rept (&ra->rpt, ra->start, conf);
 	  break;
-	case KEY_GENERIC_ESCAPE:
+	case KEY_GENERIC_CANCEL:
 	  return;
 	}
       break;
@@ -783,7 +783,7 @@ day_edit_item (conf_t *conf)
       a = apoint_get (date, day_item_nb (date, item_num, APPT));
       status_mesg (_("Edit: (1)Start time, (2)End time "
 		     "or (3)Description?"), "[1/2/3] ");
-      while (ch != STRT && ch != END && ch != DESC && ch != KEY_GENERIC_ESCAPE)
+      while (ch != STRT && ch != END && ch != DESC && ch != KEY_GENERIC_CANCEL)
 	ch = wgetch (win[STA].p);
       switch (ch)
 	{
@@ -796,7 +796,7 @@ day_edit_item (conf_t *conf)
 	case DESC:
 	  update_desc (&a->mesg);
 	  break;
-	case KEY_GENERIC_ESCAPE:
+	case KEY_GENERIC_CANCEL:
 	  return;
 	}
       break;
@@ -852,7 +852,7 @@ day_erase_item (long date, int item_number, erase_flag_e flag)
     {
       if (flag == ERASE_FORCE_ONLY_NOTE)
 	ch = 'a';
-      while ((ch != 'a') && (ch != 'o') && (ch != KEY_GENERIC_ESCAPE))
+      while ((ch != 'a') && (ch != 'o') && (ch != KEY_GENERIC_CANCEL))
 	{
 	  status_mesg (erase_warning, erase_choice);
 	  ch = wgetch (win[STA].p);

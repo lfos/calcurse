@@ -1,4 +1,4 @@
-/*	$calcurse: custom.c,v 1.28 2008/12/07 09:20:38 culot Exp $	*/
+/*	$calcurse: custom.c,v 1.29 2008/12/08 19:17:07 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -432,6 +432,26 @@ custom_confwin_init (window_t *confwin, char *label)
     }
 }
 
+static void
+custom_color_config_bar (void)
+{
+  binding_t quit    = {_("Exit"),     KEY_GENERIC_QUIT};
+  binding_t select  = {_("Select"),   KEY_GENERIC_SELECT};
+  binding_t nocolor = {_("No color"), KEY_GENERIC_CANCEL};
+  binding_t up      = {_("Up"),       KEY_MOVE_UP};
+  binding_t down    = {_("Down"),     KEY_MOVE_DOWN};
+  binding_t left    = {_("Left"),     KEY_MOVE_LEFT};
+  binding_t right   = {_("Right"),    KEY_MOVE_RIGHT};
+
+  
+  binding_t *binding[] = {
+    &quit, &nocolor, &up, &down, &left, &right, &select
+  };
+  int binding_size = sizeof (binding) / sizeof (binding[0]);
+
+  keys_display_bindings_bar (win[STA].p, binding, 0, binding_size);
+}
+
 /* 
  * Used to display available colors in color configuration menu.
  * This is useful for window resizing.
@@ -444,7 +464,6 @@ display_color_config (window_t *cwin, int *mark_fore, int *mark_back,
 #define DEFAULTCOLOR		255
 #define DEFAULTCOLOR_EXT	-1
 #define CURSOR			(32 | A_REVERSE)
-#define SPACE			32
 #define MARK			88
 
   char *fore_txt = _("Foreground");
@@ -452,9 +471,6 @@ display_color_config (window_t *cwin, int *mark_fore, int *mark_back,
   char *default_txt = _("(terminal's default)");
   char *bar = "          ";
   char *box = "[ ]";
-  char *choose_color_1 = _("Use 'X' or SPACE to select a color, "
-			   "'H/L' 'J/K' or arrow keys to move");
-  char *choose_color_2 = _("('0' for no color, 'Q' to exit) :");
   char label[BUFSIZ];
   const unsigned Y = 3;
   const unsigned XOFST = 5;
@@ -559,7 +575,7 @@ display_color_config (window_t *cwin, int *mark_fore, int *mark_back,
     }
 
   mvwaddch (cwin->p, pos[cursor][YPOS], pos[cursor][XPOS] + 1, CURSOR);
-  status_mesg (choose_color_1, choose_color_2);
+  custom_color_config_bar ();
   wnoutrefresh (win[STA].p);
   wnoutrefresh (cwin->p);
   doupdate ();
@@ -585,7 +601,7 @@ custom_color_config (void)
   display_color_config (&conf_win, &mark_fore, &mark_back, cursor,
 			need_reset, theme_changed);
 
-  while ((ch = wgetch (win[STA].p)) != 'q')
+  while ((ch = keys_getch (win[STA].p)) != KEY_GENERIC_QUIT)
     {
       need_reset = 0;
       theme_changed = 0;
@@ -599,9 +615,7 @@ custom_color_config (void)
 	  need_reset = 1;
 	  break;
 
-	case SPACE:
-	case 'X':
-	case 'x':
+	case KEY_GENERIC_SELECT:
 	  colorize = true;
 	  need_reset = 1;
 	  theme_changed = 1;
@@ -611,35 +625,27 @@ custom_color_config (void)
 	    mark_fore = cursor;
 	  break;
 
-	case KEY_DOWN:
-	case 'J':
-	case 'j':
+	case KEY_MOVE_DOWN:
 	  if (cursor < SIZE - 1)
 	    ++cursor;
 	  break;
 
-	case KEY_UP:
-	case 'K':
-	case 'k':
+	case KEY_MOVE_UP:
 	  if (cursor > 0)
 	    --cursor;
 	  break;
 
-	case KEY_LEFT:
-	case 'H':
-	case 'h':
+	case KEY_MOVE_LEFT:
 	  if (cursor > NBUSERCOLORS)
 	    cursor -= (NBUSERCOLORS + 1);
 	  break;
 
-	case KEY_RIGHT:
-	case 'L':
-	case 'l':
+	case KEY_MOVE_RIGHT:
 	  if (cursor <= NBUSERCOLORS)
 	    cursor += (NBUSERCOLORS + 1);
 	  break;
 
-	case '0':
+	case KEY_GENERIC_CANCEL:
 	  colorize = false;
 	  need_reset = 1;
 	  break;
@@ -1073,7 +1079,9 @@ custom_keys_config (void)
               delwin (grabwin);              
             }
           while (used);
-          selelm++;
+          nbrowelm++;          
+          if (selelm < nbrowelm - 1)
+            selelm++;
 #undef WINROW
 #undef WINCOL
           break;
@@ -1081,10 +1089,16 @@ custom_keys_config (void)
           keystr = keys_action_nkey (selrow, selelm);
           keyval = keys_str2int (keystr);
           keys_remove_binding (keyval, selrow);
-          if (selelm > 0)
+          nbrowelm--;
+          if (selelm > 0 && selelm <= nbrowelm)
             selelm--;
           break;
         case KEY_GENERIC_QUIT:
+          if (keys_check_missing_bindings () != 0)
+            {
+              ERROR_MSG (_("Some actions do not have any associated "
+                           "key bindings!"));              
+            }
           wins_scrollwin_delete (&kwin);
           return;
 	}

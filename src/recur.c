@@ -1,4 +1,4 @@
-/*	$calcurse: recur.c,v 1.40 2008/12/07 09:20:38 culot Exp $	*/
+/*	$calcurse: recur.c,v 1.41 2008/12/08 19:17:07 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -694,7 +694,7 @@ recur_repeat_item (conf_t *conf)
     }
 
   while ((ch != 'D') && (ch != 'W') && (ch != 'M')
-	 && (ch != 'Y') && (ch != KEY_GENERIC_ESCAPE))
+	 && (ch != 'Y') && (ch != KEY_GENERIC_CANCEL))
     {
       status_mesg (mesg_type_1, mesg_type_2);
       ch = wgetch (win[STA].p);

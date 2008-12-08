@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.45 2008/12/07 09:20:38 culot Exp $	*/
+/*	$calcurse: io.c,v 1.46 2008/12/08 19:17:07 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -1707,7 +1707,6 @@ ical_unformat_line (char *line)
 static char *
 ical_unfold_content (FILE *fd, char *line, unsigned *lineno)
 {
-  const int CHAR_SPACE = 32;
   char *content;
   int c;
 
@@ -1718,7 +1717,7 @@ ical_unfold_content (FILE *fd, char *line, unsigned *lineno)
   for (;;)
     {
       c = getc (fd);
-      if (c == CHAR_SPACE || c == TAB)
+      if (c == SPACE || c == TAB)
         {
           char buf[BUFSIZ];
           
@@ -2703,7 +2702,7 @@ void
 io_log_print (io_file_t *log, int line, char *msg)
 {
   if (log && log->fd)
-    fprintf (log->fd, "[%d]: %s\n", line, msg);
+    fprintf (log->fd, "line %d: %s\n", line, msg);
 }
 
 void

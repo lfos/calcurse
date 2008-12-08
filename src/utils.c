@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.55 2008/12/07 09:20:38 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.56 2008/12/08 19:17:07 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -226,9 +226,7 @@ showcursor (WINDOW *win, int y, int pos, char *str, int l, int offset)
 
   nc = str + pos;
   wmove (win, y, pos - offset);
-#define SPACE 32
   (pos >= l) ? waddch (win, SPACE | A_REVERSE) : waddch (win, *nc | A_REVERSE);
-#undef SPACE
 }
 
 /* Print the string at the desired position. */
@@ -368,7 +366,7 @@ getstring (WINDOW *win, char *str, int l, int x, int y)
 	    newpos++;
 	  break;
 
-	case KEY_GENERIC_ESCAPE:	/* cancel editing */
+	case KEY_GENERIC_CANCEL:	/* cancel editing */
 	  return (GETSTRING_ESC);
 	  break;
 

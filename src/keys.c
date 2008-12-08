@@ -1,4 +1,4 @@
-/*	$calcurse: keys.c,v 1.7 2008/12/07 09:20:38 culot Exp $	*/
+/*	$calcurse: keys.c,v 1.8 2008/12/08 19:17:07 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -50,6 +50,7 @@ static keys_e actions[MAXKEYVAL];
 
 static struct keydef_s keydef[NBKEYS] = {
   {"generic-escape", "ESC"},
+  {"generic-select", "SPC"},
   {"generic-credits", "@"},
   {"generic-help", "?"},
   {"generic-quit", "q Q"},
@@ -105,9 +106,10 @@ dump_intro (FILE *fd)
       "#\n"
       "# To define bindings which use the CONTROL key, prefix the key with "
       "'C-'.\n"
-      "# The escape and horizontal Tab key can be specified using the 'ESC'\n"
-      "# and 'TAB' keyword, respectively. Arrow keys can also be specified\n"
-      "# with the UP, DWN, LFT, RGT keywords.\n#\n"
+      "# The escape, space bar and horizontal Tab key can be specified using\n"
+      "# the 'ESC', 'SPC' and 'TAB' keyword, respectively.\n"
+      "# Arrow keys can also be specified with the UP, DWN, LFT, RGT keywords."
+      "\n#\n"
       "# A description of what each ACTION keyword is used for is available\n"
       "# from calcurse online configuration menu.\n");
 
@@ -164,8 +166,13 @@ keys_getch (WINDOW *win)
   int ch;
   
   ch = wgetch (win);
-
-  return keys_get_action (ch);
+  switch (ch)
+    {
+    case KEY_RESIZE:
+      return KEY_RESIZE;
+    default:
+      return keys_get_action (ch);
+    }
 }
 
 static void
@@ -253,6 +260,7 @@ keys_str2int (char *key)
 {
   const string_t CONTROL_KEY = STRING_BUILD ("C-");
   const string_t TAB_KEY = STRING_BUILD ("TAB");
+  const string_t SPACE_KEY = STRING_BUILD ("SPC");  
   const string_t ESCAPE_KEY = STRING_BUILD ("ESC");
   const string_t CURSES_KEY_UP = STRING_BUILD ("UP");
   const string_t CURSES_KEY_DOWN = STRING_BUILD ("DWN");
@@ -273,6 +281,8 @@ keys_str2int (char *key)
         return TAB;
       else if (!strncmp (key, ESCAPE_KEY.str, ESCAPE_KEY.len))
         return ESCAPE;
+      else if (!strncmp (key, SPACE_KEY.str, SPACE_KEY.len))
+        return SPACE;
       else if (!strncmp (key, CURSES_KEY_UP.str, CURSES_KEY_UP.len))
         return KEY_UP;
       else if (!strncmp (key, CURSES_KEY_DOWN.str, CURSES_KEY_DOWN.len))
@@ -293,6 +303,8 @@ keys_int2str (int key)
     {
     case TAB:
       return "TAB";
+    case SPACE:
+      return "SPC";
     case ESCAPE:
       return "ESC";
     case KEY_UP:
@@ -348,7 +360,7 @@ keys_action_allkeys (keys_e action)
 {
   static char keystr[BUFSIZ];
   struct key_str_s *i;
-  const char *SPACE = " ";
+  const char *CHAR_SPACE = " ";
   
   if (keys[action] == NULL)
     return NULL;
@@ -357,7 +369,7 @@ keys_action_allkeys (keys_e action)
     {
       const int MAXLEN = sizeof (keystr) - 1 - strlen (keystr);
       strncat (keystr, i->str, MAXLEN - 1);
-      strncat (keystr, SPACE, 1);
+      strncat (keystr, CHAR_SPACE, 1);
     }
 
   return keystr;
@@ -442,8 +454,10 @@ keys_popup_info (keys_e key)
   char *info[NBKEYS];
   WINDOW *infowin;
   
-  info[KEY_GENERIC_ESCAPE] =
+  info[KEY_GENERIC_CANCEL] =
     _("Cancel the ongoing action.");
+  info[KEY_GENERIC_SELECT] =
+    _("Select the highlighted item.");
   info[KEY_GENERIC_CREDITS] =
     _("Print general information about calcurse's authors, license, etc.");
   info[KEY_GENERIC_HELP] =
@@ -544,4 +558,17 @@ keys_save_bindings (FILE *fd)
   dump_intro (fd);
   for (i = 0; i < NBKEYS; i++)
     fprintf (fd, "%s  %s\n", keydef[i].label, keys_action_allkeys (i));
+}
+
+int
+keys_check_missing_bindings (void)
+{
+  int i;
+    
+  for (i = 0; i < NBKEYS; i++)
+    {
+      if (keys[i] == 0)
+        return 1;
+    }
+  return 0;
 }

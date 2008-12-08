@@ -1,4 +1,4 @@
-/*	$calcurse: todo.c,v 1.25 2008/12/07 09:20:38 culot Exp $	*/
+/*	$calcurse: todo.c,v 1.26 2008/12/08 19:17:07 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -274,7 +274,7 @@ todo_delete (conf_t *conf)
   if (has_note == 0)
     answer = 't';
 
-  while (answer != 't' && answer != 'n' && answer != KEY_GENERIC_ESCAPE)
+  while (answer != 't' && answer != 'n' && answer != KEY_GENERIC_CANCEL)
     {
       status_mesg (erase_warning, erase_choice);
       answer = wgetch (win[STA].p);
