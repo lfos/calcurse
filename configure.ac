@@ -1,4 +1,4 @@
-#	$calcurse: configure.ac,v 1.25 2008/12/08 20:32:30 culot Exp $
+#	$calcurse: configure.ac,v 1.26 2008/12/08 20:49:48 culot Exp $
 
 #-------------------------------------------------------------------------------
 #                                                                           Init
@@ -56,20 +56,7 @@ AC_CHECK_HEADERS([math.h], [
 #-------------------------------------------------------------------------------
 #                                                            Compilation options
 #-------------------------------------------------------------------------------
-AC_ARG_ENABLE(debug,
-              AS_HELP_STRING([--enable-debug], [set CFLAGS for debug]),
-              debug=$enableval)
-if test "$debug" != "yes"; then
-   debug=no
-   AC_DEFINE(DBG_DISABLED, 1, [Define to 1 if you do not want debug.])
-   CFLAGS="$CFLAGS -O2 -Wall"
-else
-   AC_DEFINE(DBG_ENABLED, 1, [Define to 1 if you want debug.])
-   CFLAGS="$CFLAGS -g -ggdb -Wall"
-fi
-AC_MSG_CHECKING([if debug should be used])
-AC_MSG_RESULT($debug)
-AM_CONDITIONAL(DBG_ENABLED, test x$debug = xyes)
+CFLAGS="$CFLAGS -Wall"
 #-------------------------------------------------------------------------------
 #                                                               Create Makefiles
 #-------------------------------------------------------------------------------
