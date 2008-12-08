@@ -1,4 +1,4 @@
-#	$calcurse: configure.ac,v 1.24 2008/12/08 20:03:15 culot Exp $
+#	$calcurse: configure.ac,v 1.25 2008/12/08 20:32:30 culot Exp $
 
 #-------------------------------------------------------------------------------
 #                                                                           Init
@@ -56,8 +56,6 @@ AC_CHECK_HEADERS([math.h], [
 #-------------------------------------------------------------------------------
 #                                                            Compilation options
 #-------------------------------------------------------------------------------
-CFLAGS+="-Wall -g"
-
 AC_ARG_ENABLE(debug,
               AS_HELP_STRING([--enable-debug], [set CFLAGS for debug]),
               debug=$enableval)
