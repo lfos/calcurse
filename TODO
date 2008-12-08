@@ -17,12 +17,12 @@ High
 
 Average
 -------
-  o  Make keys user configurable
   o  Add searching capabilities with support for regex
   o  Implement a daemon to notify user of upcoming appointments even when
      calcurse is not running
   o  Add an auto-save function
   o  Add support for CalDAV protocol (rfc4791)
+  o  Implement categories to classify appointments and tasks
 
 
 Low

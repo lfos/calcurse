@@ -1,4 +1,4 @@
-/*	$calcurse: i18n.h,v 1.2 2008/04/12 21:14:03 culot Exp $	*/
+/*	$calcurse: i18n.h,v 1.3 2008/12/08 19:40:23 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -32,6 +32,7 @@
 #endif /* HAVE_CONFIG_H */
 
 #if ENABLE_NLS
+#include <locale.h>
 #include <libintl.h>
 #undef _
 #define _(String) gettext(String)

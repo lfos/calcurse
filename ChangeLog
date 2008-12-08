@@ -1,6 +1,13 @@
 2008-12-08  Frederic Culot  <frederic@culot.org>
 
 	* src/custom.c (custom_color_config_bar): new function
+
+	* configure.ac
+	* TODO: update for 2.4_beta
+
+	* configure.ac: do not overwrite CFLAGS
+
+	* src/i18n.h: include locale.h in case we have ENABLE_NLS
 	
 2008-12-07  Frederic Culot  <frederic@culot.org>
 
