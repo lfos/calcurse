@@ -1,4 +1,4 @@
-.\" 	$calcurse: calcurse.1,v 1.11 2008/09/21 14:09:00 culot Exp $
+.\" 	$calcurse: calcurse.1,v 1.12 2008/12/09 21:09:17 culot Exp $
 .\"
 .\" Copyright (c) 2004-2008 Frederic Culot
 .\"
@@ -18,7 +18,7 @@
 .\" Boston, MA 02111-1307, USA.
 .\"
 .fam C
-.TH CALCURSE 1 "September 21, 2008" "Version 2.3" "Calcurse Manual"
+.TH CALCURSE 1 "December 09, 2008" "Version 2.4" "Calcurse Manual"
 .SH NAME
 Calcurse \- text-based organizer
 .SH SYNOPSIS
@@ -139,10 +139,10 @@ key. Once viewing the help screens, informations on a specific command
 can be accessed by pressing the keystroke corresponding to that command.
 .SH CONFIGURATION
 The calcurse options can be changed from the configuration menu (shown
-when 'C' is hit). Four possible categories are to be chosen from : the
+when 'C' is hit). Five possible categories are to be chosen from : the
 color scheme, the layout (the location of the three panels on the
-screen), notification options, and more general options (such as automatic 
-save before quitting). 
+screen), notification options, key bindings configuration menu,
+and more general options (such as automatic save before quitting). 
 All of these options are detailed in the configuration menu.
 .SH FILES
 The following structure is created in your $HOME directory 
@@ -156,6 +156,8 @@ $HOME/.calcurse/
 .br
 |___conf 
 .br
+|___keys
+.br
 |___apts 
 .br
 |___todo
@@ -165,7 +167,8 @@ which are attached to appointments, events or todos. One text file is
 created per note, whose name is built using mkstemp(3) and should be
 unique, but with no relation with the corresponding item's description.
 .br
-The \fIconf\fP file contains the user configuration. The \fIapts\fP 
+The \fIconf\fP file contains the user configuration. The \fIkeys\fP
+file contains the user-defined key bindings. The \fIapts\fP 
 file contains all of the user's appointments and events, and the 
 \fItodo\fP file contains the todo list.
 .SH ENVIRONMENT

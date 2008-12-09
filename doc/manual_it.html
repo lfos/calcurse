@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <!--
 /*
- * $calcurse: manual_it.html,v 1.6 2008/09/21 14:08:59 culot Exp $
+ * $calcurse: manual_it.html,v 1.7 2008/12/09 21:09:17 culot Exp $
  *
  * Calcurse - text-based organizer
  * Copyright (c) 2004-2008 Frederic Culot
@@ -95,10 +95,11 @@ partecipare allo sviluppo di calcurse.
     <li><a href="#options">5. Opzioni</a>
     <ul>
         <li><a href="#options_general">5.1 Opzioni generali</a></li>
-	<li><a href="#options_colors">5.2 Temi dei colori</a></li>
-	<li><a href="#options_layout">5.3 Configurazione dell'interfaccia</a></li>
+        <li><a href="#options_keys"><span class="todo">5.2 Key bindings</span></a>
+	<li><a href="#options_colors">5.3 Temi dei colori</a></li>
+	<li><a href="#options_layout">5.4 Configurazione dell'interfaccia</a></li>
 	<li>
-	  <a href="#options_notify">5.4 Configurazioni della barra di
+	  <a href="#options_notify">5.5 Configurazioni della barra di
 	    notifica</a>
 	</li>
     </ul></li>
@@ -190,6 +191,7 @@ caratteristiche<a name="overview_features"></a></h2>
   cui sono elencate tutte le azioni disponibili.
   Anche l'interfaccia  utente è configurabile permettendo di poter
   scegliere fra diverse combinazioni di colori e layout.
+<span class="todo">Key bindings are also configurable, to fit everyone's needs.</span>
   Infine un sistema configurabile di allarmi ricorda all'utente
   l'avvicinarsi degli appuntamenti.
 </p>
@@ -252,7 +254,7 @@ caratteristiche<a name="overview_features"></a></h2>
   Innanzitutto è necessario scompattare l'archivio contenente i
   sorgenti:
 </p>
-	<pre>tar zxvf calcurse-2.3.tar.gz</pre>
+	<pre>tar zxvf calcurse-2.4.tar.gz</pre>
 <p>
   Una volta verificati i requisiti e scompattato l'archivio la
   procedura d'installazione è piuttosto semplice visto che segue i tre
@@ -479,6 +481,14 @@ d'ambiente<a name="basics_invocation_environment"></a></h3>
   degli appuntamenti previsti per la data odierna.</p>
 
 <h3>4.2.2 Modalità interattiva<a name="basics_interface_interactive"></a></h3>
+<div class="todo">
+	<p class="rq"><span class="valorise">Note:</span>
+        Key bindings that are indicated in this manual correspond to
+        the default ones, defined when <code>calcurse</code> is launched
+        for the first time. If those key bindings do not suit user's needs,
+        it is possible to change them within the keys configuration menu
+        (see <a href="#options_keys">key bindings</a>).</p>
+</div>
 <p>
   Se viene avviato senza argomenti oppure solo con
   l'opzione <code>'-c'</code> <code>calcurse</code> si avvia nella modalità
@@ -605,6 +615,7 @@ d'ambiente<a name="basics_invocation_environment"></a></h3>
   $HOME/.calcurse/
            |___notes/
            |___conf
+           |___keys
            |___apts
            |___todo
 </pre>
@@ -620,6 +631,9 @@ d'ambiente<a name="basics_invocation_environment"></a></h3>
 
   <dt><code>conf</code>:</dt>
   <dd>questo file contiene le configurazioni dell'utente</dd>
+
+  <dt><code>keys</code>:</dt>
+  <dd><span class="todo">this file contains the user-defined key bindings</span></dd>
 
   <dt><code>apts</code>:</dt>
   <dd>questo file contiene gli eventi e gli appuntamenti
@@ -699,7 +713,10 @@ d'ambiente<a name="basics_invocation_environment"></a></h3>
   è possibile scegliere la configurazione dell'interfaccia dello
   schermo principale di <code>calcurse</code> (praticamente le posizioni relative
   dei tre pannelli); premendo 'G' è possibile modificare alcune
-  opzioni generali; ed infine premendo 'N' è possibile modificare le
+  opzioni generali; 
+  <span class="todo">pressing 'K' opens the key bindings configuration
+  menu,</span>
+  ed infine premendo 'N' è possibile modificare le
   impostazioni della barra di notifica.
 </p>
 
@@ -787,8 +804,40 @@ d'ambiente<a name="basics_invocation_environment"></a></h3>
 
 	</dl>
 
+<div class="todo">
+<h2>5.2 Key bindings<a name="options_keys"></a></h2>
+<p>
+        One can define it's own keybindings within the 'Keys' configuration
+        menu. The default keys look like the one used by the <code>vim</code>
+        editor, especially the displacement keys. Anyway, within this
+        configuration menu, users can redefine all of the keys available from
+        within calcurse's user interface.</p>
+<p>
+        To define new keybindings, first highlight the action to which it will
+        apply. Then, delete the actual key binding if necessary, and add a new
+        one. You will then be asked to press the key corresponding to the new 
+        binding. It is possible to define more than one key binding for a single
+        action.</p>
+<p>
+        An automatic check is performed to see if the new key binding
+        is not already set for another action. In that case, you will be asked
+        to choose a different one. Another check is done when exiting from this
+        menu, to make sure all possible actions have a key associated with it.</p>
+<p>
+       The following keys can be used to define bindings:
+       <ul>
+         <li>lower-case, upper-case letters and numbers, such as 'a', 'Z', '0'</li>
+         <li>CONTROL-key followed by one of the above letters</li>
+         <li>escape, horizontal tab, and space keys</li>
+         <li>arrow keys (up, down, left, and right)</li>
+       </ul> </p>
+<p>
+       While inside the key configuration menu, an online help is available for 
+       each one of the available actions. This help briefly describes what the
+       highlighted action is used for.</p>
+</div>
 
-	<h2>5.2 Color themes<a name="options_colors"></a></h2>
+	<h2>5.3 Color themes<a name="options_colors"></a></h2>
 <p>
   Il tema del colore di <code>calcurse</code> può essere personalizzato a seconda
   delle necessità dell'utente. Nella pagina di configurazione è
@@ -820,7 +869,7 @@ d'ambiente<a name="basics_invocation_environment"></a></h3>
         </p>
 	
 	
-<h2>5.3 Configurazione del layout<a name="options_layout"></a></h2>
+<h2>5.4 Configurazione del layout<a name="options_layout"></a></h2>
 <p>
   Il layout è la posizione dei pannelli all'interno dello schermo di
   <code>calcurse</code>. Il layout predefinito è così disposto: il pannello del
@@ -833,7 +882,7 @@ d'ambiente<a name="basics_invocation_environment"></a></h3>
   <code>calcurse</code> a seconda delle necessità.
 </p>
 
-<h2>5.4 Impostazioni della barra delle notifiche<a name="options_notify"></a></h2>
+<h2>5.5 Impostazioni della barra delle notifiche<a name="options_notify"></a></h2>
 <p>
   Le seguenti opzioni modificano il comportamento della barra delle
   notifiche:
@@ -1353,7 +1402,7 @@ d'ambiente<a name="basics_invocation_environment"></a></h3>
 
 <div class="footer">
   Copyright (c) 2004-2008 Fr&eacute;d&eacute;ric Culot<br>
-  Calcurse version 2.3 - Last change: September 21, 2008<br>
+  Calcurse version 2.4 - Last change: December 09, 2008<br>
 </div>
 </div>
 

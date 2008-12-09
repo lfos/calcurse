@@ -1,3 +1,9 @@
+2008-12-09  Frederic Culot  <frederic@culot.org>
+
+	* src/calcurse.1: manpage update for 2.4
+
+	* doc/manual_*.html: update for 2.4
+	
 2008-12-08  Frederic Culot  <frederic@culot.org>
 
 	* src/custom.c (custom_color_config_bar): new function

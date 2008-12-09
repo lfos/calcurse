@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <!--
 /*
- *	$calcurse: manual_es.html,v 1.17 2008/09/21 14:08:59 culot Exp $
+ *	$calcurse: manual_es.html,v 1.18 2008/12/09 21:09:17 culot Exp $
  *
  * Calcurse - text-based organizer
  * Copyright (c) 2004-2008 Frederic Culot
@@ -96,9 +96,10 @@ well as the way one can contribute to <code>calcurse</code> development.
     <li><a href="#options">5. Opciones</a>
     <ul>
         <li><a href="#options_general">5.1 Opciones generales</a></li>
-	<li><a href="#options_colors">5.2 Color (temas)</a></li>
-	<li><a href="#options_layout">5.3 Configuración de la disposición</a></li>
-	<li><a href="#options_notify">5.4 Ajustes de la barra de notificaciones</a></li>
+        <li><a href="#options_keys"><span class="todo">5.2 Key bindings</span></a>
+	<li><a href="#options_colors">5.3 Color (temas)</a></li>
+	<li><a href="#options_layout">5.4 Configuración de la disposición</a></li>
+	<li><a href="#options_notify">5.5 Ajustes de la barra de notificaciones</a></li>
     </ul></li>
     <li><a href="#known_bugs">6. Bugs conocidos</a></li>
     <li><a href="#bugs">7. Informar de bugs y comentarios</a></li>
@@ -185,6 +186,7 @@ well as the way one can contribute to <code>calcurse</code> development.
 	las posibles acciones visualizadas en todo momento en la barra de
 	estado. La interfaz de usuario también es configurable y uno puede
 	elegir entre combinaciones de colores y disposiciones.
+<span class="todo">Key bindings are also configurable, to fit everyone's needs.</span>
 	Finalmente, un sistema de notificacion recuerda al usuario sus proximas citas.
 </p>
 
@@ -236,7 +238,7 @@ well as the way one can contribute to <code>calcurse</code> development.
 <h2>3.2 Proceso de instalación<a name="install_process"></a></h2>
 <p>
 	Primero necesitas descomprimir ( gunzip  y  untar) el archivo fuente:</p>
-	<pre>tar zxvf calcurse-2.3.tar.gz</pre>
+	<pre>tar zxvf calcurse-2.4.tar.gz</pre>
 <p>
   	Una vez has resuelto los requisitos y has extraído el archivo, 
 	el proceso de instalación es muy simple y sigue los tres pasos habituales:
@@ -435,6 +437,14 @@ well as the way one can contribute to <code>calcurse</code> development.
 	programadas para el día actual.</p>
 
 <h3>4.2.2 Modo interactivo<a name="basics_interface_interactive"></a></h3>
+<div class="todo">
+	<p class="rq"><span class="valorise">Note:</span>
+        Key bindings that are indicated in this manual correspond to
+        the default ones, defined when <code>calcurse</code> is launched
+        for the first time. If those key bindings do not suit user's needs,
+        it is possible to change them within the keys configuration menu
+        (see <a href="#options_keys">key bindings</a>).</p>
+</div>
 <p>
         Cuando es llamado sin ningún argumento o solo con la opción
         <code>-c</code>, <code>calcurse</code> arranca en modo interactivo.
@@ -556,6 +566,7 @@ well as the way one can contribute to <code>calcurse</code> development.
 $HOME/.calcurse/
            |___notes/
            |___conf
+           |___keys
            |___apts
            |___todo
 	</pre>
@@ -567,6 +578,8 @@ $HOME/.calcurse/
 		unique, but with no relation with the corresponding item's description.</span></dd>
 		<dt><code>conf</code>:</dt>
 		<dd>contiene la configuración del usuario.</dd>
+         	<dt><code>keys</code>:</dt>
+                <dd><span class="todo">this file contains the user-defined key bindings</span></dd>
 		<dt><code>apts</code>:</dt>
 		<dd>contiene todos los eventos y citas del usuario.</dd>
 		<dt><code>todo</code>:</dt>
@@ -643,7 +656,10 @@ $HOME/.calcurse/
 	pulsando 'C' de nuevo, te lleva a la configuración del esquema de colores. 
 	Pulsando 'L' te permite elegir la disposición de la pantalla principal 
 	de <code>calcurse</code> (en otras palabras, donde colocar los tres diferentes 
-	paneles en pantalla), y finalmente puedes elegir entre diferentes opciones 
+	paneles en pantalla), 
+        <span class="todo">pressing 'K' opens the key bindings configuration
+        menu,</span>
+        y finalmente puedes elegir entre diferentes opciones 
 	generales pulsando 'G'.
 </p>
 
@@ -723,7 +739,40 @@ $HOME/.calcurse/
 
         </dl>
 
-<h2>5.2 Color (temas)<a name="options_colors"></a></h2>
+<div class="todo">
+<h2>5.2 Key bindings<a name="options_keys"></a></h2>
+<p>
+        One can define it's own keybindings within the 'Keys' configuration
+        menu. The default keys look like the one used by the <code>vim</code>
+        editor, especially the displacement keys. Anyway, within this
+        configuration menu, users can redefine all of the keys available from
+        within calcurse's user interface.</p>
+<p>
+        To define new keybindings, first highlight the action to which it will
+        apply. Then, delete the actual key binding if necessary, and add a new
+        one. You will then be asked to press the key corresponding to the new 
+        binding. It is possible to define more than one key binding for a single
+        action.</p>
+<p>
+        An automatic check is performed to see if the new key binding
+        is not already set for another action. In that case, you will be asked
+        to choose a different one. Another check is done when exiting from this
+        menu, to make sure all possible actions have a key associated with it.</p>
+<p>
+       The following keys can be used to define bindings:
+       <ul>
+         <li>lower-case, upper-case letters and numbers, such as 'a', 'Z', '0'</li>
+         <li>CONTROL-key followed by one of the above letters</li>
+         <li>escape, horizontal tab, and space keys</li>
+         <li>arrow keys (up, down, left, and right)</li>
+       </ul> </p>
+<p>
+       While inside the key configuration menu, an online help is available for 
+       each one of the available actions. This help briefly describes what the
+       highlighted action is used for.</p>
+</div>
+
+<h2>5.3 Color (temas)<a name="options_colors"></a></h2>
 <p>
         El tema de color de <code>calcurse</code> puede se  configurado para 
 	cubrir las necesidades del usuario. Para cambiar el tema por defecto, la
@@ -751,7 +800,7 @@ $HOME/.calcurse/
         a otro valor. (como por ejemplo <span class="emp">xterm-xfree86</span>).
         </p>
       
-<h2>5.3 Configuración de la disposición<a name="options_layout"></a></h2>
+<h2>5.4 Configuración de la disposición<a name="options_layout"></a></h2>
 <p>
         La disposición corresponde a la posición de los paneles
         dentro de la pantalla de <code>calcurse</code>. La disposición por defecto
@@ -764,7 +813,7 @@ $HOME/.calcurse/
         modificar la apariencia de <code>calcurse</code> que mejor se adapte a sus
         necesidades colocando los diferentes paneles donde los necesite.</p>
 
-<h2>5.4 Ajustes de la barra de notificaciones<a name="options_notify"></a></h2>
+<h2>5.5 Ajustes de la barra de notificaciones<a name="options_notify"></a></h2>
 <p>
 	Las siguientes opciones se usan para modificar el comportamiento de la barra de notificaciones:</p>
 	<dl>
@@ -1110,7 +1159,7 @@ msgid ""
 	Copyright (c) 2004-2008 Frédéric Culot<br>
 	Traducido al Español por José López
 	<code>&lt;testinground .at. gmail .dot. com&gt;</code><br>
-	Calcurse version 2.3 - Last change: September 21, 2008<br>
+	Calcurse version 2.4 - Last change: December 09, 2008<br>
 </div>
 </div>
 

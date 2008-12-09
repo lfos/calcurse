@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <!--
 /*
- *	$calcurse: manual_en.html,v 1.20 2008/09/21 14:08:59 culot Exp $
+ *	$calcurse: manual_en.html,v 1.21 2008/12/09 21:09:17 culot Exp $
  *
  * Calcurse - text-based organizer
  * Copyright (c) 2004-2008 Frederic Culot
@@ -93,9 +93,10 @@ well as the way one can contribute to <code>calcurse</code> development.
     <li><a href="#options">5. Options</a>
     <ul>
         <li><a href="#options_general">5.1 General options</a></li>
-	<li><a href="#options_colors">5.2 Color themes</a></li>
-	<li><a href="#options_layout">5.3 Layout configuration</a></li>
-	<li><a href="#options_notify">5.4 Notify-bar settings</a></li>
+        <li><a href="#options_keys">5.2 Key bindings</a></li>
+	<li><a href="#options_colors">5.3 Color themes</a></li>
+	<li><a href="#options_layout">5.4 Layout configuration</a></li>
+	<li><a href="#options_notify">5.5 Notify-bar settings</a></li>
     </ul></li>
     <li><a href="#known_bugs">6. Known bugs</a></li>
     <li><a href="#bugs">7. Reporting bugs and feedback</a></li>
@@ -180,8 +181,9 @@ All of the commands are documented within an online help system.
         in mind, and tends to be as friendly as possible. This means 
         a complete on-line help system, together with having all of 
         the possible actions displayed at any time inside a status bar. 
-        The user interface is also configurable, and one can choose 
+        The user interface is configurable, and one can choose 
         between several color and layout combinations.
+        Key bindings are also configurable, to fit everyone's needs.
 	Last, a configurable notification system reminds user of upcoming
 	appointments. 
 </p>
@@ -236,7 +238,7 @@ All of the commands are documented within an online help system.
 <h2>3.2 Install process<a name="install_process"></a></h2>
 <p>
 	First you need to gunzip and untar the source archive:</p>
-	<pre>tar zxvf calcurse-2.3.tar.gz</pre>
+	<pre>tar zxvf calcurse-2.4.tar.gz</pre>
 <p>
   	Once you meet the requirements and have extracted the archive, 
 	the install process is quite simple, and follows the standard 
@@ -433,7 +435,14 @@ All of the commands are documented within an online help system.
 
 <h3>4.2.2 Interactive mode<a name="basics_interface_interactive"></a></h3>
 <p>
-        When called without any argument or only with the
+	<p class="rq"><span class="valorise">Note:</span>
+        Key bindings that are indicated in this manual correspond to
+        the default ones, defined when <code>calcurse</code> is launched
+        for the first time. If those key bindings do not suit user's needs,
+        it is possible to change them within the keys configuration menu
+        (see <a href="#options_keys">key bindings</a>).</p>
+
+        <p>When called without any argument or only with the
         <code>-c</code> option, <code>calcurse</code> is started in
         interactive mode. In this mode, you are shown an interface
 	containing three different panels which you can browse using 
@@ -551,6 +560,7 @@ All of the commands are documented within an online help system.
 $HOME/.calcurse/
            |___notes/
            |___conf
+           |___keys
            |___apts
            |___todo
         </pre>
@@ -562,6 +572,8 @@ $HOME/.calcurse/
 		unique, but with no relation with the corresponding item's description.</dd>
 		<dt><code>conf</code>:</dt>
 	        <dd>this file contains the user configuration</dd>
+		<dt><code>keys</code>:</dt>
+                <dd>this file contains the user-defined key bindings</dd>
 		<dt><code>apts</code>:</dt>
 	        <dd>this file contains  all  of the events and user's appointments</dd>
 		<dt><code>todo</code>:</dt>
@@ -632,13 +644,13 @@ $HOME/.calcurse/
 <p>
 	All of the <code>calcurse</code> parameters are configurable from the 
 	Configuration menu available when pressing 'C'. You are then 
-	driven to a submenu with four possible choices : pressing 'C' 
+	driven to a submenu with five possible choices : pressing 'C' 
 	again will lead you to the Color scheme configuration, 
 	pressing 'L' allows you to choose the layout of the main 
 	<code>calcurse</code> screen (in other words, where to put the three 
 	different panels on screen), pressing 'G' permits you to choose between
-	different general options, and last you can modify the notify-bar
-	settings by pressing 'N'.</p>
+	different general options, pressing 'K' opens the key bindings configuration
+        menu, and last you can modify the notify-bar settings by pressing 'N'.</p>
 
 <h2>5.1 General options<a name="options_general"></a></h2>
 <p>
@@ -711,7 +723,39 @@ $HOME/.calcurse/
 	</dl>
 
 
-<h2>5.2 Color themes<a name="options_colors"></a></h2>
+<h2>5.2 Key bindings<a name="options_keys"></a></h2>
+<p>
+        One can define it's own keybindings within the 'Keys' configuration
+        menu. The default keys look like the one used by the <code>vim</code>
+        editor, especially the displacement keys. Anyway, within this
+        configuration menu, users can redefine all of the keys available from
+        within calcurse's user interface.</p>
+<p>
+        To define new keybindings, first highlight the action to which it will
+        apply. Then, delete the actual key binding if necessary, and add a new
+        one. You will then be asked to press the key corresponding to the new 
+        binding. It is possible to define more than one key binding for a single
+        action.</p>
+<p>
+        An automatic check is performed to see if the new key binding
+        is not already set for another action. In that case, you will be asked
+        to choose a different one. Another check is done when exiting from this
+        menu, to make sure all possible actions have a key associated with it.</p>
+<p>
+       The following keys can be used to define bindings:
+       <ul>
+         <li>lower-case, upper-case letters and numbers, such as 'a', 'Z', '0'</li>
+         <li>CONTROL-key followed by one of the above letters</li>
+         <li>escape, horizontal tab, and space keys</li>
+         <li>arrow keys (up, down, left, and right)</li>
+       </ul> </p>
+<p>
+       While inside the key configuration menu, an online help is available for 
+       each one of the available actions. This help briefly describes what the
+       highlighted action is used for.</p>
+
+
+<h2>5.3 Color themes<a name="options_colors"></a></h2>
 <p>
 	<code>calcurse</code> color theme can be customized to suit user's 
 	needs. To change the default theme, the configuration page
@@ -738,7 +782,7 @@ $HOME/.calcurse/
         </p>
 
       
-<h2>5.3 Layout configuration<a name="options_layout"></a></h2>
+<h2>5.4 Layout configuration<a name="options_layout"></a></h2>
 <p>
         The layout corresponds to the position of the panels inside
         <code>calcurse</code> screen. The default layout makes the 
@@ -753,7 +797,7 @@ $HOME/.calcurse/
         his needs by placing the different panels where needed.</p>
 
 
-<h2>5.4 Notify-bar settings<a name="options_notify"></a></h2>
+<h2>5.5 Notify-bar settings<a name="options_notify"></a></h2>
 <p>
 	The following options are used to modify the notify-bar behavior:</p>
 	<dl>
@@ -1126,7 +1170,7 @@ msgid ""
 
 <div class="footer">
 	Copyright (c) 2004-2008 Frédéric Culot<br>
-	Calcurse version 2.3 - Last change: September 21, 2008<br>
+	Calcurse version 2.4 - Last change: December 09, 2008<br>
 </div>
 </div>
 

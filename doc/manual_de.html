@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <!--
 /*
- *	$calcurse: manual_de.html,v 1.20 2008/09/21 14:08:59 culot Exp $
+ *	$calcurse: manual_de.html,v 1.21 2008/12/09 21:09:17 culot Exp $
  *
  * Calcurse - text-based organizer
  * Copyright (c) 2004-2008 Frederic Culot
@@ -96,9 +96,10 @@ well as the way one can contribute to <code>calcurse</code> development.
     <li><a href="#options">5. Optionen</a>
     <ul>
         <li><a href="#options_general">5.1 Allgemeine Optionen</a></li>
-	<li><a href="#options_colors">5.2 Einstellen der Terminalfarben</a></li>
-	<li><a href="#options_layout">5.3 Einstellen des Layouts</a></li>
-	<li><a href="#options_notify">5.4 Einstellen der Benachrichtigungszeile</a></li>
+        <li><a href="#options_keys"><span class="todo">5.2 Key bindings</span></a>
+	<li><a href="#options_colors">5.3 Einstellen der Terminalfarben</a></li>
+	<li><a href="#options_layout">5.4 Einstellen des Layouts</a></li>
+	<li><a href="#options_notify">5.5 Einstellen der Benachrichtigungszeile</a></li>
     </ul></li>
     <li><a href="#known_bugs">6. Bekannte Fehler</a></li>
     <li><a href="#bugs">7. Mitteilung von Fehlern und Anregungen</a></li>
@@ -188,7 +189,9 @@ bedeutet, dass eine komplette Onlinehilfe im Programm zu Verf&uuml;gung
 steht, sowie alle m&ouml;gliche Aktionen jederzeit in einer Statuszeile
 ersichtlich sind.  Das Benutzer-Interface ist ebenfalls
 einstellbar. Ebenso kann man verschiedene Textfarben und Layouts
-w&auml;hlen. Ein konfigurierbares Notizsystem erinnert den Benutzer 
+w&auml;hlen. 
+<span class="todo">Key bindings are also configurable, to fit everyone's needs.</span>
+Ein konfigurierbares Notizsystem erinnert den Benutzer 
 an bevorstehende Termine.
 </p>
 
@@ -238,7 +241,7 @@ laden:</p>
 <h2>3.2 Installationsprozess<a name="install_process"></a></h2>
 <p>
 Als erstes m&uuml;ssen die Dateien entpackt werden:</p>
-<pre>tar zxvf calcurse-2.3.tar.gz</pre>
+<pre>tar zxvf calcurse-2.4.tar.gz</pre>
 <p>
 Ist diese Voraussetzung erf&uuml;llt und das Archiv entpackt,
 sind nur noch die drei &uuml;blichen Schritte erforderlich:</p>
@@ -427,6 +430,14 @@ und alle Termine des heutigen Tages beim Logon anzeigen zu lassen.</p>
 
 
 <h3>4.2.2 Interaktiver Modus<a name="basics_interface_interactive"></a></h3>
+<div class="todo">
+	<p class="rq"><span class="valorise">Note:</span>
+        Key bindings that are indicated in this manual correspond to
+        the default ones, defined when <code>calcurse</code> is launched
+        for the first time. If those key bindings do not suit user's needs,
+        it is possible to change them within the keys configuration menu
+        (see <a href="#options_keys">key bindings</a>).</p>
+</div>
 <p>
 Wird keine, oder nur Option -c angegeben, startet
 <code>calcurse</code> im interaktiven Modus. In diesem Modus erh&auml;lt
@@ -544,6 +555,7 @@ wenn <code>calcurse</code> das erste Mal gestartet wird:</p>
 $HOME/.calcurse/
            |___notes/
            |___conf
+           |___keys
            |___apts
            |___todo
 </pre>
@@ -555,37 +567,14 @@ $HOME/.calcurse/
 	unique, but with no relation with the corresponding item's description.</span></dd>
 	<dt><code>conf</code>:</dt>
         <dd>Datei enth&auml;lt die Informationen zur Benutzerkonfiguration.</dd>
+	<dt><code>keys</code>:</dt>
+        <dd><span class="todo">this file contains the user-defined key bindings</span></dd>
 	<dt><code>apts</code>:</dt>
         <dd>Datei enth&auml;lt alle Termine.</dd>
 	<dt><code>todo</code>:</dt>
         <dd>Datei enth&auml;lt die todo-Liste.</dd>
 </dl>
 
-<h2>4.3 <code>calcurse</code> files<a name="basics_files"></a></h2>
-<p>
-        The following structure is created in your <code>$HOME</code>  
-	directory (or in the directory you specified with  the  -D  option)
-        the first time <code>calcurse</code> is run :</p>
-	<pre>
-$HOME/.calcurse/
-           |___notes/
-           |___conf
-           |___apts
-           |___todo
-        </pre>
-	<dl class="compact">
-		<dt><code>notes/</code>:</dt>
-		<dd>this subdirectory contains descriptions of the notes 
-		which are attached to appointments, events or todos. One text file is
-		created per note, whose name is built using mkstemp(3) and should be
-		unique, but with no relation with the corresponding item's description.</dd>
-		<dt><code>conf</code>:</dt>
-	        <dd>this file contains the user configuration</dd>
-		<dt><code>apts</code>:</dt>
-	        <dd>this file contains  all  of the events and user's appointments</dd>
-		<dt><code>todo</code>:</dt>
-	        <dd>this file contains the todo list</dd>
-	</dl>
 
 <div class="todo">
 <h2>4.4 Import/Export capabilities<a name="basics_import_export"></a></h2>
@@ -656,7 +645,10 @@ Daraufhin erscheint ein Untermen&uuml; mit vier weiteren Wahlm&ouml;glichkeiten:
 Das erneute Bet&auml;tigen von 'C' f&uuml;hrt Sie zu den Farbeinstellungen und 
 &uuml;ber 'L' gelangen Sie in ein Untermen&uuml;, in dem Sie die Anordnung der 
 drei Panel &auml;ndern k&ouml;nnen. Dr&uuml;cken Sie 'G' um ins Auswahlmen&uuml; 
-der allgemeinen Optionen zu gelangen. Zu guter Letzt k&ouml;nnen Sie die 
+der allgemeinen Optionen zu gelangen. 
+<span class="todo">pressing 'K' opens the key bindings configuration
+menu.</span>
+Zu guter Letzt k&ouml;nnen Sie die 
 Einstellungen der Benachrichtigungszeile &auml;ndern, indem Sie die Taste 'N' 
 bet&auml;tigen.</p>
 
@@ -724,11 +716,42 @@ allgemeines Verhalten.</p>
     </ol>
     </dd>
     </div>
-
 </dl>
 
+<div class="todo">
+<h2>5.2 Key bindings<a name="options_keys"></a></h2>
+<p>
+        One can define it's own keybindings within the 'Keys' configuration
+        menu. The default keys look like the one used by the <code>vim</code>
+        editor, especially the displacement keys. Anyway, within this
+        configuration menu, users can redefine all of the keys available from
+        within calcurse's user interface.</p>
+<p>
+        To define new keybindings, first highlight the action to which it will
+        apply. Then, delete the actual key binding if necessary, and add a new
+        one. You will then be asked to press the key corresponding to the new 
+        binding. It is possible to define more than one key binding for a single
+        action.</p>
+<p>
+        An automatic check is performed to see if the new key binding
+        is not already set for another action. In that case, you will be asked
+        to choose a different one. Another check is done when exiting from this
+        menu, to make sure all possible actions have a key associated with it.</p>
+<p>
+       The following keys can be used to define bindings:
+       <ul>
+         <li>lower-case, upper-case letters and numbers, such as 'a', 'Z', '0'</li>
+         <li>CONTROL-key followed by one of the above letters</li>
+         <li>escape, horizontal tab, and space keys</li>
+         <li>arrow keys (up, down, left, and right)</li>
+       </ul> </p>
+<p>
+       While inside the key configuration menu, an online help is available for 
+       each one of the available actions. This help briefly describes what the
+       highlighted action is used for.</p>
+</div>
 
-<h2>5.2 Textfarben einstellen<a name="options_colors"></a></h2>
+<h2>5.3 Textfarben einstellen<a name="options_colors"></a></h2>
 <p>
 <code>calcurse</code> Textfarben k&ouml;nnen nach eigenen
 Vorlieben eingestellt werden. Um die Standartfarben zu wechseln,
@@ -755,7 +778,7 @@ auch den Eintrag f&uuml;r die Standartfarben des Terminals.</p>
 	(etwa <span class="emp">xterm-xfree86</span>).
 </p>
 
-<h2>5.3 Layout einstellen<a name="options_layout"></a></h2>
+<h2>5.4 Layout einstellen<a name="options_layout"></a></h2>
 <p>
 Das Layout bezieht sich auf die Positionen der einzelnen Panel. Das
 Standard-Layout zeigt das Kalender-Panel in der oberen linken Ecke des
@@ -768,7 +791,7 @@ Erscheinungsbild von <code>calcurse</code> seinen eigenen W&uuml;nschen
 entsprechend anpassen.</p>
 
 
-<h2>5.4 Benachrichtigungszeile einstellen<a name="options_notify"></a></h2>
+<h2>5.5 Benachrichtigungszeile einstellen<a name="options_notify"></a></h2>
 <p>
 	Folgende Optionen &auml;ndern das Verhalten der Benachrichtigungszeile:</p>
 	<dl>
@@ -1118,7 +1141,7 @@ Benutzer, die mir Ihr Feedback mitgeteilt haben.</p>
 	Copyright (c) 2004-2008 Frédéric Culot<br>
 	German translation by Michael Schulz
 	<code>&lt;bloodshower .at. web .dot. de&gt;</code>, and Chris.<br>
-	Calcurse version 2.3 - Last change: September 21, 2008<br>
+	Calcurse version 2.4 - Last change: December 09, 2008<br>
 </div>
 </div>
 
