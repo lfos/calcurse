@@ -1,4 +1,4 @@
-/*	$calcurse: wins.c,v 1.18 2008/11/23 20:38:56 culot Exp $	*/
+/*	$calcurse: wins.c,v 1.19 2008/12/12 20:44:50 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -128,7 +128,7 @@ wins_init (void)
 void
 wins_scrollwin_init (scrollwin_t *sw)
 {
-  ASSERT (sw != NULL);
+  EXIT_IF (sw == 0, "null pointer");
   sw->win.p = newwin (sw->win.h, sw->win.w, sw->win.y, sw->win.x);
   sw->pad.p = newpad (sw->pad.h, sw->pad.w);
   sw->first_visible_line = 0;
@@ -139,7 +139,7 @@ wins_scrollwin_init (scrollwin_t *sw)
 void
 wins_scrollwin_delete (scrollwin_t *sw)
 {
-  ASSERT (sw != NULL);
+  EXIT_IF (sw == 0, "null pointer");
   delwin(sw->win.p);
   delwin(sw->pad.p);
 }
@@ -403,22 +403,18 @@ wins_update (void)
       border_nocolor (win[APP].p);
       border_nocolor (win[TOD].p);
       break;
-
     case APP:
       border_color (win[APP].p);
       border_nocolor (win[CAL].p);
       border_nocolor (win[TOD].p);
       break;
-
     case TOD:
       border_color (win[TOD].p);
       border_nocolor (win[APP].p);
       border_nocolor (win[CAL].p);
       break;
-
     default:
-      ierror (_("FATAL ERROR in wins_update: no window selected\n"),
-	      IERROR_FATAL);
+      EXIT (_("no window selected"));
       /* NOTREACHED */
     }
 

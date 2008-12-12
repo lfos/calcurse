@@ -1,4 +1,4 @@
-/*	$calcurse: notify.c,v 1.30 2008/12/07 09:20:38 culot Exp $	*/
+/*	$calcurse: notify.c,v 1.31 2008/12/12 20:44:50 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -133,11 +133,10 @@ launch_cmd (char *cmd, char *shell)
   pid = fork ();
 
   if (pid < 0)
-    ierror (_("FATAL ERROR in launch_cmd: could not fork"), IERROR_WARN);
+    ERROR_MSG (_("error while launching command: could not fork"));
   else if (pid == 0)		/* Child: launch user defined command */
-    if (execlp (shell, shell, "-c", cmd, (char *) NULL) < 0)
-      ierror (_("FATAL ERROR in launch_cmd: could not "
-		"launch user command"), IERROR_WARN);
+    if (execlp (shell, shell, "-c", cmd, (char *)0) < 0)
+      ERROR_MSG (_("error while launching command"));
 }
 
 /* 
@@ -286,7 +285,7 @@ notify_thread_app (void *arg)
     {
       notify_app->got_app = 1;
       notify_app->time = tmp_app.time;
-      notify_app->txt = mycpy (tmp_app.txt);
+      notify_app->txt = strdup (tmp_app.txt);
       notify_app->state = tmp_app.state;
     }
   else
@@ -339,7 +338,7 @@ notify_check_added (char *mesg, long start, char state)
     {
       notify_app->got_app = 1;
       notify_app->time = start;
-      notify_app->txt = mycpy (mesg);
+      notify_app->txt = strdup (mesg);
       notify_app->state = state;
     }
   pthread_mutex_unlock (&notify_app->mutex);
@@ -378,7 +377,7 @@ notify_check_repeated (recur_apoint_llist_node_t *i)
     {
       notify_app->got_app = 1;
       notify_app->time = real_app_time;
-      notify_app->txt = mycpy (i->mesg);
+      notify_app->txt = strdup (i->mesg);
       notify_app->state = i->state;
     }
   pthread_mutex_unlock (&notify_app->mutex);

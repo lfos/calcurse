@@ -1,4 +1,4 @@
-/*	$calcurse: recur.c,v 1.41 2008/12/08 19:17:07 culot Exp $	*/
+/*	$calcurse: recur.c,v 1.42 2008/12/12 20:44:50 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -694,7 +694,7 @@ recur_repeat_item (conf_t *conf)
     }
 
   while ((ch != 'D') && (ch != 'W') && (ch != 'M')
-	 && (ch != 'Y') && (ch != KEY_GENERIC_CANCEL))
+	 && (ch != 'Y') && (ch != ESCAPE))
     {
       status_mesg (mesg_type_1, mesg_type_2);
       ch = wgetch (win[STA].p);
@@ -861,7 +861,7 @@ recur_apoint_check_next (struct notify_app_s *app, long start, long day)
 	  if (real_recur_start_time > start)
 	    {
 	      app->time = real_recur_start_time;
-	      app->txt = mycpy (i->mesg);
+	      app->txt = strdup (i->mesg);
 	      app->state = i->state;
 	      app->got_app = 1;
 	    }

@@ -1,4 +1,4 @@
-/*	$calcurse: keys.c,v 1.8 2008/12/08 19:17:07 culot Exp $	*/
+/*	$calcurse: keys.c,v 1.9 2008/12/12 20:44:50 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -133,8 +133,7 @@ keys_dump_defaults (char *file)
   int i;
   
   fd = fopen (file, "w");
-  EXIT_IF (fd == NULL, _("FATAL ERROR in keys_dump_defaults: "
-                         "could not create default keys file."));
+  EXIT_IF (fd == NULL, _("FATAL ERROR: could not create default keys file."));
 
   dump_intro (fd);
   for (i = 0; i < NBKEYS; i++)
@@ -146,7 +145,7 @@ char *
 keys_get_label (keys_e key)
 {
   EXIT_IF (key < 0 || key > NBKEYS,
-           _("FATAL ERROR in keys_get_label: key value out of bounds"));
+           _("FATAL ERROR: key value out of bounds"));
 
   return keydef[key].label;
 }
@@ -553,8 +552,7 @@ keys_save_bindings (FILE *fd)
 {
   int i;
   
-  EXIT_IF (fd == NULL, _("FATAL ERROR in keys_save_bindings: "
-                         "null file pointer."));
+  EXIT_IF (fd == NULL, _("FATAL ERROR: null file pointer."));
   dump_intro (fd);
   for (i = 0; i < NBKEYS; i++)
     fprintf (fd, "%s  %s\n", keydef[i].label, keys_action_allkeys (i));

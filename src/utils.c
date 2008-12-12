@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.56 2008/12/08 19:17:07 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.57 2008/12/12 20:44:50 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -62,64 +62,27 @@ exit_calcurse (int status)
 
 /* Function to exit on internal error. */
 void
-ierror (const char *errmsg, ierror_sev_e sev)
+fatalbox (const char *errmsg)
 {
   WINDOW *errwin;
-  char *label = _("INTERNAL ERROR");
-  char *exitmsg = _("calcurse will now exit...");
-  char *reportmsg = _("Please report the following bug:");
-  const int winrow = 10;
-  const int wincol = col - 2;
-  const int msglen = wincol - 2;
-  char msg[msglen];
+  char *label = _("/!\\ INTERNAL ERROR /!\\");
+    char *reportmsg = _("Please report the following bug:");
+  const int WINROW = 10;
+  const int WINCOL = col - 2;
+  const int MSGLEN = WINCOL - 2;
+  char msg[MSGLEN];
 
-  strncpy (msg, errmsg, msglen);
-  errwin = newwin (winrow, wincol, (row - winrow) / 2, (col - wincol) / 2);
+  strncpy (msg, errmsg, MSGLEN);
+  errwin = newwin (WINROW, WINCOL, (row - WINROW) / 2, (col - WINCOL) / 2);
   custom_apply_attr (errwin, ATTR_HIGHEST);
   box (errwin, 0, 0);
   wins_show (errwin, label);
-  if (sev == IERROR_FATAL)
-    mvwprintw (errwin, 3, 1, reportmsg);
-  mvwprintw (errwin, 5, (wincol - strlen (msg)) / 2, "%s", msg);
-  if (sev == IERROR_FATAL)
-    mvwprintw (errwin, winrow - 2, wincol - strlen (exitmsg) - 1, "%s",
-	       exitmsg);
+  mvwprintw (errwin, 3, 1, reportmsg);
+  mvwprintw (errwin, 5, (WINCOL - strlen (msg)) / 2, "%s", msg);
   custom_remove_attr (errwin, ATTR_HIGHEST);
   wrefresh (errwin);
   (void)wgetch (errwin);
-  if (sev == IERROR_FATAL)
-    exit_calcurse (EXIT_FAILURE);
-}
-
-/* Function to handle an assertion failure. */
-void
-aerror (const char *file, int line, const char *assertion)
-{
-  char errmsg[BUFSIZ];
-
-  snprintf (errmsg, BUFSIZ,
-	    "assert \"%s\" failed: file \"%s\", line %d", assertion, file,
-	    line);
-  ierror (errmsg, IERROR_FATAL);
-}
-
-void
-warnbox (const char *msg)
-{
-  const int WINCOL = col - 2;
-  const int WINROW = 10;
-  const int MSGLEN = WINCOL - 2;
-  WINDOW *warnwin;
-  char displmsg[MSGLEN];
-  
-  if (msg == NULL)
-    return;
-  strncpy (displmsg, msg, MSGLEN);
-  warnwin = popup (WINROW, WINCOL, (row - WINROW) / 2, (col - WINCOL) / 2,
-                   "/!\\", displmsg, 1);
-  wrefresh (warnwin);
-  (void)wgetch (warnwin);
-  delwin (warnwin);
+  delwin (errwin);
   doupdate ();
 }
 
@@ -406,14 +369,9 @@ updatestring (WINDOW *win, char **str, int x, int y)
   if (!escape)
     {
       len = strlen (newstr) + 1;
-      if ((*str = (char *) realloc (*str, len)) == NULL)
-	{
-	  /* NOTREACHED */
-	  ierror (_("FATAL ERROR in updatestring: out of memory"),
-		  IERROR_FATAL);
-	}
-      else
-	(void) memcpy (*str, newstr, len);
+      *str = (char *) realloc (*str, len);
+      EXIT_IF (*str == 0, _("out of memory"));
+      (void) memcpy (*str, newstr, len);
     }
   free (newstr);
   return (escape);
@@ -628,7 +586,7 @@ update_time_in_date (long date, unsigned hr, unsigned mn)
   lt->tm_hour = hr;
   lt->tm_min = mn;
   new_date = mktime (lt);
-  ASSERT (new_date != -1);
+  EXIT_IF (new_date == -1, _("error in mktime"));
 
   return (new_date);
 }
@@ -773,7 +731,6 @@ void
 other_status_page (int panel)
 {
   int nb_item = 0, max_page;
-  char *error = _("FATAL ERROR in other_status_page: unknown panel\n");
 
   switch (panel)
     {
@@ -787,7 +744,8 @@ other_status_page (int panel)
       nb_item = NB_TOD_CMDS;
       break;
     default:
-      ierror (error, IERROR_FATAL);
+      EXIT (_("unknown panel"));
+      /* NOTREACHED */
     }
   max_page = ceil (nb_item / (2 * CMDS_PER_LINE + 1)) + 1;
   if (status_page < max_page)
@@ -825,34 +783,18 @@ now (void)
   return (current_time);
 }
 
-/* Copy a string */
-char *
-mycpy (const char *src)
-{
-  char *string = malloc (strlen (src) + 1);
-
-  if (string != NULL)
-    return (strncpy (string, src, strlen (src) + 1));
-  else
-    return (NULL);
-}
-
 long
 mystrtol (const char *str)
 {
   char *ep;
   long lval;
-  const char *not_a_number =
-    _("FATAL ERROR in mystrtol: could not convert string");
-  const char *out_of_range =
-    _("FATAL ERROR in mystrtol: number is out of range");
 
   errno = 0;
   lval = strtol (str, &ep, 10);
   if (str[0] == '\0' || *ep != '\0')
-    ierror (not_a_number, IERROR_FATAL);
+    EXIT (_("could not convert string"));
   if (errno == ERANGE && (lval == LONG_MAX || lval == LONG_MIN))
-    ierror (out_of_range, IERROR_FATAL);
+    EXIT (_("out of range"));
 
   return (lval);
 }
@@ -875,10 +817,8 @@ print_bool_option_incolor (WINDOW *win, bool option, int pos_y, int pos_x)
       strncpy (option_value, _("no"), BUFSIZ);
     }
   else
-    {
-      ierror (_("option not defined - Problem in print_option_incolor()"),
-	      IERROR_FATAL);
-    }
+    EXIT (_("option not defined"));
+
   custom_apply_attr (win, color);
   mvwprintw (win, pos_y, pos_x, "%s", option_value);
   custom_remove_attr (win, color);
@@ -913,9 +853,8 @@ new_tempfile (const char *prefix, int trailing_len)
 	  unlink (fullname);
 	  close (fd);
 	}
-      ierror (_("FATAL ERROR: temporary file could not be created!"),
-	      IERROR_WARN);
-      return (NULL);
+      ERROR_MSG (_("temporary file could not be created"));
+      return (char *)0;
     }
   fclose (file);
 
@@ -927,7 +866,6 @@ void
 erase_note (char **note, erase_flag_e flag)
 {
   char fullname[BUFSIZ];
-  char *errmsg = _("FATAL ERROR in erase_note: could not remove note\n");
 
   if (*note == NULL)
     return;
@@ -935,7 +873,7 @@ erase_note (char **note, erase_flag_e flag)
     {
       snprintf (fullname, BUFSIZ, "%s%s", path_notes, *note);
       if (unlink (fullname) != 0)
-	ierror (errmsg, IERROR_FATAL);
+        EXIT (_("could not remove note"));
     }
   free (*note);
   *note = NULL;

@@ -1,4 +1,4 @@
-/*	$calcurse: day.c,v 1.40 2008/12/08 19:17:07 culot Exp $	*/
+/*	$calcurse: day.c,v 1.41 2008/12/12 20:44:50 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -454,15 +454,13 @@ day_write_pad (long date, int width, int length, int incolor)
 void
 day_popup_item (void)
 {
-  char *error = _("FATAL ERROR in day_popup_item: unknown item type\n");
-
   if (day_saved_item->type == EVNT || day_saved_item->type == RECUR_EVNT)
     item_in_popup (NULL, NULL, day_saved_item->mesg, _("Event :"));
   else if (day_saved_item->type == APPT || day_saved_item->type == RECUR_APPT)
     item_in_popup (day_saved_item->start, day_saved_item->end,
 		   day_saved_item->mesg, _("Appointment :"));
   else
-    ierror (error, IERROR_FATAL);
+    EXIT (_("unknown item type"));
   /* NOTREACHED */
 }
 

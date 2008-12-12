@@ -1,3 +1,16 @@
+2008-12-12  Frederic Culot  <frederic@culot.org>
+
+	* src/utils.c (mycpy): suppressed and replaced by strdup
+
+	* src/utils.c (aerror, ierror): suppressed
+
+	* src/utils.c (warnbox): moved to fatalbox
+
+	* src/utils.h (ERROR_MSG): file name and line number added to
+	displayed error message
+
+	* src/utils.h (ASSERT): suppressed
+	
 2008-12-09  Frederic Culot  <frederic@culot.org>
 
 	* src/calcurse.1: manpage update for 2.4

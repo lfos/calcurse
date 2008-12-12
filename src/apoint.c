@@ -1,4 +1,4 @@
-/*	$calcurse: apoint.c,v 1.25 2008/12/07 09:20:38 culot Exp $	*/
+/*	$calcurse: apoint.c,v 1.26 2008/12/12 20:44:50 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -229,7 +229,6 @@ apoint_delete (conf_t *conf, unsigned *nb_events, unsigned *nb_apoints)
 {
   char *choices = "[y/n] ";
   char *del_app_str = _("Do you really want to delete this item ?");
-  const char *errmsg = _("FATAL ERROR in apoint_delete: no such type\n");
   long date;
   int nb_items = *nb_apoints + *nb_events;
   bool go_for_deletion = false;
@@ -274,7 +273,7 @@ apoint_delete (conf_t *conf, unsigned *nb_events, unsigned *nb_apoints)
 	      to_be_removed = 0;
 	    }
 	  else
-	    ierror (errmsg, IERROR_FATAL);
+            EXIT (_("no such type"));
 	  /* NOTREACHED */
 
 	  if (hilt > 1)
@@ -452,8 +451,7 @@ apoint_delete_bynum (long start, unsigned num, erase_flag_e flag)
   pthread_mutex_unlock (&(alist_p->mutex));
 
   /* NOTREACHED */
-  ierror (_("FATAL ERROR in apoint_delete_bynum: no such appointment"),
-	  IERROR_FATAL);
+  EXIT (_("no such appointment"));
 }
 
 /*
@@ -533,7 +531,7 @@ apoint_check_next (struct notify_app_s *app, long start)
 	  if (i->start > start)
 	    {
 	      app->time = i->start;
-	      app->txt = mycpy (i->mesg);
+	      app->txt = strdup (i->mesg);
 	      app->state = i->state;
 	      app->got_app = 1;
 	    }
@@ -613,8 +611,7 @@ apoint_switch_notify (void)
   pthread_mutex_unlock (&(alist_p->mutex));
 
   /* NOTREACHED */
-  ierror (_("FATAL ERROR in apoint_switch_notify: no such appointment"),
-	  IERROR_FATAL);
+  EXIT (_("no such appointment"));
 }
 
 /* Updates the Appointment panel */

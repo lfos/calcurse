@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.46 2008/12/08 19:17:07 culot Exp $	*/
+/*	$calcurse: io.c,v 1.47 2008/12/12 20:44:50 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -1257,8 +1257,7 @@ io_load_keys (char *pager)
     }
 
   keyfp = fopen (path_keys, "r");
-  EXIT_IF (keyfp == NULL,
-           _("FATAL ERROR in io_load_keys: could not find any key file."));
+  EXIT_IF (keyfp == NULL, _("could not find any key file."));
   log = io_log_init ();
   skipped = loaded = line = 0;
   while (fgets (buf, BUFSIZ, keyfp) != NULL)
@@ -1576,8 +1575,7 @@ ical_log (FILE *log, ical_types_e type, unsigned lineno, char *msg)
 {
   const char *typestr[ICAL_TYPES] = {"VEVENT", "VTODO"};
 
-  RETURN_IF (type < 0 || type >= ICAL_TYPES,
-             _("ERROR in ical_log: unknown ical type"));
+  RETURN_IF (type < 0 || type >= ICAL_TYPES, _("unknown ical type"));
   if (log)
     fprintf (log, "%s [%d]: %s\n", typestr[type], lineno, msg);
 }
@@ -2586,8 +2584,7 @@ io_import_data (import_type_t type, conf_t *conf, char *stream_name)
     unsigned events, apoints, todos, lines, skipped;
   } stats;
 
-  EXIT_IF (type < 0 || type >= IO_IMPORT_NBTYPES,
-           _("FATAL ERROR in io_import_data: unknown import type"));
+  EXIT_IF (type < 0 || type >= IO_IMPORT_NBTYPES, _("unknown import type"));
   switch (ui_mode)
     {
     case UI_CMDLINE:
@@ -2600,7 +2597,7 @@ io_import_data (import_type_t type, conf_t *conf, char *stream_name)
       stream = get_import_stream (type);
       break;
     default:
-      EXIT (_("FATAL ERROR in io_import_data: wrong import mode"));
+      EXIT (_("FATAL ERROR: wrong import mode"));
       /* NOTREACHED */
     }
 

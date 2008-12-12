@@ -1,4 +1,4 @@
-/*	$calcurse: todo.c,v 1.26 2008/12/08 19:17:07 culot Exp $	*/
+/*	$calcurse: todo.c,v 1.27 2008/12/12 20:44:50 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -190,8 +190,7 @@ todo_delete_note_bynum (unsigned num)
       if (n == num)
 	{
 	  if (i->note == NULL)
-	    ierror (_("FATAL ERROR in todo_delete_note_bynum: "
-		      "no note attached\n"), IERROR_FATAL);
+            EXIT (_("no note attached"));
 	  erase_note (&i->note, ERASE_FORCE_ONLY_NOTE);
 	  return;
 	}
@@ -199,9 +198,7 @@ todo_delete_note_bynum (unsigned num)
       n++;
     }
   /* NOTREACHED */
-  ierror (_("FATAL ERROR in todo_delete_note_bynum: no such todo\n"),
-	  IERROR_FATAL);
-  exit (EXIT_FAILURE);
+  EXIT (_("no such todo"));
 }
 
 /* Delete an item from the todo linked list. */
@@ -228,9 +225,7 @@ todo_delete_bynum (unsigned num, erase_flag_e flag)
       n++;
     }
   /* NOTREACHED */
-  ierror (_("FATAL ERROR in todo_delete_bynum: no such todo\n"),
-	  IERROR_FATAL);
-  exit (EXIT_FAILURE);
+  EXIT (_("no such todo"));
 }
 
 /* Delete an item from the ToDo list. */
@@ -326,8 +321,8 @@ todo_get_position (struct todo_s *i)
     }
   else
     {
-      fputs (_("FATAL ERROR in todo_get_position: todo not found\n"), stderr);
-      exit (EXIT_FAILURE);
+      EXIT (_("todo not found"));
+      return -1; /* avoid compiler warnings */
     }
 }
 
@@ -348,17 +343,17 @@ todo_chg_priority (int action)
     strncpy (backup_note, backup->note, NOTESIZ + 1);
   else
     backup_note[0] = '\0';
-  if (action == KEY_RAISE_PRIORITY)
+  switch (action)
     {
+    case KEY_RAISE_PRIORITY:
       (backup_id > 1) ? backup_id-- : do_chg--;
-    }
-  else if (action == KEY_LOWER_PRIORITY)
-    {
+      break;
+    case KEY_LOWER_PRIORITY:
       (backup_id < 9) ? backup_id++ : do_chg--;
-    }
-  else
-    {				/* NOTREACHED */
-      fputs (_("FATAL ERROR in todo_chg_priority: no such action\n"), stderr);
+      break;
+    default:
+      EXIT (_("no such action"));
+      /* NOTREACHED */
     }
   if (do_chg)
     {

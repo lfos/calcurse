@@ -1,4 +1,4 @@
-/*	$calcurse: utils.h,v 1.39 2008/11/23 20:38:56 culot Exp $	*/
+/*	$calcurse: utils.h,v 1.40 2008/12/12 20:44:50 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -38,13 +38,15 @@
 #define STRING_BUILD(str) {str, sizeof (str) - 1}
 
 #define ERROR_MSG(...) do {                                             \
-        char msg[BUFSIZ];                                               \
+  char msg[BUFSIZ];                                                     \
+  int len;                                                              \
                                                                         \
-        snprintf (msg, BUFSIZ, __VA_ARGS__);                            \
-        if (ui_mode == UI_CURSES)                                       \
-          warnbox (msg);                                                \
-        else                                                            \
-          fprintf (stderr, "%s\n", msg);                                \
+  len = snprintf (msg, BUFSIZ, "%s: %d: ", __FILE__, __LINE__);         \
+  snprintf (msg + len, BUFSIZ - len, __VA_ARGS__);                      \
+  if (ui_mode == UI_CURSES)                                             \
+    fatalbox (msg);                                                     \
+  else                                                                  \
+    fprintf (stderr, "%s\n", msg);                                      \
 } while (0)
 
 #define EXIT(...) do {                                                  \
@@ -56,34 +58,24 @@
 } while (0)
 
 #define EXIT_IF(cond, ...) do {                                         \
-        if ((cond))                                                     \
-          {                                                             \
-            ERROR_MSG(__VA_ARGS__);                                     \
-            if (ui_mode == UI_CURSES)                                   \
-              exit_calcurse (EXIT_FAILURE);                             \
-            else                                                        \
-              exit (EXIT_FAILURE);                                      \
-          }                                                             \
+  if ((cond))                                                           \
+    EXIT(__VA_ARGS__);                                                  \
 } while (0)
 
 #define RETURN_IF(cond, ...) do {                                       \
-        if ((cond))                                                     \
-          {                                                             \
-            ERROR_MSG(__VA_ARGS__);                                     \
-            return;                                                     \
-          }                                                             \
+  if ((cond))                                                           \
+    {                                                                   \
+      ERROR_MSG(__VA_ARGS__);                                           \
+      return;                                                           \
+    }                                                                   \
 } while (0)
 
 #define RETVAL_IF(cond, val, ...) do {                                  \
-        if ((cond))                                                     \
-          {                                                             \
-            ERROR_MSG(__VA_ARGS__);                                     \
-            return (val);                                               \
-          }                                                             \
-} while (0)
-
-#define ASSERT(e) do {							\
-	((e) ? (void)0 : aerror(__FILE__, __LINE__, #e));		\
+  if ((cond))                                                           \
+    {                                                                   \
+      ERROR_MSG(__VA_ARGS__);                                           \
+      return (val);                                                     \
+    }                                                                   \
 } while (0)
 
 #define GETSTRING_VALID	0	/* value returned by getstring() if text is valid */
@@ -97,13 +89,6 @@ typedef struct {
 
 typedef enum
 {
-  IERROR_FATAL,
-  IERROR_WARN
-}
-ierror_sev_e;
-
-typedef enum
-{
   ERASE_DONT_FORCE,
   ERASE_FORCE,
   ERASE_FORCE_KEEP_NOTE,
@@ -112,9 +97,7 @@ typedef enum
 erase_flag_e;
 
 void    exit_calcurse (int);
-void    ierror (const char *, ierror_sev_e);
-void    aerror (const char *, int, const char *);
-void    warnbox (const char *);
+void    fatalbox (const char *);
 void    status_mesg (char *, char *);
 void    erase_status_bar (void);
 void    erase_window_part (WINDOW *, int, int, int, int);
@@ -139,7 +122,6 @@ void    reset_status_page (void);
 void    other_status_page (int);
 long    get_today (void);
 long    now (void);
-char   *mycpy (const char *);
 long    mystrtol (const char *);
 void    print_bool_option_incolor (WINDOW *, bool, int, int);
 char   *new_tempfile (const char *, int);
