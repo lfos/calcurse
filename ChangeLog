@@ -1,3 +1,9 @@
+2008-12-13  Frederic Culot  <frederic@culot.org>
+
+	* src/recur.c (recur_item_inday) 
+	* src/utils.c (date_sec_change): daylight saving time unwanted
+	offset fixed (thanks youshe and Jan for reporting the problem)
+	
 2008-12-12  Frederic Culot  <frederic@culot.org>
 
 	* src/utils.c (mycpy): suppressed and replaced by strdup

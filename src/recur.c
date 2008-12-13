@@ -1,4 +1,4 @@
-/*	$calcurse: recur.c,v 1.42 2008/12/12 20:44:50 culot Exp $	*/
+/*	$calcurse: recur.c,v 1.43 2008/12/13 21:41:25 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -425,6 +425,7 @@ recur_day_is_exc (long day, struct days_s *item_exc)
  * Check if the recurrent item belongs to the selected day,
  * and if yes, return the real start time.
  * This function was improved thanks to Tony's patch.
+ * Thanks also to youshe for reporting daylight saving time related problems.
  */
 unsigned
 recur_item_inday (long item_start, struct days_s *item_exc, int rpt_type,
@@ -440,7 +441,7 @@ recur_item_inday (long item_start, struct days_s *item_exc, int rpt_type,
   day_end = day_start + DAYINSEC;
   t = day_start;
   lt_day = *localtime (&t);
-
+  
   for (exc = item_exc; exc != 0; exc = exc->next)
     if (exc->st < day_end && exc->st >= day_start)
       return (0);
@@ -453,16 +454,12 @@ recur_item_inday (long item_start, struct days_s *item_exc, int rpt_type,
 
   t = item_start;
   lt_item = *localtime (&t);
-
-  /* For proper calculation, both items must start at same time. */
-  day_start += (lt_item.tm_hour * HOURINSEC + lt_item.tm_min * MININSEC +
-		lt_item.tm_sec);
-
+  
   switch (rpt_type)
     {
     case RECUR_DAILY:
-      diff = (long) difftime ((time_t) day_start, (time_t) item_start);
-      if (diff % (rpt_freq * DAYINSEC) != 0)
+      diff = lt_day.tm_yday - lt_item.tm_yday;
+      if (diff % rpt_freq != 0)
 	return (0);
       lt_item.tm_mday = lt_day.tm_mday;
       lt_item.tm_mon = lt_day.tm_mon;

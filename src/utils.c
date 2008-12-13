@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.57 2008/12/12 20:44:50 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.58 2008/12/13 21:41:25 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -561,6 +561,7 @@ date_sec_change (long date, int delta_month, int delta_day)
   lt = localtime (&t);
   lt->tm_mon += delta_month;
   lt->tm_mday += delta_day;
+  lt->tm_isdst = -1;
   t = mktime (lt);
   if (t == -1)
     {
