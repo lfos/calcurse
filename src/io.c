@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.47 2008/12/12 20:44:50 culot Exp $	*/
+/*	$calcurse: io.c,v 1.48 2008/12/14 11:24:19 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -238,7 +238,8 @@ get_export_stream (export_type_t type)
   return (stream);
 }
 
-/* Travel through each occurence of an item, and execute the given callback
+/*
+ * Travel through each occurence of an item, and execute the given callback
  * (mainly used to export data).
  */
 static void
@@ -246,14 +247,23 @@ foreach_date_dump (const long date_end, struct rpt_s *rpt, struct days_s *exc,
                    long item_first_date, long item_dur, char *item_mesg,
                    cb_dump_t cb_dump, FILE *stream)
 {
-  long date;
+  long date, item_time;
+  struct tm lt;
+  time_t t;
 
-  date = item_first_date;
+  t = item_first_date;
+  lt = *localtime (&t);
+  lt.tm_hour = lt.tm_min = lt.tm_sec = 0;
+  lt.tm_isdst = -1;
+  date = mktime (&lt);
+  item_time = item_first_date - date;
+
   while (date <= date_end && date <= rpt->until)
     {
-      if (!recur_day_is_exc (date, exc))
+      if (recur_item_inday (item_first_date, exc, rpt->type, rpt->freq,
+                            rpt->until, date))
         {
-          (*cb_dump)(stream, date, item_dur, item_mesg);
+          (*cb_dump)(stream, date + item_time, item_dur, item_mesg);
         }
       switch (rpt->type)
         {
@@ -270,9 +280,7 @@ foreach_date_dump (const long date_end, struct rpt_s *rpt, struct days_s *exc,
           date = date_sec_change (date, rpt->freq * 12, 0);
           break;
         default:
-          fputs (_("FATAL ERROR in foreach_date_dump: "
-                   "incoherent repetition type\n"), stderr);
-          exit (EXIT_FAILURE);
+          EXIT (_("incoherent repetition type"));
           /* NOTREACHED */
           break;
         }
