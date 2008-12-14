@@ -1,5 +1,9 @@
 2008-12-14  Frederic Culot  <frederic@culot.org>
 
+	* === Released 2.4_beta ===
+	
+	* NEWS: update for 2.4_beta
+	
 	* src/recur.c (recur_day_is_exc): suppressed
 
 	* src/recur.c (foreach_date_dump): exception dates are now
