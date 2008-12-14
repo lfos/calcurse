@@ -1,4 +1,4 @@
-/*	$calcurse: custom.c,v 1.29 2008/12/08 19:17:07 culot Exp $	*/
+/*	$calcurse: custom.c,v 1.30 2008/12/14 15:54:51 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -46,9 +46,8 @@ fill_config_var (char *string)
     return (false);
   else
     {
-      fputs (_("FATAL ERROR in fill_config_var: "
-	       "wrong configuration variable format.\n"), stderr);
-      return (EXIT_FAILURE);
+      EXIT (_("wrong configuration variable format."));
+      return false;
     }
 }
 
@@ -65,26 +64,16 @@ custom_load_color (char *color, int background)
   int i, len, color_num;
   char c[AWAITED_COLORS][BUFSIZ];
   int colr[AWAITED_COLORS];
-  const char *wrong_color_number =
-      _("FATAL ERROR in custom_load_color: wrong color number.\n");
-  const char *wrong_color_name =
-      _("FATAL ERROR in custom_load_color: wrong color name.\n");
-  const char *wrong_variable_format =
-      _("FATAL ERROR in custom_load_color: "
-	"wrong configuration variable format.\n");
 
   len = strlen (color);
-
   if (len > 1)
     {
       /* New version configuration */
       if (sscanf (color, "%s on %s", c[0], c[1]) != AWAITED_COLORS)
 	{
-	  fputs (_("FATAL ERROR in custom_load_color: "
-		   "missing colors in config file.\n"), stderr);
-	  exit (EXIT_FAILURE);
+          EXIT (_("missing colors in config file"));
 	  /* NOTREACHED */
-	};
+	}
 
       for (i = 0; i < AWAITED_COLORS; i++)
 	{
@@ -108,8 +97,7 @@ custom_load_color (char *color, int background)
 	    colr[i] = background;
 	  else
 	    {
-	      fputs (wrong_color_name, stderr);
-	      exit (EXIT_FAILURE);
+              EXIT (_("wrong color name"));
 	      /* NOTREACHED */
 	    }
 	}
@@ -150,15 +138,13 @@ custom_load_color (char *color, int background)
 	  init_pair (COLR_CUSTOM, COLOR_RED, COLR_BLUE);
 	  break;
 	default:
-	  fputs (wrong_color_number, stderr);
-	  exit (EXIT_FAILURE);
+          EXIT (_("wrong color number"));
 	  /* NOTREACHED */
 	}
     }
   else
     {
-      fputs (wrong_variable_format, stderr);
-      exit (EXIT_FAILURE);
+      EXIT (_("wrong configuration variable format"));
       /* NOTREACHED */
     }
 }
@@ -310,9 +296,7 @@ custom_load_conf (conf_t *conf, int background)
 	  var = 0;
 	  break;
 	default:
-	  fputs (_("FATAL ERROR in custom_load_conf: "
-		   "configuration variable unknown.\n"), stderr);
-	  exit (EXIT_FAILURE);
+          EXIT (_("configuration variable unknown"));
 	  /* NOTREACHED */
 	}
 
@@ -686,8 +670,6 @@ custom_color_theme_name (char *theme_name)
     "cyan",
     "white"
   };
-  const char *error_txt =
-    _("FATAL ERROR in custom_color_theme_name: unknown color\n");
 
   if (!colorize)
     snprintf (theme_name, BUFSIZ, "0");
@@ -702,8 +684,7 @@ custom_color_theme_name (char *theme_name)
 	    color_name[i] = name[color[i]];
 	  else
 	    {
-	      fputs (error_txt, stderr);
-	      exit (EXIT_FAILURE);
+              EXIT (_("unknown color"));
 	      /* NOTREACHED */
 	    }
 	}
@@ -805,7 +786,9 @@ custom_general_config (conf_t *conf)
 {
   scrollwin_t cwin;
   char *number_str =
-    _("Enter an option number to change its value [Q to quit] ");
+    _("Enter an option number to change its value");
+  char *keys =
+    _("(Press '^P' or '^N' to move up or down, 'Q' to quit)");
   char *output_datefmt_str =
     _("Enter the date format (see 'man 3 strftime' for possible formats) ");
   char *input_datefmt_str =
@@ -818,7 +801,7 @@ custom_general_config (conf_t *conf)
   snprintf (cwin.label, BUFSIZ, _("CalCurse %s | general options"), VERSION);
   wins_scrollwin_init (&cwin);
   wins_show (cwin.win.p, cwin.label);
-  status_mesg (number_str, "");
+  status_mesg (number_str, keys);
   cwin.total_lines = print_general_options (cwin.pad.p, conf);
   wins_scrollwin_display (&cwin);
 
@@ -844,10 +827,10 @@ custom_general_config (conf_t *conf)
 	      notify_update_bar ();
 	    }
 	  break;
-        case KEY_MOVE_DOWN:
+        case CTRL ('N'):
           wins_scrollwin_down (&cwin, 1);
 	  break;
-	case KEY_MOVE_UP:
+        case CTRL ('P'):
           wins_scrollwin_up (&cwin, 1);
 	  break;
 	case '1':
@@ -876,7 +859,7 @@ custom_general_config (conf_t *conf)
 	    {
 	      strncpy (conf->output_datefmt, buf, strlen (buf) + 1);
 	    }
-	  status_mesg (number_str, "");
+	  status_mesg (number_str, keys);
 	  break;
 	case '8':
 	  status_mesg (input_datefmt_str, "");
@@ -886,10 +869,10 @@ custom_general_config (conf_t *conf)
 	      if (val >= 1 && val <= 3)
 		conf->input_datefmt = val;
 	    }
-	  status_mesg (number_str, "");
+	  status_mesg (number_str, keys);
 	  break;
 	}
-      status_mesg (number_str, "");
+      status_mesg (number_str, keys);
       cwin.total_lines = print_general_options (cwin.pad.p, conf);
       wins_scrollwin_display (&cwin);
     }

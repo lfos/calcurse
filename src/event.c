@@ -1,4 +1,4 @@
-/*	$calcurse: event.c,v 1.7 2008/04/12 21:14:03 culot Exp $	*/
+/*	$calcurse: event.c,v 1.8 2008/12/14 15:54:51 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -113,13 +113,9 @@ event_scan (FILE *f, struct tm start, int id, char *note)
   start.tm_mon--;
 
   tstart = mktime (&start);
-  if (tstart == -1)
-    {
-      fputs (_("FATAL ERROR in event_scan: date error in the event\n"),
-	     stderr);
-      exit (EXIT_FAILURE);
-    }
-  return (event_new (buf, note, tstart, id));
+  EXIT_IF (tstart == -1, _("date error in the event\n"));
+
+  return event_new (buf, note, tstart, id);
 }
 
 /* Retrieve an event from the list, given the day and item position. */
@@ -139,9 +135,9 @@ event_get (long day, int pos)
 	  n++;
 	}
     }
-  /* NOTREACHED */
-  fputs (_("FATAL ERROR in event_get: no such item\n"), stderr);
-  exit (EXIT_FAILURE);
+  EXIT (_("event not found"));
+  return 0;
+  /* NOTREACHED */  
 }
 
 /* Delete an event from the list. */
@@ -174,7 +170,6 @@ event_delete_bynum (long start, unsigned num, erase_flag_e flag)
 	}
       iptr = &i->next;
     }
-  /* NOTREACHED */
-  fputs (_("FATAL ERROR in event_delete_bynum: no such event\n"), stderr);
-  exit (EXIT_FAILURE);
+  EXIT (_("event not found"));
+  /* NOTREACHED */  
 }

@@ -1,4 +1,4 @@
-/*	$calcurse: recur.c,v 1.44 2008/12/14 11:24:19 culot Exp $	*/
+/*	$calcurse: recur.c,v 1.45 2008/12/14 15:54:51 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -127,7 +127,6 @@ char
 recur_def2char (recur_types_t define)
 {
   char recur_char;
-  char *error = _("FATAL ERROR in recur_def2char: unknown recur type\n");
 
   switch (define)
     {
@@ -144,8 +143,8 @@ recur_def2char (recur_types_t define)
       recur_char = 'Y';
       break;
     default:
-      fputs (error, stderr);
-      exit (EXIT_FAILURE);
+      EXIT (_("unknown repetition type"));
+      return 0;
     }
 
   return (recur_char);
@@ -159,7 +158,6 @@ int
 recur_char2def (char type)
 {
   int recur_def;
-  char *error = _("FATAL ERROR in recur_char2def: unknown char\n");
 
   switch (type)
     {
@@ -176,8 +174,8 @@ recur_char2def (char type)
       recur_def = RECUR_YEARLY;
       break;
     default:
-      fputs (error, stderr);
-      exit (EXIT_FAILURE);
+      EXIT (_("unknown character"));
+      return 0;
     }
   return (recur_def);
 }
@@ -245,13 +243,8 @@ recur_apoint_scan (FILE *f, struct tm start, struct tm end, char type,
     {
       tuntil = 0;
     }
-
-  if (tstart == -1 || tend == -1 || tstart > tend || tuntil == -1)
-    {
-      fputs (_("FATAL ERROR in apoint_scan: date error in the appointment\n"),
-	     stderr);
-      exit (EXIT_FAILURE);
-    }
+  EXIT_IF (tstart == -1 || tend == -1 || tstart > tend || tuntil == -1,
+           _("date error in appointment"));
 
   return (recur_apoint_new (buf, note, tstart, tend - tstart, state,
 			    recur_char2def (type), freq, tuntil, exc));
@@ -293,12 +286,8 @@ recur_event_scan (FILE *f, struct tm start, int id, char type, int freq,
       tuntil = 0;
     }
   tstart = mktime (&start);
-  if ((tstart == -1) || (tuntil == -1))
-    {
-      fputs (_("FATAL ERROR in recur_event_scan: "
-	       "date error in the event\n"), stderr);
-      exit (EXIT_FAILURE);
-    }
+  EXIT_IF (tstart == -1 || tuntil == -1,
+           _("date error in event"));
 
   return (recur_event_new (buf, note, tstart, id, recur_char2def (type),
                            freq, tuntil, exc));
@@ -418,7 +407,6 @@ recur_item_inday (long item_start, struct days_s *item_exc, int rpt_type,
   struct tm lt_item, lt_day;
   struct days_s *exc;
   time_t t;
-  char *error = _("FATAL ERROR in recur_item_inday: unknown item type\n");
 
   day_end = day_start + DAYINSEC;
   t = day_start;
@@ -475,8 +463,7 @@ recur_item_inday (long item_start, struct days_s *item_exc, int rpt_type,
       lt_item.tm_year = lt_day.tm_year;
       break;
     default:
-      fputs (error, stderr);
-      exit (EXIT_FAILURE);
+      EXIT (_("unknown item type"));
     }
   start_date.dd = lt_item.tm_mday;
   start_date.mm = lt_item.tm_mon + 1;
@@ -546,9 +533,8 @@ recur_event_erase (long start, unsigned num, unsigned delete_whole,
 	}
       iptr = &i->next;
     }
-  /* NOTREACHED */
-  fputs (_("FATAL ERROR in recur_event_erase: no such event\n"), stderr);
-  exit (EXIT_FAILURE);
+  EXIT (_("event not found"));
+  /* NOTREACHED */  
 }
 
 /*
@@ -618,10 +604,8 @@ recur_apoint_erase (long start, unsigned num, unsigned delete_whole,
 	}
       iptr = &i->next;
     }
+  EXIT (_("appointment not found"));
   /* NOTREACHED */
-  fputs (_("FATAL ERROR in recur_apoint_erase: no such appointment\n"),
-	 stderr);
-  exit (EXIT_FAILURE);
 }
 
 /*
@@ -768,10 +752,9 @@ recur_repeat_item (conf_t *conf)
 	notify_check_repeated (ra);
     }
   else
-    {				/* NOTREACHED */
-      fputs (_("FATAL ERROR in recur_repeat_item: wrong item type\n"),
-	     stderr);
-      exit (EXIT_FAILURE);
+    {
+      EXIT (_("wrong item type"));
+      /* NOTREACHED */
     }
   day_erase_item (date, item_nb, ERASE_FORCE_KEEP_NOTE);
 }
@@ -798,9 +781,7 @@ recur_exc_scan (FILE *data_file)
       if (fscanf (data_file, "!%u / %u / %u ",
 		  &day.tm_mon, &day.tm_mday, &day.tm_year) != 3)
 	{
-	  fputs (_("FATAL ERROR in recur_exc_scan: "
-		   "syntax error in the item date\n"), stderr);
-	  exit (EXIT_FAILURE);
+          EXIT (_("syntax error in item date"));
 	}
       day.tm_sec = 0;
       day.tm_isdst = -1;
@@ -872,9 +853,9 @@ recur_get_apoint (long date, int num)
 	  n++;
 	}
     }
+  EXIT (_("item not found"));
+  return 0;
   /* NOTREACHED */
-  fputs (_("FATAL ERROR in recur_get_apoint: no such item\n"), stderr);
-  exit (EXIT_FAILURE);
 }
 
 /* Returns a structure containing the selected recurrent event. */
@@ -896,9 +877,9 @@ recur_get_event (long date, int num)
 	  n++;
 	}
     }
+  EXIT (_("item not found"));
+  return 0;
   /* NOTREACHED */
-  fputs (_("FATAL ERROR in recur_get_event: no such item\n"), stderr);
-  exit (EXIT_FAILURE);
 }
 
 /* Switch recurrent item notification state. */
@@ -932,9 +913,7 @@ recur_apoint_switch_notify (long date, int recur_nb)
 	  n++;
 	}
     }
+  EXIT (_("item not found"));
   /* NOTREACHED */
-  fputs (_("FATAL ERROR in recur_apoint_switch_notify: no such item\n"),
-	 stderr);
-  exit (EXIT_FAILURE);
 }
 

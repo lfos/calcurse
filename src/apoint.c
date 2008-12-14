@@ -1,4 +1,4 @@
-/*	$calcurse: apoint.c,v 1.26 2008/12/12 20:44:50 culot Exp $	*/
+/*	$calcurse: apoint.c,v 1.27 2008/12/14 15:54:51 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -381,12 +381,8 @@ apoint_scan (FILE *f, struct tm start, struct tm end, char state, char *note)
 
   tstart = mktime (&start);
   tend = mktime (&end);
-  if (tstart == -1 || tend == -1 || tstart > tend)
-    {
-      fputs (_("FATAL ERROR in apoint_scan: date error in the appointment\n"),
-	     stderr);
-      exit (EXIT_FAILURE);
-    }
+  EXIT_IF (tstart == -1 || tend == -1 || tstart > tend,
+           _("date error in appointment"));
   return (apoint_new (buf, note, tstart, tend - tstart, state));
 }
 
@@ -407,9 +403,9 @@ apoint_get (long day, int pos)
 	  n++;
 	}
     }
-  /* NOTREACHED */
-  fputs (_("FATAL ERROR in apoint_get: no such item\n"), stderr);
-  exit (EXIT_FAILURE);
+  EXIT (_("item not found"));
+  return 0;
+  /* NOTREACHED */  
 }
 
 void

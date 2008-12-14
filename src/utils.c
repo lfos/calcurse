@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.58 2008/12/13 21:41:25 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.59 2008/12/14 15:54:51 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -40,9 +40,9 @@
 #include "keys.h"
 #include "utils.h"
 
-#define NB_CAL_CMDS	26	/* number of commands while in cal view */
-#define NB_APP_CMDS	30	/* same thing while in appointment view */
-#define NB_TOD_CMDS	30	/* same thing while in todo view */
+#define NB_CAL_CMDS	24	/* number of commands while in cal view */
+#define NB_APP_CMDS	29	/* same thing while in appointment view */
+#define NB_TOD_CMDS	29	/* same thing while in todo view */
 #define TOTAL_CMDS	NB_CAL_CMDS + NB_APP_CMDS + NB_TOD_CMDS
 #define CMDS_PER_LINE	6	/* max number of commands per line */  
 
@@ -410,7 +410,6 @@ status_bar (void)
   const int pos[NB_PANELS + 1] =
       { 0, NB_CAL_CMDS, NB_CAL_CMDS + NB_APP_CMDS, TOTAL_CMDS };
 
-  binding_t crdts  = {_("Credits"),  KEY_GENERIC_CREDITS};
   binding_t help   = {_("Help"),     KEY_GENERIC_HELP};
   binding_t quit   = {_("Quit"),     KEY_GENERIC_QUIT};
   binding_t save   = {_("Save"),     KEY_GENERIC_SAVE};
@@ -449,15 +448,15 @@ status_bar (void)
     /* calendar keys */
     &help, &quit, &save, &chgvu, &import, &export, &up, &down, &left, &right,
     &togo, &othr, &weekb, &weeke, &conf, &draw, &appt, &todo, &gnday, &gpday,
-    &gnweek, &gpweek, &today, &othr, &crdts, &othr,
+    &gnweek, &gpweek, &today, &othr,
     /* appointment keys */
     &help, &quit, &save, &chgvu, &import, &export, &add, &del, &edit, &view,
     &draw, &othr, &rept, &flag, &enote, &vnote, &up, &down, &gnday, &gpday,
-    &gnweek, &gpweek, &togo, &othr, &today, &conf, &appt, &todo, &crdts, &othr,
+    &gnweek, &gpweek, &togo, &othr, &today, &conf, &appt, &todo, &othr,
     /* todo keys */
     &help, &quit, &save, &chgvu, &import, &export, &add, &del, &edit, &view,
     &draw, &othr, &rprio, &lprio, &enote, &vnote, &up, &down, &gnday, &gpday,
-    &gnweek, &gpweek, &togo, &othr, &today, &conf, &appt, &todo, &crdts, &othr
+    &gnweek, &gpweek, &togo, &othr, &today, &conf, &appt, &todo, &othr
   };
 
   /* Drawing the keybinding with attribute and label without. */
@@ -487,13 +486,7 @@ date2sec (date_t day, unsigned hour, unsigned min)
   start.tm_year -= 1900;
   start.tm_mon--;
   tstart = mktime (&start);
-  if (tstart == -1)
-    {
-      fputs (_("FATAL ERROR in date2sec: failure in mktime\n"), stderr);
-      fprintf (stderr, "%u %u %u %u %u\n", day.yyyy, day.mm, day.dd,
-	       hour, min);
-      exit (EXIT_FAILURE);
-    }
+  EXIT_IF (tstart == -1, _("failure in mktime"));
 
   return (tstart);
 }
@@ -563,11 +556,7 @@ date_sec_change (long date, int delta_month, int delta_day)
   lt->tm_mday += delta_day;
   lt->tm_isdst = -1;
   t = mktime (lt);
-  if (t == -1)
-    {
-      fputs (_("FATAL ERROR in date_sec_change: failure in mktime\n"), stderr);
-      exit (EXIT_FAILURE);
-    }
+  EXIT_IF (t == -1, _("failure in mktime"));
 
   return t;
 }

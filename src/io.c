@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.48 2008/12/14 11:24:19 culot Exp $	*/
+/*	$calcurse: io.c,v 1.49 2008/12/14 15:54:51 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -437,10 +437,7 @@ pcal_export_recur_events (FILE *stream)
               fprintf (stream, "%s  %s\n", pcal_date, i->mesg);
               break;
             default:
-              fputs (_("FATAL ERROR in pcal_export_recur_events: "
-                       "incoherent repetition type\n"), stderr);
-              exit (EXIT_FAILURE);
-              break;
+              EXIT (_("incoherent repetition type"));
             }
         }
       else
@@ -573,10 +570,7 @@ pcal_export_recur_apoints (FILE *stream)
                        pcal_beg, pcal_end, i->mesg);
               break;
             default:
-              fputs (_("FATAL ERROR in pcal_export_recur_apoints: "
-                       "incoherent repetition type\n"), stderr);
-              exit (EXIT_FAILURE);
-              break;
+              EXIT (_("incoherent repetition type"));
             }
         }
       else
@@ -967,8 +961,6 @@ io_load_app (void)
   int freq;
   char type, state = 0L;
   char note[NOTESIZ + 1], *notep;
-  char *error =
-    _("FATAL ERROR in io_load_app: wrong format in the appointment or event\n");
 
   t = time (NULL);
   lt = localtime (&t);
@@ -989,9 +981,7 @@ io_load_app (void)
       if (fscanf (data_file, "%u / %u / %u ",
 		  &start.tm_mon, &start.tm_mday, &start.tm_year) != 3)
 	{
-	  fputs (_("FATAL ERROR in io_load_app: "
-		   "syntax error in the item date\n"), stderr);
-	  exit (EXIT_FAILURE);
+          EXIT (_("syntax error in the item date"));
 	}
 
       /* Read the next character : if it is an '@' then we have
@@ -1005,9 +995,7 @@ io_load_app (void)
 	is_event = 1;
       else
 	{
-	  fputs (_("FATAL ERROR in io_load_app: "
-		   "no event nor appointment found\n"), stderr);
-	  exit (EXIT_FAILURE);
+          EXIT (_("no event nor appointment found"));
 	}
       ungetc (c, data_file);
 
@@ -1024,9 +1012,9 @@ io_load_app (void)
 	  fscanf (data_file, "[%d] ", &id);
 	}
       else
-	{			/* NOT REACHED */
-	  fputs (error, stderr);
-	  exit (EXIT_FAILURE);
+	{
+          EXIT (_("wrong format in the appointment or event"));
+          /* NOTREACHED */
 	}
 
       /* Check if we have a recursive item. */
@@ -1071,9 +1059,9 @@ io_load_app (void)
 	      until.tm_year = 0;
 	    }
 	  else
-	    {			/* NOT REACHED */
-	      fputs (error, stderr);
-	      exit (EXIT_FAILURE);
+	    {
+              EXIT (_("wrong format in the appointment or event"));
+              /* NOTREACHED */
 	    }
 	}
       else
@@ -1136,9 +1124,9 @@ io_load_app (void)
 	    }
 	}
       else
-	{			/* NOT REACHED */
-	  fputs (error, stderr);
-	  exit (EXIT_FAILURE);
+	{
+          EXIT (_("wrong format in the appointment or event"));
+          /* NOTREACHED */
 	}
     }
   fclose (data_file);
@@ -1469,16 +1457,13 @@ void
 io_export_data (export_type_t type, conf_t *conf)
 {
   FILE *stream;
-  char *wrong_mode = _("FATAL ERROR in io_export_data: wrong export mode\n");
-  char *wrong_type = _("FATAL ERROR in io_export_data: unknown export type\n");
   char *success = _("The data were successfully exported");
   char *enter = _("Press [ENTER] to continue");
 
   if (type < IO_EXPORT_ICAL || type >= IO_EXPORT_NBTYPES)
-    {
-      fputs (wrong_type, stderr);
-      exit (EXIT_FAILURE);
-    }
+    EXIT (_("unknown export type"));
+
+  stream = 0;
   switch (ui_mode)
     {
     case UI_CMDLINE:
@@ -1488,12 +1473,11 @@ io_export_data (export_type_t type, conf_t *conf)
       stream = get_export_stream (type);
       break;
     default:
-      fputs (wrong_mode, stderr);
-      exit (EXIT_FAILURE);
+      EXIT (_("wrong export mode"));
       /* NOTREACHED */
     }
 
-  if (stream == NULL)
+  if (stream == 0)
     return;
 
   cb_export_header[type] (stream);

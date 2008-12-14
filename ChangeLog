@@ -4,6 +4,19 @@
 
 	* src/recur.c (foreach_date_dump): exception dates are now
 	properly taken into account
+
+	* src/apoint.c: 
+	* src/calendar.c:
+	* src/custom.c: 
+	* src/event.c:
+	* src/io.c:
+	* src/recur.c: make use of error handling macros
+
+	* src/utils.c (status_bar): do not show 'credits' key binding
+	inside status bar
+
+	* src/custom.c (custom_general_config): make it possible to scroll
+	up and down again
 	
 2008-12-13  Frederic Culot  <frederic@culot.org>
 

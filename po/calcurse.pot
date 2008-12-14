@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse 2.4_beta\n"
 "Report-Msgid-Bugs-To: frederic@culot.org\n"
-"POT-Creation-Date: 2008-12-08 21:37+0100\n"
+"POT-Creation-Date: 2008-12-14 16:48+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -37,7 +37,7 @@ msgstr ""
 msgid "You entered an invalid end time, should be [h:mm] or [hh:mm] or [mm]"
 msgstr ""
 
-#: src/apoint.c:129 src/day.c:519 src/day.c:545 src/day.c:606
+#: src/apoint.c:129 src/day.c:517 src/day.c:543 src/day.c:604
 msgid "Press [Enter] to continue"
 msgstr ""
 
@@ -45,24 +45,20 @@ msgstr ""
 msgid "Do you really want to delete this item ?"
 msgstr ""
 
-#: src/apoint.c:232
-msgid "FATAL ERROR in apoint_delete: no such type\n"
+#: src/apoint.c:276
+msgid "no such type"
 msgstr ""
 
-#: src/apoint.c:387 src/recur.c:251
-msgid "FATAL ERROR in apoint_scan: date error in the appointment\n"
+#: src/apoint.c:385 src/recur.c:247
+msgid "date error in appointment"
 msgstr ""
 
-#: src/apoint.c:412
-msgid "FATAL ERROR in apoint_get: no such item\n"
+#: src/apoint.c:406 src/recur.c:856 src/recur.c:880 src/recur.c:916
+msgid "item not found"
 msgstr ""
 
-#: src/apoint.c:455
-msgid "FATAL ERROR in apoint_delete_bynum: no such appointment"
-msgstr ""
-
-#: src/apoint.c:616
-msgid "FATAL ERROR in apoint_switch_notify: no such appointment"
+#: src/apoint.c:450 src/apoint.c:610
+msgid "no such appointment"
 msgstr ""
 
 #: src/args.c:51
@@ -209,7 +205,7 @@ msgid "To do :"
 msgstr ""
 
 #: src/calendar.c:133
-msgid "ERROR in calendar_set_first_day_of_week\n"
+msgid "ERROR setting first day of week"
 msgstr ""
 
 #: src/calendar.c:358
@@ -218,343 +214,342 @@ msgid ""
 "12/31/2037)"
 msgstr ""
 
-#: src/calendar.c:360 src/custom.c:220 src/io.c:770 src/io.c:1145
-#: src/io.c:1446 src/io.c:1468
+#: src/calendar.c:360 src/custom.c:206 src/io.c:772 src/io.c:1141
+#: src/io.c:1441 src/io.c:1461
 msgid "Press [ENTER] to continue"
 msgstr ""
 
 #: src/custom.c:49
-msgid "FATAL ERROR in fill_config_var: wrong configuration variable format.\n"
+msgid "wrong configuration variable format."
 msgstr ""
 
-#: src/custom.c:69
-msgid "FATAL ERROR in custom_load_color: wrong color number.\n"
+#: src/custom.c:74
+msgid "missing colors in config file"
 msgstr ""
 
-#: src/custom.c:71
-msgid "FATAL ERROR in custom_load_color: wrong color name.\n"
+#: src/custom.c:100
+msgid "wrong color name"
 msgstr ""
 
-#: src/custom.c:73
-msgid ""
-"FATAL ERROR in custom_load_color: wrong configuration variable format.\n"
+#: src/custom.c:141
+msgid "wrong color number"
 msgstr ""
 
-#: src/custom.c:83
-msgid "FATAL ERROR in custom_load_color: missing colors in config file.\n"
+#: src/custom.c:147
+msgid "wrong configuration variable format"
 msgstr ""
 
-#: src/custom.c:219
+#: src/custom.c:205
 msgid "Failed to open config file"
 msgstr ""
 
-#: src/custom.c:313
-msgid "FATAL ERROR in custom_load_conf: configuration variable unknown.\n"
+#: src/custom.c:299
+msgid "configuration variable unknown"
 msgstr ""
 
-#: src/custom.c:372 src/custom.c:438 src/custom.c:969 src/io.c:1535
+#: src/custom.c:356 src/custom.c:422 src/custom.c:952 src/io.c:1526
 msgid "Exit"
 msgstr ""
 
-#: src/custom.c:373
+#: src/custom.c:357
 msgid "General"
 msgstr ""
 
-#: src/custom.c:374
+#: src/custom.c:358
 msgid "Layout"
 msgstr ""
 
-#: src/custom.c:375
+#: src/custom.c:359
 msgid "Color"
 msgstr ""
 
-#: src/custom.c:376
+#: src/custom.c:360
 msgid "Notify"
 msgstr ""
 
-#: src/custom.c:377
+#: src/custom.c:361
 msgid "Keys"
 msgstr ""
 
-#: src/custom.c:390
+#: src/custom.c:374
 msgid "Pick the desired layout on next screen [press ENTER]"
 msgstr ""
 
-#: src/custom.c:392
+#: src/custom.c:376
 msgid "('A'= Appointment panel, 'C'= calendar panel, 'T'= todo panel)"
 msgstr ""
 
-#: src/custom.c:394
+#: src/custom.c:378
 msgid "    AC       AT       CA       TA       TC       TA       CT       AT"
 msgstr ""
 
-#: src/custom.c:396
+#: src/custom.c:380
 msgid " [1]AT    [2]AC    [3]TA    [4]CA    [5]TA    [6]TC    [7]AT    [8]CT"
 msgstr ""
 
-#: src/custom.c:439
+#: src/custom.c:423
 msgid "Select"
 msgstr ""
 
-#: src/custom.c:440
+#: src/custom.c:424
 msgid "No color"
 msgstr ""
 
-#: src/custom.c:441 src/custom.c:973 src/utils.c:473
+#: src/custom.c:425 src/custom.c:956 src/utils.c:430
 msgid "Up"
 msgstr ""
 
-#: src/custom.c:442 src/custom.c:974 src/utils.c:474
+#: src/custom.c:426 src/custom.c:957 src/utils.c:431
 msgid "Down"
 msgstr ""
 
-#: src/custom.c:443 src/utils.c:475
+#: src/custom.c:427 src/utils.c:432
 msgid "Left"
 msgstr ""
 
-#: src/custom.c:444 src/utils.c:476
+#: src/custom.c:428 src/utils.c:433
 msgid "Right"
 msgstr ""
 
-#: src/custom.c:469
+#: src/custom.c:453
 msgid "Foreground"
 msgstr ""
 
-#: src/custom.c:470
+#: src/custom.c:454
 msgid "Background"
 msgstr ""
 
-#: src/custom.c:471
+#: src/custom.c:455
 msgid "(terminal's default)"
 msgstr ""
 
-#: src/custom.c:507
+#: src/custom.c:491
 #, c-format
 msgid "CalCurse %s | color theme"
 msgstr ""
 
-#: src/custom.c:690
-msgid "FATAL ERROR in custom_color_theme_name: unknown color\n"
+#: src/custom.c:687
+msgid "unknown color"
 msgstr ""
 
-#: src/custom.c:721
+#: src/custom.c:702
 msgid "auto_save = "
 msgstr ""
 
-#: src/custom.c:722
+#: src/custom.c:703
 msgid "confirm_quit = "
 msgstr ""
 
-#: src/custom.c:723
+#: src/custom.c:704
 msgid "confirm_delete = "
 msgstr ""
 
-#: src/custom.c:724
+#: src/custom.c:705
 msgid "skip_system_dialogs = "
 msgstr ""
 
-#: src/custom.c:725
+#: src/custom.c:706
 msgid "skip_progress_bar = "
 msgstr ""
 
-#: src/custom.c:726
+#: src/custom.c:707
 msgid "week_begins_on_monday = "
 msgstr ""
 
-#: src/custom.c:727
+#: src/custom.c:708
 msgid "output_datefmt = "
 msgstr ""
 
-#: src/custom.c:728
+#: src/custom.c:709
 msgid "input_datefmt = "
 msgstr ""
 
-#: src/custom.c:735
+#: src/custom.c:716
 msgid "(if set to YES, automatic save is done when quitting)"
 msgstr ""
 
-#: src/custom.c:741
+#: src/custom.c:722
 msgid "(if set to YES, confirmation is required before quitting)"
 msgstr ""
 
-#: src/custom.c:747
+#: src/custom.c:728
 msgid "(if set to YES, confirmation is required before deleting an event)"
 msgstr ""
 
-#: src/custom.c:754
+#: src/custom.c:735
 msgid ""
 "(if set to YES, messages about loaded and saved data will not be displayed)"
 msgstr ""
 
-#: src/custom.c:761
+#: src/custom.c:742
 msgid "(if set to YES, progress bar will not be displayed when saving data)"
 msgstr ""
 
-#: src/custom.c:768
+#: src/custom.c:749
 msgid "(if set to YES, monday is the first day of the week, else it is sunday)"
 msgstr ""
 
-#: src/custom.c:776
+#: src/custom.c:757
 msgid "(Format of the date to be displayed in non-interactive mode)"
 msgstr ""
 
-#: src/custom.c:782
+#: src/custom.c:763
 msgid "(Format to be used when entering a date: "
 msgstr ""
 
-#: src/custom.c:783
+#: src/custom.c:764
 msgid " 1-mm/dd/yyyy, 2-dd/mm/yyyy, 3-yyyy/mm/dd)"
 msgstr ""
 
-#: src/custom.c:808 src/notify.c:521
-msgid "Enter an option number to change its value [Q to quit] "
+#: src/custom.c:789
+msgid "Enter an option number to change its value"
 msgstr ""
 
-#: src/custom.c:810 src/notify.c:523
+#: src/custom.c:791
+msgid "(Press '^P' or '^N' to move up or down, 'Q' to quit)"
+msgstr ""
+
+#: src/custom.c:793 src/notify.c:522
 msgid "Enter the date format (see 'man 3 strftime' for possible formats) "
 msgstr ""
 
-#: src/custom.c:812
+#: src/custom.c:795
 msgid "Enter the date format (1-mm/dd/yyyy, 2-dd/mm/yyyy, 3-yyyy/mm/dd) "
 msgstr ""
 
-#: src/custom.c:818
+#: src/custom.c:801
 #, c-format
 msgid "CalCurse %s | general options"
 msgstr ""
 
-#: src/custom.c:906
+#: src/custom.c:889
 msgid "Undefined option!"
 msgstr ""
 
-#: src/custom.c:934
+#: src/custom.c:917
 msgid "undefined"
 msgstr ""
 
-#: src/custom.c:970
+#: src/custom.c:953
 msgid "Key info"
 msgstr ""
 
-#: src/custom.c:971
+#: src/custom.c:954
 msgid "Add key"
 msgstr ""
 
-#: src/custom.c:972
+#: src/custom.c:955
 msgid "Del key"
 msgstr ""
 
-#: src/custom.c:975
+#: src/custom.c:958
 msgid "Prev Key"
 msgstr ""
 
-#: src/custom.c:976
+#: src/custom.c:959
 msgid "Next Key"
 msgstr ""
 
-#: src/custom.c:1000
+#: src/custom.c:983
 #, c-format
 msgid "CalCurse %s | keys configuration"
 msgstr ""
 
-#: src/custom.c:1061
+#: src/custom.c:1044
 msgid "Press the key you want to assign to:"
 msgstr ""
 
-#: src/custom.c:1071
+#: src/custom.c:1054
 #, c-format
 msgid "This key is already in use for %s, please choose another one."
 msgstr ""
 
-#: src/custom.c:1099 src/io.c:1365
+#: src/custom.c:1082 src/io.c:1360
 msgid "Some actions do not have any associated key bindings!"
 msgstr ""
 
-#: src/day.c:457
-msgid "FATAL ERROR in day_popup_item: unknown item type\n"
-msgstr ""
-
-#: src/day.c:460
+#: src/day.c:458
 msgid "Event :"
 msgstr ""
 
-#: src/day.c:463
+#: src/day.c:461
 msgid "Appointment :"
 msgstr ""
 
-#: src/day.c:518
+#: src/day.c:463 src/recur.c:466
+msgid "unknown item type"
+msgstr ""
+
+#: src/day.c:516
 msgid "Enter the new time ([hh:mm] or [h:mm]) : "
 msgstr ""
 
-#: src/day.c:520
+#: src/day.c:518
 msgid "You entered an invalid time, should be [h:mm] or [hh:mm]"
 msgstr ""
 
-#: src/day.c:544 src/day.c:602
+#: src/day.c:542 src/day.c:600
 msgid "Invalid time: start time must be before end time!"
 msgstr ""
 
-#: src/day.c:586
+#: src/day.c:584
 msgid "Enter the new item description:"
 msgstr ""
 
-#: src/day.c:598
+#: src/day.c:596
 msgid "Enter the new repetition type: (D)aily, (W)eekly, (M)onthly, (Y)early"
 msgstr ""
 
-#: src/day.c:600 src/recur.c:668
+#: src/day.c:598 src/recur.c:631
 msgid "[D/W/M/Y] "
 msgstr ""
 
-#: src/day.c:601 src/recur.c:670
+#: src/day.c:599 src/recur.c:633
 msgid "The frequence you entered is not valid."
 msgstr ""
 
-#: src/day.c:603 src/recur.c:673
+#: src/day.c:601 src/recur.c:636
 msgid "The entered date is not valid."
 msgstr ""
 
-#: src/day.c:629
+#: src/day.c:627
 msgid "Enter the new repetition frequence:"
 msgstr ""
 
-#: src/day.c:738
+#: src/day.c:736
 msgid "Edit: (1)Description or (2)Repetition?"
 msgstr ""
 
-#: src/day.c:759
+#: src/day.c:757
 msgid "Edit: (1)Start time, (2)End time, (3)Description or (4)Repetition?"
 msgstr ""
 
-#: src/day.c:784
+#: src/day.c:782
 msgid "Edit: (1)Start time, (2)End time or (3)Description?"
 msgstr ""
 
-#: src/day.c:817
+#: src/day.c:815
 msgid "This item is recurrent. Delete (a)ll occurences or just this (o)ne ?"
 msgstr ""
 
-#: src/day.c:820
+#: src/day.c:818
 msgid "This item has a note attached to it. Delete (i)tem or just its (n)ote ?"
 msgstr ""
 
-#: src/day.c:822
+#: src/day.c:820
 msgid "[i/n] "
 msgstr ""
 
-#: src/day.c:823
+#: src/day.c:821
 msgid "[a/o] "
 msgstr ""
 
-#: src/event.c:118
-msgid "FATAL ERROR in event_scan: date error in the event\n"
+#: src/event.c:116
+msgid "date error in the event\n"
 msgstr ""
 
-#: src/event.c:143
-msgid "FATAL ERROR in event_get: no such item\n"
-msgstr ""
-
-#: src/event.c:178
-msgid "FATAL ERROR in event_delete_bynum: no such event\n"
+#: src/event.c:138 src/event.c:173 src/recur.c:536
+msgid "event not found"
 msgstr ""
 
 #: src/help.c:149
@@ -1071,79 +1066,71 @@ msgstr ""
 msgid "Choose the file used to export calcurse data:"
 msgstr ""
 
-#: src/io.c:209 src/io.c:2537
+#: src/io.c:209 src/io.c:2527
 msgid "The file cannot be accessed, please enter another file name."
 msgstr ""
 
-#: src/io.c:210 src/io.c:2538 src/recur.c:677
+#: src/io.c:210 src/io.c:2528 src/recur.c:640
 msgid "Press [ENTER] to continue."
 msgstr ""
 
-#: src/io.c:273
-msgid "FATAL ERROR in foreach_date_dump: incoherent repetition type\n"
+#: src/io.c:283 src/io.c:440 src/io.c:573
+msgid "incoherent repetition type"
 msgstr ""
 
-#: src/io.c:312
+#: src/io.c:320
 msgid "Week"
 msgstr ""
 
-#: src/io.c:432
-msgid "FATAL ERROR in pcal_export_recur_events: incoherent repetition type\n"
-msgstr ""
-
-#: src/io.c:568
-msgid "FATAL ERROR in pcal_export_recur_apoints: incoherent repetition type\n"
-msgstr ""
-
-#: src/io.c:699
+#: src/io.c:701
 #, c-format
 msgid "%s does not exist, create it now [y or n] ? "
 msgstr ""
 
-#: src/io.c:706 src/io.c:726
+#: src/io.c:708 src/io.c:728
 #, c-format
 msgid "aborting...\n"
 msgstr ""
 
-#: src/io.c:720
+#: src/io.c:722
 #, c-format
 msgid "%s successfully created\n"
 msgstr ""
 
-#: src/io.c:721
+#: src/io.c:723
 #, c-format
 msgid "starting interactive mode...\n"
 msgstr ""
 
-#: src/io.c:758
+#: src/io.c:760
 msgid "Problems accessing data file ..."
 msgstr ""
 
-#: src/io.c:769
+#: src/io.c:771
 msgid "The data files were successfully saved"
 msgstr ""
 
-#: src/io.c:963
-msgid "FATAL ERROR in io_load_app: wrong format in the appointment or event\n"
-msgstr ""
-
 #: src/io.c:984
-msgid "FATAL ERROR in io_load_app: syntax error in the item date\n"
+msgid "syntax error in the item date"
 msgstr ""
 
-#: src/io.c:1000
-msgid "FATAL ERROR in io_load_app: no event nor appointment found\n"
+#: src/io.c:998
+msgid "no event nor appointment found"
 msgstr ""
 
-#: src/io.c:1144
+#: src/io.c:1016 src/io.c:1063 src/io.c:1128
+msgid "wrong format in the appointment or event"
+msgstr ""
+
+#: src/io.c:1140
 msgid "Failed to open todo file"
 msgstr ""
 
-#: src/io.c:1261
-msgid "FATAL ERROR in io_load_keys: could not find any key file."
+#: src/io.c:1256
+msgid "could not find any key file."
 msgstr ""
 
-#: src/io.c:1275
+#: src/io.c:1270
 msgid ""
 "\n"
 "Too many errors while reading configuration file!\n"
@@ -1151,333 +1138,317 @@ msgid ""
 "again.\n"
 msgstr ""
 
-#: src/io.c:1292
+#: src/io.c:1287
 msgid "Could not read key label"
 msgstr ""
 
-#: src/io.c:1301
+#: src/io.c:1296
 msgid "Key label not recognized"
 msgstr ""
 
-#: src/io.c:1321
+#: src/io.c:1316
 #, c-format
 msgid "Error reading key: \"%s\""
 msgstr ""
 
-#: src/io.c:1336
+#: src/io.c:1331
 #, c-format
 msgid "\"%s\" assigned multiple times!"
 msgstr ""
 
-#: src/io.c:1357
+#: src/io.c:1352
 msgid "There were some errors when loading keys file, see log file ?"
 msgstr ""
 
-#: src/io.c:1363
+#: src/io.c:1358
 msgid "Too many errors while reading keys file, aborting..."
 msgstr ""
 
-#: src/io.c:1377 src/io.c:1397
+#: src/io.c:1372 src/io.c:1392
 #, c-format
 msgid "FATAL ERROR: could not create %s: %s\n"
 msgstr ""
 
-#: src/io.c:1444
+#: src/io.c:1439
 msgid "Welcome to Calcurse. Missing data files were created."
 msgstr ""
 
-#: src/io.c:1445
+#: src/io.c:1440
 msgid "Data files found. Data will be loaded now."
 msgstr ""
 
-#: src/io.c:1465
-msgid "FATAL ERROR in io_export_data: wrong export mode\n"
-msgstr ""
-
-#: src/io.c:1466
-msgid "FATAL ERROR in io_export_data: unknown export type\n"
-msgstr ""
-
-#: src/io.c:1467
+#: src/io.c:1460
 msgid "The data were successfully exported"
 msgstr ""
 
-#: src/io.c:1536
+#: src/io.c:1464
+msgid "unknown export type"
+msgstr ""
+
+#: src/io.c:1476
+msgid "wrong export mode"
+msgstr ""
+
+#: src/io.c:1527
 msgid "Ical"
 msgstr ""
 
-#: src/io.c:1537
+#: src/io.c:1528
 msgid "Pcal"
 msgstr ""
 
-#: src/io.c:1580
-msgid "ERROR in ical_log: unknown ical type"
+#: src/io.c:1570
+msgid "unknown ical type"
 msgstr ""
 
-#: src/io.c:2039
+#: src/io.c:2029
 msgid "recurrence frequence not found."
 msgstr ""
 
-#: src/io.c:2057
+#: src/io.c:2047
 msgid "recurrence frequence not recognized."
 msgstr ""
 
-#: src/io.c:2122
+#: src/io.c:2112
 msgid "recurrence rule malformed."
 msgstr ""
 
-#: src/io.c:2177
+#: src/io.c:2167
 msgid "recurrence exception dates malformed."
 msgstr ""
 
-#: src/io.c:2196
+#: src/io.c:2186
 msgid ""
 "Warning: could not create new note file to store description. Aborting...\n"
 msgstr ""
 
-#: src/io.c:2200
+#: src/io.c:2190
 #, c-format
 msgid "Warning: could not open %s, Aborting..."
 msgstr ""
 
-#: src/io.c:2207
+#: src/io.c:2197
 msgid "could not get entire item description."
 msgstr ""
 
-#: src/io.c:2229
+#: src/io.c:2219
 msgid "description malformed."
 msgstr ""
 
-#: src/io.c:2308
+#: src/io.c:2298
 msgid "appointment has no start time."
 msgstr ""
 
-#: src/io.c:2316
+#: src/io.c:2306
 msgid "could not compute duration (no end time)."
 msgstr ""
 
-#: src/io.c:2335
+#: src/io.c:2325
 msgid "item has a negative duration."
 msgstr ""
 
-#: src/io.c:2352
+#: src/io.c:2342
 msgid "item could not be identified."
 msgstr ""
 
-#: src/io.c:2360 src/io.c:2480
+#: src/io.c:2350 src/io.c:2470
 msgid "could not retrieve item summary."
 msgstr ""
 
-#: src/io.c:2374
+#: src/io.c:2364
 msgid "could not retrieve event start time."
 msgstr ""
 
-#: src/io.c:2385
+#: src/io.c:2375
 msgid "could not retrieve event end time."
 msgstr ""
 
-#: src/io.c:2394
+#: src/io.c:2384
 msgid "item duration malformed."
 msgstr ""
 
-#: src/io.c:2423 src/io.c:2520
+#: src/io.c:2413 src/io.c:2510
 msgid "The ical file seems to be malformed. The end of item was not found."
 msgstr ""
 
-#: src/io.c:2499
+#: src/io.c:2489
 msgid "item priority is not acceptable (must be between 1 and 9)."
 msgstr ""
 
-#: src/io.c:2535
+#: src/io.c:2525
 msgid "Enter the file name to import data from:"
 msgstr ""
 
-#: src/io.c:2576
+#: src/io.c:2566
 #, c-format
 msgid "Import process report: %04d lines read "
 msgstr ""
 
-#: src/io.c:2578
+#: src/io.c:2568
 #, c-format
 msgid "%d apps / %d events / %d todos / %d skipped "
 msgstr ""
 
-#: src/io.c:2580
+#: src/io.c:2570
 #, c-format
 msgid "%d apps / %d events / %d todos / %d skipped ([ENTER] to continue)"
 msgstr ""
 
-#: src/io.c:2590
-msgid "FATAL ERROR in io_import_data: unknown import type"
+#: src/io.c:2579
+msgid "unknown import type"
 msgstr ""
 
-#: src/io.c:2596
+#: src/io.c:2585
 msgid "FATAL ERROR: the input file cannot be accessed, Aborting..."
 msgstr ""
 
-#: src/io.c:2603
-msgid "FATAL ERROR in io_import_data: wrong import mode"
+#: src/io.c:2592
+msgid "FATAL ERROR: wrong import mode"
 msgstr ""
 
-#: src/io.c:2613
+#: src/io.c:2602
 msgid "Warning: ical header malformed or wrong version number. Aborting..."
 msgstr ""
 
-#: src/io.c:2668
+#: src/io.c:2657
 msgid "Some items could not be imported, see log file ?"
 msgstr ""
 
-#: src/io.c:2684
+#: src/io.c:2673
 msgid "Warning: could not create temporary log file, Aborting..."
 msgstr ""
 
-#: src/io.c:2687 src/io.c:2693
+#: src/io.c:2676 src/io.c:2682
 msgid "Warning: could not open temporary log file, Aborting..."
 msgstr ""
 
-#: src/io.c:2714
+#: src/io.c:2703
 msgid "No log file to display!"
 msgstr ""
 
-#: src/io.c:2749
+#: src/io.c:2738
 #, c-format
 msgid "Warning: could not erase temporary log file %s, Aborting..."
 msgstr ""
 
 #: src/notify.c:136
-msgid "FATAL ERROR in launch_cmd: could not fork"
+msgid "error while launching command: could not fork"
 msgstr ""
 
 #: src/notify.c:139
-msgid "FATAL ERROR in launch_cmd: could not launch user command"
+msgid "error while launching command"
 msgstr ""
 
-#: src/notify.c:450
+#: src/notify.c:449
 msgid "notify-bar_show = "
 msgstr ""
 
-#: src/notify.c:451
+#: src/notify.c:450
 msgid "notify-bar_date = "
 msgstr ""
 
-#: src/notify.c:452
+#: src/notify.c:451
 msgid "notify-bar_clock = "
 msgstr ""
 
-#: src/notify.c:453
+#: src/notify.c:452
 msgid "notify-bar_warning = "
 msgstr ""
 
-#: src/notify.c:454
+#: src/notify.c:453
 msgid "notify-bar_command = "
 msgstr ""
 
-#: src/notify.c:457
+#: src/notify.c:456
 msgid "(if set to YES, notify-bar will be displayed)"
 msgstr ""
 
-#: src/notify.c:459
+#: src/notify.c:458
 msgid "(Format of the date to be displayed inside notify-bar)"
 msgstr ""
 
-#: src/notify.c:462
+#: src/notify.c:461
 msgid "(Format of the time to be displayed inside notify-bar)"
 msgstr ""
 
-#: src/notify.c:465
+#: src/notify.c:464
 msgid ""
 "(Warn user if an appointment is within next 'notify-bar_warning' seconds)"
 msgstr ""
 
-#: src/notify.c:468
+#: src/notify.c:467
 msgid "(Command used to notify user of an upcoming appointment)"
 msgstr ""
 
-#: src/notify.c:525
+#: src/notify.c:520
+msgid "Enter an option number to change its value [Q to quit] "
+msgstr ""
+
+#: src/notify.c:524
 msgid "Enter the time format (see 'man 3 strftime' for possible formats) "
 msgstr ""
 
-#: src/notify.c:527
+#: src/notify.c:526
 msgid "Enter the number of seconds (0 not to be warned before an appointment)"
 msgstr ""
 
-#: src/notify.c:528
+#: src/notify.c:527
 msgid "Enter the notification command "
 msgstr ""
 
-#: src/notify.c:532
+#: src/notify.c:531
 #, c-format
 msgid "CalCurse %s | notify-bar options"
 msgstr ""
 
-#: src/recur.c:130
-msgid "FATAL ERROR in recur_def2char: unknown recur type\n"
+#: src/recur.c:146
+msgid "unknown repetition type"
 msgstr ""
 
-#: src/recur.c:162
-msgid "FATAL ERROR in recur_char2def: unknown char\n"
+#: src/recur.c:177
+msgid "unknown character"
 msgstr ""
 
-#: src/recur.c:298
-msgid "FATAL ERROR in recur_event_scan: date error in the event\n"
+#: src/recur.c:290
+msgid "date error in event"
 msgstr ""
 
-#: src/recur.c:438
-msgid "FATAL ERROR in recur_item_inday: unknown item type\n"
+#: src/recur.c:607
+msgid "appointment not found"
 msgstr ""
 
-#: src/recur.c:571
-msgid "FATAL ERROR in recur_event_erase: no such event\n"
-msgstr ""
-
-#: src/recur.c:643
-msgid "FATAL ERROR in recur_apoint_erase: no such appointment\n"
-msgstr ""
-
-#: src/recur.c:667
+#: src/recur.c:630
 msgid "Enter the repetition type: (D)aily, (W)eekly, (M)onthly, (Y)early"
 msgstr ""
 
-#: src/recur.c:669
+#: src/recur.c:632
 msgid "Enter the repetition frequence:"
 msgstr ""
 
-#: src/recur.c:672
+#: src/recur.c:635
 #, c-format
 msgid "Enter the ending date: [%s] or '0' for an endless repetition"
 msgstr ""
 
-#: src/recur.c:675
+#: src/recur.c:638
 #, c-format
 msgid "Possible formats are [%s] or '0' for an endless repetition"
 msgstr ""
 
-#: src/recur.c:676
+#: src/recur.c:639
 msgid "This item is already a repeated one."
 msgstr ""
 
-#: src/recur.c:679
+#: src/recur.c:642
 msgid "Sorry, the date you entered is older than the item start time."
 msgstr ""
 
-#: src/recur.c:793
-msgid "FATAL ERROR in recur_repeat_item: wrong item type\n"
+#: src/recur.c:756
+msgid "wrong item type"
 msgstr ""
 
-#: src/recur.c:822
-msgid "FATAL ERROR in recur_exc_scan: syntax error in the item date\n"
-msgstr ""
-
-#: src/recur.c:897
-msgid "FATAL ERROR in recur_get_apoint: no such item\n"
-msgstr ""
-
-#: src/recur.c:921
-msgid "FATAL ERROR in recur_get_event: no such item\n"
-msgstr ""
-
-#: src/recur.c:957
-msgid "FATAL ERROR in recur_apoint_switch_notify: no such item\n"
+#: src/recur.c:784
+msgid "syntax error in item date"
 msgstr ""
 
 #: src/todo.c:139
@@ -1489,223 +1460,211 @@ msgid "Enter the ToDo priority [1 (highest) - 9 (lowest)] :"
 msgstr ""
 
 #: src/todo.c:193
-msgid "FATAL ERROR in todo_delete_note_bynum: no note attached\n"
+msgid "no note attached"
 msgstr ""
 
-#: src/todo.c:202
-msgid "FATAL ERROR in todo_delete_note_bynum: no such todo\n"
+#: src/todo.c:201 src/todo.c:228
+msgid "no such todo"
 msgstr ""
 
-#: src/todo.c:231
-msgid "FATAL ERROR in todo_delete_bynum: no such todo\n"
-msgstr ""
-
-#: src/todo.c:241
+#: src/todo.c:236
 msgid "Do you really want to delete this task ?"
 msgstr ""
 
-#: src/todo.c:243
+#: src/todo.c:238
 msgid "This item has a note attached to it. Delete (t)odo or just its (n)ote ?"
 msgstr ""
 
-#: src/todo.c:245
+#: src/todo.c:240
 msgid "[t/n] "
 msgstr ""
 
-#: src/todo.c:329
-msgid "FATAL ERROR in todo_get_position: todo not found\n"
+#: src/todo.c:324
+msgid "todo not found"
 msgstr ""
 
-#: src/todo.c:361
-msgid "FATAL ERROR in todo_chg_priority: no such action\n"
+#: src/todo.c:355
+msgid "no such action"
 msgstr ""
 
-#: src/todo.c:376
+#: src/todo.c:371
 msgid "Enter the new ToDo description :"
 msgstr ""
 
 #: src/utils.c:68
-msgid "INTERNAL ERROR"
+msgid "/!\\ INTERNAL ERROR /!\\"
 msgstr ""
 
 #: src/utils.c:69
-msgid "calcurse will now exit..."
-msgstr ""
-
-#: src/utils.c:70
 msgid "Please report the following bug:"
 msgstr ""
 
-#: src/utils.c:169
+#: src/utils.c:132
 msgid "Press any key to continue..."
 msgstr ""
 
-#: src/utils.c:412
-msgid "FATAL ERROR in updatestring: out of memory"
+#: src/utils.c:373
+msgid "out of memory"
 msgstr ""
 
-#: src/utils.c:455
-msgid "Credits"
-msgstr ""
-
-#: src/utils.c:456
+#: src/utils.c:413
 msgid "Help"
 msgstr ""
 
-#: src/utils.c:457
+#: src/utils.c:414
 msgid "Quit"
 msgstr ""
 
-#: src/utils.c:458
+#: src/utils.c:415
 msgid "Save"
 msgstr ""
 
-#: src/utils.c:459
+#: src/utils.c:416
 msgid "Chg View"
 msgstr ""
 
-#: src/utils.c:460
+#: src/utils.c:417
 msgid "Import"
 msgstr ""
 
-#: src/utils.c:461
+#: src/utils.c:418
 msgid "Export"
 msgstr ""
 
-#: src/utils.c:462
+#: src/utils.c:419
 msgid "Go to"
 msgstr ""
 
-#: src/utils.c:463
+#: src/utils.c:420
 msgid "OtherCmd"
 msgstr ""
 
-#: src/utils.c:464
+#: src/utils.c:421
 msgid "Config"
 msgstr ""
 
-#: src/utils.c:465
+#: src/utils.c:422
 msgid "Redraw"
 msgstr ""
 
-#: src/utils.c:466
+#: src/utils.c:423
 msgid "Add Appt"
 msgstr ""
 
-#: src/utils.c:467
+#: src/utils.c:424
 msgid "Add Todo"
 msgstr ""
 
-#: src/utils.c:468
+#: src/utils.c:425
 msgid "+1 Day"
 msgstr ""
 
-#: src/utils.c:469
+#: src/utils.c:426
 msgid "-1 Day"
 msgstr ""
 
-#: src/utils.c:470
+#: src/utils.c:427
 msgid "+1 Week"
 msgstr ""
 
-#: src/utils.c:471
+#: src/utils.c:428
 msgid "-1 Week"
 msgstr ""
 
-#: src/utils.c:472
+#: src/utils.c:429
 msgid "Today"
 msgstr ""
 
-#: src/utils.c:477
+#: src/utils.c:434
 msgid "beg Week"
 msgstr ""
 
-#: src/utils.c:478
+#: src/utils.c:435
 msgid "end Week"
 msgstr ""
 
-#: src/utils.c:479
+#: src/utils.c:436
 msgid "Add Item"
 msgstr ""
 
-#: src/utils.c:480
+#: src/utils.c:437
 msgid "Del Item"
 msgstr ""
 
-#: src/utils.c:481
+#: src/utils.c:438
 msgid "Edit Itm"
 msgstr ""
 
-#: src/utils.c:482
+#: src/utils.c:439
 msgid "View"
 msgstr ""
 
-#: src/utils.c:483
+#: src/utils.c:440
 msgid "Flag Itm"
 msgstr ""
 
-#: src/utils.c:484
+#: src/utils.c:441
 msgid "Repeat"
 msgstr ""
 
-#: src/utils.c:485
+#: src/utils.c:442
 msgid "EditNote"
 msgstr ""
 
-#: src/utils.c:486
+#: src/utils.c:443
 msgid "ViewNote"
 msgstr ""
 
-#: src/utils.c:487
+#: src/utils.c:444
 msgid "Prio.+"
 msgstr ""
 
-#: src/utils.c:488
+#: src/utils.c:445
 msgid "Prio.-"
 msgstr ""
 
-#: src/utils.c:534
-msgid "FATAL ERROR in date2sec: failure in mktime\n"
+#: src/utils.c:489 src/utils.c:559
+msgid "failure in mktime"
 msgstr ""
 
-#: src/utils.c:609
-msgid "FATAL ERROR in date_sec_change: failure in mktime\n"
+#: src/utils.c:579
+msgid "error in mktime"
 msgstr ""
 
-#: src/utils.c:750
+#: src/utils.c:698
 msgid "Appointment"
 msgstr ""
 
-#: src/utils.c:776
-msgid "FATAL ERROR in other_status_page: unknown panel\n"
+#: src/utils.c:737
+msgid "unknown panel"
 msgstr ""
 
-#: src/utils.c:846
-msgid "FATAL ERROR in mystrtol: could not convert string"
+#: src/utils.c:785
+msgid "could not convert string"
 msgstr ""
 
-#: src/utils.c:848
-msgid "FATAL ERROR in mystrtol: number is out of range"
+#: src/utils.c:787
+msgid "out of range"
 msgstr ""
 
-#: src/utils.c:870
+#: src/utils.c:802
 msgid "yes"
 msgstr ""
 
-#: src/utils.c:875
+#: src/utils.c:807
 msgid "no"
 msgstr ""
 
-#: src/utils.c:879
-msgid "option not defined - Problem in print_option_incolor()"
+#: src/utils.c:810
+msgid "option not defined"
 msgstr ""
 
-#: src/utils.c:916
-msgid "FATAL ERROR: temporary file could not be created!"
+#: src/utils.c:846
+msgid "temporary file could not be created"
 msgstr ""
 
-#: src/utils.c:930
-msgid "FATAL ERROR in erase_note: could not remove note\n"
+#: src/utils.c:866
+msgid "could not remove note"
 msgstr ""
 
 #: src/vars.c:57
@@ -1799,6 +1758,6 @@ msgstr ""
 msgid "ToDo"
 msgstr ""
 
-#: src/wins.c:420
-msgid "FATAL ERROR in wins_update: no window selected\n"
+#: src/wins.c:417
+msgid "no window selected"
 msgstr ""

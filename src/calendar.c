@@ -1,4 +1,4 @@
-/*	$calcurse: calendar.c,v 1.19 2008/12/07 09:20:38 culot Exp $	*/
+/*	$calcurse: calendar.c,v 1.20 2008/12/14 15:54:51 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -130,7 +130,7 @@ calendar_set_first_day_of_week (wday_e first_day)
       week_begins_on_monday = true;
       break;
     default:
-      fputs (_("ERROR in calendar_set_first_day_of_week\n"), stderr);
+      ERROR_MSG (_("ERROR setting first day of week"));
       week_begins_on_monday = false;
       /* NOTREACHED */
     }
