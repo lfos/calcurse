@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse 2.4_beta\n"
 "Report-Msgid-Bugs-To: frederic@culot.org\n"
-"POT-Creation-Date: 2008-12-14 16:48+0100\n"
+"POT-Creation-Date: 2008-12-15 20:53+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -45,19 +45,19 @@ msgstr ""
 msgid "Do you really want to delete this item ?"
 msgstr ""
 
-#: src/apoint.c:276
+#: src/apoint.c:274
 msgid "no such type"
 msgstr ""
 
-#: src/apoint.c:385 src/recur.c:247
+#: src/apoint.c:383 src/recur.c:247
 msgid "date error in appointment"
 msgstr ""
 
-#: src/apoint.c:406 src/recur.c:856 src/recur.c:880 src/recur.c:916
+#: src/apoint.c:404 src/recur.c:856 src/recur.c:880 src/recur.c:916
 msgid "item not found"
 msgstr ""
 
-#: src/apoint.c:450 src/apoint.c:610
+#: src/apoint.c:451 src/apoint.c:611
 msgid "no such appointment"
 msgstr ""
 

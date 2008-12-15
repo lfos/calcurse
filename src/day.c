@@ -1,4 +1,4 @@
-/*	$calcurse: day.c,v 1.41 2008/12/12 20:44:50 culot Exp $	*/
+/*	$calcurse: day.c,v 1.42 2008/12/15 20:02:00 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -728,7 +728,7 @@ day_edit_item (conf_t *conf)
   p = day_get_item (item_num);
   date = calendar_get_slctd_day_sec ();
 
-  ch = 0;
+  ch = -1;
   switch (p->type)
     {
     case RECUR_EVNT:
@@ -819,9 +819,10 @@ day_erase_item (long date, int item_number, erase_flag_e flag)
 	"Delete (i)tem or just its (n)ote ?");
   char *note_choice = _("[i/n] ");
   char *erase_choice = _("[a/o] ");
-  int ch = 0, ans;
+  int ch, ans;
   unsigned delete_whole;
 
+  ch = -1;
   p = day_get_item (item_number);
   if (flag == ERASE_DONT_FORCE)
     {
@@ -877,7 +878,10 @@ day_erase_item (long date, int item_number, erase_flag_e flag)
 	  recur_apoint_erase (date, p->appt_pos, delete_whole, flag);
 	}
     }
-  return (p->type);
+  if (flag == ERASE_FORCE_ONLY_NOTE)
+    return 0;
+  else
+    return (p->type);
 }
 
 /* Returns a structure containing the selected item. */

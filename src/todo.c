@@ -1,4 +1,4 @@
-/*	$calcurse: todo.c,v 1.27 2008/12/12 20:44:50 culot Exp $	*/
+/*	$calcurse: todo.c,v 1.28 2008/12/15 20:02:00 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -239,7 +239,7 @@ todo_delete (conf_t *conf)
 	"Delete (t)odo or just its (n)ote ?");
   char *erase_choice = _("[t/n] ");
   bool go_for_todo_del = false;
-  int answer = 0, has_note;
+  int answer, has_note;
 
   if (conf->confirm_delete)
     {
@@ -264,7 +264,7 @@ todo_delete (conf_t *conf)
       return;
     }
 
-  answer = 0;
+  answer = -1;
   has_note = (todo_get_item (hilt)->note != NULL) ? 1 : 0;
   if (has_note == 0)
     answer = 't';

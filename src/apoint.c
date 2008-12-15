@@ -1,4 +1,4 @@
-/*	$calcurse: apoint.c,v 1.27 2008/12/14 15:54:51 culot Exp $	*/
+/*	$calcurse: apoint.c,v 1.28 2008/12/15 20:02:00 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -269,9 +269,7 @@ apoint_delete (conf_t *conf, unsigned *nb_events, unsigned *nb_apoints)
 	      to_be_removed = 3;
 	    }
 	  else if (deleted_item_type == 0)
-	    {
-	      to_be_removed = 0;
-	    }
+            return;
 	  else
             EXIT (_("no such type"));
 	  /* NOTREACHED */
@@ -425,7 +423,10 @@ apoint_delete_bynum (long start, unsigned num, erase_flag_e flag)
 	  if (n == num)
 	    {
 	      if (flag == ERASE_FORCE_ONLY_NOTE)
-		erase_note (&i->note, flag);
+                {
+                  erase_note (&i->note, flag);
+                  pthread_mutex_unlock (&(alist_p->mutex));
+                }
 	      else
 		{
 		  if (notify_bar ())

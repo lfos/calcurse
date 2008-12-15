@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.59 2008/12/14 15:54:51 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.60 2008/12/15 20:02:00 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -329,7 +329,7 @@ getstring (WINDOW *win, char *str, int l, int x, int y)
 	    newpos++;
 	  break;
 
-	case KEY_GENERIC_CANCEL:	/* cancel editing */
+	case ESCAPE:	/* cancel editing */
 	  return (GETSTRING_ESC);
 	  break;
 

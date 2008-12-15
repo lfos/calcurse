@@ -1,4 +1,4 @@
-# 	$calcurse: de.po,v 1.21 2008/12/14 15:54:50 culot Exp $
+# 	$calcurse: de.po,v 1.22 2008/12/15 20:02:00 culot Exp $
 #
 # German translations for calcurse package.
 # Copyright (C) 2006-2007 Michael Schulz <bloodshower@web.de>
@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse 1.9\n"
 "Report-Msgid-Bugs-To: frederic@culot.org\n"
-"POT-Creation-Date: 2008-12-14 16:48+0100\n"
+"POT-Creation-Date: 2008-12-15 20:53+0100\n"
 "PO-Revision-Date: 2007-09-02 18:06+0200\n"
 "Last-Translator: Michael\n"
 "Language-Team:  Michael Schulz <bloodshower@freenet.de>\n"
@@ -52,20 +52,20 @@ msgstr "[EINGABE]-Taste um fortzufahren"
 msgid "Do you really want to delete this item ?"
 msgstr "Möchten Sie wirklich diesen Eintrag löschen ?"
 
-#: src/apoint.c:276
+#: src/apoint.c:274
 msgid "no such type"
 msgstr ""
 
-#: src/apoint.c:385 src/recur.c:247
+#: src/apoint.c:383 src/recur.c:247
 #, fuzzy
 msgid "date error in appointment"
 msgstr "nächster Termin :\n"
 
-#: src/apoint.c:406 src/recur.c:856 src/recur.c:880 src/recur.c:916
+#: src/apoint.c:404 src/recur.c:856 src/recur.c:880 src/recur.c:916
 msgid "item not found"
 msgstr ""
 
-#: src/apoint.c:450 src/apoint.c:610
+#: src/apoint.c:451 src/apoint.c:611
 #, fuzzy
 msgid "no such appointment"
 msgstr "nächster Termin :\n"

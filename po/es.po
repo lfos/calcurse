@@ -1,4 +1,4 @@
-# 	$calcurse: es.po,v 1.17 2008/12/14 15:54:50 culot Exp $
+# 	$calcurse: es.po,v 1.18 2008/12/15 20:02:00 culot Exp $
 #
 # Spanish translations for calcurse package.
 # Copyright (c) Jose Lopez <testinground@gmail.com> 2006 Free Software Foundation, Inc.
@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Calcurse 1.8\n"
 "Report-Msgid-Bugs-To: frederic@culot.org\n"
-"POT-Creation-Date: 2008-12-14 16:48+0100\n"
+"POT-Creation-Date: 2008-12-15 20:53+0100\n"
 "PO-Revision-Date: 2006-09-10 08:06+0200\n"
 "Last-Translator: Jose Lopez <testinground@gmail.com>\n"
 "Language-Team: Jose Lopez <testinground@gmail.com>\n"
@@ -50,20 +50,20 @@ msgstr "Pulsa [INTRO] para continuar"
 msgid "Do you really want to delete this item ?"
 msgstr "¿Seguro que quieres borrar este elemento?"
 
-#: src/apoint.c:276
+#: src/apoint.c:274
 msgid "no such type"
 msgstr ""
 
-#: src/apoint.c:385 src/recur.c:247
+#: src/apoint.c:383 src/recur.c:247
 #, fuzzy
 msgid "date error in appointment"
 msgstr "Proxima cita:\n"
 
-#: src/apoint.c:406 src/recur.c:856 src/recur.c:880 src/recur.c:916
+#: src/apoint.c:404 src/recur.c:856 src/recur.c:880 src/recur.c:916
 msgid "item not found"
 msgstr ""
 
-#: src/apoint.c:450 src/apoint.c:610
+#: src/apoint.c:451 src/apoint.c:611
 #, fuzzy
 msgid "no such appointment"
 msgstr "Proxima cita:\n"

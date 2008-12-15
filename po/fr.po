@@ -1,4 +1,4 @@
-# 	$calcurse: fr.po,v 1.27 2008/12/14 15:54:51 culot Exp $
+# 	$calcurse: fr.po,v 1.28 2008/12/15 20:02:00 culot Exp $
 #
 # French translations for calcurse package.
 # Copyright (C) 2004-2008 Frederic Culot <frederic@culot.org>
@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse 2.1\n"
 "Report-Msgid-Bugs-To: frederic@culot.org\n"
-"POT-Creation-Date: 2008-12-14 16:48+0100\n"
+"POT-Creation-Date: 2008-12-15 20:53+0100\n"
 "PO-Revision-Date: 2008-09-23 19:21+0200\n"
 "Last-Translator: Frederic Culot <frederic@culot.org>\n"
 "Language-Team: French <calcurse-i18n@culot.org>\n"
@@ -50,21 +50,21 @@ msgstr "Appuyez sur [ENTREE] pour continuer"
 msgid "Do you really want to delete this item ?"
 msgstr "Voulez-vous vraiment effacer cet élement ?"
 
-#: src/apoint.c:276
+#: src/apoint.c:274
 msgid "no such type"
 msgstr ""
 
-#: src/apoint.c:385 src/recur.c:247
+#: src/apoint.c:383 src/recur.c:247
 #, fuzzy
 msgid "date error in appointment"
 msgstr "prochain rendez-vous:\n"
 
-#: src/apoint.c:406 src/recur.c:856 src/recur.c:880 src/recur.c:916
+#: src/apoint.c:404 src/recur.c:856 src/recur.c:880 src/recur.c:916
 #, fuzzy
 msgid "item not found"
 msgstr "Fichier note non trouvé\n"
 
-#: src/apoint.c:450 src/apoint.c:610
+#: src/apoint.c:451 src/apoint.c:611
 #, fuzzy
 msgid "no such appointment"
 msgstr "prochain rendez-vous:\n"

@@ -1,3 +1,18 @@
+2008-12-15  Frederic Culot  <frederic@culot.org>
+
+	* src/todo.c (todo_delete)
+	* src/day.c (day_edit_item): fixed a bug that prevented from
+	editing an item
+
+	* src/keys.c: generic-escape renamed into generic-cancel
+
+	* src/utils.c (getstring): make the escape key work again to
+	cancel editing
+
+	* src/apoint.c (apoint_delete_bynum)	
+	* src/day.c (day_erase_item): fixed a possible freeze when
+	deleting an appointment's note
+	
 2008-12-14  Frederic Culot  <frederic@culot.org>
 
 	* === Released 2.4_beta ===
@@ -9,11 +24,11 @@
 	* src/recur.c (foreach_date_dump): exception dates are now
 	properly taken into account
 
-	* src/apoint.c: 
-	* src/calendar.c:
-	* src/custom.c: 
-	* src/event.c:
-	* src/io.c:
+	* src/apoint.c
+	* src/calendar.c
+	* src/custom.c
+	* src/event.c
+	* src/io.c
 	* src/recur.c: make use of error handling macros
 
 	* src/utils.c (status_bar): do not show 'credits' key binding

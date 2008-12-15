@@ -1,4 +1,4 @@
-# 	$calcurse: en.po,v 1.16 2008/12/14 15:54:50 culot Exp $
+# 	$calcurse: en.po,v 1.17 2008/12/15 20:02:00 culot Exp $
 #
 # English/GB translation of calcurse.
 # Copyright (C) 2006 Copyright (c) Frederic Culot <frederic@culot.org>
@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse 1.4\n"
 "Report-Msgid-Bugs-To: frederic@culot.org\n"
-"POT-Creation-Date: 2008-12-14 16:48+0100\n"
+"POT-Creation-Date: 2008-12-15 20:53+0100\n"
 "PO-Revision-Date: 2006-07-03 00:05+0100\n"
 "Last-Translator: Neil Williams <linux@codehelp.co.uk>\n"
 "Language-Team: English/GB <en_GB@li.org>\n"
@@ -49,20 +49,20 @@ msgstr "Press [Enter] to continue"
 msgid "Do you really want to delete this item ?"
 msgstr "Do you really want to delete this item ?"
 
-#: src/apoint.c:276
+#: src/apoint.c:274
 msgid "no such type"
 msgstr ""
 
-#: src/apoint.c:385 src/recur.c:247
+#: src/apoint.c:383 src/recur.c:247
 #, fuzzy
 msgid "date error in appointment"
 msgstr "Appointment :"
 
-#: src/apoint.c:406 src/recur.c:856 src/recur.c:880 src/recur.c:916
+#: src/apoint.c:404 src/recur.c:856 src/recur.c:880 src/recur.c:916
 msgid "item not found"
 msgstr ""
 
-#: src/apoint.c:450 src/apoint.c:610
+#: src/apoint.c:451 src/apoint.c:611
 #, fuzzy
 msgid "no such appointment"
 msgstr "Appointment :"

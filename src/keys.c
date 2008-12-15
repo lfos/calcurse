@@ -1,4 +1,4 @@
-/*	$calcurse: keys.c,v 1.9 2008/12/12 20:44:50 culot Exp $	*/
+/*	$calcurse: keys.c,v 1.10 2008/12/15 20:02:00 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -49,7 +49,7 @@ static struct key_str_s *keys[NBKEYS];
 static keys_e actions[MAXKEYVAL];
 
 static struct keydef_s keydef[NBKEYS] = {
-  {"generic-escape", "ESC"},
+  {"generic-cancel", "ESC"},
   {"generic-select", "SPC"},
   {"generic-credits", "@"},
   {"generic-help", "?"},

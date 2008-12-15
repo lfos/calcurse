@@ -1,4 +1,4 @@
-# 	$calcurse: nl.po,v 1.15 2008/12/14 15:54:51 culot Exp $
+# 	$calcurse: nl.po,v 1.16 2008/12/15 20:02:00 culot Exp $
 #
 # Dutch translations for calcurse package.
 # Copyright (C) 2007-2008 Jeremy Roon <p.roon@chello.nl>
@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse 2.1\n"
 "Report-Msgid-Bugs-To: frederic@culot.org\n"
-"POT-Creation-Date: 2008-12-14 16:48+0100\n"
+"POT-Creation-Date: 2008-12-15 20:53+0100\n"
 "PO-Revision-Date: 2008-10-14 20:54+0200\n"
 "Last-Translator: Jeremy Roon\n"
 "Language-Team:  Jeremy Roon <p.roon@chello.nl>\n"
@@ -48,21 +48,21 @@ msgstr "Druk op [Enter] om door te gaan)"
 msgid "Do you really want to delete this item ?"
 msgstr "Wilt u werkelijk dit item wissen ?"
 
-#: src/apoint.c:276
+#: src/apoint.c:274
 msgid "no such type"
 msgstr ""
 
-#: src/apoint.c:385 src/recur.c:247
+#: src/apoint.c:383 src/recur.c:247
 #, fuzzy
 msgid "date error in appointment"
 msgstr "Volgende afspraak :\n"
 
-#: src/apoint.c:406 src/recur.c:856 src/recur.c:880 src/recur.c:916
+#: src/apoint.c:404 src/recur.c:856 src/recur.c:880 src/recur.c:916
 #, fuzzy
 msgid "item not found"
 msgstr "Noot-bestand niet gevonden\n"
 
-#: src/apoint.c:450 src/apoint.c:610
+#: src/apoint.c:451 src/apoint.c:611
 #, fuzzy
 msgid "no such appointment"
 msgstr "Volgende afspraak :\n"
