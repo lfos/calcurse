@@ -1,4 +1,4 @@
-# 	$calcurse: de.po,v 1.22 2008/12/15 20:02:00 culot Exp $
+# 	$calcurse: de.po,v 1.23 2008/12/18 20:38:51 culot Exp $
 #
 # German translations for calcurse package.
 # Copyright (C) 2006-2007 Michael Schulz <bloodshower@web.de>
@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse 1.9\n"
 "Report-Msgid-Bugs-To: frederic@culot.org\n"
-"POT-Creation-Date: 2008-12-15 20:53+0100\n"
+"POT-Creation-Date: 2008-12-18 21:35+0100\n"
 "PO-Revision-Date: 2007-09-02 18:06+0200\n"
 "Last-Translator: Michael\n"
 "Language-Team:  Michael Schulz <bloodshower@freenet.de>\n"
@@ -497,7 +497,7 @@ msgstr ""
 msgid "(Press '^P' or '^N' to move up or down, 'Q' to quit)"
 msgstr ""
 
-#: src/custom.c:793 src/notify.c:522
+#: src/custom.c:793 src/notify.c:528
 msgid "Enter the date format (see 'man 3 strftime' for possible formats) "
 msgstr "Geben Sie das Datumsformat an (vgl. 'man 3 strftime')"
 
@@ -1696,78 +1696,78 @@ msgstr ""
 msgid "Warning: could not erase temporary log file %s, Aborting..."
 msgstr ""
 
-#: src/notify.c:136
+#: src/notify.c:141
 #, fuzzy
 msgid "error while launching command: could not fork"
 msgstr "SCHWERER FEHLER in launch_cmd: konnte nicht ausführen"
 
-#: src/notify.c:139
+#: src/notify.c:144
 #, fuzzy
 msgid "error while launching command"
 msgstr "Geben Sie den Befehl für Ihre Notiz ein "
 
-#: src/notify.c:449
+#: src/notify.c:455
 msgid "notify-bar_show = "
 msgstr "Benachrichtigungszeile_anzeigen = "
 
-#: src/notify.c:450
+#: src/notify.c:456
 msgid "notify-bar_date = "
 msgstr "Benachrichtigungszeile_Datum = "
 
-#: src/notify.c:451
+#: src/notify.c:457
 msgid "notify-bar_clock = "
 msgstr "Benachrichtigungszeile_Uhrzeit = "
 
-#: src/notify.c:452
+#: src/notify.c:458
 msgid "notify-bar_warning = "
 msgstr "Benachrichtigungszeile_Alarm = "
 
-#: src/notify.c:453
+#: src/notify.c:459
 msgid "notify-bar_command = "
 msgstr "Benachrichtigungszeile_Befehl = "
 
-#: src/notify.c:456
+#: src/notify.c:462
 msgid "(if set to YES, notify-bar will be displayed)"
 msgstr "(Ist JA gewählt, wird die Benachrichtigungszeile nicht angezeigt)"
 
-#: src/notify.c:458
+#: src/notify.c:464
 msgid "(Format of the date to be displayed inside notify-bar)"
 msgstr "(Datumsformatierung innerhalb der Benachrichtigungszeile.)"
 
-#: src/notify.c:461
+#: src/notify.c:467
 msgid "(Format of the time to be displayed inside notify-bar)"
 msgstr "(Uhrzeitformatierung innerhalb der Benachrichtigungszeile.)"
 
-#: src/notify.c:464
+#: src/notify.c:470
 msgid ""
 "(Warn user if an appointment is within next 'notify-bar_warning' seconds)"
 msgstr ""
 "Nutzer auf einen Termin innerhalb der nächsten "
 "'Benachrichtigungszeile_Alarm' hinweisen"
 
-#: src/notify.c:467
+#: src/notify.c:473
 msgid "(Command used to notify user of an upcoming appointment)"
 msgstr "(Befehl um Benutzer auf einen bevorstehenden Termin hinzuweisen)"
 
-#: src/notify.c:520
+#: src/notify.c:526
 msgid "Enter an option number to change its value [Q to quit] "
 msgstr ""
 "Bitte eine Optionsnummer eingeben, um den Wert zu ändern [Q um zu beenden]"
 
-#: src/notify.c:524
+#: src/notify.c:530
 msgid "Enter the time format (see 'man 3 strftime' for possible formats) "
 msgstr "Geben Sie das Zeitformat an (vgl. 'man 3 strftime')"
 
-#: src/notify.c:526
+#: src/notify.c:532
 msgid "Enter the number of seconds (0 not to be warned before an appointment)"
 msgstr ""
 "Geben Sie die Anzahl der Sekunden ein (0, um keine Hinweis zu erhalten)."
 
-#: src/notify.c:527
+#: src/notify.c:533
 msgid "Enter the notification command "
 msgstr "Geben Sie den Befehl für Ihre Notiz ein "
 
-#: src/notify.c:531
+#: src/notify.c:537
 #, c-format
 msgid "CalCurse %s | notify-bar options"
 msgstr "CalCurse %s | Optionen der Benachrichtigungszeile"

@@ -1,4 +1,4 @@
-/*	$calcurse: notify.c,v 1.31 2008/12/12 20:44:50 culot Exp $	*/
+/*	$calcurse: notify.c,v 1.32 2008/12/18 20:38:52 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -37,6 +37,7 @@
 
 static struct notify_vars_s *notify = NULL;
 static struct notify_app_s *notify_app = NULL;
+static pthread_attr_t detached_thread_attr;
 static pthread_t notify_t_main;
 
 /* Return 1 if we need to display the notify-bar, else 0. */
@@ -70,6 +71,10 @@ notify_init_vars (void)
 
   if ((nbar->shell = getenv ("SHELL")) == NULL)
     nbar->shell = "/bin/sh";
+
+  (void)pthread_attr_init (&detached_thread_attr);
+  (void)pthread_attr_setdetachstate (&detached_thread_attr,
+                                     PTHREAD_CREATE_DETACHED);
 }
 
 /* Extract the appointment file name from the complete file path. */
@@ -307,7 +312,8 @@ notify_check_next_app (void)
 {
   pthread_t notify_t_app;
 
-  pthread_create (&notify_t_app, NULL, notify_thread_app, NULL);
+  pthread_create (&notify_t_app, &detached_thread_attr, notify_thread_app,
+                  (void *)0);
   return;
 }
 

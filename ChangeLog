@@ -1,3 +1,8 @@
+2008-12-18  Frederic Culot  <frederic@culot.org>
+
+	* src/notify.c (notify_check_next_app): create thread detached to
+	avoid a memory leak
+	
 2008-12-15  Frederic Culot  <frederic@culot.org>
 
 	* src/todo.c (todo_delete)
