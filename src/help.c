@@ -1,4 +1,4 @@
-/*	$calcurse: help.c,v 1.34 2008/12/03 19:31:03 culot Exp $	*/
+/*	$calcurse: help.c,v 1.35 2008/12/20 19:27:31 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -130,7 +130,7 @@ help_write_pad (window_t *win, char *title, char *text, keys_e action)
  * Create and init help screen and its pad, which is used to make the scrolling
  * faster. 
  */
-static void
+void
 help_wins_init (scrollwin_t *hwin, int x, int y, int h, int w)
 {
   const int PADOFFSET = 4;

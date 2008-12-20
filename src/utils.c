@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.60 2008/12/15 20:02:00 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.61 2008/12/20 19:27:31 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -136,12 +136,12 @@ popup (int pop_row, int pop_col, int pop_y, int pop_x, char *title, char *msg,
 
   popup_win = newwin (pop_row, pop_col, pop_y, pop_x);
   keypad (popup_win, TRUE);
+  if (msg)
+    mvwprintw (popup_win, MSGXPOS, (pop_col - strlen (msg)) / 2, "%s", msg);
   custom_apply_attr (popup_win, ATTR_HIGHEST);
   box (popup_win, 0, 0);
   snprintf (label, BUFSIZ, "%s", title);
   wins_show (popup_win, label);
-  if (msg)
-    mvwprintw (popup_win, MSGXPOS, (pop_col - strlen (msg)) / 2, "%s", msg);
   if (hint)
     mvwprintw (popup_win, pop_row - 2, pop_col - (strlen (any_key) + 1), "%s",
                any_key);

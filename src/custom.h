@@ -1,4 +1,4 @@
-/*	$calcurse: custom.h,v 1.13 2008/11/23 20:38:56 culot Exp $	*/
+/*	$calcurse: custom.h,v 1.14 2008/12/20 19:27:31 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -77,7 +77,7 @@ void custom_apply_attr (WINDOW *, int);
 void custom_remove_attr (WINDOW *, int);
 void custom_load_conf (conf_t *, int);
 void custom_config_bar (void);
-void layout_config (void);
+void custom_layout_config (void);
 void custom_color_config (void);
 void custom_color_theme_name (char *);
 void custom_confwin_init (window_t *, char *);

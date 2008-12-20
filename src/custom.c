@@ -1,4 +1,4 @@
-/*	$calcurse: custom.c,v 1.30 2008/12/14 15:54:51 culot Exp $	*/
+/*	$calcurse: custom.c,v 1.31 2008/12/20 19:27:31 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -34,6 +34,7 @@
 #include "utils.h"
 #include "keys.h"
 #include "apoint.h"
+#include "help.h"
 
 static struct attribute_s attr;
 
@@ -365,34 +366,170 @@ custom_config_bar (void)
   doupdate ();
 }
 
+static void
+layout_selection_bar (void)
+{
+  binding_t quit    = {_("Exit"),     KEY_GENERIC_QUIT};
+  binding_t select  = {_("Select"),   KEY_GENERIC_SELECT};
+  binding_t up      = {_("Up"),       KEY_MOVE_UP};
+  binding_t down    = {_("Down"),     KEY_MOVE_DOWN};
+  binding_t left    = {_("Left"),     KEY_MOVE_LEFT};
+  binding_t right   = {_("Right"),    KEY_MOVE_RIGHT};
+  binding_t help    = {_("Help"),     KEY_GENERIC_HELP};
+  
+  binding_t *binding[] = {&quit, &select, &up, &down, &left, &right, &help};
+  int binding_size = sizeof (binding) / sizeof (binding[0]);
+
+  keys_display_bindings_bar (win[STA].p, binding, 0, binding_size);
+}
+
+#define NBLAYOUTS     8
+#define LAYOUTSPERCOL 2
+
+/* Used to display available layouts in layout configuration menu. */
+static void
+display_layout_config (window_t *lwin, int mark, int cursor, int need_reset)
+{
+#define CURSOR			(32 | A_REVERSE)
+#define MARK			88
+#define LAYOUTH                  5
+#define LAYOUTW                  9
+  char *box = "[ ]";
+  const int BOXSIZ = strlen (box);  
+  const int NBCOLS = NBLAYOUTS / LAYOUTSPERCOL;
+  const int COLSIZ = LAYOUTW + BOXSIZ + 1;
+  const int XSPC = (col - NBCOLS * COLSIZ) / (NBCOLS + 1);
+  const int XOFST = (col - NBCOLS * (XSPC + COLSIZ)) / 2;
+  const int YSPC = (row - 8 - LAYOUTSPERCOL * LAYOUTH) / (LAYOUTSPERCOL + 1);
+  const int YOFST = (row - LAYOUTSPERCOL * (YSPC + LAYOUTH)) / 2;  
+  enum {YPOS, XPOS, NBPOS};
+  int pos[NBLAYOUTS][NBPOS];
+  char *layouts[LAYOUTH][NBLAYOUTS] = {
+    {"+---+---+", "+---+---+", "+---+---+", "+---+---+", "+---+---+", "+---+---+", "+---+---+", "+---+---+"},
+    {"|   | c |", "|   | t |", "| c |   |", "| t |   |", "|   | c |", "|   | a |", "| c |   |", "| a |   |"},
+    {"| a +---+", "| a +---+", "+---+ a |", "|---+ a |", "| t +---+", "| t +---+", "+---+ t |", "+---+ t |"},
+    {"|   | t |", "|   | c |", "| t |   |", "| c |   |", "|   | a |", "|   | c |", "| a |   |", "| c |   |"},
+    {"+---+---+", "+---+---+", "+---+---+", "+---+---+", "+---+---+", "+---+---+", "+---+---+", "+---+---+"}
+  };
+  int i;
+
+  for (i = 0; i < NBLAYOUTS; i++)
+    {
+      pos[i][YPOS] = YOFST + (i % LAYOUTSPERCOL) * (YSPC + LAYOUTH);
+      pos[i][XPOS] = XOFST + (i / LAYOUTSPERCOL) * (XSPC + COLSIZ);
+    }
+
+  if (need_reset)
+    {
+      char label[BUFSIZ];
+      
+      if (lwin->p != NULL)
+	delwin (lwin->p);
+      snprintf (label, BUFSIZ, _("CalCurse %s | layout configuration"),
+                VERSION);
+      custom_confwin_init (lwin, label);
+    }
+
+  for (i = 0; i < NBLAYOUTS; i++)
+    {
+      int j;
+      
+      mvwprintw (lwin->p, pos[i][YPOS] + 2, pos[i][XPOS], box);
+      if (i == mark)
+        custom_apply_attr (lwin->p, ATTR_HIGHEST);
+      for (j = 0; j < LAYOUTH; j++)
+        {
+          mvwprintw (lwin->p, pos[i][YPOS] + j, pos[i][XPOS] + BOXSIZ + 1,
+                     layouts[j][i]);
+        }
+      if (i == mark)
+        custom_remove_attr (lwin->p, ATTR_HIGHEST);
+    }
+  mvwaddch (lwin->p, pos[mark][YPOS] + 2, pos[mark][XPOS] + 1, MARK);
+  mvwaddch (lwin->p, pos[cursor][YPOS] + 2, pos[cursor][XPOS] + 1, CURSOR);
+  
+  layout_selection_bar ();
+  wnoutrefresh (win[STA].p);
+  wnoutrefresh (lwin->p);
+  doupdate ();
+  if (notify_bar ())
+    notify_update_bar ();
+}
+
 /* Choose the layout */
 void
-layout_config (void)
+custom_layout_config (void)
 {
-  int ch;
-  char *layout_mesg =
-    _("Pick the desired layout on next screen [press ENTER]");
-  char *choice_mesg =
-    _("('A'= Appointment panel, 'C'= calendar panel, 'T'= todo panel)");
-  char *layout_up_mesg =
-    _("    AC       AT       CA       TA       TC       TA       CT       AT");
-  char *layout_down_mesg =
-    _(" [1]AT    [2]AC    [3]TA    [4]CA    [5]TA    [6]TC    [7]AT    [8]CT");
+  scrollwin_t hwin;
+  window_t conf_win;
+  int ch, mark, cursor, need_reset;
+  char *help_text =
+    _("With this configuration menu, one can choose where panels will be\n"
+      "displayed inside calcurse screen. \n"
+      "It is possible to choose between eight different configurations.\n"
+      "\nIn the configuration representations, letters correspond to:\n\n"
+      "       'c' -> calendar panel\n\n"      
+      "       'a' -> appointment panel\n\n"
+      "       't' -> todo panel\n\n");
+  
+  need_reset = 1;  
+  conf_win.p = (WINDOW *)0;
+  cursor = mark = wins_layout () - 1;  
+  clear ();
+  display_layout_config (&conf_win, mark, cursor, need_reset);
 
-  status_mesg (layout_mesg, choice_mesg);
-  (void)wgetch (win[STA].p);
-  status_mesg (layout_up_mesg, layout_down_mesg);
-  wnoutrefresh (win[STA].p);
-  doupdate ();
-  while ((ch = wgetch (win[STA].p)) != 'q')
+  while ((ch = keys_getch (win[STA].p)) != KEY_GENERIC_QUIT)
     {
-      if (ch <= '8' && ch >= '1')
+      need_reset = 0;
+      switch (ch)
 	{
-	  wins_set_layout (ch - '0');
-	  return;
+	case KEY_RESIZE:
+	  endwin ();
+	  refresh ();
+	  curs_set (0);
+	  need_reset = 1;
+	  break;
+        case KEY_GENERIC_HELP:
+          help_wins_init (&hwin, 0, 0,
+                          (notify_bar ()) ? row - 3 : row - 2, col);
+          mvwprintw (hwin.pad.p, 1, 0, "%s", help_text);
+          hwin.total_lines = 7;
+          wins_scrollwin_display (&hwin);
+          wgetch (hwin.win.p);
+          wins_scrollwin_delete (&hwin);
+          need_reset = 1;
+          break;
+	case KEY_GENERIC_SELECT:
+          mark = cursor;
+	  break;
+	case KEY_MOVE_DOWN:
+	  if (cursor % LAYOUTSPERCOL < LAYOUTSPERCOL - 1)
+	    cursor++;
+	  break;
+	case KEY_MOVE_UP:
+	  if (cursor % LAYOUTSPERCOL > 0)
+	    cursor--;
+	  break;
+	case KEY_MOVE_LEFT:
+	  if (cursor >= LAYOUTSPERCOL)
+	    cursor -= LAYOUTSPERCOL;
+	  break;
+	case KEY_MOVE_RIGHT:
+	  if (cursor < NBLAYOUTS - LAYOUTSPERCOL)
+	    cursor += LAYOUTSPERCOL;
+	  break;
+	case KEY_GENERIC_CANCEL:
+	  need_reset = 1;
+	  break;
 	}
+      display_layout_config (&conf_win, mark, cursor, need_reset);
     }
+  wins_set_layout (mark + 1);
+  delwin (conf_win.p);
 }
+
+#undef NBLAYOUTS
+#undef LAYOUTSPERCOL
 
 /* 
  * Create a configuration window and initialize status and notification bar 
@@ -417,7 +554,7 @@ custom_confwin_init (window_t *confwin, char *label)
 }
 
 static void
-custom_color_config_bar (void)
+color_selection_bar (void)
 {
   binding_t quit    = {_("Exit"),     KEY_GENERIC_QUIT};
   binding_t select  = {_("Select"),   KEY_GENERIC_SELECT};
@@ -559,7 +696,7 @@ display_color_config (window_t *cwin, int *mark_fore, int *mark_back,
     }
 
   mvwaddch (cwin->p, pos[cursor][YPOS], pos[cursor][XPOS] + 1, CURSOR);
-  custom_color_config_bar ();
+  color_selection_bar ();
   wnoutrefresh (win[STA].p);
   wnoutrefresh (cwin->p);
   doupdate ();

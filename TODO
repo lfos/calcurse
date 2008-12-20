@@ -11,8 +11,8 @@ this list.
 
 High
 ----
-  o  Add a week view in the calendar panel
   o  Add support for UTF-8
+  o  Allow events and appointments to be moved from one date to another
  
 
 Average
@@ -23,6 +23,7 @@ Average
   o  Add an auto-save function
   o  Add support for CalDAV protocol (rfc4791)
   o  Implement categories to classify appointments and tasks
+  o  Add a week view in the calendar panel
 
 
 Low

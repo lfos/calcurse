@@ -1,3 +1,10 @@
+2008-12-20  Frederic Culot  <frederic@culot.org>
+
+	* TODO: update for 2.4
+
+	* src/custom.c (custom_layout_config, display_layout_config)
+	(layout_selection_bar): new functions
+	
 2008-12-18  Frederic Culot  <frederic@culot.org>
 
 	* src/notify.c (notify_check_next_app): create thread detached to
