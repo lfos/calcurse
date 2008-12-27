@@ -1,4 +1,4 @@
-# 	$calcurse: es.po,v 1.19 2008/12/18 20:38:51 culot Exp $
+# 	$calcurse: es.po,v 1.20 2008/12/27 10:31:16 culot Exp $
 #
 # Spanish translations for calcurse package.
 # Copyright (c) Jose Lopez <testinground@gmail.com> 2006 Free Software Foundation, Inc.
@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Calcurse 1.8\n"
 "Report-Msgid-Bugs-To: frederic@culot.org\n"
-"POT-Creation-Date: 2008-12-18 21:35+0100\n"
+"POT-Creation-Date: 2008-12-27 11:29+0100\n"
 "PO-Revision-Date: 2006-09-10 08:06+0200\n"
 "Last-Translator: Jose Lopez <testinground@gmail.com>\n"
 "Language-Team: Jose Lopez <testinground@gmail.com>\n"
@@ -276,276 +276,286 @@ msgid ""
 "12/31/2037)"
 msgstr ""
 
-#: src/calendar.c:360 src/custom.c:206 src/io.c:772 src/io.c:1141
+#: src/calendar.c:360 src/custom.c:207 src/io.c:772 src/io.c:1141
 #: src/io.c:1441 src/io.c:1461
 msgid "Press [ENTER] to continue"
 msgstr "Pulsa [INTRO] para continuar"
 
-#: src/custom.c:49
+#: src/custom.c:50
 #, fuzzy
 msgid "wrong configuration variable format."
 msgstr "ERROR FATAL en fill_config_var: formato de la variable erroneo.\n"
 
-#: src/custom.c:74
+#: src/custom.c:75
 #, fuzzy
 msgid "missing colors in config file"
 msgstr "Fallo al abrir el fichero de configuradion (config)"
 
-#: src/custom.c:100
+#: src/custom.c:101
 msgid "wrong color name"
 msgstr ""
 
-#: src/custom.c:141
+#: src/custom.c:142
 msgid "wrong color number"
 msgstr ""
 
-#: src/custom.c:147
+#: src/custom.c:148
 #, fuzzy
 msgid "wrong configuration variable format"
 msgstr "ERROR FATAL en fill_config_var: formato de la variable erroneo.\n"
 
-#: src/custom.c:205
+#: src/custom.c:206
 msgid "Failed to open config file"
 msgstr "Fallo al abrir el fichero de configuradion (config)"
 
-#: src/custom.c:299
+#: src/custom.c:300
 #, fuzzy
 msgid "configuration variable unknown"
 msgstr ""
 "ERROR FATAL en custom_load_color: formato de configuracion de la variable "
 "erroneo.\n"
 
-#: src/custom.c:356 src/custom.c:422 src/custom.c:952 src/io.c:1526
+#: src/custom.c:357 src/custom.c:372 src/custom.c:559 src/custom.c:1089
+#: src/io.c:1526
 msgid "Exit"
 msgstr "Salir"
 
-#: src/custom.c:357
+#: src/custom.c:358
 msgid "General"
 msgstr "General"
 
-#: src/custom.c:358
+#: src/custom.c:359
 msgid "Layout"
 msgstr "Disposicion"
 
-#: src/custom.c:359
+#: src/custom.c:360
 msgid "Color"
 msgstr "Color"
 
-#: src/custom.c:360
+#: src/custom.c:361
 msgid "Notify"
 msgstr "Notificaciones"
 
-#: src/custom.c:361
+#: src/custom.c:362
 msgid "Keys"
 msgstr ""
 
-#: src/custom.c:374
-msgid "Pick the desired layout on next screen [press ENTER]"
-msgstr "Selecciona la disposicion deseada en la proxima pantalla [pulsa INTRO]"
-
-#: src/custom.c:376
-msgid "('A'= Appointment panel, 'C'= calendar panel, 'T'= todo panel)"
-msgstr "('E'= citas y Eventos, 'C'= Calendario, 'T'= Tareas pendientes)"
-
-#: src/custom.c:378
-msgid "    AC       AT       CA       TA       TC       TA       CT       AT"
-msgstr "    EC       ET       CE       TE       TC       TE       CT       ET"
-
-#: src/custom.c:380
-msgid " [1]AT    [2]AC    [3]TA    [4]CA    [5]TA    [6]TC    [7]AT    [8]CT"
-msgstr " [1]ET    [2]EC     [3]TE   [4]CE    [5]TE    [6]TC    [7]ET    [8]CT"
-
-#: src/custom.c:423
+#: src/custom.c:373 src/custom.c:560
 msgid "Select"
 msgstr ""
 
-#: src/custom.c:424
-#, fuzzy
-msgid "No color"
-msgstr "Color"
-
-#: src/custom.c:425 src/custom.c:956 src/utils.c:430
+#: src/custom.c:374 src/custom.c:562 src/custom.c:1093 src/utils.c:430
 msgid "Up"
 msgstr ""
 
-#: src/custom.c:426 src/custom.c:957 src/utils.c:431
+#: src/custom.c:375 src/custom.c:563 src/custom.c:1094 src/utils.c:431
 #, fuzzy
 msgid "Down"
 msgstr "Arriba/Abajo"
 
-#: src/custom.c:427 src/utils.c:432
+#: src/custom.c:376 src/custom.c:564 src/utils.c:432
 msgid "Left"
 msgstr ""
 
-#: src/custom.c:428 src/utils.c:433
+#: src/custom.c:377 src/custom.c:565 src/utils.c:433
 msgid "Right"
 msgstr ""
 
-#: src/custom.c:453
+#: src/custom.c:378 src/utils.c:413
+msgid "Help"
+msgstr "Ayuda"
+
+#: src/custom.c:428
+#, fuzzy, c-format
+msgid "CalCurse %s | layout configuration"
+msgstr "Calcurse %s | opciones generales"
+
+#: src/custom.c:467
+msgid ""
+"With this configuration menu, one can choose where panels will be\n"
+"displayed inside calcurse screen. \n"
+"It is possible to choose between eight different configurations.\n"
+"\n"
+"In the configuration representations, letters correspond to:\n"
+"\n"
+"       'c' -> calendar panel\n"
+"\n"
+"       'a' -> appointment panel\n"
+"\n"
+"       't' -> todo panel\n"
+"\n"
+msgstr ""
+
+#: src/custom.c:561
+#, fuzzy
+msgid "No color"
+msgstr "Color"
+
+#: src/custom.c:590
 msgid "Foreground"
 msgstr "Color del texto"
 
-#: src/custom.c:454
+#: src/custom.c:591
 msgid "Background"
 msgstr "Color del fondo"
 
-#: src/custom.c:455
+#: src/custom.c:592
 msgid "(terminal's default)"
 msgstr "(el del terminal por defecto)"
 
-#: src/custom.c:491
+#: src/custom.c:628
 #, c-format
 msgid "CalCurse %s | color theme"
 msgstr "Calcurse %s | color del tema"
 
-#: src/custom.c:687
+#: src/custom.c:824
 #, fuzzy
 msgid "unknown color"
 msgstr "Color"
 
-#: src/custom.c:702
+#: src/custom.c:839
 msgid "auto_save = "
 msgstr " auto_guardar = "
 
-#: src/custom.c:703
+#: src/custom.c:840
 msgid "confirm_quit = "
 msgstr "confirmar_salir = "
 
-#: src/custom.c:704
+#: src/custom.c:841
 msgid "confirm_delete = "
 msgstr "confirmar_borrar = "
 
-#: src/custom.c:705
+#: src/custom.c:842
 msgid "skip_system_dialogs = "
 msgstr "saltar_dialogos_sistema = "
 
-#: src/custom.c:706
+#: src/custom.c:843
 msgid "skip_progress_bar = "
 msgstr "saltar_barra_progreso = "
 
-#: src/custom.c:707
+#: src/custom.c:844
 msgid "week_begins_on_monday = "
 msgstr "empezar_semana_en_lunes = "
 
-#: src/custom.c:708
+#: src/custom.c:845
 msgid "output_datefmt = "
 msgstr ""
 
-#: src/custom.c:709
+#: src/custom.c:846
 msgid "input_datefmt = "
 msgstr ""
 
-#: src/custom.c:716
+#: src/custom.c:853
 msgid "(if set to YES, automatic save is done when quitting)"
 msgstr "(si se fija en SI, se guardan automaticamente los datos al salir)"
 
-#: src/custom.c:722
+#: src/custom.c:859
 msgid "(if set to YES, confirmation is required before quitting)"
 msgstr "(si se fija en SI, se requiere confirmacion antes de salir)"
 
-#: src/custom.c:728
+#: src/custom.c:865
 msgid "(if set to YES, confirmation is required before deleting an event)"
 msgstr "(si se fija en SI, se requiere confirmacion antes de borrar un evento)"
 
-#: src/custom.c:735
+#: src/custom.c:872
 msgid ""
 "(if set to YES, messages about loaded and saved data will not be displayed)"
 msgstr ""
 "(si se fija en SI, no se mostraran los mensajes de carga y guardado de los "
 "datos)"
 
-#: src/custom.c:742
+#: src/custom.c:879
 msgid "(if set to YES, progress bar will not be displayed when saving data)"
 msgstr ""
 "(si se fija en SI, no se mostrara la barra de progreso al salvar los datos)"
 
-#: src/custom.c:749
+#: src/custom.c:886
 msgid "(if set to YES, monday is the first day of the week, else it is sunday)"
 msgstr ""
 "(si se fija en SI, el Lunes sera el primer dia de la semana, sino el Domingo)"
 
-#: src/custom.c:757
+#: src/custom.c:894
 #, fuzzy
 msgid "(Format of the date to be displayed in non-interactive mode)"
 msgstr "(Formato de la fecha dentro de la barra de notificaciones)"
 
-#: src/custom.c:763
+#: src/custom.c:900
 msgid "(Format to be used when entering a date: "
 msgstr ""
 
-#: src/custom.c:764
+#: src/custom.c:901
 msgid " 1-mm/dd/yyyy, 2-dd/mm/yyyy, 3-yyyy/mm/dd)"
 msgstr ""
 
-#: src/custom.c:789
+#: src/custom.c:926
 #, fuzzy
 msgid "Enter an option number to change its value"
 msgstr "Introduce un numero para cambiar su valor [Q para salir] "
 
-#: src/custom.c:791
+#: src/custom.c:928
 msgid "(Press '^P' or '^N' to move up or down, 'Q' to quit)"
 msgstr ""
 
-#: src/custom.c:793 src/notify.c:528
+#: src/custom.c:930 src/notify.c:528
 msgid "Enter the date format (see 'man 3 strftime' for possible formats) "
 msgstr ""
 "Introduce el formato de la fecha (ver 'man 3 strftime' para los formatos\n"
 "posibles) "
 
-#: src/custom.c:795
+#: src/custom.c:932
 msgid "Enter the date format (1-mm/dd/yyyy, 2-dd/mm/yyyy, 3-yyyy/mm/dd) "
 msgstr ""
 
-#: src/custom.c:801
+#: src/custom.c:938
 #, c-format
 msgid "CalCurse %s | general options"
 msgstr "Calcurse %s | opciones generales"
 
-#: src/custom.c:889
+#: src/custom.c:1026
 msgid "Undefined option!"
 msgstr ""
 
-#: src/custom.c:917
+#: src/custom.c:1054
 msgid "undefined"
 msgstr ""
 
-#: src/custom.c:953
+#: src/custom.c:1090
 msgid "Key info"
 msgstr ""
 
-#: src/custom.c:954
+#: src/custom.c:1091
 #, fuzzy
 msgid "Add key"
 msgstr "Añadir elemento"
 
-#: src/custom.c:955
+#: src/custom.c:1092
 #, fuzzy
 msgid "Del key"
 msgstr "Borrar elemento"
 
-#: src/custom.c:958
+#: src/custom.c:1095
 msgid "Prev Key"
 msgstr ""
 
-#: src/custom.c:959
+#: src/custom.c:1096
 msgid "Next Key"
 msgstr ""
 
-#: src/custom.c:983
+#: src/custom.c:1120
 #, fuzzy, c-format
 msgid "CalCurse %s | keys configuration"
 msgstr "Calcurse %s | opciones generales"
 
-#: src/custom.c:1044
+#: src/custom.c:1181
 msgid "Press the key you want to assign to:"
 msgstr ""
 
-#: src/custom.c:1054
+#: src/custom.c:1191
 #, fuzzy, c-format
 msgid "This key is already in use for %s, please choose another one."
 msgstr "Este elemento es ya un elemento repetido."
 
-#: src/custom.c:1082 src/io.c:1360
+#: src/custom.c:1219 src/io.c:1360
 msgid "Some actions do not have any associated key bindings!"
 msgstr ""
 
@@ -1879,10 +1889,6 @@ msgstr "Pulsa cualquier tecla para continuar..."
 msgid "out of memory"
 msgstr ""
 
-#: src/utils.c:413
-msgid "Help"
-msgstr "Ayuda"
-
 #: src/utils.c:414
 msgid "Quit"
 msgstr "Salir"
@@ -2144,6 +2150,23 @@ msgstr "Tareas pendientes"
 #: src/wins.c:417
 msgid "no window selected"
 msgstr ""
+
+#~ msgid "Pick the desired layout on next screen [press ENTER]"
+#~ msgstr ""
+#~ "Selecciona la disposicion deseada en la proxima pantalla [pulsa INTRO]"
+
+#~ msgid "('A'= Appointment panel, 'C'= calendar panel, 'T'= todo panel)"
+#~ msgstr "('E'= citas y Eventos, 'C'= Calendario, 'T'= Tareas pendientes)"
+
+#~ msgid ""
+#~ "    AC       AT       CA       TA       TC       TA       CT       AT"
+#~ msgstr ""
+#~ "    EC       ET       CE       TE       TC       TE       CT       ET"
+
+#~ msgid ""
+#~ " [1]AT    [2]AC    [3]TA    [4]CA    [5]TA    [6]TC    [7]AT    [8]CT"
+#~ msgstr ""
+#~ " [1]ET    [2]EC     [3]TE   [4]CE    [5]TE    [6]TC    [7]ET    [8]CT"
 
 #, fuzzy
 #~ msgid "FATAL ERROR in apoint_delete: no such type\n"

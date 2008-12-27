@@ -1,3 +1,10 @@
+2008-12-27  Frederic Culot  <frederic@culot.org>
+
+	* === Released 2.4 ===
+
+	* NEWS
+	* configure.ac: update for 2.4
+	
 2008-12-20  Frederic Culot  <frederic@culot.org>
 
 	* TODO: update for 2.4
