@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.73 2008/12/20 19:27:31 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.74 2008/12/28 13:13:59 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -24,12 +24,12 @@
  *
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif /* HAVE_CONFIG_H */
-
 #include <stdlib.h>
 #include <signal.h>
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "i18n.h"
 #include "io.h"
@@ -86,7 +86,7 @@ main (int argc, char **argv)
    */
   non_interactive = parse_args (argc, argv, &conf);
   if (non_interactive)
-    return (EXIT_SUCCESS);
+    exit_calcurse (EXIT_SUCCESS);
 
   /* Begin of interactive mode with ncurses interface. */
   sigs_init (&sigact);		/* signal handling init */

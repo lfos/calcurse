@@ -1,4 +1,4 @@
-/*	$calcurse: vars.c,v 1.11 2008/11/16 17:42:53 culot Exp $	*/
+/*	$calcurse: vars.c,v 1.12 2008/12/28 13:13:59 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -32,6 +32,7 @@
 #include "custom.h"
 #include "wins.h"
 #include "keys.h"
+#include "mem.h"
 #include "vars.h"
 
 /*
@@ -112,7 +113,7 @@ vars_init (conf_t *conf)
   conf->auto_save = true;
   conf->skip_system_dialogs = false;
   conf->skip_progress_bar = false;
-  strncpy (conf->output_datefmt, "%D", 3);
+  (void)strncpy (conf->output_datefmt, "%D", 3);
   conf->input_datefmt = 1;
 
   /* Default external editor and pager */
@@ -133,7 +134,7 @@ vars_init (conf_t *conf)
   calendar_set_first_day_of_week (MONDAY);
 
   /* Pad structure to scroll text inside the appointment panel */
-  apad = (struct pad_s *) malloc (sizeof (struct pad_s));
+  apad = (struct pad_s *) mem_malloc (sizeof (struct pad_s));
   apad->length = 1;
   apad->first_onscreen = 0;
 
@@ -142,4 +143,10 @@ vars_init (conf_t *conf)
 
   /* Start at the current date */
   calendar_init_slctd_day ();
+}
+
+void
+vars_free (void)
+{
+  mem_free (apad);
 }

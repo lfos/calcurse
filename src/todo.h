@@ -1,4 +1,4 @@
-/*	$calcurse: todo.h,v 1.12 2008/04/19 21:05:15 culot Exp $	*/
+/*	$calcurse: todo.h,v 1.13 2008/12/28 13:13:59 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -56,5 +56,6 @@ void           todo_edit_item (void);
 void           todo_update_panel (int);
 void           todo_edit_note (char *);
 void           todo_view_note (char *);
+void           todo_free_list (void);
 
 #endif /* CALCURSE_TODO_H */

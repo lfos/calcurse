@@ -1,4 +1,4 @@
-/*	$calcurse: keys.h,v 1.6 2008/12/08 19:17:07 culot Exp $	*/
+/*	$calcurse: keys.h,v 1.7 2008/12/28 13:13:59 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -90,6 +90,7 @@ typedef struct {
 } binding_t;
 
 void    keys_init (void);
+void    keys_free (void);
 void    keys_dump_defaults (char *);
 char   *keys_get_label (keys_e);
 keys_e  keys_get_action (int);

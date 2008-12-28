@@ -1,4 +1,4 @@
-/*	$calcurse: utils.h,v 1.40 2008/12/12 20:44:50 culot Exp $	*/
+/*	$calcurse: utils.h,v 1.41 2008/12/28 13:13:59 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -42,11 +42,11 @@
   int len;                                                              \
                                                                         \
   len = snprintf (msg, BUFSIZ, "%s: %d: ", __FILE__, __LINE__);         \
-  snprintf (msg + len, BUFSIZ - len, __VA_ARGS__);                      \
+  (void)snprintf (msg + len, BUFSIZ - len, __VA_ARGS__);                \
   if (ui_mode == UI_CURSES)                                             \
     fatalbox (msg);                                                     \
   else                                                                  \
-    fprintf (stderr, "%s\n", msg);                                      \
+    (void)fprintf (stderr, "%s\n", msg);                                \
 } while (0)
 
 #define EXIT(...) do {                                                  \
@@ -78,9 +78,13 @@
     }                                                                   \
 } while (0)
 
-#define GETSTRING_VALID	0	/* value returned by getstring() if text is valid */
-#define GETSTRING_ESC	1	/* user pressed escape to cancel editing */
-#define GETSTRING_RET	2	/* return was pressed without entering any text */
+#define STRINGIFY(x)  #x
+#define TOSTRING(x)   STRINGIFY(x)
+#define __FILE_POS__   __FILE__ ":" TOSTRING(__LINE__)
+
+#define GETSTRING_VALID	0   /* value returned by getstring() if text is valid */
+#define GETSTRING_ESC	1   /* user pressed escape to cancel editing */
+#define GETSTRING_RET	2   /* return was pressed without entering any text */
 
 typedef struct {
   const char *str;
@@ -128,6 +132,6 @@ char   *new_tempfile (const char *, int);
 void    erase_note (char **, erase_flag_e);
 int     parse_date (char *, int, int *, int *, int *);
 char   *str_toupper (char *);
-void    mem_free (void *ptr);
+void    file_close (FILE *, const char *);
 
 #endif /* CALCURSE_UTILS_H */

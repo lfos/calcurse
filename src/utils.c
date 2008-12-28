@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.61 2008/12/20 19:27:31 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.62 2008/12/28 13:13:59 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -34,11 +34,19 @@
 #include <math.h>
 #include <errno.h>
 
+#include "utils.h"
 #include "i18n.h"
+#include "notify.h"
 #include "wins.h"
 #include "custom.h"
 #include "keys.h"
-#include "utils.h"
+#include "recur.h"
+#include "apoint.h"
+#include "todo.h"
+#include "day.h"
+#include "keys.h"
+#include "vars.h"
+#include "mem.h"
 
 #define NB_CAL_CMDS	24	/* number of commands while in cal view */
 #define NB_APP_CMDS	29	/* same thing while in appointment view */
@@ -52,11 +60,24 @@ static unsigned status_page;
 void
 exit_calcurse (int status)
 {
-  clear ();
-  refresh ();
-  endwin ();
-  ui_mode = UI_CMDLINE;
+  if (ui_mode == UI_CURSES)
+    {
+      clear ();
+      refresh ();
+      endwin ();
+      ui_mode = UI_CMDLINE;
+    }
   calendar_stop_date_thread ();
+  vars_free ();
+  notify_free_vars ();
+  notify_free_bar ();
+  day_saved_item_free ();
+  day_free_list ();
+  apoint_llist_free ();
+  recur_apoint_llist_free ();
+  todo_free_list ();
+  keys_free ();
+  mem_stats ();
   exit (status);
 }
 
@@ -72,7 +93,7 @@ fatalbox (const char *errmsg)
   const int MSGLEN = WINCOL - 2;
   char msg[MSGLEN];
 
-  strncpy (msg, errmsg, MSGLEN);
+  (void)strncpy (msg, errmsg, MSGLEN);
   errwin = newwin (WINROW, WINCOL, (row - WINROW) / 2, (col - WINCOL) / 2);
   custom_apply_attr (errwin, ATTR_HIGHEST);
   box (errwin, 0, 0);
@@ -140,7 +161,7 @@ popup (int pop_row, int pop_col, int pop_y, int pop_x, char *title, char *msg,
     mvwprintw (popup_win, MSGXPOS, (pop_col - strlen (msg)) / 2, "%s", msg);
   custom_apply_attr (popup_win, ATTR_HIGHEST);
   box (popup_win, 0, 0);
-  snprintf (label, BUFSIZ, "%s", title);
+  (void)snprintf (label, BUFSIZ, "%s", title);
   wins_show (popup_win, label);
   if (hint)
     mvwprintw (popup_win, pop_row - 2, pop_col - (strlen (any_key) + 1), "%s",
@@ -363,7 +384,7 @@ updatestring (WINDOW *win, char **str, int x, int y)
   char *newstr;
   int escape, len = strlen (*str) + 1;
 
-  newstr = (char *) malloc (BUFSIZ);
+  newstr = (char *) mem_malloc (BUFSIZ);
   (void) memcpy (newstr, *str, len);
   escape = getstring (win, newstr, BUFSIZ, x, y);
   if (!escape)
@@ -373,7 +394,7 @@ updatestring (WINDOW *win, char **str, int x, int y)
       EXIT_IF (*str == 0, _("out of memory"));
       (void) memcpy (*str, newstr, len);
     }
-  free (newstr);
+  mem_free (newstr);
   return (escape);
 }
 
@@ -502,8 +523,8 @@ date_sec2hour_str (long sec)
 
   t = sec;
   lt = localtime (&t);
-  timestr = (char *) malloc (TIME_LEN);
-  snprintf (timestr, TIME_LEN, "%02u:%02u", lt->tm_hour, lt->tm_min);
+  timestr = (char *) mem_malloc (TIME_LEN);
+  (void)snprintf (timestr, TIME_LEN, "%02u:%02u", lt->tm_hour, lt->tm_min);
   return (timestr);
 }
 
@@ -515,10 +536,10 @@ date_sec2date_str (long sec, char *datefmt)
   time_t t;
   char *datestr;
 
-  datestr = (char *) malloc (sizeof (char) * BUFSIZ);
+  datestr = (char *) mem_malloc (sizeof (char) * BUFSIZ);
 
   if (sec == 0)
-    snprintf (datestr, BUFSIZ, "0");
+    (void)snprintf (datestr, BUFSIZ, "0");
   else
     {
       t = sec;
@@ -634,7 +655,7 @@ check_time (char *string)
   if (((strlen (string) == 2) || (strlen (string) == 3))
       && (isdigit (string[0]) != 0) && (isdigit (string[1]) != 0))
     {
-      strncpy (minutes, string, 2);
+      (void)strncpy (minutes, string, 2);
       if (atoi (minutes) >= 0)
 	ok = 2;			/* [MM] format */
     }
@@ -642,7 +663,7 @@ check_time (char *string)
 	   && (isdigit (string[2]) != 0) && (isdigit (string[3]) != 0)
            && (string[1] == ':'))
     {
-      strncpy (hour, string, 1);
+      (void)strncpy (hour, string, 1);
       strncpy (minutes, string + 2, 2);
       if ((atoi (hour) <= 24) && (atoi (hour) >= 0)
 	  && (atoi (minutes) < MININSEC) && (atoi (minutes) >= 0))
@@ -834,7 +855,7 @@ new_tempfile (const char *prefix, int trailing_len)
   if (prefix_len + trailing_len >= BUFSIZ)
     return (NULL);
   memcpy (fullname, prefix, prefix_len);
-  memset (fullname + prefix_len, 'X', trailing_len);
+  (void)memset (fullname + prefix_len, 'X', trailing_len);
   fullname[prefix_len + trailing_len] = '\0';
   if ((fd = mkstemp (fullname)) == -1 || (file = fdopen (fd, "w+")) == NULL)
     {
@@ -848,7 +869,7 @@ new_tempfile (const char *prefix, int trailing_len)
     }
   fclose (file);
 
-  return (strdup (fullname + prefix_len));
+  return (mem_strdup (fullname + prefix_len));
 }
 
 /* Erase a note previously attached to a todo, event or appointment. */
@@ -861,11 +882,11 @@ erase_note (char **note, erase_flag_e flag)
     return;
   if (flag != ERASE_FORCE_KEEP_NOTE)
     {
-      snprintf (fullname, BUFSIZ, "%s%s", path_notes, *note);
+      (void)snprintf (fullname, BUFSIZ, "%s%s", path_notes, *note);
       if (unlink (fullname) != 0)
         EXIT (_("could not remove note"));
     }
-  free (*note);
+  mem_free (*note);
   *note = NULL;
 }
 
@@ -926,10 +947,10 @@ str_toupper (char *s)
 }
 
 void
-mem_free (void *ptr)
+file_close (FILE *f, const char *pos)
 {
-  if (!ptr)
-    return;
-  free (ptr);
-  ptr = NULL;
+  int ret;
+  
+  ret = fclose (f);
+  EXIT_IF (ret != 0, _("Error when closing file at %s"), pos);
 }

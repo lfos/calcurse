@@ -1,4 +1,4 @@
-/*	$calcurse: vars.h,v 1.26 2008/11/16 17:42:53 culot Exp $	*/
+/*	$calcurse: vars.h,v 1.27 2008/12/28 13:13:59 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -122,5 +122,6 @@ extern struct pad_s  *apad;
 extern struct nbar_s *nbar;
 
 void vars_init (conf_t *conf);
+void vars_free (void);
 
 #endif /* CALCURSE_VARS_H */

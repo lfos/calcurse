@@ -1,4 +1,4 @@
-/*	$calcurse: day.c,v 1.42 2008/12/15 20:02:00 culot Exp $	*/
+/*	$calcurse: day.c,v 1.43 2008/12/28 13:13:59 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -35,22 +35,40 @@
 #include "event.h"
 #include "custom.h"
 #include "keys.h"
+#include "mem.h"
 #include "day.h"
 
 static struct day_item_s *day_items_ptr;
-static struct day_saved_item_s *day_saved_item = NULL;
+static struct day_saved_item_s *day_saved_item;
+
+void
+day_saved_item_init (void)
+{
+  day_saved_item = mem_malloc (sizeof (struct day_saved_item_s));
+}
+
+void
+day_saved_item_free (void)
+{
+  if (day_saved_item)
+    mem_free (day_saved_item);
+}
 
 /* Free the current day linked list containing the events and appointments. */
-static void
+void
 day_free_list (void)
 {
-  struct day_item_s *p, *q;
+  struct day_item_s *o, **i;
 
-  for (p = day_items_ptr; p != 0; p = q)
+  i = &day_items_ptr;
+  for (o = day_items_ptr; o; o = o->next)
     {
-      q = p->next;
-      free (p->mesg);
-      free (p);
+      *i = o->next;
+      mem_free (o->mesg);
+      if (o->note)
+        mem_free (o->note);
+      mem_free (o);
+      i = &(*i)->next;
     }
   day_items_ptr = NULL;
 }
@@ -60,9 +78,8 @@ static struct day_item_s *
 day_add_event (int type, char *mesg, char *note, long day, int id)
 {
   struct day_item_s *o, **i;
-  o = (struct day_item_s *) malloc (sizeof (struct day_item_s));
-  o->mesg = (char *) malloc (strlen (mesg) + 1);
-  strncpy (o->mesg, mesg, strlen (mesg) + 1);
+  o = (struct day_item_s *) mem_malloc (sizeof (struct day_item_s));
+  o->mesg = mem_strdup (mesg);
   o->note = note;
   o->type = type;
   o->appt_dur = 0;
@@ -91,8 +108,8 @@ day_add_apoint (int type, char *mesg, char *note, long start, long dur,
   struct day_item_s *o, **i;
   int insert_item = 0;
 
-  o = (struct day_item_s *) malloc (sizeof (struct day_item_s));
-  o->mesg = strdup (mesg);
+  o = (struct day_item_s *) mem_malloc (sizeof (struct day_item_s));
+  o->mesg = mem_strdup (mesg);
   o->note = note;
   o->start = start;
   o->appt_dur = dur;
@@ -368,7 +385,7 @@ display_item (int incolor, char *msg, int recur, int note, int len, int y,
     mvwprintw (win, y, x, " %c%c%s", ch_recur, ch_note, msg);
   else
     {
-      strncpy (buf, msg, len - 1);
+      (void)strncpy (buf, msg, len - 1);
       buf[len - 1] = '\0';
       mvwprintw (win, y, x, " %c%c%s...", ch_recur, ch_note, buf);
     }
@@ -396,10 +413,8 @@ day_write_pad (long date, int width, int length, int incolor)
   max_pos = length;
 
   /* Initialize the structure used to store highlited item. */
-  if (day_saved_item == NULL)
-    {
-      day_saved_item = malloc (sizeof (struct day_saved_item_s));
-    }
+  if (day_saved_item == 0)
+    day_saved_item_init ();
 
   for (p = day_items_ptr; p != 0; p = p->next)
     {
@@ -545,8 +560,8 @@ update_start_time (long *start, long *dur)
   do
     {
       timestr = day_edit_time (*start);
-      sscanf (timestr, "%u:%u", &hr, &mn);
-      free (timestr);
+      (void)sscanf (timestr, "%u:%u", &hr, &mn);
+      mem_free (timestr);
       newtime = update_time_in_date (*start, hr, mn);
       if (newtime < *start + *dur)
 	{
@@ -572,8 +587,8 @@ update_duration (long *start, long *dur)
   char *timestr;
 
   timestr = day_edit_time (*start + *dur);
-  sscanf (timestr, "%u:%u", &hr, &mn);
-  free (timestr);
+  (void)sscanf (timestr, "%u:%u", &hr, &mn);
+  mem_free (timestr);
   newtime = update_time_in_date (*start, hr, mn);
   *dur = (newtime > *start) ? newtime - *start : DAYINSEC + newtime - *start;
 }
@@ -606,18 +621,18 @@ update_rept (struct rpt_s **rpt, const long start, conf_t *conf)
   do
     {
       status_mesg (msg_rpt_type, msg_rpt_ans);
-      typstr = (char *) malloc (sizeof (char) * SINGLECHAR);
-      snprintf (typstr, SINGLECHAR, "%c", recur_def2char ((*rpt)->type));
+      typstr = (char *) mem_malloc (sizeof (char) * SINGLECHAR);
+      (void)snprintf (typstr, SINGLECHAR, "%c", recur_def2char ((*rpt)->type));
       cancel = updatestring (win[STA].p, &typstr, 0, 1);
       if (cancel)
 	{
-	  free (typstr);
+	  mem_free (typstr);
 	  return;
 	}
       else
 	{
 	  ch = toupper (*typstr);
-	  free (typstr);
+	  mem_free (typstr);
 	}
     }
   while ((ch != 'D') && (ch != 'W') && (ch != 'M') && (ch != 'Y'));
@@ -625,18 +640,18 @@ update_rept (struct rpt_s **rpt, const long start, conf_t *conf)
   do
     {
       status_mesg (_("Enter the new repetition frequence:"), "");
-      freqstr = (char *) malloc (BUFSIZ);
-      snprintf (freqstr, BUFSIZ, "%d", (*rpt)->freq);
+      freqstr = (char *) mem_malloc (BUFSIZ);
+      (void)snprintf (freqstr, BUFSIZ, "%d", (*rpt)->freq);
       cancel = updatestring (win[STA].p, &freqstr, 0, 1);
       if (cancel)
 	{
-	  free (freqstr);
+	  mem_free (freqstr);
 	  return;
 	}
       else
 	{
 	  newfreq = atoi (freqstr);
-	  free (freqstr);
+	  mem_free (freqstr);
 	  if (newfreq == 0)
 	    {
 	      status_mesg (msg_wrong_freq, msg_enter);
@@ -648,15 +663,15 @@ update_rept (struct rpt_s **rpt, const long start, conf_t *conf)
 
   do
     {
-      snprintf (outstr, BUFSIZ, "Enter the new ending date: [%s] or '0'",
-		DATEFMT_DESC (conf->input_datefmt));
+      (void)snprintf (outstr, BUFSIZ, "Enter the new ending date: [%s] or '0'",
+                      DATEFMT_DESC (conf->input_datefmt));
       status_mesg (_(outstr), "");
       timstr =
 	  date_sec2date_str ((*rpt)->until, DATEFMT (conf->input_datefmt));
       cancel = updatestring (win[STA].p, &timstr, 0, 1);
       if (cancel)
 	{
-	  free (timstr);
+	  mem_free (timstr);
 	  return;
 	}
       if (strcmp (timstr, "0") == 0)
@@ -691,8 +706,8 @@ update_rept (struct rpt_s **rpt, const long start, conf_t *conf)
 	    }
 	  else
 	    {
-	      snprintf (outstr, BUFSIZ, msg_fmts,
-			DATEFMT_DESC (conf->input_datefmt));
+	      (void)snprintf (outstr, BUFSIZ, msg_fmts,
+                              DATEFMT_DESC (conf->input_datefmt));
 	      status_mesg (msg_wrong_date, _(outstr));
 	      (void)wgetch (win[STA].p);
 	      date_entered = 0;
@@ -701,7 +716,7 @@ update_rept (struct rpt_s **rpt, const long start, conf_t *conf)
     }
   while (date_entered == 0);
 
-  free (timstr);
+  mem_free (timstr);
   (*rpt)->type = recur_char2def (ch);
   (*rpt)->freq = newfreq;
   (*rpt)->until = newuntil;
@@ -943,7 +958,7 @@ day_edit_note (char *editor)
       else
 	p->note = filename;
     }
-  snprintf (fullname, BUFSIZ, "%s%s", path_notes, p->note);
+  (void)snprintf (fullname, BUFSIZ, "%s%s", path_notes, p->note);
   wins_launch_external (fullname, editor);
 
   date = calendar_get_slctd_day_sec ();
@@ -978,6 +993,6 @@ day_view_note (char *pager)
   p = day_get_item (apoint_hilt ());
   if (p->note == NULL)
     return;
-  snprintf (fullname, BUFSIZ, "%s%s", path_notes, p->note);
+  (void)snprintf (fullname, BUFSIZ, "%s%s", path_notes, p->note);
   wins_launch_external (fullname, pager);
 }

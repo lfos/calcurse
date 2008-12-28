@@ -1,4 +1,4 @@
-/*	$calcurse: event.c,v 1.8 2008/12/14 15:54:51 culot Exp $	*/
+/*	$calcurse: event.c,v 1.9 2008/12/28 13:13:59 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -31,6 +31,7 @@
 
 #include "vars.h"
 #include "i18n.h"
+#include "mem.h"
 #include "event.h"
 
 struct event_s *eventlist;
@@ -40,9 +41,8 @@ struct event_s *
 event_new (char *mesg, char *note, long day, int id)
 {
   struct event_s *o, **i;
-  o = (struct event_s *) malloc (sizeof (struct event_s));
-  o->mesg = (char *) malloc (strlen (mesg) + 1);
-  strncpy (o->mesg, mesg, strlen (mesg) + 1);
+  o = (struct event_s *) mem_malloc (sizeof (struct event_s));
+  o->mesg = mem_strdup (mesg);
   o->day = day;
   o->id = id;
   o->note = (note != NULL) ? strdup (note) : NULL;
@@ -80,26 +80,25 @@ event_write (struct event_s *o, FILE *f)
 
   t = o->day;
   lt = localtime (&t);
-  fprintf (f, "%02u/%02u/%04u [%d] ", lt->tm_mon + 1, lt->tm_mday,
-           1900 + lt->tm_year, o->id);
+  (void)fprintf (f, "%02u/%02u/%04u [%d] ", lt->tm_mon + 1, lt->tm_mday,
+                 1900 + lt->tm_year, o->id);
   if (o->note != NULL)
-    fprintf (f, ">%s ", o->note);
-  fprintf (f, "%s\n", o->mesg);
+    (void)fprintf (f, ">%s ", o->note);
+  (void)fprintf (f, "%s\n", o->mesg);
 }
 
 /* Load the events from file */
 struct event_s *
 event_scan (FILE *f, struct tm start, int id, char *note)
 {
-  struct tm *lt;
   char buf[MESG_MAXSIZE], *nl;
   time_t tstart, t;
 
   t = time (NULL);
-  lt = localtime (&t);
+  (void)localtime (&t);
 
   /* Read the event description */
-  fgets (buf, MESG_MAXSIZE, f);
+  (void)fgets (buf, MESG_MAXSIZE, f);
   nl = strchr (buf, '\n');
   if (nl)
     {
@@ -160,9 +159,9 @@ event_delete_bynum (long start, unsigned num, erase_flag_e flag)
 	      else
 		{
 		  *iptr = i->next;
-		  free (i->mesg);
+		  mem_free (i->mesg);
 		  erase_note (&i->note, flag);
-		  free (i);
+		  mem_free (i);
 		}
 	      return;
 	    }

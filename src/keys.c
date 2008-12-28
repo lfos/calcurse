@@ -1,4 +1,4 @@
-/*	$calcurse: keys.c,v 1.10 2008/12/15 20:02:00 culot Exp $	*/
+/*	$calcurse: keys.c,v 1.11 2008/12/28 13:13:59 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -30,6 +30,7 @@
 #include "i18n.h"
 #include "utils.h"
 #include "custom.h"
+#include "mem.h"
 #include "keys.h"
 
 #define MAXKEYVAL   KEY_MAX  /* ncurses defines KEY_MAX as maximum key value */
@@ -113,7 +114,7 @@ dump_intro (FILE *fd)
       "# A description of what each ACTION keyword is used for is available\n"
       "# from calcurse online configuration menu.\n");
 
-  fprintf (fd, "%s\n", intro);
+  (void)fprintf (fd, "%s\n", intro);
 }
 
 void
@@ -127,6 +128,28 @@ keys_init (void)
 }
 
 void
+keys_free (void)
+{
+  struct key_str_s *o, **i;
+  int key;
+
+  for (key = 0; key < NBKEYS; key++)
+    {
+      if (keys[key] == 0)
+        continue;
+
+      i = &keys[key];
+      for (o = keys[key]; o; o = o->next)
+        {
+          *i = o->next;
+          mem_free (o->str);
+          mem_free (o);
+          i = &o->next;
+        }
+    }
+}
+
+void
 keys_dump_defaults (char *file)
 {
   FILE *fd;
@@ -137,8 +160,8 @@ keys_dump_defaults (char *file)
 
   dump_intro (fd);
   for (i = 0; i < NBKEYS; i++)
-    fprintf (fd, "%s  %s\n", keydef[i].label, keydef[i].binding);
-  fclose (fd);
+    (void)fprintf (fd, "%s  %s\n", keydef[i].label, keydef[i].binding);
+  file_close (fd, __FILE_POS__);
 }
 
 char *
@@ -182,8 +205,8 @@ add_key_str (keys_e action, int key)
   if (action < 0 || action > NBKEYS)
     return;
 
-  new = malloc (sizeof (struct key_str_s));
-  new->str = strdup (keys_int2str (key));
+  new = mem_malloc (sizeof (struct key_str_s));
+  new->str = mem_strdup (keys_int2str (key));
   new->next = NULL;
   i = &keys[action];
   for (;;)
@@ -221,20 +244,17 @@ del_key_str (keys_e action, int key)
 {
   struct key_str_s *old, **i;
   char oldstr[BUFSIZ];
-  int oldstrlen;
   
   if (action < 0 || action > NBKEYS)
     return;
 
-  strncpy (oldstr, keys_int2str (key), BUFSIZ);
-  oldstrlen = strlen (oldstr);
+  (void)strncpy (oldstr, keys_int2str (key), BUFSIZ);
   for (i = &keys[action]; *i; i = &(*i)->next)
     {
-      if (strlen ((*i)->str) == oldstrlen
-          && !(strncmp ((*i)->str, oldstr, oldstrlen)))
+      if (!strcmp ((*i)->str, oldstr))
         {
-          old = (*i);
-          (*i) = old->next;
+          old = *i;
+          *i = old->next;
           mem_free (old->str);          
           mem_free (old);
           break;
@@ -367,8 +387,8 @@ keys_action_allkeys (keys_e action)
   for (i = keys[action]; i; i = i->next)
     {
       const int MAXLEN = sizeof (keystr) - 1 - strlen (keystr);
-      strncat (keystr, i->str, MAXLEN - 1);
-      strncat (keystr, CHAR_SPACE, 1);
+      (void)strncat (keystr, i->str, MAXLEN - 1);
+      (void)strncat (keystr, CHAR_SPACE, 1);
     }
 
   return keystr;
@@ -388,18 +408,18 @@ keys_format_label (char *key, int keylen)
 
   bzero (fmtkey, sizeof (fmtkey));
   if (len == 0)
-    snprintf (fmtkey, sizeof (fmtkey), "?");
+    (void)snprintf (fmtkey, sizeof (fmtkey), "?");
   else if (len <= keylen)
     {
       for (i = 0; i < keylen - len; i++)
         fmtkey[i] = ' ';
-      strncat (fmtkey, key, keylen);
+      (void)strncat (fmtkey, key, keylen);
     }
   else
     {
       for (i = 0; i < keylen - 1; i++)
         fmtkey[i] = key[i];
-      strncat (fmtkey, dot, strlen (dot));
+      (void)strncat (fmtkey, dot, strlen (dot));
     }
   return fmtkey;
 }
@@ -423,14 +443,15 @@ keys_display_bindings_bar (WINDOW *win, binding_t **binding, int first_key,
       const int KEY_POS = j * cmdlen;
       const int LABEL_POS = j * cmdlen + KEYS_KEYLEN + 1;
 
-      strncpy (key, keys_action_firstkey (binding[i]->action), KEYS_KEYLEN);
+      (void)strncpy (key, keys_action_firstkey (binding[i]->action),
+                     KEYS_KEYLEN);
       fmtkey = keys_format_label (key, KEYS_KEYLEN);
       custom_apply_attr (win, ATTR_HIGHEST);
       mvwprintw (win, 0, KEY_POS, fmtkey);
       if (i + 1 != last_key)
         {
-          strncpy (key, keys_action_firstkey (binding[i + 1]->action),
-                   KEYS_KEYLEN);
+          (void)strncpy (key, keys_action_firstkey (binding[i + 1]->action),
+                         KEYS_KEYLEN);
           fmtkey = keys_format_label (key, KEYS_KEYLEN);
           mvwprintw (win, 1, KEY_POS, fmtkey);
         }
@@ -541,7 +562,7 @@ keys_popup_info (keys_e key)
 #define WINCOL (col - 4)
   infowin = popup (WINROW, WINCOL, (row - WINROW) / 2, (col - WINCOL) / 2,
                    keydef[key].label, info[key], 1);
-  keys_getch (infowin);
+  (void)keys_getch (infowin);
   delwin (infowin);
 #undef WINROW
 #undef WINCOL
@@ -555,7 +576,7 @@ keys_save_bindings (FILE *fd)
   EXIT_IF (fd == NULL, _("FATAL ERROR: null file pointer."));
   dump_intro (fd);
   for (i = 0; i < NBKEYS; i++)
-    fprintf (fd, "%s  %s\n", keydef[i].label, keys_action_allkeys (i));
+    (void)fprintf (fd, "%s  %s\n", keydef[i].label, keys_action_allkeys (i));
 }
 
 int

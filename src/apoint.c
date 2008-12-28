@@ -1,4 +1,4 @@
-/*	$calcurse: apoint.c,v 1.28 2008/12/15 20:02:00 culot Exp $	*/
+/*	$calcurse: apoint.c,v 1.29 2008/12/28 13:13:59 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -38,19 +38,41 @@
 #include "recur.h"
 #include "keys.h"
 #include "calendar.h"
+#include "mem.h"
 #include "apoint.h"
 
 apoint_llist_t *alist_p;
 static int hilt = 0;
 
-int
+void
 apoint_llist_init (void)
 {
-  alist_p = (apoint_llist_t *) malloc (sizeof (apoint_llist_t));
+  alist_p = (apoint_llist_t *) mem_malloc (sizeof (apoint_llist_t));
   alist_p->root = NULL;
   pthread_mutex_init (&(alist_p->mutex), NULL);
+}
 
-  return (0);
+/*
+ * Called before exit to free memory associated with the appointments linked
+ * list. No need to be thread safe, as only the main process remains when
+ * calling this function.
+ */
+void
+apoint_llist_free (void)
+{
+  apoint_llist_node_t *o, **i;
+
+  i = &alist_p->root;
+  for (o = alist_p->root; o; o = o->next)
+    {
+      *i = o->next;
+      mem_free (o->mesg);
+      if (o->note)
+        mem_free (o->note);
+      mem_free (o);
+      i = &(*i)->next;
+    }
+  mem_free (alist_p);
 }
 
 /* Sets which appointment is highlighted. */
@@ -84,9 +106,9 @@ apoint_new (char *mesg, char *note, long start, long dur, char state)
 {
   apoint_llist_node_t *o, **i;
 
-  o = (apoint_llist_node_t *) malloc (sizeof (apoint_llist_node_t));
-  o->mesg = strdup (mesg);
-  o->note = (note != NULL) ? strdup (note) : NULL;
+  o = (apoint_llist_node_t *) mem_malloc (sizeof (apoint_llist_node_t));
+  o->mesg = mem_strdup (mesg);
+  o->note = (note != NULL) ? mem_strdup (note) : NULL;
   o->state = state;
   o->start = start;
   o->dur = dur;
@@ -131,8 +153,6 @@ apoint_add (void)
   char item_time[LTIME] = "";
   char item_mesg[BUFSIZ] = "";
   long apoint_duration = 0, apoint_start;
-  apoint_llist_node_t *apoint_pointeur;
-  struct event_s *event_pointeur;
   unsigned heures, minutes;
   unsigned end_h, end_m;
   int is_appointment = 1;
@@ -154,7 +174,7 @@ apoint_add (void)
 	      (void)wgetch (win[STA].p);
 	    }
 	  else
-	    sscanf (item_time, "%u:%u", &heures, &minutes);
+	    (void)sscanf (item_time, "%u:%u", &heures, &minutes);
 	}
       else
 	return;
@@ -183,7 +203,7 @@ apoint_add (void)
 		apoint_duration = atoi (item_time);
 	      else if (check_time (item_time) == 1)
 		{
-		  sscanf (item_time, "%u:%u", &end_h, &end_m);
+		  (void)sscanf (item_time, "%u:%u", &end_h, &end_m);
 		  if (end_h < heures)
 		    {
 		      apoint_duration = MININSEC - minutes + end_m
@@ -207,15 +227,14 @@ apoint_add (void)
       if (is_appointment)
 	{
 	  apoint_start = date2sec (*calendar_get_slctd_day (), heures, minutes);
-	  apoint_pointeur = apoint_new (item_mesg, 0L, apoint_start,
-					min2sec (apoint_duration), 0L);
+	  (void)apoint_new (item_mesg, 0L, apoint_start,
+                            min2sec (apoint_duration), 0L);
 	  if (notify_bar ())
 	    notify_check_added (item_mesg, apoint_start, 0L);
 	}
       else
-	event_pointeur = event_new (item_mesg, 0L,
-				    date2sec (*calendar_get_slctd_day (), 12,
-					      0), Id);
+	(void)event_new (item_mesg, 0L,
+                         date2sec (*calendar_get_slctd_day (), 12, 0), Id);
 
       if (hilt == 0)
 	hilt++;
@@ -302,24 +321,20 @@ apoint_sec2str (apoint_llist_node_t *o, int type, long day, char *start,
   time_t t;
 
   if (o->start < day && type == APPT)
-    {
-      strncpy (start, "..:..", 6);
-    }
+    (void)strncpy (start, "..:..", 6);
   else
     {
       t = o->start;
       lt = localtime (&t);
-      snprintf (start, HRMIN_SIZE, "%02u:%02u", lt->tm_hour, lt->tm_min);
+      (void)snprintf (start, HRMIN_SIZE, "%02u:%02u", lt->tm_hour, lt->tm_min);
     }
   if (o->start + o->dur > day + DAYINSEC && type == APPT)
-    {
-      strncpy (end, "..:..", 6);
-    }
+    (void)strncpy (end, "..:..", 6);
   else
     {
       t = o->start + o->dur;
       lt = localtime (&t);
-      snprintf (end, HRMIN_SIZE, "%02u:%02u", lt->tm_hour, lt->tm_min);
+      (void)snprintf (end, HRMIN_SIZE, "%02u:%02u", lt->tm_hour, lt->tm_min);
     }
 }
 
@@ -331,44 +346,41 @@ apoint_write (apoint_llist_node_t *o, FILE *f)
 
   t = o->start;
   lt = localtime (&t);
-  fprintf (f, "%02u/%02u/%04u @ %02u:%02u",
-	   lt->tm_mon + 1, lt->tm_mday, 1900 + lt->tm_year, lt->tm_hour,
-           lt->tm_min);
+  (void)fprintf (f, "%02u/%02u/%04u @ %02u:%02u",
+                 lt->tm_mon + 1, lt->tm_mday, 1900 + lt->tm_year, lt->tm_hour,
+                 lt->tm_min);
 
   t = o->start + o->dur;
   lt = localtime (&t);
-  fprintf (f, " -> %02u/%02u/%04u @ %02u:%02u ",
-	   lt->tm_mon + 1, lt->tm_mday, 1900 + lt->tm_year, lt->tm_hour,
-           lt->tm_min);
+  (void)fprintf (f, " -> %02u/%02u/%04u @ %02u:%02u ",
+                 lt->tm_mon + 1, lt->tm_mday, 1900 + lt->tm_year, lt->tm_hour,
+                 lt->tm_min);
 
   if (o->note != NULL)
-    fprintf (f, ">%s ", o->note);
+    (void)fprintf (f, ">%s ", o->note);
 
   if (o->state & APOINT_NOTIFY)
-    fprintf (f, "!");
+    (void)fprintf (f, "!");
   else
-    fprintf (f, "|");
+    (void)fprintf (f, "|");
 
-  fprintf (f, "%s\n", o->mesg);
+  (void)fprintf (f, "%s\n", o->mesg);
 }
 
 apoint_llist_node_t *
 apoint_scan (FILE *f, struct tm start, struct tm end, char state, char *note)
 {
-  struct tm *lt;
-  char buf[MESG_MAXSIZE], *nl;
+  char buf[MESG_MAXSIZE], *newline;
   time_t tstart, tend, t;
 
   t = time (NULL);
-  lt = localtime (&t);
+  (void)localtime (&t);
 
   /* Read the appointment description */
-  fgets (buf, MESG_MAXSIZE, f);
-  nl = strchr (buf, '\n');
-  if (nl)
-    {
-      *nl = '\0';
-    }
+  (void)fgets (buf, MESG_MAXSIZE, f);
+  newline = strchr (buf, '\n');
+  if (newline)
+    *newline = '\0';
 
   start.tm_sec = end.tm_sec = 0;
   start.tm_isdst = end.tm_isdst = -1;
@@ -432,9 +444,9 @@ apoint_delete_bynum (long start, unsigned num, erase_flag_e flag)
 		  if (notify_bar ())
 		    need_check_notify = notify_same_item (i->start);
 		  *iptr = i->next;
-		  free (i->mesg);
+		  mem_free (i->mesg);
 		  erase_note (&i->note, flag);
-		  free (i);
+		  mem_free (i);
 		  pthread_mutex_unlock (&(alist_p->mutex));
 		  if (need_check_notify)
 		    notify_check_next_app ();
@@ -445,10 +457,10 @@ apoint_delete_bynum (long start, unsigned num, erase_flag_e flag)
 	}
       iptr = &i->next;
     }
+  
   pthread_mutex_unlock (&(alist_p->mutex));
-
-  /* NOTREACHED */
   EXIT (_("no such appointment"));
+  /* NOTREACHED */
 }
 
 /*
@@ -528,7 +540,7 @@ apoint_check_next (struct notify_app_s *app, long start)
 	  if (i->start > start)
 	    {
 	      app->time = i->start;
-	      app->txt = strdup (i->mesg);
+	      app->txt = mem_strdup (i->mesg);
 	      app->state = i->state;
 	      app->got_app = 1;
 	    }
@@ -548,11 +560,10 @@ apoint_recur_s2apoint_s (recur_apoint_llist_node_t *p)
 {
   apoint_llist_node_t *a;
 
-  a = (apoint_llist_node_t *) malloc (sizeof (apoint_llist_node_t));
-  a->mesg = (char *) malloc (strlen (p->mesg) + 1);
+  a = (apoint_llist_node_t *) mem_malloc (sizeof (apoint_llist_node_t));
+  a->mesg = mem_strdup (p->mesg);
   a->start = p->start;
   a->dur = p->dur;
-  a->mesg = p->mesg;
   return (a);
 }
 
@@ -605,10 +616,10 @@ apoint_switch_notify (void)
 	  n++;
 	}
     }
-  pthread_mutex_unlock (&(alist_p->mutex));
 
-  /* NOTREACHED */
+  pthread_mutex_unlock (&(alist_p->mutex));  
   EXIT (_("no such appointment"));
+  /* NOTREACHED */  
 }
 
 /* Updates the Appointment panel */

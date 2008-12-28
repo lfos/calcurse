@@ -1,4 +1,4 @@
-/*	$calcurse: args.c,v 1.41 2008/12/07 09:20:38 culot Exp $	*/
+/*	$calcurse: args.c,v 1.42 2008/12/28 13:13:59 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -41,6 +41,10 @@
 #include "todo.h"
 #include "io.h"
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif /* HAVE_CONFIG_H */
+
 /* 
  * Print Calcurse usage and exit.
  */
@@ -72,7 +76,8 @@ version_arg ()
       _("\nCopyright (c) 2004-2008 Frederic Culot.\n"
 	"This is free software; see the source for copying conditions.\n");
 
-  snprintf (vtitle, BUFSIZ, _("Calcurse %s - text-based organizer\n"), VERSION);
+  (void)snprintf (vtitle, BUFSIZ, _("Calcurse %s - text-based organizer\n"),
+                  VERSION);
   fputs (vtitle, stdout);
   fputs (vtext, stdout);
 }
@@ -134,7 +139,8 @@ help_arg ()
       "or read the manpage.\n"
       "Mail bug reports and suggestions to <calcurse@culot.org>.\n");
 
-  snprintf (htitle, BUFSIZ, _("Calcurse %s - text-based organizer\n"), VERSION);
+  (void)snprintf (htitle, BUFSIZ, _("Calcurse %s - text-based organizer\n"),
+                  VERSION);
   fputs (htitle, stdout);
   usage ();
   fputs (htext, stdout);
@@ -159,13 +165,13 @@ print_notefile (FILE *out, char *filename, int nbtab)
   int printlinestarter = 1;
 
   for (i = 0; i < nbtab; i++)
-    snprintf(linestarter, BUFSIZ, "%s\t", linestarter);
+    (void)snprintf(linestarter, BUFSIZ, "%s\t", linestarter);
 
-  snprintf (path_to_notefile, BUFSIZ, "%s/%s", path_notes, filename);
+  (void)snprintf (path_to_notefile, BUFSIZ, "%s/%s", path_notes, filename);
   notefile = fopen (path_to_notefile, "r");
   if (notefile)
     {
-      while (fgets (buffer, BUFSIZ, notefile) != NULL)
+      while (fgets (buffer, BUFSIZ, notefile) != 0)
 	{
 	  if (printlinestarter)
 	    {
@@ -177,7 +183,7 @@ print_notefile (FILE *out, char *filename, int nbtab)
 	    printlinestarter = 1;
 	}
       fputs ("\n", out);
-      fclose (notefile);
+      file_close (notefile, __FILE_POS__);
     }
   else
     {
@@ -207,7 +213,7 @@ todo_arg (int priority, int print_note)
 	      fputs (_("to do:\n"), stdout);
 	      title = 0;
 	    }
-	  snprintf (priority_str, BUFSIZ, "%d. ", i->id);
+	  (void)snprintf (priority_str, BUFSIZ, "%d. ", i->id);
 	  fputs (priority_str, stdout);
 	  fputs (i->mesg, stdout);
 	  fputs ("\n", stdout);
@@ -239,8 +245,8 @@ next_arg (void)
       hours_left = (time_left / HOURINSEC);
       min_left = (time_left - hours_left * HOURINSEC) / MININSEC;
       fputs (_("next appointment:\n"), stdout);
-      snprintf (mesg, BUFSIZ, "   [%02d:%02d] %s\n", hours_left, min_left,
-                next_app.txt);
+      (void)snprintf (mesg, BUFSIZ, "   [%02d:%02d] %s\n", hours_left, min_left,
+                      next_app.txt);
       fputs (mesg, stdout);
       free (next_app.txt);
     }
@@ -434,7 +440,7 @@ display_app (struct tm *t, int numdays, int add_line, int print_note,
       if (app_found)
         add_line = 1;
       t->tm_mday++;
-      mktime (t);
+      (void)mktime (t);
     }
 }
 
@@ -487,9 +493,9 @@ date_arg (char *ddate, int add_line, int print_note, conf_t *conf)
 	{
 	  char outstr[BUFSIZ];
 	  fputs (_("Argument to the '-d' flag is not valid\n"), stderr);
-	  snprintf (outstr, BUFSIZ,
-		    "Possible argument format are: '%s' or 'n'\n",
-		    DATEFMT_DESC (conf->input_datefmt));
+	  (void)snprintf (outstr, BUFSIZ,
+                          "Possible argument format are: '%s' or 'n'\n",
+                          DATEFMT_DESC (conf->input_datefmt));
 	  fputs (_(outstr), stdout);
           more_info ();
 	}
@@ -535,7 +541,7 @@ date_arg_extended (char *startday, char *range, int add_line, int print_note,
 	{
 	  t.tm_year -= 1900;
 	  t.tm_mon--;
-	  mktime (&t);
+	  (void)mktime (&t);
 	}
       else
 	{
@@ -550,9 +556,9 @@ date_arg_extended (char *startday, char *range, int add_line, int print_note,
     {
       char outstr[BUFSIZ];
       fputs (_("Argument is not valid\n"), stderr);
-      snprintf (outstr, BUFSIZ,
-		"Argument format for -s and --startday is: '%s'\n",
-		DATEFMT_DESC (conf->input_datefmt));
+      (void)snprintf (outstr, BUFSIZ,
+                      "Argument format for -s and --startday is: '%s'\n",
+                      DATEFMT_DESC (conf->input_datefmt));
       fputs (_(outstr), stdout);
       fputs (_("Argument format for -r and --range is: 'n'\n"), stdout);
       more_info ();

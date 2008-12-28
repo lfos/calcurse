@@ -1,4 +1,4 @@
-/*	$calcurse: custom.c,v 1.31 2008/12/20 19:27:31 culot Exp $	*/
+/*	$calcurse: custom.c,v 1.32 2008/12/28 13:13:59 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -28,13 +28,18 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include "custom.h"
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif /* HAVE_CONFIG_H */
+
 #include "i18n.h"
 #include "io.h"
 #include "utils.h"
 #include "keys.h"
 #include "apoint.h"
 #include "help.h"
+#include "mem.h"
+#include "custom.h"
 
 static struct attribute_s attr;
 
@@ -214,7 +219,7 @@ custom_load_conf (conf_t *conf, int background)
       status_mesg (mesg_line1, mesg_line2);
       wnoutrefresh (win[STA].p);
       doupdate ();
-      keys_getch (win[STA].p);
+      (void)keys_getch (win[STA].p);
     }
   var = CUSTOM_CONF_NOVARIABLE;
   pthread_mutex_lock (&nbar->mutex);
@@ -270,11 +275,11 @@ custom_load_conf (conf_t *conf, int background)
 	  var = 0;
 	  break;
 	case CUSTOM_CONF_NOTIFYBARDATE:
-	  strncpy (nbar->datefmt, e_conf, strlen (e_conf) + 1);
+	  (void)strncpy (nbar->datefmt, e_conf, strlen (e_conf) + 1);
 	  var = 0;
 	  break;
 	case CUSTOM_CONF_NOTIFYBARCLOCK:
-	  strncpy (nbar->timefmt, e_conf, strlen (e_conf) + 1);
+	  (void)strncpy (nbar->timefmt, e_conf, strlen (e_conf) + 1);
 	  var = 0;
 	  break;
 	case CUSTOM_CONF_NOTIFYBARWARNING:
@@ -282,12 +287,12 @@ custom_load_conf (conf_t *conf, int background)
 	  var = 0;
 	  break;
 	case CUSTOM_CONF_NOTIFYBARCOMMAND:
-	  strncpy (nbar->cmd, e_conf, strlen (e_conf) + 1);
+	  (void)strncpy (nbar->cmd, e_conf, strlen (e_conf) + 1);
 	  var = 0;
 	  break;
 	case CUSTOM_CONF_OUTPUTDATEFMT:
 	  if (e_conf[0] != '\0')
-	    strncpy (conf->output_datefmt, e_conf, strlen (e_conf) + 1);
+	    (void)strncpy (conf->output_datefmt, e_conf, strlen (e_conf) + 1);
 	  var = 0;
 	  break;
 	case CUSTOM_CONF_INPUTDATEFMT:
@@ -332,7 +337,7 @@ custom_load_conf (conf_t *conf, int background)
       else if (strncmp (e_conf, "input_datefmt=", 12) == 0)
 	var = CUSTOM_CONF_INPUTDATEFMT;
     }
-  fclose (data_file);
+  file_close (data_file, __FILE_POS__);
   pthread_mutex_unlock (&nbar->mutex);
 }
 
@@ -425,8 +430,8 @@ display_layout_config (window_t *lwin, int mark, int cursor, int need_reset)
       
       if (lwin->p != NULL)
 	delwin (lwin->p);
-      snprintf (label, BUFSIZ, _("CalCurse %s | layout configuration"),
-                VERSION);
+      (void)snprintf (label, BUFSIZ, _("CalCurse %s | layout configuration"),
+                      VERSION);
       custom_confwin_init (lwin, label);
     }
 
@@ -625,7 +630,7 @@ display_color_config (window_t *cwin, int *mark_fore, int *mark_back,
     {
       if (cwin->p != NULL)
 	delwin (cwin->p);
-      snprintf (label, BUFSIZ, _("CalCurse %s | color theme"), VERSION);
+      (void)snprintf (label, BUFSIZ, _("CalCurse %s | color theme"), VERSION);
       custom_confwin_init (cwin, label);
     }
 
@@ -809,7 +814,7 @@ custom_color_theme_name (char *theme_name)
   };
 
   if (!colorize)
-    snprintf (theme_name, BUFSIZ, "0");
+    (void)snprintf (theme_name, BUFSIZ, "0");
   else
     {
       pair_content (COLR_CUSTOM, &color[0], &color[1]);
@@ -825,7 +830,8 @@ custom_color_theme_name (char *theme_name)
 	      /* NOTREACHED */
 	    }
 	}
-      snprintf (theme_name, BUFSIZ, "%s on %s", color_name[0], color_name[1]);
+      (void)snprintf (theme_name, BUFSIZ, "%s on %s", color_name[0],
+                      color_name[1]);
     }
 }
 
@@ -931,11 +937,12 @@ custom_general_config (conf_t *conf)
   char *input_datefmt_str =
     _("Enter the date format (1-mm/dd/yyyy, 2-dd/mm/yyyy, 3-yyyy/mm/dd) ");
   int ch;
-  char *buf = (char *) malloc (BUFSIZ);
+  char *buf = (char *) mem_malloc (BUFSIZ);
 
   clear ();
   conf_set_scrsize (&cwin);
-  snprintf (cwin.label, BUFSIZ, _("CalCurse %s | general options"), VERSION);
+  (void)snprintf (cwin.label, BUFSIZ, _("CalCurse %s | general options"),
+                  VERSION);
   wins_scrollwin_init (&cwin);
   wins_show (cwin.win.p, cwin.label);
   status_mesg (number_str, keys);
@@ -990,11 +997,11 @@ custom_general_config (conf_t *conf)
 	  break;
 	case '7':
 	  status_mesg (output_datefmt_str, "");
-	  strncpy (buf, conf->output_datefmt,
-		   strlen (conf->output_datefmt) + 1);
+	  (void)strncpy (buf, conf->output_datefmt,
+                         strlen (conf->output_datefmt) + 1);
 	  if (updatestring (win[STA].p, &buf, 0, 1) == 0)
 	    {
-	      strncpy (conf->output_datefmt, buf, strlen (buf) + 1);
+	      (void)strncpy (conf->output_datefmt, buf, strlen (buf) + 1);
 	    }
 	  status_mesg (number_str, keys);
 	  break;
@@ -1013,7 +1020,7 @@ custom_general_config (conf_t *conf)
       cwin.total_lines = print_general_options (cwin.pad.p, conf);
       wins_scrollwin_display (&cwin);
     }
-  free (buf);
+  mem_free (buf);
   wins_scrollwin_delete (&cwin);
 }
 
@@ -1045,7 +1052,7 @@ print_keys_bindings (WINDOW *win, int selected_row, int selected_elm, int yoff)
       int nbkeys;
 
       nbkeys = keys_action_count_keys (action);      
-      snprintf (actionstr, BUFSIZ, "%s", keys_get_label (action));
+      (void)snprintf (actionstr, BUFSIZ, "%s", keys_get_label (action));
       if (action == selected_row)
         custom_apply_attr (win, ATTR_HIGHEST);
       mvwprintw (win, y, XPOS, "%s ", actionstr);
@@ -1117,7 +1124,8 @@ custom_keys_config (void)
   clear ();
   conf_set_scrsize (&kwin);
   nbdisplayed = (kwin.win.h - LABELLINES) / LINESPERKEY;
-  snprintf (kwin.label, BUFSIZ, _("CalCurse %s | keys configuration"), VERSION);
+  (void)snprintf (kwin.label, BUFSIZ, _("CalCurse %s | keys configuration"),
+                  VERSION);
   wins_scrollwin_init (&kwin);
   wins_show (kwin.win.p, kwin.label);
   custom_keys_config_bar ();

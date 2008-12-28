@@ -1,4 +1,4 @@
-#	$calcurse: Makefile.am,v 1.7 2008/11/08 19:05:15 culot Exp $
+#	$calcurse: Makefile.am,v 1.8 2008/12/28 13:13:59 culot Exp $
 
 AUTOMAKE_OPTIONS= gnu 
 
@@ -21,7 +21,8 @@ calcurse_SOURCES= 					\
 	todo.c todo.h					\
 	utils.c utils.h					\
 	vars.c vars.h					\
-	wins.c wins.h	
+	wins.c wins.h	                                \
+	mem.c mem.h
 
 LDADD= @LTLIBINTL@
 

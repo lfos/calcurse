@@ -1,4 +1,4 @@
-/*	$calcurse: calendar.c,v 1.20 2008/12/14 15:54:51 culot Exp $	*/
+/*	$calcurse: calendar.c,v 1.21 2008/12/28 13:13:59 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -63,25 +63,22 @@ static pthread_t calendar_t_date;
 
 
 /* Thread needed to update current date in calendar. */
+/* ARGSUSED0 */
 static void *
 calendar_date_thread (void *arg)
 {
-  time_t now, tomorrow;
+  time_t actual, tomorrow;
 
   for (;;)
     {
       tomorrow = (time_t) (get_today () + DAYINSEC);
 
-      while ((now = time (NULL)) < tomorrow)
-	{
-	  sleep (tomorrow - now);
-	}
+      while ((actual = time (NULL)) < tomorrow)
+        (void)sleep (tomorrow - actual);
 
       calendar_set_current_date ();
       calendar_update_panel (win[CAL].p);
     }
-
-  pthread_exit ((void *) 0);
 }
 
 /* Launch the calendar date thread. */
@@ -362,7 +359,7 @@ calendar_change_day (int datefmt)
 
   while (wrong_day)
     {
-      snprintf (outstr, BUFSIZ, request_date, DATEFMT_DESC (datefmt));
+      (void)snprintf (outstr, BUFSIZ, request_date, DATEFMT_DESC (datefmt));
       status_mesg (_(outstr), "");
       if (getstring (win[STA].p, selected_day, LDAY, 0, 1) == GETSTRING_ESC)
 	return;
@@ -424,7 +421,7 @@ calendar_move (move_t move)
   int ret, days_to_remove, days_to_add;
   struct tm t;
 
-  memset (&t, 0, sizeof (struct tm));
+  (void)memset (&t, 0, sizeof (struct tm));
   t.tm_mday = slctd_day.dd;
   t.tm_mon = slctd_day.mm - 1;
   t.tm_year = slctd_day.yyyy - 1900;
@@ -458,7 +455,7 @@ calendar_move (move_t move)
       break;
     case WEEK_START:
       /* Normalize struct tm to get week day number. */
-      mktime (&t);
+      (void)mktime (&t);
       if (calendar_week_begins_on_monday ())
         days_to_remove = ((t.tm_wday == 0) ? WEEKINDAYS - 1 : t.tm_wday - 1);
       else
@@ -466,7 +463,7 @@ calendar_move (move_t move)
       ret = date_change (&t, 0, 0 - days_to_remove);
       break;
     case WEEK_END:
-      mktime (&t);
+      (void)mktime (&t);
       if (calendar_week_begins_on_monday ())
         days_to_add = ((t.tm_wday == 0) ? 0 : WEEKINDAYS - t.tm_wday);
       else

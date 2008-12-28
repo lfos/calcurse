@@ -1,4 +1,4 @@
-/*	$calcurse: wins.c,v 1.19 2008/12/12 20:44:50 culot Exp $	*/
+/*	$calcurse: wins.c,v 1.20 2008/12/28 13:13:59 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -32,6 +32,7 @@
 #include "utils.h"
 #include "todo.h"
 #include "custom.h"
+#include "mem.h"
 #include "wins.h"
 
 /* Variables to handle calcurse windows. */
@@ -96,17 +97,17 @@ wins_init (void)
    * display appointments and event. 
    */
   win[CAL].p = newwin (CALHEIGHT, CALWIDTH, win[CAL].y, win[CAL].x);
-  snprintf (label, BUFSIZ, _("Calendar"));
+  (void)snprintf (label, BUFSIZ, _("Calendar"));
   wins_show (win[CAL].p, label);
 
   win[APP].p = newwin (win[APP].h, win[APP].w, win[APP].y, win[APP].x);
-  snprintf (label, BUFSIZ, _("Appointments"));
+  (void)snprintf (label, BUFSIZ, _("Appointments"));
   wins_show (win[APP].p, label);
   apad->width = win[APP].w - 3;
   apad->ptrwin = newpad (apad->length, apad->width);
 
   win[TOD].p = newwin (win[TOD].h, win[TOD].w, win[TOD].y, win[TOD].x);
-  snprintf (label, BUFSIZ, _("ToDo"));
+  (void)snprintf (label, BUFSIZ, _("ToDo"));
   wins_show (win[TOD].p, label);
 
   win[STA].p = newwin (win[STA].h, win[STA].w, win[STA].y, win[STA].x);
@@ -452,10 +453,10 @@ wins_launch_external (const char *file, const char *cmd)
   /* Beware of space between cmd and file. */
   len = strlen (file) + strlen (cmd) + 2;	
 
-  p = (char *) malloc (sizeof (char) * len);
+  p = (char *) mem_malloc (sizeof (char) * len);
   if (snprintf (p, len, "%s %s", cmd, file) == -1)
     {
-      free (p);
+      mem_free (p);
       return;
     }
   if (notify_bar ())
@@ -465,7 +466,7 @@ wins_launch_external (const char *file, const char *cmd)
   ui_mode = UI_CMDLINE;
   clear ();
   refresh ();
-  system (p);
+  (void)system (p);
   reset_prog_mode ();
   clearok (curscr, TRUE);
   curs_set (0);
@@ -473,5 +474,5 @@ wins_launch_external (const char *file, const char *cmd)
   refresh ();
   if (notify_bar ())
     notify_start_main_thread ();
-  free (p);
+  mem_free (p);
 }

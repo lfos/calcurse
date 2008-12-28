@@ -1,4 +1,4 @@
-/*	$calcurse: sigs.c,v 1.6 2008/04/12 21:14:03 culot Exp $	*/
+/*	$calcurse: sigs.c,v 1.7 2008/12/28 13:13:59 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -26,12 +26,10 @@
 
 #include <sys/types.h>
 #include <sys/wait.h>
-#include <stdlib.h>
 #include <signal.h>
 
 #include "i18n.h"
-#include "vars.h"
-#include "wins.h"
+#include "utils.h"
 
 /* 
  * General signal handling routine.
@@ -50,7 +48,7 @@ signal_handler (int sig)
       break;
     case SIGWINCH:
       clearok (curscr, TRUE);
-      ungetch (KEY_RESIZE);
+      (void)ungetch (KEY_RESIZE);
       break;
     }
 }
@@ -64,8 +62,8 @@ sigs_init (struct sigaction *sa)
   sigemptyset (&sa->sa_mask);
   if (sigaction (SIGCHLD, sa, NULL) != 0)
     {
-      perror ("sigaction");
-      exit (EXIT_FAILURE);
+      ERROR_MSG (_("Error handling SIGCHLD signal"));
+      exit_calcurse (1);
     }
 
   sa->sa_handler = signal_handler;
@@ -73,8 +71,8 @@ sigs_init (struct sigaction *sa)
   sigemptyset (&sa->sa_mask);
   if (sigaction (SIGWINCH, sa, NULL) != 0)
     {
-      perror ("sigaction");
-      exit (EXIT_FAILURE);
+      ERROR_MSG (_("Error handling SIGWINCH signal"));      
+      exit_calcurse (1);
     }
 
   sa->sa_handler = SIG_IGN;
@@ -82,7 +80,7 @@ sigs_init (struct sigaction *sa)
   sigemptyset (&(sa->sa_mask));
   if (sigaction (SIGINT, sa, NULL) != 0)
     {
-      perror ("sigaction");
-      exit (EXIT_FAILURE);
+      ERROR_MSG (_("Error handling SIGINT signal"));      
+      exit_calcurse (1);
     }
 }

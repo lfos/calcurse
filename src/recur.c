@@ -1,4 +1,4 @@
-/*	$calcurse: recur.c,v 1.45 2008/12/14 15:54:51 culot Exp $	*/
+/*	$calcurse: recur.c,v 1.46 2008/12/28 13:13:59 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -35,20 +35,55 @@
 #include "notify.h"
 #include "day.h"
 #include "keys.h"
+#include "mem.h"
 #include "recur.h"
 
 recur_apoint_llist_t *recur_alist_p;
 struct recur_event_s *recur_elist;
 
-int
+void
 recur_apoint_llist_init (void)
 {
-  recur_alist_p = (recur_apoint_llist_t *)
-      malloc (sizeof (recur_apoint_llist_t));
+  recur_alist_p = mem_malloc (sizeof (recur_apoint_llist_t));
   recur_alist_p->root = NULL;
   pthread_mutex_init (&(recur_alist_p->mutex), NULL);
+}
 
-  return (0);
+static void
+free_exc (struct days_s *exc)
+{
+  struct days_s *o, **i;
+
+  i = &exc;
+  for (o = exc; o; o = o->next)
+    {
+      *i = o->next;
+      mem_free (o);
+      i = &(*i)->next;
+    }
+  mem_free (exc);
+}
+
+void
+recur_apoint_llist_free (void)
+{
+  recur_apoint_llist_node_t *o, **i;
+
+  i = &recur_alist_p->root;
+  for (o = recur_alist_p->root; o; o = o->next)
+    {
+      *i = o->next;
+      mem_free (o->mesg);
+      if (o->note)
+        mem_free (o->note);
+      if (o->rpt)
+        mem_free (o->rpt);
+      if (o->exc)
+        free_exc (o->exc);
+      mem_free (o);
+      i = &(*i)->next;
+    }
+  mem_free (recur_alist_p);
 }
 
 /* Insert a new recursive appointment in the general linked list */
@@ -58,10 +93,9 @@ recur_apoint_new (char *mesg, char *note, long start, long dur, char state,
 {
   recur_apoint_llist_node_t *o, **i;
   o = (recur_apoint_llist_node_t *)
-      malloc (sizeof (recur_apoint_llist_node_t));
-  o->rpt = (struct rpt_s *) malloc (sizeof (struct rpt_s));
-  o->mesg = (char *) malloc (strlen (mesg) + 1);
-  strncpy (o->mesg, mesg, strlen (mesg) + 1);
+      mem_malloc (sizeof (recur_apoint_llist_node_t));
+  o->rpt = (struct rpt_s *) mem_malloc (sizeof (struct rpt_s));
+  o->mesg = mem_strdup (mesg);
   o->note = (note != NULL) ? strdup (note) : NULL;
   o->start = start;
   o->state = state;
@@ -94,11 +128,10 @@ recur_event_new (char *mesg, char *note, long day, int id, int type, int freq,
 		 long until, struct days_s *except)
 {
   struct recur_event_s *o, **i;
-  o = (struct recur_event_s *) malloc (sizeof (struct recur_event_s));
-  o->rpt = (struct rpt_s *) malloc (sizeof (struct rpt_s));
-  o->mesg = (char *) malloc (strlen (mesg) + 1);
-  o->note = (note != NULL) ? strdup (note) : NULL;
-  strncpy (o->mesg, mesg, strlen (mesg) + 1);
+  o = (struct recur_event_s *) mem_malloc (sizeof (struct recur_event_s));
+  o->rpt = (struct rpt_s *) mem_malloc (sizeof (struct rpt_s));
+  o->mesg = mem_strdup (mesg);
+  (void)strncpy (o->mesg, mesg, strlen (mesg) + 1);
   o->day = day;
   o->id = id;
   o->rpt->type = type;
@@ -195,7 +228,7 @@ recur_write_exc (struct days_s *exc, FILE *f)
       st_mon = lt->tm_mon + 1;
       st_day = lt->tm_mday;
       st_year = lt->tm_year + 1900;
-      fprintf (f, " !%02u/%02u/%04u", st_mon, st_day, st_year);
+      (void)fprintf (f, " !%02u/%02u/%04u", st_mon, st_day, st_year);
       exc = exc->next;
     }
 }
@@ -214,7 +247,7 @@ recur_apoint_scan (FILE *f, struct tm start, struct tm end, char type,
   lt = localtime (&t);
 
   /* Read the appointment description */
-  fgets (buf, MESG_MAXSIZE, f);
+  (void)fgets (buf, MESG_MAXSIZE, f);
   nl = strchr (buf, '\n');
   if (nl)
     {
@@ -263,7 +296,7 @@ recur_event_scan (FILE *f, struct tm start, int id, char type, int freq,
   lt = localtime (&t);
 
   /* Read the event description */
-  fgets (buf, MESG_MAXSIZE, f);
+  (void)fgets (buf, MESG_MAXSIZE, f);
   nl = strchr (buf, '\n');
   if (nl)
     {
@@ -302,38 +335,38 @@ recur_apoint_write (recur_apoint_llist_node_t *o, FILE *f)
 
   t = o->start;
   lt = localtime (&t);
-  fprintf (f, "%02u/%02u/%04u @ %02u:%02u",
-	   lt->tm_mon + 1, lt->tm_mday, 1900 + lt->tm_year,
-	   lt->tm_hour, lt->tm_min);
+  (void)fprintf (f, "%02u/%02u/%04u @ %02u:%02u",
+                 lt->tm_mon + 1, lt->tm_mday, 1900 + lt->tm_year,
+                 lt->tm_hour, lt->tm_min);
 
   t = o->start + o->dur;
   lt = localtime (&t);
-  fprintf (f, " -> %02u/%02u/%04u @ %02u:%02u",
-	   lt->tm_mon + 1, lt->tm_mday, 1900 + lt->tm_year,
-	   lt->tm_hour, lt->tm_min);
+  (void)fprintf (f, " -> %02u/%02u/%04u @ %02u:%02u",
+                 lt->tm_mon + 1, lt->tm_mday, 1900 + lt->tm_year,
+                 lt->tm_hour, lt->tm_min);
 
   t = o->rpt->until;
   if (t == 0)
     {				/* We have an endless recurrent appointment. */
-      fprintf (f, " {%d%c", o->rpt->freq, recur_def2char (o->rpt->type));
+      (void)fprintf (f, " {%d%c", o->rpt->freq, recur_def2char (o->rpt->type));
     }
   else
     {
       lt = localtime (&t);
-      fprintf (f, " {%d%c -> %02u/%02u/%04u",
-	       o->rpt->freq, recur_def2char (o->rpt->type),
-	       lt->tm_mon + 1, lt->tm_mday, 1900 + lt->tm_year);
+      (void)fprintf (f, " {%d%c -> %02u/%02u/%04u",
+                     o->rpt->freq, recur_def2char (o->rpt->type),
+                     lt->tm_mon + 1, lt->tm_mday, 1900 + lt->tm_year);
     }
   if (o->exc != 0)
     recur_write_exc (o->exc, f);
-  fprintf (f, "} ");
+  (void)fprintf (f, "} ");
   if (o->note != NULL)
-    fprintf (f, ">%s ", o->note);
+    (void)fprintf (f, ">%s ", o->note);
   if (o->state & APOINT_NOTIFY)
-    fprintf (f, "!");
+    (void)fprintf (f, "!");
   else
-    fprintf (f, "|");
-  fprintf (f, "%s\n", o->mesg);
+    (void)fprintf (f, "|");
+  (void)fprintf (f, "%s\n", o->mesg);
 }
 
 /* Writting of a recursive event into file. */
@@ -353,9 +386,9 @@ recur_event_write (struct recur_event_s *o, FILE *f)
   t = o->rpt->until;
   if (t == 0)
     {				/* We have an endless recurrent event. */
-      fprintf (f, "%02u/%02u/%04u [%d] {%d%c",
-	       st_mon, st_day, st_year, o->id, o->rpt->freq,
-	       recur_def2char (o->rpt->type));
+      (void)fprintf (f, "%02u/%02u/%04u [%d] {%d%c",
+                     st_mon, st_day, st_year, o->id, o->rpt->freq,
+                     recur_def2char (o->rpt->type));
     }
   else
     {
@@ -363,17 +396,17 @@ recur_event_write (struct recur_event_s *o, FILE *f)
       end_mon = lt->tm_mon + 1;
       end_day = lt->tm_mday;
       end_year = lt->tm_year + 1900;
-      fprintf (f, "%02u/%02u/%04u [%d] {%d%c -> %02u/%02u/%04u",
-	       st_mon, st_day, st_year, o->id,
-	       o->rpt->freq, recur_def2char (o->rpt->type),
-	       end_mon, end_day, end_year);
+      (void)fprintf (f, "%02u/%02u/%04u [%d] {%d%c -> %02u/%02u/%04u",
+                     st_mon, st_day, st_year, o->id,
+                     o->rpt->freq, recur_def2char (o->rpt->type),
+                     end_mon, end_day, end_year);
     }
   if (o->exc != 0)
     recur_write_exc (o->exc, f);
-  fprintf (f, "} ");
+  (void)fprintf (f, "} ");
   if (o->note != NULL)
-    fprintf (f, ">%s ", o->note);
-  fprintf (f, "%s\n", o->mesg);
+    (void)fprintf (f, ">%s ", o->note);
+  (void)fprintf (f, "%s\n", o->mesg);
 }
 
 /* Write recursive items to file. */
@@ -503,17 +536,17 @@ recur_event_erase (long start, unsigned num, unsigned delete_whole,
 		  else
 		    {
 		      *iptr = i->next;
-		      free (i->mesg);
-		      free (i->rpt);
-		      free (i->exc);
+		      mem_free (i->mesg);
+		      mem_free (i->rpt);
+		      mem_free (i->exc);
 		      erase_note (&i->note, flag);
-		      free (i);
+		      mem_free (i);
 		    }
 		  return;
 		}
 	      else
 		{
-		  o = (struct days_s *) malloc (sizeof (struct days_s));
+		  o = (struct days_s *) mem_malloc (sizeof (struct days_s));
 		  o->st = start;
 		  j = &i->exc;
 		  for (;;)
@@ -568,11 +601,11 @@ recur_apoint_erase (long start, unsigned num, unsigned delete_whole,
 		  else
 		    {
 		      *iptr = i->next;
-		      free (i->mesg);
-		      free (i->rpt);
-		      free (i->exc);
+		      mem_free (i->mesg);
+		      mem_free (i->rpt);
+		      mem_free (i->exc);
 		      erase_note (&i->note, flag);
-		      free (i);
+		      mem_free (i);
 		      pthread_mutex_unlock (&(recur_alist_p->mutex));
 		      if (need_check_notify)
 			notify_check_next_app ();
@@ -581,7 +614,7 @@ recur_apoint_erase (long start, unsigned num, unsigned delete_whole,
 		}
 	      else
 		{
-		  o = (struct days_s *) malloc (sizeof (struct days_s));
+		  o = (struct days_s *) mem_malloc (sizeof (struct days_s));
 		  o->st = start;
 		  j = &i->exc;
 		  for (;;)
@@ -692,8 +725,8 @@ recur_repeat_item (conf_t *conf)
 
   while (!date_entered)
     {
-      snprintf (outstr, BUFSIZ, mesg_until_1,
-		DATEFMT_DESC (conf->input_datefmt));
+      (void)snprintf (outstr, BUFSIZ, mesg_until_1,
+                      DATEFMT_DESC (conf->input_datefmt));
       status_mesg (_(outstr), "");
       if (getstring (win[STA].p, user_input, BUFSIZ, 0, 1) == GETSTRING_VALID)
 	{
@@ -726,8 +759,8 @@ recur_repeat_item (conf_t *conf)
 		}
 	      else
 		{
-		  snprintf (outstr, BUFSIZ, mesg_wrong_2,
-			    DATEFMT_DESC (conf->input_datefmt));
+		  (void)snprintf (outstr, BUFSIZ, mesg_wrong_2,
+                                  DATEFMT_DESC (conf->input_datefmt));
 		  status_mesg (mesg_wrong_1, _(outstr));
 		  (void)wgetch (win[STA].p);
 		  date_entered = 0;
@@ -777,7 +810,7 @@ recur_exc_scan (FILE *data_file)
   day = *lt;
   while ((c = getc (data_file)) == '!')
     {
-      ungetc (c, data_file);
+      (void)ungetc (c, data_file);
       if (fscanf (data_file, "!%u / %u / %u ",
 		  &day.tm_mon, &day.tm_mday, &day.tm_year) != 3)
 	{
@@ -787,7 +820,7 @@ recur_exc_scan (FILE *data_file)
       day.tm_isdst = -1;
       day.tm_year -= 1900;
       day.tm_mon--;
-      exc = (struct days_s *) malloc (sizeof (struct days_s));
+      exc = (struct days_s *) mem_malloc (sizeof (struct days_s));
       exc->st = mktime (&day);
       exc->next = exc_head;
       exc_head = exc;

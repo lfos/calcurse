@@ -1,3 +1,25 @@
+2008-12-28  Frederic Culot  <frederic@culot.org>
+
+	* mem.[ch]: new files to build wrappers around libc's memory
+	management functions
+
+	* configure.c: enable-memory-debug compilation option added
+
+	* src/utils.c (mem_free): function removed
+
+	* src/apoint.c (apoint_llist_free): new function
+
+	* src/day.c (day_saved_item_init, day_saved_item_free): new
+	functions
+
+	* src/todo.c (todo_free_list): new_function
+
+	* src/recur.c (recur_apoint_llist_free, free_exc): new functions
+
+	* src/notify.c (notify_free_vars, notify_free_bar): new functions
+
+	* src/vars.c (vars_free): new function
+	
 2008-12-27  Frederic Culot  <frederic@culot.org>
 
 	* === Released 2.4 ===

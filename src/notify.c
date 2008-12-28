@@ -1,4 +1,4 @@
-/*	$calcurse: notify.c,v 1.32 2008/12/18 20:38:52 culot Exp $	*/
+/*	$calcurse: notify.c,v 1.33 2008/12/28 13:13:59 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -29,10 +29,15 @@
 #include <string.h>
 #include <unistd.h>
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif /* HAVE_CONFIG_H */
+
 #include "i18n.h"
 #include "utils.h"
 #include "custom.h"
 #include "keys.h"
+#include "mem.h"
 #include "notify.h"
 
 static struct notify_vars_s *notify = NULL;
@@ -61,13 +66,13 @@ notify_init_vars (void)
   char *date_format = "%a %F";
   char *cmd = "printf '\\a'";
 
-  nbar = (struct nbar_s *) malloc (sizeof (struct nbar_s));
+  nbar = (struct nbar_s *) mem_malloc (sizeof (struct nbar_s));
   pthread_mutex_init (&nbar->mutex, NULL);
   nbar->show = 1;
   nbar->cntdwn = 300;
-  strncpy (nbar->datefmt, date_format, strlen (date_format) + 1);
-  strncpy (nbar->timefmt, time_format, strlen (time_format) + 1);
-  strncpy (nbar->cmd, cmd, strlen (cmd) + 1);
+  (void)strncpy (nbar->datefmt, date_format, strlen (date_format) + 1);
+  (void)strncpy (nbar->timefmt, time_format, strlen (time_format) + 1);
+  (void)strncpy (nbar->cmd, cmd, strlen (cmd) + 1);
 
   if ((nbar->shell = getenv ("SHELL")) == NULL)
     nbar->shell = "/bin/sh";
@@ -75,6 +80,12 @@ notify_init_vars (void)
   (void)pthread_attr_init (&detached_thread_attr);
   (void)pthread_attr_setdetachstate (&detached_thread_attr,
                                      PTHREAD_CREATE_DETACHED);
+}
+
+void
+notify_free_vars (void)
+{
+  mem_free (nbar);
 }
 
 /* Extract the appointment file name from the complete file path. */
@@ -101,13 +112,20 @@ extract_aptsfile (void)
 void
 notify_init_bar (void)
 {
-  notify = (struct notify_vars_s *) malloc (sizeof (struct notify_vars_s));
-  notify_app = (struct notify_app_s *) malloc (sizeof (struct notify_app_s));
+  notify = (struct notify_vars_s *) mem_malloc (sizeof (struct notify_vars_s));
+  notify_app = (struct notify_app_s *) mem_malloc (sizeof (struct notify_app_s));
   pthread_mutex_init (&notify->mutex, NULL);
   pthread_mutex_init (&notify_app->mutex, NULL);
   notify_app->got_app = 0;
   notify->win = newwin (win[NOT].h, win[NOT].w, win[NOT].y, win[NOT].x);
   extract_aptsfile ();
+}
+
+void
+notify_free_bar (void)
+{
+  mem_free (notify_app);
+  mem_free (notify);
 }
 
 /* Stop the notify-bar main thread. */
@@ -177,7 +195,7 @@ notify_update_bar (void)
       if (strlen (notify_app->txt) > txt_max_len)
 	{
 	  too_long = 1;
-	  strncpy (buf, notify_app->txt, txt_max_len - 3);
+	  (void)strncpy (buf, notify_app->txt, txt_max_len - 3);
 	  buf[txt_max_len - 3] = '\0';
 	}
       time_left = notify_app->time - notify->time_in_sec;
@@ -229,6 +247,7 @@ notify_update_bar (void)
 }
 
 /* Update the notication bar content */
+/* ARGSUSED0 */
 static void *
 notify_main_thread (void *arg)
 {
@@ -253,7 +272,7 @@ notify_main_thread (void *arg)
       pthread_mutex_unlock (&nbar->mutex);
       pthread_mutex_unlock (&notify->mutex);
       notify_update_bar ();
-      sleep (thread_sleep);
+      (void)sleep (thread_sleep);
       elapse += thread_sleep;
       if (elapse >= check_app)
 	{
@@ -269,6 +288,7 @@ notify_main_thread (void *arg)
 }
 
 /* Look for the next appointment within the next 24 hours. */
+/* ARGSUSED0 */
 static void *
 notify_thread_app (void *arg)
 {
@@ -300,7 +320,7 @@ notify_thread_app (void *arg)
   pthread_mutex_unlock (&notify_app->mutex);
 
   if (tmp_app.txt != NULL)
-    free (tmp_app.txt);
+    mem_free (tmp_app.txt);
   notify_update_bar ();
 
   pthread_exit ((void *) 0);
@@ -452,33 +472,33 @@ notify_print_options (WINDOW *optwin, int col)
   y_offset = 3;
   maxcol = col - 2;
 
-  strncpy (opt[SHOW].name, _("notify-bar_show = "), BUFSIZ);
-  strncpy (opt[DATE].name, _("notify-bar_date = "), BUFSIZ);
-  strncpy (opt[CLOCK].name, _("notify-bar_clock = "), BUFSIZ);
-  strncpy (opt[WARN].name, _("notify-bar_warning = "), BUFSIZ);
-  strncpy (opt[CMD].name, _("notify-bar_command = "), BUFSIZ);
+  (void)strncpy (opt[SHOW].name, _("notify-bar_show = "), BUFSIZ);
+  (void)strncpy (opt[DATE].name, _("notify-bar_date = "), BUFSIZ);
+  (void)strncpy (opt[CLOCK].name, _("notify-bar_clock = "), BUFSIZ);
+  (void)strncpy (opt[WARN].name, _("notify-bar_warning = "), BUFSIZ);
+  (void)strncpy (opt[CMD].name, _("notify-bar_command = "), BUFSIZ);
 
-  strncpy (opt[SHOW].desc,
-	   _("(if set to YES, notify-bar will be displayed)"), BUFSIZ);
-  strncpy (opt[DATE].desc,
-	   _("(Format of the date to be displayed inside notify-bar)"),
-	   BUFSIZ);
-  strncpy (opt[CLOCK].desc,
-	   _("(Format of the time to be displayed inside notify-bar)"),
-	   BUFSIZ);
-  strncpy (opt[WARN].desc,
-	   _("(Warn user if an appointment is within next 'notify-bar_warning'"
-             " seconds)"), BUFSIZ);
-  strncpy (opt[CMD].desc,
-	   _("(Command used to notify user of an upcoming appointment)"),
-	   BUFSIZ);
+  (void)strncpy (opt[SHOW].desc,
+                 _("(if set to YES, notify-bar will be displayed)"), BUFSIZ);
+  (void)strncpy (opt[DATE].desc,
+                 _("(Format of the date to be displayed inside notify-bar)"),
+                 BUFSIZ);
+  (void)strncpy (opt[CLOCK].desc,
+                 _("(Format of the time to be displayed inside notify-bar)"),
+                 BUFSIZ);
+  (void)strncpy (opt[WARN].desc,
+                 _("(Warn user if an appointment is within next "
+                   "'notify-bar_warning' seconds)"), BUFSIZ);
+  (void)strncpy (opt[CMD].desc,
+                 _("(Command used to notify user of an upcoming appointment)"),
+                 BUFSIZ);
 
   pthread_mutex_lock (&nbar->mutex);
 
-  strncpy (opt[DATE].value, nbar->datefmt, BUFSIZ);
-  strncpy (opt[CLOCK].value, nbar->timefmt, BUFSIZ);
-  snprintf (opt[WARN].value, BUFSIZ, "%d", nbar->cntdwn);
-  strncpy (opt[CMD].value, nbar->cmd, BUFSIZ);
+  (void)strncpy (opt[DATE].value, nbar->datefmt, BUFSIZ);
+  (void)strncpy (opt[CLOCK].value, nbar->timefmt, BUFSIZ);
+  (void)snprintf (opt[WARN].value, BUFSIZ, "%d", nbar->cntdwn);
+  (void)strncpy (opt[CMD].value, nbar->cmd, BUFSIZ);
 
   l = strlen (opt[SHOW].name);
   x = x_pos + x_offset + l;
@@ -501,7 +521,7 @@ notify_print_options (WINDOW *optwin, int col)
 	mvwprintw (optwin, y, x, "%s", opt[i].value);
       else
 	{
-	  strncpy (buf, opt[i].value, maxlen - 1);
+	  (void)strncpy (buf, opt[i].value, maxlen - 1);
 	  buf[maxlen - 1] = '\0';
 	  mvwprintw (optwin, y, x, "%s...", buf);
 	}
@@ -533,8 +553,9 @@ notify_config_bar (void)
   char *cmd_str = _("Enter the notification command ");
   int ch = 0, change_win = 1;
 
-  buf = (char *) malloc (BUFSIZ);
-  snprintf (label, BUFSIZ, _("CalCurse %s | notify-bar options"), VERSION);
+  buf = (char *) mem_malloc (BUFSIZ);
+  (void)snprintf (label, BUFSIZ, _("CalCurse %s | notify-bar options"),
+                  VERSION);
   custom_confwin_init (&conf_win, label);
 
   while (ch != 'q')
@@ -569,12 +590,12 @@ notify_config_bar (void)
 	case '2':
 	  status_mesg (date_str, "");
 	  pthread_mutex_lock (&nbar->mutex);
-	  strncpy (buf, nbar->datefmt, strlen (nbar->datefmt) + 1);
+	  (void)strncpy (buf, nbar->datefmt, strlen (nbar->datefmt) + 1);
 	  pthread_mutex_unlock (&nbar->mutex);
 	  if (updatestring (win[STA].p, &buf, 0, 1) == 0)
 	    {
 	      pthread_mutex_lock (&nbar->mutex);
-	      strncpy (nbar->datefmt, buf, strlen (buf) + 1);
+	      (void)strncpy (nbar->datefmt, buf, strlen (buf) + 1);
 	      pthread_mutex_unlock (&nbar->mutex);
 	    }
 	  change_win = 0;
@@ -582,12 +603,12 @@ notify_config_bar (void)
 	case '3':
 	  status_mesg (time_str, "");
 	  pthread_mutex_lock (&nbar->mutex);
-	  strncpy (buf, nbar->timefmt, strlen (nbar->timefmt) + 1);
+	  (void)strncpy (buf, nbar->timefmt, strlen (nbar->timefmt) + 1);
 	  pthread_mutex_unlock (&nbar->mutex);
 	  if (updatestring (win[STA].p, &buf, 0, 1) == 0)
 	    {
 	      pthread_mutex_lock (&nbar->mutex);
-	      strncpy (nbar->timefmt, buf, strlen (buf) + 1);
+	      (void)strncpy (nbar->timefmt, buf, strlen (buf) + 1);
 	      pthread_mutex_unlock (&nbar->mutex);
 	    }
 	  change_win = 0;
@@ -609,18 +630,18 @@ notify_config_bar (void)
 	case '5':
 	  status_mesg (cmd_str, "");
 	  pthread_mutex_lock (&nbar->mutex);
-	  strncpy (buf, nbar->cmd, strlen (nbar->cmd) + 1);
+	  (void)strncpy (buf, nbar->cmd, strlen (nbar->cmd) + 1);
 	  pthread_mutex_unlock (&nbar->mutex);
 	  if (updatestring (win[STA].p, &buf, 0, 1) == 0)
 	    {
 	      pthread_mutex_lock (&nbar->mutex);
-	      strncpy (nbar->cmd, buf, strlen (buf) + 1);
+	      (void)strncpy (nbar->cmd, buf, strlen (buf) + 1);
 	      pthread_mutex_unlock (&nbar->mutex);
 	    }
 	  change_win = 0;
 	  break;
 	}
     }
-  free (buf);
+  mem_free (buf);
   delwin (conf_win.p);
 }

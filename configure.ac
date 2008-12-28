@@ -1,4 +1,4 @@
-#	$calcurse: configure.ac,v 1.27 2008/12/27 10:27:53 culot Exp $
+#	$calcurse: configure.ac,v 1.28 2008/12/28 13:13:59 culot Exp $
 
 #-------------------------------------------------------------------------------
 #                                                                           Init
@@ -57,6 +57,22 @@ AC_CHECK_HEADERS([math.h], [
 #                                                            Compilation options
 #-------------------------------------------------------------------------------
 CFLAGS="$CFLAGS -Wall"
+
+AC_ARG_ENABLE(memory_debug,
+              AS_HELP_STRING([--enable-memory-debug], 
+                             [use memory debug functions]),
+                             memdebug=$enableval)
+if test "$memdebug" != "yes"; then
+   memdebug=no
+   AC_DEFINE(CALCURSE_MEMORY_DEBUG_DISABLED, 1, 
+             [Define to 1 if you do not want memory debug.])
+else
+   AC_DEFINE(CALCURSE_MEMORY_DEBUG, 1, 
+             [Define to 1 if you want memory debug.])
+fi
+AC_MSG_CHECKING([if memory debug should be used])
+AC_MSG_RESULT($memdebug)
+AM_CONDITIONAL(CALCURSE_MEMORY_DEBUG, test x$memdebug = xyes)
 #-------------------------------------------------------------------------------
 #                                                               Create Makefiles
 #-------------------------------------------------------------------------------

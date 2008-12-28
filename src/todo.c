@@ -1,4 +1,4 @@
-/*	$calcurse: todo.c,v 1.28 2008/12/15 20:02:00 culot Exp $	*/
+/*	$calcurse: todo.c,v 1.29 2008/12/28 13:13:59 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -32,6 +32,7 @@
 #include "custom.h"
 #include "keys.h"
 #include "i18n.h"
+#include "mem.h"
 #include "todo.h"
 
 struct todo_s *todolist;
@@ -158,10 +159,10 @@ struct todo_s *
 todo_add (char *mesg, int id, char *note)
 {
   struct todo_s *o, **i;
-  o = (struct todo_s *) malloc (sizeof (struct todo_s));
-  o->mesg = strdup (mesg);
+  o = (struct todo_s *) mem_malloc (sizeof (struct todo_s));
+  o->mesg = mem_strdup (mesg);
   o->id = id;
-  o->note = (note != NULL && note[0] != '\0') ? strdup (note) : NULL;
+  o->note = (note != NULL && note[0] != '\0') ? mem_strdup (note) : NULL;
   i = &todolist;
   for (;;)
     {
@@ -215,10 +216,10 @@ todo_delete_bynum (unsigned num, erase_flag_e flag)
       if (n == num)
 	{
 	  *iptr = i->next;
-	  free (i->mesg);
+	  mem_free (i->mesg);
 	  if (i->note != NULL)
 	    erase_note (&i->note, flag);
-	  free (i);
+	  mem_free (i);
 	  return;
 	}
       iptr = &i->next;
@@ -337,10 +338,10 @@ todo_chg_priority (int action)
   int do_chg = 1;
 
   backup = todo_get_item (hilt);
-  strncpy (backup_mesg, backup->mesg, strlen (backup->mesg) + 1);
+  (void)strncpy (backup_mesg, backup->mesg, strlen (backup->mesg) + 1);
   backup_id = backup->id;
   if (backup->note)
-    strncpy (backup_note, backup->note, NOTESIZ + 1);
+    (void)strncpy (backup_note, backup->note, NOTESIZ + 1);
   else
     backup_note[0] = '\0';
   switch (action)
@@ -392,7 +393,7 @@ display_todo_item (int incolor, char *msg, int prio, int note, int len, int y,
     mvwprintw (w, y, x, "%d%c %s", prio, ch_note, msg);
   else
     {
-      strncpy (buf, msg, len - 1);
+      (void)strncpy (buf, msg, len - 1);
       buf[len - 1] = '\0';
       mvwprintw (w, y, x, "%d%c %s...", prio, ch_note, buf);
     }
@@ -467,7 +468,7 @@ todo_edit_note (char *editor)
       else
 	return;
     }
-  snprintf (fullname, BUFSIZ, "%s%s", path_notes, i->note);
+  (void)snprintf (fullname, BUFSIZ, "%s%s", path_notes, i->note);
   wins_launch_external (fullname, editor);
 }
 
@@ -481,6 +482,25 @@ todo_view_note (char *pager)
   i = todo_get_item (hilt);
   if (i->note == NULL)
     return;
-  snprintf (fullname, BUFSIZ, "%s%s", path_notes, i->note);
+  (void)snprintf (fullname, BUFSIZ, "%s%s", path_notes, i->note);
   wins_launch_external (fullname, pager);
+}
+
+void
+todo_free_list (void)
+{
+  struct todo_s *o, **i;
+
+  i = &todolist;
+  for (o = todolist; o != 0; o = o->next)
+    {
+      *i = o->next;
+      mem_free (o->mesg);
+      if (o->note != 0)
+        erase_note (&o->note, ERASE_FORCE_KEEP_NOTE);
+      mem_free (o);
+      i = &(*i)->next;
+    }
+  if (todolist)
+    mem_free (todolist);
 }
