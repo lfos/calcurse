@@ -1,4 +1,4 @@
-/*	$calcurse: vars.h,v 1.27 2008/12/28 13:13:59 culot Exp $	*/
+/*	$calcurse: vars.h,v 1.28 2008/12/28 19:41:45 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -94,15 +94,16 @@ struct nbar_s
 /* General configuration variables */
 typedef struct
 {
-  bool  auto_save;
-  bool  confirm_quit;
-  bool  confirm_delete;
-  bool  skip_system_dialogs;
-  bool  skip_progress_bar;
-  char *editor;
-  char *pager;
-  char  output_datefmt[BUFSIZ];	/* format for displaying date */
-  int   input_datefmt;		/* format for reading date */
+  bool       auto_save;
+  unsigned   periodic_save;
+  bool       confirm_quit;
+  bool       confirm_delete;
+  bool       skip_system_dialogs;
+  bool       skip_progress_bar;
+  char      *editor;
+  char      *pager;
+  char       output_datefmt[BUFSIZ];	/* format for displaying date */
+  int        input_datefmt;		/* format for reading date */
 }
 conf_t;
 

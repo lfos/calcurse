@@ -1,4 +1,4 @@
-/*	$calcurse: wins.c,v 1.20 2008/12/28 13:13:59 culot Exp $	*/
+/*	$calcurse: wins.c,v 1.21 2008/12/28 19:41:45 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -453,7 +453,7 @@ wins_launch_external (const char *file, const char *cmd)
   /* Beware of space between cmd and file. */
   len = strlen (file) + strlen (cmd) + 2;	
 
-  p = (char *) mem_malloc (sizeof (char) * len);
+  p = (char *) mem_calloc (len, sizeof (char));
   if (snprintf (p, len, "%s %s", cmd, file) == -1)
     {
       mem_free (p);

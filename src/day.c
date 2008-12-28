@@ -1,4 +1,4 @@
-/*	$calcurse: day.c,v 1.43 2008/12/28 13:13:59 culot Exp $	*/
+/*	$calcurse: day.c,v 1.44 2008/12/28 19:41:45 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -621,7 +621,7 @@ update_rept (struct rpt_s **rpt, const long start, conf_t *conf)
   do
     {
       status_mesg (msg_rpt_type, msg_rpt_ans);
-      typstr = (char *) mem_malloc (sizeof (char) * SINGLECHAR);
+      typstr = (char *) mem_calloc (SINGLECHAR, sizeof (char));
       (void)snprintf (typstr, SINGLECHAR, "%c", recur_def2char ((*rpt)->type));
       cancel = updatestring (win[STA].p, &typstr, 0, 1);
       if (cancel)

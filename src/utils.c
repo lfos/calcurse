@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.62 2008/12/28 13:13:59 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.63 2008/12/28 19:41:45 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -40,6 +40,7 @@
 #include "wins.h"
 #include "custom.h"
 #include "keys.h"
+#include "io.h"
 #include "recur.h"
 #include "apoint.h"
 #include "todo.h"
@@ -68,6 +69,7 @@ exit_calcurse (int status)
       ui_mode = UI_CMDLINE;
     }
   calendar_stop_date_thread ();
+  io_stop_psave_thread ();
   vars_free ();
   notify_free_vars ();
   notify_free_bar ();
@@ -536,7 +538,7 @@ date_sec2date_str (long sec, char *datefmt)
   time_t t;
   char *datestr;
 
-  datestr = (char *) mem_malloc (sizeof (char) * BUFSIZ);
+  datestr = (char *) mem_calloc (BUFSIZ, sizeof (char));
 
   if (sec == 0)
     (void)snprintf (datestr, BUFSIZ, "0");

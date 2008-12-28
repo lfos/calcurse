@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.74 2008/12/28 13:13:59 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.75 2008/12/28 19:41:45 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -159,7 +159,9 @@ main (int argc, char **argv)
   wins_slctd_set (CAL);
   wins_update ();
   calendar_start_date_thread ();
-
+  if (conf.periodic_save > 0)
+    io_start_psave_thread (&conf);
+  
   /* User input */
   for (;;)
     {
@@ -375,7 +377,7 @@ main (int argc, char **argv)
 	  break;
 
         case KEY_GENERIC_SAVE:
-	  io_save_cal (&conf);
+	  io_save_cal (&conf, IO_SAVE_DISPLAY_BAR);
 	  break;
 
         case KEY_GENERIC_IMPORT:
@@ -492,7 +494,7 @@ main (int argc, char **argv)
           
         case KEY_GENERIC_QUIT:          
 	  if (conf.auto_save)
-	    io_save_cal (&conf);
+	    io_save_cal (&conf, IO_SAVE_DISPLAY_BAR);
 
 	  if (conf.confirm_quit)
 	    {

@@ -1,4 +1,4 @@
-/*	$calcurse: custom.c,v 1.32 2008/12/28 13:13:59 culot Exp $	*/
+/*	$calcurse: custom.c,v 1.33 2008/12/28 19:41:45 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -239,6 +239,12 @@ custom_load_conf (conf_t *conf, int background)
 	  conf->auto_save = fill_config_var (e_conf);
 	  var = 0;
 	  break;
+	case CUSTOM_CONF_PERIODICSAVE:
+	  conf->periodic_save = atoi (e_conf);
+	  if (conf->periodic_save < 0)
+	    conf->periodic_save = 0;
+	  var = 0;
+	  break;
 	case CUSTOM_CONF_CONFIRMQUIT:
 	  conf->confirm_quit = fill_config_var (e_conf);
 	  var = 0;
@@ -308,6 +314,8 @@ custom_load_conf (conf_t *conf, int background)
 
       if (strncmp (e_conf, "auto_save=", 10) == 0)
 	var = CUSTOM_CONF_AUTOSAVE;
+      else if (strncmp (e_conf, "periodic_save=", 14) == 0)
+        var = CUSTOM_CONF_PERIODICSAVE;
       else if (strncmp (e_conf, "confirm_quit=", 13) == 0)
 	var = CUSTOM_CONF_CONFIRMQUIT;
       else if (strncmp (e_conf, "confirm_delete=", 15) == 0)
@@ -839,69 +847,95 @@ custom_color_theme_name (char *theme_name)
 static int
 print_general_options (WINDOW *win, conf_t *conf)
 {
+  enum {
+    AUTO_SAVE,
+    PERIODIC_SAVE,
+    CONFIRM_QUIT,
+    CONFIRM_DELETE,
+    SKIP_SYSTEM_DIAGS,
+    SKIP_PROGRESS_BAR,
+    WEEK_BEGINS_MONDAY,
+    OUTPUT_DATE_FMT,
+    INPUT_DATE_FMT,
+    NB_OPTIONS
+  };
   const int XPOS = 1;
   const int YOFF = 3;
   int y;
-  char *opt1 = _("auto_save = ");
-  char *opt2 = _("confirm_quit = ");
-  char *opt3 = _("confirm_delete = ");
-  char *opt4 = _("skip_system_dialogs = ");
-  char *opt5 = _("skip_progress_bar = ");
-  char *opt6 = _("week_begins_on_monday = ");
-  char *opt7 = _("output_datefmt = ");
-  char *opt8 = _("input_datefmt = ");
+  char *opt[NB_OPTIONS] = {
+    _("auto_save = "),
+    _("periodic_save = "),    
+    _("confirm_quit = "),
+    _("confirm_delete = "),
+    _("skip_system_dialogs = "),
+    _("skip_progress_bar = "),
+    _("week_begins_on_monday = "),
+    _("output_datefmt = "),
+    _("input_datefmt = ")
+  };
   
   y = 0;
-  mvwprintw (win, y, XPOS, "[1] %s      ", opt1);
+  mvwprintw (win, y, XPOS, "[1] %s      ", opt[AUTO_SAVE]);
   print_bool_option_incolor (win, conf->auto_save, y,
-                             XPOS + 4 + strlen (opt1));
+                             XPOS + 4 + strlen (opt[AUTO_SAVE]));
   mvwprintw (win, y + 1, XPOS,
 	     _("(if set to YES, automatic save is done when quitting)"));
   y += YOFF;
-  mvwprintw (win, y, XPOS, "[2] %s      ", opt2);
+  mvwprintw (win, y, XPOS, "[2] %s      ", opt[PERIODIC_SAVE]);
+  custom_apply_attr (win, ATTR_HIGHEST);
+  mvwprintw (win, y, XPOS + 4 + strlen (opt[PERIODIC_SAVE]), "%d",
+             conf->periodic_save);
+  custom_remove_attr (win, ATTR_HIGHEST);
+  mvwprintw (win, y + 1, XPOS,
+	     _("(if not null, automatically save data every 'periodic_save' "
+               "minutes)"));
+  y += YOFF;
+  mvwprintw (win, y, XPOS, "[3] %s      ", opt[CONFIRM_QUIT]);
   print_bool_option_incolor (win, conf->confirm_quit, y,
-                             XPOS + 4 + strlen (opt2));
+                             XPOS + 4 + strlen (opt[CONFIRM_QUIT]));
   mvwprintw (win, y + 1, XPOS,
 	     _("(if set to YES, confirmation is required before quitting)"));
   y += YOFF;
-  mvwprintw (win, y, XPOS, "[3] %s      ", opt3);
+  mvwprintw (win, y, XPOS, "[4] %s      ", opt[CONFIRM_DELETE]);
   print_bool_option_incolor (win, conf->confirm_delete, y,
-                             XPOS + 4 + strlen (opt3));
+                             XPOS + 4 + strlen (opt[CONFIRM_DELETE]));
   mvwprintw (win, y + 1, XPOS,
 	     _("(if set to YES, confirmation is required "
                "before deleting an event)"));
   y += YOFF;
-  mvwprintw (win, y, XPOS, "[4] %s      ", opt4);
+  mvwprintw (win, y, XPOS, "[5] %s      ", opt[SKIP_SYSTEM_DIAGS]);
   print_bool_option_incolor (win, conf->skip_system_dialogs, y,
-                             XPOS + 4 + strlen (opt4));
+                             XPOS + 4 + strlen (opt[SKIP_SYSTEM_DIAGS]));
   mvwprintw (win, y + 1, XPOS,
 	     _("(if set to YES, messages about loaded "
                "and saved data will not be displayed)"));
   y += YOFF;
-  mvwprintw (win, y, XPOS, "[5] %s      ", opt5);
+  mvwprintw (win, y, XPOS, "[6] %s      ", opt[SKIP_PROGRESS_BAR]);
   print_bool_option_incolor (win, conf->skip_progress_bar, y,
-                            XPOS + 4 + strlen (opt5));
+                            XPOS + 4 + strlen (opt[SKIP_PROGRESS_BAR]));
   mvwprintw (win, y + 1, XPOS,
 	     _("(if set to YES, progress bar will not be displayed "
                 "when saving data)"));
   y += YOFF;
-  mvwprintw (win, y, XPOS, "[6] %s      ", opt6);
+  mvwprintw (win, y, XPOS, "[7] %s      ", opt[WEEK_BEGINS_MONDAY]);
   print_bool_option_incolor (win, calendar_week_begins_on_monday (), y,
-                             XPOS + 4 + strlen (opt6));
+                             XPOS + 4 + strlen (opt[WEEK_BEGINS_MONDAY]));
   mvwprintw (win, y + 1, XPOS,
 	     _("(if set to YES, monday is the first day of the week, "
                "else it is sunday)"));
   y += YOFF;
-  mvwprintw (win, y, XPOS, "[7] %s      ", opt7);
+  mvwprintw (win, y, XPOS, "[8] %s      ", opt[OUTPUT_DATE_FMT]);
   custom_apply_attr (win, ATTR_HIGHEST);
-  mvwprintw (win, y, XPOS + 4 + strlen (opt7), "%s", conf->output_datefmt);
+  mvwprintw (win, y, XPOS + 4 + strlen (opt[OUTPUT_DATE_FMT]), "%s",
+             conf->output_datefmt);
   custom_remove_attr (win, ATTR_HIGHEST);
   mvwprintw (win, y + 1, XPOS,
 	     _("(Format of the date to be displayed in non-interactive mode)"));
   y += YOFF;
-  mvwprintw (win, y, XPOS, "[8] %s      ", opt8);
+  mvwprintw (win, y, XPOS, "[9] %s      ", opt[INPUT_DATE_FMT]);
   custom_apply_attr (win, ATTR_HIGHEST);
-  mvwprintw (win, y, XPOS + 4 + strlen (opt8), "%d", conf->input_datefmt);
+  mvwprintw (win, y, XPOS + 4 + strlen (opt[INPUT_DATE_FMT]), "%d",
+             conf->input_datefmt);
   custom_remove_attr (win, ATTR_HIGHEST);
   mvwprintw (win, y + 1, XPOS, _("(Format to be used when entering a date: "));
   mvwprintw (win, y + 2, XPOS, _(" 1-mm/dd/yyyy, 2-dd/mm/yyyy, 3-yyyy/mm/dd)"));
@@ -936,6 +970,8 @@ custom_general_config (conf_t *conf)
     _("Enter the date format (see 'man 3 strftime' for possible formats) ");
   char *input_datefmt_str =
     _("Enter the date format (1-mm/dd/yyyy, 2-dd/mm/yyyy, 3-yyyy/mm/dd) ");
+  char *periodic_save_str =
+    _("Enter the delay, in minutes, between automatic saves (0 to disable) ");
   int ch;
   char *buf = (char *) mem_malloc (BUFSIZ);
 
@@ -981,21 +1017,35 @@ custom_general_config (conf_t *conf)
 	  conf->auto_save = !conf->auto_save;
 	  break;
 	case '2':
-	  conf->confirm_quit = !conf->confirm_quit;
+	  status_mesg (periodic_save_str, "");
+	  if (updatestring (win[STA].p, &buf, 0, 1) == 0)
+	    {
+	      int val = atoi (buf);
+	      if (val >= 0)
+		conf->periodic_save = val;
+              if (conf->periodic_save > 0)
+                io_start_psave_thread (conf);
+              else if (conf->periodic_save == 0)
+                io_stop_psave_thread ();
+	    }
+	  status_mesg (number_str, keys);
 	  break;
 	case '3':
-	  conf->confirm_delete = !conf->confirm_delete;
+	  conf->confirm_quit = !conf->confirm_quit;
 	  break;
 	case '4':
-	  conf->skip_system_dialogs = !conf->skip_system_dialogs;
+	  conf->confirm_delete = !conf->confirm_delete;
 	  break;
 	case '5':
-	  conf->skip_progress_bar = !conf->skip_progress_bar;
+	  conf->skip_system_dialogs = !conf->skip_system_dialogs;
 	  break;
 	case '6':
-	  calendar_change_first_day_of_week ();
+	  conf->skip_progress_bar = !conf->skip_progress_bar;
 	  break;
 	case '7':
+	  calendar_change_first_day_of_week ();
+	  break;
+	case '8':
 	  status_mesg (output_datefmt_str, "");
 	  (void)strncpy (buf, conf->output_datefmt,
                          strlen (conf->output_datefmt) + 1);
@@ -1005,7 +1055,7 @@ custom_general_config (conf_t *conf)
 	    }
 	  status_mesg (number_str, keys);
 	  break;
-	case '8':
+	case '9':
 	  status_mesg (input_datefmt_str, "");
 	  if (updatestring (win[STA].p, &buf, 0, 1) == 0)
 	    {

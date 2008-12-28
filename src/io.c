@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.50 2008/12/28 13:13:59 culot Exp $	*/
+/*	$calcurse: io.c,v 1.51 2008/12/28 19:41:45 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -754,9 +754,29 @@ io_extract_data (char *dst_data, const char *org, int len)
   *dst_data = '\0';
 }
 
+void
+display_mark (void)
+{
+  const int DISPLAY_TIME = 1;
+  WINDOW *mwin;
+
+  mwin = newwin (1, 2, 1, col - 3);
+  
+  custom_apply_attr (mwin, ATTR_HIGHEST);
+  mvwprintw (mwin, 0, 0, "**");
+  wrefresh (mwin);
+  sleep (DISPLAY_TIME);
+  mvwprintw (mwin, 0, 0, "  ");
+  wrefresh (mwin);  
+  delwin (mwin);
+  doupdate ();
+}
+
+static pthread_mutex_t io_save_mutex = PTHREAD_MUTEX_INITIALIZER;
+
 /* Save the calendar data */
 void
-io_save_cal (conf_t *conf)
+io_save_cal (conf_t *conf, io_save_display_t display)
 {
   FILE *data_file;
   struct event_s *k;
@@ -778,12 +798,18 @@ io_save_cal (conf_t *conf)
   char *enter = _("Press [ENTER] to continue");
   bool show_bar = false;
 
-  if (ui_mode == UI_CURSES && !conf->skip_progress_bar)
+  pthread_mutex_lock (&io_save_mutex);
+  
+  if (ui_mode == UI_CURSES && display == IO_SAVE_DISPLAY_BAR
+      && !conf->skip_progress_bar)
     show_bar = true;
-
+  else if (ui_mode == UI_CURSES && display == IO_SAVE_DISPLAY_MARK)
+    display_mark ();
+  
   /* Save the user configuration. */
   if (show_bar)
     progress_bar (PROGRESS_BAR_SAVE, PROGRESS_BAR_CONF);
+  
   data_file = fopen (path_conf, "w");
   if (data_file == NULL)
     ERROR_MSG (access_pb);
@@ -799,6 +825,12 @@ io_save_cal (conf_t *conf)
       (void)fprintf (data_file, "auto_save=\n");
       (void)fprintf (data_file, "%s\n", (conf->auto_save) ? "yes" : "no");
 
+      (void)fprintf (data_file,
+                     "\n# If not null, perform automatic saves every "
+                     "'periodic_save' minutes\n");
+      (void)fprintf (data_file, "periodic_save=\n");
+      (void)fprintf (data_file, "%d\n", conf->periodic_save);
+      
       (void)fprintf (data_file,
                      "\n# If this option is set to yes, "
                      "confirmation is required before quitting\n");
@@ -948,6 +980,8 @@ io_save_cal (conf_t *conf)
       status_mesg (save_success, enter);
       (void)wgetch (win[STA].p);
     }
+
+  pthread_mutex_unlock (&io_save_mutex);
 }
 
 /* 
@@ -2742,4 +2776,38 @@ io_log_free (io_file_t *log)
            _("Warning: could not erase temporary log file %s, Aborting..."),
            log->name);
   mem_free (log);
+}
+
+static pthread_t io_t_psave;
+
+/* Thread used to periodically save data. */
+static void *
+io_psave_thread (void *arg)
+{
+  conf_t *config;
+  int delay;
+
+  config = (conf_t *)arg;
+  delay = config->periodic_save;
+  EXIT_IF (delay < 0, _("Invalid delay"));
+  
+  for (;;)
+    {
+      (void)sleep (delay * MININSEC);
+      io_save_cal (config, IO_SAVE_DISPLAY_MARK);
+    }
+}
+
+/* Launch the thread which handles periodic saves. */
+void
+io_start_psave_thread (conf_t *conf)
+{
+  pthread_create (&io_t_psave, NULL, io_psave_thread, (void *)conf);
+}
+
+/* Stop periodic data saves. */
+void
+io_stop_psave_thread (void)
+{
+  pthread_cancel (io_t_psave);  
 }

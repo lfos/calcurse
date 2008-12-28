@@ -1,4 +1,4 @@
-/*	$calcurse: io.h,v 1.17 2008/12/07 09:20:38 culot Exp $	*/
+/*	$calcurse: io.h,v 1.18 2008/12/28 19:41:45 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -40,6 +40,12 @@ typedef enum {
   IO_EXPORT_NBTYPES
 } export_type_t;
 
+typedef enum {
+  IO_SAVE_DISPLAY_BAR,
+  IO_SAVE_DISPLAY_MARK,
+  IO_SAVE_DISPLAY_NONE
+} io_save_display_t;
+
 typedef struct {
   FILE *fd;
   char name[BUFSIZ];
@@ -47,7 +53,7 @@ typedef struct {
 
 void        io_init (char *, char *);
 void        io_extract_data (char *, const char *, int);
-void        io_save_cal (conf_t *);
+void        io_save_cal (conf_t *, io_save_display_t);
 void        io_load_app (void);
 void        io_load_todo (void);
 void        io_load_keys (char *);
@@ -60,5 +66,7 @@ io_file_t  *io_log_init (void);
 void        io_log_print (io_file_t *, int, char *);
 void        io_log_display (io_file_t *, char *, char *);
 void        io_log_free (io_file_t *);
+void        io_start_psave_thread (conf_t *);
+void        io_stop_psave_thread (void);
 
 #endif /* !CALCURSE_IO_H */

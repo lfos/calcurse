@@ -1,4 +1,4 @@
-/*	$calcurse: vars.c,v 1.12 2008/12/28 13:13:59 culot Exp $	*/
+/*	$calcurse: vars.c,v 1.13 2008/12/28 19:41:45 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -111,6 +111,7 @@ vars_init (conf_t *conf)
   conf->confirm_quit = true;
   conf->confirm_delete = true;
   conf->auto_save = true;
+  conf->periodic_save = 0;
   conf->skip_system_dialogs = false;
   conf->skip_progress_bar = false;
   (void)strncpy (conf->output_datefmt, "%D", 3);

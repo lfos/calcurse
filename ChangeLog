@@ -19,6 +19,15 @@
 	* src/notify.c (notify_free_vars, notify_free_bar): new functions
 
 	* src/vars.c (vars_free): new function
+
+	* src/io.c
+	* src/custom.c: new option to periodically save data
+
+	* io.c (io_start_psave_thread, io_stop_psave_thread)
+	(io_psave_thread, display_mark): new functions to implement
+	periodic saves
+
+	* TODO: updated (auto-save functionality added)
 	
 2008-12-27  Frederic Culot  <frederic@culot.org>
 

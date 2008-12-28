@@ -1,4 +1,4 @@
-/*	$calcurse: custom.h,v 1.14 2008/12/20 19:27:31 culot Exp $	*/
+/*	$calcurse: custom.h,v 1.15 2008/12/28 19:41:45 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -49,6 +49,7 @@ enum
 {				/* Configuration variables */
   CUSTOM_CONF_NOVARIABLE,
   CUSTOM_CONF_AUTOSAVE,
+  CUSTOM_CONF_PERIODICSAVE,
   CUSTOM_CONF_CONFIRMQUIT,
   CUSTOM_CONF_CONFIRMDELETE,
   CUSTOM_CONF_SKIPSYSTEMDIALOGS,
