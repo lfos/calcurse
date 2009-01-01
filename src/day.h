@@ -1,4 +1,4 @@
-/*	$calcurse: day.h,v 1.20 2008/12/28 13:13:59 culot Exp $	*/
+/*	$calcurse: day.h,v 1.21 2009/01/01 17:50:41 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -76,6 +76,8 @@ void               day_popup_item (void);
 int                day_check_if_item (date_t);
 void               day_edit_item (conf_t *);
 int                day_erase_item (long, int, erase_flag_e);
+int                day_cut_item (long, int);
+int                day_paste_item (long);
 struct day_item_s *day_get_item (int);
 int                day_item_nb (long, int, int);
 void               day_edit_note (char *);

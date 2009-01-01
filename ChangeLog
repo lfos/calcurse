@@ -1,3 +1,44 @@
+2009-01-01  Frederic Culot  <frederic@culot.org>
+
+	* src/event.c (event_free_bkp, event_llist_free): new functions
+	
+	* src/apoint.c (apoint_dup, apoint_paste_item, apoint_free_bkp):
+	new functions
+
+	* src/recur.c (recur_event_free_bkp, recur_event_dup)
+	(recur_event_paste_item, recur_event_llist_free, recur_add_exc)
+	(exc_dup, recur_apoint_free_bkp, recur_apoint_dup): new functions
+
+	* src/utils.c (get_item_time, get_item_hour, get_item_min): new
+	functions
+
+	* src/recur.c: fixed a two-years old bug (appeared in version 1.5)
+	that made repeated items with exceptions load uncorrectly in
+	some cases (thanks Jan for reporting it)
+
+	* NEWS: updated (it is now possible to move an item from one date
+	to another by using the cut/paste feature)
+	
+2008-12-30  Frederic Culot  <frederic@culot.org>
+
+	* src/keys.c: added key bindings for cut and paste
+
+	* src/keys.c (keys_fill_missing): new function
+
+	* src/io.c (io_load_keys): load default key bindings for missing
+	keys (meaning they were added with new version of calcurse)
+
+	* src/utils.c (status_bar): added status bar labels for cut and
+	paste commands
+
+	* src/calcurse.c: handle cut and paste commands
+
+	* src/apoint.c (apoint_cut, apoint_paste): new functions
+
+	* src/day.c (day_cut_item, day_paste_item): new functions
+
+	* src/event.c (event_dup, event_paste_item): new functions
+	
 2008-12-28  Frederic Culot  <frederic@culot.org>
 
 	* mem.[ch]: new files to build wrappers around libc's memory

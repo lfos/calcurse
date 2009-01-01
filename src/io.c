@@ -1,8 +1,8 @@
-/*	$calcurse: io.c,v 1.51 2008/12/28 19:41:45 culot Exp $	*/
+/*	$calcurse: io.c,v 1.52 2009/01/01 17:50:41 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2008 Frederic Culot
+ * Copyright (c) 2004-2009 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -995,7 +995,7 @@ io_load_app (void)
   FILE *data_file;
   int c, is_appointment, is_event, is_recursive;
   struct tm start, end, until, *lt;
-  struct days_s *exc = NULL;
+  struct days_s *exc;
   time_t t;
   int id = 0;
   int freq;
@@ -1009,6 +1009,7 @@ io_load_app (void)
   data_file = fopen (path_apts, "r");
   for (;;)
     {
+      exc = 0;
       is_appointment = is_event = is_recursive = 0;
       c = getc (data_file);
       if (c == EOF)
@@ -1144,7 +1145,7 @@ io_load_app (void)
 	  if (is_recursive)
 	    {
 	      recur_apoint_scan (data_file, start, end,
-				 type, freq, until, notep, exc, state);
+				 type, freq, until, notep, &exc, state);
 	    }
 	  else
 	    {
@@ -1156,7 +1157,7 @@ io_load_app (void)
 	  if (is_recursive)
 	    {
 	      recur_event_scan (data_file, start, id, type,
-				freq, until, notep, exc);
+				freq, until, notep, &exc);
 	    }
 	  else
 	    {
@@ -1395,6 +1396,8 @@ io_load_keys (char *pager)
   EXIT_IF (skipped > MAX_ERRORS,
            _("Too many errors while reading keys file, aborting..."));
   if (loaded < NBKEYS)
+    keys_fill_missing ();
+  if (keys_check_missing_bindings ())
     ERROR_MSG (_("Some actions do not have any associated key bindings!"));
 #undef HSIZE
 }
@@ -1627,7 +1630,7 @@ ical_store_event (char *mesg, char *note, long day, ical_rpt_t *rpt,
   if (rpt != NULL)
     {
       recur_event_new (mesg, note, day, EVENTID, rpt->type, rpt->freq,
-                       rpt->until, exc);
+                       rpt->until, &exc);
       mem_free (rpt);
     }
   else
@@ -1649,7 +1652,7 @@ ical_store_apoint (char *mesg, char *note, long start, long dur,
   if (rpt != NULL)
     {
       recur_apoint_new (mesg, note, start, dur, state, rpt->type, rpt->freq,
-                        rpt->until, exc);
+                        rpt->until, &exc);
       mem_free (rpt);
     }
   else

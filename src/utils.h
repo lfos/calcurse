@@ -1,8 +1,8 @@
-/*	$calcurse: utils.h,v 1.41 2008/12/28 13:13:59 culot Exp $	*/
+/*	$calcurse: utils.h,v 1.42 2009/01/01 17:50:41 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2008 Frederic Culot
+ * Copyright (c) 2004-2009 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -96,42 +96,46 @@ typedef enum
   ERASE_DONT_FORCE,
   ERASE_FORCE,
   ERASE_FORCE_KEEP_NOTE,
-  ERASE_FORCE_ONLY_NOTE
+  ERASE_FORCE_ONLY_NOTE,
+  ERASE_CUT
 }
 erase_flag_e;
 
-void    exit_calcurse (int);
-void    fatalbox (const char *);
-void    status_mesg (char *, char *);
-void    erase_status_bar (void);
-void    erase_window_part (WINDOW *, int, int, int, int);
-WINDOW *popup (int, int, int, int, char *, char *, int);
-void    print_in_middle (WINDOW *, int, int, int, char *);
-int     getstring (WINDOW *, char *, int, int, int);
-int     updatestring (WINDOW *, char **, int, int);
-int     is_all_digit (char *);
-void    status_bar (void);
-long    date2sec (date_t, unsigned, unsigned);
-char   *date_sec2hour_str (long);
-char   *date_sec2date_str (long, char *);
-void    date_sec2date_fmt (long, const char *, char *);
-long    date_sec_change (long, int, int);
-long    update_time_in_date (long, unsigned, unsigned);
-long    get_sec_date (date_t);
-long    min2sec (unsigned);
-int     check_time (char *);
-void    draw_scrollbar (WINDOW *, int, int, int, int, int, bool);
-void    item_in_popup (char *, char *, char *, char *);
-void    reset_status_page (void);
-void    other_status_page (int);
-long    get_today (void);
-long    now (void);
-long    mystrtol (const char *);
-void    print_bool_option_incolor (WINDOW *, bool, int, int);
-char   *new_tempfile (const char *, int);
-void    erase_note (char **, erase_flag_e);
-int     parse_date (char *, int, int *, int *, int *);
-char   *str_toupper (char *);
-void    file_close (FILE *, const char *);
+void      exit_calcurse (int);
+void      fatalbox (const char *);
+void      status_mesg (char *, char *);
+void      erase_status_bar (void);
+void      erase_window_part (WINDOW *, int, int, int, int);
+WINDOW   *popup (int, int, int, int, char *, char *, int);
+void      print_in_middle (WINDOW *, int, int, int, char *);
+int       getstring (WINDOW *, char *, int, int, int);
+int       updatestring (WINDOW *, char **, int, int);
+int       is_all_digit (char *);
+void      status_bar (void);
+long      get_item_time (long);
+int       get_item_hour (long);
+int       get_item_min (long);
+long      date2sec (date_t, unsigned, unsigned);
+char     *date_sec2hour_str (long);
+char     *date_sec2date_str (long, char *);
+void      date_sec2date_fmt (long, const char *, char *);
+long      date_sec_change (long, int, int);
+long      update_time_in_date (long, unsigned, unsigned);
+long      get_sec_date (date_t);
+long      min2sec (unsigned);
+int       check_time (char *);
+void      draw_scrollbar (WINDOW *, int, int, int, int, int, bool);
+void      item_in_popup (char *, char *, char *, char *);
+void      reset_status_page (void);
+void      other_status_page (int);
+long      get_today (void);
+long      now (void);
+long      mystrtol (const char *);
+void      print_bool_option_incolor (WINDOW *, bool, int, int);
+char     *new_tempfile (const char *, int);
+void      erase_note (char **, erase_flag_e);
+int       parse_date (char *, int, int *, int *, int *);
+char     *str_toupper (char *);
+void      file_close (FILE *, const char *);
 
 #endif /* CALCURSE_UTILS_H */

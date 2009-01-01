@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.75 2008/12/28 19:41:45 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.76 2009/01/01 17:50:41 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -332,6 +332,22 @@ main (int argc, char **argv)
 	  do_storage = true;
 	  break;
 
+        case KEY_GENERIC_CUT:
+          if (wins_slctd () == APP && apoint_hilt () != 0)
+            {
+              apoint_cut (&inday.nb_events, &inday.nb_apoints);
+              do_storage = true;
+            }
+          break;
+
+        case KEY_GENERIC_PASTE:
+          if (wins_slctd () == APP)
+            {
+              apoint_paste (&inday.nb_events, &inday.nb_apoints);
+              do_storage = true;
+            }
+          break;
+          
         case KEY_REPEAT_ITEM:
 	  if (wins_slctd () == APP && apoint_hilt () != 0)
 	    recur_repeat_item (&conf);

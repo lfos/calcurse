@@ -1,8 +1,8 @@
-/*	$calcurse: event.h,v 1.6 2008/04/12 21:14:03 culot Exp $	*/
+/*	$calcurse: event.h,v 1.7 2009/01/01 17:50:41 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2008 Frederic Culot
+ * Copyright (c) 2004-2009 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,11 +43,14 @@ struct event_s
 
 extern struct event_s *eventlist;
 
+void            event_free_bkp (void);
+void            event_llist_free (void);
 struct event_s *event_new (char *, char *, long, int);
 unsigned        event_inday (struct event_s *, long);
 void            event_write (struct event_s *, FILE *);
 struct event_s *event_scan (FILE *, struct tm, int, char *);
 struct event_s *event_get (long, int);
 void            event_delete_bynum (long, unsigned, erase_flag_e);
+void            event_paste_item (void);
 
 #endif /* CALCURSE_EVENT_H */

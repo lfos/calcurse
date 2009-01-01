@@ -1,8 +1,8 @@
-/*	$calcurse: day.c,v 1.44 2008/12/28 19:41:45 culot Exp $	*/
+/*	$calcurse: day.c,v 1.45 2009/01/01 17:50:41 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2008 Frederic Culot
+ * Copyright (c) 2004-2009 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,8 +38,9 @@
 #include "mem.h"
 #include "day.h"
 
-static struct day_item_s *day_items_ptr;
-static struct day_saved_item_s *day_saved_item;
+static struct day_item_s        *day_items_ptr;
+static struct day_saved_item_s  *day_saved_item;
+static int                       cut_item_type;
 
 void
 day_saved_item_init (void)
@@ -897,6 +898,71 @@ day_erase_item (long date, int item_number, erase_flag_e flag)
     return 0;
   else
     return (p->type);
+}
+
+/* Cut an item so it can be pasted somewhere else later. */
+int
+day_cut_item (long date, int item_number)
+{
+  const int DELETE_WHOLE = 1;
+  struct day_item_s *p;
+
+  p = day_get_item (item_number);
+  switch (p->type)
+    {
+    case EVNT:
+      event_delete_bynum (date, day_item_nb (date, item_number, EVNT),
+                          ERASE_CUT);      
+      break;
+    case RECUR_EVNT:
+      recur_event_erase (date, day_item_nb (date, item_number, RECUR_EVNT),
+                         DELETE_WHOLE, ERASE_CUT);
+      break;
+    case APPT:
+      apoint_delete_bynum (date, day_item_nb (date, item_number, APPT),
+                           ERASE_CUT);
+      break;
+    case RECUR_APPT:
+      recur_apoint_erase (date, p->appt_pos, DELETE_WHOLE, ERASE_CUT);
+      break;
+    default:
+      EXIT (_("unknwon type"));
+      /* NOTREACHED */
+    }
+  cut_item_type = p->type;
+  return cut_item_type;
+}
+
+/* Paste a previously cut item. */
+int
+day_paste_item (long date)
+{
+  int pasted_item_type;
+
+  pasted_item_type = cut_item_type;
+  switch (cut_item_type)
+    {
+    case 0:
+      return 0;
+    case EVNT:
+      event_paste_item ();
+      break;
+    case RECUR_EVNT:
+      recur_event_paste_item ();
+      break;
+    case APPT:
+      apoint_paste_item ();
+      break;
+    case RECUR_APPT:
+      recur_apoint_paste_item ();
+      break;
+    default:
+      EXIT (_("unknwon type"));
+      /* NOTREACHED */
+    }
+  cut_item_type = 0;
+
+  return pasted_item_type;
 }
 
 /* Returns a structure containing the selected item. */

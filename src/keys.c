@@ -1,4 +1,4 @@
-/*	$calcurse: keys.c,v 1.11 2008/12/28 13:13:59 culot Exp $	*/
+/*	$calcurse: keys.c,v 1.12 2009/01/01 17:50:41 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -56,6 +56,8 @@ static struct keydef_s keydef[NBKEYS] = {
   {"generic-help", "?"},
   {"generic-quit", "q Q"},
   {"generic-save", "s S C-s"},
+  {"generic-cut", "C-x"},
+  {"generic-paste", "C-v"},
   {"generic-change-view", "TAB"},
   {"generic-import", "i I"},
   {"generic-export", "x X"},
@@ -590,4 +592,42 @@ keys_check_missing_bindings (void)
         return 1;
     }
   return 0;
+}
+
+void
+keys_fill_missing (void)
+{
+  int i;
+
+  for (i = 0; i < NBKEYS; i++)
+    {
+      if (keys[i] == 0)
+        {
+          char *p, tmpbuf[BUFSIZ];
+
+          (void)strncpy (tmpbuf, keydef[i].binding, BUFSIZ);          
+          p = tmpbuf;
+          for (;;)
+            {
+              char key_ch[BUFSIZ];
+
+              while (*p == ' ')
+                p++;
+              if (sscanf (p, "%s", key_ch) == 1)
+                {
+                  int ch, used;
+                  
+                  ch = keys_str2int (key_ch);
+                  used = keys_assign_binding (ch, i);
+                  if (used)
+                    ERROR_MSG (_("When adding default key for \"%s\", "
+                                 "\"%s\" was already assigned!"),
+                               keydef[i].label, key_ch);
+                  p += strlen (key_ch) + 1;
+                }
+              else
+                break;
+            }
+        }
+    }
 }

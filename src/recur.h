@@ -1,8 +1,8 @@
-/*	$calcurse: recur.h,v 1.24 2008/12/28 13:13:59 culot Exp $	*/
+/*	$calcurse: recur.h,v 1.25 2009/01/01 17:50:41 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2008 Frederic Culot
+ * Copyright (c) 2004-2009 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -86,20 +86,23 @@ typedef void (*recur_cb_foreach_date_t)(FILE *, long, char *);
 extern recur_apoint_llist_t *recur_alist_p;
 extern struct recur_event_s *recur_elist;
 
+void                       recur_event_free_bkp (void);
+void                       recur_apoint_free_bkp (void);
 void                       recur_apoint_llist_init (void);
 void                       recur_apoint_llist_free (void);
+void                       recur_event_llist_free (void);
 recur_apoint_llist_node_t *recur_apoint_new (char *, char *, long, long, char,
-                                             int, int, long, struct days_s *);
+                                             int, int, long, struct days_s **);
 struct recur_event_s      *recur_event_new (char *, char *, long, int, int, int,
-                                            long, struct days_s *);
+                                            long, struct days_s **);
 char                       recur_def2char (recur_types_t);
 int                        recur_char2def (char);
 recur_apoint_llist_node_t *recur_apoint_scan (FILE *, struct tm, struct tm,
 					      char, int, struct tm, char *,
-					      struct days_s *, char);
+					      struct days_s **, char);
 struct recur_event_s      *recur_event_scan (FILE *, struct tm, int, char,
                                              int, struct tm, char *,
-                                             struct days_s *);
+                                             struct days_s **);
 void                       recur_save_data (FILE *);
 unsigned                   recur_item_inday (long, struct days_s *, int, int,
                                              long, long);
@@ -114,5 +117,7 @@ struct notify_app_s       *recur_apoint_check_next (struct notify_app_s *,
 recur_apoint_llist_node_t *recur_get_apoint (long, int);
 struct recur_event_s      *recur_get_event (long, int);
 void                       recur_apoint_switch_notify (long, int);
+void                       recur_event_paste_item (void);
+void                       recur_apoint_paste_item (void);
 
 #endif /* CALCURSE_RECUR_H */

@@ -1,8 +1,8 @@
-/*	$calcurse: utils.c,v 1.63 2008/12/28 19:41:45 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.64 2009/01/01 17:50:41 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2008 Frederic Culot
+ * Copyright (c) 2004-2009 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,6 +42,7 @@
 #include "keys.h"
 #include "io.h"
 #include "recur.h"
+#include "event.h"
 #include "apoint.h"
 #include "todo.h"
 #include "day.h"
@@ -50,7 +51,7 @@
 #include "mem.h"
 
 #define NB_CAL_CMDS	24	/* number of commands while in cal view */
-#define NB_APP_CMDS	29	/* same thing while in appointment view */
+#define NB_APP_CMDS	31	/* same thing while in appointment view */
 #define NB_TOD_CMDS	29	/* same thing while in todo view */
 #define TOTAL_CMDS	NB_CAL_CMDS + NB_APP_CMDS + NB_TOD_CMDS
 #define CMDS_PER_LINE	6	/* max number of commands per line */  
@@ -75,8 +76,14 @@ exit_calcurse (int status)
   notify_free_bar ();
   day_saved_item_free ();
   day_free_list ();
+  event_llist_free ();
+  event_free_bkp ();
   apoint_llist_free ();
+  apoint_free_bkp ();
   recur_apoint_llist_free ();
+  recur_event_llist_free ();
+  recur_apoint_free_bkp ();
+  recur_event_free_bkp ();
   todo_free_list ();
   keys_free ();
   mem_stats ();
@@ -415,7 +422,7 @@ is_all_digit (char *string)
       digit++;
   if (digit == strlen (string))
     all_digit = 1;
-  return (all_digit);
+  return all_digit;
 }
 
 /* 
@@ -436,6 +443,8 @@ status_bar (void)
   binding_t help   = {_("Help"),     KEY_GENERIC_HELP};
   binding_t quit   = {_("Quit"),     KEY_GENERIC_QUIT};
   binding_t save   = {_("Save"),     KEY_GENERIC_SAVE};
+  binding_t cut    = {_("Cut"),      KEY_GENERIC_CUT};
+  binding_t paste  = {_("Paste"),    KEY_GENERIC_PASTE};    
   binding_t chgvu  = {_("Chg View"), KEY_GENERIC_CHANGE_VIEW};
   binding_t import = {_("Import"),   KEY_GENERIC_IMPORT};  
   binding_t export = {_("Export"),   KEY_GENERIC_EXPORT};
@@ -465,7 +474,8 @@ status_bar (void)
   binding_t enote  = {_("EditNote"), KEY_EDIT_NOTE};
   binding_t vnote  = {_("ViewNote"), KEY_VIEW_NOTE};
   binding_t rprio  = {_("Prio.+"),   KEY_RAISE_PRIORITY};
-  binding_t lprio  = {_("Prio.-"),   KEY_LOWER_PRIORITY};  
+  binding_t lprio  = {_("Prio.-"),   KEY_LOWER_PRIORITY};
+
   
   binding_t *binding[TOTAL_CMDS] = {
     /* calendar keys */
@@ -475,7 +485,8 @@ status_bar (void)
     /* appointment keys */
     &help, &quit, &save, &chgvu, &import, &export, &add, &del, &edit, &view,
     &draw, &othr, &rept, &flag, &enote, &vnote, &up, &down, &gnday, &gpday,
-    &gnweek, &gpweek, &togo, &othr, &today, &conf, &appt, &todo, &othr,
+    &gnweek, &gpweek, &togo, &othr, &today, &conf, &appt, &todo, &cut, &paste,
+    &othr,
     /* todo keys */
     &help, &quit, &save, &chgvu, &import, &export, &add, &del, &edit, &view,
     &draw, &othr, &rprio, &lprio, &enote, &vnote, &up, &down, &gnday, &gpday,
@@ -487,6 +498,38 @@ status_bar (void)
   start = pos[which_pan] + 2 * KEYS_CMDS_PER_LINE * (status_page - 1);
   end = MIN (start + 2 * KEYS_CMDS_PER_LINE, pos[which_pan + 1]);
   keys_display_bindings_bar (win[STA].p, binding, start, end);
+}
+
+/* Given an item date expressed in seconds, return its start time in seconds. */
+long
+get_item_time (long date)
+{
+  return (long)(get_item_hour (date) * HOURINSEC
+                + get_item_min (date) * MININSEC);
+}
+
+int
+get_item_hour (long date)
+{
+  struct tm *lt;
+  time_t t;
+
+  t = (time_t)date;
+  lt = localtime (&t);
+
+  return lt->tm_hour;
+}
+
+int
+get_item_min (long date)
+{
+  struct tm *lt;
+  time_t t;
+
+  t = (time_t)date;
+  lt = localtime (&t);
+
+  return lt->tm_min;
 }
 
 long
@@ -511,7 +554,7 @@ date2sec (date_t day, unsigned hour, unsigned min)
   tstart = mktime (&start);
   EXIT_IF (tstart == -1, _("failure in mktime"));
 
-  return (tstart);
+  return tstart;
 }
 
 /* Return a string containing the hour of a given date in seconds. */
@@ -527,7 +570,7 @@ date_sec2hour_str (long sec)
   lt = localtime (&t);
   timestr = (char *) mem_malloc (TIME_LEN);
   (void)snprintf (timestr, TIME_LEN, "%02u:%02u", lt->tm_hour, lt->tm_min);
-  return (timestr);
+  return timestr;
 }
 
 /* Return a string containing the date, given a date in seconds. */

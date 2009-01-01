@@ -1,8 +1,8 @@
-/*	$calcurse: recur.c,v 1.46 2008/12/28 13:13:59 culot Exp $	*/
+/*	$calcurse: recur.c,v 1.47 2009/01/01 17:50:41 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2008 Frederic Culot
+ * Copyright (c) 2004-2009 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,8 +38,147 @@
 #include "mem.h"
 #include "recur.h"
 
-recur_apoint_llist_t *recur_alist_p;
-struct recur_event_s *recur_elist;
+recur_apoint_llist_t             *recur_alist_p;
+struct recur_event_s             *recur_elist;
+static struct recur_event_s       bkp_cut_recur_event;
+static recur_apoint_llist_node_t  bkp_cut_recur_apoint;
+
+static void
+free_exc (struct days_s **exc)
+{
+  struct days_s *o, **i;
+
+  i = exc;
+  for (o = *exc; o; o = o->next)
+    {
+      *i = o->next;
+      mem_free (o);
+      i = &(*i)->next;
+    }
+  *exc = 0;
+}
+
+static void
+recur_add_exc (struct days_s **exc, long day)
+{
+  struct days_s **i, *o;
+  
+  o = mem_malloc (sizeof (struct days_s));
+  o->st = day;
+  i = exc;
+  for (;;)
+    {
+      if (*i == 0 || (*i)->st > day)
+        {
+          o->next = *i;
+          *i = o;
+          break;
+        }
+      i = &(*i)->next;
+    }
+}
+
+static void
+exc_dup (struct days_s **in, struct days_s *exc)
+{
+  struct days_s *p;
+  
+  for (p = exc; p; p = p->next)
+    recur_add_exc (in, p->st);
+}
+
+void
+recur_event_free_bkp (void)
+{
+  if (bkp_cut_recur_event.mesg)
+    {
+      mem_free (bkp_cut_recur_event.mesg);
+      bkp_cut_recur_event.mesg = 0;
+    }
+  if (bkp_cut_recur_event.note)
+    {
+      mem_free (bkp_cut_recur_event.note);
+      bkp_cut_recur_event.note = 0;
+    }
+  if (bkp_cut_recur_event.rpt)
+    {
+      mem_free (bkp_cut_recur_event.rpt);
+      bkp_cut_recur_event.rpt = 0;
+    }
+  if (bkp_cut_recur_event.exc)
+    {
+      free_exc (&bkp_cut_recur_event.exc);
+      bkp_cut_recur_event.exc = 0;
+    }
+}
+
+void
+recur_apoint_free_bkp (void)
+{
+  if (bkp_cut_recur_apoint.mesg)
+    {
+      mem_free (bkp_cut_recur_apoint.mesg);
+      bkp_cut_recur_apoint.mesg = 0;
+    }
+  if (bkp_cut_recur_apoint.note)
+    {
+      mem_free (bkp_cut_recur_apoint.note);
+      bkp_cut_recur_apoint.note = 0;
+    }
+  if (bkp_cut_recur_apoint.rpt)
+    {
+      mem_free (bkp_cut_recur_apoint.rpt);
+      bkp_cut_recur_apoint.rpt = 0;
+    }
+  if (bkp_cut_recur_apoint.exc)
+    {
+      free_exc (&bkp_cut_recur_apoint.exc);
+      bkp_cut_recur_apoint.exc = 0;
+    }
+}
+
+static void
+recur_event_dup (struct recur_event_s *in, struct recur_event_s *bkp)
+{
+  EXIT_IF (!in || !bkp, _("null pointer"));
+
+  bkp->id = in->id;
+  bkp->day = in->day;
+  bkp->mesg = mem_strdup (in->mesg);
+  
+  bkp->rpt = mem_malloc (sizeof (struct rpt_s));
+  bkp->rpt->type = in->rpt->type;
+  bkp->rpt->freq = in->rpt->freq;
+  bkp->rpt->until = in->rpt->until;
+
+  if (in->exc)
+    exc_dup (&bkp->exc, in->exc);
+
+  if (in->note)
+    bkp->note = mem_strdup (in->note);
+}
+
+static void
+recur_apoint_dup (recur_apoint_llist_node_t *in, recur_apoint_llist_node_t *bkp)
+{
+  EXIT_IF (!in || !bkp, _("null pointer"));
+
+  bkp->start = in->start;
+  bkp->dur = in->dur;
+  bkp->state = in->state;
+  bkp->mesg = mem_strdup (in->mesg);
+  
+  bkp->rpt = mem_malloc (sizeof (struct rpt_s));
+  bkp->rpt->type = in->rpt->type;
+  bkp->rpt->freq = in->rpt->freq;
+  bkp->rpt->until = in->rpt->until;
+
+  if (in->exc)
+    exc_dup (&bkp->exc, in->exc);
+
+  if (in->note)
+    bkp->note = mem_strdup (in->note);
+} 
 
 void
 recur_apoint_llist_init (void)
@@ -47,21 +186,6 @@ recur_apoint_llist_init (void)
   recur_alist_p = mem_malloc (sizeof (recur_apoint_llist_t));
   recur_alist_p->root = NULL;
   pthread_mutex_init (&(recur_alist_p->mutex), NULL);
-}
-
-static void
-free_exc (struct days_s *exc)
-{
-  struct days_s *o, **i;
-
-  i = &exc;
-  for (o = exc; o; o = o->next)
-    {
-      *i = o->next;
-      mem_free (o);
-      i = &(*i)->next;
-    }
-  mem_free (exc);
 }
 
 void
@@ -79,31 +203,63 @@ recur_apoint_llist_free (void)
       if (o->rpt)
         mem_free (o->rpt);
       if (o->exc)
-        free_exc (o->exc);
+        {
+          free_exc (&o->exc);
+          o->exc = 0;
+        }
       mem_free (o);
       i = &(*i)->next;
     }
   mem_free (recur_alist_p);
 }
 
+void
+recur_event_llist_free (void)
+{
+  struct recur_event_s *o, **i;
+
+  i = &recur_elist;
+  for (o = recur_elist; o; o = o->next)
+    {
+      *i = o->next;
+      mem_free (o->mesg);
+      if (o->note)
+        mem_free (o->note);
+      if (o->rpt)
+        mem_free (o->rpt);
+      if (o->exc)
+        {
+          free_exc (&o->exc);
+          o->exc = 0;
+        }
+      mem_free (o);
+      i = &(*i)->next;
+    }
+}
+
 /* Insert a new recursive appointment in the general linked list */
 recur_apoint_llist_node_t *
 recur_apoint_new (char *mesg, char *note, long start, long dur, char state,
-		  int type, int freq, long until, struct days_s *except)
+		  int type, int freq, long until, struct days_s **except)
 {
   recur_apoint_llist_node_t *o, **i;
-  o = (recur_apoint_llist_node_t *)
-      mem_malloc (sizeof (recur_apoint_llist_node_t));
-  o->rpt = (struct rpt_s *) mem_malloc (sizeof (struct rpt_s));
+  
+  o = mem_malloc (sizeof (recur_apoint_llist_node_t));
+  o->rpt = mem_malloc (sizeof (struct rpt_s));
   o->mesg = mem_strdup (mesg);
-  o->note = (note != NULL) ? strdup (note) : NULL;
+  o->note = (note != 0) ? strdup (note) : 0;
   o->start = start;
   o->state = state;
   o->dur = dur;
   o->rpt->type = type;
   o->rpt->freq = freq;
   o->rpt->until = until;
-  o->exc = except;
+  o->exc = 0;
+  if (except && *except)
+    {
+      exc_dup (&o->exc, *except);
+      free_exc (except);
+    }
 
   pthread_mutex_lock (&(recur_alist_p->mutex));
   i = &recur_alist_p->root;
@@ -125,19 +281,26 @@ recur_apoint_new (char *mesg, char *note, long start, long dur, char state,
 /* Insert a new recursive event in the general linked list */
 struct recur_event_s *
 recur_event_new (char *mesg, char *note, long day, int id, int type, int freq,
-		 long until, struct days_s *except)
+		 long until, struct days_s **except)
 {
   struct recur_event_s *o, **i;
-  o = (struct recur_event_s *) mem_malloc (sizeof (struct recur_event_s));
-  o->rpt = (struct rpt_s *) mem_malloc (sizeof (struct rpt_s));
+  
+  o = mem_malloc (sizeof (struct recur_event_s));
+  o->rpt = mem_malloc (sizeof (struct rpt_s));
   o->mesg = mem_strdup (mesg);
-  (void)strncpy (o->mesg, mesg, strlen (mesg) + 1);
+  o->note = (note != 0) ? strdup (note) : 0;  
   o->day = day;
   o->id = id;
   o->rpt->type = type;
   o->rpt->freq = freq;
   o->rpt->until = until;
-  o->exc = except;
+  o->exc = 0;
+  if (except && *except)
+    {
+      exc_dup (&o->exc, *except);
+      free_exc (except);
+    }
+
   i = &recur_elist;
   for (;;)
     {
@@ -236,7 +399,7 @@ recur_write_exc (struct days_s *exc, FILE *f)
 /* Load the recursive appointment description */
 recur_apoint_llist_node_t *
 recur_apoint_scan (FILE *f, struct tm start, struct tm end, char type,
-		   int freq, struct tm until, char *note, struct days_s *exc,
+		   int freq, struct tm until, char *note, struct days_s **exc,
 		   char state)
 {
   struct tm *lt;
@@ -286,14 +449,10 @@ recur_apoint_scan (FILE *f, struct tm start, struct tm end, char type,
 /* Load the recursive events from file */
 struct recur_event_s *
 recur_event_scan (FILE *f, struct tm start, int id, char type, int freq,
-		  struct tm until, char *note, struct days_s *exc)
+		  struct tm until, char *note, struct days_s **exc)
 {
-  struct tm *lt;
   char buf[MESG_MAXSIZE], *nl;
-  time_t tstart, t, tuntil;
-
-  t = time (NULL);
-  lt = localtime (&t);
+  time_t tstart, tuntil;
 
   /* Read the event description */
   (void)fgets (buf, MESG_MAXSIZE, f);
@@ -322,8 +481,8 @@ recur_event_scan (FILE *f, struct tm start, int id, char type, int freq,
   EXIT_IF (tstart == -1 || tuntil == -1,
            _("date error in event"));
 
-  return (recur_event_new (buf, note, tstart, id, recur_char2def (type),
-                           freq, tuntil, exc));
+  return recur_event_new (buf, note, tstart, id, recur_char2def (type),
+                          freq, tuntil, exc);
 }
 
 /* Writting of a recursive appointment into file. */
@@ -519,7 +678,6 @@ recur_event_erase (long start, unsigned num, unsigned delete_whole,
 {
   unsigned n = 0;
   struct recur_event_s *i, **iptr;
-  struct days_s *o, **j;
 
   iptr = &recur_elist;
   for (i = recur_elist; i != 0; i = i->next)
@@ -531,34 +689,33 @@ recur_event_erase (long start, unsigned num, unsigned delete_whole,
 	    {
 	      if (delete_whole)
 		{
-		  if (flag == ERASE_FORCE_ONLY_NOTE)
-		    erase_note (&i->note, flag);
-		  else
-		    {
+                  switch (flag)
+                    {
+                    case ERASE_FORCE_ONLY_NOTE:
+                      erase_note (&i->note, flag);                      
+                      break;
+                    case ERASE_CUT:
+                      recur_event_free_bkp ();
+                      recur_event_dup (i, &bkp_cut_recur_event);
+                      if (i->note)
+                        mem_free (i->note);
+                      /* FALLTHROUGH */
+                    default:
 		      *iptr = i->next;
 		      mem_free (i->mesg);
 		      mem_free (i->rpt);
-		      mem_free (i->exc);
-		      erase_note (&i->note, flag);
+		      free_exc (&i->exc);
+                      i->exc = 0;
+                      if (flag != ERASE_FORCE_KEEP_NOTE && flag != ERASE_CUT)
+                        erase_note (&i->note, flag);
 		      mem_free (i);
+                      break;
 		    }
 		  return;
 		}
 	      else
 		{
-		  o = (struct days_s *) mem_malloc (sizeof (struct days_s));
-		  o->st = start;
-		  j = &i->exc;
-		  for (;;)
-		    {
-		      if (*j == 0 || (*j)->st > start)
-			{
-			  o->next = *j;
-			  *j = o;
-			  break;
-			}
-		      j = &(*j)->next;
-		    }
+                  recur_add_exc (&i->exc, start);
 		  return;
 		}
 	    }
@@ -580,7 +737,6 @@ recur_apoint_erase (long start, unsigned num, unsigned delete_whole,
 {
   unsigned n = 0;
   recur_apoint_llist_node_t *i, **iptr;
-  struct days_s *o, **j;
   int need_check_notify = 0;
 
   pthread_mutex_lock (&(recur_alist_p->mutex));
@@ -596,37 +752,36 @@ recur_apoint_erase (long start, unsigned num, unsigned delete_whole,
 		need_check_notify = notify_same_recur_item (i);
 	      if (delete_whole)
 		{
-		  if (flag == ERASE_FORCE_ONLY_NOTE)
-		    erase_note (&i->note, flag);
-		  else
-		    {
+                  switch (flag)
+                    {
+                    case ERASE_FORCE_ONLY_NOTE:
+                      erase_note (&i->note, flag);
+                      break;
+                    case ERASE_CUT:
+                      recur_apoint_free_bkp ();
+                      recur_apoint_dup (i, &bkp_cut_recur_apoint);
+                      if (i->note)
+                        mem_free (i->note);
+                      /* FALLTHROUGH */
+                    default:
 		      *iptr = i->next;
 		      mem_free (i->mesg);
 		      mem_free (i->rpt);
-		      mem_free (i->exc);
-		      erase_note (&i->note, flag);
+		      free_exc (&i->exc);
+                      i->exc = 0;
+                      if (flag != ERASE_FORCE_KEEP_NOTE && flag != ERASE_CUT)
+                        erase_note (&i->note, flag);
 		      mem_free (i);
 		      pthread_mutex_unlock (&(recur_alist_p->mutex));
 		      if (need_check_notify)
 			notify_check_next_app ();
+                      break;
 		    }
 		  return;
 		}
 	      else
 		{
-		  o = (struct days_s *) mem_malloc (sizeof (struct days_s));
-		  o->st = start;
-		  j = &i->exc;
-		  for (;;)
-		    {
-		      if (*j == 0 || (*j)->st > start)
-			{
-			  o->next = *j;
-			  *j = o;
-			  break;
-			}
-		      j = &(*j)->next;
-		    }
+                  recur_add_exc (&i->exc, start);
 		  pthread_mutex_unlock (&(recur_alist_p->mutex));
 		  if (need_check_notify)
 		    notify_check_next_app ();
@@ -800,14 +955,10 @@ struct days_s *
 recur_exc_scan (FILE *data_file)
 {
   int c = 0;
-  struct tm *lt, day;
-  time_t t;
+  struct tm day;
   struct days_s *exc_head, *exc;
 
-  exc_head = NULL;
-  t = time (NULL);
-  lt = localtime (&t);
-  day = *lt;
+  exc_head = 0;
   while ((c = getc (data_file)) == '!')
     {
       (void)ungetc (c, data_file);
@@ -816,16 +967,17 @@ recur_exc_scan (FILE *data_file)
 	{
           EXIT (_("syntax error in item date"));
 	}
-      day.tm_sec = 0;
+      day.tm_hour = 12;
+      day.tm_min = day.tm_sec = 0;
       day.tm_isdst = -1;
       day.tm_year -= 1900;
       day.tm_mon--;
-      exc = (struct days_s *) mem_malloc (sizeof (struct days_s));
+      exc = mem_malloc (sizeof (struct days_s));
       exc->st = mktime (&day);
       exc->next = exc_head;
       exc_head = exc;
     }
-  return (exc_head);
+  return exc_head;
 }
 
 /*
@@ -950,3 +1102,61 @@ recur_apoint_switch_notify (long date, int recur_nb)
   /* NOTREACHED */
 }
 
+void
+recur_event_paste_item (void)
+{
+  long new_start, time_shift;
+
+  new_start = date2sec (*calendar_get_slctd_day (), 12, 0);
+  time_shift = new_start - bkp_cut_recur_event.day;
+
+  bkp_cut_recur_event.day += time_shift;
+  if (bkp_cut_recur_event.rpt->until != 0)
+    bkp_cut_recur_event.rpt->until += time_shift;
+  if (bkp_cut_recur_event.exc)
+    {
+      struct days_s *exc;
+      
+      for (exc = bkp_cut_recur_event.exc; exc != 0; exc = exc->next)
+        exc->st += time_shift;
+    }
+  
+  (void)recur_event_new (bkp_cut_recur_event.mesg, bkp_cut_recur_event.note,
+                         bkp_cut_recur_event.day, bkp_cut_recur_event.id,
+                         bkp_cut_recur_event.rpt->type,
+                         bkp_cut_recur_event.rpt->freq,
+                         bkp_cut_recur_event.rpt->until,
+                         &bkp_cut_recur_event.exc);
+  recur_event_free_bkp ();
+}
+
+void
+recur_apoint_paste_item (void)
+{
+  long new_start, time_shift;
+
+  new_start = date2sec (*calendar_get_slctd_day (),
+                        get_item_hour (bkp_cut_recur_apoint.start),
+                        get_item_min (bkp_cut_recur_apoint.start));
+  time_shift = new_start - bkp_cut_recur_apoint.start;
+
+  bkp_cut_recur_apoint.start += time_shift;
+  if (bkp_cut_recur_apoint.rpt->until != 0)
+    bkp_cut_recur_apoint.rpt->until += time_shift;
+  if (bkp_cut_recur_apoint.exc)
+    {
+      struct days_s *exc;
+      
+      for (exc = bkp_cut_recur_apoint.exc; exc != 0; exc = exc->next)
+        exc->st += time_shift;
+    }
+  
+  (void)recur_apoint_new (bkp_cut_recur_apoint.mesg, bkp_cut_recur_apoint.note,
+                          bkp_cut_recur_apoint.start, bkp_cut_recur_apoint.dur,
+                          bkp_cut_recur_apoint.state,
+                          bkp_cut_recur_apoint.rpt->type,
+                          bkp_cut_recur_apoint.rpt->freq,
+                          bkp_cut_recur_apoint.rpt->until,
+                          &bkp_cut_recur_apoint.exc);
+  recur_apoint_free_bkp ();
+}

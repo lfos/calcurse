@@ -1,8 +1,8 @@
-/*	$calcurse: apoint.c,v 1.29 2008/12/28 13:13:59 culot Exp $	*/
+/*	$calcurse: apoint.c,v 1.30 2009/01/01 17:50:41 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2008 Frederic Culot
+ * Copyright (c) 2004-2009 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,8 +41,37 @@
 #include "mem.h"
 #include "apoint.h"
 
-apoint_llist_t *alist_p;
-static int hilt = 0;
+apoint_llist_t             *alist_p;
+static apoint_llist_node_t  bkp_cut_apoint;
+static int                  hilt;
+
+void
+apoint_free_bkp (void)
+{
+  if (bkp_cut_apoint.mesg)
+    {
+      mem_free (bkp_cut_apoint.mesg);
+      bkp_cut_apoint.mesg = 0;
+    }
+  if (bkp_cut_apoint.note)
+    {
+      mem_free (bkp_cut_apoint.note);
+      bkp_cut_apoint.note = 0;
+    }
+}
+
+static void
+apoint_dup (apoint_llist_node_t *in, apoint_llist_node_t *bkp)
+{
+  EXIT_IF (!in || !bkp, _("null pointer"));
+
+  bkp->start = in->start;
+  bkp->dur = in->dur;
+  bkp->state = in->state;
+  bkp->mesg = mem_strdup (in->mesg);
+  if (in->note)
+    bkp->note = mem_strdup (in->note);
+}
 
 void
 apoint_llist_init (void)
@@ -303,6 +332,62 @@ apoint_delete (conf_t *conf, unsigned *nb_events, unsigned *nb_apoints)
     }
 }
 
+/* Cut an item, so that it can be pasted somewhere else later. */
+void
+apoint_cut (unsigned *nb_events, unsigned *nb_apoints)
+{
+  const int NBITEMS = *nb_apoints + *nb_events;
+  int item_type, to_be_removed;  
+  long date;
+
+  if (NBITEMS == 0)
+    return;
+
+  to_be_removed = 0;
+  date = calendar_get_slctd_day_sec ();
+  item_type = day_cut_item (date, hilt);
+  if (item_type == EVNT || item_type == RECUR_EVNT)
+    {
+      (*nb_events)--;
+      to_be_removed = 1;
+    }
+  else if (item_type == APPT || item_type == RECUR_APPT)
+    {
+      (*nb_apoints)--;
+      to_be_removed = 3;
+    }
+  else
+    EXIT (_("no such type"));
+  /* NOTREACHED */
+  
+  if (hilt > 1)
+    hilt--;
+  if (apad->first_onscreen >= to_be_removed)
+    apad->first_onscreen = apad->first_onscreen - to_be_removed;
+  if (NBITEMS == 1)
+    hilt = 0;
+}
+
+/* Paste a previously cut item. */
+void
+apoint_paste (unsigned *nb_events, unsigned *nb_apoints)
+{
+  int item_type;
+  long date;
+
+  date = calendar_get_slctd_day_sec ();
+  item_type = day_paste_item (date);
+  if (item_type == EVNT || item_type == RECUR_EVNT)
+    (*nb_events)++;
+  else if (item_type == APPT || item_type == RECUR_APPT)
+    (*nb_apoints)++;
+  else
+    return;
+  
+  if (hilt == 0)
+    hilt++;
+}
+
 unsigned
 apoint_inday (apoint_llist_node_t *i, long start)
 {
@@ -434,22 +519,30 @@ apoint_delete_bynum (long start, unsigned num, erase_flag_e flag)
 	{
 	  if (n == num)
 	    {
-	      if (flag == ERASE_FORCE_ONLY_NOTE)
+              switch (flag)
                 {
+                case ERASE_FORCE_ONLY_NOTE:
                   erase_note (&i->note, flag);
                   pthread_mutex_unlock (&(alist_p->mutex));
-                }
-	      else
-		{
+                  break;
+                case ERASE_CUT:
+                  apoint_free_bkp ();
+                  apoint_dup (i, &bkp_cut_apoint);
+                  if (i->note)
+                    mem_free (i->note);
+                  /* FALLTHROUGH */
+                default:
 		  if (notify_bar ())
 		    need_check_notify = notify_same_item (i->start);
 		  *iptr = i->next;
 		  mem_free (i->mesg);
-		  erase_note (&i->note, flag);
+                  if (flag != ERASE_FORCE_KEEP_NOTE && flag != ERASE_CUT)
+                    erase_note (&i->note, flag);
 		  mem_free (i);
 		  pthread_mutex_unlock (&(alist_p->mutex));
 		  if (need_check_notify)
 		    notify_check_next_app ();
+                  break;
 		}
 	      return;
 	    }
@@ -671,4 +764,17 @@ apoint_update_panel (int which_pan)
 		win[APP].y + title_lines + 1, win[APP].x + bordr,
 		win[APP].y + win[APP].h - 2 * bordr,
 		win[APP].x + win[APP].w - 3 * bordr);
+}
+
+void
+apoint_paste_item (void)
+{
+  long bkp_time, bkp_start;
+
+  bkp_time = get_item_time (bkp_cut_apoint.start);
+  bkp_start = calendar_get_slctd_day_sec () + bkp_time;
+  (void)apoint_new (bkp_cut_apoint.mesg, bkp_cut_apoint.note,
+                    bkp_start, bkp_cut_apoint.dur,
+                    bkp_cut_apoint.state);
+  apoint_free_bkp ();
 }

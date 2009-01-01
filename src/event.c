@@ -1,8 +1,8 @@
-/*	$calcurse: event.c,v 1.9 2008/12/28 13:13:59 culot Exp $	*/
+/*	$calcurse: event.c,v 1.10 2009/01/01 17:50:41 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2008 Frederic Culot
+ * Copyright (c) 2004-2009 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,52 @@
 #include "mem.h"
 #include "event.h"
 
-struct event_s *eventlist;
+struct event_s        *eventlist;
+static struct event_s  bkp_cut_event;
+
+void
+event_free_bkp (void)
+{
+  if (bkp_cut_event.mesg)
+    {
+      mem_free (bkp_cut_event.mesg);
+      bkp_cut_event.mesg = 0;
+    }
+  if (bkp_cut_event.note)
+    {
+      mem_free (bkp_cut_event.note);
+      bkp_cut_event.note = 0;
+    }
+}
+
+static void
+event_dup (struct event_s *in, struct event_s *bkp)
+{
+  EXIT_IF (!in || !bkp, _("null pointer"));
+
+  bkp->id = in->id;
+  bkp->day = in->day;
+  bkp->mesg = mem_strdup (in->mesg);
+  if (in->note)
+    bkp->note = mem_strdup (in->note);
+}
+
+void
+event_llist_free (void)
+{
+  struct event_s *o, **i;
+
+  i = &eventlist;
+  for (o = eventlist; o; o = o->next)
+    {
+      *i = o->next;
+      mem_free (o->mesg);
+      if (o->note)
+        mem_free (o->note);
+      mem_free (o);
+      i = &(*i)->next;
+    }
+}
 
 /* Create a new event */
 struct event_s *
@@ -154,15 +199,25 @@ event_delete_bynum (long start, unsigned num, erase_flag_e flag)
 	{
 	  if (n == num)
 	    {
-	      if (flag == ERASE_FORCE_ONLY_NOTE)
-		erase_note (&i->note, flag);
-	      else
-		{
+              switch (flag)
+                {
+                case ERASE_FORCE_ONLY_NOTE:
+                  erase_note (&i->note, flag);
+                  break;
+                case ERASE_CUT:
+                  event_free_bkp ();
+                  event_dup (i, &bkp_cut_event);
+                  if (i->note)
+                    mem_free (i->note);
+                  /* FALLTHROUGH */
+                default:
 		  *iptr = i->next;
 		  mem_free (i->mesg);
-		  erase_note (&i->note, flag);
+                  if (flag != ERASE_FORCE_KEEP_NOTE && flag != ERASE_CUT)
+                    erase_note (&i->note, flag);
 		  mem_free (i);
-		}
+                  break;
+                }
 	      return;
 	    }
 	  n++;
@@ -171,4 +226,13 @@ event_delete_bynum (long start, unsigned num, erase_flag_e flag)
     }
   EXIT (_("event not found"));
   /* NOTREACHED */  
+}
+
+void
+event_paste_item (void)
+{
+  (void)event_new (bkp_cut_event.mesg, bkp_cut_event.note,
+                   date2sec (*calendar_get_slctd_day (), 12, 0),
+                   bkp_cut_event.id);
+  event_free_bkp ();
 }

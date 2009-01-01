@@ -1,8 +1,8 @@
-/*	$calcurse: apoint.h,v 1.15 2008/12/28 13:13:59 culot Exp $	*/
+/*	$calcurse: apoint.h,v 1.16 2009/01/01 17:50:41 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2008 Frederic Culot
+ * Copyright (c) 2004-2009 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,6 +59,7 @@ apoint_llist_t;
 
 extern apoint_llist_t *alist_p;
 
+void                 apoint_free_bkp (void);
 void                 apoint_llist_init (void);
 void                 apoint_llist_free (void);
 void                 apoint_hilt_set (int);
@@ -68,6 +69,8 @@ int                  apoint_hilt (void);
 apoint_llist_node_t *apoint_new (char *, char *, long, long, char);
 void                 apoint_add (void);
 void                 apoint_delete (conf_t *, unsigned *, unsigned *);
+void                 apoint_cut (unsigned *, unsigned *);
+void                 apoint_paste (unsigned *, unsigned *);
 unsigned             apoint_inday (apoint_llist_node_t *, long);
 void                 apoint_sec2str (apoint_llist_node_t *, int, long, char *,
                                      char *);
@@ -81,5 +84,6 @@ struct notify_app_s *apoint_check_next (struct notify_app_s *, long);
 apoint_llist_node_t *apoint_recur_s2apoint_s (recur_apoint_llist_node_t *);
 void                 apoint_switch_notify (void);
 void                 apoint_update_panel (int);
+void                 apoint_paste_item (void);
 
 #endif /* CALCURSE_APOINT_H */
