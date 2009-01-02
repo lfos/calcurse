@@ -1,4 +1,4 @@
-/*	$calcurse: apoint.c,v 1.31 2009/01/02 19:52:32 culot Exp $	*/
+/*	$calcurse: apoint.c,v 1.32 2009/01/02 22:28:54 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -324,8 +324,8 @@ apoint_delete (conf_t *conf, unsigned *nb_events, unsigned *nb_apoints)
 
 	  if (hilt > 1)
 	    hilt--;
-	  if (apad->first_onscreen >= to_be_removed)
-	    apad->first_onscreen = apad->first_onscreen - to_be_removed;
+	  if (apad.first_onscreen >= to_be_removed)
+	    apad.first_onscreen = apad.first_onscreen - to_be_removed;
 	  if (nb_items == 1)
 	    hilt = 0;
 	}
@@ -362,8 +362,8 @@ apoint_cut (unsigned *nb_events, unsigned *nb_apoints)
   
   if (hilt > 1)
     hilt--;
-  if (apad->first_onscreen >= to_be_removed)
-    apad->first_onscreen = apad->first_onscreen - to_be_removed;
+  if (apad.first_onscreen >= to_be_removed)
+    apad.first_onscreen = apad.first_onscreen - to_be_removed;
   if (NBITEMS == 1)
     hilt = 0;
 }
@@ -592,9 +592,9 @@ apoint_scroll_pad_down (int nb_events_inday, int win_length)
     item_last_line = item_first_line;
   else
     item_last_line = item_first_line + 1;
-  pad_last_line = apad->first_onscreen + awin_length;
+  pad_last_line = apad.first_onscreen + awin_length;
   if (item_last_line >= pad_last_line)
-    apad->first_onscreen = item_last_line - awin_length;
+    apad.first_onscreen = item_last_line - awin_length;
 }
 
 /* 
@@ -607,8 +607,8 @@ apoint_scroll_pad_up (int nb_events_inday)
   int item_first_line = 0;
 
   item_first_line = get_item_line (hilt, nb_events_inday);
-  if (item_first_line < apad->first_onscreen)
-    apad->first_onscreen = item_first_line;
+  if (item_first_line < apad.first_onscreen)
+    apad.first_onscreen = item_first_line;
 }
 
 /*
@@ -745,11 +745,11 @@ apoint_update_panel (int which_pan)
   custom_remove_attr (win[APP].p, ATTR_HIGHEST);
 
   /* Draw the scrollbar if necessary. */
-  if ((apad->length >= app_length) || (apad->first_onscreen > 0))
+  if ((apad.length >= app_length) || (apad.first_onscreen > 0))
     {
-      float ratio = ((float) app_length) / ((float) apad->length);
+      float ratio = ((float) app_length) / ((float) apad.length);
       int sbar_length = (int) (ratio * app_length);
-      int highend = (int) (ratio * apad->first_onscreen);
+      int highend = (int) (ratio * apad.first_onscreen);
       bool hilt_bar = (which_pan == APP) ? true : false;
       int sbar_top = highend + title_lines + 1;
 
@@ -760,7 +760,7 @@ apoint_update_panel (int which_pan)
     }
 
   wnoutrefresh (win[APP].p);
-  pnoutrefresh (apad->ptrwin, apad->first_onscreen, 0,
+  pnoutrefresh (apad.ptrwin, apad.first_onscreen, 0,
 		win[APP].y + title_lines + 1, win[APP].x + bordr,
 		win[APP].y + win[APP].h - 2 * bordr,
 		win[APP].x + win[APP].w - 3 * bordr);

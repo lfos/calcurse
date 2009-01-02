@@ -2,7 +2,11 @@
 
 	* src/io.c (io_stop_pthread_save): do not crash when canceling the
 	thread if it was not started before
-	
+
+	* src/vars.c (vars_free): suppressed
+
+	* src/notify.c (notify_free_vars, notify_free_bar): suppressed
+
 2009-01-01  Frederic Culot  <frederic@culot.org>
 
 	* src/event.c (event_free_bkp, event_llist_free): new functions

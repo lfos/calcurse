@@ -1,4 +1,4 @@
-/*	$calcurse: day.c,v 1.46 2009/01/02 19:52:32 culot Exp $	*/
+/*	$calcurse: day.c,v 1.47 2009/01/02 22:28:54 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -309,16 +309,16 @@ day_process_storage (date_t *slctd_date, bool day_changed,
   date = date2sec (day, 0, 0);
 
   /* Inits */
-  if (apad->length != 0)
-    delwin (apad->ptrwin);
+  if (apad.length != 0)
+    delwin (apad.ptrwin);
 
   /* Store the events and appointments (recursive and normal items). */
-  apad->length = day_store_items (date, &inday->nb_events, &inday->nb_apoints);
+  apad.length = day_store_items (date, &inday->nb_events, &inday->nb_apoints);
 
   /* Create the new pad with its new length. */
   if (day_changed)
-    apad->first_onscreen = 0;
-  apad->ptrwin = newpad (apad->length, apad->width);
+    apad.first_onscreen = 0;
+  apad.ptrwin = newpad (apad.length, apad.width);
 
   return (inday);
 }
@@ -347,7 +347,7 @@ display_item_date (int incolor, apoint_llist_node_t *i, int type, long date,
   char a_st[100], a_end[100];
   int recur = 0;
 
-  win = apad->ptrwin;
+  win = apad.ptrwin;
   apoint_sec2str (i, type, date, a_st, a_end);
   if (type == RECUR_EVNT || type == RECUR_APPT)
     recur = 1;
@@ -377,7 +377,7 @@ display_item (int incolor, char *msg, int recur, int note, int len, int y,
   int ch_recur, ch_note;
   char buf[len];
 
-  win = apad->ptrwin;
+  win = apad.ptrwin;
   ch_recur = (recur) ? '*' : ' ';
   ch_note = (note) ? '>' : ' ';
   if (incolor == 0)
@@ -442,8 +442,8 @@ day_write_pad (long date, int width, int length, int incolor)
 	  /* Draw a line between events and appointments. */
 	  if (line > 0 && draw_line)
 	    {
-	      wmove (apad->ptrwin, line, 0);
-	      whline (apad->ptrwin, 0, width);
+	      wmove (apad.ptrwin, line, 0);
+	      whline (apad.ptrwin, 0, width);
 	      draw_line = false;
 	    }
 	  /* Last print the appointments for current day. */

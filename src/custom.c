@@ -1,8 +1,8 @@
-/*	$calcurse: custom.c,v 1.33 2008/12/28 19:41:45 culot Exp $	*/
+/*	$calcurse: custom.c,v 1.34 2009/01/02 22:28:54 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2008 Frederic Culot
+ * Copyright (c) 2004-2009 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -222,7 +222,7 @@ custom_load_conf (conf_t *conf, int background)
       (void)keys_getch (win[STA].p);
     }
   var = CUSTOM_CONF_NOVARIABLE;
-  pthread_mutex_lock (&nbar->mutex);
+  pthread_mutex_lock (&nbar.mutex);
   for (;;)
     {
       if (fgets (buf, 99, data_file) == NULL)
@@ -277,23 +277,23 @@ custom_load_conf (conf_t *conf, int background)
 	  var = 0;
 	  break;
 	case CUSTOM_CONF_NOTIFYBARSHOW:
-	  nbar->show = fill_config_var (e_conf);
+	  nbar.show = fill_config_var (e_conf);
 	  var = 0;
 	  break;
 	case CUSTOM_CONF_NOTIFYBARDATE:
-	  (void)strncpy (nbar->datefmt, e_conf, strlen (e_conf) + 1);
+	  (void)strncpy (nbar.datefmt, e_conf, strlen (e_conf) + 1);
 	  var = 0;
 	  break;
 	case CUSTOM_CONF_NOTIFYBARCLOCK:
-	  (void)strncpy (nbar->timefmt, e_conf, strlen (e_conf) + 1);
+	  (void)strncpy (nbar.timefmt, e_conf, strlen (e_conf) + 1);
 	  var = 0;
 	  break;
 	case CUSTOM_CONF_NOTIFYBARWARNING:
-	  nbar->cntdwn = atoi (e_conf);
+	  nbar.cntdwn = atoi (e_conf);
 	  var = 0;
 	  break;
 	case CUSTOM_CONF_NOTIFYBARCOMMAND:
-	  (void)strncpy (nbar->cmd, e_conf, strlen (e_conf) + 1);
+	  (void)strncpy (nbar.cmd, e_conf, strlen (e_conf) + 1);
 	  var = 0;
 	  break;
 	case CUSTOM_CONF_OUTPUTDATEFMT:
@@ -346,7 +346,7 @@ custom_load_conf (conf_t *conf, int background)
 	var = CUSTOM_CONF_INPUTDATEFMT;
     }
   file_close (data_file, __FILE_POS__);
-  pthread_mutex_unlock (&nbar->mutex);
+  pthread_mutex_unlock (&nbar.mutex);
 }
 
 /* Draws the configuration bar */
@@ -436,8 +436,6 @@ display_layout_config (window_t *lwin, int mark, int cursor, int need_reset)
     {
       char label[BUFSIZ];
       
-      if (lwin->p != NULL)
-	delwin (lwin->p);
       (void)snprintf (label, BUFSIZ, _("CalCurse %s | layout configuration"),
                       VERSION);
       custom_confwin_init (lwin, label);
@@ -551,6 +549,13 @@ custom_layout_config (void)
 void
 custom_confwin_init (window_t *confwin, char *label)
 {
+  if (confwin->p)
+    {
+      erase_window_part (confwin->p, confwin->x, confwin->y,
+                         confwin->x + confwin->w, confwin->y + confwin->h);
+      (void)delwin (confwin->p);
+    }
+  
   wins_get_config ();
   confwin->h = (notify_bar ())? row - 3 : row - 2;
   confwin->p = newwin (confwin->h, col, 0, 0);
@@ -636,8 +641,6 @@ display_color_config (window_t *cwin, int *mark_fore, int *mark_back,
 
   if (need_reset)
     {
-      if (cwin->p != NULL)
-	delwin (cwin->p);
       (void)snprintf (label, BUFSIZ, _("CalCurse %s | color theme"), VERSION);
       custom_confwin_init (cwin, label);
     }
@@ -731,7 +734,7 @@ custom_color_config (void)
   cursor = 0;
   need_reset = 1;
   theme_changed = 0;
-  conf_win.p = NULL;
+  conf_win.p = 0;
   display_color_config (&conf_win, &mark_fore, &mark_back, cursor,
 			need_reset, theme_changed);
 

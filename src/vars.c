@@ -1,4 +1,4 @@
-/*	$calcurse: vars.c,v 1.13 2008/12/28 19:41:45 culot Exp $	*/
+/*	$calcurse: vars.c,v 1.14 2009/01/02 22:28:54 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -92,10 +92,10 @@ char path_notes[] = "";
 char path_keys[] = "";
 
 /* Variable to handle pads. */
-struct pad_s *apad;
+struct pad_s apad;
 
 /* Variable to store notify-bar settings. */
-struct nbar_s *nbar;
+struct nbar_s nbar;
 
 /*
  * Variables init 
@@ -135,19 +135,12 @@ vars_init (conf_t *conf)
   calendar_set_first_day_of_week (MONDAY);
 
   /* Pad structure to scroll text inside the appointment panel */
-  apad = (struct pad_s *) mem_malloc (sizeof (struct pad_s));
-  apad->length = 1;
-  apad->first_onscreen = 0;
+  apad.length = 1;
+  apad.first_onscreen = 0;
 
   /* Attribute definitions for color and non-color terminals */
   custom_init_attr ();
 
   /* Start at the current date */
   calendar_init_slctd_day ();
-}
-
-void
-vars_free (void)
-{
-  mem_free (apad);
 }

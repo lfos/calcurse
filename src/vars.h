@@ -1,8 +1,8 @@
-/*	$calcurse: vars.h,v 1.28 2008/12/28 19:41:45 culot Exp $	*/
+/*	$calcurse: vars.h,v 1.29 2009/01/02 22:28:54 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2008 Frederic Culot
+ * Copyright (c) 2004-2009 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -119,10 +119,9 @@ extern char           path_apts[BUFSIZ];
 extern char           path_conf[BUFSIZ];
 extern char           path_keys[BUFSIZ];
 extern char           path_notes[BUFSIZ];
-extern struct pad_s  *apad;
-extern struct nbar_s *nbar;
+extern struct pad_s   apad;
+extern struct nbar_s  nbar;
 
 void vars_init (conf_t *conf);
-void vars_free (void);
 
 #endif /* CALCURSE_VARS_H */

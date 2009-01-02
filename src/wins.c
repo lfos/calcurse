@@ -1,4 +1,4 @@
-/*	$calcurse: wins.c,v 1.21 2008/12/28 19:41:45 culot Exp $	*/
+/*	$calcurse: wins.c,v 1.22 2009/01/02 22:28:54 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -103,8 +103,8 @@ wins_init (void)
   win[APP].p = newwin (win[APP].h, win[APP].w, win[APP].y, win[APP].x);
   (void)snprintf (label, BUFSIZ, _("Appointments"));
   wins_show (win[APP].p, label);
-  apad->width = win[APP].w - 3;
-  apad->ptrwin = newpad (apad->length, apad->width);
+  apad.width = win[APP].w - 3;
+  apad.ptrwin = newpad (apad.length, apad.width);
 
   win[TOD].p = newwin (win[TOD].h, win[TOD].w, win[TOD].y, win[TOD].x);
   (void)snprintf (label, BUFSIZ, _("ToDo"));
@@ -195,7 +195,7 @@ wins_reinit (void)
   delwin (win[STA].p);
   delwin (win[CAL].p);
   delwin (win[APP].p);
-  delwin (apad->ptrwin);
+  delwin (apad.ptrwin);
   delwin (win[TOD].p);
   wins_get_config ();
   wins_init ();

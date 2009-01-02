@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.53 2009/01/02 19:52:32 culot Exp $	*/
+/*	$calcurse: io.c,v 1.54 2009/01/02 22:28:54 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -298,9 +298,9 @@ static void
 ical_export_valarm (FILE *stream)
 {
   (void)fprintf (stream, "BEGIN:VALARM\n");
-  pthread_mutex_lock (&nbar->mutex);
-  (void)fprintf (stream, "TRIGGER:-P%dS\n", nbar->cntdwn);
-  pthread_mutex_unlock (&nbar->mutex);
+  pthread_mutex_lock (&nbar.mutex);
+  (void)fprintf (stream, "TRIGGER:-P%dS\n", nbar.cntdwn);
+  pthread_mutex_unlock (&nbar.mutex);
   (void)fprintf (stream, "ACTION:DISPLAY\n");
   (void)fprintf (stream, "END:VALARM\n");
 }
@@ -871,34 +871,34 @@ io_save_cal (conf_t *conf, io_save_display_t display)
       (void)fprintf (data_file, "%d\n", wins_layout ());
 
       if (ui_mode == UI_CURSES)
-        pthread_mutex_lock (&nbar->mutex);
+        pthread_mutex_lock (&nbar.mutex);
       (void)fprintf (data_file,
                      "\n# If this option is set to yes, "
                      "notify-bar will be displayed :\n");
       (void)fprintf (data_file, "notify-bar_show=\n");
-      (void)fprintf (data_file, "%s\n", (nbar->show) ? "yes" : "no");
+      (void)fprintf (data_file, "%s\n", (nbar.show) ? "yes" : "no");
 
       (void)fprintf (data_file,
                      "\n# Format of the date to be displayed inside notify-bar :\n");
       (void)fprintf (data_file, "notify-bar_date=\n");
-      (void)fprintf (data_file, "%s\n", nbar->datefmt);
+      (void)fprintf (data_file, "%s\n", nbar.datefmt);
 
       (void)fprintf (data_file,
                      "\n# Format of the time to be displayed inside notify-bar :\n");
       (void)fprintf (data_file, "notify-bar_clock=\n");
-      (void)fprintf (data_file, "%s\n", nbar->timefmt);
+      (void)fprintf (data_file, "%s\n", nbar.timefmt);
 
       (void)fprintf (data_file,
                      "\n# Warn user if he has an appointment within next "
                      "'notify-bar_warning' seconds :\n");
       (void)fprintf (data_file, "notify-bar_warning=\n");
-      (void)fprintf (data_file, "%d\n", nbar->cntdwn);
+      (void)fprintf (data_file, "%d\n", nbar.cntdwn);
 
       (void)fprintf (data_file,
                      "\n# Command used to notify user of "
                      "an upcoming appointment :\n");
       (void)fprintf (data_file, "notify-bar_command=\n");
-      (void)fprintf (data_file, "%s\n", nbar->cmd);
+      (void)fprintf (data_file, "%s\n", nbar.cmd);
 
       (void)fprintf (data_file,
                      "\n# Format of the date to be displayed "
@@ -913,7 +913,7 @@ io_save_cal (conf_t *conf, io_save_display_t display)
       (void)fprintf (data_file, "%d\n", conf->input_datefmt);
 
       if (ui_mode == UI_CURSES)
-        pthread_mutex_unlock (&nbar->mutex);
+        pthread_mutex_unlock (&nbar.mutex);
 
       file_close (data_file, __FILE_POS__);
     }

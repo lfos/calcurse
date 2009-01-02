@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.64 2009/01/01 17:50:41 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.65 2009/01/02 22:28:54 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -36,7 +36,6 @@
 
 #include "utils.h"
 #include "i18n.h"
-#include "notify.h"
 #include "wins.h"
 #include "custom.h"
 #include "keys.h"
@@ -47,7 +46,6 @@
 #include "todo.h"
 #include "day.h"
 #include "keys.h"
-#include "vars.h"
 #include "mem.h"
 
 #define NB_CAL_CMDS	24	/* number of commands while in cal view */
@@ -71,9 +69,6 @@ exit_calcurse (int status)
     }
   calendar_stop_date_thread ();
   io_stop_psave_thread ();
-  vars_free ();
-  notify_free_vars ();
-  notify_free_bar ();
   day_saved_item_free ();
   day_free_list ();
   event_llist_free ();
