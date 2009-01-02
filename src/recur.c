@@ -1,4 +1,4 @@
-/*	$calcurse: recur.c,v 1.47 2009/01/01 17:50:41 culot Exp $	*/
+/*	$calcurse: recur.c,v 1.48 2009/01/02 19:52:32 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -44,18 +44,17 @@ static struct recur_event_s       bkp_cut_recur_event;
 static recur_apoint_llist_node_t  bkp_cut_recur_apoint;
 
 static void
-free_exc (struct days_s **exc)
+free_exc (struct days_s *exc)
 {
   struct days_s *o, **i;
 
-  i = exc;
-  for (o = *exc; o; o = o->next)
+  i = &exc;
+  while (*i)
     {
+      o = *i;
       *i = o->next;
       mem_free (o);
-      i = &(*i)->next;
     }
-  *exc = 0;
 }
 
 static void
@@ -107,7 +106,7 @@ recur_event_free_bkp (void)
     }
   if (bkp_cut_recur_event.exc)
     {
-      free_exc (&bkp_cut_recur_event.exc);
+      free_exc (bkp_cut_recur_event.exc);
       bkp_cut_recur_event.exc = 0;
     }
 }
@@ -132,7 +131,7 @@ recur_apoint_free_bkp (void)
     }
   if (bkp_cut_recur_apoint.exc)
     {
-      free_exc (&bkp_cut_recur_apoint.exc);
+      free_exc (bkp_cut_recur_apoint.exc);
       bkp_cut_recur_apoint.exc = 0;
     }
 }
@@ -194,8 +193,9 @@ recur_apoint_llist_free (void)
   recur_apoint_llist_node_t *o, **i;
 
   i = &recur_alist_p->root;
-  for (o = recur_alist_p->root; o; o = o->next)
+  while (*i)
     {
+      o = *i;
       *i = o->next;
       mem_free (o->mesg);
       if (o->note)
@@ -204,11 +204,10 @@ recur_apoint_llist_free (void)
         mem_free (o->rpt);
       if (o->exc)
         {
-          free_exc (&o->exc);
+          free_exc (o->exc);
           o->exc = 0;
         }
       mem_free (o);
-      i = &(*i)->next;
     }
   mem_free (recur_alist_p);
 }
@@ -219,8 +218,9 @@ recur_event_llist_free (void)
   struct recur_event_s *o, **i;
 
   i = &recur_elist;
-  for (o = recur_elist; o; o = o->next)
+  while (*i)
     {
+      o = *i;
       *i = o->next;
       mem_free (o->mesg);
       if (o->note)
@@ -229,11 +229,10 @@ recur_event_llist_free (void)
         mem_free (o->rpt);
       if (o->exc)
         {
-          free_exc (&o->exc);
+          free_exc (o->exc);
           o->exc = 0;
         }
       mem_free (o);
-      i = &(*i)->next;
     }
 }
 
@@ -258,7 +257,8 @@ recur_apoint_new (char *mesg, char *note, long start, long dur, char state,
   if (except && *except)
     {
       exc_dup (&o->exc, *except);
-      free_exc (except);
+      free_exc (*except);
+      *except = 0;
     }
 
   pthread_mutex_lock (&(recur_alist_p->mutex));
@@ -298,7 +298,8 @@ recur_event_new (char *mesg, char *note, long day, int id, int type, int freq,
   if (except && *except)
     {
       exc_dup (&o->exc, *except);
-      free_exc (except);
+      free_exc (*except);
+      *except = 0;
     }
 
   i = &recur_elist;
@@ -704,7 +705,7 @@ recur_event_erase (long start, unsigned num, unsigned delete_whole,
 		      *iptr = i->next;
 		      mem_free (i->mesg);
 		      mem_free (i->rpt);
-		      free_exc (&i->exc);
+		      free_exc (i->exc);
                       i->exc = 0;
                       if (flag != ERASE_FORCE_KEEP_NOTE && flag != ERASE_CUT)
                         erase_note (&i->note, flag);
@@ -767,7 +768,7 @@ recur_apoint_erase (long start, unsigned num, unsigned delete_whole,
 		      *iptr = i->next;
 		      mem_free (i->mesg);
 		      mem_free (i->rpt);
-		      free_exc (&i->exc);
+		      free_exc (i->exc);
                       i->exc = 0;
                       if (flag != ERASE_FORCE_KEEP_NOTE && flag != ERASE_CUT)
                         erase_note (&i->note, flag);

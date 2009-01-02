@@ -1,4 +1,4 @@
-/*	$calcurse: event.c,v 1.10 2009/01/01 17:50:41 culot Exp $	*/
+/*	$calcurse: event.c,v 1.11 2009/01/02 19:52:32 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -70,14 +70,14 @@ event_llist_free (void)
   struct event_s *o, **i;
 
   i = &eventlist;
-  for (o = eventlist; o; o = o->next)
+  while (*i)
     {
+      o = *i;
       *i = o->next;
       mem_free (o->mesg);
       if (o->note)
         mem_free (o->note);
       mem_free (o);
-      i = &(*i)->next;
     }
 }
 

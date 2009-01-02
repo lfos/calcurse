@@ -1,8 +1,8 @@
-/*	$calcurse: mem.c,v 1.1 2008/12/28 13:15:18 culot Exp $	*/
+/*	$calcurse: mem.c,v 1.2 2009/01/02 19:52:32 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2008 Frederic Culot
+ * Copyright (c) 2008-2009 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@
 
 #include <string.h>
 #include <stdio.h>
+#include <stdint.h>
 
 #include "i18n.h"
 #include "utils.h"

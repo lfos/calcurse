@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.52 2009/01/01 17:50:41 culot Exp $	*/
+/*	$calcurse: io.c,v 1.53 2009/01/02 19:52:32 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -2812,5 +2812,6 @@ io_start_psave_thread (conf_t *conf)
 void
 io_stop_psave_thread (void)
 {
-  pthread_cancel (io_t_psave);  
+  if (io_t_psave)
+    pthread_cancel (io_t_psave);  
 }

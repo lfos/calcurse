@@ -1,4 +1,4 @@
-/*	$calcurse: todo.c,v 1.29 2008/12/28 13:13:59 culot Exp $	*/
+/*	$calcurse: todo.c,v 1.30 2009/01/02 19:52:32 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -492,14 +492,14 @@ todo_free_list (void)
   struct todo_s *o, **i;
 
   i = &todolist;
-  for (o = todolist; o != 0; o = o->next)
+  while (*i)
     {
+      o = *i;
       *i = o->next;
       mem_free (o->mesg);
       if (o->note != 0)
         erase_note (&o->note, ERASE_FORCE_KEEP_NOTE);
       mem_free (o);
-      i = &(*i)->next;
     }
   if (todolist)
     mem_free (todolist);

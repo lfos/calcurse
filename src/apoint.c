@@ -1,4 +1,4 @@
-/*	$calcurse: apoint.c,v 1.30 2009/01/01 17:50:41 culot Exp $	*/
+/*	$calcurse: apoint.c,v 1.31 2009/01/02 19:52:32 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -92,14 +92,14 @@ apoint_llist_free (void)
   apoint_llist_node_t *o, **i;
 
   i = &alist_p->root;
-  for (o = alist_p->root; o; o = o->next)
+  while (*i)
     {
+      o = *i;
       *i = o->next;
       mem_free (o->mesg);
       if (o->note)
         mem_free (o->note);
       mem_free (o);
-      i = &(*i)->next;
     }
   mem_free (alist_p);
 }

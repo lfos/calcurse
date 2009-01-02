@@ -1,3 +1,8 @@
+2009-01-02  Frederic Culot  <frederic@culot.org>
+
+	* src/io.c (io_stop_pthread_save): do not crash when canceling the
+	thread if it was not started before
+	
 2009-01-01  Frederic Culot  <frederic@culot.org>
 
 	* src/event.c (event_free_bkp, event_llist_free): new functions
@@ -16,7 +21,7 @@
 	that made repeated items with exceptions load uncorrectly in
 	some cases (thanks Jan for reporting it)
 
-	* NEWS: updated (it is now possible to move an item from one date
+	* TODO: updated (it is now possible to move an item from one date
 	to another by using the cut/paste feature)
 	
 2008-12-30  Frederic Culot  <frederic@culot.org>

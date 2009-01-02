@@ -1,4 +1,4 @@
-/*	$calcurse: day.c,v 1.45 2009/01/01 17:50:41 culot Exp $	*/
+/*	$calcurse: day.c,v 1.46 2009/01/02 19:52:32 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -62,14 +62,14 @@ day_free_list (void)
   struct day_item_s *o, **i;
 
   i = &day_items_ptr;
-  for (o = day_items_ptr; o; o = o->next)
+  while (*i)
     {
+      o = *i;
       *i = o->next;
       mem_free (o->mesg);
       if (o->note)
         mem_free (o->note);
       mem_free (o);
-      i = &(*i)->next;
     }
   day_items_ptr = NULL;
 }
