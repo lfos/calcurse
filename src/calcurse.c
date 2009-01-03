@@ -1,8 +1,8 @@
-/*	$calcurse: calcurse.c,v 1.76 2009/01/01 17:50:41 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.77 2009/01/03 21:32:11 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2008 Frederic Culot
+ * Copyright (c) 2004-2009 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -60,6 +60,7 @@ main (int argc, char **argv)
   int no_data_file = 1;
   int sav_hilt_app = 0;
   int sav_hilt_tod = 0;
+  int cut_item = 0;
   struct sigaction sigact;
   bool do_storage = false;
   bool do_update = true;
@@ -137,7 +138,7 @@ main (int argc, char **argv)
   wins_init ();
   wins_slctd_init ();
   notify_init_bar ();
-  reset_status_page ();
+  wins_reset_status_page ();
 
   /* 
    * Read the data from files : first the user
@@ -146,7 +147,7 @@ main (int argc, char **argv)
    */
   no_data_file = io_check_data_files ();
   custom_load_conf (&conf, background);
-  erase_status_bar ();
+  wins_erase_status_bar ();
   io_load_keys (conf.pager);
   io_load_todo ();
   io_load_app ();
@@ -182,7 +183,7 @@ main (int argc, char **argv)
 	  break;
 
 	case KEY_GENERIC_CHANGE_VIEW:
-	  reset_status_page ();
+	  wins_reset_status_page ();
 	  /* Need to save the previously highlighted event. */
 	  switch (wins_slctd ())
 	    {
@@ -221,12 +222,12 @@ main (int argc, char **argv)
 	  break;
 
         case KEY_GENERIC_OTHER_CMD:
-	  other_status_page (wins_slctd ());
+	  wins_other_status_page (wins_slctd ());
 	  break;
 
         case KEY_GENERIC_GOTO:
         case KEY_GENERIC_GOTO_TODAY:
-	  erase_status_bar ();
+	  wins_erase_status_bar ();
 	  calendar_set_current_date ();
           if (key == KEY_GENERIC_GOTO_TODAY)
             calendar_goto_today ();
@@ -244,7 +245,7 @@ main (int argc, char **argv)
 	  break;
 
         case KEY_GENERIC_CONFIG_MENU:
-	  erase_status_bar ();
+	  wins_erase_status_bar ();
 	  custom_config_bar ();
 	  while ((key = wgetch (win[STA].p)) != 'q')
 	    {
@@ -257,7 +258,7 @@ main (int argc, char **argv)
 		  else
 		    {
 		      colorize = false;
-		      erase_status_bar ();
+		      wins_erase_status_bar ();
 		      mvwprintw (win[STA].p, 0, 0, _(no_color_support));
 		      wgetch (win[STA].p);
 		    }
@@ -282,7 +283,7 @@ main (int argc, char **argv)
 	      wins_reset ();
 	      wins_update ();
 	      do_storage = true;
-	      erase_status_bar ();
+	      wins_erase_status_bar ();
 	      custom_config_bar ();
 	    }
 	  wins_update ();
@@ -335,7 +336,7 @@ main (int argc, char **argv)
         case KEY_GENERIC_CUT:
           if (wins_slctd () == APP && apoint_hilt () != 0)
             {
-              apoint_cut (&inday.nb_events, &inday.nb_apoints);
+              cut_item = apoint_cut (&inday.nb_events, &inday.nb_apoints);
               do_storage = true;
             }
           break;
@@ -343,7 +344,8 @@ main (int argc, char **argv)
         case KEY_GENERIC_PASTE:
           if (wins_slctd () == APP)
             {
-              apoint_paste (&inday.nb_events, &inday.nb_apoints);
+              apoint_paste (&inday.nb_events, &inday.nb_apoints, cut_item);
+              cut_item = 0;
               do_storage = true;
             }
           break;
@@ -388,7 +390,7 @@ main (int argc, char **argv)
 	  break;
 
         case KEY_GENERIC_HELP:
-	  status_bar ();
+	  wins_status_bar ();
 	  help_screen ();
 	  break;
 
@@ -397,13 +399,13 @@ main (int argc, char **argv)
 	  break;
 
         case KEY_GENERIC_IMPORT:
-          erase_status_bar ();
+          wins_erase_status_bar ();
           io_import_data (IO_IMPORT_ICAL, &conf, NULL);
           do_storage = true;
           break;
           
         case KEY_GENERIC_EXPORT:
-          erase_status_bar ();
+          wins_erase_status_bar ();
           io_export_bar ();
           while ((key = wgetch (win[STA].p)) != 'q')
 	    {
@@ -421,7 +423,7 @@ main (int argc, char **argv)
 	      wins_reset ();
 	      wins_update ();
 	      do_storage = true;
-	      erase_status_bar ();
+	      wins_erase_status_bar ();
 	      io_export_bar ();
 	    }
 	  wins_update ();
@@ -520,7 +522,7 @@ main (int argc, char **argv)
 		exit_calcurse (EXIT_SUCCESS);
 	      else
 		{
-		  erase_status_bar ();
+		  wins_erase_status_bar ();
 		  break;
 		}
 	    }

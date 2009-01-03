@@ -1,4 +1,4 @@
-/*	$calcurse: help.c,v 1.36 2008/12/28 13:13:59 culot Exp $	*/
+/*	$calcurse: help.c,v 1.37 2009/01/03 21:32:11 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -180,7 +180,7 @@ help_wins_reset (scrollwin_t *hwin)
   keypad (win[STA].p, TRUE);
   if (notify_bar ())
     notify_reinit_bar ();
-  status_bar ();
+  wins_status_bar ();
   if (notify_bar ())
     notify_update_bar ();
 }

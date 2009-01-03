@@ -1,4 +1,4 @@
-/*	$calcurse: day.c,v 1.47 2009/01/02 22:28:54 culot Exp $	*/
+/*	$calcurse: day.c,v 1.48 2009/01/03 21:32:11 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -39,23 +39,13 @@
 #include "day.h"
 
 static struct day_item_s        *day_items_ptr;
-static struct day_saved_item_s  *day_saved_item;
-static int                       cut_item_type;
+static struct day_saved_item_s   day_saved_item;
 
-void
-day_saved_item_init (void)
-{
-  day_saved_item = mem_malloc (sizeof (struct day_saved_item_s));
-}
-
-void
-day_saved_item_free (void)
-{
-  if (day_saved_item)
-    mem_free (day_saved_item);
-}
-
-/* Free the current day linked list containing the events and appointments. */
+/*
+ * Free the current day linked list containing the events and appointments.
+ * Must not free associated message and note, because their are not dynamically
+ * allocated (only pointers to real objects are stored in this structure).
+ */
 void
 day_free_list (void)
 {
@@ -66,12 +56,9 @@ day_free_list (void)
     {
       o = *i;
       *i = o->next;
-      mem_free (o->mesg);
-      if (o->note)
-        mem_free (o->note);
       mem_free (o);
     }
-  day_items_ptr = NULL;
+  day_items_ptr = 0;
 }
 
 /* Add an event in the current day list */
@@ -79,8 +66,9 @@ static struct day_item_s *
 day_add_event (int type, char *mesg, char *note, long day, int id)
 {
   struct day_item_s *o, **i;
-  o = (struct day_item_s *) mem_malloc (sizeof (struct day_item_s));
-  o->mesg = mem_strdup (mesg);
+  
+  o = mem_malloc (sizeof (struct day_item_s));
+  o->mesg = mesg;
   o->note = note;
   o->type = type;
   o->appt_dur = 0;
@@ -109,8 +97,8 @@ day_add_apoint (int type, char *mesg, char *note, long start, long dur,
   struct day_item_s *o, **i;
   int insert_item = 0;
 
-  o = (struct day_item_s *) mem_malloc (sizeof (struct day_item_s));
-  o->mesg = mem_strdup (mesg);
+  o = mem_malloc (sizeof (struct day_item_s));
+  o->mesg = mesg;
   o->note = note;
   o->start = start;
   o->appt_dur = dur;
@@ -137,7 +125,7 @@ day_add_apoint (int type, char *mesg, char *note, long start, long dur,
 	}
       i = &(*i)->next;
     }
-  return (o);
+  return o;
 }
 
 /* 
@@ -163,7 +151,7 @@ day_store_events (long date)
 	}
     }
 
-  return (e_nb);
+  return e_nb;
 }
 
 /* 
@@ -190,7 +178,7 @@ day_store_recur_events (long date)
 	}
     }
 
-  return (e_nb);
+  return e_nb;
 }
 
 /* 
@@ -219,7 +207,7 @@ day_store_apoints (long date)
     }
   pthread_mutex_unlock (&(alist_p->mutex));
 
-  return (a_nb);
+  return a_nb;
 }
 
 /* 
@@ -252,7 +240,7 @@ day_store_recur_apoints (long date)
     }
   pthread_mutex_unlock (&(recur_alist_p->mutex));
 
-  return (a_nb);
+  return a_nb;
 }
 
 /* 
@@ -286,7 +274,7 @@ day_store_items (long date, unsigned *pnb_events, unsigned *pnb_apoints)
   *pnb_apoints += nb_recur_apoints;
   *pnb_events += nb_recur_events;
 
-  return (pad_length);
+  return pad_length;
 }
 
 /*
@@ -320,7 +308,7 @@ day_process_storage (date_t *slctd_date, bool day_changed,
     apad.first_onscreen = 0;
   apad.ptrwin = newpad (apad.length, apad.width);
 
-  return (inday);
+  return inday;
 }
 
 /*
@@ -413,10 +401,6 @@ day_write_pad (long date, int width, int length, int incolor)
   line = item_number = 0;
   max_pos = length;
 
-  /* Initialize the structure used to store highlited item. */
-  if (day_saved_item == 0)
-    day_saved_item_init ();
-
   for (p = day_items_ptr; p != 0; p = p->next)
     {
       if (p->type == RECUR_EVNT || p->type == RECUR_APPT)
@@ -429,8 +413,8 @@ day_write_pad (long date, int width, int length, int incolor)
 	  item_number++;
 	  if (item_number - incolor == 0)
 	    {
-	      day_saved_item->type = p->type;
-	      day_saved_item->mesg = p->mesg;
+	      day_saved_item.type = p->type;
+	      day_saved_item.mesg = p->mesg;
 	    }
 	  display_item (item_number - incolor, p->mesg, recur,
 			(p->note != NULL) ? 1 : 0, width - 7, line, x_pos);
@@ -451,10 +435,10 @@ day_write_pad (long date, int width, int length, int incolor)
 	  day_item_s2apoint_s (&a, p);
 	  if (item_number - incolor == 0)
 	    {
-	      day_saved_item->type = p->type;
-	      day_saved_item->mesg = p->mesg;
+	      day_saved_item.type = p->type;
+	      day_saved_item.mesg = p->mesg;
 	      apoint_sec2str (&a, p->type, date,
-			      day_saved_item->start, day_saved_item->end);
+			      day_saved_item.start, day_saved_item.end);
 	    }
 	  display_item_date (item_number - incolor, &a, p->type,
 			     date, line + 1, x_pos);
@@ -470,11 +454,11 @@ day_write_pad (long date, int width, int length, int incolor)
 void
 day_popup_item (void)
 {
-  if (day_saved_item->type == EVNT || day_saved_item->type == RECUR_EVNT)
-    item_in_popup (NULL, NULL, day_saved_item->mesg, _("Event :"));
-  else if (day_saved_item->type == APPT || day_saved_item->type == RECUR_APPT)
-    item_in_popup (day_saved_item->start, day_saved_item->end,
-		   day_saved_item->mesg, _("Appointment :"));
+  if (day_saved_item.type == EVNT || day_saved_item.type == RECUR_EVNT)
+    item_in_popup (NULL, NULL, day_saved_item.mesg, _("Event :"));
+  else if (day_saved_item.type == APPT || day_saved_item.type == RECUR_APPT)
+    item_in_popup (day_saved_item.start, day_saved_item.end,
+		   day_saved_item.mesg, _("Appointment :"));
   else
     EXIT (_("unknown item type"));
   /* NOTREACHED */
@@ -906,7 +890,7 @@ day_cut_item (long date, int item_number)
 {
   const int DELETE_WHOLE = 1;
   struct day_item_s *p;
-
+  
   p = day_get_item (item_number);
   switch (p->type)
     {
@@ -929,13 +913,13 @@ day_cut_item (long date, int item_number)
       EXIT (_("unknwon type"));
       /* NOTREACHED */
     }
-  cut_item_type = p->type;
-  return cut_item_type;
+
+  return p->type;
 }
 
 /* Paste a previously cut item. */
 int
-day_paste_item (long date)
+day_paste_item (long date, int cut_item_type)
 {
   int pasted_item_type;
 
@@ -960,7 +944,6 @@ day_paste_item (long date)
       EXIT (_("unknwon type"));
       /* NOTREACHED */
     }
-  cut_item_type = 0;
 
   return pasted_item_type;
 }

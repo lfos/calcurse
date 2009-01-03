@@ -1,4 +1,4 @@
-/*	$calcurse: event.c,v 1.11 2009/01/02 19:52:32 culot Exp $	*/
+/*	$calcurse: event.c,v 1.12 2009/01/03 21:32:11 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -38,7 +38,7 @@ struct event_s        *eventlist;
 static struct event_s  bkp_cut_event;
 
 void
-event_free_bkp (void)
+event_free_bkp (erase_flag_e flag)
 {
   if (bkp_cut_event.mesg)
     {
@@ -47,8 +47,13 @@ event_free_bkp (void)
     }
   if (bkp_cut_event.note)
     {
-      mem_free (bkp_cut_event.note);
-      bkp_cut_event.note = 0;
+      if (flag == ERASE_FORCE)
+        erase_note (&bkp_cut_event.note, ERASE_FORCE);
+      else
+        {
+          mem_free (bkp_cut_event.note);
+          bkp_cut_event.note = 0;
+        }
     }
 }
 
@@ -90,7 +95,7 @@ event_new (char *mesg, char *note, long day, int id)
   o->mesg = mem_strdup (mesg);
   o->day = day;
   o->id = id;
-  o->note = (note != NULL) ? strdup (note) : NULL;
+  o->note = (note != NULL) ? mem_strdup (note) : NULL;
   i = &eventlist;
   for (;;)
     {
@@ -205,7 +210,7 @@ event_delete_bynum (long start, unsigned num, erase_flag_e flag)
                   erase_note (&i->note, flag);
                   break;
                 case ERASE_CUT:
-                  event_free_bkp ();
+                  event_free_bkp (ERASE_FORCE);
                   event_dup (i, &bkp_cut_event);
                   if (i->note)
                     mem_free (i->note);
@@ -234,5 +239,5 @@ event_paste_item (void)
   (void)event_new (bkp_cut_event.mesg, bkp_cut_event.note,
                    date2sec (*calendar_get_slctd_day (), 12, 0),
                    bkp_cut_event.id);
-  event_free_bkp ();
+  event_free_bkp (ERASE_FORCE_KEEP_NOTE);
 }

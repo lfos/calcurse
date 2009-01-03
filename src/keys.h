@@ -1,8 +1,8 @@
-/*	$calcurse: keys.h,v 1.8 2009/01/01 17:50:41 culot Exp $	*/
+/*	$calcurse: keys.h,v 1.9 2009/01/03 21:32:11 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2008 Frederic Culot
+ * Copyright (c) 2008-2009 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,8 @@
 
 #ifndef CALCURSE_KEYS_H
 #define CALCURSE_KEYS_H
+
+#include <ncurses.h>
 
 #define CTRLVAL                 0x1F
 #define CTRL(x)                 ((x) & CTRLVAL)

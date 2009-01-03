@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.65 2009/01/02 22:28:54 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.66 2009/01/03 21:32:11 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -31,7 +31,6 @@
 #include <unistd.h>
 #include <ctype.h>
 #include <sys/types.h>
-#include <math.h>
 #include <errno.h>
 
 #include "utils.h"
@@ -48,14 +47,6 @@
 #include "keys.h"
 #include "mem.h"
 
-#define NB_CAL_CMDS	24	/* number of commands while in cal view */
-#define NB_APP_CMDS	31	/* same thing while in appointment view */
-#define NB_TOD_CMDS	29	/* same thing while in todo view */
-#define TOTAL_CMDS	NB_CAL_CMDS + NB_APP_CMDS + NB_TOD_CMDS
-#define CMDS_PER_LINE	6	/* max number of commands per line */  
-
-static unsigned status_page;
-
 /* General routine to exit calcurse properly. */
 void
 exit_calcurse (int status)
@@ -69,16 +60,15 @@ exit_calcurse (int status)
     }
   calendar_stop_date_thread ();
   io_stop_psave_thread ();
-  day_saved_item_free ();
   day_free_list ();
   event_llist_free ();
-  event_free_bkp ();
+  event_free_bkp (ERASE_FORCE);
   apoint_llist_free ();
-  apoint_free_bkp ();
+  apoint_free_bkp (ERASE_FORCE);
   recur_apoint_llist_free ();
   recur_event_llist_free ();
-  recur_apoint_free_bkp ();
-  recur_event_free_bkp ();
+  recur_apoint_free_bkp (ERASE_FORCE);
+  recur_event_free_bkp (ERASE_FORCE);
   todo_free_list ();
   keys_free ();
   mem_stats ();
@@ -118,18 +108,11 @@ fatalbox (const char *errmsg)
 void
 status_mesg (char *mesg_line1, char *mesg_line2)
 {
-  erase_status_bar ();
+  wins_erase_status_bar ();
   custom_apply_attr (win[STA].p, ATTR_HIGHEST);
   mvwprintw (win[STA].p, 0, 0, mesg_line1);
   mvwprintw (win[STA].p, 1, 0, mesg_line2);
   custom_remove_attr (win[STA].p, ATTR_HIGHEST);
-}
-
-/* Erase status bar. */
-void
-erase_status_bar (void)
-{
-  erase_window_part (win[STA].p, 0, 0, col, STATUSHEIGHT);
 }
 
 /* Erase part of a window. */
@@ -388,18 +371,20 @@ updatestring (WINDOW *win, char **str, int x, int y)
   char *newstr;
   int escape, len = strlen (*str) + 1;
 
-  newstr = (char *) mem_malloc (BUFSIZ);
+  EXIT_IF (len > BUFSIZ, _("Internal error: line too long"));
+  
+  newstr = mem_malloc (BUFSIZ);
   (void) memcpy (newstr, *str, len);
   escape = getstring (win, newstr, BUFSIZ, x, y);
   if (!escape)
     {
       len = strlen (newstr) + 1;
-      *str = (char *) realloc (*str, len);
+      *str = mem_realloc (*str, len);
       EXIT_IF (*str == 0, _("out of memory"));
       (void) memcpy (*str, newstr, len);
     }
   mem_free (newstr);
-  return (escape);
+  return escape;
 }
 
 /* checks if a string is only made of digits */
@@ -418,81 +403,6 @@ is_all_digit (char *string)
   if (digit == strlen (string))
     all_digit = 1;
   return all_digit;
-}
-
-/* 
- * Draws the status bar. 
- * To add a keybinding, insert a new binding_t item, add it in the *binding
- * table, and update the NB_CAL_CMDS, NB_APP_CMDS or NB_TOD_CMDS defines,
- * depending on which panel the added keybind is assigned to.
- */
-void
-status_bar (void)
-{
-#define NB_PANELS	3	/* 3 panels: CALENDAR, APPOINTMENT, TODO */
-  window_e which_pan;
-  int start, end;
-  const int pos[NB_PANELS + 1] =
-      { 0, NB_CAL_CMDS, NB_CAL_CMDS + NB_APP_CMDS, TOTAL_CMDS };
-
-  binding_t help   = {_("Help"),     KEY_GENERIC_HELP};
-  binding_t quit   = {_("Quit"),     KEY_GENERIC_QUIT};
-  binding_t save   = {_("Save"),     KEY_GENERIC_SAVE};
-  binding_t cut    = {_("Cut"),      KEY_GENERIC_CUT};
-  binding_t paste  = {_("Paste"),    KEY_GENERIC_PASTE};    
-  binding_t chgvu  = {_("Chg View"), KEY_GENERIC_CHANGE_VIEW};
-  binding_t import = {_("Import"),   KEY_GENERIC_IMPORT};  
-  binding_t export = {_("Export"),   KEY_GENERIC_EXPORT};
-  binding_t togo   = {_("Go to"),    KEY_GENERIC_GOTO};
-  binding_t othr   = {_("OtherCmd"), KEY_GENERIC_OTHER_CMD};
-  binding_t conf   = {_("Config"),   KEY_GENERIC_CONFIG_MENU};  
-  binding_t draw   = {_("Redraw"),   KEY_GENERIC_REDRAW};
-  binding_t appt   = {_("Add Appt"), KEY_GENERIC_ADD_APPT};
-  binding_t todo   = {_("Add Todo"), KEY_GENERIC_ADD_TODO};
-  binding_t gnday  = {_("+1 Day"),   KEY_GENERIC_NEXT_DAY};
-  binding_t gpday  = {_("-1 Day"),   KEY_GENERIC_PREV_DAY};
-  binding_t gnweek = {_("+1 Week"),  KEY_GENERIC_NEXT_WEEK};
-  binding_t gpweek = {_("-1 Week"),  KEY_GENERIC_PREV_WEEK};
-  binding_t today  = {_("Today"),    KEY_GENERIC_GOTO_TODAY};
-  binding_t up     = {_("Up"),       KEY_MOVE_UP};
-  binding_t down   = {_("Down"),     KEY_MOVE_DOWN};  
-  binding_t left   = {_("Left"),     KEY_MOVE_LEFT};
-  binding_t right  = {_("Right"),    KEY_MOVE_RIGHT};  
-  binding_t weekb  = {_("beg Week"), KEY_START_OF_WEEK};
-  binding_t weeke  = {_("end Week"), KEY_END_OF_WEEK};
-  binding_t add    = {_("Add Item"), KEY_ADD_ITEM};
-  binding_t del    = {_("Del Item"), KEY_DEL_ITEM};
-  binding_t edit   = {_("Edit Itm"), KEY_EDIT_ITEM};
-  binding_t view   = {_("View"),     KEY_VIEW_ITEM};  
-  binding_t flag   = {_("Flag Itm"), KEY_FLAG_ITEM};
-  binding_t rept   = {_("Repeat"),   KEY_REPEAT_ITEM};
-  binding_t enote  = {_("EditNote"), KEY_EDIT_NOTE};
-  binding_t vnote  = {_("ViewNote"), KEY_VIEW_NOTE};
-  binding_t rprio  = {_("Prio.+"),   KEY_RAISE_PRIORITY};
-  binding_t lprio  = {_("Prio.-"),   KEY_LOWER_PRIORITY};
-
-  
-  binding_t *binding[TOTAL_CMDS] = {
-    /* calendar keys */
-    &help, &quit, &save, &chgvu, &import, &export, &up, &down, &left, &right,
-    &togo, &othr, &weekb, &weeke, &conf, &draw, &appt, &todo, &gnday, &gpday,
-    &gnweek, &gpweek, &today, &othr,
-    /* appointment keys */
-    &help, &quit, &save, &chgvu, &import, &export, &add, &del, &edit, &view,
-    &draw, &othr, &rept, &flag, &enote, &vnote, &up, &down, &gnday, &gpday,
-    &gnweek, &gpweek, &togo, &othr, &today, &conf, &appt, &todo, &cut, &paste,
-    &othr,
-    /* todo keys */
-    &help, &quit, &save, &chgvu, &import, &export, &add, &del, &edit, &view,
-    &draw, &othr, &rprio, &lprio, &enote, &vnote, &up, &down, &gnday, &gpday,
-    &gnweek, &gpweek, &togo, &othr, &today, &conf, &appt, &todo, &othr
-  };
-
-  /* Drawing the keybinding with attribute and label without. */
-  which_pan = wins_slctd ();
-  start = pos[which_pan] + 2 * KEYS_CMDS_PER_LINE * (status_page - 1);
-  end = MIN (start + 2 * KEYS_CMDS_PER_LINE, pos[which_pan + 1]);
-  keys_display_bindings_bar (win[STA].p, binding, start, end);
 }
 
 /* Given an item date expressed in seconds, return its start time in seconds. */
@@ -770,41 +680,6 @@ item_in_popup (char *saved_a_start, char *saved_a_end, char *msg,
   delwin (popup_win);
 }
 
-/* Reset the status bar page. */
-void
-reset_status_page (void)
-{
-  status_page = 1;
-}
-
-/* Update the status bar page number to display other commands. */
-void
-other_status_page (int panel)
-{
-  int nb_item = 0, max_page;
-
-  switch (panel)
-    {
-    case CAL:
-      nb_item = NB_CAL_CMDS;
-      break;
-    case APP:
-      nb_item = NB_APP_CMDS;
-      break;
-    case TOD:
-      nb_item = NB_TOD_CMDS;
-      break;
-    default:
-      EXIT (_("unknown panel"));
-      /* NOTREACHED */
-    }
-  max_page = ceil (nb_item / (2 * CMDS_PER_LINE + 1)) + 1;
-  if (status_page < max_page)
-    status_page++;
-  else
-    status_page = 1;
-}
-
 /* Returns the beginning of current day in seconds from 1900. */
 long
 get_today (void)
@@ -909,7 +784,7 @@ new_tempfile (const char *prefix, int trailing_len)
     }
   fclose (file);
 
-  return (mem_strdup (fullname + prefix_len));
+  return mem_strdup (fullname + prefix_len);
 }
 
 /* Erase a note previously attached to a todo, event or appointment. */

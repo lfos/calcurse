@@ -1,4 +1,4 @@
-/*	$calcurse: apoint.h,v 1.16 2009/01/01 17:50:41 culot Exp $	*/
+/*	$calcurse: apoint.h,v 1.17 2009/01/03 21:32:11 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -59,7 +59,7 @@ apoint_llist_t;
 
 extern apoint_llist_t *alist_p;
 
-void                 apoint_free_bkp (void);
+void                 apoint_free_bkp (erase_flag_e);
 void                 apoint_llist_init (void);
 void                 apoint_llist_free (void);
 void                 apoint_hilt_set (int);
@@ -69,8 +69,8 @@ int                  apoint_hilt (void);
 apoint_llist_node_t *apoint_new (char *, char *, long, long, char);
 void                 apoint_add (void);
 void                 apoint_delete (conf_t *, unsigned *, unsigned *);
-void                 apoint_cut (unsigned *, unsigned *);
-void                 apoint_paste (unsigned *, unsigned *);
+int                  apoint_cut (unsigned *, unsigned *);
+void                 apoint_paste (unsigned *, unsigned *, int);
 unsigned             apoint_inday (apoint_llist_node_t *, long);
 void                 apoint_sec2str (apoint_llist_node_t *, int, long, char *,
                                      char *);

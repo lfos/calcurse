@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.54 2009/01/02 22:28:54 culot Exp $	*/
+/*	$calcurse: io.c,v 1.55 2009/01/03 21:32:11 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -975,7 +975,8 @@ io_save_cal (conf_t *conf, io_save_display_t display)
     }
   
   /* Print a message telling data were saved */
-  if (ui_mode == UI_CURSES && !conf->skip_system_dialogs)
+  if (ui_mode == UI_CURSES && !conf->skip_system_dialogs
+      && display != IO_SAVE_DISPLAY_MARK)
     {
       status_mesg (save_success, enter);
       (void)wgetch (win[STA].p);
@@ -1693,7 +1694,7 @@ ical_unformat_line (char *line)
       switch (*p)
         {
         case LINE_FEED:
-          return strdup (uline);
+          return mem_strdup (uline);
         case CARRIAGE_RETURN:
           break;
         case '\\':
@@ -2766,7 +2767,7 @@ io_log_display (io_file_t *log, char *msg, char *pager)
             }
         }
       while (ans != 'y' && ans != 'n');
-      erase_status_bar ();
+      wins_erase_status_bar ();
     }
 }
 

@@ -1,4 +1,4 @@
-/*	$calcurse: todo.c,v 1.30 2009/01/02 19:52:32 culot Exp $	*/
+/*	$calcurse: todo.c,v 1.31 2009/01/03 21:32:11 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -252,7 +252,7 @@ todo_delete (conf_t *conf)
 	}
       else
 	{
-	  erase_status_bar ();
+	  wins_erase_status_bar ();
 	  return;
 	}
     }
@@ -261,7 +261,7 @@ todo_delete (conf_t *conf)
 
   if (go_for_todo_del == false)
     {
-      erase_status_bar ();
+      wins_erase_status_bar ();
       return;
     }
 
@@ -292,7 +292,7 @@ todo_delete (conf_t *conf)
       todo_delete_note_bynum (hilt - 1);
       break;
     default:
-      erase_status_bar ();
+      wins_erase_status_bar ();
       return;
     }
 }

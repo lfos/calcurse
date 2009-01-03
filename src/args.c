@@ -1,8 +1,8 @@
-/*	$calcurse: args.c,v 1.43 2008/12/28 19:41:45 culot Exp $	*/
+/*	$calcurse: args.c,v 1.44 2009/01/03 21:32:11 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2008 Frederic Culot
+ * Copyright (c) 2004-2009 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,6 +39,7 @@
 #include "apoint.h"
 #include "day.h"
 #include "todo.h"
+#include "mem.h"
 #include "io.h"
 
 #ifdef HAVE_CONFIG_H
@@ -248,7 +249,7 @@ next_arg (void)
       (void)snprintf (mesg, BUFSIZ, "   [%02d:%02d] %s\n", hours_left, min_left,
                       next_app.txt);
       fputs (mesg, stdout);
-      free (next_app.txt);
+      mem_free (next_app.txt);
     }
 }
 

@@ -1,4 +1,4 @@
-/*	$calcurse: notify.c,v 1.34 2009/01/02 22:28:54 culot Exp $	*/
+/*	$calcurse: notify.c,v 1.35 2009/01/03 21:32:11 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -293,7 +293,7 @@ notify_thread_app (void *arg)
     {
       notify_app.got_app = 1;
       notify_app.time = tmp_app.time;
-      notify_app.txt = strdup (tmp_app.txt);
+      notify_app.txt = mem_strdup (tmp_app.txt);
       notify_app.state = tmp_app.state;
     }
   else
@@ -347,7 +347,7 @@ notify_check_added (char *mesg, long start, char state)
     {
       notify_app.got_app = 1;
       notify_app.time = start;
-      notify_app.txt = strdup (mesg);
+      notify_app.txt = mem_strdup (mesg);
       notify_app.state = state;
     }
   pthread_mutex_unlock (&notify_app.mutex);
@@ -386,7 +386,7 @@ notify_check_repeated (recur_apoint_llist_node_t *i)
     {
       notify_app.got_app = 1;
       notify_app.time = real_app_time;
-      notify_app.txt = strdup (i->mesg);
+      notify_app.txt = mem_strdup (i->mesg);
       notify_app.state = i->state;
     }
   pthread_mutex_unlock (&notify_app.mutex);

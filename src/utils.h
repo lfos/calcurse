@@ -1,4 +1,4 @@
-/*	$calcurse: utils.h,v 1.42 2009/01/01 17:50:41 culot Exp $	*/
+/*	$calcurse: utils.h,v 1.43 2009/01/03 21:32:11 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -104,14 +104,12 @@ erase_flag_e;
 void      exit_calcurse (int);
 void      fatalbox (const char *);
 void      status_mesg (char *, char *);
-void      erase_status_bar (void);
 void      erase_window_part (WINDOW *, int, int, int, int);
 WINDOW   *popup (int, int, int, int, char *, char *, int);
 void      print_in_middle (WINDOW *, int, int, int, char *);
 int       getstring (WINDOW *, char *, int, int, int);
 int       updatestring (WINDOW *, char **, int, int);
 int       is_all_digit (char *);
-void      status_bar (void);
 long      get_item_time (long);
 int       get_item_hour (long);
 int       get_item_min (long);
@@ -126,8 +124,6 @@ long      min2sec (unsigned);
 int       check_time (char *);
 void      draw_scrollbar (WINDOW *, int, int, int, int, int, bool);
 void      item_in_popup (char *, char *, char *, char *);
-void      reset_status_page (void);
-void      other_status_page (int);
 long      get_today (void);
 long      now (void);
 long      mystrtol (const char *);

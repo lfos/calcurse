@@ -1,8 +1,8 @@
-/*	$calcurse: wins.h,v 1.10 2008/11/23 20:38:56 culot Exp $	*/
+/*	$calcurse: wins.h,v 1.11 2009/01/03 21:32:11 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2007-2008 Frederic Culot
+ * Copyright (c) 2007-2009 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -80,5 +80,9 @@ void         wins_get_config (void);
 void         wins_update (void);
 void         wins_reset (void);
 void         wins_launch_external (const char *, const char *);
+void         wins_status_bar (void);
+void         wins_erase_status_bar (void);
+void         wins_other_status_page (int);
+void         wins_reset_status_page (void);
 
 #endif /* CALCURSE_WINS_H */

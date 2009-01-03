@@ -1,4 +1,4 @@
-/*	$calcurse: custom.c,v 1.34 2009/01/02 22:28:54 culot Exp $	*/
+/*	$calcurse: custom.c,v 1.35 2009/01/03 21:32:11 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -976,7 +976,7 @@ custom_general_config (conf_t *conf)
   char *periodic_save_str =
     _("Enter the delay, in minutes, between automatic saves (0 to disable) ");
   int ch;
-  char *buf = (char *) mem_malloc (BUFSIZ);
+  char *buf;
 
   clear ();
   conf_set_scrsize (&cwin);
@@ -988,8 +988,11 @@ custom_general_config (conf_t *conf)
   cwin.total_lines = print_general_options (cwin.pad.p, conf);
   wins_scrollwin_display (&cwin);
 
+  buf = mem_malloc (BUFSIZ);
   while ((ch = wgetch (win[STA].p)) != 'q')
     {
+      buf[0] = '\0';
+      
       switch (ch)
 	{
 	case KEY_RESIZE:

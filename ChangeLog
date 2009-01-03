@@ -1,3 +1,15 @@
+2009-01-03  Frederic Culot  <frederic@culot.org>
+
+	* src/day.c (day_saved_item_init, day_saved_item_free): suppressed
+
+	* src/utils.c (status_bar): moved to wins_status_bar
+	* src/utils.c (erase_status_bar): moved to wins_erase_status_bar	
+	* src/utils.c (other_status_page): moved to wins_other_status_page
+	* src/utils.c (reset_status_page): moved to wins_reset_status_page
+
+	* src/mem.c (dbg_realloc): wrong copy from old memory area to
+	newly allocated one fixed + other fixes
+	
 2009-01-02  Frederic Culot  <frederic@culot.org>
 
 	* src/io.c (io_stop_pthread_save): do not crash when canceling the

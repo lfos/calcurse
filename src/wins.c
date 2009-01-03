@@ -1,8 +1,8 @@
-/*	$calcurse: wins.c,v 1.22 2009/01/02 22:28:54 culot Exp $	*/
+/*	$calcurse: wins.c,v 1.23 2009/01/03 21:32:11 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2007-2008 Frederic Culot
+ * Copyright (c) 2007-2009 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,8 +26,10 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 #include "i18n.h"
+#include "keys.h"
 #include "notify.h"
 #include "utils.h"
 #include "todo.h"
@@ -422,7 +424,7 @@ wins_update (void)
   apoint_update_panel (slctd_win);
   todo_update_panel (slctd_win);
   calendar_update_panel (win[CAL].p);
-  status_bar ();
+  wins_status_bar ();
   if (notify_bar ())
     notify_update_bar ();
   wmove (win[STA].p, 0, 0);
@@ -476,3 +478,135 @@ wins_launch_external (const char *file, const char *cmd)
     notify_start_main_thread ();
   mem_free (p);
 }
+
+#define NB_CAL_CMDS	24	/* number of commands while in cal view */
+#define NB_APP_CMDS	31	/* same thing while in appointment view */
+#define NB_TOD_CMDS	29	/* same thing while in todo view */
+#define TOTAL_CMDS	NB_CAL_CMDS + NB_APP_CMDS + NB_TOD_CMDS
+#define CMDS_PER_LINE	6	/* max number of commands per line */  
+
+static unsigned status_page;
+
+/* 
+ * Draws the status bar. 
+ * To add a keybinding, insert a new binding_t item, add it in the *binding
+ * table, and update the NB_CAL_CMDS, NB_APP_CMDS or NB_TOD_CMDS defines,
+ * depending on which panel the added keybind is assigned to.
+ */
+void
+wins_status_bar (void)
+{
+#define NB_PANELS	3	/* 3 panels: CALENDAR, APPOINTMENT, TODO */
+  window_e which_pan;
+  int start, end;
+  const int pos[NB_PANELS + 1] =
+      { 0, NB_CAL_CMDS, NB_CAL_CMDS + NB_APP_CMDS, TOTAL_CMDS };
+
+  binding_t help   = {_("Help"),     KEY_GENERIC_HELP};
+  binding_t quit   = {_("Quit"),     KEY_GENERIC_QUIT};
+  binding_t save   = {_("Save"),     KEY_GENERIC_SAVE};
+  binding_t cut    = {_("Cut"),      KEY_GENERIC_CUT};
+  binding_t paste  = {_("Paste"),    KEY_GENERIC_PASTE};    
+  binding_t chgvu  = {_("Chg View"), KEY_GENERIC_CHANGE_VIEW};
+  binding_t import = {_("Import"),   KEY_GENERIC_IMPORT};  
+  binding_t export = {_("Export"),   KEY_GENERIC_EXPORT};
+  binding_t togo   = {_("Go to"),    KEY_GENERIC_GOTO};
+  binding_t othr   = {_("OtherCmd"), KEY_GENERIC_OTHER_CMD};
+  binding_t conf   = {_("Config"),   KEY_GENERIC_CONFIG_MENU};  
+  binding_t draw   = {_("Redraw"),   KEY_GENERIC_REDRAW};
+  binding_t appt   = {_("Add Appt"), KEY_GENERIC_ADD_APPT};
+  binding_t todo   = {_("Add Todo"), KEY_GENERIC_ADD_TODO};
+  binding_t gnday  = {_("+1 Day"),   KEY_GENERIC_NEXT_DAY};
+  binding_t gpday  = {_("-1 Day"),   KEY_GENERIC_PREV_DAY};
+  binding_t gnweek = {_("+1 Week"),  KEY_GENERIC_NEXT_WEEK};
+  binding_t gpweek = {_("-1 Week"),  KEY_GENERIC_PREV_WEEK};
+  binding_t today  = {_("Today"),    KEY_GENERIC_GOTO_TODAY};
+  binding_t up     = {_("Up"),       KEY_MOVE_UP};
+  binding_t down   = {_("Down"),     KEY_MOVE_DOWN};  
+  binding_t left   = {_("Left"),     KEY_MOVE_LEFT};
+  binding_t right  = {_("Right"),    KEY_MOVE_RIGHT};  
+  binding_t weekb  = {_("beg Week"), KEY_START_OF_WEEK};
+  binding_t weeke  = {_("end Week"), KEY_END_OF_WEEK};
+  binding_t add    = {_("Add Item"), KEY_ADD_ITEM};
+  binding_t del    = {_("Del Item"), KEY_DEL_ITEM};
+  binding_t edit   = {_("Edit Itm"), KEY_EDIT_ITEM};
+  binding_t view   = {_("View"),     KEY_VIEW_ITEM};  
+  binding_t flag   = {_("Flag Itm"), KEY_FLAG_ITEM};
+  binding_t rept   = {_("Repeat"),   KEY_REPEAT_ITEM};
+  binding_t enote  = {_("EditNote"), KEY_EDIT_NOTE};
+  binding_t vnote  = {_("ViewNote"), KEY_VIEW_NOTE};
+  binding_t rprio  = {_("Prio.+"),   KEY_RAISE_PRIORITY};
+  binding_t lprio  = {_("Prio.-"),   KEY_LOWER_PRIORITY};
+
+  
+  binding_t *binding[TOTAL_CMDS] = {
+    /* calendar keys */
+    &help, &quit, &save, &chgvu, &import, &export, &up, &down, &left, &right,
+    &togo, &othr, &weekb, &weeke, &conf, &draw, &appt, &todo, &gnday, &gpday,
+    &gnweek, &gpweek, &today, &othr,
+    /* appointment keys */
+    &help, &quit, &save, &chgvu, &import, &export, &add, &del, &edit, &view,
+    &draw, &othr, &rept, &flag, &enote, &vnote, &up, &down, &gnday, &gpday,
+    &gnweek, &gpweek, &togo, &othr, &today, &conf, &appt, &todo, &cut, &paste,
+    &othr,
+    /* todo keys */
+    &help, &quit, &save, &chgvu, &import, &export, &add, &del, &edit, &view,
+    &draw, &othr, &rprio, &lprio, &enote, &vnote, &up, &down, &gnday, &gpday,
+    &gnweek, &gpweek, &togo, &othr, &today, &conf, &appt, &todo, &othr
+  };
+
+  /* Drawing the keybinding with attribute and label without. */
+  which_pan = wins_slctd ();
+  start = pos[which_pan] + 2 * KEYS_CMDS_PER_LINE * (status_page - 1);
+  end = MIN (start + 2 * KEYS_CMDS_PER_LINE, pos[which_pan + 1]);
+  keys_display_bindings_bar (win[STA].p, binding, start, end);
+}
+
+/* Erase status bar. */
+void
+wins_erase_status_bar (void)
+{
+  erase_window_part (win[STA].p, 0, 0, col, STATUSHEIGHT);
+}
+
+/* Update the status bar page number to display other commands. */
+void
+wins_other_status_page (int panel)
+{
+  int nb_item, max_page;
+
+  nb_item = 0;
+  switch (panel)
+    {
+    case CAL:
+      nb_item = NB_CAL_CMDS;
+      break;
+    case APP:
+      nb_item = NB_APP_CMDS;
+      break;
+    case TOD:
+      nb_item = NB_TOD_CMDS;
+      break;
+    default:
+      EXIT (_("unknown panel"));
+      /* NOTREACHED */
+    }
+  max_page = ceil (nb_item / (2 * CMDS_PER_LINE + 1)) + 1;
+  if (status_page < max_page)
+    status_page++;
+  else
+    status_page = 1;
+}
+
+/* Reset the status bar page. */
+void
+wins_reset_status_page (void)
+{
+  status_page = 1;
+}
+
+#undef NB_CAL_CMDS
+#undef NB_APP_CMDS
+#undef NB_TOD_CMDS
+#undef TOTAL_CMDS
+#undef CMDS_PER_LINE

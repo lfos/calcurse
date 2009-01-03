@@ -1,4 +1,4 @@
-/*	$calcurse: apoint.c,v 1.32 2009/01/02 22:28:54 culot Exp $	*/
+/*	$calcurse: apoint.c,v 1.33 2009/01/03 21:32:11 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -46,7 +46,7 @@ static apoint_llist_node_t  bkp_cut_apoint;
 static int                  hilt;
 
 void
-apoint_free_bkp (void)
+apoint_free_bkp (erase_flag_e flag)
 {
   if (bkp_cut_apoint.mesg)
     {
@@ -55,8 +55,13 @@ apoint_free_bkp (void)
     }
   if (bkp_cut_apoint.note)
     {
-      mem_free (bkp_cut_apoint.note);
-      bkp_cut_apoint.note = 0;
+      if (flag == ERASE_FORCE)
+        erase_note (&bkp_cut_apoint.note, ERASE_FORCE);
+      else
+        {
+          mem_free (bkp_cut_apoint.note);
+          bkp_cut_apoint.note = 0;
+        }
     }
 }
 
@@ -268,7 +273,7 @@ apoint_add (void)
       if (hilt == 0)
 	hilt++;
     }
-  erase_status_bar ();
+  wins_erase_status_bar ();
 }
 
 /* Delete an item from the appointment list. */
@@ -294,7 +299,7 @@ apoint_delete (conf_t *conf, unsigned *nb_events, unsigned *nb_apoints)
 	go_for_deletion = true;
       else
 	{
-	  erase_status_bar ();
+	  wins_erase_status_bar ();
 	  return;
 	}
     }
@@ -333,7 +338,7 @@ apoint_delete (conf_t *conf, unsigned *nb_events, unsigned *nb_apoints)
 }
 
 /* Cut an item, so that it can be pasted somewhere else later. */
-void
+int
 apoint_cut (unsigned *nb_events, unsigned *nb_apoints)
 {
   const int NBITEMS = *nb_apoints + *nb_events;
@@ -341,7 +346,7 @@ apoint_cut (unsigned *nb_events, unsigned *nb_apoints)
   long date;
 
   if (NBITEMS == 0)
-    return;
+    return 0;
 
   to_be_removed = 0;
   date = calendar_get_slctd_day_sec ();
@@ -366,17 +371,19 @@ apoint_cut (unsigned *nb_events, unsigned *nb_apoints)
     apad.first_onscreen = apad.first_onscreen - to_be_removed;
   if (NBITEMS == 1)
     hilt = 0;
+
+  return item_type;
 }
 
 /* Paste a previously cut item. */
 void
-apoint_paste (unsigned *nb_events, unsigned *nb_apoints)
+apoint_paste (unsigned *nb_events, unsigned *nb_apoints, int cut_item_type)
 {
   int item_type;
   long date;
 
   date = calendar_get_slctd_day_sec ();
-  item_type = day_paste_item (date);
+  item_type = day_paste_item (date, cut_item_type);
   if (item_type == EVNT || item_type == RECUR_EVNT)
     (*nb_events)++;
   else if (item_type == APPT || item_type == RECUR_APPT)
@@ -526,7 +533,7 @@ apoint_delete_bynum (long start, unsigned num, erase_flag_e flag)
                   pthread_mutex_unlock (&(alist_p->mutex));
                   break;
                 case ERASE_CUT:
-                  apoint_free_bkp ();
+                  apoint_free_bkp (ERASE_FORCE);
                   apoint_dup (i, &bkp_cut_apoint);
                   if (i->note)
                     mem_free (i->note);
@@ -776,5 +783,5 @@ apoint_paste_item (void)
   (void)apoint_new (bkp_cut_apoint.mesg, bkp_cut_apoint.note,
                     bkp_start, bkp_cut_apoint.dur,
                     bkp_cut_apoint.state);
-  apoint_free_bkp ();
+  apoint_free_bkp (ERASE_FORCE_KEEP_NOTE);
 }

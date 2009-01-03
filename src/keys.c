@@ -1,4 +1,4 @@
-/*	$calcurse: keys.c,v 1.13 2009/01/02 19:52:32 culot Exp $	*/
+/*	$calcurse: keys.c,v 1.14 2009/01/03 21:32:11 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -438,7 +438,7 @@ keys_display_bindings_bar (WINDOW *win, binding_t **binding, int first_key,
   cmdlen += space_between_cmds;
   
   j = 0;
-  erase_status_bar ();
+  wins_erase_status_bar ();
   for (i = first_key; i < last_key; i += 2)
     {
       char key[KEYS_KEYLEN + 1], *fmtkey;

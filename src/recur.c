@@ -1,4 +1,4 @@
-/*	$calcurse: recur.c,v 1.48 2009/01/02 19:52:32 culot Exp $	*/
+/*	$calcurse: recur.c,v 1.49 2009/01/03 21:32:11 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -87,17 +87,12 @@ exc_dup (struct days_s **in, struct days_s *exc)
 }
 
 void
-recur_event_free_bkp (void)
+recur_event_free_bkp (erase_flag_e flag)
 {
   if (bkp_cut_recur_event.mesg)
     {
       mem_free (bkp_cut_recur_event.mesg);
       bkp_cut_recur_event.mesg = 0;
-    }
-  if (bkp_cut_recur_event.note)
-    {
-      mem_free (bkp_cut_recur_event.note);
-      bkp_cut_recur_event.note = 0;
     }
   if (bkp_cut_recur_event.rpt)
     {
@@ -109,20 +104,25 @@ recur_event_free_bkp (void)
       free_exc (bkp_cut_recur_event.exc);
       bkp_cut_recur_event.exc = 0;
     }
+  if (bkp_cut_recur_event.note)
+    {
+      if (flag == ERASE_FORCE)
+        erase_note (&bkp_cut_recur_event.note, ERASE_FORCE);
+      else
+        {
+          mem_free (bkp_cut_recur_event.note);
+          bkp_cut_recur_event.note = 0;
+        }
+    }
 }
 
 void
-recur_apoint_free_bkp (void)
+recur_apoint_free_bkp (erase_flag_e flag)
 {
   if (bkp_cut_recur_apoint.mesg)
     {
       mem_free (bkp_cut_recur_apoint.mesg);
       bkp_cut_recur_apoint.mesg = 0;
-    }
-  if (bkp_cut_recur_apoint.note)
-    {
-      mem_free (bkp_cut_recur_apoint.note);
-      bkp_cut_recur_apoint.note = 0;
     }
   if (bkp_cut_recur_apoint.rpt)
     {
@@ -133,6 +133,16 @@ recur_apoint_free_bkp (void)
     {
       free_exc (bkp_cut_recur_apoint.exc);
       bkp_cut_recur_apoint.exc = 0;
+    }
+  if (bkp_cut_recur_apoint.note)
+    {
+      if (flag == ERASE_FORCE)
+        erase_note (&bkp_cut_recur_apoint.note, ERASE_FORCE);
+      else
+        {
+          mem_free (bkp_cut_recur_apoint.note);
+          bkp_cut_recur_apoint.note = 0;
+        }
     }
 }
 
@@ -246,7 +256,7 @@ recur_apoint_new (char *mesg, char *note, long start, long dur, char state,
   o = mem_malloc (sizeof (recur_apoint_llist_node_t));
   o->rpt = mem_malloc (sizeof (struct rpt_s));
   o->mesg = mem_strdup (mesg);
-  o->note = (note != 0) ? strdup (note) : 0;
+  o->note = (note != 0) ? mem_strdup (note) : 0;
   o->start = start;
   o->state = state;
   o->dur = dur;
@@ -288,7 +298,7 @@ recur_event_new (char *mesg, char *note, long day, int id, int type, int freq,
   o = mem_malloc (sizeof (struct recur_event_s));
   o->rpt = mem_malloc (sizeof (struct rpt_s));
   o->mesg = mem_strdup (mesg);
-  o->note = (note != 0) ? strdup (note) : 0;  
+  o->note = (note != 0) ? mem_strdup (note) : 0;  
   o->day = day;
   o->id = id;
   o->rpt->type = type;
@@ -696,7 +706,7 @@ recur_event_erase (long start, unsigned num, unsigned delete_whole,
                       erase_note (&i->note, flag);                      
                       break;
                     case ERASE_CUT:
-                      recur_event_free_bkp ();
+                      recur_event_free_bkp (ERASE_FORCE);
                       recur_event_dup (i, &bkp_cut_recur_event);
                       if (i->note)
                         mem_free (i->note);
@@ -759,7 +769,7 @@ recur_apoint_erase (long start, unsigned num, unsigned delete_whole,
                       erase_note (&i->note, flag);
                       break;
                     case ERASE_CUT:
-                      recur_apoint_free_bkp ();
+                      recur_apoint_free_bkp (ERASE_FORCE);
                       recur_apoint_dup (i, &bkp_cut_recur_apoint);
                       if (i->note)
                         mem_free (i->note);
@@ -1007,7 +1017,7 @@ recur_apoint_check_next (struct notify_app_s *app, long start, long day)
 	  if (real_recur_start_time > start)
 	    {
 	      app->time = real_recur_start_time;
-	      app->txt = strdup (i->mesg);
+	      app->txt = mem_strdup (i->mesg);
 	      app->state = i->state;
 	      app->got_app = 1;
 	    }
@@ -1128,7 +1138,7 @@ recur_event_paste_item (void)
                          bkp_cut_recur_event.rpt->freq,
                          bkp_cut_recur_event.rpt->until,
                          &bkp_cut_recur_event.exc);
-  recur_event_free_bkp ();
+  recur_event_free_bkp (ERASE_FORCE_KEEP_NOTE);
 }
 
 void
@@ -1159,5 +1169,5 @@ recur_apoint_paste_item (void)
                           bkp_cut_recur_apoint.rpt->freq,
                           bkp_cut_recur_apoint.rpt->until,
                           &bkp_cut_recur_apoint.exc);
-  recur_apoint_free_bkp ();
+  recur_apoint_free_bkp (ERASE_FORCE_KEEP_NOTE);
 }

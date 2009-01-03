@@ -1,4 +1,4 @@
-/*	$calcurse: mem.c,v 1.2 2009/01/02 19:52:32 culot Exp $	*/
+/*	$calcurse: mem.c,v 1.3 2009/01/03 21:32:11 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -149,7 +149,7 @@ dbg_calloc (size_t nmemb, size_t size, const char *pos)
 void *
 dbg_realloc (void *ptr, size_t size, const char *pos)
 {
-  unsigned *buf, old_size;
+  unsigned *buf, old_size, cpy_size;
   
   if (size == 0 || ptr == 0)
     return (void *)0;
@@ -158,12 +158,12 @@ dbg_realloc (void *ptr, size_t size, const char *pos)
     return (void *)0;
 
   old_size = *((unsigned *)ptr - EXTRA_SPACE_START + BLK_SIZE);
-  bcopy (ptr, buf + EXTRA_SPACE_START, old_size);
+  cpy_size = (old_size > size) ? size : old_size;
+  bcopy (ptr, buf, cpy_size);
+  
   mem_free (ptr);
   
-  mstats.nalloc += size;
-
-  return (void *)(buf + EXTRA_SPACE_START);
+  return (void *)buf;
 }
 
 char *
