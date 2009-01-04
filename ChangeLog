@@ -2,6 +2,9 @@
 
 	* src/help.c (help_screen): help page added to describe the cut
 	and paste feature
+
+	* doc/manual_*.html: information about periodic saves added in
+	manuals
 	
 2009-01-03  Frederic Culot  <frederic@culot.org>
 

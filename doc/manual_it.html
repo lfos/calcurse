@@ -1,10 +1,10 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <!--
 /*
- * $calcurse: manual_it.html,v 1.7 2008/12/09 21:09:17 culot Exp $
+ * $calcurse: manual_it.html,v 1.8 2009/01/04 11:52:47 culot Exp $
  *
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2008 Frederic Culot
+ * Copyright (c) 2004-2009 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -254,7 +254,7 @@ caratteristiche<a name="overview_features"></a></h2>
   Innanzitutto è necessario scompattare l'archivio contenente i
   sorgenti:
 </p>
-	<pre>tar zxvf calcurse-2.4.tar.gz</pre>
+	<pre>tar zxvf calcurse-2.5.tar.gz</pre>
 <p>
   Una volta verificati i requisiti e scompattato l'archivio la
   procedura d'installazione è piuttosto semplice visto che segue i tre
@@ -736,6 +736,18 @@ d'ambiente<a name="basics_invocation_environment"></a></h3>
 	      necessario premere 'S' per salvare i dati eventualmente
 	      modificati.
 	  </dd>
+
+            <div class="todo">
+            <dt><code>periodic_save</code> 
+            (default: <span class="emp">0</span>)</dt>
+            <dd>If different from '0', user's data will be automatically
+            saved every <span class="emp">periodic_save</span> minutes.
+            When an automatic save is performed, two asterisks 
+            (i.e. '<code>**</code>') will appear on the top right-hand side
+            of the screen).</p>
+            </dd>
+            </div>
+
 	  <dt><code>confirm_quit</code> 
 	    (default: <span class="emp">yes</span>)</dt>
 	  <dd>
@@ -1401,8 +1413,8 @@ d'ambiente<a name="basics_invocation_environment"></a></h3>
 </p>
 
 <div class="footer">
-  Copyright (c) 2004-2008 Fr&eacute;d&eacute;ric Culot<br>
-  Calcurse version 2.4 - Last change: December 09, 2008<br>
+  Copyright &copy; 2004-2009 Fr&eacute;d&eacute;ric Culot<br>
+  Calcurse version 2.5 - Last change: January 04, 2009<br>
 </div>
 </div>
 
