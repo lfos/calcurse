@@ -1,3 +1,8 @@
+2009-01-04  Frederic Culot  <frederic@culot.org>
+
+	* src/help.c (help_screen): help page added to describe the cut
+	and paste feature
+	
 2009-01-03  Frederic Culot  <frederic@culot.org>
 
 	* src/day.c (day_saved_item_init, day_saved_item_free): suppressed

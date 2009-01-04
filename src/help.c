@@ -1,8 +1,8 @@
-/*	$calcurse: help.c,v 1.37 2009/01/03 21:32:11 culot Exp $	*/
+/*	$calcurse: help.c,v 1.38 2009/01/04 10:22:10 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2008 Frederic Culot
+ * Copyright (c) 2004-2009 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,6 +52,7 @@ typedef enum
   HELP_GOTO,
   HELP_DELETE,
   HELP_ADD,
+  HELP_CUT_PASTE,
   HELP_EDIT,
   HELP_ENOTE,
   HELP_VNOTE,
@@ -116,6 +117,8 @@ help_write_pad (window_t *win, char *title, char *text, keys_e action)
     case KEY_GENERIC_PREV_WEEK:
     case KEY_GENERIC_GOTO_TODAY:
     case KEY_GENERIC_CREDITS:
+    case KEY_GENERIC_CUT:
+    case KEY_GENERIC_PASTE:
       break;
     default:
       bindings = keys_action_allkeys (action);
@@ -246,6 +249,11 @@ wanted_page (int ch)
       page = HELP_DELETE;
       break;
 
+    case KEY_GENERIC_CUT:
+    case KEY_GENERIC_PASTE:
+      page = HELP_CUT_PASTE;
+      break;
+      
     case KEY_EDIT_ITEM:
       page = HELP_EDIT;
       break;
@@ -506,6 +514,22 @@ help_screen (void)
             keys_action_firstkey (KEY_ADD_ITEM),
             keys_action_firstkey (KEY_ADD_ITEM));
 
+  hscr[HELP_CUT_PASTE].title = _("Cut and Paste\n");
+  (void)snprintf (hscr[HELP_CUT_PASTE].text, HELPTEXTSIZ,
+  _("Cut and paste the currently selected item. This is useful to quickly\n"
+    "move an item from one date to another.\n"
+    "To do so, one must first highlight the item that needs to be moved,\n"
+    "then press '%s' to cut this item. It will be removed from the panel.\n"
+    "Once the new date is chosen in the calendar, the appointment panel must\n"
+    "be selected and the '%s' key must be pressed to paste the item.\n"
+    "The item will appear again in the appointment panel, assigned to the\n"
+    "newly selected date.\n\n"
+    "Be careful that if two cuts are performed successively without pasting\n"
+    "between them, the item that was cut at first will be lost, together\n"
+    "with its associated note if it had one."),
+                  keys_action_firstkey (KEY_GENERIC_CUT),
+                  keys_action_firstkey (KEY_GENERIC_PASTE));
+  
   hscr[HELP_EDIT].title = _("Edit Item\n");
   (void)snprintf (hscr[HELP_EDIT].text, HELPTEXTSIZ,
     _("Edit the item which is currently selected.\n"
