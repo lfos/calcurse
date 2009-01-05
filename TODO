@@ -26,5 +26,4 @@ Average
 
 Low
 ---
-  o  Improve the '-d' option by adding more date formats
   o  All status bars should be terminal-size dependant (config_bar is not)

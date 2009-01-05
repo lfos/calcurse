@@ -1,4 +1,4 @@
-/*	$calcurse: vars.h,v 1.29 2009/01/02 22:28:54 culot Exp $	*/
+/*	$calcurse: vars.h,v 1.30 2009/01/05 20:12:08 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -59,11 +59,24 @@
 #define STATUSHEIGHT	2
 #define	NOTESIZ		6
 
-#define DATEFMT(datefmt) (datefmt == 1 ? "%m/%d/%Y" : \
-		(datefmt == 2 ? "%d/%m/%Y" : "%Y/%m/%d"))
+enum {
+  DATEFMT_MMDDYYYY = 1,
+  DATEFMT_DDMMYYYY,
+  DATEFMT_YYYYMMDD,
+  DATEFMT_ISO,
+  DATE_FORMATS
+};
 
-#define DATEFMT_DESC(datefmt) (datefmt == 1 ? _("mm/dd/yyyy") : \
-		(datefmt == 2 ? _("dd/mm/yyyy") : _("yyyy/mm/dd")))
+#define DATEFMT(datefmt) (datefmt == DATEFMT_MMDDYYYY ? "%m/%d/%Y" :          \
+		(datefmt == DATEFMT_DDMMYYYY ? "%d/%m/%Y" :                   \
+                (datefmt == DATEFMT_YYYYMMDD ? "%Y/%m/%d" : "%Y-%m-%d")))
+
+#define DATEFMT_DESC(datefmt) (datefmt == DATEFMT_MMDDYYYY ?                  \
+                               _("mm/dd/yyyy") :                              \
+		               (datefmt == DATEFMT_DDMMYYYY ?                 \
+                               _("dd/mm/yyyy") :                              \
+                               (datefmt == DATEFMT_YYYYMMDD ?                 \
+                               _("yyyy/mm/dd") : _("yyyy-mm-dd"))))
 
 typedef enum {
   UI_CURSES,
@@ -122,6 +135,6 @@ extern char           path_notes[BUFSIZ];
 extern struct pad_s   apad;
 extern struct nbar_s  nbar;
 
-void vars_init (conf_t *conf);
+void vars_init (conf_t *);
 
 #endif /* CALCURSE_VARS_H */

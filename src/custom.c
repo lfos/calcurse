@@ -1,4 +1,4 @@
-/*	$calcurse: custom.c,v 1.35 2009/01/03 21:32:11 culot Exp $	*/
+/*	$calcurse: custom.c,v 1.36 2009/01/05 20:12:08 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -303,7 +303,7 @@ custom_load_conf (conf_t *conf, int background)
 	  break;
 	case CUSTOM_CONF_INPUTDATEFMT:
 	  conf->input_datefmt = atoi (e_conf);
-	  if (conf->input_datefmt < 1 || conf->input_datefmt > 3)
+	  if (conf->input_datefmt <= 0 || conf->input_datefmt >= DATE_FORMATS)
 	    conf->input_datefmt = 1;
 	  var = 0;
 	  break;
@@ -941,7 +941,8 @@ print_general_options (WINDOW *win, conf_t *conf)
              conf->input_datefmt);
   custom_remove_attr (win, ATTR_HIGHEST);
   mvwprintw (win, y + 1, XPOS, _("(Format to be used when entering a date: "));
-  mvwprintw (win, y + 2, XPOS, _(" 1-mm/dd/yyyy, 2-dd/mm/yyyy, 3-yyyy/mm/dd)"));
+  mvwprintw (win, y + 2, XPOS,
+             _(" (1)mm/dd/yyyy (2)dd/mm/yyyy (3)yyyy/mm/dd (4)yyyy-mm-dd)"));
 
   return y + YOFF;
 }
@@ -972,7 +973,8 @@ custom_general_config (conf_t *conf)
   char *output_datefmt_str =
     _("Enter the date format (see 'man 3 strftime' for possible formats) ");
   char *input_datefmt_str =
-    _("Enter the date format (1-mm/dd/yyyy, 2-dd/mm/yyyy, 3-yyyy/mm/dd) ");
+    _("Enter the date format (1)mm/dd/yyyy (2)dd/mm/yyyy (3)yyyy/mm/dd "
+      "(4)yyyy-mm-dd");
   char *periodic_save_str =
     _("Enter the delay, in minutes, between automatic saves (0 to disable) ");
   int ch;
@@ -1066,7 +1068,7 @@ custom_general_config (conf_t *conf)
 	  if (updatestring (win[STA].p, &buf, 0, 1) == 0)
 	    {
 	      int val = atoi (buf);
-	      if (val >= 1 && val <= 3)
+	      if (val > 0 && val <= DATE_FORMATS)
 		conf->input_datefmt = val;
 	    }
 	  status_mesg (number_str, keys);

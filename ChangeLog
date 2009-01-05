@@ -1,3 +1,14 @@
+2009-01-05  Frederic Culot  <frederic@culot.org>
+
+	* src/custom.c (custom_general_config, print_general_options): 
+	iso date format (yyyy-mm-dd) added
+
+	* src/utils.c (parse_date)
+	* src/custom.c (custom_load_conf)
+	* src/io.c (io_save_cal): iso date format added
+
+	* TODO: updated
+	
 2009-01-04  Frederic Culot  <frederic@culot.org>
 
 	* src/help.c (help_screen): help page added to describe the cut

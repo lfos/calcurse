@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.66 2009/01/03 21:32:11 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.67 2009/01/05 20:12:08 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -815,40 +815,57 @@ parse_date (char *date_string, int datefmt, int *year, int *month, int *day)
 {
   int in1, in2, in3;
   int lyear, lmonth, lday;
-  if (date_string == NULL)
-    return (0);
-  if (sscanf (date_string, "%d / %d / %d", &in1, &in2, &in3) < 3)
-    return (0);
+
+  if (date_string == 0)
+    return 0;
+
+  if (datefmt == DATEFMT_ISO)
+    {
+      if (sscanf (date_string, "%d - %d - %d", &in1, &in2, &in3) < 3)
+        return 0;
+    }
+  else
+    {
+      if (sscanf (date_string, "%d / %d / %d", &in1, &in2, &in3) < 3)
+        return 0;
+    }
   switch (datefmt)
     {
-    case 1:
+    case DATEFMT_MMDDYYYY:
       lmonth = in1;
       lday = in2;
       lyear = in3;
       break;
-    case 2:
+    case DATEFMT_DDMMYYYY:
       lday = in1;
       lmonth = in2;
       lyear = in3;
       break;
-    case 3:
+    case DATEFMT_YYYYMMDD:
+    case DATEFMT_ISO:      
       lyear = in1;
       lmonth = in2;
       lday = in3;
       break;
     default:
-      return (0);
+      return 0;
     }
-  if (lyear < 1 || lyear > 9999 || lmonth < 1 || lmonth > 12 || lday < 1
-      || lday > 31)
-    return (0);
+  
+  if (lyear < 1 || lyear > 9999
+      || lmonth < 1 || lmonth > 12
+      || lday < 1 || lday > 31)
+    return 0;
+  
   if (year != NULL)
     *year = lyear;
+  
   if (month != NULL)
     *month = lmonth;
+  
   if (day != NULL)
     *day = lday;
-  return (1);
+  
+  return 1;
 }
 
 char *

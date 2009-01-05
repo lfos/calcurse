@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.55 2009/01/03 21:32:11 culot Exp $	*/
+/*	$calcurse: io.c,v 1.56 2009/01/05 20:12:08 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -908,7 +908,8 @@ io_save_cal (conf_t *conf, io_save_display_t display)
 
       (void)fprintf (data_file,
                      "\n# Format to be used when entering a date "
-                     "(1-mm/dd/yyyy, 2-dd/mm/yyyy, 3-yyyy/mm/dd) :\n");
+                     "(1)mm/dd/yyyy (2)dd/mm/yyyy (3)yyyy/mm/dd) "
+                     "(4)yyyy-mm-dd:\n");
       (void)fprintf (data_file, "input_datefmt=\n");
       (void)fprintf (data_file, "%d\n", conf->input_datefmt);
 
