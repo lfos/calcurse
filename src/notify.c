@@ -1,4 +1,4 @@
-/*	$calcurse: notify.c,v 1.35 2009/01/03 21:32:11 culot Exp $	*/
+/*	$calcurse: notify.c,v 1.36 2009/01/22 18:11:57 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -116,7 +116,8 @@ notify_init_bar (void)
 void
 notify_stop_main_thread (void)
 {
-  pthread_cancel (notify_t_main);
+  if (notify_t_main)
+    pthread_cancel (notify_t_main);
 }
 
 /* 

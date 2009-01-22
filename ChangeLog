@@ -1,3 +1,11 @@
+2009-01-22  Frederic Culot  <frederic@culot.org>
+
+	* src/notify.c (notify_stop_main_thread): avoid a possible
+	segfault if this function is called before the thread was launched
+	(thanks Jan for reporting this)
+
+	* configure.ac: switch to 2.5_beta
+	
 2009-01-05  Frederic Culot  <frederic@culot.org>
 
 	* src/custom.c (custom_general_config, print_general_options): 
