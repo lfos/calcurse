@@ -1,3 +1,8 @@
+2009-01-23  Frederic Culot  <frederic@culot.org>
+
+	* configure.ac: improve configuration script to be able to link
+	with ncursesw if ncurses is not available
+	
 2009-01-22  Frederic Culot  <frederic@culot.org>
 
 	* src/notify.c (notify_stop_main_thread): avoid a possible

@@ -1,4 +1,4 @@
-#	$calcurse: configure.ac,v 1.29 2009/01/22 18:11:56 culot Exp $
+#	$calcurse: configure.ac,v 1.30 2009/01/23 21:08:31 culot Exp $
 
 #-------------------------------------------------------------------------------
 #                                                                           Init
@@ -27,14 +27,27 @@ AC_CHECK_HEADERS([ctype.h getopt.h locale.h math.h signal.h stdbool.h stdio.h  \
 #-------------------------------------------------------------------------------
 #                                                         Checks for system libs
 #-------------------------------------------------------------------------------
-AC_CHECK_HEADERS([ncurses.h], [
-    AC_CHECK_LIB(ncurses, initscr, [
-	LIBS="$LIBS -lncurses"
-	AC_DEFINE(HAVE_LIBNCURSES, 1, 
-		  [Define to 1 if you have the 'ncurses' library (-lncurses).])
-    ], 
-    AC_MSG_ERROR(The ncurses library is required in order to build calcurse!))
-], AC_MSG_ERROR(The ncurses header is required in order to build calcurse!))
+AC_CHECK_FUNC(initscr,,
+[
+  available_ncurses="none"
+  for lib in ncursesw ncurses
+  do
+    AC_CHECK_LIB($lib, initscr,
+                 [available_ncurses="$lib"; break])
+  done
+  if test "$available_ncurses" = none; then
+    AC_MSG_ERROR(Either ncurses or ncursesw library is required to build calcurse!)
+  elif test "$available_ncurses" = ncursesw; then
+    AC_CHECK_HEADERS([ncursesw/ncurses.h],,
+                     [AC_CHECK_HEADERS([ncurses.h],,
+                                       AC_MSG_ERROR([Missing ncursesw header file]))])
+  else
+    AC_CHECK_HEADERS([ncurses/ncurses.h],,
+                     [AC_CHECK_HEADERS([ncurses.h],,
+                                       AC_MSG_ERROR([Missing ncurses header file]))])
+  fi
+  LIBS="$LIBS -l$available_ncurses"
+])
 
 AC_CHECK_HEADERS([pthread.h], [
     AC_CHECK_LIB(pthread, pthread_create, [
