@@ -1,4 +1,4 @@
-/*	$calcurse: vars.h,v 1.30 2009/01/05 20:12:08 culot Exp $	*/
+/*	$calcurse: vars.h,v 1.31 2009/01/23 21:09:21 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -27,7 +27,20 @@
 #ifndef CALCURSE_VARS_H
 #define CALCURSE_VARS_H
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif /* HAVE_CONFIG_H */
+
+#ifdef HAVE_NCURSES_H
 #include <ncurses.h>
+#elif defined HAVE_NCURSES_NCURSES_H
+#include <ncurses/ncurses.h>
+#elif defined HAVE_NCURSESW_NCURSES_H
+#include <ncursesw/ncurses.h>
+#else
+#error "Missing ncurses header. Aborting..."
+#endif
+
 #include <pthread.h>
 #include <stdbool.h>
 

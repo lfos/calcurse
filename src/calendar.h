@@ -1,8 +1,8 @@
-/*	$calcurse: calendar.h,v 1.12 2008/08/10 09:24:46 culot Exp $	*/
+/*	$calcurse: calendar.h,v 1.13 2009/01/23 21:09:21 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2008 Frederic Culot
+ * Copyright (c) 2004-2009 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,20 @@
 #ifndef CALCURSE_CALENDAR_H
 #define CALCURSE_CALENDAR_H
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif /* HAVE_CONFIG_H */
+
+#ifdef HAVE_NCURSES_H
 #include <ncurses.h>
+#elif defined HAVE_NCURSES_NCURSES_H
+#include <ncurses/ncurses.h>
+#elif defined HAVE_NCURSESW_NCURSES_H
+#include <ncursesw/ncurses.h>
+#else
+#error "Missing ncurses header. Aborting..."
+#endif
+
 #include <stdbool.h>
 #include <time.h>
 
