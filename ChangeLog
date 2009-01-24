@@ -9,6 +9,12 @@
 	* src/utils.c (warnbox): new function
 
 	* src/utils.h (WARN_MSG): new macro
+
+	* doc/manual_*.html: manuals updated for 2.5 version
+
+	* configure.ac: switch to 2.5
+
+	* src/calcurse.1: manpage updated for 2.5 version
 	
 2009-01-23  Frederic Culot  <frederic@culot.org>
 
