@@ -1,8 +1,8 @@
-/*	$calcurse: calendar.c,v 1.21 2008/12/28 13:13:59 culot Exp $	*/
+/*	$calcurse: calendar.c,v 1.22 2009/01/24 20:41:52 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2008 Frederic Culot
+ * Copyright (c) 2004-2009 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -86,15 +86,14 @@ void
 calendar_start_date_thread (void)
 {
   pthread_create (&calendar_t_date, NULL, calendar_date_thread, NULL);
-  return;
 }
 
 /* Stop the calendar date thread. */
 void
 calendar_stop_date_thread (void)
 {
-  pthread_cancel (calendar_t_date);
-  return;
+  if (calendar_t_date)
+    pthread_cancel (calendar_t_date);
 }
 
 /* Set static variable today to current date */
