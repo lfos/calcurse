@@ -1,6 +1,6 @@
-.\" 	$calcurse: calcurse.1,v 1.12 2008/12/09 21:09:17 culot Exp $
+.\" 	$calcurse: calcurse.1,v 1.13 2009/01/24 17:57:50 culot Exp $
 .\"
-.\" Copyright (c) 2004-2008 Frederic Culot
+.\" Copyright (c) 2004-2009 Frederic Culot
 .\"
 .\" This program is free software; you can redistribute it and/or modify
 .\" it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 .\" Boston, MA 02111-1307, USA.
 .\"
 .fam C
-.TH CALCURSE 1 "December 09, 2008" "Version 2.4" "Calcurse Manual"
+.TH CALCURSE 1 "January 24, 2009" "Version 2.5" "Calcurse Manual"
 .SH NAME
 Calcurse \- text-based organizer
 .SH SYNOPSIS
@@ -58,7 +58,7 @@ the given number of upcoming days, depending on the argument format.
 Two possible formats are supported:
 .RS 9
 .TP 2
-\(bu  a date of the form 'mm/dd/yyyy'. 
+\(bu  a date (see below for possible formats). 
 .TP 2
 \(bu  a number 'n'. 
 .RE
@@ -70,6 +70,21 @@ list for the 'n' upcoming days will be returned.
 .br
 As an example, typing 'calcurse -d 3' will display your appointments 
 and events for today, tomorrow, and the day after tomorrow.   
+.br
+The date format used is the one specified in the 'General options' menu.
+Four formats are available:
+.RS 9
+.TP 2
+\fB1.\fP mm/dd/yyyy
+.TP 2
+\fB2.\fP dd/mm/yyyy
+.TP 2
+\fB3.\fP yyyy/mm/dd
+.TP 2
+\fB4.\fP yyyy-mm-dd
+.RE
+.RS 7
+.LP
 .br
 \fINote:\fP as for the '-a' flag, the calendar from which to read the 
 appointments can be specified using the '\-c' flag. 
@@ -218,7 +233,7 @@ or at: http://culot.org/calcurse/manual.html
 .SH AUTHOR
 \fBFrederic Culot\fP <frederic@culot.org>.
 .SH COPYRIGHT
-Copyright (c) 2004-2008 by Frederic Culot. 
+Copyright (c) 2004-2009 by Frederic Culot. 
 .br
 This software is released under the GNU General Public License. Please
 read the COPYING file for more information. 
