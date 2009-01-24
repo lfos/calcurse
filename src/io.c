@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.56 2009/01/05 20:12:08 culot Exp $	*/
+/*	$calcurse: io.c,v 1.57 2009/01/24 14:44:25 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -1400,7 +1400,7 @@ io_load_keys (char *pager)
   if (loaded < NBKEYS)
     keys_fill_missing ();
   if (keys_check_missing_bindings ())
-    ERROR_MSG (_("Some actions do not have any associated key bindings!"));
+    WARN_MSG (_("Some actions do not have any associated key bindings!"));
 #undef HSIZE
 }
 

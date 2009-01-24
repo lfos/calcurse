@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.67 2009/01/05 20:12:08 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.68 2009/01/24 14:44:25 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -81,12 +81,15 @@ fatalbox (const char *errmsg)
 {
   WINDOW *errwin;
   char *label = _("/!\\ INTERNAL ERROR /!\\");
-    char *reportmsg = _("Please report the following bug:");
+  char *reportmsg = _("Please report the following bug:");
   const int WINROW = 10;
   const int WINCOL = col - 2;
   const int MSGLEN = WINCOL - 2;
   char msg[MSGLEN];
 
+  if (errmsg == 0)
+    return;
+  
   (void)strncpy (msg, errmsg, MSGLEN);
   errwin = newwin (WINROW, WINCOL, (row - WINROW) / 2, (col - WINCOL) / 2);
   custom_apply_attr (errwin, ATTR_HIGHEST);
@@ -98,6 +101,32 @@ fatalbox (const char *errmsg)
   wrefresh (errwin);
   (void)wgetch (errwin);
   delwin (errwin);
+  doupdate ();
+}
+
+void
+warnbox (const char *msg)
+{
+  WINDOW *warnwin;
+  char *label = "/!\\";
+  const int WINROW = 10;  
+  const int WINCOL = col - 2;
+  const int MSGLEN = WINCOL - 2;
+  char displmsg[MSGLEN];
+
+  if (msg == 0)
+    return;
+  
+  (void)strncpy (displmsg, msg, MSGLEN);
+  warnwin = newwin (WINROW, WINCOL, (row - WINROW) / 2, (col - WINCOL) / 2);
+  custom_apply_attr (warnwin, ATTR_HIGHEST);
+  box (warnwin, 0, 0);
+  wins_show (warnwin, label);
+  mvwprintw (warnwin, 5, (WINCOL - strlen (displmsg)) / 2, "%s", displmsg);
+  custom_remove_attr (warnwin, ATTR_HIGHEST);
+  wrefresh (warnwin);
+  (void)wgetch (warnwin);
+  delwin (warnwin);
   doupdate ();
 }
 

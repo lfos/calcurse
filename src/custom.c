@@ -1,4 +1,4 @@
-/*	$calcurse: custom.c,v 1.36 2009/01/05 20:12:08 culot Exp $	*/
+/*	$calcurse: custom.c,v 1.37 2009/01/24 14:44:25 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -1173,7 +1173,7 @@ custom_keys_config (void)
 {
   scrollwin_t kwin;
   int selrow, selelm, firstrow, lastrow, nbrowelm, nbdisplayed;
-  int keyval, used;
+  int keyval, used, not_recognized;
   char *keystr;
   WINDOW *grabwin;
   const int LINESPERKEY = 2;
@@ -1242,20 +1242,36 @@ custom_keys_config (void)
 #define WINCOL 50
           do
             {
+              used = 0;
               grabwin = popup (WINROW, WINCOL, (row - WINROW) / 2,
                                (col - WINCOL) / 2,
                                _("Press the key you want to assign to:"),
                                keys_get_label (selrow), 0);
               keyval = wgetch (grabwin);
+
+              /* First check if this key would be recognized by calcurse. */
+              if (keys_str2int (keys_int2str (keyval)) == -1)
+                {
+                  not_recognized = 1;
+                  WARN_MSG (_("This key is not yet recognized by calcurse, "
+                              "please choose another one."));
+                  werase (kwin.pad.p);
+                  nbrowelm = print_keys_bindings (kwin.pad.p, selrow, selelm,
+                                                  LINESPERKEY);
+                  wins_scrollwin_display (&kwin);
+                  continue;
+                }
+              else
+                not_recognized = 0;
+
               used = keys_assign_binding (keyval, selrow);
               if (used)
                 {
                   keys_e action;
                   
                   action = keys_get_action (keyval);
-                  ERROR_MSG (
-                             _("This key is already in use for %s, "
-                               "please choose another one."),
+                  WARN_MSG (_("This key is already in use for %s, "
+                              "please choose another one."),
                              keys_get_label (action));
                   werase (kwin.pad.p);
                   nbrowelm = print_keys_bindings (kwin.pad.p, selrow, selelm,
@@ -1264,7 +1280,7 @@ custom_keys_config (void)
                 }
               delwin (grabwin);              
             }
-          while (used);
+          while (used || not_recognized);
           nbrowelm++;          
           if (selelm < nbrowelm - 1)
             selelm++;
@@ -1282,8 +1298,8 @@ custom_keys_config (void)
         case KEY_GENERIC_QUIT:
           if (keys_check_missing_bindings () != 0)
             {
-              ERROR_MSG (_("Some actions do not have any associated "
-                           "key bindings!"));              
+              WARN_MSG (_("Some actions do not have any associated "
+                          "key bindings!"));              
             }
           wins_scrollwin_delete (&kwin);
           return;

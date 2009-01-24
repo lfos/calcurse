@@ -1,8 +1,8 @@
-/*	$calcurse: keys.c,v 1.14 2009/01/03 21:32:11 culot Exp $	*/
+/*	$calcurse: keys.c,v 1.15 2009/01/24 14:44:25 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2008 Frederic Culot
+ * Copyright (c) 2008-2009 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -111,7 +111,9 @@ dump_intro (FILE *fd)
       "'C-'.\n"
       "# The escape, space bar and horizontal Tab key can be specified using\n"
       "# the 'ESC', 'SPC' and 'TAB' keyword, respectively.\n"
-      "# Arrow keys can also be specified with the UP, DWN, LFT, RGT keywords."
+      "# Arrow keys can also be specified with the UP, DWN, LFT, RGT keywords.\n"
+      "# Last, Home and End keys can be assigned using 'KEY_HOME' and 'KEY_END'\n"
+      "# keywords"
       "\n#\n"
       "# A description of what each ACTION keyword is used for is available\n"
       "# from calcurse online configuration menu.\n");
@@ -287,6 +289,8 @@ keys_str2int (char *key)
   const string_t CURSES_KEY_DOWN = STRING_BUILD ("DWN");
   const string_t CURSES_KEY_LEFT = STRING_BUILD ("LFT");
   const string_t CURSES_KEY_RIGHT = STRING_BUILD ("RGT");
+  const string_t CURSES_KEY_HOME = STRING_BUILD ("KEY_HOME");
+  const string_t CURSES_KEY_END = STRING_BUILD ("KEY_END");
 
   if (!key)
     return -1;
@@ -312,6 +316,10 @@ keys_str2int (char *key)
         return KEY_LEFT;
       else if (!strncmp (key, CURSES_KEY_RIGHT.str, CURSES_KEY_RIGHT.len))
         return KEY_RIGHT;
+      else if (!strncmp (key, CURSES_KEY_HOME.str, CURSES_KEY_HOME.len))
+        return KEY_HOME;
+      else if (!strncmp (key, CURSES_KEY_END.str, CURSES_KEY_END.len))
+        return KEY_END;
       else
         return -1;
     }
@@ -336,6 +344,10 @@ keys_int2str (int key)
       return "LFT";
     case KEY_RIGHT:
       return "RGT";
+    case KEY_HOME:
+      return "KEY_HOME";
+    case KEY_END:
+      return "KEY_END";
     default:
       return (char *)keyname (key);
     }
@@ -620,9 +632,9 @@ keys_fill_missing (void)
                   ch = keys_str2int (key_ch);
                   used = keys_assign_binding (ch, i);
                   if (used)
-                    ERROR_MSG (_("When adding default key for \"%s\", "
-                                 "\"%s\" was already assigned!"),
-                               keydef[i].label, key_ch);
+                    WARN_MSG (_("When adding default key for \"%s\", "
+                                "\"%s\" was already assigned!"),
+                              keydef[i].label, key_ch);
                   p += strlen (key_ch) + 1;
                 }
               else

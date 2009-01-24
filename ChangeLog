@@ -1,3 +1,15 @@
+2009-01-24  Frederic Culot  <frederic@culot.org>
+
+	* src/keys.c: make it possible to use KEY_HOME and KEY_END to
+	define new key bindings
+
+	* src/keys.c (custom_keys_config): prevent user from assigning a
+	non-recognized key
+
+	* src/utils.c (warnbox): new function
+
+	* src/utils.h (WARN_MSG): new macro
+	
 2009-01-23  Frederic Culot  <frederic@culot.org>
 
 	* configure.ac: improve configuration script to be able to link

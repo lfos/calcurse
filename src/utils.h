@@ -1,4 +1,4 @@
-/*	$calcurse: utils.h,v 1.43 2009/01/03 21:32:11 culot Exp $	*/
+/*	$calcurse: utils.h,v 1.44 2009/01/24 14:44:25 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -45,6 +45,16 @@
   (void)snprintf (msg + len, BUFSIZ - len, __VA_ARGS__);                \
   if (ui_mode == UI_CURSES)                                             \
     fatalbox (msg);                                                     \
+  else                                                                  \
+    (void)fprintf (stderr, "%s\n", msg);                                \
+} while (0)
+
+#define WARN_MSG(...) do {                                              \
+  char msg[BUFSIZ];                                                     \
+                                                                        \
+  (void)snprintf (msg, BUFSIZ, __VA_ARGS__);                            \
+  if (ui_mode == UI_CURSES)                                             \
+    warnbox (msg);                                                      \
   else                                                                  \
     (void)fprintf (stderr, "%s\n", msg);                                \
 } while (0)
@@ -103,6 +113,7 @@ erase_flag_e;
 
 void      exit_calcurse (int);
 void      fatalbox (const char *);
+void      warnbox (const char *);
 void      status_mesg (char *, char *);
 void      erase_window_part (WINDOW *, int, int, int, int);
 WINDOW   *popup (int, int, int, int, char *, char *, int);
