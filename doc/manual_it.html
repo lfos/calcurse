@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <!--
 /*
- * $calcurse: manual_it.html,v 1.8 2009/01/04 11:52:47 culot Exp $
+ * $calcurse: manual_it.html,v 1.9 2009/01/24 17:57:36 culot Exp $
  *
  * Calcurse - text-based organizer
  * Copyright (c) 2004-2009 Frederic Culot
@@ -209,6 +209,13 @@ caratteristiche<a name="overview_features"></a></h2>
   <pre>http://ftp.gnu.org/pub/gnu/ncurses/</pre>
 </p>
 
+<div class="todo">
+        <p class="rq"><span class="valorize">Note:</span> 
+        It is also possible to link <code>calcurse</code> against the
+        <code>ncursesw</code> library (ncurses with support for unicode).
+        However, UTF-8 is not yet supported by <code>calcurse</code>.</p>
+</div>
+
 <h3>3.1.2 Librerie <code>gettext</code><a name="install_requirements_gettext"></a></h3>
 <p>
   <code>Calcurse</code> ha il supporto per la localizzazione
@@ -305,7 +312,7 @@ caratteristiche<a name="overview_features"></a></h2>
       dell'argomento. Sono possibili due formati:
 
       <ul>
-	<li>una data nella forma 'mm/gg/aaaa'.</li>
+	<li>una data <span class="todo">(possible formats described below).</li>
 	<li>un numero 'n'.</li>
       </ul>
       Nel primo caso viene mostrata la lista degli appuntamenti per la
@@ -313,6 +320,13 @@ caratteristiche<a name="overview_features"></a></h2>
       'n' giorni futuri.
       Ad esempio digitando <code>calcurse -d 3</code> verrà mostrata
       la lista degli appuntamenti di oggi, domani e dopodomani.
+
+    <div class="todo">
+            Possible formats for specifying the date are defined inside the
+            general configuration menu (see 
+            <a href="#options_general">General options</a>), using the
+            <code>input_datefmt</code> variable.
+    </div>
 
       <p class="rq"><span class="valorise">Nota:</span> così come con
 	l'argomento '-a' il calendario dal quale leggere gli
@@ -805,11 +819,12 @@ d'ambiente<a name="basics_invocation_environment"></a></h3>
                 <dt><code>input_datefmt</code>
                 (default: <span class="emp">1</span>)</dt>
                 <dd>This option indicates the format that will be used to enter dates in
-                <span class="emp">calcurse</span>. Three choices are available:
+                <span class="emp">calcurse</span>. Four choices are available:
                 <ol>
                   <li>mm/dd/yyyy</li>
                   <li>dd/mm/yyyy</li>
                   <li>yyyy/mm/dd</li>
+                  <li>yyyy-mm-dd</li>
                   </ol>
                 </dd>
                 </div>
@@ -842,6 +857,7 @@ d'ambiente<a name="basics_invocation_environment"></a></h3>
          <li>CONTROL-key followed by one of the above letters</li>
          <li>escape, horizontal tab, and space keys</li>
          <li>arrow keys (up, down, left, and right)</li>
+         <li>'HOME' and 'END' keys</li>
        </ul> </p>
 <p>
        While inside the key configuration menu, an online help is available for 
@@ -1414,7 +1430,7 @@ d'ambiente<a name="basics_invocation_environment"></a></h3>
 
 <div class="footer">
   Copyright &copy; 2004-2009 Fr&eacute;d&eacute;ric Culot<br>
-  Calcurse version 2.5 - Last change: January 04, 2009<br>
+  Calcurse version 2.5 - Last change: January 24, 2009<br>
 </div>
 </div>
 

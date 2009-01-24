@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <!--
 /*
- *	$calcurse: manual_fr.html,v 1.23 2009/01/04 11:52:47 culot Exp $
+ *	$calcurse: manual_fr.html,v 1.24 2009/01/24 17:57:36 culot Exp $
  *
  * Calcurse - text-based organizer
  * Copyright (c) 2004-2009 Frederic Culot
@@ -220,6 +220,12 @@ disponibles.
 </p>
 <pre>http://ftp.gnu.org/pub/gnu/ncurses/</pre>
 
+<div class="todo">
+        <p class="rq"><span class="valorize">Note:</span> 
+        It is also possible to link <code>calcurse</code> against the
+        <code>ncursesw</code> library (ncurses with support for unicode).
+        However, UTF-8 is not yet supported by <code>calcurse</code>.</p>
+</div>
 
 <h3>3.1.2 Librairie <code>gettext</code><a name="install_requirements_gettext"></a></h3>
 <p>
@@ -314,7 +320,7 @@ disponibles.
 	jours indiqués, suivant le format de l'argument. Deux 
 	formats différents sont acceptés :
 	<ul>
-		<li>une date sous la forme 'mm/jj/aaaa'.</li>
+		<li>une date (voir ci-dessous pour les formats disponibles).</li>
 		<li>un nombre 'n'.</li>
 	</ul>
 	Dans le premier cas, la liste des rendez-vous pour la
@@ -324,6 +330,12 @@ disponibles.
 	Par exemple, taper <code>calcurse -d  3</code> fera
 	s'afficher les rendez-vous pour aujourd'hui, demain
 	et après-demain.
+    <div class="todo">
+            Possible formats for specifying the date are defined inside the
+            general configuration menu (see 
+            <a href="#options_general">General options</a>), using the
+            <code>input_datefmt</code> variable.
+    </div>
 	<p class="rq"><span class="valorise">Remarque:</span> 
 	comme pour l'option '-a', le fichier contenant le calendrier
 	à lire peut être spécifié en utilisant l'option '-c'.</p>
@@ -800,11 +812,12 @@ $HOME/.calcurse/
                 <dt><code>format_date_entrée</code>
                   (valeur par défaut: <span class="emp">1</span>)</dt>
                 <dd>Indique le format qui sera utilisé pour entrer les dates dans 
-                  <span class="emp">calcurse</span>. Trois choix sont possibles :
+                  <span class="emp">calcurse</span>. Quatre choix sont possibles :
                   <ol>
                   <li>mm/jj/aaaa</li>
                   <li>jj/mm/aaaa</li>
                   <li>aaaa/mm/jj</li>
+                  <li>aaaa-mm-jj</li>
                   </ol>
                 </dd>
         </dl>
@@ -835,6 +848,7 @@ $HOME/.calcurse/
          <li>CONTROL-key followed by one of the above letters</li>
          <li>escape, horizontal tab, and space keys</li>
          <li>arrow keys (up, down, left, and right)</li>
+         <li>'HOME' and 'END' keys</li>
        </ul> </p>
 <p>
        While inside the key configuration menu, an online help is available for 
@@ -1336,7 +1350,7 @@ msgid ""
 
 <div class="footer">
 	Copyright &copy; 2004-2009 Frédéric Culot<br>
-	Calcurse version 2.5 - Dernière modification: 04 Janvier 2009<br>
+	Calcurse version 2.5 - Dernière modification: 24 Janvier 2009<br>
 </div>
 </div>
 

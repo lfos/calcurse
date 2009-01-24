@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <!--
 /*
- *	$calcurse: manual_de.html,v 1.22 2009/01/04 11:52:47 culot Exp $
+ *	$calcurse: manual_de.html,v 1.23 2009/01/24 17:57:36 culot Exp $
  *
  * Calcurse - text-based organizer
  * Copyright (c) 2004-2009 Frederic Culot
@@ -206,6 +206,14 @@ verf&uuml;gbar sein sollte. Falls nicht, k&ouml;nnen Sie sie von folgender URL h
 laden:</p>
 <pre>http://ftp.gnu.org/pub/gnu/ncurses/</pre>
 
+<div class="todo">
+<p>
+        <p class="rq"><span class="valorize">Note:</span> 
+        It is also possible to link <code>calcurse</code> against the
+        <code>ncursesw</code> library (ncurses with support for unicode).
+        However, UTF-8 is not yet supported by <code>calcurse</code>.</p>
+</div>
+
 <h3>3.1.2 <code>gettext</code> Bibliothek<a name="install_requirements_gettext"></a></h3>
 <p>
         <code>calcurse</code> unterst&uuml;tzt die Internationalisierung
@@ -279,7 +287,7 @@ Es werden sowohl kurze als auch lange Optionsangaben unterst&uuml;tzt.</p>
     <dd>Gibt die Termine eines angegebenen Datums oder alle Termine der 
     anzugebenden nachfolgenden Tage aus. Somit sind zwei Formate m&ouml;glich:
     <ul>
-        <li>Datum: 'MM/TT/JJJJ' (Monat, Tag, Jahr).</li>
+        <li>Datum: <span class="todo">(possible formats described below).</span></li>
 	<li>Anzahl der Tage: 'n'.</li>
     </ul>
     Im ersten Fall wird eine Liste mit allen Terminen des angegebenen
@@ -287,6 +295,15 @@ Es werden sowohl kurze als auch lange Optionsangaben unterst&uuml;tzt.</p>
     die in den n&auml;chsten 'n' Tagen zu erledigen sind.
     Beispiel: Die Eingabe <code>calcurse -d 3</code> gibt alle Termine des
     heutigen und der beiden folgenden Tage aus.
+    <div class="todo">
+            Possible formats for specifying the date are defined inside the
+            general configuration menu (see 
+            <a href="#options_general">General options</a>), using the
+            <code>input_datefmt</code> variable.
+	    <p class="rq"><span class="valorise">Note:</span> as for the '-a' 
+	    flag, the calendar  from which to  read  the appointments 
+	    can be specified using the '-c' flag.</p>
+    </div>
     </dd>
     <dt><code>-D &lt;dir&gt;, --directory &lt;dir&gt;</code></dt>
     <dd>
@@ -720,11 +737,12 @@ allgemeines Verhalten.</p>
     <dt><code>input_datefmt</code>
     (default: <span class="emp">1</span>)</dt>
     <dd>This option indicates the format that will be used to enter dates in
-    <span class="emp">calcurse</span>. Three choices are available:
+    <span class="emp">calcurse</span>. Four choices are available:
     <ol>
       <li>mm/dd/yyyy</li>
       <li>dd/mm/yyyy</li>
       <li>yyyy/mm/dd</li>
+      <li>yyyy-mm-dd</li>
     </ol>
     </dd>
     </div>
@@ -756,6 +774,7 @@ allgemeines Verhalten.</p>
          <li>CONTROL-key followed by one of the above letters</li>
          <li>escape, horizontal tab, and space keys</li>
          <li>arrow keys (up, down, left, and right)</li>
+         <li>'HOME' and 'END' keys</li>
        </ul> </p>
 <p>
        While inside the key configuration menu, an online help is available for 
@@ -1153,7 +1172,7 @@ Benutzer, die mir Ihr Feedback mitgeteilt haben.</p>
 	Copyright &copy; 2004-2009 Frédéric Culot<br>
 	German translation by Michael Schulz
 	<code>&lt;bloodshower .at. web .dot. de&gt;</code>, and Chris.<br>
-	Calcurse version 2.5 - Last change: January 04, 2009<br>
+	Calcurse version 2.5 - Last change: January 24, 2009<br>
 </div>
 </div>
 

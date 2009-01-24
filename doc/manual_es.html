@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <!--
 /*
- *	$calcurse: manual_es.html,v 1.19 2009/01/04 11:52:47 culot Exp $
+ *	$calcurse: manual_es.html,v 1.20 2009/01/24 17:57:36 culot Exp $
  *
  * Calcurse - text-based organizer
  * Copyright (c) 2004-2009 Frederic Culot
@@ -201,6 +201,14 @@ well as the way one can contribute to <code>calcurse</code> development.
         encontrarla en la siguiente dirección :</p>
 	<pre>http://ftp.gnu.org/pub/gnu/ncurses/</pre>
 
+<div class="todo">
+<p>
+        <p class="rq"><span class="valorize">Note:</span> 
+        It is also possible to link <code>calcurse</code> against the
+        <code>ncursesw</code> library (ncurses with support for unicode).
+        However, UTF-8 is not yet supported by <code>calcurse</code>.</p>
+</div>
+
 <h3>3.1.2 librería <code>gettext</code><a name="install_requirements_gettext"></a></h3>
 <p>
         <code>calcurse</code> soporta internacionalización
@@ -281,7 +289,7 @@ well as the way one can contribute to <code>calcurse</code> development.
 	    próximos, dependiendo del formato del argumento.
 	    Soporta dos posible formatos :
 	    <ul>
-	        <li>una fecha en la siguiente forma 'mm/dd/aaaa' (día/mes/año).</li>
+	        <li>una fecha <span class="todo">(possible formats described below).</li>
 		<li>un numero 'n'.</li>
 	    </ul>
 	    En el primer caso,  devolverá la lista de citas y eventos para la fecha especificada 
@@ -289,6 +297,12 @@ well as the way one can contribute to <code>calcurse</code> development.
 	    para los 'n'  próximos días.
 	    Por ejemplo, tecleando <code>calcurse -d  3</code>  
 	    mostrara tus citas y eventos para hoy, mañana y pasado mañana.
+    <div class="todo">
+            Possible formats for specifying the date are defined inside the
+            general configuration menu (see 
+            <a href="#options_general">General options</a>), using the
+            <code>input_datefmt</code> variable.
+    </div>
 	    <p class="rq"><span class="valorise">Nota:</span>
 	    al igual que para la opción '-a' , el calendario desde donde se   
 	    leerán puede ser especificado usando la opción '-c' .</p>
@@ -740,11 +754,12 @@ $HOME/.calcurse/
             <dt><code>input_datefmt</code>
             (default: <span class="emp">1</span>)</dt>
             <dd>This option indicates the format that will be used to enter dates in
-            <span class="emp">calcurse</span>. Three choices are available:
+            <span class="emp">calcurse</span>. Four choices are available:
             <ol>
               <li>mm/dd/yyyy</li>
               <li>dd/mm/yyyy</li>
               <li>yyyy/mm/dd</li>
+              <li>yyyy-mm-dd</li>
               </ol>
             </dd>
             </div>
@@ -777,6 +792,7 @@ $HOME/.calcurse/
          <li>CONTROL-key followed by one of the above letters</li>
          <li>escape, horizontal tab, and space keys</li>
          <li>arrow keys (up, down, left, and right)</li>
+         <li>'HOME' and 'END' keys</li>
        </ul> </p>
 <p>
        While inside the key configuration menu, an online help is available for 
@@ -1171,7 +1187,7 @@ msgid ""
 	Copyright &copy; 2004-2009 Frédéric Culot<br>
 	Traducido al Español por José López
 	<code>&lt;testinground .at. gmail .dot. com&gt;</code><br>
-	Calcurse version 2.5 - Last change: January 04, 2009<br>
+	Calcurse version 2.5 - Last change: January 24, 2009<br>
 </div>
 </div>
 
