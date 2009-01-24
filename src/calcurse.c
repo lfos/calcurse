@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.77 2009/01/03 21:32:11 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.78 2009/01/24 18:45:35 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -134,7 +134,6 @@ main (int argc, char **argv)
     }
 
   vars_init (&conf);
-  keys_init ();
   wins_init ();
   wins_slctd_init ();
   notify_init_bar ();

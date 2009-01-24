@@ -15,6 +15,9 @@
 	* configure.ac: switch to 2.5
 
 	* src/calcurse.1: manpage updated for 2.5 version
+
+	* src/args.c (parse_args): load keys even in non-interactive mode
+	to avoid the loss of user configured key bindings
 	
 2009-01-23  Frederic Culot  <frederic@culot.org>
 

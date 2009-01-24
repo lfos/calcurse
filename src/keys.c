@@ -1,4 +1,4 @@
-/*	$calcurse: keys.c,v 1.15 2009/01/24 14:44:25 culot Exp $	*/
+/*	$calcurse: keys.c,v 1.16 2009/01/24 18:45:35 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -113,7 +113,7 @@ dump_intro (FILE *fd)
       "# the 'ESC', 'SPC' and 'TAB' keyword, respectively.\n"
       "# Arrow keys can also be specified with the UP, DWN, LFT, RGT keywords.\n"
       "# Last, Home and End keys can be assigned using 'KEY_HOME' and 'KEY_END'\n"
-      "# keywords"
+      "# keywords."
       "\n#\n"
       "# A description of what each ACTION keyword is used for is available\n"
       "# from calcurse online configuration menu.\n");

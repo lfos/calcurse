@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.57 2009/01/24 14:44:25 culot Exp $	*/
+/*	$calcurse: io.c,v 1.58 2009/01/24 18:45:35 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -1278,6 +1278,8 @@ io_load_keys (char *pager)
   io_file_t *log;
   int i, skipped, loaded, line;
   const int MAX_ERRORS = 5;
+
+  keys_init ();
   
 #define HSIZE 256
   HTABLE_HEAD (ht_keybindings, HSIZE, ht_keybindings_s) ht_keys =

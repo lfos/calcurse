@@ -1,4 +1,4 @@
-/*	$calcurse: args.c,v 1.44 2009/01/03 21:32:11 culot Exp $	*/
+/*	$calcurse: args.c,v 1.45 2009/01/24 18:45:35 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -730,7 +730,7 @@ parse_args (int argc, char **argv, conf_t *conf)
     {
       usage ();
       usage_try ();
-      return (EXIT_FAILURE);
+      return EXIT_FAILURE;
       /* Incorrect arguments */
     }
   else if (Dflag && cflag)
@@ -739,7 +739,7 @@ parse_args (int argc, char **argv, conf_t *conf)
                stderr);
       usage ();
       usage_try ();
-      return (EXIT_FAILURE);
+      return EXIT_FAILURE;
     }
   else
     {
@@ -764,14 +764,17 @@ parse_args (int argc, char **argv, conf_t *conf)
 	      io_init (cfile, datadir);
 	      no_file = io_check_data_files ();
 	      if (dflag || aflag || nflag || iflag || xflag || rflag || sflag)
-		io_load_app ();
+                {
+                  vars_init (conf);
+                  custom_load_conf (conf, 0);
+                  io_load_keys (conf->pager);
+                  io_load_app ();
+                  io_load_todo ();
+                }
 	    }
           if (iflag)
             {
               notify_init_vars ();
-	      vars_init (conf);              
-              custom_load_conf (conf, 0);
-              io_load_todo ();
               io_import_data (IO_IMPORT_ICAL, conf, ifile);
               io_save_cal (conf, IO_SAVE_DISPLAY_NONE);
               non_interactive = 1;
@@ -779,11 +782,9 @@ parse_args (int argc, char **argv, conf_t *conf)
 	  if (xflag)
 	    {
 	      notify_init_vars ();
-	      custom_load_conf (conf, 0);
-              io_load_todo ();
 	      io_export_data (xfmt, conf);
 	      non_interactive = 1;
-	      return (non_interactive);
+	      return non_interactive;
 	    }
 	  if (tflag)
 	    {
@@ -798,8 +799,6 @@ parse_args (int argc, char **argv, conf_t *conf)
 	  if (dflag || rflag || sflag)
 	    {
 	      notify_init_vars ();
-	      vars_init (conf);
-	      custom_load_conf (conf, 0);
               if (dflag)
                 date_arg (ddate, add_line, Nflag, conf);
               if (rflag || sflag)
@@ -811,8 +810,6 @@ parse_args (int argc, char **argv, conf_t *conf)
 	      date_t day;
 	      day.dd = day.mm = day.yyyy = 0;
 	      notify_init_vars ();
-	      vars_init (conf);
-	      custom_load_conf (conf, 0);
 	      app_found = app_arg (add_line, &day, 0, Nflag, conf);
 	      non_interactive = 1;
 	    }
@@ -823,6 +820,6 @@ parse_args (int argc, char **argv, conf_t *conf)
 	  io_init (cfile, datadir);
 	  no_file = io_check_data_files ();
 	}
-      return (non_interactive);
     }
+  return non_interactive;  
 }
