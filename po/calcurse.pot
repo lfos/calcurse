@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse 2.5\n"
 "Report-Msgid-Bugs-To: frederic@culot.org\n"
-"POT-Creation-Date: 2009-01-24 20:01+0100\n"
+"POT-Creation-Date: 2009-01-24 21:36+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -208,17 +208,17 @@ msgstr ""
 msgid "To do :"
 msgstr ""
 
-#: src/calendar.c:130
+#: src/calendar.c:129
 msgid "ERROR setting first day of week"
 msgstr ""
 
-#: src/calendar.c:355
+#: src/calendar.c:354
 msgid ""
 "The day you entered is not valid (should be between 01/01/1902 and "
 "12/31/2037)"
 msgstr ""
 
-#: src/calendar.c:357 src/custom.c:212 src/io.c:798 src/io.c:1184
+#: src/calendar.c:356 src/custom.c:212 src/io.c:798 src/io.c:1184
 #: src/io.c:1486 src/io.c:1506
 msgid "Press [ENTER] to continue"
 msgstr ""

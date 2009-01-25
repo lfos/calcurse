@@ -1,4 +1,4 @@
-# 	$calcurse: de.po,v 1.25 2009/01/24 19:02:43 culot Exp $
+# 	$calcurse: de.po,v 1.26 2009/01/25 08:04:30 culot Exp $
 #
 # German translations for calcurse package.
 # Copyright (C) 2006-2007 Michael Schulz <bloodshower@web.de>
@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse 1.9\n"
 "Report-Msgid-Bugs-To: frederic@culot.org\n"
-"POT-Creation-Date: 2009-01-24 20:01+0100\n"
+"POT-Creation-Date: 2009-01-24 21:36+0100\n"
 "PO-Revision-Date: 2007-09-02 18:06+0200\n"
 "Last-Translator: Michael\n"
 "Language-Team:  Michael Schulz <bloodshower@freenet.de>\n"
@@ -272,18 +272,18 @@ msgstr "Möchten Sie wirklich das Programm beenden ?"
 msgid "To do :"
 msgstr "Aufgaben :"
 
-#: src/calendar.c:130
+#: src/calendar.c:129
 #, fuzzy
 msgid "ERROR setting first day of week"
 msgstr "FEHLER in calendar_set_first_day_of week\n"
 
-#: src/calendar.c:355
+#: src/calendar.c:354
 msgid ""
 "The day you entered is not valid (should be between 01/01/1902 and "
 "12/31/2037)"
 msgstr ""
 
-#: src/calendar.c:357 src/custom.c:212 src/io.c:798 src/io.c:1184
+#: src/calendar.c:356 src/custom.c:212 src/io.c:798 src/io.c:1184
 #: src/io.c:1486 src/io.c:1506
 msgid "Press [ENTER] to continue"
 msgstr "[EINGABE]-Taste um fortzufahren"

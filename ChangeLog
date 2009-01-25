@@ -1,3 +1,9 @@
+2009-01-25  Frederic Culot  <frederic@culot.org>
+
+	* === Released 2.5 ===
+
+	* NEWS: updated
+
 2009-01-24  Frederic Culot  <frederic@culot.org>
 
 	* src/keys.c: make it possible to use KEY_HOME and KEY_END to
@@ -18,6 +24,9 @@
 
 	* src/args.c (parse_args): load keys even in non-interactive mode
 	to avoid the loss of user configured key bindings
+
+	* src/calendar.c (calendar_stop_date_thread): do not crash when
+	canceling the thread if it was not started before
 	
 2009-01-23  Frederic Culot  <frederic@culot.org>
 

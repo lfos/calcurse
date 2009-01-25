@@ -1,3 +1,26 @@
+[25 Jan 2009]
+Version 2.5
+- New features:
+  * new option to periodically save data
+
+  * cut and paste feature added, to move items from one day to another
+
+  * support for iso date format (yyyy-mm-dd) added
+
+  * new '--enable-memory-debug' configuration option to monitor memory usage
+
+  * configuration scipt improved to be able to link against ncursesw if ncurses
+    is not available
+
+- Bugfixes:
+  * fixed a two-years old bug (appeared in version 1.5) that made repeated items
+  with exceptions load uncorrectly in some cases (thanks to Jan Smydke for
+  reporting it)
+
+  * fixed a bug related to user-configured keys that could be lost when using
+  calcurse in non-interactive mode
+
+
 [27 Dec 2008]
 Version 2.4
 - New features:

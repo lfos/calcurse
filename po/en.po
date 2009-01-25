@@ -1,4 +1,4 @@
-# 	$calcurse: en.po,v 1.20 2009/01/24 19:02:43 culot Exp $
+# 	$calcurse: en.po,v 1.21 2009/01/25 08:04:30 culot Exp $
 #
 # English/GB translation of calcurse.
 # Copyright (C) 2006 Copyright (c) Frederic Culot <frederic@culot.org>
@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse 1.4\n"
 "Report-Msgid-Bugs-To: frederic@culot.org\n"
-"POT-Creation-Date: 2009-01-24 20:01+0100\n"
+"POT-Creation-Date: 2009-01-24 21:36+0100\n"
 "PO-Revision-Date: 2006-07-03 00:05+0100\n"
 "Last-Translator: Neil Williams <linux@codehelp.co.uk>\n"
 "Language-Team: English/GB <en_GB@li.org>\n"
@@ -242,17 +242,17 @@ msgstr "Do you really want to quit ?"
 msgid "To do :"
 msgstr "To do :"
 
-#: src/calendar.c:130
+#: src/calendar.c:129
 msgid "ERROR setting first day of week"
 msgstr ""
 
-#: src/calendar.c:355
+#: src/calendar.c:354
 msgid ""
 "The day you entered is not valid (should be between 01/01/1902 and "
 "12/31/2037)"
 msgstr ""
 
-#: src/calendar.c:357 src/custom.c:212 src/io.c:798 src/io.c:1184
+#: src/calendar.c:356 src/custom.c:212 src/io.c:798 src/io.c:1184
 #: src/io.c:1486 src/io.c:1506
 msgid "Press [ENTER] to continue"
 msgstr "Press [ENTER] to continue"
