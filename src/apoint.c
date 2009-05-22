@@ -1,4 +1,4 @@
-/*	$calcurse: apoint.c,v 1.33 2009/01/03 21:32:11 culot Exp $	*/
+/*	$calcurse: apoint.c,v 1.34 2009/05/22 19:59:17 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -462,14 +462,14 @@ apoint_write (apoint_llist_node_t *o, FILE *f)
 apoint_llist_node_t *
 apoint_scan (FILE *f, struct tm start, struct tm end, char state, char *note)
 {
-  char buf[MESG_MAXSIZE], *newline;
+  char buf[BUFSIZ], *newline;
   time_t tstart, tend, t;
 
   t = time (NULL);
   (void)localtime (&t);
 
   /* Read the appointment description */
-  (void)fgets (buf, MESG_MAXSIZE, f);
+  (void)fgets (buf, sizeof buf, f);
   newline = strchr (buf, '\n');
   if (newline)
     *newline = '\0';

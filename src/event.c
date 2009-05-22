@@ -1,4 +1,4 @@
-/*	$calcurse: event.c,v 1.12 2009/01/03 21:32:11 culot Exp $	*/
+/*	$calcurse: event.c,v 1.13 2009/05/22 19:59:18 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -141,14 +141,14 @@ event_write (struct event_s *o, FILE *f)
 struct event_s *
 event_scan (FILE *f, struct tm start, int id, char *note)
 {
-  char buf[MESG_MAXSIZE], *nl;
+  char buf[BUFSIZ], *nl;
   time_t tstart, t;
 
   t = time (NULL);
   (void)localtime (&t);
 
   /* Read the event description */
-  (void)fgets (buf, MESG_MAXSIZE, f);
+  (void)fgets (buf, sizeof buf, f);
   nl = strchr (buf, '\n');
   if (nl)
     {

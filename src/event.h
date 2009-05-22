@@ -1,4 +1,4 @@
-/*	$calcurse: event.h,v 1.8 2009/01/03 21:32:11 culot Exp $	*/
+/*	$calcurse: event.h,v 1.9 2009/05/22 19:59:18 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -30,7 +30,6 @@
 #include "utils.h"
 
 #define HRMIN_SIZE 6
-#define MESG_MAXSIZE 256
 
 struct event_s
 {

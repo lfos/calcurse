@@ -1,4 +1,4 @@
-/*	$calcurse: apoint.h,v 1.17 2009/01/03 21:32:11 culot Exp $	*/
+/*	$calcurse: apoint.h,v 1.18 2009/05/22 19:59:17 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -33,7 +33,6 @@
 #include "vars.h"
 
 #define HRMIN_SIZE 6
-#define MESG_MAXSIZE 256
 
 #define APOINT_NULL		0x0
 #define APOINT_NOTIFY		0x1	/* Item needs to be notified */

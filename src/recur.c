@@ -1,4 +1,4 @@
-/*	$calcurse: recur.c,v 1.49 2009/01/03 21:32:11 culot Exp $	*/
+/*	$calcurse: recur.c,v 1.50 2009/05/22 19:59:18 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -414,14 +414,14 @@ recur_apoint_scan (FILE *f, struct tm start, struct tm end, char type,
 		   char state)
 {
   struct tm *lt;
-  char buf[MESG_MAXSIZE], *nl;
+  char buf[BUFSIZ], *nl;
   time_t tstart, tend, t, tuntil;
 
   t = time (NULL);
   lt = localtime (&t);
 
   /* Read the appointment description */
-  (void)fgets (buf, MESG_MAXSIZE, f);
+  (void)fgets (buf, sizeof buf, f);
   nl = strchr (buf, '\n');
   if (nl)
     {
@@ -462,11 +462,11 @@ struct recur_event_s *
 recur_event_scan (FILE *f, struct tm start, int id, char type, int freq,
 		  struct tm until, char *note, struct days_s **exc)
 {
-  char buf[MESG_MAXSIZE], *nl;
+  char buf[BUFSIZ], *nl;
   time_t tstart, tuntil;
 
   /* Read the event description */
-  (void)fgets (buf, MESG_MAXSIZE, f);
+  (void)fgets (buf, sizeof buf, f);
   nl = strchr (buf, '\n');
   if (nl)
     {
