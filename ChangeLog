@@ -1,3 +1,9 @@
+2009-05-22  Frederic Culot  <frederic@culot.org>
+
+	* src/apoint.c 
+	* src/event.c
+	* src/recur.c: make use of stdio's BUFSIZ instead of my own define
+	
 2009-01-25  Frederic Culot  <frederic@culot.org>
 
 	* === Released 2.5 ===
