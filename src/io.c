@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.58 2009/01/24 18:45:35 culot Exp $	*/
+/*	$calcurse: io.c,v 1.59 2009/06/01 08:04:04 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -173,15 +173,16 @@ progress_bar (progress_bar_t type, int progress)
   switch (type)
     {
     case PROGRESS_BAR_SAVE:
-      EXIT_IF (progress < 0 || progress > PROGRESS_BAR_KEYS, error_msg);
+      EXIT_IF (progress < 0 || progress > PROGRESS_BAR_KEYS, "%s", error_msg);
       status_mesg (mesg_sav, file[progress]);
       break;
     case PROGRESS_BAR_LOAD:
-      EXIT_IF (progress < 0 || progress > PROGRESS_BAR_KEYS, error_msg);
+      EXIT_IF (progress < 0 || progress > PROGRESS_BAR_KEYS, "%s", error_msg);
       status_mesg (mesg_load, file[progress]);
       break;
     case PROGRESS_BAR_EXPORT:
-      EXIT_IF (progress < 0 || progress > PROGRESS_BAR_EXPORT_TODO, error_msg);
+      EXIT_IF (progress < 0
+               || progress > PROGRESS_BAR_EXPORT_TODO, "%s", error_msg);
       status_mesg (mesg_export, data[progress]);
       break;
     }
@@ -812,7 +813,7 @@ io_save_cal (conf_t *conf, io_save_display_t display)
   
   data_file = fopen (path_conf, "w");
   if (data_file == NULL)
-    ERROR_MSG (access_pb);
+    ERROR_MSG ("%s", access_pb);
   else
     {
       custom_color_theme_name (theme_name);
@@ -924,7 +925,7 @@ io_save_cal (conf_t *conf, io_save_display_t display)
     progress_bar (PROGRESS_BAR_SAVE, PROGRESS_BAR_TODO);
   data_file = fopen (path_todo, "w");
   if (data_file == NULL)
-    ERROR_MSG (access_pb);
+    ERROR_MSG ("%s", access_pb);
   else
     {
       for (i = todolist; i != 0; i = i->next)
@@ -946,7 +947,7 @@ io_save_cal (conf_t *conf, io_save_display_t display)
     progress_bar (PROGRESS_BAR_SAVE, PROGRESS_BAR_APTS);
   data_file = fopen (path_apts, "w");
   if (data_file == NULL)
-    ERROR_MSG (access_pb);
+    ERROR_MSG ("%s", access_pb);
   else
     {
       recur_save_data (data_file);
@@ -968,7 +969,7 @@ io_save_cal (conf_t *conf, io_save_display_t display)
     progress_bar (PROGRESS_BAR_SAVE, PROGRESS_BAR_KEYS);
   data_file = fopen (path_keys, "w");
   if (data_file == NULL)
-    ERROR_MSG (access_pb);
+    ERROR_MSG ("%s", access_pb);
   else
     {
       keys_save_bindings (data_file);
