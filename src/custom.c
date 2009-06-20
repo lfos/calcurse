@@ -1,4 +1,4 @@
-/*	$calcurse: custom.c,v 1.37 2009/01/24 14:44:25 culot Exp $	*/
+/*	$calcurse: custom.c,v 1.38 2009/06/20 10:41:12 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -542,6 +542,14 @@ custom_layout_config (void)
 #undef NBLAYOUTS
 #undef LAYOUTSPERCOL
 
+static void
+set_confwin_attr (window_t *cwin)
+{
+  cwin->h = (notify_bar ())? row - 3 : row - 2;
+  cwin->w = col;
+  cwin->x = cwin->y = 0;
+}
+
 /* 
  * Create a configuration window and initialize status and notification bar 
  * (useful in case of window resize).
@@ -557,8 +565,8 @@ custom_confwin_init (window_t *confwin, char *label)
     }
   
   wins_get_config ();
-  confwin->h = (notify_bar ())? row - 3 : row - 2;
-  confwin->p = newwin (confwin->h, col, 0, 0);
+  set_confwin_attr (confwin);
+  confwin->p = newwin (confwin->h, col, 0, 0);  
   box (confwin->p, 0, 0);
   wins_show (confwin->p, label);
   delwin (win[STA].p);
@@ -735,6 +743,7 @@ custom_color_config (void)
   need_reset = 1;
   theme_changed = 0;
   conf_win.p = 0;
+  set_confwin_attr (&conf_win);
   display_color_config (&conf_win, &mark_fore, &mark_back, cursor,
 			need_reset, theme_changed);
 

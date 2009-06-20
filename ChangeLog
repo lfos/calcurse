@@ -1,3 +1,11 @@
+2009-06-20  Frederic Culot  <frederic@culot.org>
+
+	* src/custom.c (set_confwin_attr): new function
+
+	* src/custom.c: fix a bug that caused calcurse to freeze under
+	OpenBSD when changing theme color from within the configuration
+	screen
+	
 2009-06-01  Frederic Culot  <frederic@culot.org>
 
 	* src/io.c: patch submitted by Francois Boulogne to fix gcc
