@@ -5,6 +5,10 @@
 	* src/custom.c: fix a bug that caused calcurse to freeze under
 	OpenBSD when changing theme color from within the configuration
 	screen
+
+	* src/calendar.c (calendar_update_panel): day names and selected
+	date are now in the same colour as user's theme inside calendar
+	panel
 	
 2009-06-01  Frederic Culot  <frederic@culot.org>
 

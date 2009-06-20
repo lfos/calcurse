@@ -1,4 +1,4 @@
-/*	$calcurse: calendar.c,v 1.22 2009/01/24 20:41:52 culot Exp $	*/
+/*	$calcurse: calendar.c,v 1.23 2009/06/20 16:54:44 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -245,20 +245,20 @@ calendar_update_panel (WINDOW *cwin)
   c_day_1 = (int) ((ymd_to_scalar (yr, mo, 1 + sunday_first) - (long) 1) % 7L);
 
   /* Write the current month and year on top of the calendar */
-  custom_apply_attr (cwin, ATTR_HIGH);
+  custom_apply_attr (cwin, ATTR_HIGHEST);
   mvwprintw (cwin, ofs_y, (CALWIDTH - (strlen (_(monthnames[mo - 1])) + 5)) / 2,
 	     "%s %d", _(monthnames[mo - 1]), slctd_day.yyyy);
-  custom_remove_attr (cwin, ATTR_HIGH);
+  custom_remove_attr (cwin, ATTR_HIGHEST);
   ++ofs_y;
 
   /* print the days, with regards to the first day of the week */
-  custom_apply_attr (cwin, ATTR_HIGH);
+  custom_apply_attr (cwin, ATTR_HIGHEST);
   for (j = 0; j < 7; j++)
     {
       mvwprintw (cwin, ofs_y, ofs_x + 4 * j, "%s",
 		 _(daynames[1 + j - sunday_first]));
     }
-  custom_remove_attr (cwin, ATTR_HIGH);
+  custom_remove_attr (cwin, ATTR_HIGHEST);
 
   day_1_sav = (c_day_1 + 1) * 3 + c_day_1 - 7;
 
@@ -293,21 +293,21 @@ calendar_update_panel (WINDOW *cwin)
 		|| (current_day.mm != slctd_day.mm)
 		|| (current_day.yyyy != slctd_day.yyyy)))
 	{
-	  /* This is the selected day, print it in red. */
-	  custom_apply_attr (cwin, ATTR_MIDDLE);
+	  /* This is the selected day, print it according to user's theme. */
+	  custom_apply_attr (cwin, ATTR_HIGHEST);
 	  mvwprintw (cwin, ofs_y + 1, ofs_x + day_1_sav + 4 * c_day + 1, "%2d",
                      c_day);
-	  custom_remove_attr (cwin, ATTR_MIDDLE);
+	  custom_remove_attr (cwin, ATTR_HIGHEST);
 	}
       else if (c_day == slctd_day.dd && current_day.dd == slctd_day.dd
 	       && current_day.mm == slctd_day.mm
 	       && current_day.yyyy == slctd_day.yyyy)
 	{
 	  /* today is the selected day */
-	  custom_apply_attr (cwin, ATTR_MIDDLE);
+	  custom_apply_attr (cwin, ATTR_HIGHEST);
 	  mvwprintw (cwin, ofs_y + 1, ofs_x + day_1_sav + 4 * c_day + 1, "%2d",
                      c_day);
-	  custom_remove_attr (cwin, ATTR_MIDDLE);
+	  custom_remove_attr (cwin, ATTR_HIGHEST);
 	}
       else if (item_this_day)
 	{
