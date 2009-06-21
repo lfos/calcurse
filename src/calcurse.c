@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.78 2009/01/24 18:45:35 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.79 2009/06/21 18:16:22 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -88,7 +88,9 @@ main (int argc, char **argv)
   non_interactive = parse_args (argc, argv, &conf);
   if (non_interactive)
     exit_calcurse (EXIT_SUCCESS);
-
+  else
+    io_set_lock ();
+  
   /* Begin of interactive mode with ncurses interface. */
   sigs_init (&sigact);		/* signal handling init */
   initscr ();			/* start the curses mode */

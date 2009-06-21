@@ -1,4 +1,4 @@
-/*	$calcurse: vars.c,v 1.14 2009/01/02 22:28:54 culot Exp $	*/
+/*	$calcurse: vars.c,v 1.15 2009/06/21 18:16:23 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -90,6 +90,7 @@ char path_apts[] = "";
 char path_conf[] = "";
 char path_notes[] = "";
 char path_keys[] = "";
+char path_lock[] = "";
 
 /* Variable to handle pads. */
 struct pad_s apad;

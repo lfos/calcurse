@@ -1,4 +1,4 @@
-/*	$calcurse: vars.h,v 1.31 2009/01/23 21:09:21 culot Exp $	*/
+/*	$calcurse: vars.h,v 1.32 2009/06/21 18:16:23 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -49,11 +49,14 @@
 #define APTS_PATH_NAME   "apts"
 #define CONF_PATH_NAME   "conf"
 #define KEYS_PATH_NAME   "keys"
+#define LOCK_PATH_NAME   ".calcurse.lock"
 #define NOTES_DIR_NAME   "notes/"
+
 #define TODO_PATH        DIR_NAME TODO_PATH_NAME
 #define APTS_PATH        DIR_NAME APTS_PATH_NAME
 #define CONF_PATH        DIR_NAME CONF_PATH_NAME
 #define KEYS_PATH        DIR_NAME KEYS_PATH_NAME
+#define LOCK_PATH        DIR_NAME LOCK_PATH_NAME
 #define NOTES_DIR        DIR_NAME NOTES_DIR_NAME
 
 #define ATTR_FALSE	0
@@ -145,6 +148,7 @@ extern char           path_apts[BUFSIZ];
 extern char           path_conf[BUFSIZ];
 extern char           path_keys[BUFSIZ];
 extern char           path_notes[BUFSIZ];
+extern char           path_lock[BUFSIZ];
 extern struct pad_s   apad;
 extern struct nbar_s  nbar;
 

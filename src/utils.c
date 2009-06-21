@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.69 2009/06/21 14:42:50 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.70 2009/06/21 18:16:23 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -74,6 +74,7 @@ exit_calcurse (int status)
   notify_free_app ();
   keys_free ();
   mem_stats ();
+  io_unset_lock ();
   exit (status);
 }
 

@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.59 2009/06/01 08:04:04 culot Exp $	*/
+/*	$calcurse: io.c,v 1.60 2009/06/21 18:16:22 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -679,7 +679,8 @@ io_init (char *cfile, char *datadir)
       (void)snprintf (path_conf, BUFSIZ, "%s/" CONF_PATH_NAME, home);
       (void)snprintf (path_notes, BUFSIZ, "%s/" NOTES_DIR_NAME, home);
       (void)snprintf (path_apts, BUFSIZ, "%s/" APTS_PATH_NAME, home);
-      (void)snprintf (path_keys, BUFSIZ, "%s/" KEYS_PATH_NAME, home);      
+      (void)snprintf (path_keys, BUFSIZ, "%s/" KEYS_PATH_NAME, home);
+      (void)snprintf (path_lock, BUFSIZ, "%s/" LOCK_PATH_NAME, home);
     }
   else
     {
@@ -691,7 +692,8 @@ io_init (char *cfile, char *datadir)
       (void)snprintf (path_dir, BUFSIZ, "%s/" DIR_NAME, home);
       (void)snprintf (path_todo, BUFSIZ, "%s/" TODO_PATH, home);
       (void)snprintf (path_conf, BUFSIZ, "%s/" CONF_PATH, home);
-      (void)snprintf (path_keys, BUFSIZ, "%s/" KEYS_PATH, home);      
+      (void)snprintf (path_keys, BUFSIZ, "%s/" KEYS_PATH, home);
+      (void)snprintf (path_lock, BUFSIZ, "%s/" LOCK_PATH, home);      
       (void)snprintf (path_notes, BUFSIZ, "%s/" NOTES_DIR, home);
       if (cfile == NULL)
         {
@@ -2819,4 +2821,49 @@ io_stop_psave_thread (void)
 {
   if (io_t_psave)
     pthread_cancel (io_t_psave);  
+}
+
+/*
+ * This sets a lock file to prevent from having two different instances of
+ * calcurse running.
+ * If the lock cannot be obtained, then warn the user and exit calcurse.
+ * Else, create a .calcurse.lock file in the user defined directory, which
+ * will be removed when calcurse exits.
+ *
+ * Note: when creating the lock file, the interactive mode is not initialized
+ * yet.
+ */
+void
+io_set_lock (void)
+{
+  FILE *lock;
+
+  if ((lock = fopen (path_lock, "r")) != NULL)
+    {
+      (void)fprintf (stderr,
+                     _("\nWARNING: it seems that another calcurse instance is "
+                       "already running.\n"
+                       "If this is not the case, please remove the following "
+                       "lock file: \n\"%s\"\n"
+                       "and restart calcurse.\n"), path_lock);
+      exit_calcurse (EXIT_FAILURE);
+    }
+  else
+    {
+      if ((lock = fopen (path_lock, "w")) == NULL)
+	{
+	  (void)fprintf (stderr, _("FATAL ERROR: could not create %s: %s\n"),
+                         path_lock, strerror (errno));
+	  exit_calcurse (EXIT_FAILURE);
+	}
+      (void)fclose (lock);
+    }
+}  
+
+/* Used when calcurse exits to remove the lock file. */
+void
+io_unset_lock (void)
+{
+  if (unlink (path_lock) != 0)
+    EXIT (_("Could not remove lock file: %s\n"), strerror (errno));
 }

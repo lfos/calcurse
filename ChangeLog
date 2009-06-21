@@ -7,6 +7,10 @@
 
 	* src/utils.c: fixed a memory leak caused by a wrong usage of the
 	notify_app structure
+
+	* src/io.c (io_set_lock, io_unset_lock): new functions to
+	implement a basic locking mechanism in order to avoid having two
+	calcurse instances running at the same time
 	
 2009-06-20  Frederic Culot  <frederic@culot.org>
 
