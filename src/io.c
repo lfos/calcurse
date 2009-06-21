@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.60 2009/06/21 18:16:22 culot Exp $	*/
+/*	$calcurse: io.c,v 1.61 2009/06/21 18:54:11 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -2846,7 +2846,7 @@ io_set_lock (void)
                        "If this is not the case, please remove the following "
                        "lock file: \n\"%s\"\n"
                        "and restart calcurse.\n"), path_lock);
-      exit_calcurse (EXIT_FAILURE);
+      exit (EXIT_FAILURE);
     }
   else
     {
