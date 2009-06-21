@@ -1,4 +1,4 @@
-/*	$calcurse: notify.c,v 1.36 2009/01/22 18:11:57 culot Exp $	*/
+/*	$calcurse: notify.c,v 1.37 2009/06/21 14:42:49 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -110,6 +110,16 @@ notify_init_bar (void)
   notify_app.got_app = 0;
   notify.win = newwin (win[NOT].h, win[NOT].w, win[NOT].y, win[NOT].x);
   extract_aptsfile ();
+}
+
+/*
+ * Free memory associated with the notify_app structure.
+ */
+void
+notify_free_app (void)
+{
+  if (notify_app.got_app && notify_app.txt)
+    mem_free (notify_app.txt);
 }
 
 /* Stop the notify-bar main thread. */

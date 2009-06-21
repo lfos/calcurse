@@ -1,4 +1,4 @@
-/*	$calcurse: notify.h,v 1.16 2009/01/02 22:28:54 culot Exp $	*/
+/*	$calcurse: notify.h,v 1.17 2009/06/21 14:42:49 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -55,6 +55,7 @@ struct notify_app_s
 int  notify_bar (void);
 void notify_init_vars (void);
 void notify_init_bar (void);
+void notify_free_app (void);
 void notify_start_main_thread (void);
 void notify_stop_main_thread (void);
 void notify_reinit_bar (void);
