@@ -1,4 +1,4 @@
-/*	$calcurse: notify.c,v 1.37 2009/06/21 14:42:49 culot Exp $	*/
+/*	$calcurse: notify.c,v 1.38 2009/06/21 15:19:21 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -44,6 +44,21 @@ static struct notify_vars_s   notify;
 static struct notify_app_s    notify_app;
 static pthread_attr_t         detached_thread_attr;
 static pthread_t              notify_t_main;
+
+/*
+ * This is used to update the notify_app structure.
+ * Note: the mutex associated with this structure must be locked by the
+ * caller!
+ */
+static void
+notify_update_app (long start, char state, char *msg)
+{
+  notify_free_app ();
+  notify_app.got_app = 1;
+  notify_app.time = start;
+  notify_app.state = state;  
+  notify_app.txt = mem_strdup (msg);
+}
 
 /* Return 1 if we need to display the notify-bar, else 0. */
 int
@@ -108,6 +123,7 @@ notify_init_bar (void)
   pthread_mutex_init (&notify.mutex, NULL);
   pthread_mutex_init (&notify_app.mutex, NULL);
   notify_app.got_app = 0;
+  notify_app.txt = 0;
   notify.win = newwin (win[NOT].h, win[NOT].w, win[NOT].y, win[NOT].x);
   extract_aptsfile ();
 }
@@ -118,7 +134,7 @@ notify_init_bar (void)
 void
 notify_free_app (void)
 {
-  if (notify_app.got_app && notify_app.txt)
+  if (notify_app.txt)
     mem_free (notify_app.txt);
 }
 
@@ -302,14 +318,13 @@ notify_thread_app (void *arg)
   pthread_mutex_lock (&notify_app.mutex);
   if (tmp_app.got_app)
     {
-      notify_app.got_app = 1;
-      notify_app.time = tmp_app.time;
-      notify_app.txt = mem_strdup (tmp_app.txt);
-      notify_app.state = tmp_app.state;
+      notify_update_app (tmp_app.time, tmp_app.state, tmp_app.txt);
     }
   else
     {
+      notify_free_app ();
       notify_app.got_app = 0;
+      notify_app.txt = 0;
     }
   pthread_mutex_unlock (&notify_app.mutex);
 
@@ -356,10 +371,7 @@ notify_check_added (char *mesg, long start, char state)
 
   if (update_notify)
     {
-      notify_app.got_app = 1;
-      notify_app.time = start;
-      notify_app.txt = mem_strdup (mesg);
-      notify_app.state = state;
+      notify_update_app (start, state, mesg);
     }
   pthread_mutex_unlock (&notify_app.mutex);
   notify_update_bar ();
@@ -395,10 +407,7 @@ notify_check_repeated (recur_apoint_llist_node_t *i)
     }
   if (update_notify)
     {
-      notify_app.got_app = 1;
-      notify_app.time = real_app_time;
-      notify_app.txt = mem_strdup (i->mesg);
-      notify_app.state = i->state;
+      notify_update_app (real_app_time, i->state, i->mesg);
     }
   pthread_mutex_unlock (&notify_app.mutex);
   notify_update_bar ();

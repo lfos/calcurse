@@ -4,6 +4,9 @@
 
 	* src/utils.c (exit_calcurse): free memory associated with
 	structure used for appointments notification
+
+	* src/utils.c: fixed a memory leak caused by a wrong usage of the
+	notify_app structure
 	
 2009-06-20  Frederic Culot  <frederic@culot.org>
 
