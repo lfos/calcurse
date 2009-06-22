@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Copyright (c) 2004-2006 Frederic Culot
+# Copyright (c) 2004-2006, 2009 Frederic Culot
 #                                                                      
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@
 # Send your feedback or comments to : calcurse@culot.org
 # Calcurse home page : http://culot.org/calcurse
 #
-#        $calcurse: autogen.sh,v 1.1 2006/07/31 21:00:02 culot Exp $
+#        $calcurse: autogen.sh,v 1.2 2009/06/22 16:20:05 culot Exp $
 #
 #
 # autogen.sh - Generates all the necessary files to build calcurse from
@@ -158,6 +158,7 @@ echo " --- $PKG_NAME autogen script ---\n"
 check_directory_level
 clean_old_files
 check_program gettext
+check_program gettextize
 check_program_version gettext $GETTEXT_VERSION
 check_program aclocal
 check_program autoheader

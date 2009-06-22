@@ -1,3 +1,7 @@
+2009-06-22  Frederic Culot  <frederic@culot.org>
+
+	* autogen.sh: check for gettextize added
+	
 2009-06-21  Frederic Culot  <frederic@culot.org>
 
 	* src/notify.c (notify_free_app): new function
