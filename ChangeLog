@@ -5,6 +5,9 @@
 
 	* src/utils.c (exit_calcurse): remove lock only if interactive
 	mode was launched
+
+	* src/args.c (parse_args): make the argument given to -r or -s
+	flags optional
 	
 2009-06-22  Frederic Culot  <frederic@culot.org>
 

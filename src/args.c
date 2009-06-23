@@ -1,4 +1,4 @@
-/*	$calcurse: args.c,v 1.46 2009/06/20 17:59:04 culot Exp $	*/
+/*	$calcurse: args.c,v 1.47 2009/06/23 09:05:15 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -597,7 +597,7 @@ parse_args (int argc, char **argv, conf_t *conf)
   char *ddate = "", *cfile = NULL, *range = NULL, *startday = NULL;
   char *datadir = NULL, *ifile = NULL;
 
-  static char *optstr = "hvnNax::t::d:c:r:s:D:i:";
+  static char *optstr = "hvnNax::t::d:c:r::s::D:i:";
 
   struct option longopts[] = {
     {"appointment", no_argument, NULL, 'a'},
@@ -608,8 +608,8 @@ parse_args (int argc, char **argv, conf_t *conf)
     {"import", required_argument, NULL, 'i'},
     {"next", no_argument, NULL, 'n'},
     {"note", no_argument, NULL, 'N'},
-    {"range", required_argument, NULL, 'r'},
-    {"startday", required_argument, NULL, 's'},
+    {"range", optional_argument, NULL, 'r'},
+    {"startday", optional_argument, NULL, 's'},
     {"todo", optional_argument, NULL, 't'},
     {"version", no_argument, NULL, 'v'},
     {"export", optional_argument, NULL, 'x'},
