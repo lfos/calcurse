@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.70 2009/06/21 18:16:23 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.71 2009/06/23 08:52:07 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -51,6 +51,8 @@
 void
 exit_calcurse (int status)
 {
+  int remove_lock;
+  
   if (ui_mode == UI_CURSES)
     {
       notify_stop_main_thread ();
@@ -58,7 +60,11 @@ exit_calcurse (int status)
       refresh ();
       endwin ();
       ui_mode = UI_CMDLINE;
+      remove_lock = 1;
     }
+  else
+    remove_lock = 0;
+  
   calendar_stop_date_thread ();
   io_stop_psave_thread ();
   day_free_list ();
@@ -74,7 +80,9 @@ exit_calcurse (int status)
   notify_free_app ();
   keys_free ();
   mem_stats ();
-  io_unset_lock ();
+  if (remove_lock)
+    io_unset_lock ();
+  
   exit (status);
 }
 

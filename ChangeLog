@@ -2,6 +2,9 @@
 
 	* src/io.c: missing 'T' letter added in DURATION field for ical
 	export (thanks cuz for reporting this)
+
+	* src/utils.c (exit_calcurse): remove lock only if interactive
+	mode was launched
 	
 2009-06-22  Frederic Culot  <frederic@culot.org>
 
