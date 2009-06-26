@@ -1,4 +1,4 @@
-/*	$calcurse: args.c,v 1.47 2009/06/23 09:05:15 culot Exp $	*/
+/*	$calcurse: args.c,v 1.48 2009/06/26 19:56:32 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -204,7 +204,6 @@ todo_arg (int priority, int print_note)
   int title = 1;
   char priority_str[BUFSIZ] = "";
 
-  io_load_todo ();
   for (i = todolist; i != 0; i = i->next)
     {
       if (priority == 0 || i->id == priority)
@@ -769,7 +768,6 @@ parse_args (int argc, char **argv, conf_t *conf)
                   custom_load_conf (conf, 0);
                   io_load_keys (conf->pager);
                   io_load_app ();
-                  io_load_todo ();
                 }
 	    }
           if (iflag)
@@ -788,6 +786,7 @@ parse_args (int argc, char **argv, conf_t *conf)
 	    }
 	  if (tflag)
 	    {
+              io_load_todo ();              
 	      todo_arg (tnum, Nflag);
 	      non_interactive = 1;
 	    }

@@ -1,3 +1,8 @@
+2009-06-26  Frederic Culot  <frederic@culot.org>
+
+	* src/args.c: do not print todo items twice if -d and -t flags are
+	given (thanks Timo for reporting the bug)
+	
 2009-06-23  Frederic Culot  <frederic@culot.org>
 
 	* src/io.c: missing 'T' letter added in DURATION field for ical
