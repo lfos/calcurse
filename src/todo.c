@@ -1,8 +1,8 @@
-/*	$calcurse: todo.c,v 1.31 2009/01/03 21:32:11 culot Exp $	*/
+/*	$calcurse: todo.c,v 1.32 2009/06/26 21:44:12 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2008 Frederic Culot
+ * Copyright (c) 2004-2009 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -154,19 +154,30 @@ todo_new_item (void)
     }
 }
 
-/* Add an item in the todo linked list. */
+/*
+ * Add an item in the todo linked list.
+ */
 struct todo_s *
 todo_add (char *mesg, int id, char *note)
 {
   struct todo_s *o, **i;
+  int absid;
+  
   o = (struct todo_s *) mem_malloc (sizeof (struct todo_s));
   o->mesg = mem_strdup (mesg);
   o->id = id;
   o->note = (note != NULL && note[0] != '\0') ? mem_strdup (note) : NULL;
   i = &todolist;
+
+  /*
+   * As of version 2.6, todo items can have a negative id, which means they
+   * were completed. To keep them sorted, we need to consider the absolute id
+   * value.
+   */
+  absid = abs (id);
   for (;;)
     {
-      if (*i == 0 || (*i)->id > id)
+      if (*i == 0 || abs ((*i)->id) > absid)
 	{
 	  o->next = *i;
 	  *i = o;
@@ -227,6 +238,21 @@ todo_delete_bynum (unsigned num, erase_flag_e flag)
     }
   /* NOTREACHED */
   EXIT (_("no such todo"));
+}
+
+/*
+ * Flag a todo item (for now on, only the 'completed' state is available).
+ * Internally, a completed item keeps its priority, but it becomes negative.
+ * This way, it is easy to retrive its original priority if the user decides
+ * that in fact it was not completed.
+ */
+void
+todo_flag (void)
+{
+  struct todo_s *t;
+
+  t = todo_get_item (hilt);
+  t->id = -t->id;
 }
 
 /* Delete an item from the ToDo list. */
@@ -350,7 +376,7 @@ todo_chg_priority (int action)
       (backup_id > 1) ? backup_id-- : do_chg--;
       break;
     case KEY_LOWER_PRIORITY:
-      (backup_id < 9) ? backup_id++ : do_chg--;
+      (backup_id > 0 && backup_id < 9) ? backup_id++ : do_chg--;
       break;
     default:
       EXIT (_("no such action"));
@@ -383,19 +409,24 @@ display_todo_item (int incolor, char *msg, int prio, int note, int len, int y,
 {
   WINDOW *w;
   int ch_note;
-  char buf[len];
+  char buf[len], priostr[2];
 
   w = win[TOD].p;
   ch_note = (note) ? '>' : '.';
+  if (prio > 0)
+    snprintf (priostr, sizeof priostr, "%d", prio);
+  else
+    snprintf (priostr, sizeof priostr, "X");
+    
   if (incolor == 0)
     custom_apply_attr (w, ATTR_HIGHEST);
   if (strlen (msg) < len)
-    mvwprintw (w, y, x, "%d%c %s", prio, ch_note, msg);
+    mvwprintw (w, y, x, "%s%c %s", priostr, ch_note, msg);
   else
     {
       (void)strncpy (buf, msg, len - 1);
       buf[len - 1] = '\0';
-      mvwprintw (w, y, x, "%d%c %s...", prio, ch_note, buf);
+      mvwprintw (w, y, x, "%s%c %s...", priostr, ch_note, buf);
     }
   if (incolor == 0)
     custom_remove_attr (w, ATTR_HIGHEST);

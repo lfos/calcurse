@@ -1,4 +1,4 @@
-/*	$calcurse: args.c,v 1.48 2009/06/26 19:56:32 culot Exp $	*/
+/*	$calcurse: args.c,v 1.49 2009/06/26 21:44:11 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -194,33 +194,61 @@ print_notefile (FILE *out, char *filename, int nbtab)
 }
 
 /*
- * Print todo list and exit. If a priority number is given (say not equal to
- * zero), then only todo items that have this priority will be displayed.
+ * Print todo list and exit. If a priority number is given, then only todo
+ * then only todo items that have this priority will be displayed.
+ * If priority is < 0, all todos will be displayed.
+ * If priority == 0, only completed tasks will be displayed.
  */
 static void
 todo_arg (int priority, int print_note)
 {
   struct todo_s *i;
   int title = 1;
-  char priority_str[BUFSIZ] = "";
+  char *titlestr, priority_str[BUFSIZ] = "";
+  char *all_todos_title = _("to do:\n");
+  char *completed_title = _("completed tasks:\n");
 
+  titlestr = priority == 0 ? completed_title : all_todos_title;
+
+#define DISPLAY_TITLE  do {                                             \
+  if (title)                                                            \
+    {                                                                   \
+      fputs (titlestr, stdout);                                         \
+      title = 0;                                                        \
+    }                                                                   \
+  } while (0)
+
+#define DISPLAY_TODO  do {                                              \
+  (void)snprintf (priority_str, BUFSIZ, "%d. ", abs (i->id));           \
+  fputs (priority_str, stdout);                                         \
+  fputs (i->mesg, stdout);                                              \
+  fputs ("\n", stdout);                                                 \
+  if (print_note && i->note)                                            \
+    print_notefile (stdout, i->note, 1);                                \
+  } while (0)
+  
   for (i = todolist; i != 0; i = i->next)
     {
-      if (priority == 0 || i->id == priority)
-	{
-	  if (title)
-	    {
-	      fputs (_("to do:\n"), stdout);
-	      title = 0;
-	    }
-	  (void)snprintf (priority_str, BUFSIZ, "%d. ", i->id);
-	  fputs (priority_str, stdout);
-	  fputs (i->mesg, stdout);
-	  fputs ("\n", stdout);
-	  if (print_note && i->note)
-	    print_notefile (stdout, i->note, 1);
-	}
+      if (i->id < 0) /* completed task */
+        {
+          if (priority == 0)
+            {
+              DISPLAY_TITLE;
+              DISPLAY_TODO;
+            }
+        }
+      else
+        {
+          if (priority < 0 || i->id == priority)
+            {
+              DISPLAY_TITLE;
+              DISPLAY_TODO;
+            }
+        }
     }
+
+#undef DISPLAY_TITLE
+#undef DISPLAY_TODO  
 }
 
 /* Print the next appointment within the upcoming 24 hours. */
@@ -590,8 +618,7 @@ parse_args (int argc, char **argv, conf_t *conf)
   int vflag = 0;    /* -v: print version number */
   int xflag = 0;    /* -x: export data */
 
-  int tnum = 0, xfmt = 0;
-  int non_interactive = 0, multiple_flag = 0, load_data = 0;
+  int tnum = 0, xfmt = 0, non_interactive = 0, multiple_flag = 0, load_data = 0;
   int no_file = 1;
   char *ddate = "", *cfile = NULL, *range = NULL, *startday = NULL;
   char *datadir = NULL, *ifile = NULL;
@@ -677,7 +704,7 @@ parse_args (int argc, char **argv, conf_t *conf)
 	  if (optarg != NULL)
 	    {
 	      tnum = atoi (optarg);
-	      if (tnum < 1 || tnum > 9)
+	      if (tnum < 0 || tnum > 9)
 		{
 		  usage ();
 		  usage_try ();
@@ -685,7 +712,7 @@ parse_args (int argc, char **argv, conf_t *conf)
 		}
 	    }
 	  else
-	    tnum = 0;
+	    tnum = -1;
 	  break;
 	case 'v':
 	  vflag = 1;

@@ -1,8 +1,8 @@
-/*	$calcurse: todo.h,v 1.13 2008/12/28 13:13:59 culot Exp $	*/
+/*	$calcurse: todo.h,v 1.14 2009/06/26 21:44:12 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2008 Frederic Culot
+ * Copyright (c) 2004-2009 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,6 +50,7 @@ int            todo_hilt_pos (void);
 char          *todo_saved_mesg (void);
 void           todo_new_item (void);
 struct todo_s *todo_add (char *, int, char *);
+void           todo_flag (void);
 void           todo_delete (conf_t *);
 void           todo_chg_priority (int);
 void           todo_edit_item (void);

@@ -2,6 +2,13 @@
 
 	* src/args.c: do not print todo items twice if -d and -t flags are
 	given (thanks Timo for reporting the bug)
+
+	* src/todo.c (todo_flag): new function
+
+	* src/args.c (todo_arg): function adapted to display completed
+	tasks
+	
+	* src/todo.c: todos can now be flagged as completed
 	
 2009-06-23  Frederic Culot  <frederic@culot.org>
 

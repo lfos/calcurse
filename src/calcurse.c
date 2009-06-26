@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.79 2009/06/21 18:16:22 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.80 2009/06/26 21:44:12 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -360,6 +360,8 @@ main (int argc, char **argv)
         case KEY_FLAG_ITEM:
 	  if (wins_slctd () == APP && apoint_hilt () != 0)
 	    apoint_switch_notify ();
+          else if (wins_slctd () == TOD && todo_hilt () != 0)
+            todo_flag ();
 	  do_storage = true;
 	  break;
 
