@@ -9,6 +9,8 @@
 	tasks
 	
 	* src/todo.c: todos can now be flagged as completed
+
+	* src/wins.c (wins_status_bar): flag command added in todo panel
 	
 2009-06-23  Frederic Culot  <frederic@culot.org>
 

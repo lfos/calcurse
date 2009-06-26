@@ -1,4 +1,4 @@
-/*	$calcurse: wins.c,v 1.23 2009/01/03 21:32:11 culot Exp $	*/
+/*	$calcurse: wins.c,v 1.24 2009/06/26 21:50:18 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -481,7 +481,7 @@ wins_launch_external (const char *file, const char *cmd)
 
 #define NB_CAL_CMDS	24	/* number of commands while in cal view */
 #define NB_APP_CMDS	31	/* same thing while in appointment view */
-#define NB_TOD_CMDS	29	/* same thing while in todo view */
+#define NB_TOD_CMDS	30	/* same thing while in todo view */
 #define TOTAL_CMDS	NB_CAL_CMDS + NB_APP_CMDS + NB_TOD_CMDS
 #define CMDS_PER_LINE	6	/* max number of commands per line */  
 
@@ -551,8 +551,8 @@ wins_status_bar (void)
     &othr,
     /* todo keys */
     &help, &quit, &save, &chgvu, &import, &export, &add, &del, &edit, &view,
-    &draw, &othr, &rprio, &lprio, &enote, &vnote, &up, &down, &gnday, &gpday,
-    &gnweek, &gpweek, &togo, &othr, &today, &conf, &appt, &todo, &othr
+    &flag, &othr, &rprio, &lprio, &enote, &vnote, &up, &down, &gnday, &gpday,
+    &gnweek, &gpweek, &togo, &othr, &today, &conf, &appt, &todo, &draw, &othr
   };
 
   /* Drawing the keybinding with attribute and label without. */
