@@ -7,6 +7,8 @@
 	* src/args.c (help_arg): help updated for the -t command line flag
 
 	* src/calcurse.1: updated the -t flag description
+
+	* src/manual_*.html: html manuals updated
 	
 2009-06-26  Frederic Culot  <frederic@culot.org>
 
