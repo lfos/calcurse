@@ -3,6 +3,8 @@
 	* src/io.c: do not export completed tasks
 
 	* src/help.c (help_screen): help page updated for the flag command
+
+	* src/help.c (help_arg): help updated for the -t command line flag
 	
 2009-06-26  Frederic Culot  <frederic@culot.org>
 
