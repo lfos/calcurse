@@ -4,7 +4,9 @@
 
 	* src/help.c (help_screen): help page updated for the flag command
 
-	* src/help.c (help_arg): help updated for the -t command line flag
+	* src/args.c (help_arg): help updated for the -t command line flag
+
+	* src/calcurse.1: updated the -t flag description
 	
 2009-06-26  Frederic Culot  <frederic@culot.org>
 

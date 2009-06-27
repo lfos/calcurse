@@ -1,4 +1,4 @@
-.\" 	$calcurse: calcurse.1,v 1.13 2009/01/24 17:57:50 culot Exp $
+.\" 	$calcurse: calcurse.1,v 1.14 2009/06/27 09:37:58 culot Exp $
 .\"
 .\" Copyright (c) 2004-2009 Frederic Culot
 .\"
@@ -18,7 +18,7 @@
 .\" Boston, MA 02111-1307, USA.
 .\"
 .fam C
-.TH CALCURSE 1 "January 24, 2009" "Version 2.5" "Calcurse Manual"
+.TH CALCURSE 1 "June 27, 2009" "Version 2.6" "Calcurse Manual"
 .SH NAME
 Calcurse \- text-based organizer
 .SH SYNOPSIS
@@ -125,8 +125,9 @@ If no \fIdate\fP is given, the current day is considered.
 \fB-t\fP[num], \fB--todo\fP[=num]
 Print the 'todo' list and exit. If the optional number \fInum\fP is given,
 then only todos having a priority equal to \fInum\fP will be returned.
-.br
-\fINote:\fP priority number must be between 1 (highest) and 9 (lowest).
+The priority number must be between 1 (highest) and 9 (lowest). It is also
+possible to specify '0' for the priority, in which case only completed
+tasks will be shown.
 .TP
 \fB-v\fP, \fB--version\fP
 Display calcurse version and exit.
