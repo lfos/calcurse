@@ -1,4 +1,4 @@
-/*	$calcurse: help.c,v 1.38 2009/01/04 10:22:10 culot Exp $	*/
+/*	$calcurse: help.c,v 1.39 2009/06/27 09:20:39 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -634,10 +634,14 @@ help_screen (void)
 
   hscr[HELP_FLAG].title = _("Flag Item\n");
   (void)snprintf (hscr[HELP_FLAG].text, HELPTEXTSIZ,
-    _("Toggle an appointment's 'important' flag.\n"
-      "If an item is flagged as important, an exclamation mark appears in front"
-      "\nof it, and you will be warned if time gets closed to the appointment\n"
-      "start time.\n"
+    _("Toggle an appointment's 'important' flag or a todo's 'completed' flag.\n"
+      "If a todo is flagged as completed, its priority number will be replaced\n"
+      "by an 'X' sign. Completed tasks will no longer appear in exported data\n"
+      "or when using the '-t' command line flag (unless specifying '0' as the\n"
+      "priority number, in which case only completed tasks will be shown).\n\n"
+      "If an appointment is flagged as important, an exclamation mark appears\n"
+      "in front of it, and you will be warned if time gets closed to the\n"
+      "appointment start time.\n"
       "To customize the way one gets notified, the configuration submenu lets\n"
       "you choose the command launched to warn user of an upcoming appointment,"
       "\nand how long before it he gets notified."));
