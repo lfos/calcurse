@@ -1,3 +1,7 @@
+2009-06-27  Frederic Culot  <frederic@culot.org>
+
+	* src/io.c: do not export completed tasks
+	
 2009-06-26  Frederic Culot  <frederic@culot.org>
 
 	* src/args.c: do not print todo items twice if -d and -t flags are

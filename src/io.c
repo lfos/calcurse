@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.62 2009/06/23 08:11:07 culot Exp $	*/
+/*	$calcurse: io.c,v 1.63 2009/06/27 08:38:56 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -635,6 +635,9 @@ ical_export_todo (FILE *stream)
 
   for (i = todolist; i != 0; i = i->next)
     {
+      if (i->id < 0)  /* completed items */
+        continue;
+      
       (void)fprintf (stream, "BEGIN:VTODO\n");
       (void)fprintf (stream, "PRIORITY:%d\n", i->id);
       (void)fprintf (stream, "SUMMARY:%s\n", i->mesg);
@@ -650,6 +653,9 @@ pcal_export_todo (FILE *stream)
   (void)fprintf (stream, "#\n# Todos\n#\n");
   for (i = todolist; i != 0; i = i->next)
     {
+      if (i->id < 0)  /* completed items */
+        continue;
+      
       (void)fprintf (stream, "note all  ");
       (void)fprintf (stream, "%d. %s\n", i->id, i->mesg);
     }
