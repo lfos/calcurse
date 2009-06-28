@@ -1,4 +1,4 @@
-/*	$calcurse: args.c,v 1.49 2009/06/26 21:44:11 culot Exp $	*/
+/*	$calcurse: args.c,v 1.50 2009/06/28 07:30:11 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -127,7 +127,9 @@ help_arg ()
       "\n  -t[num], --todo[=num]\n"
       "	print todo list and exit. If the optional number [num] is given,\n"
       "\tthen only todos having a priority equal to [num] will be returned.\n"
-      "\tnote: priority number must be between 1 (highest) and 9 (lowest).\n"
+      "\tThe priority number must be between 1 (highest) and 9 (lowest).\n"
+      "\tIt is also possible to specify '0' for the priority, in which case\n"
+      "\tonly completed tasks will be shown.\n"
       "\n  -x[format], --export[=format]\n"
       "	export user data to the specified format. Events, appointments and\n"
       "\ttodos are converted and echoed to stdout.\n"
