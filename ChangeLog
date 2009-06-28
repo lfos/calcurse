@@ -1,3 +1,15 @@
+2009-06-28  Frederic Culot  <frederic@culot.org>
+
+	* src/io.c (io_save_apts, io_save_conf, io_save_todo)
+	(io_save_keys): new functions
+
+	* src/args.c (parse_args): simplified the way data files are
+	loaded and saved
+
+	* src/args.c: it is now possible to export data from a given
+	apts file even if the user does not have any home directory
+	(thanks Ben for reporting this bug)
+	
 2009-06-27  Frederic Culot  <frederic@culot.org>
 
 	* src/io.c: do not export completed tasks

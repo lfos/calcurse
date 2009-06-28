@@ -1,4 +1,4 @@
-/*	$calcurse: args.c,v 1.50 2009/06/28 07:30:11 culot Exp $	*/
+/*	$calcurse: args.c,v 1.51 2009/06/28 09:53:17 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -621,7 +621,6 @@ parse_args (int argc, char **argv, conf_t *conf)
   int xflag = 0;    /* -x: export data */
 
   int tnum = 0, xfmt = 0, non_interactive = 0, multiple_flag = 0, load_data = 0;
-  int no_file = 1;
   char *ddate = "", *cfile = NULL, *range = NULL, *startday = NULL;
   char *datadir = NULL, *ifile = NULL;
 
@@ -651,18 +650,18 @@ parse_args (int argc, char **argv, conf_t *conf)
 	case 'a':
 	  aflag = 1;
 	  multiple_flag++;
-	  load_data++;
+          load_data++;
 	  break;
 	case 'c':
 	  cflag = 1;
 	  multiple_flag++;
-	  load_data++;
 	  cfile = optarg;
+          load_data++;
 	  break;
 	case 'd':
 	  dflag = 1;
 	  multiple_flag++;
-	  load_data++;
+          load_data++;
 	  ddate = optarg;
 	  break;
         case 'D':
@@ -675,13 +674,13 @@ parse_args (int argc, char **argv, conf_t *conf)
         case 'i':
           iflag = 1;
           multiple_flag++;
-	  load_data++;
+          load_data++;
           ifile = optarg;
           break;
 	case 'n':
 	  nflag = 1;
 	  multiple_flag++;
-	  load_data++;
+          load_data++;
 	  break;
 	case 'N':
 	  Nflag = 1;
@@ -701,7 +700,7 @@ parse_args (int argc, char **argv, conf_t *conf)
 	case 't':
 	  tflag = 1;
 	  multiple_flag++;
-	  load_data++;
+          load_data++;
 	  add_line = 1;
 	  if (optarg != NULL)
 	    {
@@ -722,7 +721,7 @@ parse_args (int argc, char **argv, conf_t *conf)
 	case 'x':
 	  xflag = 1;
 	  multiple_flag++;
-	  load_data++;
+          load_data++;
           if (optarg != NULL)
             {
               if (strcmp (optarg, "ical") == 0)
@@ -790,25 +789,18 @@ parse_args (int argc, char **argv, conf_t *conf)
 	  if (load_data)
 	    {
 	      io_init (cfile, datadir);
-	      no_file = io_check_data_files ();
-	      if (dflag || aflag || nflag || iflag || xflag || rflag || sflag)
-                {
-                  vars_init (conf);
-                  custom_load_conf (conf, 0);
-                  io_load_keys (conf->pager);
-                  io_load_app ();
-                }
 	    }
           if (iflag)
             {
-              notify_init_vars ();
+              io_check_file (path_apts, (int *)0);
+              io_load_app ();
               io_import_data (IO_IMPORT_ICAL, conf, ifile);
-              io_save_cal (conf, IO_SAVE_DISPLAY_NONE);
+              io_save_apts ();
               non_interactive = 1;
             }
 	  if (xflag)
 	    {
-	      notify_init_vars ();
+              io_load_app ();
 	      io_export_data (xfmt, conf);
 	      non_interactive = 1;
 	      return non_interactive;
@@ -821,12 +813,13 @@ parse_args (int argc, char **argv, conf_t *conf)
 	    }
 	  if (nflag)
 	    {
+              io_load_app ();
 	      next_arg ();
 	      non_interactive = 1;
 	    }
 	  if (dflag || rflag || sflag)
 	    {
-	      notify_init_vars ();
+              io_load_app ();
               if (dflag)
                 date_arg (ddate, add_line, Nflag, conf);
               if (rflag || sflag)
@@ -836,8 +829,11 @@ parse_args (int argc, char **argv, conf_t *conf)
 	  else if (aflag)
 	    {
 	      date_t day;
+
+              vars_init (conf);
+              custom_load_conf (conf, 0); /* To get output date format. */
+              io_load_app ();
 	      day.dd = day.mm = day.yyyy = 0;
-	      notify_init_vars ();
 	      app_found = app_arg (add_line, &day, 0, Nflag, conf);
 	      non_interactive = 1;
 	    }
@@ -845,8 +841,7 @@ parse_args (int argc, char **argv, conf_t *conf)
       else
 	{
 	  non_interactive = 0;
-	  io_init (cfile, datadir);
-	  no_file = io_check_data_files ();
+          io_init (cfile, datadir);
 	}
     }
   return non_interactive;  

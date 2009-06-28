@@ -1,8 +1,8 @@
-/*	$calcurse: io.h,v 1.19 2009/06/21 18:16:22 culot Exp $	*/
+/*	$calcurse: io.h,v 1.20 2009/06/28 09:53:17 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2008 Frederic Culot
+ * Copyright (c) 2004-2009 Frederic Culot
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,10 +53,15 @@ typedef struct {
 
 void        io_init (char *, char *);
 void        io_extract_data (char *, const char *, int);
+unsigned    io_save_conf (conf_t *);
+unsigned    io_save_apts (void);
+unsigned    io_save_todo (void);
+unsigned    io_save_keys (void);
 void        io_save_cal (conf_t *, io_save_display_t);
 void        io_load_app (void);
 void        io_load_todo (void);
 void        io_load_keys (char *);
+void        io_check_file (char *, int *);
 int         io_check_data_files (void);
 void        io_startup_screen (bool, int);
 void        io_export_data (export_type_t, conf_t *);

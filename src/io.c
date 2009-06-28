@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.63 2009/06/27 08:38:56 culot Exp $	*/
+/*	$calcurse: io.c,v 1.64 2009/06/28 09:53:17 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -783,16 +783,10 @@ display_mark (void)
 
 static pthread_mutex_t io_save_mutex = PTHREAD_MUTEX_INITIALIZER;
 
-/* Save the calendar data */
-void
-io_save_cal (conf_t *conf, io_save_display_t display)
+/* Save the user configuration. */
+unsigned
+io_save_conf (conf_t *conf)
 {
-  FILE *data_file;
-  struct event_s *k;
-  apoint_llist_node_t *j;
-  struct todo_s *i;
-  char theme_name[BUFSIZ];
-  char *access_pb = _("Problems accessing data file ...");
   char *config_txt =
     "#\n"
     "# Calcurse configuration file\n#\n"
@@ -803,186 +797,214 @@ io_save_cal (conf_t *conf, io_save_display_t display)
     "# For a variable to be unset its value must be blank.\n"
     "# To set a variable to the empty string its value should be \"\".\n"
     "# Lines beginning with \"#\" are comments, and ignored by Calcurse.\n";
+  char theme_name[BUFSIZ];  
+  FILE *fp;
+  
+  if ((fp = fopen (path_conf, "w")) == 0)
+    return 0;
+
+  custom_color_theme_name (theme_name);
+
+  (void)fprintf (fp, "%s\n", config_txt);
+  
+  (void)fprintf (fp, "# If this option is set to yes, "
+                 "automatic save is done when quitting\n");
+  (void)fprintf (fp, "auto_save=\n");
+  (void)fprintf (fp, "%s\n", (conf->auto_save) ? "yes" : "no");
+  
+  (void)fprintf (fp, "\n# If not null, perform automatic saves every "
+                 "'periodic_save' minutes\n");
+  (void)fprintf (fp, "periodic_save=\n");
+  (void)fprintf (fp, "%d\n", conf->periodic_save);
+  
+  (void)fprintf (fp, "\n# If this option is set to yes, "
+                 "confirmation is required before quitting\n");
+  (void)fprintf (fp, "confirm_quit=\n");
+  (void)fprintf (fp, "%s\n", (conf->confirm_quit) ? "yes" : "no");
+  
+  (void)fprintf (fp, "\n# If this option is set to yes, "
+                 "confirmation is required before deleting an event\n");
+  (void)fprintf (fp, "confirm_delete=\n");
+  (void)fprintf (fp, "%s\n", (conf->confirm_delete) ? "yes" : "no");
+  
+  (void)fprintf (fp, "\n# If this option is set to yes, "
+                 "messages about loaded and saved data will not be displayed\n");
+  (void)fprintf (fp, "skip_system_dialogs=\n");
+  (void)fprintf (fp, "%s\n", (conf->skip_system_dialogs) ? "yes" : "no");
+  
+  (void)fprintf (fp,
+                 "\n# If this option is set to yes, progress bar appearing "
+                 "when saving data will not be displayed\n");
+  (void)fprintf (fp, "skip_progress_bar=\n");
+  (void)fprintf (fp, "%s\n", (conf->skip_progress_bar) ? "yes" : "no");
+  
+  (void)fprintf (fp, "\n# If this option is set to yes, "
+                 "monday is the first day of the week, else it is sunday\n");
+  (void)fprintf (fp, "week_begins_on_monday=\n");
+  (void)fprintf (fp, "%s\n",
+                 (calendar_week_begins_on_monday ())? "yes" : "no");
+  
+  (void)fprintf (fp, "\n# This is the color theme used for menus :\n");
+  (void)fprintf (fp, "color-theme=\n");
+  (void)fprintf (fp, "%s\n", theme_name);
+  
+  (void)fprintf (fp, "\n# This is the layout of the calendar :\n");
+  (void)fprintf (fp, "layout=\n");
+  (void)fprintf (fp, "%d\n", wins_layout ());
+  
+  if (ui_mode == UI_CURSES)
+    pthread_mutex_lock (&nbar.mutex);
+  (void)fprintf (fp,
+                 "\n# If this option is set to yes, "
+                 "notify-bar will be displayed :\n");
+  (void)fprintf (fp, "notify-bar_show=\n");
+  (void)fprintf (fp, "%s\n", (nbar.show) ? "yes" : "no");
+  
+  (void)fprintf (fp,
+                 "\n# Format of the date to be displayed inside notify-bar :\n");
+  (void)fprintf (fp, "notify-bar_date=\n");
+  (void)fprintf (fp, "%s\n", nbar.datefmt);
+  
+  (void)fprintf (fp,
+                 "\n# Format of the time to be displayed inside notify-bar :\n");
+  (void)fprintf (fp, "notify-bar_clock=\n");
+  (void)fprintf (fp, "%s\n", nbar.timefmt);
+  
+  (void)fprintf (fp,
+                 "\n# Warn user if he has an appointment within next "
+                 "'notify-bar_warning' seconds :\n");
+  (void)fprintf (fp, "notify-bar_warning=\n");
+  (void)fprintf (fp, "%d\n", nbar.cntdwn);
+  
+  (void)fprintf (fp, "\n# Command used to notify user of "
+                 "an upcoming appointment :\n");
+  (void)fprintf (fp, "notify-bar_command=\n");
+  (void)fprintf (fp, "%s\n", nbar.cmd);
+  
+  (void)fprintf (fp, "\n# Format of the date to be displayed "
+                 "in non-interactive mode :\n");
+  (void)fprintf (fp, "output_datefmt=\n");
+  (void)fprintf (fp, "%s\n", conf->output_datefmt);
+  
+  (void)fprintf (fp, "\n# Format to be used when entering a date "
+                 "(1)mm/dd/yyyy (2)dd/mm/yyyy (3)yyyy/mm/dd) "
+                 "(4)yyyy-mm-dd:\n");
+  (void)fprintf (fp, "input_datefmt=\n");
+  (void)fprintf (fp, "%d\n", conf->input_datefmt);
+  
+  if (ui_mode == UI_CURSES)
+    pthread_mutex_unlock (&nbar.mutex);
+  
+  file_close (fp, __FILE_POS__);
+
+  return 1;
+}
+
+/* 
+ * Save the apts data file, which contains the 
+ * appointments first, and then the events. 
+ * Recursive items are written first.
+ */
+unsigned
+io_save_apts (void)
+{
+  apoint_llist_node_t *a;
+  struct event_s *e;  
+  FILE *fp;
+
+  if ((fp = fopen (path_apts, "w")) == 0)
+    return 0;
+
+  recur_save_data (fp);
+
+  if (ui_mode == UI_CURSES)
+    pthread_mutex_lock (&(alist_p->mutex));
+  for (a = alist_p->root; a != 0; a = a->next)
+    apoint_write (a, fp);
+  if (ui_mode == UI_CURSES)
+    pthread_mutex_unlock (&(alist_p->mutex));
+
+  for (e = eventlist; e != 0; e = e->next)
+    event_write (e, fp);
+  file_close (fp, __FILE_POS__);
+
+  return 1;
+}
+
+/* Save the todo data file. */
+unsigned
+io_save_todo (void)
+{
+  struct todo_s *t;  
+  FILE *fp;
+  
+  if ((fp = fopen (path_todo, "w")) == 0)
+    return 0;
+
+  for (t = todolist; t != 0; t = t->next)
+    {
+      if (t->note)
+        (void)fprintf (fp, "[%d]>%s %s\n", t->id, t->note, t->mesg);
+      else
+        (void)fprintf (fp, "[%d] %s\n", t->id, t->mesg);
+    }
+  file_close (fp, __FILE_POS__);
+
+  return 1;
+}
+
+/* Save user-defined keys */
+unsigned
+io_save_keys (void)
+{
+  FILE *fp;
+  
+  if ((fp = fopen (path_keys, "w")) == 0)
+    return 0;
+  
+  keys_save_bindings (fp);
+  file_close (fp, __FILE_POS__);
+
+  return 1;
+}
+
+/* Save the calendar data */
+void
+io_save_cal (conf_t *conf, io_save_display_t display)
+{
+  char *access_pb = _("Problems accessing data file ...");
   char *save_success = _("The data files were successfully saved");
   char *enter = _("Press [ENTER] to continue");
-  bool show_bar = false;
+  int show_bar;
 
   pthread_mutex_lock (&io_save_mutex);
-  
+
+  show_bar = 0;  
   if (ui_mode == UI_CURSES && display == IO_SAVE_DISPLAY_BAR
       && !conf->skip_progress_bar)
-    show_bar = true;
+    show_bar = 1;
   else if (ui_mode == UI_CURSES && display == IO_SAVE_DISPLAY_MARK)
     display_mark ();
-  
-  /* Save the user configuration. */
+
   if (show_bar)
     progress_bar (PROGRESS_BAR_SAVE, PROGRESS_BAR_CONF);
-  
-  data_file = fopen (path_conf, "w");
-  if (data_file == NULL)
+  if (!io_save_conf (conf))
     ERROR_MSG ("%s", access_pb);
-  else
-    {
-      custom_color_theme_name (theme_name);
-
-      (void)fprintf (data_file, "%s\n", config_txt);
-
-      (void)fprintf (data_file,
-                     "# If this option is set to yes, "
-                     "automatic save is done when quitting\n");
-      (void)fprintf (data_file, "auto_save=\n");
-      (void)fprintf (data_file, "%s\n", (conf->auto_save) ? "yes" : "no");
-
-      (void)fprintf (data_file,
-                     "\n# If not null, perform automatic saves every "
-                     "'periodic_save' minutes\n");
-      (void)fprintf (data_file, "periodic_save=\n");
-      (void)fprintf (data_file, "%d\n", conf->periodic_save);
-      
-      (void)fprintf (data_file,
-                     "\n# If this option is set to yes, "
-                     "confirmation is required before quitting\n");
-      (void)fprintf (data_file, "confirm_quit=\n");
-      (void)fprintf (data_file, "%s\n", (conf->confirm_quit) ? "yes" : "no");
-
-      (void)fprintf (data_file,
-                     "\n# If this option is set to yes, "
-                     "confirmation is required before deleting an event\n");
-      (void)fprintf (data_file, "confirm_delete=\n");
-      (void)fprintf (data_file, "%s\n", (conf->confirm_delete) ? "yes" : "no");
-
-      (void)fprintf (data_file,
-                     "\n# If this option is set to yes, "
-                     "messages about loaded and saved data will not be displayed\n");
-      (void)fprintf (data_file, "skip_system_dialogs=\n");
-      (void)fprintf (data_file, "%s\n", (conf->skip_system_dialogs) ? "yes" : "no");
-
-      (void)fprintf (data_file,
-                     "\n# If this option is set to yes, progress bar appearing "
-                     "when saving data will not be displayed\n");
-      (void)fprintf (data_file, "skip_progress_bar=\n");
-      (void)fprintf (data_file, "%s\n", (conf->skip_progress_bar) ? "yes" : "no");
-
-      (void)fprintf (data_file,
-                     "\n# If this option is set to yes, "
-                     "monday is the first day of the week, else it is sunday\n");
-      (void)fprintf (data_file, "week_begins_on_monday=\n");
-      (void)fprintf (data_file, "%s\n",
-                     (calendar_week_begins_on_monday ())? "yes" : "no");
- 
-      (void)fprintf (data_file, "\n# This is the color theme used for menus :\n");
-      (void)fprintf (data_file, "color-theme=\n");
-      (void)fprintf (data_file, "%s\n", theme_name);
-
-      (void)fprintf (data_file, "\n# This is the layout of the calendar :\n");
-      (void)fprintf (data_file, "layout=\n");
-      (void)fprintf (data_file, "%d\n", wins_layout ());
-
-      if (ui_mode == UI_CURSES)
-        pthread_mutex_lock (&nbar.mutex);
-      (void)fprintf (data_file,
-                     "\n# If this option is set to yes, "
-                     "notify-bar will be displayed :\n");
-      (void)fprintf (data_file, "notify-bar_show=\n");
-      (void)fprintf (data_file, "%s\n", (nbar.show) ? "yes" : "no");
-
-      (void)fprintf (data_file,
-                     "\n# Format of the date to be displayed inside notify-bar :\n");
-      (void)fprintf (data_file, "notify-bar_date=\n");
-      (void)fprintf (data_file, "%s\n", nbar.datefmt);
-
-      (void)fprintf (data_file,
-                     "\n# Format of the time to be displayed inside notify-bar :\n");
-      (void)fprintf (data_file, "notify-bar_clock=\n");
-      (void)fprintf (data_file, "%s\n", nbar.timefmt);
-
-      (void)fprintf (data_file,
-                     "\n# Warn user if he has an appointment within next "
-                     "'notify-bar_warning' seconds :\n");
-      (void)fprintf (data_file, "notify-bar_warning=\n");
-      (void)fprintf (data_file, "%d\n", nbar.cntdwn);
-
-      (void)fprintf (data_file,
-                     "\n# Command used to notify user of "
-                     "an upcoming appointment :\n");
-      (void)fprintf (data_file, "notify-bar_command=\n");
-      (void)fprintf (data_file, "%s\n", nbar.cmd);
-
-      (void)fprintf (data_file,
-                     "\n# Format of the date to be displayed "
-                     "in non-interactive mode :\n");
-      (void)fprintf (data_file, "output_datefmt=\n");
-      (void)fprintf (data_file, "%s\n", conf->output_datefmt);
-
-      (void)fprintf (data_file,
-                     "\n# Format to be used when entering a date "
-                     "(1)mm/dd/yyyy (2)dd/mm/yyyy (3)yyyy/mm/dd) "
-                     "(4)yyyy-mm-dd:\n");
-      (void)fprintf (data_file, "input_datefmt=\n");
-      (void)fprintf (data_file, "%d\n", conf->input_datefmt);
-
-      if (ui_mode == UI_CURSES)
-        pthread_mutex_unlock (&nbar.mutex);
-
-      file_close (data_file, __FILE_POS__);
-    }
-
-  /* Save the todo data file. */
+  
   if (show_bar)
     progress_bar (PROGRESS_BAR_SAVE, PROGRESS_BAR_TODO);
-  data_file = fopen (path_todo, "w");
-  if (data_file == NULL)
+  if (!io_save_todo ())
     ERROR_MSG ("%s", access_pb);
-  else
-    {
-      for (i = todolist; i != 0; i = i->next)
-	{
-	  if (i->note != NULL)
-	    (void)fprintf (data_file, "[%d]>%s %s\n", i->id, i->note, i->mesg);
-	  else
-	    (void)fprintf (data_file, "[%d] %s\n", i->id, i->mesg);
-	}
-      file_close (data_file, __FILE_POS__);
-    }
-
-  /* 
-   * Save the apts data file, which contains the 
-   * appointments first, and then the events. 
-   * Recursive items are written first.
-   */
+  
   if (show_bar)
     progress_bar (PROGRESS_BAR_SAVE, PROGRESS_BAR_APTS);
-  data_file = fopen (path_apts, "w");
-  if (data_file == NULL)
+  if (!io_save_apts ())
     ERROR_MSG ("%s", access_pb);
-  else
-    {
-      recur_save_data (data_file);
-
-      if (ui_mode == UI_CURSES)
-        pthread_mutex_lock (&(alist_p->mutex));
-      for (j = alist_p->root; j != 0; j = j->next)
-	apoint_write (j, data_file);
-      if (ui_mode == UI_CURSES)
-        pthread_mutex_unlock (&(alist_p->mutex));
-
-      for (k = eventlist; k != 0; k = k->next)
-	event_write (k, data_file);
-      file_close (data_file, __FILE_POS__);
-    }
-
-  /* Save user-defined keys */
+  
   if (show_bar)
     progress_bar (PROGRESS_BAR_SAVE, PROGRESS_BAR_KEYS);
-  data_file = fopen (path_keys, "w");
-  if (data_file == NULL)
+  if (!io_save_keys ())
     ERROR_MSG ("%s", access_pb);
-  else
-    {
-      keys_save_bindings (data_file);
-      file_close (data_file, __FILE_POS__);
-    }
   
   /* Print a message telling data were saved */
   if (ui_mode == UI_CURSES && !conf->skip_system_dialogs
@@ -1432,15 +1454,16 @@ check_directory (char *dir, int *missing)
     (*missing)++;
 }
 
-static void
-check_file (char *file, int *missing)
+void
+io_check_file (char *file, int *missing)
 {
   FILE *fd;
 
   errno = 0;
   if ((fd = fopen (file, "r")) == NULL)
     {
-      (*missing)++;
+      if (missing)
+        (*missing)++;
       if ((fd = fopen (file, "w")) == NULL)
 	{
 	  (void)fprintf (stderr, _("FATAL ERROR: could not create %s: %s\n"),
@@ -1472,10 +1495,10 @@ io_check_data_files (void)
   errno = 0;
   check_directory (path_dir, &missing);
   check_directory (path_notes, &missing);
-  check_file (path_todo, &missing);
-  check_file (path_apts, &missing);
-  check_file (path_conf, &missing);
-  check_file (path_keys, &missing_keys);
+  io_check_file (path_todo, &missing);
+  io_check_file (path_apts, &missing);
+  io_check_file (path_conf, &missing);
+  io_check_file (path_keys, &missing_keys);
   if (missing_keys)
     {
       missing++;
