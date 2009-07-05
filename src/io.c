@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.64 2009/06/28 09:53:17 culot Exp $	*/
+/*	$calcurse: io.c,v 1.65 2009/07/05 19:37:34 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -1658,13 +1658,25 @@ ical_store_todo (int priority, char *mesg, char *note)
 }
 
 static void
-ical_store_event (char *mesg, char *note, long day, ical_rpt_t *rpt,
+ical_store_event (char *mesg, char *note, long day, long end, ical_rpt_t *rpt,
                   days_t *exc)
 {
   const int EVENTID = 1;
   
-  if (rpt != NULL)
+  if (rpt)
     {
+      recur_event_new (mesg, note, day, EVENTID, rpt->type, rpt->freq,
+                       rpt->until, &exc);
+      mem_free (rpt);
+    }
+  else if (end && end != day)
+    {
+      /* Here we have an event that spans over several days. */
+      rpt = mem_malloc (sizeof (ical_rpt_t));
+      rpt->type = RECUR_DAILY;
+      rpt->freq = 1;
+      rpt->count = 0;
+      rpt->until = end;
       recur_event_new (mesg, note, day, EVENTID, rpt->type, rpt->freq,
                        rpt->until, &exc);
       mem_free (rpt);
@@ -2387,9 +2399,10 @@ ical_read_event (FILE *fdi, FILE *log, unsigned *noevents, unsigned *noapoints,
                       else if (vevent.start == vevent.end)
                         {
                           vevent_type = EVENT;
+                          vevent.end = 0L;
                           ical_store_event (vevent.mesg, vevent.note,
-                                            vevent.start, vevent.rpt,
-                                            vevent.exc);
+                                            vevent.start, vevent.end,
+                                            vevent.rpt, vevent.exc);
                           (*noevents)++;
                           return;
                         }
@@ -2410,8 +2423,14 @@ ical_read_event (FILE *fdi, FILE *log, unsigned *noevents, unsigned *noapoints,
                   (*noapoints)++;
                   break;
                 case EVENT:
+                  if (vevent.start == 0)
+                    {
+                      ical_log (log, ICAL_VEVENT, ITEMLINE, 
+                                _("event date is not defined."));
+                      goto cleanup;
+                    }
                   ical_store_event (vevent.mesg, vevent.note, vevent.start,
-                                    vevent.rpt, vevent.exc);
+                                    vevent.end, vevent.rpt, vevent.exc);
                   (*noevents)++;
                   break;
                 case UNDEFINED:

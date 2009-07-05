@@ -12,6 +12,9 @@
 	* README: Erik Saule added to the list of contributors
 
 	* src/calcurse.1: manpage updated with the -S flag description
+
+	* src/io.c (ical_store_event): Support for events which spans
+	over several days added (thanks Andreas for reporting the bug)
 	
 2009-06-28  Frederic Culot  <frederic@culot.org>
 
