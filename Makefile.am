@@ -1,6 +1,6 @@
-#	$calcurse: Makefile.am,v 1.5 2008/03/30 10:50:29 culot Exp $
+#	$calcurse: Makefile.am,v 1.6 2009/07/05 20:32:29 culot Exp $
 
-AUTOMAKE_OPTIONS= gnu 
+AUTOMAKE_OPTIONS= foreign
 
 ACLOCAL_AMFLAGS = -I m4
 

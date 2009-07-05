@@ -15,6 +15,8 @@
 
 	* src/io.c (ical_store_event): Support for events which spans
 	over several days added (thanks Andreas for reporting the bug)
+
+	* Switch to the BSD license
 	
 2009-06-28  Frederic Culot  <frederic@culot.org>
 
