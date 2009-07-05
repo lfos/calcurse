@@ -1,4 +1,4 @@
-/*	$calcurse: args.c,v 1.51 2009/06/28 09:53:17 culot Exp $	*/
+/*	$calcurse: args.c,v 1.52 2009/07/05 17:23:06 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -30,6 +30,7 @@
 #include <sys/types.h>
 #include <getopt.h>
 #include <time.h>
+#include <regex.h>
 
 #include "i18n.h"
 #include "custom.h"
@@ -55,7 +56,7 @@ usage ()
   char *arg_usage =
     _("Usage: calcurse [-h|-v] [-N] [-an] [-t[num]] [-i<file>] [-x[format]]\n"
       "                [-d <date>|<num>] [-s[date]] [-r[range]]\n"
-      "                [-c<file> | -D<dir>]\n");
+      "                [-c<file> | -D<dir>] [-S<regex>]\n");
   fputs (arg_usage, stdout);
 }
 
@@ -124,6 +125,9 @@ help_arg ()
       "\n  -s[date], --startday[=date]\n"
       "	print events and appointments from [date] and exit.\n"
       "\tIf no [date] is given, the current day is considered.\n"
+      "\n  -S<regex>, --search=<regex>\n"
+      "	search for the given regular expression within events, appointments,\n"
+      "\tand todos description.\n"
       "\n  -t[num], --todo[=num]\n"
       "	print todo list and exit. If the optional number [num] is given,\n"
       "\tthen only todos having a priority equal to [num] will be returned.\n"
@@ -200,9 +204,10 @@ print_notefile (FILE *out, char *filename, int nbtab)
  * then only todo items that have this priority will be displayed.
  * If priority is < 0, all todos will be displayed.
  * If priority == 0, only completed tasks will be displayed.
+ * If regex is not null, only the matching todos are printed.
  */
 static void
-todo_arg (int priority, int print_note)
+todo_arg (int priority, int print_note, regex_t *regex)
 {
   struct todo_s *i;
   int title = 1;
@@ -231,6 +236,9 @@ todo_arg (int priority, int print_note)
   
   for (i = todolist; i != 0; i = i->next)
     {
+      if (regex && regexec (regex, i->mesg, 0, 0, 0) != 0)
+        continue;
+      
       if (i->id < 0) /* completed task */
         {
           if (priority == 0)
@@ -303,9 +311,11 @@ arg_print_date (long date, conf_t *conf)
  * Print appointments for given day and exit.
  * If no day is given, the given date is used.
  * If there is also no date given, current date is considered.
+ * If regex is not null, only the matching appointments or events are printed.
  */
 static int
-app_arg (int add_line, date_t *day, long date, int print_note, conf_t *conf)
+app_arg (int add_line, date_t *day, long date, int print_note, conf_t *conf,
+         regex_t *regex)
 {
   struct recur_event_s *re;
   struct event_s *j;
@@ -332,6 +342,9 @@ app_arg (int add_line, date_t *day, long date, int print_note, conf_t *conf)
       if (recur_item_inday (re->day, re->exc, re->rpt->type, re->rpt->freq,
                             re->rpt->until, today))
 	{
+          if (regex && regexec (regex, re->mesg, 0, 0, 0) != 0)
+            continue;
+          
 	  app_found = 1;
 	  if (add_line)
 	    {
@@ -355,6 +368,9 @@ app_arg (int add_line, date_t *day, long date, int print_note, conf_t *conf)
     {
       if (event_inday (j, today))
 	{
+          if (regex && regexec (regex, j->mesg, 0, 0, 0) != 0)
+            continue;
+          
 	  app_found = 1;
 	  if (add_line)
 	    {
@@ -381,6 +397,9 @@ app_arg (int add_line, date_t *day, long date, int print_note, conf_t *conf)
       if (recur_item_inday (ra->start, ra->exc, ra->rpt->type, ra->rpt->freq,
                             ra->rpt->until, today))
 	{
+          if (regex && regexec (regex, ra->mesg, 0, 0, 0) != 0)
+            continue;
+          
 	  app_found = 1;
 	  if (add_line)
 	    {
@@ -412,6 +431,9 @@ app_arg (int add_line, date_t *day, long date, int print_note, conf_t *conf)
     {
       if (apoint_inday (i, today))
 	{
+          if (regex && regexec (regex, i->mesg, 0, 0, 0) != 0)
+            continue;
+          
 	  app_found = 1;
 	  if (add_line)
 	    {
@@ -456,7 +478,7 @@ more_info (void)
  */
 static void
 display_app (struct tm *t, int numdays, int add_line, int print_note,
-             conf_t *conf)
+             conf_t *conf, regex_t *regex)
 {
   int i, app_found;
   date_t day;
@@ -466,7 +488,7 @@ display_app (struct tm *t, int numdays, int add_line, int print_note,
       day.dd = t->tm_mday;
       day.mm = t->tm_mon + 1;
       day.yyyy = t->tm_year + 1900;
-      app_found = app_arg (add_line, &day, 0, print_note, conf);
+      app_found = app_arg (add_line, &day, 0, print_note, conf, regex);
       if (app_found)
         add_line = 1;
       t->tm_mday++;
@@ -479,7 +501,8 @@ display_app (struct tm *t, int numdays, int add_line, int print_note,
  * days.
  */
 static void
-date_arg (char *ddate, int add_line, int print_note, conf_t *conf)
+date_arg (char *ddate, int add_line, int print_note, conf_t *conf,
+          regex_t *regex)
 {
   int i;
   date_t day;
@@ -510,14 +533,14 @@ date_arg (char *ddate, int add_line, int print_note, conf_t *conf)
        */
       timer = time (NULL);
       t = *localtime (&timer);
-      display_app (&t, numdays, add_line, print_note, conf);
+      display_app (&t, numdays, add_line, print_note, conf, regex);
     }
   else
     {				/* a date was entered */
       if (parse_date (ddate, conf->input_datefmt, (int *)&day.yyyy,
                       (int *)&day.mm, (int *)&day.dd))
 	{
-	  app_found = app_arg (add_line, &day, 0, print_note, conf);
+	  app_found = app_arg (add_line, &day, 0, print_note, conf, regex);
 	}
       else
 	{
@@ -542,7 +565,7 @@ date_arg (char *ddate, int add_line, int print_note, conf_t *conf)
  */
 static void
 date_arg_extended (char *startday, char *range, int add_line, int print_note,
-                   conf_t *conf)
+                   conf_t *conf, regex_t *regex)
 {
   int i, numdays = 1, error = 0, arg_len = 0;
   static struct tm t;
@@ -580,7 +603,7 @@ date_arg_extended (char *startday, char *range, int add_line, int print_note,
     }
   if (!error)
     {
-      display_app (&t, numdays, add_line, print_note, conf);
+      display_app (&t, numdays, add_line, print_note, conf, regex);
     }
   else
     {
@@ -616,6 +639,7 @@ parse_args (int argc, char **argv, conf_t *conf)
   int Nflag = 0;    /* -N: also print note content with apps and todos */
   int rflag = 0;    /* -r: specify the range of days to consider */
   int sflag = 0;    /* -s: specify the first day to consider */
+  int Sflag = 0;    /* -S: specify a regex to search for */
   int tflag = 0;    /* -t: print todo list */
   int vflag = 0;    /* -v: print version number */
   int xflag = 0;    /* -x: export data */
@@ -623,8 +647,9 @@ parse_args (int argc, char **argv, conf_t *conf)
   int tnum = 0, xfmt = 0, non_interactive = 0, multiple_flag = 0, load_data = 0;
   char *ddate = "", *cfile = NULL, *range = NULL, *startday = NULL;
   char *datadir = NULL, *ifile = NULL;
+  regex_t reg, *preg = NULL;
 
-  static char *optstr = "hvnNax::t::d:c:r::s::D:i:";
+  static char *optstr = "hvnNax::t::d:c:r::s::S:D:i:";
 
   struct option longopts[] = {
     {"appointment", no_argument, NULL, 'a'},
@@ -637,6 +662,7 @@ parse_args (int argc, char **argv, conf_t *conf)
     {"note", no_argument, NULL, 'N'},
     {"range", optional_argument, NULL, 'r'},
     {"startday", optional_argument, NULL, 's'},
+    {"search", required_argument, NULL, 'S'},
     {"todo", optional_argument, NULL, 't'},
     {"version", no_argument, NULL, 'v'},
     {"export", optional_argument, NULL, 'x'},
@@ -696,6 +722,14 @@ parse_args (int argc, char **argv, conf_t *conf)
           multiple_flag++;
           load_data++;
           startday = optarg;
+          break;
+        case 'S':
+          EXIT_IF (Sflag > 0,
+                   _("Can not handle more than one regular expression."));
+          Sflag = 1;
+          if (regcomp (&reg, optarg, REG_EXTENDED))
+            EXIT (_("Could not compile regular expression."));
+          preg = &reg;
           break;
 	case 't':
 	  tflag = 1;
@@ -768,6 +802,14 @@ parse_args (int argc, char **argv, conf_t *conf)
       usage_try ();
       return EXIT_FAILURE;
     }
+  else if (Sflag && !(aflag || dflag || rflag || sflag || tflag))
+    {
+      fputs (_("Option '-S' must be used with either '-d', '-r', '-s', "
+               "'-a' or '-t'\n"), stderr);
+      usage ();
+      usage_try ();
+      return EXIT_FAILURE;
+    }
   else
     {
       if (unknown_flag)
@@ -808,7 +850,7 @@ parse_args (int argc, char **argv, conf_t *conf)
 	  if (tflag)
 	    {
               io_load_todo ();              
-	      todo_arg (tnum, Nflag);
+	      todo_arg (tnum, Nflag, preg);
 	      non_interactive = 1;
 	    }
 	  if (nflag)
@@ -821,9 +863,10 @@ parse_args (int argc, char **argv, conf_t *conf)
 	    {
               io_load_app ();
               if (dflag)
-                date_arg (ddate, add_line, Nflag, conf);
+                date_arg (ddate, add_line, Nflag, conf, preg);
               if (rflag || sflag)
-                date_arg_extended (startday, range, add_line, Nflag, conf);
+                date_arg_extended (startday, range, add_line, Nflag, conf,
+                                   preg);
 	      non_interactive = 1;
 	    }
 	  else if (aflag)
@@ -834,7 +877,7 @@ parse_args (int argc, char **argv, conf_t *conf)
               custom_load_conf (conf, 0); /* To get output date format. */
               io_load_app ();
 	      day.dd = day.mm = day.yyyy = 0;
-	      app_found = app_arg (add_line, &day, 0, Nflag, conf);
+	      app_found = app_arg (add_line, &day, 0, Nflag, conf, preg);
 	      non_interactive = 1;
 	    }
 	}
@@ -844,5 +887,9 @@ parse_args (int argc, char **argv, conf_t *conf)
           io_init (cfile, datadir);
 	}
     }
+
+  if (preg)
+    regfree (preg);
+  
   return non_interactive;  
 }

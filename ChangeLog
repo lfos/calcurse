@@ -2,6 +2,14 @@
 
 	* src/utils.c (getstring): prevent character deletion before the
 	beginning of the string (thanks Martin for reporting the bug)
+
+	* configure.ac: switched to 2.6
+	Add a check for regex.h header
+
+	* src/args.c: support for search based on regex added (many thanks
+	to Erik for providing the patch)
+
+	* README: Erik Saule added to the list of contributors
 	
 2009-06-28  Frederic Culot  <frederic@culot.org>
 
