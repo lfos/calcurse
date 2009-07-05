@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.71 2009/06/23 08:52:07 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.72 2009/07/05 16:28:04 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -327,7 +327,7 @@ getstring (WINDOW *win, char *str, int l, int x, int y)
 	case 330:
 	case 127:
 	case CTRL ('H'):
-	  if (len > 0)
+	  if (len > 0 && newpos > x)
 	    {
 	      --newpos;
 	      --len;
