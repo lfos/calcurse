@@ -1,10 +1,10 @@
-#	$calcurse: configure.ac,v 1.31 2009/01/24 17:58:40 culot Exp $
+#	$calcurse: configure.ac,v 1.32 2009/07/05 17:16:15 culot Exp $
 
 #-------------------------------------------------------------------------------
 #                                                                           Init
 #-------------------------------------------------------------------------------
 AC_PREREQ(2.59)
-AC_INIT(calcurse, 2.5, frederic@culot.org)
+AC_INIT(calcurse, 2.6, frederic@culot.org)
 AM_INIT_AUTOMAKE
 AM_GNU_GETTEXT([external])
 AC_CONFIG_SRCDIR([src/calcurse.c])
@@ -23,7 +23,7 @@ AC_PROG_CC
 AC_HEADER_STDC
 AC_CHECK_HEADERS([ctype.h getopt.h locale.h math.h signal.h stdbool.h stdio.h  \
 		  stdlib.h string.h sys/stat.h sys/types.h sys/wait.h time.h   \
-		  unistd.h errno.h limits.h])
+		  unistd.h errno.h limits.h regex.h])
 #-------------------------------------------------------------------------------
 #                                                         Checks for system libs
 #-------------------------------------------------------------------------------
