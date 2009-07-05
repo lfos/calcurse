@@ -1,23 +1,35 @@
-/*	$calcurse: help.c,v 1.39 2009/06/27 09:20:39 culot Exp $	*/
+/*	$calcurse: help.c,v 1.40 2009/07/05 20:33:19 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
- * Copyright (c) 2004-2009 Frederic Culot
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * Copyright (c) 2004-2009 Frederic Culot <frederic@culot.org>
+ * All rights reserved.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ *      - Redistributions of source code must retain the above
+ *        copyright notice, this list of conditions and the
+ *        following disclaimer.
+ *
+ *      - Redistributions in binary form must reproduce the above
+ *        copyright notice, this list of conditions and the
+ *        following disclaimer in the documentation and/or other
+ *        materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * Send your feedback or comments to : calcurse@culot.org
  * Calcurse home page : http://culot.org/calcurse
@@ -699,16 +711,21 @@ help_screen (void)
 
   hscr[HELP_CREDITS].title = _("Calcurse - text-based organizer");
   (void)snprintf (hscr[HELP_CREDITS].text, HELPTEXTSIZ,
-    _("\nCopyright (c) 2004-2008 Frederic Culot\n"
+    _("\nCopyright (c) 2004-2009 Frederic Culot\n"
+      "All rights reserved.\n"
       "\n"
-      "This program is free software; you can redistribute it and/or modify\n"
-      "it under the terms of the GNU General Public License as published by\n"
-      "the Free Software Foundation; either version 2 of the License, or\n"
-      "(at your option) any later version.\n"
-      "\nThis program is distributed in the hope that it will be useful,\n"
-      "but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
-      "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
-      "GNU General Public License for more details.\n"
+      "Redistribution and use in source and binary forms, with or without\n"
+      "modification, are permitted provided that the following conditions\n"
+      "are met:\n"
+      "\n"
+      "\t- Redistributions of source code must retain the above\n"
+      "\t  copyright notice, this list of conditions and the\n"
+      "\t  following disclaimer.\n"
+      "\n"
+      "\t- Redistributions in binary form must reproduce the above\n"
+      "\t  copyright notice, this list of conditions and the\n"
+      "\t  following disclaimer in the documentation and/or other\n"
+      "\t  materials provided with the distribution.\n"
       "\n\n"
       "Send your feedback or comments to : calcurse@culot.org\n"
       "Calcurse home page : http://culot.org/calcurse"));

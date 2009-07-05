@@ -1,6 +1,6 @@
-#	$calcurse: Makefile.am,v 1.8 2008/12/28 13:13:59 culot Exp $
+#	$calcurse: Makefile.am,v 1.9 2009/07/05 20:33:13 culot Exp $
 
-AUTOMAKE_OPTIONS= gnu 
+AUTOMAKE_OPTIONS= foreign
 
 bin_PROGRAMS= calcurse
 
