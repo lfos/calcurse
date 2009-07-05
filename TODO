@@ -16,7 +16,6 @@ High
 
 Average
 -------
-  o  Add searching capabilities with support for regex
   o  Implement a daemon to notify user of upcoming appointments even when
      calcurse is not running
   o  Add support for CalDAV protocol (rfc4791)

@@ -17,6 +17,8 @@
 	over several days added (thanks Andreas for reporting the bug)
 
 	* Switch to the BSD license
+
+	* TODO: support for regex-based searches added
 	
 2009-06-28  Frederic Culot  <frederic@culot.org>
 
