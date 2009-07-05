@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.72 2009/07/05 16:28:04 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.73 2009/07/05 18:59:33 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -819,7 +819,7 @@ new_tempfile (const char *prefix, int trailing_len)
 	  unlink (fullname);
 	  close (fd);
 	}
-      ERROR_MSG (_("temporary file could not be created"));
+      ERROR_MSG (_("temporary file \"%s\" could not be created"), fullname);
       return (char *)0;
     }
   fclose (file);
