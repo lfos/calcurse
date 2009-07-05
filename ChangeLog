@@ -10,6 +10,8 @@
 	to Erik for providing the patch)
 
 	* README: Erik Saule added to the list of contributors
+
+	* src/calcurse.1: manpage updated with the -S flag description
 	
 2009-06-28  Frederic Culot  <frederic@culot.org>
 

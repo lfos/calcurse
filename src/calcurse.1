@@ -1,4 +1,4 @@
-.\" 	$calcurse: calcurse.1,v 1.14 2009/06/27 09:37:58 culot Exp $
+.\" 	$calcurse: calcurse.1,v 1.15 2009/07/05 17:55:46 culot Exp $
 .\"
 .\" Copyright (c) 2004-2009 Frederic Culot
 .\"
@@ -18,7 +18,7 @@
 .\" Boston, MA 02111-1307, USA.
 .\"
 .fam C
-.TH CALCURSE 1 "June 27, 2009" "Version 2.6" "Calcurse Manual"
+.TH CALCURSE 1 "July 05, 2009" "Version 2.6" "Calcurse Manual"
 .SH NAME
 Calcurse \- text-based organizer
 .SH SYNOPSIS
@@ -30,6 +30,7 @@ Calcurse \- text-based organizer
 [\fB-d\fP <\fIdate\fP>|<\fInum\fP>]
 .br
          [\fB-s\fP[\fIdate\fP]] [\fB-r\fP[\fIrange\fP]]
+[\fB-S\fP <\fIregex\fP>]
 .br
          
 .SH DESCRIPTION
@@ -121,6 +122,11 @@ and exit. If no \fInum\fP is given, a range of 1 day is considered.
 \fB-s\fP[date], \fB--startday\fP[=date]
 Print events and appointments from \fIdate\fP and exit.
 If no \fIdate\fP is given, the current day is considered.
+.TP
+\fB-S\fP<regex>, \fB--search\fP=<regex>
+When used with the '-a', '-d', '-r', '-s', or '-t' flag,
+print only the items having a description that matches the given
+regular expression.
 .TP
 \fB-t\fP[num], \fB--todo\fP[=num]
 Print the 'todo' list and exit. If the optional number \fInum\fP is given,
