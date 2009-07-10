@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <!--
 /*
- *	$calcurse: manual_en.html,v 1.25 2009/07/05 20:32:48 culot Exp $
+ *	$calcurse: manual_en.html,v 1.26 2009/07/10 19:49:07 culot Exp $
  *
  * Copyright (c) 2004-2009 Frederic Culot <frederic@culot.org>
  * All rights reserved.
@@ -351,6 +351,12 @@ All of the commands are documented within an online help system.
             <dd>
             Print  events  and appointments from date and exit.
             If no date is given, the current day is considered.
+            </dd>
+            <dt><code>-S&lt;regex&gt;, --search=&lt;regex&gt;</code></dt>
+            <dd>
+            When used with the '-a', '-d', '-r', '-s', or '-t' flag,
+            print only the items having a description that matches the given
+            regular expression.
             </dd>
 	    <dt><code>-t[num], --todo[=num]</code></dt>
 	    <dd>
@@ -1180,7 +1186,7 @@ msgid ""
 	recur_item_inday() function, and for implementing the date format configuration 
         options</li>
 	<li>Jeremy Roon for the dutch translation</li>
-	<li>Erik Saule for its patch implementing the '-N', '-s', '-r' and '-D' flags</li>
+	<li>Erik Saule for its patch implementing the '-N', '-s', '-S', '-r' and '-D' flags</li>
 	<li>people who write softwares I like and which inspired me, 
 	especially :
 		<ul>
@@ -1197,7 +1203,7 @@ msgid ""
 
 <div class="footer">
 	Copyright &copy; 2004-2009 Frédéric Culot<br>
-	Calcurse version 2.6 - Last change: June 27, 2009<br>
+	Calcurse version 2.6 - Last change: July 10, 2009<br>
 </div>
 </div>
 
