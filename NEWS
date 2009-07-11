@@ -1,3 +1,43 @@
+[11 Jul 2009]
+Version 2.6
+- New features:
+  * calcurse is now distributed under a 2-clause BSD-style license
+
+  * todos can now be flagged as completed
+
+  * support for regex-based searches added
+
+  * locking mechanism implemented to prevent having two calcurse instances
+    running at the same time
+
+  * inside calendar panel, day names and selected date are now in the same
+    colour as user's theme
+
+- Bugfixes:
+  * missing 'T' letter added in the DURATION field for ical export (reported
+    by cuz)
+
+  * ical events which spans over several days are now imported correctly
+    (reported by Andreas Kalex)
+
+  * fixed gcc's `format-security' issue (reported by Francois Boulogne)
+
+  * no more freeze when changing color within the configuration screen on
+    OpenBSD
+
+  * fixed a memory leak caused by a wrong use of the structures related to the
+    notification bar
+
+  * todo items are not displayed twice if -d and -t flags are both given
+    (reported by Timo Schmiade)
+
+  * it is now possible to export data from a given appointment file even if
+    the user does not have any home directory (reported by Ben Zanin)
+
+  * prevent character deletion before the beginning of the string within the
+    online editor (reported by Martin Rehak)
+
+
 [25 Jan 2009]
 Version 2.5
 - New features:
