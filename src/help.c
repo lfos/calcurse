@@ -1,4 +1,4 @@
-/*	$calcurse: help.c,v 1.40 2009/07/05 20:33:19 culot Exp $	*/
+/*	$calcurse: help.c,v 1.41 2009/07/12 17:55:14 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -165,7 +165,7 @@ help_wins_init (scrollwin_t *hwin, int x, int y, int h, int w)
   hwin->pad.h = BUFSIZ;
   hwin->pad.w = hwin->win.w - 2 * PADOFFSET + 1;
 
-  (void)snprintf (hwin->label, BUFSIZ, _("Calcurse %s | help"), VERSION);
+  (void)snprintf (hwin->label, BUFSIZ, _("Calcurse help"));
   wins_scrollwin_init (hwin);
   wins_show (hwin->win.p, hwin->label);
 }

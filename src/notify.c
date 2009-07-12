@@ -1,4 +1,4 @@
-/*	$calcurse: notify.c,v 1.39 2009/07/05 20:33:22 culot Exp $	*/
+/*	$calcurse: notify.c,v 1.40 2009/07/12 17:55:14 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -568,8 +568,7 @@ notify_config_bar (void)
   int ch = 0, change_win = 1;
 
   buf = mem_malloc (BUFSIZ);
-  (void)snprintf (label, BUFSIZ, _("CalCurse %s | notify-bar options"),
-                  VERSION);
+  (void)snprintf (label, BUFSIZ, _("notify-bar options"));
   
   conf_win.p = 0;
   custom_confwin_init (&conf_win, label);

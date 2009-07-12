@@ -1,4 +1,4 @@
-/*	$calcurse: custom.c,v 1.40 2009/07/12 16:22:00 culot Exp $	*/
+/*	$calcurse: custom.c,v 1.41 2009/07/12 17:55:13 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -448,8 +448,7 @@ display_layout_config (window_t *lwin, int mark, int cursor, int need_reset)
     {
       char label[BUFSIZ];
       
-      (void)snprintf (label, BUFSIZ, _("CalCurse %s | layout configuration"),
-                      VERSION);
+      (void)snprintf (label, BUFSIZ, _("layout configuration"));
       custom_confwin_init (lwin, label);
     }
 
@@ -661,7 +660,7 @@ display_color_config (window_t *cwin, int *mark_fore, int *mark_back,
 
   if (need_reset)
     {
-      (void)snprintf (label, BUFSIZ, _("CalCurse %s | color theme"), VERSION);
+      (void)snprintf (label, BUFSIZ, _("color theme"));
       custom_confwin_init (cwin, label);
     }
 
@@ -1003,8 +1002,7 @@ custom_general_config (conf_t *conf)
 
   clear ();
   conf_set_scrsize (&cwin);
-  (void)snprintf (cwin.label, BUFSIZ, _("CalCurse %s | general options"),
-                  VERSION);
+  (void)snprintf (cwin.label, BUFSIZ, _("general options"));
   wins_scrollwin_init (&cwin);
   wins_show (cwin.win.p, cwin.label);
   status_mesg (number_str, keys);
@@ -1203,8 +1201,7 @@ custom_keys_config (void)
   clear ();
   conf_set_scrsize (&kwin);
   nbdisplayed = (kwin.win.h - LABELLINES) / LINESPERKEY;
-  (void)snprintf (kwin.label, BUFSIZ, _("CalCurse %s | keys configuration"),
-                  VERSION);
+  (void)snprintf (kwin.label, BUFSIZ, _("keys configuration"));
   wins_scrollwin_init (&kwin);
   wins_show (kwin.win.p, kwin.label);
   custom_keys_config_bar ();
