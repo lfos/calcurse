@@ -12,6 +12,9 @@
 
 	* src/args.c (parse_args): fixed a bug that prevented the todo
 	items from being imported or exported
+
+	* src/calcurse.c: avoid a FATAL ERROR if user directory	does not
+	exist (thanks Antoine for reporting it)
 	
 2009-07-11  Frederic Culot  <frederic@culot.org>
 

@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.82 2009/07/12 16:21:59 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.83 2009/07/12 20:37:41 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -101,7 +101,10 @@ main (int argc, char **argv)
   if (non_interactive)
     exit_calcurse (EXIT_SUCCESS);
   else
-    io_set_lock ();
+    {
+      no_data_file = io_check_data_files ();
+      io_set_lock ();
+    }
   
   /* Begin of interactive mode with ncurses interface. */
   sigs_init (&sigact);		/* signal handling init */
@@ -158,7 +161,6 @@ main (int argc, char **argv)
    * configuration (the display is then updated), and then
    * the todo list, appointments and events.
    */
-  no_data_file = io_check_data_files ();
   custom_load_conf (&conf, background);
   wins_erase_status_bar ();
   io_load_keys (conf.pager);
