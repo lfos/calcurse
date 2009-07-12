@@ -1,9 +1,9 @@
-/*	$calcurse: mem.h,v 1.2 2009/07/05 20:33:22 culot Exp $	*/
+/*	$calcurse: mem.h,v 1.3 2009/07/12 17:48:13 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
  *
- * Copyright (c) 2008 Frederic Culot <frederic@culot.org>
+ * Copyright (c) 2008-2009 Frederic Culot <frederic@culot.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -43,32 +43,37 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H */
 
-#ifdef CALCURSE_MEMORY_DEBUG
-
-#include <stdlib.h>
-
 #include "utils.h"
 
-#define mem_malloc(s)      dbg_malloc ((s), __FILE_POS__)
-#define mem_calloc(n, s)   dbg_calloc ((n), (s), __FILE_POS__)
-#define mem_realloc(p, s)  dbg_realloc ((p), (s), __FILE_POS__)
-#define mem_strdup(s)      dbg_strdup ((s), __FILE_POS__)
-#define mem_free(p)        dbg_free ((p), __FILE_POS__)
+
+void  *xmalloc (size_t);
+void  *xcalloc (size_t, size_t);
+void  *xrealloc (void *, size_t, size_t);
+char  *xstrdup (const char *);
+void   xfree (void *);
+
+#ifdef CALCURSE_MEMORY_DEBUG
+
+#define mem_malloc(s)         dbg_malloc ((s), __FILE_POS__)
+#define mem_calloc(n, s)      dbg_calloc ((n), (s), __FILE_POS__)
+#define mem_realloc(p, n, s)  dbg_realloc ((p), (n), (s), __FILE_POS__)
+#define mem_strdup(s)         dbg_strdup ((s), __FILE_POS__)
+#define mem_free(p)           dbg_free ((p), __FILE_POS__)
 
 void  *dbg_malloc (size_t, const char *);
 void  *dbg_calloc (size_t, size_t, const char *);
-void  *dbg_realloc (void *, size_t, const char *);
+void  *dbg_realloc (void *, size_t, size_t, const char *);
 char  *dbg_strdup (const char *, const char *);
 void   dbg_free (void *, const char *);
 void   mem_stats (void);
 
 #else /* !CALCURSE_MEMORY_DEBUG */
 
-#define mem_malloc(s)      malloc ((s))
-#define mem_calloc(n, s)   calloc ((n), (s))
-#define mem_realloc(p, s)  realloc ((p), (s))
-#define mem_strdup(s)      strdup ((s))
-#define mem_free(p)        free ((p))
+#define mem_malloc(s)         xmalloc ((s))
+#define mem_calloc(n, s)      xcalloc ((n), (s))
+#define mem_realloc(p, n, s)  xrealloc ((p), (n), (s))
+#define mem_strdup(s)         xstrdup ((s))
+#define mem_free(p)           xfree ((p))
 #define mem_stats()        
 
 #endif /* CALCURSE_MEMORY_DEBUG */

@@ -2,6 +2,8 @@
 
 	* configure.ac
 	* src/var.h: sdtbool header removed, unsigned type use instead
+
+	* mem.c (xmalloc, xcalloc, xrealloc, xstrdup, xfree): new functions
 	
 2009-07-11  Frederic Culot  <frederic@culot.org>
 

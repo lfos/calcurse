@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.75 2009/07/12 16:22:01 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.76 2009/07/12 17:48:14 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -431,7 +431,7 @@ updatestring (WINDOW *win, char **str, int x, int y)
   if (!escape)
     {
       len = strlen (newstr) + 1;
-      *str = mem_realloc (*str, len);
+      *str = mem_realloc (*str, len, 1);
       EXIT_IF (*str == 0, _("out of memory"));
       (void) memcpy (*str, newstr, len);
     }

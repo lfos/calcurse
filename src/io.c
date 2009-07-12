@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.67 2009/07/12 16:22:00 culot Exp $	*/
+/*	$calcurse: io.c,v 1.68 2009/07/12 17:48:13 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -1825,7 +1825,7 @@ ical_unfold_content (FILE *fd, char *line, unsigned *lineno)
                   return NULL;
                 }
               newsize = strlen (content) + strlen (tmpline) + 1;
-              if ((rline = mem_realloc (content, newsize)) == NULL)
+              if ((rline = mem_realloc (content, newsize, 1)) == NULL)
                 {
                   mem_free (content);
                   mem_free (tmpline);

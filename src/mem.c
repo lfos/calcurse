@@ -1,4 +1,4 @@
-/*	$calcurse: mem.c,v 1.4 2009/07/05 20:33:21 culot Exp $	*/
+/*	$calcurse: mem.c,v 1.5 2009/07/12 17:48:13 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -39,6 +39,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdint.h>
+#include <stdlib.h>
 
 #include "i18n.h"
 #include "utils.h"
@@ -71,7 +72,7 @@ typedef struct {
 static mem_stats_t mstats;
 
 
-unsigned
+static unsigned
 stats_add_blk (size_t size, const char *pos)
 {
   struct mem_blk_s *o, **i;
@@ -94,7 +95,7 @@ stats_add_blk (size_t size, const char *pos)
   return o->id;
 }
 
-void
+static void
 stats_del_blk (unsigned id)
 {
   struct mem_blk_s *o, **i;
@@ -118,16 +119,74 @@ stats_del_blk (unsigned id)
 }
 
 void *
+xmalloc (size_t size)
+{
+  void *p;
+  
+  EXIT_IF (size == 0, _("xmalloc: zero size"));
+  p = malloc (size);
+  EXIT_IF (p == 0, _("xmalloc: out of memory"));
+
+  return p;
+}
+
+void *
+xcalloc (size_t nmemb, size_t size)
+{
+  void *p;
+
+  EXIT_IF (nmemb == 0 || size == 0, _("xcalloc: zero size"));
+  EXIT_IF (SIZE_MAX / nmemb < size, _("xcalloc: overflow"));
+  p = calloc (nmemb, size);
+  EXIT_IF (p == 0, _("xcalloc: out of memory"));
+
+  return p;
+}
+
+void *
+xrealloc (void *ptr, size_t nmemb, size_t size)
+{
+  void *new_ptr;
+  size_t new_size;
+
+  new_size = nmemb * size;
+  EXIT_IF (new_size == 0, _("xrealloc: zero size"));
+  EXIT_IF (SIZE_MAX / nmemb < size, _("xrealloc: overflow"));
+  new_ptr = realloc (ptr, new_size);
+  EXIT_IF (new_ptr == 0, _("xrealloc: out of memory"));
+
+  return new_ptr;
+}
+
+char *
+xstrdup (const char *str)
+{
+  size_t len;
+  char *cp;
+
+  len = strlen (str) + 1;
+  cp = xmalloc (len);
+
+  return strncpy (cp, str, len);
+}
+
+void
+xfree (void *p)
+{
+  EXIT_IF (p == 0, _("xfree: null pointer"));
+  free (p);
+}
+
+void *
 dbg_malloc (size_t size, const char *pos)
 {
   unsigned *buf;
   
-  if (size == 0)
+   if (size == 0)
     return (void *)0;
   
   size = EXTRA_SPACE + (size + sizeof (unsigned) - 1) / sizeof (unsigned);
-  if ((buf = (unsigned *)malloc (size * sizeof (unsigned))) == 0)
-    return (void *)0;
+  buf = xmalloc (size * sizeof (unsigned));
   
   buf[BLK_STATE] = MAGIC_ALLOC;             /* state of the block */
   buf[BLK_SIZE] = size;                     /* size of the block */
@@ -159,18 +218,24 @@ dbg_calloc (size_t nmemb, size_t size, const char *pos)
 }
 
 void *
-dbg_realloc (void *ptr, size_t size, const char *pos)
+dbg_realloc (void *ptr, size_t nmemb, size_t size, const char *pos)
 {
-  unsigned *buf, old_size, cpy_size;
+  unsigned *buf, old_size, new_size, cpy_size;
   
-  if (size == 0 || ptr == 0)
+  if (ptr == 0)
+    return (void *)0;
+
+  new_size = nmemb *size;
+  if (new_size == 0)
     return (void *)0;
   
-  if ((buf = dbg_malloc (size, pos)) == 0)
+  EXIT_IF (nmemb > SIZE_MAX / size, _("overflow at %s"), pos);
+  
+  if ((buf = dbg_malloc (new_size, pos)) == 0)
     return (void *)0;
 
   old_size = *((unsigned *)ptr - EXTRA_SPACE_START + BLK_SIZE);
-  cpy_size = (old_size > size) ? size : old_size;
+  cpy_size = (old_size > new_size) ? new_size : old_size;
   bcopy (ptr, buf, cpy_size);
   
   mem_free (ptr);
@@ -199,8 +264,7 @@ dbg_free (void *ptr, const char *pos)
 {
   unsigned *buf, size;
 
-  if (ptr == 0)
-    return;
+  EXIT_IF (ptr == 0, _("dbg_free: null pointer at %s"), pos);
 
   buf = (unsigned *)ptr - EXTRA_SPACE_START;
   size = buf[BLK_SIZE];
@@ -217,7 +281,7 @@ dbg_free (void *ptr, const char *pos)
 
   stats_del_blk (buf[BLK_ID]);
   
-  free (buf);
+  xfree (buf);
   mstats.nfree += size;
 }
 
