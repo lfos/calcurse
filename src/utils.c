@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.74 2009/07/05 20:33:25 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.75 2009/07/12 16:22:01 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -690,7 +690,7 @@ check_time (char *string)
  */
 void
 draw_scrollbar (WINDOW *win, int y, int x, int length,
-		int bar_top, int bar_bottom, bool hilt)
+		int bar_top, int bar_bottom, unsigned hilt)
 {
   mvwvline (win, bar_top, x, ACS_VLINE, bar_bottom - bar_top);
   if (hilt)
@@ -779,17 +779,17 @@ mystrtol (const char *str)
 
 /* Print the given option value with appropriate color. */
 void
-print_bool_option_incolor (WINDOW *win, bool option, int pos_y, int pos_x)
+print_bool_option_incolor (WINDOW *win, unsigned option, int pos_y, int pos_x)
 {
   int color = 0;
   char option_value[BUFSIZ] = "";
 
-  if (option == true)
+  if (option == 1)
     {
       color = ATTR_TRUE;
       strncpy (option_value, _("yes"), BUFSIZ);
     }
-  else if (option == false)
+  else if (option == 0)
     {
       color = ATTR_FALSE;
       strncpy (option_value, _("no"), BUFSIZ);

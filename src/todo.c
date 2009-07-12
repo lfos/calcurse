@@ -1,4 +1,4 @@
-/*	$calcurse: todo.c,v 1.33 2009/07/05 20:33:24 culot Exp $	*/
+/*	$calcurse: todo.c,v 1.34 2009/07/12 16:22:01 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -277,7 +277,7 @@ todo_delete (conf_t *conf)
       _("This item has a note attached to it. "
 	"Delete (t)odo or just its (n)ote ?");
   char *erase_choice = _("[t/n] ");
-  bool go_for_todo_del = false;
+  unsigned go_for_todo_del = 0;
   int answer, has_note;
 
   if (conf->confirm_delete)
@@ -286,7 +286,7 @@ todo_delete (conf_t *conf)
       answer = wgetch (win[STA].p);
       if ((answer == 'y') && (todos > 0))
 	{
-	  go_for_todo_del = true;
+	  go_for_todo_del = 1;
 	}
       else
 	{
@@ -295,9 +295,9 @@ todo_delete (conf_t *conf)
 	}
     }
   else if (todos > 0)
-    go_for_todo_del = true;
+    go_for_todo_del = 1;
 
-  if (go_for_todo_del == false)
+  if (go_for_todo_del == 0)
     {
       wins_erase_status_bar ();
       return;
@@ -483,7 +483,7 @@ todo_update_panel (int which_pan)
       float ratio = ((float) max_items) / ((float) todos);
       int sbar_length = (int) (ratio * (max_items + 1));
       int highend = (int) (ratio * first);
-      bool hilt_bar = (which_pan == TOD) ? true : false;
+      unsigned hilt_bar = (which_pan == TOD) ? 1 : 0;
       int sbar_top = highend + title_lines;
 
       if ((sbar_top + sbar_length) > win[TOD].h - 1)

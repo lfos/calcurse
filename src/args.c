@@ -1,4 +1,4 @@
-/*	$calcurse: args.c,v 1.53 2009/07/05 20:33:14 culot Exp $	*/
+/*	$calcurse: args.c,v 1.54 2009/07/12 16:21:58 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -334,7 +334,7 @@ app_arg (int add_line, date_t *day, long date, int print_note, conf_t *conf,
   recur_apoint_llist_node_t *ra;
   apoint_llist_node_t *i;
   long today;
-  bool print_date = true;
+  unsigned print_date = 1;
   int app_found = 0;
   char apoint_start_time[100];
   char apoint_end_time[100];
@@ -366,7 +366,7 @@ app_arg (int add_line, date_t *day, long date, int print_note, conf_t *conf,
 	  if (print_date)
 	    {
 	      arg_print_date (today, conf);
-	      print_date = false;
+	      print_date = 0;
 	    }
 	  fputs (" * ", stdout);
 	  fputs (re->mesg, stdout);
@@ -392,7 +392,7 @@ app_arg (int add_line, date_t *day, long date, int print_note, conf_t *conf,
 	  if (print_date)
 	    {
 	      arg_print_date (today, conf);
-	      print_date = false;
+	      print_date = 0;
 	    }
 	  fputs (" * ", stdout);
 	  fputs (j->mesg, stdout);
@@ -421,7 +421,7 @@ app_arg (int add_line, date_t *day, long date, int print_note, conf_t *conf,
 	  if (print_date)
 	    {
 	      arg_print_date (today, conf);
-	      print_date = false;
+	      print_date = 0;
 	    }
 	  apoint_sec2str (apoint_recur_s2apoint_s (ra), RECUR_APPT, today,
                           apoint_start_time, apoint_end_time);
@@ -455,7 +455,7 @@ app_arg (int add_line, date_t *day, long date, int print_note, conf_t *conf,
 	  if (print_date)
 	    {
 	      arg_print_date (today, conf);
-	      print_date = false;
+	      print_date = 0;
 	    }
 	  apoint_sec2str (i, APPT, today, apoint_start_time, apoint_end_time);
 	  fputs (" - ", stdout);

@@ -1,4 +1,4 @@
-/*	$calcurse: custom.c,v 1.39 2009/07/05 20:33:17 culot Exp $	*/
+/*	$calcurse: custom.c,v 1.40 2009/07/12 16:22:00 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -55,17 +55,17 @@
 
 static struct attribute_s attr;
 
-static bool
+static unsigned
 fill_config_var (char *string)
 {
   if (strncmp (string, "yes", 3) == 0)
-    return (true);
+    return 1;
   else if (strncmp (string, "no", 2) == 0)
-    return (false);
+    return 0;
   else
     {
       EXIT (_("wrong configuration variable format."));
-      return false;
+      return 0;
     }
 }
 
@@ -129,7 +129,7 @@ custom_load_color (char *color, int background)
       switch (color_num)
 	{
 	case 0:
-	  colorize = false;
+	  colorize = 0;
 	  break;
 	case 1:
 	  init_pair (COLR_CUSTOM, COLOR_RED, background);
@@ -774,7 +774,7 @@ custom_color_config (void)
 	  break;
 
 	case KEY_GENERIC_SELECT:
-	  colorize = true;
+	  colorize = 1;
 	  need_reset = 1;
 	  theme_changed = 1;
 	  if (cursor > NBUSERCOLORS)
@@ -804,7 +804,7 @@ custom_color_config (void)
 	  break;
 
 	case KEY_GENERIC_CANCEL:
-	  colorize = false;
+	  colorize = 0;
 	  need_reset = 1;
 	  break;
 	}

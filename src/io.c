@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.66 2009/07/05 20:33:20 culot Exp $	*/
+/*	$calcurse: io.c,v 1.67 2009/07/12 16:22:00 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -1522,7 +1522,7 @@ io_check_data_files (void)
 
 /* Draw the startup screen */
 void
-io_startup_screen (bool skip_dialogs, int no_data_file)
+io_startup_screen (unsigned skip_dialogs, int no_data_file)
 {
   char *welcome_mesg =
     _("Welcome to Calcurse. Missing data files were created.");

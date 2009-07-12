@@ -1,4 +1,4 @@
-/*	$calcurse: calendar.h,v 1.14 2009/07/05 20:33:16 culot Exp $	*/
+/*	$calcurse: calendar.h,v 1.15 2009/07/12 16:21:59 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -53,7 +53,6 @@
 #error "Missing ncurses header. Aborting..."
 #endif
 
-#include <stdbool.h>
 #include <time.h>
 
 #define	CALHEIGHT	12
@@ -103,22 +102,22 @@ typedef enum
 }
 move_t;
 
-void    calendar_start_date_thread (void);
-void    calendar_stop_date_thread (void);
-void    calendar_set_current_date (void);
-void    calendar_set_first_day_of_week (wday_e);
-void    calendar_change_first_day_of_week (void);
-bool    calendar_week_begins_on_monday (void);
-void    calendar_store_current_date (date_t *);
-void    calendar_init_slctd_day (void);
-date_t *calendar_get_slctd_day (void);
-long    calendar_get_slctd_day_sec (void);
-void    calendar_update_panel (WINDOW *);
-void    calendar_goto_today (void);
-void    calendar_change_day (int);
-void    calendar_move (move_t);
-long    calendar_start_of_year (void);
-long    calendar_end_of_year (void);
-char   *calendar_get_pom (time_t);
+void       calendar_start_date_thread (void);
+void       calendar_stop_date_thread (void);
+void       calendar_set_current_date (void);
+void       calendar_set_first_day_of_week (wday_e);
+void       calendar_change_first_day_of_week (void);
+unsigned   calendar_week_begins_on_monday (void);
+void       calendar_store_current_date (date_t *);
+void       calendar_init_slctd_day (void);
+date_t    *calendar_get_slctd_day (void);
+long       calendar_get_slctd_day_sec (void);
+void       calendar_update_panel (WINDOW *);
+void       calendar_goto_today (void);
+void       calendar_change_day (int);
+void       calendar_move (move_t);
+long       calendar_start_of_year (void);
+long       calendar_end_of_year (void);
+char      *calendar_get_pom (time_t);
 
 #endif /* CALCURSE_CALENDAR_H */

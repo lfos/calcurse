@@ -1,4 +1,4 @@
-/*	$calcurse: apoint.c,v 1.35 2009/07/05 20:33:13 culot Exp $	*/
+/*	$calcurse: apoint.c,v 1.36 2009/07/12 16:21:58 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -296,7 +296,7 @@ apoint_delete (conf_t *conf, unsigned *nb_events, unsigned *nb_apoints)
   char *del_app_str = _("Do you really want to delete this item ?");
   long date;
   int nb_items = *nb_apoints + *nb_events;
-  bool go_for_deletion = false;
+  unsigned go_for_deletion = 0;
   int to_be_removed = 0;
   int answer = 0;
   int deleted_item_type = 0;
@@ -308,7 +308,7 @@ apoint_delete (conf_t *conf, unsigned *nb_events, unsigned *nb_apoints)
       status_mesg (del_app_str, choices);
       answer = wgetch (win[STA].p);
       if ((answer == 'y') && (nb_items != 0))
-	go_for_deletion = true;
+	go_for_deletion = 1;
       else
 	{
 	  wins_erase_status_bar ();
@@ -316,7 +316,7 @@ apoint_delete (conf_t *conf, unsigned *nb_events, unsigned *nb_apoints)
 	}
     }
   else if (nb_items != 0)
-    go_for_deletion = true;
+    go_for_deletion = 1;
 
   if (go_for_deletion)
     {
@@ -769,7 +769,7 @@ apoint_update_panel (int which_pan)
       float ratio = ((float) app_length) / ((float) apad.length);
       int sbar_length = (int) (ratio * app_length);
       int highend = (int) (ratio * apad.first_onscreen);
-      bool hilt_bar = (which_pan == APP) ? true : false;
+      unsigned hilt_bar = (which_pan == APP) ? 1 : 0;
       int sbar_top = highend + title_lines + 1;
 
       if ((sbar_top + sbar_length) > win[APP].h - 1)

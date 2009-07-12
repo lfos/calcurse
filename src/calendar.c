@@ -1,4 +1,4 @@
-/*	$calcurse: calendar.c,v 1.24 2009/07/05 20:33:15 culot Exp $	*/
+/*	$calcurse: calendar.c,v 1.25 2009/07/12 16:21:59 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -69,7 +69,7 @@
 #define isleap(y) ((((y) % 4) == 0 && ((y) % 100) != 0) || ((y) % 400) == 0)
 
 static date_t today, slctd_day;
-static bool week_begins_on_monday;
+static unsigned week_begins_on_monday;
 static pthread_mutex_t date_thread_mutex = PTHREAD_MUTEX_INITIALIZER;
 static pthread_t calendar_t_date;
 
@@ -132,14 +132,14 @@ calendar_set_first_day_of_week (wday_e first_day)
   switch (first_day)
     {
     case SUNDAY:
-      week_begins_on_monday = false;
+      week_begins_on_monday = 0;
       break;
     case MONDAY:
-      week_begins_on_monday = true;
+      week_begins_on_monday = 1;
       break;
     default:
       ERROR_MSG (_("ERROR setting first day of week"));
-      week_begins_on_monday = false;
+      week_begins_on_monday = 0;
       /* NOTREACHED */
     }
 }
@@ -151,8 +151,8 @@ calendar_change_first_day_of_week (void)
   week_begins_on_monday = !week_begins_on_monday;
 }
 
-/* Return true if week begins on monday, false otherwise. */
-bool
+/* Return 1 if week begins on monday, 0 otherwise. */
+unsigned
 calendar_week_begins_on_monday (void)
 {
   return (week_begins_on_monday);

@@ -1,4 +1,4 @@
-/*	$calcurse: day.c,v 1.49 2009/07/05 20:33:18 culot Exp $	*/
+/*	$calcurse: day.c,v 1.50 2009/07/12 16:22:00 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -295,7 +295,7 @@ day_store_items (long date, unsigned *pnb_events, unsigned *pnb_apoints)
  * day. This is useful to speed up the appointment panel update.
  */
 day_items_nb_t *
-day_process_storage (date_t *slctd_date, bool day_changed,
+day_process_storage (date_t *slctd_date, unsigned day_changed,
 		     day_items_nb_t *inday)
 {
   long date;
@@ -408,7 +408,7 @@ day_write_pad (long date, int width, int length, int incolor)
   apoint_llist_node_t a;
   int line, item_number, max_pos, recur;
   const int x_pos = 0;
-  bool draw_line = false;
+  unsigned draw_line = 0;
 
   line = item_number = 0;
   max_pos = length;
@@ -431,7 +431,7 @@ day_write_pad (long date, int width, int length, int incolor)
 	  display_item (item_number - incolor, p->mesg, recur,
 			(p->note != NULL) ? 1 : 0, width - 7, line, x_pos);
 	  line++;
-	  draw_line = true;
+	  draw_line = 1;
 	}
       else
 	{
@@ -440,7 +440,7 @@ day_write_pad (long date, int width, int length, int incolor)
 	    {
 	      wmove (apad.ptrwin, line, 0);
 	      whline (apad.ptrwin, 0, width);
-	      draw_line = false;
+	      draw_line = 0;
 	    }
 	  /* Last print the appointments for current day. */
 	  item_number++;

@@ -1,4 +1,4 @@
-/*	$calcurse: vars.h,v 1.33 2009/07/05 20:33:26 culot Exp $	*/
+/*	$calcurse: vars.h,v 1.34 2009/07/12 16:22:02 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -54,7 +54,6 @@
 #endif
 
 #include <pthread.h>
-#include <stdbool.h>
 
 #define DIR_NAME         ".calcurse/"
 #define TODO_PATH_NAME   "todo"
@@ -135,12 +134,12 @@ struct nbar_s
 /* General configuration variables */
 typedef struct
 {
-  bool       auto_save;
+  unsigned   auto_save;
   unsigned   periodic_save;
-  bool       confirm_quit;
-  bool       confirm_delete;
-  bool       skip_system_dialogs;
-  bool       skip_progress_bar;
+  unsigned   confirm_quit;
+  unsigned   confirm_delete;
+  unsigned   skip_system_dialogs;
+  unsigned   skip_progress_bar;
   char      *editor;
   char      *pager;
   char       output_datefmt[BUFSIZ];	/* format for displaying date */
@@ -149,7 +148,7 @@ typedef struct
 conf_t;
 
 extern int            col, row;
-extern bool           colorize;
+extern unsigned       colorize;
 extern ui_mode_e      ui_mode;
 extern int            days[12];
 extern char          *monthnames[12];

@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.81 2009/07/05 20:33:15 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.82 2009/07/12 16:21:59 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -74,9 +74,9 @@ main (int argc, char **argv)
   int sav_hilt_tod = 0;
   int cut_item = 0;
   struct sigaction sigact;
-  bool do_storage = false;
-  bool do_update = true;
-  bool day_changed = false;
+  unsigned do_storage = 0;
+  unsigned do_update = 1;
+  unsigned day_changed = 0;
   char *no_color_support =
       _("Sorry, colors are not supported by your terminal\n"
 	"(Press [ENTER] to continue)");
@@ -116,7 +116,7 @@ main (int argc, char **argv)
   /* Check if terminal supports color. */
   if (has_colors ())
     {
-      colorize = true;
+      colorize = 1;
       background = COLOR_BLACK;
       foreground = COLOR_WHITE;
       start_color ();
@@ -143,7 +143,7 @@ main (int argc, char **argv)
     }
   else
     {
-      colorize = false;
+      colorize = 0;
       background = COLOR_BLACK;
     }
 
@@ -181,17 +181,17 @@ main (int argc, char **argv)
     {
       int key;
       
-      do_update = true;
+      do_update = 1;
       key = keys_getch (win[STA].p);
       switch (key)
 	{
 	case ERR:
-	  do_update = false;
+	  do_update = 0;
 	  break;
 
 	case KEY_GENERIC_REDRAW:
 	case KEY_RESIZE:
-	  do_update = false;
+	  do_update = 0;
 	  wins_reset ();
 	  break;
 
@@ -246,8 +246,8 @@ main (int argc, char **argv)
             calendar_goto_today ();
           else
             calendar_change_day (conf.input_datefmt);
-	  do_storage = true;
-	  day_changed = true;
+	  do_storage = 1;
+	  day_changed = 1;
 	  break;
 
         case KEY_VIEW_ITEM:
@@ -270,7 +270,7 @@ main (int argc, char **argv)
 		    custom_color_config ();
 		  else
 		    {
-		      colorize = false;
+		      colorize = 0;
 		      wins_erase_status_bar ();
 		      mvwprintw (win[STA].p, 0, 0, _(no_color_support));
 		      wgetch (win[STA].p);
@@ -295,7 +295,7 @@ main (int argc, char **argv)
 		}
 	      wins_reset ();
 	      wins_update ();
-	      do_storage = true;
+	      do_storage = 1;
 	      wins_erase_status_bar ();
 	      custom_config_bar ();
 	    }
@@ -304,7 +304,7 @@ main (int argc, char **argv)
 
         case KEY_GENERIC_ADD_APPT:
 	  apoint_add ();
-	  do_storage = true;
+	  do_storage = 1;
 	  break;
 
         case KEY_GENERIC_ADD_TODO:
@@ -318,7 +318,7 @@ main (int argc, char **argv)
 	    {
 	    case APP:
 	      apoint_add ();
-	      do_storage = true;
+	      do_storage = 1;
 	      break;
 	    case TOD:
 	      todo_new_item ();
@@ -335,7 +335,7 @@ main (int argc, char **argv)
 	    day_edit_item (&conf);
 	  else if (wins_slctd () == TOD && todo_hilt () != 0)
 	    todo_edit_item ();
-	  do_storage = true;
+	  do_storage = 1;
 	  break;
 
         case KEY_DEL_ITEM:
@@ -343,14 +343,14 @@ main (int argc, char **argv)
 	    apoint_delete (&conf, &inday.nb_events, &inday.nb_apoints);
 	  else if (wins_slctd () == TOD && todo_hilt () != 0)
 	    todo_delete (&conf);
-	  do_storage = true;
+	  do_storage = 1;
 	  break;
 
         case KEY_GENERIC_CUT:
           if (wins_slctd () == APP && apoint_hilt () != 0)
             {
               cut_item = apoint_cut (&inday.nb_events, &inday.nb_apoints);
-              do_storage = true;
+              do_storage = 1;
             }
           break;
 
@@ -359,14 +359,14 @@ main (int argc, char **argv)
             {
               apoint_paste (&inday.nb_events, &inday.nb_apoints, cut_item);
               cut_item = 0;
-              do_storage = true;
+              do_storage = 1;
             }
           break;
           
         case KEY_REPEAT_ITEM:
 	  if (wins_slctd () == APP && apoint_hilt () != 0)
 	    recur_repeat_item (&conf);
-	  do_storage = true;
+	  do_storage = 1;
 	  break;
 
         case KEY_FLAG_ITEM:
@@ -374,7 +374,7 @@ main (int argc, char **argv)
 	    apoint_switch_notify ();
           else if (wins_slctd () == TOD && todo_hilt () != 0)
             todo_flag ();
-	  do_storage = true;
+	  do_storage = 1;
 	  break;
 
         case KEY_RAISE_PRIORITY:
@@ -394,7 +394,7 @@ main (int argc, char **argv)
 	    day_edit_note (conf.editor);
 	  else if (wins_slctd () == TOD && todo_hilt () != 0)
 	    todo_edit_note (conf.editor);
-	  do_storage = true;
+	  do_storage = 1;
 	  break;
 
         case KEY_VIEW_NOTE:
@@ -416,7 +416,7 @@ main (int argc, char **argv)
         case KEY_GENERIC_IMPORT:
           wins_erase_status_bar ();
           io_import_data (IO_IMPORT_ICAL, &conf, NULL);
-          do_storage = true;
+          do_storage = 1;
           break;
           
         case KEY_GENERIC_EXPORT:
@@ -437,7 +437,7 @@ main (int argc, char **argv)
 		}
 	      wins_reset ();
 	      wins_update ();
-	      do_storage = true;
+	      do_storage = 1;
 	      wins_erase_status_bar ();
 	      io_export_bar ();
 	    }
@@ -448,8 +448,8 @@ main (int argc, char **argv)
         case KEY_MOVE_RIGHT:
 	  if (wins_slctd () == CAL || key == KEY_GENERIC_NEXT_DAY)
 	    {
-	      do_storage = true;
-	      day_changed = true;
+	      do_storage = 1;
+	      day_changed = 1;
 	      calendar_move (RIGHT);
 	    }
 	  break;
@@ -458,8 +458,8 @@ main (int argc, char **argv)
         case KEY_MOVE_LEFT:
 	  if (wins_slctd () == CAL || key == KEY_GENERIC_PREV_DAY)
 	    {
-	      do_storage = true;
-	      day_changed = true;
+	      do_storage = 1;
+	      day_changed = 1;
 	      calendar_move (LEFT);
 	    }
 	  break;
@@ -468,8 +468,8 @@ main (int argc, char **argv)
         case KEY_MOVE_UP:
 	  if (wins_slctd () == CAL || key == KEY_GENERIC_PREV_WEEK)
 	    {
-	      do_storage = true;
-	      day_changed = true;
+	      do_storage = 1;
+	      day_changed = 1;
 	      calendar_move (UP);
 	    }
           else if ((wins_slctd () == APP) && (apoint_hilt () > 1))
@@ -489,8 +489,8 @@ main (int argc, char **argv)
         case KEY_MOVE_DOWN:
 	  if (wins_slctd () == CAL || key == KEY_GENERIC_NEXT_WEEK)
 	    {
-	      do_storage = true;
-	      day_changed = true;
+	      do_storage = 1;
+	      day_changed = 1;
 	      calendar_move (DOWN);
 	    }
           else if ((wins_slctd () == APP) &&
@@ -510,8 +510,8 @@ main (int argc, char **argv)
         case KEY_START_OF_WEEK:
           if (wins_slctd () == CAL)
 	    {
-	      do_storage = true;
-	      day_changed = true;
+	      do_storage = 1;
+	      day_changed = 1;
 	      calendar_move (WEEK_START);
 	    }
           break;
@@ -519,8 +519,8 @@ main (int argc, char **argv)
         case KEY_END_OF_WEEK:
           if (wins_slctd () == CAL)
 	    {
-	      do_storage = true;
-	      day_changed = true;
+	      do_storage = 1;
+	      day_changed = 1;
 	      calendar_move (WEEK_END);
 	    }
           break;
@@ -546,7 +546,7 @@ main (int argc, char **argv)
 	  break;
 
 	default:
-	  do_update = false;
+	  do_update = 0;
 	  break;
 	}
 

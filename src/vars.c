@@ -1,4 +1,4 @@
-/*	$calcurse: vars.c,v 1.16 2009/07/05 20:33:25 culot Exp $	*/
+/*	$calcurse: vars.c,v 1.17 2009/07/12 16:22:02 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -53,7 +53,7 @@
 int col = 0, row = 0;
 
 /* variable to tell if the terminal supports color */
-bool colorize = false;
+unsigned colorize = 0;
 
 /*
  * To tell if curses interface was launched already or not (in that case
@@ -121,12 +121,12 @@ vars_init (conf_t *conf)
   char *ed, *pg;
 
   /* Variables for user configuration */
-  conf->confirm_quit = true;
-  conf->confirm_delete = true;
-  conf->auto_save = true;
+  conf->confirm_quit = 1;
+  conf->confirm_delete = 1;
+  conf->auto_save = 1;
   conf->periodic_save = 0;
-  conf->skip_system_dialogs = false;
-  conf->skip_progress_bar = false;
+  conf->skip_system_dialogs = 0;
+  conf->skip_progress_bar = 0;
   (void)strncpy (conf->output_datefmt, "%D", 3);
   conf->input_datefmt = 1;
 

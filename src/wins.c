@@ -1,4 +1,4 @@
-/*	$calcurse: wins.c,v 1.25 2009/07/05 20:33:26 culot Exp $	*/
+/*	$calcurse: wins.c,v 1.26 2009/07/12 16:22:03 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -175,7 +175,7 @@ wins_scrollwin_display (scrollwin_t *sw)
       if ((sbar_top + sbar_length) > sw->win.h - 1)
         sbar_length = sw->win.h - sbar_top;
       draw_scrollbar (sw->win.p, sbar_top, sw->win.w + sw->win.x - 2,
-                      sbar_length, sw->pad.y + 1, sw->win.h - 1, true);
+                      sbar_length, sw->pad.y + 1, sw->win.h - 1, 1);
     }
   wmove (win[STA].p, 0, 0);
   wnoutrefresh (sw->win.p);

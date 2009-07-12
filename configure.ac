@@ -1,4 +1,4 @@
-#	$calcurse: configure.ac,v 1.32 2009/07/05 17:16:15 culot Exp $
+#	$calcurse: configure.ac,v 1.33 2009/07/12 16:21:58 culot Exp $
 
 #-------------------------------------------------------------------------------
 #                                                                           Init
@@ -21,9 +21,9 @@ AC_PROG_CC
 #                                                        Checks for header files
 #-------------------------------------------------------------------------------
 AC_HEADER_STDC
-AC_CHECK_HEADERS([ctype.h getopt.h locale.h math.h signal.h stdbool.h stdio.h  \
-		  stdlib.h string.h sys/stat.h sys/types.h sys/wait.h time.h   \
-		  unistd.h errno.h limits.h regex.h])
+AC_CHECK_HEADERS([ctype.h getopt.h locale.h math.h signal.h stdio.h stdlib.h   \
+		  string.h sys/stat.h sys/types.h sys/wait.h time.h unistd.h   \
+		  errno.h limits.h regex.h])
 #-------------------------------------------------------------------------------
 #                                                         Checks for system libs
 #-------------------------------------------------------------------------------
