@@ -1,4 +1,4 @@
-/*	$calcurse: args.c,v 1.54 2009/07/12 16:21:58 culot Exp $	*/
+/*	$calcurse: args.c,v 1.55 2009/07/12 18:16:11 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -847,14 +847,20 @@ parse_args (int argc, char **argv, conf_t *conf)
           if (iflag)
             {
               io_check_file (path_apts, (int *)0);
+              io_check_file (path_todo, (int *)0);              
               io_load_app ();
+              io_load_todo ();
               io_import_data (IO_IMPORT_ICAL, conf, ifile);
               io_save_apts ();
+              io_save_todo ();
               non_interactive = 1;
             }
 	  if (xflag)
 	    {
+              io_check_file (path_apts, (int *)0);
+              io_check_file (path_todo, (int *)0);
               io_load_app ();
+              io_load_todo ();
 	      io_export_data (xfmt, conf);
 	      non_interactive = 1;
 	      return non_interactive;

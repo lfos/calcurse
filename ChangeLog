@@ -9,6 +9,9 @@
 	* src/custom.c
 	* src/help.c
 	* src/notify.c: calcurse version removed from menu titles
+
+	* src/args.c (parse_args): fixed a bug that prevented the todo
+	items from being imported or exported
 	
 2009-07-11  Frederic Culot  <frederic@culot.org>
 
