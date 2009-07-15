@@ -2,6 +2,11 @@
 
 	* src/io.c: could not import ical files anymore if notes were not
 	attached to items (thanks Chris for reporting it)
+
+	* src/args.c (app_arg): memory leak fixed
+
+	* src/args.c (parse_args): dates are now written properly again
+	when using the '-r' flags (thanks again Chris for your report)
 	
 2009-07-12  Frederic Culot  <frederic@culot.org>
 

@@ -1,4 +1,4 @@
-/*	$calcurse: args.c,v 1.55 2009/07/12 18:16:11 culot Exp $	*/
+/*	$calcurse: args.c,v 1.56 2009/07/15 19:16:22 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -409,6 +409,8 @@ app_arg (int add_line, date_t *day, long date, int print_note, conf_t *conf,
       if (recur_item_inday (ra->start, ra->exc, ra->rpt->type, ra->rpt->freq,
                             ra->rpt->until, today))
 	{
+          apoint_llist_node_t *apt;
+          
           if (regex && regexec (regex, ra->mesg, 0, 0, 0) != 0)
             continue;
           
@@ -423,8 +425,11 @@ app_arg (int add_line, date_t *day, long date, int print_note, conf_t *conf,
 	      arg_print_date (today, conf);
 	      print_date = 0;
 	    }
-	  apoint_sec2str (apoint_recur_s2apoint_s (ra), RECUR_APPT, today,
-                          apoint_start_time, apoint_end_time);
+          apt = apoint_recur_s2apoint_s (ra);
+	  apoint_sec2str (apt, RECUR_APPT, today, apoint_start_time,
+                          apoint_end_time);
+          mem_free (apt->mesg);
+          mem_free (apt);
 	  fputs (" - ", stdout);
 	  fputs (apoint_start_time, stdout);
 	  fputs (" -> ", stdout);
@@ -867,7 +872,7 @@ parse_args (int argc, char **argv, conf_t *conf)
 	    }
 	  if (tflag)
 	    {
-              io_load_todo ();              
+              io_load_todo ();
 	      todo_arg (tnum, Nflag, preg);
 	      non_interactive = 1;
 	    }
@@ -880,6 +885,7 @@ parse_args (int argc, char **argv, conf_t *conf)
 	  if (dflag || rflag || sflag)
 	    {
               io_load_app ();
+              custom_load_conf (conf, 0); /* To get output date format. */
               if (dflag)
                 date_arg (ddate, add_line, Nflag, conf, preg);
               if (rflag || sflag)
