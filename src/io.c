@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.68 2009/07/12 17:48:13 culot Exp $	*/
+/*	$calcurse: io.c,v 1.69 2009/07/15 18:48:44 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -1666,7 +1666,8 @@ ical_store_todo (int priority, char *mesg, char *note)
 {
   todo_add (mesg, priority, note);
   mem_free (mesg);
-  mem_free (note);
+  if (note)
+    mem_free (note);
 }
 
 static void
@@ -1720,7 +1721,8 @@ ical_store_apoint (char *mesg, char *note, long start, long dur,
       apoint_new (mesg, note, start, dur, state);
     }
   mem_free (mesg);
-  mem_free (note);
+  if (note)
+    mem_free (note);
 }
 
 /*
