@@ -1,4 +1,4 @@
-/*	$calcurse: todo.c,v 1.34 2009/07/12 16:22:01 culot Exp $	*/
+/*	$calcurse: todo.c,v 1.35 2009/07/19 08:20:01 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -240,8 +240,7 @@ todo_delete_bynum (unsigned num, erase_flag_e flag)
 	{
 	  *iptr = i->next;
 	  mem_free (i->mesg);
-	  if (i->note != NULL)
-	    erase_note (&i->note, flag);
+          erase_note (&i->note, flag);
 	  mem_free (i);
 	  return;
 	}
@@ -540,8 +539,7 @@ todo_free_list (void)
       o = *i;
       *i = o->next;
       mem_free (o->mesg);
-      if (o->note != 0)
-        erase_note (&o->note, ERASE_FORCE_KEEP_NOTE);
+      erase_note (&o->note, ERASE_FORCE_KEEP_NOTE);
       mem_free (o);
     }
   if (todolist)

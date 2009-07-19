@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.69 2009/07/15 18:48:44 culot Exp $	*/
+/*	$calcurse: io.c,v 1.70 2009/07/19 08:20:00 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -1666,8 +1666,7 @@ ical_store_todo (int priority, char *mesg, char *note)
 {
   todo_add (mesg, priority, note);
   mem_free (mesg);
-  if (note)
-    mem_free (note);
+  erase_note (&note, ERASE_FORCE_KEEP_NOTE);
 }
 
 static void
@@ -1699,7 +1698,7 @@ ical_store_event (char *mesg, char *note, long day, long end, ical_rpt_t *rpt,
       event_new (mesg, note, day, EVENTID);
     }
   mem_free (mesg);
-  mem_free (note);
+  erase_note (&note, ERASE_FORCE_KEEP_NOTE);
 }
 
 static void
@@ -1710,7 +1709,7 @@ ical_store_apoint (char *mesg, char *note, long start, long dur,
 
   if (has_alarm)
     state |= APOINT_NOTIFY;
-  if (rpt != NULL)
+  if (rpt)
     {
       recur_apoint_new (mesg, note, start, dur, state, rpt->type, rpt->freq,
                         rpt->until, &exc);
@@ -1721,8 +1720,7 @@ ical_store_apoint (char *mesg, char *note, long start, long dur,
       apoint_new (mesg, note, start, dur, state);
     }
   mem_free (mesg);
-  if (note)
-    mem_free (note);
+  erase_note (&note, ERASE_FORCE_KEEP_NOTE);
 }
 
 /*
@@ -2524,11 +2522,15 @@ ical_read_event (FILE *fdi, FILE *log, unsigned *noevents, unsigned *noapoints,
             "The end of item was not found."));
 
 cleanup:
-  
-  mem_free (vevent.note);
-  mem_free (vevent.mesg);
-  mem_free (vevent.rpt);
-  mem_free (vevent.exc);
+
+  if (vevent.note)
+    mem_free (vevent.note);
+  if (vevent.mesg)
+    mem_free (vevent.mesg);
+  if (vevent.rpt)
+    mem_free (vevent.rpt);
+  if (vevent.exc)
+    mem_free (vevent.exc);
   (*noskipped)++;
 }
 
@@ -2621,9 +2623,11 @@ ical_read_todo (FILE *fdi, FILE *log, unsigned *notodos, unsigned *noskipped,
             "The end of item was not found."));
 
 cleanup:
-  
-  mem_free (vtodo.note);
-  mem_free (vtodo.mesg);
+
+  if (vtodo.note)
+    mem_free (vtodo.note);
+  if (vtodo.mesg)
+    mem_free (vtodo.mesg);
   (*noskipped)++;
 }
 

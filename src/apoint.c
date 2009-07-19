@@ -1,4 +1,4 @@
-/*	$calcurse: apoint.c,v 1.36 2009/07/12 16:21:58 culot Exp $	*/
+/*	$calcurse: apoint.c,v 1.37 2009/07/19 08:20:00 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -65,16 +65,7 @@ apoint_free_bkp (erase_flag_e flag)
       mem_free (bkp_cut_apoint.mesg);
       bkp_cut_apoint.mesg = 0;
     }
-  if (bkp_cut_apoint.note)
-    {
-      if (flag == ERASE_FORCE)
-        erase_note (&bkp_cut_apoint.note, ERASE_FORCE);
-      else
-        {
-          mem_free (bkp_cut_apoint.note);
-          bkp_cut_apoint.note = 0;
-        }
-    }
+  erase_note (&bkp_cut_apoint.note, flag);
 }
 
 static void
@@ -114,8 +105,7 @@ apoint_llist_free (void)
       o = *i;
       *i = o->next;
       mem_free (o->mesg);
-      if (o->note)
-        mem_free (o->note);
+      erase_note (&o->note, ERASE_FORCE_KEEP_NOTE);
       mem_free (o);
     }
   mem_free (alist_p);
@@ -547,8 +537,7 @@ apoint_delete_bynum (long start, unsigned num, erase_flag_e flag)
                 case ERASE_CUT:
                   apoint_free_bkp (ERASE_FORCE);
                   apoint_dup (i, &bkp_cut_apoint);
-                  if (i->note)
-                    mem_free (i->note);
+                  erase_note (&i->note, ERASE_FORCE_KEEP_NOTE);
                   /* FALLTHROUGH */
                 default:
 		  if (notify_bar ())

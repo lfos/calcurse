@@ -2,6 +2,11 @@
 
 	* src/mem.c (dbg_free): no need to double check for null pointer
 	when freeing memory
+
+	* src/apoint.c
+	* src/event.c
+	* src/io.c
+	* src/recur.c: make use of erase_note() whenever possible
 	
 2009-07-15  Frederic Culot  <frederic@culot.org>
 

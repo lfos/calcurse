@@ -1,4 +1,4 @@
-/*	$calcurse: recur.c,v 1.51 2009/07/05 20:33:23 culot Exp $	*/
+/*	$calcurse: recur.c,v 1.52 2009/07/19 08:20:01 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -116,16 +116,7 @@ recur_event_free_bkp (erase_flag_e flag)
       free_exc (bkp_cut_recur_event.exc);
       bkp_cut_recur_event.exc = 0;
     }
-  if (bkp_cut_recur_event.note)
-    {
-      if (flag == ERASE_FORCE)
-        erase_note (&bkp_cut_recur_event.note, ERASE_FORCE);
-      else
-        {
-          mem_free (bkp_cut_recur_event.note);
-          bkp_cut_recur_event.note = 0;
-        }
-    }
+  erase_note (&bkp_cut_recur_event.note, flag);
 }
 
 void
@@ -146,16 +137,7 @@ recur_apoint_free_bkp (erase_flag_e flag)
       free_exc (bkp_cut_recur_apoint.exc);
       bkp_cut_recur_apoint.exc = 0;
     }
-  if (bkp_cut_recur_apoint.note)
-    {
-      if (flag == ERASE_FORCE)
-        erase_note (&bkp_cut_recur_apoint.note, ERASE_FORCE);
-      else
-        {
-          mem_free (bkp_cut_recur_apoint.note);
-          bkp_cut_recur_apoint.note = 0;
-        }
-    }
+  erase_note (&bkp_cut_recur_apoint.note, flag);
 }
 
 static void
@@ -720,15 +702,21 @@ recur_event_erase (long start, unsigned num, unsigned delete_whole,
                     case ERASE_CUT:
                       recur_event_free_bkp (ERASE_FORCE);
                       recur_event_dup (i, &bkp_cut_recur_event);
-                      if (i->note)
-                        mem_free (i->note);
+                      erase_note (&i->note, ERASE_FORCE_KEEP_NOTE);
                       /* FALLTHROUGH */
                     default:
 		      *iptr = i->next;
 		      mem_free (i->mesg);
-		      mem_free (i->rpt);
-		      free_exc (i->exc);
-                      i->exc = 0;
+                      if (i->rpt)
+                        {
+                          mem_free (i->rpt);
+                          i->rpt = 0;
+                        }
+                      if (i->exc)
+                        {
+                          free_exc (i->exc);
+                          i->exc = 0;
+                        }
                       if (flag != ERASE_FORCE_KEEP_NOTE && flag != ERASE_CUT)
                         erase_note (&i->note, flag);
 		      mem_free (i);
@@ -783,15 +771,21 @@ recur_apoint_erase (long start, unsigned num, unsigned delete_whole,
                     case ERASE_CUT:
                       recur_apoint_free_bkp (ERASE_FORCE);
                       recur_apoint_dup (i, &bkp_cut_recur_apoint);
-                      if (i->note)
-                        mem_free (i->note);
+                      erase_note (&i->note, ERASE_FORCE_KEEP_NOTE);
                       /* FALLTHROUGH */
                     default:
 		      *iptr = i->next;
 		      mem_free (i->mesg);
-		      mem_free (i->rpt);
-		      free_exc (i->exc);
-                      i->exc = 0;
+                      if (i->rpt)
+                        {
+                          mem_free (i->rpt);
+                          i->rpt = 0;
+                        }
+                      if (i->exc)
+                        {
+                          free_exc (i->exc);
+                          i->exc = 0;
+                        }
                       if (flag != ERASE_FORCE_KEEP_NOTE && flag != ERASE_CUT)
                         erase_note (&i->note, flag);
 		      mem_free (i);
