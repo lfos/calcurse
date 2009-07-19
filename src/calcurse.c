@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.83 2009/07/12 20:37:41 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.84 2009/07/19 16:51:36 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -37,7 +37,6 @@
  */
 
 #include <stdlib.h>
-#include <signal.h>
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -73,7 +72,6 @@ main (int argc, char **argv)
   int sav_hilt_app = 0;
   int sav_hilt_tod = 0;
   int cut_item = 0;
-  struct sigaction sigact;
   unsigned do_storage = 0;
   unsigned do_update = 1;
   unsigned day_changed = 0;
@@ -107,11 +105,11 @@ main (int argc, char **argv)
     }
   
   /* Begin of interactive mode with ncurses interface. */
-  sigs_init (&sigact);		/* signal handling init */
-  initscr ();			/* start the curses mode */
-  cbreak ();			/* control chars generate a signal */
-  noecho ();			/* controls echoing of typed chars */
-  curs_set (0);			/* make cursor invisible */
+  sigs_init ();                 /* signal handling init */
+  initscr ();                   /* start the curses mode */
+  cbreak ();                    /* control chars generate a signal */
+  noecho ();                    /* controls echoing of typed chars */
+  curs_set (0);                 /* make cursor invisible */
   calendar_set_current_date ();
   notify_init_vars ();
   wins_get_config ();

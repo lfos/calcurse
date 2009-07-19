@@ -1,4 +1,4 @@
-/*	$calcurse: sigs.c,v 1.8 2009/07/05 20:33:23 culot Exp $	*/
+/*	$calcurse: sigs.c,v 1.9 2009/07/19 16:51:36 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -38,10 +38,12 @@
 
 #include <sys/types.h>
 #include <sys/wait.h>
-#include <signal.h>
+#include <errno.h>
+#include <string.h>
 
 #include "i18n.h"
 #include "utils.h"
+#include "sigs.h"
 
 /* 
  * General signal handling routine.
@@ -50,7 +52,7 @@
  * Also catch CTRL-C (SIGINT), and SIGWINCH to resize screen automatically.
  */
 static void
-signal_handler (int sig)
+generic_hdlr (int sig)
 {
   switch (sig)
     {
@@ -65,34 +67,31 @@ signal_handler (int sig)
     }
 }
 
+unsigned
+sigs_set_hdlr (int sig, void (*handler)(int))
+{
+  struct sigaction sa;
+
+  memset (&sa, 0, sizeof sa);
+  sigemptyset (&sa.sa_mask);
+  sa.sa_handler = handler;
+  sa.sa_flags = 0;
+  if (sigaction (sig, &sa, (struct sigaction *)0) == -1)
+    {
+      ERROR_MSG (_("Error setting signal #%d : %s\n"),
+                 sig, strerror (errno));
+      return 0;
+    }
+
+  return 1;
+}
+
 /* Signal handling init. */
 void
-sigs_init (struct sigaction *sa)
+sigs_init ()
 {
-  sa->sa_handler = signal_handler;
-  sa->sa_flags = 0;
-  sigemptyset (&sa->sa_mask);
-  if (sigaction (SIGCHLD, sa, NULL) != 0)
-    {
-      ERROR_MSG (_("Error handling SIGCHLD signal"));
-      exit_calcurse (1);
-    }
-
-  sa->sa_handler = signal_handler;
-  sa->sa_flags = 0;
-  sigemptyset (&sa->sa_mask);
-  if (sigaction (SIGWINCH, sa, NULL) != 0)
-    {
-      ERROR_MSG (_("Error handling SIGWINCH signal"));      
-      exit_calcurse (1);
-    }
-
-  sa->sa_handler = SIG_IGN;
-  sa->sa_flags = 0;
-  sigemptyset (&(sa->sa_mask));
-  if (sigaction (SIGINT, sa, NULL) != 0)
-    {
-      ERROR_MSG (_("Error handling SIGINT signal"));      
-      exit_calcurse (1);
-    }
+  if (!sigs_set_hdlr (SIGCHLD, generic_hdlr)
+      || !sigs_set_hdlr (SIGWINCH, generic_hdlr)
+      || !sigs_set_hdlr (SIGINT, SIG_IGN))
+    exit_calcurse (1);
 }

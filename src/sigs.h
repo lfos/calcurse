@@ -1,4 +1,4 @@
-/*	$calcurse: sigs.h,v 1.4 2009/07/05 20:33:23 culot Exp $	*/
+/*	$calcurse: sigs.h,v 1.5 2009/07/19 16:51:36 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -39,6 +39,9 @@
 #ifndef CALCURSE_SIGS_H
 #define CALCURSE_SIGS_H
 
-void sigs_init (struct sigaction *);
+#include <signal.h>
+
+void      sigs_init (void);
+unsigned  sigs_set_hdlr (int, void (*)(int));
 
 #endif /* CALCURSE_SIGS_H */

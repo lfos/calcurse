@@ -7,6 +7,9 @@
 	* src/event.c
 	* src/io.c
 	* src/recur.c: make use of erase_note() whenever possible
+
+	* src/calcurse.c
+	* src/sigs.[ch]: new way of handling signals
 	
 2009-07-15  Frederic Culot  <frederic@culot.org>
 
