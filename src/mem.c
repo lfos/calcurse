@@ -1,4 +1,4 @@
-/*	$calcurse: mem.c,v 1.5 2009/07/12 17:48:13 culot Exp $	*/
+/*	$calcurse: mem.c,v 1.6 2009/07/19 07:44:59 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -281,7 +281,7 @@ dbg_free (void *ptr, const char *pos)
 
   stats_del_blk (buf[BLK_ID]);
   
-  xfree (buf);
+  free (buf);
   mstats.nfree += size;
 }
 
