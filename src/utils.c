@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.76 2009/07/12 17:48:14 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.77 2009/07/20 19:45:27 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -57,6 +57,7 @@
 #include "todo.h"
 #include "day.h"
 #include "keys.h"
+#include "dmon.h"
 #include "mem.h"
 
 /* General routine to exit calcurse properly. */
@@ -94,6 +95,8 @@ exit_calcurse (int status)
   mem_stats ();
   if (remove_lock)
     io_unset_lock ();
+
+  dmon_start (status);
   
   exit (status);
 }
@@ -937,4 +940,18 @@ file_close (FILE *f, const char *pos)
   
   ret = fclose (f);
   EXIT_IF (ret != 0, _("Error when closing file at %s"), pos);
+}
+
+/*
+ * Sleep the given number of seconds, but make it more 'precise' than sleep(3)
+ * (hence the 'p') in a way that even if a signal is caught during the sleep
+ * process, this function will return to sleep afterwards.
+ */
+void
+psleep (unsigned secs)
+{
+  unsigned unslept;
+
+  for (unslept = sleep (secs); unslept; unslept = sleep (unslept))
+    ;
 }

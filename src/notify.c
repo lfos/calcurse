@@ -1,4 +1,4 @@
-/*	$calcurse: notify.c,v 1.40 2009/07/12 17:55:14 culot Exp $	*/
+/*	$calcurse: notify.c,v 1.41 2009/07/20 19:45:26 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -58,11 +58,29 @@ static pthread_attr_t         detached_thread_attr;
 static pthread_t              notify_t_main;
 
 /*
+ * Return the number of seconds before next appointment
+ * (0 if no upcoming appointment).
+ */
+int
+notify_time_left (void)
+{
+  struct tm *ntime;
+  time_t ntimer;
+  int left;  
+
+  ntimer = time (NULL);
+  ntime = localtime (&ntimer);
+  left = notify_app.time - ntimer;
+
+  return left > 0 ? left : 0;
+}
+
+/*
  * This is used to update the notify_app structure.
  * Note: the mutex associated with this structure must be locked by the
  * caller!
  */
-static void
+void
 notify_update_app (long start, char state, char *msg)
 {
   notify_free_app ();
@@ -148,6 +166,7 @@ notify_free_app (void)
 {
   if (notify_app.txt)
     mem_free (notify_app.txt);
+  notify_app.txt = 0;
 }
 
 /* Stop the notify-bar main thread. */
@@ -170,18 +189,30 @@ notify_reinit_bar (void)
 }
 
 /* Launch user defined command as a notification. */
-static void
-launch_cmd (char *cmd, char *shell)
+void
+notify_launch_cmd (void)
 {
   int pid;
 
+  if (notify_app.state & APOINT_NOTIFIED)
+    return;
+  
+  notify_app.state |= APOINT_NOTIFIED;
+    
   pid = fork ();
 
   if (pid < 0)
     ERROR_MSG (_("error while launching command: could not fork"));
-  else if (pid == 0)		/* Child: launch user defined command */
-    if (execlp (shell, shell, "-c", cmd, (char *)0) < 0)
-      ERROR_MSG (_("error while launching command"));
+  else if (pid == 0)
+    {
+      /* Child: launch user defined command */
+      if (execlp (nbar.shell, nbar.shell, "-c", nbar.cmd, (char *)0) < 0)
+        {
+          ERROR_MSG (_("error while launching command"));
+          _exit (1);
+        }
+      _exit (0);
+    }
 }
 
 /* 
@@ -193,8 +224,7 @@ notify_update_bar (void)
 {
   const int space = 3;
   int file_pos, date_pos, app_pos, txt_max_len, too_long = 0;
-  int time_left, hours_left, minutes_left;
-  int blinking;
+  int time_left, blinking;
   char buf[BUFSIZ];
 
   date_pos = space;
@@ -220,9 +250,11 @@ notify_update_bar (void)
 	  (void)strncpy (buf, notify_app.txt, txt_max_len - 3);
 	  buf[txt_max_len - 3] = '\0';
 	}
-      time_left = notify_app.time - notify.time_in_sec;
+      time_left = notify_time_left ();
       if (time_left > 0)
 	{
+          int hours_left, minutes_left;
+          
 	  hours_left = (time_left / HOURINSEC);
 	  minutes_left = (time_left - hours_left * HOURINSEC) / MININSEC;
 	  pthread_mutex_lock (&nbar.mutex);
@@ -243,11 +275,8 @@ notify_update_bar (void)
 	  if (blinking)
 	    wattroff (notify.win, A_BLINK);
 
-	  if (blinking && !(notify_app.state & APOINT_NOTIFIED))
-	    {
-	      notify_app.state |= APOINT_NOTIFIED;
-	      launch_cmd (nbar.cmd, nbar.shell);
-	    }
+	  if (blinking)
+            notify_launch_cmd ();
 	  pthread_mutex_unlock (&nbar.mutex);
 	}
       else
@@ -287,14 +316,13 @@ notify_main_thread (void *arg)
       ntimer = time (NULL);
       ntime = localtime (&ntimer);
       pthread_mutex_lock (&notify.mutex);
-      notify.time_in_sec = ntimer;
       pthread_mutex_lock (&nbar.mutex);
       strftime (notify.time, NOTIFY_FIELD_LENGTH, nbar.timefmt, ntime);
       strftime (notify.date, NOTIFY_FIELD_LENGTH, nbar.datefmt, ntime);
       pthread_mutex_unlock (&nbar.mutex);
       pthread_mutex_unlock (&notify.mutex);
       notify_update_bar ();
-      (void)sleep (thread_sleep);
+      psleep (thread_sleep);
       elapse += thread_sleep;
       if (elapse >= check_app)
 	{
@@ -309,24 +337,35 @@ notify_main_thread (void *arg)
   pthread_exit ((void *) 0);
 }
 
+/* Fill the given structure with information about next appointment. */
+unsigned
+notify_get_next (struct notify_app_s *a)
+{
+  time_t current_time;
+  
+  if (!a)
+    return 0;
+  
+  current_time = time (NULL);
+
+  a->time = current_time + DAYINSEC;
+  a->got_app = 0;
+  a->state = 0;
+  a->txt = (char *)0;
+  (void)recur_apoint_check_next (a, current_time, get_today ());
+  (void)apoint_check_next (a, current_time);
+
+  return 1;
+}
+
 /* Look for the next appointment within the next 24 hours. */
 /* ARGSUSED0 */
 static void *
 notify_thread_app (void *arg)
 {
   struct notify_app_s tmp_app;
-  time_t current_time;
 
-  current_time = time (NULL);
-
-  /* Use a temporary structure not to lock the mutex for a too
-   * long time while looking for next appointment. */
-  tmp_app.time = current_time + DAYINSEC;
-  tmp_app.got_app = 0;
-  tmp_app.txt = NULL;
-  tmp_app = *recur_apoint_check_next (&tmp_app, current_time, get_today ());
-  tmp_app = *apoint_check_next (&tmp_app, current_time);
-
+  (void)notify_get_next (&tmp_app);
   pthread_mutex_lock (&notify_app.mutex);
   if (tmp_app.got_app)
     {
