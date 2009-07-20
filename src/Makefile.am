@@ -1,4 +1,4 @@
-#	$calcurse: Makefile.am,v 1.9 2009/07/05 20:33:13 culot Exp $
+#	$calcurse: Makefile.am,v 1.10 2009/07/20 19:44:05 culot Exp $
 
 AUTOMAKE_OPTIONS= foreign
 
@@ -22,7 +22,8 @@ calcurse_SOURCES= 					\
 	utils.c utils.h					\
 	vars.c vars.h					\
 	wins.c wins.h	                                \
-	mem.c mem.h
+	mem.c mem.h                                     \
+	dmon.c dmon.h
 
 LDADD= @LTLIBINTL@
 
