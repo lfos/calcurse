@@ -1,4 +1,4 @@
-/*	$calcurse: dmon.c,v 1.1 2009/07/20 19:44:04 culot Exp $	*/
+/*	$calcurse: dmon.c,v 1.2 2009/07/23 18:33:20 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -59,6 +59,8 @@ static void
 dmon_sigs_hdlr (int sig)
 {
   notify_free_app ();
+  (void)io_fprintln (path_dmon_log, _("terminated at %s with signal %d\n"),
+                     nowstr (), sig);
   
   exit (EXIT_SUCCESS);
 }
@@ -165,7 +167,10 @@ dmon_start (int parent_exit_status)
       
       if (next.txt)
         mem_free (next.txt);
-      
+
+      (void)io_fprintln (path_dmon_log, _("sleeping at %s for %d seconds\n"),
+                   nowstr (), DMON_SLEEP_TIME);
       psleep (DMON_SLEEP_TIME);
+      (void)io_fprintln (path_dmon_log, _("awakened at %s\n"), nowstr ());
     }
 }

@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.77 2009/07/20 19:45:27 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.78 2009/07/23 18:33:21 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -762,6 +762,18 @@ now (void)
 
   current_time = time (NULL);
   return (current_time);
+}
+
+char *
+nowstr (void)
+{
+  static char buf[BUFSIZ];  
+  time_t now;
+
+  (void)time (&now);
+  (void)strftime (buf, sizeof buf, "%a %b %d %T %Y", localtime (&now));
+
+  return buf;
 }
 
 long

@@ -1,4 +1,4 @@
-/*	$calcurse: io.h,v 1.22 2009/07/12 16:22:01 culot Exp $	*/
+/*	$calcurse: io.h,v 1.23 2009/07/23 18:33:21 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -63,6 +63,7 @@ typedef struct {
   char name[BUFSIZ];
 } io_file_t;
 
+unsigned    io_fprintln (const char *, const char *, ...);
 void        io_init (char *, char *);
 void        io_extract_data (char *, const char *, int);
 unsigned    io_save_conf (conf_t *);

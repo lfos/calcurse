@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.70 2009/07/19 08:20:00 culot Exp $	*/
+/*	$calcurse: io.c,v 1.71 2009/07/23 18:33:21 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -674,6 +674,34 @@ pcal_export_todo (FILE *stream)
   (void)fprintf (stream, "\n");
 }
 
+/* Append a line to a file. */
+unsigned
+io_fprintln (const char *fname, const char *fmt, ...)
+{
+  FILE *fp;
+  va_list ap;
+  char buf[BUFSIZ];
+  int ret;
+
+  fp = fopen (fname, "a");
+  RETVAL_IF (!fp, 0, _("Failed to open \"%s\", - %s\n"),
+             fname, strerror (errno));
+
+  va_start (ap, fmt);
+  ret = vsnprintf (buf, sizeof buf, fmt, ap);
+  RETVAL_IF (ret < 0, 0, _("Failed to build message\n"));
+  va_end (ap);
+  
+  ret = fprintf (fp, "%s", buf);
+  RETVAL_IF (ret < 0, 0, _("Failed to print message \"%s\"\n"), buf);
+  
+  ret = fclose (fp);
+  RETVAL_IF (ret != 0, 0, _("Failed to close \"%s\" - %s\n"),
+             fname, strerror (errno));
+
+  return 1;
+}
+
 /* 
  * Initialization of data paths. The cfile argument is the variable
  * which contains the calendar file. If none is given, then the default
@@ -699,6 +727,7 @@ io_init (char *cfile, char *datadir)
       (void)snprintf (path_apts, BUFSIZ, "%s/" APTS_PATH_NAME, home);
       (void)snprintf (path_keys, BUFSIZ, "%s/" KEYS_PATH_NAME, home);
       (void)snprintf (path_lock, BUFSIZ, "%s/" LOCK_PATH_NAME, home);
+      (void)snprintf (path_dmon_log, BUFSIZ, "%s/" DLOG_PATH_NAME, home);
     }
   else
     {
@@ -711,7 +740,8 @@ io_init (char *cfile, char *datadir)
       (void)snprintf (path_todo, BUFSIZ, "%s/" TODO_PATH, home);
       (void)snprintf (path_conf, BUFSIZ, "%s/" CONF_PATH, home);
       (void)snprintf (path_keys, BUFSIZ, "%s/" KEYS_PATH, home);
-      (void)snprintf (path_lock, BUFSIZ, "%s/" LOCK_PATH, home);      
+      (void)snprintf (path_lock, BUFSIZ, "%s/" LOCK_PATH, home);
+      (void)snprintf (path_dmon_log, BUFSIZ, "%s/" DLOG_PATH, home);           
       (void)snprintf (path_notes, BUFSIZ, "%s/" NOTES_DIR, home);
       if (cfile == NULL)
         {
