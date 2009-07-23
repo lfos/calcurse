@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.71 2009/07/23 18:33:21 culot Exp $	*/
+/*	$calcurse: io.c,v 1.72 2009/07/23 19:16:03 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -514,7 +514,7 @@ ical_export_recur_apoints (FILE *stream)
       date_sec2date_fmt (i->start, ICALDATETIMEFMT, ical_datetime);
       (void)fprintf (stream, "BEGIN:VEVENT\n");
       (void)fprintf (stream, "DTSTART:%s\n", ical_datetime);
-      (void)fprintf (stream, "DURATION:PT%ldS\n", i->dur);
+      (void)fprintf (stream, "DURATION:PT0H0M%ldS\n", i->dur);
       (void)fprintf (stream, "RRULE:FREQ=%s;INTERVAL=%d",
                      ical_recur_type[i->rpt->type], i->rpt->freq);
 
@@ -617,7 +617,7 @@ ical_export_apoints (FILE *stream)
       date_sec2date_fmt (i->start, ICALDATETIMEFMT, ical_datetime);
       (void)fprintf (stream, "BEGIN:VEVENT\n");
       (void)fprintf (stream, "DTSTART:%s\n", ical_datetime);
-      (void)fprintf (stream, "DURATION:PT%ldS\n", i->dur);
+      (void)fprintf (stream, "DURATION:PT0H0M%ldS\n", i->dur);
       (void)fprintf (stream, "SUMMARY:%s\n", i->mesg);
       if (i->state & APOINT_NOTIFY)
 	ical_export_valarm (stream);
