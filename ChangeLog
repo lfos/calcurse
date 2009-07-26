@@ -4,6 +4,10 @@
 	again Chris for reporting it)
 
 	* src/io.c (io_unset_lock): function removed
+	* src/io.c (io_get_pid): new function
+
+	* src/args.c (status_arg): new function
+	* src/args.c: --status flag added
 	
 2009-07-23  Frederic Culot  <frederic@culot.org>
 

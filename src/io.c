@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.73 2009/07/26 12:47:15 culot Exp $	*/
+/*	$calcurse: io.c,v 1.74 2009/07/26 20:26:15 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -2975,4 +2975,29 @@ io_dump_pid (char *file)
     return 0;
   
   return 1;
+}
+
+/*
+ * Return the pid number contained in a file previously created with
+ * io_dump_pid ().
+ * If no file was found, return 0.
+ */
+unsigned
+io_get_pid (char *file)
+{
+  FILE *fp;
+  unsigned pid;
+
+  if (!file)
+    return 0;
+
+  if ((fp = fopen (file, "r")) == 0)
+    return 0;
+
+  if (fscanf (fp, "%u", &pid) != 1)
+    return 0;
+
+  (void)fclose (fp);
+
+  return pid;
 }

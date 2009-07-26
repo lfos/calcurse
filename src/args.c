@@ -1,4 +1,4 @@
-/*	$calcurse: args.c,v 1.57 2009/07/26 12:30:23 culot Exp $	*/
+/*	$calcurse: args.c,v 1.58 2009/07/26 20:26:14 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -40,6 +40,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <sys/types.h>
+#include <limits.h>
 #include <getopt.h>
 #include <time.h>
 #include <regex.h>
@@ -163,6 +164,39 @@ help_arg ()
   fputs (htitle, stdout);
   usage ();
   fputs (htext, stdout);
+}
+
+/*
+ * Used to display the status of running instances of calcurse.
+ * The displayed message will look like one of the following ones:
+ *
+ *   calcurse is running (pid #)
+ *   calcurse is running in background (pid #)
+ *   calcurse is not running
+ *
+ * The status is obtained by looking at pid files in user data directory
+ * (.calcurse.pid and .daemon.pid).
+ */
+static void
+status_arg (void)
+{
+  int cpid, dpid;
+  
+  cpid = io_get_pid (path_cpid);
+  dpid = io_get_pid (path_dpid);
+
+  EXIT_IF (cpid && dpid,
+           _("Error: both calcurse (pid: %d) and its daemon (pid: %d)\n"
+             "seem to be running at the same time!\n"
+             "Please check manually and restart calcurse.\n"),
+           cpid, dpid);
+
+  if (cpid)
+    fprintf (stdout, _("calcurse is running (pid %d)\n"), cpid);
+  else if (dpid)
+    fprintf (stdout, _("calcurse is running in background (pid %d)\n"), dpid);
+  else
+    fprintf (stdout, _("calcurse is not running\n"));
 }
 
 /*
@@ -660,12 +694,19 @@ parse_args (int argc, char **argv, conf_t *conf)
   int tflag = 0;    /* -t: print todo list */
   int vflag = 0;    /* -v: print version number */
   int xflag = 0;    /* -x: export data */
-
+  
   int tnum = 0, xfmt = 0, non_interactive = 0, multiple_flag = 0, load_data = 0;
   char *ddate = "", *cfile = NULL, *range = NULL, *startday = NULL;
   char *datadir = NULL, *ifile = NULL;
   regex_t reg, *preg = NULL;
 
+  /* Long options only */
+  int statusflag = 0; /* --status: get the status of running instances */
+  enum
+  {
+    STATUS_OPT = CHAR_MAX + 1 
+  };
+  
   static char *optstr = "hvnNax::t::d:c:r::s::S:D:i:";
 
   struct option longopts[] = {
@@ -680,6 +721,7 @@ parse_args (int argc, char **argv, conf_t *conf)
     {"range", optional_argument, NULL, 'r'},
     {"startday", optional_argument, NULL, 's'},
     {"search", required_argument, NULL, 'S'},
+    {"status", no_argument, NULL, STATUS_OPT},
     {"todo", optional_argument, NULL, 't'},
     {"version", no_argument, NULL, 'v'},
     {"export", optional_argument, NULL, 'x'},
@@ -690,6 +732,9 @@ parse_args (int argc, char **argv, conf_t *conf)
     {
       switch (ch)
 	{
+        case STATUS_OPT:
+          statusflag = 1;
+          break;
 	case 'a':
 	  aflag = 1;
 	  multiple_flag++;
@@ -843,6 +888,12 @@ parse_args (int argc, char **argv, conf_t *conf)
 	  version_arg ();
 	  non_interactive = 1;
 	}
+      else if (statusflag)
+        {
+          io_init (cfile, datadir);          
+          status_arg ();
+          non_interactive = 1;
+        }
       else if (multiple_flag)
 	{
 	  if (load_data)
