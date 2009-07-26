@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.72 2009/07/23 19:16:03 culot Exp $	*/
+/*	$calcurse: io.c,v 1.73 2009/07/26 12:47:15 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -39,6 +39,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <sys/types.h>
 #include <time.h>
 #include <math.h>
 #include <unistd.h>
@@ -726,7 +727,8 @@ io_init (char *cfile, char *datadir)
       (void)snprintf (path_notes, BUFSIZ, "%s/" NOTES_DIR_NAME, home);
       (void)snprintf (path_apts, BUFSIZ, "%s/" APTS_PATH_NAME, home);
       (void)snprintf (path_keys, BUFSIZ, "%s/" KEYS_PATH_NAME, home);
-      (void)snprintf (path_lock, BUFSIZ, "%s/" LOCK_PATH_NAME, home);
+      (void)snprintf (path_cpid, BUFSIZ, "%s/" CPID_PATH_NAME, home);
+      (void)snprintf (path_dpid, BUFSIZ, "%s/" DPID_PATH_NAME, home);      
       (void)snprintf (path_dmon_log, BUFSIZ, "%s/" DLOG_PATH_NAME, home);
     }
   else
@@ -740,7 +742,8 @@ io_init (char *cfile, char *datadir)
       (void)snprintf (path_todo, BUFSIZ, "%s/" TODO_PATH, home);
       (void)snprintf (path_conf, BUFSIZ, "%s/" CONF_PATH, home);
       (void)snprintf (path_keys, BUFSIZ, "%s/" KEYS_PATH, home);
-      (void)snprintf (path_lock, BUFSIZ, "%s/" LOCK_PATH, home);
+      (void)snprintf (path_cpid, BUFSIZ, "%s/" CPID_PATH, home);
+      (void)snprintf (path_dpid, BUFSIZ, "%s/" DPID_PATH, home);      
       (void)snprintf (path_dmon_log, BUFSIZ, "%s/" DLOG_PATH, home);           
       (void)snprintf (path_notes, BUFSIZ, "%s/" NOTES_DIR, home);
       if (cfile == NULL)
@@ -2934,32 +2937,42 @@ io_set_lock (void)
 {
   FILE *lock;
 
-  if ((lock = fopen (path_lock, "r")) != NULL)
+  if ((lock = fopen (path_cpid, "r")) != NULL)
     {
       (void)fprintf (stderr,
                      _("\nWARNING: it seems that another calcurse instance is "
                        "already running.\n"
                        "If this is not the case, please remove the following "
                        "lock file: \n\"%s\"\n"
-                       "and restart calcurse.\n"), path_lock);
+                       "and restart calcurse.\n"), path_cpid);
       exit (EXIT_FAILURE);
     }
   else
     {
-      if ((lock = fopen (path_lock, "w")) == NULL)
-	{
-	  (void)fprintf (stderr, _("FATAL ERROR: could not create %s: %s\n"),
-                         path_lock, strerror (errno));
-	  exit_calcurse (EXIT_FAILURE);
-	}
-      (void)fclose (lock);
+      if (!io_dump_pid (path_cpid))
+        EXIT (_("FATAL ERROR: could not create %s: %s\n"),
+                         path_cpid, strerror (errno));
     }
 }  
 
-/* Used when calcurse exits to remove the lock file. */
-void
-io_unset_lock (void)
+/*
+ * Create a new file and write the process pid inside
+ * (used to create a simple lock for example).
+ */
+unsigned
+io_dump_pid (char *file)
 {
-  if (unlink (path_lock) != 0)
-    EXIT (_("Could not remove lock file: %s\n"), strerror (errno));
+  pid_t pid;
+  FILE *fp;
+  
+  if (!file)
+    return 0;
+
+  pid = getpid ();
+  if (!(fp = fopen (file, "w"))
+      || fprintf (fp, "%ld\n", (long)pid) < 0
+      || fclose (fp) != 0)
+    return 0;
+  
+  return 1;
 }

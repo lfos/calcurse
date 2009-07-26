@@ -2,6 +2,8 @@
 
 	* src/args.c (parse_args): check for file presence added (thanks
 	again Chris for reporting it)
+
+	* src/io.c (io_unset_lock): function removed
 	
 2009-07-23  Frederic Culot  <frederic@culot.org>
 

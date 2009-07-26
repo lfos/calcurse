@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.78 2009/07/23 18:33:21 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.79 2009/07/26 12:47:16 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -94,7 +94,11 @@ exit_calcurse (int status)
   keys_free ();
   mem_stats ();
   if (remove_lock)
-    io_unset_lock ();
+    {
+      if (unlink (path_cpid) != 0)
+        EXIT (_("Could not remove calcurse lock file: %s\n"),
+              strerror (errno));        
+    }
 
   dmon_start (status);
   

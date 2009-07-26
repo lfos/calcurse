@@ -1,4 +1,4 @@
-/*	$calcurse: io.h,v 1.23 2009/07/23 18:33:21 culot Exp $	*/
+/*	$calcurse: io.h,v 1.24 2009/07/26 12:47:16 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -87,6 +87,6 @@ void        io_log_free (io_file_t *);
 void        io_start_psave_thread (conf_t *);
 void        io_stop_psave_thread (void);
 void        io_set_lock (void);
-void        io_unset_lock (void);
+unsigned    io_dump_pid (char *);
 
 #endif /* !CALCURSE_IO_H */

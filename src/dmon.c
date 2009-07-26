@@ -1,4 +1,4 @@
-/*	$calcurse: dmon.c,v 1.2 2009/07/23 18:33:20 culot Exp $	*/
+/*	$calcurse: dmon.c,v 1.3 2009/07/26 12:47:15 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -61,6 +61,9 @@ dmon_sigs_hdlr (int sig)
   notify_free_app ();
   (void)io_fprintln (path_dmon_log, _("terminated at %s with signal %d\n"),
                      nowstr (), sig);
+
+  if (unlink (path_dpid) != 0)
+    EXIT (_("Could not remove daemon lock file: %s\n"), strerror (errno));
   
   exit (EXIT_SUCCESS);
 }
@@ -143,6 +146,9 @@ dmon_start (int parent_exit_status)
   if (!daemonize (parent_exit_status))
     EXIT (_("Cannot daemonize, aborting\n"));
 
+  if (!io_dump_pid (path_dpid))
+    EXIT (_("Could not set lock file\n"));
+  
   io_check_file (path_conf, (int *)0);
   custom_load_conf (&conf, 0);
   
