@@ -1,4 +1,4 @@
-/*	$calcurse: dmon.c,v 1.3 2009/07/26 12:47:15 culot Exp $	*/
+/*	$calcurse: dmon.c,v 1.4 2009/07/26 20:38:36 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -179,4 +179,21 @@ dmon_start (int parent_exit_status)
       psleep (DMON_SLEEP_TIME);
       (void)io_fprintln (path_dmon_log, _("awakened at %s\n"), nowstr ());
     }
+}
+
+/*
+ * Check if calcurse is running in background, and if yes, send a SIGINT
+ * signal to stop it.
+ */
+void
+dmon_stop (void)
+{
+  int dpid;
+
+  dpid = io_get_pid (path_dpid);
+  if (!dpid)
+    return;
+
+  if (kill ((pid_t)dpid, SIGINT) < 0)
+    EXIT (_("Could not stop calcurse daemon: %s\n"), strerror (errno));
 }

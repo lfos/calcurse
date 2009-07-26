@@ -1,4 +1,4 @@
-/*	$calcurse: dmon.h,v 1.1 2009/07/20 19:44:04 culot Exp $	*/
+/*	$calcurse: dmon.h,v 1.2 2009/07/26 20:38:36 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -40,5 +40,6 @@
 #define CALCURSE_DMON_H
 
 void   dmon_start (int);
+void   dmon_stop (void);
 
 #endif /* CALCURSE_DMON_H */

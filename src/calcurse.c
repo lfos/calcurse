@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.84 2009/07/19 16:51:36 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.85 2009/07/26 20:38:35 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -53,6 +53,7 @@
 #include "args.h"
 #include "notify.h"
 #include "keys.h"
+#include "dmon.h"
 
 /*
  * Calcurse is a text-based personal organizer which helps keeping track
@@ -101,6 +102,7 @@ main (int argc, char **argv)
   else
     {
       no_data_file = io_check_data_files ();
+      dmon_stop ();
       io_set_lock ();
     }
   
