@@ -11,6 +11,8 @@
 
 	* src/dmon.c (dmon_stop): new function
 	* src/dmon.c: DMON_LOG and DMON_ABRT defines added
+
+	* po/POTFILES.in: dmon.c added in the list
 	
 2009-07-23  Frederic Culot  <frederic@culot.org>
 
