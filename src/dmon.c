@@ -1,4 +1,4 @@
-/*	$calcurse: dmon.c,v 1.4 2009/07/26 20:38:36 culot Exp $	*/
+/*	$calcurse: dmon.c,v 1.5 2009/07/26 21:03:21 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -55,15 +55,27 @@
 
 #define DMON_SLEEP_TIME  60
 
+#define DMON_LOG(...) do {                              \
+  (void)io_fprintln (path_dmon_log, __VA_ARGS__);       \
+} while (0)
+
+#define DMON_ABRT(...) do {                             \
+  DMON_LOG (__VA_ARGS__);                               \
+  exit (EXIT_FAILURE);                                  \
+} while (0)
+
 static void
 dmon_sigs_hdlr (int sig)
 {
   notify_free_app ();
-  (void)io_fprintln (path_dmon_log, _("terminated at %s with signal %d\n"),
-                     nowstr (), sig);
+  DMON_LOG (_("terminated at %s with signal %d\n"), nowstr (), sig);
 
   if (unlink (path_dpid) != 0)
-    EXIT (_("Could not remove daemon lock file: %s\n"), strerror (errno));
+    {
+      DMON_LOG (_("Could not remove daemon lock file: %s\n"),
+                strerror (errno));
+      exit (EXIT_FAILURE);
+    }
   
   exit (EXIT_SUCCESS);
 }
@@ -82,8 +94,7 @@ daemonize (int status)
   switch (fork ())
     {
     case -1:               /* fork error */
-      ERROR_MSG (_("Could not fork: %s\n"), strerror (errno));
-      return 0;
+      EXIT (_("Could not fork: %s\n"), strerror (errno));
       break;
     case 0:                /* child */
       break;
@@ -99,8 +110,8 @@ daemonize (int status)
    */
   if (setsid () == -1)
     {
-      ERROR_MSG (_("Could not detach from the controlling terminal: %s\n"),
-                 strerror (errno));
+      DMON_LOG (_("Could not detach from the controlling terminal: %s\n"),
+                strerror (errno));
       return 0;
     }
 
@@ -110,8 +121,8 @@ daemonize (int status)
    */
   if (chdir ("/") == -1)
     {
-      ERROR_MSG (_("Could not change working directory: %s\n"),
-                 strerror (errno));
+      DMON_LOG (_("Could not change working directory: %s\n"),
+                strerror (errno));
       return 0;
     }
       
@@ -144,10 +155,10 @@ dmon_start (int parent_exit_status)
   conf_t conf;
   
   if (!daemonize (parent_exit_status))
-    EXIT (_("Cannot daemonize, aborting\n"));
+    DMON_ABRT (_("Cannot daemonize, aborting\n"));
 
   if (!io_dump_pid (path_dpid))
-    EXIT (_("Could not set lock file\n"));
+    DMON_ABRT (_("Could not set lock file\n"));
   
   io_check_file (path_conf, (int *)0);
   custom_load_conf (&conf, 0);
@@ -174,10 +185,10 @@ dmon_start (int parent_exit_status)
       if (next.txt)
         mem_free (next.txt);
 
-      (void)io_fprintln (path_dmon_log, _("sleeping at %s for %d seconds\n"),
-                   nowstr (), DMON_SLEEP_TIME);
+      DMON_LOG (_("sleeping at %s for %d seconds\n"), nowstr (),
+                DMON_SLEEP_TIME);
       psleep (DMON_SLEEP_TIME);
-      (void)io_fprintln (path_dmon_log, _("awakened at %s\n"), nowstr ());
+      DMON_LOG (_("awakened at %s\n"), nowstr ());
     }
 }
 
