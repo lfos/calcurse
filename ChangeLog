@@ -1,3 +1,8 @@
+2009-07-26  Frederic Culot  <frederic@culot.org>
+
+	* src/args.c (parse_args): check for file presence added (thanks
+	again Chris for reporting it)
+	
 2009-07-23  Frederic Culot  <frederic@culot.org>
 
 	* src/io.c (io_fprintln): new function
@@ -6,10 +11,12 @@
 
 	* src/dmon.c (dmon_start): log messages added
 
-	* src/vars.[ch]: daemon log file path added
+	* src/vars.[ch]: daemon log and pid file path added
 
 	* src/io.c: incorrect duration format when exporting to ical
 	(thanks Chris for reporting it)
+
+	* src/io.c (io_dump_pid): new function
 
 2009-07-20  Frederic Culot  <frederic@culot.org>
 

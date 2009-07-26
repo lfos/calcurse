@@ -1,4 +1,4 @@
-/*	$calcurse: args.c,v 1.56 2009/07/15 19:16:22 culot Exp $	*/
+/*	$calcurse: args.c,v 1.57 2009/07/26 12:30:23 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -872,18 +872,22 @@ parse_args (int argc, char **argv, conf_t *conf)
 	    }
 	  if (tflag)
 	    {
+              io_check_file (path_todo, (int *)0);
               io_load_todo ();
 	      todo_arg (tnum, Nflag, preg);
 	      non_interactive = 1;
 	    }
 	  if (nflag)
 	    {
+              io_check_file (path_apts, (int *)0);              
               io_load_app ();
 	      next_arg ();
 	      non_interactive = 1;
 	    }
 	  if (dflag || rflag || sflag)
 	    {
+              io_check_file (path_apts, (int *)0);
+              io_check_file (path_conf, (int *)0);              
               io_load_app ();
               custom_load_conf (conf, 0); /* To get output date format. */
               if (dflag)
@@ -897,6 +901,8 @@ parse_args (int argc, char **argv, conf_t *conf)
 	    {
 	      date_t day;
 
+              io_check_file (path_apts, (int *)0);              
+              io_check_file (path_conf, (int *)0);              
               vars_init (conf);
               custom_load_conf (conf, 0); /* To get output date format. */
               io_load_app ();
