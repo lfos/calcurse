@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.74 2009/07/26 20:26:15 culot Exp $	*/
+/*	$calcurse: io.c,v 1.75 2009/07/27 21:00:41 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -1499,14 +1499,30 @@ check_directory (char *dir, int *missing)
     (*missing)++;
 }
 
+unsigned
+io_file_exist (char *file)
+{
+  FILE *fd;
+  
+  if (!file)
+    return 0;
+
+  if ((fd = fopen (file, "r")) == 0)
+    return 0;
+
+  (void)fclose (fd);
+
+  return 1;
+}
+
 void
 io_check_file (char *file, int *missing)
 {
-  FILE *fd;
-
   errno = 0;
-  if ((fd = fopen (file, "r")) == NULL)
+  if (!io_file_exist (file))
     {
+      FILE *fd;
+      
       if (missing)
         (*missing)++;
       if ((fd = fopen (file, "w")) == NULL)
@@ -1515,8 +1531,8 @@ io_check_file (char *file, int *missing)
                          file, strerror (errno));
 	  exit_calcurse (EXIT_FAILURE);
 	}
+      file_close (fd, __FILE_POS__);
     }
-  file_close (fd, __FILE_POS__);
 }
 
 /* 
