@@ -1,4 +1,4 @@
-/*	$calcurse: dmon.c,v 1.6 2009/07/27 19:35:09 culot Exp $	*/
+/*	$calcurse: dmon.c,v 1.7 2009/07/27 21:02:55 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -55,19 +55,27 @@
 
 #define DMON_SLEEP_TIME  60
 
-#define DMON_LOG(...) do {                              \
-  (void)io_fprintln (path_dmon_log, __VA_ARGS__);       \
+#define DMON_LOG(...) do {                                      \
+  (void)io_fprintln (path_dmon_log, __VA_ARGS__);               \
 } while (0)
 
-#define DMON_ABRT(...) do {                             \
-  DMON_LOG (__VA_ARGS__);                               \
-  exit (EXIT_FAILURE);                                  \
+#define DMON_ABRT(...) do {                                     \
+  DMON_LOG (__VA_ARGS__);                                       \
+  if (kill (getpid (), SIGINT) < 0)                             \
+    {                                                           \
+      DMON_LOG (_("Could not stop daemon properly: %s\n"),      \
+                strerror (errno));                              \
+      exit (EXIT_FAILURE);                                      \
+    }                                                           \
 } while (0)
+
+static unsigned data_loaded;
 
 static void
 dmon_sigs_hdlr (int sig)
 {
-  free_user_data ();
+  if (data_loaded)
+    free_user_data ();
   
   DMON_LOG (_("terminated at %s with signal %d\n"), nowstr (), sig);
 
@@ -160,15 +168,20 @@ dmon_start (int parent_exit_status)
 
   if (!io_dump_pid (path_dpid))
     DMON_ABRT (_("Could not set lock file\n"));
-  
-  io_check_file (path_conf, (int *)0);
+
+  if (!io_file_exist (path_conf))
+    DMON_ABRT (_("Could not access \"%s\": %s\n"),
+               path_conf, strerror (errno));
   custom_load_conf (&conf, 0);
   
-  io_check_file (path_apts, (int *)0);
+  if (!io_file_exist (path_apts))
+    DMON_ABRT (_("Could not access \"%s\": %s\n"),
+               path_apts, strerror (errno));
   apoint_llist_init ();
   recur_apoint_llist_init ();
-  io_load_app ();  
-            
+  io_load_app ();
+
+  data_loaded = 1;
   for (;;)
     {
       struct notify_app_s next;
