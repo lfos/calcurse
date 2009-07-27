@@ -1,4 +1,4 @@
-/*	$calcurse: dmon.c,v 1.5 2009/07/26 21:03:21 culot Exp $	*/
+/*	$calcurse: dmon.c,v 1.6 2009/07/27 19:35:09 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -67,7 +67,8 @@
 static void
 dmon_sigs_hdlr (int sig)
 {
-  notify_free_app ();
+  free_user_data ();
+  
   DMON_LOG (_("terminated at %s with signal %d\n"), nowstr (), sig);
 
   if (unlink (path_dpid) != 0)
@@ -164,6 +165,8 @@ dmon_start (int parent_exit_status)
   custom_load_conf (&conf, 0);
   
   io_check_file (path_apts, (int *)0);
+  apoint_llist_init ();
+  recur_apoint_llist_init ();
   io_load_app ();  
             
   for (;;)

@@ -1,3 +1,10 @@
+2009-07-27  Frederic Culot  <frederic@culot.org>
+
+	* src/utils.c (free_user_data): new function
+
+	* src/dmon.c: work on allocating and freeing memory associated
+	with user data
+	
 2009-07-26  Frederic Culot  <frederic@culot.org>
 
 	* src/args.c (parse_args): check for file presence added (thanks

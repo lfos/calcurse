@@ -1,4 +1,4 @@
-/*	$calcurse: utils.h,v 1.48 2009/07/23 18:33:22 culot Exp $	*/
+/*	$calcurse: utils.h,v 1.49 2009/07/27 19:35:09 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -124,6 +124,7 @@ typedef enum
 erase_flag_e;
 
 void      exit_calcurse (int);
+void      free_user_data (void);
 void      fatalbox (const char *);
 void      warnbox (const char *);
 void      status_mesg (char *, char *);

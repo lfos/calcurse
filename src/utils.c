@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.80 2009/07/26 20:26:16 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.81 2009/07/27 19:35:09 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -80,17 +80,7 @@ exit_calcurse (int status)
   
   calendar_stop_date_thread ();
   io_stop_psave_thread ();
-  day_free_list ();
-  event_llist_free ();
-  event_free_bkp (ERASE_FORCE);
-  apoint_llist_free ();
-  apoint_free_bkp (ERASE_FORCE);
-  recur_apoint_llist_free ();
-  recur_event_llist_free ();
-  recur_apoint_free_bkp (ERASE_FORCE);
-  recur_event_free_bkp (ERASE_FORCE);
-  todo_free_list ();
-  notify_free_app ();
+  free_user_data ();
   keys_free ();
   mem_stats ();
   if (was_interactive)
@@ -102,6 +92,22 @@ exit_calcurse (int status)
     }
   
   exit (status);
+}
+
+void
+free_user_data (void)
+{
+  day_free_list ();
+  event_llist_free ();
+  event_free_bkp (ERASE_FORCE);
+  apoint_llist_free ();
+  apoint_free_bkp (ERASE_FORCE);
+  recur_apoint_llist_free ();
+  recur_event_llist_free ();
+  recur_apoint_free_bkp (ERASE_FORCE);
+  recur_event_free_bkp (ERASE_FORCE);
+  todo_free_list ();
+  notify_free_app ();
 }
 
 /* Function to exit on internal error. */
