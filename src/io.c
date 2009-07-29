@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.75 2009/07/27 21:00:41 culot Exp $	*/
+/*	$calcurse: io.c,v 1.76 2009/07/29 18:20:55 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -795,11 +795,12 @@ io_init (char *cfile, char *datadir)
     }
 }
 
-  /* get data from file */
 void
 io_extract_data (char *dst_data, const char *org, int len)
 {
-  for (;;)
+  int i;
+  
+  for (i = 0; i < len - 1; i++)
     {
       if (*org == '\n' || *org == '\0')
 	break;
@@ -1296,11 +1297,11 @@ io_load_todo (void)
       else
 	note[0] = '\0';
       /* Then read todo description. */
-      (void)fgets (buf, BUFSIZ, data_file);
+      (void)fgets (buf, sizeof buf, data_file);
       newline = strchr (buf, '\n');
       if (newline)
         *newline = '\0';
-      io_extract_data (e_todo, buf, strlen (buf));
+      io_extract_data (e_todo, buf, sizeof buf);
       todo_add (e_todo, id, note);
       ++nb_tod;
     }

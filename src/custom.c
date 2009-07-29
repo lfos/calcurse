@@ -1,4 +1,4 @@
-/*	$calcurse: custom.c,v 1.41 2009/07/12 17:55:13 culot Exp $	*/
+/*	$calcurse: custom.c,v 1.42 2009/07/29 18:20:54 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -222,7 +222,7 @@ custom_load_conf (conf_t *conf, int background)
   FILE *data_file;
   char *mesg_line1 = _("Failed to open config file");
   char *mesg_line2 = _("Press [ENTER] to continue");
-  char buf[100], e_conf[100];
+  char buf[BUFSIZ], e_conf[BUFSIZ];
   int var;
 
   data_file = fopen (path_conf, "r");
@@ -237,11 +237,11 @@ custom_load_conf (conf_t *conf, int background)
   pthread_mutex_lock (&nbar.mutex);
   for (;;)
     {
-      if (fgets (buf, 99, data_file) == NULL)
+      if (fgets (buf, sizeof buf, data_file) == NULL)
 	{
 	  break;
 	}
-      io_extract_data (e_conf, buf, strlen (buf));
+      io_extract_data (e_conf, buf, sizeof buf);
 
       switch (var)
 	{
