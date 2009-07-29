@@ -1,4 +1,4 @@
-/*	$calcurse: dmon.c,v 1.7 2009/07/27 21:02:55 culot Exp $	*/
+/*	$calcurse: dmon.c,v 1.8 2009/07/29 19:11:58 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -161,6 +161,7 @@ daemonize (int status)
 void
 dmon_start (int parent_exit_status)
 {
+  struct notify_app_s next;  
   conf_t conf;
   
   if (!daemonize (parent_exit_status))
@@ -182,11 +183,12 @@ dmon_start (int parent_exit_status)
   io_load_app ();
 
   data_loaded = 1;
+  next.got_app = 0;
   for (;;)
     {
-      struct notify_app_s next;
-
-      (void)notify_get_next (&next);
+      if (!next.got_app)
+        (void)notify_get_next (&next);
+      
       if (next.got_app)
         {
           int left;
@@ -195,7 +197,10 @@ dmon_start (int parent_exit_status)
           left = notify_time_left ();
 
           if (left < nbar.cntdwn)
-            notify_launch_cmd ();
+            {
+              notify_launch_cmd ();
+              next.got_app = 0;
+            }
         }
       
       if (next.txt)

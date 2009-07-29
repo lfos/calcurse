@@ -4,6 +4,9 @@
 	configuration data
 
 	* src/io.c (io_extract_data): do not read past the maximum length
+
+	* src/dmon.c (dmon_start): avoid multiple notifications of the
+	same appointment
 	
 2009-07-27  Frederic Culot  <frederic@culot.org>
 
