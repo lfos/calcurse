@@ -1,4 +1,4 @@
-/*	$calcurse: dmon.c,v 1.9 2009/08/01 13:31:20 culot Exp $	*/
+/*	$calcurse: dmon.c,v 1.10 2009/08/01 17:53:11 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -56,7 +56,8 @@
 #define DMON_SLEEP_TIME  60
 
 #define DMON_LOG(...) do {                                      \
-  (void)io_fprintln (path_dmon_log, __VA_ARGS__);               \
+  if (dmon.log)                                                 \
+    (void)io_fprintln (path_dmon_log, __VA_ARGS__);             \
 } while (0)
 
 #define DMON_ABRT(...) do {                                     \
@@ -181,7 +182,8 @@ dmon_start (int parent_exit_status)
   recur_apoint_llist_init ();
   io_load_app ();
   data_loaded = 1;
-  
+
+  DMON_LOG (_("started at %s\n"), nowstr ());
   for (;;)
     {
       int left;
