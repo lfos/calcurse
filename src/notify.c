@@ -1,4 +1,4 @@
-/*	$calcurse: notify.c,v 1.41 2009/07/20 19:45:26 culot Exp $	*/
+/*	$calcurse: notify.c,v 1.42 2009/08/01 13:31:20 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -189,20 +189,23 @@ notify_reinit_bar (void)
 }
 
 /* Launch user defined command as a notification. */
-void
+unsigned
 notify_launch_cmd (void)
 {
   int pid;
 
   if (notify_app.state & APOINT_NOTIFIED)
-    return;
+    return 1;
   
   notify_app.state |= APOINT_NOTIFIED;
     
   pid = fork ();
 
   if (pid < 0)
-    ERROR_MSG (_("error while launching command: could not fork"));
+    {
+      ERROR_MSG (_("error while launching command: could not fork"));
+      return 0;
+    }
   else if (pid == 0)
     {
       /* Child: launch user defined command */
@@ -213,6 +216,8 @@ notify_launch_cmd (void)
         }
       _exit (0);
     }
+
+  return 1;
 }
 
 /* 
@@ -276,7 +281,7 @@ notify_update_bar (void)
 	    wattroff (notify.win, A_BLINK);
 
 	  if (blinking)
-            notify_launch_cmd ();
+            (void)notify_launch_cmd ();
 	  pthread_mutex_unlock (&nbar.mutex);
 	}
       else
@@ -356,6 +361,32 @@ notify_get_next (struct notify_app_s *a)
   (void)apoint_check_next (a, current_time);
 
   return 1;
+}
+
+unsigned
+notify_get_next_bkgd (void)
+{
+  struct notify_app_s a;
+  
+  if (!notify_app.got_app)
+    {
+      if (!notify_get_next (&a))
+        return 0;
+      if (a.got_app)
+        notify_update_app (a.time, a.state, a.txt);
+    }
+
+  return 1;
+}
+
+/* Return the description of next appointment to be notified. */
+char *
+notify_app_txt (void)
+{
+  if (notify_app.got_app)
+    return notify_app.txt;
+  else
+    return (char *)0;
 }
 
 /* Look for the next appointment within the next 24 hours. */
@@ -501,88 +532,114 @@ notify_start_main_thread (void)
   notify_check_next_app ();
 }
 
+/*
+ * Print an option in the configuration menu.
+ * Specific treatment is needed depending on if the option is of type boolean
+ * (either YES or NO), or an option holding a string value.
+ */
+static void
+print_option (WINDOW *win, unsigned x, unsigned y, char *name,
+              char *valstr, unsigned valbool, char *desc, unsigned num)
+{
+  const int XOFF = 4;
+  const int MAXCOL = col - 2;
+  int x_opt, len;
+  
+  x_opt = x + XOFF + strlen (name);
+  mvwprintw (win, y, x, "[%u] %s", num, name);
+  erase_window_part (win, x_opt, y, MAXCOL, y);
+  if ((len = strlen (valstr)) != 0)
+    {
+      unsigned maxlen;
+
+      maxlen = MAXCOL - x_opt - 2;
+      custom_apply_attr (win, ATTR_HIGHEST);
+      if (len < maxlen)
+	mvwprintw (win, y, x_opt, "%s", valstr);
+      else
+	{
+          char buf[BUFSIZ];
+          
+	  (void)strncpy (buf, valstr, maxlen - 1);
+	  buf[maxlen - 1] = '\0';
+	  mvwprintw (win, y, x_opt, "%s...", buf);
+	}
+      custom_remove_attr (win, ATTR_HIGHEST);
+    }
+  else
+    print_bool_option_incolor (win, valbool, y, x_opt);
+  mvwprintw (win, y + 1, x, desc);
+}
+
 /* Print options related to the notify-bar. */
 static void
 notify_print_options (WINDOW *optwin, int col)
 {
+  const int XORIG = 3;
+  const int YORIG = 4;
+  const int YOFF  = 3;
+  
   enum
-  { SHOW, DATE, CLOCK, WARN, CMD, NB_OPT };
+  { SHOW, DATE, CLOCK, WARN, CMD, DMON, DMON_LOG, NB_OPT };
 
   struct opt_s
   {
-    char name[BUFSIZ];
-    char desc[BUFSIZ];
-    char value[BUFSIZ];
-  }
-  opt[NB_OPT];
+    char     *name;
+    char     *desc;
+    char      valstr[BUFSIZ];
+    unsigned  valnum;
+  } opt[NB_OPT];
 
-  int i, y, x, l, x_pos, y_pos, x_offset, y_offset, maxcol, maxlen;
-  char buf[BUFSIZ];
+  int i;
 
-  x_pos = 3;
-  x_offset = 4;
-  y_pos = 4;
-  y_offset = 3;
-  maxcol = col - 2;
-
-  (void)strncpy (opt[SHOW].name, _("notify-bar_show = "), BUFSIZ);
-  (void)strncpy (opt[DATE].name, _("notify-bar_date = "), BUFSIZ);
-  (void)strncpy (opt[CLOCK].name, _("notify-bar_clock = "), BUFSIZ);
-  (void)strncpy (opt[WARN].name, _("notify-bar_warning = "), BUFSIZ);
-  (void)strncpy (opt[CMD].name, _("notify-bar_command = "), BUFSIZ);
-
-  (void)strncpy (opt[SHOW].desc,
-                 _("(if set to YES, notify-bar will be displayed)"), BUFSIZ);
-  (void)strncpy (opt[DATE].desc,
-                 _("(Format of the date to be displayed inside notify-bar)"),
-                 BUFSIZ);
-  (void)strncpy (opt[CLOCK].desc,
-                 _("(Format of the time to be displayed inside notify-bar)"),
-                 BUFSIZ);
-  (void)strncpy (opt[WARN].desc,
-                 _("(Warn user if an appointment is within next "
-                   "'notify-bar_warning' seconds)"), BUFSIZ);
-  (void)strncpy (opt[CMD].desc,
-                 _("(Command used to notify user of an upcoming appointment)"),
-                 BUFSIZ);
+  opt[SHOW].name = _("notify-bar_show = ");
+  opt[SHOW].desc = _("(if set to YES, notify-bar will be displayed)");
+  
+  opt[DATE].name = _("notify-bar_date = ");
+  opt[DATE].desc = _("(Format of the date to be displayed inside notify-bar)");
+  
+  opt[CLOCK].name = _("notify-bar_clock = ");
+  opt[CLOCK].desc = _("(Format of the time to be displayed inside notify-bar)");
+  
+  opt[WARN].name = _("notify-bar_warning = ");
+  opt[WARN].desc = _("(Warn user if an appointment is within next "
+                     "'notify-bar_warning' seconds)");
+  
+  opt[CMD].name = _("notify-bar_command = ");
+  opt[CMD].desc = _("(Command used to notify user of an upcoming appointment)");
+  
+  opt[DMON].name = _("notify-daemon_enable = ");
+  opt[DMON].desc = _("(Run in background to get notifications after exiting)");
+  
+  opt[DMON_LOG].name = _("notify-daemon_log = ");
+  opt[DMON_LOG].desc = _("(Log activity when running in background)");
 
   pthread_mutex_lock (&nbar.mutex);
 
-  (void)strncpy (opt[DATE].value, nbar.datefmt, BUFSIZ);
-  (void)strncpy (opt[CLOCK].value, nbar.timefmt, BUFSIZ);
-  (void)snprintf (opt[WARN].value, BUFSIZ, "%d", nbar.cntdwn);
-  (void)strncpy (opt[CMD].value, nbar.cmd, BUFSIZ);
+  /* String value options */
+  (void)strncpy (opt[DATE].valstr, nbar.datefmt, BUFSIZ);
+  (void)strncpy (opt[CLOCK].valstr, nbar.timefmt, BUFSIZ);
+  (void)snprintf (opt[WARN].valstr, BUFSIZ, "%d", nbar.cntdwn);
+  (void)strncpy (opt[CMD].valstr, nbar.cmd, BUFSIZ);
 
-  l = strlen (opt[SHOW].name);
-  x = x_pos + x_offset + l;
-  mvwprintw (optwin, y_pos, x_pos, "[1] %s", opt[SHOW].name);
-  erase_window_part (optwin, x, y_pos, maxcol, y_pos);
-  print_bool_option_incolor (optwin, nbar.show, y_pos, x);
-  mvwprintw (optwin, y_pos + 1, x_pos, opt[SHOW].desc);
+  /* Boolean options */
+  opt[SHOW].valnum = nbar.show;
+  pthread_mutex_unlock (&nbar.mutex);
+  
+  opt[DMON].valnum = dmon.enable;
+  opt[DMON_LOG].valnum = dmon.log;
 
-  for (i = 1; i < NB_OPT; i++)
+  opt[SHOW].valstr[0] = opt[DMON].valstr[0] = opt[DMON_LOG].valstr[0] = '\0';
+  
+  for (i = 0; i < NB_OPT; i++)
     {
-      l = strlen (opt[i].name);
-      y = y_pos + i * y_offset;
-      x = x_pos + x_offset + l;
-      maxlen = maxcol - x - 2;
-
-      mvwprintw (optwin, y, x_pos, "[%d] %s", i + 1, opt[i].name);
-      erase_window_part (optwin, x, y, maxcol, y);
-      custom_apply_attr (optwin, ATTR_HIGHEST);
-      if (strlen (opt[i].value) < maxlen)
-	mvwprintw (optwin, y, x, "%s", opt[i].value);
-      else
-	{
-	  (void)strncpy (buf, opt[i].value, maxlen - 1);
-	  buf[maxlen - 1] = '\0';
-	  mvwprintw (optwin, y, x, "%s...", buf);
-	}
-      custom_remove_attr (optwin, ATTR_HIGHEST);
-      mvwprintw (optwin, y + 1, x_pos, opt[i].desc);
+      int y;
+      
+      y = YORIG + i * YOFF;
+      print_option (optwin, XORIG, y, opt[i].name, opt[i].valstr,
+                    opt[i].valnum, opt[i].desc, i + 1);
     }
 
-  pthread_mutex_unlock (&nbar.mutex);
   wmove (win[STA].p, 1, 0);
   wnoutrefresh (optwin);
   doupdate ();
@@ -692,6 +749,14 @@ notify_config_bar (void)
 	      pthread_mutex_unlock (&nbar.mutex);
 	    }
 	  change_win = 0;
+	  break;
+	case '6':
+	  dmon.enable = !dmon.enable;
+	  change_win = 1;
+	  break;
+	case '7':
+	  dmon.log = !dmon.log;
+	  change_win = 1;
 	  break;
 	}
     }

@@ -1,4 +1,4 @@
-/*	$calcurse: vars.h,v 1.36 2009/07/26 12:47:17 culot Exp $	*/
+/*	$calcurse: vars.h,v 1.37 2009/08/01 13:31:21 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -135,6 +135,12 @@ struct nbar_s
   pthread_mutex_t  mutex;
 };
 
+struct dmon_conf_s
+{
+  unsigned  enable;   /* launch daemon automatically when exiting */
+  unsigned  log;      /* log daemon activity */
+};
+
 /* General configuration variables */
 typedef struct
 {
@@ -169,6 +175,7 @@ extern char           path_dmon_log[BUFSIZ];
 
 extern struct pad_s   apad;
 extern struct nbar_s  nbar;
+extern struct dmon_conf_s dmon;
 
 void vars_init (conf_t *);
 

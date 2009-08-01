@@ -1,4 +1,4 @@
-/*	$calcurse: dmon.c,v 1.8 2009/07/29 19:11:58 culot Exp $	*/
+/*	$calcurse: dmon.c,v 1.9 2009/08/01 13:31:20 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -161,7 +161,6 @@ daemonize (int status)
 void
 dmon_start (int parent_exit_status)
 {
-  struct notify_app_s next;  
   conf_t conf;
   
   if (!daemonize (parent_exit_status))
@@ -181,31 +180,23 @@ dmon_start (int parent_exit_status)
   apoint_llist_init ();
   recur_apoint_llist_init ();
   io_load_app ();
-
   data_loaded = 1;
-  next.got_app = 0;
+  
   for (;;)
     {
-      if (!next.got_app)
-        (void)notify_get_next (&next);
+      int left;
       
-      if (next.got_app)
+      if (!notify_get_next_bkgd ())
+        DMON_ABRT (_("error loading next appointment\n"));
+      left = notify_time_left ();
+      if (left < nbar.cntdwn)
         {
-          int left;
-
-          notify_update_app (next.time, next.state, next.txt);
-          left = notify_time_left ();
-
-          if (left < nbar.cntdwn)
-            {
-              notify_launch_cmd ();
-              next.got_app = 0;
-            }
+          DMON_LOG (_("launching notification at %s for: \"%s\"\n"),
+                    nowstr (), notify_app_txt ());
+          if (!notify_launch_cmd ())
+            DMON_LOG (_("error while sending notification\n"));
         }
       
-      if (next.txt)
-        mem_free (next.txt);
-
       DMON_LOG (_("sleeping at %s for %d seconds\n"), nowstr (),
                 DMON_SLEEP_TIME);
       psleep (DMON_SLEEP_TIME);

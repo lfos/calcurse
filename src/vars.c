@@ -1,4 +1,4 @@
-/*	$calcurse: vars.c,v 1.19 2009/07/26 12:47:16 culot Exp $	*/
+/*	$calcurse: vars.c,v 1.20 2009/08/01 13:31:21 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -111,6 +111,9 @@ struct pad_s apad;
 
 /* Variable to store notify-bar settings. */
 struct nbar_s nbar;
+
+/* Variable to store daemon configuration. */
+struct dmon_conf_s dmon;
 
 /*
  * Variables init 
