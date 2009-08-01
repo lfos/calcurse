@@ -1,4 +1,4 @@
-/*	$calcurse: notify.c,v 1.42 2009/08/01 13:31:20 culot Exp $	*/
+/*	$calcurse: notify.c,v 1.43 2009/08/01 20:29:49 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -73,6 +73,18 @@ notify_time_left (void)
   left = notify_app.time - ntimer;
 
   return left > 0 ? left : 0;
+}
+
+/*
+ * Return 1 if the reminder was not sent already for the upcoming
+ * appointment.
+ */
+unsigned
+notify_needs_reminder (void)
+{
+  if (notify_app.got_app & !(notify_app.state & APOINT_NOTIFIED))
+    return 1;
+  return 0;
 }
 
 /*
@@ -164,6 +176,9 @@ notify_init_bar (void)
 void
 notify_free_app (void)
 {
+  notify_app.time = 0;
+  notify_app.got_app = 0;
+  notify_app.state = APOINT_NULL;
   if (notify_app.txt)
     mem_free (notify_app.txt);
   notify_app.txt = 0;
@@ -363,19 +378,34 @@ notify_get_next (struct notify_app_s *a)
   return 1;
 }
 
+/*
+ * This is used for the daemon to check if we have an upcoming appointment or
+ * not.
+ */
 unsigned
 notify_get_next_bkgd (void)
 {
   struct notify_app_s a;
-  
-  if (!notify_app.got_app)
+
+  a.txt = (char *)0;
+  if (!notify_get_next (&a))
+    return 0;
+
+  if (!a.got_app)
     {
-      if (!notify_get_next (&a))
-        return 0;
-      if (a.got_app)
+      /* No next appointment, reset the previous notified one. */
+      notify_app.got_app = 0;
+      return 1;
+    }
+  else
+    {
+      if (!notify_same_item (a.time))
         notify_update_app (a.time, a.state, a.txt);
     }
 
+  if (a.txt)
+    mem_free (a.txt);
+  
   return 1;
 }
 

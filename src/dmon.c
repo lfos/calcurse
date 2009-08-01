@@ -1,4 +1,4 @@
-/*	$calcurse: dmon.c,v 1.10 2009/08/01 17:53:11 culot Exp $	*/
+/*	$calcurse: dmon.c,v 1.11 2009/08/01 20:29:49 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -190,8 +190,9 @@ dmon_start (int parent_exit_status)
       
       if (!notify_get_next_bkgd ())
         DMON_ABRT (_("error loading next appointment\n"));
+
       left = notify_time_left ();
-      if (left < nbar.cntdwn)
+      if (left > 0 && left < nbar.cntdwn && notify_needs_reminder ())
         {
           DMON_LOG (_("launching notification at %s for: \"%s\"\n"),
                     nowstr (), notify_app_txt ());
