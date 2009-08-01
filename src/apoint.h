@@ -1,4 +1,4 @@
-/*	$calcurse: apoint.h,v 1.19 2009/07/05 20:33:14 culot Exp $	*/
+/*	$calcurse: apoint.h,v 1.20 2009/08/01 20:28:55 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -46,16 +46,17 @@
 
 #define HRMIN_SIZE 6
 
-#define APOINT_NULL		0x0
-#define APOINT_NOTIFY		0x1	/* Item needs to be notified */
-#define APOINT_NOTIFIED		0x2	/* Item was already notified */
-
 typedef struct apoint_llist_node
 {
   struct apoint_llist_node *next;
   long start;			/* seconds since 1 jan 1970 */
   long dur;			/* duration of the appointment in seconds */
+
+#define APOINT_NULL		0x0
+#define APOINT_NOTIFY		0x1	/* Item needs to be notified */
+#define APOINT_NOTIFIED		0x2	/* Item was already notified */
   char state;			/* 8 bits to store item state */
+  
   char *mesg;
   char *note;
 }
