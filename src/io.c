@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.76 2009/07/29 18:20:55 culot Exp $	*/
+/*	$calcurse: io.c,v 1.77 2009/08/01 17:44:52 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -940,7 +940,18 @@ io_save_conf (conf_t *conf)
   
   if (ui_mode == UI_CURSES)
     pthread_mutex_unlock (&nbar.mutex);
-  
+
+  (void)fprintf (fp, "\n# If this option is set to yes, "
+                 "calcurse will run in background to get notifications "
+                 "after exiting\n");
+  (void)fprintf (fp, "notify-daemon_enable=\n");
+  (void)fprintf (fp, "%s\n", dmon.enable ? "yes" : "no");
+
+    (void)fprintf (fp, "\n# If this option is set to yes, "
+                   "activity will be logged when running in background\n");
+  (void)fprintf (fp, "notify-daemon_log=\n");
+  (void)fprintf (fp, "%s\n", dmon.log ? "yes" : "no");
+    
   file_close (fp, __FILE_POS__);
 
   return 1;

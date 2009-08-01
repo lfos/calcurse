@@ -1,4 +1,4 @@
-/*	$calcurse: custom.c,v 1.42 2009/07/29 18:20:54 culot Exp $	*/
+/*	$calcurse: custom.c,v 1.43 2009/08/01 17:44:51 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -319,6 +319,14 @@ custom_load_conf (conf_t *conf, int background)
 	    conf->input_datefmt = 1;
 	  var = 0;
 	  break;
+	case CUSTOM_CONF_DMON_ENABLE:
+	  dmon.enable = fill_config_var (e_conf);
+	  var = 0;
+	  break;
+	case CUSTOM_CONF_DMON_LOG:
+	  dmon.log = fill_config_var (e_conf);
+	  var = 0;
+	  break;
 	default:
           EXIT (_("configuration variable unknown"));
 	  /* NOTREACHED */
@@ -352,10 +360,14 @@ custom_load_conf (conf_t *conf, int background)
 	var = CUSTOM_CONF_NOTIFYBARWARNING;
       else if (strncmp (e_conf, "notify-bar_command=", 19) == 0)
 	var = CUSTOM_CONF_NOTIFYBARCOMMAND;
-      else if (strncmp (e_conf, "output_datefmt=", 12) == 0)
+      else if (strncmp (e_conf, "output_datefmt=", 15) == 0)
 	var = CUSTOM_CONF_OUTPUTDATEFMT;
-      else if (strncmp (e_conf, "input_datefmt=", 12) == 0)
+      else if (strncmp (e_conf, "input_datefmt=", 14) == 0)
 	var = CUSTOM_CONF_INPUTDATEFMT;
+      else if (strncmp (e_conf, "notify-daemon_enable=", 21) == 0)
+        var = CUSTOM_CONF_DMON_ENABLE;
+      else if (strncmp (e_conf, "notify-daemon_log=", 18) == 0)
+        var = CUSTOM_CONF_DMON_LOG;
     }
   file_close (data_file, __FILE_POS__);
   pthread_mutex_unlock (&nbar.mutex);

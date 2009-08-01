@@ -1,9 +1,9 @@
-/*	$calcurse: custom.h,v 1.16 2009/07/05 20:33:18 culot Exp $	*/
+/*	$calcurse: custom.h,v 1.17 2009/08/01 17:44:51 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
  *
- * Copyright (c) 2004-2008 Frederic Culot <frederic@culot.org>
+ * Copyright (c) 2004-2009 Frederic Culot <frederic@culot.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -76,6 +76,8 @@ enum
   CUSTOM_CONF_NOTIFYBARCOMMAND,
   CUSTOM_CONF_OUTPUTDATEFMT,
   CUSTOM_CONF_INPUTDATEFMT,
+  CUSTOM_CONF_DMON_ENABLE,
+  CUSTOM_CONF_DMON_LOG,
   CUSTOM_CONF_VARIABLES
 };
 
