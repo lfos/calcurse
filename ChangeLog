@@ -4,6 +4,11 @@
 
 	* src/calcurse.1: manpage updated with the '--status' flag and the
 	new daemon.log file in calcurse data directory
+
+	* src/notify.c (notify_config_bar): rewritten to handle scrolling
+
+	* src/custom.c: conf_set_scrsize not static anymore (changed to
+	custom_set_swsiz)
 	
 2009-08-01  Frederic Culot  <frederic@culot.org>
 

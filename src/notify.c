@@ -1,4 +1,4 @@
-/*	$calcurse: notify.c,v 1.43 2009/08/01 20:29:49 culot Exp $	*/
+/*	$calcurse: notify.c,v 1.44 2009/08/02 09:30:01 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -572,7 +572,7 @@ print_option (WINDOW *win, unsigned x, unsigned y, char *name,
               char *valstr, unsigned valbool, char *desc, unsigned num)
 {
   const int XOFF = 4;
-  const int MAXCOL = col - 2;
+  const int MAXCOL = col - 3;
   int x_opt, len;
   
   x_opt = x + XOFF + strlen (name);
@@ -602,11 +602,11 @@ print_option (WINDOW *win, unsigned x, unsigned y, char *name,
 }
 
 /* Print options related to the notify-bar. */
-static void
-notify_print_options (WINDOW *optwin, int col)
+static unsigned
+print_config_options (WINDOW *optwin)
 {
   const int XORIG = 3;
-  const int YORIG = 4;
+  const int YORIG = 0;
   const int YOFF  = 3;
   
   enum
@@ -670,20 +670,32 @@ notify_print_options (WINDOW *optwin, int col)
                     opt[i].valnum, opt[i].desc, i + 1);
     }
 
-  wmove (win[STA].p, 1, 0);
-  wnoutrefresh (optwin);
-  doupdate ();
+  return YORIG + NB_OPT * YOFF;
+}
+
+static void
+reinit_conf_win (scrollwin_t *win)
+{
+  unsigned first_line;
+
+  first_line = win->first_visible_line;
+  wins_scrollwin_delete (win);
+  custom_set_swsiz (win);  
+  wins_scrollwin_init (win);
+  wins_show (win->win.p, win->label);
+  win->first_visible_line = first_line;
 }
 
 /* Notify-bar configuration. */
 void
 notify_config_bar (void)
 {
-  window_t conf_win;
-  char label[BUFSIZ];
+  scrollwin_t cwin;
   char *buf;
   char *number_str =
-    _("Enter an option number to change its value [Q to quit] ");
+    _("Enter an option number to change its value");
+  char *keys =
+    _("(Press '^P' or '^N' to move up or down, 'Q' to quit)");
   char *date_str =
     _("Enter the date format (see 'man 3 strftime' for possible formats) ");
   char *time_str =
@@ -691,31 +703,43 @@ notify_config_bar (void)
   char *count_str =
     _("Enter the number of seconds (0 not to be warned before an appointment)");
   char *cmd_str = _("Enter the notification command ");
-  int ch = 0, change_win = 1;
+  int ch;
 
-  buf = mem_malloc (BUFSIZ);
-  (void)snprintf (label, BUFSIZ, _("notify-bar options"));
-  
-  conf_win.p = 0;
-  custom_confwin_init (&conf_win, label);
+  clear ();  
+  custom_set_swsiz (&cwin);
+  (void)snprintf (cwin.label, BUFSIZ, _("notification options"));
+  wins_scrollwin_init (&cwin);
+  wins_show (cwin.win.p, cwin.label);
+  status_mesg (number_str, keys);
+  cwin.total_lines = print_config_options (cwin.pad.p);
+  wins_scrollwin_display (&cwin);
 
-  while (ch != 'q')
+  buf = mem_malloc (BUFSIZ);  
+  while ((ch = wgetch (win[STA].p)) != 'q')  
     {
-      if (change_win)
-	custom_confwin_init (&conf_win, label);
-      status_mesg (number_str, "");
-      notify_print_options (conf_win.p, col);
-      *buf = '\0';
-      ch = wgetch (win[STA].p);
+      buf[0] = '\0';
 
       switch (ch)
-	{
-	case KEY_RESIZE:
-	  endwin ();
-	  refresh ();
-	  curs_set (0);
-	  delwin (conf_win.p);
-	  custom_confwin_init (&conf_win, label);
+        {
+        case KEY_RESIZE:
+          wins_get_config ();
+          wins_reset ();
+          reinit_conf_win (&cwin);
+	  delwin (win[STA].p);
+	  win[STA].p = newwin (win[STA].h, win[STA].w, win[STA].y,
+			       win[STA].x);
+	  keypad (win[STA].p, TRUE);
+	  if (notify_bar ())
+	    {
+	      notify_reinit_bar ();
+	      notify_update_bar ();
+	    }
+	  break;
+        case CTRL ('N'):
+          wins_scrollwin_down (&cwin, 1);
+	  break;
+        case CTRL ('P'):
+          wins_scrollwin_up (&cwin, 1);
 	  break;
 	case '1':
 	  pthread_mutex_lock (&nbar.mutex);
@@ -725,7 +749,8 @@ notify_config_bar (void)
 	    notify_start_main_thread ();
 	  else
 	    notify_stop_main_thread ();
-	  change_win = 1;
+          wins_scrollwin_delete (&cwin);
+          reinit_conf_win (&cwin);          
 	  break;
 	case '2':
 	  status_mesg (date_str, "");
@@ -738,7 +763,6 @@ notify_config_bar (void)
 	      (void)strncpy (nbar.datefmt, buf, strlen (buf) + 1);
 	      pthread_mutex_unlock (&nbar.mutex);
 	    }
-	  change_win = 0;
 	  break;
 	case '3':
 	  status_mesg (time_str, "");
@@ -751,7 +775,6 @@ notify_config_bar (void)
 	      (void)strncpy (nbar.timefmt, buf, strlen (buf) + 1);
 	      pthread_mutex_unlock (&nbar.mutex);
 	    }
-	  change_win = 0;
 	  break;
 	case '4':
 	  status_mesg (count_str, "");
@@ -765,7 +788,6 @@ notify_config_bar (void)
 	      nbar.cntdwn = atoi (buf);
 	      pthread_mutex_unlock (&nbar.mutex);
 	    }
-	  change_win = 0;
 	  break;
 	case '5':
 	  status_mesg (cmd_str, "");
@@ -778,18 +800,18 @@ notify_config_bar (void)
 	      (void)strncpy (nbar.cmd, buf, strlen (buf) + 1);
 	      pthread_mutex_unlock (&nbar.mutex);
 	    }
-	  change_win = 0;
 	  break;
 	case '6':
 	  dmon.enable = !dmon.enable;
-	  change_win = 1;
 	  break;
 	case '7':
 	  dmon.log = !dmon.log;
-	  change_win = 1;
 	  break;
-	}
+        }
+      status_mesg (number_str, keys);
+      cwin.total_lines = print_config_options (cwin.pad.p);
+      wins_scrollwin_display (&cwin);
     }
   mem_free (buf);
-  delwin (conf_win.p);
+  wins_scrollwin_delete (&cwin);
 }
