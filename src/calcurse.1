@@ -1,4 +1,4 @@
-.\" 	$calcurse: calcurse.1,v 1.16 2009/07/05 20:33:15 culot Exp $
+.\" 	$calcurse: calcurse.1,v 1.17 2009/08/02 07:46:37 culot Exp $
 .\"
 .\" Copyright (c) 2004-2009 Frederic Culot <frederic@culot.org>
 .\" All rights reserved.
@@ -44,7 +44,7 @@ Calcurse \- text-based organizer
 [\fB-d\fP <\fIdate\fP>|<\fInum\fP>]
 .br
          [\fB-s\fP[\fIdate\fP]] [\fB-r\fP[\fIrange\fP]]
-[\fB-S\fP <\fIregex\fP>]
+[\fB-S\fP <\fIregex\fP>] [\fB--status\fP]
 .br
          
 .SH DESCRIPTION
@@ -142,6 +142,11 @@ When used with the '-a', '-d', '-r', '-s', or '-t' flag,
 print only the items having a description that matches the given
 regular expression.
 .TP
+\fB--status\fP
+Display the status of running instances of calcurse. If calcurse is running,
+this will tell if the interactive mode was launched or if calcurse is running
+in background. The process pid will also be indicated.
+.TP
 \fB-t\fP[num], \fB--todo\fP[=num]
 Print the 'todo' list and exit. If the optional number \fInum\fP is given,
 then only todos having a priority equal to \fInum\fP will be returned.
@@ -207,6 +212,11 @@ The \fIconf\fP file contains the user configuration. The \fIkeys\fP
 file contains the user-defined key bindings. The \fIapts\fP 
 file contains all of the user's appointments and events, and the 
 \fItodo\fP file contains the todo list.
+.PP
+\fINote:\fP if the logging of calcurse daemon activity was set
+in the notification configuration menu, the extra file \fIdaemon.log\fP will
+appear in calcurse data directory. This file contains logs about calcurse
+activity when running in background.
 .SH ENVIRONMENT
 This section describes the environment variables that affect how
 calcurse operates. 

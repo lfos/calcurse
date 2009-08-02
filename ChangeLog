@@ -1,6 +1,9 @@
 2009-08-02  Frederic Culot  <frederic@culot.org>
 
 	* src/args.c: help on '--status' flag added
+
+	* src/calcurse.1: manpage updated with the '--status' flag and the
+	new daemon.log file in calcurse data directory
 	
 2009-08-01  Frederic Culot  <frederic@culot.org>
 
