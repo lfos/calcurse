@@ -1,3 +1,7 @@
+2009-08-02  Frederic Culot  <frederic@culot.org>
+
+	* src/args.c: help on '--status' flag added
+	
 2009-08-01  Frederic Culot  <frederic@culot.org>
 
 	* src/vars.c: new variable to store daemon configuration

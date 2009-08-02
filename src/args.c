@@ -1,4 +1,4 @@
-/*	$calcurse: args.c,v 1.58 2009/07/26 20:26:14 culot Exp $	*/
+/*	$calcurse: args.c,v 1.59 2009/08/02 07:22:50 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -69,7 +69,7 @@ usage ()
   char *arg_usage =
     _("Usage: calcurse [-h|-v] [-N] [-an] [-t[num]] [-i<file>] [-x[format]]\n"
       "                [-d <date>|<num>] [-s[date]] [-r[range]]\n"
-      "                [-c<file> | -D<dir>] [-S<regex>]\n");
+      "                [-c<file> | -D<dir>] [-S<regex>] [--status]\n");
   fputs (arg_usage, stdout);
 }
 
@@ -110,6 +110,8 @@ help_arg ()
       "	print this help and exit.\n"
       "\n  -v, --version\n"
       "	print calcurse version and exit.\n"
+      "\n  --status\n"
+      "	display the status of running instances of calcurse.\n"
       "\nFiles:\n"
       "  -c <file>, --calendar <file>\n"
       "	specify the calendar <file> to use (incompatible with '-D').\n"
