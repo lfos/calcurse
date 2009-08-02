@@ -1,4 +1,4 @@
-/*	$calcurse: custom.c,v 1.43 2009/08/01 17:44:51 culot Exp $	*/
+/*	$calcurse: custom.c,v 1.44 2009/08/02 09:29:24 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -979,8 +979,8 @@ print_general_options (WINDOW *win, conf_t *conf)
   return y + YOFF;
 }
 
-static void
-conf_set_scrsize (scrollwin_t *sw)
+void
+custom_set_swsiz (scrollwin_t *sw)
 {
   sw->win.x = 0;
   sw->win.y = 0;
@@ -1013,7 +1013,7 @@ custom_general_config (conf_t *conf)
   char *buf;
 
   clear ();
-  conf_set_scrsize (&cwin);
+  custom_set_swsiz (&cwin);
   (void)snprintf (cwin.label, BUFSIZ, _("general options"));
   wins_scrollwin_init (&cwin);
   wins_show (cwin.win.p, cwin.label);
@@ -1033,7 +1033,7 @@ custom_general_config (conf_t *conf)
           wins_reset ();
 	  wins_scrollwin_delete (&cwin);
 	  wins_scrollwin_init (&cwin);
-          conf_set_scrsize (&cwin);
+          custom_set_swsiz (&cwin);
           wins_show (cwin.win.p, cwin.label);
 	  cwin.first_visible_line = 0;          
 	  delwin (win[STA].p);
@@ -1211,7 +1211,7 @@ custom_keys_config (void)
   const int LABELLINES = 3;
   
   clear ();
-  conf_set_scrsize (&kwin);
+  custom_set_swsiz (&kwin);
   nbdisplayed = (kwin.win.h - LABELLINES) / LINESPERKEY;
   (void)snprintf (kwin.label, BUFSIZ, _("keys configuration"));
   wins_scrollwin_init (&kwin);
