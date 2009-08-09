@@ -1,4 +1,4 @@
-/*	$calcurse: sigs.c,v 1.9 2009/07/19 16:51:36 culot Exp $	*/
+/*	$calcurse: sigs.c,v 1.10 2009/08/09 15:49:58 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -38,6 +38,7 @@
 
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <unistd.h>
 #include <errno.h>
 #include <string.h>
 
@@ -63,6 +64,14 @@ generic_hdlr (int sig)
     case SIGWINCH:
       clearok (curscr, TRUE);
       (void)ungetch (KEY_RESIZE);
+      break;
+    case SIGTERM:
+      if (unlink (path_cpid) != 0)
+        {
+          EXIT (_("Could not remove calcurse lock file: %s\n"),
+                    strerror (errno));
+        }
+      exit (EXIT_SUCCESS);
       break;
     }
 }
@@ -92,6 +101,7 @@ sigs_init ()
 {
   if (!sigs_set_hdlr (SIGCHLD, generic_hdlr)
       || !sigs_set_hdlr (SIGWINCH, generic_hdlr)
+      || !sigs_set_hdlr (SIGTERM, generic_hdlr)      
       || !sigs_set_hdlr (SIGINT, SIG_IGN))
     exit_calcurse (1);
 }

@@ -1,6 +1,8 @@
 2009-08-09  Frederic Culot  <frederic@culot.org>
 
 	* src/notify.c (notify_thread_app): rewritten
+
+	* src/sigs.c: remove calcurse lock file when SIGTERM is received
 	
 2009-08-02  Frederic Culot  <frederic@culot.org>
 
