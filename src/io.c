@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.77 2009/08/01 17:44:52 culot Exp $	*/
+/*	$calcurse: io.c,v 1.78 2009/08/09 16:00:02 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -2366,6 +2366,7 @@ ical_read_note (char *first_line, FILE *fdi, unsigned *noskipped,
         {
           file_close (fdo, __FILE_POS__);
           erase_note (&notename, ERASE_FORCE);
+          mem_free (notestr);
           return NULL;
         }
       else

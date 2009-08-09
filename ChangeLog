@@ -3,6 +3,8 @@
 	* src/notify.c (notify_thread_app): rewritten
 
 	* src/sigs.c: remove calcurse lock file when SIGTERM is received
+
+	* src/io.c (ical_read_note): memory leak fixed
 	
 2009-08-02  Frederic Culot  <frederic@culot.org>
 
