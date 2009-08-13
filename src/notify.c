@@ -1,4 +1,4 @@
-/*	$calcurse: notify.c,v 1.45 2009/08/09 15:34:56 culot Exp $	*/
+/*	$calcurse: notify.c,v 1.46 2009/08/13 17:30:42 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -429,17 +429,21 @@ notify_thread_app (void *arg)
   if (!notify_get_next (&tmp_app))
     pthread_exit ((void *)0);
   
-  pthread_mutex_lock (&notify_app.mutex);
   if (!tmp_app.got_app)
     {
+      pthread_mutex_lock (&notify_app.mutex);
       notify_free_app ();
+      pthread_mutex_unlock (&notify_app.mutex);      
     }
   else
     {
       if (!notify_same_item (tmp_app.time))
-        notify_update_app (tmp_app.time, tmp_app.state, tmp_app.txt);
+        {
+          pthread_mutex_lock (&notify_app.mutex);          
+          notify_update_app (tmp_app.time, tmp_app.state, tmp_app.txt);
+          pthread_mutex_unlock (&notify_app.mutex);          
+        }
     }
-  pthread_mutex_unlock (&notify_app.mutex);
   
   if (tmp_app.txt)
     mem_free (tmp_app.txt);
