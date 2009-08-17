@@ -12,17 +12,23 @@ this list.
 High
 ----
   o  Add support for UTF-8
- 
+  o  Implement the send-item functionality to export a single item and pipe it
+     to an external process
+  o  Add a key binding to toggle between visible/hidden tasks inside todo
+     panel
+  o  Add an optional argument to the --next flag to check for next appointment
+     starting from the specified time
+
 
 Average
 -------
-  o  Implement a daemon to notify user of upcoming appointments even when
-     calcurse is not running
   o  Add support for CalDAV protocol (rfc4791)
-  o  Implement categories to classify appointments and tasks
-  o  Add a week view in the calendar panel
+  o  Implement user-definable categories to classify appointments and tasks
+  o  Add a week view in the calendar panel (and display week numbers)
+  o  Implement copy/paste functionality
 
 
 Low
 ---
   o  All status bars should be terminal-size dependant (config_bar is not)
+  o  Compute Easter sunday

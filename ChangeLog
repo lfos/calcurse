@@ -2,6 +2,8 @@
 
 	* src/notify.c (notify_needs_reminder): do not request for
 	notification if user did not flag its appointment 
+
+	* TODO: updated
 	
 2009-08-13  Frederic Culot  <frederic@culot.org>
 
