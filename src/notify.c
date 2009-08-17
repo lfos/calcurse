@@ -1,4 +1,4 @@
-/*	$calcurse: notify.c,v 1.46 2009/08/13 17:30:42 culot Exp $	*/
+/*	$calcurse: notify.c,v 1.47 2009/08/17 10:04:39 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -82,7 +82,9 @@ notify_time_left (void)
 unsigned
 notify_needs_reminder (void)
 {
-  if (notify_app.got_app & !(notify_app.state & APOINT_NOTIFIED))
+  if (notify_app.got_app
+      && (notify_app.state & APOINT_NOTIFY)
+      && !(notify_app.state & APOINT_NOTIFIED))
     return 1;
   return 0;
 }
