@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <!--
 /*
- *	$calcurse: manual_fr.html,v 1.27 2009/07/10 19:49:08 culot Exp $
+ *	$calcurse: manual_fr.html,v 1.28 2009/08/18 13:08:00 culot Exp $
  *
  * Copyright (c) 2004-2009 Frederic Culot <frederic@culot.org>
  * All rights reserved.
@@ -92,13 +92,14 @@ pour faire remonter les bogues et pour contribuer au développement de
 	    <li><a href="#basics_interface_noninteractive">4.2.1 Mode non-interactif</a></li>
 	    <li><a href="#basics_interface_interactive">4.2.2 Mode Interactif</a></li>
 	</ul></li>
-	<li><a href="#basics_files">4.3 Fichiers</a></li>
-        <li><a href="#basics_import_export">4.4 Fonctions d'import/export</a>
+        <li><a href="#basics_daemon"><span class="todo">4.3 Background mode</span></a></li>
+	<li><a href="#basics_files">4.4 Fichiers</a></li>
+        <li><a href="#basics_import_export">4.5 Fonctions d'import/export</a>
         <ul>
-            <li><a href="#basics_import">4.4.1 Import</a></li>
-            <li><a href="#basics_export">4.4.2 Export</a></li>
+            <li><a href="#basics_import">4.5.1 Import</a></li>
+            <li><a href="#basics_export">4.5.2 Export</a></li>
         </ul></li>
-	<li><a href="#basics_help">4.5 Aide en ligne</a></li>
+	<li><a href="#basics_help">4.6 Aide en ligne</a></li>
     </ul></li>
     <li><a href="#options">5. Options</a>
     <ul>
@@ -211,7 +212,9 @@ disponibles.
         Enfin, le système de notification est
         entièrement configurable, l'utilisateur peut donc choisir la
         manière dont il veut être prévenu de l'approche d'un
-        rendez-vous.
+        rendez-vous. Les notifications peuvent également être envoyées
+        même si l'interface utilisateur n'est pas lancée, car
+        <code>calcurse</code> peut tourner en tâche de fond (mode démon).
 </p>
 
 <h1>3. Installation<a name="install"></a></h1>
@@ -280,7 +283,7 @@ disponibles.
 <p>
         Vous devez tout d'abord décompresser l'archive source de la
         manière suivante :</p>
-	<pre>tar zxvf calcurse-2.6.tar.gz</pre>
+	<pre>tar zxvf calcurse-2.7.tar.gz</pre>
 <p>
         Une fois que vous remplissez tous les pré-requis nécessaires à
         l'installation, le processus de compilation est simple et suit
@@ -397,6 +400,15 @@ disponibles.
         '-s' ou '-t', seuls les éléments dont la description correspond à 
         l'expression régulière passée en argument seront affichés.
         </dd>
+    <dt><code>--status</code></dt>
+    <dd>
+    <div class="todo">
+            Display  the  status of running instances of calcurse. If
+            calcurse is running, this will tell  if  the  interactive
+            mode  was  launched  or  if  calcurse is running in background.
+            The process pid will also be indicated.
+    </div>
+    </dd>
 	<dt><code>-t[num], --todo[=num]</code></dt>
 	<dd>
 	Affiche la liste des 'todo', puis quitte. Si le nombre optionnel
@@ -628,7 +640,38 @@ disponibles.
 	</dl>
 </p>
 
-<h2>4.3 Fichiers<a name="basics_files"></a></h2>
+<div class="todo">
+<h2>4.3 Background mode<a name="basics_daemon"></a></h2>
+
+<p>When the daemon mode is enabled in the notification configuration menu
+(see <a href="#options_notify">Notify-bar settings</a>), <code>calcurse</code> will stay
+in background when the user interface is not running. In background mode,
+<code>calcurse</code> checks for upcoming appointments and runs the user-defined 
+notification command when necessary. When the user interface is started again,
+the daemon automatically stops.</p>
+
+<p><code>calcurse</code> background activity can be logged (set the 
+<code>notify-daemon_log</code> variable in the notification configuration
+<a href="#options_notify">menu</a>), and in that case, information about the daemon
+start and stop time, reminders' command launch time, signals received... will be written
+in the <code>daemon.log</code> file (see section <a href="#basics_files">files</a>).</p>
+
+<p>
+Using the <code>--status</code> command line option (see section 
+<a href="#basics_invocation_commandline">Command line arguments</a>), 
+one can know if <code>calcurse</code> is currently running in background or not.
+If the daemon is running, a message like the following one will be displayed (the pid of
+the daemon process will be shown):
+<pre>calcurse is running in background (pid 14536)</pre>
+
+<p class="rq"><span class="valorise">Note:</span>
+To stop the daemon, just send the <code>TERM</code> signal to it, using a command such as:
+<code>'kill daemon_pid'</code>, where <span class="emp">daemon_pid</span> is the process id
+of the daemon (14536 in the above example).
+</p>
+</div>
+
+<h2>4.4 Fichiers<a name="basics_files"></a></h2>
 <p>
         La structure de fichiers suivante est créée dans le répertoire
         <code>$HOME</code> de l'utilisateur (ou bien dans le répertoire
@@ -661,13 +704,22 @@ $HOME/.calcurse/
 		<dd>ce fichier contient la liste des tâches à effectuer</dd>
 	</dl>
 
-<h2>4.4 Fonctions d'import/export<a name="basics_import_export"></a></h2>
+<div class="todo">
+	<p class="rq"><span class="valorise">Note:</span>
+        If the logging of calcurse daemon activity was set in the notification
+        configuration menu, the extra file <code>daemon.log</code> will appear
+        in calcurse data directory. This file contains logs about calcurse activity
+        when running in background.
+        </p>
+</div>
+
+<h2>4.5 Fonctions d'import/export<a name="basics_import_export"></a></h2>
 <p>
         Les possibilités offertes par <code>calcurse</code> pour importer et exporter
         des données sont décrites ci-dessous.
 </p>
 
-<h3>4.4.1 Import<a name="basics_import"></a></h3>
+<h3>4.5.1 Import<a name="basics_import"></a></h3>
 <p>
         Les données au format icalendar tel que décrit dans la spécification
         rfc2445 (voir la section <a href="#links_others">liens</a> ci-dessous)
@@ -708,7 +760,7 @@ $HOME/.calcurse/
         </ul>
 </p>
 
-<h3>4.4.2 Export<a name="basics_export"></a></h3>
+<h3>4.5.2 Export<a name="basics_export"></a></h3>
 <p>
         Deux formats peuvent êtres utilisés pour l'export des données:
         <code>ical</code> et <code>pcal</code> (voir la section
@@ -716,7 +768,7 @@ $HOME/.calcurse/
         concernant ces formats).
 </p>
 
-<h2>4.5 Aide en ligne<a name="basics_help"></a></h2>
+<h2>4.6 Aide en ligne<a name="basics_help"></a></h2>
 <p>
         A n'importe quel moment, le système d'aide en ligne peut être
         appelé en pressant la touche '?'. Une fois rentré dans l'aide,
@@ -759,16 +811,14 @@ $HOME/.calcurse/
 		    lancement de <code>calcurse</code>.</p>
 		</dd>
 
-                <div class="todo">
-                <dt><code>periodic_save</code> 
-                (default: <span class="emp">0</span>)</dt>
-                <dd>If different from '0', user's data will be automatically
-                saved every <span class="emp">periodic_save</span> minutes.
-                When an automatic save is performed, two asterisks 
-                (i.e. '<code>**</code>') will appear on the top right-hand side
-                of the screen).</p>
-                </dd>
-                </div>
+    <dt><code><span class="todo">periodic_save</code> 
+    (default: <span class="emp">0</span>)</span></dt>
+    <dd><span class="todo">If different from '0', user's data will be automatically
+    saved every <span class="emp">periodic_save</span> minutes.
+    When an automatic save is performed, two asterisks 
+    (i.e. '<code>**</code>') will appear on the top right-hand side
+    of the screen).</span>
+    </dd>
                 
 		<dt><code>confirmer_pour_quitter</code> 
 		  (valeur par défaut: <span class="emp">oui</span>)</dt>
@@ -965,6 +1015,20 @@ $HOME/.calcurse/
 calcurse --next | mail -s "[calcurse] nouveau rendez-vous!" user@host.com
 		  </code>
 		  </dd>
+
+        <dt><code><span class="todo">notify-daemon_enable</code>
+        (default: <span class="emp">no</span>)</span></dt>
+        <dd><span class="todo">If set to yes, daemon mode will be enabled, meaning <code>calcurse</code>
+        will run into background when the user's interface is exited. This will allow the
+        notifications to be launched even when the interface is not running. More details
+        can be found in section <a href="#basics_daemon">'Background mode'</a>.</span>
+        </dd>
+        <dt><code><span class="todo">notify-daemon_log</code>
+        (default: <span class="emp">no</span>)</span></dt>
+        <dd><span class="todo">If set to yes, <code>calcurse</code> daemon activity will be logged (see section
+        <a href="#basics_files">files</a></span>).
+        </dd>
+
 	</dl>
 
 <h1>6. Bogues connus<a name="known_bugs"></a></h1>
@@ -1363,7 +1427,7 @@ msgid ""
 
 <div class="footer">
 	Copyright &copy; 2004-2009 Frédéric Culot<br>
-	Calcurse version 2.6 - Dernière modification: 10 Juillet 2009<br>
+	Calcurse version 2.7 - Dernière modification: 18 Aout 2009<br>
 </div>
 </div>
 

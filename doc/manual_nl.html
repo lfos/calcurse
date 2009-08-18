@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//NL">
 <!--
 /*
- *	$calcurse: manual_nl.html,v 1.19 2009/07/10 19:49:09 culot Exp $
+ *	$calcurse: manual_nl.html,v 1.20 2009/08/18 13:08:01 culot Exp $
  *
  * Copyright (c) 2004-2009 Frederic Culot <frederic@culot.org>
  * All rights reserved.
@@ -90,13 +90,14 @@ besproken. Als laatste wordt zowel de procedure van het melden van fouten in
 	    <li><a href="#basics_interface_noninteractive">4.2.1 Niet-interactieve modus</a></li>
 	    <li><a href="#basics_interface_interactive">4.2.2 Interactieve modus</a></li>
 	</ul></li>
-	<li><a href="#basics_files">4.3 <code>calcurse</code> bestanden</a></li>
-        <li><a href="#basics_import_export">4.4 Import/Export mogelijkheden</a>
+        <li><a href="#basics_daemon"><span class="todo">4.3 Background mode</span></a></li>
+	<li><a href="#basics_files">4.4 <code>calcurse</code> bestanden</a></li>
+        <li><a href="#basics_import_export">4.5 Import/Export mogelijkheden</a>
         <ul>
-            <li><a href="#basics_import">4.4.1 Importeren</a></li>
-            <li><a href="#basics_export">4.4.2 Exporteren</a></li>
+            <li><a href="#basics_import">4.5.1 Importeren</a></li>
+            <li><a href="#basics_export">4.5.2 Exporteren</a></li>
         </ul></li>
-	<li><a href="#basics_help">4.5 Online hulp</a></li>
+	<li><a href="#basics_help">4.6 Online hulp</a></li>
     </ul></li>
     <li><a href="#options">5. Opties</a>
     <ul>
@@ -168,7 +169,7 @@ besproken. Als laatste wordt zowel de procedure van het melden van fouten in
 	die gebruikt wordt om de gebruikers-interface aan te sturen.
 </p>
 
-<h2>2?2 Belangrijke kenmerken<a name="overview_features"></a></h2>
+<h2>2.2 Belangrijke kenmerken<a name="overview_features"></a></h2>
 <p>
 	<code>Calcurse</code> is multi-platform, neemt weinig systeembronnen
 	in beslag, en is snel en betrouwbaar. Het moet gebruikt worden binnen
@@ -194,6 +195,8 @@ besproken. Als laatste wordt zowel de procedure van het melden van fouten in
 <span class="todo">Key bindings are also configurable, to fit everyone's needs.</span>
         En als laatste, is er het configurabele meldingssysteem, dat gebruikers
 	verwittigt van op handen zijnde afspraken.
+<span class="todo">The reminders are sent even if the user's interface 
+is not running, as calcurse is able to run in background.</span>
 </p>
 
 <h1>3. Installatie<a name="install"></a></h1>
@@ -251,7 +254,7 @@ besproken. Als laatste wordt zowel de procedure van het melden van fouten in
 <p>
 	Als eerste moet het volgende archief uitgepakt worden met gunzip en
 	untar:</p>
-	<pre>tar zxvf calcurse-2.6.tar.gz</pre>
+	<pre>tar zxvf calcurse-2.7.tar.gz</pre>
 <p>
 	Zodra de benodigde pakketten ge&iuml;nstalleerd zijn en het archief
 	uitgepakt is, is de installatieprocedure vrij simpel, via de
@@ -294,7 +297,7 @@ besproken. Als laatste wordt zowel de procedure van het melden van fouten in
 	    Geef de afspraken weer van de gegeven datum of van het gegeven aantal
 	    komende dagen, afhankelijk van de opties. Er zijn twee mogelijkheden:
 	    <ul>
-	        <li>een datum <span class="todo">(possible formats described below).</li>
+	        <li>een datum <span class="todo">(possible formats described below).</span></li>
 		<li>een nummer 'n'.</li>
 	    </ul>
 	    In het eerste geval, wordt een lijst met afspraken voor de gegeven
@@ -359,6 +362,15 @@ besproken. Als laatste wordt zowel de procedure van het melden van fouten in
             regular expression.
             </div>
             </dd>
+    <dt><code>--status</code></dt>
+    <dd>
+    <div class="todo">
+            Display  the  status of running instances of calcurse. If
+            calcurse is running, this will tell  if  the  interactive
+            mode  was  launched  or  if  calcurse is running in background.
+            The process pid will also be indicated.
+    </div>
+    </dd>
 	    <dt><code>-t[num], --todo[=num]</code></dt>
 	    <dd>
 	    Geef de 'todo' lijst weer en verlaat het programma. Als het optionele
@@ -576,7 +588,38 @@ besproken. Als laatste wordt zowel de procedure van het melden van fouten in
 	</dl>
 </p>
 
-<h2>4.3 <code>calcurse</code> bestanden<a name="basics_files"></a></h2>
+<div class="todo">
+<h2>4.3 Background mode<a name="basics_daemon"></a></h2>
+
+<p>When the daemon mode is enabled in the notification configuration menu
+(see <a href="#options_notify">Notify-bar settings</a>), <code>calcurse</code> will stay
+in background when the user interface is not running. In background mode,
+<code>calcurse</code> checks for upcoming appointments and runs the user-defined 
+notification command when necessary. When the user interface is started again,
+the daemon automatically stops.</p>
+
+<p><code>calcurse</code> background activity can be logged (set the 
+<code>notify-daemon_log</code> variable in the notification configuration
+<a href="#options_notify">menu</a>), and in that case, information about the daemon
+start and stop time, reminders' command launch time, signals received... will be written
+in the <code>daemon.log</code> file (see section <a href="#basics_files">files</a>).</p>
+
+<p>
+Using the <code>--status</code> command line option (see section 
+<a href="#basics_invocation_commandline">Command line arguments</a>), 
+one can know if <code>calcurse</code> is currently running in background or not.
+If the daemon is running, a message like the following one will be displayed (the pid of
+the daemon process will be shown):
+<pre>calcurse is running in background (pid 14536)</pre>
+
+<p class="rq"><span class="valorise">Note:</span>
+To stop the daemon, just send the <code>TERM</code> signal to it, using a command such as:
+<code>'kill daemon_pid'</code>, where <span class="emp">daemon_pid</span> is the process id
+of the daemon (14536 in the above example).
+</p>
+</div>
+
+<h2>4.4 <code>calcurse</code> bestanden<a name="basics_files"></a></h2>
 <p>
 	De volgende structuur wordt in je <code>$HOME</code> directory
 	aangemaakt, of in de door -D aangeduide directory)
@@ -607,13 +650,22 @@ $HOME/.calcurse/
 		<dd>bevat de takenlijst.</dd>
 	</dl>
 
-<h2>4.4 Import/Export mogelijkheden<a name="basics_import_export"></a></h2>
+<div class="todo">
+	<p class="rq"><span class="valorise">Note:</span>
+        If the logging of calcurse daemon activity was set in the notification
+        configuration menu, the extra file <code>daemon.log</code> will appear
+        in calcurse data directory. This file contains logs about calcurse activity
+        when running in background.
+        </p>
+</div>
+
+<h2>4.5 Import/Export mogelijkheden<a name="basics_import_export"></a></h2>
 <p>
 	De import en export mogelijkheden van <code>calcurse</code> zijn als
 	volgt:
 </p>
 
-<h3>4.4.1 Import<a name="basics_import"></a></h3>
+<h3>4.5.1 Import<a name="basics_import"></a></h3>
 <p>
 	Data in icalender formaat, zoals beschrevein in de rfc2445 specificatie
 	(zie <a href="#links_others">links</a> sectie beneden), kan
@@ -656,14 +708,14 @@ $HOME/.calcurse/
             </ul>
 </p>
 
-<h3>4.4.2 Export<a name="basics_export"></a></h3>
+<h3>4.5.2 Export<a name="basics_export"></a></h3>
 <p>
 	Twee export formaten zijn voorradig: <code>ical</code> en
 	<code>pcal</code> (zie sectie <a href="#links_others">Links</a> beneden
 	voor meer informatie over deze formaten).
 </p>
 
-<h2>4.5 Online hulp<a name="basics_help"></a></h2>
+<h2>4.6 Online hulp<a name="basics_help"></a></h2>
 <p>
 	De ingebouwde hulp kan waar nodig aangeroepen worden door middel van
 	de '?' toets. Tijdens het gebruik van de hulpschermen kan een
@@ -703,17 +755,14 @@ $HOME/.calcurse/
 		bewaren.</p>
 		</dd>
 
-                <div class="todo">
-                <dt><code>periodic_save</code> 
-                (default: <span class="emp">0</span>)</dt>
-                <dd>If different from '0', user's data will be automatically
-                saved every <span class="emp">periodic_save</span> minutes.
-                When an automatic save is performed, two asterisks 
-                (i.e. '<code>**</code>') will appear on the top right-hand side
-                of the screen).</p>
-                </dd>
-                </div>
-
+    <dt><code><span class="todo">periodic_save</code> 
+    (default: <span class="emp">0</span>)</span></dt>
+    <dd><span class="todo">If different from '0', user's data will be automatically
+    saved every <span class="emp">periodic_save</span> minutes.
+    When an automatic save is performed, two asterisks 
+    (i.e. '<code>**</code>') will appear on the top right-hand side
+    of the screen).</span>
+    </dd>
 
 		<dt><code>einde_bevestigen</code>
 		(standaard: <span class="emp">ja</span>)</dt>
@@ -890,6 +939,20 @@ $HOME/.calcurse/
 calcurse --next | mail -s "[calcurse] upcoming appointment!" user@host.com
 	</code>
 	</dd>
+
+        <dt><code><span class="todo">notify-daemon_enable</code>
+        (default: <span class="emp">no</span>)</span></dt>
+        <dd><span class="todo">If set to yes, daemon mode will be enabled, meaning <code>calcurse</code>
+        will run into background when the user's interface is exited. This will allow the
+        notifications to be launched even when the interface is not running. More details
+        can be found in section <a href="#basics_daemon">'Background mode'</a>.</span>
+        </dd>
+        <dt><code><span class="todo">notify-daemon_log</code>
+        (default: <span class="emp">no</span>)</span></dt>
+        <dd><span class="todo">If set to yes, <code>calcurse</code> daemon activity will be logged (see section
+        <a href="#basics_files">files</a></span>).
+        </dd>
+
 	</dl>
 
 <h1>6. bekende bugs<a name="bekende_bugs"></a></h1>
@@ -1210,7 +1273,7 @@ msgid ""
 
 <div class="footer">
 	Copyright &copy; 2004-2009 Frédéric Culot<br>
-	Calcurse version 2.6 - Last change: July 10, 2009<br>
+	Calcurse version 2.7 - Last change: August 18, 2009<br>
 </div>
 </div>
 

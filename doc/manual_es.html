@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <!--
 /*
- *	$calcurse: manual_es.html,v 1.23 2009/07/10 19:49:07 culot Exp $
+ *	$calcurse: manual_es.html,v 1.24 2009/08/18 13:08:00 culot Exp $
  *
  * Copyright (c) 2004-2009 Frederic Culot <frederic@culot.org>
  * All rights reserved.
@@ -92,13 +92,14 @@ well as the way one can contribute to <code>calcurse</code> development.
 	    <li><a href="#basics_interface_noninteractive">4.2.1 Modo no-interactivo</a></li>
 	    <li><a href="#basics_interface_interactive">4.2.2 Modo interactivo</a></li>
 	</ul></li>
-	<li><a href="#basics_files">4.3 Archivos de <code>calcurse</code></a></li>
-        <li><a href="#basics_import_export"><span class="todo">4.4 Import/Export capabilities</span></a>
+        <li><a href="#basics_daemon"><span class="todo">4.3 Background mode</span></a></li>
+	<li><a href="#basics_files">4.4 Archivos de <code>calcurse</code></a></li>
+        <li><a href="#basics_import_export"><span class="todo">4.5 Import/Export capabilities</span></a>
         <ul>
-            <li><a href="#basics_import"><span class="todo">4.4.1 Import</span></a></li>
-            <li><a href="#basics_export"><span class="todo">4.4.2 Export</span></a></li>
+            <li><a href="#basics_import"><span class="todo">4.5.1 Import</span></a></li>
+            <li><a href="#basics_export"><span class="todo">4.5.2 Export</span></a></li>
         </ul></li>
-	<li><a href="#basics_help">4.5 Ayuda en linea</a></li>
+	<li><a href="#basics_help">4.6 Ayuda en linea</a></li>
     </ul></li>
     <li><a href="#options">5. Opciones</a>
     <ul>
@@ -195,6 +196,8 @@ well as the way one can contribute to <code>calcurse</code> development.
 	elegir entre combinaciones de colores y disposiciones.
 <span class="todo">Key bindings are also configurable, to fit everyone's needs.</span>
 	Finalmente, un sistema de notificacion recuerda al usuario sus proximas citas.
+<span class="todo">The reminders are sent even if the user's interface 
+is not running, as calcurse is able to run in background.</span>
 </p>
 
 <h1>3. Instalación<a name="install"></a></h1>
@@ -253,7 +256,7 @@ well as the way one can contribute to <code>calcurse</code> development.
 <h2>3.2 Proceso de instalación<a name="install_process"></a></h2>
 <p>
 	Primero necesitas descomprimir ( gunzip  y  untar) el archivo fuente:</p>
-	<pre>tar zxvf calcurse-2.6.tar.gz</pre>
+	<pre>tar zxvf calcurse-2.7.tar.gz</pre>
 <p>
   	Una vez has resuelto los requisitos y has extraído el archivo, 
 	el proceso de instalación es muy simple y sigue los tres pasos habituales:
@@ -296,7 +299,7 @@ well as the way one can contribute to <code>calcurse</code> development.
 	    próximos, dependiendo del formato del argumento.
 	    Soporta dos posible formatos :
 	    <ul>
-	        <li>una fecha <span class="todo">(possible formats described below).</li>
+	        <li>una fecha <span class="todo">(possible formats described below).</span></li>
 		<li>un numero 'n'.</li>
 	    </ul>
 	    En el primer caso,  devolverá la lista de citas y eventos para la fecha especificada 
@@ -371,6 +374,15 @@ well as the way one can contribute to <code>calcurse</code> development.
             regular expression.
             </div>
             </dd>
+    <dt><code>--status</code></dt>
+    <dd>
+    <div class="todo">
+            Display  the  status of running instances of calcurse. If
+            calcurse is running, this will tell  if  the  interactive
+            mode  was  launched  or  if  calcurse is running in background.
+            The process pid will also be indicated.
+    </div>
+    </dd>
 	    <dt><code>-t[num], --todo[=num]</code></dt>
 	    <dd>
 	    Imprime la lista de tareas pendientes ('ToDo') y sale.
@@ -588,7 +600,38 @@ well as the way one can contribute to <code>calcurse</code> development.
 	</dl>
 </p>
 
-<h2>4.3 Archivos de <code>calcurse</code><a name="basics_files"></a></h2>
+<div class="todo">
+<h2>4.3 Background mode<a name="basics_daemon"></a></h2>
+
+<p>When the daemon mode is enabled in the notification configuration menu
+(see <a href="#options_notify">Notify-bar settings</a>), <code>calcurse</code> will stay
+in background when the user interface is not running. In background mode,
+<code>calcurse</code> checks for upcoming appointments and runs the user-defined 
+notification command when necessary. When the user interface is started again,
+the daemon automatically stops.</p>
+
+<p><code>calcurse</code> background activity can be logged (set the 
+<code>notify-daemon_log</code> variable in the notification configuration
+<a href="#options_notify">menu</a>), and in that case, information about the daemon
+start and stop time, reminders' command launch time, signals received... will be written
+in the <code>daemon.log</code> file (see section <a href="#basics_files">files</a>).</p>
+
+<p>
+Using the <code>--status</code> command line option (see section 
+<a href="#basics_invocation_commandline">Command line arguments</a>), 
+one can know if <code>calcurse</code> is currently running in background or not.
+If the daemon is running, a message like the following one will be displayed (the pid of
+the daemon process will be shown):
+<pre>calcurse is running in background (pid 14536)</pre>
+
+<p class="rq"><span class="valorise">Note:</span>
+To stop the daemon, just send the <code>TERM</code> signal to it, using a command such as:
+<code>'kill daemon_pid'</code>, where <span class="emp">daemon_pid</span> is the process id
+of the daemon (14536 in the above example).
+</p>
+</div>
+
+<h2>4.4 Archivos de <code>calcurse</code><a name="basics_files"></a></h2>
 <p>
         La siguiente estructura se crea en tu directorio <code>$HOME</code>
         <div class="todo">(or in the directory you specified with  the  -D  option)</div>
@@ -618,13 +661,22 @@ $HOME/.calcurse/
 	</dl>
 
 <div class="todo">
-<h2>4.4 Import/Export capabilities<a name="basics_import_export"></a></h2>
+	<p class="rq"><span class="valorise">Note:</span>
+        If the logging of calcurse daemon activity was set in the notification
+        configuration menu, the extra file <code>daemon.log</code> will appear
+        in calcurse data directory. This file contains logs about calcurse activity
+        when running in background.
+        </p>
+</div>
+
+<div class="todo">
+<h2>4.5 Import/Export capabilities<a name="basics_import_export"></a></h2>
 <p>
         The import and export capabilities offered by <code>calcurse</code>
         are described below.
 </p>
 
-<h3>4.4.1 Import<a name="basics_import"></a></h3>
+<h3>4.5.1 Import<a name="basics_import"></a></h3>
 <p>
         Data in icalendar format as described in the rfc2445 specification
         (see <a href="#links_others">links</a> section below) can be imported
@@ -663,7 +715,7 @@ $HOME/.calcurse/
         </ul>
 </p>
 
-<h3>4.4.2 Export<a name="basics_export"></a></h3>
+<h3>4.5.2 Export<a name="basics_export"></a></h3>
 <p>
         Two possible export formats are available: <code>ical</code> and 
         <code>pcal</code> (see section <a href="#links_others">Links</a> below
@@ -671,7 +723,7 @@ $HOME/.calcurse/
 </p>
 </div>
 
-<h2>4.5 Ayuda en linea<a name="basics_help"></a></h2>
+<h2>4.6 Ayuda en linea<a name="basics_help"></a></h2>
 <p>
         En cualquier momento, puedes consultar el sistema de ayuda integrado 
         presionando la tecla '?'. Una vez en la pantalla de ayuda,
@@ -711,16 +763,14 @@ $HOME/.calcurse/
 	    sus modificaciones antes de salir.</p>
 	    </dd>
 
-            <div class="todo">
-            <dt><code>periodic_save</code> 
-            (default: <span class="emp">0</span>)</dt>
-            <dd>If different from '0', user's data will be automatically
-            saved every <span class="emp">periodic_save</span> minutes.
-            When an automatic save is performed, two asterisks 
-            (i.e. '<code>**</code>') will appear on the top right-hand side
-            of the screen).</p>
-            </dd>
-            </div>
+    <dt><code><span class="todo">periodic_save</code> 
+    (default: <span class="emp">0</span>)</span></dt>
+    <dd><span class="todo">If different from '0', user's data will be automatically
+    saved every <span class="emp">periodic_save</span> minutes.
+    When an automatic save is performed, two asterisks 
+    (i.e. '<code>**</code>') will appear on the top right-hand side
+    of the screen).</span>
+    </dd>
 
 	    <dt><code>confirmar_salir</code>
 	    (por defecto: <span class="emp">si</span>)</dt>
@@ -760,26 +810,25 @@ $HOME/.calcurse/
 	    será el primer día de la semana.
 	    </dd>
 
-            <div class="todo">
-            <dt><code>output_datefmt</code>
-            (default: <span class="emp">%D</span>)</dt>
-            <dd>This option indicates the format to be used when displaying dates
-            in non-interactive mode. Using the default values, dates are displayed the
-            following way: <span class="emp">mm/dd/aa</span>.
-            You can see all of the possible formats by typing <code>man 3 strftime</code>
-            inside a terminal.</dd>
-            <dt><code>input_datefmt</code>
-            (default: <span class="emp">1</span>)</dt>
-            <dd>This option indicates the format that will be used to enter dates in
-            <span class="emp">calcurse</span>. Four choices are available:
-            <ol>
-              <li>mm/dd/yyyy</li>
-              <li>dd/mm/yyyy</li>
-              <li>yyyy/mm/dd</li>
-              <li>yyyy-mm-dd</li>
-              </ol>
-            </dd>
-            </div>
+    <dt><code><span class="todo">output_datefmt</code>
+    (default: <span class="emp">%D</span>)</span></dt>
+    <dd><span class="todo">This option indicates the format to be used when displaying dates
+    in non-interactive mode. Using the default values, dates are displayed the
+    following way: <span class="emp">mm/dd/aa</span>.
+    You can see all of the possible formats by typing <code>man 3 strftime</code>
+    inside a terminal.</span></dd>
+
+    <dt><code><span class="todo">input_datefmt</code>
+    (default: <span class="emp">1</span>)</span></dt>
+    <dd><span class="todo">This option indicates the format that will be used to enter dates in
+    <span class="emp">calcurse</span>. Four choices are available:</span>
+    <ol>
+      <li>mm/dd/yyyy</li>
+      <li>dd/mm/yyyy</li>
+      <li>yyyy/mm/dd</li>
+      <li>yyyy-mm-dd</li>
+    </ol>
+    </dd>
 
         </dl>
 
@@ -901,6 +950,20 @@ $HOME/.calcurse/
 calcurse --next | mail -s "[calcurse] upcoming appointment!" user@host.com
 	</code>
 	</dd> 
+
+        <dt><code><span class="todo">notify-daemon_enable</code>
+        (default: <span class="emp">no</span>)</span></dt>
+        <dd><span class="todo">If set to yes, daemon mode will be enabled, meaning <code>calcurse</code>
+        will run into background when the user's interface is exited. This will allow the
+        notifications to be launched even when the interface is not running. More details
+        can be found in section <a href="#basics_daemon">'Background mode'</a>.</span>
+        </dd>
+        <dt><code><span class="todo">notify-daemon_log</code>
+        (default: <span class="emp">no</span>)</span></dt>
+        <dd><span class="todo">If set to yes, <code>calcurse</code> daemon activity will be logged (see section
+        <a href="#basics_files">files</a></span>).
+        </dd>
+
 	</dl>
 
 <h1>6. Bugs conocidos<a name="known_bugs"></a></h1>
@@ -1204,7 +1267,7 @@ msgid ""
 	Copyright &copy; 2004-2009 Frédéric Culot<br>
 	Traducido al Español por José López
 	<code>&lt;testinground .at. gmail .dot. com&gt;</code><br>
-	Calcurse version 2.6 - Last change: July 10, 2009<br>
+	Calcurse version 2.7 - Last change: August 18, 2009<br>
 </div>
 </div>
 
