@@ -1,3 +1,7 @@
+2009-08-18  Frederic Culot  <frederic@culot.org>
+
+	* doc/manual_*.html: updated
+	
 2009-08-17  Frederic Culot  <frederic@culot.org>
 
 	* src/notify.c (notify_needs_reminder): do not request for
