@@ -1,4 +1,4 @@
-# 	$calcurse: fr.po,v 1.33 2009/07/10 20:34:09 culot Exp $
+# 	$calcurse: fr.po,v 1.34 2009/08/22 08:50:51 culot Exp $
 #
 # French translations for calcurse package.
 # Copyright (C) 2004-2008 Frederic Culot <frederic@culot.org>
@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse 2.1\n"
 "Report-Msgid-Bugs-To: frederic@culot.org\n"
-"POT-Creation-Date: 2009-07-10 21:47+0200\n"
+"POT-Creation-Date: 2009-08-22 10:43+0200\n"
 "PO-Revision-Date: 2008-09-23 19:21+0200\n"
 "Last-Translator: Frederic Culot <frederic@culot.org>\n"
 "Language-Team: French <calcurse-i18n@culot.org>\n"
@@ -18,77 +18,77 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: src/apoint.c:83 src/event.c:75 src/recur.c:164 src/recur.c:185
+#: src/apoint.c:74 src/event.c:66 src/recur.c:146 src/recur.c:167
 msgid "null pointer"
 msgstr ""
 
-#: src/apoint.c:188
+#: src/apoint.c:178
 msgid ""
 "Enter start time ([hh:mm] or [h:mm]), leave blank for an all-day event : "
 msgstr ""
 "Entrez l'heure de début ([hh:mm] ou [h:mm]), laissez vide pour toute la "
 "journée:"
 
-#: src/apoint.c:191
+#: src/apoint.c:181
 msgid "Enter end time ([hh:mm] or [h:mm]) or duration (in minutes) : "
 msgstr "Entrez l'heure de fin ([hh:mm] ou [h:mm]) ou la durée (en minutes):"
 
-#: src/apoint.c:192
+#: src/apoint.c:182
 msgid "Enter description :"
 msgstr "Entrez la description :"
 
-#: src/apoint.c:194
+#: src/apoint.c:184
 msgid "You entered an invalid start time, should be [h:mm] or [hh:mm]"
 msgstr "Erreur dans le format de l'heure de début: doit être [h:mm] ou [hh:mm]"
 
-#: src/apoint.c:196
+#: src/apoint.c:186
 msgid "You entered an invalid end time, should be [h:mm] or [hh:mm] or [mm]"
 msgstr ""
 "Erreur dans le format de l'heure de fin: doit être [h:mm] ou [hh:mm] ou [mm]"
 
-#: src/apoint.c:197 src/day.c:529 src/day.c:555 src/day.c:616
+#: src/apoint.c:187 src/day.c:529 src/day.c:555 src/day.c:616
 msgid "Press [Enter] to continue"
 msgstr "Appuyez sur [ENTREE] pour continuer"
 
-#: src/apoint.c:296
+#: src/apoint.c:286
 msgid "Do you really want to delete this item ?"
 msgstr "Voulez-vous vraiment effacer cet élement ?"
 
-#: src/apoint.c:339 src/apoint.c:377
+#: src/apoint.c:329 src/apoint.c:367
 msgid "no such type"
 msgstr ""
 
-#: src/apoint.c:499 src/recur.c:466
+#: src/apoint.c:489 src/recur.c:448
 #, fuzzy
 msgid "date error in appointment"
 msgstr "prochain rendez-vous:\n"
 
-#: src/apoint.c:520 src/recur.c:1064 src/recur.c:1088 src/recur.c:1124
+#: src/apoint.c:510 src/recur.c:1058 src/recur.c:1082 src/recur.c:1118
 #, fuzzy
 msgid "item not found"
 msgstr "Fichier note non trouvé\n"
 
-#: src/apoint.c:574 src/apoint.c:733
+#: src/apoint.c:563 src/apoint.c:722
 #, fuzzy
 msgid "no such appointment"
 msgstr "prochain rendez-vous:\n"
 
-#: src/args.c:69
+#: src/args.c:70
 #, fuzzy
 msgid ""
 "Usage: calcurse [-h|-v] [-N] [-an] [-t[num]] [-i<file>] [-x[format]]\n"
 "                [-d <date>|<num>] [-s[date]] [-r[range]]\n"
-"                [-c<file> | -D<dir>] [-S<regex>]\n"
+"                [-c<file> | -D<dir>] [-S<regex>] [--status]\n"
 msgstr ""
 "Utilisation: calcurse [-h|-v] [-N] [-an] [-t[num]] [-i<file>] [-x[format]]\n"
 "                      [-d <date>|<num>] [-s[date]] [-r[range]]\n"
 "                      [-c<fichier> | -D<dir>]\n"
 
-#: src/args.c:78
+#: src/args.c:79
 msgid "Try 'calcurse -h' for more information.\n"
 msgstr "Tapez 'calcurse -h' pour plus d'informations.\n"
 
-#: src/args.c:90
+#: src/args.c:91
 #, fuzzy
 msgid ""
 "\n"
@@ -100,12 +100,12 @@ msgstr ""
 "Ceci est un logiciel libre; voir les sources pour les conditions de "
 "diffusion.\n"
 
-#: src/args.c:93 src/args.c:161
+#: src/args.c:94 src/args.c:164
 #, c-format
 msgid "Calcurse %s - text-based organizer\n"
 msgstr "Calcurse %s - organiseur personnel en mode texte\n"
 
-#: src/args.c:107
+#: src/args.c:108
 #, fuzzy
 msgid ""
 "\n"
@@ -115,6 +115,9 @@ msgid ""
 "\n"
 "  -v, --version\n"
 "\tprint calcurse version and exit.\n"
+"\n"
+"  --status\n"
+"\tdisplay the status of running instances of calcurse.\n"
 "\n"
 "Files:\n"
 "  -c <file>, --calendar <file>\n"
@@ -241,23 +244,46 @@ msgstr ""
 "manuel.\n"
 "Envoyez vos rapports de bogues et suggestions à <calcurse@culot.org>.\n"
 
-#: src/args.c:210
+#: src/args.c:191
+#, c-format
+msgid ""
+"Error: both calcurse (pid: %d) and its daemon (pid: %d)\n"
+"seem to be running at the same time!\n"
+"Please check manually and restart calcurse.\n"
+msgstr ""
+
+#: src/args.c:197
+#, c-format
+msgid "calcurse is running (pid %d)\n"
+msgstr ""
+
+#: src/args.c:199
+#, c-format
+msgid "calcurse is running in background (pid %d)\n"
+msgstr ""
+
+#: src/args.c:201
+#, fuzzy, c-format
+msgid "calcurse is not running\n"
+msgstr "calcurse va maintenant quitter..."
+
+#: src/args.c:246
 msgid "No note file found\n"
 msgstr "Fichier note non trouvé\n"
 
-#: src/args.c:227
+#: src/args.c:263
 msgid "to do:\n"
 msgstr "à faire:\n"
 
-#: src/args.c:228
+#: src/args.c:264
 msgid "completed tasks:\n"
 msgstr ""
 
-#: src/args.c:297
+#: src/args.c:333
 msgid "next appointment:\n"
 msgstr "prochain rendez-vous:\n"
 
-#: src/args.c:480
+#: src/args.c:521
 msgid ""
 "\n"
 "For more information, type '?' from within Calcurse, or read the manpage.\n"
@@ -266,43 +292,43 @@ msgstr ""
 "Pour plus d'informations, tapez '?' dans Calcurse, ou lisez la page de "
 "manuel.\n"
 
-#: src/args.c:482
+#: src/args.c:523
 msgid "Mail bug reports and suggestions to <calcurse@culot.org>.\n"
 msgstr "Envoyez vos rapports de bogues ou suggestions à <calcurse@culot.org>\n"
 
-#: src/args.c:560
+#: src/args.c:601
 msgid "Argument to the '-d' flag is not valid\n"
 msgstr "L'argument de l'option '-d' n'est pas valide\n"
 
-#: src/args.c:623
+#: src/args.c:664
 msgid "Argument is not valid\n"
 msgstr "L'argument n'est pas valide\n"
 
-#: src/args.c:628
+#: src/args.c:669
 msgid "Argument format for -r and --range is: 'n'\n"
 msgstr "Le format de l'argument pour -r et --range est: 'n'\n"
 
-#: src/args.c:740
+#: src/args.c:792
 msgid "Can not handle more than one regular expression."
 msgstr ""
 
-#: src/args.c:743
+#: src/args.c:795
 msgid "Could not compile regular expression."
 msgstr ""
 
-#: src/args.c:779
+#: src/args.c:831
 msgid "Argument for '-x' should be either 'ical' or 'pcal'\n"
 msgstr "L'argument pour '-x' doit être soit 'ical' soit 'pcal'\n"
 
-#: src/args.c:811
+#: src/args.c:863
 msgid "Options '-D' and '-c' cannot be used at the same time\n"
 msgstr "Les options '-D' et '-c' ne peuvent pas être utilisées en même temps\n"
 
-#: src/args.c:819
+#: src/args.c:871
 msgid "Option '-S' must be used with either '-d', '-r', '-s', '-a' or '-t'\n"
 msgstr ""
 
-#: src/calcurse.c:81
+#: src/calcurse.c:80
 msgid ""
 "Sorry, colors are not supported by your terminal\n"
 "(Press [ENTER] to continue)"
@@ -310,11 +336,11 @@ msgstr ""
 "Désolé, les couleurs ne sont pas supportées par votre terminal\n"
 "(Appuyez sur [ENTREE] pour continuer)"
 
-#: src/calcurse.c:83
+#: src/calcurse.c:82
 msgid "Do you really want to quit ?"
 msgstr "Voulez-vous vraiment quitter ?"
 
-#: src/calcurse.c:257
+#: src/calcurse.c:259
 msgid "To do :"
 msgstr "Tâche :"
 
@@ -331,8 +357,8 @@ msgstr ""
 "Le jour entré est invalide (il devrait être entre le 01/01/1902 et\n"
 "le 31/12/2037)"
 
-#: src/calendar.c:368 src/custom.c:224 src/io.c:989 src/io.c:1227
-#: src/io.c:1530 src/io.c:1550
+#: src/calendar.c:368 src/custom.c:224 src/io.c:1034 src/io.c:1272
+#: src/io.c:1591 src/io.c:1611
 msgid "Press [ENTER] to continue"
 msgstr "Appuyez sur [ENTREE] pour continuer"
 
@@ -367,67 +393,67 @@ msgstr ""
 msgid "Failed to open config file"
 msgstr "Impossible d'ouvrir le fichier de configuration"
 
-#: src/custom.c:323
+#: src/custom.c:331
 #, fuzzy
 msgid "configuration variable unknown"
 msgstr "ERREUR FATALE dans custom_load_conf: variable inconnue.\n"
 
-#: src/custom.c:382 src/custom.c:397 src/custom.c:597 src/custom.c:1175
-#: src/io.c:1615
+#: src/custom.c:394 src/custom.c:409 src/custom.c:608 src/custom.c:1185
+#: src/io.c:1676
 msgid "Exit"
 msgstr "Quitter"
 
-#: src/custom.c:383
+#: src/custom.c:395
 msgid "General"
 msgstr "Général"
 
-#: src/custom.c:384
+#: src/custom.c:396
 msgid "Layout"
 msgstr "Ecran"
 
-#: src/custom.c:385
+#: src/custom.c:397
 msgid "Color"
 msgstr "Couleur"
 
-#: src/custom.c:386
+#: src/custom.c:398
 msgid "Notify"
 msgstr "Notifier"
 
-#: src/custom.c:387
+#: src/custom.c:399
 msgid "Keys"
 msgstr ""
 
-#: src/custom.c:398 src/custom.c:598
+#: src/custom.c:410 src/custom.c:609
 msgid "Select"
 msgstr ""
 
-#: src/custom.c:399 src/custom.c:600 src/custom.c:1179 src/wins.c:536
+#: src/custom.c:411 src/custom.c:611 src/custom.c:1189 src/wins.c:536
 msgid "Up"
 msgstr ""
 
-#: src/custom.c:400 src/custom.c:601 src/custom.c:1180 src/wins.c:537
+#: src/custom.c:412 src/custom.c:612 src/custom.c:1190 src/wins.c:537
 #, fuzzy
 msgid "Down"
 msgstr "Haut/Bas"
 
-#: src/custom.c:401 src/custom.c:602 src/wins.c:538
+#: src/custom.c:413 src/custom.c:613 src/wins.c:538
 msgid "Left"
 msgstr ""
 
-#: src/custom.c:402 src/custom.c:603 src/wins.c:539
+#: src/custom.c:414 src/custom.c:614 src/wins.c:539
 msgid "Right"
 msgstr ""
 
-#: src/custom.c:403 src/wins.c:517
+#: src/custom.c:415 src/wins.c:517
 msgid "Help"
 msgstr "Aide"
 
-#: src/custom.c:451
+#: src/custom.c:463
 #, fuzzy, c-format
-msgid "CalCurse %s | layout configuration"
+msgid "layout configuration"
 msgstr "CalCurse %s | options générales"
 
-#: src/custom.c:490
+#: src/custom.c:501
 msgid ""
 "With this configuration menu, one can choose where panels will be\n"
 "displayed inside calcurse screen. \n"
@@ -443,195 +469,195 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/custom.c:599
+#: src/custom.c:610
 #, fuzzy
 msgid "No color"
 msgstr "Couleur"
 
-#: src/custom.c:628
+#: src/custom.c:639
 msgid "Foreground"
 msgstr "Avant plan"
 
-#: src/custom.c:629
+#: src/custom.c:640
 msgid "Background"
 msgstr "Arrière plan"
 
-#: src/custom.c:630
+#: src/custom.c:641
 msgid "(terminal's default)"
 msgstr "(couleur du terminal)"
 
-#: src/custom.c:664
-#, c-format
-msgid "CalCurse %s | color theme"
+#: src/custom.c:675
+#, fuzzy, c-format
+msgid "color theme"
 msgstr "Calcurse %s | thème graphique"
 
-#: src/custom.c:861
+#: src/custom.c:872
 #, fuzzy
 msgid "unknown color"
 msgstr "Couleur"
 
-#: src/custom.c:890
+#: src/custom.c:901
 msgid "auto_save = "
 msgstr "sauvegarde_automatique = "
 
-#: src/custom.c:891
+#: src/custom.c:902
 #, fuzzy
 msgid "periodic_save = "
 msgstr "sauvegarde_automatique = "
 
-#: src/custom.c:892
+#: src/custom.c:903
 msgid "confirm_quit = "
 msgstr "confirmer_pour_quitter = "
 
-#: src/custom.c:893
+#: src/custom.c:904
 msgid "confirm_delete = "
 msgstr "confirmer_pour_effacer = "
 
-#: src/custom.c:894
+#: src/custom.c:905
 msgid "skip_system_dialogs = "
 msgstr "masquer_messages_système = "
 
-#: src/custom.c:895
+#: src/custom.c:906
 msgid "skip_progress_bar = "
 msgstr "masquer_barre_progression = "
 
-#: src/custom.c:896
+#: src/custom.c:907
 msgid "week_begins_on_monday = "
 msgstr "semaine_commence_lundi = "
 
-#: src/custom.c:897
+#: src/custom.c:908
 msgid "output_datefmt = "
 msgstr "format_date_sortie ="
 
-#: src/custom.c:898
+#: src/custom.c:909
 msgid "input_datefmt = "
 msgstr "format_date_entrée"
 
-#: src/custom.c:906
+#: src/custom.c:917
 msgid "(if set to YES, automatic save is done when quitting)"
 msgstr ""
 "(si fixé à OUI, une sauvegarde est automatiquement effectuée en quittant)"
 
-#: src/custom.c:914
+#: src/custom.c:925
 msgid "(if not null, automatically save data every 'periodic_save' minutes)"
 msgstr ""
 
-#: src/custom.c:921
+#: src/custom.c:932
 msgid "(if set to YES, confirmation is required before quitting)"
 msgstr "(si fixé à OUI, il est nécessaire de confirmer pour quitter)"
 
-#: src/custom.c:927
+#: src/custom.c:938
 msgid "(if set to YES, confirmation is required before deleting an event)"
 msgstr ""
 "(si fixé à OUI, il est nécessaire de confirmer pour effacer un élement)"
 
-#: src/custom.c:934
+#: src/custom.c:945
 msgid ""
 "(if set to YES, messages about loaded and saved data will not be displayed)"
 msgstr "(si fixé à OUI, les messages d'accès fichiers ne seront pas affichés)"
 
-#: src/custom.c:941
+#: src/custom.c:952
 msgid "(if set to YES, progress bar will not be displayed when saving data)"
 msgstr "(si fixé à OUI, la barre ne sera pas affichée lors des sauvegardes)"
 
-#: src/custom.c:948
+#: src/custom.c:959
 msgid "(if set to YES, monday is the first day of the week, else it is sunday)"
 msgstr ""
 "(si fixé à OUI, la semaine débute le lundi, sinon elle débute le dimanche)"
 
-#: src/custom.c:957
+#: src/custom.c:968
 msgid "(Format of the date to be displayed in non-interactive mode)"
 msgstr "(Format de la date à afficher en mode non-intéractif)"
 
-#: src/custom.c:964
+#: src/custom.c:975
 msgid "(Format to be used when entering a date: "
 msgstr "(Format à utiliser pour entrer une date: "
 
-#: src/custom.c:966
+#: src/custom.c:977
 #, fuzzy
 msgid " (1)mm/dd/yyyy (2)dd/mm/yyyy (3)yyyy/mm/dd (4)yyyy-mm-dd)"
 msgstr "1-mm/jj/aaaa, 2-jj/mm/aaaa, 3-aaaa/mm/jj)"
 
-#: src/custom.c:991
+#: src/custom.c:1002 src/notify.c:703
 #, fuzzy
 msgid "Enter an option number to change its value"
 msgstr "Entrez un numéro d'option pour changer sa valeur [Q pour quitter] "
 
-#: src/custom.c:993
+#: src/custom.c:1004 src/notify.c:705
 msgid "(Press '^P' or '^N' to move up or down, 'Q' to quit)"
 msgstr ""
 
-#: src/custom.c:995 src/notify.c:562
+#: src/custom.c:1006 src/notify.c:707
 msgid "Enter the date format (see 'man 3 strftime' for possible formats) "
 msgstr ""
 "Entrez le format de la date (voir 'man 3 strftime' pour les formats "
 "possibles)"
 
-#: src/custom.c:997
+#: src/custom.c:1008
 #, fuzzy
 msgid ""
 "Enter the date format (1)mm/dd/yyyy (2)dd/mm/yyyy (3)yyyy/mm/dd (4)yyyy-mm-dd"
 msgstr "Entrez le format de date (1-mm/jj/aaaa, 2-jj/mm/aaaa, 3-aaaa/mm/jj) "
 
-#: src/custom.c:1000
+#: src/custom.c:1011
 msgid "Enter the delay, in minutes, between automatic saves (0 to disable) "
 msgstr ""
 
-#: src/custom.c:1006
-#, c-format
-msgid "CalCurse %s | general options"
+#: src/custom.c:1017
+#, fuzzy, c-format
+msgid "general options"
 msgstr "CalCurse %s | options générales"
 
-#: src/custom.c:1112
+#: src/custom.c:1122
 msgid "Undefined option!"
 msgstr ""
 
-#: src/custom.c:1140
+#: src/custom.c:1150
 msgid "undefined"
 msgstr ""
 
-#: src/custom.c:1176
+#: src/custom.c:1186
 msgid "Key info"
 msgstr ""
 
-#: src/custom.c:1177
+#: src/custom.c:1187
 #, fuzzy
 msgid "Add key"
 msgstr "Ajouter"
 
-#: src/custom.c:1178
+#: src/custom.c:1188
 #, fuzzy
 msgid "Del key"
 msgstr "Effacer"
 
-#: src/custom.c:1181
+#: src/custom.c:1191
 msgid "Prev Key"
 msgstr ""
 
-#: src/custom.c:1182
+#: src/custom.c:1192
 msgid "Next Key"
 msgstr ""
 
-#: src/custom.c:1206
+#: src/custom.c:1216
 #, fuzzy, c-format
-msgid "CalCurse %s | keys configuration"
+msgid "keys configuration"
 msgstr "CalCurse %s | options générales"
 
-#: src/custom.c:1269
+#: src/custom.c:1278
 msgid "Press the key you want to assign to:"
 msgstr ""
 
-#: src/custom.c:1277
+#: src/custom.c:1286
 #, fuzzy
 msgid "This key is not yet recognized by calcurse, please choose another one."
 msgstr "Cet élément est déjà recurrent."
 
-#: src/custom.c:1294
+#: src/custom.c:1303
 #, fuzzy, c-format
 msgid "This key is already in use for %s, please choose another one."
 msgstr "Cet élément est déjà recurrent."
 
-#: src/custom.c:1322 src/io.c:1448
+#: src/custom.c:1331 src/io.c:1493
 msgid "Some actions do not have any associated key bindings!"
 msgstr ""
 
@@ -643,7 +669,7 @@ msgstr "Evénement :"
 msgid "Appointment :"
 msgstr "Rendez-vous :"
 
-#: src/day.c:475 src/recur.c:681
+#: src/day.c:475 src/recur.c:663
 msgid "unknown item type"
 msgstr ""
 
@@ -669,15 +695,15 @@ msgid "Enter the new repetition type: (D)aily, (W)eekly, (M)onthly, (Y)early"
 msgstr ""
 "Entrez le nouveau type: (D) journ., (W) hebdo., (M) mensuel, (Y) annuel"
 
-#: src/day.c:610 src/recur.c:842
+#: src/day.c:610 src/recur.c:836
 msgid "[D/W/M/Y] "
 msgstr "[D/W/M/Y] "
 
-#: src/day.c:611 src/recur.c:844
+#: src/day.c:611 src/recur.c:838
 msgid "The frequence you entered is not valid."
 msgstr "La fréquence que vous avez entrée n'est pas valide"
 
-#: src/day.c:613 src/recur.c:847
+#: src/day.c:613 src/recur.c:841
 msgid "The entered date is not valid."
 msgstr "Le jour que vous avez entré n'est pas valide."
 
@@ -722,18 +748,18 @@ msgstr "[a/o]"
 msgid "unknwon type"
 msgstr "ERREUR FATALE dans ical_log: type ical inconnu"
 
-#: src/event.c:177
+#: src/event.c:167
 #, fuzzy
 msgid "date error in the event\n"
 msgstr "ERREUR FATALE dans event_scan: date erronée dans l'évenement\n"
 
-#: src/event.c:199 src/event.c:244 src/recur.c:749
+#: src/event.c:189 src/event.c:233 src/recur.c:737
 msgid "event not found"
 msgstr ""
 
 #: src/help.c:168
-#, c-format
-msgid "Calcurse %s | help"
+#, fuzzy, c-format
+msgid "Calcurse help"
 msgstr "Calcurse %s | aide"
 
 #: src/help.c:337
@@ -1572,98 +1598,117 @@ msgid ""
 "Calcurse home page : http://culot.org/calcurse"
 msgstr ""
 
-#: src/io.c:158
+#: src/io.c:159
 msgid "Saving..."
 msgstr "Enregistrement..."
 
-#: src/io.c:159
+#: src/io.c:160
 msgid "Loading..."
 msgstr "Chargement..."
 
-#: src/io.c:160
+#: src/io.c:161
 msgid "Exporting..."
 msgstr "Export..."
 
-#: src/io.c:161
+#: src/io.c:162
 msgid "Internal error while displaying progress bar"
 msgstr ""
 
-#: src/io.c:225
+#: src/io.c:226
 msgid "Choose the file used to export calcurse data:"
 msgstr "Choisissez le fichier dans lequel exporter les données:"
 
-#: src/io.c:227 src/io.c:2635
+#: src/io.c:228 src/io.c:2703
 msgid "The file cannot be accessed, please enter another file name."
 msgstr "Le fichier ne peut être ouvert, veuillez entrer un nouveau nom."
 
-#: src/io.c:228 src/io.c:2636 src/recur.c:851
+#: src/io.c:229 src/io.c:2704 src/recur.c:845
 msgid "Press [ENTER] to continue."
 msgstr "Appuyez sur [ENTREE] pour continuer."
 
-#: src/io.c:302 src/io.c:459 src/io.c:592
+#: src/io.c:303 src/io.c:460 src/io.c:593
 msgid "incoherent repetition type"
 msgstr ""
 
-#: src/io.c:339
+#: src/io.c:340
 msgid "Week"
 msgstr "Semaine"
 
-#: src/io.c:728
+#: src/io.c:688
+#, fuzzy, c-format
+msgid "Failed to open \"%s\", - %s\n"
+msgstr "Problème d'ouverture du fichier des tâches"
+
+#: src/io.c:693
+msgid "Failed to build message\n"
+msgstr ""
+
+#: src/io.c:697
+#, c-format
+msgid "Failed to print message \"%s\"\n"
+msgstr ""
+
+#: src/io.c:700
+#, c-format
+msgid "Failed to close \"%s\" - %s\n"
+msgstr ""
+
+#: src/io.c:761
 #, c-format
 msgid "%s does not exist, create it now [y or n] ? "
 msgstr "%s n'existe pas, le créer maintenant [y ou n] ? "
 
-#: src/io.c:735 src/io.c:755
+#: src/io.c:768 src/io.c:788
 #, c-format
 msgid "aborting...\n"
 msgstr "annulation...\n"
 
-#: src/io.c:749
+#: src/io.c:782
 #, c-format
 msgid "%s successfully created\n"
 msgstr "%s correctement créé\n"
 
-#: src/io.c:750
+#: src/io.c:783
 #, c-format
 msgid "starting interactive mode...\n"
 msgstr "lancement du mode intéractif...\n"
 
-#: src/io.c:987
+#: src/io.c:1032
 msgid "Problems accessing data file ..."
 msgstr "Problème d'accession aux fichiers de données ..."
 
-#: src/io.c:988
+#: src/io.c:1033
 msgid "The data files were successfully saved"
 msgstr "Les données ont été correctement enregistrées"
 
-#: src/io.c:1070
+#: src/io.c:1115
 #, fuzzy
 msgid "syntax error in the item date"
 msgstr "ERREUR FATALE dans io_load_app: mauvais format de date\n"
 
-#: src/io.c:1084
+#: src/io.c:1129
 #, fuzzy
 msgid "no event nor appointment found"
 msgstr ""
 "ERREUR FATALE dans io_load_app: aucun évenement ou rendez-vous trouvé\n"
 
-#: src/io.c:1102 src/io.c:1149 src/io.c:1214
+#: src/io.c:1147 src/io.c:1194 src/io.c:1259
 #, fuzzy
 msgid "wrong format in the appointment or event"
 msgstr ""
 "ERREUR FATALE dans io_load_app: mauvais format dans le rendez-vous ou "
 "l'évenement\n"
 
-#: src/io.c:1226
+#: src/io.c:1271
 msgid "Failed to open todo file"
 msgstr "Problème d'ouverture du fichier des tâches"
 
-#: src/io.c:1342
+#: src/io.c:1387
 #, fuzzy
 msgid "could not find any key file."
 msgstr "ERREUR FATALE dans launch_cmd: impossibilité de forker"
 
-#: src/io.c:1356
+#: src/io.c:1401
 msgid ""
 "\n"
 "Too many errors while reading configuration file!\n"
@@ -1671,218 +1716,218 @@ msgid ""
 "again.\n"
 msgstr ""
 
-#: src/io.c:1373
+#: src/io.c:1418
 msgid "Could not read key label"
 msgstr ""
 
-#: src/io.c:1382
+#: src/io.c:1427
 #, fuzzy
 msgid "Key label not recognized"
 msgstr "la fréquence de répétition est inconnue."
 
-#: src/io.c:1403
+#: src/io.c:1448
 #, c-format
 msgid "Error reading key: \"%s\""
 msgstr ""
 
-#: src/io.c:1417
+#: src/io.c:1462
 #, c-format
 msgid "\"%s\" assigned multiple times!"
 msgstr ""
 
-#: src/io.c:1438
+#: src/io.c:1483
 msgid "There were some errors when loading keys file, see log file ?"
 msgstr ""
 
-#: src/io.c:1444
+#: src/io.c:1489
 msgid "Too many errors while reading keys file, aborting..."
 msgstr ""
 
-#: src/io.c:1460 src/io.c:1481 src/io.c:2915
+#: src/io.c:1505 src/io.c:1542 src/io.c:2982
 #, c-format
 msgid "FATAL ERROR: could not create %s: %s\n"
 msgstr "ERREUR FATALE: impossibilité de créer %s: %s\n"
 
-#: src/io.c:1528
+#: src/io.c:1589
 msgid "Welcome to Calcurse. Missing data files were created."
 msgstr "Bienvenue dans Calcurse. Les fichiers manquants ont été créés."
 
-#: src/io.c:1529
+#: src/io.c:1590
 msgid "Data files found. Data will be loaded now."
 msgstr "Fichiers de données trouvés. Les données seront chargées."
 
-#: src/io.c:1549
+#: src/io.c:1610
 msgid "The data were successfully exported"
 msgstr "Les données ont été correctement exportées"
 
-#: src/io.c:1553
+#: src/io.c:1614
 msgid "unknown export type"
 msgstr ""
 
-#: src/io.c:1565
+#: src/io.c:1626
 msgid "wrong export mode"
 msgstr ""
 
-#: src/io.c:1616
+#: src/io.c:1677
 msgid "Ical"
 msgstr "Ical"
 
-#: src/io.c:1617
+#: src/io.c:1678
 msgid "Pcal"
 msgstr "Pcal"
 
-#: src/io.c:1659
+#: src/io.c:1720
 #, fuzzy
 msgid "unknown ical type"
 msgstr "ERREUR FATALE dans ical_log: type ical inconnu"
 
-#: src/io.c:2130
+#: src/io.c:2191
 msgid "recurrence frequence not found."
 msgstr "la fréquence de répétition n'a pas été trouvée."
 
-#: src/io.c:2148
+#: src/io.c:2209
 msgid "recurrence frequence not recognized."
 msgstr "la fréquence de répétition est inconnue."
 
-#: src/io.c:2213
+#: src/io.c:2274
 msgid "recurrence rule malformed."
 msgstr "la règle de répétition est mal formée."
 
-#: src/io.c:2268
+#: src/io.c:2329
 msgid "recurrence exception dates malformed."
 msgstr "les dates à ne pas répéter sont mal formées."
 
-#: src/io.c:2287
+#: src/io.c:2348
 msgid ""
 "Warning: could not create new note file to store description. Aborting...\n"
 msgstr ""
 "Impossible de créer une nouvelle note pour enregistrer la déscription. "
 "Abandon...\n"
 
-#: src/io.c:2291
+#: src/io.c:2352
 #, c-format
 msgid "Warning: could not open %s, Aborting..."
 msgstr "Alerte: impossible d'ouvrir %s, abandon..."
 
-#: src/io.c:2298
+#: src/io.c:2359
 msgid "could not get entire item description."
 msgstr "impossible de trouver la description entière de l'élément."
 
-#: src/io.c:2320
+#: src/io.c:2382
 msgid "description malformed."
 msgstr "déscription mal formée."
 
-#: src/io.c:2399
+#: src/io.c:2461
 msgid "appointment has no start time."
 msgstr "le rendez-vous n'a pas de date de début."
 
-#: src/io.c:2407
+#: src/io.c:2469
 msgid "could not compute duration (no end time)."
 msgstr "impossible de calculer la durée (pas de date de fin)."
 
-#: src/io.c:2427
+#: src/io.c:2489
 msgid "item has a negative duration."
 msgstr "L'élément a une durée négative."
 
-#: src/io.c:2441
+#: src/io.c:2503
 #, fuzzy
 msgid "event date is not defined."
 msgstr "Le jour que vous avez entré n'est pas valide."
 
-#: src/io.c:2450
+#: src/io.c:2512
 msgid "item could not be identified."
 msgstr "L'élément n'a pu être identifié."
 
-#: src/io.c:2458 src/io.c:2578
+#: src/io.c:2520 src/io.c:2644
 msgid "could not retrieve item summary."
 msgstr "impossible de récupérer le résumé de l'évènement."
 
-#: src/io.c:2472
+#: src/io.c:2534
 msgid "could not retrieve event start time."
 msgstr "impossible de récupérer l'heure de début de l'évènement."
 
-#: src/io.c:2483
+#: src/io.c:2545
 msgid "could not retrieve event end time."
 msgstr "impossible de récupérer l'heure de fin de l'évènement."
 
-#: src/io.c:2492
+#: src/io.c:2554
 msgid "item duration malformed."
 msgstr "la durée de l'élément est mal formée."
 
-#: src/io.c:2521 src/io.c:2618
+#: src/io.c:2583 src/io.c:2684
 msgid "The ical file seems to be malformed. The end of item was not found."
 msgstr ""
 "Le fichier ical semble erroné. La fin de l'élément n'a pas été trouvée."
 
-#: src/io.c:2597
+#: src/io.c:2663
 msgid "item priority is not acceptable (must be between 1 and 9)."
 msgstr "La priorité de l'élément est erronée (devrait être entre 1 et 9)."
 
-#: src/io.c:2633
+#: src/io.c:2701
 msgid "Enter the file name to import data from:"
 msgstr "Entrez le nom du fichier depuis lequel importer les données:"
 
-#: src/io.c:2674
+#: src/io.c:2742
 #, c-format
 msgid "Import process report: %04d lines read "
 msgstr "Rapport sur les données importées: %04d lignes lues "
 
-#: src/io.c:2676
+#: src/io.c:2744
 #, c-format
 msgid "%d apps / %d events / %d todos / %d skipped "
 msgstr "%d rdv / %d évnts / %d tâches / %d erronés "
 
-#: src/io.c:2678
+#: src/io.c:2746
 #, c-format
 msgid "%d apps / %d events / %d todos / %d skipped ([ENTER] to continue)"
 msgstr "%d rdv / %d évnts / %d tâches / %d erronés ([ENTREE] pour continuer)"
 
-#: src/io.c:2687
+#: src/io.c:2755
 msgid "unknown import type"
 msgstr ""
 
-#: src/io.c:2693
+#: src/io.c:2761
 msgid "FATAL ERROR: the input file cannot be accessed, Aborting..."
 msgstr "ERREUR FATALE: le fichier d'entrée n'a pu être ouvert, abandon..."
 
-#: src/io.c:2700
+#: src/io.c:2768
 #, fuzzy
 msgid "FATAL ERROR: wrong import mode"
 msgstr "ERREUR FATALE dans io_import_data: mauvais mode d'import"
 
-#: src/io.c:2710
+#: src/io.c:2778
 msgid "Warning: ical header malformed or wrong version number. Aborting..."
 msgstr ""
 "Attention: l'en-tête ical est mal formé ou le numéro de version est mauvais. "
 "Abandon..."
 
-#: src/io.c:2765
+#: src/io.c:2833
 msgid "Some items could not be imported, see log file ?"
 msgstr "Certains éléments n'ont pu être importés, voir le fichier de log ?"
 
-#: src/io.c:2781
+#: src/io.c:2849
 #, fuzzy
 msgid "Warning: could not create temporary log file, Aborting..."
 msgstr "Attention: impossible d'effacer le fichier de log, abandon..."
 
-#: src/io.c:2784 src/io.c:2790
+#: src/io.c:2852 src/io.c:2858
 msgid "Warning: could not open temporary log file, Aborting..."
 msgstr "Attention: impossible d'ouvrir le fichier de log, abandon..."
 
-#: src/io.c:2811
+#: src/io.c:2879
 msgid "No log file to display!"
 msgstr ""
 
-#: src/io.c:2846
+#: src/io.c:2914
 #, fuzzy, c-format
 msgid "Warning: could not erase temporary log file %s, Aborting..."
 msgstr "Attention: impossible d'effacer le fichier de log, abandon..."
 
-#: src/io.c:2862
+#: src/io.c:2930
 msgid "Invalid delay"
 msgstr ""
 
-#: src/io.c:2904
+#: src/io.c:2972
 #, c-format
 msgid ""
 "\n"
@@ -1892,148 +1937,155 @@ msgid ""
 "and restart calcurse.\n"
 msgstr ""
 
-#: src/io.c:2928
-#, fuzzy, c-format
-msgid "Could not remove lock file: %s\n"
-msgstr "impossible de récupérer l'heure de fin de l'évènement."
-
-#: src/notify.c:181
+#: src/notify.c:223
 #, fuzzy
 msgid "error while launching command: could not fork"
 msgstr "ERREUR FATALE dans launch_cmd: impossibilité de forker"
 
-#: src/notify.c:184
+#: src/notify.c:231
 #, fuzzy
 msgid "error while launching command"
 msgstr "Entrez la commande de notification"
 
-#: src/notify.c:489
+#: src/notify.c:632
 msgid "notify-bar_show = "
 msgstr "barre-notification_afficher = "
 
-#: src/notify.c:490
-msgid "notify-bar_date = "
-msgstr "barre-notification_date = "
-
-#: src/notify.c:491
-msgid "notify-bar_clock = "
-msgstr "barre-notification_heure = "
-
-#: src/notify.c:492
-msgid "notify-bar_warning = "
-msgstr "barre-notification_alerte = "
-
-#: src/notify.c:493
-msgid "notify-bar_command = "
-msgstr "barre-notification_commande = "
-
-#: src/notify.c:496
+#: src/notify.c:633
 msgid "(if set to YES, notify-bar will be displayed)"
 msgstr "(si fixé à OUI, la barre de notification sera affichée)"
 
-#: src/notify.c:498
+#: src/notify.c:635
+msgid "notify-bar_date = "
+msgstr "barre-notification_date = "
+
+#: src/notify.c:636
 msgid "(Format of the date to be displayed inside notify-bar)"
 msgstr "(Format de la date à afficher dans la barre de notification)"
 
-#: src/notify.c:501
+#: src/notify.c:638
+msgid "notify-bar_clock = "
+msgstr "barre-notification_heure = "
+
+#: src/notify.c:639
 msgid "(Format of the time to be displayed inside notify-bar)"
 msgstr "(Format de l'heure à afficher dans la barre de notification)"
 
-#: src/notify.c:504
+#: src/notify.c:641
+msgid "notify-bar_warning = "
+msgstr "barre-notification_alerte = "
+
+#: src/notify.c:642
 msgid ""
 "(Warn user if an appointment is within next 'notify-bar_warning' seconds)"
 msgstr "(Alerte si il y a un rendez-vous dans ce prochain nombre de secondes)"
 
-#: src/notify.c:507
+#: src/notify.c:645
+msgid "notify-bar_command = "
+msgstr "barre-notification_commande = "
+
+#: src/notify.c:646
 msgid "(Command used to notify user of an upcoming appointment)"
 msgstr ""
 "(Commande utilisée pour prévenir l'utilisateur d'un nouveau rendez-vous)"
 
-#: src/notify.c:560
-msgid "Enter an option number to change its value [Q to quit] "
-msgstr "Entrez un numéro d'option pour changer sa valeur [Q pour quitter] "
+#: src/notify.c:648
+#, fuzzy
+msgid "notify-daemon_enable = "
+msgstr "barre-notification_date = "
 
-#: src/notify.c:564
+#: src/notify.c:649
+msgid "(Run in background to get notifications after exiting)"
+msgstr ""
+
+#: src/notify.c:651
+#, fuzzy
+msgid "notify-daemon_log = "
+msgstr "barre-notification_heure = "
+
+#: src/notify.c:652
+msgid "(Log activity when running in background)"
+msgstr ""
+
+#: src/notify.c:709
 msgid "Enter the time format (see 'man 3 strftime' for possible formats) "
 msgstr ""
 "Entrez le format de l'heure (voir 'man 3 strftime' pour les formats "
 "possibles)"
 
-#: src/notify.c:566
+#: src/notify.c:711
 msgid "Enter the number of seconds (0 not to be warned before an appointment)"
 msgstr "Entrez le nombre de secondes (0 pour ne pas être alerté)"
 
-#: src/notify.c:567
+#: src/notify.c:712
 msgid "Enter the notification command "
 msgstr "Entrez la commande de notification"
 
-#: src/notify.c:571
+#: src/notify.c:717
 #, c-format
-msgid "CalCurse %s | notify-bar options"
-msgstr "CalCurse %s | options de la barre de notification"
+msgid "notification options"
+msgstr ""
 
-#: src/recur.c:365
+#: src/recur.c:347
 msgid "unknown repetition type"
 msgstr ""
 
-#: src/recur.c:396
+#: src/recur.c:378
 msgid "unknown character"
 msgstr ""
 
-#: src/recur.c:505
+#: src/recur.c:487
 msgid "date error in event"
 msgstr ""
 
-#: src/recur.c:818
+#: src/recur.c:812
 #, fuzzy
 msgid "appointment not found"
 msgstr "Rendez-vous :"
 
-#: src/recur.c:841
+#: src/recur.c:835
 msgid "Enter the repetition type: (D)aily, (W)eekly, (M)onthly, (Y)early"
 msgstr "Entrez le type: (D) journ., (W) hebdo., (M) mensuel, (Y) annuel"
 
-#: src/recur.c:843
+#: src/recur.c:837
 msgid "Enter the repetition frequence:"
 msgstr "Entrez la fréquence de répétition:"
 
-#: src/recur.c:846
+#: src/recur.c:840
 #, c-format
 msgid "Enter the ending date: [%s] or '0' for an endless repetition"
 msgstr "Entrez la date de fin: [%s] ou '0' pour répéter indéfiniment"
 
-#: src/recur.c:849
+#: src/recur.c:843
 #, c-format
 msgid "Possible formats are [%s] or '0' for an endless repetition"
 msgstr "Les formats autorisés sont [%s] ou '0' pour une répétition sans fin"
 
-#: src/recur.c:850
+#: src/recur.c:844
 msgid "This item is already a repeated one."
 msgstr "Cet élément est déjà recurrent."
 
-#: src/recur.c:853
+#: src/recur.c:847
 msgid "Sorry, the date you entered is older than the item start time."
 msgstr "La date que vous avez entrée est antérieure à la date de l'élément!"
 
-#: src/recur.c:967
+#: src/recur.c:961
 msgid "wrong item type"
 msgstr ""
 
-#: src/recur.c:991
+#: src/recur.c:985
 #, fuzzy
 msgid "syntax error in item date"
 msgstr "ERREUR FATALE dans io_load_app: mauvais format de date\n"
 
-#: src/sigs.c:77
-msgid "Error handling SIGCHLD signal"
-msgstr ""
+#: src/sigs.c:71 src/utils.c:89
+#, fuzzy, c-format
+msgid "Could not remove calcurse lock file: %s\n"
+msgstr "impossible de récupérer l'heure de fin de l'évènement."
 
-#: src/sigs.c:86
-msgid "Error handling SIGWINCH signal"
-msgstr ""
-
-#: src/sigs.c:95
-msgid "Error handling SIGINT signal"
+#: src/sigs.c:90
+#, c-format
+msgid "Error setting signal #%d : %s\n"
 msgstr ""
 
 #: src/todo.c:152
@@ -2048,102 +2100,102 @@ msgstr "Entrez la priorité [1 (plus important) - 9 (moins important)] :"
 msgid "no note attached"
 msgstr ""
 
-#: src/todo.c:225 src/todo.c:252
+#: src/todo.c:225 src/todo.c:251
 msgid "no such todo"
 msgstr ""
 
-#: src/todo.c:275
+#: src/todo.c:274
 msgid "Do you really want to delete this task ?"
 msgstr "Voulez-vous vraiment effacer cette tâche ?"
 
-#: src/todo.c:277
+#: src/todo.c:276
 msgid "This item has a note attached to it. Delete (t)odo or just its (n)ote ?"
 msgstr ""
 "Une note est attachée à cette tâche. Effacer (t) la tâche ou (n) la note "
 "seulement ?"
 
-#: src/todo.c:279
+#: src/todo.c:278
 msgid "[t/n] "
 msgstr "[t/n]"
 
-#: src/todo.c:363
+#: src/todo.c:362
 #, fuzzy
 msgid "todo not found"
 msgstr "Fichier note non trouvé\n"
 
-#: src/todo.c:394
+#: src/todo.c:393
 msgid "no such action"
 msgstr ""
 
-#: src/todo.c:410
+#: src/todo.c:409
 msgid "Enter the new ToDo description :"
 msgstr "Entrez la nouvelle description pour cette tâche : "
 
-#: src/utils.c:106
+#: src/utils.c:119
 #, fuzzy
 msgid "/!\\ INTERNAL ERROR /!\\"
 msgstr "ERREUR INTERNE"
 
-#: src/utils.c:107
+#: src/utils.c:120
 msgid "Please report the following bug:"
 msgstr "Merci de reporter le bogue suivant:"
 
-#: src/utils.c:192
+#: src/utils.c:205
 msgid "Press any key to continue..."
 msgstr "Appuyez sur une touche pour continuer..."
 
-#: src/utils.c:426
+#: src/utils.c:439
 msgid "Internal error: line too long"
 msgstr ""
 
-#: src/utils.c:435
+#: src/utils.c:448
 msgid "out of memory"
 msgstr ""
 
-#: src/utils.c:512 src/utils.c:582
+#: src/utils.c:525 src/utils.c:595
 msgid "failure in mktime"
 msgstr ""
 
-#: src/utils.c:602
+#: src/utils.c:615
 msgid "error in mktime"
 msgstr ""
 
-#: src/utils.c:721
+#: src/utils.c:734
 msgid "Appointment"
 msgstr "Rendez-vous"
 
-#: src/utils.c:773
+#: src/utils.c:798
 #, fuzzy
 msgid "could not convert string"
 msgstr "ERREUR FATALE dans mystrtol: impossibilité de convertir la chaîne"
 
-#: src/utils.c:775
+#: src/utils.c:800
 msgid "out of range"
 msgstr ""
 
-#: src/utils.c:790
+#: src/utils.c:815
 msgid "yes"
 msgstr "oui"
 
-#: src/utils.c:795
+#: src/utils.c:820
 msgid "no"
 msgstr "non"
 
-#: src/utils.c:798
+#: src/utils.c:823
 msgid "option not defined"
 msgstr ""
 
-#: src/utils.c:834
+#: src/utils.c:859
 #, fuzzy, c-format
 msgid "temporary file \"%s\" could not be created"
 msgstr "ERREUR FATALE: le fichier temporaire n'a pu être créé"
 
-#: src/utils.c:854
+#: src/utils.c:879
 #, fuzzy
 msgid "could not remove note"
 msgstr "impossible de récupérer l'heure de fin de l'évènement."
 
-#: src/utils.c:939
+#: src/utils.c:964
 #, c-format
 msgid "Error when closing file at %s"
 msgstr ""
@@ -2371,6 +2423,91 @@ msgstr ""
 msgid "unknown panel"
 msgstr ""
 
+#: src/dmon.c:67
+#, fuzzy, c-format
+msgid "Could not stop daemon properly: %s\n"
+msgstr "impossible de récupérer l'heure de fin de l'évènement."
+
+#: src/dmon.c:81
+#, c-format
+msgid "terminated at %s with signal %d\n"
+msgstr ""
+
+#: src/dmon.c:85
+#, fuzzy, c-format
+msgid "Could not remove daemon lock file: %s\n"
+msgstr "impossible de récupérer l'heure de fin de l'évènement."
+
+#: src/dmon.c:107
+#, fuzzy, c-format
+msgid "Could not fork: %s\n"
+msgstr "impossible de récupérer l'heure de fin de l'évènement."
+
+#: src/dmon.c:123
+#, c-format
+msgid "Could not detach from the controlling terminal: %s\n"
+msgstr ""
+
+#: src/dmon.c:134
+#, fuzzy, c-format
+msgid "Could not change working directory: %s\n"
+msgstr "impossible de récupérer l'heure de fin de l'évènement."
+
+#: src/dmon.c:168
+msgid "Cannot daemonize, aborting\n"
+msgstr ""
+
+#: src/dmon.c:171
+#, fuzzy
+msgid "Could not set lock file\n"
+msgstr "impossible de récupérer l'heure de fin de l'évènement."
+
+#: src/dmon.c:174 src/dmon.c:179
+#, fuzzy, c-format
+msgid "Could not access \"%s\": %s\n"
+msgstr "ERREUR FATALE: impossibilité de créer %s: %s\n"
+
+#: src/dmon.c:186
+#, c-format
+msgid "started at %s\n"
+msgstr ""
+
+#: src/dmon.c:192
+#, fuzzy
+msgid "error loading next appointment\n"
+msgstr "prochain rendez-vous:\n"
+
+#: src/dmon.c:197
+#, c-format
+msgid "launching notification at %s for: \"%s\"\n"
+msgstr ""
+
+#: src/dmon.c:200
+#, fuzzy
+msgid "error while sending notification\n"
+msgstr "Entrez la commande de notification"
+
+#: src/dmon.c:203
+#, c-format
+msgid "sleeping at %s for %d seconds\n"
+msgstr ""
+
+#: src/dmon.c:206
+#, c-format
+msgid "awakened at %s\n"
+msgstr ""
+
+#: src/dmon.c:224
+#, fuzzy, c-format
+msgid "Could not stop calcurse daemon: %s\n"
+msgstr "impossible de récupérer l'heure de fin de l'évènement."
+
+#~ msgid "Enter an option number to change its value [Q to quit] "
+#~ msgstr "Entrez un numéro d'option pour changer sa valeur [Q pour quitter] "
+
+#~ msgid "CalCurse %s | notify-bar options"
+#~ msgstr "CalCurse %s | options de la barre de notification"
+
 #, fuzzy
 #~ msgid ""
 #~ "\n"
@@ -2552,9 +2689,6 @@ msgstr ""
 #~ msgid "FATAL ERROR in todo_chg_priority: no such action\n"
 #~ msgstr ""
 #~ "ERREUR FATALE dans todo_delete_by_num: aucune tâche correspondante\n"
-
-#~ msgid "calcurse will now exit..."
-#~ msgstr "calcurse va maintenant quitter..."
 
 #~ msgid "FATAL ERROR in updatestring: out of memory"
 #~ msgstr "ERREUR FATALE dans updatestring: mémoire insuffisante"
