@@ -1,3 +1,12 @@
+2009-08-24  Frederic Culot  <frederic@culot.org>
+
+	* src/calendar.c (calendar_view_next, calendar_view_prev)
+	(calendar_get_wday, draw_monthly_view, draw_weekly_view): new
+	functions to implement a weekly view inside calendar panel
+
+	* src/calcurse.c: key bindings added to switch between weekly and
+	monthly calendar views
+	
 2009-08-22  Frederic Culot  <frederic@culot.org>
 
 	* === Released 2.7 ===

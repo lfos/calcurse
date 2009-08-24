@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.85 2009/07/26 20:38:35 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.86 2009/08/24 18:59:17 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -525,6 +525,16 @@ main (int argc, char **argv)
 	      day_changed = 1;
 	      calendar_move (WEEK_END);
 	    }
+          break;
+
+        case KEY_GENERIC_SCROLL_UP:
+          if (wins_slctd () == CAL)
+            calendar_view_prev ();
+          break;
+
+        case KEY_GENERIC_SCROLL_DOWN:
+          if (wins_slctd () == CAL)
+            calendar_view_next ();
           break;
           
         case KEY_GENERIC_QUIT:          
