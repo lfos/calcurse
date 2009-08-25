@@ -1,3 +1,8 @@
+2009-08-25  Frederic Culot  <frederic@culot.org>
+
+	* src/calendar.c (weeknum, ISO8601weeknum): new functions to print
+	the week number inside calendar panel
+	
 2009-08-24  Frederic Culot  <frederic@culot.org>
 
 	* src/calendar.c (calendar_view_next, calendar_view_prev)

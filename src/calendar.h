@@ -1,4 +1,4 @@
-/*	$calcurse: calendar.h,v 1.16 2009/08/24 18:59:18 culot Exp $	*/
+/*	$calcurse: calendar.h,v 1.17 2009/08/25 14:51:42 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -54,6 +54,8 @@
 #endif
 
 #include <time.h>
+
+#include "wins.h"
 
 #define	CALHEIGHT	12
 #define	CALWIDTH	30
@@ -114,7 +116,7 @@ void       calendar_store_current_date (date_t *);
 void       calendar_init_slctd_day (void);
 date_t    *calendar_get_slctd_day (void);
 long       calendar_get_slctd_day_sec (void);
-void       calendar_update_panel (WINDOW *);
+void       calendar_update_panel (window_t *);
 void       calendar_goto_today (void);
 void       calendar_change_day (int);
 void       calendar_move (move_t);

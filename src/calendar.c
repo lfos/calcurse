@@ -1,4 +1,4 @@
-/*	$calcurse: calendar.c,v 1.26 2009/08/24 18:59:18 culot Exp $	*/
+/*	$calcurse: calendar.c,v 1.27 2009/08/25 14:51:41 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -79,9 +79,9 @@ static unsigned calendar_view, week_begins_on_monday;
 static pthread_mutex_t date_thread_mutex = PTHREAD_MUTEX_INITIALIZER;
 static pthread_t calendar_t_date;
 
-static void draw_monthly_view (WINDOW *, date_t *, unsigned);
-static void draw_weekly_view (WINDOW *, date_t *, unsigned);
-static void (*draw_calendar[CAL_VIEWS]) (WINDOW *, date_t *, unsigned) =
+static void draw_monthly_view (window_t *, date_t *, unsigned);
+static void draw_weekly_view (window_t *, date_t *, unsigned);
+static void (*draw_calendar[CAL_VIEWS]) (window_t *, date_t *, unsigned) =
   {draw_monthly_view, draw_weekly_view};
 
 /* Switch between calendar views (monthly view is selected by default). */
@@ -116,7 +116,7 @@ calendar_date_thread (void *arg)
         (void)sleep (tomorrow - actual);
 
       calendar_set_current_date ();
-      calendar_update_panel (win[CAL].p);
+      calendar_update_panel (&win[CAL]);
     }
 }
 
@@ -287,7 +287,7 @@ date_change (struct tm *date, int delta_month, int delta_day)
 
 /* Draw the monthly view inside calendar panel. */
 static void
-draw_monthly_view (WINDOW *cwin, date_t *current_day, unsigned sunday_first)
+draw_monthly_view (window_t *cwin, date_t *current_day, unsigned sunday_first)
 {
   date_t check_day;
   int c_day, c_day_1, day_1_sav, numdays, j;
@@ -314,20 +314,20 @@ draw_monthly_view (WINDOW *cwin, date_t *current_day, unsigned sunday_first)
   c_day_1 = (int) ((ymd_to_scalar (yr, mo, 1 + sunday_first) - (long) 1) % 7L);
 
   /* Write the current month and year on top of the calendar */
-  custom_apply_attr (cwin, ATTR_HIGHEST);
-  mvwprintw (cwin, ofs_y, (CALWIDTH - (strlen (_(monthnames[mo - 1])) + 5)) / 2,
+  custom_apply_attr (cwin->p, ATTR_HIGHEST);
+  mvwprintw (cwin->p, ofs_y, (CALWIDTH - (strlen (_(monthnames[mo - 1])) + 5)) / 2,
 	     "%s %d", _(monthnames[mo - 1]), slctd_day.yyyy);
-  custom_remove_attr (cwin, ATTR_HIGHEST);
+  custom_remove_attr (cwin->p, ATTR_HIGHEST);
   ++ofs_y;
 
   /* print the days, with regards to the first day of the week */
-  custom_apply_attr (cwin, ATTR_HIGHEST);
+  custom_apply_attr (cwin->p, ATTR_HIGHEST);
   for (j = 0; j < WEEKINDAYS; j++)
     {
-      mvwprintw (cwin, ofs_y, ofs_x + 4 * j, "%s",
+      mvwprintw (cwin->p, ofs_y, ofs_x + 4 * j, "%s",
 		 _(daynames[1 + j - sunday_first]));
     }
-  custom_remove_attr (cwin, ATTR_HIGHEST);
+  custom_remove_attr (cwin->p, ATTR_HIGHEST);
 
   day_1_sav = (c_day_1 + 1) * 3 + c_day_1 - 7;
 
@@ -353,38 +353,115 @@ draw_monthly_view (WINDOW *cwin, date_t *current_day, unsigned sunday_first)
           && current_day->yyyy == slctd_day.yyyy
           && current_day->dd != slctd_day.dd)
 	{
-	  custom_apply_attr (cwin, ATTR_LOWEST);
-	  mvwprintw (cwin, ofs_y + 1,
+	  custom_apply_attr (cwin->p, ATTR_LOWEST);
+	  mvwprintw (cwin->p, ofs_y + 1,
 		     ofs_x + day_1_sav + 4 * c_day + 1, "%2d", c_day);
-	  custom_remove_attr (cwin, ATTR_LOWEST);
+	  custom_remove_attr (cwin->p, ATTR_LOWEST);
 	}
       else if (c_day == slctd_day.dd)
 	{
 	  /* This is the selected day, print it according to user's theme. */
-	  custom_apply_attr (cwin, ATTR_HIGHEST);
-	  mvwprintw (cwin, ofs_y + 1, ofs_x + day_1_sav + 4 * c_day + 1, "%2d",
+	  custom_apply_attr (cwin->p, ATTR_HIGHEST);
+	  mvwprintw (cwin->p, ofs_y + 1, ofs_x + day_1_sav + 4 * c_day + 1, "%2d",
                      c_day);
-	  custom_remove_attr (cwin, ATTR_HIGHEST);
+	  custom_remove_attr (cwin->p, ATTR_HIGHEST);
 	}
       else if (item_this_day)
 	{
-	  custom_apply_attr (cwin, ATTR_LOW);
-	  mvwprintw (cwin, ofs_y + 1, ofs_x + day_1_sav + 4 * c_day + 1, "%2d",
+	  custom_apply_attr (cwin->p, ATTR_LOW);
+	  mvwprintw (cwin->p, ofs_y + 1, ofs_x + day_1_sav + 4 * c_day + 1, "%2d",
                      c_day);
-	  custom_remove_attr (cwin, ATTR_LOW);
+	  custom_remove_attr (cwin->p, ATTR_LOW);
 	}
       else
 	/* otherwise, print normal days in black */
-	mvwprintw (cwin, ofs_y + 1, ofs_x + day_1_sav + 4 * c_day + 1, "%2d",
+	mvwprintw (cwin->p, ofs_y + 1, ofs_x + day_1_sav + 4 * c_day + 1, "%2d",
                    c_day);
     }
 }
 
+static int
+weeknum (const struct tm *t, int firstweekday)
+{
+  int wday, wnum;
+
+  wday = t->tm_wday;
+  if (firstweekday == MONDAY)
+    {
+      if (wday == SUNDAY)
+        wday = 6;
+      else
+        wday--;
+    }
+  wnum = ((t->tm_yday + WEEKINDAYS - wday) / WEEKINDAYS);
+  if (wnum < 0)
+    wnum = 0;
+  
+  return wnum;
+}
+
+/*
+ * Compute the week number according to ISO 8601.
+ */
+static int
+ISO8601weeknum (const struct tm *t)
+{
+  int wnum, jan1day;
+
+  wnum = weeknum (t, MONDAY);
+
+  jan1day = t->tm_wday - (t->tm_yday % WEEKINDAYS);
+  if (jan1day < 0)
+    jan1day += WEEKINDAYS;
+
+  switch (jan1day)
+    {
+    case MONDAY:
+      break;
+    case TUESDAY:
+    case WEDNESDAY:
+    case THURSDAY:
+      wnum++;
+      break;
+    case FRIDAY:
+    case SATURDAY:
+    case SUNDAY:
+      if (wnum == 0)
+        {
+          /* Get week number of last week of last year. */
+          struct tm dec31ly; /* 12/31 last year */
+          
+          dec31ly = *t;
+          dec31ly.tm_year--;
+          dec31ly.tm_mon = 11;
+          dec31ly.tm_mday = 31;
+          dec31ly.tm_wday = (jan1day == SUNDAY) ? 6 : jan1day - 1;
+          dec31ly.tm_yday = 364 + isBissextile (dec31ly.tm_year + 1900);
+          wnum = ISO8601weeknum (&dec31ly);
+        }
+      break;
+    }
+
+  if (t->tm_mon == 11)
+    {
+      int wday, mday;
+
+      wday = t->tm_wday;
+      mday = t->tm_mday;
+      if ((wday == MONDAY && (mday >= 29 && mday <= 31))
+          || (wday == TUESDAY && (mday == 30 || mday == 31))
+          || (wday == WEDNESDAY && mday == 31))
+        wnum = 1;
+    }
+
+  return wnum;
+}
+
 /* Draw the weekly view inside calendar panel. */
 static void
-draw_weekly_view (WINDOW *cwin, date_t *current_day, unsigned sunday_first)
+draw_weekly_view (window_t *cwin, date_t *current_day, unsigned sunday_first)
 {
-  int j, c_wday, days_to_remove;
+  int j, c_wday, days_to_remove, weeknum;
   struct tm t;
 
   /* Fill in a tm structure with the first day of the selected week. */
@@ -401,16 +478,29 @@ draw_weekly_view (WINDOW *cwin, date_t *current_day, unsigned sunday_first)
   (void)mktime (&t);
   (void)date_change (&t, 0, -days_to_remove);
 
+  /* Print the week number. */
+  weeknum = ISO8601weeknum (&t);
+  custom_apply_attr (cwin->p, ATTR_HIGHEST);      
+  mvwprintw (cwin->p, 2, cwin->w - 9, "(# %02d)", weeknum);
+  custom_remove_attr (cwin->p, ATTR_HIGHEST);
+  
   /* Now draw calendar view. */
   for (j = 0; j < WEEKINDAYS; j++)
     {
-      unsigned attr;
+      date_t date;
+      unsigned attr, item_this_day;
       
       /* print the day names, with regards to the first day of the week */
-      custom_apply_attr (cwin, ATTR_HIGHEST);      
-      mvwprintw (cwin, 3, 1 + 4 * j, "%s",
+      custom_apply_attr (cwin->p, ATTR_HIGHEST);      
+      mvwprintw (cwin->p, 3, 1 + 4 * j, "%s",
 		 _(daynames[1 + j - sunday_first]));
-      custom_remove_attr (cwin, ATTR_HIGHEST);
+      custom_remove_attr (cwin->p, ATTR_HIGHEST);
+
+      /* Check if the day to be printed has an item or not. */
+      date.dd = t.tm_mday;
+      date.mm = t.tm_mon + 1;
+      date.yyyy = t.tm_year + 1900;
+      item_this_day = day_check_if_item (date);
       
       /* Print the day numbers with appropriate decoration. */
       if (t.tm_mday == current_day->dd
@@ -420,14 +510,16 @@ draw_weekly_view (WINDOW *cwin, date_t *current_day, unsigned sunday_first)
         attr = ATTR_LOWEST;               /* today, but not selected */
       else if (t.tm_mday == slctd_day.dd)
         attr = ATTR_HIGHEST;              /* selected day */
+      else if (item_this_day)
+        attr = ATTR_LOW;
       else
         attr = 0;
 
       if (attr)
-        custom_apply_attr (cwin, attr);
-      mvwprintw (cwin, 4, 2 + 4 * j, "%02d", t.tm_mday);
+        custom_apply_attr (cwin->p, attr);
+      mvwprintw (cwin->p, 4, 2 + 4 * j, "%02d", t.tm_mday);
       if (attr)
-        custom_remove_attr (cwin, attr);
+        custom_remove_attr (cwin->p, attr);
       
       /* get next day */
       (void)date_change (&t, 0, 1);
@@ -436,18 +528,19 @@ draw_weekly_view (WINDOW *cwin, date_t *current_day, unsigned sunday_first)
 
 /* Function used to display the calendar panel. */
 void
-calendar_update_panel (WINDOW *cwin)
+calendar_update_panel (window_t *cwin)
 {
   date_t current_day;
   unsigned sunday_first;
 
   calendar_store_current_date (&current_day);
-  erase_window_part (cwin, 1, 3, CALWIDTH - 2, CALHEIGHT - 2);
+  erase_window_part (cwin->p, 1, 3, cwin->w - 2, cwin->h - 2);
+  mvwhline (cwin->p, 2, 1, ACS_HLINE, cwin->w - 2);
   sunday_first = calendar_week_begins_on_monday () ? 0 : 1;
 
   draw_calendar[calendar_view] (cwin, &current_day, sunday_first);
 
-  wnoutrefresh (cwin);
+  wnoutrefresh (cwin->p);
 }
 
 /* Set the selected day in calendar to current day. */
