@@ -1,4 +1,4 @@
-/*	$calcurse: wins.c,v 1.26 2009/07/12 16:22:03 culot Exp $	*/
+/*	$calcurse: wins.c,v 1.27 2009/08/25 14:51:05 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -264,19 +264,22 @@ wins_get_config (void)
       win[NOT].x = 0;
     }
 
+  win[CAL].w = CALWIDTH;
+  win[CAL].h = CALHEIGHT;
+  
   if (layout <= 4)
     {				/* APPOINTMENT is the biggest panel */
-      win[APP].w = col - CALWIDTH;
+      win[APP].w = col - win[CAL].w;
       win[APP].h = row - (win[STA].h + win[NOT].h);
-      win[TOD].w = CALWIDTH;
-      win[TOD].h = row - (CALHEIGHT + win[STA].h + win[NOT].h);
+      win[TOD].w = win[CAL].w;
+      win[TOD].h = row - (win[CAL].h + win[STA].h + win[NOT].h);
     }
   else
     {				/* TODO is the biggest panel */
-      win[TOD].w = col - CALWIDTH;
+      win[TOD].w = col - win[CAL].w;
       win[TOD].h = row - (win[STA].h + win[NOT].h);
-      win[APP].w = CALWIDTH;
-      win[APP].h = row - (CALHEIGHT + win[STA].h + win[NOT].h);
+      win[APP].w = win[CAL].w;
+      win[APP].h = row - (win[CAL].h + win[STA].h + win[NOT].h);
     }
 
   /* defining the layout */
@@ -287,7 +290,7 @@ wins_get_config (void)
       win[APP].x = 0;
       win[CAL].y = 0;
       win[TOD].x = win[APP].w;
-      win[TOD].y = CALHEIGHT;
+      win[TOD].y = win[CAL].h;
       win[CAL].x = win[APP].w;
       break;
     case 2:
@@ -303,22 +306,22 @@ wins_get_config (void)
       win[TOD].x = 0;
       win[CAL].x = 0;
       win[CAL].y = 0;
-      win[APP].x = CALWIDTH;
-      win[TOD].y = CALHEIGHT;
+      win[APP].x = win[CAL].w;
+      win[TOD].y = win[CAL].h;
       break;
     case 4:
       win[APP].y = 0;
       win[TOD].x = 0;
       win[TOD].y = 0;
       win[CAL].x = 0;
-      win[APP].x = CALWIDTH;
+      win[APP].x = win[CAL].w;
       win[CAL].y = win[TOD].h;
       break;
     case 5:
       win[TOD].y = 0;
       win[TOD].x = 0;
       win[CAL].y = 0;
-      win[APP].y = CALHEIGHT;
+      win[APP].y = win[CAL].h;
       win[APP].x = win[TOD].w;
       win[CAL].x = win[TOD].w;
       break;
@@ -335,15 +338,15 @@ wins_get_config (void)
       win[APP].x = 0;
       win[CAL].x = 0;
       win[CAL].y = 0;
-      win[TOD].x = CALWIDTH;
-      win[APP].y = CALHEIGHT;
+      win[TOD].x = win[CAL].w;
+      win[APP].y = win[CAL].h;
       break;
     case 8:
       win[TOD].y = 0;
       win[APP].x = 0;
       win[CAL].x = 0;
       win[APP].y = 0;
-      win[TOD].x = CALWIDTH;
+      win[TOD].x = win[CAL].w;
       win[CAL].y = win[APP].h;
       break;
     }
@@ -435,7 +438,7 @@ wins_update (void)
 
   apoint_update_panel (slctd_win);
   todo_update_panel (slctd_win);
-  calendar_update_panel (win[CAL].p);
+  calendar_update_panel (&win[CAL]);
   wins_status_bar ();
   if (notify_bar ())
     notify_update_bar ();
