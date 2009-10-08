@@ -1,4 +1,4 @@
-/*	$calcurse: calendar.c,v 1.27 2009/08/25 14:51:41 culot Exp $	*/
+/*	$calcurse: calendar.c,v 1.28 2009/10/08 16:28:06 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -483,12 +483,15 @@ draw_weekly_view (window_t *cwin, date_t *current_day, unsigned sunday_first)
   custom_apply_attr (cwin->p, ATTR_HIGHEST);      
   mvwprintw (cwin->p, 2, cwin->w - 9, "(# %02d)", weeknum);
   custom_remove_attr (cwin->p, ATTR_HIGHEST);
+
+#define DAYSLICESNO  6
   
   /* Now draw calendar view. */
   for (j = 0; j < WEEKINDAYS; j++)
     {
       date_t date;
       unsigned attr, item_this_day;
+      int i, slices[DAYSLICESNO];
       
       /* print the day names, with regards to the first day of the week */
       custom_apply_attr (cwin->p, ATTR_HIGHEST);      
@@ -520,10 +523,25 @@ draw_weekly_view (window_t *cwin, date_t *current_day, unsigned sunday_first)
       mvwprintw (cwin->p, 4, 2 + 4 * j, "%02d", t.tm_mday);
       if (attr)
         custom_remove_attr (cwin->p, attr);
+
+      /* Draw slices indicating appointment times. */
+      bzero (slices, DAYSLICESNO * sizeof *slices);
+      if (day_chk_busy_slices (date, DAYSLICESNO, slices))
+        {
+          for (i = 0; i < DAYSLICESNO; i++)
+            if (slices[i])
+              {
+                wattron (cwin->p, A_REVERSE);
+                mvwprintw (cwin->p, 5 + i, 3 + 4 * j, " ");                
+                wattroff (cwin->p, A_REVERSE);
+              }
+        }
       
       /* get next day */
       (void)date_change (&t, 0, 1);
     }
+  
+#undef DAYSLICESNO  
 }
 
 /* Function used to display the calendar panel. */

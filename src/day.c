@@ -1,4 +1,4 @@
-/*	$calcurse: day.c,v 1.50 2009/07/12 16:22:00 culot Exp $	*/
+/*	$calcurse: day.c,v 1.51 2009/10/08 16:28:06 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -518,6 +518,71 @@ day_check_if_item (date_t day)
   pthread_mutex_unlock (&(alist_p->mutex));
 
   return (0);
+}
+
+static unsigned
+fill_slices (int *slices, int slicesno, int first, int last)
+{
+  int i;
+
+  if (first < 0 || last < first)
+    return 0;
+  
+  if (last >= slicesno)
+    last = slicesno - 1; /* Appointment spanning more than one day. */
+  
+  for (i = first; i <= last; i++)
+    slices[i] = 1;
+      
+  return 1;
+}
+
+/*
+ * Fill in the 'slices' vector given as an argument with 1 if there is an
+ * appointment in the corresponding time slice, 0 otherwise.
+ * A 24 hours day is divided into 'slicesno' number of time slices.
+ */
+unsigned
+day_chk_busy_slices (date_t day, int slicesno, int *slices)
+{
+  recur_apoint_llist_node_t *ra;
+  apoint_llist_node_t *a;
+  int slicelen;  
+  const long date = date2sec (day, 0, 0);
+
+  slicelen = DAYINSEC / slicesno;
+
+#define  SLICENUM(tsec)  ((tsec) / slicelen % slicesno)
+
+  pthread_mutex_lock (&(recur_alist_p->mutex));
+  for (ra = recur_alist_p->root; ra != 0; ra = ra->next)
+    if (recur_item_inday (ra->start, ra->exc, ra->rpt->type,
+			  ra->rpt->freq, ra->rpt->until, date))
+      {
+        if (!fill_slices (slices, slicesno, SLICENUM (ra->start),
+                          SLICENUM (ra->start + ra->dur)))
+          {
+            pthread_mutex_unlock (&(recur_alist_p->mutex));
+            return 0;
+          }
+      }
+  pthread_mutex_unlock (&(recur_alist_p->mutex));
+
+  pthread_mutex_lock (&(alist_p->mutex));
+  for (a = alist_p->root; a != 0; a = a->next)
+    if (apoint_inday (a, date))
+      {
+        if (!fill_slices (slices, slicesno, SLICENUM (a->start),
+                          SLICENUM (a->start + a->dur)))
+          {
+            pthread_mutex_unlock (&(alist_p->mutex));
+            return 0;
+          }
+      }
+  pthread_mutex_unlock (&(alist_p->mutex));
+
+#undef SLICENUM  
+  return 1;
 }
 
 /* Request the user to enter a new time. */

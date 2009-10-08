@@ -1,3 +1,10 @@
+2009-10-08  Frederic Culot  <frederic@culot.org>
+
+	* src/day.c (day_chk_busy_slices, fill_slices): new functions
+
+	* src/calendar.c (draw_weekly_view): draw slices indicating
+	appointment times in the calendar weekly view
+	
 2009-08-25  Frederic Culot  <frederic@culot.org>
 
 	* src/calendar.c (weeknum, ISO8601weeknum): new functions to print
