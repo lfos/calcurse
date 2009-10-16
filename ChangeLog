@@ -1,3 +1,11 @@
+2009-10-16  Frederic Culot  <frederic@culot.org>
+
+	* src/calendar.c (draw_weekly_view): cosmetic changes in the
+	weekly view
+	
+	* src/day.c (day_chk_busy_slices): bugfix in the way time slices
+	are filled for the weekly calendar view
+	
 2009-10-08  Frederic Culot  <frederic@culot.org>
 
 	* src/day.c (day_chk_busy_slices, fill_slices): new functions
