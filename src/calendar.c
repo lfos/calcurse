@@ -1,4 +1,4 @@
-/*	$calcurse: calendar.c,v 1.28 2009/10/08 16:28:06 culot Exp $	*/
+/*	$calcurse: calendar.c,v 1.29 2009/10/16 15:52:00 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -529,18 +529,36 @@ draw_weekly_view (window_t *cwin, date_t *current_day, unsigned sunday_first)
       if (day_chk_busy_slices (date, DAYSLICESNO, slices))
         {
           for (i = 0; i < DAYSLICESNO; i++)
-            if (slices[i])
-              {
-                wattron (cwin->p, A_REVERSE);
-                mvwprintw (cwin->p, 5 + i, 3 + 4 * j, " ");                
-                wattroff (cwin->p, A_REVERSE);
-              }
+            {
+              if (j != WEEKINDAYS - 1 && i != DAYSLICESNO - 1)
+                mvwhline (cwin->p, 5 + i, 4 + 4 * j, ACS_S9, 2);
+              if (slices[i])
+                {
+                  int highlight;
+
+                  highlight = (t.tm_mday == slctd_day.dd) ? 1 : 0;
+                  if (highlight)
+                    custom_apply_attr (cwin->p, attr);
+                  wattron (cwin->p, A_REVERSE);
+                  mvwprintw (cwin->p, 5 + i, 2 + 4 * j, " ");
+                  mvwprintw (cwin->p, 5 + i, 3 + 4 * j, " ");
+                  wattroff (cwin->p, A_REVERSE);
+                  if (highlight)
+                    custom_remove_attr (cwin->p, attr);                    
+                }
+            }
         }
       
       /* get next day */
       (void)date_change (&t, 0, 1);
     }
-  
+
+  /* Draw marks to indicate midday on the sides of the calendar. */
+  custom_apply_attr (cwin->p, ATTR_HIGHEST);
+  mvwhline (cwin->p, 4 + DAYSLICESNO / 2, 1, ACS_S9, 1);
+  mvwhline (cwin->p, 4 + DAYSLICESNO / 2, cwin->w - 2, ACS_S9, 1);
+  custom_remove_attr (cwin->p, ATTR_HIGHEST);
+
 #undef DAYSLICESNO  
 }
 
