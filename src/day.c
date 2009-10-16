@@ -1,4 +1,4 @@
-/*	$calcurse: day.c,v 1.51 2009/10/08 16:28:06 culot Exp $	*/
+/*	$calcurse: day.c,v 1.52 2009/10/16 15:51:33 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -559,8 +559,11 @@ day_chk_busy_slices (date_t day, int slicesno, int *slices)
     if (recur_item_inday (ra->start, ra->exc, ra->rpt->type,
 			  ra->rpt->freq, ra->rpt->until, date))
       {
-        if (!fill_slices (slices, slicesno, SLICENUM (ra->start),
-                          SLICENUM (ra->start + ra->dur)))
+        long start, end;
+
+        start = get_item_time (ra->start);
+        end = get_item_time (ra->start + ra->dur);
+        if (!fill_slices (slices, slicesno, SLICENUM (start), SLICENUM (end)))
           {
             pthread_mutex_unlock (&(recur_alist_p->mutex));
             return 0;
@@ -572,8 +575,11 @@ day_chk_busy_slices (date_t day, int slicesno, int *slices)
   for (a = alist_p->root; a != 0; a = a->next)
     if (apoint_inday (a, date))
       {
-        if (!fill_slices (slices, slicesno, SLICENUM (a->start),
-                          SLICENUM (a->start + a->dur)))
+        long start, end;
+
+        start = get_item_time (a->start);
+        end = get_item_time (a->start + a->dur);
+        if (!fill_slices (slices, slicesno, SLICENUM (start), SLICENUM (end)))
           {
             pthread_mutex_unlock (&(alist_p->mutex));
             return 0;
