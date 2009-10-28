@@ -2,6 +2,9 @@
 
 	* src/wins.c (wins_status_bar): key bindings for changing calendar
 	view added to the status bar
+
+	* src/help.c: description of the scroll keys added to the generic
+	keys help screen
 	
 2009-10-16  Frederic Culot  <frederic@culot.org>
 

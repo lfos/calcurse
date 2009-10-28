@@ -1,4 +1,4 @@
-/*	$calcurse: help.c,v 1.41 2009/07/12 17:55:14 culot Exp $	*/
+/*	$calcurse: help.c,v 1.42 2009/10/28 13:44:41 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -688,7 +688,11 @@ help_screen (void)
       " '%s' : +1 Day          -> move to next day\n"
       " '%s' : -1 Week         -> move to previous week\n"
       " '%s' : +1 Week         -> move to next week\n"
-      " '%s' : Goto today      -> move to current day"),
+      " '%s' : Goto today      -> move to current day\n"
+      "\nThe '%s' and '%s' keys are used to scroll text upward or downward\n"
+      "when inside specific screens such the help screens for example.\n"
+      "They are also used when the calendar screen is selected to switch\n"
+      "between the available views (monthly and weekly calendar views)."),
             keys_action_firstkey (KEY_GENERIC_REDRAW),
             keys_action_firstkey (KEY_GENERIC_ADD_APPT),
             keys_action_firstkey (KEY_GENERIC_ADD_TODO),
@@ -696,7 +700,9 @@ help_screen (void)
             keys_action_firstkey (KEY_GENERIC_NEXT_DAY),
             keys_action_firstkey (KEY_GENERIC_PREV_WEEK),
             keys_action_firstkey (KEY_GENERIC_NEXT_WEEK),
-            keys_action_firstkey (KEY_GENERIC_GOTO_TODAY));
+            keys_action_firstkey (KEY_GENERIC_GOTO_TODAY),
+            keys_action_firstkey (KEY_GENERIC_SCROLL_UP),
+            keys_action_firstkey (KEY_GENERIC_SCROLL_DOWN));
 
   hscr[HELP_OTHER].title = _("OtherCmd\n");
   (void)snprintf (hscr[HELP_OTHER].text, HELPTEXTSIZ,
