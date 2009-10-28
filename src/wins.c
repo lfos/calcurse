@@ -1,4 +1,4 @@
-/*	$calcurse: wins.c,v 1.27 2009/08/25 14:51:05 culot Exp $	*/
+/*	$calcurse: wins.c,v 1.28 2009/10/28 13:23:05 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -494,7 +494,7 @@ wins_launch_external (const char *file, const char *cmd)
   mem_free (p);
 }
 
-#define NB_CAL_CMDS	24	/* number of commands while in cal view */
+#define NB_CAL_CMDS	27	/* number of commands while in cal view */
 #define NB_APP_CMDS	31	/* same thing while in appointment view */
 #define NB_TOD_CMDS	30	/* same thing while in todo view */
 #define TOTAL_CMDS	NB_CAL_CMDS + NB_APP_CMDS + NB_TOD_CMDS
@@ -522,7 +522,7 @@ wins_status_bar (void)
   binding_t save   = {_("Save"),     KEY_GENERIC_SAVE};
   binding_t cut    = {_("Cut"),      KEY_GENERIC_CUT};
   binding_t paste  = {_("Paste"),    KEY_GENERIC_PASTE};    
-  binding_t chgvu  = {_("Chg View"), KEY_GENERIC_CHANGE_VIEW};
+  binding_t chgvu  = {_("Chg Win"), KEY_GENERIC_CHANGE_VIEW};
   binding_t import = {_("Import"),   KEY_GENERIC_IMPORT};  
   binding_t export = {_("Export"),   KEY_GENERIC_EXPORT};
   binding_t togo   = {_("Go to"),    KEY_GENERIC_GOTO};
@@ -536,6 +536,8 @@ wins_status_bar (void)
   binding_t gnweek = {_("+1 Week"),  KEY_GENERIC_NEXT_WEEK};
   binding_t gpweek = {_("-1 Week"),  KEY_GENERIC_PREV_WEEK};
   binding_t today  = {_("Today"),    KEY_GENERIC_GOTO_TODAY};
+  binding_t nview  = {_("Nxt View"), KEY_GENERIC_SCROLL_DOWN};
+  binding_t pview  = {_("Prv View"), KEY_GENERIC_SCROLL_UP};
   binding_t up     = {_("Up"),       KEY_MOVE_UP};
   binding_t down   = {_("Down"),     KEY_MOVE_DOWN};  
   binding_t left   = {_("Left"),     KEY_MOVE_LEFT};
@@ -552,13 +554,12 @@ wins_status_bar (void)
   binding_t vnote  = {_("ViewNote"), KEY_VIEW_NOTE};
   binding_t rprio  = {_("Prio.+"),   KEY_RAISE_PRIORITY};
   binding_t lprio  = {_("Prio.-"),   KEY_LOWER_PRIORITY};
-
   
   binding_t *binding[TOTAL_CMDS] = {
     /* calendar keys */
-    &help, &quit, &save, &chgvu, &import, &export, &up, &down, &left, &right,
-    &togo, &othr, &weekb, &weeke, &conf, &draw, &appt, &todo, &gnday, &gpday,
-    &gnweek, &gpweek, &today, &othr,
+    &help, &quit, &save, &chgvu, &nview, &pview, &up, &down, &left, &right,
+    &togo, &othr, &import, &export, &weekb, &weeke, &appt, &todo,
+    &gnday, &gpday, &gnweek, &gpweek, &draw, &othr, &today, &conf, &othr,
     /* appointment keys */
     &help, &quit, &save, &chgvu, &import, &export, &add, &del, &edit, &view,
     &draw, &othr, &rept, &flag, &enote, &vnote, &up, &down, &gnday, &gpday,

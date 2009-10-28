@@ -1,3 +1,8 @@
+2009-10-28  Frederic Culot  <frederic@culot.org>
+
+	* src/wins.c (wins_status_bar): key bindings for changing calendar
+	view added to the status bar
+	
 2009-10-16  Frederic Culot  <frederic@culot.org>
 
 	* src/calendar.c (draw_weekly_view): cosmetic changes in the
