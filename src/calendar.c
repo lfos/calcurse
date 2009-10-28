@@ -1,4 +1,4 @@
-/*	$calcurse: calendar.c,v 1.29 2009/10/16 15:52:00 culot Exp $	*/
+/*	$calcurse: calendar.c,v 1.30 2009/10/28 15:15:43 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -99,6 +99,18 @@ calendar_view_prev (void)
   if (calendar_view == 0)
     calendar_view = CAL_VIEWS;
   calendar_view--;
+}
+
+void
+calendar_set_view (int view)
+{
+  calendar_view = (view < 0 || view >= CAL_VIEWS) ? CAL_MONTH_VIEW : view;
+}
+
+int
+calendar_get_view (void)
+{
+  return (int)calendar_view;
 }
 
 /* Thread needed to update current date in calendar. */

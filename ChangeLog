@@ -5,6 +5,14 @@
 
 	* src/help.c: description of the scroll keys added to the generic
 	keys help screen
+
+	* src/custom.c (custom_load_conf): new configuration variable
+	added to define the default calendar view
+
+	* src/calendar.c (calendar_set_view, calendar_get_view): new
+	functions
+
+	* src/io.c (io_save_conf): save the calendar default view
 	
 2009-10-16  Frederic Culot  <frederic@culot.org>
 

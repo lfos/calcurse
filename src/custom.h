@@ -1,4 +1,4 @@
-/*	$calcurse: custom.h,v 1.18 2009/08/02 09:29:24 culot Exp $	*/
+/*	$calcurse: custom.h,v 1.19 2009/10/28 15:15:44 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -66,6 +66,7 @@ enum
   CUSTOM_CONF_CONFIRMDELETE,
   CUSTOM_CONF_SKIPSYSTEMDIALOGS,
   CUSTOM_CONF_SKIPPROGRESSBAR,
+  CUSTOM_CONF_CALENDAR_DEFAULTVIEW,
   CUSTOM_CONF_WEEKBEGINSONMONDAY,
   CUSTOM_CONF_COLORTHEME,
   CUSTOM_CONF_LAYOUT,

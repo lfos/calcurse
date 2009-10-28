@@ -1,4 +1,4 @@
-/*	$calcurse: calendar.h,v 1.17 2009/08/25 14:51:42 culot Exp $	*/
+/*	$calcurse: calendar.h,v 1.18 2009/10/28 15:15:43 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -106,6 +106,8 @@ move_t;
 
 void       calendar_view_next (void);
 void       calendar_view_prev (void);
+void       calendar_set_view (int);
+int        calendar_get_view (void);
 void       calendar_start_date_thread (void);
 void       calendar_stop_date_thread (void);
 void       calendar_set_current_date (void);

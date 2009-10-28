@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.78 2009/08/09 16:00:02 culot Exp $	*/
+/*	$calcurse: io.c,v 1.79 2009/10/28 15:15:44 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -883,6 +883,10 @@ io_save_conf (conf_t *conf)
                  "when saving data will not be displayed\n");
   (void)fprintf (fp, "skip_progress_bar=\n");
   (void)fprintf (fp, "%s\n", (conf->skip_progress_bar) ? "yes" : "no");
+
+  (void)fprintf (fp, "\n# Default calendar view (0)monthly (1)weekly:\n");
+  (void)fprintf (fp, "calendar_default_view=\n");
+  (void)fprintf (fp, "%d\n", calendar_get_view ());
   
   (void)fprintf (fp, "\n# If this option is set to yes, "
                  "monday is the first day of the week, else it is sunday\n");

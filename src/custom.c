@@ -1,4 +1,4 @@
-/*	$calcurse: custom.c,v 1.44 2009/08/02 09:29:24 culot Exp $	*/
+/*	$calcurse: custom.c,v 1.45 2009/10/28 15:15:44 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -273,6 +273,10 @@ custom_load_conf (conf_t *conf, int background)
 	  conf->skip_progress_bar = fill_config_var (e_conf);
 	  var = 0;
 	  break;
+        case CUSTOM_CONF_CALENDAR_DEFAULTVIEW:
+          calendar_set_view (atoi (e_conf));
+          var = 0;
+          break;
 	case CUSTOM_CONF_WEEKBEGINSONMONDAY:
 	  if (fill_config_var (e_conf))
 	    calendar_set_first_day_of_week (MONDAY);
@@ -344,7 +348,9 @@ custom_load_conf (conf_t *conf, int background)
 	var = CUSTOM_CONF_SKIPSYSTEMDIALOGS;
       else if (strncmp (e_conf, "skip_progress_bar=", 18) == 0)
 	var = CUSTOM_CONF_SKIPPROGRESSBAR;
-      else if (strncmp (e_conf, "week_begins_on_monday=", 23) == 0)
+      else if (strncmp (e_conf, "calendar_default_view=", 22) == 0)
+        var = CUSTOM_CONF_CALENDAR_DEFAULTVIEW;
+      else if (strncmp (e_conf, "week_begins_on_monday=", 22) == 0)
 	var = CUSTOM_CONF_WEEKBEGINSONMONDAY;
       else if (strncmp (e_conf, "color-theme=", 12) == 0)
 	var = CUSTOM_CONF_COLORTHEME;
