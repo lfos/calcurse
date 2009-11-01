@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.79 2009/10/28 15:15:44 culot Exp $	*/
+/*	$calcurse: io.c,v 1.80 2009/11/01 11:06:37 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -1498,8 +1498,8 @@ io_load_keys (char *pager)
 #undef HSIZE
 }
 
-static void
-check_directory (char *dir, int *missing)
+void
+io_check_dir (char *dir, int *missing)
 {
   errno = 0;
   if (mkdir (dir, 0700) != 0)
@@ -1512,7 +1512,10 @@ check_directory (char *dir, int *missing)
 	}
     }
   else
-    (*missing)++;
+    {
+      if (missing)
+        (*missing)++;
+    }
 }
 
 unsigned
@@ -1570,8 +1573,8 @@ io_check_data_files (void)
 
   missing = missing_keys = 0;
   errno = 0;
-  check_directory (path_dir, &missing);
-  check_directory (path_notes, &missing);
+  io_check_dir (path_dir, &missing);
+  io_check_dir (path_notes, &missing);
   io_check_file (path_todo, &missing);
   io_check_file (path_apts, &missing);
   io_check_file (path_conf, &missing);

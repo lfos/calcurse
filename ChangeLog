@@ -1,3 +1,12 @@
+2009-11-01  Frederic Culot  <frederic@culot.org>
+
+	* TODO: list updated
+
+	* src/io.c (check_directory): changed to non-static io_check_dir
+
+	* src/args.c (parse_args): check for data directory availability
+	added (thanks Brandon for reporting this bug)
+	
 2009-10-28  Frederic Culot  <frederic@culot.org>
 
 	* src/wins.c (wins_status_bar): key bindings for changing calendar

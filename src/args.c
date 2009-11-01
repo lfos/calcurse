@@ -1,4 +1,4 @@
-/*	$calcurse: args.c,v 1.59 2009/08/02 07:22:50 culot Exp $	*/
+/*	$calcurse: args.c,v 1.60 2009/11/01 11:06:37 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -901,6 +901,7 @@ parse_args (int argc, char **argv, conf_t *conf)
 	  if (load_data)
 	    {
 	      io_init (cfile, datadir);
+              io_check_dir (path_dir, (int *)0);
 	    }
           if (iflag)
             {
