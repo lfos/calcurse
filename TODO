@@ -25,8 +25,9 @@ High
 Average
 -------
   *  Add support for CalDAV protocol (rfc4791)
+  *  Add support for ical's BYDAY recursion modifier (to express recurrences
+     like 'every monday' for example)
   *  Implement user-definable categories to classify appointments and tasks
-  *  Add a week view in the calendar panel (and display week numbers)
   *  Implement copy/paste functionality
 
 
