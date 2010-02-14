@@ -1,4 +1,4 @@
-/*	$calcurse: notify.c,v 1.47 2009/08/17 10:04:39 culot Exp $	*/
+/*	$calcurse: notify.c,v 1.48 2010/02/14 17:29:16 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -268,9 +268,12 @@ notify_update_bar (void)
     {
       if (strlen (notify_app.txt) > txt_max_len)
 	{
+          int shrink_len;
+          
 	  too_long = 1;
-	  (void)strncpy (buf, notify_app.txt, txt_max_len - 3);
-	  buf[txt_max_len - 3] = '\0';
+          shrink_len = txt_max_len > 3 ? txt_max_len - 3 : 1;
+	  (void)strncpy (buf, notify_app.txt, shrink_len);
+	  buf[shrink_len] = '\0';
 	}
       time_left = notify_time_left ();
       if (time_left > 0)
