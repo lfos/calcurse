@@ -1,3 +1,8 @@
+2010-02-14  Frederic Culot  <frederic@culot.org>
+
+	* src/notify.c (notify_update_bar): avoid a possible segfault when
+	txt_max_len becomes too small. Reported by Thorsten, thanks
+	
 2009-11-01  Frederic Culot  <frederic@culot.org>
 
 	* TODO: list updated
