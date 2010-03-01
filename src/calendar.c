@@ -1,4 +1,4 @@
-/*	$calcurse: calendar.c,v 1.30 2009/10/28 15:15:43 culot Exp $	*/
+/*	$calcurse: calendar.c,v 1.31 2010/03/01 18:55:45 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -130,6 +130,8 @@ calendar_date_thread (void *arg)
       calendar_set_current_date ();
       calendar_update_panel (&win[CAL]);
     }
+
+  return (void *)0;
 }
 
 /* Launch the calendar date thread. */
