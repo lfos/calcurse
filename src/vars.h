@@ -1,9 +1,9 @@
-/*	$calcurse: vars.h,v 1.37 2009/08/01 13:31:21 culot Exp $	*/
+/*	$calcurse: vars.h,v 1.38 2010/03/08 08:44:44 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
  *
- * Copyright (c) 2004-2009 Frederic Culot <frederic@culot.org>
+ * Copyright (c) 2004-2010 Frederic Culot <frederic@culot.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -81,11 +81,6 @@
 #define ATTR_MIDDLE	4
 #define ATTR_HIGH	5
 #define ATTR_HIGHEST	6
-
-#define DAYINSEC  	86400
-#define HOURINSEC	3600
-#define MININSEC	60
-#define WEEKINDAYS	7
 
 #define STATUSHEIGHT	2
 #define	NOTESIZ		6

@@ -1,9 +1,9 @@
-/*	$calcurse: calendar.h,v 1.18 2009/10/28 15:15:43 culot Exp $	*/
+/*	$calcurse: calendar.h,v 1.19 2010/03/08 08:44:44 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
  *
- * Copyright (c) 2004-2009 Frederic Culot <frederic@culot.org>
+ * Copyright (c) 2004-2010 Frederic Culot <frederic@culot.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -59,6 +59,14 @@
 
 #define	CALHEIGHT	12
 #define	CALWIDTH	30
+
+#define DAYINSEC        86400
+#define HOURINSEC       3600
+#define MININSEC        60
+#define YEARINDAYS      365
+#define YEARINMONTHS    12
+#define WEEKINDAYS      7
+#define TM_YEAR_BASE    1900
 
 typedef enum
 {				/* days of week */

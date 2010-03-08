@@ -1,9 +1,9 @@
-/*	$calcurse: calendar.c,v 1.31 2010/03/01 18:55:45 culot Exp $	*/
+/*	$calcurse: calendar.c,v 1.32 2010/03/08 08:44:44 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
  *
- * Copyright (c) 2004-2009 Frederic Culot <frederic@culot.org>
+ * Copyright (c) 2004-2010 Frederic Culot <frederic@culot.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -64,7 +64,6 @@
 #define	lzero	  318.351648	/* lunar mean long at EPOCH */
 #define	Pzero	  36.340410	/* lunar mean long of perigee at EPOCH */
 #define	Nzero	  318.510107	/* lunar mean long of node at EPOCH */
-#define TM_YEAR_BASE	1900
 
 #define isleap(y) ((((y) % 4) == 0 && ((y) % 100) != 0) || ((y) % 400) == 0)
 

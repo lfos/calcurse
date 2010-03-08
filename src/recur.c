@@ -1,9 +1,9 @@
-/*	$calcurse: recur.c,v 1.52 2009/07/19 08:20:01 culot Exp $	*/
+/*	$calcurse: recur.c,v 1.53 2010/03/08 08:44:44 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
  *
- * Copyright (c) 2004-2009 Frederic Culot <frederic@culot.org>
+ * Copyright (c) 2004-2010 Frederic Culot <frederic@culot.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -54,6 +54,7 @@ recur_apoint_llist_t             *recur_alist_p;
 struct recur_event_s             *recur_elist;
 static struct recur_event_s       bkp_cut_recur_event;
 static recur_apoint_llist_node_t  bkp_cut_recur_apoint;
+
 
 static void
 free_exc (struct days_s *exc)
@@ -589,11 +590,78 @@ recur_save_data (FILE *f)
   pthread_mutex_unlock (&(recur_alist_p->mutex));
 }
 
+
+/*
+ * The two following defines together with the diff_days, diff_weeks,
+ * diff_months and diff_years functions were provided by Lukas Fleischer to
+ * correct the wrong calculation of recurrent dates after a turn of year.
+ */
+#define bc(start, end, bs)                                              \
+  (((end) - (start) + ((start) % bs) - ((end) % bs)) / bs               \
+   + ((((start) % bs) == 0) ? 1 : 0))
+
+#define leapcount(start, end)                                           \
+  (bc(start, end, 4) - bc(start, end, 100) + bc(start, end, 400))
+
+
+/* Calculate the difference in days between two dates. */
+static long
+diff_days (struct tm lt_start, struct tm lt_end)
+{
+  long diff;
+
+  if (lt_end.tm_year < lt_start.tm_year)
+    return 0;
+
+  diff = lt_end.tm_yday - lt_start.tm_yday;
+
+  if (lt_end.tm_year > lt_start.tm_year)
+    {
+      diff += (lt_end.tm_year - lt_start.tm_year) * YEARINDAYS;
+      diff += leapcount (lt_start.tm_year + TM_YEAR_BASE,
+                         lt_end.tm_year + TM_YEAR_BASE - 1);
+    }
+
+  return diff;
+}
+
+/* Calculate the difference in weeks between two dates. */
+static long
+diff_weeks (struct tm lt_start, struct tm lt_end)
+{
+  return diff_days (lt_start, lt_end) / WEEKINDAYS;
+}
+
+/* Calculate the difference in months between two dates. */
+static long
+diff_months (struct tm lt_start, struct tm lt_end)
+{
+  long diff;
+
+  if (lt_end.tm_year < lt_start.tm_year)
+    return 0;
+
+  diff = lt_end.tm_mon - lt_start.tm_mon;
+  diff += (lt_end.tm_year - lt_start.tm_year) * YEARINMONTHS;
+
+  return diff;
+}
+
+/* Calculate the difference in years between two dates. */
+static long
+diff_years (struct tm lt_start, struct tm lt_end)
+{
+  return lt_end.tm_year - lt_start.tm_year;
+}
+
 /* 
  * Check if the recurrent item belongs to the selected day,
  * and if yes, return the real start time.
+ *
  * This function was improved thanks to Tony's patch.
  * Thanks also to youshe for reporting daylight saving time related problems.
+ * And finally thanks to Lukas for providing a patch to correct the wrong
+ * calculation of recurrent dates after a turn of years.
  */
 unsigned
 recur_item_inday (long item_start, struct days_s *item_exc, int rpt_type,
@@ -625,7 +693,7 @@ recur_item_inday (long item_start, struct days_s *item_exc, int rpt_type,
   switch (rpt_type)
     {
     case RECUR_DAILY:
-      diff = lt_day.tm_yday - lt_item.tm_yday;
+      diff = diff_days (lt_item, lt_day);
       if (diff % rpt_freq != 0)
 	return (0);
       lt_item.tm_mday = lt_day.tm_mday;
@@ -637,7 +705,7 @@ recur_item_inday (long item_start, struct days_s *item_exc, int rpt_type,
 	return (0);
       else
 	{
-	  diff = ((lt_day.tm_yday - lt_item.tm_yday) / WEEKINDAYS);
+          diff = diff_weeks (lt_item, lt_day);
 	  if (diff % rpt_freq != 0)
 	    return (0);
 	}
@@ -646,15 +714,14 @@ recur_item_inday (long item_start, struct days_s *item_exc, int rpt_type,
       lt_item.tm_year = lt_day.tm_year;
       break;
     case RECUR_MONTHLY:
-      diff = (((lt_day.tm_year - lt_item.tm_year) * 12)
-              + (lt_day.tm_mon - lt_item.tm_mon));
+      diff = diff_months (lt_item, lt_day);
       if (diff % rpt_freq != 0)
 	return (0);
       lt_item.tm_mon = lt_day.tm_mon;
       lt_item.tm_year = lt_day.tm_year;
       break;
     case RECUR_YEARLY:
-      diff = lt_day.tm_year - lt_item.tm_year;
+      diff = diff_years (lt_item, lt_day);
       if (diff % rpt_freq != 0)
 	return (0);
       lt_item.tm_year = lt_day.tm_year;

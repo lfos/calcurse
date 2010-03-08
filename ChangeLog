@@ -1,3 +1,14 @@
+2010-03-08  Frederic Culot  <frederic@culot.org>
+
+	* src/recur.c (diff_days, diff_weeks, diff_months, diff_years):
+	new functions provided by Lukas Fleischer
+	* src/recur.c (recur_item_inday): patch provided by Lukas
+	Fleischer to correct the wrong calculation of recurrent dates
+	after a turn of years
+
+	* src/calendar.h: defines related to dates moved from calendar.c
+	and vars.h
+	
 2010-03-01  Frederic Culot  <frederic@culot.org>
 
 	* src/calendar.c (calendar_date_thread): avoid compilation
