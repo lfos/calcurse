@@ -18,8 +18,10 @@ High
      panel
   *  Add an optional argument to the --next flag to check for next appointment
      starting from the specified time
-  *  improve the way one can specify a duration (allowing something like
+  *  Improve the way one can specify a duration (allowing something like
      XXdXXhXXmXXs)
+  *  Allow user to change the width of the sidebar, and implement word-wrap in
+     the sidebar
 
 
 Average
