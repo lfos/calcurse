@@ -1,9 +1,9 @@
-/*	$calcurse: day.c,v 1.52 2009/10/16 15:51:33 culot Exp $	*/
+/*	$calcurse: day.c,v 1.53 2010/03/20 10:54:44 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
  *
- * Copyright (c) 2004-2009 Frederic Culot <frederic@culot.org>
+ * Copyright (c) 2004-2010 Frederic Culot <frederic@culot.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -42,16 +42,18 @@
 #include <ctype.h>
 #include <time.h>
 
-#include "i18n.h"
-#include "apoint.h"
-#include "event.h"
-#include "custom.h"
-#include "keys.h"
-#include "mem.h"
-#include "day.h"
+#include "calcurse.h"
 
-static struct day_item_s        *day_items_ptr;
-static struct day_saved_item_s   day_saved_item;
+struct day_saved_item {
+  char  start[BUFSIZ];
+  char  end[BUFSIZ];
+  char  state;
+  char  type;
+  char *mesg;
+};
+
+static struct day_item        *day_items_ptr;
+static struct day_saved_item   day_saved_item;
 
 /*
  * Free the current day linked list containing the events and appointments.
@@ -61,7 +63,7 @@ static struct day_saved_item_s   day_saved_item;
 void
 day_free_list (void)
 {
-  struct day_item_s *o, **i;
+  struct day_item *o, **i;
 
   i = &day_items_ptr;
   while (*i)
@@ -74,12 +76,12 @@ day_free_list (void)
 }
 
 /* Add an event in the current day list */
-static struct day_item_s *
+static struct day_item *
 day_add_event (int type, char *mesg, char *note, long day, int id)
 {
-  struct day_item_s *o, **i;
+  struct day_item *o, **i;
   
-  o = mem_malloc (sizeof (struct day_item_s));
+  o = mem_malloc (sizeof (struct day_item));
   o->mesg = mesg;
   o->note = note;
   o->type = type;
@@ -102,14 +104,14 @@ day_add_event (int type, char *mesg, char *note, long day, int id)
 }
 
 /* Add an appointment in the current day list. */
-static struct day_item_s *
+static struct day_item *
 day_add_apoint (int type, char *mesg, char *note, long start, long dur,
 		char state, int real_pos)
 {
-  struct day_item_s *o, **i;
+  struct day_item *o, **i;
   int insert_item = 0;
 
-  o = mem_malloc (sizeof (struct day_item_s));
+  o = mem_malloc (sizeof (struct day_item));
   o->mesg = mesg;
   o->note = note;
   o->start = start;
@@ -150,8 +152,8 @@ day_add_apoint (int type, char *mesg, char *note, long start, long dur,
 static int
 day_store_events (long date)
 {
-  struct event_s *j;
-  struct day_item_s *ptr;
+  struct event *j;
+  struct day_item *ptr;
   int e_nb = 0;
 
   for (j = eventlist; j != 0; j = j->next)
@@ -176,8 +178,8 @@ day_store_events (long date)
 static int
 day_store_recur_events (long date)
 {
-  struct recur_event_s *j;
-  struct day_item_s *ptr;
+  struct recur_event *j;
+  struct day_item *ptr;
   int e_nb = 0;
 
   for (j = recur_elist; j != 0; j = j->next)
@@ -203,8 +205,8 @@ day_store_recur_events (long date)
 static int
 day_store_apoints (long date)
 {
-  apoint_llist_node_t *j;
-  struct day_item_s *ptr;
+  struct apoint *j;
+  struct day_item *ptr;
   int a_nb = 0;
 
   pthread_mutex_lock (&(alist_p->mutex));
@@ -232,8 +234,8 @@ day_store_apoints (long date)
 static int
 day_store_recur_apoints (long date)
 {
-  recur_apoint_llist_node_t *j;
-  struct day_item_s *ptr;
+  struct recur_apoint *j;
+  struct day_item *ptr;
   long real_start;
   int a_nb = 0, n = 0;
 
@@ -294,12 +296,12 @@ day_store_items (long date, unsigned *pnb_events, unsigned *pnb_apoints)
  * those items in a pad. If selected day is null, then store items for current
  * day. This is useful to speed up the appointment panel update.
  */
-day_items_nb_t *
-day_process_storage (date_t *slctd_date, unsigned day_changed,
-		     day_items_nb_t *inday)
+struct day_items_nb *
+day_process_storage (struct date *slctd_date, unsigned day_changed,
+		     struct day_items_nb *inday)
 {
   long date;
-  date_t day;
+  struct date day;
 
   if (slctd_date)
     day = *slctd_date;
@@ -328,7 +330,7 @@ day_process_storage (date_t *slctd_date, unsigned day_changed,
  * day_item_s 
  */
 static void
-day_item_s2apoint_s (apoint_llist_node_t *a, struct day_item_s *p)
+day_item_s2apoint_s (struct apoint *a, struct day_item *p)
 {
   a->state = p->state;
   a->start = p->start;
@@ -340,7 +342,7 @@ day_item_s2apoint_s (apoint_llist_node_t *a, struct day_item_s *p)
  * Print an item date in the appointment panel.
  */
 static void
-display_item_date (int incolor, apoint_llist_node_t *i, int type, long date,
+display_item_date (int incolor, struct apoint *i, int type, long date,
 		   int y, int x)
 {
   WINDOW *win;
@@ -404,8 +406,8 @@ display_item (int incolor, char *msg, int recur, int note, int len, int y,
 void
 day_write_pad (long date, int width, int length, int incolor)
 {
-  struct day_item_s *p;
-  apoint_llist_node_t a;
+  struct day_item *p;
+  struct apoint a;
   int line, item_number, max_pos, recur;
   const int x_pos = 0;
   unsigned draw_line = 0;
@@ -481,12 +483,12 @@ day_popup_item (void)
  * calendar. This is used to put the correct colors inside calendar panel.
  */
 int
-day_check_if_item (date_t day)
+day_check_if_item (struct date day)
 {
-  struct recur_event_s *re;
-  recur_apoint_llist_node_t *ra;
-  struct event_s *e;
-  apoint_llist_node_t *a;
+  struct recur_event *re;
+  struct recur_apoint *ra;
+  struct event *e;
+  struct apoint *a;
   const long date = date2sec (day, 0, 0);
 
   for (re = recur_elist; re != 0; re = re->next)
@@ -543,10 +545,10 @@ fill_slices (int *slices, int slicesno, int first, int last)
  * A 24 hours day is divided into 'slicesno' number of time slices.
  */
 unsigned
-day_chk_busy_slices (date_t day, int slicesno, int *slices)
+day_chk_busy_slices (struct date day, int slicesno, int *slices)
 {
-  recur_apoint_llist_node_t *ra;
-  apoint_llist_node_t *a;
+  struct recur_apoint *ra;
+  struct apoint *a;
   int slicelen;  
   const long date = date2sec (day, 0, 0);
 
@@ -669,7 +671,7 @@ update_desc (char **desc)
 }
 
 static void
-update_rept (struct rpt_s **rpt, const long start, conf_t *conf)
+update_rept (struct rpt **rpt, const long start, struct conf *conf)
 {
   const int SINGLECHAR = 2;
   int ch, cancel, newfreq, date_entered;
@@ -689,7 +691,7 @@ update_rept (struct rpt_s **rpt, const long start, conf_t *conf)
   do
     {
       status_mesg (msg_rpt_type, msg_rpt_ans);
-      typstr = (char *) mem_calloc (SINGLECHAR, sizeof (char));
+      typstr = mem_calloc (SINGLECHAR, sizeof (char));
       (void)snprintf (typstr, SINGLECHAR, "%c", recur_def2char ((*rpt)->type));
       cancel = updatestring (win[STA].p, &typstr, 0, 1);
       if (cancel)
@@ -708,7 +710,7 @@ update_rept (struct rpt_s **rpt, const long start, conf_t *conf)
   do
     {
       status_mesg (_("Enter the new repetition frequence:"), "");
-      freqstr = (char *) mem_malloc (BUFSIZ);
+      freqstr = mem_malloc (BUFSIZ);
       (void)snprintf (freqstr, BUFSIZ, "%d", (*rpt)->freq);
       cancel = updatestring (win[STA].p, &freqstr, 0, 1);
       if (cancel)
@@ -751,7 +753,7 @@ update_rept (struct rpt_s **rpt, const long start, conf_t *conf)
 	{
 	  struct tm *lt;
 	  time_t t;
-	  date_t new_date;
+	  struct date new_date;
 	  int newmonth, newday, newyear;
 
 	  if (parse_date (timstr, conf->input_datefmt,
@@ -792,18 +794,18 @@ update_rept (struct rpt_s **rpt, const long start, conf_t *conf)
 
 /* Edit an already existing item. */
 void
-day_edit_item (conf_t *conf)
+day_edit_item (struct conf *conf)
 {
 #define STRT		'1'
 #define END		'2'
 #define DESC		'3'
 #define REPT		'4'
 
-  struct day_item_s *p;
-  struct recur_event_s *re;
-  struct event_s *e;
-  recur_apoint_llist_node_t *ra;
-  apoint_llist_node_t *a;
+  struct day_item *p;
+  struct recur_event *re;
+  struct event *e;
+  struct recur_apoint *ra;
+  struct apoint *a;
   long date;
   int item_num, ch;
 
@@ -891,9 +893,9 @@ day_edit_item (conf_t *conf)
  * type of the item to be deleted.
  */
 int
-day_erase_item (long date, int item_number, erase_flag_e flag)
+day_erase_item (long date, int item_number, enum eraseflg flag)
 {
-  struct day_item_s *p;
+  struct day_item *p;
   char *erase_warning =
       _("This item is recurrent. "
 	"Delete (a)ll occurences or just this (o)ne ?");
@@ -972,7 +974,7 @@ int
 day_cut_item (long date, int item_number)
 {
   const int DELETE_WHOLE = 1;
-  struct day_item_s *p;
+  struct day_item *p;
   
   p = day_get_item (item_number);
   switch (p->type)
@@ -1032,10 +1034,10 @@ day_paste_item (long date, int cut_item_type)
 }
 
 /* Returns a structure containing the selected item. */
-struct day_item_s *
+struct day_item *
 day_get_item (int item_number)
 {
-  struct day_item_s *o;
+  struct day_item *o;
   int i;
 
   o = day_items_ptr;
@@ -1051,7 +1053,7 @@ int
 day_item_nb (long date, int day_num, int type)
 {
   int i, nb_item[MAX_TYPES];
-  struct day_item_s *p;
+  struct day_item *p;
 
   for (i = 0; i < MAX_TYPES; i++)
     nb_item[i] = 0;
@@ -1071,11 +1073,11 @@ day_item_nb (long date, int day_num, int type)
 void
 day_edit_note (char *editor)
 {
-  struct day_item_s *p;
-  recur_apoint_llist_node_t *ra;
-  apoint_llist_node_t *a;
-  struct recur_event_s *re;
-  struct event_s *e;
+  struct day_item *p;
+  struct recur_apoint *ra;
+  struct apoint *a;
+  struct recur_event *re;
+  struct event *e;
   char fullname[BUFSIZ];
   char *filename;
   long date;
@@ -1119,7 +1121,7 @@ day_edit_note (char *editor)
 void
 day_view_note (char *pager)
 {
-  struct day_item_s *p;
+  struct day_item *p;
   char fullname[BUFSIZ];
 
   p = day_get_item (apoint_hilt ());

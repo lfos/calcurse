@@ -1,9 +1,9 @@
-/*	$calcurse: args.c,v 1.61 2009/11/01 11:19:14 culot Exp $	*/
+/*	$calcurse: args.c,v 1.62 2010/03/20 10:54:42 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
  *
- * Copyright (c) 2004-2009 Frederic Culot <frederic@culot.org>
+ * Copyright (c) 2004-2010 Frederic Culot <frederic@culot.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -45,20 +45,7 @@
 #include <time.h>
 #include <regex.h>
 
-#include "i18n.h"
-#include "custom.h"
-#include "utils.h"
-#include "args.h"
-#include "event.h"
-#include "apoint.h"
-#include "day.h"
-#include "todo.h"
-#include "mem.h"
-#include "io.h"
-
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif /* HAVE_CONFIG_H */
+#include "calcurse.h"
 
 /* 
  * Print Calcurse usage and exit.
@@ -257,7 +244,7 @@ print_notefile (FILE *out, char *filename, int nbtab)
 static void
 todo_arg (int priority, int print_note, regex_t *regex)
 {
-  struct todo_s *i;
+  struct todo *i;
   int title = 1;
   char *titlestr, priority_str[BUFSIZ] = "";
   char *all_todos_title = _("to do:\n");
@@ -313,7 +300,7 @@ todo_arg (int priority, int print_note, regex_t *regex)
 static void
 next_arg (void)
 {
-  struct notify_app_s next_app;
+  struct notify_app next_app;
   const long current_time = now ();
   int time_left, hours_left, min_left;
   char mesg[BUFSIZ];
@@ -342,7 +329,7 @@ next_arg (void)
  * Print the date on stdout.
  */
 static void
-arg_print_date (long date, conf_t *conf)
+arg_print_date (long date, struct conf *conf)
 {
   char date_str[BUFSIZ];
   time_t t;
@@ -362,18 +349,18 @@ arg_print_date (long date, conf_t *conf)
  * If regex is not null, only the matching appointments or events are printed.
  */
 static int
-app_arg (int add_line, date_t *day, long date, int print_note, conf_t *conf,
-         regex_t *regex)
+app_arg (int add_line, struct date *day, long date, int print_note,
+         struct conf *conf, regex_t *regex)
 {
-  struct recur_event_s *re;
-  struct event_s *j;
-  recur_apoint_llist_node_t *ra;
-  apoint_llist_node_t *i;
+  struct recur_event *re;
+  struct event *j;
+  struct recur_apoint *ra;
+  struct apoint *i;
   long today;
   unsigned print_date = 1;
   int app_found = 0;
-  char apoint_start_time[100];
-  char apoint_end_time[100];
+  char apoint_start_time[HRMIN_SIZE];
+  char apoint_end_time[HRMIN_SIZE];
 
   if (date == 0)
     today = get_sec_date (*day);
@@ -445,7 +432,7 @@ app_arg (int add_line, date_t *day, long date, int print_note, conf_t *conf,
       if (recur_item_inday (ra->start, ra->exc, ra->rpt->type, ra->rpt->freq,
                             ra->rpt->until, today))
 	{
-          apoint_llist_node_t *apt;
+          struct apoint *apt;
           
           if (regex && regexec (regex, ra->mesg, 0, 0, 0) != 0)
             continue;
@@ -531,10 +518,10 @@ more_info (void)
  */
 static void
 display_app (struct tm *t, int numdays, int add_line, int print_note,
-             conf_t *conf, regex_t *regex)
+             struct conf *conf, regex_t *regex)
 {
   int i, app_found;
-  date_t day;
+  struct date day;
 
   for (i = 0; i < numdays; i++)
     {
@@ -554,11 +541,11 @@ display_app (struct tm *t, int numdays, int add_line, int print_note,
  * days.
  */
 static void
-date_arg (char *ddate, int add_line, int print_note, conf_t *conf,
+date_arg (char *ddate, int add_line, int print_note, struct conf *conf,
           regex_t *regex)
 {
   int i;
-  date_t day;
+  struct date day;
   int numdays = 0, num_digit = 0;
   int arg_len = 0, app_found = 0;
   static struct tm t;
@@ -618,7 +605,7 @@ date_arg (char *ddate, int add_line, int print_note, conf_t *conf,
  */
 static void
 date_arg_extended (char *startday, char *range, int add_line, int print_note,
-                   conf_t *conf, regex_t *regex)
+                   struct conf *conf, regex_t *regex)
 {
   int i, numdays = 1, error = 0, arg_len = 0;
   static struct tm t;
@@ -677,7 +664,7 @@ date_arg_extended (char *startday, char *range, int add_line, int print_note,
  * routines to handle those arguments. Also initialize the data paths.
  */
 int
-parse_args (int argc, char **argv, conf_t *conf)
+parse_args (int argc, char **argv, struct conf *conf)
 {
   int ch, add_line = 0;
   int unknown_flag = 0, app_found = 0;
@@ -954,7 +941,7 @@ parse_args (int argc, char **argv, conf_t *conf)
 	    }
 	  else if (aflag)
 	    {
-	      date_t day;
+	      struct date day;
 
               io_check_file (path_apts, (int *)0);              
               io_check_file (path_conf, (int *)0);              

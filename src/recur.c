@@ -1,4 +1,4 @@
-/*	$calcurse: recur.c,v 1.53 2010/03/08 08:44:44 culot Exp $	*/
+/*	$calcurse: recur.c,v 1.54 2010/03/20 10:54:47 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -42,24 +42,18 @@
 #include <sys/types.h>
 #include <time.h>
 
-#include "i18n.h"
-#include "utils.h"
-#include "notify.h"
-#include "day.h"
-#include "keys.h"
-#include "mem.h"
-#include "recur.h"
+#include "calcurse.h"
 
-recur_apoint_llist_t             *recur_alist_p;
-struct recur_event_s             *recur_elist;
-static struct recur_event_s       bkp_cut_recur_event;
-static recur_apoint_llist_node_t  bkp_cut_recur_apoint;
+struct recur_apoint_list         *recur_alist_p;
+struct recur_event               *recur_elist;
+static struct recur_event         bkp_cut_recur_event;
+static struct recur_apoint        bkp_cut_recur_apoint;
 
 
 static void
-free_exc (struct days_s *exc)
+free_exc (struct days *exc)
 {
-  struct days_s *o, **i;
+  struct days *o, **i;
 
   i = &exc;
   while (*i)
@@ -71,11 +65,11 @@ free_exc (struct days_s *exc)
 }
 
 static void
-recur_add_exc (struct days_s **exc, long day)
+recur_add_exc (struct days **exc, long day)
 {
-  struct days_s **i, *o;
+  struct days **i, *o;
   
-  o = mem_malloc (sizeof (struct days_s));
+  o = mem_malloc (sizeof (struct days));
   o->st = day;
   i = exc;
   for (;;)
@@ -91,16 +85,16 @@ recur_add_exc (struct days_s **exc, long day)
 }
 
 static void
-exc_dup (struct days_s **in, struct days_s *exc)
+exc_dup (struct days **in, struct days *exc)
 {
-  struct days_s *p;
+  struct days *p;
   
   for (p = exc; p; p = p->next)
     recur_add_exc (in, p->st);
 }
 
 void
-recur_event_free_bkp (erase_flag_e flag)
+recur_event_free_bkp (enum eraseflg flag)
 {
   if (bkp_cut_recur_event.mesg)
     {
@@ -121,7 +115,7 @@ recur_event_free_bkp (erase_flag_e flag)
 }
 
 void
-recur_apoint_free_bkp (erase_flag_e flag)
+recur_apoint_free_bkp (enum eraseflg flag)
 {
   if (bkp_cut_recur_apoint.mesg)
     {
@@ -142,7 +136,7 @@ recur_apoint_free_bkp (erase_flag_e flag)
 }
 
 static void
-recur_event_dup (struct recur_event_s *in, struct recur_event_s *bkp)
+recur_event_dup (struct recur_event *in, struct recur_event *bkp)
 {
   EXIT_IF (!in || !bkp, _("null pointer"));
 
@@ -150,7 +144,7 @@ recur_event_dup (struct recur_event_s *in, struct recur_event_s *bkp)
   bkp->day = in->day;
   bkp->mesg = mem_strdup (in->mesg);
   
-  bkp->rpt = mem_malloc (sizeof (struct rpt_s));
+  bkp->rpt = mem_malloc (sizeof (struct rpt));
   bkp->rpt->type = in->rpt->type;
   bkp->rpt->freq = in->rpt->freq;
   bkp->rpt->until = in->rpt->until;
@@ -163,7 +157,7 @@ recur_event_dup (struct recur_event_s *in, struct recur_event_s *bkp)
 }
 
 static void
-recur_apoint_dup (recur_apoint_llist_node_t *in, recur_apoint_llist_node_t *bkp)
+recur_apoint_dup (struct recur_apoint *in, struct recur_apoint *bkp)
 {
   EXIT_IF (!in || !bkp, _("null pointer"));
 
@@ -172,7 +166,7 @@ recur_apoint_dup (recur_apoint_llist_node_t *in, recur_apoint_llist_node_t *bkp)
   bkp->state = in->state;
   bkp->mesg = mem_strdup (in->mesg);
   
-  bkp->rpt = mem_malloc (sizeof (struct rpt_s));
+  bkp->rpt = mem_malloc (sizeof (struct rpt));
   bkp->rpt->type = in->rpt->type;
   bkp->rpt->freq = in->rpt->freq;
   bkp->rpt->until = in->rpt->until;
@@ -187,7 +181,7 @@ recur_apoint_dup (recur_apoint_llist_node_t *in, recur_apoint_llist_node_t *bkp)
 void
 recur_apoint_llist_init (void)
 {
-  recur_alist_p = mem_malloc (sizeof (recur_apoint_llist_t));
+  recur_alist_p = mem_malloc (sizeof (struct recur_apoint_list));
   recur_alist_p->root = NULL;
   pthread_mutex_init (&(recur_alist_p->mutex), NULL);
 }
@@ -195,7 +189,7 @@ recur_apoint_llist_init (void)
 void
 recur_apoint_llist_free (void)
 {
-  recur_apoint_llist_node_t *o, **i;
+  struct recur_apoint *o, **i;
 
   i = &recur_alist_p->root;
   while (*i)
@@ -220,7 +214,7 @@ recur_apoint_llist_free (void)
 void
 recur_event_llist_free (void)
 {
-  struct recur_event_s *o, **i;
+  struct recur_event *o, **i;
 
   i = &recur_elist;
   while (*i)
@@ -242,14 +236,14 @@ recur_event_llist_free (void)
 }
 
 /* Insert a new recursive appointment in the general linked list */
-recur_apoint_llist_node_t *
+struct recur_apoint *
 recur_apoint_new (char *mesg, char *note, long start, long dur, char state,
-		  int type, int freq, long until, struct days_s **except)
+		  int type, int freq, long until, struct days **except)
 {
-  recur_apoint_llist_node_t *o, **i;
+  struct recur_apoint *o, **i;
   
-  o = mem_malloc (sizeof (recur_apoint_llist_node_t));
-  o->rpt = mem_malloc (sizeof (struct rpt_s));
+  o = mem_malloc (sizeof (struct recur_apoint));
+  o->rpt = mem_malloc (sizeof (struct rpt));
   o->mesg = mem_strdup (mesg);
   o->note = (note != 0) ? mem_strdup (note) : 0;
   o->start = start;
@@ -284,14 +278,14 @@ recur_apoint_new (char *mesg, char *note, long start, long dur, char state,
 }
 
 /* Insert a new recursive event in the general linked list */
-struct recur_event_s *
+struct recur_event *
 recur_event_new (char *mesg, char *note, long day, int id, int type, int freq,
-		 long until, struct days_s **except)
+		 long until, struct days **except)
 {
-  struct recur_event_s *o, **i;
+  struct recur_event *o, **i;
   
-  o = mem_malloc (sizeof (struct recur_event_s));
-  o->rpt = mem_malloc (sizeof (struct rpt_s));
+  o = mem_malloc (sizeof (struct recur_event));
+  o->rpt = mem_malloc (sizeof (struct rpt));
   o->mesg = mem_strdup (mesg);
   o->note = (note != 0) ? mem_strdup (note) : 0;  
   o->day = day;
@@ -326,7 +320,7 @@ recur_event_new (char *mesg, char *note, long day, int id, int type, int freq,
  * and the letter to be written in file. 
  */
 char
-recur_def2char (recur_types_t define)
+recur_def2char (enum recur_type define)
 {
   char recur_char;
 
@@ -384,7 +378,7 @@ recur_char2def (char type)
 
 /* Write days for which recurrent items should not be repeated. */
 static void
-recur_write_exc (struct days_s *exc, FILE *f)
+recur_write_exc (struct days *exc, FILE *f)
 {
   struct tm *lt;
   time_t t;
@@ -403,9 +397,9 @@ recur_write_exc (struct days_s *exc, FILE *f)
 }
 
 /* Load the recursive appointment description */
-recur_apoint_llist_node_t *
+struct recur_apoint *
 recur_apoint_scan (FILE *f, struct tm start, struct tm end, char type,
-		   int freq, struct tm until, char *note, struct days_s **exc,
+		   int freq, struct tm until, char *note, struct days **exc,
 		   char state)
 {
   struct tm *lt;
@@ -453,9 +447,9 @@ recur_apoint_scan (FILE *f, struct tm start, struct tm end, char type,
 }
 
 /* Load the recursive events from file */
-struct recur_event_s *
+struct recur_event *
 recur_event_scan (FILE *f, struct tm start, int id, char type, int freq,
-		  struct tm until, char *note, struct days_s **exc)
+		  struct tm until, char *note, struct days **exc)
 {
   char buf[BUFSIZ], *nl;
   time_t tstart, tuntil;
@@ -493,7 +487,7 @@ recur_event_scan (FILE *f, struct tm start, int id, char type, int freq,
 
 /* Writting of a recursive appointment into file. */
 static void
-recur_apoint_write (recur_apoint_llist_node_t *o, FILE *f)
+recur_apoint_write (struct recur_apoint *o, FILE *f)
 {
   struct tm *lt;
   time_t t;
@@ -536,7 +530,7 @@ recur_apoint_write (recur_apoint_llist_node_t *o, FILE *f)
 
 /* Writting of a recursive event into file. */
 static void
-recur_event_write (struct recur_event_s *o, FILE *f)
+recur_event_write (struct recur_event *o, FILE *f)
 {
   struct tm *lt;
   time_t t;
@@ -578,8 +572,8 @@ recur_event_write (struct recur_event_s *o, FILE *f)
 void
 recur_save_data (FILE *f)
 {
-  struct recur_event_s *re;
-  recur_apoint_llist_node_t *ra;
+  struct recur_event *re;
+  struct recur_apoint *ra;
 
   for (re = recur_elist; re != 0; re = re->next)
     recur_event_write (re, f);
@@ -664,13 +658,13 @@ diff_years (struct tm lt_start, struct tm lt_end)
  * calculation of recurrent dates after a turn of years.
  */
 unsigned
-recur_item_inday (long item_start, struct days_s *item_exc, int rpt_type,
+recur_item_inday (long item_start, struct days *item_exc, int rpt_type,
 		  int rpt_freq, long rpt_until, long day_start)
 {
-  date_t start_date;
+  struct date start_date;
   long day_end, diff;
   struct tm lt_item, lt_day;
-  struct days_s *exc;
+  struct days *exc;
   time_t t;
 
   day_end = day_start + DAYINSEC;
@@ -746,10 +740,10 @@ recur_item_inday (long item_start, struct days_s *item_exc, int rpt_type,
  */
 void
 recur_event_erase (long start, unsigned num, unsigned delete_whole,
-		   erase_flag_e flag)
+		   enum eraseflg flag)
 {
   unsigned n = 0;
-  struct recur_event_s *i, **iptr;
+  struct recur_event *i, **iptr;
 
   iptr = &recur_elist;
   for (i = recur_elist; i != 0; i = i->next)
@@ -811,10 +805,10 @@ recur_event_erase (long start, unsigned num, unsigned delete_whole,
  */
 void
 recur_apoint_erase (long start, unsigned num, unsigned delete_whole,
-		    erase_flag_e flag)
+		    enum eraseflg flag)
 {
   unsigned n = 0;
-  recur_apoint_llist_node_t *i, **iptr;
+  struct recur_apoint *i, **iptr;
   int need_check_notify = 0;
 
   pthread_mutex_lock (&(recur_alist_p->mutex));
@@ -888,14 +882,14 @@ recur_apoint_erase (long start, unsigned num, unsigned delete_whole,
  * and then delete the selected item to recreate it as a recurrent one
  */
 void
-recur_repeat_item (conf_t *conf)
+recur_repeat_item (struct conf *conf)
 {
   struct tm *lt;
   time_t t;
   int ch = 0;
   int date_entered = 0;
   int year = 0, month = 0, day = 0;
-  date_t until_date;
+  struct date until_date;
   char outstr[BUFSIZ];
   char user_input[BUFSIZ] = "";
   char *mesg_type_1 =
@@ -914,9 +908,9 @@ recur_repeat_item (conf_t *conf)
     _("Sorry, the date you entered is older than the item start time.");
   int type = 0, freq = 0;
   int item_nb;
-  struct day_item_s *p;
-  recur_apoint_llist_node_t *ra;
-  struct recur_event_s *re;
+  struct day_item *p;
+  struct recur_apoint *ra;
+  struct recur_event *re;
   long until, date;
 
   item_nb = apoint_hilt ();
@@ -1035,12 +1029,12 @@ recur_repeat_item (conf_t *conf)
  * Read days for which recurrent items must not be repeated
  * (such days are called exceptions).
  */
-struct days_s *
+struct days *
 recur_exc_scan (FILE *data_file)
 {
   int c = 0;
   struct tm day;
-  struct days_s *exc_head, *exc;
+  struct days *exc_head, *exc;
 
   exc_head = 0;
   while ((c = getc (data_file)) == '!')
@@ -1056,7 +1050,7 @@ recur_exc_scan (FILE *data_file)
       day.tm_isdst = -1;
       day.tm_year -= 1900;
       day.tm_mon--;
-      exc = mem_malloc (sizeof (struct days_s));
+      exc = mem_malloc (sizeof (struct days));
       exc->st = mktime (&day);
       exc->next = exc_head;
       exc_head = exc;
@@ -1068,10 +1062,10 @@ recur_exc_scan (FILE *data_file)
  * Look in the appointment list if we have an item which starts before the item
  * stored in the notify_app structure (which is the next item to be notified).
  */
-struct notify_app_s *
-recur_apoint_check_next (struct notify_app_s *app, long start, long day)
+struct notify_app *
+recur_apoint_check_next (struct notify_app *app, long start, long day)
 {
-  recur_apoint_llist_node_t *i;
+  struct recur_apoint *i;
   long real_recur_start_time;
 
   pthread_mutex_lock (&(recur_alist_p->mutex));
@@ -1102,10 +1096,10 @@ recur_apoint_check_next (struct notify_app_s *app, long start, long day)
 }
 
 /* Returns a structure containing the selected recurrent appointment. */
-recur_apoint_llist_node_t *
+struct recur_apoint *
 recur_get_apoint (long date, int num)
 {
-  recur_apoint_llist_node_t *o;
+  struct recur_apoint *o;
   int n = 0;
 
   pthread_mutex_lock (&(recur_alist_p->mutex));
@@ -1128,10 +1122,10 @@ recur_get_apoint (long date, int num)
 }
 
 /* Returns a structure containing the selected recurrent event. */
-struct recur_event_s *
+struct recur_event *
 recur_get_event (long date, int num)
 {
-  struct recur_event_s *o;
+  struct recur_event *o;
   int n = 0;
 
   for (o = recur_elist; o != 0; o = o->next)
@@ -1156,7 +1150,7 @@ void
 recur_apoint_switch_notify (long date, int recur_nb)
 {
   int n, need_chk_notify;
-  recur_apoint_llist_node_t *o;
+  struct recur_apoint *o;
 
   n = 0;
   need_chk_notify = 0;
@@ -1199,7 +1193,7 @@ recur_event_paste_item (void)
     bkp_cut_recur_event.rpt->until += time_shift;
   if (bkp_cut_recur_event.exc)
     {
-      struct days_s *exc;
+      struct days *exc;
       
       for (exc = bkp_cut_recur_event.exc; exc != 0; exc = exc->next)
         exc->st += time_shift;
@@ -1229,7 +1223,7 @@ recur_apoint_paste_item (void)
     bkp_cut_recur_apoint.rpt->until += time_shift;
   if (bkp_cut_recur_apoint.exc)
     {
-      struct days_s *exc;
+      struct days *exc;
       
       for (exc = bkp_cut_recur_apoint.exc; exc != 0; exc = exc->next)
         exc->st += time_shift;

@@ -1,9 +1,9 @@
-/*	$calcurse: io.c,v 1.80 2009/11/01 11:06:37 culot Exp $	*/
+/*	$calcurse: io.c,v 1.81 2010/03/20 10:54:46 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
  *
- * Copyright (c) 2004-2009 Frederic Culot <frederic@culot.org>
+ * Copyright (c) 2004-2010 Frederic Culot <frederic@culot.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -45,21 +45,7 @@
 #include <unistd.h>
 #include <errno.h>
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif /* HAVE_CONFIG_H */
-
-#include "i18n.h"
-#include "utils.h"
-#include "custom.h"
-#include "todo.h"
-#include "event.h"
-#include "apoint.h"
-#include "recur.h"
-#include "keys.h"
-#include "htable.h"
-#include "mem.h"
-#include "io.h"
+#include "calcurse.h"
 
 #define ICALDATEFMT      "%Y%m%d"
 #define ICALDATETIMEFMT  "%Y%m%dT%H%M%S"
@@ -96,15 +82,15 @@ typedef enum {
 } ical_vevent_e;
 
 typedef struct {
-  recur_types_t type;
-  int           freq;
-  long          until;
-  unsigned      count;
+  enum recur_type type;
+  int             freq;
+  long            until;
+  unsigned        count;
 } ical_rpt_t;
 
 struct ht_keybindings_s {
-  char *label;
-  keys_e key;
+  char     *label;
+  enum key  key;
   HTABLE_ENTRY (ht_keybindings_s);
 };
 
@@ -218,7 +204,7 @@ progress_bar (progress_bar_t type, int progress)
 
 /* Ask user for a file name to export data to. */
 static FILE *
-get_export_stream (export_type_t type)
+get_export_stream (enum export_type type)
 {
   FILE *stream;
   int cancel;
@@ -263,7 +249,7 @@ get_export_stream (export_type_t type)
  * (mainly used to export data).
  */
 static void
-foreach_date_dump (const long date_end, struct rpt_s *rpt, struct days_s *exc,
+foreach_date_dump (const long date_end, struct rpt *rpt, struct days *exc,
                    long item_first_date, long item_dur, char *item_mesg,
                    cb_dump_t cb_dump, FILE *stream)
 {
@@ -357,8 +343,8 @@ pcal_export_footer (FILE *stream)
 static void
 ical_export_recur_events (FILE *stream)
 {
-  struct recur_event_s *i;
-  struct days_s *day;
+  struct recur_event *i;
+  struct days *day;
   char ical_date[BUFSIZ];
 
   for (i = recur_elist; i != 0; i = i->next)
@@ -422,7 +408,7 @@ pcal_dump_apoint (FILE *stream, long apoint_date, long apoint_dur,
 static void
 pcal_export_recur_events (FILE *stream)
 {
-  struct recur_event_s *i;
+  struct recur_event *i;
   char pcal_date[BUFSIZ];
 
   (void)fprintf (stream, "\n# =============");
@@ -476,7 +462,7 @@ pcal_export_recur_events (FILE *stream)
 static void
 ical_export_events (FILE *stream)
 {
-  struct event_s *i;
+  struct event *i;
   char ical_date[BUFSIZ];
 
   for (i = eventlist; i != 0; i = i->next)
@@ -492,7 +478,7 @@ ical_export_events (FILE *stream)
 static void
 pcal_export_events (FILE *stream)
 {
-  struct event_s *i;
+  struct event *i;
   
   (void)fprintf (stream, "\n# ======\n# Events\n# ======\n");
   for (i = eventlist; i != 0; i = i->next)
@@ -504,8 +490,8 @@ pcal_export_events (FILE *stream)
 static void
 ical_export_recur_apoints (FILE *stream)
 {
-  recur_apoint_llist_node_t *i;
-  struct days_s *day;
+  struct recur_apoint *i;
+  struct days *day;
   char ical_datetime[BUFSIZ];
   char ical_date[BUFSIZ];
 
@@ -550,7 +536,7 @@ ical_export_recur_apoints (FILE *stream)
 static void
 pcal_export_recur_apoints (FILE *stream)
 {
-  recur_apoint_llist_node_t *i;
+  struct recur_apoint *i;
   char pcal_date[BUFSIZ], pcal_beg[BUFSIZ], pcal_end[BUFSIZ];
   
   (void)fprintf (stream, "\n# ==============");
@@ -609,7 +595,7 @@ pcal_export_recur_apoints (FILE *stream)
 static void
 ical_export_apoints (FILE *stream)
 {
-  apoint_llist_node_t *i;
+  struct apoint *i;
   char ical_datetime[BUFSIZ];
 
   pthread_mutex_lock (&(alist_p->mutex));
@@ -630,7 +616,7 @@ ical_export_apoints (FILE *stream)
 static void
 pcal_export_apoints (FILE *stream)
 {
-  apoint_llist_node_t *i;
+  struct apoint *i;
 
   (void)fprintf (stream, "\n# ============\n# Appointments\n# ============\n");
   pthread_mutex_lock (&(alist_p->mutex));
@@ -644,7 +630,7 @@ pcal_export_apoints (FILE *stream)
 static void
 ical_export_todo (FILE *stream)
 {
-  struct todo_s *i;
+  struct todo *i;
 
   for (i = todolist; i != 0; i = i->next)
     {
@@ -661,7 +647,7 @@ ical_export_todo (FILE *stream)
 static void
 pcal_export_todo (FILE *stream)
 {
-  struct todo_s *i;
+  struct todo *i;
 
   (void)fprintf (stream, "#\n# Todos\n#\n");
   for (i = todolist; i != 0; i = i->next)
@@ -831,7 +817,7 @@ static pthread_mutex_t io_save_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 /* Save the user configuration. */
 unsigned
-io_save_conf (conf_t *conf)
+io_save_conf (struct conf *conf)
 {
   char *config_txt =
     "#\n"
@@ -969,8 +955,8 @@ io_save_conf (conf_t *conf)
 unsigned
 io_save_apts (void)
 {
-  apoint_llist_node_t *a;
-  struct event_s *e;  
+  struct apoint *a;
+  struct event *e;  
   FILE *fp;
 
   if ((fp = fopen (path_apts, "w")) == 0)
@@ -996,7 +982,7 @@ io_save_apts (void)
 unsigned
 io_save_todo (void)
 {
-  struct todo_s *t;  
+  struct todo *t;  
   FILE *fp;
   
   if ((fp = fopen (path_todo, "w")) == 0)
@@ -1031,7 +1017,7 @@ io_save_keys (void)
 
 /* Save the calendar data */
 void
-io_save_cal (conf_t *conf, io_save_display_t display)
+io_save_cal (struct conf *conf, enum save_display display)
 {
   char *access_pb = _("Problems accessing data file ...");
   char *save_success = _("The data files were successfully saved");
@@ -1089,7 +1075,7 @@ io_load_app (void)
   FILE *data_file;
   int c, is_appointment, is_event, is_recursive;
   struct tm start, end, until, *lt;
-  struct days_s *exc;
+  struct days *exc;
   time_t t;
   int id = 0;
   int freq;
@@ -1367,7 +1353,7 @@ io_load_keys (char *pager)
   struct ht_keybindings_s keys[NBKEYS];
   FILE *keyfp;
   char buf[BUFSIZ];
-  io_file_t *log;
+  struct io_file *log;
   int i, skipped, loaded, line;
   const int MAX_ERRORS = 5;
 
@@ -1382,8 +1368,8 @@ io_load_keys (char *pager)
 
   for (i = 0; i < NBKEYS; i++)
     {
-      keys[i].key = (keys_e)i;
-      keys[i].label = keys_get_label ((keys_e)i);
+      keys[i].key = (enum key)i;
+      keys[i].label = keys_get_label ((enum key)i);
       HTABLE_INSERT (ht_keybindings, &ht_keys, &keys[i]);
     }
 
@@ -1611,7 +1597,7 @@ io_startup_screen (unsigned skip_dialogs, int no_data_file)
 
 /* Export calcurse data. */
 void
-io_export_data (export_type_t type, conf_t *conf)
+io_export_data (enum export_type type, struct conf *conf)
 {
   FILE *stream;
   char *success = _("The data were successfully exported");
@@ -1739,7 +1725,7 @@ ical_store_todo (int priority, char *mesg, char *note)
 
 static void
 ical_store_event (char *mesg, char *note, long day, long end, ical_rpt_t *rpt,
-                  days_t *exc)
+                  struct days *exc)
 {
   const int EVENTID = 1;
   
@@ -1771,7 +1757,7 @@ ical_store_event (char *mesg, char *note, long day, long end, ical_rpt_t *rpt,
 
 static void
 ical_store_apoint (char *mesg, char *note, long start, long dur,
-                   ical_rpt_t *rpt, days_t *exc, int has_alarm)
+                   ical_rpt_t *rpt, struct days *exc, int has_alarm)
 {
   char state = 0L;
 
@@ -1922,7 +1908,7 @@ static float
 ical_chk_header (FILE *fd, unsigned *lineno)
 {
   const int HEADER_MALFORMED = -1;
-  const string_t icalheader = STRING_BUILD ("BEGIN:VCALENDAR");
+  const struct string icalheader = STRING_BUILD ("BEGIN:VCALENDAR");
   char buf[BUFSIZ];
 
   (void)fgets (buf, BUFSIZ, fd);
@@ -1971,7 +1957,7 @@ static long
 ical_datetime2long (char *datestr, ical_vevent_e *type)
 {
   const int NOTFOUND = 0, FORMAT_DATE = 3, FORMAT_DATETIME = 5;
-  date_t date;
+  struct date date;
   unsigned hour, min;
   long datelong;
   int format;
@@ -2174,12 +2160,12 @@ static ical_rpt_t *
 ical_read_rrule (FILE *log, char *rrulestr, unsigned *noskipped,
                  const int itemline)
 {
-  const string_t daily = STRING_BUILD ("DAILY");
-  const string_t weekly = STRING_BUILD ("WEEKLY");
-  const string_t monthly = STRING_BUILD ("MONTHLY");
-  const string_t yearly = STRING_BUILD ("YEARLY");
-  const string_t count = STRING_BUILD ("COUNT=");
-  const string_t interv = STRING_BUILD ("INTERVAL=");
+  const struct string daily = STRING_BUILD ("DAILY");
+  const struct string weekly = STRING_BUILD ("WEEKLY");
+  const struct string monthly = STRING_BUILD ("MONTHLY");
+  const struct string yearly = STRING_BUILD ("YEARLY");
+  const struct string count = STRING_BUILD ("COUNT=");
+  const struct string interv = STRING_BUILD ("INTERVAL=");
   unsigned interval;
   ical_rpt_t *rpt;
   char *p;
@@ -2285,15 +2271,15 @@ ical_read_rrule (FILE *log, char *rrulestr, unsigned *noskipped,
 }
 
 static void
-ical_add_exc (days_t **exc_head, long date)
+ical_add_exc (struct days **exc_head, long date)
 {
   if (date == 0)
     return;
   else
     {
-      struct days_s *exc;
+      struct days *exc;
       
-      exc = mem_malloc (sizeof (struct days_s));
+      exc = mem_malloc (sizeof (struct days));
       exc->st = date;
       exc->next = *exc_head;
       *exc_head = exc;
@@ -2304,11 +2290,11 @@ ical_add_exc (days_t **exc_head, long date)
  * This property defines the list of date/time exceptions for a
  * recurring calendar component.
  */
-static days_t *
+static struct days *
 ical_read_exdate (FILE *log, char *exstr, unsigned *noskipped,
                   const int itemline)
 {
-  days_t *exc;
+  struct days *exc;
   char *p, *q;
   long date;
 
@@ -2394,7 +2380,6 @@ ical_read_note (char *first_line, FILE *fdi, unsigned *noskipped,
 
 /* Returns an allocated string containing the ical item summary. */
 static char *
-
 ical_read_summary (char *first_line, FILE *fdi, unsigned *lineno)
 {
   char *p, *summary;
@@ -2414,20 +2399,20 @@ ical_read_event (FILE *fdi, FILE *log, unsigned *noevents, unsigned *noapoints,
                  unsigned *noskipped, unsigned *lineno)
 {
   const int ITEMLINE = *lineno;
-  const string_t endevent = STRING_BUILD ("END:VEVENT");
-  const string_t summary  = STRING_BUILD ("SUMMARY:");
-  const string_t dtstart  = STRING_BUILD ("DTSTART");
-  const string_t dtend    = STRING_BUILD ("DTEND");
-  const string_t duration = STRING_BUILD ("DURATION:");
-  const string_t rrule    = STRING_BUILD ("RRULE");
-  const string_t exdate   = STRING_BUILD ("EXDATE");
-  const string_t alarm    = STRING_BUILD ("BEGIN:VALARM");
-  const string_t endalarm = STRING_BUILD ("END:VALARM");  
-  const string_t desc     = STRING_BUILD ("DESCRIPTION");
+  const struct string endevent = STRING_BUILD ("END:VEVENT");
+  const struct string summary  = STRING_BUILD ("SUMMARY:");
+  const struct string dtstart  = STRING_BUILD ("DTSTART");
+  const struct string dtend    = STRING_BUILD ("DTEND");
+  const struct string duration = STRING_BUILD ("DURATION:");
+  const struct string rrule    = STRING_BUILD ("RRULE");
+  const struct string exdate   = STRING_BUILD ("EXDATE");
+  const struct string alarm    = STRING_BUILD ("BEGIN:VALARM");
+  const struct string endalarm = STRING_BUILD ("END:VALARM");  
+  const struct string desc     = STRING_BUILD ("DESCRIPTION");
   ical_vevent_e vevent_type;
   char *p, buf[BUFSIZ], buf_upper[BUFSIZ];
   struct {
-    days_t       *exc;
+    struct days  *exc;
     ical_rpt_t   *rpt;
     char         *mesg, *note;
     long          start, end, dur;
@@ -2607,11 +2592,11 @@ static void
 ical_read_todo (FILE *fdi, FILE *log, unsigned *notodos, unsigned *noskipped,
                 unsigned *lineno)
 {
-  const string_t endtodo  = STRING_BUILD ("END:VTODO");
-  const string_t summary  = STRING_BUILD ("SUMMARY");
-  const string_t alarm    = STRING_BUILD ("BEGIN:VALARM");
-  const string_t endalarm = STRING_BUILD ("END:VALARM");
-  const string_t desc     = STRING_BUILD ("DESCRIPTION");
+  const struct string endtodo  = STRING_BUILD ("END:VTODO");
+  const struct string summary  = STRING_BUILD ("SUMMARY");
+  const struct string alarm    = STRING_BUILD ("BEGIN:VALARM");
+  const struct string endalarm = STRING_BUILD ("END:VALARM");
+  const struct string desc     = STRING_BUILD ("DESCRIPTION");
   const int LOWEST = 9;
   const int ITEMLINE = *lineno;
   char buf[BUFSIZ], buf_upper[BUFSIZ];
@@ -2701,7 +2686,7 @@ cleanup:
 }
 
 static FILE *
-get_import_stream (export_type_t type)
+get_import_stream (enum export_type type)
 {
   FILE *stream;
   char *stream_name;
@@ -2742,10 +2727,10 @@ get_import_stream (export_type_t type)
  * and is cleared at the end.
  */
 void
-io_import_data (import_type_t type, conf_t *conf, char *stream_name)
+io_import_data (enum import_type type, struct conf *conf, char *stream_name)
 {
-  const string_t vevent = STRING_BUILD ("BEGIN:VEVENT");
-  const string_t vtodo = STRING_BUILD ("BEGIN:VTODO");
+  const struct string vevent = STRING_BUILD ("BEGIN:VEVENT");
+  const struct string vtodo = STRING_BUILD ("BEGIN:VTODO");
   char *proc_report = _("Import process report: %04d lines read ");
   char *lines_stats =
     _("%d apps / %d events / %d todos / %d skipped ");
@@ -2753,7 +2738,7 @@ io_import_data (import_type_t type, conf_t *conf, char *stream_name)
     _("%d apps / %d events / %d todos / %d skipped ([ENTER] to continue)");
   char buf[BUFSIZ];
   FILE *stream = NULL;
-  io_file_t *log;
+  struct io_file *log;
   float ical_version;
   struct {
     unsigned events, apoints, todos, lines, skipped;
@@ -2844,17 +2829,17 @@ io_import_data (import_type_t type, conf_t *conf, char *stream_name)
   io_log_free (log);
 }
 
-io_file_t *
+struct io_file *
 io_log_init (void)
 {
   const char *logprefix = "/tmp/calcurse_log.";
   char *logname;
-  io_file_t *log;
+  struct io_file *log;
 
   logname = new_tempfile (logprefix, NOTESIZ);
   RETVAL_IF (logname == 0, 0,
              _("Warning: could not create temporary log file, Aborting..."));
-  log = mem_malloc (sizeof (io_file_t));
+  log = mem_malloc (sizeof (struct io_file));
   RETVAL_IF (log == 0, 0,
              _("Warning: could not open temporary log file, Aborting..."));
   (void)snprintf (log->name, sizeof (log->name), "%s%s", logprefix, logname);
@@ -2871,14 +2856,14 @@ io_log_init (void)
 }
 
 void
-io_log_print (io_file_t *log, int line, char *msg)
+io_log_print (struct io_file *log, int line, char *msg)
 {
   if (log && log->fd)
     (void)fprintf (log->fd, "line %d: %s\n", line, msg);
 }
 
 void
-io_log_display (io_file_t *log, char *msg, char *pager)
+io_log_display (struct io_file *log, char *msg, char *pager)
 {
   char *choices = "[y/n] ";
   int ans;
@@ -2913,7 +2898,7 @@ io_log_display (io_file_t *log, char *msg, char *pager)
 }
 
 void
-io_log_free (io_file_t *log)
+io_log_free (struct io_file *log)
 {
   if (!log)
     return;
@@ -2929,10 +2914,10 @@ static pthread_t io_t_psave;
 static void *
 io_psave_thread (void *arg)
 {
-  conf_t *config;
+  struct conf *config;
   int delay;
 
-  config = (conf_t *)arg;
+  config = (struct conf *)arg;
   delay = config->periodic_save;
   EXIT_IF (delay < 0, _("Invalid delay"));
   
@@ -2945,7 +2930,7 @@ io_psave_thread (void *arg)
 
 /* Launch the thread which handles periodic saves. */
 void
-io_start_psave_thread (conf_t *conf)
+io_start_psave_thread (struct conf *conf)
 {
   pthread_create (&io_t_psave, NULL, io_psave_thread, (void *)conf);
 }

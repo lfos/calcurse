@@ -1,3 +1,7 @@
+2010-03-20  Frederic Culot  <frederic@culot.org>
+
+	* src/calcurse.h: new header to gather all existing ones
+	
 2010-03-19  Frederic Culot  <frederic@culot.org>
 
 	* TODO: list updated

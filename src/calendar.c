@@ -1,4 +1,4 @@
-/*	$calcurse: calendar.c,v 1.32 2010/03/08 08:44:44 culot Exp $	*/
+/*	$calcurse: calendar.c,v 1.33 2010/03/20 10:54:43 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -43,15 +43,7 @@
 #include <time.h>
 #include <math.h>
 
-#include "i18n.h"
-#include "day.h"
-#include "apoint.h"
-#include "event.h"
-#include "custom.h"
-#include "vars.h"
-#include "keys.h"
-#include "utils.h"
-#include "calendar.h"
+#include "calcurse.h"
 
 #ifndef M_PI
 #define	M_PI	  3.14159265358979323846
@@ -73,14 +65,24 @@ enum {
   CAL_VIEWS
 };
 
-static date_t today, slctd_day;
+enum pom {
+  NO_POM,
+  FIRST_QUARTER,
+  FULL_MOON,
+  LAST_QUARTER,
+  NEW_MOON,
+  MOON_PHASES
+};
+
+static struct date today, slctd_day;
 static unsigned calendar_view, week_begins_on_monday;
 static pthread_mutex_t date_thread_mutex = PTHREAD_MUTEX_INITIALIZER;
 static pthread_t calendar_t_date;
 
-static void draw_monthly_view (window_t *, date_t *, unsigned);
-static void draw_weekly_view (window_t *, date_t *, unsigned);
-static void (*draw_calendar[CAL_VIEWS]) (window_t *, date_t *, unsigned) =
+static void draw_monthly_view (struct window *, struct date *, unsigned);
+static void draw_weekly_view (struct window *, struct date *, unsigned);
+static void (*draw_calendar[CAL_VIEWS]) (struct window *, struct date *,
+                                         unsigned) =
   {draw_monthly_view, draw_weekly_view};
 
 /* Switch between calendar views (monthly view is selected by default). */
@@ -167,7 +169,7 @@ calendar_set_current_date (void)
 
 /* Needed to display sunday or monday as the first day of week in calendar. */
 void
-calendar_set_first_day_of_week (wday_e first_day)
+calendar_set_first_day_of_week (enum wday first_day)
 {
   switch (first_day)
     {
@@ -200,7 +202,7 @@ calendar_week_begins_on_monday (void)
 
 /* Fill in the given variable with the current date. */
 void
-calendar_store_current_date (date_t *date)
+calendar_store_current_date (struct date *date)
 {
   pthread_mutex_lock (&date_thread_mutex);
   *date = today;
@@ -215,7 +217,7 @@ calendar_init_slctd_day (void)
 }
 
 /* Return the selected day in calendar */
-date_t *
+struct date *
 calendar_get_slctd_day (void)
 {
   return (&slctd_day);
@@ -229,7 +231,7 @@ calendar_get_slctd_day_sec (void)
 }
 
 static int
-calendar_get_wday (date_t *date)
+calendar_get_wday (struct date *date)
 {
   struct tm t;
 
@@ -300,9 +302,9 @@ date_change (struct tm *date, int delta_month, int delta_day)
 
 /* Draw the monthly view inside calendar panel. */
 static void
-draw_monthly_view (window_t *cwin, date_t *current_day, unsigned sunday_first)
+draw_monthly_view (struct window *cwin, struct date *current_day, unsigned sunday_first)
 {
-  date_t check_day;
+  struct date check_day;
   int c_day, c_day_1, day_1_sav, numdays, j;
   unsigned yr, mo;
   int ofs_x, ofs_y;
@@ -472,7 +474,7 @@ ISO8601weeknum (const struct tm *t)
 
 /* Draw the weekly view inside calendar panel. */
 static void
-draw_weekly_view (window_t *cwin, date_t *current_day, unsigned sunday_first)
+draw_weekly_view (struct window *cwin, struct date *current_day, unsigned sunday_first)
 {
   int j, c_wday, days_to_remove, weeknum;
   struct tm t;
@@ -502,7 +504,7 @@ draw_weekly_view (window_t *cwin, date_t *current_day, unsigned sunday_first)
   /* Now draw calendar view. */
   for (j = 0; j < WEEKINDAYS; j++)
     {
-      date_t date;
+      struct date date;
       unsigned attr, item_this_day;
       int i, slices[DAYSLICESNO];
       
@@ -577,9 +579,9 @@ draw_weekly_view (window_t *cwin, date_t *current_day, unsigned sunday_first)
 
 /* Function used to display the calendar panel. */
 void
-calendar_update_panel (window_t *cwin)
+calendar_update_panel (struct window *cwin)
 {
-  date_t current_day;
+  struct date current_day;
   unsigned sunday_first;
 
   calendar_store_current_date (&current_day);
@@ -596,7 +598,7 @@ calendar_update_panel (window_t *cwin)
 void
 calendar_goto_today (void)
 {
-  date_t today;
+  struct date today;
 
   calendar_store_current_date (&today);
   slctd_day.dd = today.dd;
@@ -661,7 +663,7 @@ calendar_change_day (int datefmt)
 }
 
 void
-calendar_move (move_t move)
+calendar_move (enum move move)
 {
   int ret, days_to_remove, days_to_add;
   struct tm t;
@@ -882,7 +884,7 @@ pom (time_t tmpt)
   struct tm *GMT;
   double days;
   int cnt;
-  pom_e pom;
+  enum pom pom;
 
   pom = NO_POM;
   GMT = gmtime (&tmpt);
@@ -906,7 +908,7 @@ char *
 calendar_get_pom (time_t date)
 {
   char *pom_pict[MOON_PHASES] = { "   ", "|) ", "(|)", "(| ", " | " };
-  pom_e phase = NO_POM;
+  enum pom phase = NO_POM;
   double pom_today, relative_pom, pom_yesterday, pom_tomorrow;
   const double half = 50.0;
 

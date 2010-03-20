@@ -1,9 +1,9 @@
-/*	$calcurse: custom.c,v 1.45 2009/10/28 15:15:44 culot Exp $	*/
+/*	$calcurse: custom.c,v 1.46 2010/03/20 10:54:43 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
  *
- * Copyright (c) 2004-2009 Frederic Culot <frederic@culot.org>
+ * Copyright (c) 2004-2010 Frederic Culot <frederic@culot.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -40,20 +40,39 @@
 #include <stdlib.h>
 #include <math.h>
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif /* HAVE_CONFIG_H */
+#include "calcurse.h"
 
-#include "i18n.h"
-#include "io.h"
-#include "utils.h"
-#include "keys.h"
-#include "apoint.h"
-#include "help.h"
-#include "mem.h"
-#include "custom.h"
+/* Available configuration variables. */
+enum {
+  CUSTOM_CONF_NOVARIABLE,
+  CUSTOM_CONF_AUTOSAVE,
+  CUSTOM_CONF_PERIODICSAVE,
+  CUSTOM_CONF_CONFIRMQUIT,
+  CUSTOM_CONF_CONFIRMDELETE,
+  CUSTOM_CONF_SKIPSYSTEMDIALOGS,
+  CUSTOM_CONF_SKIPPROGRESSBAR,
+  CUSTOM_CONF_CALENDAR_DEFAULTVIEW,
+  CUSTOM_CONF_WEEKBEGINSONMONDAY,
+  CUSTOM_CONF_COLORTHEME,
+  CUSTOM_CONF_LAYOUT,
+  CUSTOM_CONF_NOTIFYBARSHOW,
+  CUSTOM_CONF_NOTIFYBARDATE,
+  CUSTOM_CONF_NOTIFYBARCLOCK,
+  CUSTOM_CONF_NOTIFYBARWARNING,
+  CUSTOM_CONF_NOTIFYBARCOMMAND,
+  CUSTOM_CONF_OUTPUTDATEFMT,
+  CUSTOM_CONF_INPUTDATEFMT,
+  CUSTOM_CONF_DMON_ENABLE,
+  CUSTOM_CONF_DMON_LOG,
+  CUSTOM_CONF_VARIABLES
+};
 
-static struct attribute_s attr;
+struct attribute {
+  int color[7];
+  int nocolor[7];
+};
+
+static struct attribute attr;
 
 static unsigned
 fill_config_var (char *string)
@@ -217,7 +236,7 @@ custom_remove_attr (WINDOW *win, int attr_num)
 
 /* Load the user configuration. */
 void
-custom_load_conf (conf_t *conf, int background)
+custom_load_conf (struct conf *conf, int background)
 {
   FILE *data_file;
   char *mesg_line1 = _("Failed to open config file");
@@ -412,15 +431,15 @@ custom_config_bar (void)
 static void
 layout_selection_bar (void)
 {
-  binding_t quit    = {_("Exit"),     KEY_GENERIC_QUIT};
-  binding_t select  = {_("Select"),   KEY_GENERIC_SELECT};
-  binding_t up      = {_("Up"),       KEY_MOVE_UP};
-  binding_t down    = {_("Down"),     KEY_MOVE_DOWN};
-  binding_t left    = {_("Left"),     KEY_MOVE_LEFT};
-  binding_t right   = {_("Right"),    KEY_MOVE_RIGHT};
-  binding_t help    = {_("Help"),     KEY_GENERIC_HELP};
+  struct binding quit    = {_("Exit"),     KEY_GENERIC_QUIT};
+  struct binding select  = {_("Select"),   KEY_GENERIC_SELECT};
+  struct binding up      = {_("Up"),       KEY_MOVE_UP};
+  struct binding down    = {_("Down"),     KEY_MOVE_DOWN};
+  struct binding left    = {_("Left"),     KEY_MOVE_LEFT};
+  struct binding right   = {_("Right"),    KEY_MOVE_RIGHT};
+  struct binding help    = {_("Help"),     KEY_GENERIC_HELP};
   
-  binding_t *binding[] = {&quit, &select, &up, &down, &left, &right, &help};
+  struct binding *binding[] = {&quit, &select, &up, &down, &left, &right, &help};
   int binding_size = sizeof (binding) / sizeof (binding[0]);
 
   keys_display_bindings_bar (win[STA].p, binding, 0, binding_size);
@@ -431,7 +450,8 @@ layout_selection_bar (void)
 
 /* Used to display available layouts in layout configuration menu. */
 static void
-display_layout_config (window_t *lwin, int mark, int cursor, int need_reset)
+display_layout_config (struct window *lwin, int mark, int cursor,
+                       int need_reset)
 {
 #define CURSOR			(32 | A_REVERSE)
 #define MARK			88
@@ -500,8 +520,8 @@ display_layout_config (window_t *lwin, int mark, int cursor, int need_reset)
 void
 custom_layout_config (void)
 {
-  scrollwin_t hwin;
-  window_t conf_win;
+  struct scrollwin hwin;
+  struct window conf_win;
   int ch, mark, cursor, need_reset;
   char *help_text =
     _("With this configuration menu, one can choose where panels will be\n"
@@ -572,7 +592,7 @@ custom_layout_config (void)
 #undef LAYOUTSPERCOL
 
 static void
-set_confwin_attr (window_t *cwin)
+set_confwin_attr (struct window *cwin)
 {
   cwin->h = (notify_bar ())? row - 3 : row - 2;
   cwin->w = col;
@@ -584,7 +604,7 @@ set_confwin_attr (window_t *cwin)
  * (useful in case of window resize).
  */
 void
-custom_confwin_init (window_t *confwin, char *label)
+custom_confwin_init (struct window *confwin, char *label)
 {
   if (confwin->p)
     {
@@ -611,16 +631,16 @@ custom_confwin_init (window_t *confwin, char *label)
 static void
 color_selection_bar (void)
 {
-  binding_t quit    = {_("Exit"),     KEY_GENERIC_QUIT};
-  binding_t select  = {_("Select"),   KEY_GENERIC_SELECT};
-  binding_t nocolor = {_("No color"), KEY_GENERIC_CANCEL};
-  binding_t up      = {_("Up"),       KEY_MOVE_UP};
-  binding_t down    = {_("Down"),     KEY_MOVE_DOWN};
-  binding_t left    = {_("Left"),     KEY_MOVE_LEFT};
-  binding_t right   = {_("Right"),    KEY_MOVE_RIGHT};
+  struct binding quit    = {_("Exit"),     KEY_GENERIC_QUIT};
+  struct binding select  = {_("Select"),   KEY_GENERIC_SELECT};
+  struct binding nocolor = {_("No color"), KEY_GENERIC_CANCEL};
+  struct binding up      = {_("Up"),       KEY_MOVE_UP};
+  struct binding down    = {_("Down"),     KEY_MOVE_DOWN};
+  struct binding left    = {_("Left"),     KEY_MOVE_LEFT};
+  struct binding right   = {_("Right"),    KEY_MOVE_RIGHT};
 
   
-  binding_t *binding[] = {
+  struct binding *binding[] = {
     &quit, &nocolor, &up, &down, &left, &right, &select
   };
   int binding_size = sizeof (binding) / sizeof (binding[0]);
@@ -633,7 +653,7 @@ color_selection_bar (void)
  * This is useful for window resizing.
  */
 static void
-display_color_config (window_t *cwin, int *mark_fore, int *mark_back,
+display_color_config (struct window *cwin, int *mark_fore, int *mark_back,
 		      int cursor, int need_reset, int theme_changed)
 {
 #define	SIZE 			(2 * (NBUSERCOLORS + 1))
@@ -761,7 +781,7 @@ display_color_config (window_t *cwin, int *mark_fore, int *mark_back,
 void
 custom_color_config (void)
 {
-  window_t conf_win;
+  struct window conf_win;
   int ch, cursor, need_reset, theme_changed;
   int mark_fore, mark_back;
 
@@ -886,7 +906,7 @@ custom_color_theme_name (char *theme_name)
 
 /* Prints the general options. */
 static int
-print_general_options (WINDOW *win, conf_t *conf)
+print_general_options (WINDOW *win, struct conf *conf)
 {
   enum {
     AUTO_SAVE,
@@ -986,7 +1006,7 @@ print_general_options (WINDOW *win, conf_t *conf)
 }
 
 void
-custom_set_swsiz (scrollwin_t *sw)
+custom_set_swsiz (struct scrollwin *sw)
 {
   sw->win.x = 0;
   sw->win.y = 0;
@@ -1001,9 +1021,9 @@ custom_set_swsiz (scrollwin_t *sw)
                           
 /* General configuration. */
 void
-custom_general_config (conf_t *conf)
+custom_general_config (struct conf *conf)
 {
-  scrollwin_t cwin;
+  struct scrollwin cwin;
   char *number_str =
     _("Enter an option number to change its value");
   char *keys =
@@ -1188,16 +1208,16 @@ print_keys_bindings (WINDOW *win, int selected_row, int selected_elm, int yoff)
 static void
 custom_keys_config_bar (void)
 {
-  binding_t quit  = {_("Exit"),     KEY_GENERIC_QUIT};
-  binding_t info  = {_("Key info"), KEY_GENERIC_HELP};
-  binding_t add   = {_("Add key"),  KEY_ADD_ITEM};
-  binding_t del   = {_("Del key"),  KEY_DEL_ITEM};
-  binding_t up    = {_("Up"),       KEY_MOVE_UP};
-  binding_t down  = {_("Down"),     KEY_MOVE_DOWN};
-  binding_t left  = {_("Prev Key"), KEY_MOVE_LEFT};
-  binding_t right = {_("Next Key"), KEY_MOVE_RIGHT};
+  struct binding quit  = {_("Exit"),     KEY_GENERIC_QUIT};
+  struct binding info  = {_("Key info"), KEY_GENERIC_HELP};
+  struct binding add   = {_("Add key"),  KEY_ADD_ITEM};
+  struct binding del   = {_("Del key"),  KEY_DEL_ITEM};
+  struct binding up    = {_("Up"),       KEY_MOVE_UP};
+  struct binding down  = {_("Down"),     KEY_MOVE_DOWN};
+  struct binding left  = {_("Prev Key"), KEY_MOVE_LEFT};
+  struct binding right = {_("Next Key"), KEY_MOVE_RIGHT};
     
-  binding_t *binding[] = {
+  struct binding *binding[] = {
     &quit, &info, &add, &del, &up, &down, &left, &right
   };
   int binding_size = sizeof (binding) / sizeof (binding[0]);
@@ -1208,7 +1228,7 @@ custom_keys_config_bar (void)
 void
 custom_keys_config (void)
 {
-  scrollwin_t kwin;
+  struct scrollwin kwin;
   int selrow, selelm, firstrow, lastrow, nbrowelm, nbdisplayed;
   int keyval, used, not_recognized;
   char *keystr;
@@ -1303,7 +1323,7 @@ custom_keys_config (void)
               used = keys_assign_binding (keyval, selrow);
               if (used)
                 {
-                  keys_e action;
+                  enum key action;
                   
                   action = keys_get_action (keyval);
                   WARN_MSG (_("This key is already in use for %s, "

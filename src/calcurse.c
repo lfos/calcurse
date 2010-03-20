@@ -1,9 +1,9 @@
-/*	$calcurse: calcurse.c,v 1.86 2009/08/24 18:59:17 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.87 2010/03/20 10:54:42 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
  *
- * Copyright (c) 2004-2009 Frederic Culot <frederic@culot.org>
+ * Copyright (c) 2004-2010 Frederic Culot <frederic@culot.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -38,22 +38,7 @@
 
 #include <stdlib.h>
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif /* HAVE_CONFIG_H */
-
-#include "i18n.h"
-#include "io.h"
-#include "help.h"
-#include "custom.h"
-#include "utils.h"
-#include "sigs.h"
-#include "day.h"
-#include "todo.h"
-#include "args.h"
-#include "notify.h"
-#include "keys.h"
-#include "dmon.h"
+#include "calcurse.h"
 
 /*
  * Calcurse is a text-based personal organizer which helps keeping track
@@ -65,8 +50,8 @@
 int
 main (int argc, char **argv)
 {
-  conf_t conf;
-  day_items_nb_t inday;
+  struct conf conf;
+  struct day_items_nb inday;
   int background, foreground;
   int non_interactive;
   int no_data_file = 1;

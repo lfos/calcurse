@@ -1,9 +1,9 @@
-/*	$calcurse: todo.c,v 1.35 2009/07/19 08:20:01 culot Exp $	*/
+/*	$calcurse: todo.c,v 1.36 2010/03/20 10:54:48 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
  *
- * Copyright (c) 2004-2009 Frederic Culot <frederic@culot.org>
+ * Copyright (c) 2004-2010 Frederic Culot <frederic@culot.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -40,24 +40,19 @@
 #include <string.h>
 #include <unistd.h>
 
-#include "utils.h"
-#include "custom.h"
-#include "keys.h"
-#include "i18n.h"
-#include "mem.h"
-#include "todo.h"
+#include "calcurse.h"
 
-struct todo_s *todolist;
+struct todo *todolist;
 static int hilt = 0;
 static int todos = 0;
 static int first = 1;
 static char *msgsav;
 
 /* Returns a structure containing the selected item. */
-static struct todo_s *
+static struct todo *
 todo_get_item (int item_number)
 {
-  struct todo_s *o;
+  struct todo *o;
   int i;
 
   o = todolist;
@@ -169,13 +164,13 @@ todo_new_item (void)
 /*
  * Add an item in the todo linked list.
  */
-struct todo_s *
+struct todo *
 todo_add (char *mesg, int id, char *note)
 {
-  struct todo_s *o, **i;
+  struct todo *o, **i;
   int absid;
   
-  o = (struct todo_s *) mem_malloc (sizeof (struct todo_s));
+  o = mem_malloc (sizeof (struct todo));
   o->mesg = mem_strdup (mesg);
   o->id = id;
   o->note = (note != NULL && note[0] != '\0') ? mem_strdup (note) : NULL;
@@ -205,7 +200,7 @@ static void
 todo_delete_note_bynum (unsigned num)
 {
   unsigned n;
-  struct todo_s *i, **iptr;
+  struct todo *i, **iptr;
 
   n = 0;
   iptr = &todolist;
@@ -227,10 +222,10 @@ todo_delete_note_bynum (unsigned num)
 
 /* Delete an item from the todo linked list. */
 static void
-todo_delete_bynum (unsigned num, erase_flag_e flag)
+todo_delete_bynum (unsigned num, enum eraseflg flag)
 {
   unsigned n;
-  struct todo_s *i, **iptr;
+  struct todo *i, **iptr;
 
   n = 0;
   iptr = &todolist;
@@ -260,7 +255,7 @@ todo_delete_bynum (unsigned num, erase_flag_e flag)
 void
 todo_flag (void)
 {
-  struct todo_s *t;
+  struct todo *t;
 
   t = todo_get_item (hilt);
   t->id = -t->id;
@@ -268,7 +263,7 @@ todo_flag (void)
 
 /* Delete an item from the ToDo list. */
 void
-todo_delete (conf_t *conf)
+todo_delete (struct conf *conf)
 {
   char *choices = "[y/n] ";
   char *del_todo_str = _("Do you really want to delete this task ?");
@@ -336,12 +331,12 @@ todo_delete (conf_t *conf)
 
 /* 
  * Returns the position into the linked list corresponding to the
- * given todo_s item.
+ * given todo item.
  */
 static int
-todo_get_position (struct todo_s *i)
+todo_get_position (struct todo *i)
 {
-  struct todo_s *o;
+  struct todo *o;
   int n = 1, found = 0;
 
   for (o = todolist; o; o = o->next)
@@ -368,7 +363,7 @@ todo_get_position (struct todo_s *i)
 void
 todo_chg_priority (int action)
 {
-  struct todo_s *backup;
+  struct todo *backup;
   char backup_mesg[BUFSIZ];
   int backup_id;
   char backup_note[NOTESIZ + 1];
@@ -405,7 +400,7 @@ todo_chg_priority (int action)
 void
 todo_edit_item (void)
 {
-  struct todo_s *i;
+  struct todo *i;
   char *mesg = _("Enter the new ToDo description :");
 
   status_mesg (mesg, "");
@@ -447,7 +442,7 @@ display_todo_item (int incolor, char *msg, int prio, int note, int len, int y,
 void
 todo_update_panel (int which_pan)
 {
-  struct todo_s *i;
+  struct todo *i;
   int len = win[TOD].w - 8;
   int num_todo = 0;
   int y_offset = 3, x_offset = 1;
@@ -498,7 +493,7 @@ todo_update_panel (int which_pan)
 void
 todo_edit_note (char *editor)
 {
-  struct todo_s *i;
+  struct todo *i;
   char fullname[BUFSIZ];
   char *filename;
 
@@ -518,7 +513,7 @@ todo_edit_note (char *editor)
 void
 todo_view_note (char *pager)
 {
-  struct todo_s *i;
+  struct todo *i;
   char fullname[BUFSIZ];
 
   i = todo_get_item (hilt);
@@ -531,7 +526,7 @@ todo_view_note (char *pager)
 void
 todo_free_list (void)
 {
-  struct todo_s *o, **i;
+  struct todo *o, **i;
 
   i = &todolist;
   while (*i)

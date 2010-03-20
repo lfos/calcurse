@@ -1,9 +1,9 @@
-/*	$calcurse: keys.c,v 1.17 2009/07/05 20:33:21 culot Exp $	*/
+/*	$calcurse: keys.c,v 1.18 2010/03/20 10:54:46 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
  *
- * Copyright (c) 2008-2009 Frederic Culot <frederic@culot.org>
+ * Copyright (c) 2008-2010 Frederic Culot <frederic@culot.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -39,11 +39,7 @@
 #include <string.h>
 #include <math.h>
 
-#include "i18n.h"
-#include "utils.h"
-#include "custom.h"
-#include "mem.h"
-#include "keys.h"
+#include "calcurse.h"
 
 #define MAXKEYVAL   KEY_MAX  /* ncurses defines KEY_MAX as maximum key value */
 
@@ -59,7 +55,7 @@ struct key_str_s {
 
 static struct key_str_s *keys[NBKEYS];
 
-static keys_e actions[MAXKEYVAL];
+static enum key actions[MAXKEYVAL];
 
 static struct keydef_s keydef[NBKEYS] = {
   {"generic-cancel", "ESC"},
@@ -181,7 +177,7 @@ keys_dump_defaults (char *file)
 }
 
 char *
-keys_get_label (keys_e key)
+keys_get_label (enum key key)
 {
   EXIT_IF (key < 0 || key > NBKEYS,
            _("FATAL ERROR: key value out of bounds"));
@@ -189,7 +185,7 @@ keys_get_label (keys_e key)
   return keydef[key].label;
 }
 
-keys_e
+enum key
 keys_get_action (int pressed)
 {
   if (pressed < 0 || pressed > MAXKEYVAL)
@@ -198,7 +194,7 @@ keys_get_action (int pressed)
     return actions[pressed];
 }
 
-keys_e
+enum key
 keys_getch (WINDOW *win)
 {
   int ch;
@@ -214,7 +210,7 @@ keys_getch (WINDOW *win)
 }
 
 static void
-add_key_str (keys_e action, int key)
+add_key_str (enum key action, int key)
 {
   struct key_str_s *new, **i;
   
@@ -242,7 +238,7 @@ add_key_str (keys_e action, int key)
 }
 
 int
-keys_assign_binding (int key, keys_e action)
+keys_assign_binding (int key, enum key action)
 {
   if (key < 0 || key > MAXKEYVAL || actions[key] != KEY_UNDEF)
     return 1;
@@ -256,7 +252,7 @@ keys_assign_binding (int key, keys_e action)
 }
 
 static void
-del_key_str (keys_e action, int key)
+del_key_str (enum key action, int key)
 {
   struct key_str_s *old, **i;
   char oldstr[BUFSIZ];
@@ -279,7 +275,7 @@ del_key_str (keys_e action, int key)
 }
 
 void
-keys_remove_binding (int key, keys_e action)
+keys_remove_binding (int key, enum key action)
 {
   if (key < 0 || key > MAXKEYVAL)
     return;
@@ -293,16 +289,16 @@ keys_remove_binding (int key, keys_e action)
 int
 keys_str2int (char *key)
 {
-  const string_t CONTROL_KEY = STRING_BUILD ("C-");
-  const string_t TAB_KEY = STRING_BUILD ("TAB");
-  const string_t SPACE_KEY = STRING_BUILD ("SPC");  
-  const string_t ESCAPE_KEY = STRING_BUILD ("ESC");
-  const string_t CURSES_KEY_UP = STRING_BUILD ("UP");
-  const string_t CURSES_KEY_DOWN = STRING_BUILD ("DWN");
-  const string_t CURSES_KEY_LEFT = STRING_BUILD ("LFT");
-  const string_t CURSES_KEY_RIGHT = STRING_BUILD ("RGT");
-  const string_t CURSES_KEY_HOME = STRING_BUILD ("KEY_HOME");
-  const string_t CURSES_KEY_END = STRING_BUILD ("KEY_END");
+  const struct string CONTROL_KEY = STRING_BUILD ("C-");
+  const struct string TAB_KEY = STRING_BUILD ("TAB");
+  const struct string SPACE_KEY = STRING_BUILD ("SPC");  
+  const struct string ESCAPE_KEY = STRING_BUILD ("ESC");
+  const struct string CURSES_KEY_UP = STRING_BUILD ("UP");
+  const struct string CURSES_KEY_DOWN = STRING_BUILD ("DWN");
+  const struct string CURSES_KEY_LEFT = STRING_BUILD ("LFT");
+  const struct string CURSES_KEY_RIGHT = STRING_BUILD ("RGT");
+  const struct string CURSES_KEY_HOME = STRING_BUILD ("KEY_HOME");
+  const struct string CURSES_KEY_END = STRING_BUILD ("KEY_END");
 
   if (!key)
     return -1;
@@ -366,7 +362,7 @@ keys_int2str (int key)
 }
 
 int
-keys_action_count_keys (keys_e action)
+keys_action_count_keys (enum key action)
 {
   struct key_str_s *key;
   int i;
@@ -379,13 +375,13 @@ keys_action_count_keys (keys_e action)
 }
 
 char *
-keys_action_firstkey (keys_e action)
+keys_action_firstkey (enum key action)
 {
   return (keys[action] != NULL) ? keys[action]->str : "XXX"; 
 }
 
 char *
-keys_action_nkey (keys_e action, int keynum)
+keys_action_nkey (enum key action, int keynum)
 {
   struct key_str_s *key;
   int i;
@@ -401,7 +397,7 @@ keys_action_nkey (keys_e action, int keynum)
 }
 
 char *
-keys_action_allkeys (keys_e action)
+keys_action_allkeys (enum key action)
 {
   static char keystr[BUFSIZ];
   struct key_str_s *i;
@@ -451,7 +447,7 @@ keys_format_label (char *key, int keylen)
 }
 
 void
-keys_display_bindings_bar (WINDOW *win, binding_t **binding, int first_key,
+keys_display_bindings_bar (WINDOW *win, struct binding **binding, int first_key,
                            int last_key)
 {
   int i, j, cmdlen, space_between_cmds;
@@ -495,7 +491,7 @@ keys_display_bindings_bar (WINDOW *win, binding_t **binding, int first_key,
  * (could not add the keys descriptions to keydef variable, because of i18n).
  */
 void
-keys_popup_info (keys_e key)
+keys_popup_info (enum key key)
 {
   char *info[NBKEYS];
   WINDOW *infowin;

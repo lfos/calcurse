@@ -1,9 +1,9 @@
-/*	$calcurse: dmon.c,v 1.11 2009/08/01 20:29:49 culot Exp $	*/
+/*	$calcurse: dmon.c,v 1.12 2010/03/20 10:54:44 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
  *
- * Copyright (c) 2009 Frederic Culot <frederic@culot.org>
+ * Copyright (c) 2009-2010 Frederic Culot <frederic@culot.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -43,15 +43,9 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <string.h>
+#include <signal.h>
 
-#include "utils.h"
-#include "i18n.h"
-#include "sigs.h"
-#include "mem.h"
-#include "io.h"
-#include "custom.h"
-#include "notify.h"
-#include "dmon.h"
+#include "calcurse.h"
 
 #define DMON_SLEEP_TIME  60
 
@@ -162,7 +156,7 @@ daemonize (int status)
 void
 dmon_start (int parent_exit_status)
 {
-  conf_t conf;
+  struct conf conf;
   
   if (!daemonize (parent_exit_status))
     DMON_ABRT (_("Cannot daemonize, aborting\n"));

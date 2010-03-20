@@ -1,9 +1,9 @@
-/*	$calcurse: vars.c,v 1.20 2009/08/01 13:31:21 culot Exp $	*/
+/*	$calcurse: vars.c,v 1.21 2010/03/20 10:54:49 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
  *
- * Copyright (c) 2004-2008 Frederic Culot <frederic@culot.org>
+ * Copyright (c) 2004-2008, 2010 Frederic Culot <frederic@culot.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -39,13 +39,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "i18n.h"
-#include "calendar.h"
-#include "custom.h"
-#include "wins.h"
-#include "keys.h"
-#include "mem.h"
-#include "vars.h"
+#include "calcurse.h"
 
 /*
  * variables to store window size
@@ -60,7 +54,7 @@ unsigned colorize = 0;
  * calcurse is running in command-line mode).
  * This is useful to konw how to display messages on the screen.
  */
-ui_mode_e ui_mode = UI_CMDLINE;
+enum ui_mode ui_mode = UI_CMDLINE;
 
 /*
  * variables to store calendar names
@@ -107,19 +101,19 @@ char path_dpid[] = "";
 char path_dmon_log[] = "";
 
 /* Variable to handle pads. */
-struct pad_s apad;
+struct pad apad;
 
 /* Variable to store notify-bar settings. */
-struct nbar_s nbar;
+struct nbar nbar;
 
 /* Variable to store daemon configuration. */
-struct dmon_conf_s dmon;
+struct dmon_conf dmon;
 
 /*
  * Variables init 
  */
 void
-vars_init (conf_t *conf)
+vars_init (struct conf *conf)
 {
   char *PATH_VI = "/usr/bin/vi";
   char *PATH_LESS = "/usr/bin/less";

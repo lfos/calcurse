@@ -1,9 +1,9 @@
-/*	$calcurse: apoint.c,v 1.37 2009/07/19 08:20:00 culot Exp $	*/
+/*	$calcurse: apoint.c,v 1.38 2010/03/20 10:54:41 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
  *
- * Copyright (c) 2004-2009 Frederic Culot <frederic@culot.org>
+ * Copyright (c) 2004-2010 Frederic Culot <frederic@culot.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,24 +41,14 @@
 #include <sys/types.h>
 #include <time.h>
 
-#include "i18n.h"
-#include "vars.h"
-#include "event.h"
-#include "day.h"
-#include "custom.h"
-#include "notify.h"
-#include "recur.h"
-#include "keys.h"
-#include "calendar.h"
-#include "mem.h"
-#include "apoint.h"
+#include "calcurse.h"
 
-apoint_llist_t             *alist_p;
-static apoint_llist_node_t  bkp_cut_apoint;
-static int                  hilt;
+struct apoint_list   *alist_p;
+static struct apoint  bkp_cut_apoint;
+static int            hilt;
 
 void
-apoint_free_bkp (erase_flag_e flag)
+apoint_free_bkp (enum eraseflg flag)
 {
   if (bkp_cut_apoint.mesg)
     {
@@ -69,7 +59,7 @@ apoint_free_bkp (erase_flag_e flag)
 }
 
 static void
-apoint_dup (apoint_llist_node_t *in, apoint_llist_node_t *bkp)
+apoint_dup (struct apoint *in, struct apoint *bkp)
 {
   EXIT_IF (!in || !bkp, _("null pointer"));
 
@@ -84,7 +74,7 @@ apoint_dup (apoint_llist_node_t *in, apoint_llist_node_t *bkp)
 void
 apoint_llist_init (void)
 {
-  alist_p = (apoint_llist_t *) mem_malloc (sizeof (apoint_llist_t));
+  alist_p = mem_malloc (sizeof (struct apoint_list));
   alist_p->root = NULL;
   pthread_mutex_init (&(alist_p->mutex), NULL);
 }
@@ -97,7 +87,7 @@ apoint_llist_init (void)
 void
 apoint_llist_free (void)
 {
-  apoint_llist_node_t *o, **i;
+  struct apoint *o, **i;
 
   i = &alist_p->root;
   while (*i)
@@ -137,12 +127,12 @@ apoint_hilt (void)
   return (hilt);
 }
 
-apoint_llist_node_t *
+struct apoint *
 apoint_new (char *mesg, char *note, long start, long dur, char state)
 {
-  apoint_llist_node_t *o, **i;
+  struct apoint *o, **i;
 
-  o = (apoint_llist_node_t *) mem_malloc (sizeof (apoint_llist_node_t));
+  o = mem_malloc (sizeof (struct apoint));
   o->mesg = mem_strdup (mesg);
   o->note = (note != NULL) ? mem_strdup (note) : NULL;
   o->state = state;
@@ -280,7 +270,7 @@ apoint_add (void)
 
 /* Delete an item from the appointment list. */
 void
-apoint_delete (conf_t *conf, unsigned *nb_events, unsigned *nb_apoints)
+apoint_delete (struct conf *conf, unsigned *nb_events, unsigned *nb_apoints)
 {
   char *choices = "[y/n] ";
   char *del_app_str = _("Do you really want to delete this item ?");
@@ -398,7 +388,7 @@ apoint_paste (unsigned *nb_events, unsigned *nb_apoints, int cut_item_type)
 }
 
 unsigned
-apoint_inday (apoint_llist_node_t *i, long start)
+apoint_inday (struct apoint *i, long start)
 {
   if (i->start <= start + DAYINSEC && i->start + i->dur > start)
     {
@@ -408,8 +398,7 @@ apoint_inday (apoint_llist_node_t *i, long start)
 }
 
 void
-apoint_sec2str (apoint_llist_node_t *o, int type, long day, char *start,
-		char *end)
+apoint_sec2str (struct apoint *o, int type, long day, char *start, char *end)
 {
   struct tm *lt;
   time_t t;
@@ -433,7 +422,7 @@ apoint_sec2str (apoint_llist_node_t *o, int type, long day, char *start,
 }
 
 void
-apoint_write (apoint_llist_node_t *o, FILE *f)
+apoint_write (struct apoint *o, FILE *f)
 {
   struct tm *lt;
   time_t t;
@@ -461,7 +450,7 @@ apoint_write (apoint_llist_node_t *o, FILE *f)
   (void)fprintf (f, "%s\n", o->mesg);
 }
 
-apoint_llist_node_t *
+struct apoint *
 apoint_scan (FILE *f, struct tm start, struct tm end, char state, char *note)
 {
   char buf[BUFSIZ], *newline;
@@ -491,10 +480,10 @@ apoint_scan (FILE *f, struct tm start, struct tm end, char state, char *note)
 }
 
 /* Retrieve an appointment from the list, given the day and item position. */
-apoint_llist_node_t *
+struct apoint *
 apoint_get (long day, int pos)
 {
-  apoint_llist_node_t *o;
+  struct apoint *o;
   int n;
 
   n = 0;
@@ -513,11 +502,11 @@ apoint_get (long day, int pos)
 }
 
 void
-apoint_delete_bynum (long start, unsigned num, erase_flag_e flag)
+apoint_delete_bynum (long start, unsigned num, enum eraseflg flag)
 {
   unsigned n;
   int need_check_notify = 0;
-  apoint_llist_node_t *i, **iptr;
+  struct apoint *i, **iptr;
 
   n = 0;
   pthread_mutex_lock (&(alist_p->mutex));
@@ -623,10 +612,10 @@ apoint_scroll_pad_up (int nb_events_inday)
  * Look in the appointment list if we have an item which starts before the item
  * stored in the notify_app structure (which is the next item to be notified).
  */
-struct notify_app_s *
-apoint_check_next (struct notify_app_s *app, long start)
+struct notify_app *
+apoint_check_next (struct notify_app *app, long start)
 {
-  apoint_llist_node_t *i;
+  struct apoint *i;
 
   pthread_mutex_lock (&(alist_p->mutex));
   for (i = alist_p->root; i != 0; i = i->next)
@@ -653,15 +642,15 @@ apoint_check_next (struct notify_app_s *app, long start)
 }
 
 /* 
- * Returns a structure of type apoint_llist_t given a structure of type 
+ * Returns a structure of type struct apoint_list given a structure of type 
  * recur_apoint_s 
  */
-apoint_llist_node_t *
-apoint_recur_s2apoint_s (recur_apoint_llist_node_t *p)
+struct apoint *
+apoint_recur_s2apoint_s (struct recur_apoint *p)
 {
-  apoint_llist_node_t *a;
+  struct apoint *a;
 
-  a = (apoint_llist_node_t *) mem_malloc (sizeof (apoint_llist_node_t));
+  a = mem_malloc (sizeof (struct apoint));
   a->mesg = mem_strdup (p->mesg);
   a->start = p->start;
   a->dur = p->dur;
@@ -674,8 +663,8 @@ apoint_recur_s2apoint_s (recur_apoint_llist_node_t *p)
 void
 apoint_switch_notify (void)
 {
-  apoint_llist_node_t *apoint;
-  struct day_item_s *p;
+  struct apoint *apoint;
+  struct day_item *p;
   long date;
   int apoint_nb = 0, n, need_chk_notify;
 
@@ -733,7 +722,7 @@ apoint_update_panel (int which_pan)
   int app_width = win[APP].w - bordr;
   int app_length = win[APP].h - bordr - title_lines;
   long date;
-  date_t slctd_date;
+  struct date slctd_date;
 
   /* variable inits */
   slctd_date = *calendar_get_slctd_day ();

@@ -1,9 +1,9 @@
-/*	$calcurse: wins.c,v 1.28 2009/10/28 13:23:05 culot Exp $	*/
+/*	$calcurse: wins.c,v 1.29 2010/03/20 10:54:49 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
  *
- * Copyright (c) 2007-2009 Frederic Culot <frederic@culot.org>
+ * Copyright (c) 2007-2010 Frederic Culot <frederic@culot.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -40,19 +40,12 @@
 #include <string.h>
 #include <math.h>
 
-#include "i18n.h"
-#include "keys.h"
-#include "notify.h"
-#include "utils.h"
-#include "todo.h"
-#include "custom.h"
-#include "mem.h"
-#include "wins.h"
+#include "calcurse.h"
 
 /* Variables to handle calcurse windows. */
-window_t win[NBWINS];
+struct window win[NBWINS];
 
-static window_e slctd_win;
+static enum win slctd_win;
 static int layout;
 
 /* Get the current layout. */
@@ -77,7 +70,7 @@ wins_slctd_init (void)
 }
 
 /* Returns an enum which corresponds to the window which is selected. */
-window_e
+enum win
 wins_slctd (void)
 {
   return (slctd_win);
@@ -85,7 +78,7 @@ wins_slctd (void)
 
 /* Sets the selected window. */
 void
-wins_slctd_set (window_e window)
+wins_slctd_set (enum win window)
 {
   slctd_win = window;
 }
@@ -141,7 +134,7 @@ wins_init (void)
  * scrolling faster.
  */
 void
-wins_scrollwin_init (scrollwin_t *sw)
+wins_scrollwin_init (struct scrollwin *sw)
 {
   EXIT_IF (sw == 0, "null pointer");
   sw->win.p = newwin (sw->win.h, sw->win.w, sw->win.y, sw->win.x);
@@ -152,7 +145,7 @@ wins_scrollwin_init (scrollwin_t *sw)
 
 /* Free an already created scrollwin. */
 void
-wins_scrollwin_delete (scrollwin_t *sw)
+wins_scrollwin_delete (struct scrollwin *sw)
 {
   EXIT_IF (sw == 0, "null pointer");
   delwin(sw->win.p);
@@ -161,7 +154,7 @@ wins_scrollwin_delete (scrollwin_t *sw)
 
 /* Display a scrolling window. */
 void
-wins_scrollwin_display (scrollwin_t *sw)
+wins_scrollwin_display (struct scrollwin *sw)
 {
   const int visible_lines = sw->win.h - sw->pad.y - 1;
   
@@ -185,14 +178,14 @@ wins_scrollwin_display (scrollwin_t *sw)
 }
 
 void
-wins_scrollwin_up (scrollwin_t *sw, int amount)
+wins_scrollwin_up (struct scrollwin *sw, int amount)
 {
   if (sw->first_visible_line > 0)
     sw->first_visible_line -= amount;
 }
 
 void
-wins_scrollwin_down (scrollwin_t *sw, int amount)
+wins_scrollwin_down (struct scrollwin *sw, int amount)
 {
   if (sw->total_lines
       > (sw->first_visible_line + sw->win.h - sw->pad.y - 1))
@@ -512,50 +505,50 @@ void
 wins_status_bar (void)
 {
 #define NB_PANELS	3	/* 3 panels: CALENDAR, APPOINTMENT, TODO */
-  window_e which_pan;
+  enum win which_pan;
   int start, end;
   const int pos[NB_PANELS + 1] =
       { 0, NB_CAL_CMDS, NB_CAL_CMDS + NB_APP_CMDS, TOTAL_CMDS };
 
-  binding_t help   = {_("Help"),     KEY_GENERIC_HELP};
-  binding_t quit   = {_("Quit"),     KEY_GENERIC_QUIT};
-  binding_t save   = {_("Save"),     KEY_GENERIC_SAVE};
-  binding_t cut    = {_("Cut"),      KEY_GENERIC_CUT};
-  binding_t paste  = {_("Paste"),    KEY_GENERIC_PASTE};    
-  binding_t chgvu  = {_("Chg Win"), KEY_GENERIC_CHANGE_VIEW};
-  binding_t import = {_("Import"),   KEY_GENERIC_IMPORT};  
-  binding_t export = {_("Export"),   KEY_GENERIC_EXPORT};
-  binding_t togo   = {_("Go to"),    KEY_GENERIC_GOTO};
-  binding_t othr   = {_("OtherCmd"), KEY_GENERIC_OTHER_CMD};
-  binding_t conf   = {_("Config"),   KEY_GENERIC_CONFIG_MENU};  
-  binding_t draw   = {_("Redraw"),   KEY_GENERIC_REDRAW};
-  binding_t appt   = {_("Add Appt"), KEY_GENERIC_ADD_APPT};
-  binding_t todo   = {_("Add Todo"), KEY_GENERIC_ADD_TODO};
-  binding_t gnday  = {_("+1 Day"),   KEY_GENERIC_NEXT_DAY};
-  binding_t gpday  = {_("-1 Day"),   KEY_GENERIC_PREV_DAY};
-  binding_t gnweek = {_("+1 Week"),  KEY_GENERIC_NEXT_WEEK};
-  binding_t gpweek = {_("-1 Week"),  KEY_GENERIC_PREV_WEEK};
-  binding_t today  = {_("Today"),    KEY_GENERIC_GOTO_TODAY};
-  binding_t nview  = {_("Nxt View"), KEY_GENERIC_SCROLL_DOWN};
-  binding_t pview  = {_("Prv View"), KEY_GENERIC_SCROLL_UP};
-  binding_t up     = {_("Up"),       KEY_MOVE_UP};
-  binding_t down   = {_("Down"),     KEY_MOVE_DOWN};  
-  binding_t left   = {_("Left"),     KEY_MOVE_LEFT};
-  binding_t right  = {_("Right"),    KEY_MOVE_RIGHT};  
-  binding_t weekb  = {_("beg Week"), KEY_START_OF_WEEK};
-  binding_t weeke  = {_("end Week"), KEY_END_OF_WEEK};
-  binding_t add    = {_("Add Item"), KEY_ADD_ITEM};
-  binding_t del    = {_("Del Item"), KEY_DEL_ITEM};
-  binding_t edit   = {_("Edit Itm"), KEY_EDIT_ITEM};
-  binding_t view   = {_("View"),     KEY_VIEW_ITEM};  
-  binding_t flag   = {_("Flag Itm"), KEY_FLAG_ITEM};
-  binding_t rept   = {_("Repeat"),   KEY_REPEAT_ITEM};
-  binding_t enote  = {_("EditNote"), KEY_EDIT_NOTE};
-  binding_t vnote  = {_("ViewNote"), KEY_VIEW_NOTE};
-  binding_t rprio  = {_("Prio.+"),   KEY_RAISE_PRIORITY};
-  binding_t lprio  = {_("Prio.-"),   KEY_LOWER_PRIORITY};
+  struct binding help   = {_("Help"),     KEY_GENERIC_HELP};
+  struct binding quit   = {_("Quit"),     KEY_GENERIC_QUIT};
+  struct binding save   = {_("Save"),     KEY_GENERIC_SAVE};
+  struct binding cut    = {_("Cut"),      KEY_GENERIC_CUT};
+  struct binding paste  = {_("Paste"),    KEY_GENERIC_PASTE};    
+  struct binding chgvu  = {_("Chg Win"), KEY_GENERIC_CHANGE_VIEW};
+  struct binding import = {_("Import"),   KEY_GENERIC_IMPORT};  
+  struct binding export = {_("Export"),   KEY_GENERIC_EXPORT};
+  struct binding togo   = {_("Go to"),    KEY_GENERIC_GOTO};
+  struct binding othr   = {_("OtherCmd"), KEY_GENERIC_OTHER_CMD};
+  struct binding conf   = {_("Config"),   KEY_GENERIC_CONFIG_MENU};  
+  struct binding draw   = {_("Redraw"),   KEY_GENERIC_REDRAW};
+  struct binding appt   = {_("Add Appt"), KEY_GENERIC_ADD_APPT};
+  struct binding todo   = {_("Add Todo"), KEY_GENERIC_ADD_TODO};
+  struct binding gnday  = {_("+1 Day"),   KEY_GENERIC_NEXT_DAY};
+  struct binding gpday  = {_("-1 Day"),   KEY_GENERIC_PREV_DAY};
+  struct binding gnweek = {_("+1 Week"),  KEY_GENERIC_NEXT_WEEK};
+  struct binding gpweek = {_("-1 Week"),  KEY_GENERIC_PREV_WEEK};
+  struct binding today  = {_("Today"),    KEY_GENERIC_GOTO_TODAY};
+  struct binding nview  = {_("Nxt View"), KEY_GENERIC_SCROLL_DOWN};
+  struct binding pview  = {_("Prv View"), KEY_GENERIC_SCROLL_UP};
+  struct binding up     = {_("Up"),       KEY_MOVE_UP};
+  struct binding down   = {_("Down"),     KEY_MOVE_DOWN};  
+  struct binding left   = {_("Left"),     KEY_MOVE_LEFT};
+  struct binding right  = {_("Right"),    KEY_MOVE_RIGHT};  
+  struct binding weekb  = {_("beg Week"), KEY_START_OF_WEEK};
+  struct binding weeke  = {_("end Week"), KEY_END_OF_WEEK};
+  struct binding add    = {_("Add Item"), KEY_ADD_ITEM};
+  struct binding del    = {_("Del Item"), KEY_DEL_ITEM};
+  struct binding edit   = {_("Edit Itm"), KEY_EDIT_ITEM};
+  struct binding view   = {_("View"),     KEY_VIEW_ITEM};  
+  struct binding flag   = {_("Flag Itm"), KEY_FLAG_ITEM};
+  struct binding rept   = {_("Repeat"),   KEY_REPEAT_ITEM};
+  struct binding enote  = {_("EditNote"), KEY_EDIT_NOTE};
+  struct binding vnote  = {_("ViewNote"), KEY_VIEW_NOTE};
+  struct binding rprio  = {_("Prio.+"),   KEY_RAISE_PRIORITY};
+  struct binding lprio  = {_("Prio.-"),   KEY_LOWER_PRIORITY};
   
-  binding_t *binding[TOTAL_CMDS] = {
+  struct binding *binding[TOTAL_CMDS] = {
     /* calendar keys */
     &help, &quit, &save, &chgvu, &nview, &pview, &up, &down, &left, &right,
     &togo, &othr, &import, &export, &weekb, &weeke, &appt, &todo,

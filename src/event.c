@@ -1,9 +1,9 @@
-/*	$calcurse: event.c,v 1.15 2009/07/19 08:20:00 culot Exp $	*/
+/*	$calcurse: event.c,v 1.16 2010/03/20 10:54:44 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
  *
- * Copyright (c) 2004-2009 Frederic Culot <frederic@culot.org>
+ * Copyright (c) 2004-2010 Frederic Culot <frederic@culot.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,16 +41,13 @@
 #include <sys/types.h>
 #include <time.h>
 
-#include "vars.h"
-#include "i18n.h"
-#include "mem.h"
-#include "event.h"
+#include "calcurse.h"
 
-struct event_s        *eventlist;
-static struct event_s  bkp_cut_event;
+struct event        *eventlist;
+static struct event  bkp_cut_event;
 
 void
-event_free_bkp (erase_flag_e flag)
+event_free_bkp (enum eraseflg flag)
 {
   if (bkp_cut_event.mesg)
     {
@@ -61,7 +58,7 @@ event_free_bkp (erase_flag_e flag)
 }
 
 static void
-event_dup (struct event_s *in, struct event_s *bkp)
+event_dup (struct event *in, struct event *bkp)
 {
   EXIT_IF (!in || !bkp, _("null pointer"));
 
@@ -75,7 +72,7 @@ event_dup (struct event_s *in, struct event_s *bkp)
 void
 event_llist_free (void)
 {
-  struct event_s *o, **i;
+  struct event *o, **i;
 
   i = &eventlist;
   while (*i)
@@ -89,11 +86,11 @@ event_llist_free (void)
 }
 
 /* Create a new event */
-struct event_s *
+struct event *
 event_new (char *mesg, char *note, long day, int id)
 {
-  struct event_s *o, **i;
-  o = (struct event_s *) mem_malloc (sizeof (struct event_s));
+  struct event *o, **i;
+  o = mem_malloc (sizeof (struct event));
   o->mesg = mem_strdup (mesg);
   o->day = day;
   o->id = id;
@@ -114,7 +111,7 @@ event_new (char *mesg, char *note, long day, int id)
 
 /* Check if the event belongs to the selected day */
 unsigned
-event_inday (struct event_s *i, long start)
+event_inday (struct event *i, long start)
 {
   if (i->day <= start + DAYINSEC && i->day > start)
     {
@@ -125,7 +122,7 @@ event_inday (struct event_s *i, long start)
 
 /* Write to file the event in user-friendly format */
 void
-event_write (struct event_s *o, FILE *f)
+event_write (struct event *o, FILE *f)
 {
   struct tm *lt;
   time_t t;
@@ -140,7 +137,7 @@ event_write (struct event_s *o, FILE *f)
 }
 
 /* Load the events from file */
-struct event_s *
+struct event *
 event_scan (FILE *f, struct tm start, int id, char *note)
 {
   char buf[BUFSIZ], *nl;
@@ -170,10 +167,10 @@ event_scan (FILE *f, struct tm start, int id, char *note)
 }
 
 /* Retrieve an event from the list, given the day and item position. */
-struct event_s *
+struct event *
 event_get (long day, int pos)
 {
-  struct event_s *o;
+  struct event *o;
   int n;
 
   n = 0;
@@ -193,10 +190,10 @@ event_get (long day, int pos)
 
 /* Delete an event from the list. */
 void
-event_delete_bynum (long start, unsigned num, erase_flag_e flag)
+event_delete_bynum (long start, unsigned num, enum eraseflg flag)
 {
   unsigned n;
-  struct event_s *i, **iptr;
+  struct event *i, **iptr;
 
   n = 0;
   iptr = &eventlist;

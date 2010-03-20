@@ -1,9 +1,9 @@
-/*	$calcurse: sigs.c,v 1.10 2009/08/09 15:49:58 culot Exp $	*/
+/*	$calcurse: sigs.c,v 1.11 2010/03/20 10:54:48 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
  *
- * Copyright (c) 2007-2009 Frederic Culot <frederic@culot.org>
+ * Copyright (c) 2007-2010 Frederic Culot <frederic@culot.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,10 +41,9 @@
 #include <unistd.h>
 #include <errno.h>
 #include <string.h>
+#include <signal.h>
 
-#include "i18n.h"
-#include "utils.h"
-#include "sigs.h"
+#include "calcurse.h"
 
 /* 
  * General signal handling routine.

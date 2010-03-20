@@ -1,9 +1,9 @@
-/*	$calcurse: mem.c,v 1.6 2009/07/19 07:44:59 culot Exp $	*/
+/*	$calcurse: mem.c,v 1.7 2010/03/20 10:54:46 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
  *
- * Copyright (c) 2008-2009 Frederic Culot <frederic@culot.org>
+ * Copyright (c) 2008-2010 Frederic Culot <frederic@culot.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,9 +41,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#include "i18n.h"
-#include "utils.h"
-#include "mem.h"
+#include "calcurse.h"
 
 enum {
   BLK_STATE,
@@ -58,26 +56,26 @@ enum {
 #define MAGIC_ALLOC        0xda
 #define MAGIC_FREE         0xdf
 
-struct mem_blk_s {
+struct mem_blk {
   unsigned id, size;
   const char *pos;
-  struct mem_blk_s *next;
+  struct mem_blk *next;
 };
 
-typedef struct {
+struct mem_stats {
   unsigned ncall, nalloc, nfree;
-  struct mem_blk_s *blk;
-} mem_stats_t;
+  struct mem_blk *blk;
+};
 
-static mem_stats_t mstats;
+static struct mem_stats mstats;
 
 
 static unsigned
 stats_add_blk (size_t size, const char *pos)
 {
-  struct mem_blk_s *o, **i;
+  struct mem_blk *o, **i;
 
-  o = malloc (sizeof (struct mem_blk_s));
+  o = malloc (sizeof (*o));
   EXIT_IF (o == 0, _("could not allocate memory to store block info"));
 
   mstats.ncall++;
@@ -98,7 +96,7 @@ stats_add_blk (size_t size, const char *pos)
 static void
 stats_del_blk (unsigned id)
 {
-  struct mem_blk_s *o, **i;
+  struct mem_blk *o, **i;
 
   EXIT_IF (id < 0, _("Incorrect block id"));
 
@@ -289,7 +287,7 @@ dbg_free (void *ptr, const char *pos)
 #ifdef CALCURSE_MEMORY_DEBUG
 
 static void
-dump_block_info (struct mem_blk_s *blk)
+dump_block_info (struct mem_blk *blk)
 {
   if (blk == 0)
     return;
@@ -315,7 +313,7 @@ mem_stats (void)
 
   if (mstats.nfree < mstats.nalloc)
     {
-      struct mem_blk_s *blk;
+      struct mem_blk *blk;
 
       for (blk = mstats.blk; blk; blk = blk->next)
         dump_block_info (blk);

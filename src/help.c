@@ -1,9 +1,9 @@
-/*	$calcurse: help.c,v 1.42 2009/10/28 13:44:41 culot Exp $	*/
+/*	$calcurse: help.c,v 1.43 2010/03/20 10:54:45 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
  *
- * Copyright (c) 2004-2009 Frederic Culot <frederic@culot.org>
+ * Copyright (c) 2004-2010 Frederic Culot <frederic@culot.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,16 +41,14 @@
 #include <ctype.h>
 #include <sys/types.h>
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif /* HAVE_CONFIG_H */
+#include "calcurse.h"
 
-#include "i18n.h"
-#include "custom.h"
-#include "utils.h"
-#include "keys.h"
-#include "notify.h"
-#include "help.h"
+#define HELPTEXTSIZ 4096
+
+typedef struct {
+  char *title;
+  char text[HELPTEXTSIZ];
+} help_page_t;
 
 typedef enum
 {
@@ -100,7 +98,7 @@ get_help_lines (char *text)
  * of lines that were written. 
  */
 static int
-help_write_pad (window_t *win, char *title, char *text, keys_e action)
+help_write_pad (struct window *win, char *title, char *text, enum key action)
 {
   int colnum, rownum;
   char *bindings_title = "key bindings: %s";
@@ -150,7 +148,7 @@ help_write_pad (window_t *win, char *title, char *text, keys_e action)
  * faster. 
  */
 void
-help_wins_init (scrollwin_t *hwin, int x, int y, int h, int w)
+help_wins_init (struct scrollwin *hwin, int x, int y, int h, int w)
 {
   const int PADOFFSET = 4;
   const int TITLELINES = 3;
@@ -175,7 +173,7 @@ help_wins_init (scrollwin_t *hwin, int x, int y, int h, int w)
  * size and placement.
  */
 static void
-help_wins_reinit (scrollwin_t *hwin)
+help_wins_reinit (struct scrollwin *hwin)
 {
   wins_scrollwin_delete (hwin);
   wins_get_config ();
@@ -184,7 +182,7 @@ help_wins_reinit (scrollwin_t *hwin)
 
 /* Reset the screen, needed when resizing terminal for example. */
 static void
-help_wins_reset (scrollwin_t *hwin)
+help_wins_reset (struct scrollwin *hwin)
 {
   endwin ();
   refresh ();
@@ -326,9 +324,9 @@ help_screen (void)
     MOVE_RIGHT,
     DIRECTIONS
   };
-  scrollwin_t hwin;
+  struct scrollwin hwin;
   int need_resize;
-  keys_e ch = KEY_GENERIC_HELP;
+  enum key ch = KEY_GENERIC_HELP;
   int page, oldpage;
   help_page_t hscr[HELPSCREENS];
   char keystr[DIRECTIONS][BUFSIZ];

@@ -1,9 +1,9 @@
-/*	$calcurse: notify.c,v 1.48 2010/02/14 17:29:16 culot Exp $	*/
+/*	$calcurse: notify.c,v 1.49 2010/03/20 10:54:47 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
  *
- * Copyright (c) 2004-2009 Frederic Culot <frederic@culot.org>
+ * Copyright (c) 2004-2010 Frederic Culot <frederic@culot.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,19 +41,20 @@
 #include <string.h>
 #include <unistd.h>
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif /* HAVE_CONFIG_H */
+#include "calcurse.h"
 
-#include "i18n.h"
-#include "utils.h"
-#include "custom.h"
-#include "keys.h"
-#include "mem.h"
-#include "notify.h"
+#define NOTIFY_FIELD_LENGTH	25
 
-static struct notify_vars_s   notify;
-static struct notify_app_s    notify_app;
+struct notify_vars {
+  WINDOW *win;
+  char *apts_file;
+  char time[NOTIFY_FIELD_LENGTH];
+  char date[NOTIFY_FIELD_LENGTH];
+  pthread_mutex_t mutex;
+};
+
+static struct notify_vars     notify;
+static struct notify_app      notify_app;
 static pthread_attr_t         detached_thread_attr;
 static pthread_t              notify_t_main;
 
@@ -364,7 +365,7 @@ notify_main_thread (void *arg)
 
 /* Fill the given structure with information about next appointment. */
 unsigned
-notify_get_next (struct notify_app_s *a)
+notify_get_next (struct notify_app *a)
 {
   time_t current_time;
   
@@ -390,7 +391,7 @@ notify_get_next (struct notify_app_s *a)
 unsigned
 notify_get_next_bkgd (void)
 {
-  struct notify_app_s a;
+  struct notify_app a;
 
   a.txt = (char *)0;
   if (!notify_get_next (&a))
@@ -429,7 +430,7 @@ notify_app_txt (void)
 static void *
 notify_thread_app (void *arg)
 {
-  struct notify_app_s tmp_app;
+  struct notify_app tmp_app;
 
   if (!notify_get_next (&tmp_app))
     pthread_exit ((void *)0);
@@ -501,7 +502,7 @@ notify_check_added (char *mesg, long start, char state)
 
 /* Check if the newly repeated appointment is to be notified. */
 void
-notify_check_repeated (recur_apoint_llist_node_t *i)
+notify_check_repeated (struct recur_apoint *i)
 {
   long real_app_time;
   int update_notify = 0;
@@ -549,7 +550,7 @@ notify_same_item (long time)
 }
 
 int
-notify_same_recur_item (recur_apoint_llist_node_t *i)
+notify_same_recur_item (struct recur_apoint *i)
 {
   int same = 0;
   long item_start = 0;
@@ -684,7 +685,7 @@ print_config_options (WINDOW *optwin)
 }
 
 static void
-reinit_conf_win (scrollwin_t *win)
+reinit_conf_win (struct scrollwin *win)
 {
   unsigned first_line;
 
@@ -700,7 +701,7 @@ reinit_conf_win (scrollwin_t *win)
 void
 notify_config_bar (void)
 {
-  scrollwin_t cwin;
+  struct scrollwin cwin;
   char *buf;
   char *number_str =
     _("Enter an option number to change its value");

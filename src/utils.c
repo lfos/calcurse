@@ -1,9 +1,9 @@
-/*	$calcurse: utils.c,v 1.82 2009/08/01 17:53:11 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.83 2010/03/20 10:54:49 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
  *
- * Copyright (c) 2004-2009 Frederic Culot <frederic@culot.org>
+ * Copyright (c) 2004-2010 Frederic Culot <frederic@culot.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -45,20 +45,7 @@
 #include <sys/types.h>
 #include <errno.h>
 
-#include "utils.h"
-#include "i18n.h"
-#include "wins.h"
-#include "custom.h"
-#include "keys.h"
-#include "io.h"
-#include "recur.h"
-#include "event.h"
-#include "apoint.h"
-#include "todo.h"
-#include "day.h"
-#include "keys.h"
-#include "dmon.h"
-#include "mem.h"
+#include "calcurse.h"
 
 /* General routine to exit calcurse properly. */
 void
@@ -331,7 +318,7 @@ add_char (int pos, int ch, char *str)
  * environment, otherwise the cursor would move from place to place without
  * control.
  */
-int
+enum getstr
 getstring (WINDOW *win, char *str, int l, int x, int y)
 {
   int ch, newpos, len = 0;
@@ -503,7 +490,7 @@ get_item_min (long date)
 }
 
 long
-date2sec (date_t day, unsigned hour, unsigned min)
+date2sec (struct date day, unsigned hour, unsigned min)
 {
   struct tm start, *lt;
   time_t tstart, t;
@@ -622,7 +609,7 @@ update_time_in_date (long date, unsigned hr, unsigned mn)
  * If no date is entered, current date is chosen.
  */
 long
-get_sec_date (date_t date)
+get_sec_date (struct date date)
 {
   struct tm *ptrtime;
   time_t timer;
@@ -752,7 +739,7 @@ get_today (void)
   struct tm *lt;
   time_t current_time;
   long current_day;
-  date_t day;
+  struct date day;
 
   current_time = time (NULL);
   lt = localtime (&current_time);
@@ -866,7 +853,7 @@ new_tempfile (const char *prefix, int trailing_len)
 
 /* Erase a note previously attached to a todo, event or appointment. */
 void
-erase_note (char **note, erase_flag_e flag)
+erase_note (char **note, enum eraseflg flag)
 {
   char fullname[BUFSIZ];
 
@@ -888,7 +875,8 @@ erase_note (char **note, erase_flag_e flag)
  * Returns 1 if sucessfully converted or 0 if the string is an invalid date.
  */
 int
-parse_date (char *date_string, int datefmt, int *year, int *month, int *day)
+parse_date (char *date_string, enum datefmt datefmt, int *year, int *month,
+            int *day)
 {
   int in1, in2, in3;
   int lyear, lmonth, lday;
