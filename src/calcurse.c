@@ -1,4 +1,4 @@
-/*	$calcurse: calcurse.c,v 1.87 2010/03/20 10:54:42 culot Exp $	*/
+/*	$calcurse: calcurse.c,v 1.88 2010/03/20 13:29:47 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -278,6 +278,10 @@ main (int argc, char **argv)
                 case 'K':
                 case 'k':
                   custom_keys_config ();
+                  break;
+                case 's':
+                case 'S':
+                  custom_sidebar_config ();
                   break;
 		}
 	      wins_reset ();

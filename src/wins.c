@@ -1,4 +1,4 @@
-/*	$calcurse: wins.c,v 1.29 2010/03/20 10:54:49 culot Exp $	*/
+/*	$calcurse: wins.c,v 1.30 2010/03/20 13:29:48 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -44,6 +44,9 @@
 
 /* Variables to handle calcurse windows. */
 struct window win[NBWINS];
+
+/* User-configurable side bar width. */
+unsigned sbarwidth = 30;
 
 static enum win slctd_win;
 static int layout;
@@ -103,7 +106,7 @@ wins_init (void)
    * Create the three main windows plus the status bar and the pad used to
    * display appointments and event. 
    */
-  win[CAL].p = newwin (CALHEIGHT, CALWIDTH, win[CAL].y, win[CAL].x);
+  win[CAL].p = newwin (CALHEIGHT, sbarwidth, win[CAL].y, win[CAL].x);
   (void)snprintf (label, BUFSIZ, _("Calendar"));
   wins_show (win[CAL].p, label);
 
@@ -257,7 +260,7 @@ wins_get_config (void)
       win[NOT].x = 0;
     }
 
-  win[CAL].w = CALWIDTH;
+  win[CAL].w = sbarwidth;
   win[CAL].h = CALHEIGHT;
   
   if (layout <= 4)
@@ -400,12 +403,8 @@ border_nocolor (WINDOW *window)
   wnoutrefresh (window);
 }
 
-/* 
- * Update all of the three windows and put a border around the
- * selected window.
- */
 void
-wins_update (void)
+wins_update_border (void)
 {
   switch (slctd_win)
     {
@@ -428,10 +427,25 @@ wins_update (void)
       EXIT (_("no window selected"));
       /* NOTREACHED */
     }
+}
 
+void
+wins_update_panels (void)
+{
   apoint_update_panel (slctd_win);
   todo_update_panel (slctd_win);
   calendar_update_panel (&win[CAL]);
+}
+
+/* 
+ * Update all of the three windows and put a border around the
+ * selected window.
+ */
+void
+wins_update (void)
+{
+  wins_update_border ();
+  wins_update_panels ();
   wins_status_bar ();
   if (notify_bar ())
     notify_update_bar ();

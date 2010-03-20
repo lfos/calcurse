@@ -1,4 +1,4 @@
-/*	$calcurse: calendar.c,v 1.33 2010/03/20 10:54:43 culot Exp $	*/
+/*	$calcurse: calendar.c,v 1.34 2010/03/20 13:29:48 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -302,8 +302,11 @@ date_change (struct tm *date, int delta_month, int delta_day)
 
 /* Draw the monthly view inside calendar panel. */
 static void
-draw_monthly_view (struct window *cwin, struct date *current_day, unsigned sunday_first)
+draw_monthly_view (struct window *cwin, struct date *current_day,
+                   unsigned sunday_first)
 {
+  const int OFFY = 2 + (CALHEIGHT - 9) / 2;
+  const int OFFX = (sbarwidth - 27) / 2;
   struct date check_day;
   int c_day, c_day_1, day_1_sav, numdays, j;
   unsigned yr, mo;
@@ -314,8 +317,8 @@ draw_monthly_view (struct window *cwin, struct date *current_day, unsigned sunda
   yr = slctd_day.yyyy;
 
   /* offset for centering calendar in window */
-  ofs_y = 2 + (CALHEIGHT - 9) / 2;
-  ofs_x = (CALWIDTH - 27) / 2;
+  ofs_y = OFFY;
+  ofs_x = OFFX;
 
   /* checking the number of days in february */
   numdays = days[mo - 1];
@@ -330,7 +333,8 @@ draw_monthly_view (struct window *cwin, struct date *current_day, unsigned sunda
 
   /* Write the current month and year on top of the calendar */
   custom_apply_attr (cwin->p, ATTR_HIGHEST);
-  mvwprintw (cwin->p, ofs_y, (CALWIDTH - (strlen (_(monthnames[mo - 1])) + 5)) / 2,
+  mvwprintw (cwin->p, ofs_y,
+             (sbarwidth - (strlen (_(monthnames[mo - 1])) + 5)) / 2,
 	     "%s %d", _(monthnames[mo - 1]), slctd_day.yyyy);
   custom_remove_attr (cwin->p, ATTR_HIGHEST);
   ++ofs_y;
@@ -358,8 +362,8 @@ draw_monthly_view (struct window *cwin, struct date *current_day, unsigned sunda
       /* Go to next line, the week is over. */
       if (!c_day_1 && 1 != c_day)
 	{
-	  ++ofs_y;
-	  ofs_x = 2 - day_1_sav - 4 * c_day - 1;
+	  ofs_y++;
+          ofs_x = OFFX - day_1_sav - 4 * c_day;
 	}
 
       /* This is today, so print it in yellow. */
@@ -369,28 +373,31 @@ draw_monthly_view (struct window *cwin, struct date *current_day, unsigned sunda
           && current_day->dd != slctd_day.dd)
 	{
 	  custom_apply_attr (cwin->p, ATTR_LOWEST);
-	  mvwprintw (cwin->p, ofs_y + 1,
-		     ofs_x + day_1_sav + 4 * c_day + 1, "%2d", c_day);
+	  mvwprintw (cwin->p, ofs_y + 1, 
+                     ofs_x + day_1_sav + 4 * c_day + 1, "%2d", c_day);
 	  custom_remove_attr (cwin->p, ATTR_LOWEST);
 	}
       else if (c_day == slctd_day.dd)
 	{
 	  /* This is the selected day, print it according to user's theme. */
 	  custom_apply_attr (cwin->p, ATTR_HIGHEST);
-	  mvwprintw (cwin->p, ofs_y + 1, ofs_x + day_1_sav + 4 * c_day + 1, "%2d",
+	  mvwprintw (cwin->p, ofs_y + 1, 
+                     ofs_x + day_1_sav + 4 * c_day + 1, "%2d",
                      c_day);
 	  custom_remove_attr (cwin->p, ATTR_HIGHEST);
 	}
       else if (item_this_day)
 	{
 	  custom_apply_attr (cwin->p, ATTR_LOW);
-	  mvwprintw (cwin->p, ofs_y + 1, ofs_x + day_1_sav + 4 * c_day + 1, "%2d",
+	  mvwprintw (cwin->p, ofs_y + 1, 
+                     ofs_x + day_1_sav + 4 * c_day + 1, "%2d",
                      c_day);
 	  custom_remove_attr (cwin->p, ATTR_LOW);
 	}
       else
 	/* otherwise, print normal days in black */
-	mvwprintw (cwin->p, ofs_y + 1, ofs_x + day_1_sav + 4 * c_day + 1, "%2d",
+	mvwprintw (cwin->p, ofs_y + 1,
+                   ofs_x + day_1_sav + 4 * c_day + 1, "%2d",
                    c_day);
     }
 }

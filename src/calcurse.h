@@ -1,4 +1,4 @@
-/*	$Id: calcurse.h,v 1.1 2010/03/20 10:54:42 culot Exp $	*/
+/*	$Id: calcurse.h,v 1.2 2010/03/20 13:29:47 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -144,7 +144,6 @@
 
 /* Calendar window. */
 #define	CALHEIGHT	12
-#define	CALWIDTH	30
 
 /* Key definitions. */
 #define CTRLVAL                 0x1F
@@ -637,6 +636,7 @@ void custom_remove_attr (WINDOW *, int);
 void custom_load_conf (struct conf *, int);
 void custom_config_bar (void);
 void custom_layout_config (void);
+void custom_sidebar_config (void);
 void custom_color_config (void);
 void custom_color_theme_name (char *);
 void custom_confwin_init (struct window *, char *);
@@ -893,6 +893,7 @@ void vars_init (struct conf *);
 
 /* wins.c */
 extern struct window win[NBWINS];
+extern unsigned sbarwidth;
 int       wins_layout (void);
 void      wins_set_layout (int);
 void      wins_slctd_init (void);
@@ -908,6 +909,8 @@ void      wins_scrollwin_down (struct scrollwin *, int);
 void      wins_reinit (void);
 void      wins_show (WINDOW *, char *);
 void      wins_get_config (void);
+void      wins_update_border (void);
+void      wins_update_panels (void);
 void      wins_update (void);
 void      wins_reset (void);
 void      wins_launch_external (const char *, const char *);

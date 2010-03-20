@@ -1,6 +1,15 @@
 2010-03-20  Frederic Culot  <frederic@culot.org>
 
 	* src/calcurse.h: new header to gather all existing ones
+
+	* src/calcurse.c
+	* src/calendar.c
+	* src/wins.c
+	* src/custom.c (custom_sidebar_config): sidebar configuration
+	added, allowing to change sidebar's width
+
+	* src/wins.c (wins_update_border, wins_update_panels): new
+	functions extracted from wins_update()
 	
 2010-03-19  Frederic Culot  <frederic@culot.org>
 

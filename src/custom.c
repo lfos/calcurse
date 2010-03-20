@@ -1,4 +1,4 @@
-/*	$calcurse: custom.c,v 1.46 2010/03/20 10:54:43 culot Exp $	*/
+/*	$calcurse: custom.c,v 1.47 2010/03/20 13:29:48 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -402,26 +402,26 @@ custom_load_conf (struct conf *conf, int background)
 void
 custom_config_bar (void)
 {
-  int smlspc, spc;
-
-  smlspc = 2;
-  spc = 15;
+  const int SMLSPC = 2;
+  const int SPC = 15;
 
   custom_apply_attr (win[STA].p, ATTR_HIGHEST);
   mvwprintw (win[STA].p, 0, 2, "Q");
   mvwprintw (win[STA].p, 1, 2, "G");
-  mvwprintw (win[STA].p, 0, 2 + spc, "L");
-  mvwprintw (win[STA].p, 1, 2 + spc, "C");
-  mvwprintw (win[STA].p, 0, 2 + 2 * spc, "N");
-  mvwprintw (win[STA].p, 1, 2 + 2 * spc, "K");  
+  mvwprintw (win[STA].p, 0, 2 + SPC, "L");
+  mvwprintw (win[STA].p, 1, 2 + SPC, "S");
+  mvwprintw (win[STA].p, 0, 2 + 2 * SPC, "C");
+  mvwprintw (win[STA].p, 1, 2 + 2 * SPC, "N");
+  mvwprintw (win[STA].p, 0, 2 + 3 * SPC, "K");  
   custom_remove_attr (win[STA].p, ATTR_HIGHEST);
 
-  mvwprintw (win[STA].p, 0, 2 + smlspc, _("Exit"));
-  mvwprintw (win[STA].p, 1, 2 + smlspc, _("General"));
-  mvwprintw (win[STA].p, 0, 2 + spc + smlspc, _("Layout"));
-  mvwprintw (win[STA].p, 1, 2 + spc + smlspc, _("Color"));
-  mvwprintw (win[STA].p, 0, 2 + 2 * spc + smlspc, _("Notify"));
-  mvwprintw (win[STA].p, 1, 2 + 2 * spc + smlspc, _("Keys"));
+  mvwprintw (win[STA].p, 0, 2 + SMLSPC, _("Exit"));
+  mvwprintw (win[STA].p, 1, 2 + SMLSPC, _("General"));
+  mvwprintw (win[STA].p, 0, 2 + SPC + SMLSPC, _("Layout"));
+  mvwprintw (win[STA].p, 1, 2 + SPC + SMLSPC, _("Sidebar"));
+  mvwprintw (win[STA].p, 0, 2 + 2 * SPC + SMLSPC, _("Color"));  
+  mvwprintw (win[STA].p, 1, 2 + 2 * SPC + SMLSPC, _("Notify"));
+  mvwprintw (win[STA].p, 0, 2 + 3 * SPC + SMLSPC, _("Keys"));
   
   wnoutrefresh (win[STA].p);
   wmove (win[STA].p, 0, 0);
@@ -590,6 +590,54 @@ custom_layout_config (void)
 
 #undef NBLAYOUTS
 #undef LAYOUTSPERCOL
+
+/* Sidebar configuration screen. */
+void
+custom_sidebar_config (void)
+{
+  struct binding inc  = {_("Width +"),    KEY_MOVE_UP};  
+  struct binding dec  = {_("Width -"),    KEY_MOVE_DOWN};
+  struct binding help = {_("Help"),       KEY_GENERIC_HELP};
+  struct binding *binding[] = {&inc, &dec, &help};  
+  int ch, binding_size;
+
+  binding_size = sizeof (binding) / sizeof (binding[0]);
+
+  keys_display_bindings_bar (win[STA].p, binding, 0, binding_size);
+  doupdate ();
+  while ((ch = keys_getch (win[STA].p)) != KEY_GENERIC_QUIT)  
+    {
+      unsigned need_update;
+
+      need_update = 0;
+      switch (ch)
+        {
+        case KEY_MOVE_UP:
+          sbarwidth++;
+          need_update = 1;
+          break;
+        case KEY_MOVE_DOWN:
+          sbarwidth--;
+          need_update = 1;
+          break;
+        case KEY_GENERIC_HELP:
+          /* XXX
+             Add help screen for sidebar configuration
+          */
+          break;
+        }
+
+      if (need_update)
+        {
+          wins_reinit ();
+          wins_update_border ();
+          wins_update_panels ();
+          keys_display_bindings_bar (win[STA].p, binding, 0, binding_size);
+          doupdate ();
+          need_update = 0;
+        }
+    }
+}
 
 static void
 set_confwin_attr (struct window *cwin)
