@@ -1,4 +1,4 @@
-/*	$Id: calcurse.h,v 1.2 2010/03/20 13:29:47 culot Exp $	*/
+/*	$Id: calcurse.h,v 1.3 2010/03/21 09:21:07 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -132,6 +132,10 @@
 
 /* Maximum number of colors available. */
 #define NBUSERCOLORS	6
+
+/* Side bar width acceptable boundaries. */
+#define SBARMINWIDTH     32
+#define SBARMAXWIDTHPERC 50
 
 /* Related to date manipulation. */
 #define DAYINSEC        86400
@@ -893,9 +897,13 @@ void vars_init (struct conf *);
 
 /* wins.c */
 extern struct window win[NBWINS];
-extern unsigned sbarwidth;
 int       wins_layout (void);
 void      wins_set_layout (int);
+unsigned  wins_sbar_width (void);
+unsigned  wins_sbar_wperc (void);
+void      wins_set_sbar_width (unsigned);
+void      wins_sbar_winc (void);
+void      wins_sbar_wdec (void);
 void      wins_slctd_init (void);
 enum win  wins_slctd (void);
 void      wins_slctd_set (enum win);
@@ -907,6 +915,7 @@ void      wins_scrollwin_display (struct scrollwin *);
 void      wins_scrollwin_up (struct scrollwin *, int);
 void      wins_scrollwin_down (struct scrollwin *, int);
 void      wins_reinit (void);
+void      wins_reinit_panels (void);
 void      wins_show (WINDOW *, char *);
 void      wins_get_config (void);
 void      wins_update_border (void);

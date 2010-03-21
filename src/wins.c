@@ -1,4 +1,4 @@
-/*	$calcurse: wins.c,v 1.30 2010/03/20 13:29:48 culot Exp $	*/
+/*	$calcurse: wins.c,v 1.31 2010/03/21 09:21:07 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -46,7 +46,7 @@
 struct window win[NBWINS];
 
 /* User-configurable side bar width. */
-unsigned sbarwidth = 30;
+static unsigned sbarwidth;
 
 static enum win slctd_win;
 static int layout;
@@ -55,7 +55,7 @@ static int layout;
 int
 wins_layout (void)
 {
-  return (layout);
+  return layout;
 }
 
 /* Set the current layout. */
@@ -63,6 +63,63 @@ void
 wins_set_layout (int nb)
 {
   layout = nb;
+}
+
+/* Get the current side bar width. */
+unsigned
+wins_sbar_width (void)
+{
+  return sbarwidth ? sbarwidth : SBARMINWIDTH;
+}
+
+/*
+ * Return the side bar width in percentage of the total number of columns
+ * available in calcurse's screen.
+ */
+unsigned
+wins_sbar_wperc (void)
+{
+  unsigned perc;
+
+  perc = col ? (unsigned)(100 * sbarwidth / col + 1): 0;
+  
+  return perc > SBARMAXWIDTHPERC ? SBARMAXWIDTHPERC : perc;
+}
+
+/*
+ * Set side bar width (unit: number of characters) given a width in percentage
+ * of calcurse's screen total width.
+ * The side bar could not have a width representing more than 50% of the screen,
+ * and could not be less than SBARMINWIDTH characters.
+ */
+void
+wins_set_sbar_width (unsigned perc)
+{
+  if (perc > SBARMAXWIDTHPERC)
+    sbarwidth = col * SBARMAXWIDTHPERC / 100;
+  else if (perc <= 0)
+    sbarwidth = SBARMINWIDTH;
+  else
+    {
+      sbarwidth = (unsigned)(col * perc / 100);
+      if (sbarwidth < SBARMINWIDTH)
+        sbarwidth = SBARMINWIDTH;
+    }
+}
+
+/* Change the width of the side bar within acceptable boundaries. */
+void
+wins_sbar_winc (void)
+{
+  if (sbarwidth < SBARMAXWIDTHPERC * col / 100)
+    sbarwidth++;
+}
+
+void
+wins_sbar_wdec (void)
+{
+  if (sbarwidth > SBARMINWIDTH)
+    sbarwidth--;
 }
 
 /* Initialize the selected window in calcurse's interface. */
@@ -96,17 +153,12 @@ wins_slctd_next (void)
     slctd_win++;
 }
 
-/* Create all the windows. */
-void
-wins_init (void)
+static void
+wins_init_panels (void)
 {
   char label[BUFSIZ];
-
-  /* 
-   * Create the three main windows plus the status bar and the pad used to
-   * display appointments and event. 
-   */
-  win[CAL].p = newwin (CALHEIGHT, sbarwidth, win[CAL].y, win[CAL].x);
+  
+  win[CAL].p = newwin (CALHEIGHT, wins_sbar_width (), win[CAL].y, win[CAL].x);
   (void)snprintf (label, BUFSIZ, _("Calendar"));
   wins_show (win[CAL].p, label);
 
@@ -120,12 +172,19 @@ wins_init (void)
   (void)snprintf (label, BUFSIZ, _("ToDo"));
   wins_show (win[TOD].p, label);
 
-  win[STA].p = newwin (win[STA].h, win[STA].w, win[STA].y, win[STA].x);
-
-  /* Enable function keys (i.e. arrow keys) in those windows */
+  /* Enable function keys (i.e. arrow keys) in those windows */  
   keypad (win[CAL].p, TRUE);
   keypad (win[APP].p, TRUE);
   keypad (win[TOD].p, TRUE);
+}
+
+/* Create all the windows. */
+void
+wins_init (void)
+{
+  wins_init_panels ();
+  win[STA].p = newwin (win[STA].h, win[STA].w, win[STA].y, win[STA].x);
+
   keypad (win[STA].p, TRUE);
 
   /* Notify that the curses mode is now launched. */
@@ -195,6 +254,17 @@ wins_scrollwin_down (struct scrollwin *sw, int amount)
     sw->first_visible_line += amount;
 }
 
+void
+wins_reinit_panels (void)
+{
+  delwin (win[CAL].p);
+  delwin (win[APP].p);
+  delwin (apad.ptrwin);
+  delwin (win[TOD].p);
+  wins_get_config ();
+  wins_init_panels ();
+}
+
 /* 
  * Delete the existing windows and recreate them with their new
  * size and placement.
@@ -202,11 +272,11 @@ wins_scrollwin_down (struct scrollwin *sw, int amount)
 void
 wins_reinit (void)
 {
-  delwin (win[STA].p);
   delwin (win[CAL].p);
   delwin (win[APP].p);
   delwin (apad.ptrwin);
   delwin (win[TOD].p);
+  delwin (win[STA].p);
   wins_get_config ();
   wins_init ();
   if (notify_bar ())
@@ -260,7 +330,7 @@ wins_get_config (void)
       win[NOT].x = 0;
     }
 
-  win[CAL].w = sbarwidth;
+  win[CAL].w = wins_sbar_width ();
   win[CAL].h = CALHEIGHT;
   
   if (layout <= 4)

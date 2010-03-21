@@ -10,6 +10,14 @@
 
 	* src/wins.c (wins_update_border, wins_update_panels): new
 	functions extracted from wins_update()
+
+	* src/wins.c (wins_sbar_width, wins_sbar_wperc)
+	(wins_set_sbar_width, wins_sbar_winc, wins_sbar_wdec)
+	(wins_reinit_panels): new functions to handle side bar width
+	customization
+
+	* src/custom.c
+	* src/io.c: sidebar width added to the configuration file
 	
 2010-03-19  Frederic Culot  <frederic@culot.org>
 

@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.81 2010/03/20 10:54:46 culot Exp $	*/
+/*	$calcurse: io.c,v 1.82 2010/03/21 09:21:07 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -887,6 +887,11 @@ io_save_conf (struct conf *conf)
   (void)fprintf (fp, "\n# This is the layout of the calendar :\n");
   (void)fprintf (fp, "layout=\n");
   (void)fprintf (fp, "%d\n", wins_layout ());
+
+  (void)fprintf (fp, "\n# Width (in percentage, 0 being minimun width) "
+                 "of the side bar :\n");
+  (void)fprintf (fp, "side-bar_width=\n");
+  (void)fprintf (fp, "%d\n", wins_sbar_wperc ());
   
   if (ui_mode == UI_CURSES)
     pthread_mutex_lock (&nbar.mutex);

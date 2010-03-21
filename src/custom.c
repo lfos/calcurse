@@ -1,4 +1,4 @@
-/*	$calcurse: custom.c,v 1.47 2010/03/20 13:29:48 culot Exp $	*/
+/*	$calcurse: custom.c,v 1.48 2010/03/21 09:21:07 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -43,7 +43,7 @@
 #include "calcurse.h"
 
 /* Available configuration variables. */
-enum {
+enum conf_var {
   CUSTOM_CONF_NOVARIABLE,
   CUSTOM_CONF_AUTOSAVE,
   CUSTOM_CONF_PERIODICSAVE,
@@ -55,6 +55,7 @@ enum {
   CUSTOM_CONF_WEEKBEGINSONMONDAY,
   CUSTOM_CONF_COLORTHEME,
   CUSTOM_CONF_LAYOUT,
+  CUSTOM_CONF_SBAR_WIDTH,
   CUSTOM_CONF_NOTIFYBARSHOW,
   CUSTOM_CONF_NOTIFYBARDATE,
   CUSTOM_CONF_NOTIFYBARCLOCK,
@@ -242,7 +243,7 @@ custom_load_conf (struct conf *conf, int background)
   char *mesg_line1 = _("Failed to open config file");
   char *mesg_line2 = _("Press [ENTER] to continue");
   char buf[BUFSIZ], e_conf[BUFSIZ];
-  int var;
+  enum conf_var var;
 
   data_file = fopen (path_conf, "r");
   if (data_file == NULL)
@@ -311,6 +312,10 @@ custom_load_conf (struct conf *conf, int background)
 	  wins_set_layout (atoi (e_conf));
 	  var = 0;
 	  break;
+        case CUSTOM_CONF_SBAR_WIDTH:
+          wins_set_sbar_width (atoi (e_conf));
+          var = 0;
+          break;
 	case CUSTOM_CONF_NOTIFYBARSHOW:
 	  nbar.show = fill_config_var (e_conf);
 	  var = 0;
@@ -375,6 +380,8 @@ custom_load_conf (struct conf *conf, int background)
 	var = CUSTOM_CONF_COLORTHEME;
       else if (strncmp (e_conf, "layout=", 7) == 0)
 	var = CUSTOM_CONF_LAYOUT;
+      else if (strncmp (e_conf, "side-bar_width=", 15) == 0)
+        var = CUSTOM_CONF_SBAR_WIDTH;
       else if (strncmp (e_conf, "notify-bar_show=", 16) == 0)
 	var = CUSTOM_CONF_NOTIFYBARSHOW;
       else if (strncmp (e_conf, "notify-bar_date=", 16) == 0)
@@ -605,6 +612,7 @@ custom_sidebar_config (void)
 
   keys_display_bindings_bar (win[STA].p, binding, 0, binding_size);
   doupdate ();
+
   while ((ch = keys_getch (win[STA].p)) != KEY_GENERIC_QUIT)  
     {
       unsigned need_update;
@@ -613,11 +621,11 @@ custom_sidebar_config (void)
       switch (ch)
         {
         case KEY_MOVE_UP:
-          sbarwidth++;
+          wins_sbar_winc ();
           need_update = 1;
           break;
         case KEY_MOVE_DOWN:
-          sbarwidth--;
+          wins_sbar_wdec ();
           need_update = 1;
           break;
         case KEY_GENERIC_HELP:
@@ -629,7 +637,7 @@ custom_sidebar_config (void)
 
       if (need_update)
         {
-          wins_reinit ();
+          wins_reinit_panels ();
           wins_update_border ();
           wins_update_panels ();
           keys_display_bindings_bar (win[STA].p, binding, 0, binding_size);

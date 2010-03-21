@@ -1,4 +1,4 @@
-/*	$calcurse: calendar.c,v 1.34 2010/03/20 13:29:48 culot Exp $	*/
+/*	$calcurse: calendar.c,v 1.35 2010/03/21 09:21:07 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -306,17 +306,18 @@ draw_monthly_view (struct window *cwin, struct date *current_day,
                    unsigned sunday_first)
 {
   const int OFFY = 2 + (CALHEIGHT - 9) / 2;
-  const int OFFX = (sbarwidth - 27) / 2;
   struct date check_day;
   int c_day, c_day_1, day_1_sav, numdays, j;
   unsigned yr, mo;
-  int ofs_x, ofs_y;
+  int OFFX, SBAR_WIDTH, ofs_x, ofs_y;
   int item_this_day = 0;
 
   mo = slctd_day.mm;
   yr = slctd_day.yyyy;
 
   /* offset for centering calendar in window */
+  SBAR_WIDTH = wins_sbar_width ();
+  OFFX = (SBAR_WIDTH - 27) / 2;
   ofs_y = OFFY;
   ofs_x = OFFX;
 
@@ -334,7 +335,7 @@ draw_monthly_view (struct window *cwin, struct date *current_day,
   /* Write the current month and year on top of the calendar */
   custom_apply_attr (cwin->p, ATTR_HIGHEST);
   mvwprintw (cwin->p, ofs_y,
-             (sbarwidth - (strlen (_(monthnames[mo - 1])) + 5)) / 2,
+             (SBAR_WIDTH - (strlen (_(monthnames[mo - 1])) + 5)) / 2,
 	     "%s %d", _(monthnames[mo - 1]), slctd_day.yyyy);
   custom_remove_attr (cwin->p, ATTR_HIGHEST);
   ++ofs_y;
