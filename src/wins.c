@@ -1,4 +1,4 @@
-/*	$calcurse: wins.c,v 1.31 2010/03/21 09:21:07 culot Exp $	*/
+/*	$calcurse: wins.c,v 1.32 2010/03/21 10:17:04 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -50,6 +50,74 @@ static unsigned sbarwidth;
 
 static enum win slctd_win;
 static int layout;
+
+/*
+ * The screen_mutex mutex and wins_refresh(), wins_wrefresh(), wins_doupdate()
+ * functions are used to prevent concurrent updates of the screen.
+ * It was observed that the display could get screwed up when mulitple threads
+ * tried to refresh the screen at the same time.
+ *
+ * Note (2010-03-21):
+ * Since recent versions of ncurses (5.7), rudimentary support for threads are
+ * available (use_screen(), use_window() for instance - see curs_threads(3)),
+ * but to remain compatible with earlier versions, it was chosen to rely on a
+ * screen-level mutex instead.
+ */
+static pthread_mutex_t screen_mutex = PTHREAD_MUTEX_INITIALIZER;
+
+static unsigned
+screen_acquire (void)
+{
+  if (pthread_mutex_lock (&screen_mutex) != 0)
+    return 0;
+  else
+    return 1;
+}
+
+static void
+screen_release (void)
+{
+  (void)pthread_mutex_unlock (&screen_mutex);
+}
+
+int
+wins_refresh (void)
+{
+  int rc;
+  
+  if (!screen_acquire ())
+    return ERR;
+  rc = refresh ();
+  screen_release ();
+
+  return rc;
+}
+
+int
+wins_wrefresh (WINDOW *win)
+{
+  int rc;
+  
+  if (!win || !screen_acquire ())
+    return ERR;
+  rc = wrefresh (win);
+  screen_release ();
+
+  return rc;
+}
+
+int
+wins_doupdate (void)
+{
+  int rc;
+
+  if (!screen_acquire ())
+    return ERR;
+  rc = doupdate ();
+  screen_release ();
+
+  return rc;
+}
 
 /* Get the current layout. */
 int
@@ -236,7 +304,7 @@ wins_scrollwin_display (struct scrollwin *sw)
   wnoutrefresh (sw->win.p);
   pnoutrefresh (sw->pad.p, sw->first_visible_line, 0, sw->pad.y, sw->pad.x,
                 sw->win.h - sw->pad.y + 1, sw->win.w - sw->win.x);
-  doupdate ();
+  wins_doupdate ();
 }
 
 void
@@ -520,7 +588,7 @@ wins_update (void)
   if (notify_bar ())
     notify_update_bar ();
   wmove (win[STA].p, 0, 0);
-  doupdate ();
+  wins_doupdate ();
 }
 
 /* Reset the screen, needed when resizing terminal for example. */
@@ -528,7 +596,7 @@ void
 wins_reset (void)
 {
   endwin ();
-  refresh ();
+  wins_refresh ();
   curs_set (0);
   wins_reinit ();
   wins_update ();
@@ -559,13 +627,13 @@ wins_launch_external (const char *file, const char *cmd)
   endwin ();
   ui_mode = UI_CMDLINE;
   clear ();
-  refresh ();
+  wins_refresh ();
   (void)system (p);
   reset_prog_mode ();
   clearok (curscr, TRUE);
   curs_set (0);
   ui_mode = UI_CURSES;
-  refresh ();
+  wins_refresh ();
   if (notify_bar ())
     notify_start_main_thread ();
   mem_free (p);

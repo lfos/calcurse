@@ -1,4 +1,4 @@
-/*	$calcurse: help.c,v 1.43 2010/03/20 10:54:45 culot Exp $	*/
+/*	$calcurse: help.c,v 1.44 2010/03/21 10:17:03 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -185,7 +185,7 @@ static void
 help_wins_reset (struct scrollwin *hwin)
 {
   endwin ();
-  refresh ();
+  wins_refresh ();
   curs_set (0);
   delwin (win[STA].p);
   help_wins_reinit (hwin);

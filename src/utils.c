@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.83 2010/03/20 10:54:49 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.84 2010/03/21 10:17:04 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -57,7 +57,7 @@ exit_calcurse (int status)
     {
       notify_stop_main_thread ();
       clear ();
-      refresh ();
+      wins_refresh ();
       endwin ();
       ui_mode = UI_CMDLINE;
       was_interactive = 1;
@@ -121,10 +121,10 @@ fatalbox (const char *errmsg)
   mvwprintw (errwin, 3, 1, reportmsg);
   mvwprintw (errwin, 5, (WINCOL - strlen (msg)) / 2, "%s", msg);
   custom_remove_attr (errwin, ATTR_HIGHEST);
-  wrefresh (errwin);
+  wins_wrefresh (errwin);
   (void)wgetch (errwin);
   delwin (errwin);
-  doupdate ();
+  wins_doupdate ();
 }
 
 void
@@ -147,10 +147,10 @@ warnbox (const char *msg)
   wins_show (warnwin, label);
   mvwprintw (warnwin, 5, (WINCOL - strlen (displmsg)) / 2, "%s", displmsg);
   custom_remove_attr (warnwin, ATTR_HIGHEST);
-  wrefresh (warnwin);
+  wins_wrefresh (warnwin);
   (void)wgetch (warnwin);
   delwin (warnwin);
-  doupdate ();
+  wins_doupdate ();
 }
 
 /* 
@@ -206,8 +206,7 @@ popup (int pop_row, int pop_col, int pop_y, int pop_x, char *title, char *msg,
     mvwprintw (popup_win, pop_row - 2, pop_col - (strlen (any_key) + 1), "%s",
                any_key);
   custom_remove_attr (popup_win, ATTR_HIGHEST);
-  wrefresh (popup_win);
-  doupdate ();
+  wins_wrefresh (popup_win);
   
   return popup_win;
 }
@@ -409,7 +408,7 @@ getstring (WINDOW *win, char *str, int l, int x, int y)
 
 	}
       showstring (win, y, x, orig, len, newpos);
-      doupdate ();
+      wins_doupdate ();
     }
   *str = 0;
   custom_remove_attr (win, ATTR_HIGHEST);
@@ -726,7 +725,7 @@ item_in_popup (char *saved_a_start, char *saved_a_end, char *msg,
   mvwprintw (pad, 0, margin_left, "%s", msg);
   wmove (win[STA].p, 0, 0);
   pnoutrefresh (pad, 0, 0, margin_top + 2, margin_left, padl, winw);
-  doupdate ();
+  wins_doupdate ();
   (void)wgetch (popup_win);
   delwin (pad);
   delwin (popup_win);
@@ -813,7 +812,7 @@ print_bool_option_incolor (WINDOW *win, unsigned option, int pos_y, int pos_x)
   mvwprintw (win, pos_y, pos_x, "%s", option_value);
   custom_remove_attr (win, color);
   wnoutrefresh (win);
-  doupdate ();
+  wins_doupdate ();
 }
 
 /* 

@@ -1,4 +1,4 @@
-/*	$calcurse: notify.c,v 1.49 2010/03/20 10:54:47 culot Exp $	*/
+/*	$calcurse: notify.c,v 1.50 2010/03/21 10:17:04 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -318,7 +318,7 @@ notify_update_bar (void)
 
   wattroff (notify.win, A_UNDERLINE | A_REVERSE);
   custom_remove_attr (notify.win, ATTR_HIGHEST);
-  wrefresh (notify.win);
+  wins_wrefresh (notify.win);
 
   pthread_mutex_unlock (&notify.mutex);
 }

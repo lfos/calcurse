@@ -1,4 +1,4 @@
-/*	$Id: calcurse.h,v 1.3 2010/03/21 09:21:07 culot Exp $	*/
+/*	$Id: calcurse.h,v 1.4 2010/03/21 10:17:03 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -897,6 +897,9 @@ void vars_init (struct conf *);
 
 /* wins.c */
 extern struct window win[NBWINS];
+int       wins_refresh (void);
+int       wins_wrefresh (WINDOW *);
+int       wins_doupdate (void);
 int       wins_layout (void);
 void      wins_set_layout (int);
 unsigned  wins_sbar_width (void);

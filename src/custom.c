@@ -1,4 +1,4 @@
-/*	$calcurse: custom.c,v 1.48 2010/03/21 09:21:07 culot Exp $	*/
+/*	$calcurse: custom.c,v 1.49 2010/03/21 10:17:03 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -250,7 +250,7 @@ custom_load_conf (struct conf *conf, int background)
     {
       status_mesg (mesg_line1, mesg_line2);
       wnoutrefresh (win[STA].p);
-      doupdate ();
+      wins_doupdate ();
       (void)keys_getch (win[STA].p);
     }
   var = CUSTOM_CONF_NOVARIABLE;
@@ -432,7 +432,7 @@ custom_config_bar (void)
   
   wnoutrefresh (win[STA].p);
   wmove (win[STA].p, 0, 0);
-  doupdate ();
+  wins_doupdate ();
 }
 
 static void
@@ -518,7 +518,7 @@ display_layout_config (struct window *lwin, int mark, int cursor,
   layout_selection_bar ();
   wnoutrefresh (win[STA].p);
   wnoutrefresh (lwin->p);
-  doupdate ();
+  wins_doupdate ();
   if (notify_bar ())
     notify_update_bar ();
 }
@@ -552,7 +552,7 @@ custom_layout_config (void)
 	{
 	case KEY_RESIZE:
 	  endwin ();
-	  refresh ();
+	  wins_refresh ();
 	  curs_set (0);
 	  need_reset = 1;
 	  break;
@@ -611,7 +611,7 @@ custom_sidebar_config (void)
   binding_size = sizeof (binding) / sizeof (binding[0]);
 
   keys_display_bindings_bar (win[STA].p, binding, 0, binding_size);
-  doupdate ();
+  wins_doupdate ();
 
   while ((ch = keys_getch (win[STA].p)) != KEY_GENERIC_QUIT)  
     {
@@ -641,7 +641,7 @@ custom_sidebar_config (void)
           wins_update_border ();
           wins_update_panels ();
           keys_display_bindings_bar (win[STA].p, binding, 0, binding_size);
-          doupdate ();
+          wins_doupdate ();
           need_update = 0;
         }
     }
@@ -828,7 +828,7 @@ display_color_config (struct window *cwin, int *mark_fore, int *mark_back,
   color_selection_bar ();
   wnoutrefresh (win[STA].p);
   wnoutrefresh (cwin->p);
-  doupdate ();
+  wins_doupdate ();
   if (notify_bar ())
     notify_update_bar ();
 }
@@ -861,7 +861,7 @@ custom_color_config (void)
 	{
 	case KEY_RESIZE:
 	  endwin ();
-	  refresh ();
+	  wins_refresh ();
 	  curs_set (0);
 	  need_reset = 1;
 	  break;

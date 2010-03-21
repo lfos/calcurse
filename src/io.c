@@ -1,4 +1,4 @@
-/*	$calcurse: io.c,v 1.82 2010/03/21 09:21:07 culot Exp $	*/
+/*	$calcurse: io.c,v 1.83 2010/03/21 10:17:04 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -194,7 +194,7 @@ progress_bar (progress_bar_t type, int progress)
     mvwaddch (win[STA].p, 1, i, ' ' | A_REVERSE);
   custom_remove_attr (win[STA].p, ATTR_HIGHEST);
   wmove (win[STA].p, 0, 0);
-  wrefresh (win[STA].p);
+  wins_wrefresh (win[STA].p);
   (void)usleep (SLEEPTIME);
 #undef SLEEPTIME
 #undef NBFILES
@@ -805,12 +805,12 @@ display_mark (void)
   
   custom_apply_attr (mwin, ATTR_HIGHEST);
   mvwprintw (mwin, 0, 0, "**");
-  wrefresh (mwin);
+  wins_wrefresh (mwin);
   sleep (DISPLAY_TIME);
   mvwprintw (mwin, 0, 0, "  ");
-  wrefresh (mwin);  
+  wins_wrefresh (mwin);  
   delwin (mwin);
-  doupdate ();
+  wins_doupdate ();
 }
 
 static pthread_mutex_t io_save_mutex = PTHREAD_MUTEX_INITIALIZER;
@@ -1677,7 +1677,7 @@ io_export_bar (void)
 
   wnoutrefresh (win[STA].p);
   wmove (win[STA].p, 0, 0);
-  doupdate ();
+  wins_doupdate ();
 }
 
 /* Print a header to describe import log report format. */

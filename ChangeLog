@@ -1,3 +1,9 @@
+2010-03-21  Frederic Culot  <frederic@culot.org>
+
+	* src/wins.c (wins_refresh, wins_wrefresh, wins_doupdate)
+	(screen_acquire, screen_release): new functions to improve
+	concurrent screen refreshes
+	
 2010-03-20  Frederic Culot  <frederic@culot.org>
 
 	* src/calcurse.h: new header to gather all existing ones
