@@ -3,6 +3,8 @@
 	* src/wins.c (wins_refresh, wins_wrefresh, wins_doupdate)
 	(screen_acquire, screen_release): new functions to improve
 	concurrent screen refreshes
+
+	* src/custom.c (custom_sidebar_config): help screen added
 	
 2010-03-20  Frederic Culot  <frederic@culot.org>
 

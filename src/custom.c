@@ -1,4 +1,4 @@
-/*	$calcurse: custom.c,v 1.49 2010/03/21 10:17:03 culot Exp $	*/
+/*	$calcurse: custom.c,v 1.50 2010/03/21 12:21:12 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -602,10 +602,18 @@ custom_layout_config (void)
 void
 custom_sidebar_config (void)
 {
+  struct scrollwin hwin;
   struct binding inc  = {_("Width +"),    KEY_MOVE_UP};  
   struct binding dec  = {_("Width -"),    KEY_MOVE_DOWN};
   struct binding help = {_("Help"),       KEY_GENERIC_HELP};
-  struct binding *binding[] = {&inc, &dec, &help};  
+  struct binding *binding[] = {&inc, &dec, &help};
+  char *help_text =
+    _("This configuration screen is used to change the width of the side bar.\n"
+      "The side bar is the part of the screen which contains two panels:\n"
+      "the calendar and, depending on the chosen layout, either the todo list\n"
+      "or the appointment list.\n\n"
+      "The side bar width can be up to 50% of the total screen width, but\n"
+      "can't be smaller than " TOSTRING(SBARMINWIDTH) " characters wide.\n\n");
   int ch, binding_size;
 
   binding_size = sizeof (binding) / sizeof (binding[0]);
@@ -615,35 +623,31 @@ custom_sidebar_config (void)
 
   while ((ch = keys_getch (win[STA].p)) != KEY_GENERIC_QUIT)  
     {
-      unsigned need_update;
-
-      need_update = 0;
       switch (ch)
         {
         case KEY_MOVE_UP:
           wins_sbar_winc ();
-          need_update = 1;
           break;
         case KEY_MOVE_DOWN:
           wins_sbar_wdec ();
-          need_update = 1;
           break;
         case KEY_GENERIC_HELP:
-          /* XXX
-             Add help screen for sidebar configuration
-          */
+          help_wins_init (&hwin, 0, 0,
+                          (notify_bar ()) ? row - 3 : row - 2, col);
+          mvwprintw (hwin.pad.p, 1, 0, "%s", help_text);
+          hwin.total_lines = 6;
+          wins_scrollwin_display (&hwin);
+          wgetch (hwin.win.p);
+          wins_scrollwin_delete (&hwin);
           break;
+        default:
+          continue;
         }
-
-      if (need_update)
-        {
-          wins_reinit_panels ();
-          wins_update_border ();
-          wins_update_panels ();
-          keys_display_bindings_bar (win[STA].p, binding, 0, binding_size);
-          wins_doupdate ();
-          need_update = 0;
-        }
+      wins_reinit_panels ();
+      wins_update_border ();
+      wins_update_panels ();
+      keys_display_bindings_bar (win[STA].p, binding, 0, binding_size);
+      wins_doupdate ();
     }
 }
 
