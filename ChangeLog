@@ -2,6 +2,9 @@
 
 	* src/calcurse.h: compilation issue related to memory functions
 	definition fixed (thanks Doug for reporting it)
+
+	* INSTALL: new file (needed now that automake is configured for a
+	'foreign' package type, thanks Zach for reporting the problem)
 	
 2010-03-21  Frederic Culot  <frederic@culot.org>
 
