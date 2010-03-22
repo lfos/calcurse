@@ -1,4 +1,4 @@
-#	$calcurse: Makefile.am,v 1.6 2009/07/05 20:32:29 culot Exp $
+#	$calcurse: Makefile.am,v 1.7 2010/03/22 12:40:16 culot Exp $
 
 AUTOMAKE_OPTIONS= foreign
 
@@ -10,6 +10,7 @@ man_MANS= src/calcurse.1
 
 EXTRA_DIST = \
 	     $(man_MANS) \
+	     INSTALL \
 	     ABOUT-NLS \
              doc/manual.css     \
 	     doc/manual_en.html \
