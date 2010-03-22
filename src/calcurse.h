@@ -1,4 +1,4 @@
-/*	$Id: calcurse.h,v 1.4 2010/03/21 10:17:03 culot Exp $	*/
+/*	$Id: calcurse.h,v 1.5 2010/03/22 08:16:33 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -79,22 +79,6 @@
 #  define bindtextdomain(String) (String)
 #  define bind_textdomain_codeset(Domain,Codeset) (Codeset)
 #endif /* ENABLE_NLS */
-
-/* Memory debugging functions. */
-#ifdef CALCURSE_MEMORY_DEBUG
-#  define mem_malloc(s)         dbg_malloc ((s), __FILE_POS__)
-#  define mem_calloc(n, s)      dbg_calloc ((n), (s), __FILE_POS__)
-#  define mem_realloc(p, n, s)  dbg_realloc ((p), (n), (s), __FILE_POS__)
-#  define mem_strdup(s)         dbg_strdup ((s), __FILE_POS__)
-#  define mem_free(p)           dbg_free ((p), __FILE_POS__)
-#else /* MEMORY DEBUG disabled */
-#  define mem_malloc(s)         xmalloc ((s))
-#  define mem_calloc(n, s)      xcalloc ((n), (s))
-#  define mem_realloc(p, n, s)  xrealloc ((p), (n), (s))
-#  define mem_strdup(s)         xstrdup ((s))
-#  define mem_free(p)           xfree ((p))
-#  define mem_stats()        
-#endif /* CALCURSE_MEMORY_DEBUG */
 
 /* Paths configuration. */
 #define DIR_NAME         ".calcurse/"
@@ -742,12 +726,32 @@ void  *xcalloc (size_t, size_t);
 void  *xrealloc (void *, size_t, size_t);
 char  *xstrdup (const char *);
 void   xfree (void *);
+
+#ifdef CALCURSE_MEMORY_DEBUG
+
+#  define mem_malloc(s)         dbg_malloc ((s), __FILE_POS__)
+#  define mem_calloc(n, s)      dbg_calloc ((n), (s), __FILE_POS__)
+#  define mem_realloc(p, n, s)  dbg_realloc ((p), (n), (s), __FILE_POS__)
+#  define mem_strdup(s)         dbg_strdup ((s), __FILE_POS__)
+#  define mem_free(p)           dbg_free ((p), __FILE_POS__)
+
 void  *dbg_malloc (size_t, const char *);
 void  *dbg_calloc (size_t, size_t, const char *);
 void  *dbg_realloc (void *, size_t, size_t, const char *);
 char  *dbg_strdup (const char *, const char *);
 void   dbg_free (void *, const char *);
 void   mem_stats (void);
+
+#else /* MEMORY DEBUG disabled */
+
+#  define mem_malloc(s)         xmalloc ((s))
+#  define mem_calloc(n, s)      xcalloc ((n), (s))
+#  define mem_realloc(p, n, s)  xrealloc ((p), (n), (s))
+#  define mem_strdup(s)         xstrdup ((s))
+#  define mem_free(p)           xfree ((p))
+#  define mem_stats()        
+
+#endif /* CALCURSE_MEMORY_DEBUG */
 
 /* notify.c */
 int       notify_time_left (void);

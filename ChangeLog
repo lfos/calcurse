@@ -1,3 +1,8 @@
+2010-03-22  Frederic Culot  <frederic@culot.org>
+
+	* src/calcurse.h: compilation issue related to memory functions
+	definition fixed (thanks Doug for reporting it)
+	
 2010-03-21  Frederic Culot  <frederic@culot.org>
 
 	* src/wins.c (wins_refresh, wins_wrefresh, wins_doupdate)
