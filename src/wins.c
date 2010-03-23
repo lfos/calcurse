@@ -1,4 +1,4 @@
-/*	$calcurse: wins.c,v 1.32 2010/03/21 10:17:04 culot Exp $	*/
+/*	$calcurse: wins.c,v 1.33 2010/03/23 13:08:46 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -179,7 +179,9 @@ wins_set_sbar_width (unsigned perc)
 void
 wins_sbar_winc (void)
 {
-  if (sbarwidth < SBARMAXWIDTHPERC * col / 100)
+  if (sbarwidth < SBARMINWIDTH)
+    sbarwidth = SBARMINWIDTH + 1;
+  else if (sbarwidth < SBARMAXWIDTHPERC * col / 100)
     sbarwidth++;
 }
 

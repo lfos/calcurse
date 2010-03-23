@@ -1,3 +1,9 @@
+2010-03-23  Frederic Culot  <frederic@culot.org>
+
+	* src/wins.c (wins_sbar_winc): test added to avoid problems if
+	user does not have side bar width specified in its configuration
+	file
+	
 2010-03-22  Frederic Culot  <frederic@culot.org>
 
 	* src/calcurse.h: compilation issue related to memory functions
