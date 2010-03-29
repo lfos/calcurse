@@ -1,4 +1,4 @@
-/*	$calcurse: calendar.c,v 1.36 2010/03/29 11:45:03 culot Exp $	*/
+/*	$calcurse: calendar.c,v 1.37 2010/03/29 11:48:05 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -584,7 +584,7 @@ draw_weekly_view (struct window *cwin, struct date *current_day,
   custom_apply_attr (cwin->p, ATTR_HIGHEST);
   mvwhline (cwin->p, OFFY + 1 + DAYSLICESNO / 2, OFFX, ACS_S9, 1);
   mvwhline (cwin->p, OFFY + 1 + DAYSLICESNO / 2,
-            OFFX + WCALWIDTH - 2, ACS_S9, 1);
+            OFFX + WCALWIDTH - 3, ACS_S9, 1);
   custom_remove_attr (cwin->p, ATTR_HIGHEST);
 
 #undef DAYSLICESNO  
