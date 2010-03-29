@@ -1,9 +1,9 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <!--
 /*
- *	$calcurse: manual_es.html,v 1.24 2009/08/18 13:08:00 culot Exp $
+ *	$calcurse: manual_es.html,v 1.25 2010/03/29 18:18:02 culot Exp $
  *
- * Copyright (c) 2004-2009 Frederic Culot <frederic@culot.org>
+ * Copyright (c) 2004-2010 Frederic Culot <frederic@culot.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -107,7 +107,8 @@ well as the way one can contribute to <code>calcurse</code> development.
         <li><a href="#options_keys"><span class="todo">5.2 Key bindings</span></a>
 	<li><a href="#options_colors">5.3 Color (temas)</a></li>
 	<li><a href="#options_layout">5.4 Configuración de la disposición</a></li>
-	<li><a href="#options_notify">5.5 Ajustes de la barra de notificaciones</a></li>
+        <li><a href="#options_sidebar"><span class="todo">5.5 Sidebar configuration</span></a></li>
+	<li><a href="#options_notify">5.6 Ajustes de la barra de notificaciones</a></li>
     </ul></li>
     <li><a href="#known_bugs">6. Bugs conocidos</a></li>
     <li><a href="#bugs">7. Informar de bugs y comentarios</a></li>
@@ -256,7 +257,7 @@ is not running, as calcurse is able to run in background.</span>
 <h2>3.2 Proceso de instalación<a name="install_process"></a></h2>
 <p>
 	Primero necesitas descomprimir ( gunzip  y  untar) el archivo fuente:</p>
-	<pre>tar zxvf calcurse-2.7.tar.gz</pre>
+	<pre>tar zxvf calcurse-2.8.tar.gz</pre>
 <p>
   	Una vez has resuelto los requisitos y has extraído el archivo, 
 	el proceso de instalación es muy simple y sigue los tres pasos habituales:
@@ -537,6 +538,42 @@ is not running, as calcurse is able to run in background.</span>
 	especifico.</p>
 <div class="todo">
 <p>
+        Depending on the selected view, the calendar could either display
+        a monthly (default as shown in previous figure) or weekly view.
+        The weekly view would look like the following:</p>
+        <pre>
+
++------------------------------------+
+|              Calendar              |
+|----------------------------(# 13)--|
+|    Mon Tue Wed Thu Fri Sat Sun     |
+|     29  30  31  01  02  03  04     |
+|                               <----+--  slice 1: 00:00 to 04:00 AM
+|       --  --  --  --  --  --       |
+|                               <----+--  slice 2: 04:00 to 08:00 AM
+|       --  --  --  --  --  --       |
+|                               <----+--  slice 3: 08:00 to 12:00 AM
+|    -  --  --  --  --  --  --  -  <-+--  midday
+|                               <----+--  slice 4: 12:00 to 04:00 PM
+|       --  --  --  --  --  --       |
+|                               <----+--  slice 5: 04:00 to 08:00 PM
+|       --  --  --  --  --  --       |
+|                               <----+--  slice 6: 08:00 to 12:00 PM
++------------------------------------+
+
+        </pre>
+<p>
+        The current week number is displayed on the top-right side of the panel
+        (<span class="emp"># 13</span> meaning it is the 13th week of the year
+        in the above example). The seven days of the current week are displayed
+        in column. Each day is divided into slices of 4 hours each (6 slices in
+        total, see figure above). A slice will appear in a different color if
+        an appointment falls into the corresponding time-slot.
+</p>
+</div>
+
+<div class="todo">
+<p>
 	In the appointment panel, one can notice the <span class="emp">'(|)'</span> sign 
 	just in front of the date. This indicates the current phase of the moon.
 	Depending on which is the current phase, the following signs can be
@@ -801,6 +838,13 @@ $HOME/.calcurse/
 	    el nombre del archivo que se esta guardando 
 	    (ver sección <a href="#basics_files">Archivos de <code>calcurse</code></a>).
 	    </dd>
+
+		<dt><code><span class="todo">calendar_default_view</span></code> 
+		(default: <span class="emp">0</span>)</dt>
+		<dd><span class="todo">If set to <span class="emp">0</span>, the monthly calendar view will be
+                displayed by default otherwise it is the weekly view that will be displayed.</span>
+		</dd>
+
 	    <dt><code>empezar_semana_en_lunes</code>
 	    (por defecto: <span class="emp">si</span>)</dt>
 	    <dd>Uno puede elegir entre el Lunes o el Domingo como primer día de la semana. 
@@ -907,7 +951,34 @@ $HOME/.calcurse/
         modificar la apariencia de <code>calcurse</code> que mejor se adapte a sus
         necesidades colocando los diferentes paneles donde los necesite.</p>
 
-<h2>5.5 Ajustes de la barra de notificaciones<a name="options_notify"></a></h2>
+<div class="todo">
+<p>
+        The following option is used to modify the layout configuration:</p>
+        <dl>
+        <dt><code>layout</code>
+        (default: <span class="emp">0</span>)</dt>
+        <dd>Eight different layouts are to be chosen from (see layout
+        configuration screen for the description of the available layouts).</dd>
+        </dl>
+</div>
+
+
+<div class="todo">
+<h2>5.5 Sidebar configuration<a name="options_sidebar"></a></h2>
+<p>
+        The sidebar is the part of the screen which contains two panels:
+        the calendar and, depending on the chosen layout, either the todo
+        list or the appointment list.</p>
+<p>
+        The following option is used to change the width of the sidebar:</p>
+        <dl>
+        <dt><code>side-bar_width</code>
+        (default: <span class="emp">0</span>)</dt>
+        <dd>Width (in percentage, 0 being the minimum width) of the side bar.</dd>
+        </dl>
+</div>
+
+<h2>5.6 Ajustes de la barra de notificaciones<a name="options_notify"></a></h2>
 <p>
 	Las siguientes opciones se usan para modificar el comportamiento de la barra de notificaciones:</p>
 	<dl>
@@ -1256,6 +1327,7 @@ msgid ""
 		<li><code>orpheus</code> y <code>abook</code> por la documentación</li>
 		<li><code>pine</code> and <code>aptitude</code>
 	        por la interfaz de usuario</li>
+                <li><span class="todo"><code>tmux</code> for coding style</span></li>
 		</ul></li>
 	</ul>
 </p>
@@ -1264,10 +1336,10 @@ msgid ""
         que me han enviado sus comentarios.</p>
 
 <div class="footer">
-	Copyright &copy; 2004-2009 Frédéric Culot<br>
+	Copyright &copy; 2004-2010 Frédéric Culot<br>
 	Traducido al Español por José López
 	<code>&lt;testinground .at. gmail .dot. com&gt;</code><br>
-	Calcurse version 2.7 - Last change: August 18, 2009<br>
+	Calcurse version 2.8 - Last change: March 29, 2010<br>
 </div>
 </div>
 

@@ -4,6 +4,8 @@
 
 	* src/calendar.c (draw_weekly_view): adapt the weekly calendar
 	view to the side bar width
+
+	* doc/manual_*.html: html manuals updated
 	
 2010-03-23  Frederic Culot  <frederic@culot.org>
 

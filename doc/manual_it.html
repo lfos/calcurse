@@ -1,9 +1,9 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <!--
 /*
- * $calcurse: manual_it.html,v 1.13 2009/08/18 13:08:01 culot Exp $
+ * $calcurse: manual_it.html,v 1.14 2010/03/29 18:18:04 culot Exp $
  *
- * Copyright (c) 2004-2009 Frederic Culot <frederic@culot.org>
+ * Copyright (c) 2004-2010 Frederic Culot <frederic@culot.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -106,8 +106,9 @@ partecipare allo sviluppo di calcurse.
         <li><a href="#options_keys"><span class="todo">5.2 Key bindings</span></a>
 	<li><a href="#options_colors">5.3 Temi dei colori</a></li>
 	<li><a href="#options_layout">5.4 Configurazione dell'interfaccia</a></li>
+        <li><a href="#options_sidebar"><span class="todo">5.5 Sidebar configuration</span></a></li>
 	<li>
-	  <a href="#options_notify">5.5 Configurazioni della barra di
+	  <a href="#options_notify">5.6 Configurazioni della barra di
 	    notifica</a>
 	</li>
     </ul></li>
@@ -271,7 +272,7 @@ is not running, as calcurse is able to run in background.</span>
   Innanzitutto è necessario scompattare l'archivio contenente i
   sorgenti:
 </p>
-	<pre>tar zxvf calcurse-2.7.tar.gz</pre>
+	<pre>tar zxvf calcurse-2.8.tar.gz</pre>
 <p>
   Una volta verificati i requisiti e scompattato l'archivio la
   procedura d'installazione è piuttosto semplice visto che segue i tre
@@ -579,6 +580,42 @@ d'ambiente<a name="basics_invocation_environment"></a></h3>
   lista degli eventi e degli appuntamenti per la data evidenziata; ed
   infine la terza sezione contiene la lista delle attività non
   assegnate a nessun giorno particolare.</p>
+<div class="todo">
+<p>
+        Depending on the selected view, the calendar could either display
+        a monthly (default as shown in previous figure) or weekly view.
+        The weekly view would look like the following:</p>
+        <pre>
+
++------------------------------------+
+|              Calendar              |
+|----------------------------(# 13)--|
+|    Mon Tue Wed Thu Fri Sat Sun     |
+|     29  30  31  01  02  03  04     |
+|                               <----+--  slice 1: 00:00 to 04:00 AM
+|       --  --  --  --  --  --       |
+|                               <----+--  slice 2: 04:00 to 08:00 AM
+|       --  --  --  --  --  --       |
+|                               <----+--  slice 3: 08:00 to 12:00 AM
+|    -  --  --  --  --  --  --  -  <-+--  midday
+|                               <----+--  slice 4: 12:00 to 04:00 PM
+|       --  --  --  --  --  --       |
+|                               <----+--  slice 5: 04:00 to 08:00 PM
+|       --  --  --  --  --  --       |
+|                               <----+--  slice 6: 08:00 to 12:00 PM
++------------------------------------+
+
+        </pre>
+<p>
+        The current week number is displayed on the top-right side of the panel
+        (<span class="emp"># 13</span> meaning it is the 13th week of the year
+        in the above example). The seven days of the current week are displayed
+        in column. Each day is divided into slices of 4 hours each (6 slices in
+        total, see figure above). A slice will appear in a different color if
+        an appointment falls into the corresponding time-slot.
+</p>
+</div>
+
 <p>
   Nella sezione degli appuntamenti si può notare il
   segno <span class="emp">'(|)'</span> accanto alla data indicante la
@@ -865,6 +902,13 @@ of the daemon (14536 in the above example).
 	    salvato (vedi la
 	    sezione  <a href="#basics_files"><code>calcurse</code> files</a>).
 	  </dd>
+
+		<dt><code><span class="todo">calendar_default_view</span></code> 
+		(default: <span class="emp">0</span>)</dt>
+		<dd><span class="todo">If set to <span class="emp">0</span>, the monthly calendar view will be
+                displayed by default otherwise it is the weekly view that will be displayed.</span>
+		</dd>
+
 	  <dt><code>week_begins_on_monday</code> 
 	    (default: <span class="emp">yes</span>)</dt>
 	  <dd>
@@ -974,7 +1018,34 @@ of the daemon (14536 in the above example).
   <code>calcurse</code> a seconda delle necessità.
 </p>
 
-<h2>5.5 Impostazioni della barra delle notifiche<a name="options_notify"></a></h2>
+<div class="todo">
+<p>
+        The following option is used to modify the layout configuration:</p>
+        <dl>
+        <dt><code>layout</code>
+        (default: <span class="emp">0</span>)</dt>
+        <dd>Eight different layouts are to be chosen from (see layout
+        configuration screen for the description of the available layouts).</dd>
+        </dl>
+</div>
+
+
+<div class="todo">
+<h2>5.5 Sidebar configuration<a name="options_sidebar"></a></h2>
+<p>
+        The sidebar is the part of the screen which contains two panels:
+        the calendar and, depending on the chosen layout, either the todo
+        list or the appointment list.</p>
+<p>
+        The following option is used to change the width of the sidebar:</p>
+        <dl>
+        <dt><code>side-bar_width</code>
+        (default: <span class="emp">0</span>)</dt>
+        <dd>Width (in percentage, 0 being the minimum width) of the side bar.</dd>
+        </dl>
+</div>
+
+<h2>5.6 Impostazioni della barra delle notifiche<a name="options_notify"></a></h2>
 <p>
   Le seguenti opzioni modificano il comportamento della barra delle
   notifiche:
@@ -1496,6 +1567,7 @@ of the daemon (14536 in the above example).
 	  <code>pine</code> e <code>aptitude</code> per l'interfaccia
 	  utente testuale
 	</li>
+                <li><span class="todo"><code>tmux</code> for coding style</span></li>
     </ul>
     </li>
   </ul>
@@ -1506,8 +1578,8 @@ of the daemon (14536 in the above example).
 </p>
 
 <div class="footer">
-  Copyright &copy; 2004-2009 Fr&eacute;d&eacute;ric Culot<br>
-  Calcurse version 2.7 - Last change: August 18, 2009<br>
+  Copyright &copy; 2004-2010 Fr&eacute;d&eacute;ric Culot<br>
+  Calcurse version 2.8 - Last change: March 29, 2010<br>
 </div>
 </div>
 
