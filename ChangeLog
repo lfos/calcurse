@@ -1,3 +1,7 @@
+2010-03-29  Frederic Culot  <frederic@culot.org>
+
+	* src/custom.c (custom_sidebar_config): exit menu item added
+	
 2010-03-23  Frederic Culot  <frederic@culot.org>
 
 	* src/wins.c (wins_sbar_winc): test added to avoid problems if

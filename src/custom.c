@@ -1,4 +1,4 @@
-/*	$calcurse: custom.c,v 1.50 2010/03/21 12:21:12 culot Exp $	*/
+/*	$calcurse: custom.c,v 1.51 2010/03/29 07:37:16 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -603,10 +603,11 @@ void
 custom_sidebar_config (void)
 {
   struct scrollwin hwin;
+  struct binding quit = {_("Exit"),     KEY_GENERIC_QUIT};
   struct binding inc  = {_("Width +"),    KEY_MOVE_UP};  
   struct binding dec  = {_("Width -"),    KEY_MOVE_DOWN};
   struct binding help = {_("Help"),       KEY_GENERIC_HELP};
-  struct binding *binding[] = {&inc, &dec, &help};
+  struct binding *binding[] = {&inc, &dec, &help, &quit};
   char *help_text =
     _("This configuration screen is used to change the width of the side bar.\n"
       "The side bar is the part of the screen which contains two panels:\n"
