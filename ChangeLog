@@ -1,6 +1,9 @@
 2010-03-29  Frederic Culot  <frederic@culot.org>
 
 	* src/custom.c (custom_sidebar_config): exit menu item added
+
+	* src/calendar.c (draw_weekly_view): adapt the weekly calendar
+	view to the side bar width
 	
 2010-03-23  Frederic Culot  <frederic@culot.org>
 

@@ -1,4 +1,4 @@
-/*	$calcurse: calendar.c,v 1.35 2010/03/21 09:21:07 culot Exp $	*/
+/*	$calcurse: calendar.c,v 1.36 2010/03/29 11:45:03 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -482,11 +482,17 @@ ISO8601weeknum (const struct tm *t)
 
 /* Draw the weekly view inside calendar panel. */
 static void
-draw_weekly_view (struct window *cwin, struct date *current_day, unsigned sunday_first)
+draw_weekly_view (struct window *cwin, struct date *current_day,
+                  unsigned sunday_first)
 {
-  int j, c_wday, days_to_remove, weeknum;
+#define DAYSLICESNO  6  
+  const int WCALWIDTH = 30;
+  const int OFFY = 2 + (CALHEIGHT - 9) / 2;
   struct tm t;
+  int OFFX, j, c_wday, days_to_remove, weeknum;
 
+  OFFX = (wins_sbar_width () - WCALWIDTH) / 2 + 1;
+  
   /* Fill in a tm structure with the first day of the selected week. */
   c_wday = calendar_get_wday (&slctd_day);
   if (sunday_first)
@@ -506,8 +512,6 @@ draw_weekly_view (struct window *cwin, struct date *current_day, unsigned sunday
   custom_apply_attr (cwin->p, ATTR_HIGHEST);      
   mvwprintw (cwin->p, 2, cwin->w - 9, "(# %02d)", weeknum);
   custom_remove_attr (cwin->p, ATTR_HIGHEST);
-
-#define DAYSLICESNO  6
   
   /* Now draw calendar view. */
   for (j = 0; j < WEEKINDAYS; j++)
@@ -518,7 +522,7 @@ draw_weekly_view (struct window *cwin, struct date *current_day, unsigned sunday
       
       /* print the day names, with regards to the first day of the week */
       custom_apply_attr (cwin->p, ATTR_HIGHEST);      
-      mvwprintw (cwin->p, 3, 1 + 4 * j, "%s",
+      mvwprintw (cwin->p, OFFY, OFFX + 4 * j, "%s",
 		 _(daynames[1 + j - sunday_first]));
       custom_remove_attr (cwin->p, ATTR_HIGHEST);
 
@@ -543,7 +547,7 @@ draw_weekly_view (struct window *cwin, struct date *current_day, unsigned sunday
 
       if (attr)
         custom_apply_attr (cwin->p, attr);
-      mvwprintw (cwin->p, 4, 2 + 4 * j, "%02d", t.tm_mday);
+      mvwprintw (cwin->p, OFFY + 1, OFFX + 1 + 4 * j, "%02d", t.tm_mday);
       if (attr)
         custom_remove_attr (cwin->p, attr);
 
@@ -554,7 +558,7 @@ draw_weekly_view (struct window *cwin, struct date *current_day, unsigned sunday
           for (i = 0; i < DAYSLICESNO; i++)
             {
               if (j != WEEKINDAYS - 1 && i != DAYSLICESNO - 1)
-                mvwhline (cwin->p, 5 + i, 4 + 4 * j, ACS_S9, 2);
+                mvwhline (cwin->p, OFFY + 2 + i, OFFX + 3 + 4 * j, ACS_S9, 2);
               if (slices[i])
                 {
                   int highlight;
@@ -563,8 +567,8 @@ draw_weekly_view (struct window *cwin, struct date *current_day, unsigned sunday
                   if (highlight)
                     custom_apply_attr (cwin->p, attr);
                   wattron (cwin->p, A_REVERSE);
-                  mvwprintw (cwin->p, 5 + i, 2 + 4 * j, " ");
-                  mvwprintw (cwin->p, 5 + i, 3 + 4 * j, " ");
+                  mvwprintw (cwin->p, OFFY + 2 + i, OFFX + 1 + 4 * j, " ");
+                  mvwprintw (cwin->p, OFFY + 2 + i, OFFX + 2 + 4 * j, " ");
                   wattroff (cwin->p, A_REVERSE);
                   if (highlight)
                     custom_remove_attr (cwin->p, attr);                    
@@ -578,8 +582,9 @@ draw_weekly_view (struct window *cwin, struct date *current_day, unsigned sunday
 
   /* Draw marks to indicate midday on the sides of the calendar. */
   custom_apply_attr (cwin->p, ATTR_HIGHEST);
-  mvwhline (cwin->p, 4 + DAYSLICESNO / 2, 1, ACS_S9, 1);
-  mvwhline (cwin->p, 4 + DAYSLICESNO / 2, cwin->w - 2, ACS_S9, 1);
+  mvwhline (cwin->p, OFFY + 1 + DAYSLICESNO / 2, OFFX, ACS_S9, 1);
+  mvwhline (cwin->p, OFFY + 1 + DAYSLICESNO / 2,
+            OFFX + WCALWIDTH - 2, ACS_S9, 1);
   custom_remove_attr (cwin->p, ATTR_HIGHEST);
 
 #undef DAYSLICESNO  
