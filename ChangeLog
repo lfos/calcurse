@@ -5,6 +5,8 @@
 	* configure.ac: switched to 2.8
 
 	* src/calcurse.1: manpage update
+
+	* src/args.c: copyright updated
 	
 2010-03-29  Frederic Culot  <frederic@culot.org>
 

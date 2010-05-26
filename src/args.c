@@ -1,4 +1,4 @@
-/*	$calcurse: args.c,v 1.62 2010/03/20 10:54:42 culot Exp $	*/
+/*	$calcurse: args.c,v 1.63 2010/05/26 18:18:28 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -75,7 +75,7 @@ version_arg ()
 {
   char vtitle[BUFSIZ];
   char *vtext =
-      _("\nCopyright (c) 2004-2009 Frederic Culot.\n"
+      _("\nCopyright (c) 2004-2010 Frederic Culot.\n"
 	"This is free software; see the source for copying conditions.\n");
 
   (void)snprintf (vtitle, BUFSIZ, _("Calcurse %s - text-based organizer\n"),
