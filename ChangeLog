@@ -1,3 +1,11 @@
+2010-05-26  Frederic Culot  <frederic@culot.org>
+
+	* TODO: list updated
+
+	* configure.ac: switched to 2.8
+
+	* src/calcurse.1: manpage update
+	
 2010-03-29  Frederic Culot  <frederic@culot.org>
 
 	* src/custom.c (custom_sidebar_config): exit menu item added

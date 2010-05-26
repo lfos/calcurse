@@ -1,11 +1,12 @@
-#	$calcurse: configure.ac,v 1.35 2009/08/22 08:34:02 culot Exp $
+#	$calcurse: configure.ac,v 1.36 2010/05/26 17:59:57 culot Exp $
 
 #-------------------------------------------------------------------------------
 #                                                                           Init
 #-------------------------------------------------------------------------------
 AC_PREREQ(2.59)
-AC_INIT(calcurse, 2.7, frederic@culot.org)
+AC_INIT(calcurse, 2.8, frederic@culot.org)
 AM_INIT_AUTOMAKE
+#m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
 AM_GNU_GETTEXT([external])
 AC_CONFIG_SRCDIR([src/calcurse.c])
 AC_CONFIG_HEADER([config.h])

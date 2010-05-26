@@ -20,8 +20,7 @@ High
      starting from the specified time
   *  Improve the way one can specify a duration (allowing something like
      XXdXXhXXmXXs)
-  *  Allow user to change the width of the sidebar, and implement word-wrap in
-     the sidebar
+  *  Implement word-wrap in the sidebar
 
 
 Average
@@ -31,6 +30,7 @@ Average
      like 'every monday' for example)
   *  Implement user-definable categories to classify appointments and tasks
   *  Implement copy/paste functionality
+  *  Implement support for a journal
 
 
 Low
