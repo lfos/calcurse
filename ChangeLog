@@ -1,3 +1,9 @@
+2010-05-29  Frederic Culot  <frederic@culot.org>
+	
+	* === Released 2.8 ===
+
+	* NEWS: updated
+
 2010-05-28  Frederic Culot  <frederic@culot.org>
 
 	* src/calcurse.1: reference to the COPYING file removed

@@ -1,3 +1,25 @@
+[29 May 2010]
+Version 2.8
+- New features:
+  * a weekly calendar view was added with the display of the week number and
+    colored slices indicating appointment times
+
+  * the side bar width can now be customized by the user
+
+- Bugfixes:
+  * wrong calculation of recurrent dates after a turn of year fixed (patch
+    provided by Lukas Fleischer)
+
+  * check for data directory availability added
+
+  * fixed a possible segfault that could be triggered when calcurse screen
+    became too small
+
+  * INSTALL file is no longer missing from the distributed package
+
+  * compilation issue related to memory functions definitions fixed
+
+
 [22 Aug 2009]
 Version 2.7
 - New features:
