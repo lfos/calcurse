@@ -1,4 +1,4 @@
-# 	$calcurse: de.po,v 1.30 2010/10/23 10:56:36 culot Exp $
+# 	$calcurse: de.po,v 1.31 2010/10/23 11:08:28 culot Exp $
 #
 # German translations for calcurse package.
 # Copyright (C) 2006-2007 Michael Schulz <bloodshower@web.de>
@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: calcurse 1.9\n"
 "Report-Msgid-Bugs-To: frederic@culot.org\n"
 "POT-Creation-Date: 2010-05-29 09:28+0200\n"
-"PO-Revision-Date: 2010-10-18 20:29+0100\n"
+"PO-Revision-Date: 2010-10-23 13:01+0200\n"
 "Last-Translator: Benjamin Moeller <debian@lupuse.org>\n"
 "Language-Team: Michael Schulz <bloodshower@freenet.de>\n"
 "MIME-Version: 1.0\n"
@@ -273,7 +273,7 @@ msgstr "calcurse ist im Hintergrund gestartet (PID %d)\n"
 #: src/args.c:188
 #, c-format
 msgid "calcurse is not running\n"
-msgstr "calcurse ist nicht gestartet"
+msgstr "calcurse ist nicht gestartet\n"
 
 #: src/args.c:233
 msgid "No note file found\n"
@@ -508,7 +508,7 @@ msgid "Width -"
 msgstr "Breite +"
 
 #: src/custom.c:612
-#, c-format
+#, fuzzy, c-format
 msgid ""
 "This configuration screen is used to change the width of the side bar.\n"
 "The side bar is the part of the screen which contains two panels:\n"
@@ -524,7 +524,7 @@ msgstr ""
 "oder das Terminfenster.\n"
 "\n"
 "Die Seitenleiste kann bis zu 50% des Fenster breit sein, aber nicht\n"
-"weniger.\n"
+"weniger "
 
 #: src/custom.c:697
 msgid "No color"
@@ -1019,7 +1019,7 @@ msgstr ""
 "welches das ganze Ereignis enth?lt.\n"
 "\n"
 "Bet?tigen Sie eine beliebige Taste um das Fenster zu schlie?en und zum\n"
-"Hauptfenster des Programms zur?ckzukehren.\n"
+"Hauptfenster des Programms zur?ckzukehren."
 
 #: src/help.c:450
 msgid "Tab\n"
@@ -1076,7 +1076,7 @@ msgstr ""
 "Wenn Sie [EINGABE] bet?tigen ohne einen Tag anzugeben, ermittelt\n"
 "calcurse das aktuelle Systemdatum und w?hlt automatisch diesen Tag aus.\n"
 "Beachte, dass die Taste %s unabh?ngig von der aktiven Anzeige immer\n"
-"zum aktuellen Tag im Kalender springt.\n"
+"zum aktuellen Tag im Kalender springt."
 
 #: src/help.c:476
 msgid "Delete\n"
@@ -1218,7 +1218,7 @@ msgstr ""
 "Der Eintrag erscheint wieder im Terminfenster, am gew?hlten Datum.\n"
 "\n"
 "ACHTUNG: Wenn zwei Eintr?ge kopiert werden, dann wird der erste\n"
-"Eintrag, inklusive aller angeh?ngten Notizen, unwiederbringlich gel?scht!\n"
+"Eintrag, inklusive aller angeh?ngten Notizen, unwiederbringlich gel?scht!"
 
 #: src/help.c:543
 msgid "Edit Item\n"
@@ -1323,7 +1323,7 @@ msgstr ""
 "        /usr/bin/less benutzt.\n"
 "\n"
 "Um eine Notiz zu bearbeiten den Pager beenden und man kommt zur?ck\n"
-"zu calcurse\n"
+"zu calcurse"
 
 #: src/help.c:600
 msgid "Priority\n"
@@ -1496,7 +1496,7 @@ msgid "Generic keybindings\n"
 msgstr "Allgemeing?ltige Tasten\n"
 
 #: src/help.c:676
-#, c-format
+#, fuzzy, c-format
 msgid ""
 "Some of the keybindings apply whatever panel is selected. They are\n"
 "called generic keybinding.\n"
@@ -1539,7 +1539,7 @@ msgstr ""
 " '^J' : +1 Woche           -> Ansteuern der folgenden WocheDie Tasten %s und %s werden benutzt zum hoch/runter scrollen innerhalb der\n"
 "verschiedenen Fenster.\n"
 "Sie werden auch benutzt um im Kalender die unterschiedlichen Ansichten zu\n"
-"wechseln (Monats- und Wochenansicht)\n"
+"wechseln (Monats- und Wochenansicht)"
 
 #: src/help.c:705
 msgid "OtherCmd\n"
@@ -1889,7 +1889,7 @@ msgstr "SCHWERER FEHLER Eingabedatei kann nicht gelesen werden. Abbruch..."
 
 #: src/io.c:2765
 msgid "FATAL ERROR: wrong import mode"
-msgstr "SCHWERER FEHLER Falsches Exportformat\n"
+msgstr "SCHWERER FEHLER Falsches Exportformat"
 
 #: src/io.c:2775
 msgid "Warning: ical header malformed or wrong version number. Aborting..."
