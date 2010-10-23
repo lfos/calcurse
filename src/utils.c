@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.84 2010/03/21 10:17:04 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.85 2010/10/23 10:25:53 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -442,18 +442,11 @@ updatestring (WINDOW *win, char **str, int x, int y)
 int
 is_all_digit (char *string)
 {
-  int digit, i;
-  int all_digit;
+  for (; *string; string++)
+    if (!isdigit ((int)*string))
+      return 0;
 
-  digit = 0;
-  all_digit = 0;
-
-  for (i = 0; i <= strlen (string); i++)
-    if (isdigit (string[i]) != 0)
-      digit++;
-  if (digit == strlen (string))
-    all_digit = 1;
-  return all_digit;
+  return 1;
 }
 
 /* Given an item date expressed in seconds, return its start time in seconds. */
