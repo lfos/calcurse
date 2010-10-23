@@ -1,3 +1,13 @@
+2010-10-23  Frederic Culot  <frederic@culot.org>
+
+	* src/calendar.c (isBissextile): function removed and
+	replaced by isleap macro (patch submitted by Lukas Fleischer)
+
+	* src/utils.c (is_all_digit): clean up (patch submitted by
+	Lukas Fleischer)
+
+	* AUTHORS, README: add Lukas Fleischer as an author
+
 2010-05-29  Frederic Culot  <frederic@culot.org>
 	
 	* === Released 2.8 ===

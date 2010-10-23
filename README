@@ -17,14 +17,15 @@ PACKAGE OVERVIEW:
 	directory. Calcurse sources can be found in the 'src' directory.
 
 
-AUTHOR:
+AUTHORS:
 
-	Frederic Culot 
+	Frederic Culot   (original author)
+	Lukas Fleischer  (several patches + new features)
 
 
 CONTRIBUTORS:
 
-        Support for regex       Erik Saule
+	Support for regex       Erik Saule
 
 	German translation	Michael Schulz, Chris M. 	
 	Spanish translation	Jose Lopez
