@@ -9,6 +9,9 @@
 	* src/calcurse.1
 	* AUTHORS, README: add Lukas Fleischer as an author
 
+	* README
+	* po/de.po: German translation updated by Benjamin Moeller
+
 2010-05-29  Frederic Culot  <frederic@culot.org>
 	
 	* === Released 2.8 ===
