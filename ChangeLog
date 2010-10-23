@@ -6,6 +6,7 @@
 	* src/utils.c (is_all_digit): clean up (patch submitted by
 	Lukas Fleischer)
 
+	* src/calcurse.1
 	* AUTHORS, README: add Lukas Fleischer as an author
 
 2010-05-29  Frederic Culot  <frederic@culot.org>
