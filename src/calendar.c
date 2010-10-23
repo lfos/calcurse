@@ -1,4 +1,4 @@
-/*	$calcurse: calendar.c,v 1.37 2010/03/29 11:48:05 culot Exp $	*/
+/*	$calcurse: calendar.c,v 1.38 2010/10/23 10:19:47 culot Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -245,12 +245,6 @@ calendar_get_wday (struct date *date)
   return t.tm_wday;
 }
 
-static int
-isBissextile (unsigned year)
-{
-  return (year % 400 == 0 || (year % 4 == 0 && year % 100 != 0));
-}
-
 static unsigned
 months_to_days (unsigned month)
 {
@@ -271,7 +265,7 @@ ymd_to_scalar (unsigned year, unsigned month, unsigned day)
 
   scalar = day + months_to_days (month);
   if (month > 2)
-    scalar -= isBissextile (year) ? 1 : 2;
+    scalar -= isleap (year) ? 1 : 2;
   year--;
   scalar += years_to_days (year);
 
@@ -323,7 +317,7 @@ draw_monthly_view (struct window *cwin, struct date *current_day,
 
   /* checking the number of days in february */
   numdays = days[mo - 1];
-  if (2 == mo && isBissextile (yr))
+  if (2 == mo && isleap (yr))
     ++numdays;
 
   /*
@@ -459,7 +453,7 @@ ISO8601weeknum (const struct tm *t)
           dec31ly.tm_mon = 11;
           dec31ly.tm_mday = 31;
           dec31ly.tm_wday = (jan1day == SUNDAY) ? 6 : jan1day - 1;
-          dec31ly.tm_yday = 364 + isBissextile (dec31ly.tm_year + 1900);
+          dec31ly.tm_yday = 364 + isleap (dec31ly.tm_year + 1900);
           wnum = ISO8601weeknum (&dec31ly);
         }
       break;
