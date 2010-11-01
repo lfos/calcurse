@@ -1,3 +1,8 @@
+2010-11-01  Lukas Fleischer  <calcurse@cryptocrack.de>
+
+	* src/calcurse.1
+	* AUTHORS: Changed mail address to "calcurse@cryptocrack.de".
+
 2010-10-23  Frederic Culot  <frederic@culot.org>
 
 	* src/calendar.c (isBissextile): function removed and
