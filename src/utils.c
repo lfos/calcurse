@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.85 2010/10/23 10:25:53 culot Exp $	*/
+/*	$calcurse: utils.c,v 1.86 2010/11/04 10:55:07 fleischer Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -361,6 +361,25 @@ getstring (WINDOW *win, char *str, int l, int x, int y)
 	  else
 	    printf ("\a");
 	  break;
+
+  case CTRL ('W'):	/* delete a word */
+    while (len > 0 && newpos > x && *(orig + newpos - 1) == ' ') {
+      --newpos;
+      --len;
+      if (newpos >= x + len)
+        --str;
+      else
+        del_char (newpos, orig);
+    }
+    while (len > 0 && newpos > x && *(orig + newpos - 1) != ' ') {
+      --newpos;
+      --len;
+      if (newpos >= x + len)
+        --str;
+      else
+        del_char (newpos, orig);
+    }
+    break;
 
 	case CTRL ('K'):	/* delete to end-of-line */
 	  str = orig + newpos;
