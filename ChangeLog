@@ -1,5 +1,9 @@
 2011-01-11  Lukas Fleischer  <calcurse@cryptocrack.de>
 
+	* src/help.c: Code cleanup and fixed compiler warning.
+
+2011-01-11  Lukas Fleischer  <calcurse@cryptocrack.de>
+
 	* src/calcurse.h
 	* src/utils.c: Make parse_date accept several short forms, e.g.
 	"1/1/30" for "01/01/2030", "26" for the 26th of the currently
