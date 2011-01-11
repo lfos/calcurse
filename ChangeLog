@@ -1,3 +1,17 @@
+2011-01-11  Lukas Fleischer  <calcurse@cryptocrack.de>
+
+	* src/calcurse.h
+	* src/utils.c: Make parse_date accept several short forms, e.g.
+	"1/1/30" for "01/01/2030", "26" for the 26th of the currently
+	selected month/year or "3/1" for Mar 01 (or Jan 03, depending
+	on the date format) of the currently selected year.
+
+	* src/args.c
+	* src/calendar.c
+	* src/day.c
+	* src/recur.c: Make everything work with the new parse_date
+	function accepting short forms.
+
 2010-11-04  Lukas Fleischer  <calcurse@cryptocrack.de>
 
 	* src/utils.c: Added "backword-kill-word" functionality to

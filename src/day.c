@@ -1,4 +1,4 @@
-/*	$calcurse: day.c,v 1.53 2010/03/20 10:54:44 culot Exp $	*/
+/*	$calcurse: day.c,v 1.54 2011/01/11 22:10:48 fleischer Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -757,7 +757,7 @@ update_rept (struct rpt **rpt, const long start, struct conf *conf)
 	  int newmonth, newday, newyear;
 
 	  if (parse_date (timstr, conf->input_datefmt,
-			  &newyear, &newmonth, &newday))
+			  &newyear, &newmonth, &newday, calendar_get_slctd_day ()))
 	    {
 	      t = start;
 	      lt = localtime (&t);

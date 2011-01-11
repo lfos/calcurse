@@ -1,4 +1,4 @@
-/*	$calcurse: calendar.c,v 1.38 2010/10/23 10:19:47 culot Exp $	*/
+/*	$calcurse: calendar.c,v 1.39 2011/01/11 22:10:48 fleischer Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -646,11 +646,8 @@ calendar_change_day (int datefmt)
 	      wrong_day = 0;
               calendar_goto_today ();
 	    }
-	  else if (strlen (selected_day) != LDAY - 1)
-	    {
-	      wrong_day = 1;
-	    }
-	  else if (parse_date (selected_day, datefmt, &dyear, &dmonth, &dday))
+	  else if (parse_date (selected_day, datefmt, &dyear, &dmonth, &dday,
+                         calendar_get_slctd_day ()))
 	    {
 	      wrong_day = 0;
 	      /* go to chosen day */

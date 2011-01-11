@@ -1,4 +1,4 @@
-/*	$calcurse: recur.c,v 1.54 2010/03/20 10:54:47 culot Exp $	*/
+/*	$calcurse: recur.c,v 1.55 2011/01/11 22:10:48 fleischer Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -971,7 +971,7 @@ recur_repeat_item (struct conf *conf)
 	  else
 	    {
 	      if (parse_date (user_input, conf->input_datefmt,
-			      &year, &month, &day))
+			      &year, &month, &day, calendar_get_slctd_day ()))
 		{
 		  t = p->start;
 		  lt = localtime (&t);

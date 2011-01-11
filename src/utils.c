@@ -1,4 +1,4 @@
-/*	$calcurse: utils.c,v 1.86 2010/11/04 10:55:07 fleischer Exp $	*/
+/*	$calcurse: utils.c,v 1.87 2011/01/11 22:10:48 fleischer Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -46,6 +46,8 @@
 #include <errno.h>
 
 #include "calcurse.h"
+
+#define isleap(y) ((((y) % 4) == 0 && ((y) % 100) != 0) || ((y) % 400) == 0)
 
 /* General routine to exit calcurse properly. */
 void
@@ -883,64 +885,81 @@ erase_note (char **note, enum eraseflg flag)
 /*
  * Convert a string containing a date into three integers containing the year,
  * month and day.
+ *
+ * If a pointer to a date structure containing the current date is passed as
+ * last parameter ("slctd_date"), the function will accept several short forms,
+ * e.g. "26" for the 26th of the current month/year or "3/1" for Mar 01 (or Jan
+ * 03, depending on the date format) of the current year. If a null pointer is
+ * passed, short forms won't be accepted at all.
+ *
  * Returns 1 if sucessfully converted or 0 if the string is an invalid date.
  */
 int
 parse_date (char *date_string, enum datefmt datefmt, int *year, int *month,
-            int *day)
+            int *day, struct date *slctd_date)
 {
-  int in1, in2, in3;
-  int lyear, lmonth, lday;
+  char sep = (datefmt == DATEFMT_ISO) ? '-' : '/';
+  char *p;
+  int in[3] = {0, 0, 0}, n = 0;
+  int d, m, y;
 
-  if (date_string == 0)
-    return 0;
+  if (!date_string) return 0;
 
-  if (datefmt == DATEFMT_ISO)
-    {
-      if (sscanf (date_string, "%d - %d - %d", &in1, &in2, &in3) < 3)
-        return 0;
+  /* parse string into in[], read up to three integers */
+  for (p = date_string; *p; p++) {
+    if (*p == sep) {
+      if ((++n) > 2) return 0;
     }
-  else
-    {
-      if (sscanf (date_string, "%d / %d / %d", &in1, &in2, &in3) < 3)
-        return 0;
+    else if ((*p >= '0') && (*p <= '9')) {
+      in[n] = in[n] * 10 + (int)(*p - '0');
     }
-  switch (datefmt)
-    {
+    else
+      return 0;
+  }
+
+  if ((!slctd_date && n < 2) || in[n] == 0) return 0;
+
+  /* convert into day, month and year, depending on the date format */
+  switch (datefmt) {
     case DATEFMT_MMDDYYYY:
-      lmonth = in1;
-      lday = in2;
-      lyear = in3;
+      m = in[n > 0 ? 0 : 1];
+      d = in[n > 0 ? 1 : 0];
+      y = in[2];
       break;
     case DATEFMT_DDMMYYYY:
-      lday = in1;
-      lmonth = in2;
-      lyear = in3;
+      d = in[0];
+      m = in[1];
+      y = in[2];
       break;
     case DATEFMT_YYYYMMDD:
-    case DATEFMT_ISO:      
-      lyear = in1;
-      lmonth = in2;
-      lday = in3;
+    case DATEFMT_ISO:
+      y = in[0];
+      m = in[n - 1];
+      d = in[n];
       break;
     default:
       return 0;
-    }
-  
-  if (lyear < 1 || lyear > 9999
-      || lmonth < 1 || lmonth > 12
-      || lday < 1 || lday > 31)
+  }
+
+  if (y > 0 && y < 100) {
+    /* convert "YY" format into "YYYY" */
+    y += slctd_date->yyyy - slctd_date->yyyy % 100;
+  }
+  else if (n < 2) {
+    /* set year and, optionally, month if short from is used */
+    y = slctd_date->yyyy;
+    if (n < 1) m = slctd_date->mm;
+  }
+
+  /* check if date is valid, take leap years into account */
+  if (y < 1902 || y > 2037 || m < 1 || m > 12 || d < 1 ||
+      d > days[m - 1] + (m == 2 && isleap (y)) ? 1 : 0)
     return 0;
-  
-  if (year != NULL)
-    *year = lyear;
-  
-  if (month != NULL)
-    *month = lmonth;
-  
-  if (day != NULL)
-    *day = lday;
-  
+
+  if (year) *year = y;
+  if (month) *month = m;
+  if (day) *day = d;
+
   return 1;
 }
 

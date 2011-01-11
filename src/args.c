@@ -1,4 +1,4 @@
-/*	$calcurse: args.c,v 1.63 2010/05/26 18:18:28 culot Exp $	*/
+/*	$calcurse: args.c,v 1.64 2011/01/11 22:10:48 fleischer Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -578,7 +578,7 @@ date_arg (char *ddate, int add_line, int print_note, struct conf *conf,
   else
     {				/* a date was entered */
       if (parse_date (ddate, conf->input_datefmt, (int *)&day.yyyy,
-                      (int *)&day.mm, (int *)&day.dd))
+                      (int *)&day.mm, (int *)&day.dd, NULL))
 	{
 	  app_found = app_arg (add_line, &day, 0, print_note, conf, regex);
 	}
@@ -630,7 +630,7 @@ date_arg_extended (char *startday, char *range, int add_line, int print_note,
   if (startday != NULL)
     {
       if (parse_date (startday, conf->input_datefmt, (int *)&t.tm_year,
-		      (int *)&t.tm_mon, (int *)&t.tm_mday))
+		      (int *)&t.tm_mon, (int *)&t.tm_mday, NULL))
 	{
 	  t.tm_year -= 1900;
 	  t.tm_mon--;
