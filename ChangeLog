@@ -1,5 +1,45 @@
 2011-01-11  Lukas Fleischer  <calcurse@cryptocrack.de>
 
+	* AUTHORS
+	* ChangeLog
+	* INSTALL
+	* Makefile.am
+	* NEWS
+	* README
+	* TODO
+	* configure.ac
+	* doc/manual_de.html
+	* doc/manual_en.html
+	* doc/manual_es.html
+	* doc/manual_fr.html
+	* doc/manual_it.html
+	* doc/manual_nl.html
+	* po/LINGUAS
+	* po/POTFILES.in
+	* po/calcurse.pot
+	* po/fr.po
+	* src/Makefile.am
+	* src/apoint.c
+	* src/args.c
+	* src/calcurse.1
+	* src/calcurse.c
+	* src/calendar.c
+	* src/custom.c
+	* src/day.c
+	* src/event.c
+	* src/help.c
+	* src/io.c
+	* src/keys.c
+	* src/notify.c
+	* src/recur.c
+	* src/sigs.c
+	* src/todo.c
+	* src/utils.c
+	* src/vars.c
+	* src/wins.c: Fixed file permissions
+
+2011-01-11  Lukas Fleischer  <calcurse@cryptocrack.de>
+
 	* src/help.c: Code cleanup and fixed compiler warning.
 
 2011-01-11  Lukas Fleischer  <calcurse@cryptocrack.de>
