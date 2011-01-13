@@ -1,4 +1,4 @@
-/*	$calcurse: help.c,v 1.45 2011/01/11 22:31:40 fleischer Exp $	*/
+/*	$calcurse: help.c,v 1.46 2011/01/13 23:21:40 fleischer Exp $	*/
 
 /*
  * Calcurse - text-based organizer
@@ -109,32 +109,34 @@ help_write_pad (struct window *win, char *title, char *text, enum key action)
   erase_window_part (win->p, rownum, colnum, BUFSIZ, win->w);
   custom_apply_attr (win->p, ATTR_HIGHEST);
   mvwprintw (win->p, rownum, colnum, "%s", title);
-  switch (action)
-    {
-    case KEY_END_OF_WEEK:
-    case KEY_START_OF_WEEK:
-    case KEY_MOVE_UP:
-    case KEY_MOVE_DOWN:
-    case KEY_MOVE_RIGHT:
-    case KEY_MOVE_LEFT:
-    case KEY_GENERIC_HELP:
-    case KEY_GENERIC_REDRAW:
-    case KEY_GENERIC_ADD_APPT:
-    case KEY_GENERIC_ADD_TODO:
-    case KEY_GENERIC_NEXT_DAY:
-    case KEY_GENERIC_PREV_DAY:
-    case KEY_GENERIC_NEXT_WEEK:
-    case KEY_GENERIC_PREV_WEEK:
-    case KEY_GENERIC_GOTO_TODAY:
-    case KEY_GENERIC_CREDITS:
-    case KEY_GENERIC_CUT:
-    case KEY_GENERIC_PASTE:
-      break;
-    default:
-      bindings = keys_action_allkeys (action);
-      colnum = win->w - strlen (bindings_title) - strlen (bindings);
-      mvwprintw (win->p, rownum, colnum, bindings_title, bindings);
-    }
+  if ((int) action != KEY_RESIZE) {
+    switch (action)
+      {
+      case KEY_END_OF_WEEK:
+      case KEY_START_OF_WEEK:
+      case KEY_MOVE_UP:
+      case KEY_MOVE_DOWN:
+      case KEY_MOVE_RIGHT:
+      case KEY_MOVE_LEFT:
+      case KEY_GENERIC_HELP:
+      case KEY_GENERIC_REDRAW:
+      case KEY_GENERIC_ADD_APPT:
+      case KEY_GENERIC_ADD_TODO:
+      case KEY_GENERIC_NEXT_DAY:
+      case KEY_GENERIC_PREV_DAY:
+      case KEY_GENERIC_NEXT_WEEK:
+      case KEY_GENERIC_PREV_WEEK:
+      case KEY_GENERIC_GOTO_TODAY:
+      case KEY_GENERIC_CREDITS:
+      case KEY_GENERIC_CUT:
+      case KEY_GENERIC_PASTE:
+        break;
+      default:
+        bindings = keys_action_allkeys (action);
+        colnum = win->w - strlen (bindings_title) - strlen (bindings);
+        mvwprintw (win->p, rownum, colnum, bindings_title, bindings);
+      }
+  }
   colnum = 0;
   rownum += get_help_lines (title);  
   custom_remove_attr (win->p, ATTR_HIGHEST);

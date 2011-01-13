@@ -1,3 +1,8 @@
+2011-01-14  Lukas Fleischer  <calcurse@cryptocrack.de>
+
+	* src/help.c: Avoid a segfault when resizing the help window
+	  (resizing still needs to be fixed properly).
+
 2011-01-11  Lukas Fleischer  <calcurse@cryptocrack.de>
 
 	* AUTHORS
