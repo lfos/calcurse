@@ -1,3 +1,13 @@
+2011-02-12  Lukas Fleischer  <calcurse@cryptocrack.de>
+
+	* doc/manual_en.txt: Convert English manual into AsciiDoc format.
+
+	* doc/*: Remove old documentation (switching to AsciiDoc).
+
+	* Makefile.am
+	* configure.ac
+	* doc/Makefile.am: Integrate AsciiDoc into the build process.
+
 2011-01-14  Lukas Fleischer  <calcurse@cryptocrack.de>
 
 	* src/help.c: Avoid a segfault when resizing the help window

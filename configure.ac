@@ -1,4 +1,4 @@
-#	$calcurse: configure.ac,v 1.36 2010/05/26 17:59:57 culot Exp $
+#	$calcurse: configure.ac,v 1.37 2011/02/24 11:36:50 fleischer Exp $
 
 #-------------------------------------------------------------------------------
 #                                                                           Init
@@ -68,6 +68,33 @@ AC_CHECK_HEADERS([math.h], [
     AC_MSG_ERROR(The math library is required in order to build calcurse!))
 ], AC_MSG_ERROR(The math header is required in order to build calcurse!))
 #-------------------------------------------------------------------------------
+#                                           Check whether to build documentation
+#-------------------------------------------------------------------------------
+AC_ARG_WITH(asciidoc,
+            AS_HELP_STRING([--with-asciidoc],
+                           [Use asciidoc to regenerate documentation.]),
+                           [use_asciidoc=$withval],
+                           [use_asciidoc="auto"])
+if test x"$use_asciidoc" = x"auto"; then
+  AC_PATH_PROG([ASCIIDOC], [asciidoc])
+  if test -z "$ASCIIDOC"; then
+    have_asciidoc=no
+    AC_MSG_WARN([AsciiDoc not found - documentation will be skipped!])
+  else
+    have_asciidoc=yes
+  fi
+elif test x"$use_asciidoc" = x"yes"; then
+  AC_PATH_PROG([ASCIIDOC], [asciidoc])
+  if test -z "$ASCIIDOC"; then
+    AC_MSG_ERROR([AsciiDoc not found and "--with-asciidoc" specified!])
+  fi
+  have_asciidoc=yes
+elif test x"$use_asciidoc" = x"no"; then
+  AC_MSG_WARN(["--without-asciidoc" specified - documentation will be skipped!])
+  have_asciidoc=no
+fi
+AM_CONDITIONAL(HAVE_ASCIIDOC, test $have_asciidoc = yes)
+#-------------------------------------------------------------------------------
 #                                                            Compilation options
 #-------------------------------------------------------------------------------
 CFLAGS="$CFLAGS -Wall"
@@ -90,7 +117,7 @@ AM_CONDITIONAL(CALCURSE_MEMORY_DEBUG, test x$memdebug = xyes)
 #-------------------------------------------------------------------------------
 #                                                               Create Makefiles
 #-------------------------------------------------------------------------------
-AC_OUTPUT(Makefile src/Makefile po/Makefile.in po/Makefile)
+AC_OUTPUT(Makefile doc/Makefile src/Makefile po/Makefile.in po/Makefile)
 #-------------------------------------------------------------------------------
 #                                                                        Summary
 #-------------------------------------------------------------------------------
