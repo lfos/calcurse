@@ -118,7 +118,7 @@ NOTE: It is also possible to link `calcurse` against the `ncursesw` library
       (ncurses with support for unicode).  However, UTF-8 is not yet supported
       by `calcurse`.
 
-[[installation_requirements_gettext]]
+[[install_requirements_gettext]]
 gettext library
 ^^^^^^^^^^^^^^^
 
@@ -172,7 +172,7 @@ calcurse basics
 Invocation
 ~~~~~~~~~~
 
-[[invocation_commandline]]
+[[basics_invocation_commandline]]
 Command line arguments
 ^^^^^^^^^^^^^^^^^^^^^^
 
@@ -270,6 +270,7 @@ such as:
 $ calcurse --export > my_data.dat
 ----
 
+[[basics_invocation_variable]]
 Environment variable for i18n
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
