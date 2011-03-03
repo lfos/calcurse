@@ -97,14 +97,13 @@ check_program_version()
 {
         PROGRAM=$1; MAJOR=$2; MINOR=$3
         printf "Checking that $PROGRAM version is at least $MAJOR.$MINOR ... "
-        VERSION=`$PROGRAM --version |head -n 1|sed 's/([^)]*)//g;s/^[a-zA-Z\.\ \
-                \-]*//;s/ .*$//'`                
+        VERSION=`$PROGRAM --version | head -n 1 | rev | cut -d' ' -f1 | rev`
         MAJOR_FOUND=`echo $VERSION | cut -d. -f1`
-        MINOR_FOUND=`echo $VERSION | sed s/[-,a-z,A-Z].*// | cut -d. -f2`
+        MINOR_FOUND=`echo $VERSION | sed 's/[a-zA-Z-].*//' | cut -d. -f2`
         [ -z "$MINOR_FOUND" ] && MINOR_FOUND=0
         
         WRONG=
-        if [ -z "$MAJOR_FOUND" -lt "$MAJOR" ]; then
+        if [ "$MAJOR_FOUND" -lt "$MAJOR" ]; then
                 WRONG=1
         elif [ "$MAJOR_FOUND" -eq "$MAJOR" ]; then
                 if [ "$MINOR_FOUND" -lt "$MINOR" ]; then
