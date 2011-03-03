@@ -1,5 +1,3 @@
-/*	$calcurse: wins.c,v 1.33 2010/03/23 13:08:46 culot Exp $	*/
-
 /*
  * Calcurse - text-based organizer
  *

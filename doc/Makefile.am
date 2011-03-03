@@ -1,5 +1,3 @@
-#	$calcurse: Makefile.am,v 1.1 2011/02/24 11:36:50 fleischer Exp $
-
 AUTOMAKE_OPTIONS = foreign
 
 ASCIIDOC_ARGS = \

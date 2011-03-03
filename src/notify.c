@@ -1,5 +1,3 @@
-/*	$calcurse: notify.c,v 1.50 2010/03/21 10:17:04 culot Exp $	*/
-
 /*
  * Calcurse - text-based organizer
  *

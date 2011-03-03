@@ -1,5 +1,3 @@
-#	$calcurse: Makefile.am,v 1.11 2010/03/20 10:54:41 culot Exp $
-
 AUTOMAKE_OPTIONS= foreign
 
 bin_PROGRAMS= calcurse

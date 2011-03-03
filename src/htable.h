@@ -1,5 +1,3 @@
-/*	$Id: htable.h,v 1.3 2008/11/16 17:42:53 culot Exp $	*/
-
 /*
  * Copyright (c) 2008 Frederic Culot <frederic@culot.org>
  * All rights reserved.

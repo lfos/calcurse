@@ -1,5 +1,3 @@
-/*	$calcurse: help.c,v 1.46 2011/01/13 23:21:40 fleischer Exp $	*/
-
 /*
  * Calcurse - text-based organizer
  *

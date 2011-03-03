@@ -1,7 +1,5 @@
 ////
 /*
- *	$calcurse: manual.txt,v 1.1 2011/02/24 11:36:50 fleischer Exp $
- *
  * Copyright (c) 2004-2010 Frederic Culot <frederic@culot.org>
  * All rights reserved.
  *

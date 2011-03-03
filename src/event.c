@@ -1,5 +1,3 @@
-/*	$calcurse: event.c,v 1.16 2010/03/20 10:54:44 culot Exp $	*/
-
 /*
  * Calcurse - text-based organizer
  *

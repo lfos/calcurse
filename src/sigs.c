@@ -1,5 +1,3 @@
-/*	$calcurse: sigs.c,v 1.11 2010/03/20 10:54:48 culot Exp $	*/
-
 /*
  * Calcurse - text-based organizer
  *

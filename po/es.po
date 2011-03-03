@@ -1,5 +1,3 @@
-# 	$calcurse: es.po,v 1.25 2010/05/29 07:33:59 culot Exp $
-#
 # Spanish translations for calcurse package.
 # Copyright (c) Jose Lopez <testinground@gmail.com> 2006 Free Software Foundation, Inc.
 # This file is distributed under the same license as the Calcurse package.

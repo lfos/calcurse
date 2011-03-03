@@ -1,5 +1,3 @@
-/*	$calcurse: apoint.c,v 1.38 2010/03/20 10:54:41 culot Exp $	*/
-
 /*
  * Calcurse - text-based organizer
  *

@@ -1,5 +1,3 @@
-/*	$calcurse: day.c,v 1.54 2011/01/11 22:10:48 fleischer Exp $	*/
-
 /*
  * Calcurse - text-based organizer
  *

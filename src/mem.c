@@ -1,5 +1,3 @@
-/*	$calcurse: mem.c,v 1.7 2010/03/20 10:54:46 culot Exp $	*/
-
 /*
  * Calcurse - text-based organizer
  *

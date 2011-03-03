@@ -1,5 +1,3 @@
-/*	$calcurse: recur.c,v 1.55 2011/01/11 22:10:48 fleischer Exp $	*/
-
 /*
  * Calcurse - text-based organizer
  *

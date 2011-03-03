@@ -1,5 +1,3 @@
-# 	$calcurse: fr.po,v 1.35 2010/05/29 07:33:59 culot Exp $
-#
 # French translations for calcurse package.
 # Copyright (C) 2004-2008 Frederic Culot <frederic@culot.org>
 # This file is distributed under the same license as the calcurse package.
