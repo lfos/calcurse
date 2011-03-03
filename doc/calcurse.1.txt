@@ -1,0 +1,275 @@
+////
+/*
+ * Copyright (c) 2004-2010 Frederic Culot <frederic@culot.org>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ *      - Redistributions of source code must retain the above
+ *        copyright notice, this list of conditions and the
+ *        following disclaimer.
+ *
+ *      - Redistributions in binary form must reproduce the above
+ *        copyright notice, this list of conditions and the
+ *        following disclaimer in the documentation and/or other
+ *        materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+////
+
+calcurse(1)
+===========
+
+Name
+----
+
+calcurse - text-based organizer
+
+Synopsis
+--------
+
+[verse]
+*calcurse* [*-h*|*-v*] [*-N*] [*-an*] [*-t*[num]] [*-c*<file> | *-D*<dir>]
+         [*-i*<file>] [*-x*[format]] [*-d* <date>|<num>]
+         [*-s*[date]] [*-r*[range]] [*-S* <regex>] [*--status*]
+
+Description
+-----------
+
+Calcurse is a text-based calendar and scheduling application. It helps keeping
+track of events, appointments and everyday tasks.  A configurable notification
+system reminds user of upcoming deadlines, and the curses based interface can
+be customized to suit user needs.  All of the commands are documented within an
+online help system.  
+
+Options
+-------
+
+The following options are supported:
+
+*-a*, *--appointment*::
+  Print the appointments and events for the current day and exit. 'Note:' The calendar
+  from which to read the  appointments can be specified using the *-c* flag.
+
+*-c* <file>, *--calendar* <file>::
+  Specify the calendar file to use.  The default  calendar is
+  *~/.calcurse/apts* (see section 'FILES' below). This option is incompatible
+  with -*D*.
+
+*-d* <date|num>, *--day* <date|num>::
+  Print the appointments for the given date  or  for  the given  number  of
+  upcoming days, depending on the argument format. Two possible formats are
+  supported:
++
+--
+  * a date (possible formats described below).
+  * a number *n*.
+--
++
+In the first  case,  the  appointment  list  for  the specified  date will be
+returned, while in the second case the appointment list for the *n*  upcoming
+days will be returned.
++
+As an example, typing *calcurse -d  3*  will  display your  appointments  for
+today, tomorrow, and the day after tomorrow.
++
+The  date  format  used  is  the  one  specified in the ``General options''
+menu.  Four formats are available:
++
+--
+  1. mm/dd/yyyy
+  2. dd/mm/yyyy
+  3. yyyy/mm/dd
+  4. yyyy-mm-dd
+--
++
+'Note:' as for the *-a* flag, the calendar  from which to  read  the
+appointments can be specified using the *-c* flag.
+
+*-D* <dir>, *--directory* <dir>::
+  Specify  the  data directory to use. This option is incompatible  with  -c.
+  If  not  specified,   the default directory is *~/.calcurse/*.
+
+*-h*, *--help*::
+  Print  a  short  help  text  describing  the  supported command-line options,
+  and exit.
+
+*-i* <file>, *--import* <file>::
+  Import the icalendar data contained in 'file'.
+
+*-n*, *--next*::
+  Print the next appointment within upcoming 24 hours and exit.  The indicated
+  time is the number of hours and minutes left before this appointment.
++
+'Note:' the calendar from which to read the appointments can be specified using
+the *-c* flag.
+
+*-N*, *--note*::
+  When used with the *-a* or *-t* flag, also print note content if one is
+  associated with the displayed item.
+
+*-r*[num], *--range*[=num]::
+  Print events and appointments for the 'num' number of days and exit. If no
+  'num' is given, a range of 1 day is considered.
+
+*-s*[date], *--startday*[=date]::
+  Print  events  and appointments from 'date' and exit.  If no 'date' is given,
+  the current day is considered.
+
+*-S*<regex>, *--search*=<regex>::
+  When used with the *-a*, *-d*, *-r*, *-s*, or *-t* flag, print only the items
+  having a description that matches the given regular expression.
+
+*--status*::
+  Display  the  status of running instances of calcurse. If calcurse is
+  running, this will tell  if  the  interactive mode  was  launched  or  if
+  calcurse is running in background.  The process pid will also be indicated.
+
+*-t*[num], *--todo*[=num]::
+  Print the *todo* list and exit. If the optional number 'num' is given, then
+  only todos having a priority equal to 'num' will be returned. The priority
+  number must be between 1 (highest) and 9 (lowest). It is also possible to
+  specify *0* for the priority, in which case only completed tasks will be
+  shown.
+
+*-v*, *--version*::
+  Display *calcurse* version and exit.
+
+*-x*[format], *--export*[=format]::
+  Export user data to specified format. Events, appointments and todos are
+  converted and echoed to stdout.  Two possible formats are available: 'ical'
+  and 'pcal'.  If the optional argument 'format' is not given, ical format is
+  selected by default.
++
+'Note:' redirect standard output to export data to a file, by issuing a command
+such as:
++
+----
+$ calcurse --export > my_data.dat
+----
+
+Notes
+-----
+
+Calcurse interface contains three different panels (calendar, appointment list,
+and todo list) on which you can perform different actions. All the possible
+actions, together with their associated keystrokes, are listed on the status
+bar. This status bar takes place at the bottom of the screen.
+
+At any time, the built-in help system can be invoked by pressing the '?' key.
+Once viewing the help screens, informations on a specific command can be
+accessed by pressing the keystroke corresponding to that command.
+
+Configuration
+-------------
+
+The calcurse options can be changed from the configuration menu (shown when 'C'
+is hit). Five possible categories are to be chosen from : the color scheme, the
+layout (the location of the three panels on the screen), notification options,
+key bindings configuration menu, and more general options (such as automatic
+save before quitting).  All of these options are detailed in the configuration
+menu.
+
+Files
+-----
+
+The following structure is created in your $HOME directory (or in the directory
+you specified with the *-D* option), the first time calcurse is run:
+
+----
+$HOME/.calcurse/
+          |___notes/
+          |___conf 
+          |___keys
+          |___apts 
+          |___todo
+----
+
+The 'notes' subdirectory contains descriptions of the notes which are attached
+to appointments, events or todos. One text file is created per note, whose name
+is built using mkstemp(3) and should be unique, but with no relation with the
+corresponding item's description.
+
+The 'conf' file contains the user configuration. The 'keys' file contains the
+user-defined key bindings. The 'apts' file contains all of the user's
+appointments and events, and the 'todo' file contains the todo list.
+
+'Note:' if the logging of calcurse daemon activity was set in the notification
+configuration menu, the extra file 'daemon.log' will appear in calcurse data
+directory. This file contains logs about calcurse activity when running in
+background.
+
+Environment
+-----------
+
+This section describes the environment variables that affect how calcurse
+operates. 
+
+*VISUAL*::
+  Specifies the external editor to use for writing notes.
+*EDITOR*::
+  If the 'VISUAL' environment variable is not set, then 'EDITOR' will be used
+  as the default external editor. If none of those variables are set, then
+  '/usr/bin/vi' is used instead.
+*PAGER*::
+  Specifies the default viewer to be used for reading notes. If this variable
+  is not set, then '/usr/bin/less' is used.
+
+Bugs
+----
+
+Incorrect highlighting of items appear when using calcurse black and white
+theme together with a *$TERM* variable set to 'xterm-color'.  To fix this bug,
+and as advised by Thomas E. Dickey (xterm maintainer), 'xterm-xfree86' should
+be used instead of 'xterm-color' to set the *$TERM* variable:
+
+    "The xterm-color value for $TERM is a bad choice for 
+     XFree86 xterm because it is commonly used for a 
+     terminfo entry which happens to not support bce. 
+     Use the xterm-xfree86 entry which is distributed 
+     with XFree86 xterm (or the similar one distributed 
+     with ncurses)."
+
+If you find other bugs, please send a report to calcurse@culot.org or to the
+author, below.
+
+See also
+--------
+
+vi(1), less(1), ncurses(3), mkstemp(3)
+
+The ical specification (rfc2445) can be found at:
+http://tools.ietf.org/html/rfc2445
+
+The pcal project page: http://pcal.sourceforge.net/
+
+Calcurse home page: http://culot.org/calcurse/
+
+Calcurse complete manual, translated in many languages and maintained in
+html format, can be found in the doc/ directory of the source package, 
+or at: http://culot.org/calcurse/manual.html
+
+Authors
+-------
+
+* *Frederic Culot* <frederic@culot.org>
+* *Lukas Fleischer* <calcurse@cryptocrack.de>
+
+Copyright
+---------
+
+Copyright (c) 2004-2010 by Frederic Culot. 
+This software is released under the BSD License.

@@ -81,17 +81,30 @@ if test x"$use_asciidoc" = x"auto"; then
   else
     have_asciidoc=yes
   fi
+  AC_PATH_PROG([A2X], [a2x])
+  if test -z "$A2X"; then
+    have_a2x=no
+    AC_MSG_WARN([a2x not found - man pages will be skipped!])
+  else
+    have_a2x=yes
+  fi
 elif test x"$use_asciidoc" = x"yes"; then
   AC_PATH_PROG([ASCIIDOC], [asciidoc])
   if test -z "$ASCIIDOC"; then
     AC_MSG_ERROR([AsciiDoc not found and "--with-asciidoc" specified!])
   fi
+  AC_PATH_PROG([A2X], [a2x])
+  if test -z "$A2X"; then
+    AC_MSG_ERROR([a2x not found and "--with-asciidoc" specified!])
+  fi
   have_asciidoc=yes
 elif test x"$use_asciidoc" = x"no"; then
   AC_MSG_WARN(["--without-asciidoc" specified - documentation will be skipped!])
   have_asciidoc=no
+  have_a2x=no
 fi
 AM_CONDITIONAL(HAVE_ASCIIDOC, test $have_asciidoc = yes)
+AM_CONDITIONAL(HAVE_A2X, test $have_a2x = yes)
 #-------------------------------------------------------------------------------
 #                                                            Compilation options
 #-------------------------------------------------------------------------------
