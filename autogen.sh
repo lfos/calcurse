@@ -63,7 +63,7 @@ clean_old_files()
         printf "Cleaning old files ... "
         rm -rf configure config.log aclocal.m4 \
                 config.status config autom4te.cache \
-                po/Makefile.in.in
+                po/Makefile.in.in ABOUT-NLS
         printf "done\n"
 }
 
