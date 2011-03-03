@@ -63,7 +63,7 @@ clean_old_files()
         printf "Cleaning old files ... "
         rm -rf configure config.log aclocal.m4 \
                 config.status config autom4te.cache \
-		po/Makefile.in.in
+                po/Makefile.in.in
         printf "done\n"
 }
 
@@ -116,7 +116,7 @@ check_program_version()
                 printf "\nwhich is too old. You should upgrade $PROGRAM."
                 printf "\nDownload the appropriate package for your distribution,"
                 printf "\nor get the source tarball at ftp://ftp.gnu.org/pub/gnu/"
-		printf "\n"
+                printf "\n"
                 exit 1
         else
                 printf "OK, found $MAJOR_FOUND.$MINOR_FOUND\n"
@@ -155,7 +155,7 @@ run_program()
                 printf "\n\n**Error**: $PROGRAM failed.\n"
                 exit 1
         }
-	printf "OK\n"
+        printf "OK\n"
 }
 
 # Main
