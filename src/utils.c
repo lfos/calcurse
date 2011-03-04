@@ -471,15 +471,13 @@ get_item_time (long date)
 int
 get_item_hour (long date)
 {
-  time_t t = (time_t)date;
-  return (localtime (&t))->tm_hour;
+  return (localtime ((time_t *)&date))->tm_hour;
 }
 
 int
 get_item_min (long date)
 {
-  time_t t = (time_t)date;
-  return (localtime (&t))->tm_min;
+  return (localtime ((time_t *)&date))->tm_min;
 }
 
 long
