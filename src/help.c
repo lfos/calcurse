@@ -29,7 +29,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * Send your feedback or comments to : calcurse@culot.org
+ * Send your feedback or comments to : misc@calcurse.org
  * Calcurse home page : http://culot.org/calcurse
  *
  */
@@ -731,7 +731,7 @@ help_screen (void)
       "\t  following disclaimer in the documentation and/or other\n"
       "\t  materials provided with the distribution.\n"
       "\n\n"
-      "Send your feedback or comments to : calcurse@culot.org\n"
+      "Send your feedback or comments to : misc@calcurse.org\n"
       "Calcurse home page : http://culot.org/calcurse"));
 
   help_wins_init (&hwin, 0, 0, (notify_bar ()) ? row - 3 : row - 2, col);

@@ -831,8 +831,7 @@ ____
 Reporting bugs and feedback
 ---------------------------
 
-Please send bug reports and feedback to: `calcurse .at. culot .dot. org` or to
-the author: `frederic .at. culot .dot. org`.
+Please send bug reports and feedback to: `misc .at. calcurse .dot. org`.
 
 [[contribute]]
 How to contribute?

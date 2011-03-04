@@ -29,7 +29,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * Send your feedback or comments to : calcurse@culot.org
+ * Send your feedback or comments to : misc@calcurse.org
  * Calcurse home page : http://culot.org/calcurse
  *
  */
@@ -144,7 +144,7 @@ help_arg ()
       "\tby issuing a command such as: calcurse --export > calcurse.dat\n"
       "\nFor more information, type '?' from within Calcurse, "
       "or read the manpage.\n"
-      "Mail bug reports and suggestions to <calcurse@culot.org>.\n");
+      "Mail bug reports and suggestions to <misc@calcurse.org>.\n");
 
   (void)snprintf (htitle, BUFSIZ, _("Calcurse %s - text-based organizer\n"),
                   VERSION);
@@ -506,7 +506,7 @@ more_info (void)
   fputs (_("\nFor more information, type '?' from within Calcurse, "
            "or read the manpage.\n"), stdout);
   fputs (_("Mail bug reports and suggestions to "
-           "<calcurse@culot.org>.\n"), stdout);
+           "<misc@calcurse.org>.\n"), stdout);
 }
 
 /* 

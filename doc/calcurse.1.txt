@@ -243,8 +243,8 @@ be used instead of 'xterm-color' to set the *$TERM* variable:
      with XFree86 xterm (or the similar one distributed 
      with ncurses)."
 
-If you find other bugs, please send a report to calcurse@culot.org or to the
-author, below.
+If you find other bugs, please send a report to bugs@calcurse.org or to one of
+the authors, below.
 
 See also
 --------
