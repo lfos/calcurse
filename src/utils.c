@@ -507,21 +507,16 @@ char *
 date_sec2date_str (long sec, char *datefmt)
 {
   struct tm *lt;
-  time_t t;
-  char *datestr;
-
-  datestr = (char *) mem_calloc (BUFSIZ, sizeof (char));
+  char *datestr = (char *) mem_calloc (BUFSIZ, sizeof (char));
 
   if (sec == 0)
     (void)snprintf (datestr, BUFSIZ, "0");
-  else
-    {
-      t = sec;
-      lt = localtime (&t);
-      strftime (datestr, BUFSIZ, datefmt, lt);
-    }
+  else {
+    lt = localtime ((time_t *)&sec);
+    strftime (datestr, BUFSIZ, datefmt, lt);
+  }
 
-  return (datestr);
+  return datestr;
 }
 
 /* Generic function to format date. */
