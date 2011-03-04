@@ -170,17 +170,14 @@ status_mesg (char *mesg_line1, char *mesg_line2)
 /* Erase part of a window. */
 void
 erase_window_part (WINDOW *win, int first_col, int first_row, int last_col,
-		   int last_row)
+                   int last_row)
 {
   int c, r;
 
   for (r = first_row; r <= last_row; r++)
-    {
-      for (c = first_col; c <= last_col; c++)
-	{
-	  mvwprintw (win, r, c, " ");
-	}
-    }
+    for (c = first_col; c <= last_col; c++)
+      mvwprintw (win, r, c, " ");
+
   wnoutrefresh (win);
 }
 
