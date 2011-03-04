@@ -643,38 +643,21 @@ min2sec (unsigned minutes)
 int
 check_time (char *string)
 {
-  int ok = 0;
-  char hour[] = "  ";
-  char minutes[] = "  ";
+  char *s = mem_strdup(string);
+  char *hour = strtok(s, ":");
+  char *min = strtok(NULL, ":");
+  int h, m;
+  int ret = 0;
 
-  if (((strlen (string) == 2) || (strlen (string) == 3))
-      && (isdigit (string[0]) != 0) && (isdigit (string[1]) != 0))
-    {
-      (void)strncpy (minutes, string, 2);
-      if (atoi (minutes) >= 0)
-	ok = 2;			/* [MM] format */
-    }
-  else if ((strlen (string) == 4) && (isdigit (string[0]) != 0)
-	   && (isdigit (string[2]) != 0) && (isdigit (string[3]) != 0)
-           && (string[1] == ':'))
-    {
-      (void)strncpy (hour, string, 1);
-      strncpy (minutes, string + 2, 2);
-      if ((atoi (hour) <= 24) && (atoi (hour) >= 0)
-	  && (atoi (minutes) < MININSEC) && (atoi (minutes) >= 0))
-	ok = 1;			/* [H:MM] format */
-    }
-  else if ((strlen (string) == 5) && (isdigit (string[0]) != 0)
-	   && (isdigit (string[1]) != 0) && (isdigit (string[3]) != 0)
-	   && (isdigit (string[4]) != 0) && (string[2] == ':'))
-    {
-      strncpy (hour, string, 2);
-      strncpy (minutes, string + 3, 2);
-      if ((atoi (hour) <= 24) && (atoi (hour) >= 0)
-	  && (atoi (minutes) < MININSEC) && (atoi (minutes) >= 0))
-	ok = 1;			/* [HH:MM] format */
-    }
-  return (ok);
+  if (min) {
+    h = atoi (hour);
+    m = atoi (min);
+    if (h >= 0 && h < 24 && m >= 0 && m < MININSEC) ret = 1;
+  }
+  else if (strlen(s) < 4 && is_all_digit(s) && atoi(s) > 0) ret = 2;
+
+  xfree(s);
+  return ret;
 }
 
 /*
