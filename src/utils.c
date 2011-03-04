@@ -957,14 +957,11 @@ parse_date (char *date_string, enum datefmt datefmt, int *year, int *month,
   return 1;
 }
 
-char *
+void
 str_toupper (char *s)
 {
-  int len;
-
-  for (len = 0; s && s[len]; len++)
-    s[len] = toupper (s[len]);
-  return s;
+  if (!s) return;
+  for (; *s; s++) *s = toupper (*s);
 }
 
 void

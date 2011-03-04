@@ -1916,32 +1916,31 @@ ical_chk_header (FILE *fd, unsigned *lineno)
 
   (void)fgets (buf, BUFSIZ, fd);
   (*lineno)++;
-  if (buf == NULL
-      || strncmp (str_toupper (buf), icalheader.str, icalheader.len) != 0)
-    {
-      return HEADER_MALFORMED;
-    }
-  else
-    {
-      const int AWAITED = 1;
-      float version = HEADER_MALFORMED;
-      int read;
 
-      do
+  if (buf == NULL) return HEADER_MALFORMED;
+
+  str_toupper (buf);
+  if (strncmp (buf, icalheader.str, icalheader.len) != 0)
+    return HEADER_MALFORMED;
+
+  const int AWAITED = 1;
+  float version = HEADER_MALFORMED;
+  int read;
+
+  do
+    {
+      if (fgets (buf, BUFSIZ, fd) == NULL)
         {
-          if (fgets (buf, BUFSIZ, fd) == NULL)
-            {
-              return HEADER_MALFORMED;
-            }
-          else
-            {
-              (*lineno)++;
-              read = sscanf (buf, "VERSION:%f", &version);
-            }
+          return HEADER_MALFORMED;
         }
-      while (read != AWAITED);
-      return version;
+      else
+        {
+          (*lineno)++;
+          read = sscanf (buf, "VERSION:%f", &version);
+        }
     }
+  while (read != AWAITED);
+  return version;
 }
 
 /*

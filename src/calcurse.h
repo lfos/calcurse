@@ -873,7 +873,7 @@ char        *new_tempfile (const char *, int);
 void         erase_note (char **, enum eraseflg);
 int          parse_date (char *, enum datefmt, int *, int *, int *,
                          struct date *);
-char        *str_toupper (char *);
+void         str_toupper (char *);
 void         file_close (FILE *, const char *);
 void         psleep (unsigned);
 
