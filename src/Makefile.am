@@ -1,32 +1,33 @@
-AUTOMAKE_OPTIONS= foreign
+AUTOMAKE_OPTIONS = foreign
 
-bin_PROGRAMS= calcurse
+bin_PROGRAMS = calcurse
 
-calcurse_SOURCES= 					\
-	calcurse.c calcurse.h htable.h			\
-	apoint.c 					\
-	args.c 						\
-	calendar.c 					\
-	custom.c					\
-	day.c 						\
-	event.c 					\
-	help.c 						\
-	io.c 						\
-	keys.c 		                                \
-	notify.c 					\
-	recur.c 					\
-	sigs.c 						\
-	todo.c 						\
-	utils.c 					\
-	vars.c 						\
-	wins.c 		                                \
-	mem.c 		                                \
+calcurse_SOURCES = \
+	calcurse.c \
+	calcurse.h \
+	htable.h \
+	apoint.c \
+	args.c \
+	calendar.c \
+	custom.c \
+	day.c \
+	event.c \
+	help.c \
+	io.c \
+	keys.c \
+	notify.c \
+	recur.c \
+	sigs.c \
+	todo.c \
+	utils.c \
+	vars.c \
+	wins.c \
+	mem.c \
 	dmon.c
 
-LDADD= @LTLIBINTL@
+LDADD = @LTLIBINTL@
 
-datadir= @datadir@
+datadir = @datadir@
+localedir = $(datadir)/locale
 
-localedir= $(datadir)/locale
-
-DEFS= -DLOCALEDIR=\"$(localedir)\" @DEFS@
+DEFS = -DLOCALEDIR=\"$(localedir)\" @DEFS@
