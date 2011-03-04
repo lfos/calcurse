@@ -472,32 +472,22 @@ is_all_digit (char *string)
 long
 get_item_time (long date)
 {
-  return (long)(get_item_hour (date) * HOURINSEC
-                + get_item_min (date) * MININSEC);
+  return (long)(get_item_hour (date) * HOURINSEC +
+    get_item_min (date) * MININSEC);
 }
 
 int
 get_item_hour (long date)
 {
-  struct tm *lt;
-  time_t t;
-
-  t = (time_t)date;
-  lt = localtime (&t);
-
-  return lt->tm_hour;
+  time_t t = (time_t)date;
+  return (localtime (&t))->tm_hour;
 }
 
 int
 get_item_min (long date)
 {
-  struct tm *lt;
-  time_t t;
-
-  t = (time_t)date;
-  lt = localtime (&t);
-
-  return lt->tm_min;
+  time_t t = (time_t)date;
+  return (localtime (&t))->tm_min;
 }
 
 long
