@@ -970,10 +970,7 @@ str_toupper (char *s)
 void
 file_close (FILE *f, const char *pos)
 {
-  int ret;
-  
-  ret = fclose (f);
-  EXIT_IF (ret != 0, _("Error when closing file at %s"), pos);
+  EXIT_IF ((fclose (f)) != 0, _("Error when closing file at %s"), pos);
 }
 
 /*
