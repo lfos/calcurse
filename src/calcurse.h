@@ -854,7 +854,6 @@ long         get_item_time (long);
 int          get_item_hour (long);
 int          get_item_min (long);
 long         date2sec (struct date, unsigned, unsigned);
-char        *date_sec2hour_str (long);
 char        *date_sec2date_str (long, char *);
 void         date_sec2date_fmt (long, const char *, char *);
 long         date_sec_change (long, int, int);

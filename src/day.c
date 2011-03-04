@@ -603,7 +603,7 @@ day_edit_time (long time)
   while (1)
     {
       status_mesg (msg_time, "");
-      timestr = date_sec2hour_str (time);
+      timestr = date_sec2date_str (time, "%H:%M");
       updatestring (win[STA].p, &timestr, 0, 1);
       if (check_time (timestr) != 1 || strlen (timestr) == 0)
 	{

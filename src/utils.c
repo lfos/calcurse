@@ -502,22 +502,6 @@ date2sec (struct date day, unsigned hour, unsigned min)
   return t;
 }
 
-/* Return a string containing the hour of a given date in seconds. */
-char *
-date_sec2hour_str (long sec)
-{
-  const int TIME_LEN = 6;
-  struct tm *lt;
-  time_t t;
-  char *timestr;
-
-  t = sec;
-  lt = localtime (&t);
-  timestr = (char *) mem_malloc (TIME_LEN);
-  (void)snprintf (timestr, TIME_LEN, "%02u:%02u", lt->tm_hour, lt->tm_min);
-  return timestr;
-}
-
 /* Return a string containing the date, given a date in seconds. */
 char *
 date_sec2date_str (long sec, char *datefmt)
