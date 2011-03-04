@@ -212,22 +212,17 @@ popup (int pop_row, int pop_col, int pop_y, int pop_x, char *title, char *msg,
 void
 print_in_middle (WINDOW *win, int starty, int startx, int width, char *string)
 {
-  int length, x, y;
-  float temp;
+  int len = strlen (string);
+  int x, y;
 
-  if (win == NULL)
-    win = stdscr;
+  if (!win) win = stdscr;
   getyx (win, y, x);
-  if (startx != 0)
-    x = startx;
-  if (starty != 0)
-    y = starty;
-  if (width == 0)
-    width = 80;
+  if (startx) x = startx;
+  if (starty) y = starty;
+  if (!width) width = 80;
 
-  length = strlen (string);
-  temp = (width - length) / 2;
-  x = startx + (int) temp;
+  x += (width - len) / 2;
+
   custom_apply_attr (win, ATTR_HIGHEST);
   mvwprintw (win, y, x, "%s", string);
   custom_remove_attr (win, ATTR_HIGHEST);
