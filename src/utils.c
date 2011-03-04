@@ -485,26 +485,21 @@ get_item_min (long date)
 long
 date2sec (struct date day, unsigned hour, unsigned min)
 {
-  struct tm start, *lt;
-  time_t tstart, t;
+  time_t t = now ();
+  struct tm start = *(localtime (&t));
 
-  t = time (NULL);
-  lt = localtime (&t);
-  start = *lt;
-
-  start.tm_mon = day.mm;
+  start.tm_mon = day.mm - 1;
   start.tm_mday = day.dd;
-  start.tm_year = day.yyyy;
+  start.tm_year = day.yyyy - 1900;
   start.tm_hour = hour;
   start.tm_min = min;
   start.tm_sec = 0;
   start.tm_isdst = -1;
-  start.tm_year -= 1900;
-  start.tm_mon--;
-  tstart = mktime (&start);
-  EXIT_IF (tstart == -1, _("failure in mktime"));
 
-  return tstart;
+  t = mktime (&start);
+  EXIT_IF (t == -1, _("failure in mktime"));
+
+  return t;
 }
 
 /* Return a string containing the hour of a given date in seconds. */
