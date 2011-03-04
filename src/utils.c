@@ -766,20 +766,16 @@ get_today (void)
 long
 now (void)
 {
-  time_t current_time;
-
-  current_time = time (NULL);
-  return (current_time);
+  return (long)time (NULL);
 }
 
 char *
 nowstr (void)
 {
   static char buf[BUFSIZ];  
-  time_t now;
+  time_t t = now ();
 
-  (void)time (&now);
-  (void)strftime (buf, sizeof buf, "%a %b %d %T %Y", localtime (&now));
+  (void)strftime (buf, sizeof buf, "%a %b %d %T %Y", localtime (&t));
 
   return buf;
 }
