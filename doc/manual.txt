@@ -1026,7 +1026,7 @@ This section contains links and references that may be of interest to you.
 calcurse homepage
 ~~~~~~~~~~~~~~~~~
 
-The `calcurse` homepage can be found at http://culot.org/calcurse
+The `calcurse` homepage can be found at http://calcurse.org
 
 calcurse announce list
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -1038,14 +1038,16 @@ will receive an email as soon as a new feature appears in `calcurse`.
 To subscribe to this list, send a message to *calcurse-announce .at. culot
 .dot. org* with "subscribe" in the subject field.
 
+////
 calcurse RSS feed
 ~~~~~~~~~~~~~~~~~
 
 Another possibility to get warned when new releases come out is to follow the
-RSS feed at: http://culot.org/calcurse/news_rss.xml
+RSS feed at: http://calcurse.org/news_rss.xml
 
 This RSS feed is updated each time a new version of calcurse is available,
 describing newly added features.
+////
 
 [[links_others]]
 Other links

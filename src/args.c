@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * Send your feedback or comments to : misc@calcurse.org
- * Calcurse home page : http://culot.org/calcurse
+ * Calcurse home page : http://calcurse.org
  *
  */
 

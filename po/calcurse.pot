@@ -1185,7 +1185,7 @@ msgid ""
 "\n"
 "\n"
 "Send your feedback or comments to : misc@calcurse.org\n"
-"Calcurse home page : http://culot.org/calcurse"
+"Calcurse home page : http://calcurse.org"
 msgstr ""
 
 #: src/io.c:145

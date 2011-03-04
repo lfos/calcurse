@@ -256,11 +256,11 @@ http://tools.ietf.org/html/rfc2445
 
 The pcal project page: http://pcal.sourceforge.net/
 
-Calcurse home page: http://culot.org/calcurse/
+Calcurse home page: http://calcurse.org/
 
 Calcurse complete manual, translated in many languages and maintained in
 html format, can be found in the doc/ directory of the source package, 
-or at: http://culot.org/calcurse/manual.html
+or at: http://calcurse.org/files/manual.html
 
 Authors
 -------

@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * Send your feedback or comments to : misc@calcurse.org
- * Calcurse home page : http://culot.org/calcurse
+ * Calcurse home page : http://calcurse.org
  *
  */
 
@@ -732,7 +732,7 @@ help_screen (void)
       "\t  materials provided with the distribution.\n"
       "\n\n"
       "Send your feedback or comments to : misc@calcurse.org\n"
-      "Calcurse home page : http://culot.org/calcurse"));
+      "Calcurse home page : http://calcurse.org"));
 
   help_wins_init (&hwin, 0, 0, (notify_bar ()) ? row - 3 : row - 2, col);
   page = oldpage = HELP_MAIN;
