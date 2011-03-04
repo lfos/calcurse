@@ -1035,7 +1035,7 @@ If you are interested in the project and want to be warned when a new release
 comes out, you can subscribe to the `calcurse` announce list. In doing so, you
 will receive an email as soon as a new feature appears in `calcurse`.
 
-To subscribe to this list, send a message to *calcurse-announce .at. culot
+To subscribe to this list, send a message to *announce+subscribe .at. calcurse
 .dot. org* with "subscribe" in the subject field.
 
 ////
