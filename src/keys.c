@@ -472,6 +472,7 @@ keys_display_bindings_bar (WINDOW *win, struct binding **binding, int first_key,
         {
           (void)strncpy (key, keys_action_firstkey (binding[i + 1]->action),
                          KEYS_KEYLEN);
+          key[KEYS_KEYLEN] = 0;
           fmtkey = keys_format_label (key, KEYS_KEYLEN);
           mvwprintw (win, 1, KEY_POS, fmtkey);
         }
