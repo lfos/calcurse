@@ -372,23 +372,26 @@ getstring (WINDOW *win, char *str, int l, int x, int y)
 int
 updatestring (WINDOW *win, char **str, int x, int y)
 {
-  char *newstr;
-  int escape, len = strlen (*str) + 1;
+  int len = strlen (*str);
+  char *buf;
+  enum getstr ret;
 
-  EXIT_IF (len > BUFSIZ, _("Internal error: line too long"));
+  EXIT_IF (len + 1 > BUFSIZ, _("Internal error: line too long"));
   
-  newstr = mem_malloc (BUFSIZ);
-  (void) memcpy (newstr, *str, len);
-  escape = getstring (win, newstr, BUFSIZ, x, y);
-  if (!escape)
-    {
-      len = strlen (newstr) + 1;
-      *str = mem_realloc (*str, len, 1);
-      EXIT_IF (*str == 0, _("out of memory"));
-      (void) memcpy (*str, newstr, len);
-    }
-  mem_free (newstr);
-  return escape;
+  buf = mem_malloc (BUFSIZ);
+  (void)memcpy (buf, *str, len + 1);
+
+  ret = getstring (win, buf, BUFSIZ, x, y);
+
+  if (ret == GETSTRING_VALID) {
+    len = strlen (buf);
+    *str = mem_realloc (*str, len + 1, 1);
+    EXIT_IF (*str == 0, _("out of memory"));
+    (void)memcpy (*str, buf, len + 1);
+  }
+
+  mem_free (buf);
+  return ret;
 }
 
 /* checks if a string is only made of digits */
