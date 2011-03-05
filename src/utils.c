@@ -228,77 +228,51 @@ print_in_middle (WINDOW *win, int starty, int startx, int width, char *string)
   custom_remove_attr (win, ATTR_HIGHEST);
 }
 
-/* 
- * Draw the cursor at the correct position in string.
- * As echoing is not set, we need to know the string we are working on to 
- * handle display correctly.
- */
-static void
-showcursor (WINDOW *win, int y, int pos, char *str, int l, int offset)
-{
-  char *nc;
-
-  nc = str + pos;
-  wmove (win, y, pos - offset);
-  (pos >= l) ? waddch (win, SPACE | A_REVERSE) : waddch (win, *nc | A_REVERSE);
-}
-
 /* Print the string at the desired position. */
 static void
-showstring (WINDOW *win, int y, int x, char *str, int len, int pos)
+showstring (WINDOW *win, int x, int y, char *str, int len, int scroff,
+            int curpos)
 {
-  const int rec = 30, border = 3;
-  const int max_col = col - border, max_len = max_col - rec;
-  int page, max_page, offset, c = 0;
-  char *orig;
+  char c = 0;
 
-  orig = str;
-  max_page = (len - rec) / max_len;
-  page = (pos - rec) / max_len;
-  offset = page * max_len;
-  str += offset;
-  mvwaddnstr (win, y, x, str, MIN (len, max_col));
+  /* print string */
+  mvwaddnstr (win, y, x, &str[scroff], -1);
   wclrtoeol (win);
-  if (page > 0 && page < max_page)
-    {
-      c = '*';
-    }
-  else if (page > 0)
-    {
-      c = '<';
-    }
-  else if (page < max_page)
-    {
-      c = '>';
-    }
-  else
-    c = 0;
+
+  /* print scrolling indicator */
+  if (scroff > 0 && scroff < len - col) c = '*';
+  else if (scroff > 0) c = '<';
+  else if (scroff < len - col) c = '>';
   mvwprintw (win, y, col - 1, "%c", c);
-  showcursor (win, y, pos, orig, len, offset);
+
+  /* print cursor */
+  wmove (win, y, curpos - scroff);
+
+  if (curpos >= len) waddch (win, SPACE | A_REVERSE);
+  else waddch (win, str[curpos] | A_REVERSE);
 }
 
 /* Delete a character at the given position in string. */
 static void
 del_char (int pos, char *str)
 {
-  int len;
-
   str += pos;
-  len = strlen (str) + 1;
-  memmove (str, str + 1, len);
+  memmove (str, str + 1, strlen (str) + 1);
 }
 
 /* Add a character at the given position in string. */
-static char *
-add_char (int pos, int ch, char *str)
+static void
+ins_char (int pos, int ch, char *str)
 {
-  int len;
-
   str += pos;
-  len = strlen (str) + 1;
-  memmove (str + 1, str, len);
+  memmove (str + 1, str, strlen (str) + 1);
   *str = ch;
-  return (str += len);
+}
+
+void
+bell (void)
+{
+  printf ("\a");
 }
 
 /* 
@@ -312,117 +286,85 @@ add_char (int pos, int ch, char *str)
 enum getstr
 getstring (WINDOW *win, char *str, int l, int x, int y)
 {
-  int ch, newpos, len = 0;
-  char *orig;
+  const int pgsize = col / 3;
 
-  orig = str;
+  int len = strlen (str);
+  int curpos = len;
+  int scroff = 0;
+  int ch;
+
   custom_apply_attr (win, ATTR_HIGHEST);
-  for (; *str; ++str, ++len)
-    ;
-  newpos = x + len;
-  showstring (win, y, x, orig, len, newpos);
 
-  while ((ch = wgetch (win)) != '\n')
-    {
-      switch (ch)
-	{
-	case KEY_BACKSPACE:	/* delete one character */
-	case 330:
-	case 127:
-	case CTRL ('H'):
-	  if (len > 0 && newpos > x)
-	    {
-	      --newpos;
-	      --len;
-	      if (newpos >= x + len)
-		--str;
-	      else		/* to be deleted inside string */
-		del_char (newpos, orig);
-	    }
-	  break;
+  for (;;) {
+    while (curpos < scroff) scroff -= pgsize;
+    while (curpos >= scroff + col - 1) scroff += pgsize;
 
-	case CTRL ('D'):	/* delete next character */
-	  if (newpos != (x + len))
-	    {
-	      --len;
-	      if (newpos >= x + len)
-		--str;
-	      else
-		del_char (newpos, orig);
-	    }
-	  else
-	    printf ("\a");
-	  break;
+    showstring (win, x, y, str, len, scroff, curpos);
+    wins_doupdate ();
 
-  case CTRL ('W'):	/* delete a word */
-    while (len > 0 && newpos > x && *(orig + newpos - 1) == ' ') {
-      --newpos;
-      --len;
-      if (newpos >= x + len)
-        --str;
-      else
-        del_char (newpos, orig);
+    if ((ch = wgetch (win)) == '\n') break;
+    switch (ch) {
+      case KEY_BACKSPACE:     /* delete one character */
+      case 330:
+      case 127:
+      case CTRL ('H'):
+        if (curpos > 0) {
+          del_char ((--curpos), str);
+          len--;
+        }
+        else bell ();
+        break;
+      case CTRL ('D'):        /* delete next character */
+        if (curpos < len) {
+          del_char (curpos, str);
+          len--;
+        }
+	      else bell ();
+        break;
+      case CTRL ('W'):        /* delete a word */
+        if (curpos > 0) {
+          while (curpos && str[curpos - 1] == ' ') {
+            del_char ((--curpos), str);
+            len--;
+          }
+          while (curpos && str[curpos - 1] != ' ') {
+            del_char ((--curpos), str);
+            len--;
+          }
+        }
+        else bell ();
+        break;
+      case CTRL ('K'):        /* delete to end-of-line */
+        str[curpos] = 0;
+        len = curpos;
+        break;
+      case CTRL ('A'):        /* go to begginning of string */
+        curpos = 0;
+        break;
+      case CTRL ('E'):        /* go to end of string */
+        curpos = len;
+        break;
+      case KEY_LEFT:          /* move one char backward  */
+      case CTRL ('B'):
+        if (curpos > 0) curpos--;
+        break;
+      case KEY_RIGHT:         /* move one char forward */
+      case CTRL ('F'):
+        if (curpos < len) curpos++;
+        break;
+      case ESCAPE:            /* cancel editing */
+        return (GETSTRING_ESC);
+        break;
+      default:                /* insert one character */
+        if (len < l - 1) {
+          ins_char ((curpos++), ch, str);
+          len++;
+        }
     }
-    while (len > 0 && newpos > x && *(orig + newpos - 1) != ' ') {
-      --newpos;
-      --len;
-      if (newpos >= x + len)
-        --str;
-      else
-        del_char (newpos, orig);
-    }
-    break;
+  }
 
-	case CTRL ('K'):	/* delete to end-of-line */
-	  str = orig + newpos;
-	  *str = 0;
-	  len -= (len - newpos);
-	  break;
-
-	case CTRL ('A'):	/* go to begginning of string */
-	  newpos = x;
-	  break;
-
-	case CTRL ('E'):	/* go to end of string */
-	  newpos = x + len;
-	  break;
-
-	case KEY_LEFT:		/* move one char backward  */
-	case CTRL ('B'):
-	  if (newpos > x)
-	    newpos--;
-	  break;
-
-	case KEY_RIGHT:	/* move one char forward */
-	case CTRL ('F'):
-	  if (newpos < len)
-	    newpos++;
-	  break;
-
-	case ESCAPE:	/* cancel editing */
-	  return (GETSTRING_ESC);
-	  break;
-
-	default:		/* insert one character */
-	  if (len < l - 1)
-	    {
-	      if (newpos >= len)
-		{
-		  str = orig + newpos;
-		  *str++ = ch;
-		}
-	      else		// char is to be inserted inside string 
-		str = add_char (newpos, ch, orig);
-	      ++len;
-	      ++newpos;
-	    }
-
-	}
-      showstring (win, y, x, orig, len, newpos);
-      wins_doupdate ();
-    }
-  *str = 0;
   custom_remove_attr (win, ATTR_HIGHEST);
+
   return (len == 0 ? GETSTRING_RET : GETSTRING_VALID);
 }
 
