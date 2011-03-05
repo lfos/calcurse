@@ -463,11 +463,7 @@ date_sec2date_str (long sec, char *datefmt)
 void
 date_sec2date_fmt (long sec, const char *fmt, char *datef)
 {
-  struct tm *lt;
-  time_t t;
-
-  t = sec;
-  lt = localtime (&t);
+  struct tm *lt = localtime ((time_t *)&sec);
   strftime (datef, BUFSIZ, fmt, lt);
 }
 
