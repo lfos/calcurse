@@ -228,7 +228,7 @@ apoint_add (void)
 	      else if (check_time (item_time) == 1)
 		{
 		  (void)sscanf (item_time, "%u:%u", &end_h, &end_m);
-		  if (end_h < heures)
+		  if (end_h < heures || ((end_h == heures) && (end_m < minutes)))
 		    {
 		      apoint_duration = MININSEC - minutes + end_m
                         + (24 + end_h - (heures + 1)) * MININSEC;
