@@ -142,11 +142,11 @@ apoint_new (char *mesg, char *note, long start, long dur, char state)
   for (;;)
     {
       if (*i == 0 || (*i)->start > start)
-	{
-	  o->next = *i;
-	  *i = o;
-	  break;
-	}
+        {
+          o->next = *i;
+          *i = o;
+          break;
+        }
       i = &(*i)->next;
     }
   pthread_mutex_unlock (&(alist_p->mutex));
@@ -154,7 +154,7 @@ apoint_new (char *mesg, char *note, long start, long dur, char state)
   return (o);
 }
 
-/* 
+/*
  * Add an item in either the appointment or the event list,
  * depending if the start time is entered or not.
  */
@@ -186,61 +186,61 @@ apoint_add (void)
     {
       status_mesg (mesg_1, "");
       if (getstring (win[STA].p, item_time, LTIME, 0, 1) != GETSTRING_ESC)
-	{
-	  if (strlen (item_time) == 0)
-	    {
-	      is_appointment = 0;
-	      break;
-	    }
-	  else if (check_time (item_time) != 1)
-	    {
-	      status_mesg (format_message_1, enter_str);
-	      (void)wgetch (win[STA].p);
-	    }
-	  else
-	    (void)sscanf (item_time, "%u:%u", &heures, &minutes);
-	}
+        {
+          if (strlen (item_time) == 0)
+            {
+              is_appointment = 0;
+              break;
+            }
+          else if (check_time (item_time) != 1)
+            {
+              status_mesg (format_message_1, enter_str);
+              (void)wgetch (win[STA].p);
+            }
+          else
+            (void)sscanf (item_time, "%u:%u", &heures, &minutes);
+        }
       else
-	return;
+        return;
     }
-  /* 
-   * Check if an event or appointment is entered, 
-   * depending on the starting time, and record the 
+  /*
+   * Check if an event or appointment is entered,
+   * depending on the starting time, and record the
    * corresponding item.
    */
   if (is_appointment)
     {				/* Get the appointment duration */
       item_time[0] = '\0';
       while (check_time (item_time) == 0)
-	{
-	  status_mesg (mesg_2, "");
-	  if (getstring (win[STA].p, item_time, LTIME, 0, 1) != GETSTRING_VALID)
-	    return;		//nothing entered, cancel adding of event
-	  else if (check_time (item_time) == 0)
-	    {
-	      status_mesg (format_message_2, enter_str);
-	      (void)wgetch (win[STA].p);
-	    }
-	  else
-	    {
-	      if (check_time (item_time) == 2)
-		apoint_duration = atoi (item_time);
-	      else if (check_time (item_time) == 1)
-		{
-		  (void)sscanf (item_time, "%u:%u", &end_h, &end_m);
-		  if (end_h < heures || ((end_h == heures) && (end_m < minutes)))
-		    {
-		      apoint_duration = MININSEC - minutes + end_m
+        {
+          status_mesg (mesg_2, "");
+          if (getstring (win[STA].p, item_time, LTIME, 0, 1) != GETSTRING_VALID)
+            return;		//nothing entered, cancel adding of event
+          else if (check_time (item_time) == 0)
+            {
+              status_mesg (format_message_2, enter_str);
+              (void)wgetch (win[STA].p);
+            }
+          else
+            {
+              if (check_time (item_time) == 2)
+                apoint_duration = atoi (item_time);
+              else if (check_time (item_time) == 1)
+                {
+                  (void)sscanf (item_time, "%u:%u", &end_h, &end_m);
+                  if (end_h < heures || ((end_h == heures) && (end_m < minutes)))
+                    {
+                      apoint_duration = MININSEC - minutes + end_m
                         + (24 + end_h - (heures + 1)) * MININSEC;
-		    }
-		  else
-		    {
-		      apoint_duration = MININSEC - minutes
+                    }
+                  else
+                    {
+                      apoint_duration = MININSEC - minutes
                         + end_m + (end_h - (heures + 1)) * MININSEC;
-		    }
-		}
-	    }
-	}
+                    }
+                }
+            }
+        }
     }
   else				/* Insert the event Id */
     Id = 1;
@@ -249,19 +249,19 @@ apoint_add (void)
   if (getstring (win[STA].p, item_mesg, BUFSIZ, 0, 1) == GETSTRING_VALID)
     {
       if (is_appointment)
-	{
-	  apoint_start = date2sec (*calendar_get_slctd_day (), heures, minutes);
-	  (void)apoint_new (item_mesg, 0L, apoint_start,
+        {
+          apoint_start = date2sec (*calendar_get_slctd_day (), heures, minutes);
+          (void)apoint_new (item_mesg, 0L, apoint_start,
                             min2sec (apoint_duration), 0L);
-	  if (notify_bar ())
-	    notify_check_added (item_mesg, apoint_start, 0L);
-	}
+          if (notify_bar ())
+            notify_check_added (item_mesg, apoint_start, 0L);
+        }
       else
-	(void)event_new (item_mesg, 0L,
+        (void)event_new (item_mesg, 0L,
                          date2sec (*calendar_get_slctd_day (), 12, 0), Id);
 
       if (hilt == 0)
-	hilt++;
+        hilt++;
     }
   wins_erase_status_bar ();
 }
@@ -286,12 +286,12 @@ apoint_delete (struct conf *conf, unsigned *nb_events, unsigned *nb_apoints)
       status_mesg (del_app_str, choices);
       answer = wgetch (win[STA].p);
       if ((answer == 'y') && (nb_items != 0))
-	go_for_deletion = 1;
+        go_for_deletion = 1;
       else
-	{
-	  wins_erase_status_bar ();
-	  return;
-	}
+        {
+          wins_erase_status_bar ();
+          return;
+        }
     }
   else if (nb_items != 0)
     go_for_deletion = 1;
@@ -299,31 +299,31 @@ apoint_delete (struct conf *conf, unsigned *nb_events, unsigned *nb_apoints)
   if (go_for_deletion)
     {
       if (nb_items != 0)
-	{
-	  deleted_item_type = day_erase_item (date, hilt, ERASE_DONT_FORCE);
-	  if (deleted_item_type == EVNT || deleted_item_type == RECUR_EVNT)
-	    {
-	      (*nb_events)--;
-	      to_be_removed = 1;
-	    }
-	  else if (deleted_item_type == APPT || deleted_item_type == RECUR_APPT)
-	    {
-	      (*nb_apoints)--;
-	      to_be_removed = 3;
-	    }
-	  else if (deleted_item_type == 0)
+        {
+          deleted_item_type = day_erase_item (date, hilt, ERASE_DONT_FORCE);
+          if (deleted_item_type == EVNT || deleted_item_type == RECUR_EVNT)
+            {
+              (*nb_events)--;
+              to_be_removed = 1;
+            }
+          else if (deleted_item_type == APPT || deleted_item_type == RECUR_APPT)
+            {
+              (*nb_apoints)--;
+              to_be_removed = 3;
+            }
+          else if (deleted_item_type == 0)
             return;
-	  else
+          else
             EXIT (_("no such type"));
-	  /* NOTREACHED */
+          /* NOTREACHED */
 
-	  if (hilt > 1)
-	    hilt--;
-	  if (apad.first_onscreen >= to_be_removed)
-	    apad.first_onscreen = apad.first_onscreen - to_be_removed;
-	  if (nb_items == 1)
-	    hilt = 0;
-	}
+          if (hilt > 1)
+            hilt--;
+          if (apad.first_onscreen >= to_be_removed)
+            apad.first_onscreen = apad.first_onscreen - to_be_removed;
+          if (nb_items == 1)
+            hilt = 0;
+        }
     }
 }
 
@@ -332,7 +332,7 @@ int
 apoint_cut (unsigned *nb_events, unsigned *nb_apoints)
 {
   const int NBITEMS = *nb_apoints + *nb_events;
-  int item_type, to_be_removed;  
+  int item_type, to_be_removed;
   long date;
 
   if (NBITEMS == 0)
@@ -354,7 +354,7 @@ apoint_cut (unsigned *nb_events, unsigned *nb_apoints)
   else
     EXIT (_("no such type"));
   /* NOTREACHED */
-  
+
   if (hilt > 1)
     hilt--;
   if (apad.first_onscreen >= to_be_removed)
@@ -380,7 +380,7 @@ apoint_paste (unsigned *nb_events, unsigned *nb_apoints, int cut_item_type)
     (*nb_apoints)++;
   else
     return;
-  
+
   if (hilt == 0)
     hilt++;
 }
@@ -488,15 +488,15 @@ apoint_get (long day, int pos)
   for (o = alist_p->root; o; o = o->next)
     {
       if (apoint_inday (o, day))
-	{
-	  if (n == pos)
-	    return (o);
-	  n++;
-	}
+        {
+          if (n == pos)
+            return (o);
+          n++;
+        }
     }
   EXIT (_("item not found"));
   return 0;
-  /* NOTREACHED */  
+  /* NOTREACHED */
 }
 
 void
@@ -512,9 +512,9 @@ apoint_delete_bynum (long start, unsigned num, enum eraseflg flag)
   for (i = alist_p->root; i != 0; i = i->next)
     {
       if (apoint_inday (i, start))
-	{
-	  if (n == num)
-	    {
+        {
+          if (n == num)
+            {
               switch (flag)
                 {
                 case ERASE_FORCE_ONLY_NOTE:
@@ -527,25 +527,25 @@ apoint_delete_bynum (long start, unsigned num, enum eraseflg flag)
                   erase_note (&i->note, ERASE_FORCE_KEEP_NOTE);
                   /* FALLTHROUGH */
                 default:
-		  if (notify_bar ())
-		    need_check_notify = notify_same_item (i->start);
-		  *iptr = i->next;
-		  mem_free (i->mesg);
+                  if (notify_bar ())
+                    need_check_notify = notify_same_item (i->start);
+                  *iptr = i->next;
+                  mem_free (i->mesg);
                   if (flag != ERASE_FORCE_KEEP_NOTE && flag != ERASE_CUT)
                     erase_note (&i->note, flag);
-		  mem_free (i);
-		  pthread_mutex_unlock (&(alist_p->mutex));
-		  if (need_check_notify)
-		    notify_check_next_app ();
+                  mem_free (i);
+                  pthread_mutex_unlock (&(alist_p->mutex));
+                  if (need_check_notify)
+                    notify_check_next_app ();
                   break;
-		}
-	      return;
-	    }
-	  n++;
-	}
+                }
+              return;
+            }
+          n++;
+        }
       iptr = &i->next;
     }
-  
+
   pthread_mutex_unlock (&(alist_p->mutex));
   EXIT (_("no such appointment"));
   /* NOTREACHED */
@@ -553,7 +553,7 @@ apoint_delete_bynum (long start, unsigned num, enum eraseflg flag)
 
 /*
  * Return the line number of an item (either an appointment or an event) in
- * the appointment panel. This is to help the appointment scroll function 
+ * the appointment panel. This is to help the appointment scroll function
  * to place beggining of the pad correctly.
  */
 static int
@@ -570,9 +570,9 @@ get_item_line (int item_nb, int nb_events_inday)
   return line;
 }
 
-/* 
+/*
  * Update (if necessary) the first displayed pad line to make the
- * appointment panel scroll down next time pnoutrefresh is called. 
+ * appointment panel scroll down next time pnoutrefresh is called.
  */
 void
 apoint_scroll_pad_down (int nb_events_inday, int win_length)
@@ -592,9 +592,9 @@ apoint_scroll_pad_down (int nb_events_inday, int win_length)
     apad.first_onscreen = item_last_line - awin_length;
 }
 
-/* 
+/*
  * Update (if necessary) the first displayed pad line to make the
- * appointment panel scroll up next time pnoutrefresh is called. 
+ * appointment panel scroll up next time pnoutrefresh is called.
  */
 void
 apoint_scroll_pad_up (int nb_events_inday)
@@ -619,29 +619,29 @@ apoint_check_next (struct notify_app *app, long start)
   for (i = alist_p->root; i != 0; i = i->next)
     {
       if (i->start > app->time)
-	{
-	  pthread_mutex_unlock (&(alist_p->mutex));
-	  return (app);
-	}
+        {
+          pthread_mutex_unlock (&(alist_p->mutex));
+          return (app);
+        }
       else
-	{
-	  if (i->start > start)
-	    {
-	      app->time = i->start;
-	      app->txt = mem_strdup (i->mesg);
-	      app->state = i->state;
-	      app->got_app = 1;
-	    }
-	}
+        {
+          if (i->start > start)
+            {
+              app->time = i->start;
+              app->txt = mem_strdup (i->mesg);
+              app->state = i->state;
+              app->got_app = 1;
+            }
+        }
     }
   pthread_mutex_unlock (&(alist_p->mutex));
 
   return (app);
 }
 
-/* 
- * Returns a structure of type struct apoint_list given a structure of type 
- * recur_apoint_s 
+/*
+ * Returns a structure of type struct apoint_list given a structure of type
+ * recur_apoint_s
  */
 struct apoint *
 apoint_recur_s2apoint_s (struct recur_apoint *p)
@@ -687,27 +687,27 @@ apoint_switch_notify (void)
   for (apoint = alist_p->root; apoint != 0; apoint = apoint->next)
     {
       if (apoint_inday (apoint, date))
-	{
-	  if (n == apoint_nb)
-	    {
-	      apoint->state ^= APOINT_NOTIFY;
-	      if (notify_bar ())
+        {
+          if (n == apoint_nb)
+            {
+              apoint->state ^= APOINT_NOTIFY;
+              if (notify_bar ())
                 {
                   notify_check_added (apoint->mesg, apoint->start,
                                       apoint->state);
                 }
-	      pthread_mutex_unlock (&(alist_p->mutex));
-	      if (need_chk_notify)
-		notify_check_next_app ();
-	      return;
-	    }
-	  n++;
-	}
+              pthread_mutex_unlock (&(alist_p->mutex));
+              if (need_chk_notify)
+                notify_check_next_app ();
+              return;
+            }
+          n++;
+        }
     }
 
-  pthread_mutex_unlock (&(alist_p->mutex));  
+  pthread_mutex_unlock (&(alist_p->mutex));
   EXIT (_("no such appointment"));
-  /* NOTREACHED */  
+  /* NOTREACHED */
 }
 
 /* Updates the Appointment panel */
@@ -735,8 +735,8 @@ apoint_update_panel (int which_pan)
                      win[APP].h - 2);
   custom_apply_attr (win[APP].p, ATTR_HIGHEST);
   mvwprintw (win[APP].p, title_lines, title_xpos, "%s  %s %d, %d",
-	     calendar_get_pom (date), _(monthnames[slctd_date.mm - 1]),
-	     slctd_date.dd, slctd_date.yyyy);
+             calendar_get_pom (date), _(monthnames[slctd_date.mm - 1]),
+             slctd_date.dd, slctd_date.yyyy);
   custom_remove_attr (win[APP].p, ATTR_HIGHEST);
 
   /* Draw the scrollbar if necessary. */
@@ -749,16 +749,16 @@ apoint_update_panel (int which_pan)
       int sbar_top = highend + title_lines + 1;
 
       if ((sbar_top + sbar_length) > win[APP].h - 1)
-	sbar_length = win[APP].h - 1 - sbar_top;
+        sbar_length = win[APP].h - 1 - sbar_top;
       draw_scrollbar (win[APP].p, sbar_top, win[APP].w - 2, sbar_length,
-		      title_lines + 1, win[APP].h - 1, hilt_bar);
+                      title_lines + 1, win[APP].h - 1, hilt_bar);
     }
 
   wnoutrefresh (win[APP].p);
   pnoutrefresh (apad.ptrwin, apad.first_onscreen, 0,
-		win[APP].y + title_lines + 1, win[APP].x + bordr,
-		win[APP].y + win[APP].h - 2 * bordr,
-		win[APP].x + win[APP].w - 3 * bordr);
+                win[APP].y + title_lines + 1, win[APP].x + bordr,
+                win[APP].y + win[APP].h - 2 * bordr,
+                win[APP].x + win[APP].w - 3 * bordr);
 }
 
 void

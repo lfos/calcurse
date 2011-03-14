@@ -91,9 +91,9 @@ get_help_lines (char *text)
   return newline + 1;
 }
 
-/* 
+/*
  * Write the desired help text inside the help pad, and return the number
- * of lines that were written. 
+ * of lines that were written.
  */
 static int
 help_write_pad (struct window *win, char *title, char *text, enum key action)
@@ -136,16 +136,16 @@ help_write_pad (struct window *win, char *title, char *text, enum key action)
       }
   }
   colnum = 0;
-  rownum += get_help_lines (title);  
+  rownum += get_help_lines (title);
   custom_remove_attr (win->p, ATTR_HIGHEST);
   mvwprintw (win->p, rownum, colnum, "%s", text);
   rownum += get_help_lines (text);
   return rownum;
 }
 
-/* 
+/*
  * Create and init help screen and its pad, which is used to make the scrolling
- * faster. 
+ * faster.
  */
 void
 help_wins_init (struct scrollwin *hwin, int x, int y, int h, int w)
@@ -168,7 +168,7 @@ help_wins_init (struct scrollwin *hwin, int x, int y, int h, int w)
   wins_show (hwin->win.p, hwin->label);
 }
 
-/* 
+/*
  * Delete the existing windows and recreate them with their new
  * size and placement.
  */
@@ -233,7 +233,7 @@ wanted_page (int ch)
     case KEY_GENERIC_IMPORT:
       page = HELP_IMPORT;
       break;
-      
+
     case KEY_GENERIC_EXPORT:
       page = HELP_EXPORT;
       break;
@@ -263,7 +263,7 @@ wanted_page (int ch)
     case KEY_GENERIC_PASTE:
       page = HELP_CUT_PASTE;
       break;
-      
+
     case KEY_EDIT_ITEM:
       page = HELP_EDIT;
       break;
@@ -330,7 +330,7 @@ help_screen (void)
   int page, oldpage;
   help_page_t hscr[HELPSCREENS];
   char keystr[DIRECTIONS][BUFSIZ];
-  
+
   hscr[HELP_MAIN].title =
     _("       Welcome to Calcurse. This is the main help screen.\n");
   (void)snprintf (hscr[HELP_MAIN].text, HELPTEXTSIZ,
@@ -383,7 +383,7 @@ help_screen (void)
       "In this report is shown one item per line, with the line in the input\n"
       "stream at which this item begins, together with the description of why\n"
       "the item could not be imported.\n"));
-  
+
   hscr[HELP_EXPORT].title = _("Export\n");
   (void)snprintf (hscr[HELP_EXPORT].text, HELPTEXTSIZ,
     _("Export calcurse data (appointments, events and todos).\n"
@@ -432,7 +432,7 @@ help_screen (void)
             keystr[MOVE_UP], keystr[MOVE_LEFT],
             keystr[MOVE_RIGHT], keystr[MOVE_DOWN],
             keys_action_firstkey (KEY_START_OF_WEEK),
-            keys_action_firstkey (KEY_END_OF_WEEK));            
+            keys_action_firstkey (KEY_END_OF_WEEK));
 
   hscr[HELP_VIEW].title = _("View\n");
   (void)snprintf (hscr[HELP_VIEW].text, HELPTEXTSIZ,
@@ -458,7 +458,7 @@ help_screen (void)
       "\nNotice that at the bottom of the screen the list of possible actions\n"
       "change while pressing '%s', so you always know what action can be\n"
       "performed on the selected panel."),
-            keys_action_firstkey (KEY_GENERIC_CHANGE_VIEW),            
+            keys_action_firstkey (KEY_GENERIC_CHANGE_VIEW),
             keys_action_firstkey (KEY_ADD_ITEM),
             keys_action_firstkey (KEY_GENERIC_CHANGE_VIEW));
 
@@ -520,7 +520,7 @@ help_screen (void)
       "       event next time you launch Calcurse."),
             keys_action_firstkey (KEY_ADD_ITEM),
             keys_action_firstkey (KEY_RAISE_PRIORITY),
-            keys_action_firstkey (KEY_LOWER_PRIORITY),            
+            keys_action_firstkey (KEY_LOWER_PRIORITY),
             keys_action_firstkey (KEY_ADD_ITEM),
             keys_action_firstkey (KEY_ADD_ITEM));
 
@@ -539,7 +539,7 @@ help_screen (void)
     "with its associated note if it had one."),
                   keys_action_firstkey (KEY_GENERIC_CUT),
                   keys_action_firstkey (KEY_GENERIC_PASTE));
-  
+
   hscr[HELP_EDIT].title = _("Edit Item\n");
   (void)snprintf (hscr[HELP_EDIT].text, HELPTEXTSIZ,
     _("Edit the item which is currently selected.\n"
@@ -596,7 +596,7 @@ help_screen (void)
       "Calcurse."),
             keys_action_firstkey (KEY_EDIT_NOTE),
             keys_action_firstkey (KEY_VIEW_NOTE));
-  
+
   hscr[HELP_PRIORITY].title = _("Priority\n");
   (void)snprintf (hscr[HELP_PRIORITY].text, HELPTEXTSIZ,
     _("Change the priority of the currently selected item in the ToDo list.\n"
@@ -612,9 +612,9 @@ help_screen (void)
       "panel may change,\ndepending on the priority of the items above it.\n\n"
       "At the opposite, to lower a todo priority, press '%s'. The todo position"
       "\nmay also change depending on the priority of the items below."),
-            keys_action_firstkey (KEY_RAISE_PRIORITY),            
+            keys_action_firstkey (KEY_RAISE_PRIORITY),
             keys_action_firstkey (KEY_LOWER_PRIORITY));
-  
+
   hscr[HELP_REPEAT].title = _("Repeat\n");
   (void)snprintf (hscr[HELP_REPEAT].text, HELPTEXTSIZ,
     _("Repeat an event or an appointment.\n"
@@ -640,7 +640,7 @@ help_screen (void)
       "       o the 'Repeat' and 'Delete' command can be mixed to create\n"
       "         complicated configurations, as it is possible to delete only\n"
       "         one occurence of a repeated item."),
-            keys_action_firstkey (KEY_REPEAT_ITEM));            
+            keys_action_firstkey (KEY_REPEAT_ITEM));
 
   hscr[HELP_FLAG].title = _("Flag Item\n");
   (void)snprintf (hscr[HELP_FLAG].text, HELPTEXTSIZ,
@@ -711,7 +711,7 @@ help_screen (void)
       "Once the last status bar page is reached, pressing '%s' another time\n"
       "leads you back to the first page."),
             keys_action_firstkey (KEY_GENERIC_OTHER_CMD),
-            keys_action_firstkey (KEY_GENERIC_OTHER_CMD));            
+            keys_action_firstkey (KEY_GENERIC_OTHER_CMD));
 
   hscr[HELP_CREDITS].title = _("Calcurse - text-based organizer");
   (void)snprintf (hscr[HELP_CREDITS].text, HELPTEXTSIZ,
@@ -737,7 +737,7 @@ help_screen (void)
   help_wins_init (&hwin, 0, 0, (notify_bar ()) ? row - 3 : row - 2, col);
   page = oldpage = HELP_MAIN;
   need_resize = 0;
-  
+
   /* Display the help screen related to user input. */
   while (ch != KEY_GENERIC_QUIT)
     {

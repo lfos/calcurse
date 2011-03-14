@@ -45,7 +45,7 @@
 
 #include "calcurse.h"
 
-/* 
+/*
  * Print Calcurse usage and exit.
  */
 static void
@@ -74,7 +74,7 @@ version_arg ()
   char vtitle[BUFSIZ];
   char *vtext =
       _("\nCopyright (c) 2004-2010 Frederic Culot.\n"
-	"This is free software; see the source for copying conditions.\n");
+        "This is free software; see the source for copying conditions.\n");
 
   (void)snprintf (vtitle, BUFSIZ, _("Calcurse %s - text-based organizer\n"),
                   VERSION);
@@ -82,7 +82,7 @@ version_arg ()
   fputs (vtext, stdout);
 }
 
-/* 
+/*
  * Print the command line options and exit.
  */
 static void
@@ -168,7 +168,7 @@ static void
 status_arg (void)
 {
   int cpid, dpid;
-  
+
   cpid = io_get_pid (path_cpid);
   dpid = io_get_pid (path_dpid);
 
@@ -191,7 +191,7 @@ status_arg (void)
  * (to be used together with the '-a' or '-t' flag in non-interactive mode).
  * Each line begins with nbtab tabs.
  * Print "No note file found", if the notefile does not exists.
- * 
+ *
  * (patch submitted by Erik Saule).
  */
 static void
@@ -212,16 +212,16 @@ print_notefile (FILE *out, char *filename, int nbtab)
   if (notefile)
     {
       while (fgets (buffer, BUFSIZ, notefile) != 0)
-	{
-	  if (printlinestarter)
-	    {
-	      fputs (linestarter, out);
-	      printlinestarter = 0;
-	    }
-	  fputs (buffer, out);
-	  if (buffer[strlen (buffer) - 1] == '\n')
-	    printlinestarter = 1;
-	}
+        {
+          if (printlinestarter)
+            {
+              fputs (linestarter, out);
+              printlinestarter = 0;
+            }
+          fputs (buffer, out);
+          if (buffer[strlen (buffer) - 1] == '\n')
+            printlinestarter = 1;
+        }
       fputs ("\n", out);
       file_close (notefile, __FILE_POS__);
     }
@@ -266,12 +266,12 @@ todo_arg (int priority, int print_note, regex_t *regex)
   if (print_note && i->note)                                            \
     print_notefile (stdout, i->note, 1);                                \
   } while (0)
-  
+
   for (i = todolist; i != 0; i = i->next)
     {
       if (regex && regexec (regex, i->mesg, 0, 0, 0) != 0)
         continue;
-      
+
       if (i->id < 0) /* completed task */
         {
           if (priority == 0)
@@ -291,7 +291,7 @@ todo_arg (int priority, int print_note, regex_t *regex)
     }
 
 #undef DISPLAY_TITLE
-#undef DISPLAY_TODO  
+#undef DISPLAY_TODO
 }
 
 /* Print the next appointment within the upcoming 24 hours. */
@@ -323,7 +323,7 @@ next_arg (void)
     }
 }
 
-/* 
+/*
  * Print the date on stdout.
  */
 static void
@@ -365,62 +365,62 @@ app_arg (int add_line, struct date *day, long date, int print_note,
   else
     today = date;
 
-  /* 
+  /*
    * Calculate and print the selected date if there is an event for
    * that date and it is the first one, and then print all the events for
-   * that date. 
+   * that date.
    */
   for (re = recur_elist; re != 0; re = re->next)
     {
       if (recur_item_inday (re->day, re->exc, re->rpt->type, re->rpt->freq,
                             re->rpt->until, today))
-	{
+        {
           if (regex && regexec (regex, re->mesg, 0, 0, 0) != 0)
             continue;
-          
-	  app_found = 1;
-	  if (add_line)
-	    {
-	      fputs ("\n", stdout);
-	      add_line = 0;
-	    }
-	  if (print_date)
-	    {
-	      arg_print_date (today, conf);
-	      print_date = 0;
-	    }
-	  fputs (" * ", stdout);
-	  fputs (re->mesg, stdout);
-	  fputs ("\n", stdout);
-	  if (print_note && re->note)
-	    print_notefile (stdout, re->note, 2);
-	}
+
+          app_found = 1;
+          if (add_line)
+            {
+              fputs ("\n", stdout);
+              add_line = 0;
+            }
+          if (print_date)
+            {
+              arg_print_date (today, conf);
+              print_date = 0;
+            }
+          fputs (" * ", stdout);
+          fputs (re->mesg, stdout);
+          fputs ("\n", stdout);
+          if (print_note && re->note)
+            print_notefile (stdout, re->note, 2);
+        }
     }
 
   for (j = eventlist; j != 0; j = j->next)
     {
       if (event_inday (j, today))
-	{
+        {
           if (regex && regexec (regex, j->mesg, 0, 0, 0) != 0)
             continue;
-          
-	  app_found = 1;
-	  if (add_line)
-	    {
-	      fputs ("\n", stdout);
-	      add_line = 0;
-	    }
-	  if (print_date)
-	    {
-	      arg_print_date (today, conf);
-	      print_date = 0;
-	    }
-	  fputs (" * ", stdout);
-	  fputs (j->mesg, stdout);
-	  fputs ("\n", stdout);
-	  if (print_note && j->note)
-	    print_notefile (stdout, j->note, 2);
-	}
+
+          app_found = 1;
+          if (add_line)
+            {
+              fputs ("\n", stdout);
+              add_line = 0;
+            }
+          if (print_date)
+            {
+              arg_print_date (today, conf);
+              print_date = 0;
+            }
+          fputs (" * ", stdout);
+          fputs (j->mesg, stdout);
+          fputs ("\n", stdout);
+          if (print_note && j->note)
+            print_notefile (stdout, j->note, 2);
+        }
     }
 
   /* Same process is performed but this time on the appointments. */
@@ -429,38 +429,38 @@ app_arg (int add_line, struct date *day, long date, int print_note,
     {
       if (recur_item_inday (ra->start, ra->exc, ra->rpt->type, ra->rpt->freq,
                             ra->rpt->until, today))
-	{
+        {
           struct apoint *apt;
-          
+
           if (regex && regexec (regex, ra->mesg, 0, 0, 0) != 0)
             continue;
-          
-	  app_found = 1;
-	  if (add_line)
-	    {
-	      fputs ("\n", stdout);
-	      add_line = 0;
-	    }
-	  if (print_date)
-	    {
-	      arg_print_date (today, conf);
-	      print_date = 0;
-	    }
+
+          app_found = 1;
+          if (add_line)
+            {
+              fputs ("\n", stdout);
+              add_line = 0;
+            }
+          if (print_date)
+            {
+              arg_print_date (today, conf);
+              print_date = 0;
+            }
           apt = apoint_recur_s2apoint_s (ra);
-	  apoint_sec2str (apt, RECUR_APPT, today, apoint_start_time,
+          apoint_sec2str (apt, RECUR_APPT, today, apoint_start_time,
                           apoint_end_time);
           mem_free (apt->mesg);
           mem_free (apt);
-	  fputs (" - ", stdout);
-	  fputs (apoint_start_time, stdout);
-	  fputs (" -> ", stdout);
-	  fputs (apoint_end_time, stdout);
-	  fputs ("\n\t", stdout);
-	  fputs (ra->mesg, stdout);
-	  fputs ("\n", stdout);
-	  if (print_note && ra->note)
-	    print_notefile (stdout, ra->note, 2);
-	}
+          fputs (" - ", stdout);
+          fputs (apoint_start_time, stdout);
+          fputs (" -> ", stdout);
+          fputs (apoint_end_time, stdout);
+          fputs ("\n\t", stdout);
+          fputs (ra->mesg, stdout);
+          fputs ("\n", stdout);
+          if (print_note && ra->note)
+            print_notefile (stdout, ra->note, 2);
+        }
     }
   pthread_mutex_unlock (&(recur_alist_p->mutex));
 
@@ -468,32 +468,32 @@ app_arg (int add_line, struct date *day, long date, int print_note,
   for (i = alist_p->root; i != 0; i = i->next)
     {
       if (apoint_inday (i, today))
-	{
+        {
           if (regex && regexec (regex, i->mesg, 0, 0, 0) != 0)
             continue;
-          
-	  app_found = 1;
-	  if (add_line)
-	    {
-	      fputs ("\n", stdout);
-	      add_line = 0;
-	    }
-	  if (print_date)
-	    {
-	      arg_print_date (today, conf);
-	      print_date = 0;
-	    }
-	  apoint_sec2str (i, APPT, today, apoint_start_time, apoint_end_time);
-	  fputs (" - ", stdout);
-	  fputs (apoint_start_time, stdout);
-	  fputs (" -> ", stdout);
-	  fputs (apoint_end_time, stdout);
-	  fputs ("\n\t", stdout);
-	  fputs (i->mesg, stdout);
-	  fputs ("\n", stdout);
-	  if (print_note && i->note)
-	    print_notefile (stdout, i->note, 2);
-	}
+
+          app_found = 1;
+          if (add_line)
+            {
+              fputs ("\n", stdout);
+              add_line = 0;
+            }
+          if (print_date)
+            {
+              arg_print_date (today, conf);
+              print_date = 0;
+            }
+          apoint_sec2str (i, APPT, today, apoint_start_time, apoint_end_time);
+          fputs (" - ", stdout);
+          fputs (apoint_start_time, stdout);
+          fputs (" -> ", stdout);
+          fputs (apoint_end_time, stdout);
+          fputs ("\n\t", stdout);
+          fputs (i->mesg, stdout);
+          fputs ("\n", stdout);
+          if (print_note && i->note)
+            print_notefile (stdout, i->note, 2);
+        }
     }
   pthread_mutex_unlock (&(alist_p->mutex));
 
@@ -509,10 +509,10 @@ more_info (void)
            "<misc@calcurse.org>.\n"), stdout);
 }
 
-/* 
+/*
  * For a given date, print appointments for each day
  * in the chosen interval. app_found and add_line are used
- * to format the output correctly. 
+ * to format the output correctly.
  */
 static void
 display_app (struct tm *t, int numdays, int add_line, int print_note,
@@ -549,25 +549,25 @@ date_arg (char *ddate, int add_line, int print_note, struct conf *conf,
   static struct tm t;
   time_t timer;
 
-  /* 
-   * Check (with the argument length) if a date or a number of days 
+  /*
+   * Check (with the argument length) if a date or a number of days
    * was entered, and then call app_arg() to print appointments
    */
   arg_len = strlen (ddate);
   if (arg_len <= 4)
     {				/* a number of days was entered */
       for (i = 0; i <= arg_len - 1; i++)
-	{
-	  if (isdigit (ddate[i]))
-	    num_digit++;
-	}
+        {
+          if (isdigit (ddate[i]))
+            num_digit++;
+        }
       if (num_digit == arg_len)
-	numdays = atoi (ddate);
+        numdays = atoi (ddate);
 
-      /* 
+      /*
        * Get current date, and print appointments for each day
        * in the chosen interval. app_found and add_line are used
-       * to format the output correctly. 
+       * to format the output correctly.
        */
       timer = time (NULL);
       t = *localtime (&timer);
@@ -577,25 +577,25 @@ date_arg (char *ddate, int add_line, int print_note, struct conf *conf,
     {				/* a date was entered */
       if (parse_date (ddate, conf->input_datefmt, (int *)&day.yyyy,
                       (int *)&day.mm, (int *)&day.dd, NULL))
-	{
-	  app_found = app_arg (add_line, &day, 0, print_note, conf, regex);
-	}
+        {
+          app_found = app_arg (add_line, &day, 0, print_note, conf, regex);
+        }
       else
-	{
-	  char outstr[BUFSIZ];
-	  fputs (_("Argument to the '-d' flag is not valid\n"), stderr);
-	  (void)snprintf (outstr, BUFSIZ,
+        {
+          char outstr[BUFSIZ];
+          fputs (_("Argument to the '-d' flag is not valid\n"), stderr);
+          (void)snprintf (outstr, BUFSIZ,
                           "Possible argument format are: '%s' or 'n'\n",
                           DATEFMT_DESC (conf->input_datefmt));
-	  fputs (_(outstr), stdout);
+          fputs (_(outstr), stdout);
           more_info ();
-	}
+        }
     }
 }
 
 /*
  * Print appointment from the given date 'startday' for the 'range' upcoming
- * days. 
+ * days.
  * If no starday is given (NULL), today is considered
  * If no range is given (NULL), 1 day is considered
  *
@@ -609,35 +609,35 @@ date_arg_extended (char *startday, char *range, int add_line, int print_note,
   static struct tm t;
   time_t timer;
 
-  /* 
+  /*
    * Check arguments and extract information
    */
   if (range != NULL)
     {
       arg_len = strlen (range);
       for (i = 0; i <= arg_len - 1; i++)
-	{
-	  if (!isdigit (range[i]))
-	    error = 1;
-	}
+        {
+          if (!isdigit (range[i]))
+            error = 1;
+        }
       if (!error)
-	numdays = atoi (range);
+        numdays = atoi (range);
     }
   timer = time (NULL);
   t = *localtime (&timer);
   if (startday != NULL)
     {
       if (parse_date (startday, conf->input_datefmt, (int *)&t.tm_year,
-		      (int *)&t.tm_mon, (int *)&t.tm_mday, NULL))
-	{
-	  t.tm_year -= 1900;
-	  t.tm_mon--;
-	  (void)mktime (&t);
-	}
+                      (int *)&t.tm_mon, (int *)&t.tm_mday, NULL))
+        {
+          t.tm_year -= 1900;
+          t.tm_mon--;
+          (void)mktime (&t);
+        }
       else
-	{
-	  error = 1;
-	}
+        {
+          error = 1;
+        }
     }
   if (!error)
     {
@@ -657,7 +657,7 @@ date_arg_extended (char *startday, char *range, int add_line, int print_note,
 }
 
 
-/* 
+/*
  * Parse the command-line arguments and call the appropriate
  * routines to handle those arguments. Also initialize the data paths.
  */
@@ -681,7 +681,7 @@ parse_args (int argc, char **argv, struct conf *conf)
   int tflag = 0;    /* -t: print todo list */
   int vflag = 0;    /* -v: print version number */
   int xflag = 0;    /* -x: export data */
-  
+
   int tnum = 0, xfmt = 0, non_interactive = 0, multiple_flag = 0, load_data = 0;
   char *ddate = "", *cfile = NULL, *range = NULL, *startday = NULL;
   char *datadir = NULL, *ifile = NULL;
@@ -691,9 +691,9 @@ parse_args (int argc, char **argv, struct conf *conf)
   int statusflag = 0; /* --status: get the status of running instances */
   enum
   {
-    STATUS_OPT = CHAR_MAX + 1 
+    STATUS_OPT = CHAR_MAX + 1
   };
-  
+
   static char *optstr = "hvnNax::t::d:c:r::s::S:D:i:";
 
   struct option longopts[] = {
@@ -718,48 +718,48 @@ parse_args (int argc, char **argv, struct conf *conf)
   while ((ch = getopt_long (argc, argv, optstr, longopts, NULL)) != -1)
     {
       switch (ch)
-	{
+        {
         case STATUS_OPT:
           statusflag = 1;
           break;
-	case 'a':
-	  aflag = 1;
-	  multiple_flag++;
+        case 'a':
+          aflag = 1;
+          multiple_flag++;
           load_data++;
-	  break;
-	case 'c':
-	  cflag = 1;
-	  multiple_flag++;
-	  cfile = optarg;
+          break;
+        case 'c':
+          cflag = 1;
+          multiple_flag++;
+          cfile = optarg;
           load_data++;
-	  break;
-	case 'd':
-	  dflag = 1;
-	  multiple_flag++;
+          break;
+        case 'd':
+          dflag = 1;
+          multiple_flag++;
           load_data++;
-	  ddate = optarg;
-	  break;
+          ddate = optarg;
+          break;
         case 'D':
           Dflag = 1;
           datadir = optarg;
           break;
-	case 'h':
-	  hflag = 1;
-	  break;
+        case 'h':
+          hflag = 1;
+          break;
         case 'i':
           iflag = 1;
           multiple_flag++;
           load_data++;
           ifile = optarg;
           break;
-	case 'n':
-	  nflag = 1;
-	  multiple_flag++;
+        case 'n':
+          nflag = 1;
+          multiple_flag++;
           load_data++;
-	  break;
-	case 'N':
-	  Nflag = 1;
-	  break;
+          break;
+        case 'N':
+          Nflag = 1;
+          break;
         case 'r':
           rflag = 1;
           multiple_flag++;
@@ -780,30 +780,30 @@ parse_args (int argc, char **argv, struct conf *conf)
             EXIT (_("Could not compile regular expression."));
           preg = &reg;
           break;
-	case 't':
-	  tflag = 1;
-	  multiple_flag++;
+        case 't':
+          tflag = 1;
+          multiple_flag++;
           load_data++;
-	  add_line = 1;
-	  if (optarg != NULL)
-	    {
-	      tnum = atoi (optarg);
-	      if (tnum < 0 || tnum > 9)
-		{
-		  usage ();
-		  usage_try ();
-		  return (EXIT_FAILURE);
-		}
-	    }
-	  else
-	    tnum = -1;
-	  break;
-	case 'v':
-	  vflag = 1;
-	  break;
-	case 'x':
-	  xflag = 1;
-	  multiple_flag++;
+          add_line = 1;
+          if (optarg != NULL)
+            {
+              tnum = atoi (optarg);
+              if (tnum < 0 || tnum > 9)
+                {
+                  usage ();
+                  usage_try ();
+                  return (EXIT_FAILURE);
+                }
+            }
+          else
+            tnum = -1;
+          break;
+        case 'v':
+          vflag = 1;
+          break;
+        case 'x':
+          xflag = 1;
+          multiple_flag++;
           load_data++;
           if (optarg != NULL)
             {
@@ -824,14 +824,14 @@ parse_args (int argc, char **argv, struct conf *conf)
             {
               xfmt = IO_EXPORT_ICAL;
             }
-	  break;
-	default:
-	  usage ();
-	  usage_try ();
-	  unknown_flag = 1;
-	  non_interactive = 1;
-	  /* NOTREACHED */
-	}
+          break;
+        default:
+          usage ();
+          usage_try ();
+          unknown_flag = 1;
+          non_interactive = 1;
+          /* NOTREACHED */
+        }
     }
   argc -= optind;
   argv += optind;
@@ -862,37 +862,37 @@ parse_args (int argc, char **argv, struct conf *conf)
   else
     {
       if (unknown_flag)
-	{
-	  non_interactive = 1;
-	}
+        {
+          non_interactive = 1;
+        }
       else if (hflag)
-	{
-	  help_arg ();
-	  non_interactive = 1;
-	}
+        {
+          help_arg ();
+          non_interactive = 1;
+        }
       else if (vflag)
-	{
-	  version_arg ();
-	  non_interactive = 1;
-	}
+        {
+          version_arg ();
+          non_interactive = 1;
+        }
       else if (statusflag)
         {
-          io_init (cfile, datadir);          
+          io_init (cfile, datadir);
           status_arg ();
           non_interactive = 1;
         }
       else if (multiple_flag)
-	{
-	  if (load_data)
-	    {
-	      io_init (cfile, datadir);
+        {
+          if (load_data)
+            {
+              io_init (cfile, datadir);
               io_check_dir (path_dir, (int *)0);
               io_check_dir (path_notes, (int *)0);
-	    }
+            }
           if (iflag)
             {
               io_check_file (path_apts, (int *)0);
-              io_check_file (path_todo, (int *)0);              
+              io_check_file (path_todo, (int *)0);
               io_load_app ();
               io_load_todo ();
               io_import_data (IO_IMPORT_ICAL, conf, ifile);
@@ -900,34 +900,34 @@ parse_args (int argc, char **argv, struct conf *conf)
               io_save_todo ();
               non_interactive = 1;
             }
-	  if (xflag)
-	    {
+          if (xflag)
+            {
               io_check_file (path_apts, (int *)0);
               io_check_file (path_todo, (int *)0);
               io_load_app ();
               io_load_todo ();
-	      io_export_data (xfmt, conf);
-	      non_interactive = 1;
-	      return non_interactive;
-	    }
-	  if (tflag)
-	    {
+              io_export_data (xfmt, conf);
+              non_interactive = 1;
+              return non_interactive;
+            }
+          if (tflag)
+            {
               io_check_file (path_todo, (int *)0);
               io_load_todo ();
-	      todo_arg (tnum, Nflag, preg);
-	      non_interactive = 1;
-	    }
-	  if (nflag)
-	    {
-              io_check_file (path_apts, (int *)0);              
-              io_load_app ();
-	      next_arg ();
-	      non_interactive = 1;
-	    }
-	  if (dflag || rflag || sflag)
-	    {
+              todo_arg (tnum, Nflag, preg);
+              non_interactive = 1;
+            }
+          if (nflag)
+            {
               io_check_file (path_apts, (int *)0);
-              io_check_file (path_conf, (int *)0);              
+              io_load_app ();
+              next_arg ();
+              non_interactive = 1;
+            }
+          if (dflag || rflag || sflag)
+            {
+              io_check_file (path_apts, (int *)0);
+              io_check_file (path_conf, (int *)0);
               io_load_app ();
               custom_load_conf (conf, 0); /* To get output date format. */
               if (dflag)
@@ -935,31 +935,31 @@ parse_args (int argc, char **argv, struct conf *conf)
               if (rflag || sflag)
                 date_arg_extended (startday, range, add_line, Nflag, conf,
                                    preg);
-	      non_interactive = 1;
-	    }
-	  else if (aflag)
-	    {
-	      struct date day;
+              non_interactive = 1;
+            }
+          else if (aflag)
+            {
+              struct date day;
 
-              io_check_file (path_apts, (int *)0);              
-              io_check_file (path_conf, (int *)0);              
+              io_check_file (path_apts, (int *)0);
+              io_check_file (path_conf, (int *)0);
               vars_init (conf);
               custom_load_conf (conf, 0); /* To get output date format. */
               io_load_app ();
-	      day.dd = day.mm = day.yyyy = 0;
-	      app_found = app_arg (add_line, &day, 0, Nflag, conf, preg);
-	      non_interactive = 1;
-	    }
-	}
+              day.dd = day.mm = day.yyyy = 0;
+              app_found = app_arg (add_line, &day, 0, Nflag, conf, preg);
+              non_interactive = 1;
+            }
+        }
       else
-	{
-	  non_interactive = 0;
+        {
+          non_interactive = 0;
           io_init (cfile, datadir);
-	}
+        }
     }
 
   if (preg)
     regfree (preg);
-  
-  return non_interactive;  
+
+  return non_interactive;
 }

@@ -69,7 +69,7 @@ dmon_sigs_hdlr (int sig)
 {
   if (data_loaded)
     free_user_data ();
-  
+
   DMON_LOG (_("terminated at %s with signal %d\n"), nowstr (), sig);
 
   if (unlink (path_dpid) != 0)
@@ -78,7 +78,7 @@ dmon_sigs_hdlr (int sig)
                 strerror (errno));
       exit (EXIT_FAILURE);
     }
-  
+
   exit (EXIT_SUCCESS);
 }
 
@@ -86,7 +86,7 @@ static unsigned
 daemonize (int status)
 {
   int fd;
-  
+
   /*
    * Operate in the background: Daemonizing.
    *
@@ -127,7 +127,7 @@ daemonize (int status)
                 strerror (errno));
       return 0;
     }
-      
+
   /* Redirect standard file descriptors to /dev/null. */
   if ((fd = open (_PATH_DEVNULL, O_RDWR, 0)) != -1)
     {
@@ -155,7 +155,7 @@ void
 dmon_start (int parent_exit_status)
 {
   struct conf conf;
-  
+
   if (!daemonize (parent_exit_status))
     DMON_ABRT (_("Cannot daemonize, aborting\n"));
 
@@ -166,7 +166,7 @@ dmon_start (int parent_exit_status)
     DMON_ABRT (_("Could not access \"%s\": %s\n"),
                path_conf, strerror (errno));
   custom_load_conf (&conf, 0);
-  
+
   if (!io_file_exist (path_apts))
     DMON_ABRT (_("Could not access \"%s\": %s\n"),
                path_apts, strerror (errno));
@@ -179,7 +179,7 @@ dmon_start (int parent_exit_status)
   for (;;)
     {
       int left;
-      
+
       if (!notify_get_next_bkgd ())
         DMON_ABRT (_("error loading next appointment\n"));
 
@@ -191,7 +191,7 @@ dmon_start (int parent_exit_status)
           if (!notify_launch_cmd ())
             DMON_LOG (_("error while sending notification\n"));
         }
-      
+
       DMON_LOG (_("sleeping at %s for %d seconds\n"), nowstr (),
                 DMON_SLEEP_TIME);
       psleep (DMON_SLEEP_TIME);

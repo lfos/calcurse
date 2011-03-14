@@ -97,11 +97,11 @@ event_new (char *mesg, char *note, long day, int id)
   for (;;)
     {
       if (*i == 0 || (*i)->day > day)
-	{
-	  o->next = *i;
-	  *i = o;
-	  break;
-	}
+        {
+          o->next = *i;
+          *i = o;
+          break;
+        }
       i = &(*i)->next;
     }
   return (o);
@@ -175,15 +175,15 @@ event_get (long day, int pos)
   for (o = eventlist; o; o = o->next)
     {
       if (event_inday (o, day))
-	{
-	  if (n == pos)
-	    return o;
-	  n++;
-	}
+        {
+          if (n == pos)
+            return o;
+          n++;
+        }
     }
   EXIT (_("event not found"));
   return 0;
-  /* NOTREACHED */  
+  /* NOTREACHED */
 }
 
 /* Delete an event from the list. */
@@ -198,9 +198,9 @@ event_delete_bynum (long start, unsigned num, enum eraseflg flag)
   for (i = eventlist; i != 0; i = i->next)
     {
       if (event_inday (i, start))
-	{
-	  if (n == num)
-	    {
+        {
+          if (n == num)
+            {
               switch (flag)
                 {
                 case ERASE_FORCE_ONLY_NOTE:
@@ -212,21 +212,21 @@ event_delete_bynum (long start, unsigned num, enum eraseflg flag)
                   erase_note (&i->note, ERASE_FORCE_KEEP_NOTE);
                   /* FALLTHROUGH */
                 default:
-		  *iptr = i->next;
-		  mem_free (i->mesg);
+                  *iptr = i->next;
+                  mem_free (i->mesg);
                   if (flag != ERASE_FORCE_KEEP_NOTE && flag != ERASE_CUT)
                     erase_note (&i->note, flag);
-		  mem_free (i);
+                  mem_free (i);
                   break;
                 }
-	      return;
-	    }
-	  n++;
-	}
+              return;
+            }
+          n++;
+        }
       iptr = &i->next;
     }
   EXIT (_("event not found"));
-  /* NOTREACHED */  
+  /* NOTREACHED */
 }
 
 void

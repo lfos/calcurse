@@ -84,9 +84,9 @@ char *daynames[8] = {
   N_("Sun")
 };
 
-/* 
+/*
  * variables to store data path names, which are initialized in
- * io_init() 
+ * io_init()
  */
 char path_dir[] = "";
 char path_todo[] = "";
@@ -108,7 +108,7 @@ struct nbar nbar;
 struct dmon_conf dmon;
 
 /*
- * Variables init 
+ * Variables init
  */
 void
 vars_init (struct conf *conf)

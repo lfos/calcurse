@@ -82,7 +82,7 @@ int
 wins_refresh (void)
 {
   int rc;
-  
+
   if (!screen_acquire ())
     return ERR;
   rc = refresh ();
@@ -95,7 +95,7 @@ int
 wins_wrefresh (WINDOW *win)
 {
   int rc;
-  
+
   if (!win || !screen_acquire ())
     return ERR;
   rc = wrefresh (win);
@@ -148,7 +148,7 @@ wins_sbar_wperc (void)
   unsigned perc;
 
   perc = col ? (unsigned)(100 * sbarwidth / col + 1): 0;
-  
+
   return perc > SBARMAXWIDTHPERC ? SBARMAXWIDTHPERC : perc;
 }
 
@@ -225,7 +225,7 @@ static void
 wins_init_panels (void)
 {
   char label[BUFSIZ];
-  
+
   win[CAL].p = newwin (CALHEIGHT, wins_sbar_width (), win[CAL].y, win[CAL].x);
   (void)snprintf (label, BUFSIZ, _("Calendar"));
   wins_show (win[CAL].p, label);
@@ -240,7 +240,7 @@ wins_init_panels (void)
   (void)snprintf (label, BUFSIZ, _("ToDo"));
   wins_show (win[TOD].p, label);
 
-  /* Enable function keys (i.e. arrow keys) in those windows */  
+  /* Enable function keys (i.e. arrow keys) in those windows */
   keypad (win[CAL].p, TRUE);
   keypad (win[APP].p, TRUE);
   keypad (win[TOD].p, TRUE);
@@ -259,7 +259,7 @@ wins_init (void)
   ui_mode = UI_CURSES;
 }
 
-/* 
+/*
  * Create a new window and its associated pad, which is used to make the
  * scrolling faster.
  */
@@ -287,7 +287,7 @@ void
 wins_scrollwin_display (struct scrollwin *sw)
 {
   const int visible_lines = sw->win.h - sw->pad.y - 1;
-  
+
   if (sw->total_lines > visible_lines)
     {
       float ratio = ((float) visible_lines) / ((float) sw->total_lines);
@@ -333,7 +333,7 @@ wins_reinit_panels (void)
   wins_init_panels ();
 }
 
-/* 
+/*
  * Delete the existing windows and recreate them with their new
  * size and placement.
  */
@@ -368,7 +368,7 @@ wins_show (WINDOW *win, char *label)
   print_in_middle (win, 1, 0, width, label);
 }
 
-/* 
+/*
  * Get the screen size and recalculate the windows configurations.
  */
 void
@@ -400,7 +400,7 @@ wins_get_config (void)
 
   win[CAL].w = wins_sbar_width ();
   win[CAL].h = CALHEIGHT;
-  
+
   if (layout <= 4)
     {				/* APPOINTMENT is the biggest panel */
       win[APP].w = col - win[CAL].w;
@@ -575,7 +575,7 @@ wins_update_panels (void)
   calendar_update_panel (&win[CAL]);
 }
 
-/* 
+/*
  * Update all of the three windows and put a border around the
  * selected window.
  */
@@ -613,7 +613,7 @@ wins_launch_external (const char *file, const char *cmd)
   int len;
 
   /* Beware of space between cmd and file. */
-  len = strlen (file) + strlen (cmd) + 2;	
+  len = strlen (file) + strlen (cmd) + 2;
 
   p = (char *) mem_calloc (len, sizeof (char));
   if (snprintf (p, len, "%s %s", cmd, file) == -1)
@@ -643,12 +643,12 @@ wins_launch_external (const char *file, const char *cmd)
 #define NB_APP_CMDS	31	/* same thing while in appointment view */
 #define NB_TOD_CMDS	30	/* same thing while in todo view */
 #define TOTAL_CMDS	NB_CAL_CMDS + NB_APP_CMDS + NB_TOD_CMDS
-#define CMDS_PER_LINE	6	/* max number of commands per line */  
+#define CMDS_PER_LINE	6	/* max number of commands per line */
 
 static unsigned status_page;
 
-/* 
- * Draws the status bar. 
+/*
+ * Draws the status bar.
  * To add a keybinding, insert a new binding_t item, add it in the *binding
  * table, and update the NB_CAL_CMDS, NB_APP_CMDS or NB_TOD_CMDS defines,
  * depending on which panel the added keybind is assigned to.
@@ -666,13 +666,13 @@ wins_status_bar (void)
   struct binding quit   = {_("Quit"),     KEY_GENERIC_QUIT};
   struct binding save   = {_("Save"),     KEY_GENERIC_SAVE};
   struct binding cut    = {_("Cut"),      KEY_GENERIC_CUT};
-  struct binding paste  = {_("Paste"),    KEY_GENERIC_PASTE};    
+  struct binding paste  = {_("Paste"),    KEY_GENERIC_PASTE};
   struct binding chgvu  = {_("Chg Win"), KEY_GENERIC_CHANGE_VIEW};
-  struct binding import = {_("Import"),   KEY_GENERIC_IMPORT};  
+  struct binding import = {_("Import"),   KEY_GENERIC_IMPORT};
   struct binding export = {_("Export"),   KEY_GENERIC_EXPORT};
   struct binding togo   = {_("Go to"),    KEY_GENERIC_GOTO};
   struct binding othr   = {_("OtherCmd"), KEY_GENERIC_OTHER_CMD};
-  struct binding conf   = {_("Config"),   KEY_GENERIC_CONFIG_MENU};  
+  struct binding conf   = {_("Config"),   KEY_GENERIC_CONFIG_MENU};
   struct binding draw   = {_("Redraw"),   KEY_GENERIC_REDRAW};
   struct binding appt   = {_("Add Appt"), KEY_GENERIC_ADD_APPT};
   struct binding todo   = {_("Add Todo"), KEY_GENERIC_ADD_TODO};
@@ -684,22 +684,22 @@ wins_status_bar (void)
   struct binding nview  = {_("Nxt View"), KEY_GENERIC_SCROLL_DOWN};
   struct binding pview  = {_("Prv View"), KEY_GENERIC_SCROLL_UP};
   struct binding up     = {_("Up"),       KEY_MOVE_UP};
-  struct binding down   = {_("Down"),     KEY_MOVE_DOWN};  
+  struct binding down   = {_("Down"),     KEY_MOVE_DOWN};
   struct binding left   = {_("Left"),     KEY_MOVE_LEFT};
-  struct binding right  = {_("Right"),    KEY_MOVE_RIGHT};  
+  struct binding right  = {_("Right"),    KEY_MOVE_RIGHT};
   struct binding weekb  = {_("beg Week"), KEY_START_OF_WEEK};
   struct binding weeke  = {_("end Week"), KEY_END_OF_WEEK};
   struct binding add    = {_("Add Item"), KEY_ADD_ITEM};
   struct binding del    = {_("Del Item"), KEY_DEL_ITEM};
   struct binding edit   = {_("Edit Itm"), KEY_EDIT_ITEM};
-  struct binding view   = {_("View"),     KEY_VIEW_ITEM};  
+  struct binding view   = {_("View"),     KEY_VIEW_ITEM};
   struct binding flag   = {_("Flag Itm"), KEY_FLAG_ITEM};
   struct binding rept   = {_("Repeat"),   KEY_REPEAT_ITEM};
   struct binding enote  = {_("EditNote"), KEY_EDIT_NOTE};
   struct binding vnote  = {_("ViewNote"), KEY_VIEW_NOTE};
   struct binding rprio  = {_("Prio.+"),   KEY_RAISE_PRIORITY};
   struct binding lprio  = {_("Prio.-"),   KEY_LOWER_PRIORITY};
-  
+
   struct binding *binding[TOTAL_CMDS] = {
     /* calendar keys */
     &help, &quit, &save, &chgvu, &nview, &pview, &up, &down, &left, &right,

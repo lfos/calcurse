@@ -65,7 +65,7 @@ notify_time_left (void)
 {
   struct tm *ntime;
   time_t ntimer;
-  int left;  
+  int left;
 
   ntimer = time (NULL);
   ntime = localtime (&ntimer);
@@ -99,7 +99,7 @@ notify_update_app (long start, char state, char *msg)
   notify_free_app ();
   notify_app.got_app = 1;
   notify_app.time = start;
-  notify_app.state = state;  
+  notify_app.state = state;
   notify_app.txt = mem_strdup (msg);
 }
 
@@ -155,10 +155,10 @@ extract_aptsfile (void)
     }
 }
 
-/* 
- * Create the notification bar, by initializing all the variables and 
+/*
+ * Create the notification bar, by initializing all the variables and
  * creating the notification window (l is the number of lines, c the
- * number of columns, y and x are its coordinates). 
+ * number of columns, y and x are its coordinates).
  */
 void
 notify_init_bar (void)
@@ -193,9 +193,9 @@ notify_stop_main_thread (void)
     pthread_cancel (notify_t_main);
 }
 
-/* 
- * The calcurse window geometry has changed so we need to reset the 
- * notification window. 
+/*
+ * The calcurse window geometry has changed so we need to reset the
+ * notification window.
  */
 void
 notify_reinit_bar (void)
@@ -212,9 +212,9 @@ notify_launch_cmd (void)
 
   if (notify_app.state & APOINT_NOTIFIED)
     return 1;
-  
+
   notify_app.state |= APOINT_NOTIFIED;
-    
+
   pid = fork ();
 
   if (pid < 0)
@@ -236,7 +236,7 @@ notify_launch_cmd (void)
   return 1;
 }
 
-/* 
+/*
  * Update the notification bar. This is useful when changing color theme
  * for example.
  */
@@ -259,58 +259,58 @@ notify_update_bar (void)
   wattron (notify.win, A_UNDERLINE | A_REVERSE);
   mvwhline (notify.win, 0, 0, ACS_HLINE, col);
   mvwprintw (notify.win, 0, date_pos, "[ %s | %s ]",
-	     notify.date, notify.time);
+             notify.date, notify.time);
   mvwprintw (notify.win, 0, file_pos, "(%s)", notify.apts_file);
 
   pthread_mutex_lock (&notify_app.mutex);
   if (notify_app.got_app)
     {
       if (strlen (notify_app.txt) > txt_max_len)
-	{
+        {
           int shrink_len;
-          
-	  too_long = 1;
+
+          too_long = 1;
           shrink_len = txt_max_len > 3 ? txt_max_len - 3 : 1;
-	  (void)strncpy (buf, notify_app.txt, shrink_len);
-	  buf[shrink_len] = '\0';
-	}
+          (void)strncpy (buf, notify_app.txt, shrink_len);
+          buf[shrink_len] = '\0';
+        }
       time_left = notify_time_left ();
       if (time_left > 0)
-	{
+        {
           int hours_left, minutes_left;
-          
-	  hours_left = (time_left / HOURINSEC);
-	  minutes_left = (time_left - hours_left * HOURINSEC) / MININSEC;
-	  pthread_mutex_lock (&nbar.mutex);
 
-	  if (time_left < nbar.cntdwn && (notify_app.state & APOINT_NOTIFY))
-	    blinking = 1;
-	  else
-	    blinking = 0;
+          hours_left = (time_left / HOURINSEC);
+          minutes_left = (time_left - hours_left * HOURINSEC) / MININSEC;
+          pthread_mutex_lock (&nbar.mutex);
 
-	  if (blinking)
-	    wattron (notify.win, A_BLINK);
-	  if (too_long)
-	    mvwprintw (notify.win, 0, app_pos, "> %02d:%02d :: %s.. <",
-		       hours_left, minutes_left, buf);
-	  else
-	    mvwprintw (notify.win, 0, app_pos, "> %02d:%02d :: %s <",
-		       hours_left, minutes_left, notify_app.txt);
-	  if (blinking)
-	    wattroff (notify.win, A_BLINK);
+          if (time_left < nbar.cntdwn && (notify_app.state & APOINT_NOTIFY))
+            blinking = 1;
+          else
+            blinking = 0;
 
-	  if (blinking)
+          if (blinking)
+            wattron (notify.win, A_BLINK);
+          if (too_long)
+            mvwprintw (notify.win, 0, app_pos, "> %02d:%02d :: %s.. <",
+                       hours_left, minutes_left, buf);
+          else
+            mvwprintw (notify.win, 0, app_pos, "> %02d:%02d :: %s <",
+                       hours_left, minutes_left, notify_app.txt);
+          if (blinking)
+            wattroff (notify.win, A_BLINK);
+
+          if (blinking)
             (void)notify_launch_cmd ();
-	  pthread_mutex_unlock (&nbar.mutex);
-	}
+          pthread_mutex_unlock (&nbar.mutex);
+        }
       else
-	{
-	  notify_app.got_app = 0;
-	  pthread_mutex_unlock (&notify_app.mutex);
-	  pthread_mutex_unlock (&notify.mutex);
-	  notify_check_next_app ();
-	  return;
-	}
+        {
+          notify_app.got_app = 0;
+          pthread_mutex_unlock (&notify_app.mutex);
+          pthread_mutex_unlock (&notify.mutex);
+          notify_check_next_app ();
+          return;
+        }
     }
   pthread_mutex_unlock (&notify_app.mutex);
 
@@ -349,14 +349,14 @@ notify_main_thread (void *arg)
       psleep (thread_sleep);
       elapse += thread_sleep;
       if (elapse >= check_app)
-	{
-	  elapse = 0;
-	  pthread_mutex_lock (&notify_app.mutex);
-	  got_app = notify_app.got_app;
-	  pthread_mutex_unlock (&notify_app.mutex);
-	  if (!got_app)
-	    notify_check_next_app ();
-	}
+        {
+          elapse = 0;
+          pthread_mutex_lock (&notify_app.mutex);
+          got_app = notify_app.got_app;
+          pthread_mutex_unlock (&notify_app.mutex);
+          if (!got_app)
+            notify_check_next_app ();
+        }
     }
   pthread_exit ((void *) 0);
 }
@@ -366,10 +366,10 @@ unsigned
 notify_get_next (struct notify_app *a)
 {
   time_t current_time;
-  
+
   if (!a)
     return 0;
-  
+
   current_time = time (NULL);
 
   a->time = current_time + DAYINSEC;
@@ -409,7 +409,7 @@ notify_get_next_bkgd (void)
 
   if (a.txt)
     mem_free (a.txt);
-  
+
   return 1;
 }
 
@@ -432,23 +432,23 @@ notify_thread_app (void *arg)
 
   if (!notify_get_next (&tmp_app))
     pthread_exit ((void *)0);
-  
+
   if (!tmp_app.got_app)
     {
       pthread_mutex_lock (&notify_app.mutex);
       notify_free_app ();
-      pthread_mutex_unlock (&notify_app.mutex);      
+      pthread_mutex_unlock (&notify_app.mutex);
     }
   else
     {
       if (!notify_same_item (tmp_app.time))
         {
-          pthread_mutex_lock (&notify_app.mutex);          
+          pthread_mutex_lock (&notify_app.mutex);
           notify_update_app (tmp_app.time, tmp_app.state, tmp_app.txt);
-          pthread_mutex_unlock (&notify_app.mutex);          
+          pthread_mutex_unlock (&notify_app.mutex);
         }
     }
-  
+
   if (tmp_app.txt)
     mem_free (tmp_app.txt);
   notify_update_bar ();
@@ -481,7 +481,7 @@ notify_check_added (char *mesg, long start, char state)
     {
       gap = start - current_time;
       if (gap >= 0 && gap <= DAYINSEC)
-	update_notify = 1;
+        update_notify = 1;
     }
   else if (start < notify_app.time && start >= current_time)
     {
@@ -509,22 +509,22 @@ notify_check_repeated (struct recur_apoint *i)
   current_time = time (NULL);
   pthread_mutex_lock (&notify_app.mutex);
   if ((real_app_time = recur_item_inday (i->start, i->exc, i->rpt->type,
-					 i->rpt->freq, i->rpt->until,
-					 get_today ()) > current_time))
+                                         i->rpt->freq, i->rpt->until,
+                                         get_today ()) > current_time))
     {
       if (!notify_app.got_app)
-	{
-	  if (real_app_time - current_time <= DAYINSEC)
-	    update_notify = 1;
-	}
+        {
+          if (real_app_time - current_time <= DAYINSEC)
+            update_notify = 1;
+        }
       else if (real_app_time < notify_app.time &&
-	       real_app_time >= current_time)
-	{
-	  update_notify = 1;
-	}
+               real_app_time >= current_time)
+        {
+          update_notify = 1;
+        }
       else if (real_app_time == notify_app.time &&
-	       i->state != notify_app.state)
-	update_notify = 1;
+               i->state != notify_app.state)
+        update_notify = 1;
     }
   if (update_notify)
     {
@@ -554,7 +554,7 @@ notify_same_recur_item (struct recur_apoint *i)
   long item_start = 0;
 
   item_start = recur_item_inday (i->start, i->exc, i->rpt->type,
-				 i->rpt->freq, i->rpt->until, get_today ());
+                                 i->rpt->freq, i->rpt->until, get_today ());
   pthread_mutex_lock (&notify_app.mutex);
   if (notify_app.got_app && item_start == notify_app.time)
     same = 1;
@@ -583,7 +583,7 @@ print_option (WINDOW *win, unsigned x, unsigned y, char *name,
   const int XOFF = 4;
   const int MAXCOL = col - 3;
   int x_opt, len;
-  
+
   x_opt = x + XOFF + strlen (name);
   mvwprintw (win, y, x, "[%u] %s", num, name);
   erase_window_part (win, x_opt, y, MAXCOL, y);
@@ -594,15 +594,15 @@ print_option (WINDOW *win, unsigned x, unsigned y, char *name,
       maxlen = MAXCOL - x_opt - 2;
       custom_apply_attr (win, ATTR_HIGHEST);
       if (len < maxlen)
-	mvwprintw (win, y, x_opt, "%s", valstr);
+        mvwprintw (win, y, x_opt, "%s", valstr);
       else
-	{
+        {
           char buf[BUFSIZ];
-          
-	  (void)strncpy (buf, valstr, maxlen - 1);
-	  buf[maxlen - 1] = '\0';
-	  mvwprintw (win, y, x_opt, "%s...", buf);
-	}
+
+          (void)strncpy (buf, valstr, maxlen - 1);
+          buf[maxlen - 1] = '\0';
+          mvwprintw (win, y, x_opt, "%s...", buf);
+        }
       custom_remove_attr (win, ATTR_HIGHEST);
     }
   else
@@ -617,7 +617,7 @@ print_config_options (WINDOW *optwin)
   const int XORIG = 3;
   const int YORIG = 0;
   const int YOFF  = 3;
-  
+
   enum
   { SHOW, DATE, CLOCK, WARN, CMD, DMON, DMON_LOG, NB_OPT };
 
@@ -633,23 +633,23 @@ print_config_options (WINDOW *optwin)
 
   opt[SHOW].name = _("notify-bar_show = ");
   opt[SHOW].desc = _("(if set to YES, notify-bar will be displayed)");
-  
+
   opt[DATE].name = _("notify-bar_date = ");
   opt[DATE].desc = _("(Format of the date to be displayed inside notify-bar)");
-  
+
   opt[CLOCK].name = _("notify-bar_clock = ");
   opt[CLOCK].desc = _("(Format of the time to be displayed inside notify-bar)");
-  
+
   opt[WARN].name = _("notify-bar_warning = ");
   opt[WARN].desc = _("(Warn user if an appointment is within next "
                      "'notify-bar_warning' seconds)");
-  
+
   opt[CMD].name = _("notify-bar_command = ");
   opt[CMD].desc = _("(Command used to notify user of an upcoming appointment)");
-  
+
   opt[DMON].name = _("notify-daemon_enable = ");
   opt[DMON].desc = _("(Run in background to get notifications after exiting)");
-  
+
   opt[DMON_LOG].name = _("notify-daemon_log = ");
   opt[DMON_LOG].desc = _("(Log activity when running in background)");
 
@@ -664,16 +664,16 @@ print_config_options (WINDOW *optwin)
   /* Boolean options */
   opt[SHOW].valnum = nbar.show;
   pthread_mutex_unlock (&nbar.mutex);
-  
+
   opt[DMON].valnum = dmon.enable;
   opt[DMON_LOG].valnum = dmon.log;
 
   opt[SHOW].valstr[0] = opt[DMON].valstr[0] = opt[DMON_LOG].valstr[0] = '\0';
-  
+
   for (i = 0; i < NB_OPT; i++)
     {
       int y;
-      
+
       y = YORIG + i * YOFF;
       print_option (optwin, XORIG, y, opt[i].name, opt[i].valstr,
                     opt[i].valnum, opt[i].desc, i + 1);
@@ -689,7 +689,7 @@ reinit_conf_win (struct scrollwin *win)
 
   first_line = win->first_visible_line;
   wins_scrollwin_delete (win);
-  custom_set_swsiz (win);  
+  custom_set_swsiz (win);
   wins_scrollwin_init (win);
   wins_show (win->win.p, win->label);
   win->first_visible_line = first_line;
@@ -714,7 +714,7 @@ notify_config_bar (void)
   char *cmd_str = _("Enter the notification command ");
   int ch;
 
-  clear ();  
+  clear ();
   custom_set_swsiz (&cwin);
   (void)snprintf (cwin.label, BUFSIZ, _("notification options"));
   wins_scrollwin_init (&cwin);
@@ -723,8 +723,8 @@ notify_config_bar (void)
   cwin.total_lines = print_config_options (cwin.pad.p);
   wins_scrollwin_display (&cwin);
 
-  buf = mem_malloc (BUFSIZ);  
-  while ((ch = wgetch (win[STA].p)) != 'q')  
+  buf = mem_malloc (BUFSIZ);
+  while ((ch = wgetch (win[STA].p)) != 'q')
     {
       buf[0] = '\0';
 
@@ -734,88 +734,88 @@ notify_config_bar (void)
           wins_get_config ();
           wins_reset ();
           reinit_conf_win (&cwin);
-	  delwin (win[STA].p);
-	  win[STA].p = newwin (win[STA].h, win[STA].w, win[STA].y,
-			       win[STA].x);
-	  keypad (win[STA].p, TRUE);
-	  if (notify_bar ())
-	    {
-	      notify_reinit_bar ();
-	      notify_update_bar ();
-	    }
-	  break;
+          delwin (win[STA].p);
+          win[STA].p = newwin (win[STA].h, win[STA].w, win[STA].y,
+                               win[STA].x);
+          keypad (win[STA].p, TRUE);
+          if (notify_bar ())
+            {
+              notify_reinit_bar ();
+              notify_update_bar ();
+            }
+          break;
         case CTRL ('N'):
           wins_scrollwin_down (&cwin, 1);
-	  break;
+          break;
         case CTRL ('P'):
           wins_scrollwin_up (&cwin, 1);
-	  break;
-	case '1':
-	  pthread_mutex_lock (&nbar.mutex);
-	  nbar.show = !nbar.show;
-	  pthread_mutex_unlock (&nbar.mutex);
-	  if (notify_bar ())
-	    notify_start_main_thread ();
-	  else
-	    notify_stop_main_thread ();
+          break;
+        case '1':
+          pthread_mutex_lock (&nbar.mutex);
+          nbar.show = !nbar.show;
+          pthread_mutex_unlock (&nbar.mutex);
+          if (notify_bar ())
+            notify_start_main_thread ();
+          else
+            notify_stop_main_thread ();
           wins_scrollwin_delete (&cwin);
-          reinit_conf_win (&cwin);          
-	  break;
-	case '2':
-	  status_mesg (date_str, "");
-	  pthread_mutex_lock (&nbar.mutex);
-	  (void)strncpy (buf, nbar.datefmt, strlen (nbar.datefmt) + 1);
-	  pthread_mutex_unlock (&nbar.mutex);
-	  if (updatestring (win[STA].p, &buf, 0, 1) == 0)
-	    {
-	      pthread_mutex_lock (&nbar.mutex);
-	      (void)strncpy (nbar.datefmt, buf, strlen (buf) + 1);
-	      pthread_mutex_unlock (&nbar.mutex);
-	    }
-	  break;
-	case '3':
-	  status_mesg (time_str, "");
-	  pthread_mutex_lock (&nbar.mutex);
-	  (void)strncpy (buf, nbar.timefmt, strlen (nbar.timefmt) + 1);
-	  pthread_mutex_unlock (&nbar.mutex);
-	  if (updatestring (win[STA].p, &buf, 0, 1) == 0)
-	    {
-	      pthread_mutex_lock (&nbar.mutex);
-	      (void)strncpy (nbar.timefmt, buf, strlen (buf) + 1);
-	      pthread_mutex_unlock (&nbar.mutex);
-	    }
-	  break;
-	case '4':
-	  status_mesg (count_str, "");
-	  pthread_mutex_lock (&nbar.mutex);
-	  printf (buf, "%d", nbar.cntdwn);
-	  pthread_mutex_unlock (&nbar.mutex);
-	  if (updatestring (win[STA].p, &buf, 0, 1) == 0 &&
-	      is_all_digit (buf) && atoi (buf) >= 0 && atoi (buf) <= DAYINSEC)
-	    {
-	      pthread_mutex_lock (&nbar.mutex);
-	      nbar.cntdwn = atoi (buf);
-	      pthread_mutex_unlock (&nbar.mutex);
-	    }
-	  break;
-	case '5':
-	  status_mesg (cmd_str, "");
-	  pthread_mutex_lock (&nbar.mutex);
-	  (void)strncpy (buf, nbar.cmd, strlen (nbar.cmd) + 1);
-	  pthread_mutex_unlock (&nbar.mutex);
-	  if (updatestring (win[STA].p, &buf, 0, 1) == 0)
-	    {
-	      pthread_mutex_lock (&nbar.mutex);
-	      (void)strncpy (nbar.cmd, buf, strlen (buf) + 1);
-	      pthread_mutex_unlock (&nbar.mutex);
-	    }
-	  break;
-	case '6':
-	  dmon.enable = !dmon.enable;
-	  break;
-	case '7':
-	  dmon.log = !dmon.log;
-	  break;
+          reinit_conf_win (&cwin);
+          break;
+        case '2':
+          status_mesg (date_str, "");
+          pthread_mutex_lock (&nbar.mutex);
+          (void)strncpy (buf, nbar.datefmt, strlen (nbar.datefmt) + 1);
+          pthread_mutex_unlock (&nbar.mutex);
+          if (updatestring (win[STA].p, &buf, 0, 1) == 0)
+            {
+              pthread_mutex_lock (&nbar.mutex);
+              (void)strncpy (nbar.datefmt, buf, strlen (buf) + 1);
+              pthread_mutex_unlock (&nbar.mutex);
+            }
+          break;
+        case '3':
+          status_mesg (time_str, "");
+          pthread_mutex_lock (&nbar.mutex);
+          (void)strncpy (buf, nbar.timefmt, strlen (nbar.timefmt) + 1);
+          pthread_mutex_unlock (&nbar.mutex);
+          if (updatestring (win[STA].p, &buf, 0, 1) == 0)
+            {
+              pthread_mutex_lock (&nbar.mutex);
+              (void)strncpy (nbar.timefmt, buf, strlen (buf) + 1);
+              pthread_mutex_unlock (&nbar.mutex);
+            }
+          break;
+        case '4':
+          status_mesg (count_str, "");
+          pthread_mutex_lock (&nbar.mutex);
+          printf (buf, "%d", nbar.cntdwn);
+          pthread_mutex_unlock (&nbar.mutex);
+          if (updatestring (win[STA].p, &buf, 0, 1) == 0 &&
+              is_all_digit (buf) && atoi (buf) >= 0 && atoi (buf) <= DAYINSEC)
+            {
+              pthread_mutex_lock (&nbar.mutex);
+              nbar.cntdwn = atoi (buf);
+              pthread_mutex_unlock (&nbar.mutex);
+            }
+          break;
+        case '5':
+          status_mesg (cmd_str, "");
+          pthread_mutex_lock (&nbar.mutex);
+          (void)strncpy (buf, nbar.cmd, strlen (nbar.cmd) + 1);
+          pthread_mutex_unlock (&nbar.mutex);
+          if (updatestring (win[STA].p, &buf, 0, 1) == 0)
+            {
+              pthread_mutex_lock (&nbar.mutex);
+              (void)strncpy (nbar.cmd, buf, strlen (buf) + 1);
+              pthread_mutex_unlock (&nbar.mutex);
+            }
+          break;
+        case '6':
+          dmon.enable = !dmon.enable;
+          break;
+        case '7':
+          dmon.log = !dmon.log;
+          break;
         }
       status_mesg (number_str, keys);
       cwin.total_lines = print_config_options (cwin.pad.p);

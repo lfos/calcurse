@@ -270,7 +270,7 @@ ymd_to_scalar (unsigned year, unsigned month, unsigned day)
   return (scalar);
 }
 
-/* 
+/*
  * Used to change date by adding a certain amount of days or weeks.
  * Returns 0 on success, 1 otherwise.
  */
@@ -328,7 +328,7 @@ draw_monthly_view (struct window *cwin, struct date *current_day,
   custom_apply_attr (cwin->p, ATTR_HIGHEST);
   mvwprintw (cwin->p, ofs_y,
              (SBAR_WIDTH - (strlen (_(monthnames[mo - 1])) + 5)) / 2,
-	     "%s %d", _(monthnames[mo - 1]), slctd_day.yyyy);
+             "%s %d", _(monthnames[mo - 1]), slctd_day.yyyy);
   custom_remove_attr (cwin->p, ATTR_HIGHEST);
   ++ofs_y;
 
@@ -337,7 +337,7 @@ draw_monthly_view (struct window *cwin, struct date *current_day,
   for (j = 0; j < WEEKINDAYS; j++)
     {
       mvwprintw (cwin->p, ofs_y, ofs_x + 4 * j, "%s",
-		 _(daynames[1 + j - sunday_first]));
+                 _(daynames[1 + j - sunday_first]));
     }
   custom_remove_attr (cwin->p, ATTR_HIGHEST);
 
@@ -354,42 +354,42 @@ draw_monthly_view (struct window *cwin, struct date *current_day,
 
       /* Go to next line, the week is over. */
       if (!c_day_1 && 1 != c_day)
-	{
-	  ofs_y++;
+        {
+          ofs_y++;
           ofs_x = OFFX - day_1_sav - 4 * c_day;
-	}
+        }
 
       /* This is today, so print it in yellow. */
       if (c_day == current_day->dd
           && current_day->mm == slctd_day.mm
           && current_day->yyyy == slctd_day.yyyy
           && current_day->dd != slctd_day.dd)
-	{
-	  custom_apply_attr (cwin->p, ATTR_LOWEST);
-	  mvwprintw (cwin->p, ofs_y + 1, 
+        {
+          custom_apply_attr (cwin->p, ATTR_LOWEST);
+          mvwprintw (cwin->p, ofs_y + 1,
                      ofs_x + day_1_sav + 4 * c_day + 1, "%2d", c_day);
-	  custom_remove_attr (cwin->p, ATTR_LOWEST);
-	}
+          custom_remove_attr (cwin->p, ATTR_LOWEST);
+        }
       else if (c_day == slctd_day.dd)
-	{
-	  /* This is the selected day, print it according to user's theme. */
-	  custom_apply_attr (cwin->p, ATTR_HIGHEST);
-	  mvwprintw (cwin->p, ofs_y + 1, 
+        {
+          /* This is the selected day, print it according to user's theme. */
+          custom_apply_attr (cwin->p, ATTR_HIGHEST);
+          mvwprintw (cwin->p, ofs_y + 1,
                      ofs_x + day_1_sav + 4 * c_day + 1, "%2d",
                      c_day);
-	  custom_remove_attr (cwin->p, ATTR_HIGHEST);
-	}
+          custom_remove_attr (cwin->p, ATTR_HIGHEST);
+        }
       else if (item_this_day)
-	{
-	  custom_apply_attr (cwin->p, ATTR_LOW);
-	  mvwprintw (cwin->p, ofs_y + 1, 
+        {
+          custom_apply_attr (cwin->p, ATTR_LOW);
+          mvwprintw (cwin->p, ofs_y + 1,
                      ofs_x + day_1_sav + 4 * c_day + 1, "%2d",
                      c_day);
-	  custom_remove_attr (cwin->p, ATTR_LOW);
-	}
+          custom_remove_attr (cwin->p, ATTR_LOW);
+        }
       else
-	/* otherwise, print normal days in black */
-	mvwprintw (cwin->p, ofs_y + 1,
+        /* otherwise, print normal days in black */
+        mvwprintw (cwin->p, ofs_y + 1,
                    ofs_x + day_1_sav + 4 * c_day + 1, "%2d",
                    c_day);
     }
@@ -411,7 +411,7 @@ weeknum (const struct tm *t, int firstweekday)
   wnum = ((t->tm_yday + WEEKINDAYS - wday) / WEEKINDAYS);
   if (wnum < 0)
     wnum = 0;
-  
+
   return wnum;
 }
 
@@ -445,7 +445,7 @@ ISO8601weeknum (const struct tm *t)
         {
           /* Get week number of last week of last year. */
           struct tm dec31ly; /* 12/31 last year */
-          
+
           dec31ly = *t;
           dec31ly.tm_year--;
           dec31ly.tm_mon = 11;
@@ -477,21 +477,21 @@ static void
 draw_weekly_view (struct window *cwin, struct date *current_day,
                   unsigned sunday_first)
 {
-#define DAYSLICESNO  6  
+#define DAYSLICESNO  6
   const int WCALWIDTH = 30;
   const int OFFY = 2 + (CALHEIGHT - 9) / 2;
   struct tm t;
   int OFFX, j, c_wday, days_to_remove, weeknum;
 
   OFFX = (wins_sbar_width () - WCALWIDTH) / 2 + 1;
-  
+
   /* Fill in a tm structure with the first day of the selected week. */
   c_wday = calendar_get_wday (&slctd_day);
   if (sunday_first)
     days_to_remove = c_wday;
   else
     days_to_remove = c_wday == 0 ? WEEKINDAYS - 1 : c_wday - 1;
-  
+
   (void)memset (&t, 0, sizeof (struct tm));
   t.tm_mday = slctd_day.dd;
   t.tm_mon = slctd_day.mm - 1;
@@ -501,21 +501,21 @@ draw_weekly_view (struct window *cwin, struct date *current_day,
 
   /* Print the week number. */
   weeknum = ISO8601weeknum (&t);
-  custom_apply_attr (cwin->p, ATTR_HIGHEST);      
+  custom_apply_attr (cwin->p, ATTR_HIGHEST);
   mvwprintw (cwin->p, 2, cwin->w - 9, "(# %02d)", weeknum);
   custom_remove_attr (cwin->p, ATTR_HIGHEST);
-  
+
   /* Now draw calendar view. */
   for (j = 0; j < WEEKINDAYS; j++)
     {
       struct date date;
       unsigned attr, item_this_day;
       int i, slices[DAYSLICESNO];
-      
+
       /* print the day names, with regards to the first day of the week */
-      custom_apply_attr (cwin->p, ATTR_HIGHEST);      
+      custom_apply_attr (cwin->p, ATTR_HIGHEST);
       mvwprintw (cwin->p, OFFY, OFFX + 4 * j, "%s",
-		 _(daynames[1 + j - sunday_first]));
+                 _(daynames[1 + j - sunday_first]));
       custom_remove_attr (cwin->p, ATTR_HIGHEST);
 
       /* Check if the day to be printed has an item or not. */
@@ -523,7 +523,7 @@ draw_weekly_view (struct window *cwin, struct date *current_day,
       date.mm = t.tm_mon + 1;
       date.yyyy = t.tm_year + 1900;
       item_this_day = day_check_if_item (date);
-      
+
       /* Print the day numbers with appropriate decoration. */
       if (t.tm_mday == current_day->dd
           && current_day->mm == slctd_day.mm
@@ -563,11 +563,11 @@ draw_weekly_view (struct window *cwin, struct date *current_day,
                   mvwprintw (cwin->p, OFFY + 2 + i, OFFX + 2 + 4 * j, " ");
                   wattroff (cwin->p, A_REVERSE);
                   if (highlight)
-                    custom_remove_attr (cwin->p, attr);                    
+                    custom_remove_attr (cwin->p, attr);
                 }
             }
         }
-      
+
       /* get next day */
       (void)date_change (&t, 0, 1);
     }
@@ -579,7 +579,7 @@ draw_weekly_view (struct window *cwin, struct date *current_day,
             OFFX + WCALWIDTH - 3, ACS_S9, 1);
   custom_remove_attr (cwin->p, ATTR_HIGHEST);
 
-#undef DAYSLICESNO  
+#undef DAYSLICESNO
 }
 
 /* Function used to display the calendar panel. */
@@ -611,7 +611,7 @@ calendar_goto_today (void)
   slctd_day.yyyy = today.yyyy;
 }
 
-/* 
+/*
  * Ask for a date to jump to, then check the correctness of that date
  * and jump to it.
  * If the entered date is empty, automatically jump to the current date.
@@ -636,29 +636,29 @@ calendar_change_day (int datefmt)
       (void)snprintf (outstr, BUFSIZ, request_date, DATEFMT_DESC (datefmt));
       status_mesg (_(outstr), "");
       if (getstring (win[STA].p, selected_day, LDAY, 0, 1) == GETSTRING_ESC)
-	return;
+        return;
       else
-	{
-	  if (strlen (selected_day) == 0)
-	    {
-	      wrong_day = 0;
+        {
+          if (strlen (selected_day) == 0)
+            {
+              wrong_day = 0;
               calendar_goto_today ();
-	    }
-	  else if (parse_date (selected_day, datefmt, &dyear, &dmonth, &dday,
+            }
+          else if (parse_date (selected_day, datefmt, &dyear, &dmonth, &dday,
                          calendar_get_slctd_day ()))
-	    {
-	      wrong_day = 0;
-	      /* go to chosen day */
-	      slctd_day.dd = dday;
-	      slctd_day.mm = dmonth;
-	      slctd_day.yyyy = dyear;
-	    }
-	  if (wrong_day)
-	    {
-	      status_mesg (mesg_line1, mesg_line2);
-	      (void)wgetch (win[STA].p);
-	    }
-	}
+            {
+              wrong_day = 0;
+              /* go to chosen day */
+              slctd_day.dd = dday;
+              slctd_day.mm = dmonth;
+              slctd_day.yyyy = dyear;
+            }
+          if (wrong_day)
+            {
+              status_mesg (mesg_line1, mesg_line2);
+              (void)wgetch (win[STA].p);
+            }
+        }
     }
 
   return;
@@ -681,25 +681,25 @@ calendar_move (enum move move)
     case UP:
       if ((slctd_day.dd <= 7) && (slctd_day.mm == 1)
           && (slctd_day.yyyy == 1902))
-	return;
+        return;
       ret = date_change (&t, 0, -WEEKINDAYS);
       break;
     case DOWN:
       if ((slctd_day.dd > days[slctd_day.mm - 1] - 7)
-	  && (slctd_day.mm == 12) && (slctd_day.yyyy == 2037))
-	return;
+          && (slctd_day.mm == 12) && (slctd_day.yyyy == 2037))
+        return;
       ret = date_change (&t, 0, WEEKINDAYS);
       break;
     case LEFT:
       if ((slctd_day.dd == 1) && (slctd_day.mm == 1)
-	  && (slctd_day.yyyy == 1902))
-	return;
+          && (slctd_day.yyyy == 1902))
+        return;
       ret = date_change (&t, 0, -1);
       break;
     case RIGHT:
       if ((slctd_day.dd == 31) && (slctd_day.mm == 12)
-	  && (slctd_day.yyyy == 2037))
-	return;
+          && (slctd_day.yyyy == 2037))
+        return;
       ret = date_change (&t, 0, 1);
       break;
     case WEEK_START:
@@ -771,7 +771,7 @@ calendar_end_of_year (void)
 }
 
 /*
- * The pom, potm, dotr, adj360 are used to compute the current 
+ * The pom, potm, dotr, adj360 are used to compute the current
  * phase of the moon.
  * The code is based on the OpenBSD version of pom(6).
  * Below is reported the copyright notice.
@@ -891,7 +891,7 @@ pom (time_t tmpt)
   pom = NO_POM;
   GMT = gmtime (&tmpt);
   days = (GMT->tm_yday + 1) + ((GMT->tm_hour + (GMT->tm_min / 60.0) +
-				(GMT->tm_sec / 3600.0)) / 24.0);
+                                (GMT->tm_sec / 3600.0)) / 24.0);
   for (cnt = EPOCH; cnt < GMT->tm_year; ++cnt)
     days += isleap (cnt + TM_YEAR_BASE) ? 366 : 365;
   /* Selected time could be before EPOCH */

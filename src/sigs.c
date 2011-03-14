@@ -43,7 +43,7 @@
 
 #include "calcurse.h"
 
-/* 
+/*
  * General signal handling routine.
  * Catch return values from children (user-defined notification commands).
  * This is needed to avoid zombie processes running on system.
@@ -56,7 +56,7 @@ generic_hdlr (int sig)
     {
     case SIGCHLD:
       while (waitpid (WAIT_MYPGRP, NULL, WNOHANG) > 0)
-	;
+        ;
       break;
     case SIGWINCH:
       clearok (curscr, TRUE);
@@ -98,7 +98,7 @@ sigs_init ()
 {
   if (!sigs_set_hdlr (SIGCHLD, generic_hdlr)
       || !sigs_set_hdlr (SIGWINCH, generic_hdlr)
-      || !sigs_set_hdlr (SIGTERM, generic_hdlr)      
+      || !sigs_set_hdlr (SIGTERM, generic_hdlr)
       || !sigs_set_hdlr (SIGINT, SIG_IGN))
     exit_calcurse (1);
 }

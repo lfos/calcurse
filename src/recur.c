@@ -66,7 +66,7 @@ static void
 recur_add_exc (struct days **exc, long day)
 {
   struct days **i, *o;
-  
+
   o = mem_malloc (sizeof (struct days));
   o->st = day;
   i = exc;
@@ -86,7 +86,7 @@ static void
 exc_dup (struct days **in, struct days *exc)
 {
   struct days *p;
-  
+
   for (p = exc; p; p = p->next)
     recur_add_exc (in, p->st);
 }
@@ -141,7 +141,7 @@ recur_event_dup (struct recur_event *in, struct recur_event *bkp)
   bkp->id = in->id;
   bkp->day = in->day;
   bkp->mesg = mem_strdup (in->mesg);
-  
+
   bkp->rpt = mem_malloc (sizeof (struct rpt));
   bkp->rpt->type = in->rpt->type;
   bkp->rpt->freq = in->rpt->freq;
@@ -163,7 +163,7 @@ recur_apoint_dup (struct recur_apoint *in, struct recur_apoint *bkp)
   bkp->dur = in->dur;
   bkp->state = in->state;
   bkp->mesg = mem_strdup (in->mesg);
-  
+
   bkp->rpt = mem_malloc (sizeof (struct rpt));
   bkp->rpt->type = in->rpt->type;
   bkp->rpt->freq = in->rpt->freq;
@@ -174,7 +174,7 @@ recur_apoint_dup (struct recur_apoint *in, struct recur_apoint *bkp)
 
   if (in->note)
     bkp->note = mem_strdup (in->note);
-} 
+}
 
 void
 recur_apoint_llist_init (void)
@@ -236,10 +236,10 @@ recur_event_llist_free (void)
 /* Insert a new recursive appointment in the general linked list */
 struct recur_apoint *
 recur_apoint_new (char *mesg, char *note, long start, long dur, char state,
-		  int type, int freq, long until, struct days **except)
+                  int type, int freq, long until, struct days **except)
 {
   struct recur_apoint *o, **i;
-  
+
   o = mem_malloc (sizeof (struct recur_apoint));
   o->rpt = mem_malloc (sizeof (struct rpt));
   o->mesg = mem_strdup (mesg);
@@ -263,11 +263,11 @@ recur_apoint_new (char *mesg, char *note, long start, long dur, char state,
   for (;;)
     {
       if (*i == 0 || (*i)->start > start)
-	{
-	  o->next = *i;
-	  *i = o;
-	  break;
-	}
+        {
+          o->next = *i;
+          *i = o;
+          break;
+        }
       i = &(*i)->next;
     }
   pthread_mutex_unlock (&(recur_alist_p->mutex));
@@ -278,14 +278,14 @@ recur_apoint_new (char *mesg, char *note, long start, long dur, char state,
 /* Insert a new recursive event in the general linked list */
 struct recur_event *
 recur_event_new (char *mesg, char *note, long day, int id, int type, int freq,
-		 long until, struct days **except)
+                 long until, struct days **except)
 {
   struct recur_event *o, **i;
-  
+
   o = mem_malloc (sizeof (struct recur_event));
   o->rpt = mem_malloc (sizeof (struct rpt));
   o->mesg = mem_strdup (mesg);
-  o->note = (note != 0) ? mem_strdup (note) : 0;  
+  o->note = (note != 0) ? mem_strdup (note) : 0;
   o->day = day;
   o->id = id;
   o->rpt->type = type;
@@ -303,19 +303,19 @@ recur_event_new (char *mesg, char *note, long day, int id, int type, int freq,
   for (;;)
     {
       if (*i == 0 || (*i)->day > day)
-	{
-	  o->next = *i;
-	  *i = o;
-	  break;
-	}
+        {
+          o->next = *i;
+          *i = o;
+          break;
+        }
       i = &(*i)->next;
     }
   return (o);
 }
 
-/* 
- * Correspondance between the defines on recursive type, 
- * and the letter to be written in file. 
+/*
+ * Correspondance between the defines on recursive type,
+ * and the letter to be written in file.
  */
 char
 recur_def2char (enum recur_type define)
@@ -344,7 +344,7 @@ recur_def2char (enum recur_type define)
   return (recur_char);
 }
 
-/* 
+/*
  * Correspondance between the letters written in file and the defines
  * concerning the recursive type.
  */
@@ -397,8 +397,8 @@ recur_write_exc (struct days *exc, FILE *f)
 /* Load the recursive appointment description */
 struct recur_apoint *
 recur_apoint_scan (FILE *f, struct tm start, struct tm end, char type,
-		   int freq, struct tm until, char *note, struct days **exc,
-		   char state)
+                   int freq, struct tm until, char *note, struct days **exc,
+                   char state)
 {
   struct tm *lt;
   char buf[BUFSIZ], *nl;
@@ -441,13 +441,13 @@ recur_apoint_scan (FILE *f, struct tm start, struct tm end, char type,
            _("date error in appointment"));
 
   return (recur_apoint_new (buf, note, tstart, tend - tstart, state,
-			    recur_char2def (type), freq, tuntil, exc));
+                            recur_char2def (type), freq, tuntil, exc));
 }
 
 /* Load the recursive events from file */
 struct recur_event *
 recur_event_scan (FILE *f, struct tm start, int id, char type, int freq,
-		  struct tm until, char *note, struct days **exc)
+                  struct tm until, char *note, struct days **exc)
 {
   char buf[BUFSIZ], *nl;
   time_t tstart, tuntil;
@@ -646,7 +646,7 @@ diff_years (struct tm lt_start, struct tm lt_end)
   return lt_end.tm_year - lt_start.tm_year;
 }
 
-/* 
+/*
  * Check if the recurrent item belongs to the selected day,
  * and if yes, return the real start time.
  *
@@ -657,7 +657,7 @@ diff_years (struct tm lt_start, struct tm lt_end)
  */
 unsigned
 recur_item_inday (long item_start, struct days *item_exc, int rpt_type,
-		  int rpt_freq, long rpt_until, long day_start)
+                  int rpt_freq, long rpt_until, long day_start)
 {
   struct date start_date;
   long day_end, diff;
@@ -668,7 +668,7 @@ recur_item_inday (long item_start, struct days *item_exc, int rpt_type,
   day_end = day_start + DAYINSEC;
   t = day_start;
   lt_day = *localtime (&t);
-  
+
   for (exc = item_exc; exc != 0; exc = exc->next)
     if (exc->st < day_end && exc->st >= day_start)
       return (0);
@@ -681,26 +681,26 @@ recur_item_inday (long item_start, struct days *item_exc, int rpt_type,
 
   t = item_start;
   lt_item = *localtime (&t);
-  
+
   switch (rpt_type)
     {
     case RECUR_DAILY:
       diff = diff_days (lt_item, lt_day);
       if (diff % rpt_freq != 0)
-	return (0);
+        return (0);
       lt_item.tm_mday = lt_day.tm_mday;
       lt_item.tm_mon = lt_day.tm_mon;
       lt_item.tm_year = lt_day.tm_year;
       break;
     case RECUR_WEEKLY:
       if (lt_item.tm_wday != lt_day.tm_wday)
-	return (0);
+        return (0);
       else
-	{
+        {
           diff = diff_weeks (lt_item, lt_day);
-	  if (diff % rpt_freq != 0)
-	    return (0);
-	}
+          if (diff % rpt_freq != 0)
+            return (0);
+        }
       lt_item.tm_mday = lt_day.tm_mday;
       lt_item.tm_mon = lt_day.tm_mon;
       lt_item.tm_year = lt_day.tm_year;
@@ -708,14 +708,14 @@ recur_item_inday (long item_start, struct days *item_exc, int rpt_type,
     case RECUR_MONTHLY:
       diff = diff_months (lt_item, lt_day);
       if (diff % rpt_freq != 0)
-	return (0);
+        return (0);
       lt_item.tm_mon = lt_day.tm_mon;
       lt_item.tm_year = lt_day.tm_year;
       break;
     case RECUR_YEARLY:
       diff = diff_years (lt_item, lt_day);
       if (diff % rpt_freq != 0)
-	return (0);
+        return (0);
       lt_item.tm_year = lt_day.tm_year;
       break;
     default:
@@ -732,13 +732,13 @@ recur_item_inday (long item_start, struct days *item_exc, int rpt_type,
     return (0);
 }
 
-/* 
+/*
  * Delete a recurrent event from the list (if delete_whole is not null),
- * or delete only one occurence of the recurrent event. 
+ * or delete only one occurence of the recurrent event.
  */
 void
 recur_event_erase (long start, unsigned num, unsigned delete_whole,
-		   enum eraseflg flag)
+                   enum eraseflg flag)
 {
   unsigned n = 0;
   struct recur_event *i, **iptr;
@@ -747,16 +747,16 @@ recur_event_erase (long start, unsigned num, unsigned delete_whole,
   for (i = recur_elist; i != 0; i = i->next)
     {
       if (recur_item_inday (i->day, i->exc, i->rpt->type,
-			    i->rpt->freq, i->rpt->until, start))
-	{
-	  if (n == num)
-	    {
-	      if (delete_whole)
-		{
+                            i->rpt->freq, i->rpt->until, start))
+        {
+          if (n == num)
+            {
+              if (delete_whole)
+                {
                   switch (flag)
                     {
                     case ERASE_FORCE_ONLY_NOTE:
-                      erase_note (&i->note, flag);                      
+                      erase_note (&i->note, flag);
                       break;
                     case ERASE_CUT:
                       recur_event_free_bkp (ERASE_FORCE);
@@ -764,8 +764,8 @@ recur_event_erase (long start, unsigned num, unsigned delete_whole,
                       erase_note (&i->note, ERASE_FORCE_KEEP_NOTE);
                       /* FALLTHROUGH */
                     default:
-		      *iptr = i->next;
-		      mem_free (i->mesg);
+                      *iptr = i->next;
+                      mem_free (i->mesg);
                       if (i->rpt)
                         {
                           mem_free (i->rpt);
@@ -778,32 +778,32 @@ recur_event_erase (long start, unsigned num, unsigned delete_whole,
                         }
                       if (flag != ERASE_FORCE_KEEP_NOTE && flag != ERASE_CUT)
                         erase_note (&i->note, flag);
-		      mem_free (i);
+                      mem_free (i);
                       break;
-		    }
-		  return;
-		}
-	      else
-		{
+                    }
+                  return;
+                }
+              else
+                {
                   recur_add_exc (&i->exc, start);
-		  return;
-		}
-	    }
-	  n++;
-	}
+                  return;
+                }
+            }
+          n++;
+        }
       iptr = &i->next;
     }
   EXIT (_("event not found"));
-  /* NOTREACHED */  
+  /* NOTREACHED */
 }
 
 /*
  * Delete a recurrent appointment from the list (if delete_whole is not null),
- * or delete only one occurence of the recurrent appointment. 
+ * or delete only one occurence of the recurrent appointment.
  */
 void
 recur_apoint_erase (long start, unsigned num, unsigned delete_whole,
-		    enum eraseflg flag)
+                    enum eraseflg flag)
 {
   unsigned n = 0;
   struct recur_apoint *i, **iptr;
@@ -814,14 +814,14 @@ recur_apoint_erase (long start, unsigned num, unsigned delete_whole,
   for (i = recur_alist_p->root; i != 0; i = i->next)
     {
       if (recur_item_inday (i->start, i->exc, i->rpt->type,
-			    i->rpt->freq, i->rpt->until, start))
-	{
-	  if (n == num)
-	    {
-	      if (notify_bar () && flag != ERASE_FORCE_ONLY_NOTE)
-		need_check_notify = notify_same_recur_item (i);
-	      if (delete_whole)
-		{
+                            i->rpt->freq, i->rpt->until, start))
+        {
+          if (n == num)
+            {
+              if (notify_bar () && flag != ERASE_FORCE_ONLY_NOTE)
+                need_check_notify = notify_same_recur_item (i);
+              if (delete_whole)
+                {
                   switch (flag)
                     {
                     case ERASE_FORCE_ONLY_NOTE:
@@ -833,8 +833,8 @@ recur_apoint_erase (long start, unsigned num, unsigned delete_whole,
                       erase_note (&i->note, ERASE_FORCE_KEEP_NOTE);
                       /* FALLTHROUGH */
                     default:
-		      *iptr = i->next;
-		      mem_free (i->mesg);
+                      *iptr = i->next;
+                      mem_free (i->mesg);
                       if (i->rpt)
                         {
                           mem_free (i->rpt);
@@ -847,25 +847,25 @@ recur_apoint_erase (long start, unsigned num, unsigned delete_whole,
                         }
                       if (flag != ERASE_FORCE_KEEP_NOTE && flag != ERASE_CUT)
                         erase_note (&i->note, flag);
-		      mem_free (i);
-		      pthread_mutex_unlock (&(recur_alist_p->mutex));
-		      if (need_check_notify)
-			notify_check_next_app ();
+                      mem_free (i);
+                      pthread_mutex_unlock (&(recur_alist_p->mutex));
+                      if (need_check_notify)
+                        notify_check_next_app ();
                       break;
-		    }
-		  return;
-		}
-	      else
-		{
+                    }
+                  return;
+                }
+              else
+                {
                   recur_add_exc (&i->exc, start);
-		  pthread_mutex_unlock (&(recur_alist_p->mutex));
-		  if (need_check_notify)
-		    notify_check_next_app ();
-		  return;
-		}
-	    }
-	  n++;
-	}
+                  pthread_mutex_unlock (&(recur_alist_p->mutex));
+                  if (need_check_notify)
+                    notify_check_next_app ();
+                  return;
+                }
+            }
+          n++;
+        }
       iptr = &i->next;
     }
   EXIT (_("appointment not found"));
@@ -921,7 +921,7 @@ recur_repeat_item (struct conf *conf)
     }
 
   while ((ch != 'D') && (ch != 'W') && (ch != 'M')
-	 && (ch != 'Y') && (ch != ESCAPE))
+         && (ch != 'Y') && (ch != ESCAPE))
     {
       status_mesg (mesg_type_1, mesg_type_2);
       ch = wgetch (win[STA].p);
@@ -941,17 +941,17 @@ recur_repeat_item (struct conf *conf)
     {
       status_mesg (mesg_freq_1, "");
       if (getstring (win[STA].p, user_input, BUFSIZ, 0, 1) == GETSTRING_VALID)
-	{
-	  freq = atoi (user_input);
-	  if (freq == 0)
-	    {
-	      status_mesg (mesg_wrong_freq, wrong_type_2);
-	      (void)wgetch (win[STA].p);
-	    }
-	  user_input[0] = '\0';
-	}
+        {
+          freq = atoi (user_input);
+          if (freq == 0)
+            {
+              status_mesg (mesg_wrong_freq, wrong_type_2);
+              (void)wgetch (win[STA].p);
+            }
+          user_input[0] = '\0';
+        }
       else
-	return;
+        return;
     }
 
   while (!date_entered)
@@ -960,60 +960,60 @@ recur_repeat_item (struct conf *conf)
                       DATEFMT_DESC (conf->input_datefmt));
       status_mesg (_(outstr), "");
       if (getstring (win[STA].p, user_input, BUFSIZ, 0, 1) == GETSTRING_VALID)
-	{
-	  if (strlen (user_input) == 1 && strncmp (user_input, "0", 1) == 0)
-	    {
-	      until = 0;
-	      date_entered = 1;
-	    }
-	  else
-	    {
-	      if (parse_date (user_input, conf->input_datefmt,
-			      &year, &month, &day, calendar_get_slctd_day ()))
-		{
-		  t = p->start;
-		  lt = localtime (&t);
-		  until_date.dd = day;
-		  until_date.mm = month;
-		  until_date.yyyy = year;
-		  until = date2sec (until_date, lt->tm_hour, lt->tm_min);
-		  if (until < p->start)
-		    {
-		      status_mesg (mesg_older, wrong_type_2);
-		      (void)wgetch (win[STA].p);
-		      date_entered = 0;
-		    }
-		  else
-		    {
-		      date_entered = 1;
-		    }
-		}
-	      else
-		{
-		  (void)snprintf (outstr, BUFSIZ, mesg_wrong_2,
+        {
+          if (strlen (user_input) == 1 && strncmp (user_input, "0", 1) == 0)
+            {
+              until = 0;
+              date_entered = 1;
+            }
+          else
+            {
+              if (parse_date (user_input, conf->input_datefmt,
+                              &year, &month, &day, calendar_get_slctd_day ()))
+                {
+                  t = p->start;
+                  lt = localtime (&t);
+                  until_date.dd = day;
+                  until_date.mm = month;
+                  until_date.yyyy = year;
+                  until = date2sec (until_date, lt->tm_hour, lt->tm_min);
+                  if (until < p->start)
+                    {
+                      status_mesg (mesg_older, wrong_type_2);
+                      (void)wgetch (win[STA].p);
+                      date_entered = 0;
+                    }
+                  else
+                    {
+                      date_entered = 1;
+                    }
+                }
+              else
+                {
+                  (void)snprintf (outstr, BUFSIZ, mesg_wrong_2,
                                   DATEFMT_DESC (conf->input_datefmt));
-		  status_mesg (mesg_wrong_1, _(outstr));
-		  (void)wgetch (win[STA].p);
-		  date_entered = 0;
-		}
-	    }
-	}
+                  status_mesg (mesg_wrong_1, _(outstr));
+                  (void)wgetch (win[STA].p);
+                  date_entered = 0;
+                }
+            }
+        }
       else
-	return;
+        return;
     }
 
   date = calendar_get_slctd_day_sec ();
   if (p->type == EVNT)
     {
       re = recur_event_new (p->mesg, p->note, p->start, p->evnt_id,
-			    type, freq, until, NULL);
+                            type, freq, until, NULL);
     }
   else if (p->type == APPT)
     {
       ra = recur_apoint_new (p->mesg, p->note, p->start, p->appt_dur,
-			     p->state, type, freq, until, NULL);
+                             p->state, type, freq, until, NULL);
       if (notify_bar ())
-	notify_check_repeated (ra);
+        notify_check_repeated (ra);
     }
   else
     {
@@ -1023,7 +1023,7 @@ recur_repeat_item (struct conf *conf)
   day_erase_item (date, item_nb, ERASE_FORCE_KEEP_NOTE);
 }
 
-/* 
+/*
  * Read days for which recurrent items must not be repeated
  * (such days are called exceptions).
  */
@@ -1039,10 +1039,10 @@ recur_exc_scan (FILE *data_file)
     {
       (void)ungetc (c, data_file);
       if (fscanf (data_file, "!%u / %u / %u ",
-		  &day.tm_mon, &day.tm_mday, &day.tm_year) != 3)
-	{
+                  &day.tm_mon, &day.tm_mday, &day.tm_year) != 3)
+        {
           EXIT (_("syntax error in item date"));
-	}
+        }
       day.tm_hour = 12;
       day.tm_min = day.tm_sec = 0;
       day.tm_isdst = -1;
@@ -1070,23 +1070,23 @@ recur_apoint_check_next (struct notify_app *app, long start, long day)
   for (i = recur_alist_p->root; i != 0; i = i->next)
     {
       if (i->start > app->time)
-	{
-	  pthread_mutex_unlock (&(recur_alist_p->mutex));
-	  return (app);
-	}
+        {
+          pthread_mutex_unlock (&(recur_alist_p->mutex));
+          return (app);
+        }
       else
-	{
-	  real_recur_start_time =
+        {
+          real_recur_start_time =
             recur_item_inday (i->start, i->exc, i->rpt->type, i->rpt->freq,
                               i->rpt->until, day);
-	  if (real_recur_start_time > start)
-	    {
-	      app->time = real_recur_start_time;
-	      app->txt = mem_strdup (i->mesg);
-	      app->state = i->state;
-	      app->got_app = 1;
-	    }
-	}
+          if (real_recur_start_time > start)
+            {
+              app->time = real_recur_start_time;
+              app->txt = mem_strdup (i->mesg);
+              app->state = i->state;
+              app->got_app = 1;
+            }
+        }
     }
   pthread_mutex_unlock (&(recur_alist_p->mutex));
 
@@ -1104,15 +1104,15 @@ recur_get_apoint (long date, int num)
   for (o = recur_alist_p->root; o != 0; o = o->next)
     {
       if (recur_item_inday (o->start, o->exc, o->rpt->type,
-			    o->rpt->freq, o->rpt->until, date))
-	{
-	  if (n == num)
-	    {
-	      pthread_mutex_unlock (&(recur_alist_p->mutex));
-	      return (o);
-	    }
-	  n++;
-	}
+                            o->rpt->freq, o->rpt->until, date))
+        {
+          if (n == num)
+            {
+              pthread_mutex_unlock (&(recur_alist_p->mutex));
+              return (o);
+            }
+          n++;
+        }
     }
   EXIT (_("item not found"));
   return 0;
@@ -1129,14 +1129,14 @@ recur_get_event (long date, int num)
   for (o = recur_elist; o != 0; o = o->next)
     {
       if (recur_item_inday (o->day, o->exc, o->rpt->type,
-			    o->rpt->freq, o->rpt->until, date))
-	{
-	  if (n == num)
-	    {
-	      return (o);
-	    }
-	  n++;
-	}
+                            o->rpt->freq, o->rpt->until, date))
+        {
+          if (n == num)
+            {
+              return (o);
+            }
+          n++;
+        }
     }
   EXIT (_("item not found"));
   return 0;
@@ -1157,22 +1157,22 @@ recur_apoint_switch_notify (long date, int recur_nb)
   for (o = recur_alist_p->root; o != 0; o = o->next)
     {
       if (recur_item_inday (o->start, o->exc, o->rpt->type,
-			    o->rpt->freq, o->rpt->until, date))
-	{
-	  if (n == recur_nb)
-	    {
-	      o->state ^= APOINT_NOTIFY;
+                            o->rpt->freq, o->rpt->until, date))
+        {
+          if (n == recur_nb)
+            {
+              o->state ^= APOINT_NOTIFY;
 
-	      if (notify_bar ())
-		notify_check_repeated (o);
+              if (notify_bar ())
+                notify_check_repeated (o);
 
-	      pthread_mutex_unlock (&(recur_alist_p->mutex));
-	      if (need_chk_notify)
-		notify_check_next_app ();
-	      return;
-	    }
-	  n++;
-	}
+              pthread_mutex_unlock (&(recur_alist_p->mutex));
+              if (need_chk_notify)
+                notify_check_next_app ();
+              return;
+            }
+          n++;
+        }
     }
   EXIT (_("item not found"));
   /* NOTREACHED */
@@ -1192,11 +1192,11 @@ recur_event_paste_item (void)
   if (bkp_cut_recur_event.exc)
     {
       struct days *exc;
-      
+
       for (exc = bkp_cut_recur_event.exc; exc != 0; exc = exc->next)
         exc->st += time_shift;
     }
-  
+
   (void)recur_event_new (bkp_cut_recur_event.mesg, bkp_cut_recur_event.note,
                          bkp_cut_recur_event.day, bkp_cut_recur_event.id,
                          bkp_cut_recur_event.rpt->type,
@@ -1222,11 +1222,11 @@ recur_apoint_paste_item (void)
   if (bkp_cut_recur_apoint.exc)
     {
       struct days *exc;
-      
+
       for (exc = bkp_cut_recur_apoint.exc; exc != 0; exc = exc->next)
         exc->st += time_shift;
     }
-  
+
   (void)recur_apoint_new (bkp_cut_recur_apoint.mesg, bkp_cut_recur_apoint.note,
                           bkp_cut_recur_apoint.start, bkp_cut_recur_apoint.dur,
                           bkp_cut_recur_apoint.state,

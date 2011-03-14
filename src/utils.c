@@ -52,7 +52,7 @@ void
 exit_calcurse (int status)
 {
   int was_interactive;
-  
+
   if (ui_mode == UI_CURSES)
     {
       notify_stop_main_thread ();
@@ -64,7 +64,7 @@ exit_calcurse (int status)
     }
   else
     was_interactive = 0;
-  
+
   calendar_stop_date_thread ();
   io_stop_psave_thread ();
   free_user_data ();
@@ -78,7 +78,7 @@ exit_calcurse (int status)
       if (dmon.enable)
         dmon_start (status);
     }
-  
+
   exit (status);
 }
 
@@ -112,7 +112,7 @@ fatalbox (const char *errmsg)
 
   if (errmsg == 0)
     return;
-  
+
   (void)strncpy (msg, errmsg, MSGLEN);
   errwin = newwin (WINROW, WINCOL, (row - WINROW) / 2, (col - WINCOL) / 2);
   custom_apply_attr (errwin, ATTR_HIGHEST);
@@ -132,14 +132,14 @@ warnbox (const char *msg)
 {
   WINDOW *warnwin;
   char *label = "/!\\";
-  const int WINROW = 10;  
+  const int WINROW = 10;
   const int WINCOL = col - 2;
   const int MSGLEN = WINCOL - 2;
   char displmsg[MSGLEN];
 
   if (msg == 0)
     return;
-  
+
   (void)strncpy (displmsg, msg, MSGLEN);
   warnwin = newwin (WINROW, WINCOL, (row - WINROW) / 2, (col - WINCOL) / 2);
   custom_apply_attr (warnwin, ATTR_HIGHEST);
@@ -153,7 +153,7 @@ warnbox (const char *msg)
   wins_doupdate ();
 }
 
-/* 
+/*
  * Print a message in the status bar.
  * Message texts for first line and second line are to be provided.
  */
@@ -204,7 +204,7 @@ popup (int pop_row, int pop_col, int pop_y, int pop_x, char *title, char *msg,
                any_key);
   custom_remove_attr (popup_win, ATTR_HIGHEST);
   wins_wrefresh (popup_win);
-  
+
   return popup_win;
 }
 
@@ -275,7 +275,7 @@ bell (void)
   printf ("\a");
 }
 
-/* 
+/*
  * Getstring allows to get user input and to print it on a window,
  * even if noecho() is on. This function is also used to modify an existing
  * text (the variable string can be non-NULL).
@@ -319,7 +319,7 @@ getstring (WINDOW *win, char *str, int l, int x, int y)
           del_char (curpos, str);
           len--;
         }
-	      else bell ();
+              else bell ();
         break;
       case CTRL ('W'):        /* delete a word */
         if (curpos > 0) {
@@ -377,7 +377,7 @@ updatestring (WINDOW *win, char **str, int x, int y)
   enum getstr ret;
 
   EXIT_IF (len + 1 > BUFSIZ, _("Internal error: line too long"));
-  
+
   buf = mem_malloc (BUFSIZ);
   (void)memcpy (buf, *str, len + 1);
 
@@ -470,7 +470,7 @@ date_sec2date_fmt (long sec, const char *fmt, char *datef)
   strftime (datef, BUFSIZ, fmt, lt);
 }
 
-/* 
+/*
  * Used to change date by adding a certain amount of days or weeks.
  */
 long
@@ -478,7 +478,7 @@ date_sec_change (long date, int delta_month, int delta_day)
 {
   struct tm *lt;
   time_t t;
-  
+
   t = date;
   lt = localtime (&t);
   lt->tm_mon += delta_month;
@@ -490,7 +490,7 @@ date_sec_change (long date, int delta_month, int delta_day)
   return t;
 }
 
-/* 
+/*
  * Return a long containing the date which is updated taking into account
  * the new time and date entered by the user.
  */
@@ -510,7 +510,7 @@ update_time_in_date (long date, unsigned hr, unsigned mn)
   return (new_date);
 }
 
-/* 
+/*
  * Returns the date in seconds from year 1900.
  * If no date is entered, current date is chosen.
  */
@@ -545,11 +545,11 @@ min2sec (unsigned minutes)
   return (minutes * MININSEC);
 }
 
-/* 
- * Checks if a time has a good format. 
+/*
+ * Checks if a time has a good format.
  * The format could be either HH:MM or H:MM or MM, and we should have:
  * 0 <= HH <= 24 and 0 <= MM < 999.
- * This function returns 1 if the entered time is correct and in 
+ * This function returns 1 if the entered time is correct and in
  * [h:mm] or [hh:mm] format, and 2 if the entered time is correct and entered
  * in [mm] format.
  */
@@ -579,7 +579,7 @@ check_time (char *string)
  */
 void
 draw_scrollbar (WINDOW *win, int y, int x, int length,
-		int bar_top, int bar_bottom, unsigned hilt)
+                int bar_top, int bar_bottom, unsigned hilt)
 {
   mvwvline (win, bar_top, x, ACS_VLINE, bar_bottom - bar_top);
   if (hilt)
@@ -592,13 +592,13 @@ draw_scrollbar (WINDOW *win, int y, int x, int length,
 }
 
 /*
- * Print an item (either an appointment, event, or todo) in a 
- * popup window. This is useful if an item description is too 
+ * Print an item (either an appointment, event, or todo) in a
+ * popup window. This is useful if an item description is too
  * long to fit in its corresponding panel window.
  */
 void
 item_in_popup (char *saved_a_start, char *saved_a_end, char *msg,
-	       char *pop_title)
+               char *pop_title)
 {
   WINDOW *popup_win, *pad;
   const int margin_left = 4, margin_top = 4;
@@ -610,7 +610,7 @@ item_in_popup (char *saved_a_start, char *saved_a_end, char *msg,
   if (strncmp (pop_title, _("Appointment"), 11) == 0)
     {
       mvwprintw (popup_win, margin_top, margin_left, "- %s -> %s",
-		 saved_a_start, saved_a_end);
+                 saved_a_start, saved_a_end);
     }
   mvwprintw (pad, 0, margin_left, "%s", msg);
   wmove (win[STA].p, 0, 0);
@@ -650,7 +650,7 @@ now (void)
 char *
 nowstr (void)
 {
-  static char buf[BUFSIZ];  
+  static char buf[BUFSIZ];
   time_t t = now ();
 
   (void)strftime (buf, sizeof buf, "%a %b %d %T %Y", localtime (&t));
@@ -701,9 +701,9 @@ print_bool_option_incolor (WINDOW *win, unsigned option, int pos_y, int pos_x)
   wins_doupdate ();
 }
 
-/* 
+/*
  * Create a new unique file, and return a newly allocated string which contains
- * the random part of the file name. 
+ * the random part of the file name.
  */
 char *
 new_tempfile (const char *prefix, int trailing_len)
@@ -724,10 +724,10 @@ new_tempfile (const char *prefix, int trailing_len)
   if ((fd = mkstemp (fullname)) == -1 || (file = fdopen (fd, "w+")) == NULL)
     {
       if (fd != -1)
-	{
-	  unlink (fullname);
-	  close (fd);
-	}
+        {
+          unlink (fullname);
+          close (fd);
+        }
       ERROR_MSG (_("temporary file \"%s\" could not be created"), fullname);
       return (char *)0;
     }

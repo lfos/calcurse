@@ -78,9 +78,9 @@ static struct keydef_s keydef[NBKEYS] = {
   {"generic-next-week", "C-j"},
   {"generic-prev-week", "C-k"},
   {"generic-scroll-down", "C-n"},
-  {"generic-scroll-up", "C-p"},  
+  {"generic-scroll-up", "C-p"},
   {"generic-goto-today", "C-g"},
-        
+
   {"move-right", "l L"},
   {"move-left", "h H"},
   {"move-down", "j J"},
@@ -164,7 +164,7 @@ keys_dump_defaults (char *file)
 {
   FILE *fd;
   int i;
-  
+
   fd = fopen (file, "w");
   EXIT_IF (fd == NULL, _("FATAL ERROR: could not create default keys file."));
 
@@ -196,7 +196,7 @@ enum key
 keys_getch (WINDOW *win)
 {
   int ch;
-  
+
   ch = wgetch (win);
   switch (ch)
     {
@@ -211,7 +211,7 @@ static void
 add_key_str (enum key action, int key)
 {
   struct key_str_s *new, **i;
-  
+
   if (action < 0 || action > NBKEYS)
     return;
 
@@ -245,7 +245,7 @@ keys_assign_binding (int key, enum key action)
       actions[key] =  action;
       add_key_str (action, key);
     }
-  
+
   return 0;
 }
 
@@ -254,7 +254,7 @@ del_key_str (enum key action, int key)
 {
   struct key_str_s *old, **i;
   char oldstr[BUFSIZ];
-  
+
   if (action < 0 || action > NBKEYS)
     return;
 
@@ -265,7 +265,7 @@ del_key_str (enum key action, int key)
         {
           old = *i;
           *i = old->next;
-          mem_free (old->str);          
+          mem_free (old->str);
           mem_free (old);
           break;
         }
@@ -289,7 +289,7 @@ keys_str2int (char *key)
 {
   const struct string CONTROL_KEY = STRING_BUILD ("C-");
   const struct string TAB_KEY = STRING_BUILD ("TAB");
-  const struct string SPACE_KEY = STRING_BUILD ("SPC");  
+  const struct string SPACE_KEY = STRING_BUILD ("SPC");
   const struct string ESCAPE_KEY = STRING_BUILD ("ESC");
   const struct string CURSES_KEY_UP = STRING_BUILD ("UP");
   const struct string CURSES_KEY_DOWN = STRING_BUILD ("DWN");
@@ -375,7 +375,7 @@ keys_action_count_keys (enum key action)
 char *
 keys_action_firstkey (enum key action)
 {
-  return (keys[action] != NULL) ? keys[action]->str : "XXX"; 
+  return (keys[action] != NULL) ? keys[action]->str : "XXX";
 }
 
 char *
@@ -400,10 +400,10 @@ keys_action_allkeys (enum key action)
   static char keystr[BUFSIZ];
   struct key_str_s *i;
   const char *CHAR_SPACE = " ";
-  
+
   if (keys[action] == NULL)
     return NULL;
-  keystr[0] = '\0';  
+  keystr[0] = '\0';
   for (i = keys[action]; i; i = i->next)
     {
       const int MAXLEN = sizeof (keystr) - 1 - strlen (keystr);
@@ -454,7 +454,7 @@ keys_display_bindings_bar (WINDOW *win, struct binding **binding, int first_key,
   cmdlen =  KEYS_KEYLEN + 1 + KEYS_LABELEN;
   space_between_cmds = floor (col / KEYS_CMDS_PER_LINE - cmdlen);
   cmdlen += space_between_cmds;
-  
+
   j = 0;
   wins_erase_status_bar ();
   for (i = first_key; i < last_key; i += 2)
@@ -479,7 +479,7 @@ keys_display_bindings_bar (WINDOW *win, struct binding **binding, int first_key,
       custom_remove_attr (win, ATTR_HIGHEST);
       mvwprintw (win, 0, LABEL_POS, binding[i]->label);
       if (i + 1 != last_key)
-	mvwprintw (win, 1, LABEL_POS, binding[i + 1]->label);
+        mvwprintw (win, 1, LABEL_POS, binding[i + 1]->label);
       j++;
     }
   wnoutrefresh (win);
@@ -494,7 +494,7 @@ keys_popup_info (enum key key)
 {
   char *info[NBKEYS];
   WINDOW *infowin;
-  
+
   info[KEY_GENERIC_CANCEL] =
     _("Cancel the ongoing action.");
   info[KEY_GENERIC_SELECT] =
@@ -574,8 +574,8 @@ keys_popup_info (enum key key)
   info[KEY_RAISE_PRIORITY] =
     _("Raise a task priority inside the todo panel.");
   info[KEY_LOWER_PRIORITY] =
-    _("Lower a task priority inside the todo panel.");    
-    
+    _("Lower a task priority inside the todo panel.");
+
   if (key < 0 || key > NBKEYS)
     return;
 
@@ -593,7 +593,7 @@ void
 keys_save_bindings (FILE *fd)
 {
   int i;
-  
+
   EXIT_IF (fd == NULL, _("FATAL ERROR: null file pointer."));
   dump_intro (fd);
   for (i = 0; i < NBKEYS; i++)
@@ -604,7 +604,7 @@ int
 keys_check_missing_bindings (void)
 {
   int i;
-    
+
   for (i = 0; i < NBKEYS; i++)
     {
       if (keys[i] == 0)
@@ -624,7 +624,7 @@ keys_fill_missing (void)
         {
           char *p, tmpbuf[BUFSIZ];
 
-          (void)strncpy (tmpbuf, keydef[i].binding, BUFSIZ);          
+          (void)strncpy (tmpbuf, keydef[i].binding, BUFSIZ);
           p = tmpbuf;
           for (;;)
             {
@@ -635,7 +635,7 @@ keys_fill_missing (void)
               if (sscanf (p, "%s", key_ch) == 1)
                 {
                   int ch, used;
-                  
+
                   ch = keys_str2int (key_ch);
                   used = keys_assign_binding (ch, i);
                   if (used)

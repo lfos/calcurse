@@ -77,11 +77,11 @@ stats_add_blk (size_t size, const char *pos)
   EXIT_IF (o == 0, _("could not allocate memory to store block info"));
 
   mstats.ncall++;
-  
+
   o->pos = pos;
   o->size = (unsigned)size;
   o->next = 0;
-  
+
   i = &mstats.blk;
   for (i = &mstats.blk; *i; i = &(*i)->next)
     ;
@@ -111,14 +111,14 @@ stats_del_blk (unsigned id)
     }
 
   EXIT (_("Block not found"));
-  /* NOTREACHED */  
+  /* NOTREACHED */
 }
 
 void *
 xmalloc (size_t size)
 {
   void *p;
-  
+
   EXIT_IF (size == 0, _("xmalloc: zero size"));
   p = malloc (size);
   EXIT_IF (p == 0, _("xmalloc: out of memory"));
@@ -177,13 +177,13 @@ void *
 dbg_malloc (size_t size, const char *pos)
 {
   unsigned *buf;
-  
+
    if (size == 0)
     return (void *)0;
-  
+
   size = EXTRA_SPACE + (size + sizeof (unsigned) - 1) / sizeof (unsigned);
   buf = xmalloc (size * sizeof (unsigned));
-  
+
   buf[BLK_STATE] = MAGIC_ALLOC;             /* state of the block */
   buf[BLK_SIZE] = size;                     /* size of the block */
   buf[BLK_ID] = stats_add_blk (size, pos);  /* identify a block by its id */
@@ -198,10 +198,10 @@ void *
 dbg_calloc (size_t nmemb, size_t size, const char *pos)
 {
   void *buf;
-  
+
   if (!nmemb || !size)
     return (void *)0;
-  
+
   EXIT_IF (nmemb > SIZE_MAX / size, _("overflow at %s"), pos);
 
   size *= nmemb;
@@ -217,25 +217,25 @@ void *
 dbg_realloc (void *ptr, size_t nmemb, size_t size, const char *pos)
 {
   unsigned *buf, old_size, new_size, cpy_size;
-  
+
   if (ptr == 0)
     return (void *)0;
 
   new_size = nmemb *size;
   if (new_size == 0)
     return (void *)0;
-  
+
   EXIT_IF (nmemb > SIZE_MAX / size, _("overflow at %s"), pos);
-  
+
   if ((buf = dbg_malloc (new_size, pos)) == 0)
     return (void *)0;
 
   old_size = *((unsigned *)ptr - EXTRA_SPACE_START + BLK_SIZE);
   cpy_size = (old_size > new_size) ? new_size : old_size;
   bcopy (ptr, buf, cpy_size);
-  
+
   mem_free (ptr);
-  
+
   return (void *)buf;
 }
 
@@ -244,7 +244,7 @@ dbg_strdup (const char *s, const char *pos)
 {
   size_t size;
   char *buf;
-  
+
   if (s == 0)
     return (char *)0;
 
@@ -264,19 +264,19 @@ dbg_free (void *ptr, const char *pos)
 
   buf = (unsigned *)ptr - EXTRA_SPACE_START;
   size = buf[BLK_SIZE];
-  
+
   EXIT_IF (buf[BLK_STATE] == MAGIC_FREE,
            _("block seems already freed at %s"), pos);
   EXIT_IF (buf[BLK_STATE] != MAGIC_ALLOC,
            _("corrupt block header at %s"), pos);
   EXIT_IF (buf[size - 1] != buf[BLK_ID],
            _("corrupt block end at %s, (end = %u, should be %d)"), pos,
-           buf[size - 1], buf[BLK_ID]); 
+           buf[size - 1], buf[BLK_ID]);
 
   buf[0] = MAGIC_FREE;
 
   stats_del_blk (buf[BLK_ID]);
-  
+
   free (buf);
   mstats.nfree += size;
 }
@@ -289,10 +289,10 @@ dump_block_info (struct mem_blk *blk)
 {
   if (blk == 0)
     return;
-  
+
   printf (_("---==== MEMORY BLOCK ====----------------\n"));
-  printf (_("            id: %u\n"), blk->id);    
-  printf (_("          size: %u\n"), blk->size);  
+  printf (_("            id: %u\n"), blk->id);
+  printf (_("          size: %u\n"), blk->size);
   printf (_("  allocated in: %s\n"), blk->pos);
   printf (_("-----------------------------------------\n"));
 }
@@ -301,7 +301,7 @@ void
 mem_stats (void)
 {
   printf ("\n");
-  printf (_("+------------------------------+\n"));  
+  printf (_("+------------------------------+\n"));
   printf (_("| calcurse memory usage report |\n"));
   printf (_("+------------------------------+\n"));
   printf (_("  number of calls: %u\n"), mstats.ncall);

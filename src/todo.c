@@ -120,9 +120,9 @@ todo_first_decrease (void)
   first--;
 }
 
-/* 
+/*
  * Return the position of the hilghlighted item, relative to the first one
- * displayed. 
+ * displayed.
  */
 int
 todo_hilt_pos (void)
@@ -150,10 +150,10 @@ todo_new_item (void)
   if (getstring (win[STA].p, todo_input, BUFSIZ, 0, 1) == GETSTRING_VALID)
     {
       while ((ch < '1') || (ch > '9'))
-	{
-	  status_mesg (mesg_id, "");
-	  ch = wgetch (win[STA].p);
-	}
+        {
+          status_mesg (mesg_id, "");
+          ch = wgetch (win[STA].p);
+        }
       todo_add (todo_input, ch - '0', NULL);
       todos++;
     }
@@ -167,7 +167,7 @@ todo_add (char *mesg, int id, char *note)
 {
   struct todo *o, **i;
   int absid;
-  
+
   o = mem_malloc (sizeof (struct todo));
   o->mesg = mem_strdup (mesg);
   o->id = id;
@@ -183,11 +183,11 @@ todo_add (char *mesg, int id, char *note)
   for (;;)
     {
       if (*i == 0 || abs ((*i)->id) > absid)
-	{
-	  o->next = *i;
-	  *i = o;
-	  break;
-	}
+        {
+          o->next = *i;
+          *i = o;
+          break;
+        }
       i = &(*i)->next;
     }
   return (o);
@@ -205,12 +205,12 @@ todo_delete_note_bynum (unsigned num)
   for (i = todolist; i != 0; i = i->next)
     {
       if (n == num)
-	{
-	  if (i->note == NULL)
+        {
+          if (i->note == NULL)
             EXIT (_("no note attached"));
-	  erase_note (&i->note, ERASE_FORCE_ONLY_NOTE);
-	  return;
-	}
+          erase_note (&i->note, ERASE_FORCE_ONLY_NOTE);
+          return;
+        }
       iptr = &i->next;
       n++;
     }
@@ -230,13 +230,13 @@ todo_delete_bynum (unsigned num, enum eraseflg flag)
   for (i = todolist; i != 0; i = i->next)
     {
       if (n == num)
-	{
-	  *iptr = i->next;
-	  mem_free (i->mesg);
+        {
+          *iptr = i->next;
+          mem_free (i->mesg);
           erase_note (&i->note, flag);
-	  mem_free (i);
-	  return;
-	}
+          mem_free (i);
+          return;
+        }
       iptr = &i->next;
       n++;
     }
@@ -267,7 +267,7 @@ todo_delete (struct conf *conf)
   char *del_todo_str = _("Do you really want to delete this task ?");
   char *erase_warning =
       _("This item has a note attached to it. "
-	"Delete (t)odo or just its (n)ote ?");
+        "Delete (t)odo or just its (n)ote ?");
   char *erase_choice = _("[t/n] ");
   unsigned go_for_todo_del = 0;
   int answer, has_note;
@@ -277,14 +277,14 @@ todo_delete (struct conf *conf)
       status_mesg (del_todo_str, choices);
       answer = wgetch (win[STA].p);
       if ((answer == 'y') && (todos > 0))
-	{
-	  go_for_todo_del = 1;
-	}
+        {
+          go_for_todo_del = 1;
+        }
       else
-	{
-	  wins_erase_status_bar ();
-	  return;
-	}
+        {
+          wins_erase_status_bar ();
+          return;
+        }
     }
   else if (todos > 0)
     go_for_todo_del = 1;
@@ -312,11 +312,11 @@ todo_delete (struct conf *conf)
       todo_delete_bynum (hilt - 1, ERASE_FORCE);
       todos--;
       if (hilt > 1)
-	hilt--;
+        hilt--;
       if (todos == 0)
-	hilt = 0;
+        hilt = 0;
       if (hilt - first < 0)
-	first--;
+        first--;
       break;
     case 'n':
       todo_delete_note_bynum (hilt - 1);
@@ -327,7 +327,7 @@ todo_delete (struct conf *conf)
     }
 }
 
-/* 
+/*
  * Returns the position into the linked list corresponding to the
  * given todo item.
  */
@@ -340,10 +340,10 @@ todo_get_position (struct todo *i)
   for (o = todolist; o; o = o->next)
     {
       if (o == i)
-	{
-	  found = 1;
-	  break;
-	}
+        {
+          found = 1;
+          break;
+        }
       n++;
     }
   if (found)
@@ -409,7 +409,7 @@ todo_edit_item (void)
 /* Display todo items in the corresponding panel. */
 static void
 display_todo_item (int incolor, char *msg, int prio, int note, int len, int y,
-		   int x)
+                   int x)
 {
   WINDOW *w;
   int ch_note;
@@ -421,7 +421,7 @@ display_todo_item (int incolor, char *msg, int prio, int note, int len, int y,
     snprintf (priostr, sizeof priostr, "%d", prio);
   else
     snprintf (priostr, sizeof priostr, "X");
-    
+
   if (incolor == 0)
     custom_apply_attr (w, ATTR_HIGHEST);
   if (strlen (msg) < len)
@@ -459,14 +459,14 @@ todo_update_panel (int which_pan)
       t_realpos = num_todo - first;
       incolor = num_todo - hilt;
       if (incolor == 0)
-	msgsav = i->mesg;
+        msgsav = i->mesg;
       if (t_realpos >= 0 && t_realpos < max_items)
-	{
-	  display_todo_item (incolor, i->mesg, i->id,
-			     (i->note != NULL) ? 1 : 0, len, y_offset,
-			     x_offset);
-	  y_offset = y_offset + todo_lines;
-	}
+        {
+          display_todo_item (incolor, i->mesg, i->id,
+                             (i->note != NULL) ? 1 : 0, len, y_offset,
+                             x_offset);
+          y_offset = y_offset + todo_lines;
+        }
     }
 
   /* Draw the scrollbar if necessary. */
@@ -479,9 +479,9 @@ todo_update_panel (int which_pan)
       int sbar_top = highend + title_lines;
 
       if ((sbar_top + sbar_length) > win[TOD].h - 1)
-	sbar_length = win[TOD].h - 1 - sbar_top;
+        sbar_length = win[TOD].h - 1 - sbar_top;
       draw_scrollbar (win[TOD].p, sbar_top, win[TOD].w - 2,
-		      sbar_length, title_lines, win[TOD].h - 1, hilt_bar);
+                      sbar_length, title_lines, win[TOD].h - 1, hilt_bar);
     }
 
   wnoutrefresh (win[TOD].p);
@@ -499,9 +499,9 @@ todo_edit_note (char *editor)
   if (i->note == NULL)
     {
       if ((filename = new_tempfile (path_notes, NOTESIZ)) != NULL)
-	i->note = filename;
+        i->note = filename;
       else
-	return;
+        return;
     }
   (void)snprintf (fullname, BUFSIZ, "%s%s", path_notes, i->note);
   wins_launch_external (fullname, editor);
