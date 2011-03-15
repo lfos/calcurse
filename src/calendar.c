@@ -55,7 +55,7 @@
 #define	Pzero	  36.340410	/* lunar mean long of perigee at EPOCH */
 #define	Nzero	  318.510107	/* lunar mean long of node at EPOCH */
 
-#define isleap(y) ((((y) % 4) == 0 && ((y) % 100) != 0) || ((y) % 400) == 0)
+#define ISLEAP(y) ((((y) % 4) == 0 && ((y) % 100) != 0) || ((y) % 400) == 0)
 
 enum {
   CAL_MONTH_VIEW,
@@ -263,7 +263,7 @@ ymd_to_scalar (unsigned year, unsigned month, unsigned day)
 
   scalar = day + months_to_days (month);
   if (month > 2)
-    scalar -= isleap (year) ? 1 : 2;
+    scalar -= ISLEAP (year) ? 1 : 2;
   year--;
   scalar += years_to_days (year);
 
@@ -315,7 +315,7 @@ draw_monthly_view (struct window *cwin, struct date *current_day,
 
   /* checking the number of days in february */
   numdays = days[mo - 1];
-  if (2 == mo && isleap (yr))
+  if (2 == mo && ISLEAP (yr))
     ++numdays;
 
   /*
@@ -451,7 +451,7 @@ ISO8601weeknum (const struct tm *t)
           dec31ly.tm_mon = 11;
           dec31ly.tm_mday = 31;
           dec31ly.tm_wday = (jan1day == SUNDAY) ? 6 : jan1day - 1;
-          dec31ly.tm_yday = 364 + isleap (dec31ly.tm_year + 1900);
+          dec31ly.tm_yday = 364 + ISLEAP (dec31ly.tm_year + 1900);
           wnum = ISO8601weeknum (&dec31ly);
         }
       break;
@@ -893,10 +893,10 @@ pom (time_t tmpt)
   days = (GMT->tm_yday + 1) + ((GMT->tm_hour + (GMT->tm_min / 60.0) +
                                 (GMT->tm_sec / 3600.0)) / 24.0);
   for (cnt = EPOCH; cnt < GMT->tm_year; ++cnt)
-    days += isleap (cnt + TM_YEAR_BASE) ? 366 : 365;
+    days += ISLEAP (cnt + TM_YEAR_BASE) ? 366 : 365;
   /* Selected time could be before EPOCH */
   for (cnt = GMT->tm_year; cnt < EPOCH; ++cnt)
-    days -= isleap (cnt + TM_YEAR_BASE) ? 366 : 365;
+    days -= ISLEAP (cnt + TM_YEAR_BASE) ? 366 : 365;
 
   return (potm (days));
 }

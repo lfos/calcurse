@@ -588,12 +588,12 @@ recur_save_data (FILE *f)
  * diff_months and diff_years functions were provided by Lukas Fleischer to
  * correct the wrong calculation of recurrent dates after a turn of year.
  */
-#define bc(start, end, bs)                                              \
+#define BC(start, end, bs)                                              \
   (((end) - (start) + ((start) % bs) - ((end) % bs)) / bs               \
    + ((((start) % bs) == 0) ? 1 : 0))
 
-#define leapcount(start, end)                                           \
-  (bc(start, end, 4) - bc(start, end, 100) + bc(start, end, 400))
+#define LEAPCOUNT(start, end)                                           \
+  (BC(start, end, 4) - BC(start, end, 100) + BC(start, end, 400))
 
 
 /* Calculate the difference in days between two dates. */
@@ -610,7 +610,7 @@ diff_days (struct tm lt_start, struct tm lt_end)
   if (lt_end.tm_year > lt_start.tm_year)
     {
       diff += (lt_end.tm_year - lt_start.tm_year) * YEARINDAYS;
-      diff += leapcount (lt_start.tm_year + TM_YEAR_BASE,
+      diff += LEAPCOUNT (lt_start.tm_year + TM_YEAR_BASE,
                          lt_end.tm_year + TM_YEAR_BASE - 1);
     }
 

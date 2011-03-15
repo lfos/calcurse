@@ -45,7 +45,7 @@
 
 #include "calcurse.h"
 
-#define isleap(y) ((((y) % 4) == 0 && ((y) % 100) != 0) || ((y) % 400) == 0)
+#define ISLEAP(y) ((((y) % 4) == 0 && ((y) % 100) != 0) || ((y) % 400) == 0)
 
 /* General routine to exit calcurse properly. */
 void
@@ -825,7 +825,7 @@ parse_date (char *date_string, enum datefmt datefmt, int *year, int *month,
 
   /* check if date is valid, take leap years into account */
   if (y < 1902 || y > 2037 || m < 1 || m > 12 || d < 1 ||
-      d > days[m - 1] + (m == 2 && isleap (y)) ? 1 : 0)
+      d > days[m - 1] + (m == 2 && ISLEAP (y)) ? 1 : 0)
     return 0;
 
   if (year) *year = y;
