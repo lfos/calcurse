@@ -850,6 +850,11 @@ NOTE: any help in getting `calcurse` internationalized would be very welcomed,
 Translating documentation
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
+NOTE: We recently dropped all translations of the manual files from the
+      distribution tarball. There are plan to reintroduce them in form of a
+      Wiki on the calcurse website. Please follow the mailing lists for
+      up-to-date information.
+
 The *doc/* directory of the source package already contains translated version
 of `calcurse` manual. However, if the manual is not yet available into your
 native language, it would be appreciated if you could help translating it.
