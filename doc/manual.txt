@@ -842,11 +842,6 @@ feedback on what you like or dislike, and if there are features you miss in
 `calcurse`.  For now on, possible contributions concern the translation of
 `calcurse` messages and documentation.
 
-NOTE: any help in getting `calcurse` internationalized would be very welcomed,
-      but before contributing, send a mail to `calcurse-i18n .at. culot .dot.
-      org` to know if someone already started the translation process into your
-      language.
-
 Translating documentation
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -868,12 +863,23 @@ calcurse i18n
 ~~~~~~~~~~~~~
 
 As already mentioned, `gettext` utilities are used by `calcurse` to produce
-multi-lingual messages. This section provides informations about how to
-translate those messages into your native language. However, this howto is
-deliberately incomplete, focusing on working with `gettext` for `calcurse`
-specifically.  For more comprehensive informations or to grasp the Big Picture
-of Native Language Support, you should refer to the `GNU gettext` manual at:
+multi-lingual messages. We are currently using
+http://www.transifex.net/[Transifex] to manage those translations.
+
+This section provides informations about how to translate those messages into
+your native language. However, this howto is deliberately incomplete, focusing
+on working with `gettext` for `calcurse` specifically.  For more comprehensive
+informations or to grasp the Big Picture of Native Language Support, you should
+refer to the `GNU gettext` manual at:
 http://www.gnu.org/software/gettext/manual/
+
+IMPORTANT: Since we switched to Transifex, editing *po* files is not necessary
+           anymore as Transifex provides a user-friendly, intuitive web
+           interface for translators. Knowlegde of `gettext` and the *po*
+           format is still useful for those of you who prefer the command line
+           and local editing. If you want to use the web UI to edit the
+           translation strings, you can skip over to <<transifex_webui,Using
+           the Transifex web UI>> tough.
 
 Basically, three different people get involved in the translation chain:
 coders, language coordinator, and translators. After a quick overview of how
@@ -905,7 +911,6 @@ version of this file (for efficiency reasons) will be produced (*fr.mo* - *mo*
 stands for *machine object*, ie meant to be read by programs), and then
 installed.  Then `calcurse` will use this file at runtime, translating the
 strings according to the locale settings of the user.
-
 
 Translator tasks
 ^^^^^^^^^^^^^^^^
@@ -1020,8 +1025,65 @@ give your name/nick, or add an email address, for exemple:
 
 *And finally*::
   I hope you'll have fun contributing to a more internationalized world. :) If
-  you have any more questions, don't hesitate to contact me at *frederic .at.
-  culot .dot. org*.
+  you have any more questions, don't hesitate to contact us at *misc .at.
+  calcurse .dot. org*.
+
+[[transifex_uploading]]
+Uploading to Transifex
+^^^^^^^^^^^^^^^^^^^^^^
+
+There's several different ways to upload a finished (or semi-finished)
+translation for a new language to Transifex. The easiest way is to browse to
+the http://www.transifex.net/projects/p/calcurse/teams/[Translation Teams] page
+and request the addition of a new team.
+
+As soon as we accepted your request, you will be able to upload your *po* file
+on the
+http://www.transifex.net/projects/p/calcurse/resource/calcurse-pot/[calcurse
+resource page] by clicking the *Add translation* button at the bottom.
+
+Using transifex-client
+^^^^^^^^^^^^^^^^^^^^^^
+
+You can also use a command line client to submit translations instead of having
+to use the web interface every time you want to submit an updated version. If
+you have a recent version of setuptools installed, you can get the CLI client
+by issuing the following command:
+
+----
+$ easy_install -U transifex-client
+----
+
+Alternatively, you can get the source code of transifex-client at
+http://pypi.python.org/pypi/transifex-client.
+
+After you downloaded and installed the client, run the following commands to
+checkout the translation resources of *calcurse*:
+
+----
+$ tx init --host=http://www.transifex.net
+$ tx set --auto-remote http://www.transifex.net/projects/p/calcurse
+$ tx pull -r calcurse.calcurse-pot -a
+----
+
+To submit changes back to the server, you can use `tx push` (check `tx help
+push` for available options). For more details, read up on transifex-client
+usage at the http://help.transifex.net/user-guide/client/[The Transifex
+Command-line Client v0.4] section of the http://help.transifex.net/[Transifex
+documentation].
+
+[[transifex_webui]]
+Using the Transifex web UI
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+As an alternative to editing *po* files, there is a web-based interface that
+can be used to create and update translations. After having signed up and
+created a new translation team (see <<transifex_uploading,Uploading to
+Transifex>> on how to do that), click the *Add translation* button at the
+bottom on the
+http://www.transifex.net/projects/p/calcurse/resource/calcurse-pot/[calcurse
+resource page], select the language you'd like to translate and choose
+*Translate Online*.
 
 Links
 -----
