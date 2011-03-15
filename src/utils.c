@@ -175,8 +175,10 @@ erase_window_part (WINDOW *win, int first_col, int first_row, int last_col,
   int c, r;
 
   for (r = first_row; r <= last_row; r++)
-    for (c = first_col; c <= last_col; c++)
-      mvwprintw (win, r, c, " ");
+    {
+      for (c = first_col; c <= last_col; c++)
+        mvwprintw (win, r, c, " ");
+    }
 
   wnoutrefresh (win);
 }
@@ -215,11 +217,11 @@ print_in_middle (WINDOW *win, int starty, int startx, int width, char *string)
   int len = strlen (string);
   int x, y;
 
-  if (!win) win = stdscr;
+  win = win ? win : stdscr;
   getyx (win, y, x);
-  if (startx) x = startx;
-  if (starty) y = starty;
-  if (!width) width = 80;
+  x = startx ? startx : x;
+  y = starty ? starty : y;
+  width = width ? width : 80;
 
   x += (width - len) / 2;
 
@@ -240,16 +242,21 @@ showstring (WINDOW *win, int x, int y, char *str, int len, int scroff,
   wclrtoeol (win);
 
   /* print scrolling indicator */
-  if (scroff > 0 && scroff < len - col) c = '*';
-  else if (scroff > 0) c = '<';
-  else if (scroff < len - col) c = '>';
+  if (scroff > 0 && scroff < len - col)
+    c = '*';
+  else if (scroff > 0)
+    c = '<';
+  else if (scroff < len - col)
+    c = '>';
   mvwprintw (win, y, col - 1, "%c", c);
 
   /* print cursor */
   wmove (win, y, curpos - scroff);
 
-  if (curpos >= len) waddch (win, SPACE | A_REVERSE);
-  else waddch (win, str[curpos] | A_REVERSE);
+  if (curpos >= len)
+    waddch (win, SPACE | A_REVERSE);
+  else
+    waddch (win, str[curpos] | A_REVERSE);
 }
 
 /* Delete a character at the given position in string. */
@@ -296,71 +303,82 @@ getstring (WINDOW *win, char *str, int l, int x, int y)
   custom_apply_attr (win, ATTR_HIGHEST);
 
   for (;;) {
-    while (curpos < scroff) scroff -= pgsize;
-    while (curpos >= scroff + col - 1) scroff += pgsize;
+    while (curpos < scroff)
+      scroff -= pgsize;
+    while (curpos >= scroff + col - 1)
+      scroff += pgsize;
 
     showstring (win, x, y, str, len, scroff, curpos);
     wins_doupdate ();
 
     if ((ch = wgetch (win)) == '\n') break;
-    switch (ch) {
-      case KEY_BACKSPACE:     /* delete one character */
-      case 330:
-      case 127:
-      case CTRL ('H'):
-        if (curpos > 0) {
-          del_char ((--curpos), str);
-          len--;
-        }
-        else bell ();
-        break;
-      case CTRL ('D'):        /* delete next character */
-        if (curpos < len) {
-          del_char (curpos, str);
-          len--;
-        }
-              else bell ();
-        break;
-      case CTRL ('W'):        /* delete a word */
-        if (curpos > 0) {
-          while (curpos && str[curpos - 1] == ' ') {
-            del_char ((--curpos), str);
-            len--;
+    switch (ch)
+      {
+        case KEY_BACKSPACE:     /* delete one character */
+        case 330:
+        case 127:
+        case CTRL ('H'):
+          if (curpos > 0)
+            {
+              del_char ((--curpos), str);
+              len--;
+            }
+          else
+            bell ();
+          break;
+        case CTRL ('D'):        /* delete next character */
+          if (curpos < len)
+            {
+              del_char (curpos, str);
+              len--;
+            }
+          else
+            bell ();
+          break;
+        case CTRL ('W'):        /* delete a word */
+          if (curpos > 0) {
+            while (curpos && str[curpos - 1] == ' ')
+              {
+                del_char ((--curpos), str);
+                len--;
+              }
+            while (curpos && str[curpos - 1] != ' ')
+              {
+                del_char ((--curpos), str);
+                len--;
+              }
           }
-          while (curpos && str[curpos - 1] != ' ') {
-            del_char ((--curpos), str);
-            len--;
-          }
-        }
-        else bell ();
-        break;
-      case CTRL ('K'):        /* delete to end-of-line */
-        str[curpos] = 0;
-        len = curpos;
-        break;
-      case CTRL ('A'):        /* go to begginning of string */
-        curpos = 0;
-        break;
-      case CTRL ('E'):        /* go to end of string */
-        curpos = len;
-        break;
-      case KEY_LEFT:          /* move one char backward  */
-      case CTRL ('B'):
-        if (curpos > 0) curpos--;
-        break;
-      case KEY_RIGHT:         /* move one char forward */
-      case CTRL ('F'):
-        if (curpos < len) curpos++;
-        break;
-      case ESCAPE:            /* cancel editing */
-        return (GETSTRING_ESC);
-        break;
-      default:                /* insert one character */
-        if (len < l - 1) {
-          ins_char ((curpos++), ch, str);
-          len++;
-        }
-    }
+          else
+            bell ();
+          break;
+        case CTRL ('K'):        /* delete to end-of-line */
+          str[curpos] = 0;
+          len = curpos;
+          break;
+        case CTRL ('A'):        /* go to begginning of string */
+          curpos = 0;
+          break;
+        case CTRL ('E'):        /* go to end of string */
+          curpos = len;
+          break;
+        case KEY_LEFT:          /* move one char backward  */
+        case CTRL ('B'):
+          if (curpos > 0) curpos--;
+          break;
+        case KEY_RIGHT:         /* move one char forward */
+        case CTRL ('F'):
+          if (curpos < len) curpos++;
+          break;
+        case ESCAPE:            /* cancel editing */
+          return (GETSTRING_ESC);
+          break;
+        default:                /* insert one character */
+          if (len < l - 1)
+            {
+              ins_char ((curpos++), ch, str);
+              len++;
+            }
+      }
   }
 
   custom_remove_attr (win, ATTR_HIGHEST);
@@ -383,12 +401,13 @@ updatestring (WINDOW *win, char **str, int x, int y)
 
   ret = getstring (win, buf, BUFSIZ, x, y);
 
-  if (ret == GETSTRING_VALID) {
-    len = strlen (buf);
-    *str = mem_realloc (*str, len + 1, 1);
-    EXIT_IF (*str == 0, _("out of memory"));
-    (void)memcpy (*str, buf, len + 1);
-  }
+  if (ret == GETSTRING_VALID)
+    {
+      len = strlen (buf);
+      *str = mem_realloc (*str, len + 1, 1);
+      EXIT_IF (*str == 0, _("out of memory"));
+      (void)memcpy (*str, buf, len + 1);
+    }
 
   mem_free (buf);
   return ret;
@@ -399,8 +418,10 @@ int
 is_all_digit (char *string)
 {
   for (; *string; string++)
-    if (!isdigit ((int)*string))
-      return 0;
+    {
+      if (!isdigit ((int)*string))
+        return 0;
+    }
 
   return 1;
 }
@@ -454,10 +475,11 @@ date_sec2date_str (long sec, char *datefmt)
 
   if (sec == 0)
     (void)snprintf (datestr, BUFSIZ, "0");
-  else {
-    lt = localtime ((time_t *)&sec);
-    strftime (datestr, BUFSIZ, datefmt, lt);
-  }
+  else
+    {
+      lt = localtime ((time_t *)&sec);
+      strftime (datestr, BUFSIZ, datefmt, lt);
+    }
 
   return datestr;
 }
@@ -562,12 +584,15 @@ check_time (char *string)
   int h, m;
   int ret = 0;
 
-  if (min) {
-    h = atoi (hour);
-    m = atoi (min);
-    if (h >= 0 && h < 24 && m >= 0 && m < MININSEC) ret = 1;
-  }
-  else if (strlen(s) < 4 && is_all_digit(s) && atoi(s) > 0) ret = 2;
+  if (min)
+    {
+      h = atoi (hour);
+      m = atoi (min);
+      if (h >= 0 && h < 24 && m >= 0 && m < MININSEC)
+        ret = 1;
+    }
+  else if (strlen(s) < 4 && is_all_digit(s) && atoi(s) > 0)
+    ret = 2;
 
   xfree(s);
   return ret;
@@ -775,62 +800,72 @@ parse_date (char *date_string, enum datefmt datefmt, int *year, int *month,
   int in[3] = {0, 0, 0}, n = 0;
   int d, m, y;
 
-  if (!date_string) return 0;
+  if (!date_string)
+    return 0;
 
   /* parse string into in[], read up to three integers */
-  for (p = date_string; *p; p++) {
-    if (*p == sep) {
-      if ((++n) > 2) return 0;
+  for (p = date_string; *p; p++)
+    {
+      if (*p == sep)
+        {
+          if ((++n) > 2)
+            return 0;
+        }
+      else if ((*p >= '0') && (*p <= '9'))
+        in[n] = in[n] * 10 + (int)(*p - '0');
+      else
+        return 0;
     }
-    else if ((*p >= '0') && (*p <= '9')) {
-      in[n] = in[n] * 10 + (int)(*p - '0');
-    }
-    else
-      return 0;
-  }
 
-  if ((!slctd_date && n < 2) || in[n] == 0) return 0;
+  if ((!slctd_date && n < 2) || in[n] == 0)
+    return 0;
 
   /* convert into day, month and year, depending on the date format */
-  switch (datefmt) {
-    case DATEFMT_MMDDYYYY:
-      m = in[n > 0 ? 0 : 1];
-      d = in[n > 0 ? 1 : 0];
-      y = in[2];
-      break;
-    case DATEFMT_DDMMYYYY:
-      d = in[0];
-      m = in[1];
-      y = in[2];
-      break;
-    case DATEFMT_YYYYMMDD:
-    case DATEFMT_ISO:
-      y = in[0];
-      m = in[n - 1];
-      d = in[n];
-      break;
-    default:
-      return 0;
-  }
+  switch (datefmt)
+    {
+      case DATEFMT_MMDDYYYY:
+        m = in[n > 0 ? 0 : 1];
+        d = in[n > 0 ? 1 : 0];
+        y = in[2];
+        break;
+      case DATEFMT_DDMMYYYY:
+        d = in[0];
+        m = in[1];
+        y = in[2];
+        break;
+      case DATEFMT_YYYYMMDD:
+      case DATEFMT_ISO:
+        y = in[0];
+        m = in[n - 1];
+        d = in[n];
+        break;
+      default:
+        return 0;
+    }
 
-  if (y > 0 && y < 100) {
-    /* convert "YY" format into "YYYY" */
-    y += slctd_date->yyyy - slctd_date->yyyy % 100;
-  }
-  else if (n < 2) {
-    /* set year and, optionally, month if short from is used */
-    y = slctd_date->yyyy;
-    if (n < 1) m = slctd_date->mm;
-  }
+  if (y > 0 && y < 100)
+    {
+      /* convert "YY" format into "YYYY" */
+      y += slctd_date->yyyy - slctd_date->yyyy % 100;
+    }
+  else if (n < 2)
+    {
+      /* set year and, optionally, month if short from is used */
+      y = slctd_date->yyyy;
+      if (n < 1) m = slctd_date->mm;
+    }
 
   /* check if date is valid, take leap years into account */
   if (y < 1902 || y > 2037 || m < 1 || m > 12 || d < 1 ||
       d > days[m - 1] + (m == 2 && ISLEAP (y)) ? 1 : 0)
     return 0;
 
-  if (year) *year = y;
-  if (month) *month = m;
-  if (day) *day = d;
+  if (year)
+    *year = y;
+  if (month)
+    *month = m;
+  if (day)
+    *day = d;
 
   return 1;
 }
@@ -838,8 +873,10 @@ parse_date (char *date_string, enum datefmt datefmt, int *year, int *month,
 void
 str_toupper (char *s)
 {
-  if (!s) return;
-  for (; *s; s++) *s = toupper (*s);
+  if (!s)
+    return;
+  for (; *s; s++)
+    *s = toupper (*s);
 }
 
 void
