@@ -38,6 +38,7 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <signal.h>
 #include <time.h>
 #include <math.h>
 #include <unistd.h>
@@ -2948,19 +2949,34 @@ io_stop_psave_thread (void)
 /*
  * This sets a lock file to prevent from having two different instances of
  * calcurse running.
- * If the lock cannot be obtained, then warn the user and exit calcurse.
- * Else, create a .calcurse.lock file in the user defined directory, which
- * will be removed when calcurse exits.
  *
- * Note: when creating the lock file, the interactive mode is not initialized
+ * If the lock cannot be obtained, then warn the user and exit calcurse. Else,
+ * create a .calcurse.pid file in the user defined directory, which will be
+ * removed when calcurse exits.
+ *
+ * Note: When creating the lock file, the interactive mode is not initialized
  * yet.
  */
 void
 io_set_lock (void)
 {
-  FILE *lock;
+  FILE *lock = fopen (path_cpid, "r");
+  int pid;
 
-  if ((lock = fopen (path_cpid, "r")) != NULL)
+  if (lock != NULL)
+    {
+      /* If there is a lock file, check whether the process exists. */
+      if (fscanf(lock, "%d", &pid) == 1)
+        {
+          fclose(lock);
+          if (kill(pid, 0) != 0 && errno == ESRCH)
+            lock = NULL;
+        }
+      else
+        fclose(lock);
+    }
+
+  if (lock != NULL)
     {
       (void)fprintf (stderr,
                      _("\nWARNING: it seems that another calcurse instance is "
@@ -2979,8 +2995,8 @@ io_set_lock (void)
 }
 
 /*
- * Create a new file and write the process pid inside
- * (used to create a simple lock for example).
+ * Create a new file and write the process pid inside (used to create a simple
+ * lock for example). Overwrite already existing files.
  */
 unsigned
 io_dump_pid (char *file)
