@@ -824,8 +824,8 @@ parse_date (char *date_string, enum datefmt datefmt, int *year, int *month,
   switch (datefmt)
     {
       case DATEFMT_MMDDYYYY:
-        m = in[n > 0 ? 0 : 1];
-        d = in[n > 0 ? 1 : 0];
+        m = (n >= 1) ? in[0] : 0;
+        d = (n >= 1) ? in[1] : in[0];
         y = in[2];
         break;
       case DATEFMT_DDMMYYYY:
@@ -835,8 +835,8 @@ parse_date (char *date_string, enum datefmt datefmt, int *year, int *month,
         break;
       case DATEFMT_YYYYMMDD:
       case DATEFMT_ISO:
-        y = in[0];
-        m = in[n - 1];
+        y = (n >= 2) ? in[n - 2] : 0;
+        m = (n >= 1) ? in[n - 1] : 0;
         d = in[n];
         break;
       default:
