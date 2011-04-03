@@ -355,10 +355,7 @@ wins_reinit (void)
 void
 wins_show (WINDOW *win, char *label)
 {
-  int startx, starty, height, width;
-
-  getbegyx (win, starty, startx);
-  getmaxyx (win, height, width);
+  int width = getmaxx (win);
 
   box (win, 0, 0);
   mvwaddch (win, 2, 0, ACS_LTEE);
