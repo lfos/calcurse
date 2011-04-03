@@ -400,12 +400,8 @@ recur_apoint_scan (FILE *f, struct tm start, struct tm end, char type,
                    int freq, struct tm until, char *note, struct days **exc,
                    char state)
 {
-  struct tm *lt;
   char buf[BUFSIZ], *nl;
-  time_t tstart, tend, t, tuntil;
-
-  t = time (NULL);
-  lt = localtime (&t);
+  time_t tstart, tend, tuntil;
 
   /* Read the appointment description */
   (void)fgets (buf, sizeof buf, f);
@@ -908,7 +904,6 @@ recur_repeat_item (struct conf *conf)
   int item_nb;
   struct day_item *p;
   struct recur_apoint *ra;
-  struct recur_event *re;
   long until, date;
 
   item_nb = apoint_hilt ();
@@ -916,7 +911,7 @@ recur_repeat_item (struct conf *conf)
   if (p->type != APPT && p->type != EVNT)
     {
       status_mesg (wrong_type_1, wrong_type_2);
-      ch = wgetch (win[STA].p);
+      (void)wgetch (win[STA].p);
       return;
     }
 
@@ -934,7 +929,6 @@ recur_repeat_item (struct conf *conf)
   else
     {
       type = recur_char2def (ch);
-      ch = 0;
     }
 
   while (freq == 0)
@@ -1005,8 +999,8 @@ recur_repeat_item (struct conf *conf)
   date = calendar_get_slctd_day_sec ();
   if (p->type == EVNT)
     {
-      re = recur_event_new (p->mesg, p->note, p->start, p->evnt_id,
-                            type, freq, until, NULL);
+      (void)recur_event_new (p->mesg, p->note, p->start, p->evnt_id,
+                             type, freq, until, NULL);
     }
   else if (p->type == APPT)
     {

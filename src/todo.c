@@ -198,10 +198,9 @@ static void
 todo_delete_note_bynum (unsigned num)
 {
   unsigned n;
-  struct todo *i, **iptr;
+  struct todo *i;
 
   n = 0;
-  iptr = &todolist;
   for (i = todolist; i != 0; i = i->next)
     {
       if (n == num)
@@ -211,7 +210,6 @@ todo_delete_note_bynum (unsigned num)
           erase_note (&i->note, ERASE_FORCE_ONLY_NOTE);
           return;
         }
-      iptr = &i->next;
       n++;
     }
   /* NOTREACHED */

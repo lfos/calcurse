@@ -675,7 +675,6 @@ calendar_move (enum move move)
   t.tm_mon = slctd_day.mm - 1;
   t.tm_year = slctd_day.yyyy - 1900;
 
-  ret =  1;
   switch (move)
     {
     case UP:
@@ -886,9 +885,7 @@ pom (time_t tmpt)
   struct tm *GMT;
   double days;
   int cnt;
-  enum pom pom;
 
-  pom = NO_POM;
   GMT = gmtime (&tmpt);
   days = (GMT->tm_yday + 1) + ((GMT->tm_hour + (GMT->tm_min / 60.0) +
                                 (GMT->tm_sec / 3600.0)) / 24.0);

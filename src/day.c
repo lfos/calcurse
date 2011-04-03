@@ -151,7 +151,6 @@ static int
 day_store_events (long date)
 {
   struct event *j;
-  struct day_item *ptr;
   int e_nb = 0;
 
   for (j = eventlist; j != 0; j = j->next)
@@ -159,7 +158,7 @@ day_store_events (long date)
       if (event_inday (j, date))
         {
           e_nb++;
-          ptr = day_add_event (EVNT, j->mesg, j->note, j->day, j->id);
+          (void)day_add_event (EVNT, j->mesg, j->note, j->day, j->id);
         }
     }
 
@@ -177,7 +176,6 @@ static int
 day_store_recur_events (long date)
 {
   struct recur_event *j;
-  struct day_item *ptr;
   int e_nb = 0;
 
   for (j = recur_elist; j != 0; j = j->next)
@@ -186,7 +184,7 @@ day_store_recur_events (long date)
                             j->rpt->until, date))
         {
           e_nb++;
-          ptr = day_add_event (RECUR_EVNT, j->mesg, j->note, j->day, j->id);
+          (void)day_add_event (RECUR_EVNT, j->mesg, j->note, j->day, j->id);
         }
     }
 
@@ -204,7 +202,6 @@ static int
 day_store_apoints (long date)
 {
   struct apoint *j;
-  struct day_item *ptr;
   int a_nb = 0;
 
   pthread_mutex_lock (&(alist_p->mutex));
@@ -213,7 +210,7 @@ day_store_apoints (long date)
       if (apoint_inday (j, date))
         {
           a_nb++;
-          ptr = day_add_apoint (APPT, j->mesg, j->note, j->start,
+          (void)day_add_apoint (APPT, j->mesg, j->note, j->start,
                                 j->dur, j->state, 0);
         }
     }
@@ -233,7 +230,6 @@ static int
 day_store_recur_apoints (long date)
 {
   struct recur_apoint *j;
-  struct day_item *ptr;
   long real_start;
   int a_nb = 0, n = 0;
 
@@ -245,7 +241,7 @@ day_store_recur_apoints (long date)
                                           j->rpt->until, date)))
         {
           a_nb++;
-          ptr = day_add_apoint (RECUR_APPT, j->mesg, j->note,
+          (void)day_add_apoint (RECUR_APPT, j->mesg, j->note,
                                 real_start, j->dur, j->state, n);
           n++;
         }
@@ -269,9 +265,6 @@ day_store_items (long date, unsigned *pnb_events, unsigned *pnb_apoints)
   int pad_length;
   int nb_events, nb_recur_events;
   int nb_apoints, nb_recur_apoints;
-
-  pad_length = nb_events = nb_apoints = 0;
-  nb_recur_events = nb_recur_apoints = 0;
 
   if (day_items_ptr != 0)
     day_free_list ();
@@ -406,12 +399,11 @@ day_write_pad (long date, int width, int length, int incolor)
 {
   struct day_item *p;
   struct apoint a;
-  int line, item_number, max_pos, recur;
+  int line, item_number, recur;
   const int x_pos = 0;
   unsigned draw_line = 0;
 
   line = item_number = 0;
-  max_pos = length;
 
   for (p = day_items_ptr; p != 0; p = p->next)
     {

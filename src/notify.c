@@ -63,12 +63,10 @@ static pthread_t              notify_t_main;
 int
 notify_time_left (void)
 {
-  struct tm *ntime;
   time_t ntimer;
   int left;
 
   ntimer = time (NULL);
-  ntime = localtime (&ntimer);
   left = notify_app.time - ntimer;
 
   return left > 0 ? left : 0;
@@ -328,12 +326,12 @@ notify_main_thread (void *arg)
 {
   const unsigned thread_sleep = 1;
   const unsigned check_app = MININSEC;
-  int elapse = 0, got_app = 0;
+  int elapse = 0;
+  int got_app;
   struct tm *ntime;
   time_t ntimer;
 
   elapse = 0;
-  got_app = 0;
 
   for (;;)
     {

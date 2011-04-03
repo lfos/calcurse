@@ -545,7 +545,7 @@ date_arg (char *ddate, int add_line, int print_note, struct conf *conf,
   int i;
   struct date day;
   int numdays = 0, num_digit = 0;
-  int arg_len = 0, app_found = 0;
+  int arg_len = 0;
   static struct tm t;
   time_t timer;
 
@@ -578,7 +578,7 @@ date_arg (char *ddate, int add_line, int print_note, struct conf *conf,
       if (parse_date (ddate, conf->input_datefmt, (int *)&day.yyyy,
                       (int *)&day.mm, (int *)&day.dd, NULL))
         {
-          app_found = app_arg (add_line, &day, 0, print_note, conf, regex);
+          (void)app_arg (add_line, &day, 0, print_note, conf, regex);
         }
       else
         {
@@ -665,7 +665,7 @@ int
 parse_args (int argc, char **argv, struct conf *conf)
 {
   int ch, add_line = 0;
-  int unknown_flag = 0, app_found = 0;
+  int unknown_flag = 0;
   /* Command-line flags */
   int aflag = 0;    /* -a: print appointments for current day */
   int cflag = 0;    /* -c: specify the calendar file to use */
@@ -834,7 +834,6 @@ parse_args (int argc, char **argv, struct conf *conf)
         }
     }
   argc -= optind;
-  argv += optind;
 
   if (argc >= 1)
     {
@@ -947,7 +946,7 @@ parse_args (int argc, char **argv, struct conf *conf)
               custom_load_conf (conf, 0); /* To get output date format. */
               io_load_app ();
               day.dd = day.mm = day.yyyy = 0;
-              app_found = app_arg (add_line, &day, 0, Nflag, conf, preg);
+              (void)app_arg (add_line, &day, 0, Nflag, conf, preg);
               non_interactive = 1;
             }
         }

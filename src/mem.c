@@ -82,7 +82,6 @@ stats_add_blk (size_t size, const char *pos)
   o->size = (unsigned)size;
   o->next = 0;
 
-  i = &mstats.blk;
   for (i = &mstats.blk; *i; i = &(*i)->next)
     ;
   o->id = mstats.ncall;

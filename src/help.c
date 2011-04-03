@@ -735,7 +735,7 @@ help_screen (void)
       "Calcurse home page : http://calcurse.org"));
 
   help_wins_init (&hwin, 0, 0, (notify_bar ()) ? row - 3 : row - 2, col);
-  page = oldpage = HELP_MAIN;
+  oldpage = HELP_MAIN;
   need_resize = 0;
 
   /* Display the help screen related to user input. */
