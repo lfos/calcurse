@@ -141,7 +141,7 @@ apoint_new (char *mesg, char *note, long start, long dur, char state)
   i = &alist_p->root;
   for (;;)
     {
-      if (*i == 0 || (*i)->start > start)
+      if (*i == NULL || (*i)->start > start)
         {
           o->next = *i;
           *i = o;
@@ -509,7 +509,7 @@ apoint_delete_bynum (long start, unsigned num, enum eraseflg flag)
   n = 0;
   pthread_mutex_lock (&(alist_p->mutex));
   iptr = &alist_p->root;
-  for (i = alist_p->root; i != 0; i = i->next)
+  for (i = alist_p->root; i != NULL; i = i->next)
     {
       if (apoint_inday (i, start))
         {
@@ -616,7 +616,7 @@ apoint_check_next (struct notify_app *app, long start)
   struct apoint *i;
 
   pthread_mutex_lock (&(alist_p->mutex));
-  for (i = alist_p->root; i != 0; i = i->next)
+  for (i = alist_p->root; i != NULL; i = i->next)
     {
       if (i->start > app->time)
         {
@@ -684,7 +684,7 @@ apoint_switch_notify (void)
   need_chk_notify = 0;
   pthread_mutex_lock (&(alist_p->mutex));
 
-  for (apoint = alist_p->root; apoint != 0; apoint = apoint->next)
+  for (apoint = alist_p->root; apoint != NULL; apoint = apoint->next)
     {
       if (apoint_inday (apoint, date))
         {

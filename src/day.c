@@ -90,7 +90,7 @@ day_add_event (int type, char *mesg, char *note, long day, int id)
   i = &day_items_ptr;
   for (;;)
     {
-      if (*i == 0)
+      if (*i == NULL)
         {
           o->next = *i;
           *i = o;
@@ -121,7 +121,7 @@ day_add_apoint (int type, char *mesg, char *note, long start, long dur,
   i = &day_items_ptr;
   for (;;)
     {
-      if (*i == 0)
+      if (*i == NULL)
         {
           insert_item = 1;
         }
@@ -153,7 +153,7 @@ day_store_events (long date)
   struct event *j;
   int e_nb = 0;
 
-  for (j = eventlist; j != 0; j = j->next)
+  for (j = eventlist; j != NULL; j = j->next)
     {
       if (event_inday (j, date))
         {
@@ -178,7 +178,7 @@ day_store_recur_events (long date)
   struct recur_event *j;
   int e_nb = 0;
 
-  for (j = recur_elist; j != 0; j = j->next)
+  for (j = recur_elist; j != NULL; j = j->next)
     {
       if (recur_item_inday (j->day, j->exc, j->rpt->type, j->rpt->freq,
                             j->rpt->until, date))
@@ -205,7 +205,7 @@ day_store_apoints (long date)
   int a_nb = 0;
 
   pthread_mutex_lock (&(alist_p->mutex));
-  for (j = alist_p->root; j != 0; j = j->next)
+  for (j = alist_p->root; j != NULL; j = j->next)
     {
       if (apoint_inday (j, date))
         {
@@ -234,7 +234,7 @@ day_store_recur_apoints (long date)
   int a_nb = 0, n = 0;
 
   pthread_mutex_lock (&(recur_alist_p->mutex));
-  for (j = recur_alist_p->root; j != 0; j = j->next)
+  for (j = recur_alist_p->root; j != NULL; j = j->next)
     {
       if ((real_start = recur_item_inday (j->start, j->exc,
                                           j->rpt->type, j->rpt->freq,
@@ -266,7 +266,7 @@ day_store_items (long date, unsigned *pnb_events, unsigned *pnb_apoints)
   int nb_events, nb_recur_events;
   int nb_apoints, nb_recur_apoints;
 
-  if (day_items_ptr != 0)
+  if (day_items_ptr != NULL)
     day_free_list ();
   nb_recur_events = day_store_recur_events (date);
   nb_events = day_store_events (date);
@@ -405,7 +405,7 @@ day_write_pad (long date, int width, int length, int incolor)
 
   line = item_number = 0;
 
-  for (p = day_items_ptr; p != 0; p = p->next)
+  for (p = day_items_ptr; p != NULL; p = p->next)
     {
       if (p->type == RECUR_EVNT || p->type == RECUR_APPT)
         recur = 1;
@@ -481,13 +481,13 @@ day_check_if_item (struct date day)
   struct apoint *a;
   const long date = date2sec (day, 0, 0);
 
-  for (re = recur_elist; re != 0; re = re->next)
+  for (re = recur_elist; re != NULL; re = re->next)
     if (recur_item_inday (re->day, re->exc, re->rpt->type,
                           re->rpt->freq, re->rpt->until, date))
       return (1);
 
   pthread_mutex_lock (&(recur_alist_p->mutex));
-  for (ra = recur_alist_p->root; ra != 0; ra = ra->next)
+  for (ra = recur_alist_p->root; ra != NULL; ra = ra->next)
     if (recur_item_inday (ra->start, ra->exc, ra->rpt->type,
                           ra->rpt->freq, ra->rpt->until, date))
       {
@@ -496,12 +496,12 @@ day_check_if_item (struct date day)
       }
   pthread_mutex_unlock (&(recur_alist_p->mutex));
 
-  for (e = eventlist; e != 0; e = e->next)
+  for (e = eventlist; e != NULL; e = e->next)
     if (event_inday (e, date))
       return (1);
 
   pthread_mutex_lock (&(alist_p->mutex));
-  for (a = alist_p->root; a != 0; a = a->next)
+  for (a = alist_p->root; a != NULL; a = a->next)
     if (apoint_inday (a, date))
       {
         pthread_mutex_unlock (&(alist_p->mutex));
@@ -547,7 +547,7 @@ day_chk_busy_slices (struct date day, int slicesno, int *slices)
 #define  SLICENUM(tsec)  ((tsec) / slicelen % slicesno)
 
   pthread_mutex_lock (&(recur_alist_p->mutex));
-  for (ra = recur_alist_p->root; ra != 0; ra = ra->next)
+  for (ra = recur_alist_p->root; ra != NULL; ra = ra->next)
     if (recur_item_inday (ra->start, ra->exc, ra->rpt->type,
                           ra->rpt->freq, ra->rpt->until, date))
       {
@@ -564,7 +564,7 @@ day_chk_busy_slices (struct date day, int slicesno, int *slices)
   pthread_mutex_unlock (&(recur_alist_p->mutex));
 
   pthread_mutex_lock (&(alist_p->mutex));
-  for (a = alist_p->root; a != 0; a = a->next)
+  for (a = alist_p->root; a != NULL; a = a->next)
     if (apoint_inday (a, date))
       {
         long start, end;

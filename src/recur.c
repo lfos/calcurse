@@ -72,7 +72,7 @@ recur_add_exc (struct days **exc, long day)
   i = exc;
   for (;;)
     {
-      if (*i == 0 || (*i)->st > day)
+      if (*i == NULL || (*i)->st > day)
         {
           o->next = *i;
           *i = o;
@@ -243,7 +243,7 @@ recur_apoint_new (char *mesg, char *note, long start, long dur, char state,
   o = mem_malloc (sizeof (struct recur_apoint));
   o->rpt = mem_malloc (sizeof (struct rpt));
   o->mesg = mem_strdup (mesg);
-  o->note = (note != 0) ? mem_strdup (note) : 0;
+  o->note = (note != NULL) ? mem_strdup (note) : 0;
   o->start = start;
   o->state = state;
   o->dur = dur;
@@ -262,7 +262,7 @@ recur_apoint_new (char *mesg, char *note, long start, long dur, char state,
   i = &recur_alist_p->root;
   for (;;)
     {
-      if (*i == 0 || (*i)->start > start)
+      if (*i == NULL || (*i)->start > start)
         {
           o->next = *i;
           *i = o;
@@ -285,7 +285,7 @@ recur_event_new (char *mesg, char *note, long day, int id, int type, int freq,
   o = mem_malloc (sizeof (struct recur_event));
   o->rpt = mem_malloc (sizeof (struct rpt));
   o->mesg = mem_strdup (mesg);
-  o->note = (note != 0) ? mem_strdup (note) : 0;
+  o->note = (note != NULL) ? mem_strdup (note) : 0;
   o->day = day;
   o->id = id;
   o->rpt->type = type;
@@ -302,7 +302,7 @@ recur_event_new (char *mesg, char *note, long day, int id, int type, int freq,
   i = &recur_elist;
   for (;;)
     {
-      if (*i == 0 || (*i)->day > day)
+      if (*i == NULL || (*i)->day > day)
         {
           o->next = *i;
           *i = o;
@@ -510,7 +510,7 @@ recur_apoint_write (struct recur_apoint *o, FILE *f)
                      o->rpt->freq, recur_def2char (o->rpt->type),
                      lt->tm_mon + 1, lt->tm_mday, 1900 + lt->tm_year);
     }
-  if (o->exc != 0)
+  if (o->exc != NULL)
     recur_write_exc (o->exc, f);
   (void)fprintf (f, "} ");
   if (o->note != NULL)
@@ -554,7 +554,7 @@ recur_event_write (struct recur_event *o, FILE *f)
                      o->rpt->freq, recur_def2char (o->rpt->type),
                      end_mon, end_day, end_year);
     }
-  if (o->exc != 0)
+  if (o->exc != NULL)
     recur_write_exc (o->exc, f);
   (void)fprintf (f, "} ");
   if (o->note != NULL)
@@ -569,11 +569,11 @@ recur_save_data (FILE *f)
   struct recur_event *re;
   struct recur_apoint *ra;
 
-  for (re = recur_elist; re != 0; re = re->next)
+  for (re = recur_elist; re != NULL; re = re->next)
     recur_event_write (re, f);
 
   pthread_mutex_lock (&(recur_alist_p->mutex));
-  for (ra = recur_alist_p->root; ra != 0; ra = ra->next)
+  for (ra = recur_alist_p->root; ra != NULL; ra = ra->next)
     recur_apoint_write (ra, f);
   pthread_mutex_unlock (&(recur_alist_p->mutex));
 }
@@ -665,7 +665,7 @@ recur_item_inday (long item_start, struct days *item_exc, int rpt_type,
   t = day_start;
   lt_day = *localtime (&t);
 
-  for (exc = item_exc; exc != 0; exc = exc->next)
+  for (exc = item_exc; exc != NULL; exc = exc->next)
     if (exc->st < day_end && exc->st >= day_start)
       return (0);
 
@@ -740,7 +740,7 @@ recur_event_erase (long start, unsigned num, unsigned delete_whole,
   struct recur_event *i, **iptr;
 
   iptr = &recur_elist;
-  for (i = recur_elist; i != 0; i = i->next)
+  for (i = recur_elist; i != NULL; i = i->next)
     {
       if (recur_item_inday (i->day, i->exc, i->rpt->type,
                             i->rpt->freq, i->rpt->until, start))
@@ -807,7 +807,7 @@ recur_apoint_erase (long start, unsigned num, unsigned delete_whole,
 
   pthread_mutex_lock (&(recur_alist_p->mutex));
   iptr = &recur_alist_p->root;
-  for (i = recur_alist_p->root; i != 0; i = i->next)
+  for (i = recur_alist_p->root; i != NULL; i = i->next)
     {
       if (recur_item_inday (i->start, i->exc, i->rpt->type,
                             i->rpt->freq, i->rpt->until, start))
@@ -1061,7 +1061,7 @@ recur_apoint_check_next (struct notify_app *app, long start, long day)
   long real_recur_start_time;
 
   pthread_mutex_lock (&(recur_alist_p->mutex));
-  for (i = recur_alist_p->root; i != 0; i = i->next)
+  for (i = recur_alist_p->root; i != NULL; i = i->next)
     {
       if (i->start > app->time)
         {
@@ -1095,7 +1095,7 @@ recur_get_apoint (long date, int num)
   int n = 0;
 
   pthread_mutex_lock (&(recur_alist_p->mutex));
-  for (o = recur_alist_p->root; o != 0; o = o->next)
+  for (o = recur_alist_p->root; o != NULL; o = o->next)
     {
       if (recur_item_inday (o->start, o->exc, o->rpt->type,
                             o->rpt->freq, o->rpt->until, date))
@@ -1120,7 +1120,7 @@ recur_get_event (long date, int num)
   struct recur_event *o;
   int n = 0;
 
-  for (o = recur_elist; o != 0; o = o->next)
+  for (o = recur_elist; o != NULL; o = o->next)
     {
       if (recur_item_inday (o->day, o->exc, o->rpt->type,
                             o->rpt->freq, o->rpt->until, date))
@@ -1148,7 +1148,7 @@ recur_apoint_switch_notify (long date, int recur_nb)
   need_chk_notify = 0;
 
   pthread_mutex_lock (&(recur_alist_p->mutex));
-  for (o = recur_alist_p->root; o != 0; o = o->next)
+  for (o = recur_alist_p->root; o != NULL; o = o->next)
     {
       if (recur_item_inday (o->start, o->exc, o->rpt->type,
                             o->rpt->freq, o->rpt->until, date))
@@ -1187,7 +1187,7 @@ recur_event_paste_item (void)
     {
       struct days *exc;
 
-      for (exc = bkp_cut_recur_event.exc; exc != 0; exc = exc->next)
+      for (exc = bkp_cut_recur_event.exc; exc != NULL; exc = exc->next)
         exc->st += time_shift;
     }
 
@@ -1217,7 +1217,7 @@ recur_apoint_paste_item (void)
     {
       struct days *exc;
 
-      for (exc = bkp_cut_recur_apoint.exc; exc != 0; exc = exc->next)
+      for (exc = bkp_cut_recur_apoint.exc; exc != NULL; exc = exc->next)
         exc->st += time_shift;
     }
 

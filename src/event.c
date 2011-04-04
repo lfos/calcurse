@@ -96,7 +96,7 @@ event_new (char *mesg, char *note, long day, int id)
   i = &eventlist;
   for (;;)
     {
-      if (*i == 0 || (*i)->day > day)
+      if (*i == NULL || (*i)->day > day)
         {
           o->next = *i;
           *i = o;
@@ -195,7 +195,7 @@ event_delete_bynum (long start, unsigned num, enum eraseflg flag)
 
   n = 0;
   iptr = &eventlist;
-  for (i = eventlist; i != 0; i = i->next)
+  for (i = eventlist; i != NULL; i = i->next)
     {
       if (event_inday (i, start))
         {

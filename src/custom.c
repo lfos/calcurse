@@ -1243,7 +1243,7 @@ print_keys_bindings (WINDOW *win, int selected_row, int selected_elm, int yoff)
               int pos;
 
               pos = KEYPOS;
-              while ((key = keys_action_nkey (action, noelm)) != 0)
+              while ((key = keys_action_nkey (action, noelm)) != NULL)
                 {
                   if (noelm == selected_elm)
                     print_key_incolor (win, key, y, pos);

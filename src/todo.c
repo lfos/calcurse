@@ -182,7 +182,7 @@ todo_add (char *mesg, int id, char *note)
   absid = abs (id);
   for (;;)
     {
-      if (*i == 0 || abs ((*i)->id) > absid)
+      if (*i == NULL || abs ((*i)->id) > absid)
         {
           o->next = *i;
           *i = o;
@@ -201,7 +201,7 @@ todo_delete_note_bynum (unsigned num)
   struct todo *i;
 
   n = 0;
-  for (i = todolist; i != 0; i = i->next)
+  for (i = todolist; i != NULL; i = i->next)
     {
       if (n == num)
         {
@@ -225,7 +225,7 @@ todo_delete_bynum (unsigned num, enum eraseflg flag)
 
   n = 0;
   iptr = &todolist;
-  for (i = todolist; i != 0; i = i->next)
+  for (i = todolist; i != NULL; i = i->next)
     {
       if (n == num)
         {
@@ -451,7 +451,7 @@ todo_update_panel (int which_pan)
   /* Print todo item in the panel. */
   erase_window_part (win[TOD].p, 1, title_lines, win[TOD].w - 2,
                      win[TOD].h - 2);
-  for (i = todolist; i != 0; i = i->next)
+  for (i = todolist; i != NULL; i = i->next)
     {
       num_todo++;
       t_realpos = num_todo - first;

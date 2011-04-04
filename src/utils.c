@@ -110,7 +110,7 @@ fatalbox (const char *errmsg)
   const int MSGLEN = WINCOL - 2;
   char msg[MSGLEN];
 
-  if (errmsg == 0)
+  if (errmsg == NULL)
     return;
 
   (void)strncpy (msg, errmsg, MSGLEN);
@@ -137,7 +137,7 @@ warnbox (const char *msg)
   const int MSGLEN = WINCOL - 2;
   char displmsg[MSGLEN];
 
-  if (msg == 0)
+  if (msg == NULL)
     return;
 
   (void)strncpy (displmsg, msg, MSGLEN);
@@ -405,7 +405,7 @@ updatestring (WINDOW *win, char **str, int x, int y)
     {
       len = strlen (buf);
       *str = mem_realloc (*str, len + 1, 1);
-      EXIT_IF (*str == 0, _("out of memory"));
+      EXIT_IF (*str == NULL, _("out of memory"));
       (void)memcpy (*str, buf, len + 1);
     }
 

@@ -267,7 +267,7 @@ todo_arg (int priority, int print_note, regex_t *regex)
     print_notefile (stdout, i->note, 1);                                \
   } while (0)
 
-  for (i = todolist; i != 0; i = i->next)
+  for (i = todolist; i != NULL; i = i->next)
     {
       if (regex && regexec (regex, i->mesg, 0, 0, 0) != 0)
         continue;
@@ -370,7 +370,7 @@ app_arg (int add_line, struct date *day, long date, int print_note,
    * that date and it is the first one, and then print all the events for
    * that date.
    */
-  for (re = recur_elist; re != 0; re = re->next)
+  for (re = recur_elist; re != NULL; re = re->next)
     {
       if (recur_item_inday (re->day, re->exc, re->rpt->type, re->rpt->freq,
                             re->rpt->until, today))
@@ -397,7 +397,7 @@ app_arg (int add_line, struct date *day, long date, int print_note,
         }
     }
 
-  for (j = eventlist; j != 0; j = j->next)
+  for (j = eventlist; j != NULL; j = j->next)
     {
       if (event_inday (j, today))
         {
@@ -425,7 +425,7 @@ app_arg (int add_line, struct date *day, long date, int print_note,
 
   /* Same process is performed but this time on the appointments. */
   pthread_mutex_lock (&(recur_alist_p->mutex));
-  for (ra = recur_alist_p->root; ra != 0; ra = ra->next)
+  for (ra = recur_alist_p->root; ra != NULL; ra = ra->next)
     {
       if (recur_item_inday (ra->start, ra->exc, ra->rpt->type, ra->rpt->freq,
                             ra->rpt->until, today))
@@ -465,7 +465,7 @@ app_arg (int add_line, struct date *day, long date, int print_note,
   pthread_mutex_unlock (&(recur_alist_p->mutex));
 
   pthread_mutex_lock (&(alist_p->mutex));
-  for (i = alist_p->root; i != 0; i = i->next)
+  for (i = alist_p->root; i != NULL; i = i->next)
     {
       if (apoint_inday (i, today))
         {

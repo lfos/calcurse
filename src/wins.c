@@ -266,7 +266,7 @@ wins_init (void)
 void
 wins_scrollwin_init (struct scrollwin *sw)
 {
-  EXIT_IF (sw == 0, "null pointer");
+  EXIT_IF (sw == NULL, "null pointer");
   sw->win.p = newwin (sw->win.h, sw->win.w, sw->win.y, sw->win.x);
   sw->pad.p = newpad (sw->pad.h, sw->pad.w);
   sw->first_visible_line = 0;
@@ -277,7 +277,7 @@ wins_scrollwin_init (struct scrollwin *sw)
 void
 wins_scrollwin_delete (struct scrollwin *sw)
 {
-  EXIT_IF (sw == 0, "null pointer");
+  EXIT_IF (sw == NULL, "null pointer");
   delwin(sw->win.p);
   delwin(sw->pad.p);
 }

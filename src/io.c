@@ -346,7 +346,7 @@ ical_export_recur_events (FILE *stream)
   struct days *day;
   char ical_date[BUFSIZ];
 
-  for (i = recur_elist; i != 0; i = i->next)
+  for (i = recur_elist; i != NULL; i = i->next)
     {
       date_sec2date_fmt (i->day, ICALDATEFMT, ical_date);
       (void)fprintf (stream, "BEGIN:VEVENT\n");
@@ -416,7 +416,7 @@ pcal_export_recur_events (FILE *stream)
   (void)fprintf (stream,
                  "# (pcal does not support from..until dates specification\n");
 
-  for (i = recur_elist; i != 0; i = i->next)
+  for (i = recur_elist; i != NULL; i = i->next)
     {
       if (i->rpt->until == 0 && i->rpt->freq == 1)
         {
@@ -464,7 +464,7 @@ ical_export_events (FILE *stream)
   struct event *i;
   char ical_date[BUFSIZ];
 
-  for (i = eventlist; i != 0; i = i->next)
+  for (i = eventlist; i != NULL; i = i->next)
     {
       date_sec2date_fmt (i->day, ICALDATEFMT, ical_date);
       (void)fprintf (stream, "BEGIN:VEVENT\n");
@@ -480,7 +480,7 @@ pcal_export_events (FILE *stream)
   struct event *i;
 
   (void)fprintf (stream, "\n# ======\n# Events\n# ======\n");
-  for (i = eventlist; i != 0; i = i->next)
+  for (i = eventlist; i != NULL; i = i->next)
     pcal_dump_event (stream, i->day, 0, i->mesg);
   (void)fprintf (stream, "\n");
 }
@@ -495,7 +495,7 @@ ical_export_recur_apoints (FILE *stream)
   char ical_date[BUFSIZ];
 
   pthread_mutex_lock (&(recur_alist_p->mutex));
-  for (i = recur_alist_p->root; i != 0; i = i->next)
+  for (i = recur_alist_p->root; i != NULL; i = i->next)
     {
       date_sec2date_fmt (i->start, ICALDATETIMEFMT, ical_datetime);
       (void)fprintf (stream, "BEGIN:VEVENT\n");
@@ -544,7 +544,7 @@ pcal_export_recur_apoints (FILE *stream)
   (void)fprintf (stream,
                  "# (pcal does not support from..until dates specification\n");
 
-  for (i = recur_alist_p->root; i != 0; i = i->next)
+  for (i = recur_alist_p->root; i != NULL; i = i->next)
     {
       if (i->rpt->until == 0 && i->rpt->freq == 1)
         {
@@ -598,7 +598,7 @@ ical_export_apoints (FILE *stream)
   char ical_datetime[BUFSIZ];
 
   pthread_mutex_lock (&(alist_p->mutex));
-  for (i = alist_p->root; i != 0; i = i->next)
+  for (i = alist_p->root; i != NULL; i = i->next)
     {
       date_sec2date_fmt (i->start, ICALDATETIMEFMT, ical_datetime);
       (void)fprintf (stream, "BEGIN:VEVENT\n");
@@ -619,7 +619,7 @@ pcal_export_apoints (FILE *stream)
 
   (void)fprintf (stream, "\n# ============\n# Appointments\n# ============\n");
   pthread_mutex_lock (&(alist_p->mutex));
-  for (i = alist_p->root; i != 0; i = i->next)
+  for (i = alist_p->root; i != NULL; i = i->next)
       pcal_dump_apoint (stream, i->start, i->dur, i->mesg);
   pthread_mutex_unlock (&(alist_p->mutex));
   (void)fprintf (stream, "\n");
@@ -631,7 +631,7 @@ ical_export_todo (FILE *stream)
 {
   struct todo *i;
 
-  for (i = todolist; i != 0; i = i->next)
+  for (i = todolist; i != NULL; i = i->next)
     {
       if (i->id < 0)  /* completed items */
         continue;
@@ -649,7 +649,7 @@ pcal_export_todo (FILE *stream)
   struct todo *i;
 
   (void)fprintf (stream, "#\n# Todos\n#\n");
-  for (i = todolist; i != 0; i = i->next)
+  for (i = todolist; i != NULL; i = i->next)
     {
       if (i->id < 0)  /* completed items */
         continue;
@@ -831,7 +831,7 @@ io_save_conf (struct conf *conf)
   char theme_name[BUFSIZ];
   FILE *fp;
 
-  if ((fp = fopen (path_conf, "w")) == 0)
+  if ((fp = fopen (path_conf, "w")) == NULL)
     return 0;
 
   custom_color_theme_name (theme_name);
@@ -963,19 +963,19 @@ io_save_apts (void)
   struct event *e;
   FILE *fp;
 
-  if ((fp = fopen (path_apts, "w")) == 0)
+  if ((fp = fopen (path_apts, "w")) == NULL)
     return 0;
 
   recur_save_data (fp);
 
   if (ui_mode == UI_CURSES)
     pthread_mutex_lock (&(alist_p->mutex));
-  for (a = alist_p->root; a != 0; a = a->next)
+  for (a = alist_p->root; a != NULL; a = a->next)
     apoint_write (a, fp);
   if (ui_mode == UI_CURSES)
     pthread_mutex_unlock (&(alist_p->mutex));
 
-  for (e = eventlist; e != 0; e = e->next)
+  for (e = eventlist; e != NULL; e = e->next)
     event_write (e, fp);
   file_close (fp, __FILE_POS__);
 
@@ -989,10 +989,10 @@ io_save_todo (void)
   struct todo *t;
   FILE *fp;
 
-  if ((fp = fopen (path_todo, "w")) == 0)
+  if ((fp = fopen (path_todo, "w")) == NULL)
     return 0;
 
-  for (t = todolist; t != 0; t = t->next)
+  for (t = todolist; t != NULL; t = t->next)
     {
       if (t->note)
         (void)fprintf (fp, "[%d]>%s %s\n", t->id, t->note, t->mesg);
@@ -1010,7 +1010,7 @@ io_save_keys (void)
 {
   FILE *fp;
 
-  if ((fp = fopen (path_keys, "w")) == 0)
+  if ((fp = fopen (path_keys, "w")) == NULL)
     return 0;
 
   keys_save_bindings (fp);
@@ -1516,7 +1516,7 @@ io_file_exist (char *file)
   if (!file)
     return 0;
 
-  if ((fd = fopen (file, "r")) == 0)
+  if ((fd = fopen (file, "r")) == NULL)
     return 0;
 
   (void)fclose (fd);
@@ -1624,7 +1624,7 @@ io_export_data (enum export_type type, struct conf *conf)
       /* NOTREACHED */
     }
 
-  if (stream == 0)
+  if (stream == NULL)
     return;
 
   cb_export_header[type] (stream);
@@ -2774,7 +2774,7 @@ io_import_data (enum import_type type, struct conf *conf, char *stream_name)
                "Aborting..."));
 
   log = io_log_init ();
-  if (log == 0)
+  if (log == NULL)
     {
       if (stream != stdin)
         file_close (stream, __FILE_POS__);
@@ -2840,15 +2840,15 @@ io_log_init (void)
   struct io_file *log;
 
   logname = new_tempfile (logprefix, NOTESIZ);
-  RETVAL_IF (logname == 0, 0,
+  RETVAL_IF (logname == NULL, 0,
              _("Warning: could not create temporary log file, Aborting..."));
   log = mem_malloc (sizeof (struct io_file));
-  RETVAL_IF (log == 0, 0,
+  RETVAL_IF (log == NULL, 0,
              _("Warning: could not open temporary log file, Aborting..."));
   (void)snprintf (log->name, sizeof (log->name), "%s%s", logprefix, logname);
   mem_free (logname);
   log->fd = fopen (log->name, "w");
-  if (log->fd == 0)
+  if (log->fd == NULL)
     {
       ERROR_MSG (_("Warning: could not open temporary log file, Aborting..."));
       mem_free (log);
@@ -2871,7 +2871,7 @@ io_log_display (struct io_file *log, char *msg, char *pager)
   char *choices = "[y/n] ";
   int ans;
 
-  RETURN_IF (log == 0, _("No log file to display!"));
+  RETURN_IF (log == NULL, _("No log file to display!"));
   if (ui_mode == UI_CMDLINE)
     {
       printf ("\n%s %s", msg, choices);
@@ -3030,7 +3030,7 @@ io_get_pid (char *file)
   if (!file)
     return 0;
 
-  if ((fp = fopen (file, "r")) == 0)
+  if ((fp = fopen (file, "r")) == NULL)
     return 0;
 
   if (fscanf (fp, "%u", &pid) != 1)

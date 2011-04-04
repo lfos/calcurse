@@ -74,7 +74,7 @@ stats_add_blk (size_t size, const char *pos)
   struct mem_blk *o, **i;
 
   o = malloc (sizeof (*o));
-  EXIT_IF (o == 0, _("could not allocate memory to store block info"));
+  EXIT_IF (o == NULL, _("could not allocate memory to store block info"));
 
   mstats.ncall++;
 
@@ -120,7 +120,7 @@ xmalloc (size_t size)
 
   EXIT_IF (size == 0, _("xmalloc: zero size"));
   p = malloc (size);
-  EXIT_IF (p == 0, _("xmalloc: out of memory"));
+  EXIT_IF (p == NULL, _("xmalloc: out of memory"));
 
   return p;
 }
@@ -133,7 +133,7 @@ xcalloc (size_t nmemb, size_t size)
   EXIT_IF (nmemb == 0 || size == 0, _("xcalloc: zero size"));
   EXIT_IF (SIZE_MAX / nmemb < size, _("xcalloc: overflow"));
   p = calloc (nmemb, size);
-  EXIT_IF (p == 0, _("xcalloc: out of memory"));
+  EXIT_IF (p == NULL, _("xcalloc: out of memory"));
 
   return p;
 }
@@ -148,7 +148,7 @@ xrealloc (void *ptr, size_t nmemb, size_t size)
   EXIT_IF (new_size == 0, _("xrealloc: zero size"));
   EXIT_IF (SIZE_MAX / nmemb < size, _("xrealloc: overflow"));
   new_ptr = realloc (ptr, new_size);
-  EXIT_IF (new_ptr == 0, _("xrealloc: out of memory"));
+  EXIT_IF (new_ptr == NULL, _("xrealloc: out of memory"));
 
   return new_ptr;
 }
@@ -168,7 +168,7 @@ xstrdup (const char *str)
 void
 xfree (void *p)
 {
-  EXIT_IF (p == 0, _("xfree: null pointer"));
+  EXIT_IF (p == NULL, _("xfree: null pointer"));
   free (p);
 }
 
@@ -204,7 +204,7 @@ dbg_calloc (size_t nmemb, size_t size, const char *pos)
   EXIT_IF (nmemb > SIZE_MAX / size, _("overflow at %s"), pos);
 
   size *= nmemb;
-  if ((buf = dbg_malloc (size, pos)) == 0)
+  if ((buf = dbg_malloc (size, pos)) == NULL)
     return (void *)0;
 
   bzero (buf, size);
@@ -217,7 +217,7 @@ dbg_realloc (void *ptr, size_t nmemb, size_t size, const char *pos)
 {
   unsigned *buf, old_size, new_size, cpy_size;
 
-  if (ptr == 0)
+  if (ptr == NULL)
     return (void *)0;
 
   new_size = nmemb *size;
@@ -226,7 +226,7 @@ dbg_realloc (void *ptr, size_t nmemb, size_t size, const char *pos)
 
   EXIT_IF (nmemb > SIZE_MAX / size, _("overflow at %s"), pos);
 
-  if ((buf = dbg_malloc (new_size, pos)) == 0)
+  if ((buf = dbg_malloc (new_size, pos)) == NULL)
     return (void *)0;
 
   old_size = *((unsigned *)ptr - EXTRA_SPACE_START + BLK_SIZE);
@@ -244,11 +244,11 @@ dbg_strdup (const char *s, const char *pos)
   size_t size;
   char *buf;
 
-  if (s == 0)
+  if (s == NULL)
     return (char *)0;
 
   size = strlen (s);
-  if ((buf = dbg_malloc (size + 1, pos)) == 0)
+  if ((buf = dbg_malloc (size + 1, pos)) == NULL)
     return (char *)0;
 
   return strncpy (buf, s, size + 1);
@@ -259,7 +259,7 @@ dbg_free (void *ptr, const char *pos)
 {
   unsigned *buf, size;
 
-  EXIT_IF (ptr == 0, _("dbg_free: null pointer at %s"), pos);
+  EXIT_IF (ptr == NULL, _("dbg_free: null pointer at %s"), pos);
 
   buf = (unsigned *)ptr - EXTRA_SPACE_START;
   size = buf[BLK_SIZE];
@@ -286,7 +286,7 @@ dbg_free (void *ptr, const char *pos)
 static void
 dump_block_info (struct mem_blk *blk)
 {
-  if (blk == 0)
+  if (blk == NULL)
     return;
 
   printf (_("---==== MEMORY BLOCK ====----------------\n"));

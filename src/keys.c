@@ -145,7 +145,7 @@ keys_free (void)
 
   for (key = 0; key < NBKEYS; key++)
     {
-      if (keys[key] == 0)
+      if (keys[key] == NULL)
         continue;
 
       i = &keys[key];
@@ -607,7 +607,7 @@ keys_check_missing_bindings (void)
 
   for (i = 0; i < NBKEYS; i++)
     {
-      if (keys[i] == 0)
+      if (keys[i] == NULL)
         return 1;
     }
   return 0;
@@ -620,7 +620,7 @@ keys_fill_missing (void)
 
   for (i = 0; i < NBKEYS; i++)
     {
-      if (keys[i] == 0)
+      if (keys[i] == NULL)
         {
           char *p, tmpbuf[BUFSIZ];
 
