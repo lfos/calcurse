@@ -95,8 +95,6 @@ stats_del_blk (unsigned id)
 {
   struct mem_blk *o, **i;
 
-  EXIT_IF (id < 0, _("Incorrect block id"));
-
   i = &mstats.blk;
   for (o = mstats.blk; o; o = o->next)
     {

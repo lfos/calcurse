@@ -270,9 +270,10 @@ custom_load_conf (struct conf *conf, int background)
           var = 0;
           break;
         case CUSTOM_CONF_PERIODICSAVE:
-          conf->periodic_save = atoi (e_conf);
-          if (conf->periodic_save < 0)
+          if (atoi (e_conf) < 0)
             conf->periodic_save = 0;
+          else
+            conf->periodic_save = atoi (e_conf);
           var = 0;
           break;
         case CUSTOM_CONF_CONFIRMQUIT:
