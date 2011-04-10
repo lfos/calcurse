@@ -1039,7 +1039,7 @@ and request the addition of a new team.
 
 As soon as we accepted your request, you will be able to upload your *po* file
 on the
-http://www.transifex.net/projects/p/calcurse/resource/calcurse-pot/[calcurse
+http://www.transifex.net/projects/p/calcurse/resource/calcursepot/[calcurse
 resource page] by clicking the *Add translation* button at the bottom.
 
 Using transifex-client
@@ -1063,7 +1063,7 @@ checkout the translation resources of *calcurse*:
 ----
 $ tx init --host=http://www.transifex.net
 $ tx set --auto-remote http://www.transifex.net/projects/p/calcurse
-$ tx pull -r calcurse.calcurse-pot -a
+$ tx pull -r calcurse.calcursepot -a
 ----
 
 To submit changes back to the server, you can use `tx push` (check `tx help
@@ -1081,7 +1081,7 @@ can be used to create and update translations. After having signed up and
 created a new translation team (see <<transifex_uploading,Uploading to
 Transifex>> on how to do that), click the *Add translation* button at the
 bottom on the
-http://www.transifex.net/projects/p/calcurse/resource/calcurse-pot/[calcurse
+http://www.transifex.net/projects/p/calcurse/resource/calcursepot/[calcurse
 resource page], select the language you'd like to translate and choose
 *Translate Online*.
 
