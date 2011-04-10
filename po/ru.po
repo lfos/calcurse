@@ -6,83 +6,71 @@
 # Neil Williams <linux@codehelp.co.uk>, 2006.
 # , fuzzy
 #
-# 
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: calcurse 1.4\n"
-"Report-Msgid-Bugs-To: frederic@culot.org\n"
-"POT-Creation-Date: 2010-05-29 09:28+0200\n"
+"Report-Msgid-Bugs-To: bugs@calcurse.org\n"
+"POT-Creation-Date: 2011-04-10 18:00+0200\n"
 "PO-Revision-Date: 2010-03-10 00:05+0100\n"
 "Last-Translator: Aleksey Mekhonoshin <linux.kernel.it@gmail.com>\n"
 "Language-Team: non\n"
+"Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/apoint.c:64 src/event.c:63 src/recur.c:141 src/recur.c:162
 msgid "null pointer"
 msgstr "пустой указатель"
 
-#: src/apoint.c:168
 msgid ""
 "Enter start time ([hh:mm] or [h:mm]), leave blank for an all-day event : "
 msgstr ""
 "Начало ([чч:мм] или [ч:мм]). Оставьте пустым если событие займёт весь день : "
 
-#: src/apoint.c:171
 msgid "Enter end time ([hh:mm] or [h:mm]) or duration (in minutes) : "
 msgstr "Окончание ([чч:мм] или [ч:мм]) или продолжительноть ([мм]) : "
 
-#: src/apoint.c:172
 msgid "Enter description :"
 msgstr "Описание: "
 
-#: src/apoint.c:174
 msgid "You entered an invalid start time, should be [h:mm] or [hh:mm]"
 msgstr "Неверное начальное время, формат не соответствует [чч:мм] или [ч:мм]"
 
-#: src/apoint.c:176
 msgid "You entered an invalid end time, should be [h:mm] or [hh:mm] or [mm]"
-msgstr "Неверное конечное время, формат не соответствует [чч:мм] или [ч:мм], или [мм]"
+msgstr ""
+"Неверное конечное время, формат не соответствует [чч:мм] или [ч:мм], или [мм]"
 
-#: src/apoint.c:177 src/day.c:602 src/day.c:628 src/day.c:689
 msgid "Press [Enter] to continue"
 msgstr "Нажмите [Enter]"
 
-#: src/apoint.c:276
 msgid "Do you really want to delete this item ?"
 msgstr "Удалить? "
 
-#: src/apoint.c:319 src/apoint.c:357
 msgid "no such type"
 msgstr "отсутствие типа"
 
-#: src/apoint.c:478 src/recur.c:443
 msgid "date error in appointment"
 msgstr "ошибка даты в задаче"
 
-#: src/apoint.c:499 src/recur.c:1119 src/recur.c:1143 src/recur.c:1179
 msgid "item not found"
 msgstr "не найден"
 
-#: src/apoint.c:552 src/apoint.c:711
 msgid "no such appointment"
 msgstr "задача отсутствует"
 
-#: src/args.c:57
 msgid ""
 "Usage: calcurse [-h|-v] [-N] [-an] [-t[num]] [-i<file>] [-x[format]]\n"
 "                [-d <date>|<num>] [-s[date]] [-r[range]]\n"
 "                [-c<file> | -D<dir>] [-S<regex>] [--status]\n"
-msgstr "Команда: calcurse [-h | -v] [-at] [-d date|num] [-c file]\n"
+msgstr ""
+"Команда: calcurse [-h | -v] [-at] [-d date|num] [-c file]\n"
 "                [-d <date>|<num>] [-s[date]] [-r[range]]\n"
 "                [-c<file> | -D<dir>] [-S<regex>] [--status]\n"
 
-#: src/args.c:66
 msgid "Try 'calcurse -h' for more information.\n"
 msgstr "Выполните 'calcurse -h' для получение справки.\n"
 
-#: src/args.c:78
 msgid ""
 "\n"
 "Copyright (c) 2004-2010 Frederic Culot.\n"
@@ -92,12 +80,11 @@ msgstr ""
 "Авторское право (c) 2004-2010 Frederic Culot.\n"
 "This is free software; see the source for copying conditions.\n"
 
-#: src/args.c:81 src/args.c:151
 #, c-format
 msgid "Calcurse %s - text-based organizer\n"
 msgstr "Calcurse %s - текстовый органайзер\n"
 
-#: src/args.c:95
+#, fuzzy
 msgid ""
 "\n"
 "Miscellaneous:\n"
@@ -167,7 +154,7 @@ msgid ""
 "\tby issuing a command such as: calcurse --export > calcurse.dat\n"
 "\n"
 "For more information, type '?' from within Calcurse, or read the manpage.\n"
-"Mail bug reports and suggestions to <calcurse@culot.org>.\n"
+"Mail bug reports and suggestions to <misc@calcurse.org>.\n"
 msgstr ""
 "\n"
 "Разное:\n"
@@ -236,21 +223,21 @@ msgstr ""
 "\tПримечание: перенаправление стандартого вывода экспортируемых\n"
 "\tданных в файл осуществимо командой: calcurse --export > calcurse.dat\n"
 "\n"
-"Для получения справки введите '?' внутри Calcurse или смотрите man-страницу.\n"
-"Сообщения о найденных ошибках или пожелания присылайте на почту <calcurse@culot.org>.\n"
+"Для получения справки введите '?' внутри Calcurse или смотрите man-"
+"страницу.\n"
+"Сообщения о найденных ошибках или пожелания присылайте на почту "
+"<calcurse@culot.org>.\n"
 
-##: src/args.c:178
-##, c-format
-#msgid ""
-#"Error: both calcurse (pid: %d) and its daemon (pid: %d)\n"
-#"seem to be running at the same time!\n"
-#"Please check manually and restart calcurse.\n"
-#msgstr ""
-#"Ошибка: calcurse (pid: %d) и его демон (pid: %d)\n"
-#"запущены одновременно!\n"
-#"Пожалуйста, проверьте это и перезапустите calcurse.\n"
-
-#: src/args.c:178
+# #: src/args.c:178
+# #, c-format
+# msgid ""
+# "Error: both calcurse (pid: %d) and its daemon (pid: %d)\n"
+# "seem to be running at the same time!\n"
+# "Please check manually and restart calcurse.\n"
+# msgstr ""
+# "Ошибка: calcurse (pid: %d) и его демон (pid: %d)\n"
+# "запущены одновременно!\n"
+# "Пожалуйста, проверьте это и перезапустите calcurse.\n"
 #, c-format
 msgid ""
 "Error: both calcurse (pid: %d) and its daemon (pid: %d)\n"
@@ -261,38 +248,30 @@ msgstr ""
 "запущены одновременно!\n"
 "Пожалуйста, проверьте это и перезапустите calcurse.\n"
 
-#: src/args.c:184
 #, c-format
 msgid "calcurse is running (pid %d)\n"
 msgstr "calcurse запущен (pid: %d)\n"
 
-#: src/args.c:186
 #, c-format
 msgid "calcurse is running in background (pid %d)\n"
 msgstr "calcurse запущен в фоновом режиме (pid: %d)\n"
 
-#: src/args.c:188
 #, c-format
 msgid "calcurse is not running\n"
 msgstr "calcurse не запущен\n"
 
-#: src/args.c:233
 msgid "No note file found\n"
 msgstr "Файл с заметкой не найден\n"
 
-#: src/args.c:250
 msgid "to do:\n"
 msgstr "Список дел:\n"
 
-#: src/args.c:251
 msgid "completed tasks:\n"
 msgstr "Выполненные задачи:\n"
 
-#: src/args.c:320
 msgid "next appointment:\n"
 msgstr "Следующая задача:\n"
 
-#: src/args.c:508
 msgid ""
 "\n"
 "For more information, type '?' from within Calcurse, or read the manpage.\n"
@@ -300,160 +279,127 @@ msgstr ""
 "\n"
 "Для получения справки, нажмите '?' в Calcurse или смотрите man-страницу.\n"
 
-#: src/args.c:510
-msgid "Mail bug reports and suggestions to <calcurse@culot.org>.\n"
-msgstr "Сообщения о найденых ошибках или пожелания присылайте на почту <calcurse@culot.org>.\n"
+#, fuzzy
+msgid "Mail bug reports and suggestions to <misc@calcurse.org>.\n"
+msgstr ""
+"Сообщения о найденых ошибках или пожелания присылайте на почту "
+"<calcurse@culot.org>.\n"
 
-#: src/args.c:588
 msgid "Argument to the '-d' flag is not valid\n"
 msgstr "Аргумент ключа '-d' неверен\n"
 
-#: src/args.c:651
 msgid "Argument is not valid\n"
 msgstr "Аргумент неверен\n"
 
-#: src/args.c:656
 msgid "Argument format for -r and --range is: 'n'\n"
 msgstr "Формат аргумента для -r и --range: 'n'\n"
 
-#: src/args.c:779
 msgid "Can not handle more than one regular expression."
 msgstr "Невозможно обрабатывать более чем одно регулярное выражение."
 
-#: src/args.c:782
 msgid "Could not compile regular expression."
 msgstr "Невозможно скомпилировать регулярное выражение."
 
-#: src/args.c:818
 msgid "Argument for '-x' should be either 'ical' or 'pcal'\n"
 msgstr "Аргумент для '-x': 'ical' либо 'pcal'\n"
 
-#: src/args.c:850
 msgid "Options '-D' and '-c' cannot be used at the same time\n"
 msgstr "Ключи '-D' и '-c' не могут использоваться одновременно\n"
 
-#: src/args.c:858
 msgid "Option '-S' must be used with either '-d', '-r', '-s', '-a' or '-t'\n"
-msgstr "Ключ '-S' должен использоваться с любым из след.: '-d'. '-r', '-s', '-a', '-t'\n"
+msgstr ""
+"Ключ '-S' должен использоваться с любым из след.: '-d'. '-r', '-s', '-a', '-"
+"t'\n"
 
-#: src/calcurse.c:65
+#, fuzzy
 msgid ""
-"Sorry, colours are not supported by your terminal\n"
+"Sorry, colors are not supported by your terminal\n"
 "(Press [ENTER] to continue)"
 msgstr ""
 "Цвета не поддерживаются вашим терминалом\n"
 "(Нажмите [ENTER])"
 
-#: src/calcurse.c:67
 msgid "Do you really want to quit ?"
 msgstr "Вы уверены, что хотите выйти?"
 
-#: src/calcurse.c:244
 msgid "To do :"
 msgstr "Дело: "
 
-#: src/calendar.c:183
 msgid "ERROR setting first day of week"
 msgstr "ОШИБКА настройки первого дня недели"
 
-#: src/calendar.c:637
 msgid ""
 "The day you entered is not valid (should be between 01/01/1902 and "
 "12/31/2037)"
 msgstr "Введённый день должен быть между 01/01/1902 и 12/31/2037"
 
-#: src/calendar.c:639 src/custom.c:244 src/io.c:1029 src/io.c:1267
-#: src/io.c:1589 src/io.c:1609
 msgid "Press [ENTER] to continue"
 msgstr "Нажмите [ENTER]"
 
-#: src/custom.c:87
 msgid "wrong configuration variable format."
 msgstr "неверный формат настройки переменной."
 
-#: src/custom.c:112
 msgid "missing colors in config file"
 msgstr "отсутствующие цвета в файле настроек"
 
-#: src/custom.c:138
 msgid "wrong color name"
 msgstr "неверное название цвета"
 
-#: src/custom.c:179
 msgid "wrong color number"
 msgstr "неверный номер цвета"
 
-#: src/custom.c:185
 msgid "wrong configuration variable format"
 msgstr "неверный формат настройки переменной"
 
-#: src/custom.c:243
 msgid "Failed to open config file"
 msgstr "Ошибка открытия файла настроек"
 
-#: src/custom.c:359
 msgid "configuration variable unknown"
 msgstr "неизвестная настройка переменной"
 
-#: src/custom.c:425 src/custom.c:441 src/custom.c:606 src/custom.c:695
-#: src/custom.c:1272 src/io.c:1674
 msgid "Exit"
 msgstr "Выход"
 
-#: src/custom.c:426
 msgid "General"
 msgstr "Основные"
 
-#: src/custom.c:427
 msgid "Layout"
 msgstr "Располож."
 
-#: src/custom.c:428
 msgid "Sidebar"
 msgstr "Обрамление"
 
-#: src/custom.c:429
 msgid "Color"
 msgstr "Цвета"
 
-#: src/custom.c:430
 msgid "Notify"
 msgstr "Уведомление"
 
-#: src/custom.c:431
 msgid "Keys"
 msgstr "Клавиши"
 
-#: src/custom.c:442 src/custom.c:696
 msgid "Select"
 msgstr "Выбрать"
 
-#: src/custom.c:443 src/custom.c:698 src/custom.c:1276 src/wins.c:688
 msgid "Up"
 msgstr "Вверх"
 
-#: src/custom.c:444 src/custom.c:699 src/custom.c:1277 src/wins.c:689
 msgid "Down"
 msgstr "Вниз"
 
-#: src/custom.c:445 src/custom.c:700 src/wins.c:690
 msgid "Left"
 msgstr "Влево"
 
-#: src/custom.c:446 src/custom.c:701 src/wins.c:691
 msgid "Right"
 msgstr "Вправо"
 
-#: src/custom.c:447 src/custom.c:609 src/wins.c:667
 msgid "Help"
 msgstr "Справка"
 
-#: src/custom.c:496
 #, c-format
 msgid "layout configuration"
 msgstr "Настройки расположения"
 
-#: src/custom.c:534
 msgid ""
 "With this configuration menu, one can choose where panels will be\n"
 "displayed inside calcurse screen. \n"
@@ -481,25 +427,21 @@ msgstr ""
 "       't' -> панель списка дел\n"
 "\n"
 
-#: src/custom.c:607
 msgid "Width +"
 msgstr "Ширина +"
 
-#: src/custom.c:608
 msgid "Width -"
 msgstr "Ширина -"
 
-#: src/custom.c:612
-
+#, fuzzy, c-format
 msgid ""
 "This configuration screen is used to change the width of the side bar.\n"
 "The side bar is the part of the screen which contains two panels:\n"
 "the calendar and, depending on the chosen layout, either the todo list\n"
 "or the appointment list.\n"
 "\n"
-"The side bar width can be up to 50 of the total screen width, but\n"
+"The side bar width can be up to 50% of the total screen width, but\n"
 "can't be smaller than "
-
 msgstr ""
 "В этом меню настроек регулируется ширина сторон.\n"
 "Экран состоит из двух сторон, одна из которых содержит\n"
@@ -509,284 +451,221 @@ msgstr ""
 "Ширина сторон может занимать 50% от общего экрана,\n"
 "но она не может быть меньше изначальной "
 
-#: src/custom.c:697
 msgid "No color"
 msgstr "Цвет отсутствует"
 
-#: src/custom.c:726
 msgid "Foreground"
 msgstr "Передний фон"
 
-#: src/custom.c:727
 msgid "Background"
 msgstr "Задний фон"
 
-#: src/custom.c:728
 msgid "(terminal's default)"
 msgstr "(цвета терминала)"
 
-#: src/custom.c:762
 #, c-format
 msgid "color theme"
 msgstr "Цветовая схема"
 
-#: src/custom.c:959
 msgid "unknown color"
 msgstr "неизвестный цвет"
 
-#: src/custom.c:988
 msgid "auto_save = "
 msgstr "auto_save = "
 
-#: src/custom.c:989
 msgid "periodic_save = "
 msgstr "periodic_save = "
 
-#: src/custom.c:990
 msgid "confirm_quit = "
 msgstr "confirm_quit = "
 
-#: src/custom.c:991
 msgid "confirm_delete = "
 msgstr "confirm_delete = "
 
-#: src/custom.c:992
 msgid "skip_system_dialogs = "
 msgstr "skip_system_dialogues = "
 
-#: src/custom.c:993
 msgid "skip_progress_bar = "
 msgstr "skip_progress_bar = "
 
-#: src/custom.c:994
 msgid "week_begins_on_monday = "
 msgstr "week_begins_on_monday = "
 
-#: src/custom.c:995
 msgid "output_datefmt = "
 msgstr "output_datefmt = "
 
-#: src/custom.c:996
 msgid "input_datefmt = "
 msgstr "input_datefmt = "
 
-#: src/custom.c:1004
 msgid "(if set to YES, automatic save is done when quitting)"
 msgstr "(yes/no) Автосохранение при выходе из программы"
 
-#: src/custom.c:1012
 msgid "(if not null, automatically save data every 'periodic_save' minutes)"
 msgstr "(N/0) Автосохранение каждые N минут. (для отмены '0')"
 
-#: src/custom.c:1019
 msgid "(if set to YES, confirmation is required before quitting)"
 msgstr "(yes/no) Подтверждение выхода из программы"
 
-#: src/custom.c:1025
 msgid "(if set to YES, confirmation is required before deleting an event)"
 msgstr "(yes/no) Подтверждение удаления событий"
 
-#: src/custom.c:1032
 msgid ""
 "(if set to YES, messages about loaded and saved data will not be displayed)"
-msgstr ""
-"(yes/no) Отображение уведомления о загрузки/сохранении данных"
+msgstr "(yes/no) Отображение уведомления о загрузки/сохранении данных"
 
-#: src/custom.c:1039
 msgid "(if set to YES, progress bar will not be displayed when saving data)"
 msgstr "(yes/no) Отображение полосы загрузки при сохранении данных"
 
-#: src/custom.c:1046
 msgid "(if set to YES, monday is the first day of the week, else it is sunday)"
 msgstr ""
-"(yes/no) Назначить понедельник первым днём недели. Если 'нет', то первый день - воскресение"
+"(yes/no) Назначить понедельник первым днём недели. Если 'нет', то первый "
+"день - воскресение"
 
-#: src/custom.c:1055
 msgid "(Format of the date to be displayed in non-interactive mode)"
 msgstr "Формат даты отображается в неинтерактивном режиме"
 
-#: src/custom.c:1062
 msgid "(Format to be used when entering a date: "
 msgstr "Формат для ввода даты: "
 
-#: src/custom.c:1064
 msgid " (1)mm/dd/yyyy (2)dd/mm/yyyy (3)yyyy/mm/dd (4)yyyy-mm-dd)"
 msgstr "(1)мм/дд/гггг (2)дд/мм/гггг (3)гггг/мм/дд (4)гггг-мм-дд)"
 
-#: src/custom.c:1089 src/notify.c:707
 msgid "Enter an option number to change its value"
 msgstr "Введите номер настроки для изменения её параметра"
 
-#: src/custom.c:1091 src/notify.c:709
 msgid "(Press '^P' or '^N' to move up or down, 'Q' to quit)"
 msgstr "'^P' или '^N' - вверх/вниз, 'Q' - выхода"
 
-#: src/custom.c:1093 src/notify.c:711
 msgid "Enter the date format (see 'man 3 strftime' for possible formats) "
 msgstr "Задайте формат даты (см. 'man 3 strftime' для возможных форматов)"
 
-#: src/custom.c:1095
 msgid ""
 "Enter the date format (1)mm/dd/yyyy (2)dd/mm/yyyy (3)yyyy/mm/dd (4)yyyy-mm-dd"
-msgstr "Задайте формат даты (1)мм/дд/гггг (2)дд/мм/гггг (3)гггг/мм/дд (4)гггг-мм-дд"
+msgstr ""
+"Задайте формат даты (1)мм/дд/гггг (2)дд/мм/гггг (3)гггг/мм/дд (4)гггг-мм-дд"
 
-#: src/custom.c:1098
 msgid "Enter the delay, in minutes, between automatic saves (0 to disable) "
 msgstr "Введите задержку между автосохранениями (в минутах) или 0 для отмены "
 
-#: src/custom.c:1104
 #, c-format
 msgid "general options"
 msgstr "Основные настройки"
 
-#: src/custom.c:1209
 msgid "Undefined option!"
 msgstr "Неопределённая настройка!"
 
-#: src/custom.c:1237
 msgid "undefined"
 msgstr "неопределено"
 
-#: src/custom.c:1273
 msgid "Key info"
 msgstr "Инфо клавиши"
 
-#: src/custom.c:1274
 msgid "Add key"
 msgstr "Добавить клавишу"
 
-#: src/custom.c:1275
 msgid "Del key"
 msgstr "Удалить клавишу"
 
-#: src/custom.c:1278
 msgid "Prev Key"
 msgstr "Пред. клавиша"
 
-#: src/custom.c:1279
 msgid "Next Key"
 msgstr "След. клавиша"
 
-#: src/custom.c:1303
 #, c-format
 msgid "keys configuration"
 msgstr "Настройка клавиш"
 
-#: src/custom.c:1365
 msgid "Press the key you want to assign to:"
 msgstr "Нажмите клавишу, чтобы привязать её к:"
 
-#: src/custom.c:1373
 msgid "This key is not yet recognized by calcurse, please choose another one."
 msgstr "Эта клавиша ещё не распознаётся calcurse, попробуйте другую."
 
-#: src/custom.c:1390
 #, c-format
 msgid "This key is already in use for %s, please choose another one."
 msgstr "Эта клавиша уже используется для %s, попробуйте другую."
 
-#: src/custom.c:1418 src/io.c:1488
 msgid "Some actions do not have any associated key bindings!"
 msgstr "Некоторые действия не привязаны к клавишам!"
 
-#: src/day.c:472
 msgid "Event :"
 msgstr "Событие: "
 
-#: src/day.c:475
 msgid "Appointment :"
 msgstr "Задача: "
 
-#: src/day.c:477 src/recur.c:724
 msgid "unknown item type"
 msgstr "неизвестный тип записи"
 
-#: src/day.c:601
 msgid "Enter the new time ([hh:mm] or [h:mm]) : "
 msgstr "Новое время ([чч:мм] или [ч:мм]): "
 
-#: src/day.c:603
 msgid "You entered an invalid time, should be [h:mm] or [hh:mm]"
 msgstr "Неверно введено время: формат не соответствует [чч:мм] или [ч:мм]"
 
-#: src/day.c:627 src/day.c:685
 msgid "Invalid time: start time must be before end time!"
 msgstr "Неверное время: время начала должно идти до времени конца"
 
-#: src/day.c:669
 msgid "Enter the new item description:"
 msgstr "Описание: "
 
-#: src/day.c:681
 msgid "Enter the new repetition type: (D)aily, (W)eekly, (M)onthly, (Y)early"
-msgstr "Выберите тип повторения: (D)Ежедневно, (W)Еженедельно, (M)Ежемесячно, (Y)Ежегодно"
+msgstr ""
+"Выберите тип повторения: (D)Ежедневно, (W)Еженедельно, (M)Ежемесячно, (Y)"
+"Ежегодно"
 
-#: src/day.c:683 src/recur.c:897
 msgid "[D/W/M/Y] "
 msgstr "[D/W/M/G] "
 
-#: src/day.c:684 src/recur.c:899
 msgid "The frequence you entered is not valid."
 msgstr "Неверно введена частота."
 
-#: src/day.c:686 src/recur.c:902
 msgid "The entered date is not valid."
 msgstr "Неверно введена дата."
 
-#: src/day.c:712
 msgid "Enter the new repetition frequence:"
 msgstr "Новая частота повторения:"
 
-#: src/day.c:821
 msgid "Edit: (1)Description or (2)Repetition?"
 msgstr "Изменить: (1)Описание или (2)Повторение?"
 
-#: src/day.c:842
 msgid "Edit: (1)Start time, (2)End time, (3)Description or (4)Repetition?"
 msgstr "Изменить: (1)Начало, (2)Окончание, (3)Описание или (4)Повторение?"
 
-#: src/day.c:867
 msgid "Edit: (1)Start time, (2)End time or (3)Description?"
 msgstr "Изменить: (1)Начало, (2)Окончание или (3)Описание?"
 
-#: src/day.c:900
 msgid "This item is recurrent. Delete (a)ll occurences or just this (o)ne ?"
-msgstr "Эта запись имеет повторения. Удалить (a)все подобные записи или только (o)эту ?"
+msgstr ""
+"Эта запись имеет повторения. Удалить (a)все подобные записи или только (o)"
+"эту ?"
 
-#: src/day.c:903
 msgid "This item has a note attached to it. Delete (i)tem or just its (n)ote ?"
 msgstr "Эта запись содержит заметку. Удалить (i)запись или только (n)заметку ?"
 
-#: src/day.c:905
 msgid "[i/n] "
 msgstr "[i/n] "
 
-#: src/day.c:906
 msgid "[a/o] "
 msgstr "[a/o] "
 
-#: src/day.c:998 src/day.c:1029
 msgid "unknwon type"
 msgstr "неизвестный тип"
 
-#: src/event.c:164
 msgid "date error in the event\n"
 msgstr "ошибка даты в событии\n"
 
-#: src/event.c:186 src/event.c:230 src/recur.c:798
 msgid "event not found"
 msgstr "событие не найдено"
 
-#: src/help.c:166
 #, c-format
 msgid "Calcurse help"
 msgstr "Справка"
 
-#: src/help.c:335
 msgid "       Welcome to Calcurse. This is the main help screen.\n"
 msgstr "       Добро пожаловать в Calcurse. Это главный экран справки.\n"
 
-#: src/help.c:337
 #, c-format
 msgid ""
 "Moving around:  Press '%s' or '%s' to scroll text upward or downward\n"
@@ -807,13 +686,13 @@ msgid ""
 "\n"
 "      Credits:  Press '%s' for credits."
 msgstr ""
-"Перемещение: 		Нажмите '%s' или '%s' при необходимости\n"
+"Перемещение: \t\tНажмите '%s' или '%s' при необходимости\n"
 "                 листать текст.\n"
 "\n"
-"      Выйти:	  	Нажмите '%s' чтобы выйти из меню справки и\n"
+"      Выйти:\t  \tНажмите '%s' чтобы выйти из меню справки и\n"
 "                 вернуться в главный экран Calcurse.\n"
 "\n"
-"    Справка:  		Внизу экрана находится панель с областью в которой\n"
+"    Справка:  \t\tВнизу экрана находится панель с областью в которой\n"
 "                 расположены символы и соответствующие им названия. Эта\n"
 "                 панель содержит действия которые можно выполнять внутри \n"
 "                 органайзера Calcurse.\n"
@@ -821,14 +700,11 @@ msgstr ""
 "                 панеле, будет показано короткое описания действия для\n"
 "                 данной клавиши.\n"
 "\n"
-"О программе:  	Нажмите '%s' для информации о программе."
+"О программе:  \tНажмите '%s' для информации о программе."
 
-#: src/help.c:356
-#,
 msgid "Save\n"
 msgstr "Сохранить\n"
 
-#: src/help.c:358
 #, c-format
 msgid ""
 "Save calcurse data.\n"
@@ -856,11 +732,9 @@ msgstr ""
 "В меню настроек вы можете выбрать автосохранение данных Calcurse\n"
 "при выходе из программы."
 
-#: src/help.c:369
 msgid "Import\n"
 msgstr "Импорт\n"
 
-#: src/help.c:371
 #, c-format
 msgid ""
 "Import data from an icalendar file.\n"
@@ -895,11 +769,9 @@ msgstr ""
 "Информация в отчёте выводится построчно. В каждой строке находится\n"
 "запись и описание того, почему она не смогла быть импортирована.\n"
 
-#: src/help.c:387
 msgid "Export\n"
 msgstr "Экспорт\n"
 
-#: src/help.c:389
 #, c-format
 msgid ""
 "Export calcurse data (appointments, events and todos).\n"
@@ -930,22 +802,19 @@ msgstr ""
 "Сперва укажите файл, в который будет производиться экспорт.\n"
 "По-умолчанию, это файлы:\n"
 "\n"
-"		~/calcurse.ics\n"
+"\t\t~/calcurse.ics\n"
 "\n"
 "для ical, и:\n"
-"		~/cacurse.txt\n"
+"\t\t~/cacurse.txt\n"
 "\n"
 "для pcal.\n"
 "\n"
 "Calcurse экспортирует такие данные как:\n"
 "     события, задачи, дела.\n"
 
-
-#: src/help.c:410
 msgid "Displacement keys\n"
 msgstr "Назначение клавиш\n"
 
-#: src/help.c:412
 #, c-format
 msgid ""
 "Move around inside calcurse screens.\n"
@@ -988,17 +857,15 @@ msgstr ""
 "                                 %s\n"
 "\n"
 "                          следующая неделя\n"
-"                              	вниз\n"
+"                              \tвниз\n"
 "\n"
 "Кроме того в панели календаря, клавиша '%s' перемещает\n"
 "к первому дню недели, а клавиша '%s' к последнему\n"
 "дню недели.\n"
 
-#: src/help.c:437
 msgid "View\n"
 msgstr "Смотреть\n"
 
-#: src/help.c:439
 #, c-format
 msgid ""
 "View the item you select in either the Todo or Appointment panel.\n"
@@ -1022,11 +889,9 @@ msgstr ""
 "Нажмите любую клавишу чтобы закрыть окно и вернуться в главный\n"
 "экран Calcurse."
 
-#: src/help.c:450
 msgid "Tab\n"
 msgstr "Таб\n"
 
-#: src/help.c:452
 #, c-format
 msgid ""
 "Switch between panels.\n"
@@ -1053,11 +918,9 @@ msgstr ""
 "при выборе той или иной панели (клав.'%s'). Так вы всегда можете знать\n"
 "какие действия доступны для текущей панели."
 
-#: src/help.c:465
 msgid "Goto\n"
 msgstr "Перейти\n"
 
-#: src/help.c:467
 #, c-format
 msgid ""
 "Jump to a specific day in the calendar.\n"
@@ -1077,14 +940,12 @@ msgstr ""
 "При нажатии [ENTER] без заданного дня, Calcurse\n"
 "проверит текущую дату и перейдёт на неё.\n"
 "\n"
-"Внезависимости от текущей панели, нажатие клавиши '%s',"
-"выделит текущую дату в календаре."
+"Внезависимости от текущей панели, нажатие клавиши '%s',выделит текущую дату "
+"в календаре."
 
-#: src/help.c:476
 msgid "Delete\n"
 msgstr "Удалить\n"
 
-#: src/help.c:478
 #, c-format
 msgid ""
 "Delete an element in the ToDo or Appointment list.\n"
@@ -1117,11 +978,9 @@ msgstr ""
 "Не забывайте сохранять данные для того, чтоб восстановить\n"
 "их при следующей загрузке Calcurse."
 
-#: src/help.c:490
 msgid "Add\n"
 msgstr "Добавить\n"
 
-#: src/help.c:492
 #, c-format
 msgid ""
 "Add an item in either the ToDo or Appointment list, depending on which\n"
@@ -1194,11 +1053,9 @@ msgstr ""
 "       o не забывайте сохранять данные для того, чтоб восстановить\n"
 "       их при следующей загрузке Calcurse."
 
-#: src/help.c:527
 msgid "Cut and Paste\n"
 msgstr "Вырезать/Вставить\n"
 
-#: src/help.c:529
 #, c-format
 msgid ""
 "Cut and paste the currently selected item. This is useful to quickly\n"
@@ -1227,11 +1084,9 @@ msgstr ""
 "вставки между ними, то первая вырезанная запись будет утеряна, вместе\n"
 "с заметкой если таковая имеется."
 
-#: src/help.c:543
 msgid "Edit Item\n"
 msgstr "Изм. запись\n"
 
-#: src/help.c:545
 #, c-format
 msgid ""
 "Edit the item which is currently selected.\n"
@@ -1266,11 +1121,9 @@ msgstr ""
 "     o не забывайте сохранять данные для того, чтоб восстановить\n"
 "       их при следующей загрузке Calcurse."
 
-#: src/help.c:560
 msgid "EditNote\n"
 msgstr "Изм.Заметку\n"
 
-#: src/help.c:562
 #, c-format
 msgid ""
 "Attach a note to any type of item, or edit an already existing note.\n"
@@ -1311,11 +1164,9 @@ msgstr ""
 "Вы вернётесь в экран Calcurse, где можно будет увидеть, что запись,\n"
 "к которой была добавлена заметка, помечена знаком '>'."
 
-#: src/help.c:581
 msgid "ViewNote\n"
 msgstr "См.Заметку:\n"
 
-#: src/help.c:583
 #, c-format
 msgid ""
 "View a note which was previously attached to an item (an item which\n"
@@ -1346,11 +1197,9 @@ msgstr ""
 "Как и в случае с изменением заметки, выход из просмотрщика\n"
 "вернёт вас к экрану Calcurse."
 
-#: src/help.c:600
 msgid "Priority\n"
 msgstr "Приоритет\n"
 
-#: src/help.c:602
 #, c-format
 msgid ""
 "Change the priority of the currently selected item in the ToDo list.\n"
@@ -1383,11 +1232,9 @@ msgstr ""
 "Наоборот, для понижения приоритета, нажимайте  клавишу '%s'. Запись,\n"
 "в таком случае, будет опускаться ниже по списку дел."
 
-#: src/help.c:618
 msgid "Repeat\n"
 msgstr "Повторить:\n"
 
-#: src/help.c:620
 #, c-format
 msgid ""
 "Repeat an event or an appointment.\n"
@@ -1424,34 +1271,32 @@ msgstr ""
 "повторяться. Нажмите на клавишу '%s' чтобы задать настройки для\n"
 "повторения. Параметров повторения три:\n"
 "\n"
-"  o        Тип: 	выбор между ежедневным, еженедельным, ежемесячным\n"
+"  o        Тип: \tвыбор между ежедневным, еженедельным, ежемесячным\n"
 "                 или ежегодным повторениями. Выберите нажатием на 'D',\n"
 "                 'W', 'M', или 'Y'\n"
 "\n"
-"  o    Частота: 	указание как часто запись будет повторяться.\n"
+"  o    Частота: \tуказание как часто запись будет повторяться.\n"
 "                 Например, чтобы запомнить годовщину, выберите\n"
 "                 тип 'ежегодно', а частоту установите равной '1'.\n"
 "                 Запись будет повторяться раз в год. Другой пример:\n"
 "                 если вы ужинаете в ресторане раз в два дня выберите,\n"
 "                 тип 'ежедневно', а частоту повторения равной '2'.\n"
 "\n"
-"  o  Окончание: 	необходимо для прекращения повторения события или\n"
+"  o  Окончание: \tнеобходимо для прекращения повторения события или\n"
 "                 задачи. Установите значение окончания повторения\n"
 "                 равным '0' и запись будет повторяться\n"
 "                 бесконечно.\n"
 "\n"
-"	  Примечание:\n"
+"\t  Примечание:\n"
 "       o повторяемая запись помечается '*' внутри панели задач для\n"
 "         того, чтобы отличаться от неповторяемых записей.\n"
 "       o при удалении повторяемая записи, необходимо выбрать\n"
 "         цель удаления: только эту повторяющуюся запись или все\n"
 "         повторения целиком."
 
-#: src/help.c:645
 msgid "Flag Item\n"
 msgstr "Флаг\n"
 
-#: src/help.c:647
 #, c-format
 msgid ""
 "Toggle an appointment's 'important' flag or a todo's 'completed' flag.\n"
@@ -1480,11 +1325,9 @@ msgstr ""
 "наступающем времени начала задачи, а так же возможность задать\n"
 "промежуток между задачей и временем уведомления о ней."
 
-#: src/help.c:659
 msgid "Config\n"
 msgstr "Настройка:\n"
 
-#: src/help.c:661
 #, c-format
 msgid ""
 "Open the configuration submenu.\n"
@@ -1517,11 +1360,9 @@ msgstr ""
 "Обязательно сохраните данные, чтобы заданные настройки\n"
 "восстановились при следующей загрузке Calcurse."
 
-#: src/help.c:674
 msgid "Generic keybindings\n"
 msgstr "Осн. комбинации клавиш\n"
 
-#: src/help.c:676
 #, c-format
 msgid ""
 "Some of the keybindings apply whatever panel is selected. They are\n"
@@ -1550,27 +1391,25 @@ msgstr ""
 "Ниже представлен список основных клавиш, которые ответственны\n"
 "за следующие действия:\n"
 "\n"
-" '%s' : Обновить		-> обновляет экран Calcurse. Это полезно\n"
+" '%s' : Обновить\t\t-> обновляет экран Calcurse. Это полезно\n"
 "                          при изменении размера терминала или\n"
 "                          уборки \"мусора\" c экрана.\n"
-" '%s' : Доб.Задачу	-> добавить новую задачу или новое событие.\n"
+" '%s' : Доб.Задачу\t-> добавить новую задачу или новое событие.\n"
 " '%s' : Доб.Дело       -> добавить новое дело.\n"
 " '%s' : День -         -> перейти на день назад.\n"
 " '%s' : День +         -> перейти на день вперёд.\n"
 " '%s' : Неделя -       -> перейти на неделю назад.\n"
 " '%s' : Неделя +       -> перейти на неделю вперёд.\n"
-" '%s' : Переход    	-> перейти на текущий день.\n"
+" '%s' : Переход    \t-> перейти на текущий день.\n"
 "\n"
 "Клавиши '%s' и '%s' используются для перемотки текста вверх и вниз\n"
 "во время нахождения внутри определённого экрана, например экран справки.\n"
 "Так же они используются в панеле календаря для переключения между двумя\n"
 "его видами (вид недели и вид месяца)."
 
-#: src/help.c:705
 msgid "OtherCmd\n"
 msgstr "ещё...\n"
 
-#: src/help.c:707
 #, c-format
 msgid ""
 "Switch between status bar help pages.\n"
@@ -1587,12 +1426,10 @@ msgstr ""
 "Когда текущая страница команд является последней, нажмите\n"
 "клавишу '%s' чтобы вернуться на первую страницу."
 
-#: src/help.c:716
 msgid "Calcurse - text-based organizer"
 msgstr "Calcurse - текстовый органайзер"
 
-#: src/help.c:718
-#, c-format
+#, fuzzy, c-format
 msgid ""
 "\n"
 "Copyright (c) 2004-2009 Frederic Culot\n"
@@ -1612,8 +1449,8 @@ msgid ""
 "\t  materials provided with the distribution.\n"
 "\n"
 "\n"
-"Send your feedback or comments to : calcurse@culot.org\n"
-"Calcurse home page : http://culot.org/calcurse"
+"Send your feedback or comments to : misc@calcurse.org\n"
+"Calcurse home page : http://calcurse.org"
 msgstr ""
 "\n"
 "Авторское право (c) 2004-2009 Frederic Culot\n"
@@ -1636,110 +1473,85 @@ msgstr ""
 "Отзывы и предложения присылайте на почту: calcurse@culot.org\n"
 "Домашняя страница проекта Calcurse: http://culot.org/calcurse"
 
-#: src/io.c:145
 msgid "Saving..."
 msgstr "Сохранение..."
 
-#: src/io.c:146
 msgid "Loading..."
 msgstr "Загрузка..."
 
-#: src/io.c:147
 msgid "Exporting..."
 msgstr "Экспорт..."
 
-#: src/io.c:148
 msgid "Internal error while displaying progress bar"
 msgstr "Внутренняя ошибка во время вывода полосы загрузки"
 
-#: src/io.c:212
 msgid "Choose the file used to export calcurse data:"
 msgstr "Выберите файл для экспорта данных:"
 
-#: src/io.c:214 src/io.c:2700
 msgid "The file cannot be accessed, please enter another file name."
 msgstr "Файл не может быть добавлен, попробуйте другое имя файла."
 
-#: src/io.c:215 src/io.c:2701 src/recur.c:906
 msgid "Press [ENTER] to continue."
 msgstr "Нажмите [ENTER]."
 
-#: src/io.c:289 src/io.c:446 src/io.c:579
 msgid "incoherent repetition type"
 msgstr "бессвязный тип повторения"
 
-#: src/io.c:326
 msgid "Week"
 msgstr "Неделя"
 
-#: src/io.c:674
 #, c-format
 msgid "Failed to open \"%s\", - %s\n"
 msgstr "Ошибка открытия \"%s\", - %s\n"
 
-#: src/io.c:679
 msgid "Failed to build message\n"
 msgstr "Ошибка создания сообщения\n"
 
-#: src/io.c:683
 #, c-format
 msgid "Failed to print message \"%s\"\n"
 msgstr "Ошибка вывода сообщения \"%s\"\n"
 
-#: src/io.c:686
 #, c-format
 msgid "Failed to close \"%s\" - %s\n"
 msgstr "Ошибка закрытия \"%s\" - %s\n"
 
-#: src/io.c:747
 #, c-format
 msgid "%s does not exist, create it now [y or n] ? "
 msgstr "%s не существует, создать его [y/n]? "
 
-#: src/io.c:754 src/io.c:774
 #, c-format
 msgid "aborting...\n"
 msgstr "завершение...\n"
 
-#: src/io.c:768
 #, c-format
 msgid "%s successfully created\n"
 msgstr "%s создание завершено\n"
 
-#: src/io.c:769
 #, c-format
 msgid "starting interactive mode...\n"
 msgstr "запускается интерактивный режим...\n"
 
-#: src/io.c:1027
 msgid "Problems accessing data file ..."
 msgstr "Проблемы с доступом к файлу данных..."
 
-#: src/io.c:1028
 msgid "The data files were successfully saved"
 msgstr "Файл данных успешно сохранён"
 
-#: src/io.c:1110
 msgid "syntax error in the item date"
 msgstr "ошибка синтаксиса в записе дата"
 
-#: src/io.c:1124
 msgid "no event nor appointment found"
 msgstr "события и задачи не найдены"
 
-#: src/io.c:1142 src/io.c:1189 src/io.c:1254
 msgid "wrong format in the appointment or event"
 msgstr "неверный формат события или задачи"
 
-#: src/io.c:1266
 msgid "Failed to open todo file"
 msgstr "Ошибка открытия файла todo-файла"
 
-#: src/io.c:1382
 msgid "could not find any key file."
 msgstr "невозможно найти key-файл."
 
-#: src/io.c:1396
 msgid ""
 "\n"
 "Too many errors while reading configuration file!\n"
@@ -1748,212 +1560,166 @@ msgid ""
 msgstr ""
 "\n"
 "Обнаружены ошибки при чтении файла настроек!\n"
-"Сделайте копию keys-файла, удалите его из каталога и запустите "
-"Calcurse снова.\n"
+"Сделайте копию keys-файла, удалите его из каталога и запустите Calcurse "
+"снова.\n"
 
-#: src/io.c:1413
 msgid "Could not read key label"
 msgstr "Невозможно прочитать клавишу"
 
-#: src/io.c:1422
 msgid "Key label not recognized"
 msgstr "Клавиша неопознана"
 
-#: src/io.c:1443
 #, c-format
 msgid "Error reading key: \"%s\""
 msgstr "Ошибка чтения клавиши: \"%s\""
 
-#: src/io.c:1457
 #, c-format
 msgid "\"%s\" assigned multiple times!"
 msgstr "\"%s\" определено множество времён!"
 
-#: src/io.c:1478
 msgid "There were some errors when loading keys file, see log file ?"
 msgstr "Возникли ошибки при загрузке keys-файла. Смотреть log-файл ?"
 
-#: src/io.c:1484
 msgid "Too many errors while reading keys file, aborting..."
 msgstr "Обнаружены ошибки при чтении keys-файла, отмена..."
 
-#: src/io.c:1500 src/io.c:1540 src/io.c:2979
 #, c-format
 msgid "FATAL ERROR: could not create %s: %s\n"
 msgstr "ФАТАЛЬНАЯ ОШИБКА: невозможно создать %s: %s\n"
 
-#: src/io.c:1587
 msgid "Welcome to Calcurse. Missing data files were created."
 msgstr "Добро пожаловать в Calcurse. Отсутствующие файлы данных будут созданы."
 
-#: src/io.c:1588
 msgid "Data files found. Data will be loaded now."
 msgstr "Данные найдены и будут загружены"
 
-#: src/io.c:1608
 msgid "The data were successfully exported"
 msgstr "Данные успешно экспортированы"
 
-#: src/io.c:1612
 msgid "unknown export type"
 msgstr "неизвестный тип экспорта"
 
-#: src/io.c:1624
 msgid "wrong export mode"
 msgstr "неверный режим экспорта"
 
-#: src/io.c:1675
 msgid "Ical"
 msgstr "Ical"
 
-#: src/io.c:1676
 msgid "Pcal"
 msgstr "Pcal"
 
-#: src/io.c:1718
 msgid "unknown ical type"
 msgstr "неизвестный тип ical"
 
-#: src/io.c:2189
 msgid "recurrence frequence not found."
 msgstr "частота повторений не найдена."
 
-#: src/io.c:2207
 msgid "recurrence frequence not recognized."
 msgstr "частота повторений не распознана."
 
-#: src/io.c:2272
 msgid "recurrence rule malformed."
 msgstr "рекурентные правила повреждены."
 
-#: src/io.c:2327
 msgid "recurrence exception dates malformed."
 msgstr "рекурентные соотношения дат повреждены."
 
-#: src/io.c:2346
 msgid ""
 "Warning: could not create new note file to store description. Aborting...\n"
 msgstr ""
-"Внимание: невозможно создать новую записку в хранилище записей. Завершение...\n"
+"Внимание: невозможно создать новую записку в хранилище записей. "
+"Завершение...\n"
 
-#: src/io.c:2350
 #, c-format
 msgid "Warning: could not open %s, Aborting..."
 msgstr "Внимание: невозможно открыть %s, Завершение..."
 
-#: src/io.c:2357
 msgid "could not get entire item description."
 msgstr "невозможно получить описание полностью."
 
-#: src/io.c:2380
 msgid "description malformed."
 msgstr "описание повреждено."
 
-#: src/io.c:2458
 msgid "appointment has no start time."
 msgstr "задача не имеет начального времени."
 
-#: src/io.c:2466
 msgid "could not compute duration (no end time)."
 msgstr "невозможно вычислить продолжительность (нет времени окончания)."
 
-#: src/io.c:2486
 msgid "item has a negative duration."
 msgstr "значение имеет отрицательную продолжительность."
 
-#: src/io.c:2500
 msgid "event date is not defined."
 msgstr "дата события неопределена."
 
-#: src/io.c:2509
 msgid "item could not be identified."
 msgstr "значение не может быть распознано."
 
-#: src/io.c:2517 src/io.c:2641
 msgid "could not retrieve item summary."
 msgstr "невозможно восстановить суммарные записи."
 
-#: src/io.c:2531
 msgid "could not retrieve event start time."
 msgstr "невозможно восстановить время начала события."
 
-#: src/io.c:2542
 msgid "could not retrieve event end time."
 msgstr "невозможно восстановить время окончания события."
 
-#: src/io.c:2551
 msgid "item duration malformed."
 msgstr "значение продолжительности повреждено."
 
-#: src/io.c:2580 src/io.c:2681
 msgid "The ical file seems to be malformed. The end of item was not found."
 msgstr "Файл ical скорее всего повреждён. Не найдено окончание записи."
 
-#: src/io.c:2660
 msgid "item priority is not acceptable (must be between 1 and 9)."
 msgstr "Значение приоритета должно быть между 1 и 9."
 
-#: src/io.c:2698
 msgid "Enter the file name to import data from:"
 msgstr "Имя файла для импорта: "
 
-#: src/io.c:2739
 #, c-format
 msgid "Import process report: %04d lines read "
 msgstr "Отчёт импорта: прочитано %04d строк"
 
-#: src/io.c:2741
 #, c-format
 msgid "%d apps / %d events / %d todos / %d skipped "
 msgstr "%d задачи / %d события / %d дела / %d пропустить"
 
-#: src/io.c:2743
 #, c-format
 msgid "%d apps / %d events / %d todos / %d skipped ([ENTER] to continue)"
 msgstr "%d задачи / %d события / %d дела / %d пропустить (Нажмите [ENTER])"
 
-#: src/io.c:2752
 msgid "unknown import type"
 msgstr "неизвестный тип импорта"
 
-#: src/io.c:2758
 msgid "FATAL ERROR: the input file cannot be accessed, Aborting..."
 msgstr "ФАТАЛЬНАЯ ОШИБКА: входящий файл не может быть добавлен. Завершение..."
 
-#: src/io.c:2765
 msgid "FATAL ERROR: wrong import mode"
 msgstr "ФАТАЛЬНАЯ ОШИБКА: неправильный режим импорта"
 
-#: src/io.c:2775
 msgid "Warning: ical header malformed or wrong version number. Aborting..."
-msgstr "Внимание: заголовок ical повреждён или непраильный номер версии. Завершение..."
+msgstr ""
+"Внимание: заголовок ical повреждён или непраильный номер версии. "
+"Завершение..."
 
-#: src/io.c:2830
 msgid "Some items could not be imported, see log file ?"
 msgstr "Некоторые записи не были импортированы. Открыть лог-файл?"
 
-#: src/io.c:2846
 msgid "Warning: could not create temporary log file, Aborting..."
 msgstr "Внимание: невозможно открыть временный лог-файл. Завершение..."
 
-#: src/io.c:2849 src/io.c:2855
 msgid "Warning: could not open temporary log file, Aborting..."
 msgstr "Внимание: невозможно открыть временный лог-файл. Завершение..."
 
-#: src/io.c:2876
 msgid "No log file to display!"
 msgstr "Нет лог-файла для отображения!"
 
-#: src/io.c:2911
 #, c-format
 msgid "Warning: could not erase temporary log file %s, Aborting..."
 msgstr "Внимание: невозможно очистить временный лог-файл %s. Завершение..."
 
-#: src/io.c:2927
 msgid "Invalid delay"
 msgstr "Неверная задержка"
 
-#: src/io.c:2969
 #, c-format
 msgid ""
 "\n"
@@ -1968,569 +1734,422 @@ msgstr ""
 "\"%s\"\n"
 "и перезапустите calcurse.\n"
 
-#: src/notify.c:224
 msgid "error while launching command: could not fork"
 msgstr "ошибка во время запуска команды: невозможно разделиться"
 
-#: src/notify.c:232
 msgid "error while launching command"
 msgstr "ошибка во время запуска команды"
 
-#: src/notify.c:636
 msgid "notify-bar_show = "
 msgstr "notify-bar_show = "
 
-#: src/notify.c:637
 msgid "(if set to YES, notify-bar will be displayed)"
 msgstr "(Если выбрано yes, будет выводится окно уведомления)"
 
-#: src/notify.c:639
 msgid "notify-bar_date = "
 msgstr "notufy-bar_date = "
 
-#: src/notify.c:640
 msgid "(Format of the date to be displayed inside notify-bar)"
 msgstr "(Формат даты выводится внутри окна уведомления)"
 
-#: src/notify.c:642
 msgid "notify-bar_clock = "
 msgstr "notify-bar_clock = "
 
-#: src/notify.c:643
 msgid "(Format of the time to be displayed inside notify-bar)"
 msgstr "(Формат времени выводится внутри окна уведомления)"
 
-#: src/notify.c:645
 msgid "notify-bar_warning = "
 msgstr "notify-bar_warning = "
 
-#: src/notify.c:646
 msgid ""
 "(Warn user if an appointment is within next 'notify-bar_warning' seconds)"
-msgstr ""
-"(Предупреждать пользователя о событии за 'notify-bar_warning' секунд)"
+msgstr "(Предупреждать пользователя о событии за 'notify-bar_warning' секунд)"
 
-#: src/notify.c:649
 msgid "notify-bar_command = "
 msgstr "notify-bar_command = "
 
-#: src/notify.c:650
 msgid "(Command used to notify user of an upcoming appointment)"
 msgstr "(Команда уведомляет пользователя о грядущем событии)"
 
-#: src/notify.c:652
 msgid "notify-daemon_enable = "
 msgstr "notify-daemon_enable = "
 
-#: src/notify.c:653
 msgid "(Run in background to get notifications after exiting)"
 msgstr "(Запустить в фоновом режиме для уведомлений после выхода)"
 
-#: src/notify.c:655
 msgid "notify-daemon_log = "
 msgstr "notify-daemon_log = "
 
-#: src/notify.c:656
 msgid "(Log activity when running in background)"
 msgstr "(Лог активен во время фонового режима)"
 
-#: src/notify.c:713
 msgid "Enter the time format (see 'man 3 strftime' for possible formats) "
 msgstr "Задайте формат времени (см. 'man 3 strftime' для возможных форматов) "
 
-#: src/notify.c:715
 msgid "Enter the number of seconds (0 not to be warned before an appointment)"
 msgstr "Введите количество секунд (0 - отмена оповещения до события)"
 
-#: src/notify.c:716
 msgid "Enter the notification command "
 msgstr "Введите команду уведомления "
 
-#: src/notify.c:721
 #, c-format
 msgid "notification options"
 msgstr "настройки уведомления"
 
-#: src/recur.c:342
 msgid "unknown repetition type"
 msgstr "неизвестный тип повторения"
 
-#: src/recur.c:373
 msgid "unknown character"
 msgstr "неизвестный символ"
 
-#: src/recur.c:482
 msgid "date error in event"
 msgstr "ошибка даты в событии"
 
-#: src/recur.c:873
 msgid "appointment not found"
 msgstr "задача не найдена"
 
-#: src/recur.c:896
 msgid "Enter the repetition type: (D)aily, (W)eekly, (M)onthly, (Y)early"
-msgstr "Тип повторения: (D)Ежедневно, (W)Еженедельно, (M)Ежемесячно, (Y)Ежегодно"
+msgstr ""
+"Тип повторения: (D)Ежедневно, (W)Еженедельно, (M)Ежемесячно, (Y)Ежегодно"
 
-#: src/recur.c:898
 msgid "Enter the repetition frequence:"
 msgstr "Количество повторений: "
 
-#: src/recur.c:901
 #, c-format
 msgid "Enter the ending date: [%s] or '0' for an endless repetition"
 msgstr "Конечная дата: [%s] или '0' для окончания повторения"
 
-#: src/recur.c:904
 #, c-format
 msgid "Possible formats are [%s] or '0' for an endless repetition"
 msgstr "Возможные форматы [%s] или '0' для окончания повторения"
 
-#: src/recur.c:905
 msgid "This item is already a repeated one."
 msgstr "Эта запись уже повторяется."
 
-#: src/recur.c:908
 msgid "Sorry, the date you entered is older than the item start time."
 msgstr "Заданная дата не соответствует времени начала записи."
 
-#: src/recur.c:1022
 msgid "wrong item type"
 msgstr "неправильный тип записи"
 
-#: src/recur.c:1046
 msgid "syntax error in item date"
 msgstr "синтаксическая ошибка в записи даты"
 
-#: src/sigs.c:70 src/utils.c:76
 #, c-format
 msgid "Could not remove calcurse lock file: %s\n"
 msgstr "Невозможно удалить занятый файл: %s\n"
 
-#: src/sigs.c:89
 #, c-format
 msgid "Error setting signal #%d : %s\n"
 msgstr "Сигнал ошибки настройки #%d : %s\n"
 
-#: src/todo.c:147
 msgid "Enter the new ToDo item : "
 msgstr "Дело: "
 
-#: src/todo.c:148
 msgid "Enter the ToDo priority [1 (highest) - 9 (lowest)] :"
 msgstr "Приоритет дела [1 (высокий) - 9 (низкий)] :"
 
-#: src/todo.c:212
 msgid "no note attached"
 msgstr "записка отсутствует"
 
-#: src/todo.c:220 src/todo.c:246
 msgid "no such todo"
 msgstr "дело не найдено"
 
-#: src/todo.c:269
 msgid "Do you really want to delete this task ?"
 msgstr "Удалить эту запись?"
 
-#: src/todo.c:271
 msgid "This item has a note attached to it. Delete (t)odo or just its (n)ote ?"
 msgstr "К делу прикреплена записка. Удалить (t)дело или только (n)записку ?"
 
-#: src/todo.c:273
 msgid "[t/n] "
 msgstr "[t/n] "
 
-#: src/todo.c:357
 msgid "todo not found"
 msgstr "дело не найдено"
 
-#: src/todo.c:388
 msgid "no such action"
 msgstr "действие нераспознано"
 
-#: src/todo.c:404
 msgid "Enter the new ToDo description :"
 msgstr "Описание дела: "
 
-#: src/utils.c:106
 msgid "/!\\ INTERNAL ERROR /!\\"
 msgstr "/!\\ ВНУТРЕННЯЯ ОШИБКА /!\\"
 
-#: src/utils.c:107
 msgid "Please report the following bug:"
 msgstr "Сообщите об ошибке:"
 
-#: src/utils.c:192
 msgid "Press any key to continue..."
 msgstr "Нажмите любую клавишу..."
 
-#: src/utils.c:425
 msgid "Internal error: line too long"
 msgstr "Внутренняя ошибка: слишком длинная строка"
 
-#: src/utils.c:434
 msgid "out of memory"
 msgstr "нехватка памяти"
 
-#: src/utils.c:511 src/utils.c:581
 msgid "failure in mktime"
 msgstr "ошибка в mktime"
 
-#: src/utils.c:601
 msgid "error in mktime"
 msgstr "ошибка в mktime"
 
-#: src/utils.c:720
 msgid "Appointment"
 msgstr "Задача"
 
-#: src/utils.c:784
 msgid "could not convert string"
 msgstr "невозможно конвертировать строку"
 
-#: src/utils.c:786
 msgid "out of range"
 msgstr "превышен диапазон"
 
-#: src/utils.c:801
 msgid "yes"
 msgstr "yes"
 
-#: src/utils.c:806
 msgid "no"
 msgstr "no"
 
-#: src/utils.c:809
 msgid "option not defined"
 msgstr "параметр не установлен"
 
-#: src/utils.c:845
 #, c-format
 msgid "temporary file \"%s\" could not be created"
 msgstr "временный файл \"%s\" не может быть создан"
 
-#: src/utils.c:865
 msgid "could not remove note"
 msgstr "невозможно удалить заметку"
 
-#: src/utils.c:951
 #, c-format
 msgid "Error when closing file at %s"
 msgstr "Ошибка во время закрытия файла %s"
 
-#: src/vars.c:64
 msgid "January"
 msgstr "Январь"
 
-#: src/vars.c:65
 msgid "February"
 msgstr "Февраль"
 
-#: src/vars.c:66
 msgid "March"
 msgstr "Март"
 
-#: src/vars.c:67
 msgid "April"
 msgstr "Апрель"
 
-#: src/vars.c:68
 msgid "May"
 msgstr "Май"
 
-#: src/vars.c:69
 msgid "June"
 msgstr "Июнь"
 
-#: src/vars.c:70
 msgid "July"
 msgstr "Июль"
 
-#: src/vars.c:71
 msgid "August"
 msgstr "Август"
 
-#: src/vars.c:72
 msgid "September"
 msgstr "Сентябрь"
 
-#: src/vars.c:73
 msgid "October"
 msgstr "Октябрь"
 
-#: src/vars.c:74
 msgid "November"
 msgstr "Ноябрь"
 
-#: src/vars.c:75
 msgid "December"
 msgstr "Декабрь"
 
-#: src/vars.c:79 src/vars.c:86
 msgid "Sun"
 msgstr "Вс"
 
-#: src/vars.c:80
 msgid "Mon"
 msgstr "Пн"
 
-#: src/vars.c:81
 msgid "Tue"
 msgstr "Вт"
 
-#: src/vars.c:82
 msgid "Wed"
 msgstr "Ср"
 
-#: src/vars.c:83
 msgid "Thu"
 msgstr "Чт"
 
-#: src/vars.c:84
 msgid "Fri"
 msgstr "Пт"
 
-#: src/vars.c:85
 msgid "Sat"
 msgstr "Сб"
 
-#: src/wins.c:232
 #, c-format
 msgid "Calendar"
 msgstr "Календарь"
 
-#: src/wins.c:236
 #, c-format
 msgid "Appointments"
 msgstr "Задачи"
 
-#: src/wins.c:242
 #, c-format
 msgid "ToDo"
 msgstr "Дела"
 
-#: src/wins.c:567
 msgid "no window selected"
 msgstr "окно не выбрано"
 
-#: src/wins.c:668
 msgid "Quit"
 msgstr "Выход"
 
-#: src/wins.c:669
 msgid "Save"
 msgstr "Сохр."
 
-#: src/wins.c:670
 msgid "Cut"
 msgstr "Вырезать"
 
-#: src/wins.c:671
 msgid "Paste"
 msgstr "Вставить"
-
-#: src/wins.c:672
 
 msgid "Chg Win"
 msgstr "Панель"
 
-#: src/wins.c:673
 msgid "Import"
 msgstr "Импорт"
 
-#: src/wins.c:674
 msgid "Export"
 msgstr "Экспорт"
-
-#: src/wins.c:675
 
 msgid "Go to"
 msgstr "Переход"
 
-#: src/wins.c:676
 msgid "OtherCmd"
 msgstr "ещё..."
 
-#: src/wins.c:677
 msgid "Config"
 msgstr "Настроки"
 
-#: src/wins.c:678
 msgid "Redraw"
 msgstr "Обновить"
-
-#: src/wins.c:679
 
 msgid "Add Appt"
 msgstr "Доб.Задачу"
 
-#: src/wins.c:680
 msgid "Add Todo"
 msgstr "Доб.Дело"
-
-#: src/wins.c:681
 
 msgid "+1 Day"
 msgstr "День -"
 
-#: src/wins.c:682
-
 msgid "-1 Day"
 msgstr "День +"
-
-#: src/wins.c:683
 
 msgid "+1 Week"
 msgstr "Неделя -"
 
-#: src/wins.c:684
-
 msgid "-1 Week"
 msgstr "Неделя +"
 
-#: src/wins.c:685
 msgid "Today"
 msgstr "Сегодня"
-
-#: src/wins.c:686
 
 msgid "Nxt View"
 msgstr "След."
 
-#: src/wins.c:687
-
 msgid "Prv View"
 msgstr "Пред."
-
-#: src/wins.c:692
 
 msgid "beg Week"
 msgstr "Нач.недели"
 
-#: src/wins.c:693
-
 msgid "end Week"
 msgstr "Кон.недели"
 
-#: src/wins.c:694
 msgid "Add Item"
 msgstr "Доб.Запись"
 
-#: src/wins.c:695
 msgid "Del Item"
 msgstr "Уд.Запись"
-
-#: src/wins.c:696
 
 msgid "Edit Itm"
 msgstr "Изм.Запись"
 
-#: src/wins.c:697
 msgid "View"
 msgstr "Смотреть"
-
-#: src/wins.c:698
 
 msgid "Flag Itm"
 msgstr "Флаг"
 
-#: src/wins.c:699
 msgid "Repeat"
 msgstr "Повтор"
-
-#: src/wins.c:700
 
 msgid "EditNote"
 msgstr "Изм.Заметку"
 
-#: src/wins.c:701
-
 msgid "ViewNote"
 msgstr "См.Заметку"
 
-#: src/wins.c:702
 msgid "Prio.+"
 msgstr "Приоритет +"
 
-#: src/wins.c:703
 msgid "Prio.-"
 msgstr "Приоритет -"
 
-#: src/wins.c:754
 msgid "unknown panel"
 msgstr "неизвестная панель"
 
-#: src/dmon.c:61
 #, c-format
 msgid "Could not stop daemon properly: %s\n"
 msgstr "Невозможно остановить демон должным образом: %s\n"
 
-#: src/dmon.c:75
 #, c-format
 msgid "terminated at %s with signal %d\n"
 msgstr "завершено %s с сигналом %d\n"
 
-#: src/dmon.c:79
 #, c-format
 msgid "Could not remove daemon lock file: %s\n"
 msgstr "Невозможно удалить демон: %s\n"
 
-#: src/dmon.c:101
 #, c-format
 msgid "Could not fork: %s\n"
 msgstr "Невозможно разделить: %s\n"
 
-#: src/dmon.c:117
 #, c-format
 msgid "Could not detach from the controlling terminal: %s\n"
 msgstr "Невозможно прервать с управляющего терминала: %s\n"
 
-#: src/dmon.c:128
 #, c-format
 msgid "Could not change working directory: %s\n"
 msgstr "Невозможно выбрать рабочий каталог: %s\n"
 
-#: src/dmon.c:162
 msgid "Cannot daemonize, aborting\n"
 msgstr "Невозможно демонизировать процесс. Завершение\n"
 
-#: src/dmon.c:165
 msgid "Could not set lock file\n"
 msgstr "Невозможно выбрать закрытый файл\n"
 
-#: src/dmon.c:168 src/dmon.c:173
 #, c-format
 msgid "Could not access \"%s\": %s\n"
 msgstr "Нет доступа \"%s\": %s\n"
 
-#: src/dmon.c:180
 #, c-format
 msgid "started at %s\n"
 msgstr "запуск в %s\n"
 
-#: src/dmon.c:186
 msgid "error loading next appointment\n"
 msgstr "ошибка при загрузке следущей задачи\n"
 
-#: src/dmon.c:191
 #, c-format
 msgid "launching notification at %s for: \"%s\"\n"
 msgstr "запуск уведомения %s для: \"%s\"\n"
 
-#: src/dmon.c:194
 msgid "error while sending notification\n"
 msgstr "ошибка во время отправки уведомления\n"
 
-#: src/dmon.c:197
 #, c-format
 msgid "sleeping at %s for %d seconds\n"
 msgstr "спящий режим %s на %d секунд\n"
 
-#: src/dmon.c:200
 #, c-format
 msgid "awakened at %s\n"
 msgstr "пробуждение %s\n"
 
-#: src/dmon.c:218
 #, c-format
 msgid "Could not stop calcurse daemon: %s\n"
 msgstr "Невозможно остановить демон calcurs: %s\n"
