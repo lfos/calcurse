@@ -126,6 +126,10 @@ AC_MSG_CHECKING([if memory debug should be used])
 AC_MSG_RESULT($memdebug)
 AM_CONDITIONAL(CALCURSE_MEMORY_DEBUG, test x$memdebug = xyes)
 #-------------------------------------------------------------------------------
+#                                                               xgettext options
+#-------------------------------------------------------------------------------
+AM_XGETTEXT_OPTION([--no-location --keyword=_ --keyword=N_])
+#-------------------------------------------------------------------------------
 #                                                               Create Makefiles
 #-------------------------------------------------------------------------------
 AC_OUTPUT(Makefile doc/Makefile src/Makefile po/Makefile.in po/Makefile)
