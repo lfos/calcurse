@@ -696,6 +696,7 @@ void             io_stop_psave_thread (void);
 void             io_set_lock (void);
 unsigned         io_dump_pid (char *);
 unsigned         io_get_pid (char *);
+int              io_file_is_empty (char *);
 
 /* keys.c */
 void      keys_init (void);

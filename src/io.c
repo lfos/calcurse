@@ -3040,3 +3040,28 @@ io_get_pid (char *file)
 
   return pid;
 }
+
+/*
+ * Check whether a file is empty.
+ */
+int
+io_file_is_empty (char *file)
+{
+  FILE *fp;
+
+  if (file && (fp = fopen (file, "r")))
+    {
+      if (fgetc (fp) == '\n' || feof (fp))
+        {
+          fclose (fp);
+          return 1;
+        }
+      else
+        {
+          fclose (fp);
+          return 0;
+        }
+    }
+
+  return 1;
+}

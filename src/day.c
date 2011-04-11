@@ -1085,6 +1085,9 @@ day_edit_note (char *editor)
   (void)snprintf (fullname, BUFSIZ, "%s%s", path_notes, p->note);
   wins_launch_external (fullname, editor);
 
+  if (io_file_is_empty (fullname))
+    erase_note (&p->note, ERASE_FORCE);
+
   date = calendar_get_slctd_day_sec ();
   switch (p->type)
     {

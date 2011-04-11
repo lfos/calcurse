@@ -503,6 +503,9 @@ todo_edit_note (char *editor)
     }
   (void)snprintf (fullname, BUFSIZ, "%s%s", path_notes, i->note);
   wins_launch_external (fullname, editor);
+
+  if (io_file_is_empty (fullname))
+    erase_note (&i->note, ERASE_FORCE);
 }
 
 /* View a note previously attached to a todo */
