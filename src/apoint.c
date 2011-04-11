@@ -182,7 +182,7 @@ apoint_add (void)
   int is_appointment = 1;
 
   /* Get the starting time */
-  while (check_time (item_time) != 1)
+  do
     {
       status_mesg (mesg_1, "");
       if (getstring (win[STA].p, item_time, LTIME, 0, 1) != GETSTRING_ESC)
@@ -203,6 +203,8 @@ apoint_add (void)
       else
         return;
     }
+  while (check_time (item_time) != 1);
+
   /*
    * Check if an event or appointment is entered,
    * depending on the starting time, and record the
@@ -211,7 +213,7 @@ apoint_add (void)
   if (is_appointment)
     {				/* Get the appointment duration */
       item_time[0] = '\0';
-      while (check_time (item_time) == 0)
+      do
         {
           status_mesg (mesg_2, "");
           if (getstring (win[STA].p, item_time, LTIME, 0, 1) != GETSTRING_VALID)
@@ -241,6 +243,7 @@ apoint_add (void)
                 }
             }
         }
+      while (check_time (item_time) == 0);
     }
   else				/* Insert the event Id */
     Id = 1;
