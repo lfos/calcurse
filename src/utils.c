@@ -843,16 +843,19 @@ parse_date (char *date_string, enum datefmt datefmt, int *year, int *month,
         return 0;
     }
 
-  if (y > 0 && y < 100)
+  if (slctd_date)
     {
-      /* convert "YY" format into "YYYY" */
-      y += slctd_date->yyyy - slctd_date->yyyy % 100;
-    }
-  else if (n < 2)
-    {
-      /* set year and, optionally, month if short from is used */
-      y = slctd_date->yyyy;
-      if (n < 1) m = slctd_date->mm;
+      if (y > 0 && y < 100)
+        {
+          /* convert "YY" format into "YYYY" */
+          y += slctd_date->yyyy - slctd_date->yyyy % 100;
+        }
+      else if (n < 2)
+        {
+          /* set year and, optionally, month if short from is used */
+          y = slctd_date->yyyy;
+          if (n < 1) m = slctd_date->mm;
+        }
     }
 
   /* check if date is valid, take leap years into account */
