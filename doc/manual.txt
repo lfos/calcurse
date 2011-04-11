@@ -1065,11 +1065,15 @@ the calcurse source directory to checkout the translation resources of
 $ tx pull -a
 ----
 
-To submit changes back to the server, you can use `tx push` (check `tx help
-push` for available options). For more details, read up on transifex-client
-usage at the http://help.transifex.net/user-guide/client/[The Transifex
-Command-line Client v0.4] section of the http://help.transifex.net/[Transifex
-documentation].
+To submit changes back to the server, use:
+
+----
+$ tx push -r calcurse.calcursepot -t -l <locale>
+----
+
+For more details, read up on transifex-client usage at the
+http://help.transifex.net/user-guide/client/[The Transifex Command-line Client
+v0.4] section of the http://help.transifex.net/[Transifex documentation].
 
 [[transifex_webui]]
 Using the Transifex web UI
