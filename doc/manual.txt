@@ -1057,13 +1057,12 @@ $ easy_install -U transifex-client
 Alternatively, you can get the source code of transifex-client at
 http://pypi.python.org/pypi/transifex-client.
 
-After you downloaded and installed the client, run the following commands to
-checkout the translation resources of *calcurse*:
+After you downloaded and installed the client, run the following commands in
+the calcurse source directory to checkout the translation resources of
+*calcurse*:
 
 ----
-$ tx init --host=https://www.transifex.net
-$ tx set --auto-remote https://www.transifex.net/projects/p/calcurse
-$ tx pull -r calcurse.calcursepot -a
+$ tx pull -a
 ----
 
 To submit changes back to the server, you can use `tx push` (check `tx help

@@ -1,0 +1,7 @@
+[main]
+host = https://www.transifex.net
+
+[calcurse.calcursepot]
+file_filter = po/<lang>.po
+source_file = po/calcurse.pot
+source_lang = en
