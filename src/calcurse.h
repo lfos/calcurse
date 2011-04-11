@@ -840,7 +840,7 @@ void          todo_view_note (char *);
 void          todo_free_list (void);
 
 /* utils.c */
-void         exit_calcurse (int);
+void         exit_calcurse (int) __attribute__((__noreturn__));
 void         free_user_data (void);
 void         fatalbox (const char *);
 void         warnbox (const char *);
