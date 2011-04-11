@@ -338,7 +338,6 @@ apoint_cut (unsigned *nb_events, unsigned *nb_apoints)
   if (NBITEMS == 0)
     return 0;
 
-  to_be_removed = 0;
   date = calendar_get_slctd_day_sec ();
   item_type = day_cut_item (date, hilt);
   if (item_type == EVNT || item_type == RECUR_EVNT)

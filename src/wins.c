@@ -733,7 +733,6 @@ wins_other_status_page (int panel)
 {
   int nb_item, max_page;
 
-  nb_item = 0;
   switch (panel)
     {
     case CAL:
