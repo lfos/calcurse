@@ -3051,7 +3051,7 @@ io_file_is_empty (char *file)
 
   if (file && (fp = fopen (file, "r")))
     {
-      if (fgetc (fp) == '\n' || feof (fp))
+      if ((fgetc (fp) == '\n' && fgetc (fp) == EOF) || feof (fp))
         {
           fclose (fp);
           return 1;
