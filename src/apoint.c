@@ -41,7 +41,7 @@
 
 #include "calcurse.h"
 
-struct apoint_list   *alist_p;
+llist_ts_t            alist_p;
 static struct apoint  bkp_cut_apoint;
 static int            hilt;
 
@@ -54,6 +54,14 @@ apoint_free_bkp (enum eraseflg flag)
       bkp_cut_apoint.mesg = 0;
     }
   erase_note (&bkp_cut_apoint.note, flag);
+}
+
+static void
+apoint_free (struct apoint *apt)
+{
+  mem_free (apt->mesg);
+  erase_note (&apt->note, ERASE_FORCE_KEEP_NOTE);
+  mem_free (apt);
 }
 
 static void
@@ -72,9 +80,7 @@ apoint_dup (struct apoint *in, struct apoint *bkp)
 void
 apoint_llist_init (void)
 {
-  alist_p = mem_malloc (sizeof (struct apoint_list));
-  alist_p->root = NULL;
-  pthread_mutex_init (&(alist_p->mutex), NULL);
+  LLIST_TS_INIT (&alist_p);
 }
 
 /*
@@ -85,18 +91,8 @@ apoint_llist_init (void)
 void
 apoint_llist_free (void)
 {
-  struct apoint *o, **i;
-
-  i = &alist_p->root;
-  while (*i)
-    {
-      o = *i;
-      *i = o->next;
-      mem_free (o->mesg);
-      erase_note (&o->note, ERASE_FORCE_KEEP_NOTE);
-      mem_free (o);
-    }
-  mem_free (alist_p);
+  LLIST_TS_FREE_INNER (&alist_p, apoint_free);
+  LLIST_TS_FREE (&alist_p);
 }
 
 /* Sets which appointment is highlighted. */
@@ -125,33 +121,29 @@ apoint_hilt (void)
   return (hilt);
 }
 
+static int
+apoint_cmp_start (struct apoint *a, struct apoint *b)
+{
+  return (a->start < b->start ? -1 : (a->start == b->start ? 0 : 1));
+}
+
 struct apoint *
 apoint_new (char *mesg, char *note, long start, long dur, char state)
 {
-  struct apoint *o, **i;
+  struct apoint *apt;
 
-  o = mem_malloc (sizeof (struct apoint));
-  o->mesg = mem_strdup (mesg);
-  o->note = (note != NULL) ? mem_strdup (note) : NULL;
-  o->state = state;
-  o->start = start;
-  o->dur = dur;
+  apt = mem_malloc (sizeof (struct apoint));
+  apt->mesg = mem_strdup (mesg);
+  apt->note = (note != NULL) ? mem_strdup (note) : NULL;
+  apt->state = state;
+  apt->start = start;
+  apt->dur = dur;
 
-  pthread_mutex_lock (&(alist_p->mutex));
-  i = &alist_p->root;
-  for (;;)
-    {
-      if (*i == NULL || (*i)->start > start)
-        {
-          o->next = *i;
-          *i = o;
-          break;
-        }
-      i = &(*i)->next;
-    }
-  pthread_mutex_unlock (&(alist_p->mutex));
+  LLIST_TS_LOCK (&alist_p);
+  LLIST_TS_ADD_SORTED (&alist_p, apt, apoint_cmp_start);
+  LLIST_TS_UNLOCK (&alist_p);
 
-  return (o);
+  return apt;
 }
 
 /*
@@ -483,74 +475,52 @@ apoint_scan (FILE *f, struct tm start, struct tm end, char state, char *note)
 struct apoint *
 apoint_get (long day, int pos)
 {
-  struct apoint *o;
-  int n;
+  llist_item_t *i = LLIST_TS_FIND_NTH (&alist_p, pos, day, apoint_inday);
 
-  n = 0;
-  for (o = alist_p->root; o; o = o->next)
-    {
-      if (apoint_inday (o, day))
-        {
-          if (n == pos)
-            return (o);
-          n++;
-        }
-    }
+  if (i)
+    return LLIST_TS_GET_DATA (i);
+
   EXIT (_("item not found"));
-  return 0;
   /* NOTREACHED */
 }
 
 void
 apoint_delete_bynum (long start, unsigned num, enum eraseflg flag)
 {
-  unsigned n;
+  llist_item_t *i;
   int need_check_notify = 0;
-  struct apoint *i, **iptr;
 
-  n = 0;
-  pthread_mutex_lock (&(alist_p->mutex));
-  iptr = &alist_p->root;
-  for (i = alist_p->root; i != NULL; i = i->next)
+  LLIST_TS_LOCK (&alist_p);
+  i = LLIST_TS_FIND_NTH (&alist_p, num, start, apoint_inday);
+
+  if (!i)
+    EXIT (_("no such appointment"));
+  struct apoint *apt = LLIST_TS_GET_DATA (i);
+
+  switch (flag)
     {
-      if (apoint_inday (i, start))
-        {
-          if (n == num)
-            {
-              switch (flag)
-                {
-                case ERASE_FORCE_ONLY_NOTE:
-                  erase_note (&i->note, flag);
-                  pthread_mutex_unlock (&(alist_p->mutex));
-                  break;
-                case ERASE_CUT:
-                  apoint_free_bkp (ERASE_FORCE);
-                  apoint_dup (i, &bkp_cut_apoint);
-                  erase_note (&i->note, ERASE_FORCE_KEEP_NOTE);
-                  /* FALLTHROUGH */
-                default:
-                  if (notify_bar ())
-                    need_check_notify = notify_same_item (i->start);
-                  *iptr = i->next;
-                  mem_free (i->mesg);
-                  if (flag != ERASE_FORCE_KEEP_NOTE && flag != ERASE_CUT)
-                    erase_note (&i->note, flag);
-                  mem_free (i);
-                  pthread_mutex_unlock (&(alist_p->mutex));
-                  if (need_check_notify)
-                    notify_check_next_app ();
-                  break;
-                }
-              return;
-            }
-          n++;
-        }
-      iptr = &i->next;
+    case ERASE_FORCE_ONLY_NOTE:
+      erase_note (&apt->note, flag);
+      break;
+    case ERASE_CUT:
+      apoint_free_bkp (ERASE_FORCE);
+      apoint_dup (apt, &bkp_cut_apoint);
+      erase_note (&apt->note, ERASE_FORCE_KEEP_NOTE);
+      /* FALLTHROUGH */
+    default:
+      if (notify_bar ())
+        need_check_notify = notify_same_item (apt->start);
+      LLIST_TS_REMOVE (&alist_p, i);
+      mem_free (apt->mesg);
+      if (flag != ERASE_FORCE_KEEP_NOTE && flag != ERASE_CUT)
+        erase_note (&apt->note, flag);
+      mem_free (apt);
+      if (need_check_notify)
+        notify_check_next_app ();
+      break;
     }
 
-  pthread_mutex_unlock (&(alist_p->mutex));
-  EXIT (_("no such appointment"));
-  /* NOTREACHED */
+  LLIST_TS_UNLOCK (&alist_p);
 }
 
 /*
@@ -608,6 +578,12 @@ apoint_scroll_pad_up (int nb_events_inday)
     apad.first_onscreen = item_first_line;
 }
 
+static int
+apoint_starts_after (struct apoint *apt, long time)
+{
+  return (apt->start > time);
+}
+
 /*
  * Look in the appointment list if we have an item which starts before the item
  * stored in the notify_app structure (which is the next item to be notified).
@@ -615,28 +591,25 @@ apoint_scroll_pad_up (int nb_events_inday)
 struct notify_app *
 apoint_check_next (struct notify_app *app, long start)
 {
-  struct apoint *i;
+  llist_item_t *i;
 
-  pthread_mutex_lock (&(alist_p->mutex));
-  for (i = alist_p->root; i != NULL; i = i->next)
+  LLIST_TS_LOCK (&alist_p);
+  i = LLIST_TS_FIND_FIRST (&alist_p, start, apoint_starts_after);
+
+  if (i)
     {
-      if (i->start > app->time)
+      struct apoint *apt = LLIST_TS_GET_DATA (i);
+
+      if (apt->start <= app->time)
         {
-          pthread_mutex_unlock (&(alist_p->mutex));
-          return (app);
-        }
-      else
-        {
-          if (i->start > start)
-            {
-              app->time = i->start;
-              app->txt = mem_strdup (i->mesg);
-              app->state = i->state;
-              app->got_app = 1;
-            }
+          app->time = apt->start;
+          app->txt = mem_strdup (apt->mesg);
+          app->state = apt->state;
+          app->got_app = 1;
         }
     }
-  pthread_mutex_unlock (&(alist_p->mutex));
+
+  LLIST_TS_UNLOCK (&alist_p);
 
   return (app);
 }
@@ -663,10 +636,9 @@ apoint_recur_s2apoint_s (struct recur_apoint *p)
 void
 apoint_switch_notify (void)
 {
-  struct apoint *apoint;
   struct day_item *p;
   long date;
-  int apoint_nb = 0, n, need_chk_notify;
+  int apoint_nb = 0, need_chk_notify;
 
   p = day_get_item (hilt);
   if (p->type != APPT && p->type != RECUR_APPT)
@@ -682,34 +654,18 @@ apoint_switch_notify (void)
   else if (p->type == APPT)
     apoint_nb = day_item_nb (date, hilt, APPT);
 
-  n = 0;
   need_chk_notify = 0;
-  pthread_mutex_lock (&(alist_p->mutex));
+  LLIST_TS_LOCK (&alist_p);
 
-  for (apoint = alist_p->root; apoint != NULL; apoint = apoint->next)
-    {
-      if (apoint_inday (apoint, date))
-        {
-          if (n == apoint_nb)
-            {
-              apoint->state ^= APOINT_NOTIFY;
-              if (notify_bar ())
-                {
-                  notify_check_added (apoint->mesg, apoint->start,
-                                      apoint->state);
-                }
-              pthread_mutex_unlock (&(alist_p->mutex));
-              if (need_chk_notify)
-                notify_check_next_app ();
-              return;
-            }
-          n++;
-        }
-    }
+  struct apoint *apt = apoint_get (apoint_nb, date);
 
-  pthread_mutex_unlock (&(alist_p->mutex));
-  EXIT (_("no such appointment"));
-  /* NOTREACHED */
+  apt->state ^= APOINT_NOTIFY;
+  if (notify_bar ())
+    notify_check_added (apt->mesg, apt->start, apt->state);
+  if (need_chk_notify)
+    notify_check_next_app ();
+
+  LLIST_TS_UNLOCK (&alist_p);
 }
 
 /* Updates the Appointment panel */

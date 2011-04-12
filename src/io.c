@@ -594,34 +594,38 @@ pcal_export_recur_apoints (FILE *stream)
 static void
 ical_export_apoints (FILE *stream)
 {
-  struct apoint *i;
+  llist_item_t *i;
   char ical_datetime[BUFSIZ];
 
-  pthread_mutex_lock (&(alist_p->mutex));
-  for (i = alist_p->root; i != NULL; i = i->next)
+  LLIST_TS_LOCK (&alist_p);
+  LLIST_TS_FOREACH (&alist_p, i)
     {
-      date_sec2date_fmt (i->start, ICALDATETIMEFMT, ical_datetime);
+      struct apoint *apt = LLIST_TS_GET_DATA (i);
+      date_sec2date_fmt (apt->start, ICALDATETIMEFMT, ical_datetime);
       (void)fprintf (stream, "BEGIN:VEVENT\n");
       (void)fprintf (stream, "DTSTART:%s\n", ical_datetime);
-      (void)fprintf (stream, "DURATION:PT0H0M%ldS\n", i->dur);
-      (void)fprintf (stream, "SUMMARY:%s\n", i->mesg);
-      if (i->state & APOINT_NOTIFY)
+      (void)fprintf (stream, "DURATION:PT0H0M%ldS\n", apt->dur);
+      (void)fprintf (stream, "SUMMARY:%s\n", apt->mesg);
+      if (apt->state & APOINT_NOTIFY)
         ical_export_valarm (stream);
       (void)fprintf (stream, "END:VEVENT\n");
     }
-  pthread_mutex_unlock (&(alist_p->mutex));
+  LLIST_TS_UNLOCK (&alist_p);
 }
 
 static void
 pcal_export_apoints (FILE *stream)
 {
-  struct apoint *i;
+  llist_item_t *i;
 
   (void)fprintf (stream, "\n# ============\n# Appointments\n# ============\n");
-  pthread_mutex_lock (&(alist_p->mutex));
-  for (i = alist_p->root; i != NULL; i = i->next)
-      pcal_dump_apoint (stream, i->start, i->dur, i->mesg);
-  pthread_mutex_unlock (&(alist_p->mutex));
+  LLIST_TS_LOCK (&alist_p);
+  LLIST_TS_FOREACH (&alist_p, i)
+    {
+      struct apoint *apt = LLIST_TS_GET_DATA (i);
+      pcal_dump_apoint (stream, apt->start, apt->dur, apt->mesg);
+    }
+  LLIST_TS_UNLOCK (&alist_p);
   (void)fprintf (stream, "\n");
 }
 
@@ -959,7 +963,7 @@ io_save_conf (struct conf *conf)
 unsigned
 io_save_apts (void)
 {
-  struct apoint *a;
+  llist_item_t *i;
   struct event *e;
   FILE *fp;
 
@@ -969,11 +973,14 @@ io_save_apts (void)
   recur_save_data (fp);
 
   if (ui_mode == UI_CURSES)
-    pthread_mutex_lock (&(alist_p->mutex));
-  for (a = alist_p->root; a != NULL; a = a->next)
-    apoint_write (a, fp);
+    LLIST_TS_LOCK (&alist_p);
+  LLIST_TS_FOREACH (&alist_p, i)
+    {
+      struct apoint *apt = LLIST_TS_GET_DATA (i);
+      apoint_write (apt, fp);
+    }
   if (ui_mode == UI_CURSES)
-    pthread_mutex_unlock (&(alist_p->mutex));
+    LLIST_TS_UNLOCK (&alist_p);
 
   for (e = eventlist; e != NULL; e = e->next)
     event_write (e, fp);

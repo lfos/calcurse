@@ -350,10 +350,10 @@ static int
 app_arg (int add_line, struct date *day, long date, int print_note,
          struct conf *conf, regex_t *regex)
 {
+  llist_item_t *i;
   struct recur_event *re;
   struct event *j;
   struct recur_apoint *ra;
-  struct apoint *i;
   long today;
   unsigned print_date = 1;
   int app_found = 0;
@@ -464,38 +464,36 @@ app_arg (int add_line, struct date *day, long date, int print_note,
     }
   pthread_mutex_unlock (&(recur_alist_p->mutex));
 
-  pthread_mutex_lock (&(alist_p->mutex));
-  for (i = alist_p->root; i != NULL; i = i->next)
+  LLIST_TS_LOCK (&alist_p);
+  LLIST_TS_FIND_FOREACH (&alist_p, today, apoint_inday, i)
     {
-      if (apoint_inday (i, today))
-        {
-          if (regex && regexec (regex, i->mesg, 0, 0, 0) != 0)
-            continue;
+      struct apoint *apt = LLIST_TS_GET_DATA (i);
+      if (regex && regexec (regex, apt->mesg, 0, 0, 0) != 0)
+        continue;
 
-          app_found = 1;
-          if (add_line)
-            {
-              fputs ("\n", stdout);
-              add_line = 0;
-            }
-          if (print_date)
-            {
-              arg_print_date (today, conf);
-              print_date = 0;
-            }
-          apoint_sec2str (i, APPT, today, apoint_start_time, apoint_end_time);
-          fputs (" - ", stdout);
-          fputs (apoint_start_time, stdout);
-          fputs (" -> ", stdout);
-          fputs (apoint_end_time, stdout);
-          fputs ("\n\t", stdout);
-          fputs (i->mesg, stdout);
+      app_found = 1;
+      if (add_line)
+        {
           fputs ("\n", stdout);
-          if (print_note && i->note)
-            print_notefile (stdout, i->note, 2);
+          add_line = 0;
         }
+      if (print_date)
+        {
+          arg_print_date (today, conf);
+          print_date = 0;
+        }
+      apoint_sec2str (apt, APPT, today, apoint_start_time, apoint_end_time);
+      fputs (" - ", stdout);
+      fputs (apoint_start_time, stdout);
+      fputs (" -> ", stdout);
+      fputs (apoint_end_time, stdout);
+      fputs ("\n\t", stdout);
+      fputs (apt->mesg, stdout);
+      fputs ("\n", stdout);
+      if (print_note && apt->note)
+        print_notefile (stdout, apt->note, 2);
     }
-  pthread_mutex_unlock (&(alist_p->mutex));
+  LLIST_TS_UNLOCK (&alist_p);
 
   return (app_found);
 }

@@ -269,13 +269,6 @@ struct apoint
   char          *note;
 };
 
-/* Appointments are stored in a linked-list. */
-struct apoint_list
-{
-  struct apoint   *root;
-  pthread_mutex_t  mutex;
-};
-
 /* Event definition. */
 struct event {
   struct event *next;
@@ -564,8 +557,9 @@ enum save_display {
 };
 
 /* apoint.c */
-extern struct apoint_list  *alist_p;
+extern llist_ts_t alist_p;
 void               apoint_free_bkp (enum eraseflg);
+void               apoint_free (struct apoint *);
 void               apoint_llist_init (void);
 void               apoint_llist_free (void);
 void               apoint_hilt_set (int);
