@@ -56,6 +56,7 @@
 
 #include "llist.h"
 #include "htable.h"
+#include "llist_ts.h"
 
 /* Internationalization. */
 #if ENABLE_NLS
