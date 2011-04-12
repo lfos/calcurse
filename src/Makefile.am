@@ -15,6 +15,7 @@ calcurse_SOURCES = \
 	help.c \
 	io.c \
 	keys.c \
+	llist.c \
 	notify.c \
 	recur.c \
 	sigs.c \
