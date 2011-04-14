@@ -55,6 +55,11 @@ void          llist_init (llist_t *);
 void          llist_free (llist_t *);
 void          llist_free_inner (llist_t *, llist_fn_free_t);
 
+#define LLIST_INIT(l) llist_init(l)
+#define LLIST_FREE(l) llist_free(l)
+#define LLIST_FREE_INNER(l, fn_free)                                          \
+  llist_free_inner(l, (llist_fn_free_t)fn_free)
+
 /* Retrieving list items. */
 llist_item_t *llist_first (llist_t *);
 llist_item_t *llist_nth (llist_t *, int);
@@ -63,11 +68,32 @@ llist_item_t *llist_find_first (llist_t *, long, llist_fn_match_t);
 llist_item_t *llist_find_next (llist_item_t *, long, llist_fn_match_t);
 llist_item_t *llist_find_nth (llist_t *, int, long, llist_fn_match_t);
 
+#define LLIST_FIRST(l) llist_first(l)
+#define LLIST_NTH(l, n) llist_nth(l, n)
+#define LLIST_NEXT(i) llist_next(i)
+#define LLIST_FIND_FIRST(l, data, fn_match)                                   \
+  llist_find_first(l, data, (llist_fn_match_t)fn_match)
+#define LLIST_FIND_NEXT(i, data, fn_match)                                    \
+  llist_find_next(i, data, (llist_fn_match_t)fn_match)
+#define LLIST_FIND_NTH(l, n, data, fn_match)                                  \
+  llist_find_nth(l, n, data, (llist_fn_match_t)fn_match)
+
+#define LLIST_FOREACH(l, i) for (i = LLIST_FIRST (l); i; i = LLIST_NEXT (i))
+#define LLIST_FIND_FOREACH(l, data, fn_match, i)                              \
+  for (i = LLIST_FIND_FIRST (l, data, fn_match); i;                           \
+       i = LLIST_FIND_NEXT (i, data, fn_match))
+
 /* Accessing list item data. */
 void         *llist_get_data (llist_item_t *);
+
+#define LLIST_GET_DATA(i) llist_get_data(i)
 
 /* List manipulation. */
 void          llist_add (llist_t *, void *);
 void          llist_add_sorted (llist_t *, void *, llist_fn_cmp_t);
 void          llist_remove (llist_t *, llist_item_t *);
 
+#define LLIST_ADD(l, data) llist_add(l, data)
+#define LLIST_ADD_SORTED(l, data, fn_cmp)                                     \
+  llist_add_sorted(l, data, (llist_fn_cmp_t)fn_cmp)
+#define LLIST_REMOVE(l, i) llist_remove(l, i)
