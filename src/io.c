@@ -637,16 +637,17 @@ pcal_export_apoints (FILE *stream)
 static void
 ical_export_todo (FILE *stream)
 {
-  struct todo *i;
+  llist_item_t *i;
 
-  for (i = todolist; i != NULL; i = i->next)
+  LLIST_FOREACH (&todolist, i)
     {
-      if (i->id < 0)  /* completed items */
+      struct todo *todo = LLIST_TS_GET_DATA (i);
+      if (todo->id < 0)  /* completed items */
         continue;
 
       (void)fprintf (stream, "BEGIN:VTODO\n");
-      (void)fprintf (stream, "PRIORITY:%d\n", i->id);
-      (void)fprintf (stream, "SUMMARY:%s\n", i->mesg);
+      (void)fprintf (stream, "PRIORITY:%d\n", todo->id);
+      (void)fprintf (stream, "SUMMARY:%s\n", todo->mesg);
       (void)fprintf (stream, "END:VTODO\n");
     }
 }
@@ -654,16 +655,17 @@ ical_export_todo (FILE *stream)
 static void
 pcal_export_todo (FILE *stream)
 {
-  struct todo *i;
+  llist_item_t *i;
 
   (void)fprintf (stream, "#\n# Todos\n#\n");
-  for (i = todolist; i != NULL; i = i->next)
+  LLIST_FOREACH (&todolist, i)
     {
-      if (i->id < 0)  /* completed items */
+      struct todo *todo = LLIST_TS_GET_DATA (i);
+      if (todo->id < 0)  /* completed items */
         continue;
 
       (void)fprintf (stream, "note all  ");
-      (void)fprintf (stream, "%d. %s\n", i->id, i->mesg);
+      (void)fprintf (stream, "%d. %s\n", todo->id, todo->mesg);
     }
   (void)fprintf (stream, "\n");
 }
@@ -999,18 +1001,19 @@ io_save_apts (void)
 unsigned
 io_save_todo (void)
 {
-  struct todo *t;
+  llist_item_t *i;
   FILE *fp;
 
   if ((fp = fopen (path_todo, "w")) == NULL)
     return 0;
 
-  for (t = todolist; t != NULL; t = t->next)
+  LLIST_FOREACH (&todolist, i)
     {
-      if (t->note)
-        (void)fprintf (fp, "[%d]>%s %s\n", t->id, t->note, t->mesg);
+      struct todo *todo = LLIST_TS_GET_DATA (i);
+      if (todo->note)
+        (void)fprintf (fp, "[%d]>%s %s\n", todo->id, todo->note, todo->mesg);
       else
-        (void)fprintf (fp, "[%d] %s\n", t->id, t->mesg);
+        (void)fprintf (fp, "[%d] %s\n", todo->id, todo->mesg);
     }
   file_close (fp, __FILE_POS__);
 

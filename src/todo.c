@@ -40,7 +40,7 @@
 
 #include "calcurse.h"
 
-struct todo *todolist;
+llist_t todolist;
 static int hilt = 0;
 static int todos = 0;
 static int first = 1;
@@ -50,15 +50,7 @@ static char *msgsav;
 static struct todo *
 todo_get_item (int item_number)
 {
-  struct todo *o;
-  int i;
-
-  o = todolist;
-  for (i = 1; i < item_number; i++)
-    {
-      o = o->next;
-    }
-  return (o);
+  return LLIST_GET_DATA (LLIST_NTH (&todolist, item_number - 1));
 }
 
 /* Sets which todo is highlighted. */
@@ -159,87 +151,67 @@ todo_new_item (void)
     }
 }
 
+static int
+todo_cmp_id (struct todo *a, struct todo *b)
+{
+  /*
+   * As of version 2.6, todo items can have a negative id, which means they
+   * were completed. To keep them sorted, we need to consider the absolute id
+   * value.
+   */
+  int abs_a = abs (a->id);
+  int abs_b = abs (b->id);
+
+  return (abs_a < abs_b ? -1 : (abs_a == abs_b ? 0 : 1));
+}
+
 /*
  * Add an item in the todo linked list.
  */
 struct todo *
 todo_add (char *mesg, int id, char *note)
 {
-  struct todo *o, **i;
-  int absid;
+  struct todo *todo;
 
-  o = mem_malloc (sizeof (struct todo));
-  o->mesg = mem_strdup (mesg);
-  o->id = id;
-  o->note = (note != NULL && note[0] != '\0') ? mem_strdup (note) : NULL;
-  i = &todolist;
+  todo = mem_malloc (sizeof (struct todo));
+  todo->mesg = mem_strdup (mesg);
+  todo->id = id;
+  todo->note = (note != NULL && note[0] != '\0') ? mem_strdup (note) : NULL;
 
-  /*
-   * As of version 2.6, todo items can have a negative id, which means they
-   * were completed. To keep them sorted, we need to consider the absolute id
-   * value.
-   */
-  absid = abs (id);
-  for (;;)
-    {
-      if (*i == NULL || abs ((*i)->id) > absid)
-        {
-          o->next = *i;
-          *i = o;
-          break;
-        }
-      i = &(*i)->next;
-    }
-  return (o);
+  LLIST_ADD_SORTED (&todolist, todo, todo_cmp_id);
+
+  return todo;
 }
 
 /* Delete a note previously attached to a todo item. */
 static void
 todo_delete_note_bynum (unsigned num)
 {
-  unsigned n;
-  struct todo *i;
+  llist_item_t *i = LLIST_NTH (&todolist, num);
 
-  n = 0;
-  for (i = todolist; i != NULL; i = i->next)
-    {
-      if (n == num)
-        {
-          if (i->note == NULL)
-            EXIT (_("no note attached"));
-          erase_note (&i->note, ERASE_FORCE_ONLY_NOTE);
-          return;
-        }
-      n++;
-    }
-  /* NOTREACHED */
-  EXIT (_("no such todo"));
+  if (!i)
+    EXIT (_("no such todo"));
+  struct todo *todo = LLIST_TS_GET_DATA (i);
+
+  if (!todo->note)
+    EXIT (_("no note attached"));
+  erase_note (&todo->note, ERASE_FORCE_ONLY_NOTE);
 }
 
 /* Delete an item from the todo linked list. */
 static void
 todo_delete_bynum (unsigned num, enum eraseflg flag)
 {
-  unsigned n;
-  struct todo *i, **iptr;
+  llist_item_t *i = LLIST_NTH (&todolist, num);
 
-  n = 0;
-  iptr = &todolist;
-  for (i = todolist; i != NULL; i = i->next)
-    {
-      if (n == num)
-        {
-          *iptr = i->next;
-          mem_free (i->mesg);
-          erase_note (&i->note, flag);
-          mem_free (i);
-          return;
-        }
-      iptr = &i->next;
-      n++;
-    }
-  /* NOTREACHED */
-  EXIT (_("no such todo"));
+  if (!i)
+    EXIT (_("no such todo"));
+  struct todo *todo = LLIST_TS_GET_DATA (i);
+
+  LLIST_REMOVE (&todolist, i);
+  mem_free (todo->mesg);
+  erase_note (&todo->note, flag);
+  mem_free (todo);
 }
 
 /*
@@ -330,29 +302,20 @@ todo_delete (struct conf *conf)
  * given todo item.
  */
 static int
-todo_get_position (struct todo *i)
+todo_get_position (struct todo *needle)
 {
-  struct todo *o;
-  int n = 1, found = 0;
+  llist_item_t *i;
+  int n = 0;
 
-  for (o = todolist; o; o = o->next)
+  LLIST_FOREACH (&todolist, i)
     {
-      if (o == i)
-        {
-          found = 1;
-          break;
-        }
       n++;
+      if (LLIST_TS_GET_DATA (i) == needle)
+        return n;
     }
-  if (found)
-    {
-      return (n);
-    }
-  else
-    {
-      EXIT (_("todo not found"));
-      return -1; /* avoid compiler warnings */
-    }
+
+  EXIT (_("todo not found"));
+  return -1; /* avoid compiler warnings */
 }
 
 /* Change an item priority by pressing '+' or '-' inside TODO panel. */
@@ -438,7 +401,7 @@ display_todo_item (int incolor, char *msg, int prio, int note, int len, int y,
 void
 todo_update_panel (int which_pan)
 {
-  struct todo *i;
+  llist_item_t *i;
   int len = win[TOD].w - 8;
   int num_todo = 0;
   int y_offset = 3, x_offset = 1;
@@ -451,17 +414,18 @@ todo_update_panel (int which_pan)
   /* Print todo item in the panel. */
   erase_window_part (win[TOD].p, 1, title_lines, win[TOD].w - 2,
                      win[TOD].h - 2);
-  for (i = todolist; i != NULL; i = i->next)
+  LLIST_FOREACH (&todolist, i)
     {
+      struct todo *todo = LLIST_TS_GET_DATA (i);
       num_todo++;
       t_realpos = num_todo - first;
       incolor = num_todo - hilt;
       if (incolor == 0)
-        msgsav = i->mesg;
+        msgsav = todo->mesg;
       if (t_realpos >= 0 && t_realpos < max_items)
         {
-          display_todo_item (incolor, i->mesg, i->id,
-                             (i->note != NULL) ? 1 : 0, len, y_offset,
+          display_todo_item (incolor, todo->mesg, todo->id,
+                             (todo->note != NULL) ? 1 : 0, len, y_offset,
                              x_offset);
           y_offset = y_offset + todo_lines;
         }
@@ -523,19 +487,22 @@ todo_view_note (char *pager)
 }
 
 void
+todo_free (struct todo *todo)
+{
+  mem_free (todo->mesg);
+  erase_note (&todo->note, ERASE_FORCE_KEEP_NOTE);
+  mem_free (todo);
+}
+
+void
+todo_init_list (void)
+{
+  LLIST_INIT (&todolist);
+}
+
+void
 todo_free_list (void)
 {
-  struct todo *o, **i;
-
-  i = &todolist;
-  while (*i)
-    {
-      o = *i;
-      *i = o->next;
-      mem_free (o->mesg);
-      erase_note (&o->note, ERASE_FORCE_KEEP_NOTE);
-      mem_free (o);
-    }
-  if (todolist)
-    mem_free (todolist);
+  LLIST_FREE_INNER (&todolist, todo_free);
+  LLIST_FREE (&todolist);
 }

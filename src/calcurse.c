@@ -77,6 +77,7 @@ main (int argc, char **argv)
 
   /* Initialize non-thread-safe data structures. */
   event_llist_init ();
+  todo_init_list ();
 
   /*
    * Begin by parsing and handling command line arguments.

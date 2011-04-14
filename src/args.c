@@ -242,7 +242,7 @@ print_notefile (FILE *out, char *filename, int nbtab)
 static void
 todo_arg (int priority, int print_note, regex_t *regex)
 {
-  struct todo *i;
+  llist_item_t *i;
   int title = 1;
   char *titlestr, priority_str[BUFSIZ] = "";
   char *all_todos_title = _("to do:\n");
@@ -259,20 +259,21 @@ todo_arg (int priority, int print_note, regex_t *regex)
   } while (0)
 
 #define DISPLAY_TODO  do {                                              \
-  (void)snprintf (priority_str, BUFSIZ, "%d. ", abs (i->id));           \
+  (void)snprintf (priority_str, BUFSIZ, "%d. ", abs (todo->id));        \
   fputs (priority_str, stdout);                                         \
-  fputs (i->mesg, stdout);                                              \
+  fputs (todo->mesg, stdout);                                           \
   fputs ("\n", stdout);                                                 \
-  if (print_note && i->note)                                            \
-    print_notefile (stdout, i->note, 1);                                \
+  if (print_note && todo->note)                                         \
+    print_notefile (stdout, todo->note, 1);                             \
   } while (0)
 
-  for (i = todolist; i != NULL; i = i->next)
+  LLIST_FOREACH (&todolist, i)
     {
-      if (regex && regexec (regex, i->mesg, 0, 0, 0) != 0)
+      struct todo *todo = LLIST_TS_GET_DATA (i);
+      if (regex && regexec (regex, todo->mesg, 0, 0, 0) != 0)
         continue;
 
-      if (i->id < 0) /* completed task */
+      if (todo->id < 0) /* completed task */
         {
           if (priority == 0)
             {
@@ -282,7 +283,7 @@ todo_arg (int priority, int print_note, regex_t *regex)
         }
       else
         {
-          if (priority < 0 || i->id == priority)
+          if (priority < 0 || todo->id == priority)
             {
               DISPLAY_TITLE;
               DISPLAY_TODO;

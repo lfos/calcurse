@@ -278,7 +278,6 @@ struct event {
 
 /* Todo item definition. */
 struct todo {
-  struct todo  *next;
   char         *mesg;
   int           id;
   char         *note;
@@ -810,7 +809,7 @@ void      sigs_init (void);
 unsigned  sigs_set_hdlr (int, void (*)(int));
 
 /* todo.c */
-extern struct todo *todolist;
+extern llist_t todolist;
 void          todo_hilt_set (int);
 void          todo_hilt_decrease (void);
 void          todo_hilt_increase (void);
@@ -831,6 +830,7 @@ void          todo_edit_item (void);
 void          todo_update_panel (int);
 void          todo_edit_note (char *);
 void          todo_view_note (char *);
+void          todo_init_list (void);
 void          todo_free_list (void);
 
 /* utils.c */
