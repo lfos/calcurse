@@ -461,15 +461,16 @@ pcal_export_recur_events (FILE *stream)
 static void
 ical_export_events (FILE *stream)
 {
-  struct event *i;
+  llist_item_t *i;
   char ical_date[BUFSIZ];
 
-  for (i = eventlist; i != NULL; i = i->next)
+  LLIST_FOREACH (&eventlist, i)
     {
-      date_sec2date_fmt (i->day, ICALDATEFMT, ical_date);
+      struct event *ev = LLIST_TS_GET_DATA (i);
+      date_sec2date_fmt (ev->day, ICALDATEFMT, ical_date);
       (void)fprintf (stream, "BEGIN:VEVENT\n");
       (void)fprintf (stream, "DTSTART:%s\n", ical_date);
-      (void)fprintf (stream, "SUMMARY:%s\n", i->mesg);
+      (void)fprintf (stream, "SUMMARY:%s\n", ev->mesg);
       (void)fprintf (stream, "END:VEVENT\n");
     }
 }
@@ -477,11 +478,14 @@ ical_export_events (FILE *stream)
 static void
 pcal_export_events (FILE *stream)
 {
-  struct event *i;
+  llist_item_t *i;
 
   (void)fprintf (stream, "\n# ======\n# Events\n# ======\n");
-  for (i = eventlist; i != NULL; i = i->next)
-    pcal_dump_event (stream, i->day, 0, i->mesg);
+  LLIST_FOREACH (&eventlist, i)
+    {
+      struct event *ev = LLIST_TS_GET_DATA (i);
+      pcal_dump_event (stream, ev->day, 0, ev->mesg);
+    }
   (void)fprintf (stream, "\n");
 }
 
@@ -964,7 +968,6 @@ unsigned
 io_save_apts (void)
 {
   llist_item_t *i;
-  struct event *e;
   FILE *fp;
 
   if ((fp = fopen (path_apts, "w")) == NULL)
@@ -982,8 +985,11 @@ io_save_apts (void)
   if (ui_mode == UI_CURSES)
     LLIST_TS_UNLOCK (&alist_p);
 
-  for (e = eventlist; e != NULL; e = e->next)
-    event_write (e, fp);
+  LLIST_FOREACH (&eventlist, i)
+    {
+      struct event *ev = LLIST_TS_GET_DATA (i);
+      event_write (ev, fp);
+    }
   file_close (fp, __FILE_POS__);
 
   return 1;

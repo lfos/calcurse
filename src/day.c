@@ -150,16 +150,14 @@ day_add_apoint (int type, char *mesg, char *note, long start, long dur,
 static int
 day_store_events (long date)
 {
-  struct event *j;
+  llist_item_t *i;
   int e_nb = 0;
 
-  for (j = eventlist; j != NULL; j = j->next)
+  LLIST_FIND_FOREACH (&eventlist, date, event_inday, i)
     {
-      if (event_inday (j, date))
-        {
-          e_nb++;
-          (void)day_add_event (EVNT, j->mesg, j->note, j->day, j->id);
-        }
+      struct event *ev = LLIST_TS_GET_DATA (i);
+      (void)day_add_event (EVNT, ev->mesg, ev->note, ev->day, ev->id);
+      e_nb++;
     }
 
   return e_nb;
@@ -475,7 +473,6 @@ day_check_if_item (struct date day)
 {
   struct recur_event *re;
   struct recur_apoint *ra;
-  struct event *e;
   const long date = date2sec (day, 0, 0);
 
   for (re = recur_elist; re != NULL; re = re->next)
@@ -493,9 +490,8 @@ day_check_if_item (struct date day)
       }
   pthread_mutex_unlock (&(recur_alist_p->mutex));
 
-  for (e = eventlist; e != NULL; e = e->next)
-    if (event_inday (e, date))
-      return (1);
+  if (LLIST_FIND_FIRST (&eventlist, date, event_inday))
+    return (1);
 
   LLIST_TS_LOCK (&alist_p);
   if (LLIST_TS_FIND_FIRST (&alist_p, date, apoint_inday))

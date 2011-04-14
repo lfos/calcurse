@@ -352,7 +352,6 @@ app_arg (int add_line, struct date *day, long date, int print_note,
 {
   llist_item_t *i;
   struct recur_event *re;
-  struct event *j;
   struct recur_apoint *ra;
   long today;
   unsigned print_date = 1;
@@ -397,30 +396,28 @@ app_arg (int add_line, struct date *day, long date, int print_note,
         }
     }
 
-  for (j = eventlist; j != NULL; j = j->next)
+  LLIST_FIND_FOREACH (&eventlist, today, event_inday, i)
     {
-      if (event_inday (j, today))
-        {
-          if (regex && regexec (regex, j->mesg, 0, 0, 0) != 0)
-            continue;
+      struct apoint *ev = LLIST_TS_GET_DATA (i);
+      if (regex && regexec (regex, ev->mesg, 0, 0, 0) != 0)
+        continue;
 
-          app_found = 1;
-          if (add_line)
-            {
-              fputs ("\n", stdout);
-              add_line = 0;
-            }
-          if (print_date)
-            {
-              arg_print_date (today, conf);
-              print_date = 0;
-            }
-          fputs (" * ", stdout);
-          fputs (j->mesg, stdout);
+      app_found = 1;
+      if (add_line)
+        {
           fputs ("\n", stdout);
-          if (print_note && j->note)
-            print_notefile (stdout, j->note, 2);
+          add_line = 0;
         }
+      if (print_date)
+        {
+          arg_print_date (today, conf);
+          print_date = 0;
+        }
+      fputs (" * ", stdout);
+      fputs (ev->mesg, stdout);
+      fputs ("\n", stdout);
+      if (print_note && ev->note)
+        print_notefile (stdout, ev->note, 2);
     }
 
   /* Same process is performed but this time on the appointments. */

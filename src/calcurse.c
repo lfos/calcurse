@@ -75,6 +75,9 @@ main (int argc, char **argv)
   apoint_llist_init ();
   recur_apoint_llist_init ();
 
+  /* Initialize non-thread-safe data structures. */
+  event_llist_init ();
+
   /*
    * Begin by parsing and handling command line arguments.
    * The data path is also initialized here.

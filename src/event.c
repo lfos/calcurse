@@ -41,7 +41,7 @@
 
 #include "calcurse.h"
 
-struct event        *eventlist;
+llist_t              eventlist;
 static struct event  bkp_cut_event;
 
 void
@@ -53,6 +53,14 @@ event_free_bkp (enum eraseflg flag)
       bkp_cut_event.mesg = 0;
     }
   erase_note (&bkp_cut_event.note, flag);
+}
+
+static void
+event_free (struct event *ev)
+{
+  mem_free (ev->mesg);
+  erase_note (&ev->note, ERASE_FORCE_KEEP_NOTE);
+  mem_free (ev);
 }
 
 static void
@@ -68,43 +76,39 @@ event_dup (struct event *in, struct event *bkp)
 }
 
 void
+event_llist_init (void)
+{
+  LLIST_INIT (&eventlist);
+}
+
+void
 event_llist_free (void)
 {
-  struct event *o, **i;
+  LLIST_FREE_INNER (&eventlist, event_free);
+  LLIST_FREE (&eventlist);
+}
 
-  i = &eventlist;
-  while (*i)
-    {
-      o = *i;
-      *i = o->next;
-      mem_free (o->mesg);
-      erase_note (&o->note, ERASE_FORCE_KEEP_NOTE);
-      mem_free (o);
-    }
+static int
+event_cmp_day (struct event *a, struct event *b)
+{
+  return (a->day < b->day ? -1 : (a->day == b->day ? 0 : 1));
 }
 
 /* Create a new event */
 struct event *
 event_new (char *mesg, char *note, long day, int id)
 {
-  struct event *o, **i;
-  o = mem_malloc (sizeof (struct event));
-  o->mesg = mem_strdup (mesg);
-  o->day = day;
-  o->id = id;
-  o->note = (note != NULL) ? mem_strdup (note) : NULL;
-  i = &eventlist;
-  for (;;)
-    {
-      if (*i == NULL || (*i)->day > day)
-        {
-          o->next = *i;
-          *i = o;
-          break;
-        }
-      i = &(*i)->next;
-    }
-  return (o);
+  struct event *ev;
+
+  ev = mem_malloc (sizeof (struct event));
+  ev->mesg = mem_strdup (mesg);
+  ev->day = day;
+  ev->id = id;
+  ev->note = (note != NULL) ? mem_strdup (note) : NULL;
+  
+  LLIST_ADD_SORTED (&eventlist, ev, event_cmp_day);
+
+  return ev;
 }
 
 /* Check if the event belongs to the selected day */
@@ -168,21 +172,12 @@ event_scan (FILE *f, struct tm start, int id, char *note)
 struct event *
 event_get (long day, int pos)
 {
-  struct event *o;
-  int n;
+  llist_item_t *i = LLIST_FIND_NTH (&eventlist, pos, day, event_inday);
 
-  n = 0;
-  for (o = eventlist; o; o = o->next)
-    {
-      if (event_inday (o, day))
-        {
-          if (n == pos)
-            return o;
-          n++;
-        }
-    }
+  if (i)
+    return LLIST_TS_GET_DATA (i);
+
   EXIT (_("event not found"));
-  return 0;
   /* NOTREACHED */
 }
 
@@ -190,43 +185,30 @@ event_get (long day, int pos)
 void
 event_delete_bynum (long start, unsigned num, enum eraseflg flag)
 {
-  unsigned n;
-  struct event *i, **iptr;
+  llist_item_t *i = LLIST_FIND_NTH (&eventlist, num, start, event_inday);
 
-  n = 0;
-  iptr = &eventlist;
-  for (i = eventlist; i != NULL; i = i->next)
+  if (!i)
+    EXIT (_("no such appointment"));
+  struct event *ev = LLIST_TS_GET_DATA (i);
+
+  switch (flag)
     {
-      if (event_inday (i, start))
-        {
-          if (n == num)
-            {
-              switch (flag)
-                {
-                case ERASE_FORCE_ONLY_NOTE:
-                  erase_note (&i->note, flag);
-                  break;
-                case ERASE_CUT:
-                  event_free_bkp (ERASE_FORCE);
-                  event_dup (i, &bkp_cut_event);
-                  erase_note (&i->note, ERASE_FORCE_KEEP_NOTE);
-                  /* FALLTHROUGH */
-                default:
-                  *iptr = i->next;
-                  mem_free (i->mesg);
-                  if (flag != ERASE_FORCE_KEEP_NOTE && flag != ERASE_CUT)
-                    erase_note (&i->note, flag);
-                  mem_free (i);
-                  break;
-                }
-              return;
-            }
-          n++;
-        }
-      iptr = &i->next;
+    case ERASE_FORCE_ONLY_NOTE:
+      erase_note (&ev->note, flag);
+      break;
+    case ERASE_CUT:
+      event_free_bkp (ERASE_FORCE);
+      event_dup (ev, &bkp_cut_event);
+      erase_note (&ev->note, ERASE_FORCE_KEEP_NOTE);
+      /* FALLTHROUGH */
+    default:
+      LLIST_REMOVE (&eventlist, i);
+      mem_free (ev->mesg);
+      if (flag != ERASE_FORCE_KEEP_NOTE && flag != ERASE_CUT)
+        erase_note (&ev->note, flag);
+      mem_free (ev);
+      break;
     }
-  EXIT (_("event not found"));
-  /* NOTREACHED */
 }
 
 void

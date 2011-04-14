@@ -172,6 +172,7 @@ dmon_start (int parent_exit_status)
                path_apts, strerror (errno));
   apoint_llist_init ();
   recur_apoint_llist_init ();
+  event_llist_init ();
   io_load_app ();
   data_loaded = 1;
 

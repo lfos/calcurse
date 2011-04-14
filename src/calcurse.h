@@ -270,7 +270,6 @@ struct apoint
 
 /* Event definition. */
 struct event {
-  struct event *next;
   int           id;    /* event identifier */
   long          day;   /* seconds since 1 jan 1970 */
   char         *mesg;
@@ -558,7 +557,6 @@ enum save_display {
 /* apoint.c */
 extern llist_ts_t alist_p;
 void               apoint_free_bkp (enum eraseflg);
-void               apoint_free (struct apoint *);
 void               apoint_llist_init (void);
 void               apoint_llist_free (void);
 void               apoint_hilt_set (int);
@@ -647,8 +645,9 @@ void   dmon_start (int);
 void   dmon_stop (void);
 
 /* event.c */
-extern struct event *eventlist;
+extern llist_t eventlist;
 void          event_free_bkp (enum eraseflg);
+void          event_llist_init (void);
 void          event_llist_free (void);
 struct event *event_new (char *, char *, long, int);
 unsigned      event_inday (struct event *, long);
