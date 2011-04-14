@@ -256,7 +256,6 @@ struct date {
 /* Appointment definition. */
 struct apoint
 {
-  struct apoint *next;    /* appointments are stored in a linked-list */
   long           start;   /* seconds since 1 jan 1970 */
   long           dur;     /* duration of the appointment in seconds */
 
