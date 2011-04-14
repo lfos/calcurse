@@ -50,8 +50,20 @@ struct day_saved_item {
   char *mesg;
 };
 
-static struct day_item        *day_items_ptr;
+static llist_t                 day_items;
 static struct day_saved_item   day_saved_item;
+
+static void
+day_free (struct day_item *day)
+{
+  mem_free (day);
+}
+
+static void
+day_init_list (void)
+{
+  LLIST_INIT (&day_items);
+}
 
 /*
  * Free the current day linked list containing the events and appointments.
@@ -61,44 +73,44 @@ static struct day_saved_item   day_saved_item;
 void
 day_free_list (void)
 {
-  struct day_item *o, **i;
-
-  i = &day_items_ptr;
-  while (*i)
-    {
-      o = *i;
-      *i = o->next;
-      mem_free (o);
-    }
-  day_items_ptr = 0;
+  LLIST_FREE_INNER (&day_items, day_free);
+  LLIST_FREE (&day_items);
 }
 
 /* Add an event in the current day list */
 static struct day_item *
-day_add_event (int type, char *mesg, char *note, long day, int id)
+day_add_event (int type, char *mesg, char *note, long nday, int id)
 {
-  struct day_item *o, **i;
+  struct day_item *day;
 
-  o = mem_malloc (sizeof (struct day_item));
-  o->mesg = mesg;
-  o->note = note;
-  o->type = type;
-  o->appt_dur = 0;
-  o->appt_pos = 0;
-  o->start = day;
-  o->evnt_id = id;
-  i = &day_items_ptr;
-  for (;;)
+  day = mem_malloc (sizeof (struct day_item));
+  day->mesg = mesg;
+  day->note = note;
+  day->type = type;
+  day->appt_dur = 0;
+  day->appt_pos = 0;
+  day->start = nday;
+  day->evnt_id = id;
+
+  LLIST_ADD (&day_items, day);
+
+  return day;
+}
+
+static int
+day_cmp_start (struct day_item *a, struct day_item *b)
+{
+  if (a->type <= EVNT)
     {
-      if (*i == NULL)
-        {
-          o->next = *i;
-          *i = o;
-          break;
-        }
-      i = &(*i)->next;
+      if (b->type <= EVNT)
+        return 0;
+      else
+        return -1;
     }
-  return (o);
+  else if (b->type <= EVNT)
+    return 1;
+  else
+    return (a->start < b->start ? -1 : (a->start == b->start ? 0 : 1));
 }
 
 /* Add an appointment in the current day list. */
@@ -106,43 +118,26 @@ static struct day_item *
 day_add_apoint (int type, char *mesg, char *note, long start, long dur,
                 char state, int real_pos)
 {
-  struct day_item *o, **i;
-  int insert_item = 0;
+  struct day_item *day;
 
-  o = mem_malloc (sizeof (struct day_item));
-  o->mesg = mesg;
-  o->note = note;
-  o->start = start;
-  o->appt_dur = dur;
-  o->appt_pos = real_pos;
-  o->state = state;
-  o->type = type;
-  o->evnt_id = 0;
-  i = &day_items_ptr;
-  for (;;)
-    {
-      if (*i == NULL)
-        {
-          insert_item = 1;
-        }
-      else if (((*i)->start > start) && ((*i)->type > EVNT))
-        {
-          insert_item = 1;
-        }
-      if (insert_item)
-        {
-          o->next = *i;
-          *i = o;
-          break;
-        }
-      i = &(*i)->next;
-    }
-  return o;
+  day = mem_malloc (sizeof (struct day_item));
+  day->mesg = mesg;
+  day->note = note;
+  day->start = start;
+  day->appt_dur = dur;
+  day->appt_pos = real_pos;
+  day->state = state;
+  day->type = type;
+  day->evnt_id = 0;
+
+  LLIST_ADD_SORTED (&day_items, day, day_cmp_start);
+
+  return day;
 }
 
 /*
  * Store the events for the selected day in structure pointed
- * by day_items_ptr. This is done by copying the events
+ * by day_items. This is done by copying the events
  * from the general structure pointed by eventlist to the structure
  * dedicated to the selected day.
  * Returns the number of events for the selected day.
@@ -165,7 +160,7 @@ day_store_events (long date)
 
 /*
  * Store the recurrent events for the selected day in structure pointed
- * by day_items_ptr. This is done by copying the recurrent events
+ * by day_items. This is done by copying the recurrent events
  * from the general structure pointed by recur_elist to the structure
  * dedicated to the selected day.
  * Returns the number of recurrent events for the selected day.
@@ -191,7 +186,7 @@ day_store_recur_events (long date)
 
 /*
  * Store the apoints for the selected day in structure pointed
- * by day_items_ptr. This is done by copying the appointments
+ * by day_items. This is done by copying the appointments
  * from the general structure pointed by alist_p to the
  * structure dedicated to the selected day.
  * Returns the number of appointments for the selected day.
@@ -217,7 +212,7 @@ day_store_apoints (long date)
 
 /*
  * Store the recurrent apoints for the selected day in structure pointed
- * by day_items_ptr. This is done by copying the appointments
+ * by day_items. This is done by copying the appointments
  * from the general structure pointed by recur_alist_p->root to the
  * structure dedicated to the selected day.
  * Returns the number of recurrent appointments for the selected day.
@@ -251,7 +246,7 @@ day_store_recur_apoints (long date)
  * Store all of the items to be displayed for the selected day.
  * Items are of four types: recursive events, normal events,
  * recursive appointments and normal appointments.
- * The items are stored in the linked list pointed by *day_items_ptr
+ * The items are stored in the linked list pointed by day_items
  * and the length of the new pad to write is returned.
  * The number of events and appointments in the current day are also updated.
  */
@@ -262,8 +257,8 @@ day_store_items (long date, unsigned *pnb_events, unsigned *pnb_apoints)
   int nb_events, nb_recur_events;
   int nb_apoints, nb_recur_apoints;
 
-  if (day_items_ptr != NULL)
-    day_free_list ();
+  day_free_list ();
+  day_init_list ();
   nb_recur_events = day_store_recur_events (date);
   nb_events = day_store_events (date);
   *pnb_events = nb_events;
@@ -393,7 +388,7 @@ display_item (int incolor, char *msg, int recur, int note, int len, int y,
 void
 day_write_pad (long date, int width, int length, int incolor)
 {
-  struct day_item *p;
+  llist_item_t *i;
   struct apoint a;
   int line, item_number, recur;
   const int x_pos = 0;
@@ -401,23 +396,24 @@ day_write_pad (long date, int width, int length, int incolor)
 
   line = item_number = 0;
 
-  for (p = day_items_ptr; p != NULL; p = p->next)
+  LLIST_FOREACH (&day_items, i)
     {
-      if (p->type == RECUR_EVNT || p->type == RECUR_APPT)
+      struct day_item *day = LLIST_TS_GET_DATA (i);
+      if (day->type == RECUR_EVNT || day->type == RECUR_APPT)
         recur = 1;
       else
         recur = 0;
       /* First print the events for current day. */
-      if (p->type < RECUR_APPT)
+      if (day->type < RECUR_APPT)
         {
           item_number++;
           if (item_number - incolor == 0)
             {
-              day_saved_item.type = p->type;
-              day_saved_item.mesg = p->mesg;
+              day_saved_item.type = day->type;
+              day_saved_item.mesg = day->mesg;
             }
-          display_item (item_number - incolor, p->mesg, recur,
-                        (p->note != NULL) ? 1 : 0, width - 7, line, x_pos);
+          display_item (item_number - incolor, day->mesg, recur,
+                        (day->note != NULL) ? 1 : 0, width - 7, line, x_pos);
           line++;
           draw_line = 1;
         }
@@ -432,18 +428,18 @@ day_write_pad (long date, int width, int length, int incolor)
             }
           /* Last print the appointments for current day. */
           item_number++;
-          day_item_s2apoint_s (&a, p);
+          day_item_s2apoint_s (&a, day);
           if (item_number - incolor == 0)
             {
-              day_saved_item.type = p->type;
-              day_saved_item.mesg = p->mesg;
-              apoint_sec2str (&a, p->type, date,
+              day_saved_item.type = day->type;
+              day_saved_item.mesg = day->mesg;
+              apoint_sec2str (&a, day->type, date,
                               day_saved_item.start, day_saved_item.end);
             }
-          display_item_date (item_number - incolor, &a, p->type,
+          display_item_date (item_number - incolor, &a, day->type,
                              date, line + 1, x_pos);
-          display_item (item_number - incolor, p->mesg, 0,
-                        (p->note != NULL) ? 1 : 0, width - 7, line + 2,
+          display_item (item_number - incolor, day->mesg, 0,
+                        (day->note != NULL) ? 1 : 0, width - 7, line + 2,
                         x_pos);
           line += 3;
         }
@@ -1018,15 +1014,7 @@ day_paste_item (long date, int cut_item_type)
 struct day_item *
 day_get_item (int item_number)
 {
-  struct day_item *o;
-  int i;
-
-  o = day_items_ptr;
-  for (i = 1; i < item_number; i++)
-    {
-      o = o->next;
-    }
-  return (o);
+  return LLIST_GET_DATA (LLIST_NTH (&day_items, item_number - 1));
 }
 
 /* Returns the real item number, given its type. */
@@ -1034,17 +1022,17 @@ int
 day_item_nb (long date, int day_num, int type)
 {
   int i, nb_item[MAX_TYPES];
-  struct day_item *p;
+  llist_item_t *j;
 
   for (i = 0; i < MAX_TYPES; i++)
     nb_item[i] = 0;
 
-  p = day_items_ptr;
-
+  j = LLIST_FIRST (&day_items);
   for (i = 1; i < day_num; i++)
     {
-      nb_item[p->type - 1]++;
-      p = p->next;
+      struct day_item *day = LLIST_TS_GET_DATA (j);
+      nb_item[day->type - 1]++;
+      j = LLIST_TS_NEXT (j);
     }
 
   return (nb_item[type - 1]);

@@ -291,7 +291,6 @@ struct day_items_nb {
 
 /* Generic item description (to hold appointments, events...). */
 struct day_item {
-  struct day_item *next;
   long             start;    /* seconds since 1 jan 1970 */
   long             appt_dur; /* appointment duration in seconds */
   int              type;     /* (recursive or normal) event or appointment */
