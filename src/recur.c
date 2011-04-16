@@ -42,10 +42,10 @@
 
 #include "calcurse.h"
 
-struct recur_apoint_list         *recur_alist_p;
-struct recur_event               *recur_elist;
-static struct recur_event         bkp_cut_recur_event;
-static struct recur_apoint        bkp_cut_recur_apoint;
+llist_ts_t                 recur_alist_p;
+llist_t                    recur_elist;
+static struct recur_event  bkp_cut_recur_event;
+static struct recur_apoint bkp_cut_recur_apoint;
 
 
 static void
@@ -179,58 +179,65 @@ recur_apoint_dup (struct recur_apoint *in, struct recur_apoint *bkp)
 void
 recur_apoint_llist_init (void)
 {
-  recur_alist_p = mem_malloc (sizeof (struct recur_apoint_list));
-  recur_alist_p->root = NULL;
-  pthread_mutex_init (&(recur_alist_p->mutex), NULL);
+  LLIST_TS_INIT (&recur_alist_p);
+}
+
+static void
+recur_apoint_free (struct recur_apoint *rapt)
+{
+  mem_free (rapt->mesg);
+  if (rapt->note)
+    mem_free (rapt->note);
+  if (rapt->rpt)
+    mem_free (rapt->rpt);
+  if (rapt->exc)
+    {
+      free_exc (rapt->exc);
+      rapt->exc = 0;
+    }
+  mem_free (rapt);
+}
+
+static void
+recur_event_free (struct recur_event *rev)
+{
+  mem_free (rev->mesg);
+  if (rev->note)
+    mem_free (rev->note);
+  if (rev->rpt)
+    mem_free (rev->rpt);
+  if (rev->exc)
+    {
+      free_exc (rev->exc);
+      rev->exc = 0;
+    }
+  mem_free (rev);
 }
 
 void
 recur_apoint_llist_free (void)
 {
-  struct recur_apoint *o, **i;
-
-  i = &recur_alist_p->root;
-  while (*i)
-    {
-      o = *i;
-      *i = o->next;
-      mem_free (o->mesg);
-      if (o->note)
-        mem_free (o->note);
-      if (o->rpt)
-        mem_free (o->rpt);
-      if (o->exc)
-        {
-          free_exc (o->exc);
-          o->exc = 0;
-        }
-      mem_free (o);
-    }
-  mem_free (recur_alist_p);
+  LLIST_TS_FREE_INNER (&recur_alist_p, recur_apoint_free);
+  LLIST_TS_FREE (&recur_alist_p);
 }
 
 void
 recur_event_llist_free (void)
 {
-  struct recur_event *o, **i;
+  LLIST_FREE_INNER (&recur_elist, recur_event_free);
+  LLIST_FREE (&recur_elist);
+}
 
-  i = &recur_elist;
-  while (*i)
-    {
-      o = *i;
-      *i = o->next;
-      mem_free (o->mesg);
-      if (o->note)
-        mem_free (o->note);
-      if (o->rpt)
-        mem_free (o->rpt);
-      if (o->exc)
-        {
-          free_exc (o->exc);
-          o->exc = 0;
-        }
-      mem_free (o);
-    }
+static int
+recur_apoint_cmp_start (struct recur_apoint *a, struct recur_apoint *b)
+{
+  return (a->start < b->start ? -1 : (a->start == b->start ? 0 : 1));
+}
+
+static int
+recur_event_cmp_day (struct recur_event *a, struct recur_event *b)
+{
+  return (a->day < b->day ? -1 : (a->day == b->day ? 0 : 1));
 }
 
 /* Insert a new recursive appointment in the general linked list */
@@ -238,41 +245,30 @@ struct recur_apoint *
 recur_apoint_new (char *mesg, char *note, long start, long dur, char state,
                   int type, int freq, long until, struct days **except)
 {
-  struct recur_apoint *o, **i;
+  struct recur_apoint *rapt = mem_malloc (sizeof (struct recur_apoint));
 
-  o = mem_malloc (sizeof (struct recur_apoint));
-  o->rpt = mem_malloc (sizeof (struct rpt));
-  o->mesg = mem_strdup (mesg);
-  o->note = (note != NULL) ? mem_strdup (note) : 0;
-  o->start = start;
-  o->state = state;
-  o->dur = dur;
-  o->rpt->type = type;
-  o->rpt->freq = freq;
-  o->rpt->until = until;
-  o->exc = 0;
+  rapt->rpt = mem_malloc (sizeof (struct rpt));
+  rapt->mesg = mem_strdup (mesg);
+  rapt->note = (note != NULL) ? mem_strdup (note) : 0;
+  rapt->start = start;
+  rapt->state = state;
+  rapt->dur = dur;
+  rapt->rpt->type = type;
+  rapt->rpt->freq = freq;
+  rapt->rpt->until = until;
+  rapt->exc = 0;
   if (except && *except)
     {
-      exc_dup (&o->exc, *except);
+      exc_dup (&rapt->exc, *except);
       free_exc (*except);
       *except = 0;
     }
 
-  pthread_mutex_lock (&(recur_alist_p->mutex));
-  i = &recur_alist_p->root;
-  for (;;)
-    {
-      if (*i == NULL || (*i)->start > start)
-        {
-          o->next = *i;
-          *i = o;
-          break;
-        }
-      i = &(*i)->next;
-    }
-  pthread_mutex_unlock (&(recur_alist_p->mutex));
+  LLIST_TS_LOCK (&recur_alist_p);
+  LLIST_TS_ADD_SORTED (&recur_alist_p, rapt, recur_apoint_cmp_start);
+  LLIST_TS_UNLOCK (&recur_alist_p);
 
-  return (o);
+  return rapt;
 }
 
 /* Insert a new recursive event in the general linked list */
@@ -280,37 +276,27 @@ struct recur_event *
 recur_event_new (char *mesg, char *note, long day, int id, int type, int freq,
                  long until, struct days **except)
 {
-  struct recur_event *o, **i;
+  struct recur_event *rev = mem_malloc (sizeof (struct recur_event));
 
-  o = mem_malloc (sizeof (struct recur_event));
-  o->rpt = mem_malloc (sizeof (struct rpt));
-  o->mesg = mem_strdup (mesg);
-  o->note = (note != NULL) ? mem_strdup (note) : 0;
-  o->day = day;
-  o->id = id;
-  o->rpt->type = type;
-  o->rpt->freq = freq;
-  o->rpt->until = until;
-  o->exc = 0;
+  rev->rpt = mem_malloc (sizeof (struct rpt));
+  rev->mesg = mem_strdup (mesg);
+  rev->note = (note != NULL) ? mem_strdup (note) : 0;
+  rev->day = day;
+  rev->id = id;
+  rev->rpt->type = type;
+  rev->rpt->freq = freq;
+  rev->rpt->until = until;
+  rev->exc = 0;
   if (except && *except)
     {
-      exc_dup (&o->exc, *except);
+      exc_dup (&rev->exc, *except);
       free_exc (*except);
       *except = 0;
     }
 
-  i = &recur_elist;
-  for (;;)
-    {
-      if (*i == NULL || (*i)->day > day)
-        {
-          o->next = *i;
-          *i = o;
-          break;
-        }
-      i = &(*i)->next;
-    }
-  return (o);
+  LLIST_ADD_SORTED (&recur_elist, rev, recur_event_cmp_day);
+
+  return rev;
 }
 
 /*
@@ -566,16 +552,21 @@ recur_event_write (struct recur_event *o, FILE *f)
 void
 recur_save_data (FILE *f)
 {
-  struct recur_event *re;
-  struct recur_apoint *ra;
+  llist_item_t *i;
 
-  for (re = recur_elist; re != NULL; re = re->next)
-    recur_event_write (re, f);
+  LLIST_FOREACH (&recur_elist, i)
+    {
+      struct recur_event *rev = LLIST_GET_DATA (i);
+      recur_event_write (rev, f);
+    }
 
-  pthread_mutex_lock (&(recur_alist_p->mutex));
-  for (ra = recur_alist_p->root; ra != NULL; ra = ra->next)
-    recur_apoint_write (ra, f);
-  pthread_mutex_unlock (&(recur_alist_p->mutex));
+  LLIST_TS_LOCK (&recur_alist_p);
+  LLIST_TS_FOREACH (&recur_alist_p, i)
+    {
+      struct recur_apoint *rapt = LLIST_GET_DATA (i);
+      recur_apoint_write (rapt, f);
+    }
+  LLIST_TS_UNLOCK (&recur_alist_p);
 }
 
 
@@ -750,61 +741,47 @@ void
 recur_event_erase (long start, unsigned num, unsigned delete_whole,
                    enum eraseflg flag)
 {
-  unsigned n = 0;
-  struct recur_event *i, **iptr;
+  llist_item_t *i;
+ 
+  i = LLIST_FIND_NTH (&recur_elist, num, start, recur_event_inday);
 
-  iptr = &recur_elist;
-  for (i = recur_elist; i != NULL; i = i->next)
+  if (!i)
+    EXIT (_("event not found"));
+  struct recur_event *rev = LLIST_GET_DATA (i);
+
+  if (delete_whole)
     {
-      if (recur_item_inday (i->day, i->exc, i->rpt->type,
-                            i->rpt->freq, i->rpt->until, start))
+      switch (flag)
         {
-          if (n == num)
+        case ERASE_FORCE_ONLY_NOTE:
+          erase_note (&rev->note, flag);
+          break;
+        case ERASE_CUT:
+          recur_event_free_bkp (ERASE_FORCE);
+          recur_event_dup (rev, &bkp_cut_recur_event);
+          erase_note (&rev->note, ERASE_FORCE_KEEP_NOTE);
+          /* FALLTHROUGH */
+        default:
+          LLIST_REMOVE (&recur_elist, i);
+          mem_free (rev->mesg);
+          if (rev->rpt)
             {
-              if (delete_whole)
-                {
-                  switch (flag)
-                    {
-                    case ERASE_FORCE_ONLY_NOTE:
-                      erase_note (&i->note, flag);
-                      break;
-                    case ERASE_CUT:
-                      recur_event_free_bkp (ERASE_FORCE);
-                      recur_event_dup (i, &bkp_cut_recur_event);
-                      erase_note (&i->note, ERASE_FORCE_KEEP_NOTE);
-                      /* FALLTHROUGH */
-                    default:
-                      *iptr = i->next;
-                      mem_free (i->mesg);
-                      if (i->rpt)
-                        {
-                          mem_free (i->rpt);
-                          i->rpt = 0;
-                        }
-                      if (i->exc)
-                        {
-                          free_exc (i->exc);
-                          i->exc = 0;
-                        }
-                      if (flag != ERASE_FORCE_KEEP_NOTE && flag != ERASE_CUT)
-                        erase_note (&i->note, flag);
-                      mem_free (i);
-                      break;
-                    }
-                  return;
-                }
-              else
-                {
-                  recur_add_exc (&i->exc, start);
-                  return;
-                }
+              mem_free (rev->rpt);
+              rev->rpt = 0;
             }
-          n++;
+          if (rev->exc)
+            {
+              free_exc (rev->exc);
+              rev->exc = 0;
+            }
+          if (flag != ERASE_FORCE_KEEP_NOTE && flag != ERASE_CUT)
+            erase_note (&rev->note, flag);
+          mem_free (rev);
+          break;
         }
-      iptr = &i->next;
     }
-  EXIT (_("event not found"));
-  /* NOTREACHED */
+  else
+    recur_add_exc (&rev->exc, start);
 }
 
 /*
@@ -815,71 +792,58 @@ void
 recur_apoint_erase (long start, unsigned num, unsigned delete_whole,
                     enum eraseflg flag)
 {
-  unsigned n = 0;
-  struct recur_apoint *i, **iptr;
+  llist_item_t *i;
   int need_check_notify = 0;
+ 
+  i = LLIST_TS_FIND_NTH (&recur_alist_p, num, start, recur_apoint_inday);
 
-  pthread_mutex_lock (&(recur_alist_p->mutex));
-  iptr = &recur_alist_p->root;
-  for (i = recur_alist_p->root; i != NULL; i = i->next)
+  if (!i)
+    EXIT (_("appointment not found"));
+  struct recur_apoint *rapt = LLIST_GET_DATA (i);
+
+  LLIST_TS_LOCK (&recur_alist_p);
+  if (notify_bar () && flag != ERASE_FORCE_ONLY_NOTE)
+    need_check_notify = notify_same_recur_item (rapt);
+  if (delete_whole)
     {
-      if (recur_item_inday (i->start, i->exc, i->rpt->type,
-                            i->rpt->freq, i->rpt->until, start))
+      switch (flag)
         {
-          if (n == num)
+        case ERASE_FORCE_ONLY_NOTE:
+          erase_note (&rapt->note, flag);
+          break;
+        case ERASE_CUT:
+          recur_apoint_free_bkp (ERASE_FORCE);
+          recur_apoint_dup (rapt, &bkp_cut_recur_apoint);
+          erase_note (&rapt->note, ERASE_FORCE_KEEP_NOTE);
+          /* FALLTHROUGH */
+        default:
+          LLIST_TS_REMOVE (&recur_alist_p, i);
+          mem_free (rapt->mesg);
+          if (rapt->rpt)
             {
-              if (notify_bar () && flag != ERASE_FORCE_ONLY_NOTE)
-                need_check_notify = notify_same_recur_item (i);
-              if (delete_whole)
-                {
-                  switch (flag)
-                    {
-                    case ERASE_FORCE_ONLY_NOTE:
-                      erase_note (&i->note, flag);
-                      break;
-                    case ERASE_CUT:
-                      recur_apoint_free_bkp (ERASE_FORCE);
-                      recur_apoint_dup (i, &bkp_cut_recur_apoint);
-                      erase_note (&i->note, ERASE_FORCE_KEEP_NOTE);
-                      /* FALLTHROUGH */
-                    default:
-                      *iptr = i->next;
-                      mem_free (i->mesg);
-                      if (i->rpt)
-                        {
-                          mem_free (i->rpt);
-                          i->rpt = 0;
-                        }
-                      if (i->exc)
-                        {
-                          free_exc (i->exc);
-                          i->exc = 0;
-                        }
-                      if (flag != ERASE_FORCE_KEEP_NOTE && flag != ERASE_CUT)
-                        erase_note (&i->note, flag);
-                      mem_free (i);
-                      pthread_mutex_unlock (&(recur_alist_p->mutex));
-                      if (need_check_notify)
-                        notify_check_next_app ();
-                      break;
-                    }
-                  return;
-                }
-              else
-                {
-                  recur_add_exc (&i->exc, start);
-                  pthread_mutex_unlock (&(recur_alist_p->mutex));
-                  if (need_check_notify)
-                    notify_check_next_app ();
-                  return;
-                }
+              mem_free (rapt->rpt);
+              rapt->rpt = 0;
             }
-          n++;
+          if (rapt->exc)
+            {
+              free_exc (rapt->exc);
+              rapt->exc = 0;
+            }
+          if (flag != ERASE_FORCE_KEEP_NOTE && flag != ERASE_CUT)
+            erase_note (&rapt->note, flag);
+          mem_free (rapt);
+          if (need_check_notify)
+            notify_check_next_app ();
+          break;
         }
-      iptr = &i->next;
     }
-  EXIT (_("appointment not found"));
-  /* NOTREACHED */
+  else
+    {
+      recur_add_exc (&rapt->exc, start);
+      if (need_check_notify)
+        notify_check_next_app ();
+    }
+  LLIST_TS_UNLOCK (&recur_alist_p);
 }
 
 /*
@@ -1064,6 +1028,12 @@ recur_exc_scan (FILE *data_file)
   return exc_head;
 }
 
+static int
+recur_apoint_starts_after (struct recur_apoint *rapt, long time)
+{
+  return (rapt->start > time);
+}
+
 /*
  * Look in the appointment list if we have an item which starts before the item
  * stored in the notify_app structure (which is the next item to be notified).
@@ -1071,32 +1041,27 @@ recur_exc_scan (FILE *data_file)
 struct notify_app *
 recur_apoint_check_next (struct notify_app *app, long start, long day)
 {
-  struct recur_apoint *i;
+  llist_item_t *i;
   long real_recur_start_time;
 
-  pthread_mutex_lock (&(recur_alist_p->mutex));
-  for (i = recur_alist_p->root; i != NULL; i = i->next)
+  LLIST_TS_LOCK (&recur_alist_p);
+  i = LLIST_TS_FIND_FIRST (&recur_alist_p, start, recur_apoint_starts_after);
+
+  if (i)
     {
-      if (i->start > app->time)
+      struct recur_apoint *rapt = LLIST_TS_GET_DATA (i);
+
+      real_recur_start_time = recur_apoint_inday(rapt, day);
+      if (real_recur_start_time > start)
         {
-          pthread_mutex_unlock (&(recur_alist_p->mutex));
-          return (app);
-        }
-      else
-        {
-          real_recur_start_time =
-            recur_item_inday (i->start, i->exc, i->rpt->type, i->rpt->freq,
-                              i->rpt->until, day);
-          if (real_recur_start_time > start)
-            {
-              app->time = real_recur_start_time;
-              app->txt = mem_strdup (i->mesg);
-              app->state = i->state;
-              app->got_app = 1;
-            }
+          app->time = real_recur_start_time;
+          app->txt = mem_strdup (rapt->mesg);
+          app->state = rapt->state;
+          app->got_app = 1;
         }
     }
-  pthread_mutex_unlock (&(recur_alist_p->mutex));
+
+  LLIST_TS_UNLOCK (&recur_alist_p);
 
   return (app);
 }
@@ -1105,25 +1070,13 @@ recur_apoint_check_next (struct notify_app *app, long start, long day)
 struct recur_apoint *
 recur_get_apoint (long date, int num)
 {
-  struct recur_apoint *o;
-  int n = 0;
+  llist_item_t *i = LLIST_TS_FIND_NTH (&recur_alist_p, num, date,
+                                      recur_apoint_inday);
 
-  pthread_mutex_lock (&(recur_alist_p->mutex));
-  for (o = recur_alist_p->root; o != NULL; o = o->next)
-    {
-      if (recur_item_inday (o->start, o->exc, o->rpt->type,
-                            o->rpt->freq, o->rpt->until, date))
-        {
-          if (n == num)
-            {
-              pthread_mutex_unlock (&(recur_alist_p->mutex));
-              return (o);
-            }
-          n++;
-        }
-    }
+  if (i)
+    return LLIST_TS_GET_DATA (i);
+
   EXIT (_("item not found"));
-  return 0;
   /* NOTREACHED */
 }
 
@@ -1131,23 +1084,13 @@ recur_get_apoint (long date, int num)
 struct recur_event *
 recur_get_event (long date, int num)
 {
-  struct recur_event *o;
-  int n = 0;
+  llist_item_t *i = LLIST_FIND_NTH (&recur_elist, num, date,
+                                    recur_event_inday);
 
-  for (o = recur_elist; o != NULL; o = o->next)
-    {
-      if (recur_item_inday (o->day, o->exc, o->rpt->type,
-                            o->rpt->freq, o->rpt->until, date))
-        {
-          if (n == num)
-            {
-              return (o);
-            }
-          n++;
-        }
-    }
+  if (i)
+    return LLIST_GET_DATA (i);
+
   EXIT (_("item not found"));
-  return 0;
   /* NOTREACHED */
 }
 
@@ -1155,35 +1098,21 @@ recur_get_event (long date, int num)
 void
 recur_apoint_switch_notify (long date, int recur_nb)
 {
-  int n, need_chk_notify;
-  struct recur_apoint *o;
+  llist_item_t *i;
 
-  n = 0;
-  need_chk_notify = 0;
+  LLIST_TS_LOCK (&recur_alist_p);
+  i = LLIST_TS_FIND_NTH (&recur_alist_p, recur_nb, date, recur_apoint_inday);
 
-  pthread_mutex_lock (&(recur_alist_p->mutex));
-  for (o = recur_alist_p->root; o != NULL; o = o->next)
-    {
-      if (recur_item_inday (o->start, o->exc, o->rpt->type,
-                            o->rpt->freq, o->rpt->until, date))
-        {
-          if (n == recur_nb)
-            {
-              o->state ^= APOINT_NOTIFY;
+  if (!i)
+    EXIT (_("item not found"));
+  struct recur_apoint *rapt = LLIST_TS_GET_DATA (i);
 
-              if (notify_bar ())
-                notify_check_repeated (o);
+  rapt->state ^= APOINT_NOTIFY;
 
-              pthread_mutex_unlock (&(recur_alist_p->mutex));
-              if (need_chk_notify)
-                notify_check_next_app ();
-              return;
-            }
-          n++;
-        }
-    }
-  EXIT (_("item not found"));
-  /* NOTREACHED */
+  if (notify_bar ())
+    notify_check_repeated (rapt);
+
+  LLIST_TS_UNLOCK (&recur_alist_p);
 }
 
 void

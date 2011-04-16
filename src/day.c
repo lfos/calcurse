@@ -168,17 +168,15 @@ day_store_events (long date)
 static int
 day_store_recur_events (long date)
 {
-  struct recur_event *j;
+  llist_item_t *i;
   int e_nb = 0;
 
-  for (j = recur_elist; j != NULL; j = j->next)
+  LLIST_FIND_FOREACH (&recur_elist, date, recur_event_inday, i)
     {
-      if (recur_item_inday (j->day, j->exc, j->rpt->type, j->rpt->freq,
-                            j->rpt->until, date))
-        {
-          e_nb++;
-          (void)day_add_event (RECUR_EVNT, j->mesg, j->note, j->day, j->id);
-        }
+      struct recur_event *rev = LLIST_TS_GET_DATA (i);
+      (void)day_add_event (RECUR_EVNT, rev->mesg, rev->note, rev->day,
+                           rev->id);
+      e_nb++;
     }
 
   return e_nb;
@@ -213,31 +211,26 @@ day_store_apoints (long date)
 /*
  * Store the recurrent apoints for the selected day in structure pointed
  * by day_items. This is done by copying the appointments
- * from the general structure pointed by recur_alist_p->root to the
+ * from the general structure pointed by recur_alist_p to the
  * structure dedicated to the selected day.
  * Returns the number of recurrent appointments for the selected day.
  */
 static int
 day_store_recur_apoints (long date)
 {
-  struct recur_apoint *j;
-  long real_start;
-  int a_nb = 0, n = 0;
+  llist_item_t *i;
+  int a_nb = 0;
 
-  pthread_mutex_lock (&(recur_alist_p->mutex));
-  for (j = recur_alist_p->root; j != NULL; j = j->next)
+  LLIST_TS_LOCK (&recur_alist_p);
+  LLIST_TS_FIND_FOREACH (&recur_alist_p, date, recur_apoint_inday, i)
     {
-      if ((real_start = recur_item_inday (j->start, j->exc,
-                                          j->rpt->type, j->rpt->freq,
-                                          j->rpt->until, date)))
-        {
-          a_nb++;
-          (void)day_add_apoint (RECUR_APPT, j->mesg, j->note,
-                                real_start, j->dur, j->state, n);
-          n++;
-        }
+      struct recur_apoint *rapt = LLIST_TS_GET_DATA (i);
+      int real_start = recur_apoint_inday (rapt, date);
+      (void)day_add_apoint (RECUR_APPT, rapt->mesg, rapt->note, real_start,
+                            rapt->dur, rapt->state, a_nb);
+      a_nb++;
     }
-  pthread_mutex_unlock (&(recur_alist_p->mutex));
+  LLIST_TS_UNLOCK (&recur_alist_p);
 
   return a_nb;
 }
@@ -467,24 +460,18 @@ day_popup_item (void)
 int
 day_check_if_item (struct date day)
 {
-  struct recur_event *re;
-  struct recur_apoint *ra;
   const long date = date2sec (day, 0, 0);
 
-  for (re = recur_elist; re != NULL; re = re->next)
-    if (recur_item_inday (re->day, re->exc, re->rpt->type,
-                          re->rpt->freq, re->rpt->until, date))
-      return (1);
+  if (LLIST_FIND_FIRST (&recur_elist, date, recur_event_inday))
+    return (1);
 
-  pthread_mutex_lock (&(recur_alist_p->mutex));
-  for (ra = recur_alist_p->root; ra != NULL; ra = ra->next)
-    if (recur_item_inday (ra->start, ra->exc, ra->rpt->type,
-                          ra->rpt->freq, ra->rpt->until, date))
-      {
-        pthread_mutex_unlock (&(recur_alist_p->mutex));
-        return (1);
-      }
-  pthread_mutex_unlock (&(recur_alist_p->mutex));
+  LLIST_TS_LOCK (&recur_alist_p);
+  if (LLIST_TS_FIND_FIRST (&recur_alist_p, date, recur_apoint_inday))
+    {
+      LLIST_TS_UNLOCK (&recur_alist_p);
+      return (1);
+    }
+  LLIST_TS_UNLOCK (&recur_alist_p);
 
   if (LLIST_FIND_FIRST (&eventlist, date, event_inday))
     return (1);
@@ -526,7 +513,6 @@ unsigned
 day_chk_busy_slices (struct date day, int slicesno, int *slices)
 {
   llist_item_t *i;
-  struct recur_apoint *ra;
   int slicelen;
   const long date = date2sec (day, 0, 0);
 
@@ -534,22 +520,20 @@ day_chk_busy_slices (struct date day, int slicesno, int *slices)
 
 #define  SLICENUM(tsec)  ((tsec) / slicelen % slicesno)
 
-  pthread_mutex_lock (&(recur_alist_p->mutex));
-  for (ra = recur_alist_p->root; ra != NULL; ra = ra->next)
-    if (recur_item_inday (ra->start, ra->exc, ra->rpt->type,
-                          ra->rpt->freq, ra->rpt->until, date))
-      {
-        long start, end;
+  LLIST_TS_LOCK (&recur_alist_p);
+  LLIST_TS_FIND_FOREACH (&recur_alist_p, date, recur_apoint_inday, i)
+    {
+      struct apoint *rapt = LLIST_TS_GET_DATA (i);
+      long start = get_item_time (rapt->start);
+      long end = get_item_time (rapt->start + rapt->dur);
 
-        start = get_item_time (ra->start);
-        end = get_item_time (ra->start + ra->dur);
-        if (!fill_slices (slices, slicesno, SLICENUM (start), SLICENUM (end)))
-          {
-            pthread_mutex_unlock (&(recur_alist_p->mutex));
-            return 0;
-          }
-      }
-  pthread_mutex_unlock (&(recur_alist_p->mutex));
+      if (!fill_slices (slices, slicesno, SLICENUM (start), SLICENUM (end)))
+        {
+          LLIST_TS_UNLOCK (&recur_alist_p);
+          return 0;
+        }
+    }
+  LLIST_TS_UNLOCK (&recur_alist_p);
 
   LLIST_TS_LOCK (&alist_p);
   LLIST_TS_FIND_FOREACH (&alist_p, date, apoint_inday, i)

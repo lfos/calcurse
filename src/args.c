@@ -352,8 +352,6 @@ app_arg (int add_line, struct date *day, long date, int print_note,
          struct conf *conf, regex_t *regex)
 {
   llist_item_t *i;
-  struct recur_event *re;
-  struct recur_apoint *ra;
   long today;
   unsigned print_date = 1;
   int app_found = 0;
@@ -370,31 +368,28 @@ app_arg (int add_line, struct date *day, long date, int print_note,
    * that date and it is the first one, and then print all the events for
    * that date.
    */
-  for (re = recur_elist; re != NULL; re = re->next)
+  LLIST_FIND_FOREACH (&recur_elist, today, recur_event_inday, i)
     {
-      if (recur_item_inday (re->day, re->exc, re->rpt->type, re->rpt->freq,
-                            re->rpt->until, today))
-        {
-          if (regex && regexec (regex, re->mesg, 0, 0, 0) != 0)
-            continue;
+      struct recur_event *re = LLIST_GET_DATA (i);
+      if (regex && regexec (regex, re->mesg, 0, 0, 0) != 0)
+        continue;
 
-          app_found = 1;
-          if (add_line)
-            {
-              fputs ("\n", stdout);
-              add_line = 0;
-            }
-          if (print_date)
-            {
-              arg_print_date (today, conf);
-              print_date = 0;
-            }
-          fputs (" * ", stdout);
-          fputs (re->mesg, stdout);
+      app_found = 1;
+      if (add_line)
+        {
           fputs ("\n", stdout);
-          if (print_note && re->note)
-            print_notefile (stdout, re->note, 2);
+          add_line = 0;
         }
+      if (print_date)
+        {
+          arg_print_date (today, conf);
+          print_date = 0;
+        }
+      fputs (" * ", stdout);
+      fputs (re->mesg, stdout);
+      fputs ("\n", stdout);
+      if (print_note && re->note)
+        print_notefile (stdout, re->note, 2);
     }
 
   LLIST_FIND_FOREACH (&eventlist, today, event_inday, i)
@@ -422,45 +417,42 @@ app_arg (int add_line, struct date *day, long date, int print_note,
     }
 
   /* Same process is performed but this time on the appointments. */
-  pthread_mutex_lock (&(recur_alist_p->mutex));
-  for (ra = recur_alist_p->root; ra != NULL; ra = ra->next)
+  LLIST_TS_LOCK (&recur_alist_p);
+  LLIST_TS_FIND_FOREACH (&recur_alist_p, today, recur_apoint_inday, i)
     {
-      if (recur_item_inday (ra->start, ra->exc, ra->rpt->type, ra->rpt->freq,
-                            ra->rpt->until, today))
+      struct recur_apoint *ra = LLIST_TS_GET_DATA (i);
+      struct apoint *apt;
+
+      if (regex && regexec (regex, ra->mesg, 0, 0, 0) != 0)
+        continue;
+
+      app_found = 1;
+      if (add_line)
         {
-          struct apoint *apt;
-
-          if (regex && regexec (regex, ra->mesg, 0, 0, 0) != 0)
-            continue;
-
-          app_found = 1;
-          if (add_line)
-            {
-              fputs ("\n", stdout);
-              add_line = 0;
-            }
-          if (print_date)
-            {
-              arg_print_date (today, conf);
-              print_date = 0;
-            }
-          apt = apoint_recur_s2apoint_s (ra);
-          apoint_sec2str (apt, RECUR_APPT, today, apoint_start_time,
-                          apoint_end_time);
-          mem_free (apt->mesg);
-          mem_free (apt);
-          fputs (" - ", stdout);
-          fputs (apoint_start_time, stdout);
-          fputs (" -> ", stdout);
-          fputs (apoint_end_time, stdout);
-          fputs ("\n\t", stdout);
-          fputs (ra->mesg, stdout);
           fputs ("\n", stdout);
-          if (print_note && ra->note)
-            print_notefile (stdout, ra->note, 2);
+          add_line = 0;
         }
+      if (print_date)
+        {
+          arg_print_date (today, conf);
+          print_date = 0;
+        }
+      apt = apoint_recur_s2apoint_s (ra);
+      apoint_sec2str (apt, RECUR_APPT, today, apoint_start_time,
+                      apoint_end_time);
+      mem_free (apt->mesg);
+      mem_free (apt);
+      fputs (" - ", stdout);
+      fputs (apoint_start_time, stdout);
+      fputs (" -> ", stdout);
+      fputs (apoint_end_time, stdout);
+      fputs ("\n\t", stdout);
+      fputs (ra->mesg, stdout);
+      fputs ("\n", stdout);
+      if (print_note && ra->note)
+        print_notefile (stdout, ra->note, 2);
     }
-  pthread_mutex_unlock (&(recur_alist_p->mutex));
+  LLIST_TS_UNLOCK (&recur_alist_p);
 
   LLIST_TS_LOCK (&alist_p);
   LLIST_TS_FIND_FOREACH (&alist_p, today, apoint_inday, i)

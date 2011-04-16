@@ -342,31 +342,32 @@ pcal_export_footer (FILE *stream)
 static void
 ical_export_recur_events (FILE *stream)
 {
-  struct recur_event *i;
+  llist_item_t *i;
   struct days *day;
   char ical_date[BUFSIZ];
 
-  for (i = recur_elist; i != NULL; i = i->next)
+  LLIST_FOREACH (&recur_elist, i)
     {
-      date_sec2date_fmt (i->day, ICALDATEFMT, ical_date);
+      struct recur_event *rev = LLIST_GET_DATA (i);
+      date_sec2date_fmt (rev->day, ICALDATEFMT, ical_date);
       (void)fprintf (stream, "BEGIN:VEVENT\n");
       (void)fprintf (stream, "DTSTART:%s\n", ical_date);
       (void)fprintf (stream, "RRULE:FREQ=%s;INTERVAL=%d",
-                     ical_recur_type[i->rpt->type], i->rpt->freq);
+                     ical_recur_type[rev->rpt->type], rev->rpt->freq);
 
-      if (i->rpt->until != 0)
+      if (rev->rpt->until != 0)
         {
-          date_sec2date_fmt (i->rpt->until, ICALDATEFMT, ical_date);
+          date_sec2date_fmt (rev->rpt->until, ICALDATEFMT, ical_date);
           (void)fprintf (stream, ";UNTIL=%s\n", ical_date);
         }
       else
         (void)fprintf (stream, "\n");
 
-      if (i->exc != NULL)
+      if (rev->exc != NULL)
         {
-          date_sec2date_fmt (i->exc->st, ICALDATEFMT, ical_date);
+          date_sec2date_fmt (rev->exc->st, ICALDATEFMT, ical_date);
           (void)fprintf (stream, "EXDATE:%s", ical_date);
-          for (day = i->exc->next; day; day = day->next)
+          for (day = rev->exc->next; day; day = day->next)
             {
               date_sec2date_fmt (day->st, ICALDATEFMT, ical_date);
               (void)fprintf (stream, ",%s", ical_date);
@@ -374,7 +375,7 @@ ical_export_recur_events (FILE *stream)
           (void)fprintf (stream, "\n");
         }
 
-      (void)fprintf (stream, "SUMMARY:%s\n", i->mesg);
+      (void)fprintf (stream, "SUMMARY:%s\n", rev->mesg);
       (void)fprintf (stream, "END:VEVENT\n");
     }
 }
@@ -407,7 +408,7 @@ pcal_dump_apoint (FILE *stream, long apoint_date, long apoint_dur,
 static void
 pcal_export_recur_events (FILE *stream)
 {
-  struct recur_event *i;
+  llist_item_t *i;
   char pcal_date[BUFSIZ];
 
   (void)fprintf (stream, "\n# =============");
@@ -416,30 +417,32 @@ pcal_export_recur_events (FILE *stream)
   (void)fprintf (stream,
                  "# (pcal does not support from..until dates specification\n");
 
-  for (i = recur_elist; i != NULL; i = i->next)
+  LLIST_FOREACH (&recur_elist, i)
     {
-      if (i->rpt->until == 0 && i->rpt->freq == 1)
+      struct recur_event *rev = LLIST_GET_DATA (i);
+      if (rev->rpt->until == 0 && rev->rpt->freq == 1)
         {
-          switch (i->rpt->type)
+          switch (rev->rpt->type)
             {
             case RECUR_DAILY:
-              date_sec2date_fmt (i->day, "%b %d", pcal_date);
+              date_sec2date_fmt (rev->day, "%b %d", pcal_date);
               (void)fprintf (stream, "all day on_or_after %s  %s\n",
-                             pcal_date, i->mesg);
+                             pcal_date, rev->mesg);
               break;
             case RECUR_WEEKLY:
-              date_sec2date_fmt (i->day, "%a", pcal_date);
+              date_sec2date_fmt (rev->day, "%a", pcal_date);
               (void)fprintf (stream, "all %s on_or_after ", pcal_date);
-              date_sec2date_fmt (i->day, "%b %d", pcal_date);
-              (void)fprintf (stream, "%s  %s\n", pcal_date, i->mesg);
+              date_sec2date_fmt (rev->day, "%b %d", pcal_date);
+              (void)fprintf (stream, "%s  %s\n", pcal_date, rev->mesg);
               break;
             case RECUR_MONTHLY:
-              date_sec2date_fmt (i->day, "%d", pcal_date);
-              (void)fprintf (stream, "day on all %s  %s\n", pcal_date, i->mesg);
+              date_sec2date_fmt (rev->day, "%d", pcal_date);
+              (void)fprintf (stream, "day on all %s  %s\n", pcal_date,
+                             rev->mesg);
               break;
             case RECUR_YEARLY:
-              date_sec2date_fmt (i->day, "%b %d", pcal_date);
-              (void)fprintf (stream, "%s  %s\n", pcal_date, i->mesg);
+              date_sec2date_fmt (rev->day, "%b %d", pcal_date);
+              (void)fprintf (stream, "%s  %s\n", pcal_date, rev->mesg);
               break;
             default:
               EXIT (_("incoherent repetition type"));
@@ -450,9 +453,9 @@ pcal_export_recur_events (FILE *stream)
           const long YEAR_START = calendar_start_of_year ();
           const long YEAR_END = calendar_end_of_year ();
 
-          if (i->day < YEAR_END && i->day > YEAR_START)
-            foreach_date_dump (YEAR_END, i->rpt, i->exc, i->day, 0, i->mesg,
-                               (cb_dump_t) pcal_dump_event, stream);
+          if (rev->day < YEAR_END && rev->day > YEAR_START)
+            foreach_date_dump (YEAR_END, rev->rpt, rev->exc, rev->day, 0,
+                               rev->mesg, (cb_dump_t) pcal_dump_event, stream);
         }
     }
 }
@@ -493,34 +496,37 @@ pcal_export_events (FILE *stream)
 static void
 ical_export_recur_apoints (FILE *stream)
 {
-  struct recur_apoint *i;
+  llist_item_t *i;
   struct days *day;
   char ical_datetime[BUFSIZ];
   char ical_date[BUFSIZ];
 
-  pthread_mutex_lock (&(recur_alist_p->mutex));
-  for (i = recur_alist_p->root; i != NULL; i = i->next)
+  LLIST_TS_LOCK (&recur_alist_p);
+  LLIST_TS_FOREACH (&recur_alist_p, i)
     {
-      date_sec2date_fmt (i->start, ICALDATETIMEFMT, ical_datetime);
+      struct recur_apoint *rapt = LLIST_TS_GET_DATA (i);
+
+      date_sec2date_fmt (rapt->start, ICALDATETIMEFMT, ical_datetime);
       (void)fprintf (stream, "BEGIN:VEVENT\n");
       (void)fprintf (stream, "DTSTART:%s\n", ical_datetime);
-      (void)fprintf (stream, "DURATION:PT0H0M%ldS\n", i->dur);
+      (void)fprintf (stream, "DURATION:PT0H0M%ldS\n", rapt->dur);
       (void)fprintf (stream, "RRULE:FREQ=%s;INTERVAL=%d",
-                     ical_recur_type[i->rpt->type], i->rpt->freq);
+                     ical_recur_type[rapt->rpt->type], rapt->rpt->freq);
 
-      if (i->rpt->until != 0)
+      if (rapt->rpt->until != 0)
         {
-          date_sec2date_fmt (i->rpt->until + HOURINSEC, ICALDATEFMT, ical_date);
+          date_sec2date_fmt (rapt->rpt->until + HOURINSEC, ICALDATEFMT,
+                             ical_date);
           (void)fprintf (stream, ";UNTIL=%s\n", ical_date);
         }
       else
         (void)fprintf (stream, "\n");
 
-      if (i->exc != NULL)
+      if (rapt->exc != NULL)
         {
-          date_sec2date_fmt (i->exc->st, ICALDATEFMT, ical_date);
+          date_sec2date_fmt (rapt->exc->st, ICALDATEFMT, ical_date);
           (void)fprintf (stream, "EXDATE:%s", ical_date);
-          for (day = i->exc->next; day; day = day->next)
+          for (day = rapt->exc->next; day; day = day->next)
             {
               date_sec2date_fmt (day->st, ICALDATEFMT, ical_date);
               (void)fprintf (stream, ",%s", ical_date);
@@ -528,18 +534,18 @@ ical_export_recur_apoints (FILE *stream)
           (void)fprintf (stream, "\n");
         }
 
-      (void)fprintf (stream, "SUMMARY:%s\n", i->mesg);
-      if (i->state & APOINT_NOTIFY)
+      (void)fprintf (stream, "SUMMARY:%s\n", rapt->mesg);
+      if (rapt->state & APOINT_NOTIFY)
         ical_export_valarm (stream);
       (void)fprintf (stream, "END:VEVENT\n");
     }
-  pthread_mutex_unlock (&(recur_alist_p->mutex));
+  LLIST_TS_UNLOCK (&recur_alist_p);
 }
 
 static void
 pcal_export_recur_apoints (FILE *stream)
 {
-  struct recur_apoint *i;
+  llist_item_t *i;
   char pcal_date[BUFSIZ], pcal_beg[BUFSIZ], pcal_end[BUFSIZ];
 
   (void)fprintf (stream, "\n# ==============");
@@ -548,35 +554,37 @@ pcal_export_recur_apoints (FILE *stream)
   (void)fprintf (stream,
                  "# (pcal does not support from..until dates specification\n");
 
-  for (i = recur_alist_p->root; i != NULL; i = i->next)
+  LLIST_TS_FOREACH (&recur_alist_p, i)
     {
-      if (i->rpt->until == 0 && i->rpt->freq == 1)
+      struct recur_apoint *rapt = LLIST_TS_GET_DATA (i);
+
+      if (rapt->rpt->until == 0 && rapt->rpt->freq == 1)
         {
-          date_sec2date_fmt (i->start, "%R", pcal_beg);
-          date_sec2date_fmt (i->start + i->dur, "%R", pcal_end);
-          switch (i->rpt->type)
+          date_sec2date_fmt (rapt->start, "%R", pcal_beg);
+          date_sec2date_fmt (rapt->start + rapt->dur, "%R", pcal_end);
+          switch (rapt->rpt->type)
             {
             case RECUR_DAILY:
-              date_sec2date_fmt (i->start, "%b %d", pcal_date);
+              date_sec2date_fmt (rapt->start, "%b %d", pcal_date);
               (void)fprintf (stream, "all day on_or_after %s  (%s -> %s) %s\n",
-                             pcal_date, pcal_beg, pcal_end, i->mesg);
+                             pcal_date, pcal_beg, pcal_end, rapt->mesg);
               break;
             case RECUR_WEEKLY:
-              date_sec2date_fmt (i->start, "%a", pcal_date);
+              date_sec2date_fmt (rapt->start, "%a", pcal_date);
               (void)fprintf (stream, "all %s on_or_after ", pcal_date);
-              date_sec2date_fmt (i->start, "%b %d", pcal_date);
+              date_sec2date_fmt (rapt->start, "%b %d", pcal_date);
               (void)fprintf (stream, "%s  (%s -> %s) %s\n", pcal_date,
-                             pcal_beg, pcal_end, i->mesg);
+                             pcal_beg, pcal_end, rapt->mesg);
               break;
             case RECUR_MONTHLY:
-              date_sec2date_fmt (i->start, "%d", pcal_date);
+              date_sec2date_fmt (rapt->start, "%d", pcal_date);
               (void)fprintf (stream, "day on all %s  (%s -> %s) %s\n",
-                             pcal_date, pcal_beg, pcal_end, i->mesg);
+                             pcal_date, pcal_beg, pcal_end, rapt->mesg);
               break;
             case RECUR_YEARLY:
-              date_sec2date_fmt (i->start, "%b %d", pcal_date);
+              date_sec2date_fmt (rapt->start, "%b %d", pcal_date);
               (void)fprintf (stream, "%s  (%s -> %s) %s\n", pcal_date,
-                             pcal_beg, pcal_end, i->mesg);
+                             pcal_beg, pcal_end, rapt->mesg);
               break;
             default:
               EXIT (_("incoherent repetition type"));
@@ -587,9 +595,10 @@ pcal_export_recur_apoints (FILE *stream)
           const long YEAR_START = calendar_start_of_year ();
           const long YEAR_END = calendar_end_of_year ();
 
-          if (i->start < YEAR_END && i->start > YEAR_START)
-            foreach_date_dump (YEAR_END, i->rpt, i->exc, i->start, i->dur,
-                               i->mesg, (cb_dump_t)pcal_dump_apoint, stream);
+          if (rapt->start < YEAR_END && rapt->start > YEAR_START)
+            foreach_date_dump (YEAR_END, rapt->rpt, rapt->exc, rapt->start,
+                               rapt->dur, rapt->mesg,
+                               (cb_dump_t)pcal_dump_apoint, stream);
         }
     }
 }

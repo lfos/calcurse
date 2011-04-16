@@ -334,15 +334,8 @@ struct recur_apoint {
   char                 *note;  /* note attached to appointment */
 };
 
-/* Recurrent appointments are stored in a linked-list. */
-struct recur_apoint_list {
-  struct recur_apoint  *root;
-  pthread_mutex_t       mutex;
-};
-
 /* Reccurent event definition. */
 struct recur_event {
-  struct recur_event  *next;
   struct rpt          *rpt;  /* information about repetition */
   struct days         *exc;  /* days when the item should not be repeated */
   int                  id;   /* event type */
@@ -768,8 +761,8 @@ int       notify_same_recur_item (struct recur_apoint *);
 void      notify_config_bar (void);
 
 /* recur.c */
-extern struct recur_apoint_list  *recur_alist_p;
-extern struct recur_event        *recur_elist;
+extern llist_ts_t recur_alist_p;
+extern llist_t recur_elist;
 void                  recur_event_free_bkp (enum eraseflg);
 void                  recur_apoint_free_bkp (enum eraseflg);
 void                  recur_apoint_llist_init (void);
