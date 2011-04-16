@@ -790,6 +790,8 @@ struct recur_event  *recur_event_scan (FILE *, struct tm, int, char,
 void                 recur_save_data (FILE *);
 unsigned             recur_item_inday (long, struct days *, int, int,
                                        long, long);
+unsigned             recur_apoint_inday(struct recur_apoint *, long);
+unsigned             recur_event_inday(struct recur_event *, long);
 void                 recur_event_erase (long, unsigned, unsigned,
                                         enum eraseflg);
 void                 recur_apoint_erase (long, unsigned, unsigned,

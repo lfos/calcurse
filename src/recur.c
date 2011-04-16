@@ -728,6 +728,20 @@ recur_item_inday (long item_start, struct days *item_exc, int rpt_type,
     return (0);
 }
 
+unsigned
+recur_apoint_inday(struct recur_apoint *rapt, long day_start)
+{
+  return recur_item_inday (rapt->start, rapt->exc, rapt->rpt->type,
+                           rapt->rpt->freq, rapt->rpt->until, day_start);
+}
+
+unsigned
+recur_event_inday(struct recur_event *rev, long day_start)
+{
+  return recur_item_inday (rev->day, rev->exc, rev->rpt->type, rev->rpt->freq,
+                           rev->rpt->until, day_start);
+}
+
 /*
  * Delete a recurrent event from the list (if delete_whole is not null),
  * or delete only one occurence of the recurrent event.
