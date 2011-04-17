@@ -324,7 +324,6 @@ struct rpt {
 
 /* Recurrent appointment definition. */
 struct recur_apoint {
-  struct recur_apoint  *next;
   struct rpt           *rpt;   /* information about repetition */
   struct days          *exc;   /* days when the item should not be repeated */
   long                  start; /* beggining of the appointment */
