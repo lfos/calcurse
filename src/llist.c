@@ -36,12 +36,18 @@
 
 #include "calcurse.h"                                                           
 
+/*
+ * Initialize a list.
+ */
 void
 llist_init (llist_t *l)
 {
   l->head = NULL;
 }
 
+/*
+ * Free a list, but not the contained data.
+ */
 void
 llist_free (llist_t *l)
 {
@@ -56,6 +62,9 @@ llist_free (llist_t *l)
   l->head = NULL;
 }
 
+/*
+ * Free the data contained in a list.
+ */
 void
 llist_free_inner (llist_t *l, llist_fn_free_t fn_free)
 {
@@ -71,12 +80,18 @@ llist_free_inner (llist_t *l, llist_fn_free_t fn_free)
     }
 }
 
+/*
+ * Get the first item of a list.
+ */
 llist_item_t *
 llist_first (llist_t *l)
 {
   return l->head;
 }
 
+/*
+ * Get the nth item of a list.
+ */
 llist_item_t *
 llist_nth (llist_t *l, int n)
 {
@@ -88,18 +103,27 @@ llist_nth (llist_t *l, int n)
   return i;
 }
 
+/*
+ * Get the successor of a list item.
+ */
 llist_item_t *
 llist_next (llist_item_t *i)
 {
   return i ? i->next : NULL;
 }
 
+/*
+ * Get the actual data of an item.
+ */
 void *
 llist_get_data (llist_item_t *i)
 {
   return i ? i->data : NULL;
 }
 
+/*
+ * Add an item at the end of a list.
+ */
 void
 llist_add (llist_t *l, void *data)
 {
@@ -122,6 +146,9 @@ llist_add (llist_t *l, void *data)
     }
 }
 
+/*
+ * Add an item to a sorted list.
+ */
 void
 llist_add_sorted (llist_t *l, void *data, llist_fn_cmp_t fn_cmp)
 {
@@ -151,6 +178,9 @@ llist_add_sorted (llist_t *l, void *data, llist_fn_cmp_t fn_cmp)
     }
 }
 
+/*
+ * Remove an item from a list.
+ */
 void
 llist_remove (llist_t *l, llist_item_t *i)
 {
@@ -172,6 +202,9 @@ llist_remove (llist_t *l, llist_item_t *i)
     }
 }
 
+/*
+ * Find the first item matched by some filter callback.
+ */
 llist_item_t *
 llist_find_first (llist_t *l, long data, llist_fn_match_t fn_match)
 {
@@ -186,6 +219,9 @@ llist_find_first (llist_t *l, long data, llist_fn_match_t fn_match)
   return NULL;
 }
 
+/*
+ * Find the next item matched by some filter callback.
+ */
 llist_item_t *
 llist_find_next (llist_item_t *i, long data, llist_fn_match_t fn_match)
 {
@@ -202,6 +238,9 @@ llist_find_next (llist_item_t *i, long data, llist_fn_match_t fn_match)
   return NULL;
 }
 
+/*
+ * Find the nth item matched by some filter callback.
+ */
 llist_item_t *
 llist_find_nth (llist_t *l, int n, long data, llist_fn_match_t fn_match)
 {
