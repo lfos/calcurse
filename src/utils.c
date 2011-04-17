@@ -594,7 +594,7 @@ check_time (char *string)
   else if (strlen(s) < 4 && is_all_digit(s) && atoi(s) > 0)
     ret = 2;
 
-  xfree(s);
+  mem_free(s);
   return ret;
 }
 
