@@ -506,7 +506,7 @@ notify_check_repeated (struct recur_apoint *i)
 
   current_time = time (NULL);
   pthread_mutex_lock (&notify_app.mutex);
-  if ((real_app_time = recur_item_inday (i->start, i->exc, i->rpt->type,
+  if ((real_app_time = recur_item_inday (i->start, &i->exc, i->rpt->type,
                                          i->rpt->freq, i->rpt->until,
                                          get_today ()) > current_time))
     {
@@ -551,7 +551,7 @@ notify_same_recur_item (struct recur_apoint *i)
   int same = 0;
   long item_start = 0;
 
-  item_start = recur_item_inday (i->start, i->exc, i->rpt->type,
+  item_start = recur_item_inday (i->start, &i->exc, i->rpt->type,
                                  i->rpt->freq, i->rpt->until, get_today ());
   pthread_mutex_lock (&notify_app.mutex);
   if (notify_app.got_app && item_start == notify_app.time)

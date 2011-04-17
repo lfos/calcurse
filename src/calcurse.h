@@ -301,8 +301,7 @@ struct day_item {
   char            *note;     /* note attached to item */
 };
 
-struct days {
-  struct days *next;
+struct excp {
   long         st;    /* beggining of the considered day, in seconds */
 };
 
@@ -325,7 +324,7 @@ struct rpt {
 /* Recurrent appointment definition. */
 struct recur_apoint {
   struct rpt           *rpt;   /* information about repetition */
-  struct days          *exc;   /* days when the item should not be repeated */
+  llist_t               exc;   /* days when the item should not be repeated */
   long                  start; /* beggining of the appointment */
   long                  dur;   /* duration of the appointment */
   char                  state; /* 8 bits to store item state */
@@ -336,7 +335,7 @@ struct recur_apoint {
 /* Reccurent event definition. */
 struct recur_event {
   struct rpt          *rpt;  /* information about repetition */
-  struct days         *exc;  /* days when the item should not be repeated */
+  llist_t              exc;  /* days when the item should not be repeated */
   int                  id;   /* event type */
   long                 day;  /* day at which event occurs */
   char                *mesg; /* event description */
@@ -768,20 +767,19 @@ void                  recur_apoint_llist_init (void);
 void                  recur_apoint_llist_free (void);
 void                  recur_event_llist_free (void);
 struct recur_apoint  *recur_apoint_new (char *, char *, long, long, char,
-                                       int, int, long, struct days **);
+                                       int, int, long, llist_t *);
 struct recur_event   *recur_event_new (char *, char *, long, int, int, int,
-                                       long, struct days **);
+                                       long, llist_t *);
 char                  recur_def2char (enum recur_type);
 int                   recur_char2def (char);
 struct recur_apoint *recur_apoint_scan (FILE *, struct tm, struct tm,
                                         char, int, struct tm, char *,
-                                        struct days **, char);
+                                        llist_t *, char);
 struct recur_event  *recur_event_scan (FILE *, struct tm, int, char,
                                        int, struct tm, char *,
-                                       struct days **);
+                                       llist_t *);
 void                 recur_save_data (FILE *);
-unsigned             recur_item_inday (long, struct days *, int, int,
-                                       long, long);
+unsigned             recur_item_inday (long, llist_t *, int, int, long, long);
 unsigned             recur_apoint_inday(struct recur_apoint *, long);
 unsigned             recur_event_inday(struct recur_event *, long);
 void                 recur_event_erase (long, unsigned, unsigned,
@@ -789,7 +787,7 @@ void                 recur_event_erase (long, unsigned, unsigned,
 void                 recur_apoint_erase (long, unsigned, unsigned,
                                          enum eraseflg);
 void                 recur_repeat_item (struct conf *);
-struct days         *recur_exc_scan (FILE *);
+void                 recur_exc_scan (llist_t *, FILE *);
 struct notify_app   *recur_apoint_check_next (struct notify_app *, long, long);
 struct recur_apoint *recur_get_apoint (long, int);
 struct recur_event  *recur_get_event (long, int);

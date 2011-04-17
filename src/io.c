@@ -248,7 +248,7 @@ get_export_stream (enum export_type type)
  * (mainly used to export data).
  */
 static void
-foreach_date_dump (const long date_end, struct rpt *rpt, struct days *exc,
+foreach_date_dump (const long date_end, struct rpt *rpt, llist_t *exc,
                    long item_first_date, long item_dur, char *item_mesg,
                    cb_dump_t cb_dump, FILE *stream)
 {
@@ -342,8 +342,7 @@ pcal_export_footer (FILE *stream)
 static void
 ical_export_recur_events (FILE *stream)
 {
-  llist_item_t *i;
-  struct days *day;
+  llist_item_t *i, *j;
   char ical_date[BUFSIZ];
 
   LLIST_FOREACH (&recur_elist, i)
@@ -363,16 +362,19 @@ ical_export_recur_events (FILE *stream)
       else
         (void)fprintf (stream, "\n");
 
-      if (rev->exc != NULL)
+      if (LLIST_FIRST (&rev->exc))
         {
-          date_sec2date_fmt (rev->exc->st, ICALDATEFMT, ical_date);
-          (void)fprintf (stream, "EXDATE:%s", ical_date);
-          for (day = rev->exc->next; day; day = day->next)
+          (void)fprintf (stream, "EXDATE:");
+          LLIST_FOREACH (&rev->exc, j)
             {
-              date_sec2date_fmt (day->st, ICALDATEFMT, ical_date);
-              (void)fprintf (stream, ",%s", ical_date);
+              struct excp *exc = LLIST_GET_DATA (j);
+              date_sec2date_fmt (exc->st, ICALDATEFMT, ical_date);
+              (void)fprintf (stream, "%s", ical_date);
+              if (LLIST_NEXT (j))
+                (void)fprintf (stream, ",");
+              else
+                (void)fprintf (stream, "\n");
             }
-          (void)fprintf (stream, "\n");
         }
 
       (void)fprintf (stream, "SUMMARY:%s\n", rev->mesg);
@@ -454,7 +456,7 @@ pcal_export_recur_events (FILE *stream)
           const long YEAR_END = calendar_end_of_year ();
 
           if (rev->day < YEAR_END && rev->day > YEAR_START)
-            foreach_date_dump (YEAR_END, rev->rpt, rev->exc, rev->day, 0,
+            foreach_date_dump (YEAR_END, rev->rpt, &rev->exc, rev->day, 0,
                                rev->mesg, (cb_dump_t) pcal_dump_event, stream);
         }
     }
@@ -496,8 +498,7 @@ pcal_export_events (FILE *stream)
 static void
 ical_export_recur_apoints (FILE *stream)
 {
-  llist_item_t *i;
-  struct days *day;
+  llist_item_t *i, *j;
   char ical_datetime[BUFSIZ];
   char ical_date[BUFSIZ];
 
@@ -522,16 +523,19 @@ ical_export_recur_apoints (FILE *stream)
       else
         (void)fprintf (stream, "\n");
 
-      if (rapt->exc != NULL)
+      if (LLIST_FIRST (&rapt->exc))
         {
-          date_sec2date_fmt (rapt->exc->st, ICALDATEFMT, ical_date);
-          (void)fprintf (stream, "EXDATE:%s", ical_date);
-          for (day = rapt->exc->next; day; day = day->next)
+          (void)fprintf (stream, "EXDATE:");
+          LLIST_FOREACH (&rapt->exc, j)
             {
-              date_sec2date_fmt (day->st, ICALDATEFMT, ical_date);
-              (void)fprintf (stream, ",%s", ical_date);
+              struct excp *exc = LLIST_GET_DATA (j);
+              date_sec2date_fmt (exc->st, ICALDATEFMT, ical_date);
+              (void)fprintf (stream, "%s", ical_date);
+              if (LLIST_NEXT (j))
+                (void)fprintf (stream, ",");
+              else
+                (void)fprintf (stream, "\n");
             }
-          (void)fprintf (stream, "\n");
         }
 
       (void)fprintf (stream, "SUMMARY:%s\n", rapt->mesg);
@@ -596,7 +600,7 @@ pcal_export_recur_apoints (FILE *stream)
           const long YEAR_END = calendar_end_of_year ();
 
           if (rapt->start < YEAR_END && rapt->start > YEAR_START)
-            foreach_date_dump (YEAR_END, rapt->rpt, rapt->exc, rapt->start,
+            foreach_date_dump (YEAR_END, rapt->rpt, &rapt->exc, rapt->start,
                                rapt->dur, rapt->mesg,
                                (cb_dump_t)pcal_dump_apoint, stream);
         }
@@ -1104,7 +1108,7 @@ io_load_app (void)
   FILE *data_file;
   int c, is_appointment, is_event, is_recursive;
   struct tm start, end, until, *lt;
-  struct days *exc;
+  llist_t exc;
   time_t t;
   int id = 0;
   int freq;
@@ -1118,7 +1122,7 @@ io_load_app (void)
   data_file = fopen (path_apts, "r");
   for (;;)
     {
-      exc = 0;
+      LLIST_INIT (&exc);
       is_appointment = is_event = is_recursive = 0;
       c = getc (data_file);
       if (c == EOF)
@@ -1192,7 +1196,7 @@ io_load_app (void)
               if (c == '!')
                 {
                   (void)ungetc (c, data_file);
-                  exc = recur_exc_scan (data_file);
+                  recur_exc_scan (&exc, data_file);
                   c = getc (data_file);
                 }
               else
@@ -1204,7 +1208,7 @@ io_load_app (void)
           else if (c == '!')
             {			// endless item with exceptions
               (void)ungetc (c, data_file);
-              exc = recur_exc_scan (data_file);
+              recur_exc_scan (&exc, data_file);
               c = getc (data_file);
               until.tm_year = 0;
             }
@@ -1754,14 +1758,14 @@ ical_store_todo (int priority, char *mesg, char *note)
 
 static void
 ical_store_event (char *mesg, char *note, long day, long end, ical_rpt_t *rpt,
-                  struct days *exc)
+                  llist_t *exc)
 {
   const int EVENTID = 1;
 
   if (rpt)
     {
       recur_event_new (mesg, note, day, EVENTID, rpt->type, rpt->freq,
-                       rpt->until, &exc);
+                       rpt->until, exc);
       mem_free (rpt);
     }
   else if (end && end != day)
@@ -1773,7 +1777,7 @@ ical_store_event (char *mesg, char *note, long day, long end, ical_rpt_t *rpt,
       rpt->count = 0;
       rpt->until = end;
       recur_event_new (mesg, note, day, EVENTID, rpt->type, rpt->freq,
-                       rpt->until, &exc);
+                       rpt->until, exc);
       mem_free (rpt);
     }
   else
@@ -1786,7 +1790,7 @@ ical_store_event (char *mesg, char *note, long day, long end, ical_rpt_t *rpt,
 
 static void
 ical_store_apoint (char *mesg, char *note, long start, long dur,
-                   ical_rpt_t *rpt, struct days *exc, int has_alarm)
+                   ical_rpt_t *rpt, llist_t *exc, int has_alarm)
 {
   char state = 0L;
 
@@ -1795,7 +1799,7 @@ ical_store_apoint (char *mesg, char *note, long start, long dur,
   if (rpt)
     {
       recur_apoint_new (mesg, note, start, dur, state, rpt->type, rpt->freq,
-                        rpt->until, &exc);
+                        rpt->until, exc);
       mem_free (rpt);
     }
   else
@@ -2299,18 +2303,14 @@ ical_read_rrule (FILE *log, char *rrulestr, unsigned *noskipped,
 }
 
 static void
-ical_add_exc (struct days **exc_head, long date)
+ical_add_exc (llist_t *exc_head, long date)
 {
-  if (date == 0)
-    return;
-  else
+  if (date != 0)
     {
-      struct days *exc;
-
-      exc = mem_malloc (sizeof (struct days));
+      struct excp *exc = mem_malloc (sizeof (struct excp));
       exc->st = date;
-      exc->next = *exc_head;
-      *exc_head = exc;
+
+      LLIST_ADD (exc_head, exc);
     }
 }
 
@@ -2318,15 +2318,14 @@ ical_add_exc (struct days **exc_head, long date)
  * This property defines the list of date/time exceptions for a
  * recurring calendar component.
  */
-static struct days *
-ical_read_exdate (FILE *log, char *exstr, unsigned *noskipped,
+void
+ical_read_exdate (llist_t *exc, FILE *log, char *exstr, unsigned *noskipped,
                   const int itemline)
 {
-  struct days *exc;
   char *p, *q;
   long date;
 
-  exc = NULL;
+  LLIST_INIT (exc);
   if ((p = strchr (exstr, ':')) != NULL)
     {
       p++;
@@ -2338,11 +2337,11 @@ ical_read_exdate (FILE *log, char *exstr, unsigned *noskipped,
           (void)strncpy (buf, p, buflen);
           buf[buflen] = '\0';
           date = ical_datetime2long (buf, NULL);
-          ical_add_exc (&exc, date);
+          ical_add_exc (exc, date);
           p = ++q;
         }
       date = ical_datetime2long (p, NULL);
-      ical_add_exc (&exc, date);
+      ical_add_exc (exc, date);
     }
   else
     {
@@ -2350,7 +2349,6 @@ ical_read_exdate (FILE *log, char *exstr, unsigned *noskipped,
                 _("recurrence exception dates malformed."));
       (*noskipped)++;
     }
-  return exc;
 }
 
 /* Return an allocated string containing the name of the newly created note. */
@@ -2440,7 +2438,7 @@ ical_read_event (FILE *fdi, FILE *log, unsigned *noevents, unsigned *noapoints,
   ical_vevent_e vevent_type;
   char *p, buf[BUFSIZ], buf_upper[BUFSIZ];
   struct {
-    struct days  *exc;
+    llist_t       exc;
     ical_rpt_t   *rpt;
     char         *mesg, *note;
     long          start, end, dur;
@@ -2496,7 +2494,7 @@ ical_read_event (FILE *fdi, FILE *log, unsigned *noevents, unsigned *noapoints,
                           vevent.end = 0L;
                           ical_store_event (vevent.mesg, vevent.note,
                                             vevent.start, vevent.end,
-                                            vevent.rpt, vevent.exc);
+                                            vevent.rpt, &vevent.exc);
                           (*noevents)++;
                           return;
                         }
@@ -2512,7 +2510,7 @@ ical_read_event (FILE *fdi, FILE *log, unsigned *noevents, unsigned *noapoints,
                         }
                     }
                   ical_store_apoint (vevent.mesg, vevent.note, vevent.start,
-                                     vevent.dur, vevent.rpt, vevent.exc,
+                                     vevent.dur, vevent.rpt, &vevent.exc,
                                      vevent.has_alarm);
                   (*noapoints)++;
                   break;
@@ -2524,7 +2522,7 @@ ical_read_event (FILE *fdi, FILE *log, unsigned *noevents, unsigned *noapoints,
                       goto cleanup;
                     }
                   ical_store_event (vevent.mesg, vevent.note, vevent.start,
-                                    vevent.end, vevent.rpt, vevent.exc);
+                                    vevent.end, vevent.rpt, &vevent.exc);
                   (*noevents)++;
                   break;
                 case UNDEFINED:
@@ -2581,7 +2579,7 @@ ical_read_event (FILE *fdi, FILE *log, unsigned *noevents, unsigned *noapoints,
             }
           else if (strncmp (buf_upper, exdate.str, exdate.len) == 0)
             {
-              vevent.exc = ical_read_exdate (log, buf, noskipped, ITEMLINE);
+              ical_read_exdate (&vevent.exc, log, buf, noskipped, ITEMLINE);
             }
           else if (strncmp (buf_upper, summary.str, summary.len) == 0)
             {
@@ -2611,8 +2609,7 @@ cleanup:
     mem_free (vevent.mesg);
   if (vevent.rpt)
     mem_free (vevent.rpt);
-  if (vevent.exc)
-    mem_free (vevent.exc);
+  LLIST_FREE (&vevent.exc);
   (*noskipped)++;
 }
 
