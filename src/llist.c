@@ -52,6 +52,8 @@ llist_free (llist_t *l)
       t = i->next;
       mem_free (i);
     }
+
+  l->head = NULL;
 }
 
 void
@@ -62,7 +64,10 @@ llist_free_inner (llist_t *l, llist_fn_free_t fn_free)
   for (i = l->head; i; i = i->next)
     {
       if (i->data)
-        fn_free(i->data);
+        {
+          fn_free(i->data);
+          i->data = NULL;
+        }
     }
 }
 
