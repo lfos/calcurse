@@ -9,10 +9,18 @@ A2X_ARGS = \
 	-d manpage \
 	-f manpage
 
-doc_DATA = \
+dist_doc_DATA = \
 	manual.html
 
-man_MANS = \
+dist_man_MANS = \
+	calcurse.1
+
+EXTRA_DIST = \
+	manual.txt \
+	calcurse.1.txt
+
+CLEANFILES = \
+	manual.html \
 	calcurse.1
 
 docdir = $(datadir)/doc/$(PACKAGE)
@@ -22,7 +30,7 @@ if HAVE_ASCIIDOC
 	$(AM_V_GEN) $(ASCIIDOC) $(ASCIIDOC_ARGS) $<
 endif
 
-calcurse.1: calcurse.1.txt
+%.1: %.1.txt
 if HAVE_A2X
 	$(AM_V_GEN) $(A2X) $(A2X_ARGS) $<
 endif
