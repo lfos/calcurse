@@ -7,3 +7,7 @@ SUBDIRS = doc po src
 EXTRA_DIST = \
 	INSTALL \
 	ABOUT-NLS
+
+BUILT_SOURCES = $(top_srcdir)/.version
+$(top_srcdir)/.version:
+	echo $(VERSION) > $@-t && mv $@-t $@

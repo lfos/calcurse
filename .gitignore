@@ -11,6 +11,7 @@ depcomp
 install-sh
 missing
 stamp-h1
+.version
 autom4te.cache/
 m4/
 

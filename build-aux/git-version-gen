@@ -1,0 +1,24 @@
+#!/bin/sh
+
+if [ "$#" -ne 1 ]
+then
+  echo "usage: git-version-gen <verfile>" >&2
+  exit 1
+fi
+
+VERFILE="$1"
+
+if [ -d '.git' ]
+then
+  VERSION=`git describe --abbrev=4 --match='v[0-9]*' --dirty | sed 's/^v//'`
+  echo -n "$VERSION" > "$VERFILE"
+fi
+
+if [ -f "$VERFILE" ]
+then
+  cat "$VERFILE"
+else
+  echo "git-version-gen: unknown version number." >&2
+  exit 1
+fi
+

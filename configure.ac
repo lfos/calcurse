@@ -2,7 +2,9 @@
 #                                                                           Init
 #-------------------------------------------------------------------------------
 AC_PREREQ(2.59)
-AC_INIT(calcurse, 2.8, bugs@calcurse.org)
+AC_INIT([calcurse],
+        m4_esyscmd([build-aux/git-version-gen .version]),
+        [bugs@calcurse.org])
 AM_INIT_AUTOMAKE
 #m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
 AM_GNU_GETTEXT([external])
