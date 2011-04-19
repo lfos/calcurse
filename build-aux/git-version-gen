@@ -10,8 +10,9 @@ VERFILE="$1"
 
 if [ -d '.git' ]
 then
-  VERSION=`git describe --abbrev=4 --match='v[0-9]*' --dirty | sed 's/^v//'`
-  echo -n "$VERSION" > "$VERFILE"
+  VERSION=`git describe --abbrev=4 --match='v[0-9]*' --dirty 2>/dev/null`
+  VERSION=`echo "$VERSION" | sed 's/^v//'`
+  [ -n "$VERSION" ] && echo -n "$VERSION" > "$VERFILE"
 fi
 
 if [ -f "$VERFILE" ]
