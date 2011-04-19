@@ -3085,5 +3085,5 @@ io_file_is_empty (char *file)
         }
     }
 
-  return 1;
+  return -1;
 }

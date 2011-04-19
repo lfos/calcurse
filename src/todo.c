@@ -468,7 +468,7 @@ todo_edit_note (char *editor)
   (void)snprintf (fullname, BUFSIZ, "%s%s", path_notes, i->note);
   wins_launch_external (fullname, editor);
 
-  if (io_file_is_empty (fullname))
+  if (io_file_is_empty (fullname) > 0)
     erase_note (&i->note, ERASE_FORCE);
 }
 
