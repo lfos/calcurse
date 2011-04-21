@@ -1,39 +1,36 @@
+calcurse TODO list
+==================
 
- Calcurse TODO list :
- --------------------
-
-Here are listed the modifications I will perform on Calcurse in future
-releases. They are ordered into three different parts, depending on the
-priority. Feel free to send me an email (see the AUTHORS file) if you
-would like to see a feature added in Calcurse which does not appear in
-this list.
-
+Here is a list of modifications we will perform on calcurse in future releases.
+They are grouped into three different priority categories. Feel free to send us
+an email (misc@calcurse.org or bugs@calcurse.org) if you would like to see a
+feature added in calcurse which does not appear in this list.
 
 High
 ----
-  *  Add support for UTF-8
-  *  Implement the send-item functionality to export a single item and pipe it
-     to an external process
-  *  Add a key binding to toggle between visible/hidden tasks inside todo
-     panel
-  *  Add an optional argument to the --next flag to check for next appointment
-     starting from the specified time
-  *  Improve the way one can specify a duration (allowing something like
-     XXdXXhXXmXXs)
-  *  Implement word-wrap in the sidebar
 
+* Add support for UTF-8
+* Implement the send-item functionality to export a single item and pipe it to
+  an external process
+* Add a key binding to toggle between visible/hidden tasks inside todo panel
+* Add an optional argument to the --next flag to check for next appointment
+  starting from the specified time
+* Improve the way one can specify a duration (allowing something like
+  XXdXXhXXmXXs)
+* Implement word-wrap in the sidebar
 
 Average
 -------
-  *  Add support for CalDAV protocol (rfc4791)
-  *  Add support for ical's BYDAY recursion modifier (to express recurrences
-     like 'every monday' for example)
-  *  Implement user-definable categories to classify appointments and tasks
-  *  Implement copy/paste functionality
-  *  Implement support for a journal
 
+* Add support for CalDAV protocol (rfc4791)
+* Add support for ical's BYDAY recursion modifier (to express recurrences
+  like 'every monday' for example)
+* Implement user-definable categories to classify appointments and tasks
+* Implement copy/paste functionality
+* Implement support for a journal
 
 Low
 ---
-  *  All status bars should be terminal-size dependant (config_bar is not)
-  *  Compute Easter sunday
+
+* All status bars should be terminal-size dependant (config_bar is not)
+* Compute Easter sunday
