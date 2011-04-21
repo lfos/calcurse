@@ -1,36 +1,34 @@
-		README file for the calcurse package
+calcurse
+========
 
-See the file INSTALL for instructions on how to build and install calcurse.
-See the file Changelog for a release history and bug-fix notes.
-See the file TODO for things that still need doing.
+Read `INSTALL` for instructions on how to build and install calcurse.
 
-Browse the file doc/manual_xx.html (where xx stands for a language
-abbreviation) for narrative descriptions of how to use calcurse.
+Check `TODO` for things that still need to be done.
 
+Browse the file `doc/manual.html` (or its source `doc/manual.txt`) for
+narrative descriptions on how to use calcurse.
 
-PACKAGE OVERVIEW:
+Package Overview
+----------------
 
-	You should be reading this file in a directory called: calcurse-x.x,
-	where x.x is the current version number. There should be two 
-	subdirectories : 'src' and 'doc'. 
-	Detailed documentation in html format can be found in the 'doc' 
-	directory. Calcurse sources can be found in the 'src' directory.
+You should be reading this file in a directory called: `calcurse-x.x`, where
+`x.x` is the current version number. There should be two subdirectories : `src`
+and `doc`.  Detailed documentation in HTML format can be found in the `doc`
+directory. Calcurse sources can be found in the `src` directory.
 
+Authors
+-------
 
-AUTHORS:
+* Frederic Culot (Founder, Lead Developer)
+* Lukas Fleischer (Developer)
 
-	Frederic Culot   (original author)
-	Lukas Fleischer  (several patches + new features)
+Contributors
+------------
 
+* RegEx support: Erik Saule
+* German translation: Michael Schulz, Chris M., Benjamin Moeller
+* Spanish translation: Jose Lopez
+* Dutch translation: Jeremy Roon
 
-CONTRIBUTORS:
-
-	Support for regex       Erik Saule
-
-	German translation	Michael Schulz, Chris M., Benjamin Moeller
-	Spanish translation	Jose Lopez
-	Dutch translation	Jeremy Roon
-
-	See also the 'Thanks' section in doc/manual_xx.html for a list of 
-	people who have contributed by reporting bugs, sending fixes, or 
-	suggesting improvements.
+Also check the `Thanks` section in the manual for a list of people who have
+contributed by reporting bugs, sending fixes, or suggesting improvements.
