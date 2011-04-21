@@ -214,6 +214,6 @@ dmon_stop (void)
   if (!dpid)
     return;
 
-  if (kill ((pid_t)dpid, SIGINT) < 0)
+  if (kill ((pid_t)dpid, SIGINT) < 0 && errno != ESRCH)
     EXIT (_("Could not stop calcurse daemon: %s\n"), strerror (errno));
 }
