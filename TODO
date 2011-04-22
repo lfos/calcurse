@@ -18,6 +18,8 @@ High
 * Improve the way one can specify a duration (allowing something like
   XXdXXhXXmXXs)
 * Implement word-wrap in the sidebar
+* Support additional iCalendar keywords in appointment/event/todo notes (see
+  http://lists.calcurse.org/misc/msg00017.html)
 
 Average
 -------
