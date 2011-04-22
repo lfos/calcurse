@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Copyright (c) 2004-2006, 2009 Frederic Culot <frederic@culot.org>
+# Copyright (c) 2004-2011 calcurse Development Team <misc@calcurse.org>
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
