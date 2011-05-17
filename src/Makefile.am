@@ -6,6 +6,8 @@ calcurse_SOURCES = \
 	calcurse.c \
 	calcurse.h \
 	htable.h \
+	llist.h \
+	llist_ts.h \
 	apoint.c \
 	args.c \
 	calendar.c \
