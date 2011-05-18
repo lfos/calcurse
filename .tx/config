@@ -5,3 +5,4 @@ host = https://www.transifex.net
 file_filter = po/<lang>.po
 source_file = po/calcurse.pot
 source_lang = en
+
