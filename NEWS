@@ -1,3 +1,40 @@
+[29 May 2011]
+Version 2.9.0
+- New features:
+  * Usage of short form dates such as "29/5/10" instead of "29/05/2010", "23"
+    for the 23rd of the currently selected month and year or "3/1" for Mar 01
+    (or Jan 03, depending on the date format) of the currently selected year.
+
+  * "backword-kill-word" line editing function.
+
+  * Automatically drop empty notes after editing.
+
+  * Documentation and man pages now are in AsciiDoc format which is easier to
+    maintain and can be translated to several formats such as HTML, PDF,
+    PostScript, EPUB, DocBook and much more.
+
+  * Manual and man pages contain updated links to our new website and mailing
+    lists, as well as instructions on how to use Transifex.
+
+  * Extensive code cleanups and improvements.
+
+- Bugfixes:
+  * Avoid a segfault when resizing the help window.
+
+  * Remove the lock file if calcurse died (fixes Debian Bug #575772, thanks to
+    Erik for submitting a patch).
+
+  * Parse appointment end times correctly if they date back (reported by
+    Aleksey Mechonoshin).
+
+  * Fix some compiler warnings.
+
+- Translation:
+  * Russian translation provided by Aleksey Mechonoshin.
+
+  * Several translation updates.
+
+
 [29 May 2010]
 Version 2.8
 - New features:
