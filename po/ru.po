@@ -1,24 +1,22 @@
-# 	$calcurse: en.po,v 1.23 2009-08-22 08:50:50 culot Exp $
-#
-# English/GB translation of calcurse.
-# Copyright (C) 2006 Copyright (c) Frederic Culot <frederic@culot.org>
-# This file is distributed under the same license as the calcurse package.
-# Neil Williams <linux@codehelp.co.uk>, 2006.
-# , fuzzy
-#
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# This file is distributed under the same license as the PACKAGE package.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: calcurse 1.4\n"
+"Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2011-04-10 18:00+0200\n"
-"PO-Revision-Date: 2010-03-10 00:05+0100\n"
-"Last-Translator: Aleksey Mekhonoshin <linux.kernel.it@gmail.com>\n"
-"Language-Team: non\n"
+"POT-Creation-Date: 2011-05-24 11:20+0200\n"
+"PO-Revision-Date: 2011-05-23 18:06+0000\n"
+"Last-Translator: Rusdec <linux.kernel.it@gmail.com>\n"
+"Language-Team: Russian (http://www.transifex.net/projects/p/calcurse/team/"
+"ru/)\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
 
 msgid "null pointer"
 msgstr "пустой указатель"
@@ -26,10 +24,10 @@ msgstr "пустой указатель"
 msgid ""
 "Enter start time ([hh:mm] or [h:mm]), leave blank for an all-day event : "
 msgstr ""
-"Начало ([чч:мм] или [ч:мм]). Оставьте пустым если событие займёт весь день : "
+"Начало ([чч:мм] или [ч:мм]). Оставьте пустым если событие займёт весь день :"
 
 msgid "Enter end time ([hh:mm] or [h:mm]) or duration (in minutes) : "
-msgstr "Окончание ([чч:мм] или [ч:мм]) или продолжительноть ([мм]) : "
+msgstr "Окончание ([чч:мм] или [ч:мм]), или продолжительность ([мм]) : "
 
 msgid "Enter description :"
 msgstr "Описание: "
@@ -73,18 +71,14 @@ msgstr "Выполните 'calcurse -h' для получение справк�
 
 msgid ""
 "\n"
-"Copyright (c) 2004-2010 Frederic Culot.\n"
+"Copyright (c) 2004-2011 calcurse Development Team.\n"
 "This is free software; see the source for copying conditions.\n"
 msgstr ""
-"\n"
-"Авторское право (c) 2004-2010 Frederic Culot.\n"
-"This is free software; see the source for copying conditions.\n"
 
 #, c-format
 msgid "Calcurse %s - text-based organizer\n"
 msgstr "Calcurse %s - текстовый органайзер\n"
 
-#, fuzzy
 msgid ""
 "\n"
 "Miscellaneous:\n"
@@ -156,88 +150,7 @@ msgid ""
 "For more information, type '?' from within Calcurse, or read the manpage.\n"
 "Mail bug reports and suggestions to <misc@calcurse.org>.\n"
 msgstr ""
-"\n"
-"Разное:\n"
-"  -h, --help\n"
-"\tсправка.\n"
-"\n"
-"  -v, --version\n"
-"\tверсия программы.\n"
-"\n"
-"  --status\n"
-"\tстатус Calcurse.\n"
-"\n"
-"Файлы:\n"
-"  -c <file>, --calendar <file>\n"
-"\tиспользовать определённый файл календаря <file>\n"
-"(недопустимо с '-D').\n"
-"  -D <dir>, --directory <dir>\n"
-"\tиспользовать определённый каталог для данных\n"
-"\t(недопустимо с '-c'). По-умолчанию ~/.calcurse\n"
-"\n"
-"Неинтерактивные:\n"
-"  -a, --appointment\n"
-" \tвывести события и задачи на текущий день.\n"
-"\n"
-"  -d <date|num>, --day <date|num>\n"
-"\tвывести события и задачи на дату <date> или количество <num>\n"
-"\tгрядущих дней. Для указания начальной даты и диапазона дней\n"
-"\tиспользуйте '--startday' и '--range'.\n"
-"\n"
-"  -i <file>, --import <file>\n"
-"\tимпорт данных icalendar в файл <file>. \n"
-"\n"
-"  -n, --next\n"
-"\tвывести след. событие на ближайшие 24 часа и количество \n"
-"\tоставшегося до этого события времени.\n"
-"\n"
-"  -N, --note\n"
-"\tпри использовании с '-a' or '-t' выводит содержание\n"
-"\tзаметки, если таковая имеется.\n"
-"\n"
-"  -r[num], --range[=num]\n"
-"\tвывести события и задачи на указанное количество [num] дней.\n"
-"\tПо-умолчанию, [num] равно 1.\n"
-"\n"
-"  -s[date], --startday[=date]\n"
-"\tвывести события и задачи для указанной даты [date].\n"
-"\tПо-умолчанию, [date] равна текущей дате.\n"
-"\n"
-"  -S<regex>, --search=<regex>\n"
-"\tsearch for the given regular expression within events, appointments,\n"
-"\tand todos description.\n"
-"\n"
-"  -t[num], --todo[=num]\n"
-"\tвывести список дел. Указанное число [num] выведит только\n"
-"\tте дела, приоритет которых равен [num].\n"
-"\tПриоритет - это число от 1 (высокий) до 9 (низкий).\n"
-"\tЕсли указать '0' как число приоритета, будут выведены\n"
-"\tвыполненные дела.\n"
-"\n"
-"  -x[format], --export[=format]\n"
-"\tэкспорт данных пользователя. Конвертация событий, задач\n"
-"\tи дел.\n"
-"\tВозможно два формата на выходе: 'ical' и 'pcal'.\n"
-"\tПо-умолчанию, выходной формат при экспорте - 'ical'\n"
-"\t\n"
-"\tПримечание: перенаправление стандартого вывода экспортируемых\n"
-"\tданных в файл осуществимо командой: calcurse --export > calcurse.dat\n"
-"\n"
-"Для получения справки введите '?' внутри Calcurse или смотрите man-"
-"страницу.\n"
-"Сообщения о найденных ошибках или пожелания присылайте на почту "
-"<calcurse@culot.org>.\n"
 
-# #: src/args.c:178
-# #, c-format
-# msgid ""
-# "Error: both calcurse (pid: %d) and its daemon (pid: %d)\n"
-# "seem to be running at the same time!\n"
-# "Please check manually and restart calcurse.\n"
-# msgstr ""
-# "Ошибка: calcurse (pid: %d) и его демон (pid: %d)\n"
-# "запущены одновременно!\n"
-# "Пожалуйста, проверьте это и перезапустите calcurse.\n"
 #, c-format
 msgid ""
 "Error: both calcurse (pid: %d) and its daemon (pid: %d)\n"
@@ -279,11 +192,8 @@ msgstr ""
 "\n"
 "Для получения справки, нажмите '?' в Calcurse или смотрите man-страницу.\n"
 
-#, fuzzy
 msgid "Mail bug reports and suggestions to <misc@calcurse.org>.\n"
-msgstr ""
-"Сообщения о найденых ошибках или пожелания присылайте на почту "
-"<calcurse@culot.org>.\n"
+msgstr "Найденные ошибки или ваши идеи, присылайте на <misc@calcurse.org>.\n"
 
 msgid "Argument to the '-d' flag is not valid\n"
 msgstr "Аргумент ключа '-d' неверен\n"
@@ -311,7 +221,6 @@ msgstr ""
 "Ключ '-S' должен использоваться с любым из след.: '-d'. '-r', '-s', '-a', '-"
 "t'\n"
 
-#, fuzzy
 msgid ""
 "Sorry, colors are not supported by your terminal\n"
 "(Press [ENTER] to continue)"
@@ -414,7 +323,7 @@ msgid ""
 "       't' -> todo panel\n"
 "\n"
 msgstr ""
-"В этом меню настроек можно выбрать место расположения панелей\n"
+"В этом меню настроек можно выбрать место расположения панелей,\n"
 "отображаемых на экране Calcurse. \n"
 "Возможен выбор из нескольких вариантов.\n"
 "\n"
@@ -433,7 +342,7 @@ msgstr "Ширина +"
 msgid "Width -"
 msgstr "Ширина -"
 
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "This configuration screen is used to change the width of the side bar.\n"
 "The side bar is the part of the screen which contains two panels:\n"
@@ -443,13 +352,13 @@ msgid ""
 "The side bar width can be up to 50% of the total screen width, but\n"
 "can't be smaller than "
 msgstr ""
-"В этом меню настроек регулируется ширина сторон.\n"
-"Экран состоит из двух сторон, одна из которых содержит\n"
-"две панели: панель календаря и, взависимости от настроек\n"
-"расположения, панель задач либо панель дел.\n"
+"Здесь можно настроить ширину боковой пенели. Боковая\n"
+"панель - это часть экрака, содержащая две панели: панель календаря\n"
+"и в, календаря зависимости от выбранного слоя, панель списка дел\n"
+"либо панель задач.\n"
 "\n"
-"Ширина сторон может занимать 50% от общего экрана,\n"
-"но она не может быть меньше изначальной "
+"Боковая панель может занимать 50% oт экрана, но не\n"
+"может быть меньше изначального размера "
 
 msgid "No color"
 msgstr "Цвет отсутствует"
@@ -518,8 +427,8 @@ msgstr "(yes/no) Отображение полосы загрузки при с�
 
 msgid "(if set to YES, monday is the first day of the week, else it is sunday)"
 msgstr ""
-"(yes/no) Назначить понедельник первым днём недели. Если 'нет', то первый "
-"день - воскресение"
+"(yes/no) Назначить понедельник первым днём недели. Если 'no', то первый день "
+"- воскресение"
 
 msgid "(Format of the date to be displayed in non-interactive mode)"
 msgstr "Формат даты отображается в неинтерактивном режиме"
@@ -531,7 +440,7 @@ msgid " (1)mm/dd/yyyy (2)dd/mm/yyyy (3)yyyy/mm/dd (4)yyyy-mm-dd)"
 msgstr "(1)мм/дд/гггг (2)дд/мм/гггг (3)гггг/мм/дд (4)гггг-мм-дд)"
 
 msgid "Enter an option number to change its value"
-msgstr "Введите номер настроки для изменения её параметра"
+msgstr "Введите номер настройки для изменения её параметра"
 
 msgid "(Press '^P' or '^N' to move up or down, 'Q' to quit)"
 msgstr "'^P' или '^N' - вверх/вниз, 'Q' - выхода"
@@ -555,7 +464,7 @@ msgid "Undefined option!"
 msgstr "Неопределённая настройка!"
 
 msgid "undefined"
-msgstr "неопределено"
+msgstr "не определено"
 
 msgid "Key info"
 msgstr "Инфо клавиши"
@@ -692,12 +601,12 @@ msgstr ""
 "      Выйти:\t  \tНажмите '%s' чтобы выйти из меню справки и\n"
 "                 вернуться в главный экран Calcurse.\n"
 "\n"
-"    Справка:  \t\tВнизу экрана находится панель с областью в которой\n"
+"    Справка:  \t\tВнизу экрана находится панель с областью, в которой\n"
 "                 расположены символы и соответствующие им названия. Эта\n"
-"                 панель содержит действия которые можно выполнять внутри \n"
+"                 панель содержит действия, которые можно выполнять внутри \n"
 "                 органайзера Calcurse.\n"
-"                 По нажатию на клавишу символа представленного в этой\n"
-"                 панеле, будет показано короткое описания действия для\n"
+"                 По нажатию на клавишу символа, представленного в этой\n"
+"                 панели, будет показано короткое описание действия для\n"
 "                 данной клавиши.\n"
 "\n"
 "О программе:  \tНажмите '%s' для информации о программе."
@@ -756,12 +665,12 @@ msgid ""
 msgstr ""
 "Импорт данных из файла icalendar.\n"
 "Вам будет предложено указать файл, из которого потребуется импортировать\n"
-"ical записи. По окончанию процесса импорта и при условии, что настройка\n"
+"ical записи. По окончании процесса импорта и при условии, что настройка\n"
 "'skip_system_dialogs' помечена как 'no', на экран будет выведен отчёт о\n"
-"количестве импортированых записях.\n"
+"количестве импортированных записях.\n"
 "Отчёт содержит итог о прочитанных строках, количестве задач, событий и дел\n"
-"которые были упешно импортированы. В тоже время отчёт несёт информацию о\n"
-"количестве записей которые были пропущены, с которыми возникли проблемы\n"
+"которые были успешно импортированы. В тоже время, отчёт несёт информацию о\n"
+"количестве записей, которые были пропущены, с которыми возникли проблемы\n"
 "и др.\n"
 "\n"
 "Если одна или больше записей небыли импортированы, есть возможность\n"
@@ -882,7 +791,7 @@ msgstr ""
 "Позволит вам просмотреть выбранную запись на панелях Дела или Задачи.\n"
 "\n"
 "Вы сможете посмотреть длинное описание события, которое не помещается\n"
-"в панеле. Обычно, описание, не помещающееся в панеле, обрезается,\n"
+"в панели. Обычно описание, не помещающееся в панели, обрезается,\n"
 "заканчиваясь троеточием '...'. При необходимости просмотра описания \n"
 "события целиком, просто нажмите '%s'.\n"
 "\n"
@@ -890,7 +799,7 @@ msgstr ""
 "экран Calcurse."
 
 msgid "Tab\n"
-msgstr "Таб\n"
+msgstr "Таб.\n"
 
 #, c-format
 msgid ""
@@ -910,12 +819,12 @@ msgstr ""
 "Обрамление текущей панели выделяется другим цветом.\n"
 "\n"
 "Некоторые действия возможны только при нахождении на нужной панели.\n"
-"Например, если требуется добавить запись в список дел, необходимо\n"
-"нажатием клавиши '%s' выбрать панель Дела. Тогда станет возможным\n"
+"Например, если требуется добавить запись в список дел, необходимо,\n"
+"нажатием клавиши '%s', выбрать панель Дела. Тогда станет возможным\n"
 "добавления новой записи (клав.'%s').\n"
 "\n"
 "Внизу экрана находится перечень возможных действия, который меняется\n"
-"при выборе той или иной панели (клав.'%s'). Так вы всегда можете знать\n"
+"при выборе той или иной панели (клав.'%s'). Так вы всегда будете знать,\n"
 "какие действия доступны для текущей панели."
 
 msgid "Goto\n"
@@ -940,8 +849,8 @@ msgstr ""
 "При нажатии [ENTER] без заданного дня, Calcurse\n"
 "проверит текущую дату и перейдёт на неё.\n"
 "\n"
-"Внезависимости от текущей панели, нажатие клавиши '%s',выделит текущую дату "
-"в календаре."
+"Вне зависимости от текущей панели, нажатие клавиши '%s', выдедет текущую "
+"дату в календаре."
 
 msgid "Delete\n"
 msgstr "Удалить\n"
@@ -969,13 +878,13 @@ msgstr ""
 "'Удалить', приведёт к удалению выдленной записи\n"
 "дела или задачи из соответствующего списка.\n"
 "\n"
-"Если запись удаляется рекурентно, вам будет\n"
-"предложено выбрать: удалить все записи либо\n"
-"только выделенную вами.\n"
+"Если удаляемая запись имеет повторения, вам\n"
+"будет предложено выбрать: удалить все записи\n"
+"либо только выделенную вами.\n"
 "\n"
 "Если в настройках 'confirm_delete' помечен как 'yes',\n"
 "потребуется подтвердить удаление выбранного события.\n"
-"Не забывайте сохранять данные для того, чтоб восстановить\n"
+"Не забывайте сохранять данные для того, чтобы восстановить\n"
 "их при следующей загрузке Calcurse."
 
 msgid "Add\n"
@@ -1018,18 +927,18 @@ msgid ""
 "     o do not forget to save the calendar data to retrieve the new\n"
 "       event next time you launch Calcurse."
 msgstr ""
-"Добавляет запись в дела или задачи, в зависимости от панели.\n"
+"Добавляет запись в дела или задачи, в зависимости от панели,\n"
 "которая является текущей во время нажатия '%s'.\n"
 "\n"
 "Для создания новой записи в панеле дел, вам необходимо просто\n"
-"ввести её описание. После вам будет задан вопрос о приритете\n"
+"ввести её описание. Далее вам будет задан вопрос о приритете.\n"
 "Приоритет представляет собой число от 9 (низкий приоритет) до\n"
-"1 (высокий приоритет). Весьма хорошая возможность задать приоритет\n"
+"1 (высокий приоритет). Существует возможность задать приоритет\n"
 "сразу после создания записи. Используйте клавиши '%s' и '%s'\n"
 "внутри панели дел.\n"
 "\n"
-"Для панели задач по нажатию клавиши '%s', существует выбор между\n"
-"созданием новой задачи и созданием нового события-на-целый-день.\n"
+"Для панели задач, по нажатию клавиши '%s', существует выбор между\n"
+"созданием новой задачи и созданием нового \"события на целый день\".\n"
 "Чтобы создать событие, нажмите [ENTER] когда нужно указать время\n"
 "начала события и просто заполните описание события.\n"
 "Чтобы создать задачу, необходимо указать время её начала, а\n"
@@ -1080,9 +989,9 @@ msgstr ""
 "Запись снова окажется на панели задач и будет привязаня к\n"
 "новой дате.\n"
 "\n"
-"Будьте внимательны. Если вырезаете одну дату за другой без процедуры\n"
-"вставки между ними, то первая вырезанная запись будет утеряна, вместе\n"
-"с заметкой если таковая имеется."
+"Будьте внимательны! Если вырезаете одну дату за другой без процедуры\n"
+"вставки между этими действиями, то первая вырезанная запись будет\n"
+"утеряна, вместе с заметкой... если таковая имеется."
 
 msgid "Edit Item\n"
 msgstr "Изм. запись\n"
@@ -1190,7 +1099,7 @@ msgstr ""
 "При выборе записи с прикреплённой заметкой и нажатии на клавишу '%s',\n"
 "будет запущен просмотрщик заметок.\n"
 "Просмотрщик выбирается след. образом:\n"
-"     o если переменная 'PAGER'  задана, \n"
+"     o если переменная 'PAGER' задана, то\n"
 "       используется просмотрщик по-умолчанию.\n"
 "     o если переменная не задана, испольуется\n"
 "       '/usr/bin/less'.\n"
@@ -1217,7 +1126,7 @@ msgid ""
 "At the opposite, to lower a todo priority, press '%s'. The todo position\n"
 "may also change depending on the priority of the items below."
 msgstr ""
-"Установит приоритет для выбранной записи в панеле дел.\n"
+"Установить приоритет для выбранной записи в панеле дел.\n"
 "Приоритеты представлены числами, стоящими перед описанием\n"
 "дела. Число 9 сообщает, что приоритет записи низкий, а\n"
 "число 1, что приоритет высокий.\n"
@@ -1279,7 +1188,7 @@ msgstr ""
 "                 Например, чтобы запомнить годовщину, выберите\n"
 "                 тип 'ежегодно', а частоту установите равной '1'.\n"
 "                 Запись будет повторяться раз в год. Другой пример:\n"
-"                 если вы ужинаете в ресторане раз в два дня выберите,\n"
+"                 если вы ужинаете в ресторане раз в два дня, выберите\n"
 "                 тип 'ежедневно', а частоту повторения равной '2'.\n"
 "\n"
 "  o  Окончание: \tнеобходимо для прекращения повторения события или\n"
@@ -1314,7 +1223,7 @@ msgid ""
 msgstr ""
 "Установка флагов 'important' для задач и 'completed' для дел.\n"
 "Если дело выполнено, его приоритет становится равен 'X'.\n"
-"Выполненные дела не будут больше появляться как в экспортирумых данных\n"
+"Выполненные дела не будут больше появляться как в экспортирумых данных,\n"
 "так и при использовании ключа '-t' в командной строке (если не указан\n"
 "'0' как приоритет. В этом случае выводятся только выполненные дела).\n"
 "\n"
@@ -1350,7 +1259,7 @@ msgstr ""
 "уведомления, основные настройки, настройки клавиш.\n"
 "\n"
 "Категория 'Цвета' позволяет выбрать цветовую схему.\n"
-"Категория 'Располож.' позволяе настроить месторасположение\n"
+"Категория 'Располож.' позволяет настроить месторасположение\n"
 "панелей на экране Calcurse.\n"
 "Категория 'Основные' позволяет изменить настройки,\n"
 "определяющие поведение Calcurse.\n"
@@ -1429,10 +1338,10 @@ msgstr ""
 msgid "Calcurse - text-based organizer"
 msgstr "Calcurse - текстовый органайзер"
 
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "\n"
-"Copyright (c) 2004-2009 Frederic Culot\n"
+"Copyright (c) 2004-2011 calcurse Development Team\n"
 "All rights reserved.\n"
 "\n"
 "Redistribution and use in source and binary forms, with or without\n"
@@ -1452,26 +1361,6 @@ msgid ""
 "Send your feedback or comments to : misc@calcurse.org\n"
 "Calcurse home page : http://calcurse.org"
 msgstr ""
-"\n"
-"Авторское право (c) 2004-2009 Frederic Culot\n"
-"Все права защищены.\n"
-"\n"
-"Распространение и использование исходного кода или бинарного\n"
-"файла с или без изменений разрешается при следовании следующим\n"
-"условиям:\n"
-"\n"
-"\t- Redistributions of source code must retain the above\n"
-"\t  copyright notice, this list of conditions and the\n"
-"\t  following disclaimer.\n"
-"\n"
-"\t- Redistributions in binary form must reproduce the above\n"
-"\t  copyright notice, this list of conditions and the\n"
-"\t  following disclaimer in the documentation and/or other\n"
-"\t  materials provided with the distribution.\n"
-"\n"
-"\n"
-"Отзывы и предложения присылайте на почту: calcurse@culot.org\n"
-"Домашняя страница проекта Calcurse: http://culot.org/calcurse"
 
 msgid "Saving..."
 msgstr "Сохранение..."
@@ -1538,7 +1427,7 @@ msgid "The data files were successfully saved"
 msgstr "Файл данных успешно сохранён"
 
 msgid "syntax error in the item date"
-msgstr "ошибка синтаксиса в записе дата"
+msgstr "ошибка синтаксиса в записе даты"
 
 msgid "no event nor appointment found"
 msgstr "события и задачи не найдены"
@@ -1547,7 +1436,7 @@ msgid "wrong format in the appointment or event"
 msgstr "неверный формат события или задачи"
 
 msgid "Failed to open todo file"
-msgstr "Ошибка открытия файла todo-файла"
+msgstr "Ошибка открытия todo-файла"
 
 msgid "could not find any key file."
 msgstr "невозможно найти key-файл."
@@ -1560,14 +1449,14 @@ msgid ""
 msgstr ""
 "\n"
 "Обнаружены ошибки при чтении файла настроек!\n"
-"Сделайте копию keys-файла, удалите его из каталога и запустите Calcurse "
+"Сделайте копию keys-файла, удалите его из каталога и запустите calcurse "
 "снова.\n"
 
 msgid "Could not read key label"
 msgstr "Невозможно прочитать клавишу"
 
 msgid "Key label not recognized"
-msgstr "Клавиша неопознана"
+msgstr "Клавиша не опознана"
 
 #, c-format
 msgid "Error reading key: \"%s\""
@@ -1649,7 +1538,7 @@ msgid "item has a negative duration."
 msgstr "значение имеет отрицательную продолжительность."
 
 msgid "event date is not defined."
-msgstr "дата события неопределена."
+msgstr "дата события не определена."
 
 msgid "item could not be identified."
 msgstr "значение не может быть распознано."
@@ -1698,14 +1587,14 @@ msgstr "ФАТАЛЬНАЯ ОШИБКА: неправильный режим и�
 
 msgid "Warning: ical header malformed or wrong version number. Aborting..."
 msgstr ""
-"Внимание: заголовок ical повреждён или непраильный номер версии. "
+"Внимание: заголовок ical повреждён или неправильный номер версии. "
 "Завершение..."
 
 msgid "Some items could not be imported, see log file ?"
 msgstr "Некоторые записи не были импортированы. Открыть лог-файл?"
 
 msgid "Warning: could not create temporary log file, Aborting..."
-msgstr "Внимание: невозможно открыть временный лог-файл. Завершение..."
+msgstr "Внимание: невозможно создать временный лог-файл. Завершение..."
 
 msgid "Warning: could not open temporary log file, Aborting..."
 msgstr "Внимание: невозможно открыть временный лог-файл. Завершение..."
@@ -1729,8 +1618,8 @@ msgid ""
 "and restart calcurse.\n"
 msgstr ""
 "\n"
-"ВНИМАНИЕ: уже запущен другой calcurse.\n"
-"Если это не так, удалите занятый файл: \n"
+"ВНИМАНИЕ: calcurse уже запущен.\n"
+"Если это не так, удалите заблокированный файл: \n"
 "\"%s\"\n"
 "и перезапустите calcurse.\n"
 
@@ -1775,7 +1664,7 @@ msgid "notify-daemon_enable = "
 msgstr "notify-daemon_enable = "
 
 msgid "(Run in background to get notifications after exiting)"
-msgstr "(Запустить в фоновом режиме для уведомлений после выхода)"
+msgstr "(Запустить в фоновом режиме, для возможности получать уведомления)"
 
 msgid "notify-daemon_log = "
 msgstr "notify-daemon_log = "
@@ -1849,11 +1738,11 @@ msgstr "Дело: "
 msgid "Enter the ToDo priority [1 (highest) - 9 (lowest)] :"
 msgstr "Приоритет дела [1 (высокий) - 9 (низкий)] :"
 
-msgid "no note attached"
-msgstr "записка отсутствует"
-
 msgid "no such todo"
 msgstr "дело не найдено"
+
+msgid "no note attached"
+msgstr "записка отсутствует"
 
 msgid "Do you really want to delete this task ?"
 msgstr "Удалить эту запись?"
@@ -1868,7 +1757,7 @@ msgid "todo not found"
 msgstr "дело не найдено"
 
 msgid "no such action"
-msgstr "действие нераспознано"
+msgstr "действие не распознано"
 
 msgid "Enter the new ToDo description :"
 msgstr "Описание дела: "
@@ -2023,7 +1912,7 @@ msgid "OtherCmd"
 msgstr "ещё..."
 
 msgid "Config"
-msgstr "Настроки"
+msgstr "Настройки"
 
 msgid "Redraw"
 msgstr "Обновить"
@@ -2122,7 +2011,7 @@ msgid "Cannot daemonize, aborting\n"
 msgstr "Невозможно демонизировать процесс. Завершение\n"
 
 msgid "Could not set lock file\n"
-msgstr "Невозможно выбрать закрытый файл\n"
+msgstr "Невозможно выбрать заблкированный файл\n"
 
 #, c-format
 msgid "Could not access \"%s\": %s\n"
@@ -2133,11 +2022,11 @@ msgid "started at %s\n"
 msgstr "запуск в %s\n"
 
 msgid "error loading next appointment\n"
-msgstr "ошибка при загрузке следущей задачи\n"
+msgstr "ошибка при загрузке следующей задачи\n"
 
 #, c-format
 msgid "launching notification at %s for: \"%s\"\n"
-msgstr "запуск уведомения %s для: \"%s\"\n"
+msgstr "запуск уведомления %s для: \"%s\"\n"
 
 msgid "error while sending notification\n"
 msgstr "ошибка во время отправки уведомления\n"
@@ -2152,335 +2041,4 @@ msgstr "пробуждение %s\n"
 
 #, c-format
 msgid "Could not stop calcurse daemon: %s\n"
-msgstr "Невозможно остановить демон calcurs: %s\n"
-
-#~ msgid "Enter an option number to change its value [Q to quit] "
-#~ msgstr "Enter an option number to change its value [Q to quit] "
-
-#, fuzzy
-#~ msgid "CalCurse %s | notify-bar options"
-#~ msgstr "CalCurse %s | general options"
-
-#, fuzzy
-#~ msgid ""
-#~ "\n"
-#~ "Copyright (c) 2004-2008 Frederic Culot\n"
-#~ "\n"
-#~ "This program is free software; you can redistribute it and/or modify\n"
-#~ "it under the terms of the GNU General Public License as published by\n"
-#~ "the Free Software Foundation; either version 2 of the License, or\n"
-#~ "(at your option) any later version.\n"
-#~ "\n"
-#~ "This program is distributed in the hope that it will be useful,\n"
-#~ "but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
-#~ "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
-#~ "GNU General Public License for more details.\n"
-#~ "\n"
-#~ "\n"
-#~ "Send your feedback or comments to : calcurse@culot.org\n"
-#~ "Calcurse home page : http://culot.org/calcurse"
-#~ msgstr ""
-#~ "Copyright (c) 2004-2006 Frederic Culot\n"
-#~ "\n"
-#~ "This program is free software; you can redistribute it and/or modify\n"
-#~ "it under the terms of the GNU General Public License as published by\n"
-#~ "the Free Software Foundation; either version 2 of the License, or\n"
-#~ "(at your option) any later version.\n"
-#~ "\n"
-#~ "This program is distributed in the hope that it will be useful,\n"
-#~ "but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
-#~ "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
-#~ "GNU General Public License for more details.\n"
-#~ "\n"
-#~ "\n"
-#~ "Send your feedback or comments to : calcurse@culot.org\n"
-#~ "Calcurse home page : http://culot.org/calcurse"
-
-#~ msgid "Pick the desired layout on next screen [press ENTER]"
-#~ msgstr "Pick the desired layout on next screen [press ENTER]"
-
-#, fuzzy
-#~ msgid "('A'= Appointment panel, 'C'= calendar panel, 'T'= todo panel)"
-#~ msgstr "('A'= Appointment panel, 'c'= calendar panel, 't'= todo panel)"
-
-#, fuzzy
-#~ msgid "FATAL ERROR in apoint_delete: no such type\n"
-#~ msgstr "FATAL ERROR in todo_delete_bynum: no such todo\n"
-
-#~ msgid "FATAL ERROR in apoint_scan: date error in the appointment\n"
-#~ msgstr "FATAL ERROR in apoint_scan: date error in the appointment\n"
-
-#, fuzzy
-#~ msgid "FATAL ERROR in apoint_get: no such item\n"
-#~ msgstr "FATAL ERROR in todo_delete_bynum: no such todo\n"
-
-#, fuzzy
-#~ msgid "FATAL ERROR in apoint_delete_bynum: no such appointment"
-#~ msgstr "FATAL ERROR in apoint_delete_bynum: no such appointment\n"
-
-#, fuzzy
-#~ msgid "FATAL ERROR in apoint_switch_notify: no such appointment"
-#~ msgstr "FATAL ERROR in apoint_delete_bynum: no such appointment\n"
-
-#, fuzzy
-#~ msgid "FATAL ERROR in custom_load_color: wrong color number.\n"
-#~ msgstr ""
-#~ "FATAL ERROR in fill_config_var: wrong configuration variable format.\n"
-
-#, fuzzy
-#~ msgid "FATAL ERROR in custom_load_color: wrong color name.\n"
-#~ msgstr "FATAL ERROR in load_app: wrong format in the appointment or event\n"
-
-#, fuzzy
-#~ msgid ""
-#~ "FATAL ERROR in custom_load_color: wrong configuration variable format.\n"
-#~ msgstr ""
-#~ "FATAL ERROR in fill_config_var: wrong configuration variable format.\n"
-
-#, fuzzy
-#~ msgid "FATAL ERROR in custom_color_theme_name: unknown color\n"
-#~ msgstr "FATAL ERROR in todo_delete_bynum: no such todo\n"
-
-#, fuzzy
-#~ msgid "FATAL ERROR in day_popup_item: unknown item type\n"
-#~ msgstr "FATAL ERROR in todo_delete_bynum: no such todo\n"
-
-#, fuzzy
-#~ msgid "FATAL ERROR in event_get: no such item\n"
-#~ msgstr "FATAL ERROR in event_delete_bynum: no such event\n"
-
-#~ msgid "FATAL ERROR in event_delete_bynum: no such event\n"
-#~ msgstr "FATAL ERROR in event_delete_bynum: no such event\n"
-
-#, fuzzy
-#~ msgid "FATAL ERROR in foreach_date_dump: incoherent repetition type\n"
-#~ msgstr "FATAL ERROR in todo_delete_bynum: no such todo\n"
-
-#, fuzzy
-#~ msgid ""
-#~ "FATAL ERROR in pcal_export_recur_events: incoherent repetition type\n"
-#~ msgstr "FATAL ERROR in event_delete_bynum: no such event\n"
-
-#, fuzzy
-#~ msgid ""
-#~ "FATAL ERROR in pcal_export_recur_apoints: incoherent repetition type\n"
-#~ msgstr "FATAL ERROR in apoint_delete_bynum: no such appointment\n"
-
-#, fuzzy
-#~ msgid "FATAL ERROR in io_export_data: wrong export mode\n"
-#~ msgstr "FATAL ERROR in todo_delete_bynum: no such todo\n"
-
-#, fuzzy
-#~ msgid "FATAL ERROR in io_export_data: unknown export type\n"
-#~ msgstr "FATAL ERROR in todo_delete_bynum: no such todo\n"
-
-#, fuzzy
-#~ msgid "FATAL ERROR in io_import_data: unknown import type"
-#~ msgstr "FATAL ERROR in todo_delete_bynum: no such todo\n"
-
-#, fuzzy
-#~ msgid "FATAL ERROR in launch_cmd: could not launch user command"
-#~ msgstr "FATAL ERROR in todo_delete_bynum: no such todo\n"
-
-#, fuzzy
-#~ msgid "FATAL ERROR in recur_def2char: unknown recur type\n"
-#~ msgstr "FATAL ERROR in todo_delete_bynum: no such todo\n"
-
-#, fuzzy
-#~ msgid "FATAL ERROR in recur_char2def: unknown char\n"
-#~ msgstr "FATAL ERROR in todo_delete_bynum: no such todo\n"
-
-#, fuzzy
-#~ msgid "FATAL ERROR in recur_event_scan: date error in the event\n"
-#~ msgstr "FATAL ERROR in event_scan: date error in the event\n"
-
-#, fuzzy
-#~ msgid "FATAL ERROR in recur_item_inday: unknown item type\n"
-#~ msgstr "FATAL ERROR in todo_delete_bynum: no such todo\n"
-
-#, fuzzy
-#~ msgid "FATAL ERROR in recur_event_erase: no such event\n"
-#~ msgstr "FATAL ERROR in event_delete_bynum: no such event\n"
-
-#, fuzzy
-#~ msgid "FATAL ERROR in recur_apoint_erase: no such appointment\n"
-#~ msgstr "FATAL ERROR in apoint_delete_bynum: no such appointment\n"
-
-#, fuzzy
-#~ msgid "FATAL ERROR in recur_repeat_item: wrong item type\n"
-#~ msgstr "FATAL ERROR in todo_delete_bynum: no such todo\n"
-
-#, fuzzy
-#~ msgid "FATAL ERROR in recur_exc_scan: syntax error in the item date\n"
-#~ msgstr "FATAL ERROR in load_app: syntax error in the item date\n"
-
-#, fuzzy
-#~ msgid "FATAL ERROR in recur_get_apoint: no such item\n"
-#~ msgstr "FATAL ERROR in apoint_delete_bynum: no such appointment\n"
-
-#, fuzzy
-#~ msgid "FATAL ERROR in recur_get_event: no such item\n"
-#~ msgstr "FATAL ERROR in event_delete_bynum: no such event\n"
-
-#, fuzzy
-#~ msgid "FATAL ERROR in recur_apoint_switch_notify: no such item\n"
-#~ msgstr "FATAL ERROR in apoint_delete_bynum: no such appointment\n"
-
-#, fuzzy
-#~ msgid "FATAL ERROR in todo_delete_note_bynum: no note attached\n"
-#~ msgstr "FATAL ERROR in todo_delete_bynum: no such todo\n"
-
-#, fuzzy
-#~ msgid "FATAL ERROR in todo_delete_note_bynum: no such todo\n"
-#~ msgstr "FATAL ERROR in todo_delete_bynum: no such todo\n"
-
-#~ msgid "FATAL ERROR in todo_delete_bynum: no such todo\n"
-#~ msgstr "FATAL ERROR in todo_delete_bynum: no such todo\n"
-
-#, fuzzy
-#~ msgid "FATAL ERROR in todo_get_position: todo not found\n"
-#~ msgstr "FATAL ERROR in todo_delete_bynum: no such todo\n"
-
-#, fuzzy
-#~ msgid "FATAL ERROR in todo_chg_priority: no such action\n"
-#~ msgstr "FATAL ERROR in todo_delete_bynum: no such todo\n"
-
-#, fuzzy
-#~ msgid "FATAL ERROR in updatestring: out of memory"
-#~ msgstr "FATAL ERROR in update_windows: no window selected\n"
-
-#~ msgid "FATAL ERROR in date2sec: failure in mktime\n"
-#~ msgstr "FATAL ERROR in date2sec: failure in mktime\n"
-
-#, fuzzy
-#~ msgid "FATAL ERROR in date_sec_change: failure in mktime\n"
-#~ msgstr "FATAL ERROR in date2sec: failure in mktime\n"
-
-#, fuzzy
-#~ msgid "FATAL ERROR in other_status_page: unknown panel\n"
-#~ msgstr "FATAL ERROR in todo_delete_bynum: no such todo\n"
-
-#, fuzzy
-#~ msgid "FATAL ERROR in mystrtol: number is out of range"
-#~ msgstr "FATAL ERROR in update_windows: no window selected\n"
-
-#~ msgid "option not defined - Problem in print_option_incolor()"
-#~ msgstr "option not defined - Problem in print_option_incolor()"
-
-#, fuzzy
-#~ msgid "FATAL ERROR in erase_note: could not remove note\n"
-#~ msgstr "FATAL ERROR in todo_delete_bynum: no such todo\n"
-
-#, fuzzy
-#~ msgid "FATAL ERROR in wins_update: no window selected\n"
-#~ msgstr "FATAL ERROR in update_windows: no window selected\n"
-
-#, fuzzy
-#~ msgid ""
-#~ "You can use either 'H','J','K','L' or the arrow keys '<','v','^','>'\n"
-#~ "to move into the calendar.\n"
-#~ "\n"
-#~ "The following scheme explains how :\n"
-#~ "\n"
-#~ "                      move to previous week\n"
-#~ "                              K ^  \n"
-#~ "  move to previous day   H <       > L   move to next day\n"
-#~ "                              J v  \n"
-#~ "                       move to next week\n"
-#~ "\n"
-#~ "Moreover, while inside the calendar panel, the '0' (zero) key moves\n"
-#~ "to the first day of the week, and the '$' key selects the last day of\n"
-#~ "the week.\n"
-#~ "\n"
-#~ "When the Appointment or ToDo panel is selected, the up and down keys\n"
-#~ "(respectively K or up arrow, and J or down arrow) allows you to select\n"
-#~ "an item from those lists."
-#~ msgstr ""
-#~ "You can use either 'H','J','K','L' or the arrow keys '<','v','^','>'\n"
-#~ "to move into the calendar.\n"
-#~ "\n"
-#~ "The following scheme explains how :\n"
-#~ "\n"
-#~ "                      move to previous week\n"
-#~ "                              K ^  \n"
-#~ "  move to previous day   H <       > L   move to next day\n"
-#~ "                              J v  \n"
-#~ "                       move to next week\n"
-#~ "\n"
-#~ "When the Appointment or ToDo panel is selected, the up and down keys\n"
-#~ "(respectively K or up arrow, and J or down arrow) allows you to select\n"
-#~ "an item from those lists."
-
-#~ msgid "CalCurse %s | help"
-#~ msgstr "CalCurse %s | help"
-
-#~ msgid "Possible argument formats are : 'mm/dd/yyyy' or 'n'\n"
-#~ msgstr "Possible argument formats are : 'mm/dd/yyyy' or 'n'\n"
-
-#, fuzzy
-#~ msgid "Enter the day to go to [ENTER for today] : mm/dd/yyyy"
-#~ msgstr "Enter the day to go to [ENTER for today] : dd/mm/yyyy"
-
-#, fuzzy
-#~ msgid "FATAL ERROR in wins_prop: property unknown\n"
-#~ msgstr "FATAL ERROR in todo_delete_bynum: no such todo\n"
-
-#~ msgid "The day you entered is not valid"
-#~ msgstr "The day you entered is not valid"
-
-#~ msgid ""
-#~ "Please resize your terminal screen\n"
-#~ "(to at least 80x24),\n"
-#~ "and restart calcurse.\n"
-#~ msgstr ""
-#~ "Please resize your terminal screen\n"
-#~ "(to at least 80x24),\n"
-#~ "and restart calcurse.\n"
-
-#, fuzzy
-#~ msgid "FATAL ERROR in update_time_in_date: failure in mktime\n"
-#~ msgstr "FATAL ERROR in date2sec: failure in mktime\n"
-
-#~ msgid "Pick the number corresponding to the color scheme (Q to exit) :"
-#~ msgstr "Pick the number corresponding to the colour scheme (Q to exit) :"
-
-#~ msgid "([>0<] for black & white)"
-#~ msgstr "([>0<] for black & white)"
-
-#~ msgid "-- Press 'N' for next page --"
-#~ msgstr "-- Press 'N' for next page --"
-
-#~ msgid "-- Press 'P' for previous page --"
-#~ msgstr "-- Press 'P' for previous page --"
-
-#~ msgid "   |Ac|      |At|      |cA|      |tA|"
-#~ msgstr "   |Ac|      |At|      |cA|      |tA|"
-
-#~ msgid "[1]|At|   [2]|Ac|   [3]|tA|   [4]|cA|"
-#~ msgstr "[1]|At|   [2]|Ac|   [3]|tA|   [4]|cA|"
-
-#~ msgid "Redraw:\n"
-#~ msgstr "Обновить:\n"
-
-#, fuzzy
-#~ msgid ""
-#~ "Pressing CTRL-L redraws the Calcurse panels.\n"
-#~ "\n"
-#~ "You might want to use this function when you resize your terminal\n"
-#~ "screen for example, and you want Calcurse to take into account the new\n"
-#~ "size of the terminal.\n"
-#~ "\n"
-#~ "This function can also be useful when garbage appears in the display,\n"
-#~ "and you want to clean it."
-#~ msgstr ""
-#~ "Pressing 'R' redraws the Calcurse panels.\n"
-#~ "\n"
-#~ "You might want to use this function when you resize your terminal\n"
-#~ "screen for example, and you want Calcurse to take into account the new\n"
-#~ "size of the terminal.\n"
-#~ "\n"
-#~ "This function can also be useful when garbage appears in the display,\n"
-#~ "and you want to clear it."
-
-#~ msgid "GoTo"
-#~ msgstr "Переход"
+msgstr "Невозможно остановить демон calcurse: %s\n"

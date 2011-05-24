@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: calcurse 2.8\n"
+"Project-Id-Version: calcurse 2.9.0\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2011-04-10 18:00+0200\n"
+"POT-Creation-Date: 2011-05-24 11:20+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -65,7 +65,7 @@ msgstr ""
 
 msgid ""
 "\n"
-"Copyright (c) 2004-2010 Frederic Culot.\n"
+"Copyright (c) 2004-2011 calcurse Development Team.\n"
 "This is free software; see the source for copying conditions.\n"
 msgstr ""
 
@@ -992,7 +992,7 @@ msgstr ""
 #, c-format
 msgid ""
 "\n"
-"Copyright (c) 2004-2009 Frederic Culot\n"
+"Copyright (c) 2004-2011 calcurse Development Team\n"
 "All rights reserved.\n"
 "\n"
 "Redistribution and use in source and binary forms, with or without\n"
@@ -1375,10 +1375,10 @@ msgstr ""
 msgid "Enter the ToDo priority [1 (highest) - 9 (lowest)] :"
 msgstr ""
 
-msgid "no note attached"
+msgid "no such todo"
 msgstr ""
 
-msgid "no such todo"
+msgid "no note attached"
 msgstr ""
 
 msgid "Do you really want to delete this task ?"

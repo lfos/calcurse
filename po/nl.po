@@ -1,21 +1,20 @@
-# Dutch translations for calcurse package.
-# Copyright (C) 2007-2008 Jeremy Roon <p.roon@chello.nl>
-# This file is distributed under the same license as the calcurse package.
-# Frederic Culot <frederic@culot.org>, 2006-2008.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# This file is distributed under the same license as the PACKAGE package.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: calcurse 2.1\n"
+"Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2011-04-10 18:00+0200\n"
-"PO-Revision-Date: 2008-10-14 20:54+0200\n"
-"Last-Translator: Jeremy Roon\n"
-"Language-Team:  Jeremy Roon <p.roon@chello.nl>\n"
+"POT-Creation-Date: 2011-05-24 11:20+0200\n"
+"PO-Revision-Date: 2011-05-11 09:21+0000\n"
+"Last-Translator: cryptocrack <transifex@cryptocrack.de>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
 msgid "null pointer"
 msgstr ""
@@ -46,46 +45,34 @@ msgstr "Wilt u werkelijk dit item wissen ?"
 msgid "no such type"
 msgstr ""
 
-#, fuzzy
 msgid "date error in appointment"
-msgstr "Volgende afspraak :\n"
+msgstr ""
 
-#, fuzzy
 msgid "item not found"
-msgstr "Noot-bestand niet gevonden\n"
+msgstr ""
 
-#, fuzzy
 msgid "no such appointment"
-msgstr "Volgende afspraak :\n"
+msgstr ""
 
-#, fuzzy
 msgid ""
 "Usage: calcurse [-h|-v] [-N] [-an] [-t[num]] [-i<file>] [-x[format]]\n"
 "                [-d <date>|<num>] [-s[date]] [-r[range]]\n"
 "                [-c<file> | -D<dir>] [-S<regex>] [--status]\n"
 msgstr ""
-"Gebruik: calcurse [-h|-v] [-N] [-an] [-t[nr]] [-i<bestand>] [-x[formaat]]\n"
-"\t\t [-d <datum>|<nr>] [-s[datum]] [-r[bereik]]\n"
-"\t\t [-c<bestand> | -D<dir>]\n"
 
 msgid "Try 'calcurse -h' for more information.\n"
 msgstr "Gebruik 'calcurse -h', voor meer informatie.\n"
 
-#, fuzzy
 msgid ""
 "\n"
-"Copyright (c) 2004-2010 Frederic Culot.\n"
+"Copyright (c) 2004-2011 calcurse Development Team.\n"
 "This is free software; see the source for copying conditions.\n"
 msgstr ""
-"\n"
-"Copyright (c) 2004-2008 Frederic Culot.\n"
-"Dit is vrije Software; kijk in de broncode voor kopieervoorwaarden.\n"
 
 #, c-format
 msgid "Calcurse %s - text-based organizer\n"
 msgstr "Calcurse %s - tekst-gebaseerde organizer\n"
 
-#, fuzzy
 msgid ""
 "\n"
 "Miscellaneous:\n"
@@ -157,66 +144,6 @@ msgid ""
 "For more information, type '?' from within Calcurse, or read the manpage.\n"
 "Mail bug reports and suggestions to <misc@calcurse.org>.\n"
 msgstr ""
-"\n"
-"Diversen:\n"
-"  -h, --hulp\n"
-"\tGeeft deze hulp weer en verlaat het programma.\n"
-"\n"
-"  -v, --versie\n"
-" \tGeeft versie weer en verlaat het programma.\n"
-"\n"
-"Bestanden:\n"
-"  -c <bestand>, --calendar <bestand>\n"
-"\tHet te gebruiken kalender <bestand> (niet gebruiken met '-D'.\n"
-"\n"
-" -D <dir>, --directory <dir>\n"
-"\tDe te gebruiken data directory (niet gebruiken met '-c').\n"
-"\tStandaard is de data directory ~/.calcurse\n"
-"\n"
-"Niet-interactief:\n"
-"  -a, --appointment\n"
-"\tGeeft de afspraak van vandaag weer en verlaat het programma.\n"
-"\n"
-"  -d <datum|nr>, --day <datum|nr>\n"
-"\tGeeft alle afspraken voor de <datum> of de <nr> volgende dagen weer\n"
-"\ten verlaat het programma. Mogelijke opties: 'mm/dd/jjjj' of 'n'.\n"
-"\n"
-" -i <bestand>, --import <bestand>\n"
-"\timporteer de icalendar data uit <bestand>. \n"
-"\n"
-"  -n, --next\n"
-"\tGeeft de volgende afspraak binnen de komende 24 uur weer, en verlaat het\n"
-"\tprogramma. Ook wordt de tijd tot die afspraak weergegeven.\n"
-"\n"
-"  -N, --note\n"
-"\tIndien samen gebruikt met '-a' of '-t', wordt ook de inhoud van de noot\n"
-"weergegeven, als deze geassocieerd is met het weergegeven item.\n"
-"\n"
-" -r[nr], --bereik[[=num]\n"
-"\tgeeft gebeurtenissen en afspraken voor [nr] aantal dagen weer en \n"
-"\teindigt. Standaard wordt 1 dag weergegeven, als [nr] niet is gegeven\n"
-"\n"
-" -s[datum], --begindag[=datum]\n"
-"\tgeeft gebeurtenissen en afspraken voor [datum] weer en sluit af.\n"
-"\tAls er geen datum wordt gegeven, wordt de huidige datum gebruikt.\n"
-"\n"
-"  -t[nr], --todo[=nr]\n"
-"\tGeeft de takenlijst weer en verlaat het programma. Als het optionele\n"
-"\targument [nr] wordt gegeven, zullen alleen de taken met de prioriteit\n"
-"\tgelijk aan [nr] worden getoond.\n"
-"\tLet op: De prioriteit moet tussen 1 (hoogste) en 9 (laagste) liggen.\n"
-"\n"
-"  -x[formaat], --export[formaat]\n"
-"\texporteert gebruikersdata naar het gekozen formaat. Afspraken,\n"
-"\tgebeurtenissen en taken worden geconverteerd en naar stdout gezonden.\n"
-"\tEr zijn twee mogelijkheden: 'ical' en 'pcal'.\n"
-"\tAls er geen keuze-argument wordt meegegeven, zal ical standaard\n"
-"\tworden geselecteerd.\n"
-"\tNoot: Met het volgende commando, wordt de output omgeleid en\n"
-"\topgeslagen in een bestand: calcurse --export > my_data.ics\n"
-"\n"
-"Typ '?' in Calcurse voor meer informatie, of lees de man-pagina.\n"
-"Mail a.u.b. foutrapporten en suggesties naar <misc@calcurse.org>.\n"
 
 #, c-format
 msgid ""
@@ -233,9 +160,9 @@ msgstr ""
 msgid "calcurse is running in background (pid %d)\n"
 msgstr ""
 
-#, fuzzy, c-format
+#, c-format
 msgid "calcurse is not running\n"
-msgstr "calcurse eindigt nu..."
+msgstr ""
 
 msgid "No note file found\n"
 msgstr "Noot-bestand niet gevonden\n"
@@ -296,9 +223,8 @@ msgstr "Wilt u werkelijk het programma verlaten?"
 msgid "To do :"
 msgstr "Taken :"
 
-#, fuzzy
 msgid "ERROR setting first day of week"
-msgstr "FOUT in calender_set_first_day_of_week\n"
+msgstr ""
 
 msgid ""
 "The day you entered is not valid (should be between 01/01/1902 and "
@@ -310,13 +236,11 @@ msgstr ""
 msgid "Press [ENTER] to continue"
 msgstr "Druk op [ENTER] om door te gaan)"
 
-#, fuzzy
 msgid "wrong configuration variable format."
-msgstr "FATALE FOUT in fill_config_var: fout formaat configuratievariabele.\n"
+msgstr ""
 
-#, fuzzy
 msgid "missing colors in config file"
-msgstr "Kan het configuratiebestand niet openen"
+msgstr ""
 
 msgid "wrong color name"
 msgstr ""
@@ -324,16 +248,14 @@ msgstr ""
 msgid "wrong color number"
 msgstr ""
 
-#, fuzzy
 msgid "wrong configuration variable format"
-msgstr "FATALE FOUT in fill_config_var: fout formaat configuratievariabele.\n"
+msgstr ""
 
 msgid "Failed to open config file"
 msgstr "Kan het configuratiebestand niet openen"
 
-#, fuzzy
 msgid "configuration variable unknown"
-msgstr "FATALE FOUT in custom_load_conf: onbekende configuratievariabele.\n"
+msgstr ""
 
 msgid "Exit"
 msgstr "Einde"
@@ -362,9 +284,8 @@ msgstr ""
 msgid "Up"
 msgstr ""
 
-#, fuzzy
 msgid "Down"
-msgstr "Op/Neer"
+msgstr ""
 
 msgid "Left"
 msgstr ""
@@ -375,9 +296,9 @@ msgstr ""
 msgid "Help"
 msgstr "Hulp"
 
-#, fuzzy, c-format
+#, c-format
 msgid "layout configuration"
-msgstr "CalCurse %s | algemene Opties"
+msgstr ""
 
 msgid ""
 "With this configuration menu, one can choose where panels will be\n"
@@ -411,9 +332,8 @@ msgid ""
 "can't be smaller than "
 msgstr ""
 
-#, fuzzy
 msgid "No color"
-msgstr "Kleur"
+msgstr ""
 
 msgid "Foreground"
 msgstr "Voorgrond"
@@ -424,20 +344,18 @@ msgstr "Achtergrond"
 msgid "(terminal's default)"
 msgstr "standaard van terminal"
 
-#, fuzzy, c-format
+#, c-format
 msgid "color theme"
-msgstr "Calcurse %s | kleurschema"
+msgstr ""
 
-#, fuzzy
 msgid "unknown color"
-msgstr "Kleur"
+msgstr ""
 
 msgid "auto_save = "
 msgstr "automatisch_opslaan = "
 
-#, fuzzy
 msgid "periodic_save = "
-msgstr "automatisch_opslaan = "
+msgstr ""
 
 msgid "confirm_quit = "
 msgstr "einde_bevestigen = "
@@ -489,13 +407,11 @@ msgstr "(Formaat van de datum in niet-interactieve modus)"
 msgid "(Format to be used when entering a date: "
 msgstr "Het te gebruiken formaat bij datuminvoer: "
 
-#, fuzzy
 msgid " (1)mm/dd/yyyy (2)dd/mm/yyyy (3)yyyy/mm/dd (4)yyyy-mm-dd)"
-msgstr " 1-mm/dd/yyyy, 2-dd/mm/yyyy, 3-yyyy/mm/dd)"
+msgstr ""
 
-#, fuzzy
 msgid "Enter an option number to change its value"
-msgstr "Geef een nummer om de waarde te veranderen [Q om te stoppen]"
+msgstr ""
 
 msgid "(Press '^P' or '^N' to move up or down, 'Q' to quit)"
 msgstr ""
@@ -503,17 +419,16 @@ msgstr ""
 msgid "Enter the date format (see 'man 3 strftime' for possible formats) "
 msgstr "Geef het formaat van de datum (zie 'man 3 strftime')"
 
-#, fuzzy
 msgid ""
 "Enter the date format (1)mm/dd/yyyy (2)dd/mm/yyyy (3)yyyy/mm/dd (4)yyyy-mm-dd"
-msgstr "Voer datumformaat in (1-mm/dd/yyyy, 2-dd/mm/yyyy, 3-yyyy/mm/dd) "
+msgstr ""
 
 msgid "Enter the delay, in minutes, between automatic saves (0 to disable) "
 msgstr ""
 
-#, fuzzy, c-format
+#, c-format
 msgid "general options"
-msgstr "CalCurse %s | algemene Opties"
+msgstr ""
 
 msgid "Undefined option!"
 msgstr ""
@@ -524,13 +439,11 @@ msgstr ""
 msgid "Key info"
 msgstr ""
 
-#, fuzzy
 msgid "Add key"
-msgstr "Nieuw Itm"
+msgstr ""
 
-#, fuzzy
 msgid "Del key"
-msgstr "Wis Item"
+msgstr ""
 
 msgid "Prev Key"
 msgstr ""
@@ -538,20 +451,19 @@ msgstr ""
 msgid "Next Key"
 msgstr ""
 
-#, fuzzy, c-format
+#, c-format
 msgid "keys configuration"
-msgstr "CalCurse %s | algemene Opties"
+msgstr ""
 
 msgid "Press the key you want to assign to:"
 msgstr ""
 
-#, fuzzy
 msgid "This key is not yet recognized by calcurse, please choose another one."
-msgstr "Dit item wordt al herhaald."
+msgstr ""
 
-#, fuzzy, c-format
+#, c-format
 msgid "This key is already in use for %s, please choose another one."
-msgstr "Dit item wordt al herhaald."
+msgstr ""
 
 msgid "Some actions do not have any associated key bindings!"
 msgstr ""
@@ -617,25 +529,23 @@ msgstr "[i/n]"
 msgid "[a/o] "
 msgstr "[a/o]"
 
-#, fuzzy
 msgid "unknwon type"
-msgstr "FOUT in ical_log: onbekend ical type"
+msgstr ""
 
-#, fuzzy
 msgid "date error in the event\n"
-msgstr "FATALE FOUT in event_scan: datumfout in afspraak\n"
+msgstr ""
 
 msgid "event not found"
 msgstr ""
 
-#, fuzzy, c-format
+#, c-format
 msgid "Calcurse help"
-msgstr "Calcurse %s | Hulp"
+msgstr ""
 
 msgid "       Welcome to Calcurse. This is the main help screen.\n"
 msgstr "       Welkom in Calcurse. Dit is het centrale hulpscherm.\n"
 
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Moving around:  Press '%s' or '%s' to scroll text upward or downward\n"
 "                inside help screens, if necessary.\n"
@@ -655,26 +565,11 @@ msgid ""
 "\n"
 "      Credits:  Press '%s' for credits."
 msgstr ""
-"      Navigeren:  Gebruik CTRL-P of CTRL-N om de tekst zonodig op of\n"
-"                  neer te scrollen in het hulpvenster.\n"
-"\n"
-"  Hulp verlaten:  Druk op 'Q' om het hulpvenster te verlaten.\n"
-"\n"
-" Hulp-onderwerp:  Aan de onderkant van dit venster, is een panel met ver-\n"
-"                  schillende velden, weergegeven door een letter en een\n"
-"                  korte titel. Dit panel bevat al de beschikbare acties\n"
-"                  die mogelijk zijn in het gebruik van Calcurse.\n"
-"                  Door op een van de letters te drukken in dit panel, zal\n"
-"                  er een korte beschrijving van de corresponderende actie\n"
-"                  verschijnen.\n"
-"\n"
-"        Auteurs:  Druk op '@' om de auteurs van Calcurse te zien."
 
-#, fuzzy
 msgid "Save\n"
-msgstr "Opslaan:\n"
+msgstr ""
 
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Save calcurse data.\n"
 "Data are splitted into four different files which contain :\n"
@@ -688,23 +583,11 @@ msgid ""
 "In the config menu, you can choose to save the Calcurse data\n"
 "automatically before quitting."
 msgstr ""
-"Door 'S' te drukken, wordt de data van Calcurse opgeslagen.\n"
-"\n"
-"De data wordt in drie verschillende bestanden opgeslagen :\n"
-"\n"
-"       /  ~/.calcurse/conf -> gebruikersinstellingen\n"
-"       |                      (Layout, kleur, alg. Opties)\n"
-"       |  ~/.calcurse/apts -> afspraken\n"
-"       \\  ~/.calcurse/todo -> taken\n"
-"\n"
-"In het venster instellingen kan een optie gekozen worden, \n"
-"die de data automatisch opslaat bij het verlaten van Calcurse."
 
-#, fuzzy
 msgid "Import\n"
-msgstr "Import:\n"
+msgstr ""
 
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Import data from an icalendar file.\n"
 "You will be asked to enter the file name from which to load ical\n"
@@ -723,27 +606,11 @@ msgid ""
 "stream at which this item begins, together with the description of why\n"
 "the item could not be imported.\n"
 msgstr ""
-"Met de 'I'-toets wordt data van een icalenderbestand geïmporteerd\n"
-"Er wordt om een bestandsnaam met de te importeren ical-data gevraagd.\n"
-"\n"
-"Bij het einde van het importprocess, en als de optie\n"
-"'skip_system_dialogs' op 'nee' staat, zal een rapport getoond worden\n"
-"met hoeveel items werden geïmporteerd.\n"
-"Dit rapport bevat het aantal regels, afspraken, gebeurtenissen en\n"
-"taken die succesvol zijn geïmporteerd, alsook het aantal items\n"
-"waar problemen mee waren, en die zijn overgeslagen.\n"
-"\n"
-"Als een of meer items niet geïmporteerd zijn, is het mogelijk om in\n"
-"het import-process-rapport na te kijken, waar de problemen zich\n"
-"bevinden.\n"
-"In dit rapport is per item met omschrijving te zien waarom het item\n"
-"niet geïmporteerd kon worden.\n"
 
-#, fuzzy
 msgid "Export\n"
-msgstr "Export:\n"
+msgstr ""
 
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Export calcurse data (appointments, events and todos).\n"
 "This leads to the export submenu, from which you can choose between\n"
@@ -765,22 +632,9 @@ msgid ""
 "Calcurse data are exported in the following order:\n"
 "     events, appointments, todos.\n"
 msgstr ""
-"Druk op 'X' om via een export submenu tussen twee verschillende\n"
-"export formaten te kiezen: 'ical' en 'pcal'.\n"
-"Het standaardbestand is:\n"
-"\n"
-"     ~/calcurse.ics\n"
-"\n"
-"voor ical-export, en:\n"
-"\n"
-"     ~/calcurse.txt\n"
-"voor pcal export.\n"
-"Alle data wordt geëxporteerd, in deze volgorde:\n"
-"gebeurtenissen, afspraken, taken.\n"
 
-#, fuzzy
 msgid "Displacement keys\n"
-msgstr "Navigatietoetsen:\n"
+msgstr ""
 
 #, c-format
 msgid ""
@@ -808,11 +662,10 @@ msgid ""
 "the week.\n"
 msgstr ""
 
-#, fuzzy
 msgid "View\n"
-msgstr "Bekijk:\n"
+msgstr ""
 
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "View the item you select in either the Todo or Appointment panel.\n"
 "\n"
@@ -825,23 +678,11 @@ msgid ""
 "Press any key to close the popup window and go back to the main\n"
 "Calcurse screen."
 msgstr ""
-"Met de toets 'V' bekijk je het geselecteerde item in het \n"
-"taken of afsprakenpanel.\n"
-"\n"
-"Dit is nuttig, als de beschrijving van de gebeurtenis langer is als de\n"
-"beschikbare plaats in de terminal. In dit geval, zal de beschrijving \n"
-"afgekort worden en het einde vervangen worden door '...'. Om de rest \n"
-"van de beschrijving te zien, gebruikt men de toets 'V'. In een venster \n"
-"wordt dan de volledige beschrijving weergegeven.\n"
-"\n"
-"Druk op een willekeurige toets om dit venster te sluiten en terug te \n"
-"keren naar het standaard Calcurse venster."
 
-#, fuzzy
 msgid "Tab\n"
-msgstr "Tab:\n"
+msgstr ""
 
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Switch between panels.\n"
 "The panel currently in use has its border colorized.\n"
@@ -855,22 +696,11 @@ msgid ""
 "change while pressing '%s', so you always know what action can be\n"
 "performed on the selected panel."
 msgstr ""
-"De 'Tab'-toets verplaatst de focus tussen de panels.\n"
-"Het actieve panel heeft een gekleurd kader.\n"
-"\n"
-"Sommige acties zijn alleen mogelijk, als het juiste panel actief is.\n"
-"Als je bv. een taak toe wilt voegen, zal je eerst met 'Tab' het \n"
-"taken-panel moeten activeren. Pas dan kun je met 'A' een item toevoegen.\n"
-"\n"
-"Merk op dat aan de onderkant van het venster, de lijst met mogelijke \n"
-"acties mee verandert, zodat altijd te zien is, welke acties gedaan kunnen \n"
-"worden in het actieve panel."
 
-#, fuzzy
 msgid "Goto\n"
-msgstr "Ga naar:\n"
+msgstr ""
 
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Jump to a specific day in the calendar.\n"
 "\n"
@@ -882,21 +712,11 @@ msgid ""
 "Notice that pressing '%s', whatever panel is\n"
 "selected, will select current day in the calendar."
 msgstr ""
-"Met de 'G'-toets, gaat men naar een specifieke datum in de kalender.\n"
-"\n"
-"Door dit commando, is het niet nodig naar de datum te gaan met behulp \n"
-"van de verplaatsingstoetsen in het kalenderpanel.\n"
-"Indien men op [ENTER] drukt zonder een datum te geven, zal Calcurse \n"
-"naar de huidige dag gaan die op het systeem is insteld.\n"
-"\n"
-"Merk op dat met ^G (Control + G), ongeacht welk panel actief is\n"
-"de huidige datum geselecteerd zal worden in de kalender."
 
-#, fuzzy
 msgid "Delete\n"
-msgstr "Wissen:\n"
+msgstr ""
 
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Delete an element in the ToDo or Appointment list.\n"
 "\n"
@@ -913,24 +733,11 @@ msgid ""
 "Do not forget to save the calendar data to retrieve the modifications\n"
 "next time you launch Calcurse."
 msgstr ""
-"De 'D'-toets wist een element uit de taken- of afsprakenlijst.\n"
-"\n"
-"Afhankelijk van het geactiveerde panel, zal het gemarkeerde item van \n"
-"of de taken- of afsprakelijst worden gewist.\n"
-"\n"
-"Als het te wissen item recursief is, zal er gevraagd worden of alle \n"
-"recursieve items, of alleen het geselecteerde item gewist moet worden.\n"
-"\n"
-"Als de algemene optie 'bevestigen_verwijderen' op 'JA' staat, zal er \n"
-"om een bevestiging gevraagd worden bij het wissen van een gebeurtenis.\n"
-"Vergeet niet om de kalenderdata op te slaan, als je de veranderingen \n"
-"wilt behouden."
 
-#, fuzzy
 msgid "Add\n"
-msgstr "Toevoegen:\n"
+msgstr ""
 
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Add an item in either the ToDo or Appointment list, depending on which\n"
 "panel is selected when you press '%s'.\n"
@@ -967,35 +774,6 @@ msgid ""
 "     o do not forget to save the calendar data to retrieve the new\n"
 "       event next time you launch Calcurse."
 msgstr ""
-"Je kunt zowel een taak als afspraak toevoegen met de 'A'-toets, \n"
-"afhankelijk in welk panel je staat als je op 'A' drukt.\n"
-"\n"
-"Bij het toevoegen van een taak, wordt er eerst om een beschrijving \n"
-"gevraagd. Dan zal er om de prioriteit gevraagd worden. De prioriteit \n"
-"wordt door middel van een nummer weergegeven. Het nummer ligt tussen \n"
-"9 (laagste prioriteit) en 1 (hoogste prioriteit. Het is altijd mogelijk \n"
-"om naderhand de prioriteit te veranderen, dmv de '+/-'-toetsen, in \n"
-"het takenpanel.\n"
-"\n"
-"Als je op 'A' drukt met het AFSPRAKEN-panel geselecteerd, kan je een \n"
-"nieuwe afspraak of gebeurtenis van een dag lang toevoegen. Druk op \n"
-"[ENTER] bij de aanvangstijd om een nieuwe gebeurtenis toe te voegen en \n"
-"vul dan de beschrijving van de gebeurtenis in.\n"
-"Om een nieuwe afspraak toe te voegen aan de AFSPRAKEN-lijst, zal je \n"
-"achtereenvolgens de aanvangstijd van de afspraak, en de lengte van de \n"
-"afspraak (ofwel door de duur in minuten, of door de eindtijd in [hh:mm] \n"
-"of [h:mm] formaat) in moeten voeren.\n"
-"\n"
-"De afspraak of gebeurtenis wordt aan de geselecteerde dag in de kalender \n"
-"toegewezen, dus selecteer eerst de gewenste dag voordat je op 'A' drukt.\n"
-"Opmerking:\n"
-"        o Als een afspraak meerdere dagen duurt, dan zal op de dagen, \n"
-"          dat de afspraak niet begint of eindigt, de aanvangs- \n"
-"          of eindtijd worden aangegeven met '..'.\n"
-"        o Er wordt geen AFSPRAAK of TAAK toegevoegd als bij de vraag om \n"
-"          de beschrijving hiervan alleen op [ENTER] wordt gedrukt.\n"
-"        o vergeet niet kalenderdata op te slaan, als de nieuwe items voor\n"
-"          de volgende start van Calcurse behouden moeten blijven."
 
 msgid "Cut and Paste\n"
 msgstr ""
@@ -1016,11 +794,10 @@ msgid ""
 "with its associated note if it had one."
 msgstr ""
 
-#, fuzzy
 msgid "Edit Item\n"
-msgstr "Item wijzigen:\n"
+msgstr ""
 
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Edit the item which is currently selected.\n"
 "Depending on the item type (appointment, event, or todo), and if it is\n"
@@ -1038,28 +815,11 @@ msgid ""
 "     o do not forget to save the calendar data to retrieve the\n"
 "       modified properties next time you launch Calcurse."
 msgstr ""
-"Het huidige geselecteerde item kan met 'E' worden gewijzigd.\n"
-"Afhankelijke van het type item (afspraak, gebeurtenis of taak), en of \n"
-"het herhaald wordt of niet, zal om een van de te wijzigen eigenschappen \n"
-"van het item gevraagd worden. Die eigenschappen zijn: aanvangstijd, \n"
-"eindtijd, beschrijving, of de herhaling van het item.\n"
-"Als eenmaal de gewenste eigenschap is gekozen, dan zal de actuele waarde \n"
-"weergegeven worden. Deze waarde kan dan naar wens gewijzigd worden.\n"
-"\n"
-"Opmerking:\n"
-"       o Bij het wijzigen van de herhalings-eigenschappen, zullen alle \n"
-"         waardes opnieuw ingevoerd moeten worden (type herhaling, \n"
-"         interval en einddatum).\n"
-"         Let op: De vorige data van de gewiste herhalingen zal verloren \n"
-"         gaan.\n"
-"       o vergeet niet kalenderdata op te slaan, als de nieuwe items voor\n"
-"         de volgende start van Calcurse behouden moeten blijven."
 
-#, fuzzy
 msgid "EditNote\n"
-msgstr "WzgNoot:\n"
+msgstr ""
 
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Attach a note to any type of item, or edit an already existing note.\n"
 "This feature is useful if you do not have enough space to store all\n"
@@ -1080,30 +840,11 @@ msgid ""
 "You will then go back to Calcurse, and the '>' sign will appear in front\n"
 "of the highlighted item, meaning there is a note attached to it."
 msgstr ""
-"Druk op 'N' om een noot bij elk type item bij te sluiten, of om een\n"
-"reeds bestaande noot te wijzigen.\n"
-"Dit is handig indien er niet genoeg ruimte is, om een item met een lange\n"
-"beschrijving op te slaan, of om bv. een sub-taak aan een reeds bestaande\n"
-"taak toe te voegen.\n"
-"Selecteer eerst het item om de noot bij te sluiten, alvorens op 'N' te\n"
-"drukken. Er wordt een externe editor opgestart om uw noot te wijzigen.\n"
-"Welke editor wordt gestart, hangt af van de volgende factoren:\n"
-"     o Indien de 'VISUAL' omgevingsvariabele is ingesteld, dan zal\n"
-"       dit de standaard editor zijn die wordt aangeroepen.\n"
-"     o Indien 'VISUAL' niet is ingesteld, wordt de 'EDITOR'\n"
-"       omgevingsvariabele gebruikt als standaard editor.\n"
-"     o Als geen van bovenstaande variabelen is ingesteld, zal\n"
-"       '/usr/bin/vi' worden gebruikt.\n"
-"\n"
-"Zodra de noot is gewijzigd en opgeslagen, sluit dan de editor af.\n"
-"Je keert dan terug naar Calcurse, en er zal een '>' verschijnen voor\n"
-"het geselecteerde item, wat betekent dat er een noot bijgesloten is."
 
-#, fuzzy
 msgid "ViewNote\n"
-msgstr "BekijkNoot:\n"
+msgstr ""
 
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "View a note which was previously attached to an item (an item which\n"
 "owns a note has a '>' sign in front of it).\n"
@@ -1119,24 +860,11 @@ msgid ""
 "As for editing a note, quit the pager and you will be driven back to\n"
 "Calcurse."
 msgstr ""
-"Druk op '>' om een bijgesloten noot te bekijken (een item heeft een noot\n"
-"bijgesloten als het wordt voorafgegaan door een '>'). Het is met '>'\n"
-"alleen mogelijk om de noot te bekijken (maak gebruik van 'WzgNoot' of de\n"
-"'N' toets om de noot te wijzigen).\n"
-"Als je op 'N' drukt, terwijl een item met een noot geselecteerd is, zal\n"
-"de noot weergegeven worden door een externe pager.\n"
-"Welke pager wordt gebruikt, hangt af van het volgende:\n"
-"     o indien de 'PAGER' omgevingsvariabele is ingesteld, zal deze\n"
-"       worden gebruikt om de noot weer te geven\n"
-"     o Als de bovenstaande omgevingsvariabele niet is ingesteld, zal\n"
-"       er gebruik gemaakt worden van '/usr/bin/less'.\n"
-"Als de pager wordt afgesloten, keer je terug naar Calcurse."
 
-#, fuzzy
 msgid "Priority\n"
-msgstr "Prioriteit:\n"
+msgstr ""
 
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Change the priority of the currently selected item in the ToDo list.\n"
 "Priorities are represented by the number appearing in front of the\n"
@@ -1153,26 +881,11 @@ msgid ""
 "At the opposite, to lower a todo priority, press '%s'. The todo position\n"
 "may also change depending on the priority of the items below."
 msgstr ""
-"De prioriteit van het geselecteerde item in de takenlijst is te \n"
-"wijzigen door op '+' of '-' te drukken. Prioriteiten worden \n"
-"aangegeven door een nummer dat voor de taak staat. Het nummer ligt \n"
-"tussen 9 voor laagste en 1 voor de hoogste prioriteit. Taken met een \n"
-"hogere prioriteit worden bovenin de lijst weergegeven.\n"
-"\n"
-"Druk op '+' om de prioriteit van een taak te verhogen. Het nummer van de \n"
-"taak zal lager worden, wat betekent dat de prioriteit is verhoogt. De \n"
-"plaats van de taak in de lijst zou kunnen veranderen, afhankelijk van de \n"
-"prioriteiten van de bovenstaande taken.\n"
-"\n"
-"Het tegenovergestelde, het verlagen van de prioriteit, bereikt men door op \n"
-"'-' te drukken. Ook hier kan de plaats van de taak veranderen, afhankelijk \n"
-"van de prioriteiten van de onderstaande taken."
 
-#, fuzzy
 msgid "Repeat\n"
-msgstr "Herhalen:\n"
+msgstr ""
 
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Repeat an event or an appointment.\n"
 "You must first select the item to be repeated by moving inside the\n"
@@ -1203,39 +916,11 @@ msgid ""
 "         complicated configurations, as it is possible to delete only\n"
 "         one occurence of a repeated item."
 msgstr ""
-"Door op 'R' te drukken, is het mogelijk om een afspraak of gebeurtenis \n"
-"te laten herhalen. Selecteer ten eerste het item dat herhaald moet \n"
-"worden in de afsprakenlijst. Na het drukken op 'R', worden er drie \n"
-"vragen gesteld, waarmee je de eigenschappen van de herhaling instelt:\n"
-"\n"
-"  o        type: Kies uit dagelijkse, wekelijkse, maandelijkse of \n"
-"                 jaarlijkse herhaling door respectievelijk 'D', 'W', \n"
-"                 'M' of 'J' in te voeren.\n"
-"\n"
-"  o    interval: Hiermee wordt aangegeven, hoe vaak het item herhaald \n"
-"                 zal worden. Als je bijvoorbeeld een verjaardag wilt \n"
-"                 onthouden, kies dan voor een 'jaarlijkse' herhaling \n"
-"                 met een interval van '1'. Een ander voorbeeld: Stel dat \n"
-"                 je een keer in de twee dagen naar het restaurant gaat. \n"
-"                 Kies dan 'dagelijks' met een interval van '2'.\n"
-"\n"
-"  o   Einddatum: Dit bepaald wanneer gestopt moet worden met het item te \n"
-"                 herhalen. Voer hier '0' in om het item oneindig te \n"
-"                 laten herhalen.\n"
-"\n"
-"Opmerking:\n"
-"       o Herhaalde afspraken zijn met een '*' gemarkeerd in het \n"
-"         afsprakenpanel, zodat ze makkelijk te onderscheiden zijn van \n"
-"         afspraken zonder herhaling.\n"
-"       o Door 'Herhalen' en 'Wissen' te combineren kunnen complexe \n"
-"         schema's gemaakt worden, omdat het mogelijk is om slechts \n"
-"         een herhaling van meerdere herhaalde items te wissen."
 
-#, fuzzy
 msgid "Flag Item\n"
-msgstr "Vlag Item:\n"
+msgstr ""
 
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Toggle an appointment's 'important' flag or a todo's 'completed' flag.\n"
 "If a todo is flagged as completed, its priority number will be replaced\n"
@@ -1250,20 +935,11 @@ msgid ""
 "you choose the command launched to warn user of an upcoming appointment,\n"
 "and how long before it he gets notified."
 msgstr ""
-"Door de '!'-toets zet je de 'belangrijk'-vlag aan of uit.\n"
-"\n"
-"Als een item als belanrijk is gemarkeerd staat er een uitroepteken voor, \n"
-"en zal er een melding verschijnen als de aanvangstijd van de afspraak \n"
-"bijna is bereikt.\n"
-"In het configuratie submenu kan je instellen welk commando wordt gestart \n"
-"om de gebruiker te waarschuwen over de op handen zijnde afspraak, en hoe \n"
-"lang van te voren dit gebeurt."
 
-#, fuzzy
 msgid "Config\n"
-msgstr "Instellingen:\n"
+msgstr ""
 
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Open the configuration submenu.\n"
 "From this submenu, you can select between color, layout, notification\n"
@@ -1280,27 +956,11 @@ msgid ""
 "Do not forget to save the calendar data to retrieve your configuration\n"
 "next time you launch Calcurse."
 msgstr ""
-"De 'C'-toets toont het configuratie submenu, waar gekozen kan worden \n"
-"tussen kleur, layout, en standaard instellingen.\n"
-"\n"
-"In het kleur submenu kan het kleurschema gekozen worden.\n"
-"\n"
-"In het layout submenu kan de indeling van het Calcurse scherm worden \n"
-"gekozen, dus waar de drie panels geplaatst worden.\n"
-"\n"
-"In het standaardinstellingen submenu staan verscheidene opties, die \n"
-"bepalen hoe Calcurse bepaalde zaken regelt.\n"
-"\n"
-"In het informatiebalk submenu staan de instellingen van de informatiebalk.\n"
-"\n"
-"Vergeet niet kalenderdata op te slaan, als de nieuwe configuratie voor\n"
-"de volgende start van Calcurse behouden moeten blijven."
 
-#, fuzzy
 msgid "Generic keybindings\n"
-msgstr "Algemene toetsen:\n"
+msgstr ""
 
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Some of the keybindings apply whatever panel is selected. They are\n"
 "called generic keybinding.\n"
@@ -1323,29 +983,11 @@ msgid ""
 "They are also used when the calendar screen is selected to switch\n"
 "between the available views (monthly and weekly calendar views)."
 msgstr ""
-"De werking van toetsen hangt af van welk panel is geselecteerd. \n"
-"Deze worden algemene toetsen genoemt, en worden samen met de \n"
-"<CONTROL>-toets gebruikt, welke weer wordt aangeduidt met '^' in de \n"
-"statusbalk. Bijvoorbeeld: '^A' betekent dat je tegelijk <CONTROL> en \n"
-"'A' indrukt om het commando uit te voeren. Hier volgt een lijst met \n"
-"alle algemene toetsbindingen samen met de corresponderende actie:\n"
-"\n"
-" '^R' : Scherm verver-     -> Geeft de panels opnieuw weer, nuttig als \n"
-"        sen                   de terminalgrootte verandert of als er \n"
-"                              iets niet goed wordt weergegeven\n"
-" '^A' : Afsrpaak toevoegen -> Voegt een afspraak of gebeurtenis toe\n"
-" '^T' : Taak toevoegen     -> Voegt een taak toe\n"
-" '^H' : -1 dag             -> Ga naar de vorige dag\n"
-" '^L' : +1 dag             -> Ga naar de volgende dag\n"
-" '^K' : -1 week            -> Ga naar de vorige week\n"
-" '^J' : +1 week            -> Ga naar de volgende week\n"
-" '^G' : Naar vandaag       -> Ga naar de huidige datum"
 
-#, fuzzy
 msgid "OtherCmd\n"
-msgstr "AndereCmd:\n"
+msgstr ""
 
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Switch between status bar help pages.\n"
 "Because the terminal screen is too narrow to display all of the\n"
@@ -1354,12 +996,6 @@ msgid ""
 "Once the last status bar page is reached, pressing '%s' another time\n"
 "leads you back to the first page."
 msgstr ""
-"Met de 'O'-toets kan er tussen de verschillende hulpschermen \n"
-"geschakeld worden. Omdat de terminalgrootte te klein is om alle \n"
-"commando's weer te geven, kun je met 'O' de volgende serie \n"
-"comando's zien, samen met de toetsen.\n"
-"Zodra het laatste scherm is bereikt, ga je naar het eerste scherm \n"
-"terug, als er weer op 'O' wordt gedrukt."
 
 msgid "Calcurse - text-based organizer"
 msgstr "Calcurse - tekst-gebaseerde organizer"
@@ -1367,7 +1003,7 @@ msgstr "Calcurse - tekst-gebaseerde organizer"
 #, c-format
 msgid ""
 "\n"
-"Copyright (c) 2004-2009 Frederic Culot\n"
+"Copyright (c) 2004-2011 calcurse Development Team\n"
 "All rights reserved.\n"
 "\n"
 "Redistribution and use in source and binary forms, with or without\n"
@@ -1415,9 +1051,9 @@ msgstr ""
 msgid "Week"
 msgstr "Week"
 
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to open \"%s\", - %s\n"
-msgstr "Kan takenbestand niet openen"
+msgstr ""
 
 msgid "Failed to build message\n"
 msgstr ""
@@ -1452,24 +1088,20 @@ msgstr "Probleem bij benaderen databestand ..."
 msgid "The data files were successfully saved"
 msgstr "De databestanden zijn met succes opgeslagen"
 
-#, fuzzy
 msgid "syntax error in the item date"
-msgstr "FATALE FOUT in io_load_app: fout in syntax itemdatum\n"
+msgstr ""
 
-#, fuzzy
 msgid "no event nor appointment found"
-msgstr "FATALE FOUT in io_load_app: geen afspraak/gebeurtenis gevonden\n"
+msgstr ""
 
-#, fuzzy
 msgid "wrong format in the appointment or event"
-msgstr "FATALE FOUT in io_load_app: fout formaat in afspraak of gebeurtenis\n"
+msgstr ""
 
 msgid "Failed to open todo file"
 msgstr "Kan takenbestand niet openen"
 
-#, fuzzy
 msgid "could not find any key file."
-msgstr "FATALE FOUT in launch_cmd: probleem met fork"
+msgstr ""
 
 msgid ""
 "\n"
@@ -1481,9 +1113,8 @@ msgstr ""
 msgid "Could not read key label"
 msgstr ""
 
-#, fuzzy
 msgid "Key label not recognized"
-msgstr "herhalingsfrequentie niet herkend"
+msgstr ""
 
 #, c-format
 msgid "Error reading key: \"%s\""
@@ -1510,7 +1141,7 @@ msgid "Data files found. Data will be loaded now."
 msgstr "Databestanden gevonden. Data wordt geladen."
 
 msgid "The data were successfully exported"
-msgstr "De data is met succes geëxporteerd"
+msgstr "De data is met succes geÃ«xporteerd"
 
 msgid "unknown export type"
 msgstr ""
@@ -1524,9 +1155,8 @@ msgstr "Ical"
 msgid "Pcal"
 msgstr "Pcal"
 
-#, fuzzy
 msgid "unknown ical type"
-msgstr "FOUT in ical_log: onbekend ical type"
+msgstr ""
 
 msgid "recurrence frequence not found."
 msgstr "herhalingsfrequentie niet gevonden."
@@ -1564,9 +1194,8 @@ msgstr "kan tijdsduur niet berekenen (geen eindtijd)."
 msgid "item has a negative duration."
 msgstr "item heeft een negatieve tijdsduur"
 
-#, fuzzy
 msgid "event date is not defined."
-msgstr "De ingevoerde datum is ongeldig."
+msgstr ""
 
 msgid "item could not be identified."
 msgstr "item onbekend"
@@ -1611,19 +1240,17 @@ msgstr ""
 msgid "FATAL ERROR: the input file cannot be accessed, Aborting..."
 msgstr "FATALE FOUT: invoerbestand niet toegankelijk, Afbreken..."
 
-#, fuzzy
 msgid "FATAL ERROR: wrong import mode"
-msgstr "FATALE FOUT in io_import_data: verkeerde import modus"
+msgstr ""
 
 msgid "Warning: ical header malformed or wrong version number. Aborting..."
 msgstr "Pas op: ical header onjuist of verkeerde versie. Stoppen..."
 
 msgid "Some items could not be imported, see log file ?"
-msgstr "Enkele items konden niet geïmporteerd worden, log zien?"
+msgstr "Enkele items konden niet geÃ¯mporteerd worden, log zien?"
 
-#, fuzzy
 msgid "Warning: could not create temporary log file, Aborting..."
-msgstr "Pas op: kan tijdelijk logbestand niet wissen, Stoppen..."
+msgstr ""
 
 msgid "Warning: could not open temporary log file, Aborting..."
 msgstr "Pas op: kan tijdelijk logbestand niet openen, Stoppen..."
@@ -1631,9 +1258,9 @@ msgstr "Pas op: kan tijdelijk logbestand niet openen, Stoppen..."
 msgid "No log file to display!"
 msgstr ""
 
-#, fuzzy, c-format
+#, c-format
 msgid "Warning: could not erase temporary log file %s, Aborting..."
-msgstr "Pas op: kan tijdelijk logbestand niet wissen, Stoppen..."
+msgstr ""
 
 msgid "Invalid delay"
 msgstr ""
@@ -1647,13 +1274,11 @@ msgid ""
 "and restart calcurse.\n"
 msgstr ""
 
-#, fuzzy
 msgid "error while launching command: could not fork"
-msgstr "FATALE FOUT in launch_cmd: probleem met fork"
+msgstr ""
 
-#, fuzzy
 msgid "error while launching command"
-msgstr "Geef het meldingscommando "
+msgstr ""
 
 msgid "notify-bar_show = "
 msgstr "informatiebalk_toon = "
@@ -1688,16 +1313,14 @@ msgstr "informatiebalk_commando = "
 msgid "(Command used to notify user of an upcoming appointment)"
 msgstr "(Commando dat melding geeft van op handen zijnde afspraak)"
 
-#, fuzzy
 msgid "notify-daemon_enable = "
-msgstr "informatiebalk_datum = "
+msgstr ""
 
 msgid "(Run in background to get notifications after exiting)"
 msgstr ""
 
-#, fuzzy
 msgid "notify-daemon_log = "
-msgstr "informatiebalk_tijd= "
+msgstr ""
 
 msgid "(Log activity when running in background)"
 msgstr ""
@@ -1724,9 +1347,8 @@ msgstr ""
 msgid "date error in event"
 msgstr ""
 
-#, fuzzy
 msgid "appointment not found"
-msgstr "Afspraak :"
+msgstr ""
 
 msgid "Enter the repetition type: (D)aily, (W)eekly, (M)onthly, (Y)early"
 msgstr "Type herhaling: (D)agelijks, (W)ekelijks, (M)aandelijks, (Y) jaarlijks"
@@ -1751,13 +1373,12 @@ msgstr "Sorry, de ingevoerde datum is ouder dan de aanvangstijd."
 msgid "wrong item type"
 msgstr ""
 
-#, fuzzy
 msgid "syntax error in item date"
-msgstr "FATALE FOUT in io_load_app: fout in syntax itemdatum\n"
+msgstr ""
 
-#, fuzzy, c-format
+#, c-format
 msgid "Could not remove calcurse lock file: %s\n"
-msgstr "kan eindtijd van gebeurtenis niet ophalen"
+msgstr ""
 
 #, c-format
 msgid "Error setting signal #%d : %s\n"
@@ -1769,10 +1390,10 @@ msgstr "Voer de nieuwe taak in : "
 msgid "Enter the ToDo priority [1 (highest) - 9 (lowest)] :"
 msgstr "Geef taakprioriteit [1 (hoogste) - 9 (laagste)] :"
 
-msgid "no note attached"
+msgid "no such todo"
 msgstr ""
 
-msgid "no such todo"
+msgid "no note attached"
 msgstr ""
 
 msgid "Do you really want to delete this task ?"
@@ -1784,9 +1405,8 @@ msgstr "Dit item heeft een noot bijgesloten. Wis (t)aak of alleen de (n)oot?"
 msgid "[t/n] "
 msgstr "[t/n]"
 
-#, fuzzy
 msgid "todo not found"
-msgstr "Noot-bestand niet gevonden\n"
+msgstr ""
 
 msgid "no such action"
 msgstr ""
@@ -1794,9 +1414,8 @@ msgstr ""
 msgid "Enter the new ToDo description :"
 msgstr "Voer de nieuwe taakbeschrijving in : "
 
-#, fuzzy
 msgid "/!\\ INTERNAL ERROR /!\\"
-msgstr "INTERNE FOUT"
+msgstr ""
 
 msgid "Please report the following bug:"
 msgstr "Rapporteer aub de volgende fout:"
@@ -1819,9 +1438,8 @@ msgstr ""
 msgid "Appointment"
 msgstr "Afspraak"
 
-#, fuzzy
 msgid "could not convert string"
-msgstr "FATALE FOUT in mystrtol: kan string niet omzetten"
+msgstr ""
 
 msgid "out of range"
 msgstr ""
@@ -1835,13 +1453,12 @@ msgstr "nee"
 msgid "option not defined"
 msgstr ""
 
-#, fuzzy, c-format
+#, c-format
 msgid "temporary file \"%s\" could not be created"
-msgstr "FATALE FOUT: tijdelijk bestand kan niet worden aangemaakt!"
+msgstr ""
 
-#, fuzzy
 msgid "could not remove note"
-msgstr "kan eindtijd van gebeurtenis niet ophalen"
+msgstr ""
 
 #, c-format
 msgid "Error when closing file at %s"
@@ -1931,9 +1548,8 @@ msgstr ""
 msgid "Paste"
 msgstr ""
 
-#, fuzzy
 msgid "Chg Win"
-msgstr "Wzg focus"
+msgstr ""
 
 msgid "Import"
 msgstr "Import"
@@ -1959,32 +1575,26 @@ msgstr "Nieuw Afspr"
 msgid "Add Todo"
 msgstr "Nieuw Taak"
 
-#, fuzzy
 msgid "+1 Day"
-msgstr "-/+1 Dag"
+msgstr ""
 
-#, fuzzy
 msgid "-1 Day"
-msgstr "-/+1 Dag"
+msgstr ""
 
-#, fuzzy
 msgid "+1 Week"
-msgstr "-/+ Week"
+msgstr ""
 
-#, fuzzy
 msgid "-1 Week"
-msgstr "-/+ Week"
+msgstr ""
 
 msgid "Today"
 msgstr "Vandaag"
 
-#, fuzzy
 msgid "Nxt View"
-msgstr "Bekijken"
+msgstr ""
 
-#, fuzzy
 msgid "Prv View"
-msgstr "Bekijken"
+msgstr ""
 
 msgid "beg Week"
 msgstr "beg Week"
@@ -2025,56 +1635,53 @@ msgstr ""
 msgid "unknown panel"
 msgstr ""
 
-#, fuzzy, c-format
+#, c-format
 msgid "Could not stop daemon properly: %s\n"
-msgstr "kan eindtijd van gebeurtenis niet ophalen"
+msgstr ""
 
 #, c-format
 msgid "terminated at %s with signal %d\n"
 msgstr ""
 
-#, fuzzy, c-format
+#, c-format
 msgid "Could not remove daemon lock file: %s\n"
-msgstr "kan eindtijd van gebeurtenis niet ophalen"
+msgstr ""
 
-#, fuzzy, c-format
+#, c-format
 msgid "Could not fork: %s\n"
-msgstr "kan eindtijd van gebeurtenis niet ophalen"
+msgstr ""
 
 #, c-format
 msgid "Could not detach from the controlling terminal: %s\n"
 msgstr ""
 
-#, fuzzy, c-format
+#, c-format
 msgid "Could not change working directory: %s\n"
-msgstr "kan eindtijd van gebeurtenis niet ophalen"
+msgstr ""
 
 msgid "Cannot daemonize, aborting\n"
 msgstr ""
 
-#, fuzzy
 msgid "Could not set lock file\n"
-msgstr "kan eindtijd van gebeurtenis niet ophalen"
+msgstr ""
 
-#, fuzzy, c-format
+#, c-format
 msgid "Could not access \"%s\": %s\n"
-msgstr "FATALE FOUT: kan %s niet aanmaken: %s\n"
+msgstr ""
 
 #, c-format
 msgid "started at %s\n"
 msgstr ""
 
-#, fuzzy
 msgid "error loading next appointment\n"
-msgstr "Volgende afspraak :\n"
+msgstr ""
 
 #, c-format
 msgid "launching notification at %s for: \"%s\"\n"
 msgstr ""
 
-#, fuzzy
 msgid "error while sending notification\n"
-msgstr "Geef het meldingscommando "
+msgstr ""
 
 #, c-format
 msgid "sleeping at %s for %d seconds\n"
@@ -2084,255 +1691,6 @@ msgstr ""
 msgid "awakened at %s\n"
 msgstr ""
 
-#, fuzzy, c-format
+#, c-format
 msgid "Could not stop calcurse daemon: %s\n"
-msgstr "kan eindtijd van gebeurtenis niet ophalen"
-
-#~ msgid "Enter an option number to change its value [Q to quit] "
-#~ msgstr "Geef een nummer om de waarde te veranderen [Q om te stoppen]"
-
-#~ msgid "CalCurse %s | notify-bar options"
-#~ msgstr "CalCurse %s | Informatiebalk-opties"
-
-#, fuzzy
-#~ msgid ""
-#~ "\n"
-#~ "Copyright (c) 2004-2008 Frederic Culot\n"
-#~ "\n"
-#~ "This program is free software; you can redistribute it and/or modify\n"
-#~ "it under the terms of the GNU General Public License as published by\n"
-#~ "the Free Software Foundation; either version 2 of the License, or\n"
-#~ "(at your option) any later version.\n"
-#~ "\n"
-#~ "This program is distributed in the hope that it will be useful,\n"
-#~ "but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
-#~ "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
-#~ "GNU General Public License for more details.\n"
-#~ "\n"
-#~ "\n"
-#~ "Send your feedback or comments to : misc@calcurse.org\n"
-#~ "Calcurse home page : http://calcurse.org"
-#~ msgstr ""
-#~ "Copyright (c) 2004-2008 Frederic Culot\n"
-#~ "\n"
-#~ "Dit programma is vrije Software; Het mag zowel gedistribueerd en/of \n"
-#~ "gewijzigd worden binnen het kader van de GNU General Public License, \n"
-#~ "zoals gepubliceerd door de Free Software Foundation; ofwel versie 2 van \n"
-#~ "de licentie of (desgewenst) elke volgende versie.\n"
-#~ "\n"
-#~ "Dit programma wordt verspreid in de hoop dat het nuttig is, maar ZONDER \n"
-#~ "ELKE GARANTIE; zelfs zonder de impliciete garantie van een programma \n"
-#~ "dat klaar is voor de verkoop of BEDOELD VOOR EEN SPECIFIEK DOEL. Zie de \n"
-#~ "GNU General Public License voor nadere details.\n"
-#~ "\n"
-#~ "\n"
-#~ "Zendt kritiek of commentaar aan : misc@calcurse.org\n"
-#~ "Calcurse Homepage : http://calcurse.org"
-
-#~ msgid "Pick the desired layout on next screen [press ENTER]"
-#~ msgstr "Kies de gewenste layout in het volgende venster [druk op ENTER]"
-
-#~ msgid "('A'= Appointment panel, 'C'= calendar panel, 'T'= todo panel)"
-#~ msgstr "('A'= Afspraken panel, 'K'= Kalender panel, 'T'= taken panel)"
-
-#~ msgid ""
-#~ "    AC       AT       CA       TA       TC       TA       CT       AT"
-#~ msgstr ""
-#~ "    AK       AT       KA       TA       TK       TA       KT       AT"
-
-#~ msgid ""
-#~ " [1]AT    [2]AC    [3]TA    [4]CA    [5]TA    [6]TC    [7]AT    [8]CT"
-#~ msgstr ""
-#~ " [1]AT    [2]AK    [3]TA    [4]KA    [5]TA    [6]TK    [7]AT    [8]KT"
-
-#~ msgid "FATAL ERROR in apoint_delete: no such type\n"
-#~ msgstr "FATALE FOUT in apoint_delete: Type bestaat niet\n"
-
-#~ msgid "FATAL ERROR in apoint_scan: date error in the appointment\n"
-#~ msgstr "FATALE FOUT in apoint_scan: datafout in de afspraak\n"
-
-#~ msgid "FATAL ERROR in apoint_get: no such item\n"
-#~ msgstr "FATALE FOUT in apoint_get: item bestaat niet\n"
-
-#~ msgid "FATAL ERROR in apoint_delete_bynum: no such appointment"
-#~ msgstr "FATALE FOUT in apoint_delete_bynum: Afspraak bestaat niet"
-
-#~ msgid "FATAL ERROR in apoint_switch_notify: no such appointment"
-#~ msgstr "FATALE FOUT in apoint_switch_notify: Afspraak bestaat niet"
-
-#~ msgid "FATAL ERROR in custom_load_color: wrong color number.\n"
-#~ msgstr "FATALE FOUT in custom_load_color: ongeldig kleurnummer.\n"
-
-#~ msgid "FATAL ERROR in custom_load_color: wrong color name.\n"
-#~ msgstr "FATALE FOUT in custom_load_color: ongeldige kleurnaam.\n"
-
-#~ msgid ""
-#~ "FATAL ERROR in custom_load_color: wrong configuration variable format.\n"
-#~ msgstr ""
-#~ "FATALE FOUT in custom_load_color: ongeldig formaat "
-#~ "configuratievariabele.\n"
-
-#~ msgid "FATAL ERROR in custom_load_color: missing colors in config file.\n"
-#~ msgstr ""
-#~ "FATALE FOUT in custom_load_color: ontbrekende kleuren "
-#~ "configuratiebestand.\n"
-
-#~ msgid "FATAL ERROR in custom_color_theme_name: unknown color\n"
-#~ msgstr "FATALE FOUT in custom_color_theme_name: kleur onbekend\n"
-
-#~ msgid "FATAL ERROR in day_popup_item: unknown item type\n"
-#~ msgstr "FATALE FOUT in day_popup_item: onbekend itemtype\n"
-
-#~ msgid "FATAL ERROR in event_get: no such item\n"
-#~ msgstr "FATALE FOUT in event_get: item bestaat niet\n"
-
-#~ msgid "FATAL ERROR in event_delete_bynum: no such event\n"
-#~ msgstr "FATALE FOUT in event_delete_bynum: Gebeurtenis bestaat niet\n"
-
-#~ msgid "FATAL ERROR in foreach_date_dump: incoherent repetition type\n"
-#~ msgstr "FATALE FOUT in foreach_date_dump: incoherent herhalingstype\n"
-
-#~ msgid ""
-#~ "FATAL ERROR in pcal_export_recur_events: incoherent repetition type\n"
-#~ msgstr ""
-#~ "FATALE FOUT in pcal_export_recur_events: incoherent herhalingstype\n"
-
-#~ msgid ""
-#~ "FATAL ERROR in pcal_export_recur_apoints: incoherent repetition type\n"
-#~ msgstr ""
-#~ "FATALE FOUT in pcal_export_recur_apoints: incoherent herhalingstype\n"
-
-#~ msgid "FATAL ERROR in io_export_data: wrong export mode\n"
-#~ msgstr "FATALE FOUT in io_export_data: verkeerde export modus\n"
-
-#~ msgid "FATAL ERROR in io_export_data: unknown export type\n"
-#~ msgstr "FATALE FOUT in io_export_data: onbekend export type\n"
-
-#~ msgid "FATAL ERROR in io_import_data: unknown import type"
-#~ msgstr "FATALE FOUT in io_import_data: verkeerd import type"
-
-#~ msgid "FATAL ERROR in launch_cmd: could not launch user command"
-#~ msgstr "FATALE FOUT in launch_cmd: kan gebruikerscommando niet starten"
-
-#~ msgid "FATAL ERROR in recur_def2char: unknown recur type\n"
-#~ msgstr "FATALE FOUT in recur_def2char: herhaal type onbekend\n"
-
-#~ msgid "FATAL ERROR in recur_char2def: unknown char\n"
-#~ msgstr "FATALE FOUT in recur_char2def: onbekend karakter\n"
-
-#~ msgid "FATAL ERROR in recur_event_scan: date error in the event\n"
-#~ msgstr "FATALE FOUT in recur_event_scan: datumfout in de gebeurtenis\n"
-
-#~ msgid "FATAL ERROR in recur_item_inday: unknown item type\n"
-#~ msgstr "FATALE FOUT in recur_item_inday: type item onbekend\n"
-
-#~ msgid "FATAL ERROR in recur_event_erase: no such event\n"
-#~ msgstr "FATALE FOUT in recur_event_erase: gebeurtenis bestaat niet\n"
-
-#~ msgid "FATAL ERROR in recur_apoint_erase: no such appointment\n"
-#~ msgstr "FATALE FOUT in recur_apoint_erase: afspraak bestaat niet\n"
-
-#~ msgid "FATAL ERROR in recur_repeat_item: wrong item type\n"
-#~ msgstr "FATALE FOUT in recur_repeat_item: fout item type\n"
-
-#~ msgid "FATAL ERROR in recur_exc_scan: syntax error in the item date\n"
-#~ msgstr "FATALE FOUT in recur_exc_scan: fout in syntax itemdatum\n"
-
-#~ msgid "FATAL ERROR in recur_get_apoint: no such item\n"
-#~ msgstr "FATALE FOUT in recur_get_apoint: item bestaat niet\n"
-
-#~ msgid "FATAL ERROR in recur_get_event: no such item\n"
-#~ msgstr "FATALE FOUT in recur_get_event: item bestaat niet\n"
-
-#~ msgid "FATAL ERROR in recur_apoint_switch_notify: no such item\n"
-#~ msgstr "FATALE FOUT in recur_apoint_switch_notify: item bestaat niet\n"
-
-#~ msgid "FATAL ERROR in todo_delete_note_bynum: no note attached\n"
-#~ msgstr "FATALE FOUT in todo_delete_note: geen noot aanwezig\n"
-
-#~ msgid "FATAL ERROR in todo_delete_note_bynum: no such todo\n"
-#~ msgstr "FATALE FOUT in todo_delete_note_bynum: taak bestaat niet\n"
-
-#~ msgid "FATAL ERROR in todo_delete_bynum: no such todo\n"
-#~ msgstr "FATALE FOUT in todo_delete_bynum: taak bestaat niet\n"
-
-#~ msgid "FATAL ERROR in todo_get_position: todo not found\n"
-#~ msgstr "FATALE FOUT in todo_get_position: taak bestaat niet\n"
-
-#~ msgid "FATAL ERROR in todo_chg_priority: no such action\n"
-#~ msgstr "FATALE FOUT in todo_chg_priority: actie bestaat niet\n"
-
-#~ msgid "FATAL ERROR in updatestring: out of memory"
-#~ msgstr "FATALE FOUT in updatestring: te weinig geheugen"
-
-#~ msgid "FATAL ERROR in date2sec: failure in mktime\n"
-#~ msgstr "FATALE FOUT in date2sec: fout in mktime\n"
-
-#~ msgid "FATAL ERROR in date_sec_change: failure in mktime\n"
-#~ msgstr "FATALE FOUT in date_sec_change: fout in mktime\n"
-
-#~ msgid "FATAL ERROR in other_status_page: unknown panel\n"
-#~ msgstr "FATALE FOUT in other_status_page: onbekend panel\n"
-
-#~ msgid "FATAL ERROR in mystrtol: number is out of range"
-#~ msgstr "FATALE FOUT in mystrtol: nummer buiten bereik"
-
-#~ msgid "option not defined - Problem in print_option_incolor()"
-#~ msgstr "Optie ongedefinieerd - Probleem in print_option_incolor()"
-
-#~ msgid "FATAL ERROR in erase_note: could not remove note\n"
-#~ msgstr "FATALE FOUT in erase_note: kan noot niet verwijderen\n"
-
-#~ msgid "FATAL ERROR in wins_update: no window selected\n"
-#~ msgstr "Fatale fout in wins_update: geen venster geselecteerd\n"
-
-#~ msgid ""
-#~ "Use 'X' or SPACE to select a color, 'H/L' 'J/K' or arrow keys to move"
-#~ msgstr ""
-#~ "'X' of SPATIE voor kleurselectie, 'h/l' 'j/k' of pijltjes verplaatsen "
-#~ "cursor"
-
-#~ msgid "('0' for no color, 'Q' to exit) :"
-#~ msgstr "('0' voor geen kleur, 'Q' voor einde) :"
-
-#~ msgid ""
-#~ "You can use either 'H','J','K','L' or the arrow keys '<','v','^','>'\n"
-#~ "to move into the calendar.\n"
-#~ "\n"
-#~ "The following scheme explains how :\n"
-#~ "\n"
-#~ "                      move to previous week\n"
-#~ "                              K ^  \n"
-#~ "  move to previous day   H <       > L   move to next day\n"
-#~ "                              J v  \n"
-#~ "                       move to next week\n"
-#~ "\n"
-#~ "Moreover, while inside the calendar panel, the '0' (zero) key moves\n"
-#~ "to the first day of the week, and the '$' key selects the last day of\n"
-#~ "the week.\n"
-#~ "\n"
-#~ "When the Appointment or ToDo panel is selected, the up and down keys\n"
-#~ "(respectively K or up arrow, and J or down arrow) allows you to select\n"
-#~ "an item from those lists."
-#~ msgstr ""
-#~ "Met de toetsen 'h','j','k','l' of de pijltjestoetsen \n"
-#~ "'<','v','^',>' kan men zich door de kalender verplaatsen.\n"
-#~ "\n"
-#~ "Het volgende schema verduidelijkt hoe :\n"
-#~ "\n"
-#~ "                  naar de vorige week\n"
-#~ "                          k ^  \n"
-#~ "naar de vorige dag   h <       > l   naar de volgende dag\n"
-#~ "                          j v  \n"
-#~ "                  naar de volgende week\n"
-#~ "\n"
-#~ "Bovendien kan men, als men zich in het kalender panel bevindt, met de\n"
-#~ "0-toets naar de eerste dag van de week, en met '$' naar de laatste\n"
-#~ "dag van de week.\n"
-#~ "\n"
-#~ "Wanneer het afspraken of taken panel is geselecteerd, kan je met\n"
-#~ "de op-en-neer toetsen (resp. k of pijl-omhoog, en j of pijl-beneden)\n"
-#~ "een item uit de lijst kiezen."
-
-#~ msgid "Priority"
-#~ msgstr "Prioriteit"
+msgstr ""
