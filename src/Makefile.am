@@ -22,6 +22,7 @@ calcurse_SOURCES = \
 	recur.c \
 	sigs.c \
 	todo.c \
+	utf8.c \
 	utils.c \
 	vars.c \
 	wins.c \

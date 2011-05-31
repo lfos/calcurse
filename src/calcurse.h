@@ -832,6 +832,10 @@ void          todo_view_note (char *);
 void          todo_init_list (void);
 void          todo_free_list (void);
 
+/* utf8.c */
+int           utf8_width (char *);
+int           utf8_strwidth (char *);
+
 /* utils.c */
 void         exit_calcurse (int) __attribute__((__noreturn__));
 void         free_user_data (void);
