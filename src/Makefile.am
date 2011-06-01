@@ -14,6 +14,7 @@ calcurse_SOURCES = \
 	custom.c \
 	day.c \
 	event.c \
+	getstring.c \
 	help.c \
 	io.c \
 	keys.c \

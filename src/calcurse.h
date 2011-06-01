@@ -658,6 +658,10 @@ void          event_paste_item (void);
 void help_wins_init (struct scrollwin *, int, int, int, int);
 void help_screen (void);
 
+/* getstring.c */
+enum getstr  getstring (WINDOW *, char *, int, int, int);
+int          updatestring (WINDOW *, char **, int, int);
+
 /* io.c */
 unsigned         io_fprintln (const char *, const char *, ...);
 void             io_init (char *, char *);
@@ -845,8 +849,6 @@ void         status_mesg (char *, char *);
 void         erase_window_part (WINDOW *, int, int, int, int);
 WINDOW      *popup (int, int, int, int, char *, char *, int);
 void         print_in_middle (WINDOW *, int, int, int, char *);
-enum getstr  getstring (WINDOW *, char *, int, int, int);
-int          updatestring (WINDOW *, char **, int, int);
 int          is_all_digit (char *);
 long         get_item_time (long);
 int          get_item_hour (long);
