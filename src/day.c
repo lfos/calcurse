@@ -347,14 +347,15 @@ display_item_date (int incolor, struct apoint *i, int type, long date,
  * Print an item description in the corresponding panel window.
  */
 static void
-display_item (int incolor, char *msg, int recur, int note, int len, int y,
+display_item (int incolor, char *msg, int recur, int note, int width, int y,
               int x)
 {
   WINDOW *win;
   int ch_recur, ch_note;
-  char buf[len];
+  char buf[width * 6];
+  int i;
 
-  if (len <= 0)
+  if (width <= 0)
     return;
 
   win = apad.ptrwin;
@@ -362,12 +363,20 @@ display_item (int incolor, char *msg, int recur, int note, int len, int y,
   ch_note = (note) ? '>' : ' ';
   if (incolor == 0)
     custom_apply_attr (win, ATTR_HIGHEST);
-  if (strlen (msg) < len)
+  if (utf8_strwidth (msg) < width)
     mvwprintw (win, y, x, " %c%c%s", ch_recur, ch_note, msg);
   else
     {
-      (void)strncpy (buf, msg, len - 1);
-      buf[len - 1] = '\0';
+      for (i = 0; msg[i] && width > 0; i++)
+        {
+          if (!UTF8_ISCONT (msg[i]))
+            width -= utf8_width (&msg[i]);
+          buf[i] = msg[i];
+        }
+      if (i)
+        buf[i - 1] = 0;
+      else
+        buf[0] = 0;
       mvwprintw (win, y, x, " %c%c%s...", ch_recur, ch_note, buf);
     }
   if (incolor == 0)
