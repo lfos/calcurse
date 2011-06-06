@@ -36,50 +36,80 @@
 
 #include "calcurse.h"
 
+struct getstr_charinfo {
+  unsigned int offset, dpyoff;
+};
+
+struct getstr_status {
+  char *s;
+  struct getstr_charinfo *ci;
+  int pos, len;
+  int scrpos;
+};
+
 /* Print the string at the desired position. */
 static void
-showstring (WINDOW *win, int x, int y, char *str, int len, int scroff,
-            int curpos)
+showstring (WINDOW *win, int x, int y, struct getstr_status *st)
 {
   char c = 0;
 
   /* print string */
-  mvwaddnstr (win, y, x, &str[scroff], -1);
+  mvwaddnstr (win, y, x, &st->s[st->ci[st->scrpos].offset], -1);
   wclrtoeol (win);
 
   /* print scrolling indicator */
-  if (scroff > 0 && scroff < len - col)
+  if (st->scrpos > 0 && st->ci[st->len].dpyoff -
+      st->ci[st->scrpos].dpyoff > col - 2)
     c = '*';
-  else if (scroff > 0)
+  else if (st->scrpos > 0)
     c = '<';
-  else if (scroff < len - col)
+  else if (st->ci[st->len].dpyoff - st->ci[st->scrpos].dpyoff > col - 2)
     c = '>';
-  mvwprintw (win, y, col - 1, "%c", c);
+  mvwprintw (win, y, col - 2, " %c", c);
 
   /* print cursor */
-  wmove (win, y, curpos - scroff);
-
-  if (curpos >= len)
-    waddch (win, SPACE | A_REVERSE);
-  else
-    waddch (win, str[curpos] | A_REVERSE);
+  wmove (win, y, st->ci[st->pos].dpyoff - st->ci[st->scrpos].dpyoff);
+  wchgat (win, 1, A_REVERSE, COLR_CUSTOM, NULL);
 }
 
 /* Delete a character at the given position in string. */
 static void
-del_char (int pos, char *str)
+del_char (struct getstr_status *st)
 {
-  str += pos;
-  memmove (str, str + 1, strlen (str) + 1);
+  char *str = st->s + st->ci[st->pos].offset;
+  int cl = st->ci[st->pos + 1].offset - st->ci[st->pos].offset;
+  int cw = st->ci[st->pos + 1].dpyoff - st->ci[st->pos].dpyoff;
+  int i;
+
+  memmove (str, str + cl, strlen (str) + 1);
+
+  st->len--;
+  for (i = st->pos; i <= st->len; i++)
+    {
+      st->ci[i].offset = st->ci[i + 1].offset - cl;
+      st->ci[i].dpyoff = st->ci[i + 1].dpyoff - cw;
+    }
 }
 
 /* Add a character at the given position in string. */
 static void
-ins_char (int pos, int ch, char *str)
+ins_char (struct getstr_status *st, char *c)
 {
-  str += pos;
-  memmove (str + 1, str, strlen (str) + 1);
-  *str = ch;
+  char *str = st->s + st->ci[st->pos].offset;
+  int cl = UTF8_LENGTH (c[0]);
+  int cw = utf8_width (c);
+  int i;
+
+  memmove (str + cl, str, strlen (str) + 1);
+  for (i = 0; c[i]; i++, str++)
+    *str = c[i];
+
+  for (i = st->len; i >= st->pos; i--)
+    {
+      st->ci[i + 1].offset = st->ci[i].offset + cl;
+      st->ci[i + 1].dpyoff = st->ci[i].dpyoff + cw;
+    }
+  st->len++;
 }
 
 static void
@@ -100,21 +130,57 @@ enum getstr
 getstring (WINDOW *win, char *str, int l, int x, int y)
 {
   const int pgsize = col / 3;
+  int pgskip;
 
-  int len = strlen (str);
-  int curpos = len;
-  int scroff = 0;
-  int ch;
+  struct getstr_status st;
+  struct getstr_charinfo ci[l + 1];
+
+  int width;
+  int ch, k;
+  char c[6];
+
+  st.s = str;
+  st.ci = ci;
+  st.len = 0;
+  width = 0;
+  while (*str)
+    {
+      st.ci[st.len].offset = str - st.s;
+      st.ci[st.len].dpyoff = width;
+
+      st.len++;
+      width += utf8_width (str);
+      str += UTF8_LENGTH (*str);
+    }
+  st.ci[st.len].offset = str - st.s;
+  st.ci[st.len].dpyoff = width;
+
+  st.pos = st.len;
+  st.scrpos = 0;
 
   custom_apply_attr (win, ATTR_HIGHEST);
 
   for (;;) {
-    while (curpos < scroff)
-      scroff -= pgsize;
-    while (curpos >= scroff + col - 1)
-      scroff += pgsize;
+    while (st.pos < st.scrpos)
+      {
+        pgskip = 0;
+        while (pgskip < pgsize)
+          {
+            st.scrpos--;
+            pgskip += st.ci[st.scrpos + 1].dpyoff - st.ci[st.scrpos].dpyoff;
+          }
+      }
+    while (st.ci[st.pos].dpyoff - st.ci[st.scrpos].dpyoff > col - 2)
+      {
+        pgskip = 0;
+        while (pgskip < pgsize)
+          {
+            pgskip += st.ci[st.scrpos + 1].dpyoff - st.ci[st.scrpos].dpyoff;
+            st.scrpos++;
+          }
+      }
 
-    showstring (win, x, y, str, len, scroff, curpos);
+    showstring (win, x, y, &st);
     wins_doupdate ();
 
     if ((ch = wgetch (win)) == '\n') break;
@@ -124,72 +190,72 @@ getstring (WINDOW *win, char *str, int l, int x, int y)
         case 330:
         case 127:
         case CTRL ('H'):
-          if (curpos > 0)
+          if (st.pos > 0)
             {
-              del_char ((--curpos), str);
-              len--;
+              st.pos--;
+              del_char (&st);
             }
           else
             bell ();
           break;
         case CTRL ('D'):        /* delete next character */
-          if (curpos < len)
-            {
-              del_char (curpos, str);
-              len--;
-            }
+          if (st.pos < st.len)
+            del_char (&st);
           else
             bell ();
           break;
         case CTRL ('W'):        /* delete a word */
-          if (curpos > 0) {
-            while (curpos && str[curpos - 1] == ' ')
+          if (st.pos > 0) {
+            while (st.pos && st.s[st.ci[st.pos - 1].offset] == ' ')
               {
-                del_char ((--curpos), str);
-                len--;
+                st.pos--;
+                del_char (&st);
               }
-            while (curpos && str[curpos - 1] != ' ')
+            while (st.pos && st.s[st.ci[st.pos - 1].offset] != ' ')
               {
-                del_char ((--curpos), str);
-                len--;
+                st.pos--;
+                del_char (&st);
               }
           }
           else
             bell ();
           break;
         case CTRL ('K'):        /* delete to end-of-line */
-          str[curpos] = 0;
-          len = curpos;
+          st.s[st.ci[st.pos].offset] = 0;
+          st.len = st.pos;
           break;
         case CTRL ('A'):        /* go to begginning of string */
-          curpos = 0;
+          st.pos = 0;
           break;
         case CTRL ('E'):        /* go to end of string */
-          curpos = len;
+          st.pos = st.len;
           break;
         case KEY_LEFT:          /* move one char backward  */
         case CTRL ('B'):
-          if (curpos > 0) curpos--;
+          if (st.pos > 0) st.pos--;
           break;
         case KEY_RIGHT:         /* move one char forward */
         case CTRL ('F'):
-          if (curpos < len) curpos++;
+          if (st.pos < st.len) st.pos++;
           break;
         case ESCAPE:            /* cancel editing */
           return (GETSTRING_ESC);
           break;
         default:                /* insert one character */
-          if (len < l - 1)
+          for (c[0] = ch, k = 1; k < MIN (UTF8_LENGTH (c[0]), 6); k++)
+            c[k] = (unsigned char)wgetch (win);
+          c[k] = 0;
+          if (st.ci[st.len].offset + k < l)
             {
-              ins_char ((curpos++), ch, str);
-              len++;
+              ins_char (&st, c);
+              st.pos++;
             }
       }
   }
 
   custom_remove_attr (win, ATTR_HIGHEST);
 
-  return (len == 0 ? GETSTRING_RET : GETSTRING_VALID);
+  return (st.len == 0 ? GETSTRING_RET : GETSTRING_VALID);
 }
 
 /* Update an already existing string. */
