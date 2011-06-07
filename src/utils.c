@@ -276,7 +276,7 @@ ins_char (int pos, int ch, char *str)
   *str = ch;
 }
 
-void
+static void
 bell (void)
 {
   printf ("\a");
