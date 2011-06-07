@@ -352,7 +352,7 @@ display_item (int incolor, char *msg, int recur, int note, int width, int y,
 {
   WINDOW *win;
   int ch_recur, ch_note;
-  char buf[width * 6];
+  char buf[width * UTF8_MAXLEN];
   int i;
 
   if (width <= 0)

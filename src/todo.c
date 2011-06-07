@@ -374,7 +374,7 @@ display_todo_item (int incolor, char *msg, int prio, int note, int width, int y,
 {
   WINDOW *w;
   int ch_note;
-  char buf[width * 6], priostr[2];
+  char buf[width * UTF8_MAXLEN], priostr[2];
   int i;
 
   w = win[TOD].p;

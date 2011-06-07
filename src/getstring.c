@@ -186,7 +186,7 @@ getstring (WINDOW *win, char *str, int l, int x, int y)
   struct getstr_charinfo ci[l + 1];
 
   int ch, k;
-  char c[6];
+  char c[UTF8_MAXLEN];
 
   getstr_init (&st, str, ci);
   custom_apply_attr (win, ATTR_HIGHEST);
@@ -255,7 +255,8 @@ getstring (WINDOW *win, char *str, int l, int x, int y)
           return (GETSTRING_ESC);
           break;
         default:                /* insert one character */
-          for (c[0] = ch, k = 1; k < MIN (UTF8_LENGTH (c[0]), 6); k++)
+          c[0] = ch;
+          for (k = 1; k < MIN (UTF8_LENGTH (c[0]), UTF8_MAXLEN); k++)
             c[k] = (unsigned char)wgetch (win);
           if (st.ci[st.len].offset + k < l)
             {

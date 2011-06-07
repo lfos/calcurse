@@ -200,6 +200,7 @@
 #define TOSTRING(x)   STRINGIFY(x)
 #define __FILE_POS__   __FILE__ ":" TOSTRING(__LINE__)
 
+#define UTF8_MAXLEN 6
 #define UTF8_LENGTH(ch) ((unsigned char)ch >= 0xFC ? 6 : \
     ((unsigned char)ch >= 0xF8 ? 5 : \
     ((unsigned char)ch >= 0xF0 ? 4 : \
