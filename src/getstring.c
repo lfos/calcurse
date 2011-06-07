@@ -49,7 +49,7 @@ struct getstr_status {
 
 /* Print the string at the desired position. */
 static void
-showstring (WINDOW *win, int x, int y, struct getstr_status *st)
+getstr_print (WINDOW *win, int x, int y, struct getstr_status *st)
 {
   char c = 0;
 
@@ -74,7 +74,7 @@ showstring (WINDOW *win, int x, int y, struct getstr_status *st)
 
 /* Delete a character at the given position in string. */
 static void
-del_char (struct getstr_status *st)
+getstr_del_char (struct getstr_status *st)
 {
   char *str = st->s + st->ci[st->pos].offset;
   int cl = st->ci[st->pos + 1].offset - st->ci[st->pos].offset;
@@ -93,7 +93,7 @@ del_char (struct getstr_status *st)
 
 /* Add a character at the given position in string. */
 static void
-ins_char (struct getstr_status *st, char *c)
+getstr_ins_char (struct getstr_status *st, char *c)
 {
   char *str = st->s + st->ci[st->pos].offset;
   int cl = UTF8_LENGTH (c[0]);
@@ -101,7 +101,7 @@ ins_char (struct getstr_status *st, char *c)
   int i;
 
   memmove (str + cl, str, strlen (str) + 1);
-  for (i = 0; c[i]; i++, str++)
+  for (i = 0; i < cl; i++, str++)
     *str = c[i];
 
   for (i = st->len; i >= st->pos; i--)
@@ -118,6 +118,59 @@ bell (void)
   printf ("\a");
 }
 
+/* Initialize getstring data structure. */
+static void
+getstr_init (struct getstr_status *st, char *str, struct getstr_charinfo *ci)
+{
+  int width;
+
+  st->s = str;
+  st->ci = ci;
+
+  st->len = width = 0;
+  while (*str)
+    {
+      st->ci[st->len].offset = str - st->s;
+      st->ci[st->len].dpyoff = width;
+
+      st->len++;
+      width += utf8_width (str);
+      str += UTF8_LENGTH (*str);
+    }
+  st->ci[st->len].offset = str - st->s;
+  st->ci[st->len].dpyoff = width;
+
+  st->pos = st->len;
+  st->scrpos = 0;
+}
+
+/* Scroll left/right if the cursor moves outside the window range. */
+static void
+getstr_fixscr (struct getstr_status *st)
+{
+  const int pgsize = col / 3;
+  int pgskip;
+
+  while (st->pos < st->scrpos)
+    {
+      pgskip = 0;
+      while (pgskip < pgsize)
+        {
+          st->scrpos--;
+          pgskip += st->ci[st->scrpos + 1].dpyoff - st->ci[st->scrpos].dpyoff;
+        }
+    }
+  while (st->ci[st->pos].dpyoff - st->ci[st->scrpos].dpyoff > col - 2)
+    {
+      pgskip = 0;
+      while (pgskip < pgsize)
+        {
+          pgskip += st->ci[st->scrpos + 1].dpyoff - st->ci[st->scrpos].dpyoff;
+          st->scrpos++;
+        }
+    }
+}
+
 /*
  * Getstring allows to get user input and to print it on a window,
  * even if noecho() is on. This function is also used to modify an existing
@@ -129,58 +182,18 @@ bell (void)
 enum getstr
 getstring (WINDOW *win, char *str, int l, int x, int y)
 {
-  const int pgsize = col / 3;
-  int pgskip;
-
   struct getstr_status st;
   struct getstr_charinfo ci[l + 1];
 
-  int width;
   int ch, k;
   char c[6];
 
-  st.s = str;
-  st.ci = ci;
-  st.len = 0;
-  width = 0;
-  while (*str)
-    {
-      st.ci[st.len].offset = str - st.s;
-      st.ci[st.len].dpyoff = width;
-
-      st.len++;
-      width += utf8_width (str);
-      str += UTF8_LENGTH (*str);
-    }
-  st.ci[st.len].offset = str - st.s;
-  st.ci[st.len].dpyoff = width;
-
-  st.pos = st.len;
-  st.scrpos = 0;
-
+  getstr_init (&st, str, ci);
   custom_apply_attr (win, ATTR_HIGHEST);
 
   for (;;) {
-    while (st.pos < st.scrpos)
-      {
-        pgskip = 0;
-        while (pgskip < pgsize)
-          {
-            st.scrpos--;
-            pgskip += st.ci[st.scrpos + 1].dpyoff - st.ci[st.scrpos].dpyoff;
-          }
-      }
-    while (st.ci[st.pos].dpyoff - st.ci[st.scrpos].dpyoff > col - 2)
-      {
-        pgskip = 0;
-        while (pgskip < pgsize)
-          {
-            pgskip += st.ci[st.scrpos + 1].dpyoff - st.ci[st.scrpos].dpyoff;
-            st.scrpos++;
-          }
-      }
-
-    showstring (win, x, y, &st);
+    getstr_fixscr (&st);
+    getstr_print (win, x, y, &st);
     wins_doupdate ();
 
     if ((ch = wgetch (win)) == '\n') break;
@@ -193,14 +206,14 @@ getstring (WINDOW *win, char *str, int l, int x, int y)
           if (st.pos > 0)
             {
               st.pos--;
-              del_char (&st);
+              getstr_del_char (&st);
             }
           else
             bell ();
           break;
         case CTRL ('D'):        /* delete next character */
           if (st.pos < st.len)
-            del_char (&st);
+            getstr_del_char (&st);
           else
             bell ();
           break;
@@ -209,12 +222,12 @@ getstring (WINDOW *win, char *str, int l, int x, int y)
             while (st.pos && st.s[st.ci[st.pos - 1].offset] == ' ')
               {
                 st.pos--;
-                del_char (&st);
+                getstr_del_char (&st);
               }
             while (st.pos && st.s[st.ci[st.pos - 1].offset] != ' ')
               {
                 st.pos--;
-                del_char (&st);
+                getstr_del_char (&st);
               }
           }
           else
@@ -244,10 +257,9 @@ getstring (WINDOW *win, char *str, int l, int x, int y)
         default:                /* insert one character */
           for (c[0] = ch, k = 1; k < MIN (UTF8_LENGTH (c[0]), 6); k++)
             c[k] = (unsigned char)wgetch (win);
-          c[k] = 0;
           if (st.ci[st.len].offset + k < l)
             {
-              ins_char (&st, c);
+              getstr_ins_char (&st, c);
               st.pos++;
             }
       }
