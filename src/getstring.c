@@ -154,7 +154,7 @@ getstr_fixscr (struct getstr_status *st)
   while (st->pos < st->scrpos)
     {
       pgskip = 0;
-      while (pgskip < pgsize)
+      while (pgskip < pgsize && st->scrpos > 0)
         {
           st->scrpos--;
           pgskip += st->ci[st->scrpos + 1].dpyoff - st->ci[st->scrpos].dpyoff;
@@ -163,7 +163,7 @@ getstr_fixscr (struct getstr_status *st)
   while (st->ci[st->pos].dpyoff - st->ci[st->scrpos].dpyoff > col - 2)
     {
       pgskip = 0;
-      while (pgskip < pgsize)
+      while (pgskip < pgsize && st->scrpos < st->len)
         {
           pgskip += st->ci[st->scrpos + 1].dpyoff - st->ci[st->scrpos].dpyoff;
           st->scrpos++;
