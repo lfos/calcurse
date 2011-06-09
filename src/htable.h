@@ -44,7 +44,7 @@
  * number). It works by transforming the key using a hash function into a hash,
  * a number that is used as an index in an array to locate the desired location
  * ("bucket") where the values should be.
- * 
+ *
  * Hash tables support the efficient insertion of new entries, in expected O(1)
  * time. The time spent in searching depends on the hash function and the load
  * of the hash table; both insertion and search approach O(1) time with well
@@ -59,7 +59,7 @@
  * capacity of data would only be about twice as slow on average as the same
  * table at its recommended capacity).
  */
- 
+
 #define HTABLE_HEAD(name, size, type)                                         \
 struct name {                                                                 \
   uint32_t      noitems;     /* Number of items stored in hash table. */      \
@@ -287,7 +287,7 @@ name##_HTABLE_NEXT(struct name *head, struct type *elm)                       \
 #define HTABLE_LOOKUP(name, x, y)       name##_HTABLE_LOOKUP(x, y)
 #define HTABLE_FIRST_FROM(name, x, y)   (HTABLE_EMPTY(x) ? NULL               \
                                          : name##_HTABLE_FIRST_FROM(x, y))
-#define HTABLE_FIRST(name, x)           HTABLE_FIRST_FROM(name, x, FIRST_BKT) 
+#define HTABLE_FIRST(name, x)           HTABLE_FIRST_FROM(name, x, FIRST_BKT)
 #define HTABLE_NEXT(name, x, y)         (HTABLE_EMPTY(x) ? NULL               \
                                          : name##_HTABLE_NEXT(x, y))
 

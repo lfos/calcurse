@@ -728,7 +728,7 @@ recur_event_erase (long start, unsigned num, unsigned delete_whole,
                    enum eraseflg flag)
 {
   llist_item_t *i;
- 
+
   i = LLIST_FIND_NTH (&recur_elist, num, start, recur_event_inday);
 
   if (!i)
@@ -776,7 +776,7 @@ recur_apoint_erase (long start, unsigned num, unsigned delete_whole,
 {
   llist_item_t *i;
   int need_check_notify = 0;
- 
+
   i = LLIST_TS_FIND_NTH (&recur_alist_p, num, start, recur_apoint_inday);
 
   if (!i)

@@ -34,7 +34,7 @@
  *
  */
 
-#include "calcurse.h"                                                           
+#include "calcurse.h"
 
 /*
  * Initialize a list.
@@ -54,7 +54,7 @@ llist_free (llist_t *l)
   llist_item_t *i, *t;
 
   for (i = l->head; i; i = t)
-    { 
+    {
       t = i->next;
       mem_free (i);
     }

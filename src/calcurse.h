@@ -140,7 +140,7 @@
 #define TAB       		9
 #define SPACE                   32
 
-#define KEYS_KEYLEN		3 /* length of each keybinding */  
+#define KEYS_KEYLEN		3 /* length of each keybinding */
 #define KEYS_LABELEN		8 /* length of command description */
 #define KEYS_CMDS_PER_LINE	6 /* max number of commands per line */
 
@@ -263,7 +263,7 @@ struct apoint
 #define APOINT_NOTIFY    0x1	/* Item needs to be notified */
 #define APOINT_NOTIFIED  0x2	/* Item was already notified */
   int            state;
-  
+
   char          *mesg;
   char          *note;
 };
@@ -311,7 +311,7 @@ enum recur_type {
   RECUR_WEEKLY,
   RECUR_MONTHLY,
   RECUR_YEARLY,
-  RECUR_TYPES  
+  RECUR_TYPES
 };
 
 /* To describe an item's repetition. */
@@ -349,7 +349,7 @@ struct notify_app {
   char             state;
   pthread_mutex_t  mutex;
 };
-  
+
 struct io_file {
   FILE *fd;
   char  name[BUFSIZ];
@@ -381,7 +381,7 @@ enum key {
   KEY_GENERIC_SCROLL_DOWN,
   KEY_GENERIC_SCROLL_UP,
   KEY_GENERIC_GOTO_TODAY,
-  
+
   KEY_MOVE_RIGHT,
   KEY_MOVE_LEFT,
   KEY_MOVE_DOWN,
@@ -398,7 +398,7 @@ enum key {
   KEY_VIEW_NOTE,
   KEY_RAISE_PRIORITY,
   KEY_LOWER_PRIORITY,
-  
+
   NBKEYS,
   KEY_UNDEF
 };
@@ -477,9 +477,9 @@ enum eraseflg {
   ERASE_FORCE,
   ERASE_FORCE_KEEP_NOTE,
   ERASE_FORCE_ONLY_NOTE,
-  ERASE_CUT  
+  ERASE_CUT
 };
-  
+
 /* Return codes for the getstring() function. */
 enum getstr {
   GETSTRING_VALID,
@@ -731,7 +731,7 @@ void   mem_stats (void);
 #  define mem_realloc(p, n, s)  xrealloc ((p), (n), (s))
 #  define mem_strdup(s)         xstrdup ((s))
 #  define mem_free(p)           xfree ((p))
-#  define mem_stats()        
+#  define mem_stats()
 
 #endif /* CALCURSE_MEMORY_DEBUG */
 

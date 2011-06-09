@@ -105,7 +105,7 @@ event_new (char *mesg, char *note, long day, int id)
   ev->day = day;
   ev->id = id;
   ev->note = (note != NULL) ? mem_strdup (note) : NULL;
-  
+
   LLIST_ADD_SORTED (&eventlist, ev, event_cmp_day);
 
   return ev;
