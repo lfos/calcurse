@@ -113,8 +113,7 @@ library already installed on your computer, but if not, you can find it at the
 following url: http://ftp.gnu.org/pub/gnu/ncurses/
 
 NOTE: It is also possible to link `calcurse` against the `ncursesw` library
-      (ncurses with support for unicode).  However, UTF-8 is not yet supported
-      by `calcurse`.
+      (ncurses with support for unicode).
 
 [[install_requirements_gettext]]
 gettext library
