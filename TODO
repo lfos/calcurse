@@ -9,7 +9,6 @@ feature added in calcurse which does not appear in this list.
 High
 ----
 
-* Add support for UTF-8
 * Implement the send-item functionality to export a single item and pipe it to
   an external process
 * Add a key binding to toggle between visible/hidden tasks inside todo panel
