@@ -1,19 +1,23 @@
 AUTOMAKE_OPTIONS = foreign
 
+if HAVE_ASCIIDOC
 ASCIIDOC_ARGS = \
 	-n \
 	-a toc \
 	-a icons
 
+dist_doc_DATA = \
+	manual.html
+endif
+
+if HAVE_A2X
 A2X_ARGS = \
 	-d manpage \
 	-f manpage
 
-dist_doc_DATA = \
-	manual.html
-
 dist_man_MANS = \
 	calcurse.1
+endif
 
 EXTRA_DIST = \
 	manual.txt \
