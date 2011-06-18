@@ -162,7 +162,7 @@ llist_add_sorted (llist_t *l, void *data, llist_fn_cmp_t fn_cmp)
 
       if (!l->head)
         l->head = o;
-      else if (fn_cmp(o->data, l->head->data) <= 0)
+      else if (fn_cmp(o->data, l->head->data) < 0)
         {
           o->next = l->head;
           l->head = o;
@@ -170,7 +170,7 @@ llist_add_sorted (llist_t *l, void *data, llist_fn_cmp_t fn_cmp)
       else
         {
           i = l->head;
-          while (i->next && fn_cmp(o->data, i->next->data) > 0)
+          while (i->next && fn_cmp(o->data, i->next->data) >= 0)
             i = i->next;
           o->next = i->next;
           i->next = o;
