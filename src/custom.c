@@ -456,8 +456,7 @@ layout_selection_bar (void)
 
 /* Used to display available layouts in layout configuration menu. */
 static void
-display_layout_config (struct window *lwin, int mark, int cursor,
-                       int need_reset)
+display_layout_config (struct window *lwin, int mark, int cursor)
 {
 #define CURSOR			(32 | A_REVERSE)
 #define MARK			88
@@ -467,10 +466,10 @@ display_layout_config (struct window *lwin, int mark, int cursor,
   const int BOXSIZ = strlen (box);
   const int NBCOLS = NBLAYOUTS / LAYOUTSPERCOL;
   const int COLSIZ = LAYOUTW + BOXSIZ + 1;
-  const int XSPC = (col - NBCOLS * COLSIZ) / (NBCOLS + 1);
-  const int XOFST = (col - NBCOLS * (XSPC + COLSIZ)) / 2;
-  const int YSPC = (row - 8 - LAYOUTSPERCOL * LAYOUTH) / (LAYOUTSPERCOL + 1);
-  const int YOFST = (row - LAYOUTSPERCOL * (YSPC + LAYOUTH)) / 2;
+  const int XSPC = (lwin->w - NBCOLS * COLSIZ) / (NBCOLS + 1);
+  const int XOFST = (lwin->w - NBCOLS * (XSPC + COLSIZ)) / 2;
+  const int YSPC = (lwin->h - 8 - LAYOUTSPERCOL * LAYOUTH) / (LAYOUTSPERCOL + 1);
+  const int YOFST = (lwin->h - LAYOUTSPERCOL * (YSPC + LAYOUTH)) / 2;
   enum {YPOS, XPOS, NBPOS};
   int pos[NBLAYOUTS][NBPOS];
   char *layouts[LAYOUTH][NBLAYOUTS] = {
@@ -486,14 +485,6 @@ display_layout_config (struct window *lwin, int mark, int cursor,
     {
       pos[i][YPOS] = YOFST + (i % LAYOUTSPERCOL) * (YSPC + LAYOUTH);
       pos[i][XPOS] = XOFST + (i / LAYOUTSPERCOL) * (XSPC + COLSIZ);
-    }
-
-  if (need_reset)
-    {
-      char label[BUFSIZ];
-
-      (void)snprintf (label, BUFSIZ, _("layout configuration"));
-      custom_confwin_init (lwin, label);
     }
 
   for (i = 0; i < NBLAYOUTS; i++)
@@ -529,6 +520,7 @@ custom_layout_config (void)
   struct scrollwin hwin;
   struct window conf_win;
   int ch, mark, cursor, need_reset;
+  char label[BUFSIZ];
   char *help_text =
     _("With this configuration menu, one can choose where panels will be\n"
       "displayed inside calcurse screen. \n"
@@ -538,11 +530,12 @@ custom_layout_config (void)
       "       'a' -> appointment panel\n\n"
       "       't' -> todo panel\n\n");
 
-  need_reset = 1;
   conf_win.p = (WINDOW *)0;
+  (void)snprintf (label, BUFSIZ, _("layout configuration"));
+  custom_confwin_init (&conf_win, label);
   cursor = mark = wins_layout () - 1;
+  display_layout_config (&conf_win, mark, cursor);
   clear ();
-  display_layout_config (&conf_win, mark, cursor, need_reset);
 
   while ((ch = keys_getch (win[STA].p)) != KEY_GENERIC_QUIT)
     {
@@ -592,7 +585,10 @@ custom_layout_config (void)
           need_reset = 1;
         }
 
-      display_layout_config (&conf_win, mark, cursor, need_reset);
+      if (need_reset)
+        custom_confwin_init (&conf_win, label);
+
+      display_layout_config (&conf_win, mark, cursor);
     }
   wins_set_layout (mark + 1);
   delwin (conf_win.p);
@@ -718,7 +714,7 @@ color_selection_bar (void)
  */
 static void
 display_color_config (struct window *cwin, int *mark_fore, int *mark_back,
-                      int cursor, int need_reset, int theme_changed)
+                      int cursor, int theme_changed)
 {
 #define	SIZE 			(2 * (NBUSERCOLORS + 1))
 #define DEFAULTCOLOR		255
@@ -731,13 +727,12 @@ display_color_config (struct window *cwin, int *mark_fore, int *mark_back,
   char *default_txt = _("(terminal's default)");
   char *bar = "          ";
   char *box = "[ ]";
-  char label[BUFSIZ];
   const unsigned Y = 3;
   const unsigned XOFST = 5;
-  const unsigned YSPC = (row - 8) / (NBUSERCOLORS + 1);
+  const unsigned YSPC = (cwin->h - 8) / (NBUSERCOLORS + 1);
   const unsigned BARSIZ = strlen (bar);
   const unsigned BOXSIZ = strlen (box);
-  const unsigned XSPC = (col - 2 * BARSIZ - 2 * BOXSIZ - 6) / 3;
+  const unsigned XSPC = (cwin->w - 2 * BARSIZ - 2 * BOXSIZ - 6) / 3;
   const unsigned XFORE = XSPC;
   const unsigned XBACK = 2 * XSPC + BOXSIZ + XOFST + BARSIZ;
   enum
@@ -758,12 +753,6 @@ display_color_config (struct window *cwin, int *mark_fore, int *mark_back,
       pos[NBUSERCOLORS + i + 1][YPOS] = Y + YSPC * (i + 1);
       pos[i][XPOS] = XFORE;
       pos[NBUSERCOLORS + i + 1][XPOS] = XBACK;
-    }
-
-  if (need_reset)
-    {
-      (void)snprintf (label, BUFSIZ, _("color theme"));
-      custom_confwin_init (cwin, label);
     }
 
   if (colorize)
@@ -848,17 +837,17 @@ custom_color_config (void)
   struct window conf_win;
   int ch, cursor, need_reset, theme_changed;
   int mark_fore, mark_back;
+  char label[BUFSIZ];
 
+  conf_win.p = 0;
+  (void)snprintf (label, BUFSIZ, _("color theme"));
+  custom_confwin_init (&conf_win, label);
   mark_fore = NBUSERCOLORS;
   mark_back = SIZE - 1;
-  clear ();
   cursor = 0;
-  need_reset = 1;
   theme_changed = 0;
-  conf_win.p = 0;
-  set_confwin_attr (&conf_win);
-  display_color_config (&conf_win, &mark_fore, &mark_back, cursor,
-                        need_reset, theme_changed);
+  display_color_config (&conf_win, &mark_fore, &mark_back, cursor, theme_changed);
+  clear ();
 
   while ((ch = keys_getch (win[STA].p)) != KEY_GENERIC_QUIT)
     {
@@ -912,8 +901,11 @@ custom_color_config (void)
           need_reset = 1;
         }
 
+      if (need_reset)
+        custom_confwin_init (&conf_win, label);
+
       display_color_config (&conf_win, &mark_fore, &mark_back, cursor,
-                            need_reset, theme_changed);
+                            theme_changed);
     }
   delwin (conf_win.p);
 }
@@ -1186,8 +1178,8 @@ custom_general_config (struct conf *conf)
           resize = 0;
           wins_reset ();
           wins_scrollwin_delete (&cwin);
-          wins_scrollwin_init (&cwin);
           custom_set_swsiz (&cwin);
+          wins_scrollwin_init (&cwin);
           wins_show (cwin.win.p, cwin.label);
           cwin.first_visible_line = 0;
           delwin (win[STA].p);
