@@ -354,6 +354,9 @@ display_item (int incolor, char *msg, int recur, int note, int len, int y,
   int ch_recur, ch_note;
   char buf[len];
 
+  if (len <= 0)
+    return;
+
   win = apad.ptrwin;
   ch_recur = (recur) ? '*' : ' ';
   ch_note = (note) ? '>' : ' ';
