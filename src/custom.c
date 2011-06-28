@@ -549,12 +549,6 @@ custom_layout_config (void)
       need_reset = 0;
       switch (ch)
         {
-        case KEY_RESIZE:
-          endwin ();
-          wins_refresh ();
-          curs_set (0);
-          need_reset = 1;
-          break;
         case KEY_GENERIC_HELP:
           help_wins_init (&hwin, 0, 0,
                           (notify_bar ()) ? row - 3 : row - 2, col);
@@ -588,6 +582,16 @@ custom_layout_config (void)
           need_reset = 1;
           break;
         }
+
+      if (resize)
+        {
+          resize = 0;
+          endwin ();
+          wins_refresh ();
+          curs_set (0);
+          need_reset = 1;
+        }
+
       display_layout_config (&conf_win, mark, cursor, need_reset);
     }
   wins_set_layout (mark + 1);
@@ -863,13 +867,6 @@ custom_color_config (void)
 
       switch (ch)
         {
-        case KEY_RESIZE:
-          endwin ();
-          wins_refresh ();
-          curs_set (0);
-          need_reset = 1;
-          break;
-
         case KEY_GENERIC_SELECT:
           colorize = 1;
           need_reset = 1;
@@ -905,6 +902,16 @@ custom_color_config (void)
           need_reset = 1;
           break;
         }
+
+      if (resize)
+        {
+          resize = 0;
+          endwin ();
+          wins_refresh ();
+          curs_set (0);
+          need_reset = 1;
+        }
+
       display_color_config (&conf_win, &mark_fore, &mark_back, cursor,
                             need_reset, theme_changed);
     }
@@ -1114,24 +1121,6 @@ custom_general_config (struct conf *conf)
 
       switch (ch)
         {
-        case KEY_RESIZE:
-          wins_get_config ();
-          wins_reset ();
-          wins_scrollwin_delete (&cwin);
-          wins_scrollwin_init (&cwin);
-          custom_set_swsiz (&cwin);
-          wins_show (cwin.win.p, cwin.label);
-          cwin.first_visible_line = 0;
-          delwin (win[STA].p);
-          win[STA].p = newwin (win[STA].h, win[STA].w, win[STA].y,
-                               win[STA].x);
-          keypad (win[STA].p, TRUE);
-          if (notify_bar ())
-            {
-              notify_reinit_bar ();
-              notify_update_bar ();
-            }
-          break;
         case CTRL ('N'):
           wins_scrollwin_down (&cwin, 1);
           break;
@@ -1191,6 +1180,27 @@ custom_general_config (struct conf *conf)
           status_mesg (number_str, keys);
           break;
         }
+
+      if (resize)
+        {
+          resize = 0;
+          wins_reset ();
+          wins_scrollwin_delete (&cwin);
+          wins_scrollwin_init (&cwin);
+          custom_set_swsiz (&cwin);
+          wins_show (cwin.win.p, cwin.label);
+          cwin.first_visible_line = 0;
+          delwin (win[STA].p);
+          win[STA].p = newwin (win[STA].h, win[STA].w, win[STA].y,
+                               win[STA].x);
+          keypad (win[STA].p, TRUE);
+          if (notify_bar ())
+            {
+              notify_reinit_bar ();
+              notify_update_bar ();
+            }
+        }
+
       status_mesg (number_str, keys);
       cwin.total_lines = print_general_options (cwin.pad.p, conf);
       wins_scrollwin_display (&cwin);

@@ -59,6 +59,7 @@ generic_hdlr (int sig)
         ;
       break;
     case SIGWINCH:
+      resize = 1;
       clearok (curscr, TRUE);
       (void)ungetch (KEY_RESIZE);
       break;

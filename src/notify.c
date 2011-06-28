@@ -728,20 +728,6 @@ notify_config_bar (void)
 
       switch (ch)
         {
-        case KEY_RESIZE:
-          wins_get_config ();
-          wins_reset ();
-          reinit_conf_win (&cwin);
-          delwin (win[STA].p);
-          win[STA].p = newwin (win[STA].h, win[STA].w, win[STA].y,
-                               win[STA].x);
-          keypad (win[STA].p, TRUE);
-          if (notify_bar ())
-            {
-              notify_reinit_bar ();
-              notify_update_bar ();
-            }
-          break;
         case CTRL ('N'):
           wins_scrollwin_down (&cwin, 1);
           break;
@@ -815,6 +801,25 @@ notify_config_bar (void)
           dmon.log = !dmon.log;
           break;
         }
+
+      if (resize)
+        {
+          resize = 0;
+          wins_get_config ();
+          wins_reset ();
+          reinit_conf_win (&cwin);
+          delwin (win[STA].p);
+          win[STA].p = newwin (win[STA].h, win[STA].w, win[STA].y,
+                               win[STA].x);
+          keypad (win[STA].p, TRUE);
+          if (notify_bar ())
+            {
+              notify_reinit_bar ();
+              notify_update_bar ();
+            }
+          clearok (curscr, TRUE);
+        }
+
       status_mesg (number_str, keys);
       cwin.total_lines = print_config_options (cwin.pad.p);
       wins_scrollwin_display (&cwin);

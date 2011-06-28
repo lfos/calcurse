@@ -179,9 +179,7 @@ main (int argc, char **argv)
           break;
 
         case KEY_GENERIC_REDRAW:
-        case KEY_RESIZE:
-          do_update = 0;
-          wins_reset ();
+          resize = 1;
           break;
 
         case KEY_GENERIC_CHANGE_VIEW:
@@ -567,6 +565,14 @@ main (int argc, char **argv)
                 apoint_hilt_set (1);
             }
         }
+
+      if (resize)
+        {
+          resize = 0;
+          do_update = 0;
+          wins_reset ();
+        }
+
       if (do_update)
         wins_update ();
     }

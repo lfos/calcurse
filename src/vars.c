@@ -43,6 +43,7 @@
  * variables to store window size
  */
 int col = 0, row = 0;
+int resize = 0;
 
 /* variable to tell if the terminal supports color */
 unsigned colorize = 0;

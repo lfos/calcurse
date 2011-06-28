@@ -107,7 +107,7 @@ help_write_pad (struct window *win, char *title, char *text, enum key action)
   erase_window_part (win->p, rownum, colnum, BUFSIZ, win->w);
   custom_apply_attr (win->p, ATTR_HIGHEST);
   mvwprintw (win->p, rownum, colnum, "%s", title);
-  if ((int) action != KEY_RESIZE) {
+  if ((int) action != KEY_RESIZE && action < NBKEYS) {
     switch (action)
       {
       case KEY_END_OF_WEEK:
@@ -131,8 +131,12 @@ help_write_pad (struct window *win, char *title, char *text, enum key action)
         break;
       default:
         bindings = keys_action_allkeys (action);
-        colnum = win->w - strlen (bindings_title) - strlen (bindings);
-        mvwprintw (win->p, rownum, colnum, bindings_title, bindings);
+
+        if (bindings)
+          {
+            colnum = win->w - strlen (bindings_title) - strlen (bindings);
+            mvwprintw (win->p, rownum, colnum, bindings_title, bindings);
+          }
       }
   }
   colnum = 0;
@@ -744,34 +748,35 @@ help_screen (void)
       erase_window_part (hwin.win.p, 1, hwin.pad.y, col - 2,
                          hwin.win.h - 2);
 
-      if ((int) ch == KEY_RESIZE) {
-        wins_get_config ();
-        help_wins_reset (&hwin);
-        hwin.first_visible_line = 0;
-        hwin.total_lines = help_write_pad (&hwin.pad, hscr[oldpage].title,
-                                                 hscr[oldpage].text, ch);
-        need_resize = 1;
+      switch (ch) {
+        case KEY_GENERIC_SCROLL_DOWN:
+          wins_scrollwin_down (&hwin, 1);
+          break;
+
+        case KEY_GENERIC_SCROLL_UP:
+          wins_scrollwin_up (&hwin, 1);
+          break;
+
+        default:
+          page = wanted_page (ch);
+          if (page != NOPAGE) {
+            hwin.first_visible_line = 0;
+            hwin.total_lines = help_write_pad (&hwin.pad, hscr[page].title,
+                                               hscr[page].text, ch);
+            oldpage = page;
+          }
       }
-      else {
-        switch (ch) {
-          case KEY_GENERIC_SCROLL_DOWN:
-            wins_scrollwin_down (&hwin, 1);
-            break;
 
-          case KEY_GENERIC_SCROLL_UP:
-            wins_scrollwin_up (&hwin, 1);
-            break;
-
-          default:
-            page = wanted_page (ch);
-            if (page != NOPAGE) {
-              hwin.first_visible_line = 0;
-              hwin.total_lines = help_write_pad (&hwin.pad, hscr[page].title,
-                                                 hscr[page].text, ch);
-              oldpage = page;
-            }
+      if (resize)
+        {
+          resize = 0;
+          wins_get_config ();
+          help_wins_reset (&hwin);
+          hwin.first_visible_line = 0;
+          hwin.total_lines = help_write_pad (&hwin.pad, hscr[oldpage].title,
+                                             hscr[oldpage].text, ch);
+          need_resize = 1;
         }
-      }
 
       wins_scrollwin_display (&hwin);
       ch = keys_getch (win[STA].p);

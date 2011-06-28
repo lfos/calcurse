@@ -864,6 +864,7 @@ void         psleep (unsigned);
 
 /* vars.c */
 extern int               col, row;
+extern int               resize;
 extern unsigned          colorize;
 extern enum ui_mode      ui_mode;
 extern int               days[12];
