@@ -640,14 +640,25 @@ custom_sidebar_config (void)
           wgetch (hwin.win.p);
           wins_scrollwin_delete (&hwin);
           break;
+        case KEY_RESIZE:
+          break;
         default:
           continue;
         }
-      wins_reinit_panels ();
-      wins_update_border ();
-      wins_update_panels ();
-      keys_display_bindings_bar (win[STA].p, binding, 0, binding_size);
-      wins_doupdate ();
+
+      if (resize)
+        {
+          resize = 0;
+          wins_reset ();
+        }
+      else
+        {
+          wins_reinit_panels ();
+          wins_update_border ();
+          wins_update_panels ();
+          keys_display_bindings_bar (win[STA].p, binding, 0, binding_size);
+          wins_doupdate ();
+        }
     }
 }
 
