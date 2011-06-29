@@ -475,6 +475,9 @@ control key):
 `^k`::
   deletes the input from the cursor to the end of the line
 
+`^w`::
+  deletes backward to the beginning of the current word
+
 `ESCAPE`::
     cancels the editing
 
