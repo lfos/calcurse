@@ -56,6 +56,7 @@ typedef enum
   HELP_EXPORT,
   HELP_DISPLACEMENT,
   HELP_VIEW,
+  HELP_PIPE,
   HELP_TAB,
   HELP_GOTO,
   HELP_DELETE,
@@ -296,6 +297,10 @@ wanted_page (int ch)
       page = HELP_VIEW;
       break;
 
+    case KEY_PIPE_ITEM:
+      page = HELP_PIPE;
+      break;
+
     case KEY_RAISE_PRIORITY:
     case KEY_LOWER_PRIORITY:
       page = HELP_PRIORITY;
@@ -450,6 +455,14 @@ help_screen (void)
       "\nPress any key to close the popup window and go back to the main\n"
       "Calcurse screen."),
       keys_action_firstkey (KEY_VIEW_ITEM));
+
+  hscr[HELP_PIPE].title = _("Pipe\n");
+  (void)snprintf (hscr[HELP_PIPE].text, HELPTEXTSIZ,
+    _("Pipe the selected item to an external program.\n"
+      "\nPress the '%s' key to pipe the currently selected appointment or\n"
+      "todo entry to an external program.\n"
+      "\nYou will be driven back to calcurse as soon as the program exits.\n"),
+      keys_action_firstkey (KEY_PIPE_ITEM));
 
   hscr[HELP_TAB].title = _("Tab\n");
   (void)snprintf (hscr[HELP_TAB].text, HELPTEXTSIZ,

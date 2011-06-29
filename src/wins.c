@@ -642,8 +642,8 @@ wins_launch_external (char *file, char *cmd)
 }
 
 #define NB_CAL_CMDS	27	/* number of commands while in cal view */
-#define NB_APP_CMDS	31	/* same thing while in appointment view */
-#define NB_TOD_CMDS	30	/* same thing while in todo view */
+#define NB_APP_CMDS	32	/* same thing while in appointment view */
+#define NB_TOD_CMDS	31	/* same thing while in todo view */
 #define TOTAL_CMDS	NB_CAL_CMDS + NB_APP_CMDS + NB_TOD_CMDS
 #define CMDS_PER_LINE	6	/* max number of commands per line */
 
@@ -695,6 +695,7 @@ wins_status_bar (void)
   struct binding del    = {_("Del Item"), KEY_DEL_ITEM};
   struct binding edit   = {_("Edit Itm"), KEY_EDIT_ITEM};
   struct binding view   = {_("View"),     KEY_VIEW_ITEM};
+  struct binding pipe   = {_("Pipe"),     KEY_PIPE_ITEM};
   struct binding flag   = {_("Flag Itm"), KEY_FLAG_ITEM};
   struct binding rept   = {_("Repeat"),   KEY_REPEAT_ITEM};
   struct binding enote  = {_("EditNote"), KEY_EDIT_NOTE};
@@ -709,13 +710,14 @@ wins_status_bar (void)
     &gnday, &gpday, &gnweek, &gpweek, &draw, &othr, &today, &conf, &othr,
     /* appointment keys */
     &help, &quit, &save, &chgvu, &import, &export, &add, &del, &edit, &view,
-    &draw, &othr, &rept, &flag, &enote, &vnote, &up, &down, &gnday, &gpday,
-    &gnweek, &gpweek, &togo, &othr, &today, &conf, &appt, &todo, &cut, &paste,
-    &othr,
+    &pipe, &othr, &draw, &rept, &flag, &enote, &vnote, &up, &down, &gnday,
+    &gpday, &gnweek, &gpweek, &othr, &togo, &today, &conf, &appt, &todo, &cut,
+    &paste, &othr,
     /* todo keys */
     &help, &quit, &save, &chgvu, &import, &export, &add, &del, &edit, &view,
-    &flag, &othr, &rprio, &lprio, &enote, &vnote, &up, &down, &gnday, &gpday,
-    &gnweek, &gpweek, &togo, &othr, &today, &conf, &appt, &todo, &draw, &othr
+    &pipe, &othr, &flag, &rprio, &lprio, &enote, &vnote, &up, &down, &gnday,
+    &gpday, &gnweek, &gpweek, &othr, &togo, &today, &conf, &appt, &todo, &draw,
+    &othr
   };
 
   /* Drawing the keybinding with attribute and label without. */

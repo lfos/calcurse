@@ -368,6 +368,13 @@ main (int argc, char **argv)
           do_storage = 1;
           break;
 
+        case KEY_PIPE_ITEM:
+          if (wins_slctd () == APP && apoint_hilt () != 0)
+            day_pipe_item (&conf);
+          else if (wins_slctd () == TOD && todo_hilt () != 0)
+            todo_pipe_item ();
+          break;
+
         case KEY_RAISE_PRIORITY:
         case KEY_LOWER_PRIORITY:
           if (wins_slctd () == TOD && todo_hilt () != 0)

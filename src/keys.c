@@ -91,6 +91,7 @@ static struct keydef_s keydef[NBKEYS] = {
   {"del-item", "d D"},
   {"edit-item", "e E"},
   {"view-item", "v V"},
+  {"pipe-item", "|"},
   {"flag-item", "!"},
   {"repeat", "r R"},
   {"edit-note", "n N"},
@@ -567,6 +568,8 @@ keys_popup_info (enum key key)
     _("Flag the currently selected item as important.");
   info[KEY_REPEAT_ITEM] =
     _("Repeat an item");
+  info[KEY_PIPE_ITEM] =
+    _("Pipe the currently selected item to an external program.");
   info[KEY_EDIT_NOTE] =
     _("Attach (or edit if one exists) a note to the currently selected item");
   info[KEY_VIEW_NOTE] =
