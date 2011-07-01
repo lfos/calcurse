@@ -791,6 +791,14 @@ fork_exec (int *pfdin, int *pfdout, const char *path, char *const *arg)
   return pid;
 }
 
+/* Execute an external program in a shell. */
+int
+shell_exec (int *pfdin, int *pfdout, char *cmd)
+{
+  char *arg[] = { "/bin/sh", "-c", cmd, NULL };
+  return fork_exec (pfdin, pfdout, *arg, arg);
+}
+
 /* Wait for a child process to terminate. */
 int
 child_wait (int *pfdin, int *pfdout, int pid)

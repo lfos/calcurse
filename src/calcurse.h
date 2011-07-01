@@ -880,6 +880,7 @@ void         str_toupper (char *);
 void         file_close (FILE *, const char *);
 void         psleep (unsigned);
 int          fork_exec (int *, int *, const char *, char *const *);
+int          shell_exec (int *, int *, char *);
 int          child_wait (int *, int *, int);
 
 /* vars.c */
