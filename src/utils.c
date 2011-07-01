@@ -42,6 +42,7 @@
 #include <ctype.h>
 #include <sys/types.h>
 #include <errno.h>
+#include <fcntl.h>
 
 #include "calcurse.h"
 
@@ -717,4 +718,74 @@ psleep (unsigned secs)
 
   for (unslept = sleep (secs); unslept; unslept = sleep (unslept))
     ;
+}
+
+/*
+ * Fork and execute an external process.
+ *
+ * If pfdin and/or pfdout point to a valid address, a pipe is created and the
+ * appropriate file descriptors are written to pfdin/pfdout.
+ */
+int
+fork_exec (int *pfdin, int *pfdout, const char *path, char *const *arg)
+{
+  int pin[2], pout[2];
+  int pid;
+
+  if (pfdin && (pipe (pin) == -1))
+    return 0;
+  if (pfdout && (pipe (pout) == -1))
+    return 0;
+
+  if ((pid = fork ()) == 0)
+    {
+      if (pfdout)
+        {
+          if (dup2 (pout[0], STDIN_FILENO) < 0)
+            _exit (127);
+          close (pout[0]);
+          close (pout[1]);
+        }
+
+      if (pfdin)
+        {
+          if (dup2 (pin[1], STDOUT_FILENO) < 0)
+            _exit (127);
+          close (pin[0]);
+          close (pin[1]);
+        }
+
+      execvp (path, arg);
+      _exit (127);
+    }
+  else
+    {
+      if (pfdin)
+        close (pin[1]);
+      if (pfdout)
+        close (pout[0]);
+
+      if (pid > 0)
+        {
+          if (pfdin)
+            {
+              fcntl (pin[0], F_SETFD, FD_CLOEXEC);
+              *pfdin = pin[0];
+            }
+          if (pfdout)
+            {
+              fcntl (pout[1], F_SETFD, FD_CLOEXEC);
+              *pfdout = pout[1];
+            }
+        }
+      else
+        {
+          if (pfdin)
+            close (pin[0]);
+          if (pfdout)
+            close (pout[1]);
+          return 0;
+        }
+    }
+  return pid;
 }

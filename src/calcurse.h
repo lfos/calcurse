@@ -879,6 +879,7 @@ int          parse_date (char *, enum datefmt, int *, int *, int *,
 void         str_toupper (char *);
 void         file_close (FILE *, const char *);
 void         psleep (unsigned);
+int          fork_exec (int *, int *, const char *, char *const *);
 
 /* vars.c */
 extern int               col, row;
