@@ -1023,10 +1023,7 @@ io_save_todo (void)
   LLIST_FOREACH (&todolist, i)
     {
       struct todo *todo = LLIST_TS_GET_DATA (i);
-      if (todo->note)
-        (void)fprintf (fp, "[%d]>%s %s\n", todo->id, todo->note, todo->mesg);
-      else
-        (void)fprintf (fp, "[%d] %s\n", todo->id, todo->mesg);
+      todo_write (todo, fp);
     }
   file_close (fp, __FILE_POS__);
 

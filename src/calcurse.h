@@ -827,6 +827,7 @@ int           todo_hilt_pos (void);
 char         *todo_saved_mesg (void);
 void          todo_new_item (void);
 struct todo  *todo_add (char *, int, char *);
+void          todo_write (struct todo *, FILE *);
 void          todo_flag (void);
 void          todo_delete (struct conf *);
 void          todo_chg_priority (int);

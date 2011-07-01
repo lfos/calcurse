@@ -183,6 +183,15 @@ todo_add (char *mesg, int id, char *note)
   return todo;
 }
 
+void
+todo_write (struct todo *todo, FILE *f)
+{
+  if (todo->note)
+    (void)fprintf (f, "[%d]>%s %s\n", todo->id, todo->note, todo->mesg);
+  else
+    (void)fprintf (f, "[%d] %s\n", todo->id, todo->mesg);
+}
+
 /* Delete a note previously attached to a todo item. */
 static void
 todo_delete_note_bynum (unsigned num)
