@@ -637,6 +637,7 @@ struct day_item      *day_get_item (int);
 int                   day_item_nb (long, int, int);
 void                  day_edit_note (char *);
 void                  day_view_note (char *);
+void                  day_pipe_item (struct conf *);
 
 /* dmon.c */
 void   dmon_start (int);

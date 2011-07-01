@@ -1098,3 +1098,58 @@ day_view_note (char *pager)
   (void)snprintf (fullname, BUFSIZ, "%s%s", path_notes, p->note);
   wins_launch_external (fullname, pager);
 }
+
+/* Pipe an appointment or event to an external program. */
+void
+day_pipe_item (struct conf *conf)
+{
+  char cmd[BUFSIZ] = "";
+  int pout;
+  int pid;
+  FILE *fpout;
+  int item_num;
+  long date;
+  struct day_item *p;
+  struct recur_apoint *ra;
+  struct apoint *a;
+  struct recur_event *re;
+  struct event *e;
+
+  status_mesg (_("Pipe item to external command:"), "");
+  if (getstring (win[STA].p, cmd, BUFSIZ, 0, 1) != GETSTRING_VALID)
+    return;
+
+  wins_prepare_external ();
+  if ((pid = shell_exec (NULL, &pout, cmd)))
+    {
+      fpout = fdopen (pout, "w");
+
+      item_num = apoint_hilt ();
+      p = day_get_item (item_num);
+      date = calendar_get_slctd_day_sec ();
+      switch (p->type)
+        {
+        case RECUR_EVNT:
+          re = recur_get_event (date, day_item_nb (date, item_num, RECUR_EVNT));
+          recur_event_write (re, fpout);
+          break;
+        case EVNT:
+          e = event_get (date, day_item_nb (date, item_num, EVNT));
+          event_write (e, fpout);
+          break;
+        case RECUR_APPT:
+          ra = recur_get_apoint (date, day_item_nb (date, item_num, RECUR_APPT));
+          recur_apoint_write (ra, fpout);
+          break;
+        case APPT:
+          a = apoint_get (date, day_item_nb (date, item_num, APPT));
+          apoint_write (a, fpout);
+          break;
+        }
+
+      fclose (fpout);
+      child_wait (NULL, &pout, pid);
+      press_any_key ();
+    }
+  wins_unprepare_external ();
+}
