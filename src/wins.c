@@ -599,25 +599,10 @@ wins_reset (void)
   wins_update ();
 }
 
-/*
- * While inside interactive mode, launch the external command cmd on the given
- * file.
- */
+/* Prepare windows for the execution of an external command. */
 void
-wins_launch_external (const char *file, const char *cmd)
+wins_prepare_external (void)
 {
-  char *p;
-  int len;
-
-  /* Beware of space between cmd and file. */
-  len = strlen (file) + strlen (cmd) + 2;
-
-  p = (char *) mem_calloc (len, sizeof (char));
-  if (snprintf (p, len, "%s %s", cmd, file) == -1)
-    {
-      mem_free (p);
-      return;
-    }
   if (notify_bar ())
     notify_stop_main_thread ();
   def_prog_mode ();
@@ -625,7 +610,12 @@ wins_launch_external (const char *file, const char *cmd)
   ui_mode = UI_CMDLINE;
   clear ();
   wins_refresh ();
-  (void)system (p);
+}
+
+/* Restore windows when returning from an external command. */
+void
+wins_unprepare_external (void)
+{
   reset_prog_mode ();
   clearok (curscr, TRUE);
   curs_set (0);
@@ -633,7 +623,22 @@ wins_launch_external (const char *file, const char *cmd)
   wins_refresh ();
   if (notify_bar ())
     notify_start_main_thread ();
-  mem_free (p);
+}
+
+/*
+ * While inside interactive mode, launch the external command cmd on the given
+ * file.
+ */
+void
+wins_launch_external (char *file, char *cmd)
+{
+  char *arg[] = { cmd, file, NULL };
+  int pid;
+
+  wins_prepare_external ();
+  if ((pid = fork_exec (NULL, NULL, cmd, arg)))
+    child_wait (NULL, NULL, pid);
+  wins_unprepare_external ();
 }
 
 #define NB_CAL_CMDS	27	/* number of commands while in cal view */
