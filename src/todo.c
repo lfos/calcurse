@@ -504,6 +504,35 @@ todo_view_note (char *pager)
   wins_launch_external (fullname, pager);
 }
 
+/* Pipe a todo item to an external program. */
+void
+todo_pipe_item (void)
+{
+  char cmd[BUFSIZ] = "";
+  int pout;
+  int pid;
+  FILE *fpout;
+  struct todo *todo;
+
+  status_mesg (_("Pipe item to external command:"), "");
+  if (getstring (win[STA].p, cmd, BUFSIZ, 0, 1) != GETSTRING_VALID)
+    return;
+
+  wins_prepare_external ();
+  if ((pid = shell_exec (NULL, &pout, cmd)))
+    {
+      fpout = fdopen (pout, "w");
+
+      todo = todo_get_item (hilt);
+      todo_write (todo, fpout);
+
+      fclose (fpout);
+      child_wait (NULL, &pout, pid);
+      press_any_key ();
+    }
+  wins_unprepare_external ();
+}
+
 void
 todo_free (struct todo *todo)
 {

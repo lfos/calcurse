@@ -838,6 +838,7 @@ void          todo_edit_item (void);
 void          todo_update_panel (int);
 void          todo_edit_note (char *);
 void          todo_view_note (char *);
+void          todo_pipe_item (void);
 void          todo_init_list (void);
 void          todo_free_list (void);
 
