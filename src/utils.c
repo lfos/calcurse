@@ -43,6 +43,7 @@
 #include <sys/types.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <sys/wait.h>
 
 #include "calcurse.h"
 
@@ -788,4 +789,19 @@ fork_exec (int *pfdin, int *pfdout, const char *path, char *const *arg)
         }
     }
   return pid;
+}
+
+/* Wait for a child process to terminate. */
+int
+child_wait (int *pfdin, int *pfdout, int pid)
+{
+  int stat;
+
+  if (pfdin)
+    close (*pfdin);
+  if (pfdout)
+    close (*pfdout);
+
+  waitpid (pid, &stat, 0);
+  return stat;
 }
