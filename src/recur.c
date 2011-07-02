@@ -450,7 +450,7 @@ recur_event_scan (FILE *f, struct tm start, int id, char type, int freq,
 }
 
 /* Writting of a recursive appointment into file. */
-static void
+void
 recur_apoint_write (struct recur_apoint *o, FILE *f)
 {
   struct tm *lt;
@@ -492,7 +492,7 @@ recur_apoint_write (struct recur_apoint *o, FILE *f)
 }
 
 /* Writting of a recursive event into file. */
-static void
+void
 recur_event_write (struct recur_event *o, FILE *f)
 {
   struct tm *lt;

@@ -791,6 +791,8 @@ struct recur_apoint *recur_apoint_scan (FILE *, struct tm, struct tm,
 struct recur_event  *recur_event_scan (FILE *, struct tm, int, char,
                                        int, struct tm, char *,
                                        llist_t *);
+void                 recur_apoint_write (struct recur_apoint *, FILE *);
+void                 recur_event_write (struct recur_event *, FILE *);
 void                 recur_save_data (FILE *);
 unsigned             recur_item_inday (long, llist_t *, int, int, long, long);
 unsigned             recur_apoint_inday(struct recur_apoint *, long);
