@@ -813,3 +813,15 @@ child_wait (int *pfdin, int *pfdout, int pid)
   waitpid (pid, &stat, 0);
   return stat;
 }
+
+/* Display "Press any key to continue..." and wait for a key press. */
+void
+press_any_key (void)
+{
+  fflush (stdout);
+  fputs (_("Press any key to continue..."), stdout);
+  fflush (stdout);
+  fgetc (stdin);
+  fflush (stdin);
+  fputs ("\r\n", stdout);
+}
