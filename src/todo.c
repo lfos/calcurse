@@ -369,12 +369,13 @@ todo_edit_item (void)
 
 /* Display todo items in the corresponding panel. */
 static void
-display_todo_item (int incolor, char *msg, int prio, int note, int len, int y,
+display_todo_item (int incolor, char *msg, int prio, int note, int width, int y,
                    int x)
 {
   WINDOW *w;
   int ch_note;
-  char buf[len], priostr[2];
+  char buf[width * 6], priostr[2];
+  int i;
 
   w = win[TOD].p;
   ch_note = (note) ? '>' : '.';
@@ -385,12 +386,20 @@ display_todo_item (int incolor, char *msg, int prio, int note, int len, int y,
 
   if (incolor == 0)
     custom_apply_attr (w, ATTR_HIGHEST);
-  if (strlen (msg) < len)
+  if (utf8_strwidth (msg) < width)
     mvwprintw (w, y, x, "%s%c %s", priostr, ch_note, msg);
   else
     {
-      (void)strncpy (buf, msg, len - 1);
-      buf[len - 1] = '\0';
+      for (i = 0; msg[i] && width > 0; i++)
+        {
+          if (!UTF8_ISCONT (msg[i]))
+          width -= utf8_width (&msg[i]);
+          buf[i] = msg[i];
+        }
+      if (i)
+        buf[i - 1] = 0;
+      else
+        buf[0] = 0;
       mvwprintw (w, y, x, "%s%c %s...", priostr, ch_note, buf);
     }
   if (incolor == 0)
