@@ -9,8 +9,6 @@ feature added in calcurse which does not appear in this list.
 High
 ----
 
-* Implement the send-item functionality to export a single item and pipe it to
-  an external process
 * Add a key binding to toggle between visible/hidden tasks inside todo panel
 * Add an optional argument to the --next flag to check for next appointment
   starting from the specified time
