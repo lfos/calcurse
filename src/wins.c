@@ -606,10 +606,10 @@ wins_prepare_external (void)
   if (notify_bar ())
     notify_stop_main_thread ();
   def_prog_mode ();
-  endwin ();
   ui_mode = UI_CMDLINE;
   clear ();
   wins_refresh ();
+  endwin ();
 }
 
 /* Restore windows when returning from an external command. */
