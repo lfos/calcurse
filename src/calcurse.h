@@ -750,6 +750,11 @@ void   mem_stats (void);
 
 #endif /* CALCURSE_MEMORY_DEBUG */
 
+/* note.c */
+void  edit_note (char **, char *);
+void  view_note (char *, char *);
+void  erase_note (char **, enum eraseflg);
+
 /* notify.c */
 int       notify_time_left (void);
 unsigned  notify_needs_reminder (void);
@@ -877,7 +882,6 @@ long         mystrtol (const char *);
 void         print_bool_option_incolor (WINDOW *, unsigned, int, int);
 const char  *get_tempdir (void);
 char        *new_tempfile (const char *, int);
-void         erase_note (char **, enum eraseflg);
 int          parse_date (char *, enum datefmt, int *, int *, int *,
                          struct date *);
 void         str_toupper (char *);

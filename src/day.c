@@ -1043,25 +1043,12 @@ day_edit_note (char *editor)
   struct apoint *a;
   struct recur_event *re;
   struct event *e;
-  char fullname[BUFSIZ];
-  char *filename;
   long date;
   int item_num;
 
   item_num = apoint_hilt ();
   p = day_get_item (item_num);
-  if (p->note == NULL)
-    {
-      if ((filename = new_tempfile (path_notes, NOTESIZ)) == NULL)
-        return;
-      else
-        p->note = filename;
-    }
-  (void)snprintf (fullname, BUFSIZ, "%s%s", path_notes, p->note);
-  wins_launch_external (fullname, editor);
-
-  if (io_file_is_empty (fullname) > 0)
-    erase_note (&p->note, ERASE_FORCE);
+  edit_note (&p->note, editor);
 
   date = calendar_get_slctd_day_sec ();
   switch (p->type)
@@ -1089,14 +1076,8 @@ day_edit_note (char *editor)
 void
 day_view_note (char *pager)
 {
-  struct day_item *p;
-  char fullname[BUFSIZ];
-
-  p = day_get_item (apoint_hilt ());
-  if (p->note == NULL)
-    return;
-  (void)snprintf (fullname, BUFSIZ, "%s%s", path_notes, p->note);
-  wins_launch_external (fullname, pager);
+  struct day_item *p = day_get_item (apoint_hilt ());
+  view_note (p->note, pager);
 }
 
 /* Pipe an appointment or event to an external program. */

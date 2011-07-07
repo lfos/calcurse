@@ -595,24 +595,6 @@ new_tempfile (const char *prefix, int trailing_len)
   return mem_strdup (fullname + prefix_len);
 }
 
-/* Erase a note previously attached to a todo, event or appointment. */
-void
-erase_note (char **note, enum eraseflg flag)
-{
-  char fullname[BUFSIZ];
-
-  if (*note == NULL)
-    return;
-  if (flag != ERASE_FORCE_KEEP_NOTE)
-    {
-      (void)snprintf (fullname, BUFSIZ, "%s%s", path_notes, *note);
-      if (unlink (fullname) != 0)
-        EXIT (_("could not remove note"));
-    }
-  mem_free (*note);
-  *note = NULL;
-}
-
 /*
  * Convert a string containing a date into three integers containing the year,
  * month and day.

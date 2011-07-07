@@ -471,37 +471,16 @@ todo_update_panel (int which_pan)
 void
 todo_edit_note (char *editor)
 {
-  struct todo *i;
-  char fullname[BUFSIZ];
-  char *filename;
-
-  i = todo_get_item (hilt);
-  if (i->note == NULL)
-    {
-      if ((filename = new_tempfile (path_notes, NOTESIZ)) != NULL)
-        i->note = filename;
-      else
-        return;
-    }
-  (void)snprintf (fullname, BUFSIZ, "%s%s", path_notes, i->note);
-  wins_launch_external (fullname, editor);
-
-  if (io_file_is_empty (fullname) > 0)
-    erase_note (&i->note, ERASE_FORCE);
+  struct todo *i = todo_get_item (hilt);
+  edit_note (&i->note, editor);
 }
 
 /* View a note previously attached to a todo */
 void
 todo_view_note (char *pager)
 {
-  struct todo *i;
-  char fullname[BUFSIZ];
-
-  i = todo_get_item (hilt);
-  if (i->note == NULL)
-    return;
-  (void)snprintf (fullname, BUFSIZ, "%s%s", path_notes, i->note);
-  wins_launch_external (fullname, pager);
+  struct todo *i = todo_get_item (hilt);
+  view_note (i->note, pager);
 }
 
 /* Pipe a todo item to an external program. */
