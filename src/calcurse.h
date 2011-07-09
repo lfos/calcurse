@@ -854,6 +854,7 @@ long         now (void);
 char        *nowstr (void);
 long         mystrtol (const char *);
 void         print_bool_option_incolor (WINDOW *, unsigned, int, int);
+const char  *get_tempdir (void);
 char        *new_tempfile (const char *, int);
 void         erase_note (char **, enum eraseflg);
 int          parse_date (char *, enum datefmt, int *, int *, int *,
