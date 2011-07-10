@@ -220,7 +220,8 @@ get_export_stream (enum export_type type)
     (void)snprintf (stream_name, BUFSIZ, "%s/calcurse.%s", home,
                     file_ext[type]);
   else
-    (void)snprintf (stream_name, BUFSIZ, "/tmp/calcurse.%s", file_ext[type]);
+    (void)snprintf (stream_name, BUFSIZ, "%s/calcurse.%s", get_tempdir (),
+                    file_ext[type]);
 
   while (stream == NULL)
     {
@@ -2854,10 +2855,11 @@ io_import_data (enum import_type type, struct conf *conf, char *stream_name)
 struct io_file *
 io_log_init (void)
 {
-  const char *logprefix = "/tmp/calcurse_log.";
+  char logprefix[BUFSIZ];
   char *logname;
   struct io_file *log;
 
+  snprintf (logprefix, BUFSIZ, "%s/calcurse_log.", get_tempdir ());
   logname = new_tempfile (logprefix, NOTESIZ);
   RETVAL_IF (logname == NULL, 0,
              _("Warning: could not create temporary log file, Aborting..."));

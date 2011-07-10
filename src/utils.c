@@ -545,6 +545,21 @@ print_bool_option_incolor (WINDOW *win, unsigned option, int pos_y, int pos_x)
   wins_doupdate ();
 }
 
+
+/*
+ * Get the name of the default directory for temporary files.
+ */
+const char *
+get_tempdir (void)
+{
+  if (getenv ("TMPDIR"))
+    return getenv ("TMPDIR");
+  else if (P_tmpdir)
+    return P_tmpdir;
+  else
+    return "/tmp";
+}
+
 /*
  * Create a new unique file, and return a newly allocated string which contains
  * the random part of the file name.
