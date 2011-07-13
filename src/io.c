@@ -136,7 +136,6 @@ static char *ical_recur_type[RECUR_TYPES] =
 static void
 progress_bar (progress_bar_t type, int progress)
 {
-#define SLEEPTIME	125000
 #define NBFILES		4
 #define NBEXPORTED      3
 #define LABELENGTH      15
@@ -194,8 +193,6 @@ progress_bar (progress_bar_t type, int progress)
   custom_remove_attr (win[STA].p, ATTR_HIGHEST);
   wmove (win[STA].p, 0, 0);
   wins_wrefresh (win[STA].p);
-  (void)usleep (SLEEPTIME);
-#undef SLEEPTIME
 #undef NBFILES
 #undef NBEXPORTED
 #undef LABELENGTH
