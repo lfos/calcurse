@@ -283,6 +283,8 @@ main (int argc, char **argv)
                 case 'S':
                   custom_sidebar_config ();
                   break;
+                default:
+                  continue;
                 }
               wins_reset ();
               wins_update ();
