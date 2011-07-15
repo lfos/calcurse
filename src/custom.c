@@ -42,7 +42,6 @@
 
 /* Available configuration variables. */
 enum conf_var {
-  CUSTOM_CONF_NOVARIABLE,
   CUSTOM_CONF_AUTOSAVE,
   CUSTOM_CONF_PERIODICSAVE,
   CUSTOM_CONF_CONFIRMQUIT,
@@ -62,8 +61,7 @@ enum conf_var {
   CUSTOM_CONF_OUTPUTDATEFMT,
   CUSTOM_CONF_INPUTDATEFMT,
   CUSTOM_CONF_DMON_ENABLE,
-  CUSTOM_CONF_DMON_LOG,
-  CUSTOM_CONF_VARIABLES
+  CUSTOM_CONF_DMON_LOG
 };
 
 struct attribute {
@@ -258,7 +256,9 @@ custom_load_conf (struct conf *conf, int background)
         break;
       io_extract_data (e_conf, buf, sizeof buf);
 
-      if (strncmp (e_conf, "auto_save=", 10) == 0)
+      if (*e_conf == '\0')
+        continue;
+      else if (strncmp (e_conf, "auto_save=", 10) == 0)
         var = CUSTOM_CONF_AUTOSAVE;
       else if (strncmp (e_conf, "periodic_save=", 14) == 0)
         var = CUSTOM_CONF_PERIODICSAVE;
@@ -300,8 +300,8 @@ custom_load_conf (struct conf *conf, int background)
         var = CUSTOM_CONF_DMON_LOG;
       else
         {
-          var = CUSTOM_CONF_NOVARIABLE;
-          continue;
+          EXIT (_("configuration variable unknown"));
+          /* NOTREACHED */
         }
 
       if (fgets (buf, sizeof buf, data_file) == NULL)
@@ -310,8 +310,6 @@ custom_load_conf (struct conf *conf, int background)
 
       switch (var)
         {
-        case CUSTOM_CONF_NOVARIABLE:
-          break;
         case CUSTOM_CONF_AUTOSAVE:
           conf->auto_save = fill_config_var (e_conf);
           break;
@@ -381,9 +379,6 @@ custom_load_conf (struct conf *conf, int background)
         case CUSTOM_CONF_DMON_LOG:
           dmon.log = fill_config_var (e_conf);
           break;
-        default:
-          EXIT (_("configuration variable unknown"));
-          /* NOTREACHED */
         }
     }
   file_close (data_file, __FILE_POS__);
