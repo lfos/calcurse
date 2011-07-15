@@ -806,9 +806,10 @@ io_extract_data (char *dst_data, const char *org, int len)
 {
   int i;
 
+  for (; *org == ' ' || *org == '\t'; org++);
   for (i = 0; i < len - 1; i++)
     {
-      if (*org == '\n' || *org == '\0')
+      if (*org == '\n' || *org == '\0' || *org == '#')
         break;
       *dst_data++ = *org++;
     }
