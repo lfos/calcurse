@@ -251,113 +251,12 @@ custom_load_conf (struct conf *conf, int background)
       wins_doupdate ();
       (void)keys_getch (win[STA].p);
     }
-  var = CUSTOM_CONF_NOVARIABLE;
   pthread_mutex_lock (&nbar.mutex);
   for (;;)
     {
       if (fgets (buf, sizeof buf, data_file) == NULL)
-        {
-          break;
-        }
+        break;
       io_extract_data (e_conf, buf, sizeof buf);
-
-      switch (var)
-        {
-        case CUSTOM_CONF_NOVARIABLE:
-          break;
-        case CUSTOM_CONF_AUTOSAVE:
-          conf->auto_save = fill_config_var (e_conf);
-          var = 0;
-          break;
-        case CUSTOM_CONF_PERIODICSAVE:
-          if (atoi (e_conf) < 0)
-            conf->periodic_save = 0;
-          else
-            conf->periodic_save = atoi (e_conf);
-          var = 0;
-          break;
-        case CUSTOM_CONF_CONFIRMQUIT:
-          conf->confirm_quit = fill_config_var (e_conf);
-          var = 0;
-          break;
-        case CUSTOM_CONF_CONFIRMDELETE:
-          conf->confirm_delete = fill_config_var (e_conf);
-          var = 0;
-          break;
-        case CUSTOM_CONF_SKIPSYSTEMDIALOGS:
-          conf->skip_system_dialogs = fill_config_var (e_conf);
-          var = 0;
-          break;
-        case CUSTOM_CONF_SKIPPROGRESSBAR:
-          conf->skip_progress_bar = fill_config_var (e_conf);
-          var = 0;
-          break;
-        case CUSTOM_CONF_CALENDAR_DEFAULTVIEW:
-          calendar_set_view (atoi (e_conf));
-          var = 0;
-          break;
-        case CUSTOM_CONF_WEEKBEGINSONMONDAY:
-          if (fill_config_var (e_conf))
-            calendar_set_first_day_of_week (MONDAY);
-          else
-            calendar_set_first_day_of_week (SUNDAY);
-          var = 0;
-          break;
-        case CUSTOM_CONF_COLORTHEME:
-          custom_load_color (e_conf, background);
-          var = 0;
-          break;
-        case CUSTOM_CONF_LAYOUT:
-          wins_set_layout (atoi (e_conf));
-          var = 0;
-          break;
-        case CUSTOM_CONF_SBAR_WIDTH:
-          wins_set_sbar_width (atoi (e_conf));
-          var = 0;
-          break;
-        case CUSTOM_CONF_NOTIFYBARSHOW:
-          nbar.show = fill_config_var (e_conf);
-          var = 0;
-          break;
-        case CUSTOM_CONF_NOTIFYBARDATE:
-          (void)strncpy (nbar.datefmt, e_conf, strlen (e_conf) + 1);
-          var = 0;
-          break;
-        case CUSTOM_CONF_NOTIFYBARCLOCK:
-          (void)strncpy (nbar.timefmt, e_conf, strlen (e_conf) + 1);
-          var = 0;
-          break;
-        case CUSTOM_CONF_NOTIFYBARWARNING:
-          nbar.cntdwn = atoi (e_conf);
-          var = 0;
-          break;
-        case CUSTOM_CONF_NOTIFYBARCOMMAND:
-          (void)strncpy (nbar.cmd, e_conf, strlen (e_conf) + 1);
-          var = 0;
-          break;
-        case CUSTOM_CONF_OUTPUTDATEFMT:
-          if (e_conf[0] != '\0')
-            (void)strncpy (conf->output_datefmt, e_conf, strlen (e_conf) + 1);
-          var = 0;
-          break;
-        case CUSTOM_CONF_INPUTDATEFMT:
-          conf->input_datefmt = atoi (e_conf);
-          if (conf->input_datefmt <= 0 || conf->input_datefmt >= DATE_FORMATS)
-            conf->input_datefmt = 1;
-          var = 0;
-          break;
-        case CUSTOM_CONF_DMON_ENABLE:
-          dmon.enable = fill_config_var (e_conf);
-          var = 0;
-          break;
-        case CUSTOM_CONF_DMON_LOG:
-          dmon.log = fill_config_var (e_conf);
-          var = 0;
-          break;
-        default:
-          EXIT (_("configuration variable unknown"));
-          /* NOTREACHED */
-        }
 
       if (strncmp (e_conf, "auto_save=", 10) == 0)
         var = CUSTOM_CONF_AUTOSAVE;
@@ -399,6 +298,93 @@ custom_load_conf (struct conf *conf, int background)
         var = CUSTOM_CONF_DMON_ENABLE;
       else if (strncmp (e_conf, "notify-daemon_log=", 18) == 0)
         var = CUSTOM_CONF_DMON_LOG;
+      else
+        {
+          var = CUSTOM_CONF_NOVARIABLE;
+          continue;
+        }
+
+      if (fgets (buf, sizeof buf, data_file) == NULL)
+        break;
+      io_extract_data (e_conf, buf, sizeof buf);
+
+      switch (var)
+        {
+        case CUSTOM_CONF_NOVARIABLE:
+          break;
+        case CUSTOM_CONF_AUTOSAVE:
+          conf->auto_save = fill_config_var (e_conf);
+          break;
+        case CUSTOM_CONF_PERIODICSAVE:
+          if (atoi (e_conf) < 0)
+            conf->periodic_save = 0;
+          else
+            conf->periodic_save = atoi (e_conf);
+          break;
+        case CUSTOM_CONF_CONFIRMQUIT:
+          conf->confirm_quit = fill_config_var (e_conf);
+          break;
+        case CUSTOM_CONF_CONFIRMDELETE:
+          conf->confirm_delete = fill_config_var (e_conf);
+          break;
+        case CUSTOM_CONF_SKIPSYSTEMDIALOGS:
+          conf->skip_system_dialogs = fill_config_var (e_conf);
+          break;
+        case CUSTOM_CONF_SKIPPROGRESSBAR:
+          conf->skip_progress_bar = fill_config_var (e_conf);
+          break;
+        case CUSTOM_CONF_CALENDAR_DEFAULTVIEW:
+          calendar_set_view (atoi (e_conf));
+          break;
+        case CUSTOM_CONF_WEEKBEGINSONMONDAY:
+          if (fill_config_var (e_conf))
+            calendar_set_first_day_of_week (MONDAY);
+          else
+            calendar_set_first_day_of_week (SUNDAY);
+          break;
+        case CUSTOM_CONF_COLORTHEME:
+          custom_load_color (e_conf, background);
+          break;
+        case CUSTOM_CONF_LAYOUT:
+          wins_set_layout (atoi (e_conf));
+          break;
+        case CUSTOM_CONF_SBAR_WIDTH:
+          wins_set_sbar_width (atoi (e_conf));
+          break;
+        case CUSTOM_CONF_NOTIFYBARSHOW:
+          nbar.show = fill_config_var (e_conf);
+          break;
+        case CUSTOM_CONF_NOTIFYBARDATE:
+          (void)strncpy (nbar.datefmt, e_conf, strlen (e_conf) + 1);
+          break;
+        case CUSTOM_CONF_NOTIFYBARCLOCK:
+          (void)strncpy (nbar.timefmt, e_conf, strlen (e_conf) + 1);
+          break;
+        case CUSTOM_CONF_NOTIFYBARWARNING:
+          nbar.cntdwn = atoi (e_conf);
+          break;
+        case CUSTOM_CONF_NOTIFYBARCOMMAND:
+          (void)strncpy (nbar.cmd, e_conf, strlen (e_conf) + 1);
+          break;
+        case CUSTOM_CONF_OUTPUTDATEFMT:
+          if (e_conf[0] != '\0')
+            (void)strncpy (conf->output_datefmt, e_conf, strlen (e_conf) + 1);
+          break;
+        case CUSTOM_CONF_INPUTDATEFMT:
+          conf->input_datefmt = atoi (e_conf);
+          if (conf->input_datefmt <= 0 || conf->input_datefmt >= DATE_FORMATS)
+            conf->input_datefmt = 1;
+          break;
+        case CUSTOM_CONF_DMON_ENABLE:
+          dmon.enable = fill_config_var (e_conf);
+          break;
+        case CUSTOM_CONF_DMON_LOG:
+          dmon.log = fill_config_var (e_conf);
+          break;
+        default:
+          EXIT (_("configuration variable unknown"));
+          /* NOTREACHED */
+        }
     }
   file_close (data_file, __FILE_POS__);
   pthread_mutex_unlock (&nbar.mutex);
