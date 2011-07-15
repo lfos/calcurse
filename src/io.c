@@ -847,8 +847,9 @@ io_save_conf (struct conf *conf)
     "# options are usually set from within Calcurse. A line beginning with \n"
     "# a space or tab is considered to be a continuation of the previous "
     "line.\n"
-    "# For a variable to be unset its value must be blank.\n"
-    "# To set a variable to the empty string its value should be \"\".\n"
+    "# For a variable to be unset its value must be blank, followed by an\n"
+    "# empty line. To set a variable to the empty string its value should be "
+    "\"\".\n"
     "# Lines beginning with \"#\" are comments, and ignored by Calcurse.\n";
   char theme_name[BUFSIZ];
   FILE *fp;
@@ -862,56 +863,56 @@ io_save_conf (struct conf *conf)
 
   (void)fprintf (fp, "# If this option is set to yes, "
                  "automatic save is done when quitting\n");
-  (void)fprintf (fp, "auto_save=\n");
+  (void)fprintf (fp, "auto_save=");
   (void)fprintf (fp, "%s\n", (conf->auto_save) ? "yes" : "no");
 
   (void)fprintf (fp, "\n# If not null, perform automatic saves every "
                  "'periodic_save' minutes\n");
-  (void)fprintf (fp, "periodic_save=\n");
+  (void)fprintf (fp, "periodic_save=");
   (void)fprintf (fp, "%d\n", conf->periodic_save);
 
   (void)fprintf (fp, "\n# If this option is set to yes, "
                  "confirmation is required before quitting\n");
-  (void)fprintf (fp, "confirm_quit=\n");
+  (void)fprintf (fp, "confirm_quit=");
   (void)fprintf (fp, "%s\n", (conf->confirm_quit) ? "yes" : "no");
 
   (void)fprintf (fp, "\n# If this option is set to yes, "
                  "confirmation is required before deleting an event\n");
-  (void)fprintf (fp, "confirm_delete=\n");
+  (void)fprintf (fp, "confirm_delete=");
   (void)fprintf (fp, "%s\n", (conf->confirm_delete) ? "yes" : "no");
 
   (void)fprintf (fp, "\n# If this option is set to yes, "
                  "messages about loaded and saved data will not be displayed\n");
-  (void)fprintf (fp, "skip_system_dialogs=\n");
+  (void)fprintf (fp, "skip_system_dialogs=");
   (void)fprintf (fp, "%s\n", (conf->skip_system_dialogs) ? "yes" : "no");
 
   (void)fprintf (fp,
                  "\n# If this option is set to yes, progress bar appearing "
                  "when saving data will not be displayed\n");
-  (void)fprintf (fp, "skip_progress_bar=\n");
+  (void)fprintf (fp, "skip_progress_bar=");
   (void)fprintf (fp, "%s\n", (conf->skip_progress_bar) ? "yes" : "no");
 
   (void)fprintf (fp, "\n# Default calendar view (0)monthly (1)weekly:\n");
-  (void)fprintf (fp, "calendar_default_view=\n");
+  (void)fprintf (fp, "calendar_default_view=");
   (void)fprintf (fp, "%d\n", calendar_get_view ());
 
   (void)fprintf (fp, "\n# If this option is set to yes, "
                  "monday is the first day of the week, else it is sunday\n");
-  (void)fprintf (fp, "week_begins_on_monday=\n");
+  (void)fprintf (fp, "week_begins_on_monday=");
   (void)fprintf (fp, "%s\n",
                  (calendar_week_begins_on_monday ())? "yes" : "no");
 
   (void)fprintf (fp, "\n# This is the color theme used for menus :\n");
-  (void)fprintf (fp, "color-theme=\n");
+  (void)fprintf (fp, "color-theme=");
   (void)fprintf (fp, "%s\n", theme_name);
 
   (void)fprintf (fp, "\n# This is the layout of the calendar :\n");
-  (void)fprintf (fp, "layout=\n");
+  (void)fprintf (fp, "layout=");
   (void)fprintf (fp, "%d\n", wins_layout ());
 
   (void)fprintf (fp, "\n# Width (in percentage, 0 being minimun width) "
                  "of the side bar :\n");
-  (void)fprintf (fp, "side-bar_width=\n");
+  (void)fprintf (fp, "side-bar_width=");
   (void)fprintf (fp, "%d\n", wins_sbar_wperc ());
 
   if (ui_mode == UI_CURSES)
@@ -919,39 +920,39 @@ io_save_conf (struct conf *conf)
   (void)fprintf (fp,
                  "\n# If this option is set to yes, "
                  "notify-bar will be displayed :\n");
-  (void)fprintf (fp, "notify-bar_show=\n");
+  (void)fprintf (fp, "notify-bar_show=");
   (void)fprintf (fp, "%s\n", (nbar.show) ? "yes" : "no");
 
   (void)fprintf (fp,
                  "\n# Format of the date to be displayed inside notify-bar :\n");
-  (void)fprintf (fp, "notify-bar_date=\n");
+  (void)fprintf (fp, "notify-bar_date=");
   (void)fprintf (fp, "%s\n", nbar.datefmt);
 
   (void)fprintf (fp,
                  "\n# Format of the time to be displayed inside notify-bar :\n");
-  (void)fprintf (fp, "notify-bar_clock=\n");
+  (void)fprintf (fp, "notify-bar_clock=");
   (void)fprintf (fp, "%s\n", nbar.timefmt);
 
   (void)fprintf (fp,
                  "\n# Warn user if he has an appointment within next "
                  "'notify-bar_warning' seconds :\n");
-  (void)fprintf (fp, "notify-bar_warning=\n");
+  (void)fprintf (fp, "notify-bar_warning=");
   (void)fprintf (fp, "%d\n", nbar.cntdwn);
 
   (void)fprintf (fp, "\n# Command used to notify user of "
                  "an upcoming appointment :\n");
-  (void)fprintf (fp, "notify-bar_command=\n");
+  (void)fprintf (fp, "notify-bar_command=");
   (void)fprintf (fp, "%s\n", nbar.cmd);
 
   (void)fprintf (fp, "\n# Format of the date to be displayed "
                  "in non-interactive mode :\n");
-  (void)fprintf (fp, "output_datefmt=\n");
+  (void)fprintf (fp, "output_datefmt=");
   (void)fprintf (fp, "%s\n", conf->output_datefmt);
 
   (void)fprintf (fp, "\n# Format to be used when entering a date "
                  "(1)mm/dd/yyyy (2)dd/mm/yyyy (3)yyyy/mm/dd) "
                  "(4)yyyy-mm-dd:\n");
-  (void)fprintf (fp, "input_datefmt=\n");
+  (void)fprintf (fp, "input_datefmt=");
   (void)fprintf (fp, "%d\n", conf->input_datefmt);
 
   if (ui_mode == UI_CURSES)
@@ -960,12 +961,12 @@ io_save_conf (struct conf *conf)
   (void)fprintf (fp, "\n# If this option is set to yes, "
                  "calcurse will run in background to get notifications "
                  "after exiting\n");
-  (void)fprintf (fp, "notify-daemon_enable=\n");
+  (void)fprintf (fp, "notify-daemon_enable=");
   (void)fprintf (fp, "%s\n", dmon.enable ? "yes" : "no");
 
     (void)fprintf (fp, "\n# If this option is set to yes, "
                    "activity will be logged when running in background\n");
-  (void)fprintf (fp, "notify-daemon_log=\n");
+  (void)fprintf (fp, "notify-daemon_log=");
   (void)fprintf (fp, "%s\n", dmon.log ? "yes" : "no");
 
   file_close (fp, __FILE_POS__);
