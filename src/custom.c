@@ -112,8 +112,8 @@ conf_parse_int (int *dest, char *val)
  * Need to handle calcurse versions prior to 1.8, where colors where handled
  * differently (number between 1 and 8).
  */
-static void
-custom_load_color (char *color)
+static int
+conf_parse_color (char *val)
 {
 #define AWAITED_COLORS	2
 
@@ -121,15 +121,12 @@ custom_load_color (char *color)
   char c[AWAITED_COLORS][BUFSIZ];
   int colr[AWAITED_COLORS];
 
-  len = strlen (color);
+  len = strlen (val);
   if (len > 1)
     {
       /* New version configuration */
-      if (sscanf (color, "%s on %s", c[0], c[1]) != AWAITED_COLORS)
-        {
-          EXIT (_("missing colors in config file"));
-          /* NOTREACHED */
-        }
+      if (sscanf (val, "%s on %s", c[0], c[1]) != AWAITED_COLORS)
+        return 0;
 
       for (i = 0; i < AWAITED_COLORS; i++)
         {
@@ -152,17 +149,17 @@ custom_load_color (char *color)
           else if (!strncmp (c[i], "default", 7))
             colr[i] = background;
           else
-            {
-              EXIT (_("wrong color name"));
-              /* NOTREACHED */
-            }
+            return 0;
         }
       init_pair (COLR_CUSTOM, colr[0], colr[1]);
     }
-  else if (len > 0 && len < 2)
+  else if (len == 1)
     {
       /* Old version configuration */
-      color_num = atoi (color);
+      if (isdigit (*val))
+        color_num = atoi (val);
+      else
+        return 0;
 
       switch (color_num)
         {
@@ -194,15 +191,13 @@ custom_load_color (char *color)
           init_pair (COLR_CUSTOM, COLOR_RED, COLR_BLUE);
           break;
         default:
-          EXIT (_("wrong color number"));
-          /* NOTREACHED */
+          return 0;
         }
     }
   else
-    {
-      EXIT (_("wrong configuration variable format"));
-      /* NOTREACHED */
-    }
+    return 0;
+
+  return 1;
 }
 
 /*
@@ -290,7 +285,7 @@ custom_set_conf (struct conf *conf, enum conf_var var, char *val)
         calendar_set_first_day_of_week (SUNDAY);
       break;
     case CUSTOM_CONF_COLORTHEME:
-      custom_load_color (val);
+      conf_parse_color (val);
       break;
     case CUSTOM_CONF_LAYOUT:
       wins_set_layout (atoi (val));
