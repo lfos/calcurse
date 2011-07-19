@@ -408,7 +408,7 @@ custom_load_conf (struct conf *conf)
 
       if (var == CUSTOM_CONF_INVALID)
         {
-          EXIT (_("configuration variable unknown"));
+          EXIT (_("configuration variable unknown: \"%s\""), name);
           /* NOTREACHED */
         }
 
@@ -423,7 +423,7 @@ custom_load_conf (struct conf *conf)
 
       if (!val || !custom_set_conf (conf, var, val))
         {
-          EXIT (_("wrong configuration variable format."));
+          EXIT (_("wrong configuration variable format for \"%s\""), name);
           /* NOTREACHED */
         }
     }
