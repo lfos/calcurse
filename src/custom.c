@@ -72,7 +72,7 @@ struct attribute {
 static struct attribute attr;
 
 static unsigned
-fill_config_var (char *string)
+conf_parse_bool (char *string)
 {
   if (strncmp (string, "yes", 3) == 0)
     return 1;
@@ -238,7 +238,7 @@ custom_set_conf (struct conf *conf, int background, enum conf_var var, char *val
   switch (var)
     {
     case CUSTOM_CONF_AUTOSAVE:
-      conf->auto_save = fill_config_var (val);
+      conf->auto_save = conf_parse_bool (val);
       break;
     case CUSTOM_CONF_PERIODICSAVE:
       if (atoi (val) < 0)
@@ -247,22 +247,22 @@ custom_set_conf (struct conf *conf, int background, enum conf_var var, char *val
         conf->periodic_save = atoi (val);
       break;
     case CUSTOM_CONF_CONFIRMQUIT:
-      conf->confirm_quit = fill_config_var (val);
+      conf->confirm_quit = conf_parse_bool (val);
       break;
     case CUSTOM_CONF_CONFIRMDELETE:
-      conf->confirm_delete = fill_config_var (val);
+      conf->confirm_delete = conf_parse_bool (val);
       break;
     case CUSTOM_CONF_SKIPSYSTEMDIALOGS:
-      conf->skip_system_dialogs = fill_config_var (val);
+      conf->skip_system_dialogs = conf_parse_bool (val);
       break;
     case CUSTOM_CONF_SKIPPROGRESSBAR:
-      conf->skip_progress_bar = fill_config_var (val);
+      conf->skip_progress_bar = conf_parse_bool (val);
       break;
     case CUSTOM_CONF_CALENDAR_DEFAULTVIEW:
       calendar_set_view (atoi (val));
       break;
     case CUSTOM_CONF_WEEKBEGINSONMONDAY:
-      if (fill_config_var (val))
+      if (conf_parse_bool (val))
         calendar_set_first_day_of_week (MONDAY);
       else
         calendar_set_first_day_of_week (SUNDAY);
@@ -277,7 +277,7 @@ custom_set_conf (struct conf *conf, int background, enum conf_var var, char *val
       wins_set_sbar_width (atoi (val));
       break;
     case CUSTOM_CONF_NOTIFYBARSHOW:
-      nbar.show = fill_config_var (val);
+      nbar.show = conf_parse_bool (val);
       break;
     case CUSTOM_CONF_NOTIFYBARDATE:
       (void)strncpy (nbar.datefmt, val, strlen (val) + 1);
@@ -301,10 +301,10 @@ custom_set_conf (struct conf *conf, int background, enum conf_var var, char *val
         conf->input_datefmt = 1;
       break;
     case CUSTOM_CONF_DMON_ENABLE:
-      dmon.enable = fill_config_var (val);
+      dmon.enable = conf_parse_bool (val);
       break;
     case CUSTOM_CONF_DMON_LOG:
-      dmon.log = fill_config_var (val);
+      dmon.log = conf_parse_bool (val);
       break;
     }
 }
