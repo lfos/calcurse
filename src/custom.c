@@ -249,7 +249,7 @@ custom_remove_attr (WINDOW *win, int attr_num)
 }
 
 /* Set a configuration variable. */
-static void
+static int
 custom_set_conf (struct conf *conf, enum conf_var var, char *val)
 {
   unsigned tmp;
@@ -257,35 +257,35 @@ custom_set_conf (struct conf *conf, enum conf_var var, char *val)
   switch (var)
     {
     case CUSTOM_CONF_AUTOSAVE:
-      conf_parse_bool (&conf->auto_save, val);
+      return conf_parse_bool (&conf->auto_save, val);
       break;
     case CUSTOM_CONF_PERIODICSAVE:
-      conf_parse_unsigned (&conf->periodic_save, val);
+      return conf_parse_unsigned (&conf->periodic_save, val);
       break;
     case CUSTOM_CONF_CONFIRMQUIT:
-      conf_parse_bool (&conf->confirm_quit, val);
+      return conf_parse_bool (&conf->confirm_quit, val);
       break;
     case CUSTOM_CONF_CONFIRMDELETE:
-      conf_parse_bool (&conf->confirm_delete, val);
+      return conf_parse_bool (&conf->confirm_delete, val);
       break;
     case CUSTOM_CONF_SKIPSYSTEMDIALOGS:
-      conf_parse_bool (&conf->skip_system_dialogs, val);
+      return conf_parse_bool (&conf->skip_system_dialogs, val);
       break;
     case CUSTOM_CONF_SKIPPROGRESSBAR:
-      conf_parse_bool (&conf->skip_progress_bar, val);
+      return conf_parse_bool (&conf->skip_progress_bar, val);
       break;
     case CUSTOM_CONF_CALENDAR_DEFAULTVIEW:
       calendar_set_view (atoi (val));
       break;
     case CUSTOM_CONF_WEEKBEGINSONMONDAY:
-      conf_parse_bool (&tmp, val);
+      return conf_parse_bool (&tmp, val);
       if (tmp)
         calendar_set_first_day_of_week (MONDAY);
       else
         calendar_set_first_day_of_week (SUNDAY);
       break;
     case CUSTOM_CONF_COLORTHEME:
-      conf_parse_color (val);
+      return conf_parse_color (val);
       break;
     case CUSTOM_CONF_LAYOUT:
       wins_set_layout (atoi (val));
@@ -294,7 +294,7 @@ custom_set_conf (struct conf *conf, enum conf_var var, char *val)
       wins_set_sbar_width (atoi (val));
       break;
     case CUSTOM_CONF_NOTIFYBARSHOW:
-      conf_parse_bool (&nbar.show, val);
+      return conf_parse_bool (&nbar.show, val);
       break;
     case CUSTOM_CONF_NOTIFYBARDATE:
       (void)strncpy (nbar.datefmt, val, strlen (val) + 1);
@@ -303,7 +303,7 @@ custom_set_conf (struct conf *conf, enum conf_var var, char *val)
       (void)strncpy (nbar.timefmt, val, strlen (val) + 1);
       break;
     case CUSTOM_CONF_NOTIFYBARWARNING:
-      conf_parse_int (&nbar.cntdwn, val);
+      return conf_parse_int (&nbar.cntdwn, val);
       break;
     case CUSTOM_CONF_NOTIFYBARCOMMAND:
       (void)strncpy (nbar.cmd, val, strlen (val) + 1);
@@ -313,17 +313,19 @@ custom_set_conf (struct conf *conf, enum conf_var var, char *val)
         (void)strncpy (conf->output_datefmt, val, strlen (val) + 1);
       break;
     case CUSTOM_CONF_INPUTDATEFMT:
-      conf_parse_int (&conf->input_datefmt, val);
+      return conf_parse_int (&conf->input_datefmt, val);
       if (conf->input_datefmt <= 0 || conf->input_datefmt >= DATE_FORMATS)
         conf->input_datefmt = 1;
       break;
     case CUSTOM_CONF_DMON_ENABLE:
-      conf_parse_bool (&dmon.enable, val);
+      return conf_parse_bool (&dmon.enable, val);
       break;
     case CUSTOM_CONF_DMON_LOG:
-      conf_parse_bool (&dmon.log, val);
+      return conf_parse_bool (&dmon.log, val);
       break;
     }
+
+  return 1;
 }
 
 /* Load the user configuration. */
