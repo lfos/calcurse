@@ -462,7 +462,7 @@ struct pad {
 
 /* Notification bar definition. */
 struct nbar {
-  int              show;	     /* display or hide the notify-bar */
+  unsigned         show;	     /* display or hide the notify-bar */
   int              cntdwn;	     /* warn when time left before next app
 				        becomes lesser than cntdwn */
   char             datefmt[BUFSIZ];  /* format for displaying date */
