@@ -37,6 +37,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <math.h>
+#include <ctype.h>
 
 #include "calcurse.h"
 
@@ -78,6 +79,28 @@ conf_parse_bool (unsigned *dest, char *val)
     *dest = 1;
   else if (strncmp (val, "no", 3) == 0)
     *dest = 0;
+  else
+    return 0;
+
+  return 1;
+}
+
+static int
+conf_parse_unsigned (unsigned *dest, char *val)
+{
+  if (is_all_digit (val))
+    *dest = atoi (val);
+  else
+    return 0;
+
+  return 1;
+}
+
+static int
+conf_parse_int (int *dest, char *val)
+{
+  if ((*val == '+' || *val == '-' || isdigit (*val)) && is_all_digit (val + 1))
+    *dest = atoi (val);
   else
     return 0;
 
@@ -242,10 +265,7 @@ custom_set_conf (struct conf *conf, int background, enum conf_var var, char *val
       conf_parse_bool (&conf->auto_save, val);
       break;
     case CUSTOM_CONF_PERIODICSAVE:
-      if (atoi (val) < 0)
-        conf->periodic_save = 0;
-      else
-        conf->periodic_save = atoi (val);
+      conf_parse_unsigned (&conf->periodic_save, val);
       break;
     case CUSTOM_CONF_CONFIRMQUIT:
       conf_parse_bool (&conf->confirm_quit, val);
@@ -288,7 +308,7 @@ custom_set_conf (struct conf *conf, int background, enum conf_var var, char *val
       (void)strncpy (nbar.timefmt, val, strlen (val) + 1);
       break;
     case CUSTOM_CONF_NOTIFYBARWARNING:
-      nbar.cntdwn = atoi (val);
+      conf_parse_int (&nbar.cntdwn, val);
       break;
     case CUSTOM_CONF_NOTIFYBARCOMMAND:
       (void)strncpy (nbar.cmd, val, strlen (val) + 1);
@@ -298,7 +318,7 @@ custom_set_conf (struct conf *conf, int background, enum conf_var var, char *val
         (void)strncpy (conf->output_datefmt, val, strlen (val) + 1);
       break;
     case CUSTOM_CONF_INPUTDATEFMT:
-      conf->input_datefmt = atoi (val);
+      conf_parse_int (&conf->input_datefmt, val);
       if (conf->input_datefmt <= 0 || conf->input_datefmt >= DATE_FORMATS)
         conf->input_datefmt = 1;
       break;
