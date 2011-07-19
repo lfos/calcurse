@@ -50,7 +50,6 @@ main (int argc, char **argv)
 {
   struct conf conf;
   struct day_items_nb inday;
-  int background, foreground;
   int non_interactive;
   int no_data_file = 1;
   int sav_hilt_app = 0;
@@ -148,7 +147,7 @@ main (int argc, char **argv)
    * configuration (the display is then updated), and then
    * the todo list, appointments and events.
    */
-  custom_load_conf (&conf, background);
+  custom_load_conf (&conf);
   wins_erase_status_bar ();
   io_load_keys (conf.pager);
   io_load_todo ();

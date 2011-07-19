@@ -165,7 +165,7 @@ dmon_start (int parent_exit_status)
   if (!io_file_exist (path_conf))
     DMON_ABRT (_("Could not access \"%s\": %s\n"),
                path_conf, strerror (errno));
-  custom_load_conf (&conf, 0);
+  custom_load_conf (&conf);
 
   if (!io_file_exist (path_apts))
     DMON_ABRT (_("Could not access \"%s\": %s\n"),

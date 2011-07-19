@@ -113,7 +113,7 @@ conf_parse_int (int *dest, char *val)
  * differently (number between 1 and 8).
  */
 static void
-custom_load_color (char *color, int background)
+custom_load_color (char *color)
 {
 #define AWAITED_COLORS	2
 
@@ -255,7 +255,7 @@ custom_remove_attr (WINDOW *win, int attr_num)
 
 /* Set a configuration variable. */
 static void
-custom_set_conf (struct conf *conf, int background, enum conf_var var, char *val)
+custom_set_conf (struct conf *conf, enum conf_var var, char *val)
 {
   unsigned tmp;
 
@@ -290,7 +290,7 @@ custom_set_conf (struct conf *conf, int background, enum conf_var var, char *val
         calendar_set_first_day_of_week (SUNDAY);
       break;
     case CUSTOM_CONF_COLORTHEME:
-      custom_load_color (val, background);
+      custom_load_color (val);
       break;
     case CUSTOM_CONF_LAYOUT:
       wins_set_layout (atoi (val));
@@ -333,7 +333,7 @@ custom_set_conf (struct conf *conf, int background, enum conf_var var, char *val
 
 /* Load the user configuration. */
 void
-custom_load_conf (struct conf *conf, int background)
+custom_load_conf (struct conf *conf)
 {
   FILE *data_file;
   char *mesg_line1 = _("Failed to open config file");
@@ -413,10 +413,10 @@ custom_load_conf (struct conf *conf, int background)
           if (fgets (buf, sizeof buf, data_file) == NULL)
             break;
           io_extract_data (e_conf, buf, sizeof buf);
-          custom_set_conf (conf, background, var, e_conf);
+          custom_set_conf (conf, var, e_conf);
         }
       else
-        custom_set_conf (conf, background, var, val);
+        custom_set_conf (conf, var, val);
     }
   file_close (data_file, __FILE_POS__);
   pthread_mutex_unlock (&nbar.mutex);

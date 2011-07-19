@@ -916,7 +916,7 @@ parse_args (int argc, char **argv, struct conf *conf)
               io_check_file (path_apts, (int *)0);
               io_check_file (path_conf, (int *)0);
               io_load_app ();
-              custom_load_conf (conf, 0); /* To get output date format. */
+              custom_load_conf (conf); /* To get output date format. */
               if (dflag)
                 date_arg (ddate, add_line, Nflag, conf, preg);
               if (rflag || sflag)
@@ -931,7 +931,7 @@ parse_args (int argc, char **argv, struct conf *conf)
               io_check_file (path_apts, (int *)0);
               io_check_file (path_conf, (int *)0);
               vars_init (conf);
-              custom_load_conf (conf, 0); /* To get output date format. */
+              custom_load_conf (conf); /* To get output date format. */
               io_load_app ();
               day.dd = day.mm = day.yyyy = 0;
               (void)app_arg (add_line, &day, 0, Nflag, conf, preg);

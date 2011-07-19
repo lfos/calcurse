@@ -48,6 +48,9 @@ int resize = 0;
 /* variable to tell if the terminal supports color */
 unsigned colorize = 0;
 
+/* Default background and foreground colors. */
+int foreground, background;
+
 /*
  * To tell if curses interface was launched already or not (in that case
  * calcurse is running in command-line mode).
