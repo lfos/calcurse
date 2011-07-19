@@ -62,7 +62,37 @@ enum conf_var {
   CUSTOM_CONF_OUTPUTDATEFMT,
   CUSTOM_CONF_INPUTDATEFMT,
   CUSTOM_CONF_DMON_ENABLE,
-  CUSTOM_CONF_DMON_LOG
+  CUSTOM_CONF_DMON_LOG,
+  CUSTOM_CONF_INVALID
+};
+
+struct conf_varname {
+  enum conf_var var;
+  const char *name;
+};
+
+static struct conf_varname conf_varmap[] =
+{
+  { CUSTOM_CONF_AUTOSAVE, "auto_save" },
+  { CUSTOM_CONF_PERIODICSAVE, "periodic_save" },
+  { CUSTOM_CONF_CONFIRMQUIT, "confirm_quit" },
+  { CUSTOM_CONF_CONFIRMDELETE, "confirm_delete" },
+  { CUSTOM_CONF_SKIPSYSTEMDIALOGS, "skip_system_dialogs" },
+  { CUSTOM_CONF_SKIPPROGRESSBAR, "skip_progress_bar" },
+  { CUSTOM_CONF_CALENDAR_DEFAULTVIEW, "calendar_default_view" },
+  { CUSTOM_CONF_WEEKBEGINSONMONDAY, "week_begins_on_monday" },
+  { CUSTOM_CONF_COLORTHEME, "color-theme" },
+  { CUSTOM_CONF_LAYOUT, "layout" },
+  { CUSTOM_CONF_SBAR_WIDTH, "side-bar_width" },
+  { CUSTOM_CONF_NOTIFYBARSHOW, "notify-bar_show" },
+  { CUSTOM_CONF_NOTIFYBARDATE, "notify-bar_date" },
+  { CUSTOM_CONF_NOTIFYBARCLOCK, "notify-bar_clock" },
+  { CUSTOM_CONF_NOTIFYBARWARNING, "notify-bar_warning" },
+  { CUSTOM_CONF_NOTIFYBARCOMMAND, "notify-bar_command" },
+  { CUSTOM_CONF_OUTPUTDATEFMT, "output_datefmt" },
+  { CUSTOM_CONF_INPUTDATEFMT, "input_datefmt" },
+  { CUSTOM_CONF_DMON_ENABLE, "notify-daemon_enable" },
+  { CUSTOM_CONF_DMON_LOG, "notify-daemon_log" }
 };
 
 struct attribute {
@@ -323,6 +353,9 @@ custom_set_conf (struct conf *conf, enum conf_var var, char *val)
     case CUSTOM_CONF_DMON_LOG:
       return conf_parse_bool (&dmon.log, val);
       break;
+    default:
+      return 0;
+      break;
     }
 
   return 1;
@@ -336,8 +369,10 @@ custom_load_conf (struct conf *conf)
   char *mesg_line1 = _("Failed to open config file");
   char *mesg_line2 = _("Press [ENTER] to continue");
   char buf[BUFSIZ], e_conf[BUFSIZ];
-  char *val;
+  int i;
+  char *name;
   enum conf_var var;
+  char *val;
 
   data_file = fopen (path_conf, "r");
   if (data_file == NULL)
@@ -347,6 +382,7 @@ custom_load_conf (struct conf *conf)
       wins_doupdate ();
       (void)keys_getch (win[STA].p);
     }
+
   pthread_mutex_lock (&nbar.mutex);
   for (;;)
     {
@@ -356,64 +392,40 @@ custom_load_conf (struct conf *conf)
 
       if (*e_conf == '\0')
         continue;
-      else if (strncmp (e_conf, "auto_save=", 10) == 0)
-        var = CUSTOM_CONF_AUTOSAVE;
-      else if (strncmp (e_conf, "periodic_save=", 14) == 0)
-        var = CUSTOM_CONF_PERIODICSAVE;
-      else if (strncmp (e_conf, "confirm_quit=", 13) == 0)
-        var = CUSTOM_CONF_CONFIRMQUIT;
-      else if (strncmp (e_conf, "confirm_delete=", 15) == 0)
-        var = CUSTOM_CONF_CONFIRMDELETE;
-      else if (strncmp (e_conf, "skip_system_dialogs=", 20) == 0)
-        var = CUSTOM_CONF_SKIPSYSTEMDIALOGS;
-      else if (strncmp (e_conf, "skip_progress_bar=", 18) == 0)
-        var = CUSTOM_CONF_SKIPPROGRESSBAR;
-      else if (strncmp (e_conf, "calendar_default_view=", 22) == 0)
-        var = CUSTOM_CONF_CALENDAR_DEFAULTVIEW;
-      else if (strncmp (e_conf, "week_begins_on_monday=", 22) == 0)
-        var = CUSTOM_CONF_WEEKBEGINSONMONDAY;
-      else if (strncmp (e_conf, "color-theme=", 12) == 0)
-        var = CUSTOM_CONF_COLORTHEME;
-      else if (strncmp (e_conf, "layout=", 7) == 0)
-        var = CUSTOM_CONF_LAYOUT;
-      else if (strncmp (e_conf, "side-bar_width=", 15) == 0)
-        var = CUSTOM_CONF_SBAR_WIDTH;
-      else if (strncmp (e_conf, "notify-bar_show=", 16) == 0)
-        var = CUSTOM_CONF_NOTIFYBARSHOW;
-      else if (strncmp (e_conf, "notify-bar_date=", 16) == 0)
-        var = CUSTOM_CONF_NOTIFYBARDATE;
-      else if (strncmp (e_conf, "notify-bar_clock=", 17) == 0)
-        var = CUSTOM_CONF_NOTIFYBARCLOCK;
-      else if (strncmp (e_conf, "notify-bar_warning=", 19) == 0)
-        var = CUSTOM_CONF_NOTIFYBARWARNING;
-      else if (strncmp (e_conf, "notify-bar_command=", 19) == 0)
-        var = CUSTOM_CONF_NOTIFYBARCOMMAND;
-      else if (strncmp (e_conf, "output_datefmt=", 15) == 0)
-        var = CUSTOM_CONF_OUTPUTDATEFMT;
-      else if (strncmp (e_conf, "input_datefmt=", 14) == 0)
-        var = CUSTOM_CONF_INPUTDATEFMT;
-      else if (strncmp (e_conf, "notify-daemon_enable=", 21) == 0)
-        var = CUSTOM_CONF_DMON_ENABLE;
-      else if (strncmp (e_conf, "notify-daemon_log=", 18) == 0)
-        var = CUSTOM_CONF_DMON_LOG;
-      else
+
+      name = strtok (e_conf, "=");
+      val = strtok (NULL, "\0");
+
+      var = CUSTOM_CONF_INVALID;
+      for (i = 0; i < sizeof (conf_varmap) / sizeof (struct conf_varname); i++)
+        {
+          if (strncmp (name, conf_varmap[i].name, BUFSIZ) == 0)
+            {
+              var = conf_varmap[i].var;
+              break;
+            }
+        }
+
+      if (var == CUSTOM_CONF_INVALID)
         {
           EXIT (_("configuration variable unknown"));
           /* NOTREACHED */
         }
 
-      val = strchr (e_conf, '=') + 1;
-
-      if (*val == '\0' || *val == '\n')
+      if (val && (*val == '\0' || *val == '\n'))
         {
           /* Backward compatibility mode. */
           if (fgets (buf, sizeof buf, data_file) == NULL)
             break;
           io_extract_data (e_conf, buf, sizeof buf);
-          custom_set_conf (conf, var, e_conf);
+          val = e_conf;
         }
-      else
-        custom_set_conf (conf, var, val);
+
+      if (!val || !custom_set_conf (conf, var, val))
+        {
+          EXIT (_("wrong configuration variable format."));
+          /* NOTREACHED */
+        }
     }
   file_close (data_file, __FILE_POS__);
   pthread_mutex_unlock (&nbar.mutex);
