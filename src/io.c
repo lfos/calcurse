@@ -2754,8 +2754,7 @@ io_import_data (enum import_type type, struct conf *conf, char *stream_name)
   const struct string vevent = STRING_BUILD ("BEGIN:VEVENT");
   const struct string vtodo = STRING_BUILD ("BEGIN:VTODO");
   char *proc_report = _("Import process report: %04d lines read ");
-  char *stats_fmt[] = { "%d apps", "%d events", "%d todos", "%d skipped" };
-  char stats_str[sizeof (stats_fmt) / sizeof (char *)][BUFSIZ];
+  char stats_str[4][BUFSIZ];
   char buf[BUFSIZ];
   FILE *stream = NULL;
   struct io_file *log;
@@ -2817,10 +2816,13 @@ io_import_data (enum import_type type, struct conf *conf, char *stream_name)
   if (stream != stdin)
     file_close (stream, __FILE_POS__);
 
-  snprintf (stats_str[0], BUFSIZ, _(stats_fmt[0]), stats.apoints);
-  snprintf (stats_str[1], BUFSIZ, _(stats_fmt[1]), stats.events);
-  snprintf (stats_str[2], BUFSIZ, _(stats_fmt[2]), stats.todos);
-  snprintf (stats_str[3], BUFSIZ, _(stats_fmt[3]), stats.skipped);
+  snprintf (stats_str[0], BUFSIZ,
+            ngettext ("%d app", "%d apps", stats.apoints), stats.apoints);
+  snprintf (stats_str[1], BUFSIZ,
+            ngettext ("%d event", "%d events", stats.events), stats.events);
+  snprintf (stats_str[2], BUFSIZ,
+            ngettext ("%d todo", "%d todos", stats.todos), stats.todos);
+  snprintf (stats_str[3], BUFSIZ, _("%d skipped"), stats.skipped);
 
   if (ui_mode == UI_CURSES && !conf->skip_system_dialogs)
     {

@@ -194,8 +194,9 @@ dmon_start (int parent_exit_status)
             DMON_LOG (_("error while sending notification\n"));
         }
 
-      DMON_LOG (_("sleeping at %s for %d seconds\n"), nowstr (),
-                DMON_SLEEP_TIME);
+      DMON_LOG (ngettext ("sleeping at %s for %d second\n",
+                          "sleeping at %s for %d seconds\n",
+                          DMON_SLEEP_TIME), nowstr (), DMON_SLEEP_TIME);
       psleep (DMON_SLEEP_TIME);
       DMON_LOG (_("awakened at %s\n"), nowstr ());
     }
