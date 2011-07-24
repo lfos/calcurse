@@ -2754,10 +2754,8 @@ io_import_data (enum import_type type, struct conf *conf, char *stream_name)
   const struct string vevent = STRING_BUILD ("BEGIN:VEVENT");
   const struct string vtodo = STRING_BUILD ("BEGIN:VTODO");
   char *proc_report = _("Import process report: %04d lines read ");
-  char *lines_stats =
-    _("%d apps / %d events / %d todos / %d skipped ");
-  char *lines_stats_interactive =
-    _("%d apps / %d events / %d todos / %d skipped ([ENTER] to continue)");
+  char *stats_fmt[] = { "%d apps", "%d events", "%d todos", "%d skipped" };
+  char stats_str[sizeof (stats_fmt) / sizeof (char *)][BUFSIZ];
   char buf[BUFSIZ];
   FILE *stream = NULL;
   struct io_file *log;
@@ -2819,23 +2817,27 @@ io_import_data (enum import_type type, struct conf *conf, char *stream_name)
   if (stream != stdin)
     file_close (stream, __FILE_POS__);
 
+  snprintf (stats_str[0], BUFSIZ, _(stats_fmt[0]), stats.apoints);
+  snprintf (stats_str[1], BUFSIZ, _(stats_fmt[1]), stats.events);
+  snprintf (stats_str[2], BUFSIZ, _(stats_fmt[2]), stats.todos);
+  snprintf (stats_str[3], BUFSIZ, _(stats_fmt[3]), stats.skipped);
+
   if (ui_mode == UI_CURSES && !conf->skip_system_dialogs)
     {
       char read[BUFSIZ], stat[BUFSIZ];
 
       (void)snprintf (read, BUFSIZ, proc_report, stats.lines);
-      (void)snprintf (stat, BUFSIZ, lines_stats_interactive, stats.apoints,
-                      stats.events, stats.todos, stats.skipped);
+      (void)snprintf (stat, BUFSIZ, "%s / %s / %s / %s (%s)", stats_str[0],
+                      stats_str[1], stats_str[2], stats_str[3],
+                      _("Press [ENTER] to continue"));
       status_mesg (read, stat);
       (void)wgetch (win[STA].p);
     }
   else if (ui_mode == UI_CMDLINE)
     {
       printf (proc_report, stats.lines);
-      printf ("\n");
-      printf (lines_stats, stats.apoints, stats.events, stats.todos,
-              stats.skipped);
-      printf ("\n");
+      printf ("\n%s / %s / %s / %s\n", stats_str[0], stats_str[1],
+              stats_str[2], stats_str[3]);
     }
 
   /* User has the choice to look at the log file if some items could not be
