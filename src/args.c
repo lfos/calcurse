@@ -88,7 +88,6 @@ version_arg ()
 static void
 help_arg ()
 {
-  char htitle[BUFSIZ];
   char *htext =
     _("\nMiscellaneous:\n"
       "  -h, --help\n"
@@ -146,9 +145,7 @@ help_arg ()
       "or read the manpage.\n"
       "Mail bug reports and suggestions to <misc@calcurse.org>.\n");
 
-  (void)snprintf (htitle, BUFSIZ, _("Calcurse %s - text-based organizer\n"),
-                  VERSION);
-  fputs (htitle, stdout);
+  fprintf (stdout, _("Calcurse %s - text-based organizer\n"), VERSION);
   usage ();
   fputs (htext, stdout);
 }
