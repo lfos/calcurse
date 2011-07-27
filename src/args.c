@@ -51,7 +51,7 @@
 static void
 usage ()
 {
-  char *arg_usage =
+  const char *arg_usage =
     _("Usage: calcurse [-h|-v] [-N] [-an] [-t[num]] [-i<file>] [-x[format]]\n"
       "                [-d <date>|<num>] [-s[date]] [-r[range]]\n"
       "                [-c<file> | -D<dir>] [-S<regex>] [--status]\n");
@@ -61,7 +61,7 @@ usage ()
 static void
 usage_try ()
 {
-  char *arg_usage_try = _("Try 'calcurse -h' for more information.\n");
+  const char *arg_usage_try = _("Try 'calcurse -h' for more information.\n");
   fputs (arg_usage_try, stdout);
 }
 
@@ -71,7 +71,7 @@ usage_try ()
 static void
 version_arg ()
 {
-  char *vtext =
+  const char *vtext =
       _("\nCopyright (c) 2004-2011 calcurse Development Team.\n"
         "This is free software; see the source for copying conditions.\n");
 
@@ -85,7 +85,7 @@ version_arg ()
 static void
 help_arg ()
 {
-  char *htext =
+  const char *htext =
     _("\nMiscellaneous:\n"
       "  -h, --help\n"
       "	print this help and exit.\n"
