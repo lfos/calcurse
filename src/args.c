@@ -71,14 +71,11 @@ usage_try ()
 static void
 version_arg ()
 {
-  char vtitle[BUFSIZ];
   char *vtext =
       _("\nCopyright (c) 2004-2011 calcurse Development Team.\n"
         "This is free software; see the source for copying conditions.\n");
 
-  (void)snprintf (vtitle, BUFSIZ, _("Calcurse %s - text-based organizer\n"),
-                  VERSION);
-  fputs (vtitle, stdout);
+  fprintf (stdout, _("Calcurse %s - text-based organizer\n"), VERSION);
   fputs (vtext, stdout);
 }
 
