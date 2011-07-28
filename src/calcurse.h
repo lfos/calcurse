@@ -100,22 +100,22 @@
 #define DPID_PATH        DIR_NAME DPID_PATH_NAME
 #define NOTES_DIR        DIR_NAME NOTES_DIR_NAME
 
-#define ATTR_FALSE	0
-#define ATTR_TRUE	1
-#define ATTR_LOWEST	2
-#define ATTR_LOW	3
-#define ATTR_MIDDLE	4
-#define ATTR_HIGH	5
-#define ATTR_HIGHEST	6
+#define ATTR_FALSE    0
+#define ATTR_TRUE     1
+#define ATTR_LOWEST   2
+#define ATTR_LOW      3
+#define ATTR_MIDDLE   4
+#define ATTR_HIGH     5
+#define ATTR_HIGHEST  6
 
-#define STATUSHEIGHT	2
-#define	NOTESIZ		6
+#define STATUSHEIGHT  2
+#define NOTESIZ       6
 
 /* Format for appointment hours is: HH:MM */
 #define HRMIN_SIZE 6
 
 /* Maximum number of colors available. */
-#define NBUSERCOLORS	6
+#define NBUSERCOLORS  6
 
 /* Side bar width acceptable boundaries. */
 #define SBARMINWIDTH     32
@@ -131,68 +131,68 @@
 #define TM_YEAR_BASE    1900
 
 /* Calendar window. */
-#define	CALHEIGHT	12
+#define CALHEIGHT       12
 
 /* Key definitions. */
 #define CTRLVAL                 0x1F
 #define CTRL(x)                 ((x) & CTRLVAL)
-#define ESCAPE		        27
-#define TAB       		9
+#define ESCAPE                  27
+#define TAB                     9
 #define SPACE                   32
 
-#define KEYS_KEYLEN		3 /* length of each keybinding */
-#define KEYS_LABELEN		8 /* length of command description */
-#define KEYS_CMDS_PER_LINE	6 /* max number of commands per line */
+#define KEYS_KEYLEN         3 /* length of each keybinding */
+#define KEYS_LABELEN        8 /* length of command description */
+#define KEYS_CMDS_PER_LINE  6 /* max number of commands per line */
 
-#define ERROR_MSG(...) do {                                             \
-  char msg[BUFSIZ];                                                     \
-  int len;                                                              \
-                                                                        \
-  len = snprintf (msg, BUFSIZ, "%s: %d: ", __FILE__, __LINE__);         \
-  (void)snprintf (msg + len, BUFSIZ - len, __VA_ARGS__);                \
-  if (ui_mode == UI_CURSES)                                             \
-    fatalbox (msg);                                                     \
-  else                                                                  \
-    (void)fprintf (stderr, "%s\n", msg);                                \
+#define ERROR_MSG(...) do {                                                   \
+  char msg[BUFSIZ];                                                           \
+  int len;                                                                    \
+                                                                              \
+  len = snprintf (msg, BUFSIZ, "%s: %d: ", __FILE__, __LINE__);               \
+  (void)snprintf (msg + len, BUFSIZ - len, __VA_ARGS__);                      \
+  if (ui_mode == UI_CURSES)                                                   \
+    fatalbox (msg);                                                           \
+  else                                                                        \
+    (void)fprintf (stderr, "%s\n", msg);                                      \
 } while (0)
 
-#define WARN_MSG(...) do {                                              \
-  char msg[BUFSIZ];                                                     \
-                                                                        \
-  (void)snprintf (msg, BUFSIZ, __VA_ARGS__);                            \
-  if (ui_mode == UI_CURSES)                                             \
-    warnbox (msg);                                                      \
-  else                                                                  \
-    (void)fprintf (stderr, "%s\n", msg);                                \
+#define WARN_MSG(...) do {                                                    \
+  char msg[BUFSIZ];                                                           \
+                                                                              \
+  (void)snprintf (msg, BUFSIZ, __VA_ARGS__);                                  \
+  if (ui_mode == UI_CURSES)                                                   \
+    warnbox (msg);                                                            \
+  else                                                                        \
+    (void)fprintf (stderr, "%s\n", msg);                                      \
 } while (0)
 
-#define EXIT(...) do {                                                  \
-          ERROR_MSG(__VA_ARGS__);                                       \
-          if (ui_mode == UI_CURSES)                                     \
-            exit_calcurse (EXIT_FAILURE);                               \
-          else                                                          \
-            exit (EXIT_FAILURE);                                        \
+#define EXIT(...) do {                                                        \
+  ERROR_MSG(__VA_ARGS__);                                                     \
+  if (ui_mode == UI_CURSES)                                                   \
+    exit_calcurse (EXIT_FAILURE);                                             \
+  else                                                                        \
+    exit (EXIT_FAILURE);                                                      \
 } while (0)
 
-#define EXIT_IF(cond, ...) do {                                         \
-  if ((cond))                                                           \
-    EXIT(__VA_ARGS__);                                                  \
+#define EXIT_IF(cond, ...) do {                                               \
+  if ((cond))                                                                 \
+    EXIT(__VA_ARGS__);                                                        \
 } while (0)
 
-#define RETURN_IF(cond, ...) do {                                       \
-  if ((cond))                                                           \
-    {                                                                   \
-      ERROR_MSG(__VA_ARGS__);                                           \
-      return;                                                           \
-    }                                                                   \
+#define RETURN_IF(cond, ...) do {                                             \
+  if ((cond))                                                                 \
+    {                                                                         \
+      ERROR_MSG(__VA_ARGS__);                                                 \
+      return;                                                                 \
+    }                                                                         \
 } while (0)
 
-#define RETVAL_IF(cond, val, ...) do {                                  \
-  if ((cond))                                                           \
-    {                                                                   \
-      ERROR_MSG(__VA_ARGS__);                                           \
-      return (val);                                                     \
-    }                                                                   \
+#define RETVAL_IF(cond, val, ...) do {                                        \
+  if ((cond))                                                                 \
+    {                                                                         \
+      ERROR_MSG(__VA_ARGS__);                                                 \
+      return (val);                                                           \
+    }                                                                         \
 } while (0)
 
 #define STRING_BUILD(str) {str, sizeof (str) - 1}
@@ -223,7 +223,7 @@ struct conf {
   char      *editor;
   char      *pager;
   char       output_datefmt[BUFSIZ];  /* format for displaying date */
-  int        input_datefmt;	      /* format for reading date */
+  int        input_datefmt;           /* format for reading date */
 };
 
 /* Daemon-related configuration. */
@@ -245,16 +245,13 @@ enum datefmt {
   DATE_FORMATS
 };
 
-#define DATEFMT(datefmt) (datefmt == DATEFMT_MMDDYYYY ? "%m/%d/%Y" :       \
-		(datefmt == DATEFMT_DDMMYYYY ? "%d/%m/%Y" :                \
-                (datefmt == DATEFMT_YYYYMMDD ? "%Y/%m/%d" : "%Y-%m-%d")))
+#define DATEFMT(datefmt) (datefmt == DATEFMT_MMDDYYYY ? "%m/%d/%Y" :          \
+    (datefmt == DATEFMT_DDMMYYYY ? "%d/%m/%Y" :                               \
+    (datefmt == DATEFMT_YYYYMMDD ? "%Y/%m/%d" : "%Y-%m-%d")))
 
-#define DATEFMT_DESC(datefmt) (datefmt == DATEFMT_MMDDYYYY ?               \
-                               _("mm/dd/yyyy") :                           \
-		               (datefmt == DATEFMT_DDMMYYYY ?              \
-                               _("dd/mm/yyyy") :                           \
-                               (datefmt == DATEFMT_YYYYMMDD ?              \
-                               _("yyyy/mm/dd") : _("yyyy-mm-dd"))))
+#define DATEFMT_DESC(datefmt) (datefmt == DATEFMT_MMDDYYYY ?                  \
+    _("mm/dd/yyyy") : (datefmt == DATEFMT_DDMMYYYY ? _("dd/mm/yyyy") :        \
+    (datefmt == DATEFMT_YYYYMMDD ? _("yyyy/mm/dd") : _("yyyy-mm-dd"))))
 
 struct date {
   unsigned dd;
@@ -269,8 +266,8 @@ struct apoint
   long           dur;     /* duration of the appointment in seconds */
 
 #define APOINT_NULL      0x0
-#define APOINT_NOTIFY    0x1	/* Item needs to be notified */
-#define APOINT_NOTIFIED  0x2	/* Item was already notified */
+#define APOINT_NOTIFY    0x1  /* Item needs to be notified */
+#define APOINT_NOTIFIED  0x2  /* Item was already notified */
   int            state;
 
   char          *mesg;
@@ -462,13 +459,13 @@ struct pad {
 
 /* Notification bar definition. */
 struct nbar {
-  unsigned         show;	     /* display or hide the notify-bar */
-  int              cntdwn;	     /* warn when time left before next app
-				        becomes lesser than cntdwn */
+  unsigned         show;             /* display or hide the notify-bar */
+  int              cntdwn;           /* warn when time left before next app
+                                        becomes lesser than cntdwn */
   char             datefmt[BUFSIZ];  /* format for displaying date */
   char             timefmt[BUFSIZ];  /* format for displaying time */
-  char             cmd[BUFSIZ];	     /* notification command */
-  char            *shell;	     /* user shell to launch notif. cmd */
+  char             cmd[BUFSIZ];      /* notification command */
+  char            *shell;            /* user shell to launch notif. cmd */
   pthread_mutex_t  mutex;
 };
 
