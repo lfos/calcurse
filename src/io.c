@@ -2427,10 +2427,10 @@ ical_read_event (FILE *fdi, FILE *log, unsigned *noevents, unsigned *noapoints,
 {
   const int ITEMLINE = *lineno;
   const struct string endevent = STRING_BUILD ("END:VEVENT");
-  const struct string summary  = STRING_BUILD ("SUMMARY:");
+  const struct string summary  = STRING_BUILD ("SUMMARY");
   const struct string dtstart  = STRING_BUILD ("DTSTART");
   const struct string dtend    = STRING_BUILD ("DTEND");
-  const struct string duration = STRING_BUILD ("DURATION:");
+  const struct string duration = STRING_BUILD ("DURATION");
   const struct string rrule    = STRING_BUILD ("RRULE");
   const struct string exdate   = STRING_BUILD ("EXDATE");
   const struct string alarm    = STRING_BUILD ("BEGIN:VALARM");
