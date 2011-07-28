@@ -880,6 +880,8 @@ parse_args (int argc, char **argv, struct conf *conf)
             {
               io_check_file (path_apts, (int *)0);
               io_check_file (path_todo, (int *)0);
+              /* Get default pager in case we need to show a log file. */
+              vars_init (conf);
               io_load_app ();
               io_load_todo ();
               io_import_data (IO_IMPORT_ICAL, conf, ifile);
