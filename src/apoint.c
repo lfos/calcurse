@@ -516,7 +516,7 @@ apoint_delete_bynum (long start, unsigned num, enum eraseflg flag)
         erase_note (&apt->note, flag);
       mem_free (apt);
       if (need_check_notify)
-        notify_check_next_app ();
+        notify_check_next_app (0);
       break;
     }
 
@@ -663,7 +663,7 @@ apoint_switch_notify (void)
   if (notify_bar ())
     notify_check_added (apt->mesg, apt->start, apt->state);
   if (need_chk_notify)
-    notify_check_next_app ();
+    notify_check_next_app (0);
 
   LLIST_TS_UNLOCK (&alist_p);
 }

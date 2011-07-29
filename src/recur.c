@@ -811,7 +811,7 @@ recur_apoint_erase (long start, unsigned num, unsigned delete_whole,
             erase_note (&rapt->note, flag);
           mem_free (rapt);
           if (need_check_notify)
-            notify_check_next_app ();
+            notify_check_next_app (0);
           break;
         }
     }
@@ -819,7 +819,7 @@ recur_apoint_erase (long start, unsigned num, unsigned delete_whole,
     {
       recur_add_exc (&rapt->exc, start);
       if (need_check_notify)
-        notify_check_next_app ();
+        notify_check_next_app (0);
     }
   LLIST_TS_UNLOCK (&recur_alist_p);
 }
