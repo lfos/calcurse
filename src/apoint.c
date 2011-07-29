@@ -657,7 +657,7 @@ apoint_switch_notify (void)
   need_chk_notify = 0;
   LLIST_TS_LOCK (&alist_p);
 
-  struct apoint *apt = apoint_get (apoint_nb, date);
+  struct apoint *apt = apoint_get (date, apoint_nb);
 
   apt->state ^= APOINT_NOTIFY;
   if (notify_bar ())
