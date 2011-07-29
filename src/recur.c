@@ -1144,5 +1144,9 @@ recur_apoint_paste_item (void)
                           bkp_cut_recur_apoint.rpt->freq,
                           bkp_cut_recur_apoint.rpt->until,
                           &bkp_cut_recur_apoint.exc);
+
+  if (notify_bar ())
+    notify_check_repeated (&bkp_cut_recur_apoint);
+
   recur_apoint_free_bkp (ERASE_FORCE_KEEP_NOTE);
 }

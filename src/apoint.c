@@ -729,5 +729,9 @@ apoint_paste_item (void)
   (void)apoint_new (bkp_cut_apoint.mesg, bkp_cut_apoint.note,
                     bkp_start, bkp_cut_apoint.dur,
                     bkp_cut_apoint.state);
+
+  if (notify_bar ())
+    notify_check_added (bkp_cut_apoint.mesg, bkp_start, bkp_cut_apoint.state);
+
   apoint_free_bkp (ERASE_FORCE_KEEP_NOTE);
 }
