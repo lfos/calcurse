@@ -393,8 +393,13 @@ custom_load_conf (struct conf *conf)
       if (*e_conf == '\0')
         continue;
 
-      name = strtok (e_conf, "=");
-      val = strtok (NULL, "\0");
+      name = e_conf;
+      val = strchr (e_conf, '=');
+      if (val)
+        {
+          *val = '\0';
+          val++;
+        }
 
       var = CUSTOM_CONF_INVALID;
       for (i = 0; i < sizeof (conf_varmap) / sizeof (struct conf_varname); i++)
