@@ -772,6 +772,7 @@ day_edit_item (struct conf *conf)
   struct apoint *a;
   long date;
   int item_num, ch;
+  int need_check_notify = 0;
 
   item_num = apoint_hilt ();
   p = day_get_item (item_num);
@@ -811,15 +812,19 @@ day_edit_item (struct conf *conf)
       switch (ch)
         {
         case STRT:
+          need_check_notify = 1;
           update_start_time (&ra->start, &ra->dur);
           break;
         case END:
           update_duration (&ra->start, &ra->dur);
           break;
         case DESC:
+          if (notify_bar ())
+            need_check_notify = notify_same_recur_item (ra);
           update_desc (&ra->mesg);
           break;
         case REPT:
+          need_check_notify = 1;
           update_rept (&ra->rpt, ra->start, conf);
           break;
         case KEY_GENERIC_CANCEL:
@@ -835,12 +840,15 @@ day_edit_item (struct conf *conf)
       switch (ch)
         {
         case STRT:
+          need_check_notify = 1;
           update_start_time (&a->start, &a->dur);
           break;
         case END:
           update_duration (&a->start, &a->dur);
           break;
         case DESC:
+          if (notify_bar ())
+            need_check_notify = notify_same_item (a->start);
           update_desc (&a->mesg);
           break;
         case KEY_GENERIC_CANCEL:
@@ -848,6 +856,9 @@ day_edit_item (struct conf *conf)
         }
       break;
     }
+
+  if (need_check_notify)
+    notify_check_next_app (1);
 }
 
 /*
