@@ -1004,9 +1004,9 @@ recur_exc_scan (llist_t *lexc, FILE *data_file)
 }
 
 static int
-recur_apoint_starts_after (struct recur_apoint *rapt, long time)
+recur_apoint_starts_before (struct recur_apoint *rapt, long time)
 {
-  return (rapt->start > time);
+  return (rapt->start < time);
 }
 
 /*
@@ -1020,9 +1020,7 @@ recur_apoint_check_next (struct notify_app *app, long start, long day)
   long real_recur_start_time;
 
   LLIST_TS_LOCK (&recur_alist_p);
-  i = LLIST_TS_FIND_FIRST (&recur_alist_p, start, recur_apoint_starts_after);
-
-  if (i)
+  LLIST_TS_FIND_FOREACH (&recur_alist_p, app->time, recur_apoint_starts_before, i)
     {
       struct recur_apoint *rapt = LLIST_TS_GET_DATA (i);
 
@@ -1035,7 +1033,6 @@ recur_apoint_check_next (struct notify_app *app, long start, long day)
           app->got_app = 1;
         }
     }
-
   LLIST_TS_UNLOCK (&recur_alist_p);
 
   return (app);
