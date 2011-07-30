@@ -345,7 +345,7 @@ static int
 app_arg (int add_line, struct date *day, long date, int print_note,
          struct conf *conf, regex_t *regex)
 {
-  llist_item_t *i;
+  llist_item_t *i, *j;
   long today;
   unsigned print_date = 1;
   int app_found = 0;
@@ -411,72 +411,98 @@ app_arg (int add_line, struct date *day, long date, int print_note,
     }
 
   /* Same process is performed but this time on the appointments. */
-  LLIST_TS_LOCK (&recur_alist_p);
-  LLIST_TS_FIND_FOREACH (&recur_alist_p, today, recur_apoint_inday, i)
-    {
-      struct recur_apoint *ra = LLIST_TS_GET_DATA (i);
-      struct apoint *apt;
-
-      if (regex && regexec (regex, ra->mesg, 0, 0, 0) != 0)
-        continue;
-
-      app_found = 1;
-      if (add_line)
-        {
-          fputs ("\n", stdout);
-          add_line = 0;
-        }
-      if (print_date)
-        {
-          arg_print_date (today, conf);
-          print_date = 0;
-        }
-      apt = apoint_recur_s2apoint_s (ra);
-      apoint_sec2str (apt, RECUR_APPT, today, apoint_start_time,
-                      apoint_end_time);
-      mem_free (apt->mesg);
-      mem_free (apt);
-      fputs (" - ", stdout);
-      fputs (apoint_start_time, stdout);
-      fputs (" -> ", stdout);
-      fputs (apoint_end_time, stdout);
-      fputs ("\n\t", stdout);
-      fputs (ra->mesg, stdout);
-      fputs ("\n", stdout);
-      if (print_note && ra->note)
-        print_notefile (stdout, ra->note, 2);
-    }
-  LLIST_TS_UNLOCK (&recur_alist_p);
-
   LLIST_TS_LOCK (&alist_p);
-  LLIST_TS_FIND_FOREACH (&alist_p, today, apoint_inday, i)
+  LLIST_TS_LOCK (&recur_alist_p);
+
+  /*
+   * Iterate over regular appointments and recurrent ones simultaneously (fixes
+   * http://lists.calcurse.org/bugs/msg00002.html).
+   */
+  i = LLIST_TS_FIND_FIRST (&alist_p, today, apoint_inday);
+  j = LLIST_TS_FIND_FIRST (&recur_alist_p, today, recur_apoint_inday);
+  while (i || j)
     {
       struct apoint *apt = LLIST_TS_GET_DATA (i);
-      if (regex && regexec (regex, apt->mesg, 0, 0, 0) != 0)
-        continue;
+      struct recur_apoint *ra = LLIST_TS_GET_DATA (j);
 
-      app_found = 1;
-      if (add_line)
+      while (i && regex && regexec (regex, apt->mesg, 0, 0, 0) != 0)
         {
+          i = LLIST_TS_FIND_NEXT (i, today, apoint_inday);
+          apt = LLIST_TS_GET_DATA (i);
+        }
+
+      while (j && regex && regexec (regex, ra->mesg, 0, 0, 0) != 0)
+        {
+          j = LLIST_TS_FIND_NEXT (j, today, recur_apoint_inday);
+          ra = LLIST_TS_GET_DATA (j);
+        }
+
+      if (apt && ra)
+        {
+          if (apt->start <= recur_apoint_inday (ra, today))
+            ra = NULL;
+          else
+            apt = NULL;
+        }
+
+      if (apt)
+        {
+          app_found = 1;
+          if (add_line)
+            {
+              fputs ("\n", stdout);
+              add_line = 0;
+            }
+          if (print_date)
+            {
+              arg_print_date (today, conf);
+              print_date = 0;
+            }
+          apoint_sec2str (apt, APPT, today, apoint_start_time, apoint_end_time);
+          fputs (" - ", stdout);
+          fputs (apoint_start_time, stdout);
+          fputs (" -> ", stdout);
+          fputs (apoint_end_time, stdout);
+          fputs ("\n\t", stdout);
+          fputs (apt->mesg, stdout);
           fputs ("\n", stdout);
-          add_line = 0;
+          if (print_note && apt->note)
+            print_notefile (stdout, apt->note, 2);
+          i = LLIST_TS_FIND_NEXT (i, today, apoint_inday);
         }
-      if (print_date)
+      else if (ra)
         {
-          arg_print_date (today, conf);
-          print_date = 0;
+          app_found = 1;
+          if (add_line)
+            {
+              fputs ("\n", stdout);
+              add_line = 0;
+            }
+          if (print_date)
+            {
+              arg_print_date (today, conf);
+              print_date = 0;
+            }
+          apt = apoint_recur_s2apoint_s (ra);
+          apoint_sec2str (apt, RECUR_APPT, today, apoint_start_time,
+                          apoint_end_time);
+          mem_free (apt->mesg);
+          mem_free (apt);
+          fputs (" - ", stdout);
+          fputs (apoint_start_time, stdout);
+          fputs (" -> ", stdout);
+          fputs (apoint_end_time, stdout);
+          fputs ("\n\t", stdout);
+          fputs (ra->mesg, stdout);
+          fputs ("\n", stdout);
+          if (print_note && ra->note)
+            print_notefile (stdout, ra->note, 2);
+          apt = NULL;
+          j = LLIST_TS_FIND_NEXT (j, today, recur_apoint_inday);
         }
-      apoint_sec2str (apt, APPT, today, apoint_start_time, apoint_end_time);
-      fputs (" - ", stdout);
-      fputs (apoint_start_time, stdout);
-      fputs (" -> ", stdout);
-      fputs (apoint_end_time, stdout);
-      fputs ("\n\t", stdout);
-      fputs (apt->mesg, stdout);
-      fputs ("\n", stdout);
-      if (print_note && apt->note)
-        print_notefile (stdout, apt->note, 2);
     }
+
+  LLIST_TS_UNLOCK (&recur_alist_p);
   LLIST_TS_UNLOCK (&alist_p);
 
   return (app_found);

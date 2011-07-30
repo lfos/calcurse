@@ -306,7 +306,7 @@ notify_update_bar (void)
           notify_app.got_app = 0;
           pthread_mutex_unlock (&notify_app.mutex);
           pthread_mutex_unlock (&notify.mutex);
-          notify_check_next_app ();
+          notify_check_next_app (0);
           return;
         }
     }
@@ -353,7 +353,7 @@ notify_main_thread (void *arg)
           got_app = notify_app.got_app;
           pthread_mutex_unlock (&notify_app.mutex);
           if (!got_app)
-            notify_check_next_app ();
+            notify_check_next_app (0);
         }
     }
   pthread_exit ((void *) 0);
@@ -427,6 +427,7 @@ static void *
 notify_thread_app (void *arg)
 {
   struct notify_app tmp_app;
+  int force = (arg ? 1 : 0);
 
   if (!notify_get_next (&tmp_app))
     pthread_exit ((void *)0);
@@ -439,7 +440,7 @@ notify_thread_app (void *arg)
     }
   else
     {
-      if (!notify_same_item (tmp_app.time))
+      if (force || !notify_same_item (tmp_app.time))
         {
           pthread_mutex_lock (&notify_app.mutex);
           notify_update_app (tmp_app.time, tmp_app.state, tmp_app.txt);
@@ -456,12 +457,13 @@ notify_thread_app (void *arg)
 
 /* Launch the thread notify_thread_app to look for next appointment. */
 void
-notify_check_next_app (void)
+notify_check_next_app (int force)
 {
   pthread_t notify_t_app;
+  void *arg = (force ? (void *)1 : (void *)0);
 
   pthread_create (&notify_t_app, &detached_thread_attr, notify_thread_app,
-                  (void *)0);
+                  arg);
   return;
 }
 
@@ -508,7 +510,7 @@ notify_check_repeated (struct recur_apoint *i)
   pthread_mutex_lock (&notify_app.mutex);
   if ((real_app_time = recur_item_inday (i->start, &i->exc, i->rpt->type,
                                          i->rpt->freq, i->rpt->until,
-                                         get_today ()) > current_time))
+                                         get_today ())))
     {
       if (!notify_app.got_app)
         {
@@ -566,7 +568,7 @@ void
 notify_start_main_thread (void)
 {
   pthread_create (&notify_t_main, NULL, notify_main_thread, NULL);
-  notify_check_next_app ();
+  notify_check_next_app (0);
 }
 
 /*

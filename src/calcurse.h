@@ -768,7 +768,7 @@ void      notify_update_bar (void);
 unsigned  notify_get_next (struct notify_app *);
 unsigned  notify_get_next_bkgd (void);
 char     *notify_app_txt (void);
-void      notify_check_next_app (void);
+void      notify_check_next_app (int);
 void      notify_check_added (char *, long, char);
 void      notify_check_repeated (struct recur_apoint *);
 int       notify_same_item (long);

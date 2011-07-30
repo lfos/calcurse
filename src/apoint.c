@@ -516,7 +516,7 @@ apoint_delete_bynum (long start, unsigned num, enum eraseflg flag)
         erase_note (&apt->note, flag);
       mem_free (apt);
       if (need_check_notify)
-        notify_check_next_app ();
+        notify_check_next_app (0);
       break;
     }
 
@@ -657,13 +657,13 @@ apoint_switch_notify (void)
   need_chk_notify = 0;
   LLIST_TS_LOCK (&alist_p);
 
-  struct apoint *apt = apoint_get (apoint_nb, date);
+  struct apoint *apt = apoint_get (date, apoint_nb);
 
   apt->state ^= APOINT_NOTIFY;
   if (notify_bar ())
     notify_check_added (apt->mesg, apt->start, apt->state);
   if (need_chk_notify)
-    notify_check_next_app ();
+    notify_check_next_app (0);
 
   LLIST_TS_UNLOCK (&alist_p);
 }
@@ -729,5 +729,9 @@ apoint_paste_item (void)
   (void)apoint_new (bkp_cut_apoint.mesg, bkp_cut_apoint.note,
                     bkp_start, bkp_cut_apoint.dur,
                     bkp_cut_apoint.state);
+
+  if (notify_bar ())
+    notify_check_added (bkp_cut_apoint.mesg, bkp_start, bkp_cut_apoint.state);
+
   apoint_free_bkp (ERASE_FORCE_KEEP_NOTE);
 }

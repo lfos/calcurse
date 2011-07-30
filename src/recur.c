@@ -811,7 +811,7 @@ recur_apoint_erase (long start, unsigned num, unsigned delete_whole,
             erase_note (&rapt->note, flag);
           mem_free (rapt);
           if (need_check_notify)
-            notify_check_next_app ();
+            notify_check_next_app (0);
           break;
         }
     }
@@ -819,7 +819,7 @@ recur_apoint_erase (long start, unsigned num, unsigned delete_whole,
     {
       recur_add_exc (&rapt->exc, start);
       if (need_check_notify)
-        notify_check_next_app ();
+        notify_check_next_app (0);
     }
   LLIST_TS_UNLOCK (&recur_alist_p);
 }
@@ -1004,9 +1004,9 @@ recur_exc_scan (llist_t *lexc, FILE *data_file)
 }
 
 static int
-recur_apoint_starts_after (struct recur_apoint *rapt, long time)
+recur_apoint_starts_before (struct recur_apoint *rapt, long time)
 {
-  return (rapt->start > time);
+  return (rapt->start < time);
 }
 
 /*
@@ -1020,9 +1020,7 @@ recur_apoint_check_next (struct notify_app *app, long start, long day)
   long real_recur_start_time;
 
   LLIST_TS_LOCK (&recur_alist_p);
-  i = LLIST_TS_FIND_FIRST (&recur_alist_p, start, recur_apoint_starts_after);
-
-  if (i)
+  LLIST_TS_FIND_FOREACH (&recur_alist_p, app->time, recur_apoint_starts_before, i)
     {
       struct recur_apoint *rapt = LLIST_TS_GET_DATA (i);
 
@@ -1035,7 +1033,6 @@ recur_apoint_check_next (struct notify_app *app, long start, long day)
           app->got_app = 1;
         }
     }
-
   LLIST_TS_UNLOCK (&recur_alist_p);
 
   return (app);
@@ -1144,5 +1141,9 @@ recur_apoint_paste_item (void)
                           bkp_cut_recur_apoint.rpt->freq,
                           bkp_cut_recur_apoint.rpt->until,
                           &bkp_cut_recur_apoint.exc);
+
+  if (notify_bar ())
+    notify_check_repeated (&bkp_cut_recur_apoint);
+
   recur_apoint_free_bkp (ERASE_FORCE_KEEP_NOTE);
 }
