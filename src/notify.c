@@ -80,7 +80,8 @@ unsigned
 notify_needs_reminder (void)
 {
   if (notify_app.got_app
-      && (notify_app.state & APOINT_NOTIFY)
+      && (((notify_app.state & APOINT_NOTIFY) && !nbar.notify_all) ||
+          (!(notify_app.state & APOINT_NOTIFY) && nbar.notify_all))
       && !(notify_app.state & APOINT_NOTIFIED))
     return 1;
   return 0;
@@ -131,6 +132,8 @@ notify_init_vars (void)
 
   if ((nbar.shell = getenv ("SHELL")) == NULL)
     nbar.shell = "/bin/sh";
+
+  nbar.notify_all = 0;
 
   (void)pthread_attr_init (&detached_thread_attr);
   (void)pthread_attr_setdetachstate (&detached_thread_attr,
@@ -281,7 +284,9 @@ notify_update_bar (void)
           minutes_left = (time_left - hours_left * HOURINSEC) / MININSEC;
           pthread_mutex_lock (&nbar.mutex);
 
-          if (time_left < nbar.cntdwn && (notify_app.state & APOINT_NOTIFY))
+          if (time_left < nbar.cntdwn &&
+              (((notify_app.state & APOINT_NOTIFY) && !nbar.notify_all) ||
+              (!(notify_app.state & APOINT_NOTIFY) && nbar.notify_all)))
             blinking = 1;
           else
             blinking = 0;
@@ -619,7 +624,7 @@ print_config_options (WINDOW *optwin)
   const int YOFF  = 3;
 
   enum
-  { SHOW, DATE, CLOCK, WARN, CMD, DMON, DMON_LOG, NB_OPT };
+  { SHOW, DATE, CLOCK, WARN, CMD, NOTIFY_ALL, DMON, DMON_LOG, NB_OPT };
 
   struct opt_s
   {
@@ -647,6 +652,9 @@ print_config_options (WINDOW *optwin)
   opt[CMD].name = _("notify-bar_command = ");
   opt[CMD].desc = _("(Command used to notify user of an upcoming appointment)");
 
+  opt[NOTIFY_ALL].name = _("notify-all = ");
+  opt[NOTIFY_ALL].desc = _("(Notify all appointments instead of flagged ones only)");
+
   opt[DMON].name = _("notify-daemon_enable = ");
   opt[DMON].desc = _("(Run in background to get notifications after exiting)");
 
@@ -663,12 +671,14 @@ print_config_options (WINDOW *optwin)
 
   /* Boolean options */
   opt[SHOW].valnum = nbar.show;
+  opt[NOTIFY_ALL].valnum = nbar.notify_all;
   pthread_mutex_unlock (&nbar.mutex);
 
   opt[DMON].valnum = dmon.enable;
   opt[DMON_LOG].valnum = dmon.log;
 
-  opt[SHOW].valstr[0] = opt[DMON].valstr[0] = opt[DMON_LOG].valstr[0] = '\0';
+  opt[SHOW].valstr[0] = opt[NOTIFY_ALL].valstr[0] = opt[DMON].valstr[0] =
+      opt[DMON_LOG].valstr[0] = '\0';
 
   for (i = 0; i < NB_OPT; i++)
     {
@@ -797,9 +807,15 @@ notify_config_bar (void)
             }
           break;
         case '6':
-          dmon.enable = !dmon.enable;
+          pthread_mutex_lock (&nbar.mutex);
+          nbar.notify_all = !nbar.notify_all;
+          pthread_mutex_unlock (&nbar.mutex);
+          notify_check_next_app (1);
           break;
         case '7':
+          dmon.enable = !dmon.enable;
+          break;
+        case '8':
           dmon.log = !dmon.log;
           break;
         }

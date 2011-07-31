@@ -59,6 +59,7 @@ enum conf_var {
   CUSTOM_CONF_NOTIFYBARCLOCK,
   CUSTOM_CONF_NOTIFYBARWARNING,
   CUSTOM_CONF_NOTIFYBARCOMMAND,
+  CUSTOM_CONF_NOTIFYALL,
   CUSTOM_CONF_OUTPUTDATEFMT,
   CUSTOM_CONF_INPUTDATEFMT,
   CUSTOM_CONF_DMON_ENABLE,
@@ -89,6 +90,7 @@ static struct conf_varname conf_varmap[] =
   { CUSTOM_CONF_NOTIFYBARCLOCK, "notify-bar_clock" },
   { CUSTOM_CONF_NOTIFYBARWARNING, "notify-bar_warning" },
   { CUSTOM_CONF_NOTIFYBARCOMMAND, "notify-bar_command" },
+  { CUSTOM_CONF_NOTIFYALL, "notify-all" },
   { CUSTOM_CONF_OUTPUTDATEFMT, "output_datefmt" },
   { CUSTOM_CONF_INPUTDATEFMT, "input_datefmt" },
   { CUSTOM_CONF_DMON_ENABLE, "notify-daemon_enable" },
@@ -337,6 +339,9 @@ custom_set_conf (struct conf *conf, enum conf_var var, char *val)
       break;
     case CUSTOM_CONF_NOTIFYBARCOMMAND:
       (void)strncpy (nbar.cmd, val, strlen (val) + 1);
+      break;
+    case CUSTOM_CONF_NOTIFYALL:
+      return conf_parse_bool (&nbar.notify_all, val);
       break;
     case CUSTOM_CONF_OUTPUTDATEFMT:
       if (val[0] != '\0')

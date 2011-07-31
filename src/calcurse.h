@@ -466,6 +466,7 @@ struct nbar {
   char             timefmt[BUFSIZ];  /* format for displaying time */
   char             cmd[BUFSIZ];      /* notification command */
   char            *shell;            /* user shell to launch notif. cmd */
+  unsigned         notify_all;       /* notify all appointments */
   pthread_mutex_t  mutex;
 };
 

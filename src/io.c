@@ -944,6 +944,10 @@ io_save_conf (struct conf *conf)
   (void)fprintf (fp, "notify-bar_command=");
   (void)fprintf (fp, "%s\n", nbar.cmd);
 
+  (void)fprintf (fp, "\n# Notify all appointments instead of flagged ones only\n");
+  (void)fprintf (fp, "notify-all=");
+  (void)fprintf (fp, "%s\n", (nbar.notify_all) ? "yes" : "no");
+
   (void)fprintf (fp, "\n# Format of the date to be displayed "
                  "in non-interactive mode :\n");
   (void)fprintf (fp, "output_datefmt=");

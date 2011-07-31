@@ -804,6 +804,10 @@ $ calcurse --next | mail -s "[calcurse] upcoming appointment!" user@host.com
 ----
 ====
 
+`notify-all` (default: *no*)::
+  Invert the sense of flagging an appointment as `important`. If this is
+  enabled, all appointments will be notified - except for flagged ones.
+
 `notify-daemon_enable` (default: *no*)::
   If set to yes, daemon mode will be enabled, meaning `calcurse` will run into
   background when the user's interface is exited. This will allow the
