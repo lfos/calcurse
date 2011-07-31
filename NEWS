@@ -1,3 +1,38 @@
+[03 Aug 2011]
+Version 2.9.1:
+- Bugfixes:
+  * Keep the order of events across restarts (reported by Alan).
+
+  * Fix the build process when disabling documentation generation.
+
+  * Avoid flickering on window resize.
+
+  * Avoid a segfault when resizing the calcurse window.
+
+  * Add missing documentation for the "backword-kill-word" line editing
+    function.
+
+  * Honor the "TMPDIR" environment variable instead of using hardcoded paths
+    for temporary files (reported by Erik Saule).
+
+  * Fix pager invocation when showing the log file during an import (reported
+    by Andraz Levstik).
+
+  * Accept resource parameters in iCal import. Accept additional parameters
+    such as language parameters (reported by Andraz Levstik).
+
+  * Sync the notification item after editing or pasting an appointment. This
+    ensures the information in the notification bar as well as the countdown
+    for the notification daemon are always up-to-date (reported by Andraz
+    Levstik).
+
+  * Fix recurrent appointment notification.
+
+  * Fix flagging of regular appointments.
+
+  * Fix sort order when using command line options to display upcoming
+    appointments and events (reported by Erik Saule).
+
 [29 May 2011]
 Version 2.9.0
 - New features:
