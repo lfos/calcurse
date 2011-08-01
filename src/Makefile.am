@@ -8,6 +8,7 @@ calcurse_SOURCES = \
 	htable.h \
 	llist.h \
 	llist_ts.h \
+	sha1.h \
 	apoint.c \
 	args.c \
 	calendar.c \
@@ -22,6 +23,7 @@ calcurse_SOURCES = \
 	note.c \
 	notify.c \
 	recur.c \
+	sha1.c \
 	sigs.c \
 	todo.c \
 	utf8.c \
