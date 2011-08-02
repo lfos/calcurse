@@ -1226,10 +1226,8 @@ io_load_app (void)
       c = getc (data_file);
       if (c == '>')
         {
-          (void)fgets (note, NOTESIZ + 1, data_file);
-          note[NOTESIZ] = '\0';
+          note_read (note, data_file);
           notep = note;
-          getc (data_file);
         }
       else
         {
@@ -1324,11 +1322,7 @@ io_load_todo (void)
       /* Now read the attached note, if any. */
       c = getc (data_file);
       if (c == '>')
-        {
-          (void)fgets (note, NOTESIZ + 1, data_file);
-          note[NOTESIZ] = '\0';
-          getc (data_file);
-        }
+        note_read (note, data_file);
       else
         note[0] = '\0';
       /* Then read todo description. */

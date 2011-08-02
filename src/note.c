@@ -88,3 +88,12 @@ erase_note (char **note, enum eraseflg flag)
   mem_free (*note);
   *note = NULL;
 }
+
+/* Read a serialized note file name from a stream and deserialize it. */
+void
+note_read (char *buffer, FILE *fp)
+{
+  (void)fgets (buffer, NOTESIZ + 1, fp);
+  buffer[NOTESIZ] = '\0';
+  getc (fp);
+}

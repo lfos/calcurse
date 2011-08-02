@@ -753,6 +753,7 @@ void   mem_stats (void);
 void  edit_note (char **, char *);
 void  view_note (char *, char *);
 void  erase_note (char **, enum eraseflg);
+void  note_read (char *, FILE *);
 
 /* notify.c */
 int       notify_time_left (void);
