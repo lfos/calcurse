@@ -3050,3 +3050,36 @@ io_file_is_empty (char *file)
 
   return -1;
 }
+
+/*
+ * Copy an existing file to a new location.
+ */
+int
+io_file_cp (const char *src, const char *dst)
+{
+  FILE *fp_src, *fp_dst;
+  char *buffer[BUFSIZ];
+  unsigned int bytes_read;
+
+  if (!(fp_src = fopen (src, "rb")))
+    return 0;
+  if (!(fp_dst = fopen (dst, "wb")))
+    return 0;
+
+  while (!feof (fp_src))
+    {
+      bytes_read = fread (buffer, 1, BUFSIZ, fp_src);
+      if (bytes_read > 0)
+        {
+          if (fwrite (buffer, 1, bytes_read, fp_dst) != bytes_read)
+            return 0;
+        }
+      else
+        return 0;
+    }
+
+  fclose (fp_dst);
+  fclose (fp_src);
+
+  return 1;
+}
