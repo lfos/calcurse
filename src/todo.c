@@ -334,14 +334,14 @@ todo_chg_priority (int action)
   struct todo *backup;
   char backup_mesg[BUFSIZ];
   int backup_id;
-  char backup_note[NOTESIZ + 1];
+  char backup_note[MAX_NOTESIZ + 1];
   int do_chg = 1;
 
   backup = todo_get_item (hilt);
   (void)strncpy (backup_mesg, backup->mesg, strlen (backup->mesg) + 1);
   backup_id = backup->id;
   if (backup->note)
-    (void)strncpy (backup_note, backup->note, NOTESIZ + 1);
+    (void)strncpy (backup_note, backup->note, MAX_NOTESIZ + 1);
   else
     backup_note[0] = '\0';
   switch (action)

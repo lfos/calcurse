@@ -109,7 +109,8 @@
 #define ATTR_HIGHEST  6
 
 #define STATUSHEIGHT  2
-#define NOTESIZ       6
+#define MAX_NOTESIZ   40
+#define TMPEXTSIZ     6
 
 /* Format for appointment hours is: HH:MM */
 #define HRMIN_SIZE 6

@@ -93,7 +93,18 @@ erase_note (char **note, enum eraseflg flag)
 void
 note_read (char *buffer, FILE *fp)
 {
-  (void)fgets (buffer, NOTESIZ + 1, fp);
-  buffer[NOTESIZ] = '\0';
-  getc (fp);
+  int i;
+
+  for (i = 0; i < MAX_NOTESIZ; i++)
+    {
+      buffer[i] = getc (fp);
+      if (buffer[i] == ' ')
+        {
+          buffer[i] = '\0';
+          return;
+        }
+    }
+
+  while (getc (fp) != ' ');
+  buffer[MAX_NOTESIZ] = '\0';
 }

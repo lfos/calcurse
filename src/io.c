@@ -1114,7 +1114,7 @@ io_load_app (void)
   int id = 0;
   int freq;
   char type, state = 0L;
-  char note[NOTESIZ + 1], *notep;
+  char note[MAX_NOTESIZ + 1], *notep;
 
   t = time (NULL);
   lt = localtime (&t);
@@ -1295,7 +1295,7 @@ io_load_todo (void)
   char *newline;
   int nb_tod = 0;
   int c, id;
-  char buf[BUFSIZ], e_todo[BUFSIZ], note[NOTESIZ + 1];
+  char buf[BUFSIZ], e_todo[BUFSIZ], note[MAX_NOTESIZ + 1];
 
   data_file = fopen (path_todo, "r");
   if (data_file == NULL)
@@ -2313,7 +2313,7 @@ ical_read_note (char *line, unsigned *noskipped, ical_vevent_e item_type,
 
   if ((p = strchr (line, ':')) != NULL)
     {
-      notename = new_tempfile (path_notes, NOTESIZ);
+      notename = new_tempfile (path_notes, TMPEXTSIZ);
       EXIT_IF (notename == NULL,
                _("Warning: could not create new note file to store "
                  "description. Aborting...\n"));
@@ -2818,7 +2818,7 @@ io_log_init (void)
   struct io_file *log;
 
   snprintf (logprefix, BUFSIZ, "%s/calcurse_log.", get_tempdir ());
-  logname = new_tempfile (logprefix, NOTESIZ);
+  logname = new_tempfile (logprefix, TMPEXTSIZ);
   RETVAL_IF (logname == NULL, 0,
              _("Warning: could not create temporary log file, Aborting..."));
   log = mem_malloc (sizeof (struct io_file));
