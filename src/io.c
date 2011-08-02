@@ -45,6 +45,7 @@
 #include <errno.h>
 
 #include "calcurse.h"
+#include "sha1.h"
 
 #define ICALDATEFMT      "%Y%m%d"
 #define ICALDATETIMEFMT  "%Y%m%dT%H%M%S"
@@ -2308,43 +2309,37 @@ static char *
 ical_read_note (char *line, unsigned *noskipped, ical_vevent_e item_type,
                 const int itemline, FILE *log)
 {
-  char *p, *notestr, *notename, fullnotename[BUFSIZ];
+  char *sha1 = mem_malloc (SHA1_DIGESTLEN * 2 + 1);
+  char *p, *notestr, fullnotename[BUFSIZ];
   FILE *fdo;
 
   if ((p = strchr (line, ':')) != NULL)
     {
-      notename = new_tempfile (path_notes, TMPEXTSIZ);
-      EXIT_IF (notename == NULL,
-               _("Warning: could not create new note file to store "
-                 "description. Aborting...\n"));
-      (void)snprintf (fullnotename, BUFSIZ, "%s%s", path_notes, notename);
-      fdo = fopen (fullnotename, "w");
-      EXIT_IF (fdo == NULL, _("Warning: could not open %s, Aborting..."),
-               fullnotename);
       p++;
       notestr = ical_unformat_line (p);
       if (notestr == NULL)
         {
           ical_log (log, item_type, itemline,
                     _("could not get entire item description."));
-          file_close (fdo, __FILE_POS__);
-          erase_note (&notename, ERASE_FORCE);
           (*noskipped)++;
           return NULL;
         }
       else if (strlen (notestr) == 0)
         {
-          file_close (fdo, __FILE_POS__);
-          erase_note (&notename, ERASE_FORCE);
           mem_free (notestr);
           return NULL;
         }
       else
         {
+          sha1_digest (notestr, sha1);
+          (void)snprintf (fullnotename, BUFSIZ, "%s%s", path_notes, sha1);
+          fdo = fopen (fullnotename, "w");
+          EXIT_IF (fdo == NULL, _("Warning: could not open %s, Aborting..."),
+                   fullnotename);
           (void)fprintf (fdo, "%s", notestr);
           file_close (fdo, __FILE_POS__);
           mem_free (notestr);
-          return notename;
+          return sha1;
         }
     }
   else
