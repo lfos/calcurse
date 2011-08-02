@@ -37,26 +37,46 @@
 #include <unistd.h>
 
 #include "calcurse.h"
+#include "sha1.h"
 
 /* Edit a note with an external editor. */
 void
 edit_note (char **note, char *editor)
 {
-  char fullname[BUFSIZ];
-  char *filename;
+  char tmppath[BUFSIZ];
+  char *tmpext;
+  char notepath[BUFSIZ];
+  char *sha1 = mem_malloc (SHA1_DIGESTLEN * 2 + 1);
+  FILE *fp;
 
-  if (*note == NULL)
+  strncpy (tmppath, get_tempdir (), BUFSIZ);
+  strncat (tmppath, "/calcurse-note.", BUFSIZ);
+  if ((tmpext = new_tempfile (tmppath, TMPEXTSIZ)) == NULL)
+    return;
+  strncat (tmppath, tmpext, BUFSIZ);
+  mem_free (tmpext);
+
+  if (*note != NULL)
     {
-      if ((filename = new_tempfile (path_notes, NOTESIZ)) != NULL)
-        *note = filename;
-      else
-        return;
+      snprintf (notepath, BUFSIZ, "%s%s", path_notes, *note);
+      io_file_cp (notepath, tmppath);
     }
-  (void)snprintf (fullname, BUFSIZ, "%s%s", path_notes, *note);
-  wins_launch_external (fullname, editor);
 
-  if (io_file_is_empty (fullname) > 0)
-    erase_note (note, ERASE_FORCE);
+  wins_launch_external (tmppath, editor);
+
+  if (io_file_is_empty (tmppath) > 0)
+    erase_note (note, ERASE_FORCE_KEEP_NOTE);
+  else if ((fp = fopen (tmppath, "r")))
+    {
+      sha1_stream (fp, sha1);
+      fclose (fp);
+      *note = sha1;
+
+      snprintf (notepath, BUFSIZ, "%s%s", path_notes, *note);
+      io_file_cp (tmppath, notepath);
+    }
+
+  unlink (tmppath);
 }
 
 /* View a note in an external pager. */
