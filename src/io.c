@@ -1813,7 +1813,7 @@ ical_store_apoint (char *mesg, char *note, long start, long dur,
 
 /*
  * Returns an allocated string representing the string given in argument once
- * unformatted. See ical_unfold_content () below.
+ * unformatted.
  *
  * Note:
  * Even if the RFC2445 recommends not to have more than 75 octets on one line of
@@ -1827,8 +1827,6 @@ ical_store_apoint (char *mesg, char *note, long start, long dur,
 static char *
 ical_unformat_line (char *line)
 {
-#define LINE_FEED       0x0a
-#define CARRIAGE_RETURN 0x0d
   char *p, uline[BUFSIZ];
   int len;
 
@@ -1840,10 +1838,6 @@ ical_unformat_line (char *line)
     {
       switch (*p)
         {
-        case LINE_FEED:
-          return mem_strdup (uline);
-        case CARRIAGE_RETURN:
-          break;
         case '\\':
           switch (*(p + 1))
             {
@@ -1871,106 +1865,69 @@ ical_unformat_line (char *line)
           break;
         }
     }
-#undef LINE_FEED
-#undef CARRIAGE_RETURN
-    return NULL;
+
+  return mem_strdup (uline);
 }
 
-/*
- * Extract from RFC2445:
- *
- * When parsing a content line, folded lines MUST first be
- * unfolded [..] The content information associated with an iCalendar
- * object is formatted using a syntax similar to that defined by [RFC 2425].
- */
-static char *
-ical_unfold_content (FILE *fd, char *line, unsigned *lineno)
+static void
+ical_readline_init (FILE *fdi, char *buf, char *lstore, unsigned *ln)
 {
-  char *content;
-  int c;
+  char *eol;
 
-  content = ical_unformat_line (line);
-  if (!content)
-    return NULL;
+  *buf = *lstore = '\0';
+  fgets (lstore, BUFSIZ, fdi);
+  if ((eol = strchr(lstore, '\n')) != NULL)
+    *eol = '\0';
+  (*ln)++;
+}
 
-  for (;;)
+static int
+ical_readline (FILE *fdi, char *buf, char *lstore, unsigned *ln)
+{
+  char *eol;
+
+  strncpy (buf, lstore, BUFSIZ);
+  (*ln)++;
+
+  while (fgets (lstore, BUFSIZ, fdi) != NULL)
     {
-      c = getc (fd);
-      if (c == SPACE || c == TAB)
-        {
-          char buf[BUFSIZ];
-
-          if (fgets (buf, BUFSIZ, fd) != NULL)
-            {
-              char *tmpline, *rline;
-              int newsize;
-
-              (*lineno)++;
-              tmpline = ical_unformat_line (buf);
-              if (!tmpline)
-                {
-                  mem_free (content);
-                  return NULL;
-                }
-              newsize = strlen (content) + strlen (tmpline) + 1;
-              if ((rline = mem_realloc (content, newsize, 1)) == NULL)
-                {
-                  mem_free (content);
-                  mem_free (tmpline);
-                  return NULL;
-                }
-              content = rline;
-              (void)strncat (content, tmpline, BUFSIZ);
-              mem_free (tmpline);
-            }
-          else
-            {
-              mem_free (content);
-              return NULL;
-              /* Could not get entire item description. */
-            }
-        }
-      else
-        {
-          (void)ungetc (c, fd);
-          return content;
-        }
+      if ((eol = strchr(lstore, '\n')) != NULL)
+        *eol = '\0';
+      if (*lstore != SPACE && *lstore != TAB)
+        break;
+      strncat (buf, lstore + 1, BUFSIZ);
+      (*ln)++;
     }
+
+  if (feof (fdi))
+    {
+      *lstore = '\0';
+      if (*buf == '\0')
+        return 0;
+    }
+
+  return 1;
 }
 
 static float
-ical_chk_header (FILE *fd, unsigned *lineno)
+ical_chk_header (FILE *fd, char *buf, char *lstore, unsigned *lineno)
 {
   const int HEADER_MALFORMED = -1;
   const struct string icalheader = STRING_BUILD ("BEGIN:VCALENDAR");
-  char buf[BUFSIZ];
+  float version;
 
-  (void)fgets (buf, BUFSIZ, fd);
-  (*lineno)++;
-
-  if (buf == NULL) return HEADER_MALFORMED;
+  if (!ical_readline (fd, buf, lstore, lineno))
+    return HEADER_MALFORMED;
 
   str_toupper (buf);
   if (strncmp (buf, icalheader.str, icalheader.len) != 0)
     return HEADER_MALFORMED;
 
-  const int AWAITED = 1;
-  float version = HEADER_MALFORMED;
-  int read;
-
-  do
+  while (!sscanf (buf, "VERSION:%f", &version))
     {
-      if (fgets (buf, BUFSIZ, fd) == NULL)
-        {
-          return HEADER_MALFORMED;
-        }
-      else
-        {
-          (*lineno)++;
-          read = sscanf (buf, "VERSION:%f", &version);
-        }
+      if (!ical_readline (fd, buf, lstore, lineno))
+        return HEADER_MALFORMED;
     }
-  while (read != AWAITED);
   return version;
 }
 
@@ -2354,14 +2311,13 @@ ical_read_exdate (llist_t *exc, FILE *log, char *exstr, unsigned *noskipped,
 
 /* Return an allocated string containing the name of the newly created note. */
 static char *
-ical_read_note (char *first_line, FILE *fdi, unsigned *noskipped,
-                unsigned *lineno, ical_vevent_e item_type, const int itemline,
-                FILE *log)
+ical_read_note (char *line, unsigned *noskipped, ical_vevent_e item_type,
+                const int itemline, FILE *log)
 {
   char *p, *notestr, *notename, fullnotename[BUFSIZ];
   FILE *fdo;
 
-  if ((p = strchr (first_line, ':')) != NULL)
+  if ((p = strchr (line, ':')) != NULL)
     {
       notename = new_tempfile (path_notes, NOTESIZ);
       EXIT_IF (notename == NULL,
@@ -2372,7 +2328,7 @@ ical_read_note (char *first_line, FILE *fdi, unsigned *noskipped,
       EXIT_IF (fdo == NULL, _("Warning: could not open %s, Aborting..."),
                fullnotename);
       p++;
-      notestr = ical_unfold_content (fdi, p, lineno);
+      notestr = ical_unformat_line (p);
       if (notestr == NULL)
         {
           ical_log (log, item_type, itemline,
@@ -2407,14 +2363,14 @@ ical_read_note (char *first_line, FILE *fdi, unsigned *noskipped,
 
 /* Returns an allocated string containing the ical item summary. */
 static char *
-ical_read_summary (char *first_line, FILE *fdi, unsigned *lineno)
+ical_read_summary (char *line)
 {
   char *p, *summary;
 
-  if ((p = strchr (first_line, ':')) != NULL)
+  if ((p = strchr (line, ':')) != NULL)
     {
       p++;
-      summary = ical_unfold_content (fdi, p, lineno);
+      summary = ical_unformat_line (p);
       return summary;
     }
   else
@@ -2423,7 +2379,8 @@ ical_read_summary (char *first_line, FILE *fdi, unsigned *lineno)
 
 static void
 ical_read_event (FILE *fdi, FILE *log, unsigned *noevents, unsigned *noapoints,
-                 unsigned *noskipped, unsigned *lineno)
+                 unsigned *noskipped, char *buf, char *lstore,
+                 unsigned *lineno)
 {
   const int ITEMLINE = *lineno;
   const struct string endevent = STRING_BUILD ("END:VEVENT");
@@ -2437,7 +2394,7 @@ ical_read_event (FILE *fdi, FILE *log, unsigned *noevents, unsigned *noapoints,
   const struct string endalarm = STRING_BUILD ("END:VALARM");
   const struct string desc     = STRING_BUILD ("DESCRIPTION");
   ical_vevent_e vevent_type;
-  char *p, buf[BUFSIZ], buf_upper[BUFSIZ];
+  char *p, buf_upper[BUFSIZ];
   struct {
     llist_t       exc;
     ical_rpt_t   *rpt;
@@ -2450,11 +2407,11 @@ ical_read_event (FILE *fdi, FILE *log, unsigned *noevents, unsigned *noapoints,
   vevent_type = UNDEFINED;
   bzero (&vevent, sizeof vevent);
   skip_alarm = 0;
-  while (fgets (buf, BUFSIZ, fdi) != NULL)
+  while (ical_readline (fdi, buf, lstore, lineno))
     {
-      (*lineno)++;
       memcpy (buf_upper, buf, strlen (buf));
       str_toupper (buf_upper);
+
       if (skip_alarm)
         {
           /* Need to skip VALARM properties because some keywords could
@@ -2584,7 +2541,7 @@ ical_read_event (FILE *fdi, FILE *log, unsigned *noevents, unsigned *noapoints,
             }
           else if (strncmp (buf_upper, summary.str, summary.len) == 0)
             {
-              vevent.mesg = ical_read_summary (buf, fdi, lineno);
+              vevent.mesg = ical_read_summary (buf);
             }
           else if (strncmp (buf_upper, alarm.str, alarm.len) == 0)
             {
@@ -2593,8 +2550,8 @@ ical_read_event (FILE *fdi, FILE *log, unsigned *noevents, unsigned *noapoints,
             }
           else if (strncmp (buf_upper, desc.str, desc.len) == 0)
             {
-              vevent.note = ical_read_note (buf, fdi, noskipped, lineno,
-                                            ICAL_VEVENT, ITEMLINE, log);
+              vevent.note = ical_read_note (buf, noskipped, ICAL_VEVENT,
+                                            ITEMLINE, log);
             }
         }
     }
@@ -2616,7 +2573,7 @@ cleanup:
 
 static void
 ical_read_todo (FILE *fdi, FILE *log, unsigned *notodos, unsigned *noskipped,
-                unsigned *lineno)
+                char *buf, char *lstore, unsigned *lineno)
 {
   const struct string endtodo  = STRING_BUILD ("END:VTODO");
   const struct string summary  = STRING_BUILD ("SUMMARY");
@@ -2625,7 +2582,7 @@ ical_read_todo (FILE *fdi, FILE *log, unsigned *notodos, unsigned *noskipped,
   const struct string desc     = STRING_BUILD ("DESCRIPTION");
   const int LOWEST = 9;
   const int ITEMLINE = *lineno;
-  char buf[BUFSIZ], buf_upper[BUFSIZ];
+  char buf_upper[BUFSIZ];
   struct {
     char *mesg, *note;
     int has_priority, priority;
@@ -2634,9 +2591,8 @@ ical_read_todo (FILE *fdi, FILE *log, unsigned *notodos, unsigned *noskipped,
 
   bzero (&vtodo, sizeof vtodo);
   skip_alarm = 0;
-  while (fgets (buf, BUFSIZ, fdi) != NULL)
+  while (ical_readline (fdi, buf, lstore, lineno))
     {
-      (*lineno)++;
       memcpy (buf_upper, buf, strlen (buf));
       str_toupper (buf_upper);
       if (skip_alarm)
@@ -2685,7 +2641,7 @@ ical_read_todo (FILE *fdi, FILE *log, unsigned *notodos, unsigned *noskipped,
             }
           else if (strncmp (buf_upper, summary.str, summary.len) == 0)
             {
-              vtodo.mesg = ical_read_summary (buf, fdi, lineno);
+              vtodo.mesg = ical_read_summary (buf);
             }
           else if (strncmp (buf_upper, alarm.str, alarm.len) == 0)
             {
@@ -2693,8 +2649,8 @@ ical_read_todo (FILE *fdi, FILE *log, unsigned *notodos, unsigned *noskipped,
             }
           else if (strncmp (buf_upper, desc.str, desc.len) == 0)
             {
-              vtodo.note = ical_read_note (buf, fdi, noskipped, lineno,
-                                           ICAL_VTODO, ITEMLINE, log);
+              vtodo.note = ical_read_note (buf, noskipped, ICAL_VTODO,
+                                           ITEMLINE, log);
             }
         }
     }
@@ -2762,7 +2718,7 @@ io_import_data (enum import_type type, struct conf *conf, char *stream_name)
     _("%d apps / %d events / %d todos / %d skipped ");
   char *lines_stats_interactive =
     _("%d apps / %d events / %d todos / %d skipped ([ENTER] to continue)");
-  char buf[BUFSIZ];
+  char buf[BUFSIZ], lstore[BUFSIZ];
   FILE *stream = NULL;
   struct io_file *log;
   float ical_version;
@@ -2791,7 +2747,8 @@ io_import_data (enum import_type type, struct conf *conf, char *stream_name)
     return;
 
   bzero (&stats, sizeof stats);
-  ical_version = ical_chk_header (stream, &stats.lines);
+  ical_readline_init (stream, buf, lstore, &stats.lines);
+  ical_version = ical_chk_header (stream, buf, lstore, &stats.lines);
   RETURN_IF (ical_version < 0,
              _("Warning: ical header malformed or wrong version number. "
                "Aborting..."));
@@ -2805,19 +2762,19 @@ io_import_data (enum import_type type, struct conf *conf, char *stream_name)
     }
   ical_log_init (log->fd, ical_version);
 
-  while (fgets (buf, BUFSIZ, stream) != NULL)
+  while (ical_readline (stream, buf, lstore, &stats.lines))
     {
       stats.lines++;
       str_toupper (buf);
       if (strncmp (buf, vevent.str, vevent.len) == 0)
         {
           ical_read_event (stream, log->fd, &stats.events, &stats.apoints,
-                           &stats.skipped, &stats.lines);
+                           &stats.skipped, buf, lstore, &stats.lines);
         }
       else if (strncmp (buf, vtodo.str, vtodo.len) == 0)
         {
           ical_read_todo (stream, log->fd, &stats.todos, &stats.skipped,
-                          &stats.lines);
+                          buf, lstore, &stats.lines);
         }
     }
   if (stream != stdin)
