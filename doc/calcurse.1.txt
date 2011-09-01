@@ -103,6 +103,9 @@ appointments can be specified using the *-c* flag.
   Specify  the  data directory to use. This option is incompatible  with  -c.
   If  not  specified,   the default directory is *~/.calcurse/*.
 
+*-g*, *--gc*::
+  Run the garbage collector for note files and exit.
+
 *-h*, *--help*::
   Print  a  short  help  text  describing  the  supported command-line options,
   and exit.

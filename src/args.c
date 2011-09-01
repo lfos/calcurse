@@ -52,7 +52,7 @@ static void
 usage ()
 {
   const char *arg_usage =
-    _("Usage: calcurse [-h|-v] [-N] [-an] [-t[num]] [-i<file>] [-x[format]]\n"
+    _("Usage: calcurse [-g|-h|-v] [-N] [-an] [-t[num]] [-i<file>] [-x[format]]\n"
       "                [-d <date>|<num>] [-s[date]] [-r[range]]\n"
       "                [-c<file> | -D<dir>] [-S<regex>] [--status]\n");
   fputs (arg_usage, stdout);
@@ -106,6 +106,8 @@ help_arg ()
       "	print events and appointments for <date> or <num> upcoming days and"
       "\n\texit. To specify both a starting date and a range, use the\n"
       "\t'--startday' and the '--range' option.\n"
+      "\n  -g, --gc\n"
+      "	run the garbage collector for note files and exit. \n"
       "\n  -i <file>, --import <file>\n"
       "	import the icalendar data contained in <file>. \n"
       "\n  -n, --next\n"
@@ -686,6 +688,7 @@ parse_args (int argc, char **argv, struct conf *conf)
   int dflag = 0;    /* -d: print appointments for a specified days */
   int Dflag = 0;    /* -D: specify data directory to use */
   int hflag = 0;    /* -h: print help text */
+  int gflag = 0;    /* -g: run garbage collector */
   int iflag = 0;    /* -i: import data */
   int nflag = 0;    /* -n: print next appointment */
   int Nflag = 0;    /* -N: also print note content with apps and todos */
@@ -708,13 +711,14 @@ parse_args (int argc, char **argv, struct conf *conf)
     STATUS_OPT = CHAR_MAX + 1
   };
 
-  static char *optstr = "hvnNax::t::d:c:r::s::S:D:i:";
+  static char *optstr = "ghvnNax::t::d:c:r::s::S:D:i:";
 
   struct option longopts[] = {
     {"appointment", no_argument, NULL, 'a'},
     {"calendar", required_argument, NULL, 'c'},
     {"day", required_argument, NULL, 'd'},
     {"directory", required_argument, NULL, 'D'},
+    {"gc", no_argument, NULL, 'g'},
     {"help", no_argument, NULL, 'h'},
     {"import", required_argument, NULL, 'i'},
     {"next", no_argument, NULL, 'n'},
@@ -759,6 +763,9 @@ parse_args (int argc, char **argv, struct conf *conf)
           break;
         case 'h':
           hflag = 1;
+          break;
+        case 'g':
+          gflag = 1;
           break;
         case 'i':
           iflag = 1;
@@ -892,6 +899,18 @@ parse_args (int argc, char **argv, struct conf *conf)
         {
           io_init (cfile, datadir);
           status_arg ();
+          non_interactive = 1;
+        }
+      else if (gflag)
+        {
+          io_init (cfile, datadir);
+          io_check_dir (path_dir, (int *)0);
+          io_check_dir (path_notes, (int *)0);
+          io_check_file (path_apts, (int *)0);
+          io_check_file (path_todo, (int *)0);
+          io_load_app ();
+          io_load_todo ();
+          note_gc ();
           non_interactive = 1;
         }
       else if (multiple_flag)
