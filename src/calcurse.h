@@ -145,6 +145,9 @@
 #define KEYS_LABELEN        8 /* length of command description */
 #define KEYS_CMDS_PER_LINE  6 /* max number of commands per line */
 
+/* Size of the hash table the note garbage collector uses. */
+#define NOTE_GC_HSIZE 1024
+
 #define ERROR_MSG(...) do {                                                   \
   char msg[BUFSIZ];                                                           \
   int len;                                                                    \
@@ -754,6 +757,7 @@ void  edit_note (char **, char *);
 void  view_note (char *, char *);
 void  erase_note (char **);
 void  note_read (char *, FILE *);
+void  note_gc (void);
 
 /* notify.c */
 int       notify_time_left (void);

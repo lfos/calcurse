@@ -35,9 +35,16 @@
  */
 
 #include <unistd.h>
+#include <dirent.h>
 
 #include "calcurse.h"
 #include "sha1.h"
+
+struct note_gc_hash {
+  char *hash;
+  char buf[MAX_NOTESIZ + 1];
+  HTABLE_ENTRY (note_gc_hash);
+};
 
 /* Edit a note with an external editor. */
 void
@@ -119,4 +126,110 @@ note_read (char *buffer, FILE *fp)
 
   while (getc (fp) != ' ');
   buffer[MAX_NOTESIZ] = '\0';
+}
+
+static void
+note_gc_extract_key (struct note_gc_hash *data, char **key, int *len)
+{
+  *key = data->hash;
+  *len = strlen (data->hash);
+}
+
+static int
+note_gc_cmp (struct note_gc_hash *a, struct note_gc_hash *b)
+{
+  return strcmp (a->hash, b->hash);
+}
+
+/* Spot and unlink unused note files. */
+void
+note_gc (void)
+{
+  HTABLE_HEAD (htp, NOTE_GC_HSIZE, note_gc_hash) gc_htable =
+      HTABLE_INITIALIZER (&gc_htable);
+  struct note_gc_hash *hp;
+  DIR *dirp;
+  struct dirent *dp;
+  llist_item_t *i;
+  struct note_gc_hash tmph;
+  char notepath[BUFSIZ];
+
+  if (!(dirp = opendir (path_notes)))
+    return;
+
+  /* Insert all note file names into a hash table. */
+  HTABLE_GENERATE (htp, note_gc_hash, note_gc_extract_key, note_gc_cmp);
+  do
+    {
+      if ((dp = readdir (dirp)) && *(dp->d_name) != '.')
+        {
+          hp = mem_malloc (sizeof (struct note_gc_hash));
+
+          strncpy (hp->buf, dp->d_name, MAX_NOTESIZ + 1);
+          hp->hash = hp->buf;
+
+          HTABLE_INSERT (htp, &gc_htable, hp);
+        }
+    }
+  while (dp);
+
+  closedir (dirp);
+
+  /* Remove hashes that are actually in use. */
+  LLIST_TS_FOREACH (&alist_p, i)
+    {
+      struct apoint *apt = LLIST_GET_DATA (i);
+      if (apt->note)
+        {
+          tmph.hash = apt->note;
+          free (HTABLE_REMOVE (htp, &gc_htable, &tmph));
+        }
+    }
+
+  LLIST_FOREACH (&eventlist, i)
+    {
+      struct event *ev = LLIST_GET_DATA (i);
+      if (ev->note)
+        {
+          tmph.hash = ev->note;
+          free (HTABLE_REMOVE (htp, &gc_htable, &tmph));
+        }
+    }
+
+  LLIST_TS_FOREACH (&recur_alist_p, i)
+    {
+      struct recur_apoint *rapt = LLIST_GET_DATA (i);
+      if (rapt->note)
+        {
+          tmph.hash = rapt->note;
+          free (HTABLE_REMOVE (htp, &gc_htable, &tmph));
+        }
+    }
+
+  LLIST_FOREACH (&recur_elist, i)
+    {
+      struct recur_event *rev = LLIST_GET_DATA (i);
+      if (rev->note)
+        {
+          tmph.hash = rev->note;
+          free (HTABLE_REMOVE (htp, &gc_htable, &tmph));
+        }
+    }
+
+  LLIST_FOREACH (&todolist, i)
+    {
+      struct todo *todo = LLIST_GET_DATA (i);
+      if (todo->note)
+        {
+          tmph.hash = todo->note;
+          free (HTABLE_REMOVE (htp, &gc_htable, &tmph));
+        }
+    }
+
+  /* Unlink unused note files. */
+  HTABLE_FOREACH (hp, htp, &gc_htable)
+    {
+      snprintf (notepath, BUFSIZ, "%s%s", path_notes, hp->hash);
+      unlink (notepath);
+    }
 }
