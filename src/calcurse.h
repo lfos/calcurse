@@ -219,6 +219,7 @@
 /* General configuration variables. */
 struct conf {
   unsigned   auto_save;
+  unsigned   auto_gc;
   unsigned   periodic_save;
   unsigned   confirm_quit;
   unsigned   confirm_delete;

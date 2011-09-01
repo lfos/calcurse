@@ -125,6 +125,7 @@ vars_init (struct conf *conf)
   conf->confirm_quit = 1;
   conf->confirm_delete = 1;
   conf->auto_save = 1;
+  conf->auto_gc = 0;
   conf->periodic_save = 0;
   conf->skip_system_dialogs = 0;
   conf->skip_progress_bar = 0;

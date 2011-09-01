@@ -537,6 +537,8 @@ main (int argc, char **argv)
         case KEY_GENERIC_QUIT:
           if (conf.auto_save)
             io_save_cal (&conf, IO_SAVE_DISPLAY_BAR);
+          if (conf.auto_gc)
+            note_gc ();
 
           if (conf.confirm_quit)
             {

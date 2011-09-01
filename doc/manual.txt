@@ -623,6 +623,9 @@ These options control `calcurse` general behavior, as described below:
   will be automatically saved if `auto_save` is set to *no*.  This means the
   user must press `S` (for saving) in order to retrieve its modifications.
 
+`auto_gc` (default: *no*)::
+  Automatically run the garbage collector for note files when quitting.
+
 `periodic_save` (default: *0*)::
   If different from `0`, user's data will be automatically saved every
   *periodic_save* minutes.  When an automatic save is performed, two asterisks

@@ -44,6 +44,7 @@
 /* Available configuration variables. */
 enum conf_var {
   CUSTOM_CONF_AUTOSAVE,
+  CUSTOM_CONF_AUTOGC,
   CUSTOM_CONF_PERIODICSAVE,
   CUSTOM_CONF_CONFIRMQUIT,
   CUSTOM_CONF_CONFIRMDELETE,
@@ -75,6 +76,7 @@ struct conf_varname {
 static struct conf_varname conf_varmap[] =
 {
   { CUSTOM_CONF_AUTOSAVE, "auto_save" },
+  { CUSTOM_CONF_AUTOGC, "auto_gc" },
   { CUSTOM_CONF_PERIODICSAVE, "periodic_save" },
   { CUSTOM_CONF_CONFIRMQUIT, "confirm_quit" },
   { CUSTOM_CONF_CONFIRMDELETE, "confirm_delete" },
@@ -290,6 +292,9 @@ custom_set_conf (struct conf *conf, enum conf_var var, char *val)
     {
     case CUSTOM_CONF_AUTOSAVE:
       return conf_parse_bool (&conf->auto_save, val);
+      break;
+    case CUSTOM_CONF_AUTOGC:
+      return conf_parse_bool (&conf->auto_gc, val);
       break;
     case CUSTOM_CONF_PERIODICSAVE:
       return conf_parse_unsigned (&conf->periodic_save, val);
@@ -1017,6 +1022,7 @@ print_general_options (WINDOW *win, struct conf *conf)
 {
   enum {
     AUTO_SAVE,
+    AUTO_GC,
     PERIODIC_SAVE,
     CONFIRM_QUIT,
     CONFIRM_DELETE,
@@ -1032,6 +1038,7 @@ print_general_options (WINDOW *win, struct conf *conf)
   int y;
   char *opt[NB_OPTIONS] = {
     _("auto_save = "),
+    _("auto_gc = "),
     _("periodic_save = "),
     _("confirm_quit = "),
     _("confirm_delete = "),
@@ -1049,7 +1056,13 @@ print_general_options (WINDOW *win, struct conf *conf)
   mvwprintw (win, y + 1, XPOS,
              _("(if set to YES, automatic save is done when quitting)"));
   y += YOFF;
-  mvwprintw (win, y, XPOS, "[2] %s      ", opt[PERIODIC_SAVE]);
+  mvwprintw (win, y, XPOS, "[2] %s      ", opt[AUTO_GC]);
+  print_bool_option_incolor (win, conf->auto_gc, y,
+                             XPOS + 4 + strlen (opt[AUTO_GC]));
+  mvwprintw (win, y + 1, XPOS,
+             _("(run the garbage collector when quitting)"));
+  y += YOFF;
+  mvwprintw (win, y, XPOS, "[3] %s      ", opt[PERIODIC_SAVE]);
   custom_apply_attr (win, ATTR_HIGHEST);
   mvwprintw (win, y, XPOS + 4 + strlen (opt[PERIODIC_SAVE]), "%d",
              conf->periodic_save);
@@ -1058,41 +1071,41 @@ print_general_options (WINDOW *win, struct conf *conf)
              _("(if not null, automatically save data every 'periodic_save' "
                "minutes)"));
   y += YOFF;
-  mvwprintw (win, y, XPOS, "[3] %s      ", opt[CONFIRM_QUIT]);
+  mvwprintw (win, y, XPOS, "[4] %s      ", opt[CONFIRM_QUIT]);
   print_bool_option_incolor (win, conf->confirm_quit, y,
                              XPOS + 4 + strlen (opt[CONFIRM_QUIT]));
   mvwprintw (win, y + 1, XPOS,
              _("(if set to YES, confirmation is required before quitting)"));
   y += YOFF;
-  mvwprintw (win, y, XPOS, "[4] %s      ", opt[CONFIRM_DELETE]);
+  mvwprintw (win, y, XPOS, "[5] %s      ", opt[CONFIRM_DELETE]);
   print_bool_option_incolor (win, conf->confirm_delete, y,
                              XPOS + 4 + strlen (opt[CONFIRM_DELETE]));
   mvwprintw (win, y + 1, XPOS,
              _("(if set to YES, confirmation is required "
                "before deleting an event)"));
   y += YOFF;
-  mvwprintw (win, y, XPOS, "[5] %s      ", opt[SKIP_SYSTEM_DIAGS]);
+  mvwprintw (win, y, XPOS, "[6] %s      ", opt[SKIP_SYSTEM_DIAGS]);
   print_bool_option_incolor (win, conf->skip_system_dialogs, y,
                              XPOS + 4 + strlen (opt[SKIP_SYSTEM_DIAGS]));
   mvwprintw (win, y + 1, XPOS,
              _("(if set to YES, messages about loaded "
                "and saved data will not be displayed)"));
   y += YOFF;
-  mvwprintw (win, y, XPOS, "[6] %s      ", opt[SKIP_PROGRESS_BAR]);
+  mvwprintw (win, y, XPOS, "[7] %s      ", opt[SKIP_PROGRESS_BAR]);
   print_bool_option_incolor (win, conf->skip_progress_bar, y,
                             XPOS + 4 + strlen (opt[SKIP_PROGRESS_BAR]));
   mvwprintw (win, y + 1, XPOS,
              _("(if set to YES, progress bar will not be displayed "
                 "when saving data)"));
   y += YOFF;
-  mvwprintw (win, y, XPOS, "[7] %s      ", opt[WEEK_BEGINS_MONDAY]);
+  mvwprintw (win, y, XPOS, "[8] %s      ", opt[WEEK_BEGINS_MONDAY]);
   print_bool_option_incolor (win, calendar_week_begins_on_monday (), y,
                              XPOS + 4 + strlen (opt[WEEK_BEGINS_MONDAY]));
   mvwprintw (win, y + 1, XPOS,
              _("(if set to YES, monday is the first day of the week, "
                "else it is sunday)"));
   y += YOFF;
-  mvwprintw (win, y, XPOS, "[8] %s      ", opt[OUTPUT_DATE_FMT]);
+  mvwprintw (win, y, XPOS, "[9] %s      ", opt[OUTPUT_DATE_FMT]);
   custom_apply_attr (win, ATTR_HIGHEST);
   mvwprintw (win, y, XPOS + 4 + strlen (opt[OUTPUT_DATE_FMT]), "%s",
              conf->output_datefmt);
@@ -1100,7 +1113,7 @@ print_general_options (WINDOW *win, struct conf *conf)
   mvwprintw (win, y + 1, XPOS,
              _("(Format of the date to be displayed in non-interactive mode)"));
   y += YOFF;
-  mvwprintw (win, y, XPOS, "[9] %s      ", opt[INPUT_DATE_FMT]);
+  mvwprintw (win, y, XPOS, "[0] %s      ", opt[INPUT_DATE_FMT]);
   custom_apply_attr (win, ATTR_HIGHEST);
   mvwprintw (win, y, XPOS + 4 + strlen (opt[INPUT_DATE_FMT]), "%d",
              conf->input_datefmt);
@@ -1171,6 +1184,9 @@ custom_general_config (struct conf *conf)
           conf->auto_save = !conf->auto_save;
           break;
         case '2':
+          conf->auto_gc = !conf->auto_gc;
+          break;
+        case '3':
           status_mesg (periodic_save_str, "");
           if (updatestring (win[STA].p, &buf, 0, 1) == 0)
             {
@@ -1184,22 +1200,22 @@ custom_general_config (struct conf *conf)
             }
           status_mesg (number_str, keys);
           break;
-        case '3':
+        case '4':
           conf->confirm_quit = !conf->confirm_quit;
           break;
-        case '4':
+        case '5':
           conf->confirm_delete = !conf->confirm_delete;
           break;
-        case '5':
+        case '6':
           conf->skip_system_dialogs = !conf->skip_system_dialogs;
           break;
-        case '6':
+        case '7':
           conf->skip_progress_bar = !conf->skip_progress_bar;
           break;
-        case '7':
+        case '8':
           calendar_change_first_day_of_week ();
           break;
-        case '8':
+        case '9':
           status_mesg (output_datefmt_str, "");
           (void)strncpy (buf, conf->output_datefmt,
                          strlen (conf->output_datefmt) + 1);
@@ -1209,7 +1225,7 @@ custom_general_config (struct conf *conf)
             }
           status_mesg (number_str, keys);
           break;
-        case '9':
+        case '0':
           status_mesg (input_datefmt_str, "");
           if (updatestring (win[STA].p, &buf, 0, 1) == 0)
             {

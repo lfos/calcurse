@@ -867,6 +867,11 @@ io_save_conf (struct conf *conf)
   (void)fprintf (fp, "auto_save=");
   (void)fprintf (fp, "%s\n", (conf->auto_save) ? "yes" : "no");
 
+  (void)fprintf (fp, "\n# If this option is set to yes, "
+                 "the GC is run automatically when quitting\n");
+  (void)fprintf (fp, "auto_gc=");
+  (void)fprintf (fp, "%s\n", (conf->auto_gc) ? "yes" : "no");
+
   (void)fprintf (fp, "\n# If not null, perform automatic saves every "
                  "'periodic_save' minutes\n");
   (void)fprintf (fp, "periodic_save=");
