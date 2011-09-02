@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2011-05-24 11:20+0200\n"
+"POT-Creation-Date: 2011-07-31 02:54+0200\n"
 "PO-Revision-Date: 2011-05-11 09:21+0000\n"
 "Last-Translator: cryptocrack <transifex@cryptocrack.de>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -296,10 +296,6 @@ msgstr ""
 msgid "Help"
 msgstr "Hulp"
 
-#, c-format
-msgid "layout configuration"
-msgstr ""
-
 msgid ""
 "With this configuration menu, one can choose where panels will be\n"
 "displayed inside calcurse screen. \n"
@@ -313,6 +309,10 @@ msgid ""
 "\n"
 "       't' -> todo panel\n"
 "\n"
+msgstr ""
+
+#, c-format
+msgid "layout configuration"
 msgstr ""
 
 msgid "Width +"

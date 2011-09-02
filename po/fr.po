@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2011-05-24 11:20+0200\n"
+"POT-Creation-Date: 2011-07-31 02:54+0200\n"
 "PO-Revision-Date: 2011-05-17 13:44+0000\n"
 "Last-Translator: esaule <godrik@mandragor.org>\n"
 "Language-Team: French (http://www.transifex.net/projects/p/calcurse/team/"
@@ -307,10 +307,6 @@ msgstr "Droite"
 msgid "Help"
 msgstr "Aide"
 
-#, c-format
-msgid "layout configuration"
-msgstr "Configuration du placement"
-
 msgid ""
 "With this configuration menu, one can choose where panels will be\n"
 "displayed inside calcurse screen. \n"
@@ -337,6 +333,10 @@ msgstr ""
 "\n"
 "       't' -> panneau des tâches\n"
 "\n"
+
+#, c-format
+msgid "layout configuration"
+msgstr "Configuration du placement"
 
 msgid "Width +"
 msgstr "Largeur +"

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2011-05-24 11:20+0200\n"
+"POT-Creation-Date: 2011-07-31 02:54+0200\n"
 "PO-Revision-Date: 2011-05-11 14:00+0000\n"
 "Last-Translator: cryptocrack <transifex@cryptocrack.de>\n"
 "Language-Team: German (http://www.transifex.net/projects/p/calcurse/team/"
@@ -373,10 +373,6 @@ msgstr "Rechts"
 msgid "Help"
 msgstr "Hilfe"
 
-#, c-format
-msgid "layout configuration"
-msgstr "Layout Einstellungen"
-
 msgid ""
 "With this configuration menu, one can choose where panels will be\n"
 "displayed inside calcurse screen. \n"
@@ -402,6 +398,10 @@ msgstr ""
 "\n"
 "\tt -> Aufgabenfenster\n"
 "\n"
+
+#, c-format
+msgid "layout configuration"
+msgstr "Layout Einstellungen"
 
 msgid "Width +"
 msgstr "Breite +"
