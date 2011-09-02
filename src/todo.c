@@ -204,12 +204,12 @@ todo_delete_note_bynum (unsigned num)
 
   if (!todo->note)
     EXIT (_("no note attached"));
-  erase_note (&todo->note, ERASE_FORCE_ONLY_NOTE);
+  erase_note (&todo->note);
 }
 
 /* Delete an item from the todo linked list. */
 static void
-todo_delete_bynum (unsigned num, enum eraseflg flag)
+todo_delete_bynum (unsigned num)
 {
   llist_item_t *i = LLIST_NTH (&todolist, num);
 
@@ -219,7 +219,7 @@ todo_delete_bynum (unsigned num, enum eraseflg flag)
 
   LLIST_REMOVE (&todolist, i);
   mem_free (todo->mesg);
-  erase_note (&todo->note, flag);
+  erase_note (&todo->note);
   mem_free (todo);
 }
 
@@ -288,7 +288,7 @@ todo_delete (struct conf *conf)
   switch (answer)
     {
     case 't':
-      todo_delete_bynum (hilt - 1, ERASE_FORCE);
+      todo_delete_bynum (hilt - 1);
       todos--;
       if (hilt > 1)
         hilt--;
@@ -358,7 +358,7 @@ todo_chg_priority (int action)
     }
   if (do_chg)
     {
-      todo_delete_bynum (hilt - 1, ERASE_FORCE_KEEP_NOTE);
+      todo_delete_bynum (hilt - 1);
       backup = todo_add (backup_mesg, backup_id, backup_note);
       hilt = todo_get_position (backup);
     }
@@ -516,7 +516,7 @@ void
 todo_free (struct todo *todo)
 {
   mem_free (todo->mesg);
-  erase_note (&todo->note, ERASE_FORCE_KEEP_NOTE);
+  erase_note (&todo->note);
   mem_free (todo);
 }
 

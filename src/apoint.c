@@ -46,21 +46,21 @@ static struct apoint  bkp_cut_apoint;
 static int            hilt;
 
 void
-apoint_free_bkp (enum eraseflg flag)
+apoint_free_bkp (void)
 {
   if (bkp_cut_apoint.mesg)
     {
       mem_free (bkp_cut_apoint.mesg);
       bkp_cut_apoint.mesg = 0;
     }
-  erase_note (&bkp_cut_apoint.note, flag);
+  erase_note (&bkp_cut_apoint.note);
 }
 
 static void
 apoint_free (struct apoint *apt)
 {
   mem_free (apt->mesg);
-  erase_note (&apt->note, ERASE_FORCE_KEEP_NOTE);
+  erase_note (&apt->note);
   mem_free (apt);
 }
 
@@ -500,20 +500,18 @@ apoint_delete_bynum (long start, unsigned num, enum eraseflg flag)
   switch (flag)
     {
     case ERASE_FORCE_ONLY_NOTE:
-      erase_note (&apt->note, flag);
+      erase_note (&apt->note);
       break;
     case ERASE_CUT:
-      apoint_free_bkp (ERASE_FORCE);
+      apoint_free_bkp ();
       apoint_dup (apt, &bkp_cut_apoint);
-      erase_note (&apt->note, ERASE_FORCE_KEEP_NOTE);
+      erase_note (&apt->note);
       /* FALLTHROUGH */
     default:
       if (notify_bar ())
         need_check_notify = notify_same_item (apt->start);
       LLIST_TS_REMOVE (&alist_p, i);
       mem_free (apt->mesg);
-      if (flag != ERASE_FORCE_KEEP_NOTE && flag != ERASE_CUT)
-        erase_note (&apt->note, flag);
       mem_free (apt);
       if (need_check_notify)
         notify_check_next_app (0);
@@ -733,5 +731,5 @@ apoint_paste_item (void)
   if (notify_bar ())
     notify_check_added (bkp_cut_apoint.mesg, bkp_start, bkp_cut_apoint.state);
 
-  apoint_free_bkp (ERASE_FORCE_KEEP_NOTE);
+  apoint_free_bkp ();
 }

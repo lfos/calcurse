@@ -484,7 +484,6 @@ enum item_type {
 enum eraseflg {
   ERASE_DONT_FORCE,
   ERASE_FORCE,
-  ERASE_FORCE_KEEP_NOTE,
   ERASE_FORCE_ONLY_NOTE,
   ERASE_CUT
 };
@@ -554,7 +553,7 @@ enum save_display {
 
 /* apoint.c */
 extern llist_ts_t alist_p;
-void               apoint_free_bkp (enum eraseflg);
+void               apoint_free_bkp (void);
 void               apoint_llist_init (void);
 void               apoint_llist_free (void);
 void               apoint_hilt_set (int);
@@ -645,7 +644,7 @@ void   dmon_stop (void);
 
 /* event.c */
 extern llist_t eventlist;
-void          event_free_bkp (enum eraseflg);
+void          event_free_bkp (void);
 void          event_llist_init (void);
 void          event_llist_free (void);
 struct event *event_new (char *, char *, long, int);
@@ -753,7 +752,7 @@ void   mem_stats (void);
 /* note.c */
 void  edit_note (char **, char *);
 void  view_note (char *, char *);
-void  erase_note (char **, enum eraseflg);
+void  erase_note (char **);
 void  note_read (char *, FILE *);
 
 /* notify.c */
@@ -782,8 +781,8 @@ void      notify_config_bar (void);
 /* recur.c */
 extern llist_ts_t recur_alist_p;
 extern llist_t recur_elist;
-void                  recur_event_free_bkp (enum eraseflg);
-void                  recur_apoint_free_bkp (enum eraseflg);
+void                  recur_event_free_bkp (void);
+void                  recur_apoint_free_bkp (void);
 void                  recur_apoint_llist_init (void);
 void                  recur_apoint_llist_free (void);
 void                  recur_event_llist_free (void);

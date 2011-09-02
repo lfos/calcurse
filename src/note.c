@@ -65,7 +65,7 @@ edit_note (char **note, char *editor)
   wins_launch_external (tmppath, editor);
 
   if (io_file_is_empty (tmppath) > 0)
-    erase_note (note, ERASE_FORCE_KEEP_NOTE);
+    erase_note (note);
   else if ((fp = fopen (tmppath, "r")))
     {
       sha1_stream (fp, sha1);
@@ -93,18 +93,10 @@ view_note (char *note, char *pager)
 
 /* Erase a note previously attached to an item. */
 void
-erase_note (char **note, enum eraseflg flag)
+erase_note (char **note)
 {
-  char fullname[BUFSIZ];
-
   if (*note == NULL)
     return;
-  if (flag != ERASE_FORCE_KEEP_NOTE)
-    {
-      (void)snprintf (fullname, BUFSIZ, "%s%s", path_notes, *note);
-      if (unlink (fullname) != 0)
-        EXIT (_("could not remove note"));
-    }
   mem_free (*note);
   *note = NULL;
 }

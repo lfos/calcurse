@@ -93,7 +93,7 @@ exc_dup (llist_t *in, llist_t *exc)
 }
 
 void
-recur_event_free_bkp (enum eraseflg flag)
+recur_event_free_bkp (void)
 {
   if (bkp_cut_recur_event.mesg)
     {
@@ -106,11 +106,11 @@ recur_event_free_bkp (enum eraseflg flag)
       bkp_cut_recur_event.rpt = 0;
     }
   free_exc_list (&bkp_cut_recur_event.exc);
-  erase_note (&bkp_cut_recur_event.note, flag);
+  erase_note (&bkp_cut_recur_event.note);
 }
 
 void
-recur_apoint_free_bkp (enum eraseflg flag)
+recur_apoint_free_bkp (void)
 {
   if (bkp_cut_recur_apoint.mesg)
     {
@@ -123,7 +123,7 @@ recur_apoint_free_bkp (enum eraseflg flag)
       bkp_cut_recur_apoint.rpt = 0;
     }
   free_exc_list (&bkp_cut_recur_apoint.exc);
-  erase_note (&bkp_cut_recur_apoint.note, flag);
+  erase_note (&bkp_cut_recur_apoint.note);
 }
 
 static void
@@ -740,12 +740,12 @@ recur_event_erase (long start, unsigned num, unsigned delete_whole,
       switch (flag)
         {
         case ERASE_FORCE_ONLY_NOTE:
-          erase_note (&rev->note, flag);
+          erase_note (&rev->note);
           break;
         case ERASE_CUT:
-          recur_event_free_bkp (ERASE_FORCE);
+          recur_event_free_bkp ();
           recur_event_dup (rev, &bkp_cut_recur_event);
-          erase_note (&rev->note, ERASE_FORCE_KEEP_NOTE);
+          erase_note (&rev->note);
           /* FALLTHROUGH */
         default:
           LLIST_REMOVE (&recur_elist, i);
@@ -756,8 +756,6 @@ recur_event_erase (long start, unsigned num, unsigned delete_whole,
               rev->rpt = 0;
             }
           free_exc_list (&rev->exc);
-          if (flag != ERASE_FORCE_KEEP_NOTE && flag != ERASE_CUT)
-            erase_note (&rev->note, flag);
           mem_free (rev);
           break;
         }
@@ -791,12 +789,12 @@ recur_apoint_erase (long start, unsigned num, unsigned delete_whole,
       switch (flag)
         {
         case ERASE_FORCE_ONLY_NOTE:
-          erase_note (&rapt->note, flag);
+          erase_note (&rapt->note);
           break;
         case ERASE_CUT:
-          recur_apoint_free_bkp (ERASE_FORCE);
+          recur_apoint_free_bkp ();
           recur_apoint_dup (rapt, &bkp_cut_recur_apoint);
-          erase_note (&rapt->note, ERASE_FORCE_KEEP_NOTE);
+          erase_note (&rapt->note);
           /* FALLTHROUGH */
         default:
           LLIST_TS_REMOVE (&recur_alist_p, i);
@@ -807,8 +805,6 @@ recur_apoint_erase (long start, unsigned num, unsigned delete_whole,
               rapt->rpt = 0;
             }
           free_exc_list (&rapt->exc);
-          if (flag != ERASE_FORCE_KEEP_NOTE && flag != ERASE_CUT)
-            erase_note (&rapt->note, flag);
           mem_free (rapt);
           if (need_check_notify)
             notify_check_next_app (0);
@@ -970,7 +966,7 @@ recur_repeat_item (struct conf *conf)
       EXIT (_("wrong item type"));
       /* NOTREACHED */
     }
-  day_erase_item (date, item_nb, ERASE_FORCE_KEEP_NOTE);
+  day_erase_item (date, item_nb, ERASE_FORCE);
 }
 
 /*
@@ -1111,7 +1107,7 @@ recur_event_paste_item (void)
                          bkp_cut_recur_event.rpt->freq,
                          bkp_cut_recur_event.rpt->until,
                          &bkp_cut_recur_event.exc);
-  recur_event_free_bkp (ERASE_FORCE_KEEP_NOTE);
+  recur_event_free_bkp ();
 }
 
 void
@@ -1145,5 +1141,5 @@ recur_apoint_paste_item (void)
   if (notify_bar ())
     notify_check_repeated (&bkp_cut_recur_apoint);
 
-  recur_apoint_free_bkp (ERASE_FORCE_KEEP_NOTE);
+  recur_apoint_free_bkp ();
 }

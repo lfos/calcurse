@@ -1749,7 +1749,7 @@ ical_store_todo (int priority, char *mesg, char *note)
 {
   todo_add (mesg, priority, note);
   mem_free (mesg);
-  erase_note (&note, ERASE_FORCE_KEEP_NOTE);
+  erase_note (&note);
 }
 
 static void
@@ -1781,7 +1781,7 @@ ical_store_event (char *mesg, char *note, long day, long end, ical_rpt_t *rpt,
       event_new (mesg, note, day, EVENTID);
     }
   mem_free (mesg);
-  erase_note (&note, ERASE_FORCE_KEEP_NOTE);
+  erase_note (&note);
 }
 
 static void
@@ -1803,7 +1803,7 @@ ical_store_apoint (char *mesg, char *note, long start, long dur,
       apoint_new (mesg, note, start, dur, state);
     }
   mem_free (mesg);
-  erase_note (&note, ERASE_FORCE_KEEP_NOTE);
+  erase_note (&note);
 }
 
 /*

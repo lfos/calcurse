@@ -45,21 +45,21 @@ llist_t              eventlist;
 static struct event  bkp_cut_event;
 
 void
-event_free_bkp (enum eraseflg flag)
+event_free_bkp (void)
 {
   if (bkp_cut_event.mesg)
     {
       mem_free (bkp_cut_event.mesg);
       bkp_cut_event.mesg = 0;
     }
-  erase_note (&bkp_cut_event.note, flag);
+  erase_note (&bkp_cut_event.note);
 }
 
 static void
 event_free (struct event *ev)
 {
   mem_free (ev->mesg);
-  erase_note (&ev->note, ERASE_FORCE_KEEP_NOTE);
+  erase_note (&ev->note);
   mem_free (ev);
 }
 
@@ -194,18 +194,16 @@ event_delete_bynum (long start, unsigned num, enum eraseflg flag)
   switch (flag)
     {
     case ERASE_FORCE_ONLY_NOTE:
-      erase_note (&ev->note, flag);
+      erase_note (&ev->note);
       break;
     case ERASE_CUT:
-      event_free_bkp (ERASE_FORCE);
+      event_free_bkp ();
       event_dup (ev, &bkp_cut_event);
-      erase_note (&ev->note, ERASE_FORCE_KEEP_NOTE);
+      erase_note (&ev->note);
       /* FALLTHROUGH */
     default:
       LLIST_REMOVE (&eventlist, i);
       mem_free (ev->mesg);
-      if (flag != ERASE_FORCE_KEEP_NOTE && flag != ERASE_CUT)
-        erase_note (&ev->note, flag);
       mem_free (ev);
       break;
     }
@@ -217,5 +215,5 @@ event_paste_item (void)
   (void)event_new (bkp_cut_event.mesg, bkp_cut_event.note,
                    date2sec (*calendar_get_slctd_day (), 12, 0),
                    bkp_cut_event.id);
-  event_free_bkp (ERASE_FORCE_KEEP_NOTE);
+  event_free_bkp ();
 }

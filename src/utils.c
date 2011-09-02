@@ -89,13 +89,13 @@ free_user_data (void)
 {
   day_free_list ();
   event_llist_free ();
-  event_free_bkp (ERASE_FORCE);
+  event_free_bkp ();
   apoint_llist_free ();
-  apoint_free_bkp (ERASE_FORCE);
+  apoint_free_bkp ();
   recur_apoint_llist_free ();
   recur_event_llist_free ();
-  recur_apoint_free_bkp (ERASE_FORCE);
-  recur_event_free_bkp (ERASE_FORCE);
+  recur_apoint_free_bkp ();
+  recur_event_free_bkp ();
   todo_free_list ();
   notify_free_app ();
 }
