@@ -2,7 +2,11 @@ AUTOMAKE_OPTIONS= foreign
 
 ACLOCAL_AMFLAGS = -I m4
 
-SUBDIRS = doc po src
+SUBDIRS = po src
+
+if ENABLE_DOCS
+SUBDIRS += doc
+endif
 
 EXTRA_DIST = \
 	INSTALL \
