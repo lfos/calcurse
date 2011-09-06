@@ -70,23 +70,34 @@ AC_CHECK_HEADERS([math.h], [
 #-------------------------------------------------------------------------------
 #                                           Check whether to build documentation
 #-------------------------------------------------------------------------------
+AC_ARG_ENABLE(docs,
+              AS_HELP_STRING([--disable-docs], [skip documentation]),
+              [enabledocs=$enableval], [enabledocs=yes])
+if test x"$enabledocs" != x"yes"; then
+  enabledocs=no
+  AC_MSG_WARN([Skipping documentation!])
+fi
+AC_MSG_CHECKING([whether to include documentation])
+AC_MSG_RESULT($enabledocs)
+AM_CONDITIONAL(ENABLE_DOCS, test x"$enabledocs" = x"yes")
+
 AC_ARG_WITH(asciidoc,
             AS_HELP_STRING([--with-asciidoc],
-                           [Use asciidoc to regenerate documentation.]),
+                           [use AsciiDoc to regenerate documentation]),
                            [use_asciidoc=$withval],
                            [use_asciidoc="auto"])
 if test x"$use_asciidoc" = x"auto"; then
   AC_PATH_PROG([ASCIIDOC], [asciidoc])
   if test -z "$ASCIIDOC"; then
     have_asciidoc=no
-    AC_MSG_WARN([AsciiDoc not found - documentation will be skipped!])
+    AC_MSG_WARN([AsciiDoc not found - cannot rebuild documentation!])
   else
     have_asciidoc=yes
   fi
   AC_PATH_PROG([A2X], [a2x])
   if test -z "$A2X"; then
     have_a2x=no
-    AC_MSG_WARN([a2x not found - man pages will be skipped!])
+    AC_MSG_WARN([a2x not found - cannot rebuild man pages!])
   else
     have_a2x=yes
   fi
@@ -101,7 +112,7 @@ elif test x"$use_asciidoc" = x"yes"; then
   fi
   have_asciidoc=yes
 elif test x"$use_asciidoc" = x"no"; then
-  AC_MSG_WARN(["--without-asciidoc" specified - documentation will be skipped!])
+  AC_MSG_WARN([Will not rebuild documentation!])
   have_asciidoc=no
   have_a2x=no
 fi

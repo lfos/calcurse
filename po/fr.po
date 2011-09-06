@@ -2,13 +2,15 @@
 # Copyright (C) YEAR Free Software Foundation, Inc.
 # This file is distributed under the same license as the PACKAGE package.
 #
+# esaule <godrik@mandragor.org>, 2011.
+# Lukas Fleischer <transifex@cryptocrack.de>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2011-07-31 02:54+0200\n"
-"PO-Revision-Date: 2011-05-17 13:44+0000\n"
-"Last-Translator: esaule <godrik@mandragor.org>\n"
+"POT-Creation-Date: 2011-09-06 14:34+0200\n"
+"PO-Revision-Date: 2011-09-04 21:35+0000\n"
+"Last-Translator: lkppo <lkppo@free.fr>\n"
 "Language-Team: French (http://www.transifex.net/projects/p/calcurse/team/"
 "fr/)\n"
 "Language: fr\n"
@@ -74,6 +76,10 @@ msgid ""
 "Copyright (c) 2004-2011 calcurse Development Team.\n"
 "This is free software; see the source for copying conditions.\n"
 msgstr ""
+"\n"
+"Copyright (c) 2004-2011 Équipe de développement de calcurse.\n"
+"Ceci est un logiciel libre ; consultez le code source pour connaître les "
+"conditions légales d'utilisation.\n"
 
 #, c-format
 msgid "Calcurse %s - text-based organizer\n"
@@ -150,6 +156,81 @@ msgid ""
 "For more information, type '?' from within Calcurse, or read the manpage.\n"
 "Mail bug reports and suggestions to <misc@calcurse.org>.\n"
 msgstr ""
+"\n"
+"Divers:\n"
+"  -h, --help\n"
+"\taffiche cette aide et quitte.\n"
+"\n"
+"  -v, --version\n"
+"\taffiche la version de calcurse et quitte.\n"
+"\n"
+"  --status\n"
+"\taffiche l'état des instances de calcurse en cours d'exécution.\n"
+"\n"
+"Fichiers:\n"
+"  -c <fichier>, --calendar <fichier>\n"
+"\tindique le <fichier> de calendrier à utiliser (incompatible avec '-D').\n"
+"\n"
+"  -D <dir>, --directory <dir>\n"
+"\tindique le répertoire de données à utiliser (incompatible avec '-c').\n"
+"\tSi non indiqué, le répertoire par défaut est ~/.calcurse\n"
+"\n"
+"Non-interactif:\n"
+"  -a, --appointment\n"
+" \taffiche les évènements et les rendez-vous du jour et quitte.\n"
+"\n"
+"  -d <date|nb>, --day <date|nb>\n"
+"\taffiche les évènements et rendez-vous d'une <date> ou des <nb> prochains "
+"jours et\n"
+"\tquitte. Pour indiquer un jour de départ et une durée, utilisez les "
+"options\n"
+"\t'--startday' and '--range'.\n"
+"\n"
+"  -i <fichier>, --import <fichier>\n"
+"\timporte les données au format icalendar depuis un <fichier>. \n"
+"\n"
+"  -n, --next\n"
+"\taffiche le prochain rendez-vous à venir dans les 24 heures et quitte. "
+"Donne aussi\n"
+"\tle temps restant avant le rendez-vous suivant.\n"
+"  -N, --note\n"
+"\tutilisée avec l'option '-a' ou '-t', affiche la note associée\n"
+"\tà l'élément affiché s'il en a une.\n"
+"\n"
+"  -r[nombre], --range[=nombre]\n"
+"\taffiche les évènements et les rendez-vous sur [nombre] de jours\n"
+"\tet quitte. Si [nombre] n'est pas précisé, on utilise une durée de 1 jour "
+"par défaut.\n"
+"\n"
+"  -s[date], --startday[=date]\n"
+"\taffiche les évènements et rendez-vous d'une [date] et quitte.\n"
+"\tSi la [date] n'est pas précisée, la date courante est utilisée.\n"
+"\n"
+"  -S<regex>, --search=<regex>\n"
+"\tRecherche les évènements, rendez-vous et tâches\n"
+"\tdont la description correspond à l'expression régulière [regex].n\n"
+"  -t[priorite], --todo[=priorite]\n"
+"\taffiche la liste des tâches et quitte. Si la valeur facultative [priorite] "
+"est précisée,\n"
+"\talors ne seront affichées que les tâches de ce niveau priorité.\n"
+"\tLe niveau de priorité est compris entre 1 (plus important) et 9 (moins "
+"important).\n"
+"\tIl est également possible de spécifier '0' pour la priorité,\n"
+"\tauquel cas seules les tâches terminées seront affichés.\n"
+"\n"
+"  -x[format], --export[=format]\n"
+"\texporte les données utilisateur au format spécifié. Évènements, rendez-"
+"vous et \n"
+"\ttâches sont convertis et envoyés sur la sortie standard (stdout).\n"
+"\tDeux formats au choix : 'ical' et 'pcal'.\n"
+"\tSi l'option facultative de format est omise, le format ical\n"
+"\test sélectionné par défaut.\n"
+"\tnote : pour rediriger la sortie de l'export vers un fichier,\n"
+"\tutilisez une commande de la forme : calcurse --export > calcurse.dat\n"
+"\n"
+"Pour plus d'informations, tapez '?' dans Calcurse, ou lisez le manuel.\n"
+"Envoyez par courriel vos rapports de bogue et vos suggestions à "
+"<misc@calcurse.org>.\n"
 
 #, c-format
 msgid ""
@@ -235,7 +316,7 @@ msgid "To do :"
 msgstr "Tâche :"
 
 msgid "ERROR setting first day of week"
-msgstr ""
+msgstr "ERREUR de paramètre sur le premier jour de la semaine"
 
 msgid ""
 "The day you entered is not valid (should be between 01/01/1902 and "
@@ -278,7 +359,7 @@ msgid "Layout"
 msgstr "Ecran"
 
 msgid "Sidebar"
-msgstr ""
+msgstr "Barre latérale"
 
 msgid "Color"
 msgstr "Couleur"
@@ -287,10 +368,10 @@ msgid "Notify"
 msgstr "Notifier"
 
 msgid "Keys"
-msgstr ""
+msgstr "Raccourcis"
 
 msgid "Select"
-msgstr ""
+msgstr "Sélectionner"
 
 msgid "Up"
 msgstr "Haut"
@@ -479,19 +560,19 @@ msgid "undefined"
 msgstr "inconnue"
 
 msgid "Key info"
-msgstr ""
+msgstr "Informations"
 
 msgid "Add key"
-msgstr ""
+msgstr "Ajouter"
 
 msgid "Del key"
-msgstr ""
+msgstr "Supprimer"
 
 msgid "Prev Key"
-msgstr ""
+msgstr "Précédent"
 
 msgid "Next Key"
-msgstr ""
+msgstr "Suivant"
 
 #, c-format
 msgid "keys configuration"
@@ -692,7 +773,7 @@ msgid ""
 msgstr ""
 
 msgid "Displacement keys\n"
-msgstr ""
+msgstr "Touches de déplacement\n"
 
 #, c-format
 msgid ""
@@ -721,7 +802,7 @@ msgid ""
 msgstr ""
 
 msgid "View\n"
-msgstr ""
+msgstr "Afficher\n"
 
 #, c-format
 msgid ""
@@ -772,7 +853,7 @@ msgid ""
 msgstr ""
 
 msgid "Delete\n"
-msgstr ""
+msgstr "Supprimer\n"
 
 #, c-format
 msgid ""
@@ -1016,7 +1097,7 @@ msgid ""
 msgstr ""
 
 msgid "Generic keybindings\n"
-msgstr ""
+msgstr "Raccourcis clavier génériques\n"
 
 #, c-format
 msgid ""
@@ -1093,6 +1174,8 @@ msgstr "Export..."
 
 msgid "Internal error while displaying progress bar"
 msgstr ""
+"Une erreur interne s'est produite durant l'affichage de la barre de "
+"progression"
 
 msgid "Choose the file used to export calcurse data:"
 msgstr "Choisissez le fichier dans lequel exporter les données :"
@@ -1147,7 +1230,7 @@ msgid "The data files were successfully saved"
 msgstr "Les données ont été correctement enregistrées"
 
 msgid "syntax error in the item date"
-msgstr ""
+msgstr "Erreur de syntaxe sur la date"
 
 msgid "no event nor appointment found"
 msgstr "Aucun évènement ou rendez-vous trouvé"
@@ -1159,7 +1242,7 @@ msgid "Failed to open todo file"
 msgstr "Problème d'ouverture du fichier des tâches"
 
 msgid "could not find any key file."
-msgstr ""
+msgstr "Impossible de trouver un fichier de raccourcis."
 
 msgid ""
 "\n"
@@ -1167,23 +1250,29 @@ msgid ""
 "Please backup your keys file, remove it from directory, and launch calcurse "
 "again.\n"
 msgstr ""
+"\n"
+"Trop d'erreurs à la lecture du fichier de configuration !\n"
+"Veuillez faire une sauvegarde votre fichier de raccourcis, et le supprimer "
+"du répertoire, puis relancer calcurse.\n"
 
 msgid "Could not read key label"
-msgstr ""
+msgstr "Impossible de lire le libellé de la touche"
 
 msgid "Key label not recognized"
 msgstr "Touche non reconnue"
 
 #, c-format
 msgid "Error reading key: \"%s\""
-msgstr ""
+msgstr "Erreur de lecture de la touche : \"%s\""
 
 #, c-format
 msgid "\"%s\" assigned multiple times!"
-msgstr ""
+msgstr "\"%s\" est assignée plusieurs fois !"
 
 msgid "There were some errors when loading keys file, see log file ?"
 msgstr ""
+"Des erreurs se sont produites lors du chargement du fichier de raccourcis. "
+"Voulez-vous consulter le journal ?"
 
 msgid "Too many errors while reading keys file, aborting..."
 msgstr "Trop d'erreur durant la lecture du fichier de touche, annulation..."
@@ -1254,7 +1343,7 @@ msgid "item has a negative duration."
 msgstr "L'élément a une durée négative."
 
 msgid "event date is not defined."
-msgstr ""
+msgstr "La date de l'évènement n'est pas définie."
 
 msgid "item could not be identified."
 msgstr "L'élément n'a pu être identifié."
@@ -1312,6 +1401,8 @@ msgstr "Certains éléments n'ont pu être importés, voir le fichier de log ?"
 
 msgid "Warning: could not create temporary log file, Aborting..."
 msgstr ""
+"Attention : création d'un fichier journal temporaire impossible, abandon en "
+"cours..."
 
 msgid "Warning: could not open temporary log file, Aborting..."
 msgstr "Attention: impossible d'ouvrir le fichier de log, abandon..."
@@ -1385,7 +1476,7 @@ msgid "notify-daemon_log = "
 msgstr "notify-daemon_log = "
 
 msgid "(Log activity when running in background)"
-msgstr ""
+msgstr "Enregistrer l'activité lors de l'exécution en arrière-plan"
 
 msgid "Enter the time format (see 'man 3 strftime' for possible formats) "
 msgstr ""
@@ -1409,13 +1500,15 @@ msgid "unknown character"
 msgstr "caractère inconnu"
 
 msgid "date error in event"
-msgstr "Date erroné pour le rendez-vous"
+msgstr "Date erronée pour l'évènement"
 
 msgid "appointment not found"
 msgstr "rendez-vous inconnu"
 
 msgid "Enter the repetition type: (D)aily, (W)eekly, (M)onthly, (Y)early"
-msgstr "Entrez le type: (D) journ., (W) hebdo., (M) mensuel, (Y) annuel"
+msgstr ""
+"Entrez le type de répétition : (D) quotidien, (W) hebdomadaire, (M) mensuel, "
+"(Y) annuel"
 
 msgid "Enter the repetition frequence:"
 msgstr "Entrez la fréquence de répétition :"
@@ -1426,19 +1519,20 @@ msgstr "Entrez la date de fin: [%s] ou '0' pour répéter indéfiniment"
 
 #, c-format
 msgid "Possible formats are [%s] or '0' for an endless repetition"
-msgstr "Les formats autorisés sont [%s] ou '0' pour une répétition sans fin"
+msgstr ""
+"Les formats autorisés sont [%s] ou '0' pour une répétition indéfiniment"
 
 msgid "This item is already a repeated one."
-msgstr "Cet élément est déjà recurrent."
+msgstr "Cet élément est déjà récurrent."
 
 msgid "Sorry, the date you entered is older than the item start time."
-msgstr "La date que vous avez entrée est antérieure à la date de l'élément!"
+msgstr "La date que vous avez entrée est antérieure à la date de l'élément !"
 
 msgid "wrong item type"
 msgstr "type d'élément incorrect"
 
 msgid "syntax error in item date"
-msgstr "erreur de syntaxe dans la data de l'élément"
+msgstr "erreur de syntaxe dans la date de l'élément"
 
 #, c-format
 msgid "Could not remove calcurse lock file: %s\n"
@@ -1465,7 +1559,7 @@ msgstr "Voulez-vous vraiment effacer cette tâche ?"
 
 msgid "This item has a note attached to it. Delete (t)odo or just its (n)ote ?"
 msgstr ""
-"Une note est attachée à cette tâche. Effacer (t) la tâche ou (n) la note "
+"Une note est attachée à cette tâche. Effacer la (t)âche ou la (n)ote "
 "seulement ?"
 
 msgid "[t/n] "
@@ -1493,10 +1587,10 @@ msgid "Internal error: line too long"
 msgstr "Erreur interne : ligne trop longue"
 
 msgid "out of memory"
-msgstr "plus de memoire"
+msgstr "dépassement de mémoire"
 
 msgid "failure in mktime"
-msgstr "faute dans mktime"
+msgstr "erreur fatale dans mktime"
 
 msgid "error in mktime"
 msgstr "erreur dans mktime"
@@ -1508,7 +1602,7 @@ msgid "could not convert string"
 msgstr "impossible de convertir la chaîne de caractères"
 
 msgid "out of range"
-msgstr "en dehors de l'interval"
+msgstr "en dehors de l'intervalle"
 
 msgid "yes"
 msgstr "oui"
@@ -1517,14 +1611,14 @@ msgid "no"
 msgstr "non"
 
 msgid "option not defined"
-msgstr "option non definie"
+msgstr "option non définie"
 
 #, c-format
 msgid "temporary file \"%s\" could not be created"
 msgstr "le fichier temporaire \"%s\" n'a pas pu être crée"
 
 msgid "could not remove note"
-msgstr "impossible de retirer la note"
+msgstr "impossible de supprimer la note"
 
 #, c-format
 msgid "Error when closing file at %s"
@@ -1633,13 +1727,13 @@ msgid "Config"
 msgstr "Config"
 
 msgid "Redraw"
-msgstr "Retracer"
+msgstr "Rafraîchir"
 
 msgid "Add Appt"
 msgstr "Ajt rdv"
 
 msgid "Add Todo"
-msgstr "Ajt todo"
+msgstr "Ajt tâche"
 
 msgid "+1 Day"
 msgstr "+1 Jour"
@@ -1657,10 +1751,10 @@ msgid "Today"
 msgstr "Aujourd."
 
 msgid "Nxt View"
-msgstr "Proch.Vue"
+msgstr "Voir Suiv."
 
 msgid "Prv View"
-msgstr "VuePrec."
+msgstr "Voir Prec."
 
 msgid "beg Week"
 msgstr "deb Sem."

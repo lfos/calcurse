@@ -193,13 +193,19 @@ print_notefile (FILE *out, char *filename, int nbtab)
 {
   char path_to_notefile[BUFSIZ];
   FILE *notefile;
-  char linestarter[BUFSIZ] = "";
+  char linestarter[BUFSIZ];
   char buffer[BUFSIZ];
   int i;
   int printlinestarter = 1;
 
-  for (i = 0; i < nbtab; i++)
-    (void)snprintf(linestarter, BUFSIZ, "%s\t", linestarter);
+  if (nbtab < BUFSIZ)
+    {
+      for (i = 0; i < nbtab; i++)
+        linestarter[i] = '\t';
+      linestarter[nbtab] = '\0';
+    }
+  else
+    linestarter[0] = '\0';
 
   (void)snprintf (path_to_notefile, BUFSIZ, "%s/%s", path_notes, filename);
   notefile = fopen (path_to_notefile, "r");
