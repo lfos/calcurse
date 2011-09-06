@@ -1,3 +1,11 @@
+[08 Sep 2011]
+Version 2.9.2:
+- Bugfixes:
+  * Handle iCal line folding correctly.
+
+  * Introduce a configure option to completely exclude the documentation
+    subdirectory from the build process ("--disable-docs").
+
 [03 Aug 2011]
 Version 2.9.1:
 - Bugfixes:
