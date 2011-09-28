@@ -38,6 +38,7 @@
 typedef struct llist_ts llist_ts_t;
 struct llist_ts {
   llist_item_t    *head;
+  llist_item_t    *tail;
   pthread_mutex_t  mutex;
 };
 

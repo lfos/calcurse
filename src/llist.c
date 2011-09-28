@@ -43,6 +43,7 @@ void
 llist_init (llist_t *l)
 {
   l->head = NULL;
+  l->tail = NULL;
 }
 
 /*
@@ -60,6 +61,7 @@ llist_free (llist_t *l)
     }
 
   l->head = NULL;
+  l->tail = NULL;
 }
 
 /*
@@ -128,7 +130,6 @@ void
 llist_add (llist_t *l, void *data)
 {
   llist_item_t *o = mem_malloc (sizeof (llist_item_t));
-  llist_item_t *i;
 
   if (o)
     {
@@ -136,12 +137,11 @@ llist_add (llist_t *l, void *data)
       o->next = NULL;
 
       if (!l->head)
-        l->head = o;
+        l->head = l->tail = o;
       else
         {
-          for (i = l->head; i->next; i = i->next)
-            ;
-          i->next = o;
+          l->tail->next = o;
+          l->tail = o;
         }
     }
 }
@@ -161,7 +161,12 @@ llist_add_sorted (llist_t *l, void *data, llist_fn_cmp_t fn_cmp)
       o->next = NULL;
 
       if (!l->head)
-        l->head = o;
+        l->head = l->tail = o;
+      else if (fn_cmp(o->data, l->tail->data) >= 0)
+        {
+          l->tail->next = o;
+          l->tail = o;
+        }
       else if (fn_cmp(o->data, l->head->data) < 0)
         {
           o->next = l->head;
@@ -198,6 +203,9 @@ llist_remove (llist_t *l, llist_item_t *i)
     {
       if (j)
         j->next = i->next;
+      if (i == l->tail)
+        l->tail = j;
+
       mem_free (i);
     }
 }

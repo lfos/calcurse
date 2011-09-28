@@ -44,6 +44,7 @@ struct llist_item {
 typedef struct llist llist_t;
 struct llist {
   struct llist_item *head;
+  struct llist_item *tail;
 };
 
 typedef int (*llist_fn_cmp_t) (void *, void *);
