@@ -2780,6 +2780,9 @@ io_import_data (enum import_type type, struct conf *conf, char *stream_name)
   if (stream != stdin)
     file_close (stream, __FILE_POS__);
 
+  /* Update the number of todo items. */
+  todo_set_nb (todo_nb () + stats.todos);
+
   if (ui_mode == UI_CURSES && !conf->skip_system_dialogs)
     {
       char read[BUFSIZ], stat[BUFSIZ];
