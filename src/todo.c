@@ -437,7 +437,7 @@ todo_update_panel (int which_pan)
       struct todo *todo = LLIST_TS_GET_DATA (i);
       num_todo++;
       t_realpos = num_todo - first;
-      incolor = num_todo - hilt;
+      incolor = (which_pan == TOD) ? num_todo - hilt : num_todo;
       if (incolor == 0)
         msgsav = todo->mesg;
       if (t_realpos >= 0 && t_realpos < max_items)

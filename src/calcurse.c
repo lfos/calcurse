@@ -52,8 +52,6 @@ main (int argc, char **argv)
   struct day_items_nb inday;
   int non_interactive;
   int no_data_file = 1;
-  int sav_hilt_app = 0;
-  int sav_hilt_tod = 0;
   int cut_item = 0;
   unsigned do_storage = 0;
   unsigned do_update = 1;
@@ -183,37 +181,19 @@ main (int argc, char **argv)
 
         case KEY_GENERIC_CHANGE_VIEW:
           wins_reset_status_page ();
-          /* Need to save the previously highlighted event. */
-          switch (wins_slctd ())
-            {
-            case TOD:
-              sav_hilt_tod = todo_hilt ();
-              todo_hilt_set (0);
-              break;
-            case APP:
-              sav_hilt_app = apoint_hilt ();
-              apoint_hilt_set (0);
-              break;
-            default:
-              break;
-            }
           wins_slctd_next ();
 
           /* Select the event to highlight. */
           switch (wins_slctd ())
             {
             case TOD:
-              if ((sav_hilt_tod == 0) && (todo_nb () != 0))
+              if ((todo_hilt () == 0) && (todo_nb () > 0))
                 todo_hilt_set (1);
-              else
-                todo_hilt_set (sav_hilt_tod);
               break;
             case APP:
-              if ((sav_hilt_app == 0)
-                  && ((inday.nb_events + inday.nb_apoints) != 0))
+              if ((apoint_hilt () == 0) &&
+                  ((inday.nb_events + inday.nb_apoints) > 0))
                 apoint_hilt_set (1);
-              else
-                apoint_hilt_set (sav_hilt_app);
               break;
             default:
               break;
@@ -568,11 +548,8 @@ main (int argc, char **argv)
           do_storage = !do_storage;
           if (day_changed)
             {
-              sav_hilt_app = 0;
+              apoint_hilt_set (1);
               day_changed = !day_changed;
-              if ((wins_slctd () == APP) &&
-                  (inday.nb_events + inday.nb_apoints != 0))
-                apoint_hilt_set (1);
             }
         }
 

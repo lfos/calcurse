@@ -684,7 +684,7 @@ apoint_update_panel (int which_pan)
   if (slctd_date.dd < 10)
     title_xpos++;
   date = date2sec (slctd_date, 0, 0);
-  day_write_pad (date, app_width, app_length, hilt);
+  day_write_pad (date, app_width, app_length, (which_pan == APP) ? hilt : 0);
 
   /* Print current date in the top right window corner. */
   erase_window_part (win[APP].p, 1, title_lines, win[APP].w - 2,
