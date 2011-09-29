@@ -114,8 +114,6 @@ struct dmon_conf dmon;
 void
 vars_init (struct conf *conf)
 {
-  char *PATH_VI = "/usr/bin/vi";
-  char *PATH_LESS = "/usr/bin/less";
   char *ed, *pg;
 
   /* Variables for user configuration */
@@ -133,12 +131,12 @@ vars_init (struct conf *conf)
   if (ed == NULL || ed[0] == '\0')
     ed = getenv ("EDITOR");
   if (ed == NULL || ed[0] == '\0')
-    ed = PATH_VI;
+    ed = DEFAULT_EDITOR;
   conf->editor = ed;
 
   pg = getenv ("PAGER");
   if (pg == NULL || pg[0] == '\0')
-    pg = PATH_LESS;
+    pg = DEFAULT_PAGER;
   conf->pager = pg;
 
   wins_set_layout (1);
