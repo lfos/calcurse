@@ -39,6 +39,22 @@
 #include "calcurse.h"
 
 /*
+ * Store the events and appointments for the selected day and reset the
+ * appointment highlight pointer if a new day was selected.
+ */
+static struct day_items_nb
+do_storage (int day_changed)
+{
+  struct day_items_nb inday = *day_process_storage (calendar_get_slctd_day (),
+                                                    day_changed, &inday);
+
+  if (day_changed)
+    apoint_hilt_set (1);
+
+  return inday;
+}
+
+/*
  * Calcurse is a text-based personal organizer which helps keeping track
  * of events and everyday tasks. It contains a calendar, a 'todo' list,
  * and puts your appointments in order. The user interface is configurable,
@@ -53,9 +69,7 @@ main (int argc, char **argv)
   int non_interactive;
   int no_data_file = 1;
   int cut_item = 0;
-  unsigned do_storage = 0;
   unsigned do_update = 1;
-  unsigned day_changed = 0;
   char *no_color_support =
       _("Sorry, colors are not supported by your terminal\n"
         "(Press [ENTER] to continue)");
@@ -155,7 +169,7 @@ main (int argc, char **argv)
       notify_start_main_thread ();
   wins_update ();
   io_startup_screen (conf.skip_system_dialogs, no_data_file);
-  inday = *day_process_storage (0, day_changed, &inday);
+  inday = *day_process_storage (0, 0, &inday);
   wins_slctd_set (CAL);
   wins_update ();
   calendar_start_date_thread ();
@@ -212,8 +226,7 @@ main (int argc, char **argv)
             calendar_goto_today ();
           else
             calendar_change_day (conf.input_datefmt);
-          do_storage = 1;
-          day_changed = 1;
+          inday = do_storage (1);
           break;
 
         case KEY_VIEW_ITEM:
@@ -267,16 +280,16 @@ main (int argc, char **argv)
                 }
               wins_reset ();
               wins_update ();
-              do_storage = 1;
               wins_erase_status_bar ();
               custom_config_bar ();
+              inday = do_storage (0);
             }
           wins_update ();
           break;
 
         case KEY_GENERIC_ADD_APPT:
           apoint_add ();
-          do_storage = 1;
+          inday = do_storage (1);
           break;
 
         case KEY_GENERIC_ADD_TODO:
@@ -290,7 +303,7 @@ main (int argc, char **argv)
             {
             case APP:
               apoint_add ();
-              do_storage = 1;
+              inday = do_storage (0);
               break;
             case TOD:
               todo_new_item ();
@@ -304,25 +317,29 @@ main (int argc, char **argv)
 
         case KEY_EDIT_ITEM:
           if (wins_slctd () == APP && apoint_hilt () != 0)
-            day_edit_item (&conf);
+            {
+              day_edit_item (&conf);
+              inday = do_storage (0);
+            }
           else if (wins_slctd () == TOD && todo_hilt () != 0)
             todo_edit_item ();
-          do_storage = 1;
           break;
 
         case KEY_DEL_ITEM:
           if (wins_slctd () == APP && apoint_hilt () != 0)
-            apoint_delete (&conf, &inday.nb_events, &inday.nb_apoints);
+            {
+              apoint_delete (&conf, &inday.nb_events, &inday.nb_apoints);
+              inday = do_storage (0);
+            }
           else if (wins_slctd () == TOD && todo_hilt () != 0)
             todo_delete (&conf);
-          do_storage = 1;
           break;
 
         case KEY_GENERIC_CUT:
           if (wins_slctd () == APP && apoint_hilt () != 0)
             {
               cut_item = apoint_cut (&inday.nb_events, &inday.nb_apoints);
-              do_storage = 1;
+              inday = do_storage (0);
             }
           break;
 
@@ -331,22 +348,24 @@ main (int argc, char **argv)
             {
               apoint_paste (&inday.nb_events, &inday.nb_apoints, cut_item);
               cut_item = 0;
-              do_storage = 1;
+              inday = do_storage (0);
             }
           break;
 
         case KEY_REPEAT_ITEM:
           if (wins_slctd () == APP && apoint_hilt () != 0)
             recur_repeat_item (&conf);
-          do_storage = 1;
+          inday = do_storage (0);
           break;
 
         case KEY_FLAG_ITEM:
           if (wins_slctd () == APP && apoint_hilt () != 0)
-            apoint_switch_notify ();
+            {
+              apoint_switch_notify ();
+              inday = do_storage (0);
+            }
           else if (wins_slctd () == TOD && todo_hilt () != 0)
             todo_flag ();
-          do_storage = 1;
           break;
 
         case KEY_PIPE_ITEM:
@@ -370,10 +389,12 @@ main (int argc, char **argv)
 
         case KEY_EDIT_NOTE:
           if (wins_slctd () == APP && apoint_hilt () != 0)
-            day_edit_note (conf.editor);
+            {
+              day_edit_note (conf.editor);
+              inday = do_storage (0);
+            }
           else if (wins_slctd () == TOD && todo_hilt () != 0)
             todo_edit_note (conf.editor);
-          do_storage = 1;
           break;
 
         case KEY_VIEW_NOTE:
@@ -395,7 +416,7 @@ main (int argc, char **argv)
         case KEY_GENERIC_IMPORT:
           wins_erase_status_bar ();
           io_import_data (IO_IMPORT_ICAL, &conf, NULL);
-          do_storage = 1;
+          inday = do_storage (0);
           break;
 
         case KEY_GENERIC_EXPORT:
@@ -416,10 +437,10 @@ main (int argc, char **argv)
                 }
               wins_reset ();
               wins_update ();
-              do_storage = 1;
               wins_erase_status_bar ();
               io_export_bar ();
             }
+          inday = do_storage (0);
           wins_update ();
           break;
 
@@ -427,9 +448,8 @@ main (int argc, char **argv)
         case KEY_MOVE_RIGHT:
           if (wins_slctd () == CAL || key == KEY_GENERIC_NEXT_DAY)
             {
-              do_storage = 1;
-              day_changed = 1;
               calendar_move (RIGHT);
+              inday = do_storage (1);
             }
           break;
 
@@ -437,9 +457,8 @@ main (int argc, char **argv)
         case KEY_MOVE_LEFT:
           if (wins_slctd () == CAL || key == KEY_GENERIC_PREV_DAY)
             {
-              do_storage = 1;
-              day_changed = 1;
               calendar_move (LEFT);
+              inday = do_storage (1);
             }
           break;
 
@@ -447,9 +466,8 @@ main (int argc, char **argv)
         case KEY_MOVE_UP:
           if (wins_slctd () == CAL || key == KEY_GENERIC_PREV_WEEK)
             {
-              do_storage = 1;
-              day_changed = 1;
               calendar_move (UP);
+              inday = do_storage (1);
             }
           else if ((wins_slctd () == APP) && (apoint_hilt () > 1))
             {
@@ -468,9 +486,8 @@ main (int argc, char **argv)
         case KEY_MOVE_DOWN:
           if (wins_slctd () == CAL || key == KEY_GENERIC_NEXT_WEEK)
             {
-              do_storage = 1;
-              day_changed = 1;
               calendar_move (DOWN);
+              inday = do_storage (1);
             }
           else if ((wins_slctd () == APP) &&
               (apoint_hilt () < inday.nb_events + inday.nb_apoints))
@@ -489,18 +506,16 @@ main (int argc, char **argv)
         case KEY_START_OF_WEEK:
           if (wins_slctd () == CAL)
             {
-              do_storage = 1;
-              day_changed = 1;
               calendar_move (WEEK_START);
+              inday = do_storage (1);
             }
           break;
 
         case KEY_END_OF_WEEK:
           if (wins_slctd () == CAL)
             {
-              do_storage = 1;
-              day_changed = 1;
               calendar_move (WEEK_END);
+              inday = do_storage (1);
             }
           break;
 
@@ -539,18 +554,6 @@ main (int argc, char **argv)
         default:
           do_update = 0;
           break;
-        }
-
-      if (do_storage)
-        {
-          inday = *day_process_storage (calendar_get_slctd_day (),
-                                        day_changed, &inday);
-          do_storage = !do_storage;
-          if (day_changed)
-            {
-              apoint_hilt_set (1);
-              day_changed = !day_changed;
-            }
         }
 
       if (resize)
