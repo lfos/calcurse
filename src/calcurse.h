@@ -430,6 +430,13 @@ enum win {
   NBWINS
 };
 
+#define FLAG_CAL (1 << CAL)
+#define FLAG_APP (1 << APP)
+#define FLAG_TOD (1 << TOD)
+#define FLAG_NOT (1 << NOT)
+#define FLAG_STA (1 << STA)
+#define FLAG_ALL ((1 << NBWINS) - 1)
+
 enum ui_mode {
   UI_CURSES,
   UI_CMDLINE,
@@ -946,9 +953,9 @@ void      wins_reinit (void);
 void      wins_reinit_panels (void);
 void      wins_show (WINDOW *, char *);
 void      wins_get_config (void);
-void      wins_update_border (void);
-void      wins_update_panels (void);
-void      wins_update (void);
+void      wins_update_border (int);
+void      wins_update_panels (int);
+void      wins_update (int);
 void      wins_reset (void);
 void      wins_prepare_external (void);
 void      wins_unprepare_external (void);

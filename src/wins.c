@@ -539,37 +539,40 @@ border_nocolor (WINDOW *window)
 }
 
 void
-wins_update_border (void)
+wins_update_border (int flags)
 {
-  switch (slctd_win)
+  if (flags & FLAG_CAL)
     {
-    case CAL:
-      border_color (win[CAL].p);
-      border_nocolor (win[APP].p);
-      border_nocolor (win[TOD].p);
-      break;
-    case APP:
-      border_color (win[APP].p);
-      border_nocolor (win[CAL].p);
-      border_nocolor (win[TOD].p);
-      break;
-    case TOD:
-      border_color (win[TOD].p);
-      border_nocolor (win[APP].p);
-      border_nocolor (win[CAL].p);
-      break;
-    default:
-      EXIT (_("no window selected"));
-      /* NOTREACHED */
+      if (slctd_win == CAL)
+        border_color (win[CAL].p);
+      else
+        border_nocolor (win[CAL].p);
+    }
+  if (flags & FLAG_APP)
+    {
+      if (slctd_win == APP)
+        border_color (win[APP].p);
+      else
+        border_nocolor (win[APP].p);
+    }
+  if (flags & FLAG_TOD)
+    {
+      if (slctd_win == TOD)
+        border_color (win[TOD].p);
+      else
+        border_nocolor (win[TOD].p);
     }
 }
 
 void
-wins_update_panels (void)
+wins_update_panels (int flags)
 {
-  apoint_update_panel (slctd_win);
-  todo_update_panel (slctd_win);
-  calendar_update_panel (&win[CAL]);
+  if (flags & FLAG_APP)
+    apoint_update_panel (slctd_win);
+  if (flags & FLAG_TOD)
+    todo_update_panel (slctd_win);
+  if (flags & FLAG_CAL)
+    calendar_update_panel (&win[CAL]);
 }
 
 /*
@@ -577,12 +580,13 @@ wins_update_panels (void)
  * selected window.
  */
 void
-wins_update (void)
+wins_update (int flags)
 {
-  wins_update_border ();
-  wins_update_panels ();
-  wins_status_bar ();
-  if (notify_bar ())
+  wins_update_border (flags);
+  wins_update_panels (flags);
+  if (flags & FLAG_STA)
+    wins_status_bar ();
+  if ((flags & FLAG_NOT) && notify_bar ())
     notify_update_bar ();
   wmove (win[STA].p, 0, 0);
   wins_doupdate ();
@@ -596,7 +600,7 @@ wins_reset (void)
   wins_refresh ();
   curs_set (0);
   wins_reinit ();
-  wins_update ();
+  wins_update (FLAG_ALL);
 }
 
 /* Prepare windows for the execution of an external command. */

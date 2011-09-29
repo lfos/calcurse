@@ -696,8 +696,8 @@ custom_sidebar_config (void)
       else
         {
           wins_reinit_panels ();
-          wins_update_border ();
-          wins_update_panels ();
+          wins_update_border (FLAG_ALL);
+          wins_update_panels (FLAG_ALL);
           keys_display_bindings_bar (win[STA].p, binding, 0, binding_size);
           wins_doupdate ();
         }

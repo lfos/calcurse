@@ -69,7 +69,6 @@ main (int argc, char **argv)
   int non_interactive;
   int no_data_file = 1;
   int cut_item = 0;
-  unsigned do_update = 1;
   char *no_color_support =
       _("Sorry, colors are not supported by your terminal\n"
         "(Press [ENTER] to continue)");
@@ -167,11 +166,11 @@ main (int argc, char **argv)
   wins_reinit ();
   if (notify_bar ())
       notify_start_main_thread ();
-  wins_update ();
+  wins_update (FLAG_ALL);
   io_startup_screen (conf.skip_system_dialogs, no_data_file);
   inday = *day_process_storage (0, 0, &inday);
   wins_slctd_set (CAL);
-  wins_update ();
+  wins_update (FLAG_ALL);
   calendar_start_date_thread ();
   if (conf.periodic_save > 0)
     io_start_psave_thread (&conf);
@@ -181,14 +180,15 @@ main (int argc, char **argv)
     {
       int key;
 
-      do_update = 1;
+      if (resize)
+        {
+          resize = 0;
+          wins_reset ();
+        }
+
       key = keys_getch (win[STA].p);
       switch (key)
         {
-        case ERR:
-          do_update = 0;
-          break;
-
         case KEY_GENERIC_REDRAW:
           resize = 1;
           break;
@@ -212,10 +212,12 @@ main (int argc, char **argv)
             default:
               break;
             }
+          wins_update (FLAG_ALL);
           break;
 
         case KEY_GENERIC_OTHER_CMD:
           wins_other_status_page (wins_slctd ());
+          wins_update (FLAG_STA);
           break;
 
         case KEY_GENERIC_GOTO:
@@ -227,6 +229,7 @@ main (int argc, char **argv)
           else
             calendar_change_day (conf.input_datefmt);
           inday = do_storage (1);
+          wins_update (FLAG_CAL | FLAG_APP | FLAG_STA);
           break;
 
         case KEY_VIEW_ITEM:
@@ -234,6 +237,7 @@ main (int argc, char **argv)
             day_popup_item ();
           else if ((wins_slctd () == TOD) && (todo_hilt () != 0))
             item_in_popup (NULL, NULL, todo_saved_mesg (), _("To do :"));
+          wins_update (FLAG_ALL);
           break;
 
         case KEY_GENERIC_CONFIG_MENU:
@@ -279,23 +283,25 @@ main (int argc, char **argv)
                   continue;
                 }
               wins_reset ();
-              wins_update ();
+              wins_update (FLAG_ALL);
               wins_erase_status_bar ();
               custom_config_bar ();
               inday = do_storage (0);
             }
-          wins_update ();
+          wins_update (FLAG_ALL);
           break;
 
         case KEY_GENERIC_ADD_APPT:
           apoint_add ();
           inday = do_storage (1);
+          wins_update (FLAG_CAL | FLAG_APP | FLAG_STA);
           break;
 
         case KEY_GENERIC_ADD_TODO:
           todo_new_item ();
           if (todo_hilt () == 0 && todo_nb () == 1)
             todo_hilt_increase ();
+          wins_update (FLAG_TOD | FLAG_STA);
           break;
 
         case KEY_ADD_ITEM:
@@ -304,11 +310,13 @@ main (int argc, char **argv)
             case APP:
               apoint_add ();
               inday = do_storage (0);
+              wins_update (FLAG_CAL | FLAG_APP | FLAG_STA);
               break;
             case TOD:
               todo_new_item ();
               if (todo_hilt () == 0 && todo_nb () == 1)
                 todo_hilt_increase ();
+              wins_update (FLAG_TOD | FLAG_STA);
               break;
             default:
               break;
@@ -320,9 +328,13 @@ main (int argc, char **argv)
             {
               day_edit_item (&conf);
               inday = do_storage (0);
+              wins_update (FLAG_CAL | FLAG_APP | FLAG_STA);
             }
           else if (wins_slctd () == TOD && todo_hilt () != 0)
-            todo_edit_item ();
+            {
+              todo_edit_item ();
+              wins_update (FLAG_TOD | FLAG_STA);
+            }
           break;
 
         case KEY_DEL_ITEM:
@@ -330,9 +342,13 @@ main (int argc, char **argv)
             {
               apoint_delete (&conf, &inday.nb_events, &inday.nb_apoints);
               inday = do_storage (0);
+              wins_update (FLAG_CAL | FLAG_APP | FLAG_STA);
             }
           else if (wins_slctd () == TOD && todo_hilt () != 0)
-            todo_delete (&conf);
+            {
+              todo_delete (&conf);
+              wins_update (FLAG_TOD | FLAG_STA);
+            }
           break;
 
         case KEY_GENERIC_CUT:
@@ -340,6 +356,7 @@ main (int argc, char **argv)
             {
               cut_item = apoint_cut (&inday.nb_events, &inday.nb_apoints);
               inday = do_storage (0);
+              wins_update (FLAG_CAL | FLAG_APP);
             }
           break;
 
@@ -349,6 +366,7 @@ main (int argc, char **argv)
               apoint_paste (&inday.nb_events, &inday.nb_apoints, cut_item);
               cut_item = 0;
               inday = do_storage (0);
+              wins_update (FLAG_CAL | FLAG_APP);
             }
           break;
 
@@ -356,6 +374,7 @@ main (int argc, char **argv)
           if (wins_slctd () == APP && apoint_hilt () != 0)
             recur_repeat_item (&conf);
           inday = do_storage (0);
+          wins_update (FLAG_CAL | FLAG_APP | FLAG_STA);
           break;
 
         case KEY_FLAG_ITEM:
@@ -363,9 +382,13 @@ main (int argc, char **argv)
             {
               apoint_switch_notify ();
               inday = do_storage (0);
+              wins_update (FLAG_APP);
             }
           else if (wins_slctd () == TOD && todo_hilt () != 0)
-            todo_flag ();
+            {
+              todo_flag ();
+              wins_update (FLAG_TOD);
+            }
           break;
 
         case KEY_PIPE_ITEM:
@@ -373,6 +396,7 @@ main (int argc, char **argv)
             day_pipe_item (&conf);
           else if (wins_slctd () == TOD && todo_hilt () != 0)
             todo_pipe_item ();
+          wins_update (FLAG_ALL);
           break;
 
         case KEY_RAISE_PRIORITY:
@@ -384,6 +408,7 @@ main (int argc, char **argv)
                 todo_set_first (todo_hilt ());
               else if (todo_hilt_pos () >= win[TOD].h - 4)
                 todo_set_first (todo_hilt () - win[TOD].h + 5);
+              wins_update (FLAG_TOD);
             }
           break;
 
@@ -395,6 +420,7 @@ main (int argc, char **argv)
             }
           else if (wins_slctd () == TOD && todo_hilt () != 0)
             todo_edit_note (conf.editor);
+          wins_update (FLAG_ALL);
           break;
 
         case KEY_VIEW_NOTE:
@@ -402,21 +428,25 @@ main (int argc, char **argv)
             day_view_note (conf.pager);
           else if (wins_slctd () == TOD && todo_hilt () != 0)
             todo_view_note (conf.pager);
+          wins_update (FLAG_ALL);
           break;
 
         case KEY_GENERIC_HELP:
           wins_status_bar ();
           help_screen ();
+          wins_update (FLAG_ALL);
           break;
 
         case KEY_GENERIC_SAVE:
           io_save_cal (&conf, IO_SAVE_DISPLAY_BAR);
+          wins_update (FLAG_STA);
           break;
 
         case KEY_GENERIC_IMPORT:
           wins_erase_status_bar ();
           io_import_data (IO_IMPORT_ICAL, &conf, NULL);
           inday = do_storage (0);
+          wins_update (FLAG_ALL);
           break;
 
         case KEY_GENERIC_EXPORT:
@@ -436,12 +466,12 @@ main (int argc, char **argv)
                   break;
                 }
               wins_reset ();
-              wins_update ();
+              wins_update (FLAG_ALL);
               wins_erase_status_bar ();
               io_export_bar ();
             }
           inday = do_storage (0);
-          wins_update ();
+          wins_update (FLAG_ALL);
           break;
 
         case KEY_GENERIC_NEXT_DAY:
@@ -450,6 +480,7 @@ main (int argc, char **argv)
             {
               calendar_move (RIGHT);
               inday = do_storage (1);
+              wins_update (FLAG_CAL | FLAG_APP);
             }
           break;
 
@@ -459,6 +490,7 @@ main (int argc, char **argv)
             {
               calendar_move (LEFT);
               inday = do_storage (1);
+              wins_update (FLAG_CAL | FLAG_APP);
             }
           break;
 
@@ -468,17 +500,20 @@ main (int argc, char **argv)
             {
               calendar_move (UP);
               inday = do_storage (1);
+              wins_update (FLAG_CAL | FLAG_APP);
             }
           else if ((wins_slctd () == APP) && (apoint_hilt () > 1))
             {
               apoint_hilt_decrease ();
               apoint_scroll_pad_up (inday.nb_events);
+              wins_update (FLAG_APP);
             }
           else if ((wins_slctd () == TOD) && (todo_hilt () > 1))
             {
               todo_hilt_decrease ();
               if (todo_hilt_pos () < 0)
                 todo_first_decrease ();
+              wins_update (FLAG_TOD);
             }
           break;
 
@@ -488,18 +523,21 @@ main (int argc, char **argv)
             {
               calendar_move (DOWN);
               inday = do_storage (1);
+              wins_update (FLAG_CAL | FLAG_APP);
             }
           else if ((wins_slctd () == APP) &&
               (apoint_hilt () < inday.nb_events + inday.nb_apoints))
             {
               apoint_hilt_increase ();
               apoint_scroll_pad_down (inday.nb_events, win[APP].h);
+              wins_update (FLAG_APP);
             }
           else if ((wins_slctd () == TOD) && (todo_hilt () < todo_nb ()))
             {
               todo_hilt_increase ();
               if (todo_hilt_pos () == win[TOD].h - 4)
                 todo_first_increase ();
+              wins_update (FLAG_TOD);
             }
           break;
 
@@ -508,6 +546,7 @@ main (int argc, char **argv)
             {
               calendar_move (WEEK_START);
               inday = do_storage (1);
+              wins_update (FLAG_CAL | FLAG_APP);
             }
           break;
 
@@ -516,17 +555,24 @@ main (int argc, char **argv)
             {
               calendar_move (WEEK_END);
               inday = do_storage (1);
+              wins_update (FLAG_CAL | FLAG_APP);
             }
           break;
 
         case KEY_GENERIC_SCROLL_UP:
           if (wins_slctd () == CAL)
-            calendar_view_prev ();
+            {
+              calendar_view_prev ();
+              wins_update (FLAG_CAL | FLAG_APP);
+            }
           break;
 
         case KEY_GENERIC_SCROLL_DOWN:
           if (wins_slctd () == CAL)
-            calendar_view_next ();
+            {
+              calendar_view_next ();
+              wins_update (FLAG_CAL | FLAG_APP);
+            }
           break;
 
         case KEY_GENERIC_QUIT:
@@ -544,6 +590,7 @@ main (int argc, char **argv)
               else
                 {
                   wins_erase_status_bar ();
+                  wins_update (FLAG_STA);
                   break;
                 }
             }
@@ -551,19 +598,9 @@ main (int argc, char **argv)
             exit_calcurse (EXIT_SUCCESS);
           break;
 
+        case ERR:
         default:
-          do_update = 0;
           break;
         }
-
-      if (resize)
-        {
-          resize = 0;
-          do_update = 0;
-          wins_reset ();
-        }
-
-      if (do_update)
-        wins_update ();
     }
 }
