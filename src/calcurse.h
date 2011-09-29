@@ -611,7 +611,7 @@ long          calendar_get_slctd_day_sec (void);
 void          calendar_update_panel (struct window *);
 void          calendar_goto_today (void);
 void          calendar_change_day (int);
-void          calendar_move (enum move);
+void          calendar_move (enum move, int);
 long          calendar_start_of_year (void);
 long          calendar_end_of_year (void);
 char         *calendar_get_pom (time_t);

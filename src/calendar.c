@@ -665,7 +665,7 @@ calendar_change_day (int datefmt)
 }
 
 void
-calendar_move (enum move move)
+calendar_move (enum move move, int count)
 {
   int ret, days_to_remove, days_to_add;
   struct tm t;
@@ -681,25 +681,25 @@ calendar_move (enum move move)
       if ((slctd_day.dd <= 7) && (slctd_day.mm == 1)
           && (slctd_day.yyyy == 1902))
         return;
-      ret = date_change (&t, 0, -WEEKINDAYS);
+      ret = date_change (&t, 0, -count * WEEKINDAYS);
       break;
     case DOWN:
       if ((slctd_day.dd > days[slctd_day.mm - 1] - 7)
           && (slctd_day.mm == 12) && (slctd_day.yyyy == 2037))
         return;
-      ret = date_change (&t, 0, WEEKINDAYS);
+      ret = date_change (&t, 0, count * WEEKINDAYS);
       break;
     case LEFT:
       if ((slctd_day.dd == 1) && (slctd_day.mm == 1)
           && (slctd_day.yyyy == 1902))
         return;
-      ret = date_change (&t, 0, -1);
+      ret = date_change (&t, 0, -count);
       break;
     case RIGHT:
       if ((slctd_day.dd == 31) && (slctd_day.mm == 12)
           && (slctd_day.yyyy == 2037))
         return;
-      ret = date_change (&t, 0, 1);
+      ret = date_change (&t, 0, count);
       break;
     case WEEK_START:
       /* Normalize struct tm to get week day number. */
@@ -708,7 +708,8 @@ calendar_move (enum move move)
         days_to_remove = ((t.tm_wday == 0) ? WEEKINDAYS - 1 : t.tm_wday - 1);
       else
         days_to_remove = ((t.tm_wday == 0) ? 0 : t.tm_wday);
-      ret = date_change (&t, 0, 0 - days_to_remove);
+      days_to_remove += (count - 1) * WEEKINDAYS;
+      ret = date_change (&t, 0, -days_to_remove);
       break;
     case WEEK_END:
       (void)mktime (&t);
@@ -717,6 +718,7 @@ calendar_move (enum move move)
       else
           days_to_add = ((t.tm_wday == 0) ?
                          WEEKINDAYS - 1 : WEEKINDAYS - 1 - t.tm_wday);
+      days_to_add += (count - 1) * WEEKINDAYS;
       ret = date_change (&t, 0, days_to_add);
       break;
     default:

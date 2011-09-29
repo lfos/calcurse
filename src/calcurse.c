@@ -478,7 +478,7 @@ main (int argc, char **argv)
         case KEY_MOVE_RIGHT:
           if (wins_slctd () == CAL || key == KEY_GENERIC_NEXT_DAY)
             {
-              calendar_move (RIGHT);
+              calendar_move (RIGHT, 1);
               inday = do_storage (1);
               wins_update (FLAG_CAL | FLAG_APP);
             }
@@ -488,7 +488,7 @@ main (int argc, char **argv)
         case KEY_MOVE_LEFT:
           if (wins_slctd () == CAL || key == KEY_GENERIC_PREV_DAY)
             {
-              calendar_move (LEFT);
+              calendar_move (LEFT, 1);
               inday = do_storage (1);
               wins_update (FLAG_CAL | FLAG_APP);
             }
@@ -498,7 +498,7 @@ main (int argc, char **argv)
         case KEY_MOVE_UP:
           if (wins_slctd () == CAL || key == KEY_GENERIC_PREV_WEEK)
             {
-              calendar_move (UP);
+              calendar_move (UP, 1);
               inday = do_storage (1);
               wins_update (FLAG_CAL | FLAG_APP);
             }
@@ -521,7 +521,7 @@ main (int argc, char **argv)
         case KEY_MOVE_DOWN:
           if (wins_slctd () == CAL || key == KEY_GENERIC_NEXT_WEEK)
             {
-              calendar_move (DOWN);
+              calendar_move (DOWN, 1);
               inday = do_storage (1);
               wins_update (FLAG_CAL | FLAG_APP);
             }
@@ -544,7 +544,7 @@ main (int argc, char **argv)
         case KEY_START_OF_WEEK:
           if (wins_slctd () == CAL)
             {
-              calendar_move (WEEK_START);
+              calendar_move (WEEK_START, 1);
               inday = do_storage (1);
               wins_update (FLAG_CAL | FLAG_APP);
             }
@@ -553,7 +553,7 @@ main (int argc, char **argv)
         case KEY_END_OF_WEEK:
           if (wins_slctd () == CAL)
             {
-              calendar_move (WEEK_END);
+              calendar_move (WEEK_END, 1);
               inday = do_storage (1);
               wins_update (FLAG_CAL | FLAG_APP);
             }
