@@ -61,15 +61,15 @@ todo_hilt_set (int highlighted)
 }
 
 void
-todo_hilt_decrease (void)
+todo_hilt_decrease (int n)
 {
-  hilt--;
+  hilt -= n;
 }
 
 void
-todo_hilt_increase (void)
+todo_hilt_increase (int n)
 {
-  hilt++;
+  hilt += n;
 }
 
 /* Return which todo is highlighted. */
@@ -101,15 +101,15 @@ todo_set_first (int nb)
 }
 
 void
-todo_first_increase (void)
+todo_first_increase (int n)
 {
-  first++;
+  first += n;
 }
 
 void
-todo_first_decrease (void)
+todo_first_decrease (int n)
 {
-  first--;
+  first -= n;
 }
 
 /*

@@ -300,7 +300,7 @@ main (int argc, char **argv)
         case KEY_GENERIC_ADD_TODO:
           todo_new_item ();
           if (todo_hilt () == 0 && todo_nb () == 1)
-            todo_hilt_increase ();
+            todo_hilt_increase (1);
           wins_update (FLAG_TOD | FLAG_STA);
           break;
 
@@ -315,7 +315,7 @@ main (int argc, char **argv)
             case TOD:
               todo_new_item ();
               if (todo_hilt () == 0 && todo_nb () == 1)
-                todo_hilt_increase ();
+                todo_hilt_increase (1);
               wins_update (FLAG_TOD | FLAG_STA);
               break;
             default:
@@ -504,15 +504,15 @@ main (int argc, char **argv)
             }
           else if ((wins_slctd () == APP) && (apoint_hilt () > 1))
             {
-              apoint_hilt_decrease ();
+              apoint_hilt_decrease (1);
               apoint_scroll_pad_up (inday.nb_events);
               wins_update (FLAG_APP);
             }
           else if ((wins_slctd () == TOD) && (todo_hilt () > 1))
             {
-              todo_hilt_decrease ();
+              todo_hilt_decrease (1);
               if (todo_hilt_pos () < 0)
-                todo_first_decrease ();
+                todo_first_decrease (1);
               wins_update (FLAG_TOD);
             }
           break;
@@ -528,15 +528,15 @@ main (int argc, char **argv)
           else if ((wins_slctd () == APP) &&
               (apoint_hilt () < inday.nb_events + inday.nb_apoints))
             {
-              apoint_hilt_increase ();
+              apoint_hilt_increase (1);
               apoint_scroll_pad_down (inday.nb_events, win[APP].h);
               wins_update (FLAG_APP);
             }
           else if ((wins_slctd () == TOD) && (todo_hilt () < todo_nb ()))
             {
-              todo_hilt_increase ();
+              todo_hilt_increase (1);
               if (todo_hilt_pos () == win[TOD].h - 4)
-                todo_first_increase ();
+                todo_first_increase (1);
               wins_update (FLAG_TOD);
             }
           break;

@@ -103,15 +103,15 @@ apoint_hilt_set (int highlighted)
 }
 
 void
-apoint_hilt_decrease (void)
+apoint_hilt_decrease (int n)
 {
-  hilt--;
+  hilt -= n;
 }
 
 void
-apoint_hilt_increase (void)
+apoint_hilt_increase (int n)
 {
-  hilt++;
+  hilt += n;
 }
 
 /* Return which appointment is highlighted. */
