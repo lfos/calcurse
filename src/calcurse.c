@@ -74,6 +74,7 @@ main (int argc, char **argv)
         "(Press [ENTER] to continue)");
   char *quit_message = _("Do you really want to quit ?");
   char choices[] = "[y/n] ";
+  int count;
 
 #if ENABLE_NLS
   setlocale (LC_ALL, "");
@@ -186,7 +187,7 @@ main (int argc, char **argv)
           wins_reset ();
         }
 
-      key = keys_getch (win[STA].p, NULL);
+      key = keys_getch (win[STA].p, &count);
       switch (key)
         {
         case KEY_GENERIC_REDRAW:
@@ -478,7 +479,7 @@ main (int argc, char **argv)
         case KEY_MOVE_RIGHT:
           if (wins_slctd () == CAL || key == KEY_GENERIC_NEXT_DAY)
             {
-              calendar_move (RIGHT, 1);
+              calendar_move (RIGHT, count);
               inday = do_storage (1);
               wins_update (FLAG_CAL | FLAG_APP);
             }
@@ -488,7 +489,7 @@ main (int argc, char **argv)
         case KEY_MOVE_LEFT:
           if (wins_slctd () == CAL || key == KEY_GENERIC_PREV_DAY)
             {
-              calendar_move (LEFT, 1);
+              calendar_move (LEFT, count);
               inday = do_storage (1);
               wins_update (FLAG_CAL | FLAG_APP);
             }
@@ -498,21 +499,25 @@ main (int argc, char **argv)
         case KEY_MOVE_UP:
           if (wins_slctd () == CAL || key == KEY_GENERIC_PREV_WEEK)
             {
-              calendar_move (UP, 1);
+              calendar_move (UP, count);
               inday = do_storage (1);
               wins_update (FLAG_CAL | FLAG_APP);
             }
-          else if ((wins_slctd () == APP) && (apoint_hilt () > 1))
+          else if (wins_slctd () == APP)
             {
-              apoint_hilt_decrease (1);
+              if (count >= apoint_hilt ())
+                count = apoint_hilt () - 1;
+              apoint_hilt_decrease (count);
               apoint_scroll_pad_up (inday.nb_events);
               wins_update (FLAG_APP);
             }
-          else if ((wins_slctd () == TOD) && (todo_hilt () > 1))
+          else if (wins_slctd () == TOD)
             {
-              todo_hilt_decrease (1);
+              if (count >= todo_hilt ())
+                count = todo_hilt () - 1;
+              todo_hilt_decrease (count);
               if (todo_hilt_pos () < 0)
-                todo_first_decrease (1);
+                todo_first_increase (todo_hilt_pos ());
               wins_update (FLAG_TOD);
             }
           break;
@@ -521,22 +526,25 @@ main (int argc, char **argv)
         case KEY_MOVE_DOWN:
           if (wins_slctd () == CAL || key == KEY_GENERIC_NEXT_WEEK)
             {
-              calendar_move (DOWN, 1);
+              calendar_move (DOWN, count);
               inday = do_storage (1);
               wins_update (FLAG_CAL | FLAG_APP);
             }
-          else if ((wins_slctd () == APP) &&
-              (apoint_hilt () < inday.nb_events + inday.nb_apoints))
+          else if (wins_slctd () == APP)
             {
-              apoint_hilt_increase (1);
+              if (count > inday.nb_events + inday.nb_apoints - apoint_hilt ())
+                count = inday.nb_events + inday.nb_apoints - apoint_hilt ();
+              apoint_hilt_increase (count);
               apoint_scroll_pad_down (inday.nb_events, win[APP].h);
               wins_update (FLAG_APP);
             }
-          else if ((wins_slctd () == TOD) && (todo_hilt () < todo_nb ()))
+          else if (wins_slctd () == TOD)
             {
-              todo_hilt_increase (1);
-              if (todo_hilt_pos () == win[TOD].h - 4)
-                todo_first_increase (1);
+              if (count > todo_nb () - todo_hilt ())
+                count = todo_nb () - todo_hilt ();
+              todo_hilt_increase (count);
+              if (todo_hilt_pos () >= win[TOD].h - 4)
+                todo_first_increase (todo_hilt_pos () - win[TOD].h + 5);
               wins_update (FLAG_TOD);
             }
           break;
@@ -544,7 +552,7 @@ main (int argc, char **argv)
         case KEY_START_OF_WEEK:
           if (wins_slctd () == CAL)
             {
-              calendar_move (WEEK_START, 1);
+              calendar_move (WEEK_START, count);
               inday = do_storage (1);
               wins_update (FLAG_CAL | FLAG_APP);
             }
@@ -553,7 +561,7 @@ main (int argc, char **argv)
         case KEY_END_OF_WEEK:
           if (wins_slctd () == CAL)
             {
-              calendar_move (WEEK_END, 1);
+              calendar_move (WEEK_END, count);
               inday = do_storage (1);
               wins_update (FLAG_CAL | FLAG_APP);
             }
@@ -598,9 +606,15 @@ main (int argc, char **argv)
             exit_calcurse (EXIT_SUCCESS);
           break;
 
+        case KEY_RESIZE:
         case ERR:
+          /* Do not reset the count parameter on resize or error. */
+          continue;
+
         default:
           break;
         }
+
+      count = 0;
     }
 }
