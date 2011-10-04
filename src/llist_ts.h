@@ -64,6 +64,8 @@ struct llist_ts {
 #define LLIST_TS_FIRST(l_ts) llist_first ((llist_t *)l_ts)
 #define LLIST_TS_NTH(l_ts, n) llist_nth ((llist_t *)l_ts, n)
 #define LLIST_TS_NEXT(i) llist_next (i)
+#define LLIST_TS_NEXT_FILTER(i, data, fn_match)                               \
+  llist_next_filter (i, data, (llist_fn_match_t)fn_match)
 #define LLIST_TS_FIND_FIRST(l_ts, data, fn_match)                             \
   llist_find_first ((llist_t *)l_ts, data, (llist_fn_match_t)fn_match)
 #define LLIST_TS_FIND_NEXT(i, data, fn_match)                                 \

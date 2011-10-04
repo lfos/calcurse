@@ -115,6 +115,19 @@ llist_next (llist_item_t *i)
 }
 
 /*
+ * Return the successor of a list item if it is matched by some filter
+ * callback. Return NULL otherwise.
+ */
+llist_item_t *
+llist_next_filter (llist_item_t *i, long data, llist_fn_match_t fn_match)
+{
+  if (i && i->next && fn_match (i->next->data, data))
+    return i->next;
+  else
+    return NULL;
+}
+
+/*
  * Get the actual data of an item.
  */
 void *
