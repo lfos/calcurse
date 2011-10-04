@@ -2927,7 +2927,10 @@ void
 io_stop_psave_thread (void)
 {
   if (io_t_psave)
-    pthread_cancel (io_t_psave);
+    {
+      pthread_cancel (io_t_psave);
+      pthread_join (io_t_psave, NULL);
+    }
 }
 
 /*

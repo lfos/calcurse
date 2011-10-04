@@ -145,7 +145,10 @@ void
 calendar_stop_date_thread (void)
 {
   if (calendar_t_date)
-    pthread_cancel (calendar_t_date);
+    {
+      pthread_cancel (calendar_t_date);
+      pthread_join (calendar_t_date, NULL);
+    }
 }
 
 /* Set static variable today to current date */

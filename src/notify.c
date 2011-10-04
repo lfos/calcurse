@@ -188,7 +188,10 @@ void
 notify_stop_main_thread (void)
 {
   if (notify_t_main)
-    pthread_cancel (notify_t_main);
+    {
+      pthread_cancel (notify_t_main);
+      pthread_join (notify_t_main, NULL);
+    }
 }
 
 /*
