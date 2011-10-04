@@ -86,6 +86,9 @@ llist_item_t *llist_find_nth (llist_t *, int, long, llist_fn_match_t);
 #define LLIST_FIND_FOREACH(l, data, fn_match, i)                              \
   for (i = LLIST_FIND_FIRST (l, data, fn_match); i;                           \
        i = LLIST_FIND_NEXT (i, data, fn_match))
+#define LLIST_FIND_FOREACH_CONT(l, data, fn_match, i)                         \
+  for (i = LLIST_FIND_FIRST (l, data, fn_match); i;                           \
+       i = LLIST_NEXT_FILTER (i, data, fn_match))
 
 /* Accessing list item data. */
 void         *llist_get_data (llist_item_t *);

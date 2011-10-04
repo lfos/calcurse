@@ -78,6 +78,9 @@ struct llist_ts {
 #define LLIST_TS_FIND_FOREACH(l_ts, data, fn_match, i) \
   for (i = LLIST_TS_FIND_FIRST (l_ts, data, fn_match); i; \
        i = LLIST_TS_FIND_NEXT (i, data, fn_match))
+#define LLIST_TS_FIND_FOREACH_CONT(l_ts, data, fn_match, i) \
+  for (i = LLIST_TS_FIND_FIRST (l_ts, data, fn_match); i; \
+       i = LLIST_TS_NEXT_FILTER (i, data, fn_match))
 
 /* Accessing list item data. */
 #define LLIST_TS_GET_DATA(i) llist_get_data (i)
