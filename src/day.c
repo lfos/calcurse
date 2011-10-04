@@ -148,7 +148,7 @@ day_store_events (long date)
   llist_item_t *i;
   int e_nb = 0;
 
-  LLIST_FIND_FOREACH (&eventlist, date, event_inday, i)
+  LLIST_FIND_FOREACH_CONT (&eventlist, date, event_inday, i)
     {
       struct event *ev = LLIST_TS_GET_DATA (i);
       (void)day_add_event (EVNT, ev->mesg, ev->note, ev->day, ev->id);
@@ -196,7 +196,7 @@ day_store_apoints (long date)
   int a_nb = 0;
 
   LLIST_TS_LOCK (&alist_p);
-  LLIST_TS_FIND_FOREACH (&alist_p, date, apoint_inday, i)
+  LLIST_TS_FIND_FOREACH_CONT (&alist_p, date, apoint_inday, i)
     {
       struct apoint *apt = LLIST_TS_GET_DATA (i);
       (void)day_add_apoint (APPT, apt->mesg, apt->note, apt->start, apt->dur,
@@ -548,7 +548,7 @@ day_chk_busy_slices (struct date day, int slicesno, int *slices)
   LLIST_TS_UNLOCK (&recur_alist_p);
 
   LLIST_TS_LOCK (&alist_p);
-  LLIST_TS_FIND_FOREACH (&alist_p, date, apoint_inday, i)
+  LLIST_TS_FIND_FOREACH_CONT (&alist_p, date, apoint_inday, i)
     {
       struct apoint *apt = LLIST_TS_GET_DATA (i);
       long start = get_item_time (apt->start);

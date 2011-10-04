@@ -394,7 +394,7 @@ app_arg (int add_line, struct date *day, long date, int print_note,
         print_notefile (stdout, re->note, 2);
     }
 
-  LLIST_FIND_FOREACH (&eventlist, today, event_inday, i)
+  LLIST_FIND_FOREACH_CONT (&eventlist, today, event_inday, i)
     {
       struct event *ev = LLIST_TS_GET_DATA (i);
       if (regex && regexec (regex, ev->mesg, 0, 0, 0) != 0)
