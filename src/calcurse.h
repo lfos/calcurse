@@ -712,7 +712,7 @@ void      keys_free (void);
 void      keys_dump_defaults (char *);
 char     *keys_get_label (enum key);
 enum key  keys_get_action (int);
-enum key  keys_getch (WINDOW *win);
+enum key  keys_getch (WINDOW *win, int *);
 int       keys_assign_binding (int, enum key);
 void      keys_remove_binding (int, enum key);
 int       keys_str2int (char *);

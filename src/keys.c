@@ -194,11 +194,26 @@ keys_get_action (int pressed)
 }
 
 enum key
-keys_getch (WINDOW *win)
+keys_getch (WINDOW *win, int *count)
 {
-  int ch;
+  int ch = '0';
 
-  ch = wgetch (win);
+  if (count)
+    {
+      *count = 0;
+      do
+        {
+          *count = *count * 10 + ch - '0';
+          ch = wgetch (win);
+        }
+      while ((ch == '0' && *count > 0) || (ch >= '1' && ch <= '9'));
+
+      if (*count == 0)
+        *count = 1;
+    }
+  else
+    ch = wgetch (win);
+
   switch (ch)
     {
     case KEY_RESIZE:
@@ -586,7 +601,7 @@ keys_popup_info (enum key key)
 #define WINCOL (col - 4)
   infowin = popup (WINROW, WINCOL, (row - WINROW) / 2, (col - WINCOL) / 2,
                    keydef[key].label, info[key], 1);
-  (void)keys_getch (infowin);
+  (void)keys_getch (infowin, NULL);
   delwin (infowin);
 #undef WINROW
 #undef WINCOL

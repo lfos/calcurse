@@ -186,7 +186,7 @@ main (int argc, char **argv)
           wins_reset ();
         }
 
-      key = keys_getch (win[STA].p);
+      key = keys_getch (win[STA].p, NULL);
       switch (key)
         {
         case KEY_GENERIC_REDRAW:

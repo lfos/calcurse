@@ -390,7 +390,7 @@ custom_load_conf (struct conf *conf)
       status_mesg (mesg_line1, mesg_line2);
       wnoutrefresh (win[STA].p);
       wins_doupdate ();
-      (void)keys_getch (win[STA].p);
+      (void)keys_getch (win[STA].p, NULL);
     }
 
   pthread_mutex_lock (&nbar.mutex);
@@ -579,7 +579,7 @@ custom_layout_config (void)
   display_layout_config (&conf_win, mark, cursor);
   clear ();
 
-  while ((ch = keys_getch (win[STA].p)) != KEY_GENERIC_QUIT)
+  while ((ch = keys_getch (win[STA].p, NULL)) != KEY_GENERIC_QUIT)
     {
       need_reset = 0;
       switch (ch)
@@ -663,7 +663,7 @@ custom_sidebar_config (void)
   keys_display_bindings_bar (win[STA].p, binding, 0, binding_size);
   wins_doupdate ();
 
-  while ((ch = keys_getch (win[STA].p)) != KEY_GENERIC_QUIT)
+  while ((ch = keys_getch (win[STA].p, NULL)) != KEY_GENERIC_QUIT)
     {
       switch (ch)
         {
@@ -902,7 +902,7 @@ custom_color_config (void)
   display_color_config (&conf_win, &mark_fore, &mark_back, cursor, theme_changed);
   clear ();
 
-  while ((ch = keys_getch (win[STA].p)) != KEY_GENERIC_QUIT)
+  while ((ch = keys_getch (win[STA].p, NULL)) != KEY_GENERIC_QUIT)
     {
       need_reset = 0;
       theme_changed = 0;
@@ -1379,7 +1379,7 @@ custom_keys_config (void)
     {
       int ch;
 
-      ch = keys_getch (win[STA].p);
+      ch = keys_getch (win[STA].p, NULL);
       switch (ch)
         {
         case KEY_MOVE_UP:
