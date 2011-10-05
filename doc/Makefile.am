@@ -14,17 +14,20 @@ A2X_ARGS = \
 endif
 
 dist_doc_DATA = \
-	manual.html
+	manual.html \
+	submitting-patches.html
 
 dist_man_MANS = \
 	calcurse.1
 
 EXTRA_DIST = \
 	manual.txt \
+	submitting-patches.txt \
 	calcurse.1.txt
 
 CLEANFILES = \
 	manual.html \
+	submitting-patches.html \
 	calcurse.1
 
 docdir = $(datadir)/doc/$(PACKAGE)

@@ -1,0 +1,192 @@
+////
+/*
+ * Copyright (c) 2004-2011 calcurse Development Team <misc@calcurse.org>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ *      - Redistributions of source code must retain the above
+ *        copyright notice, this list of conditions and the
+ *        following disclaimer.
+ *
+ *      - Redistributions in binary form must reproduce the above
+ *        copyright notice, this list of conditions and the
+ *        following disclaimer in the documentation and/or other
+ *        materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+////
+
+CALCURSE - Submitting Patches
+=============================
+
+This is a short summary of guidelines you should try to follow when submitting
+patches to calcurse.
+
+Fetching the most recent source
+-------------------------------
+
+The whole source code currently is under version control using Git as VCS. You
+can retrieve a local copy of the development tree using:
+
+----
+$ git clone git://git.calcurse.org/calcurse.git
+----
+
+This will create a new directory `calcurse` that contains the cloned
+repository.
+
+If you want to follow the maintenance branch (`maint`) as well (e.g. to create
+a bug fix), setting up a tracking branch is recommended:
+
+----
+$ git branch -t maint origin/maint
+----
+
+Creating a working branch
+-------------------------
+
+Whenever you want to work on a new feature, do it in a separate branch. Having
+diverging commits in the `master` branch might cause conflicts when pulling in
+new changes. Thus, creating a new development branch *before* doing any changes
+is good practice. And even before doing that, you should update the master
+branch of your working copy:
+
+----
+$ git checkout master
+$ git pull origin master
+$ git checkout -b wip
+----
+
+You can replace `wip` by any name you like.
+
+Maintenance patches such as bug fixes and stability improvements should be
+based on the `maint` branch instead:
+
+----
+$ git checkout maint
+$ git pull origin maint
+$ git checkout -b wip-maint
+----
+
+Committing the changes
+----------------------
+
+Edit files in the source tree and test your changes. When everything seems to
+be fine, you're ready to commit to your local working tree:
+
+----
+$ git commit -as
+----
+
+If you added or removed files, you probably need to run `git add` or `git rm`
+before committing so that Git is aware of them.
+
+If you work on more than a small bug fix, you should split your work into
+several commits. Try to keep your commits small and focused. Smaller patches
+are way easier to review and have a better chance of being included in mainline
+development.
+
+Also try to make your commit messages brief and descriptive. The first line of
+the commit message should be a short description (not more than 50 characters)
+and should use imperative, present tense. If there are details that cannot be
+expressed in these size constraints, put them in separate text paragraphs
+separated by blank lines and wrapped to 72 columns. If you use Vim,
+`gitcommit.vim` will do most of the job for you.
+
+Here's a sample commit message:
+
+----
+Invoke vars_init() before importing data with "-i"
+
+We forgot to call vars_init() when importing an item using the "-i"
+command line argument, which led to the pager configuration variable
+being unset and hence the pager invocation (triggered to show the log in
+case there are any errors during import) failing.
+
+Fix this by calling vars_init() before io_import_data().
+
+Reported-by: Andraž 'ruskie' Levstik <ruskie@codemages.net>
+Signed-off-by: Lukas Fleischer <calcurse@cryptocrack.de>
+----
+
+The `-s` in the `git commit` invocation makes Git add a "Signed-off-by" line to
+credit yourself and to confirm that your contribution was created in whole or
+in part by you and you have the right to submit it under the BSD license.
+Please do not remove that line when editing the commit message.
+
+Creating a patch series
+-----------------------
+
+As soon as you finished all your work, test everything again and create a patch
+series:
+
+----
+$ git format-patch master
+----
+
+Replace `master` by `maint` if your development branch is based on the
+maintenance branch:
+
+----
+$ git format-patch maint
+----
+
+Submitting patches
+------------------
+
+Send your patch series to one of the mailing lists:
+
+----
+$ git send-email *.patch
+----
+
+The `bugs` mailing list should be used for bug fixes, `misc` should be used for
+everything else.
+
+You can also add a cover letter and/or add annotations to patches:
+
+----
+$ git send-email --cover-letter --annotate *.patch
+----
+
+Additional information on the particular patches, which shouldn't appear in the
+commit message itself, can be added immediately after the `---`.
+
+Importing patches
+-----------------
+
+Git also provides a tool for importing a patch series submitted via `git
+send-email`. Just save all mails that contain patches into mbox files and use
+`git am` to apply them to your working branch:
+
+----
+$ git am <mbox>...
+----
+
+If you use mutt, you can also add following macro to apply the patch contained
+in the current mail to your local Git repository by pressing `A`:
+
+----
+set mbox_type=mbox
+set my_git_repo_path=$HOME/src/calcurse
+
+macro index,pager A "<pipe-message>(cd $my_git_repo_path && git am)<enter>"
+----
+
+To setup different Git repositories per mailing list (in case you follow several
+different development lists), simply bind the macro to a `folder-hook` or to a
+`message-hook` and use different repository paths per hook.
