@@ -894,7 +894,7 @@ long         mystrtol (const char *);
 void         print_bool_option_incolor (WINDOW *, unsigned, int, int);
 const char  *get_tempdir (void);
 char        *new_tempfile (const char *, int);
-int          parse_date (char *, enum datefmt, int *, int *, int *,
+int          parse_date (const char *, enum datefmt, int *, int *, int *,
                          struct date *);
 void         str_toupper (char *);
 void         file_close (FILE *, const char *);

@@ -608,11 +608,11 @@ new_tempfile (const char *prefix, int trailing_len)
  * Returns 1 if sucessfully converted or 0 if the string is an invalid date.
  */
 int
-parse_date (char *date_string, enum datefmt datefmt, int *year, int *month,
-            int *day, struct date *slctd_date)
+parse_date (const char *date_string, enum datefmt datefmt, int *year,
+            int *month, int *day, struct date *slctd_date)
 {
-  char sep = (datefmt == DATEFMT_ISO) ? '-' : '/';
-  char *p;
+  const char sep = (datefmt == DATEFMT_ISO) ? '-' : '/';
+  const char *p;
   int in[3] = {0, 0, 0}, n = 0;
   int d, m, y;
 
