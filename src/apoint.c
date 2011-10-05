@@ -155,26 +155,26 @@ apoint_add (void)
 {
 #define LTIME 6
   char *mesg_1 =
-    _("Enter start time ([hh:mm] or [h:mm]), "
-      "leave blank for an all-day event : ");
+    _("Enter start time ([hh:mm]), leave blank for an all-day event : ");
   char *mesg_2 =
-    _("Enter end time ([hh:mm] or [h:mm]) or duration (in minutes) : ");
+    _("Enter end time ([hh:mm]) or duration ([+hh:mm]) : ");
   char *mesg_3 = _("Enter description :");
   char *format_message_1 =
-    _("You entered an invalid start time, should be [h:mm] or [hh:mm]");
+    _("You entered an invalid start time, should be [hh:mm]");
   char *format_message_2 =
-    _("You entered an invalid end time, should be [h:mm] or [hh:mm] or [mm]");
+    _("You entered an invalid end time, should be [hh:mm], [+hh:mm] or [+mm]");
   char *enter_str = _("Press [Enter] to continue");
   int Id = 1;
   char item_time[LTIME] = "";
   char item_mesg[BUFSIZ] = "";
-  long apoint_duration = 0, apoint_start;
+  long apoint_start;
   unsigned heures, minutes;
+  unsigned apoint_duration;
   unsigned end_h, end_m;
   int is_appointment = 1;
 
   /* Get the starting time */
-  do
+  for (;;)
     {
       status_mesg (mesg_1, "");
       if (getstring (win[STA].p, item_time, LTIME, 0, 1) != GETSTRING_ESC)
@@ -184,18 +184,18 @@ apoint_add (void)
               is_appointment = 0;
               break;
             }
-          else if (check_time (item_time) != 1)
+
+          if (parse_time (item_time, &heures, &minutes) == 1)
+            break;
+          else
             {
               status_mesg (format_message_1, enter_str);
               (void)wgetch (win[STA].p);
             }
-          else
-            (void)sscanf (item_time, "%u:%u", &heures, &minutes);
         }
       else
         return;
     }
-  while (check_time (item_time) != 1);
 
   /*
    * Check if an event or appointment is entered,
@@ -205,23 +205,16 @@ apoint_add (void)
   if (is_appointment)
     {				/* Get the appointment duration */
       item_time[0] = '\0';
-      do
+      for (;;)
         {
           status_mesg (mesg_2, "");
-          if (getstring (win[STA].p, item_time, LTIME, 0, 1) != GETSTRING_VALID)
-            return;		//nothing entered, cancel adding of event
-          else if (check_time (item_time) == 0)
+          if (getstring (win[STA].p, item_time, LTIME, 0, 1) != GETSTRING_ESC)
             {
-              status_mesg (format_message_2, enter_str);
-              (void)wgetch (win[STA].p);
-            }
-          else
-            {
-              if (check_time (item_time) == 2)
-                apoint_duration = atoi (item_time);
-              else if (check_time (item_time) == 1)
+              if (*item_time == '+' && parse_duration (item_time + 1,
+                  &apoint_duration) == 1)
+                break;
+              else if (parse_time (item_time, &end_h, &end_m) == 1)
                 {
-                  (void)sscanf (item_time, "%u:%u", &end_h, &end_m);
                   if (end_h < heures || ((end_h == heures) && (end_m < minutes)))
                     {
                       apoint_duration = MININSEC - minutes + end_m
@@ -232,10 +225,17 @@ apoint_add (void)
                       apoint_duration = MININSEC - minutes
                         + end_m + (end_h - (heures + 1)) * MININSEC;
                     }
+                  break;
+                }
+              else
+                {
+                  status_mesg (format_message_2, enter_str);
+                  (void)wgetch (win[STA].p);
                 }
             }
+          else
+            return;
         }
-      while (check_time (item_time) == 0);
     }
   else				/* Insert the event Id */
     Id = 1;

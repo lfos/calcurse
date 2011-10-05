@@ -567,26 +567,28 @@ day_chk_busy_slices (struct date day, int slicesno, int *slices)
 }
 
 /* Request the user to enter a new time. */
-static char *
-day_edit_time (long time)
+static int
+day_edit_time (int time, unsigned *new_hour, unsigned *new_minute)
 {
-  char *timestr;
-  char *msg_time = _("Enter the new time ([hh:mm] or [h:mm]) : ");
+  char *timestr = date_sec2date_str (time, "%H:%M");
+  char *msg_time = _("Enter the new time ([hh:mm]) : ");
   char *enter_str = _("Press [Enter] to continue");
-  char *fmt_msg = _("You entered an invalid time, should be [h:mm] or [hh:mm]");
+  char *fmt_msg = _("You entered an invalid time, should be [hh:mm]");
 
-  while (1)
+  for (;;)
     {
       status_mesg (msg_time, "");
-      timestr = date_sec2date_str (time, "%H:%M");
       updatestring (win[STA].p, &timestr, 0, 1);
-      if (check_time (timestr) != 1 || strlen (timestr) == 0)
+      if (parse_time (timestr, new_hour, new_minute) == 1)
+        {
+          mem_free (timestr);
+          return 1;
+        }
+      else
         {
           status_mesg (fmt_msg, enter_str);
           (void)wgetch (win[STA].p);
         }
-      else
-        return (timestr);
     }
 }
 
@@ -596,15 +598,12 @@ update_start_time (long *start, long *dur)
   long newtime;
   unsigned hr, mn;
   int valid_date;
-  char *timestr;
   char *msg_wrong_time = _("Invalid time: start time must be before end time!");
   char *msg_enter = _("Press [Enter] to continue");
 
   do
     {
-      timestr = day_edit_time (*start);
-      (void)sscanf (timestr, "%u:%u", &hr, &mn);
-      mem_free (timestr);
+      day_edit_time (*start, &hr, &mn);
       newtime = update_time_in_date (*start, hr, mn);
       if (newtime < *start + *dur)
         {
@@ -627,11 +626,8 @@ update_duration (long *start, long *dur)
 {
   long newtime;
   unsigned hr, mn;
-  char *timestr;
 
-  timestr = day_edit_time (*start + *dur);
-  (void)sscanf (timestr, "%u:%u", &hr, &mn);
-  mem_free (timestr);
+  day_edit_time (*start + *dur, &hr, &mn);
   newtime = update_time_in_date (*start, hr, mn);
   *dur = (newtime > *start) ? newtime - *start : DAYINSEC + newtime - *start;
 }
