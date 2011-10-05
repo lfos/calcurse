@@ -387,37 +387,6 @@ min2sec (unsigned minutes)
 }
 
 /*
- * Checks if a time has a good format.
- * The format could be either HH:MM or H:MM or MM, and we should have:
- * 0 <= HH <= 24 and 0 <= MM < 999.
- * This function returns 1 if the entered time is correct and in
- * [h:mm] or [hh:mm] format, and 2 if the entered time is correct and entered
- * in [mm] format.
- */
-int
-check_time (char *string)
-{
-  char *s = mem_strdup(string);
-  char *hour = strtok(s, ":");
-  char *min = strtok(NULL, ":");
-  int h, m;
-  int ret = 0;
-
-  if (min)
-    {
-      h = atoi (hour);
-      m = atoi (min);
-      if (h >= 0 && h < 24 && m >= 0 && m < MININSEC)
-        ret = 1;
-    }
-  else if (strlen(s) < 4 && is_all_digit(s) && atoi(s) > 0)
-    ret = 2;
-
-  mem_free(s);
-  return ret;
-}
-
-/*
  * Display a scroll bar when there are so many items that they
  * can not be displayed inside the corresponding panel.
  */

@@ -892,7 +892,6 @@ long         date_sec_change (long, int, int);
 long         update_time_in_date (long, unsigned, unsigned);
 long         get_sec_date (struct date);
 long         min2sec (unsigned);
-int          check_time (char *);
 void         draw_scrollbar (WINDOW *, int, int, int, int, int, unsigned);
 void         item_in_popup (char *, char *, char *, char *);
 long         get_today (void);
