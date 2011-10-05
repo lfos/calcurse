@@ -689,6 +689,91 @@ parse_date (const char *date_string, enum datefmt datefmt, int *year,
   return 1;
 }
 
+/*
+ * Converts a time string into hours and minutes. Short forms like "23:"
+ * (23:00) or ":45" (0:45) are allowed.
+ *
+ * Returns 1 on success and 0 on failure.
+ */
+int
+parse_time (const char *string, unsigned *hour, unsigned *minute)
+{
+  const char *p;
+  unsigned in[2] = {0, 0}, n = 0;
+
+  if (!string)
+    return 0;
+
+  /* parse string into in[], read up to two integers */
+  for (p = string; *p; p++)
+    {
+      if (*p == ':')
+        {
+          if ((++n) > 1)
+            return 0;
+        }
+      else if ((*p >= '0') && (*p <= '9'))
+        in[n] = in[n] * 10 + (int)(*p - '0');
+      else
+        return 0;
+    }
+
+  if (n != 1 || in[0] >= DAYINHOURS || in[1] >= HOURINMIN)
+    return 0;
+
+  *hour = in[0];
+  *minute = in[1];
+  return 1;
+}
+
+/*
+ * Converts a duration string into minutes. Both "hh:mm" (e.g.  "23:42") and
+ * "mmm" (e.g. "100") formats are accepted. Short forms like "23:" (23:00) or
+ * ":45" (0:45) are allowed as well.
+ *
+ * Returns 1 on success and 0 on failure.
+ */
+int
+parse_duration (const char *string, unsigned *duration)
+{
+  const char *p;
+  unsigned in[2] = {0, 0}, n = 0;
+
+  if (!string || *string == '\0')
+    return 0;
+
+  /* parse string into in[], read up to two integers */
+  for (p = string; *p; p++)
+    {
+      if (*p == ':')
+        {
+          if ((++n) > 1)
+            return 0;
+        }
+      else if ((*p >= '0') && (*p <= '9'))
+        in[n] = in[n] * 10 + (int)(*p - '0');
+      else
+        return 0;
+    }
+
+  if (n == 0)
+    {
+      if (in[0] > 999)
+        return 0;
+      *duration = in[0];
+    }
+  else if (n == 1)
+    {
+      if (in[0] > DAYINHOURS || in[1] >= HOURINMIN)
+        return 0;
+      *duration = in[0] * HOURINMIN + in[1];
+    }
+  else
+    return 0;
+
+  return 1;
+}
+
 void
 str_toupper (char *s)
 {

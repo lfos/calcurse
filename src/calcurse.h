@@ -904,6 +904,8 @@ const char  *get_tempdir (void);
 char        *new_tempfile (const char *, int);
 int          parse_date (const char *, enum datefmt, int *, int *, int *,
                          struct date *);
+int          parse_time (const char *, unsigned *, unsigned *);
+int          parse_duration (const char *, unsigned *);
 void         str_toupper (char *);
 void         file_close (FILE *, const char *);
 void         psleep (unsigned);
