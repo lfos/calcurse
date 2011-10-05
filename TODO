@@ -12,8 +12,6 @@ High
 * Add a key binding to toggle between visible/hidden tasks inside todo panel
 * Add an optional argument to the --next flag to check for next appointment
   starting from the specified time
-* Improve the way one can specify a duration (allowing something like
-  XXdXXhXXmXXs)
 * Implement word-wrap in the sidebar
 * Support additional iCalendar keywords in appointment/event/todo notes (see
   http://lists.calcurse.org/misc/msg00017.html)
