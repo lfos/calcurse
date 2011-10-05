@@ -696,49 +696,126 @@ parse_time (const char *string, unsigned *hour, unsigned *minute)
 }
 
 /*
- * Converts a duration string into minutes. Both "hh:mm" (e.g.  "23:42") and
- * "mmm" (e.g. "100") formats are accepted. Short forms like "23:" (23:00) or
- * ":45" (0:45) are allowed as well.
+ * Converts a duration string into minutes.
+ *
+ * Allowed formats (noted as regular expressions):
+ *
+ * - \d*:\d*
+ * - (\d*m|\d*h(|\d*m)|\d*d(|\d*m|\d*h(|\d*m)))
+ * - \d+
+ *
+ * "\d" is used as a placeholder for "(0|1|2|3|4|5|6|7|8|9)".
+ *
+ * Note that this function performs an additional range check on each token to
+ * ensure we do not accept semantically invalid strings such as "42:23".
  *
  * Returns 1 on success and 0 on failure.
  */
 int
 parse_duration (const char *string, unsigned *duration)
 {
+  enum {
+    STATE_INITIAL,
+    STATE_HHMM_MM,
+    STATE_DDHHMM_HH,
+    STATE_DDHHMM_MM,
+    STATE_DONE
+  } state = STATE_INITIAL;
+
   const char *p;
-  unsigned in[2] = {0, 0}, n = 0;
+  unsigned in = 0;
+  unsigned dur = 0;
 
   if (!string || *string == '\0')
     return 0;
 
-  /* parse string into in[], read up to two integers */
+  /* parse string using a simple state machine */
   for (p = string; *p; p++)
     {
-      if (*p == ':')
+      if ((*p >= '0') && (*p <= '9'))
         {
-          if ((++n) > 1)
+          if (state == STATE_DONE)
             return 0;
+          else
+            in = in * 10 + (int)(*p - '0');
         }
-      else if ((*p >= '0') && (*p <= '9'))
-        in[n] = in[n] * 10 + (int)(*p - '0');
       else
-        return 0;
+        {
+          switch (state)
+            {
+            case STATE_INITIAL:
+              if (*p == ':')
+                {
+                  dur += in * HOURINMIN;
+                  state = STATE_HHMM_MM;
+                }
+              else if (*p == 'd')
+                {
+                  dur += in * DAYINMIN;
+                  state = STATE_DDHHMM_HH;
+                }
+              else if (*p == 'h')
+                {
+                  if (in >= DAYINHOURS)
+                    return 0;
+                  dur += in * HOURINMIN;
+                  state = STATE_DDHHMM_MM;
+                }
+              else if (*p == 'm')
+                {
+                  if (in >= HOURINMIN)
+                    return 0;
+                  dur += in;
+                  state = STATE_DONE;
+                }
+              else
+                return 0;
+              break;
+            case STATE_DDHHMM_HH:
+              if (*p == 'h')
+                {
+                  if (in >= DAYINHOURS)
+                    return 0;
+                  dur += in * HOURINMIN;
+                  state = STATE_DDHHMM_MM;
+                }
+              else if (*p == 'm')
+                {
+                  if (in >= HOURINMIN)
+                    return 0;
+                  dur += in;
+                  state = STATE_DONE;
+                }
+              else
+                return 0;
+              break;
+            case STATE_DDHHMM_MM:
+              if (*p == 'm')
+                {
+                  if (in >= HOURINMIN)
+                    return 0;
+                  dur += in;
+                  state = STATE_DONE;
+                }
+              else
+                return 0;
+              break;
+            case STATE_HHMM_MM:
+            case STATE_DONE:
+              return 0;
+              break;
+            }
+
+          in = 0;
+        }
     }
 
-  if (n == 0)
-    {
-      if (in[0] > 999)
-        return 0;
-      *duration = in[0];
-    }
-  else if (n == 1)
-    {
-      if (in[0] > DAYINHOURS || in[1] >= HOURINMIN)
-        return 0;
-      *duration = in[0] * HOURINMIN + in[1];
-    }
-  else
+  if ((state == STATE_HHMM_MM && in >= HOURINMIN) ||
+      ((state == STATE_DDHHMM_HH || state == STATE_DDHHMM_MM) && in > 0))
     return 0;
+
+  dur += in;
+  *duration = dur;
 
   return 1;
 }
