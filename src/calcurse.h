@@ -123,13 +123,21 @@
 #define SBARMAXWIDTHPERC 50
 
 /* Related to date manipulation. */
-#define DAYINSEC        86400
-#define HOURINSEC       3600
-#define MININSEC        60
-#define YEARINDAYS      365
 #define YEARINMONTHS    12
-#define WEEKINDAYS      7
+#define YEARINDAYS      365
 #define TM_YEAR_BASE    1900
+
+#define WEEKINDAYS      7
+#define DAYINHOURS      24
+#define HOURINMIN       60
+#define MININSEC        60
+
+#define WEEKINHOURS     (WEEKINDAYS * DAYINHOURS)
+#define WEEKINMIN       (WEEKINHOURS * HOURINMIN)
+#define WEEKINSEC       (WEEKINMIN * MININSEC)
+#define DAYINMIN        (DAYINHOURS * HOURINMIN)
+#define DAYINSEC        (DAYINMIN * MININSEC)
+#define HOURINSEC       (HOURINMIN * MININSEC)
 
 /* Calendar window. */
 #define CALHEIGHT       12
