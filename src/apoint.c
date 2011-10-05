@@ -154,6 +154,7 @@ void
 apoint_add (void)
 {
 #define LTIME 6
+#define LDUR 12
   char *mesg_1 =
     _("Enter start time ([hh:mm]), leave blank for an all-day event : ");
   char *mesg_2 =
@@ -208,7 +209,7 @@ apoint_add (void)
       for (;;)
         {
           status_mesg (mesg_2, "");
-          if (getstring (win[STA].p, item_time, LTIME, 0, 1) != GETSTRING_ESC)
+          if (getstring (win[STA].p, item_time, LDUR, 0, 1) != GETSTRING_ESC)
             {
               if (*item_time == '+' && parse_duration (item_time + 1,
                   &apoint_duration) == 1)
