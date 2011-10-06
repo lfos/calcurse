@@ -155,7 +155,7 @@ event_scan (FILE *f, struct tm start, int id, char *note)
     {
       *nl = '\0';
     }
-  start.tm_hour = 12;
+  start.tm_hour = 0;
   start.tm_min = 0;
   start.tm_sec = 0;
   start.tm_isdst = -1;
@@ -213,7 +213,7 @@ void
 event_paste_item (void)
 {
   (void)event_new (bkp_cut_event.mesg, bkp_cut_event.note,
-                   date2sec (*calendar_get_slctd_day (), 12, 0),
+                   date2sec (*calendar_get_slctd_day (), 0, 0),
                    bkp_cut_event.id);
   event_free_bkp ();
 }

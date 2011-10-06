@@ -254,7 +254,7 @@ apoint_add (void)
         }
       else
         (void)event_new (item_mesg, 0L,
-                         date2sec (*calendar_get_slctd_day (), 12, 0), Id);
+                         date2sec (*calendar_get_slctd_day (), 0, 0), Id);
 
       if (hilt == 0)
         hilt++;

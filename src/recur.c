@@ -425,7 +425,7 @@ recur_event_scan (FILE *f, struct tm start, int id, char type, int freq,
     {
       *nl = '\0';
     }
-  start.tm_hour = until.tm_hour = 12;
+  start.tm_hour = until.tm_hour = 0;
   start.tm_min = until.tm_min = 0;
   start.tm_sec = until.tm_sec = 0;
   start.tm_isdst = until.tm_isdst = -1;
@@ -988,7 +988,7 @@ recur_exc_scan (llist_t *lexc, FILE *data_file)
         {
           EXIT (_("syntax error in item date"));
         }
-      day.tm_hour = 12;
+      day.tm_hour = 0;
       day.tm_min = day.tm_sec = 0;
       day.tm_isdst = -1;
       day.tm_year -= 1900;
@@ -1089,7 +1089,7 @@ recur_event_paste_item (void)
   long new_start, time_shift;
   llist_item_t *i;
 
-  new_start = date2sec (*calendar_get_slctd_day (), 12, 0);
+  new_start = date2sec (*calendar_get_slctd_day (), 0, 0);
   time_shift = new_start - bkp_cut_recur_event.day;
 
   bkp_cut_recur_event.day += time_shift;
