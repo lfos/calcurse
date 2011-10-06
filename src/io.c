@@ -264,8 +264,8 @@ foreach_date_dump (const long date_end, struct rpt *rpt, llist_t *exc,
 
   while (date <= date_end && date <= rpt->until)
     {
-      if (recur_item_inday (item_first_date, exc, rpt->type, rpt->freq,
-                            rpt->until, date))
+      if (recur_item_inday (item_first_date, item_dur, exc, rpt->type,
+                            rpt->freq, rpt->until, date))
         {
           (*cb_dump)(stream, date + item_time, item_dur, item_mesg);
         }

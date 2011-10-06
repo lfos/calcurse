@@ -631,8 +631,8 @@ exc_inday (struct excp *exc, long day_start)
  * calculation of recurrent dates after a turn of years.
  */
 unsigned
-recur_item_inday (long item_start, llist_t *item_exc, int rpt_type,
-                  int rpt_freq, long rpt_until, long day_start)
+recur_item_inday (long item_start, long item_dur, llist_t *item_exc,
+                  int rpt_type, int rpt_freq, long rpt_until, long day_start)
 {
   struct date start_date;
   long day_end, diff;
@@ -708,15 +708,15 @@ recur_item_inday (long item_start, llist_t *item_exc, int rpt_type,
 unsigned
 recur_apoint_inday(struct recur_apoint *rapt, long day_start)
 {
-  return recur_item_inday (rapt->start, &rapt->exc, rapt->rpt->type,
+  return recur_item_inday (rapt->start, rapt->dur, &rapt->exc, rapt->rpt->type,
                            rapt->rpt->freq, rapt->rpt->until, day_start);
 }
 
 unsigned
 recur_event_inday(struct recur_event *rev, long day_start)
 {
-  return recur_item_inday (rev->day, &rev->exc, rev->rpt->type, rev->rpt->freq,
-                           rev->rpt->until, day_start);
+  return recur_item_inday (rev->day, DAYINSEC, &rev->exc, rev->rpt->type,
+                           rev->rpt->freq, rev->rpt->until, day_start);
 }
 
 /*
