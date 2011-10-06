@@ -553,9 +553,9 @@ recur_save_data (FILE *f)
 
 
 /*
- * The two following defines together with the diff_days, diff_weeks,
- * diff_months and diff_years functions were provided by Lukas Fleischer to
- * correct the wrong calculation of recurrent dates after a turn of year.
+ * The two following defines together with the diff_days, diff_months and
+ * diff_years functions were provided by Lukas Fleischer to correct the wrong
+ * calculation of recurrent dates after a turn of year.
  */
 #define BC(start, end, bs)                                              \
   (((end) - (start) + ((start) % bs) - ((end) % bs)) / bs               \
@@ -584,13 +584,6 @@ diff_days (struct tm lt_start, struct tm lt_end)
     }
 
   return diff;
-}
-
-/* Calculate the difference in weeks between two dates. */
-static long
-diff_weeks (struct tm lt_start, struct tm lt_end)
-{
-  return diff_days (lt_start, lt_end) / WEEKINDAYS;
 }
 
 /* Calculate the difference in months between two dates. */
