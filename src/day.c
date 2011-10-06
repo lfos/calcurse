@@ -578,17 +578,21 @@ day_edit_time (int time, unsigned *new_hour, unsigned *new_minute)
   for (;;)
     {
       status_mesg (msg_time, "");
-      updatestring (win[STA].p, &timestr, 0, 1);
-      if (parse_time (timestr, new_hour, new_minute) == 1)
+      if (updatestring (win[STA].p, &timestr, 0, 1) == GETSTRING_VALID)
         {
-          mem_free (timestr);
-          return 1;
+          if (parse_time (timestr, new_hour, new_minute) == 1)
+            {
+              mem_free (timestr);
+              return 1;
+            }
+          else
+            {
+              status_mesg (fmt_msg, enter_str);
+              (void)wgetch (win[STA].p);
+            }
         }
       else
-        {
-          status_mesg (fmt_msg, enter_str);
-          (void)wgetch (win[STA].p);
-        }
+        return 0;
     }
 }
 
@@ -643,7 +647,7 @@ static void
 update_rept (struct rpt **rpt, const long start, struct conf *conf)
 {
   const int SINGLECHAR = 2;
-  int ch, cancel, newfreq, date_entered;
+  int ch, newfreq, date_entered;
   long newuntil;
   char outstr[BUFSIZ];
   char *typstr, *freqstr, *timstr;
@@ -662,16 +666,15 @@ update_rept (struct rpt **rpt, const long start, struct conf *conf)
       status_mesg (msg_rpt_type, msg_rpt_ans);
       typstr = mem_calloc (SINGLECHAR, sizeof (char));
       (void)snprintf (typstr, SINGLECHAR, "%c", recur_def2char ((*rpt)->type));
-      cancel = updatestring (win[STA].p, &typstr, 0, 1);
-      if (cancel)
-        {
-          mem_free (typstr);
-          return;
-        }
-      else
+      if (updatestring (win[STA].p, &typstr, 0, 1) == GETSTRING_VALID)
         {
           ch = toupper (*typstr);
           mem_free (typstr);
+        }
+      else
+        {
+          mem_free (typstr);
+          return;
         }
     }
   while ((ch != 'D') && (ch != 'W') && (ch != 'M') && (ch != 'Y'));
@@ -681,13 +684,7 @@ update_rept (struct rpt **rpt, const long start, struct conf *conf)
       status_mesg (_("Enter the new repetition frequence:"), "");
       freqstr = mem_malloc (BUFSIZ);
       (void)snprintf (freqstr, BUFSIZ, "%d", (*rpt)->freq);
-      cancel = updatestring (win[STA].p, &freqstr, 0, 1);
-      if (cancel)
-        {
-          mem_free (freqstr);
-          return;
-        }
-      else
+      if (updatestring (win[STA].p, &freqstr, 0, 1) == GETSTRING_VALID)
         {
           newfreq = atoi (freqstr);
           mem_free (freqstr);
@@ -696,6 +693,11 @@ update_rept (struct rpt **rpt, const long start, struct conf *conf)
               status_mesg (msg_wrong_freq, msg_enter);
               (void)wgetch (win[STA].p);
             }
+        }
+      else
+        {
+          mem_free (freqstr);
+          return;
         }
     }
   while (newfreq == 0);
@@ -707,8 +709,7 @@ update_rept (struct rpt **rpt, const long start, struct conf *conf)
       status_mesg (_(outstr), "");
       timstr =
           date_sec2date_str ((*rpt)->until, DATEFMT (conf->input_datefmt));
-      cancel = updatestring (win[STA].p, &timstr, 0, 1);
-      if (cancel)
+      if (updatestring (win[STA].p, &timstr, 0, 1) != GETSTRING_VALID)
         {
           mem_free (timstr);
           return;
