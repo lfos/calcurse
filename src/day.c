@@ -596,6 +596,50 @@ day_edit_time (int time, unsigned *new_hour, unsigned *new_minute)
     }
 }
 
+/* Request the user to enter a new time or duration. */
+static int
+day_edit_duration (int start, int dur, unsigned *new_duration)
+{
+  char *timestr = date_sec2date_str (start + dur, "%H:%M");
+  char *msg_time = _("Enter the new time ([hh:mm]) or duration ([+hh:mm]): ");
+  char *enter_str = _("Press [Enter] to continue");
+  char *fmt_msg = _("You entered an invalid time, should be [hh:mm]");
+  long newtime;
+  unsigned hr, mn;
+
+  for (;;)
+    {
+      status_mesg (msg_time, "");
+      if (updatestring (win[STA].p, &timestr, 0, 1) == GETSTRING_VALID)
+        {
+          if (*timestr == '+' && parse_duration (timestr + 1,
+              new_duration) == 1)
+            {
+              *new_duration *= MININSEC;
+              break;
+            }
+          else if (parse_time (timestr, &hr, &mn) == 1)
+            {
+              newtime = update_time_in_date (start + dur, hr, mn);
+              *new_duration = (newtime > start) ? newtime - start :
+                  DAYINSEC + newtime - start;
+              break;
+            }
+          else
+            {
+              status_mesg (fmt_msg, enter_str);
+              (void)wgetch (win[STA].p);
+            }
+        }
+      else
+        return 0;
+    }
+
+  mem_free (timestr);
+  return 1;
+}
+
+/* Request the user to enter a new end time or duration. */
 static void
 update_start_time (long *start, long *dur)
 {
@@ -628,12 +672,10 @@ update_start_time (long *start, long *dur)
 static void
 update_duration (long *start, long *dur)
 {
-  long newtime;
-  unsigned hr, mn;
+  unsigned newdur;
 
-  day_edit_time (*start + *dur, &hr, &mn);
-  newtime = update_time_in_date (*start, hr, mn);
-  *dur = (newtime > *start) ? newtime - *start : DAYINSEC + newtime - *start;
+  day_edit_duration (*start, *dur, &newdur);
+  *dur = newdur;
 }
 
 static void
