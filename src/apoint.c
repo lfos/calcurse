@@ -396,7 +396,7 @@ apoint_sec2str (struct apoint *o, int type, long day, char *start, char *end)
   struct tm *lt;
   time_t t;
 
-  if (o->start < day && type == APPT)
+  if (o->start < day)
     (void)strncpy (start, "..:..", 6);
   else
     {
@@ -404,7 +404,7 @@ apoint_sec2str (struct apoint *o, int type, long day, char *start, char *end)
       lt = localtime (&t);
       (void)snprintf (start, HRMIN_SIZE, "%02u:%02u", lt->tm_hour, lt->tm_min);
     }
-  if (o->start + o->dur > day + DAYINSEC && type == APPT)
+  if (o->start + o->dur > day + DAYINSEC)
     (void)strncpy (end, "..:..", 6);
   else
     {
