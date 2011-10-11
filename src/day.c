@@ -225,10 +225,13 @@ day_store_recur_apoints (long date)
   LLIST_TS_FIND_FOREACH (&recur_alist_p, date, recur_apoint_inday, i)
     {
       struct recur_apoint *rapt = LLIST_TS_GET_DATA (i);
-      int real_start = recur_apoint_inday (rapt, date);
-      (void)day_add_apoint (RECUR_APPT, rapt->mesg, rapt->note, real_start,
-                            rapt->dur, rapt->state, a_nb);
-      a_nb++;
+      unsigned real_start;
+      if (recur_apoint_find_occurrence (rapt, date, &real_start))
+        {
+          (void)day_add_apoint (RECUR_APPT, rapt->mesg, rapt->note, real_start,
+                                rapt->dur, rapt->state, a_nb);
+          a_nb++;
+        }
     }
   LLIST_TS_UNLOCK (&recur_alist_p);
 

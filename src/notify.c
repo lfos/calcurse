@@ -507,15 +507,15 @@ notify_check_added (char *mesg, long start, char state)
 void
 notify_check_repeated (struct recur_apoint *i)
 {
-  long real_app_time;
+  unsigned real_app_time;
   int update_notify = 0;
   time_t current_time;
 
   current_time = time (NULL);
   pthread_mutex_lock (&notify_app.mutex);
-  if ((real_app_time = recur_item_inday (i->start, i->dur, &i->exc,
-                                         i->rpt->type, i->rpt->freq,
-                                         i->rpt->until, get_today ())))
+  if (recur_item_find_occurrence (i->start, i->dur, &i->exc, i->rpt->type,
+                                  i->rpt->freq, i->rpt->until, get_today (),
+                                  &real_app_time))
     {
       if (!notify_app.got_app)
         {
@@ -556,10 +556,11 @@ int
 notify_same_recur_item (struct recur_apoint *i)
 {
   int same = 0;
-  long item_start = 0;
+  unsigned item_start = 0;
 
-  item_start = recur_item_inday (i->start, i->dur, &i->exc, i->rpt->type,
-                                 i->rpt->freq, i->rpt->until, get_today ());
+  recur_item_find_occurrence (i->start, i->dur, &i->exc, i->rpt->type,
+                              i->rpt->freq, i->rpt->until, get_today (),
+                              &item_start);
   pthread_mutex_lock (&notify_app.mutex);
   if (notify_app.got_app && item_start == notify_app.time)
     same = 1;

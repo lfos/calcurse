@@ -432,6 +432,7 @@ app_arg (int add_line, struct date *day, long date, int print_note,
     {
       struct apoint *apt = LLIST_TS_GET_DATA (i);
       struct recur_apoint *ra = LLIST_TS_GET_DATA (j);
+      unsigned occurrence;
 
       while (i && regex && regexec (regex, apt->mesg, 0, 0, 0) != 0)
         {
@@ -447,7 +448,8 @@ app_arg (int add_line, struct date *day, long date, int print_note,
 
       if (apt && ra)
         {
-          if (apt->start <= recur_apoint_inday (ra, today))
+          if (recur_apoint_find_occurrence (ra, today, &occurrence) &&
+              apt->start <= occurrence)
             ra = NULL;
           else
             apt = NULL;

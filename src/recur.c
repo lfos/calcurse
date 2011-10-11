@@ -615,8 +615,8 @@ exc_inday (struct excp *exc, long day_start)
 }
 
 /*
- * Check if the recurrent item belongs to the selected day,
- * and if yes, return the real start time.
+ * Check if the recurrent item belongs to the selected day, and if yes, store
+ * the start date of the occurrence that belongs to the day in a buffer.
  *
  * This function was improved thanks to Tony's patch.
  * Thanks also to youshe for reporting daylight saving time related problems.
@@ -624,8 +624,9 @@ exc_inday (struct excp *exc, long day_start)
  * calculation of recurrent dates after a turn of years.
  */
 unsigned
-recur_item_inday (long item_start, long item_dur, llist_t *item_exc,
-                  int rpt_type, int rpt_freq, long rpt_until, long day_start)
+recur_item_find_occurrence (long item_start, long item_dur, llist_t *item_exc,
+                            int rpt_type, int rpt_freq, long rpt_until,
+                            long day_start, unsigned *occurrence)
 {
   struct date start_date;
   long diff, span;
@@ -693,14 +694,48 @@ recur_item_inday (long item_start, long item_dur, llist_t *item_exc,
 
   if (diff <= span)
     {
-      start_date.dd = lt_item_day.tm_mday;
-      start_date.mm = lt_item_day.tm_mon + 1;
-      start_date.yyyy = lt_item_day.tm_year + 1900;
+      if (occurrence)
+        {
+          start_date.dd = lt_item_day.tm_mday;
+          start_date.mm = lt_item_day.tm_mon + 1;
+          start_date.yyyy = lt_item_day.tm_year + 1900;
 
-      return date2sec (start_date, lt_item.tm_hour, lt_item.tm_min);
+          *occurrence = date2sec (start_date, lt_item.tm_hour, lt_item.tm_min);
+        }
+
+      return 1;
     }
   else
     return 0;
+}
+
+unsigned
+recur_apoint_find_occurrence (struct recur_apoint *rapt, long day_start,
+                              unsigned *occurrence)
+{
+  return recur_item_find_occurrence (rapt->start, rapt->dur, &rapt->exc,
+                                     rapt->rpt->type, rapt->rpt->freq,
+                                     rapt->rpt->until, day_start, occurrence);
+}
+
+unsigned
+recur_event_find_occurrence (struct recur_event *rev, long day_start,
+                             unsigned *occurrence)
+{
+  return recur_item_find_occurrence (rev->day, DAYINSEC, &rev->exc,
+                                     rev->rpt->type, rev->rpt->freq,
+                                     rev->rpt->until, day_start, occurrence);
+}
+
+/* Check if a recurrent item belongs to the selected day. */
+unsigned
+recur_item_inday (long item_start, long item_dur, llist_t *item_exc,
+                  int rpt_type, int rpt_freq, long rpt_until, long day_start)
+{
+  /* We do not need the (real) start time of the occurrence here, so just
+   * ignore the buffer. */
+  return recur_item_find_occurrence (item_start, item_dur, item_exc, rpt_type,
+                                     rpt_freq, rpt_until, day_start, NULL);
 }
 
 unsigned
@@ -1011,15 +1046,15 @@ struct notify_app *
 recur_apoint_check_next (struct notify_app *app, long start, long day)
 {
   llist_item_t *i;
-  long real_recur_start_time;
+  unsigned real_recur_start_time;
 
   LLIST_TS_LOCK (&recur_alist_p);
   LLIST_TS_FIND_FOREACH (&recur_alist_p, app->time, recur_apoint_starts_before, i)
     {
       struct recur_apoint *rapt = LLIST_TS_GET_DATA (i);
 
-      real_recur_start_time = recur_apoint_inday(rapt, day);
-      if (real_recur_start_time > start)
+      if (recur_apoint_find_occurrence (rapt, day, &real_recur_start_time) &&
+          real_recur_start_time > start)
         {
           app->time = real_recur_start_time;
           app->txt = mem_strdup (rapt->mesg);

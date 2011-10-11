@@ -821,6 +821,12 @@ struct recur_event  *recur_event_scan (FILE *, struct tm, int, char,
 void                 recur_apoint_write (struct recur_apoint *, FILE *);
 void                 recur_event_write (struct recur_event *, FILE *);
 void                 recur_save_data (FILE *);
+unsigned             recur_item_find_occurrence (long, long, llist_t *, int,
+                                                 int, long, long, unsigned *);
+unsigned             recur_apoint_find_occurrence (struct recur_apoint *,
+                                                   long, unsigned *);
+unsigned             recur_event_find_occurrence (struct recur_event *, long,
+                                                  unsigned *);
 unsigned             recur_item_inday (long, long, llist_t *, int, int, long,
                                        long);
 unsigned             recur_apoint_inday(struct recur_apoint *, long);
