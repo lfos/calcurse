@@ -115,7 +115,7 @@ getstr_ins_char (struct getstr_status *st, char *c)
 static void
 bell (void)
 {
-  printf ("\a");
+  putchar ('\a');
 }
 
 /* Initialize getstring data structure. */

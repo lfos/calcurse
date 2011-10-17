@@ -573,7 +573,7 @@ custom_layout_config (void)
       "       't' -> todo panel\n\n");
 
   conf_win.p = (WINDOW *)0;
-  (void)snprintf (label, BUFSIZ, _("layout configuration"));
+  (void)strncpy (label, _("layout configuration"), BUFSIZ);
   custom_confwin_init (&conf_win, label);
   cursor = mark = wins_layout () - 1;
   display_layout_config (&conf_win, mark, cursor);
@@ -893,7 +893,7 @@ custom_color_config (void)
   char label[BUFSIZ];
 
   conf_win.p = 0;
-  (void)snprintf (label, BUFSIZ, _("color theme"));
+  (void)strncpy (label, _("color theme"), BUFSIZ);
   custom_confwin_init (&conf_win, label);
   mark_fore = NBUSERCOLORS;
   mark_back = SIZE - 1;
@@ -995,7 +995,7 @@ custom_color_theme_name (char *theme_name)
   };
 
   if (!colorize)
-    (void)snprintf (theme_name, BUFSIZ, "0");
+    (void)strncpy (theme_name, "0", BUFSIZ);
   else
     {
       pair_content (COLR_CUSTOM, &color[0], &color[1]);
@@ -1160,7 +1160,7 @@ custom_general_config (struct conf *conf)
 
   clear ();
   custom_set_swsiz (&cwin);
-  (void)snprintf (cwin.label, BUFSIZ, _("general options"));
+  (void)strncpy (cwin.label, _("general options"), BUFSIZ);
   wins_scrollwin_init (&cwin);
   wins_show (cwin.win.p, cwin.label);
   status_mesg (number_str, keys);
@@ -1365,7 +1365,7 @@ custom_keys_config (void)
   clear ();
   custom_set_swsiz (&kwin);
   nbdisplayed = (kwin.win.h - LABELLINES) / LINESPERKEY;
-  (void)snprintf (kwin.label, BUFSIZ, _("keys configuration"));
+  (void)strncpy (kwin.label, _("keys configuration"), BUFSIZ);
   wins_scrollwin_init (&kwin);
   wins_show (kwin.win.p, kwin.label);
   custom_keys_config_bar ();

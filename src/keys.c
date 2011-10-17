@@ -444,7 +444,7 @@ keys_format_label (char *key, int keylen)
 
   bzero (fmtkey, sizeof (fmtkey));
   if (len == 0)
-    (void)snprintf (fmtkey, sizeof (fmtkey), "?");
+    (void)strncpy (fmtkey, "?", sizeof (fmtkey));
   else if (len <= keylen)
     {
       for (i = 0; i < keylen - len; i++)

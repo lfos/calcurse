@@ -727,7 +727,7 @@ notify_config_bar (void)
 
   clear ();
   custom_set_swsiz (&cwin);
-  (void)snprintf (cwin.label, BUFSIZ, _("notification options"));
+  (void)strncpy (cwin.label, _("notification options"), BUFSIZ);
   wins_scrollwin_init (&cwin);
   wins_show (cwin.win.p, cwin.label);
   status_mesg (number_str, keys);

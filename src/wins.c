@@ -227,17 +227,17 @@ wins_init_panels (void)
   char label[BUFSIZ];
 
   win[CAL].p = newwin (CALHEIGHT, wins_sbar_width (), win[CAL].y, win[CAL].x);
-  (void)snprintf (label, BUFSIZ, _("Calendar"));
+  (void)strncpy (label, _("Calendar"), BUFSIZ);
   wins_show (win[CAL].p, label);
 
   win[APP].p = newwin (win[APP].h, win[APP].w, win[APP].y, win[APP].x);
-  (void)snprintf (label, BUFSIZ, _("Appointments"));
+  (void)strncpy (label, _("Appointments"), BUFSIZ);
   wins_show (win[APP].p, label);
   apad.width = win[APP].w - 3;
   apad.ptrwin = newpad (apad.length, apad.width);
 
   win[TOD].p = newwin (win[TOD].h, win[TOD].w, win[TOD].y, win[TOD].x);
-  (void)snprintf (label, BUFSIZ, _("ToDo"));
+  (void)strncpy (label, _("ToDo"), BUFSIZ);
   wins_show (win[TOD].p, label);
 
   /* Enable function keys (i.e. arrow keys) in those windows */

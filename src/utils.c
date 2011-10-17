@@ -293,7 +293,7 @@ date_sec2date_str (long sec, char *datefmt)
   char *datestr = (char *) mem_calloc (BUFSIZ, sizeof (char));
 
   if (sec == 0)
-    (void)snprintf (datestr, BUFSIZ, "0");
+    (void)strncpy (datestr, "0", BUFSIZ);
   else
     {
       lt = localtime ((time_t *)&sec);

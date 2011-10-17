@@ -391,7 +391,7 @@ display_todo_item (int incolor, char *msg, int prio, int note, int width, int y,
   if (prio > 0)
     snprintf (priostr, sizeof priostr, "%d", prio);
   else
-    snprintf (priostr, sizeof priostr, "X");
+    strncpy (priostr, "X", sizeof priostr);
 
   if (incolor == 0)
     custom_apply_attr (w, ATTR_HIGHEST);

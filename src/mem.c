@@ -287,24 +287,24 @@ dump_block_info (struct mem_blk *blk)
   if (blk == NULL)
     return;
 
-  printf (_("---==== MEMORY BLOCK ====----------------\n"));
+  puts (_("---==== MEMORY BLOCK ====----------------\n"));
   printf (_("            id: %u\n"), blk->id);
   printf (_("          size: %u\n"), blk->size);
   printf (_("  allocated in: %s\n"), blk->pos);
-  printf (_("-----------------------------------------\n"));
+  puts (_("-----------------------------------------\n"));
 }
 
 void
 mem_stats (void)
 {
-  printf ("\n");
-  printf (_("+------------------------------+\n"));
-  printf (_("| calcurse memory usage report |\n"));
-  printf (_("+------------------------------+\n"));
+  putchar ('\n');
+  puts (_("+------------------------------+\n"));
+  puts (_("| calcurse memory usage report |\n"));
+  puts (_("+------------------------------+\n"));
   printf (_("  number of calls: %u\n"), mstats.ncall);
   printf (_(" allocated blocks: %u\n"), mstats.nalloc);
   printf (_("   unfreed blocks: %u\n"), mstats.nalloc - mstats.nfree);
-  printf ("\n");
+  putchar ("\n");
 
   if (mstats.nfree < mstats.nalloc)
     {

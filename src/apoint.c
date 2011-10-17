@@ -436,9 +436,9 @@ apoint_write (struct apoint *o, FILE *f)
     (void)fprintf (f, ">%s ", o->note);
 
   if (o->state & APOINT_NOTIFY)
-    (void)fprintf (f, "!");
+    (void)fputc ('!', f);
   else
-    (void)fprintf (f, "|");
+    (void)fputc ('|', f);
 
   (void)fprintf (f, "%s\n", o->mesg);
 }

@@ -481,13 +481,13 @@ recur_apoint_write (struct recur_apoint *o, FILE *f)
                      lt->tm_mon + 1, lt->tm_mday, 1900 + lt->tm_year);
     }
   recur_write_exc (&o->exc, f);
-  (void)fprintf (f, "} ");
+  (void)fputs ("} ", f);
   if (o->note != NULL)
     (void)fprintf (f, ">%s ", o->note);
   if (o->state & APOINT_NOTIFY)
-    (void)fprintf (f, "!");
+    (void)fputc ('!', f);
   else
-    (void)fprintf (f, "|");
+    (void)fputc ('|', f);
   (void)fprintf (f, "%s\n", o->mesg);
 }
 
@@ -524,7 +524,7 @@ recur_event_write (struct recur_event *o, FILE *f)
                      end_mon, end_day, end_year);
     }
   recur_write_exc (&o->exc, f);
-  (void)fprintf (f, "} ");
+  (void)fputs ("} ", f);
   if (o->note != NULL)
     (void)fprintf (f, ">%s ", o->note);
   (void)fprintf (f, "%s\n", o->mesg);

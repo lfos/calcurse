@@ -295,41 +295,41 @@ foreach_date_dump (const long date_end, struct rpt *rpt, llist_t *exc,
 static void
 ical_export_valarm (FILE *stream)
 {
-  (void)fprintf (stream, "BEGIN:VALARM\n");
+  (void)fputs ("BEGIN:VALARM\n", stream);
   pthread_mutex_lock (&nbar.mutex);
   (void)fprintf (stream, "TRIGGER:-P%dS\n", nbar.cntdwn);
   pthread_mutex_unlock (&nbar.mutex);
-  (void)fprintf (stream, "ACTION:DISPLAY\n");
-  (void)fprintf (stream, "END:VALARM\n");
+  (void)fputs ("ACTION:DISPLAY\n", stream);
+  (void)fputs ("END:VALARM\n", stream);
 }
 
 /* Export header. */
 static void
 ical_export_header (FILE *stream)
 {
-  (void)fprintf (stream, "BEGIN:VCALENDAR\n");
+  (void)fputs ("BEGIN:VCALENDAR\n", stream);
   (void)fprintf (stream, "PRODID:-//calcurse//NONSGML v%s//EN\n", VERSION);
-  (void)fprintf (stream, "VERSION:2.0\n");
+  (void)fputs ("VERSION:2.0\n", stream);
 }
 
 static void
 pcal_export_header (FILE *stream)
 {
-  (void)fprintf (stream, "# calcurse pcal export\n");
-  (void)fprintf (stream, "\n# =======\n# options\n# =======\n");
+  (void)fputs ("# calcurse pcal export\n", stream);
+  (void)fputs ("\n# =======\n# options\n# =======\n", stream);
   (void)fprintf (stream, "opt -A -K -l -m -F %s\n",
                  calendar_week_begins_on_monday () ?
                  "Monday" : "Sunday");
-  (void)fprintf (stream, "# Display week number (i.e. 1-52) on every Monday\n");
+  (void)fputs ("# Display week number (i.e. 1-52) on every Monday\n", stream);
   (void)fprintf (stream, "all monday in all  %s %%w\n", _("Week"));
-  (void)fprintf (stream, "\n");
+  (void)fputc ('\n', stream);
 }
 
 /* Export footer. */
 static void
 ical_export_footer (FILE *stream)
 {
-  (void)fprintf (stream, "END:VCALENDAR\n");
+  (void)fputs ("END:VCALENDAR\n", stream);
 }
 
 static void
@@ -348,7 +348,7 @@ ical_export_recur_events (FILE *stream)
     {
       struct recur_event *rev = LLIST_GET_DATA (i);
       date_sec2date_fmt (rev->day, ICALDATEFMT, ical_date);
-      (void)fprintf (stream, "BEGIN:VEVENT\n");
+      (void)fputs ("BEGIN:VEVENT\n", stream);
       (void)fprintf (stream, "DTSTART:%s\n", ical_date);
       (void)fprintf (stream, "RRULE:FREQ=%s;INTERVAL=%d",
                      ical_recur_type[rev->rpt->type], rev->rpt->freq);
@@ -359,25 +359,25 @@ ical_export_recur_events (FILE *stream)
           (void)fprintf (stream, ";UNTIL=%s\n", ical_date);
         }
       else
-        (void)fprintf (stream, "\n");
+        (void)fputc ('\n', stream);
 
       if (LLIST_FIRST (&rev->exc))
         {
-          (void)fprintf (stream, "EXDATE:");
+          (void)fputs ("EXDATE:", stream);
           LLIST_FOREACH (&rev->exc, j)
             {
               struct excp *exc = LLIST_GET_DATA (j);
               date_sec2date_fmt (exc->st, ICALDATEFMT, ical_date);
               (void)fprintf (stream, "%s", ical_date);
               if (LLIST_NEXT (j))
-                (void)fprintf (stream, ",");
+                (void)fputc (',', stream);
               else
-                (void)fprintf (stream, "\n");
+                (void)fputc ('\n', stream);
             }
         }
 
       (void)fprintf (stream, "SUMMARY:%s\n", rev->mesg);
-      (void)fprintf (stream, "END:VEVENT\n");
+      (void)fputs ("END:VEVENT\n", stream);
     }
 }
 
@@ -412,11 +412,11 @@ pcal_export_recur_events (FILE *stream)
   llist_item_t *i;
   char pcal_date[BUFSIZ];
 
-  (void)fprintf (stream, "\n# =============");
-  (void)fprintf (stream, "\n# Recur. Events");
-  (void)fprintf (stream, "\n# =============\n");
-  (void)fprintf (stream,
-                 "# (pcal does not support from..until dates specification\n");
+  (void)fputs ("\n# =============", stream);
+  (void)fputs ("\n# Recur. Events", stream);
+  (void)fputs ("\n# =============\n", stream);
+  (void)fputs ("# (pcal does not support from..until dates specification\n",
+      stream);
 
   LLIST_FOREACH (&recur_elist, i)
     {
@@ -472,10 +472,10 @@ ical_export_events (FILE *stream)
     {
       struct event *ev = LLIST_TS_GET_DATA (i);
       date_sec2date_fmt (ev->day, ICALDATEFMT, ical_date);
-      (void)fprintf (stream, "BEGIN:VEVENT\n");
+      (void)fputs ("BEGIN:VEVENT\n", stream);
       (void)fprintf (stream, "DTSTART:%s\n", ical_date);
       (void)fprintf (stream, "SUMMARY:%s\n", ev->mesg);
-      (void)fprintf (stream, "END:VEVENT\n");
+      (void)fputs ("END:VEVENT\n", stream);
     }
 }
 
@@ -484,13 +484,13 @@ pcal_export_events (FILE *stream)
 {
   llist_item_t *i;
 
-  (void)fprintf (stream, "\n# ======\n# Events\n# ======\n");
+  (void)fputs ("\n# ======\n# Events\n# ======\n", stream);
   LLIST_FOREACH (&eventlist, i)
     {
       struct event *ev = LLIST_TS_GET_DATA (i);
       pcal_dump_event (stream, ev->day, 0, ev->mesg);
     }
-  (void)fprintf (stream, "\n");
+  (void)fputc ('\n', stream);
 }
 
 /* Export recurrent appointments. */
@@ -507,7 +507,7 @@ ical_export_recur_apoints (FILE *stream)
       struct recur_apoint *rapt = LLIST_TS_GET_DATA (i);
 
       date_sec2date_fmt (rapt->start, ICALDATETIMEFMT, ical_datetime);
-      (void)fprintf (stream, "BEGIN:VEVENT\n");
+      (void)fputs ("BEGIN:VEVENT\n", stream);
       (void)fprintf (stream, "DTSTART:%s\n", ical_datetime);
       (void)fprintf (stream, "DURATION:PT0H0M%ldS\n", rapt->dur);
       (void)fprintf (stream, "RRULE:FREQ=%s;INTERVAL=%d",
@@ -520,27 +520,27 @@ ical_export_recur_apoints (FILE *stream)
           (void)fprintf (stream, ";UNTIL=%s\n", ical_date);
         }
       else
-        (void)fprintf (stream, "\n");
+        (void)fputc ('\n', stream);
 
       if (LLIST_FIRST (&rapt->exc))
         {
-          (void)fprintf (stream, "EXDATE:");
+          (void)fputs ("EXDATE:", stream);
           LLIST_FOREACH (&rapt->exc, j)
             {
               struct excp *exc = LLIST_GET_DATA (j);
               date_sec2date_fmt (exc->st, ICALDATEFMT, ical_date);
               (void)fprintf (stream, "%s", ical_date);
               if (LLIST_NEXT (j))
-                (void)fprintf (stream, ",");
+                (void)fputc (',', stream);
               else
-                (void)fprintf (stream, "\n");
+                (void)fputc ('\n', stream);
             }
         }
 
       (void)fprintf (stream, "SUMMARY:%s\n", rapt->mesg);
       if (rapt->state & APOINT_NOTIFY)
         ical_export_valarm (stream);
-      (void)fprintf (stream, "END:VEVENT\n");
+      (void)fputs ("END:VEVENT\n", stream);
     }
   LLIST_TS_UNLOCK (&recur_alist_p);
 }
@@ -551,11 +551,11 @@ pcal_export_recur_apoints (FILE *stream)
   llist_item_t *i;
   char pcal_date[BUFSIZ], pcal_beg[BUFSIZ], pcal_end[BUFSIZ];
 
-  (void)fprintf (stream, "\n# ==============");
-  (void)fprintf (stream, "\n# Recur. Apoints");
-  (void)fprintf (stream, "\n# ==============\n");
-  (void)fprintf (stream,
-                 "# (pcal does not support from..until dates specification\n");
+  (void)fputs ("\n# ==============", stream);
+  (void)fputs ("\n# Recur. Apoints", stream);
+  (void)fputs ("\n# ==============\n", stream);
+  (void)fputs ("# (pcal does not support from..until dates specification\n",
+      stream);
 
   LLIST_TS_FOREACH (&recur_alist_p, i)
     {
@@ -618,13 +618,13 @@ ical_export_apoints (FILE *stream)
     {
       struct apoint *apt = LLIST_TS_GET_DATA (i);
       date_sec2date_fmt (apt->start, ICALDATETIMEFMT, ical_datetime);
-      (void)fprintf (stream, "BEGIN:VEVENT\n");
+      (void)fputs ("BEGIN:VEVENT\n", stream);
       (void)fprintf (stream, "DTSTART:%s\n", ical_datetime);
       (void)fprintf (stream, "DURATION:PT0H0M%ldS\n", apt->dur);
       (void)fprintf (stream, "SUMMARY:%s\n", apt->mesg);
       if (apt->state & APOINT_NOTIFY)
         ical_export_valarm (stream);
-      (void)fprintf (stream, "END:VEVENT\n");
+      (void)fputs ("END:VEVENT\n", stream);
     }
   LLIST_TS_UNLOCK (&alist_p);
 }
@@ -634,7 +634,7 @@ pcal_export_apoints (FILE *stream)
 {
   llist_item_t *i;
 
-  (void)fprintf (stream, "\n# ============\n# Appointments\n# ============\n");
+  (void)fputs ("\n# ============\n# Appointments\n# ============\n", stream);
   LLIST_TS_LOCK (&alist_p);
   LLIST_TS_FOREACH (&alist_p, i)
     {
@@ -642,7 +642,7 @@ pcal_export_apoints (FILE *stream)
       pcal_dump_apoint (stream, apt->start, apt->dur, apt->mesg);
     }
   LLIST_TS_UNLOCK (&alist_p);
-  (void)fprintf (stream, "\n");
+  (void)fputc ('\n', stream);
 }
 
 /* Export todo items. */
@@ -657,10 +657,10 @@ ical_export_todo (FILE *stream)
       if (todo->id < 0)  /* completed items */
         continue;
 
-      (void)fprintf (stream, "BEGIN:VTODO\n");
+      (void)fputs ("BEGIN:VTODO\n", stream);
       (void)fprintf (stream, "PRIORITY:%d\n", todo->id);
       (void)fprintf (stream, "SUMMARY:%s\n", todo->mesg);
-      (void)fprintf (stream, "END:VTODO\n");
+      (void)fputs ("END:VTODO\n", stream);
     }
 }
 
@@ -669,17 +669,17 @@ pcal_export_todo (FILE *stream)
 {
   llist_item_t *i;
 
-  (void)fprintf (stream, "#\n# Todos\n#\n");
+  (void)fputs ("#\n# Todos\n#\n", stream);
   LLIST_FOREACH (&todolist, i)
     {
       struct todo *todo = LLIST_TS_GET_DATA (i);
       if (todo->id < 0)  /* completed items */
         continue;
 
-      (void)fprintf (stream, "note all  ");
+      (void)fputs ("note all  ", stream);
       (void)fprintf (stream, "%d. %s\n", todo->id, todo->mesg);
     }
-  (void)fprintf (stream, "\n");
+  (void)fputc ('\n', stream);
 }
 
 /* Append a line to a file. */
@@ -772,7 +772,7 @@ io_init (char *cfile, char *datadir)
                 {
                 case 'N':
                 case 'n':
-                  printf (_("aborting...\n"));
+                  puts (_("aborting...\n"));
                   exit_calcurse (EXIT_FAILURE);
                   break;
 
@@ -787,12 +787,12 @@ io_init (char *cfile, char *datadir)
                   else
                     {
                       printf (_("%s successfully created\n"), path_apts);
-                      printf (_("starting interactive mode...\n"));
+                      puts (_("starting interactive mode...\n"));
                     }
                   break;
 
                 default:
-                  printf (_("aborting...\n"));
+                  puts (_("aborting...\n"));
                   exit_calcurse (EXIT_FAILURE);
                   break;
                 }
@@ -862,121 +862,116 @@ io_save_conf (struct conf *conf)
 
   (void)fprintf (fp, "%s\n", config_txt);
 
-  (void)fprintf (fp, "# If this option is set to yes, "
-                 "automatic save is done when quitting\n");
-  (void)fprintf (fp, "auto_save=");
+  (void)fputs ("# If this option is set to yes, "
+               "automatic save is done when quitting\n", fp);
+  (void)fputs ("auto_save=", fp);
   (void)fprintf (fp, "%s\n", (conf->auto_save) ? "yes" : "no");
 
-  (void)fprintf (fp, "\n# If this option is set to yes, "
-                 "the GC is run automatically when quitting\n");
-  (void)fprintf (fp, "auto_gc=");
+  (void)fputs ("\n# If this option is set to yes, "
+               "the GC is run automatically when quitting\n", fp);
+  (void)fputs ("auto_gc=", fp);
   (void)fprintf (fp, "%s\n", (conf->auto_gc) ? "yes" : "no");
 
-  (void)fprintf (fp, "\n# If not null, perform automatic saves every "
-                 "'periodic_save' minutes\n");
-  (void)fprintf (fp, "periodic_save=");
+  (void)fputs ("\n# If not null, perform automatic saves every "
+               "'periodic_save' minutes\n", fp);
+  (void)fputs ("periodic_save=", fp);
   (void)fprintf (fp, "%d\n", conf->periodic_save);
 
-  (void)fprintf (fp, "\n# If this option is set to yes, "
-                 "confirmation is required before quitting\n");
-  (void)fprintf (fp, "confirm_quit=");
+  (void)fputs ("\n# If this option is set to yes, "
+               "confirmation is required before quitting\n", fp);
+  (void)fputs ("confirm_quit=", fp);
   (void)fprintf (fp, "%s\n", (conf->confirm_quit) ? "yes" : "no");
 
-  (void)fprintf (fp, "\n# If this option is set to yes, "
-                 "confirmation is required before deleting an event\n");
-  (void)fprintf (fp, "confirm_delete=");
+  (void)fputs ("\n# If this option is set to yes, "
+               "confirmation is required before deleting an event\n", fp);
+  (void)fputs ("confirm_delete=", fp);
   (void)fprintf (fp, "%s\n", (conf->confirm_delete) ? "yes" : "no");
 
-  (void)fprintf (fp, "\n# If this option is set to yes, "
-                 "messages about loaded and saved data will not be displayed\n");
-  (void)fprintf (fp, "skip_system_dialogs=");
+  (void)fputs ("\n# If this option is set to yes, messages about loaded and "
+               "saved data will not be displayed\n", fp);
+  (void)fputs ("skip_system_dialogs=", fp);
   (void)fprintf (fp, "%s\n", (conf->skip_system_dialogs) ? "yes" : "no");
 
-  (void)fprintf (fp,
-                 "\n# If this option is set to yes, progress bar appearing "
-                 "when saving data will not be displayed\n");
-  (void)fprintf (fp, "skip_progress_bar=");
+  (void)fputs ("\n# If this option is set to yes, progress bar appearing "
+               "when saving data will not be displayed\n", fp);
+  (void)fputs ("skip_progress_bar=", fp);
   (void)fprintf (fp, "%s\n", (conf->skip_progress_bar) ? "yes" : "no");
 
-  (void)fprintf (fp, "\n# Default calendar view (0)monthly (1)weekly:\n");
-  (void)fprintf (fp, "calendar_default_view=");
+  (void)fputs ("\n# Default calendar view (0)monthly (1)weekly:\n", fp);
+  (void)fputs ("calendar_default_view=", fp);
   (void)fprintf (fp, "%d\n", calendar_get_view ());
 
-  (void)fprintf (fp, "\n# If this option is set to yes, "
-                 "monday is the first day of the week, else it is sunday\n");
-  (void)fprintf (fp, "week_begins_on_monday=");
+  (void)fputs ("\n# If this option is set to yes, "
+               "monday is the first day of the week, else it is sunday\n", fp);
+  (void)fputs ("week_begins_on_monday=", fp);
   (void)fprintf (fp, "%s\n",
                  (calendar_week_begins_on_monday ())? "yes" : "no");
 
-  (void)fprintf (fp, "\n# This is the color theme used for menus :\n");
-  (void)fprintf (fp, "color-theme=");
+  (void)fputs ("\n# This is the color theme used for menus :\n", fp);
+  (void)fputs ("color-theme=", fp);
   (void)fprintf (fp, "%s\n", theme_name);
 
-  (void)fprintf (fp, "\n# This is the layout of the calendar :\n");
-  (void)fprintf (fp, "layout=");
+  (void)fputs ("\n# This is the layout of the calendar :\n", fp);
+  (void)fputs ("layout=", fp);
   (void)fprintf (fp, "%d\n", wins_layout ());
 
-  (void)fprintf (fp, "\n# Width (in percentage, 0 being minimun width) "
-                 "of the side bar :\n");
-  (void)fprintf (fp, "side-bar_width=");
+  (void)fputs ("\n# Width ( percentage, 0 being minimun width, fp) "
+               "of the side bar :\n", fp);
+  (void)fputs ("side-bar_width=", fp);
   (void)fprintf (fp, "%d\n", wins_sbar_wperc ());
 
   if (ui_mode == UI_CURSES)
     pthread_mutex_lock (&nbar.mutex);
-  (void)fprintf (fp,
-                 "\n# If this option is set to yes, "
-                 "notify-bar will be displayed :\n");
-  (void)fprintf (fp, "notify-bar_show=");
+  (void)fputs ("\n# If this option is set to yes, "
+               "notify-bar will be displayed :\n", fp);
+  (void)fputs ("notify-bar_show=", fp);
   (void)fprintf (fp, "%s\n", (nbar.show) ? "yes" : "no");
 
-  (void)fprintf (fp,
-                 "\n# Format of the date to be displayed inside notify-bar :\n");
-  (void)fprintf (fp, "notify-bar_date=");
+  (void)fputs ("\n# Format of the date to be displayed inside notify-bar :\n", fp);
+  (void)fputs ("notify-bar_date=", fp);
   (void)fprintf (fp, "%s\n", nbar.datefmt);
 
-  (void)fprintf (fp,
-                 "\n# Format of the time to be displayed inside notify-bar :\n");
-  (void)fprintf (fp, "notify-bar_clock=");
+  (void)fputs ("\n# Format of the time to be displayed inside notify-bar :\n", fp);
+  (void)fputs ("notify-bar_clock=", fp);
   (void)fprintf (fp, "%s\n", nbar.timefmt);
 
-  (void)fprintf (fp,
-                 "\n# Warn user if he has an appointment within next "
-                 "'notify-bar_warning' seconds :\n");
-  (void)fprintf (fp, "notify-bar_warning=");
+  (void)fputs ("\n# Warn user if he has an appointment within next "
+               "'notify-bar_warning' seconds :\n", fp);
+  (void)fputs ("notify-bar_warning=", fp);
   (void)fprintf (fp, "%d\n", nbar.cntdwn);
 
-  (void)fprintf (fp, "\n# Command used to notify user of "
-                 "an upcoming appointment :\n");
-  (void)fprintf (fp, "notify-bar_command=");
+  (void)fputs ("\n# Command used to notify user of "
+               "an upcoming appointment :\n", fp);
+  (void)fputs ("notify-bar_command=", fp);
   (void)fprintf (fp, "%s\n", nbar.cmd);
 
-  (void)fprintf (fp, "\n# Notify all appointments instead of flagged ones only\n");
-  (void)fprintf (fp, "notify-all=");
+  (void)fputs ("\n# Notify all appointments instead of flagged ones only\n", fp);
+  (void)fputs ("notify-all=", fp);
   (void)fprintf (fp, "%s\n", (nbar.notify_all) ? "yes" : "no");
 
-  (void)fprintf (fp, "\n# Format of the date to be displayed "
-                 "in non-interactive mode :\n");
-  (void)fprintf (fp, "output_datefmt=");
+  (void)fputs ("\n# Format of the date to be displayed "
+               "in non-interactive mode :\n", fp);
+  (void)fputs ("output_datefmt=", fp);
   (void)fprintf (fp, "%s\n", conf->output_datefmt);
 
-  (void)fprintf (fp, "\n# Format to be used when entering a date "
-                 "(1)mm/dd/yyyy (2)dd/mm/yyyy (3)yyyy/mm/dd) "
-                 "(4)yyyy-mm-dd:\n");
-  (void)fprintf (fp, "input_datefmt=");
+  (void)fputs ("\n# Format to be used when entering a date "
+               "(1)mm/dd/yyyy (2)dd/mm/yyyy (3)yyyy/mm/dd) "
+               "(4)yyyy-mm-dd:\n", fp);
+  (void)fputs ("input_datefmt=", fp);
   (void)fprintf (fp, "%d\n", conf->input_datefmt);
 
   if (ui_mode == UI_CURSES)
     pthread_mutex_unlock (&nbar.mutex);
 
-  (void)fprintf (fp, "\n# If this option is set to yes, "
-                 "calcurse will run in background to get notifications "
-                 "after exiting\n");
-  (void)fprintf (fp, "notify-daemon_enable=");
+  (void)fputs ("\n# If this option is set to yes, "
+               "calcurse will run in background to get notifications "
+               "after exiting\n", fp);
+  (void)fputs ("notify-daemon_enable=", fp);
   (void)fprintf (fp, "%s\n", dmon.enable ? "yes" : "no");
 
-    (void)fprintf (fp, "\n# If this option is set to yes, "
-                   "activity will be logged when running in background\n");
-  (void)fprintf (fp, "notify-daemon_log=");
+  (void)fputs ("\n# If this option is set to yes, "
+               "activity will be logged when running in background\n", fp);
+  (void)fputs ("notify-daemon_log=", fp);
   (void)fprintf (fp, "%s\n", dmon.log ? "yes" : "no");
 
   file_close (fp, __FILE_POS__);

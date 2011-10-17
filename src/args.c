@@ -179,7 +179,7 @@ status_arg (void)
   else if (dpid)
     fprintf (stdout, _("calcurse is running in background (pid %d)\n"), dpid);
   else
-    fprintf (stdout, _("calcurse is not running\n"));
+    puts (_("calcurse is not running\n"));
 }
 
 /*
