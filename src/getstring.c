@@ -282,7 +282,7 @@ updatestring (WINDOW *win, char **str, int x, int y)
   EXIT_IF (len + 1 > BUFSIZ, _("Internal error: line too long"));
 
   buf = mem_malloc (BUFSIZ);
-  (void)memcpy (buf, *str, len + 1);
+  memcpy (buf, *str, len + 1);
 
   ret = getstring (win, buf, BUFSIZ, x, y);
 
@@ -291,7 +291,7 @@ updatestring (WINDOW *win, char **str, int x, int y)
       len = strlen (buf);
       *str = mem_realloc (*str, len + 1, 1);
       EXIT_IF (*str == NULL, _("out of memory"));
-      (void)memcpy (*str, buf, len + 1);
+      memcpy (*str, buf, len + 1);
     }
 
   mem_free (buf);

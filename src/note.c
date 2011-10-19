@@ -94,7 +94,7 @@ view_note (char *note, char *pager)
 
   if (note == NULL)
     return;
-  (void)snprintf (fullname, BUFSIZ, "%s%s", path_notes, note);
+  snprintf (fullname, BUFSIZ, "%s%s", path_notes, note);
   wins_launch_external (fullname, pager);
 }
 

@@ -215,11 +215,10 @@ get_export_stream (enum export_type type)
   stream = NULL;
   stream_name = (char *) mem_malloc (BUFSIZ);
   if ((home = getenv ("HOME")) != NULL)
-    (void)snprintf (stream_name, BUFSIZ, "%s/calcurse.%s", home,
-                    file_ext[type]);
+    snprintf (stream_name, BUFSIZ, "%s/calcurse.%s", home, file_ext[type]);
   else
-    (void)snprintf (stream_name, BUFSIZ, "%s/calcurse.%s", get_tempdir (),
-                    file_ext[type]);
+    snprintf (stream_name, BUFSIZ, "%s/calcurse.%s", get_tempdir (),
+              file_ext[type]);
 
   while (stream == NULL)
     {
@@ -234,7 +233,7 @@ get_export_stream (enum export_type type)
       if (stream == NULL)
         {
           status_mesg (wrong_name, press_enter);
-          (void)wgetch (win[STA].p);
+          wgetch (win[STA].p);
         }
     }
   mem_free (stream_name);
@@ -295,41 +294,40 @@ foreach_date_dump (const long date_end, struct rpt *rpt, llist_t *exc,
 static void
 ical_export_valarm (FILE *stream)
 {
-  (void)fputs ("BEGIN:VALARM\n", stream);
+  fputs ("BEGIN:VALARM\n", stream);
   pthread_mutex_lock (&nbar.mutex);
-  (void)fprintf (stream, "TRIGGER:-P%dS\n", nbar.cntdwn);
+  fprintf (stream, "TRIGGER:-P%dS\n", nbar.cntdwn);
   pthread_mutex_unlock (&nbar.mutex);
-  (void)fputs ("ACTION:DISPLAY\n", stream);
-  (void)fputs ("END:VALARM\n", stream);
+  fputs ("ACTION:DISPLAY\n", stream);
+  fputs ("END:VALARM\n", stream);
 }
 
 /* Export header. */
 static void
 ical_export_header (FILE *stream)
 {
-  (void)fputs ("BEGIN:VCALENDAR\n", stream);
-  (void)fprintf (stream, "PRODID:-//calcurse//NONSGML v%s//EN\n", VERSION);
-  (void)fputs ("VERSION:2.0\n", stream);
+  fputs ("BEGIN:VCALENDAR\n", stream);
+  fprintf (stream, "PRODID:-//calcurse//NONSGML v%s//EN\n", VERSION);
+  fputs ("VERSION:2.0\n", stream);
 }
 
 static void
 pcal_export_header (FILE *stream)
 {
-  (void)fputs ("# calcurse pcal export\n", stream);
-  (void)fputs ("\n# =======\n# options\n# =======\n", stream);
-  (void)fprintf (stream, "opt -A -K -l -m -F %s\n",
-                 calendar_week_begins_on_monday () ?
-                 "Monday" : "Sunday");
-  (void)fputs ("# Display week number (i.e. 1-52) on every Monday\n", stream);
-  (void)fprintf (stream, "all monday in all  %s %%w\n", _("Week"));
-  (void)fputc ('\n', stream);
+  fputs ("# calcurse pcal export\n", stream);
+  fputs ("\n# =======\n# options\n# =======\n", stream);
+  fprintf (stream, "opt -A -K -l -m -F %s\n",
+           calendar_week_begins_on_monday () ?  "Monday" : "Sunday");
+  fputs ("# Display week number (i.e. 1-52) on every Monday\n", stream);
+  fprintf (stream, "all monday in all  %s %%w\n", _("Week"));
+  fputc ('\n', stream);
 }
 
 /* Export footer. */
 static void
 ical_export_footer (FILE *stream)
 {
-  (void)fputs ("END:VCALENDAR\n", stream);
+  fputs ("END:VCALENDAR\n", stream);
 }
 
 static void
@@ -348,36 +346,36 @@ ical_export_recur_events (FILE *stream)
     {
       struct recur_event *rev = LLIST_GET_DATA (i);
       date_sec2date_fmt (rev->day, ICALDATEFMT, ical_date);
-      (void)fputs ("BEGIN:VEVENT\n", stream);
-      (void)fprintf (stream, "DTSTART:%s\n", ical_date);
-      (void)fprintf (stream, "RRULE:FREQ=%s;INTERVAL=%d",
-                     ical_recur_type[rev->rpt->type], rev->rpt->freq);
+      fputs ("BEGIN:VEVENT\n", stream);
+      fprintf (stream, "DTSTART:%s\n", ical_date);
+      fprintf (stream, "RRULE:FREQ=%s;INTERVAL=%d",
+               ical_recur_type[rev->rpt->type], rev->rpt->freq);
 
       if (rev->rpt->until != 0)
         {
           date_sec2date_fmt (rev->rpt->until, ICALDATEFMT, ical_date);
-          (void)fprintf (stream, ";UNTIL=%s\n", ical_date);
+          fprintf (stream, ";UNTIL=%s\n", ical_date);
         }
       else
-        (void)fputc ('\n', stream);
+        fputc ('\n', stream);
 
       if (LLIST_FIRST (&rev->exc))
         {
-          (void)fputs ("EXDATE:", stream);
+          fputs ("EXDATE:", stream);
           LLIST_FOREACH (&rev->exc, j)
             {
               struct excp *exc = LLIST_GET_DATA (j);
               date_sec2date_fmt (exc->st, ICALDATEFMT, ical_date);
-              (void)fprintf (stream, "%s", ical_date);
+              fprintf (stream, "%s", ical_date);
               if (LLIST_NEXT (j))
-                (void)fputc (',', stream);
+                fputc (',', stream);
               else
-                (void)fputc ('\n', stream);
+                fputc ('\n', stream);
             }
         }
 
-      (void)fprintf (stream, "SUMMARY:%s\n", rev->mesg);
-      (void)fputs ("END:VEVENT\n", stream);
+      fprintf (stream, "SUMMARY:%s\n", rev->mesg);
+      fputs ("END:VEVENT\n", stream);
     }
 }
 
@@ -389,7 +387,7 @@ pcal_dump_event (FILE *stream, long event_date, long event_dur,
   char pcal_date[BUFSIZ];
 
   date_sec2date_fmt (event_date, "%b %d", pcal_date);
-  (void)fprintf (stream, "%s  %s\n", pcal_date, event_mesg);
+  fprintf (stream, "%s  %s\n", pcal_date, event_mesg);
 }
 
 /* Format and dump appointment data to a pcal formatted file. */
@@ -402,8 +400,8 @@ pcal_dump_apoint (FILE *stream, long apoint_date, long apoint_dur,
   date_sec2date_fmt (apoint_date, "%b %d", pcal_date);
   date_sec2date_fmt (apoint_date, "%R", pcal_beg);
   date_sec2date_fmt (apoint_date + apoint_dur, "%R", pcal_end);
-  (void)fprintf (stream, "%s  ", pcal_date);
-  (void)fprintf (stream, "(%s -> %s) %s\n", pcal_beg, pcal_end, apoint_mesg);
+  fprintf (stream, "%s  ", pcal_date);
+  fprintf (stream, "(%s -> %s) %s\n", pcal_beg, pcal_end, apoint_mesg);
 }
 
 static void
@@ -412,11 +410,10 @@ pcal_export_recur_events (FILE *stream)
   llist_item_t *i;
   char pcal_date[BUFSIZ];
 
-  (void)fputs ("\n# =============", stream);
-  (void)fputs ("\n# Recur. Events", stream);
-  (void)fputs ("\n# =============\n", stream);
-  (void)fputs ("# (pcal does not support from..until dates specification\n",
-      stream);
+  fputs ("\n# =============", stream);
+  fputs ("\n# Recur. Events", stream);
+  fputs ("\n# =============\n", stream);
+  fputs ("# (pcal does not support from..until dates specification\n", stream);
 
   LLIST_FOREACH (&recur_elist, i)
     {
@@ -427,23 +424,22 @@ pcal_export_recur_events (FILE *stream)
             {
             case RECUR_DAILY:
               date_sec2date_fmt (rev->day, "%b %d", pcal_date);
-              (void)fprintf (stream, "all day on_or_after %s  %s\n",
-                             pcal_date, rev->mesg);
+              fprintf (stream, "all day on_or_after %s  %s\n", pcal_date,
+                       rev->mesg);
               break;
             case RECUR_WEEKLY:
               date_sec2date_fmt (rev->day, "%a", pcal_date);
-              (void)fprintf (stream, "all %s on_or_after ", pcal_date);
+              fprintf (stream, "all %s on_or_after ", pcal_date);
               date_sec2date_fmt (rev->day, "%b %d", pcal_date);
-              (void)fprintf (stream, "%s  %s\n", pcal_date, rev->mesg);
+              fprintf (stream, "%s  %s\n", pcal_date, rev->mesg);
               break;
             case RECUR_MONTHLY:
               date_sec2date_fmt (rev->day, "%d", pcal_date);
-              (void)fprintf (stream, "day on all %s  %s\n", pcal_date,
-                             rev->mesg);
+              fprintf (stream, "day on all %s  %s\n", pcal_date, rev->mesg);
               break;
             case RECUR_YEARLY:
               date_sec2date_fmt (rev->day, "%b %d", pcal_date);
-              (void)fprintf (stream, "%s  %s\n", pcal_date, rev->mesg);
+              fprintf (stream, "%s  %s\n", pcal_date, rev->mesg);
               break;
             default:
               EXIT (_("incoherent repetition type"));
@@ -472,10 +468,10 @@ ical_export_events (FILE *stream)
     {
       struct event *ev = LLIST_TS_GET_DATA (i);
       date_sec2date_fmt (ev->day, ICALDATEFMT, ical_date);
-      (void)fputs ("BEGIN:VEVENT\n", stream);
-      (void)fprintf (stream, "DTSTART:%s\n", ical_date);
-      (void)fprintf (stream, "SUMMARY:%s\n", ev->mesg);
-      (void)fputs ("END:VEVENT\n", stream);
+      fputs ("BEGIN:VEVENT\n", stream);
+      fprintf (stream, "DTSTART:%s\n", ical_date);
+      fprintf (stream, "SUMMARY:%s\n", ev->mesg);
+      fputs ("END:VEVENT\n", stream);
     }
 }
 
@@ -484,13 +480,13 @@ pcal_export_events (FILE *stream)
 {
   llist_item_t *i;
 
-  (void)fputs ("\n# ======\n# Events\n# ======\n", stream);
+  fputs ("\n# ======\n# Events\n# ======\n", stream);
   LLIST_FOREACH (&eventlist, i)
     {
       struct event *ev = LLIST_TS_GET_DATA (i);
       pcal_dump_event (stream, ev->day, 0, ev->mesg);
     }
-  (void)fputc ('\n', stream);
+  fputc ('\n', stream);
 }
 
 /* Export recurrent appointments. */
@@ -507,40 +503,40 @@ ical_export_recur_apoints (FILE *stream)
       struct recur_apoint *rapt = LLIST_TS_GET_DATA (i);
 
       date_sec2date_fmt (rapt->start, ICALDATETIMEFMT, ical_datetime);
-      (void)fputs ("BEGIN:VEVENT\n", stream);
-      (void)fprintf (stream, "DTSTART:%s\n", ical_datetime);
-      (void)fprintf (stream, "DURATION:PT0H0M%ldS\n", rapt->dur);
-      (void)fprintf (stream, "RRULE:FREQ=%s;INTERVAL=%d",
-                     ical_recur_type[rapt->rpt->type], rapt->rpt->freq);
+      fputs ("BEGIN:VEVENT\n", stream);
+      fprintf (stream, "DTSTART:%s\n", ical_datetime);
+      fprintf (stream, "DURATION:PT0H0M%ldS\n", rapt->dur);
+      fprintf (stream, "RRULE:FREQ=%s;INTERVAL=%d",
+               ical_recur_type[rapt->rpt->type], rapt->rpt->freq);
 
       if (rapt->rpt->until != 0)
         {
           date_sec2date_fmt (rapt->rpt->until + HOURINSEC, ICALDATEFMT,
                              ical_date);
-          (void)fprintf (stream, ";UNTIL=%s\n", ical_date);
+          fprintf (stream, ";UNTIL=%s\n", ical_date);
         }
       else
-        (void)fputc ('\n', stream);
+        fputc ('\n', stream);
 
       if (LLIST_FIRST (&rapt->exc))
         {
-          (void)fputs ("EXDATE:", stream);
+          fputs ("EXDATE:", stream);
           LLIST_FOREACH (&rapt->exc, j)
             {
               struct excp *exc = LLIST_GET_DATA (j);
               date_sec2date_fmt (exc->st, ICALDATEFMT, ical_date);
-              (void)fprintf (stream, "%s", ical_date);
+              fprintf (stream, "%s", ical_date);
               if (LLIST_NEXT (j))
-                (void)fputc (',', stream);
+                fputc (',', stream);
               else
-                (void)fputc ('\n', stream);
+                fputc ('\n', stream);
             }
         }
 
-      (void)fprintf (stream, "SUMMARY:%s\n", rapt->mesg);
+      fprintf (stream, "SUMMARY:%s\n", rapt->mesg);
       if (rapt->state & APOINT_NOTIFY)
         ical_export_valarm (stream);
-      (void)fputs ("END:VEVENT\n", stream);
+      fputs ("END:VEVENT\n", stream);
     }
   LLIST_TS_UNLOCK (&recur_alist_p);
 }
@@ -551,11 +547,10 @@ pcal_export_recur_apoints (FILE *stream)
   llist_item_t *i;
   char pcal_date[BUFSIZ], pcal_beg[BUFSIZ], pcal_end[BUFSIZ];
 
-  (void)fputs ("\n# ==============", stream);
-  (void)fputs ("\n# Recur. Apoints", stream);
-  (void)fputs ("\n# ==============\n", stream);
-  (void)fputs ("# (pcal does not support from..until dates specification\n",
-      stream);
+  fputs ("\n# ==============", stream);
+  fputs ("\n# Recur. Apoints", stream);
+  fputs ("\n# ==============\n", stream);
+  fputs ("# (pcal does not support from..until dates specification\n", stream);
 
   LLIST_TS_FOREACH (&recur_alist_p, i)
     {
@@ -569,25 +564,25 @@ pcal_export_recur_apoints (FILE *stream)
             {
             case RECUR_DAILY:
               date_sec2date_fmt (rapt->start, "%b %d", pcal_date);
-              (void)fprintf (stream, "all day on_or_after %s  (%s -> %s) %s\n",
-                             pcal_date, pcal_beg, pcal_end, rapt->mesg);
+              fprintf (stream, "all day on_or_after %s  (%s -> %s) %s\n",
+                       pcal_date, pcal_beg, pcal_end, rapt->mesg);
               break;
             case RECUR_WEEKLY:
               date_sec2date_fmt (rapt->start, "%a", pcal_date);
-              (void)fprintf (stream, "all %s on_or_after ", pcal_date);
+              fprintf (stream, "all %s on_or_after ", pcal_date);
               date_sec2date_fmt (rapt->start, "%b %d", pcal_date);
-              (void)fprintf (stream, "%s  (%s -> %s) %s\n", pcal_date,
-                             pcal_beg, pcal_end, rapt->mesg);
+              fprintf (stream, "%s  (%s -> %s) %s\n", pcal_date, pcal_beg,
+                       pcal_end, rapt->mesg);
               break;
             case RECUR_MONTHLY:
               date_sec2date_fmt (rapt->start, "%d", pcal_date);
-              (void)fprintf (stream, "day on all %s  (%s -> %s) %s\n",
-                             pcal_date, pcal_beg, pcal_end, rapt->mesg);
+              fprintf (stream, "day on all %s  (%s -> %s) %s\n", pcal_date,
+                       pcal_beg, pcal_end, rapt->mesg);
               break;
             case RECUR_YEARLY:
               date_sec2date_fmt (rapt->start, "%b %d", pcal_date);
-              (void)fprintf (stream, "%s  (%s -> %s) %s\n", pcal_date,
-                             pcal_beg, pcal_end, rapt->mesg);
+              fprintf (stream, "%s  (%s -> %s) %s\n", pcal_date, pcal_beg,
+                       pcal_end, rapt->mesg);
               break;
             default:
               EXIT (_("incoherent repetition type"));
@@ -618,13 +613,13 @@ ical_export_apoints (FILE *stream)
     {
       struct apoint *apt = LLIST_TS_GET_DATA (i);
       date_sec2date_fmt (apt->start, ICALDATETIMEFMT, ical_datetime);
-      (void)fputs ("BEGIN:VEVENT\n", stream);
-      (void)fprintf (stream, "DTSTART:%s\n", ical_datetime);
-      (void)fprintf (stream, "DURATION:PT0H0M%ldS\n", apt->dur);
-      (void)fprintf (stream, "SUMMARY:%s\n", apt->mesg);
+      fputs ("BEGIN:VEVENT\n", stream);
+      fprintf (stream, "DTSTART:%s\n", ical_datetime);
+      fprintf (stream, "DURATION:PT0H0M%ldS\n", apt->dur);
+      fprintf (stream, "SUMMARY:%s\n", apt->mesg);
       if (apt->state & APOINT_NOTIFY)
         ical_export_valarm (stream);
-      (void)fputs ("END:VEVENT\n", stream);
+      fputs ("END:VEVENT\n", stream);
     }
   LLIST_TS_UNLOCK (&alist_p);
 }
@@ -634,7 +629,7 @@ pcal_export_apoints (FILE *stream)
 {
   llist_item_t *i;
 
-  (void)fputs ("\n# ============\n# Appointments\n# ============\n", stream);
+  fputs ("\n# ============\n# Appointments\n# ============\n", stream);
   LLIST_TS_LOCK (&alist_p);
   LLIST_TS_FOREACH (&alist_p, i)
     {
@@ -642,7 +637,7 @@ pcal_export_apoints (FILE *stream)
       pcal_dump_apoint (stream, apt->start, apt->dur, apt->mesg);
     }
   LLIST_TS_UNLOCK (&alist_p);
-  (void)fputc ('\n', stream);
+  fputc ('\n', stream);
 }
 
 /* Export todo items. */
@@ -657,10 +652,10 @@ ical_export_todo (FILE *stream)
       if (todo->id < 0)  /* completed items */
         continue;
 
-      (void)fputs ("BEGIN:VTODO\n", stream);
-      (void)fprintf (stream, "PRIORITY:%d\n", todo->id);
-      (void)fprintf (stream, "SUMMARY:%s\n", todo->mesg);
-      (void)fputs ("END:VTODO\n", stream);
+      fputs ("BEGIN:VTODO\n", stream);
+      fprintf (stream, "PRIORITY:%d\n", todo->id);
+      fprintf (stream, "SUMMARY:%s\n", todo->mesg);
+      fputs ("END:VTODO\n", stream);
     }
 }
 
@@ -669,17 +664,17 @@ pcal_export_todo (FILE *stream)
 {
   llist_item_t *i;
 
-  (void)fputs ("#\n# Todos\n#\n", stream);
+  fputs ("#\n# Todos\n#\n", stream);
   LLIST_FOREACH (&todolist, i)
     {
       struct todo *todo = LLIST_TS_GET_DATA (i);
       if (todo->id < 0)  /* completed items */
         continue;
 
-      (void)fputs ("note all  ", stream);
-      (void)fprintf (stream, "%d. %s\n", todo->id, todo->mesg);
+      fputs ("note all  ", stream);
+      fprintf (stream, "%d. %s\n", todo->id, todo->mesg);
     }
-  (void)fputc ('\n', stream);
+  fputc ('\n', stream);
 }
 
 /* Append a line to a file. */
@@ -728,15 +723,15 @@ io_init (char *cfile, char *datadir)
   if (datadir != NULL)
     {
       home = datadir;
-      (void)snprintf (path_dir, BUFSIZ, "%s", home);
-      (void)snprintf (path_todo, BUFSIZ, "%s/" TODO_PATH_NAME, home);
-      (void)snprintf (path_conf, BUFSIZ, "%s/" CONF_PATH_NAME, home);
-      (void)snprintf (path_notes, BUFSIZ, "%s/" NOTES_DIR_NAME, home);
-      (void)snprintf (path_apts, BUFSIZ, "%s/" APTS_PATH_NAME, home);
-      (void)snprintf (path_keys, BUFSIZ, "%s/" KEYS_PATH_NAME, home);
-      (void)snprintf (path_cpid, BUFSIZ, "%s/" CPID_PATH_NAME, home);
-      (void)snprintf (path_dpid, BUFSIZ, "%s/" DPID_PATH_NAME, home);
-      (void)snprintf (path_dmon_log, BUFSIZ, "%s/" DLOG_PATH_NAME, home);
+      snprintf (path_dir, BUFSIZ, "%s", home);
+      snprintf (path_todo, BUFSIZ, "%s/" TODO_PATH_NAME, home);
+      snprintf (path_conf, BUFSIZ, "%s/" CONF_PATH_NAME, home);
+      snprintf (path_notes, BUFSIZ, "%s/" NOTES_DIR_NAME, home);
+      snprintf (path_apts, BUFSIZ, "%s/" APTS_PATH_NAME, home);
+      snprintf (path_keys, BUFSIZ, "%s/" KEYS_PATH_NAME, home);
+      snprintf (path_cpid, BUFSIZ, "%s/" CPID_PATH_NAME, home);
+      snprintf (path_dpid, BUFSIZ, "%s/" DPID_PATH_NAME, home);
+      snprintf (path_dmon_log, BUFSIZ, "%s/" DLOG_PATH_NAME, home);
     }
   else
     {
@@ -745,22 +740,22 @@ io_init (char *cfile, char *datadir)
         {
           home = ".";
         }
-      (void)snprintf (path_dir, BUFSIZ, "%s/" DIR_NAME, home);
-      (void)snprintf (path_todo, BUFSIZ, "%s/" TODO_PATH, home);
-      (void)snprintf (path_conf, BUFSIZ, "%s/" CONF_PATH, home);
-      (void)snprintf (path_keys, BUFSIZ, "%s/" KEYS_PATH, home);
-      (void)snprintf (path_cpid, BUFSIZ, "%s/" CPID_PATH, home);
-      (void)snprintf (path_dpid, BUFSIZ, "%s/" DPID_PATH, home);
-      (void)snprintf (path_dmon_log, BUFSIZ, "%s/" DLOG_PATH, home);
-      (void)snprintf (path_notes, BUFSIZ, "%s/" NOTES_DIR, home);
+      snprintf (path_dir, BUFSIZ, "%s/" DIR_NAME, home);
+      snprintf (path_todo, BUFSIZ, "%s/" TODO_PATH, home);
+      snprintf (path_conf, BUFSIZ, "%s/" CONF_PATH, home);
+      snprintf (path_keys, BUFSIZ, "%s/" KEYS_PATH, home);
+      snprintf (path_cpid, BUFSIZ, "%s/" CPID_PATH, home);
+      snprintf (path_dpid, BUFSIZ, "%s/" DPID_PATH, home);
+      snprintf (path_dmon_log, BUFSIZ, "%s/" DLOG_PATH, home);
+      snprintf (path_notes, BUFSIZ, "%s/" NOTES_DIR, home);
       if (cfile == NULL)
         {
-          (void)snprintf (path_apts, BUFSIZ, "%s/" APTS_PATH, home);
+          snprintf (path_apts, BUFSIZ, "%s/" APTS_PATH, home);
         }
       else
         {
-          (void)snprintf (apts_file, BUFSIZ, "%s", cfile);
-          (void)strncpy (path_apts, apts_file, BUFSIZ);
+          snprintf (apts_file, BUFSIZ, "%s", cfile);
+          strncpy (path_apts, apts_file, BUFSIZ);
           /* check if the file exists, otherwise create it */
           data_file = fopen (path_apts, "r");
           if (data_file == NULL)
@@ -860,119 +855,118 @@ io_save_conf (struct conf *conf)
 
   custom_color_theme_name (theme_name);
 
-  (void)fprintf (fp, "%s\n", config_txt);
+  fprintf (fp, "%s\n", config_txt);
 
-  (void)fputs ("# If this option is set to yes, "
-               "automatic save is done when quitting\n", fp);
-  (void)fputs ("auto_save=", fp);
-  (void)fprintf (fp, "%s\n", (conf->auto_save) ? "yes" : "no");
+  fputs ("# If this option is set to yes, "
+         "automatic save is done when quitting\n", fp);
+  fputs ("auto_save=", fp);
+  fprintf (fp, "%s\n", (conf->auto_save) ? "yes" : "no");
 
-  (void)fputs ("\n# If this option is set to yes, "
-               "the GC is run automatically when quitting\n", fp);
-  (void)fputs ("auto_gc=", fp);
-  (void)fprintf (fp, "%s\n", (conf->auto_gc) ? "yes" : "no");
+  fputs ("\n# If this option is set to yes, "
+         "the GC is run automatically when quitting\n", fp);
+  fputs ("auto_gc=", fp);
+  fprintf (fp, "%s\n", (conf->auto_gc) ? "yes" : "no");
 
-  (void)fputs ("\n# If not null, perform automatic saves every "
-               "'periodic_save' minutes\n", fp);
-  (void)fputs ("periodic_save=", fp);
-  (void)fprintf (fp, "%d\n", conf->periodic_save);
+  fputs ("\n# If not null, perform automatic saves every "
+         "'periodic_save' minutes\n", fp);
+  fputs ("periodic_save=", fp);
+  fprintf (fp, "%d\n", conf->periodic_save);
 
-  (void)fputs ("\n# If this option is set to yes, "
-               "confirmation is required before quitting\n", fp);
-  (void)fputs ("confirm_quit=", fp);
-  (void)fprintf (fp, "%s\n", (conf->confirm_quit) ? "yes" : "no");
+  fputs ("\n# If this option is set to yes, "
+         "confirmation is required before quitting\n", fp);
+  fputs ("confirm_quit=", fp);
+  fprintf (fp, "%s\n", (conf->confirm_quit) ? "yes" : "no");
 
-  (void)fputs ("\n# If this option is set to yes, "
-               "confirmation is required before deleting an event\n", fp);
-  (void)fputs ("confirm_delete=", fp);
-  (void)fprintf (fp, "%s\n", (conf->confirm_delete) ? "yes" : "no");
+  fputs ("\n# If this option is set to yes, "
+         "confirmation is required before deleting an event\n", fp);
+  fputs ("confirm_delete=", fp);
+  fprintf (fp, "%s\n", (conf->confirm_delete) ? "yes" : "no");
 
-  (void)fputs ("\n# If this option is set to yes, messages about loaded and "
-               "saved data will not be displayed\n", fp);
-  (void)fputs ("skip_system_dialogs=", fp);
-  (void)fprintf (fp, "%s\n", (conf->skip_system_dialogs) ? "yes" : "no");
+  fputs ("\n# If this option is set to yes, messages about loaded and "
+         "saved data will not be displayed\n", fp);
+  fputs ("skip_system_dialogs=", fp);
+  fprintf (fp, "%s\n", (conf->skip_system_dialogs) ? "yes" : "no");
 
-  (void)fputs ("\n# If this option is set to yes, progress bar appearing "
-               "when saving data will not be displayed\n", fp);
-  (void)fputs ("skip_progress_bar=", fp);
-  (void)fprintf (fp, "%s\n", (conf->skip_progress_bar) ? "yes" : "no");
+  fputs ("\n# If this option is set to yes, progress bar appearing "
+         "when saving data will not be displayed\n", fp);
+  fputs ("skip_progress_bar=", fp);
+  fprintf (fp, "%s\n", (conf->skip_progress_bar) ? "yes" : "no");
 
-  (void)fputs ("\n# Default calendar view (0)monthly (1)weekly:\n", fp);
-  (void)fputs ("calendar_default_view=", fp);
-  (void)fprintf (fp, "%d\n", calendar_get_view ());
+  fputs ("\n# Default calendar view (0)monthly (1)weekly:\n", fp);
+  fputs ("calendar_default_view=", fp);
+  fprintf (fp, "%d\n", calendar_get_view ());
 
-  (void)fputs ("\n# If this option is set to yes, "
-               "monday is the first day of the week, else it is sunday\n", fp);
-  (void)fputs ("week_begins_on_monday=", fp);
-  (void)fprintf (fp, "%s\n",
-                 (calendar_week_begins_on_monday ())? "yes" : "no");
+  fputs ("\n# If this option is set to yes, "
+         "monday is the first day of the week, else it is sunday\n", fp);
+  fputs ("week_begins_on_monday=", fp);
+  fprintf (fp, "%s\n", (calendar_week_begins_on_monday ())? "yes" : "no");
 
-  (void)fputs ("\n# This is the color theme used for menus :\n", fp);
-  (void)fputs ("color-theme=", fp);
-  (void)fprintf (fp, "%s\n", theme_name);
+  fputs ("\n# This is the color theme used for menus :\n", fp);
+  fputs ("color-theme=", fp);
+  fprintf (fp, "%s\n", theme_name);
 
-  (void)fputs ("\n# This is the layout of the calendar :\n", fp);
-  (void)fputs ("layout=", fp);
-  (void)fprintf (fp, "%d\n", wins_layout ());
+  fputs ("\n# This is the layout of the calendar :\n", fp);
+  fputs ("layout=", fp);
+  fprintf (fp, "%d\n", wins_layout ());
 
-  (void)fputs ("\n# Width ( percentage, 0 being minimun width, fp) "
-               "of the side bar :\n", fp);
-  (void)fputs ("side-bar_width=", fp);
-  (void)fprintf (fp, "%d\n", wins_sbar_wperc ());
+  fputs ("\n# Width ( percentage, 0 being minimun width, fp) "
+         "of the side bar :\n", fp);
+  fputs ("side-bar_width=", fp);
+  fprintf (fp, "%d\n", wins_sbar_wperc ());
 
   if (ui_mode == UI_CURSES)
     pthread_mutex_lock (&nbar.mutex);
-  (void)fputs ("\n# If this option is set to yes, "
-               "notify-bar will be displayed :\n", fp);
-  (void)fputs ("notify-bar_show=", fp);
-  (void)fprintf (fp, "%s\n", (nbar.show) ? "yes" : "no");
+  fputs ("\n# If this option is set to yes, "
+         "notify-bar will be displayed :\n", fp);
+  fputs ("notify-bar_show=", fp);
+  fprintf (fp, "%s\n", (nbar.show) ? "yes" : "no");
 
-  (void)fputs ("\n# Format of the date to be displayed inside notify-bar :\n", fp);
-  (void)fputs ("notify-bar_date=", fp);
-  (void)fprintf (fp, "%s\n", nbar.datefmt);
+  fputs ("\n# Format of the date to be displayed inside notify-bar :\n", fp);
+  fputs ("notify-bar_date=", fp);
+  fprintf (fp, "%s\n", nbar.datefmt);
 
-  (void)fputs ("\n# Format of the time to be displayed inside notify-bar :\n", fp);
-  (void)fputs ("notify-bar_clock=", fp);
-  (void)fprintf (fp, "%s\n", nbar.timefmt);
+  fputs ("\n# Format of the time to be displayed inside notify-bar :\n", fp);
+  fputs ("notify-bar_clock=", fp);
+  fprintf (fp, "%s\n", nbar.timefmt);
 
-  (void)fputs ("\n# Warn user if he has an appointment within next "
-               "'notify-bar_warning' seconds :\n", fp);
-  (void)fputs ("notify-bar_warning=", fp);
-  (void)fprintf (fp, "%d\n", nbar.cntdwn);
+  fputs ("\n# Warn user if he has an appointment within next "
+         "'notify-bar_warning' seconds :\n", fp);
+  fputs ("notify-bar_warning=", fp);
+  fprintf (fp, "%d\n", nbar.cntdwn);
 
-  (void)fputs ("\n# Command used to notify user of "
-               "an upcoming appointment :\n", fp);
-  (void)fputs ("notify-bar_command=", fp);
-  (void)fprintf (fp, "%s\n", nbar.cmd);
+  fputs ("\n# Command used to notify user of "
+         "an upcoming appointment :\n", fp);
+  fputs ("notify-bar_command=", fp);
+  fprintf (fp, "%s\n", nbar.cmd);
 
-  (void)fputs ("\n# Notify all appointments instead of flagged ones only\n", fp);
-  (void)fputs ("notify-all=", fp);
-  (void)fprintf (fp, "%s\n", (nbar.notify_all) ? "yes" : "no");
+  fputs ("\n# Notify all appointments instead of flagged ones only\n", fp);
+  fputs ("notify-all=", fp);
+  fprintf (fp, "%s\n", (nbar.notify_all) ? "yes" : "no");
 
-  (void)fputs ("\n# Format of the date to be displayed "
-               "in non-interactive mode :\n", fp);
-  (void)fputs ("output_datefmt=", fp);
-  (void)fprintf (fp, "%s\n", conf->output_datefmt);
+  fputs ("\n# Format of the date to be displayed "
+         "in non-interactive mode :\n", fp);
+  fputs ("output_datefmt=", fp);
+  fprintf (fp, "%s\n", conf->output_datefmt);
 
-  (void)fputs ("\n# Format to be used when entering a date "
-               "(1)mm/dd/yyyy (2)dd/mm/yyyy (3)yyyy/mm/dd) "
-               "(4)yyyy-mm-dd:\n", fp);
-  (void)fputs ("input_datefmt=", fp);
-  (void)fprintf (fp, "%d\n", conf->input_datefmt);
+  fputs ("\n# Format to be used when entering a date "
+         "(1)mm/dd/yyyy (2)dd/mm/yyyy (3)yyyy/mm/dd) "
+         "(4)yyyy-mm-dd:\n", fp);
+  fputs ("input_datefmt=", fp);
+  fprintf (fp, "%d\n", conf->input_datefmt);
 
   if (ui_mode == UI_CURSES)
     pthread_mutex_unlock (&nbar.mutex);
 
-  (void)fputs ("\n# If this option is set to yes, "
-               "calcurse will run in background to get notifications "
-               "after exiting\n", fp);
-  (void)fputs ("notify-daemon_enable=", fp);
-  (void)fprintf (fp, "%s\n", dmon.enable ? "yes" : "no");
+  fputs ("\n# If this option is set to yes, "
+         "calcurse will run in background to get notifications "
+         "after exiting\n", fp);
+  fputs ("notify-daemon_enable=", fp);
+  fprintf (fp, "%s\n", dmon.enable ? "yes" : "no");
 
-  (void)fputs ("\n# If this option is set to yes, "
-               "activity will be logged when running in background\n", fp);
-  (void)fputs ("notify-daemon_log=", fp);
-  (void)fprintf (fp, "%s\n", dmon.log ? "yes" : "no");
+  fputs ("\n# If this option is set to yes, "
+         "activity will be logged when running in background\n", fp);
+  fputs ("notify-daemon_log=", fp);
+  fprintf (fp, "%s\n", dmon.log ? "yes" : "no");
 
   file_close (fp, __FILE_POS__);
 
@@ -1093,7 +1087,7 @@ io_save_cal (struct conf *conf, enum save_display display)
       && display != IO_SAVE_DISPLAY_MARK)
     {
       status_mesg (save_success, enter);
-      (void)wgetch (win[STA].p);
+      wgetch (win[STA].p);
     }
 
   pthread_mutex_unlock (&io_save_mutex);
@@ -1129,7 +1123,7 @@ io_load_app (void)
       c = getc (data_file);
       if (c == EOF)
         break;
-      (void)ungetc (c, data_file);
+      ungetc (c, data_file);
 
       /* Read the date first: it is common to both events
        * and appointments.
@@ -1153,7 +1147,7 @@ io_load_app (void)
         {
           EXIT (_("no event nor appointment found"));
         }
-      (void)ungetc (c, data_file);
+      ungetc (c, data_file);
 
       /* Read the remaining informations. */
       if (is_appointment)
@@ -1178,38 +1172,38 @@ io_load_app (void)
 
       if (c == '{')
         {
-          (void)ungetc (c, data_file);
+          ungetc (c, data_file);
           is_recursive = 1;
           fscanf (data_file, "{ %d%c ", &freq, &type);
 
           c = getc (data_file);
           if (c == '}')
             {			/* endless recurrent item */
-              (void)ungetc (c, data_file);
+              ungetc (c, data_file);
               fscanf (data_file, "} ");
               until.tm_year = 0;
             }
           else if (c == '-')
             {
-              (void)ungetc (c, data_file);
+              ungetc (c, data_file);
               fscanf (data_file, " -> %u / %u / %u ",
                       &until.tm_mon, &until.tm_mday, &until.tm_year);
               c = getc (data_file);
               if (c == '!')
                 {
-                  (void)ungetc (c, data_file);
+                  ungetc (c, data_file);
                   recur_exc_scan (&exc, data_file);
                   c = getc (data_file);
                 }
               else
                 {
-                  (void)ungetc (c, data_file);
+                  ungetc (c, data_file);
                   fscanf (data_file, "} ");
                 }
             }
           else if (c == '!')
             {			// endless item with exceptions
-              (void)ungetc (c, data_file);
+              ungetc (c, data_file);
               recur_exc_scan (&exc, data_file);
               c = getc (data_file);
               until.tm_year = 0;
@@ -1221,7 +1215,7 @@ io_load_app (void)
             }
         }
       else
-        (void)ungetc (c, data_file);
+        ungetc (c, data_file);
 
       /* Check if a note is attached to the item. */
       c = getc (data_file);
@@ -1233,7 +1227,7 @@ io_load_app (void)
       else
         {
           notep = NULL;
-          (void)ungetc (c, data_file);
+          ungetc (c, data_file);
         }
 
       /*
@@ -1245,13 +1239,13 @@ io_load_app (void)
           c = getc (data_file);
           if (c == '!')
             {
-              (void)ungetc (c, data_file);
+              ungetc (c, data_file);
               fscanf (data_file, " ! ");
               state |= APOINT_NOTIFY;
             }
           else
             {
-              (void)ungetc (c, data_file);
+              ungetc (c, data_file);
               fscanf (data_file, " | ");
               state = 0L;
             }
@@ -1302,7 +1296,7 @@ io_load_todo (void)
   if (data_file == NULL)
     {
       status_mesg (mesg_line1, mesg_line2);
-      (void)wgetch (win[STA].p);
+      wgetch (win[STA].p);
     }
   for (;;)
     {
@@ -1318,7 +1312,7 @@ io_load_todo (void)
       else
         {
           id = 9;
-          (void)ungetc (c, data_file);
+          ungetc (c, data_file);
         }
       /* Now read the attached note, if any. */
       c = getc (data_file);
@@ -1327,7 +1321,7 @@ io_load_todo (void)
       else
         note[0] = '\0';
       /* Then read todo description. */
-      (void)fgets (buf, sizeof buf, data_file);
+      fgets (buf, sizeof buf, data_file);
       newline = strchr (buf, '\n');
       if (newline)
         *newline = '\0';
@@ -1521,8 +1515,8 @@ io_check_dir (char *dir, int *missing)
     {
       if (errno != EEXIST)
         {
-          (void)fprintf (stderr, _("FATAL ERROR: could not create %s: %s\n"),
-                         dir, strerror (errno));
+          fprintf (stderr, _("FATAL ERROR: could not create %s: %s\n"), dir,
+                   strerror (errno));
           exit_calcurse (EXIT_FAILURE);
         }
     }
@@ -1544,7 +1538,7 @@ io_file_exist (char *file)
   if ((fd = fopen (file, "r")) == NULL)
     return 0;
 
-  (void)fclose (fd);
+  fclose (fd);
 
   return 1;
 }
@@ -1561,8 +1555,8 @@ io_check_file (char *file, int *missing)
         (*missing)++;
       if ((fd = fopen (file, "w")) == NULL)
         {
-          (void)fprintf (stderr, _("FATAL ERROR: could not create %s: %s\n"),
-                         file, strerror (errno));
+          fprintf (stderr, _("FATAL ERROR: could not create %s: %s\n"), file,
+                   strerror (errno));
           exit_calcurse (EXIT_FAILURE);
         }
       file_close (fd, __FILE_POS__);
@@ -1615,12 +1609,12 @@ io_startup_screen (unsigned skip_dialogs, int no_data_file)
   if (no_data_file != 0)
     {
       status_mesg (welcome_mesg, enter);
-      (void)wgetch (win[STA].p);
+      wgetch (win[STA].p);
     }
   else if (!skip_dialogs)
     {
       status_mesg (data_mesg, enter);
-      (void)wgetch (win[STA].p);
+      wgetch (win[STA].p);
     }
 }
 
@@ -1676,7 +1670,7 @@ io_export_data (enum export_type type, struct conf *conf)
   if (!conf->skip_system_dialogs && ui_mode == UI_CURSES)
     {
       status_mesg (success, enter);
-      (void)wgetch (win[STA].p);
+      wgetch (win[STA].p);
     }
 }
 
@@ -1725,7 +1719,7 @@ ical_log_init (FILE *log, float version)
     "+-------------------------------------------------------------------+\n\n";
 
   if (log)
-    (void)fprintf (log, header, version);
+    fprintf (log, header, version);
 }
 
 /*
@@ -1741,7 +1735,7 @@ ical_log (FILE *log, ical_types_e type, unsigned lineno, char *msg)
 
   RETURN_IF (type < 0 || type >= ICAL_TYPES, _("unknown ical type"));
   if (log)
-    (void)fprintf (log, "%s [%d]: %s\n", typestr[type], lineno, msg);
+    fprintf (log, "%s [%d]: %s\n", typestr[type], lineno, msg);
 }
 
 static void
@@ -2287,7 +2281,7 @@ ical_read_exdate (llist_t *exc, FILE *log, char *exstr, unsigned *noskipped,
           char buf[BUFSIZ];
           const int buflen = q - p;
 
-          (void)strncpy (buf, p, buflen);
+          strncpy (buf, p, buflen);
           buf[buflen] = '\0';
           date = ical_datetime2long (buf, NULL);
           ical_add_exc (exc, date);
@@ -2332,11 +2326,11 @@ ical_read_note (char *line, unsigned *noskipped, ical_vevent_e item_type,
       else
         {
           sha1_digest (notestr, sha1);
-          (void)snprintf (fullnotename, BUFSIZ, "%s%s", path_notes, sha1);
+          snprintf (fullnotename, BUFSIZ, "%s%s", path_notes, sha1);
           fdo = fopen (fullnotename, "w");
           EXIT_IF (fdo == NULL, _("Warning: could not open %s, Aborting..."),
                    fullnotename);
-          (void)fprintf (fdo, "%s", notestr);
+          fprintf (fdo, "%s", notestr);
           file_close (fdo, __FILE_POS__);
           mem_free (notestr);
           return sha1;
@@ -2683,7 +2677,7 @@ get_import_stream (enum export_type type)
       if (stream == NULL)
         {
           status_mesg (wrong_file, press_enter);
-          (void)wgetch (win[STA].p);
+          wgetch (win[STA].p);
         }
     }
   mem_free (stream_name);
@@ -2778,12 +2772,12 @@ io_import_data (enum import_type type, struct conf *conf, char *stream_name)
     {
       char read[BUFSIZ], stat[BUFSIZ];
 
-      (void)snprintf (read, BUFSIZ, proc_report, stats.lines);
-      (void)snprintf (stat, BUFSIZ, "%s / %s / %s / %s (%s)", stats_str[0],
-                      stats_str[1], stats_str[2], stats_str[3],
-                      _("Press [ENTER] to continue"));
+      snprintf (read, BUFSIZ, proc_report, stats.lines);
+      snprintf (stat, BUFSIZ, "%s / %s / %s / %s (%s)", stats_str[0],
+                stats_str[1], stats_str[2], stats_str[3],
+                _("Press [ENTER] to continue"));
       status_mesg (read, stat);
-      (void)wgetch (win[STA].p);
+      wgetch (win[STA].p);
     }
   else if (ui_mode == UI_CMDLINE)
     {
@@ -2819,7 +2813,7 @@ io_log_init (void)
   log = mem_malloc (sizeof (struct io_file));
   RETVAL_IF (log == NULL, 0,
              _("Warning: could not open temporary log file, Aborting..."));
-  (void)snprintf (log->name, sizeof (log->name), "%s%s", logprefix, logname);
+  snprintf (log->name, sizeof (log->name), "%s%s", logprefix, logname);
   mem_free (logname);
   log->fd = fopen (log->name, "w");
   if (log->fd == NULL)
@@ -2836,7 +2830,7 @@ void
 io_log_print (struct io_file *log, int line, char *msg)
 {
   if (log && log->fd)
-    (void)fprintf (log->fd, "line %d: %s\n", line, msg);
+    fprintf (log->fd, "line %d: %s\n", line, msg);
 }
 
 void
@@ -2854,8 +2848,8 @@ io_log_display (struct io_file *log, char *msg, char *pager)
         {
           char cmd[BUFSIZ];
 
-          (void)snprintf (cmd, BUFSIZ, "%s %s", pager, log->name);
-          (void)system (cmd);
+          snprintf (cmd, BUFSIZ, "%s %s", pager, log->name);
+          system (cmd);
         }
     }
   else
@@ -2900,7 +2894,7 @@ io_psave_thread (void *arg)
 
   for (;;)
     {
-      (void)sleep (delay * MININSEC);
+      sleep (delay * MININSEC);
       io_save_cal (config, IO_SAVE_DISPLAY_MARK);
     }
 }
@@ -2952,12 +2946,12 @@ io_set_lock (void)
 
   if (lock != NULL)
     {
-      (void)fprintf (stderr,
-                     _("\nWARNING: it seems that another calcurse instance is "
-                       "already running.\n"
-                       "If this is not the case, please remove the following "
-                       "lock file: \n\"%s\"\n"
-                       "and restart calcurse.\n"), path_cpid);
+      fprintf (stderr,
+               _("\nWARNING: it seems that another calcurse instance is "
+                 "already running.\n"
+                 "If this is not the case, please remove the following "
+                 "lock file: \n\"%s\"\n"
+                 "and restart calcurse.\n"), path_cpid);
       exit (EXIT_FAILURE);
     }
   else
@@ -3010,7 +3004,7 @@ io_get_pid (char *file)
   if (fscanf (fp, "%u", &pid) != 1)
     return 0;
 
-  (void)fclose (fp);
+  fclose (fp);
 
   return pid;
 }

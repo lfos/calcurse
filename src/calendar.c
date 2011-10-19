@@ -124,7 +124,7 @@ calendar_date_thread (void *arg)
       tomorrow = (time_t) (get_today () + DAYINSEC);
 
       while ((actual = time (NULL)) < tomorrow)
-        (void)sleep (tomorrow - actual);
+        sleep (tomorrow - actual);
 
       calendar_set_current_date ();
       calendar_update_panel (&win[CAL]);
@@ -233,12 +233,12 @@ calendar_get_wday (struct date *date)
 {
   struct tm t;
 
-  (void)memset (&t, 0, sizeof (struct tm));
+  memset (&t, 0, sizeof (struct tm));
   t.tm_mday = date->dd;
   t.tm_mon = date->mm - 1;
   t.tm_year = date->yyyy - 1900;
 
-  (void)mktime (&t);
+  mktime (&t);
 
   return t.tm_wday;
 }
@@ -492,12 +492,12 @@ draw_weekly_view (struct window *cwin, struct date *current_day,
   else
     days_to_remove = c_wday == 0 ? WEEKINDAYS - 1 : c_wday - 1;
 
-  (void)memset (&t, 0, sizeof (struct tm));
+  memset (&t, 0, sizeof (struct tm));
   t.tm_mday = slctd_day.dd;
   t.tm_mon = slctd_day.mm - 1;
   t.tm_year = slctd_day.yyyy - 1900;
-  (void)mktime (&t);
-  (void)date_change (&t, 0, -days_to_remove);
+  mktime (&t);
+  date_change (&t, 0, -days_to_remove);
 
   /* Print the week number. */
   weeknum = ISO8601weeknum (&t);
@@ -569,7 +569,7 @@ draw_weekly_view (struct window *cwin, struct date *current_day,
         }
 
       /* get next day */
-      (void)date_change (&t, 0, 1);
+      date_change (&t, 0, 1);
     }
 
   /* Draw marks to indicate midday on the sides of the calendar. */
@@ -633,7 +633,7 @@ calendar_change_day (int datefmt)
 
   while (wrong_day)
     {
-      (void)snprintf (outstr, BUFSIZ, request_date, DATEFMT_DESC (datefmt));
+      snprintf (outstr, BUFSIZ, request_date, DATEFMT_DESC (datefmt));
       status_mesg (_(outstr), "");
       if (getstring (win[STA].p, selected_day, LDAY, 0, 1) == GETSTRING_ESC)
         return;
@@ -656,7 +656,7 @@ calendar_change_day (int datefmt)
           if (wrong_day)
             {
               status_mesg (mesg_line1, mesg_line2);
-              (void)wgetch (win[STA].p);
+              wgetch (win[STA].p);
             }
         }
     }
@@ -670,7 +670,7 @@ calendar_move (enum move move, int count)
   int ret, days_to_remove, days_to_add;
   struct tm t;
 
-  (void)memset (&t, 0, sizeof (struct tm));
+  memset (&t, 0, sizeof (struct tm));
   t.tm_mday = slctd_day.dd;
   t.tm_mon = slctd_day.mm - 1;
   t.tm_year = slctd_day.yyyy - 1900;
@@ -703,7 +703,7 @@ calendar_move (enum move move, int count)
       break;
     case WEEK_START:
       /* Normalize struct tm to get week day number. */
-      (void)mktime (&t);
+      mktime (&t);
       if (calendar_week_begins_on_monday ())
         days_to_remove = ((t.tm_wday == 0) ? WEEKINDAYS - 1 : t.tm_wday - 1);
       else
@@ -712,7 +712,7 @@ calendar_move (enum move move, int count)
       ret = date_change (&t, 0, -days_to_remove);
       break;
     case WEEK_END:
-      (void)mktime (&t);
+      mktime (&t);
       if (calendar_week_begins_on_monday ())
         days_to_add = ((t.tm_wday == 0) ? 0 : WEEKINDAYS - t.tm_wday);
       else

@@ -49,7 +49,7 @@
 
 #define DMON_LOG(...) do {                                      \
   if (dmon.log)                                                 \
-    (void)io_fprintln (path_dmon_log, __VA_ARGS__);             \
+    io_fprintln (path_dmon_log, __VA_ARGS__);                   \
 } while (0)
 
 #define DMON_ABRT(...) do {                                     \
@@ -131,15 +131,15 @@ daemonize (int status)
   /* Redirect standard file descriptors to /dev/null. */
   if ((fd = open (_PATH_DEVNULL, O_RDWR, 0)) != -1)
     {
-      (void)dup2 (fd, STDIN_FILENO);
-      (void)dup2 (fd, STDOUT_FILENO);
-      (void)dup2 (fd, STDERR_FILENO);
+      dup2 (fd, STDIN_FILENO);
+      dup2 (fd, STDOUT_FILENO);
+      dup2 (fd, STDERR_FILENO);
       if (fd > 2)
-        (void)close (fd);
+        close (fd);
     }
 
   /* Write access for the owner only. */
-  (void)umask (0022);
+  umask (0022);
 
   if (!sigs_set_hdlr (SIGINT, dmon_sigs_hdlr)
       || !sigs_set_hdlr (SIGTERM, dmon_sigs_hdlr)

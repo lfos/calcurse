@@ -151,7 +151,7 @@ day_store_events (long date)
   LLIST_FIND_FOREACH_CONT (&eventlist, date, event_inday, i)
     {
       struct event *ev = LLIST_TS_GET_DATA (i);
-      (void)day_add_event (EVNT, ev->mesg, ev->note, ev->day, ev->id);
+      day_add_event (EVNT, ev->mesg, ev->note, ev->day, ev->id);
       e_nb++;
     }
 
@@ -174,8 +174,7 @@ day_store_recur_events (long date)
   LLIST_FIND_FOREACH (&recur_elist, date, recur_event_inday, i)
     {
       struct recur_event *rev = LLIST_TS_GET_DATA (i);
-      (void)day_add_event (RECUR_EVNT, rev->mesg, rev->note, rev->day,
-                           rev->id);
+      day_add_event (RECUR_EVNT, rev->mesg, rev->note, rev->day, rev->id);
       e_nb++;
     }
 
@@ -199,8 +198,8 @@ day_store_apoints (long date)
   LLIST_TS_FIND_FOREACH_CONT (&alist_p, date, apoint_inday, i)
     {
       struct apoint *apt = LLIST_TS_GET_DATA (i);
-      (void)day_add_apoint (APPT, apt->mesg, apt->note, apt->start, apt->dur,
-                            apt->state, 0);
+      day_add_apoint (APPT, apt->mesg, apt->note, apt->start, apt->dur,
+                      apt->state, 0);
       a_nb++;
     }
   LLIST_TS_UNLOCK (&alist_p);
@@ -228,8 +227,8 @@ day_store_recur_apoints (long date)
       unsigned real_start;
       if (recur_apoint_find_occurrence (rapt, date, &real_start))
         {
-          (void)day_add_apoint (RECUR_APPT, rapt->mesg, rapt->note, real_start,
-                                rapt->dur, rapt->state, a_nb);
+          day_add_apoint (RECUR_APPT, rapt->mesg, rapt->note, real_start,
+                          rapt->dur, rapt->state, a_nb);
           a_nb++;
         }
     }
@@ -591,7 +590,7 @@ day_edit_time (int time, unsigned *new_hour, unsigned *new_minute)
           else
             {
               status_mesg (fmt_msg, enter_str);
-              (void)wgetch (win[STA].p);
+              wgetch (win[STA].p);
             }
         }
       else
@@ -631,7 +630,7 @@ day_edit_duration (int start, int dur, unsigned *new_duration)
           else
             {
               status_mesg (fmt_msg, enter_str);
-              (void)wgetch (win[STA].p);
+              wgetch (win[STA].p);
             }
         }
       else
@@ -665,7 +664,7 @@ update_start_time (long *start, long *dur)
       else
         {
           status_mesg (msg_wrong_time, msg_enter);
-          (void)wgetch (win[STA].p);
+          wgetch (win[STA].p);
           valid_date = 0;
         }
     }
@@ -710,7 +709,7 @@ update_rept (struct rpt **rpt, const long start, struct conf *conf)
     {
       status_mesg (msg_rpt_type, msg_rpt_ans);
       typstr = mem_calloc (SINGLECHAR, sizeof (char));
-      (void)snprintf (typstr, SINGLECHAR, "%c", recur_def2char ((*rpt)->type));
+      snprintf (typstr, SINGLECHAR, "%c", recur_def2char ((*rpt)->type));
       if (updatestring (win[STA].p, &typstr, 0, 1) == GETSTRING_VALID)
         {
           ch = toupper (*typstr);
@@ -728,7 +727,7 @@ update_rept (struct rpt **rpt, const long start, struct conf *conf)
     {
       status_mesg (_("Enter the new repetition frequence:"), "");
       freqstr = mem_malloc (BUFSIZ);
-      (void)snprintf (freqstr, BUFSIZ, "%d", (*rpt)->freq);
+      snprintf (freqstr, BUFSIZ, "%d", (*rpt)->freq);
       if (updatestring (win[STA].p, &freqstr, 0, 1) == GETSTRING_VALID)
         {
           newfreq = atoi (freqstr);
@@ -736,7 +735,7 @@ update_rept (struct rpt **rpt, const long start, struct conf *conf)
           if (newfreq == 0)
             {
               status_mesg (msg_wrong_freq, msg_enter);
-              (void)wgetch (win[STA].p);
+              wgetch (win[STA].p);
             }
         }
       else
@@ -749,8 +748,8 @@ update_rept (struct rpt **rpt, const long start, struct conf *conf)
 
   do
     {
-      (void)snprintf (outstr, BUFSIZ, "Enter the new ending date: [%s] or '0'",
-                      DATEFMT_DESC (conf->input_datefmt));
+      snprintf (outstr, BUFSIZ, "Enter the new ending date: [%s] or '0'",
+                DATEFMT_DESC (conf->input_datefmt));
       status_mesg (_(outstr), "");
       timstr =
           date_sec2date_str ((*rpt)->until, DATEFMT (conf->input_datefmt));
@@ -783,7 +782,7 @@ update_rept (struct rpt **rpt, const long start, struct conf *conf)
               if (newuntil < start)
                 {
                   status_mesg (msg_wrong_time, msg_enter);
-                  (void)wgetch (win[STA].p);
+                  wgetch (win[STA].p);
                   date_entered = 0;
                 }
               else
@@ -791,10 +790,10 @@ update_rept (struct rpt **rpt, const long start, struct conf *conf)
             }
           else
             {
-              (void)snprintf (outstr, BUFSIZ, msg_fmts,
-                              DATEFMT_DESC (conf->input_datefmt));
+              snprintf (outstr, BUFSIZ, msg_fmts,
+                        DATEFMT_DESC (conf->input_datefmt));
               status_mesg (msg_wrong_date, _(outstr));
-              (void)wgetch (win[STA].p);
+              wgetch (win[STA].p);
               date_entered = 0;
             }
         }

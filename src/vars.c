@@ -129,7 +129,7 @@ vars_init (struct conf *conf)
   conf->periodic_save = 0;
   conf->skip_system_dialogs = 0;
   conf->skip_progress_bar = 0;
-  (void)strncpy (conf->output_datefmt, "%D", 3);
+  strncpy (conf->output_datefmt, "%D", 3);
   conf->input_datefmt = 1;
 
   /* Default external editor and pager */

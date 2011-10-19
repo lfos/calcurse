@@ -115,7 +115,7 @@ fatalbox (const char *errmsg)
   if (errmsg == NULL)
     return;
 
-  (void)strncpy (msg, errmsg, MSGLEN);
+  strncpy (msg, errmsg, MSGLEN);
   errwin = newwin (WINROW, WINCOL, (row - WINROW) / 2, (col - WINCOL) / 2);
   custom_apply_attr (errwin, ATTR_HIGHEST);
   box (errwin, 0, 0);
@@ -124,7 +124,7 @@ fatalbox (const char *errmsg)
   mvwprintw (errwin, 5, (WINCOL - strlen (msg)) / 2, "%s", msg);
   custom_remove_attr (errwin, ATTR_HIGHEST);
   wins_wrefresh (errwin);
-  (void)wgetch (errwin);
+  wgetch (errwin);
   delwin (errwin);
   wins_doupdate ();
 }
@@ -142,7 +142,7 @@ warnbox (const char *msg)
   if (msg == NULL)
     return;
 
-  (void)strncpy (displmsg, msg, MSGLEN);
+  strncpy (displmsg, msg, MSGLEN);
   warnwin = newwin (WINROW, WINCOL, (row - WINROW) / 2, (col - WINCOL) / 2);
   custom_apply_attr (warnwin, ATTR_HIGHEST);
   box (warnwin, 0, 0);
@@ -150,7 +150,7 @@ warnbox (const char *msg)
   mvwprintw (warnwin, 5, (WINCOL - strlen (displmsg)) / 2, "%s", displmsg);
   custom_remove_attr (warnwin, ATTR_HIGHEST);
   wins_wrefresh (warnwin);
-  (void)wgetch (warnwin);
+  wgetch (warnwin);
   delwin (warnwin);
   wins_doupdate ();
 }
@@ -201,7 +201,7 @@ popup (int pop_row, int pop_col, int pop_y, int pop_x, char *title, char *msg,
     mvwprintw (popup_win, MSGXPOS, (pop_col - strlen (msg)) / 2, "%s", msg);
   custom_apply_attr (popup_win, ATTR_HIGHEST);
   box (popup_win, 0, 0);
-  (void)snprintf (label, BUFSIZ, "%s", title);
+  snprintf (label, BUFSIZ, "%s", title);
   wins_show (popup_win, label);
   if (hint)
     mvwprintw (popup_win, pop_row - 2, pop_col - (strlen (any_key) + 1), "%s",
@@ -293,7 +293,7 @@ date_sec2date_str (long sec, char *datefmt)
   char *datestr = (char *) mem_calloc (BUFSIZ, sizeof (char));
 
   if (sec == 0)
-    (void)strncpy (datestr, "0", BUFSIZ);
+    strncpy (datestr, "0", BUFSIZ);
   else
     {
       lt = localtime ((time_t *)&sec);
@@ -429,7 +429,7 @@ item_in_popup (char *saved_a_start, char *saved_a_end, char *msg,
   wmove (win[STA].p, 0, 0);
   pnoutrefresh (pad, 0, 0, margin_top + 2, margin_left, padl, winw);
   wins_doupdate ();
-  (void)wgetch (popup_win);
+  wgetch (popup_win);
   delwin (pad);
   delwin (popup_win);
 }
@@ -466,7 +466,7 @@ nowstr (void)
   static char buf[BUFSIZ];
   time_t t = now ();
 
-  (void)strftime (buf, sizeof buf, "%a %b %d %T %Y", localtime (&t));
+  strftime (buf, sizeof buf, "%a %b %d %T %Y", localtime (&t));
 
   return buf;
 }
@@ -547,7 +547,7 @@ new_tempfile (const char *prefix, int trailing_len)
   if (prefix_len + trailing_len >= BUFSIZ)
     return (NULL);
   memcpy (fullname, prefix, prefix_len);
-  (void)memset (fullname + prefix_len, 'X', trailing_len);
+  memset (fullname + prefix_len, 'X', trailing_len);
   fullname[prefix_len + trailing_len] = '\0';
   if ((fd = mkstemp (fullname)) == -1 || (file = fdopen (fd, "w+")) == NULL)
     {

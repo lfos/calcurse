@@ -161,21 +161,21 @@
   int len;                                                                    \
                                                                               \
   len = snprintf (msg, BUFSIZ, "%s: %d: ", __FILE__, __LINE__);               \
-  (void)snprintf (msg + len, BUFSIZ - len, __VA_ARGS__);                      \
+  snprintf (msg + len, BUFSIZ - len, __VA_ARGS__);                            \
   if (ui_mode == UI_CURSES)                                                   \
     fatalbox (msg);                                                           \
   else                                                                        \
-    (void)fprintf (stderr, "%s\n", msg);                                      \
+    fprintf (stderr, "%s\n", msg);                                            \
 } while (0)
 
 #define WARN_MSG(...) do {                                                    \
   char msg[BUFSIZ];                                                           \
                                                                               \
-  (void)snprintf (msg, BUFSIZ, __VA_ARGS__);                                  \
+  snprintf (msg, BUFSIZ, __VA_ARGS__);                                        \
   if (ui_mode == UI_CURSES)                                                   \
     warnbox (msg);                                                            \
   else                                                                        \
-    (void)fprintf (stderr, "%s\n", msg);                                      \
+    fprintf (stderr, "%s\n", msg);                                            \
 } while (0)
 
 #define EXIT(...) do {                                                        \

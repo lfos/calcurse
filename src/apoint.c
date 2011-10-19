@@ -191,7 +191,7 @@ apoint_add (void)
           else
             {
               status_mesg (format_message_1, enter_str);
-              (void)wgetch (win[STA].p);
+              wgetch (win[STA].p);
             }
         }
       else
@@ -231,7 +231,7 @@ apoint_add (void)
               else
                 {
                   status_mesg (format_message_2, enter_str);
-                  (void)wgetch (win[STA].p);
+                  wgetch (win[STA].p);
                 }
             }
           else
@@ -247,14 +247,12 @@ apoint_add (void)
       if (is_appointment)
         {
           apoint_start = date2sec (*calendar_get_slctd_day (), heures, minutes);
-          (void)apoint_new (item_mesg, 0L, apoint_start,
-                            min2sec (apoint_duration), 0L);
+          apoint_new (item_mesg, 0L, apoint_start, min2sec (apoint_duration), 0L);
           if (notify_bar ())
             notify_check_added (item_mesg, apoint_start, 0L);
         }
       else
-        (void)event_new (item_mesg, 0L,
-                         date2sec (*calendar_get_slctd_day (), 0, 0), Id);
+        event_new (item_mesg, 0L, date2sec (*calendar_get_slctd_day (), 0, 0), Id);
 
       if (hilt == 0)
         hilt++;
@@ -397,20 +395,20 @@ apoint_sec2str (struct apoint *o, int type, long day, char *start, char *end)
   time_t t;
 
   if (o->start < day)
-    (void)strncpy (start, "..:..", 6);
+    strncpy (start, "..:..", 6);
   else
     {
       t = o->start;
       lt = localtime (&t);
-      (void)snprintf (start, HRMIN_SIZE, "%02u:%02u", lt->tm_hour, lt->tm_min);
+      snprintf (start, HRMIN_SIZE, "%02u:%02u", lt->tm_hour, lt->tm_min);
     }
   if (o->start + o->dur > day + DAYINSEC)
-    (void)strncpy (end, "..:..", 6);
+    strncpy (end, "..:..", 6);
   else
     {
       t = o->start + o->dur;
       lt = localtime (&t);
-      (void)snprintf (end, HRMIN_SIZE, "%02u:%02u", lt->tm_hour, lt->tm_min);
+      snprintf (end, HRMIN_SIZE, "%02u:%02u", lt->tm_hour, lt->tm_min);
     }
 }
 
@@ -422,25 +420,23 @@ apoint_write (struct apoint *o, FILE *f)
 
   t = o->start;
   lt = localtime (&t);
-  (void)fprintf (f, "%02u/%02u/%04u @ %02u:%02u",
-                 lt->tm_mon + 1, lt->tm_mday, 1900 + lt->tm_year, lt->tm_hour,
-                 lt->tm_min);
+  fprintf (f, "%02u/%02u/%04u @ %02u:%02u", lt->tm_mon + 1, lt->tm_mday,
+           1900 + lt->tm_year, lt->tm_hour, lt->tm_min);
 
   t = o->start + o->dur;
   lt = localtime (&t);
-  (void)fprintf (f, " -> %02u/%02u/%04u @ %02u:%02u ",
-                 lt->tm_mon + 1, lt->tm_mday, 1900 + lt->tm_year, lt->tm_hour,
-                 lt->tm_min);
+  fprintf (f, " -> %02u/%02u/%04u @ %02u:%02u ", lt->tm_mon + 1, lt->tm_mday,
+           1900 + lt->tm_year, lt->tm_hour, lt->tm_min);
 
   if (o->note != NULL)
-    (void)fprintf (f, ">%s ", o->note);
+    fprintf (f, ">%s ", o->note);
 
   if (o->state & APOINT_NOTIFY)
-    (void)fputc ('!', f);
+    fputc ('!', f);
   else
-    (void)fputc ('|', f);
+    fputc ('|', f);
 
-  (void)fprintf (f, "%s\n", o->mesg);
+  fprintf (f, "%s\n", o->mesg);
 }
 
 struct apoint *
@@ -450,10 +446,10 @@ apoint_scan (FILE *f, struct tm start, struct tm end, char state, char *note)
   time_t tstart, tend, t;
 
   t = time (NULL);
-  (void)localtime (&t);
+  localtime (&t);
 
   /* Read the appointment description */
-  (void)fgets (buf, sizeof buf, f);
+  fgets (buf, sizeof buf, f);
   newline = strchr (buf, '\n');
   if (newline)
     *newline = '\0';
@@ -725,9 +721,8 @@ apoint_paste_item (void)
 
   bkp_time = get_item_time (bkp_cut_apoint.start);
   bkp_start = calendar_get_slctd_day_sec () + bkp_time;
-  (void)apoint_new (bkp_cut_apoint.mesg, bkp_cut_apoint.note,
-                    bkp_start, bkp_cut_apoint.dur,
-                    bkp_cut_apoint.state);
+  apoint_new (bkp_cut_apoint.mesg, bkp_cut_apoint.note, bkp_start,
+              bkp_cut_apoint.dur, bkp_cut_apoint.state);
 
   if (notify_bar ())
     notify_check_added (bkp_cut_apoint.mesg, bkp_start, bkp_cut_apoint.state);

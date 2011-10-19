@@ -187,9 +187,9 @@ void
 todo_write (struct todo *todo, FILE *f)
 {
   if (todo->note)
-    (void)fprintf (f, "[%d]>%s %s\n", todo->id, todo->note, todo->mesg);
+    fprintf (f, "[%d]>%s %s\n", todo->id, todo->note, todo->mesg);
   else
-    (void)fprintf (f, "[%d] %s\n", todo->id, todo->mesg);
+    fprintf (f, "[%d] %s\n", todo->id, todo->mesg);
 }
 
 /* Delete a note previously attached to a todo item. */
@@ -338,10 +338,10 @@ todo_chg_priority (int action)
   int do_chg = 1;
 
   backup = todo_get_item (hilt);
-  (void)strncpy (backup_mesg, backup->mesg, strlen (backup->mesg) + 1);
+  strncpy (backup_mesg, backup->mesg, strlen (backup->mesg) + 1);
   backup_id = backup->id;
   if (backup->note)
-    (void)strncpy (backup_note, backup->note, MAX_NOTESIZ + 1);
+    strncpy (backup_note, backup->note, MAX_NOTESIZ + 1);
   else
     backup_note[0] = '\0';
   switch (action)

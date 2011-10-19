@@ -61,7 +61,7 @@ generic_hdlr (int sig)
     case SIGWINCH:
       resize = 1;
       clearok (curscr, TRUE);
-      (void)ungetch (KEY_RESIZE);
+      ungetch (KEY_RESIZE);
       break;
     case SIGTERM:
       if (unlink (path_cpid) != 0)

@@ -360,7 +360,7 @@ recur_write_exc (llist_t *lexc, FILE *f)
       st_mon = lt->tm_mon + 1;
       st_day = lt->tm_mday;
       st_year = lt->tm_year + 1900;
-      (void)fprintf (f, " !%02u/%02u/%04u", st_mon, st_day, st_year);
+      fprintf (f, " !%02u/%02u/%04u", st_mon, st_day, st_year);
     }
 }
 
@@ -374,7 +374,7 @@ recur_apoint_scan (FILE *f, struct tm start, struct tm end, char type,
   time_t tstart, tend, tuntil;
 
   /* Read the appointment description */
-  (void)fgets (buf, sizeof buf, f);
+  fgets (buf, sizeof buf, f);
   nl = strchr (buf, '\n');
   if (nl)
     {
@@ -419,7 +419,7 @@ recur_event_scan (FILE *f, struct tm start, int id, char type, int freq,
   time_t tstart, tuntil;
 
   /* Read the event description */
-  (void)fgets (buf, sizeof buf, f);
+  fgets (buf, sizeof buf, f);
   nl = strchr (buf, '\n');
   if (nl)
     {
@@ -458,37 +458,35 @@ recur_apoint_write (struct recur_apoint *o, FILE *f)
 
   t = o->start;
   lt = localtime (&t);
-  (void)fprintf (f, "%02u/%02u/%04u @ %02u:%02u",
-                 lt->tm_mon + 1, lt->tm_mday, 1900 + lt->tm_year,
-                 lt->tm_hour, lt->tm_min);
+  fprintf (f, "%02u/%02u/%04u @ %02u:%02u", lt->tm_mon + 1, lt->tm_mday,
+           1900 + lt->tm_year, lt->tm_hour, lt->tm_min);
 
   t = o->start + o->dur;
   lt = localtime (&t);
-  (void)fprintf (f, " -> %02u/%02u/%04u @ %02u:%02u",
-                 lt->tm_mon + 1, lt->tm_mday, 1900 + lt->tm_year,
-                 lt->tm_hour, lt->tm_min);
+  fprintf (f, " -> %02u/%02u/%04u @ %02u:%02u", lt->tm_mon + 1, lt->tm_mday,
+           1900 + lt->tm_year, lt->tm_hour, lt->tm_min);
 
   t = o->rpt->until;
   if (t == 0)
     {				/* We have an endless recurrent appointment. */
-      (void)fprintf (f, " {%d%c", o->rpt->freq, recur_def2char (o->rpt->type));
+      fprintf (f, " {%d%c", o->rpt->freq, recur_def2char (o->rpt->type));
     }
   else
     {
       lt = localtime (&t);
-      (void)fprintf (f, " {%d%c -> %02u/%02u/%04u",
-                     o->rpt->freq, recur_def2char (o->rpt->type),
-                     lt->tm_mon + 1, lt->tm_mday, 1900 + lt->tm_year);
+      fprintf (f, " {%d%c -> %02u/%02u/%04u", o->rpt->freq,
+               recur_def2char (o->rpt->type), lt->tm_mon + 1, lt->tm_mday,
+               1900 + lt->tm_year);
     }
   recur_write_exc (&o->exc, f);
-  (void)fputs ("} ", f);
+  fputs ("} ", f);
   if (o->note != NULL)
-    (void)fprintf (f, ">%s ", o->note);
+    fprintf (f, ">%s ", o->note);
   if (o->state & APOINT_NOTIFY)
-    (void)fputc ('!', f);
+    fputc ('!', f);
   else
-    (void)fputc ('|', f);
-  (void)fprintf (f, "%s\n", o->mesg);
+    fputc ('|', f);
+  fprintf (f, "%s\n", o->mesg);
 }
 
 /* Writting of a recursive event into file. */
@@ -508,9 +506,8 @@ recur_event_write (struct recur_event *o, FILE *f)
   t = o->rpt->until;
   if (t == 0)
     {				/* We have an endless recurrent event. */
-      (void)fprintf (f, "%02u/%02u/%04u [%d] {%d%c",
-                     st_mon, st_day, st_year, o->id, o->rpt->freq,
-                     recur_def2char (o->rpt->type));
+      fprintf (f, "%02u/%02u/%04u [%d] {%d%c", st_mon, st_day, st_year, o->id,
+               o->rpt->freq, recur_def2char (o->rpt->type));
     }
   else
     {
@@ -518,16 +515,15 @@ recur_event_write (struct recur_event *o, FILE *f)
       end_mon = lt->tm_mon + 1;
       end_day = lt->tm_mday;
       end_year = lt->tm_year + 1900;
-      (void)fprintf (f, "%02u/%02u/%04u [%d] {%d%c -> %02u/%02u/%04u",
-                     st_mon, st_day, st_year, o->id,
-                     o->rpt->freq, recur_def2char (o->rpt->type),
-                     end_mon, end_day, end_year);
+      fprintf (f, "%02u/%02u/%04u [%d] {%d%c -> %02u/%02u/%04u", st_mon,
+               st_day, st_year, o->id, o->rpt->freq,
+               recur_def2char (o->rpt->type), end_mon, end_day, end_year);
     }
   recur_write_exc (&o->exc, f);
-  (void)fputs ("} ", f);
+  fputs ("} ", f);
   if (o->note != NULL)
-    (void)fprintf (f, ">%s ", o->note);
-  (void)fprintf (f, "%s\n", o->mesg);
+    fprintf (f, ">%s ", o->note);
+  fprintf (f, "%s\n", o->mesg);
 }
 
 /* Write recursive items to file. */
@@ -899,7 +895,7 @@ recur_repeat_item (struct conf *conf)
   if (p->type != APPT && p->type != EVNT)
     {
       status_mesg (wrong_type_1, wrong_type_2);
-      (void)wgetch (win[STA].p);
+      wgetch (win[STA].p);
       return;
     }
 
@@ -928,7 +924,7 @@ recur_repeat_item (struct conf *conf)
           if (freq == 0)
             {
               status_mesg (mesg_wrong_freq, wrong_type_2);
-              (void)wgetch (win[STA].p);
+              wgetch (win[STA].p);
             }
           user_input[0] = '\0';
         }
@@ -938,8 +934,8 @@ recur_repeat_item (struct conf *conf)
 
   while (!date_entered)
     {
-      (void)snprintf (outstr, BUFSIZ, mesg_until_1,
-                      DATEFMT_DESC (conf->input_datefmt));
+      snprintf (outstr, BUFSIZ, mesg_until_1,
+                DATEFMT_DESC (conf->input_datefmt));
       status_mesg (_(outstr), "");
       if (getstring (win[STA].p, user_input, BUFSIZ, 0, 1) == GETSTRING_VALID)
         {
@@ -962,7 +958,7 @@ recur_repeat_item (struct conf *conf)
                   if (until < p->start)
                     {
                       status_mesg (mesg_older, wrong_type_2);
-                      (void)wgetch (win[STA].p);
+                      wgetch (win[STA].p);
                       date_entered = 0;
                     }
                   else
@@ -972,10 +968,10 @@ recur_repeat_item (struct conf *conf)
                 }
               else
                 {
-                  (void)snprintf (outstr, BUFSIZ, mesg_wrong_2,
-                                  DATEFMT_DESC (conf->input_datefmt));
+                  snprintf (outstr, BUFSIZ, mesg_wrong_2,
+                            DATEFMT_DESC (conf->input_datefmt));
                   status_mesg (mesg_wrong_1, _(outstr));
-                  (void)wgetch (win[STA].p);
+                  wgetch (win[STA].p);
                   date_entered = 0;
                 }
             }
@@ -987,8 +983,8 @@ recur_repeat_item (struct conf *conf)
   date = calendar_get_slctd_day_sec ();
   if (p->type == EVNT)
     {
-      (void)recur_event_new (p->mesg, p->note, p->start, p->evnt_id,
-                             type, freq, until, NULL);
+      recur_event_new (p->mesg, p->note, p->start, p->evnt_id, type, freq,
+                       until, NULL);
     }
   else if (p->type == APPT)
     {
@@ -1018,7 +1014,7 @@ recur_exc_scan (llist_t *lexc, FILE *data_file)
   LLIST_INIT (lexc);
   while ((c = getc (data_file)) == '!')
     {
-      (void)ungetc (c, data_file);
+      ungetc (c, data_file);
       if (fscanf (data_file, "!%u / %u / %u ",
                   &day.tm_mon, &day.tm_mday, &day.tm_year) != 3)
         {
@@ -1137,12 +1133,11 @@ recur_event_paste_item (void)
       exc->st += time_shift;
     }
 
-  (void)recur_event_new (bkp_cut_recur_event.mesg, bkp_cut_recur_event.note,
-                         bkp_cut_recur_event.day, bkp_cut_recur_event.id,
-                         bkp_cut_recur_event.rpt->type,
-                         bkp_cut_recur_event.rpt->freq,
-                         bkp_cut_recur_event.rpt->until,
-                         &bkp_cut_recur_event.exc);
+  recur_event_new (bkp_cut_recur_event.mesg, bkp_cut_recur_event.note,
+                   bkp_cut_recur_event.day, bkp_cut_recur_event.id,
+                   bkp_cut_recur_event.rpt->type,
+                   bkp_cut_recur_event.rpt->freq,
+                   bkp_cut_recur_event.rpt->until, &bkp_cut_recur_event.exc);
   recur_event_free_bkp ();
 }
 
@@ -1166,13 +1161,12 @@ recur_apoint_paste_item (void)
       exc->st += time_shift;
     }
 
-  (void)recur_apoint_new (bkp_cut_recur_apoint.mesg, bkp_cut_recur_apoint.note,
-                          bkp_cut_recur_apoint.start, bkp_cut_recur_apoint.dur,
-                          bkp_cut_recur_apoint.state,
-                          bkp_cut_recur_apoint.rpt->type,
-                          bkp_cut_recur_apoint.rpt->freq,
-                          bkp_cut_recur_apoint.rpt->until,
-                          &bkp_cut_recur_apoint.exc);
+  recur_apoint_new (bkp_cut_recur_apoint.mesg, bkp_cut_recur_apoint.note,
+                    bkp_cut_recur_apoint.start, bkp_cut_recur_apoint.dur,
+                    bkp_cut_recur_apoint.state, bkp_cut_recur_apoint.rpt->type,
+                    bkp_cut_recur_apoint.rpt->freq,
+                    bkp_cut_recur_apoint.rpt->until,
+                    &bkp_cut_recur_apoint.exc);
 
   if (notify_bar ())
     notify_check_repeated (&bkp_cut_recur_apoint);

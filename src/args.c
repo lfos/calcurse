@@ -209,7 +209,7 @@ print_notefile (FILE *out, char *filename, int nbtab)
   else
     linestarter[0] = '\0';
 
-  (void)snprintf (path_to_notefile, BUFSIZ, "%s/%s", path_notes, filename);
+  snprintf (path_to_notefile, BUFSIZ, "%s/%s", path_notes, filename);
   notefile = fopen (path_to_notefile, "r");
   if (notefile)
     {
@@ -319,8 +319,8 @@ next_arg (void)
       hours_left = (time_left / HOURINSEC);
       min_left = (time_left - hours_left * HOURINSEC) / MININSEC;
       fputs (_("next appointment:\n"), stdout);
-      (void)snprintf (mesg, BUFSIZ, "   [%02d:%02d] %s\n", hours_left, min_left,
-                      next_app.txt);
+      snprintf (mesg, BUFSIZ, "   [%02d:%02d] %s\n", hours_left, min_left,
+                next_app.txt);
       fputs (mesg, stdout);
       mem_free (next_app.txt);
     }
@@ -548,7 +548,7 @@ display_app (struct tm *t, int numdays, int add_line, int print_note,
       if (app_found)
         add_line = 1;
       t->tm_mday++;
-      (void)mktime (t);
+      mktime (t);
     }
 }
 
@@ -596,15 +596,15 @@ date_arg (char *ddate, int add_line, int print_note, struct conf *conf,
       if (parse_date (ddate, conf->input_datefmt, (int *)&day.yyyy,
                       (int *)&day.mm, (int *)&day.dd, NULL))
         {
-          (void)app_arg (add_line, &day, 0, print_note, conf, regex);
+          app_arg (add_line, &day, 0, print_note, conf, regex);
         }
       else
         {
           char outstr[BUFSIZ];
           fputs (_("Argument to the '-d' flag is not valid\n"), stderr);
-          (void)snprintf (outstr, BUFSIZ,
-                          "Possible argument format are: '%s' or 'n'\n",
-                          DATEFMT_DESC (conf->input_datefmt));
+          snprintf (outstr, BUFSIZ,
+                    "Possible argument format are: '%s' or 'n'\n",
+                    DATEFMT_DESC (conf->input_datefmt));
           fputs (_(outstr), stdout);
           more_info ();
         }
@@ -650,7 +650,7 @@ date_arg_extended (char *startday, char *range, int add_line, int print_note,
         {
           t.tm_year -= 1900;
           t.tm_mon--;
-          (void)mktime (&t);
+          mktime (&t);
         }
       else
         {
@@ -665,9 +665,9 @@ date_arg_extended (char *startday, char *range, int add_line, int print_note,
     {
       char outstr[BUFSIZ];
       fputs (_("Argument is not valid\n"), stderr);
-      (void)snprintf (outstr, BUFSIZ,
-                      "Argument format for -s and --startday is: '%s'\n",
-                      DATEFMT_DESC (conf->input_datefmt));
+      snprintf (outstr, BUFSIZ,
+                "Argument format for -s and --startday is: '%s'\n",
+                DATEFMT_DESC (conf->input_datefmt));
       fputs (_(outstr), stdout);
       fputs (_("Argument format for -r and --range is: 'n'\n"), stdout);
       more_info ();
@@ -983,7 +983,7 @@ parse_args (int argc, char **argv, struct conf *conf)
               custom_load_conf (conf); /* To get output date format. */
               io_load_app ();
               day.dd = day.mm = day.yyyy = 0;
-              (void)app_arg (add_line, &day, 0, Nflag, conf, preg);
+              app_arg (add_line, &day, 0, Nflag, conf, preg);
               non_interactive = 1;
             }
         }

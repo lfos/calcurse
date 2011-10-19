@@ -168,7 +168,7 @@ help_wins_init (struct scrollwin *hwin, int x, int y, int h, int w)
   hwin->pad.h = BUFSIZ;
   hwin->pad.w = hwin->win.w - 2 * PADOFFSET + 1;
 
-  (void)strncpy (hwin->label, _("Calcurse help"), BUFSIZ);
+  strncpy (hwin->label, _("Calcurse help"), BUFSIZ);
   wins_scrollwin_init (hwin);
   wins_show (hwin->win.p, hwin->label);
 }
@@ -342,7 +342,7 @@ help_screen (void)
 
   hscr[HELP_MAIN].title =
     _("       Welcome to Calcurse. This is the main help screen.\n");
-  (void)snprintf (hscr[HELP_MAIN].text, HELPTEXTSIZ,
+  snprintf (hscr[HELP_MAIN].text, HELPTEXTSIZ,
     _("Moving around:  Press '%s' or '%s' to scroll text upward or downward\n"
       "                inside help screens, if necessary.\n\n"
       "    Exit help:  When finished, press '%s' to exit help and go back to\n"
@@ -363,7 +363,7 @@ help_screen (void)
             keys_action_firstkey (KEY_GENERIC_CREDITS));
 
   hscr[HELP_SAVE].title = _("Save\n");
-  (void)snprintf (hscr[HELP_SAVE].text, HELPTEXTSIZ,
+  snprintf (hscr[HELP_SAVE].text, HELPTEXTSIZ,
     _("Save calcurse data.\n"
       "Data are splitted into four different files which contain :"
       "\n\n"
@@ -376,7 +376,7 @@ help_screen (void)
       "automatically before quitting."));
 
   hscr[HELP_IMPORT].title = _("Import\n");
-  (void)snprintf (hscr[HELP_IMPORT].text, HELPTEXTSIZ,
+  snprintf (hscr[HELP_IMPORT].text, HELPTEXTSIZ,
     _("Import data from an icalendar file.\n"
       "You will be asked to enter the file name from which to load ical\n"
       "items. At the end of the import process, and if the general option\n"
@@ -394,7 +394,7 @@ help_screen (void)
       "the item could not be imported.\n"));
 
   hscr[HELP_EXPORT].title = _("Export\n");
-  (void)snprintf (hscr[HELP_EXPORT].text, HELPTEXTSIZ,
+  snprintf (hscr[HELP_EXPORT].text, HELPTEXTSIZ,
     _("Export calcurse data (appointments, events and todos).\n"
       "This leads to the export submenu, from which you can choose between\n"
       "two different export formats: 'ical' and 'pcal'. Choosing one of\n"
@@ -409,15 +409,15 @@ help_screen (void)
       "Calcurse data are exported in the following order:\n"
       "     events, appointments, todos.\n"));
 
-  (void)strncpy (keystr[MOVE_UP], keys_action_allkeys (KEY_MOVE_UP), BUFSIZ);
-  (void)strncpy (keystr[MOVE_DOWN], keys_action_allkeys (KEY_MOVE_DOWN),
+  strncpy (keystr[MOVE_UP], keys_action_allkeys (KEY_MOVE_UP), BUFSIZ);
+  strncpy (keystr[MOVE_DOWN], keys_action_allkeys (KEY_MOVE_DOWN),
                  BUFSIZ);
-  (void)strncpy (keystr[MOVE_LEFT], keys_action_allkeys (KEY_MOVE_LEFT),
+  strncpy (keystr[MOVE_LEFT], keys_action_allkeys (KEY_MOVE_LEFT),
                  BUFSIZ);
-  (void)strncpy (keystr[MOVE_RIGHT], keys_action_allkeys (KEY_MOVE_RIGHT),
+  strncpy (keystr[MOVE_RIGHT], keys_action_allkeys (KEY_MOVE_RIGHT),
                  BUFSIZ);
   hscr[HELP_DISPLACEMENT].title = _("Displacement keys\n");
-  (void)snprintf (hscr[HELP_DISPLACEMENT].text, HELPTEXTSIZ,
+  snprintf (hscr[HELP_DISPLACEMENT].text, HELPTEXTSIZ,
     _("Move around inside calcurse screens.\n"
       "The following scheme summarizes how to get around:\n\n"
       "                               move up\n"
@@ -444,7 +444,7 @@ help_screen (void)
             keys_action_firstkey (KEY_END_OF_WEEK));
 
   hscr[HELP_VIEW].title = _("View\n");
-  (void)snprintf (hscr[HELP_VIEW].text, HELPTEXTSIZ,
+  snprintf (hscr[HELP_VIEW].text, HELPTEXTSIZ,
     _("View the item you select in either the Todo or Appointment panel.\n"
       "\nThis is usefull when an event description is longer than the "
       "available\nspace to display it. "
@@ -457,7 +457,7 @@ help_screen (void)
       keys_action_firstkey (KEY_VIEW_ITEM));
 
   hscr[HELP_PIPE].title = _("Pipe\n");
-  (void)snprintf (hscr[HELP_PIPE].text, HELPTEXTSIZ,
+  snprintf (hscr[HELP_PIPE].text, HELPTEXTSIZ,
     _("Pipe the selected item to an external program.\n"
       "\nPress the '%s' key to pipe the currently selected appointment or\n"
       "todo entry to an external program.\n"
@@ -465,7 +465,7 @@ help_screen (void)
       keys_action_firstkey (KEY_PIPE_ITEM));
 
   hscr[HELP_TAB].title = _("Tab\n");
-  (void)snprintf (hscr[HELP_TAB].text, HELPTEXTSIZ,
+  snprintf (hscr[HELP_TAB].text, HELPTEXTSIZ,
     _("Switch between panels.\n"
       "The panel currently in use has its border colorized.\n"
       "\nSome actions are possible only if the right panel is selected.\n"
@@ -480,7 +480,7 @@ help_screen (void)
             keys_action_firstkey (KEY_GENERIC_CHANGE_VIEW));
 
   hscr[HELP_GOTO].title = _("Goto\n");
-  (void)snprintf (hscr[HELP_GOTO].text, HELPTEXTSIZ,
+  snprintf (hscr[HELP_GOTO].text, HELPTEXTSIZ,
     _("Jump to a specific day in the calendar.\n"
       "\nUsing this command, you do not need to travel to that day using\n"
       "the displacement keys inside the calendar panel.\n"
@@ -491,7 +491,7 @@ help_screen (void)
             keys_action_firstkey (KEY_GENERIC_GOTO_TODAY));
 
   hscr[HELP_DELETE].title = _("Delete\n");
-  (void)snprintf (hscr[HELP_DELETE].text, HELPTEXTSIZ,
+  snprintf (hscr[HELP_DELETE].text, HELPTEXTSIZ,
     _("Delete an element in the ToDo or Appointment list.\n"
       "\nDepending on which panel is selected when you press the delete key,\n"
       "the hilighted item of either the ToDo or Appointment list will be \n"
@@ -505,7 +505,7 @@ help_screen (void)
       "next time you launch Calcurse."));
 
   hscr[HELP_ADD].title = _("Add\n");
-  (void)snprintf (hscr[HELP_ADD].text, HELPTEXTSIZ,
+  snprintf (hscr[HELP_ADD].text, HELPTEXTSIZ,
     _("Add an item in either the ToDo or Appointment list, depending on which\n"
       "panel is selected when you press '%s'.\n"
       "\nTo enter a new item in the TODO list, you will need first to enter the"
@@ -542,7 +542,7 @@ help_screen (void)
             keys_action_firstkey (KEY_ADD_ITEM));
 
   hscr[HELP_CUT_PASTE].title = _("Cut and Paste\n");
-  (void)snprintf (hscr[HELP_CUT_PASTE].text, HELPTEXTSIZ,
+  snprintf (hscr[HELP_CUT_PASTE].text, HELPTEXTSIZ,
   _("Cut and paste the currently selected item. This is useful to quickly\n"
     "move an item from one date to another.\n"
     "To do so, one must first highlight the item that needs to be moved,\n"
@@ -558,7 +558,7 @@ help_screen (void)
                   keys_action_firstkey (KEY_GENERIC_PASTE));
 
   hscr[HELP_EDIT].title = _("Edit Item\n");
-  (void)snprintf (hscr[HELP_EDIT].text, HELPTEXTSIZ,
+  snprintf (hscr[HELP_EDIT].text, HELPTEXTSIZ,
     _("Edit the item which is currently selected.\n"
       "Depending on the item type (appointment, event, or todo), and if it is\n"
       "repeated or not, you will be asked to choose one of the item properties"
@@ -575,7 +575,7 @@ help_screen (void)
       "       modified properties next time you launch Calcurse."));
 
   hscr[HELP_ENOTE].title = _("EditNote\n");
-  (void)snprintf (hscr[HELP_ENOTE].text, HELPTEXTSIZ,
+  snprintf (hscr[HELP_ENOTE].text, HELPTEXTSIZ,
     _("Attach a note to any type of item, or edit an already existing note.\n"
       "This feature is useful if you do not have enough space to store all\n"
       "of your item description, or if you would like to add sub-tasks to an\n"
@@ -596,7 +596,7 @@ help_screen (void)
     keys_action_firstkey (KEY_EDIT_NOTE));
 
   hscr[HELP_VNOTE].title = _("ViewNote\n");
-  (void)snprintf (hscr[HELP_VNOTE].text, HELPTEXTSIZ,
+  snprintf (hscr[HELP_VNOTE].text, HELPTEXTSIZ,
     _("View a note which was previously attached to an item (an item which\n"
       "owns a note has a '>' sign in front of it).\n"
       "This command only permits to view the note, not to edit it (to do so,\n"
@@ -615,7 +615,7 @@ help_screen (void)
             keys_action_firstkey (KEY_VIEW_NOTE));
 
   hscr[HELP_PRIORITY].title = _("Priority\n");
-  (void)snprintf (hscr[HELP_PRIORITY].text, HELPTEXTSIZ,
+  snprintf (hscr[HELP_PRIORITY].text, HELPTEXTSIZ,
     _("Change the priority of the currently selected item in the ToDo list.\n"
       "Priorities are represented by the number appearing in front of the\n"
       "todo description. This number goes from 9 for the lowest priority to\n"
@@ -633,7 +633,7 @@ help_screen (void)
             keys_action_firstkey (KEY_LOWER_PRIORITY));
 
   hscr[HELP_REPEAT].title = _("Repeat\n");
-  (void)snprintf (hscr[HELP_REPEAT].text, HELPTEXTSIZ,
+  snprintf (hscr[HELP_REPEAT].text, HELPTEXTSIZ,
     _("Repeat an event or an appointment.\n"
       "You must first select the item to be repeated by moving inside the\n"
       "appointment panel. Then pressing '%s' will lead you to a set of three\n"
@@ -660,7 +660,7 @@ help_screen (void)
             keys_action_firstkey (KEY_REPEAT_ITEM));
 
   hscr[HELP_FLAG].title = _("Flag Item\n");
-  (void)snprintf (hscr[HELP_FLAG].text, HELPTEXTSIZ,
+  snprintf (hscr[HELP_FLAG].text, HELPTEXTSIZ,
     _("Toggle an appointment's 'important' flag or a todo's 'completed' flag.\n"
       "If a todo is flagged as completed, its priority number will be replaced\n"
       "by an 'X' sign. Completed tasks will no longer appear in exported data\n"
@@ -674,7 +674,7 @@ help_screen (void)
       "\nand how long before it he gets notified."));
 
   hscr[HELP_CONFIG].title = _("Config\n");
-  (void)snprintf (hscr[HELP_CONFIG].text, HELPTEXTSIZ,
+  snprintf (hscr[HELP_CONFIG].text, HELPTEXTSIZ,
     _("Open the configuration submenu.\n"
       "From this submenu, you can select between color, layout, notification\n"
       "and general options, and you can also configure your keybindings.\n"
@@ -689,7 +689,7 @@ help_screen (void)
       "\nnext time you launch Calcurse."));
 
   hscr[HELP_GENERAL].title = _("Generic keybindings\n");
-  (void)snprintf (hscr[HELP_GENERAL].text, HELPTEXTSIZ,
+  snprintf (hscr[HELP_GENERAL].text, HELPTEXTSIZ,
     _("Some of the keybindings apply whatever panel is selected. They are\n"
       "called generic keybinding.\n"
       "Here is the list of all the generic key bindings, together with their\n"
@@ -720,7 +720,7 @@ help_screen (void)
             keys_action_firstkey (KEY_GENERIC_SCROLL_DOWN));
 
   hscr[HELP_OTHER].title = _("OtherCmd\n");
-  (void)snprintf (hscr[HELP_OTHER].text, HELPTEXTSIZ,
+  snprintf (hscr[HELP_OTHER].text, HELPTEXTSIZ,
     _("Switch between status bar help pages.\n"
       "Because the terminal screen is too narrow to display all of the\n"
       "available commands, you need to press '%s' to see the next set of\n"
@@ -731,7 +731,7 @@ help_screen (void)
             keys_action_firstkey (KEY_GENERIC_OTHER_CMD));
 
   hscr[HELP_CREDITS].title = _("Calcurse - text-based organizer");
-  (void)snprintf (hscr[HELP_CREDITS].text, HELPTEXTSIZ,
+  snprintf (hscr[HELP_CREDITS].text, HELPTEXTSIZ,
     _("\nCopyright (c) 2004-2011 calcurse Development Team\n"
       "All rights reserved.\n"
       "\n"

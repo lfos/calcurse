@@ -334,23 +334,23 @@ custom_set_conf (struct conf *conf, enum conf_var var, char *val)
       return conf_parse_bool (&nbar.show, val);
       break;
     case CUSTOM_CONF_NOTIFYBARDATE:
-      (void)strncpy (nbar.datefmt, val, strlen (val) + 1);
+      strncpy (nbar.datefmt, val, strlen (val) + 1);
       break;
     case CUSTOM_CONF_NOTIFYBARCLOCK:
-      (void)strncpy (nbar.timefmt, val, strlen (val) + 1);
+      strncpy (nbar.timefmt, val, strlen (val) + 1);
       break;
     case CUSTOM_CONF_NOTIFYBARWARNING:
       return conf_parse_int (&nbar.cntdwn, val);
       break;
     case CUSTOM_CONF_NOTIFYBARCOMMAND:
-      (void)strncpy (nbar.cmd, val, strlen (val) + 1);
+      strncpy (nbar.cmd, val, strlen (val) + 1);
       break;
     case CUSTOM_CONF_NOTIFYALL:
       return conf_parse_bool (&nbar.notify_all, val);
       break;
     case CUSTOM_CONF_OUTPUTDATEFMT:
       if (val[0] != '\0')
-        (void)strncpy (conf->output_datefmt, val, strlen (val) + 1);
+        strncpy (conf->output_datefmt, val, strlen (val) + 1);
       break;
     case CUSTOM_CONF_INPUTDATEFMT:
       return conf_parse_int (&conf->input_datefmt, val);
@@ -390,7 +390,7 @@ custom_load_conf (struct conf *conf)
       status_mesg (mesg_line1, mesg_line2);
       wnoutrefresh (win[STA].p);
       wins_doupdate ();
-      (void)keys_getch (win[STA].p, NULL);
+      keys_getch (win[STA].p, NULL);
     }
 
   pthread_mutex_lock (&nbar.mutex);
@@ -573,7 +573,7 @@ custom_layout_config (void)
       "       't' -> todo panel\n\n");
 
   conf_win.p = (WINDOW *)0;
-  (void)strncpy (label, _("layout configuration"), BUFSIZ);
+  strncpy (label, _("layout configuration"), BUFSIZ);
   custom_confwin_init (&conf_win, label);
   cursor = mark = wins_layout () - 1;
   display_layout_config (&conf_win, mark, cursor);
@@ -723,7 +723,7 @@ custom_confwin_init (struct window *confwin, char *label)
     {
       erase_window_part (confwin->p, confwin->x, confwin->y,
                          confwin->x + confwin->w, confwin->y + confwin->h);
-      (void)delwin (confwin->p);
+      delwin (confwin->p);
     }
 
   wins_get_config ();
@@ -893,7 +893,7 @@ custom_color_config (void)
   char label[BUFSIZ];
 
   conf_win.p = 0;
-  (void)strncpy (label, _("color theme"), BUFSIZ);
+  strncpy (label, _("color theme"), BUFSIZ);
   custom_confwin_init (&conf_win, label);
   mark_fore = NBUSERCOLORS;
   mark_back = SIZE - 1;
@@ -995,7 +995,7 @@ custom_color_theme_name (char *theme_name)
   };
 
   if (!colorize)
-    (void)strncpy (theme_name, "0", BUFSIZ);
+    strncpy (theme_name, "0", BUFSIZ);
   else
     {
       pair_content (COLR_CUSTOM, &color[0], &color[1]);
@@ -1011,8 +1011,7 @@ custom_color_theme_name (char *theme_name)
               /* NOTREACHED */
             }
         }
-      (void)snprintf (theme_name, BUFSIZ, "%s on %s", color_name[0],
-                      color_name[1]);
+      snprintf (theme_name, BUFSIZ, "%s on %s", color_name[0], color_name[1]);
     }
 }
 
@@ -1160,7 +1159,7 @@ custom_general_config (struct conf *conf)
 
   clear ();
   custom_set_swsiz (&cwin);
-  (void)strncpy (cwin.label, _("general options"), BUFSIZ);
+  strncpy (cwin.label, _("general options"), BUFSIZ);
   wins_scrollwin_init (&cwin);
   wins_show (cwin.win.p, cwin.label);
   status_mesg (number_str, keys);
@@ -1217,11 +1216,11 @@ custom_general_config (struct conf *conf)
           break;
         case '9':
           status_mesg (output_datefmt_str, "");
-          (void)strncpy (buf, conf->output_datefmt,
-                         strlen (conf->output_datefmt) + 1);
+          strncpy (buf, conf->output_datefmt,
+                   strlen (conf->output_datefmt) + 1);
           if (updatestring (win[STA].p, &buf, 0, 1) == 0)
             {
-              (void)strncpy (conf->output_datefmt, buf, strlen (buf) + 1);
+              strncpy (conf->output_datefmt, buf, strlen (buf) + 1);
             }
           status_mesg (number_str, keys);
           break;
@@ -1293,7 +1292,7 @@ print_keys_bindings (WINDOW *win, int selected_row, int selected_elm, int yoff)
       int nbkeys;
 
       nbkeys = keys_action_count_keys (action);
-      (void)snprintf (actionstr, BUFSIZ, "%s", keys_get_label (action));
+      snprintf (actionstr, BUFSIZ, "%s", keys_get_label (action));
       if (action == selected_row)
         custom_apply_attr (win, ATTR_HIGHEST);
       mvwprintw (win, y, XPOS, "%s ", actionstr);
@@ -1365,7 +1364,7 @@ custom_keys_config (void)
   clear ();
   custom_set_swsiz (&kwin);
   nbdisplayed = (kwin.win.h - LABELLINES) / LINESPERKEY;
-  (void)strncpy (kwin.label, _("keys configuration"), BUFSIZ);
+  strncpy (kwin.label, _("keys configuration"), BUFSIZ);
   wins_scrollwin_init (&kwin);
   wins_show (kwin.win.p, kwin.label);
   custom_keys_config_bar ();

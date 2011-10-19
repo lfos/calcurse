@@ -131,11 +131,11 @@ event_write (struct event *o, FILE *f)
 
   t = o->day;
   lt = localtime (&t);
-  (void)fprintf (f, "%02u/%02u/%04u [%d] ", lt->tm_mon + 1, lt->tm_mday,
-                 1900 + lt->tm_year, o->id);
+  fprintf (f, "%02u/%02u/%04u [%d] ", lt->tm_mon + 1, lt->tm_mday,
+           1900 + lt->tm_year, o->id);
   if (o->note != NULL)
-    (void)fprintf (f, ">%s ", o->note);
-  (void)fprintf (f, "%s\n", o->mesg);
+    fprintf (f, ">%s ", o->note);
+  fprintf (f, "%s\n", o->mesg);
 }
 
 /* Load the events from file */
@@ -146,10 +146,10 @@ event_scan (FILE *f, struct tm start, int id, char *note)
   time_t tstart, t;
 
   t = time (NULL);
-  (void)localtime (&t);
+  localtime (&t);
 
   /* Read the event description */
-  (void)fgets (buf, sizeof buf, f);
+  fgets (buf, sizeof buf, f);
   nl = strchr (buf, '\n');
   if (nl)
     {
@@ -212,8 +212,7 @@ event_delete_bynum (long start, unsigned num, enum eraseflg flag)
 void
 event_paste_item (void)
 {
-  (void)event_new (bkp_cut_event.mesg, bkp_cut_event.note,
-                   date2sec (*calendar_get_slctd_day (), 0, 0),
-                   bkp_cut_event.id);
+  event_new (bkp_cut_event.mesg, bkp_cut_event.note,
+             date2sec (*calendar_get_slctd_day (), 0, 0), bkp_cut_event.id);
   event_free_bkp ();
 }

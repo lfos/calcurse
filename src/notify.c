@@ -126,18 +126,17 @@ notify_init_vars (void)
   pthread_mutex_init (&nbar.mutex, NULL);
   nbar.show = 1;
   nbar.cntdwn = 300;
-  (void)strncpy (nbar.datefmt, date_format, strlen (date_format) + 1);
-  (void)strncpy (nbar.timefmt, time_format, strlen (time_format) + 1);
-  (void)strncpy (nbar.cmd, cmd, strlen (cmd) + 1);
+  strncpy (nbar.datefmt, date_format, strlen (date_format) + 1);
+  strncpy (nbar.timefmt, time_format, strlen (time_format) + 1);
+  strncpy (nbar.cmd, cmd, strlen (cmd) + 1);
 
   if ((nbar.shell = getenv ("SHELL")) == NULL)
     nbar.shell = "/bin/sh";
 
   nbar.notify_all = 0;
 
-  (void)pthread_attr_init (&detached_thread_attr);
-  (void)pthread_attr_setdetachstate (&detached_thread_attr,
-                                     PTHREAD_CREATE_DETACHED);
+  pthread_attr_init (&detached_thread_attr);
+  pthread_attr_setdetachstate (&detached_thread_attr, PTHREAD_CREATE_DETACHED);
 }
 
 /* Extract the appointment file name from the complete file path. */
@@ -272,7 +271,7 @@ notify_update_bar (void)
 
           too_long = 1;
           shrink_len = txt_max_len > 3 ? txt_max_len - 3 : 1;
-          (void)strncpy (buf, notify_app.txt, shrink_len);
+          strncpy (buf, notify_app.txt, shrink_len);
           buf[shrink_len] = '\0';
         }
       time_left = notify_time_left ();
@@ -303,7 +302,7 @@ notify_update_bar (void)
             wattroff (notify.win, A_BLINK);
 
           if (blinking)
-            (void)notify_launch_cmd ();
+            notify_launch_cmd ();
           pthread_mutex_unlock (&nbar.mutex);
         }
       else
@@ -379,8 +378,8 @@ notify_get_next (struct notify_app *a)
   a->got_app = 0;
   a->state = 0;
   a->txt = (char *)0;
-  (void)recur_apoint_check_next (a, current_time, get_today ());
-  (void)apoint_check_next (a, current_time);
+  recur_apoint_check_next (a, current_time, get_today ());
+  apoint_check_next (a, current_time);
 
   return 1;
 }
@@ -605,7 +604,7 @@ print_option (WINDOW *win, unsigned x, unsigned y, char *name,
         {
           char buf[BUFSIZ];
 
-          (void)strncpy (buf, valstr, maxlen - 1);
+          strncpy (buf, valstr, maxlen - 1);
           buf[maxlen - 1] = '\0';
           mvwprintw (win, y, x_opt, "%s...", buf);
         }
@@ -665,10 +664,10 @@ print_config_options (WINDOW *optwin)
   pthread_mutex_lock (&nbar.mutex);
 
   /* String value options */
-  (void)strncpy (opt[DATE].valstr, nbar.datefmt, BUFSIZ);
-  (void)strncpy (opt[CLOCK].valstr, nbar.timefmt, BUFSIZ);
-  (void)snprintf (opt[WARN].valstr, BUFSIZ, "%d", nbar.cntdwn);
-  (void)strncpy (opt[CMD].valstr, nbar.cmd, BUFSIZ);
+  strncpy (opt[DATE].valstr, nbar.datefmt, BUFSIZ);
+  strncpy (opt[CLOCK].valstr, nbar.timefmt, BUFSIZ);
+  snprintf (opt[WARN].valstr, BUFSIZ, "%d", nbar.cntdwn);
+  strncpy (opt[CMD].valstr, nbar.cmd, BUFSIZ);
 
   /* Boolean options */
   opt[SHOW].valnum = nbar.show;
@@ -727,7 +726,7 @@ notify_config_bar (void)
 
   clear ();
   custom_set_swsiz (&cwin);
-  (void)strncpy (cwin.label, _("notification options"), BUFSIZ);
+  strncpy (cwin.label, _("notification options"), BUFSIZ);
   wins_scrollwin_init (&cwin);
   wins_show (cwin.win.p, cwin.label);
   status_mesg (number_str, keys);
@@ -761,24 +760,24 @@ notify_config_bar (void)
         case '2':
           status_mesg (date_str, "");
           pthread_mutex_lock (&nbar.mutex);
-          (void)strncpy (buf, nbar.datefmt, strlen (nbar.datefmt) + 1);
+          strncpy (buf, nbar.datefmt, strlen (nbar.datefmt) + 1);
           pthread_mutex_unlock (&nbar.mutex);
           if (updatestring (win[STA].p, &buf, 0, 1) == 0)
             {
               pthread_mutex_lock (&nbar.mutex);
-              (void)strncpy (nbar.datefmt, buf, strlen (buf) + 1);
+              strncpy (nbar.datefmt, buf, strlen (buf) + 1);
               pthread_mutex_unlock (&nbar.mutex);
             }
           break;
         case '3':
           status_mesg (time_str, "");
           pthread_mutex_lock (&nbar.mutex);
-          (void)strncpy (buf, nbar.timefmt, strlen (nbar.timefmt) + 1);
+          strncpy (buf, nbar.timefmt, strlen (nbar.timefmt) + 1);
           pthread_mutex_unlock (&nbar.mutex);
           if (updatestring (win[STA].p, &buf, 0, 1) == 0)
             {
               pthread_mutex_lock (&nbar.mutex);
-              (void)strncpy (nbar.timefmt, buf, strlen (buf) + 1);
+              strncpy (nbar.timefmt, buf, strlen (buf) + 1);
               pthread_mutex_unlock (&nbar.mutex);
             }
           break;
@@ -798,12 +797,12 @@ notify_config_bar (void)
         case '5':
           status_mesg (cmd_str, "");
           pthread_mutex_lock (&nbar.mutex);
-          (void)strncpy (buf, nbar.cmd, strlen (nbar.cmd) + 1);
+          strncpy (buf, nbar.cmd, strlen (nbar.cmd) + 1);
           pthread_mutex_unlock (&nbar.mutex);
           if (updatestring (win[STA].p, &buf, 0, 1) == 0)
             {
               pthread_mutex_lock (&nbar.mutex);
-              (void)strncpy (nbar.cmd, buf, strlen (buf) + 1);
+              strncpy (nbar.cmd, buf, strlen (buf) + 1);
               pthread_mutex_unlock (&nbar.mutex);
             }
           break;
