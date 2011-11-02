@@ -636,6 +636,9 @@ recur_item_find_occurrence (long item_start, long item_dur, llist_t *item_exc,
   if (day_start < item_start - DAYINSEC + 1)
     return 0;
 
+  if (rpt_until != 0 && day_start >= rpt_until + item_dur)
+    return 0;
+
   t = day_start;
   lt_day = *localtime (&t);
 
