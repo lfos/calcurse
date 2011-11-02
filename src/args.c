@@ -515,7 +515,7 @@ app_arg (int add_line, struct date *day, long date, int print_note,
   LLIST_TS_UNLOCK (&recur_alist_p);
   LLIST_TS_UNLOCK (&alist_p);
 
-  return (app_found);
+  return app_found;
 }
 
 static void
@@ -815,7 +815,7 @@ parse_args (int argc, char **argv, struct conf *conf)
                 {
                   usage ();
                   usage_try ();
-                  return (EXIT_FAILURE);
+                  return EXIT_FAILURE;
                 }
             }
           else

@@ -110,7 +110,7 @@ day_cmp_start (struct day_item *a, struct day_item *b)
   else if (b->type <= EVNT)
     return 1;
   else
-    return (a->start < b->start ? -1 : (a->start == b->start ? 0 : 1));
+    return a->start < b->start ? -1 : (a->start == b->start ? 0 : 1);
 }
 
 /* Add an appointment in the current day list. */
@@ -477,28 +477,28 @@ day_check_if_item (struct date day)
   const long date = date2sec (day, 0, 0);
 
   if (LLIST_FIND_FIRST (&recur_elist, date, recur_event_inday))
-    return (1);
+    return 1;
 
   LLIST_TS_LOCK (&recur_alist_p);
   if (LLIST_TS_FIND_FIRST (&recur_alist_p, date, recur_apoint_inday))
     {
       LLIST_TS_UNLOCK (&recur_alist_p);
-      return (1);
+      return 1;
     }
   LLIST_TS_UNLOCK (&recur_alist_p);
 
   if (LLIST_FIND_FIRST (&eventlist, date, event_inday))
-    return (1);
+    return 1;
 
   LLIST_TS_LOCK (&alist_p);
   if (LLIST_TS_FIND_FIRST (&alist_p, date, apoint_inday))
     {
       LLIST_TS_UNLOCK (&alist_p);
-      return (1);
+      return 1;
     }
   LLIST_TS_UNLOCK (&alist_p);
 
-  return (0);
+  return 0;
 }
 
 static unsigned
@@ -976,7 +976,7 @@ day_erase_item (long date, int item_number, enum eraseflg flag)
         }
       else
         {
-          return (0);
+          return 0;
         }
       if (p->type == RECUR_EVNT)
         {
@@ -991,7 +991,7 @@ day_erase_item (long date, int item_number, enum eraseflg flag)
   if (flag == ERASE_FORCE_ONLY_NOTE)
     return 0;
   else
-    return (p->type);
+    return p->type;
 }
 
 /* Cut an item so it can be pasted somewhere else later. */
@@ -1083,7 +1083,7 @@ day_item_nb (long date, int day_num, int type)
       j = LLIST_TS_NEXT (j);
     }
 
-  return (nb_item[type - 1]);
+  return nb_item[type - 1];
 }
 
 /* Attach a note to an appointment or event. */

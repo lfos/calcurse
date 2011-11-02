@@ -346,7 +346,7 @@ custom_set_conf (struct conf *conf, enum conf_var var, char *val)
       strncpy (nbar.cmd, val, strlen (val) + 1);
       break;
     case CUSTOM_CONF_NOTIFYALL:
-      return conf_parse_bool (&nbar.notify_all, val);
+      return conf_parse_bool(&nbar.notify_all, val);
       break;
     case CUSTOM_CONF_OUTPUTDATEFMT:
       if (val[0] != '\0')

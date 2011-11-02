@@ -319,7 +319,7 @@ wanted_page (int ch)
       break;
     }
 
-  return (page);
+  return page;
 }
 
 /* Draws the help screen */

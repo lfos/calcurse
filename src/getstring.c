@@ -252,7 +252,7 @@ getstring (WINDOW *win, char *str, int l, int x, int y)
           if (st.pos < st.len) st.pos++;
           break;
         case ESCAPE:            /* cancel editing */
-          return (GETSTRING_ESC);
+          return GETSTRING_ESC;
           break;
         default:                /* insert one character */
           c[0] = ch;
@@ -268,7 +268,7 @@ getstring (WINDOW *win, char *str, int l, int x, int y)
 
   custom_remove_attr (win, ATTR_HIGHEST);
 
-  return (st.len == 0 ? GETSTRING_RET : GETSTRING_VALID);
+  return st.len == 0 ? GETSTRING_RET : GETSTRING_VALID;
 }
 
 /* Update an already existing string. */

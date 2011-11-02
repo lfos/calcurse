@@ -63,7 +63,7 @@ free_exc_list (llist_t *exc)
 static int
 exc_cmp_day (struct excp *a, struct excp *b)
 {
-  return (a->st < b->st ? -1 : (a->st == b->st ? 0 : 1));
+  return a->st < b->st ? -1 : (a->st == b->st ? 0 : 1);
 }
 
 static void
@@ -214,13 +214,13 @@ recur_event_llist_free (void)
 static int
 recur_apoint_cmp_start (struct recur_apoint *a, struct recur_apoint *b)
 {
-  return (a->start < b->start ? -1 : (a->start == b->start ? 0 : 1));
+  return a->start < b->start ? -1 : (a->start == b->start ? 0 : 1);
 }
 
 static int
 recur_event_cmp_day (struct recur_event *a, struct recur_event *b)
 {
-  return (a->day < b->day ? -1 : (a->day == b->day ? 0 : 1));
+  return a->day < b->day ? -1 : (a->day == b->day ? 0 : 1);
 }
 
 /* Insert a new recursive appointment in the general linked list */
@@ -310,7 +310,7 @@ recur_def2char (enum recur_type define)
       return 0;
     }
 
-  return (recur_char);
+  return recur_char;
 }
 
 /*
@@ -340,7 +340,7 @@ recur_char2def (char type)
       EXIT (_("unknown character"));
       return 0;
     }
-  return (recur_def);
+  return recur_def;
 }
 
 /* Write days for which recurrent items should not be repeated. */
@@ -406,8 +406,8 @@ recur_apoint_scan (FILE *f, struct tm start, struct tm end, char type,
   EXIT_IF (tstart == -1 || tend == -1 || tstart > tend || tuntil == -1,
            _("date error in appointment"));
 
-  return (recur_apoint_new (buf, note, tstart, tend - tstart, state,
-                            recur_char2def (type), freq, tuntil, exc));
+  return recur_apoint_new (buf, note, tstart, tend - tstart, state,
+                           recur_char2def(type), freq, tuntil, exc);
 }
 
 /* Load the recursive events from file */
@@ -445,8 +445,8 @@ recur_event_scan (FILE *f, struct tm start, int id, char type, int freq,
   EXIT_IF (tstart == -1 || tuntil == -1,
            _("date error in event"));
 
-  return recur_event_new (buf, note, tstart, id, recur_char2def (type),
-                          freq, tuntil, exc);
+  return recur_event_new (buf, note, tstart, id, recur_char2def(type), freq,
+                          tuntil, exc);
 }
 
 /* Writting of a recursive appointment into file. */
@@ -607,7 +607,7 @@ diff_years (struct tm lt_start, struct tm lt_end)
 static int
 exc_inday (struct excp *exc, long day_start)
 {
-  return (exc->st >= day_start && exc->st < day_start + DAYINSEC);
+  return exc->st >= day_start && exc->st < day_start + DAYINSEC;
 }
 
 /*
@@ -712,18 +712,18 @@ unsigned
 recur_apoint_find_occurrence (struct recur_apoint *rapt, long day_start,
                               unsigned *occurrence)
 {
-  return recur_item_find_occurrence (rapt->start, rapt->dur, &rapt->exc,
-                                     rapt->rpt->type, rapt->rpt->freq,
-                                     rapt->rpt->until, day_start, occurrence);
+  return recur_item_find_occurrence(rapt->start, rapt->dur, &rapt->exc,
+                                    rapt->rpt->type, rapt->rpt->freq,
+                                    rapt->rpt->until, day_start, occurrence);
 }
 
 unsigned
 recur_event_find_occurrence (struct recur_event *rev, long day_start,
                              unsigned *occurrence)
 {
-  return recur_item_find_occurrence (rev->day, DAYINSEC, &rev->exc,
-                                     rev->rpt->type, rev->rpt->freq,
-                                     rev->rpt->until, day_start, occurrence);
+  return recur_item_find_occurrence(rev->day, DAYINSEC, &rev->exc,
+                                    rev->rpt->type, rev->rpt->freq,
+                                    rev->rpt->until, day_start, occurrence);
 }
 
 /* Check if a recurrent item belongs to the selected day. */
@@ -733,22 +733,22 @@ recur_item_inday (long item_start, long item_dur, llist_t *item_exc,
 {
   /* We do not need the (real) start time of the occurrence here, so just
    * ignore the buffer. */
-  return recur_item_find_occurrence (item_start, item_dur, item_exc, rpt_type,
-                                     rpt_freq, rpt_until, day_start, NULL);
+  return recur_item_find_occurrence(item_start, item_dur, item_exc, rpt_type,
+                                    rpt_freq, rpt_until, day_start, NULL);
 }
 
 unsigned
 recur_apoint_inday(struct recur_apoint *rapt, long day_start)
 {
-  return recur_item_inday (rapt->start, rapt->dur, &rapt->exc, rapt->rpt->type,
-                           rapt->rpt->freq, rapt->rpt->until, day_start);
+  return recur_item_inday(rapt->start, rapt->dur, &rapt->exc, rapt->rpt->type,
+                          rapt->rpt->freq, rapt->rpt->until, day_start);
 }
 
 unsigned
 recur_event_inday(struct recur_event *rev, long day_start)
 {
-  return recur_item_inday (rev->day, DAYINSEC, &rev->exc, rev->rpt->type,
-                           rev->rpt->freq, rev->rpt->until, day_start);
+  return recur_item_inday(rev->day, DAYINSEC, &rev->exc, rev->rpt->type,
+                          rev->rpt->freq, rev->rpt->until, day_start);
 }
 
 /*
@@ -1034,7 +1034,7 @@ recur_exc_scan (llist_t *lexc, FILE *data_file)
 static int
 recur_apoint_starts_before (struct recur_apoint *rapt, long time)
 {
-  return (rapt->start < time);
+  return rapt->start < time;
 }
 
 /*
@@ -1063,7 +1063,7 @@ recur_apoint_check_next (struct notify_app *app, long start, long day)
     }
   LLIST_TS_UNLOCK (&recur_alist_p);
 
-  return (app);
+  return app;
 }
 
 /* Returns a structure containing the selected recurrent appointment. */

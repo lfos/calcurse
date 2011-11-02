@@ -118,13 +118,13 @@ apoint_hilt_increase (int n)
 int
 apoint_hilt (void)
 {
-  return (hilt);
+  return hilt;
 }
 
 static int
 apoint_cmp_start (struct apoint *a, struct apoint *b)
 {
-  return (a->start < b->start ? -1 : (a->start == b->start ? 0 : 1));
+  return a->start < b->start ? -1 : (a->start == b->start ? 0 : 1);
 }
 
 struct apoint *
@@ -383,9 +383,9 @@ apoint_inday (struct apoint *i, long start)
 {
   if (i->start <= start + DAYINSEC && i->start + i->dur > start)
     {
-      return (1);
+      return 1;
     }
-  return (0);
+  return 0;
 }
 
 void
@@ -465,7 +465,7 @@ apoint_scan (FILE *f, struct tm start, struct tm end, char state, char *note)
   tend = mktime (&end);
   EXIT_IF (tstart == -1 || tend == -1 || tstart > tend,
            _("date error in appointment"));
-  return (apoint_new (buf, note, tstart, tend - tstart, state));
+  return apoint_new (buf, note, tstart, tend - tstart, state);
 }
 
 /* Retrieve an appointment from the list, given the day and item position. */
@@ -576,7 +576,7 @@ apoint_scroll_pad_up (int nb_events_inday)
 static int
 apoint_starts_after (struct apoint *apt, long time)
 {
-  return (apt->start > time);
+  return apt->start > time;
 }
 
 /*
@@ -606,7 +606,7 @@ apoint_check_next (struct notify_app *app, long start)
 
   LLIST_TS_UNLOCK (&alist_p);
 
-  return (app);
+  return app;
 }
 
 /*
@@ -622,7 +622,7 @@ apoint_recur_s2apoint_s (struct recur_apoint *p)
   a->mesg = mem_strdup (p->mesg);
   a->start = p->start;
   a->dur = p->dur;
-  return (a);
+  return a;
 }
 
 /*

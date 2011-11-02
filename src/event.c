@@ -91,7 +91,7 @@ event_llist_free (void)
 static int
 event_cmp_day (struct event *a, struct event *b)
 {
-  return (a->day < b->day ? -1 : (a->day == b->day ? 0 : 1));
+  return a->day < b->day ? -1 : (a->day == b->day ? 0 : 1);
 }
 
 /* Create a new event */
@@ -117,9 +117,9 @@ event_inday (struct event *i, long start)
 {
   if (i->day < start + DAYINSEC && i->day >= start)
     {
-      return (1);
+      return 1;
     }
-  return (0);
+  return 0;
 }
 
 /* Write to file the event in user-friendly format */

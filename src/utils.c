@@ -249,8 +249,8 @@ is_all_digit (char *string)
 long
 get_item_time (long date)
 {
-  return (long)(get_item_hour (date) * HOURINSEC +
-    get_item_min (date) * MININSEC);
+  return (long)(get_item_hour(date) * HOURINSEC +
+                get_item_min(date) * MININSEC);
 }
 
 int
@@ -348,7 +348,7 @@ update_time_in_date (long date, unsigned hr, unsigned mn)
   new_date = mktime (lt);
   EXIT_IF (new_date == -1, _("error in mktime"));
 
-  return (new_date);
+  return new_date;
 }
 
 /*
@@ -377,13 +377,13 @@ get_sec_date (struct date date)
       date.yyyy = atoi (current_year);
     }
   long_date = date2sec (date, 0, 0);
-  return (long_date);
+  return long_date;
 }
 
 long
 min2sec (unsigned minutes)
 {
-  return (minutes * MININSEC);
+  return minutes * MININSEC;
 }
 
 /*
@@ -450,7 +450,7 @@ get_today (void)
   day.yyyy = lt->tm_year + 1900;
   current_day = date2sec (day, 0, 0);
 
-  return (current_day);
+  return current_day;
 }
 
 /* Returns the current time in seconds. */
@@ -484,7 +484,7 @@ mystrtol (const char *str)
   if (errno == ERANGE && (lval == LONG_MAX || lval == LONG_MIN))
     EXIT (_("out of range"));
 
-  return (lval);
+  return lval;
 }
 
 /* Print the given option value with appropriate color. */
@@ -541,11 +541,11 @@ new_tempfile (const char *prefix, int trailing_len)
   FILE *file;
 
   if (prefix == NULL)
-    return (NULL);
+    return NULL;
 
   prefix_len = strlen (prefix);
   if (prefix_len + trailing_len >= BUFSIZ)
-    return (NULL);
+    return NULL;
   memcpy (fullname, prefix, prefix_len);
   memset (fullname + prefix_len, 'X', trailing_len);
   fullname[prefix_len + trailing_len] = '\0';

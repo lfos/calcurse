@@ -112,7 +112,7 @@ notify_bar (void)
   display_bar = (nbar.show) ? 1 : 0;
   pthread_mutex_unlock (&nbar.mutex);
 
-  return (display_bar);
+  return display_bar;
 }
 
 /* Initialize the nbar variable used to store notification options. */

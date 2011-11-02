@@ -195,7 +195,7 @@ calendar_change_first_day_of_week (void)
 unsigned
 calendar_week_begins_on_monday (void)
 {
-  return (week_begins_on_monday);
+  return week_begins_on_monday;
 }
 
 /* Fill in the given variable with the current date. */
@@ -218,14 +218,14 @@ calendar_init_slctd_day (void)
 struct date *
 calendar_get_slctd_day (void)
 {
-  return (&slctd_day);
+  return &slctd_day;
 }
 
 /* Returned value represents the selected day in calendar (in seconds) */
 long
 calendar_get_slctd_day_sec (void)
 {
-  return (date2sec (slctd_day, 0, 0));
+  return date2sec (slctd_day, 0, 0);
 }
 
 static int
@@ -246,14 +246,14 @@ calendar_get_wday (struct date *date)
 static unsigned
 months_to_days (unsigned month)
 {
-  return ((month * 3057 - 3007) / 100);
+  return (month * 3057 - 3007) / 100;
 }
 
 
 static long
 years_to_days (unsigned year)
 {
-  return (year * 365L + year / 4 - year / 100 + year / 400);
+  return year * 365L + year / 4 - year / 100 + year / 400;
 }
 
 static long
@@ -267,7 +267,7 @@ ymd_to_scalar (unsigned year, unsigned month, unsigned day)
   year--;
   scalar += years_to_days (year);
 
-  return (scalar);
+  return scalar;
 }
 
 /*
@@ -284,11 +284,11 @@ date_change (struct tm *date, int delta_month, int delta_day)
   t.tm_mday += delta_day;
 
   if (mktime (&t) == -1)
-    return (1);
+    return 1;
   else
     {
       *date = t;
-      return (0);
+      return 0;
     }
 }
 
@@ -815,7 +815,7 @@ calendar_end_of_year (void)
 static double
 dtor (double deg)
 {
-  return (deg * M_PI / 180);
+  return deg * M_PI / 180;
 }
 
 /*
@@ -867,7 +867,7 @@ potm (double days)
   V = 0.6583 * sin (dtor (2 * (lprime - LambdaSol)));	/* sec 65 #13 */
   ldprime = lprime + V;		/* sec 65 #14 */
   D = ldprime - LambdaSol;	/* sec 67 #2 */
-  return (50.0 * (1 - cos (dtor (D))));	/* sec 67 #3 */
+  return 50.0 * (1 - cos (dtor (D)));	/* sec 67 #3 */
 }
 
 /*
@@ -897,7 +897,7 @@ pom (time_t tmpt)
   for (cnt = GMT->tm_year; cnt < EPOCH; ++cnt)
     days -= ISLEAP (cnt + TM_YEAR_BASE) ? 366 : 365;
 
-  return (potm (days));
+  return potm (days);
 }
 
 /*
@@ -925,5 +925,5 @@ calendar_get_pom (time_t date)
            && relative_pom < abs (pom_tomorrow - half))
     phase = (pom_tomorrow > pom_today) ? FIRST_QUARTER : LAST_QUARTER;
 
-  return (pom_pict[phase]);
+  return pom_pict[phase];
 }

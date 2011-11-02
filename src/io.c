@@ -227,7 +227,7 @@ get_export_stream (enum export_type type)
       if (cancel)
         {
           mem_free (stream_name);
-          return (NULL);
+          return NULL;
         }
       stream = fopen (stream_name, "w");
       if (stream == NULL)
@@ -238,7 +238,7 @@ get_export_stream (enum export_type type)
     }
   mem_free (stream_name);
 
-  return (stream);
+  return stream;
 }
 
 /*

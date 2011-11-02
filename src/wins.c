@@ -201,7 +201,7 @@ wins_slctd_init (void)
 enum win
 wins_slctd (void)
 {
-  return (slctd_win);
+  return slctd_win;
 }
 
 /* Sets the selected window. */

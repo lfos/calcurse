@@ -76,14 +76,14 @@ todo_hilt_increase (int n)
 int
 todo_hilt (void)
 {
-  return (hilt);
+  return hilt;
 }
 
 /* Return the number of todos. */
 int
 todo_nb (void)
 {
-  return (todos);
+  return todos;
 }
 
 /* Set the number of todos. */
@@ -119,14 +119,14 @@ todo_first_decrease (int n)
 int
 todo_hilt_pos (void)
 {
-  return (hilt - first);
+  return hilt - first;
 }
 
 /* Return the last visited todo. */
 char *
 todo_saved_mesg (void)
 {
-  return (msgsav);
+  return msgsav;
 }
 
 /* Request user to enter a new todo item. */
@@ -162,7 +162,7 @@ todo_cmp_id (struct todo *a, struct todo *b)
   int abs_a = abs (a->id);
   int abs_b = abs (b->id);
 
-  return (abs_a < abs_b ? -1 : (abs_a == abs_b ? 0 : 1));
+  return abs_a < abs_b ? -1 : (abs_a == abs_b ? 0 : 1);
 }
 
 /*
