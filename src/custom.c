@@ -572,7 +572,7 @@ custom_layout_config (void)
       "       'a' -> appointment panel\n\n"
       "       't' -> todo panel\n\n");
 
-  conf_win.p = (WINDOW *)0;
+  conf_win.p = NULL;
   strncpy (label, _("layout configuration"), BUFSIZ);
   custom_confwin_init (&conf_win, label);
   cursor = mark = wins_layout () - 1;

@@ -225,7 +225,7 @@ notify_launch_cmd (void)
   else if (pid == 0)
     {
       /* Child: launch user defined command */
-      if (execlp (nbar.shell, nbar.shell, "-c", nbar.cmd, (char *)0) < 0)
+      if (execlp (nbar.shell, nbar.shell, "-c", nbar.cmd, NULL) < 0)
         {
           ERROR_MSG (_("error while launching command"));
           _exit (1);
@@ -360,7 +360,7 @@ notify_main_thread (void *arg)
             notify_check_next_app (0);
         }
     }
-  pthread_exit ((void *) 0);
+  pthread_exit (NULL);
 }
 
 /* Fill the given structure with information about next appointment. */
@@ -377,7 +377,7 @@ notify_get_next (struct notify_app *a)
   a->time = current_time + DAYINSEC;
   a->got_app = 0;
   a->state = 0;
-  a->txt = (char *)0;
+  a->txt = NULL;
   recur_apoint_check_next (a, current_time, get_today ());
   apoint_check_next (a, current_time);
 
@@ -393,7 +393,7 @@ notify_get_next_bkgd (void)
 {
   struct notify_app a;
 
-  a.txt = (char *)0;
+  a.txt = NULL;
   if (!notify_get_next (&a))
     return 0;
 
@@ -422,7 +422,7 @@ notify_app_txt (void)
   if (notify_app.got_app)
     return notify_app.txt;
   else
-    return (char *)0;
+    return NULL;
 }
 
 /* Look for the next appointment within the next 24 hours. */
@@ -434,7 +434,7 @@ notify_thread_app (void *arg)
   int force = (arg ? 1 : 0);
 
   if (!notify_get_next (&tmp_app))
-    pthread_exit ((void *)0);
+    pthread_exit (NULL);
 
   if (!tmp_app.got_app)
     {
@@ -456,7 +456,7 @@ notify_thread_app (void *arg)
     mem_free (tmp_app.txt);
   notify_update_bar ();
 
-  pthread_exit ((void *) 0);
+  pthread_exit (NULL);
 }
 
 /* Launch the thread notify_thread_app to look for next appointment. */
@@ -464,7 +464,7 @@ void
 notify_check_next_app (int force)
 {
   pthread_t notify_t_app;
-  void *arg = (force ? (void *)1 : (void *)0);
+  void *arg = (force ? (void *)1 : NULL);
 
   pthread_create (&notify_t_app, &detached_thread_attr, notify_thread_app,
                   arg);

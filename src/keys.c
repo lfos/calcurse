@@ -407,7 +407,7 @@ keys_action_nkey (enum key action, int keynum)
         return key->str;
       i++;
     }
-  return (char *)0;
+  return NULL;
 }
 
 char *
@@ -440,7 +440,7 @@ keys_format_label (char *key, int keylen)
   int i;
 
   if (keylen > BUFSIZ)
-    return (char *)0;
+    return NULL;
 
   bzero (fmtkey, sizeof (fmtkey));
   if (len == 0)

@@ -130,7 +130,7 @@ calendar_date_thread (void *arg)
       calendar_update_panel (&win[CAL]);
     }
 
-  return (void *)0;
+  return NULL;
 }
 
 /* Launch the calendar date thread. */

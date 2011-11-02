@@ -176,7 +176,7 @@ dbg_malloc (size_t size, const char *pos)
   unsigned *buf;
 
    if (size == 0)
-    return (void *)0;
+    return NULL;
 
   size = EXTRA_SPACE + (size + sizeof (unsigned) - 1) / sizeof (unsigned);
   buf = xmalloc (size * sizeof (unsigned));
@@ -197,13 +197,13 @@ dbg_calloc (size_t nmemb, size_t size, const char *pos)
   void *buf;
 
   if (!nmemb || !size)
-    return (void *)0;
+    return NULL;
 
   EXIT_IF (nmemb > SIZE_MAX / size, _("overflow at %s"), pos);
 
   size *= nmemb;
   if ((buf = dbg_malloc (size, pos)) == NULL)
-    return (void *)0;
+    return NULL;
 
   bzero (buf, size);
 
@@ -216,16 +216,16 @@ dbg_realloc (void *ptr, size_t nmemb, size_t size, const char *pos)
   unsigned *buf, old_size, new_size, cpy_size;
 
   if (ptr == NULL)
-    return (void *)0;
+    return NULL;
 
   new_size = nmemb *size;
   if (new_size == 0)
-    return (void *)0;
+    return NULL;
 
   EXIT_IF (nmemb > SIZE_MAX / size, _("overflow at %s"), pos);
 
   if ((buf = dbg_malloc (new_size, pos)) == NULL)
-    return (void *)0;
+    return NULL;
 
   old_size = *((unsigned *)ptr - EXTRA_SPACE_START + BLK_SIZE);
   cpy_size = (old_size > new_size) ? new_size : old_size;
@@ -243,11 +243,11 @@ dbg_strdup (const char *s, const char *pos)
   char *buf;
 
   if (s == NULL)
-    return (char *)0;
+    return NULL;
 
   size = strlen (s);
   if ((buf = dbg_malloc (size + 1, pos)) == NULL)
-    return (char *)0;
+    return NULL;
 
   return strncpy (buf, s, size + 1);
 }

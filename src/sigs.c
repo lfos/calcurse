@@ -83,7 +83,7 @@ sigs_set_hdlr (int sig, void (*handler)(int))
   sigemptyset (&sa.sa_mask);
   sa.sa_handler = handler;
   sa.sa_flags = 0;
-  if (sigaction (sig, &sa, (struct sigaction *)0) == -1)
+  if (sigaction (sig, &sa, NULL) == -1)
     {
       ERROR_MSG (_("Error setting signal #%d : %s\n"),
                  sig, strerror (errno));
