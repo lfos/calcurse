@@ -240,7 +240,7 @@ todo_flag (void)
 
 /* Delete an item from the ToDo list. */
 void
-todo_delete (struct conf *conf)
+todo_delete (void)
 {
   char *choices = "[y/n] ";
   char *del_todo_str = _("Do you really want to delete this task ?");
@@ -251,7 +251,7 @@ todo_delete (struct conf *conf)
   unsigned go_for_todo_del = 0;
   int answer, has_note;
 
-  if (conf->confirm_delete)
+  if (conf.confirm_delete)
     {
       status_mesg (del_todo_str, choices);
       answer = wgetch (win[STA].p);

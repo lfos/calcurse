@@ -262,7 +262,7 @@ apoint_add (void)
 
 /* Delete an item from the appointment list. */
 void
-apoint_delete (struct conf *conf, unsigned *nb_events, unsigned *nb_apoints)
+apoint_delete (unsigned *nb_events, unsigned *nb_apoints)
 {
   char *choices = "[y/n] ";
   char *del_app_str = _("Do you really want to delete this item ?");
@@ -275,7 +275,7 @@ apoint_delete (struct conf *conf, unsigned *nb_events, unsigned *nb_apoints)
 
   date = calendar_get_slctd_day_sec ();
 
-  if (conf->confirm_delete)
+  if (conf.confirm_delete)
     {
       status_mesg (del_app_str, choices);
       answer = wgetch (win[STA].p);

@@ -284,32 +284,32 @@ custom_remove_attr (WINDOW *win, int attr_num)
 
 /* Set a configuration variable. */
 static int
-custom_set_conf (struct conf *conf, enum conf_var var, char *val)
+custom_set_conf (enum conf_var var, char *val)
 {
   unsigned tmp;
 
   switch (var)
     {
     case CUSTOM_CONF_AUTOSAVE:
-      return conf_parse_bool (&conf->auto_save, val);
+      return conf_parse_bool (&conf.auto_save, val);
       break;
     case CUSTOM_CONF_AUTOGC:
-      return conf_parse_bool (&conf->auto_gc, val);
+      return conf_parse_bool (&conf.auto_gc, val);
       break;
     case CUSTOM_CONF_PERIODICSAVE:
-      return conf_parse_unsigned (&conf->periodic_save, val);
+      return conf_parse_unsigned (&conf.periodic_save, val);
       break;
     case CUSTOM_CONF_CONFIRMQUIT:
-      return conf_parse_bool (&conf->confirm_quit, val);
+      return conf_parse_bool (&conf.confirm_quit, val);
       break;
     case CUSTOM_CONF_CONFIRMDELETE:
-      return conf_parse_bool (&conf->confirm_delete, val);
+      return conf_parse_bool (&conf.confirm_delete, val);
       break;
     case CUSTOM_CONF_SKIPSYSTEMDIALOGS:
-      return conf_parse_bool (&conf->skip_system_dialogs, val);
+      return conf_parse_bool (&conf.skip_system_dialogs, val);
       break;
     case CUSTOM_CONF_SKIPPROGRESSBAR:
-      return conf_parse_bool (&conf->skip_progress_bar, val);
+      return conf_parse_bool (&conf.skip_progress_bar, val);
       break;
     case CUSTOM_CONF_CALENDAR_DEFAULTVIEW:
       calendar_set_view (atoi (val));
@@ -350,12 +350,12 @@ custom_set_conf (struct conf *conf, enum conf_var var, char *val)
       break;
     case CUSTOM_CONF_OUTPUTDATEFMT:
       if (val[0] != '\0')
-        strncpy (conf->output_datefmt, val, strlen (val) + 1);
+        strncpy (conf.output_datefmt, val, strlen (val) + 1);
       break;
     case CUSTOM_CONF_INPUTDATEFMT:
-      return conf_parse_int (&conf->input_datefmt, val);
-      if (conf->input_datefmt <= 0 || conf->input_datefmt >= DATE_FORMATS)
-        conf->input_datefmt = 1;
+      return conf_parse_int (&conf.input_datefmt, val);
+      if (conf.input_datefmt <= 0 || conf.input_datefmt >= DATE_FORMATS)
+        conf.input_datefmt = 1;
       break;
     case CUSTOM_CONF_DMON_ENABLE:
       return conf_parse_bool (&dmon.enable, val);
@@ -373,7 +373,7 @@ custom_set_conf (struct conf *conf, enum conf_var var, char *val)
 
 /* Load the user configuration. */
 void
-custom_load_conf (struct conf *conf)
+custom_load_conf (void)
 {
   FILE *data_file;
   char *mesg_line1 = _("Failed to open config file");
@@ -436,7 +436,7 @@ custom_load_conf (struct conf *conf)
           val = e_conf;
         }
 
-      if (!val || !custom_set_conf (conf, var, val))
+      if (!val || !custom_set_conf (var, val))
         {
           EXIT (_("wrong configuration variable format for \"%s\""), name);
           /* NOTREACHED */
@@ -1017,7 +1017,7 @@ custom_color_theme_name (char *theme_name)
 
 /* Prints the general options. */
 static int
-print_general_options (WINDOW *win, struct conf *conf)
+print_general_options (WINDOW *win)
 {
   enum {
     AUTO_SAVE,
@@ -1050,13 +1050,13 @@ print_general_options (WINDOW *win, struct conf *conf)
 
   y = 0;
   mvwprintw (win, y, XPOS, "[1] %s      ", opt[AUTO_SAVE]);
-  print_bool_option_incolor (win, conf->auto_save, y,
+  print_bool_option_incolor (win, conf.auto_save, y,
                              XPOS + 4 + strlen (opt[AUTO_SAVE]));
   mvwprintw (win, y + 1, XPOS,
              _("(if set to YES, automatic save is done when quitting)"));
   y += YOFF;
   mvwprintw (win, y, XPOS, "[2] %s      ", opt[AUTO_GC]);
-  print_bool_option_incolor (win, conf->auto_gc, y,
+  print_bool_option_incolor (win, conf.auto_gc, y,
                              XPOS + 4 + strlen (opt[AUTO_GC]));
   mvwprintw (win, y + 1, XPOS,
              _("(run the garbage collector when quitting)"));
@@ -1064,34 +1064,34 @@ print_general_options (WINDOW *win, struct conf *conf)
   mvwprintw (win, y, XPOS, "[3] %s      ", opt[PERIODIC_SAVE]);
   custom_apply_attr (win, ATTR_HIGHEST);
   mvwprintw (win, y, XPOS + 4 + strlen (opt[PERIODIC_SAVE]), "%d",
-             conf->periodic_save);
+             conf.periodic_save);
   custom_remove_attr (win, ATTR_HIGHEST);
   mvwprintw (win, y + 1, XPOS,
              _("(if not null, automatically save data every 'periodic_save' "
                "minutes)"));
   y += YOFF;
   mvwprintw (win, y, XPOS, "[4] %s      ", opt[CONFIRM_QUIT]);
-  print_bool_option_incolor (win, conf->confirm_quit, y,
+  print_bool_option_incolor (win, conf.confirm_quit, y,
                              XPOS + 4 + strlen (opt[CONFIRM_QUIT]));
   mvwprintw (win, y + 1, XPOS,
              _("(if set to YES, confirmation is required before quitting)"));
   y += YOFF;
   mvwprintw (win, y, XPOS, "[5] %s      ", opt[CONFIRM_DELETE]);
-  print_bool_option_incolor (win, conf->confirm_delete, y,
+  print_bool_option_incolor (win, conf.confirm_delete, y,
                              XPOS + 4 + strlen (opt[CONFIRM_DELETE]));
   mvwprintw (win, y + 1, XPOS,
              _("(if set to YES, confirmation is required "
                "before deleting an event)"));
   y += YOFF;
   mvwprintw (win, y, XPOS, "[6] %s      ", opt[SKIP_SYSTEM_DIAGS]);
-  print_bool_option_incolor (win, conf->skip_system_dialogs, y,
+  print_bool_option_incolor (win, conf.skip_system_dialogs, y,
                              XPOS + 4 + strlen (opt[SKIP_SYSTEM_DIAGS]));
   mvwprintw (win, y + 1, XPOS,
              _("(if set to YES, messages about loaded "
                "and saved data will not be displayed)"));
   y += YOFF;
   mvwprintw (win, y, XPOS, "[7] %s      ", opt[SKIP_PROGRESS_BAR]);
-  print_bool_option_incolor (win, conf->skip_progress_bar, y,
+  print_bool_option_incolor (win, conf.skip_progress_bar, y,
                             XPOS + 4 + strlen (opt[SKIP_PROGRESS_BAR]));
   mvwprintw (win, y + 1, XPOS,
              _("(if set to YES, progress bar will not be displayed "
@@ -1107,7 +1107,7 @@ print_general_options (WINDOW *win, struct conf *conf)
   mvwprintw (win, y, XPOS, "[9] %s      ", opt[OUTPUT_DATE_FMT]);
   custom_apply_attr (win, ATTR_HIGHEST);
   mvwprintw (win, y, XPOS + 4 + strlen (opt[OUTPUT_DATE_FMT]), "%s",
-             conf->output_datefmt);
+             conf.output_datefmt);
   custom_remove_attr (win, ATTR_HIGHEST);
   mvwprintw (win, y + 1, XPOS,
              _("(Format of the date to be displayed in non-interactive mode)"));
@@ -1115,7 +1115,7 @@ print_general_options (WINDOW *win, struct conf *conf)
   mvwprintw (win, y, XPOS, "[0] %s      ", opt[INPUT_DATE_FMT]);
   custom_apply_attr (win, ATTR_HIGHEST);
   mvwprintw (win, y, XPOS + 4 + strlen (opt[INPUT_DATE_FMT]), "%d",
-             conf->input_datefmt);
+             conf.input_datefmt);
   custom_remove_attr (win, ATTR_HIGHEST);
   mvwprintw (win, y + 1, XPOS, _("(Format to be used when entering a date: "));
   mvwprintw (win, y + 2, XPOS,
@@ -1140,7 +1140,7 @@ custom_set_swsiz (struct scrollwin *sw)
 
 /* General configuration. */
 void
-custom_general_config (struct conf *conf)
+custom_general_config (void)
 {
   struct scrollwin cwin;
   char *number_str =
@@ -1163,7 +1163,7 @@ custom_general_config (struct conf *conf)
   wins_scrollwin_init (&cwin);
   wins_show (cwin.win.p, cwin.label);
   status_mesg (number_str, keys);
-  cwin.total_lines = print_general_options (cwin.pad.p, conf);
+  cwin.total_lines = print_general_options (cwin.pad.p);
   wins_scrollwin_display (&cwin);
 
   buf = mem_malloc (BUFSIZ);
@@ -1180,10 +1180,10 @@ custom_general_config (struct conf *conf)
           wins_scrollwin_up (&cwin, 1);
           break;
         case '1':
-          conf->auto_save = !conf->auto_save;
+          conf.auto_save = !conf.auto_save;
           break;
         case '2':
-          conf->auto_gc = !conf->auto_gc;
+          conf.auto_gc = !conf.auto_gc;
           break;
         case '3':
           status_mesg (periodic_save_str, "");
@@ -1191,36 +1191,36 @@ custom_general_config (struct conf *conf)
             {
               int val = atoi (buf);
               if (val >= 0)
-                conf->periodic_save = val;
-              if (conf->periodic_save > 0)
-                io_start_psave_thread (conf);
-              else if (conf->periodic_save == 0)
+                conf.periodic_save = val;
+              if (conf.periodic_save > 0)
+                io_start_psave_thread ();
+              else if (conf.periodic_save == 0)
                 io_stop_psave_thread ();
             }
           status_mesg (number_str, keys);
           break;
         case '4':
-          conf->confirm_quit = !conf->confirm_quit;
+          conf.confirm_quit = !conf.confirm_quit;
           break;
         case '5':
-          conf->confirm_delete = !conf->confirm_delete;
+          conf.confirm_delete = !conf.confirm_delete;
           break;
         case '6':
-          conf->skip_system_dialogs = !conf->skip_system_dialogs;
+          conf.skip_system_dialogs = !conf.skip_system_dialogs;
           break;
         case '7':
-          conf->skip_progress_bar = !conf->skip_progress_bar;
+          conf.skip_progress_bar = !conf.skip_progress_bar;
           break;
         case '8':
           calendar_change_first_day_of_week ();
           break;
         case '9':
           status_mesg (output_datefmt_str, "");
-          strncpy (buf, conf->output_datefmt,
-                   strlen (conf->output_datefmt) + 1);
+          strncpy (buf, conf.output_datefmt,
+                   strlen (conf.output_datefmt) + 1);
           if (updatestring (win[STA].p, &buf, 0, 1) == 0)
             {
-              strncpy (conf->output_datefmt, buf, strlen (buf) + 1);
+              strncpy (conf.output_datefmt, buf, strlen (buf) + 1);
             }
           status_mesg (number_str, keys);
           break;
@@ -1230,7 +1230,7 @@ custom_general_config (struct conf *conf)
             {
               int val = atoi (buf);
               if (val > 0 && val <= DATE_FORMATS)
-                conf->input_datefmt = val;
+                conf.input_datefmt = val;
             }
           status_mesg (number_str, keys);
           break;
@@ -1257,7 +1257,7 @@ custom_general_config (struct conf *conf)
         }
 
       status_mesg (number_str, keys);
-      cwin.total_lines = print_general_options (cwin.pad.p, conf);
+      cwin.total_lines = print_general_options (cwin.pad.p);
       wins_scrollwin_display (&cwin);
     }
   mem_free (buf);

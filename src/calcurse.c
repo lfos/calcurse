@@ -64,7 +64,6 @@ do_storage (int day_changed)
 int
 main (int argc, char **argv)
 {
-  struct conf conf;
   struct day_items_nb inday;
   int non_interactive;
   int no_data_file = 1;
@@ -94,7 +93,7 @@ main (int argc, char **argv)
    * Begin by parsing and handling command line arguments.
    * The data path is also initialized here.
    */
-  non_interactive = parse_args (argc, argv, &conf);
+  non_interactive = parse_args (argc, argv);
   if (non_interactive)
     exit_calcurse (EXIT_SUCCESS);
   else
@@ -148,7 +147,7 @@ main (int argc, char **argv)
       background = COLOR_BLACK;
     }
 
-  vars_init (&conf);
+  vars_init ();
   wins_init ();
   wins_slctd_init ();
   notify_init_bar ();
@@ -159,7 +158,7 @@ main (int argc, char **argv)
    * configuration (the display is then updated), and then
    * the todo list, appointments and events.
    */
-  custom_load_conf (&conf);
+  custom_load_conf ();
   wins_erase_status_bar ();
   io_load_keys (conf.pager);
   io_load_todo ();
@@ -174,7 +173,7 @@ main (int argc, char **argv)
   wins_update (FLAG_ALL);
   calendar_start_date_thread ();
   if (conf.periodic_save > 0)
-    io_start_psave_thread (&conf);
+    io_start_psave_thread ();
 
   /* User input */
   for (;;)
@@ -266,7 +265,7 @@ main (int argc, char **argv)
                   break;
                 case 'G':
                 case 'g':
-                  custom_general_config (&conf);
+                  custom_general_config ();
                   break;
                 case 'N':
                 case 'n':
@@ -327,7 +326,7 @@ main (int argc, char **argv)
         case KEY_EDIT_ITEM:
           if (wins_slctd () == APP && apoint_hilt () != 0)
             {
-              day_edit_item (&conf);
+              day_edit_item ();
               inday = do_storage (0);
               wins_update (FLAG_CAL | FLAG_APP | FLAG_STA);
             }
@@ -341,13 +340,13 @@ main (int argc, char **argv)
         case KEY_DEL_ITEM:
           if (wins_slctd () == APP && apoint_hilt () != 0)
             {
-              apoint_delete (&conf, &inday.nb_events, &inday.nb_apoints);
+              apoint_delete (&inday.nb_events, &inday.nb_apoints);
               inday = do_storage (0);
               wins_update (FLAG_CAL | FLAG_APP | FLAG_STA);
             }
           else if (wins_slctd () == TOD && todo_hilt () != 0)
             {
-              todo_delete (&conf);
+              todo_delete ();
               wins_update (FLAG_TOD | FLAG_STA);
             }
           break;
@@ -373,7 +372,7 @@ main (int argc, char **argv)
 
         case KEY_REPEAT_ITEM:
           if (wins_slctd () == APP && apoint_hilt () != 0)
-            recur_repeat_item (&conf);
+            recur_repeat_item ();
           inday = do_storage (0);
           wins_update (FLAG_CAL | FLAG_APP | FLAG_STA);
           break;
@@ -394,7 +393,7 @@ main (int argc, char **argv)
 
         case KEY_PIPE_ITEM:
           if (wins_slctd () == APP && apoint_hilt () != 0)
-            day_pipe_item (&conf);
+            day_pipe_item ();
           else if (wins_slctd () == TOD && todo_hilt () != 0)
             todo_pipe_item ();
           wins_update (FLAG_ALL);
@@ -439,13 +438,13 @@ main (int argc, char **argv)
           break;
 
         case KEY_GENERIC_SAVE:
-          io_save_cal (&conf, IO_SAVE_DISPLAY_BAR);
+          io_save_cal (IO_SAVE_DISPLAY_BAR);
           wins_update (FLAG_STA);
           break;
 
         case KEY_GENERIC_IMPORT:
           wins_erase_status_bar ();
-          io_import_data (IO_IMPORT_ICAL, &conf, NULL);
+          io_import_data (IO_IMPORT_ICAL, NULL);
           inday = do_storage (0);
           wins_update (FLAG_ALL);
           break;
@@ -459,11 +458,11 @@ main (int argc, char **argv)
                 {
                 case 'I':
                 case 'i':
-                  io_export_data (IO_EXPORT_ICAL, &conf);
+                  io_export_data (IO_EXPORT_ICAL);
                   break;
                 case 'P':
                 case 'p':
-                  io_export_data (IO_EXPORT_PCAL, &conf);
+                  io_export_data (IO_EXPORT_PCAL);
                   break;
                 }
               wins_reset ();
@@ -585,7 +584,7 @@ main (int argc, char **argv)
 
         case KEY_GENERIC_QUIT:
           if (conf.auto_save)
-            io_save_cal (&conf, IO_SAVE_DISPLAY_BAR);
+            io_save_cal (IO_SAVE_DISPLAY_BAR);
           if (conf.auto_gc)
             note_gc ();
 

@@ -860,7 +860,7 @@ recur_apoint_erase (long start, unsigned num, unsigned delete_whole,
  * and then delete the selected item to recreate it as a recurrent one
  */
 void
-recur_repeat_item (struct conf *conf)
+recur_repeat_item (void)
 {
   struct tm *lt;
   time_t t;
@@ -935,7 +935,7 @@ recur_repeat_item (struct conf *conf)
   while (!date_entered)
     {
       snprintf (outstr, BUFSIZ, mesg_until_1,
-                DATEFMT_DESC (conf->input_datefmt));
+                DATEFMT_DESC (conf.input_datefmt));
       status_mesg (_(outstr), "");
       if (getstring (win[STA].p, user_input, BUFSIZ, 0, 1) == GETSTRING_VALID)
         {
@@ -946,7 +946,7 @@ recur_repeat_item (struct conf *conf)
             }
           else
             {
-              if (parse_date (user_input, conf->input_datefmt,
+              if (parse_date (user_input, conf.input_datefmt,
                               &year, &month, &day, calendar_get_slctd_day ()))
                 {
                   t = p->start;
@@ -969,7 +969,7 @@ recur_repeat_item (struct conf *conf)
               else
                 {
                   snprintf (outstr, BUFSIZ, mesg_wrong_2,
-                            DATEFMT_DESC (conf->input_datefmt));
+                            DATEFMT_DESC (conf.input_datefmt));
                   status_mesg (mesg_wrong_1, _(outstr));
                   wgetch (win[STA].p);
                   date_entered = 0;

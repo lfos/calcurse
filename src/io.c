@@ -834,7 +834,7 @@ static pthread_mutex_t io_save_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 /* Save the user configuration. */
 unsigned
-io_save_conf (struct conf *conf)
+io_save_conf (void)
 {
   char *config_txt =
     "#\n"
@@ -860,37 +860,37 @@ io_save_conf (struct conf *conf)
   fputs ("# If this option is set to yes, "
          "automatic save is done when quitting\n", fp);
   fputs ("auto_save=", fp);
-  fprintf (fp, "%s\n", (conf->auto_save) ? "yes" : "no");
+  fprintf (fp, "%s\n", (conf.auto_save) ? "yes" : "no");
 
   fputs ("\n# If this option is set to yes, "
          "the GC is run automatically when quitting\n", fp);
   fputs ("auto_gc=", fp);
-  fprintf (fp, "%s\n", (conf->auto_gc) ? "yes" : "no");
+  fprintf (fp, "%s\n", (conf.auto_gc) ? "yes" : "no");
 
   fputs ("\n# If not null, perform automatic saves every "
          "'periodic_save' minutes\n", fp);
   fputs ("periodic_save=", fp);
-  fprintf (fp, "%d\n", conf->periodic_save);
+  fprintf (fp, "%d\n", conf.periodic_save);
 
   fputs ("\n# If this option is set to yes, "
          "confirmation is required before quitting\n", fp);
   fputs ("confirm_quit=", fp);
-  fprintf (fp, "%s\n", (conf->confirm_quit) ? "yes" : "no");
+  fprintf (fp, "%s\n", (conf.confirm_quit) ? "yes" : "no");
 
   fputs ("\n# If this option is set to yes, "
          "confirmation is required before deleting an event\n", fp);
   fputs ("confirm_delete=", fp);
-  fprintf (fp, "%s\n", (conf->confirm_delete) ? "yes" : "no");
+  fprintf (fp, "%s\n", (conf.confirm_delete) ? "yes" : "no");
 
   fputs ("\n# If this option is set to yes, messages about loaded and "
          "saved data will not be displayed\n", fp);
   fputs ("skip_system_dialogs=", fp);
-  fprintf (fp, "%s\n", (conf->skip_system_dialogs) ? "yes" : "no");
+  fprintf (fp, "%s\n", (conf.skip_system_dialogs) ? "yes" : "no");
 
   fputs ("\n# If this option is set to yes, progress bar appearing "
          "when saving data will not be displayed\n", fp);
   fputs ("skip_progress_bar=", fp);
-  fprintf (fp, "%s\n", (conf->skip_progress_bar) ? "yes" : "no");
+  fprintf (fp, "%s\n", (conf.skip_progress_bar) ? "yes" : "no");
 
   fputs ("\n# Default calendar view (0)monthly (1)weekly:\n", fp);
   fputs ("calendar_default_view=", fp);
@@ -946,13 +946,13 @@ io_save_conf (struct conf *conf)
   fputs ("\n# Format of the date to be displayed "
          "in non-interactive mode :\n", fp);
   fputs ("output_datefmt=", fp);
-  fprintf (fp, "%s\n", conf->output_datefmt);
+  fprintf (fp, "%s\n", conf.output_datefmt);
 
   fputs ("\n# Format to be used when entering a date "
          "(1)mm/dd/yyyy (2)dd/mm/yyyy (3)yyyy/mm/dd) "
          "(4)yyyy-mm-dd:\n", fp);
   fputs ("input_datefmt=", fp);
-  fprintf (fp, "%d\n", conf->input_datefmt);
+  fprintf (fp, "%d\n", conf.input_datefmt);
 
   if (ui_mode == UI_CURSES)
     pthread_mutex_unlock (&nbar.mutex);
@@ -1046,7 +1046,7 @@ io_save_keys (void)
 
 /* Save the calendar data */
 void
-io_save_cal (struct conf *conf, enum save_display display)
+io_save_cal (enum save_display display)
 {
   char *access_pb = _("Problems accessing data file ...");
   char *save_success = _("The data files were successfully saved");
@@ -1057,14 +1057,14 @@ io_save_cal (struct conf *conf, enum save_display display)
 
   show_bar = 0;
   if (ui_mode == UI_CURSES && display == IO_SAVE_DISPLAY_BAR
-      && !conf->skip_progress_bar)
+      && !conf.skip_progress_bar)
     show_bar = 1;
   else if (ui_mode == UI_CURSES && display == IO_SAVE_DISPLAY_MARK)
     display_mark ();
 
   if (show_bar)
     progress_bar (PROGRESS_BAR_SAVE, PROGRESS_BAR_CONF);
-  if (!io_save_conf (conf))
+  if (!io_save_conf ())
     ERROR_MSG ("%s", access_pb);
 
   if (show_bar)
@@ -1083,7 +1083,7 @@ io_save_cal (struct conf *conf, enum save_display display)
     ERROR_MSG ("%s", access_pb);
 
   /* Print a message telling data were saved */
-  if (ui_mode == UI_CURSES && !conf->skip_system_dialogs
+  if (ui_mode == UI_CURSES && !conf.skip_system_dialogs
       && display != IO_SAVE_DISPLAY_MARK)
     {
       status_mesg (save_success, enter);
@@ -1620,7 +1620,7 @@ io_startup_screen (unsigned skip_dialogs, int no_data_file)
 
 /* Export calcurse data. */
 void
-io_export_data (enum export_type type, struct conf *conf)
+io_export_data (enum export_type type)
 {
   FILE *stream;
   char *success = _("The data were successfully exported");
@@ -1648,17 +1648,17 @@ io_export_data (enum export_type type, struct conf *conf)
 
   cb_export_header[type] (stream);
 
-  if (!conf->skip_progress_bar && ui_mode == UI_CURSES)
+  if (!conf.skip_progress_bar && ui_mode == UI_CURSES)
     progress_bar (PROGRESS_BAR_EXPORT, PROGRESS_BAR_EXPORT_EVENTS);
   cb_export_recur_events[type] (stream);
   cb_export_events[type] (stream);
 
-  if (!conf->skip_progress_bar && ui_mode == UI_CURSES)
+  if (!conf.skip_progress_bar && ui_mode == UI_CURSES)
     progress_bar (PROGRESS_BAR_EXPORT, PROGRESS_BAR_EXPORT_APOINTS);
   cb_export_recur_apoints[type] (stream);
   cb_export_apoints[type] (stream);
 
-  if (!conf->skip_progress_bar && ui_mode == UI_CURSES)
+  if (!conf.skip_progress_bar && ui_mode == UI_CURSES)
     progress_bar (PROGRESS_BAR_EXPORT, PROGRESS_BAR_EXPORT_TODO);
   cb_export_todo[type] (stream);
 
@@ -1667,7 +1667,7 @@ io_export_data (enum export_type type, struct conf *conf)
   if (stream != stdout)
     file_close (stream, __FILE_POS__);
 
-  if (!conf->skip_system_dialogs && ui_mode == UI_CURSES)
+  if (!conf.skip_system_dialogs && ui_mode == UI_CURSES)
     {
       status_mesg (success, enter);
       wgetch (win[STA].p);
@@ -2692,7 +2692,7 @@ get_import_stream (enum export_type type)
  * and is cleared at the end.
  */
 void
-io_import_data (enum import_type type, struct conf *conf, char *stream_name)
+io_import_data (enum import_type type, char *stream_name)
 {
   const struct string vevent = STRING_BUILD ("BEGIN:VEVENT");
   const struct string vtodo = STRING_BUILD ("BEGIN:VTODO");
@@ -2771,7 +2771,7 @@ io_import_data (enum import_type type, struct conf *conf, char *stream_name)
   /* Update the number of todo items. */
   todo_set_nb (todo_nb () + stats.todos);
 
-  if (ui_mode == UI_CURSES && !conf->skip_system_dialogs)
+  if (ui_mode == UI_CURSES && !conf.skip_system_dialogs)
     {
       char read[BUFSIZ], stat[BUFSIZ];
 
@@ -2797,7 +2797,7 @@ io_import_data (enum import_type type, struct conf *conf, char *stream_name)
     {
       char *view_log = _("Some items could not be imported, see log file ?");
 
-      io_log_display (log, view_log, conf->pager);
+      io_log_display (log, view_log, conf.pager);
     }
   io_log_free (log);
 }
@@ -2888,25 +2888,23 @@ static pthread_t io_t_psave;
 static void *
 io_psave_thread (void *arg)
 {
-  struct conf *config;
   int delay;
 
-  config = (struct conf *)arg;
-  delay = config->periodic_save;
+  delay = conf.periodic_save;
   EXIT_IF (delay < 0, _("Invalid delay"));
 
   for (;;)
     {
       sleep (delay * MININSEC);
-      io_save_cal (config, IO_SAVE_DISPLAY_MARK);
+      io_save_cal (IO_SAVE_DISPLAY_MARK);
     }
 }
 
 /* Launch the thread which handles periodic saves. */
 void
-io_start_psave_thread (struct conf *conf)
+io_start_psave_thread (void)
 {
-  pthread_create (&io_t_psave, NULL, io_psave_thread, (void *)conf);
+  pthread_create (&io_t_psave, NULL, io_psave_thread, NULL);
 }
 
 /* Stop periodic data saves. */

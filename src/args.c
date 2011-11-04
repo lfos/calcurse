@@ -330,7 +330,7 @@ next_arg (void)
  * Print the date on stdout.
  */
 static void
-arg_print_date (long date, struct conf *conf)
+arg_print_date (long date)
 {
   char date_str[BUFSIZ];
   time_t t;
@@ -338,7 +338,7 @@ arg_print_date (long date, struct conf *conf)
 
   t = date;
   lt = localtime (&t);
-  strftime (date_str, BUFSIZ, conf->output_datefmt, lt);
+  strftime (date_str, BUFSIZ, conf.output_datefmt, lt);
   fputs (date_str, stdout);
   fputs (":\n", stdout);
 }
@@ -351,7 +351,7 @@ arg_print_date (long date, struct conf *conf)
  */
 static int
 app_arg (int add_line, struct date *day, long date, int print_note,
-         struct conf *conf, regex_t *regex)
+         regex_t *regex)
 {
   llist_item_t *i, *j;
   long today;
@@ -384,7 +384,7 @@ app_arg (int add_line, struct date *day, long date, int print_note,
         }
       if (print_date)
         {
-          arg_print_date (today, conf);
+          arg_print_date (today);
           print_date = 0;
         }
       fputs (" * ", stdout);
@@ -408,7 +408,7 @@ app_arg (int add_line, struct date *day, long date, int print_note,
         }
       if (print_date)
         {
-          arg_print_date (today, conf);
+          arg_print_date (today);
           print_date = 0;
         }
       fputs (" * ", stdout);
@@ -465,7 +465,7 @@ app_arg (int add_line, struct date *day, long date, int print_note,
             }
           if (print_date)
             {
-              arg_print_date (today, conf);
+              arg_print_date (today);
               print_date = 0;
             }
           apoint_sec2str (apt, APPT, today, apoint_start_time, apoint_end_time);
@@ -490,7 +490,7 @@ app_arg (int add_line, struct date *day, long date, int print_note,
             }
           if (print_date)
             {
-              arg_print_date (today, conf);
+              arg_print_date (today);
               print_date = 0;
             }
           apt = apoint_recur_s2apoint_s (ra);
@@ -534,7 +534,7 @@ more_info (void)
  */
 static void
 display_app (struct tm *t, int numdays, int add_line, int print_note,
-             struct conf *conf, regex_t *regex)
+             regex_t *regex)
 {
   int i, app_found;
   struct date day;
@@ -544,7 +544,7 @@ display_app (struct tm *t, int numdays, int add_line, int print_note,
       day.dd = t->tm_mday;
       day.mm = t->tm_mon + 1;
       day.yyyy = t->tm_year + 1900;
-      app_found = app_arg (add_line, &day, 0, print_note, conf, regex);
+      app_found = app_arg (add_line, &day, 0, print_note, regex);
       if (app_found)
         add_line = 1;
       t->tm_mday++;
@@ -557,8 +557,7 @@ display_app (struct tm *t, int numdays, int add_line, int print_note,
  * days.
  */
 static void
-date_arg (char *ddate, int add_line, int print_note, struct conf *conf,
-          regex_t *regex)
+date_arg (char *ddate, int add_line, int print_note, regex_t *regex)
 {
   int i;
   struct date day;
@@ -589,14 +588,14 @@ date_arg (char *ddate, int add_line, int print_note, struct conf *conf,
        */
       timer = time (NULL);
       t = *localtime (&timer);
-      display_app (&t, numdays, add_line, print_note, conf, regex);
+      display_app (&t, numdays, add_line, print_note, regex);
     }
   else
     {				/* a date was entered */
-      if (parse_date (ddate, conf->input_datefmt, (int *)&day.yyyy,
+      if (parse_date (ddate, conf.input_datefmt, (int *)&day.yyyy,
                       (int *)&day.mm, (int *)&day.dd, NULL))
         {
-          app_arg (add_line, &day, 0, print_note, conf, regex);
+          app_arg (add_line, &day, 0, print_note, regex);
         }
       else
         {
@@ -604,7 +603,7 @@ date_arg (char *ddate, int add_line, int print_note, struct conf *conf,
           fputs (_("Argument to the '-d' flag is not valid\n"), stderr);
           snprintf (outstr, BUFSIZ,
                     "Possible argument format are: '%s' or 'n'\n",
-                    DATEFMT_DESC (conf->input_datefmt));
+                    DATEFMT_DESC (conf.input_datefmt));
           fputs (_(outstr), stdout);
           more_info ();
         }
@@ -621,7 +620,7 @@ date_arg (char *ddate, int add_line, int print_note, struct conf *conf,
  */
 static void
 date_arg_extended (char *startday, char *range, int add_line, int print_note,
-                   struct conf *conf, regex_t *regex)
+                   regex_t *regex)
 {
   int i, numdays = 1, error = 0, arg_len = 0;
   static struct tm t;
@@ -645,7 +644,7 @@ date_arg_extended (char *startday, char *range, int add_line, int print_note,
   t = *localtime (&timer);
   if (startday != NULL)
     {
-      if (parse_date (startday, conf->input_datefmt, (int *)&t.tm_year,
+      if (parse_date (startday, conf.input_datefmt, (int *)&t.tm_year,
                       (int *)&t.tm_mon, (int *)&t.tm_mday, NULL))
         {
           t.tm_year -= 1900;
@@ -659,7 +658,7 @@ date_arg_extended (char *startday, char *range, int add_line, int print_note,
     }
   if (!error)
     {
-      display_app (&t, numdays, add_line, print_note, conf, regex);
+      display_app (&t, numdays, add_line, print_note, regex);
     }
   else
     {
@@ -667,7 +666,7 @@ date_arg_extended (char *startday, char *range, int add_line, int print_note,
       fputs (_("Argument is not valid\n"), stderr);
       snprintf (outstr, BUFSIZ,
                 "Argument format for -s and --startday is: '%s'\n",
-                DATEFMT_DESC (conf->input_datefmt));
+                DATEFMT_DESC (conf.input_datefmt));
       fputs (_(outstr), stdout);
       fputs (_("Argument format for -r and --range is: 'n'\n"), stdout);
       more_info ();
@@ -680,7 +679,7 @@ date_arg_extended (char *startday, char *range, int add_line, int print_note,
  * routines to handle those arguments. Also initialize the data paths.
  */
 int
-parse_args (int argc, char **argv, struct conf *conf)
+parse_args (int argc, char **argv)
 {
   int ch, add_line = 0;
   int unknown_flag = 0;
@@ -928,10 +927,10 @@ parse_args (int argc, char **argv, struct conf *conf)
               io_check_file (path_apts, NULL);
               io_check_file (path_todo, NULL);
               /* Get default pager in case we need to show a log file. */
-              vars_init (conf);
+              vars_init ();
               io_load_app ();
               io_load_todo ();
-              io_import_data (IO_IMPORT_ICAL, conf, ifile);
+              io_import_data (IO_IMPORT_ICAL, ifile);
               io_save_apts ();
               io_save_todo ();
               non_interactive = 1;
@@ -942,7 +941,7 @@ parse_args (int argc, char **argv, struct conf *conf)
               io_check_file (path_todo, NULL);
               io_load_app ();
               io_load_todo ();
-              io_export_data (xfmt, conf);
+              io_export_data (xfmt);
               non_interactive = 1;
               return non_interactive;
             }
@@ -965,12 +964,11 @@ parse_args (int argc, char **argv, struct conf *conf)
               io_check_file (path_apts, NULL);
               io_check_file (path_conf, NULL);
               io_load_app ();
-              custom_load_conf (conf); /* To get output date format. */
+              custom_load_conf (); /* To get output date format. */
               if (dflag)
-                date_arg (ddate, add_line, Nflag, conf, preg);
+                date_arg (ddate, add_line, Nflag, preg);
               if (rflag || sflag)
-                date_arg_extended (startday, range, add_line, Nflag, conf,
-                                   preg);
+                date_arg_extended (startday, range, add_line, Nflag, preg);
               non_interactive = 1;
             }
           else if (aflag)
@@ -979,11 +977,11 @@ parse_args (int argc, char **argv, struct conf *conf)
 
               io_check_file (path_apts, NULL);
               io_check_file (path_conf, NULL);
-              vars_init (conf);
-              custom_load_conf (conf); /* To get output date format. */
+              vars_init ();
+              custom_load_conf (); /* To get output date format. */
               io_load_app ();
               day.dd = day.mm = day.yyyy = 0;
-              app_arg (add_line, &day, 0, Nflag, conf, preg);
+              app_arg (add_line, &day, 0, Nflag, preg);
               non_interactive = 1;
             }
         }

@@ -688,7 +688,7 @@ update_desc (char **desc)
 }
 
 static void
-update_rept (struct rpt **rpt, const long start, struct conf *conf)
+update_rept (struct rpt **rpt, const long start)
 {
   const int SINGLECHAR = 2;
   int ch, newfreq, date_entered;
@@ -749,10 +749,10 @@ update_rept (struct rpt **rpt, const long start, struct conf *conf)
   do
     {
       snprintf (outstr, BUFSIZ, "Enter the new ending date: [%s] or '0'",
-                DATEFMT_DESC (conf->input_datefmt));
+                DATEFMT_DESC (conf.input_datefmt));
       status_mesg (_(outstr), "");
       timstr =
-          date_sec2date_str ((*rpt)->until, DATEFMT (conf->input_datefmt));
+          date_sec2date_str ((*rpt)->until, DATEFMT (conf.input_datefmt));
       if (updatestring (win[STA].p, &timstr, 0, 1) != GETSTRING_VALID)
         {
           mem_free (timstr);
@@ -770,8 +770,8 @@ update_rept (struct rpt **rpt, const long start, struct conf *conf)
           struct date new_date;
           int newmonth, newday, newyear;
 
-          if (parse_date (timstr, conf->input_datefmt,
-                          &newyear, &newmonth, &newday, calendar_get_slctd_day ()))
+          if (parse_date (timstr, conf.input_datefmt, &newyear, &newmonth,
+                          &newday, calendar_get_slctd_day ()))
             {
               t = start;
               lt = localtime (&t);
@@ -791,7 +791,7 @@ update_rept (struct rpt **rpt, const long start, struct conf *conf)
           else
             {
               snprintf (outstr, BUFSIZ, msg_fmts,
-                        DATEFMT_DESC (conf->input_datefmt));
+                        DATEFMT_DESC (conf.input_datefmt));
               status_mesg (msg_wrong_date, _(outstr));
               wgetch (win[STA].p);
               date_entered = 0;
@@ -808,7 +808,7 @@ update_rept (struct rpt **rpt, const long start, struct conf *conf)
 
 /* Edit an already existing item. */
 void
-day_edit_item (struct conf *conf)
+day_edit_item (void)
 {
 #define STRT		'1'
 #define END		'2'
@@ -842,7 +842,7 @@ day_edit_item (struct conf *conf)
           update_desc (&re->mesg);
           break;
         case '2':
-          update_rept (&re->rpt, re->day, conf);
+          update_rept (&re->rpt, re->day);
           break;
         default:
           return;
@@ -875,7 +875,7 @@ day_edit_item (struct conf *conf)
           break;
         case REPT:
           need_check_notify = 1;
-          update_rept (&ra->rpt, ra->start, conf);
+          update_rept (&ra->rpt, ra->start);
           break;
         case KEY_GENERIC_CANCEL:
           return;
@@ -1134,7 +1134,7 @@ day_view_note (char *pager)
 
 /* Pipe an appointment or event to an external program. */
 void
-day_pipe_item (struct conf *conf)
+day_pipe_item (void)
 {
   char cmd[BUFSIZ] = "";
   int pout;

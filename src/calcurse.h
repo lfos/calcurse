@@ -584,7 +584,7 @@ void               apoint_hilt_increase (int);
 int                apoint_hilt (void);
 struct apoint     *apoint_new (char *, char *, long, long, char);
 void               apoint_add (void);
-void               apoint_delete (struct conf *, unsigned *, unsigned *);
+void               apoint_delete (unsigned *, unsigned *);
 int                apoint_cut (unsigned *, unsigned *);
 void               apoint_paste (unsigned *, unsigned *, int);
 unsigned           apoint_inday (struct apoint *, long);
@@ -602,7 +602,7 @@ void               apoint_update_panel (int);
 void               apoint_paste_item (void);
 
 /* args.c */
-int parse_args (int, char **, struct conf *);
+int parse_args (int, char **);
 
 /* calendar.c */
 void          calendar_view_next (void);
@@ -631,7 +631,7 @@ char         *calendar_get_pom (time_t);
 void custom_init_attr (void);
 void custom_apply_attr (WINDOW *, int);
 void custom_remove_attr (WINDOW *, int);
-void custom_load_conf (struct conf *);
+void custom_load_conf (void);
 void custom_config_bar (void);
 void custom_layout_config (void);
 void custom_sidebar_config (void);
@@ -639,7 +639,7 @@ void custom_color_config (void);
 void custom_color_theme_name (char *);
 void custom_confwin_init (struct window *, char *);
 void custom_set_swsiz (struct scrollwin *);
-void custom_general_config (struct conf *);
+void custom_general_config (void);
 void custom_keys_config (void);
 
 /* day.c */
@@ -650,7 +650,7 @@ void                  day_write_pad (long, int, int, int);
 void                  day_popup_item (void);
 int                   day_check_if_item (struct date);
 unsigned              day_chk_busy_slices (struct date, int, int *);
-void                  day_edit_item (struct conf *);
+void                  day_edit_item (void);
 int                   day_erase_item (long, int, enum eraseflg);
 int                   day_cut_item (long, int);
 int                   day_paste_item (long, int);
@@ -658,7 +658,7 @@ struct day_item      *day_get_item (int);
 int                   day_item_nb (long, int, int);
 void                  day_edit_note (char *);
 void                  day_view_note (char *);
-void                  day_pipe_item (struct conf *);
+void                  day_pipe_item (void);
 
 /* dmon.c */
 void   dmon_start (int);
@@ -689,11 +689,11 @@ int          updatestring (WINDOW *, char **, int, int);
 unsigned         io_fprintln (const char *, const char *, ...);
 void             io_init (char *, char *);
 void             io_extract_data (char *, const char *, int);
-unsigned         io_save_conf (struct conf *);
+unsigned         io_save_conf (void);
 unsigned         io_save_apts (void);
 unsigned         io_save_todo (void);
 unsigned         io_save_keys (void);
-void             io_save_cal (struct conf *, enum save_display);
+void             io_save_cal (enum save_display);
 void             io_load_app (void);
 void             io_load_todo (void);
 void             io_load_keys (char *);
@@ -702,14 +702,14 @@ unsigned         io_file_exist (char *);
 void             io_check_file (char *, int *);
 int              io_check_data_files (void);
 void             io_startup_screen (unsigned, int);
-void             io_export_data (enum export_type, struct conf *);
+void             io_export_data (enum export_type);
 void             io_export_bar (void);
-void             io_import_data (enum import_type, struct conf *, char *);
+void             io_import_data (enum import_type, char *);
 struct io_file  *io_log_init (void);
 void             io_log_print (struct io_file *, int, char *);
 void             io_log_display (struct io_file *, char *, char *);
 void             io_log_free (struct io_file *);
-void             io_start_psave_thread (struct conf *);
+void             io_start_psave_thread (void);
 void             io_stop_psave_thread (void);
 void             io_set_lock (void);
 unsigned         io_dump_pid (char *);
@@ -838,7 +838,7 @@ void                 recur_event_erase (long, unsigned, unsigned,
                                         enum eraseflg);
 void                 recur_apoint_erase (long, unsigned, unsigned,
                                          enum eraseflg);
-void                 recur_repeat_item (struct conf *);
+void                 recur_repeat_item (void);
 void                 recur_exc_scan (llist_t *, FILE *);
 struct notify_app   *recur_apoint_check_next (struct notify_app *, long, long);
 struct recur_apoint *recur_get_apoint (long, int);
@@ -868,7 +868,7 @@ void          todo_new_item (void);
 struct todo  *todo_add (char *, int, char *);
 void          todo_write (struct todo *, FILE *);
 void          todo_flag (void);
-void          todo_delete (struct conf *);
+void          todo_delete (void);
 void          todo_chg_priority (int);
 void          todo_edit_item (void);
 void          todo_update_panel (int);
@@ -941,10 +941,11 @@ extern char              path_notes[BUFSIZ];
 extern char              path_cpid[BUFSIZ];
 extern char              path_dpid[BUFSIZ];
 extern char              path_dmon_log[BUFSIZ];
+extern struct conf       conf;
 extern struct pad        apad;
 extern struct nbar       nbar;
 extern struct dmon_conf  dmon;
-void vars_init (struct conf *);
+void vars_init (void);
 
 /* wins.c */
 extern struct window win[NBWINS];

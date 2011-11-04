@@ -102,6 +102,9 @@ char path_cpid[] = "";
 char path_dpid[] = "";
 char path_dmon_log[] = "";
 
+/* Variable to store global configuration. */
+struct conf conf;
+
 /* Variable to handle pads. */
 struct pad apad;
 
@@ -115,20 +118,20 @@ struct dmon_conf dmon;
  * Variables init
  */
 void
-vars_init (struct conf *conf)
+vars_init (void)
 {
   char *ed, *pg;
 
   /* Variables for user configuration */
-  conf->confirm_quit = 1;
-  conf->confirm_delete = 1;
-  conf->auto_save = 1;
-  conf->auto_gc = 0;
-  conf->periodic_save = 0;
-  conf->skip_system_dialogs = 0;
-  conf->skip_progress_bar = 0;
-  strncpy (conf->output_datefmt, "%D", 3);
-  conf->input_datefmt = 1;
+  conf.confirm_quit = 1;
+  conf.confirm_delete = 1;
+  conf.auto_save = 1;
+  conf.auto_gc = 0;
+  conf.periodic_save = 0;
+  conf.skip_system_dialogs = 0;
+  conf.skip_progress_bar = 0;
+  strncpy (conf.output_datefmt, "%D", 3);
+  conf.input_datefmt = 1;
 
   /* Default external editor and pager */
   ed = getenv ("VISUAL");
@@ -136,12 +139,12 @@ vars_init (struct conf *conf)
     ed = getenv ("EDITOR");
   if (ed == NULL || ed[0] == '\0')
     ed = DEFAULT_EDITOR;
-  conf->editor = ed;
+  conf.editor = ed;
 
   pg = getenv ("PAGER");
   if (pg == NULL || pg[0] == '\0')
     pg = DEFAULT_PAGER;
-  conf->pager = pg;
+  conf.pager = pg;
 
   wins_set_layout (1);
 
