@@ -357,8 +357,6 @@ app_arg (int add_line, struct date *day, long date, int print_note,
   long today;
   unsigned print_date = 1;
   int app_found = 0;
-  char apoint_start_time[HRMIN_SIZE];
-  char apoint_end_time[HRMIN_SIZE];
 
   if (date == 0)
     today = get_sec_date (*day);
@@ -468,14 +466,7 @@ app_arg (int add_line, struct date *day, long date, int print_note,
               arg_print_date (today);
               print_date = 0;
             }
-          apoint_sec2str (apt, today, apoint_start_time, apoint_end_time);
-          fputs (" - ", stdout);
-          fputs (apoint_start_time, stdout);
-          fputs (" -> ", stdout);
-          fputs (apoint_end_time, stdout);
-          fputs ("\n\t", stdout);
-          fputs (apt->mesg, stdout);
-          fputs ("\n", stdout);
+          print_apoint (" - %S -> %E\n\t%m\n", today, apt);
           if (print_note && apt->note)
             print_notefile (stdout, apt->note, 2);
           i = LLIST_TS_FIND_NEXT (i, today, apoint_inday);
@@ -494,16 +485,9 @@ app_arg (int add_line, struct date *day, long date, int print_note,
               print_date = 0;
             }
           apt = apoint_recur_s2apoint_s (ra);
-          apoint_sec2str (apt, today, apoint_start_time, apoint_end_time);
+          print_apoint (" - %S -> %E\n\t%m\n", today, apt);
           mem_free (apt->mesg);
           mem_free (apt);
-          fputs (" - ", stdout);
-          fputs (apoint_start_time, stdout);
-          fputs (" -> ", stdout);
-          fputs (apoint_end_time, stdout);
-          fputs ("\n\t", stdout);
-          fputs (ra->mesg, stdout);
-          fputs ("\n", stdout);
           if (print_note && ra->note)
             print_notefile (stdout, ra->note, 2);
           apt = NULL;

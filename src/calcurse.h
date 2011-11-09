@@ -922,6 +922,7 @@ int          fork_exec (int *, int *, const char *, char *const *);
 int          shell_exec (int *, int *, char *);
 int          child_wait (int *, int *, int);
 void         press_any_key (void);
+void         print_apoint (const char *, long, struct apoint *);
 
 /* vars.c */
 extern int               col, row;

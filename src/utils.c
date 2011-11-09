@@ -953,3 +953,52 @@ press_any_key (void)
   fflush (stdin);
   fputs ("\r\n", stdout);
 }
+
+/* Print a formatted appointment to stdout. */
+void
+print_apoint (const char *format, long day, struct apoint *apt)
+{
+  const char *p;
+  char str_start[HRMIN_SIZE], str_end[HRMIN_SIZE];
+
+  apoint_sec2str (apt, day, str_start, str_end);
+
+  for (p = format; *p; p++)
+    {
+      if (*p == '%') {
+        p++;
+        switch (*p)
+          {
+          case 's':
+            printf ("%ld", apt->start);
+            break;
+          case 'S':
+            printf ("%s", str_start);
+            break;
+          case 'd':
+            printf ("%ld", apt->dur);
+            break;
+          case 'e':
+            printf ("%ld", apt->start + apt->dur);
+            break;
+          case 'E':
+            printf ("%s", str_end);
+            break;
+          case 'm':
+            printf ("%s", apt->mesg);
+            break;
+          case 'n':
+            printf ("%s", apt->note);
+            break;
+          case '\0':
+            return;
+            break;
+          default:
+            putchar ('?');
+            break;
+          }
+        }
+      else
+        putchar (*p);
+    }
+}
