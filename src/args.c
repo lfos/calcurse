@@ -468,7 +468,7 @@ app_arg (int add_line, struct date *day, long date, int print_note,
               arg_print_date (today);
               print_date = 0;
             }
-          apoint_sec2str (apt, APPT, today, apoint_start_time, apoint_end_time);
+          apoint_sec2str (apt, today, apoint_start_time, apoint_end_time);
           fputs (" - ", stdout);
           fputs (apoint_start_time, stdout);
           fputs (" -> ", stdout);
@@ -494,8 +494,7 @@ app_arg (int add_line, struct date *day, long date, int print_note,
               print_date = 0;
             }
           apt = apoint_recur_s2apoint_s (ra);
-          apoint_sec2str (apt, RECUR_APPT, today, apoint_start_time,
-                          apoint_end_time);
+          apoint_sec2str (apt, today, apoint_start_time, apoint_end_time);
           mem_free (apt->mesg);
           mem_free (apt);
           fputs (" - ", stdout);

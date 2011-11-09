@@ -389,7 +389,7 @@ apoint_inday (struct apoint *i, long start)
 }
 
 void
-apoint_sec2str (struct apoint *o, int type, long day, char *start, char *end)
+apoint_sec2str (struct apoint *o, long day, char *start, char *end)
 {
   struct tm *lt;
   time_t t;

@@ -327,7 +327,7 @@ display_item_date (int incolor, struct apoint *i, int type, long date,
   int recur = 0;
 
   win = apad.ptrwin;
-  apoint_sec2str (i, type, date, a_st, a_end);
+  apoint_sec2str (i, date, a_st, a_end);
   if (type == RECUR_EVNT || type == RECUR_APPT)
     recur = 1;
   if (incolor == 0)
@@ -440,8 +440,8 @@ day_write_pad (long date, int width, int length, int incolor)
             {
               day_saved_item.type = day->type;
               day_saved_item.mesg = day->mesg;
-              apoint_sec2str (&a, day->type, date,
-                              day_saved_item.start, day_saved_item.end);
+              apoint_sec2str (&a, date, day_saved_item.start,
+                              day_saved_item.end);
             }
           display_item_date (item_number - incolor, &a, day->type,
                              date, line + 1, x_pos);

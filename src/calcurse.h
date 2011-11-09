@@ -588,7 +588,7 @@ void               apoint_delete (unsigned *, unsigned *);
 int                apoint_cut (unsigned *, unsigned *);
 void               apoint_paste (unsigned *, unsigned *, int);
 unsigned           apoint_inday (struct apoint *, long);
-void               apoint_sec2str (struct apoint *, int, long, char *, char *);
+void               apoint_sec2str (struct apoint *, long, char *, char *);
 void               apoint_write (struct apoint *, FILE *);
 struct apoint     *apoint_scan (FILE *, struct tm, struct tm, char, char *);
 struct apoint     *apoint_get (long, int);
