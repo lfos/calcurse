@@ -1002,3 +1002,34 @@ print_apoint (const char *format, long day, struct apoint *apt)
         putchar (*p);
     }
 }
+
+/* Print a formatted event to stdout. */
+void
+print_event (const char *format, long day, struct event *ev)
+{
+  const char *p;
+
+  for (p = format; *p; p++)
+    {
+      if (*p == '%') {
+        p++;
+        switch (*p)
+          {
+          case 'm':
+            printf ("%s", ev->mesg);
+            break;
+          case 'n':
+            printf ("%s", ev->note);
+            break;
+          case '\0':
+            return;
+            break;
+          default:
+            putchar ('?');
+            break;
+          }
+        }
+      else
+        putchar (*p);
+    }
+}

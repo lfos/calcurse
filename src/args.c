@@ -409,9 +409,7 @@ app_arg (int add_line, struct date *day, long date, int print_note,
           arg_print_date (today);
           print_date = 0;
         }
-      fputs (" * ", stdout);
-      fputs (ev->mesg, stdout);
-      fputs ("\n", stdout);
+      print_event (" * %m\n", today, ev);
       if (print_note && ev->note)
         print_notefile (stdout, ev->note, 2);
     }
