@@ -100,6 +100,9 @@
 #define DPID_PATH        DIR_NAME DPID_PATH_NAME
 #define NOTES_DIR        DIR_NAME NOTES_DIR_NAME
 
+#define DEFAULT_EDITOR   "vi"
+#define DEFAULT_PAGER    "less"
+
 #define ATTR_FALSE    0
 #define ATTR_TRUE     1
 #define ATTR_LOWEST   2

@@ -2768,6 +2768,9 @@ io_import_data (enum import_type type, struct conf *conf, char *stream_name)
             ngettext ("%d todo", "%d todos", stats.todos), stats.todos);
   snprintf (stats_str[3], BUFSIZ, _("%d skipped"), stats.skipped);
 
+  /* Update the number of todo items. */
+  todo_set_nb (todo_nb () + stats.todos);
+
   if (ui_mode == UI_CURSES && !conf->skip_system_dialogs)
     {
       char read[BUFSIZ], stat[BUFSIZ];
@@ -2911,7 +2914,10 @@ void
 io_stop_psave_thread (void)
 {
   if (io_t_psave)
-    pthread_cancel (io_t_psave);
+    {
+      pthread_cancel (io_t_psave);
+      pthread_join (io_t_psave, NULL);
+    }
 }
 
 /*
