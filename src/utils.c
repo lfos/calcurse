@@ -954,6 +954,58 @@ press_any_key (void)
   fputs ("\r\n", stdout);
 }
 
+/*
+ * Display note contents if one is asociated with the currently displayed item
+ * (to be used together with the '-a' or '-t' flag in non-interactive mode).
+ * Each line begins with nbtab tabs.
+ * Print "No note file found", if the notefile does not exists.
+ *
+ * (patch submitted by Erik Saule).
+ */
+static void
+print_notefile (FILE *out, char *filename, int nbtab)
+{
+  char path_to_notefile[BUFSIZ];
+  FILE *notefile;
+  char linestarter[BUFSIZ];
+  char buffer[BUFSIZ];
+  int i;
+  int printlinestarter = 1;
+
+  if (nbtab < BUFSIZ)
+    {
+      for (i = 0; i < nbtab; i++)
+        linestarter[i] = '\t';
+      linestarter[nbtab] = '\0';
+    }
+  else
+    linestarter[0] = '\0';
+
+  snprintf (path_to_notefile, BUFSIZ, "%s/%s", path_notes, filename);
+  notefile = fopen (path_to_notefile, "r");
+  if (notefile)
+    {
+      while (fgets (buffer, BUFSIZ, notefile) != 0)
+        {
+          if (printlinestarter)
+            {
+              fputs (linestarter, out);
+              printlinestarter = 0;
+            }
+          fputs (buffer, out);
+          if (buffer[strlen (buffer) - 1] == '\n')
+            printlinestarter = 1;
+        }
+      fputs ("\n", out);
+      file_close (notefile, __FILE_POS__);
+    }
+  else
+    {
+      fputs (linestarter, out);
+      fputs (_("No note file found\n"), out);
+    }
+}
+
 /* Print a formatted appointment to stdout. */
 void
 print_apoint (const char *format, long day, struct apoint *apt)
@@ -990,6 +1042,9 @@ print_apoint (const char *format, long day, struct apoint *apt)
           case 'n':
             printf ("%s", apt->note);
             break;
+          case 'N':
+            print_notefile (stdout, apt->note, 1);
+            break;
           case '\0':
             return;
             break;
@@ -1020,6 +1075,9 @@ print_event (const char *format, long day, struct event *ev)
             break;
           case 'n':
             printf ("%s", ev->note);
+            break;
+          case 'N':
+            print_notefile (stdout, ev->note, 1);
             break;
           case '\0':
             return;
@@ -1081,6 +1139,9 @@ print_todo (const char *format, struct todo *todo)
             break;
           case 'n':
             printf ("%s", todo->note);
+            break;
+          case 'N':
+            print_notefile (stdout, todo->note, 1);
             break;
           case '\0':
             return;

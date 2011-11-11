@@ -183,58 +183,6 @@ status_arg (void)
 }
 
 /*
- * Display note contents if one is asociated with the currently displayed item
- * (to be used together with the '-a' or '-t' flag in non-interactive mode).
- * Each line begins with nbtab tabs.
- * Print "No note file found", if the notefile does not exists.
- *
- * (patch submitted by Erik Saule).
- */
-static void
-print_notefile (FILE *out, char *filename, int nbtab)
-{
-  char path_to_notefile[BUFSIZ];
-  FILE *notefile;
-  char linestarter[BUFSIZ];
-  char buffer[BUFSIZ];
-  int i;
-  int printlinestarter = 1;
-
-  if (nbtab < BUFSIZ)
-    {
-      for (i = 0; i < nbtab; i++)
-        linestarter[i] = '\t';
-      linestarter[nbtab] = '\0';
-    }
-  else
-    linestarter[0] = '\0';
-
-  snprintf (path_to_notefile, BUFSIZ, "%s/%s", path_notes, filename);
-  notefile = fopen (path_to_notefile, "r");
-  if (notefile)
-    {
-      while (fgets (buffer, BUFSIZ, notefile) != 0)
-        {
-          if (printlinestarter)
-            {
-              fputs (linestarter, out);
-              printlinestarter = 0;
-            }
-          fputs (buffer, out);
-          if (buffer[strlen (buffer) - 1] == '\n')
-            printlinestarter = 1;
-        }
-      fputs ("\n", out);
-      file_close (notefile, __FILE_POS__);
-    }
-  else
-    {
-      fputs (linestarter, out);
-      fputs (_("No note file found\n"), out);
-    }
-}
-
-/*
  * Print todo list and exit. If a priority number is given, then only todo
  * then only todo items that have this priority will be displayed.
  * If priority is < 0, all todos will be displayed.
@@ -271,9 +219,7 @@ todo_arg (int priority, int print_note, regex_t *regex)
           if (priority == 0)
             {
               DISPLAY_TITLE;
-              print_todo ("%p. %m\n", todo);
-              if (print_note && todo->note)
-                print_notefile (stdout, todo->note, 1);
+              print_todo (print_note ? "%p. %m\n%N" : "%p. %m\n", todo);
             }
         }
       else
@@ -281,9 +227,7 @@ todo_arg (int priority, int print_note, regex_t *regex)
           if (priority < 0 || todo->id == priority)
             {
               DISPLAY_TITLE;
-              print_todo ("%p. %m\n", todo);
-              if (print_note && todo->note)
-                print_notefile (stdout, todo->note, 1);
+              print_todo (print_note ? "%p. %m\n%N" : "%p. %m\n", todo);
             }
         }
     }
@@ -379,9 +323,7 @@ app_arg (int add_line, struct date *day, long date, int print_note,
           arg_print_date (today);
           print_date = 0;
         }
-      print_recur_event (" * %m\n", today, re);
-      if (print_note && re->note)
-        print_notefile (stdout, re->note, 2);
+      print_recur_event (print_note ? " * %m\n%N" : " * %m\n", today, re);
     }
 
   LLIST_FIND_FOREACH_CONT (&eventlist, today, event_inday, i)
@@ -401,9 +343,7 @@ app_arg (int add_line, struct date *day, long date, int print_note,
           arg_print_date (today);
           print_date = 0;
         }
-      print_event (" * %m\n", today, ev);
-      if (print_note && ev->note)
-        print_notefile (stdout, ev->note, 2);
+      print_event (print_note ? " * %m\n%N" : " * %m\n", today, ev);
     }
 
   /* Same process is performed but this time on the appointments. */
@@ -456,9 +396,8 @@ app_arg (int add_line, struct date *day, long date, int print_note,
               arg_print_date (today);
               print_date = 0;
             }
-          print_apoint (" - %S -> %E\n\t%m\n", today, apt);
-          if (print_note && apt->note)
-            print_notefile (stdout, apt->note, 2);
+          print_apoint (print_note ? " - %S -> %E\n\t%m\n%N" :
+                                     " - %S -> %E\n\t%m\n", today, apt);
           i = LLIST_TS_FIND_NEXT (i, today, apoint_inday);
         }
       else if (ra)
@@ -475,9 +414,9 @@ app_arg (int add_line, struct date *day, long date, int print_note,
               print_date = 0;
             }
           recur_apoint_find_occurrence (ra, today, &occurrence);
-          print_recur_apoint (" - %S -> %E\n\t%m\n", today, occurrence, ra);
-          if (print_note && ra->note)
-            print_notefile (stdout, ra->note, 2);
+          print_recur_apoint (print_note ? " - %S -> %E\n\t%m\n%N" :
+                                           " - %S -> %E\n\t%m\n", today,
+                              occurrence, ra);
           apt = NULL;
           j = LLIST_TS_FIND_NEXT (j, today, recur_apoint_inday);
         }
