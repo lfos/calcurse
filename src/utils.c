@@ -1045,6 +1045,9 @@ print_apoint (const char *format, long day, struct apoint *apt)
           case 'N':
             print_notefile (stdout, apt->note, 1);
             break;
+          case '%':
+            putchar ('%');
+            break;
           case '\0':
             return;
             break;
@@ -1078,6 +1081,9 @@ print_event (const char *format, long day, struct event *ev)
             break;
           case 'N':
             print_notefile (stdout, ev->note, 1);
+            break;
+          case '%':
+            putchar ('%');
             break;
           case '\0':
             return;
@@ -1142,6 +1148,9 @@ print_todo (const char *format, struct todo *todo)
             break;
           case 'N':
             print_notefile (stdout, todo->note, 1);
+            break;
+          case '%':
+            putchar ('%');
             break;
           case '\0':
             return;
