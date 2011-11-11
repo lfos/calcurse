@@ -924,6 +924,9 @@ int          child_wait (int *, int *, int);
 void         press_any_key (void);
 void         print_apoint (const char *, long, struct apoint *);
 void         print_event (const char *, long, struct event *);
+void         print_recur_apoint (const char *, long, unsigned,
+                                 struct recur_apoint *);
+void         print_recur_event (const char *, long, struct recur_event *);
 
 /* vars.c */
 extern int               col, row;

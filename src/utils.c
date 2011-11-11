@@ -1033,3 +1033,30 @@ print_event (const char *format, long day, struct event *ev)
         putchar (*p);
     }
 }
+
+/* Print a formatted recurrent appointment to stdout. */
+void
+print_recur_apoint (const char *format, long day, unsigned occurrence,
+                    struct recur_apoint *rapt)
+{
+  struct apoint apt;
+
+  apt.start = occurrence;
+  apt.dur = rapt->dur;
+  apt.mesg = rapt->mesg;
+  apt.note = rapt->note;
+
+  print_apoint (format, day, &apt);
+}
+
+/* Print a formatted recurrent event to stdout. */
+void
+print_recur_event (const char *format, long day, struct recur_event *rev)
+{
+  struct event ev;
+
+  ev.mesg = rev->mesg;
+  ev.note = rev->note;
+
+  print_event (format, day, &ev);
+}

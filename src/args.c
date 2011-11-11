@@ -385,9 +385,7 @@ app_arg (int add_line, struct date *day, long date, int print_note,
           arg_print_date (today);
           print_date = 0;
         }
-      fputs (" * ", stdout);
-      fputs (re->mesg, stdout);
-      fputs ("\n", stdout);
+      print_recur_event (" * %m\n", today, re);
       if (print_note && re->note)
         print_notefile (stdout, re->note, 2);
     }
@@ -482,10 +480,8 @@ app_arg (int add_line, struct date *day, long date, int print_note,
               arg_print_date (today);
               print_date = 0;
             }
-          apt = apoint_recur_s2apoint_s (ra);
-          print_apoint (" - %S -> %E\n\t%m\n", today, apt);
-          mem_free (apt->mesg);
-          mem_free (apt);
+          recur_apoint_find_occurrence (ra, today, &occurrence);
+          print_recur_apoint (" - %S -> %E\n\t%m\n", today, occurrence, ra);
           if (print_note && ra->note)
             print_notefile (stdout, ra->note, 2);
           apt = NULL;
