@@ -610,22 +610,6 @@ apoint_check_next (struct notify_app *app, long start)
 }
 
 /*
- * Returns a structure of type struct apoint_list given a structure of type
- * recur_apoint_s
- */
-struct apoint *
-apoint_recur_s2apoint_s (struct recur_apoint *p)
-{
-  struct apoint *a;
-
-  a = mem_malloc (sizeof (struct apoint));
-  a->mesg = mem_strdup (p->mesg);
-  a->start = p->start;
-  a->dur = p->dur;
-  return a;
-}
-
-/*
  * Switch notification state.
  */
 void

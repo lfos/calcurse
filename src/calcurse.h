@@ -596,7 +596,6 @@ void               apoint_delete_bynum (long, unsigned, enum eraseflg);
 void               apoint_scroll_pad_down (int, int);
 void               apoint_scroll_pad_up (int);
 struct notify_app *apoint_check_next (struct notify_app *, long);
-struct apoint     *apoint_recur_s2apoint_s (struct recur_apoint *);
 void               apoint_switch_notify (void);
 void               apoint_update_panel (int);
 void               apoint_paste_item (void);
