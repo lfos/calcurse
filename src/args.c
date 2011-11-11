@@ -246,7 +246,7 @@ todo_arg (int priority, int print_note, regex_t *regex)
 {
   llist_item_t *i;
   int title = 1;
-  char *titlestr, priority_str[BUFSIZ] = "";
+  char *titlestr;
   char *all_todos_title = _("to do:\n");
   char *completed_title = _("completed tasks:\n");
 
@@ -260,15 +260,6 @@ todo_arg (int priority, int print_note, regex_t *regex)
     }                                                                   \
   } while (0)
 
-#define DISPLAY_TODO  do {                                              \
-  (void)snprintf (priority_str, BUFSIZ, "%d. ", abs (todo->id));        \
-  fputs (priority_str, stdout);                                         \
-  fputs (todo->mesg, stdout);                                           \
-  fputs ("\n", stdout);                                                 \
-  if (print_note && todo->note)                                         \
-    print_notefile (stdout, todo->note, 1);                             \
-  } while (0)
-
   LLIST_FOREACH (&todolist, i)
     {
       struct todo *todo = LLIST_TS_GET_DATA (i);
@@ -280,7 +271,9 @@ todo_arg (int priority, int print_note, regex_t *regex)
           if (priority == 0)
             {
               DISPLAY_TITLE;
-              DISPLAY_TODO;
+              print_todo ("%p. %m\n", todo);
+              if (print_note && todo->note)
+                print_notefile (stdout, todo->note, 1);
             }
         }
       else
@@ -288,13 +281,14 @@ todo_arg (int priority, int print_note, regex_t *regex)
           if (priority < 0 || todo->id == priority)
             {
               DISPLAY_TITLE;
-              DISPLAY_TODO;
+              print_todo ("%p. %m\n", todo);
+              if (print_note && todo->note)
+                print_notefile (stdout, todo->note, 1);
             }
         }
     }
 
 #undef DISPLAY_TITLE
-#undef DISPLAY_TODO
 }
 
 /* Print the next appointment within the upcoming 24 hours. */

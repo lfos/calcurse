@@ -1060,3 +1060,37 @@ print_recur_event (const char *format, long day, struct recur_event *rev)
 
   print_event (format, day, &ev);
 }
+
+/* Print a formatted todo item to stdout. */
+void
+print_todo (const char *format, struct todo *todo)
+{
+  const char *p;
+
+  for (p = format; *p; p++)
+    {
+      if (*p == '%') {
+        p++;
+        switch (*p)
+          {
+          case 'p':
+            printf ("%d", abs (todo->id));
+            break;
+          case 'm':
+            printf ("%s", todo->mesg);
+            break;
+          case 'n':
+            printf ("%s", todo->note);
+            break;
+          case '\0':
+            return;
+            break;
+          default:
+            putchar ('?');
+            break;
+          }
+        }
+      else
+        putchar (*p);
+    }
+}

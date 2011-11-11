@@ -926,6 +926,7 @@ void         print_event (const char *, long, struct event *);
 void         print_recur_apoint (const char *, long, unsigned,
                                  struct recur_apoint *);
 void         print_recur_event (const char *, long, struct recur_event *);
+void         print_todo (const char *, struct todo *);
 
 /* vars.c */
 extern int               col, row;
