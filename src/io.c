@@ -2410,7 +2410,8 @@ ical_read_event (FILE *fdi, FILE *log, unsigned *noevents, unsigned *noapoints,
   skip_alarm = 0;
   while (ical_readline (fdi, buf, lstore, lineno))
     {
-      memcpy (buf_upper, buf, strlen (buf));
+      strncpy (buf_upper, buf, BUFSIZ);
+      buf_upper[BUFSIZ - 1] = '\0';
       str_toupper (buf_upper);
 
       if (skip_alarm)
@@ -2594,7 +2595,8 @@ ical_read_todo (FILE *fdi, FILE *log, unsigned *notodos, unsigned *noskipped,
   skip_alarm = 0;
   while (ical_readline (fdi, buf, lstore, lineno))
     {
-      memcpy (buf_upper, buf, strlen (buf));
+      strncpy (buf_upper, buf, BUFSIZ);
+      buf_upper[BUFSIZ - 1] = '\0';
       str_toupper (buf_upper);
       if (skip_alarm)
         {
