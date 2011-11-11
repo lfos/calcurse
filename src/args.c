@@ -615,7 +615,6 @@ parse_args (int argc, char **argv)
   int gflag = 0;    /* -g: run garbage collector */
   int iflag = 0;    /* -i: import data */
   int nflag = 0;    /* -n: print next appointment */
-  int Nflag = 0;    /* -N: also print note content with apps and todos */
   int rflag = 0;    /* -r: specify the range of days to consider */
   int sflag = 0;    /* -s: specify the first day to consider */
   int Sflag = 0;    /* -S: specify a regex to search for */
@@ -713,9 +712,6 @@ parse_args (int argc, char **argv)
           nflag = 1;
           multiple_flag++;
           load_data++;
-          break;
-        case 'N':
-          Nflag = 1;
           break;
         case 'r':
           rflag = 1;
