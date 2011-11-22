@@ -1006,6 +1006,55 @@ print_notefile (FILE *out, char *filename, int nbtab)
     }
 }
 
+/* Print an escape sequence and return its length. */
+static int
+print_escape (const char *s)
+{
+  switch (*(s + 1))
+    {
+    case 'a':
+      putchar ('\a');
+      return 1;
+    case 'b':
+      putchar ('\b');
+      return 1;
+    case 'f':
+      putchar ('\f');
+      return 1;
+    case 'n':
+      putchar ('\n');
+      return 1;
+    case 'r':
+      putchar ('\r');
+      return 1;
+    case 't':
+      putchar ('\t');
+      return 1;
+    case 'v':
+      putchar ('\v');
+      return 1;
+    case '0':
+      putchar ('\0');
+      return 1;
+    case '\'':
+      putchar ('\'');
+      return 1;
+    case '"':
+      putchar ('"');
+      return 1;
+    case '\?':
+      putchar ('?');
+      return 1;
+    case '\\':
+      putchar ('\\');
+      return 1;
+    case '\0':
+      return 0;
+    default:
+      return 1;
+    }
+}
+
 /* Print a formatted appointment to stdout. */
 void
 print_apoint (const char *format, long day, struct apoint *apt)
@@ -1056,6 +1105,8 @@ print_apoint (const char *format, long day, struct apoint *apt)
             break;
           }
         }
+      else if (*p == '\\')
+        p += print_escape (p);
       else
         putchar (*p);
     }
@@ -1093,6 +1144,8 @@ print_event (const char *format, long day, struct event *ev)
             break;
           }
         }
+      else if (*p == '\\')
+        p += print_escape (p);
       else
         putchar (*p);
     }
@@ -1160,6 +1213,8 @@ print_todo (const char *format, struct todo *todo)
             break;
           }
         }
+      else if (*p == '\\')
+        p += print_escape (p);
       else
         putchar (*p);
     }
