@@ -268,57 +268,51 @@ apoint_delete (unsigned *nb_events, unsigned *nb_apoints)
   char *del_app_str = _("Do you really want to delete this item ?");
   long date;
   int nb_items = *nb_apoints + *nb_events;
-  unsigned go_for_deletion = 0;
   int to_be_removed = 0;
-  int answer = 0;
-  int deleted_item_type = 0;
 
   date = calendar_get_slctd_day_sec ();
+
+  if (nb_items == 0)
+    return;
 
   if (conf.confirm_delete)
     {
       status_mesg (del_app_str, choices);
-      answer = wgetch (win[STA].p);
-      if ((answer == 'y') && (nb_items != 0))
-        go_for_deletion = 1;
-      else
+      if (wgetch (win[STA].p) != 'y')
         {
           wins_erase_status_bar ();
           return;
         }
     }
-  else if (nb_items != 0)
-    go_for_deletion = 1;
 
-  if (go_for_deletion)
-    {
-      if (nb_items != 0)
-        {
-          deleted_item_type = day_erase_item (date, hilt, ERASE_DONT_FORCE);
-          if (deleted_item_type == EVNT || deleted_item_type == RECUR_EVNT)
-            {
-              (*nb_events)--;
-              to_be_removed = 1;
-            }
-          else if (deleted_item_type == APPT || deleted_item_type == RECUR_APPT)
-            {
-              (*nb_apoints)--;
-              to_be_removed = 3;
-            }
-          else if (deleted_item_type == 0)
+    if (nb_items != 0)
+      {
+        switch (day_erase_item (date, hilt, ERASE_DONT_FORCE))
+          {
+          case EVNT:
+          case RECUR_EVNT:
+            (*nb_events)--;
+            to_be_removed = 1;
+            break;
+          case APPT:
+          case RECUR_APPT:
+            (*nb_apoints)--;
+            to_be_removed = 3;
+            break;
+          case 0:
             return;
-          else
+          default:
             EXIT (_("no such type"));
-          /* NOTREACHED */
+            /* NOTREACHED */
+          }
 
-          if (hilt > 1)
-            hilt--;
-          if (apad.first_onscreen >= to_be_removed)
-            apad.first_onscreen = apad.first_onscreen - to_be_removed;
-          if (nb_items == 1)
-            hilt = 0;
-        }
-    }
+        if (hilt > 1)
+          hilt--;
+        if (apad.first_onscreen >= to_be_removed)
+          apad.first_onscreen = apad.first_onscreen - to_be_removed;
+        if (nb_items == 1)
+          hilt = 0;
+      }
 }
 
 /* Cut an item, so that it can be pasted somewhere else later. */
