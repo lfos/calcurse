@@ -248,27 +248,19 @@ todo_delete (void)
       _("This item has a note attached to it. "
         "Delete (t)odo or just its (n)ote ?");
   char *erase_choice = _("[t/n] ");
-  unsigned go_for_todo_del = 0;
   int answer, has_note;
 
   if (conf.confirm_delete)
     {
       status_mesg (del_todo_str, choices);
       answer = wgetch (win[STA].p);
-      if ((answer == 'y') && (todos > 0))
-        {
-          go_for_todo_del = 1;
-        }
-      else
+      if ((answer != 'y') || (todos <= 0))
         {
           wins_erase_status_bar ();
           return;
         }
     }
-  else if (todos > 0)
-    go_for_todo_del = 1;
-
-  if (go_for_todo_del == 0)
+  else if (todos <= 0)
     {
       wins_erase_status_bar ();
       return;
@@ -335,7 +327,6 @@ todo_chg_priority (int action)
   char backup_mesg[BUFSIZ];
   int backup_id;
   char backup_note[MAX_NOTESIZ + 1];
-  int do_chg = 1;
 
   backup = todo_get_item (hilt);
   strncpy (backup_mesg, backup->mesg, strlen (backup->mesg) + 1);
@@ -347,21 +338,25 @@ todo_chg_priority (int action)
   switch (action)
     {
     case KEY_RAISE_PRIORITY:
-      (backup_id > 1) ? backup_id-- : do_chg--;
+      if (backup_id > 1)
+        backup_id--;
+      else
+        return;
       break;
     case KEY_LOWER_PRIORITY:
-      (backup_id > 0 && backup_id < 9) ? backup_id++ : do_chg--;
+      if (backup_id > 0 && backup_id < 9)
+        backup_id++;
+      else
+        return;
       break;
     default:
       EXIT (_("no such action"));
       /* NOTREACHED */
     }
-  if (do_chg)
-    {
-      todo_delete_bynum (hilt - 1);
-      backup = todo_add (backup_mesg, backup_id, backup_note);
-      hilt = todo_get_position (backup);
-    }
+
+  todo_delete_bynum (hilt - 1);
+  backup = todo_add (backup_mesg, backup_id, backup_note);
+  hilt = todo_get_position (backup);
 }
 
 /* Edit the description of an already existing todo item. */
