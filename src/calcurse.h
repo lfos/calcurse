@@ -893,7 +893,7 @@ void         status_mesg (char *, char *);
 void         erase_window_part (WINDOW *, int, int, int, int);
 WINDOW      *popup (int, int, int, int, char *, char *, int);
 void         print_in_middle (WINDOW *, int, int, int, char *);
-int          is_all_digit (char *);
+int          is_all_digit (const char *);
 long         get_item_time (long);
 int          get_item_hour (long);
 int          get_item_min (long);

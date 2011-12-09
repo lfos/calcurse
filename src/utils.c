@@ -234,7 +234,7 @@ print_in_middle (WINDOW *win, int starty, int startx, int width, char *string)
 
 /* checks if a string is only made of digits */
 int
-is_all_digit (char *string)
+is_all_digit (const char *string)
 {
   for (; *string; string++)
     {
