@@ -324,15 +324,12 @@ display_item_date (int incolor, struct apoint *i, int type, long date,
 {
   WINDOW *win;
   char a_st[100], a_end[100];
-  int recur = 0;
 
   win = apad.ptrwin;
   apoint_sec2str (i, date, a_st, a_end);
-  if (type == RECUR_EVNT || type == RECUR_APPT)
-    recur = 1;
   if (incolor == 0)
     custom_apply_attr (win, ATTR_HIGHEST);
-  if (recur)
+  if (type == RECUR_EVNT || type == RECUR_APPT)
     if (i->state & APOINT_NOTIFY)
       mvwprintw (win, y, x, " *!%s -> %s", a_st, a_end);
     else
