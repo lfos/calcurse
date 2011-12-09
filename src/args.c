@@ -910,7 +910,7 @@ parse_args (int argc, char **argv)
               io_check_file (path_apts, NULL);
               io_check_file (path_conf, NULL);
               io_load_app ();
-              custom_load_conf (); /* To get output date format. */
+              config_load (); /* To get output date format. */
               if (dflag)
                 date_arg (ddate, add_line, fmt_apt, fmt_rapt, fmt_ev, fmt_rev,
                           preg);
@@ -926,7 +926,7 @@ parse_args (int argc, char **argv)
               io_check_file (path_apts, NULL);
               io_check_file (path_conf, NULL);
               vars_init ();
-              custom_load_conf (); /* To get output date format. */
+              config_load (); /* To get output date format. */
               io_load_app ();
               day.dd = day.mm = day.yyyy = 0;
               app_arg (add_line, &day, 0, fmt_apt, fmt_rapt, fmt_ev, fmt_rev,

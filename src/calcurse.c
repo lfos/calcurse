@@ -158,7 +158,7 @@ main (int argc, char **argv)
    * configuration (the display is then updated), and then
    * the todo list, appointments and events.
    */
-  custom_load_conf ();
+  config_load ();
   wins_erase_status_bar ();
   io_load_keys (conf.pager);
   io_load_todo ();

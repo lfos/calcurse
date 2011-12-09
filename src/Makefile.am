@@ -12,6 +12,7 @@ calcurse_SOURCES = \
 	apoint.c \
 	args.c \
 	calendar.c \
+	config.c \
 	custom.c \
 	day.c \
 	event.c \

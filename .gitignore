@@ -5,7 +5,6 @@ Makefile.in
 Makefile.in.in
 Makevars
 aclocal.m4
-config.*
 configure
 depcomp
 install-sh
@@ -14,6 +13,8 @@ stamp-h1
 .version
 autom4te.cache/
 m4/
+
+./config.*
 
 doc/*.1
 doc/*.html

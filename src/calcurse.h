@@ -626,11 +626,15 @@ long          calendar_start_of_year (void);
 long          calendar_end_of_year (void);
 char         *calendar_get_pom (time_t);
 
+/* config.c */
+
+void      config_load (void);
+unsigned  config_save (void);
+
 /* custom.c */
 void custom_init_attr (void);
 void custom_apply_attr (WINDOW *, int);
 void custom_remove_attr (WINDOW *, int);
-void custom_load_conf (void);
 void custom_config_bar (void);
 void custom_layout_config (void);
 void custom_sidebar_config (void);
@@ -688,7 +692,6 @@ int          updatestring (WINDOW *, char **, int, int);
 unsigned         io_fprintln (const char *, const char *, ...);
 void             io_init (char *, char *);
 void             io_extract_data (char *, const char *, int);
-unsigned         io_save_conf (void);
 unsigned         io_save_apts (void);
 unsigned         io_save_todo (void);
 unsigned         io_save_keys (void);
