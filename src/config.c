@@ -38,66 +38,8 @@
 
 #include "calcurse.h"
 
-/* Available configuration variables. */
-enum config_var {
-  CUSTOM_CONF_AUTOSAVE,
-  CUSTOM_CONF_AUTOGC,
-  CUSTOM_CONF_PERIODICSAVE,
-  CUSTOM_CONF_CONFIRMQUIT,
-  CUSTOM_CONF_CONFIRMDELETE,
-  CUSTOM_CONF_SKIPSYSTEMDIALOGS,
-  CUSTOM_CONF_SKIPPROGRESSBAR,
-  CUSTOM_CONF_CALENDAR_DEFAULTVIEW,
-  CUSTOM_CONF_WEEKBEGINSONMONDAY,
-  CUSTOM_CONF_COLORTHEME,
-  CUSTOM_CONF_LAYOUT,
-  CUSTOM_CONF_SBAR_WIDTH,
-  CUSTOM_CONF_NOTIFYBARSHOW,
-  CUSTOM_CONF_NOTIFYBARDATE,
-  CUSTOM_CONF_NOTIFYBARCLOCK,
-  CUSTOM_CONF_NOTIFYBARWARNING,
-  CUSTOM_CONF_NOTIFYBARCOMMAND,
-  CUSTOM_CONF_NOTIFYALL,
-  CUSTOM_CONF_OUTPUTDATEFMT,
-  CUSTOM_CONF_INPUTDATEFMT,
-  CUSTOM_CONF_DMON_ENABLE,
-  CUSTOM_CONF_DMON_LOG,
-  CUSTOM_CONF_INVALID
-};
-
-struct config_varname {
-  enum config_var var;
-  const char *name;
-};
-
-static struct config_varname config_varmap[] =
-{
-  { CUSTOM_CONF_AUTOSAVE, "auto_save" },
-  { CUSTOM_CONF_AUTOGC, "auto_gc" },
-  { CUSTOM_CONF_PERIODICSAVE, "periodic_save" },
-  { CUSTOM_CONF_CONFIRMQUIT, "confirm_quit" },
-  { CUSTOM_CONF_CONFIRMDELETE, "confirm_delete" },
-  { CUSTOM_CONF_SKIPSYSTEMDIALOGS, "skip_system_dialogs" },
-  { CUSTOM_CONF_SKIPPROGRESSBAR, "skip_progress_bar" },
-  { CUSTOM_CONF_CALENDAR_DEFAULTVIEW, "calendar_default_view" },
-  { CUSTOM_CONF_WEEKBEGINSONMONDAY, "week_begins_on_monday" },
-  { CUSTOM_CONF_COLORTHEME, "color-theme" },
-  { CUSTOM_CONF_LAYOUT, "layout" },
-  { CUSTOM_CONF_SBAR_WIDTH, "side-bar_width" },
-  { CUSTOM_CONF_NOTIFYBARSHOW, "notify-bar_show" },
-  { CUSTOM_CONF_NOTIFYBARDATE, "notify-bar_date" },
-  { CUSTOM_CONF_NOTIFYBARCLOCK, "notify-bar_clock" },
-  { CUSTOM_CONF_NOTIFYBARWARNING, "notify-bar_warning" },
-  { CUSTOM_CONF_NOTIFYBARCOMMAND, "notify-bar_command" },
-  { CUSTOM_CONF_NOTIFYALL, "notify-all" },
-  { CUSTOM_CONF_OUTPUTDATEFMT, "output_datefmt" },
-  { CUSTOM_CONF_INPUTDATEFMT, "input_datefmt" },
-  { CUSTOM_CONF_DMON_ENABLE, "notify-daemon_enable" },
-  { CUSTOM_CONF_DMON_LOG, "notify-daemon_log" }
-};
-
 static int
-config_parse_bool (unsigned *dest, char *val)
+config_parse_bool (unsigned *dest, const char *val)
 {
   if (strncmp (val, "yes", 4) == 0)
     *dest = 1;
@@ -110,7 +52,7 @@ config_parse_bool (unsigned *dest, char *val)
 }
 
 static int
-config_parse_unsigned (unsigned *dest, char *val)
+config_parse_unsigned (unsigned *dest, const char *val)
 {
   if (is_all_digit (val))
     *dest = atoi (val);
@@ -121,7 +63,7 @@ config_parse_unsigned (unsigned *dest, char *val)
 }
 
 static int
-config_parse_int (int *dest, char *val)
+config_parse_int (int *dest, const char *val)
 {
   if ((*val == '+' || *val == '-' || isdigit (*val)) && is_all_digit (val + 1))
     *dest = atoi (val);
@@ -137,7 +79,7 @@ config_parse_int (int *dest, char *val)
  * differently (number between 1 and 8).
  */
 static int
-config_parse_color (char *val)
+config_parse_color (const char *val)
 {
 #define AWAITED_COLORS	2
 
@@ -226,91 +168,110 @@ config_parse_color (char *val)
 
 /* Set a configuration variable. */
 static int
-config_set_conf (enum config_var var, char *val)
+config_set_conf (const char *key, const char *value)
 {
-  unsigned tmp;
+  if (!key)
+    return -1;
 
-  switch (var)
-    {
-    case CUSTOM_CONF_AUTOSAVE:
-      return config_parse_bool (&conf.auto_save, val);
-      break;
-    case CUSTOM_CONF_AUTOGC:
-      return config_parse_bool (&conf.auto_gc, val);
-      break;
-    case CUSTOM_CONF_PERIODICSAVE:
-      return config_parse_unsigned (&conf.periodic_save, val);
-      break;
-    case CUSTOM_CONF_CONFIRMQUIT:
-      return config_parse_bool (&conf.confirm_quit, val);
-      break;
-    case CUSTOM_CONF_CONFIRMDELETE:
-      return config_parse_bool (&conf.confirm_delete, val);
-      break;
-    case CUSTOM_CONF_SKIPSYSTEMDIALOGS:
-      return config_parse_bool (&conf.skip_system_dialogs, val);
-      break;
-    case CUSTOM_CONF_SKIPPROGRESSBAR:
-      return config_parse_bool (&conf.skip_progress_bar, val);
-      break;
-    case CUSTOM_CONF_CALENDAR_DEFAULTVIEW:
-      calendar_set_view (atoi (val));
-      break;
-    case CUSTOM_CONF_WEEKBEGINSONMONDAY:
-      return config_parse_bool (&tmp, val);
+  if (!strcmp(key, "auto_save"))
+    return config_parse_bool (&conf.auto_save, value);
+
+  if (!strcmp(key, "auto_gc"))
+    return config_parse_bool (&conf.auto_gc, value);
+
+  if (!strcmp(key, "periodic_save"))
+    return config_parse_unsigned (&conf.periodic_save, value);
+
+  if (!strcmp(key, "confirm_quit"))
+    return config_parse_bool (&conf.confirm_quit, value);
+
+  if (!strcmp(key, "confirm_delete"))
+    return config_parse_bool (&conf.confirm_delete, value);
+
+  if (!strcmp(key, "skip_system_dialogs"))
+    return config_parse_bool (&conf.skip_system_dialogs, value);
+
+  if (!strcmp(key, "skip_progress_bar"))
+    return config_parse_bool (&conf.skip_progress_bar, value);
+
+  if (!strcmp(key, "calendar_default_view")) {
+    calendar_set_view (atoi (value));
+    return 1;
+  }
+
+  if (!strcmp(key, "week_begins_on_monday")) {
+    unsigned tmp;
+    if (config_parse_bool (&tmp, value)) {
       if (tmp)
         calendar_set_first_day_of_week (MONDAY);
       else
         calendar_set_first_day_of_week (SUNDAY);
-      break;
-    case CUSTOM_CONF_COLORTHEME:
-      return config_parse_color (val);
-      break;
-    case CUSTOM_CONF_LAYOUT:
-      wins_set_layout (atoi (val));
-      break;
-    case CUSTOM_CONF_SBAR_WIDTH:
-      wins_set_sbar_width (atoi (val));
-      break;
-    case CUSTOM_CONF_NOTIFYBARSHOW:
-      return config_parse_bool (&nbar.show, val);
-      break;
-    case CUSTOM_CONF_NOTIFYBARDATE:
-      strncpy (nbar.datefmt, val, strlen (val) + 1);
-      break;
-    case CUSTOM_CONF_NOTIFYBARCLOCK:
-      strncpy (nbar.timefmt, val, strlen (val) + 1);
-      break;
-    case CUSTOM_CONF_NOTIFYBARWARNING:
-      return config_parse_int (&nbar.cntdwn, val);
-      break;
-    case CUSTOM_CONF_NOTIFYBARCOMMAND:
-      strncpy (nbar.cmd, val, strlen (val) + 1);
-      break;
-    case CUSTOM_CONF_NOTIFYALL:
-      return config_parse_bool(&nbar.notify_all, val);
-      break;
-    case CUSTOM_CONF_OUTPUTDATEFMT:
-      if (val[0] != '\0')
-        strncpy (conf.output_datefmt, val, strlen (val) + 1);
-      break;
-    case CUSTOM_CONF_INPUTDATEFMT:
-      return config_parse_int (&conf.input_datefmt, val);
+      return 1;
+    }
+    else
+      return 0;
+  }
+
+  if (!strcmp(key, "color-theme"))
+    return config_parse_color (value);
+
+  if (!strcmp(key, "layout")) {
+    wins_set_layout (atoi (value));
+    return 1;
+  }
+
+  if (!strcmp(key, "side-bar_width")) {
+    wins_set_sbar_width (atoi (value));
+    return 1;
+  }
+
+  if (!strcmp(key, "notify-bar_show"))
+    return config_parse_bool (&nbar.show, value);
+
+  if (!strcmp(key, "notify-bar_date")) {
+    strncpy (nbar.datefmt, value, strlen (value) + 1);
+    return 1;
+  }
+
+  if (!strcmp(key, "notify-bar_clock")) {
+    strncpy (nbar.timefmt, value, strlen (value) + 1);
+    return 1;
+  }
+
+  if (!strcmp(key, "notify-bar_warning"))
+    return config_parse_int (&nbar.cntdwn, value);
+
+  if (!strcmp(key, "notify-bar_command")) {
+    strncpy (nbar.cmd, value, strlen (value) + 1);
+    return 1;
+  }
+
+  if (!strcmp(key, "notify-all"))
+    return config_parse_bool(&nbar.notify_all, value);
+
+  if (!strcmp(key, "output_datefmt")) {
+    if (value[0] != '\0')
+      strncpy (conf.output_datefmt, value, strlen (value) + 1);
+    return 1;
+  }
+
+  if (!strcmp(key, "input_datefmt")) {
+    if (config_parse_int (&conf.input_datefmt, value)) {
       if (conf.input_datefmt <= 0 || conf.input_datefmt >= DATE_FORMATS)
         conf.input_datefmt = 1;
-      break;
-    case CUSTOM_CONF_DMON_ENABLE:
-      return config_parse_bool (&dmon.enable, val);
-      break;
-    case CUSTOM_CONF_DMON_LOG:
-      return config_parse_bool (&dmon.log, val);
-      break;
-    default:
-      return 0;
-      break;
+      return 1;
     }
+    else
+      return 0;
+  }
 
-  return 1;
+  if (!strcmp(key, "notify-daemon_enable"))
+    return config_parse_bool (&dmon.enable, value);
+
+  if (!strcmp(key, "notify-daemon_log"))
+    return config_parse_bool (&dmon.log, value);
+
+  return -1;
 }
 
 /* Load the user configuration. */
@@ -321,10 +282,8 @@ config_load (void)
   char *mesg_line1 = _("Failed to open config file");
   char *mesg_line2 = _("Press [ENTER] to continue");
   char buf[BUFSIZ], e_conf[BUFSIZ];
-  int i;
-  char *name;
-  enum config_var var;
-  char *val;
+  char *key, *value;
+  int result;
 
   data_file = fopen (path_conf, "r");
   if (data_file == NULL)
@@ -345,44 +304,30 @@ config_load (void)
       if (*e_conf == '\0')
         continue;
 
-      name = e_conf;
-      val = strchr (e_conf, '=');
-      if (val)
+      key = e_conf;
+      value = strchr (e_conf, '=');
+      if (value)
         {
-          *val = '\0';
-          val++;
+          *value = '\0';
+          value++;
         }
 
-      var = CUSTOM_CONF_INVALID;
-      for (i = 0; i < sizeof (config_varmap) / sizeof (struct config_varname); i++)
-        {
-          if (strncmp (name, config_varmap[i].name, BUFSIZ) == 0)
-            {
-              var = config_varmap[i].var;
-              break;
-            }
-        }
-
-      if (var == CUSTOM_CONF_INVALID)
-        {
-          EXIT (_("configuration variable unknown: \"%s\""), name);
-          /* NOTREACHED */
-        }
-
-      if (val && (*val == '\0' || *val == '\n'))
+      if (value && (*value == '\0' || *value == '\n'))
         {
           /* Backward compatibility mode. */
           if (fgets (buf, sizeof buf, data_file) == NULL)
             break;
           io_extract_data (e_conf, buf, sizeof buf);
-          val = e_conf;
+          value = e_conf;
         }
 
-      if (!val || !config_set_conf (var, val))
-        {
-          EXIT (_("wrong configuration variable format for \"%s\""), name);
-          /* NOTREACHED */
-        }
+      result = config_set_conf (key, value);
+      if (result < 0)
+        EXIT (_("configuration variable unknown: \"%s\""), key);
+        /* NOTREACHED */
+      else if (result == 0)
+        EXIT (_("wrong configuration variable format for \"%s\""), key);
+        /* NOTREACHED */
     }
   file_close (data_file, __FILE_POS__);
   pthread_mutex_unlock (&nbar.mutex);
