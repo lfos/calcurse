@@ -622,7 +622,11 @@ ical_export_apoints (FILE *stream)
       date_sec2date_fmt (apt->start, ICALDATETIMEFMT, ical_datetime);
       (void)fprintf (stream, "BEGIN:VEVENT\n");
       (void)fprintf (stream, "DTSTART:%s\n", ical_datetime);
-      (void)fprintf (stream, "DURATION:PT0H0M%ldS\n", apt->dur);
+      (void)fprintf (stream, "DURATION:P%ldDT%ldH%ldM%ldS\n",
+                     apt->dur / DAYINSEC,
+                     (apt->dur / HOURINSEC) % 24,
+                     (apt->dur / MININSEC) % 60,
+                     apt->dur % MININSEC);
       (void)fprintf (stream, "SUMMARY:%s\n", apt->mesg);
       if (apt->state & APOINT_NOTIFY)
         ical_export_valarm (stream);
