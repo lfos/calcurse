@@ -73,97 +73,42 @@ config_parse_int (int *dest, const char *val)
   return 1;
 }
 
-/*
- * Load user color theme from file.
- * Need to handle calcurse versions prior to 1.8, where colors where handled
- * differently (number between 1 and 8).
- */
 static int
-config_parse_color (const char *val)
+config_parse_color (int *dest, const char *val)
 {
-#define AWAITED_COLORS	2
-
-  int i, len, color_num;
-  char c[AWAITED_COLORS][BUFSIZ];
-  int colr[AWAITED_COLORS];
-
-  len = strlen (val);
-  if (len > 1)
-    {
-      /* New version configuration */
-      if (sscanf (val, "%s on %s", c[0], c[1]) != AWAITED_COLORS)
-        return 0;
-
-      for (i = 0; i < AWAITED_COLORS; i++)
-        {
-          if (!strncmp (c[i], "black", 5))
-            colr[i] = COLOR_BLACK;
-          else if (!strncmp (c[i], "red", 3))
-            colr[i] = COLOR_RED;
-          else if (!strncmp (c[i], "green", 5))
-            colr[i] = COLOR_GREEN;
-          else if (!strncmp (c[i], "yellow", 6))
-            colr[i] = COLOR_YELLOW;
-          else if (!strncmp (c[i], "blue", 4))
-            colr[i] = COLOR_BLUE;
-          else if (!strncmp (c[i], "magenta", 7))
-            colr[i] = COLOR_MAGENTA;
-          else if (!strncmp (c[i], "cyan", 4))
-            colr[i] = COLOR_CYAN;
-          else if (!strncmp (c[i], "white", 5))
-            colr[i] = COLOR_WHITE;
-          else if (!strncmp (c[i], "default", 7))
-            colr[i] = background;
-          else
-            return 0;
-        }
-      init_pair (COLR_CUSTOM, colr[0], colr[1]);
-    }
-  else if (len == 1)
-    {
-      /* Old version configuration */
-      if (isdigit (*val))
-        color_num = atoi (val);
-      else
-        return 0;
-
-      switch (color_num)
-        {
-        case 0:
-          colorize = 0;
-          break;
-        case 1:
-          init_pair (COLR_CUSTOM, COLOR_RED, background);
-          break;
-        case 2:
-          init_pair (COLR_CUSTOM, COLOR_GREEN, background);
-          break;
-        case 3:
-          init_pair (COLR_CUSTOM, COLOR_BLUE, background);
-          break;
-        case 4:
-          init_pair (COLR_CUSTOM, COLOR_CYAN, background);
-          break;
-        case 5:
-          init_pair (COLR_CUSTOM, COLOR_YELLOW, background);
-          break;
-        case 6:
-          init_pair (COLR_CUSTOM, COLOR_BLACK, COLR_GREEN);
-          break;
-        case 7:
-          init_pair (COLR_CUSTOM, COLOR_BLACK, COLR_YELLOW);
-          break;
-        case 8:
-          init_pair (COLR_CUSTOM, COLOR_RED, COLR_BLUE);
-          break;
-        default:
-          return 0;
-        }
-    }
+  if (!strcmp (val, "black"))
+    *dest = COLOR_BLACK;
+  else if (!strcmp (val, "red"))
+    *dest = COLOR_RED;
+  else if (!strcmp (val, "green"))
+    *dest = COLOR_GREEN;
+  else if (!strcmp (val, "yellow"))
+    *dest = COLOR_YELLOW;
+  else if (!strcmp (val, "blue"))
+    *dest = COLOR_BLUE;
+  else if (!strcmp (val, "magenta"))
+    *dest = COLOR_MAGENTA;
+  else if (!strcmp (val, "cyan"))
+    *dest = COLOR_CYAN;
+  else if (!strcmp (val, "white"))
+    *dest = COLOR_WHITE;
+  else if (!strcmp (val, "default"))
+    *dest = background;
   else
     return 0;
 
   return 1;
+}
+
+static int
+config_parse_color_pair (int *dest1, int *dest2, const char *val)
+{
+  char s1[BUFSIZ], s2[BUFSIZ];
+
+  if (sscanf (val, "%s on %s", s1, s2) != 2)
+    return 0;
+
+  return (config_parse_color (dest1, s1) && config_parse_color (dest2, s2));
 }
 
 /* Set a configuration variable. */
@@ -213,7 +158,13 @@ config_set_conf (const char *key, const char *value)
   }
 
   if (!strcmp(key, "color-theme"))
-    return config_parse_color (value);
+    {
+      int color1, color2;
+      if (!config_parse_color_pair (&color1, &color2, value))
+        return 0;
+      init_pair (COLR_CUSTOM, color1, color2);
+      return 1;
+    }
 
   if (!strcmp(key, "layout")) {
     wins_set_layout (atoi (value));
