@@ -18,11 +18,13 @@ calcurse_SOURCES = \
 	event.c \
 	getstring.c \
 	help.c \
+	ical.c \
 	io.c \
 	keys.c \
 	llist.c \
 	note.c \
 	notify.c \
+	pcal.c \
 	recur.c \
 	sha1.c \
 	sigs.c \

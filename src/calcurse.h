@@ -688,6 +688,11 @@ void help_screen (void);
 enum getstr  getstring (WINDOW *, char *, int, int, int);
 int          updatestring (WINDOW *, char **, int, int);
 
+/* ical.c */
+void  ical_import_data (FILE *, FILE *, unsigned *, unsigned *, unsigned *,
+                        unsigned *, unsigned *);
+void  ical_export_data (FILE *);
+
 /* io.c */
 unsigned         io_fprintln (const char *, const char *, ...);
 void             io_init (char *, char *);
@@ -802,6 +807,9 @@ void      notify_check_repeated (struct recur_apoint *);
 int       notify_same_item (long);
 int       notify_same_recur_item (struct recur_apoint *);
 void      notify_config_bar (void);
+
+/* pcal.c */
+void  pcal_export_data (FILE *);
 
 /* recur.c */
 extern llist_ts_t recur_alist_p;
