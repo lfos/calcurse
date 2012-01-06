@@ -166,7 +166,7 @@ apoint_add (void)
     _("You entered an invalid end time, should be [hh:mm], [+hh:mm] or [+mm]");
   char *enter_str = _("Press [Enter] to continue");
   int Id = 1;
-  char item_time[LTIME] = "";
+  char item_time[LDUR] = "";
   char item_mesg[BUFSIZ] = "";
   long apoint_start;
   unsigned heures, minutes;
