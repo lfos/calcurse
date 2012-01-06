@@ -158,12 +158,12 @@ apoint_add (void)
   char *mesg_1 =
     _("Enter start time ([hh:mm]), leave blank for an all-day event : ");
   char *mesg_2 =
-    _("Enter end time ([hh:mm]) or duration ([+hh:mm]) : ");
+    _("Enter end time ([hh:mm]) or duration ([+hh:mm], [+xxxdxxhxxm] or [+mm]) : ");
   char *mesg_3 = _("Enter description :");
   char *format_message_1 =
     _("You entered an invalid start time, should be [hh:mm]");
   char *format_message_2 =
-    _("You entered an invalid end time, should be [hh:mm], [+hh:mm] or [+mm]");
+    _("Invalid end time/duration, should be [hh:mm], [+hh:mm], [+xxxdxxhxxm] or [+mm]");
   char *enter_str = _("Press [Enter] to continue");
   int Id = 1;
   char item_time[LDUR] = "";
