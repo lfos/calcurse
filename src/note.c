@@ -46,6 +46,25 @@ struct note_gc_hash {
   HTABLE_ENTRY (note_gc_hash);
 };
 
+/* Create note file from a string and return a newly allocated string that
+ * contains its name. */
+char *
+generate_note (const char *str)
+{
+  char *sha1 = mem_malloc (SHA1_DIGESTLEN * 2 + 1);
+  char notepath[BUFSIZ];
+  FILE *fp;
+
+  sha1_digest (str, sha1);
+  snprintf (notepath, BUFSIZ, "%s%s", path_notes, sha1);
+  fp = fopen (notepath, "w");
+  EXIT_IF (fp == NULL, _("Warning: could not open %s, Aborting..."), notepath);
+  fputs (str, fp);
+  file_close (fp, __FILE_POS__);
+
+  return sha1;
+}
+
 /* Edit a note with an external editor. */
 void
 edit_note (char **note, char *editor)

@@ -779,6 +779,7 @@ void   mem_stats (void);
 #endif /* CALCURSE_MEMORY_DEBUG */
 
 /* note.c */
+char *generate_note (const char *);
 void  edit_note (char **, char *);
 void  view_note (char *, char *);
 void  erase_note (char **);

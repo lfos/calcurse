@@ -37,7 +37,6 @@
 #include <sys/types.h>
 
 #include "calcurse.h"
-#include "sha1.h"
 
 #define ICALDATEFMT      "%Y%m%d"
 #define ICALDATETIMEFMT  "%Y%m%dT%H%M%S"
@@ -866,9 +865,7 @@ static char *
 ical_read_note (char *line, unsigned *noskipped, ical_vevent_e item_type,
                 const int itemline, FILE *log)
 {
-  char *sha1 = mem_malloc (SHA1_DIGESTLEN * 2 + 1);
-  char *p, *notestr, fullnotename[BUFSIZ];
-  FILE *fdo;
+  char *p, *notestr, *note;
 
   if ((p = strchr (line, ':')) != NULL)
     {
@@ -888,15 +885,9 @@ ical_read_note (char *line, unsigned *noskipped, ical_vevent_e item_type,
         }
       else
         {
-          sha1_digest (notestr, sha1);
-          snprintf (fullnotename, BUFSIZ, "%s%s", path_notes, sha1);
-          fdo = fopen (fullnotename, "w");
-          EXIT_IF (fdo == NULL, _("Warning: could not open %s, Aborting..."),
-                   fullnotename);
-          fprintf (fdo, "%s", notestr);
-          file_close (fdo, __FILE_POS__);
+          note = generate_note (notestr);
           mem_free (notestr);
-          return sha1;
+          return note;
         }
     }
   else
