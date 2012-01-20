@@ -151,7 +151,7 @@ usage (void)
 
 /* Run test with a specific name. */
 static int
-run_test (const char *name)
+run_test (const char *name, int expect_failure)
 {
   char filename[BUFSIZ];
   char *arg1[3], *arg2[3];
@@ -210,6 +210,9 @@ run_test (const char *name)
   if (child_wait (&pin2, NULL, pid2) != 0)
     ret = 0;
 
+  if (expect_failure)
+    ret = 1 - ret;
+
   if (ret == 1)
     printf (" ok\n");
   else
@@ -233,8 +236,16 @@ main (int argc, char **argv)
 
   for (i = 1; i < argc; i++)
     {
-      if (!run_test (argv[i]))
-        return 1;
+      if (*argv[i] == '!')
+        {
+          if (!run_test (argv[i] + 1, 1))
+            return 1;
+        }
+      else
+        {
+          if (!run_test (argv[i], 0))
+            return 1;
+        }
     }
 
   return 0;
