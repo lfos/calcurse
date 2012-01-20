@@ -32,3 +32,6 @@ po/stamp-po
 src/*.o
 src/.deps/
 src/calcurse
+
+test/*.o
+test/run-test

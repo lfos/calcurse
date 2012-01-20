@@ -2,7 +2,7 @@ AUTOMAKE_OPTIONS= foreign
 
 ACLOCAL_AMFLAGS = -I m4
 
-SUBDIRS = po src
+SUBDIRS = po src test
 
 if ENABLE_DOCS
 SUBDIRS += doc
