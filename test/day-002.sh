@@ -1,0 +1,39 @@
+#!/bin/sh
+
+if [ ! -x "$(command -v faketime)" ]; then
+  echo "libfaketime not found - skipping $0..."
+  exit 1
+fi
+
+if [ "$1" = 'actual' ]; then
+  faketime '1912-06-23' calcurse -D data/ -d42
+elif [ "$1" = 'expected' ]; then
+  cat <<EOD
+06/24/12:
+ * Flurry's docks courteously McKinley's apse's
+
+07/01/12:
+ * Abrogates fraud's empty
+
+07/10/12:
+ - 17:47 -> ..:..
+	Impersonating integer broils blame
+
+07/11/12:
+ - ..:.. -> ..:..
+	Impersonating integer broils blame
+
+07/12/12:
+ - ..:.. -> ..:..
+	Impersonating integer broils blame
+
+07/13/12:
+ - ..:.. -> 03:18
+	Impersonating integer broils blame
+
+07/16/12:
+ * Truckles vicissitudes
+EOD
+else
+  ./run-test "$0"
+fi
