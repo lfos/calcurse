@@ -681,27 +681,15 @@ calendar_move (enum move move, int count)
   switch (move)
     {
     case UP:
-      if ((slctd_day.dd <= 7) && (slctd_day.mm == 1)
-          && (slctd_day.yyyy == 1902))
-        return;
       ret = date_change (&t, 0, -count * WEEKINDAYS);
       break;
     case DOWN:
-      if ((slctd_day.dd > days[slctd_day.mm - 1] - 7)
-          && (slctd_day.mm == 12) && (slctd_day.yyyy == 2037))
-        return;
       ret = date_change (&t, 0, count * WEEKINDAYS);
       break;
     case LEFT:
-      if ((slctd_day.dd == 1) && (slctd_day.mm == 1)
-          && (slctd_day.yyyy == 1902))
-        return;
       ret = date_change (&t, 0, -count);
       break;
     case RIGHT:
-      if ((slctd_day.dd == 31) && (slctd_day.mm == 12)
-          && (slctd_day.yyyy == 2037))
-        return;
       ret = date_change (&t, 0, count);
       break;
     case WEEK_START:
@@ -728,8 +716,22 @@ calendar_move (enum move move, int count)
       ret = 1;
       /* NOTREACHED */
     }
+
   if (ret == 0)
     {
+      if (t.tm_year < 2)
+        {
+          t.tm_mday = 1;
+          t.tm_mon = 0;
+          t.tm_year = 2;
+        }
+      else if (t.tm_year > 137)
+        {
+          t.tm_mday = 31;
+          t.tm_mon = 11;
+          t.tm_year = 137;
+        }
+
       slctd_day.dd = t.tm_mday;
       slctd_day.mm = t.tm_mon + 1;
       slctd_day.yyyy = t.tm_year + 1900;
