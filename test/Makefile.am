@@ -14,7 +14,8 @@ TESTS = \
 	range-002.sh \
 	range-003.sh \
 	appointment-001.sh \
-	next-001.sh
+	next-001.sh \
+	search-001.sh
 
 check_PROGRAMS = run-test
 check_SCRIPTS = $(TESTS)
