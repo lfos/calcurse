@@ -38,6 +38,8 @@
 
 #include "calcurse.h"
 
+typedef int (*config_fn_walk_cb_t) (const char *, const char *, void *);
+
 static int
 config_parse_bool (unsigned *dest, const char *val)
 {
@@ -225,16 +227,14 @@ config_set_conf (const char *key, const char *value)
   return -1;
 }
 
-/* Load the user configuration. */
-void
-config_load (void)
+static void
+config_file_walk (config_fn_walk_cb_t fn_cb, void *data)
 {
   FILE *data_file;
   char *mesg_line1 = _("Failed to open config file");
   char *mesg_line2 = _("Press [ENTER] to continue");
   char buf[BUFSIZ], e_conf[BUFSIZ];
   char *key, *value;
-  int result;
 
   data_file = fopen (path_conf, "r");
   if (data_file == NULL)
@@ -272,16 +272,32 @@ config_load (void)
           value = e_conf;
         }
 
-      result = config_set_conf (key, value);
-      if (result < 0)
-        EXIT (_("configuration variable unknown: \"%s\""), key);
-        /* NOTREACHED */
-      else if (result == 0)
-        EXIT (_("wrong configuration variable format for \"%s\""), key);
-        /* NOTREACHED */
+      fn_cb (key, value, data);
     }
   file_close (data_file, __FILE_POS__);
   pthread_mutex_unlock (&nbar.mutex);
+}
+
+static int
+config_load_cb (const char *key, const char *value, void *dummy)
+{
+  int result = config_set_conf (key, value);
+
+  if (result < 0)
+    EXIT (_("configuration variable unknown: \"%s\""), key);
+    /* NOTREACHED */
+  else if (result == 0)
+    EXIT (_("wrong configuration variable format for \"%s\""), key);
+    /* NOTREACHED */
+
+  return 1;
+}
+
+/* Load the user configuration. */
+void
+config_load (void)
+{
+  config_file_walk (config_load_cb, NULL);
 }
 
 /*
