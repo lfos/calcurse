@@ -78,6 +78,13 @@ config_parse_int (int *dest, const char *val)
 }
 
 static int
+config_parse_str (char *dest, const char *val)
+{
+  strncpy (dest, val, BUFSIZ);
+  return 1;
+}
+
+static int
 config_parse_color (int *dest, const char *val)
 {
   if (!strcmp (val, "black"))
@@ -183,30 +190,24 @@ config_set_conf (const char *key, const char *value)
   if (!strcmp(key, "notify-bar_show"))
     return config_parse_bool (&nbar.show, value);
 
-  if (!strcmp(key, "notify-bar_date")) {
-    strncpy (nbar.datefmt, value, strlen (value) + 1);
-    return 1;
-  }
+  if (!strcmp(key, "notify-bar_date"))
+    return config_parse_str (nbar.datefmt, value);
 
-  if (!strcmp(key, "notify-bar_clock")) {
-    strncpy (nbar.timefmt, value, strlen (value) + 1);
-    return 1;
-  }
+  if (!strcmp(key, "notify-bar_clock"))
+    return config_parse_str (nbar.timefmt, value);
 
   if (!strcmp(key, "notify-bar_warning"))
     return config_parse_int (&nbar.cntdwn, value);
 
-  if (!strcmp(key, "notify-bar_command")) {
-    strncpy (nbar.cmd, value, strlen (value) + 1);
-    return 1;
-  }
+  if (!strcmp(key, "notify-bar_command"))
+    return config_parse_str (nbar.cmd, value);
 
   if (!strcmp(key, "notify-all"))
     return config_parse_bool(&nbar.notify_all, value);
 
   if (!strcmp(key, "output_datefmt")) {
     if (value[0] != '\0')
-      strncpy (conf.output_datefmt, value, strlen (value) + 1);
+      return config_parse_str (conf.output_datefmt, value);
     return 1;
   }
 
