@@ -39,6 +39,7 @@
 #include "calcurse.h"
 
 typedef int (*config_fn_walk_cb_t) (const char *, const char *, void *);
+typedef int (*config_fn_walk_junk_cb_t) (const char *, void *);
 
 static int
 config_parse_bool (unsigned *dest, const char *val)
@@ -228,7 +229,8 @@ config_set_conf (const char *key, const char *value)
 }
 
 static void
-config_file_walk (config_fn_walk_cb_t fn_cb, void *data)
+config_file_walk (config_fn_walk_cb_t fn_cb,
+                  config_fn_walk_junk_cb_t fn_junk_cb, void *data)
 {
   FILE *data_file;
   char *mesg_line1 = _("Failed to open config file");
@@ -253,7 +255,11 @@ config_file_walk (config_fn_walk_cb_t fn_cb, void *data)
       io_extract_data (e_conf, buf, sizeof buf);
 
       if (*e_conf == '\0')
-        continue;
+        {
+          if (fn_junk_cb)
+            fn_junk_cb (buf, data);
+          continue;
+        }
 
       key = e_conf;
       value = strchr (e_conf, '=');
@@ -297,7 +303,7 @@ config_load_cb (const char *key, const char *value, void *dummy)
 void
 config_load (void)
 {
-  config_file_walk (config_load_cb, NULL);
+  config_file_walk (config_load_cb, NULL, NULL);
 }
 
 /*
