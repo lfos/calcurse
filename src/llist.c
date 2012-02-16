@@ -99,7 +99,10 @@ llist_nth (llist_t *l, int n)
 {
   llist_item_t *i;
 
-  for (i = l->head; i && n > 0; n--)
+  if (n < 0)
+    return NULL;
+
+  for (i = l->head; i && n != 0; n--)
     i = i->next;
 
   return i;
@@ -266,6 +269,9 @@ llist_item_t *
 llist_find_nth (llist_t *l, int n, long data, llist_fn_match_t fn_match)
 {
   llist_item_t *i;
+
+  if (n < 0)
+    return NULL;
 
   for (i = l->head; i; i = i->next)
     {
