@@ -35,6 +35,7 @@
  */
 
 #include <ctype.h>
+#include <unistd.h>
 
 #include "calcurse.h"
 
@@ -490,143 +491,57 @@ config_load (void)
   config_file_walk (config_load_cb, NULL, NULL);
 }
 
+static int
+config_save_cb (const char *key, const char *value, void *fp)
+{
+  char buf[BUFSIZ];
+  int result = config_serialize_conf (buf, key);
+
+  if (result < 0)
+    EXIT (_("configuration variable unknown: \"%s\""), key);
+    /* NOTREACHED */
+  else if (result == 0)
+    EXIT (_("wrong configuration variable format for \"%s\""), key);
+    /* NOTREACHED */
+
+  fputs (key, (FILE *) fp);
+  fputc ('=', (FILE *) fp);
+  fputs (buf, (FILE *) fp);
+  fputc ('\n', (FILE *) fp);
+
+  return 1;
+}
+
+static int
+config_save_junk_cb (const char *data, void *fp)
+{
+  fputs (data, (FILE *) fp);
+  return 1;
+}
+
 /* Save the user configuration. */
 unsigned
 config_save (void)
 {
-  char *config_txt =
-    "#\n"
-    "# Calcurse configuration file\n#\n"
-    "# This file sets the configuration options used by Calcurse. These\n"
-    "# options are usually set from within Calcurse. A line beginning with \n"
-    "# a space or tab is considered to be a continuation of the previous "
-    "line.\n"
-    "# For a variable to be unset its value must be blank, followed by an\n"
-    "# empty line. To set a variable to the empty string its value should be "
-    "\"\".\n"
-    "# Lines beginning with \"#\" are comments, and ignored by Calcurse.\n";
-  char theme_name[BUFSIZ];
-  FILE *fp;
+  char tmppath[BUFSIZ];
+  char *tmpext;
+  FILE *fp_tmp;
 
-  if ((fp = fopen (path_conf, "w")) == NULL)
+  strncpy (tmppath, get_tempdir (), BUFSIZ);
+  strncat (tmppath, "/" CONF_PATH_NAME ".", BUFSIZ);
+  if ((tmpext = new_tempfile (tmppath, TMPEXTSIZ)) == NULL)
     return 0;
+  strncat (tmppath, tmpext, BUFSIZ);
+  mem_free (tmpext);
 
-  config_color_theme_name (theme_name);
+  fp_tmp = fopen (tmppath, "w");
+  if (!fp_tmp)
+    return 0;
+  config_file_walk (config_save_cb, config_save_junk_cb, (void *) fp_tmp);
+  file_close (fp_tmp, __FILE_POS__);
 
-  fprintf (fp, "%s\n", config_txt);
-
-  fputs ("# If this option is set to yes, "
-         "automatic save is done when quitting\n", fp);
-  fputs ("auto_save=", fp);
-  fprintf (fp, "%s\n", (conf.auto_save) ? "yes" : "no");
-
-  fputs ("\n# If this option is set to yes, "
-         "the GC is run automatically when quitting\n", fp);
-  fputs ("auto_gc=", fp);
-  fprintf (fp, "%s\n", (conf.auto_gc) ? "yes" : "no");
-
-  fputs ("\n# If not null, perform automatic saves every "
-         "'periodic_save' minutes\n", fp);
-  fputs ("periodic_save=", fp);
-  fprintf (fp, "%d\n", conf.periodic_save);
-
-  fputs ("\n# If this option is set to yes, "
-         "confirmation is required before quitting\n", fp);
-  fputs ("confirm_quit=", fp);
-  fprintf (fp, "%s\n", (conf.confirm_quit) ? "yes" : "no");
-
-  fputs ("\n# If this option is set to yes, "
-         "confirmation is required before deleting an event\n", fp);
-  fputs ("confirm_delete=", fp);
-  fprintf (fp, "%s\n", (conf.confirm_delete) ? "yes" : "no");
-
-  fputs ("\n# If this option is set to yes, messages about loaded and "
-         "saved data will not be displayed\n", fp);
-  fputs ("skip_system_dialogs=", fp);
-  fprintf (fp, "%s\n", (conf.skip_system_dialogs) ? "yes" : "no");
-
-  fputs ("\n# If this option is set to yes, progress bar appearing "
-         "when saving data will not be displayed\n", fp);
-  fputs ("skip_progress_bar=", fp);
-  fprintf (fp, "%s\n", (conf.skip_progress_bar) ? "yes" : "no");
-
-  fputs ("\n# Default calendar view (0)monthly (1)weekly:\n", fp);
-  fputs ("calendar_default_view=", fp);
-  fprintf (fp, "%d\n", calendar_get_view ());
-
-  fputs ("\n# If this option is set to yes, "
-         "monday is the first day of the week, else it is sunday\n", fp);
-  fputs ("week_begins_on_monday=", fp);
-  fprintf (fp, "%s\n", (calendar_week_begins_on_monday ())? "yes" : "no");
-
-  fputs ("\n# This is the color theme used for menus :\n", fp);
-  fputs ("color-theme=", fp);
-  fprintf (fp, "%s\n", theme_name);
-
-  fputs ("\n# This is the layout of the calendar :\n", fp);
-  fputs ("layout=", fp);
-  fprintf (fp, "%d\n", wins_layout ());
-
-  fputs ("\n# Width ( percentage, 0 being minimun width, fp) "
-         "of the side bar :\n", fp);
-  fputs ("side-bar_width=", fp);
-  fprintf (fp, "%d\n", wins_sbar_wperc ());
-
-  if (ui_mode == UI_CURSES)
-    pthread_mutex_lock (&nbar.mutex);
-  fputs ("\n# If this option is set to yes, "
-         "notify-bar will be displayed :\n", fp);
-  fputs ("notify-bar_show=", fp);
-  fprintf (fp, "%s\n", (nbar.show) ? "yes" : "no");
-
-  fputs ("\n# Format of the date to be displayed inside notify-bar :\n", fp);
-  fputs ("notify-bar_date=", fp);
-  fprintf (fp, "%s\n", nbar.datefmt);
-
-  fputs ("\n# Format of the time to be displayed inside notify-bar :\n", fp);
-  fputs ("notify-bar_clock=", fp);
-  fprintf (fp, "%s\n", nbar.timefmt);
-
-  fputs ("\n# Warn user if he has an appointment within next "
-         "'notify-bar_warning' seconds :\n", fp);
-  fputs ("notify-bar_warning=", fp);
-  fprintf (fp, "%d\n", nbar.cntdwn);
-
-  fputs ("\n# Command used to notify user of "
-         "an upcoming appointment :\n", fp);
-  fputs ("notify-bar_command=", fp);
-  fprintf (fp, "%s\n", nbar.cmd);
-
-  fputs ("\n# Notify all appointments instead of flagged ones only\n", fp);
-  fputs ("notify-all=", fp);
-  fprintf (fp, "%s\n", (nbar.notify_all) ? "yes" : "no");
-
-  fputs ("\n# Format of the date to be displayed "
-         "in non-interactive mode :\n", fp);
-  fputs ("output_datefmt=", fp);
-  fprintf (fp, "%s\n", conf.output_datefmt);
-
-  fputs ("\n# Format to be used when entering a date "
-         "(1)mm/dd/yyyy (2)dd/mm/yyyy (3)yyyy/mm/dd) "
-         "(4)yyyy-mm-dd:\n", fp);
-  fputs ("input_datefmt=", fp);
-  fprintf (fp, "%d\n", conf.input_datefmt);
-
-  if (ui_mode == UI_CURSES)
-    pthread_mutex_unlock (&nbar.mutex);
-
-  fputs ("\n# If this option is set to yes, "
-         "calcurse will run in background to get notifications "
-         "after exiting\n", fp);
-  fputs ("notify-daemon_enable=", fp);
-  fprintf (fp, "%s\n", dmon.enable ? "yes" : "no");
-
-  fputs ("\n# If this option is set to yes, "
-         "activity will be logged when running in background\n", fp);
-  fputs ("notify-daemon_log=", fp);
-  fprintf (fp, "%s\n", dmon.log ? "yes" : "no");
-
-  file_close (fp, __FILE_POS__);
+  if (io_file_cp (tmppath, path_conf))
+    unlink (tmppath);
 
   return 1;
 }
