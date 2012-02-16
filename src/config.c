@@ -228,6 +228,190 @@ config_set_conf (const char *key, const char *value)
   return -1;
 }
 
+static int
+config_serialize_bool (char *dest, unsigned *val)
+{
+  if (*val)
+    {
+      dest[0] = 'y';
+      dest[1] = 'e';
+      dest[2] = 's';
+      dest[3] = '\0';
+    }
+  else
+    {
+      dest[0] = 'n';
+      dest[1] = 'o';
+      dest[2] = '\0';
+    }
+
+  return 1;
+}
+
+static int
+config_serialize_unsigned (char *dest, unsigned *val)
+{
+  snprintf (dest, BUFSIZ, "%u", *val);
+  return 1;
+}
+
+static int
+config_serialize_int (char *dest, int *val)
+{
+  snprintf (dest, BUFSIZ, "%d", *val);
+  return 1;
+}
+
+static int
+config_serialize_str (char *dest, const char *val)
+{
+  strncpy (dest, val, BUFSIZ);
+  return 1;
+}
+
+/*
+ * Return a string defining the color theme in the form:
+ *       foreground color 'on' background color
+ * in order to dump this data in the configuration file.
+ * Color numbers follow the ncurses library definitions.
+ * If ncurses library was compiled with --enable-ext-funcs,
+ * then default color is -1.
+ */
+void
+config_color_theme_name (char *theme_name)
+{
+#define MAXCOLORS		8
+#define NBCOLORS		2
+#define DEFAULTCOLOR		255
+#define DEFAULTCOLOR_EXT	-1
+
+  int i;
+  short color[NBCOLORS];
+  char *color_name[NBCOLORS];
+  char *default_color = "default";
+  char *name[MAXCOLORS] = {
+    "black",
+    "red",
+    "green",
+    "yellow",
+    "blue",
+    "magenta",
+    "cyan",
+    "white"
+  };
+
+  if (!colorize)
+    strncpy (theme_name, "0", BUFSIZ);
+  else
+    {
+      pair_content (COLR_CUSTOM, &color[0], &color[1]);
+      for (i = 0; i < NBCOLORS; i++)
+        {
+          if ((color[i] == DEFAULTCOLOR) || (color[i] == DEFAULTCOLOR_EXT))
+            color_name[i] = default_color;
+          else if (color[i] >= 0 && color[i] <= MAXCOLORS)
+            color_name[i] = name[color[i]];
+          else
+            {
+              EXIT (_("unknown color"));
+              /* NOTREACHED */
+            }
+        }
+      snprintf (theme_name, BUFSIZ, "%s on %s", color_name[0], color_name[1]);
+    }
+}
+
+/* Serialize the value of a configuration variable. */
+static int
+config_serialize_conf (char *buf, const char *key)
+{
+  if (!key)
+    return -1;
+
+  if (!strcmp(key, "auto_save"))
+    return config_serialize_bool (buf, &conf.auto_save);
+
+  if (!strcmp(key, "auto_gc"))
+    return config_serialize_bool (buf, &conf.auto_gc);
+
+  if (!strcmp(key, "periodic_save"))
+    return config_serialize_unsigned (buf, &conf.periodic_save);
+
+  if (!strcmp(key, "confirm_quit"))
+    return config_serialize_bool (buf, &conf.confirm_quit);
+
+  if (!strcmp(key, "confirm_delete"))
+    return config_serialize_bool (buf, &conf.confirm_delete);
+
+  if (!strcmp(key, "skip_system_dialogs"))
+    return config_serialize_bool (buf, &conf.skip_system_dialogs);
+
+  if (!strcmp(key, "skip_progress_bar"))
+    return config_serialize_bool (buf, &conf.skip_progress_bar);
+
+  if (!strcmp(key, "calendar_default_view"))
+    {
+      int tmp = calendar_get_view ();
+      return config_serialize_int (buf, &tmp);
+    }
+
+  if (!strcmp(key, "week_begins_on_monday"))
+    {
+      unsigned tmp = calendar_week_begins_on_monday ();
+      return config_serialize_bool (buf, &tmp);
+    }
+
+  if (!strcmp(key, "color-theme"))
+    {
+      config_color_theme_name (buf);
+      return 1;
+    }
+
+  if (!strcmp(key, "layout"))
+    {
+      int tmp = wins_layout ();
+      return config_serialize_int (buf, &tmp);
+    }
+
+  if (!strcmp(key, "side-bar_width"))
+    {
+      int tmp = wins_sbar_wperc ();
+      return config_serialize_int (buf, &tmp);
+    }
+
+  if (!strcmp(key, "notify-bar_show"))
+    return config_serialize_bool (buf, &nbar.show);
+
+  if (!strcmp(key, "notify-bar_date"))
+    return config_serialize_str (buf, nbar.datefmt);
+
+  if (!strcmp(key, "notify-bar_clock"))
+    return config_serialize_str (buf, nbar.timefmt);
+
+  if (!strcmp(key, "notify-bar_warning"))
+    return config_serialize_int (buf, &nbar.cntdwn);
+
+  if (!strcmp(key, "notify-bar_command"))
+    return config_serialize_str (buf, nbar.cmd);
+
+  if (!strcmp(key, "notify-all"))
+    return config_serialize_bool (buf, &nbar.notify_all);
+
+  if (!strcmp(key, "output_datefmt"))
+    return config_serialize_str (buf, conf.output_datefmt);
+
+  if (!strcmp(key, "input_datefmt"))
+    return config_serialize_int (buf, &conf.input_datefmt);
+
+  if (!strcmp(key, "notify-daemon_enable"))
+    return config_serialize_bool (buf, &dmon.enable);
+
+  if (!strcmp(key, "notify-daemon_log"))
+    return config_serialize_bool (buf, &dmon.log);
+
+  return -1;
+}
+
 static void
 config_file_walk (config_fn_walk_cb_t fn_cb,
                   config_fn_walk_junk_cb_t fn_junk_cb, void *data)
@@ -305,59 +489,6 @@ config_load (void)
 {
   config_file_walk (config_load_cb, NULL, NULL);
 }
-
-/*
- * Return a string defining the color theme in the form:
- *       foreground color 'on' background color
- * in order to dump this data in the configuration file.
- * Color numbers follow the ncurses library definitions.
- * If ncurses library was compiled with --enable-ext-funcs,
- * then default color is -1.
- */
-void
-config_color_theme_name (char *theme_name)
-{
-#define MAXCOLORS		8
-#define NBCOLORS		2
-#define DEFAULTCOLOR		255
-#define DEFAULTCOLOR_EXT	-1
-
-  int i;
-  short color[NBCOLORS];
-  char *color_name[NBCOLORS];
-  char *default_color = "default";
-  char *name[MAXCOLORS] = {
-    "black",
-    "red",
-    "green",
-    "yellow",
-    "blue",
-    "magenta",
-    "cyan",
-    "white"
-  };
-
-  if (!colorize)
-    strncpy (theme_name, "0", BUFSIZ);
-  else
-    {
-      pair_content (COLR_CUSTOM, &color[0], &color[1]);
-      for (i = 0; i < NBCOLORS; i++)
-        {
-          if ((color[i] == DEFAULTCOLOR) || (color[i] == DEFAULTCOLOR_EXT))
-            color_name[i] = default_color;
-          else if (color[i] >= 0 && color[i] <= MAXCOLORS)
-            color_name[i] = name[color[i]];
-          else
-            {
-              EXIT (_("unknown color"));
-              /* NOTREACHED */
-            }
-        }
-      snprintf (theme_name, BUFSIZ, "%s on %s", color_name[0], color_name[1]);
-    }
-}
-
 
 /* Save the user configuration. */
 unsigned
