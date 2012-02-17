@@ -106,6 +106,11 @@ static const struct confvar confmap[] = {
   { "notify-daemon_log", CONFIG_HANDLER_BOOL (dmon.log) }
 };
 
+struct config_save_status {
+  FILE *fp;
+  int done[sizeof (confmap) / sizeof (confmap[0])];
+};
+
 typedef int (*config_fn_walk_cb_t) (const char *, const char *, void *);
 typedef int (*config_fn_walk_junk_cb_t) (const char *, void *);
 
@@ -415,7 +420,8 @@ config_serialize_input_datefmt (char *buf, void *dummy)
 
 /* Serialize the value of a configuration variable. */
 static int
-config_serialize_conf (char *buf, const char *key)
+config_serialize_conf (char *buf, const char *key,
+                       struct config_save_status *status)
 {
   int i;
 
@@ -425,7 +431,16 @@ config_serialize_conf (char *buf, const char *key)
   for (i = 0; i < sizeof (confmap) / sizeof (confmap[0]); i++)
     {
       if (!strcmp (confmap[i].key, key))
-        return confmap[i].fn_serialize (buf, confmap[i].target);
+        {
+          if (confmap[i].fn_serialize (buf, confmap[i].target))
+            {
+              if (status)
+                status->done[i] = 1;
+              return 1;
+            }
+          else
+            return 0;
+        }
     }
 
   return -1;
@@ -510,10 +525,10 @@ config_load (void)
 }
 
 static int
-config_save_cb (const char *key, const char *value, void *fp)
+config_save_cb (const char *key, const char *value, void *status)
 {
   char buf[BUFSIZ];
-  int result = config_serialize_conf (buf, key);
+  int result = config_serialize_conf (buf, key, (struct config_save_status *) status);
 
   if (result < 0)
     EXIT (_("configuration variable unknown: \"%s\""), key);
@@ -522,18 +537,18 @@ config_save_cb (const char *key, const char *value, void *fp)
     EXIT (_("wrong configuration variable format for \"%s\""), key);
     /* NOTREACHED */
 
-  fputs (key, (FILE *) fp);
-  fputc ('=', (FILE *) fp);
-  fputs (buf, (FILE *) fp);
-  fputc ('\n', (FILE *) fp);
+  fputs (key, ((struct config_save_status *) status)->fp);
+  fputc ('=', ((struct config_save_status *) status)->fp);
+  fputs (buf, ((struct config_save_status *) status)->fp);
+  fputc ('\n', ((struct config_save_status *) status)->fp);
 
   return 1;
 }
 
 static int
-config_save_junk_cb (const char *data, void *fp)
+config_save_junk_cb (const char *data, void *status)
 {
-  fputs (data, (FILE *) fp);
+  fputs (data, ((struct config_save_status *) status)->fp);
   return 1;
 }
 
@@ -543,7 +558,8 @@ config_save (void)
 {
   char tmppath[BUFSIZ];
   char *tmpext;
-  FILE *fp_tmp;
+  struct config_save_status status;
+  int i;
 
   strncpy (tmppath, get_tempdir (), BUFSIZ);
   strncat (tmppath, "/" CONF_PATH_NAME ".", BUFSIZ);
@@ -552,11 +568,22 @@ config_save (void)
   strncat (tmppath, tmpext, BUFSIZ);
   mem_free (tmpext);
 
-  fp_tmp = fopen (tmppath, "w");
-  if (!fp_tmp)
+  status.fp = fopen (tmppath, "w");
+  if (!status.fp)
     return 0;
-  config_file_walk (config_save_cb, config_save_junk_cb, (void *) fp_tmp);
-  file_close (fp_tmp, __FILE_POS__);
+
+  memset (status.done, 0, sizeof (status.done));
+
+  config_file_walk (config_save_cb, config_save_junk_cb, (void *) &status);
+
+  /* Set variables that were missing from the configuration file. */
+  for (i = 0; i < sizeof (confmap) / sizeof (confmap[0]); i++)
+    {
+      if (!status.done[i])
+        config_save_cb (confmap[i].key, NULL, &status);
+    }
+
+  file_close (status.fp, __FILE_POS__);
 
   if (io_file_cp (tmppath, path_conf))
     unlink (tmppath);
