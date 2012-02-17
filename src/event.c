@@ -149,7 +149,9 @@ event_scan (FILE *f, struct tm start, int id, char *note)
   localtime (&t);
 
   /* Read the event description */
-  fgets (buf, sizeof buf, f);
+  if (!fgets (buf, sizeof buf, f))
+    return NULL;
+
   nl = strchr (buf, '\n');
   if (nl)
     {

@@ -374,7 +374,9 @@ recur_apoint_scan (FILE *f, struct tm start, struct tm end, char type,
   time_t tstart, tend, tuntil;
 
   /* Read the appointment description */
-  fgets (buf, sizeof buf, f);
+  if (!fgets (buf, sizeof buf, f))
+    return NULL;
+
   nl = strchr (buf, '\n');
   if (nl)
     {
@@ -419,7 +421,9 @@ recur_event_scan (FILE *f, struct tm start, int id, char type, int freq,
   time_t tstart, tuntil;
 
   /* Read the event description */
-  fgets (buf, sizeof buf, f);
+  if (!fgets (buf, sizeof buf, f))
+    return NULL;
+
   nl = strchr (buf, '\n');
   if (nl)
     {

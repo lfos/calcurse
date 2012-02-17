@@ -443,7 +443,9 @@ apoint_scan (FILE *f, struct tm start, struct tm end, char state, char *note)
   localtime (&t);
 
   /* Read the appointment description */
-  fgets (buf, sizeof buf, f);
+  if (!fgets (buf, sizeof buf, f))
+    return NULL;
+
   newline = strchr (buf, '\n');
   if (newline)
     *newline = '\0';
