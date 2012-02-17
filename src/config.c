@@ -122,6 +122,72 @@ config_parse_color_pair (int *dest1, int *dest2, const char *val)
   return (config_parse_color (dest1, s1) && config_parse_color (dest2, s2));
 }
 
+static int
+config_parse_calendar_view (void *dummy, const char *val)
+{
+  calendar_set_view (atoi (val));
+  return 1;
+}
+
+static int
+config_parse_first_day_of_week (void *dummy, const char *val)
+{
+  unsigned tmp;
+  if (config_parse_bool (&tmp, val)) {
+    if (tmp)
+      calendar_set_first_day_of_week (MONDAY);
+    else
+      calendar_set_first_day_of_week (SUNDAY);
+    return 1;
+  }
+  else
+    return 0;
+}
+
+static int
+config_parse_color_theme (void *dummy, const char *val)
+{
+  int color1, color2;
+  if (!config_parse_color_pair (&color1, &color2, val))
+    return 0;
+  init_pair (COLR_CUSTOM, color1, color2);
+  return 1;
+}
+
+static int
+config_parse_layout (void *dummy, const char *val)
+{
+  wins_set_layout (atoi (val));
+  return 1;
+}
+
+static int
+config_parse_sidebar_width (void *dummy, const char *val)
+{
+  wins_set_sbar_width (atoi (val));
+  return 1;
+}
+
+static int
+config_parse_output_datefmt (void *dummy, const char *val)
+{
+  if (val[0] != '\0')
+    return config_parse_str (conf.output_datefmt, val);
+  return 1;
+}
+
+static int
+config_parse_input_datefmt (void *dummy, const char *val)
+{
+  if (config_parse_int (&conf.input_datefmt, val)) {
+    if (conf.input_datefmt <= 0 || conf.input_datefmt >= DATE_FORMATS)
+      conf.input_datefmt = 1;
+    return 1;
+  }
+  else
+    return 0;
+}
+
 /* Set a configuration variable. */
 static int
 config_set_conf (const char *key, const char *value)
@@ -150,42 +216,20 @@ config_set_conf (const char *key, const char *value)
   if (!strcmp(key, "skip_progress_bar"))
     return config_parse_bool (&conf.skip_progress_bar, value);
 
-  if (!strcmp(key, "calendar_default_view")) {
-    calendar_set_view (atoi (value));
-    return 1;
-  }
+  if (!strcmp(key, "calendar_default_view"))
+    return config_parse_calendar_view (NULL, value);
 
-  if (!strcmp(key, "week_begins_on_monday")) {
-    unsigned tmp;
-    if (config_parse_bool (&tmp, value)) {
-      if (tmp)
-        calendar_set_first_day_of_week (MONDAY);
-      else
-        calendar_set_first_day_of_week (SUNDAY);
-      return 1;
-    }
-    else
-      return 0;
-  }
+  if (!strcmp(key, "week_begins_on_monday"))
+    return config_parse_first_day_of_week (NULL, value);
 
   if (!strcmp(key, "color-theme"))
-    {
-      int color1, color2;
-      if (!config_parse_color_pair (&color1, &color2, value))
-        return 0;
-      init_pair (COLR_CUSTOM, color1, color2);
-      return 1;
-    }
+    return config_parse_color_theme (NULL, value);
 
-  if (!strcmp(key, "layout")) {
-    wins_set_layout (atoi (value));
-    return 1;
-  }
+  if (!strcmp(key, "layout"))
+    return config_parse_layout (NULL, value);
 
-  if (!strcmp(key, "side-bar_width")) {
-    wins_set_sbar_width (atoi (value));
-    return 1;
-  }
+  if (!strcmp(key, "side-bar_width"))
+    return config_parse_sidebar_width (NULL, value);
 
   if (!strcmp(key, "notify-bar_show"))
     return config_parse_bool (&nbar.show, value);
@@ -205,21 +249,11 @@ config_set_conf (const char *key, const char *value)
   if (!strcmp(key, "notify-all"))
     return config_parse_bool(&nbar.notify_all, value);
 
-  if (!strcmp(key, "output_datefmt")) {
-    if (value[0] != '\0')
-      return config_parse_str (conf.output_datefmt, value);
-    return 1;
-  }
+  if (!strcmp(key, "output_datefmt"))
+    return config_parse_output_datefmt (NULL, value);
 
-  if (!strcmp(key, "input_datefmt")) {
-    if (config_parse_int (&conf.input_datefmt, value)) {
-      if (conf.input_datefmt <= 0 || conf.input_datefmt >= DATE_FORMATS)
-        conf.input_datefmt = 1;
-      return 1;
-    }
-    else
-      return 0;
-  }
+  if (!strcmp(key, "input_datefmt"))
+    return config_parse_input_datefmt (NULL, value);
 
   if (!strcmp(key, "notify-daemon_enable"))
     return config_parse_bool (&dmon.enable, value);
@@ -323,6 +357,53 @@ config_color_theme_name (char *theme_name)
     }
 }
 
+static int
+config_serialize_calendar_view (char *buf, void *dummy)
+{
+  int tmp = calendar_get_view ();
+  return config_serialize_int (buf, &tmp);
+}
+
+static int
+config_serialize_first_day_of_week (char *buf, void *dummy)
+{
+  unsigned tmp = calendar_week_begins_on_monday ();
+  return config_serialize_bool (buf, &tmp);
+}
+
+static int
+config_serialize_color_theme (char *buf, void *dummy)
+{
+  config_color_theme_name (buf);
+  return 1;
+}
+
+static int
+config_serialize_layout (char *buf, void *dummy)
+{
+  int tmp = wins_layout ();
+  return config_serialize_int (buf, &tmp);
+}
+
+static int
+config_serialize_sidebar_width (char *buf, void *dummy)
+{
+  int tmp = wins_sbar_wperc ();
+  return config_serialize_int (buf, &tmp);
+}
+
+static int
+config_serialize_output_datefmt (char *buf, void *dummy)
+{
+  return config_serialize_str (buf, conf.output_datefmt);
+}
+
+static int
+config_serialize_input_datefmt (char *buf, void *dummy)
+{
+  return config_serialize_int (buf, &conf.input_datefmt);
+}
+
 /* Serialize the value of a configuration variable. */
 static int
 config_serialize_conf (char *buf, const char *key)
@@ -352,34 +433,19 @@ config_serialize_conf (char *buf, const char *key)
     return config_serialize_bool (buf, &conf.skip_progress_bar);
 
   if (!strcmp(key, "calendar_default_view"))
-    {
-      int tmp = calendar_get_view ();
-      return config_serialize_int (buf, &tmp);
-    }
+    return config_serialize_calendar_view (buf, NULL);
 
   if (!strcmp(key, "week_begins_on_monday"))
-    {
-      unsigned tmp = calendar_week_begins_on_monday ();
-      return config_serialize_bool (buf, &tmp);
-    }
+    return config_serialize_first_day_of_week (buf, NULL);
 
   if (!strcmp(key, "color-theme"))
-    {
-      config_color_theme_name (buf);
-      return 1;
-    }
+    return config_serialize_color_theme (buf, NULL);
 
   if (!strcmp(key, "layout"))
-    {
-      int tmp = wins_layout ();
-      return config_serialize_int (buf, &tmp);
-    }
+    return config_serialize_layout (buf, NULL);
 
   if (!strcmp(key, "side-bar_width"))
-    {
-      int tmp = wins_sbar_wperc ();
-      return config_serialize_int (buf, &tmp);
-    }
+    return config_serialize_sidebar_width (buf, NULL);
 
   if (!strcmp(key, "notify-bar_show"))
     return config_serialize_bool (buf, &nbar.show);
@@ -400,10 +466,10 @@ config_serialize_conf (char *buf, const char *key)
     return config_serialize_bool (buf, &nbar.notify_all);
 
   if (!strcmp(key, "output_datefmt"))
-    return config_serialize_str (buf, conf.output_datefmt);
+    return config_serialize_output_datefmt (buf, NULL);
 
   if (!strcmp(key, "input_datefmt"))
-    return config_serialize_int (buf, &conf.input_datefmt);
+    return config_serialize_input_datefmt (buf, NULL);
 
   if (!strcmp(key, "notify-daemon_enable"))
     return config_serialize_bool (buf, &dmon.enable);
