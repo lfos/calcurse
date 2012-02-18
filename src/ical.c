@@ -425,10 +425,12 @@ ical_readline_init (FILE *fdi, char *buf, char *lstore, unsigned *ln)
   char *eol;
 
   *buf = *lstore = '\0';
-  fgets (lstore, BUFSIZ, fdi);
-  if ((eol = strchr(lstore, '\n')) != NULL)
-    *eol = '\0';
-  (*ln)++;
+  if (fgets (lstore, BUFSIZ, fdi))
+    {
+      if ((eol = strchr(lstore, '\n')) != NULL)
+        *eol = '\0';
+      (*ln)++;
+    }
 }
 
 static int
