@@ -492,9 +492,7 @@ io_load_app (void)
        */
       if (fscanf (data_file, "%u / %u / %u ",
                   &start.tm_mon, &start.tm_mday, &start.tm_year) != 3)
-        {
-          EXIT (_("syntax error in the item date"));
-        }
+        EXIT (_("syntax error in the item date"));
 
       /* Read the next character : if it is an '@' then we have
        * an appointment, else if it is an '[' we have en event.
@@ -506,22 +504,23 @@ io_load_app (void)
       else if (c == '[')
         is_event = 1;
       else
-        {
-          EXIT (_("no event nor appointment found"));
-        }
-      ungetc (c, data_file);
+        EXIT (_("no event nor appointment found"));
 
       /* Read the remaining informations. */
       if (is_appointment)
         {
-          fscanf (data_file, "@ %u : %u -> %u / %u / %u @ %u : %u ",
-                  &start.tm_hour, &start.tm_min,
-                  &end.tm_mon, &end.tm_mday, &end.tm_year,
-                  &end.tm_hour, &end.tm_min);
+          if (fscanf (data_file, " %u : %u -> %u / %u / %u @ %u : %u ",
+                      &start.tm_hour, &start.tm_min,
+                      &end.tm_mon, &end.tm_mday, &end.tm_year,
+                      &end.tm_hour, &end.tm_min) != 7)
+            EXIT (_("syntax error in item time or duration"));
         }
       else if (is_event)
         {
-          fscanf (data_file, "[%d] ", &id);
+          if (fscanf (data_file, " %d ", &id) != 1 || getc (data_file) != ']')
+            EXIT (_("syntax error in item identifier"));
+          while ((c = getc (data_file)) == ' ');
+          ungetc (c, data_file);
         }
       else
         {
@@ -534,22 +533,22 @@ io_load_app (void)
 
       if (c == '{')
         {
-          ungetc (c, data_file);
           is_recursive = 1;
-          fscanf (data_file, "{ %d%c ", &freq, &type);
+          if (fscanf (data_file, " %d%c ", &freq, &type) != 2)
+            EXIT (_("syntax error in item repetition"));
 
           c = getc (data_file);
           if (c == '}')
             {			/* endless recurrent item */
-              ungetc (c, data_file);
-              fscanf (data_file, "} ");
               until.tm_year = 0;
-            }
-          else if (c == '-')
-            {
+              while ((c = getc (data_file)) == ' ');
               ungetc (c, data_file);
-              fscanf (data_file, " -> %u / %u / %u ",
-                      &until.tm_mon, &until.tm_mday, &until.tm_year);
+            }
+          else if (c == '-' && getc (data_file) == '>')
+            {
+              if (fscanf (data_file, " %u / %u / %u ", &until.tm_mon,
+                          &until.tm_mday, &until.tm_year) != 3)
+                EXIT (_("syntax error in item repetition"));
               c = getc (data_file);
               if (c == '!')
                 {
@@ -557,11 +556,13 @@ io_load_app (void)
                   recur_exc_scan (&exc, data_file);
                   c = getc (data_file);
                 }
-              else
+              else if (c == '}')
                 {
+                  while ((c = getc (data_file)) == ' ');
                   ungetc (c, data_file);
-                  fscanf (data_file, "} ");
                 }
+              else
+                EXIT (_("syntax error in item repetition"));
             }
           else if (c == '!')
             {			// endless item with exceptions
@@ -601,16 +602,18 @@ io_load_app (void)
           c = getc (data_file);
           if (c == '!')
             {
-              ungetc (c, data_file);
-              fscanf (data_file, " ! ");
               state |= APOINT_NOTIFY;
+              while ((c = getc (data_file)) == ' ');
+              ungetc (c, data_file);
+            }
+          else if (c == '|')
+            {
+              state = 0L;
+              while ((c = getc (data_file)) == ' ');
+              ungetc (c, data_file);
             }
           else
-            {
-              ungetc (c, data_file);
-              fscanf (data_file, " | ");
-              state = 0L;
-            }
+            EXIT (_("syntax error in item repetition"));
           if (is_recursive)
             {
               recur_apoint_scan (data_file, start, end,
@@ -664,12 +667,13 @@ io_load_todo (void)
     {
       c = getc (data_file);
       if (c == EOF)
-        {
-          break;
-        }
+        break;
       else if (c == '[')
         {			/* new style with id */
-          fscanf (data_file, "%d]", &id);
+          if (fscanf (data_file, " %d ", &id) != 1 || getc (data_file) != ']')
+            EXIT (_("syntax error in item identifier"));
+          while ((c = getc (data_file)) == ' ');
+          ungetc (c, data_file);
         }
       else
         {
@@ -681,9 +685,13 @@ io_load_todo (void)
       if (c == '>')
         note_read (note, data_file);
       else
-        note[0] = '\0';
+        {
+          note[0] = '\0';
+          ungetc (c, data_file);
+        }
       /* Then read todo description. */
-      fgets (buf, sizeof buf, data_file);
+      if (!fgets (buf, sizeof buf, data_file))
+        buf[0] = '\0';
       newline = strchr (buf, '\n');
       if (newline)
         *newline = '\0';
