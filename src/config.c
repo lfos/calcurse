@@ -562,10 +562,10 @@ config_save (void)
   int i;
 
   strncpy (tmppath, get_tempdir (), BUFSIZ);
-  strncat (tmppath, "/" CONF_PATH_NAME ".", BUFSIZ);
+  strncat (tmppath, "/" CONF_PATH_NAME ".", BUFSIZ - strlen (tmppath) - 1);
   if ((tmpext = new_tempfile (tmppath, TMPEXTSIZ)) == NULL)
     return 0;
-  strncat (tmppath, tmpext, BUFSIZ);
+  strncat (tmppath, tmpext, BUFSIZ - strlen (tmppath) - 1);
   mem_free (tmpext);
 
   status.fp = fopen (tmppath, "w");

@@ -447,8 +447,7 @@ ical_readline (FILE *fdi, char *buf, char *lstore, unsigned *ln)
         *eol = '\0';
       if (*lstore != SPACE && *lstore != TAB)
         break;
-      strncat (buf, lstore + 1, BUFSIZ);
-      buf[BUFSIZ - 1] = '\0';
+      strncat (buf, lstore + 1, BUFSIZ - strlen (buf) - 1);
       (*ln)++;
     }
 

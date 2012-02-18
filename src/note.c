@@ -76,10 +76,10 @@ edit_note (char **note, char *editor)
   FILE *fp;
 
   strncpy (tmppath, get_tempdir (), BUFSIZ);
-  strncat (tmppath, "/calcurse-note.", BUFSIZ);
+  strncat (tmppath, "/calcurse-note.", BUFSIZ - strlen (tmppath) - 1);
   if ((tmpext = new_tempfile (tmppath, TMPEXTSIZ)) == NULL)
     return;
-  strncat (tmppath, tmpext, BUFSIZ);
+  strncat (tmppath, tmpext, BUFSIZ - strlen (tmppath) - 1);
   mem_free (tmpext);
 
   if (*note != NULL)

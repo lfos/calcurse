@@ -436,7 +436,7 @@ keys_format_label (char *key, int keylen)
 {
   static char fmtkey[BUFSIZ];
   const int len = strlen (key);
-  char *dot = ".";
+  const char dot = '.';
   int i;
 
   if (keylen > BUFSIZ)
@@ -455,7 +455,7 @@ keys_format_label (char *key, int keylen)
     {
       for (i = 0; i < keylen - 1; i++)
         fmtkey[i] = key[i];
-      strncat (fmtkey, dot, strlen (dot));
+      fmtkey[keylen - 1] = dot;
     }
   return fmtkey;
 }
