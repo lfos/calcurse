@@ -1230,10 +1230,11 @@ io_log_display (struct io_file *log, char *msg, char *pager)
       ans = fgetc (stdin);
       if (ans == 'y')
         {
-          char cmd[BUFSIZ];
+          char *arg[] = { pager, log->name, NULL };
+          int pid;
 
-          snprintf (cmd, BUFSIZ, "%s %s", pager, log->name);
-          system (cmd);
+          if ((pid = fork_exec (NULL, NULL, pager, arg)))
+            child_wait (NULL, NULL, pid);
         }
     }
   else
