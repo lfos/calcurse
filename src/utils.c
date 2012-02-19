@@ -523,8 +523,10 @@ get_tempdir (void)
 {
   if (getenv ("TMPDIR"))
     return getenv ("TMPDIR");
+#ifdef P_tmpdir
   else if (P_tmpdir)
     return P_tmpdir;
+#endif
   else
     return "/tmp";
 }

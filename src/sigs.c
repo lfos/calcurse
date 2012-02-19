@@ -43,6 +43,10 @@
 
 #include "calcurse.h"
 
+#ifndef WAIT_MYPGRP
+#define WAIT_MYPGRP 0
+#endif
+
 /*
  * General signal handling routine.
  * Catch return values from children (user-defined notification commands).
