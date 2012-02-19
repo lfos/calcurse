@@ -191,9 +191,9 @@ run_test (const char *name, int expect_failure)
   fpin1 = fdopen (pin1, "r");
   fpin2 = fdopen (pin2, "r");
 
-  while (fgets (buf1, BUFSIZ, fpin1) > 0)
+  while (fgets (buf1, BUFSIZ, fpin1))
     {
-      if (fgets (buf2, BUFSIZ, fpin2) <= 0 || strcmp (buf1, buf2) != 0)
+      if (!fgets (buf2, BUFSIZ, fpin2) || strcmp (buf1, buf2) != 0)
         {
           ret = 0;
           break;
