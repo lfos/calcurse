@@ -46,6 +46,12 @@ struct note_gc_hash {
   HTABLE_ENTRY (note_gc_hash);
 };
 
+static void note_gc_extract_key (struct note_gc_hash *, char **, int *);
+static int note_gc_cmp (struct note_gc_hash *, struct note_gc_hash *);
+
+HTABLE_HEAD (htp, NOTE_GC_HSIZE, note_gc_hash);
+HTABLE_GENERATE (htp, note_gc_hash, note_gc_extract_key, note_gc_cmp)
+
 /* Create note file from a string and return a newly allocated string that
  * contains its name. */
 char *
@@ -164,8 +170,7 @@ note_gc_cmp (struct note_gc_hash *a, struct note_gc_hash *b)
 void
 note_gc (void)
 {
-  HTABLE_HEAD (htp, NOTE_GC_HSIZE, note_gc_hash) gc_htable =
-      HTABLE_INITIALIZER (&gc_htable);
+  struct htp gc_htable = HTABLE_INITIALIZER (&gc_htable);
   struct note_gc_hash *hp;
   DIR *dirp;
   struct dirent *dp;
@@ -177,7 +182,6 @@ note_gc (void)
     return;
 
   /* Insert all note file names into a hash table. */
-  HTABLE_GENERATE (htp, note_gc_hash, note_gc_extract_key, note_gc_cmp);
   do
     {
       if ((dp = readdir (dirp)) && *(dp->d_name) != '.')

@@ -72,6 +72,15 @@ struct ht_keybindings_s {
   HTABLE_ENTRY (ht_keybindings_s);
 };
 
+static void load_keys_ht_getkey (struct ht_keybindings_s *, char **, int *);
+static int load_keys_ht_compare (struct ht_keybindings_s *,
+                                 struct ht_keybindings_s *);
+
+#define HSIZE 256
+HTABLE_HEAD (ht_keybindings, HSIZE, ht_keybindings_s);
+HTABLE_GENERATE (ht_keybindings, ht_keybindings_s, load_keys_ht_getkey,
+                 load_keys_ht_compare)
+
 /* Draw a progress bar while saving, loading or exporting data. */
 static void
 progress_bar (progress_bar_t type, int progress)
@@ -752,12 +761,7 @@ io_load_keys (char *pager)
 
   keys_init ();
 
-#define HSIZE 256
-  HTABLE_HEAD (ht_keybindings, HSIZE, ht_keybindings_s) ht_keys =
-    HTABLE_INITIALIZER (&ht_keys);
-
-  HTABLE_GENERATE (ht_keybindings, ht_keybindings_s, load_keys_ht_getkey,
-                   load_keys_ht_compare);
+  struct ht_keybindings ht_keys = HTABLE_INITIALIZER (&ht_keys);
 
   for (i = 0; i < NBKEYS; i++)
     {
@@ -874,7 +878,6 @@ io_load_keys (char *pager)
     keys_fill_missing ();
   if (keys_check_missing_bindings ())
     WARN_MSG (_("Some actions do not have any associated key bindings!"));
-#undef HSIZE
 }
 
 void
