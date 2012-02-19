@@ -2,6 +2,8 @@ AUTOMAKE_OPTIONS = foreign
 
 bin_PROGRAMS = calcurse
 
+AM_CFLAGS = -std=c99 -pedantic -D_POSIX_C_SOURCE=200809L
+
 calcurse_SOURCES = \
 	calcurse.c \
 	calcurse.h \

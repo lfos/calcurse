@@ -17,6 +17,8 @@ TESTS = \
 	next-001.sh \
 	search-001.sh
 
+AM_CFLAGS = -std=c99 -pedantic -D_POSIX_C_SOURCE=200809L
+
 check_PROGRAMS = run-test
 check_SCRIPTS = $(TESTS)
 
