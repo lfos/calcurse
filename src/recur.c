@@ -1019,7 +1019,7 @@ recur_exc_scan (llist_t *lexc, FILE *data_file)
   while ((c = getc (data_file)) == '!')
     {
       ungetc (c, data_file);
-      if (fscanf (data_file, "!%u / %u / %u ",
+      if (fscanf (data_file, "!%d / %d / %d ",
                   &day.tm_mon, &day.tm_mday, &day.tm_year) != 3)
         {
           EXIT (_("syntax error in item date"));

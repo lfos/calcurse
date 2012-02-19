@@ -499,7 +499,7 @@ io_load_app (void)
       /* Read the date first: it is common to both events
        * and appointments.
        */
-      if (fscanf (data_file, "%u / %u / %u ",
+      if (fscanf (data_file, "%d / %d / %d ",
                   &start.tm_mon, &start.tm_mday, &start.tm_year) != 3)
         EXIT (_("syntax error in the item date"));
 
@@ -518,7 +518,7 @@ io_load_app (void)
       /* Read the remaining informations. */
       if (is_appointment)
         {
-          if (fscanf (data_file, " %u : %u -> %u / %u / %u @ %u : %u ",
+          if (fscanf (data_file, " %d : %d -> %d / %d / %d @ %d : %d ",
                       &start.tm_hour, &start.tm_min,
                       &end.tm_mon, &end.tm_mday, &end.tm_year,
                       &end.tm_hour, &end.tm_min) != 7)
@@ -555,7 +555,7 @@ io_load_app (void)
             }
           else if (c == '-' && getc (data_file) == '>')
             {
-              if (fscanf (data_file, " %u / %u / %u ", &until.tm_mon,
+              if (fscanf (data_file, " %d / %d / %d ", &until.tm_mon,
                           &until.tm_mday, &until.tm_year) != 3)
                 EXIT (_("syntax error in item repetition"));
               c = getc (data_file);
