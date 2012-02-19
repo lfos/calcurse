@@ -205,7 +205,7 @@ dbg_calloc (size_t nmemb, size_t size, const char *pos)
   if ((buf = dbg_malloc (size, pos)) == NULL)
     return NULL;
 
-  bzero (buf, size);
+  memset (buf, 0, size);
 
   return buf;
 }
@@ -229,7 +229,7 @@ dbg_realloc (void *ptr, size_t nmemb, size_t size, const char *pos)
 
   old_size = *((unsigned *)ptr - EXTRA_SPACE_START + BLK_SIZE);
   cpy_size = (old_size > new_size) ? new_size : old_size;
-  bcopy (ptr, buf, cpy_size);
+  memmove (buf, ptr, cpy_size);
 
   mem_free (ptr);
 

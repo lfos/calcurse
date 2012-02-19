@@ -1065,7 +1065,7 @@ get_import_stream (enum export_type type)
 
   stream = NULL;
   stream_name = mem_malloc (BUFSIZ);
-  bzero (stream_name, BUFSIZ);
+  memset (stream_name, 0, BUFSIZ);
   while (stream == NULL)
     {
       status_mesg (ask_fname, "");
@@ -1124,7 +1124,7 @@ io_import_data (enum import_type type, char *stream_name)
   if (stream == NULL)
     return;
 
-  bzero (&stats, sizeof stats);
+  memset (&stats, 0, sizeof stats);
 
   log = io_log_init ();
   if (log == NULL)

@@ -135,7 +135,7 @@ keys_init (void)
 
   for (i = 0; i < MAXKEYVAL; i++)
     actions[i] = KEY_UNDEF;
-  bzero (keys, NBKEYS);
+  memset (keys, 0, NBKEYS);
 }
 
 void
@@ -442,7 +442,7 @@ keys_format_label (char *key, int keylen)
   if (keylen > BUFSIZ)
     return NULL;
 
-  bzero (fmtkey, sizeof (fmtkey));
+  memset (fmtkey, 0, sizeof(fmtkey));
   if (len == 0)
     strncpy (fmtkey, "?", sizeof (fmtkey));
   else if (len <= keylen)

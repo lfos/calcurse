@@ -383,7 +383,7 @@ ical_unformat_line (char *line)
   if (strlen (line) >= BUFSIZ)
     return NULL;
 
-  bzero (uline, BUFSIZ);
+  memset (uline, 0, BUFSIZ);
   for (len = 0, p = line; *p; p++)
     {
       switch (*p)
@@ -541,7 +541,7 @@ ical_durtime2long (char *timestr)
       } time;
 
       p++;
-      bzero (&time, sizeof time);
+      memset (&time, 0, sizeof time);
       nbmatch = sscanf (p, "%uH%uM%uS", &time.hour, &time.min, &time.sec);
       if (nbmatch < 1 || nbmatch > 3)
         timelong = 0;
@@ -586,7 +586,7 @@ ical_dur2long (char *durstr)
     unsigned week, day;
   } date;
 
-  bzero (&date, sizeof date);
+  memset (&date, 0, sizeof date);
   if ((p = strchr (durstr, 'P')) == NULL)
     durlong = NOTFOUND;
   else
@@ -719,7 +719,7 @@ ical_read_rrule (FILE *log, char *rrulestr, unsigned *noskipped,
 
       p++;
       rpt = mem_malloc (sizeof (ical_rpt_t));
-      bzero (rpt, sizeof (ical_rpt_t));
+      memset (rpt, 0, sizeof(ical_rpt_t));
       if (sscanf (p, "FREQ=%s", freqstr) != 1)
         {
           ical_log (log, ICAL_VEVENT, itemline,
@@ -943,7 +943,7 @@ ical_read_event (FILE *fdi, FILE *log, unsigned *noevents, unsigned *noapoints,
   int skip_alarm;
 
   vevent_type = UNDEFINED;
-  bzero (&vevent, sizeof vevent);
+  memset (&vevent, 0, sizeof vevent);
   skip_alarm = 0;
   while (ical_readline (fdi, buf, lstore, lineno))
     {
@@ -1128,7 +1128,7 @@ ical_read_todo (FILE *fdi, FILE *log, unsigned *notodos, unsigned *noskipped,
   } vtodo;
   int skip_alarm;
 
-  bzero (&vtodo, sizeof vtodo);
+  memset (&vtodo, 0, sizeof vtodo);
   skip_alarm = 0;
   while (ical_readline (fdi, buf, lstore, lineno))
     {

@@ -547,7 +547,7 @@ draw_weekly_view (struct window *cwin, struct date *current_day,
         custom_remove_attr (cwin->p, attr);
 
       /* Draw slices indicating appointment times. */
-      bzero (slices, DAYSLICESNO * sizeof *slices);
+      memset (slices, 0, DAYSLICESNO * sizeof *slices);
       if (day_chk_busy_slices (date, DAYSLICESNO, slices))
         {
           for (i = 0; i < DAYSLICESNO; i++)
