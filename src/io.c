@@ -574,7 +574,7 @@ io_load_app (void)
                 EXIT (_("syntax error in item repetition"));
             }
           else if (c == '!')
-            {			// endless item with exceptions
+            {			/* endless item with exceptions */
               ungetc (c, data_file);
               recur_exc_scan (&exc, data_file);
               c = getc (data_file);
