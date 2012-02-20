@@ -645,11 +645,9 @@ wins_launch_external (char *file, char *cmd)
   wins_unprepare_external ();
 }
 
-#define NB_CAL_CMDS	27	/* number of commands while in cal view */
-#define NB_APP_CMDS	32	/* same thing while in appointment view */
-#define NB_TOD_CMDS	31	/* same thing while in todo view */
-#define TOTAL_CMDS	NB_CAL_CMDS + NB_APP_CMDS + NB_TOD_CMDS
-#define CMDS_PER_LINE	6	/* max number of commands per line */
+#define NB_CAL_CMDS    27      /* number of commands while in cal view */
+#define NB_APP_CMDS    32      /* same thing while in appointment view */
+#define NB_TOD_CMDS    31      /* same thing while in todo view */
 
 static unsigned status_page;
 
@@ -663,10 +661,7 @@ void
 wins_status_bar (void)
 {
 #define NB_PANELS	3	/* 3 panels: CALENDAR, APPOINTMENT, TODO */
-  enum win which_pan;
-  int start, end;
-  const int pos[NB_PANELS + 1] =
-      { 0, NB_CAL_CMDS, NB_CAL_CMDS + NB_APP_CMDS, TOTAL_CMDS };
+  const int pos[NB_PANELS] = { 0, 0, 0 };
 
   struct binding help   = {_("Help"),     KEY_GENERIC_HELP};
   struct binding quit   = {_("Quit"),     KEY_GENERIC_QUIT};
@@ -677,7 +672,6 @@ wins_status_bar (void)
   struct binding import = {_("Import"),   KEY_GENERIC_IMPORT};
   struct binding export = {_("Export"),   KEY_GENERIC_EXPORT};
   struct binding togo   = {_("Go to"),    KEY_GENERIC_GOTO};
-  struct binding othr   = {_("OtherCmd"), KEY_GENERIC_OTHER_CMD};
   struct binding conf   = {_("Config"),   KEY_GENERIC_CONFIG_MENU};
   struct binding draw   = {_("Redraw"),   KEY_GENERIC_REDRAW};
   struct binding appt   = {_("Add Appt"), KEY_GENERIC_ADD_APPT};
@@ -706,29 +700,53 @@ wins_status_bar (void)
   struct binding vnote  = {_("ViewNote"), KEY_VIEW_NOTE};
   struct binding rprio  = {_("Prio.+"),   KEY_RAISE_PRIORITY};
   struct binding lprio  = {_("Prio.-"),   KEY_LOWER_PRIORITY};
+  struct binding othr   = {_("OtherCmd"), KEY_GENERIC_OTHER_CMD};
 
-  struct binding *binding[TOTAL_CMDS] = {
-    /* calendar keys */
+  struct binding *bindings_cal[] = {
     &help, &quit, &save, &chgvu, &nview, &pview, &up, &down, &left, &right,
-    &togo, &othr, &import, &export, &weekb, &weeke, &appt, &todo,
-    &gnday, &gpday, &gnweek, &gpweek, &draw, &othr, &today, &conf, &othr,
-    /* appointment keys */
-    &help, &quit, &save, &chgvu, &import, &export, &add, &del, &edit, &view,
-    &pipe, &othr, &draw, &rept, &flag, &enote, &vnote, &up, &down, &gnday,
-    &gpday, &gnweek, &gpweek, &othr, &togo, &today, &conf, &appt, &todo, &cut,
-    &paste, &othr,
-    /* todo keys */
-    &help, &quit, &save, &chgvu, &import, &export, &add, &del, &edit, &view,
-    &pipe, &othr, &flag, &rprio, &lprio, &enote, &vnote, &up, &down, &gnday,
-    &gpday, &gnweek, &gpweek, &othr, &togo, &today, &conf, &appt, &todo, &draw,
-    &othr
+    &togo, &import, &export, &weekb, &weeke, &appt, &todo, &gnday, &gpday,
+    &gnweek, &gpweek, &draw, &today, &conf
   };
 
-  /* Drawing the keybinding with attribute and label without. */
-  which_pan = wins_slctd ();
-  start = pos[which_pan] + 2 * KEYS_CMDS_PER_LINE * (status_page - 1);
-  end = MIN (start + 2 * KEYS_CMDS_PER_LINE, pos[which_pan + 1]);
-  keys_display_bindings_bar (win[STA].p, binding, start, end);
+  struct binding *bindings_apoint[] = {
+    &help, &quit, &save, &chgvu, &import, &export, &add, &del, &edit, &view,
+    &pipe, &draw, &rept, &flag, &enote, &vnote, &up, &down, &gnday, &gpday,
+    &gnweek, &gpweek, &togo, &today, &conf, &appt, &todo, &cut, &paste
+  };
+
+  struct binding *bindings_todo[] = {
+    &help, &quit, &save, &chgvu, &import, &export, &add, &del, &edit, &view,
+    &pipe, &flag, &rprio, &lprio, &enote, &vnote, &up, &down, &gnday, &gpday,
+    &gnweek, &gpweek, &togo, &today, &conf, &appt, &todo, &draw
+  };
+
+  enum win active_panel = wins_slctd ();
+
+  struct binding **bindings;
+  int bindings_size;
+
+  switch (active_panel)
+    {
+    case CAL:
+      bindings = bindings_cal;
+      bindings_size = sizeof (bindings_cal) / sizeof (bindings_cal[0]);
+      break;
+    case APP:
+      bindings = bindings_apoint;
+      bindings_size = sizeof (bindings_apoint) / sizeof (bindings_apoint[0]);
+      break;
+    case TOD:
+      bindings = bindings_todo;
+      bindings_size = sizeof (bindings_todo) / sizeof (bindings_todo[0]);
+      break;
+    default:
+      EXIT (_("unknown panel"));
+      /* NOTREACHED */
+    }
+
+  keys_display_bindings_bar (win[STA].p, bindings, bindings_size,
+                             pos[active_panel] + (KEYS_CMDS_PER_LINE * 2 - 1) *
+                             (status_page - 1), KEYS_CMDS_PER_LINE * 2, &othr);
 }
 
 /* Erase status bar. */
@@ -759,7 +777,7 @@ wins_other_status_page (int panel)
       EXIT (_("unknown panel"));
       /* NOTREACHED */
     }
-  max_page = ceil (nb_item / (2 * CMDS_PER_LINE + 1)) + 1;
+  max_page = nb_item / (KEYS_CMDS_PER_LINE * 2 - 1) + 1;
   if (status_page < max_page)
     status_page++;
   else

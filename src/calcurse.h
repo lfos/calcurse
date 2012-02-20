@@ -739,7 +739,8 @@ int       keys_action_count_keys (enum key);
 char     *keys_action_firstkey (enum key);
 char     *keys_action_nkey (enum key, int);
 char     *keys_action_allkeys (enum key);
-void      keys_display_bindings_bar (WINDOW *, struct binding **, int, int);
+void      keys_display_bindings_bar (WINDOW *, struct binding *[], int, int,
+                                     int, struct binding *);
 void      keys_popup_info (enum key);
 void      keys_save_bindings (FILE *);
 int       keys_check_missing_bindings (void);

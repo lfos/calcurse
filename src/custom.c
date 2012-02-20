@@ -137,10 +137,13 @@ layout_selection_bar (void)
   struct binding right   = {_("Right"),    KEY_MOVE_RIGHT};
   struct binding help    = {_("Help"),     KEY_GENERIC_HELP};
 
-  struct binding *binding[] = {&quit, &select, &up, &down, &left, &right, &help};
-  int binding_size = sizeof (binding) / sizeof (binding[0]);
+  struct binding *bindings[] = {
+      &quit, &select, &up, &down, &left, &right, &help
+  };
+  int bindings_size = sizeof (bindings) / sizeof (bindings[0]);
 
-  keys_display_bindings_bar (win[STA].p, binding, 0, binding_size);
+  keys_display_bindings_bar (win[STA].p, bindings, bindings_size, 0,
+                             bindings_size, NULL);
 }
 
 #define NBLAYOUTS     8
@@ -298,7 +301,9 @@ custom_sidebar_config (void)
   struct binding inc  = {_("Width +"),    KEY_MOVE_UP};
   struct binding dec  = {_("Width -"),    KEY_MOVE_DOWN};
   struct binding help = {_("Help"),       KEY_GENERIC_HELP};
-  struct binding *binding[] = {&inc, &dec, &help, &quit};
+  struct binding *bindings[] = {
+      &inc, &dec, &help, &quit
+  };
   char *help_text =
     _("This configuration screen is used to change the width of the side bar.\n"
       "The side bar is the part of the screen which contains two panels:\n"
@@ -306,11 +311,12 @@ custom_sidebar_config (void)
       "or the appointment list.\n\n"
       "The side bar width can be up to 50% of the total screen width, but\n"
       "can't be smaller than " TOSTRING(SBARMINWIDTH) " characters wide.\n\n");
-  int ch, binding_size;
+  int ch, bindings_size;
 
-  binding_size = sizeof (binding) / sizeof (binding[0]);
+  bindings_size = sizeof (bindings) / sizeof (bindings[0]);
 
-  keys_display_bindings_bar (win[STA].p, binding, 0, binding_size);
+  keys_display_bindings_bar (win[STA].p, bindings, bindings_size, 0,
+                             bindings_size, NULL);
   wins_doupdate ();
 
   while ((ch = keys_getch (win[STA].p, NULL)) != KEY_GENERIC_QUIT)
@@ -348,7 +354,8 @@ custom_sidebar_config (void)
           wins_reinit_panels ();
           wins_update_border (FLAG_ALL);
           wins_update_panels (FLAG_ALL);
-          keys_display_bindings_bar (win[STA].p, binding, 0, binding_size);
+          keys_display_bindings_bar (win[STA].p, bindings, bindings_size, 0,
+                                     bindings_size, NULL);
           wins_doupdate ();
         }
     }
@@ -402,13 +409,13 @@ color_selection_bar (void)
   struct binding left    = {_("Left"),     KEY_MOVE_LEFT};
   struct binding right   = {_("Right"),    KEY_MOVE_RIGHT};
 
-
-  struct binding *binding[] = {
+  struct binding *bindings[] = {
     &quit, &nocolor, &up, &down, &left, &right, &select
   };
-  int binding_size = sizeof (binding) / sizeof (binding[0]);
+  int bindings_size = sizeof (bindings) / sizeof (bindings[0]);
 
-  keys_display_bindings_bar (win[STA].p, binding, 0, binding_size);
+  keys_display_bindings_bar (win[STA].p, bindings, bindings_size, 0,
+                             bindings_size, NULL);
 }
 
 /*
@@ -940,12 +947,13 @@ custom_keys_config_bar (void)
   struct binding left  = {_("Prev Key"), KEY_MOVE_LEFT};
   struct binding right = {_("Next Key"), KEY_MOVE_RIGHT};
 
-  struct binding *binding[] = {
+  struct binding *bindings[] = {
     &quit, &info, &add, &del, &up, &down, &left, &right
   };
-  int binding_size = sizeof (binding) / sizeof (binding[0]);
+  int bindings_size = sizeof (bindings) / sizeof (bindings[0]);
 
-  keys_display_bindings_bar (win[STA].p, binding, 0, binding_size);
+  keys_display_bindings_bar (win[STA].p, bindings, bindings_size, 0,
+                             bindings_size, NULL);
 }
 
 void

@@ -461,41 +461,41 @@ keys_format_label (char *key, int keylen)
 }
 
 void
-keys_display_bindings_bar (WINDOW *win, struct binding **binding, int first_key,
-                           int last_key)
+keys_display_bindings_bar (WINDOW *win, struct binding *bindings[], int count,
+                           int page_base, int page_size, struct binding *more)
 {
-  int i, j, cmdlen, space_between_cmds;
+  /* Padding between two key bindings. */
+  const int padding = (col * 2) / page_size - (KEYS_KEYLEN + KEYS_LABELEN + 1);
+  /* Total length of a key binding (including padding). */
+  const int cmd_len = KEYS_KEYLEN + KEYS_LABELEN + 1 + padding;
 
-  /* Total length of a command. */
-  cmdlen =  KEYS_KEYLEN + 1 + KEYS_LABELEN;
-  space_between_cmds = floor (col / KEYS_CMDS_PER_LINE - cmdlen);
-  cmdlen += space_between_cmds;
+  int i;
 
-  j = 0;
   wins_erase_status_bar ();
-  for (i = first_key; i < last_key; i += 2)
+  for (i = 0; i < page_size && page_base + i < count; i++)
     {
-      char key[KEYS_KEYLEN + 1], *fmtkey;
-      const int KEY_POS = j * cmdlen;
-      const int LABEL_POS = j * cmdlen + KEYS_KEYLEN + 1;
+      /* Location of key and label. */
+      const int key_pos_x = (i / 2) * cmd_len;
+      const int key_pos_y = i % 2;
+      const int label_pos_x = key_pos_x + KEYS_KEYLEN + 1;
+      const int label_pos_y = key_pos_y;
 
-      strncpy (key, keys_action_firstkey (binding[i]->action), KEYS_KEYLEN);
+      struct binding *binding;
+      char key[KEYS_KEYLEN + 1], *fmtkey;
+
+      if (!more || i < page_size - 1 || page_base + i == count - 1)
+        binding = bindings[page_base + i];
+      else
+        binding = more;
+
+      strncpy (key, keys_action_firstkey (binding->action), KEYS_KEYLEN);
+      key[KEYS_KEYLEN] = '\0';
       fmtkey = keys_format_label (key, KEYS_KEYLEN);
+
       custom_apply_attr (win, ATTR_HIGHEST);
-      mvwprintw (win, 0, KEY_POS, fmtkey);
-      if (i + 1 != last_key)
-        {
-          strncpy (key, keys_action_firstkey (binding[i + 1]->action),
-                   KEYS_KEYLEN);
-          key[KEYS_KEYLEN] = 0;
-          fmtkey = keys_format_label (key, KEYS_KEYLEN);
-          mvwprintw (win, 1, KEY_POS, fmtkey);
-        }
+      mvwprintw (win, key_pos_y, key_pos_x, fmtkey);
       custom_remove_attr (win, ATTR_HIGHEST);
-      mvwprintw (win, 0, LABEL_POS, binding[i]->label);
-      if (i + 1 != last_key)
-        mvwprintw (win, 1, LABEL_POS, binding[i + 1]->label);
-      j++;
+      mvwprintw (win, label_pos_y, label_pos_x, binding->label);
     }
   wnoutrefresh (win);
 }
