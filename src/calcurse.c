@@ -68,9 +68,6 @@ main (int argc, char **argv)
   int non_interactive;
   int no_data_file = 1;
   int cut_item = 0;
-  char *no_color_support =
-      _("Sorry, colors are not supported by your terminal\n"
-        "(Press [ENTER] to continue)");
   char *quit_message = _("Do you really want to quit ?");
   char choices[] = "[y/n] ";
   int count;
@@ -242,52 +239,8 @@ main (int argc, char **argv)
 
         case KEY_GENERIC_CONFIG_MENU:
           wins_erase_status_bar ();
-          custom_config_bar ();
-          while ((key = wgetch (win[STA].p)) != 'q')
-            {
-              switch (key)
-                {
-                case 'C':
-                case 'c':
-                  if (has_colors ())
-                    custom_color_config ();
-                  else
-                    {
-                      colorize = 0;
-                      wins_erase_status_bar ();
-                      mvwprintw (win[STA].p, 0, 0, _(no_color_support));
-                      wgetch (win[STA].p);
-                    }
-                  break;
-                case 'L':
-                case 'l':
-                  custom_layout_config ();
-                  break;
-                case 'G':
-                case 'g':
-                  custom_general_config ();
-                  break;
-                case 'N':
-                case 'n':
-                  notify_config_bar ();
-                  break;
-                case 'K':
-                case 'k':
-                  custom_keys_config ();
-                  break;
-                case 's':
-                case 'S':
-                  custom_sidebar_config ();
-                  break;
-                default:
-                  continue;
-                }
-              wins_reset ();
-              wins_update (FLAG_ALL);
-              wins_erase_status_bar ();
-              custom_config_bar ();
-              inday = do_storage (0);
-            }
+          custom_config_main ();
+          inday = do_storage (0);
           wins_update (FLAG_ALL);
           break;
 

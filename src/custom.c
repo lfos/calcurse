@@ -1097,3 +1097,58 @@ custom_keys_config (void)
       wins_scrollwin_display (&kwin);
     }
 }
+
+void
+custom_config_main (void)
+{
+  char *no_color_support =
+      _("Sorry, colors are not supported by your terminal\n"
+        "(Press [ENTER] to continue)");
+  int ch;
+
+  custom_config_bar ();
+  while ((ch = wgetch (win[STA].p)) != 'q')
+    {
+      switch (ch)
+        {
+        case 'C':
+        case 'c':
+          if (has_colors ())
+            custom_color_config ();
+          else
+            {
+              colorize = 0;
+              wins_erase_status_bar ();
+              mvwprintw (win[STA].p, 0, 0, _(no_color_support));
+              wgetch (win[STA].p);
+            }
+          break;
+        case 'L':
+        case 'l':
+          custom_layout_config ();
+          break;
+        case 'G':
+        case 'g':
+          custom_general_config ();
+          break;
+        case 'N':
+        case 'n':
+          notify_config_bar ();
+          break;
+        case 'K':
+        case 'k':
+          custom_keys_config ();
+          break;
+        case 's':
+        case 'S':
+          custom_sidebar_config ();
+          break;
+        default:
+          continue;
+        }
+      wins_reset ();
+      wins_update (FLAG_ALL);
+      wins_erase_status_bar ();
+      custom_config_bar ();
+    }
+}

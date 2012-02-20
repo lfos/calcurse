@@ -644,6 +644,7 @@ void custom_confwin_init (struct window *, char *);
 void custom_set_swsiz (struct scrollwin *);
 void custom_general_config (void);
 void custom_keys_config (void);
+void custom_config_main (void);
 
 /* day.c */
 void                  day_free_list (void);
