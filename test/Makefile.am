@@ -24,3 +24,4 @@ check_SCRIPTS = $(TESTS)
 
 run_test_SOURCES = run-test.c
 
+EXTRA_DIST = $(TESTS) data/apts data/conf data/todo
