@@ -6,7 +6,7 @@ if [ ! -x "$(command -v faketime)" ]; then
 fi
 
 if [ "$1" = 'actual' ]; then
-  faketime '2011-02-25 23:42' calcurse -D data -a
+  faketime '2011-02-25 23:42' "$CALCURSE" -D "$DATA_DIR" -a
 elif [ "$1" = 'expected' ]; then
   cat <<EOD
 02/25/11:

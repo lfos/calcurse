@@ -17,6 +17,10 @@ TESTS = \
 	next-001.sh \
 	search-001.sh
 
+TESTS_ENVIRONMENT = \
+	CALCURSE='$(top_builddir)/src/calcurse' \
+	DATA_DIR='$(top_srcdir)/test/data/'
+
 AM_CFLAGS = -std=c99 -pedantic -D_POSIX_C_SOURCE=200809L
 
 check_PROGRAMS = run-test

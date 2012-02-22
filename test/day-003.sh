@@ -6,9 +6,9 @@ if [ ! -x "$(command -v faketime)" ]; then
 fi
 
 if [ "$1" = 'actual' ]; then
-  faketime '1912-06-23' calcurse -D data/ -d42
+  faketime '1912-06-23' "$CALCURSE" -D "$DATA_DIR"/ -d42
 elif [ "$1" = 'expected' ]; then
-  calcurse -D data/ -s06/23/1912 -r42
+  "$CALCURSE" -D "$DATA_DIR"/ -s06/23/1912 -r42
 else
   ./run-test "$0"
 fi

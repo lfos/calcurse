@@ -1,7 +1,7 @@
 #!/bin/sh
 
 if [ "$1" = 'actual' ]; then
-  calcurse -D data/ -d02/25/2011
+  "$CALCURSE" -D "$DATA_DIR"/ -d02/25/2011
 elif [ "$1" = 'expected' ]; then
   cat <<EOD
 02/25/11:

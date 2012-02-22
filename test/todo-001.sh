@@ -1,11 +1,11 @@
 #!/bin/sh
 
 if [ "$1" = 'actual' ]; then
-  calcurse -D data/ -t | sort
+  "$CALCURSE" -D "$DATA_DIR"/ -t | sort
 elif [ "$1" = 'expected' ]; then
   (
     echo 'to do:'
-    sed '/^\[-/d; s/^\[\([0-9]\)\] \(.*\)/\1. \2/' data/todo
+    sed '/^\[-/d; s/^\[\([0-9]\)\] \(.*\)/\1. \2/' "$DATA_DIR"/todo
   ) | sort
 else
   ./run-test "$0"
