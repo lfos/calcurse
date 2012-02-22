@@ -58,6 +58,9 @@ int foreground, background;
  */
 enum ui_mode ui_mode = UI_CMDLINE;
 
+/* Don't save anything if this is set. */
+int read_only = 0;
+
 /*
  * variables to store calendar names
  */

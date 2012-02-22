@@ -946,6 +946,7 @@ extern int               resize;
 extern unsigned          colorize;
 extern int               foreground, background;
 extern enum ui_mode      ui_mode;
+extern int               read_only;
 extern int               days[12];
 extern char             *monthnames[12];
 extern char             *daynames[8];

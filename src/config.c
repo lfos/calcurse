@@ -451,19 +451,11 @@ config_file_walk (config_fn_walk_cb_t fn_cb,
                   config_fn_walk_junk_cb_t fn_junk_cb, void *data)
 {
   FILE *data_file;
-  char *mesg_line1 = _("Failed to open config file");
-  char *mesg_line2 = _("Press [ENTER] to continue");
   char buf[BUFSIZ], e_conf[BUFSIZ];
   char *key, *value;
 
   data_file = fopen (path_conf, "r");
-  if (data_file == NULL)
-    {
-      status_mesg (mesg_line1, mesg_line2);
-      wnoutrefresh (win[STA].p);
-      wins_doupdate ();
-      keys_getch (win[STA].p, NULL);
-    }
+  EXIT_IF (data_file == NULL, _("failed to open configuration file"));
 
   pthread_mutex_lock (&nbar.mutex);
   for (;;)
@@ -560,6 +552,9 @@ config_save (void)
   char *tmpext;
   struct config_save_status status;
   int i;
+
+  if (read_only)
+    return 1;
 
   strncpy (tmppath, get_tempdir (), BUFSIZ);
   strncat (tmppath, "/" CONF_PATH_NAME ".", BUFSIZ - strlen (tmppath) - 1);

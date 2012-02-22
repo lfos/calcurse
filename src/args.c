@@ -51,7 +51,8 @@ enum {
   OPT_FMT_RAPT,
   OPT_FMT_EV,
   OPT_FMT_REV,
-  OPT_FMT_TODO
+  OPT_FMT_TODO,
+  OPT_READ_ONLY
 };
 
 /*
@@ -665,6 +666,7 @@ parse_args (int argc, char **argv)
     {"format-event", required_argument, NULL, OPT_FMT_EV},
     {"format-recur-event", required_argument, NULL, OPT_FMT_REV},
     {"format-todo", required_argument, NULL, OPT_FMT_TODO},
+    {"read-only", no_argument, NULL, OPT_READ_ONLY},
     {NULL, no_argument, NULL, 0}
   };
 
@@ -792,6 +794,9 @@ parse_args (int argc, char **argv)
           break;
         case OPT_FMT_TODO:
           fmt_todo = optarg;
+          break;
+        case OPT_READ_ONLY:
+          read_only = 1;
           break;
         default:
           usage ();

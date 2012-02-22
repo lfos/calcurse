@@ -128,6 +128,12 @@ the *-c* flag.
   Print events and appointments for the 'num' number of days and exit. If no
   'num' is given, a range of 1 day is considered.
 
+*--read-only*::
+  Don't save configuration nor appointments/todos.
++
+'Warning:' Use this this with care! If you run an interactive calcurse instance
+in read-only mode, all changes from this session will be lost without warning!
+
 *-s*[date], *--startday*[=date]::
   Print  events  and appointments from 'date' and exit.  If no 'date' is given,
   the current day is considered.

@@ -355,6 +355,9 @@ io_save_apts (void)
   llist_item_t *i;
   FILE *fp;
 
+  if (read_only)
+    return 1;
+
   if ((fp = fopen (path_apts, "w")) == NULL)
     return 0;
 
@@ -387,6 +390,9 @@ io_save_todo (void)
   llist_item_t *i;
   FILE *fp;
 
+  if (read_only)
+    return 1;
+
   if ((fp = fopen (path_todo, "w")) == NULL)
     return 0;
 
@@ -406,6 +412,9 @@ io_save_keys (void)
 {
   FILE *fp;
 
+  if (read_only)
+    return 1;
+
   if ((fp = fopen (path_keys, "w")) == NULL)
     return 0;
 
@@ -423,6 +432,9 @@ io_save_cal (enum save_display display)
   char *save_success = _("The data files were successfully saved");
   char *enter = _("Press [ENTER] to continue");
   int show_bar;
+
+  if (read_only)
+    return;
 
   pthread_mutex_lock (&io_save_mutex);
 
@@ -487,6 +499,8 @@ io_load_app (void)
   start = end = until = *lt;
 
   data_file = fopen (path_apts, "r");
+  EXIT_IF (data_file == NULL, _("failed to open appointment file"));
+
   for (;;)
     {
       LLIST_INIT (&exc);
@@ -659,19 +673,14 @@ void
 io_load_todo (void)
 {
   FILE *data_file;
-  char *mesg_line1 = _("Failed to open todo file");
-  char *mesg_line2 = _("Press [ENTER] to continue");
   char *newline;
   int nb_tod = 0;
   int c, id;
   char buf[BUFSIZ], e_todo[BUFSIZ], note[MAX_NOTESIZ + 1];
 
   data_file = fopen (path_todo, "r");
-  if (data_file == NULL)
-    {
-      status_mesg (mesg_line1, mesg_line2);
-      wgetch (win[STA].p);
-    }
+  EXIT_IF (data_file == NULL, _("failed to open todo file"));
+
   for (;;)
     {
       c = getc (data_file);
@@ -771,7 +780,8 @@ io_load_keys (char *pager)
     }
 
   keyfp = fopen (path_keys, "r");
-  EXIT_IF (keyfp == NULL, _("could not find any key file."));
+  EXIT_IF (keyfp == NULL, _("failed to open key file"));
+
   log = io_log_init ();
   skipped = loaded = line = 0;
   while (fgets (buf, BUFSIZ, keyfp) != NULL)
@@ -883,6 +893,9 @@ io_load_keys (char *pager)
 void
 io_check_dir (char *dir, int *missing)
 {
+  if (read_only)
+    return;
+
   errno = 0;
   if (mkdir (dir, 0700) != 0)
     {
@@ -919,6 +932,9 @@ io_file_exist (char *file)
 void
 io_check_file (char *file, int *missing)
 {
+  if (read_only)
+    return;
+
   errno = 0;
   if (!io_file_exist (file))
     {
