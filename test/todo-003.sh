@@ -1,7 +1,7 @@
 #!/bin/sh
 
 if [ "$1" = 'actual' ]; then
-  "$CALCURSE" -D "$DATA_DIR"/ -t0 | sort -n
+  "$CALCURSE" --read-only -D "$DATA_DIR"/ -t0 | sort -n
 elif [ "$1" = 'expected' ]; then
   (
     echo 'completed tasks:'

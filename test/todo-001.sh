@@ -1,7 +1,7 @@
 #!/bin/sh
 
 if [ "$1" = 'actual' ]; then
-  "$CALCURSE" -D "$DATA_DIR"/ -t | sort
+  "$CALCURSE" --read-only -D "$DATA_DIR"/ -t | sort
 elif [ "$1" = 'expected' ]; then
   (
     echo 'to do:'

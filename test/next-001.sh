@@ -6,7 +6,7 @@ if [ ! -x "$(command -v faketime)" ]; then
 fi
 
 if [ "$1" = 'actual' ]; then
-  faketime '1912-07-10 04:10' "$CALCURSE" -D "$DATA_DIR" -n
+  faketime '1912-07-10 04:10' "$CALCURSE" --read-only -D "$DATA_DIR" -n
 elif [ "$1" = 'expected' ]; then
   cat <<EOD
 next appointment:

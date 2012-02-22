@@ -1,7 +1,7 @@
 #!/bin/sh
 
 if [ "$1" = 'actual' ]; then
-  "$CALCURSE" -D "$DATA_DIR"/ -t3
+  "$CALCURSE" --read-only -D "$DATA_DIR"/ -t3
 elif [ "$1" = 'expected' ]; then
   echo 'to do:'
   sed -n 's/^\[3\] \(.*\)/3. \1/p' "$DATA_DIR"/todo
