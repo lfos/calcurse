@@ -879,7 +879,6 @@ print_key_incolor (WINDOW *win, char *option, int pos_y, int pos_x)
   custom_apply_attr (win, color);
   mvwprintw (win, pos_y, pos_x, "%s ", option);
   custom_remove_attr (win, color);
-  wnoutrefresh (win);
 }
 
 static int

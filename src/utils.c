@@ -181,8 +181,6 @@ erase_window_part (WINDOW *win, int first_col, int first_row, int last_col,
       for (c = first_col; c <= last_col; c++)
         mvwprintw (win, r, c, " ");
     }
-
-  wnoutrefresh (win);
 }
 
 /* draws a popup window */
