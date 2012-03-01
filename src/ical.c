@@ -465,14 +465,14 @@ static float
 ical_chk_header (FILE *fd, char *buf, char *lstore, unsigned *lineno)
 {
   const int HEADER_MALFORMED = -1;
-  const struct string icalheader = STRING_BUILD ("BEGIN:VCALENDAR");
+  const char icalheader[] = "BEGIN:VCALENDAR";
   float version;
 
   if (!ical_readline (fd, buf, lstore, lineno))
     return HEADER_MALFORMED;
 
   str_toupper (buf);
-  if (strcmp (buf, icalheader.str) != 0)
+  if (strcmp (buf, icalheader) != 0)
     return HEADER_MALFORMED;
 
   while (!sscanf (buf, "VERSION:%f", &version))
@@ -702,12 +702,12 @@ static ical_rpt_t *
 ical_read_rrule (FILE *log, char *rrulestr, unsigned *noskipped,
                  const int itemline)
 {
-  const struct string daily = STRING_BUILD ("DAILY");
-  const struct string weekly = STRING_BUILD ("WEEKLY");
-  const struct string monthly = STRING_BUILD ("MONTHLY");
-  const struct string yearly = STRING_BUILD ("YEARLY");
-  const struct string count = STRING_BUILD ("COUNT=");
-  const struct string interv = STRING_BUILD ("INTERVAL=");
+  const char daily[] = "DAILY";
+  const char weekly[] = "WEEKLY";
+  const char monthly[] = "MONTHLY";
+  const char yearly[] = "YEARLY";
+  const char count[] = "COUNT=";
+  const char interv[] = "INTERVAL=";
   unsigned interval;
   ical_rpt_t *rpt;
   char *p;
@@ -730,13 +730,13 @@ ical_read_rrule (FILE *log, char *rrulestr, unsigned *noskipped,
         }
       else
         {
-          if (strcmp (freqstr, daily.str) == 0)
+          if (strcmp (freqstr, daily) == 0)
             rpt->type = RECUR_DAILY;
-          else if (strcmp (freqstr, weekly.str) == 0)
+          else if (strcmp (freqstr, weekly) == 0)
             rpt->type = RECUR_WEEKLY;
-          else if (strcmp (freqstr, monthly.str) == 0)
+          else if (strcmp (freqstr, monthly) == 0)
             rpt->type = RECUR_MONTHLY;
-          else if (strcmp (freqstr, yearly.str) == 0)
+          else if (strcmp (freqstr, yearly) == 0)
             rpt->type = RECUR_YEARLY;
           else
             {
@@ -769,9 +769,9 @@ ical_read_rrule (FILE *log, char *rrulestr, unsigned *noskipped,
           unsigned cnt;
           char *countstr;
 
-          if ((countstr = strstr (rrulestr, count.str)) != NULL)
+          if ((countstr = strstr (rrulestr, count)) != NULL)
             {
-              countstr += count.len;
+              countstr += sizeof (count) - 1;
               if (sscanf (countstr, "%u", &cnt) != 1)
                 {
                   rpt->until = 0;
@@ -786,9 +786,9 @@ ical_read_rrule (FILE *log, char *rrulestr, unsigned *noskipped,
             rpt->until = 0;
         }
 
-      if ((p = strstr (rrulestr, interv.str)) != NULL)
+      if ((p = strstr (rrulestr, interv)) != NULL)
         {
-          p += interv.len;
+          p += sizeof (interv) - 1;
           if (sscanf (p, "%u", &interval) != 1)
             {
               rpt->freq = 1;
@@ -921,16 +921,16 @@ ical_read_event (FILE *fdi, FILE *log, unsigned *noevents, unsigned *noapoints,
                  unsigned *lineno)
 {
   const int ITEMLINE = *lineno;
-  const struct string endevent = STRING_BUILD ("END:VEVENT");
-  const struct string summary  = STRING_BUILD ("SUMMARY");
-  const struct string dtstart  = STRING_BUILD ("DTSTART");
-  const struct string dtend    = STRING_BUILD ("DTEND");
-  const struct string duration = STRING_BUILD ("DURATION");
-  const struct string rrule    = STRING_BUILD ("RRULE");
-  const struct string exdate   = STRING_BUILD ("EXDATE");
-  const struct string alarm    = STRING_BUILD ("BEGIN:VALARM");
-  const struct string endalarm = STRING_BUILD ("END:VALARM");
-  const struct string desc     = STRING_BUILD ("DESCRIPTION");
+  const char endevent[] = "END:VEVENT";
+  const char summary[]  = "SUMMARY";
+  const char dtstart[]  = "DTSTART";
+  const char dtend[]    = "DTEND";
+  const char duration[] = "DURATION";
+  const char rrule[]    = "RRULE";
+  const char exdate[]   = "EXDATE";
+  const char alarm[]    = "BEGIN:VALARM";
+  const char endalarm[] = "END:VALARM";
+  const char desc[]     = "DESCRIPTION";
   ical_vevent_e vevent_type;
   char *p, buf_upper[BUFSIZ];
   struct {
@@ -955,11 +955,11 @@ ical_read_event (FILE *fdi, FILE *log, unsigned *noevents, unsigned *noapoints,
         {
           /* Need to skip VALARM properties because some keywords could
              interfere, such as DURATION, SUMMARY,.. */
-          if (strcmp (buf_upper, endalarm.str) == 0)
+          if (strcmp (buf_upper, endalarm) == 0)
             skip_alarm = 0;
           continue;
         }
-      if (strcmp (buf_upper, endevent.str) == 0)
+      if (strcmp (buf_upper, endevent) == 0)
         {
           if (vevent.mesg)
             {
@@ -1039,7 +1039,7 @@ ical_read_event (FILE *fdi, FILE *log, unsigned *noevents, unsigned *noapoints,
         }
       else
         {
-          if (strcmp (buf_upper, dtstart.str) == 0)
+          if (strcmp (buf_upper, dtstart) == 0)
             {
               if ((p = strchr (buf, ':')) != NULL)
                 vevent.start = ical_datetime2long (++p, &vevent_type);
@@ -1050,7 +1050,7 @@ ical_read_event (FILE *fdi, FILE *log, unsigned *noevents, unsigned *noapoints,
                   goto cleanup;
                 }
             }
-          else if (strcmp (buf_upper, dtend.str) == 0)
+          else if (strcmp (buf_upper, dtend) == 0)
             {
               if ((p = strchr (buf, ':')) != NULL)
                 vevent.end = ical_datetime2long (++p, &vevent_type);
@@ -1061,7 +1061,7 @@ ical_read_event (FILE *fdi, FILE *log, unsigned *noevents, unsigned *noapoints,
                   goto cleanup;
                 }
             }
-          else if (strcmp (buf_upper, duration.str) == 0)
+          else if (strcmp (buf_upper, duration) == 0)
             {
               if ((vevent.dur = ical_dur2long (buf)) <= 0)
                 {
@@ -1070,24 +1070,24 @@ ical_read_event (FILE *fdi, FILE *log, unsigned *noevents, unsigned *noapoints,
                   goto cleanup;
                 }
             }
-          else if (strcmp (buf_upper, rrule.str) == 0)
+          else if (strcmp (buf_upper, rrule) == 0)
             {
               vevent.rpt = ical_read_rrule (log, buf, noskipped, ITEMLINE);
             }
-          else if (strcmp (buf_upper, exdate.str) == 0)
+          else if (strcmp (buf_upper, exdate) == 0)
             {
               ical_read_exdate (&vevent.exc, log, buf, noskipped, ITEMLINE);
             }
-          else if (strcmp (buf_upper, summary.str) == 0)
+          else if (strcmp (buf_upper, summary) == 0)
             {
               vevent.mesg = ical_read_summary (buf);
             }
-          else if (strcmp (buf_upper, alarm.str) == 0)
+          else if (strcmp (buf_upper, alarm) == 0)
             {
               skip_alarm = 1;
               vevent.has_alarm = 1;
             }
-          else if (strcmp (buf_upper, desc.str) == 0)
+          else if (strcmp (buf_upper, desc) == 0)
             {
               vevent.note = ical_read_note (buf, noskipped, ICAL_VEVENT,
                                             ITEMLINE, log);
@@ -1114,11 +1114,11 @@ static void
 ical_read_todo (FILE *fdi, FILE *log, unsigned *notodos, unsigned *noskipped,
                 char *buf, char *lstore, unsigned *lineno)
 {
-  const struct string endtodo  = STRING_BUILD ("END:VTODO");
-  const struct string summary  = STRING_BUILD ("SUMMARY");
-  const struct string alarm    = STRING_BUILD ("BEGIN:VALARM");
-  const struct string endalarm = STRING_BUILD ("END:VALARM");
-  const struct string desc     = STRING_BUILD ("DESCRIPTION");
+  const char endtodo[]  = "END:VTODO";
+  const char summary[]  = "SUMMARY";
+  const char alarm[]    = "BEGIN:VALARM";
+  const char endalarm[] = "END:VALARM";
+  const char desc[]     = "DESCRIPTION";
   const int LOWEST = 9;
   const int ITEMLINE = *lineno;
   char buf_upper[BUFSIZ];
@@ -1139,11 +1139,11 @@ ical_read_todo (FILE *fdi, FILE *log, unsigned *notodos, unsigned *noskipped,
         {
           /* Need to skip VALARM properties because some keywords could
              interfere, such as DURATION, SUMMARY,.. */
-          if (strcmp (buf_upper, endalarm.str) == 0)
+          if (strcmp (buf_upper, endalarm) == 0)
             skip_alarm = 0;
           continue;
         }
-      if (strcmp (buf_upper, endtodo.str) == 0)
+      if (strcmp (buf_upper, endtodo) == 0)
         {
           if (!vtodo.has_priority)
             vtodo.priority = LOWEST;
@@ -1179,15 +1179,15 @@ ical_read_todo (FILE *fdi, FILE *log, unsigned *notodos, unsigned *noskipped,
                   vtodo.priority = LOWEST;
                 }
             }
-          else if (strcmp (buf_upper, summary.str) == 0)
+          else if (strcmp (buf_upper, summary) == 0)
             {
               vtodo.mesg = ical_read_summary (buf);
             }
-          else if (strcmp (buf_upper, alarm.str) == 0)
+          else if (strcmp (buf_upper, alarm) == 0)
             {
               skip_alarm = 1;
             }
-          else if (strcmp (buf_upper, desc.str) == 0)
+          else if (strcmp (buf_upper, desc) == 0)
             {
               vtodo.note = ical_read_note (buf, noskipped, ICAL_VTODO,
                                            ITEMLINE, log);
@@ -1212,8 +1212,8 @@ void
 ical_import_data (FILE *stream, FILE *log, unsigned *events, unsigned *apoints,
                   unsigned *todos, unsigned *lines, unsigned *skipped)
 {
-  const struct string vevent = STRING_BUILD ("BEGIN:VEVENT");
-  const struct string vtodo = STRING_BUILD ("BEGIN:VTODO");
+  const char vevent[] = "BEGIN:VEVENT";
+  const char vtodo[] = "BEGIN:VTODO";
   char buf[BUFSIZ], lstore[BUFSIZ];
   float ical_version;
 
@@ -1229,12 +1229,12 @@ ical_import_data (FILE *stream, FILE *log, unsigned *events, unsigned *apoints,
     {
       (*lines)++;
       str_toupper (buf);
-      if (strcmp (buf, vevent.str) == 0)
+      if (strcmp (buf, vevent) == 0)
         {
           ical_read_event (stream, log, events, apoints, skipped, buf, lstore,
                            lines);
         }
-      else if (strcmp (buf, vtodo.str) == 0)
+      else if (strcmp (buf, vtodo) == 0)
         {
           ical_read_todo (stream, log, todos, skipped, buf, lstore, lines);
         }

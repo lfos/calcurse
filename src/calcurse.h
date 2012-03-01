@@ -210,7 +210,6 @@
     }                                                                         \
 } while (0)
 
-#define STRING_BUILD(str) {str, sizeof (str) - 1}
 #define STRINGIFY(x)  #x
 #define TOSTRING(x)   STRINGIFY(x)
 #define __FILE_POS__   __FILE__ ":" TOSTRING(__LINE__)
@@ -246,11 +245,6 @@ struct conf {
 struct dmon_conf {
   unsigned  enable;   /* launch daemon automatically when exiting */
   unsigned  log;      /* log daemon activity */
-};
-
-struct string {
-  const char   *str;
-  const int     len;
 };
 
 enum datefmt {

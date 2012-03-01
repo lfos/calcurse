@@ -303,16 +303,16 @@ keys_remove_binding (int key, enum key action)
 int
 keys_str2int (char *key)
 {
-  const struct string CONTROL_KEY = STRING_BUILD ("C-");
-  const struct string TAB_KEY = STRING_BUILD ("TAB");
-  const struct string SPACE_KEY = STRING_BUILD ("SPC");
-  const struct string ESCAPE_KEY = STRING_BUILD ("ESC");
-  const struct string CURSES_KEY_UP = STRING_BUILD ("UP");
-  const struct string CURSES_KEY_DOWN = STRING_BUILD ("DWN");
-  const struct string CURSES_KEY_LEFT = STRING_BUILD ("LFT");
-  const struct string CURSES_KEY_RIGHT = STRING_BUILD ("RGT");
-  const struct string CURSES_KEY_HOME = STRING_BUILD ("KEY_HOME");
-  const struct string CURSES_KEY_END = STRING_BUILD ("KEY_END");
+  const char CONTROL_KEY[] = "C-";
+  const char TAB_KEY[] = "TAB";
+  const char SPACE_KEY[] = "SPC";
+  const char ESCAPE_KEY[] = "ESC";
+  const char CURSES_KEY_UP[] = "UP";
+  const char CURSES_KEY_DOWN[] = "DWN";
+  const char CURSES_KEY_LEFT[] = "LFT";
+  const char CURSES_KEY_RIGHT[] = "RGT";
+  const char CURSES_KEY_HOME[] = "KEY_HOME";
+  const char CURSES_KEY_END[] = "KEY_END";
 
   if (!key)
     return -1;
@@ -322,25 +322,25 @@ keys_str2int (char *key)
     {
       if (key[0] == '^')
         return CTRL ((int)key[1]);
-      else if (!strcmp (key, CONTROL_KEY.str))
-        return CTRL ((int)key[CONTROL_KEY.len]);
-      else if (!strcmp (key, TAB_KEY.str))
+      else if (!strcmp (key, CONTROL_KEY))
+        return CTRL ((int)key[sizeof (CONTROL_KEY) - 1]);
+      else if (!strcmp (key, TAB_KEY))
         return TAB;
-      else if (!strcmp (key, ESCAPE_KEY.str))
+      else if (!strcmp (key, ESCAPE_KEY))
         return ESCAPE;
-      else if (!strcmp (key, SPACE_KEY.str))
+      else if (!strcmp (key, SPACE_KEY))
         return SPACE;
-      else if (!strcmp (key, CURSES_KEY_UP.str))
+      else if (!strcmp (key, CURSES_KEY_UP))
         return KEY_UP;
-      else if (!strcmp (key, CURSES_KEY_DOWN.str))
+      else if (!strcmp (key, CURSES_KEY_DOWN))
         return KEY_DOWN;
-      else if (!strcmp (key, CURSES_KEY_LEFT.str))
+      else if (!strcmp (key, CURSES_KEY_LEFT))
         return KEY_LEFT;
-      else if (!strcmp (key, CURSES_KEY_RIGHT.str))
+      else if (!strcmp (key, CURSES_KEY_RIGHT))
         return KEY_RIGHT;
-      else if (!strcmp (key, CURSES_KEY_HOME.str))
+      else if (!strcmp (key, CURSES_KEY_HOME))
         return KEY_HOME;
-      else if (!strcmp (key, CURSES_KEY_END.str))
+      else if (!strcmp (key, CURSES_KEY_END))
         return KEY_END;
       else
         return -1;
