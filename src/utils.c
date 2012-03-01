@@ -418,7 +418,7 @@ item_in_popup (char *saved_a_start, char *saved_a_end, char *msg,
 
   pad = newpad (padl, padw);
   popup_win = popup (winl, winw, 1, 2, pop_title, NULL, 1);
-  if (strncmp (pop_title, _("Appointment"), 11) == 0)
+  if (strcmp (pop_title, _("Appointment")) == 0)
     {
       mvwprintw (popup_win, margin_top, margin_left, "- %s -> %s",
                  saved_a_start, saved_a_end);

@@ -943,7 +943,7 @@ recur_repeat_item (void)
       status_mesg (_(outstr), "");
       if (getstring (win[STA].p, user_input, BUFSIZ, 0, 1) == GETSTRING_VALID)
         {
-          if (strlen (user_input) == 1 && strncmp (user_input, "0", 1) == 0)
+          if (strlen (user_input) == 1 && strcmp (user_input, "0") == 0)
             {
               until = 0;
               date_entered = 1;

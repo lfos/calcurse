@@ -322,25 +322,25 @@ keys_str2int (char *key)
     {
       if (key[0] == '^')
         return CTRL ((int)key[1]);
-      else if (!strncmp (key, CONTROL_KEY.str, CONTROL_KEY.len))
+      else if (!strcmp (key, CONTROL_KEY.str))
         return CTRL ((int)key[CONTROL_KEY.len]);
-      else if (!strncmp (key, TAB_KEY.str, TAB_KEY.len))
+      else if (!strcmp (key, TAB_KEY.str))
         return TAB;
-      else if (!strncmp (key, ESCAPE_KEY.str, ESCAPE_KEY.len))
+      else if (!strcmp (key, ESCAPE_KEY.str))
         return ESCAPE;
-      else if (!strncmp (key, SPACE_KEY.str, SPACE_KEY.len))
+      else if (!strcmp (key, SPACE_KEY.str))
         return SPACE;
-      else if (!strncmp (key, CURSES_KEY_UP.str, CURSES_KEY_UP.len))
+      else if (!strcmp (key, CURSES_KEY_UP.str))
         return KEY_UP;
-      else if (!strncmp (key, CURSES_KEY_DOWN.str, CURSES_KEY_DOWN.len))
+      else if (!strcmp (key, CURSES_KEY_DOWN.str))
         return KEY_DOWN;
-      else if (!strncmp (key, CURSES_KEY_LEFT.str, CURSES_KEY_LEFT.len))
+      else if (!strcmp (key, CURSES_KEY_LEFT.str))
         return KEY_LEFT;
-      else if (!strncmp (key, CURSES_KEY_RIGHT.str, CURSES_KEY_RIGHT.len))
+      else if (!strcmp (key, CURSES_KEY_RIGHT.str))
         return KEY_RIGHT;
-      else if (!strncmp (key, CURSES_KEY_HOME.str, CURSES_KEY_HOME.len))
+      else if (!strcmp (key, CURSES_KEY_HOME.str))
         return KEY_HOME;
-      else if (!strncmp (key, CURSES_KEY_END.str, CURSES_KEY_END.len))
+      else if (!strcmp (key, CURSES_KEY_END.str))
         return KEY_END;
       else
         return -1;

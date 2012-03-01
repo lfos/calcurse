@@ -117,9 +117,9 @@ typedef int (*config_fn_walk_junk_cb_t) (const char *, void *);
 static int
 config_parse_bool (unsigned *dest, const char *val)
 {
-  if (strncmp (val, "yes", 4) == 0)
+  if (strcmp (val, "yes") == 0)
     *dest = 1;
-  else if (strncmp (val, "no", 3) == 0)
+  else if (strcmp (val, "no") == 0)
     *dest = 0;
   else
     return 0;

@@ -472,7 +472,7 @@ ical_chk_header (FILE *fd, char *buf, char *lstore, unsigned *lineno)
     return HEADER_MALFORMED;
 
   str_toupper (buf);
-  if (strncmp (buf, icalheader.str, icalheader.len) != 0)
+  if (strcmp (buf, icalheader.str) != 0)
     return HEADER_MALFORMED;
 
   while (!sscanf (buf, "VERSION:%f", &version))
@@ -730,13 +730,13 @@ ical_read_rrule (FILE *log, char *rrulestr, unsigned *noskipped,
         }
       else
         {
-          if (strncmp (freqstr, daily.str, daily.len) == 0)
+          if (strcmp (freqstr, daily.str) == 0)
             rpt->type = RECUR_DAILY;
-          else if (strncmp (freqstr, weekly.str, weekly.len) == 0)
+          else if (strcmp (freqstr, weekly.str) == 0)
             rpt->type = RECUR_WEEKLY;
-          else if (strncmp (freqstr, monthly.str, monthly.len) == 0)
+          else if (strcmp (freqstr, monthly.str) == 0)
             rpt->type = RECUR_MONTHLY;
-          else if (strncmp (freqstr, yearly.str, yearly.len) == 0)
+          else if (strcmp (freqstr, yearly.str) == 0)
             rpt->type = RECUR_YEARLY;
           else
             {
@@ -955,11 +955,11 @@ ical_read_event (FILE *fdi, FILE *log, unsigned *noevents, unsigned *noapoints,
         {
           /* Need to skip VALARM properties because some keywords could
              interfere, such as DURATION, SUMMARY,.. */
-          if (strncmp (buf_upper, endalarm.str, endalarm.len) == 0)
+          if (strcmp (buf_upper, endalarm.str) == 0)
             skip_alarm = 0;
           continue;
         }
-      if (strncmp (buf_upper, endevent.str, endevent.len) == 0)
+      if (strcmp (buf_upper, endevent.str) == 0)
         {
           if (vevent.mesg)
             {
@@ -1039,7 +1039,7 @@ ical_read_event (FILE *fdi, FILE *log, unsigned *noevents, unsigned *noapoints,
         }
       else
         {
-          if (strncmp (buf_upper, dtstart.str, dtstart.len) == 0)
+          if (strcmp (buf_upper, dtstart.str) == 0)
             {
               if ((p = strchr (buf, ':')) != NULL)
                 vevent.start = ical_datetime2long (++p, &vevent_type);
@@ -1050,7 +1050,7 @@ ical_read_event (FILE *fdi, FILE *log, unsigned *noevents, unsigned *noapoints,
                   goto cleanup;
                 }
             }
-          else if (strncmp (buf_upper, dtend.str, dtend.len) == 0)
+          else if (strcmp (buf_upper, dtend.str) == 0)
             {
               if ((p = strchr (buf, ':')) != NULL)
                 vevent.end = ical_datetime2long (++p, &vevent_type);
@@ -1061,7 +1061,7 @@ ical_read_event (FILE *fdi, FILE *log, unsigned *noevents, unsigned *noapoints,
                   goto cleanup;
                 }
             }
-          else if (strncmp (buf_upper, duration.str, duration.len) == 0)
+          else if (strcmp (buf_upper, duration.str) == 0)
             {
               if ((vevent.dur = ical_dur2long (buf)) <= 0)
                 {
@@ -1070,24 +1070,24 @@ ical_read_event (FILE *fdi, FILE *log, unsigned *noevents, unsigned *noapoints,
                   goto cleanup;
                 }
             }
-          else if (strncmp (buf_upper, rrule.str, rrule.len) == 0)
+          else if (strcmp (buf_upper, rrule.str) == 0)
             {
               vevent.rpt = ical_read_rrule (log, buf, noskipped, ITEMLINE);
             }
-          else if (strncmp (buf_upper, exdate.str, exdate.len) == 0)
+          else if (strcmp (buf_upper, exdate.str) == 0)
             {
               ical_read_exdate (&vevent.exc, log, buf, noskipped, ITEMLINE);
             }
-          else if (strncmp (buf_upper, summary.str, summary.len) == 0)
+          else if (strcmp (buf_upper, summary.str) == 0)
             {
               vevent.mesg = ical_read_summary (buf);
             }
-          else if (strncmp (buf_upper, alarm.str, alarm.len) == 0)
+          else if (strcmp (buf_upper, alarm.str) == 0)
             {
               skip_alarm = 1;
               vevent.has_alarm = 1;
             }
-          else if (strncmp (buf_upper, desc.str, desc.len) == 0)
+          else if (strcmp (buf_upper, desc.str) == 0)
             {
               vevent.note = ical_read_note (buf, noskipped, ICAL_VEVENT,
                                             ITEMLINE, log);
@@ -1139,11 +1139,11 @@ ical_read_todo (FILE *fdi, FILE *log, unsigned *notodos, unsigned *noskipped,
         {
           /* Need to skip VALARM properties because some keywords could
              interfere, such as DURATION, SUMMARY,.. */
-          if (strncmp (buf_upper, endalarm.str, endalarm.len) == 0)
+          if (strcmp (buf_upper, endalarm.str) == 0)
             skip_alarm = 0;
           continue;
         }
-      if (strncmp (buf_upper, endtodo.str, endtodo.len) == 0)
+      if (strcmp (buf_upper, endtodo.str) == 0)
         {
           if (!vtodo.has_priority)
             vtodo.priority = LOWEST;
@@ -1179,15 +1179,15 @@ ical_read_todo (FILE *fdi, FILE *log, unsigned *notodos, unsigned *noskipped,
                   vtodo.priority = LOWEST;
                 }
             }
-          else if (strncmp (buf_upper, summary.str, summary.len) == 0)
+          else if (strcmp (buf_upper, summary.str) == 0)
             {
               vtodo.mesg = ical_read_summary (buf);
             }
-          else if (strncmp (buf_upper, alarm.str, alarm.len) == 0)
+          else if (strcmp (buf_upper, alarm.str) == 0)
             {
               skip_alarm = 1;
             }
-          else if (strncmp (buf_upper, desc.str, desc.len) == 0)
+          else if (strcmp (buf_upper, desc.str) == 0)
             {
               vtodo.note = ical_read_note (buf, noskipped, ICAL_VTODO,
                                            ITEMLINE, log);
@@ -1229,12 +1229,12 @@ ical_import_data (FILE *stream, FILE *log, unsigned *events, unsigned *apoints,
     {
       (*lines)++;
       str_toupper (buf);
-      if (strncmp (buf, vevent.str, vevent.len) == 0)
+      if (strcmp (buf, vevent.str) == 0)
         {
           ical_read_event (stream, log, events, apoints, skipped, buf, lstore,
                            lines);
         }
-      else if (strncmp (buf, vtodo.str, vtodo.len) == 0)
+      else if (strcmp (buf, vtodo.str) == 0)
         {
           ical_read_todo (stream, log, todos, skipped, buf, lstore, lines);
         }
