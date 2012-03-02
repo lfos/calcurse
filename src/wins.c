@@ -224,21 +224,16 @@ wins_slctd_next (void)
 static void
 wins_init_panels (void)
 {
-  char label[BUFSIZ];
-
   win[CAL].p = newwin (CALHEIGHT, wins_sbar_width (), win[CAL].y, win[CAL].x);
-  strncpy (label, _("Calendar"), BUFSIZ);
-  wins_show (win[CAL].p, label);
+  wins_show (win[CAL].p, _("Calendar"));
 
   win[APP].p = newwin (win[APP].h, win[APP].w, win[APP].y, win[APP].x);
-  strncpy (label, _("Appointments"), BUFSIZ);
-  wins_show (win[APP].p, label);
+  wins_show (win[APP].p, _("Appointments"));
   apad.width = win[APP].w - 3;
   apad.ptrwin = newpad (apad.length, apad.width);
 
   win[TOD].p = newwin (win[TOD].h, win[TOD].w, win[TOD].y, win[TOD].x);
-  strncpy (label, _("ToDo"), BUFSIZ);
-  wins_show (win[TOD].p, label);
+  wins_show (win[TOD].p, _("ToDo"));
 
   /* Enable function keys (i.e. arrow keys) in those windows */
   keypad (win[CAL].p, TRUE);
@@ -353,7 +348,7 @@ wins_reinit (void)
 
 /* Show the window with a border and a label. */
 void
-wins_show (WINDOW *win, char *label)
+wins_show (WINDOW *win, const char *label)
 {
   int width = getmaxx (win);
 

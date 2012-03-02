@@ -215,7 +215,7 @@ custom_layout_config (void)
   struct scrollwin hwin;
   struct window conf_win;
   int ch, mark, cursor, need_reset;
-  char label[BUFSIZ];
+  const char *label = _("layout configuration");
   char *help_text =
     _("With this configuration menu, one can choose where panels will be\n"
       "displayed inside calcurse screen. \n"
@@ -226,7 +226,6 @@ custom_layout_config (void)
       "       't' -> todo panel\n\n");
 
   conf_win.p = NULL;
-  strncpy (label, _("layout configuration"), BUFSIZ);
   custom_confwin_init (&conf_win, label);
   cursor = mark = wins_layout () - 1;
   display_layout_config (&conf_win, mark, cursor);
@@ -374,7 +373,7 @@ set_confwin_attr (struct window *cwin)
  * (useful in case of window resize).
  */
 void
-custom_confwin_init (struct window *confwin, char *label)
+custom_confwin_init (struct window *confwin, const char *label)
 {
   if (confwin->p)
     {
@@ -547,10 +546,9 @@ custom_color_config (void)
   struct window conf_win;
   int ch, cursor, need_reset, theme_changed;
   int mark_fore, mark_back;
-  char label[BUFSIZ];
+  const char *label = _("color theme");
 
   conf_win.p = 0;
-  strncpy (label, _("color theme"), BUFSIZ);
   custom_confwin_init (&conf_win, label);
   mark_fore = NBUSERCOLORS;
   mark_back = SIZE - 1;
@@ -764,7 +762,7 @@ custom_general_config (void)
 
   clear ();
   custom_set_swsiz (&cwin);
-  strncpy (cwin.label, _("general options"), BUFSIZ);
+  cwin.label = _("general options");
   wins_scrollwin_init (&cwin);
   wins_show (cwin.win.p, cwin.label);
   status_mesg (number_str, keys);
@@ -969,7 +967,7 @@ custom_keys_config (void)
   clear ();
   custom_set_swsiz (&kwin);
   nbdisplayed = (kwin.win.h - LABELLINES) / LINESPERKEY;
-  strncpy (kwin.label, _("keys configuration"), BUFSIZ);
+  kwin.label = _("keys configuration");
   wins_scrollwin_init (&kwin);
   wins_show (kwin.win.p, kwin.label);
   custom_keys_config_bar ();

@@ -463,7 +463,7 @@ struct scrollwin {
   struct window  pad;
   unsigned       first_visible_line;
   unsigned       total_lines;
-  char           label[BUFSIZ];
+  const char    *label;
 };
 
 /* Pad structure to handle scrolling. */
@@ -634,7 +634,7 @@ void custom_layout_config (void);
 void custom_sidebar_config (void);
 void custom_color_config (void);
 void custom_color_theme_name (char *);
-void custom_confwin_init (struct window *, char *);
+void custom_confwin_init (struct window *, const char *);
 void custom_set_swsiz (struct scrollwin *);
 void custom_general_config (void);
 void custom_keys_config (void);
@@ -897,7 +897,7 @@ void         warnbox (const char *);
 void         status_mesg (char *, char *);
 void         erase_window_part (WINDOW *, int, int, int, int);
 WINDOW      *popup (int, int, int, int, char *, char *, int);
-void         print_in_middle (WINDOW *, int, int, int, char *);
+void         print_in_middle (WINDOW *, int, int, int, const char *);
 int          is_all_digit (const char *);
 long         get_item_time (long);
 int          get_item_hour (long);
@@ -985,7 +985,7 @@ void      wins_scrollwin_up (struct scrollwin *, int);
 void      wins_scrollwin_down (struct scrollwin *, int);
 void      wins_reinit (void);
 void      wins_reinit_panels (void);
-void      wins_show (WINDOW *, char *);
+void      wins_show (WINDOW *, const char *);
 void      wins_get_config (void);
 void      wins_update_border (int);
 void      wins_update_panels (int);

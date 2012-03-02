@@ -168,7 +168,7 @@ help_wins_init (struct scrollwin *hwin, int x, int y, int h, int w)
   hwin->pad.h = BUFSIZ;
   hwin->pad.w = hwin->win.w - 2 * PADOFFSET + 1;
 
-  strncpy (hwin->label, _("Calcurse help"), BUFSIZ);
+  hwin->label = _("Calcurse help");
   wins_scrollwin_init (hwin);
   wins_show (hwin->win.p, hwin->label);
 }

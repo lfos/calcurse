@@ -212,7 +212,8 @@ popup (int pop_row, int pop_col, int pop_y, int pop_x, char *title, char *msg,
 
 /* prints in middle of a panel */
 void
-print_in_middle (WINDOW *win, int starty, int startx, int width, char *string)
+print_in_middle (WINDOW *win, int starty, int startx, int width,
+                 const char *string)
 {
   int len = strlen (string);
   int x, y;
@@ -490,17 +491,17 @@ void
 print_bool_option_incolor (WINDOW *win, unsigned option, int pos_y, int pos_x)
 {
   int color = 0;
-  char option_value[BUFSIZ] = "";
+  const char *option_value;
 
   if (option == 1)
     {
       color = ATTR_TRUE;
-      strncpy (option_value, _("yes"), BUFSIZ);
+      option_value = _("yes");
     }
   else if (option == 0)
     {
       color = ATTR_FALSE;
-      strncpy (option_value, _("no"), BUFSIZ);
+      option_value = _("no");
     }
   else
     EXIT (_("option not defined"));
