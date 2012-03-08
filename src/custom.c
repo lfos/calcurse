@@ -1104,6 +1104,7 @@ custom_config_main (void)
       _("Sorry, colors are not supported by your terminal\n"
         "(Press [ENTER] to continue)");
   int ch;
+  int old_layout;
 
   custom_config_bar ();
   while ((ch = wgetch (win[STA].p)) != 'q')
@@ -1124,7 +1125,10 @@ custom_config_main (void)
           break;
         case 'L':
         case 'l':
+          old_layout = wins_layout ();
           custom_layout_config ();
+          if (wins_layout () != old_layout)
+            wins_reset ();
           break;
         case 'G':
         case 'g':
@@ -1145,7 +1149,6 @@ custom_config_main (void)
         default:
           continue;
         }
-      wins_reset ();
       wins_update (FLAG_ALL);
       wins_erase_status_bar ();
       custom_config_bar ();
