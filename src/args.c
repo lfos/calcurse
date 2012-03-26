@@ -1,7 +1,7 @@
 /*
  * Calcurse - text-based organizer
  *
- * Copyright (c) 2004-2011 calcurse Development Team <misc@calcurse.org>
+ * Copyright (c) 2004-2012 calcurse Development Team <misc@calcurse.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -82,7 +82,7 @@ static void
 version_arg ()
 {
   const char *vtext =
-      _("\nCopyright (c) 2004-2011 calcurse Development Team.\n"
+      _("\nCopyright (c) 2004-2012 calcurse Development Team.\n"
         "This is free software; see the source for copying conditions.\n");
 
   fprintf (stdout, _("Calcurse %s - text-based organizer\n"), VERSION);
