@@ -82,28 +82,28 @@ static int config_serialize_input_datefmt (char *, void *);
   (config_fn_serialize_t) config_serialize_str, &(var)
 
 static const struct confvar confmap[] = {
-  { "general.autosave", CONFIG_HANDLER_BOOL (conf.auto_save) },
-  { "general.autogc", CONFIG_HANDLER_BOOL (conf.auto_gc) },
-  { "general.periodicsave", CONFIG_HANDLER_UNSIGNED (conf.periodic_save) },
-  { "general.confirmquit", CONFIG_HANDLER_BOOL (conf.confirm_quit) },
-  { "general.confirmdelete", CONFIG_HANDLER_BOOL (conf.confirm_delete) },
-  { "general.systemdialogs", CONFIG_HANDLER_BOOL (conf.skip_system_dialogs) },
-  { "general.progressbar", CONFIG_HANDLER_BOOL (conf.skip_progress_bar) },
   { "appearance.calendarview", config_parse_calendar_view, config_serialize_calendar_view, NULL },
-  { "general.firstdayofweek", config_parse_first_day_of_week, config_serialize_first_day_of_week, NULL },
-  { "appearance.theme", config_parse_color_theme, config_serialize_color_theme, NULL },
   { "appearance.layout", config_parse_layout, config_serialize_layout, NULL },
-  { "appearance.sidebarwidth", config_parse_sidebar_width, config_serialize_sidebar_width, NULL },
   { "appearance.notifybar", CONFIG_HANDLER_BOOL (nbar.show) },
+  { "appearance.sidebarwidth", config_parse_sidebar_width, config_serialize_sidebar_width, NULL },
+  { "appearance.theme", config_parse_color_theme, config_serialize_color_theme, NULL },
+  { "daemon.enable", CONFIG_HANDLER_BOOL (dmon.enable) },
+  { "daemon.log", CONFIG_HANDLER_BOOL (dmon.log) },
+  { "format.inputdate", config_parse_input_datefmt, config_serialize_input_datefmt, NULL },
   { "format.notifydate", CONFIG_HANDLER_STR (nbar.datefmt) },
   { "format.notifytime", CONFIG_HANDLER_STR (nbar.timefmt) },
-  { "notification.warning", CONFIG_HANDLER_INT (nbar.cntdwn) },
+  { "format.outputdate", config_parse_output_datefmt, config_serialize_output_datefmt, NULL },
+  { "general.autogc", CONFIG_HANDLER_BOOL (conf.auto_gc) },
+  { "general.autosave", CONFIG_HANDLER_BOOL (conf.auto_save) },
+  { "general.confirmdelete", CONFIG_HANDLER_BOOL (conf.confirm_delete) },
+  { "general.confirmquit", CONFIG_HANDLER_BOOL (conf.confirm_quit) },
+  { "general.firstdayofweek", config_parse_first_day_of_week, config_serialize_first_day_of_week, NULL },
+  { "general.periodicsave", CONFIG_HANDLER_UNSIGNED (conf.periodic_save) },
+  { "general.progressbar", CONFIG_HANDLER_BOOL (conf.skip_progress_bar) },
+  { "general.systemdialogs", CONFIG_HANDLER_BOOL (conf.skip_system_dialogs) },
   { "notification.command", CONFIG_HANDLER_STR (nbar.cmd) },
   { "notification.notifyall", CONFIG_HANDLER_BOOL (nbar.notify_all) },
-  { "format.outputdate", config_parse_output_datefmt, config_serialize_output_datefmt, NULL },
-  { "format.inputdate", config_parse_input_datefmt, config_serialize_input_datefmt, NULL },
-  { "daemon.enable", CONFIG_HANDLER_BOOL (dmon.enable) },
-  { "daemon.log", CONFIG_HANDLER_BOOL (dmon.log) }
+  { "notification.warning", CONFIG_HANDLER_INT (nbar.cntdwn) }
 };
 
 struct config_save_status {
