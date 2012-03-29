@@ -9,67 +9,67 @@
 # Lines beginning with "#" are comments, and ignored by Calcurse.
 
 # If this option is set to yes, automatic save is done when quitting
-auto_save=yes
+general.autosave=yes
 
 # If this option is set to yes, the GC is run automatically when quitting
-auto_gc=no
+general.autogc=no
 
 # If not null, perform automatic saves every 'periodic_save' minutes
-periodic_save=0
+general.periodicsave=0
 
 # If this option is set to yes, confirmation is required before quitting
-confirm_quit=yes
+general.confirmquit=yes
 
 # If this option is set to yes, confirmation is required before deleting an event
-confirm_delete=yes
+general.confirmdelete=yes
 
 # If this option is set to yes, messages about loaded and saved data will not be displayed
-skip_system_dialogs=no
+general.systemdialogs=no
 
 # If this option is set to yes, progress bar appearing when saving data will not be displayed
-skip_progress_bar=no
+general.progressbar=no
 
 # Default calendar view (0)monthly (1)weekly:
-calendar_default_view=0
+appearance.calendarview=0
 
 # If this option is set to yes, monday is the first day of the week, else it is sunday
-week_begins_on_monday=yes
+general.firstdayofweek=yes
 
 # This is the color theme used for menus :
-color-theme=red on default
+appearance.theme=red on default
 
 # This is the layout of the calendar :
-layout=1
+appearance.layout=1
 
 # Width ( percentage, 0 being minimun width, fp) of the side bar :
-side-bar_width=1
+appearance.sidebarwidth=1
 
 # If this option is set to yes, notify-bar will be displayed :
-notify-bar_show=yes
+appearance.notifybar=yes
 
 # Format of the date to be displayed inside notify-bar :
-notify-bar_date=%a %F
+format.notifydate=%a %F
 
 # Format of the time to be displayed inside notify-bar :
-notify-bar_clock=%T
+format.notifytime=%T
 
 # Warn user if he has an appointment within next 'notify-bar_warning' seconds :
-notify-bar_warning=300
+notification.warning=300
 
 # Command used to notify user of an upcoming appointment :
-notify-bar_command=printf '\a'
+notification.command=printf '\a'
 
 # Notify all appointments instead of flagged ones only
-notify-all=no
+notification.notifyall=no
 
 # Format of the date to be displayed in non-interactive mode :
-output_datefmt=%D
+format.outputdate=%D
 
 # Format to be used when entering a date (1)mm/dd/yyyy (2)dd/mm/yyyy (3)yyyy/mm/dd) (4)yyyy-mm-dd:
-input_datefmt=1
+format.inputdate=1
 
 # If this option is set to yes, calcurse will run in background to get notifications after exiting
-notify-daemon_enable=no
+daemon.enable=no
 
 # If this option is set to yes, activity will be logged when running in background
-notify-daemon_log=no
+daemon.log=no
