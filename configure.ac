@@ -145,8 +145,8 @@ AM_XGETTEXT_OPTION([--no-location --keyword=_ --keyword=N_])
 #-------------------------------------------------------------------------------
 #                                                               Create Makefiles
 #-------------------------------------------------------------------------------
-AC_OUTPUT(Makefile doc/Makefile src/Makefile test/Makefile po/Makefile.in \
-          po/Makefile)
+AC_OUTPUT(Makefile doc/Makefile src/Makefile test/Makefile scripts/Makefile \
+          po/Makefile.in po/Makefile)
 #-------------------------------------------------------------------------------
 #                                                                        Summary
 #-------------------------------------------------------------------------------
