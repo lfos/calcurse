@@ -479,6 +479,33 @@ config_file_walk (config_fn_walk_cb_t fn_cb,
           value++;
         }
 
+      if (strcmp(key, "auto_save") == 0 ||
+          strcmp(key, "auto_gc") == 0 ||
+          strcmp(key, "periodic_save") == 0 ||
+          strcmp(key, "confirm_quit") == 0 ||
+          strcmp(key, "confirm_delete") == 0 ||
+          strcmp(key, "skip_system_dialogs") == 0 ||
+          strcmp(key, "skip_progress_bar") == 0 ||
+          strcmp(key, "calendar_default_view") == 0 ||
+          strcmp(key, "week_begins_on_monday") == 0 ||
+          strcmp(key, "color-theme") == 0 ||
+          strcmp(key, "layout") == 0 ||
+          strcmp(key, "side-bar_width") == 0 ||
+          strcmp(key, "notify-bar_show") == 0 ||
+          strcmp(key, "notify-bar_date") == 0 ||
+          strcmp(key, "notify-bar_clock") == 0 ||
+          strcmp(key, "notify-bar_warning") == 0 ||
+          strcmp(key, "notify-bar_command") == 0 ||
+          strcmp(key, "notify-all") == 0 ||
+          strcmp(key, "output_datefmt") == 0 ||
+          strcmp(key, "input_datefmt") == 0 ||
+          strcmp(key, "notify-daemon_enable") == 0 ||
+          strcmp(key, "notify-daemon_log") == 0)
+        {
+          WARN_MSG (_("Pre-3.0.0 configuration file format detected, "
+                      "please upgrade running `calcurse-upgrade`."));
+        }
+
       if (value && (*value == '\0' || *value == '\n'))
         {
           /* Backward compatibility mode. */
