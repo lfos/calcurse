@@ -6,20 +6,25 @@ Read `INSTALL` for instructions on how to build and install calcurse.
 Check `TODO` for things that still need to be done.
 
 Browse the file `doc/manual.html` (or its source `doc/manual.txt`) for
-narrative descriptions on how to use calcurse.
+detailed descriptions on how to use calcurse.
 
 Package Overview
 ----------------
 
-You should be reading this file in a directory called: `calcurse-x.x`, where
-`x.x` is the current version number. There should be two subdirectories : `src`
-and `doc`.  Detailed documentation in HTML format can be found in the `doc`
-directory. Calcurse sources can be found in the `src` directory.
+You should be reading this file in a directory called: `calcurse-x.y.z`, where
+`x.y.z` is the current version number.
+
+There should be four subdirectories:
+
+* `src`: contains calcurse sources
+* `test`: contains a test suite and test cases for calcurse
+* `scripts`: contains additional scripts, such as `calcurse-upgrade`
+* `doc`: contains detailed documentation in plain text and HTML
 
 Authors
 -------
 
-* Frederic Culot (Founder, Lead Developer)
+* Frederic Culot (Founder)
 * Lukas Fleischer (Developer)
 
 Contributors
