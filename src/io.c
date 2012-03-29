@@ -440,7 +440,7 @@ io_save_cal (enum save_display display)
 
   show_bar = 0;
   if (ui_mode == UI_CURSES && display == IO_SAVE_DISPLAY_BAR
-      && !conf.skip_progress_bar)
+      && conf.progress_bar)
     show_bar = 1;
   else if (ui_mode == UI_CURSES && display == IO_SAVE_DISPLAY_MARK)
     display_mark ();
@@ -466,7 +466,7 @@ io_save_cal (enum save_display display)
     ERROR_MSG ("%s", access_pb);
 
   /* Print a message telling data were saved */
-  if (ui_mode == UI_CURSES && !conf.skip_system_dialogs
+  if (ui_mode == UI_CURSES && conf.system_dialogs
       && display != IO_SAVE_DISPLAY_MARK)
     {
       status_mesg (save_success, enter);
@@ -988,7 +988,7 @@ io_check_data_files (void)
 
 /* Draw the startup screen */
 void
-io_startup_screen (unsigned skip_dialogs, int no_data_file)
+io_startup_screen (unsigned show_dialogs, int no_data_file)
 {
   char *welcome_mesg =
     _("Welcome to Calcurse. Missing data files were created.");
@@ -1000,7 +1000,7 @@ io_startup_screen (unsigned skip_dialogs, int no_data_file)
       status_mesg (welcome_mesg, enter);
       wgetch (win[STA].p);
     }
-  else if (!skip_dialogs)
+  else if (show_dialogs)
     {
       status_mesg (data_mesg, enter);
       wgetch (win[STA].p);
@@ -1040,7 +1040,7 @@ io_export_data (enum export_type type)
   else if (type == IO_EXPORT_PCAL)
     pcal_export_data (stream);
 
-  if (!conf.skip_system_dialogs && ui_mode == UI_CURSES)
+  if (conf.system_dialogs && ui_mode == UI_CURSES)
     {
       status_mesg (success, enter);
       wgetch (win[STA].p);
@@ -1171,7 +1171,7 @@ io_import_data (enum import_type type, char *stream_name)
   /* Update the number of todo items. */
   todo_set_nb (todo_nb () + stats.todos);
 
-  if (ui_mode == UI_CURSES && !conf.skip_system_dialogs)
+  if (ui_mode == UI_CURSES && conf.system_dialogs)
     {
       char read[BUFSIZ], stat[BUFSIZ];
 

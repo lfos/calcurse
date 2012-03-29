@@ -63,5 +63,13 @@ if grep -q -e '^auto_save=' -e '^auto_gc=' -e '^periodic_save=' \
       -e '/^daemon.log=/{N;s/\n//}' "$CONFFILE" > "$tmpfile" || exit 1
     mv "$tmpfile" "$CONFFILE" || exit 1
   fi
+
+  awk '
+  BEGIN { FS=OFS="=" }
+  $1 == "general.systemdialogs" || $1 == "general.progressbar" \
+    { $2 = ($2 == "yes") ? "no" : "yes" }
+  { print }
+  ' < "$CONFFILE" > "$tmpfile" || exit 1
+  mv "$tmpfile" "$CONFFILE" || exit 1
 fi
 

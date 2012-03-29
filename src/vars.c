@@ -131,8 +131,8 @@ vars_init (void)
   conf.auto_save = 1;
   conf.auto_gc = 0;
   conf.periodic_save = 0;
-  conf.skip_system_dialogs = 0;
-  conf.skip_progress_bar = 0;
+  conf.system_dialogs = 1;
+  conf.progress_bar = 1;
   strncpy (conf.output_datefmt, "%D", 3);
   conf.input_datefmt = 1;
 

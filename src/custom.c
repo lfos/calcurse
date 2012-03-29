@@ -644,8 +644,8 @@ print_general_options (WINDOW *win)
     _("periodic_save = "),
     _("confirm_quit = "),
     _("confirm_delete = "),
-    _("skip_system_dialogs = "),
-    _("skip_progress_bar = "),
+    _("system_dialogs = "),
+    _("progress_bar = "),
     _("week_begins_on_monday = "),
     _("output_datefmt = "),
     _("input_datefmt = ")
@@ -687,17 +687,17 @@ print_general_options (WINDOW *win)
                "before deleting an event)"));
   y += YOFF;
   mvwprintw (win, y, XPOS, "[6] %s      ", opt[SKIP_SYSTEM_DIAGS]);
-  print_bool_option_incolor (win, conf.skip_system_dialogs, y,
+  print_bool_option_incolor (win, conf.system_dialogs, y,
                              XPOS + 4 + strlen (opt[SKIP_SYSTEM_DIAGS]));
   mvwprintw (win, y + 1, XPOS,
              _("(if set to YES, messages about loaded "
-               "and saved data will not be displayed)"));
+               "and saved data will be displayed)"));
   y += YOFF;
   mvwprintw (win, y, XPOS, "[7] %s      ", opt[SKIP_PROGRESS_BAR]);
-  print_bool_option_incolor (win, conf.skip_progress_bar, y,
+  print_bool_option_incolor (win, conf.progress_bar, y,
                             XPOS + 4 + strlen (opt[SKIP_PROGRESS_BAR]));
   mvwprintw (win, y + 1, XPOS,
-             _("(if set to YES, progress bar will not be displayed "
+             _("(if set to YES, progress bar will be displayed "
                 "when saving data)"));
   y += YOFF;
   mvwprintw (win, y, XPOS, "[8] %s      ", opt[WEEK_BEGINS_MONDAY]);
@@ -809,10 +809,10 @@ custom_general_config (void)
           conf.confirm_delete = !conf.confirm_delete;
           break;
         case '6':
-          conf.skip_system_dialogs = !conf.skip_system_dialogs;
+          conf.system_dialogs = !conf.system_dialogs;
           break;
         case '7':
-          conf.skip_progress_bar = !conf.skip_progress_bar;
+          conf.progress_bar = !conf.progress_bar;
           break;
         case '8':
           calendar_change_first_day_of_week ();

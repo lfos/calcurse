@@ -99,8 +99,8 @@ static const struct confvar confmap[] = {
   { "general.confirmquit", CONFIG_HANDLER_BOOL (conf.confirm_quit) },
   { "general.firstdayofweek", config_parse_first_day_of_week, config_serialize_first_day_of_week, NULL },
   { "general.periodicsave", CONFIG_HANDLER_UNSIGNED (conf.periodic_save) },
-  { "general.progressbar", CONFIG_HANDLER_BOOL (conf.skip_progress_bar) },
-  { "general.systemdialogs", CONFIG_HANDLER_BOOL (conf.skip_system_dialogs) },
+  { "general.progressbar", CONFIG_HANDLER_BOOL (conf.progress_bar) },
+  { "general.systemdialogs", CONFIG_HANDLER_BOOL (conf.system_dialogs) },
   { "notification.command", CONFIG_HANDLER_STR (nbar.cmd) },
   { "notification.notifyall", CONFIG_HANDLER_BOOL (nbar.notify_all) },
   { "notification.warning", CONFIG_HANDLER_INT (nbar.cntdwn) }

@@ -233,8 +233,8 @@ struct conf {
   unsigned   periodic_save;
   unsigned   confirm_quit;
   unsigned   confirm_delete;
-  unsigned   skip_system_dialogs;
-  unsigned   skip_progress_bar;
+  unsigned   system_dialogs;
+  unsigned   progress_bar;
   char      *editor;
   char      *pager;
   char       output_datefmt[BUFSIZ];  /* format for displaying date */
