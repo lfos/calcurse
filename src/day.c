@@ -195,9 +195,13 @@ day_store_apoints (long date)
   int a_nb = 0;
 
   LLIST_TS_LOCK (&alist_p);
-  LLIST_TS_FIND_FOREACH_CONT (&alist_p, date, apoint_inday, i)
+  LLIST_TS_FIND_FOREACH (&alist_p, date, apoint_inday, i)
     {
       struct apoint *apt = LLIST_TS_GET_DATA (i);
+
+      if (apt->start >= date + DAYINSEC)
+        break;
+
       day_add_apoint (APPT, apt->mesg, apt->note, apt->start, apt->dur,
                       apt->state, 0);
       a_nb++;
@@ -547,11 +551,14 @@ day_chk_busy_slices (struct date day, int slicesno, int *slices)
   LLIST_TS_UNLOCK (&recur_alist_p);
 
   LLIST_TS_LOCK (&alist_p);
-  LLIST_TS_FIND_FOREACH_CONT (&alist_p, date, apoint_inday, i)
+  LLIST_TS_FIND_FOREACH (&alist_p, date, apoint_inday, i)
     {
       struct apoint *apt = LLIST_TS_GET_DATA (i);
       long start = get_item_time (apt->start);
       long end = get_item_time (apt->start + apt->dur);
+
+      if (apt->start >= date + DAYINSEC)
+        break;
 
       if (!fill_slices (slices, slicesno, SLICENUM (start), SLICENUM (end)))
         {
