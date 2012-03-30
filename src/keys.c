@@ -322,7 +322,7 @@ keys_str2int (char *key)
     {
       if (key[0] == '^')
         return CTRL ((int)key[1]);
-      else if (!strcmp (key, CONTROL_KEY))
+      else if (!strncmp (key, CONTROL_KEY, sizeof (CONTROL_KEY) - 1))
         return CTRL ((int)key[sizeof (CONTROL_KEY) - 1]);
       else if (!strcmp (key, TAB_KEY))
         return TAB;
