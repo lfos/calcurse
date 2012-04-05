@@ -160,7 +160,7 @@ warnbox (const char *msg)
  * Message texts for first line and second line are to be provided.
  */
 void
-status_mesg (char *mesg_line1, char *mesg_line2)
+status_mesg (const char *mesg_line1, const char *mesg_line2)
 {
   wins_erase_status_bar ();
   custom_apply_attr (win[STA].p, ATTR_HIGHEST);

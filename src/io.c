@@ -1230,14 +1230,14 @@ io_log_init (void)
 }
 
 void
-io_log_print (struct io_file *log, int line, char *msg)
+io_log_print (struct io_file *log, int line, const char *msg)
 {
   if (log && log->fd)
     fprintf (log->fd, "line %d: %s\n", line, msg);
 }
 
 void
-io_log_display (struct io_file *log, char *msg, char *pager)
+io_log_display (struct io_file *log, const char *msg, char *pager)
 {
   char *choices = "[y/n] ";
   int ans;

@@ -204,7 +204,7 @@ todo_arg (int priority, const char *format, regex_t *regex)
 {
   llist_item_t *i;
   int title = 1;
-  char *titlestr;
+  const char *titlestr;
   const char *all_todos_title = _("to do:\n");
   const char *completed_title = _("completed tasks:\n");
 
