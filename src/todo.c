@@ -134,8 +134,8 @@ void
 todo_new_item (void)
 {
   int ch = 0;
-  char *mesg = _("Enter the new ToDo item : ");
-  char *mesg_id = _("Enter the ToDo priority [1 (highest) - 9 (lowest)] :");
+  const char *mesg = _("Enter the new ToDo item : ");
+  const char *mesg_id = _("Enter the ToDo priority [1 (highest) - 9 (lowest)] :");
   char todo_input[BUFSIZ] = "";
 
   status_mesg (mesg, "");
@@ -243,11 +243,11 @@ void
 todo_delete (void)
 {
   char *choices = "[y/n] ";
-  char *del_todo_str = _("Do you really want to delete this task ?");
-  char *erase_warning =
+  const char *del_todo_str = _("Do you really want to delete this task ?");
+  const char *erase_warning =
       _("This item has a note attached to it. "
         "Delete (t)odo or just its (n)ote ?");
-  char *erase_choice = _("[t/n] ");
+  const char *erase_choice = _("[t/n] ");
   int answer, has_note;
 
   if (conf.confirm_delete)
@@ -364,7 +364,7 @@ void
 todo_edit_item (void)
 {
   struct todo *i;
-  char *mesg = _("Enter the new ToDo description :");
+  const char *mesg = _("Enter the new ToDo description :");
 
   status_mesg (mesg, "");
   i = todo_get_item (hilt);

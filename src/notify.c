@@ -714,17 +714,17 @@ notify_config_bar (void)
 {
   struct scrollwin cwin;
   char *buf;
-  char *number_str =
+  const char *number_str =
     _("Enter an option number to change its value");
-  char *keys =
+  const char *keys =
     _("(Press '^P' or '^N' to move up or down, 'Q' to quit)");
-  char *date_str =
+  const char *date_str =
     _("Enter the date format (see 'man 3 strftime' for possible formats) ");
-  char *time_str =
+  const char *time_str =
     _("Enter the time format (see 'man 3 strftime' for possible formats) ");
-  char *count_str =
+  const char *count_str =
     _("Enter the number of seconds (0 not to be warned before an appointment)");
-  char *cmd_str = _("Enter the notification command ");
+  const char *cmd_str = _("Enter the notification command ");
   int ch;
 
   clear ();

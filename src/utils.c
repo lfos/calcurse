@@ -105,8 +105,8 @@ void
 fatalbox (const char *errmsg)
 {
   WINDOW *errwin;
-  char *label = _("/!\\ INTERNAL ERROR /!\\");
-  char *reportmsg = _("Please report the following bug:");
+  const char *label = _("/!\\ INTERNAL ERROR /!\\");
+  const char *reportmsg = _("Please report the following bug:");
   const int WINROW = 10;
   const int WINCOL = col - 2;
   const int MSGLEN = WINCOL - 2;
@@ -188,7 +188,7 @@ WINDOW *
 popup (int pop_row, int pop_col, int pop_y, int pop_x, char *title, char *msg,
        int hint)
 {
-  char *any_key = _("Press any key to continue...");
+  const char *any_key = _("Press any key to continue...");
   char label[BUFSIZ];
   WINDOW *popup_win;
   const int MSGXPOS = 5;

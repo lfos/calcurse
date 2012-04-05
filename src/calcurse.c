@@ -68,7 +68,7 @@ main (int argc, char **argv)
   int non_interactive;
   int no_data_file = 1;
   int cut_item = 0;
-  char *quit_message = _("Do you really want to quit ?");
+  const char *quit_message = _("Do you really want to quit ?");
   char choices[] = "[y/n] ";
   int count;
 

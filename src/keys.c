@@ -103,7 +103,7 @@ static struct keydef_s keydef[NBKEYS] = {
 static void
 dump_intro (FILE *fd)
 {
-  char *intro =
+  const char *intro =
     _("#\n"
       "# Calcurse keys configuration file\n#\n"
       "# This file sets the keybindings used by Calcurse.\n"

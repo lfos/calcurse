@@ -874,19 +874,19 @@ recur_repeat_item (void)
   struct date until_date;
   char outstr[BUFSIZ];
   char user_input[BUFSIZ] = "";
-  char *mesg_type_1 =
+  const char *mesg_type_1 =
     _("Enter the repetition type: (D)aily, (W)eekly, (M)onthly, (Y)early");
-  char *mesg_type_2 = _("[D/W/M/Y] ");
-  char *mesg_freq_1 = _("Enter the repetition frequence:");
-  char *mesg_wrong_freq = _("The frequence you entered is not valid.");
-  char *mesg_until_1 =
+  const char *mesg_type_2 = _("[D/W/M/Y] ");
+  const char *mesg_freq_1 = _("Enter the repetition frequence:");
+  const char *mesg_wrong_freq = _("The frequence you entered is not valid.");
+  const char *mesg_until_1 =
     _("Enter the ending date: [%s] or '0' for an endless repetition");
-  char *mesg_wrong_1 = _("The entered date is not valid.");
-  char *mesg_wrong_2 =
+  const char *mesg_wrong_1 = _("The entered date is not valid.");
+  const char *mesg_wrong_2 =
     _("Possible formats are [%s] or '0' for an endless repetition");
-  char *wrong_type_1 = _("This item is already a repeated one.");
-  char *wrong_type_2 = _("Press [ENTER] to continue.");
-  char *mesg_older =
+  const char *wrong_type_1 = _("This item is already a repeated one.");
+  const char *wrong_type_2 = _("Press [ENTER] to continue.");
+  const char *mesg_older =
     _("Sorry, the date you entered is older than the item start time.");
   int type = 0, freq = 0;
   int item_nb;

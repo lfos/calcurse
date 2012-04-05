@@ -155,16 +155,16 @@ apoint_add (void)
 {
 #define LTIME 6
 #define LDUR 12
-  char *mesg_1 =
+  const char *mesg_1 =
     _("Enter start time ([hh:mm]), leave blank for an all-day event : ");
-  char *mesg_2 =
+  const char *mesg_2 =
     _("Enter end time ([hh:mm]) or duration ([+hh:mm], [+xxxdxxhxxm] or [+mm]) : ");
-  char *mesg_3 = _("Enter description :");
-  char *format_message_1 =
+  const char *mesg_3 = _("Enter description :");
+  const char *format_message_1 =
     _("You entered an invalid start time, should be [hh:mm]");
-  char *format_message_2 =
+  const char *format_message_2 =
     _("Invalid end time/duration, should be [hh:mm], [+hh:mm], [+xxxdxxhxxm] or [+mm]");
-  char *enter_str = _("Press [Enter] to continue");
+  const char *enter_str = _("Press [Enter] to continue");
   int Id = 1;
   char item_time[LDUR] = "";
   char item_mesg[BUFSIZ] = "";
@@ -265,7 +265,7 @@ void
 apoint_delete (unsigned *nb_events, unsigned *nb_apoints)
 {
   char *choices = "[y/n] ";
-  char *del_app_str = _("Do you really want to delete this item ?");
+  const char *del_app_str = _("Do you really want to delete this item ?");
   long date;
   int nb_items = *nb_apoints + *nb_events;
   int to_be_removed = 0;

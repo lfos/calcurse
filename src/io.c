@@ -89,10 +89,10 @@ progress_bar (progress_bar_t type, int progress)
 #define NBEXPORTED      3
 #define LABELENGTH      15
   int i, step, steps;
-  char *mesg_sav = _("Saving...");
-  char *mesg_load = _("Loading...");
-  char *mesg_export = _("Exporting...");
-  char *error_msg = _("Internal error while displaying progress bar");
+  const char *mesg_sav = _("Saving...");
+  const char *mesg_load = _("Loading...");
+  const char *mesg_export = _("Exporting...");
+  const char *error_msg = _("Internal error while displaying progress bar");
   char *barchar = "|";
   char *file[NBFILES] = {
     "[    conf    ]",
@@ -154,10 +154,10 @@ get_export_stream (enum export_type type)
   FILE *stream;
   int cancel;
   char *home, *stream_name;
-  char *question = _("Choose the file used to export calcurse data:");
-  char *wrong_name =
+  const char *question = _("Choose the file used to export calcurse data:");
+  const char *wrong_name =
     _("The file cannot be accessed, please enter another file name.");
-  char *press_enter = _("Press [ENTER] to continue.");
+  const char *press_enter = _("Press [ENTER] to continue.");
   const char *file_ext[IO_EXPORT_NBTYPES] = {"ical", "txt"};
 
   stream = NULL;
@@ -428,9 +428,9 @@ io_save_keys (void)
 void
 io_save_cal (enum save_display display)
 {
-  char *access_pb = _("Problems accessing data file ...");
-  char *save_success = _("The data files were successfully saved");
-  char *enter = _("Press [ENTER] to continue");
+  const char *access_pb = _("Problems accessing data file ...");
+  const char *save_success = _("The data files were successfully saved");
+  const char *enter = _("Press [ENTER] to continue");
   int show_bar;
 
   if (read_only)
@@ -794,7 +794,7 @@ io_load_keys (char *pager)
       line++;
       if (skipped > MAX_ERRORS)
         {
-          char *too_many =
+          const char *too_many =
             _("\nToo many errors while reading configuration file!\n"
               "Please backup your keys file, remove it from directory, "
               "and launch calcurse again.\n");
@@ -876,7 +876,7 @@ io_load_keys (char *pager)
   file_close (log->fd, __FILE_POS__);
   if (skipped > 0)
     {
-      char *view_log =
+      const char *view_log =
         _("There were some errors when loading keys file, see log file ?");
 
       io_log_display (log, view_log, pager);
@@ -990,10 +990,10 @@ io_check_data_files (void)
 void
 io_startup_screen (unsigned show_dialogs, int no_data_file)
 {
-  char *welcome_mesg =
+  const char *welcome_mesg =
     _("Welcome to Calcurse. Missing data files were created.");
-  char *data_mesg = _("Data files found. Data will be loaded now.");
-  char *enter = _("Press [ENTER] to continue");
+  const char *data_mesg = _("Data files found. Data will be loaded now.");
+  const char *enter = _("Press [ENTER] to continue");
 
   if (no_data_file != 0)
     {
@@ -1012,8 +1012,8 @@ void
 io_export_data (enum export_type type)
 {
   FILE *stream;
-  char *success = _("The data were successfully exported");
-  char *enter = _("Press [ENTER] to continue");
+  const char *success = _("The data were successfully exported");
+  const char *enter = _("Press [ENTER] to continue");
 
   if (type < IO_EXPORT_ICAL || type >= IO_EXPORT_NBTYPES)
     EXIT (_("unknown export type"));
@@ -1076,10 +1076,10 @@ get_import_stream (enum export_type type)
 {
   FILE *stream;
   char *stream_name;
-  char *ask_fname = _("Enter the file name to import data from:");
-  char *wrong_file =
+  const char *ask_fname = _("Enter the file name to import data from:");
+  const char *wrong_file =
     _("The file cannot be accessed, please enter another file name.");
-  char *press_enter = _("Press [ENTER] to continue.");
+  const char *press_enter = _("Press [ENTER] to continue.");
   int cancel;
 
   stream = NULL;
@@ -1115,7 +1115,7 @@ get_import_stream (enum export_type type)
 void
 io_import_data (enum import_type type, char *stream_name)
 {
-  char *proc_report = _("Import process report: %04d lines read ");
+  const char *proc_report = _("Import process report: %04d lines read ");
   char stats_str[4][BUFSIZ];
   FILE *stream = NULL;
   struct io_file *log;
@@ -1195,7 +1195,7 @@ io_import_data (enum import_type type, char *stream_name)
   file_close (log->fd, __FILE_POS__);
   if (stats.skipped > 0)
     {
-      char *view_log = _("Some items could not be imported, see log file ?");
+      const char *view_log = _("Some items could not be imported, see log file ?");
 
       io_log_display (log, view_log, conf.pager);
     }

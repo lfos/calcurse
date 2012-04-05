@@ -216,7 +216,7 @@ custom_layout_config (void)
   struct window conf_win;
   int ch, mark, cursor, need_reset;
   const char *label = _("layout configuration");
-  char *help_text =
+  const char *help_text =
     _("With this configuration menu, one can choose where panels will be\n"
       "displayed inside calcurse screen. \n"
       "It is possible to choose between eight different configurations.\n"
@@ -303,7 +303,7 @@ custom_sidebar_config (void)
   struct binding *bindings[] = {
       &inc, &dec, &help, &quit
   };
-  char *help_text =
+  const char *help_text =
     _("This configuration screen is used to change the width of the side bar.\n"
       "The side bar is the part of the screen which contains two panels:\n"
       "the calendar and, depending on the chosen layout, either the todo list\n"
@@ -431,9 +431,9 @@ display_color_config (struct window *cwin, int *mark_fore, int *mark_back,
 #define CURSOR			(32 | A_REVERSE)
 #define MARK			88
 
-  char *fore_txt = _("Foreground");
-  char *back_txt = _("Background");
-  char *default_txt = _("(terminal's default)");
+  const char *fore_txt = _("Foreground");
+  const char *back_txt = _("Background");
+  const char *default_txt = _("(terminal's default)");
   char *bar = "          ";
   char *box = "[ ]";
   const unsigned Y = 3;
@@ -746,16 +746,16 @@ void
 custom_general_config (void)
 {
   struct scrollwin cwin;
-  char *number_str =
+  const char *number_str =
     _("Enter an option number to change its value");
-  char *keys =
+  const char *keys =
     _("(Press '^P' or '^N' to move up or down, 'Q' to quit)");
-  char *output_datefmt_str =
+  const char *output_datefmt_str =
     _("Enter the date format (see 'man 3 strftime' for possible formats) ");
-  char *input_datefmt_str =
+  const char *input_datefmt_str =
     _("Enter the date format (1)mm/dd/yyyy (2)dd/mm/yyyy (3)yyyy/mm/dd "
       "(4)yyyy-mm-dd");
-  char *periodic_save_str =
+  const char *periodic_save_str =
     _("Enter the delay, in minutes, between automatic saves (0 to disable) ");
   int ch;
   char *buf;
@@ -1098,7 +1098,7 @@ custom_keys_config (void)
 void
 custom_config_main (void)
 {
-  char *no_color_support =
+  const char *no_color_support =
       _("Sorry, colors are not supported by your terminal\n"
         "(Press [ENTER] to continue)");
   int ch;

@@ -628,10 +628,10 @@ calendar_change_day (int datefmt)
   char outstr[BUFSIZ];
   int dday, dmonth, dyear;
   int wrong_day = 1;
-  char *mesg_line1 =
+  const char *mesg_line1 =
     _("The day you entered is not valid "
       "(should be between 01/01/1902 and 12/31/2037)");
-  char *mesg_line2 = _("Press [ENTER] to continue");
+  const char *mesg_line2 = _("Press [ENTER] to continue");
   char *request_date = "Enter the day to go to [ENTER for today] : %s";
 
   while (wrong_day)

@@ -577,9 +577,9 @@ static int
 day_edit_time (int time, unsigned *new_hour, unsigned *new_minute)
 {
   char *timestr = date_sec2date_str (time, "%H:%M");
-  char *msg_time = _("Enter the new time ([hh:mm]) : ");
-  char *enter_str = _("Press [Enter] to continue");
-  char *fmt_msg = _("You entered an invalid time, should be [hh:mm]");
+  const char *msg_time = _("Enter the new time ([hh:mm]) : ");
+  const char *enter_str = _("Press [Enter] to continue");
+  const char *fmt_msg = _("You entered an invalid time, should be [hh:mm]");
 
   for (;;)
     {
@@ -607,9 +607,9 @@ static int
 day_edit_duration (int start, int dur, unsigned *new_duration)
 {
   char *timestr = date_sec2date_str (start + dur, "%H:%M");
-  char *msg_time = _("Enter the new time ([hh:mm]) or duration ([+hh:mm]): ");
-  char *enter_str = _("Press [Enter] to continue");
-  char *fmt_msg = _("You entered an invalid time, should be [hh:mm]");
+  const char *msg_time = _("Enter the new time ([hh:mm]) or duration ([+hh:mm]): ");
+  const char *enter_str = _("Press [Enter] to continue");
+  const char *fmt_msg = _("You entered an invalid time, should be [hh:mm]");
   long newtime;
   unsigned hr, mn;
 
@@ -652,8 +652,8 @@ update_start_time (long *start, long *dur)
   long newtime;
   unsigned hr, mn;
   int valid_date;
-  char *msg_wrong_time = _("Invalid time: start time must be before end time!");
-  char *msg_enter = _("Press [Enter] to continue");
+  const char *msg_wrong_time = _("Invalid time: start time must be before end time!");
+  const char *msg_enter = _("Press [Enter] to continue");
 
   do
     {
@@ -699,15 +699,15 @@ update_rept (struct rpt **rpt, const long start)
   long newuntil;
   char outstr[BUFSIZ];
   char *typstr, *freqstr, *timstr;
-  char *msg_rpt_type = _("Enter the new repetition type: (D)aily, (W)eekly, "
+  const char *msg_rpt_type = _("Enter the new repetition type: (D)aily, (W)eekly, "
                          "(M)onthly, (Y)early");
-  char *msg_rpt_ans = _("[D/W/M/Y] ");
-  char *msg_wrong_freq = _("The frequence you entered is not valid.");
-  char *msg_wrong_time = _("Invalid time: start time must be before end time!");
-  char *msg_wrong_date = _("The entered date is not valid.");
+  const char *msg_rpt_ans = _("[D/W/M/Y] ");
+  const char *msg_wrong_freq = _("The frequence you entered is not valid.");
+  const char *msg_wrong_time = _("Invalid time: start time must be before end time!");
+  const char *msg_wrong_date = _("The entered date is not valid.");
   char *msg_fmts =
     "Possible formats are [%s] or '0' for an endless repetetition";
-  char *msg_enter = _("Press [Enter] to continue");
+  const char *msg_enter = _("Press [Enter] to continue");
 
   do
     {
@@ -925,14 +925,14 @@ int
 day_erase_item (long date, int item_number, enum eraseflg flag)
 {
   struct day_item *p;
-  char *erase_warning =
+  const char *erase_warning =
       _("This item is recurrent. "
         "Delete (a)ll occurences or just this (o)ne ?");
-  char *note_warning =
+  const char *note_warning =
       _("This item has a note attached to it. "
         "Delete (i)tem or just its (n)ote ?");
-  char *note_choice = _("[i/n] ");
-  char *erase_choice = _("[a/o] ");
+  const char *note_choice = _("[i/n] ");
+  const char *erase_choice = _("[a/o] ");
   int ch, ans;
   unsigned delete_whole;
 
