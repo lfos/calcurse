@@ -46,13 +46,7 @@ struct keydef_s {
   char *binding;
 };
 
-struct key_str_s {
-  char *str;
-  struct key_str_s *next;
-};
-
-static struct key_str_s *keys[NBKEYS];
-
+static llist_t keys[NBKEYS];
 static enum key actions[MAXKEYVAL];
 
 static struct keydef_s keydef[NBKEYS] = {
@@ -135,28 +129,25 @@ keys_init (void)
 
   for (i = 0; i < MAXKEYVAL; i++)
     actions[i] = KEY_UNDEF;
-  memset (keys, 0, NBKEYS);
+  for (i = 0; i < NBKEYS; i++)
+    LLIST_INIT (&keys[i]);
+}
+
+static void
+key_free (char *s)
+{
+  mem_free (s);
 }
 
 void
 keys_free (void)
 {
-  struct key_str_s *o, **i;
-  int key;
+  int i;
 
-  for (key = 0; key < NBKEYS; key++)
+  for (i = 0; i < NBKEYS; i++)
     {
-      if (keys[key] == NULL)
-        continue;
-
-      i = &keys[key];
-      while (*i)
-        {
-          o = *i;
-          *i = o->next;
-          mem_free (o->str);
-          mem_free (o);
-        }
+      LLIST_FREE_INNER (&keys[i], key_free);
+      LLIST_FREE (&keys[i]);
     }
 }
 
@@ -226,29 +217,10 @@ keys_getch (WINDOW *win, int *count)
 static void
 add_key_str (enum key action, int key)
 {
-  struct key_str_s *new, **i;
-
   if (action < 0 || action > NBKEYS)
     return;
 
-  new = mem_malloc (sizeof (struct key_str_s));
-  new->str = mem_strdup (keys_int2str (key));
-  new->next = NULL;
-  i = &keys[action];
-  for (;;)
-    {
-      if (*i == NULL)
-        {
-          *i = new;
-          break;
-        }
-      else if ((*i)->next == NULL)
-        {
-          (*i)->next = new;
-          break;
-        }
-      i = &(*i)->next;
-    }
+  LLIST_ADD (&keys[action], mem_strdup (keys_int2str (key)));
 }
 
 int
@@ -268,22 +240,20 @@ keys_assign_binding (int key, enum key action)
 static void
 del_key_str (enum key action, int key)
 {
-  struct key_str_s *old, **i;
+  llist_item_t *i;
   char oldstr[BUFSIZ];
 
   if (action < 0 || action > NBKEYS)
     return;
 
   strncpy (oldstr, keys_int2str (key), BUFSIZ);
-  for (i = &keys[action]; *i; i = &(*i)->next)
+
+  LLIST_FOREACH (&keys[action], i)
     {
-      if (!strcmp ((*i)->str, oldstr))
+      if (strcmp (LLIST_GET_DATA (i), oldstr) == 0)
         {
-          old = *i;
-          *i = old->next;
-          mem_free (old->str);
-          mem_free (old);
-          break;
+          LLIST_REMOVE (&keys[action], i);
+          return;
         }
     }
 }
@@ -291,9 +261,7 @@ del_key_str (enum key action, int key)
 void
 keys_remove_binding (int key, enum key action)
 {
-  if (key < 0 || key > MAXKEYVAL)
-    return;
-  else
+  if (key >= 0 && key <= MAXKEYVAL)
     {
       actions[key] = KEY_UNDEF;
       del_key_str (action, key);
@@ -378,52 +346,43 @@ keys_int2str (int key)
 int
 keys_action_count_keys (enum key action)
 {
-  struct key_str_s *key;
-  int i;
+  llist_item_t *i;
+  int n = 0;
 
-  i = 0;
-  for (key = keys[action]; key; key = key->next)
-    i++;
+  LLIST_FOREACH (&keys[action], i)
+    n++;
 
-  return i;
+  return n;
 }
 
 char *
 keys_action_firstkey (enum key action)
 {
-  return (keys[action] != NULL) ? keys[action]->str : "XXX";
+  char *s = LLIST_GET_DATA (LLIST_FIRST (&keys[action]));
+  return (s != NULL) ? s : "XXX";
 }
 
 char *
 keys_action_nkey (enum key action, int keynum)
 {
-  struct key_str_s *key;
-  int i;
-
-  i = 0;
-  for (key = keys[action]; key; key = key->next)
-    {
-      if (i == keynum)
-        return key->str;
-      i++;
-    }
-  return NULL;
+  return LLIST_GET_DATA (LLIST_NTH (&keys[action], keynum));
 }
 
 char *
 keys_action_allkeys (enum key action)
 {
+  llist_item_t *i;
   static char keystr[BUFSIZ];
-  struct key_str_s *i;
   const char *CHAR_SPACE = " ";
 
-  if (keys[action] == NULL)
+  if (!LLIST_FIRST (&keys[action]))
     return NULL;
+
   keystr[0] = '\0';
-  for (i = keys[action]; i; i = i->next)
+  LLIST_FOREACH (&keys[action], i)
     {
       const int MAXLEN = sizeof (keystr) - 1 - strlen (keystr);
-      strncat (keystr, i->str, MAXLEN - 1);
+      strncat (keystr, LLIST_GET_DATA (i), MAXLEN - 1);
       strncat (keystr, CHAR_SPACE, 1);
     }
 
@@ -624,7 +583,7 @@ keys_check_missing_bindings (void)
 
   for (i = 0; i < NBKEYS; i++)
     {
-      if (keys[i] == NULL)
+      if (!LLIST_FIRST (&keys[i]))
         return 1;
     }
   return 0;
@@ -637,7 +596,7 @@ keys_fill_missing (void)
 
   for (i = 0; i < NBKEYS; i++)
     {
-      if (keys[i] == NULL)
+      if (!LLIST_FIRST (&keys[i]))
         {
           char *p, tmpbuf[BUFSIZ];
 
