@@ -160,13 +160,20 @@ warnbox (const char *msg)
  * Message texts for first line and second line are to be provided.
  */
 void
-status_mesg (const char *mesg_line1, const char *mesg_line2)
+status_mesg (const char *msg1, const char *msg2)
 {
   wins_erase_status_bar ();
   custom_apply_attr (win[STA].p, ATTR_HIGHEST);
-  mvwprintw (win[STA].p, 0, 0, mesg_line1);
-  mvwprintw (win[STA].p, 1, 0, mesg_line2);
+  mvwprintw (win[STA].p, 0, 0, msg1);
+  mvwprintw (win[STA].p, 1, 0, msg2);
   custom_remove_attr (win[STA].p, ATTR_HIGHEST);
+}
+
+/* Print a status message, followed by a "[y/n]" prompt. */
+void
+status_mesg_yesno (const char *msg)
+{
+  status_mesg (msg, "[y/n] ");
 }
 
 /* Erase part of a window. */

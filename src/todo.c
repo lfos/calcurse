@@ -242,7 +242,6 @@ todo_flag (void)
 void
 todo_delete (void)
 {
-  char *choices = "[y/n] ";
   const char *del_todo_str = _("Do you really want to delete this task ?");
   const char *erase_warning =
       _("This item has a note attached to it. "
@@ -252,7 +251,7 @@ todo_delete (void)
 
   if (conf.confirm_delete)
     {
-      status_mesg (del_todo_str, choices);
+      status_mesg_yesno (del_todo_str);
       answer = wgetch (win[STA].p);
       if ((answer != 'y') || (todos <= 0))
         {

@@ -1239,13 +1239,12 @@ io_log_print (struct io_file *log, int line, const char *msg)
 void
 io_log_display (struct io_file *log, const char *msg, char *pager)
 {
-  char *choices = "[y/n] ";
   int ans;
 
   RETURN_IF (log == NULL, _("No log file to display!"));
   if (ui_mode == UI_CMDLINE)
     {
-      printf ("\n%s %s", msg, choices);
+      printf ("\n%s [y/n] ", msg);
       ans = fgetc (stdin);
       if (ans == 'y')
         {
@@ -1258,7 +1257,7 @@ io_log_display (struct io_file *log, const char *msg, char *pager)
     }
   else
     {
-      status_mesg (msg, choices);
+      status_mesg_yesno (msg);
       do
         {
           ans = wgetch (win[STA].p);

@@ -65,11 +65,8 @@ int
 main (int argc, char **argv)
 {
   struct day_items_nb inday;
-  int non_interactive;
   int no_data_file = 1;
   int cut_item = 0;
-  const char *quit_message = _("Do you really want to quit ?");
-  char choices[] = "[y/n] ";
   int count;
 
 #if ENABLE_NLS
@@ -90,9 +87,11 @@ main (int argc, char **argv)
    * Begin by parsing and handling command line arguments.
    * The data path is also initialized here.
    */
-  non_interactive = parse_args (argc, argv);
-  if (non_interactive)
-    exit_calcurse (EXIT_SUCCESS);
+  if (parse_args (argc, argv))
+    {
+      /* Non-interactive mode. */
+      exit_calcurse (EXIT_SUCCESS);
+    }
   else
     {
       no_data_file = io_check_data_files ();
@@ -136,7 +135,6 @@ main (int argc, char **argv)
       init_pair (COLR_DEFAULT, foreground, background);
       init_pair (COLR_HIGH, COLOR_BLACK, COLOR_GREEN);
       init_pair (COLR_CUSTOM, COLOR_RED, background);
-
     }
   else
     {
@@ -543,7 +541,7 @@ main (int argc, char **argv)
 
           if (conf.confirm_quit)
             {
-              status_mesg (_(quit_message), choices);
+              status_mesg_yesno (_("Do you really want to quit ?"));
               key = wgetch (win[STA].p);
               if (key == 'y')
                 exit_calcurse (EXIT_SUCCESS);

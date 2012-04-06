@@ -895,6 +895,7 @@ void         free_user_data (void);
 void         fatalbox (const char *);
 void         warnbox (const char *);
 void         status_mesg (const char *, const char *);
+void         status_mesg_yesno (const char *);
 void         erase_window_part (WINDOW *, int, int, int, int);
 WINDOW      *popup (int, int, int, int, char *, char *, int);
 void         print_in_middle (WINDOW *, int, int, int, const char *);

@@ -264,7 +264,6 @@ apoint_add (void)
 void
 apoint_delete (unsigned *nb_events, unsigned *nb_apoints)
 {
-  char *choices = "[y/n] ";
   const char *del_app_str = _("Do you really want to delete this item ?");
   long date;
   int nb_items = *nb_apoints + *nb_events;
@@ -277,7 +276,7 @@ apoint_delete (unsigned *nb_events, unsigned *nb_apoints)
 
   if (conf.confirm_delete)
     {
-      status_mesg (del_app_str, choices);
+      status_mesg_yesno (del_app_str);
       if (wgetch (win[STA].p) != 'y')
         {
           wins_erase_status_bar ();
@@ -375,11 +374,7 @@ apoint_paste (unsigned *nb_events, unsigned *nb_apoints, int cut_item_type)
 unsigned
 apoint_inday (struct apoint *i, long start)
 {
-  if (i->start <= start + DAYINSEC && i->start + i->dur > start)
-    {
-      return 1;
-    }
-  return 0;
+  return (i->start <= start + DAYINSEC && i->start + i->dur > start);
 }
 
 void

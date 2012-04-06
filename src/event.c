@@ -115,11 +115,7 @@ event_new (char *mesg, char *note, long day, int id)
 unsigned
 event_inday (struct event *i, long start)
 {
-  if (i->day < start + DAYINSEC && i->day >= start)
-    {
-      return 1;
-    }
-  return 0;
+  return (i->day < start + DAYINSEC && i->day >= start);
 }
 
 /* Write to file the event in user-friendly format */

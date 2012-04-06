@@ -611,7 +611,7 @@ diff_years (struct tm lt_start, struct tm lt_end)
 static int
 exc_inday (struct excp *exc, long day_start)
 {
-  return exc->st >= day_start && exc->st < day_start + DAYINSEC;
+  return (exc->st >= day_start && exc->st < day_start + DAYINSEC);
 }
 
 /*
