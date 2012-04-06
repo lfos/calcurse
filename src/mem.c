@@ -304,7 +304,7 @@ mem_stats (void)
   printf (_("  number of calls: %u\n"), mstats.ncall);
   printf (_(" allocated blocks: %u\n"), mstats.nalloc);
   printf (_("   unfreed blocks: %u\n"), mstats.nalloc - mstats.nfree);
-  putchar ("\n");
+  putchar ('\n');
 
   if (mstats.nfree < mstats.nalloc)
     {
