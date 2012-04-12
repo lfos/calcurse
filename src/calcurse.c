@@ -159,8 +159,6 @@ main (int argc, char **argv)
   io_load_todo ();
   io_load_app ();
   wins_reinit ();
-  if (notify_bar ())
-      notify_start_main_thread ();
   if (conf.system_dialogs)
     {
       wins_update (FLAG_ALL);
@@ -169,6 +167,10 @@ main (int argc, char **argv)
   inday = *day_process_storage (0, 0, &inday);
   wins_slctd_set (CAL);
   wins_update (FLAG_ALL);
+
+  /* Start miscellaneous threads. */
+  if (notify_bar ())
+    notify_start_main_thread ();
   calendar_start_date_thread ();
   if (conf.periodic_save > 0)
     io_start_psave_thread ();
