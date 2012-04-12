@@ -44,7 +44,7 @@
 struct window win[NBWINS];
 
 /* User-configurable side bar width. */
-static unsigned sbarwidth;
+static unsigned sbarwidth_perc;
 
 static enum win slctd_win;
 static int layout;
@@ -135,7 +135,13 @@ wins_set_layout (int nb)
 unsigned
 wins_sbar_width (void)
 {
-  return sbarwidth ? sbarwidth : SBARMINWIDTH;
+  if (sbarwidth_perc > SBARMAXWIDTHPERC)
+    return col * SBARMAXWIDTHPERC / 100;
+  else
+    {
+      unsigned sbarwidth = (unsigned)(col * sbarwidth_perc / 100);
+      return (sbarwidth < SBARMINWIDTH) ? SBARMINWIDTH : sbarwidth;
+    }
 }
 
 /*
@@ -145,11 +151,7 @@ wins_sbar_width (void)
 unsigned
 wins_sbar_wperc (void)
 {
-  unsigned perc;
-
-  perc = col ? (unsigned)(100 * sbarwidth / col + 1): 0;
-
-  return perc > SBARMAXWIDTHPERC ? SBARMAXWIDTHPERC : perc;
+  return sbarwidth_perc > SBARMAXWIDTHPERC ? SBARMAXWIDTHPERC : sbarwidth_perc;
 }
 
 /*
@@ -161,33 +163,22 @@ wins_sbar_wperc (void)
 void
 wins_set_sbar_width (unsigned perc)
 {
-  if (perc > SBARMAXWIDTHPERC)
-    sbarwidth = col * SBARMAXWIDTHPERC / 100;
-  else if (perc <= 0)
-    sbarwidth = SBARMINWIDTH;
-  else
-    {
-      sbarwidth = (unsigned)(col * perc / 100);
-      if (sbarwidth < SBARMINWIDTH)
-        sbarwidth = SBARMINWIDTH;
-    }
+  sbarwidth_perc = perc;
 }
 
 /* Change the width of the side bar within acceptable boundaries. */
 void
 wins_sbar_winc (void)
 {
-  if (sbarwidth < SBARMINWIDTH)
-    sbarwidth = SBARMINWIDTH + 1;
-  else if (sbarwidth < SBARMAXWIDTHPERC * col / 100)
-    sbarwidth++;
+  if (sbarwidth_perc < SBARMAXWIDTHPERC)
+    sbarwidth_perc++;
 }
 
 void
 wins_sbar_wdec (void)
 {
-  if (sbarwidth > SBARMINWIDTH)
-    sbarwidth--;
+  if (sbarwidth_perc > 0)
+    sbarwidth_perc--;
 }
 
 /* Initialize the selected window in calcurse's interface. */
