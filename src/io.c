@@ -988,23 +988,17 @@ io_check_data_files (void)
 
 /* Draw the startup screen */
 void
-io_startup_screen (unsigned show_dialogs, int no_data_file)
+io_startup_screen (int no_data_file)
 {
-  const char *welcome_mesg =
-    _("Welcome to Calcurse. Missing data files were created.");
-  const char *data_mesg = _("Data files found. Data will be loaded now.");
   const char *enter = _("Press [ENTER] to continue");
 
-  if (no_data_file != 0)
-    {
-      status_mesg (welcome_mesg, enter);
-      wgetch (win[STA].p);
-    }
-  else if (show_dialogs)
-    {
-      status_mesg (data_mesg, enter);
-      wgetch (win[STA].p);
-    }
+  if (no_data_file)
+    status_mesg (_("Data files found. Data will be loaded now."), enter);
+  else
+    status_mesg (_("Welcome to Calcurse. Missing data files were created."),
+                 enter);
+
+  wgetch (win[STA].p);
 }
 
 /* Export calcurse data. */

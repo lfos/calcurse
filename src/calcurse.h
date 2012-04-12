@@ -703,7 +703,7 @@ void             io_check_dir (char *, int *);
 unsigned         io_file_exist (char *);
 void             io_check_file (char *, int *);
 int              io_check_data_files (void);
-void             io_startup_screen (unsigned, int);
+void             io_startup_screen (int);
 void             io_export_data (enum export_type);
 void             io_export_bar (void);
 void             io_import_data (enum import_type, char *);

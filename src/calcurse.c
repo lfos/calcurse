@@ -161,8 +161,11 @@ main (int argc, char **argv)
   wins_reinit ();
   if (notify_bar ())
       notify_start_main_thread ();
-  wins_update (FLAG_ALL);
-  io_startup_screen (conf.system_dialogs, no_data_file);
+  if (conf.system_dialogs)
+    {
+      wins_update (FLAG_ALL);
+      io_startup_screen (no_data_file);
+    }
   inday = *day_process_storage (0, 0, &inday);
   wins_slctd_set (CAL);
   wins_update (FLAG_ALL);
