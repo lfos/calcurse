@@ -49,6 +49,21 @@
 
 #define ISLEAP(y) ((((y) % 4) == 0 && ((y) % 100) != 0) || ((y) % 400) == 0)
 
+enum format_specifier {
+  FS_STARTDATE,
+  FS_STARTDATESTR,
+  FS_DURATION,
+  FS_ENDDATE,
+  FS_ENDDATESTR,
+  FS_MESSAGE,
+  FS_NOTE,
+  FS_NOTEFILE,
+  FS_PRIORITY,
+  FS_PSIGN,
+  FS_EOF,
+  FS_UNKNOWN
+};
+
 /* General routine to exit calcurse properly. */
 void
 exit_calcurse (int status)
@@ -1063,6 +1078,39 @@ print_escape (const char *s)
     }
 }
 
+/* Parse a format specifier. */
+static enum format_specifier
+parse_fs (const char *s)
+{
+  switch (*s)
+    {
+    case 's':
+      return FS_STARTDATE;
+    case 'S':
+      return FS_STARTDATESTR;
+    case 'd':
+      return FS_DURATION;
+    case 'e':
+      return FS_ENDDATE;
+    case 'E':
+      return FS_ENDDATESTR;
+    case 'm':
+      return FS_MESSAGE;
+    case 'n':
+      return FS_NOTE;
+    case 'N':
+      return FS_NOTEFILE;
+    case 'p':
+      return FS_PRIORITY;
+    case '%':
+      return FS_PSIGN;
+    case '\0':
+      return FS_EOF;
+    default:
+      return FS_UNKNOWN;
+    }
+}
+
 /* Print a formatted appointment to stdout. */
 void
 print_apoint (const char *format, long day, struct apoint *apt)
@@ -1076,36 +1124,36 @@ print_apoint (const char *format, long day, struct apoint *apt)
     {
       if (*p == '%') {
         p++;
-        switch (*p)
+        switch (parse_fs (p))
           {
-          case 's':
+          case FS_STARTDATE:
             printf ("%ld", apt->start);
             break;
-          case 'S':
+          case FS_STARTDATESTR:
             printf ("%s", str_start);
             break;
-          case 'd':
+          case FS_DURATION:
             printf ("%ld", apt->dur);
             break;
-          case 'e':
+          case FS_ENDDATE:
             printf ("%ld", apt->start + apt->dur);
             break;
-          case 'E':
+          case FS_ENDDATESTR:
             printf ("%s", str_end);
             break;
-          case 'm':
+          case FS_MESSAGE:
             printf ("%s", apt->mesg);
             break;
-          case 'n':
+          case FS_NOTE:
             printf ("%s", apt->note);
             break;
-          case 'N':
+          case FS_NOTEFILE:
             print_notefile (stdout, apt->note, 1);
             break;
-          case '%':
+          case FS_PSIGN:
             putchar ('%');
             break;
-          case '\0':
+          case FS_EOF:
             return;
             break;
           default:
@@ -1130,21 +1178,21 @@ print_event (const char *format, long day, struct event *ev)
     {
       if (*p == '%') {
         p++;
-        switch (*p)
+        switch (parse_fs (p))
           {
-          case 'm':
+          case FS_MESSAGE:
             printf ("%s", ev->mesg);
             break;
-          case 'n':
+          case FS_NOTE:
             printf ("%s", ev->note);
             break;
-          case 'N':
+          case FS_NOTEFILE:
             print_notefile (stdout, ev->note, 1);
             break;
-          case '%':
+          case FS_PSIGN:
             putchar ('%');
             break;
-          case '\0':
+          case FS_EOF:
             return;
             break;
           default:
@@ -1196,24 +1244,24 @@ print_todo (const char *format, struct todo *todo)
     {
       if (*p == '%') {
         p++;
-        switch (*p)
+        switch (parse_fs (p))
           {
-          case 'p':
+          case FS_PRIORITY:
             printf ("%d", abs (todo->id));
             break;
-          case 'm':
+          case FS_MESSAGE:
             printf ("%s", todo->mesg);
             break;
-          case 'n':
+          case FS_NOTE:
             printf ("%s", todo->note);
             break;
-          case 'N':
+          case FS_NOTEFILE:
             print_notefile (stdout, todo->note, 1);
             break;
-          case '%':
+          case FS_PSIGN:
             putchar ('%');
             break;
-          case '\0':
+          case FS_EOF:
             return;
             break;
           default:
