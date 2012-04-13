@@ -1082,10 +1082,12 @@ print_escape (const char *s)
 
 /* Parse a format specifier. */
 static enum format_specifier
-parse_fs (const char **s)
+parse_fs (const char **s, char *extformat)
 {
   char buf[FS_EXT_MAXLEN];
   int i;
+
+  extformat[0] = '\0';
 
   switch (**s)
     {
@@ -1109,7 +1111,7 @@ parse_fs (const char **s)
       return FS_PRIORITY;
     case '(':
       /* Long format specifier. */
-      for ((*s)++, i = 0; **s != ')'; (*s)++, i++)
+      for ((*s)++, i = 0; **s != ':' && **s != ')'; (*s)++, i++)
         {
           if (**s == '\0')
             return FS_EOF;
@@ -1119,6 +1121,20 @@ parse_fs (const char **s)
         }
 
       buf[(i < FS_EXT_MAXLEN) ? i : FS_EXT_MAXLEN - 1] = '\0';
+
+      if (**s == ':')
+        {
+          for ((*s)++, i = 0; **s != ')'; (*s)++, i++)
+            {
+              if (**s == '\0')
+                return FS_EOF;
+
+              if (i < FS_EXT_MAXLEN)
+                extformat[i] = **s;
+            }
+
+          extformat[(i < FS_EXT_MAXLEN) ? i : FS_EXT_MAXLEN - 1] = '\0';
+        }
 
       if (!strcmp (buf, "start"))
         return FS_STARTDATE;
@@ -1155,6 +1171,7 @@ print_apoint (const char *format, long day, struct apoint *apt)
 {
   const char *p;
   char str_start[HRMIN_SIZE], str_end[HRMIN_SIZE];
+  char extformat[FS_EXT_MAXLEN];
 
   apoint_sec2str (apt, day, str_start, str_end);
 
@@ -1162,7 +1179,7 @@ print_apoint (const char *format, long day, struct apoint *apt)
     {
       if (*p == '%') {
         p++;
-        switch (parse_fs (&p))
+        switch (parse_fs (&p, extformat))
           {
           case FS_STARTDATE:
             printf ("%ld", apt->start);
@@ -1211,12 +1228,13 @@ void
 print_event (const char *format, long day, struct event *ev)
 {
   const char *p;
+  char extformat[FS_EXT_MAXLEN];
 
   for (p = format; *p; p++)
     {
       if (*p == '%') {
         p++;
-        switch (parse_fs (&p))
+        switch (parse_fs (&p, extformat))
           {
           case FS_MESSAGE:
             printf ("%s", ev->mesg);
@@ -1277,12 +1295,13 @@ void
 print_todo (const char *format, struct todo *todo)
 {
   const char *p;
+  char extformat[FS_EXT_MAXLEN];
 
   for (p = format; *p; p++)
     {
       if (*p == '%') {
         p++;
-        switch (parse_fs (&p))
+        switch (parse_fs (&p, extformat))
           {
           case FS_PRIORITY:
             printf ("%d", abs (todo->id));
