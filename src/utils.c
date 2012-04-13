@@ -53,10 +53,8 @@
 
 enum format_specifier {
   FS_STARTDATE,
-  FS_STARTDATESTR,
   FS_DURATION,
   FS_ENDDATE,
-  FS_ENDDATESTR,
   FS_MESSAGE,
   FS_NOTE,
   FS_NOTEFILE,
@@ -1092,15 +1090,17 @@ parse_fs (const char **s, char *extformat)
   switch (**s)
     {
     case 's':
+      strcpy (extformat, "epoch");
       return FS_STARTDATE;
     case 'S':
-      return FS_STARTDATESTR;
+      return FS_STARTDATE;
     case 'd':
       return FS_DURATION;
     case 'e':
+      strcpy (extformat, "epoch");
       return FS_ENDDATE;
     case 'E':
-      return FS_ENDDATESTR;
+      return FS_ENDDATE;
     case 'm':
       return FS_MESSAGE;
     case 'n':
@@ -1138,14 +1138,10 @@ parse_fs (const char **s, char *extformat)
 
       if (!strcmp (buf, "start"))
         return FS_STARTDATE;
-      else if (!strcmp (buf, "startstr"))
-        return FS_STARTDATESTR;
       else if (!strcmp (buf, "duration"))
         return FS_DURATION;
       else if (!strcmp (buf, "end"))
         return FS_ENDDATE;
-      else if (!strcmp (buf, "endstr"))
-        return FS_ENDDATESTR;
       else if (!strcmp (buf, "message"))
         return FS_MESSAGE;
       else if (!strcmp (buf, "noteid"))
@@ -1171,15 +1167,20 @@ print_date (long date, const char *extformat)
 {
   char buf[BUFSIZ];
 
-  if (extformat[0] != '\0')
+  if (!strcmp (extformat, "epoch"))
+    printf ("%ld", date);
+  else
     {
       time_t t = date;
       struct tm *lt = localtime ((time_t *)&t);
-      strftime (buf, BUFSIZ, extformat, lt);
+
+      if (extformat[0] == '\0' || !strcmp (extformat, "default"))
+        strftime (buf, BUFSIZ, "%H:%M", lt);
+      else
+        strftime (buf, BUFSIZ, extformat, lt);
+
       printf ("%s", buf);
     }
-  else
-    printf ("%ld", date);
 }
 
 /* Print a formatted appointment to stdout. */
@@ -1187,10 +1188,7 @@ void
 print_apoint (const char *format, long day, struct apoint *apt)
 {
   const char *p;
-  char str_start[HRMIN_SIZE], str_end[HRMIN_SIZE];
   char extformat[FS_EXT_MAXLEN];
-
-  apoint_sec2str (apt, day, str_start, str_end);
 
   for (p = format; *p; p++)
     {
@@ -1201,17 +1199,11 @@ print_apoint (const char *format, long day, struct apoint *apt)
           case FS_STARTDATE:
             print_date (apt->start, extformat);
             break;
-          case FS_STARTDATESTR:
-            printf ("%s", str_start);
-            break;
           case FS_DURATION:
             printf ("%ld", apt->dur);
             break;
           case FS_ENDDATE:
             print_date (apt->start + apt->dur, extformat);
-            break;
-          case FS_ENDDATESTR:
-            printf ("%s", str_end);
             break;
           case FS_MESSAGE:
             printf ("%s", apt->mesg);
