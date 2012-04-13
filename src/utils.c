@@ -49,6 +49,8 @@
 
 #define ISLEAP(y) ((((y) % 4) == 0 && ((y) % 100) != 0) || ((y) % 400) == 0)
 
+#define FS_EXT_MAXLEN 64
+
 enum format_specifier {
   FS_STARTDATE,
   FS_STARTDATESTR,
@@ -1080,9 +1082,12 @@ print_escape (const char *s)
 
 /* Parse a format specifier. */
 static enum format_specifier
-parse_fs (const char *s)
+parse_fs (const char **s)
 {
-  switch (*s)
+  char buf[FS_EXT_MAXLEN];
+  int i;
+
+  switch (**s)
     {
     case 's':
       return FS_STARTDATE;
@@ -1102,6 +1107,39 @@ parse_fs (const char *s)
       return FS_NOTEFILE;
     case 'p':
       return FS_PRIORITY;
+    case '(':
+      /* Long format specifier. */
+      for ((*s)++, i = 0; **s != ')'; (*s)++, i++)
+        {
+          if (**s == '\0')
+            return FS_EOF;
+
+          if (i < FS_EXT_MAXLEN)
+            buf[i] = **s;
+        }
+
+      buf[(i < FS_EXT_MAXLEN) ? i : FS_EXT_MAXLEN - 1] = '\0';
+
+      if (!strcmp (buf, "start"))
+        return FS_STARTDATE;
+      else if (!strcmp (buf, "startstr"))
+        return FS_STARTDATESTR;
+      else if (!strcmp (buf, "duration"))
+        return FS_DURATION;
+      else if (!strcmp (buf, "end"))
+        return FS_ENDDATE;
+      else if (!strcmp (buf, "endstr"))
+        return FS_ENDDATESTR;
+      else if (!strcmp (buf, "message"))
+        return FS_MESSAGE;
+      else if (!strcmp (buf, "noteid"))
+        return FS_NOTE;
+      else if (!strcmp (buf, "note"))
+        return FS_NOTEFILE;
+      else if (!strcmp (buf, "priority"))
+        return FS_PRIORITY;
+      else
+        return FS_UNKNOWN;
     case '%':
       return FS_PSIGN;
     case '\0':
@@ -1124,7 +1162,7 @@ print_apoint (const char *format, long day, struct apoint *apt)
     {
       if (*p == '%') {
         p++;
-        switch (parse_fs (p))
+        switch (parse_fs (&p))
           {
           case FS_STARTDATE:
             printf ("%ld", apt->start);
@@ -1178,7 +1216,7 @@ print_event (const char *format, long day, struct event *ev)
     {
       if (*p == '%') {
         p++;
-        switch (parse_fs (p))
+        switch (parse_fs (&p))
           {
           case FS_MESSAGE:
             printf ("%s", ev->mesg);
@@ -1244,7 +1282,7 @@ print_todo (const char *format, struct todo *todo)
     {
       if (*p == '%') {
         p++;
-        switch (parse_fs (p))
+        switch (parse_fs (&p))
           {
           case FS_PRIORITY:
             printf ("%d", abs (todo->id));
