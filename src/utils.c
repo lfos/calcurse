@@ -1165,6 +1165,23 @@ parse_fs (const char **s, char *extformat)
     }
 }
 
+/* Print a formatted date to stdout. */
+static void
+print_date (long date, const char *extformat)
+{
+  char buf[BUFSIZ];
+
+  if (extformat[0] != '\0')
+    {
+      time_t t = date;
+      struct tm *lt = localtime ((time_t *)&t);
+      strftime (buf, BUFSIZ, extformat, lt);
+      printf ("%s", buf);
+    }
+  else
+    printf ("%ld", date);
+}
+
 /* Print a formatted appointment to stdout. */
 void
 print_apoint (const char *format, long day, struct apoint *apt)
@@ -1182,7 +1199,7 @@ print_apoint (const char *format, long day, struct apoint *apt)
         switch (parse_fs (&p, extformat))
           {
           case FS_STARTDATE:
-            printf ("%ld", apt->start);
+            print_date (apt->start, extformat);
             break;
           case FS_STARTDATESTR:
             printf ("%s", str_start);
@@ -1191,7 +1208,7 @@ print_apoint (const char *format, long day, struct apoint *apt)
             printf ("%ld", apt->dur);
             break;
           case FS_ENDDATE:
-            printf ("%ld", apt->start + apt->dur);
+            print_date (apt->start + apt->dur, extformat);
             break;
           case FS_ENDDATESTR:
             printf ("%s", str_end);
