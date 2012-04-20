@@ -506,7 +506,7 @@ todo_pipe_item (void)
   wins_unprepare_external ();
 }
 
-void
+static void
 todo_free (struct todo *todo)
 {
   mem_free (todo->mesg);

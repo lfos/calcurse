@@ -828,7 +828,7 @@ ical_add_exc (llist_t *exc_head, long date)
  * This property defines the list of date/time exceptions for a
  * recurring calendar component.
  */
-void
+static void
 ical_read_exdate (llist_t *exc, FILE *log, char *exstr, unsigned *noskipped,
                   const int itemline)
 {

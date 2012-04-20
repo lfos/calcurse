@@ -327,7 +327,7 @@ config_serialize_str (char *dest, const char *val)
  * If ncurses library was compiled with --enable-ext-funcs,
  * then default color is -1.
  */
-void
+static void
 config_color_theme_name (char *theme_name)
 {
 #define MAXCOLORS		8

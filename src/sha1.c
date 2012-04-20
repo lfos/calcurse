@@ -67,7 +67,7 @@
 #define R4(v, w, x, y, z, i) z += (w ^ x ^ y) + blk (i) + 0xCA62C1D6 + \
     rol (v, 5); w = rol (w, 30);
 
-void
+static void
 sha1_transform (uint32_t state[5], const uint8_t buffer[64])
 {
   typedef union {

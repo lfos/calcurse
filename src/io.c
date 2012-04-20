@@ -324,7 +324,7 @@ io_extract_data (char *dst_data, const char *org, int len)
   *dst_data = '\0';
 }
 
-void
+static void
 display_mark (void)
 {
   const int DISPLAY_TIME = 1;
