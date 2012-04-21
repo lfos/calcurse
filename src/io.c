@@ -323,7 +323,7 @@ pcal_export_header (FILE *stream)
                  calendar_week_begins_on_monday () ?
                  "Monday" : "Sunday");
   (void)fprintf (stream, "# Display week number (i.e. 1-52) on every Monday\n");
-  (void)fprintf (stream, "all monday in all  %s %%w\n", _("Week"));
+  (void)fprintf (stream, "all monday in all week %%w\n");
   (void)fprintf (stream, "\n");
 }
 
