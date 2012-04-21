@@ -78,6 +78,7 @@ static int load_keys_ht_compare (struct ht_keybindings_s *,
 
 #define HSIZE 256
 HTABLE_HEAD (ht_keybindings, HSIZE, ht_keybindings_s);
+HTABLE_PROTOTYPE (ht_keybindings, ht_keybindings_s)
 HTABLE_GENERATE (ht_keybindings, ht_keybindings_s, load_keys_ht_getkey,
                  load_keys_ht_compare)
 

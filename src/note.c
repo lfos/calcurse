@@ -50,6 +50,7 @@ static void note_gc_extract_key (struct note_gc_hash *, char **, int *);
 static int note_gc_cmp (struct note_gc_hash *, struct note_gc_hash *);
 
 HTABLE_HEAD (htp, NOTE_GC_HSIZE, note_gc_hash);
+HTABLE_PROTOTYPE (htp, note_gc_hash)
 HTABLE_GENERATE (htp, note_gc_hash, note_gc_extract_key, note_gc_cmp)
 
 /* Create note file from a string and return a newly allocated string that
