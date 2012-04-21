@@ -104,7 +104,11 @@ struct type   *next          /* To build the bucket chain list. */
 #define HTABLE_PROTOTYPE(name, type)                                          \
 struct type *name##_HTABLE_INSERT(struct name *, struct type *);              \
 struct type *name##_HTABLE_REMOVE(struct name *, struct type *);              \
-struct type *name##_HTABLE_LOOKUP(struct name *, struct type *);
+struct type *name##_HTABLE_LOOKUP(struct name *, struct type *);              \
+uint32_t name##_HTABLE_FIND_BKT(struct name *, struct type *);                \
+int name##_HTABLE_CHAIN_LEN(struct name *, uint32_t);                         \
+struct type *name##_HTABLE_FIRST_FROM(struct name *, int);                    \
+struct type *name##_HTABLE_NEXT(struct name *, struct type *);
 
 /*
  * Generate function bodies.
