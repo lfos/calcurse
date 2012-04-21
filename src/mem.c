@@ -41,6 +41,8 @@
 
 #include "calcurse.h"
 
+#ifdef CALCURSE_MEMORY_DEBUG
+
 enum {
   BLK_STATE,
   BLK_SIZE,
@@ -67,49 +69,8 @@ struct mem_stats {
 
 static struct mem_stats mstats;
 
+#endif /* CALCURSE_MEMORY_DEBUG */
 
-static unsigned
-stats_add_blk (size_t size, const char *pos)
-{
-  struct mem_blk *o, **i;
-
-  o = malloc (sizeof (*o));
-  EXIT_IF (o == NULL, _("could not allocate memory to store block info"));
-
-  mstats.ncall++;
-
-  o->pos = pos;
-  o->size = (unsigned)size;
-  o->next = 0;
-
-  for (i = &mstats.blk; *i; i = &(*i)->next)
-    ;
-  o->id = mstats.ncall;
-  *i = o;
-
-  return o->id;
-}
-
-static void
-stats_del_blk (unsigned id)
-{
-  struct mem_blk *o, **i;
-
-  i = &mstats.blk;
-  for (o = mstats.blk; o; o = o->next)
-    {
-      if (o->id == id)
-        {
-          *i = o->next;
-          free (o);
-          return;
-        }
-      i = &o->next;
-    }
-
-  EXIT (_("Block not found"));
-  /* NOTREACHED */
-}
 
 void *
 xmalloc (size_t size)
@@ -168,6 +129,51 @@ xfree (void *p)
 {
   EXIT_IF (p == NULL, _("xfree: null pointer"));
   free (p);
+}
+
+#ifdef CALCURSE_MEMORY_DEBUG
+
+static unsigned
+stats_add_blk (size_t size, const char *pos)
+{
+  struct mem_blk *o, **i;
+
+  o = malloc (sizeof (*o));
+  EXIT_IF (o == NULL, _("could not allocate memory to store block info"));
+
+  mstats.ncall++;
+
+  o->pos = pos;
+  o->size = (unsigned)size;
+  o->next = 0;
+
+  for (i = &mstats.blk; *i; i = &(*i)->next)
+    ;
+  o->id = mstats.ncall;
+  *i = o;
+
+  return o->id;
+}
+
+static void
+stats_del_blk (unsigned id)
+{
+  struct mem_blk *o, **i;
+
+  i = &mstats.blk;
+  for (o = mstats.blk; o; o = o->next)
+    {
+      if (o->id == id)
+        {
+          *i = o->next;
+          free (o);
+          return;
+        }
+      i = &o->next;
+    }
+
+  EXIT (_("Block not found"));
+  /* NOTREACHED */
 }
 
 void *
@@ -277,9 +283,6 @@ dbg_free (void *ptr, const char *pos)
   free (buf);
   mstats.nfree += size;
 }
-
-
-#ifdef CALCURSE_MEMORY_DEBUG
 
 static void
 dump_block_info (struct mem_blk *blk)
