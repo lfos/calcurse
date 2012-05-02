@@ -646,9 +646,6 @@ static unsigned status_page;
 void
 wins_status_bar (void)
 {
-#define NB_PANELS	3	/* 3 panels: CALENDAR, APPOINTMENT, TODO */
-  const int pos[NB_PANELS] = { 0, 0, 0 };
-
   struct binding help   = {_("Help"),     KEY_GENERIC_HELP};
   struct binding quit   = {_("Quit"),     KEY_GENERIC_QUIT};
   struct binding save   = {_("Save"),     KEY_GENERIC_SAVE};
@@ -731,8 +728,8 @@ wins_status_bar (void)
     }
 
   keys_display_bindings_bar (win[STA].p, bindings, bindings_size,
-                             pos[active_panel] + (KEYS_CMDS_PER_LINE * 2 - 1) *
-                             (status_page - 1), KEYS_CMDS_PER_LINE * 2, &othr);
+                             (KEYS_CMDS_PER_LINE * 2 - 1) * (status_page - 1),
+                             KEYS_CMDS_PER_LINE * 2, &othr);
 }
 
 /* Erase status bar. */
@@ -764,10 +761,7 @@ wins_other_status_page (int panel)
       /* NOTREACHED */
     }
   max_page = nb_item / (KEYS_CMDS_PER_LINE * 2 - 1) + 1;
-  if (status_page < max_page)
-    status_page++;
-  else
-    status_page = 1;
+  status_page = (status_page % max_page) + 1;
 }
 
 /* Reset the status bar page. */
@@ -780,5 +774,3 @@ wins_reset_status_page (void)
 #undef NB_CAL_CMDS
 #undef NB_APP_CMDS
 #undef NB_TOD_CMDS
-#undef TOTAL_CMDS
-#undef CMDS_PER_LINE
