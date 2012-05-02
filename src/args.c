@@ -64,7 +64,8 @@ usage ()
   const char *arg_usage =
     _("Usage: calcurse [-g|-h|-v] [-N] [-an] [-t[num]] [-i<file>] [-x[format]]\n"
       "                [-d <date>|<num>] [-s[date]] [-r[range]]\n"
-      "                [-c<file> | -D<dir>] [-S<regex>] [--status]\n");
+      "                [-c<file> | -D<dir>] [-S<regex>] [--status]\n"
+      "                [--read-only]\n");
   fputs (arg_usage, stdout);
 }
 
@@ -103,6 +104,8 @@ help_arg ()
       "	print calcurse version and exit.\n"
       "\n  --status\n"
       "	display the status of running instances of calcurse.\n"
+      "\n  --read-only\n"
+      "	Don't save configuration nor appointments/todos. Use with care.\n"
       "\nFiles:\n"
       "  -c <file>, --calendar <file>\n"
       "	specify the calendar <file> to use (incompatible with '-D').\n"
