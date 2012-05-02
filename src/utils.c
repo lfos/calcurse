@@ -729,9 +729,6 @@ parse_time (const char *string, unsigned *hour, unsigned *minute)
  *
  * "\d" is used as a placeholder for "(0|1|2|3|4|5|6|7|8|9)".
  *
- * Note that this function performs an additional range check on each token to
- * ensure we do not accept semantically invalid strings such as "42:23".
- *
  * Returns 1 on success and 0 on failure.
  */
 int
@@ -779,15 +776,11 @@ parse_duration (const char *string, unsigned *duration)
                 }
               else if (*p == 'h')
                 {
-                  if (in >= DAYINHOURS)
-                    return 0;
                   dur += in * HOURINMIN;
                   state = STATE_DDHHMM_MM;
                 }
               else if (*p == 'm')
                 {
-                  if (in >= HOURINMIN)
-                    return 0;
                   dur += in;
                   state = STATE_DONE;
                 }
@@ -797,15 +790,11 @@ parse_duration (const char *string, unsigned *duration)
             case STATE_DDHHMM_HH:
               if (*p == 'h')
                 {
-                  if (in >= DAYINHOURS)
-                    return 0;
                   dur += in * HOURINMIN;
                   state = STATE_DDHHMM_MM;
                 }
               else if (*p == 'm')
                 {
-                  if (in >= HOURINMIN)
-                    return 0;
                   dur += in;
                   state = STATE_DONE;
                 }
@@ -815,8 +804,6 @@ parse_duration (const char *string, unsigned *duration)
             case STATE_DDHHMM_MM:
               if (*p == 'm')
                 {
-                  if (in >= HOURINMIN)
-                    return 0;
                   dur += in;
                   state = STATE_DONE;
                 }
