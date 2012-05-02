@@ -607,7 +607,7 @@ static int
 day_edit_duration (int start, int dur, unsigned *new_duration)
 {
   char *timestr = date_sec2date_str (start + dur, "%H:%M");
-  const char *msg_time = _("Enter the new time ([hh:mm]) or duration ([+hh:mm]): ");
+  const char *msg_time = _("Enter new end time ([hh:mm]) or duration ([+hh:mm], [+xxxdxxhxxm] or [+mm]) : ");
   const char *enter_str = _("Press [Enter] to continue");
   const char *fmt_msg = _("You entered an invalid time, should be [hh:mm]");
   long newtime;
