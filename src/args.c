@@ -59,7 +59,7 @@ enum {
  * Print Calcurse usage and exit.
  */
 static void
-usage ()
+usage (void)
 {
   const char *arg_usage =
     _("Usage: calcurse [-g|-h|-v] [-N] [-an] [-t[num]] [-i<file>] [-x[format]]\n"
@@ -70,7 +70,7 @@ usage ()
 }
 
 static void
-usage_try ()
+usage_try (void)
 {
   const char *arg_usage_try = _("Try 'calcurse -h' for more information.\n");
   fputs (arg_usage_try, stdout);
@@ -80,7 +80,7 @@ usage_try ()
  * Print Calcurse version with a short copyright text and exit.
  */
 static void
-version_arg ()
+version_arg (void)
 {
   const char *vtext =
       _("\nCopyright (c) 2004-2012 calcurse Development Team.\n"
@@ -94,7 +94,7 @@ version_arg ()
  * Print the command line options and exit.
  */
 static void
-help_arg ()
+help_arg (void)
 {
   const char *htext =
     _("\nMiscellaneous:\n"
