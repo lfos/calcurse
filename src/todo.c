@@ -463,7 +463,7 @@ todo_update_panel (int which_pan)
 
 /* Attach a note to a todo */
 void
-todo_edit_note (char *editor)
+todo_edit_note (const char *editor)
 {
   struct todo *i = todo_get_item (hilt);
   edit_note (&i->note, editor);
@@ -471,7 +471,7 @@ todo_edit_note (char *editor)
 
 /* View a note previously attached to a todo */
 void
-todo_view_note (char *pager)
+todo_view_note (const char *pager)
 {
   struct todo *i = todo_get_item (hilt);
   view_note (i->note, pager);

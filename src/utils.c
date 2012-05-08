@@ -148,7 +148,7 @@ void
 warnbox (const char *msg)
 {
   WINDOW *warnwin;
-  char *label = "/!\\";
+  const char *label = "/!\\";
   const int WINROW = 10;
   const int WINCOL = col - 2;
   const int MSGLEN = WINCOL - 2;
@@ -207,8 +207,8 @@ erase_window_part (WINDOW *win, int first_col, int first_row, int last_col,
 
 /* draws a popup window */
 WINDOW *
-popup (int pop_row, int pop_col, int pop_y, int pop_x, char *title, char *msg,
-       int hint)
+popup (int pop_row, int pop_col, int pop_y, int pop_x, const char *title,
+       const char *msg, int hint)
 {
   const char *any_key = _("Press any key to continue...");
   char label[BUFSIZ];
@@ -308,7 +308,7 @@ date2sec (struct date day, unsigned hour, unsigned min)
 
 /* Return a string containing the date, given a date in seconds. */
 char *
-date_sec2date_str (long sec, char *datefmt)
+date_sec2date_str (long sec, const char *datefmt)
 {
   struct tm *lt;
   char *datestr = (char *) mem_calloc (BUFSIZ, sizeof (char));
@@ -431,8 +431,8 @@ draw_scrollbar (WINDOW *win, int y, int x, int length,
  * long to fit in its corresponding panel window.
  */
 void
-item_in_popup (char *saved_a_start, char *saved_a_end, char *msg,
-               char *pop_title)
+item_in_popup (const char *saved_a_start, const char *saved_a_end,
+               const char *msg, const char *pop_title)
 {
   WINDOW *popup_win, *pad;
   const int margin_left = 4, margin_top = 4;
@@ -866,7 +866,7 @@ psleep (unsigned secs)
  * appropriate file descriptors are written to pfdin/pfdout.
  */
 int
-fork_exec (int *pfdin, int *pfdout, const char *path, char *const *arg)
+fork_exec (int *pfdin, int *pfdout, const char *path, const char *const *arg)
 {
   int pin[2], pout[2];
   int pid;
@@ -894,7 +894,7 @@ fork_exec (int *pfdin, int *pfdout, const char *path, char *const *arg)
           close (pin[1]);
         }
 
-      execvp (path, arg);
+      execvp (path, (char *const *)arg);
       _exit (127);
     }
   else
@@ -931,9 +931,9 @@ fork_exec (int *pfdin, int *pfdout, const char *path, char *const *arg)
 
 /* Execute an external program in a shell. */
 int
-shell_exec (int *pfdin, int *pfdout, char *cmd)
+shell_exec (int *pfdin, int *pfdout, const char *cmd)
 {
-  char *arg[] = { "/bin/sh", "-c", cmd, NULL };
+  const char *arg[] = { "/bin/sh", "-c", cmd, NULL };
   return fork_exec (pfdin, pfdout, *arg, arg);
 }
 
@@ -973,7 +973,7 @@ press_any_key (void)
  * (patch submitted by Erik Saule).
  */
 static void
-print_notefile (FILE *out, char *filename, int nbtab)
+print_notefile (FILE *out, const char *filename, int nbtab)
 {
   char path_to_notefile[BUFSIZ];
   FILE *notefile;

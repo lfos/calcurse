@@ -68,7 +68,7 @@ static void ical_export_apoints (FILE *);
 static void ical_export_todo (FILE *);
 static void ical_export_footer (FILE *);
 
-static char *ical_recur_type[RECUR_TYPES] =
+static const char *ical_recur_type[RECUR_TYPES] =
   { "", "DAILY", "WEEKLY", "MONTHLY", "YEARLY" };
 
 /* iCal alarm notification. */

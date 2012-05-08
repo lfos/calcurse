@@ -632,7 +632,7 @@ calendar_change_day (int datefmt)
     _("The day you entered is not valid "
       "(should be between 01/01/1902 and 12/31/2037)");
   const char *mesg_line2 = _("Press [ENTER] to continue");
-  char *request_date = "Enter the day to go to [ENTER for today] : %s";
+  const char *request_date = "Enter the day to go to [ENTER for today] : %s";
 
   while (wrong_day)
     {
@@ -910,10 +910,10 @@ pom (time_t tmpt)
  * Careful: date is the selected day in calendar at 00:00, so it represents
  * the phase of the moon for previous day.
  */
-char *
+const char *
 calendar_get_pom (time_t date)
 {
-  char *pom_pict[MOON_PHASES] = { "   ", "|) ", "(|)", "(| ", " | " };
+  const char *pom_pict[MOON_PHASES] = { "   ", "|) ", "(|)", "(| ", " | " };
   enum pom phase = NO_POM;
   double pom_today, relative_pom, pom_yesterday, pom_tomorrow;
   const double half = 50.0;

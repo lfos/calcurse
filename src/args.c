@@ -480,8 +480,9 @@ display_app (struct tm *t, int numdays, int add_line, const char *fmt_apt,
  * days.
  */
 static void
-date_arg (char *ddate, int add_line, const char *fmt_apt, const char *fmt_rapt,
-          const char *fmt_ev, const char *fmt_rev, regex_t *regex)
+date_arg (const char *ddate, int add_line, const char *fmt_apt,
+          const char *fmt_rapt, const char *fmt_ev, const char *fmt_rev,
+          regex_t *regex)
 {
   int i;
   struct date day;
@@ -544,7 +545,7 @@ date_arg (char *ddate, int add_line, const char *fmt_apt, const char *fmt_rapt,
  * Many thanks to Erik Saule for providing this function.
  */
 static void
-date_arg_extended (char *startday, char *range, int add_line,
+date_arg_extended (const char *startday, const char *range, int add_line,
                    const char *fmt_apt, const char *fmt_rapt,
                    const char *fmt_ev, const char *fmt_rev, regex_t *regex)
 {
@@ -633,8 +634,8 @@ parse_args (int argc, char **argv)
   const char *fmt_todo = "%p. %m\n";
 
   int tnum = 0, xfmt = 0, non_interactive = 0, multiple_flag = 0, load_data = 0;
-  char *ddate = "", *cfile = NULL, *range = NULL, *startday = NULL;
-  char *datadir = NULL, *ifile = NULL;
+  const char *ddate = "", *cfile = NULL, *range = NULL, *startday = NULL;
+  const char *datadir = NULL, *ifile = NULL;
   regex_t reg, *preg = NULL;
 
   /* Long options only */
@@ -644,7 +645,7 @@ parse_args (int argc, char **argv)
     STATUS_OPT = CHAR_MAX + 1
   };
 
-  static char *optstr = "ghvnNax::t::d:c:r::s::S:D:i:";
+  static const char *optstr = "ghvnNax::t::d:c:r::s::S:D:i:";
 
   struct option longopts[] = {
     {"appointment", no_argument, NULL, 'a'},

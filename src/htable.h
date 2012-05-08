@@ -118,7 +118,7 @@ uint32_t                                                                      \
 name##_HTABLE_FIND_BKT(struct name *head, struct type *elm)                   \
 {                                                                             \
   uint32_t __bkt;                                                             \
-  char *__key;                                                                \
+  const char *__key;                                                                \
   int __len;                                                                  \
                                                                               \
   (key) (elm, &__key, &__len);                                                \

@@ -119,9 +119,9 @@ notify_bar (void)
 void
 notify_init_vars (void)
 {
-  char *time_format = "%T";
-  char *date_format = "%a %F";
-  char *cmd = "printf '\\a'";
+  const char *time_format = "%T";
+  const char *date_format = "%a %F";
+  const char *cmd = "printf '\\a'";
 
   pthread_mutex_init (&nbar.mutex, NULL);
   nbar.show = 1;

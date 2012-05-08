@@ -157,7 +157,7 @@ display_layout_config (struct window *lwin, int mark, int cursor)
 #define MARK			88
 #define LAYOUTH                  5
 #define LAYOUTW                  9
-  char *box = "[ ]";
+  const char *box = "[ ]";
   const int BOXSIZ = strlen (box);
   const int NBCOLS = NBLAYOUTS / LAYOUTSPERCOL;
   const int COLSIZ = LAYOUTW + BOXSIZ + 1;
@@ -167,7 +167,7 @@ display_layout_config (struct window *lwin, int mark, int cursor)
   const int YOFST = (lwin->h - LAYOUTSPERCOL * (YSPC + LAYOUTH)) / 2;
   enum {YPOS, XPOS, NBPOS};
   int pos[NBLAYOUTS][NBPOS];
-  char *layouts[LAYOUTH][NBLAYOUTS] = {
+  const char *layouts[LAYOUTH][NBLAYOUTS] = {
     {"+---+---+", "+---+---+", "+---+---+", "+---+---+", "+---+---+", "+---+---+", "+---+---+", "+---+---+"},
     {"|   | c |", "|   | t |", "| c |   |", "| t |   |", "|   | c |", "|   | a |", "| c |   |", "| a |   |"},
     {"| a +---+", "| a +---+", "+---+ a |", "|---+ a |", "| t +---+", "| t +---+", "+---+ t |", "+---+ t |"},
@@ -434,8 +434,8 @@ display_color_config (struct window *cwin, int *mark_fore, int *mark_back,
   const char *fore_txt = _("Foreground");
   const char *back_txt = _("Background");
   const char *default_txt = _("(terminal's default)");
-  char *bar = "          ";
-  char *box = "[ ]";
+  const char *bar = "          ";
+  const char *box = "[ ]";
   const unsigned Y = 3;
   const unsigned XOFST = 5;
   const unsigned YSPC = (cwin->h - 8) / (NBUSERCOLORS + 1);
@@ -869,7 +869,7 @@ custom_general_config (void)
 
 
 static void
-print_key_incolor (WINDOW *win, char *option, int pos_y, int pos_x)
+print_key_incolor (WINDOW *win, const char *option, int pos_y, int pos_x)
 {
   const int color = ATTR_HIGHEST;
 
@@ -907,7 +907,7 @@ print_keys_bindings (WINDOW *win, int selected_row, int selected_elm, int yoff)
         {
           if (action == selected_row)
             {
-              char *key;
+              const char *key;
               int pos;
 
               pos = KEYPOS;
@@ -959,7 +959,7 @@ custom_keys_config (void)
   struct scrollwin kwin;
   int selrow, selelm, firstrow, lastrow, nbrowelm, nbdisplayed;
   int keyval, used, not_recognized;
-  char *keystr;
+  const char *keystr;
   WINDOW *grabwin;
   const int LINESPERKEY = 2;
   const int LABELLINES = 3;

@@ -67,12 +67,13 @@ enum {
 };
 
 struct ht_keybindings_s {
-  char     *label;
-  enum key  key;
+  const char *label;
+  enum key    key;
   HTABLE_ENTRY (ht_keybindings_s);
 };
 
-static void load_keys_ht_getkey (struct ht_keybindings_s *, char **, int *);
+static void load_keys_ht_getkey (struct ht_keybindings_s *, const char **,
+                                 int *);
 static int load_keys_ht_compare (struct ht_keybindings_s *,
                                  struct ht_keybindings_s *);
 
@@ -94,14 +95,14 @@ progress_bar (progress_bar_t type, int progress)
   const char *mesg_load = _("Loading...");
   const char *mesg_export = _("Exporting...");
   const char *error_msg = _("Internal error while displaying progress bar");
-  char *barchar = "|";
-  char *file[NBFILES] = {
+  const char *barchar = "|";
+  const char *file[NBFILES] = {
     "[    conf    ]",
     "[    todo    ]",
     "[    apts    ]",
     "[    keys    ]"
   };
-  char *data[NBEXPORTED] = {
+  const char *data[NBEXPORTED] = {
     "[   events   ]",
     "[appointments]",
     "[    todo    ]"
@@ -226,10 +227,10 @@ io_fprintln (const char *fname, const char *fmt, ...)
  * The datadir argument can be use to specify an alternative data root dir.
  */
 void
-io_init (char *cfile, char *datadir)
+io_init (const char *cfile, const char *datadir)
 {
   FILE *data_file;
-  char *home;
+  const char *home;
   char apts_file[BUFSIZ] = "";
   int ch;
 
@@ -723,7 +724,7 @@ io_load_todo (void)
 }
 
 static void
-load_keys_ht_getkey (struct ht_keybindings_s *data, char **key, int *len)
+load_keys_ht_getkey (struct ht_keybindings_s *data, const char **key, int *len)
 {
   *key = data->label;
   *len = strlen (data->label);
@@ -760,7 +761,7 @@ static int is_blank (int c)
  * configuration file.
  */
 void
-io_load_keys (char *pager)
+io_load_keys (const char *pager)
 {
   struct ht_keybindings_s keys[NBKEYS];
   FILE *keyfp;
@@ -1108,7 +1109,7 @@ get_import_stream (enum export_type type)
  * and is cleared at the end.
  */
 void
-io_import_data (enum import_type type, char *stream_name)
+io_import_data (enum import_type type, const char *stream_name)
 {
   const char *proc_report = _("Import process report: %04d lines read ");
   char stats_str[4][BUFSIZ];
@@ -1232,7 +1233,7 @@ io_log_print (struct io_file *log, int line, const char *msg)
 }
 
 void
-io_log_display (struct io_file *log, const char *msg, char *pager)
+io_log_display (struct io_file *log, const char *msg, const char *pager)
 {
   int ans;
 
@@ -1243,7 +1244,7 @@ io_log_display (struct io_file *log, const char *msg, char *pager)
       ans = fgetc (stdin);
       if (ans == 'y')
         {
-          char *arg[] = { pager, log->name, NULL };
+          const char *arg[] = { pager, log->name, NULL };
           int pid;
 
           if ((pid = fork_exec (NULL, NULL, pager, arg)))

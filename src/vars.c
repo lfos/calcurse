@@ -65,7 +65,7 @@ int read_only = 0;
  * variables to store calendar names
  */
 int days[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
-char *monthnames[12] = {
+const char *monthnames[12] = {
   N_("January"),
   N_("February"),
   N_("March"),
@@ -80,7 +80,7 @@ char *monthnames[12] = {
   N_("December")
 };
 
-char *daynames[8] = {
+const char *daynames[8] = {
   N_("Sun"),
   N_("Mon"),
   N_("Tue"),
@@ -123,7 +123,7 @@ struct dmon_conf dmon;
 void
 vars_init (void)
 {
-  char *ed, *pg;
+  const char *ed, *pg;
 
   /* Variables for user configuration */
   conf.confirm_quit = 1;

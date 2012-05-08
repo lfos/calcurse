@@ -228,17 +228,17 @@
 
 /* General configuration variables. */
 struct conf {
-  unsigned   auto_save;
-  unsigned   auto_gc;
-  unsigned   periodic_save;
-  unsigned   confirm_quit;
-  unsigned   confirm_delete;
-  unsigned   system_dialogs;
-  unsigned   progress_bar;
-  char      *editor;
-  char      *pager;
-  char       output_datefmt[BUFSIZ];  /* format for displaying date */
-  int        input_datefmt;           /* format for reading date */
+  unsigned    auto_save;
+  unsigned    auto_gc;
+  unsigned    periodic_save;
+  unsigned    confirm_quit;
+  unsigned    confirm_delete;
+  unsigned    system_dialogs;
+  unsigned    progress_bar;
+  const char *editor;
+  const char *pager;
+  char        output_datefmt[BUFSIZ];  /* format for displaying date */
+  int         input_datefmt;           /* format for reading date */
 };
 
 /* Daemon-related configuration. */
@@ -482,7 +482,7 @@ struct nbar {
   char             datefmt[BUFSIZ];  /* format for displaying date */
   char             timefmt[BUFSIZ];  /* format for displaying time */
   char             cmd[BUFSIZ];      /* notification command */
-  char            *shell;            /* user shell to launch notif. cmd */
+  const char      *shell;            /* user shell to launch notif. cmd */
   unsigned         notify_all;       /* notify all appointments */
   pthread_mutex_t  mutex;
 };
@@ -618,7 +618,7 @@ void          calendar_change_day (int);
 void          calendar_move (enum move, int);
 long          calendar_start_of_year (void);
 long          calendar_end_of_year (void);
-char         *calendar_get_pom (time_t);
+const char   *calendar_get_pom (time_t);
 
 /* config.c */
 
@@ -654,8 +654,8 @@ int                   day_cut_item (long, int);
 int                   day_paste_item (long, int);
 struct day_item      *day_get_item (int);
 int                   day_item_nb (long, int, int);
-void                  day_edit_note (char *);
-void                  day_view_note (char *);
+void                  day_edit_note (const char *);
+void                  day_view_note (const char *);
 void                  day_pipe_item (void);
 
 /* dmon.c */
@@ -690,7 +690,7 @@ void  ical_export_data (FILE *);
 
 /* io.c */
 unsigned         io_fprintln (const char *, const char *, ...);
-void             io_init (char *, char *);
+void             io_init (const char *, const char *);
 void             io_extract_data (char *, const char *, int);
 unsigned         io_save_apts (void);
 unsigned         io_save_todo (void);
@@ -698,7 +698,7 @@ unsigned         io_save_keys (void);
 void             io_save_cal (enum save_display);
 void             io_load_app (void);
 void             io_load_todo (void);
-void             io_load_keys (char *);
+void             io_load_keys (const char *);
 void             io_check_dir (char *, int *);
 unsigned         io_file_exist (char *);
 void             io_check_file (char *, int *);
@@ -706,10 +706,10 @@ int              io_check_data_files (void);
 void             io_startup_screen (int);
 void             io_export_data (enum export_type);
 void             io_export_bar (void);
-void             io_import_data (enum import_type, char *);
+void             io_import_data (enum import_type, const char *);
 struct io_file  *io_log_init (void);
 void             io_log_print (struct io_file *, int, const char *);
-void             io_log_display (struct io_file *, const char *, char *);
+void             io_log_display (struct io_file *, const char *, const char *);
 void             io_log_free (struct io_file *);
 void             io_start_psave_thread (void);
 void             io_stop_psave_thread (void);
@@ -720,26 +720,26 @@ int              io_file_is_empty (char *);
 int              io_file_cp (const char *, const char *);
 
 /* keys.c */
-void      keys_init (void);
-void      keys_free (void);
-void      keys_dump_defaults (char *);
-char     *keys_get_label (enum key);
-enum key  keys_get_action (int);
-enum key  keys_getch (WINDOW *win, int *);
-int       keys_assign_binding (int, enum key);
-void      keys_remove_binding (int, enum key);
-int       keys_str2int (char *);
-char     *keys_int2str (int);
-int       keys_action_count_keys (enum key);
-char     *keys_action_firstkey (enum key);
-char     *keys_action_nkey (enum key, int);
-char     *keys_action_allkeys (enum key);
-void      keys_display_bindings_bar (WINDOW *, struct binding *[], int, int,
-                                     int, struct binding *);
-void      keys_popup_info (enum key);
-void      keys_save_bindings (FILE *);
-int       keys_check_missing_bindings (void);
-void      keys_fill_missing (void);
+void        keys_init (void);
+void        keys_free (void);
+void        keys_dump_defaults (char *);
+const char *keys_get_label (enum key);
+enum key    keys_get_action (int);
+enum key    keys_getch (WINDOW *win, int *);
+int         keys_assign_binding (int, enum key);
+void        keys_remove_binding (int, enum key);
+int         keys_str2int (const char *);
+const char *keys_int2str (int);
+int         keys_action_count_keys (enum key);
+const char *keys_action_firstkey (enum key);
+const char *keys_action_nkey (enum key, int);
+char       *keys_action_allkeys (enum key);
+void        keys_display_bindings_bar (WINDOW *, struct binding *[], int, int,
+                                       int, struct binding *);
+void        keys_popup_info (enum key);
+void        keys_save_bindings (FILE *);
+int         keys_check_missing_bindings (void);
+void        keys_fill_missing (void);
 
 /* mem.c */
 void  *xmalloc (size_t);
@@ -776,8 +776,8 @@ void   mem_stats (void);
 
 /* note.c */
 char *generate_note (const char *);
-void  edit_note (char **, char *);
-void  view_note (char *, char *);
+void  edit_note (char **, const char *);
+void  view_note (const char *, const char *);
 void  erase_note (char **);
 void  note_read (char *, FILE *);
 void  note_gc (void);
@@ -879,8 +879,8 @@ void          todo_delete (void);
 void          todo_chg_priority (int);
 void          todo_edit_item (void);
 void          todo_update_panel (int);
-void          todo_edit_note (char *);
-void          todo_view_note (char *);
+void          todo_edit_note (const char *);
+void          todo_view_note (const char *);
 void          todo_pipe_item (void);
 void          todo_init_list (void);
 void          todo_free_list (void);
@@ -897,21 +897,22 @@ void         warnbox (const char *);
 void         status_mesg (const char *, const char *);
 void         status_mesg_yesno (const char *);
 void         erase_window_part (WINDOW *, int, int, int, int);
-WINDOW      *popup (int, int, int, int, char *, char *, int);
+WINDOW      *popup (int, int, int, int, const char *, const char *, int);
 void         print_in_middle (WINDOW *, int, int, int, const char *);
 int          is_all_digit (const char *);
 long         get_item_time (long);
 int          get_item_hour (long);
 int          get_item_min (long);
 long         date2sec (struct date, unsigned, unsigned);
-char        *date_sec2date_str (long, char *);
+char        *date_sec2date_str (long, const char *);
 void         date_sec2date_fmt (long, const char *, char *);
 long         date_sec_change (long, int, int);
 long         update_time_in_date (long, unsigned, unsigned);
 long         get_sec_date (struct date);
 long         min2sec (unsigned);
 void         draw_scrollbar (WINDOW *, int, int, int, int, int, unsigned);
-void         item_in_popup (char *, char *, char *, char *);
+void         item_in_popup (const char *, const char *, const char *,
+                            const char *);
 long         get_today (void);
 long         now (void);
 char        *nowstr (void);
@@ -926,8 +927,8 @@ int          parse_duration (const char *, unsigned *);
 void         str_toupper (char *);
 void         file_close (FILE *, const char *);
 void         psleep (unsigned);
-int          fork_exec (int *, int *, const char *, char *const *);
-int          shell_exec (int *, int *, char *);
+int          fork_exec (int *, int *, const char *, const char *const *);
+int          shell_exec (int *, int *, const char *);
 int          child_wait (int *, int *, int);
 void         press_any_key (void);
 void         print_apoint (const char *, long, struct apoint *);
@@ -945,8 +946,8 @@ extern int               foreground, background;
 extern enum ui_mode      ui_mode;
 extern int               read_only;
 extern int               days[12];
-extern char             *monthnames[12];
-extern char             *daynames[8];
+extern const char       *monthnames[12];
+extern const char       *daynames[8];
 extern char              path_dir[BUFSIZ];
 extern char              path_todo[BUFSIZ];
 extern char              path_apts[BUFSIZ];
@@ -994,7 +995,7 @@ void      wins_update (int);
 void      wins_reset (void);
 void      wins_prepare_external (void);
 void      wins_unprepare_external (void);
-void      wins_launch_external (char *, char *);
+void      wins_launch_external (const char *, const char *);
 void      wins_status_bar (void);
 void      wins_erase_status_bar (void);
 void      wins_other_status_page (int);

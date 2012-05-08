@@ -337,9 +337,9 @@ config_color_theme_name (char *theme_name)
 
   int i;
   short color[NBCOLORS];
-  char *color_name[NBCOLORS];
-  char *default_color = "default";
-  char *name[MAXCOLORS] = {
+  const char *color_name[NBCOLORS];
+  const char *default_color = "default";
+  const char *name[MAXCOLORS] = {
     "black",
     "red",
     "green",

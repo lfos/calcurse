@@ -705,7 +705,7 @@ update_rept (struct rpt **rpt, const long start)
   const char *msg_wrong_freq = _("The frequence you entered is not valid.");
   const char *msg_wrong_time = _("Invalid time: start time must be before end time!");
   const char *msg_wrong_date = _("The entered date is not valid.");
-  char *msg_fmts =
+  const char *msg_fmts =
     "Possible formats are [%s] or '0' for an endless repetetition";
   const char *msg_enter = _("Press [Enter] to continue");
 
@@ -1092,7 +1092,7 @@ day_item_nb (long date, int day_num, int type)
 
 /* Attach a note to an appointment or event. */
 void
-day_edit_note (char *editor)
+day_edit_note (const char *editor)
 {
   struct day_item *p;
   struct recur_apoint *ra;
@@ -1130,7 +1130,7 @@ day_edit_note (char *editor)
 
 /* View a note previously attached to an appointment or event */
 void
-day_view_note (char *pager)
+day_view_note (const char *pager)
 {
   struct day_item *p = day_get_item (apoint_hilt ());
   view_note (p->note, pager);

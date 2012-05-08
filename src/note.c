@@ -46,7 +46,7 @@ struct note_gc_hash {
   HTABLE_ENTRY (note_gc_hash);
 };
 
-static void note_gc_extract_key (struct note_gc_hash *, char **, int *);
+static void note_gc_extract_key (struct note_gc_hash *, const char **, int *);
 static int note_gc_cmp (struct note_gc_hash *, struct note_gc_hash *);
 
 HTABLE_HEAD (htp, NOTE_GC_HSIZE, note_gc_hash);
@@ -74,7 +74,7 @@ generate_note (const char *str)
 
 /* Edit a note with an external editor. */
 void
-edit_note (char **note, char *editor)
+edit_note (char **note, const char *editor)
 {
   char tmppath[BUFSIZ];
   char *tmpext;
@@ -114,7 +114,7 @@ edit_note (char **note, char *editor)
 
 /* View a note in an external pager. */
 void
-view_note (char *note, char *pager)
+view_note (const char *note, const char *pager)
 {
   char fullname[BUFSIZ];
 
@@ -155,7 +155,7 @@ note_read (char *buffer, FILE *fp)
 }
 
 static void
-note_gc_extract_key (struct note_gc_hash *data, char **key, int *len)
+note_gc_extract_key (struct note_gc_hash *data, const char **key, int *len)
 {
   *key = data->hash;
   *len = strlen (data->hash);

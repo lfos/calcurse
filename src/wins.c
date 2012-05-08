@@ -620,9 +620,9 @@ wins_unprepare_external (void)
  * file.
  */
 void
-wins_launch_external (char *file, char *cmd)
+wins_launch_external (const char *file, const char *cmd)
 {
-  char *arg[] = { cmd, file, NULL };
+  const char *arg[] = { cmd, file, NULL };
   int pid;
 
   wins_prepare_external ();

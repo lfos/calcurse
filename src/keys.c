@@ -42,8 +42,8 @@
 #define MAXKEYVAL   KEY_MAX  /* ncurses defines KEY_MAX as maximum key value */
 
 struct keydef_s {
-  char *label;
-  char *binding;
+  const char *label;
+  const char *binding;
 };
 
 static llist_t keys[NBKEYS];
@@ -166,7 +166,7 @@ keys_dump_defaults (char *file)
   file_close (fd, __FILE_POS__);
 }
 
-char *
+const char *
 keys_get_label (enum key key)
 {
   EXIT_IF (key < 0 || key > NBKEYS,
@@ -269,7 +269,7 @@ keys_remove_binding (int key, enum key action)
 }
 
 int
-keys_str2int (char *key)
+keys_str2int (const char *key)
 {
   const char CONTROL_KEY[] = "C-";
   const char TAB_KEY[] = "TAB";
@@ -315,7 +315,7 @@ keys_str2int (char *key)
     }
 }
 
-char *
+const char *
 keys_int2str (int key)
 {
   switch (key)
@@ -355,14 +355,14 @@ keys_action_count_keys (enum key action)
   return n;
 }
 
-char *
+const char *
 keys_action_firstkey (enum key action)
 {
-  char *s = LLIST_GET_DATA (LLIST_FIRST (&keys[action]));
+  const char *s = LLIST_GET_DATA (LLIST_FIRST (&keys[action]));
   return (s != NULL) ? s : "XXX";
 }
 
-char *
+const char *
 keys_action_nkey (enum key action, int keynum)
 {
   return LLIST_GET_DATA (LLIST_NTH (&keys[action], keynum));
