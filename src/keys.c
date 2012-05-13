@@ -481,6 +481,10 @@ keys_popup_info (enum key key)
     _("Exit from the current menu, or quit calcurse.");
   info[KEY_GENERIC_SAVE] =
     _("Save calcurse data.");
+  info[KEY_GENERIC_CUT] =
+    _("Help for `generic-cut`.");
+  info[KEY_GENERIC_PASTE] =
+    _("Help for `generic-paste`.");
   info[KEY_GENERIC_CHANGE_VIEW] =
     _("Select next panel in calcurse main screen.");
   info[KEY_GENERIC_IMPORT] =
