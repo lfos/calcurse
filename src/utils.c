@@ -184,13 +184,6 @@ status_mesg (const char *msg1, const char *msg2)
   custom_remove_attr (win[STA].p, ATTR_HIGHEST);
 }
 
-/* Print a status message, followed by a "[y/n]" prompt. */
-void
-status_mesg_yesno (const char *msg)
-{
-  status_mesg (msg, "[y/n] ");
-}
-
 /*
  * Prompts the user to make a choice between named alternatives.
  *
@@ -231,6 +224,17 @@ status_ask_choice(const char *message, const char choice[], int nb_choice)
         return (-1);
       /* TODO: handle resize events. */
     }
+}
+
+/*
+ * Prompts the user with a boolean question.
+ *
+ * Returns 1 if yes, 2 if no, and -1 otherwise
+ */
+int
+status_ask_bool (const char *msg)
+{
+  return (status_ask_choice (msg, _("[yn]"), 2));
 }
 
 /*

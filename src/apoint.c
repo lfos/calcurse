@@ -276,8 +276,7 @@ apoint_delete (unsigned *nb_events, unsigned *nb_apoints)
 
   if (conf.confirm_delete)
     {
-      status_mesg_yesno (del_app_str);
-      if (wgetch (win[STA].p) != 'y')
+      if (status_ask_bool (del_app_str) != 1)
         {
           wins_erase_status_bar ();
           return;

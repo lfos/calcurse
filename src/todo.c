@@ -250,17 +250,8 @@ todo_delete (void)
   const int nb_erase_choice = 2;
   int answer;
 
-  if (conf.confirm_delete)
-    {
-      status_mesg_yesno (del_todo_str);
-      answer = wgetch (win[STA].p);
-      if ((answer != 'y') || (todos <= 0))
-        {
-          wins_erase_status_bar ();
-          return;
-        }
-    }
-  else if (todos <= 0)
+  if ((todos <= 0) ||
+      (conf.confirm_delete && (status_ask_bool (del_todo_str) != 1)))
     {
       wins_erase_status_bar ();
       return;

@@ -546,10 +546,8 @@ main (int argc, char **argv)
 
           if (conf.confirm_quit)
             {
-              status_mesg_yesno (_("Do you really want to quit ?"));
-              key = wgetch (win[STA].p);
-              if (key == 'y')
-                exit_calcurse (EXIT_SUCCESS);
+              if (status_ask_bool (_("Do you really want to quit ?")) == 1)
+                  exit_calcurse (EXIT_SUCCESS);
               else
                 {
                   wins_erase_status_bar ();

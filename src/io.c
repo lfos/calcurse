@@ -1253,16 +1253,8 @@ io_log_display (struct io_file *log, const char *msg, const char *pager)
     }
   else
     {
-      status_mesg_yesno (msg);
-      do
-        {
-          ans = wgetch (win[STA].p);
-          if (ans == 'y')
-            {
-              wins_launch_external (log->name, pager);
-            }
-        }
-      while (ans != 'y' && ans != 'n');
+      if (status_ask_bool (msg) == 1)
+        wins_launch_external (log->name, pager);
       wins_erase_status_bar ();
     }
 }
