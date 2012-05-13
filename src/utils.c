@@ -208,7 +208,7 @@ status_ask_choice(const char *message, const char choice[], int nb_choice)
 
   for (i = 1; i <= nb_choice; i++)
     {
-      sprintf (tmp, (i == nb_choice) ? "%c] " : "%c/", choice[i]);
+      snprintf (tmp, BUFSIZ, (i == nb_choice) ? "%c] " : "%c/", choice[i]);
       strcat (avail_choice, tmp);
     }
 
@@ -262,7 +262,7 @@ status_ask_simplechoice (const char *prefix, const char *choice[],
 
   for (i = 0; i < nb_choice; i++)
     {
-      sprintf (tmp, ((i + 1) == nb_choice) ? "(%d) %s?" : "(%d) %s, ",
+      snprintf (tmp, BUFSIZ, ((i + 1) == nb_choice) ? "(%d) %s?" : "(%d) %s, ",
                (i + 1), _(choice[i]));
       strcat (choicestr, tmp);
     }

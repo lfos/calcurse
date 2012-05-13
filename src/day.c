@@ -742,7 +742,7 @@ update_rept (struct rpt **rpt, const long start)
   const char *msg_wrong_time = _("Invalid time: start time must be before end time!");
   const char *msg_wrong_date = _("The entered date is not valid.");
   const char *msg_fmts =
-    "Possible formats are [%s] or '0' for an endless repetetition";
+    _("Possible formats are [%s] or '0' for an endless repetetition");
   const char *msg_enter = _("Press [Enter] to continue");
 
   switch (status_ask_choice (msg_rpt_asktype, msg_rpt_choice, 4))
