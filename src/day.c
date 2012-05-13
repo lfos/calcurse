@@ -694,14 +694,50 @@ update_desc (char **desc)
 static void
 update_rept (struct rpt **rpt, const long start)
 {
-  const int SINGLECHAR = 2;
-  int ch, newfreq, date_entered;
+  int newtype, newfreq, date_entered;
   long newuntil;
   char outstr[BUFSIZ];
-  char *typstr, *freqstr, *timstr;
-  const char *msg_rpt_type = _("Enter the new repetition type: (D)aily, (W)eekly, "
-                         "(M)onthly, (Y)early");
-  const char *msg_rpt_ans = _("[D/W/M/Y] ");
+  char *freqstr, *timstr;
+  const char *msg_rpt_prefix = _("Enter the new repetition type:");
+  const char *msg_rpt_daily = _("(d)aily");
+  const char *msg_rpt_weekly = _("(w)eekly");
+  const char *msg_rpt_monthly = _("(m)onthly");
+  const char *msg_rpt_yearly = _("(y)early");
+
+  /* Find the current repetition type. */
+  const char *rpt_current;
+  char msg_rpt_current[BUFSIZ];
+  switch (recur_def2char ((*rpt)->type))
+    {
+    case 'D':
+      rpt_current = msg_rpt_daily;
+      break;
+    case 'W':
+      rpt_current = msg_rpt_weekly;
+      break;
+    case 'M':
+      rpt_current = msg_rpt_monthly;
+      break;
+    case 'Y':
+      rpt_current = msg_rpt_yearly;
+      break;
+    default:
+      /* NOTREACHED, but makes the compiler happier. */
+      rpt_current = msg_rpt_daily;
+    }
+
+  snprintf (msg_rpt_current, BUFSIZ, _("(currently using %s)"), rpt_current);
+
+  char msg_rpt_asktype[BUFSIZ];
+  snprintf (msg_rpt_asktype, BUFSIZ, "%s %s, %s, %s, %s ? %s",
+            msg_rpt_prefix,
+            msg_rpt_daily,
+            msg_rpt_weekly,
+            msg_rpt_monthly,
+            msg_rpt_yearly,
+            msg_rpt_current);
+
+  const char *msg_rpt_choice = _("[dwmy]");
   const char *msg_wrong_freq = _("The frequence you entered is not valid.");
   const char *msg_wrong_time = _("Invalid time: start time must be before end time!");
   const char *msg_wrong_date = _("The entered date is not valid.");
@@ -709,23 +745,23 @@ update_rept (struct rpt **rpt, const long start)
     "Possible formats are [%s] or '0' for an endless repetetition";
   const char *msg_enter = _("Press [Enter] to continue");
 
-  do
+  switch (status_ask_choice (msg_rpt_asktype, msg_rpt_choice, 4))
     {
-      status_mesg (msg_rpt_type, msg_rpt_ans);
-      typstr = mem_calloc (SINGLECHAR, sizeof (char));
-      snprintf (typstr, SINGLECHAR, "%c", recur_def2char ((*rpt)->type));
-      if (updatestring (win[STA].p, &typstr, 0, 1) == GETSTRING_VALID)
-        {
-          ch = toupper (*typstr);
-          mem_free (typstr);
-        }
-      else
-        {
-          mem_free (typstr);
-          return;
-        }
+    case 1:
+      newtype = 'D';
+      break;
+    case 2:
+      newtype = 'W';
+      break;
+    case 3:
+      newtype = 'M';
+      break;
+    case 4:
+      newtype = 'Y';
+      break;
+    default:
+      return;
     }
-  while ((ch != 'D') && (ch != 'W') && (ch != 'M') && (ch != 'Y'));
 
   do
     {
@@ -805,7 +841,7 @@ update_rept (struct rpt **rpt, const long start)
   while (date_entered == 0);
 
   mem_free (timstr);
-  (*rpt)->type = recur_char2def (ch);
+  (*rpt)->type = recur_char2def (newtype);
   (*rpt)->freq = newfreq;
   (*rpt)->until = newuntil;
 }

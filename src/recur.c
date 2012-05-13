@@ -868,15 +868,17 @@ recur_repeat_item (void)
 {
   struct tm *lt;
   time_t t;
-  int ch = 0;
   int date_entered = 0;
   int year = 0, month = 0, day = 0;
   struct date until_date;
   char outstr[BUFSIZ];
   char user_input[BUFSIZ] = "";
-  const char *mesg_type_1 =
-    _("Enter the repetition type: (D)aily, (W)eekly, (M)onthly, (Y)early");
-  const char *mesg_type_2 = _("[D/W/M/Y] ");
+  const char *msg_rpt_prefix = _("Enter the repetition type:");
+  const char *msg_rpt_daily = _("(d)aily");
+  const char *msg_rpt_weekly = _("(w)eekly");
+  const char *msg_rpt_monthly = _("(m)onthly");
+  const char *msg_rpt_yearly = _("(y)early");
+  const char *msg_type_choice = _("[dwmy]");
   const char *mesg_freq_1 = _("Enter the repetition frequence:");
   const char *mesg_wrong_freq = _("The frequence you entered is not valid.");
   const char *mesg_until_1 =
@@ -888,6 +890,15 @@ recur_repeat_item (void)
   const char *wrong_type_2 = _("Press [ENTER] to continue.");
   const char *mesg_older =
     _("Sorry, the date you entered is older than the item start time.");
+
+  char msg_asktype[BUFSIZ];
+    snprintf (msg_asktype, BUFSIZ, "%s %s, %s, %s, %s",
+              msg_rpt_prefix,
+              msg_rpt_daily,
+              msg_rpt_weekly,
+              msg_rpt_monthly,
+              msg_rpt_yearly);
+
   int type = 0, freq = 0;
   int item_nb;
   struct day_item *p;
@@ -903,20 +914,22 @@ recur_repeat_item (void)
       return;
     }
 
-  while ((ch != 'D') && (ch != 'W') && (ch != 'M')
-         && (ch != 'Y') && (ch != ESCAPE))
+  switch (status_ask_choice (msg_asktype, msg_type_choice, 4))
     {
-      status_mesg (mesg_type_1, mesg_type_2);
-      ch = wgetch (win[STA].p);
-      ch = toupper (ch);
-    }
-  if (ch == ESCAPE)
-    {
+    case 1:
+      type = RECUR_DAILY;
+      break;
+    case 2:
+      type = RECUR_WEEKLY;
+      break;
+    case 3:
+      type = RECUR_MONTHLY;
+      break;
+    case 4:
+      type = RECUR_YEARLY;
+      break;
+    default:
       return;
-    }
-  else
-    {
-      type = recur_char2def (ch);
     }
 
   while (freq == 0)
