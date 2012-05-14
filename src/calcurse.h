@@ -896,6 +896,7 @@ void         fatalbox (const char *);
 void         warnbox (const char *);
 void         status_mesg (const char *, const char *);
 void         status_mesg_yesno (const char *);
+int          status_ask_choice (const char *, const char[], int);
 void         erase_window_part (WINDOW *, int, int, int, int);
 WINDOW      *popup (int, int, int, int, const char *, const char *, int);
 void         print_in_middle (WINDOW *, int, int, int, const char *);

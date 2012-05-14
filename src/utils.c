@@ -191,6 +191,48 @@ status_mesg_yesno (const char *msg)
   status_mesg (msg, "[y/n] ");
 }
 
+/*
+ * Prompts the user to make a choice between named alternatives.
+ *
+ * The available choices are described by a string of the form
+ * "[ynp]". The first and last char are ignored (they are only here to
+ * make the translators' life easier), and every other char indicates
+ * a key the user is allowed to press.
+ *
+ * Returns the index of the key pressed by the user (starting from 1),
+ * or -1 if the user doesn't want to answer (e.g. by escaping).
+ */
+int
+status_ask_choice(const char *message, const char choice[], int nb_choice)
+{
+  int i, ch;
+  char tmp[BUFSIZ];
+  /* "[4/2/f/t/w/.../Z] " */
+  char avail_choice[2 * nb_choice + 3];
+
+  avail_choice[0] = '[';
+  avail_choice[1] = '\0';
+
+  for (i = 1; i <= nb_choice; i++)
+    {
+      sprintf (tmp, (i == nb_choice) ? "%c] " : "%c/", choice[i]);
+      strcat (avail_choice, tmp);
+    }
+
+  status_mesg (message, avail_choice);
+
+  for (;;)
+    {
+      ch = wgetch (win[STA].p);
+      for (i = 1; i <= nb_choice; i++)
+        if (ch == choice[i])
+          return i;
+      if (ch == ESCAPE)
+        return (-1);
+      /* TODO: handle resize events. */
+    }
+}
+
 /* Erase part of a window. */
 void
 erase_window_part (WINDOW *win, int first_col, int first_row, int last_col,
