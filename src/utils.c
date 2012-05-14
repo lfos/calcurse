@@ -222,7 +222,12 @@ status_ask_choice(const char *message, const char choice[], int nb_choice)
           return i;
       if (ch == ESCAPE)
         return (-1);
-      /* TODO: handle resize events. */
+      if (resize)
+        {
+          resize = 0;
+          wins_reset ();
+          status_mesg (message, avail_choice);
+        }
     }
 }
 
