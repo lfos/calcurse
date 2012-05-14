@@ -922,33 +922,40 @@ int
 day_erase_item (long date, int item_number, enum eraseflg flag)
 {
   struct day_item *p;
+
   const char *erase_warning =
       _("This item is recurrent. "
         "Delete (a)ll occurences or just this (o)ne ?");
+  const char *erase_choices = _("[ao]");
+  const int nb_erase_choices = 2;
+
   const char *note_warning =
       _("This item has a note attached to it. "
         "Delete (i)tem or just its (n)ote ?");
-  const char *note_choice = _("[i/n] ");
-  const char *erase_choice = _("[a/o] ");
-  int ch, ans;
+  const char *note_choices = _("[in]");
+  const int nb_note_choices = 2;
+  int ans;
   unsigned delete_whole;
 
-  ch = -1;
   p = day_get_item (item_number);
   if (flag == ERASE_DONT_FORCE)
     {
-      ans = 0;
       if (p->note == NULL)
-        ans = 'i';
-      while (ans != 'i' && ans != 'n')
-        {
-          status_mesg (note_warning, note_choice);
-          ans = wgetch (win[STA].p);
-        }
-      if (ans == 'i')
-        flag = ERASE_FORCE;
+        ans = 1;
       else
-        flag = ERASE_FORCE_ONLY_NOTE;
+        ans = status_ask_choice (note_warning, note_choices, nb_note_choices);
+
+      switch (ans)
+        {
+        case 1:
+          flag = ERASE_FORCE;
+          break;
+        case 2:
+          flag = ERASE_FORCE_ONLY_NOTE;
+          break;
+        default: /* User escaped */
+          return 0;
+        }
     }
   if (p->type == EVNT)
     {
@@ -961,24 +968,23 @@ day_erase_item (long date, int item_number, enum eraseflg flag)
   else
     {
       if (flag == ERASE_FORCE_ONLY_NOTE)
-        ch = 'a';
-      while ((ch != 'a') && (ch != 'o') && (ch != KEY_GENERIC_CANCEL))
-        {
-          status_mesg (erase_warning, erase_choice);
-          ch = wgetch (win[STA].p);
-        }
-      if (ch == 'a')
-        {
-          delete_whole = 1;
-        }
-      else if (ch == 'o')
-        {
-          delete_whole = 0;
-        }
+        ans = 1;
       else
+        ans = status_ask_choice (erase_warning, erase_choices,
+                                 nb_erase_choices);
+
+      switch (ans)
         {
+        case 1:
+          delete_whole = 1;
+          break;
+        case 2:
+          delete_whole = 0;
+          break;
+        default:
           return 0;
         }
+
       if (p->type == RECUR_EVNT)
         {
           recur_event_erase (date, day_item_nb (date, item_number, RECUR_EVNT),

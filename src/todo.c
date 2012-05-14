@@ -246,8 +246,9 @@ todo_delete (void)
   const char *erase_warning =
       _("This item has a note attached to it. "
         "Delete (t)odo or just its (n)ote ?");
-  const char *erase_choice = _("[t/n] ");
-  int answer, has_note;
+  const char *erase_choice = _("[tn]");
+  const int nb_erase_choice = 2;
+  int answer;
 
   if (conf.confirm_delete)
     {
@@ -265,20 +266,15 @@ todo_delete (void)
       return;
     }
 
-  answer = -1;
-  has_note = (todo_get_item (hilt)->note != NULL) ? 1 : 0;
-  if (has_note == 0)
-    answer = 't';
-
-  while (answer != 't' && answer != 'n' && answer != KEY_GENERIC_CANCEL)
-    {
-      status_mesg (erase_warning, erase_choice);
-      answer = wgetch (win[STA].p);
-    }
+  /* This todo item doesn't have any note associated. */
+  if (todo_get_item (hilt)->note == NULL)
+    answer = 1;
+  else
+    answer = status_ask_choice (erase_warning, erase_choice, nb_erase_choice);
 
   switch (answer)
     {
-    case 't':
+    case 1:
       todo_delete_bynum (hilt - 1);
       todos--;
       if (hilt > 1)
@@ -288,7 +284,7 @@ todo_delete (void)
       if (hilt - first < 0)
         first--;
       break;
-    case 'n':
+    case 2:
       todo_delete_note_bynum (hilt - 1);
       break;
     default:
