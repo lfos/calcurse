@@ -814,38 +814,33 @@ update_rept (struct rpt **rpt, const long start)
 void
 day_edit_item (void)
 {
-#define STRT		'1'
-#define END		'2'
-#define DESC		'3'
-#define REPT		'4'
-
   struct day_item *p;
   struct recur_event *re;
   struct event *e;
   struct recur_apoint *ra;
   struct apoint *a;
   long date;
-  int item_num, ch;
+  int item_num;
   int need_check_notify = 0;
 
   item_num = apoint_hilt ();
   p = day_get_item (item_num);
   date = calendar_get_slctd_day_sec ();
 
-  ch = -1;
   switch (p->type)
     {
     case RECUR_EVNT:
       re = recur_get_event (date, day_item_nb (date, item_num, RECUR_EVNT));
-      status_mesg (_("Edit: (1)Description or (2)Repetition?"), "[1/2] ");
-      while (ch != '1' && ch != '2' && ch != KEY_GENERIC_CANCEL)
-        ch = wgetch (win[STA].p);
-      switch (ch)
+      const char *choice_recur_evnt[2] = {
+        "Description",
+        "Repetition",
+      };
+      switch (status_ask_simplechoice (_("Edit: "), choice_recur_evnt, 2))
         {
-        case '1':
+        case 1:
           update_desc (&re->mesg);
           break;
-        case '2':
+        case 2:
           update_rept (&re->rpt, re->day);
           break;
         default:
@@ -858,54 +853,56 @@ day_edit_item (void)
       break;
     case RECUR_APPT:
       ra = recur_get_apoint (date, day_item_nb (date, item_num, RECUR_APPT));
-      status_mesg (_("Edit: (1)Start time, (2)End time, "
-                     "(3)Description or (4)Repetition?"), "[1/2/3/4] ");
-      while (ch != STRT && ch != END && ch != DESC &&
-             ch != REPT && ch != KEY_GENERIC_CANCEL)
-        ch = wgetch (win[STA].p);
-      switch (ch)
+      const char *choice_recur_appt[4] = {
+        "Start time",
+        "End time",
+        "Description",
+        "Repetition",
+      };
+      switch (status_ask_simplechoice (_("Edit: "), choice_recur_appt, 4))
         {
-        case STRT:
+        case 1:
           need_check_notify = 1;
           update_start_time (&ra->start, &ra->dur);
           break;
-        case END:
+        case 2:
           update_duration (&ra->start, &ra->dur);
           break;
-        case DESC:
+        case 3:
           if (notify_bar ())
             need_check_notify = notify_same_recur_item (ra);
           update_desc (&ra->mesg);
           break;
-        case REPT:
+        case 4:
           need_check_notify = 1;
           update_rept (&ra->rpt, ra->start);
           break;
-        case KEY_GENERIC_CANCEL:
+        default:
           return;
         }
       break;
     case APPT:
       a = apoint_get (date, day_item_nb (date, item_num, APPT));
-      status_mesg (_("Edit: (1)Start time, (2)End time "
-                     "or (3)Description?"), "[1/2/3] ");
-      while (ch != STRT && ch != END && ch != DESC && ch != KEY_GENERIC_CANCEL)
-        ch = wgetch (win[STA].p);
-      switch (ch)
+      const char *choice_appt[3] = {
+        "Start time",
+        "End time",
+        "Description",
+      };
+      switch (status_ask_simplechoice (_("Edit: "), choice_appt, 3))
         {
-        case STRT:
+        case 1:
           need_check_notify = 1;
           update_start_time (&a->start, &a->dur);
           break;
-        case END:
+        case 2:
           update_duration (&a->start, &a->dur);
           break;
-        case DESC:
+        case 3:
           if (notify_bar ())
             need_check_notify = notify_same_item (a->start);
           update_desc (&a->mesg);
           break;
-        case KEY_GENERIC_CANCEL:
+        default:
           return;
         }
       break;
