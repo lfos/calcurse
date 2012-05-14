@@ -233,6 +233,39 @@ status_ask_choice(const char *message, const char choice[], int nb_choice)
     }
 }
 
+/*
+ * Prompts the user to make a choice between a number of alternatives.
+ *
+ * Returns the option chosen by the user (starting from 1), or -1 if
+ * the user doesn't want to answer.
+ */
+int
+status_ask_simplechoice (const char *prefix, const char *choice[],
+                         int nb_choice)
+{
+  int i;
+  char tmp[BUFSIZ];
+  /* "(1) Choice1, (2) Choice2, (3) Choice3?" */
+  char choicestr[BUFSIZ];
+  /* Holds the characters to choose from ('1', '2', etc) */
+  char char_choice[nb_choice + 2];
+
+  /* No need to initialize first and last char. */
+  for (i = 1; i <= nb_choice; i++)
+    char_choice[i] = '0' + i;
+
+  strcpy (choicestr, prefix);
+
+  for (i = 0; i < nb_choice; i++)
+    {
+      sprintf (tmp, ((i + 1) == nb_choice) ? "(%d) %s?" : "(%d) %s, ",
+               (i + 1), _(choice[i]));
+      strcat (choicestr, tmp);
+    }
+
+  return (status_ask_choice (choicestr, char_choice, nb_choice));
+}
+
 /* Erase part of a window. */
 void
 erase_window_part (WINDOW *win, int first_col, int first_row, int last_col,
