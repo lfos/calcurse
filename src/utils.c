@@ -1015,10 +1015,47 @@ fork_exec (int *pfdin, int *pfdout, const char *path, const char *const *arg)
 
 /* Execute an external program in a shell. */
 int
-shell_exec (int *pfdin, int *pfdout, const char *cmd)
+shell_exec (int *pfdin, int *pfdout, const char *path, const char *const *arg)
 {
-  const char *arg[] = { "/bin/sh", "-c", cmd, NULL };
-  return fork_exec (pfdin, pfdout, *arg, arg);
+  int argc, i;
+  const char **narg;
+  char *arg0 = NULL;
+  int ret;
+
+  for (argc = 0; arg[argc]; argc++)
+    ;
+
+  if (argc < 1)
+    return -1;
+
+  narg = mem_calloc (argc + 4, sizeof (const char *));
+
+  narg[0] = "sh";
+  narg[1] = "-c";
+
+  if (argc > 1)
+    {
+      arg0 = mem_malloc (strlen (path) + 6);
+      sprintf (arg0, "%s \"$@\"", path);
+      narg[2] = arg0;
+
+      for (i = 0; i < argc; i++)
+        narg[i + 3] = arg[i];
+      narg[argc + 3] = NULL;
+    }
+  else
+    {
+      narg[2] = path;
+      narg[3] = NULL;
+    }
+
+  ret = fork_exec (pfdin, pfdout, *narg, narg);
+
+  if (arg0)
+    mem_free (arg0);
+  mem_free (narg);
+
+  return ret;
 }
 
 /* Wait for a child process to terminate. */

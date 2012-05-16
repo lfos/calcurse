@@ -930,7 +930,7 @@ void         str_toupper (char *);
 void         file_close (FILE *, const char *);
 void         psleep (unsigned);
 int          fork_exec (int *, int *, const char *, const char *const *);
-int          shell_exec (int *, int *, const char *);
+int          shell_exec (int *, int *, const char *, const char *const *);
 int          child_wait (int *, int *, int);
 void         press_any_key (void);
 void         print_apoint (const char *, long, struct apoint *);

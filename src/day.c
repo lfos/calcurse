@@ -1180,6 +1180,7 @@ void
 day_pipe_item (void)
 {
   char cmd[BUFSIZ] = "";
+  char const *arg[] = { cmd, NULL };
   int pout;
   int pid;
   FILE *fpout;
@@ -1196,7 +1197,7 @@ day_pipe_item (void)
     return;
 
   wins_prepare_external ();
-  if ((pid = shell_exec (NULL, &pout, cmd)))
+  if ((pid = shell_exec (NULL, &pout, *arg, arg)))
     {
       fpout = fdopen (pout, "w");
 
