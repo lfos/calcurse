@@ -538,9 +538,10 @@ $HOME/.calcurse/
 ----
 `notes/`::
   this subdirectory contains descriptions of the notes which are attached to
-  appointments, events or todos. One text file is created per note, whose name
-  is built using mkstemp(3) and should be unique, but with no relation with the
-  corresponding item's description.
+  appointments, events or todos. Since the file name of each note file is a
+  SHA1 hash of the note itself, multiple items can share the same note file.
+  calcurse provides a garbage collector (see the `-g` command line parameter)
+  that can be used to remove note files which are no longer linked to any item.
 `conf`::
   this file contains the user configuration
 `keys`::
