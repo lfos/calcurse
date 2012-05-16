@@ -36,7 +36,7 @@ CALCURSE - text-based organizer
 Abstract
 --------
 
-This manual describes `calcurse` functionnalities, and how to use them. The
+This manual describes `calcurse` functionalities, and how to use them. The
 installation from source is first described, together with the available
 command line arguments. The user interface is then presented, with all of the
 customizable options that change `calcurse` behavior. Last, bug reporting
@@ -690,12 +690,12 @@ These options control `calcurse` general behavior, as described below:
 Key bindings
 ~~~~~~~~~~~~
 
-One can define it's own keybindings within the `Keys` configuration menu. The
+One can define ones own key bindings within the `Keys` configuration menu. The
 default keys look like the one used by the `vim` editor, especially the
 displacement keys. Anyway, within this configuration menu, users can redefine
 all of the keys available from within calcurse's user interface.
 
-To define new keybindings, first highlight the action to which it will apply.
+To define new key bindings, first highlight the action to which it will apply.
 Then, delete the actual key binding if necessary, and add a new one. You will
 then be asked to press the key corresponding to the new binding. It is possible
 to define more than one key binding for a single action.
@@ -737,7 +737,7 @@ bar. A black and white theme is also available, in order to support non-color
 terminals.
 
 NOTE: Depending on your terminal type and on the value of the `$TERM`
-      environnement variable, color could or could not be supported. An error
+      environment variable, color could or could not be supported. An error
       message will appear if you try to change colors whereas your terminal
       does not support this feature.  If you do know your terminal supports
       colors but could not get `calcurse` to display them, try to set your
@@ -751,8 +751,8 @@ The default layout makes the calendar panel to be displayed on the top-right
 corner of the terminal, the todo panel on the bottom-right corner, while the
 appointment panel is displayed on the left hand-side of the screen (see the
 figure in section <<basics_interface_interactive,Interactive mode>> for an
-exemple of the default layout).  By choosing another layout in the
-configuration screen, user can customize `calcurse` appearence to best suit his
+example of the default layout).  By choosing another layout in the
+configuration screen, user can customize `calcurse` appearance to best suit his
 needs by placing the different panels where needed.
 
 The following option is used to modify the layout configuration:
@@ -840,9 +840,9 @@ be used instead of *xterm-color* to set the `$TERM` variable:
 
 ____
 "The xterm-color value for $TERM is a bad choice for XFree86 xterm because it
-is commonly used for a terminfo entry which happens to not support bce. Use the
-xterm-xfree86 entry which is distributed with XFree86 xterm (or the similar one
-distributed with ncurses)."
+is commonly used for a `terminfo` entry which happens to not support bce. Use
+the xterm-xfree86 entry which is distributed with XFree86 xterm (or the similar
+one distributed with ncurses)."
 ____
 
 [[bugs]]
@@ -893,7 +893,7 @@ http://www.gnu.org/software/gettext/manual/
 
 IMPORTANT: Since we switched to Transifex, editing *po* files is not necessary
            anymore as Transifex provides a user-friendly, intuitive web
-           interface for translators. Knowlegde of `gettext` and the *po*
+           interface for translators. Knowledge of `gettext` and the *po*
            format is still useful for those of you who prefer the command line
            and local editing. If you want to use the web UI to edit the
            translation strings, you can skip over to <<transifex_webui,Using
@@ -921,12 +921,12 @@ translation.
 So, translatable strings are first marked by the coders within the `C` source
 files, then gathered in a template file (*calcurse.pot* - the *pot* extension
 meaning *portable object template*). The content of this template file is then
-merged with the translation files for each language (*fr.po* for french, for
+merged with the translation files for each language (*fr.po* for French, for
 instance - with *po* standing for *portable object*, ie meant to be read and
 edited by humans). A given translation team will take this file, translate its
 strings, and send it back to the developers. At compilation time, a binary
 version of this file (for efficiency reasons) will be produced (*fr.mo* - *mo*
-stands for *machine object*, ie meant to be read by programs), and then
+stands for *machine object*, i.e. meant to be read by programs), and then
 installed.  Then `calcurse` will use this file at runtime, translating the
 strings according to the locale settings of the user.
 
@@ -1065,7 +1065,7 @@ Using transifex-client
 
 You can also use a command line client to submit translations instead of having
 to use the web interface every time you want to submit an updated version. If
-you have a recent version of setuptools installed, you can get the CLI client
+you have a recent version of `setuptools` installed, you can get the CLI client
 by issuing the following command:
 
 ----
@@ -1089,7 +1089,7 @@ To submit changes back to the server, use:
 $ tx push -r calcurse.calcursepot -t -l <locale>
 ----
 
-For more details, read up on transifex-client usage at the
+For more details, read up on `transifex-client` usage at the
 http://help.transifex.net/user-guide/client/[The Transifex Command-line Client
 v0.4] section of the http://help.transifex.net/[Transifex documentation].
 
