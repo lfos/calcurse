@@ -626,7 +626,7 @@ wins_launch_external (const char *file, const char *cmd)
   int pid;
 
   wins_prepare_external ();
-  if ((pid = fork_exec (NULL, NULL, cmd, arg)))
+  if ((pid = shell_exec (NULL, NULL, *arg, arg)))
     child_wait (NULL, NULL, pid);
   wins_unprepare_external ();
 }
