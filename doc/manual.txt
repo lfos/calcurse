@@ -722,6 +722,10 @@ While inside the key configuration menu, an online help is available for each
 one of the available actions. This help briefly describes what the highlighted
 action is used for.
 
+NOTE: As of calcurse 3.0.0, displacement commands can be preceded by an
+      optional number to repeat the command. For example, `10k` will move the
+      cursor ten weeks forwards if you use default key bindings.
+
 Color themes
 ~~~~~~~~~~~~
 
