@@ -33,7 +33,7 @@ general.progressbar=no
 appearance.calendarview=0
 
 # If this option is set to yes, monday is the first day of the week, else it is sunday
-general.firstdayofweek=yes
+general.firstdayofweek=monday
 
 # This is the color theme used for menus :
 appearance.theme=red on default

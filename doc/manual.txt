@@ -756,11 +756,10 @@ These options control `calcurse` general behavior, as described below:
   If set to `0`, the monthly calendar view will be displayed by default
   otherwise it is the weekly view that will be displayed.
 
-`general.firstdayofweek` (default: *yes*)::
-  One can choose between Monday and Sunday as the first day of the week. If the
-  option `general.firstdayofweek` is set to *yes*, Monday will be first in the
-  calendar view. Else if the option is set to *no*, then Sunday will be the
-  first day of the week.
+`general.firstdayofweek` (default: *monday*)::
+  One can choose between Monday and Sunday as the first day of the week. If
+  `general.firstdayofweek` is set to *monday*, Monday will be first in the
+  calendar view. Otherwise, Sunday will be the first day of the week.
 
 `format.outputdate` (default: *%D*)::
   This option indicates the format to be used when displaying dates in

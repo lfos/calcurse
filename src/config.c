@@ -204,16 +204,14 @@ config_parse_calendar_view (void *dummy, const char *val)
 static int
 config_parse_first_day_of_week (void *dummy, const char *val)
 {
-  unsigned tmp;
-  if (config_parse_bool (&tmp, val)) {
-    if (tmp)
-      calendar_set_first_day_of_week (MONDAY);
-    else
-      calendar_set_first_day_of_week (SUNDAY);
-    return 1;
-  }
+  if (!strcmp (val, "monday"))
+    calendar_set_first_day_of_week (MONDAY);
+  else if (!strcmp (val, "sunday"))
+    calendar_set_first_day_of_week (SUNDAY);
   else
     return 0;
+
+  return 1;
 }
 
 static int
@@ -381,8 +379,12 @@ config_serialize_calendar_view (char *buf, void *dummy)
 static int
 config_serialize_first_day_of_week (char *buf, void *dummy)
 {
-  unsigned tmp = calendar_week_begins_on_monday ();
-  return config_serialize_bool (buf, &tmp);
+  if (calendar_week_begins_on_monday ())
+    strcpy(buf, "monday");
+  else
+    strcpy(buf, "sunday");
+
+  return 1;
 }
 
 static int

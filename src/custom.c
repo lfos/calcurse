@@ -630,7 +630,7 @@ print_general_options (WINDOW *win)
     CONFIRM_DELETE,
     SYSTEM_DIAGS,
     PROGRESS_BAR,
-    WEEK_BEGINS_MONDAY,
+    FIRST_DAY_OF_WEEK,
     OUTPUT_DATE_FMT,
     INPUT_DATE_FMT,
     NB_OPTIONS
@@ -700,12 +700,13 @@ print_general_options (WINDOW *win)
              _("(if set to YES, progress bar will be displayed "
                 "when saving data)"));
   y += YOFF;
-  mvwprintw (win, y, XPOS, "[8] %s      ", opt[WEEK_BEGINS_MONDAY]);
-  print_bool_option_incolor (win, calendar_week_begins_on_monday (), y,
-                             XPOS + 4 + strlen (opt[WEEK_BEGINS_MONDAY]));
+  mvwprintw (win, y, XPOS, "[8] %s      ", opt[FIRST_DAY_OF_WEEK]);
+  custom_apply_attr (win, ATTR_HIGHEST);
+  mvwprintw (win, y, XPOS + 4 + strlen (opt[FIRST_DAY_OF_WEEK]), "%s",
+             calendar_week_begins_on_monday () ? _("Monday") : _("Sunday"));
+  custom_remove_attr (win, ATTR_HIGHEST);
   mvwprintw (win, y + 1, XPOS,
-             _("(if set to YES, monday is the first day of the week, "
-               "else it is sunday)"));
+             _("(specifies the first day of week in the calendar view)"));
   y += YOFF;
   mvwprintw (win, y, XPOS, "[9] %s      ", opt[OUTPUT_DATE_FMT]);
   custom_apply_attr (win, ATTR_HIGHEST);

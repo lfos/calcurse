@@ -68,6 +68,7 @@ if grep -q -e '^auto_save=' -e '^auto_gc=' -e '^periodic_save=' \
   BEGIN { FS=OFS="=" }
   $1 == "general.systemdialogs" || $1 == "general.progressbar" \
     { $2 = ($2 == "yes") ? "no" : "yes" }
+  $1 == "general.firstdayofweek" { $2 = ($2 == "yes") ? "monday" : "sunday" }
   { print }
   ' < "$CONFFILE" > "$tmpfile" || exit 1
   mv "$tmpfile" "$CONFFILE" || exit 1
