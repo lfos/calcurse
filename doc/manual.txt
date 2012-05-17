@@ -209,6 +209,31 @@ can be specified using the `-c` flag.
   Specify  the  data directory to use. This option is incompatible  with  -c.
   If  not  specified,   the default directory is `~/.calcurse/`.
 
+`--format-apt <format>`::
+  Specify a format to control the output of appointments in non-interactive
+  mode. See the <<basics_format_strings,Format strings>> section for detailed
+  information on format strings.
+
+`--format-recur-apt <format>`::
+  Specify a format to control the output of recurrent appointments in
+  non-interactive mode. See the <<basics_format_strings,Format strings>>
+  section for detailed information on format strings.
+
+`--format-event <format>`::
+  Specify a format to control the output of events in non-interactive mode. See
+  the <<basics_format_strings,Format strings>> section for detailed information
+  on format strings.
+
+`--format-recur-event <format>`::
+  Specify a format to control the output of recurrent events in non-interactive
+  mode. See the <<basics_format_strings,Format strings>> section for detailed
+  information on format strings.
+
+`--format-todo <format>`::
+  Specify a format to control the output of todo items in non-interactive mode.
+  See the <<basics_format_strings,Format strings>> section for detailed
+  information on format strings.
+
 `-g, --gc`::
   Run the garbage collector for note files and exit.
 
@@ -275,6 +300,71 @@ such as:
 ----
 $ calcurse --export > my_data.dat
 ----
+
+[[basics_format_strings]]
+Format strings
+^^^^^^^^^^^^^^
+
+Format strings are composed of printf()-style format specifiers -- ordinary
+characters are copied to stdout without modification. Each specifier is
+introduced by a `%` and is followed by a character which specifies the field to
+print. The set of available fields depends on the item type.
+
+Format specifiers for appointments
+++++++++++++++++++++++++++++++++++
+
+`s`::
+  Print the start time of the appointment as UNIX time stamp
+`S`::
+  Print the start time of the appointment using the `hh:mm` format
+`d`::
+  Print the duration of the appointment in seconds
+`e`::
+  Print the end time of the appointment as UNIX time stamp
+`E`::
+  Print the end time of the appointment using the `hh:mm` format
+`m`::
+  Print the description of the item
+`n`::
+  Print the name of the note file belonging to the item
+`N`::
+  Print the note belonging to the item
+
+Format specifiers for events
+++++++++++++++++++++++++++++
+
+`m`::
+  Print the description of the item
+`n`::
+  Print the name of the note file belonging to the item
+`N`::
+  Print the note belonging to the item
+
+Format specifiers for todo items
+++++++++++++++++++++++++++++++++
+
+`p`::
+  Print the priority of the item
+`m`::
+  Print the description of the item
+`n`::
+  Print the name of the note file belonging to the item
+`N`::
+  Print the note belonging to the item
+
+Examples
+++++++++
+
+`calcurse -r7 --format-apt='- %S -> %E\n\t%m\n%N'`::
+  Print appointments and events for the next seven days. Also, print the notes
+  attached to each regular appointment (simulates `-N` for appointments).
+
+`calcurse -r7 --format-apt=' - %m (%S to %E)\n' --format-recur-apt=' - %m (%S to %E)\n'`::
+  Print appointments and events for the next seven days and use a custom format
+  for (recurrent) appointments: ` - Some appointment (18:30 to 21:30)`.
+
+`calcurse -t --format-todo '(%p) %m\n'`::
+  List all todo items and put parentheses around the priority specifiers.
 
 [[basics_invocation_variable]]
 Environment variable for i18n
