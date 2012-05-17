@@ -200,7 +200,7 @@ days will be returned.  As an example, typing `calcurse -d  3`  will  display
 your  appointments  for  today, tomorrow, and the day after tomorrow.  Possible
 formats for specifying the date are defined inside the general configuration
 menu (see <<options_general,General options>>), using the
-`input_datefmt` variable.
+`format.inputdate` variable.
 +
 Note: as for the `-a` flag, the calendar  from which to  read  the appointments
 can be specified using the `-c` flag.
@@ -590,11 +590,11 @@ for upcoming appointments and runs the user-defined notification command when
   necessary. When the user interface is started again, the daemon automatically
   stops.
 
-`calcurse` background activity can be logged (set the `notify-daemon_log`
-variable in the notification configuration <<options_notify,menu>>),
-and in that case, information about the daemon start and stop time, reminders'
-command launch time, signals received... will be written in the `daemon.log`
-file (see section <<basics_files,files>>).
+`calcurse` background activity can be logged (set the `daemon.log` variable in
+the notification configuration <<options_notify,menu>>), and in that case,
+information about the daemon start and stop time, reminders' command launch
+time, signals received... will be written in the `daemon.log` file (see section
+<<basics_files,files>>).
 
 Using the `--status` command line option (see section
 <<basics_invocation_commandline,Command line arguments>>), one can know if
@@ -717,58 +717,58 @@ General options
 
 These options control `calcurse` general behavior, as described below:
 
-`auto_save` (default: *yes*)::
+`general.autosave` (default: *yes*)::
   This option allows to automatically save the user's data (if set to *yes*)
   when quitting.  <p class="rq"><span class="valorise">warning:</span> No data
-  will be automatically saved if `auto_save` is set to *no*.  This means the
-  user must press `S` (for saving) in order to retrieve its modifications.
+  will be automatically saved if `general.autosave` is set to *no*.  This means
+  the user must press `S` (for saving) in order to retrieve its modifications.
 
-`auto_gc` (default: *no*)::
+`general.autogc` (default: *no*)::
   Automatically run the garbage collector for note files when quitting.
 
-`periodic_save` (default: *0*)::
+`general.periodicsave` (default: *0*)::
   If different from `0`, user's data will be automatically saved every
-  *periodic_save* minutes.  When an automatic save is performed, two asterisks
-  (i.e. `**`) will appear on the top right-hand side of the screen).
+  *general.periodicsave* minutes.  When an automatic save is performed, two
+  asterisks (i.e. `**`) will appear on the top right-hand side of the screen).
 
-`confirm_quit` (default: *yes*)::
+`general.confirmquit` (default: *yes*)::
   If set to *yes*, confirmation is required before quitting, otherwise pressing
   `Q` will cause `calcurse` to quit without prompting for user confirmation.
 
-`confirm_delete` (default: *yes*)::
+`general.confirmdelete` (default: *yes*)::
   If this option is set to *yes*, pressing `D` for deleting an item (either a
   *todo*, *appointment*, or *event*), will lead to a prompt asking for user
   confirmation before removing the selected item from the list.  Otherwise, no
   confirmation will be needed before deleting the item.
 
-`skip_system_dialogs` (default: *no*)::
-  Setting this option to *yes* will result in skipping the system dialogs
+`general.systemdialogs` (default: *yes*)::
+  Setting this option to *no* will result in skipping the system dialogs
   related to the saving and loading of data.  This can be useful to speed up
   the input/output processes.
 
-`skip_progress_bar` (default: *no*)::
-  If set to *yes*, this will cause the disappearing of the progress bar which
-  is usually shown when saving data to file.  If set to *no*, this bar will be
+`general.progressbar` (default: *yes*)::
+  If set to *no*, this will cause the disappearing of the progress bar which is
+  usually shown when saving data to file.  If set to *yes*, this bar will be
   displayed, together with the name of the file being saved (see section
   <<basics_files,calcurse files>>).
 
-`calendar_default_view` (default: *0*)::
+`appearance.calendarview` (default: *0*)::
   If set to `0`, the monthly calendar view will be displayed by default
   otherwise it is the weekly view that will be displayed.
 
-`week_begins_on_monday` (default: *yes*)::
+`general.firstdayofweek` (default: *yes*)::
   One can choose between Monday and Sunday as the first day of the week. If the
-  option `week_begins_on_monday` is set to *yes*, Monday will be first in the
+  option `general.firstdayofweek` is set to *yes*, Monday will be first in the
   calendar view. Else if the option is set to *no*, then Sunday will be the
   first day of the week.
 
-`output_datefmt` (default: *%D*)::
+`format.outputdate` (default: *%D*)::
   This option indicates the format to be used when displaying dates in
   non-interactive mode. Using the default values, dates are displayed the
   following way: *mm/dd/aa*.  You can see all of the possible formats by typing
   `man 3 strftime` inside a terminal.
 
-`input_datefmt` (default: *1*)::
+`format.inputdate` (default: *1*)::
   This option indicates the format that will be used to enter dates in
   *calcurse*. Four choices are available:
 +
@@ -852,7 +852,7 @@ needs by placing the different panels where needed.
 
 The following option is used to modify the layout configuration:
 
-`layout` (default: *0*)::
+`appearance.layout` (default: *0*)::
   Eight different layouts are to be chosen from (see layout configuration
   screen for the description of the available layouts).
 
@@ -865,7 +865,7 @@ list.
 
 The following option is used to change the width of the sidebar:
 
-`side-bar_width` (default: *0*)::
+`appearance.sidebarwidth` (default: *0*)::
   Width (in percentage, 0 being the minimum width) of the side bar.
 
 [[options_notify]]
@@ -874,27 +874,27 @@ Notify-bar settings
 
 The following options are used to modify the notify-bar behavior:
 
-`notify-bar_show` (default: *yes*)::
+`appearance.notifybar` (default: *yes*)::
   This option indicates if you want the notify-bar to be displayed or not.
 
-`notify-bar_date` (default: *%a %F*)::
+`format.notifydate` (default: *%a %F*)::
   With this option, you can specify the format to be used to display the
   current date inside the notification bar. You can see all of the possible
   formats by typing `man 3 strftime` inside a terminal.
 
-`notify-bar_time` (default: *%T*)::
+`format.notifytime` (default: *%T*)::
   With this option, you can specify the format to be used to display the
   current time inside the notification bar. You can see all of the possible
   formats by typing `man 3 strftime` inside a terminal.
 
-`notify-bar_warning` (default: *300*)::
+`notification.warning` (default: *300*)::
   When there is an appointment which is flagged as `important` within the next
-  `notify-bar_warning` seconds, the display of that appointment inside the
-  notify-bar starts to blink.  Moreover, the command defined by the
-  `notify-bar_command` option will be launched.  That way, the user is warned
+  `notification.warning` seconds, the display of that appointment inside the
+  notify-bar starts to blink. Moreover, the command defined by the
+  `notification.command` option will be launched.  That way, the user is warned
   and knows there will be soon an upcoming appointment.
 
-`notify-bar_command` (default: *printf '\a'*)::
+`notification.command` (default: *printf '\a'*)::
   This option indicates which command is to be launched when there is an
   upcoming appointment flagged as `important`. This command will be passed to
   the user's shell which will interpret it. To know what shell must be used,
@@ -911,17 +911,17 @@ $ calcurse --next | mail -s "[calcurse] upcoming appointment!" user@host.com
 ----
 ====
 
-`notify-all` (default: *no*)::
+`notification.notifyall` (default: *no*)::
   Invert the sense of flagging an appointment as `important`. If this is
   enabled, all appointments will be notified - except for flagged ones.
 
-`notify-daemon_enable` (default: *no*)::
+`daemon.enable` (default: *no*)::
   If set to yes, daemon mode will be enabled, meaning `calcurse` will run into
   background when the user's interface is exited. This will allow the
   notifications to be launched even when the interface is not running. More
   details can be found in section <<basics_daemon,Background mode>>.
 
-`notify-daemon_log` (default: *no*)::
+`daemon.log` (default: *no*)::
   If set to yes, `calcurse` daemon activity will be logged (see section
   <<basics_files,files>>).
 
