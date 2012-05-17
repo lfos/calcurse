@@ -628,8 +628,8 @@ print_general_options (WINDOW *win)
     PERIODIC_SAVE,
     CONFIRM_QUIT,
     CONFIRM_DELETE,
-    SKIP_SYSTEM_DIAGS,
-    SKIP_PROGRESS_BAR,
+    SYSTEM_DIAGS,
+    PROGRESS_BAR,
     WEEK_BEGINS_MONDAY,
     OUTPUT_DATE_FMT,
     INPUT_DATE_FMT,
@@ -639,16 +639,16 @@ print_general_options (WINDOW *win)
   const int YOFF = 3;
   int y;
   char *opt[NB_OPTIONS] = {
-    _("auto_save = "),
-    _("auto_gc = "),
-    _("periodic_save = "),
-    _("confirm_quit = "),
-    _("confirm_delete = "),
-    _("system_dialogs = "),
-    _("progress_bar = "),
-    _("week_begins_on_monday = "),
-    _("output_datefmt = "),
-    _("input_datefmt = ")
+    _("general.autosave = "),
+    _("general.autogc = "),
+    _("general.periodicsave = "),
+    _("general.confirmquit = "),
+    _("general.confirmdelete = "),
+    _("general.systemdialogs = "),
+    _("general.progressbar = "),
+    _("general.firstdayofweek = "),
+    _("format.outputdate = "),
+    _("format.inputdate = ")
   };
 
   y = 0;
@@ -686,16 +686,16 @@ print_general_options (WINDOW *win)
              _("(if set to YES, confirmation is required "
                "before deleting an event)"));
   y += YOFF;
-  mvwprintw (win, y, XPOS, "[6] %s      ", opt[SKIP_SYSTEM_DIAGS]);
+  mvwprintw (win, y, XPOS, "[6] %s      ", opt[SYSTEM_DIAGS]);
   print_bool_option_incolor (win, conf.system_dialogs, y,
-                             XPOS + 4 + strlen (opt[SKIP_SYSTEM_DIAGS]));
+                             XPOS + 4 + strlen (opt[SYSTEM_DIAGS]));
   mvwprintw (win, y + 1, XPOS,
              _("(if set to YES, messages about loaded "
                "and saved data will be displayed)"));
   y += YOFF;
-  mvwprintw (win, y, XPOS, "[7] %s      ", opt[SKIP_PROGRESS_BAR]);
+  mvwprintw (win, y, XPOS, "[7] %s      ", opt[PROGRESS_BAR]);
   print_bool_option_incolor (win, conf.progress_bar, y,
-                            XPOS + 4 + strlen (opt[SKIP_PROGRESS_BAR]));
+                            XPOS + 4 + strlen (opt[PROGRESS_BAR]));
   mvwprintw (win, y + 1, XPOS,
              _("(if set to YES, progress bar will be displayed "
                 "when saving data)"));
