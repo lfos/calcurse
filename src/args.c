@@ -62,7 +62,7 @@ static void
 usage (void)
 {
   const char *arg_usage =
-    _("Usage: calcurse [-g|-h|-v] [-N] [-an] [-t[num]] [-i<file>] [-x[format]]\n"
+    _("Usage: calcurse [-g|-h|-v] [-an] [-t[num]] [-i<file>] [-x[format]]\n"
       "                [-d <date>|<num>] [-s[date]] [-r[range]]\n"
       "                [-c<file> | -D<dir>] [-S<regex>] [--status]\n"
       "                [--read-only]\n");
@@ -127,9 +127,6 @@ help_arg (void)
       "	print next appointment within upcoming 24 hours "
       "and exit. Also given\n\tis the remaining time before this "
       "next appointment.\n"
-      "\n  -N, --note\n"
-      "	when used with the '-a' or '-t' flag, also print note content\n"
-      "	if one is associated with the displayed item.\n"
       "\n  -r[num], --range[=num]\n"
       "	print events and appointments for the [num] number of days"
       "\n\tand exit. If no [num] is given, a range of 1 day is considered.\n"

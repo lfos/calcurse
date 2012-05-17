@@ -251,10 +251,6 @@ can be specified using the `-c` flag.
 Note: the calendar from which to read the appointments can be specified using
 the `-c` flag.
 
-`-N, --note`::
-  When used with the `-a` or `-t` flag, also print note content if one is
-  associated with the displayed item.
-
 `-r[num], --range[=num]`::
   Print events and appointments for the num number of days and exit. If no num
   is given, a range of 1 day is considered.
@@ -300,6 +296,10 @@ such as:
 ----
 $ calcurse --export > my_data.dat
 ----
+
+NOTE: The `-N` option has been removed in calcurse 3.0.0. See the
+<<basics_format_strings,Format strings>> section on how to print note along
+with appointments and events.
 
 [[basics_format_strings]]
 Format strings
