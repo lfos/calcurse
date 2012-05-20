@@ -44,6 +44,7 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <sys/wait.h>
+#include <termios.h>
 
 #include "calcurse.h"
 
@@ -1077,12 +1078,21 @@ child_wait (int *pfdin, int *pfdout, int pid)
 void
 press_any_key (void)
 {
+  struct termios t_attr_old, t_attr;
+
+  tcgetattr (STDIN_FILENO, &t_attr_old);
+  memcpy (&t_attr, &t_attr_old, sizeof (struct termios));
+  t_attr.c_lflag &= ~(ICANON | ECHO | ECHONL);
+  tcsetattr (STDIN_FILENO, TCSAFLUSH, &t_attr);
+
   fflush (stdout);
   fputs (_("Press any key to continue..."), stdout);
   fflush (stdout);
   fgetc (stdin);
   fflush (stdin);
   fputs ("\r\n", stdout);
+
+  tcsetattr (STDIN_FILENO, TCSAFLUSH, &t_attr_old);
 }
 
 /*
