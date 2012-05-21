@@ -1167,7 +1167,7 @@ static enum format_specifier parse_fs(const char **s, char *extformat)
 }
 
 /* Print a formatted date to stdout. */
-static void print_date(long date, const char *extformat)
+static void print_date(long date, long day, const char *extformat)
 {
   char buf[BUFSIZ];
 
@@ -1177,10 +1177,14 @@ static void print_date(long date, const char *extformat)
     time_t t = date;
     struct tm *lt = localtime((time_t *) & t);
 
-    if (extformat[0] == '\0' || !strcmp(extformat, "default"))
-      strftime(buf, BUFSIZ, "%H:%M", lt);
-    else
+    if (extformat[0] == '\0' || !strcmp(extformat, "default")) {
+      if (date >= day && date <= day + DAYINSEC)
+        strftime(buf, BUFSIZ, "%H:%M", lt);
+      else
+        strftime(buf, BUFSIZ, "..:..", lt);
+    } else {
       strftime(buf, BUFSIZ, extformat, lt);
+    }
 
     printf("%s", buf);
   }
@@ -1197,13 +1201,13 @@ void print_apoint(const char *format, long day, struct apoint *apt)
       p++;
       switch (parse_fs(&p, extformat)) {
       case FS_STARTDATE:
-        print_date(apt->start, extformat);
+        print_date(apt->start, day, extformat);
         break;
       case FS_DURATION:
         printf("%ld", apt->dur);
         break;
       case FS_ENDDATE:
-        print_date(apt->start + apt->dur, extformat);
+        print_date(apt->start + apt->dur, day, extformat);
         break;
       case FS_MESSAGE:
         printf("%s", apt->mesg);
