@@ -50,8 +50,8 @@ typedef struct {
   uint8_t buffer[SHA1_BLOCKLEN];
 } sha1_ctx_t;
 
-void sha1_init (sha1_ctx_t *);
-void sha1_update (sha1_ctx_t *, const uint8_t *, unsigned int);
-void sha1_final (sha1_ctx_t *, uint8_t *);
-void sha1_digest (const char *, char *);
-void sha1_stream (FILE *, char *);
+void sha1_init(sha1_ctx_t *);
+void sha1_update(sha1_ctx_t *, const uint8_t *, unsigned int);
+void sha1_final(sha1_ctx_t *, uint8_t *);
+void sha1_digest(const char *, char *);
+void sha1_stream(FILE *, char *);

@@ -53,57 +53,48 @@
  * This is needed to avoid zombie processes running on system.
  * Also catch CTRL-C (SIGINT), and SIGWINCH to resize screen automatically.
  */
-static void
-generic_hdlr (int sig)
+static void generic_hdlr(int sig)
 {
-  switch (sig)
-    {
-    case SIGCHLD:
-      while (waitpid (WAIT_MYPGRP, NULL, WNOHANG) > 0)
-        ;
-      break;
-    case SIGWINCH:
-      resize = 1;
-      clearok (curscr, TRUE);
-      ungetch (KEY_RESIZE);
-      break;
-    case SIGTERM:
-      if (unlink (path_cpid) != 0)
-        {
-          EXIT (_("Could not remove calcurse lock file: %s\n"),
-                    strerror (errno));
-        }
-      exit (EXIT_SUCCESS);
-      break;
+  switch (sig) {
+  case SIGCHLD:
+    while (waitpid(WAIT_MYPGRP, NULL, WNOHANG) > 0) ;
+    break;
+  case SIGWINCH:
+    resize = 1;
+    clearok(curscr, TRUE);
+    ungetch(KEY_RESIZE);
+    break;
+  case SIGTERM:
+    if (unlink(path_cpid) != 0) {
+      EXIT(_("Could not remove calcurse lock file: %s\n"), strerror(errno));
     }
+    exit(EXIT_SUCCESS);
+    break;
+  }
 }
 
-unsigned
-sigs_set_hdlr (int sig, void (*handler)(int))
+unsigned sigs_set_hdlr(int sig, void (*handler) (int))
 {
   struct sigaction sa;
 
-  memset (&sa, 0, sizeof sa);
-  sigemptyset (&sa.sa_mask);
+  memset(&sa, 0, sizeof sa);
+  sigemptyset(&sa.sa_mask);
   sa.sa_handler = handler;
   sa.sa_flags = 0;
-  if (sigaction (sig, &sa, NULL) == -1)
-    {
-      ERROR_MSG (_("Error setting signal #%d : %s\n"),
-                 sig, strerror (errno));
-      return 0;
-    }
+  if (sigaction(sig, &sa, NULL) == -1) {
+    ERROR_MSG(_("Error setting signal #%d : %s\n"), sig, strerror(errno));
+    return 0;
+  }
 
   return 1;
 }
 
 /* Signal handling init. */
-void
-sigs_init ()
+void sigs_init()
 {
-  if (!sigs_set_hdlr (SIGCHLD, generic_hdlr)
-      || !sigs_set_hdlr (SIGWINCH, generic_hdlr)
-      || !sigs_set_hdlr (SIGTERM, generic_hdlr)
-      || !sigs_set_hdlr (SIGINT, SIG_IGN))
-    exit_calcurse (1);
+  if (!sigs_set_hdlr(SIGCHLD, generic_hdlr)
+      || !sigs_set_hdlr(SIGWINCH, generic_hdlr)
+      || !sigs_set_hdlr(SIGTERM, generic_hdlr)
+      || !sigs_set_hdlr(SIGINT, SIG_IGN))
+    exit_calcurse(1);
 }

@@ -38,7 +38,7 @@
 typedef struct llist_item llist_item_t;
 struct llist_item {
   struct llist_item *next;
-  void              *data;
+  void *data;
 };
 
 typedef struct llist llist_t;
@@ -52,9 +52,9 @@ typedef int (*llist_fn_match_t) (void *, long);
 typedef void (*llist_fn_free_t) (void *);
 
 /* Initialization and deallocation. */
-void          llist_init (llist_t *);
-void          llist_free (llist_t *);
-void          llist_free_inner (llist_t *, llist_fn_free_t);
+void llist_init(llist_t *);
+void llist_free(llist_t *);
+void llist_free_inner(llist_t *, llist_fn_free_t);
 
 #define LLIST_INIT(l) llist_init(l)
 #define LLIST_FREE(l) llist_free(l)
@@ -62,13 +62,13 @@ void          llist_free_inner (llist_t *, llist_fn_free_t);
   llist_free_inner(l, (llist_fn_free_t)fn_free)
 
 /* Retrieving list items. */
-llist_item_t *llist_first (llist_t *);
-llist_item_t *llist_nth (llist_t *, int);
-llist_item_t *llist_next (llist_item_t *);
-llist_item_t *llist_next_filter (llist_item_t *, long, llist_fn_match_t);
-llist_item_t *llist_find_first (llist_t *, long, llist_fn_match_t);
-llist_item_t *llist_find_next (llist_item_t *, long, llist_fn_match_t);
-llist_item_t *llist_find_nth (llist_t *, int, long, llist_fn_match_t);
+llist_item_t *llist_first(llist_t *);
+llist_item_t *llist_nth(llist_t *, int);
+llist_item_t *llist_next(llist_item_t *);
+llist_item_t *llist_next_filter(llist_item_t *, long, llist_fn_match_t);
+llist_item_t *llist_find_first(llist_t *, long, llist_fn_match_t);
+llist_item_t *llist_find_next(llist_item_t *, long, llist_fn_match_t);
+llist_item_t *llist_find_nth(llist_t *, int, long, llist_fn_match_t);
 
 #define LLIST_FIRST(l) llist_first(l)
 #define LLIST_NTH(l, n) llist_nth(l, n)
@@ -91,14 +91,14 @@ llist_item_t *llist_find_nth (llist_t *, int, long, llist_fn_match_t);
        i = LLIST_NEXT_FILTER (i, data, fn_match))
 
 /* Accessing list item data. */
-void         *llist_get_data (llist_item_t *);
+void *llist_get_data(llist_item_t *);
 
 #define LLIST_GET_DATA(i) llist_get_data(i)
 
 /* List manipulation. */
-void          llist_add (llist_t *, void *);
-void          llist_add_sorted (llist_t *, void *, llist_fn_cmp_t);
-void          llist_remove (llist_t *, llist_item_t *);
+void llist_add(llist_t *, void *);
+void llist_add_sorted(llist_t *, void *, llist_fn_cmp_t);
+void llist_remove(llist_t *, llist_item_t *);
 
 #define LLIST_ADD(l, data) llist_add(l, data)
 #define LLIST_ADD_SORTED(l, data, fn_cmp)                                     \

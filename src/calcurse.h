@@ -40,13 +40,13 @@
 #include "config.h"
 
 #ifdef HAVE_NCURSES_H
-#  include <ncurses.h>
+#include <ncurses.h>
 #elif defined HAVE_NCURSES_NCURSES_H
-#  include <ncurses/ncurses.h>
+#include <ncurses/ncurses.h>
 #elif defined HAVE_NCURSESW_NCURSES_H
-#  include <ncursesw/ncurses.h>
+#include <ncursesw/ncurses.h>
 #else
-#  error "Missing ncurses header. Aborting..."
+#error "Missing ncurses header. Aborting..."
 #endif
 
 #include <pthread.h>
@@ -60,24 +60,24 @@
 
 /* Internationalization. */
 #if ENABLE_NLS
-#  include <locale.h>
-#  include <libintl.h>
-#  undef _
-#  define _(String) gettext(String)
-#  ifdef gettext_noop
-#    define N_(String) gettext_noop(String)
-#  else
-#    define N_(String) (String)
-#  endif
+#include <locale.h>
+#include <libintl.h>
+#undef _
+#define _(String) gettext(String)
+#ifdef gettext_noop
+#define N_(String) gettext_noop(String)
+#else
+#define N_(String) (String)
+#endif
 #else /* NLS disabled */
-#  define _(String) (String)
-#  define N_(String) (String)
-#  define textdomain(String) (String)
-#  define gettext(String) (String)
-#  define dgettext(String) (String)
-#  define dcgettext(String) (String)
-#  define bindtextdomain(String) (String)
-#  define bind_textdomain_codeset(Domain,Codeset) (Codeset)
+#define _(String) (String)
+#define N_(String) (String)
+#define textdomain(String) (String)
+#define gettext(String) (String)
+#define dgettext(String) (String)
+#define dcgettext(String) (String)
+#define bindtextdomain(String) (String)
+#define bind_textdomain_codeset(Domain,Codeset) (Codeset)
 #endif /* ENABLE_NLS */
 
 /* Paths configuration. */
@@ -152,9 +152,9 @@
 #define TAB                     9
 #define SPACE                   32
 
-#define KEYS_KEYLEN         3 /* length of each keybinding */
-#define KEYS_LABELEN        8 /* length of command description */
-#define KEYS_CMDS_PER_LINE  6 /* max number of commands per line */
+#define KEYS_KEYLEN         3   /* length of each keybinding */
+#define KEYS_LABELEN        8   /* length of command description */
+#define KEYS_CMDS_PER_LINE  6   /* max number of commands per line */
 
 /* Size of the hash table the note garbage collector uses. */
 #define NOTE_GC_HSIZE 1024
@@ -228,23 +228,23 @@
 
 /* General configuration variables. */
 struct conf {
-  unsigned    auto_save;
-  unsigned    auto_gc;
-  unsigned    periodic_save;
-  unsigned    confirm_quit;
-  unsigned    confirm_delete;
-  unsigned    system_dialogs;
-  unsigned    progress_bar;
+  unsigned auto_save;
+  unsigned auto_gc;
+  unsigned periodic_save;
+  unsigned confirm_quit;
+  unsigned confirm_delete;
+  unsigned system_dialogs;
+  unsigned progress_bar;
   const char *editor;
   const char *pager;
-  char        output_datefmt[BUFSIZ];  /* format for displaying date */
-  int         input_datefmt;           /* format for reading date */
+  char output_datefmt[BUFSIZ];  /* format for displaying date */
+  int input_datefmt;            /* format for reading date */
 };
 
 /* Daemon-related configuration. */
 struct dmon_conf {
-  unsigned  enable;   /* launch daemon automatically when exiting */
-  unsigned  log;      /* log daemon activity */
+  unsigned enable;              /* launch daemon automatically when exiting */
+  unsigned log;                 /* log daemon activity */
 };
 
 enum datefmt {
@@ -270,33 +270,32 @@ struct date {
 };
 
 /* Appointment definition. */
-struct apoint
-{
-  long           start;   /* seconds since 1 jan 1970 */
-  long           dur;     /* duration of the appointment in seconds */
+struct apoint {
+  long start;                   /* seconds since 1 jan 1970 */
+  long dur;                     /* duration of the appointment in seconds */
 
 #define APOINT_NULL      0x0
-#define APOINT_NOTIFY    0x1  /* Item needs to be notified */
-#define APOINT_NOTIFIED  0x2  /* Item was already notified */
-  int            state;
+#define APOINT_NOTIFY    0x1    /* Item needs to be notified */
+#define APOINT_NOTIFIED  0x2    /* Item was already notified */
+  int state;
 
-  char          *mesg;
-  char          *note;
+  char *mesg;
+  char *note;
 };
 
 /* Event definition. */
 struct event {
-  int           id;    /* event identifier */
-  long          day;   /* seconds since 1 jan 1970 */
-  char         *mesg;
-  char         *note;
+  int id;                       /* event identifier */
+  long day;                     /* seconds since 1 jan 1970 */
+  char *mesg;
+  char *note;
 };
 
 /* Todo item definition. */
 struct todo {
-  char         *mesg;
-  int           id;
-  char         *note;
+  char *mesg;
+  int id;
+  char *note;
 };
 
 /* Number of items in current day. */
@@ -307,18 +306,18 @@ struct day_items_nb {
 
 /* Generic item description (to hold appointments, events...). */
 struct day_item {
-  long             start;    /* seconds since 1 jan 1970 */
-  long             appt_dur; /* appointment duration in seconds */
-  int              type;     /* (recursive or normal) event or appointment */
-  int              evnt_id;  /* event identifier */
-  int              appt_pos; /* real position in recurrent list */
-  char             state;    /* appointment state */
-  char            *mesg;     /* item description */
-  char            *note;     /* note attached to item */
+  long start;                   /* seconds since 1 jan 1970 */
+  long appt_dur;                /* appointment duration in seconds */
+  int type;                     /* (recursive or normal) event or appointment */
+  int evnt_id;                  /* event identifier */
+  int appt_pos;                 /* real position in recurrent list */
+  char state;                   /* appointment state */
+  char *mesg;                   /* item description */
+  char *note;                   /* note attached to item */
 };
 
 struct excp {
-  long         st;    /* beggining of the considered day, in seconds */
+  long st;                      /* beggining of the considered day, in seconds */
 };
 
 enum recur_type {
@@ -332,43 +331,43 @@ enum recur_type {
 
 /* To describe an item's repetition. */
 struct rpt {
-  enum recur_type  type;  /* repetition type */
-  int              freq;  /* repetition frequence */
-  long             until; /* ending date for repeated event */
+  enum recur_type type;         /* repetition type */
+  int freq;                     /* repetition frequence */
+  long until;                   /* ending date for repeated event */
 };
 
 /* Recurrent appointment definition. */
 struct recur_apoint {
-  struct rpt           *rpt;   /* information about repetition */
-  llist_t               exc;   /* days when the item should not be repeated */
-  long                  start; /* beggining of the appointment */
-  long                  dur;   /* duration of the appointment */
-  char                  state; /* 8 bits to store item state */
-  char                 *mesg;  /* appointment description */
-  char                 *note;  /* note attached to appointment */
+  struct rpt *rpt;              /* information about repetition */
+  llist_t exc;                  /* days when the item should not be repeated */
+  long start;                   /* beggining of the appointment */
+  long dur;                     /* duration of the appointment */
+  char state;                   /* 8 bits to store item state */
+  char *mesg;                   /* appointment description */
+  char *note;                   /* note attached to appointment */
 };
 
 /* Reccurent event definition. */
 struct recur_event {
-  struct rpt          *rpt;  /* information about repetition */
-  llist_t              exc;  /* days when the item should not be repeated */
-  int                  id;   /* event type */
-  long                 day;  /* day at which event occurs */
-  char                *mesg; /* event description */
-  char                *note; /* note attached to event */
+  struct rpt *rpt;              /* information about repetition */
+  llist_t exc;                  /* days when the item should not be repeated */
+  int id;                       /* event type */
+  long day;                     /* day at which event occurs */
+  char *mesg;                   /* event description */
+  char *note;                   /* note attached to event */
 };
 
 struct notify_app {
-  long             time;
-  int              got_app;
-  char            *txt;
-  char             state;
-  pthread_mutex_t  mutex;
+  long time;
+  int got_app;
+  char *txt;
+  char state;
+  pthread_mutex_t mutex;
 };
 
 struct io_file {
   FILE *fd;
-  char  name[BUFSIZ];
+  char name[BUFSIZ];
 };
 
 /* Available keys. */
@@ -422,8 +421,8 @@ enum key {
 
 /* To describe a key binding. */
 struct binding {
-  char      *label;
-  enum key   action;
+  char *label;
+  enum key action;
 };
 
 enum win {
@@ -450,41 +449,41 @@ enum ui_mode {
 
 /* Generic window structure. */
 struct window {
-  WINDOW   *p;  /* pointer to window */
-  unsigned  w;  /* width */
-  unsigned  h;  /* height */
-  int       x;  /* x position */
-  int       y;  /* y position */
+  WINDOW *p;                    /* pointer to window */
+  unsigned w;                   /* width */
+  unsigned h;                   /* height */
+  int x;                        /* x position */
+  int y;                        /* y position */
 };
 
 /* Generic scrolling window structure. */
 struct scrollwin {
-  struct window  win;
-  struct window  pad;
-  unsigned       first_visible_line;
-  unsigned       total_lines;
-  const char    *label;
+  struct window win;
+  struct window pad;
+  unsigned first_visible_line;
+  unsigned total_lines;
+  const char *label;
 };
 
 /* Pad structure to handle scrolling. */
 struct pad {
-  int     width;
-  int     length;
-  int     first_onscreen; /* first line to be displayed inside window */
-  WINDOW *ptrwin;         /* pointer to the pad window */
+  int width;
+  int length;
+  int first_onscreen;           /* first line to be displayed inside window */
+  WINDOW *ptrwin;               /* pointer to the pad window */
 };
 
 /* Notification bar definition. */
 struct nbar {
-  unsigned         show;             /* display or hide the notify-bar */
-  int              cntdwn;           /* warn when time left before next app
-                                        becomes lesser than cntdwn */
-  char             datefmt[BUFSIZ];  /* format for displaying date */
-  char             timefmt[BUFSIZ];  /* format for displaying time */
-  char             cmd[BUFSIZ];      /* notification command */
-  const char      *shell;            /* user shell to launch notif. cmd */
-  unsigned         notify_all;       /* notify all appointments */
-  pthread_mutex_t  mutex;
+  unsigned show;                /* display or hide the notify-bar */
+  int cntdwn;                   /* warn when time left before next app
+                                   becomes lesser than cntdwn */
+  char datefmt[BUFSIZ];         /* format for displaying date */
+  char timefmt[BUFSIZ];         /* format for displaying time */
+  char cmd[BUFSIZ];             /* notification command */
+  const char *shell;            /* user shell to launch notif. cmd */
+  unsigned notify_all;          /* notify all appointments */
+  pthread_mutex_t mutex;
 };
 
 /* Available types of items. */
@@ -507,8 +506,8 @@ enum eraseflg {
 /* Return codes for the getstring() function. */
 enum getstr {
   GETSTRING_VALID,
-  GETSTRING_ESC,   /* user pressed escape to cancel editing. */
-  GETSTRING_RET    /* return was pressed without entering any text. */
+  GETSTRING_ESC,                /* user pressed escape to cancel editing. */
+  GETSTRING_RET                 /* return was pressed without entering any text. */
 };
 
 /* Week days. */
@@ -569,438 +568,429 @@ enum save_display {
 
 /* apoint.c */
 extern llist_ts_t alist_p;
-void               apoint_free_bkp (void);
-void               apoint_llist_init (void);
-void               apoint_llist_free (void);
-void               apoint_hilt_set (int);
-void               apoint_hilt_decrease (int);
-void               apoint_hilt_increase (int);
-int                apoint_hilt (void);
-struct apoint     *apoint_new (char *, char *, long, long, char);
-void               apoint_add (void);
-void               apoint_delete (unsigned *, unsigned *);
-int                apoint_cut (unsigned *, unsigned *);
-void               apoint_paste (unsigned *, unsigned *, int);
-unsigned           apoint_inday (struct apoint *, long);
-void               apoint_sec2str (struct apoint *, long, char *, char *);
-void               apoint_write (struct apoint *, FILE *);
-struct apoint     *apoint_scan (FILE *, struct tm, struct tm, char, char *);
-struct apoint     *apoint_get (long, int);
-void               apoint_delete_bynum (long, unsigned, enum eraseflg);
-void               apoint_scroll_pad_down (int, int);
-void               apoint_scroll_pad_up (int);
-struct notify_app *apoint_check_next (struct notify_app *, long);
-void               apoint_switch_notify (void);
-void               apoint_update_panel (int);
-void               apoint_paste_item (void);
+void apoint_free_bkp(void);
+void apoint_llist_init(void);
+void apoint_llist_free(void);
+void apoint_hilt_set(int);
+void apoint_hilt_decrease(int);
+void apoint_hilt_increase(int);
+int apoint_hilt(void);
+struct apoint *apoint_new(char *, char *, long, long, char);
+void apoint_add(void);
+void apoint_delete(unsigned *, unsigned *);
+int apoint_cut(unsigned *, unsigned *);
+void apoint_paste(unsigned *, unsigned *, int);
+unsigned apoint_inday(struct apoint *, long);
+void apoint_sec2str(struct apoint *, long, char *, char *);
+void apoint_write(struct apoint *, FILE *);
+struct apoint *apoint_scan(FILE *, struct tm, struct tm, char, char *);
+struct apoint *apoint_get(long, int);
+void apoint_delete_bynum(long, unsigned, enum eraseflg);
+void apoint_scroll_pad_down(int, int);
+void apoint_scroll_pad_up(int);
+struct notify_app *apoint_check_next(struct notify_app *, long);
+void apoint_switch_notify(void);
+void apoint_update_panel(int);
+void apoint_paste_item(void);
 
 /* args.c */
-int parse_args (int, char **);
+int parse_args(int, char **);
 
 /* calendar.c */
-void          calendar_view_next (void);
-void          calendar_view_prev (void);
-void          calendar_set_view (int);
-int           calendar_get_view (void);
-void          calendar_start_date_thread (void);
-void          calendar_stop_date_thread (void);
-void          calendar_set_current_date (void);
-void          calendar_set_first_day_of_week (enum wday);
-void          calendar_change_first_day_of_week (void);
-unsigned      calendar_week_begins_on_monday (void);
-void          calendar_store_current_date (struct date *);
-void          calendar_init_slctd_day (void);
-struct date  *calendar_get_slctd_day (void);
-long          calendar_get_slctd_day_sec (void);
-void          calendar_update_panel (struct window *);
-void          calendar_goto_today (void);
-void          calendar_change_day (int);
-void          calendar_move (enum move, int);
-long          calendar_start_of_year (void);
-long          calendar_end_of_year (void);
-const char   *calendar_get_pom (time_t);
+void calendar_view_next(void);
+void calendar_view_prev(void);
+void calendar_set_view(int);
+int calendar_get_view(void);
+void calendar_start_date_thread(void);
+void calendar_stop_date_thread(void);
+void calendar_set_current_date(void);
+void calendar_set_first_day_of_week(enum wday);
+void calendar_change_first_day_of_week(void);
+unsigned calendar_week_begins_on_monday(void);
+void calendar_store_current_date(struct date *);
+void calendar_init_slctd_day(void);
+struct date *calendar_get_slctd_day(void);
+long calendar_get_slctd_day_sec(void);
+void calendar_update_panel(struct window *);
+void calendar_goto_today(void);
+void calendar_change_day(int);
+void calendar_move(enum move, int);
+long calendar_start_of_year(void);
+long calendar_end_of_year(void);
+const char *calendar_get_pom(time_t);
 
 /* config.c */
 
-void      config_load (void);
-unsigned  config_save (void);
+void config_load(void);
+unsigned config_save(void);
 
 /* custom.c */
-void custom_init_attr (void);
-void custom_apply_attr (WINDOW *, int);
-void custom_remove_attr (WINDOW *, int);
-void custom_config_bar (void);
-void custom_layout_config (void);
-void custom_sidebar_config (void);
-void custom_color_config (void);
-void custom_color_theme_name (char *);
-void custom_confwin_init (struct window *, const char *);
-void custom_set_swsiz (struct scrollwin *);
-void custom_general_config (void);
-void custom_keys_config (void);
-void custom_config_main (void);
+void custom_init_attr(void);
+void custom_apply_attr(WINDOW *, int);
+void custom_remove_attr(WINDOW *, int);
+void custom_config_bar(void);
+void custom_layout_config(void);
+void custom_sidebar_config(void);
+void custom_color_config(void);
+void custom_color_theme_name(char *);
+void custom_confwin_init(struct window *, const char *);
+void custom_set_swsiz(struct scrollwin *);
+void custom_general_config(void);
+void custom_keys_config(void);
+void custom_config_main(void);
 
 /* day.c */
-void                  day_free_list (void);
-struct day_items_nb  *day_process_storage (struct date *, unsigned,
-                                           struct day_items_nb *);
-void                  day_write_pad (long, int, int, int);
-void                  day_popup_item (void);
-int                   day_check_if_item (struct date);
-unsigned              day_chk_busy_slices (struct date, int, int *);
-void                  day_edit_item (void);
-int                   day_erase_item (long, int, enum eraseflg);
-int                   day_cut_item (long, int);
-int                   day_paste_item (long, int);
-struct day_item      *day_get_item (int);
-int                   day_item_nb (long, int, int);
-void                  day_edit_note (const char *);
-void                  day_view_note (const char *);
-void                  day_pipe_item (void);
+void day_free_list(void);
+struct day_items_nb *day_process_storage(struct date *, unsigned,
+                                         struct day_items_nb *);
+void day_write_pad(long, int, int, int);
+void day_popup_item(void);
+int day_check_if_item(struct date);
+unsigned day_chk_busy_slices(struct date, int, int *);
+void day_edit_item(void);
+int day_erase_item(long, int, enum eraseflg);
+int day_cut_item(long, int);
+int day_paste_item(long, int);
+struct day_item *day_get_item(int);
+int day_item_nb(long, int, int);
+void day_edit_note(const char *);
+void day_view_note(const char *);
+void day_pipe_item(void);
 
 /* dmon.c */
-void   dmon_start (int);
-void   dmon_stop (void);
+void dmon_start(int);
+void dmon_stop(void);
 
 /* event.c */
 extern llist_t eventlist;
-void          event_free_bkp (void);
-void          event_llist_init (void);
-void          event_llist_free (void);
-struct event *event_new (char *, char *, long, int);
-unsigned      event_inday (struct event *, long);
-void          event_write (struct event *, FILE *);
-struct event *event_scan (FILE *, struct tm, int, char *);
-struct event *event_get (long, int);
-void          event_delete_bynum (long, unsigned, enum eraseflg);
-void          event_paste_item (void);
+void event_free_bkp(void);
+void event_llist_init(void);
+void event_llist_free(void);
+struct event *event_new(char *, char *, long, int);
+unsigned event_inday(struct event *, long);
+void event_write(struct event *, FILE *);
+struct event *event_scan(FILE *, struct tm, int, char *);
+struct event *event_get(long, int);
+void event_delete_bynum(long, unsigned, enum eraseflg);
+void event_paste_item(void);
 
 /* help.c */
-void help_wins_init (struct scrollwin *, int, int, int, int);
-void help_screen (void);
+void help_wins_init(struct scrollwin *, int, int, int, int);
+void help_screen(void);
 
 /* getstring.c */
-enum getstr  getstring (WINDOW *, char *, int, int, int);
-int          updatestring (WINDOW *, char **, int, int);
+enum getstr getstring(WINDOW *, char *, int, int, int);
+int updatestring(WINDOW *, char **, int, int);
 
 /* ical.c */
-void  ical_import_data (FILE *, FILE *, unsigned *, unsigned *, unsigned *,
-                        unsigned *, unsigned *);
-void  ical_export_data (FILE *);
+void ical_import_data(FILE *, FILE *, unsigned *, unsigned *, unsigned *,
+                      unsigned *, unsigned *);
+void ical_export_data(FILE *);
 
 /* io.c */
-unsigned         io_fprintln (const char *, const char *, ...);
-void             io_init (const char *, const char *);
-void             io_extract_data (char *, const char *, int);
-unsigned         io_save_apts (void);
-unsigned         io_save_todo (void);
-unsigned         io_save_keys (void);
-void             io_save_cal (enum save_display);
-void             io_load_app (void);
-void             io_load_todo (void);
-void             io_load_keys (const char *);
-void             io_check_dir (char *, int *);
-unsigned         io_file_exist (char *);
-void             io_check_file (char *, int *);
-int              io_check_data_files (void);
-void             io_startup_screen (int);
-void             io_export_data (enum export_type);
-void             io_export_bar (void);
-void             io_import_data (enum import_type, const char *);
-struct io_file  *io_log_init (void);
-void             io_log_print (struct io_file *, int, const char *);
-void             io_log_display (struct io_file *, const char *, const char *);
-void             io_log_free (struct io_file *);
-void             io_start_psave_thread (void);
-void             io_stop_psave_thread (void);
-void             io_set_lock (void);
-unsigned         io_dump_pid (char *);
-unsigned         io_get_pid (char *);
-int              io_file_is_empty (char *);
-int              io_file_cp (const char *, const char *);
+unsigned io_fprintln(const char *, const char *, ...);
+void io_init(const char *, const char *);
+void io_extract_data(char *, const char *, int);
+unsigned io_save_apts(void);
+unsigned io_save_todo(void);
+unsigned io_save_keys(void);
+void io_save_cal(enum save_display);
+void io_load_app(void);
+void io_load_todo(void);
+void io_load_keys(const char *);
+void io_check_dir(char *, int *);
+unsigned io_file_exist(char *);
+void io_check_file(char *, int *);
+int io_check_data_files(void);
+void io_startup_screen(int);
+void io_export_data(enum export_type);
+void io_export_bar(void);
+void io_import_data(enum import_type, const char *);
+struct io_file *io_log_init(void);
+void io_log_print(struct io_file *, int, const char *);
+void io_log_display(struct io_file *, const char *, const char *);
+void io_log_free(struct io_file *);
+void io_start_psave_thread(void);
+void io_stop_psave_thread(void);
+void io_set_lock(void);
+unsigned io_dump_pid(char *);
+unsigned io_get_pid(char *);
+int io_file_is_empty(char *);
+int io_file_cp(const char *, const char *);
 
 /* keys.c */
-void        keys_init (void);
-void        keys_free (void);
-void        keys_dump_defaults (char *);
-const char *keys_get_label (enum key);
-enum key    keys_get_action (int);
-enum key    keys_getch (WINDOW *win, int *);
-int         keys_assign_binding (int, enum key);
-void        keys_remove_binding (int, enum key);
-int         keys_str2int (const char *);
-const char *keys_int2str (int);
-int         keys_action_count_keys (enum key);
-const char *keys_action_firstkey (enum key);
-const char *keys_action_nkey (enum key, int);
-char       *keys_action_allkeys (enum key);
-void        keys_display_bindings_bar (WINDOW *, struct binding *[], int, int,
-                                       int, struct binding *);
-void        keys_popup_info (enum key);
-void        keys_save_bindings (FILE *);
-int         keys_check_missing_bindings (void);
-void        keys_fill_missing (void);
+void keys_init(void);
+void keys_free(void);
+void keys_dump_defaults(char *);
+const char *keys_get_label(enum key);
+enum key keys_get_action(int);
+enum key keys_getch(WINDOW * win, int *);
+int keys_assign_binding(int, enum key);
+void keys_remove_binding(int, enum key);
+int keys_str2int(const char *);
+const char *keys_int2str(int);
+int keys_action_count_keys(enum key);
+const char *keys_action_firstkey(enum key);
+const char *keys_action_nkey(enum key, int);
+char *keys_action_allkeys(enum key);
+void keys_display_bindings_bar(WINDOW *, struct binding *[], int, int,
+                               int, struct binding *);
+void keys_popup_info(enum key);
+void keys_save_bindings(FILE *);
+int keys_check_missing_bindings(void);
+void keys_fill_missing(void);
 
 /* mem.c */
-void  *xmalloc (size_t);
-void  *xcalloc (size_t, size_t);
-void  *xrealloc (void *, size_t, size_t);
-char  *xstrdup (const char *);
-void   xfree (void *);
+void *xmalloc(size_t);
+void *xcalloc(size_t, size_t);
+void *xrealloc(void *, size_t, size_t);
+char *xstrdup(const char *);
+void xfree(void *);
 
 #ifdef CALCURSE_MEMORY_DEBUG
 
-#  define mem_malloc(s)         dbg_malloc ((s), __FILE_POS__)
-#  define mem_calloc(n, s)      dbg_calloc ((n), (s), __FILE_POS__)
-#  define mem_realloc(p, n, s)  dbg_realloc ((p), (n), (s), __FILE_POS__)
-#  define mem_strdup(s)         dbg_strdup ((s), __FILE_POS__)
-#  define mem_free(p)           dbg_free ((p), __FILE_POS__)
+#define mem_malloc(s)         dbg_malloc ((s), __FILE_POS__)
+#define mem_calloc(n, s)      dbg_calloc ((n), (s), __FILE_POS__)
+#define mem_realloc(p, n, s)  dbg_realloc ((p), (n), (s), __FILE_POS__)
+#define mem_strdup(s)         dbg_strdup ((s), __FILE_POS__)
+#define mem_free(p)           dbg_free ((p), __FILE_POS__)
 
-void  *dbg_malloc (size_t, const char *);
-void  *dbg_calloc (size_t, size_t, const char *);
-void  *dbg_realloc (void *, size_t, size_t, const char *);
-char  *dbg_strdup (const char *, const char *);
-void   dbg_free (void *, const char *);
-void   mem_stats (void);
+void *dbg_malloc(size_t, const char *);
+void *dbg_calloc(size_t, size_t, const char *);
+void *dbg_realloc(void *, size_t, size_t, const char *);
+char *dbg_strdup(const char *, const char *);
+void dbg_free(void *, const char *);
+void mem_stats(void);
 
 #else /* MEMORY DEBUG disabled */
 
-#  define mem_malloc(s)         xmalloc ((s))
-#  define mem_calloc(n, s)      xcalloc ((n), (s))
-#  define mem_realloc(p, n, s)  xrealloc ((p), (n), (s))
-#  define mem_strdup(s)         xstrdup ((s))
-#  define mem_free(p)           xfree ((p))
-#  define mem_stats()
+#define mem_malloc(s)         xmalloc ((s))
+#define mem_calloc(n, s)      xcalloc ((n), (s))
+#define mem_realloc(p, n, s)  xrealloc ((p), (n), (s))
+#define mem_strdup(s)         xstrdup ((s))
+#define mem_free(p)           xfree ((p))
+#define mem_stats()
 
 #endif /* CALCURSE_MEMORY_DEBUG */
 
 /* note.c */
-char *generate_note (const char *);
-void  edit_note (char **, const char *);
-void  view_note (const char *, const char *);
-void  erase_note (char **);
-void  note_read (char *, FILE *);
-void  note_gc (void);
+char *generate_note(const char *);
+void edit_note(char **, const char *);
+void view_note(const char *, const char *);
+void erase_note(char **);
+void note_read(char *, FILE *);
+void note_gc(void);
 
 /* notify.c */
-int       notify_time_left (void);
-unsigned  notify_needs_reminder (void);
-void      notify_update_app (long, char, char *);
-int       notify_bar (void);
-void      notify_init_vars (void);
-void      notify_init_bar (void);
-void      notify_free_app (void);
-void      notify_start_main_thread (void);
-void      notify_stop_main_thread (void);
-void      notify_reinit_bar (void);
-unsigned  notify_launch_cmd (void);
-void      notify_update_bar (void);
-unsigned  notify_get_next (struct notify_app *);
-unsigned  notify_get_next_bkgd (void);
-char     *notify_app_txt (void);
-void      notify_check_next_app (int);
-void      notify_check_added (char *, long, char);
-void      notify_check_repeated (struct recur_apoint *);
-int       notify_same_item (long);
-int       notify_same_recur_item (struct recur_apoint *);
-void      notify_config_bar (void);
+int notify_time_left(void);
+unsigned notify_needs_reminder(void);
+void notify_update_app(long, char, char *);
+int notify_bar(void);
+void notify_init_vars(void);
+void notify_init_bar(void);
+void notify_free_app(void);
+void notify_start_main_thread(void);
+void notify_stop_main_thread(void);
+void notify_reinit_bar(void);
+unsigned notify_launch_cmd(void);
+void notify_update_bar(void);
+unsigned notify_get_next(struct notify_app *);
+unsigned notify_get_next_bkgd(void);
+char *notify_app_txt(void);
+void notify_check_next_app(int);
+void notify_check_added(char *, long, char);
+void notify_check_repeated(struct recur_apoint *);
+int notify_same_item(long);
+int notify_same_recur_item(struct recur_apoint *);
+void notify_config_bar(void);
 
 /* pcal.c */
-void  pcal_export_data (FILE *);
+void pcal_export_data(FILE *);
 
 /* recur.c */
 extern llist_ts_t recur_alist_p;
 extern llist_t recur_elist;
-void                  recur_event_free_bkp (void);
-void                  recur_apoint_free_bkp (void);
-void                  recur_apoint_llist_init (void);
-void                  recur_apoint_llist_free (void);
-void                  recur_event_llist_free (void);
-struct recur_apoint  *recur_apoint_new (char *, char *, long, long, char,
-                                       int, int, long, llist_t *);
-struct recur_event   *recur_event_new (char *, char *, long, int, int, int,
-                                       long, llist_t *);
-char                  recur_def2char (enum recur_type);
-int                   recur_char2def (char);
-struct recur_apoint *recur_apoint_scan (FILE *, struct tm, struct tm,
-                                        char, int, struct tm, char *,
-                                        llist_t *, char);
-struct recur_event  *recur_event_scan (FILE *, struct tm, int, char,
-                                       int, struct tm, char *,
-                                       llist_t *);
-void                 recur_apoint_write (struct recur_apoint *, FILE *);
-void                 recur_event_write (struct recur_event *, FILE *);
-void                 recur_save_data (FILE *);
-unsigned             recur_item_find_occurrence (long, long, llist_t *, int,
-                                                 int, long, long, unsigned *);
-unsigned             recur_apoint_find_occurrence (struct recur_apoint *,
-                                                   long, unsigned *);
-unsigned             recur_event_find_occurrence (struct recur_event *, long,
-                                                  unsigned *);
-unsigned             recur_item_inday (long, long, llist_t *, int, int, long,
-                                       long);
-unsigned             recur_apoint_inday(struct recur_apoint *, long);
-unsigned             recur_event_inday(struct recur_event *, long);
-void                 recur_event_erase (long, unsigned, unsigned,
-                                        enum eraseflg);
-void                 recur_apoint_erase (long, unsigned, unsigned,
-                                         enum eraseflg);
-void                 recur_repeat_item (void);
-void                 recur_exc_scan (llist_t *, FILE *);
-struct notify_app   *recur_apoint_check_next (struct notify_app *, long, long);
-struct recur_apoint *recur_get_apoint (long, int);
-struct recur_event  *recur_get_event (long, int);
-void                 recur_apoint_switch_notify (long, int);
-void                 recur_event_paste_item (void);
-void                 recur_apoint_paste_item (void);
+void recur_event_free_bkp(void);
+void recur_apoint_free_bkp(void);
+void recur_apoint_llist_init(void);
+void recur_apoint_llist_free(void);
+void recur_event_llist_free(void);
+struct recur_apoint *recur_apoint_new(char *, char *, long, long, char,
+                                      int, int, long, llist_t *);
+struct recur_event *recur_event_new(char *, char *, long, int, int, int,
+                                    long, llist_t *);
+char recur_def2char(enum recur_type);
+int recur_char2def(char);
+struct recur_apoint *recur_apoint_scan(FILE *, struct tm, struct tm,
+                                       char, int, struct tm, char *,
+                                       llist_t *, char);
+struct recur_event *recur_event_scan(FILE *, struct tm, int, char,
+                                     int, struct tm, char *, llist_t *);
+void recur_apoint_write(struct recur_apoint *, FILE *);
+void recur_event_write(struct recur_event *, FILE *);
+void recur_save_data(FILE *);
+unsigned recur_item_find_occurrence(long, long, llist_t *, int,
+                                    int, long, long, unsigned *);
+unsigned recur_apoint_find_occurrence(struct recur_apoint *, long, unsigned *);
+unsigned recur_event_find_occurrence(struct recur_event *, long, unsigned *);
+unsigned recur_item_inday(long, long, llist_t *, int, int, long, long);
+unsigned recur_apoint_inday(struct recur_apoint *, long);
+unsigned recur_event_inday(struct recur_event *, long);
+void recur_event_erase(long, unsigned, unsigned, enum eraseflg);
+void recur_apoint_erase(long, unsigned, unsigned, enum eraseflg);
+void recur_repeat_item(void);
+void recur_exc_scan(llist_t *, FILE *);
+struct notify_app *recur_apoint_check_next(struct notify_app *, long, long);
+struct recur_apoint *recur_get_apoint(long, int);
+struct recur_event *recur_get_event(long, int);
+void recur_apoint_switch_notify(long, int);
+void recur_event_paste_item(void);
+void recur_apoint_paste_item(void);
 
 /* sigs.c */
-void      sigs_init (void);
-unsigned  sigs_set_hdlr (int, void (*)(int));
+void sigs_init(void);
+unsigned sigs_set_hdlr(int, void (*)(int));
 
 /* todo.c */
 extern llist_t todolist;
-void          todo_hilt_set (int);
-void          todo_hilt_decrease (int);
-void          todo_hilt_increase (int);
-int           todo_hilt (void);
-int           todo_nb (void);
-void          todo_set_nb (int);
-void          todo_set_first (int);
-void          todo_first_increase (int);
-void          todo_first_decrease (int);
-int           todo_hilt_pos (void);
-char         *todo_saved_mesg (void);
-void          todo_new_item (void);
-struct todo  *todo_add (char *, int, char *);
-void          todo_write (struct todo *, FILE *);
-void          todo_flag (void);
-void          todo_delete (void);
-void          todo_chg_priority (int);
-void          todo_edit_item (void);
-void          todo_update_panel (int);
-void          todo_edit_note (const char *);
-void          todo_view_note (const char *);
-void          todo_pipe_item (void);
-void          todo_init_list (void);
-void          todo_free_list (void);
+void todo_hilt_set(int);
+void todo_hilt_decrease(int);
+void todo_hilt_increase(int);
+int todo_hilt(void);
+int todo_nb(void);
+void todo_set_nb(int);
+void todo_set_first(int);
+void todo_first_increase(int);
+void todo_first_decrease(int);
+int todo_hilt_pos(void);
+char *todo_saved_mesg(void);
+void todo_new_item(void);
+struct todo *todo_add(char *, int, char *);
+void todo_write(struct todo *, FILE *);
+void todo_flag(void);
+void todo_delete(void);
+void todo_chg_priority(int);
+void todo_edit_item(void);
+void todo_update_panel(int);
+void todo_edit_note(const char *);
+void todo_view_note(const char *);
+void todo_pipe_item(void);
+void todo_init_list(void);
+void todo_free_list(void);
 
 /* utf8.c */
-int           utf8_width (char *);
-int           utf8_strwidth (char *);
+int utf8_width(char *);
+int utf8_strwidth(char *);
 
 /* utils.c */
-void         exit_calcurse (int) __attribute__((__noreturn__));
-void         free_user_data (void);
-void         fatalbox (const char *);
-void         warnbox (const char *);
-void         status_mesg (const char *, const char *);
-int          status_ask_choice (const char *, const char[], int);
-int          status_ask_bool (const char *);
-int          status_ask_simplechoice (const char *, const char *[], int);
-void         erase_window_part (WINDOW *, int, int, int, int);
-WINDOW      *popup (int, int, int, int, const char *, const char *, int);
-void         print_in_middle (WINDOW *, int, int, int, const char *);
-int          is_all_digit (const char *);
-long         get_item_time (long);
-int          get_item_hour (long);
-int          get_item_min (long);
-long         date2sec (struct date, unsigned, unsigned);
-char        *date_sec2date_str (long, const char *);
-void         date_sec2date_fmt (long, const char *, char *);
-long         date_sec_change (long, int, int);
-long         update_time_in_date (long, unsigned, unsigned);
-long         get_sec_date (struct date);
-long         min2sec (unsigned);
-void         draw_scrollbar (WINDOW *, int, int, int, int, int, unsigned);
-void         item_in_popup (const char *, const char *, const char *,
-                            const char *);
-long         get_today (void);
-long         now (void);
-char        *nowstr (void);
-long         mystrtol (const char *);
-void         print_bool_option_incolor (WINDOW *, unsigned, int, int);
-const char  *get_tempdir (void);
-char        *new_tempfile (const char *, int);
-int          parse_date (const char *, enum datefmt, int *, int *, int *,
-                         struct date *);
-int          parse_time (const char *, unsigned *, unsigned *);
-int          parse_duration (const char *, unsigned *);
-void         str_toupper (char *);
-void         file_close (FILE *, const char *);
-void         psleep (unsigned);
-int          fork_exec (int *, int *, const char *, const char *const *);
-int          shell_exec (int *, int *, const char *, const char *const *);
-int          child_wait (int *, int *, int);
-void         press_any_key (void);
-void         print_apoint (const char *, long, struct apoint *);
-void         print_event (const char *, long, struct event *);
-void         print_recur_apoint (const char *, long, unsigned,
-                                 struct recur_apoint *);
-void         print_recur_event (const char *, long, struct recur_event *);
-void         print_todo (const char *, struct todo *);
+void exit_calcurse(int) __attribute__ ((__noreturn__));
+void free_user_data(void);
+void fatalbox(const char *);
+void warnbox(const char *);
+void status_mesg(const char *, const char *);
+int status_ask_choice(const char *, const char[], int);
+int status_ask_bool(const char *);
+int status_ask_simplechoice(const char *, const char *[], int);
+void erase_window_part(WINDOW *, int, int, int, int);
+WINDOW *popup(int, int, int, int, const char *, const char *, int);
+void print_in_middle(WINDOW *, int, int, int, const char *);
+int is_all_digit(const char *);
+long get_item_time(long);
+int get_item_hour(long);
+int get_item_min(long);
+long date2sec(struct date, unsigned, unsigned);
+char *date_sec2date_str(long, const char *);
+void date_sec2date_fmt(long, const char *, char *);
+long date_sec_change(long, int, int);
+long update_time_in_date(long, unsigned, unsigned);
+long get_sec_date(struct date);
+long min2sec(unsigned);
+void draw_scrollbar(WINDOW *, int, int, int, int, int, unsigned);
+void item_in_popup(const char *, const char *, const char *, const char *);
+long get_today(void);
+long now(void);
+char *nowstr(void);
+long mystrtol(const char *);
+void print_bool_option_incolor(WINDOW *, unsigned, int, int);
+const char *get_tempdir(void);
+char *new_tempfile(const char *, int);
+int parse_date(const char *, enum datefmt, int *, int *, int *, struct date *);
+int parse_time(const char *, unsigned *, unsigned *);
+int parse_duration(const char *, unsigned *);
+void str_toupper(char *);
+void file_close(FILE *, const char *);
+void psleep(unsigned);
+int fork_exec(int *, int *, const char *, const char *const *);
+int shell_exec(int *, int *, const char *, const char *const *);
+int child_wait(int *, int *, int);
+void press_any_key(void);
+void print_apoint(const char *, long, struct apoint *);
+void print_event(const char *, long, struct event *);
+void print_recur_apoint(const char *, long, unsigned, struct recur_apoint *);
+void print_recur_event(const char *, long, struct recur_event *);
+void print_todo(const char *, struct todo *);
 
 /* vars.c */
-extern int               col, row;
-extern int               resize;
-extern unsigned          colorize;
-extern int               foreground, background;
-extern enum ui_mode      ui_mode;
-extern int               read_only;
-extern int               days[12];
-extern const char       *monthnames[12];
-extern const char       *daynames[8];
-extern char              path_dir[BUFSIZ];
-extern char              path_todo[BUFSIZ];
-extern char              path_apts[BUFSIZ];
-extern char              path_conf[BUFSIZ];
-extern char              path_keys[BUFSIZ];
-extern char              path_notes[BUFSIZ];
-extern char              path_cpid[BUFSIZ];
-extern char              path_dpid[BUFSIZ];
-extern char              path_dmon_log[BUFSIZ];
-extern struct conf       conf;
-extern struct pad        apad;
-extern struct nbar       nbar;
-extern struct dmon_conf  dmon;
-void vars_init (void);
+extern int col, row;
+extern int resize;
+extern unsigned colorize;
+extern int foreground, background;
+extern enum ui_mode ui_mode;
+extern int read_only;
+extern int days[12];
+extern const char *monthnames[12];
+extern const char *daynames[8];
+extern char path_dir[BUFSIZ];
+extern char path_todo[BUFSIZ];
+extern char path_apts[BUFSIZ];
+extern char path_conf[BUFSIZ];
+extern char path_keys[BUFSIZ];
+extern char path_notes[BUFSIZ];
+extern char path_cpid[BUFSIZ];
+extern char path_dpid[BUFSIZ];
+extern char path_dmon_log[BUFSIZ];
+extern struct conf conf;
+extern struct pad apad;
+extern struct nbar nbar;
+extern struct dmon_conf dmon;
+void vars_init(void);
 
 /* wins.c */
 extern struct window win[NBWINS];
-int       wins_refresh (void);
-int       wins_wrefresh (WINDOW *);
-int       wins_doupdate (void);
-int       wins_layout (void);
-void      wins_set_layout (int);
-unsigned  wins_sbar_width (void);
-unsigned  wins_sbar_wperc (void);
-void      wins_set_sbar_width (unsigned);
-void      wins_sbar_winc (void);
-void      wins_sbar_wdec (void);
-void      wins_slctd_init (void);
-enum win  wins_slctd (void);
-void      wins_slctd_set (enum win);
-void      wins_slctd_next (void);
-void      wins_init (void);
-void      wins_scrollwin_init (struct scrollwin *);
-void      wins_scrollwin_delete (struct scrollwin *);
-void      wins_scrollwin_display (struct scrollwin *);
-void      wins_scrollwin_up (struct scrollwin *, int);
-void      wins_scrollwin_down (struct scrollwin *, int);
-void      wins_reinit (void);
-void      wins_reinit_panels (void);
-void      wins_show (WINDOW *, const char *);
-void      wins_get_config (void);
-void      wins_update_border (int);
-void      wins_update_panels (int);
-void      wins_update (int);
-void      wins_reset (void);
-void      wins_prepare_external (void);
-void      wins_unprepare_external (void);
-void      wins_launch_external (const char *, const char *);
-void      wins_status_bar (void);
-void      wins_erase_status_bar (void);
-void      wins_other_status_page (int);
-void      wins_reset_status_page (void);
+int wins_refresh(void);
+int wins_wrefresh(WINDOW *);
+int wins_doupdate(void);
+int wins_layout(void);
+void wins_set_layout(int);
+unsigned wins_sbar_width(void);
+unsigned wins_sbar_wperc(void);
+void wins_set_sbar_width(unsigned);
+void wins_sbar_winc(void);
+void wins_sbar_wdec(void);
+void wins_slctd_init(void);
+enum win wins_slctd(void);
+void wins_slctd_set(enum win);
+void wins_slctd_next(void);
+void wins_init(void);
+void wins_scrollwin_init(struct scrollwin *);
+void wins_scrollwin_delete(struct scrollwin *);
+void wins_scrollwin_display(struct scrollwin *);
+void wins_scrollwin_up(struct scrollwin *, int);
+void wins_scrollwin_down(struct scrollwin *, int);
+void wins_reinit(void);
+void wins_reinit_panels(void);
+void wins_show(WINDOW *, const char *);
+void wins_get_config(void);
+void wins_update_border(int);
+void wins_update_panels(int);
+void wins_update(int);
+void wins_reset(void);
+void wins_prepare_external(void);
+void wins_unprepare_external(void);
+void wins_launch_external(const char *, const char *);
+void wins_status_bar(void);
+void wins_erase_status_bar(void);
+void wins_other_status_page(int);
+void wins_reset_status_page(void);
 
 #endif /* CALCURSE_H */

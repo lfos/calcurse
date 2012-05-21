@@ -69,7 +69,7 @@ struct name {                                                                 \
 }
 
 #define HTABLE_ENTRY(type)                                                    \
-struct type   *next          /* To build the bucket chain list. */
+struct type   *next             /* To build the bucket chain list. */
 
 #define HTABLE_SIZE(head)                                                     \
   (sizeof (*(head)->bkts) ? sizeof ((head)->bkts) / sizeof (*(head)->bkts) : 0)

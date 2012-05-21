@@ -65,6 +65,7 @@ int read_only = 0;
  * variables to store calendar names
  */
 int days[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+
 const char *monthnames[12] = {
   N_("January"),
   N_("February"),
@@ -120,8 +121,7 @@ struct dmon_conf dmon;
 /*
  * Variables init
  */
-void
-vars_init (void)
+void vars_init(void)
 {
   const char *ed, *pg;
 
@@ -133,33 +133,33 @@ vars_init (void)
   conf.periodic_save = 0;
   conf.system_dialogs = 1;
   conf.progress_bar = 1;
-  strncpy (conf.output_datefmt, "%D", 3);
+  strncpy(conf.output_datefmt, "%D", 3);
   conf.input_datefmt = 1;
 
   /* Default external editor and pager */
-  ed = getenv ("VISUAL");
+  ed = getenv("VISUAL");
   if (ed == NULL || ed[0] == '\0')
-    ed = getenv ("EDITOR");
+    ed = getenv("EDITOR");
   if (ed == NULL || ed[0] == '\0')
     ed = DEFAULT_EDITOR;
   conf.editor = ed;
 
-  pg = getenv ("PAGER");
+  pg = getenv("PAGER");
   if (pg == NULL || pg[0] == '\0')
     pg = DEFAULT_PAGER;
   conf.pager = pg;
 
-  wins_set_layout (1);
+  wins_set_layout(1);
 
-  calendar_set_first_day_of_week (MONDAY);
+  calendar_set_first_day_of_week(MONDAY);
 
   /* Pad structure to scroll text inside the appointment panel */
   apad.length = 1;
   apad.first_onscreen = 0;
 
   /* Attribute definitions for color and non-color terminals */
-  custom_init_attr ();
+  custom_init_attr();
 
   /* Start at the current date */
-  calendar_init_slctd_day ();
+  calendar_init_slctd_day();
 }

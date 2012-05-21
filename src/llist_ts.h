@@ -37,9 +37,9 @@
 /* Thread-safe linked lists. */
 typedef struct llist_ts llist_ts_t;
 struct llist_ts {
-  llist_item_t    *head;
-  llist_item_t    *tail;
-  pthread_mutex_t  mutex;
+  llist_item_t *head;
+  llist_item_t *tail;
+  pthread_mutex_t mutex;
 };
 
 /* Initialization and deallocation. */
@@ -90,4 +90,3 @@ struct llist_ts {
 #define LLIST_TS_REMOVE(l_ts, i) llist_remove ((llist_t *)l_ts, i)
 #define LLIST_TS_ADD_SORTED(l_ts, data, fn_cmp)                               \
   llist_add_sorted ((llist_t *)l_ts, data, (llist_fn_cmp_t)fn_cmp)
-

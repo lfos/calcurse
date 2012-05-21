@@ -43,135 +43,124 @@
 struct note_gc_hash {
   char *hash;
   char buf[MAX_NOTESIZ + 1];
-  HTABLE_ENTRY (note_gc_hash);
+   HTABLE_ENTRY(note_gc_hash);
 };
 
-static void note_gc_extract_key (struct note_gc_hash *, const char **, int *);
-static int note_gc_cmp (struct note_gc_hash *, struct note_gc_hash *);
+static void note_gc_extract_key(struct note_gc_hash *, const char **, int *);
+static int note_gc_cmp(struct note_gc_hash *, struct note_gc_hash *);
 
-HTABLE_HEAD (htp, NOTE_GC_HSIZE, note_gc_hash);
-HTABLE_PROTOTYPE (htp, note_gc_hash)
-HTABLE_GENERATE (htp, note_gc_hash, note_gc_extract_key, note_gc_cmp)
+HTABLE_HEAD(htp, NOTE_GC_HSIZE, note_gc_hash);
+HTABLE_PROTOTYPE(htp, note_gc_hash)
+    HTABLE_GENERATE(htp, note_gc_hash, note_gc_extract_key, note_gc_cmp)
 
 /* Create note file from a string and return a newly allocated string that
  * contains its name. */
-char *
-generate_note (const char *str)
+char *generate_note(const char *str)
 {
-  char *sha1 = mem_malloc (SHA1_DIGESTLEN * 2 + 1);
+  char *sha1 = mem_malloc(SHA1_DIGESTLEN * 2 + 1);
   char notepath[BUFSIZ];
   FILE *fp;
 
-  sha1_digest (str, sha1);
-  snprintf (notepath, BUFSIZ, "%s%s", path_notes, sha1);
-  fp = fopen (notepath, "w");
-  EXIT_IF (fp == NULL, _("Warning: could not open %s, Aborting..."), notepath);
-  fputs (str, fp);
-  file_close (fp, __FILE_POS__);
+  sha1_digest(str, sha1);
+  snprintf(notepath, BUFSIZ, "%s%s", path_notes, sha1);
+  fp = fopen(notepath, "w");
+  EXIT_IF(fp == NULL, _("Warning: could not open %s, Aborting..."), notepath);
+  fputs(str, fp);
+  file_close(fp, __FILE_POS__);
 
   return sha1;
 }
 
 /* Edit a note with an external editor. */
-void
-edit_note (char **note, const char *editor)
+void edit_note(char **note, const char *editor)
 {
   char tmppath[BUFSIZ];
   char *tmpext;
   char notepath[BUFSIZ];
-  char *sha1 = mem_malloc (SHA1_DIGESTLEN * 2 + 1);
+  char *sha1 = mem_malloc(SHA1_DIGESTLEN * 2 + 1);
   FILE *fp;
 
-  strncpy (tmppath, get_tempdir (), BUFSIZ);
-  strncat (tmppath, "/calcurse-note.", BUFSIZ - strlen (tmppath) - 1);
-  if ((tmpext = new_tempfile (tmppath, TMPEXTSIZ)) == NULL)
+  strncpy(tmppath, get_tempdir(), BUFSIZ);
+  strncat(tmppath, "/calcurse-note.", BUFSIZ - strlen(tmppath) - 1);
+  if ((tmpext = new_tempfile(tmppath, TMPEXTSIZ)) == NULL)
     return;
-  strncat (tmppath, tmpext, BUFSIZ - strlen (tmppath) - 1);
-  mem_free (tmpext);
+  strncat(tmppath, tmpext, BUFSIZ - strlen(tmppath) - 1);
+  mem_free(tmpext);
 
-  if (*note != NULL)
-    {
-      snprintf (notepath, BUFSIZ, "%s%s", path_notes, *note);
-      io_file_cp (notepath, tmppath);
-    }
+  if (*note != NULL) {
+    snprintf(notepath, BUFSIZ, "%s%s", path_notes, *note);
+    io_file_cp(notepath, tmppath);
+  }
 
-  wins_launch_external (tmppath, editor);
+  wins_launch_external(tmppath, editor);
 
-  if (io_file_is_empty (tmppath) > 0)
-    erase_note (note);
-  else if ((fp = fopen (tmppath, "r")))
-    {
-      sha1_stream (fp, sha1);
-      fclose (fp);
-      *note = sha1;
+  if (io_file_is_empty(tmppath) > 0)
+    erase_note(note);
+  else if ((fp = fopen(tmppath, "r"))) {
+    sha1_stream(fp, sha1);
+    fclose(fp);
+    *note = sha1;
 
-      snprintf (notepath, BUFSIZ, "%s%s", path_notes, *note);
-      io_file_cp (tmppath, notepath);
-    }
+    snprintf(notepath, BUFSIZ, "%s%s", path_notes, *note);
+    io_file_cp(tmppath, notepath);
+  }
 
-  unlink (tmppath);
+  unlink(tmppath);
 }
 
 /* View a note in an external pager. */
-void
-view_note (const char *note, const char *pager)
+void view_note(const char *note, const char *pager)
 {
   char fullname[BUFSIZ];
 
   if (note == NULL)
     return;
-  snprintf (fullname, BUFSIZ, "%s%s", path_notes, note);
-  wins_launch_external (fullname, pager);
+  snprintf(fullname, BUFSIZ, "%s%s", path_notes, note);
+  wins_launch_external(fullname, pager);
 }
 
 /* Erase a note previously attached to an item. */
-void
-erase_note (char **note)
+void erase_note(char **note)
 {
   if (*note == NULL)
     return;
-  mem_free (*note);
+  mem_free(*note);
   *note = NULL;
 }
 
 /* Read a serialized note file name from a stream and deserialize it. */
-void
-note_read (char *buffer, FILE *fp)
+void note_read(char *buffer, FILE * fp)
 {
   int i;
 
-  for (i = 0; i < MAX_NOTESIZ; i++)
-    {
-      buffer[i] = getc (fp);
-      if (buffer[i] == ' ')
-        {
-          buffer[i] = '\0';
-          return;
-        }
+  for (i = 0; i < MAX_NOTESIZ; i++) {
+    buffer[i] = getc(fp);
+    if (buffer[i] == ' ') {
+      buffer[i] = '\0';
+      return;
     }
+  }
 
-  while (getc (fp) != ' ');
+  while (getc(fp) != ' ') ;
   buffer[MAX_NOTESIZ] = '\0';
 }
 
 static void
-note_gc_extract_key (struct note_gc_hash *data, const char **key, int *len)
+note_gc_extract_key(struct note_gc_hash *data, const char **key, int *len)
 {
   *key = data->hash;
-  *len = strlen (data->hash);
+  *len = strlen(data->hash);
 }
 
-static int
-note_gc_cmp (struct note_gc_hash *a, struct note_gc_hash *b)
+static int note_gc_cmp(struct note_gc_hash *a, struct note_gc_hash *b)
 {
-  return strcmp (a->hash, b->hash);
+  return strcmp(a->hash, b->hash);
 }
 
 /* Spot and unlink unused note files. */
-void
-note_gc (void)
+void note_gc(void)
 {
-  struct htp gc_htable = HTABLE_INITIALIZER (&gc_htable);
+  struct htp gc_htable = HTABLE_INITIALIZER(&gc_htable);
   struct note_gc_hash *hp;
   DIR *dirp;
   struct dirent *dp;
@@ -179,81 +168,68 @@ note_gc (void)
   struct note_gc_hash tmph;
   char notepath[BUFSIZ];
 
-  if (!(dirp = opendir (path_notes)))
+  if (!(dirp = opendir(path_notes)))
     return;
 
   /* Insert all note file names into a hash table. */
-  do
-    {
-      if ((dp = readdir (dirp)) && *(dp->d_name) != '.')
-        {
-          hp = mem_malloc (sizeof (struct note_gc_hash));
+  do {
+    if ((dp = readdir(dirp)) && *(dp->d_name) != '.') {
+      hp = mem_malloc(sizeof(struct note_gc_hash));
 
-          strncpy (hp->buf, dp->d_name, MAX_NOTESIZ + 1);
-          hp->hash = hp->buf;
+      strncpy(hp->buf, dp->d_name, MAX_NOTESIZ + 1);
+      hp->hash = hp->buf;
 
-          HTABLE_INSERT (htp, &gc_htable, hp);
-        }
+      HTABLE_INSERT(htp, &gc_htable, hp);
     }
+  }
   while (dp);
 
-  closedir (dirp);
+  closedir(dirp);
 
   /* Remove hashes that are actually in use. */
-  LLIST_TS_FOREACH (&alist_p, i)
-    {
-      struct apoint *apt = LLIST_GET_DATA (i);
-      if (apt->note)
-        {
-          tmph.hash = apt->note;
-          free (HTABLE_REMOVE (htp, &gc_htable, &tmph));
-        }
+  LLIST_TS_FOREACH(&alist_p, i) {
+    struct apoint *apt = LLIST_GET_DATA(i);
+    if (apt->note) {
+      tmph.hash = apt->note;
+      free(HTABLE_REMOVE(htp, &gc_htable, &tmph));
     }
+  }
 
-  LLIST_FOREACH (&eventlist, i)
-    {
-      struct event *ev = LLIST_GET_DATA (i);
-      if (ev->note)
-        {
-          tmph.hash = ev->note;
-          free (HTABLE_REMOVE (htp, &gc_htable, &tmph));
-        }
+  LLIST_FOREACH(&eventlist, i) {
+    struct event *ev = LLIST_GET_DATA(i);
+    if (ev->note) {
+      tmph.hash = ev->note;
+      free(HTABLE_REMOVE(htp, &gc_htable, &tmph));
     }
+  }
 
-  LLIST_TS_FOREACH (&recur_alist_p, i)
-    {
-      struct recur_apoint *rapt = LLIST_GET_DATA (i);
-      if (rapt->note)
-        {
-          tmph.hash = rapt->note;
-          free (HTABLE_REMOVE (htp, &gc_htable, &tmph));
-        }
+  LLIST_TS_FOREACH(&recur_alist_p, i) {
+    struct recur_apoint *rapt = LLIST_GET_DATA(i);
+    if (rapt->note) {
+      tmph.hash = rapt->note;
+      free(HTABLE_REMOVE(htp, &gc_htable, &tmph));
     }
+  }
 
-  LLIST_FOREACH (&recur_elist, i)
-    {
-      struct recur_event *rev = LLIST_GET_DATA (i);
-      if (rev->note)
-        {
-          tmph.hash = rev->note;
-          free (HTABLE_REMOVE (htp, &gc_htable, &tmph));
-        }
+  LLIST_FOREACH(&recur_elist, i) {
+    struct recur_event *rev = LLIST_GET_DATA(i);
+    if (rev->note) {
+      tmph.hash = rev->note;
+      free(HTABLE_REMOVE(htp, &gc_htable, &tmph));
     }
+  }
 
-  LLIST_FOREACH (&todolist, i)
-    {
-      struct todo *todo = LLIST_GET_DATA (i);
-      if (todo->note)
-        {
-          tmph.hash = todo->note;
-          free (HTABLE_REMOVE (htp, &gc_htable, &tmph));
-        }
+  LLIST_FOREACH(&todolist, i) {
+    struct todo *todo = LLIST_GET_DATA(i);
+    if (todo->note) {
+      tmph.hash = todo->note;
+      free(HTABLE_REMOVE(htp, &gc_htable, &tmph));
     }
+  }
 
   /* Unlink unused note files. */
-  HTABLE_FOREACH (hp, htp, &gc_htable)
-    {
-      snprintf (notepath, BUFSIZ, "%s%s", path_notes, hp->hash);
-      unlink (notepath);
-    }
+  HTABLE_FOREACH(hp, htp, &gc_htable) {
+    snprintf(notepath, BUFSIZ, "%s%s", path_notes, hp->hash);
+    unlink(notepath);
+  }
 }
