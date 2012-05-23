@@ -2,7 +2,16 @@
 
 set -e
 
-CONFFILE=$HOME/.calcurse/conf
+if [ "$1" = "--config" ]; then
+  CONFFILE=$2
+else
+  CONFFILE=$HOME/.calcurse/conf
+fi
+
+if [ ! -e "$CONFFILE" ]; then
+  echo "Configuration file not found: $CONFFILE" >&2
+  exit 1
+fi
 
 if grep -q -e '^auto_save=' -e '^auto_gc=' -e '^periodic_save=' \
   -e '^confirm_quit=' -e '^confirm_delete=' -e '^skip_system_dialogs=' \
