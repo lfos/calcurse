@@ -575,30 +575,30 @@ static unsigned print_config_options(WINDOW * optwin)
 
   int i;
 
-  opt[SHOW].name = _("appearance.notifybar = ");
+  opt[SHOW].name = "appearance.notifybar = ";
   opt[SHOW].desc = _("(if set to YES, notify-bar will be displayed)");
 
-  opt[DATE].name = _("format.notifydate = ");
+  opt[DATE].name = "format.notifydate = ";
   opt[DATE].desc = _("(Format of the date to be displayed inside notify-bar)");
 
-  opt[CLOCK].name = _("format.notifytime = ");
+  opt[CLOCK].name = "format.notifytime = ";
   opt[CLOCK].desc = _("(Format of the time to be displayed inside notify-bar)");
 
-  opt[WARN].name = _("notification.warning = ");
+  opt[WARN].name = "notification.warning = ";
   opt[WARN].desc = _("(Warn user if an appointment is within next "
                      "'notify-bar_warning' seconds)");
 
-  opt[CMD].name = _("notification.command = ");
+  opt[CMD].name = "notification.command = ";
   opt[CMD].desc = _("(Command used to notify user of an upcoming appointment)");
 
-  opt[NOTIFY_ALL].name = _("notification.notifyall = ");
+  opt[NOTIFY_ALL].name = "notification.notifyall = ";
   opt[NOTIFY_ALL].desc =
       _("(Notify all appointments instead of flagged ones only)");
 
-  opt[DMON].name = _("daemon.enable = ");
+  opt[DMON].name = "daemon.enable = ";
   opt[DMON].desc = _("(Run in background to get notifications after exiting)");
 
-  opt[DMON_LOG].name = _("daemon.log = ");
+  opt[DMON_LOG].name = "daemon.log = ";
   opt[DMON_LOG].desc = _("(Log activity when running in background)");
 
   pthread_mutex_lock(&nbar.mutex);

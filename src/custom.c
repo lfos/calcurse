@@ -605,16 +605,16 @@ static int print_general_options(WINDOW * win)
   const int YOFF = 3;
   int y;
   char *opt[NB_OPTIONS] = {
-    _("general.autosave = "),
-    _("general.autogc = "),
-    _("general.periodicsave = "),
-    _("general.confirmquit = "),
-    _("general.confirmdelete = "),
-    _("general.systemdialogs = "),
-    _("general.progressbar = "),
-    _("general.firstdayofweek = "),
-    _("format.outputdate = "),
-    _("format.inputdate = ")
+    "general.autosave = ",
+    "general.autogc = ",
+    "general.periodicsave = ",
+    "general.confirmquit = ",
+    "general.confirmdelete = ",
+    "general.systemdialogs = ",
+    "general.progressbar = ",
+    "general.firstdayofweek = ",
+    "format.outputdate = ",
+    "format.inputdate = "
   };
 
   y = 0;
