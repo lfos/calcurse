@@ -1,5 +1,7 @@
 #!/bin/sh
 
+export TEXTDOMAIN='calcurse'
+
 set -e
 
 if [ "$1" = "--config" ]; then
@@ -9,7 +11,7 @@ else
 fi
 
 if [ ! -e "$CONFFILE" ]; then
-  echo "Configuration file not found: $CONFFILE" >&2
+  echo "$(gettext "Configuration file not found:") $CONFFILE" >&2
   exit 1
 fi
 
@@ -22,12 +24,12 @@ if grep -q -e '^auto_save=' -e '^auto_gc=' -e '^periodic_save=' \
   -e '^notify-all=' -e '^output_datefmt=' -e '^input_datefmt=' \
   -e '^notify-daemon_enable=' -e '^notify-daemon_log=' "$CONFFILE"; then
 
-  echo "Pre-3.0.0 configuration file format detected..."
+  echo "$(gettext "Pre-3.0.0 configuration file format detected...")"
 
   tmpfile="${TMPDIR:-/tmp}/calcurse-upgrade.$!"
   [ -e "$tmpfile" ] && exit 1
 
-  echo -n "Upgrade configuration directives..."
+  echo -n "$(gettext "Upgrade configuration directives...")"
 
   sed -e 's/^auto_save=/general.autosave=/' \
     -e 's/^auto_gc=/general.autogc=/' \
@@ -89,6 +91,6 @@ if grep -q -e '^auto_save=' -e '^auto_gc=' -e '^periodic_save=' \
   mv "$tmpfile" "$CONFFILE"
 
   echo -n ' '
-  echo 'done'
+  echo "$(gettext 'done')"
 fi
 

@@ -16,3 +16,5 @@ src/utils.c
 src/vars.c
 src/wins.c
 src/dmon.c
+
+scripts/calcurse-upgrade.sh
