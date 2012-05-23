@@ -716,7 +716,7 @@ void notify_config_bar(void)
     case '4':
       status_mesg(count_str, "");
       pthread_mutex_lock(&nbar.mutex);
-      printf(buf, "%d", nbar.cntdwn);
+      snprintf(buf, BUFSIZ, "%d", nbar.cntdwn);
       pthread_mutex_unlock(&nbar.mutex);
       if (updatestring(win[STA].p, &buf, 0, 1) == 0 &&
           is_all_digit(buf) && atoi(buf) >= 0 && atoi(buf) <= DAYINSEC) {

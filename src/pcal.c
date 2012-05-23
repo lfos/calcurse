@@ -103,7 +103,7 @@ static void pcal_export_header(FILE * stream)
   fprintf(stream, "opt -A -K -l -m -F %s\n",
           calendar_week_begins_on_monday()? "Monday" : "Sunday");
   fputs("# Display week number (i.e. 1-52) on every Monday\n", stream);
-  fprintf(stream, "all monday in all  %s %%w\n", _("Week"));
+  fprintf(stream, "all monday in all week %%w\n");
   fputc('\n', stream);
 }
 

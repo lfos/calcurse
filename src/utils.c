@@ -386,8 +386,15 @@ char *date_sec2date_str(long sec, const char *datefmt)
 /* Generic function to format date. */
 void date_sec2date_fmt(long sec, const char *fmt, char *datef)
 {
-  struct tm *lt = localtime((time_t *) & sec);
+  /* TODO: Find a better way to deal with localization and strftime(). */
+  char *locale_old = mem_strdup (setlocale (LC_ALL, NULL));
+  setlocale (LC_ALL, "C");
+
+  struct tm *lt = localtime((time_t *)&sec);
   strftime(datef, BUFSIZ, fmt, lt);
+
+  setlocale (LC_ALL, locale_old);
+  mem_free (locale_old);
 }
 
 /*
