@@ -366,6 +366,31 @@ Examples
 `calcurse -t --format-todo '(%p) %m\n'`::
   List all todo items and put parentheses around the priority specifiers.
 
+Extended format specifiers
+++++++++++++++++++++++++++
+
+Extended format specifiers can be used if you want to specify advanced
+formatting options. Extended specifiers are introduced by `%(` and are
+terminated by a closing parenthesis (`)`). The following list includes all
+short specifiers and corresponding long options:
+
+* `s`: `(start)`
+* `S`: `(start:epoch)`
+* `d`: `(duration)`
+* `e`: `(end)`
+* `E`: `(end:epoch)`
+* `m`: `(message)`
+* `n`: `(noteid)`
+* `N`: `(note)`
+* `p`: `(priority)`
+
+The `(start)` and `(end)` specifiers support strftime()-style extended
+formatting options that can be used for fine-grained formatting. Additionally,
+the special formats `epoch` (which is equivalent to `(start:%s)` or `(end:%s)`)
+and `default` (which is mostly equivalent to `(start:%H:%M)` or `(end:%H:%M)`
+but displays `..:..` if the item doesn't start/end at the current day) are
+supported.
+
 [[basics_invocation_variable]]
 Environment variable for i18n
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
