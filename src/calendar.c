@@ -582,11 +582,11 @@ void calendar_change_day(int datefmt)
       _("The day you entered is not valid "
         "(should be between 01/01/1902 and 12/31/2037)");
   const char *mesg_line2 = _("Press [ENTER] to continue");
-  const char *request_date = "Enter the day to go to [ENTER for today] : %s";
+  const char *request_date = _("Enter the day to go to [ENTER for today] : %s");
 
   while (wrong_day) {
     snprintf(outstr, BUFSIZ, request_date, DATEFMT_DESC(datefmt));
-    status_mesg(_(outstr), "");
+    status_mesg(outstr, "");
     if (getstring(win[STA].p, selected_day, LDAY, 0, 1) == GETSTRING_ESC)
       return;
     else {

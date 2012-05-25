@@ -253,7 +253,7 @@ status_ask_simplechoice(const char *prefix, const char *choice[], int nb_choice)
 
   for (i = 0; i < nb_choice; i++) {
     snprintf(tmp, BUFSIZ, ((i + 1) == nb_choice) ? "(%d) %s?" : "(%d) %s, ",
-             (i + 1), _(choice[i]));
+             (i + 1), choice[i]);
     strcat(choicestr, tmp);
   }
 

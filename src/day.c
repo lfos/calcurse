@@ -718,9 +718,9 @@ static void update_rept(struct rpt **rpt, const long start)
   while (newfreq == 0);
 
   do {
-    snprintf(outstr, BUFSIZ, "Enter the new ending date: [%s] or '0'",
+    snprintf(outstr, BUFSIZ, _("Enter the new ending date: [%s] or '0'"),
              DATEFMT_DESC(conf.input_datefmt));
-    status_mesg(_(outstr), "");
+    status_mesg(outstr, "");
     timstr = date_sec2date_str((*rpt)->until, DATEFMT(conf.input_datefmt));
     if (updatestring(win[STA].p, &timstr, 0, 1) != GETSTRING_VALID) {
       mem_free(timstr);
@@ -751,7 +751,7 @@ static void update_rept(struct rpt **rpt, const long start)
           date_entered = 1;
       } else {
         snprintf(outstr, BUFSIZ, msg_fmts, DATEFMT_DESC(conf.input_datefmt));
-        status_mesg(msg_wrong_date, _(outstr));
+        status_mesg(msg_wrong_date, outstr);
         wgetch(win[STA].p);
         date_entered = 0;
       }
@@ -785,8 +785,8 @@ void day_edit_item(void)
   case RECUR_EVNT:
     re = recur_get_event(date, day_item_nb(date, item_num, RECUR_EVNT));
     const char *choice_recur_evnt[2] = {
-      "Description",
-      "Repetition",
+      _("Description"),
+      _("Repetition"),
     };
     switch (status_ask_simplechoice(_("Edit: "), choice_recur_evnt, 2)) {
     case 1:
@@ -806,10 +806,10 @@ void day_edit_item(void)
   case RECUR_APPT:
     ra = recur_get_apoint(date, day_item_nb(date, item_num, RECUR_APPT));
     const char *choice_recur_appt[4] = {
-      "Start time",
-      "End time",
-      "Description",
-      "Repetition",
+      _("Start time"),
+      _("End time"),
+      _("Description"),
+      _("Repetition"),
     };
     switch (status_ask_simplechoice(_("Edit: "), choice_recur_appt, 4)) {
     case 1:
@@ -835,9 +835,9 @@ void day_edit_item(void)
   case APPT:
     a = apoint_get(date, day_item_nb(date, item_num, APPT));
     const char *choice_appt[3] = {
-      "Start time",
-      "End time",
-      "Description",
+      _("Start time"),
+      _("End time"),
+      _("Description"),
     };
     switch (status_ask_simplechoice(_("Edit: "), choice_appt, 3)) {
     case 1:

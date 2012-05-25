@@ -483,9 +483,9 @@ date_arg(const char *ddate, int add_line, const char *fmt_apt,
       char outstr[BUFSIZ];
       fputs(_("Argument to the '-d' flag is not valid\n"), stderr);
       snprintf(outstr, BUFSIZ,
-               "Possible argument format are: '%s' or 'n'\n",
+               _("Possible argument format are: '%s' or 'n'\n"),
                DATEFMT_DESC(conf.input_datefmt));
-      fputs(_(outstr), stdout);
+      fputs(outstr, stdout);
       more_info();
     }
   }
@@ -539,9 +539,9 @@ date_arg_extended(const char *startday, const char *range, int add_line,
     char outstr[BUFSIZ];
     fputs(_("Argument is not valid\n"), stderr);
     snprintf(outstr, BUFSIZ,
-             "Argument format for -s and --startday is: '%s'\n",
+             _("Argument format for -s and --startday is: '%s'\n"),
              DATEFMT_DESC(conf.input_datefmt));
-    fputs(_(outstr), stdout);
+    fputs(outstr, stdout);
     fputs(_("Argument format for -r and --range is: 'n'\n"), stdout);
     more_info();
   }

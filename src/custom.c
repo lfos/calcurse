@@ -1044,7 +1044,7 @@ void custom_config_main(void)
       else {
         colorize = 0;
         wins_erase_status_bar();
-        mvwprintw(win[STA].p, 0, 0, _(no_color_support));
+        mvwprintw(win[STA].p, 0, 0, no_color_support);
         wgetch(win[STA].p);
       }
       break;

@@ -867,7 +867,7 @@ void recur_repeat_item(void)
 
   while (!date_entered) {
     snprintf(outstr, BUFSIZ, mesg_until_1, DATEFMT_DESC(conf.input_datefmt));
-    status_mesg(_(outstr), "");
+    status_mesg(outstr, "");
     if (getstring(win[STA].p, user_input, BUFSIZ, 0, 1) == GETSTRING_VALID) {
       if (strlen(user_input) == 1 && strcmp(user_input, "0") == 0) {
         until = 0;
@@ -891,7 +891,7 @@ void recur_repeat_item(void)
         } else {
           snprintf(outstr, BUFSIZ, mesg_wrong_2,
                    DATEFMT_DESC(conf.input_datefmt));
-          status_mesg(mesg_wrong_1, _(outstr));
+          status_mesg(mesg_wrong_1, outstr);
           wgetch(win[STA].p);
           date_entered = 0;
         }
