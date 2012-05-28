@@ -687,8 +687,8 @@ static int print_general_options(WINDOW * win)
             conf.input_datefmt);
   custom_remove_attr(win, ATTR_HIGHEST);
   mvwaddstr(win, y + 1, XPOS, _("(Format to be used when entering a date: "));
-  mvwaddstr(win, y + 2, XPOS,
-            _(" (1)mm/dd/yyyy (2)dd/mm/yyyy (3)yyyy/mm/dd (4)yyyy-mm-dd)"));
+  mvwprintw(win, y + 2, XPOS, " (1) %s, (2) %s, (3) %s, (4) %s)",
+            datefmt_str[0], datefmt_str[1], datefmt_str[2], datefmt_str[3]);
 
   return y + YOFF;
 }
@@ -715,12 +715,6 @@ void custom_general_config(void)
   const char *output_datefmt_str =
       _("Enter the date format (see 'man 3 strftime' for possible formats) ");
   const char *input_datefmt_prefix = _("Enter the date format: ");
-  const char *input_datefmt_choices[] = {
-    _("mm/dd/yyyy"),
-    _("dd/mm/yyyy"),
-    _("yyyy/mm/dd"),
-    _("yyyy-mm-dd")
-  };
   const char *periodic_save_str =
       _("Enter the delay, in minutes, between automatic saves (0 to disable) ");
   int ch;
@@ -791,8 +785,7 @@ void custom_general_config(void)
       break;
     case '0':
       val = status_ask_simplechoice(input_datefmt_prefix,
-                                    input_datefmt_choices,
-                                    DATE_FORMATS);
+                                    datefmt_str, DATE_FORMATS);
       if (val != -1)
         conf.input_datefmt = val;
       break;
