@@ -792,7 +792,7 @@ void custom_general_config(void)
     case '0':
       val = status_ask_simplechoice(input_datefmt_prefix,
                                     input_datefmt_choices,
-                                    DATE_FORMATS - 1);
+                                    DATE_FORMATS);
       if (val != -1)
         conf.input_datefmt = val;
       break;

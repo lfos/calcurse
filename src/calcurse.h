@@ -247,13 +247,16 @@ struct dmon_conf {
   unsigned log;                 /* log daemon activity */
 };
 
+/* Input date formats. */
 enum datefmt {
   DATEFMT_MMDDYYYY = 1,
   DATEFMT_DDMMYYYY,
   DATEFMT_YYYYMMDD,
   DATEFMT_ISO,
-  DATE_FORMATS
+  DATEFMT_MAX
 };
+
+#define DATE_FORMATS (DATEFMT_MAX - 1)
 
 #define DATEFMT(datefmt) (datefmt == DATEFMT_MMDDYYYY ? "%m/%d/%Y" :          \
     (datefmt == DATEFMT_DDMMYYYY ? "%d/%m/%Y" :                               \

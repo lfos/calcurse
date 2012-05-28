@@ -243,7 +243,7 @@ static int config_parse_output_datefmt(void *dummy, const char *val)
 static int config_parse_input_datefmt(void *dummy, const char *val)
 {
   if (config_parse_int(&conf.input_datefmt, val)) {
-    if (conf.input_datefmt <= 0 || conf.input_datefmt >= DATE_FORMATS)
+    if (conf.input_datefmt <= 0 || conf.input_datefmt > DATE_FORMATS)
       conf.input_datefmt = 1;
     return 1;
   } else
