@@ -238,7 +238,6 @@ static void next_arg(void)
   struct notify_app next_app;
   const long current_time = now();
   int time_left, hours_left, min_left;
-  char mesg[BUFSIZ];
 
   next_app.time = current_time + DAYINSEC;
   next_app.got_app = 0;
@@ -252,9 +251,8 @@ static void next_arg(void)
     hours_left = (time_left / HOURINSEC);
     min_left = (time_left - hours_left * HOURINSEC) / MININSEC;
     fputs(_("next appointment:\n"), stdout);
-    snprintf(mesg, BUFSIZ, "   [%02d:%02d] %s\n", hours_left, min_left,
-             next_app.txt);
-    fputs(mesg, stdout);
+    fprintf(stdout, "   [%02d:%02d] %s\n", hours_left, min_left,
+            next_app.txt);
     mem_free(next_app.txt);
   }
 }
@@ -480,12 +478,9 @@ date_arg(const char *ddate, int add_line, const char *fmt_apt,
                    (int *)&day.mm, (int *)&day.dd, NULL)) {
       app_arg(add_line, &day, 0, fmt_apt, fmt_rapt, fmt_ev, fmt_rev, regex);
     } else {
-      char outstr[BUFSIZ];
       fputs(_("Argument to the '-d' flag is not valid\n"), stderr);
-      snprintf(outstr, BUFSIZ,
-               _("Possible argument format are: '%s' or 'n'\n"),
+      fprintf(stdout, _("Possible argument format are: '%s' or 'n'\n"),
                DATEFMT_DESC(conf.input_datefmt));
-      fputs(outstr, stdout);
       more_info();
     }
   }
@@ -536,12 +531,9 @@ date_arg_extended(const char *startday, const char *range, int add_line,
     display_app(&t, numdays, add_line, fmt_apt, fmt_rapt, fmt_ev, fmt_rev,
                 regex);
   } else {
-    char outstr[BUFSIZ];
     fputs(_("Argument is not valid\n"), stderr);
-    snprintf(outstr, BUFSIZ,
-             _("Argument format for -s and --startday is: '%s'\n"),
+    fprintf(stdout, _("Argument format for -s and --startday is: '%s'\n"),
              DATEFMT_DESC(conf.input_datefmt));
-    fputs(outstr, stdout);
     fputs(_("Argument format for -r and --range is: 'n'\n"), stdout);
     more_info();
   }
