@@ -714,12 +714,17 @@ void custom_general_config(void)
   const char *keys = _("(Press '^P' or '^N' to move up or down, 'Q' to quit)");
   const char *output_datefmt_str =
       _("Enter the date format (see 'man 3 strftime' for possible formats) ");
-  const char *input_datefmt_str =
-      _("Enter the date format (1)mm/dd/yyyy (2)dd/mm/yyyy (3)yyyy/mm/dd "
-        "(4)yyyy-mm-dd");
+  const char *input_datefmt_prefix = _("Enter the date format: ");
+  const char *input_datefmt_choices[] = {
+    _("mm/dd/yyyy"),
+    _("dd/mm/yyyy"),
+    _("yyyy/mm/dd"),
+    _("yyyy-mm-dd")
+  };
   const char *periodic_save_str =
       _("Enter the delay, in minutes, between automatic saves (0 to disable) ");
   int ch;
+  int val;
   char *buf;
 
   clear();
@@ -751,7 +756,7 @@ void custom_general_config(void)
     case '3':
       status_mesg(periodic_save_str, "");
       if (updatestring(win[STA].p, &buf, 0, 1) == 0) {
-        int val = atoi(buf);
+        val = atoi(buf);
         if (val >= 0)
           conf.periodic_save = val;
         if (conf.periodic_save > 0)
@@ -785,13 +790,11 @@ void custom_general_config(void)
       status_mesg(number_str, keys);
       break;
     case '0':
-      status_mesg(input_datefmt_str, "");
-      if (updatestring(win[STA].p, &buf, 0, 1) == 0) {
-        int val = atoi(buf);
-        if (val > 0 && val <= DATE_FORMATS)
-          conf.input_datefmt = val;
-      }
-      status_mesg(number_str, keys);
+      val = status_ask_simplechoice(input_datefmt_prefix,
+                                    input_datefmt_choices,
+                                    DATE_FORMATS - 1);
+      if (val != -1)
+        conf.input_datefmt = val;
       break;
     }
 
