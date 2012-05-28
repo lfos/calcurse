@@ -61,6 +61,9 @@ enum ui_mode ui_mode = UI_CMDLINE;
 /* Don't save anything if this is set. */
 int read_only = 0;
 
+/* Strings describing each input date format. */
+const char *datefmt_str[DATE_FORMATS];
+
 /*
  * variables to store calendar names
  */
@@ -135,6 +138,11 @@ void vars_init(void)
   conf.progress_bar = 1;
   strncpy(conf.output_datefmt, "%D", 3);
   conf.input_datefmt = 1;
+
+  datefmt_str[0] = _("mm/dd/yyyy");
+  datefmt_str[1] = _("dd/mm/yyyy");
+  datefmt_str[2] = _("yyyy/mm/dd");
+  datefmt_str[3] = _("yyyy-mm-dd");
 
   /* Default external editor and pager */
   ed = getenv("VISUAL");
