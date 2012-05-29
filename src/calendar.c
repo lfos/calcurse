@@ -57,12 +57,6 @@
 
 #define ISLEAP(y) ((((y) % 4) == 0 && ((y) % 100) != 0) || ((y) % 400) == 0)
 
-enum {
-  CAL_MONTH_VIEW,
-  CAL_WEEK_VIEW,
-  CAL_VIEWS
-};
-
 enum pom {
   NO_POM,
   FIRST_QUARTER,

@@ -196,7 +196,13 @@ static int config_parse_color_pair(int *dest1, int *dest2, const char *val)
 
 static int config_parse_calendar_view(void *dummy, const char *val)
 {
-  calendar_set_view(atoi(val));
+  if (!strcmp(val, "monthly"))
+    calendar_set_view(CAL_MONTH_VIEW);
+  else if (!strcmp(val, "weekly"))
+    calendar_set_view(CAL_WEEK_VIEW);
+  else
+    return 0;
+
   return 1;
 }
 
@@ -350,8 +356,12 @@ static void config_color_theme_name(char *theme_name)
 
 static int config_serialize_calendar_view(char *buf, void *dummy)
 {
-  int tmp = calendar_get_view();
-  return config_serialize_int(buf, &tmp);
+  if (calendar_get_view() == CAL_WEEK_VIEW)
+    strcpy(buf, "weekly");
+  else
+    strcpy(buf, "monthly");
+
+  return 1;
 }
 
 static int config_serialize_first_day_of_week(char *buf, void *dummy)

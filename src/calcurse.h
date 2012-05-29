@@ -360,6 +360,13 @@ struct recur_event {
   char *note;                   /* note attached to event */
 };
 
+/* Available view for the calendar panel. */
+enum {
+  CAL_MONTH_VIEW,
+  CAL_WEEK_VIEW,
+  CAL_VIEWS
+};
+
 struct notify_app {
   long time;
   int got_app;
