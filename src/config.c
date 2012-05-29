@@ -445,6 +445,9 @@ config_file_walk(config_fn_walk_cb_t fn_cb,
       *value = '\0';
       value++;
     }
+    else {
+      EXIT(_("invalid configuration directive: \"%s\""), e_conf);
+    }
 
     if (strcmp(key, "auto_save") == 0 ||
         strcmp(key, "auto_gc") == 0 ||
