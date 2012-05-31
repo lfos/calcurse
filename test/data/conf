@@ -30,7 +30,7 @@ general.systemdialogs=no
 general.progressbar=no
 
 # Default calendar view (0)monthly (1)weekly:
-appearance.calendarview=0
+appearance.calendarview=monthly
 
 # If this option is set to yes, monday is the first day of the week, else it is sunday
 general.firstdayofweek=monday
