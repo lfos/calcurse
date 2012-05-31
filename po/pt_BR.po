@@ -1,0 +1,1997 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# This file is distributed under the same license as the PACKAGE package.
+# 
+# Translators:
+# Rafael Ferreira <rafael.f.f1@gmail.com>, 2012.
+msgid ""
+msgstr ""
+"Project-Id-Version: calcurse\n"
+"Report-Msgid-Bugs-To: bugs@calcurse.org\n"
+"POT-Creation-Date: 2012-05-31 23:58+0200\n"
+"PO-Revision-Date: 2012-05-31 20:14+0000\n"
+"Last-Translator: Lukas Fleischer <transifex@cryptocrack.de>\n"
+"Language-Team: Portuguese (Brazil) (http://www.transifex.net/projects/p/calcurse/language/pt_BR/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pt_BR\n"
+"Plural-Forms: nplurals=2; plural=(n > 1)\n"
+
+msgid "null pointer"
+msgstr "ponteiro nulo"
+
+msgid "Enter start time ([hh:mm]), leave blank for an all-day event : "
+msgstr ""
+
+msgid ""
+"Enter end time ([hh:mm]) or duration ([+hh:mm], [+xxxdxxhxxm] or [+mm]) : "
+msgstr ""
+
+msgid "Enter description :"
+msgstr "Informe descrição :"
+
+msgid "You entered an invalid start time, should be [hh:mm]"
+msgstr ""
+
+msgid ""
+"Invalid end time/duration, should be [hh:mm], [+hh:mm], [+xxxdxxhxxm] or "
+"[+mm]"
+msgstr ""
+
+msgid "Press [Enter] to continue"
+msgstr "Pressione [Enter] para continuar"
+
+msgid "Do you really want to delete this item ?"
+msgstr "Tem certeza que deseja excluir este item ?"
+
+msgid "no such type"
+msgstr "Mapeamentos de teclas genéricos"
+
+msgid "date error in appointment"
+msgstr "erro de dados no agendamento"
+
+msgid "item not found"
+msgstr "item não encontrado"
+
+msgid "no such appointment"
+msgstr "agendamento inexistente"
+
+msgid ""
+"Usage: calcurse [-g|-h|-v] [-an] [-t[num]] [-i<file>] [-x[format]]\n"
+"                [-d <date>|<num>] [-s[date]] [-r[range]]\n"
+"                [-c<file> | -D<dir>] [-S<regex>] [--status]\n"
+"                [--read-only]\n"
+msgstr ""
+
+msgid "Try 'calcurse -h' for more information.\n"
+msgstr "Tente \"calcurse -h\" para maiores informações.\n"
+
+msgid ""
+"\n"
+"Copyright (c) 2004-2012 calcurse Development Team.\n"
+"This is free software; see the source for copying conditions.\n"
+msgstr ""
+
+#, c-format
+msgid "Calcurse %s - text-based organizer\n"
+msgstr "Calcurse %s - organizador baseado em texto\n"
+
+msgid ""
+"\n"
+"Miscellaneous:\n"
+"  -h, --help\n"
+"\tprint this help and exit.\n"
+"\n"
+"  -v, --version\n"
+"\tprint calcurse version and exit.\n"
+"\n"
+"  --status\n"
+"\tdisplay the status of running instances of calcurse.\n"
+"\n"
+"  --read-only\n"
+"\tDon't save configuration nor appointments/todos. Use with care.\n"
+"\n"
+"Files:\n"
+"  -c <file>, --calendar <file>\n"
+"\tspecify the calendar <file> to use (incompatible with '-D').\n"
+"\n"
+"  -D <dir>, --directory <dir>\n"
+"\tspecify the data directory to use (incompatible with '-c').\n"
+"\tIf not specified, the default directory is ~/.calcurse\n"
+"\n"
+"Non-interactive:\n"
+"  -a, --appointment\n"
+" \tprint events and appointments for current day and exit.\n"
+"\n"
+"  -d <date|num>, --day <date|num>\n"
+"\tprint events and appointments for <date> or <num> upcoming days and\n"
+"\texit. To specify both a starting date and a range, use the\n"
+"\t'--startday' and the '--range' option.\n"
+"\n"
+"  -g, --gc\n"
+"\trun the garbage collector for note files and exit. \n"
+"\n"
+"  -i <file>, --import <file>\n"
+"\timport the icalendar data contained in <file>. \n"
+"\n"
+"  -n, --next\n"
+"\tprint next appointment within upcoming 24 hours and exit. Also given\n"
+"\tis the remaining time before this next appointment.\n"
+"\n"
+"  -r[num], --range[=num]\n"
+"\tprint events and appointments for the [num] number of days\n"
+"\tand exit. If no [num] is given, a range of 1 day is considered.\n"
+"\n"
+"  -s[date], --startday[=date]\n"
+"\tprint events and appointments from [date] and exit.\n"
+"\tIf no [date] is given, the current day is considered.\n"
+"\n"
+"  -S<regex>, --search=<regex>\n"
+"\tsearch for the given regular expression within events, appointments,\n"
+"\tand todos description.\n"
+"\n"
+"  -t[num], --todo[=num]\n"
+"\tprint todo list and exit. If the optional number [num] is given,\n"
+"\tthen only todos having a priority equal to [num] will be returned.\n"
+"\tThe priority number must be between 1 (highest) and 9 (lowest).\n"
+"\tIt is also possible to specify '0' for the priority, in which case\n"
+"\tonly completed tasks will be shown.\n"
+"\n"
+"  -x[format], --export[=format]\n"
+"\texport user data to the specified format. Events, appointments and\n"
+"\ttodos are converted and echoed to stdout.\n"
+"\tTwo possible formats are available: 'ical' and 'pcal'.\n"
+"\tIf the optional argument format is not given, ical format is\n"
+"\tselected by default.\n"
+"\tnote: redirect standard output to export data to a file,\n"
+"\tby issuing a command such as: calcurse --export > calcurse.dat\n"
+"\n"
+"For more information, type '?' from within Calcurse, or read the manpage.\n"
+"Mail bug reports and suggestions to <misc@calcurse.org>.\n"
+msgstr ""
+
+#, c-format
+msgid ""
+"Error: both calcurse (pid: %d) and its daemon (pid: %d)\n"
+"seem to be running at the same time!\n"
+"Please check manually and restart calcurse.\n"
+msgstr "Erro: ambos calcurse (pid: %d) e seu daemon (pid: %d)\nparecem estar em execução simultaneamente!\nFavor verifique manualmente e reinicie calcurse.\n"
+
+#, c-format
+msgid "calcurse is running (pid %d)\n"
+msgstr "calcurse está em execução (pid %d)\n"
+
+#, c-format
+msgid "calcurse is running in background (pid %d)\n"
+msgstr "calcurse está em execução em plano de fundo (pid %d)\n"
+
+msgid "calcurse is not running\n"
+msgstr "calcurse não está em execução\n"
+
+msgid "to do:\n"
+msgstr "a fazer:\n"
+
+msgid "completed tasks:\n"
+msgstr "tarefas finalizadas:\n"
+
+msgid "next appointment:\n"
+msgstr "próximo agendamento:\n"
+
+msgid ""
+"\n"
+"For more information, type '?' from within Calcurse, or read the manpage.\n"
+msgstr "\nPara maiores informações, pressione \"?\" estando dentro do Calcurse ou leia a página man.\n"
+
+msgid "Mail bug reports and suggestions to <misc@calcurse.org>.\n"
+msgstr "Envie emails com relatórios de erros e sugestões para <misc@calcurse.org>.\n"
+
+msgid "Argument to the '-d' flag is not valid\n"
+msgstr "Argumento para a sinalização \"-d\" não é válido\n"
+
+#, c-format
+msgid "Possible argument format are: '%s' or 'n'\n"
+msgstr ""
+
+msgid "Argument is not valid\n"
+msgstr "Argumento não é válido\n"
+
+#, c-format
+msgid "Argument format for -s and --startday is: '%s'\n"
+msgstr ""
+
+msgid "Argument format for -r and --range is: 'n'\n"
+msgstr "Formato de argumento para -r e --range é: \"n\"\n"
+
+msgid "Can not handle more than one regular expression."
+msgstr "Não é possível utilizar mais de um expressão regular."
+
+msgid "Could not compile regular expression."
+msgstr "Não foi possível compilar expressão regular."
+
+msgid "Argument for '-x' should be either 'ical' or 'pcal'\n"
+msgstr "Argumento para \"-x\" deveria ser \"ical\" ou \"pcal\"\n"
+
+msgid "Options '-D' and '-c' cannot be used at the same time\n"
+msgstr "Opções '-D' e '-c' não podem ser usados ao mesmo tempo\n"
+
+msgid "Option '-S' must be used with either '-d', '-r', '-s', '-a' or '-t'\n"
+msgstr "Opção \"-S\" deve ser usada com \"-d\", \"-r\", \"-s\", \"-a\" ou \"-t\"\n"
+
+msgid "To do :"
+msgstr "A Fazer :"
+
+msgid "Do you really want to quit ?"
+msgstr "Tem certeza que deseja sair ?"
+
+msgid "ERROR setting first day of week"
+msgstr "ERRO na configuração do primeiro dia do mês"
+
+msgid ""
+"The day you entered is not valid (should be between 01/01/1902 and "
+"12/31/2037)"
+msgstr "O dia informado não é válido (deveria ser entre 01/01/1902 e 12/31/2037)"
+
+msgid "Press [ENTER] to continue"
+msgstr "Pressione [ENTER] para continuar"
+
+#, c-format
+msgid "Enter the day to go to [ENTER for today] : %s"
+msgstr ""
+
+msgid "unknown color"
+msgstr "cor desconhecida"
+
+msgid "failed to open configuration file"
+msgstr ""
+
+#, c-format
+msgid "invalid configuration directive: \"%s\""
+msgstr ""
+
+msgid ""
+"Pre-3.0.0 configuration file format detected, please upgrade running "
+"`calcurse-upgrade`."
+msgstr ""
+
+#, c-format
+msgid "configuration variable unknown: \"%s\""
+msgstr ""
+
+#, c-format
+msgid "wrong configuration variable format for \"%s\""
+msgstr ""
+
+msgid "Exit"
+msgstr "Sair"
+
+msgid "General"
+msgstr "Geral"
+
+msgid "Layout"
+msgstr "Layout"
+
+msgid "Sidebar"
+msgstr "Barra Lateral"
+
+msgid "Color"
+msgstr "Cor"
+
+msgid "Notify"
+msgstr "Notificação"
+
+msgid "Keys"
+msgstr "Teclas"
+
+msgid "Select"
+msgstr "Selecionar"
+
+msgid "Up"
+msgstr "Cima"
+
+msgid "Down"
+msgstr "Baixo"
+
+msgid "Left"
+msgstr "Esquerda"
+
+msgid "Right"
+msgstr "Direita"
+
+msgid "Help"
+msgstr "Ajuda"
+
+msgid "layout configuration"
+msgstr "Configuração de layout"
+
+msgid ""
+"With this configuration menu, one can choose where panels will be\n"
+"displayed inside calcurse screen. \n"
+"It is possible to choose between eight different configurations.\n"
+"\n"
+"In the configuration representations, letters correspond to:\n"
+"\n"
+"       'c' -> calendar panel\n"
+"\n"
+"       'a' -> appointment panel\n"
+"\n"
+"       't' -> todo panel\n"
+"\n"
+msgstr "Com esse menu de configuração, o usuário pode escolher onde os\npainéis serão exibidos dentro da tela do calcurse.\nÉ possível escolher entre oito configuraçções diferentes.\n\nNas representações de configuração, letras correspondem a:\n\n       \"c\" -> painel de calendário\n\n       \"a\" -> painel de agendamento\n\n       \"t\" -> painel de ToDo - a fazer\n"
+
+msgid "Width +"
+msgstr "Largura +"
+
+msgid "Width -"
+msgstr "Largura -"
+
+#, no-c-format
+msgid ""
+"This configuration screen is used to change the width of the side bar.\n"
+"The side bar is the part of the screen which contains two panels:\n"
+"the calendar and, depending on the chosen layout, either the todo list\n"
+"or the appointment list.\n"
+"\n"
+"The side bar width can be up to 50% of the total screen width, but\n"
+"can't be smaller than "
+msgstr "Esta tela de configuração será usada para alterar a largura da barra\nlateral, a qual é parte da tela que contém dois painéis:\no calendário e, dependendo do layout escolhido, tanto a lista de ToDo\nquanto a lista de agendamento.\n\nA largura da barra lateral pode ser até 50% da largura total da tela,\nmas não pode ser menor do que "
+
+msgid "No color"
+msgstr "Nenhuma cor"
+
+msgid "Foreground"
+msgstr "Primeiro plano"
+
+msgid "Background"
+msgstr "Plano de fundo"
+
+msgid "(terminal's default)"
+msgstr "(padrão do terminal)"
+
+msgid "color theme"
+msgstr "tema de cor"
+
+msgid "(if set to YES, automatic save is done when quitting)"
+msgstr "(se definida como SIM, salvamento automático será feito quando estiver de saída)"
+
+msgid "(run the garbage collector when quitting)"
+msgstr ""
+
+msgid "(if not null, automatically save data every 'periodic_save' minutes)"
+msgstr "(se não nulo, automaticamente salva os dados a cada \"periodic_save\" minutos)"
+
+msgid "(if set to YES, confirmation is required before quitting)"
+msgstr "(se definida como SIM, uma confirmação será necessária antes de sair)"
+
+msgid "(if set to YES, confirmation is required before deleting an event)"
+msgstr "(se definida como SIM, uma confirmação será necessária antes da exclusão de um evento)"
+
+msgid ""
+"(if set to YES, messages about loaded and saved data will be displayed)"
+msgstr ""
+
+msgid "(if set to YES, progress bar will be displayed when saving data)"
+msgstr ""
+
+msgid "Monday"
+msgstr ""
+
+msgid "Sunday"
+msgstr ""
+
+msgid "(specifies the first day of week in the calendar view)"
+msgstr ""
+
+msgid "(Format of the date to be displayed in non-interactive mode)"
+msgstr "(Formato da data a ser exibido no modo não interativo)"
+
+msgid "(Format to be used when entering a date: "
+msgstr "(Formato a ser usado ao informar uma data: "
+
+msgid "Enter an option number to change its value"
+msgstr "Informe um número de opção para alterar seu valor"
+
+msgid "(Press '^P' or '^N' to move up or down, 'Q' to quit)"
+msgstr "(Pressione \"^P\" ou \"^N\" para mover para cima ou para baixo, \"Q\" para sair)"
+
+msgid "Enter the date format (see 'man 3 strftime' for possible formats) "
+msgstr "Informe o formato da data (veja \"man 3 strftime\" para formatos possíveis) "
+
+msgid "Enter the date format: "
+msgstr ""
+
+msgid "Enter the delay, in minutes, between automatic saves (0 to disable) "
+msgstr "Informe o atraso, em minutos, entre salvamentos (0 para desabilitar) "
+
+msgid "general options"
+msgstr "opções gerais"
+
+msgid "Undefined option!"
+msgstr "Opção indefinida!"
+
+msgid "undefined"
+msgstr "indefinida"
+
+msgid "Key info"
+msgstr "Informação da tecla"
+
+msgid "Add key"
+msgstr "Ad. tecla"
+
+msgid "Del key"
+msgstr "Tecla de Exclusão"
+
+msgid "Prev Key"
+msgstr "Tecla Anterior"
+
+msgid "Next Key"
+msgstr "Tecla Seguinte"
+
+msgid "keys configuration"
+msgstr "configurações de teclas"
+
+msgid "Press the key you want to assign to:"
+msgstr "Pressione a tecla que você quer designar para:"
+
+msgid "This key is not yet recognized by calcurse, please choose another one."
+msgstr "Essa tecla não é reconhecida ainda pelo calcurse, favor escolha outra."
+
+#, c-format
+msgid "This key is already in use for %s, please choose another one."
+msgstr "Essa tecla está sendo usada por %s, favor escolha outra."
+
+msgid "Some actions do not have any associated key bindings!"
+msgstr "Algumas ações não têm teclas relacionadas!"
+
+msgid ""
+"Sorry, colors are not supported by your terminal\n"
+"(Press [ENTER] to continue)"
+msgstr "Sinto muito, cores não são suportadas em seu terminal\n(Pressione [Enter] para continuar)"
+
+msgid "Event :"
+msgstr "Evento :"
+
+msgid "Appointment :"
+msgstr "Agendamento :"
+
+msgid "unknown item type"
+msgstr "tipo de item desconhecido"
+
+msgid "Enter the new time ([hh:mm]) : "
+msgstr ""
+
+msgid "You entered an invalid time, should be [hh:mm]"
+msgstr ""
+
+msgid ""
+"Enter new end time ([hh:mm]) or duration ([+hh:mm], [+xxxdxxhxxm] or [+mm]) "
+": "
+msgstr ""
+
+msgid "Invalid time: start time must be before end time!"
+msgstr "Horário inválido: horário de início deve ser antes do de fim!"
+
+msgid "Enter the new item description:"
+msgstr "Informe uma descrição para o novo item:"
+
+msgid "Enter the new repetition type:"
+msgstr ""
+
+msgid "(d)aily"
+msgstr ""
+
+msgid "(w)eekly"
+msgstr ""
+
+msgid "(m)onthly"
+msgstr ""
+
+msgid "(y)early"
+msgstr ""
+
+#, c-format
+msgid "(currently using %s)"
+msgstr ""
+
+msgid "[dwmy]"
+msgstr ""
+
+msgid "The frequence you entered is not valid."
+msgstr "A frequência informada não é válida."
+
+msgid "The entered date is not valid."
+msgstr "A data informada não é válida."
+
+#, c-format
+msgid "Possible formats are [%s] or '0' for an endless repetition."
+msgstr ""
+
+msgid "Enter the new repetition frequence:"
+msgstr "Informe uma nova frequência de repetição:"
+
+#, c-format
+msgid "Enter the new ending date: [%s] or '0'"
+msgstr ""
+
+msgid "Description"
+msgstr ""
+
+msgid "Repetition"
+msgstr ""
+
+msgid "Edit: "
+msgstr ""
+
+msgid "Start time"
+msgstr ""
+
+msgid "End time"
+msgstr ""
+
+msgid "This item is recurrent. Delete (a)ll occurences or just this (o)ne ?"
+msgstr "Este item é recorrente. Excluir todas(a) ocorrências ou somente esta aqui(o)?"
+
+msgid "[ao]"
+msgstr ""
+
+msgid ""
+"This item has a note attached to it. Delete (i)tem or just its (n)ote ?"
+msgstr "Este item tem uma anotação anexada a ele. Excluir o (i)tem ou somente a (n)ota?"
+
+msgid "[in]"
+msgstr ""
+
+msgid "unknwon type"
+msgstr "tipo desconhecido"
+
+msgid "Pipe item to external command:"
+msgstr ""
+
+#, c-format
+msgid "Could not stop daemon properly: %s\n"
+msgstr "Não foi possível parar daemon corretamente: %s\n"
+
+#, c-format
+msgid "terminated at %s with signal %d\n"
+msgstr "Terminado em %s com sinal %d\n"
+
+#, c-format
+msgid "Could not remove daemon lock file: %s\n"
+msgstr "Não foi possível remover o arquivo de trava de daemon: %s\n"
+
+#, c-format
+msgid "Could not fork: %s\n"
+msgstr "Não foi possível fazer bifurcação: %s\n"
+
+#, c-format
+msgid "Could not detach from the controlling terminal: %s\n"
+msgstr "Não foi possível desanexar do terminal de controle: %s\n"
+
+#, c-format
+msgid "Could not change working directory: %s\n"
+msgstr "Não foi possível alterar o diretório de trabalho: %s\n"
+
+msgid "Cannot daemonize, aborting\n"
+msgstr "Não foi possível executar em daemon, abortando\n"
+
+msgid "Could not set lock file\n"
+msgstr "Não foi possível definir arquivo de trava\n"
+
+#, c-format
+msgid "Could not access \"%s\": %s\n"
+msgstr "Não foi possível acessar \"%s\": %s\n"
+
+#, c-format
+msgid "started at %s\n"
+msgstr "Iniciado em %s\n"
+
+msgid "error loading next appointment\n"
+msgstr "erro no carregamento do agendamento seguinte\n"
+
+#, c-format
+msgid "launching notification at %s for: \"%s\"\n"
+msgstr "Iniciando notificação em %s para : \"%s\"\n"
+
+msgid "error while sending notification\n"
+msgstr "Erro no envio de notificação\n"
+
+#, c-format
+msgid "sleeping at %s for %d second\n"
+msgid_plural "sleeping at %s for %d seconds\n"
+msgstr[0] ""
+msgstr[1] ""
+
+#, c-format
+msgid "awakened at %s\n"
+msgstr "Acordou em %s\n"
+
+#, c-format
+msgid "Could not stop calcurse daemon: %s\n"
+msgstr "Não foi possível parar daemon do calcurse: %s\n"
+
+msgid "date error in the event\n"
+msgstr "erro de data no evento\n"
+
+msgid "event not found"
+msgstr "evento não encontrado"
+
+msgid "Internal error: line too long"
+msgstr "Erro interno: linha muito comprida"
+
+msgid "out of memory"
+msgstr "memória insuficiente"
+
+msgid "Calcurse help"
+msgstr "Ajuda do Calcurse"
+
+msgid "       Welcome to Calcurse. This is the main help screen.\n"
+msgstr "       Bem-vindo ao Calcurse. Esta é a tela de ajuda principal.\n"
+
+#, c-format
+msgid ""
+"Moving around:  Press '%s' or '%s' to scroll text upward or downward\n"
+"                inside help screens, if necessary.\n"
+"\n"
+"    Exit help:  When finished, press '%s' to exit help and go back to\n"
+"                the main Calcurse screen.\n"
+"\n"
+"   Help topic:  At the bottom of this screen you can see a panel with\n"
+"                different fields, represented by a letter and a short\n"
+"                title. This panel contains all the available actions\n"
+"                you can perform when using Calcurse.\n"
+"                By pressing one of the letters appearing in this\n"
+"                panel, you will be shown a short description of the\n"
+"                corresponding action. At the top right side of the\n"
+"                description screen are indicated the user-defined key\n"
+"                bindings that lead to the action.\n"
+"\n"
+"      Credits:  Press '%s' for credits."
+msgstr "   Movimentação: Pressione \"%s\" ou \"%s\" para rolar o texto para cima ou\n                 para baixo dentro da tela, se necessário.\n\n  Sair da ajuda: Quando finalizado, pressione \"%s\" para sair da ajuda e\n                 e voltar para a tela principal do Calcurse.\n\nTópico de ajuda: At the bottom of this screen you can see a panel with\n                 different fields, represented by a letter and a short\n                 title. This panel contains all the available actions\n                 you can perform when using Calcurse.\n                 By pressing one of the letters appearing in this\n                 panel, you will be shown a short description of the\n                 corresponding action. At the top right side of the\n                 description screen are indicated the user-defined key\n                 bindings that lead to the action.\n\n       Créditos: Pressione \"%s\" para acessar os créditos."
+
+msgid "Save\n"
+msgstr "Salvar\n"
+
+#, c-format
+msgid ""
+"Save calcurse data.\n"
+"Data are splitted into four different files which contain :\n"
+"\n"
+"         / ~/.calcurse/conf -> user configuration\n"
+"        |                      (layout, color, general options)\n"
+"        |  ~/.calcurse/apts -> data related to the appointments\n"
+"        |  ~/.calcurse/todo -> data related to the todo list\n"
+"         \\ ~/.calcurse/keys -> user-defined key bindings\n"
+"\n"
+"In the config menu, you can choose to save the Calcurse data\n"
+"automatically before quitting."
+msgstr "Salva dados do calcurse.\nDados serão separados em quatro arquivos diferentes contendo:\n\n         / ~/.calcurse/conf -> configuração do usuário\n        |                      (layout, cores, opções gerais)\n        |  ~/.calcurse/apts -> dados relacionados a agendamentos\n        |  ~/.calcurse/todo -> dados relacionados a lista de ToDo\n         \\ ~/.calcurse/keys -> teclas de atalho do usuário\n\nNo menu Config, você pode escolher salvar os dados do Calcurse\nautomaticamente antes de cada saída."
+
+msgid "Import\n"
+msgstr "Importar\n"
+
+#, c-format
+msgid ""
+"Import data from an icalendar file.\n"
+"You will be asked to enter the file name from which to load ical\n"
+"items. At the end of the import process, and if the general option\n"
+"'system_dialogs' is set to 'yes', a report indicating how many items\n"
+"were imported is shown.\n"
+"This report contains the total number of lines read, the number of\n"
+"appointments, events and todo items which were successfully imported,\n"
+"together with the number of items for which problems occured and that\n"
+"were skipped, if any.\n"
+"\n"
+"If one or more items could not be imported, one has the possibility to\n"
+"read the import process report in order to identify which problems\n"
+"occured.\n"
+"In this report is shown one item per line, with the line in the input\n"
+"stream at which this item begins, together with the description of why\n"
+"the item could not be imported.\n"
+msgstr ""
+
+msgid "Export\n"
+msgstr "Exportar\n"
+
+#, c-format
+msgid ""
+"Export calcurse data (appointments, events and todos).\n"
+"This leads to the export submenu, from which you can choose between\n"
+"two different export formats: 'ical' and 'pcal'. Choosing one of\n"
+"those formats lets you export calcurse data to icalendar or pcal\n"
+"format.\n"
+"\n"
+"You first need to specify the file to which the data will be exported.\n"
+"By default, this file is:\n"
+"\n"
+"     ~/calcurse.ics\n"
+"\n"
+"for an ical export, and:\n"
+"\n"
+"     ~/calcurse.txt\n"
+"\n"
+"for a pcal export.\n"
+"\n"
+"Calcurse data are exported in the following order:\n"
+"     events, appointments, todos.\n"
+msgstr "Exporta dados do calcurse (agendamentos, eventos e todos).\nEsta opção leva ao submenu de exportação, no qual você pode escolher\nentre dois formatos diferentes de exportação: 'ical' e 'pcal'.\nEscolhendo um destes formatos, será exportado dados do calcurse\npara o formato icalendar ou pcal.\n\nVocê primeiro precisa especificar o arquivo para o qual o arquivo será\nexportado. Por padrão, este arquivo será:\n\n     ~/calcurse.ics\n\npara uma exportação em ical, e:\n\n     ~/calcurse.txt\n\npara uma exportação em pcal.\n\nDados de Calcurse são exportados na seguinte ordem:\n     eventos, agendamentos, todos.\n"
+
+msgid "Displacement keys\n"
+msgstr "Teclas de deslocamento\n"
+
+#, c-format
+msgid ""
+"Move around inside calcurse screens.\n"
+"The following scheme summarizes how to get around:\n"
+"\n"
+"                               move up\n"
+"                        move to previous week\n"
+"\n"
+"                                 %s\n"
+"       move left                  ^  \n"
+" move to previous day             |\n"
+"                      %s\n"
+"                            <--   +  -->\n"
+"                                           %s\n"
+"                                  |            move right\n"
+"                                  v         move to next day\n"
+"                                 %s\n"
+"\n"
+"                          move to next week\n"
+"                              move down\n"
+"\n"
+"Moreover, while inside the calendar panel, the '%s' key moves\n"
+"to the first day of the week, and the '%s' key selects the last day of\n"
+"the week.\n"
+msgstr "Movimenta dentro das telas do calcurse.\nO seguinte esquema resume como funciona a movimentação:\n\n                            move para cima\n                      move para semana anterior\n\n                                 %s\n   move para esquerda             ^  \n move para dia anterior           |\n                      %s\n                            <--   +  -->\n                                           %s\n                                  |            move para direita\n                                  v         move para dia seguinte\n                                 %s\n\n                      move para semana seguinte\n                           move para baixo\n\nAdemais, enquanto dentro do painel calendário, a tecla \"%s\" move para\no primeiro dia da semana, e a tecla \"%s\" seleciona o último dia da\nsemana.\n"
+
+msgid "View\n"
+msgstr "Ver\n"
+
+#, c-format
+msgid ""
+"View the item you select in either the Todo or Appointment panel.\n"
+"\n"
+"This is usefull when an event description is longer than the available\n"
+"space to display it. If that is the case, the description will be\n"
+"shortened and its end replaced by '...'. To be able to read the entire\n"
+"description, just press '%s' and a popup window will appear, containing\n"
+"the whole event.\n"
+"\n"
+"Press any key to close the popup window and go back to the main\n"
+"Calcurse screen."
+msgstr "Vê o item que você selecionou em tanto no painel de ToDo quanto de\nAgendamento.\n\nIsto é útil quando a descrição de um evento é maior do que o espaço\ndisponível para exibí-lo. Se esse for o caso, a descrição será\nreduzida e seu final será substituído por \"...\". Para ler a descrição\npor inteiro, basta pressionar \"%s\" e uma janela de pop-up aparecerá,\ncontendo o evento completo.\n\nPressione qualquer tecla para fechar a janela pop-up e vá para a tela\nprincipal do Calcurse."
+
+msgid "Pipe\n"
+msgstr ""
+
+#, c-format
+msgid ""
+"Pipe the selected item to an external program.\n"
+"\n"
+"Press the '%s' key to pipe the currently selected appointment or\n"
+"todo entry to an external program.\n"
+"\n"
+"You will be driven back to calcurse as soon as the program exits.\n"
+msgstr ""
+
+msgid "Tab\n"
+msgstr "Guia\n"
+
+#, c-format
+msgid ""
+"Switch between panels.\n"
+"The panel currently in use has its border colorized.\n"
+"\n"
+"Some actions are possible only if the right panel is selected.\n"
+"For example, if you want to add a task in the TODO list, you need first\n"
+"to press the '%s' key to get the TODO panel selected. Then you can\n"
+"press '%s' to add your item.\n"
+"\n"
+"Notice that at the bottom of the screen the list of possible actions\n"
+"change while pressing '%s', so you always know what action can be\n"
+"performed on the selected panel."
+msgstr "Alterna entre paineis.\nO painel em uso no momento tem a sua borda colorizada.\n\nAlgumas ações são possíveis somente se o painel correto estiver\nselecionado.\nPor exemplo, se você quer adicioanr uma tarfea na lista de TODO, você\nprecisa primeiro pressionar a tecla \"%s\" para que o painel TODO seja\nselecionado. Então, você poderá pressionar \"%s\" para adicionar seu item.\n\nRepare como na parte inferior da tela a lista de ações possíveis muda\nquando se pressiona \"%s\", de forma que você sempre saberá qual ação pode\nser executada no painel selecionado."
+
+msgid "Goto\n"
+msgstr "Ir Para\n"
+
+#, c-format
+msgid ""
+"Jump to a specific day in the calendar.\n"
+"\n"
+"Using this command, you do not need to travel to that day using\n"
+"the displacement keys inside the calendar panel.\n"
+"If you hit [ENTER] without specifying any date, Calcurse checks the\n"
+"system current date and you will be taken to that date.\n"
+"\n"
+"Notice that pressing '%s', whatever panel is\n"
+"selected, will select current day in the calendar."
+msgstr "Pula para um dia especificado no calendário.\n\nAo usar este comando, você não precisará viajar até aquele dia\nusando as teclas de movimentação dentro do painel de calendário.\nSe você pressionar [ENTER] sem especificar qualquer data, Calcurse\nverifica a data atual do sistema e você será levado àquela data.\n\nRepare que ao pressionar \"%s\", não importa o painel que esteja\nselecionado, será selecionado o dia atual no calendário."
+
+msgid "Delete\n"
+msgstr "Remover\n"
+
+#, c-format
+msgid ""
+"Delete an element in the ToDo or Appointment list.\n"
+"\n"
+"Depending on which panel is selected when you press the delete key,\n"
+"the hilighted item of either the ToDo or Appointment list will be \n"
+"removed from this list.\n"
+"\n"
+"If the item to be deleted is recurrent, you will be asked if you\n"
+"wish to suppress all of the item occurences or just the one you\n"
+"selected.\n"
+"\n"
+"If the general option 'confirm_delete' is set to 'YES', then you will\n"
+"be asked for confirmation before deleting the selected event.\n"
+"Do not forget to save the calendar data to retrieve the modifications\n"
+"next time you launch Calcurse."
+msgstr "Remove um elemento na lista de ToDo ou de Agendamento.\n\nDependendo do painel selecionado, quando você pressionar a tecla de\nremoção, o item selecionado de tanto a lista de ToDo quando de\nAgendamento será removido desta lista.\n\nSe o item a ser removido é recorrente, você será perguntado se você\ndeseja suprimir todas ocorrências deste item ou somente o item que\nvocê selecionou.\n\nSe a opção geral \"confirm_delete\" estiver definida para \"YES\", a você\nserá solicitada confirmação antes de remover o evento selecionado.\nNão esqueça de salvar os dados do calendário para recuperar as\nmodificações na próxima vez que iniciar Calcurse."
+
+msgid "Add\n"
+msgstr "Adicionar\n"
+
+#, c-format
+msgid ""
+"Add an item in either the ToDo or Appointment list, depending on which\n"
+"panel is selected when you press '%s'.\n"
+"\n"
+"To enter a new item in the TODO list, you will need first to enter the\n"
+"description of this new item. Then you will be asked to specify the todo\n"
+"priority. This priority is represented by a number going from 9 for the\n"
+"lowest priority, to 1 for the highest one. It is still possible to\n"
+"change the item priority afterwards, by using the '%s' and '%s' keys\n"
+"inside the todo panel.\n"
+"\n"
+"If the APPOINTMENT panel is selected while pressing '%s', you will be\n"
+"able to enter either a new appointment or a new all-day long event.\n"
+"To enter a new event, press [ENTER] instead of the item start time, and\n"
+"just fill in the event description.\n"
+"To enter a new appointment to be added in the APPOINTMENT list, you\n"
+"will need to enter successively the time at which the appointment\n"
+"begins, the appointment length (either by specifying the end time in\n"
+"[hh:mm] or the duration in [+hh:mm], [+xxdxxhxxm] or [+mm] format), \n"
+"and the description of the event.\n"
+"\n"
+"The day at which occurs the event or appointment is the day currently\n"
+"selected in the calendar, so you need to move to the desired day before\n"
+"pressing '%s'.\n"
+"\n"
+"Notes:\n"
+"     o if an appointment lasts for such a long time that it continues\n"
+"       on the next days, this event will be indicated on all the\n"
+"       corresponding days, and the beginning or ending hour will be\n"
+"       replaced by '..' if the event does not begin or end on the day.\n"
+"     o if you only press [ENTER] at the APPOINTMENT or TODO event\n"
+"       description prompt, without any description, no item will be\n"
+"       added.\n"
+"     o do not forget to save the calendar data to retrieve the new\n"
+"       event next time you launch Calcurse."
+msgstr ""
+
+msgid "Cut and Paste\n"
+msgstr "Recortar e Colar\n"
+
+#, c-format
+msgid ""
+"Cut and paste the currently selected item. This is useful to quickly\n"
+"move an item from one date to another.\n"
+"To do so, one must first highlight the item that needs to be moved,\n"
+"then press '%s' to cut this item. It will be removed from the panel.\n"
+"Once the new date is chosen in the calendar, the appointment panel must\n"
+"be selected and the '%s' key must be pressed to paste the item.\n"
+"The item will appear again in the appointment panel, assigned to the\n"
+"newly selected date.\n"
+"\n"
+"Be careful that if two cuts are performed successively without pasting\n"
+"between them, the item that was cut at first will be lost, together\n"
+"with its associated note if it had one."
+msgstr "Cortar e colar o item selecionado. Isto é útil para rapidamente mover\num item de uma data para outra.\nPara fazer isto, deve-se primeiro realçar o item que deve ser movido\ne então pressionar \"%s\" para cortar este item. Ele será removido do\npainel.\nAssim que a nova data for escolhida no calendário, o painel de\nagendamento deve estar selecionado e a tecla \"%s\" deve ser pressionada\npara colar o item.\nO item aparecerá novamente no painel de agendamento, alocado para a\nnova data selecionada.\n\nTenha cuitado que se dois cortes forem executados sucessivamente sem\nque haja colagem entre eles, o item que foi cortado primeiro será\nperdido, junto com a nota associada a ele, se houvesse alguma."
+
+msgid "Edit Item\n"
+msgstr "Editar item\n"
+
+#, c-format
+msgid ""
+"Edit the item which is currently selected.\n"
+"Depending on the item type (appointment, event, or todo), and if it is\n"
+"repeated or not, you will be asked to choose one of the item properties\n"
+"to modify. An item property is one of the following: the start time, the\n"
+"end time, the description, or the item repetition.\n"
+"Once you have chosen the property you want to modify, you will be shown\n"
+"its actual value, and you will be able to change it as you like.\n"
+"\n"
+"Notes:\n"
+"     o if you choose to edit the item repetition properties, you will\n"
+"       be asked to re-enter all of the repetition characteristics\n"
+"       (repetition type, frequence, and ending date). Moreover, the\n"
+"       previous data concerning the deleted occurences will be lost.\n"
+"     o do not forget to save the calendar data to retrieve the\n"
+"       modified properties next time you launch Calcurse."
+msgstr "Edita o item selecionado.\nDependendo do tipo do item (agendamento, evento, ou todo), e se ele for\nrepetido ou não, a você será solicitado que escolha uma das propriedades\ndo item a modificar. Uma propriedade de item é uma das seguintes: o\nhorário de início, o horário de fim, a descrição, ou a repetição do item.\nAssim que você escolher a propriedade que você quer modificar, será\nexibido a você o valor atual, e você poderá alterá-lo como quiser.\n\nNotas:\n     o Se você escolher editar as propriedades de repetição do item,\n       a você será solicitado que informe novamente todas as\n       características de repetição (tipo de repetição, frequência\n       e data do fim). Ademais, a data anterior referente as\n       ocorrências removidas será perdida.\n     o não esqueça de salvar os dados do calendário para recuperar as\n       propriedades modificadas na próxima vez que iniciar Calcurse."
+
+msgid "EditNote\n"
+msgstr "EditarNota\n"
+
+#, c-format
+msgid ""
+"Attach a note to any type of item, or edit an already existing note.\n"
+"This feature is useful if you do not have enough space to store all\n"
+"of your item description, or if you would like to add sub-tasks to an\n"
+"already existing todo item for example.\n"
+"Before pressing the '%s' key, you first need to highlight the item you\n"
+"want the note to be attached to. Then you will be driven to an\n"
+"external editor to edit your note. This editor is chosen the following\n"
+"way:\n"
+"     o if the 'VISUAL' environment variable is set, then this will be\n"
+"       the default editor to be called.\n"
+"     o if 'VISUAL' is not set, then the 'EDITOR' environment variable\n"
+"       will be used as the default editor.\n"
+"     o if none of the above environment variables is set, then\n"
+"       '/usr/bin/vi' will be used.\n"
+"\n"
+"Once the item note is edited and saved, quit your favorite editor.\n"
+"You will then go back to Calcurse, and the '>' sign will appear in front\n"
+"of the highlighted item, meaning there is a note attached to it."
+msgstr "Anexa uma nota a qualquer tipo de item, ou edita qualquer nota existente.\nEste recurso é útil se você não tem espaço suficiente para armazenar\ntoda descrição de seu item, o se você deseja adicionar sub-tarefas para\num item de ToDo já existente, por exemplo.\nAntes de pressionar a tecla \"%s\", você primeiro precisa realçar o item\nao qual você deseja que a nota seja anexada. O editor é escolhido das\nseguintes formas:\n     o se a variável de ambiente \"VISUAL\" estiver definida, então este\n       será o editor padrão a ser chamado.\n     o se \"VISUAL\" não estiver definido, então a variável de ambiente\n       \"EDITOR\" será usada como o editor padrão.\n     o se nenhuma das variáveis de ambiente acima estiverem definidas,\n       então \"/usr/bin/vi\" será usado\n\nAssim que a nota do item for editada e salvada, saia do seu editor\nfavorito.\nEntão, você voltará para o Calcurse, e o sinal \">\" aparecerá na frente\ndo item realçado, significando haver uma nota anexada a ele."
+
+msgid "ViewNote\n"
+msgstr "VerNota\n"
+
+#, c-format
+msgid ""
+"View a note which was previously attached to an item (an item which\n"
+"owns a note has a '>' sign in front of it).\n"
+"This command only permits to view the note, not to edit it (to do so,\n"
+"use the 'EditNote' command, by pressing the '%s' key).\n"
+"Once you highlighted an item with a note attached to it, and the '%s' key\n"
+"was pressed, you will be driven to an external pager to view that note.\n"
+"The default pager is chosen the following way:\n"
+"     o if the 'PAGER' environment variable is set, then this will be\n"
+"       the default viewer to be called.\n"
+"     o if the above environment variable is not set, then\n"
+"       '/usr/bin/less' will be used.\n"
+"As for editing a note, quit the pager and you will be driven back to\n"
+"Calcurse."
+msgstr "Vê uma nota que foi previamente anexada a um item (um item que possui\numa nota tem um sinal \">\" na sua frente).\nEste comando somente permite que se visualize a note, e não que se edite\n(para fazê-lo, use o comando \"EditNote\", pressionando a tecla \"%s\").\nAssim que você tiver realçado um item contendo uma nota anexada, e a\ntecla \"%s\" for pressionada, você será levado para um paginador externo\npara ver aquela nota.\nO paginador padrão é escolhido das seguintes formas:\n     o se a variávei de ambiente \"PAGER\" estiver definida, então esta\n       será chamada como visualizador padrão.\n     o Se a variável de ambiente acima não estiver definida, então\n       \"/usr/bin/less\" será usado\nQuanto à edição de notas, saia do paginador e você será levado devolta\nao Calcurse."
+
+msgid "Priority\n"
+msgstr "Prioridade\n"
+
+#, c-format
+msgid ""
+"Change the priority of the currently selected item in the ToDo list.\n"
+"Priorities are represented by the number appearing in front of the\n"
+"todo description. This number goes from 9 for the lowest priority to\n"
+"1 for the highest priority.\n"
+"Todo having higher priorities are placed first (at the top) inside the\n"
+"todo panel.\n"
+"\n"
+"If you want to raise the priority of a todo item, you need to press '%s'.\n"
+"In doing so, the number in front of this item will decrease, meaning its\n"
+"priority increases. The item position inside the todo panel may change,\n"
+"depending on the priority of the items above it.\n"
+"\n"
+"At the opposite, to lower a todo priority, press '%s'. The todo position\n"
+"may also change depending on the priority of the items below."
+msgstr "Altera a prioridade do item atualmente sekecuibadi na lista de ToDo.\nPrioridades são representadas pelo número que aparece na frente da\ndescrição de ToDo. O número vai desde 9 para a menor prioridade até\n1 para a maior prioridade.\nOs ToDos que tenham maior prioridade serão posicionadas primeiro (no\ntopo) dentro do painel de ToDo.\n\nSe você desejar aumentar a prioridade de um item de ToDo, você deverá\npressionar \"%s\". Ao fazer isso, o número da prioridade deste item será\nreduzida, o que significa um aumento na sua prioridade. A posição do\nitem dentor do painel de ToDo pode mudar, dependendo da prioridade dos\nitens acima deste.\n\nE o contrário, para diminuir a prioridade de um ToDo, pressione \"%s\".\nA posição do ToDo pode também alterar dependendo da prioridade dos\ndemais itens abaixo deste."
+
+msgid "Repeat\n"
+msgstr "Repetir\n"
+
+#, c-format
+msgid ""
+"Repeat an event or an appointment.\n"
+"You must first select the item to be repeated by moving inside the\n"
+"appointment panel. Then pressing '%s' will lead you to a set of three\n"
+"questions, with which you will be able to specify the repetition\n"
+"characteristics:\n"
+"\n"
+"  o        type: you can choose between a daily, weekly, monthly or\n"
+"                 yearly repetition by pressing 'D', 'W', 'M' or 'Y'\n"
+"                 respectively.\n"
+"\n"
+"  o   frequence: this indicates how often the item shall be repeated.\n"
+"                 For example, if you want to remember an anniversary,\n"
+"                 choose a 'yearly' repetition with a frequence of '1',\n"
+"                 which means it must be repeated every year. Another\n"
+"                 example: if you go to the restaurant every two days,\n"
+"                 choose a 'daily' repetition with a frequence of '2'.\n"
+"\n"
+"  o ending date: this specifies when to stop repeating the selected\n"
+"                 event or appointment. To indicate an endless \n"
+"                 repetition, enter '0' and the item will be repeated\n"
+"                 forever.\n"
+"\n"
+"Notes:\n"
+"       o repeated items are marked with an '*' inside the appointment\n"
+"         panel, to be easily recognizable from non-repeated ones.\n"
+"       o the 'Repeat' and 'Delete' command can be mixed to create\n"
+"         complicated configurations, as it is possible to delete only\n"
+"         one occurence of a repeated item."
+msgstr "Repete um evento ou um agendamento.\nPrimeiro você deve que selecionar o item a ser repetido movendo-o\ndentro do painel de agendamento. Então, ao pressionar \"%s\" você\nresponderá um conjunto de três perguntas, com as quais você poderá\nespecificar as caracterísitcas da repetição:\n\n  o        tipo: você pode escolher entre uma repetição diária,\n  \t\t\t\t semanal, mensal ou anual pressionando, \"D\", \"W\",\"M\"\n  \t\t\t\t ou \"Y\", respectivamente.\n\n  o  frequencia: indica com qual frequência o item deve se repetir.\n                 Por exemplo, se você deseja sempre se lembrar de um\n                 aniversário, escolha uma repetição \"anual\" com uma\n                 frequência de \"1\", o que significa que deve repetir\n                 todo ano. Outro exemplo: se você vai ao restaurante\n                 a cada dois dias, escolha uma repetição \"diária\" com\n                 frequência de \"2\".\n\n  o  data final: especifica quando deve parar a repetição do\n                 evento ou agendamento selecionado. Para indicar uma\n                 repetição sem fim, insira \"0\" e o item será repetido\n                 para sempre.\n\nNotas:\n       o itens repetidos são marcados com um \"*\" dentro do painel de\n         agendamento, para ser facilmente diferenciável dos não\n         repetidos.\n       o Os comandos \"Repetir\" e \"Excluir\" podem ser combinados para\n         para criar configurações complicadas, já que é possível \n         excluir somente uma ocorrência de um item repetido."
+
+msgid "Flag Item\n"
+msgstr "Sinalizar Item\n"
+
+#, c-format
+msgid ""
+"Toggle an appointment's 'important' flag or a todo's 'completed' flag.\n"
+"If a todo is flagged as completed, its priority number will be replaced\n"
+"by an 'X' sign. Completed tasks will no longer appear in exported data\n"
+"or when using the '-t' command line flag (unless specifying '0' as the\n"
+"priority number, in which case only completed tasks will be shown).\n"
+"\n"
+"If an appointment is flagged as important, an exclamation mark appears\n"
+"in front of it, and you will be warned if time gets closed to the\n"
+"appointment start time.\n"
+"To customize the way one gets notified, the configuration submenu lets\n"
+"you choose the command launched to warn user of an upcoming appointment,\n"
+"and how long before it he gets notified."
+msgstr "Alterna estado de sinalizador de \"importante\" de um agendamento ou\n\"finalizado\" de um ToDo.\nSe um ToDo é sinalizado como finalizado, seu número de prioridade\nserá substituído por um sinal \"X\". Tarefas finalizadas não vão mais\naparecer nos dados exportados ou quando se estiver usando a opção de\nlinha de comando \"-t\" (a não ser que tenha sido especificado \"0\" como\no número de prioridade, caso este em que somente tarefas finalizadas\nserão exibidas).\n\nSe um agendamento é sinalizado como importante, uma exclamação vai\naparecer na frente dele e você será avisado quando o horário de início\ndo agendamento se aproximar.\nPara personalizar a forma de notificação, o submenu de configuração\npermite que você escolha o comando a ser executado para avisar o\nusuário de um agendamento proximo e quanto tempo até que ele seja\nnotificado."
+
+msgid "Config\n"
+msgstr "Config\n"
+
+#, c-format
+msgid ""
+"Open the configuration submenu.\n"
+"From this submenu, you can select between color, layout, notification\n"
+"and general options, and you can also configure your keybindings.\n"
+"\n"
+"The color submenu lets you choose the color theme.\n"
+"The layout submenu lets you choose the Calcurse screen layout, in other\n"
+"words where to place the three different panels on the screen.\n"
+"The general options submenu brings a screen with the different options\n"
+"which modifies the way Calcurse interacts with the user.\n"
+"The notify submenu allows you to change the notify-bar settings.\n"
+"The keys submenu lets you define your own key bindings.\n"
+"\n"
+"Do not forget to save the calendar data to retrieve your configuration\n"
+"next time you launch Calcurse."
+msgstr "Abre os submenus de configuração.\nA partir deste submenu, você pode selecionar dentre várias cores,\nlayout, nocitifcações e opções em geral, e você pode até mesmo\nconfigurar suas tlecas de atalhos.\n\nO submenu cor permite que você escolha o tema de cores.\nO submenu layout permite que você escolha o layout da tela do Calcurse.\nEm outras palavras, permite definir onde colocar três painéis\ndiferentes na tela.\nO submenu de opções gerais traz uma tela com opções diferentes, que\nmodificam a forma como Calcurse interage com o usuário.\nO submenu de notificação permite que você altere as configurações da\nbarra de notificação.\nO submenu de teclas permite que você defina seus próprios atalhos de\nteclado.\n\nNão esqueça de salvar os dados do calendário para restaurar sua\nconfiguração na próxima vez que você carregar Calcurse."
+
+msgid "Generic keybindings\n"
+msgstr "Mapeamentos de teclas genéricos\n"
+
+#, c-format
+msgid ""
+"Some of the keybindings apply whatever panel is selected. They are\n"
+"called generic keybinding.\n"
+"Here is the list of all the generic key bindings, together with their\n"
+"corresponding action:\n"
+"\n"
+" '%s' : Redraw function -> redraws calcurse panels, this is useful if\n"
+"                           you resize your terminal screen or when\n"
+"                           garbage appears inside the display\n"
+" '%s' : Add Appointment -> add an appointment or an event\n"
+" '%s' : Add ToDo        -> add a todo\n"
+" '%s' : -1 Day          -> move to previous day\n"
+" '%s' : +1 Day          -> move to next day\n"
+" '%s' : -1 Week         -> move to previous week\n"
+" '%s' : +1 Week         -> move to next week\n"
+" '%s' : Goto today      -> move to current day\n"
+"\n"
+"The '%s' and '%s' keys are used to scroll text upward or downward\n"
+"when inside specific screens such the help screens for example.\n"
+"They are also used when the calendar screen is selected to switch\n"
+"between the available views (monthly and weekly calendar views)."
+msgstr "Alguns dos mapeamentos de teclas aplicam a qualquer painel\nselecionado. São chamados de mapeamentos de teclas genéricos.\nAqui está uma lista de todos os mapeamentos de teclas genéricos,\njunto com suas respectivas ações:\n\n '%s' : função redesenho-> redesenha paineis do calcursem, é útil se\n                           você redimensional a tela do seu terminal\n                           ou quando aparece lixo no visor\n '%s' : Adic. Agendam.  -> adiciona um agendamento ou um evento\n '%s' : Adic. ToDo      -> adiciona um ToDo\n '%s' : -1 Dia          -> move para o dia anterior\n '%s' : +1 Dia          -> move para o dia seguinte\n '%s' : -1 Semana       -> move para a semana anterior\n '%s' : +1 Semana       -> move para a semana seguinte\n '%s' : Ir para Hoje    -> move para o dia atual\n\nAs teclas \"%s\" e \"%s\" são usadas para rolar o text para cima ou\npara baixo quando dentro de telas específicas como as telas de\najuda, por exemplo.\nElas também são usadas quando a tela do calendário é selecionado\npara alternar entre as visões disponíveis (visões de calendário\nmensamente e semanalmente)."
+
+msgid "OtherCmd\n"
+msgstr "OutroCmd\n"
+
+#, c-format
+msgid ""
+"Switch between status bar help pages.\n"
+"Because the terminal screen is too narrow to display all of the\n"
+"available commands, you need to press '%s' to see the next set of\n"
+"commands together with their keybindings.\n"
+"Once the last status bar page is reached, pressing '%s' another time\n"
+"leads you back to the first page."
+msgstr "Alterna entre páginas de ajuda de barra de status.\nPorque a tela do terminal é muito estreita para exibir todos os\ncomandos disponíveis, você tem que pressionar \"%s\" para ver o\npróximo conjunto de comandos junto com suas teclas de atalhos.\nAssim que se chegar à última página de barra de status, ao se\npressionar \"%s\" mais uma vez levará vocÊ de volta para a primeira\npágina."
+
+msgid "Calcurse - text-based organizer"
+msgstr "Calcurse - Organizador baseado em texto"
+
+#, c-format
+msgid ""
+"\n"
+"Copyright (c) 2004-2012 calcurse Development Team\n"
+"All rights reserved.\n"
+"\n"
+"Redistribution and use in source and binary forms, with or without\n"
+"modification, are permitted provided that the following conditions\n"
+"are met:\n"
+"\n"
+"\t- Redistributions of source code must retain the above\n"
+"\t  copyright notice, this list of conditions and the\n"
+"\t  following disclaimer.\n"
+"\n"
+"\t- Redistributions in binary form must reproduce the above\n"
+"\t  copyright notice, this list of conditions and the\n"
+"\t  following disclaimer in the documentation and/or other\n"
+"\t  materials provided with the distribution.\n"
+"\n"
+"\n"
+"Send your feedback or comments to : misc@calcurse.org\n"
+"Calcurse home page : http://calcurse.org"
+msgstr ""
+
+msgid "unknown ical type"
+msgstr "tipo de ical desconhecido"
+
+msgid "recurrence frequence not found."
+msgstr "frequência de recorrência não encontrada."
+
+msgid "recurrence frequence not recognized."
+msgstr "frequência de recorrência não reconhecida."
+
+msgid "recurrence rule malformed."
+msgstr "regra de recorrência mal-formulada."
+
+msgid "recurrence exception dates malformed."
+msgstr "Exceção de datas de recorrência mal-formulada."
+
+msgid "could not get entire item description."
+msgstr "não foi possível adquirir a completa descrição do item."
+
+msgid "description malformed."
+msgstr "descrição mal-formulada."
+
+msgid "appointment has no start time."
+msgstr "agendamento não tem hora de início."
+
+msgid "could not compute duration (no end time)."
+msgstr "não foi possível computar duração (falta hora de fim)."
+
+msgid "item has a negative duration."
+msgstr "item tem uma duração negativa."
+
+msgid "event date is not defined."
+msgstr "data de evento não está definida."
+
+msgid "item could not be identified."
+msgstr "item não pôde ser identificado."
+
+msgid "could not retrieve item summary."
+msgstr "Não foi possível adquirir sumário do item"
+
+msgid "could not retrieve event start time."
+msgstr "não foi possível adquirir hora de início do evento."
+
+msgid "could not retrieve event end time."
+msgstr "Não foi possível adquirir hora de fim do evento."
+
+msgid "item duration malformed."
+msgstr "duração de item mal-formulada."
+
+msgid "The ical file seems to be malformed. The end of item was not found."
+msgstr "O arquivo ical parece estar mal-formulada. O fim do item não foi encontrado."
+
+msgid "item priority is not acceptable (must be between 1 and 9)."
+msgstr "prioridade de item não é aceitável (deve ser entre 1 e 9)."
+
+msgid "Warning: ical header malformed or wrong version number. Aborting..."
+msgstr "Aviso: cabeçalho ical mal-formulado ou número de versão errado. Abortando..."
+
+msgid "Saving..."
+msgstr "Salvando..."
+
+msgid "Loading..."
+msgstr "Carregando..."
+
+msgid "Exporting..."
+msgstr "Exportando..."
+
+msgid "Internal error while displaying progress bar"
+msgstr "Erro interno enquanto exibia barra de progresso"
+
+msgid "Choose the file used to export calcurse data:"
+msgstr "Escolha o arquivo para o qual serão exportados os dados do calcurse:"
+
+msgid "The file cannot be accessed, please enter another file name."
+msgstr "O arquivo não pode ser acessado, favor informe outro nome de arquivo."
+
+msgid "Press [ENTER] to continue."
+msgstr "Pressione [ENTER] para continuar."
+
+#, c-format
+msgid "Failed to open \"%s\", - %s\n"
+msgstr "Falha na abertura de \"%s\", - %s\n"
+
+msgid "Failed to build message\n"
+msgstr "Falha na criação da mensagem\n"
+
+#, c-format
+msgid "Failed to print message \"%s\"\n"
+msgstr "Falha na exibição da mensagem \"%s\"\n"
+
+#, c-format
+msgid "Failed to close \"%s\" - %s\n"
+msgstr "Falha no fechamento de \"%s\" - %s\n"
+
+#, c-format
+msgid "%s does not exist, create it now [y or n] ? "
+msgstr "%s não existe, criar agora [s ou n]? "
+
+msgid "aborting...\n"
+msgstr "abortando...\n"
+
+#, c-format
+msgid "%s successfully created\n"
+msgstr "%s criado com sucesso\n"
+
+msgid "starting interactive mode...\n"
+msgstr "iniciando modo interativo...\n"
+
+msgid "Problems accessing data file ..."
+msgstr "Problemas no acesso de arquivo de dados..."
+
+msgid "The data files were successfully saved"
+msgstr "Os arquivos de dados foram salvos com sucesso"
+
+msgid "failed to open appointment file"
+msgstr ""
+
+msgid "syntax error in the item date"
+msgstr "erro de sintaxe no item data"
+
+msgid "no event nor appointment found"
+msgstr "nenhum evento nem agendamento encontrado"
+
+msgid "syntax error in item time or duration"
+msgstr ""
+
+msgid "syntax error in item identifier"
+msgstr ""
+
+msgid "wrong format in the appointment or event"
+msgstr "Formato errado no agendamento ou evento"
+
+msgid "syntax error in item repetition"
+msgstr ""
+
+msgid "failed to open todo file"
+msgstr ""
+
+msgid "failed to open key file"
+msgstr ""
+
+msgid ""
+"\n"
+"Too many errors while reading configuration file!\n"
+"Please backup your keys file, remove it from directory, and launch calcurse again.\n"
+msgstr "\nMuitos erros de leitura do arquivo de configuração!\nFavor faça backup de seus arquivos de teclas, remova-o de seu diretório e carregue calcurse novamente.\n"
+
+msgid "Could not read key label"
+msgstr "Não foi possível ler o rótulo de tecla"
+
+msgid "Key label not recognized"
+msgstr "Rótulo de tecla não reconhecida"
+
+#, c-format
+msgid "Error reading key: \"%s\""
+msgstr "Erro na leitura da tecla: \"%s\""
+
+#, c-format
+msgid "\"%s\" assigned multiple times!"
+msgstr "\"%s\" alocada múltiplas vezes!"
+
+msgid "There were some errors when loading keys file, see log file ?"
+msgstr "Ocorreram erros na leitura de arquivo de chaves, viu arquivos de log?"
+
+msgid "Too many errors while reading keys file, aborting..."
+msgstr "Erros demais na leitura do arquivo de chaves, abortando..."
+
+#, c-format
+msgid "FATAL ERROR: could not create %s: %s\n"
+msgstr "ERRO FATAL: não foi possível criar %s: %s\n"
+
+msgid "Data files found. Data will be loaded now."
+msgstr "Arquivos de dados encontrados. Os dados serão carregados agora."
+
+msgid "Welcome to Calcurse. Missing data files were created."
+msgstr "Bem-vindo ao Calcurse. Arquivos de dados não encontrados foram criados."
+
+msgid "The data were successfully exported"
+msgstr "Os dados foram exportados com sucesso"
+
+msgid "unknown export type"
+msgstr "tipo de exportação desconhecido"
+
+msgid "wrong export mode"
+msgstr "modo de exportação errado"
+
+msgid "Ical"
+msgstr "Ical"
+
+msgid "Pcal"
+msgstr "Pcal"
+
+msgid "Enter the file name to import data from:"
+msgstr "Informe o nome do arquivo de onde serão importados os dados:"
+
+#, c-format
+msgid "Import process report: %04d lines read "
+msgstr "Relatório de processo importação: %04d linhas lidas"
+
+msgid "unknown import type"
+msgstr "tipo de importação desconhecida"
+
+msgid "FATAL ERROR: the input file cannot be accessed, Aborting..."
+msgstr "ERRO FATAL: o arquivo de entrada não pode ser acessado. Abortando..."
+
+msgid "FATAL ERROR: wrong import mode"
+msgstr "ERRO FATAL: modo de importação errado"
+
+#, c-format
+msgid "%d app"
+msgid_plural "%d apps"
+msgstr[0] ""
+msgstr[1] ""
+
+#, c-format
+msgid "%d event"
+msgid_plural "%d events"
+msgstr[0] ""
+msgstr[1] ""
+
+#, c-format
+msgid "%d todo"
+msgid_plural "%d todos"
+msgstr[0] ""
+msgstr[1] ""
+
+#, c-format
+msgid "%d skipped"
+msgstr ""
+
+msgid "Some items could not be imported, see log file ?"
+msgstr "Alguns item não puderam ser importados. Ver arquivo de log ?"
+
+msgid "Warning: could not create temporary log file, Aborting..."
+msgstr "Aviso: não foi possível criar arquivo temporário de log. Abortando..."
+
+msgid "Warning: could not open temporary log file, Aborting..."
+msgstr "Aviso: não foi possível abrir o arquivo temporário de log. Abortando..."
+
+msgid "No log file to display!"
+msgstr "Nenhum arquivo de log para ser exibido!"
+
+#, c-format
+msgid "Warning: could not erase temporary log file %s, Aborting..."
+msgstr "Aviso: não foi possível apagar o arquivo temporário de log %s. Abortando..."
+
+msgid "Invalid delay"
+msgstr "Atraso inválido"
+
+#, c-format
+msgid ""
+"\n"
+"WARNING: it seems that another calcurse instance is already running.\n"
+"If this is not the case, please remove the following lock file: \n"
+"\"%s\"\n"
+"and restart calcurse.\n"
+msgstr "\nAVISO: para que outra instância de calcurse já está em execução.\nSe este não é o caso, favor remover o seguinte arquivo de trava: \n\"%s\"\ne reinicie calcurse.\n"
+
+msgid ""
+"#\n"
+"# Calcurse keys configuration file\n"
+"#\n"
+"# This file sets the keybindings used by Calcurse.\n"
+"# Lines beginning with \"#\" are comments, and ignored by Calcurse.\n"
+"# To assign a keybinding to an action, this file must contain a line\n"
+"# with the following syntax:\n"
+"#\n"
+"#        ACTION  KEY1  KEY2  ...  KEYn\n"
+"#\n"
+"# Where ACTION is what will be performed when KEY1, KEY2, ..., or KEYn\n"
+"# will be pressed.\n"
+"#\n"
+"# To define bindings which use the CONTROL key, prefix the key with 'C-'.\n"
+"# The escape, space bar and horizontal Tab key can be specified using\n"
+"# the 'ESC', 'SPC' and 'TAB' keyword, respectively.\n"
+"# Arrow keys can also be specified with the UP, DWN, LFT, RGT keywords.\n"
+"# Last, Home and End keys can be assigned using 'KEY_HOME' and 'KEY_END'\n"
+"# keywords.\n"
+"#\n"
+"# A description of what each ACTION keyword is used for is available\n"
+"# from calcurse online configuration menu.\n"
+msgstr ""
+
+msgid "FATAL ERROR: could not create default keys file."
+msgstr ""
+
+msgid "FATAL ERROR: key value out of bounds"
+msgstr ""
+
+msgid "Cancel the ongoing action."
+msgstr ""
+
+msgid "Select the highlighted item."
+msgstr ""
+
+msgid "Print general information about calcurse's authors, license, etc."
+msgstr ""
+
+msgid "Display hints whenever some help screens are available."
+msgstr ""
+
+msgid "Exit from the current menu, or quit calcurse."
+msgstr ""
+
+msgid "Save calcurse data."
+msgstr ""
+
+msgid "Help for `generic-cut`."
+msgstr ""
+
+msgid "Help for `generic-paste`."
+msgstr ""
+
+msgid "Select next panel in calcurse main screen."
+msgstr ""
+
+msgid "Import data from an external file."
+msgstr ""
+
+msgid "Export data to a new file format."
+msgstr ""
+
+msgid "Select the day to go to."
+msgstr ""
+
+msgid "Show next possible actions inside status bar."
+msgstr ""
+
+msgid "Enter the configuration menu."
+msgstr ""
+
+msgid "Redraw calcurse's screen."
+msgstr ""
+
+msgid "Add an appointment, whichever panel is currently selected."
+msgstr ""
+
+msgid "Add a todo item, whichever panel is currently selected."
+msgstr ""
+
+msgid "Move to next day in calendar, whichever panel is currently selected."
+msgstr ""
+
+msgid ""
+"Move to previous day in calendar, whichever panel is currently selected."
+msgstr ""
+
+msgid "Move to next week in calendar, whichever panel is currently selected."
+msgstr ""
+
+msgid ""
+"Move to previous week in calendar, whichever panel is currently selected"
+msgstr ""
+
+msgid "Scroll window down (e.g. when displaying text inside a popup window)."
+msgstr ""
+
+msgid "Scroll window up (e.g. when displaying text inside a popup window)."
+msgstr ""
+
+msgid "Go to today, whichever panel is selected."
+msgstr ""
+
+msgid "Move to the right."
+msgstr ""
+
+msgid "Move to the left."
+msgstr ""
+
+msgid "Move down."
+msgstr ""
+
+msgid "Move up."
+msgstr ""
+
+msgid ""
+"Select the first day of the current week when inside the calendar panel."
+msgstr ""
+
+msgid ""
+"Select the last day of the current week when inside the calendar panel."
+msgstr ""
+
+msgid "Add an item to the currently selected panel."
+msgstr ""
+
+msgid "Delete the currently selected item."
+msgstr ""
+
+msgid "Edit the currently seleted item."
+msgstr ""
+
+msgid "Display the currently selected item inside a popup window."
+msgstr ""
+
+msgid "Flag the currently selected item as important."
+msgstr ""
+
+msgid "Repeat an item"
+msgstr ""
+
+msgid "Pipe the currently selected item to an external program."
+msgstr ""
+
+msgid "Attach (or edit if one exists) a note to the currently selected item"
+msgstr ""
+
+msgid "View the note attached to the currently selected item."
+msgstr ""
+
+msgid "Raise a task priority inside the todo panel."
+msgstr ""
+
+msgid "Lower a task priority inside the todo panel."
+msgstr ""
+
+msgid "FATAL ERROR: null file pointer."
+msgstr ""
+
+#, c-format
+msgid "When adding default key for \"%s\", \"%s\" was already assigned!"
+msgstr ""
+
+msgid "xmalloc: zero size"
+msgstr ""
+
+msgid "xmalloc: out of memory"
+msgstr ""
+
+msgid "xcalloc: zero size"
+msgstr ""
+
+msgid "xcalloc: overflow"
+msgstr ""
+
+msgid "xcalloc: out of memory"
+msgstr ""
+
+msgid "xrealloc: zero size"
+msgstr ""
+
+msgid "xrealloc: overflow"
+msgstr ""
+
+msgid "xrealloc: out of memory"
+msgstr ""
+
+msgid "xfree: null pointer"
+msgstr ""
+
+msgid "could not allocate memory to store block info"
+msgstr ""
+
+msgid "Block not found"
+msgstr ""
+
+#, c-format
+msgid "overflow at %s"
+msgstr ""
+
+#, c-format
+msgid "dbg_free: null pointer at %s"
+msgstr ""
+
+#, c-format
+msgid "block seems already freed at %s"
+msgstr ""
+
+#, c-format
+msgid "corrupt block header at %s"
+msgstr ""
+
+#, c-format
+msgid "corrupt block end at %s, (end = %u, should be %d)"
+msgstr ""
+
+msgid "---==== MEMORY BLOCK ====----------------\n"
+msgstr ""
+
+#, c-format
+msgid "            id: %u\n"
+msgstr ""
+
+#, c-format
+msgid "          size: %u\n"
+msgstr ""
+
+#, c-format
+msgid "  allocated in: %s\n"
+msgstr ""
+
+msgid "-----------------------------------------\n"
+msgstr ""
+
+msgid "+------------------------------+\n"
+msgstr ""
+
+msgid "| calcurse memory usage report |\n"
+msgstr ""
+
+#, c-format
+msgid "  number of calls: %u\n"
+msgstr ""
+
+#, c-format
+msgid " allocated blocks: %u\n"
+msgstr ""
+
+#, c-format
+msgid "   unfreed blocks: %u\n"
+msgstr ""
+
+#, c-format
+msgid "Warning: could not open %s, Aborting..."
+msgstr "Aviso: não foi possível abrir %s. Abortando..."
+
+msgid "error while launching command: could not fork"
+msgstr "erro durante o lançamento do comando: não foi possível realizar fork"
+
+msgid "error while launching command"
+msgstr "erro durante o lançamento do comando"
+
+msgid "(if set to YES, notify-bar will be displayed)"
+msgstr "(Se definida como SIM, a barra de notificação será exibida)"
+
+msgid "(Format of the date to be displayed inside notify-bar)"
+msgstr "(Formato da data a ser exibida dentro de notify-bar)"
+
+msgid "(Format of the time to be displayed inside notify-bar)"
+msgstr "(Formato de horário a ser exibido dentro de notify-bar)"
+
+msgid ""
+"(Warn user if an appointment is within next 'notify-bar_warning' seconds)"
+msgstr "(avisa o usuário se um agendamento ocorrerá nos próximos \"notify-bar_warning\" segundos)"
+
+msgid "(Command used to notify user of an upcoming appointment)"
+msgstr "(Comando usado para notificar usuário de um agendamento próximo)"
+
+msgid "(Notify all appointments instead of flagged ones only)"
+msgstr ""
+
+msgid "(Run in background to get notifications after exiting)"
+msgstr "(Executar em plano de fundo para pegar notificações depois de sair)"
+
+msgid "(Log activity when running in background)"
+msgstr "(Registra atividades quando estiver executando em plano de fundo)"
+
+msgid "Enter the time format (see 'man 3 strftime' for possible formats) "
+msgstr "Informe o formato do horário (veja \"man 3 strftime\" para formatos possíveis) "
+
+msgid "Enter the number of seconds (0 not to be warned before an appointment)"
+msgstr "Informe o número de segundos (0 para não ser avisado antes do agendamento)"
+
+msgid "Enter the notification command "
+msgstr "Informe o comando de notificação "
+
+msgid "notification options"
+msgstr "opções de notificação"
+
+msgid "incoherent repetition type"
+msgstr "(se definida como SIM, salvamento automático será feito quando estiver de saída)"
+
+msgid "unknown repetition type"
+msgstr "tipo de repetição desconhecida"
+
+msgid "unknown character"
+msgstr "caractere"
+
+msgid "date error in event"
+msgstr "erro na data em evento"
+
+msgid "appointment not found"
+msgstr "agendamento não encontrado"
+
+msgid "Enter the repetition type:"
+msgstr ""
+
+msgid "Enter the repetition frequence:"
+msgstr "Informe a frequência de repetição:"
+
+#, c-format
+msgid "Enter the ending date: [%s] or '0' for an endless repetition"
+msgstr "Informe a data final: [%s] ou \"0\" para uma repetição sem fim"
+
+#, c-format
+msgid "Possible formats are [%s] or '0' for an endless repetition"
+msgstr "Formatos possíveis são [%s] ou \"0\" para uma repetição sem fim"
+
+msgid "This item is already a repeated one."
+msgstr "Este é um item repetido."
+
+msgid "Sorry, the date you entered is older than the item start time."
+msgstr "Desculpe, a data que foi informou é mais antiga que a data inicial."
+
+msgid "wrong item type"
+msgstr "tipo de item errado"
+
+msgid "syntax error in item date"
+msgstr "erro de sintaxe no item data"
+
+#, c-format
+msgid "Could not remove calcurse lock file: %s\n"
+msgstr "Não foi possível remover arquivo de trava do Calcurse: %s\n"
+
+#, c-format
+msgid "Error setting signal #%d : %s\n"
+msgstr "Erro na definição de sinal #%d : %s\n"
+
+msgid "Enter the new ToDo item : "
+msgstr "Informe o novo item de ToDo : "
+
+msgid "Enter the ToDo priority [1 (highest) - 9 (lowest)] :"
+msgstr "Informe a prioridade do ToDo [1 (mais alta) - 9 (mais baixa)]:"
+
+msgid "no such todo"
+msgstr "não existe este ToDo"
+
+msgid "no note attached"
+msgstr "nenhuma nota anexada"
+
+msgid "Do you really want to delete this task ?"
+msgstr "Você realmente deseja remover esta tarefa ?"
+
+msgid ""
+"This item has a note attached to it. Delete (t)odo or just its (n)ote ?"
+msgstr "Este item possui uma nota anexada a ele. Remover o (t)odo ou somente sua (n)ota ?"
+
+msgid "[tn]"
+msgstr ""
+
+msgid "todo not found"
+msgstr "todo não encontrado"
+
+msgid "no such action"
+msgstr "não exite tal ação"
+
+msgid "Enter the new ToDo description :"
+msgstr "Informe a nova descrição de ToDo :"
+
+msgid "/!\\ INTERNAL ERROR /!\\"
+msgstr "/!\\ ERRO INTERNO /!\\"
+
+msgid "Please report the following bug:"
+msgstr "Favor reportar o seguinte bug:"
+
+msgid "[yn]"
+msgstr ""
+
+msgid "Press any key to continue..."
+msgstr "Pressione qualquer tecla para continuar..."
+
+msgid "failure in mktime"
+msgstr "falha no mktime"
+
+msgid "error in mktime"
+msgstr "erro no mktime"
+
+msgid "Appointment"
+msgstr "Agendamento"
+
+msgid "could not convert string"
+msgstr "Não foi possível converter string"
+
+msgid "out of range"
+msgstr "fora de alcance"
+
+msgid "yes"
+msgstr "sim"
+
+msgid "no"
+msgstr "não"
+
+msgid "option not defined"
+msgstr "opção não definida"
+
+#, c-format
+msgid "temporary file \"%s\" could not be created"
+msgstr "arquivo temporário \"%s\" não pôde ser criado"
+
+#, c-format
+msgid "Error when closing file at %s"
+msgstr "Erro em fechar arquivo em %s"
+
+msgid "No note file found\n"
+msgstr "Nenhuma nota encontrada\n"
+
+msgid "January"
+msgstr "Janeiro"
+
+msgid "February"
+msgstr "Fevereiro"
+
+msgid "March"
+msgstr "Março"
+
+msgid "April"
+msgstr "Abril"
+
+msgid "May"
+msgstr "Maio"
+
+msgid "June"
+msgstr "Junho"
+
+msgid "July"
+msgstr "Julho"
+
+msgid "August"
+msgstr "Agosto"
+
+msgid "September"
+msgstr "Setembro"
+
+msgid "October"
+msgstr "Outubro"
+
+msgid "November"
+msgstr "Novembro"
+
+msgid "December"
+msgstr "Dezembro"
+
+msgid "Sun"
+msgstr "Dom"
+
+msgid "Mon"
+msgstr "Seg"
+
+msgid "Tue"
+msgstr "Ter"
+
+msgid "Wed"
+msgstr "Qua"
+
+msgid "Thu"
+msgstr "Qui"
+
+msgid "Fri"
+msgstr "Sex"
+
+msgid "Sat"
+msgstr "Sab"
+
+msgid "mm/dd/yyyy"
+msgstr ""
+
+msgid "dd/mm/yyyy"
+msgstr ""
+
+msgid "yyyy/mm/dd"
+msgstr ""
+
+msgid "yyyy-mm-dd"
+msgstr ""
+
+msgid "Calendar"
+msgstr "Calendário"
+
+msgid "Appointments"
+msgstr "Agendamentos"
+
+msgid "ToDo"
+msgstr "ToDo"
+
+msgid "Quit"
+msgstr "Sair"
+
+msgid "Save"
+msgstr "Salvar"
+
+msgid "Cut"
+msgstr "Cortar"
+
+msgid "Paste"
+msgstr "Colar"
+
+msgid "Chg Win"
+msgstr "Mudar Jan"
+
+msgid "Import"
+msgstr "Importar"
+
+msgid "Export"
+msgstr "Exportar"
+
+msgid "Go to"
+msgstr "Ir para"
+
+msgid "Config"
+msgstr "Config"
+
+msgid "Redraw"
+msgstr "Redesenhar"
+
+msgid "Add Appt"
+msgstr "Ad. Agend"
+
+msgid "Add Todo"
+msgstr "Ad. ToDo"
+
+msgid "+1 Day"
+msgstr "+1 Dia"
+
+msgid "-1 Day"
+msgstr "-1 Dia"
+
+msgid "+1 Week"
+msgstr "+1 Semana"
+
+msgid "-1 Week"
+msgstr "-1 Semana"
+
+msgid "Today"
+msgstr "Hoje"
+
+msgid "Nxt View"
+msgstr "Visão Seg"
+
+msgid "Prv View"
+msgstr "Visão Ant"
+
+msgid "beg Week"
+msgstr "Inic. Semana"
+
+msgid "end Week"
+msgstr "Fim Semana"
+
+msgid "Add Item"
+msgstr "Ad. Item"
+
+msgid "Del Item"
+msgstr "Rm Item"
+
+msgid "Edit Itm"
+msgstr "Edit. Item"
+
+msgid "View"
+msgstr "Visão"
+
+msgid "Pipe"
+msgstr ""
+
+msgid "Flag Itm"
+msgstr "Marcar Item"
+
+msgid "Repeat"
+msgstr "Repetir"
+
+msgid "EditNote"
+msgstr "EditNota"
+
+msgid "ViewNote"
+msgstr "VerNota"
+
+msgid "Prio.+"
+msgstr "Prio.+"
+
+msgid "Prio.-"
+msgstr "Prio.-"
+
+msgid "OtherCmd"
+msgstr "OutroCmd"
+
+msgid "unknown panel"
+msgstr "painel desconhecido"
+
+msgid "Configuration file not found:"
+msgstr ""
+
+msgid "Pre-3.0.0 configuration file format detected..."
+msgstr ""
+
+msgid "Upgrade configuration directives..."
+msgstr ""
+
+msgid "done"
+msgstr ""
