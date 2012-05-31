@@ -416,9 +416,9 @@ keys_display_bindings_bar(WINDOW * win, struct binding *bindings[], int count,
     fmtkey = keys_format_label(key, KEYS_KEYLEN);
 
     custom_apply_attr(win, ATTR_HIGHEST);
-    mvwprintw(win, key_pos_y, key_pos_x, fmtkey);
+    mvwaddstr(win, key_pos_y, key_pos_x, fmtkey);
     custom_remove_attr(win, ATTR_HIGHEST);
-    mvwprintw(win, label_pos_y, label_pos_x, binding->label);
+    mvwaddstr(win, label_pos_y, label_pos_x, binding->label);
   }
   wnoutrefresh(win);
 }

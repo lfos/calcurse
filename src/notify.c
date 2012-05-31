@@ -543,7 +543,7 @@ print_option(WINDOW * win, unsigned x, unsigned y, char *name,
     maxlen = MAXCOL - x_opt - 2;
     custom_apply_attr(win, ATTR_HIGHEST);
     if (len < maxlen)
-      mvwprintw(win, y, x_opt, "%s", valstr);
+      mvwaddstr(win, y, x_opt, valstr);
     else {
       char buf[BUFSIZ];
 
@@ -554,7 +554,7 @@ print_option(WINDOW * win, unsigned x, unsigned y, char *name,
     custom_remove_attr(win, ATTR_HIGHEST);
   } else
     print_bool_option_incolor(win, valbool, y, x_opt);
-  mvwprintw(win, y + 1, x, desc);
+  mvwaddstr(win, y + 1, x, desc);
 }
 
 /* Print options related to the notify-bar. */

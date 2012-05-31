@@ -100,22 +100,22 @@ void custom_config_bar(void)
   const int SPC = 15;
 
   custom_apply_attr(win[STA].p, ATTR_HIGHEST);
-  mvwprintw(win[STA].p, 0, 2, "Q");
-  mvwprintw(win[STA].p, 1, 2, "G");
-  mvwprintw(win[STA].p, 0, 2 + SPC, "L");
-  mvwprintw(win[STA].p, 1, 2 + SPC, "S");
-  mvwprintw(win[STA].p, 0, 2 + 2 * SPC, "C");
-  mvwprintw(win[STA].p, 1, 2 + 2 * SPC, "N");
-  mvwprintw(win[STA].p, 0, 2 + 3 * SPC, "K");
+  mvwaddstr(win[STA].p, 0, 2, "Q");
+  mvwaddstr(win[STA].p, 1, 2, "G");
+  mvwaddstr(win[STA].p, 0, 2 + SPC, "L");
+  mvwaddstr(win[STA].p, 1, 2 + SPC, "S");
+  mvwaddstr(win[STA].p, 0, 2 + 2 * SPC, "C");
+  mvwaddstr(win[STA].p, 1, 2 + 2 * SPC, "N");
+  mvwaddstr(win[STA].p, 0, 2 + 3 * SPC, "K");
   custom_remove_attr(win[STA].p, ATTR_HIGHEST);
 
-  mvwprintw(win[STA].p, 0, 2 + SMLSPC, _("Exit"));
-  mvwprintw(win[STA].p, 1, 2 + SMLSPC, _("General"));
-  mvwprintw(win[STA].p, 0, 2 + SPC + SMLSPC, _("Layout"));
-  mvwprintw(win[STA].p, 1, 2 + SPC + SMLSPC, _("Sidebar"));
-  mvwprintw(win[STA].p, 0, 2 + 2 * SPC + SMLSPC, _("Color"));
-  mvwprintw(win[STA].p, 1, 2 + 2 * SPC + SMLSPC, _("Notify"));
-  mvwprintw(win[STA].p, 0, 2 + 3 * SPC + SMLSPC, _("Keys"));
+  mvwaddstr(win[STA].p, 0, 2 + SMLSPC, _("Exit"));
+  mvwaddstr(win[STA].p, 1, 2 + SMLSPC, _("General"));
+  mvwaddstr(win[STA].p, 0, 2 + SPC + SMLSPC, _("Layout"));
+  mvwaddstr(win[STA].p, 1, 2 + SPC + SMLSPC, _("Sidebar"));
+  mvwaddstr(win[STA].p, 0, 2 + 2 * SPC + SMLSPC, _("Color"));
+  mvwaddstr(win[STA].p, 1, 2 + 2 * SPC + SMLSPC, _("Notify"));
+  mvwaddstr(win[STA].p, 0, 2 + 3 * SPC + SMLSPC, _("Keys"));
 
   wnoutrefresh(win[STA].p);
   wmove(win[STA].p, 0, 0);
@@ -184,11 +184,11 @@ static void display_layout_config(struct window *lwin, int mark, int cursor)
   for (i = 0; i < NBLAYOUTS; i++) {
     int j;
 
-    mvwprintw(lwin->p, pos[i][YPOS] + 2, pos[i][XPOS], box);
+    mvwaddstr(lwin->p, pos[i][YPOS] + 2, pos[i][XPOS], box);
     if (i == mark)
       custom_apply_attr(lwin->p, ATTR_HIGHEST);
     for (j = 0; j < LAYOUTH; j++) {
-      mvwprintw(lwin->p, pos[i][YPOS] + j, pos[i][XPOS] + BOXSIZ + 1,
+      mvwaddstr(lwin->p, pos[i][YPOS] + j, pos[i][XPOS] + BOXSIZ + 1,
                 layouts[j][i]);
     }
     if (i == mark)
@@ -231,7 +231,7 @@ void custom_layout_config(void)
     switch (ch) {
     case KEY_GENERIC_HELP:
       help_wins_init(&hwin, 0, 0, (notify_bar())? row - 3 : row - 2, col);
-      mvwprintw(hwin.pad.p, 1, 0, "%s", help_text);
+      mvwaddstr(hwin.pad.p, 1, 0, help_text);
       hwin.total_lines = 7;
       wins_scrollwin_display(&hwin);
       wgetch(hwin.win.p);
@@ -319,7 +319,7 @@ void custom_sidebar_config(void)
       break;
     case KEY_GENERIC_HELP:
       help_wins_init(&hwin, 0, 0, (notify_bar())? row - 3 : row - 2, col);
-      mvwprintw(hwin.pad.p, 1, 0, "%s", help_text);
+      mvwaddstr(hwin.pad.p, 1, 0, help_text);
       hwin.total_lines = 6;
       wins_scrollwin_display(&hwin);
       wgetch(hwin.win.p);
@@ -473,26 +473,26 @@ display_color_config(struct window *cwin, int *mark_fore, int *mark_back,
 
   /* color boxes */
   for (i = 0; i < SIZE - 1; i++) {
-    mvwprintw(cwin->p, pos[i][YPOS], pos[i][XPOS], box);
+    mvwaddstr(cwin->p, pos[i][YPOS], pos[i][XPOS], box);
     wattron(cwin->p, COLOR_PAIR(colr[i]) | A_REVERSE);
-    mvwprintw(cwin->p, pos[i][YPOS], pos[i][XPOS] + XOFST, bar);
+    mvwaddstr(cwin->p, pos[i][YPOS], pos[i][XPOS] + XOFST, bar);
     wattroff(cwin->p, COLOR_PAIR(colr[i]) | A_REVERSE);
   }
 
   /* Terminal's default color */
   i = SIZE - 1;
-  mvwprintw(cwin->p, pos[i][YPOS], pos[i][XPOS], box);
+  mvwaddstr(cwin->p, pos[i][YPOS], pos[i][XPOS], box);
   wattron(cwin->p, COLOR_PAIR(colr[i]));
-  mvwprintw(cwin->p, pos[i][YPOS], pos[i][XPOS] + XOFST, bar);
+  mvwaddstr(cwin->p, pos[i][YPOS], pos[i][XPOS] + XOFST, bar);
   wattroff(cwin->p, COLOR_PAIR(colr[i]));
-  mvwprintw(cwin->p, pos[NBUSERCOLORS][YPOS] + 1,
+  mvwaddstr(cwin->p, pos[NBUSERCOLORS][YPOS] + 1,
             pos[NBUSERCOLORS][XPOS] + XOFST, default_txt);
-  mvwprintw(cwin->p, pos[SIZE - 1][YPOS] + 1,
+  mvwaddstr(cwin->p, pos[SIZE - 1][YPOS] + 1,
             pos[SIZE - 1][XPOS] + XOFST, default_txt);
 
   custom_apply_attr(cwin->p, ATTR_HIGHEST);
-  mvwprintw(cwin->p, Y, XFORE + XOFST, fore_txt);
-  mvwprintw(cwin->p, Y, XBACK + XOFST, back_txt);
+  mvwaddstr(cwin->p, Y, XFORE + XOFST, fore_txt);
+  mvwaddstr(cwin->p, Y, XBACK + XOFST, back_txt);
   custom_remove_attr(cwin->p, ATTR_HIGHEST);
 
   if (colorize) {
@@ -621,64 +621,64 @@ static int print_general_options(WINDOW * win)
   mvwprintw(win, y, XPOS, "[1] %s      ", opt[AUTO_SAVE]);
   print_bool_option_incolor(win, conf.auto_save, y,
                             XPOS + 4 + strlen(opt[AUTO_SAVE]));
-  mvwprintw(win, y + 1, XPOS,
+  mvwaddstr(win, y + 1, XPOS,
             _("(if set to YES, automatic save is done when quitting)"));
   y += YOFF;
   mvwprintw(win, y, XPOS, "[2] %s      ", opt[AUTO_GC]);
   print_bool_option_incolor(win, conf.auto_gc, y,
                             XPOS + 4 + strlen(opt[AUTO_GC]));
-  mvwprintw(win, y + 1, XPOS, _("(run the garbage collector when quitting)"));
+  mvwaddstr(win, y + 1, XPOS, _("(run the garbage collector when quitting)"));
   y += YOFF;
   mvwprintw(win, y, XPOS, "[3] %s      ", opt[PERIODIC_SAVE]);
   custom_apply_attr(win, ATTR_HIGHEST);
   mvwprintw(win, y, XPOS + 4 + strlen(opt[PERIODIC_SAVE]), "%d",
             conf.periodic_save);
   custom_remove_attr(win, ATTR_HIGHEST);
-  mvwprintw(win, y + 1, XPOS,
+  mvwaddstr(win, y + 1, XPOS,
             _("(if not null, automatically save data every 'periodic_save' "
               "minutes)"));
   y += YOFF;
   mvwprintw(win, y, XPOS, "[4] %s      ", opt[CONFIRM_QUIT]);
   print_bool_option_incolor(win, conf.confirm_quit, y,
                             XPOS + 4 + strlen(opt[CONFIRM_QUIT]));
-  mvwprintw(win, y + 1, XPOS,
+  mvwaddstr(win, y + 1, XPOS,
             _("(if set to YES, confirmation is required before quitting)"));
   y += YOFF;
   mvwprintw(win, y, XPOS, "[5] %s      ", opt[CONFIRM_DELETE]);
   print_bool_option_incolor(win, conf.confirm_delete, y,
                             XPOS + 4 + strlen(opt[CONFIRM_DELETE]));
-  mvwprintw(win, y + 1, XPOS,
+  mvwaddstr(win, y + 1, XPOS,
             _("(if set to YES, confirmation is required "
               "before deleting an event)"));
   y += YOFF;
   mvwprintw(win, y, XPOS, "[6] %s      ", opt[SYSTEM_DIAGS]);
   print_bool_option_incolor(win, conf.system_dialogs, y,
                             XPOS + 4 + strlen(opt[SYSTEM_DIAGS]));
-  mvwprintw(win, y + 1, XPOS,
+  mvwaddstr(win, y + 1, XPOS,
             _("(if set to YES, messages about loaded "
               "and saved data will be displayed)"));
   y += YOFF;
   mvwprintw(win, y, XPOS, "[7] %s      ", opt[PROGRESS_BAR]);
   print_bool_option_incolor(win, conf.progress_bar, y,
                             XPOS + 4 + strlen(opt[PROGRESS_BAR]));
-  mvwprintw(win, y + 1, XPOS,
+  mvwaddstr(win, y + 1, XPOS,
             _("(if set to YES, progress bar will be displayed "
               "when saving data)"));
   y += YOFF;
   mvwprintw(win, y, XPOS, "[8] %s      ", opt[FIRST_DAY_OF_WEEK]);
   custom_apply_attr(win, ATTR_HIGHEST);
-  mvwprintw(win, y, XPOS + 4 + strlen(opt[FIRST_DAY_OF_WEEK]), "%s",
+  mvwaddstr(win, y, XPOS + 4 + strlen(opt[FIRST_DAY_OF_WEEK]),
             calendar_week_begins_on_monday()? _("Monday") : _("Sunday"));
   custom_remove_attr(win, ATTR_HIGHEST);
-  mvwprintw(win, y + 1, XPOS,
+  mvwaddstr(win, y + 1, XPOS,
             _("(specifies the first day of week in the calendar view)"));
   y += YOFF;
   mvwprintw(win, y, XPOS, "[9] %s      ", opt[OUTPUT_DATE_FMT]);
   custom_apply_attr(win, ATTR_HIGHEST);
-  mvwprintw(win, y, XPOS + 4 + strlen(opt[OUTPUT_DATE_FMT]), "%s",
+  mvwaddstr(win, y, XPOS + 4 + strlen(opt[OUTPUT_DATE_FMT]),
             conf.output_datefmt);
   custom_remove_attr(win, ATTR_HIGHEST);
-  mvwprintw(win, y + 1, XPOS,
+  mvwaddstr(win, y + 1, XPOS,
             _("(Format of the date to be displayed in non-interactive mode)"));
   y += YOFF;
   mvwprintw(win, y, XPOS, "[0] %s      ", opt[INPUT_DATE_FMT]);
@@ -686,8 +686,8 @@ static int print_general_options(WINDOW * win)
   mvwprintw(win, y, XPOS + 4 + strlen(opt[INPUT_DATE_FMT]), "%d",
             conf.input_datefmt);
   custom_remove_attr(win, ATTR_HIGHEST);
-  mvwprintw(win, y + 1, XPOS, _("(Format to be used when entering a date: "));
-  mvwprintw(win, y + 2, XPOS,
+  mvwaddstr(win, y + 1, XPOS, _("(Format to be used when entering a date: "));
+  mvwaddstr(win, y + 2, XPOS,
             _(" (1)mm/dd/yyyy (2)dd/mm/yyyy (3)yyyy/mm/dd (4)yyyy-mm-dd)"));
 
   return y + YOFF;
@@ -849,9 +849,9 @@ print_keys_bindings(WINDOW * win, int selected_row, int selected_elm, int yoff)
     if (action == selected_row)
       custom_apply_attr(win, ATTR_HIGHEST);
     mvwprintw(win, y, XPOS, "%s ", actionstr);
-    mvwprintw(win, y, EQUALPOS, "=");
+    mvwaddstr(win, y, EQUALPOS, "=");
     if (nbkeys == 0)
-      mvwprintw(win, y, KEYPOS, _("undefined"));
+      mvwaddstr(win, y, KEYPOS, _("undefined"));
     if (action == selected_row)
       custom_remove_attr(win, ATTR_HIGHEST);
     if (nbkeys > 0) {
@@ -869,7 +869,7 @@ print_keys_bindings(WINDOW * win, int selected_row, int selected_elm, int yoff)
           pos += strlen(key) + 1;
         }
       } else {
-        mvwprintw(win, y, KEYPOS, "%s", keys_action_allkeys(action));
+        mvwaddstr(win, y, KEYPOS, keys_action_allkeys(action));
       }
     }
     y += yoff;
@@ -1044,7 +1044,7 @@ void custom_config_main(void)
       else {
         colorize = 0;
         wins_erase_status_bar();
-        mvwprintw(win[STA].p, 0, 0, no_color_support);
+        mvwaddstr(win[STA].p, 0, 0, no_color_support);
         wgetch(win[STA].p);
       }
       break;

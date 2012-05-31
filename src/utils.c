@@ -129,8 +129,8 @@ void fatalbox(const char *errmsg)
   custom_apply_attr(errwin, ATTR_HIGHEST);
   box(errwin, 0, 0);
   wins_show(errwin, label);
-  mvwprintw(errwin, 3, 1, reportmsg);
-  mvwprintw(errwin, 5, (WINCOL - strlen(msg)) / 2, "%s", msg);
+  mvwaddstr(errwin, 3, 1, reportmsg);
+  mvwaddstr(errwin, 5, (WINCOL - strlen(msg)) / 2, msg);
   custom_remove_attr(errwin, ATTR_HIGHEST);
   wins_wrefresh(errwin);
   wgetch(errwin);
@@ -155,7 +155,7 @@ void warnbox(const char *msg)
   custom_apply_attr(warnwin, ATTR_HIGHEST);
   box(warnwin, 0, 0);
   wins_show(warnwin, label);
-  mvwprintw(warnwin, 5, (WINCOL - strlen(displmsg)) / 2, "%s", displmsg);
+  mvwaddstr(warnwin, 5, (WINCOL - strlen(displmsg)) / 2, displmsg);
   custom_remove_attr(warnwin, ATTR_HIGHEST);
   wins_wrefresh(warnwin);
   wgetch(warnwin);
@@ -171,8 +171,8 @@ void status_mesg(const char *msg1, const char *msg2)
 {
   wins_erase_status_bar();
   custom_apply_attr(win[STA].p, ATTR_HIGHEST);
-  mvwprintw(win[STA].p, 0, 0, msg1);
-  mvwprintw(win[STA].p, 1, 0, msg2);
+  mvwaddstr(win[STA].p, 0, 0, msg1);
+  mvwaddstr(win[STA].p, 1, 0, msg2);
   custom_remove_attr(win[STA].p, ATTR_HIGHEST);
 }
 
@@ -269,7 +269,7 @@ erase_window_part(WINDOW * win, int first_col, int first_row, int last_col,
 
   for (r = first_row; r <= last_row; r++) {
     for (c = first_col; c <= last_col; c++)
-      mvwprintw(win, r, c, " ");
+      mvwaddstr(win, r, c, " ");
   }
 }
 
@@ -278,21 +278,18 @@ WINDOW *popup(int pop_row, int pop_col, int pop_y, int pop_x, const char *title,
               const char *msg, int hint)
 {
   const char *any_key = _("Press any key to continue...");
-  char label[BUFSIZ];
   WINDOW *popup_win;
   const int MSGXPOS = 5;
 
   popup_win = newwin(pop_row, pop_col, pop_y, pop_x);
   keypad(popup_win, TRUE);
   if (msg)
-    mvwprintw(popup_win, MSGXPOS, (pop_col - strlen(msg)) / 2, "%s", msg);
+    mvwaddstr(popup_win, MSGXPOS, (pop_col - strlen(msg)) / 2, msg);
   custom_apply_attr(popup_win, ATTR_HIGHEST);
   box(popup_win, 0, 0);
-  snprintf(label, BUFSIZ, "%s", title);
-  wins_show(popup_win, label);
+  wins_show(popup_win, title);
   if (hint)
-    mvwprintw(popup_win, pop_row - 2, pop_col - (strlen(any_key) + 1), "%s",
-              any_key);
+    mvwaddstr(popup_win, pop_row - 2, pop_col - (strlen(any_key) + 1), any_key);
   custom_remove_attr(popup_win, ATTR_HIGHEST);
   wins_wrefresh(popup_win);
 
@@ -316,7 +313,7 @@ print_in_middle(WINDOW * win, int starty, int startx, int width,
   x += (width - len) / 2;
 
   custom_apply_attr(win, ATTR_HIGHEST);
-  mvwprintw(win, y, x, "%s", string);
+  mvwaddstr(win, y, x, string);
   custom_remove_attr(win, ATTR_HIGHEST);
 }
 
@@ -505,7 +502,7 @@ item_in_popup(const char *saved_a_start, const char *saved_a_end,
     mvwprintw(popup_win, margin_top, margin_left, "- %s -> %s",
               saved_a_start, saved_a_end);
   }
-  mvwprintw(pad, 0, margin_left, "%s", msg);
+  mvwaddstr(pad, 0, margin_left, msg);
   wmove(win[STA].p, 0, 0);
   pnoutrefresh(pad, 0, 0, margin_top + 2, margin_left, padl, winw);
   wins_doupdate();
@@ -580,7 +577,7 @@ print_bool_option_incolor(WINDOW * win, unsigned option, int pos_y, int pos_x)
     EXIT(_("option not defined"));
 
   custom_apply_attr(win, color);
-  mvwprintw(win, pos_y, pos_x, "%s", option_value);
+  mvwaddstr(win, pos_y, pos_x, option_value);
   custom_remove_attr(win, color);
   wnoutrefresh(win);
   wins_doupdate();

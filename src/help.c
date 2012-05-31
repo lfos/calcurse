@@ -103,7 +103,7 @@ help_write_pad(struct window *win, char *title, char *text, enum key action)
   rownum = 0;
   erase_window_part(win->p, rownum, colnum, BUFSIZ, win->w);
   custom_apply_attr(win->p, ATTR_HIGHEST);
-  mvwprintw(win->p, rownum, colnum, "%s", title);
+  mvwaddstr(win->p, rownum, colnum, title);
   if ((int)action != KEY_RESIZE && action < NBKEYS) {
     switch (action) {
     case KEY_END_OF_WEEK:
@@ -137,7 +137,7 @@ help_write_pad(struct window *win, char *title, char *text, enum key action)
   colnum = 0;
   rownum += get_help_lines(title);
   custom_remove_attr(win->p, ATTR_HIGHEST);
-  mvwprintw(win->p, rownum, colnum, "%s", text);
+  mvwaddstr(win->p, rownum, colnum, text);
   rownum += get_help_lines(text);
   return rownum;
 }

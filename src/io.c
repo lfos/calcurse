@@ -134,8 +134,8 @@ static void progress_bar(progress_bar_t type, int progress)
   }
 
   /* Draw the progress bar. */
-  mvwprintw(win[STA].p, 1, ipos, barchar);
-  mvwprintw(win[STA].p, 1, epos[steps - 1], barchar);
+  mvwaddstr(win[STA].p, 1, ipos, barchar);
+  mvwaddstr(win[STA].p, 1, epos[steps - 1], barchar);
   custom_apply_attr(win[STA].p, ATTR_HIGHEST);
   for (i = ipos + 1; i < epos[progress]; i++)
     mvwaddch(win[STA].p, 1, i, ' ' | A_REVERSE);
@@ -310,10 +310,10 @@ static void display_mark(void)
   mwin = newwin(1, 2, 1, col - 3);
 
   custom_apply_attr(mwin, ATTR_HIGHEST);
-  mvwprintw(mwin, 0, 0, "**");
+  mvwaddstr(mwin, 0, 0, "**");
   wins_wrefresh(mwin);
   sleep(DISPLAY_TIME);
-  mvwprintw(mwin, 0, 0, "  ");
+  mvwaddstr(mwin, 0, 0, "  ");
   wins_wrefresh(mwin);
   delwin(mwin);
   wins_doupdate();
@@ -942,14 +942,14 @@ void io_export_bar(void)
   spc = 15;
 
   custom_apply_attr(win[STA].p, ATTR_HIGHEST);
-  mvwprintw(win[STA].p, 0, 2, "Q");
-  mvwprintw(win[STA].p, 1, 2, "I");
-  mvwprintw(win[STA].p, 0, 2 + spc, "P");
+  mvwaddstr(win[STA].p, 0, 2, "Q");
+  mvwaddstr(win[STA].p, 1, 2, "I");
+  mvwaddstr(win[STA].p, 0, 2 + spc, "P");
   custom_remove_attr(win[STA].p, ATTR_HIGHEST);
 
-  mvwprintw(win[STA].p, 0, 2 + smlspc, _("Exit"));
-  mvwprintw(win[STA].p, 1, 2 + smlspc, _("Ical"));
-  mvwprintw(win[STA].p, 0, 2 + spc + smlspc, _("Pcal"));
+  mvwaddstr(win[STA].p, 0, 2 + smlspc, _("Exit"));
+  mvwaddstr(win[STA].p, 1, 2 + smlspc, _("Ical"));
+  mvwaddstr(win[STA].p, 0, 2 + spc + smlspc, _("Pcal"));
 
   wnoutrefresh(win[STA].p);
   wmove(win[STA].p, 0, 0);

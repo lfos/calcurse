@@ -313,8 +313,7 @@ draw_monthly_view(struct window *cwin, struct date *current_day,
   /* print the days, with regards to the first day of the week */
   custom_apply_attr(cwin->p, ATTR_HIGHEST);
   for (j = 0; j < WEEKINDAYS; j++) {
-    mvwprintw(cwin->p, ofs_y, ofs_x + 4 * j, "%s",
-              _(daynames[1 + j - sunday_first]));
+    mvwaddstr(cwin->p, ofs_y, ofs_x + 4 * j, _(daynames[1 + j - sunday_first]));
   }
   custom_remove_attr(cwin->p, ATTR_HIGHEST);
 
@@ -473,8 +472,7 @@ draw_weekly_view(struct window *cwin, struct date *current_day,
 
     /* print the day names, with regards to the first day of the week */
     custom_apply_attr(cwin->p, ATTR_HIGHEST);
-    mvwprintw(cwin->p, OFFY, OFFX + 4 * j, "%s",
-              _(daynames[1 + j - sunday_first]));
+    mvwaddstr(cwin->p, OFFY, OFFX + 4 * j, _(daynames[1 + j - sunday_first]));
     custom_remove_attr(cwin->p, ATTR_HIGHEST);
 
     /* Check if the day to be printed has an item or not. */
@@ -515,8 +513,8 @@ draw_weekly_view(struct window *cwin, struct date *current_day,
           if (highlight)
             custom_apply_attr(cwin->p, attr);
           wattron(cwin->p, A_REVERSE);
-          mvwprintw(cwin->p, OFFY + 2 + i, OFFX + 1 + 4 * j, " ");
-          mvwprintw(cwin->p, OFFY + 2 + i, OFFX + 2 + 4 * j, " ");
+          mvwaddstr(cwin->p, OFFY + 2 + i, OFFX + 1 + 4 * j, " ");
+          mvwaddstr(cwin->p, OFFY + 2 + i, OFFX + 2 + 4 * j, " ");
           wattroff(cwin->p, A_REVERSE);
           if (highlight)
             custom_remove_attr(cwin->p, attr);
