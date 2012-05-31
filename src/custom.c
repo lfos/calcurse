@@ -295,6 +295,7 @@ void custom_sidebar_config(void)
   };
   const char *help_text =
       _
+      /* xgettext:no-c-format */
       ("This configuration screen is used to change the width of the side bar.\n"
        "The side bar is the part of the screen which contains two panels:\n"
        "the calendar and, depending on the chosen layout, either the todo list\n"
