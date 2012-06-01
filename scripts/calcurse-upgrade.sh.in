@@ -41,7 +41,13 @@ if grep -q -e '^auto_save=' -e '^auto_gc=' -e '^periodic_save=' \
   echo "$(gettext "Pre-3.0.0 configuration file format detected...")"
 
   tmpfile="$CONFFILE.calcurse-upgrade.tmp"
-  [ -e "$tmpfile" ] && exit 1
+  if [ -e "$tmpfile" ]; then
+    echo "$(gettext "Old temporary file found:") \"$tmpfile\"" >&2
+    echo "$(gettext "
+If a previous conversion did not complete, please try to remove this file and
+start over with a backup of your old configuration file.")" >&2
+    exit 1
+  fi
 
   echo -n "$(gettext "Upgrade configuration directives...")"
 
