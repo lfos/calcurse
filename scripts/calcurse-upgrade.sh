@@ -56,28 +56,95 @@ if grep -q -e '^auto_save=' -e '^auto_gc=' -e '^periodic_save=' \
   mv "$tmpfile" "$CONFFILE"
 
   if grep -q -e '^[^#=][^#=]*$' -e '^[^#=][^#=]*#.*$' "$CONFFILE"; then
-    sed -e '/^general.autosave=/{N;s/\n//}' \
-      -e '/^general.autogc=/{N;s/\n//}' \
-      -e '/^general.periodicsave=/{N;s/\n//}' \
-      -e '/^general.confirmquit=/{N;s/\n//}' \
-      -e '/^general.confirmdelete=/{N;s/\n//}' \
-      -e '/^general.systemdialogs=/{N;s/\n//}' \
-      -e '/^general.progressbar=/{N;s/\n//}' \
-      -e '/^appearance.calendarview=/{N;s/\n//}' \
-      -e '/^general.firstdayofweek=/{N;s/\n//}' \
-      -e '/^appearance.theme=/{N;s/\n//}' \
-      -e '/^appearance.layout=/{N;s/\n//}' \
-      -e '/^appearance.sidebarwidth=/{N;s/\n//}' \
-      -e '/^appearance.notifybar=/{N;s/\n//}' \
-      -e '/^format.notifydate=/{N;s/\n//}' \
-      -e '/^format.notifytime=/{N;s/\n//}' \
-      -e '/^notification.warning=/{N;s/\n//}' \
-      -e '/^notification.command=/{N;s/\n//}' \
-      -e '/^notification.notifyall=/{N;s/\n//}' \
-      -e '/^format.outputdate=/{N;s/\n//}' \
-      -e '/^format.inputdate=/{N;s/\n//}' \
-      -e '/^daemon.enable=/{N;s/\n//}' \
-      -e '/^daemon.log=/{N;s/\n//}' "$CONFFILE" > "$tmpfile"
+    sed '
+      /^general.autosave=/{
+        N
+        s/\n//
+      }
+      /^general.autogc=/{
+        N
+        s/\n//
+      }
+      /^general.periodicsave=/{
+        N
+        s/\n//
+      }
+      /^general.confirmquit=/{
+        N
+        s/\n//
+      }
+      /^general.confirmdelete=/{
+        N
+        s/\n//
+      }
+      /^general.systemdialogs=/{
+        N
+        s/\n//
+      }
+      /^general.progressbar=/{
+        N
+        s/\n//
+      }
+      /^appearance.calendarview=/{
+        N
+        s/\n//
+      }
+      /^general.firstdayofweek=/{
+        N
+        s/\n//
+      }
+      /^appearance.theme=/{
+        N
+        s/\n//
+      }
+      /^appearance.layout=/{
+        N
+        s/\n//
+      }
+      /^appearance.sidebarwidth=/{
+        N
+        s/\n//
+      }
+      /^appearance.notifybar=/{
+        N
+        s/\n//
+      }
+      /^format.notifydate=/{
+        N
+        s/\n//
+      }
+      /^format.notifytime=/{
+        N
+        s/\n//
+      }
+      /^notification.warning=/{
+        N
+        s/\n//
+      }
+      /^notification.command=/{
+        N
+        s/\n//
+      }
+      /^notification.notifyall=/{
+        N
+        s/\n//
+      }
+      /^format.outputdate=/{
+        N
+        s/\n//
+      }
+      /^format.inputdate=/{
+        N
+        s/\n//
+      }
+      /^daemon.enable=/{
+        N
+        s/\n//
+      }
+      /^daemon.log=/{
+        N
+        s/\n//
+      }' "$CONFFILE" > "$tmpfile"
     mv "$tmpfile" "$CONFFILE"
   fi
 
@@ -86,7 +153,7 @@ if grep -q -e '^auto_save=' -e '^auto_gc=' -e '^periodic_save=' \
   $1 == "general.systemdialogs" || $1 == "general.progressbar" \
     { $2 = ($2 == "yes") ? "no" : "yes" }
   $1 == "general.firstdayofweek" { $2 = ($2 == "yes") ? "monday" : "sunday" }
-  $1 == "appearance.calendarview" { $2 = ($2 == 0) ? "monthly" :
+  $1 == "appearance.calendarview" { $2 = ($2 == 0) ? "monthly" : \
                                          ($2 == 1) ? "weekly"  : $2 }
   { print }
   ' < "$CONFFILE" > "$tmpfile"
