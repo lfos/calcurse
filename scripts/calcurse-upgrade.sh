@@ -4,10 +4,15 @@ export TEXTDOMAIN='calcurse'
 
 set -e
 
-if [ "$1" = "--config" ]; then
-  CONFFILE=$2
-else
-  CONFFILE=$HOME/.calcurse/conf
+CONFFILE=$HOME/.calcurse/conf
+
+if [ "$#" -gt 0 ]; then
+  if [ "$1" = "--config" ]; then
+    CONFFILE=$2
+  else
+    echo "$(gettext "unrecognized option:") \"$1\"" >&2
+    exit 1
+  fi
 fi
 
 if [ ! -e "$CONFFILE" ]; then
