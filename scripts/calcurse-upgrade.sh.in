@@ -9,6 +9,15 @@ CONFFILE=$HOME/.calcurse/conf
 if [ "$#" -gt 0 ]; then
   if [ "$1" = "--config" ]; then
     CONFFILE=$2
+  elif [ "$1" = "-h" -o "$1" = "--help" ]; then
+    echo "calcurse-upgrade @PACKAGE_VERSION@"
+    echo "$(gettext "Usage: calcurse-upgrade [-h|-v|--config <file>]")"
+  elif [ "$1" = "-v" -o "$1" = "--version" ]; then
+    echo "calcurse-upgrade @PACKAGE_VERSION@"
+    echo "$(gettext "
+Copyright (c) 2004-2012 calcurse Development Team.
+This is free software; see the source for copying conditions.
+")"
   else
     echo "$(gettext "unrecognized option:") \"$1\"" >&2
     exit 1
