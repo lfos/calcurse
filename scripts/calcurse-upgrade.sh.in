@@ -40,7 +40,7 @@ if grep -q -e '^auto_save=' -e '^auto_gc=' -e '^periodic_save=' \
 
   echo "$(gettext "Pre-3.0.0 configuration file format detected...")"
 
-  tmpfile="${TMPDIR:-/tmp}/calcurse-upgrade.$!"
+  tmpfile="$CONFFILE.calcurse-upgrade.tmp"
   [ -e "$tmpfile" ] && exit 1
 
   echo -n "$(gettext "Upgrade configuration directives...")"
