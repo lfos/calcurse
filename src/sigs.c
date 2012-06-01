@@ -34,6 +34,16 @@
  *
  */
 
+#ifndef _BSD_SOURCE
+/* Needed for SIGWINCH on OpenBSD. */
+#define _BSD_SOURCE
+#endif
+
+#ifndef __BSD_VISIBLE
+/* Needed for SIGWINCH on FreeBSD. */
+#define __BSD_VISIBLE 1
+#endif
+
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
