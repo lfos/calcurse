@@ -27,4 +27,4 @@ src/utils.c
 src/vars.c
 src/wins.c
 
-scripts/calcurse-upgrade.sh
+scripts/calcurse-upgrade.sh.in
