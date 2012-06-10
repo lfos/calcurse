@@ -40,6 +40,23 @@ if grep -q -e '^auto_save=' -e '^auto_gc=' -e '^periodic_save=' \
 
   echo "$(gettext "Pre-3.0.0 configuration file format detected...")"
 
+  echo -n "$(gettext "Create temporary backup of the configuration file...")"
+
+  backupfile="$CONFFILE.calcurse-upgrade.old"
+  if [ -e "$backupfile" ]; then
+    echo
+    echo "$(gettext "Old backup file found:") \"$backupfile\"" >&2
+    echo "$(gettext "
+If a previous conversion did not complete, please try to restore your
+configuration from this backup and then remove the backup file.")" >&2
+    exit 1
+  fi
+
+  cp "$CONFFILE" "$backupfile"
+
+  echo -n ' '
+  echo "$(gettext 'done')"
+
   tmpfile="$CONFFILE.calcurse-upgrade.tmp"
   if [ -e "$tmpfile" ]; then
     echo "$(gettext "Old temporary file found:") \"$tmpfile\"" >&2
@@ -179,6 +196,11 @@ start over with a backup of your old configuration file.")" >&2
   ' < "$CONFFILE" > "$tmpfile"
   mv "$tmpfile" "$CONFFILE"
 
+  echo -n ' '
+  echo "$(gettext 'done')"
+
+  echo -n "$(gettext "Remove temporary backup...")"
+  rm "$backupfile"
   echo -n ' '
   echo "$(gettext 'done')"
 fi
