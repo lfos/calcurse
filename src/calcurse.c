@@ -460,6 +460,30 @@ int main(int argc, char **argv)
       }
       break;
 
+    case KEY_GENERIC_PREV_MONTH:
+      calendar_move(MONTH_PREV, count);
+      inday = do_storage(1);
+      wins_update(FLAG_CAL | FLAG_APP);
+      break;
+
+    case KEY_GENERIC_NEXT_MONTH:
+      calendar_move(MONTH_NEXT, count);
+      inday = do_storage(1);
+      wins_update(FLAG_CAL | FLAG_APP);
+      break;
+
+    case KEY_GENERIC_PREV_YEAR:
+      calendar_move(YEAR_PREV, count);
+      inday = do_storage(1);
+      wins_update(FLAG_CAL | FLAG_APP);
+      break;
+
+    case KEY_GENERIC_NEXT_YEAR:
+      calendar_move(YEAR_NEXT, count);
+      inday = do_storage(1);
+      wins_update(FLAG_CAL | FLAG_APP);
+      break;
+
     case KEY_START_OF_WEEK:
       if (wins_slctd() == CAL) {
         calendar_move(WEEK_START, count);

@@ -626,6 +626,18 @@ void calendar_move(enum move move, int count)
   case WEEK_NEXT:
     ret = date_change(&t, 0, count * WEEKINDAYS);
     break;
+  case MONTH_PREV:
+    ret = date_change(&t, -count, 0);
+    break;
+  case MONTH_NEXT:
+    ret = date_change(&t, count, 0);
+    break;
+  case YEAR_PREV:
+    ret = date_change(&t, -count * YEARINMONTHS, 0);
+    break;
+  case YEAR_NEXT:
+    ret = date_change(&t, count * YEARINMONTHS, 0);
+    break;
   case WEEK_START:
     /* Normalize struct tm to get week day number. */
     mktime(&t);

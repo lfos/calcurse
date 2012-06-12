@@ -120,6 +120,10 @@ help_write_pad(struct window *win, char *title, char *text, enum key action)
     case KEY_GENERIC_NEXT_DAY:
     case KEY_GENERIC_PREV_WEEK:
     case KEY_GENERIC_NEXT_WEEK:
+    case KEY_GENERIC_PREV_MONTH:
+    case KEY_GENERIC_NEXT_MONTH:
+    case KEY_GENERIC_PREV_YEAR:
+    case KEY_GENERIC_NEXT_YEAR:
     case KEY_GENERIC_GOTO_TODAY:
     case KEY_GENERIC_CREDITS:
     case KEY_GENERIC_CUT:
@@ -216,6 +220,10 @@ static int wanted_page(int ch)
   case KEY_GENERIC_NEXT_DAY:
   case KEY_GENERIC_PREV_WEEK:
   case KEY_GENERIC_NEXT_WEEK:
+  case KEY_GENERIC_PREV_MONTH:
+  case KEY_GENERIC_NEXT_MONTH:
+  case KEY_GENERIC_PREV_YEAR:
+  case KEY_GENERIC_NEXT_YEAR:
   case KEY_GENERIC_GOTO_TODAY:
     page = HELP_GENERAL;
     break;
@@ -694,6 +702,10 @@ void help_screen(void)
             " '%s' : +1 Day          -> move to next day\n"
             " '%s' : -1 Week         -> move to previous week\n"
             " '%s' : +1 Week         -> move to next week\n"
+            " '%s' : -1 Month        -> move to previous month\n"
+            " '%s' : +1 Month        -> move to next month\n"
+            " '%s' : -1 Year         -> move to previous year\n"
+            " '%s' : +1 Year         -> move to next year\n"
             " '%s' : Goto today      -> move to current day\n"
             "\nThe '%s' and '%s' keys are used to scroll text upward or downward\n"
             "when inside specific screens such the help screens for example.\n"
@@ -706,6 +718,10 @@ void help_screen(void)
            keys_action_firstkey(KEY_GENERIC_NEXT_DAY),
            keys_action_firstkey(KEY_GENERIC_PREV_WEEK),
            keys_action_firstkey(KEY_GENERIC_NEXT_WEEK),
+           keys_action_firstkey(KEY_GENERIC_PREV_MONTH),
+           keys_action_firstkey(KEY_GENERIC_NEXT_MONTH),
+           keys_action_firstkey(KEY_GENERIC_PREV_YEAR),
+           keys_action_firstkey(KEY_GENERIC_NEXT_YEAR),
            keys_action_firstkey(KEY_GENERIC_GOTO_TODAY),
            keys_action_firstkey(KEY_GENERIC_SCROLL_UP),
            keys_action_firstkey(KEY_GENERIC_SCROLL_DOWN));

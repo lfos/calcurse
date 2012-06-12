@@ -71,6 +71,10 @@ static struct keydef_s keydef[NBKEYS] = {
   {"generic-next-day", "C-l"},
   {"generic-prev-week", "C-k"},
   {"generic-next-week", "C-j"},
+  {"generic-prev-month", "M"},
+  {"generic-next-month", "m"},
+  {"generic-prev-year", "Y"},
+  {"generic-next-year", "y"},
   {"generic-scroll-down", "C-n"},
   {"generic-scroll-up", "C-p"},
   {"generic-goto-today", "C-g"},
@@ -466,6 +470,19 @@ void keys_popup_info(enum key key)
   info[KEY_GENERIC_NEXT_WEEK] =
       _
       ("Move to next week in calendar, whichever panel is currently selected.");
+  info[KEY_GENERIC_PREV_MONTH] =
+      _("Move to previous month in calendar, whichever panel is currently "
+        "selected");
+  info[KEY_GENERIC_NEXT_MONTH] =
+      _
+      ("Move to next month in calendar, whichever panel is currently "
+       "selected.");
+  info[KEY_GENERIC_PREV_YEAR] =
+      _("Move to previous year in calendar, whichever panel is currently "
+        "selected");
+  info[KEY_GENERIC_NEXT_YEAR] =
+      _
+      ("Move to next year in calendar, whichever panel is currently selected.");
   info[KEY_GENERIC_SCROLL_DOWN] =
       _
       ("Scroll window down (e.g. when displaying text inside a popup window).");
