@@ -67,10 +67,10 @@ static struct keydef_s keydef[NBKEYS] = {
   {"generic-redraw", "C-r"},
   {"generic-add-appt", "C-a"},
   {"generic-add-todo", "C-t"},
-  {"generic-next-day", "C-l"},
   {"generic-prev-day", "C-h"},
-  {"generic-next-week", "C-j"},
+  {"generic-next-day", "C-l"},
   {"generic-prev-week", "C-k"},
+  {"generic-next-week", "C-j"},
   {"generic-scroll-down", "C-n"},
   {"generic-scroll-up", "C-p"},
   {"generic-goto-today", "C-g"},
@@ -455,17 +455,17 @@ void keys_popup_info(enum key key)
       _("Add an appointment, whichever panel is currently selected.");
   info[KEY_GENERIC_ADD_TODO] =
       _("Add a todo item, whichever panel is currently selected.");
-  info[KEY_GENERIC_NEXT_DAY] =
-      _("Move to next day in calendar, whichever panel is currently selected.");
   info[KEY_GENERIC_PREV_DAY] =
       _("Move to previous day in calendar, whichever panel is currently "
         "selected.");
-  info[KEY_GENERIC_NEXT_WEEK] =
-      _
-      ("Move to next week in calendar, whichever panel is currently selected.");
+  info[KEY_GENERIC_NEXT_DAY] =
+      _("Move to next day in calendar, whichever panel is currently selected.");
   info[KEY_GENERIC_PREV_WEEK] =
       _("Move to previous week in calendar, whichever panel is currently "
         "selected");
+  info[KEY_GENERIC_NEXT_WEEK] =
+      _
+      ("Move to next week in calendar, whichever panel is currently selected.");
   info[KEY_GENERIC_SCROLL_DOWN] =
       _
       ("Scroll window down (e.g. when displaying text inside a popup window).");

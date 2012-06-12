@@ -597,10 +597,10 @@ void wins_status_bar(void)
   struct binding draw = { _("Redraw"), KEY_GENERIC_REDRAW };
   struct binding appt = { _("Add Appt"), KEY_GENERIC_ADD_APPT };
   struct binding todo = { _("Add Todo"), KEY_GENERIC_ADD_TODO };
-  struct binding gnday = { _("+1 Day"), KEY_GENERIC_NEXT_DAY };
   struct binding gpday = { _("-1 Day"), KEY_GENERIC_PREV_DAY };
-  struct binding gnweek = { _("+1 Week"), KEY_GENERIC_NEXT_WEEK };
+  struct binding gnday = { _("+1 Day"), KEY_GENERIC_NEXT_DAY };
   struct binding gpweek = { _("-1 Week"), KEY_GENERIC_PREV_WEEK };
+  struct binding gnweek = { _("+1 Week"), KEY_GENERIC_NEXT_WEEK };
   struct binding today = { _("Today"), KEY_GENERIC_GOTO_TODAY };
   struct binding nview = { _("Nxt View"), KEY_GENERIC_SCROLL_DOWN };
   struct binding pview = { _("Prv View"), KEY_GENERIC_SCROLL_UP };
@@ -625,20 +625,20 @@ void wins_status_bar(void)
 
   struct binding *bindings_cal[] = {
     &help, &quit, &save, &chgvu, &nview, &pview, &up, &down, &left, &right,
-    &togo, &import, &export, &weekb, &weeke, &appt, &todo, &gnday, &gpday,
-    &gnweek, &gpweek, &draw, &today, &conf
+    &togo, &import, &export, &weekb, &weeke, &appt, &todo, &gpday, &gnday,
+    &gpweek, &gnweek, &draw, &today, &conf
   };
 
   struct binding *bindings_apoint[] = {
     &help, &quit, &save, &chgvu, &import, &export, &add, &del, &edit, &view,
-    &pipe, &draw, &rept, &flag, &enote, &vnote, &up, &down, &gnday, &gpday,
-    &gnweek, &gpweek, &togo, &today, &conf, &appt, &todo, &cut, &paste
+    &pipe, &draw, &rept, &flag, &enote, &vnote, &up, &down, &gpday, &gnday,
+    &gpweek, &gnweek, &togo, &today, &conf, &appt, &todo, &cut, &paste
   };
 
   struct binding *bindings_todo[] = {
     &help, &quit, &save, &chgvu, &import, &export, &add, &del, &edit, &view,
-    &pipe, &flag, &rprio, &lprio, &enote, &vnote, &up, &down, &gnday, &gpday,
-    &gnweek, &gpweek, &togo, &today, &conf, &appt, &todo, &draw
+    &pipe, &flag, &rprio, &lprio, &enote, &vnote, &up, &down, &gpday, &gnday,
+    &gpweek, &gnweek, &togo, &today, &conf, &appt, &todo, &draw
   };
 
   enum win active_panel = wins_slctd();

@@ -116,10 +116,10 @@ help_write_pad(struct window *win, char *title, char *text, enum key action)
     case KEY_GENERIC_REDRAW:
     case KEY_GENERIC_ADD_APPT:
     case KEY_GENERIC_ADD_TODO:
-    case KEY_GENERIC_NEXT_DAY:
     case KEY_GENERIC_PREV_DAY:
-    case KEY_GENERIC_NEXT_WEEK:
+    case KEY_GENERIC_NEXT_DAY:
     case KEY_GENERIC_PREV_WEEK:
+    case KEY_GENERIC_NEXT_WEEK:
     case KEY_GENERIC_GOTO_TODAY:
     case KEY_GENERIC_CREDITS:
     case KEY_GENERIC_CUT:
@@ -212,10 +212,10 @@ static int wanted_page(int ch)
   case KEY_GENERIC_REDRAW:
   case KEY_GENERIC_ADD_APPT:
   case KEY_GENERIC_ADD_TODO:
-  case KEY_GENERIC_NEXT_DAY:
   case KEY_GENERIC_PREV_DAY:
-  case KEY_GENERIC_NEXT_WEEK:
+  case KEY_GENERIC_NEXT_DAY:
   case KEY_GENERIC_PREV_WEEK:
+  case KEY_GENERIC_NEXT_WEEK:
   case KEY_GENERIC_GOTO_TODAY:
     page = HELP_GENERAL;
     break;

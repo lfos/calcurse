@@ -614,17 +614,17 @@ void calendar_move(enum move move, int count)
   t.tm_year = slctd_day.yyyy - 1900;
 
   switch (move) {
-  case UP:
-    ret = date_change(&t, 0, -count * WEEKINDAYS);
-    break;
-  case DOWN:
-    ret = date_change(&t, 0, count * WEEKINDAYS);
-    break;
-  case LEFT:
+  case DAY_PREV:
     ret = date_change(&t, 0, -count);
     break;
-  case RIGHT:
+  case DAY_NEXT:
     ret = date_change(&t, 0, count);
+    break;
+  case WEEK_PREV:
+    ret = date_change(&t, 0, -count * WEEKINDAYS);
+    break;
+  case WEEK_NEXT:
+    ret = date_change(&t, 0, count * WEEKINDAYS);
     break;
   case WEEK_START:
     /* Normalize struct tm to get week day number. */
