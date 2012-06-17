@@ -96,7 +96,7 @@ static int
 help_write_pad(struct window *win, char *title, char *text, enum key action)
 {
   int colnum, rownum;
-  const char *bindings_title = "key bindings: %s";
+  const char *bindings_title = _("key bindings: %s");
   char *bindings;
 
   colnum = 0;
