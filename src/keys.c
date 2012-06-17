@@ -444,8 +444,8 @@ void keys_popup_info(enum key key)
       _("Display hints whenever some help screens are available.");
   info[KEY_GENERIC_QUIT] = _("Exit from the current menu, or quit calcurse.");
   info[KEY_GENERIC_SAVE] = _("Save calcurse data.");
-  info[KEY_GENERIC_CUT] = _("Help for `generic-cut`.");
-  info[KEY_GENERIC_PASTE] = _("Help for `generic-paste`.");
+  info[KEY_GENERIC_CUT] = _("Cut the item that is currently selected.");
+  info[KEY_GENERIC_PASTE] = _("Paste an item at the current position.");
   info[KEY_GENERIC_CHANGE_VIEW] =
       _("Select next panel in calcurse main screen.");
   info[KEY_GENERIC_IMPORT] = _("Import data from an external file.");
