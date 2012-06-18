@@ -87,6 +87,15 @@ static void version_arg(void)
   fputs(vtext, stdout);
 }
 
+static void more_info(void)
+{
+  fputs(_("\nFor more information, type '?' from within Calcurse, "
+          "or read the manpage.\n"), stdout);
+  fputs(_("Mail feature requests and suggestions to <misc@calcurse.org>.\n"),
+        stdout);
+  fputs(_("Mail bug reports to <bugs@calcurse.org>.\n"), stdout);
+}
+
 /*
  * Print the command line options and exit.
  */
@@ -145,14 +154,12 @@ static void help_arg(void)
         "\tIf the optional argument format is not given, ical format is\n"
         "\tselected by default.\n"
         "\tnote: redirect standard output to export data to a file,\n"
-        "\tby issuing a command such as: calcurse --export > calcurse.dat\n"
-        "\nFor more information, type '?' from within Calcurse, "
-        "or read the manpage.\n"
-        "Mail bug reports and suggestions to <misc@calcurse.org>.\n");
+        "\tby issuing a command such as: calcurse --export > calcurse.dat\n");
 
   fprintf(stdout, _("Calcurse %s - text-based organizer\n"), VERSION);
   usage();
   fputs(htext, stdout);
+  more_info();
 }
 
 /*
@@ -399,14 +406,6 @@ app_arg(int add_line, struct date *day, long date, const char *fmt_apt,
   LLIST_TS_UNLOCK(&alist_p);
 
   return app_found;
-}
-
-static void more_info(void)
-{
-  fputs(_("\nFor more information, type '?' from within Calcurse, "
-          "or read the manpage.\n"), stdout);
-  fputs(_("Mail bug reports and suggestions to "
-          "<misc@calcurse.org>.\n"), stdout);
 }
 
 /*
