@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2012-06-01 00:35+0200\n"
-"PO-Revision-Date: 2012-05-31 20:14+0000\n"
+"POT-Creation-Date: 2012-06-24 01:21+0200\n"
+"PO-Revision-Date: 2012-06-18 16:51+0000\n"
 "Last-Translator: Lukas Fleischer <transifex@cryptocrack.de>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: es\n"
@@ -76,6 +76,20 @@ msgstr ""
 #, c-format
 msgid "Calcurse %s - text-based organizer\n"
 msgstr " Calcurse %s - organizador basado en modo texto\n"
+
+msgid ""
+"\n"
+"For more information, type '?' from within Calcurse, or read the manpage.\n"
+msgstr ""
+"\n"
+"Para mas informacion, pulsa '?' dentro de Calcurse, o lee la pagina del "
+"man.\n"
+
+msgid "Mail feature requests and suggestions to <misc@calcurse.org>.\n"
+msgstr ""
+
+msgid "Mail bug reports to <bugs@calcurse.org>.\n"
+msgstr ""
 
 msgid ""
 "\n"
@@ -146,9 +160,6 @@ msgid ""
 "\tselected by default.\n"
 "\tnote: redirect standard output to export data to a file,\n"
 "\tby issuing a command such as: calcurse --export > calcurse.dat\n"
-"\n"
-"For more information, type '?' from within Calcurse, or read the manpage.\n"
-"Mail bug reports and suggestions to <misc@calcurse.org>.\n"
 msgstr ""
 
 #, c-format
@@ -177,17 +188,6 @@ msgstr ""
 
 msgid "next appointment:\n"
 msgstr "Proxima cita:\n"
-
-msgid ""
-"\n"
-"For more information, type '?' from within Calcurse, or read the manpage.\n"
-msgstr ""
-"\n"
-"Para mas informacion, pulsa '?' dentro de Calcurse, o lee la pagina del "
-"man.\n"
-
-msgid "Mail bug reports and suggestions to <misc@calcurse.org>.\n"
-msgstr "Informes de errores o comentarios a <misc@calcurse.org>.\n"
 
 msgid "Argument to the '-d' flag is not valid\n"
 msgstr "El argumento pasado a la opcion -d no es valido\n"
@@ -626,6 +626,10 @@ msgid "Internal error: line too long"
 msgstr ""
 
 msgid "out of memory"
+msgstr ""
+
+#, c-format
+msgid "key bindings: %s"
 msgstr ""
 
 msgid "Calcurse help"
@@ -1078,6 +1082,10 @@ msgid ""
 " '%s' : +1 Day          -> move to next day\n"
 " '%s' : -1 Week         -> move to previous week\n"
 " '%s' : +1 Week         -> move to next week\n"
+" '%s' : -1 Month        -> move to previous month\n"
+" '%s' : +1 Month        -> move to next month\n"
+" '%s' : -1 Year         -> move to previous year\n"
+" '%s' : +1 Year         -> move to next year\n"
 " '%s' : Goto today      -> move to current day\n"
 "\n"
 "The '%s' and '%s' keys are used to scroll text upward or downward\n"
@@ -1433,10 +1441,10 @@ msgstr ""
 msgid "Save calcurse data."
 msgstr ""
 
-msgid "Help for `generic-cut`."
+msgid "Cut the item that is currently selected."
 msgstr ""
 
-msgid "Help for `generic-paste`."
+msgid "Paste an item at the current position."
 msgstr ""
 
 msgid "Select next panel in calcurse main screen."
@@ -1466,18 +1474,32 @@ msgstr ""
 msgid "Add a todo item, whichever panel is currently selected."
 msgstr ""
 
+msgid ""
+"Move to previous day in calendar, whichever panel is currently selected."
+msgstr ""
+
 msgid "Move to next day in calendar, whichever panel is currently selected."
 msgstr ""
 
 msgid ""
-"Move to previous day in calendar, whichever panel is currently selected."
+"Move to previous week in calendar, whichever panel is currently selected"
 msgstr ""
 
 msgid "Move to next week in calendar, whichever panel is currently selected."
 msgstr ""
 
 msgid ""
-"Move to previous week in calendar, whichever panel is currently selected"
+"Move to previous month in calendar, whichever panel is currently selected"
+msgstr ""
+
+msgid "Move to next month in calendar, whichever panel is currently selected."
+msgstr ""
+
+msgid ""
+"Move to previous year in calendar, whichever panel is currently selected"
+msgstr ""
+
+msgid "Move to next year in calendar, whichever panel is currently selected."
 msgstr ""
 
 msgid "Scroll window down (e.g. when displaying text inside a popup window)."
@@ -1929,16 +1951,28 @@ msgstr "Añadir Cita"
 msgid "Add Todo"
 msgstr "Añadir tarea"
 
+msgid "-1 Day"
+msgstr ""
+
 msgid "+1 Day"
 msgstr ""
 
-msgid "-1 Day"
+msgid "-1 Week"
 msgstr ""
 
 msgid "+1 Week"
 msgstr ""
 
-msgid "-1 Week"
+msgid "-1 Month"
+msgstr ""
+
+msgid "+1 Month"
+msgstr ""
+
+msgid "-1 Year"
+msgstr ""
+
+msgid "+1 Year"
 msgstr ""
 
 msgid "Today"
@@ -1995,14 +2029,45 @@ msgstr "Otros comandos"
 msgid "unknown panel"
 msgstr ""
 
+msgid "Usage: calcurse-upgrade [-h|-v|--config <file>]"
+msgstr ""
+
+msgid "unrecognized option:"
+msgstr ""
+
 msgid "Configuration file not found:"
 msgstr ""
 
 msgid "Pre-3.0.0 configuration file format detected..."
 msgstr ""
 
-msgid "Upgrade configuration directives..."
+msgid "Create temporary backup of the configuration file..."
+msgstr ""
+
+msgid "Old backup file found:"
+msgstr ""
+
+msgid ""
+"\n"
+"If a previous conversion did not complete, please try to restore your\n"
+"configuration from this backup and then remove the backup file."
 msgstr ""
 
 msgid "done"
+msgstr ""
+
+msgid "Old temporary file found:"
+msgstr ""
+
+msgid ""
+"\n"
+"If a previous conversion did not complete, please try to remove this file "
+"and\n"
+"start over with a backup of your old configuration file."
+msgstr ""
+
+msgid "Upgrade configuration directives..."
+msgstr ""
+
+msgid "Remove temporary backup..."
 msgstr ""

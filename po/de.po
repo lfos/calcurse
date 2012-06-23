@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2012-06-01 00:35+0200\n"
+"POT-Creation-Date: 2012-06-24 01:21+0200\n"
 "PO-Revision-Date: 2012-05-31 22:19+0000\n"
 "Last-Translator: Lukas Fleischer <transifex@cryptocrack.de>\n"
 "Language-Team: German (http://www.transifex.net/projects/p/calcurse/language/"
@@ -92,6 +92,24 @@ msgstr "Calcurse %s - textbasierender Terminkalender\n"
 
 msgid ""
 "\n"
+"For more information, type '?' from within Calcurse, or read the manpage.\n"
+msgstr ""
+"\n"
+"Für nähere Informationen bitte '?' drücken oder die manpage lesen!\n"
+
+#, fuzzy
+msgid "Mail feature requests and suggestions to <misc@calcurse.org>.\n"
+msgstr ""
+"Bitte melden Sie Programmfehler und Vorschläge an <misc@calcurse.org>\n"
+
+#, fuzzy
+msgid "Mail bug reports to <bugs@calcurse.org>.\n"
+msgstr ""
+"Bitte melden Sie Programmfehler und Vorschläge an <misc@calcurse.org>\n"
+
+#, fuzzy
+msgid ""
+"\n"
 "Miscellaneous:\n"
 "  -h, --help\n"
 "\tprint this help and exit.\n"
@@ -159,9 +177,6 @@ msgid ""
 "\tselected by default.\n"
 "\tnote: redirect standard output to export data to a file,\n"
 "\tby issuing a command such as: calcurse --export > calcurse.dat\n"
-"\n"
-"For more information, type '?' from within Calcurse, or read the manpage.\n"
-"Mail bug reports and suggestions to <misc@calcurse.org>.\n"
 msgstr ""
 "\n"
 "Diverses:\n"
@@ -265,17 +280,6 @@ msgstr "Beendete Aufgaben:\n"
 
 msgid "next appointment:\n"
 msgstr "Nächster Termin:\n"
-
-msgid ""
-"\n"
-"For more information, type '?' from within Calcurse, or read the manpage.\n"
-msgstr ""
-"\n"
-"Für nähere Informationen bitte '?' drücken oder die manpage lesen!\n"
-
-msgid "Mail bug reports and suggestions to <misc@calcurse.org>.\n"
-msgstr ""
-"Bitte melden Sie Programmfehler und Vorschläge an <misc@calcurse.org>\n"
 
 msgid "Argument to the '-d' flag is not valid\n"
 msgstr "Argument von '-d' ist nicht gültig.\n"
@@ -741,6 +745,10 @@ msgstr "INTERNER FEHLER Die Zeile ist zu lang"
 
 msgid "out of memory"
 msgstr "Hauptspeicher reicht nicht aus"
+
+#, fuzzy, c-format
+msgid "key bindings: %s"
+msgstr "Allgemeingültige Tasten\n"
 
 msgid "Calcurse help"
 msgstr "calcurse Hilfe"
@@ -1454,7 +1462,7 @@ msgstr ""
 msgid "Generic keybindings\n"
 msgstr "Allgemeingültige Tasten\n"
 
-#, c-format
+#, fuzzy, c-format
 msgid ""
 "Some of the keybindings apply whatever panel is selected. They are\n"
 "called generic keybinding.\n"
@@ -1470,6 +1478,10 @@ msgid ""
 " '%s' : +1 Day          -> move to next day\n"
 " '%s' : -1 Week         -> move to previous week\n"
 " '%s' : +1 Week         -> move to next week\n"
+" '%s' : -1 Month        -> move to previous month\n"
+" '%s' : +1 Month        -> move to next month\n"
+" '%s' : -1 Year         -> move to previous year\n"
+" '%s' : +1 Year         -> move to next year\n"
 " '%s' : Goto today      -> move to current day\n"
 "\n"
 "The '%s' and '%s' keys are used to scroll text upward or downward\n"
@@ -1905,11 +1917,13 @@ msgstr "Verlasse aktuelles Menü oder beende calcurse."
 msgid "Save calcurse data."
 msgstr "Speichere calcurse-Daten."
 
-msgid "Help for `generic-cut`."
-msgstr "Hilfe für `generic-cut`."
+#, fuzzy
+msgid "Cut the item that is currently selected."
+msgstr "Erstelle Aufgabe, je nach aktuell ausgewähltem Fenster."
 
-msgid "Help for `generic-paste`."
-msgstr "Hilfe für `generic-paste`."
+#, fuzzy
+msgid "Paste an item at the current position."
+msgstr "Füge ein Item zum aktuell ausgewählten Fenster hinzu."
 
 msgid "Select next panel in calcurse main screen."
 msgstr "Wähle nächstes Fenster im calcurse-Hauptbildschirm."
@@ -1938,23 +1952,45 @@ msgstr "Erstelle Termin, je nach aktuell ausgewähltem Fenster."
 msgid "Add a todo item, whichever panel is currently selected."
 msgstr "Erstelle Aufgabe, je nach aktuell ausgewähltem Fenster."
 
-msgid "Move to next day in calendar, whichever panel is currently selected."
-msgstr ""
-"Gehe zum nächsten Tag im Kalender, je nach aktuell ausgewähltem Fenster."
-
 msgid ""
 "Move to previous day in calendar, whichever panel is currently selected."
 msgstr ""
 "Gehe zum vorigen Tag im Kalender, je nach aktuell ausgewähltem Fenster."
 
-msgid "Move to next week in calendar, whichever panel is currently selected."
+msgid "Move to next day in calendar, whichever panel is currently selected."
 msgstr ""
-"Gehe zur nächsten Woche im Kalender, je nach aktuell ausgewähltem Fenster."
+"Gehe zum nächsten Tag im Kalender, je nach aktuell ausgewähltem Fenster."
 
 msgid ""
 "Move to previous week in calendar, whichever panel is currently selected"
 msgstr ""
 "Gehe zur vorigen Woche im Kalender, je nach aktuell ausgewähltem Fenster."
+
+msgid "Move to next week in calendar, whichever panel is currently selected."
+msgstr ""
+"Gehe zur nächsten Woche im Kalender, je nach aktuell ausgewähltem Fenster."
+
+#, fuzzy
+msgid ""
+"Move to previous month in calendar, whichever panel is currently selected"
+msgstr ""
+"Gehe zum vorigen Tag im Kalender, je nach aktuell ausgewähltem Fenster."
+
+#, fuzzy
+msgid "Move to next month in calendar, whichever panel is currently selected."
+msgstr ""
+"Gehe zum nächsten Tag im Kalender, je nach aktuell ausgewähltem Fenster."
+
+#, fuzzy
+msgid ""
+"Move to previous year in calendar, whichever panel is currently selected"
+msgstr ""
+"Gehe zum vorigen Tag im Kalender, je nach aktuell ausgewähltem Fenster."
+
+#, fuzzy
+msgid "Move to next year in calendar, whichever panel is currently selected."
+msgstr ""
+"Gehe zum nächsten Tag im Kalender, je nach aktuell ausgewähltem Fenster."
 
 msgid "Scroll window down (e.g. when displaying text inside a popup window)."
 msgstr ""
@@ -2406,17 +2442,29 @@ msgstr "Neuer Termin"
 msgid "Add Todo"
 msgstr "Neue Aufgabe"
 
+msgid "-1 Day"
+msgstr "-1 Tag"
+
 msgid "+1 Day"
 msgstr "+1 Tag"
 
-msgid "-1 Day"
-msgstr "-1 Tag"
+msgid "-1 Week"
+msgstr "-1 Woche"
 
 msgid "+1 Week"
 msgstr "+1 Woche"
 
-msgid "-1 Week"
-msgstr "-1 Woche"
+msgid "-1 Month"
+msgstr ""
+
+msgid "+1 Month"
+msgstr ""
+
+msgid "-1 Year"
+msgstr ""
+
+msgid "+1 Year"
+msgstr ""
 
 msgid "Today"
 msgstr "Heute"
@@ -2472,14 +2520,54 @@ msgstr "Zus. Befehle"
 msgid "unknown panel"
 msgstr "unbekannte Ansicht"
 
+msgid "Usage: calcurse-upgrade [-h|-v|--config <file>]"
+msgstr ""
+
+#, fuzzy
+msgid "unrecognized option:"
+msgstr "Unbestimmte Einstellung!"
+
 msgid "Configuration file not found:"
 msgstr "Konfigurationsdatei nicht gefunden:"
 
 msgid "Pre-3.0.0 configuration file format detected..."
 msgstr "Prä-3.0.0-Konfigurationsdateiformat entdeckt..."
 
-msgid "Upgrade configuration directives..."
-msgstr "Aktualisiere Konfigurationsanweisungen..."
+#, fuzzy
+msgid "Create temporary backup of the configuration file..."
+msgstr "konnte Konfigurationsdatei nicht öffnen"
+
+msgid "Old backup file found:"
+msgstr ""
+
+msgid ""
+"\n"
+"If a previous conversion did not complete, please try to restore your\n"
+"configuration from this backup and then remove the backup file."
+msgstr ""
 
 msgid "done"
 msgstr "fertig"
+
+#, fuzzy
+msgid "Old temporary file found:"
+msgstr "Notiz nicht gefunden\n"
+
+msgid ""
+"\n"
+"If a previous conversion did not complete, please try to remove this file "
+"and\n"
+"start over with a backup of your old configuration file."
+msgstr ""
+
+msgid "Upgrade configuration directives..."
+msgstr "Aktualisiere Konfigurationsanweisungen..."
+
+msgid "Remove temporary backup..."
+msgstr ""
+
+#~ msgid "Help for `generic-cut`."
+#~ msgstr "Hilfe für `generic-cut`."
+
+#~ msgid "Help for `generic-paste`."
+#~ msgstr "Hilfe für `generic-paste`."
