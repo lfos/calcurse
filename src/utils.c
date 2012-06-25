@@ -492,8 +492,8 @@ draw_scrollbar(WINDOW * win, int y, int x, int length,
  * long to fit in its corresponding panel window.
  */
 void
-item_in_popup(const char *saved_a_start, const char *saved_a_end,
-              const char *msg, const char *pop_title)
+item_in_popup(const char *a_start, const char *a_end, const char *msg,
+              const char *pop_title)
 {
   WINDOW *popup_win, *pad;
   const int margin_left = 4, margin_top = 4;
@@ -502,9 +502,9 @@ item_in_popup(const char *saved_a_start, const char *saved_a_end,
 
   pad = newpad(padl, padw);
   popup_win = popup(winl, winw, 1, 2, pop_title, NULL, 1);
-  if (strcmp(pop_title, _("Appointment")) == 0) {
-    mvwprintw(popup_win, margin_top, margin_left, "- %s -> %s",
-              saved_a_start, saved_a_end);
+  if (a_start && a_end) {
+    mvwprintw(popup_win, margin_top, margin_left, "- %s -> %s", a_start,
+              a_end);
   }
   mvwaddstr(pad, 0, margin_left, msg);
   wmove(win[STA].p, 0, 0);

@@ -42,16 +42,7 @@
 
 #include "calcurse.h"
 
-struct day_saved_item {
-  char start[BUFSIZ];
-  char end[BUFSIZ];
-  char state;
-  char type;
-  char *mesg;
-};
-
 static llist_t day_items;
-static struct day_saved_item day_saved_item;
 
 static void day_free(struct day_item *day)
 {
@@ -406,14 +397,11 @@ display_item(struct day_item *day, int incolor, int width, int y, int x)
 /*
  * Write the appointments and events for the selected day in a pad.
  * An horizontal line is drawn between events and appointments, and the
- * item selected by user is highlighted. This item is also saved inside
- * structure (pointed by day_saved_item), to be later displayed in a
- * popup window if requested.
+ * item selected by user is highlighted.
  */
 void day_write_pad(long date, int width, int length, int incolor)
 {
   llist_item_t *i;
-  struct apoint a;
   int line, item_number;
   const int x_pos = 0;
   unsigned draw_line = 0;
@@ -426,10 +414,6 @@ void day_write_pad(long date, int width, int length, int incolor)
     /* First print the events for current day. */
     if (day->type < RECUR_APPT) {
       item_number++;
-      if (item_number - incolor == 0) {
-        day_saved_item.type = day->type;
-        day_saved_item.mesg = day_item_get_mesg(day);
-      }
       display_item(day, item_number - incolor, width - 7, line, x_pos);
       line++;
       draw_line = 1;
@@ -442,11 +426,6 @@ void day_write_pad(long date, int width, int length, int incolor)
       }
       /* Last print the appointments for current day. */
       item_number++;
-      if (item_number - incolor == 0) {
-        day_saved_item.type = day->type;
-        day_saved_item.mesg = day_item_get_mesg(day);
-        apoint_sec2str(&a, date, day_saved_item.start, day_saved_item.end);
-      }
       display_item_date(day, item_number - incolor, date, line + 1, x_pos);
       display_item(day, item_number - incolor, width - 7, line + 2, x_pos);
       line += 3;
@@ -457,14 +436,25 @@ void day_write_pad(long date, int width, int length, int incolor)
 /* Display an item inside a popup window. */
 void day_popup_item(void)
 {
-  if (day_saved_item.type == EVNT || day_saved_item.type == RECUR_EVNT)
-    item_in_popup(NULL, NULL, day_saved_item.mesg, _("Event :"));
-  else if (day_saved_item.type == APPT || day_saved_item.type == RECUR_APPT)
-    item_in_popup(day_saved_item.start, day_saved_item.end,
-                  day_saved_item.mesg, _("Appointment :"));
-  else
+  struct day_item *day = day_get_item(apoint_hilt());
+
+  if (day->type == EVNT || day->type == RECUR_EVNT) {
+    item_in_popup(NULL, NULL, day_item_get_mesg(day), _("Event :"));
+  } else if (day->type == APPT || day->type == RECUR_APPT) {
+    char a_st[100], a_end[100];
+
+    /* FIXME: Redesign apoint_sec2str() and remove the need for a temporary
+     * appointment item here. */
+    struct apoint apt_tmp;
+    apt_tmp.start = day->start;
+    apt_tmp.dur = day_item_get_duration(day);
+    apoint_sec2str(&apt_tmp, calendar_get_slctd_day_sec(), a_st, a_end);
+
+    item_in_popup(a_st, a_end, day_item_get_mesg(day), _("Appointment :"));
+  } else {
     EXIT(_("unknown item type"));
-  /* NOTREACHED */
+    /* NOTREACHED */
+  }
 }
 
 /*
