@@ -288,123 +288,21 @@ static void arg_print_date(long date)
 static int
 app_arg(int add_line, struct date *day, long date, const char *fmt_apt,
         const char *fmt_rapt, const char *fmt_ev, const char *fmt_rev,
-        regex_t * regex)
+        regex_t *regex)
 {
-  llist_item_t *i, *j;
-  long today;
-  unsigned print_date = 1;
-  int app_found = 0;
-
   if (date == 0)
-    today = get_sec_date(*day);
-  else
-    today = date;
+    date = get_sec_date(*day);
 
-  /*
-   * Calculate and print the selected date if there is an event for
-   * that date and it is the first one, and then print all the events for
-   * that date.
-   */
-  LLIST_FIND_FOREACH(&recur_elist, today, recur_event_inday, i) {
-    struct recur_event *re = LLIST_GET_DATA(i);
-    if (regex && regexec(regex, re->mesg, 0, 0, 0) != 0)
-      continue;
+  int n = day_store_items(date, NULL, NULL, regex);
 
-    app_found = 1;
-    if (add_line) {
+  if (n > 1) {
+    if (add_line)
       fputs("\n", stdout);
-      add_line = 0;
-    }
-    if (print_date) {
-      arg_print_date(today);
-      print_date = 0;
-    }
-    print_recur_event(fmt_rev, today, re);
+    arg_print_date(date);
+    day_write_stdout(date, fmt_apt, fmt_rapt, fmt_ev, fmt_rev);
   }
 
-  LLIST_FIND_FOREACH_CONT(&eventlist, today, event_inday, i) {
-    struct event *ev = LLIST_TS_GET_DATA(i);
-    if (regex && regexec(regex, ev->mesg, 0, 0, 0) != 0)
-      continue;
-
-    app_found = 1;
-    if (add_line) {
-      fputs("\n", stdout);
-      add_line = 0;
-    }
-    if (print_date) {
-      arg_print_date(today);
-      print_date = 0;
-    }
-    print_event(fmt_ev, today, ev);
-  }
-
-  /* Same process is performed but this time on the appointments. */
-  LLIST_TS_LOCK(&alist_p);
-  LLIST_TS_LOCK(&recur_alist_p);
-
-  /*
-   * Iterate over regular appointments and recurrent ones simultaneously (fixes
-   * http://lists.calcurse.org/bugs/msg00002.html).
-   */
-  i = LLIST_TS_FIND_FIRST(&alist_p, today, apoint_inday);
-  j = LLIST_TS_FIND_FIRST(&recur_alist_p, today, recur_apoint_inday);
-  while (i || j) {
-    struct apoint *apt = LLIST_TS_GET_DATA(i);
-    struct recur_apoint *ra = LLIST_TS_GET_DATA(j);
-    unsigned occurrence;
-
-    while (i && regex && regexec(regex, apt->mesg, 0, 0, 0) != 0) {
-      i = LLIST_TS_FIND_NEXT(i, today, apoint_inday);
-      apt = LLIST_TS_GET_DATA(i);
-    }
-
-    while (j && regex && regexec(regex, ra->mesg, 0, 0, 0) != 0) {
-      j = LLIST_TS_FIND_NEXT(j, today, recur_apoint_inday);
-      ra = LLIST_TS_GET_DATA(j);
-    }
-
-    if (apt && ra) {
-      if (recur_apoint_find_occurrence(ra, today, &occurrence) &&
-          apt->start <= occurrence)
-        ra = NULL;
-      else
-        apt = NULL;
-    }
-
-    if (apt) {
-      app_found = 1;
-      if (add_line) {
-        fputs("\n", stdout);
-        add_line = 0;
-      }
-      if (print_date) {
-        arg_print_date(today);
-        print_date = 0;
-      }
-      print_apoint(fmt_apt, today, apt);
-      i = LLIST_TS_FIND_NEXT(i, today, apoint_inday);
-    } else if (ra) {
-      app_found = 1;
-      if (add_line) {
-        fputs("\n", stdout);
-        add_line = 0;
-      }
-      if (print_date) {
-        arg_print_date(today);
-        print_date = 0;
-      }
-      recur_apoint_find_occurrence(ra, today, &occurrence);
-      print_recur_apoint(fmt_rapt, today, occurrence, ra);
-      apt = NULL;
-      j = LLIST_TS_FIND_NEXT(j, today, recur_apoint_inday);
-    }
-  }
-
-  LLIST_TS_UNLOCK(&recur_alist_p);
-  LLIST_TS_UNLOCK(&alist_p);
-
-  return app_found;
+  return n - 1;
 }
 
 /*
