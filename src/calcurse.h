@@ -865,7 +865,7 @@ void recur_exc_scan(llist_t *, FILE *);
 struct notify_app *recur_apoint_check_next(struct notify_app *, long, long);
 struct recur_apoint *recur_get_apoint(long, int);
 struct recur_event *recur_get_event(long, int);
-void recur_apoint_switch_notify(long, int);
+void recur_apoint_switch_notify(struct recur_apoint *);
 void recur_event_paste_item(void);
 void recur_apoint_paste_item(void);
 

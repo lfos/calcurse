@@ -1005,19 +1005,11 @@ struct recur_event *recur_get_event(long date, int num)
 }
 
 /* Switch recurrent item notification state. */
-void recur_apoint_switch_notify(long date, int recur_nb)
+void recur_apoint_switch_notify(struct recur_apoint *rapt)
 {
-  llist_item_t *i;
-
   LLIST_TS_LOCK(&recur_alist_p);
-  i = LLIST_TS_FIND_NTH(&recur_alist_p, recur_nb, date, recur_apoint_inday);
-
-  if (!i)
-    EXIT(_("item not found"));
-  struct recur_apoint *rapt = LLIST_TS_GET_DATA(i);
 
   rapt->state ^= APOINT_NOTIFY;
-
   if (notify_bar())
     notify_check_repeated(rapt);
 

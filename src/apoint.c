@@ -560,7 +560,7 @@ void apoint_switch_notify(void)
   date = calendar_get_slctd_day_sec();
 
   if (p->type == RECUR_APPT) {
-    recur_apoint_switch_notify(date, p->appt_pos);
+    recur_apoint_switch_notify(p->item.rapt);
     return;
   } else if (p->type == APPT)
     apoint_nb = day_item_nb(date, hilt, APPT);
