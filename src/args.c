@@ -41,7 +41,6 @@
 #include <limits.h>
 #include <getopt.h>
 #include <time.h>
-#include <regex.h>
 
 #include "calcurse.h"
 

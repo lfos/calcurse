@@ -39,7 +39,6 @@
 #include <sys/types.h>
 #include <ctype.h>
 #include <time.h>
-#include <regex.h>
 
 #include "calcurse.h"
 
@@ -280,7 +279,7 @@ static int day_store_recur_apoints(long date, regex_t *regex)
  * and the length of the new pad to write is returned.
  * The number of events and appointments in the current day are also updated.
  */
-static int
+int
 day_store_items(long date, unsigned *pnb_events, unsigned *pnb_apoints,
                 regex_t *regex)
 {
@@ -292,14 +291,18 @@ day_store_items(long date, unsigned *pnb_events, unsigned *pnb_apoints,
   day_init_list();
   nb_recur_events = day_store_recur_events(date, regex);
   nb_events = day_store_events(date, regex);
-  *pnb_events = nb_events;
+  if (pnb_events)
+    *pnb_events = nb_events;
   nb_recur_apoints = day_store_recur_apoints(date, regex);
   nb_apoints = day_store_apoints(date, regex);
-  *pnb_apoints = nb_apoints;
+  if (pnb_apoints)
+    *pnb_apoints = nb_apoints;
   pad_length = (nb_recur_events + nb_events + 1 +
                 3 * (nb_recur_apoints + nb_apoints));
-  *pnb_apoints += nb_recur_apoints;
-  *pnb_events += nb_recur_events;
+  if (pnb_apoints)
+    *pnb_apoints += nb_recur_apoints;
+  if (pnb_events)
+    *pnb_events += nb_recur_events;
 
   return pad_length;
 }

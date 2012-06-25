@@ -53,6 +53,7 @@
 #include <time.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <regex.h>
 
 #include "llist.h"
 #include "htable.h"
@@ -663,6 +664,7 @@ void custom_config_main(void);
 
 /* day.c */
 void day_free_list(void);
+int day_store_items(long, unsigned *, unsigned *, regex_t *);
 struct day_items_nb *day_process_storage(struct date *, unsigned,
                                          struct day_items_nb *);
 void day_write_pad(long, int, int, int);
