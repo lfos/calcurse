@@ -311,7 +311,7 @@ int main(int argc, char **argv)
 
     case KEY_FLAG_ITEM:
       if (wins_slctd() == APP && apoint_hilt() != 0) {
-        apoint_switch_notify();
+        day_item_switch_notify();
         inday = do_storage(0);
         wins_update(FLAG_APP);
       } else if (wins_slctd() == TOD && todo_hilt() != 0) {

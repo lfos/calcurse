@@ -1154,3 +1154,18 @@ void day_pipe_item(void)
   }
   wins_unprepare_external();
 }
+
+/* Switch notification state for an item. */
+void day_item_switch_notify(void)
+{
+  struct day_item *p = day_get_item(apoint_hilt());
+
+  switch (p->type) {
+  case RECUR_APPT:
+    recur_apoint_switch_notify(p->item.rapt);
+    break;
+  case APPT:
+    apoint_switch_notify(p->item.apt);
+    break;
+  }
+}

@@ -547,34 +547,13 @@ struct notify_app *apoint_check_next(struct notify_app *app, long start)
 /*
  * Switch notification state.
  */
-void apoint_switch_notify(void)
+void apoint_switch_notify(struct apoint *apt)
 {
-  struct day_item *p;
-  long date;
-  int apoint_nb = 0, need_chk_notify;
-
-  p = day_get_item(hilt);
-  if (p->type != APPT && p->type != RECUR_APPT)
-    return;
-
-  date = calendar_get_slctd_day_sec();
-
-  if (p->type == RECUR_APPT) {
-    recur_apoint_switch_notify(p->item.rapt);
-    return;
-  } else if (p->type == APPT)
-    apoint_nb = day_item_nb(date, hilt, APPT);
-
-  need_chk_notify = 0;
   LLIST_TS_LOCK(&alist_p);
-
-  struct apoint *apt = apoint_get(date, apoint_nb);
 
   apt->state ^= APOINT_NOTIFY;
   if (notify_bar())
     notify_check_added(apt->mesg, apt->start, apt->state);
-  if (need_chk_notify)
-    notify_check_next_app(0);
 
   LLIST_TS_UNLOCK(&alist_p);
 }

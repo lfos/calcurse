@@ -612,7 +612,7 @@ void apoint_delete_bynum(long, unsigned, enum eraseflg);
 void apoint_scroll_pad_down(int, int);
 void apoint_scroll_pad_up(int);
 struct notify_app *apoint_check_next(struct notify_app *, long);
-void apoint_switch_notify(void);
+void apoint_switch_notify(struct apoint *);
 void apoint_update_panel(int);
 void apoint_paste_item(void);
 
@@ -682,6 +682,7 @@ int day_item_nb(long, int, int);
 void day_edit_note(const char *);
 void day_view_note(const char *);
 void day_pipe_item(void);
+void day_item_switch_notify(void);
 
 /* dmon.c */
 void dmon_start(int);
