@@ -455,6 +455,35 @@ void day_write_pad(long date, int width, int length, int incolor)
   }
 }
 
+/* Write the appointments and events for the selected day to stdout. */
+void day_write_stdout(long date, const char *fmt_apt, const char *fmt_rapt,
+                      const char *fmt_ev, const char *fmt_rev)
+{
+  llist_item_t *i;
+
+  LLIST_FOREACH(&day_items, i) {
+    struct day_item *day = LLIST_TS_GET_DATA(i);
+
+    switch (day->type) {
+    case APPT:
+      print_apoint(fmt_apt, date, day->item.apt);
+      break;
+    case EVNT:
+      print_event(fmt_ev, date, day->item.ev);
+      break;
+    case RECUR_APPT:
+      print_recur_apoint(fmt_rapt, date, day->start, day->item.rapt);
+      break;
+    case RECUR_EVNT:
+      print_recur_event(fmt_rev, date, day->item.rev);
+      break;
+    default:
+      EXIT(_("unknown item type"));
+      /* NOTREACHED */
+    }
+  }
+}
+
 /* Display an item inside a popup window. */
 void day_popup_item(void)
 {
