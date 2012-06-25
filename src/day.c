@@ -333,8 +333,7 @@ struct day_items_nb *day_process_storage(struct date *slctd_date,
  * Print an item date in the appointment panel.
  */
 static void
-display_item_date(int incolor, long start, long dur, int state, int type,
-                  long date, int y, int x)
+display_item_date(struct day_item *day, int incolor, long date, int y, int x)
 {
   WINDOW *win;
   char a_st[100], a_end[100];
@@ -342,22 +341,25 @@ display_item_date(int incolor, long start, long dur, int state, int type,
   /* FIXME: Redesign apoint_sec2str() and remove the need for a temporary
    * appointment item here. */
   struct apoint apt_tmp;
-  apt_tmp.start = start;
-  apt_tmp.dur = dur;
+  apt_tmp.start = day->start;
+  apt_tmp.dur = day_item_get_duration(day);
 
   win = apad.ptrwin;
   apoint_sec2str(&apt_tmp, date, a_st, a_end);
   if (incolor == 0)
     custom_apply_attr(win, ATTR_HIGHEST);
-  if (type == RECUR_EVNT || type == RECUR_APPT)
-    if (state & APOINT_NOTIFY)
+
+  if (day->type == RECUR_EVNT || day->type == RECUR_APPT) {
+    if (day_item_get_state(day) & APOINT_NOTIFY)
       mvwprintw(win, y, x, " *!%s -> %s", a_st, a_end);
     else
       mvwprintw(win, y, x, " * %s -> %s", a_st, a_end);
-  else if (state & APOINT_NOTIFY)
+  } else if (day_item_get_state(day) & APOINT_NOTIFY) {
     mvwprintw(win, y, x, " -!%s -> %s", a_st, a_end);
-  else
+  } else {
     mvwprintw(win, y, x, " - %s -> %s", a_st, a_end);
+  }
+
   if (incolor == 0)
     custom_remove_attr(win, ATTR_HIGHEST);
 }
@@ -366,8 +368,7 @@ display_item_date(int incolor, long start, long dur, int state, int type,
  * Print an item description in the corresponding panel window.
  */
 static void
-display_item(int incolor, char *msg, int recur, int note, int width, int y,
-             int x)
+display_item(struct day_item *day, int incolor, int width, int y, int x)
 {
   WINDOW *win;
   int ch_recur, ch_note;
@@ -377,18 +378,20 @@ display_item(int incolor, char *msg, int recur, int note, int width, int y,
   if (width <= 0)
     return;
 
+  char *mesg = day_item_get_mesg(day);
+
   win = apad.ptrwin;
-  ch_recur = (recur) ? '*' : ' ';
-  ch_note = (note) ? '>' : ' ';
+  ch_recur = (day->type == RECUR_EVNT || day->type == RECUR_APPT) ? '*' : ' ';
+  ch_note = day_item_get_note(day) ? '>' : ' ';
   if (incolor == 0)
     custom_apply_attr(win, ATTR_HIGHEST);
-  if (utf8_strwidth(msg) < width)
-    mvwprintw(win, y, x, " %c%c%s", ch_recur, ch_note, msg);
+  if (utf8_strwidth(mesg) < width)
+    mvwprintw(win, y, x, " %c%c%s", ch_recur, ch_note, mesg);
   else {
-    for (i = 0; msg[i] && width > 0; i++) {
-      if (!UTF8_ISCONT(msg[i]))
-        width -= utf8_width(&msg[i]);
-      buf[i] = msg[i];
+    for (i = 0; mesg[i] && width > 0; i++) {
+      if (!UTF8_ISCONT(mesg[i]))
+        width -= utf8_width(&mesg[i]);
+      buf[i] = mesg[i];
     }
     if (i)
       buf[i - 1] = 0;
@@ -411,7 +414,7 @@ void day_write_pad(long date, int width, int length, int incolor)
 {
   llist_item_t *i;
   struct apoint a;
-  int line, item_number, recur;
+  int line, item_number;
   const int x_pos = 0;
   unsigned draw_line = 0;
 
@@ -419,23 +422,15 @@ void day_write_pad(long date, int width, int length, int incolor)
 
   LLIST_FOREACH(&day_items, i) {
     struct day_item *day = LLIST_TS_GET_DATA(i);
-    char *mesg = day_item_get_mesg(day);
-    char *note = day_item_get_note(day);
-
-    if (day->type == RECUR_EVNT || day->type == RECUR_APPT)
-      recur = 1;
-    else
-      recur = 0;
 
     /* First print the events for current day. */
     if (day->type < RECUR_APPT) {
       item_number++;
       if (item_number - incolor == 0) {
         day_saved_item.type = day->type;
-        day_saved_item.mesg = mesg;
+        day_saved_item.mesg = day_item_get_mesg(day);
       }
-      display_item(item_number - incolor, mesg, recur, (note != NULL) ? 1 : 0,
-                   width - 7, line, x_pos);
+      display_item(day, item_number - incolor, width - 7, line, x_pos);
       line++;
       draw_line = 1;
     } else {
@@ -449,14 +444,11 @@ void day_write_pad(long date, int width, int length, int incolor)
       item_number++;
       if (item_number - incolor == 0) {
         day_saved_item.type = day->type;
-        day_saved_item.mesg = mesg;
+        day_saved_item.mesg = day_item_get_mesg(day);
         apoint_sec2str(&a, date, day_saved_item.start, day_saved_item.end);
       }
-      display_item_date(item_number - incolor, day->start,
-                        day_item_get_duration(day), day_item_get_state(day),
-                        day->type, date, line + 1, x_pos);
-      display_item(item_number - incolor, mesg, 0, (note != NULL) ? 1 : 0,
-                   width - 7, line + 2, x_pos);
+      display_item_date(day, item_number - incolor, date, line + 1, x_pos);
+      display_item(day, item_number - incolor, width - 7, line + 2, x_pos);
       line += 3;
     }
   }
