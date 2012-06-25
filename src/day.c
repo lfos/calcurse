@@ -791,17 +791,13 @@ void day_edit_item(void)
   struct event *e;
   struct recur_apoint *ra;
   struct apoint *a;
-  long date;
-  int item_num;
   int need_check_notify = 0;
 
-  item_num = apoint_hilt();
-  p = day_get_item(item_num);
-  date = calendar_get_slctd_day_sec();
+  p = day_get_item(apoint_hilt());
 
   switch (p->type) {
   case RECUR_EVNT:
-    re = recur_get_event(date, day_item_nb(date, item_num, RECUR_EVNT));
+    re = p->item.rev;
     const char *choice_recur_evnt[2] = {
       _("Description"),
       _("Repetition"),
@@ -818,11 +814,11 @@ void day_edit_item(void)
     }
     break;
   case EVNT:
-    e = event_get(date, day_item_nb(date, item_num, EVNT));
+    e = p->item.ev;
     update_desc(&e->mesg);
     break;
   case RECUR_APPT:
-    ra = recur_get_apoint(date, day_item_nb(date, item_num, RECUR_APPT));
+    ra = p->item.rapt;
     const char *choice_recur_appt[4] = {
       _("Start time"),
       _("End time"),
@@ -851,7 +847,7 @@ void day_edit_item(void)
     }
     break;
   case APPT:
-    a = apoint_get(date, day_item_nb(date, item_num, APPT));
+    a = p->item.apt;
     const char *choice_appt[3] = {
       _("Start time"),
       _("End time"),
@@ -1044,35 +1040,23 @@ void day_edit_note(const char *editor)
 {
   struct day_item *p;
   char *note;
-  struct recur_apoint *ra;
-  struct apoint *a;
-  struct recur_event *re;
-  struct event *e;
-  long date;
-  int item_num;
 
-  item_num = apoint_hilt();
-  p = day_get_item(item_num);
+  p = day_get_item(apoint_hilt());
   note = day_item_get_note(p);
   edit_note(&note, editor);
 
-  date = calendar_get_slctd_day_sec();
   switch (p->type) {
   case RECUR_EVNT:
-    re = recur_get_event(date, day_item_nb(date, item_num, RECUR_EVNT));
-    re->note = note;
+    p->item.rev->note = note;
     break;
   case EVNT:
-    e = event_get(date, day_item_nb(date, item_num, EVNT));
-    e->note = note;
+    p->item.ev->note = note;
     break;
   case RECUR_APPT:
-    ra = recur_get_apoint(date, day_item_nb(date, item_num, RECUR_APPT));
-    ra->note = note;
+    p->item.rapt->note = note;
     break;
   case APPT:
-    a = apoint_get(date, day_item_nb(date, item_num, APPT));
-    a->note = note;
+    p->item.apt->note = note;
     break;
   }
 }
@@ -1092,13 +1076,7 @@ void day_pipe_item(void)
   int pout;
   int pid;
   FILE *fpout;
-  int item_num;
-  long date;
   struct day_item *p;
-  struct recur_apoint *ra;
-  struct apoint *a;
-  struct recur_event *re;
-  struct event *e;
 
   status_mesg(_("Pipe item to external command:"), "");
   if (getstring(win[STA].p, cmd, BUFSIZ, 0, 1) != GETSTRING_VALID)
@@ -1108,25 +1086,19 @@ void day_pipe_item(void)
   if ((pid = shell_exec(NULL, &pout, *arg, arg))) {
     fpout = fdopen(pout, "w");
 
-    item_num = apoint_hilt();
-    p = day_get_item(item_num);
-    date = calendar_get_slctd_day_sec();
+    p = day_get_item(apoint_hilt());
     switch (p->type) {
     case RECUR_EVNT:
-      re = recur_get_event(date, day_item_nb(date, item_num, RECUR_EVNT));
-      recur_event_write(re, fpout);
+      recur_event_write(p->item.rev, fpout);
       break;
     case EVNT:
-      e = event_get(date, day_item_nb(date, item_num, EVNT));
-      event_write(e, fpout);
+      event_write(p->item.ev, fpout);
       break;
     case RECUR_APPT:
-      ra = recur_get_apoint(date, day_item_nb(date, item_num, RECUR_APPT));
-      recur_apoint_write(ra, fpout);
+      recur_apoint_write(p->item.rapt, fpout);
       break;
     case APPT:
-      a = apoint_get(date, day_item_nb(date, item_num, APPT));
-      apoint_write(a, fpout);
+      apoint_write(p->item.apt, fpout);
       break;
     }
 
