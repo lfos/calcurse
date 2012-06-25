@@ -283,28 +283,23 @@ int
 day_store_items(long date, unsigned *pnb_events, unsigned *pnb_apoints,
                 regex_t *regex)
 {
-  int pad_length;
   int nb_events, nb_recur_events;
   int nb_apoints, nb_recur_apoints;
 
   day_free_list();
   day_init_list();
+
   nb_recur_events = day_store_recur_events(date, regex);
   nb_events = day_store_events(date, regex);
-  if (pnb_events)
-    *pnb_events = nb_events;
   nb_recur_apoints = day_store_recur_apoints(date, regex);
   nb_apoints = day_store_apoints(date, regex);
-  if (pnb_apoints)
-    *pnb_apoints = nb_apoints;
-  pad_length = (nb_recur_events + nb_events + 1 +
-                3 * (nb_recur_apoints + nb_apoints));
-  if (pnb_apoints)
-    *pnb_apoints += nb_recur_apoints;
-  if (pnb_events)
-    *pnb_events += nb_recur_events;
 
-  return pad_length;
+  if (pnb_apoints)
+    *pnb_apoints = nb_apoints + nb_recur_apoints;
+  if (pnb_events)
+    *pnb_events = nb_events + nb_recur_events;
+
+  return nb_events + nb_recur_events + nb_apoints + nb_recur_apoints;
 }
 
 /*
@@ -331,8 +326,8 @@ struct day_items_nb *day_process_storage(struct date *slctd_date,
     delwin(apad.ptrwin);
 
   /* Store the events and appointments (recursive and normal items). */
-  apad.length = day_store_items(date, &inday->nb_events, &inday->nb_apoints,
-                                NULL);
+  day_store_items(date, &inday->nb_events, &inday->nb_apoints, NULL);
+  apad.length = (inday->nb_events + 1 + 3 * inday->nb_apoints);
 
   /* Create the new pad with its new length. */
   if (day_changed)

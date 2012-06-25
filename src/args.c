@@ -295,14 +295,14 @@ app_arg(int add_line, struct date *day, long date, const char *fmt_apt,
 
   int n = day_store_items(date, NULL, NULL, regex);
 
-  if (n > 1) {
+  if (n > 0) {
     if (add_line)
       fputs("\n", stdout);
     arg_print_date(date);
     day_write_stdout(date, fmt_apt, fmt_rapt, fmt_ev, fmt_rev);
   }
 
-  return n - 1;
+  return n;
 }
 
 /*
