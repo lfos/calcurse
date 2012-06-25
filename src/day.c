@@ -39,6 +39,7 @@
 #include <sys/types.h>
 #include <ctype.h>
 #include <time.h>
+#include <regex.h>
 
 #include "calcurse.h"
 
@@ -158,7 +159,7 @@ static int day_item_get_state(struct day_item *day)
  * dedicated to the selected day.
  * Returns the number of events for the selected day.
  */
-static int day_store_events(long date)
+static int day_store_events(long date, regex_t *regex)
 {
   llist_item_t *i;
   union aptev_ptr p;
@@ -166,6 +167,10 @@ static int day_store_events(long date)
 
   LLIST_FIND_FOREACH_CONT(&eventlist, date, event_inday, i) {
     struct event *ev = LLIST_TS_GET_DATA(i);
+
+    if (regex && regexec(regex, ev->mesg, 0, 0, 0) != 0)
+      continue;
+
     p.ev = ev;
     day_add_item(EVNT, ev->day, p, 0);
     e_nb++;
@@ -181,7 +186,7 @@ static int day_store_events(long date)
  * dedicated to the selected day.
  * Returns the number of recurrent events for the selected day.
  */
-static int day_store_recur_events(long date)
+static int day_store_recur_events(long date, regex_t *regex)
 {
   llist_item_t *i;
   union aptev_ptr p;
@@ -189,6 +194,10 @@ static int day_store_recur_events(long date)
 
   LLIST_FIND_FOREACH(&recur_elist, date, recur_event_inday, i) {
     struct recur_event *rev = LLIST_TS_GET_DATA(i);
+
+    if (regex && regexec(regex, rev->mesg, 0, 0, 0) != 0)
+      continue;
+
     p.rev = rev;
     day_add_item(RECUR_EVNT, rev->day, p, 0);
     e_nb++;
@@ -204,7 +213,7 @@ static int day_store_recur_events(long date)
  * structure dedicated to the selected day.
  * Returns the number of appointments for the selected day.
  */
-static int day_store_apoints(long date)
+static int day_store_apoints(long date, regex_t *regex)
 {
   llist_item_t *i;
   union aptev_ptr p;
@@ -213,6 +222,10 @@ static int day_store_apoints(long date)
   LLIST_TS_LOCK(&alist_p);
   LLIST_TS_FIND_FOREACH(&alist_p, date, apoint_inday, i) {
     struct apoint *apt = LLIST_TS_GET_DATA(i);
+
+    if (regex && regexec(regex, apt->mesg, 0, 0, 0) != 0)
+      continue;
+
     p.apt = apt;
 
     if (apt->start >= date + DAYINSEC)
@@ -233,7 +246,7 @@ static int day_store_apoints(long date)
  * structure dedicated to the selected day.
  * Returns the number of recurrent appointments for the selected day.
  */
-static int day_store_recur_apoints(long date)
+static int day_store_recur_apoints(long date, regex_t *regex)
 {
   llist_item_t *i;
   union aptev_ptr p;
@@ -242,6 +255,10 @@ static int day_store_recur_apoints(long date)
   LLIST_TS_LOCK(&recur_alist_p);
   LLIST_TS_FIND_FOREACH(&recur_alist_p, date, recur_apoint_inday, i) {
     struct recur_apoint *rapt = LLIST_TS_GET_DATA(i);
+
+    if (regex && regexec(regex, rapt->mesg, 0, 0, 0) != 0)
+      continue;
+
     p.rapt = rapt;
 
     unsigned real_start;
@@ -264,7 +281,8 @@ static int day_store_recur_apoints(long date)
  * The number of events and appointments in the current day are also updated.
  */
 static int
-day_store_items(long date, unsigned *pnb_events, unsigned *pnb_apoints)
+day_store_items(long date, unsigned *pnb_events, unsigned *pnb_apoints,
+                regex_t *regex)
 {
   int pad_length;
   int nb_events, nb_recur_events;
@@ -272,11 +290,11 @@ day_store_items(long date, unsigned *pnb_events, unsigned *pnb_apoints)
 
   day_free_list();
   day_init_list();
-  nb_recur_events = day_store_recur_events(date);
-  nb_events = day_store_events(date);
+  nb_recur_events = day_store_recur_events(date, regex);
+  nb_events = day_store_events(date, regex);
   *pnb_events = nb_events;
-  nb_recur_apoints = day_store_recur_apoints(date);
-  nb_apoints = day_store_apoints(date);
+  nb_recur_apoints = day_store_recur_apoints(date, regex);
+  nb_apoints = day_store_apoints(date, regex);
   *pnb_apoints = nb_apoints;
   pad_length = (nb_recur_events + nb_events + 1 +
                 3 * (nb_recur_apoints + nb_apoints));
@@ -310,7 +328,8 @@ struct day_items_nb *day_process_storage(struct date *slctd_date,
     delwin(apad.ptrwin);
 
   /* Store the events and appointments (recursive and normal items). */
-  apad.length = day_store_items(date, &inday->nb_events, &inday->nb_apoints);
+  apad.length = day_store_items(date, &inday->nb_events, &inday->nb_apoints,
+                                NULL);
 
   /* Create the new pad with its new length. */
   if (day_changed)
