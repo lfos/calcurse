@@ -308,18 +308,6 @@ struct day_items_nb {
   unsigned nb_apoints;
 };
 
-/* Generic item description (to hold appointments, events...). */
-struct day_item {
-  long start;                   /* seconds since 1 jan 1970 */
-  long appt_dur;                /* appointment duration in seconds */
-  int type;                     /* (recursive or normal) event or appointment */
-  int evnt_id;                  /* event identifier */
-  int appt_pos;                 /* real position in recurrent list */
-  char state;                   /* appointment state */
-  char *mesg;                   /* item description */
-  char *note;                   /* note attached to item */
-};
-
 struct excp {
   long st;                      /* beggining of the considered day, in seconds */
 };
@@ -359,6 +347,22 @@ struct recur_event {
   long day;                     /* day at which event occurs */
   char *mesg;                   /* event description */
   char *note;                   /* note attached to event */
+};
+
+/* Generic pointer data type for appointments and events. */
+union aptev_ptr {
+  struct apoint *apt;
+  struct event *ev;
+  struct recur_apoint *rapt;
+  struct recur_event *rev;
+};
+
+/* Generic item description (to hold appointments, events...). */
+struct day_item {
+  int type;                     /* (recursive or normal) event or appointment */
+  long start;                   /* start time of the repetition occurrence */
+  union aptev_ptr item;         /* pointer to the actual item */
+  int appt_pos;                 /* real position in recurrent list */
 };
 
 /* Available view for the calendar panel. */

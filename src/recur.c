@@ -902,11 +902,13 @@ void recur_repeat_item(void)
 
   date = calendar_get_slctd_day_sec();
   if (p->type == EVNT) {
-    recur_event_new(p->mesg, p->note, p->start, p->evnt_id, type, freq,
-                    until, NULL);
+    struct event *ev = p->item.ev;
+    recur_event_new(ev->mesg, ev->note, ev->day, ev->id, type, freq, until,
+                    NULL);
   } else if (p->type == APPT) {
-    ra = recur_apoint_new(p->mesg, p->note, p->start, p->appt_dur,
-                          p->state, type, freq, until, NULL);
+    struct apoint *apt = p->item.apt;
+    ra = recur_apoint_new(apt->mesg, apt->note, apt->start, apt->dur,
+                          apt->state, type, freq, until, NULL);
     if (notify_bar())
       notify_check_repeated(ra);
   } else {

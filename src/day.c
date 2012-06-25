@@ -74,26 +74,6 @@ void day_free_list(void)
   LLIST_FREE(&day_items);
 }
 
-/* Add an event in the current day list */
-static struct day_item *day_add_event(int type, char *mesg, char *note,
-                                      long nday, int id)
-{
-  struct day_item *day;
-
-  day = mem_malloc(sizeof(struct day_item));
-  day->mesg = mesg;
-  day->note = note;
-  day->type = type;
-  day->appt_dur = 0;
-  day->appt_pos = 0;
-  day->start = nday;
-  day->evnt_id = id;
-
-  LLIST_ADD(&day_items, day);
-
-  return day;
-}
-
 static int day_cmp_start(struct day_item *a, struct day_item *b)
 {
   if (a->type <= EVNT) {
@@ -107,26 +87,77 @@ static int day_cmp_start(struct day_item *a, struct day_item *b)
     return a->start < b->start ? -1 : (a->start == b->start ? 0 : 1);
 }
 
-/* Add an appointment in the current day list. */
-static struct day_item *day_add_apoint(int type, char *mesg, char *note,
-                                       long start, long dur, char state,
-                                       int real_pos)
+/* Add an item to the current day list. */
+static void day_add_item(int type, long start, union aptev_ptr item,
+                         int appt_pos)
 {
-  struct day_item *day;
-
-  day = mem_malloc(sizeof(struct day_item));
-  day->mesg = mesg;
-  day->note = note;
-  day->start = start;
-  day->appt_dur = dur;
-  day->appt_pos = real_pos;
-  day->state = state;
+  struct day_item *day = mem_malloc(sizeof(struct day_item));
   day->type = type;
-  day->evnt_id = 0;
+  day->start = start;
+  day->item = item;
+  day->appt_pos = appt_pos;
 
   LLIST_ADD_SORTED(&day_items, day, day_cmp_start);
+}
 
-  return day;
+/* Get the message of an item. */
+static char *day_item_get_mesg(struct day_item *day)
+{
+  switch (day->type) {
+  case APPT:
+    return day->item.apt->mesg;
+  case EVNT:
+    return day->item.ev->mesg;
+  case RECUR_APPT:
+    return day->item.rapt->mesg;
+  case RECUR_EVNT:
+    return day->item.rev->mesg;
+  default:
+    return NULL;
+  }
+}
+
+/* Get the note attached to an item. */
+static char *day_item_get_note(struct day_item *day)
+{
+  switch (day->type) {
+  case APPT:
+    return day->item.apt->note;
+  case EVNT:
+    return day->item.ev->note;
+  case RECUR_APPT:
+    return day->item.rapt->note;
+  case RECUR_EVNT:
+    return day->item.rev->note;
+  default:
+    return NULL;
+  }
+}
+
+/* Get the duration of an item. */
+static long day_item_get_duration(struct day_item *day)
+{
+  switch (day->type) {
+  case APPT:
+    return day->item.apt->dur;
+  case RECUR_APPT:
+    return day->item.rapt->dur;
+  default:
+    return 0;
+  }
+}
+
+/* Get the notification state of an item. */
+static int day_item_get_state(struct day_item *day)
+{
+  switch (day->type) {
+  case APPT:
+    return day->item.apt->state;
+  case RECUR_APPT:
+    return day->item.rapt->state;
+  default:
+    return APOINT_NULL;
+  }
 }
 
 /*
@@ -139,11 +170,13 @@ static struct day_item *day_add_apoint(int type, char *mesg, char *note,
 static int day_store_events(long date)
 {
   llist_item_t *i;
+  union aptev_ptr p;
   int e_nb = 0;
 
   LLIST_FIND_FOREACH_CONT(&eventlist, date, event_inday, i) {
     struct event *ev = LLIST_TS_GET_DATA(i);
-    day_add_event(EVNT, ev->mesg, ev->note, ev->day, ev->id);
+    p.ev = ev;
+    day_add_item(EVNT, ev->day, p, 0);
     e_nb++;
   }
 
@@ -160,11 +193,13 @@ static int day_store_events(long date)
 static int day_store_recur_events(long date)
 {
   llist_item_t *i;
+  union aptev_ptr p;
   int e_nb = 0;
 
   LLIST_FIND_FOREACH(&recur_elist, date, recur_event_inday, i) {
     struct recur_event *rev = LLIST_TS_GET_DATA(i);
-    day_add_event(RECUR_EVNT, rev->mesg, rev->note, rev->day, rev->id);
+    p.rev = rev;
+    day_add_item(RECUR_EVNT, rev->day, p, 0);
     e_nb++;
   }
 
@@ -181,17 +216,18 @@ static int day_store_recur_events(long date)
 static int day_store_apoints(long date)
 {
   llist_item_t *i;
+  union aptev_ptr p;
   int a_nb = 0;
 
   LLIST_TS_LOCK(&alist_p);
   LLIST_TS_FIND_FOREACH(&alist_p, date, apoint_inday, i) {
     struct apoint *apt = LLIST_TS_GET_DATA(i);
+    p.apt = apt;
 
     if (apt->start >= date + DAYINSEC)
       break;
 
-    day_add_apoint(APPT, apt->mesg, apt->note, apt->start, apt->dur,
-                   apt->state, 0);
+    day_add_item(APPT, apt->start, p, 0);
     a_nb++;
   }
   LLIST_TS_UNLOCK(&alist_p);
@@ -209,15 +245,17 @@ static int day_store_apoints(long date)
 static int day_store_recur_apoints(long date)
 {
   llist_item_t *i;
+  union aptev_ptr p;
   int a_nb = 0;
 
   LLIST_TS_LOCK(&recur_alist_p);
   LLIST_TS_FIND_FOREACH(&recur_alist_p, date, recur_apoint_inday, i) {
     struct recur_apoint *rapt = LLIST_TS_GET_DATA(i);
+    p.rapt = rapt;
+
     unsigned real_start;
     if (recur_apoint_find_occurrence(rapt, date, &real_start)) {
-      day_add_apoint(RECUR_APPT, rapt->mesg, rapt->note, real_start,
-                     rapt->dur, rapt->state, a_nb);
+      day_add_item(RECUR_APPT, real_start, p, a_nb);
       a_nb++;
     }
   }
@@ -292,37 +330,31 @@ struct day_items_nb *day_process_storage(struct date *slctd_date,
 }
 
 /*
- * Returns a structure of type apoint_llist_node_t given a structure of type
- * day_item_s
- */
-static void day_item_s2apoint_s(struct apoint *a, struct day_item *p)
-{
-  a->state = p->state;
-  a->start = p->start;
-  a->dur = p->appt_dur;
-  a->mesg = p->mesg;
-}
-
-/*
  * Print an item date in the appointment panel.
  */
 static void
-display_item_date(int incolor, struct apoint *i, int type, long date,
-                  int y, int x)
+display_item_date(int incolor, long start, long dur, int state, int type,
+                  long date, int y, int x)
 {
   WINDOW *win;
   char a_st[100], a_end[100];
 
+  /* FIXME: Redesign apoint_sec2str() and remove the need for a temporary
+   * appointment item here. */
+  struct apoint apt_tmp;
+  apt_tmp.start = start;
+  apt_tmp.dur = dur;
+
   win = apad.ptrwin;
-  apoint_sec2str(i, date, a_st, a_end);
+  apoint_sec2str(&apt_tmp, date, a_st, a_end);
   if (incolor == 0)
     custom_apply_attr(win, ATTR_HIGHEST);
   if (type == RECUR_EVNT || type == RECUR_APPT)
-    if (i->state & APOINT_NOTIFY)
+    if (state & APOINT_NOTIFY)
       mvwprintw(win, y, x, " *!%s -> %s", a_st, a_end);
     else
       mvwprintw(win, y, x, " * %s -> %s", a_st, a_end);
-  else if (i->state & APOINT_NOTIFY)
+  else if (state & APOINT_NOTIFY)
     mvwprintw(win, y, x, " -!%s -> %s", a_st, a_end);
   else
     mvwprintw(win, y, x, " - %s -> %s", a_st, a_end);
@@ -387,19 +419,23 @@ void day_write_pad(long date, int width, int length, int incolor)
 
   LLIST_FOREACH(&day_items, i) {
     struct day_item *day = LLIST_TS_GET_DATA(i);
+    char *mesg = day_item_get_mesg(day);
+    char *note = day_item_get_note(day);
+
     if (day->type == RECUR_EVNT || day->type == RECUR_APPT)
       recur = 1;
     else
       recur = 0;
+
     /* First print the events for current day. */
     if (day->type < RECUR_APPT) {
       item_number++;
       if (item_number - incolor == 0) {
         day_saved_item.type = day->type;
-        day_saved_item.mesg = day->mesg;
+        day_saved_item.mesg = mesg;
       }
-      display_item(item_number - incolor, day->mesg, recur,
-                   (day->note != NULL) ? 1 : 0, width - 7, line, x_pos);
+      display_item(item_number - incolor, mesg, recur, (note != NULL) ? 1 : 0,
+                   width - 7, line, x_pos);
       line++;
       draw_line = 1;
     } else {
@@ -411,16 +447,16 @@ void day_write_pad(long date, int width, int length, int incolor)
       }
       /* Last print the appointments for current day. */
       item_number++;
-      day_item_s2apoint_s(&a, day);
       if (item_number - incolor == 0) {
         day_saved_item.type = day->type;
-        day_saved_item.mesg = day->mesg;
+        day_saved_item.mesg = mesg;
         apoint_sec2str(&a, date, day_saved_item.start, day_saved_item.end);
       }
-      display_item_date(item_number - incolor, &a, day->type,
-                        date, line + 1, x_pos);
-      display_item(item_number - incolor, day->mesg, 0,
-                   (day->note != NULL) ? 1 : 0, width - 7, line + 2, x_pos);
+      display_item_date(item_number - incolor, day->start,
+                        day_item_get_duration(day), day_item_get_state(day),
+                        day->type, date, line + 1, x_pos);
+      display_item(item_number - incolor, mesg, 0, (note != NULL) ? 1 : 0,
+                   width - 7, line + 2, x_pos);
       line += 3;
     }
   }
@@ -888,7 +924,7 @@ int day_erase_item(long date, int item_number, enum eraseflg flag)
 
   p = day_get_item(item_number);
   if (flag == ERASE_DONT_FORCE) {
-    if (p->note == NULL)
+    if (day_item_get_note(p) == NULL)
       ans = 1;
     else
       ans = status_ask_choice(note_warning, note_choices, nb_note_choices);
@@ -1025,6 +1061,7 @@ int day_item_nb(long date, int day_num, int type)
 void day_edit_note(const char *editor)
 {
   struct day_item *p;
+  char *note;
   struct recur_apoint *ra;
   struct apoint *a;
   struct recur_event *re;
@@ -1034,25 +1071,26 @@ void day_edit_note(const char *editor)
 
   item_num = apoint_hilt();
   p = day_get_item(item_num);
-  edit_note(&p->note, editor);
+  note = day_item_get_note(p);
+  edit_note(&note, editor);
 
   date = calendar_get_slctd_day_sec();
   switch (p->type) {
   case RECUR_EVNT:
     re = recur_get_event(date, day_item_nb(date, item_num, RECUR_EVNT));
-    re->note = p->note;
+    re->note = note;
     break;
   case EVNT:
     e = event_get(date, day_item_nb(date, item_num, EVNT));
-    e->note = p->note;
+    e->note = note;
     break;
   case RECUR_APPT:
     ra = recur_get_apoint(date, day_item_nb(date, item_num, RECUR_APPT));
-    ra->note = p->note;
+    ra->note = note;
     break;
   case APPT:
     a = apoint_get(date, day_item_nb(date, item_num, APPT));
-    a->note = p->note;
+    a->note = note;
     break;
   }
 }
@@ -1061,7 +1099,7 @@ void day_edit_note(const char *editor)
 void day_view_note(const char *pager)
 {
   struct day_item *p = day_get_item(apoint_hilt());
-  view_note(p->note, pager);
+  view_note(day_item_get_note(p), pager);
 }
 
 /* Pipe an appointment or event to an external program. */
