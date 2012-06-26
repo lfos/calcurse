@@ -189,11 +189,8 @@ void todo_delete(struct todo *todo)
  * This way, it is easy to retrive its original priority if the user decides
  * that in fact it was not completed.
  */
-void todo_flag(void)
+void todo_flag(struct todo *t)
 {
-  struct todo *t;
-
-  t = todo_get_item(hilt);
   t->id = -t->id;
 }
 
@@ -217,14 +214,12 @@ static int todo_get_position(struct todo *needle)
 }
 
 /* Change an item priority by pressing '+' or '-' inside TODO panel. */
-void todo_chg_priority(int action)
+void todo_chg_priority(struct todo *backup, int action)
 {
-  struct todo *backup;
   char backup_mesg[BUFSIZ];
   int backup_id;
   char backup_note[MAX_NOTESIZ + 1];
 
-  backup = todo_get_item(hilt);
   strncpy(backup_mesg, backup->mesg, strlen(backup->mesg) + 1);
   backup_id = backup->id;
   if (backup->note)
@@ -338,16 +333,14 @@ void todo_update_panel(int which_pan)
 }
 
 /* Attach a note to a todo */
-void todo_edit_note(const char *editor)
+void todo_edit_note(struct todo *i, const char *editor)
 {
-  struct todo *i = todo_get_item(hilt);
   edit_note(&i->note, editor);
 }
 
 /* View a note previously attached to a todo */
-void todo_view_note(const char *pager)
+void todo_view_note(struct todo *i, const char *pager)
 {
-  struct todo *i = todo_get_item(hilt);
   view_note(i->note, pager);
 }
 

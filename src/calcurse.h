@@ -901,11 +901,11 @@ struct todo *todo_add(char *, int, char *);
 void todo_write(struct todo *, FILE *);
 void todo_delete_note_bynum(unsigned);
 void todo_delete(struct todo *);
-void todo_flag(void);
-void todo_chg_priority(int);
+void todo_flag(struct todo *);
+void todo_chg_priority(struct todo *, int);
 void todo_update_panel(int);
-void todo_edit_note(const char *);
-void todo_view_note(const char *);
+void todo_edit_note(struct todo *, const char *);
+void todo_view_note(struct todo *, const char *);
 void todo_init_list(void);
 void todo_free_list(void);
 

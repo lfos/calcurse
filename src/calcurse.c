@@ -315,7 +315,7 @@ int main(int argc, char **argv)
         inday = do_storage(0);
         wins_update(FLAG_APP);
       } else if (wins_slctd() == TOD && todo_hilt() != 0) {
-        todo_flag();
+        todo_flag(todo_get_item(todo_hilt()));
         wins_update(FLAG_TOD);
       }
       break;
@@ -331,7 +331,7 @@ int main(int argc, char **argv)
     case KEY_RAISE_PRIORITY:
     case KEY_LOWER_PRIORITY:
       if (wins_slctd() == TOD && todo_hilt() != 0) {
-        todo_chg_priority(key);
+        todo_chg_priority(todo_get_item(todo_hilt()), key);
         if (todo_hilt_pos() < 0)
           todo_set_first(todo_hilt());
         else if (todo_hilt_pos() >= win[TOD].h - 4)
@@ -345,7 +345,7 @@ int main(int argc, char **argv)
         day_edit_note(day_get_item(apoint_hilt()), conf.editor);
         inday = do_storage(0);
       } else if (wins_slctd() == TOD && todo_hilt() != 0)
-        todo_edit_note(conf.editor);
+        todo_edit_note(todo_get_item(todo_hilt()), conf.editor);
       wins_update(FLAG_ALL);
       break;
 
@@ -353,7 +353,7 @@ int main(int argc, char **argv)
       if (wins_slctd() == APP && apoint_hilt() != 0)
         day_view_note(day_get_item(apoint_hilt()), conf.pager);
       else if (wins_slctd() == TOD && todo_hilt() != 0)
-        todo_view_note(conf.pager);
+        todo_view_note(todo_get_item(todo_hilt()), conf.pager);
       wins_update(FLAG_ALL);
       break;
 
