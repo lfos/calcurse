@@ -550,9 +550,9 @@ static long diff_years(struct tm lt_start, struct tm lt_end)
   return lt_end.tm_year - lt_start.tm_year;
 }
 
-static int exc_inday(struct excp *exc, long day_start)
+static int exc_inday(struct excp *exc, long *day_start)
 {
-  return (exc->st >= day_start && exc->st < day_start + DAYINSEC);
+  return (exc->st >= *day_start && exc->st < *day_start + DAYINSEC);
 }
 
 /*
@@ -626,7 +626,7 @@ recur_item_find_occurrence(long item_start, long item_dur, llist_t * item_exc,
   lt_item_day.tm_isdst = lt_day.tm_isdst;
   t = mktime(&lt_item_day);
 
-  if (LLIST_FIND_FIRST(item_exc, t, exc_inday))
+  if (LLIST_FIND_FIRST(item_exc, &t, exc_inday))
     return 0;
 
   if (rpt_until != 0 && t > rpt_until)
@@ -678,16 +678,16 @@ recur_item_inday(long item_start, long item_dur, llist_t * item_exc,
                                     rpt_freq, rpt_until, day_start, NULL);
 }
 
-unsigned recur_apoint_inday(struct recur_apoint *rapt, long day_start)
+unsigned recur_apoint_inday(struct recur_apoint *rapt, long *day_start)
 {
   return recur_item_inday(rapt->start, rapt->dur, &rapt->exc, rapt->rpt->type,
-                          rapt->rpt->freq, rapt->rpt->until, day_start);
+                          rapt->rpt->freq, rapt->rpt->until, *day_start);
 }
 
-unsigned recur_event_inday(struct recur_event *rev, long day_start)
+unsigned recur_event_inday(struct recur_event *rev, long *day_start)
 {
   return recur_item_inday(rev->day, DAYINSEC, &rev->exc, rev->rpt->type,
-                          rev->rpt->freq, rev->rpt->until, day_start);
+                          rev->rpt->freq, rev->rpt->until, *day_start);
 }
 
 /*
@@ -700,7 +700,7 @@ recur_event_erase(long start, unsigned num, unsigned delete_whole,
 {
   llist_item_t *i;
 
-  i = LLIST_FIND_NTH(&recur_elist, num, start, recur_event_inday);
+  i = LLIST_FIND_NTH(&recur_elist, num, &start, recur_event_inday);
 
   if (!i)
     EXIT(_("event not found"));
@@ -742,7 +742,7 @@ recur_apoint_erase(long start, unsigned num, unsigned delete_whole,
   llist_item_t *i;
   int need_check_notify = 0;
 
-  i = LLIST_TS_FIND_NTH(&recur_alist_p, num, start, recur_apoint_inday);
+  i = LLIST_TS_FIND_NTH(&recur_alist_p, num, &start, recur_apoint_inday);
 
   if (!i)
     EXIT(_("appointment not found"));
@@ -825,7 +825,7 @@ struct notify_app *recur_apoint_check_next(struct notify_app *app, long start,
   unsigned real_recur_start_time;
 
   LLIST_TS_LOCK(&recur_alist_p);
-  LLIST_TS_FIND_FOREACH(&recur_alist_p, app->time, recur_apoint_starts_before,
+  LLIST_TS_FIND_FOREACH(&recur_alist_p, &app->time, recur_apoint_starts_before,
                         i) {
     struct recur_apoint *rapt = LLIST_TS_GET_DATA(i);
 

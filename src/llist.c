@@ -112,7 +112,7 @@ llist_item_t *llist_next(llist_item_t * i)
  * Return the successor of a list item if it is matched by some filter
  * callback. Return NULL otherwise.
  */
-llist_item_t *llist_next_filter(llist_item_t * i, long data,
+llist_item_t *llist_next_filter(llist_item_t * i, void *data,
                                 llist_fn_match_t fn_match)
 {
   if (i && i->next && fn_match(i->next->data, data))
@@ -205,7 +205,7 @@ void llist_remove(llist_t * l, llist_item_t * i)
 /*
  * Find the first item matched by some filter callback.
  */
-llist_item_t *llist_find_first(llist_t * l, long data,
+llist_item_t *llist_find_first(llist_t * l, void *data,
                                llist_fn_match_t fn_match)
 {
   llist_item_t *i;
@@ -221,7 +221,7 @@ llist_item_t *llist_find_first(llist_t * l, long data,
 /*
  * Find the next item matched by some filter callback.
  */
-llist_item_t *llist_find_next(llist_item_t * i, long data,
+llist_item_t *llist_find_next(llist_item_t * i, void *data,
                               llist_fn_match_t fn_match)
 {
   if (i) {
@@ -238,7 +238,7 @@ llist_item_t *llist_find_next(llist_item_t * i, long data,
 /*
  * Find the nth item matched by some filter callback.
  */
-llist_item_t *llist_find_nth(llist_t * l, int n, long data,
+llist_item_t *llist_find_nth(llist_t * l, int n, void *data,
                              llist_fn_match_t fn_match)
 {
   llist_item_t *i;

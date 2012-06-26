@@ -186,9 +186,9 @@ void apoint_paste(unsigned *nb_events, unsigned *nb_apoints, int cut_item_type)
     hilt++;
 }
 
-unsigned apoint_inday(struct apoint *i, long start)
+unsigned apoint_inday(struct apoint *i, long *start)
 {
-  return (i->start <= start + DAYINSEC && i->start + i->dur > start);
+  return (i->start <= *start + DAYINSEC && i->start + i->dur > *start);
 }
 
 void apoint_sec2str(struct apoint *o, long day, char *start, char *end)
@@ -275,7 +275,7 @@ void apoint_delete_bynum(long start, unsigned num, enum eraseflg flag)
   int need_check_notify = 0;
 
   LLIST_TS_LOCK(&alist_p);
-  i = LLIST_TS_FIND_NTH(&alist_p, num, start, apoint_inday);
+  i = LLIST_TS_FIND_NTH(&alist_p, num, &start, apoint_inday);
 
   if (!i)
     EXIT(_("no such appointment"));
@@ -356,9 +356,9 @@ void apoint_scroll_pad_up(int nb_events_inday)
     apad.first_onscreen = item_first_line;
 }
 
-static int apoint_starts_after(struct apoint *apt, long time)
+static int apoint_starts_after(struct apoint *apt, long *time)
 {
-  return apt->start > time;
+  return apt->start > *time;
 }
 
 /*
@@ -370,7 +370,7 @@ struct notify_app *apoint_check_next(struct notify_app *app, long start)
   llist_item_t *i;
 
   LLIST_TS_LOCK(&alist_p);
-  i = LLIST_TS_FIND_FIRST(&alist_p, start, apoint_starts_after);
+  i = LLIST_TS_FIND_FIRST(&alist_p, &start, apoint_starts_after);
 
   if (i) {
     struct apoint *apt = LLIST_TS_GET_DATA(i);

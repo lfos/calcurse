@@ -164,7 +164,7 @@ static int day_store_events(long date, regex_t *regex)
   union aptev_ptr p;
   int e_nb = 0;
 
-  LLIST_FIND_FOREACH_CONT(&eventlist, date, event_inday, i) {
+  LLIST_FIND_FOREACH_CONT(&eventlist, &date, event_inday, i) {
     struct event *ev = LLIST_TS_GET_DATA(i);
 
     if (regex && regexec(regex, ev->mesg, 0, 0, 0) != 0)
@@ -191,7 +191,7 @@ static int day_store_recur_events(long date, regex_t *regex)
   union aptev_ptr p;
   int e_nb = 0;
 
-  LLIST_FIND_FOREACH(&recur_elist, date, recur_event_inday, i) {
+  LLIST_FIND_FOREACH(&recur_elist, &date, recur_event_inday, i) {
     struct recur_event *rev = LLIST_TS_GET_DATA(i);
 
     if (regex && regexec(regex, rev->mesg, 0, 0, 0) != 0)
@@ -219,7 +219,7 @@ static int day_store_apoints(long date, regex_t *regex)
   int a_nb = 0;
 
   LLIST_TS_LOCK(&alist_p);
-  LLIST_TS_FIND_FOREACH(&alist_p, date, apoint_inday, i) {
+  LLIST_TS_FIND_FOREACH(&alist_p, &date, apoint_inday, i) {
     struct apoint *apt = LLIST_TS_GET_DATA(i);
 
     if (regex && regexec(regex, apt->mesg, 0, 0, 0) != 0)
@@ -252,7 +252,7 @@ static int day_store_recur_apoints(long date, regex_t *regex)
   int a_nb = 0;
 
   LLIST_TS_LOCK(&recur_alist_p);
-  LLIST_TS_FIND_FOREACH(&recur_alist_p, date, recur_apoint_inday, i) {
+  LLIST_TS_FIND_FOREACH(&recur_alist_p, &date, recur_apoint_inday, i) {
     struct recur_apoint *rapt = LLIST_TS_GET_DATA(i);
 
     if (regex && regexec(regex, rapt->mesg, 0, 0, 0) != 0)
@@ -511,21 +511,21 @@ int day_check_if_item(struct date day)
 {
   const long date = date2sec(day, 0, 0);
 
-  if (LLIST_FIND_FIRST(&recur_elist, date, recur_event_inday))
+  if (LLIST_FIND_FIRST(&recur_elist, (long *)&date, recur_event_inday))
     return 1;
 
   LLIST_TS_LOCK(&recur_alist_p);
-  if (LLIST_TS_FIND_FIRST(&recur_alist_p, date, recur_apoint_inday)) {
+  if (LLIST_TS_FIND_FIRST(&recur_alist_p, (long *)&date, recur_apoint_inday)) {
     LLIST_TS_UNLOCK(&recur_alist_p);
     return 1;
   }
   LLIST_TS_UNLOCK(&recur_alist_p);
 
-  if (LLIST_FIND_FIRST(&eventlist, date, event_inday))
+  if (LLIST_FIND_FIRST(&eventlist, (long *)&date, event_inday))
     return 1;
 
   LLIST_TS_LOCK(&alist_p);
-  if (LLIST_TS_FIND_FIRST(&alist_p, date, apoint_inday)) {
+  if (LLIST_TS_FIND_FIRST(&alist_p, (long *)&date, apoint_inday)) {
     LLIST_TS_UNLOCK(&alist_p);
     return 1;
   }
@@ -566,7 +566,7 @@ unsigned day_chk_busy_slices(struct date day, int slicesno, int *slices)
 #define  SLICENUM(tsec)  ((tsec) / slicelen % slicesno)
 
   LLIST_TS_LOCK(&recur_alist_p);
-  LLIST_TS_FIND_FOREACH(&recur_alist_p, date, recur_apoint_inday, i) {
+  LLIST_TS_FIND_FOREACH(&recur_alist_p, (long *)&date, recur_apoint_inday, i) {
     struct apoint *rapt = LLIST_TS_GET_DATA(i);
     long start = get_item_time(rapt->start);
     long end = get_item_time(rapt->start + rapt->dur);
@@ -579,7 +579,7 @@ unsigned day_chk_busy_slices(struct date day, int slicesno, int *slices)
   LLIST_TS_UNLOCK(&recur_alist_p);
 
   LLIST_TS_LOCK(&alist_p);
-  LLIST_TS_FIND_FOREACH(&alist_p, date, apoint_inday, i) {
+  LLIST_TS_FIND_FOREACH(&alist_p, (long *)&date, apoint_inday, i) {
     struct apoint *apt = LLIST_TS_GET_DATA(i);
     long start = get_item_time(apt->start);
     long end = get_item_time(apt->start + apt->dur);

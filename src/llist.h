@@ -48,7 +48,7 @@ struct llist {
 };
 
 typedef int (*llist_fn_cmp_t) (void *, void *);
-typedef int (*llist_fn_match_t) (void *, long);
+typedef int (*llist_fn_match_t) (void *, void *);
 typedef void (*llist_fn_free_t) (void *);
 
 /* Initialization and deallocation. */
@@ -65,10 +65,10 @@ void llist_free_inner(llist_t *, llist_fn_free_t);
 llist_item_t *llist_first(llist_t *);
 llist_item_t *llist_nth(llist_t *, int);
 llist_item_t *llist_next(llist_item_t *);
-llist_item_t *llist_next_filter(llist_item_t *, long, llist_fn_match_t);
-llist_item_t *llist_find_first(llist_t *, long, llist_fn_match_t);
-llist_item_t *llist_find_next(llist_item_t *, long, llist_fn_match_t);
-llist_item_t *llist_find_nth(llist_t *, int, long, llist_fn_match_t);
+llist_item_t *llist_next_filter(llist_item_t *, void *, llist_fn_match_t);
+llist_item_t *llist_find_first(llist_t *, void *, llist_fn_match_t);
+llist_item_t *llist_find_next(llist_item_t *, void *, llist_fn_match_t);
+llist_item_t *llist_find_nth(llist_t *, int, void *, llist_fn_match_t);
 
 #define LLIST_FIRST(l) llist_first(l)
 #define LLIST_NTH(l, n) llist_nth(l, n)

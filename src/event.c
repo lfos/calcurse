@@ -104,9 +104,9 @@ struct event *event_new(char *mesg, char *note, long day, int id)
 }
 
 /* Check if the event belongs to the selected day */
-unsigned event_inday(struct event *i, long start)
+unsigned event_inday(struct event *i, long *start)
 {
-  return (i->day < start + DAYINSEC && i->day >= start);
+  return (i->day < *start + DAYINSEC && i->day >= *start);
 }
 
 /* Write to file the event in user-friendly format */
@@ -157,7 +157,7 @@ struct event *event_scan(FILE * f, struct tm start, int id, char *note)
 /* Delete an event from the list. */
 void event_delete_bynum(long start, unsigned num, enum eraseflg flag)
 {
-  llist_item_t *i = LLIST_FIND_NTH(&eventlist, num, start, event_inday);
+  llist_item_t *i = LLIST_FIND_NTH(&eventlist, num, &start, event_inday);
 
   if (!i)
     EXIT(_("no such appointment"));
