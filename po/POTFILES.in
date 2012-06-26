@@ -11,6 +11,7 @@ src/event.c
 src/getstring.c
 src/help.c
 src/ical.c
+src/interaction.c
 src/io.c
 src/keys.c
 src/llist.c

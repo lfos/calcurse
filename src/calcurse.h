@@ -599,8 +599,6 @@ void apoint_hilt_decrease(int);
 void apoint_hilt_increase(int);
 int apoint_hilt(void);
 struct apoint *apoint_new(char *, char *, long, long, char);
-void apoint_add(void);
-void apoint_delete(unsigned *, unsigned *);
 int apoint_cut(unsigned *, unsigned *);
 void apoint_paste(unsigned *, unsigned *, int);
 unsigned apoint_inday(struct apoint *, long);
@@ -663,6 +661,10 @@ void custom_config_main(void);
 
 /* day.c */
 void day_free_list(void);
+char *day_item_get_mesg(struct day_item *);
+char *day_item_get_note(struct day_item *);
+long day_item_get_duration(struct day_item *);
+int day_item_get_state(struct day_item *);
 int day_store_items(long, unsigned *, unsigned *, regex_t *);
 struct day_items_nb *day_process_storage(struct date *, unsigned,
                                          struct day_items_nb *);
@@ -672,15 +674,12 @@ void day_write_stdout(long, const char *, const char *, const char *,
 void day_popup_item(void);
 int day_check_if_item(struct date);
 unsigned day_chk_busy_slices(struct date, int, int *);
-void day_edit_item(void);
-int day_erase_item(long, int, enum eraseflg);
 int day_cut_item(long, int);
 int day_paste_item(long, int);
 struct day_item *day_get_item(int);
 int day_item_nb(long, int, int);
 void day_edit_note(const char *);
 void day_view_note(const char *);
-void day_pipe_item(void);
 void day_item_switch_notify(void);
 
 /* dmon.c */
@@ -711,6 +710,18 @@ int updatestring(WINDOW *, char **, int, int);
 void ical_import_data(FILE *, FILE *, unsigned *, unsigned *, unsigned *,
                       unsigned *, unsigned *);
 void ical_export_data(FILE *);
+
+/* interaction.c */
+void apoint_add(void);
+void apoint_delete(unsigned *, unsigned *);
+void day_edit_item(void);
+int day_erase_item(long, int, enum eraseflg);
+void day_pipe_item(void);
+void recur_repeat_item(void);
+void todo_new_item(void);
+void todo_delete(void);
+void todo_edit_item(void);
+void todo_pipe_item(void);
 
 /* io.c */
 unsigned io_fprintln(const char *, const char *, ...);
@@ -863,7 +874,6 @@ unsigned recur_apoint_inday(struct recur_apoint *, long);
 unsigned recur_event_inday(struct recur_event *, long);
 void recur_event_erase(long, unsigned, unsigned, enum eraseflg);
 void recur_apoint_erase(long, unsigned, unsigned, enum eraseflg);
-void recur_repeat_item(void);
 void recur_exc_scan(llist_t *, FILE *);
 struct notify_app *recur_apoint_check_next(struct notify_app *, long, long);
 void recur_apoint_switch_notify(struct recur_apoint *);
@@ -876,6 +886,7 @@ unsigned sigs_set_hdlr(int, void (*)(int));
 
 /* todo.c */
 extern llist_t todolist;
+struct todo *todo_get_item(int);
 void todo_hilt_set(int);
 void todo_hilt_decrease(int);
 void todo_hilt_increase(int);
@@ -887,17 +898,15 @@ void todo_first_increase(int);
 void todo_first_decrease(int);
 int todo_hilt_pos(void);
 char *todo_saved_mesg(void);
-void todo_new_item(void);
 struct todo *todo_add(char *, int, char *);
 void todo_write(struct todo *, FILE *);
+void todo_delete_note_bynum(unsigned);
+void todo_delete_bynum(unsigned);
 void todo_flag(void);
-void todo_delete(void);
 void todo_chg_priority(int);
-void todo_edit_item(void);
 void todo_update_panel(int);
 void todo_edit_note(const char *);
 void todo_view_note(const char *);
-void todo_pipe_item(void);
 void todo_init_list(void);
 void todo_free_list(void);
 

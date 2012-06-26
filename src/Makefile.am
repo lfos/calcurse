@@ -21,6 +21,7 @@ calcurse_SOURCES = \
 	getstring.c \
 	help.c \
 	ical.c \
+	interaction.c \
 	io.c \
 	keys.c \
 	llist.c \

@@ -47,7 +47,7 @@ static int first = 1;
 static char *msgsav;
 
 /* Returns a structure containing the selected item. */
-static struct todo *todo_get_item(int item_number)
+struct todo *todo_get_item(int item_number)
 {
   return LLIST_GET_DATA(LLIST_NTH(&todolist, item_number - 1));
 }
@@ -117,26 +117,6 @@ char *todo_saved_mesg(void)
   return msgsav;
 }
 
-/* Request user to enter a new todo item. */
-void todo_new_item(void)
-{
-  int ch = 0;
-  const char *mesg = _("Enter the new ToDo item : ");
-  const char *mesg_id =
-      _("Enter the ToDo priority [1 (highest) - 9 (lowest)] :");
-  char todo_input[BUFSIZ] = "";
-
-  status_mesg(mesg, "");
-  if (getstring(win[STA].p, todo_input, BUFSIZ, 0, 1) == GETSTRING_VALID) {
-    while ((ch < '1') || (ch > '9')) {
-      status_mesg(mesg_id, "");
-      ch = wgetch(win[STA].p);
-    }
-    todo_add(todo_input, ch - '0', NULL);
-    todos++;
-  }
-}
-
 static int todo_cmp_id(struct todo *a, struct todo *b)
 {
   /*
@@ -176,7 +156,7 @@ void todo_write(struct todo *todo, FILE * f)
 }
 
 /* Delete a note previously attached to a todo item. */
-static void todo_delete_note_bynum(unsigned num)
+void todo_delete_note_bynum(unsigned num)
 {
   llist_item_t *i = LLIST_NTH(&todolist, num);
 
@@ -190,7 +170,7 @@ static void todo_delete_note_bynum(unsigned num)
 }
 
 /* Delete an item from the todo linked list. */
-static void todo_delete_bynum(unsigned num)
+void todo_delete_bynum(unsigned num)
 {
   llist_item_t *i = LLIST_NTH(&todolist, num);
 
@@ -216,49 +196,6 @@ void todo_flag(void)
 
   t = todo_get_item(hilt);
   t->id = -t->id;
-}
-
-/* Delete an item from the ToDo list. */
-void todo_delete(void)
-{
-  const char *del_todo_str = _("Do you really want to delete this task ?");
-  const char *erase_warning =
-      _("This item has a note attached to it. "
-        "Delete (t)odo or just its (n)ote ?");
-  const char *erase_choice = _("[tn]");
-  const int nb_erase_choice = 2;
-  int answer;
-
-  if ((todos <= 0) ||
-      (conf.confirm_delete && (status_ask_bool(del_todo_str) != 1))) {
-    wins_erase_status_bar();
-    return;
-  }
-
-  /* This todo item doesn't have any note associated. */
-  if (todo_get_item(hilt)->note == NULL)
-    answer = 1;
-  else
-    answer = status_ask_choice(erase_warning, erase_choice, nb_erase_choice);
-
-  switch (answer) {
-  case 1:
-    todo_delete_bynum(hilt - 1);
-    todos--;
-    if (hilt > 1)
-      hilt--;
-    if (todos == 0)
-      hilt = 0;
-    if (hilt - first < 0)
-      first--;
-    break;
-  case 2:
-    todo_delete_note_bynum(hilt - 1);
-    break;
-  default:
-    wins_erase_status_bar();
-    return;
-  }
 }
 
 /*
@@ -316,17 +253,6 @@ void todo_chg_priority(int action)
   todo_delete_bynum(hilt - 1);
   backup = todo_add(backup_mesg, backup_id, backup_note);
   hilt = todo_get_position(backup);
-}
-
-/* Edit the description of an already existing todo item. */
-void todo_edit_item(void)
-{
-  struct todo *i;
-  const char *mesg = _("Enter the new ToDo description :");
-
-  status_mesg(mesg, "");
-  i = todo_get_item(hilt);
-  updatestring(win[STA].p, &i->mesg, 0, 1);
 }
 
 /* Display todo items in the corresponding panel. */
@@ -424,34 +350,6 @@ void todo_view_note(const char *pager)
 {
   struct todo *i = todo_get_item(hilt);
   view_note(i->note, pager);
-}
-
-/* Pipe a todo item to an external program. */
-void todo_pipe_item(void)
-{
-  char cmd[BUFSIZ] = "";
-  char const *arg[] = { cmd, NULL };
-  int pout;
-  int pid;
-  FILE *fpout;
-  struct todo *todo;
-
-  status_mesg(_("Pipe item to external command:"), "");
-  if (getstring(win[STA].p, cmd, BUFSIZ, 0, 1) != GETSTRING_VALID)
-    return;
-
-  wins_prepare_external();
-  if ((pid = shell_exec(NULL, &pout, *arg, arg))) {
-    fpout = fdopen(pout, "w");
-
-    todo = todo_get_item(hilt);
-    todo_write(todo, fpout);
-
-    fclose(fpout);
-    child_wait(NULL, &pout, pid);
-    press_any_key();
-  }
-  wins_unprepare_external();
 }
 
 static void todo_free(struct todo *todo)
