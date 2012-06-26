@@ -712,16 +712,15 @@ void ical_import_data(FILE *, FILE *, unsigned *, unsigned *, unsigned *,
 void ical_export_data(FILE *);
 
 /* interaction.c */
-void apoint_add(void);
-void apoint_delete(unsigned *, unsigned *);
-void day_edit_item(void);
-int day_erase_item(long, int, enum eraseflg);
-void day_pipe_item(void);
-void recur_repeat_item(void);
-void todo_new_item(void);
-void todo_delete(void);
-void todo_edit_item(void);
-void todo_pipe_item(void);
+void interact_day_item_add(void);
+void interact_day_item_delete(unsigned *, unsigned *);
+void interact_day_item_edit(void);
+void interact_day_item_pipe(void);
+void interact_day_item_repeat(void);
+void interact_todo_add(void);
+void interact_todo_delete(void);
+void interact_todo_edit(void);
+void interact_todo_pipe(void);
 
 /* io.c */
 unsigned io_fprintln(const char *, const char *, ...);

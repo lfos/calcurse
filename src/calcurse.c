@@ -233,13 +233,13 @@ int main(int argc, char **argv)
       break;
 
     case KEY_GENERIC_ADD_APPT:
-      apoint_add();
+      interact_day_item_add();
       inday = do_storage(1);
       wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
       break;
 
     case KEY_GENERIC_ADD_TODO:
-      todo_new_item();
+      interact_todo_add();
       if (todo_hilt() == 0 && todo_nb() == 1)
         todo_hilt_increase(1);
       wins_update(FLAG_TOD | FLAG_STA);
@@ -248,12 +248,12 @@ int main(int argc, char **argv)
     case KEY_ADD_ITEM:
       switch (wins_slctd()) {
       case APP:
-        apoint_add();
+        interact_day_item_add();
         inday = do_storage(0);
         wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
         break;
       case TOD:
-        todo_new_item();
+        interact_todo_add();
         if (todo_hilt() == 0 && todo_nb() == 1)
           todo_hilt_increase(1);
         wins_update(FLAG_TOD | FLAG_STA);
@@ -265,22 +265,22 @@ int main(int argc, char **argv)
 
     case KEY_EDIT_ITEM:
       if (wins_slctd() == APP && apoint_hilt() != 0) {
-        day_edit_item();
+        interact_day_item_edit();
         inday = do_storage(0);
         wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
       } else if (wins_slctd() == TOD && todo_hilt() != 0) {
-        todo_edit_item();
+        interact_todo_edit();
         wins_update(FLAG_TOD | FLAG_STA);
       }
       break;
 
     case KEY_DEL_ITEM:
       if (wins_slctd() == APP && apoint_hilt() != 0) {
-        apoint_delete(&inday.nb_events, &inday.nb_apoints);
+        interact_day_item_delete(&inday.nb_events, &inday.nb_apoints);
         inday = do_storage(0);
         wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
       } else if (wins_slctd() == TOD && todo_hilt() != 0) {
-        todo_delete();
+        interact_todo_delete();
         wins_update(FLAG_TOD | FLAG_STA);
       }
       break;
@@ -304,7 +304,7 @@ int main(int argc, char **argv)
 
     case KEY_REPEAT_ITEM:
       if (wins_slctd() == APP && apoint_hilt() != 0)
-        recur_repeat_item();
+        interact_day_item_repeat();
       inday = do_storage(0);
       wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
       break;
@@ -322,9 +322,9 @@ int main(int argc, char **argv)
 
     case KEY_PIPE_ITEM:
       if (wins_slctd() == APP && apoint_hilt() != 0)
-        day_pipe_item();
+        interact_day_item_pipe();
       else if (wins_slctd() == TOD && todo_hilt() != 0)
-        todo_pipe_item();
+        interact_todo_pipe();
       wins_update(FLAG_ALL);
       break;
 

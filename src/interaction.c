@@ -268,7 +268,7 @@ static void update_rept(struct rpt **rpt, const long start)
 }
 
 /* Edit an already existing item. */
-void day_edit_item(void)
+void interact_day_item_edit(void)
 {
   struct day_item *p;
   struct recur_event *re;
@@ -366,7 +366,7 @@ void day_edit_item(void)
  * recurrent appointments and appointments) and then to test the
  * type of the item to be deleted.
  */
-int day_erase_item(long date, int item_number, enum eraseflg flag)
+static int day_erase_item(long date, int item_number, enum eraseflg flag)
 {
   struct day_item *p;
 
@@ -437,7 +437,7 @@ int day_erase_item(long date, int item_number, enum eraseflg flag)
 }
 
 /* Pipe an appointment or event to an external program. */
-void day_pipe_item(void)
+void interact_day_item_pipe(void)
 {
   char cmd[BUFSIZ] = "";
   char const *arg[] = { cmd, NULL };
@@ -481,7 +481,7 @@ void day_pipe_item(void)
  * Add an item in either the appointment or the event list,
  * depending if the start time is entered or not.
  */
-void apoint_add(void)
+void interact_day_item_add(void)
 {
 #define LTIME 6
 #define LDUR 12
@@ -574,7 +574,7 @@ void apoint_add(void)
 }
 
 /* Delete an item from the appointment list. */
-void apoint_delete(unsigned *nb_events, unsigned *nb_apoints)
+void interact_day_item_delete(unsigned *nb_events, unsigned *nb_apoints)
 {
   const char *del_app_str = _("Do you really want to delete this item ?");
   long date;
@@ -622,7 +622,7 @@ void apoint_delete(unsigned *nb_events, unsigned *nb_apoints)
 }
 
 /* Request user to enter a new todo item. */
-void todo_new_item(void)
+void interact_todo_add(void)
 {
   int ch = 0;
   const char *mesg = _("Enter the new ToDo item : ");
@@ -642,7 +642,7 @@ void todo_new_item(void)
 }
 
 /* Delete an item from the ToDo list. */
-void todo_delete(void)
+void interact_todo_delete(void)
 {
   const char *del_todo_str = _("Do you really want to delete this task ?");
   const char *erase_warning =
@@ -685,7 +685,7 @@ void todo_delete(void)
 }
 
 /* Edit the description of an already existing todo item. */
-void todo_edit_item(void)
+void interact_todo_edit(void)
 {
   struct todo *i;
   const char *mesg = _("Enter the new ToDo description :");
@@ -696,7 +696,7 @@ void todo_edit_item(void)
 }
 
 /* Pipe a todo item to an external program. */
-void todo_pipe_item(void)
+void interact_todo_pipe(void)
 {
   char cmd[BUFSIZ] = "";
   char const *arg[] = { cmd, NULL };
@@ -730,7 +730,7 @@ void todo_pipe_item(void)
  *	o repetition end date
  * and then delete the selected item to recreate it as a recurrent one
  */
-void recur_repeat_item(void)
+void interact_day_item_repeat(void)
 {
   struct tm *lt;
   time_t t;
