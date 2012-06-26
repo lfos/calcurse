@@ -154,18 +154,6 @@ struct event *event_scan(FILE * f, struct tm start, int id, char *note)
   return event_new(buf, note, tstart, id);
 }
 
-/* Retrieve an event from the list, given the day and item position. */
-struct event *event_get(long day, int pos)
-{
-  llist_item_t *i = LLIST_FIND_NTH(&eventlist, pos, day, event_inday);
-
-  if (i)
-    return LLIST_TS_GET_DATA(i);
-
-  EXIT(_("event not found"));
-  /* NOTREACHED */
-}
-
 /* Delete an event from the list. */
 void event_delete_bynum(long start, unsigned num, enum eraseflg flag)
 {

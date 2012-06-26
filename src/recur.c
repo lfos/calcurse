@@ -978,32 +978,6 @@ struct notify_app *recur_apoint_check_next(struct notify_app *app, long start,
   return app;
 }
 
-/* Returns a structure containing the selected recurrent appointment. */
-struct recur_apoint *recur_get_apoint(long date, int num)
-{
-  llist_item_t *i = LLIST_TS_FIND_NTH(&recur_alist_p, num, date,
-                                      recur_apoint_inday);
-
-  if (i)
-    return LLIST_TS_GET_DATA(i);
-
-  EXIT(_("item not found"));
-  /* NOTREACHED */
-}
-
-/* Returns a structure containing the selected recurrent event. */
-struct recur_event *recur_get_event(long date, int num)
-{
-  llist_item_t *i = LLIST_FIND_NTH(&recur_elist, num, date,
-                                   recur_event_inday);
-
-  if (i)
-    return LLIST_GET_DATA(i);
-
-  EXIT(_("item not found"));
-  /* NOTREACHED */
-}
-
 /* Switch recurrent item notification state. */
 void recur_apoint_switch_notify(struct recur_apoint *rapt)
 {

@@ -413,18 +413,6 @@ struct apoint *apoint_scan(FILE * f, struct tm start, struct tm end, char state,
   return apoint_new(buf, note, tstart, tend - tstart, state);
 }
 
-/* Retrieve an appointment from the list, given the day and item position. */
-struct apoint *apoint_get(long day, int pos)
-{
-  llist_item_t *i = LLIST_TS_FIND_NTH(&alist_p, pos, day, apoint_inday);
-
-  if (i)
-    return LLIST_TS_GET_DATA(i);
-
-  EXIT(_("item not found"));
-  /* NOTREACHED */
-}
-
 void apoint_delete_bynum(long start, unsigned num, enum eraseflg flag)
 {
   llist_item_t *i;
