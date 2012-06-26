@@ -210,9 +210,16 @@ llist_item_t *llist_find_first(llist_t * l, void *data,
 {
   llist_item_t *i;
 
-  for (i = l->head; i; i = i->next) {
-    if (fn_match(i->data, data))
-      return i;
+  if (fn_match) {
+    for (i = l->head; i; i = i->next) {
+      if (fn_match(i->data, data))
+        return i;
+    }
+  } else {
+    for (i = l->head; i; i = i->next) {
+      if (i->data == data)
+        return i;
+    }
   }
 
   return NULL;
@@ -226,9 +233,16 @@ llist_item_t *llist_find_next(llist_item_t * i, void *data,
 {
   if (i) {
     i = i->next;
-    for (; i; i = i->next) {
-      if (fn_match(i->data, data))
-        return i;
+    if (fn_match) {
+      for (; i; i = i->next) {
+        if (fn_match(i->data, data))
+          return i;
+      }
+    } else {
+      for (; i; i = i->next) {
+        if (i->data == data)
+          return i;
+      }
     }
   }
 
@@ -246,9 +260,16 @@ llist_item_t *llist_find_nth(llist_t * l, int n, void *data,
   if (n < 0)
     return NULL;
 
-  for (i = l->head; i; i = i->next) {
-    if (fn_match(i->data, data) && (n-- == 0))
-      return i;
+  if (fn_match) {
+    for (i = l->head; i; i = i->next) {
+      if (fn_match(i->data, data) && (n-- == 0))
+        return i;
+    }
+  } else {
+    for (i = l->head; i; i = i->next) {
+      if ((i->data == data) && (n-- == 0))
+        return i;
+    }
   }
 
   return NULL;
