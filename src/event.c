@@ -155,13 +155,12 @@ struct event *event_scan(FILE * f, struct tm start, int id, char *note)
 }
 
 /* Delete an event from the list. */
-void event_delete_bynum(long start, unsigned num, enum eraseflg flag)
+void event_delete(struct event *ev, enum eraseflg flag)
 {
-  llist_item_t *i = LLIST_FIND_NTH(&eventlist, num, &start, event_inday);
+  llist_item_t *i = LLIST_FIND_FIRST(&eventlist, ev, NULL);
 
   if (!i)
     EXIT(_("no such appointment"));
-  struct event *ev = LLIST_TS_GET_DATA(i);
 
   switch (flag) {
   case ERASE_FORCE_ONLY_NOTE:

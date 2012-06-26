@@ -269,17 +269,15 @@ struct apoint *apoint_scan(FILE * f, struct tm start, struct tm end, char state,
   return apoint_new(buf, note, tstart, tend - tstart, state);
 }
 
-void apoint_delete_bynum(long start, unsigned num, enum eraseflg flag)
+void apoint_delete(struct apoint *apt, enum eraseflg flag)
 {
-  llist_item_t *i;
   int need_check_notify = 0;
 
   LLIST_TS_LOCK(&alist_p);
-  i = LLIST_TS_FIND_NTH(&alist_p, num, &start, apoint_inday);
+  llist_item_t *i = LLIST_TS_FIND_FIRST(&alist_p, apt, NULL);
 
   if (!i)
     EXIT(_("no such appointment"));
-  struct apoint *apt = LLIST_TS_GET_DATA(i);
 
   switch (flag) {
   case ERASE_FORCE_ONLY_NOTE:

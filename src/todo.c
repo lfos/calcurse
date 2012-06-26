@@ -170,13 +170,12 @@ void todo_delete_note_bynum(unsigned num)
 }
 
 /* Delete an item from the todo linked list. */
-void todo_delete_bynum(unsigned num)
+void todo_delete(struct todo *todo)
 {
-  llist_item_t *i = LLIST_NTH(&todolist, num);
+  llist_item_t *i = LLIST_FIND_FIRST(&todolist, todo, NULL);
 
   if (!i)
     EXIT(_("no such todo"));
-  struct todo *todo = LLIST_TS_GET_DATA(i);
 
   LLIST_REMOVE(&todolist, i);
   mem_free(todo->mesg);
@@ -250,7 +249,7 @@ void todo_chg_priority(int action)
     /* NOTREACHED */
   }
 
-  todo_delete_bynum(hilt - 1);
+  todo_delete(todo_get_item(hilt));
   backup = todo_add(backup_mesg, backup_id, backup_note);
   hilt = todo_get_position(backup);
 }

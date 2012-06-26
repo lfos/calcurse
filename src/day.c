@@ -607,17 +607,16 @@ int day_cut_item(long date, int item_number)
   p = day_get_item(item_number);
   switch (p->type) {
   case EVNT:
-    event_delete_bynum(date, day_item_nb(date, item_number, EVNT), ERASE_CUT);
+    event_delete(p->item.ev, ERASE_CUT);
     break;
   case RECUR_EVNT:
-    recur_event_erase(date, day_item_nb(date, item_number, RECUR_EVNT),
-                      DELETE_WHOLE, ERASE_CUT);
+    recur_event_erase(p->item.rev, date, DELETE_WHOLE, ERASE_CUT);
     break;
   case APPT:
-    apoint_delete_bynum(date, day_item_nb(date, item_number, APPT), ERASE_CUT);
+    apoint_delete(p->item.apt, ERASE_CUT);
     break;
   case RECUR_APPT:
-    recur_apoint_erase(date, p->appt_pos, DELETE_WHOLE, ERASE_CUT);
+    recur_apoint_erase(p->item.rapt, date, DELETE_WHOLE, ERASE_CUT);
     break;
   default:
     EXIT(_("unknwon type"));

@@ -403,9 +403,9 @@ static int day_erase_item(long date, int item_number, enum eraseflg flag)
     }
   }
   if (p->type == EVNT) {
-    event_delete_bynum(date, day_item_nb(date, item_number, EVNT), flag);
+    event_delete(p->item.ev, flag);
   } else if (p->type == APPT) {
-    apoint_delete_bynum(date, day_item_nb(date, item_number, APPT), flag);
+    apoint_delete(p->item.apt, flag);
   } else {
     if (flag == ERASE_FORCE_ONLY_NOTE)
       ans = 1;
@@ -424,10 +424,9 @@ static int day_erase_item(long date, int item_number, enum eraseflg flag)
     }
 
     if (p->type == RECUR_EVNT) {
-      recur_event_erase(date, day_item_nb(date, item_number, RECUR_EVNT),
-                        delete_whole, flag);
+      recur_event_erase(p->item.rev, date, delete_whole, flag);
     } else {
-      recur_apoint_erase(date, p->appt_pos, delete_whole, flag);
+      recur_apoint_erase(p->item.rapt, date, delete_whole, flag);
     }
   }
   if (flag == ERASE_FORCE_ONLY_NOTE)
@@ -666,7 +665,7 @@ void interact_todo_delete(void)
 
   switch (answer) {
   case 1:
-    todo_delete_bynum(todo_hilt() - 1);
+    todo_delete(todo_get_item(todo_hilt()));
     todo_set_nb(todo_nb() - 1);
     if (todo_hilt() > 1)
       todo_hilt_decrease(1);

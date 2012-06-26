@@ -695,16 +695,13 @@ unsigned recur_event_inday(struct recur_event *rev, long *day_start)
  * or delete only one occurence of the recurrent event.
  */
 void
-recur_event_erase(long start, unsigned num, unsigned delete_whole,
+recur_event_erase(struct recur_event *rev, long start, unsigned delete_whole,
                   enum eraseflg flag)
 {
-  llist_item_t *i;
-
-  i = LLIST_FIND_NTH(&recur_elist, num, &start, recur_event_inday);
+  llist_item_t *i = LLIST_FIND_FIRST(&recur_elist, rev, NULL);
 
   if (!i)
     EXIT(_("event not found"));
-  struct recur_event *rev = LLIST_GET_DATA(i);
 
   if (delete_whole) {
     switch (flag) {
@@ -736,17 +733,14 @@ recur_event_erase(long start, unsigned num, unsigned delete_whole,
  * or delete only one occurence of the recurrent appointment.
  */
 void
-recur_apoint_erase(long start, unsigned num, unsigned delete_whole,
-                   enum eraseflg flag)
+recur_apoint_erase(struct recur_apoint *rapt, long start,
+                   unsigned delete_whole, enum eraseflg flag)
 {
-  llist_item_t *i;
+  llist_item_t *i = LLIST_TS_FIND_FIRST(&recur_alist_p, rapt, NULL);
   int need_check_notify = 0;
-
-  i = LLIST_TS_FIND_NTH(&recur_alist_p, num, &start, recur_apoint_inday);
 
   if (!i)
     EXIT(_("appointment not found"));
-  struct recur_apoint *rapt = LLIST_GET_DATA(i);
 
   LLIST_TS_LOCK(&recur_alist_p);
   if (notify_bar() && flag != ERASE_FORCE_ONLY_NOTE)
