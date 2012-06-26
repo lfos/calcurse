@@ -219,7 +219,7 @@ int main(int argc, char **argv)
 
     case KEY_VIEW_ITEM:
       if ((wins_slctd() == APP) && (apoint_hilt() != 0))
-        day_popup_item();
+        day_popup_item(day_get_item(apoint_hilt()));
       else if ((wins_slctd() == TOD) && (todo_hilt() != 0))
         item_in_popup(NULL, NULL, todo_saved_mesg(), _("To do :"));
       wins_update(FLAG_ALL);
@@ -311,7 +311,7 @@ int main(int argc, char **argv)
 
     case KEY_FLAG_ITEM:
       if (wins_slctd() == APP && apoint_hilt() != 0) {
-        day_item_switch_notify();
+        day_item_switch_notify(day_get_item(apoint_hilt()));
         inday = do_storage(0);
         wins_update(FLAG_APP);
       } else if (wins_slctd() == TOD && todo_hilt() != 0) {
@@ -342,7 +342,7 @@ int main(int argc, char **argv)
 
     case KEY_EDIT_NOTE:
       if (wins_slctd() == APP && apoint_hilt() != 0) {
-        day_edit_note(conf.editor);
+        day_edit_note(day_get_item(apoint_hilt()), conf.editor);
         inday = do_storage(0);
       } else if (wins_slctd() == TOD && todo_hilt() != 0)
         todo_edit_note(conf.editor);
@@ -351,7 +351,7 @@ int main(int argc, char **argv)
 
     case KEY_VIEW_NOTE:
       if (wins_slctd() == APP && apoint_hilt() != 0)
-        day_view_note(conf.pager);
+        day_view_note(day_get_item(apoint_hilt()), conf.pager);
       else if (wins_slctd() == TOD && todo_hilt() != 0)
         todo_view_note(conf.pager);
       wins_update(FLAG_ALL);

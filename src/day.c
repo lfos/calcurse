@@ -480,10 +480,8 @@ void day_write_stdout(long date, const char *fmt_apt, const char *fmt_rapt,
 }
 
 /* Display an item inside a popup window. */
-void day_popup_item(void)
+void day_popup_item(struct day_item *day)
 {
-  struct day_item *day = day_get_item(apoint_hilt());
-
   if (day->type == EVNT || day->type == RECUR_EVNT) {
     item_in_popup(NULL, NULL, day_item_get_mesg(day), _("Event :"));
   } else if (day->type == APPT || day->type == RECUR_APPT) {
@@ -681,12 +679,10 @@ int day_item_nb(long date, int day_num, int type)
 }
 
 /* Attach a note to an appointment or event. */
-void day_edit_note(const char *editor)
+void day_edit_note(struct day_item *p, const char *editor)
 {
-  struct day_item *p;
   char *note;
 
-  p = day_get_item(apoint_hilt());
   note = day_item_get_note(p);
   edit_note(&note, editor);
 
@@ -707,17 +703,14 @@ void day_edit_note(const char *editor)
 }
 
 /* View a note previously attached to an appointment or event */
-void day_view_note(const char *pager)
+void day_view_note(struct day_item *p, const char *pager)
 {
-  struct day_item *p = day_get_item(apoint_hilt());
   view_note(day_item_get_note(p), pager);
 }
 
 /* Switch notification state for an item. */
-void day_item_switch_notify(void)
+void day_item_switch_notify(struct day_item *p)
 {
-  struct day_item *p = day_get_item(apoint_hilt());
-
   switch (p->type) {
   case RECUR_APPT:
     recur_apoint_switch_notify(p->item.rapt);

@@ -671,16 +671,16 @@ struct day_items_nb *day_process_storage(struct date *, unsigned,
 void day_write_pad(long, int, int, int);
 void day_write_stdout(long, const char *, const char *, const char *,
                       const char *);
-void day_popup_item(void);
+void day_popup_item(struct day_item *);
 int day_check_if_item(struct date);
 unsigned day_chk_busy_slices(struct date, int, int *);
 int day_cut_item(long, int);
 int day_paste_item(long, int);
 struct day_item *day_get_item(int);
 int day_item_nb(long, int, int);
-void day_edit_note(const char *);
-void day_view_note(const char *);
-void day_item_switch_notify(void);
+void day_edit_note(struct day_item *, const char *);
+void day_view_note(struct day_item *, const char *);
+void day_item_switch_notify(struct day_item *);
 
 /* dmon.c */
 void dmon_start(int);
