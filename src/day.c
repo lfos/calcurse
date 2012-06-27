@@ -79,14 +79,12 @@ static int day_cmp_start(struct day_item *a, struct day_item *b)
 }
 
 /* Add an item to the current day list. */
-static void day_add_item(int type, long start, union aptev_ptr item,
-                         int appt_pos)
+static void day_add_item(int type, long start, union aptev_ptr item)
 {
   struct day_item *day = mem_malloc(sizeof(struct day_item));
   day->type = type;
   day->start = start;
   day->item = item;
-  day->appt_pos = appt_pos;
 
   LLIST_ADD_SORTED(&day_items, day, day_cmp_start);
 }
@@ -171,7 +169,7 @@ static int day_store_events(long date, regex_t *regex)
       continue;
 
     p.ev = ev;
-    day_add_item(EVNT, ev->day, p, 0);
+    day_add_item(EVNT, ev->day, p);
     e_nb++;
   }
 
@@ -198,7 +196,7 @@ static int day_store_recur_events(long date, regex_t *regex)
       continue;
 
     p.rev = rev;
-    day_add_item(RECUR_EVNT, rev->day, p, 0);
+    day_add_item(RECUR_EVNT, rev->day, p);
     e_nb++;
   }
 
@@ -230,7 +228,7 @@ static int day_store_apoints(long date, regex_t *regex)
     if (apt->start >= date + DAYINSEC)
       break;
 
-    day_add_item(APPT, apt->start, p, 0);
+    day_add_item(APPT, apt->start, p);
     a_nb++;
   }
   LLIST_TS_UNLOCK(&alist_p);
@@ -262,7 +260,7 @@ static int day_store_recur_apoints(long date, regex_t *regex)
 
     unsigned real_start;
     if (recur_apoint_find_occurrence(rapt, date, &real_start)) {
-      day_add_item(RECUR_APPT, real_start, p, a_nb);
+      day_add_item(RECUR_APPT, real_start, p);
       a_nb++;
     }
   }

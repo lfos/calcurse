@@ -363,7 +363,6 @@ struct day_item {
   int type;                     /* (recursive or normal) event or appointment */
   long start;                   /* start time of the repetition occurrence */
   union aptev_ptr item;         /* pointer to the actual item */
-  int appt_pos;                 /* real position in recurrent list */
 };
 
 /* Available view for the calendar panel. */
