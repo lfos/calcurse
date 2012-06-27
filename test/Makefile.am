@@ -15,7 +15,8 @@ TESTS = \
 	range-003.sh \
 	appointment-001.sh \
 	next-001.sh \
-	search-001.sh
+	search-001.sh \
+	bug-002.sh
 
 TESTS_ENVIRONMENT = \
 	CALCURSE='$(top_builddir)/src/calcurse' \
