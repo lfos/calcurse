@@ -883,13 +883,13 @@ void interact_day_item_cut_free(void)
 }
 
 /* Cut an item, so that it can be pasted somewhere else later. */
-int interact_day_item_cut(unsigned *nb_events, unsigned *nb_apoints)
+void interact_day_item_cut(unsigned *nb_events, unsigned *nb_apoints)
 {
   const int NBITEMS = *nb_apoints + *nb_events;
   int to_be_removed;
 
   if (NBITEMS == 0)
-    return 0;
+    return;
 
   interact_day_item_cut_free();
   struct day_item *p = day_cut_item(calendar_get_slctd_day_sec(),
@@ -913,13 +913,10 @@ int interact_day_item_cut(unsigned *nb_events, unsigned *nb_apoints)
     apad.first_onscreen = apad.first_onscreen - to_be_removed;
   if (NBITEMS == 1)
     apoint_hilt_set(0);
-
-  return p->type;
 }
 
 /* Paste a previously cut item. */
-void interact_day_item_paste(unsigned *nb_events, unsigned *nb_apoints,
-                             int cut_item_type)
+void interact_day_item_paste(unsigned *nb_events, unsigned *nb_apoints)
 {
   int item_type;
 
