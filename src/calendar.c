@@ -77,6 +77,10 @@ static void (*draw_calendar[CAL_VIEWS]) (struct window *, struct date *,
                                          unsigned) = {
 draw_monthly_view, draw_weekly_view};
 
+static int monthly_view_cache[MAXDAYSPERMONTH];
+static int monthly_view_cache_valid = 0;
+static int monthly_view_cache_month = 0;
+
 /* Switch between calendar views (monthly view is selected by default). */
 void calendar_view_next(void)
 {
@@ -264,6 +268,11 @@ static int date_change(struct tm *date, int delta_month, int delta_day)
   }
 }
 
+void calendar_monthly_view_cache_set_invalid(void)
+{
+  monthly_view_cache_valid = 0;
+}
+
 /* Draw the monthly view inside calendar panel. */
 static void
 draw_monthly_view(struct window *cwin, struct date *current_day,
@@ -313,13 +322,25 @@ draw_monthly_view(struct window *cwin, struct date *current_day,
 
   day_1_sav = (c_day_1 + 1) * 3 + c_day_1 - 7;
 
+  /* invalidate cache if a new month is selected */
+  if (yr * YEARINMONTHS + mo != monthly_view_cache_month) {
+    monthly_view_cache_month = yr * YEARINMONTHS + mo;
+    monthly_view_cache_valid = 0;
+  }
+
   for (c_day = 1; c_day <= numdays; ++c_day, ++c_day_1, c_day_1 %= 7) {
     check_day.dd = c_day;
     check_day.mm = slctd_day.mm;
     check_day.yyyy = slctd_day.yyyy;
 
     /* check if the day contains an event or an appointment */
-    item_this_day = day_check_if_item(check_day);
+    if (monthly_view_cache_valid) {
+      item_this_day = monthly_view_cache[c_day - 1];
+    }
+    else {
+      item_this_day = monthly_view_cache[c_day - 1] =
+        day_check_if_item(check_day);
+    }
 
     /* Go to next line, the week is over. */
     if (!c_day_1 && 1 != c_day) {
@@ -352,6 +373,8 @@ draw_monthly_view(struct window *cwin, struct date *current_day,
       mvwprintw(cwin->p, ofs_y + 1,
                 ofs_x + day_1_sav + 4 * c_day + 1, "%2d", c_day);
   }
+
+  monthly_view_cache_valid = 1;
 }
 
 static int weeknum(const struct tm *t, int firstweekday)

@@ -358,6 +358,8 @@ void interact_day_item_edit(void)
     break;
   }
 
+  calendar_monthly_view_cache_set_invalid();
+
   if (need_check_notify)
     notify_check_next_app(1);
 }
@@ -571,6 +573,9 @@ void interact_day_item_add(void)
     if (apoint_hilt() == 0)
       apoint_hilt_increase(1);
   }
+
+  calendar_monthly_view_cache_set_invalid();
+
   wins_erase_status_bar();
 }
 
@@ -612,6 +617,8 @@ void interact_day_item_delete(unsigned *nb_events, unsigned *nb_apoints)
       EXIT(_("no such type"));
       /* NOTREACHED */
     }
+
+    calendar_monthly_view_cache_set_invalid();
 
     if (apoint_hilt() > 1)
       apoint_hilt_decrease(1);
@@ -858,6 +865,8 @@ void interact_day_item_repeat(void)
     /* NOTREACHED */
   }
   day_erase_item(date, item_nb, ERASE_FORCE);
+
+  calendar_monthly_view_cache_set_invalid();
 }
 
 /* Free the current cut item, if any. */
@@ -897,6 +906,8 @@ void interact_day_item_cut(unsigned *nb_events, unsigned *nb_apoints)
   day_cut.type = p->type;
   day_cut.item = p->item;
 
+  calendar_monthly_view_cache_set_invalid();
+
   if (p->type == EVNT || p->type == RECUR_EVNT) {
     (*nb_events)--;
     to_be_removed = 1;
@@ -925,6 +936,8 @@ void interact_day_item_paste(unsigned *nb_events, unsigned *nb_apoints)
 
   item_type = day_paste_item(&day_cut, calendar_get_slctd_day_sec());
   day_cut.type = 0;
+
+  calendar_monthly_view_cache_set_invalid();
 
   if (item_type == EVNT || item_type == RECUR_EVNT)
     (*nb_events)++;

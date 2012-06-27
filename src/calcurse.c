@@ -369,6 +369,7 @@ int main(int argc, char **argv)
     case KEY_GENERIC_IMPORT:
       wins_erase_status_bar();
       io_import_data(IO_IMPORT_ICAL, NULL);
+      calendar_monthly_view_cache_set_invalid();
       inday = do_storage(0);
       wins_update(FLAG_ALL);
       break;

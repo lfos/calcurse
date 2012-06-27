@@ -144,6 +144,8 @@
 #define DAYINSEC        (DAYINMIN * MININSEC)
 #define HOURINSEC       (HOURINMIN * MININSEC)
 
+#define MAXDAYSPERMONTH 31
+
 /* Calendar window. */
 #define CALHEIGHT       12
 
@@ -629,6 +631,7 @@ void calendar_store_current_date(struct date *);
 void calendar_init_slctd_day(void);
 struct date *calendar_get_slctd_day(void);
 long calendar_get_slctd_day_sec(void);
+void calendar_monthly_view_cache_set_invalid(void);
 void calendar_update_panel(struct window *);
 void calendar_goto_today(void);
 void calendar_change_day(int);
