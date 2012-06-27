@@ -42,16 +42,6 @@
 #include "calcurse.h"
 
 llist_t eventlist;
-static struct event bkp_cut_event;
-
-void event_free_bkp(void)
-{
-  if (bkp_cut_event.mesg) {
-    mem_free(bkp_cut_event.mesg);
-    bkp_cut_event.mesg = 0;
-  }
-  erase_note(&bkp_cut_event.note);
-}
 
 void event_free(struct event *ev)
 {

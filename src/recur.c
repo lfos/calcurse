@@ -44,8 +44,6 @@
 
 llist_ts_t recur_alist_p;
 llist_t recur_elist;
-static struct recur_event bkp_cut_recur_event;
-static struct recur_apoint bkp_cut_recur_apoint;
 
 static void free_exc(struct excp *exc)
 {
@@ -83,34 +81,6 @@ static void exc_dup(llist_t * in, llist_t * exc)
       recur_add_exc(in, p->st);
     }
   }
-}
-
-void recur_event_free_bkp(void)
-{
-  if (bkp_cut_recur_event.mesg) {
-    mem_free(bkp_cut_recur_event.mesg);
-    bkp_cut_recur_event.mesg = 0;
-  }
-  if (bkp_cut_recur_event.rpt) {
-    mem_free(bkp_cut_recur_event.rpt);
-    bkp_cut_recur_event.rpt = 0;
-  }
-  free_exc_list(&bkp_cut_recur_event.exc);
-  erase_note(&bkp_cut_recur_event.note);
-}
-
-void recur_apoint_free_bkp(void)
-{
-  if (bkp_cut_recur_apoint.mesg) {
-    mem_free(bkp_cut_recur_apoint.mesg);
-    bkp_cut_recur_apoint.mesg = 0;
-  }
-  if (bkp_cut_recur_apoint.rpt) {
-    mem_free(bkp_cut_recur_apoint.rpt);
-    bkp_cut_recur_apoint.rpt = 0;
-  }
-  free_exc_list(&bkp_cut_recur_apoint.exc);
-  erase_note(&bkp_cut_recur_apoint.note);
 }
 
 static void recur_event_dup(struct recur_event *in, struct recur_event *bkp)

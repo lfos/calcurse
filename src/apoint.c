@@ -42,17 +42,7 @@
 #include "calcurse.h"
 
 llist_ts_t alist_p;
-static struct apoint bkp_cut_apoint;
 static int hilt;
-
-void apoint_free_bkp(void)
-{
-  if (bkp_cut_apoint.mesg) {
-    mem_free(bkp_cut_apoint.mesg);
-    bkp_cut_apoint.mesg = 0;
-  }
-  erase_note(&bkp_cut_apoint.note);
-}
 
 void apoint_free(struct apoint *apt)
 {
