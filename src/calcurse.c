@@ -287,7 +287,7 @@ int main(int argc, char **argv)
 
     case KEY_GENERIC_CUT:
       if (wins_slctd() == APP && apoint_hilt() != 0) {
-        cut_item = apoint_cut(&inday.nb_events, &inday.nb_apoints);
+        cut_item = interact_day_item_cut(&inday.nb_events, &inday.nb_apoints);
         inday = do_storage(0);
         wins_update(FLAG_CAL | FLAG_APP);
       }
@@ -295,7 +295,7 @@ int main(int argc, char **argv)
 
     case KEY_GENERIC_PASTE:
       if (wins_slctd() == APP) {
-        apoint_paste(&inday.nb_events, &inday.nb_apoints, cut_item);
+        interact_day_item_paste(&inday.nb_events, &inday.nb_apoints, cut_item);
         cut_item = 0;
         inday = do_storage(0);
         wins_update(FLAG_CAL | FLAG_APP);

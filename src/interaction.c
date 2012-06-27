@@ -858,3 +858,54 @@ void interact_day_item_repeat(void)
   day_erase_item(date, item_nb, ERASE_FORCE);
 }
 
+/* Cut an item, so that it can be pasted somewhere else later. */
+int interact_day_item_cut(unsigned *nb_events, unsigned *nb_apoints)
+{
+  const int NBITEMS = *nb_apoints + *nb_events;
+  int item_type, to_be_removed;
+  long date;
+
+  if (NBITEMS == 0)
+    return 0;
+
+  date = calendar_get_slctd_day_sec();
+  item_type = day_cut_item(date, apoint_hilt());
+  if (item_type == EVNT || item_type == RECUR_EVNT) {
+    (*nb_events)--;
+    to_be_removed = 1;
+  } else if (item_type == APPT || item_type == RECUR_APPT) {
+    (*nb_apoints)--;
+    to_be_removed = 3;
+  } else
+    EXIT(_("no such type"));
+  /* NOTREACHED */
+
+  if (apoint_hilt() > 1)
+    apoint_hilt_decrease(1);
+  if (apad.first_onscreen >= to_be_removed)
+    apad.first_onscreen = apad.first_onscreen - to_be_removed;
+  if (NBITEMS == 1)
+    apoint_hilt_set(0);
+
+  return item_type;
+}
+
+/* Paste a previously cut item. */
+void interact_day_item_paste(unsigned *nb_events, unsigned *nb_apoints,
+                             int cut_item_type)
+{
+  int item_type;
+  long date;
+
+  date = calendar_get_slctd_day_sec();
+  item_type = day_paste_item(date, cut_item_type);
+  if (item_type == EVNT || item_type == RECUR_EVNT)
+    (*nb_events)++;
+  else if (item_type == APPT || item_type == RECUR_APPT)
+    (*nb_apoints)++;
+  else
+    return;
+
+  if (apoint_hilt() == 0)
+    apoint_hilt_increase(1);
+}
