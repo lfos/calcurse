@@ -344,7 +344,7 @@ void todo_view_note(struct todo *i, const char *pager)
   view_note(i->note, pager);
 }
 
-static void todo_free(struct todo *todo)
+void todo_free(struct todo *todo)
 {
   mem_free(todo->mesg);
   erase_note(&todo->note);

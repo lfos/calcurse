@@ -591,6 +591,7 @@ enum save_display {
 /* apoint.c */
 extern llist_ts_t alist_p;
 void apoint_free_bkp(void);
+void apoint_free(struct apoint *);
 void apoint_llist_init(void);
 void apoint_llist_free(void);
 void apoint_hilt_set(int);
@@ -686,6 +687,7 @@ void dmon_stop(void);
 /* event.c */
 extern llist_t eventlist;
 void event_free_bkp(void);
+void event_free(struct event *);
 void event_llist_init(void);
 void event_llist_free(void);
 struct event *event_new(char *, char *, long, int);
@@ -846,6 +848,8 @@ extern llist_ts_t recur_alist_p;
 extern llist_t recur_elist;
 void recur_event_free_bkp(void);
 void recur_apoint_free_bkp(void);
+void recur_event_free(struct recur_event *);
+void recur_apoint_free(struct recur_apoint *);
 void recur_apoint_llist_init(void);
 void recur_apoint_llist_free(void);
 void recur_event_llist_free(void);
@@ -905,6 +909,7 @@ void todo_chg_priority(struct todo *, int);
 void todo_update_panel(int);
 void todo_edit_note(struct todo *, const char *);
 void todo_view_note(struct todo *, const char *);
+void todo_free(struct todo *);
 void todo_init_list(void);
 void todo_free_list(void);
 

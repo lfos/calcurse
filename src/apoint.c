@@ -54,7 +54,7 @@ void apoint_free_bkp(void)
   erase_note(&bkp_cut_apoint.note);
 }
 
-static void apoint_free(struct apoint *apt)
+void apoint_free(struct apoint *apt)
 {
   mem_free(apt->mesg);
   erase_note(&apt->note);

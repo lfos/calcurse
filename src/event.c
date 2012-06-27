@@ -53,7 +53,7 @@ void event_free_bkp(void)
   erase_note(&bkp_cut_event.note);
 }
 
-static void event_free(struct event *ev)
+void event_free(struct event *ev)
 {
   mem_free(ev->mesg);
   erase_note(&ev->note);

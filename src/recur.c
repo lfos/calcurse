@@ -157,7 +157,7 @@ void recur_apoint_llist_init(void)
   LLIST_TS_INIT(&recur_alist_p);
 }
 
-static void recur_apoint_free(struct recur_apoint *rapt)
+void recur_apoint_free(struct recur_apoint *rapt)
 {
   mem_free(rapt->mesg);
   if (rapt->note)
@@ -168,7 +168,7 @@ static void recur_apoint_free(struct recur_apoint *rapt)
   mem_free(rapt);
 }
 
-static void recur_event_free(struct recur_event *rev)
+void recur_event_free(struct recur_event *rev)
 {
   mem_free(rev->mesg);
   if (rev->note)
