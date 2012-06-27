@@ -709,10 +709,8 @@ recur_event_erase(struct recur_event *rev, long start, unsigned delete_whole,
       erase_note(&rev->note);
       break;
     case ERASE_CUT:
-      recur_event_free_bkp();
-      recur_event_dup(rev, &bkp_cut_recur_event);
-      erase_note(&rev->note);
-      /* FALLTHROUGH */
+      LLIST_REMOVE(&recur_elist, i);
+      return;
     default:
       LLIST_REMOVE(&recur_elist, i);
       mem_free(rev->mesg);
@@ -751,10 +749,8 @@ recur_apoint_erase(struct recur_apoint *rapt, long start,
       erase_note(&rapt->note);
       break;
     case ERASE_CUT:
-      recur_apoint_free_bkp();
-      recur_apoint_dup(rapt, &bkp_cut_recur_apoint);
-      erase_note(&rapt->note);
-      /* FALLTHROUGH */
+      LLIST_TS_REMOVE(&recur_alist_p, i);
+      break;
     default:
       LLIST_TS_REMOVE(&recur_alist_p, i);
       mem_free(rapt->mesg);
@@ -848,56 +844,45 @@ void recur_apoint_switch_notify(struct recur_apoint *rapt)
   LLIST_TS_UNLOCK(&recur_alist_p);
 }
 
-void recur_event_paste_item(void)
+void recur_event_paste_item(struct recur_event *rev, long date)
 {
-  long new_start, time_shift;
+  long time_shift;
   llist_item_t *i;
 
-  new_start = date2sec(*calendar_get_slctd_day(), 0, 0);
-  time_shift = new_start - bkp_cut_recur_event.day;
+  time_shift = date - rev->day;
+  rev->day += time_shift;
 
-  bkp_cut_recur_event.day += time_shift;
-  if (bkp_cut_recur_event.rpt->until != 0)
-    bkp_cut_recur_event.rpt->until += time_shift;
-  LLIST_FOREACH(&bkp_cut_recur_event.exc, i) {
+  if (rev->rpt->until != 0)
+    rev->rpt->until += time_shift;
+
+  LLIST_FOREACH(&rev->exc, i) {
     struct excp *exc = LLIST_GET_DATA(i);
     exc->st += time_shift;
   }
 
-  recur_event_new(bkp_cut_recur_event.mesg, bkp_cut_recur_event.note,
-                  bkp_cut_recur_event.day, bkp_cut_recur_event.id,
-                  bkp_cut_recur_event.rpt->type,
-                  bkp_cut_recur_event.rpt->freq,
-                  bkp_cut_recur_event.rpt->until, &bkp_cut_recur_event.exc);
-  recur_event_free_bkp();
+  LLIST_ADD_SORTED(&recur_elist, rev, recur_event_cmp_day);
 }
 
-void recur_apoint_paste_item(void)
+void recur_apoint_paste_item(struct recur_apoint *rapt, long date)
 {
-  long new_start, time_shift;
+  long time_shift;
   llist_item_t *i;
 
-  new_start = date2sec(*calendar_get_slctd_day(),
-                       get_item_hour(bkp_cut_recur_apoint.start),
-                       get_item_min(bkp_cut_recur_apoint.start));
-  time_shift = new_start - bkp_cut_recur_apoint.start;
+  time_shift = (date + get_item_time(rapt->start)) - rapt->start;
+  rapt->start += time_shift;
 
-  bkp_cut_recur_apoint.start += time_shift;
-  if (bkp_cut_recur_apoint.rpt->until != 0)
-    bkp_cut_recur_apoint.rpt->until += time_shift;
-  LLIST_FOREACH(&bkp_cut_recur_event.exc, i) {
+  if (rapt->rpt->until != 0)
+    rapt->rpt->until += time_shift;
+
+  LLIST_FOREACH(&rapt->exc, i) {
     struct excp *exc = LLIST_GET_DATA(i);
     exc->st += time_shift;
   }
 
-  recur_apoint_new(bkp_cut_recur_apoint.mesg, bkp_cut_recur_apoint.note,
-                   bkp_cut_recur_apoint.start, bkp_cut_recur_apoint.dur,
-                   bkp_cut_recur_apoint.state, bkp_cut_recur_apoint.rpt->type,
-                   bkp_cut_recur_apoint.rpt->freq,
-                   bkp_cut_recur_apoint.rpt->until, &bkp_cut_recur_apoint.exc);
+  LLIST_TS_LOCK(&recur_alist_p);
+  LLIST_TS_ADD_SORTED(&recur_alist_p, rapt, recur_apoint_cmp_start);
+  LLIST_TS_UNLOCK(&recur_alist_p);
 
   if (notify_bar())
-    notify_check_repeated(&bkp_cut_recur_apoint);
-
-  recur_apoint_free_bkp();
+    notify_check_repeated(rapt);
 }

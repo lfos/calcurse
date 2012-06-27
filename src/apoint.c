@@ -233,10 +233,12 @@ void apoint_delete(struct apoint *apt, enum eraseflg flag)
     erase_note(&apt->note);
     break;
   case ERASE_CUT:
-    apoint_free_bkp();
-    apoint_dup(apt, &bkp_cut_apoint);
-    erase_note(&apt->note);
-    /* FALLTHROUGH */
+    if (notify_bar())
+      need_check_notify = notify_same_item(apt->start);
+    LLIST_TS_REMOVE(&alist_p, i);
+    if (need_check_notify)
+      notify_check_next_app(0);
+    break;
   default:
     if (notify_bar())
       need_check_notify = notify_same_item(apt->start);
@@ -397,17 +399,14 @@ void apoint_update_panel(int which_pan)
                win[APP].x + win[APP].w - 3 * bordr);
 }
 
-void apoint_paste_item(void)
+void apoint_paste_item(struct apoint *apt, long date)
 {
-  long bkp_time, bkp_start;
+  apt->start = date + get_item_time(apt->start);
 
-  bkp_time = get_item_time(bkp_cut_apoint.start);
-  bkp_start = calendar_get_slctd_day_sec() + bkp_time;
-  apoint_new(bkp_cut_apoint.mesg, bkp_cut_apoint.note, bkp_start,
-             bkp_cut_apoint.dur, bkp_cut_apoint.state);
+  LLIST_TS_LOCK(&alist_p);
+  LLIST_TS_ADD_SORTED(&alist_p, apt, apoint_cmp_start);
+  LLIST_TS_UNLOCK(&alist_p);
 
   if (notify_bar())
-    notify_check_added(bkp_cut_apoint.mesg, bkp_start, bkp_cut_apoint.state);
-
-  apoint_free_bkp();
+    notify_check_added(apt->mesg, apt->start, apt->state);
 }

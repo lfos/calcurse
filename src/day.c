@@ -595,24 +595,48 @@ unsigned day_chk_busy_slices(struct date day, int slicesno, int *slices)
 }
 
 /* Cut an item so it can be pasted somewhere else later. */
-int day_cut_item(long date, int item_number)
+struct day_item *day_cut_item(long date, int item_number)
 {
-  const int DELETE_WHOLE = 1;
-  struct day_item *p;
+  struct day_item *p = day_get_item(item_number);
 
-  p = day_get_item(item_number);
   switch (p->type) {
   case EVNT:
     event_delete(p->item.ev, ERASE_CUT);
     break;
   case RECUR_EVNT:
-    recur_event_erase(p->item.rev, date, DELETE_WHOLE, ERASE_CUT);
+    recur_event_erase(p->item.rev, date, 1, ERASE_CUT);
     break;
   case APPT:
     apoint_delete(p->item.apt, ERASE_CUT);
     break;
   case RECUR_APPT:
-    recur_apoint_erase(p->item.rapt, date, DELETE_WHOLE, ERASE_CUT);
+    recur_apoint_erase(p->item.rapt, date, 1, ERASE_CUT);
+    break;
+  default:
+    EXIT(_("unknwon type"));
+    /* NOTREACHED */
+  }
+
+  return p;
+}
+
+/* Paste a previously cut item. */
+int day_paste_item(struct day_item *p, long date)
+{
+  switch (p->type) {
+  case 0:
+    return 0;
+  case EVNT:
+    event_paste_item(p->item.ev, date);
+    break;
+  case RECUR_EVNT:
+    recur_event_paste_item(p->item.rev, date);
+    break;
+  case APPT:
+    apoint_paste_item(p->item.apt, date);
+    break;
+  case RECUR_APPT:
+    recur_apoint_paste_item(p->item.rapt, date);
     break;
   default:
     EXIT(_("unknwon type"));
@@ -620,35 +644,6 @@ int day_cut_item(long date, int item_number)
   }
 
   return p->type;
-}
-
-/* Paste a previously cut item. */
-int day_paste_item(long date, int cut_item_type)
-{
-  int pasted_item_type;
-
-  pasted_item_type = cut_item_type;
-  switch (cut_item_type) {
-  case 0:
-    return 0;
-  case EVNT:
-    event_paste_item();
-    break;
-  case RECUR_EVNT:
-    recur_event_paste_item();
-    break;
-  case APPT:
-    apoint_paste_item();
-    break;
-  case RECUR_APPT:
-    recur_apoint_paste_item();
-    break;
-  default:
-    EXIT(_("unknwon type"));
-    /* NOTREACHED */
-  }
-
-  return pasted_item_type;
 }
 
 /* Returns a structure containing the selected item. */

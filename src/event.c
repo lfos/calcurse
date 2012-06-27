@@ -167,10 +167,8 @@ void event_delete(struct event *ev, enum eraseflg flag)
     erase_note(&ev->note);
     break;
   case ERASE_CUT:
-    event_free_bkp();
-    event_dup(ev, &bkp_cut_event);
-    erase_note(&ev->note);
-    /* FALLTHROUGH */
+    LLIST_REMOVE(&eventlist, i);
+    break;
   default:
     LLIST_REMOVE(&eventlist, i);
     mem_free(ev->mesg);
@@ -179,9 +177,8 @@ void event_delete(struct event *ev, enum eraseflg flag)
   }
 }
 
-void event_paste_item(void)
+void event_paste_item(struct event *ev, long date)
 {
-  event_new(bkp_cut_event.mesg, bkp_cut_event.note,
-            date2sec(*calendar_get_slctd_day(), 0, 0), bkp_cut_event.id);
-  event_free_bkp();
+  ev->day = date;
+  LLIST_ADD_SORTED(&eventlist, ev, event_cmp_day);
 }

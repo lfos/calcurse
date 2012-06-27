@@ -36,6 +36,8 @@
 
 #include "calcurse.h"
 
+struct day_item day_cut = { 0, 0, { NULL } };
+
 /* Request the user to enter a new time. */
 static int day_edit_time(int time, unsigned *new_hour, unsigned *new_minute)
 {
@@ -858,22 +860,47 @@ void interact_day_item_repeat(void)
   day_erase_item(date, item_nb, ERASE_FORCE);
 }
 
+/* Free the current cut item, if any. */
+void interact_day_item_cut_free(void)
+{
+  switch (day_cut.type) {
+  case 0:
+    /* No previous item, don't free anything. */
+    break;
+  case APPT:
+    apoint_free(day_cut.item.apt);
+    break;
+  case EVNT:
+    event_free(day_cut.item.ev);
+    break;
+  case RECUR_APPT:
+    recur_apoint_free(day_cut.item.rapt);
+    break;
+  case RECUR_EVNT:
+    recur_event_free(day_cut.item.rev);
+    break;
+  }
+}
+
 /* Cut an item, so that it can be pasted somewhere else later. */
 int interact_day_item_cut(unsigned *nb_events, unsigned *nb_apoints)
 {
   const int NBITEMS = *nb_apoints + *nb_events;
-  int item_type, to_be_removed;
-  long date;
+  int to_be_removed;
 
   if (NBITEMS == 0)
     return 0;
 
-  date = calendar_get_slctd_day_sec();
-  item_type = day_cut_item(date, apoint_hilt());
-  if (item_type == EVNT || item_type == RECUR_EVNT) {
+  interact_day_item_cut_free();
+  struct day_item *p = day_cut_item(calendar_get_slctd_day_sec(),
+                                    apoint_hilt());
+  day_cut.type = p->type;
+  day_cut.item = p->item;
+
+  if (p->type == EVNT || p->type == RECUR_EVNT) {
     (*nb_events)--;
     to_be_removed = 1;
-  } else if (item_type == APPT || item_type == RECUR_APPT) {
+  } else if (p->type == APPT || p->type == RECUR_APPT) {
     (*nb_apoints)--;
     to_be_removed = 3;
   } else
@@ -887,7 +914,7 @@ int interact_day_item_cut(unsigned *nb_events, unsigned *nb_apoints)
   if (NBITEMS == 1)
     apoint_hilt_set(0);
 
-  return item_type;
+  return p->type;
 }
 
 /* Paste a previously cut item. */
@@ -895,10 +922,13 @@ void interact_day_item_paste(unsigned *nb_events, unsigned *nb_apoints,
                              int cut_item_type)
 {
   int item_type;
-  long date;
 
-  date = calendar_get_slctd_day_sec();
-  item_type = day_paste_item(date, cut_item_type);
+  if (!day_cut.type)
+    return;
+
+  item_type = day_paste_item(&day_cut, calendar_get_slctd_day_sec());
+  day_cut.type = 0;
+
   if (item_type == EVNT || item_type == RECUR_EVNT)
     (*nb_events)++;
   else if (item_type == APPT || item_type == RECUR_APPT)

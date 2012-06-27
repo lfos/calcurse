@@ -609,7 +609,7 @@ void apoint_scroll_pad_up(int);
 struct notify_app *apoint_check_next(struct notify_app *, long);
 void apoint_switch_notify(struct apoint *);
 void apoint_update_panel(int);
-void apoint_paste_item(void);
+void apoint_paste_item(struct apoint *, long);
 
 /* args.c */
 int parse_args(int, char **);
@@ -672,8 +672,8 @@ void day_write_stdout(long, const char *, const char *, const char *,
 void day_popup_item(struct day_item *);
 int day_check_if_item(struct date);
 unsigned day_chk_busy_slices(struct date, int, int *);
-int day_cut_item(long, int);
-int day_paste_item(long, int);
+struct day_item *day_cut_item(long, int);
+int day_paste_item(struct day_item *, long);
 struct day_item *day_get_item(int);
 int day_item_nb(long, int, int);
 void day_edit_note(struct day_item *, const char *);
@@ -695,7 +695,7 @@ unsigned event_inday(struct event *, long *);
 void event_write(struct event *, FILE *);
 struct event *event_scan(FILE *, struct tm, int, char *);
 void event_delete(struct event *, enum eraseflg);
-void event_paste_item(void);
+void event_paste_item(struct event *, long);
 
 /* help.c */
 void help_wins_init(struct scrollwin *, int, int, int, int);
@@ -716,6 +716,7 @@ void interact_day_item_delete(unsigned *, unsigned *);
 void interact_day_item_edit(void);
 void interact_day_item_pipe(void);
 void interact_day_item_repeat(void);
+void interact_day_item_cut_free();
 int interact_day_item_cut(unsigned *, unsigned *);
 void interact_day_item_paste(unsigned *, unsigned *, int);
 void interact_todo_add(void);
@@ -879,8 +880,8 @@ void recur_apoint_erase(struct recur_apoint *, long, unsigned, enum eraseflg);
 void recur_exc_scan(llist_t *, FILE *);
 struct notify_app *recur_apoint_check_next(struct notify_app *, long, long);
 void recur_apoint_switch_notify(struct recur_apoint *);
-void recur_event_paste_item(void);
-void recur_apoint_paste_item(void);
+void recur_event_paste_item(struct recur_event *, long);
+void recur_apoint_paste_item(struct recur_apoint *, long);
 
 /* sigs.c */
 void sigs_init(void);
