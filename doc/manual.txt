@@ -181,8 +181,9 @@ long options are supported):
   from which to read the  appointments can be specified using the `-c` flag.
 
 `-c <file>, --calendar <file>`::
-  Specify the calendar file to use.  The default  calendar is
-  `~/.calcurse/apts` (see section <<basics_files,calcurse files>>).
+  Specify the calendar file to use. The default calendar is `~/.calcurse/apts`
+  (see section <<basics_files,calcurse files>>). This option has precedence
+  over `-D`.
 
 `-d <date|num>, --day <date|num>`::
   Print the appointments for the given date  or  for  the given  number  of
@@ -206,8 +207,8 @@ Note: as for the `-a` flag, the calendar  from which to  read  the appointments
 can be specified using the `-c` flag.
 
 `-D <dir>, --directory <dir>`::
-  Specify  the  data directory to use. This option is incompatible  with  -c.
-  If  not  specified,   the default directory is `~/.calcurse/`.
+  Specify the data directory to use. If not specified, the default directory is
+  `~/.calcurse/`.
 
 `--format-apt <format>`::
   Specify a format to control the output of appointments in non-interactive

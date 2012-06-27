@@ -62,7 +62,7 @@ static void usage(void)
   const char *arg_usage =
       _("Usage: calcurse [-g|-h|-v] [-an] [-t[num]] [-i<file>] [-x[format]]\n"
         "                [-d <date>|<num>] [-s[date]] [-r[range]]\n"
-        "                [-c<file> | -D<dir>] [-S<regex>] [--status]\n"
+        "                [-c<file>] [-D<dir>] [-S<regex>] [--status]\n"
         "                [--read-only]\n");
   fputs(arg_usage, stdout);
 }
@@ -112,9 +112,9 @@ static void help_arg(void)
         "	Don't save configuration nor appointments/todos. Use with care.\n"
         "\nFiles:\n"
         "  -c <file>, --calendar <file>\n"
-        "	specify the calendar <file> to use (incompatible with '-D').\n"
+        "	specify the calendar <file> to use (has precedence over '-D').\n"
         "\n  -D <dir>, --directory <dir>\n"
-        "	specify the data directory to use (incompatible with '-c').\n"
+        "	specify the data directory to use.\n"
         "\tIf not specified, the default directory is ~/.calcurse\n"
         "\nNon-interactive:\n"
         "  -a, --appointment\n"
@@ -445,9 +445,7 @@ int parse_args(int argc, char **argv)
   int unknown_flag = 0;
   /* Command-line flags */
   int aflag = 0;                /* -a: print appointments for current day */
-  int cflag = 0;                /* -c: specify the calendar file to use */
   int dflag = 0;                /* -d: print appointments for a specified days */
-  int Dflag = 0;                /* -D: specify data directory to use */
   int hflag = 0;                /* -h: print help text */
   int gflag = 0;                /* -g: run garbage collector */
   int iflag = 0;                /* -i: import data */
@@ -516,7 +514,6 @@ int parse_args(int argc, char **argv)
       load_data++;
       break;
     case 'c':
-      cflag = 1;
       multiple_flag++;
       cfile = optarg;
       load_data++;
@@ -528,7 +525,6 @@ int parse_args(int argc, char **argv)
       ddate = optarg;
       break;
     case 'D':
-      Dflag = 1;
       datadir = optarg;
       break;
     case 'h':
@@ -638,11 +634,6 @@ int parse_args(int argc, char **argv)
     usage_try();
     return EXIT_FAILURE;
     /* Incorrect arguments */
-  } else if (Dflag && cflag) {
-    fputs(_("Options '-D' and '-c' cannot be used at the same time\n"), stderr);
-    usage();
-    usage_try();
-    return EXIT_FAILURE;
   } else if (Sflag && !(aflag || dflag || rflag || sflag || tflag)) {
     fputs(_("Option '-S' must be used with either '-d', '-r', '-s', "
             "'-a' or '-t'\n"), stderr);

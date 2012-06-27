@@ -231,7 +231,6 @@ void io_init(const char *cfile, const char *datadir)
     snprintf(path_todo, BUFSIZ, "%s/" TODO_PATH_NAME, home);
     snprintf(path_conf, BUFSIZ, "%s/" CONF_PATH_NAME, home);
     snprintf(path_notes, BUFSIZ, "%s/" NOTES_DIR_NAME, home);
-    snprintf(path_apts, BUFSIZ, "%s/" APTS_PATH_NAME, home);
     snprintf(path_keys, BUFSIZ, "%s/" KEYS_PATH_NAME, home);
     snprintf(path_cpid, BUFSIZ, "%s/" CPID_PATH_NAME, home);
     snprintf(path_dpid, BUFSIZ, "%s/" DPID_PATH_NAME, home);
@@ -249,43 +248,48 @@ void io_init(const char *cfile, const char *datadir)
     snprintf(path_dpid, BUFSIZ, "%s/" DPID_PATH, home);
     snprintf(path_dmon_log, BUFSIZ, "%s/" DLOG_PATH, home);
     snprintf(path_notes, BUFSIZ, "%s/" NOTES_DIR, home);
-    if (cfile == NULL) {
-      snprintf(path_apts, BUFSIZ, "%s/" APTS_PATH, home);
+  }
+
+  if (cfile == NULL) {
+    if (datadir != NULL) {
+      snprintf(path_apts, BUFSIZ, "%s/" APTS_PATH_NAME, home);
     } else {
-      snprintf(apts_file, BUFSIZ, "%s", cfile);
-      strncpy(path_apts, apts_file, BUFSIZ);
-      /* check if the file exists, otherwise create it */
-      data_file = fopen(path_apts, "r");
-      if (data_file == NULL) {
-        printf(_("%s does not exist, create it now [y or n] ? "), path_apts);
-        ch = getchar();
-        switch (ch) {
-        case 'N':
-        case 'n':
-          puts(_("aborting...\n"));
-          exit_calcurse(EXIT_FAILURE);
-          break;
-
-        case 'Y':
-        case 'y':
-          data_file = fopen(path_apts, "w");
-          if (data_file == NULL) {
-            perror(path_apts);
-            exit_calcurse(EXIT_FAILURE);
-          } else {
-            printf(_("%s successfully created\n"), path_apts);
-            puts(_("starting interactive mode...\n"));
-          }
-          break;
-
-        default:
-          puts(_("aborting...\n"));
-          exit_calcurse(EXIT_FAILURE);
-          break;
-        }
-      }
-      file_close(data_file, __FILE_POS__);
+      snprintf(path_apts, BUFSIZ, "%s/" APTS_PATH, home);
     }
+  } else {
+    snprintf(apts_file, BUFSIZ, "%s", cfile);
+    strncpy(path_apts, apts_file, BUFSIZ);
+    /* check if the file exists, otherwise create it */
+    data_file = fopen(path_apts, "r");
+    if (data_file == NULL) {
+      printf(_("%s does not exist, create it now [y or n] ? "), path_apts);
+      ch = getchar();
+      switch (ch) {
+      case 'N':
+      case 'n':
+        puts(_("aborting...\n"));
+        exit_calcurse(EXIT_FAILURE);
+        break;
+
+      case 'Y':
+      case 'y':
+        data_file = fopen(path_apts, "w");
+        if (data_file == NULL) {
+          perror(path_apts);
+          exit_calcurse(EXIT_FAILURE);
+        } else {
+          printf(_("%s successfully created\n"), path_apts);
+          puts(_("starting interactive mode...\n"));
+        }
+        break;
+
+      default:
+        puts(_("aborting...\n"));
+        exit_calcurse(EXIT_FAILURE);
+        break;
+      }
+    }
+    file_close(data_file, __FILE_POS__);
   }
 }
 
