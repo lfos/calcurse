@@ -593,6 +593,7 @@ enum save_display {
 /* apoint.c */
 extern llist_ts_t alist_p;
 void apoint_free_bkp(void);
+struct apoint *apoint_dup(struct apoint *);
 void apoint_free(struct apoint *);
 void apoint_llist_init(void);
 void apoint_llist_free(void);
@@ -689,6 +690,7 @@ void dmon_stop(void);
 /* event.c */
 extern llist_t eventlist;
 void event_free_bkp(void);
+struct event *event_dup(struct event *);
 void event_free(struct event *);
 void event_llist_init(void);
 void event_llist_free(void);
@@ -849,6 +851,8 @@ void pcal_export_data(FILE *);
 /* recur.c */
 extern llist_ts_t recur_alist_p;
 extern llist_t recur_elist;
+struct recur_event *recur_event_dup(struct recur_event *);
+struct recur_apoint *recur_apoint_dup(struct recur_apoint *);
 void recur_event_free_bkp(void);
 void recur_apoint_free_bkp(void);
 void recur_event_free(struct recur_event *);

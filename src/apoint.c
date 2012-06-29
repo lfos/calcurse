@@ -51,16 +51,21 @@ void apoint_free(struct apoint *apt)
   mem_free(apt);
 }
 
-static void apoint_dup(struct apoint *in, struct apoint *bkp)
+struct apoint *apoint_dup(struct apoint *in)
 {
-  EXIT_IF(!in || !bkp, _("null pointer"));
+  EXIT_IF(!in, _("null pointer"));
 
-  bkp->start = in->start;
-  bkp->dur = in->dur;
-  bkp->state = in->state;
-  bkp->mesg = mem_strdup(in->mesg);
+  struct apoint *apt = mem_malloc(sizeof(struct apoint));
+  apt->start = in->start;
+  apt->dur = in->dur;
+  apt->state = in->state;
+  apt->mesg = mem_strdup(in->mesg);
   if (in->note)
-    bkp->note = mem_strdup(in->note);
+    apt->note = mem_strdup(in->note);
+  else
+    apt->note = NULL;
+
+  return apt;
 }
 
 void apoint_llist_init(void)

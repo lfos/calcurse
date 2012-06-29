@@ -83,43 +83,55 @@ static void exc_dup(llist_t * in, llist_t * exc)
   }
 }
 
-static void recur_event_dup(struct recur_event *in, struct recur_event *bkp)
+struct recur_event *recur_event_dup(struct recur_event *in)
 {
-  EXIT_IF(!in || !bkp, _("null pointer"));
+  EXIT_IF(!in, _("null pointer"));
 
-  bkp->id = in->id;
-  bkp->day = in->day;
-  bkp->mesg = mem_strdup(in->mesg);
+  struct recur_event *rev = mem_malloc(sizeof(struct recur_event));
 
-  bkp->rpt = mem_malloc(sizeof(struct rpt));
-  bkp->rpt->type = in->rpt->type;
-  bkp->rpt->freq = in->rpt->freq;
-  bkp->rpt->until = in->rpt->until;
+  rev->id = in->id;
+  rev->day = in->day;
+  rev->mesg = mem_strdup(in->mesg);
 
-  exc_dup(&bkp->exc, &in->exc);
+  rev->rpt = mem_malloc(sizeof(struct rpt));
+  rev->rpt->type = in->rpt->type;
+  rev->rpt->freq = in->rpt->freq;
+  rev->rpt->until = in->rpt->until;
+
+  exc_dup(&rev->exc, &in->exc);
 
   if (in->note)
-    bkp->note = mem_strdup(in->note);
+    rev->note = mem_strdup(in->note);
+  else
+    rev->note = NULL;
+
+  return rev;
 }
 
-static void recur_apoint_dup(struct recur_apoint *in, struct recur_apoint *bkp)
+struct recur_apoint *recur_apoint_dup(struct recur_apoint *in)
 {
-  EXIT_IF(!in || !bkp, _("null pointer"));
+  EXIT_IF(!in, _("null pointer"));
 
-  bkp->start = in->start;
-  bkp->dur = in->dur;
-  bkp->state = in->state;
-  bkp->mesg = mem_strdup(in->mesg);
+  struct recur_apoint *rapt = mem_malloc(sizeof(struct recur_apoint));
 
-  bkp->rpt = mem_malloc(sizeof(struct rpt));
-  bkp->rpt->type = in->rpt->type;
-  bkp->rpt->freq = in->rpt->freq;
-  bkp->rpt->until = in->rpt->until;
+  rapt->start = in->start;
+  rapt->dur = in->dur;
+  rapt->state = in->state;
+  rapt->mesg = mem_strdup(in->mesg);
 
-  exc_dup(&bkp->exc, &in->exc);
+  rapt->rpt = mem_malloc(sizeof(struct rpt));
+  rapt->rpt->type = in->rpt->type;
+  rapt->rpt->freq = in->rpt->freq;
+  rapt->rpt->until = in->rpt->until;
+
+  exc_dup(&rapt->exc, &in->exc);
 
   if (in->note)
-    bkp->note = mem_strdup(in->note);
+    rapt->note = mem_strdup(in->note);
+  else
+    rapt->note = NULL;
+
+  return rapt;
 }
 
 void recur_apoint_llist_init(void)

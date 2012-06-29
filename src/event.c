@@ -50,15 +50,20 @@ void event_free(struct event *ev)
   mem_free(ev);
 }
 
-static void event_dup(struct event *in, struct event *bkp)
+struct event *event_dup(struct event *in)
 {
-  EXIT_IF(!in || !bkp, _("null pointer"));
+  EXIT_IF(!in, _("null pointer"));
 
-  bkp->id = in->id;
-  bkp->day = in->day;
-  bkp->mesg = mem_strdup(in->mesg);
+  struct event *ev = mem_malloc(sizeof(struct event));
+  ev->id = in->id;
+  ev->day = in->day;
+  ev->mesg = mem_strdup(in->mesg);
   if (in->note)
-    bkp->note = mem_strdup(in->note);
+    ev->note = mem_strdup(in->note);
+  else
+    ev->note = NULL;
+
+  return ev;
 }
 
 void event_llist_init(void)
