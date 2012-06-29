@@ -652,25 +652,6 @@ struct day_item *day_get_item(int item_number)
   return LLIST_GET_DATA(LLIST_NTH(&day_items, item_number - 1));
 }
 
-/* Returns the real item number, given its type. */
-int day_item_nb(long date, int day_num, int type)
-{
-  int i, nb_item[MAX_TYPES];
-  llist_item_t *j;
-
-  for (i = 0; i < MAX_TYPES; i++)
-    nb_item[i] = 0;
-
-  j = LLIST_FIRST(&day_items);
-  for (i = 1; i < day_num; i++) {
-    struct day_item *day = LLIST_TS_GET_DATA(j);
-    nb_item[day->type - 1]++;
-    j = LLIST_TS_NEXT(j);
-  }
-
-  return nb_item[type - 1];
-}
-
 /* Attach a note to an appointment or event. */
 void day_edit_note(struct day_item *p, const char *editor)
 {
