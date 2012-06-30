@@ -1,3 +1,57 @@
+[01 Jul 2012]
+Version 3.0.0:
+- New features:
+  * Full UTF-8 support.
+
+  * Much more powerful formatting options for printing items in non-interactive
+    mode. Format strings can be specified using "--format-apt",
+    "--format-event", "--format-recur-apt" and "--format-recur-event".
+
+  * Support for vim-style count prefixes for displacement keys.
+
+  * Powerful duration strings: Allows using extended duration strings, such as
+    "+3:10" or "+1d20h5m".
+
+  * A feature that allows piping items to external commands.
+
+  * New key bindings to jump to the previous/next month/year.
+
+  * A new configuration file format. `calcurse-upgrade` can be used to convert
+    existing configuration files.
+
+  * Several performance improvements.
+
+  * Notes are now stored using hash-based file names which results in lower
+    disk space usage.
+
+  * A test suite that can be used to test the core functionality of calcurse.
+
+  * "-D" and "-c" can now be used simultaneously, whereby "-c" has precedence
+    over "-D".
+
+  * A "--read-only" command line option to discard all changes to data files.
+
+- Bug fixes:
+  * Do not hardcode paths to the default editor/pager. Rely on the "$PATH"
+    variable instead.
+
+  * Update the number of todo items when importing an iCal file to prevent some
+    items from being inaccessible.
+
+  * Fix a segmentation fault when importing iCal data (reported by Andraz
+    Levstik).
+
+  * Format the "DURATION" field properly on iCal export. Use
+    days/hours/minutes/seconds instead of seconds (reported and fixed by Jerome
+    Pinot).
+
+  * Do not localize dates in pcal exports (reported by Baptiste Jonglez).
+
+- Translation:
+  * Portuguese translation (provided by Rafael Ferreira).
+
+  * 100% complete French, German and Russian translations.
+
 [08 Sep 2011]
 Version 2.9.2:
 - Bugfixes:
