@@ -221,6 +221,10 @@ static int config_parse_first_day_of_week(void *dummy, const char *val)
 static int config_parse_color_theme(void *dummy, const char *val)
 {
   int color1, color2;
+  if (!strcmp(val, "0") || !strcmp(val, "none")) {
+    colorize = 0;
+    return 1;
+  }
   if (!config_parse_color_pair(&color1, &color2, val))
     return 0;
   init_pair(COLR_CUSTOM, color1, color2);
@@ -337,7 +341,7 @@ static void config_color_theme_name(char *theme_name)
   };
 
   if (!colorize)
-    strncpy(theme_name, "0", BUFSIZ);
+    strncpy(theme_name, "none", BUFSIZ);
   else {
     pair_content(COLR_CUSTOM, &color[0], &color[1]);
     for (i = 0; i < NBCOLORS; i++) {
