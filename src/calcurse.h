@@ -76,6 +76,7 @@
 #define gettext(String) (String)
 #define dgettext(String) (String)
 #define dcgettext(String) (String)
+#define ngettext(String1,String2,n) ((n) == 1 ? (String1) : (String2))
 #define bindtextdomain(String) (String)
 #define bind_textdomain_codeset(Domain,Codeset) (Codeset)
 #endif /* ENABLE_NLS */
