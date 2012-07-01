@@ -156,14 +156,8 @@ void todo_write(struct todo *todo, FILE * f)
 }
 
 /* Delete a note previously attached to a todo item. */
-void todo_delete_note_bynum(unsigned num)
+void todo_delete_note(struct todo *todo)
 {
-  llist_item_t *i = LLIST_NTH(&todolist, num);
-
-  if (!i)
-    EXIT(_("no such todo"));
-  struct todo *todo = LLIST_TS_GET_DATA(i);
-
   if (!todo->note)
     EXIT(_("no note attached"));
   erase_note(&todo->note);

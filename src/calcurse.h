@@ -905,7 +905,7 @@ int todo_hilt_pos(void);
 char *todo_saved_mesg(void);
 struct todo *todo_add(char *, int, char *);
 void todo_write(struct todo *, FILE *);
-void todo_delete_note_bynum(unsigned);
+void todo_delete_note(struct todo *);
 void todo_delete(struct todo *);
 void todo_flag(struct todo *);
 void todo_chg_priority(struct todo *, int);

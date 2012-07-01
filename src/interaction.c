@@ -684,7 +684,7 @@ void interact_todo_delete(void)
       todo_first_decrease(1);
     break;
   case 2:
-    todo_delete_note_bynum(todo_hilt() - 1);
+    todo_delete_note(todo_get_item(todo_hilt()));
     break;
   default:
     wins_erase_status_bar();
