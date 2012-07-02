@@ -1292,19 +1292,22 @@ So here is a list of contributing persons I would like to thank :
 
 * Joel for its calendar script which inspired `calcurse` calendar view
 
-* Michael Schulz and Chris M. for the german translation of `calcurse` and its
-  manual
+* Jeremy Roon for the Dutch translation
 
-* Jose Lopez for the spanish translation of `calcurse` and its manual
+* Frédéric Culot, Toucouch, Erik Saule, Stéphane Aulery
+  and Baptiste Jonglez for the French translation
 
-* Neil Williams for the english translation
+* Michael Schulz, Chris M., Benjamin Moeller and Lukas Fleischer for the German
+  translation
 
-* Leandro Noferini for the italian translation
+* Rafael Ferreira for the Portuguese (Brazil) translation
+
+* Aleksey Mechonoshin for the Russian translation
+
+* Jose Lopez for the Spanish translation
 
 * Tony for its patch which helped improving the recur_item_inday() function,
   and for implementing the date format configuration options
-
-* Jeremy Roon for the dutch translation
 
 * Erik Saule for its patch implementing the `-N`, `-s`, `-S`, `-r` and `-D`
   flags
