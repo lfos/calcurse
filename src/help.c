@@ -60,7 +60,7 @@ typedef enum {
   HELP_GOTO,
   HELP_DELETE,
   HELP_ADD,
-  HELP_CUT_PASTE,
+  HELP_CUT_COPY_PASTE,
   HELP_EDIT,
   HELP_ENOTE,
   HELP_VNOTE,
@@ -127,6 +127,7 @@ help_write_pad(struct window *win, char *title, char *text, enum key action)
     case KEY_GENERIC_GOTO_TODAY:
     case KEY_GENERIC_CREDITS:
     case KEY_GENERIC_CUT:
+    case KEY_GENERIC_COPY:
     case KEY_GENERIC_PASTE:
       break;
     default:
@@ -262,8 +263,9 @@ static int wanted_page(int ch)
     break;
 
   case KEY_GENERIC_CUT:
+  case KEY_GENERIC_COPY:
   case KEY_GENERIC_PASTE:
-    page = HELP_CUT_PASTE;
+    page = HELP_CUT_COPY_PASTE;
     break;
 
   case KEY_EDIT_ITEM:
@@ -536,21 +538,23 @@ void help_screen(void)
            keys_action_firstkey(KEY_ADD_ITEM),
            keys_action_firstkey(KEY_ADD_ITEM));
 
-  hscr[HELP_CUT_PASTE].title = _("Cut and Paste\n");
-  snprintf(hscr[HELP_CUT_PASTE].text, HELPTEXTSIZ,
+  hscr[HELP_CUT_COPY_PASTE].title = _("Cut and Paste\n");
+  snprintf(hscr[HELP_CUT_COPY_PASTE].text, HELPTEXTSIZ,
            _
-           ("Cut and paste the currently selected item. This is useful to quickly\n"
-            "move an item from one date to another.\n"
-            "To do so, one must first highlight the item that needs to be moved,\n"
-            "then press '%s' to cut this item. It will be removed from the panel.\n"
-            "Once the new date is chosen in the calendar, the appointment panel must\n"
-            "be selected and the '%s' key must be pressed to paste the item.\n"
-            "The item will appear again in the appointment panel, assigned to the\n"
-            "newly selected date.\n\n"
+           (
+            "Cut/copy and paste the currently selected item. This is useful to\n"
+            "quickly move or copy an item from one date to another.\n"
+            "To do so, one must first highlight the item that needs to be moved or\n"
+            "copied, then press '%s' to cut (or '%s' to copy) this item. Once the\n"
+            "new date is chosen in the calendar, the appointment panel must be\n"
+            "selected and the '%s' key must be pressed to paste the item. The item\n"
+            "will appear again in the appointment panel, assigned to the newly\n"
+            "selected date.\n\n"
             "Be careful that if two cuts are performed successively without pasting\n"
             "between them, the item that was cut at first will be lost, together\n"
             "with its associated note if it had one."),
            keys_action_firstkey(KEY_GENERIC_CUT),
+           keys_action_firstkey(KEY_GENERIC_COPY),
            keys_action_firstkey(KEY_GENERIC_PASTE));
 
   hscr[HELP_EDIT].title = _("Edit Item\n");

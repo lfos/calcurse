@@ -292,6 +292,14 @@ int main(int argc, char **argv)
       }
       break;
 
+    case KEY_GENERIC_COPY:
+      if (wins_slctd() == APP && apoint_hilt() != 0) {
+        interact_day_item_copy(&inday.nb_events, &inday.nb_apoints);
+        inday = do_storage(0);
+        wins_update(FLAG_CAL | FLAG_APP);
+      }
+      break;
+
     case KEY_GENERIC_PASTE:
       if (wins_slctd() == APP) {
         interact_day_item_paste(&inday.nb_events, &inday.nb_apoints);
