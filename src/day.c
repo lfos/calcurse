@@ -149,6 +149,31 @@ int day_item_get_state(struct day_item *day)
   }
 }
 
+/* Clone the actual item. */
+void day_item_fork(struct day_item *day_in, struct day_item *day_out)
+{
+  day_out->type = day_in->type;
+  day_out->start = day_in->start;
+
+  switch (day_in->type) {
+  case APPT:
+    day_out->item.apt = apoint_dup(day_in->item.apt);
+    break;
+  case EVNT:
+    day_out->item.ev = event_dup(day_in->item.ev);
+    break;
+  case RECUR_APPT:
+    day_out->item.rapt = recur_apoint_dup(day_in->item.rapt);
+    break;
+  case RECUR_EVNT:
+    day_out->item.rev = recur_event_dup(day_in->item.rev);
+    break;
+  default:
+    EXIT(_("unknown item type"));
+    /* NOTREACHED */
+  }
+}
+
 /*
  * Store the events for the selected day in structure pointed
  * by day_items. This is done by copying the events

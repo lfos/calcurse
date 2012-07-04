@@ -667,6 +667,7 @@ char *day_item_get_mesg(struct day_item *);
 char *day_item_get_note(struct day_item *);
 long day_item_get_duration(struct day_item *);
 int day_item_get_state(struct day_item *);
+void day_item_fork(struct day_item *, struct day_item *);
 int day_store_items(long, unsigned *, unsigned *, regex_t *);
 struct day_items_nb *day_process_storage(struct date *, unsigned,
                                          struct day_items_nb *);
