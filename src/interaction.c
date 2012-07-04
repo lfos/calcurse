@@ -930,12 +930,13 @@ void interact_day_item_cut(unsigned *nb_events, unsigned *nb_apoints)
 void interact_day_item_paste(unsigned *nb_events, unsigned *nb_apoints)
 {
   int item_type;
+  struct day_item day;
 
   if (!day_cut.type)
     return;
 
-  item_type = day_paste_item(&day_cut, calendar_get_slctd_day_sec());
-  day_cut.type = 0;
+  day_item_fork(&day_cut, &day);
+  item_type = day_paste_item(&day, calendar_get_slctd_day_sec());
 
   calendar_monthly_view_cache_set_invalid();
 
