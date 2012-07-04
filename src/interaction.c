@@ -926,6 +926,18 @@ void interact_day_item_cut(unsigned *nb_events, unsigned *nb_apoints)
     apoint_hilt_set(0);
 }
 
+/* Copy an item, so that it can be pasted somewhere else later. */
+void interact_day_item_copy(unsigned *nb_events, unsigned *nb_apoints)
+{
+  const int NBITEMS = *nb_apoints + *nb_events;
+
+  if (NBITEMS == 0)
+    return;
+
+  interact_day_item_cut_free();
+  day_item_fork(day_get_item(apoint_hilt()), &day_cut);
+}
+
 /* Paste a previously cut item. */
 void interact_day_item_paste(unsigned *nb_events, unsigned *nb_apoints)
 {

@@ -723,6 +723,7 @@ void interact_day_item_pipe(void);
 void interact_day_item_repeat(void);
 void interact_day_item_cut_free();
 void interact_day_item_cut(unsigned *, unsigned *);
+void interact_day_item_copy(unsigned *, unsigned *);
 void interact_day_item_paste(unsigned *, unsigned *);
 void interact_todo_add(void);
 void interact_todo_delete(void);
