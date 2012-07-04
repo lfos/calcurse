@@ -63,7 +63,7 @@ static struct keydef_s keydef[NBKEYS] = {
   {"generic-export", "x X"},
   {"generic-goto", "g G"},
   {"generic-other-cmd", "o O"},
-  {"generic-config-menu", "c C"},
+  {"generic-config-menu", "C"},
   {"generic-redraw", "C-r"},
   {"generic-add-appt", "C-a"},
   {"generic-add-todo", "C-t"},
