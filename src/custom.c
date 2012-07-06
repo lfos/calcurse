@@ -226,7 +226,7 @@ void custom_layout_config(void)
   display_layout_config(&conf_win, mark, cursor);
   clear();
 
-  while ((ch = keys_getch(win[STA].p, NULL)) != KEY_GENERIC_QUIT) {
+  while ((ch = keys_getch(win[STA].p, NULL, NULL)) != KEY_GENERIC_QUIT) {
     need_reset = 0;
     switch (ch) {
     case KEY_GENERIC_HELP:
@@ -310,7 +310,7 @@ void custom_sidebar_config(void)
                             bindings_size, NULL);
   wins_doupdate();
 
-  while ((ch = keys_getch(win[STA].p, NULL)) != KEY_GENERIC_QUIT) {
+  while ((ch = keys_getch(win[STA].p, NULL, NULL)) != KEY_GENERIC_QUIT) {
     switch (ch) {
     case KEY_MOVE_UP:
       wins_sbar_winc();
@@ -528,7 +528,7 @@ void custom_color_config(void)
                        theme_changed);
   clear();
 
-  while ((ch = keys_getch(win[STA].p, NULL)) != KEY_GENERIC_QUIT) {
+  while ((ch = keys_getch(win[STA].p, NULL, NULL)) != KEY_GENERIC_QUIT) {
     need_reset = 0;
     theme_changed = 0;
 
@@ -921,7 +921,7 @@ void custom_keys_config(void)
   for (;;) {
     int ch;
 
-    ch = keys_getch(win[STA].p, NULL);
+    ch = keys_getch(win[STA].p, NULL, NULL);
     switch (ch) {
     case KEY_MOVE_UP:
       if (selrow > 0) {

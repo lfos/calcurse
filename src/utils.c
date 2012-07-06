@@ -97,12 +97,15 @@ void exit_calcurse(int status)
 
 void free_user_data(void)
 {
+  unsigned i;
+
   day_free_list();
   event_llist_free();
   apoint_llist_free();
   recur_apoint_llist_free();
   recur_event_llist_free();
-  interact_day_item_cut_free();
+  for (i = 0; i <= 37; i++)
+    interact_day_item_cut_free(i);
   todo_free_list();
   notify_free_app();
 }

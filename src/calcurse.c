@@ -64,7 +64,7 @@ int main(int argc, char **argv)
 {
   struct day_items_nb inday;
   int no_data_file = 1;
-  int count;
+  int count, reg;
 
 #if ENABLE_NLS
   setlocale(LC_ALL, "");
@@ -173,7 +173,7 @@ int main(int argc, char **argv)
       wins_reset();
     }
 
-    key = keys_getch(win[STA].p, &count);
+    key = keys_getch(win[STA].p, &count, &reg);
     switch (key) {
     case KEY_GENERIC_REDRAW:
       resize = 1;
@@ -286,7 +286,7 @@ int main(int argc, char **argv)
 
     case KEY_GENERIC_CUT:
       if (wins_slctd() == APP && apoint_hilt() != 0) {
-        interact_day_item_cut(&inday.nb_events, &inday.nb_apoints);
+        interact_day_item_cut(&inday.nb_events, &inday.nb_apoints, reg);
         inday = do_storage(0);
         wins_update(FLAG_CAL | FLAG_APP);
       }
@@ -294,7 +294,7 @@ int main(int argc, char **argv)
 
     case KEY_GENERIC_COPY:
       if (wins_slctd() == APP && apoint_hilt() != 0) {
-        interact_day_item_copy(&inday.nb_events, &inday.nb_apoints);
+        interact_day_item_copy(&inday.nb_events, &inday.nb_apoints, reg);
         inday = do_storage(0);
         wins_update(FLAG_CAL | FLAG_APP);
       }
@@ -302,7 +302,7 @@ int main(int argc, char **argv)
 
     case KEY_GENERIC_PASTE:
       if (wins_slctd() == APP) {
-        interact_day_item_paste(&inday.nb_events, &inday.nb_apoints);
+        interact_day_item_paste(&inday.nb_events, &inday.nb_apoints, reg);
         inday = do_storage(0);
         wins_update(FLAG_CAL | FLAG_APP);
       }

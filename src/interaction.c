@@ -36,7 +36,7 @@
 
 #include "calcurse.h"
 
-struct day_item day_cut = { 0, 0, { NULL } };
+struct day_item day_cut[37] = { { 0, 0, { NULL } } };
 
 /* Request the user to enter a new time. */
 static int day_edit_time(int time, unsigned *new_hour, unsigned *new_minute)
@@ -870,29 +870,30 @@ void interact_day_item_repeat(void)
 }
 
 /* Free the current cut item, if any. */
-void interact_day_item_cut_free(void)
+void interact_day_item_cut_free(unsigned reg)
 {
-  switch (day_cut.type) {
+  switch (day_cut[reg].type) {
   case 0:
     /* No previous item, don't free anything. */
     break;
   case APPT:
-    apoint_free(day_cut.item.apt);
+    apoint_free(day_cut[reg].item.apt);
     break;
   case EVNT:
-    event_free(day_cut.item.ev);
+    event_free(day_cut[reg].item.ev);
     break;
   case RECUR_APPT:
-    recur_apoint_free(day_cut.item.rapt);
+    recur_apoint_free(day_cut[reg].item.rapt);
     break;
   case RECUR_EVNT:
-    recur_event_free(day_cut.item.rev);
+    recur_event_free(day_cut[reg].item.rev);
     break;
   }
 }
 
 /* Cut an item, so that it can be pasted somewhere else later. */
-void interact_day_item_cut(unsigned *nb_events, unsigned *nb_apoints)
+void interact_day_item_cut(unsigned *nb_events, unsigned *nb_apoints,
+                           unsigned reg)
 {
   const int NBITEMS = *nb_apoints + *nb_events;
   int to_be_removed;
@@ -900,11 +901,11 @@ void interact_day_item_cut(unsigned *nb_events, unsigned *nb_apoints)
   if (NBITEMS == 0)
     return;
 
-  interact_day_item_cut_free();
+  interact_day_item_cut_free(reg);
   struct day_item *p = day_cut_item(calendar_get_slctd_day_sec(),
                                     apoint_hilt());
-  day_cut.type = p->type;
-  day_cut.item = p->item;
+  day_cut[reg].type = p->type;
+  day_cut[reg].item = p->item;
 
   calendar_monthly_view_cache_set_invalid();
 
@@ -927,27 +928,29 @@ void interact_day_item_cut(unsigned *nb_events, unsigned *nb_apoints)
 }
 
 /* Copy an item, so that it can be pasted somewhere else later. */
-void interact_day_item_copy(unsigned *nb_events, unsigned *nb_apoints)
+void interact_day_item_copy(unsigned *nb_events, unsigned *nb_apoints,
+                            unsigned reg)
 {
   const int NBITEMS = *nb_apoints + *nb_events;
 
-  if (NBITEMS == 0)
+  if (NBITEMS == 0 || reg == REG_BLACK_HOLE)
     return;
 
-  interact_day_item_cut_free();
-  day_item_fork(day_get_item(apoint_hilt()), &day_cut);
+  interact_day_item_cut_free(reg);
+  day_item_fork(day_get_item(apoint_hilt()), &day_cut[reg]);
 }
 
 /* Paste a previously cut item. */
-void interact_day_item_paste(unsigned *nb_events, unsigned *nb_apoints)
+void interact_day_item_paste(unsigned *nb_events, unsigned *nb_apoints,
+                             unsigned reg)
 {
   int item_type;
   struct day_item day;
 
-  if (!day_cut.type)
+  if (reg == REG_BLACK_HOLE || !day_cut[reg].type)
     return;
 
-  day_item_fork(&day_cut, &day);
+  day_item_fork(&day_cut[reg], &day);
   item_type = day_paste_item(&day, calendar_get_slctd_day_sec());
 
   calendar_monthly_view_cache_set_invalid();

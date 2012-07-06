@@ -160,6 +160,9 @@
 #define KEYS_LABELEN        8   /* length of command description */
 #define KEYS_CMDS_PER_LINE  6   /* max number of commands per line */
 
+/* Register definitions. */
+#define REG_BLACK_HOLE 37
+
 /* Size of the hash table the note garbage collector uses. */
 #define NOTE_GC_HSIZE 1024
 
@@ -722,10 +725,10 @@ void interact_day_item_delete(unsigned *, unsigned *);
 void interact_day_item_edit(void);
 void interact_day_item_pipe(void);
 void interact_day_item_repeat(void);
-void interact_day_item_cut_free();
-void interact_day_item_cut(unsigned *, unsigned *);
-void interact_day_item_copy(unsigned *, unsigned *);
-void interact_day_item_paste(unsigned *, unsigned *);
+void interact_day_item_cut_free(unsigned);
+void interact_day_item_cut(unsigned *, unsigned *, unsigned);
+void interact_day_item_copy(unsigned *, unsigned *, unsigned);
+void interact_day_item_paste(unsigned *, unsigned *, unsigned);
 void interact_todo_add(void);
 void interact_todo_delete(void);
 void interact_todo_edit(void);
@@ -768,7 +771,7 @@ void keys_free(void);
 void keys_dump_defaults(char *);
 const char *keys_get_label(enum key);
 enum key keys_get_action(int);
-enum key keys_getch(WINDOW * win, int *);
+enum key keys_getch(WINDOW * win, int *, int *);
 int keys_assign_binding(int, enum key);
 void keys_remove_binding(int, enum key);
 int keys_str2int(const char *);

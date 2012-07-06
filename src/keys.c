@@ -180,12 +180,13 @@ enum key keys_get_action(int pressed)
     return actions[pressed];
 }
 
-enum key keys_getch(WINDOW * win, int *count)
+enum key keys_getch(WINDOW * win, int *count, int *reg)
 {
   int ch = '0';
 
-  if (count) {
+  if (count && reg) {
     *count = 0;
+    *reg = 0;
     do {
       *count = *count * 10 + ch - '0';
       ch = wgetch(win);
@@ -194,8 +195,23 @@ enum key keys_getch(WINDOW * win, int *count)
 
     if (*count == 0)
       *count = 1;
-  } else
+
+    if (ch == '"') {
+      ch = wgetch(win);
+      if (ch >= '1' && ch <= '9') {
+        *reg = ch - '1' + 1;
+      }
+      else if (ch >= 'a' && ch <= 'z') {
+        *reg = ch - 'a' + 10;
+      }
+      else if (ch == '_') {
+        *reg = REG_BLACK_HOLE;
+      }
+      ch = wgetch(win);
+    }
+  } else {
     ch = wgetch(win);
+  }
 
   switch (ch) {
   case KEY_RESIZE:
@@ -524,7 +540,7 @@ void keys_popup_info(enum key key)
 #define WINCOL (col - 4)
   infowin = popup(WINROW, WINCOL, (row - WINROW) / 2, (col - WINCOL) / 2,
                   keydef[key].label, info[key], 1);
-  keys_getch(infowin, NULL);
+  keys_getch(infowin, NULL, NULL);
   delwin(infowin);
 #undef WINROW
 #undef WINCOL
