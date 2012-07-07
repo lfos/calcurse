@@ -389,32 +389,26 @@ static int day_erase_item(long date, int item_number, enum eraseflg flag)
   unsigned delete_whole;
 
   p = day_get_item(item_number);
-  if (flag == ERASE_DONT_FORCE) {
-    if (day_item_get_note(p) == NULL)
-      ans = 1;
-    else
-      ans = status_ask_choice(note_warning, note_choices, nb_note_choices);
-
-    switch (ans) {
+  if (flag == ERASE_DONT_FORCE && day_item_get_note(p)) {
+    switch (status_ask_choice(note_warning, note_choices, nb_note_choices)) {
     case 1:
-      flag = ERASE_FORCE;
       break;
     case 2:
-      flag = ERASE_FORCE_ONLY_NOTE;
-      break;
+      day_item_erase_note(p);
+      return 0;
     default:                   /* User escaped */
       return 0;
     }
   }
+
+  flag = ERASE_FORCE;
+
   if (p->type == EVNT) {
     event_delete(p->item.ev, flag);
   } else if (p->type == APPT) {
     apoint_delete(p->item.apt, flag);
   } else {
-    if (flag == ERASE_FORCE_ONLY_NOTE)
-      ans = 1;
-    else
-      ans = status_ask_choice(erase_warning, erase_choices, nb_erase_choices);
+    ans = status_ask_choice(erase_warning, erase_choices, nb_erase_choices);
 
     switch (ans) {
     case 1:
@@ -433,10 +427,8 @@ static int day_erase_item(long date, int item_number, enum eraseflg flag)
       recur_apoint_erase(p->item.rapt, date, delete_whole, flag);
     }
   }
-  if (flag == ERASE_FORCE_ONLY_NOTE)
-    return 0;
-  else
-    return p->type;
+
+  return p->type;
 }
 
 /* Pipe an appointment or event to an external program. */

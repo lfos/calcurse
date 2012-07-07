@@ -158,9 +158,6 @@ void event_delete(struct event *ev, enum eraseflg flag)
     EXIT(_("no such appointment"));
 
   switch (flag) {
-  case ERASE_FORCE_ONLY_NOTE:
-    erase_note(&ev->note);
-    break;
   case ERASE_CUT:
     LLIST_REMOVE(&eventlist, i);
     break;

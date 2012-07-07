@@ -687,9 +687,6 @@ recur_event_erase(struct recur_event *rev, long start, unsigned delete_whole,
 
   if (delete_whole) {
     switch (flag) {
-    case ERASE_FORCE_ONLY_NOTE:
-      erase_note(&rev->note);
-      break;
     case ERASE_CUT:
       LLIST_REMOVE(&recur_elist, i);
       return;
@@ -723,13 +720,10 @@ recur_apoint_erase(struct recur_apoint *rapt, long start,
     EXIT(_("appointment not found"));
 
   LLIST_TS_LOCK(&recur_alist_p);
-  if (notify_bar() && flag != ERASE_FORCE_ONLY_NOTE)
+  if (notify_bar())
     need_check_notify = notify_same_recur_item(rapt);
   if (delete_whole) {
     switch (flag) {
-    case ERASE_FORCE_ONLY_NOTE:
-      erase_note(&rapt->note);
-      break;
     case ERASE_CUT:
       LLIST_TS_REMOVE(&recur_alist_p, i);
       break;

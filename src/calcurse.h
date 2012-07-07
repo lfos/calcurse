@@ -524,7 +524,6 @@ enum item_type {
 enum eraseflg {
   ERASE_DONT_FORCE,
   ERASE_FORCE,
-  ERASE_FORCE_ONLY_NOTE,
   ERASE_CUT
 };
 
@@ -669,6 +668,7 @@ void custom_config_main(void);
 void day_free_list(void);
 char *day_item_get_mesg(struct day_item *);
 char *day_item_get_note(struct day_item *);
+void day_item_erase_note(struct day_item *);
 long day_item_get_duration(struct day_item *);
 int day_item_get_state(struct day_item *);
 void day_item_fork(struct day_item *, struct day_item *);

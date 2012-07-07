@@ -123,6 +123,25 @@ char *day_item_get_note(struct day_item *day)
   }
 }
 
+/* Get the note attached to an item. */
+void day_item_erase_note(struct day_item *day)
+{
+  switch (day->type) {
+  case APPT:
+    erase_note(&day->item.apt->note);
+    break;
+  case EVNT:
+    erase_note(&day->item.ev->note);
+    break;
+  case RECUR_APPT:
+    erase_note(&day->item.rapt->note);
+    break;
+  case RECUR_EVNT:
+    erase_note(&day->item.rev->note);
+    break;
+  }
+}
+
 /* Get the duration of an item. */
 long day_item_get_duration(struct day_item *day)
 {

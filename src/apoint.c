@@ -224,9 +224,6 @@ void apoint_delete(struct apoint *apt, enum eraseflg flag)
     EXIT(_("no such appointment"));
 
   switch (flag) {
-  case ERASE_FORCE_ONLY_NOTE:
-    erase_note(&apt->note);
-    break;
   case ERASE_CUT:
     if (notify_bar())
       need_check_notify = notify_same_item(apt->start);
