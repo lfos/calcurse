@@ -213,34 +213,21 @@ struct apoint *apoint_scan(FILE * f, struct tm start, struct tm end, char state,
   return apoint_new(buf, note, tstart, tend - tstart, state);
 }
 
-void apoint_delete(struct apoint *apt, enum eraseflg flag)
+void apoint_delete(struct apoint *apt)
 {
-  int need_check_notify = 0;
-
   LLIST_TS_LOCK(&alist_p);
+
   llist_item_t *i = LLIST_TS_FIND_FIRST(&alist_p, apt, NULL);
+  int need_check_notify = 0;
 
   if (!i)
     EXIT(_("no such appointment"));
 
-  switch (flag) {
-  case ERASE_CUT:
-    if (notify_bar())
-      need_check_notify = notify_same_item(apt->start);
-    LLIST_TS_REMOVE(&alist_p, i);
-    if (need_check_notify)
-      notify_check_next_app(0);
-    break;
-  default:
-    if (notify_bar())
-      need_check_notify = notify_same_item(apt->start);
-    LLIST_TS_REMOVE(&alist_p, i);
-    mem_free(apt->mesg);
-    mem_free(apt);
-    if (need_check_notify)
-      notify_check_next_app(0);
-    break;
-  }
+  if (notify_bar())
+    need_check_notify = notify_same_item(apt->start);
+  LLIST_TS_REMOVE(&alist_p, i);
+  if (need_check_notify)
+    notify_check_next_app(0);
 
   LLIST_TS_UNLOCK(&alist_p);
 }

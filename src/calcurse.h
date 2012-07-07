@@ -519,13 +519,6 @@ enum item_type {
   MAX_TYPES = APPT
 };
 
-/* Flags used to adapt processing when erasing an item. */
-enum eraseflg {
-  ERASE_DONT_FORCE,
-  ERASE_FORCE,
-  ERASE_CUT
-};
-
 /* Return codes for the getstring() function. */
 enum getstr {
   GETSTRING_VALID,
@@ -608,7 +601,7 @@ unsigned apoint_inday(struct apoint *, long *);
 void apoint_sec2str(struct apoint *, long, char *, char *);
 void apoint_write(struct apoint *, FILE *);
 struct apoint *apoint_scan(FILE *, struct tm, struct tm, char, char *);
-void apoint_delete(struct apoint *, enum eraseflg);
+void apoint_delete(struct apoint *);
 void apoint_scroll_pad_down(int, int);
 void apoint_scroll_pad_up(int);
 struct notify_app *apoint_check_next(struct notify_app *, long);
@@ -703,7 +696,7 @@ struct event *event_new(char *, char *, long, int);
 unsigned event_inday(struct event *, long *);
 void event_write(struct event *, FILE *);
 struct event *event_scan(FILE *, struct tm, int, char *);
-void event_delete(struct event *, enum eraseflg);
+void event_delete(struct event *);
 void event_paste_item(struct event *, long);
 
 /* help.c */
@@ -888,8 +881,8 @@ unsigned recur_apoint_inday(struct recur_apoint *, long *);
 unsigned recur_event_inday(struct recur_event *, long *);
 void recur_event_add_exc(struct recur_event *, long);
 void recur_apoint_add_exc(struct recur_apoint *, long);
-void recur_event_erase(struct recur_event *, enum eraseflg);
-void recur_apoint_erase(struct recur_apoint *, enum eraseflg);
+void recur_event_erase(struct recur_event *);
+void recur_apoint_erase(struct recur_apoint *);
 void recur_exc_scan(llist_t *, FILE *);
 struct notify_app *recur_apoint_check_next(struct notify_app *, long, long);
 void recur_apoint_switch_notify(struct recur_apoint *);

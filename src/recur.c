@@ -697,28 +697,14 @@ recur_apoint_add_exc(struct recur_apoint *rapt, long date)
  * or delete only one occurence of the recurrent event.
  */
 void
-recur_event_erase(struct recur_event *rev, enum eraseflg flag)
+recur_event_erase(struct recur_event *rev)
 {
   llist_item_t *i = LLIST_FIND_FIRST(&recur_elist, rev, NULL);
 
   if (!i)
     EXIT(_("event not found"));
 
-  switch (flag) {
-  case ERASE_CUT:
-    LLIST_REMOVE(&recur_elist, i);
-    return;
-  default:
-    LLIST_REMOVE(&recur_elist, i);
-    mem_free(rev->mesg);
-    if (rev->rpt) {
-      mem_free(rev->rpt);
-      rev->rpt = 0;
-    }
-    free_exc_list(&rev->exc);
-    mem_free(rev);
-    break;
-  }
+  LLIST_REMOVE(&recur_elist, i);
 }
 
 /*
@@ -726,34 +712,22 @@ recur_event_erase(struct recur_event *rev, enum eraseflg flag)
  * or delete only one occurence of the recurrent appointment.
  */
 void
-recur_apoint_erase(struct recur_apoint *rapt, enum eraseflg flag)
+recur_apoint_erase(struct recur_apoint *rapt)
 {
+  LLIST_TS_LOCK(&recur_alist_p);
+
   llist_item_t *i = LLIST_TS_FIND_FIRST(&recur_alist_p, rapt, NULL);
   int need_check_notify = 0;
 
   if (!i)
     EXIT(_("appointment not found"));
 
-  LLIST_TS_LOCK(&recur_alist_p);
   if (notify_bar())
     need_check_notify = notify_same_recur_item(rapt);
-  switch (flag) {
-  case ERASE_CUT:
-    LLIST_TS_REMOVE(&recur_alist_p, i);
-    break;
-  default:
-    LLIST_TS_REMOVE(&recur_alist_p, i);
-    mem_free(rapt->mesg);
-    if (rapt->rpt) {
-      mem_free(rapt->rpt);
-      rapt->rpt = 0;
-    }
-    free_exc_list(&rapt->exc);
-    mem_free(rapt);
-    if (need_check_notify)
-      notify_check_next_app(0);
-    break;
-  }
+  LLIST_TS_REMOVE(&recur_alist_p, i);
+  if (need_check_notify)
+    notify_check_next_app(0);
+
   LLIST_TS_UNLOCK(&recur_alist_p);
 }
 

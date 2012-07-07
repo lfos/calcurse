@@ -150,23 +150,14 @@ struct event *event_scan(FILE * f, struct tm start, int id, char *note)
 }
 
 /* Delete an event from the list. */
-void event_delete(struct event *ev, enum eraseflg flag)
+void event_delete(struct event *ev)
 {
   llist_item_t *i = LLIST_FIND_FIRST(&eventlist, ev, NULL);
 
   if (!i)
     EXIT(_("no such appointment"));
 
-  switch (flag) {
-  case ERASE_CUT:
-    LLIST_REMOVE(&eventlist, i);
-    break;
-  default:
-    LLIST_REMOVE(&eventlist, i);
-    mem_free(ev->mesg);
-    mem_free(ev);
-    break;
-  }
+  LLIST_REMOVE(&eventlist, i);
 }
 
 void event_paste_item(struct event *ev, long date)

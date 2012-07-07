@@ -656,16 +656,16 @@ struct day_item *day_cut_item(long date, int item_number)
 
   switch (p->type) {
   case EVNT:
-    event_delete(p->item.ev, ERASE_CUT);
+    event_delete(p->item.ev);
     break;
   case RECUR_EVNT:
-    recur_event_erase(p->item.rev, ERASE_CUT);
+    recur_event_erase(p->item.rev);
     break;
   case APPT:
-    apoint_delete(p->item.apt, ERASE_CUT);
+    apoint_delete(p->item.apt);
     break;
   case RECUR_APPT:
-    recur_apoint_erase(p->item.rapt, ERASE_CUT);
+    recur_apoint_erase(p->item.rapt);
     break;
   default:
     EXIT(_("unknwon type"));
