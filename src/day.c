@@ -168,6 +168,17 @@ int day_item_get_state(struct day_item *day)
   }
 }
 
+/* Add an exception to an item. */
+void day_item_add_exc(struct day_item *day, long date)
+{
+  switch (day->type) {
+  case RECUR_EVNT:
+    recur_event_add_exc(day->item.rev, date);
+  case RECUR_APPT:
+    recur_apoint_add_exc(day->item.rapt, date);
+  }
+}
+
 /* Clone the actual item. */
 void day_item_fork(struct day_item *day_in, struct day_item *day_out)
 {
@@ -648,13 +659,13 @@ struct day_item *day_cut_item(long date, int item_number)
     event_delete(p->item.ev, ERASE_CUT);
     break;
   case RECUR_EVNT:
-    recur_event_erase(p->item.rev, date, 1, ERASE_CUT);
+    recur_event_erase(p->item.rev, ERASE_CUT);
     break;
   case APPT:
     apoint_delete(p->item.apt, ERASE_CUT);
     break;
   case RECUR_APPT:
-    recur_apoint_erase(p->item.rapt, date, 1, ERASE_CUT);
+    recur_apoint_erase(p->item.rapt, ERASE_CUT);
     break;
   default:
     EXIT(_("unknwon type"));

@@ -385,8 +385,6 @@ static int day_erase_item(long date, int item_number, enum eraseflg flag)
         "Delete (i)tem or just its (n)ote ?");
   const char *note_choices = _("[in]");
   const int nb_note_choices = 2;
-  int ans;
-  unsigned delete_whole;
 
   p = day_get_item(item_number);
   if (flag == ERASE_DONT_FORCE && day_item_get_note(p)) {
@@ -408,23 +406,20 @@ static int day_erase_item(long date, int item_number, enum eraseflg flag)
   } else if (p->type == APPT) {
     apoint_delete(p->item.apt, flag);
   } else {
-    ans = status_ask_choice(erase_warning, erase_choices, nb_erase_choices);
-
-    switch (ans) {
+    switch (status_ask_choice(erase_warning, erase_choices, nb_erase_choices)) {
     case 1:
-      delete_whole = 1;
       break;
     case 2:
-      delete_whole = 0;
-      break;
+      day_item_add_exc(p, date);
+      return 0;
     default:
       return 0;
     }
 
     if (p->type == RECUR_EVNT) {
-      recur_event_erase(p->item.rev, date, delete_whole, flag);
+      recur_event_erase(p->item.rev, flag);
     } else {
-      recur_apoint_erase(p->item.rapt, date, delete_whole, flag);
+      recur_apoint_erase(p->item.rapt, flag);
     }
   }
 

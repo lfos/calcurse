@@ -672,37 +672,53 @@ unsigned recur_event_inday(struct recur_event *rev, long *day_start)
                           rev->rpt->freq, rev->rpt->until, *day_start);
 }
 
+/* Add an exception to a recurrent event. */
+void
+recur_event_add_exc(struct recur_event *rev, long date)
+{
+  recur_add_exc(&rev->exc, date);
+}
+
+/* Add an exception to a recurrent appointment. */
+void
+recur_apoint_add_exc(struct recur_apoint *rapt, long date)
+{
+  int need_check_notify = 0;
+
+  if (notify_bar())
+    need_check_notify = notify_same_recur_item(rapt);
+  recur_add_exc(&rapt->exc, date);
+  if (need_check_notify)
+    notify_check_next_app(0);
+}
+
 /*
  * Delete a recurrent event from the list (if delete_whole is not null),
  * or delete only one occurence of the recurrent event.
  */
 void
-recur_event_erase(struct recur_event *rev, long start, unsigned delete_whole,
-                  enum eraseflg flag)
+recur_event_erase(struct recur_event *rev, enum eraseflg flag)
 {
   llist_item_t *i = LLIST_FIND_FIRST(&recur_elist, rev, NULL);
 
   if (!i)
     EXIT(_("event not found"));
 
-  if (delete_whole) {
-    switch (flag) {
-    case ERASE_CUT:
-      LLIST_REMOVE(&recur_elist, i);
-      return;
-    default:
-      LLIST_REMOVE(&recur_elist, i);
-      mem_free(rev->mesg);
-      if (rev->rpt) {
-        mem_free(rev->rpt);
-        rev->rpt = 0;
-      }
-      free_exc_list(&rev->exc);
-      mem_free(rev);
-      break;
+  switch (flag) {
+  case ERASE_CUT:
+    LLIST_REMOVE(&recur_elist, i);
+    return;
+  default:
+    LLIST_REMOVE(&recur_elist, i);
+    mem_free(rev->mesg);
+    if (rev->rpt) {
+      mem_free(rev->rpt);
+      rev->rpt = 0;
     }
-  } else
-    recur_add_exc(&rev->exc, start);
+    free_exc_list(&rev->exc);
+    mem_free(rev);
+    break;
+  }
 }
 
 /*
@@ -710,8 +726,7 @@ recur_event_erase(struct recur_event *rev, long start, unsigned delete_whole,
  * or delete only one occurence of the recurrent appointment.
  */
 void
-recur_apoint_erase(struct recur_apoint *rapt, long start,
-                   unsigned delete_whole, enum eraseflg flag)
+recur_apoint_erase(struct recur_apoint *rapt, enum eraseflg flag)
 {
   llist_item_t *i = LLIST_TS_FIND_FIRST(&recur_alist_p, rapt, NULL);
   int need_check_notify = 0;
@@ -722,28 +737,22 @@ recur_apoint_erase(struct recur_apoint *rapt, long start,
   LLIST_TS_LOCK(&recur_alist_p);
   if (notify_bar())
     need_check_notify = notify_same_recur_item(rapt);
-  if (delete_whole) {
-    switch (flag) {
-    case ERASE_CUT:
-      LLIST_TS_REMOVE(&recur_alist_p, i);
-      break;
-    default:
-      LLIST_TS_REMOVE(&recur_alist_p, i);
-      mem_free(rapt->mesg);
-      if (rapt->rpt) {
-        mem_free(rapt->rpt);
-        rapt->rpt = 0;
-      }
-      free_exc_list(&rapt->exc);
-      mem_free(rapt);
-      if (need_check_notify)
-        notify_check_next_app(0);
-      break;
+  switch (flag) {
+  case ERASE_CUT:
+    LLIST_TS_REMOVE(&recur_alist_p, i);
+    break;
+  default:
+    LLIST_TS_REMOVE(&recur_alist_p, i);
+    mem_free(rapt->mesg);
+    if (rapt->rpt) {
+      mem_free(rapt->rpt);
+      rapt->rpt = 0;
     }
-  } else {
-    recur_add_exc(&rapt->exc, start);
+    free_exc_list(&rapt->exc);
+    mem_free(rapt);
     if (need_check_notify)
       notify_check_next_app(0);
+    break;
   }
   LLIST_TS_UNLOCK(&recur_alist_p);
 }
