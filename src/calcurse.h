@@ -398,7 +398,6 @@ enum key {
   KEY_GENERIC_HELP,
   KEY_GENERIC_QUIT,
   KEY_GENERIC_SAVE,
-  KEY_GENERIC_CUT,
   KEY_GENERIC_COPY,
   KEY_GENERIC_PASTE,
   KEY_GENERIC_CHANGE_VIEW,
@@ -722,12 +721,11 @@ void ical_export_data(FILE *);
 
 /* interaction.c */
 void interact_day_item_add(void);
-void interact_day_item_delete(unsigned *, unsigned *);
+void interact_day_item_delete(unsigned *, unsigned *, unsigned);
 void interact_day_item_edit(void);
 void interact_day_item_pipe(void);
 void interact_day_item_repeat(void);
 void interact_day_item_cut_free(unsigned);
-void interact_day_item_cut(unsigned *, unsigned *, unsigned);
 void interact_day_item_copy(unsigned *, unsigned *, unsigned);
 void interact_day_item_paste(unsigned *, unsigned *, unsigned);
 void interact_todo_add(void);

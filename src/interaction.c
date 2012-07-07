@@ -36,7 +36,7 @@
 
 #include "calcurse.h"
 
-struct day_item day_cut[37] = { { 0, 0, { NULL } } };
+struct day_item day_cut[38] = { { 0, 0, { NULL } } };
 
 /* Request the user to enter a new time. */
 static int day_edit_time(int time, unsigned *new_hour, unsigned *new_minute)
@@ -364,68 +364,6 @@ void interact_day_item_edit(void)
     notify_check_next_app(1);
 }
 
-/*
- * In order to erase an item, we need to count first the number of
- * items for each type (in order: recurrent events, events,
- * recurrent appointments and appointments) and then to test the
- * type of the item to be deleted.
- */
-static int day_erase_item(long date, int item_number, enum eraseflg flag)
-{
-  struct day_item *p;
-
-  const char *erase_warning =
-      _("This item is recurrent. "
-        "Delete (a)ll occurences or just this (o)ne ?");
-  const char *erase_choices = _("[ao]");
-  const int nb_erase_choices = 2;
-
-  const char *note_warning =
-      _("This item has a note attached to it. "
-        "Delete (i)tem or just its (n)ote ?");
-  const char *note_choices = _("[in]");
-  const int nb_note_choices = 2;
-
-  p = day_get_item(item_number);
-  if (flag == ERASE_DONT_FORCE && day_item_get_note(p)) {
-    switch (status_ask_choice(note_warning, note_choices, nb_note_choices)) {
-    case 1:
-      break;
-    case 2:
-      day_item_erase_note(p);
-      return 0;
-    default:                   /* User escaped */
-      return 0;
-    }
-  }
-
-  flag = ERASE_FORCE;
-
-  if (p->type == EVNT) {
-    event_delete(p->item.ev, flag);
-  } else if (p->type == APPT) {
-    apoint_delete(p->item.apt, flag);
-  } else {
-    switch (status_ask_choice(erase_warning, erase_choices, nb_erase_choices)) {
-    case 1:
-      break;
-    case 2:
-      day_item_add_exc(p, date);
-      return 0;
-    default:
-      return 0;
-    }
-
-    if (p->type == RECUR_EVNT) {
-      recur_event_erase(p->item.rev, flag);
-    } else {
-      recur_apoint_erase(p->item.rapt, flag);
-    }
-  }
-
-  return p->type;
-}
-
 /* Pipe an appointment or event to an external program. */
 void interact_day_item_pipe(void)
 {
@@ -567,17 +505,31 @@ void interact_day_item_add(void)
 }
 
 /* Delete an item from the appointment list. */
-void interact_day_item_delete(unsigned *nb_events, unsigned *nb_apoints)
+void interact_day_item_delete(unsigned *nb_events, unsigned *nb_apoints,
+                              unsigned reg)
 {
   const char *del_app_str = _("Do you really want to delete this item ?");
-  long date;
+
+  const char *erase_warning =
+      _("This item is recurrent. "
+        "Delete (a)ll occurences or just this (o)ne ?");
+  const char *erase_choices = _("[ao]");
+  const int nb_erase_choices = 2;
+
+  const char *note_warning =
+      _("This item has a note attached to it. "
+        "Delete (i)tem or just its (n)ote ?");
+  const char *note_choices = _("[in]");
+  const int nb_note_choices = 2;
+
+  long date = calendar_get_slctd_day_sec();
   int nb_items = *nb_apoints + *nb_events;
   int to_be_removed = 0;
 
-  date = calendar_get_slctd_day_sec();
-
   if (nb_items == 0)
     return;
+
+  struct day_item *p = day_get_item(apoint_hilt());
 
   if (conf.confirm_delete) {
     if (status_ask_bool(del_app_str) != 1) {
@@ -586,34 +538,59 @@ void interact_day_item_delete(unsigned *nb_events, unsigned *nb_apoints)
     }
   }
 
-  if (nb_items != 0) {
-    switch (day_erase_item(date, apoint_hilt(), ERASE_DONT_FORCE)) {
-    case EVNT:
-    case RECUR_EVNT:
-      (*nb_events)--;
-      to_be_removed = 1;
+  if (day_item_get_note(p)) {
+    switch (status_ask_choice(note_warning, note_choices, nb_note_choices)) {
+    case 1:
       break;
-    case APPT:
-    case RECUR_APPT:
-      (*nb_apoints)--;
-      to_be_removed = 3;
+    case 2:
+      day_item_erase_note(p);
+      return;
+    default:                   /* User escaped */
+      return;
+    }
+  }
+
+  if (p->type == RECUR_EVNT || p->type == RECUR_APPT) {
+    switch (status_ask_choice(erase_warning, erase_choices, nb_erase_choices)) {
+    case 1:
       break;
-    case 0:
+    case 2:
+      day_item_add_exc(p, date);
       return;
     default:
-      EXIT(_("no such type"));
-      /* NOTREACHED */
+      return;
     }
-
-    calendar_monthly_view_cache_set_invalid();
-
-    if (apoint_hilt() > 1)
-      apoint_hilt_decrease(1);
-    if (apad.first_onscreen >= to_be_removed)
-      apad.first_onscreen = apad.first_onscreen - to_be_removed;
-    if (nb_items == 1)
-      apoint_hilt_set(0);
   }
+
+  interact_day_item_cut_free(reg);
+  p = day_cut_item(date, apoint_hilt());
+  day_cut[reg].type = p->type;
+  day_cut[reg].item = p->item;
+
+  switch (p->type) {
+  case EVNT:
+  case RECUR_EVNT:
+    (*nb_events)--;
+    to_be_removed = 1;
+    break;
+  case APPT:
+  case RECUR_APPT:
+    (*nb_apoints)--;
+    to_be_removed = 3;
+    break;
+  default:
+    EXIT(_("no such type"));
+    /* NOTREACHED */
+  }
+
+  calendar_monthly_view_cache_set_invalid();
+
+  if (apoint_hilt() > 1)
+    apoint_hilt_decrease(1);
+  if (apad.first_onscreen >= to_be_removed)
+    apad.first_onscreen = apad.first_onscreen - to_be_removed;
+  if (nb_items == 1)
+    apoint_hilt_set(0);
 }
 
 /* Request user to enter a new todo item. */
@@ -851,7 +828,11 @@ void interact_day_item_repeat(void)
     EXIT(_("wrong item type"));
     /* NOTREACHED */
   }
-  day_erase_item(date, item_nb, ERASE_FORCE);
+
+  interact_day_item_cut_free(REG_BLACK_HOLE);
+  p = day_cut_item(date, item_nb);
+  day_cut[REG_BLACK_HOLE].type = p->type;
+  day_cut[REG_BLACK_HOLE].item = p->item;
 
   calendar_monthly_view_cache_set_invalid();
 }
@@ -876,42 +857,6 @@ void interact_day_item_cut_free(unsigned reg)
     recur_event_free(day_cut[reg].item.rev);
     break;
   }
-}
-
-/* Cut an item, so that it can be pasted somewhere else later. */
-void interact_day_item_cut(unsigned *nb_events, unsigned *nb_apoints,
-                           unsigned reg)
-{
-  const int NBITEMS = *nb_apoints + *nb_events;
-  int to_be_removed;
-
-  if (NBITEMS == 0)
-    return;
-
-  interact_day_item_cut_free(reg);
-  struct day_item *p = day_cut_item(calendar_get_slctd_day_sec(),
-                                    apoint_hilt());
-  day_cut[reg].type = p->type;
-  day_cut[reg].item = p->item;
-
-  calendar_monthly_view_cache_set_invalid();
-
-  if (p->type == EVNT || p->type == RECUR_EVNT) {
-    (*nb_events)--;
-    to_be_removed = 1;
-  } else if (p->type == APPT || p->type == RECUR_APPT) {
-    (*nb_apoints)--;
-    to_be_removed = 3;
-  } else
-    EXIT(_("no such type"));
-  /* NOTREACHED */
-
-  if (apoint_hilt() > 1)
-    apoint_hilt_decrease(1);
-  if (apad.first_onscreen >= to_be_removed)
-    apad.first_onscreen = apad.first_onscreen - to_be_removed;
-  if (NBITEMS == 1)
-    apoint_hilt_set(0);
 }
 
 /* Copy an item, so that it can be pasted somewhere else later. */

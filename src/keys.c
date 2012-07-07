@@ -56,7 +56,6 @@ static struct keydef_s keydef[NBKEYS] = {
   {"generic-help", "?"},
   {"generic-quit", "q Q"},
   {"generic-save", "s S C-s"},
-  {"generic-cut", "C-x"},
   {"generic-copy", "c"},
   {"generic-paste", "C-v"},
   {"generic-change-view", "TAB"},
@@ -461,7 +460,6 @@ void keys_popup_info(enum key key)
       _("Display hints whenever some help screens are available.");
   info[KEY_GENERIC_QUIT] = _("Exit from the current menu, or quit calcurse.");
   info[KEY_GENERIC_SAVE] = _("Save calcurse data.");
-  info[KEY_GENERIC_CUT] = _("Cut the item that is currently selected.");
   info[KEY_GENERIC_COPY] = _("Copy the item that is currently selected.");
   info[KEY_GENERIC_PASTE] = _("Paste an item at the current position.");
   info[KEY_GENERIC_CHANGE_VIEW] =

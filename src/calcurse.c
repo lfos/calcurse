@@ -275,20 +275,12 @@ int main(int argc, char **argv)
 
     case KEY_DEL_ITEM:
       if (wins_slctd() == APP && apoint_hilt() != 0) {
-        interact_day_item_delete(&inday.nb_events, &inday.nb_apoints);
+        interact_day_item_delete(&inday.nb_events, &inday.nb_apoints, reg);
         inday = do_storage(0);
         wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
       } else if (wins_slctd() == TOD && todo_hilt() != 0) {
         interact_todo_delete();
         wins_update(FLAG_TOD | FLAG_STA);
-      }
-      break;
-
-    case KEY_GENERIC_CUT:
-      if (wins_slctd() == APP && apoint_hilt() != 0) {
-        interact_day_item_cut(&inday.nb_events, &inday.nb_apoints, reg);
-        inday = do_storage(0);
-        wins_update(FLAG_CAL | FLAG_APP);
       }
       break;
 

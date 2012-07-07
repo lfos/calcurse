@@ -587,7 +587,6 @@ void wins_status_bar(void)
   struct binding help = { _("Help"), KEY_GENERIC_HELP };
   struct binding quit = { _("Quit"), KEY_GENERIC_QUIT };
   struct binding save = { _("Save"), KEY_GENERIC_SAVE };
-  struct binding cut = { _("Cut"), KEY_GENERIC_CUT };
   struct binding copy = { _("Copy"), KEY_GENERIC_COPY };
   struct binding paste = { _("Paste"), KEY_GENERIC_PASTE };
   struct binding chgvu = { _("Chg Win"), KEY_GENERIC_CHANGE_VIEW };
@@ -639,7 +638,7 @@ void wins_status_bar(void)
     &help, &quit, &save, &chgvu, &import, &export, &add, &del, &edit, &view,
     &pipe, &draw, &rept, &flag, &enote, &vnote, &up, &down, &gpday, &gnday,
     &gpweek, &gnweek, &gpmonth, &gnmonth, &gpyear, &gnyear, &togo, &today,
-    &conf, &appt, &todo, &cut, &copy, &paste
+    &conf, &appt, &todo, &copy, &paste
   };
 
   struct binding *bindings_todo[] = {
