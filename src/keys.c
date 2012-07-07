@@ -57,7 +57,7 @@ static struct keydef_s keydef[NBKEYS] = {
   {"generic-quit", "q Q"},
   {"generic-save", "s S C-s"},
   {"generic-copy", "c"},
-  {"generic-paste", "C-v"},
+  {"generic-paste", "p C-v"},
   {"generic-change-view", "TAB"},
   {"generic-import", "i I"},
   {"generic-export", "x X"},
