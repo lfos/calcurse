@@ -237,13 +237,13 @@ static void ical_export_todo(FILE * stream)
 }
 
 /* Print a header to describe import log report format. */
-static void ical_log_init(FILE * log, float version)
+static void ical_log_init(FILE * log, int major, int minor)
 {
   const char *header =
       "+-------------------------------------------------------------------+\n"
       "| Calcurse icalendar import log.                                    |\n"
       "|                                                                   |\n"
-      "| Items imported from icalendar file, version %1.1f                   |\n"
+      "| Items imported from icalendar file, version %d.%d                   |\n"
       "| Some items could not be imported, they are described hereafter.   |\n"
       "| The log line format is as follows:                                |\n"
       "|                                                                   |\n"
@@ -256,7 +256,7 @@ static void ical_log_init(FILE * log, float version)
       "+-------------------------------------------------------------------+\n\n";
 
   if (log)
-    fprintf(log, header, version);
+    fprintf(log, header, major, minor);
 }
 
 /*
@@ -419,25 +419,25 @@ static int ical_readline(FILE * fdi, char *buf, char *lstore, unsigned *ln)
   return 1;
 }
 
-static float
-ical_chk_header(FILE * fd, char *buf, char *lstore, unsigned *lineno)
+static int
+ical_chk_header(FILE * fd, char *buf, char *lstore, unsigned *lineno,
+                int *major, int *minor)
 {
-  const int HEADER_MALFORMED = -1;
   const char icalheader[] = "BEGIN:VCALENDAR";
-  float version;
 
   if (!ical_readline(fd, buf, lstore, lineno))
-    return HEADER_MALFORMED;
+    return 0;
 
   str_toupper(buf);
   if (strncmp(buf, icalheader, sizeof(icalheader) - 1) != 0)
-    return HEADER_MALFORMED;
+    return 0;
 
-  while (!sscanf(buf, "VERSION:%f", &version)) {
+  while (!sscanf(buf, "VERSION:%d.%d", major, minor)) {
     if (!ical_readline(fd, buf, lstore, lineno))
-      return HEADER_MALFORMED;
+      return 0;
   }
-  return version;
+
+  return 1;
 }
 
 /*
@@ -1055,15 +1055,14 @@ ical_import_data(FILE * stream, FILE * log, unsigned *events, unsigned *apoints,
   const char vevent[] = "BEGIN:VEVENT";
   const char vtodo[] = "BEGIN:VTODO";
   char buf[BUFSIZ], lstore[BUFSIZ];
-  float ical_version;
+  int major, minor;
 
   ical_readline_init(stream, buf, lstore, lines);
-  ical_version = ical_chk_header(stream, buf, lstore, lines);
-  RETURN_IF(ical_version < 0,
+  RETURN_IF(!ical_chk_header(stream, buf, lstore, lines, &major, &minor),
             _("Warning: ical header malformed or wrong version number. "
               "Aborting..."));
 
-  ical_log_init(log, ical_version);
+  ical_log_init(log, major, minor);
 
   while (ical_readline(stream, buf, lstore, lines)) {
     (*lines)++;

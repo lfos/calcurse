@@ -253,9 +253,8 @@ void wins_scrollwin_display(struct scrollwin *sw)
   const int visible_lines = sw->win.h - sw->pad.y - 1;
 
   if (sw->total_lines > visible_lines) {
-    float ratio = ((float)visible_lines) / ((float)sw->total_lines);
-    int sbar_length = (int)(ratio * visible_lines);
-    int highend = (int)(ratio * sw->first_visible_line);
+    int sbar_length = visible_lines * visible_lines / sw->total_lines;
+    int highend = visible_lines * sw->first_visible_line / sw->total_lines;
     int sbar_top = highend + sw->pad.y + 1;
 
     if ((sbar_top + sbar_length) > sw->win.h - 1)

@@ -359,9 +359,8 @@ void apoint_update_panel(int which_pan)
 
   /* Draw the scrollbar if necessary. */
   if ((apad.length >= app_length) || (apad.first_onscreen > 0)) {
-    float ratio = ((float)app_length) / ((float)apad.length);
-    int sbar_length = (int)(ratio * app_length);
-    int highend = (int)(ratio * apad.first_onscreen);
+    int sbar_length = app_length * app_length / apad.length;
+    int highend = app_length * apad.first_onscreen / apad.length;
     unsigned hilt_bar = (which_pan == APP) ? 1 : 0;
     int sbar_top = highend + title_lines + 1;
 

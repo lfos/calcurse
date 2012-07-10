@@ -311,9 +311,8 @@ void todo_update_panel(int which_pan)
 
   /* Draw the scrollbar if necessary. */
   if (todos > max_items) {
-    float ratio = ((float)max_items) / ((float)todos);
-    int sbar_length = (int)(ratio * (max_items + 1));
-    int highend = (int)(ratio * first);
+    int sbar_length = max_items * (max_items + 1) / todos;
+    int highend = max_items * first / todos;
     unsigned hilt_bar = (which_pan == TOD) ? 1 : 0;
     int sbar_top = highend + title_lines;
 
