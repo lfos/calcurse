@@ -42,9 +42,9 @@ struct day_item day_cut[38] = { { 0, 0, { NULL } } };
 static int day_edit_time(int time, unsigned *new_hour, unsigned *new_minute)
 {
   char *timestr = date_sec2date_str(time, "%H:%M");
-  const char *msg_time = _("Enter the new time ([hh:mm]) : ");
+  const char *msg_time = _("Enter the new time ([hh:mm] or [hhmm]) : ");
   const char *enter_str = _("Press [Enter] to continue");
-  const char *fmt_msg = _("You entered an invalid time, should be [hh:mm]");
+  const char *fmt_msg = _("You entered an invalid time, should be [hh:mm] or [hhmm]");
 
   for (;;) {
     status_mesg(msg_time, "");
@@ -67,9 +67,9 @@ static int day_edit_duration(int start, int dur, unsigned *new_duration)
   char *timestr = date_sec2date_str(start + dur, "%H:%M");
   const char *msg_time =
       _
-      ("Enter new end time ([hh:mm]) or duration ([+hh:mm], [+xxxdxxhxxm] or [+mm]) : ");
+      ("Enter new end time ([hh:mm], [hhmm]) or duration ([+hh:mm], [+xxxdxxhxxm] or [+mm]) : ");
   const char *enter_str = _("Press [Enter] to continue");
-  const char *fmt_msg = _("You entered an invalid time, should be [hh:mm]");
+  const char *fmt_msg = _("You entered an invalid time, should be [hh:mm] or [hhmm]");
   long newtime;
   unsigned hr, mn;
 
@@ -414,16 +414,16 @@ void interact_day_item_add(void)
 #define LTIME 6
 #define LDUR 12
   const char *mesg_1 =
-      _("Enter start time ([hh:mm]), leave blank for an all-day event : ");
+      _("Enter start time ([hh:mm] or [hhmm]), leave blank for an all-day event : ");
   const char *mesg_2 =
       _
-      ("Enter end time ([hh:mm]) or duration ([+hh:mm], [+xxxdxxhxxm] or [+mm]) : ");
+      ("Enter end time ([hh:mm] or [hhmm]) or duration ([+hh:mm], [+xxxdxxhxxm] or [+mm]) : ");
   const char *mesg_3 = _("Enter description :");
   const char *format_message_1 =
-      _("You entered an invalid start time, should be [hh:mm]");
+      _("You entered an invalid start time, should be [hh:mm] or [hhmm]");
   const char *format_message_2 =
       _
-      ("Invalid end time/duration, should be [hh:mm], [+hh:mm], [+xxxdxxhxxm] or [+mm]");
+      ("Invalid end time/duration, should be [hh:mm], [hhmm], [+hh:mm], [+xxxdxxhxxm] or [+mm]");
   const char *enter_str = _("Press [Enter] to continue");
   int Id = 1;
   char item_time[LDUR] = "";

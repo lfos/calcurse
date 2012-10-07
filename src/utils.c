@@ -740,9 +740,11 @@ int parse_time(const char *string, unsigned *hour, unsigned *minute)
     if (*p == ':') {
       if ((++n) > 1)
         return 0;
-    } else if ((*p >= '0') && (*p <= '9'))
+    } else if ((*p >= '0') && (*p <= '9')) {
+      if ((n == 0) && (p == (string + 2)) && *(p + 1))
+        n++;
       in[n] = in[n] * 10 + (int)(*p - '0');
-    else
+    } else
       return 0;
   }
 
