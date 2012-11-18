@@ -89,10 +89,16 @@ static inline void key_generic_goto(int key)
 {
   wins_erase_status_bar();
   calendar_set_current_date();
-  if (key == KEY_GENERIC_GOTO_TODAY)
-    calendar_goto_today();
-  else
-    calendar_change_day(conf.input_datefmt);
+  calendar_change_day(conf.input_datefmt);
+  inday = do_storage(1);
+  wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
+}
+
+static inline void key_generic_goto_today(int key)
+{
+  wins_erase_status_bar();
+  calendar_set_current_date();
+  calendar_goto_today();
   inday = do_storage(1);
   wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
 }
@@ -565,7 +571,7 @@ int main(int argc, char **argv)
     HANDLE_KEY(KEY_GENERIC_CHANGE_VIEW, key_generic_change_view);
     HANDLE_KEY(KEY_GENERIC_OTHER_CMD, key_generic_other_cmd);
     HANDLE_KEY(KEY_GENERIC_GOTO, key_generic_goto);
-    HANDLE_KEY(KEY_GENERIC_GOTO_TODAY, key_generic_goto);
+    HANDLE_KEY(KEY_GENERIC_GOTO_TODAY, key_generic_goto_today);
     HANDLE_KEY(KEY_VIEW_ITEM, key_view_item);
     HANDLE_KEY(KEY_GENERIC_CONFIG_MENU, key_generic_config_menu);
     HANDLE_KEY(KEY_GENERIC_ADD_APPT, key_generic_add_appt);
