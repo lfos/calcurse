@@ -38,6 +38,11 @@
 
 #include "calcurse.h"
 
+#define HANDLE_KEY(key, fn) case key: fn(key); break;
+
+struct day_items_nb inday;
+int count, reg;
+
 /*
  * Store the events and appointments for the selected day and reset the
  * appointment highlight pointer if a new day was selected.
@@ -53,6 +58,385 @@ static struct day_items_nb do_storage(int day_changed)
   return inday;
 }
 
+static inline void key_generic_change_view(int key)
+{
+  wins_reset_status_page();
+  wins_slctd_next();
+
+  /* Select the event to highlight. */
+  switch (wins_slctd()) {
+  case TOD:
+    if ((todo_hilt() == 0) && (todo_nb() > 0))
+      todo_hilt_set(1);
+    break;
+  case APP:
+    if ((apoint_hilt() == 0) && ((inday.nb_events + inday.nb_apoints) > 0))
+      apoint_hilt_set(1);
+    break;
+  default:
+    break;
+  }
+  wins_update(FLAG_ALL);
+}
+
+static inline void key_generic_other_cmd(int key)
+{
+  wins_other_status_page(wins_slctd());
+  wins_update(FLAG_STA);
+}
+
+static inline void key_generic_goto(int key)
+{
+  wins_erase_status_bar();
+  calendar_set_current_date();
+  if (key == KEY_GENERIC_GOTO_TODAY)
+    calendar_goto_today();
+  else
+    calendar_change_day(conf.input_datefmt);
+  inday = do_storage(1);
+  wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
+}
+
+static inline void key_view_item(int key)
+{
+  if ((wins_slctd() == APP) && (apoint_hilt() != 0))
+    day_popup_item(day_get_item(apoint_hilt()));
+  else if ((wins_slctd() == TOD) && (todo_hilt() != 0))
+    item_in_popup(NULL, NULL, todo_saved_mesg(), _("To do :"));
+  wins_update(FLAG_ALL);
+}
+
+static inline void key_generic_config_menu(int key)
+{
+  wins_erase_status_bar();
+  custom_config_main();
+  inday = do_storage(0);
+  wins_update(FLAG_ALL);
+}
+
+static inline void key_generic_add_appt(int key)
+{
+  interact_day_item_add();
+  inday = do_storage(1);
+  wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
+}
+
+static inline void key_generic_add_todo(int key)
+{
+  interact_todo_add();
+  if (todo_hilt() == 0 && todo_nb() == 1)
+    todo_hilt_increase(1);
+  wins_update(FLAG_TOD | FLAG_STA);
+}
+
+static inline void key_add_item(int key)
+{
+  switch (wins_slctd()) {
+  case APP:
+    interact_day_item_add();
+    inday = do_storage(0);
+    wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
+  case TOD:
+    interact_todo_add();
+    if (todo_hilt() == 0 && todo_nb() == 1)
+      todo_hilt_increase(1);
+    wins_update(FLAG_TOD | FLAG_STA);
+    break;
+  default:
+    break;
+  }
+}
+
+static inline void key_edit_item(int key)
+{
+  if (wins_slctd() == APP && apoint_hilt() != 0) {
+    interact_day_item_edit();
+    inday = do_storage(0);
+    wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
+  } else if (wins_slctd() == TOD && todo_hilt() != 0) {
+    interact_todo_edit();
+    wins_update(FLAG_TOD | FLAG_STA);
+  }
+}
+
+static inline void key_del_item(int key)
+{
+  if (wins_slctd() == APP && apoint_hilt() != 0) {
+    interact_day_item_delete(&inday.nb_events, &inday.nb_apoints, reg);
+    inday = do_storage(0);
+    wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
+  } else if (wins_slctd() == TOD && todo_hilt() != 0) {
+    interact_todo_delete();
+    wins_update(FLAG_TOD | FLAG_STA);
+  }
+}
+
+static inline void key_generic_copy(int key)
+{
+  if (wins_slctd() == APP && apoint_hilt() != 0) {
+    interact_day_item_copy(&inday.nb_events, &inday.nb_apoints, reg);
+    inday = do_storage(0);
+    wins_update(FLAG_CAL | FLAG_APP);
+  }
+}
+
+static inline void key_generic_paste(int key)
+{
+  if (wins_slctd() == APP) {
+    interact_day_item_paste(&inday.nb_events, &inday.nb_apoints, reg);
+    inday = do_storage(0);
+    wins_update(FLAG_CAL | FLAG_APP);
+  }
+}
+
+static inline void key_repeat_item(int key)
+{
+  if (wins_slctd() == APP && apoint_hilt() != 0)
+    interact_day_item_repeat();
+  inday = do_storage(0);
+  wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
+}
+
+static inline void key_flag_item(int key)
+{
+  if (wins_slctd() == APP && apoint_hilt() != 0) {
+    day_item_switch_notify(day_get_item(apoint_hilt()));
+    inday = do_storage(0);
+    wins_update(FLAG_APP);
+  } else if (wins_slctd() == TOD && todo_hilt() != 0) {
+    todo_flag(todo_get_item(todo_hilt()));
+    wins_update(FLAG_TOD);
+  }
+}
+
+static inline void key_pipe_item(int key)
+{
+  if (wins_slctd() == APP && apoint_hilt() != 0)
+    interact_day_item_pipe();
+  else if (wins_slctd() == TOD && todo_hilt() != 0)
+    interact_todo_pipe();
+  wins_update(FLAG_ALL);
+}
+
+static inline void key_change_priority(int key)
+{
+  if (wins_slctd() == TOD && todo_hilt() != 0) {
+    todo_chg_priority(todo_get_item(todo_hilt()), key);
+    if (todo_hilt_pos() < 0)
+      todo_set_first(todo_hilt());
+    else if (todo_hilt_pos() >= win[TOD].h - 4)
+      todo_set_first(todo_hilt() - win[TOD].h + 5);
+    wins_update(FLAG_TOD);
+  }
+}
+
+static inline void key_edit_note(int key)
+{
+  if (wins_slctd() == APP && apoint_hilt() != 0) {
+    day_edit_note(day_get_item(apoint_hilt()), conf.editor);
+    inday = do_storage(0);
+  } else if (wins_slctd() == TOD && todo_hilt() != 0)
+    todo_edit_note(todo_get_item(todo_hilt()), conf.editor);
+  wins_update(FLAG_ALL);
+}
+
+static inline void key_view_note(int key)
+{
+  if (wins_slctd() == APP && apoint_hilt() != 0)
+    day_view_note(day_get_item(apoint_hilt()), conf.pager);
+  else if (wins_slctd() == TOD && todo_hilt() != 0)
+    todo_view_note(todo_get_item(todo_hilt()), conf.pager);
+  wins_update(FLAG_ALL);
+}
+
+static inline void key_generic_help(int key)
+{
+  wins_status_bar();
+  help_screen();
+  wins_update(FLAG_ALL);
+}
+
+static inline void key_generic_save(int key)
+{
+  io_save_cal(IO_SAVE_DISPLAY_BAR);
+  wins_update(FLAG_STA);
+}
+
+static inline void key_generic_import(int key)
+{
+  wins_erase_status_bar();
+  io_import_data(IO_IMPORT_ICAL, NULL);
+  calendar_monthly_view_cache_set_invalid();
+  inday = do_storage(0);
+  wins_update(FLAG_ALL);
+}
+
+static inline void key_generic_export(int dummy)
+{
+  int key;
+
+  wins_erase_status_bar();
+  io_export_bar();
+  while ((key = wgetch(win[STA].p)) != 'q') {
+    switch (key) {
+    case 'I':
+    case 'i':
+      io_export_data(IO_EXPORT_ICAL);
+    case 'p':
+      io_export_data(IO_EXPORT_PCAL);
+      break;
+    }
+    wins_reset();
+    wins_update(FLAG_ALL);
+    wins_erase_status_bar();
+    io_export_bar();
+  }
+  inday = do_storage(0);
+  wins_update(FLAG_ALL);
+}
+
+static inline void key_generic_prev_day(int key)
+{
+  if (wins_slctd() == CAL || key == KEY_GENERIC_PREV_DAY) {
+    calendar_move(DAY_PREV, count);
+    inday = do_storage(1);
+    wins_update(FLAG_CAL | FLAG_APP);
+  }
+}
+
+static inline void key_generic_next_day(int key)
+{
+  if (wins_slctd() == CAL || key == KEY_GENERIC_NEXT_DAY) {
+    calendar_move(DAY_NEXT, count);
+    inday = do_storage(1);
+    wins_update(FLAG_CAL | FLAG_APP);
+  }
+}
+
+static inline void key_generic_prev_week(int key)
+{
+  if (wins_slctd() == CAL || key == KEY_GENERIC_PREV_WEEK) {
+    calendar_move(WEEK_PREV, count);
+    inday = do_storage(1);
+    wins_update(FLAG_CAL | FLAG_APP);
+  } else if (wins_slctd() == APP) {
+    if (count >= apoint_hilt())
+      count = apoint_hilt() - 1;
+    apoint_hilt_decrease(count);
+    apoint_scroll_pad_up(inday.nb_events);
+    wins_update(FLAG_APP);
+  } else if (wins_slctd() == TOD) {
+    if (count >= todo_hilt())
+      count = todo_hilt() - 1;
+    todo_hilt_decrease(count);
+    if (todo_hilt_pos() < 0)
+      todo_first_increase(todo_hilt_pos());
+    wins_update(FLAG_TOD);
+  }
+}
+
+static inline void key_generic_next_week(int key)
+{
+  if (wins_slctd() == CAL || key == KEY_GENERIC_NEXT_WEEK) {
+    calendar_move(WEEK_NEXT, count);
+    inday = do_storage(1);
+    wins_update(FLAG_CAL | FLAG_APP);
+  } else if (wins_slctd() == APP) {
+    if (count > inday.nb_events + inday.nb_apoints - apoint_hilt())
+      count = inday.nb_events + inday.nb_apoints - apoint_hilt();
+    apoint_hilt_increase(count);
+    apoint_scroll_pad_down(inday.nb_events, win[APP].h);
+    wins_update(FLAG_APP);
+  } else if (wins_slctd() == TOD) {
+    if (count > todo_nb() - todo_hilt())
+      count = todo_nb() - todo_hilt();
+    todo_hilt_increase(count);
+    if (todo_hilt_pos() >= win[TOD].h - 4)
+      todo_first_increase(todo_hilt_pos() - win[TOD].h + 5);
+    wins_update(FLAG_TOD);
+  }
+}
+
+static inline void key_generic_prev_month(int key)
+{
+  calendar_move(MONTH_PREV, count);
+  inday = do_storage(1);
+  wins_update(FLAG_CAL | FLAG_APP);
+}
+
+static inline void key_generic_next_month(int key)
+{
+  calendar_move(MONTH_NEXT, count);
+  inday = do_storage(1);
+  wins_update(FLAG_CAL | FLAG_APP);
+}
+
+static inline void key_generic_prev_year(int key)
+{
+  calendar_move(YEAR_PREV, count);
+  inday = do_storage(1);
+  wins_update(FLAG_CAL | FLAG_APP);
+}
+
+static inline void key_generic_next_year(int key)
+{
+  calendar_move(YEAR_NEXT, count);
+  inday = do_storage(1);
+  wins_update(FLAG_CAL | FLAG_APP);
+}
+
+static inline void key_start_of_week(int key)
+{
+  if (wins_slctd() == CAL) {
+    calendar_move(WEEK_START, count);
+    inday = do_storage(1);
+    wins_update(FLAG_CAL | FLAG_APP);
+  }
+}
+
+static inline void key_end_of_week(int key)
+{
+  if (wins_slctd() == CAL) {
+    calendar_move(WEEK_END, count);
+    inday = do_storage(1);
+    wins_update(FLAG_CAL | FLAG_APP);
+  }
+}
+
+static inline void key_generic_scroll_up(int key)
+{
+  if (wins_slctd() == CAL) {
+    calendar_view_prev();
+    wins_update(FLAG_CAL | FLAG_APP);
+  }
+}
+
+static inline void key_generic_scroll_down(int key)
+{
+  if (wins_slctd() == CAL) {
+    calendar_view_next();
+    wins_update(FLAG_CAL | FLAG_APP);
+  }
+}
+
+static inline void key_generic_quit(int key)
+{
+  if (conf.auto_save)
+    io_save_cal(IO_SAVE_DISPLAY_BAR);
+  if (conf.auto_gc)
+    note_gc();
+
+  if (conf.confirm_quit) {
+    if (status_ask_bool(_("Do you really want to quit ?")) == 1)
+      exit_calcurse(EXIT_SUCCESS);
+    else {
+      wins_erase_status_bar();
+      wins_update(FLAG_STA);
+    }
+  } else
+    exit_calcurse(EXIT_SUCCESS);
+}
+
 /*
  * Calcurse is a text-based personal organizer which helps keeping track
  * of events and everyday tasks. It contains a calendar, a 'todo' list,
@@ -62,9 +446,7 @@ static struct day_items_nb do_storage(int day_changed)
  */
 int main(int argc, char **argv)
 {
-  struct day_items_nb inday;
   int no_data_file = 1;
-  int count, reg;
 
 #if ENABLE_NLS
   setlocale(LC_ALL, "");
@@ -179,357 +561,47 @@ int main(int argc, char **argv)
       resize = 1;
       break;
 
-    case KEY_GENERIC_CHANGE_VIEW:
-      wins_reset_status_page();
-      wins_slctd_next();
-
-      /* Select the event to highlight. */
-      switch (wins_slctd()) {
-      case TOD:
-        if ((todo_hilt() == 0) && (todo_nb() > 0))
-          todo_hilt_set(1);
-        break;
-      case APP:
-        if ((apoint_hilt() == 0) && ((inday.nb_events + inday.nb_apoints) > 0))
-          apoint_hilt_set(1);
-        break;
-      default:
-        break;
-      }
-      wins_update(FLAG_ALL);
-      break;
-
-    case KEY_GENERIC_OTHER_CMD:
-      wins_other_status_page(wins_slctd());
-      wins_update(FLAG_STA);
-      break;
-
-    case KEY_GENERIC_GOTO:
-    case KEY_GENERIC_GOTO_TODAY:
-      wins_erase_status_bar();
-      calendar_set_current_date();
-      if (key == KEY_GENERIC_GOTO_TODAY)
-        calendar_goto_today();
-      else
-        calendar_change_day(conf.input_datefmt);
-      inday = do_storage(1);
-      wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
-      break;
-
-    case KEY_VIEW_ITEM:
-      if ((wins_slctd() == APP) && (apoint_hilt() != 0))
-        day_popup_item(day_get_item(apoint_hilt()));
-      else if ((wins_slctd() == TOD) && (todo_hilt() != 0))
-        item_in_popup(NULL, NULL, todo_saved_mesg(), _("To do :"));
-      wins_update(FLAG_ALL);
-      break;
-
-    case KEY_GENERIC_CONFIG_MENU:
-      wins_erase_status_bar();
-      custom_config_main();
-      inday = do_storage(0);
-      wins_update(FLAG_ALL);
-      break;
-
-    case KEY_GENERIC_ADD_APPT:
-      interact_day_item_add();
-      inday = do_storage(1);
-      wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
-      break;
-
-    case KEY_GENERIC_ADD_TODO:
-      interact_todo_add();
-      if (todo_hilt() == 0 && todo_nb() == 1)
-        todo_hilt_increase(1);
-      wins_update(FLAG_TOD | FLAG_STA);
-      break;
-
-    case KEY_ADD_ITEM:
-      switch (wins_slctd()) {
-      case APP:
-        interact_day_item_add();
-        inday = do_storage(0);
-        wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
-        break;
-      case TOD:
-        interact_todo_add();
-        if (todo_hilt() == 0 && todo_nb() == 1)
-          todo_hilt_increase(1);
-        wins_update(FLAG_TOD | FLAG_STA);
-        break;
-      default:
-        break;
-      }
-      break;
-
-    case KEY_EDIT_ITEM:
-      if (wins_slctd() == APP && apoint_hilt() != 0) {
-        interact_day_item_edit();
-        inday = do_storage(0);
-        wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
-      } else if (wins_slctd() == TOD && todo_hilt() != 0) {
-        interact_todo_edit();
-        wins_update(FLAG_TOD | FLAG_STA);
-      }
-      break;
-
-    case KEY_DEL_ITEM:
-      if (wins_slctd() == APP && apoint_hilt() != 0) {
-        interact_day_item_delete(&inday.nb_events, &inday.nb_apoints, reg);
-        inday = do_storage(0);
-        wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
-      } else if (wins_slctd() == TOD && todo_hilt() != 0) {
-        interact_todo_delete();
-        wins_update(FLAG_TOD | FLAG_STA);
-      }
-      break;
-
-    case KEY_GENERIC_COPY:
-      if (wins_slctd() == APP && apoint_hilt() != 0) {
-        interact_day_item_copy(&inday.nb_events, &inday.nb_apoints, reg);
-        inday = do_storage(0);
-        wins_update(FLAG_CAL | FLAG_APP);
-      }
-      break;
-
-    case KEY_GENERIC_PASTE:
-      if (wins_slctd() == APP) {
-        interact_day_item_paste(&inday.nb_events, &inday.nb_apoints, reg);
-        inday = do_storage(0);
-        wins_update(FLAG_CAL | FLAG_APP);
-      }
-      break;
-
-    case KEY_REPEAT_ITEM:
-      if (wins_slctd() == APP && apoint_hilt() != 0)
-        interact_day_item_repeat();
-      inday = do_storage(0);
-      wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
-      break;
-
-    case KEY_FLAG_ITEM:
-      if (wins_slctd() == APP && apoint_hilt() != 0) {
-        day_item_switch_notify(day_get_item(apoint_hilt()));
-        inday = do_storage(0);
-        wins_update(FLAG_APP);
-      } else if (wins_slctd() == TOD && todo_hilt() != 0) {
-        todo_flag(todo_get_item(todo_hilt()));
-        wins_update(FLAG_TOD);
-      }
-      break;
-
-    case KEY_PIPE_ITEM:
-      if (wins_slctd() == APP && apoint_hilt() != 0)
-        interact_day_item_pipe();
-      else if (wins_slctd() == TOD && todo_hilt() != 0)
-        interact_todo_pipe();
-      wins_update(FLAG_ALL);
-      break;
-
-    case KEY_RAISE_PRIORITY:
-    case KEY_LOWER_PRIORITY:
-      if (wins_slctd() == TOD && todo_hilt() != 0) {
-        todo_chg_priority(todo_get_item(todo_hilt()), key);
-        if (todo_hilt_pos() < 0)
-          todo_set_first(todo_hilt());
-        else if (todo_hilt_pos() >= win[TOD].h - 4)
-          todo_set_first(todo_hilt() - win[TOD].h + 5);
-        wins_update(FLAG_TOD);
-      }
-      break;
-
-    case KEY_EDIT_NOTE:
-      if (wins_slctd() == APP && apoint_hilt() != 0) {
-        day_edit_note(day_get_item(apoint_hilt()), conf.editor);
-        inday = do_storage(0);
-      } else if (wins_slctd() == TOD && todo_hilt() != 0)
-        todo_edit_note(todo_get_item(todo_hilt()), conf.editor);
-      wins_update(FLAG_ALL);
-      break;
-
-    case KEY_VIEW_NOTE:
-      if (wins_slctd() == APP && apoint_hilt() != 0)
-        day_view_note(day_get_item(apoint_hilt()), conf.pager);
-      else if (wins_slctd() == TOD && todo_hilt() != 0)
-        todo_view_note(todo_get_item(todo_hilt()), conf.pager);
-      wins_update(FLAG_ALL);
-      break;
-
-    case KEY_GENERIC_HELP:
-      wins_status_bar();
-      help_screen();
-      wins_update(FLAG_ALL);
-      break;
-
-    case KEY_GENERIC_SAVE:
-      io_save_cal(IO_SAVE_DISPLAY_BAR);
-      wins_update(FLAG_STA);
-      break;
-
-    case KEY_GENERIC_IMPORT:
-      wins_erase_status_bar();
-      io_import_data(IO_IMPORT_ICAL, NULL);
-      calendar_monthly_view_cache_set_invalid();
-      inday = do_storage(0);
-      wins_update(FLAG_ALL);
-      break;
-
-    case KEY_GENERIC_EXPORT:
-      wins_erase_status_bar();
-      io_export_bar();
-      while ((key = wgetch(win[STA].p)) != 'q') {
-        switch (key) {
-        case 'I':
-        case 'i':
-          io_export_data(IO_EXPORT_ICAL);
-          break;
-        case 'P':
-        case 'p':
-          io_export_data(IO_EXPORT_PCAL);
-          break;
-        }
-        wins_reset();
-        wins_update(FLAG_ALL);
-        wins_erase_status_bar();
-        io_export_bar();
-      }
-      inday = do_storage(0);
-      wins_update(FLAG_ALL);
-      break;
-
-    case KEY_GENERIC_PREV_DAY:
-    case KEY_MOVE_LEFT:
-      if (wins_slctd() == CAL || key == KEY_GENERIC_PREV_DAY) {
-        calendar_move(DAY_PREV, count);
-        inday = do_storage(1);
-        wins_update(FLAG_CAL | FLAG_APP);
-      }
-      break;
-
-    case KEY_GENERIC_NEXT_DAY:
-    case KEY_MOVE_RIGHT:
-      if (wins_slctd() == CAL || key == KEY_GENERIC_NEXT_DAY) {
-        calendar_move(DAY_NEXT, count);
-        inday = do_storage(1);
-        wins_update(FLAG_CAL | FLAG_APP);
-      }
-      break;
-
-    case KEY_GENERIC_PREV_WEEK:
-    case KEY_MOVE_UP:
-      if (wins_slctd() == CAL || key == KEY_GENERIC_PREV_WEEK) {
-        calendar_move(WEEK_PREV, count);
-        inday = do_storage(1);
-        wins_update(FLAG_CAL | FLAG_APP);
-      } else if (wins_slctd() == APP) {
-        if (count >= apoint_hilt())
-          count = apoint_hilt() - 1;
-        apoint_hilt_decrease(count);
-        apoint_scroll_pad_up(inday.nb_events);
-        wins_update(FLAG_APP);
-      } else if (wins_slctd() == TOD) {
-        if (count >= todo_hilt())
-          count = todo_hilt() - 1;
-        todo_hilt_decrease(count);
-        if (todo_hilt_pos() < 0)
-          todo_first_increase(todo_hilt_pos());
-        wins_update(FLAG_TOD);
-      }
-      break;
-
-    case KEY_GENERIC_NEXT_WEEK:
-    case KEY_MOVE_DOWN:
-      if (wins_slctd() == CAL || key == KEY_GENERIC_NEXT_WEEK) {
-        calendar_move(WEEK_NEXT, count);
-        inday = do_storage(1);
-        wins_update(FLAG_CAL | FLAG_APP);
-      } else if (wins_slctd() == APP) {
-        if (count > inday.nb_events + inday.nb_apoints - apoint_hilt())
-          count = inday.nb_events + inday.nb_apoints - apoint_hilt();
-        apoint_hilt_increase(count);
-        apoint_scroll_pad_down(inday.nb_events, win[APP].h);
-        wins_update(FLAG_APP);
-      } else if (wins_slctd() == TOD) {
-        if (count > todo_nb() - todo_hilt())
-          count = todo_nb() - todo_hilt();
-        todo_hilt_increase(count);
-        if (todo_hilt_pos() >= win[TOD].h - 4)
-          todo_first_increase(todo_hilt_pos() - win[TOD].h + 5);
-        wins_update(FLAG_TOD);
-      }
-      break;
-
-    case KEY_GENERIC_PREV_MONTH:
-      calendar_move(MONTH_PREV, count);
-      inday = do_storage(1);
-      wins_update(FLAG_CAL | FLAG_APP);
-      break;
-
-    case KEY_GENERIC_NEXT_MONTH:
-      calendar_move(MONTH_NEXT, count);
-      inday = do_storage(1);
-      wins_update(FLAG_CAL | FLAG_APP);
-      break;
-
-    case KEY_GENERIC_PREV_YEAR:
-      calendar_move(YEAR_PREV, count);
-      inday = do_storage(1);
-      wins_update(FLAG_CAL | FLAG_APP);
-      break;
-
-    case KEY_GENERIC_NEXT_YEAR:
-      calendar_move(YEAR_NEXT, count);
-      inday = do_storage(1);
-      wins_update(FLAG_CAL | FLAG_APP);
-      break;
-
-    case KEY_START_OF_WEEK:
-      if (wins_slctd() == CAL) {
-        calendar_move(WEEK_START, count);
-        inday = do_storage(1);
-        wins_update(FLAG_CAL | FLAG_APP);
-      }
-      break;
-
-    case KEY_END_OF_WEEK:
-      if (wins_slctd() == CAL) {
-        calendar_move(WEEK_END, count);
-        inday = do_storage(1);
-        wins_update(FLAG_CAL | FLAG_APP);
-      }
-      break;
-
-    case KEY_GENERIC_SCROLL_UP:
-      if (wins_slctd() == CAL) {
-        calendar_view_prev();
-        wins_update(FLAG_CAL | FLAG_APP);
-      }
-      break;
-
-    case KEY_GENERIC_SCROLL_DOWN:
-      if (wins_slctd() == CAL) {
-        calendar_view_next();
-        wins_update(FLAG_CAL | FLAG_APP);
-      }
-      break;
-
-    case KEY_GENERIC_QUIT:
-      if (conf.auto_save)
-        io_save_cal(IO_SAVE_DISPLAY_BAR);
-      if (conf.auto_gc)
-        note_gc();
-
-      if (conf.confirm_quit) {
-        if (status_ask_bool(_("Do you really want to quit ?")) == 1)
-          exit_calcurse(EXIT_SUCCESS);
-        else {
-          wins_erase_status_bar();
-          wins_update(FLAG_STA);
-          break;
-        }
-      } else
-        exit_calcurse(EXIT_SUCCESS);
-      break;
+    HANDLE_KEY(KEY_GENERIC_CHANGE_VIEW, key_generic_change_view);
+    HANDLE_KEY(KEY_GENERIC_OTHER_CMD, key_generic_other_cmd);
+    HANDLE_KEY(KEY_GENERIC_GOTO, key_generic_goto);
+    HANDLE_KEY(KEY_GENERIC_GOTO_TODAY, key_generic_goto);
+    HANDLE_KEY(KEY_VIEW_ITEM, key_view_item);
+    HANDLE_KEY(KEY_GENERIC_CONFIG_MENU, key_generic_config_menu);
+    HANDLE_KEY(KEY_GENERIC_ADD_APPT, key_generic_add_appt);
+    HANDLE_KEY(KEY_GENERIC_ADD_TODO, key_generic_add_todo);
+    HANDLE_KEY(KEY_ADD_ITEM, key_add_item);
+    HANDLE_KEY(KEY_EDIT_ITEM, key_edit_item);
+    HANDLE_KEY(KEY_DEL_ITEM, key_del_item);
+    HANDLE_KEY(KEY_GENERIC_COPY, key_generic_copy);
+    HANDLE_KEY(KEY_GENERIC_PASTE, key_generic_paste);
+    HANDLE_KEY(KEY_REPEAT_ITEM, key_repeat_item);
+    HANDLE_KEY(KEY_FLAG_ITEM, key_flag_item);
+    HANDLE_KEY(KEY_PIPE_ITEM, key_pipe_item);
+    HANDLE_KEY(KEY_RAISE_PRIORITY, key_change_priority);
+    HANDLE_KEY(KEY_LOWER_PRIORITY, key_change_priority);
+    HANDLE_KEY(KEY_EDIT_NOTE, key_edit_note);
+    HANDLE_KEY(KEY_VIEW_NOTE, key_view_note);
+    HANDLE_KEY(KEY_GENERIC_HELP, key_generic_help);
+    HANDLE_KEY(KEY_GENERIC_SAVE, key_generic_save);
+    HANDLE_KEY(KEY_GENERIC_IMPORT, key_generic_import);
+    HANDLE_KEY(KEY_GENERIC_EXPORT, key_generic_export);
+    HANDLE_KEY(KEY_GENERIC_PREV_DAY, key_generic_prev_day);
+    HANDLE_KEY(KEY_MOVE_LEFT, key_generic_prev_day);
+    HANDLE_KEY(KEY_GENERIC_NEXT_DAY, key_generic_next_day);
+    HANDLE_KEY(KEY_MOVE_RIGHT, key_generic_next_day);
+    HANDLE_KEY(KEY_GENERIC_PREV_WEEK, key_generic_prev_week);
+    HANDLE_KEY(KEY_MOVE_UP, key_generic_prev_week);
+    HANDLE_KEY(KEY_GENERIC_NEXT_WEEK, key_generic_next_week);
+    HANDLE_KEY(KEY_MOVE_DOWN, key_generic_next_week);
+    HANDLE_KEY(KEY_GENERIC_PREV_MONTH, key_generic_prev_month);
+    HANDLE_KEY(KEY_GENERIC_NEXT_MONTH, key_generic_next_month);
+    HANDLE_KEY(KEY_GENERIC_PREV_YEAR, key_generic_prev_year);
+    HANDLE_KEY(KEY_GENERIC_NEXT_YEAR, key_generic_next_year);
+    HANDLE_KEY(KEY_START_OF_WEEK, key_start_of_week);
+    HANDLE_KEY(KEY_END_OF_WEEK, key_end_of_week);
+    HANDLE_KEY(KEY_GENERIC_SCROLL_UP, key_generic_scroll_up);
+    HANDLE_KEY(KEY_GENERIC_SCROLL_DOWN, key_generic_scroll_down);
+    HANDLE_KEY(KEY_GENERIC_QUIT, key_generic_quit);
 
     case KEY_RESIZE:
     case ERR:
