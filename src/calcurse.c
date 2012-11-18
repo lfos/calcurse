@@ -313,28 +313,41 @@ static inline void key_generic_export(int dummy)
 
 static inline void key_generic_prev_day(int key)
 {
-  if (wins_slctd() == CAL || key == KEY_GENERIC_PREV_DAY) {
-    calendar_move(DAY_PREV, count);
-    inday = do_storage(1);
-    wins_update(FLAG_CAL | FLAG_APP);
-  }
+  calendar_move(DAY_PREV, count);
+  inday = do_storage(1);
+  wins_update(FLAG_CAL | FLAG_APP);
+}
+
+static inline void key_move_left(int key)
+{
+  if (wins_slctd() == CAL)
+    key_generic_prev_day(key);
 }
 
 static inline void key_generic_next_day(int key)
 {
-  if (wins_slctd() == CAL || key == KEY_GENERIC_NEXT_DAY) {
-    calendar_move(DAY_NEXT, count);
-    inday = do_storage(1);
-    wins_update(FLAG_CAL | FLAG_APP);
-  }
+  calendar_move(DAY_NEXT, count);
+  inday = do_storage(1);
+  wins_update(FLAG_CAL | FLAG_APP);
+}
+
+static inline void key_move_right(int key)
+{
+  if (wins_slctd() == CAL)
+    key_generic_next_day(key);
 }
 
 static inline void key_generic_prev_week(int key)
 {
-  if (wins_slctd() == CAL || key == KEY_GENERIC_PREV_WEEK) {
-    calendar_move(WEEK_PREV, count);
-    inday = do_storage(1);
-    wins_update(FLAG_CAL | FLAG_APP);
+  calendar_move(WEEK_PREV, count);
+  inday = do_storage(1);
+  wins_update(FLAG_CAL | FLAG_APP);
+}
+
+static inline void key_move_up(int key)
+{
+  if (wins_slctd() == CAL) {
+    key_generic_prev_week(key);
   } else if (wins_slctd() == APP) {
     if (count >= apoint_hilt())
       count = apoint_hilt() - 1;
@@ -353,10 +366,15 @@ static inline void key_generic_prev_week(int key)
 
 static inline void key_generic_next_week(int key)
 {
-  if (wins_slctd() == CAL || key == KEY_GENERIC_NEXT_WEEK) {
-    calendar_move(WEEK_NEXT, count);
-    inday = do_storage(1);
-    wins_update(FLAG_CAL | FLAG_APP);
+  calendar_move(WEEK_NEXT, count);
+  inday = do_storage(1);
+  wins_update(FLAG_CAL | FLAG_APP);
+}
+
+static inline void key_move_down(int key)
+{
+  if (wins_slctd() == CAL) {
+    key_generic_next_week(key);
   } else if (wins_slctd() == APP) {
     if (count > inday.nb_events + inday.nb_apoints - apoint_hilt())
       count = inday.nb_events + inday.nb_apoints - apoint_hilt();
@@ -602,13 +620,13 @@ int main(int argc, char **argv)
     HANDLE_KEY(KEY_GENERIC_IMPORT, key_generic_import);
     HANDLE_KEY(KEY_GENERIC_EXPORT, key_generic_export);
     HANDLE_KEY(KEY_GENERIC_PREV_DAY, key_generic_prev_day);
-    HANDLE_KEY(KEY_MOVE_LEFT, key_generic_prev_day);
+    HANDLE_KEY(KEY_MOVE_LEFT, key_move_left);
     HANDLE_KEY(KEY_GENERIC_NEXT_DAY, key_generic_next_day);
-    HANDLE_KEY(KEY_MOVE_RIGHT, key_generic_next_day);
+    HANDLE_KEY(KEY_MOVE_RIGHT, key_move_right);
     HANDLE_KEY(KEY_GENERIC_PREV_WEEK, key_generic_prev_week);
-    HANDLE_KEY(KEY_MOVE_UP, key_generic_prev_week);
+    HANDLE_KEY(KEY_MOVE_UP, key_move_up);
     HANDLE_KEY(KEY_GENERIC_NEXT_WEEK, key_generic_next_week);
-    HANDLE_KEY(KEY_MOVE_DOWN, key_generic_next_week);
+    HANDLE_KEY(KEY_MOVE_DOWN, key_move_down);
     HANDLE_KEY(KEY_GENERIC_PREV_MONTH, key_generic_prev_month);
     HANDLE_KEY(KEY_GENERIC_NEXT_MONTH, key_generic_next_month);
     HANDLE_KEY(KEY_GENERIC_PREV_YEAR, key_generic_prev_year);
