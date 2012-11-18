@@ -224,17 +224,26 @@ static inline void key_pipe_item(int key)
   wins_update(FLAG_ALL);
 }
 
-static inline void key_change_priority(int key)
+static inline void change_priority(int diff)
 {
   if (wins_slctd() == TOD && todo_hilt() != 0) {
-    todo_chg_priority(todo_get_item(todo_hilt()),
-                      key == KEY_RAISE_PRIORITY ? 1 : -1);
+    todo_chg_priority(todo_get_item(todo_hilt()), diff);
     if (todo_hilt_pos() < 0)
       todo_set_first(todo_hilt());
     else if (todo_hilt_pos() >= win[TOD].h - 4)
       todo_set_first(todo_hilt() - win[TOD].h + 5);
     wins_update(FLAG_TOD);
   }
+}
+
+static inline void key_raise_priority(int key)
+{
+  change_priority(1);
+}
+
+static inline void key_lower_priority(int key)
+{
+  change_priority(-1);
 }
 
 static inline void key_edit_note(int key)
@@ -584,8 +593,8 @@ int main(int argc, char **argv)
     HANDLE_KEY(KEY_REPEAT_ITEM, key_repeat_item);
     HANDLE_KEY(KEY_FLAG_ITEM, key_flag_item);
     HANDLE_KEY(KEY_PIPE_ITEM, key_pipe_item);
-    HANDLE_KEY(KEY_RAISE_PRIORITY, key_change_priority);
-    HANDLE_KEY(KEY_LOWER_PRIORITY, key_change_priority);
+    HANDLE_KEY(KEY_RAISE_PRIORITY, key_raise_priority);
+    HANDLE_KEY(KEY_LOWER_PRIORITY, key_lower_priority);
     HANDLE_KEY(KEY_EDIT_NOTE, key_edit_note);
     HANDLE_KEY(KEY_VIEW_NOTE, key_view_note);
     HANDLE_KEY(KEY_GENERIC_HELP, key_generic_help);
