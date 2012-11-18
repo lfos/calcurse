@@ -38,7 +38,7 @@
 
 #include "calcurse.h"
 
-#define HANDLE_KEY(key, fn) case key: fn(key); break;
+#define HANDLE_KEY(key, fn) case key: fn(); break;
 
 struct day_items_nb inday;
 int count, reg;
@@ -58,7 +58,7 @@ static struct day_items_nb do_storage(int day_changed)
   return inday;
 }
 
-static inline void key_generic_change_view(int key)
+static inline void key_generic_change_view(void)
 {
   wins_reset_status_page();
   wins_slctd_next();
@@ -79,13 +79,13 @@ static inline void key_generic_change_view(int key)
   wins_update(FLAG_ALL);
 }
 
-static inline void key_generic_other_cmd(int key)
+static inline void key_generic_other_cmd(void)
 {
   wins_other_status_page(wins_slctd());
   wins_update(FLAG_STA);
 }
 
-static inline void key_generic_goto(int key)
+static inline void key_generic_goto(void)
 {
   wins_erase_status_bar();
   calendar_set_current_date();
@@ -94,7 +94,7 @@ static inline void key_generic_goto(int key)
   wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
 }
 
-static inline void key_generic_goto_today(int key)
+static inline void key_generic_goto_today(void)
 {
   wins_erase_status_bar();
   calendar_set_current_date();
@@ -103,7 +103,7 @@ static inline void key_generic_goto_today(int key)
   wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
 }
 
-static inline void key_view_item(int key)
+static inline void key_view_item(void)
 {
   if ((wins_slctd() == APP) && (apoint_hilt() != 0))
     day_popup_item(day_get_item(apoint_hilt()));
@@ -112,7 +112,7 @@ static inline void key_view_item(int key)
   wins_update(FLAG_ALL);
 }
 
-static inline void key_generic_config_menu(int key)
+static inline void key_generic_config_menu(void)
 {
   wins_erase_status_bar();
   custom_config_main();
@@ -120,14 +120,14 @@ static inline void key_generic_config_menu(int key)
   wins_update(FLAG_ALL);
 }
 
-static inline void key_generic_add_appt(int key)
+static inline void key_generic_add_appt(void)
 {
   interact_day_item_add();
   inday = do_storage(1);
   wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
 }
 
-static inline void key_generic_add_todo(int key)
+static inline void key_generic_add_todo(void)
 {
   interact_todo_add();
   if (todo_hilt() == 0 && todo_nb() == 1)
@@ -135,7 +135,7 @@ static inline void key_generic_add_todo(int key)
   wins_update(FLAG_TOD | FLAG_STA);
 }
 
-static inline void key_add_item(int key)
+static inline void key_add_item(void)
 {
   switch (wins_slctd()) {
   case APP:
@@ -153,7 +153,7 @@ static inline void key_add_item(int key)
   }
 }
 
-static inline void key_edit_item(int key)
+static inline void key_edit_item(void)
 {
   if (wins_slctd() == APP && apoint_hilt() != 0) {
     interact_day_item_edit();
@@ -165,7 +165,7 @@ static inline void key_edit_item(int key)
   }
 }
 
-static inline void key_del_item(int key)
+static inline void key_del_item(void)
 {
   if (wins_slctd() == APP && apoint_hilt() != 0) {
     interact_day_item_delete(&inday.nb_events, &inday.nb_apoints, reg);
@@ -177,7 +177,7 @@ static inline void key_del_item(int key)
   }
 }
 
-static inline void key_generic_copy(int key)
+static inline void key_generic_copy(void)
 {
   if (wins_slctd() == APP && apoint_hilt() != 0) {
     interact_day_item_copy(&inday.nb_events, &inday.nb_apoints, reg);
@@ -186,7 +186,7 @@ static inline void key_generic_copy(int key)
   }
 }
 
-static inline void key_generic_paste(int key)
+static inline void key_generic_paste(void)
 {
   if (wins_slctd() == APP) {
     interact_day_item_paste(&inday.nb_events, &inday.nb_apoints, reg);
@@ -195,7 +195,7 @@ static inline void key_generic_paste(int key)
   }
 }
 
-static inline void key_repeat_item(int key)
+static inline void key_repeat_item(void)
 {
   if (wins_slctd() == APP && apoint_hilt() != 0)
     interact_day_item_repeat();
@@ -203,7 +203,7 @@ static inline void key_repeat_item(int key)
   wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
 }
 
-static inline void key_flag_item(int key)
+static inline void key_flag_item(void)
 {
   if (wins_slctd() == APP && apoint_hilt() != 0) {
     day_item_switch_notify(day_get_item(apoint_hilt()));
@@ -215,7 +215,7 @@ static inline void key_flag_item(int key)
   }
 }
 
-static inline void key_pipe_item(int key)
+static inline void key_pipe_item(void)
 {
   if (wins_slctd() == APP && apoint_hilt() != 0)
     interact_day_item_pipe();
@@ -236,17 +236,17 @@ static inline void change_priority(int diff)
   }
 }
 
-static inline void key_raise_priority(int key)
+static inline void key_raise_priority(void)
 {
   change_priority(1);
 }
 
-static inline void key_lower_priority(int key)
+static inline void key_lower_priority(void)
 {
   change_priority(-1);
 }
 
-static inline void key_edit_note(int key)
+static inline void key_edit_note(void)
 {
   if (wins_slctd() == APP && apoint_hilt() != 0) {
     day_edit_note(day_get_item(apoint_hilt()), conf.editor);
@@ -256,7 +256,7 @@ static inline void key_edit_note(int key)
   wins_update(FLAG_ALL);
 }
 
-static inline void key_view_note(int key)
+static inline void key_view_note(void)
 {
   if (wins_slctd() == APP && apoint_hilt() != 0)
     day_view_note(day_get_item(apoint_hilt()), conf.pager);
@@ -265,20 +265,20 @@ static inline void key_view_note(int key)
   wins_update(FLAG_ALL);
 }
 
-static inline void key_generic_help(int key)
+static inline void key_generic_help(void)
 {
   wins_status_bar();
   help_screen();
   wins_update(FLAG_ALL);
 }
 
-static inline void key_generic_save(int key)
+static inline void key_generic_save(void)
 {
   io_save_cal(IO_SAVE_DISPLAY_BAR);
   wins_update(FLAG_STA);
 }
 
-static inline void key_generic_import(int key)
+static inline void key_generic_import(void)
 {
   wins_erase_status_bar();
   io_import_data(IO_IMPORT_ICAL, NULL);
@@ -287,7 +287,7 @@ static inline void key_generic_import(int key)
   wins_update(FLAG_ALL);
 }
 
-static inline void key_generic_export(int dummy)
+static inline void key_generic_export()
 {
   int key;
 
@@ -311,43 +311,43 @@ static inline void key_generic_export(int dummy)
   wins_update(FLAG_ALL);
 }
 
-static inline void key_generic_prev_day(int key)
+static inline void key_generic_prev_day(void)
 {
   calendar_move(DAY_PREV, count);
   inday = do_storage(1);
   wins_update(FLAG_CAL | FLAG_APP);
 }
 
-static inline void key_move_left(int key)
+static inline void key_move_left(void)
 {
   if (wins_slctd() == CAL)
-    key_generic_prev_day(key);
+    key_generic_prev_day();
 }
 
-static inline void key_generic_next_day(int key)
+static inline void key_generic_next_day(void)
 {
   calendar_move(DAY_NEXT, count);
   inday = do_storage(1);
   wins_update(FLAG_CAL | FLAG_APP);
 }
 
-static inline void key_move_right(int key)
+static inline void key_move_right(void)
 {
   if (wins_slctd() == CAL)
-    key_generic_next_day(key);
+    key_generic_next_day();
 }
 
-static inline void key_generic_prev_week(int key)
+static inline void key_generic_prev_week(void)
 {
   calendar_move(WEEK_PREV, count);
   inday = do_storage(1);
   wins_update(FLAG_CAL | FLAG_APP);
 }
 
-static inline void key_move_up(int key)
+static inline void key_move_up(void)
 {
   if (wins_slctd() == CAL) {
-    key_generic_prev_week(key);
+    key_generic_prev_week();
   } else if (wins_slctd() == APP) {
     if (count >= apoint_hilt())
       count = apoint_hilt() - 1;
@@ -364,17 +364,17 @@ static inline void key_move_up(int key)
   }
 }
 
-static inline void key_generic_next_week(int key)
+static inline void key_generic_next_week(void)
 {
   calendar_move(WEEK_NEXT, count);
   inday = do_storage(1);
   wins_update(FLAG_CAL | FLAG_APP);
 }
 
-static inline void key_move_down(int key)
+static inline void key_move_down(void)
 {
   if (wins_slctd() == CAL) {
-    key_generic_next_week(key);
+    key_generic_next_week();
   } else if (wins_slctd() == APP) {
     if (count > inday.nb_events + inday.nb_apoints - apoint_hilt())
       count = inday.nb_events + inday.nb_apoints - apoint_hilt();
@@ -391,35 +391,35 @@ static inline void key_move_down(int key)
   }
 }
 
-static inline void key_generic_prev_month(int key)
+static inline void key_generic_prev_month(void)
 {
   calendar_move(MONTH_PREV, count);
   inday = do_storage(1);
   wins_update(FLAG_CAL | FLAG_APP);
 }
 
-static inline void key_generic_next_month(int key)
+static inline void key_generic_next_month(void)
 {
   calendar_move(MONTH_NEXT, count);
   inday = do_storage(1);
   wins_update(FLAG_CAL | FLAG_APP);
 }
 
-static inline void key_generic_prev_year(int key)
+static inline void key_generic_prev_year(void)
 {
   calendar_move(YEAR_PREV, count);
   inday = do_storage(1);
   wins_update(FLAG_CAL | FLAG_APP);
 }
 
-static inline void key_generic_next_year(int key)
+static inline void key_generic_next_year(void)
 {
   calendar_move(YEAR_NEXT, count);
   inday = do_storage(1);
   wins_update(FLAG_CAL | FLAG_APP);
 }
 
-static inline void key_start_of_week(int key)
+static inline void key_start_of_week(void)
 {
   if (wins_slctd() == CAL) {
     calendar_move(WEEK_START, count);
@@ -428,7 +428,7 @@ static inline void key_start_of_week(int key)
   }
 }
 
-static inline void key_end_of_week(int key)
+static inline void key_end_of_week(void)
 {
   if (wins_slctd() == CAL) {
     calendar_move(WEEK_END, count);
@@ -437,7 +437,7 @@ static inline void key_end_of_week(int key)
   }
 }
 
-static inline void key_generic_scroll_up(int key)
+static inline void key_generic_scroll_up(void)
 {
   if (wins_slctd() == CAL) {
     calendar_view_prev();
@@ -445,7 +445,7 @@ static inline void key_generic_scroll_up(int key)
   }
 }
 
-static inline void key_generic_scroll_down(int key)
+static inline void key_generic_scroll_down(void)
 {
   if (wins_slctd() == CAL) {
     calendar_view_next();
@@ -453,7 +453,7 @@ static inline void key_generic_scroll_down(int key)
   }
 }
 
-static inline void key_generic_quit(int key)
+static inline void key_generic_quit(void)
 {
   if (conf.auto_save)
     io_save_cal(IO_SAVE_DISPLAY_BAR);
