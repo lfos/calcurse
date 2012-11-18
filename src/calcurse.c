@@ -221,7 +221,8 @@ static inline void key_pipe_item(int key)
 static inline void key_change_priority(int key)
 {
   if (wins_slctd() == TOD && todo_hilt() != 0) {
-    todo_chg_priority(todo_get_item(todo_hilt()), key);
+    todo_chg_priority(todo_get_item(todo_hilt()),
+                      key == KEY_RAISE_PRIORITY ? 1 : -1);
     if (todo_hilt_pos() < 0)
       todo_set_first(todo_hilt());
     else if (todo_hilt_pos() >= win[TOD].h - 4)

@@ -208,7 +208,7 @@ static int todo_get_position(struct todo *needle)
 }
 
 /* Change an item priority by pressing '+' or '-' inside TODO panel. */
-void todo_chg_priority(struct todo *backup, int action)
+void todo_chg_priority(struct todo *backup, int diff)
 {
   char backup_mesg[BUFSIZ];
   int backup_id;
@@ -220,23 +220,12 @@ void todo_chg_priority(struct todo *backup, int action)
     strncpy(backup_note, backup->note, MAX_NOTESIZ + 1);
   else
     backup_note[0] = '\0';
-  switch (action) {
-  case KEY_RAISE_PRIORITY:
-    if (backup_id > 1)
-      backup_id--;
-    else
-      return;
-    break;
-  case KEY_LOWER_PRIORITY:
-    if (backup_id > 0 && backup_id < 9)
-      backup_id++;
-    else
-      return;
-    break;
-  default:
-    EXIT(_("no such action"));
-    /* NOTREACHED */
-  }
+
+  backup_id += diff;
+  if (backup_id < 1)
+    backup_id = 1;
+  else if (backup_id > 9)
+    backup_id = 9;
 
   todo_delete(todo_get_item(hilt));
   backup = todo_add(backup_mesg, backup_id, backup_note);
