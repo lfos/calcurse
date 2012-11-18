@@ -937,29 +937,6 @@ void io_export_data(enum export_type type)
   }
 }
 
-/* Draws the export format selection bar */
-void io_export_bar(void)
-{
-  int smlspc, spc;
-
-  smlspc = 2;
-  spc = 15;
-
-  custom_apply_attr(win[STA].p, ATTR_HIGHEST);
-  mvwaddstr(win[STA].p, 0, 2, "Q");
-  mvwaddstr(win[STA].p, 1, 2, "I");
-  mvwaddstr(win[STA].p, 0, 2 + spc, "P");
-  custom_remove_attr(win[STA].p, ATTR_HIGHEST);
-
-  mvwaddstr(win[STA].p, 0, 2 + smlspc, _("Exit"));
-  mvwaddstr(win[STA].p, 1, 2 + smlspc, _("Ical"));
-  mvwaddstr(win[STA].p, 0, 2 + spc + smlspc, _("Pcal"));
-
-  wnoutrefresh(win[STA].p);
-  wmove(win[STA].p, 0, 0);
-  wins_doupdate();
-}
-
 static FILE *get_import_stream(enum export_type type)
 {
   FILE *stream;

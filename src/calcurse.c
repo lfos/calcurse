@@ -289,24 +289,23 @@ static inline void key_generic_import(void)
 
 static inline void key_generic_export()
 {
-  int key;
+  const char *export_msg = _("Export to (i)cal or (p)cal format?");
+  const char *export_choices = _("[ip]");
+  const int nb_export_choices = 2;
 
   wins_erase_status_bar();
-  io_export_bar();
-  while ((key = wgetch(win[STA].p)) != 'q') {
-    switch (key) {
-    case 'I':
-    case 'i':
-      io_export_data(IO_EXPORT_ICAL);
-    case 'p':
-      io_export_data(IO_EXPORT_PCAL);
-      break;
-    }
-    wins_reset();
-    wins_update(FLAG_ALL);
-    wins_erase_status_bar();
-    io_export_bar();
+
+  switch (status_ask_choice(export_msg, export_choices, nb_export_choices)) {
+  case 1:
+    io_export_data(IO_EXPORT_ICAL);
+    break;
+  case 2:
+    io_export_data(IO_EXPORT_PCAL);
+    break;
+  default:                   /* User escaped */
+    break;
   }
+
   inday = do_storage(0);
   wins_update(FLAG_ALL);
 }
