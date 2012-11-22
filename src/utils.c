@@ -337,18 +337,26 @@ long get_item_time(long date)
 
 int get_item_hour(long date)
 {
-  return (localtime((time_t *) & date))->tm_hour;
+  struct tm lt;
+
+  localtime_r((time_t *)&date, &lt);
+  return lt.tm_hour;
 }
 
 int get_item_min(long date)
 {
-  return (localtime((time_t *) & date))->tm_min;
+  struct tm lt;
+
+  localtime_r((time_t *)&date, &lt);
+  return lt.tm_min;
 }
 
 long date2sec(struct date day, unsigned hour, unsigned min)
 {
   time_t t = now();
-  struct tm start = *(localtime(&t));
+  struct tm start;
+
+  localtime_r(&t, &start);
 
   start.tm_mon = day.mm - 1;
   start.tm_mday = day.dd;
@@ -367,14 +375,14 @@ long date2sec(struct date day, unsigned hour, unsigned min)
 /* Return a string containing the date, given a date in seconds. */
 char *date_sec2date_str(long sec, const char *datefmt)
 {
-  struct tm *lt;
+  struct tm lt;
   char *datestr = (char *)mem_calloc(BUFSIZ, sizeof(char));
 
   if (sec == 0)
     strncpy(datestr, "0", BUFSIZ);
   else {
-    lt = localtime((time_t *) & sec);
-    strftime(datestr, BUFSIZ, datefmt, lt);
+    localtime_r((time_t *)&sec, &lt);
+    strftime(datestr, BUFSIZ, datefmt, &lt);
   }
 
   return datestr;
@@ -389,8 +397,9 @@ void date_sec2date_fmt(long sec, const char *fmt, char *datef)
   setlocale (LC_ALL, "C");
 #endif
 
-  struct tm *lt = localtime((time_t *)&sec);
-  strftime(datef, BUFSIZ, fmt, lt);
+  struct tm lt;
+  localtime_r((time_t *)&sec, &lt);
+  strftime(datef, BUFSIZ, fmt, &lt);
 
 #if ENABLE_NLS
   setlocale (LC_ALL, locale_old);
@@ -403,15 +412,15 @@ void date_sec2date_fmt(long sec, const char *fmt, char *datef)
  */
 long date_sec_change(long date, int delta_month, int delta_day)
 {
-  struct tm *lt;
+  struct tm lt;
   time_t t;
 
   t = date;
-  lt = localtime(&t);
-  lt->tm_mon += delta_month;
-  lt->tm_mday += delta_day;
-  lt->tm_isdst = -1;
-  t = mktime(lt);
+  localtime_r(&t, &lt);
+  lt.tm_mon += delta_month;
+  lt.tm_mday += delta_day;
+  lt.tm_isdst = -1;
+  t = mktime(&lt);
   EXIT_IF(t == -1, _("failure in mktime"));
 
   return t;
@@ -423,14 +432,14 @@ long date_sec_change(long date, int delta_month, int delta_day)
  */
 long update_time_in_date(long date, unsigned hr, unsigned mn)
 {
-  struct tm *lt;
+  struct tm lt;
   time_t t, new_date;
 
   t = date;
-  lt = localtime(&t);
-  lt->tm_hour = hr;
-  lt->tm_min = mn;
-  new_date = mktime(lt);
+  localtime_r(&t, &lt);
+  lt.tm_hour = hr;
+  lt.tm_min = mn;
+  new_date = mktime(&lt);
   EXIT_IF(new_date == -1, _("error in mktime"));
 
   return new_date;
@@ -442,7 +451,7 @@ long update_time_in_date(long date, unsigned hr, unsigned mn)
  */
 long get_sec_date(struct date date)
 {
-  struct tm *ptrtime;
+  struct tm ptrtime;
   time_t timer;
   long long_date;
   char current_day[] = "dd ";
@@ -451,10 +460,10 @@ long get_sec_date(struct date date)
 
   if (date.yyyy == 0 && date.mm == 0 && date.dd == 0) {
     timer = time(NULL);
-    ptrtime = localtime(&timer);
-    strftime(current_day, strlen(current_day), "%d", ptrtime);
-    strftime(current_month, strlen(current_month), "%m", ptrtime);
-    strftime(current_year, strlen(current_year), "%Y", ptrtime);
+    localtime_r(&timer, &ptrtime);
+    strftime(current_day, strlen(current_day), "%d", &ptrtime);
+    strftime(current_month, strlen(current_month), "%m", &ptrtime);
+    strftime(current_year, strlen(current_year), "%Y", &ptrtime);
     date.mm = atoi(current_month);
     date.dd = atoi(current_day);
     date.yyyy = atoi(current_year);
@@ -518,16 +527,16 @@ item_in_popup(const char *saved_a_start, const char *saved_a_end,
 /* Returns the beginning of current day in seconds from 1900. */
 long get_today(void)
 {
-  struct tm *lt;
+  struct tm lt;
   time_t current_time;
   long current_day;
   struct date day;
 
   current_time = time(NULL);
-  lt = localtime(&current_time);
-  day.mm = lt->tm_mon + 1;
-  day.dd = lt->tm_mday;
-  day.yyyy = lt->tm_year + 1900;
+  localtime_r(&current_time, &lt);
+  day.mm = lt.tm_mon + 1;
+  day.dd = lt.tm_mday;
+  day.yyyy = lt.tm_year + 1900;
   current_day = date2sec(day, 0, 0);
 
   return current_day;
@@ -541,10 +550,12 @@ long now(void)
 
 char *nowstr(void)
 {
+  struct tm lt;
   static char buf[BUFSIZ];
   time_t t = now();
 
-  strftime(buf, sizeof buf, "%a %b %d %T %Y", localtime(&t));
+  localtime_r(&t, &lt);
+  strftime(buf, sizeof buf, "%a %b %d %T %Y", &lt);
 
   return buf;
 }
@@ -1183,15 +1194,17 @@ static void print_date(long date, long day, const char *extformat)
     printf("%ld", date);
   else {
     time_t t = date;
-    struct tm *lt = localtime((time_t *) & t);
+    struct tm lt;
+
+    localtime_r((time_t *)&t, &lt);
 
     if (extformat[0] == '\0' || !strcmp(extformat, "default")) {
       if (date >= day && date <= day + DAYINSEC)
-        strftime(buf, BUFSIZ, "%H:%M", lt);
+        strftime(buf, BUFSIZ, "%H:%M", &lt);
       else
-        strftime(buf, BUFSIZ, "..:..", lt);
+        strftime(buf, BUFSIZ, "..:..", &lt);
     } else {
-      strftime(buf, BUFSIZ, extformat, lt);
+      strftime(buf, BUFSIZ, extformat, &lt);
     }
 
     printf("%s", buf);

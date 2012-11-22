@@ -337,39 +337,39 @@ unsigned apoint_inday(struct apoint *i, long start)
 
 void apoint_sec2str(struct apoint *o, long day, char *start, char *end)
 {
-  struct tm *lt;
+  struct tm lt;
   time_t t;
 
   if (o->start < day)
     strncpy(start, "..:..", 6);
   else {
     t = o->start;
-    lt = localtime(&t);
-    snprintf(start, HRMIN_SIZE, "%02u:%02u", lt->tm_hour, lt->tm_min);
+    localtime_r(&t, &lt);
+    snprintf(start, HRMIN_SIZE, "%02u:%02u", lt.tm_hour, lt.tm_min);
   }
   if (o->start + o->dur > day + DAYINSEC)
     strncpy(end, "..:..", 6);
   else {
     t = o->start + o->dur;
-    lt = localtime(&t);
-    snprintf(end, HRMIN_SIZE, "%02u:%02u", lt->tm_hour, lt->tm_min);
+    localtime_r(&t, &lt);
+    snprintf(end, HRMIN_SIZE, "%02u:%02u", lt.tm_hour, lt.tm_min);
   }
 }
 
 void apoint_write(struct apoint *o, FILE * f)
 {
-  struct tm *lt;
+  struct tm lt;
   time_t t;
 
   t = o->start;
-  lt = localtime(&t);
-  fprintf(f, "%02u/%02u/%04u @ %02u:%02u", lt->tm_mon + 1, lt->tm_mday,
-          1900 + lt->tm_year, lt->tm_hour, lt->tm_min);
+  localtime_r(&t, &lt);
+  fprintf(f, "%02u/%02u/%04u @ %02u:%02u", lt.tm_mon + 1, lt.tm_mday,
+          1900 + lt.tm_year, lt.tm_hour, lt.tm_min);
 
   t = o->start + o->dur;
-  lt = localtime(&t);
-  fprintf(f, " -> %02u/%02u/%04u @ %02u:%02u ", lt->tm_mon + 1, lt->tm_mday,
-          1900 + lt->tm_year, lt->tm_hour, lt->tm_min);
+  localtime_r(&t, &lt);
+  fprintf(f, " -> %02u/%02u/%04u @ %02u:%02u ", lt.tm_mon + 1, lt.tm_mday,
+          1900 + lt.tm_year, lt.tm_hour, lt.tm_min);
 
   if (o->note != NULL)
     fprintf(f, ">%s ", o->note);
@@ -386,10 +386,7 @@ struct apoint *apoint_scan(FILE * f, struct tm start, struct tm end, char state,
                            char *note)
 {
   char buf[BUFSIZ], *newline;
-  time_t tstart, tend, t;
-
-  t = time(NULL);
-  localtime(&t);
+  time_t tstart, tend;
 
   /* Read the appointment description */
   if (!fgets(buf, sizeof buf, f))

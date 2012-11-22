@@ -730,7 +730,7 @@ static void update_rept(struct rpt **rpt, const long start)
       newuntil = 0;
       date_entered = 1;
     } else {
-      struct tm *lt;
+      struct tm lt;
       time_t t;
       struct date new_date;
       int newmonth, newday, newyear;
@@ -738,11 +738,11 @@ static void update_rept(struct rpt **rpt, const long start)
       if (parse_date(timstr, conf.input_datefmt, &newyear, &newmonth,
                      &newday, calendar_get_slctd_day())) {
         t = start;
-        lt = localtime(&t);
+        localtime_r(&t, &lt);
         new_date.dd = newday;
         new_date.mm = newmonth;
         new_date.yyyy = newyear;
-        newuntil = date2sec(new_date, lt->tm_hour, lt->tm_min);
+        newuntil = date2sec(new_date, lt.tm_hour, lt.tm_min);
         if (newuntil < start) {
           status_mesg(msg_wrong_time, msg_enter);
           wgetch(win[STA].p);

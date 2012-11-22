@@ -454,7 +454,7 @@ void io_load_app(void)
 {
   FILE *data_file;
   int c, is_appointment, is_event, is_recursive;
-  struct tm start, end, until, *lt;
+  struct tm start, end, until, lt;
   llist_t exc;
   time_t t;
   int id = 0;
@@ -463,8 +463,8 @@ void io_load_app(void)
   char note[MAX_NOTESIZ + 1], *notep;
 
   t = time(NULL);
-  lt = localtime(&t);
-  start = end = until = *lt;
+  localtime_r(&t, &lt);
+  start = end = until = lt;
 
   data_file = fopen(path_apts, "r");
   EXIT_IF(data_file == NULL, _("failed to open appointment file"));

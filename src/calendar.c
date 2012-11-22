@@ -140,15 +140,15 @@ void calendar_stop_date_thread(void)
 void calendar_set_current_date(void)
 {
   time_t timer;
-  struct tm *tm;
+  struct tm tm;
 
   timer = time(NULL);
-  tm = localtime(&timer);
+  localtime_r(&timer, &tm);
 
   pthread_mutex_lock(&date_thread_mutex);
-  today.dd = tm->tm_mday;
-  today.mm = tm->tm_mon + 1;
-  today.yyyy = tm->tm_year + 1900;
+  today.dd = tm.tm_mday;
+  today.mm = tm.tm_mon + 1;
+  today.yyyy = tm.tm_year + 1900;
   pthread_mutex_unlock(&date_thread_mutex);
 }
 
@@ -684,16 +684,16 @@ void calendar_move(enum move move, int count)
 long calendar_start_of_year(void)
 {
   time_t timer;
-  struct tm *tm;
+  struct tm tm;
 
   timer = time(NULL);
-  tm = localtime(&timer);
-  tm->tm_mon = 0;
-  tm->tm_mday = 1;
-  tm->tm_hour = 0;
-  tm->tm_min = 0;
-  tm->tm_sec = 0;
-  timer = mktime(tm);
+  localtime_r(&timer, &tm);
+  tm.tm_mon = 0;
+  tm.tm_mday = 1;
+  tm.tm_hour = 0;
+  tm.tm_min = 0;
+  tm.tm_sec = 0;
+  timer = mktime(&tm);
 
   return (long)timer;
 }
@@ -701,17 +701,17 @@ long calendar_start_of_year(void)
 long calendar_end_of_year(void)
 {
   time_t timer;
-  struct tm *tm;
+  struct tm tm;
 
   timer = time(NULL);
-  tm = localtime(&timer);
-  tm->tm_mon = 0;
-  tm->tm_mday = 1;
-  tm->tm_hour = 0;
-  tm->tm_min = 0;
-  tm->tm_sec = 0;
-  tm->tm_year++;
-  timer = mktime(tm);
+  localtime_r(&timer, &tm);
+  tm.tm_mon = 0;
+  tm.tm_mday = 1;
+  tm.tm_hour = 0;
+  tm.tm_min = 0;
+  tm.tm_sec = 0;
+  tm.tm_year++;
+  timer = mktime(&tm);
 
   return (long)(timer - 1);
 }

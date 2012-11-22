@@ -318,17 +318,17 @@ int recur_char2def(char type)
 static void recur_write_exc(llist_t * lexc, FILE * f)
 {
   llist_item_t *i;
-  struct tm *lt;
+  struct tm lt;
   time_t t;
   int st_mon, st_day, st_year;
 
   LLIST_FOREACH(lexc, i) {
     struct excp *exc = LLIST_GET_DATA(i);
     t = exc->st;
-    lt = localtime(&t);
-    st_mon = lt->tm_mon + 1;
-    st_day = lt->tm_mday;
-    st_year = lt->tm_year + 1900;
+    localtime_r(&t, &lt);
+    st_mon = lt.tm_mon + 1;
+    st_day = lt.tm_mday;
+    st_year = lt.tm_year + 1900;
     fprintf(f, " !%02u/%02u/%04u", st_mon, st_day, st_year);
   }
 }
@@ -415,27 +415,27 @@ struct recur_event *recur_event_scan(FILE * f, struct tm start, int id,
 /* Writting of a recursive appointment into file. */
 void recur_apoint_write(struct recur_apoint *o, FILE * f)
 {
-  struct tm *lt;
+  struct tm lt;
   time_t t;
 
   t = o->start;
-  lt = localtime(&t);
-  fprintf(f, "%02u/%02u/%04u @ %02u:%02u", lt->tm_mon + 1, lt->tm_mday,
-          1900 + lt->tm_year, lt->tm_hour, lt->tm_min);
+  localtime_r(&t, &lt);
+  fprintf(f, "%02u/%02u/%04u @ %02u:%02u", lt.tm_mon + 1, lt.tm_mday,
+          1900 + lt.tm_year, lt.tm_hour, lt.tm_min);
 
   t = o->start + o->dur;
-  lt = localtime(&t);
-  fprintf(f, " -> %02u/%02u/%04u @ %02u:%02u", lt->tm_mon + 1, lt->tm_mday,
-          1900 + lt->tm_year, lt->tm_hour, lt->tm_min);
+  localtime_r(&t, &lt);
+  fprintf(f, " -> %02u/%02u/%04u @ %02u:%02u", lt.tm_mon + 1, lt.tm_mday,
+          1900 + lt.tm_year, lt.tm_hour, lt.tm_min);
 
   t = o->rpt->until;
   if (t == 0) {                 /* We have an endless recurrent appointment. */
     fprintf(f, " {%d%c", o->rpt->freq, recur_def2char(o->rpt->type));
   } else {
-    lt = localtime(&t);
+    localtime_r(&t, &lt);
     fprintf(f, " {%d%c -> %02u/%02u/%04u", o->rpt->freq,
-            recur_def2char(o->rpt->type), lt->tm_mon + 1, lt->tm_mday,
-            1900 + lt->tm_year);
+            recur_def2char(o->rpt->type), lt.tm_mon + 1, lt.tm_mday,
+            1900 + lt.tm_year);
   }
   recur_write_exc(&o->exc, f);
   fputs("} ", f);
@@ -451,25 +451,25 @@ void recur_apoint_write(struct recur_apoint *o, FILE * f)
 /* Writting of a recursive event into file. */
 void recur_event_write(struct recur_event *o, FILE * f)
 {
-  struct tm *lt;
+  struct tm lt;
   time_t t;
   int st_mon, st_day, st_year;
   int end_mon, end_day, end_year;
 
   t = o->day;
-  lt = localtime(&t);
-  st_mon = lt->tm_mon + 1;
-  st_day = lt->tm_mday;
-  st_year = lt->tm_year + 1900;
+  localtime_r(&t, &lt);
+  st_mon = lt.tm_mon + 1;
+  st_day = lt.tm_mday;
+  st_year = lt.tm_year + 1900;
   t = o->rpt->until;
   if (t == 0) {                 /* We have an endless recurrent event. */
     fprintf(f, "%02u/%02u/%04u [%d] {%d%c", st_mon, st_day, st_year, o->id,
             o->rpt->freq, recur_def2char(o->rpt->type));
   } else {
-    lt = localtime(&t);
-    end_mon = lt->tm_mon + 1;
-    end_day = lt->tm_mday;
-    end_year = lt->tm_year + 1900;
+    localtime_r(&t, &lt);
+    end_mon = lt.tm_mon + 1;
+    end_day = lt.tm_mday;
+    end_year = lt.tm_year + 1900;
     fprintf(f, "%02u/%02u/%04u [%d] {%d%c -> %02u/%02u/%04u", st_mon,
             st_day, st_year, o->id, o->rpt->freq,
             recur_def2char(o->rpt->type), end_mon, end_day, end_year);
@@ -581,10 +581,10 @@ recur_item_find_occurrence(long item_start, long item_dur, llist_t * item_exc,
     return 0;
 
   t = day_start;
-  lt_day = *localtime(&t);
+  localtime_r(&t, &lt_day);
 
   t = item_start;
-  lt_item = *localtime(&t);
+  localtime_r(&t, &lt_item);
 
   lt_item_day = lt_item;
   lt_item_day.tm_sec = lt_item_day.tm_min = lt_item_day.tm_hour = 0;
@@ -632,7 +632,7 @@ recur_item_find_occurrence(long item_start, long item_dur, llist_t * item_exc,
   if (rpt_until != 0 && t > rpt_until)
     return 0;
 
-  lt_item_day = *localtime(&t);
+  localtime_r(&t, &lt_item_day);
   diff = diff_days(lt_item_day, lt_day);
 
   if (diff <= span) {
@@ -791,7 +791,7 @@ recur_apoint_erase(long start, unsigned num, unsigned delete_whole,
  */
 void recur_repeat_item(void)
 {
-  struct tm *lt;
+  struct tm lt;
   time_t t;
   int date_entered = 0;
   int year = 0, month = 0, day = 0;
@@ -876,11 +876,11 @@ void recur_repeat_item(void)
         if (parse_date(user_input, conf.input_datefmt,
                        &year, &month, &day, calendar_get_slctd_day())) {
           t = p->start;
-          lt = localtime(&t);
+          localtime_r(&t, &lt);
           until_date.dd = day;
           until_date.mm = month;
           until_date.yyyy = year;
-          until = date2sec(until_date, lt->tm_hour, lt->tm_min);
+          until = date2sec(until_date, lt.tm_hour, lt.tm_min);
           if (until < p->start) {
             status_mesg(mesg_older, wrong_type_2);
             wgetch(win[STA].p);

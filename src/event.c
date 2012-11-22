@@ -112,13 +112,13 @@ unsigned event_inday(struct event *i, long start)
 /* Write to file the event in user-friendly format */
 void event_write(struct event *o, FILE * f)
 {
-  struct tm *lt;
+  struct tm lt;
   time_t t;
 
   t = o->day;
-  lt = localtime(&t);
-  fprintf(f, "%02u/%02u/%04u [%d] ", lt->tm_mon + 1, lt->tm_mday,
-          1900 + lt->tm_year, o->id);
+  localtime_r(&t, &lt);
+  fprintf(f, "%02u/%02u/%04u [%d] ", lt.tm_mon + 1, lt.tm_mday,
+          1900 + lt.tm_year, o->id);
   if (o->note != NULL)
     fprintf(f, ">%s ", o->note);
   fprintf(f, "%s\n", o->mesg);
@@ -128,10 +128,7 @@ void event_write(struct event *o, FILE * f)
 struct event *event_scan(FILE * f, struct tm start, int id, char *note)
 {
   char buf[BUFSIZ], *nl;
-  time_t tstart, t;
-
-  t = time(NULL);
-  localtime(&t);
+  time_t tstart;
 
   /* Read the event description */
   if (!fgets(buf, sizeof buf, f))

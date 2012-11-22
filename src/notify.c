@@ -310,18 +310,18 @@ static void *notify_main_thread(void *arg)
   const unsigned check_app = MININSEC;
   int elapse = 0;
   int got_app;
-  struct tm *ntime;
+  struct tm ntime;
   time_t ntimer;
 
   elapse = 0;
 
   for (;;) {
     ntimer = time(NULL);
-    ntime = localtime(&ntimer);
+    localtime_r(&ntimer, &ntime);
     pthread_mutex_lock(&notify.mutex);
     pthread_mutex_lock(&nbar.mutex);
-    strftime(notify.time, NOTIFY_FIELD_LENGTH, nbar.timefmt, ntime);
-    strftime(notify.date, NOTIFY_FIELD_LENGTH, nbar.datefmt, ntime);
+    strftime(notify.time, NOTIFY_FIELD_LENGTH, nbar.timefmt, &ntime);
+    strftime(notify.date, NOTIFY_FIELD_LENGTH, nbar.datefmt, &ntime);
     pthread_mutex_unlock(&nbar.mutex);
     pthread_mutex_unlock(&notify.mutex);
     notify_update_bar();
