@@ -270,11 +270,11 @@ static void arg_print_date(long date)
 {
   char date_str[BUFSIZ];
   time_t t;
-  struct tm *lt;
+  struct tm lt;
 
   t = date;
-  lt = localtime(&t);
-  strftime(date_str, BUFSIZ, conf.output_datefmt, lt);
+  localtime_r(&t, &lt);
+  strftime(date_str, BUFSIZ, conf.output_datefmt, &lt);
   fputs(date_str, stdout);
   fputs(":\n", stdout);
 }
@@ -366,7 +366,7 @@ date_arg(const char *ddate, int add_line, const char *fmt_apt,
      * to format the output correctly.
      */
     timer = time(NULL);
-    t = *localtime(&timer);
+    localtime_r(&timer, &t);
     display_app(&t, numdays, add_line, fmt_apt, fmt_rapt, fmt_ev, fmt_rev,
                 regex);
   } else {                      /* a date was entered */
@@ -412,7 +412,7 @@ date_arg_extended(const char *startday, const char *range, int add_line,
       numdays = atoi(range);
   }
   timer = time(NULL);
-  t = *localtime(&timer);
+  localtime_r(&timer, &t);
   if (startday != NULL) {
     if (parse_date(startday, conf.input_datefmt, (int *)&t.tm_year,
                    (int *)&t.tm_mon, (int *)&t.tm_mday, NULL)) {

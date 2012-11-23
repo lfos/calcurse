@@ -240,11 +240,13 @@ void notify_update_bar(void)
   app_pos = file_pos + strlen(notify.apts_file) + 2 + space;
   txt_max_len = col - (app_pos + 12 + space);
 
+  WINS_NBAR_LOCK;
   custom_apply_attr(notify.win, ATTR_HIGHEST);
   wattron(notify.win, A_UNDERLINE | A_REVERSE);
   mvwhline(notify.win, 0, 0, ACS_HLINE, col);
   mvwprintw(notify.win, 0, date_pos, "[ %s | %s ]", notify.date, notify.time);
   mvwprintw(notify.win, 0, file_pos, "(%s)", notify.apts_file);
+  WINS_NBAR_UNLOCK;
 
   pthread_mutex_lock(&notify_app.mutex);
   if (notify_app.got_app) {
@@ -271,6 +273,7 @@ void notify_update_bar(void)
       else
         blinking = 0;
 
+      WINS_NBAR_LOCK;
       if (blinking)
         wattron(notify.win, A_BLINK);
       if (too_long)
@@ -281,6 +284,7 @@ void notify_update_bar(void)
                   hours_left, minutes_left, notify_app.txt);
       if (blinking)
         wattroff(notify.win, A_BLINK);
+      WINS_NBAR_UNLOCK;
 
       if (blinking)
         notify_launch_cmd();
@@ -295,8 +299,10 @@ void notify_update_bar(void)
   }
   pthread_mutex_unlock(&notify_app.mutex);
 
+  WINS_NBAR_LOCK;
   wattroff(notify.win, A_UNDERLINE | A_REVERSE);
   custom_remove_attr(notify.win, ATTR_HIGHEST);
+  WINS_NBAR_UNLOCK;
   wins_wrefresh(notify.win);
 
   pthread_mutex_unlock(&notify.mutex);
@@ -310,18 +316,18 @@ static void *notify_main_thread(void *arg)
   const unsigned check_app = MININSEC;
   int elapse = 0;
   int got_app;
-  struct tm *ntime;
+  struct tm ntime;
   time_t ntimer;
 
   elapse = 0;
 
   for (;;) {
     ntimer = time(NULL);
-    ntime = localtime(&ntimer);
+    localtime_r(&ntimer, &ntime);
     pthread_mutex_lock(&notify.mutex);
     pthread_mutex_lock(&nbar.mutex);
-    strftime(notify.time, NOTIFY_FIELD_LENGTH, nbar.timefmt, ntime);
-    strftime(notify.date, NOTIFY_FIELD_LENGTH, nbar.datefmt, ntime);
+    strftime(notify.time, NOTIFY_FIELD_LENGTH, nbar.timefmt, &ntime);
+    strftime(notify.date, NOTIFY_FIELD_LENGTH, nbar.datefmt, &ntime);
     pthread_mutex_unlock(&nbar.mutex);
     pthread_mutex_unlock(&notify.mutex);
     notify_update_bar();

@@ -64,7 +64,7 @@ foreach_date_dump(const long date_end, struct rpt *rpt, llist_t * exc,
   time_t t;
 
   t = item_first_date;
-  lt = *localtime(&t);
+  localtime_r(&t, &lt);
   lt.tm_hour = lt.tm_min = lt.tm_sec = 0;
   lt.tm_isdst = -1;
   date = mktime(&lt);

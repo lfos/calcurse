@@ -234,7 +234,7 @@ static void update_rept(struct rpt **rpt, const long start)
       newuntil = 0;
       date_entered = 1;
     } else {
-      struct tm *lt;
+      struct tm lt;
       time_t t;
       struct date new_date;
       int newmonth, newday, newyear;
@@ -242,11 +242,11 @@ static void update_rept(struct rpt **rpt, const long start)
       if (parse_date(timstr, conf.input_datefmt, &newyear, &newmonth,
                      &newday, calendar_get_slctd_day())) {
         t = start;
-        lt = localtime(&t);
+        localtime_r(&t, &lt);
         new_date.dd = newday;
         new_date.mm = newmonth;
         new_date.yyyy = newyear;
-        newuntil = date2sec(new_date, lt->tm_hour, lt->tm_min);
+        newuntil = date2sec(new_date, lt.tm_hour, lt.tm_min);
         if (newuntil < start) {
           status_mesg(msg_wrong_time, msg_enter);
           wgetch(win[STA].p);
@@ -704,7 +704,7 @@ void interact_todo_pipe(void)
  */
 void interact_day_item_repeat(void)
 {
-  struct tm *lt;
+  struct tm lt;
   time_t t;
   int date_entered = 0;
   int year = 0, month = 0, day = 0;
@@ -789,11 +789,11 @@ void interact_day_item_repeat(void)
         if (parse_date(user_input, conf.input_datefmt,
                        &year, &month, &day, calendar_get_slctd_day())) {
           t = p->start;
-          lt = localtime(&t);
+          localtime_r(&t, &lt);
           until_date.dd = day;
           until_date.mm = month;
           until_date.yyyy = year;
-          until = date2sec(until_date, lt->tm_hour, lt->tm_min);
+          until = date2sec(until_date, lt.tm_hour, lt.tm_min);
           if (until < p->start) {
             status_mesg(mesg_older, wrong_type_2);
             wgetch(win[STA].p);

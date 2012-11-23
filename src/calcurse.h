@@ -465,6 +465,22 @@ enum win {
 #define FLAG_STA (1 << STA)
 #define FLAG_ALL ((1 << NBWINS) - 1)
 
+#define WINS_NBAR_LOCK \
+  pthread_cleanup_push(wins_nbar_cleanup, NULL); \
+  wins_nbar_lock();
+
+#define WINS_NBAR_UNLOCK \
+  wins_nbar_unlock(); \
+  pthread_cleanup_pop(0);
+
+#define WINS_CALENDAR_LOCK \
+  pthread_cleanup_push(wins_calendar_cleanup, NULL); \
+  wins_calendar_lock();
+
+#define WINS_CALENDAR_UNLOCK \
+  wins_calendar_unlock(); \
+  pthread_cleanup_pop(0);
+
 enum ui_mode {
   UI_CURSES,
   UI_CMDLINE,
@@ -581,7 +597,6 @@ enum export_type {
 /* To customize the display when saving data. */
 enum save_display {
   IO_SAVE_DISPLAY_BAR,
-  IO_SAVE_DISPLAY_MARK,
   IO_SAVE_DISPLAY_NONE
 };
 
@@ -999,6 +1014,12 @@ void vars_init(void);
 
 /* wins.c */
 extern struct window win[NBWINS];
+unsigned wins_nbar_lock(void);
+void wins_nbar_unlock(void);
+void wins_nbar_cleanup(void *);
+unsigned wins_calendar_lock(void);
+void wins_calendar_unlock(void);
+void wins_calendar_cleanup(void *);
 int wins_refresh(void);
 int wins_wrefresh(WINDOW *);
 int wins_doupdate(void);
