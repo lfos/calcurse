@@ -240,13 +240,13 @@ void notify_update_bar(void)
   app_pos = file_pos + strlen(notify.apts_file) + 2 + space;
   txt_max_len = col - (app_pos + 12 + space);
 
-  wins_nbar_lock();
+  WINS_NBAR_LOCK;
   custom_apply_attr(notify.win, ATTR_HIGHEST);
   wattron(notify.win, A_UNDERLINE | A_REVERSE);
   mvwhline(notify.win, 0, 0, ACS_HLINE, col);
   mvwprintw(notify.win, 0, date_pos, "[ %s | %s ]", notify.date, notify.time);
   mvwprintw(notify.win, 0, file_pos, "(%s)", notify.apts_file);
-  wins_nbar_unlock();
+  WINS_NBAR_UNLOCK;
 
   pthread_mutex_lock(&notify_app.mutex);
   if (notify_app.got_app) {
@@ -273,7 +273,7 @@ void notify_update_bar(void)
       else
         blinking = 0;
 
-      wins_nbar_lock();
+      WINS_NBAR_LOCK;
       if (blinking)
         wattron(notify.win, A_BLINK);
       if (too_long)
@@ -284,7 +284,7 @@ void notify_update_bar(void)
                   hours_left, minutes_left, notify_app.txt);
       if (blinking)
         wattroff(notify.win, A_BLINK);
-      wins_nbar_unlock();
+      WINS_NBAR_UNLOCK;
 
       if (blinking)
         notify_launch_cmd();
@@ -299,10 +299,10 @@ void notify_update_bar(void)
   }
   pthread_mutex_unlock(&notify_app.mutex);
 
-  wins_nbar_lock();
+  WINS_NBAR_LOCK;
   wattroff(notify.win, A_UNDERLINE | A_REVERSE);
   custom_remove_attr(notify.win, ATTR_HIGHEST);
-  wins_nbar_unlock();
+  WINS_NBAR_UNLOCK;
   wins_wrefresh(notify.win);
 
   pthread_mutex_unlock(&notify.mutex);

@@ -40,6 +40,14 @@
 
 #include "calcurse.h"
 
+#define SCREEN_ACQUIRE \
+  pthread_cleanup_push(screen_cleanup, (void *)NULL); \
+  screen_acquire();
+
+#define SCREEN_RELEASE \
+  screen_release(); \
+  pthread_cleanup_pop(0);
+
 /* Variables to handle calcurse windows. */
 struct window win[NBWINS];
 
@@ -76,6 +84,11 @@ static void screen_release(void)
   pthread_mutex_unlock(&screen_mutex);
 }
 
+static void screen_cleanup(void *arg)
+{
+  screen_release();
+}
+
 /*
  * FIXME: The following functions currently lock the whole screen. Use both
  * window-level and screen-level mutexes (or use use_screen() and use_window(),
@@ -92,6 +105,11 @@ void wins_nbar_unlock(void)
   screen_release();
 }
 
+void wins_nbar_cleanup(void *arg)
+{
+  wins_nbar_unlock();
+}
+
 unsigned wins_calendar_lock(void)
 {
   return screen_acquire();
@@ -102,14 +120,18 @@ void wins_calendar_unlock(void)
   screen_release();
 }
 
+void wins_calendar_cleanup(void *arg)
+{
+  wins_calendar_unlock();
+}
+
 int wins_refresh(void)
 {
   int rc;
 
-  if (!screen_acquire())
-    return ERR;
+  SCREEN_ACQUIRE;
   rc = refresh();
-  screen_release();
+  SCREEN_RELEASE;
 
   return rc;
 }
@@ -118,10 +140,11 @@ int wins_wrefresh(WINDOW * win)
 {
   int rc;
 
-  if (!win || !screen_acquire())
+  if (!win)
     return ERR;
+  SCREEN_ACQUIRE;
   rc = wrefresh(win);
-  screen_release();
+  SCREEN_RELEASE;
 
   return rc;
 }
@@ -130,10 +153,9 @@ int wins_doupdate(void)
 {
   int rc;
 
-  if (!screen_acquire())
-    return ERR;
+  SCREEN_ACQUIRE;
   rc = doupdate();
-  screen_release();
+  SCREEN_RELEASE;
 
   return rc;
 }
@@ -502,12 +524,12 @@ static void border_nocolor(WINDOW * window)
 void wins_update_border(int flags)
 {
   if (flags & FLAG_CAL) {
-    wins_calendar_lock();
+    WINS_CALENDAR_LOCK;
     if (slctd_win == CAL)
       border_color(win[CAL].p);
     else
       border_nocolor(win[CAL].p);
-    wins_calendar_unlock();
+    WINS_CALENDAR_UNLOCK;
   }
   if (flags & FLAG_APP) {
     if (slctd_win == APP)
