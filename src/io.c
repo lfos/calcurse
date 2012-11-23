@@ -429,6 +429,12 @@ void io_save_cal(enum save_display display)
   pthread_mutex_unlock(&io_save_mutex);
 }
 
+static void io_load_error(const char *filename, unsigned line,
+                          const char *mesg)
+{
+  EXIT("%s:%u: %s", filename, line, mesg);
+}
+
 /*
  * Check what type of data is written in the appointment file,
  * and then load either: a new appointment, a new event, or a new
@@ -445,6 +451,7 @@ void io_load_app(void)
   int freq;
   char type, state = 0L;
   char note[MAX_NOTESIZ + 1], *notep;
+  unsigned line = 0;
 
   t = time(NULL);
   localtime_r(&t, &lt);
@@ -456,6 +463,7 @@ void io_load_app(void)
   for (;;) {
     LLIST_INIT(&exc);
     is_appointment = is_event = is_recursive = 0;
+    line++;
     c = getc(data_file);
     if (c == EOF)
       break;
@@ -466,7 +474,7 @@ void io_load_app(void)
      */
     if (fscanf(data_file, "%d / %d / %d ",
                &start.tm_mon, &start.tm_mday, &start.tm_year) != 3)
-      EXIT(_("syntax error in the item date"));
+      io_load_error(path_apts, line, _("syntax error in the item date"));
 
     /* Read the next character : if it is an '@' then we have
      * an appointment, else if it is an '[' we have en event.
@@ -478,7 +486,7 @@ void io_load_app(void)
     else if (c == '[')
       is_event = 1;
     else
-      EXIT(_("no event nor appointment found"));
+      io_load_error(path_apts, line, _("no event nor appointment found"));
 
     /* Read the remaining informations. */
     if (is_appointment) {
@@ -486,14 +494,16 @@ void io_load_app(void)
                  &start.tm_hour, &start.tm_min,
                  &end.tm_mon, &end.tm_mday, &end.tm_year,
                  &end.tm_hour, &end.tm_min) != 7)
-        EXIT(_("syntax error in item time or duration"));
+        io_load_error(path_apts, line,
+                      _("syntax error in item time or duration"));
     } else if (is_event) {
       if (fscanf(data_file, " %d ", &id) != 1 || getc(data_file) != ']')
-        EXIT(_("syntax error in item identifier"));
+        io_load_error(path_apts, line, _("syntax error in item identifier"));
       while ((c = getc(data_file)) == ' ') ;
       ungetc(c, data_file);
     } else {
-      EXIT(_("wrong format in the appointment or event"));
+      io_load_error(path_apts, line,
+                    _("wrong format in the appointment or event"));
       /* NOTREACHED */
     }
 
@@ -503,7 +513,7 @@ void io_load_app(void)
     if (c == '{') {
       is_recursive = 1;
       if (fscanf(data_file, " %d%c ", &freq, &type) != 2)
-        EXIT(_("syntax error in item repetition"));
+        io_load_error(path_apts, line, _("syntax error in item repetition"));
 
       c = getc(data_file);
       if (c == '}') {           /* endless recurrent item */
@@ -513,7 +523,7 @@ void io_load_app(void)
       } else if (c == '-' && getc(data_file) == '>') {
         if (fscanf(data_file, " %d / %d / %d ", &until.tm_mon,
                    &until.tm_mday, &until.tm_year) != 3)
-          EXIT(_("syntax error in item repetition"));
+          io_load_error(path_apts, line, _("syntax error in item repetition"));
         c = getc(data_file);
         if (c == '!') {
           ungetc(c, data_file);
@@ -523,14 +533,15 @@ void io_load_app(void)
           while ((c = getc(data_file)) == ' ') ;
           ungetc(c, data_file);
         } else
-          EXIT(_("syntax error in item repetition"));
+          io_load_error(path_apts, line, _("syntax error in item repetition"));
       } else if (c == '!') {    /* endless item with exceptions */
         ungetc(c, data_file);
         recur_exc_scan(&exc, data_file);
         c = getc(data_file);
         until.tm_year = 0;
       } else {
-        EXIT(_("wrong format in the appointment or event"));
+        io_load_error(path_apts, line,
+                      _("wrong format in the appointment or event"));
         /* NOTREACHED */
       }
     } else
@@ -561,7 +572,7 @@ void io_load_app(void)
         while ((c = getc(data_file)) == ' ') ;
         ungetc(c, data_file);
       } else
-        EXIT(_("syntax error in item repetition"));
+        io_load_error(path_apts, line, _("syntax error in item repetition"));
       if (is_recursive) {
         recur_apoint_scan(data_file, start, end,
                           type, freq, until, notep, &exc, state);
@@ -575,7 +586,8 @@ void io_load_app(void)
         event_scan(data_file, start, id, notep);
       }
     } else {
-      EXIT(_("wrong format in the appointment or event"));
+      io_load_error(path_apts, line,
+                    _("wrong format in the appointment or event"));
       /* NOTREACHED */
     }
   }
@@ -590,17 +602,19 @@ void io_load_todo(void)
   int nb_tod = 0;
   int c, id;
   char buf[BUFSIZ], e_todo[BUFSIZ], note[MAX_NOTESIZ + 1];
+  unsigned line = 0;
 
   data_file = fopen(path_todo, "r");
   EXIT_IF(data_file == NULL, _("failed to open todo file"));
 
   for (;;) {
+    line++;
     c = getc(data_file);
     if (c == EOF)
       break;
     else if (c == '[') {        /* new style with id */
       if (fscanf(data_file, " %d ", &id) != 1 || getc(data_file) != ']')
-        EXIT(_("syntax error in item identifier"));
+        io_load_error(path_todo, line, _("syntax error in item identifier"));
       while ((c = getc(data_file)) == ' ') ;
       ungetc(c, data_file);
     } else {
