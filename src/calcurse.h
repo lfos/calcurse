@@ -580,7 +580,6 @@ enum export_type {
 /* To customize the display when saving data. */
 enum save_display {
   IO_SAVE_DISPLAY_BAR,
-  IO_SAVE_DISPLAY_MARK,
   IO_SAVE_DISPLAY_NONE
 };
 

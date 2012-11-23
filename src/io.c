@@ -302,23 +302,6 @@ void io_extract_data(char *dst_data, const char *org, int len)
   *dst_data = '\0';
 }
 
-static void display_mark(void)
-{
-  const int DISPLAY_TIME = 1;
-  WINDOW *mwin;
-
-  mwin = newwin(1, 2, 1, col - 3);
-
-  custom_apply_attr(mwin, ATTR_HIGHEST);
-  mvwaddstr(mwin, 0, 0, "**");
-  wins_wrefresh(mwin);
-  sleep(DISPLAY_TIME);
-  mvwaddstr(mwin, 0, 0, "  ");
-  wins_wrefresh(mwin);
-  delwin(mwin);
-  wins_doupdate();
-}
-
 static pthread_mutex_t io_save_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 /*
@@ -412,8 +395,6 @@ void io_save_cal(enum save_display display)
   if (ui_mode == UI_CURSES && display == IO_SAVE_DISPLAY_BAR
       && conf.progress_bar)
     show_bar = 1;
-  else if (ui_mode == UI_CURSES && display == IO_SAVE_DISPLAY_MARK)
-    display_mark();
 
   if (show_bar)
     progress_bar(PROGRESS_BAR_SAVE, PROGRESS_BAR_CONF);
@@ -436,8 +417,7 @@ void io_save_cal(enum save_display display)
     ERROR_MSG("%s", access_pb);
 
   /* Print a message telling data were saved */
-  if (ui_mode == UI_CURSES && conf.system_dialogs
-      && display != IO_SAVE_DISPLAY_MARK) {
+  if (ui_mode == UI_CURSES && conf.system_dialogs) {
     status_mesg(save_success, enter);
     wgetch(win[STA].p);
   }
@@ -1152,7 +1132,7 @@ static void *io_psave_thread(void *arg)
 
   for (;;) {
     sleep(delay * MININSEC);
-    io_save_cal(IO_SAVE_DISPLAY_MARK);
+    io_save_cal(IO_SAVE_DISPLAY_NONE);
   }
 }
 
