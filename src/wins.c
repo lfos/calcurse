@@ -76,6 +76,32 @@ static void screen_release(void)
   pthread_mutex_unlock(&screen_mutex);
 }
 
+/*
+ * FIXME: The following functions currently lock the whole screen. Use both
+ * window-level and screen-level mutexes (or use use_screen() and use_window(),
+ * see curs_threads(3)) to avoid locking too much.
+ */
+
+unsigned wins_nbar_lock(void)
+{
+  return screen_acquire();
+}
+
+void wins_nbar_unlock(void)
+{
+  screen_release();
+}
+
+unsigned wins_calendar_lock(void)
+{
+  return screen_acquire();
+}
+
+void wins_calendar_unlock(void)
+{
+  screen_release();
+}
+
 int wins_refresh(void)
 {
   int rc;
@@ -476,10 +502,12 @@ static void border_nocolor(WINDOW * window)
 void wins_update_border(int flags)
 {
   if (flags & FLAG_CAL) {
+    wins_calendar_lock();
     if (slctd_win == CAL)
       border_color(win[CAL].p);
     else
       border_nocolor(win[CAL].p);
+    wins_calendar_unlock();
   }
   if (flags & FLAG_APP) {
     if (slctd_win == APP)

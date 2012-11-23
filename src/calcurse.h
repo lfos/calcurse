@@ -975,6 +975,10 @@ void vars_init(void);
 
 /* wins.c */
 extern struct window win[NBWINS];
+unsigned wins_nbar_lock(void);
+void wins_nbar_unlock(void);
+unsigned wins_calendar_lock(void);
+void wins_calendar_unlock(void);
 int wins_refresh(void);
 int wins_wrefresh(WINDOW *);
 int wins_doupdate(void);

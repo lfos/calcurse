@@ -297,6 +297,7 @@ draw_monthly_view(struct window *cwin, struct date *current_day,
   c_day_1 = (int)((ymd_to_scalar(yr, mo, 1 + sunday_first) - (long)1) % 7L);
 
   /* Write the current month and year on top of the calendar */
+  wins_calendar_lock();
   custom_apply_attr(cwin->p, ATTR_HIGHEST);
   mvwprintw(cwin->p, ofs_y,
             (SBAR_WIDTH - (strlen(_(monthnames[mo - 1])) + 5)) / 2,
@@ -310,6 +311,7 @@ draw_monthly_view(struct window *cwin, struct date *current_day,
     mvwaddstr(cwin->p, ofs_y, ofs_x + 4 * j, _(daynames[1 + j - sunday_first]));
   }
   custom_remove_attr(cwin->p, ATTR_HIGHEST);
+  wins_calendar_unlock();
 
   day_1_sav = (c_day_1 + 1) * 3 + c_day_1 - 7;
 
@@ -327,11 +329,12 @@ draw_monthly_view(struct window *cwin, struct date *current_day,
       ofs_x = OFFX - day_1_sav - 4 * c_day;
     }
 
-    /* This is today, so print it in yellow. */
+    wins_calendar_lock();
     if (c_day == current_day->dd
         && current_day->mm == slctd_day.mm
         && current_day->yyyy == slctd_day.yyyy
         && current_day->dd != slctd_day.dd) {
+      /* This is today, so print it in yellow. */
       custom_apply_attr(cwin->p, ATTR_LOWEST);
       mvwprintw(cwin->p, ofs_y + 1,
                 ofs_x + day_1_sav + 4 * c_day + 1, "%2d", c_day);
@@ -347,10 +350,12 @@ draw_monthly_view(struct window *cwin, struct date *current_day,
       mvwprintw(cwin->p, ofs_y + 1,
                 ofs_x + day_1_sav + 4 * c_day + 1, "%2d", c_day);
       custom_remove_attr(cwin->p, ATTR_LOW);
-    } else
+    } else {
       /* otherwise, print normal days in black */
       mvwprintw(cwin->p, ofs_y + 1,
                 ofs_x + day_1_sav + 4 * c_day + 1, "%2d", c_day);
+    }
+    wins_calendar_unlock();
   }
 }
 
@@ -454,9 +459,11 @@ draw_weekly_view(struct window *cwin, struct date *current_day,
 
   /* Print the week number. */
   weeknum = ISO8601weeknum(&t);
+  wins_calendar_lock();
   custom_apply_attr(cwin->p, ATTR_HIGHEST);
   mvwprintw(cwin->p, 2, cwin->w - 9, "(# %02d)", weeknum);
   custom_remove_attr(cwin->p, ATTR_HIGHEST);
+  wins_calendar_unlock();
 
   /* Now draw calendar view. */
   for (j = 0; j < WEEKINDAYS; j++) {
@@ -488,22 +495,28 @@ draw_weekly_view(struct window *cwin, struct date *current_day,
     else
       attr = 0;
 
+    wins_calendar_lock();
     if (attr)
       custom_apply_attr(cwin->p, attr);
     mvwprintw(cwin->p, OFFY + 1, OFFX + 1 + 4 * j, "%02d", t.tm_mday);
     if (attr)
       custom_remove_attr(cwin->p, attr);
+    wins_calendar_unlock();
 
     /* Draw slices indicating appointment times. */
     memset(slices, 0, DAYSLICESNO * sizeof *slices);
     if (day_chk_busy_slices(date, DAYSLICESNO, slices)) {
       for (i = 0; i < DAYSLICESNO; i++) {
-        if (j != WEEKINDAYS - 1 && i != DAYSLICESNO - 1)
+        if (j != WEEKINDAYS - 1 && i != DAYSLICESNO - 1) {
+          wins_calendar_lock();
           mvwhline(cwin->p, OFFY + 2 + i, OFFX + 3 + 4 * j, ACS_S9, 2);
+          wins_calendar_unlock();
+        }
         if (slices[i]) {
           int highlight;
 
           highlight = (t.tm_mday == slctd_day.dd) ? 1 : 0;
+          wins_calendar_lock();
           if (highlight)
             custom_apply_attr(cwin->p, attr);
           wattron(cwin->p, A_REVERSE);
@@ -512,6 +525,7 @@ draw_weekly_view(struct window *cwin, struct date *current_day,
           wattroff(cwin->p, A_REVERSE);
           if (highlight)
             custom_remove_attr(cwin->p, attr);
+          wins_calendar_unlock();
         }
       }
     }
@@ -521,11 +535,13 @@ draw_weekly_view(struct window *cwin, struct date *current_day,
   }
 
   /* Draw marks to indicate midday on the sides of the calendar. */
+  wins_calendar_lock();
   custom_apply_attr(cwin->p, ATTR_HIGHEST);
   mvwhline(cwin->p, OFFY + 1 + DAYSLICESNO / 2, OFFX, ACS_S9, 1);
   mvwhline(cwin->p, OFFY + 1 + DAYSLICESNO / 2,
            OFFX + WCALWIDTH - 3, ACS_S9, 1);
   custom_remove_attr(cwin->p, ATTR_HIGHEST);
+  wins_calendar_unlock();
 
 #undef DAYSLICESNO
 }
@@ -537,8 +553,12 @@ void calendar_update_panel(struct window *cwin)
   unsigned sunday_first;
 
   calendar_store_current_date(&current_day);
+
+  wins_calendar_lock();
   erase_window_part(cwin->p, 1, 3, cwin->w - 2, cwin->h - 2);
   mvwhline(cwin->p, 2, 1, ACS_HLINE, cwin->w - 2);
+  wins_calendar_unlock();
+
   sunday_first = calendar_week_begins_on_monday()? 0 : 1;
 
   draw_calendar[calendar_view] (cwin, &current_day, sunday_first);
