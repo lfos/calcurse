@@ -282,6 +282,9 @@ void todo_update_panel(int which_pan)
   int max_items = win[TOD].h - 4;
   int incolor = -1;
 
+  if ((int)win[TOD].h < 4)
+    return;
+
   /* Print todo item in the panel. */
   erase_window_part(win[TOD].p, 1, title_lines, win[TOD].w - 2, win[TOD].h - 2);
   LLIST_FOREACH(&todolist, i) {
