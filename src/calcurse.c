@@ -549,6 +549,7 @@ int main(int argc, char **argv)
 
   vars_init();
   wins_init();
+  /* Default to the calendar panel -- this is overridden later. */
   wins_slctd_set(CAL);
   notify_init_bar();
   wins_reset_status_page();
@@ -569,7 +570,7 @@ int main(int argc, char **argv)
     io_startup_screen(no_data_file);
   }
   inday = *day_process_storage(0, 0, &inday);
-  wins_slctd_set(CAL);
+  wins_slctd_set(conf.default_panel);
   wins_update(FLAG_ALL);
 
   /* Start miscellaneous threads. */

@@ -233,6 +233,15 @@
 #define MAX(x,y) ((x)>(y)?(x):(y))
 #define MIN(x,y) ((x)<(y)?(x):(y))
 
+enum win {
+  CAL,
+  APP,
+  TOD,
+  NOT,
+  STA,
+  NBWINS
+};
+
 /* General configuration variables. */
 struct conf {
   unsigned auto_save;
@@ -240,6 +249,7 @@ struct conf {
   unsigned periodic_save;
   unsigned confirm_quit;
   unsigned confirm_delete;
+  enum win default_panel;
   unsigned system_dialogs;
   unsigned progress_bar;
   const char *editor;
@@ -447,15 +457,6 @@ enum key {
 struct binding {
   char *label;
   enum key action;
-};
-
-enum win {
-  CAL,
-  APP,
-  TOD,
-  NOT,
-  STA,
-  NBWINS
 };
 
 #define FLAG_CAL (1 << CAL)

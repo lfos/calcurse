@@ -59,6 +59,8 @@ static int config_parse_str(char *, const char *);
 static int config_serialize_str(char *, const char *);
 static int config_parse_calendar_view(void *, const char *);
 static int config_serialize_calendar_view(char *, void *);
+static int config_parse_default_panel(void *, const char *);
+static int config_serialize_default_panel(char *, void *);
 static int config_parse_first_day_of_week(void *, const char *);
 static int config_serialize_first_day_of_week(char *, void *);
 static int config_parse_color_theme(void *, const char *);
@@ -84,6 +86,8 @@ static int config_serialize_input_datefmt(char *, void *);
 static const struct confvar confmap[] = {
   {"appearance.calendarview", config_parse_calendar_view,
    config_serialize_calendar_view, NULL},
+  {"appearance.defaultpanel", config_parse_default_panel,
+   config_serialize_default_panel, NULL},
   {"appearance.layout", config_parse_layout, config_serialize_layout, NULL},
   {"appearance.notifybar", CONFIG_HANDLER_BOOL(nbar.show)},
   {"appearance.sidebarwidth", config_parse_sidebar_width,
@@ -200,6 +204,20 @@ static int config_parse_calendar_view(void *dummy, const char *val)
     calendar_set_view(CAL_MONTH_VIEW);
   else if (!strcmp(val, "weekly"))
     calendar_set_view(CAL_WEEK_VIEW);
+  else
+    return 0;
+
+  return 1;
+}
+
+static int config_parse_default_panel(void *dummy, const char *val)
+{
+  if (!strcmp(val, "calendar"))
+    conf.default_panel = CAL;
+  else if (!strcmp(val, "appointments"))
+    conf.default_panel = APP;
+  else if (!strcmp(val, "todo"))
+    conf.default_panel = TOD;
   else
     return 0;
 
@@ -364,6 +382,18 @@ static int config_serialize_calendar_view(char *buf, void *dummy)
     strcpy(buf, "weekly");
   else
     strcpy(buf, "monthly");
+
+  return 1;
+}
+
+static int config_serialize_default_panel(char *buf, void *dummy)
+{
+  if (conf.default_panel == CAL)
+    strcpy(buf, "calendar");
+  else if (conf.default_panel == APP)
+    strcpy(buf, "appointments");
+  else
+    strcpy(buf, "todo");
 
   return 1;
 }
