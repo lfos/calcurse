@@ -549,7 +549,7 @@ int main(int argc, char **argv)
 
   vars_init();
   wins_init();
-  wins_slctd_init();
+  wins_slctd_set(CAL);
   notify_init_bar();
   wins_reset_status_page();
 

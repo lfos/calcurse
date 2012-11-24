@@ -216,12 +216,6 @@ void wins_sbar_wdec(void)
     sbarwidth_perc--;
 }
 
-/* Initialize the selected window in calcurse's interface. */
-void wins_slctd_init(void)
-{
-  wins_slctd_set(CAL);
-}
-
 /* Returns an enum which corresponds to the window which is selected. */
 enum win wins_slctd(void)
 {

@@ -1030,7 +1030,6 @@ unsigned wins_sbar_wperc(void);
 void wins_set_sbar_width(unsigned);
 void wins_sbar_winc(void);
 void wins_sbar_wdec(void);
-void wins_slctd_init(void);
 enum win wins_slctd(void);
 void wins_slctd_set(enum win);
 void wins_slctd_next(void);
