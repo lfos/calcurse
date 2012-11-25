@@ -151,7 +151,6 @@ static void progress_bar(progress_bar_t type, int progress)
 static FILE *get_export_stream(enum export_type type)
 {
   FILE *stream;
-  int cancel;
   char *home, *stream_name;
   const char *question = _("Choose the file used to export calcurse data:");
   const char *wrong_name =
@@ -169,8 +168,7 @@ static FILE *get_export_stream(enum export_type type)
 
   while (stream == NULL) {
     status_mesg(question, "");
-    cancel = updatestring(win[STA].p, &stream_name, 0, 1);
-    if (cancel) {
+    if (updatestring(win[STA].p, &stream_name, 0, 1)) {
       mem_free(stream_name);
       return NULL;
     }
@@ -798,7 +796,7 @@ void io_load_keys(const char *pager)
 void io_check_dir(char *dir, int *missing)
 {
   if (read_only)
-    return;
+    return -1;
 
   errno = 0;
   if (mkdir(dir, 0700) != 0) {
@@ -806,10 +804,11 @@ void io_check_dir(char *dir, int *missing)
       fprintf(stderr, _("FATAL ERROR: could not create %s: %s\n"), dir,
               strerror(errno));
       exit_calcurse(EXIT_FAILURE);
+    } else {
+      return 1;
     }
   } else {
-    if (missing)
-      (*missing)++;
+    return 0;
   }
 }
 
@@ -817,34 +816,34 @@ unsigned io_file_exist(char *file)
 {
   FILE *fd;
 
-  if (!file)
+  if (file && (fd = fopen(file, "r")) != NULL) {
+    fclose(fd);
+    return 1;
+  }
+  else {
     return 0;
-
-  if ((fd = fopen(file, "r")) == NULL)
-    return 0;
-
-  fclose(fd);
-
-  return 1;
+  }
 }
 
-void io_check_file(char *file, int *missing)
+unsigned io_check_file(char *file)
 {
   if (read_only)
-    return;
+    return -1;
 
   errno = 0;
-  if (!io_file_exist(file)) {
+  if (io_file_exist(file)) {
+    return 1;
+  } else {
     FILE *fd;
 
-    if (missing)
-      (*missing)++;
     if ((fd = fopen(file, "w")) == NULL) {
       fprintf(stderr, _("FATAL ERROR: could not create %s: %s\n"), file,
               strerror(errno));
       exit_calcurse(EXIT_FAILURE);
     }
     file_close(fd, __FILE_POS__);
+
+    return 0;
   }
 }
 
@@ -862,17 +861,15 @@ void io_check_file(char *file, int *missing)
  */
 int io_check_data_files(void)
 {
-  int missing, missing_keys;
+  int missing = 0;
 
-  missing = missing_keys = 0;
-  errno = 0;
-  io_check_dir(path_dir, &missing);
-  io_check_dir(path_notes, &missing);
-  io_check_file(path_todo, &missing);
-  io_check_file(path_apts, &missing);
-  io_check_file(path_conf, &missing);
-  io_check_file(path_keys, &missing_keys);
-  if (missing_keys) {
+  missing += io_check_dir(path_dir) ? 0 : 1;
+  missing += io_check_dir(path_notes) ? 0 : 1;
+  missing += io_check_file(path_todo) ? 0 : 1;
+  missing += io_check_file(path_apts) ? 0 : 1;
+  missing += io_check_file(path_conf) ? 0 : 1;
+
+  if (!io_check_file(path_keys)) {
     missing++;
     keys_dump_defaults(path_keys);
   }
@@ -897,14 +894,13 @@ void io_startup_screen(int no_data_file)
 /* Export calcurse data. */
 void io_export_data(enum export_type type)
 {
-  FILE *stream;
+  FILE *stream = NULL;
   const char *success = _("The data were successfully exported");
   const char *enter = _("Press [ENTER] to continue");
 
   if (type < IO_EXPORT_ICAL || type >= IO_EXPORT_NBTYPES)
     EXIT(_("unknown export type"));
 
-  stream = 0;
   switch (ui_mode) {
   case UI_CMDLINE:
     stream = stdout;
@@ -933,21 +929,18 @@ void io_export_data(enum export_type type)
 
 static FILE *get_import_stream(enum export_type type)
 {
-  FILE *stream;
+  FILE *stream = NULL;
   char *stream_name;
   const char *ask_fname = _("Enter the file name to import data from:");
   const char *wrong_file =
       _("The file cannot be accessed, please enter another file name.");
   const char *press_enter = _("Press [ENTER] to continue.");
-  int cancel;
 
-  stream = NULL;
   stream_name = mem_malloc(BUFSIZ);
   memset(stream_name, 0, BUFSIZ);
   while (stream == NULL) {
     status_mesg(ask_fname, "");
-    cancel = updatestring(win[STA].p, &stream_name, 0, 1);
-    if (cancel) {
+    if (updatestring(win[STA].p, &stream_name, 0, 1)) {
       mem_free(stream_name);
       return NULL;
     }
@@ -1085,13 +1078,10 @@ void io_log_print(struct io_file *log, int line, const char *msg)
 
 void io_log_display(struct io_file *log, const char *msg, const char *pager)
 {
-  int ans;
-
   RETURN_IF(log == NULL, _("No log file to display!"));
   if (ui_mode == UI_CMDLINE) {
     printf("\n%s [y/n] ", msg);
-    ans = fgetc(stdin);
-    if (ans == 'y') {
+    if (fgetc(stdin) == 'y') {
       const char *arg[] = { pager, log->name, NULL };
       int pid;
 
@@ -1120,9 +1110,7 @@ static pthread_t io_t_psave;
 /* Thread used to periodically save data. */
 static void *io_psave_thread(void *arg)
 {
-  int delay;
-
-  delay = conf.periodic_save;
+  int delay = conf.periodic_save;
   EXIT_IF(delay < 0, _("Invalid delay"));
 
   for (;;) {
