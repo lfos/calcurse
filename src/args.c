@@ -269,11 +269,9 @@ static void next_arg(void)
 static void arg_print_date(long date)
 {
   char date_str[BUFSIZ];
-  time_t t;
   struct tm lt;
 
-  t = date;
-  localtime_r(&t, &lt);
+  localtime_r((time_t *)&date, &lt);
   strftime(date_str, BUFSIZ, conf.output_datefmt, &lt);
   fputs(date_str, stdout);
   fputs(":\n", stdout);
@@ -340,10 +338,7 @@ date_arg(const char *ddate, int add_line, const char *fmt_apt,
          const char *fmt_rapt, const char *fmt_ev, const char *fmt_rev,
          regex_t * regex)
 {
-  int i;
   struct date day;
-  int numdays = 0, num_digit = 0;
-  int arg_len = 0;
   static struct tm t;
   time_t timer;
 
@@ -351,25 +346,18 @@ date_arg(const char *ddate, int add_line, const char *fmt_apt,
    * Check (with the argument length) if a date or a number of days
    * was entered, and then call app_arg() to print appointments
    */
-  arg_len = strlen(ddate);
-  if (arg_len <= 4) {           /* a number of days was entered */
-    for (i = 0; i <= arg_len - 1; i++) {
-      if (isdigit(ddate[i]))
-        num_digit++;
-    }
-    if (num_digit == arg_len)
-      numdays = atoi(ddate);
-
+  if (strlen(ddate) <= 4 && is_all_digit(ddate)) {
     /*
-     * Get current date, and print appointments for each day
-     * in the chosen interval. app_found and add_line are used
-     * to format the output correctly.
+     * A number of days was entered. Get current date and print appointments
+     * for each day in the chosen interval. app_found and add_line are used to
+     * format the output correctly.
      */
     timer = time(NULL);
     localtime_r(&timer, &t);
-    display_app(&t, numdays, add_line, fmt_apt, fmt_rapt, fmt_ev, fmt_rev,
+    display_app(&t, atoi(ddate), add_line, fmt_apt, fmt_rapt, fmt_ev, fmt_rev,
                 regex);
-  } else {                      /* a date was entered */
+  } else {
+    /* A date was entered. */
     if (parse_date(ddate, conf.input_datefmt, (int *)&day.yyyy,
                    (int *)&day.mm, (int *)&day.dd, NULL)) {
       app_arg(add_line, &day, 0, fmt_apt, fmt_rapt, fmt_ev, fmt_rev, regex);
@@ -395,7 +383,7 @@ date_arg_extended(const char *startday, const char *range, int add_line,
                   const char *fmt_apt, const char *fmt_rapt,
                   const char *fmt_ev, const char *fmt_rev, regex_t * regex)
 {
-  int i, numdays = 1, error = 0, arg_len = 0;
+  int numdays = 1, error = 0;
   static struct tm t;
   time_t timer;
 
@@ -403,13 +391,11 @@ date_arg_extended(const char *startday, const char *range, int add_line,
    * Check arguments and extract information
    */
   if (range != NULL) {
-    arg_len = strlen(range);
-    for (i = 0; i <= arg_len - 1; i++) {
-      if (!isdigit(range[i]))
-        error = 1;
-    }
-    if (!error)
+    if (is_all_digit(range)) {
       numdays = atoi(range);
+    } else {
+      error = 1;
+    }
   }
   timer = time(NULL);
   localtime_r(&timer, &t);
