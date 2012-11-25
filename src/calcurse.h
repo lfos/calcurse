@@ -147,7 +147,7 @@
 #define MAXDAYSPERMONTH 31
 
 /* Calendar window. */
-#define CALHEIGHT       12
+#define CALHEIGHT       8
 
 /* Key definitions. */
 #define CTRLVAL                 0x1F
@@ -250,6 +250,7 @@ struct conf {
   unsigned confirm_quit;
   unsigned confirm_delete;
   enum win default_panel;
+  unsigned compact_panels;
   unsigned system_dialogs;
   unsigned progress_bar;
   const char *editor;

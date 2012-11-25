@@ -332,7 +332,7 @@ void apoint_update_panel(int which_pan)
 {
   int title_xpos;
   int bordr = 1;
-  int title_lines = 3;
+  int title_lines = conf.compact_panels ? 1 : 3;
   int app_width = win[APP].w - bordr;
   int app_length = win[APP].h - bordr - title_lines;
   long date;

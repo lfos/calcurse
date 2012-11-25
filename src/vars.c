@@ -135,6 +135,7 @@ void vars_init(void)
   conf.auto_gc = 0;
   conf.periodic_save = 0;
   conf.default_panel = CAL;
+  conf.compact_panels = 0;
   conf.system_dialogs = 1;
   conf.progress_bar = 1;
   strncpy(conf.output_datefmt, "%D", 3);

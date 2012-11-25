@@ -86,6 +86,7 @@ static int config_serialize_input_datefmt(char *, void *);
 static const struct confvar confmap[] = {
   {"appearance.calendarview", config_parse_calendar_view,
    config_serialize_calendar_view, NULL},
+  {"appearance.compactpanels", CONFIG_HANDLER_BOOL(conf.compact_panels)},
   {"appearance.defaultpanel", config_parse_default_panel,
    config_serialize_default_panel, NULL},
   {"appearance.layout", config_parse_layout, config_serialize_layout, NULL},

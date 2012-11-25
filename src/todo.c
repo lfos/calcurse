@@ -275,9 +275,9 @@ void todo_update_panel(int which_pan)
   llist_item_t *i;
   int len = win[TOD].w - 8;
   int num_todo = 0;
-  int y_offset = 3, x_offset = 1;
+  int title_lines = conf.compact_panels ? 1 : 3;
+  int y_offset = title_lines, x_offset = 1;
   int t_realpos = -1;
-  int title_lines = 3;
   int todo_lines = 1;
   int max_items = win[TOD].h - 4;
   int incolor = -1;

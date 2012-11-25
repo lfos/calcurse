@@ -239,7 +239,8 @@ void wins_slctd_next(void)
 
 static void wins_init_panels(void)
 {
-  win[CAL].p = newwin(CALHEIGHT, wins_sbar_width(), win[CAL].y, win[CAL].x);
+  win[CAL].p = newwin(CALHEIGHT + (conf.compact_panels ? 2 : 4),
+                      wins_sbar_width(), win[CAL].y, win[CAL].x);
   wins_show(win[CAL].p, _("Calendar"));
 
   win[APP].p = newwin(win[APP].h, win[APP].w, win[APP].y, win[APP].x);
@@ -356,11 +357,14 @@ void wins_show(WINDOW * win, const char *label)
   int width = getmaxx(win);
 
   box(win, 0, 0);
-  mvwaddch(win, 2, 0, ACS_LTEE);
-  mvwhline(win, 2, 1, ACS_HLINE, width - 2);
-  mvwaddch(win, 2, width - 1, ACS_RTEE);
 
-  print_in_middle(win, 1, 0, width, label);
+  if (!conf.compact_panels) {
+    mvwaddch(win, 2, 0, ACS_LTEE);
+    mvwhline(win, 2, 1, ACS_HLINE, width - 2);
+    mvwaddch(win, 2, width - 1, ACS_RTEE);
+
+    print_in_middle(win, 1, 0, width, label);
+  }
 }
 
 /*
@@ -390,7 +394,7 @@ void wins_get_config(void)
   }
 
   win[CAL].w = wins_sbar_width();
-  win[CAL].h = CALHEIGHT;
+  win[CAL].h = CALHEIGHT + (conf.compact_panels ? 2 : 4);
 
   if (layout <= 4) {            /* APPOINTMENT is the biggest panel */
     win[APP].w = col - win[CAL].w;

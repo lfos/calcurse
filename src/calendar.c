@@ -278,7 +278,7 @@ static void
 draw_monthly_view(struct window *cwin, struct date *current_day,
                   unsigned sunday_first)
 {
-  const int OFFY = 2 + (CALHEIGHT - 9) / 2;
+  const int OFFY = CALHEIGHT / 2 - (conf.compact_panels ? 3 : 1);
   struct date check_day;
   int c_day, c_day_1, day_1_sav, numdays, j;
   unsigned yr, mo;
@@ -460,7 +460,7 @@ draw_weekly_view(struct window *cwin, struct date *current_day,
 {
 #define DAYSLICESNO  6
   const int WCALWIDTH = 30;
-  const int OFFY = 2 + (CALHEIGHT - 9) / 2;
+  const int OFFY = CALHEIGHT / 2 - (conf.compact_panels ? 3 : 1);
   struct tm t;
   int OFFX, j, c_wday, days_to_remove, weeknum;
 
@@ -484,7 +484,8 @@ draw_weekly_view(struct window *cwin, struct date *current_day,
   weeknum = ISO8601weeknum(&t);
   WINS_CALENDAR_LOCK;
   custom_apply_attr(cwin->p, ATTR_HIGHEST);
-  mvwprintw(cwin->p, 2, cwin->w - 9, "(# %02d)", weeknum);
+  mvwprintw(cwin->p, conf.compact_panels ? 0 : 2, cwin->w - 9, "(# %02d)",
+            weeknum);
   custom_remove_attr(cwin->p, ATTR_HIGHEST);
   WINS_CALENDAR_UNLOCK;
 
@@ -578,8 +579,10 @@ void calendar_update_panel(struct window *cwin)
   calendar_store_current_date(&current_day);
 
   WINS_CALENDAR_LOCK;
-  erase_window_part(cwin->p, 1, 3, cwin->w - 2, cwin->h - 2);
-  mvwhline(cwin->p, 2, 1, ACS_HLINE, cwin->w - 2);
+  erase_window_part(cwin->p, 1, conf.compact_panels ? 1 : 3, cwin->w - 2,
+                    cwin->h - 2);
+  if (!conf.compact_panels)
+    mvwhline(cwin->p, 2, 1, ACS_HLINE, cwin->w - 2);
   WINS_CALENDAR_UNLOCK;
 
   sunday_first = calendar_week_begins_on_monday()? 0 : 1;
