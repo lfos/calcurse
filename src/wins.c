@@ -372,6 +372,10 @@ void wins_show(WINDOW * win, const char *label)
  */
 void wins_get_config(void)
 {
+  enum win win_master;
+  enum win win_slave[1];
+  unsigned master_is_left;
+
   /* Get the screen configuration */
   getmaxyx(stdscr, row, col);
 
@@ -393,88 +397,31 @@ void wins_get_config(void)
     win[NOT].x = 0;
   }
 
-  win[CAL].w = wins_sbar_width();
   win[CAL].h = CALHEIGHT + (conf.compact_panels ? 2 : 4);
 
-  if (layout <= 4) {            /* APPOINTMENT is the biggest panel */
-    win[APP].w = col - win[CAL].w;
-    win[APP].h = row - (win[STA].h + win[NOT].h);
-    win[TOD].w = win[CAL].w;
+  if (layout <= 4) {
+    win_master = APP;
+    win_slave[0] = ((layout - 1) % 2 == 0) ? CAL : TOD;
+    win_slave[1] = ((layout - 1) % 2 == 1) ? CAL : TOD;
     win[TOD].h = row - (win[CAL].h + win[STA].h + win[NOT].h);
-  } else {                      /* TODO is the biggest panel */
-    win[TOD].w = col - win[CAL].w;
-    win[TOD].h = row - (win[STA].h + win[NOT].h);
-    win[APP].w = win[CAL].w;
+  } else {
+    win_master = TOD;
+    win_slave[0] = ((layout - 1) % 2 == 0) ? CAL : APP;
+    win_slave[1] = ((layout - 1) % 2 == 1) ? CAL : APP;
     win[APP].h = row - (win[CAL].h + win[STA].h + win[NOT].h);
   }
+  master_is_left = ((layout - 1) % 4 < 2);
 
-  /* defining the layout */
-  switch (layout) {
-  case 1:
-    win[APP].y = 0;
-    win[APP].x = 0;
-    win[CAL].y = 0;
-    win[TOD].x = win[APP].w;
-    win[TOD].y = win[CAL].h;
-    win[CAL].x = win[APP].w;
-    break;
-  case 2:
-    win[APP].y = 0;
-    win[APP].x = 0;
-    win[TOD].y = 0;
-    win[TOD].x = win[APP].w;
-    win[CAL].x = win[APP].w;
-    win[CAL].y = win[TOD].h;
-    break;
-  case 3:
-    win[APP].y = 0;
-    win[TOD].x = 0;
-    win[CAL].x = 0;
-    win[CAL].y = 0;
-    win[APP].x = win[CAL].w;
-    win[TOD].y = win[CAL].h;
-    break;
-  case 4:
-    win[APP].y = 0;
-    win[TOD].x = 0;
-    win[TOD].y = 0;
-    win[CAL].x = 0;
-    win[APP].x = win[CAL].w;
-    win[CAL].y = win[TOD].h;
-    break;
-  case 5:
-    win[TOD].y = 0;
-    win[TOD].x = 0;
-    win[CAL].y = 0;
-    win[APP].y = win[CAL].h;
-    win[APP].x = win[TOD].w;
-    win[CAL].x = win[TOD].w;
-    break;
-  case 6:
-    win[TOD].y = 0;
-    win[TOD].x = 0;
-    win[APP].y = 0;
-    win[APP].x = win[TOD].w;
-    win[CAL].x = win[TOD].w;
-    win[CAL].y = win[APP].h;
-    break;
-  case 7:
-    win[TOD].y = 0;
-    win[APP].x = 0;
-    win[CAL].x = 0;
-    win[CAL].y = 0;
-    win[TOD].x = win[CAL].w;
-    win[APP].y = win[CAL].h;
-    break;
-  case 8:
-    win[TOD].y = 0;
-    win[APP].x = 0;
-    win[CAL].x = 0;
-    win[APP].y = 0;
-    win[TOD].x = win[CAL].w;
-    win[CAL].y = win[APP].h;
-    break;
-  }
+  win[win_master].x = master_is_left ? 0 : wins_sbar_width();
+  win[win_master].y = 0;
+  win[win_master].w = col - wins_sbar_width();
+  win[win_master].h = row - (win[STA].h + win[NOT].h);
+
+  win[win_slave[0]].x = win[win_slave[1]].x =
+    master_is_left ? win[win_master].w : 0;
+  win[win_slave[0]].y = 0;
+  win[win_slave[1]].y = win[win_slave[0]].h;
+  win[win_slave[0]].w = win[win_slave[1]].w = wins_sbar_width();
 }
 
 /* draw panel border in color */
