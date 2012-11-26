@@ -641,10 +641,10 @@ int parse_args(int argc, char **argv)
       non_interactive = 1;
     } else if (gflag) {
       io_init(cfile, datadir);
-      io_check_dir(path_dir, NULL);
-      io_check_dir(path_notes, NULL);
-      io_check_file(path_apts, NULL);
-      io_check_file(path_todo, NULL);
+      io_check_dir(path_dir);
+      io_check_dir(path_notes);
+      io_check_file(path_apts);
+      io_check_file(path_todo);
       io_load_app();
       io_load_todo();
       note_gc();
@@ -652,12 +652,12 @@ int parse_args(int argc, char **argv)
     } else if (multiple_flag) {
       if (load_data) {
         io_init(cfile, datadir);
-        io_check_dir(path_dir, NULL);
-        io_check_dir(path_notes, NULL);
+        io_check_dir(path_dir);
+        io_check_dir(path_notes);
       }
       if (iflag) {
-        io_check_file(path_apts, NULL);
-        io_check_file(path_todo, NULL);
+        io_check_file(path_apts);
+        io_check_file(path_todo);
         /* Get default pager in case we need to show a log file. */
         vars_init();
         io_load_app();
@@ -668,8 +668,8 @@ int parse_args(int argc, char **argv)
         non_interactive = 1;
       }
       if (xflag) {
-        io_check_file(path_apts, NULL);
-        io_check_file(path_todo, NULL);
+        io_check_file(path_apts);
+        io_check_file(path_todo);
         io_load_app();
         io_load_todo();
         io_export_data(xfmt);
@@ -677,20 +677,20 @@ int parse_args(int argc, char **argv)
         return non_interactive;
       }
       if (tflag) {
-        io_check_file(path_todo, NULL);
+        io_check_file(path_todo);
         io_load_todo();
         todo_arg(tnum, fmt_todo, preg);
         non_interactive = 1;
       }
       if (nflag) {
-        io_check_file(path_apts, NULL);
+        io_check_file(path_apts);
         io_load_app();
         next_arg();
         non_interactive = 1;
       }
       if (dflag || rflag || sflag) {
-        io_check_file(path_apts, NULL);
-        io_check_file(path_conf, NULL);
+        io_check_file(path_apts);
+        io_check_file(path_conf);
         io_load_app();
         config_load();          /* To get output date format. */
         if (dflag)
@@ -702,8 +702,8 @@ int parse_args(int argc, char **argv)
       } else if (aflag) {
         struct date day;
 
-        io_check_file(path_apts, NULL);
-        io_check_file(path_conf, NULL);
+        io_check_file(path_apts);
+        io_check_file(path_conf);
         vars_init();
         config_load();          /* To get output date format. */
         io_load_app();

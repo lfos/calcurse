@@ -793,7 +793,7 @@ void io_load_keys(const char *pager)
     WARN_MSG(_("Some actions do not have any associated key bindings!"));
 }
 
-void io_check_dir(char *dir, int *missing)
+int io_check_dir(const char *dir)
 {
   if (read_only)
     return -1;
@@ -812,7 +812,7 @@ void io_check_dir(char *dir, int *missing)
   }
 }
 
-unsigned io_file_exist(char *file)
+unsigned io_file_exist(const char *file)
 {
   FILE *fd;
 
@@ -825,7 +825,7 @@ unsigned io_file_exist(char *file)
   }
 }
 
-unsigned io_check_file(char *file)
+int io_check_file(const char *file)
 {
   if (read_only)
     return -1;
