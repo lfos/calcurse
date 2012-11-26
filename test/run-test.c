@@ -183,6 +183,9 @@ static int run_test(const char *name, int expect_failure)
     }
   }
 
+  if (fgets(buf2, BUFSIZ, fpin2))
+    ret = 0;
+
   if (fpin1)
     fclose(fpin1);
   if (fpin2)
