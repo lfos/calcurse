@@ -3,7 +3,6 @@ ABOUT-NLS
 Makefile
 Makefile.in
 Makefile.in.in
-Makevars
 aclocal.m4
 configure
 depcomp
