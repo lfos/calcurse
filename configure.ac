@@ -8,6 +8,7 @@ AC_INIT([calcurse],
 AM_INIT_AUTOMAKE
 #m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
 AM_GNU_GETTEXT([external])
+AM_GNU_GETTEXT_VERSION([0.14.1])
 AC_CONFIG_SRCDIR([src/calcurse.c])
 AC_CONFIG_HEADER([config.h])
 #-------------------------------------------------------------------------------

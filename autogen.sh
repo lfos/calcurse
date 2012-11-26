@@ -29,6 +29,7 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
+autopoint --force
 aclocal -I m4
 autoheader
 automake --foreign --copy --add-missing
