@@ -1,0 +1,12 @@
+01/01/2000 [1] {1D} Each day since 2000-01-01
+01/01/2000 [1] {1W} Each Saturday since 2000-01-01
+01/01/2000 [1] {1M} Each first day of the month since 2000-01-01
+01/01/2000 [1] {1Y} Every year on January, 1st since year 2000
+01/01/2000 [1] {2D} Every second day since 2000-01-01
+01/01/2000 [1] {4W} Every 28 days since 2000-01-01
+01/01/2000 [1] {7D} Same as "01/01/2000 [1] {1W}"
+01/01/2000 [1] {3D -> 12/31/2000} Every three days in year 2000
+01/01/2000 [1] {3D !01/04/2000} Every three days, but not on 2000-01-04
+01/01/2000 @ 16:00 -> 01/02/2000 @ 02:00 {2D} |Recurrent appointment
+01/01/2000 @ 00:00 -> 01/07/2000 @ 00:00 {1W} |Another recurrent appointment
+01/01/2000 @ 00:00 -> 01/07/2000 @ 00:00 {1D} |Third recurrent appointment
