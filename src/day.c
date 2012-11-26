@@ -622,6 +622,11 @@ unsigned day_chk_busy_slices(struct date day, int slicesno, int *slices)
     long start = get_item_time(rapt->start);
     long end = get_item_time(rapt->start + rapt->dur);
 
+    if (rapt->start < date)
+      start = 0;
+    if (rapt->start + rapt->dur >= date + DAYINSEC)
+      end = DAYINSEC - 1;
+
     if (!fill_slices(slices, slicesno, SLICENUM(start), SLICENUM(end))) {
       LLIST_TS_UNLOCK(&recur_alist_p);
       return 0;
@@ -637,6 +642,10 @@ unsigned day_chk_busy_slices(struct date day, int slicesno, int *slices)
 
     if (apt->start >= date + DAYINSEC)
       break;
+    if (apt->start < date)
+      start = 0;
+    if (apt->start + apt->dur >= date + DAYINSEC)
+      end = DAYINSEC - 1;
 
     if (!fill_slices(slices, slicesno, SLICENUM(start), SLICENUM(end))) {
       LLIST_TS_UNLOCK(&alist_p);
