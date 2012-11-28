@@ -108,3 +108,17 @@ void sigs_init()
       || !sigs_set_hdlr(SIGINT, SIG_IGN))
     exit_calcurse(1);
 }
+
+/* Ignore SIGWINCH and SIGTERM signals. */
+void sigs_ignore(void)
+{
+  sigs_set_hdlr(SIGWINCH, SIG_IGN);
+  sigs_set_hdlr(SIGTERM, SIG_IGN);
+}
+
+/* No longer ignore SIGWINCH and SIGTERM signals. */
+void sigs_unignore(void)
+{
+  sigs_set_hdlr(SIGWINCH, generic_hdlr);
+  sigs_set_hdlr(SIGTERM, generic_hdlr);
+}
