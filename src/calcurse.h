@@ -908,6 +908,8 @@ void recur_apoint_paste_item(struct recur_apoint *, long);
 /* sigs.c */
 void sigs_init(void);
 unsigned sigs_set_hdlr(int, void (*)(int));
+void sigs_ignore(void);
+void sigs_unignore(void);
 
 /* todo.c */
 extern llist_t todolist;

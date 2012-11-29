@@ -535,16 +535,20 @@ void wins_prepare_external(void)
   clear();
   wins_refresh();
   endwin();
+  sigs_ignore();
 }
 
 /* Restore windows when returning from an external command. */
 void wins_unprepare_external(void)
 {
+  sigs_unignore();
   reset_prog_mode();
   clearok(curscr, TRUE);
   curs_set(0);
   ui_mode = UI_CURSES;
   wins_refresh();
+  wins_reinit();
+  wins_update(FLAG_ALL);
   if (notify_bar())
     notify_start_main_thread();
 }
