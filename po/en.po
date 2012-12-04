@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse 1.4\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2012-06-24 01:21+0200\n"
+"POT-Creation-Date: 2012-12-05 12:27+0100\n"
 "PO-Revision-Date: 2006-07-03 00:05+0100\n"
 "Last-Translator: Neil Williams <linux@codehelp.co.uk>\n"
 "Language-Team: English/GB <en_GB@li.org>\n"
@@ -22,43 +22,8 @@ msgid "null pointer"
 msgstr ""
 
 #, fuzzy
-msgid "Enter start time ([hh:mm]), leave blank for an all-day event : "
-msgstr ""
-"Enter start time ([hh:mm] or [h:mm]), leave blank for an all-day event : "
-
-#, fuzzy
-msgid ""
-"Enter end time ([hh:mm]) or duration ([+hh:mm], [+xxxdxxhxxm] or [+mm]) : "
-msgstr "Enter end time ([hh:mm] or [h:mm]) or duration (in minutes) : "
-
-msgid "Enter description :"
-msgstr "Enter description :"
-
-#, fuzzy
-msgid "You entered an invalid start time, should be [hh:mm]"
-msgstr "You entered an invalid start time, should be [h:mm] or [hh:mm]"
-
-#, fuzzy
-msgid ""
-"Invalid end time/duration, should be [hh:mm], [+hh:mm], [+xxxdxxhxxm] or "
-"[+mm]"
-msgstr "You entered an invalid end time, should be [h:mm] or [hh:mm] or [mm]"
-
-msgid "Press [Enter] to continue"
-msgstr "Press [Enter] to continue"
-
-msgid "Do you really want to delete this item ?"
-msgstr "Do you really want to delete this item ?"
-
-msgid "no such type"
-msgstr ""
-
-#, fuzzy
 msgid "date error in appointment"
 msgstr "Appointment :"
-
-msgid "item not found"
-msgstr ""
 
 #, fuzzy
 msgid "no such appointment"
@@ -68,7 +33,7 @@ msgstr "Appointment :"
 msgid ""
 "Usage: calcurse [-g|-h|-v] [-an] [-t[num]] [-i<file>] [-x[format]]\n"
 "                [-d <date>|<num>] [-s[date]] [-r[range]]\n"
-"                [-c<file> | -D<dir>] [-S<regex>] [--status]\n"
+"                [-c<file>] [-D<dir>] [-S<regex>] [--status]\n"
 "                [--read-only]\n"
 msgstr "Usage: calcurse [-h | -v] [-at] [-d date|num] [-c file]\n"
 
@@ -122,10 +87,10 @@ msgid ""
 "\n"
 "Files:\n"
 "  -c <file>, --calendar <file>\n"
-"\tspecify the calendar <file> to use (incompatible with '-D').\n"
+"\tspecify the calendar <file> to use (has precedence over '-D').\n"
 "\n"
 "  -D <dir>, --directory <dir>\n"
-"\tspecify the data directory to use (incompatible with '-c').\n"
+"\tspecify the data directory to use.\n"
 "\tIf not specified, the default directory is ~/.calcurse\n"
 "\n"
 "Non-interactive:\n"
@@ -247,14 +212,17 @@ msgstr ""
 msgid "Argument for '-x' should be either 'ical' or 'pcal'\n"
 msgstr ""
 
-msgid "Options '-D' and '-c' cannot be used at the same time\n"
-msgstr ""
-
 msgid "Option '-S' must be used with either '-d', '-r', '-s', '-a' or '-t'\n"
 msgstr ""
 
 msgid "To do :"
 msgstr "To do :"
+
+msgid "Export to (i)cal or (p)cal format?"
+msgstr ""
+
+msgid "[ip]"
+msgstr ""
 
 msgid "Do you really want to quit ?"
 msgstr "Do you really want to quit ?"
@@ -499,113 +467,18 @@ msgstr ""
 "Sorry, colours are not supported by your terminal\n"
 "(Press [ENTER] to continue)"
 
+msgid "unknown item type"
+msgstr ""
+
 msgid "Event :"
 msgstr "Event :"
 
 msgid "Appointment :"
 msgstr "Appointment :"
 
-msgid "unknown item type"
-msgstr ""
-
-#, fuzzy
-msgid "Enter the new time ([hh:mm]) : "
-msgstr "Enter end time ([hh:mm] or [h:mm]) or duration (in minutes) : "
-
-#, fuzzy
-msgid "You entered an invalid time, should be [hh:mm]"
-msgstr "You entered an invalid start time, should be [h:mm] or [hh:mm]"
-
-#, fuzzy
-msgid ""
-"Enter new end time ([hh:mm]) or duration ([+hh:mm], [+xxxdxxhxxm] or "
-"[+mm]) : "
-msgstr "Enter end time ([hh:mm] or [h:mm]) or duration (in minutes) : "
-
-msgid "Invalid time: start time must be before end time!"
-msgstr ""
-
-#, fuzzy
-msgid "Enter the new item description:"
-msgstr "Enter description :"
-
-#, fuzzy
-msgid "Enter the new repetition type:"
-msgstr "Enter description :"
-
-msgid "(d)aily"
-msgstr ""
-
-msgid "(w)eekly"
-msgstr ""
-
-msgid "(m)onthly"
-msgstr ""
-
-msgid "(y)early"
-msgstr ""
-
-#, c-format
-msgid "(currently using %s)"
-msgstr ""
-
-msgid "[dwmy]"
-msgstr ""
-
-#, fuzzy
-msgid "The frequence you entered is not valid."
-msgstr "The day you entered is not valid"
-
-#, fuzzy
-msgid "The entered date is not valid."
-msgstr "The day you entered is not valid"
-
-#, fuzzy, c-format
-msgid "Possible formats are [%s] or '0' for an endless repetition."
-msgstr "Possible argument formats are : 'mm/dd/yyyy' or 'n'\n"
-
-msgid "Enter the new repetition frequence:"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "Enter the new ending date: [%s] or '0'"
-msgstr "Possible argument formats are : 'mm/dd/yyyy' or 'n'\n"
-
-#, fuzzy
-msgid "Description"
-msgstr "Enter description :"
-
-msgid "Repetition"
-msgstr ""
-
-#, fuzzy
-msgid "Edit: "
-msgstr "Add Item"
-
-msgid "Start time"
-msgstr ""
-
-msgid "End time"
-msgstr ""
-
-msgid "This item is recurrent. Delete (a)ll occurences or just this (o)ne ?"
-msgstr ""
-
-msgid "[ao]"
-msgstr ""
-
-msgid "This item has a note attached to it. Delete (i)tem or just its (n)ote ?"
-msgstr ""
-
-msgid "[in]"
-msgstr ""
-
 #, fuzzy
 msgid "unknwon type"
 msgstr "FATAL ERROR in todo_delete_bynum: no such todo\n"
-
-msgid "Pipe item to external command:"
-msgstr ""
 
 #, fuzzy, c-format
 msgid "Could not stop daemon properly: %s\n"
@@ -674,9 +547,6 @@ msgstr "Enter description :"
 #, fuzzy
 msgid "date error in the event\n"
 msgstr "FATAL ERROR in event_scan: date error in the event\n"
-
-msgid "event not found"
-msgstr ""
 
 msgid "Internal error: line too long"
 msgstr ""
@@ -1040,23 +910,19 @@ msgstr ""
 "       o do not forget to save the calendar data to retrieve the new\n"
 "         event next time you launch Calcurse."
 
-msgid "Cut and Paste\n"
+msgid "Copy and Paste\n"
 msgstr ""
 
 #, c-format
 msgid ""
-"Cut and paste the currently selected item. This is useful to quickly\n"
-"move an item from one date to another.\n"
-"To do so, one must first highlight the item that needs to be moved,\n"
-"then press '%s' to cut this item. It will be removed from the panel.\n"
+"Copy and paste the currently selected item. This is useful to quickly\n"
+"copy an item from one date to another. To do so, one must first\n"
+"highlight the item that needs to be copied, then press '%s' to copy.\n"
 "Once the new date is chosen in the calendar, the appointment panel must\n"
-"be selected and the '%s' key must be pressed to paste the item.\n"
-"The item will appear again in the appointment panel, assigned to the\n"
-"newly selected date.\n"
+"be selected and the '%s' key must be pressed to paste the item. The item\n"
+"will appear in the appointment panel, assigned to the newly selected\n"
+"date.\n"
 "\n"
-"Be careful that if two cuts are performed successively without pasting\n"
-"between them, the item that was cut at first will be lost, together\n"
-"with its associated note if it had one."
 msgstr ""
 
 #, fuzzy
@@ -1373,6 +1239,182 @@ msgstr ""
 msgid "Warning: ical header malformed or wrong version number. Aborting..."
 msgstr ""
 
+#, fuzzy
+msgid "Enter the new time ([hh:mm] or [hhmm]) : "
+msgstr "Enter end time ([hh:mm] or [h:mm]) or duration (in minutes) : "
+
+msgid "Press [Enter] to continue"
+msgstr "Press [Enter] to continue"
+
+#, fuzzy
+msgid "You entered an invalid time, should be [hh:mm] or [hhmm]"
+msgstr "You entered an invalid start time, should be [h:mm] or [hh:mm]"
+
+#, fuzzy
+msgid ""
+"Enter new end time ([hh:mm], [hhmm]) or duration ([+hh:mm], [+xxxdxxhxxm] or "
+"[+mm]) : "
+msgstr "Enter end time ([hh:mm] or [h:mm]) or duration (in minutes) : "
+
+msgid "Invalid time: start time must be before end time!"
+msgstr ""
+
+#, fuzzy
+msgid "Enter the new item description:"
+msgstr "Enter description :"
+
+#, fuzzy
+msgid "Enter the new repetition type:"
+msgstr "Enter description :"
+
+msgid "(d)aily"
+msgstr ""
+
+msgid "(w)eekly"
+msgstr ""
+
+msgid "(m)onthly"
+msgstr ""
+
+msgid "(y)early"
+msgstr ""
+
+#, c-format
+msgid "(currently using %s)"
+msgstr ""
+
+msgid "[dwmy]"
+msgstr ""
+
+#, fuzzy
+msgid "The frequence you entered is not valid."
+msgstr "The day you entered is not valid"
+
+#, fuzzy
+msgid "The entered date is not valid."
+msgstr "The day you entered is not valid"
+
+#, fuzzy, c-format
+msgid "Possible formats are [%s] or '0' for an endless repetition."
+msgstr "Possible argument formats are : 'mm/dd/yyyy' or 'n'\n"
+
+msgid "Enter the new repetition frequence:"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "Enter the new ending date: [%s] or '0'"
+msgstr "Possible argument formats are : 'mm/dd/yyyy' or 'n'\n"
+
+#, fuzzy
+msgid "Description"
+msgstr "Enter description :"
+
+msgid "Repetition"
+msgstr ""
+
+#, fuzzy
+msgid "Edit: "
+msgstr "Add Item"
+
+msgid "Start time"
+msgstr ""
+
+msgid "End time"
+msgstr ""
+
+msgid "Pipe item to external command:"
+msgstr ""
+
+#, fuzzy
+msgid ""
+"Enter start time ([hh:mm] or [hhmm]), leave blank for an all-day event : "
+msgstr ""
+"Enter start time ([hh:mm] or [h:mm]), leave blank for an all-day event : "
+
+#, fuzzy
+msgid ""
+"Enter end time ([hh:mm] or [hhmm]) or duration ([+hh:mm], [+xxxdxxhxxm] or "
+"[+mm]) : "
+msgstr "Enter end time ([hh:mm] or [h:mm]) or duration (in minutes) : "
+
+msgid "Enter description :"
+msgstr "Enter description :"
+
+#, fuzzy
+msgid "You entered an invalid start time, should be [hh:mm] or [hhmm]"
+msgstr "You entered an invalid start time, should be [h:mm] or [hh:mm]"
+
+#, fuzzy
+msgid ""
+"Invalid end time/duration, should be [hh:mm], [hhmm], [+hh:mm], "
+"[+xxxdxxhxxm] or [+mm]"
+msgstr "You entered an invalid end time, should be [h:mm] or [hh:mm] or [mm]"
+
+msgid "Do you really want to delete this item ?"
+msgstr "Do you really want to delete this item ?"
+
+msgid "This item is recurrent. Delete (a)ll occurences or just this (o)ne ?"
+msgstr ""
+
+msgid "[ao]"
+msgstr ""
+
+msgid "This item has a note attached to it. Delete (i)tem or just its (n)ote ?"
+msgstr ""
+
+msgid "[in]"
+msgstr ""
+
+msgid "no such type"
+msgstr ""
+
+msgid "Enter the new ToDo item : "
+msgstr "Enter the new ToDo item : "
+
+msgid "Enter the ToDo priority [1 (highest) - 9 (lowest)] :"
+msgstr ""
+
+msgid "Do you really want to delete this task ?"
+msgstr "Do you really want to delete this task ?"
+
+msgid "This item has a note attached to it. Delete (t)odo or just its (n)ote ?"
+msgstr ""
+
+msgid "[tn]"
+msgstr ""
+
+#, fuzzy
+msgid "Enter the new ToDo description :"
+msgstr "Enter the new ToDo item : "
+
+#, fuzzy
+msgid "Enter the repetition type:"
+msgstr "Enter description :"
+
+msgid "Enter the repetition frequence:"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "Enter the ending date: [%s] or '0' for an endless repetition"
+msgstr "Possible argument formats are : 'mm/dd/yyyy' or 'n'\n"
+
+#, fuzzy, c-format
+msgid "Possible formats are [%s] or '0' for an endless repetition"
+msgstr "Possible argument formats are : 'mm/dd/yyyy' or 'n'\n"
+
+msgid "This item is already a repeated one."
+msgstr ""
+
+#, fuzzy
+msgid "Press [ENTER] to continue."
+msgstr "Press [ENTER] to continue"
+
+msgid "Sorry, the date you entered is older than the item start time."
+msgstr ""
+
+msgid "wrong item type"
+msgstr ""
+
 msgid "Saving..."
 msgstr "Saving..."
 
@@ -1391,10 +1433,6 @@ msgstr ""
 
 msgid "The file cannot be accessed, please enter another file name."
 msgstr ""
-
-#, fuzzy
-msgid "Press [ENTER] to continue."
-msgstr "Press [ENTER] to continue"
 
 #, fuzzy, c-format
 msgid "Failed to open \"%s\", - %s\n"
@@ -1512,12 +1550,6 @@ msgid "unknown export type"
 msgstr ""
 
 msgid "wrong export mode"
-msgstr ""
-
-msgid "Ical"
-msgstr ""
-
-msgid "Pcal"
 msgstr ""
 
 msgid "Enter the file name to import data from:"
@@ -1638,7 +1670,7 @@ msgstr ""
 msgid "Save calcurse data."
 msgstr ""
 
-msgid "Cut the item that is currently selected."
+msgid "Copy the item that is currently selected."
 msgstr ""
 
 msgid "Paste an item at the current position."
@@ -1920,33 +1952,12 @@ msgstr ""
 msgid "date error in event"
 msgstr ""
 
+msgid "event not found"
+msgstr ""
+
 #, fuzzy
 msgid "appointment not found"
 msgstr "Appointment :"
-
-#, fuzzy
-msgid "Enter the repetition type:"
-msgstr "Enter description :"
-
-msgid "Enter the repetition frequence:"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "Enter the ending date: [%s] or '0' for an endless repetition"
-msgstr "Possible argument formats are : 'mm/dd/yyyy' or 'n'\n"
-
-#, fuzzy, c-format
-msgid "Possible formats are [%s] or '0' for an endless repetition"
-msgstr "Possible argument formats are : 'mm/dd/yyyy' or 'n'\n"
-
-msgid "This item is already a repeated one."
-msgstr ""
-
-msgid "Sorry, the date you entered is older than the item start time."
-msgstr ""
-
-msgid "wrong item type"
-msgstr ""
 
 #, fuzzy
 msgid "syntax error in item date"
@@ -1960,36 +1971,14 @@ msgstr "Enter description :"
 msgid "Error setting signal #%d : %s\n"
 msgstr ""
 
-msgid "Enter the new ToDo item : "
-msgstr "Enter the new ToDo item : "
-
-msgid "Enter the ToDo priority [1 (highest) - 9 (lowest)] :"
+msgid "no note attached"
 msgstr ""
 
 msgid "no such todo"
 msgstr ""
 
-msgid "no note attached"
-msgstr ""
-
-msgid "Do you really want to delete this task ?"
-msgstr "Do you really want to delete this task ?"
-
-msgid "This item has a note attached to it. Delete (t)odo or just its (n)ote ?"
-msgstr ""
-
-msgid "[tn]"
-msgstr ""
-
 msgid "todo not found"
 msgstr ""
-
-msgid "no such action"
-msgstr ""
-
-#, fuzzy
-msgid "Enter the new ToDo description :"
-msgstr "Enter the new ToDo item : "
 
 msgid "/!\\ INTERNAL ERROR /!\\"
 msgstr ""
@@ -2008,9 +1997,6 @@ msgstr ""
 
 msgid "error in mktime"
 msgstr ""
-
-msgid "Appointment"
-msgstr "Appointment"
 
 #, fuzzy
 msgid "could not convert string"
@@ -2123,7 +2109,7 @@ msgstr "Quit"
 msgid "Save"
 msgstr "Save"
 
-msgid "Cut"
+msgid "Copy"
 msgstr ""
 
 msgid "Paste"
@@ -2291,6 +2277,9 @@ msgstr ""
 
 msgid "Remove temporary backup..."
 msgstr ""
+
+#~ msgid "Appointment"
+#~ msgstr "Appointment"
 
 #, fuzzy
 #~ msgid "missing colors in config file"

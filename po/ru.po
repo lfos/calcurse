@@ -10,59 +10,23 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2012-06-24 01:21+0200\n"
-"PO-Revision-Date: 2012-06-22 09:31+0000\n"
+"POT-Creation-Date: 2012-12-05 12:27+0100\n"
+"PO-Revision-Date: 2012-11-27 08:22+0000\n"
 "Last-Translator: Aleksey Mekhonoshin <linux.kernel.it@gmail.com>\n"
-"Language-Team: Russian (http://www.transifex.net/projects/p/calcurse/"
+"Language-Team: Russian (http://www.transifex.com/projects/p/calcurse/"
 "language/ru/)\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 msgid "null pointer"
 msgstr "пустой указатель"
 
-msgid "Enter start time ([hh:mm]), leave blank for an all-day event : "
-msgstr ""
-"Время начала ([чч:мм] или [ч:мм]). Оставьте пустым, если событие займёт весь "
-"день :"
-
-msgid ""
-"Enter end time ([hh:mm]) or duration ([+hh:mm], [+xxxdxxhxxm] or [+mm]) : "
-msgstr ""
-"Время окончания ([чч:мм]) или продолжительности ([+чч:мм], [+xxxdxxhxxm] или "
-"[+мм] : "
-
-msgid "Enter description :"
-msgstr "Описание: "
-
-msgid "You entered an invalid start time, should be [hh:mm]"
-msgstr "Неверное начальное время, формат не соответствует [чч:мм] или [ч:мм]"
-
-msgid ""
-"Invalid end time/duration, should be [hh:mm], [+hh:mm], [+xxxdxxhxxm] or "
-"[+mm]"
-msgstr ""
-"Неверное конечное время/задержка, должно быть [чч:мм], [+чч:мм], "
-"[+xxdxxhxxm] или [+мм]"
-
-msgid "Press [Enter] to continue"
-msgstr "Нажмите [Enter]"
-
-msgid "Do you really want to delete this item ?"
-msgstr "Удалить?"
-
-msgid "no such type"
-msgstr "отсутствие типа"
-
 msgid "date error in appointment"
 msgstr "ошибка даты в задаче"
-
-msgid "item not found"
-msgstr "не найден"
 
 msgid "no such appointment"
 msgstr "задача отсутствует"
@@ -70,7 +34,7 @@ msgstr "задача отсутствует"
 msgid ""
 "Usage: calcurse [-g|-h|-v] [-an] [-t[num]] [-i<file>] [-x[format]]\n"
 "                [-d <date>|<num>] [-s[date]] [-r[range]]\n"
-"                [-c<file> | -D<dir>] [-S<regex>] [--status]\n"
+"                [-c<file>] [-D<dir>] [-S<regex>] [--status]\n"
 "                [--read-only]\n"
 msgstr ""
 "Команда: calcurse [-g|-h|-v] [-an] [-t[num]] [-i<file>] [-x[format]]\n"
@@ -124,10 +88,10 @@ msgid ""
 "\n"
 "Files:\n"
 "  -c <file>, --calendar <file>\n"
-"\tspecify the calendar <file> to use (incompatible with '-D').\n"
+"\tspecify the calendar <file> to use (has precedence over '-D').\n"
 "\n"
 "  -D <dir>, --directory <dir>\n"
-"\tspecify the data directory to use (incompatible with '-c').\n"
+"\tspecify the data directory to use.\n"
 "\tIf not specified, the default directory is ~/.calcurse\n"
 "\n"
 "Non-interactive:\n"
@@ -178,73 +142,68 @@ msgid ""
 "\tby issuing a command such as: calcurse --export > calcurse.dat\n"
 msgstr ""
 "\n"
-"Разное:\n"
-"  -h, --help\n"
-"\tпоказать справку.\n"
+"Разное: \n"
+"-h, --help\n"
+"показать справку. \n"
 "\n"
-"  -v, --version\n"
-"\tпоказать версию calcurse.\n"
+"-v, --version\n"
+"показать версию calcurse. \n"
 "\n"
-"  --status\n"
-"\tпоказать статус calcurse.\n"
+"--status\n"
+"показать статус calcurse.\n"
 "\n"
-"  --read-only\n"
-"\tНе сохр. настройки а также задачи и дела. Будьте внимательны.\n"
+"--read-only\n"
+"Не сохр. настройки, задачи и дела (будьте внимательны).\n"
 "\n"
 "Файлы:\n"
-"  -c <file>, --calendar <file>\n"
-"\tиспользование файла <file> календаря (несовместимо с  ключом '-D').\n"
+"-c <file>, --calendar <file> использование файла <file> календаря "
+"(приоритетен перед ключом '-D').\n"
 "\n"
-"  -D <dir>, --directory <dir>\n"
-"\tиспользование конкретной директории (incompatible with '-c').\n"
-"\tДиректория по-умолчанию ~/.calcurse\n"
+"-D <dir>, --directory <dir> использование конкретной директории. Директория "
+"по-умолчанию ~/.calcurse\n"
 "\n"
 "Не интерактивные:\n"
-"  -a, --appointment\n"
-" \tпоказать события и задачи на текущий день.\n"
+"-a, --appointment\n"
+"показать события и задачи на текущий день.\n"
 "\n"
-"  -d <date|num>, --day <date|num>\n"
-"\tпоказать события и задачи на дату <date> или на кол-во <num> грядущих "
-"дней.\n"
-"\tДля одновременного использования\n"
-"\t'--startday' и '--range'.\n"
+"-d <date|num>, --day <date|num>\n"
+"показать события и задачи на дату <date> или на кол-во <num> грядущих дней. "
+"Для одновременного использования '--startday' и '--range'.\n"
 "\n"
-"  -g, --gc\n"
-"\tзапустить сборщик мусора для файлов заметок. \n"
+"-g, --gc\n"
+"запустить сборщик мусора для файлов заметок.\n"
 "\n"
-"  -i <file>, --import <file>\n"
-"\tимпортировать данные icalendar в файл <file>. \n"
+"-i <file>, --import <file>\n"
+"импортировать данные icalendar в файл <file>.\n"
 "\n"
-"  -n, --next\n"
-"\tпоказать след. задачу и время до неё в пределах 24 часов.\n"
+"-n, --next\n"
+"показать след. задачу и время до неё в пределах 24 часов.\n"
 "\n"
-"  -r[num], --range[=num]\n"
-"\tпоказать события и задачи на указанное кол-во [num] дней. По-умолчанию "
-"значение [num] равно одному дню.\n"
+"-r[num], --range[=num]\n"
+"показать события и задачи на [num] дней. По-умолчанию значение [num] равно "
+"одному дню.\n"
 "\n"
-"  -s[date], --startday[=date]\n"
-"\tпоказать события и задачи на указанную дату [date].\n"
-"\tПо-умолчанию значение [date] равно текущему дню.\n"
+"-s[date], --startday[=date]\n"
+"показать события и задачи на указанную дату [date]. По-умолчанию значение "
+"[date] равно текущему дню.\n"
 "\n"
-"  -S<regex>, --search=<regex>\n"
-"\tпоиск регулярных выражений внутри описания событий, задач и дел.\n"
+"-S<regex>, --search=<regex>\n"
+"поиск регулярных выражений внутри описания событий, задач и дел.\n"
 "\n"
-"  -t[num], --todo[=num]\n"
-"\tПоказать список дел. Если задано [num], будут показаны дела, имеющие "
-"приоритет равный значению [num]. \n"
-"\tЗначение приоритета находится между 1 (высокий) и 9 (низкий).\n"
-"\tУстановка значения равного '0', покажет только завершённые дела. \n"
+"-t[num], --todo[=num]\n"
+"Показать список дел. Если задано [num], будут показаны дела, имеющие "
+"приоритет равный значению [num]. Значение приоритета находится между 1 "
+"(высокий) и 9 (низкий). Установка значения равного '0', покажет только "
+"завершённые дела.\n"
 "\n"
-"  -x[format], --export[=format]\n"
-"\tэкспорт данных пользователя. События, задачи и дела\n"
-"\tбудут конвертированы, а пользователь уведомлён об этом.\n"
-"\tСущ. два формата для экспорта: 'ical' and 'pcal'.\n"
-"\tФорматом по-умолчанию является ical.\n"
-"\tПримечание: перенаправление потока экспорта данных в файл,\n"
-"\tвозможно след. образом: calcurse --export > calcurse.dat\n"
-"\n"
-"Для доп. информации нажмите '?' из-под Calcurse, или читайте man-ы.\n"
-"Найденные ошибки, а так же пожелания шлите на : <misc@calcurse.org>.\n"
+"-x[format], --export[=format]\n"
+"экспорт данных пользователя. События, задачи и дела будут конвертированы, а "
+"пользователь уведомлён об этом. Сущ. два формата для экспорта: 'ical' and "
+"'pcal'. Форматом по-умолчанию является ical. \n"
+"Примечание: перенаправление потока экспорта данных в файл, возможно след. "
+"образом: calcurse --export > calcurse.dat Для доп. информации нажмите '?' из-"
+"под Calcurse, или читайте man-ы. Найденные ошибки, а так же пожелания шлите "
+"на : <misc@calcurse.org>.\n"
 
 #, c-format
 msgid ""
@@ -302,9 +261,6 @@ msgstr "Невозможно скомпилировать регулярное �
 msgid "Argument for '-x' should be either 'ical' or 'pcal'\n"
 msgstr "Аргумент для '-x': 'ical' либо 'pcal'\n"
 
-msgid "Options '-D' and '-c' cannot be used at the same time\n"
-msgstr "Ключи '-D' и '-c' не могут использоваться одновременно\n"
-
 msgid "Option '-S' must be used with either '-d', '-r', '-s', '-a' or '-t'\n"
 msgstr ""
 "Ключ '-S' должен использоваться с любым из след.: '-d'. '-r', '-s', '-a', '-"
@@ -312,6 +268,12 @@ msgstr ""
 
 msgid "To do :"
 msgstr "Дело: "
+
+msgid "Export to (i)cal or (p)cal format?"
+msgstr "Формат экспорта (i)cal или (p)cal?"
+
+msgid "[ip]"
+msgstr "[ip]"
 
 msgid "Do you really want to quit ?"
 msgstr "Вы уверены, что хотите выйти?"
@@ -560,107 +522,17 @@ msgid ""
 "(Press [ENTER] to continue)"
 msgstr "Цвета не поддерживаются вашим терминалом (Нажмите [ENTER])"
 
+msgid "unknown item type"
+msgstr "неизвестный тип записи"
+
 msgid "Event :"
 msgstr "Событие: "
 
 msgid "Appointment :"
 msgstr "Задача: "
 
-msgid "unknown item type"
-msgstr "неизвестный тип записи"
-
-msgid "Enter the new time ([hh:mm]) : "
-msgstr "Введите время ([чч:мм])"
-
-msgid "You entered an invalid time, should be [hh:mm]"
-msgstr "Неверно введено время: формат не соответствует [чч:мм] или [ч:мм]"
-
-msgid ""
-"Enter new end time ([hh:mm]) or duration ([+hh:mm], [+xxxdxxhxxm] or "
-"[+mm]) : "
-msgstr ""
-"Введите время окончания ([чч:мм]) или задержку ([+чч:мм], [+хххdххhххм] или "
-"[+мм]):"
-
-msgid "Invalid time: start time must be before end time!"
-msgstr "Неверное время: время начала должно идти до времени конца"
-
-msgid "Enter the new item description:"
-msgstr "Описание: "
-
-msgid "Enter the new repetition type:"
-msgstr "Введите тип повторения:"
-
-msgid "(d)aily"
-msgstr "(d)ежедневно"
-
-msgid "(w)eekly"
-msgstr "(w)еженедельно"
-
-msgid "(m)onthly"
-msgstr "(m)ежемесячно"
-
-msgid "(y)early"
-msgstr "(y)ежегодно"
-
-#, c-format
-msgid "(currently using %s)"
-msgstr "(используется %s)"
-
-msgid "[dwmy]"
-msgstr "[днмг]"
-
-msgid "The frequence you entered is not valid."
-msgstr "Неверно введена частота повторения."
-
-msgid "The entered date is not valid."
-msgstr "Неверно введена дата."
-
-#, c-format
-msgid "Possible formats are [%s] or '0' for an endless repetition."
-msgstr "[%s] или '0'- возможные форматы для окончания повторения."
-
-msgid "Enter the new repetition frequence:"
-msgstr "Новая частота повторения:"
-
-#, c-format
-msgid "Enter the new ending date: [%s] or '0'"
-msgstr "Новая дата окончания: [%s] или '0'"
-
-msgid "Description"
-msgstr "Описание"
-
-msgid "Repetition"
-msgstr "Повторение"
-
-msgid "Edit: "
-msgstr "Редактировать:"
-
-msgid "Start time"
-msgstr "Начальное время"
-
-msgid "End time"
-msgstr "Конечное время"
-
-msgid "This item is recurrent. Delete (a)ll occurences or just this (o)ne ?"
-msgstr ""
-"Эта запись имеет повторения. Удалить (a)все подобные записи или только (o)"
-"эту ?"
-
-msgid "[ao]"
-msgstr "[ао]"
-
-msgid "This item has a note attached to it. Delete (i)tem or just its (n)ote ?"
-msgstr "Эта запись содержит заметку. Удалить (i)запись или только (n)заметку ?"
-
-msgid "[in]"
-msgstr "[в]"
-
 msgid "unknwon type"
 msgstr "неизвестный тип"
-
-msgid "Pipe item to external command:"
-msgstr "Программный канал (pipe) во внешнюю команду:"
 
 #, c-format
 msgid "Could not stop daemon properly: %s\n"
@@ -727,9 +599,6 @@ msgstr "Невозможно остановить демон calcurse: %s\n"
 
 msgid "date error in the event\n"
 msgstr "ошибка даты в событии\n"
-
-msgid "event not found"
-msgstr "событие не найдено"
 
 msgid "Internal error: line too long"
 msgstr "Внутренняя ошибка: слишком длинная строка"
@@ -1149,36 +1018,27 @@ msgstr ""
 "     o Не забывайте сохранять данные, чтобы работать с ними при следующих "
 "запусках программы."
 
-msgid "Cut and Paste\n"
-msgstr "Вырезать/Вставить\n"
+msgid "Copy and Paste\n"
+msgstr "Копир. и Встав.\n"
 
 #, c-format
 msgid ""
-"Cut and paste the currently selected item. This is useful to quickly\n"
-"move an item from one date to another.\n"
-"To do so, one must first highlight the item that needs to be moved,\n"
-"then press '%s' to cut this item. It will be removed from the panel.\n"
+"Copy and paste the currently selected item. This is useful to quickly\n"
+"copy an item from one date to another. To do so, one must first\n"
+"highlight the item that needs to be copied, then press '%s' to copy.\n"
 "Once the new date is chosen in the calendar, the appointment panel must\n"
-"be selected and the '%s' key must be pressed to paste the item.\n"
-"The item will appear again in the appointment panel, assigned to the\n"
-"newly selected date.\n"
+"be selected and the '%s' key must be pressed to paste the item. The item\n"
+"will appear in the appointment panel, assigned to the newly selected\n"
+"date.\n"
 "\n"
-"Be careful that if two cuts are performed successively without pasting\n"
-"between them, the item that was cut at first will be lost, together\n"
-"with its associated note if it had one."
 msgstr ""
-"Вырезать и вставить выделенную запись. Это быстрый способ\n"
-"переместить запись из одной даты в другую.\n"
-"Чтобы вырезать перемещаемую запись, необходимо выделить её и\n"
-"нажать клавишу '%s'. Запись исчезнет с панели.\n"
-"Когда выбрана новая дата и текущей панелью является панел задач,\n"
-"нажмите клавишу '%s' и вставьте запись.\n"
-"Запись снова окажется на панели задач и будет привязаня к\n"
-"новой дате.\n"
+"Копировать и вставить выделенную запись. Позволяет быстро\n"
+"скопировать запись из одной даты в другую. Чтобы сделать это\n"
+"выделите необходимую запись и нажмите '%s' для копирования.\n"
+"Когда новая дата в календаре будет выбрана, перейдите на панель\n"
+"задач и нажмите '%s' - запись будет вставлена. Она также появится в панеле "
+"задач и ей будет присвоена новая, выбранная для неё дата.\n"
 "\n"
-"Будьте внимательны! Если вырезаете одну дату за другой без процедуры\n"
-"вставки между этими действиями, то первая вырезанная запись будет\n"
-"утеряна, вместе с заметкой... если таковая имеется."
 
 msgid "Edit Item\n"
 msgstr "Изм. запись\n"
@@ -1641,6 +1501,174 @@ msgstr ""
 "Внимание: заголовок ical повреждён или неправильный номер версии. "
 "Завершение..."
 
+msgid "Enter the new time ([hh:mm] or [hhmm]) : "
+msgstr "Новое время ([чч:мм] или [ччмм]): "
+
+msgid "Press [Enter] to continue"
+msgstr "Нажмите [Enter]"
+
+msgid "You entered an invalid time, should be [hh:mm] or [hhmm]"
+msgstr "Неверно указано время, должно быть [чч:мм] или [ччмм]"
+
+msgid ""
+"Enter new end time ([hh:mm], [hhmm]) or duration ([+hh:mm], [+xxxdxxhxxm] or "
+"[+mm]) : "
+msgstr ""
+"Окончание ([чч:мм], [ччмм]) или задержка ([+чч:мм], [+хххДххЧххМ] или "
+"[+мм]): "
+
+msgid "Invalid time: start time must be before end time!"
+msgstr "Неверное время: время начала должно идти до времени конца"
+
+msgid "Enter the new item description:"
+msgstr "Описание: "
+
+msgid "Enter the new repetition type:"
+msgstr "Введите тип повторения:"
+
+msgid "(d)aily"
+msgstr "(d)ежедневно"
+
+msgid "(w)eekly"
+msgstr "(w)еженедельно"
+
+msgid "(m)onthly"
+msgstr "(m)ежемесячно"
+
+msgid "(y)early"
+msgstr "(y)ежегодно"
+
+#, c-format
+msgid "(currently using %s)"
+msgstr "(используется %s)"
+
+msgid "[dwmy]"
+msgstr "[днмг]"
+
+msgid "The frequence you entered is not valid."
+msgstr "Неверно введена частота повторения."
+
+msgid "The entered date is not valid."
+msgstr "Неверно введена дата."
+
+#, c-format
+msgid "Possible formats are [%s] or '0' for an endless repetition."
+msgstr "[%s] или '0'- возможные форматы для окончания повторения."
+
+msgid "Enter the new repetition frequence:"
+msgstr "Новая частота повторения:"
+
+#, c-format
+msgid "Enter the new ending date: [%s] or '0'"
+msgstr "Новая дата окончания: [%s] или '0'"
+
+msgid "Description"
+msgstr "Описание"
+
+msgid "Repetition"
+msgstr "Повторение"
+
+msgid "Edit: "
+msgstr "Редактировать:"
+
+msgid "Start time"
+msgstr "Начальное время"
+
+msgid "End time"
+msgstr "Конечное время"
+
+msgid "Pipe item to external command:"
+msgstr "Программный канал (pipe) во внешнюю команду:"
+
+msgid ""
+"Enter start time ([hh:mm] or [hhmm]), leave blank for an all-day event : "
+msgstr ""
+"Начало ([чч:мм] или [ччмм]). Оставьте пустым если событие займёт весь день: "
+
+msgid ""
+"Enter end time ([hh:mm] or [hhmm]) or duration ([+hh:mm], [+xxxdxxhxxm] or "
+"[+mm]) : "
+msgstr ""
+"Окончание ([чч:мм], [ччмм]) или задержка ([+чч:мм], [+хххДххЧххМ] или "
+"[+мм]): "
+
+msgid "Enter description :"
+msgstr "Описание: "
+
+msgid "You entered an invalid start time, should be [hh:mm] or [hhmm]"
+msgstr "Неверно указано начальное время, должно быть [чч:мм] или [ччмм]"
+
+msgid ""
+"Invalid end time/duration, should be [hh:mm], [hhmm], [+hh:mm], "
+"[+xxxdxxhxxm] or [+mm]"
+msgstr ""
+"Неверно указано конечное время/задержка, должно быть [+чч:мм], [+хххДххЧххМ] "
+"или [+мм]"
+
+msgid "Do you really want to delete this item ?"
+msgstr "Удалить?"
+
+msgid "This item is recurrent. Delete (a)ll occurences or just this (o)ne ?"
+msgstr ""
+"Эта запись имеет повторения. Удалить (a)все подобные записи или только (o)"
+"эту ?"
+
+msgid "[ao]"
+msgstr "[ао]"
+
+msgid "This item has a note attached to it. Delete (i)tem or just its (n)ote ?"
+msgstr "Эта запись содержит заметку. Удалить (i)запись или только (n)заметку ?"
+
+msgid "[in]"
+msgstr "[в]"
+
+msgid "no such type"
+msgstr "отсутствие типа"
+
+msgid "Enter the new ToDo item : "
+msgstr "Дело: "
+
+msgid "Enter the ToDo priority [1 (highest) - 9 (lowest)] :"
+msgstr "Приоритет дела [1 (высокий) - 9 (низкий)] :"
+
+msgid "Do you really want to delete this task ?"
+msgstr "Удалить эту запись?"
+
+msgid "This item has a note attached to it. Delete (t)odo or just its (n)ote ?"
+msgstr "К делу прикреплена записка. Удалить (t)дело или только (n)записку ?"
+
+msgid "[tn]"
+msgstr "[tn]"
+
+msgid "Enter the new ToDo description :"
+msgstr "Описание дела: "
+
+msgid "Enter the repetition type:"
+msgstr "Назначить тип повторения:"
+
+msgid "Enter the repetition frequence:"
+msgstr "Количество повторений: "
+
+#, c-format
+msgid "Enter the ending date: [%s] or '0' for an endless repetition"
+msgstr "Конечная дата: [%s] или '0' для окончания повторения"
+
+#, c-format
+msgid "Possible formats are [%s] or '0' for an endless repetition"
+msgstr "Возможные форматы [%s] или '0' для окончания повторения"
+
+msgid "This item is already a repeated one."
+msgstr "Эта запись уже повторяется."
+
+msgid "Press [ENTER] to continue."
+msgstr "Нажмите [ENTER]."
+
+msgid "Sorry, the date you entered is older than the item start time."
+msgstr "Заданная дата не соответствует времени начала записи."
+
+msgid "wrong item type"
+msgstr "неправильный тип записи"
+
 msgid "Saving..."
 msgstr "Сохранение..."
 
@@ -1658,9 +1686,6 @@ msgstr "Выберите файл для экспорта данных:"
 
 msgid "The file cannot be accessed, please enter another file name."
 msgstr "Файл не может быть добавлен, попробуйте другое имя файла."
-
-msgid "Press [ENTER] to continue."
-msgstr "Нажмите [ENTER]."
 
 #, c-format
 msgid "Failed to open \"%s\", - %s\n"
@@ -1773,12 +1798,6 @@ msgstr "неизвестный тип экспорта"
 
 msgid "wrong export mode"
 msgstr "ошибочный режим экспорта"
-
-msgid "Ical"
-msgstr "Ical"
-
-msgid "Pcal"
-msgstr "Pcal"
 
 msgid "Enter the file name to import data from:"
 msgstr "Имя файла для импорта: "
@@ -1927,8 +1946,8 @@ msgstr "Выйти из текущего меню или из calcurse"
 msgid "Save calcurse data."
 msgstr "Сохр. данные calcurse"
 
-msgid "Cut the item that is currently selected."
-msgstr "Вырезать выделенную запись"
+msgid "Copy the item that is currently selected."
+msgstr "Копировать выделенную запись (пункт?)"
 
 msgid "Paste an item at the current position."
 msgstr "Вставить запись в текущую позицию"
@@ -2207,31 +2226,11 @@ msgstr "неизвестный символ"
 msgid "date error in event"
 msgstr "ошибка даты в событии"
 
+msgid "event not found"
+msgstr "событие не найдено"
+
 msgid "appointment not found"
 msgstr "задача не найдена"
-
-msgid "Enter the repetition type:"
-msgstr "Назначить тип повторения:"
-
-msgid "Enter the repetition frequence:"
-msgstr "Количество повторений: "
-
-#, c-format
-msgid "Enter the ending date: [%s] or '0' for an endless repetition"
-msgstr "Конечная дата: [%s] или '0' для окончания повторения"
-
-#, c-format
-msgid "Possible formats are [%s] or '0' for an endless repetition"
-msgstr "Возможные форматы [%s] или '0' для окончания повторения"
-
-msgid "This item is already a repeated one."
-msgstr "Эта запись уже повторяется."
-
-msgid "Sorry, the date you entered is older than the item start time."
-msgstr "Заданная дата не соответствует времени начала записи."
-
-msgid "wrong item type"
-msgstr "неправильный тип записи"
 
 msgid "syntax error in item date"
 msgstr "опечатка в записи даты"
@@ -2244,35 +2243,14 @@ msgstr "Невозможно удалить занятый файл: %s\n"
 msgid "Error setting signal #%d : %s\n"
 msgstr "Сигнал ошибки настройки #%d : %s\n"
 
-msgid "Enter the new ToDo item : "
-msgstr "Дело: "
-
-msgid "Enter the ToDo priority [1 (highest) - 9 (lowest)] :"
-msgstr "Приоритет дела [1 (высокий) - 9 (низкий)] :"
+msgid "no note attached"
+msgstr "записка отсутствует"
 
 msgid "no such todo"
 msgstr "дело не найдено"
 
-msgid "no note attached"
-msgstr "записка отсутствует"
-
-msgid "Do you really want to delete this task ?"
-msgstr "Удалить эту запись?"
-
-msgid "This item has a note attached to it. Delete (t)odo or just its (n)ote ?"
-msgstr "К делу прикреплена записка. Удалить (t)дело или только (n)записку ?"
-
-msgid "[tn]"
-msgstr "[tn]"
-
 msgid "todo not found"
 msgstr "дело не найдено"
-
-msgid "no such action"
-msgstr "действие не распознано"
-
-msgid "Enter the new ToDo description :"
-msgstr "Описание дела: "
 
 msgid "/!\\ INTERNAL ERROR /!\\"
 msgstr "/!\\ INTERNAL ERROR /!\\"
@@ -2291,9 +2269,6 @@ msgstr "ошибка в mktime"
 
 msgid "error in mktime"
 msgstr "ошибка в mktime"
-
-msgid "Appointment"
-msgstr "Задача"
 
 msgid "could not convert string"
 msgstr "невозможно конвертировать строку"
@@ -2405,8 +2380,8 @@ msgstr "Выход"
 msgid "Save"
 msgstr "Сохр."
 
-msgid "Cut"
-msgstr "Вырезать"
+msgid "Copy"
+msgstr "Копир."
 
 msgid "Paste"
 msgstr "Вставить"

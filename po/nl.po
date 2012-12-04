@@ -4,55 +4,27 @@
 #
 # Translators:
 # Lukas Fleischer <transifex@cryptocrack.de>, 2011.
+#   <wannessmet@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2012-06-24 01:21+0200\n"
-"PO-Revision-Date: 2012-06-18 16:51+0000\n"
+"POT-Creation-Date: 2012-12-05 12:27+0100\n"
+"PO-Revision-Date: 2012-11-23 21:51+0000\n"
 "Last-Translator: Lukas Fleischer <transifex@cryptocrack.de>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language-Team: Dutch (http://www.transifex.com/projects/p/calcurse/language/"
+"nl/)\n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgid "null pointer"
 msgstr ""
 
-msgid "Enter start time ([hh:mm]), leave blank for an all-day event : "
-msgstr ""
-
-msgid ""
-"Enter end time ([hh:mm]) or duration ([+hh:mm], [+xxxdxxhxxm] or [+mm]) : "
-msgstr ""
-
-msgid "Enter description :"
-msgstr "Voer beschrijving in :"
-
-msgid "You entered an invalid start time, should be [hh:mm]"
-msgstr ""
-
-msgid ""
-"Invalid end time/duration, should be [hh:mm], [+hh:mm], [+xxxdxxhxxm] or "
-"[+mm]"
-msgstr ""
-
-msgid "Press [Enter] to continue"
-msgstr "Druk op [Enter] om door te gaan)"
-
-msgid "Do you really want to delete this item ?"
-msgstr "Wilt u werkelijk dit item wissen ?"
-
-msgid "no such type"
-msgstr ""
-
 msgid "date error in appointment"
-msgstr ""
-
-msgid "item not found"
-msgstr ""
+msgstr "gegevensfout in de afspraak"
 
 msgid "no such appointment"
 msgstr ""
@@ -60,7 +32,7 @@ msgstr ""
 msgid ""
 "Usage: calcurse [-g|-h|-v] [-an] [-t[num]] [-i<file>] [-x[format]]\n"
 "                [-d <date>|<num>] [-s[date]] [-r[range]]\n"
-"                [-c<file> | -D<dir>] [-S<regex>] [--status]\n"
+"                [-c<file>] [-D<dir>] [-S<regex>] [--status]\n"
 "                [--read-only]\n"
 msgstr ""
 
@@ -107,10 +79,10 @@ msgid ""
 "\n"
 "Files:\n"
 "  -c <file>, --calendar <file>\n"
-"\tspecify the calendar <file> to use (incompatible with '-D').\n"
+"\tspecify the calendar <file> to use (has precedence over '-D').\n"
 "\n"
 "  -D <dir>, --directory <dir>\n"
-"\tspecify the data directory to use (incompatible with '-c').\n"
+"\tspecify the data directory to use.\n"
 "\tIf not specified, the default directory is ~/.calcurse\n"
 "\n"
 "Non-interactive:\n"
@@ -170,20 +142,20 @@ msgstr ""
 
 #, c-format
 msgid "calcurse is running (pid %d)\n"
-msgstr ""
+msgstr "calcurse draait (pid%d)\n"
 
 #, c-format
 msgid "calcurse is running in background (pid %d)\n"
-msgstr ""
+msgstr "calcurse draait op de achtergrond (pid%d)\n"
 
 msgid "calcurse is not running\n"
-msgstr ""
+msgstr "calcurse is niet actief\n"
 
 msgid "to do:\n"
 msgstr "Taken:\n"
 
 msgid "completed tasks:\n"
-msgstr ""
+msgstr "afgewerkte taken:\n"
 
 msgid "next appointment:\n"
 msgstr "Volgende afspraak :\n"
@@ -206,28 +178,33 @@ msgid "Argument format for -r and --range is: 'n'\n"
 msgstr "Argument formaat voor -r en --range is: 'n'\n"
 
 msgid "Can not handle more than one regular expression."
-msgstr ""
+msgstr "Kan niet meer dan een reguliere expressie behandelen."
 
 msgid "Could not compile regular expression."
-msgstr ""
+msgstr "Kan de reguliere expressie niet compileren."
 
 msgid "Argument for '-x' should be either 'ical' or 'pcal'\n"
 msgstr "Argument voor '-x' moet of 'ical' of 'pcal' zijn\n"
 
-msgid "Options '-D' and '-c' cannot be used at the same time\n"
-msgstr "Opties '-D' en '-c' kunnen niet tegelijk gebruikt worden\n"
-
 msgid "Option '-S' must be used with either '-d', '-r', '-s', '-a' or '-t'\n"
 msgstr ""
+"Optie '-S' moet met een van volgende worden gebruikt '-d', '-r', '-s', '-"
+"a','-' of '-t'\n"
 
 msgid "To do :"
 msgstr "Taken :"
+
+msgid "Export to (i)cal or (p)cal format?"
+msgstr ""
+
+msgid "[ip]"
+msgstr ""
 
 msgid "Do you really want to quit ?"
 msgstr "Wilt u werkelijk het programma verlaten?"
 
 msgid "ERROR setting first day of week"
-msgstr ""
+msgstr "FOUT in het instellen van de eerste dag van de week"
 
 msgid ""
 "The day you entered is not valid (should be between 01/01/1902 and "
@@ -244,7 +221,7 @@ msgid "Enter the day to go to [ENTER for today] : %s"
 msgstr ""
 
 msgid "unknown color"
-msgstr ""
+msgstr "Onbekende kleur"
 
 msgid "failed to open configuration file"
 msgstr ""
@@ -276,7 +253,7 @@ msgid "Layout"
 msgstr "Layout"
 
 msgid "Sidebar"
-msgstr ""
+msgstr "Zijbalk"
 
 msgid "Color"
 msgstr "Kleur"
@@ -285,28 +262,28 @@ msgid "Notify"
 msgstr "Info"
 
 msgid "Keys"
-msgstr ""
+msgstr "Toetsen"
 
 msgid "Select"
-msgstr ""
+msgstr "Selecteer"
 
 msgid "Up"
-msgstr ""
+msgstr "Omhoog"
 
 msgid "Down"
-msgstr ""
+msgstr "Omlaag"
 
 msgid "Left"
-msgstr ""
+msgstr "Links"
 
 msgid "Right"
-msgstr ""
+msgstr "Rechts"
 
 msgid "Help"
 msgstr "Hulp"
 
 msgid "layout configuration"
-msgstr ""
+msgstr "layout configuratie"
 
 msgid ""
 "With this configuration menu, one can choose where panels will be\n"
@@ -324,10 +301,10 @@ msgid ""
 msgstr ""
 
 msgid "Width +"
-msgstr ""
+msgstr "Breedte +"
 
 msgid "Width -"
-msgstr ""
+msgstr "Breedte -"
 
 #, no-c-format
 msgid ""
@@ -341,7 +318,7 @@ msgid ""
 msgstr ""
 
 msgid "No color"
-msgstr ""
+msgstr "Geen kleur"
 
 msgid "Foreground"
 msgstr "Voorgrond"
@@ -353,7 +330,7 @@ msgid "(terminal's default)"
 msgstr "standaard van terminal"
 
 msgid "color theme"
-msgstr ""
+msgstr "Kleurthema"
 
 msgid "(if set to YES, automatic save is done when quitting)"
 msgstr "(Bij JA, wordt er automatisch opgeslagen bij einde programma)"
@@ -392,10 +369,11 @@ msgid "(Format to be used when entering a date: "
 msgstr "Het te gebruiken formaat bij datuminvoer: "
 
 msgid "Enter an option number to change its value"
-msgstr ""
+msgstr "Voer een nummer in om de waarde te veranderen"
 
 msgid "(Press '^P' or '^N' to move up or down, 'Q' to quit)"
 msgstr ""
+"(Druk '^P' of '^N' om omhoog of omlaag te bewegen, 'Q' om af te sluiten)"
 
 msgid "Enter the date format (see 'man 3 strftime' for possible formats) "
 msgstr "Geef het formaat van de datum (zie 'man 3 strftime')"
@@ -405,43 +383,45 @@ msgstr ""
 
 msgid "Enter the delay, in minutes, between automatic saves (0 to disable) "
 msgstr ""
+"Voer het tijdsinterval in minuten voor automatisch opslaan (0 om dit uit te "
+"schakelen)"
 
 msgid "general options"
-msgstr ""
+msgstr "Algemene opties"
 
 msgid "Undefined option!"
-msgstr ""
+msgstr "Niet gekende optie!"
 
 msgid "undefined"
-msgstr ""
+msgstr "Ongekend"
 
 msgid "Key info"
-msgstr ""
+msgstr "Toets informatie"
 
 msgid "Add key"
-msgstr ""
+msgstr "Voeg toets toe"
 
 msgid "Del key"
-msgstr ""
+msgstr "Verwijder toets"
 
 msgid "Prev Key"
-msgstr ""
+msgstr "Vorig toets"
 
 msgid "Next Key"
-msgstr ""
+msgstr "Volgend toets"
 
 msgid "keys configuration"
-msgstr ""
+msgstr "Toetsinstellingen"
 
 msgid "Press the key you want to assign to:"
-msgstr ""
+msgstr "Druk de toets die u wilt toewijzen:"
 
 msgid "This key is not yet recognized by calcurse, please choose another one."
-msgstr ""
+msgstr "Deze toets wordt nog niet door Calcurse herkend, kies een andere aub."
 
 #, c-format
 msgid "This key is already in use for %s, please choose another one."
-msgstr ""
+msgstr "Deze toets is al in gebruik voor %s, kies aub een andere."
 
 msgid "Some actions do not have any associated key bindings!"
 msgstr ""
@@ -453,113 +433,25 @@ msgstr ""
 "Helaas wordt kleur niet door uw terminal ondersteund.\n"
 "(druk op [ENTER] om door te gaan)"
 
+msgid "unknown item type"
+msgstr "ongekend type item"
+
 msgid "Event :"
 msgstr "Gebeurtenis :"
 
 msgid "Appointment :"
 msgstr "Afspraak :"
 
-msgid "unknown item type"
-msgstr ""
-
-msgid "Enter the new time ([hh:mm]) : "
-msgstr ""
-
-msgid "You entered an invalid time, should be [hh:mm]"
-msgstr ""
-
-msgid ""
-"Enter new end time ([hh:mm]) or duration ([+hh:mm], [+xxxdxxhxxm] or "
-"[+mm]) : "
-msgstr ""
-
-msgid "Invalid time: start time must be before end time!"
-msgstr "Ongeldige tijd: aanvangstijd moet voor eindtijd zijn!"
-
-msgid "Enter the new item description:"
-msgstr "Voer een nieuwe beschrijving in:"
-
-msgid "Enter the new repetition type:"
-msgstr ""
-
-msgid "(d)aily"
-msgstr ""
-
-msgid "(w)eekly"
-msgstr ""
-
-msgid "(m)onthly"
-msgstr ""
-
-msgid "(y)early"
-msgstr ""
-
-#, c-format
-msgid "(currently using %s)"
-msgstr ""
-
-msgid "[dwmy]"
-msgstr ""
-
-msgid "The frequence you entered is not valid."
-msgstr "Het ingevoerde interval is ongeldig."
-
-msgid "The entered date is not valid."
-msgstr "De ingevoerde datum is ongeldig."
-
-#, c-format
-msgid "Possible formats are [%s] or '0' for an endless repetition."
-msgstr ""
-
-msgid "Enter the new repetition frequence:"
-msgstr "Voer herhalingsinterval in:"
-
-#, c-format
-msgid "Enter the new ending date: [%s] or '0'"
-msgstr ""
-
-msgid "Description"
-msgstr ""
-
-msgid "Repetition"
-msgstr ""
-
-msgid "Edit: "
-msgstr ""
-
-msgid "Start time"
-msgstr ""
-
-msgid "End time"
-msgstr ""
-
-msgid "This item is recurrent. Delete (a)ll occurences or just this (o)ne ?"
-msgstr ""
-"Dit is een herhalende afspraak. (a)lle afspraken of alleen (o) deze wissen ?"
-
-msgid "[ao]"
-msgstr ""
-
-msgid "This item has a note attached to it. Delete (i)tem or just its (n)ote ?"
-msgstr ""
-"Dit item heeft een bijgesloten noot. (i)tem wissen of alleen de (n)oot?"
-
-msgid "[in]"
-msgstr ""
-
 msgid "unknwon type"
-msgstr ""
-
-msgid "Pipe item to external command:"
-msgstr ""
+msgstr "ongekend type"
 
 #, c-format
 msgid "Could not stop daemon properly: %s\n"
-msgstr ""
+msgstr "Kon de deamon niet stoppen: %s\n"
 
 #, c-format
 msgid "terminated at %s with signal %d\n"
-msgstr ""
+msgstr "gestopt bij %s met signaal %d\n"
 
 #, c-format
 msgid "Could not remove daemon lock file: %s\n"
@@ -571,7 +463,7 @@ msgstr ""
 
 #, c-format
 msgid "Could not detach from the controlling terminal: %s\n"
-msgstr ""
+msgstr "Kon niet van de control terminal loskoppelen: %s\n"
 
 #, c-format
 msgid "Could not change working directory: %s\n"
@@ -585,21 +477,21 @@ msgstr ""
 
 #, c-format
 msgid "Could not access \"%s\": %s\n"
-msgstr ""
+msgstr "Geen toegang tot \"%s\": %s\n"
 
 #, c-format
 msgid "started at %s\n"
 msgstr ""
 
 msgid "error loading next appointment\n"
-msgstr ""
+msgstr "fout bij laden van volgende afspraak\n"
 
 #, c-format
 msgid "launching notification at %s for: \"%s\"\n"
 msgstr ""
 
 msgid "error while sending notification\n"
-msgstr ""
+msgstr "fout bij verzenden notificatie\n"
 
 #, c-format
 msgid "sleeping at %s for %d second\n"
@@ -618,11 +510,8 @@ msgstr ""
 msgid "date error in the event\n"
 msgstr ""
 
-msgid "event not found"
-msgstr ""
-
 msgid "Internal error: line too long"
-msgstr ""
+msgstr "Interne fout: lijn te lang"
 
 msgid "out of memory"
 msgstr ""
@@ -632,7 +521,7 @@ msgid "key bindings: %s"
 msgstr ""
 
 msgid "Calcurse help"
-msgstr ""
+msgstr "Calcurse help"
 
 msgid "       Welcome to Calcurse. This is the main help screen.\n"
 msgstr "       Welkom in Calcurse. Dit is het centrale hulpscherm.\n"
@@ -700,7 +589,7 @@ msgid ""
 msgstr ""
 
 msgid "Export\n"
-msgstr ""
+msgstr "Exporteer\n"
 
 #, c-format
 msgid ""
@@ -880,27 +769,23 @@ msgid ""
 "       event next time you launch Calcurse."
 msgstr ""
 
-msgid "Cut and Paste\n"
+msgid "Copy and Paste\n"
 msgstr ""
 
 #, c-format
 msgid ""
-"Cut and paste the currently selected item. This is useful to quickly\n"
-"move an item from one date to another.\n"
-"To do so, one must first highlight the item that needs to be moved,\n"
-"then press '%s' to cut this item. It will be removed from the panel.\n"
+"Copy and paste the currently selected item. This is useful to quickly\n"
+"copy an item from one date to another. To do so, one must first\n"
+"highlight the item that needs to be copied, then press '%s' to copy.\n"
 "Once the new date is chosen in the calendar, the appointment panel must\n"
-"be selected and the '%s' key must be pressed to paste the item.\n"
-"The item will appear again in the appointment panel, assigned to the\n"
-"newly selected date.\n"
+"be selected and the '%s' key must be pressed to paste the item. The item\n"
+"will appear in the appointment panel, assigned to the newly selected\n"
+"date.\n"
 "\n"
-"Be careful that if two cuts are performed successively without pasting\n"
-"between them, the item that was cut at first will be lost, together\n"
-"with its associated note if it had one."
 msgstr ""
 
 msgid "Edit Item\n"
-msgstr ""
+msgstr "Wijzig item\n"
 
 #, c-format
 msgid ""
@@ -1063,7 +948,7 @@ msgid ""
 msgstr ""
 
 msgid "Generic keybindings\n"
-msgstr ""
+msgstr "Algemene sneltoets\n"
 
 #, c-format
 msgid ""
@@ -1134,7 +1019,7 @@ msgid ""
 msgstr ""
 
 msgid "unknown ical type"
-msgstr ""
+msgstr "onbekend ical type"
 
 msgid "recurrence frequence not found."
 msgstr "herhalingsfrequentie niet gevonden."
@@ -1164,7 +1049,7 @@ msgid "item has a negative duration."
 msgstr "item heeft een negatieve tijdsduur"
 
 msgid "event date is not defined."
-msgstr ""
+msgstr "datum van de gebeurtenis is niet gespecifieerd"
 
 msgid "item could not be identified."
 msgstr "item onbekend"
@@ -1190,6 +1075,167 @@ msgstr "Prioriteit van item is onjuist (kies nr tussen 1 en 9)"
 msgid "Warning: ical header malformed or wrong version number. Aborting..."
 msgstr "Pas op: ical header onjuist of verkeerde versie. Stoppen..."
 
+msgid "Enter the new time ([hh:mm] or [hhmm]) : "
+msgstr ""
+
+msgid "Press [Enter] to continue"
+msgstr "Druk op [Enter] om door te gaan)"
+
+msgid "You entered an invalid time, should be [hh:mm] or [hhmm]"
+msgstr ""
+
+msgid ""
+"Enter new end time ([hh:mm], [hhmm]) or duration ([+hh:mm], [+xxxdxxhxxm] or "
+"[+mm]) : "
+msgstr ""
+
+msgid "Invalid time: start time must be before end time!"
+msgstr "Ongeldige tijd: aanvangstijd moet voor eindtijd zijn!"
+
+msgid "Enter the new item description:"
+msgstr "Voer een nieuwe beschrijving in:"
+
+msgid "Enter the new repetition type:"
+msgstr ""
+
+msgid "(d)aily"
+msgstr "(d)agelijks"
+
+msgid "(w)eekly"
+msgstr "(w)ekelijks"
+
+msgid "(m)onthly"
+msgstr "(m)aandelijks"
+
+msgid "(y)early"
+msgstr "(y)aarlijks"
+
+#, c-format
+msgid "(currently using %s)"
+msgstr ""
+
+msgid "[dwmy]"
+msgstr "[dwmy]"
+
+msgid "The frequence you entered is not valid."
+msgstr "Het ingevoerde interval is ongeldig."
+
+msgid "The entered date is not valid."
+msgstr "De ingevoerde datum is ongeldig."
+
+#, c-format
+msgid "Possible formats are [%s] or '0' for an endless repetition."
+msgstr ""
+
+msgid "Enter the new repetition frequence:"
+msgstr "Voer herhalingsinterval in:"
+
+#, c-format
+msgid "Enter the new ending date: [%s] or '0'"
+msgstr ""
+
+msgid "Description"
+msgstr ""
+
+msgid "Repetition"
+msgstr ""
+
+msgid "Edit: "
+msgstr "Wijzig:"
+
+msgid "Start time"
+msgstr ""
+
+msgid "End time"
+msgstr ""
+
+msgid "Pipe item to external command:"
+msgstr ""
+
+msgid ""
+"Enter start time ([hh:mm] or [hhmm]), leave blank for an all-day event : "
+msgstr ""
+
+msgid ""
+"Enter end time ([hh:mm] or [hhmm]) or duration ([+hh:mm], [+xxxdxxhxxm] or "
+"[+mm]) : "
+msgstr ""
+
+msgid "Enter description :"
+msgstr "Voer beschrijving in :"
+
+msgid "You entered an invalid start time, should be [hh:mm] or [hhmm]"
+msgstr ""
+
+msgid ""
+"Invalid end time/duration, should be [hh:mm], [hhmm], [+hh:mm], "
+"[+xxxdxxhxxm] or [+mm]"
+msgstr ""
+
+msgid "Do you really want to delete this item ?"
+msgstr "Wilt u werkelijk dit item wissen ?"
+
+msgid "This item is recurrent. Delete (a)ll occurences or just this (o)ne ?"
+msgstr ""
+"Dit is een herhalende afspraak. (a)lle afspraken of alleen (o) deze wissen ?"
+
+msgid "[ao]"
+msgstr ""
+
+msgid "This item has a note attached to it. Delete (i)tem or just its (n)ote ?"
+msgstr ""
+"Dit item heeft een bijgesloten noot. (i)tem wissen of alleen de (n)oot?"
+
+msgid "[in]"
+msgstr ""
+
+msgid "no such type"
+msgstr ""
+
+msgid "Enter the new ToDo item : "
+msgstr "Voer de nieuwe taak in : "
+
+msgid "Enter the ToDo priority [1 (highest) - 9 (lowest)] :"
+msgstr "Geef taakprioriteit [1 (hoogste) - 9 (laagste)] :"
+
+msgid "Do you really want to delete this task ?"
+msgstr "Wilt u werkelijk deze taak wissen ?"
+
+msgid "This item has a note attached to it. Delete (t)odo or just its (n)ote ?"
+msgstr "Dit item heeft een noot bijgesloten. Wis (t)aak of alleen de (n)oot?"
+
+msgid "[tn]"
+msgstr ""
+
+msgid "Enter the new ToDo description :"
+msgstr "Voer de nieuwe taakbeschrijving in : "
+
+msgid "Enter the repetition type:"
+msgstr ""
+
+msgid "Enter the repetition frequence:"
+msgstr "Geef de herhalingsinterval:"
+
+#, c-format
+msgid "Enter the ending date: [%s] or '0' for an endless repetition"
+msgstr "Geef einddatum: [%s] of '0' voor oneindige herhaling"
+
+#, c-format
+msgid "Possible formats are [%s] or '0' for an endless repetition"
+msgstr "Mogelijk formaat is: [%s] of '0' voor oneindig."
+
+msgid "This item is already a repeated one."
+msgstr "Dit item wordt al herhaald."
+
+msgid "Press [ENTER] to continue."
+msgstr "[ENTER]-toets om door te gaan."
+
+msgid "Sorry, the date you entered is older than the item start time."
+msgstr "Sorry, de ingevoerde datum is ouder dan de aanvangstijd."
+
+msgid "wrong item type"
+msgstr ""
+
 msgid "Saving..."
 msgstr "Opslaan..."
 
@@ -1200,7 +1246,7 @@ msgid "Exporting..."
 msgstr "Exporteren..."
 
 msgid "Internal error while displaying progress bar"
-msgstr ""
+msgstr "Interne fout bij het tonen van de voortgangsbalk"
 
 msgid "Choose the file used to export calcurse data:"
 msgstr "Kies het bestand om calcurse data naar te exporteren:"
@@ -1208,12 +1254,9 @@ msgstr "Kies het bestand om calcurse data naar te exporteren:"
 msgid "The file cannot be accessed, please enter another file name."
 msgstr "Het bestand is ontoegankelijk, kies een andere bestandsnaam."
 
-msgid "Press [ENTER] to continue."
-msgstr "[ENTER]-toets om door te gaan."
-
 #, c-format
 msgid "Failed to open \"%s\", - %s\n"
-msgstr ""
+msgstr "Fout bij openen \"%s\", - %s\n"
 
 msgid "Failed to build message\n"
 msgstr ""
@@ -1224,7 +1267,7 @@ msgstr ""
 
 #, c-format
 msgid "Failed to close \"%s\" - %s\n"
-msgstr ""
+msgstr "Fout bij sluiten \"%s\" - %s\n"
 
 #, c-format
 msgid "%s does not exist, create it now [y or n] ? "
@@ -1247,28 +1290,28 @@ msgid "The data files were successfully saved"
 msgstr "De databestanden zijn met succes opgeslagen"
 
 msgid "failed to open appointment file"
-msgstr ""
+msgstr "Afsprakenbestand niet kunnen openen"
 
 msgid "syntax error in the item date"
 msgstr ""
 
 msgid "no event nor appointment found"
-msgstr ""
+msgstr "Geen gebeurtenis of afspraak gevonden"
 
 msgid "syntax error in item time or duration"
-msgstr ""
+msgstr "syntaxfout in itemtijd of duurtijd van het item"
 
 msgid "syntax error in item identifier"
 msgstr ""
 
 msgid "wrong format in the appointment or event"
-msgstr ""
+msgstr "fout formaat in de afspraak of gebeurtenis"
 
 msgid "syntax error in item repetition"
-msgstr ""
+msgstr "syntaxfout in de herhaling van het item"
 
 msgid "failed to open todo file"
-msgstr ""
+msgstr "kon het todo-bestand niet openen"
 
 msgid "failed to open key file"
 msgstr ""
@@ -1279,6 +1322,10 @@ msgid ""
 "Please backup your keys file, remove it from directory, and launch calcurse "
 "again.\n"
 msgstr ""
+"\n"
+"Teveel fouten tijdens het lezen van het configuratiebestand!\n"
+"Maak een backup van het sneltoetsenbestand, verwijder het van de map en "
+"start calcurse opnieuw op.\n"
 
 msgid "Could not read key label"
 msgstr ""
@@ -1292,13 +1339,15 @@ msgstr ""
 
 #, c-format
 msgid "\"%s\" assigned multiple times!"
-msgstr ""
+msgstr "\"%s\" meer dan eens toegewezen!"
 
 msgid "There were some errors when loading keys file, see log file ?"
 msgstr ""
+"Er waren fouten tijdens het laden van het sneltoetsenbestand, zie log file?"
 
 msgid "Too many errors while reading keys file, aborting..."
 msgstr ""
+"Teveel fouten bij het laden van het sneltoetsenbestand, wordt afgebroken ..."
 
 #, c-format
 msgid "FATAL ERROR: could not create %s: %s\n"
@@ -1314,16 +1363,10 @@ msgid "The data were successfully exported"
 msgstr "De data is met succes geëxporteerd"
 
 msgid "unknown export type"
-msgstr ""
+msgstr "onbekend exporttype"
 
 msgid "wrong export mode"
-msgstr ""
-
-msgid "Ical"
-msgstr "Ical"
-
-msgid "Pcal"
-msgstr "Pcal"
+msgstr "foute exportmodus"
 
 msgid "Enter the file name to import data from:"
 msgstr "Kies het bestand voor het importeren van data:"
@@ -1333,13 +1376,13 @@ msgid "Import process report: %04d lines read "
 msgstr "Import proces rapport: %04d gelezen regels"
 
 msgid "unknown import type"
-msgstr ""
+msgstr "onbekend type om te importeren"
 
 msgid "FATAL ERROR: the input file cannot be accessed, Aborting..."
 msgstr "FATALE FOUT: invoerbestand niet toegankelijk, Afbreken..."
 
 msgid "FATAL ERROR: wrong import mode"
-msgstr ""
+msgstr "FATALE FOUT: foute import modus"
 
 #, c-format
 msgid "%d app"
@@ -1378,6 +1421,7 @@ msgstr ""
 #, c-format
 msgid "Warning: could not erase temporary log file %s, Aborting..."
 msgstr ""
+"Waarschuwing: kon het tijdelijke logbestand %s niet verwijderen. Afbreken ..."
 
 msgid "Invalid delay"
 msgstr ""
@@ -1426,21 +1470,21 @@ msgid "Cancel the ongoing action."
 msgstr ""
 
 msgid "Select the highlighted item."
-msgstr ""
+msgstr "Selecteer het gemarkeerde bestand"
 
 msgid "Print general information about calcurse's authors, license, etc."
-msgstr ""
+msgstr "Geef algemene informatie van de auteurs, licentie, etc. weer."
 
 msgid "Display hints whenever some help screens are available."
 msgstr ""
 
 msgid "Exit from the current menu, or quit calcurse."
-msgstr ""
+msgstr "Verlaat het huidige menu, of verlaat Calcurse."
 
 msgid "Save calcurse data."
 msgstr ""
 
-msgid "Cut the item that is currently selected."
+msgid "Copy the item that is currently selected."
 msgstr ""
 
 msgid "Paste an item at the current position."
@@ -1450,22 +1494,22 @@ msgid "Select next panel in calcurse main screen."
 msgstr ""
 
 msgid "Import data from an external file."
-msgstr ""
+msgstr "Importeer gegevens uit een extern bestand."
 
 msgid "Export data to a new file format."
-msgstr ""
+msgstr "Exporteer gegevens naar een nieuw bestandsformaat"
 
 msgid "Select the day to go to."
-msgstr ""
+msgstr "Secteer een datum om naartoe te gaan"
 
 msgid "Show next possible actions inside status bar."
 msgstr ""
 
 msgid "Enter the configuration menu."
-msgstr ""
+msgstr "Ga naar het configuratiemenu."
 
 msgid "Redraw calcurse's screen."
-msgstr ""
+msgstr "Ververs het scherm"
 
 msgid "Add an appointment, whichever panel is currently selected."
 msgstr ""
@@ -1511,16 +1555,16 @@ msgid "Go to today, whichever panel is selected."
 msgstr ""
 
 msgid "Move to the right."
-msgstr ""
+msgstr "Ga naar rechts."
 
 msgid "Move to the left."
-msgstr ""
+msgstr "Ga naar links."
 
 msgid "Move down."
-msgstr ""
+msgstr "Ga omlaag"
 
 msgid "Move up."
-msgstr ""
+msgstr "Ga omhoog"
 
 msgid ""
 "Select the first day of the current week when inside the calendar panel."
@@ -1533,28 +1577,30 @@ msgid "Add an item to the currently selected panel."
 msgstr ""
 
 msgid "Delete the currently selected item."
-msgstr ""
+msgstr "Verwijder huidig geselecteerde item"
 
 msgid "Edit the currently seleted item."
-msgstr ""
+msgstr "Wijzig huidig geselecteerde item"
 
 msgid "Display the currently selected item inside a popup window."
-msgstr ""
+msgstr "Geef het huidig geselecteerde item weer in een popup"
 
 msgid "Flag the currently selected item as important."
-msgstr ""
+msgstr "Markeer het huidig bestand als belangrijk"
 
 msgid "Repeat an item"
-msgstr ""
+msgstr "Herhaal item"
 
 msgid "Pipe the currently selected item to an external program."
 msgstr ""
 
 msgid "Attach (or edit if one exists) a note to the currently selected item"
 msgstr ""
+"Voeg een noot toe aan het huidig geselecteerde item (of wijzig dit indien "
+"bestaande)"
 
 msgid "View the note attached to the currently selected item."
-msgstr ""
+msgstr "Bekijk de noot toegevoegd aan het huidig geselecteerde item"
 
 msgid "Raise a task priority inside the todo panel."
 msgstr ""
@@ -1638,10 +1684,10 @@ msgid "  allocated in: %s\n"
 msgstr ""
 
 msgid "-----------------------------------------\n"
-msgstr ""
+msgstr "-----------------------------------------\n"
 
 msgid "+------------------------------+\n"
-msgstr ""
+msgstr "+------------------------------+\n"
 
 msgid "| calcurse memory usage report |\n"
 msgstr ""
@@ -1666,7 +1712,7 @@ msgid "error while launching command: could not fork"
 msgstr ""
 
 msgid "error while launching command"
-msgstr ""
+msgstr "fout bij uitvoeren commando"
 
 msgid "(if set to YES, notify-bar will be displayed)"
 msgstr "(Bij JA, wordt de informatiebalk weergegeven)"
@@ -1705,48 +1751,28 @@ msgid "Enter the notification command "
 msgstr "Geef het meldingscommando "
 
 msgid "notification options"
-msgstr ""
+msgstr "notificatie-opties"
 
 msgid "incoherent repetition type"
-msgstr ""
+msgstr "Herhalingstype is niet coherent"
 
 msgid "unknown repetition type"
 msgstr ""
 
 msgid "unknown character"
-msgstr ""
+msgstr "onbekend karakter"
 
 msgid "date error in event"
-msgstr ""
+msgstr "datumfout in gebeurtenis"
+
+msgid "event not found"
+msgstr "Gebeurtenis niet gevonden"
 
 msgid "appointment not found"
-msgstr ""
-
-msgid "Enter the repetition type:"
-msgstr ""
-
-msgid "Enter the repetition frequence:"
-msgstr "Geef de herhalingsinterval:"
-
-#, c-format
-msgid "Enter the ending date: [%s] or '0' for an endless repetition"
-msgstr "Geef einddatum: [%s] of '0' voor oneindige herhaling"
-
-#, c-format
-msgid "Possible formats are [%s] or '0' for an endless repetition"
-msgstr "Mogelijk formaat is: [%s] of '0' voor oneindig."
-
-msgid "This item is already a repeated one."
-msgstr "Dit item wordt al herhaald."
-
-msgid "Sorry, the date you entered is older than the item start time."
-msgstr "Sorry, de ingevoerde datum is ouder dan de aanvangstijd."
-
-msgid "wrong item type"
-msgstr ""
+msgstr "afspraak niet gevonden"
 
 msgid "syntax error in item date"
-msgstr ""
+msgstr "syntaxfout in datum van item"
 
 #, c-format
 msgid "Could not remove calcurse lock file: %s\n"
@@ -1756,38 +1782,17 @@ msgstr ""
 msgid "Error setting signal #%d : %s\n"
 msgstr ""
 
-msgid "Enter the new ToDo item : "
-msgstr "Voer de nieuwe taak in : "
-
-msgid "Enter the ToDo priority [1 (highest) - 9 (lowest)] :"
-msgstr "Geef taakprioriteit [1 (hoogste) - 9 (laagste)] :"
+msgid "no note attached"
+msgstr "geen noot bijgevoegd"
 
 msgid "no such todo"
-msgstr ""
-
-msgid "no note attached"
-msgstr ""
-
-msgid "Do you really want to delete this task ?"
-msgstr "Wilt u werkelijk deze taak wissen ?"
-
-msgid "This item has a note attached to it. Delete (t)odo or just its (n)ote ?"
-msgstr "Dit item heeft een noot bijgesloten. Wis (t)aak of alleen de (n)oot?"
-
-msgid "[tn]"
-msgstr ""
+msgstr "Er is zo geen todo"
 
 msgid "todo not found"
-msgstr ""
-
-msgid "no such action"
-msgstr ""
-
-msgid "Enter the new ToDo description :"
-msgstr "Voer de nieuwe taakbeschrijving in : "
+msgstr "todo niet gevonden"
 
 msgid "/!\\ INTERNAL ERROR /!\\"
-msgstr ""
+msgstr "/!\\ INTERNE FOUT /!\\"
 
 msgid "Please report the following bug:"
 msgstr "Rapporteer aub de volgende fout:"
@@ -1799,19 +1804,16 @@ msgid "Press any key to continue..."
 msgstr "Druk op een toets om door te gaan..."
 
 msgid "failure in mktime"
-msgstr ""
+msgstr "fout in mktime"
 
 msgid "error in mktime"
-msgstr ""
-
-msgid "Appointment"
-msgstr "Afspraak"
+msgstr "fout in mktime"
 
 msgid "could not convert string"
-msgstr ""
+msgstr "kon de data niet converteren"
 
 msgid "out of range"
-msgstr ""
+msgstr "buiten bereik"
 
 msgid "yes"
 msgstr "ja"
@@ -1917,11 +1919,11 @@ msgstr "Einde"
 msgid "Save"
 msgstr "Opslaan"
 
-msgid "Cut"
+msgid "Copy"
 msgstr ""
 
 msgid "Paste"
-msgstr ""
+msgstr "Plak"
 
 msgid "Chg Win"
 msgstr ""
@@ -1948,16 +1950,16 @@ msgid "Add Todo"
 msgstr "Nieuw Taak"
 
 msgid "-1 Day"
-msgstr ""
+msgstr "-1 Dag"
 
 msgid "+1 Day"
-msgstr ""
+msgstr "+1 Dag"
 
 msgid "-1 Week"
-msgstr ""
+msgstr "-1 Week"
 
 msgid "+1 Week"
-msgstr ""
+msgstr "+1 Week"
 
 msgid "-1 Month"
 msgstr ""
@@ -2014,10 +2016,10 @@ msgid "ViewNote"
 msgstr "BekijkNoot"
 
 msgid "Prio.+"
-msgstr ""
+msgstr "Prio.+"
 
 msgid "Prio.-"
-msgstr ""
+msgstr "rio.-"
 
 msgid "OtherCmd"
 msgstr "AnderCmd"
@@ -2032,7 +2034,7 @@ msgid "unrecognized option:"
 msgstr ""
 
 msgid "Configuration file not found:"
-msgstr ""
+msgstr "Configuratiebestand niet gevonden:"
 
 msgid "Pre-3.0.0 configuration file format detected..."
 msgstr ""
@@ -2050,7 +2052,7 @@ msgid ""
 msgstr ""
 
 msgid "done"
-msgstr ""
+msgstr "klaar"
 
 msgid "Old temporary file found:"
 msgstr ""

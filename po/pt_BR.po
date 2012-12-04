@@ -8,57 +8,22 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2012-06-24 01:21+0200\n"
-"PO-Revision-Date: 2012-06-19 23:58+0000\n"
+"POT-Creation-Date: 2012-12-05 12:27+0100\n"
+"PO-Revision-Date: 2012-11-24 04:59+0000\n"
 "Last-Translator: Rafael Ferreira <rafael.f.f1@gmail.com>\n"
-"Language-Team: Portuguese (Brazil) (http://www.transifex.net/projects/p/"
+"Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/"
 "calcurse/language/pt_BR/)\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1)\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 msgid "null pointer"
 msgstr "ponteiro nulo"
 
-msgid "Enter start time ([hh:mm]), leave blank for an all-day event : "
-msgstr ""
-"Entre com a data de início ([hh:mm]), ou deixe em branco para dia inteiro:"
-
-msgid ""
-"Enter end time ([hh:mm]) or duration ([+hh:mm], [+xxxdxxhxxm] or [+mm]) : "
-msgstr ""
-"Entre com a data de término ([hh:mm]) ou duração ([+hh:mm], [+xxxdxxhxxm] ou "
-"[+mm]) :"
-
-msgid "Enter description :"
-msgstr "Entre com a descrição :"
-
-msgid "You entered an invalid start time, should be [hh:mm]"
-msgstr "Você entrou com um horário de início inválida - deveria ser [hh:mm]"
-
-msgid ""
-"Invalid end time/duration, should be [hh:mm], [+hh:mm], [+xxxdxxhxxm] or "
-"[+mm]"
-msgstr ""
-"Horário de término/duração inválido/a, deveria ser [hh:mm], [+xxxdxxhxxm] ou "
-"[+mm]"
-
-msgid "Press [Enter] to continue"
-msgstr "Pressione [Enter] para continuar"
-
-msgid "Do you really want to delete this item ?"
-msgstr "Tem certeza que deseja excluir este item ?"
-
-msgid "no such type"
-msgstr "tipo inexistente"
-
 msgid "date error in appointment"
 msgstr "erro de data no agendamento"
-
-msgid "item not found"
-msgstr "item não encontrado"
 
 msgid "no such appointment"
 msgstr "agendamento inexistente"
@@ -66,12 +31,12 @@ msgstr "agendamento inexistente"
 msgid ""
 "Usage: calcurse [-g|-h|-v] [-an] [-t[num]] [-i<file>] [-x[format]]\n"
 "                [-d <date>|<num>] [-s[date]] [-r[range]]\n"
-"                [-c<file> | -D<dir>] [-S<regex>] [--status]\n"
+"                [-c<file>] [-D<dir>] [-S<regex>] [--status]\n"
 "                [--read-only]\n"
 msgstr ""
-"Uso:   calcurse [-g|-h|-v] [-an] [-t[número]] [-i<arquivo>] [-x[formato]]\n"
-"                [-d <data>|<número>] [-s[data]] [-r[número]]\n"
-"                [-c<arquivo> | -D<dir>] [-S<regex>] [--status]\n"
+"Usage: calcurse [-g|-h|-v] [-an] [-t[num]] [-i<file>] [-x[format]]\n"
+"                [-d <date>|<num>] [-s[date]] [-r[range]]\n"
+"                [-c<file>] [-D<dir>] [-S<regex>] [--status]\n"
 "                [--read-only]\n"
 
 msgid "Try 'calcurse -h' for more information.\n"
@@ -122,10 +87,10 @@ msgid ""
 "\n"
 "Files:\n"
 "  -c <file>, --calendar <file>\n"
-"\tspecify the calendar <file> to use (incompatible with '-D').\n"
+"\tspecify the calendar <file> to use (has precedence over '-D').\n"
 "\n"
 "  -D <dir>, --directory <dir>\n"
-"\tspecify the data directory to use (incompatible with '-c').\n"
+"\tspecify the data directory to use.\n"
 "\tIf not specified, the default directory is ~/.calcurse\n"
 "\n"
 "Non-interactive:\n"
@@ -181,23 +146,21 @@ msgstr ""
 "\texibe esta mensagem de ajuda e sai.\n"
 "\n"
 "  -v, --version\n"
-" \texibe a versão do calcurse e sai.\n"
+"    exibe a versão do calcurse e sai.\n"
 "\n"
 "  --status\n"
-" \tmostra o status de instâncias em execução do calcurse.\n"
+"    mostra o status de instâncias em execução do calcurse.\n"
 "\n"
 "  --read-only\n"
-" \tnão salva configuração nem agendamentos/tarefas. Use com cuidado. \n"
+"    não salva configuração nem agendamentos/tarefas. Use com cuidado. \n"
 "\n"
 "Arquivos:\n"
 "  -c <arquivo>, --calendar <arquivo>\n"
-"    especifica o <arquivo> de calendário a ser usado (incompatível\n"
-"    com '-D').\n"
+"    especifica o <arquivo> de calendário a ser usado (precede '-D').\n"
 "\n"
 "  -D <dir>, --directory <dir>\n"
-"    especifica o diretório de dados a ser usado (incompatível com\n"
-"    '-c'). Se não for especificado, o diretório padrão do calcurse\n"
-"    é ~/.calcurse\n"
+"    especifica o diretório de dados a ser usado.\n"
+"    Se não for especificado, o diretório padrão do calcurse é ~/.calcurse\n"
 "\n"
 "Não-interativo:\n"
 "  -a, --appointment\n"
@@ -303,15 +266,18 @@ msgstr "Não foi possível compilar expressão regular."
 msgid "Argument for '-x' should be either 'ical' or 'pcal'\n"
 msgstr "Argumento para \"-x\" deveria ser \"ical\" ou \"pcal\"\n"
 
-msgid "Options '-D' and '-c' cannot be used at the same time\n"
-msgstr "Opções '-D' e '-c' não podem ser usados ao mesmo tempo\n"
-
 msgid "Option '-S' must be used with either '-d', '-r', '-s', '-a' or '-t'\n"
 msgstr ""
 "Opção \"-S\" deve ser usada com \"-d\", \"-r\", \"-s\", \"-a\" ou \"-t\"\n"
 
 msgid "To do :"
 msgstr "Tarefa :"
+
+msgid "Export to (i)cal or (p)cal format?"
+msgstr "Exportar para o formato (i)cal ou para (p)cal?"
+
+msgid "[ip]"
+msgstr "[ip]"
 
 msgid "Do you really want to quit ?"
 msgstr "Tem certeza que deseja sair ?"
@@ -577,109 +543,17 @@ msgstr ""
 "Sinto muito, cores não são suportadas em seu terminal\n"
 "(Pressione [Enter] para continuar)"
 
+msgid "unknown item type"
+msgstr "tipo de item desconhecido"
+
 msgid "Event :"
 msgstr "Evento :"
 
 msgid "Appointment :"
 msgstr "Agendamento :"
 
-msgid "unknown item type"
-msgstr "tipo de item desconhecido"
-
-msgid "Enter the new time ([hh:mm]) : "
-msgstr "Entre com novo horário ([hh:mm]) : "
-
-msgid "You entered an invalid time, should be [hh:mm]"
-msgstr "Você entrou com horário inválido, deveria ser [hh:mm]"
-
-msgid ""
-"Enter new end time ([hh:mm]) or duration ([+hh:mm], [+xxxdxxhxxm] or "
-"[+mm]) : "
-msgstr ""
-"Entre com novo horário de término ([hh:mm]) ou duração ([+hh:mm], "
-"[+xxxdxxhxxm] ou [+mm]) : "
-
-msgid "Invalid time: start time must be before end time!"
-msgstr ""
-"Horário inválido: horário de início deve ser antes do horário de término!"
-
-msgid "Enter the new item description:"
-msgstr "Entre com uma descrição para o novo item:"
-
-msgid "Enter the new repetition type:"
-msgstr "Entre com o novo tipo de repetição:"
-
-msgid "(d)aily"
-msgstr "(d)iária"
-
-msgid "(w)eekly"
-msgstr "(s)emanal"
-
-msgid "(m)onthly"
-msgstr "(m)ensal"
-
-msgid "(y)early"
-msgstr "(a)nual"
-
-#, c-format
-msgid "(currently using %s)"
-msgstr "(atualmente usando %s)"
-
-msgid "[dwmy]"
-msgstr "[dsma]"
-
-msgid "The frequence you entered is not valid."
-msgstr "A frequência informada não é válida."
-
-msgid "The entered date is not valid."
-msgstr "A data informada não é válida."
-
-#, c-format
-msgid "Possible formats are [%s] or '0' for an endless repetition."
-msgstr "Formatos possíveis são [%s] ou '0' para repetição sem fim."
-
-msgid "Enter the new repetition frequence:"
-msgstr "Entre com uma nova frequência de repetição:"
-
-#, c-format
-msgid "Enter the new ending date: [%s] or '0'"
-msgstr "Entre com a nova data final: [%s] ou '0'"
-
-msgid "Description"
-msgstr "Descrição"
-
-msgid "Repetition"
-msgstr "Repetição"
-
-msgid "Edit: "
-msgstr "Editar: "
-
-msgid "Start time"
-msgstr "Horário de início"
-
-msgid "End time"
-msgstr "Horário de término"
-
-msgid "This item is recurrent. Delete (a)ll occurences or just this (o)ne ?"
-msgstr ""
-"Este item é recorrente. Excluir (t)odas ocorrências ou somente (e)esta aqui?"
-
-msgid "[ao]"
-msgstr "[te]"
-
-msgid "This item has a note attached to it. Delete (i)tem or just its (n)ote ?"
-msgstr ""
-"Este item tem uma anotação anexada a ele. Excluir o (i)tem ou somente a (n)"
-"ota?"
-
-msgid "[in]"
-msgstr "[in]"
-
 msgid "unknwon type"
 msgstr "tipo desconhecido"
-
-msgid "Pipe item to external command:"
-msgstr "Redirecionar o item para comando externo:"
 
 #, c-format
 msgid "Could not stop daemon properly: %s\n"
@@ -745,9 +619,6 @@ msgstr "Não foi possível parar o daemon do calcurse: %s\n"
 
 msgid "date error in the event\n"
 msgstr "erro de data no evento\n"
-
-msgid "event not found"
-msgstr "evento não encontrado"
 
 msgid "Internal error: line too long"
 msgstr "Erro interno: linha muito comprida"
@@ -1183,38 +1054,29 @@ msgstr ""
 "     o não se esqueça de salvar os dados do calendário para obter o novo\n"
 "       evento na próxima vez que você iniciar o Calcurse."
 
-msgid "Cut and Paste\n"
-msgstr "Cortar e Colar\n"
+msgid "Copy and Paste\n"
+msgstr "Copiar e Colar\n"
 
 #, c-format
 msgid ""
-"Cut and paste the currently selected item. This is useful to quickly\n"
-"move an item from one date to another.\n"
-"To do so, one must first highlight the item that needs to be moved,\n"
-"then press '%s' to cut this item. It will be removed from the panel.\n"
+"Copy and paste the currently selected item. This is useful to quickly\n"
+"copy an item from one date to another. To do so, one must first\n"
+"highlight the item that needs to be copied, then press '%s' to copy.\n"
 "Once the new date is chosen in the calendar, the appointment panel must\n"
-"be selected and the '%s' key must be pressed to paste the item.\n"
-"The item will appear again in the appointment panel, assigned to the\n"
-"newly selected date.\n"
+"be selected and the '%s' key must be pressed to paste the item. The item\n"
+"will appear in the appointment panel, assigned to the newly selected\n"
+"date.\n"
 "\n"
-"Be careful that if two cuts are performed successively without pasting\n"
-"between them, the item that was cut at first will be lost, together\n"
-"with its associated note if it had one."
 msgstr ""
-"Cortar e colar o item selecionado. Isto é útil para rapidamente mover\n"
-"um item de uma data para outra.\n"
-"Para fazer isto, deve-se primeiro realçar o item que deve ser movido\n"
-"e então pressionar \"%s\" para cortar este item. Ele será excluído do\n"
-"painel.\n"
-"Assim que a nova data for escolhida no calendário, o painel de\n"
-"Agendamentos deve estar selecionado e a tecla \"%s\" deve ser\n"
-"pressionada para colar o item.\n"
-"O item aparecerá novamente no painel de Agendamentos, alocado\n"
-"para a nova data selecionada.\n"
+"Copia e cola o item atualmente selecionado. Isso é útil para rapidamente\n"
+"copiar um item de uma data para outra. Para isso, deve-se primeiro\n"
+"destacar o item que precisa ser copiado e, então, pressionar \"%s\" para\n"
+"copiar. Assim que a nova data tiver sido escolhida no calendário, o painel\n"
+"de agendamentos deve estar selecionado e a tecla \"%s\" deve ser "
+"pressionado\n"
+"para colar o item. O item vai aparecer o painel de agendamentos, atribuído\n"
+"à data selecionada.\n"
 "\n"
-"Tenha cuitado que se dois cortes forem executados sucessivamente sem\n"
-"que haja colagem entre eles, o item que foi cortado primeiro será\n"
-"perdido, junto com a nota associada a ele, se houvesse alguma."
 
 msgid "Edit Item\n"
 msgstr "Editar item\n"
@@ -1690,6 +1552,180 @@ msgid "Warning: ical header malformed or wrong version number. Aborting..."
 msgstr ""
 "Aviso: cabeçalho ical mal-formulado ou número de versão errado. Abortando..."
 
+msgid "Enter the new time ([hh:mm] or [hhmm]) : "
+msgstr "Entre com novo horário ([hh:mm] ou [hhmm]) :"
+
+msgid "Press [Enter] to continue"
+msgstr "Pressione [Enter] para continuar"
+
+msgid "You entered an invalid time, should be [hh:mm] or [hhmm]"
+msgstr "Você entrou com horário inválido, deveria ser [hh:mm] ou [hhmm]"
+
+msgid ""
+"Enter new end time ([hh:mm], [hhmm]) or duration ([+hh:mm], [+xxxdxxhxxm] or "
+"[+mm]) : "
+msgstr ""
+"Entre com novo horário de término ([hh:mm],[hhmm]) ou duração ([+hh:mm], "
+"[+xxxdxxhxxm] ou [+mm]) : "
+
+msgid "Invalid time: start time must be before end time!"
+msgstr ""
+"Horário inválido: horário de início deve ser antes do horário de término!"
+
+msgid "Enter the new item description:"
+msgstr "Entre com uma descrição para o novo item:"
+
+msgid "Enter the new repetition type:"
+msgstr "Entre com o novo tipo de repetição:"
+
+msgid "(d)aily"
+msgstr "(d)iária"
+
+msgid "(w)eekly"
+msgstr "(s)emanal"
+
+msgid "(m)onthly"
+msgstr "(m)ensal"
+
+msgid "(y)early"
+msgstr "(a)nual"
+
+#, c-format
+msgid "(currently using %s)"
+msgstr "(atualmente usando %s)"
+
+msgid "[dwmy]"
+msgstr "[dsma]"
+
+msgid "The frequence you entered is not valid."
+msgstr "A frequência informada não é válida."
+
+msgid "The entered date is not valid."
+msgstr "A data informada não é válida."
+
+#, c-format
+msgid "Possible formats are [%s] or '0' for an endless repetition."
+msgstr "Formatos possíveis são [%s] ou '0' para repetição sem fim."
+
+msgid "Enter the new repetition frequence:"
+msgstr "Entre com uma nova frequência de repetição:"
+
+#, c-format
+msgid "Enter the new ending date: [%s] or '0'"
+msgstr "Entre com a nova data final: [%s] ou '0'"
+
+msgid "Description"
+msgstr "Descrição"
+
+msgid "Repetition"
+msgstr "Repetição"
+
+msgid "Edit: "
+msgstr "Editar: "
+
+msgid "Start time"
+msgstr "Horário de início"
+
+msgid "End time"
+msgstr "Horário de término"
+
+msgid "Pipe item to external command:"
+msgstr "Redirecionar o item para comando externo:"
+
+msgid ""
+"Enter start time ([hh:mm] or [hhmm]), leave blank for an all-day event : "
+msgstr ""
+"Entre com a data de início ([hh:mm] ou [hhmm]), ou deixe em branco para dia "
+"inteiro:"
+
+msgid ""
+"Enter end time ([hh:mm] or [hhmm]) or duration ([+hh:mm], [+xxxdxxhxxm] or "
+"[+mm]) : "
+msgstr ""
+"Entre com a data de término ([hh:mm] ou [hhmm]) ou duração ([+hh:mm], "
+"[+xxxdxxhxxm] ou [+mm]) :"
+
+msgid "Enter description :"
+msgstr "Entre com a descrição :"
+
+msgid "You entered an invalid start time, should be [hh:mm] or [hhmm]"
+msgstr ""
+"Você entrou com um horário de início inválida - deveria ser [hh:mm] ou [hhmm]"
+
+msgid ""
+"Invalid end time/duration, should be [hh:mm], [hhmm], [+hh:mm], "
+"[+xxxdxxhxxm] or [+mm]"
+msgstr ""
+"Horário de término/duração inválido/a, deveria ser [hh:mm], [hhmm], [+hh:"
+"mm], [+xxxdxxhxxm] ou [+mm]"
+
+msgid "Do you really want to delete this item ?"
+msgstr "Tem certeza que deseja excluir este item ?"
+
+msgid "This item is recurrent. Delete (a)ll occurences or just this (o)ne ?"
+msgstr ""
+"Este item é recorrente. Excluir (t)odas ocorrências ou somente (e)esta aqui?"
+
+msgid "[ao]"
+msgstr "[te]"
+
+msgid "This item has a note attached to it. Delete (i)tem or just its (n)ote ?"
+msgstr ""
+"Este item tem uma anotação anexada a ele. Excluir o (i)tem ou somente a (n)"
+"ota?"
+
+msgid "[in]"
+msgstr "[in]"
+
+msgid "no such type"
+msgstr "tipo inexistente"
+
+msgid "Enter the new ToDo item : "
+msgstr "Entre com o novo item da Tarefa : "
+
+msgid "Enter the ToDo priority [1 (highest) - 9 (lowest)] :"
+msgstr "Entre com a prioridade da Tarefa [1 (mais alta) - 9 (mais baixa)]:"
+
+msgid "Do you really want to delete this task ?"
+msgstr "Você realmente deseja excluir esta tarefa ?"
+
+msgid "This item has a note attached to it. Delete (t)odo or just its (n)ote ?"
+msgstr ""
+"Este item possui uma nota anexada a ele. Excluir o (t)odo ou somente sua (n)"
+"ota ?"
+
+msgid "[tn]"
+msgstr "[tn]"
+
+msgid "Enter the new ToDo description :"
+msgstr "Entre com a nova descrição da Tarefa :"
+
+msgid "Enter the repetition type:"
+msgstr "Entre com o tipo da repetição:"
+
+msgid "Enter the repetition frequence:"
+msgstr "Entre com a frequência de repetição:"
+
+#, c-format
+msgid "Enter the ending date: [%s] or '0' for an endless repetition"
+msgstr "Entre com a data final: [%s] ou \"0\" para uma repetição sem fim"
+
+#, c-format
+msgid "Possible formats are [%s] or '0' for an endless repetition"
+msgstr "Formatos possíveis são [%s] ou \"0\" para uma repetição sem fim"
+
+msgid "This item is already a repeated one."
+msgstr "Este é um item repetido."
+
+msgid "Press [ENTER] to continue."
+msgstr "Pressione [ENTER] para continuar."
+
+msgid "Sorry, the date you entered is older than the item start time."
+msgstr "Desculpe, a data que foi informou é mais antiga que a data inicial."
+
+msgid "wrong item type"
+msgstr "tipo de item errado"
+
 msgid "Saving..."
 msgstr "Salvando..."
 
@@ -1708,9 +1744,6 @@ msgstr "Escolha o arquivo para o qual serão exportados os dados do calcurse:"
 msgid "The file cannot be accessed, please enter another file name."
 msgstr ""
 "O arquivo não pode ser acessado. Favor, entra com outro nome de arquivo."
-
-msgid "Press [ENTER] to continue."
-msgstr "Pressione [ENTER] para continuar."
 
 #, c-format
 msgid "Failed to open \"%s\", - %s\n"
@@ -1824,12 +1857,6 @@ msgstr "tipo de exportação desconhecido"
 
 msgid "wrong export mode"
 msgstr "modo de exportação errado"
-
-msgid "Ical"
-msgstr "Ical"
-
-msgid "Pcal"
-msgstr "Pcal"
 
 msgid "Enter the file name to import data from:"
 msgstr "Entre com o nome do arquivo de onde serão importados os dados:"
@@ -1980,8 +2007,8 @@ msgstr "Sai deste menu, ou sai do calcurse."
 msgid "Save calcurse data."
 msgstr "Salva dados do calcurse."
 
-msgid "Cut the item that is currently selected."
-msgstr "Corta o item que está atualmente selecionado."
+msgid "Copy the item that is currently selected."
+msgstr "Copia o item que está selecionado no momento."
 
 msgid "Paste an item at the current position."
 msgstr "Cola um item na posição atual."
@@ -2289,31 +2316,11 @@ msgstr "caractere desconhecido"
 msgid "date error in event"
 msgstr "erro na data em evento"
 
+msgid "event not found"
+msgstr "evento não encontrado"
+
 msgid "appointment not found"
 msgstr "agendamento não encontrado"
-
-msgid "Enter the repetition type:"
-msgstr "Entre com o tipo da repetição:"
-
-msgid "Enter the repetition frequence:"
-msgstr "Entre com a frequência de repetição:"
-
-#, c-format
-msgid "Enter the ending date: [%s] or '0' for an endless repetition"
-msgstr "Entre com a data final: [%s] ou \"0\" para uma repetição sem fim"
-
-#, c-format
-msgid "Possible formats are [%s] or '0' for an endless repetition"
-msgstr "Formatos possíveis são [%s] ou \"0\" para uma repetição sem fim"
-
-msgid "This item is already a repeated one."
-msgstr "Este é um item repetido."
-
-msgid "Sorry, the date you entered is older than the item start time."
-msgstr "Desculpe, a data que foi informou é mais antiga que a data inicial."
-
-msgid "wrong item type"
-msgstr "tipo de item errado"
 
 msgid "syntax error in item date"
 msgstr "erro de sintaxe no item data"
@@ -2326,37 +2333,14 @@ msgstr "Não foi possível excluir arquivo de trava do Calcurse: %s\n"
 msgid "Error setting signal #%d : %s\n"
 msgstr "Erro na definição de sinal #%d : %s\n"
 
-msgid "Enter the new ToDo item : "
-msgstr "Entre com o novo item da Tarefa : "
-
-msgid "Enter the ToDo priority [1 (highest) - 9 (lowest)] :"
-msgstr "Entre com a prioridade da Tarefa [1 (mais alta) - 9 (mais baixa)]:"
+msgid "no note attached"
+msgstr "nenhuma nota anexada"
 
 msgid "no such todo"
 msgstr "tarefa inexistente"
 
-msgid "no note attached"
-msgstr "nenhuma nota anexada"
-
-msgid "Do you really want to delete this task ?"
-msgstr "Você realmente deseja excluir esta tarefa ?"
-
-msgid "This item has a note attached to it. Delete (t)odo or just its (n)ote ?"
-msgstr ""
-"Este item possui uma nota anexada a ele. Excluir o (t)odo ou somente sua (n)"
-"ota ?"
-
-msgid "[tn]"
-msgstr "[tn]"
-
 msgid "todo not found"
 msgstr "tarefa não encontrada"
-
-msgid "no such action"
-msgstr "ação inexistente"
-
-msgid "Enter the new ToDo description :"
-msgstr "Entre com a nova descrição da Tarefa :"
 
 msgid "/!\\ INTERNAL ERROR /!\\"
 msgstr "/!\\ ERRO INTERNO /!\\"
@@ -2375,9 +2359,6 @@ msgstr "falha no mktime"
 
 msgid "error in mktime"
 msgstr "erro no mktime"
-
-msgid "Appointment"
-msgstr "Agendamento"
 
 msgid "could not convert string"
 msgstr "Não foi possível converter string"
@@ -2489,8 +2470,8 @@ msgstr "Sair"
 msgid "Save"
 msgstr "Salvar"
 
-msgid "Cut"
-msgstr "Cortar"
+msgid "Copy"
+msgstr "Copiar"
 
 msgid "Paste"
 msgstr "Colar"

@@ -8,50 +8,20 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2012-06-24 01:21+0200\n"
-"PO-Revision-Date: 2012-06-18 16:51+0000\n"
+"POT-Creation-Date: 2012-12-05 12:27+0100\n"
+"PO-Revision-Date: 2012-11-23 21:51+0000\n"
 "Last-Translator: Lukas Fleischer <transifex@cryptocrack.de>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgid "null pointer"
 msgstr ""
 
-msgid "Enter start time ([hh:mm]), leave blank for an all-day event : "
-msgstr ""
-
-msgid ""
-"Enter end time ([hh:mm]) or duration ([+hh:mm], [+xxxdxxhxxm] or [+mm]) : "
-msgstr ""
-
-msgid "Enter description :"
-msgstr "Introduce la descripcion :"
-
-msgid "You entered an invalid start time, should be [hh:mm]"
-msgstr ""
-
-msgid ""
-"Invalid end time/duration, should be [hh:mm], [+hh:mm], [+xxxdxxhxxm] or "
-"[+mm]"
-msgstr ""
-
-msgid "Press [Enter] to continue"
-msgstr "Pulsa [INTRO] para continuar"
-
-msgid "Do you really want to delete this item ?"
-msgstr "¿Seguro que quieres borrar este elemento?"
-
-msgid "no such type"
-msgstr ""
-
 msgid "date error in appointment"
-msgstr ""
-
-msgid "item not found"
 msgstr ""
 
 msgid "no such appointment"
@@ -60,7 +30,7 @@ msgstr ""
 msgid ""
 "Usage: calcurse [-g|-h|-v] [-an] [-t[num]] [-i<file>] [-x[format]]\n"
 "                [-d <date>|<num>] [-s[date]] [-r[range]]\n"
-"                [-c<file> | -D<dir>] [-S<regex>] [--status]\n"
+"                [-c<file>] [-D<dir>] [-S<regex>] [--status]\n"
 "                [--read-only]\n"
 msgstr ""
 
@@ -108,10 +78,10 @@ msgid ""
 "\n"
 "Files:\n"
 "  -c <file>, --calendar <file>\n"
-"\tspecify the calendar <file> to use (incompatible with '-D').\n"
+"\tspecify the calendar <file> to use (has precedence over '-D').\n"
 "\n"
 "  -D <dir>, --directory <dir>\n"
-"\tspecify the data directory to use (incompatible with '-c').\n"
+"\tspecify the data directory to use.\n"
 "\tIf not specified, the default directory is ~/.calcurse\n"
 "\n"
 "Non-interactive:\n"
@@ -215,14 +185,17 @@ msgstr ""
 msgid "Argument for '-x' should be either 'ical' or 'pcal'\n"
 msgstr ""
 
-msgid "Options '-D' and '-c' cannot be used at the same time\n"
-msgstr ""
-
 msgid "Option '-S' must be used with either '-d', '-r', '-s', '-a' or '-t'\n"
 msgstr ""
 
 msgid "To do :"
 msgstr "Tareas pendientes :"
+
+msgid "Export to (i)cal or (p)cal format?"
+msgstr ""
+
+msgid "[ip]"
+msgstr ""
 
 msgid "Do you really want to quit ?"
 msgstr "¿Estas seguro de que quieres salir?"
@@ -454,104 +427,16 @@ msgstr ""
 "Lo siento, tu terminal no soporta colores\n"
 "(Pulsa [INTRO] para continuar)"
 
+msgid "unknown item type"
+msgstr ""
+
 msgid "Event :"
 msgstr "Evento :"
 
 msgid "Appointment :"
 msgstr "Cita :"
 
-msgid "unknown item type"
-msgstr ""
-
-msgid "Enter the new time ([hh:mm]) : "
-msgstr ""
-
-msgid "You entered an invalid time, should be [hh:mm]"
-msgstr ""
-
-msgid ""
-"Enter new end time ([hh:mm]) or duration ([+hh:mm], [+xxxdxxhxxm] or "
-"[+mm]) : "
-msgstr ""
-
-msgid "Invalid time: start time must be before end time!"
-msgstr "Hora no valida: La hora de inicio debe ser anterior a la hora final!"
-
-msgid "Enter the new item description:"
-msgstr "Introduce la descripcion del nuevo elemento:"
-
-msgid "Enter the new repetition type:"
-msgstr ""
-
-msgid "(d)aily"
-msgstr ""
-
-msgid "(w)eekly"
-msgstr ""
-
-msgid "(m)onthly"
-msgstr ""
-
-msgid "(y)early"
-msgstr ""
-
-#, c-format
-msgid "(currently using %s)"
-msgstr ""
-
-msgid "[dwmy]"
-msgstr ""
-
-msgid "The frequence you entered is not valid."
-msgstr "La frecuencia que has introducido no es valida."
-
-msgid "The entered date is not valid."
-msgstr "La fecha introducida no es valida."
-
-#, c-format
-msgid "Possible formats are [%s] or '0' for an endless repetition."
-msgstr ""
-
-msgid "Enter the new repetition frequence:"
-msgstr "Introduce la nueva frecuencia de repeticion:"
-
-#, c-format
-msgid "Enter the new ending date: [%s] or '0'"
-msgstr ""
-
-msgid "Description"
-msgstr ""
-
-msgid "Repetition"
-msgstr ""
-
-msgid "Edit: "
-msgstr ""
-
-msgid "Start time"
-msgstr ""
-
-msgid "End time"
-msgstr ""
-
-msgid "This item is recurrent. Delete (a)ll occurences or just this (o)ne ?"
-msgstr ""
-"Este evento es recurrente. ¿ Borrar todas las recurrencias (a) o solo esta\n"
-"(o) ?"
-
-msgid "[ao]"
-msgstr ""
-
-msgid "This item has a note attached to it. Delete (i)tem or just its (n)ote ?"
-msgstr ""
-
-msgid "[in]"
-msgstr ""
-
 msgid "unknwon type"
-msgstr ""
-
-msgid "Pipe item to external command:"
 msgstr ""
 
 #, c-format
@@ -617,9 +502,6 @@ msgid "Could not stop calcurse daemon: %s\n"
 msgstr ""
 
 msgid "date error in the event\n"
-msgstr ""
-
-msgid "event not found"
 msgstr ""
 
 msgid "Internal error: line too long"
@@ -881,23 +763,19 @@ msgid ""
 "       event next time you launch Calcurse."
 msgstr ""
 
-msgid "Cut and Paste\n"
+msgid "Copy and Paste\n"
 msgstr ""
 
 #, c-format
 msgid ""
-"Cut and paste the currently selected item. This is useful to quickly\n"
-"move an item from one date to another.\n"
-"To do so, one must first highlight the item that needs to be moved,\n"
-"then press '%s' to cut this item. It will be removed from the panel.\n"
+"Copy and paste the currently selected item. This is useful to quickly\n"
+"copy an item from one date to another. To do so, one must first\n"
+"highlight the item that needs to be copied, then press '%s' to copy.\n"
 "Once the new date is chosen in the calendar, the appointment panel must\n"
-"be selected and the '%s' key must be pressed to paste the item.\n"
-"The item will appear again in the appointment panel, assigned to the\n"
-"newly selected date.\n"
+"be selected and the '%s' key must be pressed to paste the item. The item\n"
+"will appear in the appointment panel, assigned to the newly selected\n"
+"date.\n"
 "\n"
-"Be careful that if two cuts are performed successively without pasting\n"
-"between them, the item that was cut at first will be lost, together\n"
-"with its associated note if it had one."
 msgstr ""
 
 msgid "Edit Item\n"
@@ -1191,6 +1069,168 @@ msgstr ""
 msgid "Warning: ical header malformed or wrong version number. Aborting..."
 msgstr ""
 
+msgid "Enter the new time ([hh:mm] or [hhmm]) : "
+msgstr ""
+
+msgid "Press [Enter] to continue"
+msgstr "Pulsa [INTRO] para continuar"
+
+msgid "You entered an invalid time, should be [hh:mm] or [hhmm]"
+msgstr ""
+
+msgid ""
+"Enter new end time ([hh:mm], [hhmm]) or duration ([+hh:mm], [+xxxdxxhxxm] or "
+"[+mm]) : "
+msgstr ""
+
+msgid "Invalid time: start time must be before end time!"
+msgstr "Hora no valida: La hora de inicio debe ser anterior a la hora final!"
+
+msgid "Enter the new item description:"
+msgstr "Introduce la descripcion del nuevo elemento:"
+
+msgid "Enter the new repetition type:"
+msgstr ""
+
+msgid "(d)aily"
+msgstr ""
+
+msgid "(w)eekly"
+msgstr ""
+
+msgid "(m)onthly"
+msgstr ""
+
+msgid "(y)early"
+msgstr ""
+
+#, c-format
+msgid "(currently using %s)"
+msgstr ""
+
+msgid "[dwmy]"
+msgstr ""
+
+msgid "The frequence you entered is not valid."
+msgstr "La frecuencia que has introducido no es valida."
+
+msgid "The entered date is not valid."
+msgstr "La fecha introducida no es valida."
+
+#, c-format
+msgid "Possible formats are [%s] or '0' for an endless repetition."
+msgstr ""
+
+msgid "Enter the new repetition frequence:"
+msgstr "Introduce la nueva frecuencia de repeticion:"
+
+#, c-format
+msgid "Enter the new ending date: [%s] or '0'"
+msgstr ""
+
+msgid "Description"
+msgstr ""
+
+msgid "Repetition"
+msgstr ""
+
+msgid "Edit: "
+msgstr ""
+
+msgid "Start time"
+msgstr ""
+
+msgid "End time"
+msgstr ""
+
+msgid "Pipe item to external command:"
+msgstr ""
+
+msgid ""
+"Enter start time ([hh:mm] or [hhmm]), leave blank for an all-day event : "
+msgstr ""
+
+msgid ""
+"Enter end time ([hh:mm] or [hhmm]) or duration ([+hh:mm], [+xxxdxxhxxm] or "
+"[+mm]) : "
+msgstr ""
+
+msgid "Enter description :"
+msgstr "Introduce la descripcion :"
+
+msgid "You entered an invalid start time, should be [hh:mm] or [hhmm]"
+msgstr ""
+
+msgid ""
+"Invalid end time/duration, should be [hh:mm], [hhmm], [+hh:mm], "
+"[+xxxdxxhxxm] or [+mm]"
+msgstr ""
+
+msgid "Do you really want to delete this item ?"
+msgstr "¿Seguro que quieres borrar este elemento?"
+
+msgid "This item is recurrent. Delete (a)ll occurences or just this (o)ne ?"
+msgstr ""
+"Este evento es recurrente. ¿ Borrar todas las recurrencias (a) o solo esta\n"
+"(o) ?"
+
+msgid "[ao]"
+msgstr ""
+
+msgid "This item has a note attached to it. Delete (i)tem or just its (n)ote ?"
+msgstr ""
+
+msgid "[in]"
+msgstr ""
+
+msgid "no such type"
+msgstr ""
+
+msgid "Enter the new ToDo item : "
+msgstr "Introduce una nueva tarea pendiente :"
+
+msgid "Enter the ToDo priority [1 (highest) - 9 (lowest)] :"
+msgstr ""
+"Introduce la prioridad de la tarea [1 (la mas alta) - 9 (la mas baja)] :"
+
+msgid "Do you really want to delete this task ?"
+msgstr "¿Seguro que quieres borrar esta tarea ?"
+
+msgid "This item has a note attached to it. Delete (t)odo or just its (n)ote ?"
+msgstr ""
+
+msgid "[tn]"
+msgstr ""
+
+msgid "Enter the new ToDo description :"
+msgstr "Introduce la descripcion de la nueva tarea :"
+
+msgid "Enter the repetition type:"
+msgstr ""
+
+msgid "Enter the repetition frequence:"
+msgstr "Introduce la frecuencia de repeticion:"
+
+#, c-format
+msgid "Enter the ending date: [%s] or '0' for an endless repetition"
+msgstr ""
+
+#, c-format
+msgid "Possible formats are [%s] or '0' for an endless repetition"
+msgstr ""
+
+msgid "This item is already a repeated one."
+msgstr "Este elemento es ya un elemento repetido."
+
+msgid "Press [ENTER] to continue."
+msgstr "Pulsa [INTRO] para continuar."
+
+msgid "Sorry, the date you entered is older than the item start time."
+msgstr "La fecha que has introducido es anterior a la de inicio del elemento."
+
+msgid "wrong item type"
+msgstr ""
+
 msgid "Saving..."
 msgstr "Guardando..."
 
@@ -1208,9 +1248,6 @@ msgstr "Elige el archivo que se usara para exportar los datos de Calcurse:"
 
 msgid "The file cannot be accessed, please enter another file name."
 msgstr "El archivo no es accesible, por favor elige otro nombre de archivo."
-
-msgid "Press [ENTER] to continue."
-msgstr "Pulsa [INTRO] para continuar."
 
 #, c-format
 msgid "Failed to open \"%s\", - %s\n"
@@ -1318,12 +1355,6 @@ msgid "unknown export type"
 msgstr ""
 
 msgid "wrong export mode"
-msgstr ""
-
-msgid "Ical"
-msgstr ""
-
-msgid "Pcal"
 msgstr ""
 
 msgid "Enter the file name to import data from:"
@@ -1441,7 +1472,7 @@ msgstr ""
 msgid "Save calcurse data."
 msgstr ""
 
-msgid "Cut the item that is currently selected."
+msgid "Copy the item that is currently selected."
 msgstr ""
 
 msgid "Paste an item at the current position."
@@ -1722,30 +1753,10 @@ msgstr ""
 msgid "date error in event"
 msgstr ""
 
+msgid "event not found"
+msgstr ""
+
 msgid "appointment not found"
-msgstr ""
-
-msgid "Enter the repetition type:"
-msgstr ""
-
-msgid "Enter the repetition frequence:"
-msgstr "Introduce la frecuencia de repeticion:"
-
-#, c-format
-msgid "Enter the ending date: [%s] or '0' for an endless repetition"
-msgstr ""
-
-#, c-format
-msgid "Possible formats are [%s] or '0' for an endless repetition"
-msgstr ""
-
-msgid "This item is already a repeated one."
-msgstr "Este elemento es ya un elemento repetido."
-
-msgid "Sorry, the date you entered is older than the item start time."
-msgstr "La fecha que has introducido es anterior a la de inicio del elemento."
-
-msgid "wrong item type"
 msgstr ""
 
 msgid "syntax error in item date"
@@ -1759,36 +1770,14 @@ msgstr ""
 msgid "Error setting signal #%d : %s\n"
 msgstr ""
 
-msgid "Enter the new ToDo item : "
-msgstr "Introduce una nueva tarea pendiente :"
-
-msgid "Enter the ToDo priority [1 (highest) - 9 (lowest)] :"
+msgid "no note attached"
 msgstr ""
-"Introduce la prioridad de la tarea [1 (la mas alta) - 9 (la mas baja)] :"
 
 msgid "no such todo"
 msgstr ""
 
-msgid "no note attached"
-msgstr ""
-
-msgid "Do you really want to delete this task ?"
-msgstr "¿Seguro que quieres borrar esta tarea ?"
-
-msgid "This item has a note attached to it. Delete (t)odo or just its (n)ote ?"
-msgstr ""
-
-msgid "[tn]"
-msgstr ""
-
 msgid "todo not found"
 msgstr ""
-
-msgid "no such action"
-msgstr ""
-
-msgid "Enter the new ToDo description :"
-msgstr "Introduce la descripcion de la nueva tarea :"
 
 msgid "/!\\ INTERNAL ERROR /!\\"
 msgstr ""
@@ -1807,9 +1796,6 @@ msgstr ""
 
 msgid "error in mktime"
 msgstr ""
-
-msgid "Appointment"
-msgstr "Cita"
 
 msgid "could not convert string"
 msgstr ""
@@ -1921,7 +1907,7 @@ msgstr "Salir"
 msgid "Save"
 msgstr "Guardar"
 
-msgid "Cut"
+msgid "Copy"
 msgstr ""
 
 msgid "Paste"
