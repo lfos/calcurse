@@ -34,4 +34,10 @@ check_SCRIPTS = $(TESTS)
 
 run_test_SOURCES = run-test.c
 
-EXTRA_DIST = $(TESTS) data/apts data/conf data/todo
+EXTRA_DIST = \
+	$(TESTS) \
+	data/apts \
+	data/apts-bug-002 \
+	data/apts-recur \
+	data/conf \
+	data/todo
