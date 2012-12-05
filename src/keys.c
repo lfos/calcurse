@@ -547,11 +547,15 @@ void keys_popup_info(enum key key)
 void keys_save_bindings(FILE * fd)
 {
   int i;
+  char *action;
 
   EXIT_IF(fd == NULL, _("FATAL ERROR: null file pointer."));
   dump_intro(fd);
-  for (i = 0; i < NBKEYS; i++)
-    fprintf(fd, "%s  %s\n", keydef[i].label, keys_action_allkeys(i));
+  for (i = 0; i < NBKEYS; i++) {
+    action = keys_action_allkeys(i);
+    if (action)
+      fprintf(fd, "%s  %s\n", keydef[i].label, action);
+  }
 }
 
 int keys_check_missing_bindings(void)
