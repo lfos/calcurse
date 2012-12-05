@@ -729,6 +729,11 @@ void io_load_keys(const char *pager)
       io_log_print(log, line, _("Could not read key label"));
       continue;
     }
+
+    /* Skip legacy entries. */
+    if (strcmp(key_label, "generic-cut") == 0)
+      continue;
+
     ht_entry.label = key_label;
     p = buf + strlen(key_label) + 1;
     ht_elm = HTABLE_LOOKUP(ht_keybindings, &ht_keys, &ht_entry);
