@@ -1,3 +1,41 @@
+[05 Dec 2012]
+Version 3.1.0:
+- New features:
+  * Vim-like copy/paste (FR#15). Use the delete key to cut items.
+
+  * Support for entering times in 24 hour format ("2130" instead of "21:30",
+    thanks to William Pettersson for submitting a patch).
+
+  * Compact panel mode (FR#7). This can be enabled using the currently
+    undocumented "appearance.compactpanels" configuration setting.
+
+  * Configurable default view (FR#19). The default view can be changed using
+    the currently undocumented "appearance.defaultpanel" configuration setting.
+
+  * "-D" and "-c" can now be used simultaneously, whereby "-c" has precedence
+    over "-D".
+
+  * Cache monthly view to speed up browsing.
+
+- Bug fixes:
+  * Sort `calcurse -d` output by time (BUG#2, reported by Romeo Van Snick).
+
+  * Fix a critical data corruption bug (BUG#7, BUG#8, reported by Baptiste
+    Jonglez and Erik Saule).
+
+  * Fix screen corruption (BUG#6, reported by Erik Saule and Antoine Jacoutot).
+
+  * No longer show the calcurse screen in the editor/pager when the window is
+    resized (BUG#9, reported by Michael Smith).
+
+  * Calculate busy slices correctly if (recurrent) appointments with a duration
+    of more than 24 hours are used.
+
+  * Fix a core dump that occurred if the main window was too small.
+
+- Translation:
+  * Several translation updates.
+
 [01 Jul 2012]
 Version 3.0.0:
 - New features:
@@ -25,9 +63,6 @@ Version 3.0.0:
     disk space usage.
 
   * A test suite that can be used to test the core functionality of calcurse.
-
-  * "-D" and "-c" can now be used simultaneously, whereby "-c" has precedence
-    over "-D".
 
   * A "--read-only" command line option to discard all changes to data files.
 
