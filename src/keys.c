@@ -222,7 +222,7 @@ enum key keys_getch(WINDOW * win, int *count, int *reg)
 
 static void add_key_str(enum key action, int key)
 {
-  if (action < 0 || action > NBKEYS)
+  if (action > NBKEYS)
     return;
 
   LLIST_ADD(&keys[action], mem_strdup(keys_int2str(key)));
@@ -245,7 +245,7 @@ static void del_key_str(enum key action, int key)
   llist_item_t *i;
   char oldstr[BUFSIZ];
 
-  if (action < 0 || action > NBKEYS)
+  if (action > NBKEYS)
     return;
 
   strncpy(oldstr, keys_int2str(key), BUFSIZ);
@@ -531,7 +531,7 @@ void keys_popup_info(enum key key)
   info[KEY_RAISE_PRIORITY] = _("Raise a task priority inside the todo panel.");
   info[KEY_LOWER_PRIORITY] = _("Lower a task priority inside the todo panel.");
 
-  if (key < 0 || key > NBKEYS)
+  if (key > NBKEYS)
     return;
 
 #define WINROW 10
