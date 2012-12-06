@@ -932,7 +932,7 @@ void io_export_data(enum export_type type)
   }
 }
 
-static FILE *get_import_stream(enum export_type type)
+static FILE *get_import_stream(enum import_type type)
 {
   FILE *stream = NULL;
   char *stream_name;

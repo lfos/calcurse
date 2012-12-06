@@ -773,7 +773,7 @@ ical_read_exdate(llist_t * exc, FILE * log, char *exstr, unsigned *noskipped,
 
 /* Return an allocated string containing the name of the newly created note. */
 static char *ical_read_note(char *line, unsigned *noskipped,
-                            ical_vevent_e item_type, const int itemline,
+                            ical_types_e item_type, const int itemline,
                             FILE * log)
 {
   char *p, *notestr, *note;
