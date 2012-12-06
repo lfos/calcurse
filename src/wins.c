@@ -373,7 +373,7 @@ void wins_show(WINDOW * win, const char *label)
 void wins_get_config(void)
 {
   enum win win_master;
-  enum win win_slave[1];
+  enum win win_slave[2];
   unsigned master_is_left;
 
   /* Get the screen configuration */
