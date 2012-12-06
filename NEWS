@@ -1,3 +1,10 @@
+[07 Dec 2012]
+Version 3.1.1:
+- Bug fixes:
+  * Fix another screen corruption bug.
+
+  * Fix several compiler warnings.
+
 [05 Dec 2012]
 Version 3.1.0:
 - New features:
