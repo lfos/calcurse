@@ -54,7 +54,7 @@ static int day_edit_time(int time, unsigned *new_hour, unsigned *new_minute)
         return 1;
       } else {
         status_mesg(fmt_msg, enter_str);
-        wgetch(win[STA].p);
+        wgetch(win[KEY].p);
       }
     } else
       return 0;
@@ -86,7 +86,7 @@ static int day_edit_duration(int start, int dur, unsigned *new_duration)
         break;
       } else {
         status_mesg(fmt_msg, enter_str);
-        wgetch(win[STA].p);
+        wgetch(win[KEY].p);
       }
     } else
       return 0;
@@ -115,7 +115,7 @@ static void update_start_time(long *start, long *dur)
       valid_date = 1;
     } else {
       status_mesg(msg_wrong_time, msg_enter);
-      wgetch(win[STA].p);
+      wgetch(win[KEY].p);
       valid_date = 0;
     }
   }
@@ -212,7 +212,7 @@ static void update_rept(struct rpt **rpt, const long start)
       mem_free(freqstr);
       if (newfreq == 0) {
         status_mesg(msg_wrong_freq, msg_enter);
-        wgetch(win[STA].p);
+        wgetch(win[KEY].p);
       }
     } else {
       mem_free(freqstr);
@@ -249,14 +249,14 @@ static void update_rept(struct rpt **rpt, const long start)
         newuntil = date2sec(new_date, lt.tm_hour, lt.tm_min);
         if (newuntil < start) {
           status_mesg(msg_wrong_time, msg_enter);
-          wgetch(win[STA].p);
+          wgetch(win[KEY].p);
           date_entered = 0;
         } else
           date_entered = 1;
       } else {
         snprintf(outstr, BUFSIZ, msg_fmts, DATEFMT_DESC(conf.input_datefmt));
         status_mesg(msg_wrong_date, outstr);
-        wgetch(win[STA].p);
+        wgetch(win[KEY].p);
         date_entered = 0;
       }
     }
@@ -447,7 +447,7 @@ void interact_day_item_add(void)
         break;
       else {
         status_mesg(format_message_1, enter_str);
-        wgetch(win[STA].p);
+        wgetch(win[KEY].p);
       }
     } else
       return;
@@ -477,7 +477,7 @@ void interact_day_item_add(void)
           break;
         } else {
           status_mesg(format_message_2, enter_str);
-          wgetch(win[STA].p);
+          wgetch(win[KEY].p);
         }
       } else
         return;
@@ -606,7 +606,7 @@ void interact_todo_add(void)
   if (getstring(win[STA].p, todo_input, BUFSIZ, 0, 1) == GETSTRING_VALID) {
     while ((ch < '1') || (ch > '9')) {
       status_mesg(mesg_id, "");
-      ch = wgetch(win[STA].p);
+      ch = wgetch(win[KEY].p);
     }
     todo_add(todo_input, ch - '0', NULL);
     todo_set_nb(todo_nb() + 1);
@@ -744,7 +744,7 @@ void interact_day_item_repeat(void)
   p = day_get_item(item_nb);
   if (p->type != APPT && p->type != EVNT) {
     status_mesg(wrong_type_1, wrong_type_2);
-    wgetch(win[STA].p);
+    wgetch(win[KEY].p);
     return;
   }
 
@@ -771,7 +771,7 @@ void interact_day_item_repeat(void)
       freq = atoi(user_input);
       if (freq == 0) {
         status_mesg(mesg_wrong_freq, wrong_type_2);
-        wgetch(win[STA].p);
+        wgetch(win[KEY].p);
       }
       user_input[0] = '\0';
     } else
@@ -796,7 +796,7 @@ void interact_day_item_repeat(void)
           until = date2sec(until_date, lt.tm_hour, lt.tm_min);
           if (until < p->start) {
             status_mesg(mesg_older, wrong_type_2);
-            wgetch(win[STA].p);
+            wgetch(win[KEY].p);
             date_entered = 0;
           } else {
             date_entered = 1;
@@ -805,7 +805,7 @@ void interact_day_item_repeat(void)
           snprintf(outstr, BUFSIZ, mesg_wrong_2,
                    DATEFMT_DESC(conf.input_datefmt));
           status_mesg(mesg_wrong_1, outstr);
-          wgetch(win[STA].p);
+          wgetch(win[KEY].p);
           date_entered = 0;
         }
       }

@@ -676,7 +676,7 @@ void notify_config_bar(void)
   wins_scrollwin_display(&cwin);
 
   buf = mem_malloc(BUFSIZ);
-  while ((ch = wgetch(win[STA].p)) != 'q') {
+  while ((ch = wgetch(win[KEY].p)) != 'q') {
     buf[0] = '\0';
 
     switch (ch) {

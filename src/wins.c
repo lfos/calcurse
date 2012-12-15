@@ -262,8 +262,10 @@ void wins_init(void)
 {
   wins_init_panels();
   win[STA].p = newwin(win[STA].h, win[STA].w, win[STA].y, win[STA].x);
+  win[KEY].p = newwin(1, 1, 1, 1);
 
   keypad(win[STA].p, TRUE);
+  keypad(win[KEY].p, TRUE);
 
   /* Notify that the curses mode is now launched. */
   ui_mode = UI_CURSES;
@@ -345,6 +347,7 @@ void wins_reinit(void)
   delwin(apad.ptrwin);
   delwin(win[TOD].p);
   delwin(win[STA].p);
+  delwin(win[KEY].p);
   wins_get_config();
   wins_init();
   if (notify_bar())

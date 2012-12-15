@@ -793,7 +793,7 @@ void help_screen(void)
     }
 
     wins_scrollwin_display(&hwin);
-    ch = keys_getch(win[STA].p, NULL, NULL);
+    ch = keys_getch(win[KEY].p, NULL, NULL);
   }
   wins_scrollwin_delete(&hwin);
   if (need_resize)

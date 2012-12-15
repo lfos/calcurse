@@ -175,7 +175,7 @@ static FILE *get_export_stream(enum export_type type)
     stream = fopen(stream_name, "w");
     if (stream == NULL) {
       status_mesg(wrong_name, press_enter);
-      wgetch(win[STA].p);
+      wgetch(win[KEY].p);
     }
   }
   mem_free(stream_name);
@@ -421,7 +421,7 @@ void io_save_cal(enum save_display display)
   /* Print a message telling data were saved */
   if (ui_mode == UI_CURSES && conf.system_dialogs) {
     status_mesg(save_success, enter);
-    wgetch(win[STA].p);
+    wgetch(win[KEY].p);
   }
 
   pthread_mutex_unlock(&io_save_mutex);
@@ -893,7 +893,7 @@ void io_startup_screen(int no_data_file)
     status_mesg(_("Welcome to Calcurse. Missing data files were created."),
                 enter);
 
-  wgetch(win[STA].p);
+  wgetch(win[KEY].p);
 }
 
 /* Export calcurse data. */
@@ -928,7 +928,7 @@ void io_export_data(enum export_type type)
 
   if (conf.system_dialogs && ui_mode == UI_CURSES) {
     status_mesg(success, enter);
-    wgetch(win[STA].p);
+    wgetch(win[KEY].p);
   }
 }
 
@@ -952,7 +952,7 @@ static FILE *get_import_stream(enum import_type type)
     stream = fopen(stream_name, "r");
     if (stream == NULL) {
       status_mesg(wrong_file, press_enter);
-      wgetch(win[STA].p);
+      wgetch(win[KEY].p);
     }
   }
   mem_free(stream_name);
@@ -1030,7 +1030,7 @@ void io_import_data(enum import_type type, const char *stream_name)
              stats_str[1], stats_str[2], stats_str[3],
              _("Press [ENTER] to continue"));
     status_mesg(read, stat);
-    wgetch(win[STA].p);
+    wgetch(win[KEY].p);
   } else if (ui_mode == UI_CMDLINE) {
     printf(proc_report, stats.lines);
     printf("\n%s / %s / %s / %s\n", stats_str[0], stats_str[1],

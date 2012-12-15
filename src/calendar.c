@@ -641,7 +641,7 @@ void calendar_change_day(int datefmt)
       }
       if (wrong_day) {
         status_mesg(mesg_line1, mesg_line2);
-        wgetch(win[STA].p);
+        wgetch(win[KEY].p);
       }
     }
   }

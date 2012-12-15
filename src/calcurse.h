@@ -239,6 +239,7 @@ enum win {
   TOD,
   NOT,
   STA,
+  KEY,
   NBWINS
 };
 

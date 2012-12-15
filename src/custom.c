@@ -226,7 +226,7 @@ void custom_layout_config(void)
   display_layout_config(&conf_win, mark, cursor);
   clear();
 
-  while ((ch = keys_getch(win[STA].p, NULL, NULL)) != KEY_GENERIC_QUIT) {
+  while ((ch = keys_getch(win[KEY].p, NULL, NULL)) != KEY_GENERIC_QUIT) {
     need_reset = 0;
     switch (ch) {
     case KEY_GENERIC_HELP:
@@ -310,7 +310,7 @@ void custom_sidebar_config(void)
                             bindings_size, NULL);
   wins_doupdate();
 
-  while ((ch = keys_getch(win[STA].p, NULL, NULL)) != KEY_GENERIC_QUIT) {
+  while ((ch = keys_getch(win[KEY].p, NULL, NULL)) != KEY_GENERIC_QUIT) {
     switch (ch) {
     case KEY_MOVE_UP:
       wins_sbar_winc();
@@ -528,7 +528,7 @@ void custom_color_config(void)
                        theme_changed);
   clear();
 
-  while ((ch = keys_getch(win[STA].p, NULL, NULL)) != KEY_GENERIC_QUIT) {
+  while ((ch = keys_getch(win[KEY].p, NULL, NULL)) != KEY_GENERIC_QUIT) {
     need_reset = 0;
     theme_changed = 0;
 
@@ -732,7 +732,7 @@ void custom_general_config(void)
   wins_scrollwin_display(&cwin);
 
   buf = mem_malloc(BUFSIZ);
-  while ((ch = wgetch(win[STA].p)) != 'q') {
+  while ((ch = wgetch(win[KEY].p)) != 'q') {
     buf[0] = '\0';
 
     switch (ch) {
@@ -921,7 +921,7 @@ void custom_keys_config(void)
   for (;;) {
     int ch;
 
-    ch = keys_getch(win[STA].p, NULL, NULL);
+    ch = keys_getch(win[KEY].p, NULL, NULL);
     switch (ch) {
     case KEY_MOVE_UP:
       if (selrow > 0) {
@@ -1032,7 +1032,7 @@ void custom_config_main(void)
   int old_layout;
 
   custom_config_bar();
-  while ((ch = wgetch(win[STA].p)) != 'q') {
+  while ((ch = wgetch(win[KEY].p)) != 'q') {
     switch (ch) {
     case 'C':
     case 'c':
@@ -1042,7 +1042,7 @@ void custom_config_main(void)
         colorize = 0;
         wins_erase_status_bar();
         mvwaddstr(win[STA].p, 0, 0, no_color_support);
-        wgetch(win[STA].p);
+        wgetch(win[KEY].p);
       }
       break;
     case 'L':

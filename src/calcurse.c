@@ -565,6 +565,11 @@ int main(int argc, char **argv)
   io_load_todo();
   io_load_app();
   wins_reinit();
+  /*
+   * Refresh the hidden key handler window here to prevent wgetch() from
+   * implicitly calling wrefresh() later (causing ncurses race conditions).
+   */
+  wins_wrefresh(win[KEY].p);
   if (conf.system_dialogs) {
     wins_update(FLAG_ALL);
     io_startup_screen(no_data_file);
@@ -589,7 +594,7 @@ int main(int argc, char **argv)
       wins_reset();
     }
 
-    key = keys_getch(win[STA].p, &count, &reg);
+    key = keys_getch(win[KEY].p, &count, &reg);
     switch (key) {
     case KEY_GENERIC_REDRAW:
       resize = 1;

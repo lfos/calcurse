@@ -174,6 +174,7 @@ void status_mesg(const char *msg1, const char *msg2)
   mvwaddstr(win[STA].p, 0, 0, msg1);
   mvwaddstr(win[STA].p, 1, 0, msg2);
   custom_remove_attr(win[STA].p, ATTR_HIGHEST);
+  wins_wrefresh(win[STA].p);
 }
 
 /*
@@ -205,7 +206,7 @@ int status_ask_choice(const char *message, const char choice[], int nb_choice)
   status_mesg(message, avail_choice);
 
   for (;;) {
-    ch = wgetch(win[STA].p);
+    ch = wgetch(win[KEY].p);
     for (i = 1; i <= nb_choice; i++)
       if (ch == choice[i])
         return i;
