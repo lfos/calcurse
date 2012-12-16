@@ -1,3 +1,12 @@
+[16 Dec 2012]
+Version 3.1.2:
+- Bug fixes:
+  * Fix another corner case of the screen corruption bug (BUG#6).
+
+  * Fix core dump when trying to edit a non-existent item.
+
+  * Display correct welcome messages on startup.
+
 [07 Dec 2012]
 Version 3.1.1:
 - Bug fixes:
