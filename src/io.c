@@ -888,10 +888,10 @@ void io_startup_screen(int no_data_file)
   const char *enter = _("Press [ENTER] to continue");
 
   if (no_data_file)
-    status_mesg(_("Data files found. Data will be loaded now."), enter);
-  else
     status_mesg(_("Welcome to Calcurse. Missing data files were created."),
                 enter);
+  else
+    status_mesg(_("Data files found. Data will be loaded now."), enter);
 
   wgetch(win[KEY].p);
 }
