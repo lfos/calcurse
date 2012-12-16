@@ -52,8 +52,12 @@ static struct day_items_nb do_storage(int day_changed)
   struct day_items_nb inday = *day_process_storage(calendar_get_slctd_day(),
                                                    day_changed, &inday);
 
-  if (day_changed)
-    apoint_hilt_set(1);
+  if (day_changed) {
+    if ((inday.nb_events + inday.nb_apoints) > 0)
+      apoint_hilt_set(1);
+    else
+      apoint_hilt_set(0);
+  }
 
   return inday;
 }
