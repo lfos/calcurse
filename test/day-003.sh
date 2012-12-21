@@ -6,7 +6,8 @@ if [ ! -x "$(command -v faketime)" ]; then
 fi
 
 if [ "$1" = 'actual' ]; then
-  faketime '1912-06-23' "$CALCURSE" --read-only -D "$DATA_DIR"/ -d42
+  faketime -f '1912-06-23 00:00:00' "$CALCURSE" --read-only -D "$DATA_DIR"/ \
+    -d42
 elif [ "$1" = 'expected' ]; then
   "$CALCURSE" --read-only -D "$DATA_DIR"/ -s06/23/1912 -r42
 else
