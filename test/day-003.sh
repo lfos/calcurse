@@ -2,7 +2,7 @@
 
 if [ ! -x "$(command -v faketime)" ]; then
   echo "libfaketime not found - skipping $0..."
-  exit 1
+  exit 0
 fi
 
 if [ "$1" = 'actual' ]; then
