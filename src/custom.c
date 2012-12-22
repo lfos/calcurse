@@ -231,7 +231,7 @@ void custom_layout_config(void)
     switch (ch) {
     case KEY_GENERIC_HELP:
       help_wins_init(&hwin, 0, 0, (notify_bar())? row - 3 : row - 2, col);
-      mvwaddstr(hwin.pad.p, 1, 0, help_text);
+      mvwprintw(hwin.pad.p, 1, 0, help_text, SBARMINWIDTH);
       hwin.total_lines = 7;
       wins_scrollwin_display(&hwin);
       wgetch(hwin.win.p);
@@ -295,13 +295,12 @@ void custom_sidebar_config(void)
   };
   const char *help_text =
       _
-      /* xgettext:no-c-format */
       ("This configuration screen is used to change the width of the side bar.\n"
        "The side bar is the part of the screen which contains two panels:\n"
        "the calendar and, depending on the chosen layout, either the todo list\n"
        "or the appointment list.\n\n"
-       "The side bar width can be up to 50% of the total screen width, but\n"
-       "can't be smaller than " TOSTRING(SBARMINWIDTH) " characters wide.\n\n");
+       "The side bar width can be up to 50%% of the total screen width, but\n"
+       "can't be smaller than %d characters wide.\n\n");
   int ch, bindings_size;
 
   bindings_size = sizeof(bindings) / sizeof(bindings[0]);
