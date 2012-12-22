@@ -561,21 +561,6 @@ char *nowstr(void)
   return buf;
 }
 
-long mystrtol(const char *str)
-{
-  char *ep;
-  long lval;
-
-  errno = 0;
-  lval = strtol(str, &ep, 10);
-  if (str[0] == '\0' || *ep != '\0')
-    EXIT(_("could not convert string"));
-  if (errno == ERANGE && (lval == LONG_MAX || lval == LONG_MIN))
-    EXIT(_("out of range"));
-
-  return lval;
-}
-
 /* Print the given option value with appropriate color. */
 void
 print_bool_option_incolor(WINDOW * win, unsigned option, int pos_y, int pos_x)

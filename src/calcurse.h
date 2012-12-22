@@ -971,7 +971,6 @@ void item_in_popup(const char *, const char *, const char *, const char *);
 long get_today(void);
 long now(void);
 char *nowstr(void);
-long mystrtol(const char *);
 void print_bool_option_incolor(WINDOW *, unsigned, int, int);
 const char *get_tempdir(void);
 char *new_tempfile(const char *, int);
