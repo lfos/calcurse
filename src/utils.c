@@ -845,14 +845,6 @@ int parse_duration(const char *string, unsigned *duration)
   return 1;
 }
 
-void str_toupper(char *s)
-{
-  if (!s)
-    return;
-  for (; *s; s++)
-    *s = toupper(*s);
-}
-
 void file_close(FILE * f, const char *pos)
 {
   EXIT_IF((fclose(f)) != 0, _("Error when closing file at %s"), pos);
