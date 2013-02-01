@@ -49,8 +49,8 @@ int count, reg;
  */
 static struct day_items_nb do_storage(int day_changed)
 {
-  struct day_items_nb inday = *day_process_storage(calendar_get_slctd_day(),
-                                                   day_changed, &inday);
+  struct day_items_nb inday = day_process_storage(calendar_get_slctd_day(),
+                                                  day_changed);
 
   if (day_changed) {
     if ((inday.nb_events + inday.nb_apoints) > 0)
@@ -578,7 +578,7 @@ int main(int argc, char **argv)
     wins_update(FLAG_ALL);
     io_startup_screen(no_data_file);
   }
-  inday = *day_process_storage(0, 0, &inday);
+  inday = day_process_storage(0, 0);
   wins_slctd_set(conf.default_panel);
   wins_update(FLAG_ALL);
 

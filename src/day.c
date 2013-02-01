@@ -360,12 +360,12 @@ day_store_items(long date, unsigned *pnb_events, unsigned *pnb_apoints,
  * those items in a pad. If selected day is null, then store items for current
  * day. This is useful to speed up the appointment panel update.
  */
-struct day_items_nb *day_process_storage(struct date *slctd_date,
-                                         unsigned day_changed,
-                                         struct day_items_nb *inday)
+struct day_items_nb day_process_storage(struct date *slctd_date,
+                                        unsigned day_changed)
 {
   long date;
   struct date day;
+  struct day_items_nb inday;
 
   if (slctd_date)
     day = *slctd_date;
@@ -379,8 +379,8 @@ struct day_items_nb *day_process_storage(struct date *slctd_date,
     delwin(apad.ptrwin);
 
   /* Store the events and appointments (recursive and normal items). */
-  day_store_items(date, &inday->nb_events, &inday->nb_apoints, NULL);
-  apad.length = (inday->nb_events + 1 + 3 * inday->nb_apoints);
+  day_store_items(date, &inday.nb_events, &inday.nb_apoints, NULL);
+  apad.length = (inday.nb_events + 1 + 3 * inday.nb_apoints);
 
   /* Create the new pad with its new length. */
   if (day_changed)

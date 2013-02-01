@@ -684,8 +684,7 @@ int day_item_get_state(struct day_item *);
 void day_item_add_exc(struct day_item *, long);
 void day_item_fork(struct day_item *, struct day_item *);
 int day_store_items(long, unsigned *, unsigned *, regex_t *);
-struct day_items_nb *day_process_storage(struct date *, unsigned,
-                                         struct day_items_nb *);
+struct day_items_nb day_process_storage(struct date *, unsigned);
 void day_write_pad(long, int, int, int);
 void day_write_stdout(long, const char *, const char *, const char *,
                       const char *);
