@@ -107,7 +107,8 @@ static void update_start_time(long *start, long *dur)
   const char *msg_enter = _("Press [Enter] to continue");
 
   do {
-    day_edit_time(*start, &hr, &mn);
+    if (!day_edit_time(*start, &hr, &mn))
+      break;
     newtime = update_time_in_date(*start, hr, mn);
     if (newtime < *start + *dur) {
       *dur -= (newtime - *start);
