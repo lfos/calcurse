@@ -1,3 +1,14 @@
+[02 Feb 2013]
+Version 3.1.3:
+- Bug fixes:
+  * Complete the test-suite even if libfaketime is not present.
+
+  * Add a workaround for broken libfaketime-based tests on 32-bit systems
+    (fixes Debian bug #697013).
+
+  * Do not update start time/duration with bogus values if the prompt is
+    canceled in edit mode.
+
 [16 Dec 2012]
 Version 3.1.2:
 - Bug fixes:
