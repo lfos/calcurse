@@ -107,7 +107,8 @@ static void update_start_time(long *start, long *dur)
   const char *msg_enter = _("Press [Enter] to continue");
 
   do {
-    day_edit_time(*start, &hr, &mn);
+    if (!day_edit_time(*start, &hr, &mn))
+      break;
     newtime = update_time_in_date(*start, hr, mn);
     if (newtime < *start + *dur) {
       *dur -= (newtime - *start);
@@ -126,8 +127,8 @@ static void update_duration(long *start, long *dur)
 {
   unsigned newdur;
 
-  day_edit_duration(*start, *dur, &newdur);
-  *dur = newdur;
+  if (day_edit_duration(*start, *dur, &newdur))
+    *dur = newdur;
 }
 
 static void update_desc(char **desc)

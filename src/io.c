@@ -526,7 +526,8 @@ void io_load_app(void)
         if (c == '!') {
           ungetc(c, data_file);
           recur_exc_scan(&exc, data_file);
-          c = getc(data_file);
+          while ((c = getc(data_file)) == ' ') ;
+          ungetc(c, data_file);
         } else if (c == '}') {
           while ((c = getc(data_file)) == ' ') ;
           ungetc(c, data_file);
@@ -535,7 +536,8 @@ void io_load_app(void)
       } else if (c == '!') {    /* endless item with exceptions */
         ungetc(c, data_file);
         recur_exc_scan(&exc, data_file);
-        c = getc(data_file);
+        while ((c = getc(data_file)) == ' ') ;
+        ungetc(c, data_file);
         until.tm_year = 0;
       } else {
         io_load_error(path_apts, line,
