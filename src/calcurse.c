@@ -146,6 +146,7 @@ static inline void key_add_item(void)
     interact_day_item_add();
     inday = do_storage(0);
     wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
+    break;
   case TOD:
     interact_todo_add();
     if (todo_hilt() == 0 && todo_nb() == 1)
