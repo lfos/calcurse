@@ -980,6 +980,12 @@ void custom_keys_config(void)
         } else
           not_recognized = 0;
 
+        /* Is the binding used by this action already? If so, just end the reassignment */
+        if (selrow == keys_get_action(keyval)) {
+          delwin(grabwin);
+          break;
+        }
+
         used = keys_assign_binding(keyval, selrow);
         if (used) {
           enum key action;
