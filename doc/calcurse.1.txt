@@ -1,6 +1,6 @@
 ////
 /*
- * Copyright (c) 2004-2012 calcurse Development Team <misc@calcurse.org>
+ * Copyright (c) 2004-2013 calcurse Development Team <misc@calcurse.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -390,5 +390,5 @@ Authors
 Copyright
 ---------
 
-Copyright (c) 2004-2012 calcurse Development Team.
+Copyright (c) 2004-2013 calcurse Development Team.
 This software is released under the BSD License.

@@ -1,7 +1,7 @@
 /*
  * Calcurse - text-based organizer
  *
- * Copyright (c) 2004-2012 calcurse Development Team <misc@calcurse.org>
+ * Copyright (c) 2004-2013 calcurse Development Team <misc@calcurse.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -978,6 +978,12 @@ void custom_keys_config(void)
           continue;
         } else
           not_recognized = 0;
+
+        /* Is the binding used by this action already? If so, just end the reassignment */
+        if (selrow == keys_get_action(keyval)) {
+          delwin(grabwin);
+          break;
+        }
 
         used = keys_assign_binding(keyval, selrow);
         if (used) {

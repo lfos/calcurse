@@ -1,7 +1,7 @@
 /*
  * Calcurse - text-based organizer
  *
- * Copyright (c) 2004-2012 calcurse Development Team <misc@calcurse.org>
+ * Copyright (c) 2004-2013 calcurse Development Team <misc@calcurse.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -146,6 +146,7 @@ static inline void key_add_item(void)
     interact_day_item_add();
     inday = do_storage(0);
     wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
+    break;
   case TOD:
     interact_todo_add();
     if (todo_hilt() == 0 && todo_nb() == 1)
