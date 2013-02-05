@@ -30,6 +30,11 @@
 #
 
 autopoint --force
+if ! grep -F -q datarootdir po/Makefile.in.in
+then
+  sed -i '/^datadir =/i\
+datarootdir = @datarootdir@\' po/Makefile.in.in
+fi
 aclocal -I m4
 autoheader
 automake --foreign --copy --add-missing
