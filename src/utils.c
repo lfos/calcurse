@@ -785,11 +785,10 @@ int parse_duration(const char *string, unsigned *duration)
 
   /* parse string using a simple state machine */
   for (p = string; *p; p++) {
-    if ((*p >= '0') && (*p <= '9')) {
-      if (state == STATE_DONE)
-        return 0;
-      else
-        in = in * 10 + (int)(*p - '0');
+    if (state == STATE_DONE) {
+      return 0;
+    } else if ((*p >= '0') && (*p <= '9')) {
+      in = in * 10 + (int)(*p - '0');
     } else {
       switch (state) {
       case STATE_INITIAL:
@@ -826,7 +825,6 @@ int parse_duration(const char *string, unsigned *duration)
           return 0;
         break;
       case STATE_HHMM_MM:
-      case STATE_DONE:
         return 0;
         break;
       }
