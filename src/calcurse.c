@@ -133,7 +133,7 @@ static inline void key_generic_add_appt(void)
 
 static inline void key_generic_add_todo(void)
 {
-  interact_todo_add();
+  ui_todo_add();
   if (todo_hilt() == 0 && todo_nb() == 1)
     todo_hilt_increase(1);
   wins_update(FLAG_TOD | FLAG_STA);
@@ -148,7 +148,7 @@ static inline void key_add_item(void)
     wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
     break;
   case TOD:
-    interact_todo_add();
+    ui_todo_add();
     if (todo_hilt() == 0 && todo_nb() == 1)
       todo_hilt_increase(1);
     wins_update(FLAG_TOD | FLAG_STA);
@@ -165,7 +165,7 @@ static inline void key_edit_item(void)
     inday = do_storage(0);
     wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
   } else if (wins_slctd() == TOD && todo_hilt() != 0) {
-    interact_todo_edit();
+    ui_todo_edit();
     wins_update(FLAG_TOD | FLAG_STA);
   }
 }
@@ -177,7 +177,7 @@ static inline void key_del_item(void)
     inday = do_storage(0);
     wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
   } else if (wins_slctd() == TOD && todo_hilt() != 0) {
-    interact_todo_delete();
+    ui_todo_delete();
     wins_update(FLAG_TOD | FLAG_STA);
   }
 }
@@ -225,7 +225,7 @@ static inline void key_pipe_item(void)
   if (wins_slctd() == APP && apoint_hilt() != 0)
     interact_day_item_pipe();
   else if (wins_slctd() == TOD && todo_hilt() != 0)
-    interact_todo_pipe();
+    ui_todo_pipe();
   wins_update(FLAG_ALL);
 }
 

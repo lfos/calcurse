@@ -738,10 +738,10 @@ void interact_day_item_repeat(void);
 void interact_day_item_cut_free(unsigned);
 void interact_day_item_copy(unsigned *, unsigned *, unsigned);
 void interact_day_item_paste(unsigned *, unsigned *, unsigned);
-void interact_todo_add(void);
-void interact_todo_delete(void);
-void interact_todo_edit(void);
-void interact_todo_pipe(void);
+void ui_todo_add(void);
+void ui_todo_delete(void);
+void ui_todo_edit(void);
+void ui_todo_pipe(void);
 
 /* io.c */
 unsigned io_fprintln(const char *, const char *, ...);

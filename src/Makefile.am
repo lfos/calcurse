@@ -32,6 +32,7 @@ calcurse_SOURCES = \
 	sha1.c \
 	sigs.c \
 	todo.c \
+	ui-todo.c \
 	utf8.c \
 	utils.c \
 	vars.c \
