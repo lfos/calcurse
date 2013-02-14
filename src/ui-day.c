@@ -242,7 +242,7 @@ static void update_rept(struct rpt **rpt, const long start)
       int newmonth, newday, newyear;
 
       if (parse_date(timstr, conf.input_datefmt, &newyear, &newmonth,
-                     &newday, calendar_get_slctd_day())) {
+                     &newday, ui_calendar_get_slctd_day())) {
         t = start;
         localtime_r(&t, &lt);
         new_date.dd = newday;
@@ -360,7 +360,7 @@ void ui_day_item_edit(void)
     break;
   }
 
-  calendar_monthly_view_cache_set_invalid();
+  ui_calendar_monthly_view_cache_set_invalid();
 
   if (need_check_notify)
     notify_check_next_app(1);
@@ -490,18 +490,18 @@ void ui_day_item_add(void)
   status_mesg(mesg_3, "");
   if (getstring(win[STA].p, item_mesg, BUFSIZ, 0, 1) == GETSTRING_VALID) {
     if (is_appointment) {
-      apoint_start = date2sec(*calendar_get_slctd_day(), heures, minutes);
+      apoint_start = date2sec(*ui_calendar_get_slctd_day(), heures, minutes);
       apoint_new(item_mesg, 0L, apoint_start, min2sec(apoint_duration), 0L);
       if (notify_bar())
         notify_check_added(item_mesg, apoint_start, 0L);
     } else
-      event_new(item_mesg, 0L, date2sec(*calendar_get_slctd_day(), 0, 0), Id);
+      event_new(item_mesg, 0L, date2sec(*ui_calendar_get_slctd_day(), 0, 0), Id);
 
     if (ui_day_hilt() == 0)
       ui_day_hilt_increase(1);
   }
 
-  calendar_monthly_view_cache_set_invalid();
+  ui_calendar_monthly_view_cache_set_invalid();
 
   wins_erase_status_bar();
 }
@@ -524,7 +524,7 @@ void ui_day_item_delete(unsigned *nb_events, unsigned *nb_apoints,
   const char *note_choices = _("[in]");
   const int nb_note_choices = 2;
 
-  long date = calendar_get_slctd_day_sec();
+  long date = ui_calendar_get_slctd_day_sec();
   int nb_items = *nb_apoints + *nb_events;
   int to_be_removed = 0;
 
@@ -585,7 +585,7 @@ void ui_day_item_delete(unsigned *nb_events, unsigned *nb_apoints,
     /* NOTREACHED */
   }
 
-  calendar_monthly_view_cache_set_invalid();
+  ui_calendar_monthly_view_cache_set_invalid();
 
   if (ui_day_hilt() > 1)
     ui_day_hilt_decrease(1);
@@ -687,7 +687,7 @@ void ui_day_item_repeat(void)
         date_entered = 1;
       } else {
         if (parse_date(user_input, conf.input_datefmt,
-                       &year, &month, &day, calendar_get_slctd_day())) {
+                       &year, &month, &day, ui_calendar_get_slctd_day())) {
           t = p->start;
           localtime_r(&t, &lt);
           until_date.dd = day;
@@ -713,7 +713,7 @@ void ui_day_item_repeat(void)
       return;
   }
 
-  date = calendar_get_slctd_day_sec();
+  date = ui_calendar_get_slctd_day_sec();
   if (p->type == EVNT) {
     struct event *ev = p->item.ev;
     recur_event_new(ev->mesg, ev->note, ev->day, ev->id, type, freq, until,
@@ -734,7 +734,7 @@ void ui_day_item_repeat(void)
   day_cut[REG_BLACK_HOLE].type = p->type;
   day_cut[REG_BLACK_HOLE].item = p->item;
 
-  calendar_monthly_view_cache_set_invalid();
+  ui_calendar_monthly_view_cache_set_invalid();
 }
 
 /* Free the current cut item, if any. */
@@ -783,9 +783,9 @@ void ui_day_item_paste(unsigned *nb_events, unsigned *nb_apoints,
     return;
 
   day_item_fork(&day_cut[reg], &day);
-  item_type = day_paste_item(&day, calendar_get_slctd_day_sec());
+  item_type = day_paste_item(&day, ui_calendar_get_slctd_day_sec());
 
-  calendar_monthly_view_cache_set_invalid();
+  ui_calendar_monthly_view_cache_set_invalid();
 
   if (item_type == EVNT || item_type == RECUR_EVNT)
     (*nb_events)++;
@@ -884,7 +884,7 @@ void ui_day_update_panel(int which_pan)
   struct date slctd_date;
 
   /* variable inits */
-  slctd_date = *calendar_get_slctd_day();
+  slctd_date = *ui_calendar_get_slctd_day();
   title_xpos = win[APP].w - (strlen(_(monthnames[slctd_date.mm - 1])) + 16);
   if (slctd_date.dd < 10)
     title_xpos++;
@@ -895,7 +895,7 @@ void ui_day_update_panel(int which_pan)
   erase_window_part(win[APP].p, 1, title_lines, win[APP].w - 2, win[APP].h - 2);
   custom_apply_attr(win[APP].p, ATTR_HIGHEST);
   mvwprintw(win[APP].p, title_lines, title_xpos, "%s  %s %d, %d",
-            calendar_get_pom(date), _(monthnames[slctd_date.mm - 1]),
+            ui_calendar_get_pom(date), _(monthnames[slctd_date.mm - 1]),
             slctd_date.dd, slctd_date.yyyy);
   custom_remove_attr(win[APP].p, ATTR_HIGHEST);
 

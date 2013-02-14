@@ -370,7 +370,7 @@ struct day_items_nb day_process_storage(struct date *slctd_date,
   if (slctd_date)
     day = *slctd_date;
   else
-    calendar_store_current_date(&day);
+    ui_calendar_store_current_date(&day);
 
   date = date2sec(day, 0, 0);
 
@@ -545,7 +545,7 @@ void day_popup_item(struct day_item *day)
     struct apoint apt_tmp;
     apt_tmp.start = day->start;
     apt_tmp.dur = day_item_get_duration(day);
-    apoint_sec2str(&apt_tmp, calendar_get_slctd_day_sec(), a_st, a_end);
+    apoint_sec2str(&apt_tmp, ui_calendar_get_slctd_day_sec(), a_st, a_end);
 
     item_in_popup(a_st, a_end, day_item_get_mesg(day), _("Appointment :"));
   } else {

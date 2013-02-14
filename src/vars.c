@@ -161,7 +161,7 @@ void vars_init(void)
 
   wins_set_layout(1);
 
-  calendar_set_first_day_of_week(MONDAY);
+  ui_calendar_set_first_day_of_week(MONDAY);
 
   /* Pad structure to scroll text inside the appointment panel */
   apad.length = 1;
@@ -171,5 +171,5 @@ void vars_init(void)
   custom_init_attr();
 
   /* Start at the current date */
-  calendar_init_slctd_day();
+  ui_calendar_init_slctd_day();
 }

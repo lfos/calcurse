@@ -80,7 +80,7 @@ void exit_calcurse(int status)
   } else
     was_interactive = 0;
 
-  calendar_stop_date_thread();
+  ui_calendar_stop_date_thread();
   io_stop_psave_thread();
   free_user_data();
   keys_free();

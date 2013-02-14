@@ -499,7 +499,7 @@ void wins_update_panels(int flags)
   if (flags & FLAG_TOD)
     ui_todo_update_panel(slctd_win);
   if (flags & FLAG_CAL)
-    calendar_update_panel(&win[CAL]);
+    ui_calendar_update_panel(&win[CAL]);
 }
 
 /*

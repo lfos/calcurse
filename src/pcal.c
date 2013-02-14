@@ -101,7 +101,7 @@ static void pcal_export_header(FILE * stream)
   fputs("# calcurse pcal export\n", stream);
   fputs("\n# =======\n# options\n# =======\n", stream);
   fprintf(stream, "opt -A -K -l -m -F %s\n",
-          calendar_week_begins_on_monday()? "Monday" : "Sunday");
+          ui_calendar_week_begins_on_monday()? "Monday" : "Sunday");
   fputs("# Display week number (i.e. 1-52) on every Monday\n", stream);
   fprintf(stream, "all monday in all week %%w\n");
   fputc('\n', stream);
@@ -172,8 +172,8 @@ static void pcal_export_recur_events(FILE * stream)
         EXIT(_("incoherent repetition type"));
       }
     } else {
-      const long YEAR_START = calendar_start_of_year();
-      const long YEAR_END = calendar_end_of_year();
+      const long YEAR_START = ui_calendar_start_of_year();
+      const long YEAR_END = ui_calendar_end_of_year();
 
       if (rev->day < YEAR_END && rev->day > YEAR_START)
         foreach_date_dump(YEAR_END, rev->rpt, &rev->exc, rev->day, 0,
@@ -237,8 +237,8 @@ static void pcal_export_recur_apoints(FILE * stream)
         EXIT(_("incoherent repetition type"));
       }
     } else {
-      const long YEAR_START = calendar_start_of_year();
-      const long YEAR_END = calendar_end_of_year();
+      const long YEAR_START = ui_calendar_start_of_year();
+      const long YEAR_END = ui_calendar_end_of_year();
 
       if (rapt->start < YEAR_END && rapt->start > YEAR_START)
         foreach_date_dump(YEAR_END, rapt->rpt, &rapt->exc, rapt->start,

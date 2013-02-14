@@ -631,28 +631,28 @@ void apoint_paste_item(struct apoint *, long);
 int parse_args(int, char **);
 
 /* calendar.c */
-void calendar_view_next(void);
-void calendar_view_prev(void);
-void calendar_set_view(int);
-int calendar_get_view(void);
-void calendar_start_date_thread(void);
-void calendar_stop_date_thread(void);
-void calendar_set_current_date(void);
-void calendar_set_first_day_of_week(enum wday);
-void calendar_change_first_day_of_week(void);
-unsigned calendar_week_begins_on_monday(void);
-void calendar_store_current_date(struct date *);
-void calendar_init_slctd_day(void);
-struct date *calendar_get_slctd_day(void);
-long calendar_get_slctd_day_sec(void);
-void calendar_monthly_view_cache_set_invalid(void);
-void calendar_update_panel(struct window *);
-void calendar_goto_today(void);
-void calendar_change_day(int);
-void calendar_move(enum move, int);
-long calendar_start_of_year(void);
-long calendar_end_of_year(void);
-const char *calendar_get_pom(time_t);
+void ui_calendar_view_next(void);
+void ui_calendar_view_prev(void);
+void ui_calendar_set_view(int);
+int ui_calendar_get_view(void);
+void ui_calendar_start_date_thread(void);
+void ui_calendar_stop_date_thread(void);
+void ui_calendar_set_current_date(void);
+void ui_calendar_set_first_day_of_week(enum wday);
+void ui_calendar_change_first_day_of_week(void);
+unsigned ui_calendar_week_begins_on_monday(void);
+void ui_calendar_store_current_date(struct date *);
+void ui_calendar_init_slctd_day(void);
+struct date *ui_calendar_get_slctd_day(void);
+long ui_calendar_get_slctd_day_sec(void);
+void ui_calendar_monthly_view_cache_set_invalid(void);
+void ui_calendar_update_panel(struct window *);
+void ui_calendar_goto_today(void);
+void ui_calendar_change_day(int);
+void ui_calendar_move(enum move, int);
+long ui_calendar_start_of_year(void);
+long ui_calendar_end_of_year(void);
+const char *ui_calendar_get_pom(time_t);
 
 /* config.c */
 

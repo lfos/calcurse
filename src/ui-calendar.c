@@ -67,9 +67,9 @@ enum pom {
 };
 
 static struct date today, slctd_day;
-static unsigned calendar_view, week_begins_on_monday;
+static unsigned ui_calendar_view, week_begins_on_monday;
 static pthread_mutex_t date_thread_mutex = PTHREAD_MUTEX_INITIALIZER;
-static pthread_t calendar_t_date;
+static pthread_t ui_calendar_t_date;
 
 static void draw_monthly_view(struct window *, struct date *, unsigned);
 static void draw_weekly_view(struct window *, struct date *, unsigned);
@@ -82,33 +82,33 @@ static int monthly_view_cache_valid = 0;
 static int monthly_view_cache_month = 0;
 
 /* Switch between calendar views (monthly view is selected by default). */
-void calendar_view_next(void)
+void ui_calendar_view_next(void)
 {
-  calendar_view++;
-  if (calendar_view == CAL_VIEWS)
-    calendar_view = 0;
+  ui_calendar_view++;
+  if (ui_calendar_view == CAL_VIEWS)
+    ui_calendar_view = 0;
 }
 
-void calendar_view_prev(void)
+void ui_calendar_view_prev(void)
 {
-  if (calendar_view == 0)
-    calendar_view = CAL_VIEWS;
-  calendar_view--;
+  if (ui_calendar_view == 0)
+    ui_calendar_view = CAL_VIEWS;
+  ui_calendar_view--;
 }
 
-void calendar_set_view(int view)
+void ui_calendar_set_view(int view)
 {
-  calendar_view = (view < 0 || view >= CAL_VIEWS) ? CAL_MONTH_VIEW : view;
+  ui_calendar_view = (view < 0 || view >= CAL_VIEWS) ? CAL_MONTH_VIEW : view;
 }
 
-int calendar_get_view(void)
+int ui_calendar_get_view(void)
 {
-  return (int)calendar_view;
+  return (int)ui_calendar_view;
 }
 
 /* Thread needed to update current date in calendar. */
 /* ARGSUSED0 */
-static void *calendar_date_thread(void *arg)
+static void *ui_calendar_date_thread(void *arg)
 {
   time_t actual, tomorrow;
 
@@ -118,30 +118,30 @@ static void *calendar_date_thread(void *arg)
     while ((actual = time(NULL)) < tomorrow)
       sleep(tomorrow - actual);
 
-    calendar_set_current_date();
-    calendar_update_panel(&win[CAL]);
+    ui_calendar_set_current_date();
+    ui_calendar_update_panel(&win[CAL]);
   }
 
   return NULL;
 }
 
 /* Launch the calendar date thread. */
-void calendar_start_date_thread(void)
+void ui_calendar_start_date_thread(void)
 {
-  pthread_create(&calendar_t_date, NULL, calendar_date_thread, NULL);
+  pthread_create(&ui_calendar_t_date, NULL, ui_calendar_date_thread, NULL);
 }
 
 /* Stop the calendar date thread. */
-void calendar_stop_date_thread(void)
+void ui_calendar_stop_date_thread(void)
 {
-  if (calendar_t_date) {
-    pthread_cancel(calendar_t_date);
-    pthread_join(calendar_t_date, NULL);
+  if (ui_calendar_t_date) {
+    pthread_cancel(ui_calendar_t_date);
+    pthread_join(ui_calendar_t_date, NULL);
   }
 }
 
 /* Set static variable today to current date */
-void calendar_set_current_date(void)
+void ui_calendar_set_current_date(void)
 {
   time_t timer;
   struct tm tm;
@@ -157,7 +157,7 @@ void calendar_set_current_date(void)
 }
 
 /* Needed to display sunday or monday as the first day of week in calendar. */
-void calendar_set_first_day_of_week(enum wday first_day)
+void ui_calendar_set_first_day_of_week(enum wday first_day)
 {
   switch (first_day) {
   case SUNDAY:
@@ -174,19 +174,19 @@ void calendar_set_first_day_of_week(enum wday first_day)
 }
 
 /* Swap first day of week in calendar. */
-void calendar_change_first_day_of_week(void)
+void ui_calendar_change_first_day_of_week(void)
 {
   week_begins_on_monday = !week_begins_on_monday;
 }
 
 /* Return 1 if week begins on monday, 0 otherwise. */
-unsigned calendar_week_begins_on_monday(void)
+unsigned ui_calendar_week_begins_on_monday(void)
 {
   return week_begins_on_monday;
 }
 
 /* Fill in the given variable with the current date. */
-void calendar_store_current_date(struct date *date)
+void ui_calendar_store_current_date(struct date *date)
 {
   pthread_mutex_lock(&date_thread_mutex);
   *date = today;
@@ -194,24 +194,24 @@ void calendar_store_current_date(struct date *date)
 }
 
 /* This is to start at the current date in calendar. */
-void calendar_init_slctd_day(void)
+void ui_calendar_init_slctd_day(void)
 {
-  calendar_store_current_date(&slctd_day);
+  ui_calendar_store_current_date(&slctd_day);
 }
 
 /* Return the selected day in calendar */
-struct date *calendar_get_slctd_day(void)
+struct date *ui_calendar_get_slctd_day(void)
 {
   return &slctd_day;
 }
 
 /* Returned value represents the selected day in calendar (in seconds) */
-long calendar_get_slctd_day_sec(void)
+long ui_calendar_get_slctd_day_sec(void)
 {
   return date2sec(slctd_day, 0, 0);
 }
 
-static int calendar_get_wday(struct date *date)
+static int ui_calendar_get_wday(struct date *date)
 {
   struct tm t;
 
@@ -268,7 +268,7 @@ static int date_change(struct tm *date, int delta_month, int delta_day)
   }
 }
 
-void calendar_monthly_view_cache_set_invalid(void)
+void ui_calendar_monthly_view_cache_set_invalid(void)
 {
   monthly_view_cache_valid = 0;
 }
@@ -467,7 +467,7 @@ draw_weekly_view(struct window *cwin, struct date *current_day,
   OFFX = (wins_sbar_width() - WCALWIDTH) / 2 + 1;
 
   /* Fill in a tm structure with the first day of the selected week. */
-  c_wday = calendar_get_wday(&slctd_day);
+  c_wday = ui_calendar_get_wday(&slctd_day);
   if (sunday_first)
     days_to_remove = c_wday;
   else
@@ -571,12 +571,12 @@ draw_weekly_view(struct window *cwin, struct date *current_day,
 }
 
 /* Function used to display the calendar panel. */
-void calendar_update_panel(struct window *cwin)
+void ui_calendar_update_panel(struct window *cwin)
 {
   struct date current_day;
   unsigned sunday_first;
 
-  calendar_store_current_date(&current_day);
+  ui_calendar_store_current_date(&current_day);
 
   WINS_CALENDAR_LOCK;
   erase_window_part(cwin->p, 1, conf.compact_panels ? 1 : 3, cwin->w - 2,
@@ -585,19 +585,19 @@ void calendar_update_panel(struct window *cwin)
     mvwhline(cwin->p, 2, 1, ACS_HLINE, cwin->w - 2);
   WINS_CALENDAR_UNLOCK;
 
-  sunday_first = calendar_week_begins_on_monday()? 0 : 1;
+  sunday_first = ui_calendar_week_begins_on_monday()? 0 : 1;
 
-  draw_calendar[calendar_view] (cwin, &current_day, sunday_first);
+  draw_calendar[ui_calendar_view] (cwin, &current_day, sunday_first);
 
   wnoutrefresh(cwin->p);
 }
 
 /* Set the selected day in calendar to current day. */
-void calendar_goto_today(void)
+void ui_calendar_goto_today(void)
 {
   struct date today;
 
-  calendar_store_current_date(&today);
+  ui_calendar_store_current_date(&today);
   slctd_day.dd = today.dd;
   slctd_day.mm = today.mm;
   slctd_day.yyyy = today.yyyy;
@@ -609,7 +609,7 @@ void calendar_goto_today(void)
  * If the entered date is empty, automatically jump to the current date.
  * slctd_day is updated with the newly selected date.
  */
-void calendar_change_day(int datefmt)
+void ui_calendar_change_day(int datefmt)
 {
 #define LDAY 11
   char selected_day[LDAY] = "";
@@ -630,9 +630,9 @@ void calendar_change_day(int datefmt)
     else {
       if (strlen(selected_day) == 0) {
         wrong_day = 0;
-        calendar_goto_today();
+        ui_calendar_goto_today();
       } else if (parse_date(selected_day, datefmt, &dyear, &dmonth, &dday,
-                            calendar_get_slctd_day())) {
+                            ui_calendar_get_slctd_day())) {
         wrong_day = 0;
         /* go to chosen day */
         slctd_day.dd = dday;
@@ -649,7 +649,7 @@ void calendar_change_day(int datefmt)
   return;
 }
 
-void calendar_move(enum move move, int count)
+void ui_calendar_move(enum move move, int count)
 {
   int ret, days_to_remove, days_to_add;
   struct tm t;
@@ -687,7 +687,7 @@ void calendar_move(enum move move, int count)
   case WEEK_START:
     /* Normalize struct tm to get week day number. */
     mktime(&t);
-    if (calendar_week_begins_on_monday())
+    if (ui_calendar_week_begins_on_monday())
       days_to_remove = ((t.tm_wday == 0) ? WEEKINDAYS - 1 : t.tm_wday - 1);
     else
       days_to_remove = ((t.tm_wday == 0) ? 0 : t.tm_wday);
@@ -696,7 +696,7 @@ void calendar_move(enum move move, int count)
     break;
   case WEEK_END:
     mktime(&t);
-    if (calendar_week_begins_on_monday())
+    if (ui_calendar_week_begins_on_monday())
       days_to_add = ((t.tm_wday == 0) ? 0 : WEEKINDAYS - t.tm_wday);
     else
       days_to_add = ((t.tm_wday == 0) ?
@@ -727,7 +727,7 @@ void calendar_move(enum move move, int count)
 }
 
 /* Returns the beginning of current year as a long. */
-long calendar_start_of_year(void)
+long ui_calendar_start_of_year(void)
 {
   time_t timer;
   struct tm tm;
@@ -744,7 +744,7 @@ long calendar_start_of_year(void)
   return (long)timer;
 }
 
-long calendar_end_of_year(void)
+long ui_calendar_end_of_year(void)
 {
   time_t timer;
   struct tm tm;
@@ -892,7 +892,7 @@ static double pom(time_t tmpt)
  * Careful: date is the selected day in calendar at 00:00, so it represents
  * the phase of the moon for previous day.
  */
-const char *calendar_get_pom(time_t date)
+const char *ui_calendar_get_pom(time_t date)
 {
   const char *pom_pict[MOON_PHASES] = { "   ", "|) ", "(|)", "(| ", " | " };
   enum pom phase = NO_POM;

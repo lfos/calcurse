@@ -13,7 +13,6 @@ calcurse_SOURCES = \
 	sha1.h \
 	apoint.c \
 	args.c \
-	calendar.c \
 	config.c \
 	custom.c \
 	day.c \
@@ -31,6 +30,7 @@ calcurse_SOURCES = \
 	sha1.c \
 	sigs.c \
 	todo.c \
+	ui-calendar.c \
 	ui-day.c \
 	ui-todo.c \
 	utf8.c \

@@ -202,9 +202,9 @@ static int config_parse_color_pair(int *dest1, int *dest2, const char *val)
 static int config_parse_calendar_view(void *dummy, const char *val)
 {
   if (!strcmp(val, "monthly"))
-    calendar_set_view(CAL_MONTH_VIEW);
+    ui_calendar_set_view(CAL_MONTH_VIEW);
   else if (!strcmp(val, "weekly"))
-    calendar_set_view(CAL_WEEK_VIEW);
+    ui_calendar_set_view(CAL_WEEK_VIEW);
   else
     return 0;
 
@@ -228,9 +228,9 @@ static int config_parse_default_panel(void *dummy, const char *val)
 static int config_parse_first_day_of_week(void *dummy, const char *val)
 {
   if (!strcmp(val, "monday"))
-    calendar_set_first_day_of_week(MONDAY);
+    ui_calendar_set_first_day_of_week(MONDAY);
   else if (!strcmp(val, "sunday"))
-    calendar_set_first_day_of_week(SUNDAY);
+    ui_calendar_set_first_day_of_week(SUNDAY);
   else
     return 0;
 
@@ -379,7 +379,7 @@ static void config_color_theme_name(char *theme_name)
 
 static int config_serialize_calendar_view(char *buf, void *dummy)
 {
-  if (calendar_get_view() == CAL_WEEK_VIEW)
+  if (ui_calendar_get_view() == CAL_WEEK_VIEW)
     strcpy(buf, "weekly");
   else
     strcpy(buf, "monthly");
@@ -401,7 +401,7 @@ static int config_serialize_default_panel(char *buf, void *dummy)
 
 static int config_serialize_first_day_of_week(char *buf, void *dummy)
 {
-  if (calendar_week_begins_on_monday())
+  if (ui_calendar_week_begins_on_monday())
     strcpy(buf, "monday");
   else
     strcpy(buf, "sunday");

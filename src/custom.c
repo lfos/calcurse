@@ -668,7 +668,7 @@ static int print_general_options(WINDOW * win)
   mvwprintw(win, y, XPOS, "[8] %s      ", opt[FIRST_DAY_OF_WEEK]);
   custom_apply_attr(win, ATTR_HIGHEST);
   mvwaddstr(win, y, XPOS + 4 + strlen(opt[FIRST_DAY_OF_WEEK]),
-            calendar_week_begins_on_monday()? _("Monday") : _("Sunday"));
+            ui_calendar_week_begins_on_monday()? _("Monday") : _("Sunday"));
   custom_remove_attr(win, ATTR_HIGHEST);
   mvwaddstr(win, y + 1, XPOS,
             _("(specifies the first day of week in the calendar view)"));
@@ -773,7 +773,7 @@ void custom_general_config(void)
       conf.progress_bar = !conf.progress_bar;
       break;
     case '8':
-      calendar_change_first_day_of_week();
+      ui_calendar_change_first_day_of_week();
       break;
     case '9':
       status_mesg(output_datefmt_str, "");
