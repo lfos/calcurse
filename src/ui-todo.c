@@ -294,26 +294,17 @@ void ui_todo_update_panel(int which_pan)
 }
 
 /* Change an item priority by pressing '+' or '-' inside TODO panel. */
-void ui_todo_chg_priority(struct todo *backup, int diff)
+void ui_todo_chg_priority(struct todo *todo, int diff)
 {
-  char backup_mesg[BUFSIZ];
-  int backup_id;
-  char backup_note[MAX_NOTESIZ + 1];
+  int id = todo->id + diff;
+  struct todo *todo_new;
 
-  strncpy(backup_mesg, backup->mesg, strlen(backup->mesg) + 1);
-  backup_id = backup->id;
-  if (backup->note)
-    strncpy(backup_note, backup->note, MAX_NOTESIZ + 1);
-  else
-    backup_note[0] = '\0';
+  if (id < 1)
+    id = 1;
+  else if (id > 9)
+    id = 9;
 
-  backup_id += diff;
-  if (backup_id < 1)
-    backup_id = 1;
-  else if (backup_id > 9)
-    backup_id = 9;
-
-  todo_delete(todo_get_item(hilt));
-  backup = todo_add(backup_mesg, backup_id, backup_note);
-  hilt = todo_get_position(backup);
+  todo_new = todo_add(todo->mesg, id, todo->note);
+  todo_delete(todo);
+  hilt = todo_get_position(todo_new);
 }
