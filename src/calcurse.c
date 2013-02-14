@@ -54,9 +54,9 @@ static struct day_items_nb do_storage(int day_changed)
 
   if (day_changed) {
     if ((inday.nb_events + inday.nb_apoints) > 0)
-      apoint_hilt_set(1);
+      ui_day_hilt_set(1);
     else
-      apoint_hilt_set(0);
+      ui_day_hilt_set(0);
   }
 
   return inday;
@@ -74,8 +74,8 @@ static inline void key_generic_change_view(void)
       todo_hilt_set(1);
     break;
   case APP:
-    if ((apoint_hilt() == 0) && ((inday.nb_events + inday.nb_apoints) > 0))
-      apoint_hilt_set(1);
+    if ((ui_day_hilt() == 0) && ((inday.nb_events + inday.nb_apoints) > 0))
+      ui_day_hilt_set(1);
     break;
   default:
     break;
@@ -109,8 +109,8 @@ static inline void key_generic_goto_today(void)
 
 static inline void key_view_item(void)
 {
-  if ((wins_slctd() == APP) && (apoint_hilt() != 0))
-    day_popup_item(day_get_item(apoint_hilt()));
+  if ((wins_slctd() == APP) && (ui_day_hilt() != 0))
+    day_popup_item(day_get_item(ui_day_hilt()));
   else if ((wins_slctd() == TOD) && (todo_hilt() != 0))
     item_in_popup(NULL, NULL, todo_saved_mesg(), _("To do :"));
   wins_update(FLAG_ALL);
@@ -160,7 +160,7 @@ static inline void key_add_item(void)
 
 static inline void key_edit_item(void)
 {
-  if (wins_slctd() == APP && apoint_hilt() != 0) {
+  if (wins_slctd() == APP && ui_day_hilt() != 0) {
     ui_day_item_edit();
     inday = do_storage(0);
     wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
@@ -172,7 +172,7 @@ static inline void key_edit_item(void)
 
 static inline void key_del_item(void)
 {
-  if (wins_slctd() == APP && apoint_hilt() != 0) {
+  if (wins_slctd() == APP && ui_day_hilt() != 0) {
     ui_day_item_delete(&inday.nb_events, &inday.nb_apoints, reg);
     inday = do_storage(0);
     wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
@@ -184,7 +184,7 @@ static inline void key_del_item(void)
 
 static inline void key_generic_copy(void)
 {
-  if (wins_slctd() == APP && apoint_hilt() != 0) {
+  if (wins_slctd() == APP && ui_day_hilt() != 0) {
     ui_day_item_copy(&inday.nb_events, &inday.nb_apoints, reg);
     inday = do_storage(0);
     wins_update(FLAG_CAL | FLAG_APP);
@@ -202,7 +202,7 @@ static inline void key_generic_paste(void)
 
 static inline void key_repeat_item(void)
 {
-  if (wins_slctd() == APP && apoint_hilt() != 0)
+  if (wins_slctd() == APP && ui_day_hilt() != 0)
     ui_day_item_repeat();
   inday = do_storage(0);
   wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
@@ -210,8 +210,8 @@ static inline void key_repeat_item(void)
 
 static inline void key_flag_item(void)
 {
-  if (wins_slctd() == APP && apoint_hilt() != 0) {
-    day_item_switch_notify(day_get_item(apoint_hilt()));
+  if (wins_slctd() == APP && ui_day_hilt() != 0) {
+    day_item_switch_notify(day_get_item(ui_day_hilt()));
     inday = do_storage(0);
     wins_update(FLAG_APP);
   } else if (wins_slctd() == TOD && todo_hilt() != 0) {
@@ -222,7 +222,7 @@ static inline void key_flag_item(void)
 
 static inline void key_pipe_item(void)
 {
-  if (wins_slctd() == APP && apoint_hilt() != 0)
+  if (wins_slctd() == APP && ui_day_hilt() != 0)
     ui_day_item_pipe();
   else if (wins_slctd() == TOD && todo_hilt() != 0)
     ui_todo_pipe();
@@ -253,8 +253,8 @@ static inline void key_lower_priority(void)
 
 static inline void key_edit_note(void)
 {
-  if (wins_slctd() == APP && apoint_hilt() != 0) {
-    day_edit_note(day_get_item(apoint_hilt()), conf.editor);
+  if (wins_slctd() == APP && ui_day_hilt() != 0) {
+    day_edit_note(day_get_item(ui_day_hilt()), conf.editor);
     inday = do_storage(0);
   } else if (wins_slctd() == TOD && todo_hilt() != 0)
     todo_edit_note(todo_get_item(todo_hilt()), conf.editor);
@@ -263,8 +263,8 @@ static inline void key_edit_note(void)
 
 static inline void key_view_note(void)
 {
-  if (wins_slctd() == APP && apoint_hilt() != 0)
-    day_view_note(day_get_item(apoint_hilt()), conf.pager);
+  if (wins_slctd() == APP && ui_day_hilt() != 0)
+    day_view_note(day_get_item(ui_day_hilt()), conf.pager);
   else if (wins_slctd() == TOD && todo_hilt() != 0)
     todo_view_note(todo_get_item(todo_hilt()), conf.pager);
   wins_update(FLAG_ALL);
@@ -353,10 +353,10 @@ static inline void key_move_up(void)
   if (wins_slctd() == CAL) {
     key_generic_prev_week();
   } else if (wins_slctd() == APP) {
-    if (count >= apoint_hilt())
-      count = apoint_hilt() - 1;
-    apoint_hilt_decrease(count);
-    apoint_scroll_pad_up(inday.nb_events);
+    if (count >= ui_day_hilt())
+      count = ui_day_hilt() - 1;
+    ui_day_hilt_decrease(count);
+    ui_day_scroll_pad_up(inday.nb_events);
     wins_update(FLAG_APP);
   } else if (wins_slctd() == TOD) {
     if (count >= todo_hilt())
@@ -380,10 +380,10 @@ static inline void key_move_down(void)
   if (wins_slctd() == CAL) {
     key_generic_next_week();
   } else if (wins_slctd() == APP) {
-    if (count > inday.nb_events + inday.nb_apoints - apoint_hilt())
-      count = inday.nb_events + inday.nb_apoints - apoint_hilt();
-    apoint_hilt_increase(count);
-    apoint_scroll_pad_down(inday.nb_events, win[APP].h);
+    if (count > inday.nb_events + inday.nb_apoints - ui_day_hilt())
+      count = inday.nb_events + inday.nb_apoints - ui_day_hilt();
+    ui_day_hilt_increase(count);
+    ui_day_scroll_pad_down(inday.nb_events, win[APP].h);
     wins_update(FLAG_APP);
   } else if (wins_slctd() == TOD) {
     if (count > todo_nb() - todo_hilt())

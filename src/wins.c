@@ -495,7 +495,7 @@ void wins_update_border(int flags)
 void wins_update_panels(int flags)
 {
   if (flags & FLAG_APP)
-    apoint_update_panel(slctd_win);
+    ui_day_update_panel(slctd_win);
   if (flags & FLAG_TOD)
     todo_update_panel(slctd_win);
   if (flags & FLAG_CAL)

@@ -42,7 +42,6 @@
 #include "calcurse.h"
 
 llist_ts_t alist_p;
-static int hilt;
 
 void apoint_free(struct apoint *apt)
 {
@@ -82,28 +81,6 @@ void apoint_llist_free(void)
 {
   LLIST_TS_FREE_INNER(&alist_p, apoint_free);
   LLIST_TS_FREE(&alist_p);
-}
-
-/* Sets which appointment is highlighted. */
-void apoint_hilt_set(int highlighted)
-{
-  hilt = highlighted;
-}
-
-void apoint_hilt_decrease(int n)
-{
-  hilt -= n;
-}
-
-void apoint_hilt_increase(int n)
-{
-  hilt += n;
-}
-
-/* Return which appointment is highlighted. */
-int apoint_hilt(void)
-{
-  return hilt;
 }
 
 static int apoint_cmp_start(struct apoint *a, struct apoint *b)
@@ -229,58 +206,6 @@ void apoint_delete(struct apoint *apt)
   LLIST_TS_UNLOCK(&alist_p);
 }
 
-/*
- * Return the line number of an item (either an appointment or an event) in
- * the appointment panel. This is to help the appointment scroll function
- * to place beggining of the pad correctly.
- */
-static int get_item_line(int item_nb, int nb_events_inday)
-{
-  int separator = 2;
-  int line = 0;
-
-  if (item_nb <= nb_events_inday)
-    line = item_nb - 1;
-  else
-    line = nb_events_inday + separator
-        + (item_nb - (nb_events_inday + 1)) * 3 - 1;
-  return line;
-}
-
-/*
- * Update (if necessary) the first displayed pad line to make the
- * appointment panel scroll down next time pnoutrefresh is called.
- */
-void apoint_scroll_pad_down(int nb_events_inday, int win_length)
-{
-  int pad_last_line = 0;
-  int item_first_line = 0, item_last_line = 0;
-  int borders = 6;
-  int awin_length = win_length - borders;
-
-  item_first_line = get_item_line(hilt, nb_events_inday);
-  if (hilt < nb_events_inday)
-    item_last_line = item_first_line;
-  else
-    item_last_line = item_first_line + 1;
-  pad_last_line = apad.first_onscreen + awin_length;
-  if (item_last_line >= pad_last_line)
-    apad.first_onscreen = item_last_line - awin_length;
-}
-
-/*
- * Update (if necessary) the first displayed pad line to make the
- * appointment panel scroll up next time pnoutrefresh is called.
- */
-void apoint_scroll_pad_up(int nb_events_inday)
-{
-  int item_first_line = 0;
-
-  item_first_line = get_item_line(hilt, nb_events_inday);
-  if (item_first_line < apad.first_onscreen)
-    apad.first_onscreen = item_first_line;
-}
-
 static int apoint_starts_after(struct apoint *apt, long *time)
 {
   return apt->start > *time;
@@ -325,53 +250,6 @@ void apoint_switch_notify(struct apoint *apt)
     notify_check_added(apt->mesg, apt->start, apt->state);
 
   LLIST_TS_UNLOCK(&alist_p);
-}
-
-/* Updates the Appointment panel */
-void apoint_update_panel(int which_pan)
-{
-  int title_xpos;
-  int bordr = 1;
-  int title_lines = conf.compact_panels ? 1 : 3;
-  int app_width = win[APP].w - bordr;
-  int app_length = win[APP].h - bordr - title_lines;
-  long date;
-  struct date slctd_date;
-
-  /* variable inits */
-  slctd_date = *calendar_get_slctd_day();
-  title_xpos = win[APP].w - (strlen(_(monthnames[slctd_date.mm - 1])) + 16);
-  if (slctd_date.dd < 10)
-    title_xpos++;
-  date = date2sec(slctd_date, 0, 0);
-  day_write_pad(date, app_width, app_length, (which_pan == APP) ? hilt : 0);
-
-  /* Print current date in the top right window corner. */
-  erase_window_part(win[APP].p, 1, title_lines, win[APP].w - 2, win[APP].h - 2);
-  custom_apply_attr(win[APP].p, ATTR_HIGHEST);
-  mvwprintw(win[APP].p, title_lines, title_xpos, "%s  %s %d, %d",
-            calendar_get_pom(date), _(monthnames[slctd_date.mm - 1]),
-            slctd_date.dd, slctd_date.yyyy);
-  custom_remove_attr(win[APP].p, ATTR_HIGHEST);
-
-  /* Draw the scrollbar if necessary. */
-  if ((apad.length >= app_length) || (apad.first_onscreen > 0)) {
-    int sbar_length = app_length * app_length / apad.length;
-    int highend = app_length * apad.first_onscreen / apad.length;
-    unsigned hilt_bar = (which_pan == APP) ? 1 : 0;
-    int sbar_top = highend + title_lines + 1;
-
-    if ((sbar_top + sbar_length) > win[APP].h - 1)
-      sbar_length = win[APP].h - 1 - sbar_top;
-    draw_scrollbar(win[APP].p, sbar_top, win[APP].w - 2, sbar_length,
-                   title_lines + 1, win[APP].h - 1, hilt_bar);
-  }
-
-  wnoutrefresh(win[APP].p);
-  pnoutrefresh(apad.ptrwin, apad.first_onscreen, 0,
-               win[APP].y + title_lines + 1, win[APP].x + bordr,
-               win[APP].y + win[APP].h - 2 * bordr,
-               win[APP].x + win[APP].w - 3 * bordr);
 }
 
 void apoint_paste_item(struct apoint *apt, long date)

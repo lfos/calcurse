@@ -610,21 +610,21 @@ struct apoint *apoint_dup(struct apoint *);
 void apoint_free(struct apoint *);
 void apoint_llist_init(void);
 void apoint_llist_free(void);
-void apoint_hilt_set(int);
-void apoint_hilt_decrease(int);
-void apoint_hilt_increase(int);
-int apoint_hilt(void);
+void ui_day_hilt_set(int);
+void ui_day_hilt_decrease(int);
+void ui_day_hilt_increase(int);
+int ui_day_hilt(void);
 struct apoint *apoint_new(char *, char *, long, long, char);
 unsigned apoint_inday(struct apoint *, long *);
 void apoint_sec2str(struct apoint *, long, char *, char *);
 void apoint_write(struct apoint *, FILE *);
 struct apoint *apoint_scan(FILE *, struct tm, struct tm, char, char *);
 void apoint_delete(struct apoint *);
-void apoint_scroll_pad_down(int, int);
-void apoint_scroll_pad_up(int);
+void ui_day_scroll_pad_down(int, int);
+void ui_day_scroll_pad_up(int);
 struct notify_app *apoint_check_next(struct notify_app *, long);
 void apoint_switch_notify(struct apoint *);
-void apoint_update_panel(int);
+void ui_day_update_panel(int);
 void apoint_paste_item(struct apoint *, long);
 
 /* args.c */
