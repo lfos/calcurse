@@ -70,8 +70,8 @@ static inline void key_generic_change_view(void)
   /* Select the event to highlight. */
   switch (wins_slctd()) {
   case TOD:
-    if ((todo_hilt() == 0) && (todo_nb() > 0))
-      todo_hilt_set(1);
+    if ((ui_todo_hilt() == 0) && (ui_todo_nb() > 0))
+      ui_todo_hilt_set(1);
     break;
   case APP:
     if ((ui_day_hilt() == 0) && ((inday.nb_events + inday.nb_apoints) > 0))
@@ -111,8 +111,8 @@ static inline void key_view_item(void)
 {
   if ((wins_slctd() == APP) && (ui_day_hilt() != 0))
     day_popup_item(day_get_item(ui_day_hilt()));
-  else if ((wins_slctd() == TOD) && (todo_hilt() != 0))
-    item_in_popup(NULL, NULL, todo_saved_mesg(), _("To do :"));
+  else if ((wins_slctd() == TOD) && (ui_todo_hilt() != 0))
+    item_in_popup(NULL, NULL, ui_todo_saved_mesg(), _("To do :"));
   wins_update(FLAG_ALL);
 }
 
@@ -134,8 +134,8 @@ static inline void key_generic_add_appt(void)
 static inline void key_generic_add_todo(void)
 {
   ui_todo_add();
-  if (todo_hilt() == 0 && todo_nb() == 1)
-    todo_hilt_increase(1);
+  if (ui_todo_hilt() == 0 && ui_todo_nb() == 1)
+    ui_todo_hilt_increase(1);
   wins_update(FLAG_TOD | FLAG_STA);
 }
 
@@ -149,8 +149,8 @@ static inline void key_add_item(void)
     break;
   case TOD:
     ui_todo_add();
-    if (todo_hilt() == 0 && todo_nb() == 1)
-      todo_hilt_increase(1);
+    if (ui_todo_hilt() == 0 && ui_todo_nb() == 1)
+      ui_todo_hilt_increase(1);
     wins_update(FLAG_TOD | FLAG_STA);
     break;
   default:
@@ -164,7 +164,7 @@ static inline void key_edit_item(void)
     ui_day_item_edit();
     inday = do_storage(0);
     wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
-  } else if (wins_slctd() == TOD && todo_hilt() != 0) {
+  } else if (wins_slctd() == TOD && ui_todo_hilt() != 0) {
     ui_todo_edit();
     wins_update(FLAG_TOD | FLAG_STA);
   }
@@ -176,7 +176,7 @@ static inline void key_del_item(void)
     ui_day_item_delete(&inday.nb_events, &inday.nb_apoints, reg);
     inday = do_storage(0);
     wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
-  } else if (wins_slctd() == TOD && todo_hilt() != 0) {
+  } else if (wins_slctd() == TOD && ui_todo_hilt() != 0) {
     ui_todo_delete();
     wins_update(FLAG_TOD | FLAG_STA);
   }
@@ -214,8 +214,8 @@ static inline void key_flag_item(void)
     day_item_switch_notify(day_get_item(ui_day_hilt()));
     inday = do_storage(0);
     wins_update(FLAG_APP);
-  } else if (wins_slctd() == TOD && todo_hilt() != 0) {
-    todo_flag(todo_get_item(todo_hilt()));
+  } else if (wins_slctd() == TOD && ui_todo_hilt() != 0) {
+    todo_flag(todo_get_item(ui_todo_hilt()));
     wins_update(FLAG_TOD);
   }
 }
@@ -224,19 +224,19 @@ static inline void key_pipe_item(void)
 {
   if (wins_slctd() == APP && ui_day_hilt() != 0)
     ui_day_item_pipe();
-  else if (wins_slctd() == TOD && todo_hilt() != 0)
+  else if (wins_slctd() == TOD && ui_todo_hilt() != 0)
     ui_todo_pipe();
   wins_update(FLAG_ALL);
 }
 
 static inline void change_priority(int diff)
 {
-  if (wins_slctd() == TOD && todo_hilt() != 0) {
-    todo_chg_priority(todo_get_item(todo_hilt()), diff);
-    if (todo_hilt_pos() < 0)
-      todo_set_first(todo_hilt());
-    else if (todo_hilt_pos() >= win[TOD].h - 4)
-      todo_set_first(todo_hilt() - win[TOD].h + 5);
+  if (wins_slctd() == TOD && ui_todo_hilt() != 0) {
+    ui_todo_chg_priority(todo_get_item(ui_todo_hilt()), diff);
+    if (ui_todo_hilt_pos() < 0)
+      ui_todo_set_first(ui_todo_hilt());
+    else if (ui_todo_hilt_pos() >= win[TOD].h - 4)
+      ui_todo_set_first(ui_todo_hilt() - win[TOD].h + 5);
     wins_update(FLAG_TOD);
   }
 }
@@ -256,8 +256,8 @@ static inline void key_edit_note(void)
   if (wins_slctd() == APP && ui_day_hilt() != 0) {
     day_edit_note(day_get_item(ui_day_hilt()), conf.editor);
     inday = do_storage(0);
-  } else if (wins_slctd() == TOD && todo_hilt() != 0)
-    todo_edit_note(todo_get_item(todo_hilt()), conf.editor);
+  } else if (wins_slctd() == TOD && ui_todo_hilt() != 0)
+    todo_edit_note(todo_get_item(ui_todo_hilt()), conf.editor);
   wins_update(FLAG_ALL);
 }
 
@@ -265,8 +265,8 @@ static inline void key_view_note(void)
 {
   if (wins_slctd() == APP && ui_day_hilt() != 0)
     day_view_note(day_get_item(ui_day_hilt()), conf.pager);
-  else if (wins_slctd() == TOD && todo_hilt() != 0)
-    todo_view_note(todo_get_item(todo_hilt()), conf.pager);
+  else if (wins_slctd() == TOD && ui_todo_hilt() != 0)
+    todo_view_note(todo_get_item(ui_todo_hilt()), conf.pager);
   wins_update(FLAG_ALL);
 }
 
@@ -359,11 +359,11 @@ static inline void key_move_up(void)
     ui_day_scroll_pad_up(inday.nb_events);
     wins_update(FLAG_APP);
   } else if (wins_slctd() == TOD) {
-    if (count >= todo_hilt())
-      count = todo_hilt() - 1;
-    todo_hilt_decrease(count);
-    if (todo_hilt_pos() < 0)
-      todo_first_increase(todo_hilt_pos());
+    if (count >= ui_todo_hilt())
+      count = ui_todo_hilt() - 1;
+    ui_todo_hilt_decrease(count);
+    if (ui_todo_hilt_pos() < 0)
+      ui_todo_first_increase(ui_todo_hilt_pos());
     wins_update(FLAG_TOD);
   }
 }
@@ -386,11 +386,11 @@ static inline void key_move_down(void)
     ui_day_scroll_pad_down(inday.nb_events, win[APP].h);
     wins_update(FLAG_APP);
   } else if (wins_slctd() == TOD) {
-    if (count > todo_nb() - todo_hilt())
-      count = todo_nb() - todo_hilt();
-    todo_hilt_increase(count);
-    if (todo_hilt_pos() >= win[TOD].h - 4)
-      todo_first_increase(todo_hilt_pos() - win[TOD].h + 5);
+    if (count > ui_todo_nb() - ui_todo_hilt())
+      count = ui_todo_nb() - ui_todo_hilt();
+    ui_todo_hilt_increase(count);
+    if (ui_todo_hilt_pos() >= win[TOD].h - 4)
+      ui_todo_first_increase(ui_todo_hilt_pos() - win[TOD].h + 5);
     wins_update(FLAG_TOD);
   }
 }

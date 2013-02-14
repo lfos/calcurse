@@ -497,7 +497,7 @@ void wins_update_panels(int flags)
   if (flags & FLAG_APP)
     ui_day_update_panel(slctd_win);
   if (flags & FLAG_TOD)
-    todo_update_panel(slctd_win);
+    ui_todo_update_panel(slctd_win);
   if (flags & FLAG_CAL)
     calendar_update_panel(&win[CAL]);
 }
