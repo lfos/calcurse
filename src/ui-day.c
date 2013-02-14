@@ -49,16 +49,15 @@ static int day_edit_time(int time, unsigned *new_hour, unsigned *new_minute)
 
   for (;;) {
     status_mesg(msg_time, "");
-    if (updatestring(win[STA].p, &timestr, 0, 1) == GETSTRING_VALID) {
-      if (parse_time(timestr, new_hour, new_minute) == 1) {
-        mem_free(timestr);
-        return 1;
-      } else {
-        status_mesg(fmt_msg, enter_str);
-        wgetch(win[KEY].p);
-      }
-    } else
+    if (updatestring(win[STA].p, &timestr, 0, 1) != GETSTRING_VALID)
       return 0;
+    if (parse_time(timestr, new_hour, new_minute) == 1) {
+      mem_free(timestr);
+      return 1;
+    } else {
+      status_mesg(fmt_msg, enter_str);
+      wgetch(win[KEY].p);
+    }
   }
 }
 
@@ -76,21 +75,20 @@ static int day_edit_duration(int start, int dur, unsigned *new_duration)
 
   for (;;) {
     status_mesg(msg_time, "");
-    if (updatestring(win[STA].p, &timestr, 0, 1) == GETSTRING_VALID) {
-      if (*timestr == '+' && parse_duration(timestr + 1, new_duration) == 1) {
-        *new_duration *= MININSEC;
-        break;
-      } else if (parse_time(timestr, &hr, &mn) == 1) {
-        newtime = update_time_in_date(start + dur, hr, mn);
-        *new_duration = (newtime > start) ? newtime - start :
-            DAYINSEC + newtime - start;
-        break;
-      } else {
-        status_mesg(fmt_msg, enter_str);
-        wgetch(win[KEY].p);
-      }
-    } else
+    if (updatestring(win[STA].p, &timestr, 0, 1) != GETSTRING_VALID)
       return 0;
+    if (*timestr == '+' && parse_duration(timestr + 1, new_duration) == 1) {
+      *new_duration *= MININSEC;
+      break;
+    } else if (parse_time(timestr, &hr, &mn) == 1) {
+      newtime = update_time_in_date(start + dur, hr, mn);
+      *new_duration = (newtime > start) ? newtime - start :
+          DAYINSEC + newtime - start;
+      break;
+    } else {
+      status_mesg(fmt_msg, enter_str);
+      wgetch(win[KEY].p);
+    }
   }
 
   mem_free(timestr);
@@ -140,7 +138,7 @@ static void update_desc(char **desc)
 
 static void update_rept(struct rpt **rpt, const long start)
 {
-  int newtype, newfreq, date_entered;
+  int newtype, newfreq;
   long newuntil;
   char outstr[BUFSIZ];
   char *freqstr, *timstr;
@@ -209,21 +207,25 @@ static void update_rept(struct rpt **rpt, const long start)
     status_mesg(_("Enter the new repetition frequence:"), "");
     freqstr = mem_malloc(BUFSIZ);
     snprintf(freqstr, BUFSIZ, "%d", (*rpt)->freq);
-    if (updatestring(win[STA].p, &freqstr, 0, 1) == GETSTRING_VALID) {
-      newfreq = atoi(freqstr);
-      mem_free(freqstr);
-      if (newfreq == 0) {
-        status_mesg(msg_wrong_freq, msg_enter);
-        wgetch(win[KEY].p);
-      }
-    } else {
+    if (updatestring(win[STA].p, &freqstr, 0, 1) != GETSTRING_VALID) {
       mem_free(freqstr);
       return;
+    }
+    newfreq = atoi(freqstr);
+    mem_free(freqstr);
+    if (newfreq == 0) {
+      status_mesg(msg_wrong_freq, msg_enter);
+      wgetch(win[KEY].p);
     }
   }
   while (newfreq == 0);
 
-  do {
+  for (;;) {
+    struct tm lt;
+    time_t t;
+    struct date new_date;
+    int newmonth, newday, newyear;
+
     snprintf(outstr, BUFSIZ, _("Enter the new ending date: [%s] or '0'"),
              DATEFMT_DESC(conf.input_datefmt));
     status_mesg(outstr, "");
@@ -234,36 +236,26 @@ static void update_rept(struct rpt **rpt, const long start)
     }
     if (strcmp(timstr, "0") == 0) {
       newuntil = 0;
-      date_entered = 1;
-    } else {
-      struct tm lt;
-      time_t t;
-      struct date new_date;
-      int newmonth, newday, newyear;
-
-      if (parse_date(timstr, conf.input_datefmt, &newyear, &newmonth,
-                     &newday, ui_calendar_get_slctd_day())) {
-        t = start;
-        localtime_r(&t, &lt);
-        new_date.dd = newday;
-        new_date.mm = newmonth;
-        new_date.yyyy = newyear;
-        newuntil = date2sec(new_date, lt.tm_hour, lt.tm_min);
-        if (newuntil < start) {
-          status_mesg(msg_wrong_time, msg_enter);
-          wgetch(win[KEY].p);
-          date_entered = 0;
-        } else
-          date_entered = 1;
-      } else {
-        snprintf(outstr, BUFSIZ, msg_fmts, DATEFMT_DESC(conf.input_datefmt));
-        status_mesg(msg_wrong_date, outstr);
-        wgetch(win[KEY].p);
-        date_entered = 0;
-      }
+      break;
     }
+    if (!parse_date(timstr, conf.input_datefmt, &newyear, &newmonth,
+                    &newday, ui_calendar_get_slctd_day())) {
+      snprintf(outstr, BUFSIZ, msg_fmts, DATEFMT_DESC(conf.input_datefmt));
+      status_mesg(msg_wrong_date, outstr);
+      wgetch(win[KEY].p);
+      continue;
+    }
+    t = start;
+    localtime_r(&t, &lt);
+    new_date.dd = newday;
+    new_date.mm = newmonth;
+    new_date.yyyy = newyear;
+    newuntil = date2sec(new_date, lt.tm_hour, lt.tm_min);
+    if (newuntil >= start)
+      break;
+    status_mesg(msg_wrong_time, msg_enter);
+    wgetch(win[KEY].p);
   }
-  while (date_entered == 0);
 
   mem_free(timstr);
   (*rpt)->type = recur_char2def(newtype);
@@ -427,7 +419,6 @@ void ui_day_item_add(void)
       _
       ("Invalid end time/duration, should be [hh:mm], [hhmm], [+hh:mm], [+xxxdxxhxxm] or [+mm]");
   const char *enter_str = _("Press [Enter] to continue");
-  int Id = 1;
   char item_time[LDUR] = "";
   char item_mesg[BUFSIZ] = "";
   long apoint_start;
@@ -439,20 +430,16 @@ void ui_day_item_add(void)
   /* Get the starting time */
   for (;;) {
     status_mesg(mesg_1, "");
-    if (getstring(win[STA].p, item_time, LTIME, 0, 1) != GETSTRING_ESC) {
-      if (strlen(item_time) == 0) {
-        is_appointment = 0;
-        break;
-      }
-
-      if (parse_time(item_time, &heures, &minutes) == 1)
-        break;
-      else {
-        status_mesg(format_message_1, enter_str);
-        wgetch(win[KEY].p);
-      }
-    } else
+    if (getstring(win[STA].p, item_time, LTIME, 0, 1) == GETSTRING_ESC)
       return;
+    if (strlen(item_time) == 0) {
+      is_appointment = 0;
+      break;
+    }
+    if (parse_time(item_time, &heures, &minutes) == 1)
+      break;
+    status_mesg(format_message_1, enter_str);
+    wgetch(win[KEY].p);
   }
 
   /*
@@ -464,28 +451,25 @@ void ui_day_item_add(void)
     item_time[0] = '\0';
     for (;;) {
       status_mesg(mesg_2, "");
-      if (getstring(win[STA].p, item_time, LDUR, 0, 1) != GETSTRING_ESC) {
-        if (*item_time == '+' && parse_duration(item_time + 1,
-                                                &apoint_duration) == 1)
-          break;
-        else if (parse_time(item_time, &end_h, &end_m) == 1) {
-          if (end_h < heures || ((end_h == heures) && (end_m < minutes))) {
-            apoint_duration = MININSEC - minutes + end_m
-                + (24 + end_h - (heures + 1)) * MININSEC;
-          } else {
-            apoint_duration = MININSEC - minutes
-                + end_m + (end_h - (heures + 1)) * MININSEC;
-          }
-          break;
-        } else {
-          status_mesg(format_message_2, enter_str);
-          wgetch(win[KEY].p);
-        }
-      } else
+      if (getstring(win[STA].p, item_time, LDUR, 0, 1) == GETSTRING_ESC)
         return;
+      if (*item_time == '+' && parse_duration(item_time + 1,
+                                              &apoint_duration) == 1)
+          break;
+      if (parse_time(item_time, &end_h, &end_m) == 1) {
+        if (end_h < heures || ((end_h == heures) && (end_m < minutes))) {
+          apoint_duration = MININSEC - minutes + end_m
+              + (24 + end_h - (heures + 1)) * MININSEC;
+        } else {
+          apoint_duration = MININSEC - minutes
+              + end_m + (end_h - (heures + 1)) * MININSEC;
+        }
+        break;
+      }
+      status_mesg(format_message_2, enter_str);
+      wgetch(win[KEY].p);
     }
-  } else                        /* Insert the event Id */
-    Id = 1;
+  }
 
   status_mesg(mesg_3, "");
   if (getstring(win[STA].p, item_mesg, BUFSIZ, 0, 1) == GETSTRING_VALID) {
@@ -494,8 +478,9 @@ void ui_day_item_add(void)
       apoint_new(item_mesg, 0L, apoint_start, min2sec(apoint_duration), 0L);
       if (notify_bar())
         notify_check_added(item_mesg, apoint_start, 0L);
-    } else
-      event_new(item_mesg, 0L, date2sec(*ui_calendar_get_slctd_day(), 0, 0), Id);
+    } else {
+      event_new(item_mesg, 0L, date2sec(*ui_calendar_get_slctd_day(), 0, 0), 1);
+    }
 
     if (ui_day_hilt() == 0)
       ui_day_hilt_increase(1);
@@ -606,7 +591,6 @@ void ui_day_item_repeat(void)
 {
   struct tm lt;
   time_t t;
-  int date_entered = 0;
   int year = 0, month = 0, day = 0;
   struct date until_date;
   char outstr[BUFSIZ];
@@ -667,50 +651,42 @@ void ui_day_item_repeat(void)
 
   while (freq == 0) {
     status_mesg(mesg_freq_1, "");
-    if (getstring(win[STA].p, user_input, BUFSIZ, 0, 1) == GETSTRING_VALID) {
-      freq = atoi(user_input);
-      if (freq == 0) {
-        status_mesg(mesg_wrong_freq, wrong_type_2);
-        wgetch(win[KEY].p);
-      }
-      user_input[0] = '\0';
-    } else
+    if (getstring(win[STA].p, user_input, BUFSIZ, 0, 1) != GETSTRING_VALID)
       return;
+    freq = atoi(user_input);
+    if (freq == 0) {
+      status_mesg(mesg_wrong_freq, wrong_type_2);
+      wgetch(win[KEY].p);
+    }
+    user_input[0] = '\0';
   }
 
-  while (!date_entered) {
+  for (;;) {
     snprintf(outstr, BUFSIZ, mesg_until_1, DATEFMT_DESC(conf.input_datefmt));
     status_mesg(outstr, "");
-    if (getstring(win[STA].p, user_input, BUFSIZ, 0, 1) == GETSTRING_VALID) {
-      if (strlen(user_input) == 1 && strcmp(user_input, "0") == 0) {
-        until = 0;
-        date_entered = 1;
-      } else {
-        if (parse_date(user_input, conf.input_datefmt,
-                       &year, &month, &day, ui_calendar_get_slctd_day())) {
-          t = p->start;
-          localtime_r(&t, &lt);
-          until_date.dd = day;
-          until_date.mm = month;
-          until_date.yyyy = year;
-          until = date2sec(until_date, lt.tm_hour, lt.tm_min);
-          if (until < p->start) {
-            status_mesg(mesg_older, wrong_type_2);
-            wgetch(win[KEY].p);
-            date_entered = 0;
-          } else {
-            date_entered = 1;
-          }
-        } else {
-          snprintf(outstr, BUFSIZ, mesg_wrong_2,
-                   DATEFMT_DESC(conf.input_datefmt));
-          status_mesg(mesg_wrong_1, outstr);
-          wgetch(win[KEY].p);
-          date_entered = 0;
-        }
-      }
-    } else
+    if (getstring(win[STA].p, user_input, BUFSIZ, 0, 1) != GETSTRING_VALID)
       return;
+    if (strlen(user_input) == 1 && strcmp(user_input, "0") == 0) {
+      until = 0;
+      break;
+    }
+    if (parse_date(user_input, conf.input_datefmt,
+                   &year, &month, &day, ui_calendar_get_slctd_day())) {
+      t = p->start;
+      localtime_r(&t, &lt);
+      until_date.dd = day;
+      until_date.mm = month;
+      until_date.yyyy = year;
+      until = date2sec(until_date, lt.tm_hour, lt.tm_min);
+      if (until >= p->start)
+        break;
+      status_mesg(mesg_older, wrong_type_2);
+      wgetch(win[KEY].p);
+    } else {
+      snprintf(outstr, BUFSIZ, mesg_wrong_2, DATEFMT_DESC(conf.input_datefmt));
+      status_mesg(mesg_wrong_1, outstr);
+      wgetch(win[KEY].p);
+    }
   }
 
   date = ui_calendar_get_slctd_day_sec();
