@@ -930,6 +930,7 @@ void todo_write(struct todo *, FILE *);
 void todo_delete_note(struct todo *);
 void todo_delete(struct todo *);
 void todo_flag(struct todo *);
+int todo_get_position(struct todo *);
 void ui_todo_chg_priority(struct todo *, int);
 void ui_todo_update_panel(int);
 void todo_edit_note(struct todo *, const char *);

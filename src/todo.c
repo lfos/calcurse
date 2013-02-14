@@ -123,7 +123,7 @@ void todo_flag(struct todo *t)
  * Returns the position into the linked list corresponding to the
  * given todo item.
  */
-static int todo_get_position(struct todo *needle)
+int todo_get_position(struct todo *needle)
 {
   llist_item_t *i;
   int n = 0;
