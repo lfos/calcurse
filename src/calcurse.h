@@ -730,14 +730,14 @@ void ical_import_data(FILE *, FILE *, unsigned *, unsigned *, unsigned *,
 void ical_export_data(FILE *);
 
 /* interaction.c */
-void interact_day_item_add(void);
-void interact_day_item_delete(unsigned *, unsigned *, unsigned);
-void interact_day_item_edit(void);
-void interact_day_item_pipe(void);
-void interact_day_item_repeat(void);
-void interact_day_item_cut_free(unsigned);
-void interact_day_item_copy(unsigned *, unsigned *, unsigned);
-void interact_day_item_paste(unsigned *, unsigned *, unsigned);
+void ui_day_item_add(void);
+void ui_day_item_delete(unsigned *, unsigned *, unsigned);
+void ui_day_item_edit(void);
+void ui_day_item_pipe(void);
+void ui_day_item_repeat(void);
+void ui_day_item_cut_free(unsigned);
+void ui_day_item_copy(unsigned *, unsigned *, unsigned);
+void ui_day_item_paste(unsigned *, unsigned *, unsigned);
 void ui_todo_add(void);
 void ui_todo_delete(void);
 void ui_todo_edit(void);

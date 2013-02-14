@@ -126,7 +126,7 @@ static inline void key_generic_config_menu(void)
 
 static inline void key_generic_add_appt(void)
 {
-  interact_day_item_add();
+  ui_day_item_add();
   inday = do_storage(1);
   wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
 }
@@ -143,7 +143,7 @@ static inline void key_add_item(void)
 {
   switch (wins_slctd()) {
   case APP:
-    interact_day_item_add();
+    ui_day_item_add();
     inday = do_storage(0);
     wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
     break;
@@ -161,7 +161,7 @@ static inline void key_add_item(void)
 static inline void key_edit_item(void)
 {
   if (wins_slctd() == APP && apoint_hilt() != 0) {
-    interact_day_item_edit();
+    ui_day_item_edit();
     inday = do_storage(0);
     wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
   } else if (wins_slctd() == TOD && todo_hilt() != 0) {
@@ -173,7 +173,7 @@ static inline void key_edit_item(void)
 static inline void key_del_item(void)
 {
   if (wins_slctd() == APP && apoint_hilt() != 0) {
-    interact_day_item_delete(&inday.nb_events, &inday.nb_apoints, reg);
+    ui_day_item_delete(&inday.nb_events, &inday.nb_apoints, reg);
     inday = do_storage(0);
     wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
   } else if (wins_slctd() == TOD && todo_hilt() != 0) {
@@ -185,7 +185,7 @@ static inline void key_del_item(void)
 static inline void key_generic_copy(void)
 {
   if (wins_slctd() == APP && apoint_hilt() != 0) {
-    interact_day_item_copy(&inday.nb_events, &inday.nb_apoints, reg);
+    ui_day_item_copy(&inday.nb_events, &inday.nb_apoints, reg);
     inday = do_storage(0);
     wins_update(FLAG_CAL | FLAG_APP);
   }
@@ -194,7 +194,7 @@ static inline void key_generic_copy(void)
 static inline void key_generic_paste(void)
 {
   if (wins_slctd() == APP) {
-    interact_day_item_paste(&inday.nb_events, &inday.nb_apoints, reg);
+    ui_day_item_paste(&inday.nb_events, &inday.nb_apoints, reg);
     inday = do_storage(0);
     wins_update(FLAG_CAL | FLAG_APP);
   }
@@ -203,7 +203,7 @@ static inline void key_generic_paste(void)
 static inline void key_repeat_item(void)
 {
   if (wins_slctd() == APP && apoint_hilt() != 0)
-    interact_day_item_repeat();
+    ui_day_item_repeat();
   inday = do_storage(0);
   wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
 }
@@ -223,7 +223,7 @@ static inline void key_flag_item(void)
 static inline void key_pipe_item(void)
 {
   if (wins_slctd() == APP && apoint_hilt() != 0)
-    interact_day_item_pipe();
+    ui_day_item_pipe();
   else if (wins_slctd() == TOD && todo_hilt() != 0)
     ui_todo_pipe();
   wins_update(FLAG_ALL);

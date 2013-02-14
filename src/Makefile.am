@@ -21,7 +21,6 @@ calcurse_SOURCES = \
 	getstring.c \
 	help.c \
 	ical.c \
-	interaction.c \
 	io.c \
 	keys.c \
 	llist.c \
@@ -32,6 +31,7 @@ calcurse_SOURCES = \
 	sha1.c \
 	sigs.c \
 	todo.c \
+	ui-day.c \
 	ui-todo.c \
 	utf8.c \
 	utils.c \

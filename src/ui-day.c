@@ -271,7 +271,7 @@ static void update_rept(struct rpt **rpt, const long start)
 }
 
 /* Edit an already existing item. */
-void interact_day_item_edit(void)
+void ui_day_item_edit(void)
 {
   struct day_item *p;
   struct recur_event *re;
@@ -366,7 +366,7 @@ void interact_day_item_edit(void)
 }
 
 /* Pipe an appointment or event to an external program. */
-void interact_day_item_pipe(void)
+void ui_day_item_pipe(void)
 {
   char cmd[BUFSIZ] = "";
   char const *arg[] = { cmd, NULL };
@@ -410,7 +410,7 @@ void interact_day_item_pipe(void)
  * Add an item in either the appointment or the event list,
  * depending if the start time is entered or not.
  */
-void interact_day_item_add(void)
+void ui_day_item_add(void)
 {
 #define LTIME 6
 #define LDUR 12
@@ -506,7 +506,7 @@ void interact_day_item_add(void)
 }
 
 /* Delete an item from the appointment list. */
-void interact_day_item_delete(unsigned *nb_events, unsigned *nb_apoints,
+void ui_day_item_delete(unsigned *nb_events, unsigned *nb_apoints,
                               unsigned reg)
 {
   const char *del_app_str = _("Do you really want to delete this item ?");
@@ -563,7 +563,7 @@ void interact_day_item_delete(unsigned *nb_events, unsigned *nb_apoints,
     }
   }
 
-  interact_day_item_cut_free(reg);
+  ui_day_item_cut_free(reg);
   p = day_cut_item(date, apoint_hilt());
   day_cut[reg].type = p->type;
   day_cut[reg].item = p->item;
@@ -601,7 +601,7 @@ void interact_day_item_delete(unsigned *nb_events, unsigned *nb_apoints,
  *	o repetition end date
  * and then delete the selected item to recreate it as a recurrent one
  */
-void interact_day_item_repeat(void)
+void ui_day_item_repeat(void)
 {
   struct tm lt;
   time_t t;
@@ -728,7 +728,7 @@ void interact_day_item_repeat(void)
     /* NOTREACHED */
   }
 
-  interact_day_item_cut_free(REG_BLACK_HOLE);
+  ui_day_item_cut_free(REG_BLACK_HOLE);
   p = day_cut_item(date, item_nb);
   day_cut[REG_BLACK_HOLE].type = p->type;
   day_cut[REG_BLACK_HOLE].item = p->item;
@@ -737,7 +737,7 @@ void interact_day_item_repeat(void)
 }
 
 /* Free the current cut item, if any. */
-void interact_day_item_cut_free(unsigned reg)
+void ui_day_item_cut_free(unsigned reg)
 {
   switch (day_cut[reg].type) {
   case 0:
@@ -759,7 +759,7 @@ void interact_day_item_cut_free(unsigned reg)
 }
 
 /* Copy an item, so that it can be pasted somewhere else later. */
-void interact_day_item_copy(unsigned *nb_events, unsigned *nb_apoints,
+void ui_day_item_copy(unsigned *nb_events, unsigned *nb_apoints,
                             unsigned reg)
 {
   const int NBITEMS = *nb_apoints + *nb_events;
@@ -767,12 +767,12 @@ void interact_day_item_copy(unsigned *nb_events, unsigned *nb_apoints,
   if (NBITEMS == 0 || reg == REG_BLACK_HOLE)
     return;
 
-  interact_day_item_cut_free(reg);
+  ui_day_item_cut_free(reg);
   day_item_fork(day_get_item(apoint_hilt()), &day_cut[reg]);
 }
 
 /* Paste a previously cut item. */
-void interact_day_item_paste(unsigned *nb_events, unsigned *nb_apoints,
+void ui_day_item_paste(unsigned *nb_events, unsigned *nb_apoints,
                              unsigned reg)
 {
   int item_type;
