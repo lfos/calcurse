@@ -256,8 +256,9 @@ static inline void key_edit_note(void)
   if (wins_slctd() == APP && ui_day_hilt() != 0) {
     day_edit_note(day_get_item(ui_day_hilt()), conf.editor);
     inday = do_storage(0);
-  } else if (wins_slctd() == TOD && ui_todo_hilt() != 0)
+  } else if (wins_slctd() == TOD && ui_todo_hilt() != 0) {
     todo_edit_note(todo_get_item(ui_todo_hilt()), conf.editor);
+  }
   wins_update(FLAG_ALL);
 }
 
@@ -465,14 +466,15 @@ static inline void key_generic_quit(void)
     note_gc();
 
   if (conf.confirm_quit) {
-    if (status_ask_bool(_("Do you really want to quit ?")) == 1)
+    if (status_ask_bool(_("Do you really want to quit ?")) == 1) {
       exit_calcurse(EXIT_SUCCESS);
-    else {
+    } else {
       wins_erase_status_bar();
       wins_update(FLAG_STA);
     }
-  } else
+  } else {
     exit_calcurse(EXIT_SUCCESS);
+  }
 }
 
 /*

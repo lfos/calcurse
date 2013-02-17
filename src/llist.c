@@ -140,9 +140,9 @@ void llist_add(llist_t * l, void *data)
     o->data = data;
     o->next = NULL;
 
-    if (!l->head)
+    if (!l->head) {
       l->head = l->tail = o;
-    else {
+    } else {
       l->tail->next = o;
       l->tail = o;
     }
@@ -161,9 +161,9 @@ void llist_add_sorted(llist_t * l, void *data, llist_fn_cmp_t fn_cmp)
     o->data = data;
     o->next = NULL;
 
-    if (!l->head)
+    if (!l->head) {
       l->head = l->tail = o;
-    else if (fn_cmp(o->data, l->tail->data) >= 0) {
+    } else if (fn_cmp(o->data, l->tail->data) >= 0) {
       l->tail->next = o;
       l->tail = o;
     } else if (fn_cmp(o->data, l->head->data) < 0) {
@@ -186,9 +186,9 @@ void llist_remove(llist_t * l, llist_item_t * i)
 {
   llist_item_t *j = NULL;
 
-  if (l->head && i == l->head)
+  if (l->head && i == l->head) {
     l->head = i->next;
-  else {
+  } else {
     for (j = l->head; j && j->next != i; j = j->next) ;
   }
 

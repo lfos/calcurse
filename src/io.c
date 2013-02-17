@@ -531,8 +531,9 @@ void io_load_app(void)
         } else if (c == '}') {
           while ((c = getc(data_file)) == ' ') ;
           ungetc(c, data_file);
-        } else
+        } else {
           io_load_error(path_apts, line, _("syntax error in item repetition"));
+        }
       } else if (c == '!') {    /* endless item with exceptions */
         ungetc(c, data_file);
         recur_exc_scan(&exc, data_file);
@@ -544,8 +545,9 @@ void io_load_app(void)
                       _("wrong format in the appointment or event"));
         /* NOTREACHED */
       }
-    } else
+    } else {
       ungetc(c, data_file);
+    }
 
     /* Check if a note is attached to the item. */
     c = getc(data_file);
@@ -571,8 +573,9 @@ void io_load_app(void)
         state = 0L;
         while ((c = getc(data_file)) == ' ') ;
         ungetc(c, data_file);
-      } else
+      } else {
         io_load_error(path_apts, line, _("syntax error in item repetition"));
+      }
       if (is_recursive) {
         recur_apoint_scan(data_file, start, end,
                           type, freq, until, notep, &exc, state);
@@ -610,9 +613,9 @@ void io_load_todo(void)
   for (;;) {
     line++;
     c = getc(data_file);
-    if (c == EOF)
+    if (c == EOF) {
       break;
-    else if (c == '[') {        /* new style with id */
+    } else if (c == '[') {        /* new style with id */
       if (fscanf(data_file, " %d ", &id) != 1 || getc(data_file) != ']')
         io_load_error(path_todo, line, _("syntax error in item identifier"));
       while ((c = getc(data_file)) == ' ') ;
@@ -623,9 +626,9 @@ void io_load_todo(void)
     }
     /* Now read the attached note, if any. */
     c = getc(data_file);
-    if (c == '>')
+    if (c == '>') {
       note_read(note, data_file);
-    else {
+    } else {
       note[0] = '\0';
       ungetc(c, data_file);
     }
@@ -772,8 +775,9 @@ void io_load_keys(const char *pager)
             (void)snprintf(already_assigned, BUFSIZ,
                            _("\"%s\" assigned multiple times!"), key_ch);
             io_log_print(log, line, already_assigned);
-          } else
+          } else {
             assigned++;
+          }
         }
         p += strlen(key_ch) + 1;
       } else {
@@ -826,8 +830,7 @@ unsigned io_file_exist(const char *file)
   if (file && (fd = fopen(file, "r")) != NULL) {
     fclose(fd);
     return 1;
-  }
-  else {
+  } else {
     return 0;
   }
 }
@@ -1163,8 +1166,9 @@ void io_set_lock(void)
       fclose(lock);
       if (kill(pid, 0) != 0 && errno == ESRCH)
         lock = NULL;
-    } else
+    } else {
       fclose(lock);
+    }
   }
 
   if (lock != NULL) {
@@ -1264,8 +1268,9 @@ int io_file_cp(const char *src, const char *dst)
     if (bytes_read > 0) {
       if (fwrite(buffer, 1, bytes_read, fp_dst) != bytes_read)
         return 0;
-    } else
+    } else {
       return 0;
+    }
   }
 
   fclose(fp_dst);

@@ -260,9 +260,9 @@ static int date_change(struct tm *date, int delta_month, int delta_day)
   t.tm_mon += delta_month;
   t.tm_mday += delta_day;
 
-  if (mktime(&t) == -1)
+  if (mktime(&t) == -1) {
     return 1;
-  else {
+  } else {
     *date = t;
     return 0;
   }
@@ -338,8 +338,7 @@ draw_monthly_view(struct window *cwin, struct date *current_day,
     /* check if the day contains an event or an appointment */
     if (monthly_view_cache_valid) {
       item_this_day = monthly_view_cache[c_day - 1];
-    }
-    else {
+    } else {
       item_this_day = monthly_view_cache[c_day - 1] =
         day_check_if_item(check_day);
     }
@@ -625,9 +624,9 @@ void ui_calendar_change_day(int datefmt)
   while (wrong_day) {
     snprintf(outstr, BUFSIZ, request_date, DATEFMT_DESC(datefmt));
     status_mesg(outstr, "");
-    if (getstring(win[STA].p, selected_day, LDAY, 0, 1) == GETSTRING_ESC)
+    if (getstring(win[STA].p, selected_day, LDAY, 0, 1) == GETSTRING_ESC) {
       return;
-    else {
+    } else {
       if (strlen(selected_day) == 0) {
         wrong_day = 0;
         ui_calendar_goto_today();

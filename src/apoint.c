@@ -117,16 +117,16 @@ void apoint_sec2str(struct apoint *o, long day, char *start, char *end)
   struct tm lt;
   time_t t;
 
-  if (o->start < day)
+  if (o->start < day) {
     strncpy(start, "..:..", 6);
-  else {
+  } else {
     t = o->start;
     localtime_r(&t, &lt);
     snprintf(start, HRMIN_SIZE, "%02u:%02u", lt.tm_hour, lt.tm_min);
   }
-  if (o->start + o->dur > day + DAYINSEC)
+  if (o->start + o->dur > day + DAYINSEC) {
     strncpy(end, "..:..", 6);
-  else {
+  } else {
     t = o->start + o->dur;
     localtime_r(&t, &lt);
     snprintf(end, HRMIN_SIZE, "%02u:%02u", lt.tm_hour, lt.tm_min);

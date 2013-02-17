@@ -175,9 +175,9 @@ void wins_set_layout(int nb)
 /* Get the current side bar width. */
 unsigned wins_sbar_width(void)
 {
-  if (sbarwidth_perc > SBARMAXWIDTHPERC)
+  if (sbarwidth_perc > SBARMAXWIDTHPERC) {
     return col * SBARMAXWIDTHPERC / 100;
-  else {
+  } else {
     unsigned sbarwidth = (unsigned)(col * sbarwidth_perc / 100);
     return (sbarwidth < SBARMINWIDTH) ? SBARMINWIDTH : sbarwidth;
   }

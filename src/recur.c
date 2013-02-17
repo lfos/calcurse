@@ -203,8 +203,9 @@ struct recur_apoint *recur_apoint_new(char *mesg, char *note, long start,
   if (except) {
     exc_dup(&rapt->exc, except);
     free_exc_list(except);
-  } else
+  } else {
     LLIST_INIT(&rapt->exc);
+  }
 
   LLIST_TS_LOCK(&recur_alist_p);
   LLIST_TS_ADD_SORTED(&recur_alist_p, rapt, recur_apoint_cmp_start);
@@ -231,8 +232,9 @@ struct recur_event *recur_event_new(char *mesg, char *note, long day, int id,
   if (except) {
     exc_dup(&rev->exc, except);
     free_exc_list(except);
-  } else
+  } else {
     LLIST_INIT(&rev->exc);
+  }
 
   LLIST_ADD_SORTED(&recur_elist, rev, recur_event_cmp_day);
 
@@ -627,8 +629,9 @@ recur_item_find_occurrence(long item_start, long item_dur, llist_t * item_exc,
     }
 
     return 1;
-  } else
+  } else {
     return 0;
+  }
 }
 
 unsigned

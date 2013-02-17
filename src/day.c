@@ -72,10 +72,11 @@ static int day_cmp_start(struct day_item *a, struct day_item *b)
       return 0;
     else
       return -1;
-  } else if (b->type <= EVNT)
+  } else if (b->type <= EVNT) {
     return 1;
-  else
+  } else {
     return a->start < b->start ? -1 : (a->start == b->start ? 0 : 1);
+  }
 }
 
 /* Add an item to the current day list. */
@@ -446,9 +447,9 @@ display_item(struct day_item *day, int incolor, int width, int y, int x)
   ch_note = day_item_get_note(day) ? '>' : ' ';
   if (incolor == 0)
     custom_apply_attr(win, ATTR_HIGHEST);
-  if (utf8_strwidth(mesg) < width)
+  if (utf8_strwidth(mesg) < width) {
     mvwprintw(win, y, x, " %c%c%s", ch_recur, ch_note, mesg);
-  else {
+  } else {
     for (i = 0; mesg[i] && width > 0; i++) {
       if (!UTF8_ISCONT(mesg[i]))
         width -= utf8_width(&mesg[i]);

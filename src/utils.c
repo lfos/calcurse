@@ -77,8 +77,9 @@ void exit_calcurse(int status)
     endwin();
     ui_mode = UI_CMDLINE;
     was_interactive = 1;
-  } else
+  } else {
     was_interactive = 0;
+  }
 
   ui_calendar_stop_date_thread();
   io_stop_psave_thread();
@@ -379,9 +380,9 @@ char *date_sec2date_str(long sec, const char *datefmt)
   struct tm lt;
   char *datestr = (char *)mem_calloc(BUFSIZ, sizeof(char));
 
-  if (sec == 0)
-    strncpy(datestr, "0", BUFSIZ);
-  else {
+  if (sec == 0) {
+    strncpy(datestr, "0", BUFSIZ)
+  } else {
     localtime_r((time_t *)&sec, &lt);
     strftime(datestr, BUFSIZ, datefmt, &lt);
   }
@@ -574,8 +575,9 @@ print_bool_option_incolor(WINDOW * win, unsigned option, int pos_y, int pos_x)
   } else if (option == 0) {
     color = ATTR_FALSE;
     option_value = _("no");
-  } else
+  } else {
     EXIT(_("option not defined"));
+  }
 
   custom_apply_attr(win, color);
   mvwaddstr(win, pos_y, pos_x, option_value);
@@ -660,10 +662,11 @@ parse_date(const char *date_string, enum datefmt datefmt, int *year,
     if (*p == sep) {
       if ((++n) > 2)
         return 0;
-    } else if ((*p >= '0') && (*p <= '9'))
+    } else if ((*p >= '0') && (*p <= '9')) {
       in[n] = in[n] * 10 + (int)(*p - '0');
-    else
+    } else {
       return 0;
+    }
   }
 
   if ((!slctd_date && n < 2) || in[n] == 0)
@@ -741,8 +744,9 @@ int parse_time(const char *string, unsigned *hour, unsigned *minute)
       if ((n == 0) && (p == (string + 2)) && *(p + 1))
         n++;
       in[n] = in[n] * 10 + (int)(*p - '0');
-    } else
+    } else {
       return 0;
+    }
   }
 
   if (n != 1 || in[0] >= DAYINHOURS || in[1] >= HOURINMIN)
@@ -804,8 +808,9 @@ int parse_duration(const char *string, unsigned *duration)
         } else if (*p == 'm') {
           dur += in;
           state = STATE_DONE;
-        } else
+        } else {
           return 0;
+        }
         break;
       case STATE_DDHHMM_HH:
         if (*p == 'h') {
@@ -814,15 +819,17 @@ int parse_duration(const char *string, unsigned *duration)
         } else if (*p == 'm') {
           dur += in;
           state = STATE_DONE;
-        } else
+        } else {
           return 0;
+        }
         break;
       case STATE_DDHHMM_MM:
         if (*p == 'm') {
           dur += in;
           state = STATE_DONE;
-        } else
+        } else {
           return 0;
+        }
         break;
       case STATE_HHMM_MM:
         return 0;
@@ -1015,8 +1022,9 @@ static void print_notefile(FILE * out, const char *filename, int nbtab)
     for (i = 0; i < nbtab; i++)
       linestarter[i] = '\t';
     linestarter[nbtab] = '\0';
-  } else
+  } else {
     linestarter[0] = '\0';
+  }
 
   snprintf(path_to_notefile, BUFSIZ, "%s/%s", path_notes, filename);
   notefile = fopen(path_to_notefile, "r");
@@ -1168,9 +1176,9 @@ static void print_date(long date, long day, const char *extformat)
 {
   char buf[BUFSIZ];
 
-  if (!strcmp(extformat, "epoch"))
+  if (!strcmp(extformat, "epoch")) {
     printf("%ld", date);
-  else {
+  } else {
     time_t t = date;
     struct tm lt;
 
@@ -1227,10 +1235,11 @@ void print_apoint(const char *format, long day, struct apoint *apt)
         putchar('?');
         break;
       }
-    } else if (*p == '\\')
+    } else if (*p == '\\') {
       p += print_escape(p);
-    else
+    } else {
       putchar(*p);
+    }
   }
 }
 
@@ -1263,10 +1272,11 @@ void print_event(const char *format, long day, struct event *ev)
         putchar('?');
         break;
       }
-    } else if (*p == '\\')
+    } else if (*p == '\\') {
       p += print_escape(p);
-    else
+    } else {
       putchar(*p);
+    }
   }
 }
 
@@ -1328,9 +1338,10 @@ void print_todo(const char *format, struct todo *todo)
         putchar('?');
         break;
       }
-    } else if (*p == '\\')
+    } else if (*p == '\\') {
       p += print_escape(p);
-    else
+    } else {
       putchar(*p);
+    }
   }
 }

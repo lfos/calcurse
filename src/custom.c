@@ -455,19 +455,21 @@ display_color_config(struct window *cwin, int *mark_fore, int *mark_back,
       /* Retrieve the actual color theme. */
       pair_content(COLR_CUSTOM, &colr_fore, &colr_back);
 
-      if ((colr_fore == DEFAULTCOLOR) || (colr_fore == DEFAULTCOLOR_EXT))
+      if ((colr_fore == DEFAULTCOLOR) || (colr_fore == DEFAULTCOLOR_EXT)) {
         *mark_fore = NBUSERCOLORS;
-      else
+      } else {
         for (i = 0; i < NBUSERCOLORS + 1; i++)
           if (colr_fore == colr[i])
             *mark_fore = i;
+      }
 
-      if ((colr_back == DEFAULTCOLOR) || (colr_back == DEFAULTCOLOR_EXT))
+      if ((colr_back == DEFAULTCOLOR) || (colr_back == DEFAULTCOLOR_EXT)) {
         *mark_back = SIZE - 1;
-      else
+      } else {
         for (i = 0; i < NBUSERCOLORS + 1; i++)
           if (colr_back == colr[NBUSERCOLORS + 1 + i])
             *mark_back = NBUSERCOLORS + 1 + i;
+      }
     }
   }
 
@@ -976,8 +978,9 @@ void custom_keys_config(void)
                                          LINESPERKEY);
           wins_scrollwin_display(&kwin);
           continue;
-        } else
+        } else {
           not_recognized = 0;
+        }
 
         /* Is the binding used by this action already? If so, just end the reassignment */
         if (selrow == keys_get_action(keyval)) {
@@ -1041,9 +1044,9 @@ void custom_config_main(void)
     switch (ch) {
     case 'C':
     case 'c':
-      if (has_colors())
+      if (has_colors()) {
         custom_color_config();
-      else {
+      } else {
         colorize = 0;
         wins_erase_status_bar();
         mvwaddstr(win[STA].p, 0, 0, no_color_support);

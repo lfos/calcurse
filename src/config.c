@@ -275,8 +275,9 @@ static int config_parse_input_datefmt(void *dummy, const char *val)
     if (conf.input_datefmt <= 0 || conf.input_datefmt > DATE_FORMATS)
       conf.input_datefmt = 1;
     return 1;
-  } else
+  } else {
     return 0;
+  }
 }
 
 /* Set a configuration variable. */
@@ -359,16 +360,16 @@ static void config_color_theme_name(char *theme_name)
     "white"
   };
 
-  if (!colorize)
+  if (!colorize) {
     strncpy(theme_name, "none", BUFSIZ);
-  else {
+  } else {
     pair_content(COLR_CUSTOM, &color[0], &color[1]);
     for (i = 0; i < NBCOLORS; i++) {
-      if ((color[i] == DEFAULTCOLOR) || (color[i] == DEFAULTCOLOR_EXT))
+      if ((color[i] == DEFAULTCOLOR) || (color[i] == DEFAULTCOLOR_EXT)) {
         color_name[i] = default_color;
-      else if (color[i] >= 0 && color[i] <= MAXCOLORS)
+      } else if (color[i] >= 0 && color[i] <= MAXCOLORS) {
         color_name[i] = name[color[i]];
-      else {
+      } else {
         EXIT(_("unknown color"));
         /* NOTREACHED */
       }
@@ -453,8 +454,9 @@ config_serialize_conf(char *buf, const char *key,
         if (status)
           status->done[i] = 1;
         return 1;
-      } else
+      } else {
         return 0;
+      }
     }
   }
 
@@ -489,8 +491,7 @@ config_file_walk(config_fn_walk_cb_t fn_cb,
     if (value) {
       *value = '\0';
       value++;
-    }
-    else {
+    } else {
       EXIT(_("invalid configuration directive: \"%s\""), e_conf);
     }
 
@@ -538,12 +539,13 @@ static int config_load_cb(const char *key, const char *value, void *dummy)
 {
   int result = config_set_conf(key, value);
 
-  if (result < 0)
+  if (result < 0) {
     EXIT(_("configuration variable unknown: \"%s\""), key);
-  /* NOTREACHED */
-  else if (result == 0)
+    /* NOTREACHED */
+  } else if (result == 0) {
     EXIT(_("wrong configuration variable format for \"%s\""), key);
-  /* NOTREACHED */
+    /* NOTREACHED */
+  }
 
   return 1;
 }
@@ -560,12 +562,13 @@ static int config_save_cb(const char *key, const char *value, void *status)
   int result =
       config_serialize_conf(buf, key, (struct config_save_status *)status);
 
-  if (result < 0)
+  if (result < 0) {
     EXIT(_("configuration variable unknown: \"%s\""), key);
-  /* NOTREACHED */
-  else if (result == 0)
+    /* NOTREACHED */
+  } else if (result == 0) {
     EXIT(_("wrong configuration variable format for \"%s\""), key);
-  /* NOTREACHED */
+    /* NOTREACHED */
+  }
 
   fputs(key, ((struct config_save_status *)status)->fp);
   fputc('=', ((struct config_save_status *)status)->fp);

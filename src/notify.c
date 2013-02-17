@@ -140,9 +140,9 @@ static void extract_aptsfile(void)
   char *file;
 
   file = strrchr(path_apts, '/');
-  if (!file)
+  if (!file) {
     notify.apts_file = path_apts;
-  else {
+  } else {
     notify.apts_file = file;
     notify.apts_file++;
   }
@@ -455,8 +455,9 @@ void notify_check_added(char *mesg, long start, char state)
       update_notify = 1;
   } else if (start < notify_app.time && start >= current_time) {
     update_notify = 1;
-  } else if (start == notify_app.time && state != notify_app.state)
+  } else if (start == notify_app.time && state != notify_app.state) {
     update_notify = 1;
+  }
 
   if (update_notify) {
     notify_update_app(start, state, mesg);
@@ -482,8 +483,9 @@ void notify_check_repeated(struct recur_apoint *i)
         update_notify = 1;
     } else if (real_app_time < notify_app.time && real_app_time >= current_time) {
       update_notify = 1;
-    } else if (real_app_time == notify_app.time && i->state != notify_app.state)
+    } else if (real_app_time == notify_app.time && i->state != notify_app.state) {
       update_notify = 1;
+    }
   }
   if (update_notify) {
     notify_update_app(real_app_time, i->state, i->mesg);
@@ -548,9 +550,9 @@ print_option(WINDOW * win, unsigned x, unsigned y, char *name,
 
     maxlen = MAXCOL - x_opt - 2;
     custom_apply_attr(win, ATTR_HIGHEST);
-    if (len < maxlen)
+    if (len < maxlen) {
       mvwaddstr(win, y, x_opt, valstr);
-    else {
+    } else {
       char buf[BUFSIZ];
 
       strncpy(buf, valstr, maxlen - 1);
@@ -558,8 +560,9 @@ print_option(WINDOW * win, unsigned x, unsigned y, char *name,
       mvwprintw(win, y, x_opt, "%s...", buf);
     }
     custom_remove_attr(win, ATTR_HIGHEST);
-  } else
+  } else {
     print_bool_option_incolor(win, valbool, y, x_opt);
+  }
   mvwaddstr(win, y + 1, x, desc);
 }
 

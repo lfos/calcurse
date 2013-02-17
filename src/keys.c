@@ -199,11 +199,9 @@ enum key keys_getch(WINDOW * win, int *count, int *reg)
       ch = wgetch(win);
       if (ch >= '1' && ch <= '9') {
         *reg = ch - '1' + 1;
-      }
-      else if (ch >= 'a' && ch <= 'z') {
+      } else if (ch >= 'a' && ch <= 'z') {
         *reg = ch - 'a' + 10;
-      }
-      else if (ch == '_') {
+      } else if (ch == '_') {
         *reg = REG_BLACK_HOLE;
       }
       ch = wgetch(win);
@@ -230,9 +228,9 @@ static void add_key_str(enum key action, int key)
 
 int keys_assign_binding(int key, enum key action)
 {
-  if (key < 0 || key > MAXKEYVAL || actions[key] != KEY_UNDEF)
+  if (key < 0 || key > MAXKEYVAL || actions[key] != KEY_UNDEF) {
     return 1;
-  else {
+  } else {
     actions[key] = action;
     add_key_str(action, key);
   }
@@ -281,9 +279,9 @@ int keys_str2int(const char *key)
 
   if (!key)
     return -1;
-  if (strlen(key) == 1)
+  if (strlen(key) == 1) {
     return (int)key[0];
-  else {
+  } else {
     if (key[0] == '^')
       return CTRL((int)key[1]);
     else if (!strncmp(key, CONTROL_KEY, sizeof(CONTROL_KEY) - 1))
@@ -390,9 +388,9 @@ static char *keys_format_label(char *key, int keylen)
     return NULL;
 
   memset(fmtkey, 0, sizeof(fmtkey));
-  if (len == 0)
+  if (len == 0) {
     strncpy(fmtkey, "?", sizeof(fmtkey));
-  else if (len <= keylen) {
+  } else if (len <= keylen) {
     for (i = 0; i < keylen - len; i++)
       fmtkey[i] = ' ';
     strncat(fmtkey, key, keylen);
@@ -594,8 +592,9 @@ void keys_fill_missing(void)
                        "\"%s\" was already assigned!"),
                      keydef[i].label, key_ch);
           p += strlen(key_ch) + 1;
-        } else
+        } else {
           break;
+        }
       }
     }
   }

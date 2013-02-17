@@ -227,9 +227,9 @@ display_todo_item(int incolor, char *msg, int prio, int note, int width, int y,
 
   if (incolor == 0)
     custom_apply_attr(w, ATTR_HIGHEST);
-  if (utf8_strwidth(msg) < width)
+  if (utf8_strwidth(msg) < width) {
     mvwprintw(w, y, x, "%s%c %s", priostr, ch_note, msg);
-  else {
+  } else {
     for (i = 0; msg[i] && width > 0; i++) {
       if (!UTF8_ISCONT(msg[i]))
         width -= utf8_width(&msg[i]);

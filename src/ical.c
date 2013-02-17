@@ -114,8 +114,9 @@ static void ical_export_recur_events(FILE * stream)
     if (rev->rpt->until != 0) {
       date_sec2date_fmt(rev->rpt->until, ICALDATEFMT, ical_date);
       fprintf(stream, ";UNTIL=%s\n", ical_date);
-    } else
+    } else {
       fputc('\n', stream);
+    }
 
     if (LLIST_FIRST(&rev->exc)) {
       fputs("EXDATE:", stream);
@@ -172,8 +173,9 @@ static void ical_export_recur_apoints(FILE * stream)
     if (rapt->rpt->until != 0) {
       date_sec2date_fmt(rapt->rpt->until + HOURINSEC, ICALDATEFMT, ical_date);
       fprintf(stream, ";UNTIL=%s\n", ical_date);
-    } else
+    } else {
       fputc('\n', stream);
+    }
 
     if (LLIST_FIRST(&rapt->exc)) {
       fputs("EXDATE:", stream);
@@ -481,9 +483,9 @@ static long ical_durtime2long(char *timestr)
   long timelong;
   char *p;
 
-  if ((p = strchr(timestr, 'T')) == NULL)
+  if ((p = strchr(timestr, 'T')) == NULL) {
     timelong = 0;
-  else {
+  } else {
     int nbmatch;
     struct {
       unsigned hour, min, sec;
@@ -535,18 +537,18 @@ static long ical_dur2long(char *durstr)
   } date;
 
   memset(&date, 0, sizeof date);
-  if ((p = strchr(durstr, 'P')) == NULL)
+  if ((p = strchr(durstr, 'P')) == NULL) {
     durlong = NOTFOUND;
-  else {
+  } else {
     p++;
     if (*p == '-')
       return NOTFOUND;
     else if (*p == '+')
       p++;
 
-    if (*p == 'T')              /* dur-time */
+    if (*p == 'T') {              /* dur-time */
       durlong = ical_durtime2long(p);
-    else if (strchr(p, 'W')) {  /* dur-week */
+    } else if (strchr(p, 'W')) {  /* dur-week */
       if (sscanf(p, "%u", &date.week) == 1)
         durlong = date.week * WEEKINDAYS * DAYINSEC;
       else
@@ -556,10 +558,12 @@ static long ical_dur2long(char *durstr)
         if (sscanf(p, "%uD", &date.day) == 1) {
           durlong = date.day * DAYINSEC;
           durlong += ical_durtime2long(p);
-        } else
+        } else {
           durlong = NOTFOUND;
-      } else
+        }
+      } else {
         durlong = NOTFOUND;
+      }
     }
   }
   return durlong;
@@ -663,15 +667,15 @@ static ical_rpt_t *ical_read_rrule(FILE * log, char *rrulestr,
       mem_free(rpt);
       return NULL;
     } else {
-      if (strncmp(freqstr, daily, sizeof(daily) - 1) == 0)
+      if (strncmp(freqstr, daily, sizeof(daily) - 1) == 0) {
         rpt->type = RECUR_DAILY;
-      else if (strncmp(freqstr, weekly, sizeof(weekly) - 1) == 0)
+      } else if (strncmp(freqstr, weekly, sizeof(weekly) - 1) == 0) {
         rpt->type = RECUR_WEEKLY;
-      else if (strncmp(freqstr, monthly, sizeof(monthly) - 1) == 0)
+      } else if (strncmp(freqstr, monthly, sizeof(monthly) - 1) == 0) {
         rpt->type = RECUR_MONTHLY;
-      else if (strncmp(freqstr, yearly, sizeof(yearly) - 1) == 0)
+      } else if (strncmp(freqstr, yearly, sizeof(yearly) - 1) == 0) {
         rpt->type = RECUR_YEARLY;
-      else {
+      } else {
         ical_log(log, ICAL_VEVENT, itemline,
                  _("recurrence frequence not recognized."));
         (*noskipped)++;
@@ -706,8 +710,9 @@ static ical_rpt_t *ical_read_rrule(FILE * log, char *rrulestr,
         } else {
           rpt->count = cnt;
         }
-      } else
+      } else {
         rpt->until = 0;
+      }
     }
 
     if ((p = strstr(rrulestr, interv)) != NULL) {
@@ -810,8 +815,9 @@ static char *ical_read_summary(char *line)
     p++;
     summary = ical_unformat_line(p);
     return summary;
-  } else
+  } else {
     return NULL;
+  }
 }
 
 static void

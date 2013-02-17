@@ -193,8 +193,9 @@ enum getstr getstring(WINDOW * win, char *str, int l, int x, int y)
       if (st.pos > 0) {
         st.pos--;
         getstr_del_char(&st);
-      } else
+      } else {
         bell();
+      }
       break;
     case CTRL('D'):            /* delete next character */
       if (st.pos < st.len)
@@ -212,8 +213,9 @@ enum getstr getstring(WINDOW * win, char *str, int l, int x, int y)
           st.pos--;
           getstr_del_char(&st);
         }
-      } else
+      } else {
         bell();
+      }
       break;
     case CTRL('K'):            /* delete to end-of-line */
       st.s[st.ci[st.pos].offset] = 0;

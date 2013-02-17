@@ -561,8 +561,9 @@ int parse_args(int argc, char **argv)
           usage_try();
           return EXIT_FAILURE;
         }
-      } else
+      } else {
         tnum = -1;
+      }
       break;
     case 'v':
       vflag = 1;
@@ -572,11 +573,11 @@ int parse_args(int argc, char **argv)
       multiple_flag++;
       load_data++;
       if (optarg != NULL) {
-        if (strcmp(optarg, "ical") == 0)
+        if (strcmp(optarg, "ical") == 0) {
           xfmt = IO_EXPORT_ICAL;
-        else if (strcmp(optarg, "pcal") == 0)
+        } else if (strcmp(optarg, "pcal") == 0) {
           xfmt = IO_EXPORT_PCAL;
-        else {
+        } else {
           fputs(_("Argument for '-x' should be either "
                   "'ical' or 'pcal'\n"), stderr);
           usage();

@@ -313,8 +313,9 @@ int utf8_width(char *s)
         return utf8_widthtab[cur].width;
       else
         low = cur + 1;
-    } else
+    } else {
       high = cur - 1;
+    }
   }
   while (low <= high);
 

@@ -94,9 +94,9 @@ void edit_note(char **note, const char *editor)
 
   wins_launch_external(tmppath, editor);
 
-  if (io_file_is_empty(tmppath) > 0)
+  if (io_file_is_empty(tmppath) > 0) {
     erase_note(note);
-  else if ((fp = fopen(tmppath, "r"))) {
+  } else if ((fp = fopen(tmppath, "r"))) {
     sha1_stream(fp, sha1);
     fclose(fp);
     *note = sha1;
