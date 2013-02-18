@@ -381,7 +381,7 @@ char *date_sec2date_str(long sec, const char *datefmt)
   char *datestr = (char *)mem_calloc(BUFSIZ, sizeof(char));
 
   if (sec == 0) {
-    strncpy(datestr, "0", BUFSIZ)
+    strncpy(datestr, "0", BUFSIZ);
   } else {
     localtime_r((time_t *)&sec, &lt);
     strftime(datestr, BUFSIZ, datefmt, &lt);
