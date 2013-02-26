@@ -1,5 +1,7 @@
 #!/bin/sh
 
+. ./test-init.sh
+
 if [ "$1" = 'actual' ]; then
   "$CALCURSE" --read-only -D "$DATA_DIR"/ -c "$DATA_DIR/apts-recur" \
     -s01/01/2000 -r8 --format-recur-apt=''

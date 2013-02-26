@@ -1,5 +1,7 @@
 #!/bin/sh
 
+. ./test-init.sh
+
 if [ "$1" = 'actual' ]; then
   echo 23
 elif [ "$1" = 'expected' ]; then

@@ -16,13 +16,8 @@ when all tests are finished.
 
 You can also run tests manually. Test cases are usually shell scripts or
 binaries. To run an individual test, just invoke the corresponding executable.
-Note that some tests require the `CALCURSE` and `DATA_DIR` environment
-variables to be set, where `CALCURSE` should point to a valid calcurse binary
-and `DATA_DIR` should point to a valid data directory. We usually use the data
-directory `data/`, which is contained in the `test/` directory, for test cases:
-
-    $ CALCURSE=../src/calcurse DATA_DIR=data/ ./next-001.sh
-    Running ./next-001.sh... ok
+The `CALCURSE` and `DATA_DIR` environment variables can be used to specify an
+alternative calcurse binary and data directory.
 
 Passing another data directory might cause some failures since many tests are
 adapted for the `test/` directory provided by the test suite:

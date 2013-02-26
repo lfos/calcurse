@@ -1,5 +1,7 @@
 #!/bin/sh
 
+. ./test-init.sh
+
 if [ "$1" = 'actual' ]; then
   "$CALCURSE" --read-only -D "$DATA_DIR"/ -c "$DATA_DIR/apts-appointment-006" \
     -d02/23/2013

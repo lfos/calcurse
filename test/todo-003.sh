@@ -1,5 +1,7 @@
 #!/bin/sh
 
+. ./test-init.sh
+
 if [ "$1" = 'actual' ]; then
   "$CALCURSE" --read-only -D "$DATA_DIR"/ -t0 | sort -n
 elif [ "$1" = 'expected' ]; then

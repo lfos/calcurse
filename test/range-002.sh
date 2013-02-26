@@ -1,5 +1,7 @@
 #!/bin/sh
 
+. ./test-init.sh
+
 if [ ! -x "$(command -v faketime)" ]; then
   echo "libfaketime not found - skipping $0..."
   exit 0
