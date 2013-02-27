@@ -125,6 +125,10 @@ struct event *event_scan(FILE * f, struct tm start, int id, char *note)
   char buf[BUFSIZ], *nl;
   time_t tstart;
 
+  EXIT_IF(!check_date(start.tm_year, start.tm_mon, start.tm_mday) ||
+          !check_time(start.tm_hour, start.tm_min),
+          _("date error in event"));
+
   /* Read the event description */
   if (!fgets(buf, sizeof buf, f))
     return NULL;

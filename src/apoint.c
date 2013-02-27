@@ -165,6 +165,12 @@ struct apoint *apoint_scan(FILE * f, struct tm start, struct tm end, char state,
   char buf[BUFSIZ], *newline;
   time_t tstart, tend;
 
+  EXIT_IF(!check_date(start.tm_year, start.tm_mon, start.tm_mday) ||
+          !check_date(end.tm_year, end.tm_mon, end.tm_mday) ||
+          !check_time(start.tm_hour, start.tm_min) ||
+          !check_time(end.tm_hour, end.tm_min),
+          _("date error in appointment"));
+
   /* Read the appointment description */
   if (!fgets(buf, sizeof buf, f))
     return NULL;

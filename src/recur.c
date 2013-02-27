@@ -325,6 +325,14 @@ struct recur_apoint *recur_apoint_scan(FILE * f, struct tm start, struct tm end,
   char buf[BUFSIZ], *nl;
   time_t tstart, tend, tuntil;
 
+  EXIT_IF(!check_date(start.tm_year, start.tm_mon, start.tm_mday) ||
+          !check_date(end.tm_year, end.tm_mon, end.tm_mday) ||
+          !check_time(start.tm_hour, start.tm_min) ||
+          !check_time(end.tm_hour, end.tm_min) ||
+          (until.tm_year != 0 && !check_date(until.tm_year, until.tm_mon,
+                                             until.tm_mday)),
+          _("date error in appointment"));
+
   /* Read the appointment description */
   if (!fgets(buf, sizeof buf, f))
     return NULL;
@@ -367,6 +375,12 @@ struct recur_event *recur_event_scan(FILE * f, struct tm start, int id,
 {
   char buf[BUFSIZ], *nl;
   time_t tstart, tuntil;
+
+  EXIT_IF(!check_date(start.tm_year, start.tm_mon, start.tm_mday) ||
+          !check_time(start.tm_hour, start.tm_min) ||
+          (until.tm_year != 0 && !check_date(until.tm_year, until.tm_mon,
+                                             until.tm_mday)),
+          _("date error in event"));
 
   /* Read the event description */
   if (!fgets(buf, sizeof buf, f))
@@ -750,6 +764,11 @@ void recur_exc_scan(llist_t * lexc, FILE * data_file)
                &day.tm_mon, &day.tm_mday, &day.tm_year) != 3) {
       EXIT(_("syntax error in item date"));
     }
+
+    EXIT_IF(!check_date(day.tm_year, day.tm_mon, day.tm_mday) ||
+            !check_time(day.tm_hour, day.tm_min),
+            _("date error in item exception"));
+
     day.tm_hour = 0;
     day.tm_min = day.tm_sec = 0;
     day.tm_isdst = -1;
