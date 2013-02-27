@@ -634,6 +634,17 @@ char *new_tempfile(const char *prefix, int trailing_len)
 }
 
 /*
+ * Check if a date is valid.
+ */
+int
+check_date(unsigned year, unsigned month, unsigned day)
+{
+  return (year >= 1902 && year <= 2037 && month >= 1 && month <= 12 &&
+          day >= 1 && day <= days[month - 1] + (month == 2 &&
+                                                ISLEAP(year)) ? 1 : 0);
+}
+
+/*
  * Convert a string containing a date into three integers containing the year,
  * month and day.
  *
@@ -707,8 +718,7 @@ parse_date(const char *date_string, enum datefmt datefmt, int *year,
   }
 
   /* check if date is valid, take leap years into account */
-  if (y < 1902 || y > 2037 || m < 1 || m > 12 || d < 1 ||
-      d > days[m - 1] + (m == 2 && ISLEAP(y)) ? 1 : 0)
+  if (!check_date(y, m, d))
     return 0;
 
   if (year)
@@ -720,6 +730,16 @@ parse_date(const char *date_string, enum datefmt datefmt, int *year,
 
   return 1;
 }
+
+/*
+ * Check if time is valid.
+ */
+int
+check_time(unsigned hours, unsigned minutes)
+{
+  return (hours < DAYINHOURS && minutes < HOURINMIN);
+}
+
 
 /*
  * Converts a time string into hours and minutes. Short forms like "23:"
@@ -749,7 +769,7 @@ int parse_time(const char *string, unsigned *hour, unsigned *minute)
     }
   }
 
-  if (n != 1 || in[0] >= DAYINHOURS || in[1] >= HOURINMIN)
+  if (n != 1 || !check_time(in[0], in[1]))
     return 0;
 
   *hour = in[0];
