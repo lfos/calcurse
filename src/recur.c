@@ -783,8 +783,7 @@ void recur_exc_scan(llist_t * lexc, FILE * data_file)
 			EXIT(_("syntax error in item date"));
 		}
 
-		EXIT_IF(!check_date(day.tm_year, day.tm_mon, day.tm_mday)
-			|| !check_time(day.tm_hour, day.tm_min),
+		EXIT_IF(!check_date(day.tm_year, day.tm_mon, day.tm_mday),
 			_("date error in item exception"));
 
 		day.tm_hour = 0;
