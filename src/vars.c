@@ -70,29 +70,29 @@ const char *datefmt_str[DATE_FORMATS];
 int days[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
 const char *monthnames[12] = {
-  N_("January"),
-  N_("February"),
-  N_("March"),
-  N_("April"),
-  N_("May"),
-  N_("June"),
-  N_("July"),
-  N_("August"),
-  N_("September"),
-  N_("October"),
-  N_("November"),
-  N_("December")
+	N_("January"),
+	N_("February"),
+	N_("March"),
+	N_("April"),
+	N_("May"),
+	N_("June"),
+	N_("July"),
+	N_("August"),
+	N_("September"),
+	N_("October"),
+	N_("November"),
+	N_("December")
 };
 
 const char *daynames[8] = {
-  N_("Sun"),
-  N_("Mon"),
-  N_("Tue"),
-  N_("Wed"),
-  N_("Thu"),
-  N_("Fri"),
-  N_("Sat"),
-  N_("Sun")
+	N_("Sun"),
+	N_("Mon"),
+	N_("Tue"),
+	N_("Wed"),
+	N_("Thu"),
+	N_("Fri"),
+	N_("Sat"),
+	N_("Sun")
 };
 
 /*
@@ -126,50 +126,50 @@ struct dmon_conf dmon;
  */
 void vars_init(void)
 {
-  const char *ed, *pg;
+	const char *ed, *pg;
 
-  /* Variables for user configuration */
-  conf.confirm_quit = 1;
-  conf.confirm_delete = 1;
-  conf.auto_save = 1;
-  conf.auto_gc = 0;
-  conf.periodic_save = 0;
-  conf.default_panel = CAL;
-  conf.compact_panels = 0;
-  conf.system_dialogs = 1;
-  conf.progress_bar = 1;
-  strncpy(conf.output_datefmt, "%D", 3);
-  conf.input_datefmt = 1;
+	/* Variables for user configuration */
+	conf.confirm_quit = 1;
+	conf.confirm_delete = 1;
+	conf.auto_save = 1;
+	conf.auto_gc = 0;
+	conf.periodic_save = 0;
+	conf.default_panel = CAL;
+	conf.compact_panels = 0;
+	conf.system_dialogs = 1;
+	conf.progress_bar = 1;
+	strncpy(conf.output_datefmt, "%D", 3);
+	conf.input_datefmt = 1;
 
-  datefmt_str[0] = _("mm/dd/yyyy");
-  datefmt_str[1] = _("dd/mm/yyyy");
-  datefmt_str[2] = _("yyyy/mm/dd");
-  datefmt_str[3] = _("yyyy-mm-dd");
+	datefmt_str[0] = _("mm/dd/yyyy");
+	datefmt_str[1] = _("dd/mm/yyyy");
+	datefmt_str[2] = _("yyyy/mm/dd");
+	datefmt_str[3] = _("yyyy-mm-dd");
 
-  /* Default external editor and pager */
-  ed = getenv("VISUAL");
-  if (ed == NULL || ed[0] == '\0')
-    ed = getenv("EDITOR");
-  if (ed == NULL || ed[0] == '\0')
-    ed = DEFAULT_EDITOR;
-  conf.editor = ed;
+	/* Default external editor and pager */
+	ed = getenv("VISUAL");
+	if (ed == NULL || ed[0] == '\0')
+		ed = getenv("EDITOR");
+	if (ed == NULL || ed[0] == '\0')
+		ed = DEFAULT_EDITOR;
+	conf.editor = ed;
 
-  pg = getenv("PAGER");
-  if (pg == NULL || pg[0] == '\0')
-    pg = DEFAULT_PAGER;
-  conf.pager = pg;
+	pg = getenv("PAGER");
+	if (pg == NULL || pg[0] == '\0')
+		pg = DEFAULT_PAGER;
+	conf.pager = pg;
 
-  wins_set_layout(1);
+	wins_set_layout(1);
 
-  ui_calendar_set_first_day_of_week(MONDAY);
+	ui_calendar_set_first_day_of_week(MONDAY);
 
-  /* Pad structure to scroll text inside the appointment panel */
-  apad.length = 1;
-  apad.first_onscreen = 0;
+	/* Pad structure to scroll text inside the appointment panel */
+	apad.length = 1;
+	apad.first_onscreen = 0;
 
-  /* Attribute definitions for color and non-color terminals */
-  custom_init_attr();
+	/* Attribute definitions for color and non-color terminals */
+	custom_init_attr();
 
-  /* Start at the current date */
-  ui_calendar_init_slctd_day();
+	/* Start at the current date */
+	ui_calendar_init_slctd_day();
 }

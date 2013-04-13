@@ -37,14 +37,14 @@
 /* Linked lists. */
 typedef struct llist_item llist_item_t;
 struct llist_item {
-  struct llist_item *next;
-  void *data;
+	struct llist_item *next;
+	void *data;
 };
 
 typedef struct llist llist_t;
 struct llist {
-  struct llist_item *head;
-  struct llist_item *tail;
+	struct llist_item *head;
+	struct llist_item *tail;
 };
 
 typedef int (*llist_fn_cmp_t) (void *, void *);

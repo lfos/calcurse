@@ -45,20 +45,20 @@ llist_t todolist;
 /* Returns a structure containing the selected item. */
 struct todo *todo_get_item(int item_number)
 {
-  return LLIST_GET_DATA(LLIST_NTH(&todolist, item_number - 1));
+	return LLIST_GET_DATA(LLIST_NTH(&todolist, item_number - 1));
 }
 
 static int todo_cmp_id(struct todo *a, struct todo *b)
 {
-  /*
-   * As of version 2.6, todo items can have a negative id, which means they
-   * were completed. To keep them sorted, we need to consider the absolute id
-   * value.
-   */
-  int abs_a = abs(a->id);
-  int abs_b = abs(b->id);
+	/*
+	 * As of version 2.6, todo items can have a negative id, which means they
+	 * were completed. To keep them sorted, we need to consider the absolute id
+	 * value.
+	 */
+	int abs_a = abs(a->id);
+	int abs_b = abs(b->id);
 
-  return abs_a < abs_b ? -1 : (abs_a == abs_b ? 0 : 1);
+	return abs_a < abs_b ? -1 : (abs_a == abs_b ? 0 : 1);
 }
 
 /*
@@ -66,46 +66,48 @@ static int todo_cmp_id(struct todo *a, struct todo *b)
  */
 struct todo *todo_add(char *mesg, int id, char *note)
 {
-  struct todo *todo;
+	struct todo *todo;
 
-  todo = mem_malloc(sizeof(struct todo));
-  todo->mesg = mem_strdup(mesg);
-  todo->id = id;
-  todo->note = (note != NULL && note[0] != '\0') ? mem_strdup(note) : NULL;
+	todo = mem_malloc(sizeof(struct todo));
+	todo->mesg = mem_strdup(mesg);
+	todo->id = id;
+	todo->note = (note != NULL
+		      && note[0] != '\0') ? mem_strdup(note) : NULL;
 
-  LLIST_ADD_SORTED(&todolist, todo, todo_cmp_id);
+	LLIST_ADD_SORTED(&todolist, todo, todo_cmp_id);
 
-  return todo;
+	return todo;
 }
 
 void todo_write(struct todo *todo, FILE * f)
 {
-  if (todo->note)
-    fprintf(f, "[%d]>%s %s\n", todo->id, todo->note, todo->mesg);
-  else
-    fprintf(f, "[%d] %s\n", todo->id, todo->mesg);
+	if (todo->note)
+		fprintf(f, "[%d]>%s %s\n", todo->id, todo->note,
+			todo->mesg);
+	else
+		fprintf(f, "[%d] %s\n", todo->id, todo->mesg);
 }
 
 /* Delete a note previously attached to a todo item. */
 void todo_delete_note(struct todo *todo)
 {
-  if (!todo->note)
-    EXIT(_("no note attached"));
-  erase_note(&todo->note);
+	if (!todo->note)
+		EXIT(_("no note attached"));
+	erase_note(&todo->note);
 }
 
 /* Delete an item from the todo linked list. */
 void todo_delete(struct todo *todo)
 {
-  llist_item_t *i = LLIST_FIND_FIRST(&todolist, todo, NULL);
+	llist_item_t *i = LLIST_FIND_FIRST(&todolist, todo, NULL);
 
-  if (!i)
-    EXIT(_("no such todo"));
+	if (!i)
+		EXIT(_("no such todo"));
 
-  LLIST_REMOVE(&todolist, i);
-  mem_free(todo->mesg);
-  erase_note(&todo->note);
-  mem_free(todo);
+	LLIST_REMOVE(&todolist, i);
+	mem_free(todo->mesg);
+	erase_note(&todo->note);
+	mem_free(todo);
 }
 
 /*
@@ -116,7 +118,7 @@ void todo_delete(struct todo *todo)
  */
 void todo_flag(struct todo *t)
 {
-  t->id = -t->id;
+	t->id = -t->id;
 }
 
 /*
@@ -125,45 +127,45 @@ void todo_flag(struct todo *t)
  */
 int todo_get_position(struct todo *needle)
 {
-  llist_item_t *i;
-  int n = 0;
+	llist_item_t *i;
+	int n = 0;
 
-  LLIST_FOREACH(&todolist, i) {
-    n++;
-    if (LLIST_TS_GET_DATA(i) == needle)
-      return n;
-  }
+	LLIST_FOREACH(&todolist, i) {
+		n++;
+		if (LLIST_TS_GET_DATA(i) == needle)
+			return n;
+	}
 
-  EXIT(_("todo not found"));
-  return -1;                    /* avoid compiler warnings */
+	EXIT(_("todo not found"));
+	return -1;		/* avoid compiler warnings */
 }
 
 /* Attach a note to a todo */
 void todo_edit_note(struct todo *i, const char *editor)
 {
-  edit_note(&i->note, editor);
+	edit_note(&i->note, editor);
 }
 
 /* View a note previously attached to a todo */
 void todo_view_note(struct todo *i, const char *pager)
 {
-  view_note(i->note, pager);
+	view_note(i->note, pager);
 }
 
 void todo_free(struct todo *todo)
 {
-  mem_free(todo->mesg);
-  erase_note(&todo->note);
-  mem_free(todo);
+	mem_free(todo->mesg);
+	erase_note(&todo->note);
+	mem_free(todo);
 }
 
 void todo_init_list(void)
 {
-  LLIST_INIT(&todolist);
+	LLIST_INIT(&todolist);
 }
 
 void todo_free_list(void)
 {
-  LLIST_FREE_INNER(&todolist, todo_free);
-  LLIST_FREE(&todolist);
+	LLIST_FREE_INNER(&todolist, todo_free);
+	LLIST_FREE(&todolist);
 }

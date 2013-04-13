@@ -66,124 +66,130 @@ static unsigned data_loaded;
 
 static void dmon_sigs_hdlr(int sig)
 {
-  if (data_loaded)
-    free_user_data();
+	if (data_loaded)
+		free_user_data();
 
-  DMON_LOG(_("terminated at %s with signal %d\n"), nowstr(), sig);
+	DMON_LOG(_("terminated at %s with signal %d\n"), nowstr(), sig);
 
-  if (unlink(path_dpid) != 0) {
-    DMON_LOG(_("Could not remove daemon lock file: %s\n"), strerror(errno));
-    exit(EXIT_FAILURE);
-  }
+	if (unlink(path_dpid) != 0) {
+		DMON_LOG(_("Could not remove daemon lock file: %s\n"),
+			 strerror(errno));
+		exit(EXIT_FAILURE);
+	}
 
-  exit(EXIT_SUCCESS);
+	exit(EXIT_SUCCESS);
 }
 
 static unsigned daemonize(int status)
 {
-  int fd;
+	int fd;
 
-  /*
-   * Operate in the background: Daemonizing.
-   *
-   * First need to fork in order to become a child of the init process,
-   * once the father exits.
-   */
-  switch (fork()) {
-  case -1:                     /* fork error */
-    EXIT(_("Could not fork: %s\n"), strerror(errno));
-    break;
-  case 0:                      /* child */
-    break;
-  default:                     /* parent */
-    exit(status);
-  }
+	/*
+	 * Operate in the background: Daemonizing.
+	 *
+	 * First need to fork in order to become a child of the init process,
+	 * once the father exits.
+	 */
+	switch (fork()) {
+	case -1:		/* fork error */
+		EXIT(_("Could not fork: %s\n"), strerror(errno));
+		break;
+	case 0:		/* child */
+		break;
+	default:		/* parent */
+		exit(status);
+	}
 
-  /*
-   * Process independency.
-   *
-   * Obtain a new process group and session in order to get detached from the
-   * controlling terminal.
-   */
-  if (setsid() == -1) {
-    DMON_LOG(_("Could not detach from the controlling terminal: %s\n"),
-             strerror(errno));
-    return 0;
-  }
+	/*
+	 * Process independency.
+	 *
+	 * Obtain a new process group and session in order to get detached from the
+	 * controlling terminal.
+	 */
+	if (setsid() == -1) {
+		DMON_LOG(_("Could not detach from the controlling terminal: %s\n"),
+			 strerror(errno));
+		return 0;
+	}
 
-  /*
-   * Change working directory to root directory,
-   * to prevent filesystem unmounts.
-   */
-  if (chdir("/") == -1) {
-    DMON_LOG(_("Could not change working directory: %s\n"), strerror(errno));
-    return 0;
-  }
+	/*
+	 * Change working directory to root directory,
+	 * to prevent filesystem unmounts.
+	 */
+	if (chdir("/") == -1) {
+		DMON_LOG(_("Could not change working directory: %s\n"),
+			 strerror(errno));
+		return 0;
+	}
 
-  /* Redirect standard file descriptors to /dev/null. */
-  if ((fd = open(_PATH_DEVNULL, O_RDWR, 0)) != -1) {
-    dup2(fd, STDIN_FILENO);
-    dup2(fd, STDOUT_FILENO);
-    dup2(fd, STDERR_FILENO);
-    if (fd > 2)
-      close(fd);
-  }
+	/* Redirect standard file descriptors to /dev/null. */
+	if ((fd = open(_PATH_DEVNULL, O_RDWR, 0)) != -1) {
+		dup2(fd, STDIN_FILENO);
+		dup2(fd, STDOUT_FILENO);
+		dup2(fd, STDERR_FILENO);
+		if (fd > 2)
+			close(fd);
+	}
 
-  /* Write access for the owner only. */
-  umask(0022);
+	/* Write access for the owner only. */
+	umask(0022);
 
-  if (!sigs_set_hdlr(SIGINT, dmon_sigs_hdlr)
-      || !sigs_set_hdlr(SIGTERM, dmon_sigs_hdlr)
-      || !sigs_set_hdlr(SIGALRM, dmon_sigs_hdlr)
-      || !sigs_set_hdlr(SIGQUIT, dmon_sigs_hdlr)
-      || !sigs_set_hdlr(SIGCHLD, SIG_IGN))
-    return 0;
+	if (!sigs_set_hdlr(SIGINT, dmon_sigs_hdlr)
+	    || !sigs_set_hdlr(SIGTERM, dmon_sigs_hdlr)
+	    || !sigs_set_hdlr(SIGALRM, dmon_sigs_hdlr)
+	    || !sigs_set_hdlr(SIGQUIT, dmon_sigs_hdlr)
+	    || !sigs_set_hdlr(SIGCHLD, SIG_IGN))
+		return 0;
 
-  return 1;
+	return 1;
 }
 
 void dmon_start(int parent_exit_status)
 {
-  if (!daemonize(parent_exit_status))
-    DMON_ABRT(_("Cannot daemonize, aborting\n"));
+	if (!daemonize(parent_exit_status))
+		DMON_ABRT(_("Cannot daemonize, aborting\n"));
 
-  if (!io_dump_pid(path_dpid))
-    DMON_ABRT(_("Could not set lock file\n"));
+	if (!io_dump_pid(path_dpid))
+		DMON_ABRT(_("Could not set lock file\n"));
 
-  if (!io_file_exist(path_conf))
-    DMON_ABRT(_("Could not access \"%s\": %s\n"), path_conf, strerror(errno));
-  config_load();
+	if (!io_file_exist(path_conf))
+		DMON_ABRT(_("Could not access \"%s\": %s\n"), path_conf,
+			  strerror(errno));
+	config_load();
 
-  if (!io_file_exist(path_apts))
-    DMON_ABRT(_("Could not access \"%s\": %s\n"), path_apts, strerror(errno));
-  apoint_llist_init();
-  recur_apoint_llist_init();
-  event_llist_init();
-  todo_init_list();
-  io_load_app();
-  data_loaded = 1;
+	if (!io_file_exist(path_apts))
+		DMON_ABRT(_("Could not access \"%s\": %s\n"), path_apts,
+			  strerror(errno));
+	apoint_llist_init();
+	recur_apoint_llist_init();
+	event_llist_init();
+	todo_init_list();
+	io_load_app();
+	data_loaded = 1;
 
-  DMON_LOG(_("started at %s\n"), nowstr());
-  for (;;) {
-    int left;
+	DMON_LOG(_("started at %s\n"), nowstr());
+	for (;;) {
+		int left;
 
-    if (!notify_get_next_bkgd())
-      DMON_ABRT(_("error loading next appointment\n"));
+		if (!notify_get_next_bkgd())
+			DMON_ABRT(_("error loading next appointment\n"));
 
-    left = notify_time_left();
-    if (left > 0 && left < nbar.cntdwn && notify_needs_reminder()) {
-      DMON_LOG(_("launching notification at %s for: \"%s\"\n"),
-               nowstr(), notify_app_txt());
-      if (!notify_launch_cmd())
-        DMON_LOG(_("error while sending notification\n"));
-    }
+		left = notify_time_left();
+		if (left > 0 && left < nbar.cntdwn
+		    && notify_needs_reminder()) {
+			DMON_LOG(_("launching notification at %s for: \"%s\"\n"),
+				 nowstr(), notify_app_txt());
+			if (!notify_launch_cmd())
+				DMON_LOG(_("error while sending notification\n"));
+		}
 
-    DMON_LOG(ngettext("sleeping at %s for %d second\n",
-                      "sleeping at %s for %d seconds\n",
-                      DMON_SLEEP_TIME), nowstr(), DMON_SLEEP_TIME);
-    psleep(DMON_SLEEP_TIME);
-    DMON_LOG(_("awakened at %s\n"), nowstr());
-  }
+		DMON_LOG(ngettext("sleeping at %s for %d second\n",
+				  "sleeping at %s for %d seconds\n",
+				  DMON_SLEEP_TIME), nowstr(),
+			 DMON_SLEEP_TIME);
+		psleep(DMON_SLEEP_TIME);
+		DMON_LOG(_("awakened at %s\n"), nowstr());
+	}
 }
 
 /*
@@ -192,12 +198,13 @@ void dmon_start(int parent_exit_status)
  */
 void dmon_stop(void)
 {
-  int dpid;
+	int dpid;
 
-  dpid = io_get_pid(path_dpid);
-  if (!dpid)
-    return;
+	dpid = io_get_pid(path_dpid);
+	if (!dpid)
+		return;
 
-  if (kill((pid_t) dpid, SIGINT) < 0 && errno != ESRCH)
-    EXIT(_("Could not stop calcurse daemon: %s\n"), strerror(errno));
+	if (kill((pid_t) dpid, SIGINT) < 0 && errno != ESRCH)
+		EXIT(_("Could not stop calcurse daemon: %s\n"),
+		     strerror(errno));
 }

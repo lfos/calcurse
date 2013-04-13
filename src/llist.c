@@ -41,8 +41,8 @@
  */
 void llist_init(llist_t * l)
 {
-  l->head = NULL;
-  l->tail = NULL;
+	l->head = NULL;
+	l->tail = NULL;
 }
 
 /*
@@ -50,15 +50,15 @@ void llist_init(llist_t * l)
  */
 void llist_free(llist_t * l)
 {
-  llist_item_t *i, *t;
+	llist_item_t *i, *t;
 
-  for (i = l->head; i; i = t) {
-    t = i->next;
-    mem_free(i);
-  }
+	for (i = l->head; i; i = t) {
+		t = i->next;
+		mem_free(i);
+	}
 
-  l->head = NULL;
-  l->tail = NULL;
+	l->head = NULL;
+	l->tail = NULL;
 }
 
 /*
@@ -66,14 +66,14 @@ void llist_free(llist_t * l)
  */
 void llist_free_inner(llist_t * l, llist_fn_free_t fn_free)
 {
-  llist_item_t *i;
+	llist_item_t *i;
 
-  for (i = l->head; i; i = i->next) {
-    if (i->data) {
-      fn_free(i->data);
-      i->data = NULL;
-    }
-  }
+	for (i = l->head; i; i = i->next) {
+		if (i->data) {
+			fn_free(i->data);
+			i->data = NULL;
+		}
+	}
 }
 
 /*
@@ -81,7 +81,7 @@ void llist_free_inner(llist_t * l, llist_fn_free_t fn_free)
  */
 llist_item_t *llist_first(llist_t * l)
 {
-  return l->head;
+	return l->head;
 }
 
 /*
@@ -89,15 +89,15 @@ llist_item_t *llist_first(llist_t * l)
  */
 llist_item_t *llist_nth(llist_t * l, int n)
 {
-  llist_item_t *i;
+	llist_item_t *i;
 
-  if (n < 0)
-    return NULL;
+	if (n < 0)
+		return NULL;
 
-  for (i = l->head; i && n != 0; n--)
-    i = i->next;
+	for (i = l->head; i && n != 0; n--)
+		i = i->next;
 
-  return i;
+	return i;
 }
 
 /*
@@ -105,7 +105,7 @@ llist_item_t *llist_nth(llist_t * l, int n)
  */
 llist_item_t *llist_next(llist_item_t * i)
 {
-  return i ? i->next : NULL;
+	return i ? i->next : NULL;
 }
 
 /*
@@ -113,12 +113,12 @@ llist_item_t *llist_next(llist_item_t * i)
  * callback. Return NULL otherwise.
  */
 llist_item_t *llist_next_filter(llist_item_t * i, void *data,
-                                llist_fn_match_t fn_match)
+				llist_fn_match_t fn_match)
 {
-  if (i && i->next && fn_match(i->next->data, data))
-    return i->next;
-  else
-    return NULL;
+	if (i && i->next && fn_match(i->next->data, data))
+		return i->next;
+	else
+		return NULL;
 }
 
 /*
@@ -126,7 +126,7 @@ llist_item_t *llist_next_filter(llist_item_t * i, void *data,
  */
 void *llist_get_data(llist_item_t * i)
 {
-  return i ? i->data : NULL;
+	return i ? i->data : NULL;
 }
 
 /*
@@ -134,19 +134,19 @@ void *llist_get_data(llist_item_t * i)
  */
 void llist_add(llist_t * l, void *data)
 {
-  llist_item_t *o = mem_malloc(sizeof(llist_item_t));
+	llist_item_t *o = mem_malloc(sizeof(llist_item_t));
 
-  if (o) {
-    o->data = data;
-    o->next = NULL;
+	if (o) {
+		o->data = data;
+		o->next = NULL;
 
-    if (!l->head) {
-      l->head = l->tail = o;
-    } else {
-      l->tail->next = o;
-      l->tail = o;
-    }
-  }
+		if (!l->head) {
+			l->head = l->tail = o;
+		} else {
+			l->tail->next = o;
+			l->tail = o;
+		}
+	}
 }
 
 /*
@@ -154,29 +154,30 @@ void llist_add(llist_t * l, void *data)
  */
 void llist_add_sorted(llist_t * l, void *data, llist_fn_cmp_t fn_cmp)
 {
-  llist_item_t *o = mem_malloc(sizeof(llist_item_t));
-  llist_item_t *i;
+	llist_item_t *o = mem_malloc(sizeof(llist_item_t));
+	llist_item_t *i;
 
-  if (o) {
-    o->data = data;
-    o->next = NULL;
+	if (o) {
+		o->data = data;
+		o->next = NULL;
 
-    if (!l->head) {
-      l->head = l->tail = o;
-    } else if (fn_cmp(o->data, l->tail->data) >= 0) {
-      l->tail->next = o;
-      l->tail = o;
-    } else if (fn_cmp(o->data, l->head->data) < 0) {
-      o->next = l->head;
-      l->head = o;
-    } else {
-      i = l->head;
-      while (i->next && fn_cmp(o->data, i->next->data) >= 0)
-        i = i->next;
-      o->next = i->next;
-      i->next = o;
-    }
-  }
+		if (!l->head) {
+			l->head = l->tail = o;
+		} else if (fn_cmp(o->data, l->tail->data) >= 0) {
+			l->tail->next = o;
+			l->tail = o;
+		} else if (fn_cmp(o->data, l->head->data) < 0) {
+			o->next = l->head;
+			l->head = o;
+		} else {
+			i = l->head;
+			while (i->next
+			       && fn_cmp(o->data, i->next->data) >= 0)
+				i = i->next;
+			o->next = i->next;
+			i->next = o;
+		}
+	}
 }
 
 /*
@@ -184,93 +185,93 @@ void llist_add_sorted(llist_t * l, void *data, llist_fn_cmp_t fn_cmp)
  */
 void llist_remove(llist_t * l, llist_item_t * i)
 {
-  llist_item_t *j = NULL;
+	llist_item_t *j = NULL;
 
-  if (l->head && i == l->head) {
-    l->head = i->next;
-  } else {
-    for (j = l->head; j && j->next != i; j = j->next) ;
-  }
+	if (l->head && i == l->head) {
+		l->head = i->next;
+	} else {
+		for (j = l->head; j && j->next != i; j = j->next) ;
+	}
 
-  if (i) {
-    if (j)
-      j->next = i->next;
-    if (i == l->tail)
-      l->tail = j;
+	if (i) {
+		if (j)
+			j->next = i->next;
+		if (i == l->tail)
+			l->tail = j;
 
-    mem_free(i);
-  }
+		mem_free(i);
+	}
 }
 
 /*
  * Find the first item matched by some filter callback.
  */
 llist_item_t *llist_find_first(llist_t * l, void *data,
-                               llist_fn_match_t fn_match)
+			       llist_fn_match_t fn_match)
 {
-  llist_item_t *i;
+	llist_item_t *i;
 
-  if (fn_match) {
-    for (i = l->head; i; i = i->next) {
-      if (fn_match(i->data, data))
-        return i;
-    }
-  } else {
-    for (i = l->head; i; i = i->next) {
-      if (i->data == data)
-        return i;
-    }
-  }
+	if (fn_match) {
+		for (i = l->head; i; i = i->next) {
+			if (fn_match(i->data, data))
+				return i;
+		}
+	} else {
+		for (i = l->head; i; i = i->next) {
+			if (i->data == data)
+				return i;
+		}
+	}
 
-  return NULL;
+	return NULL;
 }
 
 /*
  * Find the next item matched by some filter callback.
  */
 llist_item_t *llist_find_next(llist_item_t * i, void *data,
-                              llist_fn_match_t fn_match)
+			      llist_fn_match_t fn_match)
 {
-  if (i) {
-    i = i->next;
-    if (fn_match) {
-      for (; i; i = i->next) {
-        if (fn_match(i->data, data))
-          return i;
-      }
-    } else {
-      for (; i; i = i->next) {
-        if (i->data == data)
-          return i;
-      }
-    }
-  }
+	if (i) {
+		i = i->next;
+		if (fn_match) {
+			for (; i; i = i->next) {
+				if (fn_match(i->data, data))
+					return i;
+			}
+		} else {
+			for (; i; i = i->next) {
+				if (i->data == data)
+					return i;
+			}
+		}
+	}
 
-  return NULL;
+	return NULL;
 }
 
 /*
  * Find the nth item matched by some filter callback.
  */
 llist_item_t *llist_find_nth(llist_t * l, int n, void *data,
-                             llist_fn_match_t fn_match)
+			     llist_fn_match_t fn_match)
 {
-  llist_item_t *i;
+	llist_item_t *i;
 
-  if (n < 0)
-    return NULL;
+	if (n < 0)
+		return NULL;
 
-  if (fn_match) {
-    for (i = l->head; i; i = i->next) {
-      if (fn_match(i->data, data) && (n-- == 0))
-        return i;
-    }
-  } else {
-    for (i = l->head; i; i = i->next) {
-      if ((i->data == data) && (n-- == 0))
-        return i;
-    }
-  }
+	if (fn_match) {
+		for (i = l->head; i; i = i->next) {
+			if (fn_match(i->data, data) && (n-- == 0))
+				return i;
+		}
+	} else {
+		for (i = l->head; i; i = i->next) {
+			if ((i->data == data) && (n-- == 0))
+				return i;
+		}
+	}
 
-  return NULL;
+	return NULL;
 }

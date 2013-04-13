@@ -45,9 +45,9 @@
 #define SHA1_DIGESTLEN  20
 
 typedef struct {
-  uint32_t state[5];
-  uint32_t count[2];
-  uint8_t buffer[SHA1_BLOCKLEN];
+	uint32_t state[5];
+	uint32_t count[2];
+	uint8_t buffer[SHA1_BLOCKLEN];
 } sha1_ctx_t;
 
 void sha1_init(sha1_ctx_t *);

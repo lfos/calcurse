@@ -47,198 +47,202 @@ llist_t recur_elist;
 
 static void free_exc(struct excp *exc)
 {
-  mem_free(exc);
+	mem_free(exc);
 }
 
 static void free_exc_list(llist_t * exc)
 {
-  LLIST_FREE_INNER(exc, free_exc);
-  LLIST_FREE(exc);
+	LLIST_FREE_INNER(exc, free_exc);
+	LLIST_FREE(exc);
 }
 
 static int exc_cmp_day(struct excp *a, struct excp *b)
 {
-  return a->st < b->st ? -1 : (a->st == b->st ? 0 : 1);
+	return a->st < b->st ? -1 : (a->st == b->st ? 0 : 1);
 }
 
 static void recur_add_exc(llist_t * exc, long day)
 {
-  struct excp *o = mem_malloc(sizeof(struct excp));
-  o->st = day;
+	struct excp *o = mem_malloc(sizeof(struct excp));
+	o->st = day;
 
-  LLIST_ADD_SORTED(exc, o, exc_cmp_day);
+	LLIST_ADD_SORTED(exc, o, exc_cmp_day);
 }
 
 static void exc_dup(llist_t * in, llist_t * exc)
 {
-  llist_item_t *i;
+	llist_item_t *i;
 
-  LLIST_INIT(in);
+	LLIST_INIT(in);
 
-  if (exc) {
-    LLIST_FOREACH(exc, i) {
-      struct excp *p = LLIST_GET_DATA(i);
-      recur_add_exc(in, p->st);
-    }
-  }
+	if (exc) {
+		LLIST_FOREACH(exc, i) {
+			struct excp *p = LLIST_GET_DATA(i);
+			recur_add_exc(in, p->st);
+		}
+	}
 }
 
 struct recur_event *recur_event_dup(struct recur_event *in)
 {
-  EXIT_IF(!in, _("null pointer"));
+	EXIT_IF(!in, _("null pointer"));
 
-  struct recur_event *rev = mem_malloc(sizeof(struct recur_event));
+	struct recur_event *rev = mem_malloc(sizeof(struct recur_event));
 
-  rev->id = in->id;
-  rev->day = in->day;
-  rev->mesg = mem_strdup(in->mesg);
+	rev->id = in->id;
+	rev->day = in->day;
+	rev->mesg = mem_strdup(in->mesg);
 
-  rev->rpt = mem_malloc(sizeof(struct rpt));
-  rev->rpt->type = in->rpt->type;
-  rev->rpt->freq = in->rpt->freq;
-  rev->rpt->until = in->rpt->until;
+	rev->rpt = mem_malloc(sizeof(struct rpt));
+	rev->rpt->type = in->rpt->type;
+	rev->rpt->freq = in->rpt->freq;
+	rev->rpt->until = in->rpt->until;
 
-  exc_dup(&rev->exc, &in->exc);
+	exc_dup(&rev->exc, &in->exc);
 
-  if (in->note)
-    rev->note = mem_strdup(in->note);
-  else
-    rev->note = NULL;
+	if (in->note)
+		rev->note = mem_strdup(in->note);
+	else
+		rev->note = NULL;
 
-  return rev;
+	return rev;
 }
 
 struct recur_apoint *recur_apoint_dup(struct recur_apoint *in)
 {
-  EXIT_IF(!in, _("null pointer"));
+	EXIT_IF(!in, _("null pointer"));
 
-  struct recur_apoint *rapt = mem_malloc(sizeof(struct recur_apoint));
+	struct recur_apoint *rapt =
+	    mem_malloc(sizeof(struct recur_apoint));
 
-  rapt->start = in->start;
-  rapt->dur = in->dur;
-  rapt->state = in->state;
-  rapt->mesg = mem_strdup(in->mesg);
+	rapt->start = in->start;
+	rapt->dur = in->dur;
+	rapt->state = in->state;
+	rapt->mesg = mem_strdup(in->mesg);
 
-  rapt->rpt = mem_malloc(sizeof(struct rpt));
-  rapt->rpt->type = in->rpt->type;
-  rapt->rpt->freq = in->rpt->freq;
-  rapt->rpt->until = in->rpt->until;
+	rapt->rpt = mem_malloc(sizeof(struct rpt));
+	rapt->rpt->type = in->rpt->type;
+	rapt->rpt->freq = in->rpt->freq;
+	rapt->rpt->until = in->rpt->until;
 
-  exc_dup(&rapt->exc, &in->exc);
+	exc_dup(&rapt->exc, &in->exc);
 
-  if (in->note)
-    rapt->note = mem_strdup(in->note);
-  else
-    rapt->note = NULL;
+	if (in->note)
+		rapt->note = mem_strdup(in->note);
+	else
+		rapt->note = NULL;
 
-  return rapt;
+	return rapt;
 }
 
 void recur_apoint_llist_init(void)
 {
-  LLIST_TS_INIT(&recur_alist_p);
+	LLIST_TS_INIT(&recur_alist_p);
 }
 
 void recur_apoint_free(struct recur_apoint *rapt)
 {
-  mem_free(rapt->mesg);
-  if (rapt->note)
-    mem_free(rapt->note);
-  if (rapt->rpt)
-    mem_free(rapt->rpt);
-  free_exc_list(&rapt->exc);
-  mem_free(rapt);
+	mem_free(rapt->mesg);
+	if (rapt->note)
+		mem_free(rapt->note);
+	if (rapt->rpt)
+		mem_free(rapt->rpt);
+	free_exc_list(&rapt->exc);
+	mem_free(rapt);
 }
 
 void recur_event_free(struct recur_event *rev)
 {
-  mem_free(rev->mesg);
-  if (rev->note)
-    mem_free(rev->note);
-  if (rev->rpt)
-    mem_free(rev->rpt);
-  free_exc_list(&rev->exc);
-  mem_free(rev);
+	mem_free(rev->mesg);
+	if (rev->note)
+		mem_free(rev->note);
+	if (rev->rpt)
+		mem_free(rev->rpt);
+	free_exc_list(&rev->exc);
+	mem_free(rev);
 }
 
 void recur_apoint_llist_free(void)
 {
-  LLIST_TS_FREE_INNER(&recur_alist_p, recur_apoint_free);
-  LLIST_TS_FREE(&recur_alist_p);
+	LLIST_TS_FREE_INNER(&recur_alist_p, recur_apoint_free);
+	LLIST_TS_FREE(&recur_alist_p);
 }
 
 void recur_event_llist_free(void)
 {
-  LLIST_FREE_INNER(&recur_elist, recur_event_free);
-  LLIST_FREE(&recur_elist);
+	LLIST_FREE_INNER(&recur_elist, recur_event_free);
+	LLIST_FREE(&recur_elist);
 }
 
 static int
 recur_apoint_cmp_start(struct recur_apoint *a, struct recur_apoint *b)
 {
-  return a->start < b->start ? -1 : (a->start == b->start ? 0 : 1);
+	return a->start < b->start ? -1 : (a->start == b->start ? 0 : 1);
 }
 
-static int recur_event_cmp_day(struct recur_event *a, struct recur_event *b)
+static int recur_event_cmp_day(struct recur_event *a,
+			       struct recur_event *b)
 {
-  return a->day < b->day ? -1 : (a->day == b->day ? 0 : 1);
+	return a->day < b->day ? -1 : (a->day == b->day ? 0 : 1);
 }
 
 /* Insert a new recursive appointment in the general linked list */
 struct recur_apoint *recur_apoint_new(char *mesg, char *note, long start,
-                                      long dur, char state, int type, int freq,
-                                      long until, llist_t * except)
+				      long dur, char state, int type,
+				      int freq, long until,
+				      llist_t * except)
 {
-  struct recur_apoint *rapt = mem_malloc(sizeof(struct recur_apoint));
+	struct recur_apoint *rapt =
+	    mem_malloc(sizeof(struct recur_apoint));
 
-  rapt->rpt = mem_malloc(sizeof(struct rpt));
-  rapt->mesg = mem_strdup(mesg);
-  rapt->note = (note != NULL) ? mem_strdup(note) : 0;
-  rapt->start = start;
-  rapt->state = state;
-  rapt->dur = dur;
-  rapt->rpt->type = type;
-  rapt->rpt->freq = freq;
-  rapt->rpt->until = until;
-  if (except) {
-    exc_dup(&rapt->exc, except);
-    free_exc_list(except);
-  } else {
-    LLIST_INIT(&rapt->exc);
-  }
+	rapt->rpt = mem_malloc(sizeof(struct rpt));
+	rapt->mesg = mem_strdup(mesg);
+	rapt->note = (note != NULL) ? mem_strdup(note) : 0;
+	rapt->start = start;
+	rapt->state = state;
+	rapt->dur = dur;
+	rapt->rpt->type = type;
+	rapt->rpt->freq = freq;
+	rapt->rpt->until = until;
+	if (except) {
+		exc_dup(&rapt->exc, except);
+		free_exc_list(except);
+	} else {
+		LLIST_INIT(&rapt->exc);
+	}
 
-  LLIST_TS_LOCK(&recur_alist_p);
-  LLIST_TS_ADD_SORTED(&recur_alist_p, rapt, recur_apoint_cmp_start);
-  LLIST_TS_UNLOCK(&recur_alist_p);
+	LLIST_TS_LOCK(&recur_alist_p);
+	LLIST_TS_ADD_SORTED(&recur_alist_p, rapt, recur_apoint_cmp_start);
+	LLIST_TS_UNLOCK(&recur_alist_p);
 
-  return rapt;
+	return rapt;
 }
 
 /* Insert a new recursive event in the general linked list */
-struct recur_event *recur_event_new(char *mesg, char *note, long day, int id,
-                                    int type, int freq, long until,
-                                    llist_t * except)
+struct recur_event *recur_event_new(char *mesg, char *note, long day,
+				    int id, int type, int freq, long until,
+				    llist_t * except)
 {
-  struct recur_event *rev = mem_malloc(sizeof(struct recur_event));
+	struct recur_event *rev = mem_malloc(sizeof(struct recur_event));
 
-  rev->rpt = mem_malloc(sizeof(struct rpt));
-  rev->mesg = mem_strdup(mesg);
-  rev->note = (note != NULL) ? mem_strdup(note) : 0;
-  rev->day = day;
-  rev->id = id;
-  rev->rpt->type = type;
-  rev->rpt->freq = freq;
-  rev->rpt->until = until;
-  if (except) {
-    exc_dup(&rev->exc, except);
-    free_exc_list(except);
-  } else {
-    LLIST_INIT(&rev->exc);
-  }
+	rev->rpt = mem_malloc(sizeof(struct rpt));
+	rev->mesg = mem_strdup(mesg);
+	rev->note = (note != NULL) ? mem_strdup(note) : 0;
+	rev->day = day;
+	rev->id = id;
+	rev->rpt->type = type;
+	rev->rpt->freq = freq;
+	rev->rpt->until = until;
+	if (except) {
+		exc_dup(&rev->exc, except);
+		free_exc_list(except);
+	} else {
+		LLIST_INIT(&rev->exc);
+	}
 
-  LLIST_ADD_SORTED(&recur_elist, rev, recur_event_cmp_day);
+	LLIST_ADD_SORTED(&recur_elist, rev, recur_event_cmp_day);
 
-  return rev;
+	return rev;
 }
 
 /*
@@ -247,27 +251,27 @@ struct recur_event *recur_event_new(char *mesg, char *note, long day, int id,
  */
 char recur_def2char(enum recur_type define)
 {
-  char recur_char;
+	char recur_char;
 
-  switch (define) {
-  case RECUR_DAILY:
-    recur_char = 'D';
-    break;
-  case RECUR_WEEKLY:
-    recur_char = 'W';
-    break;
-  case RECUR_MONTHLY:
-    recur_char = 'M';
-    break;
-  case RECUR_YEARLY:
-    recur_char = 'Y';
-    break;
-  default:
-    EXIT(_("unknown repetition type"));
-    return 0;
-  }
+	switch (define) {
+	case RECUR_DAILY:
+		recur_char = 'D';
+		break;
+	case RECUR_WEEKLY:
+		recur_char = 'W';
+		break;
+	case RECUR_MONTHLY:
+		recur_char = 'M';
+		break;
+	case RECUR_YEARLY:
+		recur_char = 'Y';
+		break;
+	default:
+		EXIT(_("unknown repetition type"));
+		return 0;
+	}
 
-  return recur_char;
+	return recur_char;
 }
 
 /*
@@ -276,225 +280,230 @@ char recur_def2char(enum recur_type define)
  */
 int recur_char2def(char type)
 {
-  int recur_def;
+	int recur_def;
 
-  switch (type) {
-  case 'D':
-    recur_def = RECUR_DAILY;
-    break;
-  case 'W':
-    recur_def = RECUR_WEEKLY;
-    break;
-  case 'M':
-    recur_def = RECUR_MONTHLY;
-    break;
-  case 'Y':
-    recur_def = RECUR_YEARLY;
-    break;
-  default:
-    EXIT(_("unknown character"));
-    return 0;
-  }
-  return recur_def;
+	switch (type) {
+	case 'D':
+		recur_def = RECUR_DAILY;
+		break;
+	case 'W':
+		recur_def = RECUR_WEEKLY;
+		break;
+	case 'M':
+		recur_def = RECUR_MONTHLY;
+		break;
+	case 'Y':
+		recur_def = RECUR_YEARLY;
+		break;
+	default:
+		EXIT(_("unknown character"));
+		return 0;
+	}
+	return recur_def;
 }
 
 /* Write days for which recurrent items should not be repeated. */
 static void recur_write_exc(llist_t * lexc, FILE * f)
 {
-  llist_item_t *i;
-  struct tm lt;
-  time_t t;
-  int st_mon, st_day, st_year;
+	llist_item_t *i;
+	struct tm lt;
+	time_t t;
+	int st_mon, st_day, st_year;
 
-  LLIST_FOREACH(lexc, i) {
-    struct excp *exc = LLIST_GET_DATA(i);
-    t = exc->st;
-    localtime_r(&t, &lt);
-    st_mon = lt.tm_mon + 1;
-    st_day = lt.tm_mday;
-    st_year = lt.tm_year + 1900;
-    fprintf(f, " !%02u/%02u/%04u", st_mon, st_day, st_year);
-  }
+	LLIST_FOREACH(lexc, i) {
+		struct excp *exc = LLIST_GET_DATA(i);
+		t = exc->st;
+		localtime_r(&t, &lt);
+		st_mon = lt.tm_mon + 1;
+		st_day = lt.tm_mday;
+		st_year = lt.tm_year + 1900;
+		fprintf(f, " !%02u/%02u/%04u", st_mon, st_day, st_year);
+	}
 }
 
 /* Load the recursive appointment description */
-struct recur_apoint *recur_apoint_scan(FILE * f, struct tm start, struct tm end,
-                                       char type, int freq, struct tm until,
-                                       char *note, llist_t * exc, char state)
+struct recur_apoint *recur_apoint_scan(FILE * f, struct tm start,
+				       struct tm end, char type, int freq,
+				       struct tm until, char *note,
+				       llist_t * exc, char state)
 {
-  char buf[BUFSIZ], *nl;
-  time_t tstart, tend, tuntil;
+	char buf[BUFSIZ], *nl;
+	time_t tstart, tend, tuntil;
 
-  EXIT_IF(!check_date(start.tm_year, start.tm_mon, start.tm_mday) ||
-          !check_date(end.tm_year, end.tm_mon, end.tm_mday) ||
-          !check_time(start.tm_hour, start.tm_min) ||
-          !check_time(end.tm_hour, end.tm_min) ||
-          (until.tm_year != 0 && !check_date(until.tm_year, until.tm_mon,
-                                             until.tm_mday)),
-          _("date error in appointment"));
+	EXIT_IF(!check_date(start.tm_year, start.tm_mon, start.tm_mday) ||
+		!check_date(end.tm_year, end.tm_mon, end.tm_mday) ||
+		!check_time(start.tm_hour, start.tm_min) ||
+		!check_time(end.tm_hour, end.tm_min) ||
+		(until.tm_year != 0
+		 && !check_date(until.tm_year, until.tm_mon,
+				until.tm_mday)),
+		_("date error in appointment"));
 
-  /* Read the appointment description */
-  if (!fgets(buf, sizeof buf, f))
-    return NULL;
+	/* Read the appointment description */
+	if (!fgets(buf, sizeof buf, f))
+		return NULL;
 
-  nl = strchr(buf, '\n');
-  if (nl) {
-    *nl = '\0';
-  }
-  start.tm_sec = end.tm_sec = 0;
-  start.tm_isdst = end.tm_isdst = -1;
-  start.tm_year -= 1900;
-  start.tm_mon--;
-  end.tm_year -= 1900;
-  end.tm_mon--;
-  tstart = mktime(&start);
-  tend = mktime(&end);
+	nl = strchr(buf, '\n');
+	if (nl) {
+		*nl = '\0';
+	}
+	start.tm_sec = end.tm_sec = 0;
+	start.tm_isdst = end.tm_isdst = -1;
+	start.tm_year -= 1900;
+	start.tm_mon--;
+	end.tm_year -= 1900;
+	end.tm_mon--;
+	tstart = mktime(&start);
+	tend = mktime(&end);
 
-  if (until.tm_year != 0) {
-    until.tm_hour = 23;
-    until.tm_min = 59;
-    until.tm_sec = 0;
-    until.tm_isdst = -1;
-    until.tm_year -= 1900;
-    until.tm_mon--;
-    tuntil = mktime(&until);
-  } else {
-    tuntil = 0;
-  }
-  EXIT_IF(tstart == -1 || tend == -1 || tstart > tend || tuntil == -1,
-          _("date error in appointment"));
+	if (until.tm_year != 0) {
+		until.tm_hour = 23;
+		until.tm_min = 59;
+		until.tm_sec = 0;
+		until.tm_isdst = -1;
+		until.tm_year -= 1900;
+		until.tm_mon--;
+		tuntil = mktime(&until);
+	} else {
+		tuntil = 0;
+	}
+	EXIT_IF(tstart == -1 || tend == -1 || tstart > tend
+		|| tuntil == -1, _("date error in appointment"));
 
-  return recur_apoint_new(buf, note, tstart, tend - tstart, state,
-                          recur_char2def(type), freq, tuntil, exc);
+	return recur_apoint_new(buf, note, tstart, tend - tstart, state,
+				recur_char2def(type), freq, tuntil, exc);
 }
 
 /* Load the recursive events from file */
 struct recur_event *recur_event_scan(FILE * f, struct tm start, int id,
-                                     char type, int freq, struct tm until,
-                                     char *note, llist_t * exc)
+				     char type, int freq, struct tm until,
+				     char *note, llist_t * exc)
 {
-  char buf[BUFSIZ], *nl;
-  time_t tstart, tuntil;
+	char buf[BUFSIZ], *nl;
+	time_t tstart, tuntil;
 
-  EXIT_IF(!check_date(start.tm_year, start.tm_mon, start.tm_mday) ||
-          !check_time(start.tm_hour, start.tm_min) ||
-          (until.tm_year != 0 && !check_date(until.tm_year, until.tm_mon,
-                                             until.tm_mday)),
-          _("date error in event"));
+	EXIT_IF(!check_date(start.tm_year, start.tm_mon, start.tm_mday) ||
+		!check_time(start.tm_hour, start.tm_min) ||
+		(until.tm_year != 0
+		 && !check_date(until.tm_year, until.tm_mon,
+				until.tm_mday)), _("date error in event"));
 
-  /* Read the event description */
-  if (!fgets(buf, sizeof buf, f))
-    return NULL;
+	/* Read the event description */
+	if (!fgets(buf, sizeof buf, f))
+		return NULL;
 
-  nl = strchr(buf, '\n');
-  if (nl) {
-    *nl = '\0';
-  }
-  start.tm_hour = until.tm_hour = 0;
-  start.tm_min = until.tm_min = 0;
-  start.tm_sec = until.tm_sec = 0;
-  start.tm_isdst = until.tm_isdst = -1;
-  start.tm_year -= 1900;
-  start.tm_mon--;
-  if (until.tm_year != 0) {
-    until.tm_year -= 1900;
-    until.tm_mon--;
-    tuntil = mktime(&until);
-  } else {
-    tuntil = 0;
-  }
-  tstart = mktime(&start);
-  EXIT_IF(tstart == -1 || tuntil == -1, _("date error in event"));
+	nl = strchr(buf, '\n');
+	if (nl) {
+		*nl = '\0';
+	}
+	start.tm_hour = until.tm_hour = 0;
+	start.tm_min = until.tm_min = 0;
+	start.tm_sec = until.tm_sec = 0;
+	start.tm_isdst = until.tm_isdst = -1;
+	start.tm_year -= 1900;
+	start.tm_mon--;
+	if (until.tm_year != 0) {
+		until.tm_year -= 1900;
+		until.tm_mon--;
+		tuntil = mktime(&until);
+	} else {
+		tuntil = 0;
+	}
+	tstart = mktime(&start);
+	EXIT_IF(tstart == -1 || tuntil == -1, _("date error in event"));
 
-  return recur_event_new(buf, note, tstart, id, recur_char2def(type), freq,
-                         tuntil, exc);
+	return recur_event_new(buf, note, tstart, id, recur_char2def(type),
+			       freq, tuntil, exc);
 }
 
 /* Writting of a recursive appointment into file. */
 void recur_apoint_write(struct recur_apoint *o, FILE * f)
 {
-  struct tm lt;
-  time_t t;
+	struct tm lt;
+	time_t t;
 
-  t = o->start;
-  localtime_r(&t, &lt);
-  fprintf(f, "%02u/%02u/%04u @ %02u:%02u", lt.tm_mon + 1, lt.tm_mday,
-          1900 + lt.tm_year, lt.tm_hour, lt.tm_min);
+	t = o->start;
+	localtime_r(&t, &lt);
+	fprintf(f, "%02u/%02u/%04u @ %02u:%02u", lt.tm_mon + 1, lt.tm_mday,
+		1900 + lt.tm_year, lt.tm_hour, lt.tm_min);
 
-  t = o->start + o->dur;
-  localtime_r(&t, &lt);
-  fprintf(f, " -> %02u/%02u/%04u @ %02u:%02u", lt.tm_mon + 1, lt.tm_mday,
-          1900 + lt.tm_year, lt.tm_hour, lt.tm_min);
+	t = o->start + o->dur;
+	localtime_r(&t, &lt);
+	fprintf(f, " -> %02u/%02u/%04u @ %02u:%02u", lt.tm_mon + 1,
+		lt.tm_mday, 1900 + lt.tm_year, lt.tm_hour, lt.tm_min);
 
-  t = o->rpt->until;
-  if (t == 0) {                 /* We have an endless recurrent appointment. */
-    fprintf(f, " {%d%c", o->rpt->freq, recur_def2char(o->rpt->type));
-  } else {
-    localtime_r(&t, &lt);
-    fprintf(f, " {%d%c -> %02u/%02u/%04u", o->rpt->freq,
-            recur_def2char(o->rpt->type), lt.tm_mon + 1, lt.tm_mday,
-            1900 + lt.tm_year);
-  }
-  recur_write_exc(&o->exc, f);
-  fputs("} ", f);
-  if (o->note != NULL)
-    fprintf(f, ">%s ", o->note);
-  if (o->state & APOINT_NOTIFY)
-    fputc('!', f);
-  else
-    fputc('|', f);
-  fprintf(f, "%s\n", o->mesg);
+	t = o->rpt->until;
+	if (t == 0) {		/* We have an endless recurrent appointment. */
+		fprintf(f, " {%d%c", o->rpt->freq,
+			recur_def2char(o->rpt->type));
+	} else {
+		localtime_r(&t, &lt);
+		fprintf(f, " {%d%c -> %02u/%02u/%04u", o->rpt->freq,
+			recur_def2char(o->rpt->type), lt.tm_mon + 1,
+			lt.tm_mday, 1900 + lt.tm_year);
+	}
+	recur_write_exc(&o->exc, f);
+	fputs("} ", f);
+	if (o->note != NULL)
+		fprintf(f, ">%s ", o->note);
+	if (o->state & APOINT_NOTIFY)
+		fputc('!', f);
+	else
+		fputc('|', f);
+	fprintf(f, "%s\n", o->mesg);
 }
 
 /* Writting of a recursive event into file. */
 void recur_event_write(struct recur_event *o, FILE * f)
 {
-  struct tm lt;
-  time_t t;
-  int st_mon, st_day, st_year;
-  int end_mon, end_day, end_year;
+	struct tm lt;
+	time_t t;
+	int st_mon, st_day, st_year;
+	int end_mon, end_day, end_year;
 
-  t = o->day;
-  localtime_r(&t, &lt);
-  st_mon = lt.tm_mon + 1;
-  st_day = lt.tm_mday;
-  st_year = lt.tm_year + 1900;
-  t = o->rpt->until;
-  if (t == 0) {                 /* We have an endless recurrent event. */
-    fprintf(f, "%02u/%02u/%04u [%d] {%d%c", st_mon, st_day, st_year, o->id,
-            o->rpt->freq, recur_def2char(o->rpt->type));
-  } else {
-    localtime_r(&t, &lt);
-    end_mon = lt.tm_mon + 1;
-    end_day = lt.tm_mday;
-    end_year = lt.tm_year + 1900;
-    fprintf(f, "%02u/%02u/%04u [%d] {%d%c -> %02u/%02u/%04u", st_mon,
-            st_day, st_year, o->id, o->rpt->freq,
-            recur_def2char(o->rpt->type), end_mon, end_day, end_year);
-  }
-  recur_write_exc(&o->exc, f);
-  fputs("} ", f);
-  if (o->note != NULL)
-    fprintf(f, ">%s ", o->note);
-  fprintf(f, "%s\n", o->mesg);
+	t = o->day;
+	localtime_r(&t, &lt);
+	st_mon = lt.tm_mon + 1;
+	st_day = lt.tm_mday;
+	st_year = lt.tm_year + 1900;
+	t = o->rpt->until;
+	if (t == 0) {		/* We have an endless recurrent event. */
+		fprintf(f, "%02u/%02u/%04u [%d] {%d%c", st_mon, st_day,
+			st_year, o->id, o->rpt->freq,
+			recur_def2char(o->rpt->type));
+	} else {
+		localtime_r(&t, &lt);
+		end_mon = lt.tm_mon + 1;
+		end_day = lt.tm_mday;
+		end_year = lt.tm_year + 1900;
+		fprintf(f, "%02u/%02u/%04u [%d] {%d%c -> %02u/%02u/%04u",
+			st_mon, st_day, st_year, o->id, o->rpt->freq,
+			recur_def2char(o->rpt->type), end_mon, end_day,
+			end_year);
+	}
+	recur_write_exc(&o->exc, f);
+	fputs("} ", f);
+	if (o->note != NULL)
+		fprintf(f, ">%s ", o->note);
+	fprintf(f, "%s\n", o->mesg);
 }
 
 /* Write recursive items to file. */
 void recur_save_data(FILE * f)
 {
-  llist_item_t *i;
+	llist_item_t *i;
 
-  LLIST_FOREACH(&recur_elist, i) {
-    struct recur_event *rev = LLIST_GET_DATA(i);
-    recur_event_write(rev, f);
-  }
+	LLIST_FOREACH(&recur_elist, i) {
+		struct recur_event *rev = LLIST_GET_DATA(i);
+		recur_event_write(rev, f);
+	}
 
-  LLIST_TS_LOCK(&recur_alist_p);
-  LLIST_TS_FOREACH(&recur_alist_p, i) {
-    struct recur_apoint *rapt = LLIST_GET_DATA(i);
-    recur_apoint_write(rapt, f);
-  }
-  LLIST_TS_UNLOCK(&recur_alist_p);
+	LLIST_TS_LOCK(&recur_alist_p);
+	LLIST_TS_FOREACH(&recur_alist_p, i) {
+		struct recur_apoint *rapt = LLIST_GET_DATA(i);
+		recur_apoint_write(rapt, f);
+	}
+	LLIST_TS_UNLOCK(&recur_alist_p);
 }
 
 /*
@@ -512,45 +521,45 @@ void recur_save_data(FILE * f)
 /* Calculate the difference in days between two dates. */
 static long diff_days(struct tm lt_start, struct tm lt_end)
 {
-  long diff;
+	long diff;
 
-  if (lt_end.tm_year < lt_start.tm_year)
-    return 0;
+	if (lt_end.tm_year < lt_start.tm_year)
+		return 0;
 
-  diff = lt_end.tm_yday - lt_start.tm_yday;
+	diff = lt_end.tm_yday - lt_start.tm_yday;
 
-  if (lt_end.tm_year > lt_start.tm_year) {
-    diff += (lt_end.tm_year - lt_start.tm_year) * YEARINDAYS;
-    diff += LEAPCOUNT(lt_start.tm_year + TM_YEAR_BASE,
-                      lt_end.tm_year + TM_YEAR_BASE - 1);
-  }
+	if (lt_end.tm_year > lt_start.tm_year) {
+		diff += (lt_end.tm_year - lt_start.tm_year) * YEARINDAYS;
+		diff += LEAPCOUNT(lt_start.tm_year + TM_YEAR_BASE,
+				  lt_end.tm_year + TM_YEAR_BASE - 1);
+	}
 
-  return diff;
+	return diff;
 }
 
 /* Calculate the difference in months between two dates. */
 static long diff_months(struct tm lt_start, struct tm lt_end)
 {
-  long diff;
+	long diff;
 
-  if (lt_end.tm_year < lt_start.tm_year)
-    return 0;
+	if (lt_end.tm_year < lt_start.tm_year)
+		return 0;
 
-  diff = lt_end.tm_mon - lt_start.tm_mon;
-  diff += (lt_end.tm_year - lt_start.tm_year) * YEARINMONTHS;
+	diff = lt_end.tm_mon - lt_start.tm_mon;
+	diff += (lt_end.tm_year - lt_start.tm_year) * YEARINMONTHS;
 
-  return diff;
+	return diff;
 }
 
 /* Calculate the difference in years between two dates. */
 static long diff_years(struct tm lt_start, struct tm lt_end)
 {
-  return lt_end.tm_year - lt_start.tm_year;
+	return lt_end.tm_year - lt_start.tm_year;
 }
 
 static int exc_inday(struct excp *exc, long *day_start)
 {
-  return (exc->st >= *day_start && exc->st < *day_start + DAYINSEC);
+	return (exc->st >= *day_start && exc->st < *day_start + DAYINSEC);
 }
 
 /*
@@ -563,189 +572,198 @@ static int exc_inday(struct excp *exc, long *day_start)
  * calculation of recurrent dates after a turn of years.
  */
 unsigned
-recur_item_find_occurrence(long item_start, long item_dur, llist_t * item_exc,
-                           int rpt_type, int rpt_freq, long rpt_until,
-                           long day_start, unsigned *occurrence)
+recur_item_find_occurrence(long item_start, long item_dur,
+			   llist_t * item_exc, int rpt_type, int rpt_freq,
+			   long rpt_until, long day_start,
+			   unsigned *occurrence)
 {
-  struct date start_date;
-  long diff, span;
-  struct tm lt_day, lt_item, lt_item_day;
-  time_t t;
+	struct date start_date;
+	long diff, span;
+	struct tm lt_day, lt_item, lt_item_day;
+	time_t t;
 
-  if (day_start < item_start - DAYINSEC + 1)
-    return 0;
+	if (day_start < item_start - DAYINSEC + 1)
+		return 0;
 
-  if (rpt_until != 0 && day_start >= rpt_until + item_dur)
-    return 0;
+	if (rpt_until != 0 && day_start >= rpt_until + item_dur)
+		return 0;
 
-  t = day_start;
-  localtime_r(&t, &lt_day);
+	t = day_start;
+	localtime_r(&t, &lt_day);
 
-  t = item_start;
-  localtime_r(&t, &lt_item);
+	t = item_start;
+	localtime_r(&t, &lt_item);
 
-  lt_item_day = lt_item;
-  lt_item_day.tm_sec = lt_item_day.tm_min = lt_item_day.tm_hour = 0;
+	lt_item_day = lt_item;
+	lt_item_day.tm_sec = lt_item_day.tm_min = lt_item_day.tm_hour = 0;
 
-  span = (item_start - mktime(&lt_item_day) + item_dur - 1) / DAYINSEC;
+	span =
+	    (item_start - mktime(&lt_item_day) + item_dur - 1) / DAYINSEC;
 
-  switch (rpt_type) {
-  case RECUR_DAILY:
-    diff = diff_days(lt_item_day, lt_day) % rpt_freq;
-    lt_item_day.tm_mday = lt_day.tm_mday - diff;
-    lt_item_day.tm_mon = lt_day.tm_mon;
-    lt_item_day.tm_year = lt_day.tm_year;
-    break;
-  case RECUR_WEEKLY:
-    diff = diff_days(lt_item_day, lt_day) % (rpt_freq * WEEKINDAYS);
-    lt_item_day.tm_mday = lt_day.tm_mday - diff;
-    lt_item_day.tm_mon = lt_day.tm_mon;
-    lt_item_day.tm_year = lt_day.tm_year;
-    break;
-  case RECUR_MONTHLY:
-    diff = diff_months(lt_item_day, lt_day) % rpt_freq;
-    if (lt_day.tm_mday < lt_item_day.tm_mday)
-      diff++;
-    lt_item_day.tm_mon = lt_day.tm_mon - diff;
-    lt_item_day.tm_year = lt_day.tm_year;
-    break;
-  case RECUR_YEARLY:
-    diff = diff_years(lt_item_day, lt_day) % rpt_freq;
-    if (lt_day.tm_mon < lt_item_day.tm_mon ||
-        (lt_day.tm_mon == lt_item_day.tm_mon &&
-         lt_day.tm_mday < lt_item_day.tm_mday))
-      diff++;
-    lt_item_day.tm_year = lt_day.tm_year - diff;
-    break;
-  default:
-    EXIT(_("unknown item type"));
-  }
+	switch (rpt_type) {
+	case RECUR_DAILY:
+		diff = diff_days(lt_item_day, lt_day) % rpt_freq;
+		lt_item_day.tm_mday = lt_day.tm_mday - diff;
+		lt_item_day.tm_mon = lt_day.tm_mon;
+		lt_item_day.tm_year = lt_day.tm_year;
+		break;
+	case RECUR_WEEKLY:
+		diff =
+		    diff_days(lt_item_day,
+			      lt_day) % (rpt_freq * WEEKINDAYS);
+		lt_item_day.tm_mday = lt_day.tm_mday - diff;
+		lt_item_day.tm_mon = lt_day.tm_mon;
+		lt_item_day.tm_year = lt_day.tm_year;
+		break;
+	case RECUR_MONTHLY:
+		diff = diff_months(lt_item_day, lt_day) % rpt_freq;
+		if (lt_day.tm_mday < lt_item_day.tm_mday)
+			diff++;
+		lt_item_day.tm_mon = lt_day.tm_mon - diff;
+		lt_item_day.tm_year = lt_day.tm_year;
+		break;
+	case RECUR_YEARLY:
+		diff = diff_years(lt_item_day, lt_day) % rpt_freq;
+		if (lt_day.tm_mon < lt_item_day.tm_mon ||
+		    (lt_day.tm_mon == lt_item_day.tm_mon &&
+		     lt_day.tm_mday < lt_item_day.tm_mday))
+			diff++;
+		lt_item_day.tm_year = lt_day.tm_year - diff;
+		break;
+	default:
+		EXIT(_("unknown item type"));
+	}
 
-  lt_item_day.tm_isdst = lt_day.tm_isdst;
-  t = mktime(&lt_item_day);
+	lt_item_day.tm_isdst = lt_day.tm_isdst;
+	t = mktime(&lt_item_day);
 
-  if (LLIST_FIND_FIRST(item_exc, &t, exc_inday))
-    return 0;
+	if (LLIST_FIND_FIRST(item_exc, &t, exc_inday))
+		return 0;
 
-  if (rpt_until != 0 && t > rpt_until)
-    return 0;
+	if (rpt_until != 0 && t > rpt_until)
+		return 0;
 
-  localtime_r(&t, &lt_item_day);
-  diff = diff_days(lt_item_day, lt_day);
+	localtime_r(&t, &lt_item_day);
+	diff = diff_days(lt_item_day, lt_day);
 
-  if (diff <= span) {
-    if (occurrence) {
-      start_date.dd = lt_item_day.tm_mday;
-      start_date.mm = lt_item_day.tm_mon + 1;
-      start_date.yyyy = lt_item_day.tm_year + 1900;
+	if (diff <= span) {
+		if (occurrence) {
+			start_date.dd = lt_item_day.tm_mday;
+			start_date.mm = lt_item_day.tm_mon + 1;
+			start_date.yyyy = lt_item_day.tm_year + 1900;
 
-      *occurrence = date2sec(start_date, lt_item.tm_hour, lt_item.tm_min);
-    }
+			*occurrence =
+			    date2sec(start_date, lt_item.tm_hour,
+				     lt_item.tm_min);
+		}
 
-    return 1;
-  } else {
-    return 0;
-  }
+		return 1;
+	} else {
+		return 0;
+	}
 }
 
 unsigned
 recur_apoint_find_occurrence(struct recur_apoint *rapt, long day_start,
-                             unsigned *occurrence)
+			     unsigned *occurrence)
 {
-  return recur_item_find_occurrence(rapt->start, rapt->dur, &rapt->exc,
-                                    rapt->rpt->type, rapt->rpt->freq,
-                                    rapt->rpt->until, day_start, occurrence);
+	return recur_item_find_occurrence(rapt->start, rapt->dur,
+					  &rapt->exc, rapt->rpt->type,
+					  rapt->rpt->freq,
+					  rapt->rpt->until, day_start,
+					  occurrence);
 }
 
 unsigned
 recur_event_find_occurrence(struct recur_event *rev, long day_start,
-                            unsigned *occurrence)
+			    unsigned *occurrence)
 {
-  return recur_item_find_occurrence(rev->day, DAYINSEC, &rev->exc,
-                                    rev->rpt->type, rev->rpt->freq,
-                                    rev->rpt->until, day_start, occurrence);
+	return recur_item_find_occurrence(rev->day, DAYINSEC, &rev->exc,
+					  rev->rpt->type, rev->rpt->freq,
+					  rev->rpt->until, day_start,
+					  occurrence);
 }
 
 /* Check if a recurrent item belongs to the selected day. */
 unsigned
 recur_item_inday(long item_start, long item_dur, llist_t * item_exc,
-                 int rpt_type, int rpt_freq, long rpt_until, long day_start)
+		 int rpt_type, int rpt_freq, long rpt_until,
+		 long day_start)
 {
-  /* We do not need the (real) start time of the occurrence here, so just
-   * ignore the buffer. */
-  return recur_item_find_occurrence(item_start, item_dur, item_exc, rpt_type,
-                                    rpt_freq, rpt_until, day_start, NULL);
+	/* We do not need the (real) start time of the occurrence here, so just
+	 * ignore the buffer. */
+	return recur_item_find_occurrence(item_start, item_dur, item_exc,
+					  rpt_type, rpt_freq, rpt_until,
+					  day_start, NULL);
 }
 
 unsigned recur_apoint_inday(struct recur_apoint *rapt, long *day_start)
 {
-  return recur_item_inday(rapt->start, rapt->dur, &rapt->exc, rapt->rpt->type,
-                          rapt->rpt->freq, rapt->rpt->until, *day_start);
+	return recur_item_inday(rapt->start, rapt->dur, &rapt->exc,
+				rapt->rpt->type, rapt->rpt->freq,
+				rapt->rpt->until, *day_start);
 }
 
 unsigned recur_event_inday(struct recur_event *rev, long *day_start)
 {
-  return recur_item_inday(rev->day, DAYINSEC, &rev->exc, rev->rpt->type,
-                          rev->rpt->freq, rev->rpt->until, *day_start);
+	return recur_item_inday(rev->day, DAYINSEC, &rev->exc,
+				rev->rpt->type, rev->rpt->freq,
+				rev->rpt->until, *day_start);
 }
 
 /* Add an exception to a recurrent event. */
-void
-recur_event_add_exc(struct recur_event *rev, long date)
+void recur_event_add_exc(struct recur_event *rev, long date)
 {
-  recur_add_exc(&rev->exc, date);
+	recur_add_exc(&rev->exc, date);
 }
 
 /* Add an exception to a recurrent appointment. */
-void
-recur_apoint_add_exc(struct recur_apoint *rapt, long date)
+void recur_apoint_add_exc(struct recur_apoint *rapt, long date)
 {
-  int need_check_notify = 0;
+	int need_check_notify = 0;
 
-  if (notify_bar())
-    need_check_notify = notify_same_recur_item(rapt);
-  recur_add_exc(&rapt->exc, date);
-  if (need_check_notify)
-    notify_check_next_app(0);
+	if (notify_bar())
+		need_check_notify = notify_same_recur_item(rapt);
+	recur_add_exc(&rapt->exc, date);
+	if (need_check_notify)
+		notify_check_next_app(0);
 }
 
 /*
  * Delete a recurrent event from the list (if delete_whole is not null),
  * or delete only one occurence of the recurrent event.
  */
-void
-recur_event_erase(struct recur_event *rev)
+void recur_event_erase(struct recur_event *rev)
 {
-  llist_item_t *i = LLIST_FIND_FIRST(&recur_elist, rev, NULL);
+	llist_item_t *i = LLIST_FIND_FIRST(&recur_elist, rev, NULL);
 
-  if (!i)
-    EXIT(_("event not found"));
+	if (!i)
+		EXIT(_("event not found"));
 
-  LLIST_REMOVE(&recur_elist, i);
+	LLIST_REMOVE(&recur_elist, i);
 }
 
 /*
  * Delete a recurrent appointment from the list (if delete_whole is not null),
  * or delete only one occurence of the recurrent appointment.
  */
-void
-recur_apoint_erase(struct recur_apoint *rapt)
+void recur_apoint_erase(struct recur_apoint *rapt)
 {
-  LLIST_TS_LOCK(&recur_alist_p);
+	LLIST_TS_LOCK(&recur_alist_p);
 
-  llist_item_t *i = LLIST_TS_FIND_FIRST(&recur_alist_p, rapt, NULL);
-  int need_check_notify = 0;
+	llist_item_t *i = LLIST_TS_FIND_FIRST(&recur_alist_p, rapt, NULL);
+	int need_check_notify = 0;
 
-  if (!i)
-    EXIT(_("appointment not found"));
+	if (!i)
+		EXIT(_("appointment not found"));
 
-  if (notify_bar())
-    need_check_notify = notify_same_recur_item(rapt);
-  LLIST_TS_REMOVE(&recur_alist_p, i);
-  if (need_check_notify)
-    notify_check_next_app(0);
+	if (notify_bar())
+		need_check_notify = notify_same_recur_item(rapt);
+	LLIST_TS_REMOVE(&recur_alist_p, i);
+	if (need_check_notify)
+		notify_check_next_app(0);
 
-  LLIST_TS_UNLOCK(&recur_alist_p);
+	LLIST_TS_UNLOCK(&recur_alist_p);
 }
 
 /*
@@ -754,116 +772,117 @@ recur_apoint_erase(struct recur_apoint *rapt)
  */
 void recur_exc_scan(llist_t * lexc, FILE * data_file)
 {
-  int c = 0;
-  struct tm day;
+	int c = 0;
+	struct tm day;
 
-  LLIST_INIT(lexc);
-  while ((c = getc(data_file)) == '!') {
-    ungetc(c, data_file);
-    if (fscanf(data_file, "!%d / %d / %d ",
-               &day.tm_mon, &day.tm_mday, &day.tm_year) != 3) {
-      EXIT(_("syntax error in item date"));
-    }
+	LLIST_INIT(lexc);
+	while ((c = getc(data_file)) == '!') {
+		ungetc(c, data_file);
+		if (fscanf(data_file, "!%d / %d / %d ",
+			   &day.tm_mon, &day.tm_mday, &day.tm_year) != 3) {
+			EXIT(_("syntax error in item date"));
+		}
 
-    EXIT_IF(!check_date(day.tm_year, day.tm_mon, day.tm_mday) ||
-            !check_time(day.tm_hour, day.tm_min),
-            _("date error in item exception"));
+		EXIT_IF(!check_date(day.tm_year, day.tm_mon, day.tm_mday)
+			|| !check_time(day.tm_hour, day.tm_min),
+			_("date error in item exception"));
 
-    day.tm_hour = 0;
-    day.tm_min = day.tm_sec = 0;
-    day.tm_isdst = -1;
-    day.tm_year -= 1900;
-    day.tm_mon--;
-    struct excp *exc = mem_malloc(sizeof(struct excp));
-    exc->st = mktime(&day);
-    LLIST_ADD(lexc, exc);
-  }
+		day.tm_hour = 0;
+		day.tm_min = day.tm_sec = 0;
+		day.tm_isdst = -1;
+		day.tm_year -= 1900;
+		day.tm_mon--;
+		struct excp *exc = mem_malloc(sizeof(struct excp));
+		exc->st = mktime(&day);
+		LLIST_ADD(lexc, exc);
+	}
 }
 
 static int recur_apoint_starts_before(struct recur_apoint *rapt, long time)
 {
-  return rapt->start < time;
+	return rapt->start < time;
 }
 
 /*
  * Look in the appointment list if we have an item which starts before the item
  * stored in the notify_app structure (which is the next item to be notified).
  */
-struct notify_app *recur_apoint_check_next(struct notify_app *app, long start,
-                                           long day)
+struct notify_app *recur_apoint_check_next(struct notify_app *app,
+					   long start, long day)
 {
-  llist_item_t *i;
-  unsigned real_recur_start_time;
+	llist_item_t *i;
+	unsigned real_recur_start_time;
 
-  LLIST_TS_LOCK(&recur_alist_p);
-  LLIST_TS_FIND_FOREACH(&recur_alist_p, &app->time, recur_apoint_starts_before,
-                        i) {
-    struct recur_apoint *rapt = LLIST_TS_GET_DATA(i);
+	LLIST_TS_LOCK(&recur_alist_p);
+	LLIST_TS_FIND_FOREACH(&recur_alist_p, &app->time,
+			      recur_apoint_starts_before, i) {
+		struct recur_apoint *rapt = LLIST_TS_GET_DATA(i);
 
-    if (recur_apoint_find_occurrence(rapt, day, &real_recur_start_time) &&
-        real_recur_start_time > start) {
-      app->time = real_recur_start_time;
-      app->txt = mem_strdup(rapt->mesg);
-      app->state = rapt->state;
-      app->got_app = 1;
-    }
-  }
-  LLIST_TS_UNLOCK(&recur_alist_p);
+		if (recur_apoint_find_occurrence
+		    (rapt, day, &real_recur_start_time)
+		    && real_recur_start_time > start) {
+			app->time = real_recur_start_time;
+			app->txt = mem_strdup(rapt->mesg);
+			app->state = rapt->state;
+			app->got_app = 1;
+		}
+	}
+	LLIST_TS_UNLOCK(&recur_alist_p);
 
-  return app;
+	return app;
 }
 
 /* Switch recurrent item notification state. */
 void recur_apoint_switch_notify(struct recur_apoint *rapt)
 {
-  LLIST_TS_LOCK(&recur_alist_p);
+	LLIST_TS_LOCK(&recur_alist_p);
 
-  rapt->state ^= APOINT_NOTIFY;
-  if (notify_bar())
-    notify_check_repeated(rapt);
+	rapt->state ^= APOINT_NOTIFY;
+	if (notify_bar())
+		notify_check_repeated(rapt);
 
-  LLIST_TS_UNLOCK(&recur_alist_p);
+	LLIST_TS_UNLOCK(&recur_alist_p);
 }
 
 void recur_event_paste_item(struct recur_event *rev, long date)
 {
-  long time_shift;
-  llist_item_t *i;
+	long time_shift;
+	llist_item_t *i;
 
-  time_shift = date - rev->day;
-  rev->day += time_shift;
+	time_shift = date - rev->day;
+	rev->day += time_shift;
 
-  if (rev->rpt->until != 0)
-    rev->rpt->until += time_shift;
+	if (rev->rpt->until != 0)
+		rev->rpt->until += time_shift;
 
-  LLIST_FOREACH(&rev->exc, i) {
-    struct excp *exc = LLIST_GET_DATA(i);
-    exc->st += time_shift;
-  }
+	LLIST_FOREACH(&rev->exc, i) {
+		struct excp *exc = LLIST_GET_DATA(i);
+		exc->st += time_shift;
+	}
 
-  LLIST_ADD_SORTED(&recur_elist, rev, recur_event_cmp_day);
+	LLIST_ADD_SORTED(&recur_elist, rev, recur_event_cmp_day);
 }
 
 void recur_apoint_paste_item(struct recur_apoint *rapt, long date)
 {
-  long time_shift;
-  llist_item_t *i;
+	long time_shift;
+	llist_item_t *i;
 
-  time_shift = (date + get_item_time(rapt->start)) - rapt->start;
-  rapt->start += time_shift;
+	time_shift = (date + get_item_time(rapt->start)) - rapt->start;
+	rapt->start += time_shift;
 
-  if (rapt->rpt->until != 0)
-    rapt->rpt->until += time_shift;
+	if (rapt->rpt->until != 0)
+		rapt->rpt->until += time_shift;
 
-  LLIST_FOREACH(&rapt->exc, i) {
-    struct excp *exc = LLIST_GET_DATA(i);
-    exc->st += time_shift;
-  }
+	LLIST_FOREACH(&rapt->exc, i) {
+		struct excp *exc = LLIST_GET_DATA(i);
+		exc->st += time_shift;
+	}
 
-  LLIST_TS_LOCK(&recur_alist_p);
-  LLIST_TS_ADD_SORTED(&recur_alist_p, rapt, recur_apoint_cmp_start);
-  LLIST_TS_UNLOCK(&recur_alist_p);
+	LLIST_TS_LOCK(&recur_alist_p);
+	LLIST_TS_ADD_SORTED(&recur_alist_p, rapt, recur_apoint_cmp_start);
+	LLIST_TS_UNLOCK(&recur_alist_p);
 
-  if (notify_bar())
-    notify_check_repeated(rapt);
+	if (notify_bar())
+		notify_check_repeated(rapt);
 }

@@ -65,60 +65,62 @@
  */
 static void generic_hdlr(int sig)
 {
-  switch (sig) {
-  case SIGCHLD:
-    while (waitpid(WAIT_MYPGRP, NULL, WNOHANG) > 0) ;
-    break;
-  case SIGWINCH:
-    resize = 1;
-    clearok(curscr, TRUE);
-    ungetch(KEY_RESIZE);
-    break;
-  case SIGTERM:
-    if (unlink(path_cpid) != 0) {
-      EXIT(_("Could not remove calcurse lock file: %s\n"), strerror(errno));
-    }
-    exit(EXIT_SUCCESS);
-    break;
-  }
+	switch (sig) {
+	case SIGCHLD:
+		while (waitpid(WAIT_MYPGRP, NULL, WNOHANG) > 0) ;
+		break;
+	case SIGWINCH:
+		resize = 1;
+		clearok(curscr, TRUE);
+		ungetch(KEY_RESIZE);
+		break;
+	case SIGTERM:
+		if (unlink(path_cpid) != 0) {
+			EXIT(_("Could not remove calcurse lock file: %s\n"),
+			     strerror(errno));
+		}
+		exit(EXIT_SUCCESS);
+		break;
+	}
 }
 
 unsigned sigs_set_hdlr(int sig, void (*handler) (int))
 {
-  struct sigaction sa;
+	struct sigaction sa;
 
-  memset(&sa, 0, sizeof sa);
-  sigemptyset(&sa.sa_mask);
-  sa.sa_handler = handler;
-  sa.sa_flags = 0;
-  if (sigaction(sig, &sa, NULL) == -1) {
-    ERROR_MSG(_("Error setting signal #%d : %s\n"), sig, strerror(errno));
-    return 0;
-  }
+	memset(&sa, 0, sizeof sa);
+	sigemptyset(&sa.sa_mask);
+	sa.sa_handler = handler;
+	sa.sa_flags = 0;
+	if (sigaction(sig, &sa, NULL) == -1) {
+		ERROR_MSG(_("Error setting signal #%d : %s\n"), sig,
+			  strerror(errno));
+		return 0;
+	}
 
-  return 1;
+	return 1;
 }
 
 /* Signal handling init. */
 void sigs_init()
 {
-  if (!sigs_set_hdlr(SIGCHLD, generic_hdlr)
-      || !sigs_set_hdlr(SIGWINCH, generic_hdlr)
-      || !sigs_set_hdlr(SIGTERM, generic_hdlr)
-      || !sigs_set_hdlr(SIGINT, SIG_IGN))
-    exit_calcurse(1);
+	if (!sigs_set_hdlr(SIGCHLD, generic_hdlr)
+	    || !sigs_set_hdlr(SIGWINCH, generic_hdlr)
+	    || !sigs_set_hdlr(SIGTERM, generic_hdlr)
+	    || !sigs_set_hdlr(SIGINT, SIG_IGN))
+		exit_calcurse(1);
 }
 
 /* Ignore SIGWINCH and SIGTERM signals. */
 void sigs_ignore(void)
 {
-  sigs_set_hdlr(SIGWINCH, SIG_IGN);
-  sigs_set_hdlr(SIGTERM, SIG_IGN);
+	sigs_set_hdlr(SIGWINCH, SIG_IGN);
+	sigs_set_hdlr(SIGTERM, SIG_IGN);
 }
 
 /* No longer ignore SIGWINCH and SIGTERM signals. */
 void sigs_unignore(void)
 {
-  sigs_set_hdlr(SIGWINCH, generic_hdlr);
-  sigs_set_hdlr(SIGTERM, generic_hdlr);
+	sigs_set_hdlr(SIGWINCH, generic_hdlr);
+	sigs_set_hdlr(SIGTERM, generic_hdlr);
 }

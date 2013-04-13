@@ -156,9 +156,9 @@
 #define TAB                     9
 #define SPACE                   32
 
-#define KEYS_KEYLEN         3   /* length of each keybinding */
-#define KEYS_LABELEN        8   /* length of command description */
-#define KEYS_CMDS_PER_LINE  6   /* max number of commands per line */
+#define KEYS_KEYLEN         3	/* length of each keybinding */
+#define KEYS_LABELEN        8	/* length of command description */
+#define KEYS_CMDS_PER_LINE  6	/* max number of commands per line */
 
 /* Register definitions. */
 #define REG_BLACK_HOLE 37
@@ -234,45 +234,45 @@
 #define MIN(x,y) ((x)<(y)?(x):(y))
 
 enum win {
-  CAL,
-  APP,
-  TOD,
-  NOT,
-  STA,
-  KEY,
-  NBWINS
+	CAL,
+	APP,
+	TOD,
+	NOT,
+	STA,
+	KEY,
+	NBWINS
 };
 
 /* General configuration variables. */
 struct conf {
-  unsigned auto_save;
-  unsigned auto_gc;
-  unsigned periodic_save;
-  unsigned confirm_quit;
-  unsigned confirm_delete;
-  enum win default_panel;
-  unsigned compact_panels;
-  unsigned system_dialogs;
-  unsigned progress_bar;
-  const char *editor;
-  const char *pager;
-  char output_datefmt[BUFSIZ];  /* format for displaying date */
-  int input_datefmt;            /* format for reading date */
+	unsigned auto_save;
+	unsigned auto_gc;
+	unsigned periodic_save;
+	unsigned confirm_quit;
+	unsigned confirm_delete;
+	enum win default_panel;
+	unsigned compact_panels;
+	unsigned system_dialogs;
+	unsigned progress_bar;
+	const char *editor;
+	const char *pager;
+	char output_datefmt[BUFSIZ];	/* format for displaying date */
+	int input_datefmt;	/* format for reading date */
 };
 
 /* Daemon-related configuration. */
 struct dmon_conf {
-  unsigned enable;              /* launch daemon automatically when exiting */
-  unsigned log;                 /* log daemon activity */
+	unsigned enable;	/* launch daemon automatically when exiting */
+	unsigned log;		/* log daemon activity */
 };
 
 /* Input date formats. */
 enum datefmt {
-  DATEFMT_MMDDYYYY = 1,
-  DATEFMT_DDMMYYYY,
-  DATEFMT_YYYYMMDD,
-  DATEFMT_ISO,
-  DATEFMT_MAX
+	DATEFMT_MMDDYYYY = 1,
+	DATEFMT_DDMMYYYY,
+	DATEFMT_YYYYMMDD,
+	DATEFMT_ISO,
+	DATEFMT_MAX
 };
 
 #define DATE_FORMATS (DATEFMT_MAX - 1)
@@ -286,179 +286,179 @@ enum datefmt {
     (datefmt == DATEFMT_YYYYMMDD ? _("yyyy/mm/dd") : _("yyyy-mm-dd"))))
 
 struct date {
-  unsigned dd;
-  unsigned mm;
-  unsigned yyyy;
+	unsigned dd;
+	unsigned mm;
+	unsigned yyyy;
 };
 
 /* Appointment definition. */
 struct apoint {
-  long start;                   /* seconds since 1 jan 1970 */
-  long dur;                     /* duration of the appointment in seconds */
+	long start;		/* seconds since 1 jan 1970 */
+	long dur;		/* duration of the appointment in seconds */
 
 #define APOINT_NULL      0x0
-#define APOINT_NOTIFY    0x1    /* Item needs to be notified */
-#define APOINT_NOTIFIED  0x2    /* Item was already notified */
-  int state;
+#define APOINT_NOTIFY    0x1	/* Item needs to be notified */
+#define APOINT_NOTIFIED  0x2	/* Item was already notified */
+	int state;
 
-  char *mesg;
-  char *note;
+	char *mesg;
+	char *note;
 };
 
 /* Event definition. */
 struct event {
-  int id;                       /* event identifier */
-  long day;                     /* seconds since 1 jan 1970 */
-  char *mesg;
-  char *note;
+	int id;			/* event identifier */
+	long day;		/* seconds since 1 jan 1970 */
+	char *mesg;
+	char *note;
 };
 
 /* Todo item definition. */
 struct todo {
-  char *mesg;
-  int id;
-  char *note;
+	char *mesg;
+	int id;
+	char *note;
 };
 
 /* Number of items in current day. */
 struct day_items_nb {
-  unsigned nb_events;
-  unsigned nb_apoints;
+	unsigned nb_events;
+	unsigned nb_apoints;
 };
 
 struct excp {
-  long st;                      /* beggining of the considered day, in seconds */
+	long st;		/* beggining of the considered day, in seconds */
 };
 
 enum recur_type {
-  RECUR_NO,
-  RECUR_DAILY,
-  RECUR_WEEKLY,
-  RECUR_MONTHLY,
-  RECUR_YEARLY,
-  RECUR_TYPES
+	RECUR_NO,
+	RECUR_DAILY,
+	RECUR_WEEKLY,
+	RECUR_MONTHLY,
+	RECUR_YEARLY,
+	RECUR_TYPES
 };
 
 /* To describe an item's repetition. */
 struct rpt {
-  enum recur_type type;         /* repetition type */
-  int freq;                     /* repetition frequence */
-  long until;                   /* ending date for repeated event */
+	enum recur_type type;	/* repetition type */
+	int freq;		/* repetition frequence */
+	long until;		/* ending date for repeated event */
 };
 
 /* Recurrent appointment definition. */
 struct recur_apoint {
-  struct rpt *rpt;              /* information about repetition */
-  llist_t exc;                  /* days when the item should not be repeated */
-  long start;                   /* beggining of the appointment */
-  long dur;                     /* duration of the appointment */
-  char state;                   /* 8 bits to store item state */
-  char *mesg;                   /* appointment description */
-  char *note;                   /* note attached to appointment */
+	struct rpt *rpt;	/* information about repetition */
+	llist_t exc;		/* days when the item should not be repeated */
+	long start;		/* beggining of the appointment */
+	long dur;		/* duration of the appointment */
+	char state;		/* 8 bits to store item state */
+	char *mesg;		/* appointment description */
+	char *note;		/* note attached to appointment */
 };
 
 /* Reccurent event definition. */
 struct recur_event {
-  struct rpt *rpt;              /* information about repetition */
-  llist_t exc;                  /* days when the item should not be repeated */
-  int id;                       /* event type */
-  long day;                     /* day at which event occurs */
-  char *mesg;                   /* event description */
-  char *note;                   /* note attached to event */
+	struct rpt *rpt;	/* information about repetition */
+	llist_t exc;		/* days when the item should not be repeated */
+	int id;			/* event type */
+	long day;		/* day at which event occurs */
+	char *mesg;		/* event description */
+	char *note;		/* note attached to event */
 };
 
 /* Generic pointer data type for appointments and events. */
 union aptev_ptr {
-  struct apoint *apt;
-  struct event *ev;
-  struct recur_apoint *rapt;
-  struct recur_event *rev;
+	struct apoint *apt;
+	struct event *ev;
+	struct recur_apoint *rapt;
+	struct recur_event *rev;
 };
 
 /* Generic item description (to hold appointments, events...). */
 struct day_item {
-  int type;                     /* (recursive or normal) event or appointment */
-  long start;                   /* start time of the repetition occurrence */
-  union aptev_ptr item;         /* pointer to the actual item */
+	int type;		/* (recursive or normal) event or appointment */
+	long start;		/* start time of the repetition occurrence */
+	union aptev_ptr item;	/* pointer to the actual item */
 };
 
 /* Available view for the calendar panel. */
 enum {
-  CAL_MONTH_VIEW,
-  CAL_WEEK_VIEW,
-  CAL_VIEWS
+	CAL_MONTH_VIEW,
+	CAL_WEEK_VIEW,
+	CAL_VIEWS
 };
 
 struct notify_app {
-  long time;
-  int got_app;
-  char *txt;
-  char state;
-  pthread_mutex_t mutex;
+	long time;
+	int got_app;
+	char *txt;
+	char state;
+	pthread_mutex_t mutex;
 };
 
 struct io_file {
-  FILE *fd;
-  char name[BUFSIZ];
+	FILE *fd;
+	char name[BUFSIZ];
 };
 
 /* Available keys. */
 enum key {
-  KEY_GENERIC_CANCEL,
-  KEY_GENERIC_SELECT,
-  KEY_GENERIC_CREDITS,
-  KEY_GENERIC_HELP,
-  KEY_GENERIC_QUIT,
-  KEY_GENERIC_SAVE,
-  KEY_GENERIC_COPY,
-  KEY_GENERIC_PASTE,
-  KEY_GENERIC_CHANGE_VIEW,
-  KEY_GENERIC_IMPORT,
-  KEY_GENERIC_EXPORT,
-  KEY_GENERIC_GOTO,
-  KEY_GENERIC_OTHER_CMD,
-  KEY_GENERIC_CONFIG_MENU,
-  KEY_GENERIC_REDRAW,
-  KEY_GENERIC_ADD_APPT,
-  KEY_GENERIC_ADD_TODO,
-  KEY_GENERIC_PREV_DAY,
-  KEY_GENERIC_NEXT_DAY,
-  KEY_GENERIC_PREV_WEEK,
-  KEY_GENERIC_NEXT_WEEK,
-  KEY_GENERIC_PREV_MONTH,
-  KEY_GENERIC_NEXT_MONTH,
-  KEY_GENERIC_PREV_YEAR,
-  KEY_GENERIC_NEXT_YEAR,
-  KEY_GENERIC_SCROLL_DOWN,
-  KEY_GENERIC_SCROLL_UP,
-  KEY_GENERIC_GOTO_TODAY,
+	KEY_GENERIC_CANCEL,
+	KEY_GENERIC_SELECT,
+	KEY_GENERIC_CREDITS,
+	KEY_GENERIC_HELP,
+	KEY_GENERIC_QUIT,
+	KEY_GENERIC_SAVE,
+	KEY_GENERIC_COPY,
+	KEY_GENERIC_PASTE,
+	KEY_GENERIC_CHANGE_VIEW,
+	KEY_GENERIC_IMPORT,
+	KEY_GENERIC_EXPORT,
+	KEY_GENERIC_GOTO,
+	KEY_GENERIC_OTHER_CMD,
+	KEY_GENERIC_CONFIG_MENU,
+	KEY_GENERIC_REDRAW,
+	KEY_GENERIC_ADD_APPT,
+	KEY_GENERIC_ADD_TODO,
+	KEY_GENERIC_PREV_DAY,
+	KEY_GENERIC_NEXT_DAY,
+	KEY_GENERIC_PREV_WEEK,
+	KEY_GENERIC_NEXT_WEEK,
+	KEY_GENERIC_PREV_MONTH,
+	KEY_GENERIC_NEXT_MONTH,
+	KEY_GENERIC_PREV_YEAR,
+	KEY_GENERIC_NEXT_YEAR,
+	KEY_GENERIC_SCROLL_DOWN,
+	KEY_GENERIC_SCROLL_UP,
+	KEY_GENERIC_GOTO_TODAY,
 
-  KEY_MOVE_RIGHT,
-  KEY_MOVE_LEFT,
-  KEY_MOVE_DOWN,
-  KEY_MOVE_UP,
-  KEY_START_OF_WEEK,
-  KEY_END_OF_WEEK,
-  KEY_ADD_ITEM,
-  KEY_DEL_ITEM,
-  KEY_EDIT_ITEM,
-  KEY_VIEW_ITEM,
-  KEY_PIPE_ITEM,
-  KEY_FLAG_ITEM,
-  KEY_REPEAT_ITEM,
-  KEY_EDIT_NOTE,
-  KEY_VIEW_NOTE,
-  KEY_RAISE_PRIORITY,
-  KEY_LOWER_PRIORITY,
+	KEY_MOVE_RIGHT,
+	KEY_MOVE_LEFT,
+	KEY_MOVE_DOWN,
+	KEY_MOVE_UP,
+	KEY_START_OF_WEEK,
+	KEY_END_OF_WEEK,
+	KEY_ADD_ITEM,
+	KEY_DEL_ITEM,
+	KEY_EDIT_ITEM,
+	KEY_VIEW_ITEM,
+	KEY_PIPE_ITEM,
+	KEY_FLAG_ITEM,
+	KEY_REPEAT_ITEM,
+	KEY_EDIT_NOTE,
+	KEY_VIEW_NOTE,
+	KEY_RAISE_PRIORITY,
+	KEY_LOWER_PRIORITY,
 
-  NBKEYS,
-  KEY_UNDEF
+	NBKEYS,
+	KEY_UNDEF
 };
 
 /* To describe a key binding. */
 struct binding {
-  char *label;
-  enum key action;
+	char *label;
+	enum key action;
 };
 
 #define FLAG_CAL (1 << CAL)
@@ -485,122 +485,122 @@ struct binding {
   pthread_cleanup_pop(0);
 
 enum ui_mode {
-  UI_CURSES,
-  UI_CMDLINE,
-  UI_MODES
+	UI_CURSES,
+	UI_CMDLINE,
+	UI_MODES
 };
 
 /* Generic window structure. */
 struct window {
-  WINDOW *p;                    /* pointer to window */
-  unsigned w;                   /* width */
-  unsigned h;                   /* height */
-  int x;                        /* x position */
-  int y;                        /* y position */
+	WINDOW *p;		/* pointer to window */
+	unsigned w;		/* width */
+	unsigned h;		/* height */
+	int x;			/* x position */
+	int y;			/* y position */
 };
 
 /* Generic scrolling window structure. */
 struct scrollwin {
-  struct window win;
-  struct window pad;
-  unsigned first_visible_line;
-  unsigned total_lines;
-  const char *label;
+	struct window win;
+	struct window pad;
+	unsigned first_visible_line;
+	unsigned total_lines;
+	const char *label;
 };
 
 /* Pad structure to handle scrolling. */
 struct pad {
-  int width;
-  int length;
-  int first_onscreen;           /* first line to be displayed inside window */
-  WINDOW *ptrwin;               /* pointer to the pad window */
+	int width;
+	int length;
+	int first_onscreen;	/* first line to be displayed inside window */
+	WINDOW *ptrwin;		/* pointer to the pad window */
 };
 
 /* Notification bar definition. */
 struct nbar {
-  unsigned show;                /* display or hide the notify-bar */
-  int cntdwn;                   /* warn when time left before next app
-                                   becomes lesser than cntdwn */
-  char datefmt[BUFSIZ];         /* format for displaying date */
-  char timefmt[BUFSIZ];         /* format for displaying time */
-  char cmd[BUFSIZ];             /* notification command */
-  const char *shell;            /* user shell to launch notif. cmd */
-  unsigned notify_all;          /* notify all appointments */
-  pthread_mutex_t mutex;
+	unsigned show;		/* display or hide the notify-bar */
+	int cntdwn;		/* warn when time left before next app
+				   becomes lesser than cntdwn */
+	char datefmt[BUFSIZ];	/* format for displaying date */
+	char timefmt[BUFSIZ];	/* format for displaying time */
+	char cmd[BUFSIZ];	/* notification command */
+	const char *shell;	/* user shell to launch notif. cmd */
+	unsigned notify_all;	/* notify all appointments */
+	pthread_mutex_t mutex;
 };
 
 /* Available types of items. */
 enum item_type {
-  RECUR_EVNT = 1,
-  EVNT,
-  RECUR_APPT,
-  APPT,
-  MAX_TYPES = APPT
+	RECUR_EVNT = 1,
+	EVNT,
+	RECUR_APPT,
+	APPT,
+	MAX_TYPES = APPT
 };
 
 /* Return codes for the getstring() function. */
 enum getstr {
-  GETSTRING_VALID,
-  GETSTRING_ESC,                /* user pressed escape to cancel editing. */
-  GETSTRING_RET                 /* return was pressed without entering any text. */
+	GETSTRING_VALID,
+	GETSTRING_ESC,		/* user pressed escape to cancel editing. */
+	GETSTRING_RET		/* return was pressed without entering any text. */
 };
 
 /* Week days. */
 enum wday {
-  SUNDAY,
-  MONDAY,
-  TUESDAY,
-  WEDNESDAY,
-  THURSDAY,
-  FRIDAY,
-  SATURDAY,
-  WDAYS
+	SUNDAY,
+	MONDAY,
+	TUESDAY,
+	WEDNESDAY,
+	THURSDAY,
+	FRIDAY,
+	SATURDAY,
+	WDAYS
 };
 
 /* Possible movements inside calendar. */
 enum move {
-  DAY_PREV,
-  DAY_NEXT,
-  WEEK_PREV,
-  WEEK_NEXT,
-  WEEK_START,
-  WEEK_END,
-  MONTH_PREV,
-  MONTH_NEXT,
-  YEAR_PREV,
-  YEAR_NEXT
+	DAY_PREV,
+	DAY_NEXT,
+	WEEK_PREV,
+	WEEK_NEXT,
+	WEEK_START,
+	WEEK_END,
+	MONTH_PREV,
+	MONTH_NEXT,
+	YEAR_PREV,
+	YEAR_NEXT
 };
 
 /* Available color pairs. */
 enum {
-  COLR_RED = 1,
-  COLR_GREEN,
-  COLR_YELLOW,
-  COLR_BLUE,
-  COLR_MAGENTA,
-  COLR_CYAN,
-  COLR_DEFAULT,
-  COLR_HIGH,
-  COLR_CUSTOM
+	COLR_RED = 1,
+	COLR_GREEN,
+	COLR_YELLOW,
+	COLR_BLUE,
+	COLR_MAGENTA,
+	COLR_CYAN,
+	COLR_DEFAULT,
+	COLR_HIGH,
+	COLR_CUSTOM
 };
 
 /* Available import types. */
 enum import_type {
-  IO_IMPORT_ICAL,
-  IO_IMPORT_NBTYPES
+	IO_IMPORT_ICAL,
+	IO_IMPORT_NBTYPES
 };
 
 /* Available export types. */
 enum export_type {
-  IO_EXPORT_ICAL,
-  IO_EXPORT_PCAL,
-  IO_EXPORT_NBTYPES
+	IO_EXPORT_ICAL,
+	IO_EXPORT_PCAL,
+	IO_EXPORT_NBTYPES
 };
 
 /* To customize the display when saving data. */
 enum save_display {
-  IO_SAVE_DISPLAY_BAR,
-  IO_SAVE_DISPLAY_NONE
+	IO_SAVE_DISPLAY_BAR,
+	IO_SAVE_DISPLAY_NONE
 };
 
 /* apoint.c */
@@ -687,7 +687,7 @@ int day_store_items(long, unsigned *, unsigned *, regex_t *);
 struct day_items_nb day_process_storage(struct date *, unsigned);
 void day_write_pad(long, int, int, int);
 void day_write_stdout(long, const char *, const char *, const char *,
-                      const char *);
+		      const char *);
 void day_popup_item(struct day_item *);
 int day_check_if_item(struct date);
 unsigned day_chk_busy_slices(struct date, int, int *);
@@ -726,7 +726,7 @@ int updatestring(WINDOW *, char **, int, int);
 
 /* ical.c */
 void ical_import_data(FILE *, FILE *, unsigned *, unsigned *, unsigned *,
-                      unsigned *, unsigned *);
+		      unsigned *, unsigned *);
 void ical_export_data(FILE *);
 
 /* interaction.c */
@@ -789,7 +789,7 @@ const char *keys_action_firstkey(enum key);
 const char *keys_action_nkey(enum key, int);
 char *keys_action_allkeys(enum key);
 void keys_display_bindings_bar(WINDOW *, struct binding *[], int, int,
-                               int, struct binding *);
+			       int, struct binding *);
 void keys_popup_info(enum key);
 void keys_save_bindings(FILE *);
 int keys_check_missing_bindings(void);
@@ -875,23 +875,25 @@ void recur_apoint_llist_init(void);
 void recur_apoint_llist_free(void);
 void recur_event_llist_free(void);
 struct recur_apoint *recur_apoint_new(char *, char *, long, long, char,
-                                      int, int, long, llist_t *);
+				      int, int, long, llist_t *);
 struct recur_event *recur_event_new(char *, char *, long, int, int, int,
-                                    long, llist_t *);
+				    long, llist_t *);
 char recur_def2char(enum recur_type);
 int recur_char2def(char);
 struct recur_apoint *recur_apoint_scan(FILE *, struct tm, struct tm,
-                                       char, int, struct tm, char *,
-                                       llist_t *, char);
+				       char, int, struct tm, char *,
+				       llist_t *, char);
 struct recur_event *recur_event_scan(FILE *, struct tm, int, char,
-                                     int, struct tm, char *, llist_t *);
+				     int, struct tm, char *, llist_t *);
 void recur_apoint_write(struct recur_apoint *, FILE *);
 void recur_event_write(struct recur_event *, FILE *);
 void recur_save_data(FILE *);
 unsigned recur_item_find_occurrence(long, long, llist_t *, int,
-                                    int, long, long, unsigned *);
-unsigned recur_apoint_find_occurrence(struct recur_apoint *, long, unsigned *);
-unsigned recur_event_find_occurrence(struct recur_event *, long, unsigned *);
+				    int, long, long, unsigned *);
+unsigned recur_apoint_find_occurrence(struct recur_apoint *, long,
+				      unsigned *);
+unsigned recur_event_find_occurrence(struct recur_event *, long,
+				     unsigned *);
 unsigned recur_item_inday(long, long, llist_t *, int, int, long, long);
 unsigned recur_apoint_inday(struct recur_apoint *, long *);
 unsigned recur_event_inday(struct recur_event *, long *);
@@ -900,7 +902,8 @@ void recur_apoint_add_exc(struct recur_apoint *, long);
 void recur_event_erase(struct recur_event *);
 void recur_apoint_erase(struct recur_apoint *);
 void recur_exc_scan(llist_t *, FILE *);
-struct notify_app *recur_apoint_check_next(struct notify_app *, long, long);
+struct notify_app *recur_apoint_check_next(struct notify_app *, long,
+					   long);
 void recur_apoint_switch_notify(struct recur_apoint *);
 void recur_event_paste_item(struct recur_event *, long);
 void recur_apoint_paste_item(struct recur_apoint *, long);
@@ -975,7 +978,8 @@ void print_bool_option_incolor(WINDOW *, unsigned, int, int);
 const char *get_tempdir(void);
 char *new_tempfile(const char *, int);
 int check_date(unsigned, unsigned, unsigned);
-int parse_date(const char *, enum datefmt, int *, int *, int *, struct date *);
+int parse_date(const char *, enum datefmt, int *, int *, int *,
+	       struct date *);
 int check_time(unsigned, unsigned);
 int parse_time(const char *, unsigned *, unsigned *);
 int parse_duration(const char *, unsigned *);
@@ -987,7 +991,8 @@ int child_wait(int *, int *, int);
 void press_any_key(void);
 void print_apoint(const char *, long, struct apoint *);
 void print_event(const char *, long, struct event *);
-void print_recur_apoint(const char *, long, unsigned, struct recur_apoint *);
+void print_recur_apoint(const char *, long, unsigned,
+			struct recur_apoint *);
 void print_recur_event(const char *, long, struct recur_event *);
 void print_todo(const char *, struct todo *);
 
