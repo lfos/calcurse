@@ -597,8 +597,7 @@ recur_item_find_occurrence(long item_start, long item_dur,
 	lt_item_day = lt_item;
 	lt_item_day.tm_sec = lt_item_day.tm_min = lt_item_day.tm_hour = 0;
 
-	span =
-	    (item_start - mktime(&lt_item_day) + item_dur - 1) / DAYINSEC;
+	span = (item_start - mktime(&lt_item_day) + item_dur - 1) / DAYINSEC;
 
 	switch (rpt_type) {
 	case RECUR_DAILY:
@@ -608,9 +607,8 @@ recur_item_find_occurrence(long item_start, long item_dur,
 		lt_item_day.tm_year = lt_day.tm_year;
 		break;
 	case RECUR_WEEKLY:
-		diff =
-		    diff_days(lt_item_day,
-			      lt_day) % (rpt_freq * WEEKINDAYS);
+		diff = diff_days(lt_item_day, lt_day) %
+			(rpt_freq * WEEKINDAYS);
 		lt_item_day.tm_mday = lt_day.tm_mday - diff;
 		lt_item_day.tm_mon = lt_day.tm_mon;
 		lt_item_day.tm_year = lt_day.tm_year;
@@ -646,21 +644,19 @@ recur_item_find_occurrence(long item_start, long item_dur,
 	localtime_r(&t, &lt_item_day);
 	diff = diff_days(lt_item_day, lt_day);
 
-	if (diff <= span) {
-		if (occurrence) {
-			start_date.dd = lt_item_day.tm_mday;
-			start_date.mm = lt_item_day.tm_mon + 1;
-			start_date.yyyy = lt_item_day.tm_year + 1900;
-
-			*occurrence =
-			    date2sec(start_date, lt_item.tm_hour,
-				     lt_item.tm_min);
-		}
-
-		return 1;
-	} else {
+	if (diff > span)
 		return 0;
+
+	if (occurrence) {
+		start_date.dd = lt_item_day.tm_mday;
+		start_date.mm = lt_item_day.tm_mon + 1;
+		start_date.yyyy = lt_item_day.tm_year + 1900;
+
+		*occurrence = date2sec(start_date, lt_item.tm_hour,
+				lt_item.tm_min);
 	}
+
+	return 1;
 }
 
 unsigned
