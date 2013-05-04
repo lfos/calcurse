@@ -112,7 +112,7 @@ static const struct confvar confmap[] = {
 
 struct config_save_status {
 	FILE *fp;
-	int done[sizeof(confmap) / sizeof(confmap[0])];
+	int done[ARRAY_SIZE(confmap)];
 };
 
 typedef int (*config_fn_walk_cb_t) (const char *, const char *, void *);
@@ -284,7 +284,7 @@ static int config_set_conf(const char *key, const char *value)
 	if (!key)
 		return -1;
 
-	for (i = 0; i < sizeof(confmap) / sizeof(confmap[0]); i++) {
+	for (i = 0; i < ARRAY_SIZE(confmap); i++) {
 		if (!strcmp(confmap[i].key, key))
 			return confmap[i].fn_parse(confmap[i].target,
 						   value);
@@ -447,7 +447,7 @@ config_serialize_conf(char *buf, const char *key,
 	if (!key)
 		return -1;
 
-	for (i = 0; i < sizeof(confmap) / sizeof(confmap[0]); i++) {
+	for (i = 0; i < ARRAY_SIZE(confmap); i++) {
 		if (!strcmp(confmap[i].key, key)) {
 			if (confmap[i].
 			    fn_serialize(buf, confmap[i].target)) {
@@ -617,7 +617,7 @@ unsigned config_save(void)
 			 (void *)&status);
 
 	/* Set variables that were missing from the configuration file. */
-	for (i = 0; i < sizeof(confmap) / sizeof(confmap[0]); i++) {
+	for (i = 0; i < ARRAY_SIZE(confmap); i++) {
 		if (!status.done[i])
 			config_save_cb(confmap[i].key, NULL, &status);
 	}

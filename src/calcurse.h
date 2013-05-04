@@ -230,6 +230,8 @@
 #define UTF8_ISCONT(ch) ((unsigned char)ch >= 0x80 && \
     (unsigned char)ch <= 0xBF)
 
+#define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
+
 #define MAX(x,y) ((x)>(y)?(x):(y))
 #define MIN(x,y) ((x)<(y)?(x):(y))
 

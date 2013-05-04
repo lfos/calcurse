@@ -135,7 +135,7 @@ static void layout_selection_bar(void)
 	struct binding *bindings[] = {
 		&quit, &select, &up, &down, &left, &right, &help
 	};
-	int bindings_size = sizeof(bindings) / sizeof(bindings[0]);
+	int bindings_size = ARRAY_SIZE(bindings);
 
 	keys_display_bindings_bar(win[STA].p, bindings, bindings_size, 0,
 				  bindings_size, NULL);
@@ -307,7 +307,7 @@ void custom_sidebar_config(void)
 	     "can't be smaller than %d characters wide.\n\n");
 	int ch, bindings_size;
 
-	bindings_size = sizeof(bindings) / sizeof(bindings[0]);
+	bindings_size = ARRAY_SIZE(bindings);
 
 	keys_display_bindings_bar(win[STA].p, bindings, bindings_size, 0,
 				  bindings_size, NULL);
@@ -401,7 +401,7 @@ static void color_selection_bar(void)
 	struct binding *bindings[] = {
 		&quit, &nocolor, &up, &down, &left, &right, &select
 	};
-	int bindings_size = sizeof(bindings) / sizeof(bindings[0]);
+	int bindings_size = ARRAY_SIZE(bindings);
 
 	keys_display_bindings_bar(win[STA].p, bindings, bindings_size, 0,
 				  bindings_size, NULL);
@@ -926,7 +926,7 @@ static void custom_keys_config_bar(void)
 	struct binding *bindings[] = {
 		&quit, &info, &add, &del, &up, &down, &left, &right
 	};
-	int bindings_size = sizeof(bindings) / sizeof(bindings[0]);
+	int bindings_size = ARRAY_SIZE(bindings);
 
 	keys_display_bindings_bar(win[STA].p, bindings, bindings_size, 0,
 				  bindings_size, NULL);

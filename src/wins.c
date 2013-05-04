@@ -678,18 +678,15 @@ void wins_status_bar(void)
 	switch (active_panel) {
 	case CAL:
 		bindings = bindings_cal;
-		bindings_size =
-		    sizeof(bindings_cal) / sizeof(bindings_cal[0]);
+		bindings_size = ARRAY_SIZE(bindings_cal);
 		break;
 	case APP:
 		bindings = bindings_apoint;
-		bindings_size =
-		    sizeof(bindings_apoint) / sizeof(bindings_apoint[0]);
+		bindings_size = ARRAY_SIZE(bindings_apoint);
 		break;
 	case TOD:
 		bindings = bindings_todo;
-		bindings_size =
-		    sizeof(bindings_todo) / sizeof(bindings_todo[0]);
+		bindings_size = ARRAY_SIZE(bindings_todo);
 		break;
 	default:
 		EXIT(_("unknown panel"));
