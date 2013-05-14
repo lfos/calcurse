@@ -416,8 +416,9 @@ display_item_date(struct day_item *day, int incolor, long date, int y,
 	ch_recur = (day->type == RECUR_EVNT ||
 			day->type == RECUR_APPT) ? '*' : '-';
 	ch_notify = (day_item_get_state(day) & APOINT_NOTIFY) ? '!' : ' ';
-	mvwprintw(win, y, x, " %c%c%s -> %s", ch_recur, ch_notify,
-			a_st, a_end);
+	mvwprintw(win, y, x, " %c%c%s", ch_recur, ch_notify, a_st);
+	if (apt_tmp.dur)
+		mvwprintw(win, y, x + 3 + strlen(a_st), " -> %s", a_end);
 	if (incolor == 0)
 		custom_remove_attr(win, ATTR_HIGHEST);
 }
