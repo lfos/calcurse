@@ -401,6 +401,7 @@ display_item_date(struct day_item *day, int incolor, long date, int y,
 {
 	WINDOW *win;
 	char a_st[100], a_end[100];
+	char ch_recur, ch_notify;
 
 	/* FIXME: Redesign apoint_sec2str() and remove the need for a temporary
 	 * appointment item here. */
@@ -412,18 +413,11 @@ display_item_date(struct day_item *day, int incolor, long date, int y,
 	apoint_sec2str(&apt_tmp, date, a_st, a_end);
 	if (incolor == 0)
 		custom_apply_attr(win, ATTR_HIGHEST);
-
-	if (day->type == RECUR_EVNT || day->type == RECUR_APPT) {
-		if (day_item_get_state(day) & APOINT_NOTIFY)
-			mvwprintw(win, y, x, " *!%s -> %s", a_st, a_end);
-		else
-			mvwprintw(win, y, x, " * %s -> %s", a_st, a_end);
-	} else if (day_item_get_state(day) & APOINT_NOTIFY) {
-		mvwprintw(win, y, x, " -!%s -> %s", a_st, a_end);
-	} else {
-		mvwprintw(win, y, x, " - %s -> %s", a_st, a_end);
-	}
-
+	ch_recur = (day->type == RECUR_EVNT ||
+			day->type == RECUR_APPT) ? '*' : '-';
+	ch_notify = (day_item_get_state(day) & APOINT_NOTIFY) ? '!' : ' ';
+	mvwprintw(win, y, x, " %c%c%s -> %s", ch_recur, ch_notify,
+			a_st, a_end);
 	if (incolor == 0)
 		custom_remove_attr(win, ATTR_HIGHEST);
 }
