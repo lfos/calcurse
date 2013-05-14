@@ -476,6 +476,10 @@ void ui_day_item_add(void)
 			if (getstring(win[STA].p, item_time, LDUR, 0, 1) ==
 			    GETSTRING_ESC)
 				return;
+			if (strlen(item_time) == 0) {
+				apoint_duration = 0;
+				break;
+			}
 			if (*item_time == '+'
 			    && parse_duration(item_time + 1,
 					      &apoint_duration) == 1)
