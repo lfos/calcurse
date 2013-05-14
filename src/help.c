@@ -491,9 +491,9 @@ void help_screen(void)
 
 	hscr[HELP_DELETE].title = _("Delete\n");
 	snprintf(hscr[HELP_DELETE].text, HELPTEXTSIZ,
-		 _("Delete an element in the ToDo or Appointment list.\n"
+		 _("Delete an element in the TODO or Appointment list.\n"
 		   "\nDepending on which panel is selected when you press the delete key,\n"
-		   "the hilighted item of either the ToDo or Appointment list will be \n"
+		   "the hilighted item of either the TODO or Appointment list will be \n"
 		   "removed from this list.\n"
 		   "\nIf the item to be deleted is recurrent, you will be asked if you\n"
 		   "wish to suppress all of the item occurences or just the one you\n"
@@ -505,7 +505,7 @@ void help_screen(void)
 
 	hscr[HELP_ADD].title = _("Add\n");
 	snprintf(hscr[HELP_ADD].text, HELPTEXTSIZ,
-		 _("Add an item in either the ToDo or Appointment list, depending on which\n"
+		 _("Add an item in either the TODO or Appointment list, depending on which\n"
 		  "panel is selected when you press '%s'.\n"
 		  "\nTo enter a new item in the TODO list, you will need first to enter the"
 		  "\ndescription of this new item. Then you will be asked to specify the "
@@ -610,7 +610,7 @@ void help_screen(void)
 
 	hscr[HELP_PRIORITY].title = _("Priority\n");
 	snprintf(hscr[HELP_PRIORITY].text, HELPTEXTSIZ,
-		 _("Change the priority of the currently selected item in the ToDo list.\n"
+		 _("Change the priority of the currently selected item in the TODO list.\n"
 		  "Priorities are represented by the number appearing in front of the\n"
 		  "todo description. This number goes from 9 for the lowest priority to\n"
 		  "1 for the highest priority.\n"
@@ -692,7 +692,7 @@ void help_screen(void)
 		  "                           you resize your terminal screen or when\n"
 		  "                           garbage appears inside the display\n"
 		  " '%s' : Add Appointment -> add an appointment or an event\n"
-		  " '%s' : Add ToDo        -> add a todo\n"
+		  " '%s' : Add TODO        -> add a todo\n"
 		  " '%s' : -1 Day          -> move to previous day\n"
 		  " '%s' : +1 Day          -> move to next day\n"
 		  " '%s' : -1 Week         -> move to previous week\n"

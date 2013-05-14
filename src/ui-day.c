@@ -45,7 +45,7 @@ static int day_edit_time(int time, unsigned *new_hour,
 {
 	char *timestr = date_sec2date_str(time, "%H:%M");
 	const char *msg_time =
-	    _("Enter the new time ([hh:mm] or [hhmm]) : ");
+	    _("Enter start time ([hh:mm] or [hhmm]):");
 	const char *enter_str = _("Press [Enter] to continue");
 	const char *fmt_msg =
 	    _("You entered an invalid time, should be [hh:mm] or [hhmm]");
@@ -70,7 +70,7 @@ static int day_edit_duration(int start, int dur, unsigned *new_duration)
 {
 	char *timestr = date_sec2date_str(start + dur, "%H:%M");
 	const char *msg_time =
-	    _("Enter new end time ([hh:mm], [hhmm]) or duration ([+hh:mm], [+xxxdxxhxxm] or [+mm]) : ");
+	    _("Enter end time ([hh:mm], [hhmm]) or duration ([+hh:mm], [+xxxdxxhxxm]):");
 	const char *enter_str = _("Press [Enter] to continue");
 	const char *fmt_msg =
 	    _("You entered an invalid time, should be [hh:mm] or [hhmm]");
@@ -431,10 +431,10 @@ void ui_day_item_add(void)
 #define LTIME 6
 #define LDUR 12
 	const char *mesg_1 =
-	    _("Enter start time ([hh:mm] or [hhmm]), leave blank for an all-day event : ");
+	    _("Enter start time ([hh:mm] or [hhmm]), leave blank for an all-day event:");
 	const char *mesg_2 =
-	    _("Enter end time ([hh:mm] or [hhmm]) or duration ([+hh:mm], [+xxxdxxhxxm] or [+mm]) : ");
-	const char *mesg_3 = _("Enter description :");
+	    _("Enter end time ([hh:mm], [hhmm]) or duration ([+hh:mm], [+xxxdxxhxxm]):");
+	const char *mesg_3 = _("Enter description:");
 	const char *format_message_1 =
 	    _("You entered an invalid start time, should be [hh:mm] or [hhmm]");
 	const char *format_message_2 =
@@ -537,17 +537,17 @@ void ui_day_item_delete(unsigned *nb_events, unsigned *nb_apoints,
 			unsigned reg)
 {
 	const char *del_app_str =
-	    _("Do you really want to delete this item ?");
+	    _("Do you really want to delete this item?");
 
 	const char *erase_warning =
 	    _("This item is recurrent. "
-	      "Delete (a)ll occurences or just this (o)ne ?");
+	      "Delete (a)ll occurences or just this (o)ne?");
 	const char *erase_choices = _("[ao]");
 	const int nb_erase_choices = 2;
 
 	const char *note_warning =
 	    _("This item has a note attached to it. "
-	      "Delete (i)tem or just its (n)ote ?");
+	      "Delete (i)tem or just its (n)ote?");
 	const char *note_choices = _("[in]");
 	const int nb_note_choices = 2;
 

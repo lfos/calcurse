@@ -45,9 +45,9 @@ static char *msgsav;
 void ui_todo_add(void)
 {
 	int ch = 0;
-	const char *mesg = _("Enter the new ToDo item : ");
+	const char *mesg = _("Enter the new TODO item:");
 	const char *mesg_id =
-	    _("Enter the ToDo priority [1 (highest) - 9 (lowest)] :");
+	    _("Enter the TODO priority [1 (highest) - 9 (lowest)]:");
 	char todo_input[BUFSIZ] = "";
 
 	status_mesg(mesg, "");
@@ -62,14 +62,14 @@ void ui_todo_add(void)
 	}
 }
 
-/* Delete an item from the ToDo list. */
+/* Delete an item from the TODO list. */
 void ui_todo_delete(void)
 {
 	const char *del_todo_str =
-	    _("Do you really want to delete this task ?");
+	    _("Do you really want to delete this task?");
 	const char *erase_warning =
 	    _("This item has a note attached to it. "
-	      "Delete (t)odo or just its (n)ote ?");
+	      "Delete (t)odo or just its (n)ote?");
 	const char *erase_choice = _("[tn]");
 	const int nb_erase_choice = 2;
 	int answer;
@@ -113,7 +113,7 @@ void ui_todo_delete(void)
 void ui_todo_edit(void)
 {
 	struct todo *i;
-	const char *mesg = _("Enter the new ToDo description :");
+	const char *mesg = _("Enter the new TODO description:");
 
 	status_mesg(mesg, "");
 	i = todo_get_item(ui_todo_hilt());
@@ -250,7 +250,7 @@ display_todo_item(int incolor, char *msg, int prio, int note, int width,
 		custom_remove_attr(w, ATTR_HIGHEST);
 }
 
-/* Updates the ToDo panel. */
+/* Updates the TODO panel. */
 void ui_todo_update_panel(int which_pan)
 {
 	llist_item_t *i;

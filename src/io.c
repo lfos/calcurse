@@ -269,7 +269,7 @@ void io_init(const char *cfile, const char *datadir)
 		/* check if the file exists, otherwise create it */
 		data_file = fopen(path_apts, "r");
 		if (data_file == NULL) {
-			printf(_("%s does not exist, create it now [y or n] ? "),
+			printf(_("%s does not exist, create it now [y/n]? "),
 			       path_apts);
 			ch = getchar();
 			switch (ch) {
@@ -839,7 +839,7 @@ void io_load_keys(const char *pager)
 	file_close(log->fd, __FILE_POS__);
 	if (skipped > 0) {
 		const char *view_log =
-		    _("There were some errors when loading keys file, see log file ?");
+		    _("There were some errors when loading keys file, see log file?");
 
 		io_log_display(log, view_log, pager);
 	}
@@ -1106,7 +1106,7 @@ void io_import_data(enum import_type type, const char *stream_name)
 	file_close(log->fd, __FILE_POS__);
 	if (stats.skipped > 0) {
 		const char *view_log =
-		    _("Some items could not be imported, see log file ?");
+		    _("Some items could not be imported, see log file?");
 
 		io_log_display(log, view_log, conf.pager);
 	}

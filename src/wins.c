@@ -254,7 +254,7 @@ static void wins_init_panels(void)
 
 	win[TOD].p =
 	    newwin(win[TOD].h, win[TOD].w, win[TOD].y, win[TOD].x);
-	wins_show(win[TOD].p, _("ToDo"));
+	wins_show(win[TOD].p, _("TODO"));
 
 	/* Enable function keys (i.e. arrow keys) in those windows */
 	keypad(win[CAL].p, TRUE);

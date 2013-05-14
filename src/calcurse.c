@@ -115,7 +115,7 @@ static inline void key_view_item(void)
 		day_popup_item(day_get_item(ui_day_hilt()));
 	else if ((wins_slctd() == TOD) && (ui_todo_hilt() != 0))
 		item_in_popup(NULL, NULL, ui_todo_saved_mesg(),
-			      _("To do :"));
+			      _("TODO:"));
 	wins_update(FLAG_ALL);
 }
 
@@ -476,7 +476,7 @@ static inline void key_generic_quit(void)
 		note_gc();
 
 	if (conf.confirm_quit) {
-		if (status_ask_bool(_("Do you really want to quit ?")) ==
+		if (status_ask_bool(_("Do you really want to quit?")) ==
 		    1) {
 			exit_calcurse(EXIT_SUCCESS);
 		} else {

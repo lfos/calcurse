@@ -540,7 +540,7 @@ void day_popup_item(struct day_item *day)
 {
 	if (day->type == EVNT || day->type == RECUR_EVNT) {
 		item_in_popup(NULL, NULL, day_item_get_mesg(day),
-			      _("Event :"));
+			      _("Event:"));
 	} else if (day->type == APPT || day->type == RECUR_APPT) {
 		char a_st[100], a_end[100];
 
@@ -553,7 +553,7 @@ void day_popup_item(struct day_item *day)
 			       a_st, a_end);
 
 		item_in_popup(a_st, a_end, day_item_get_mesg(day),
-			      _("Appointment :"));
+			      _("Appointment:"));
 	} else {
 		EXIT(_("unknown item type"));
 		/* NOTREACHED */
