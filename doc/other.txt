@@ -1,0 +1,9 @@
+OtherCmd
+========
+
+Switch between status bar help pages.
+Because the terminal screen is too narrow to display all of the
+available commands, you need to press 'o' to see the next set of
+commands together with their keybindings.
+Once the last status bar page is reached, pressing 'o' another time
+leads you back to the first page.
