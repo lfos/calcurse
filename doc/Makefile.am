@@ -15,7 +15,30 @@ endif
 
 dist_doc_DATA = \
 	manual.html \
-	submitting-patches.html
+	submitting-patches.html \
+	add.txt \
+	config.txt \
+	copy_paste.txt \
+	credits.txt \
+	delete.txt \
+	displacement.txt \
+	edit.txt \
+	enote.txt \
+	export.txt \
+	flag.txt \
+	general.txt \
+	goto.txt \
+	import.txt \
+	main.txt \
+	manual.txt \
+	other.txt \
+	pipe.txt \
+	priority.txt \
+	repeat.txt \
+	save.txt \
+	tab.txt \
+	view.txt \
+	vnote.txt
 
 dist_man_MANS = \
 	calcurse.1
