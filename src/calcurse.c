@@ -506,6 +506,14 @@ static inline void key_generic_cmd(void)
 			topic = "intro";
 
 		snprintf(path, BUFSIZ, DOCDIR "/%s.txt", topic);
+
+		if (!io_file_exist(path) && keys_str2int(topic) > 0 &&
+		    keys_get_action(keys_str2int(topic)) > 0) {
+			enum key action = keys_get_action(keys_str2int(topic));
+			snprintf(path, BUFSIZ, DOCDIR "/%s.txt",
+			         keys_get_label(action));
+		}
+
 		if (io_file_exist(path)) {
 			wins_launch_external(path, conf.pager);
 		} else {
