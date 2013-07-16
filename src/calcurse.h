@@ -689,7 +689,7 @@ int day_store_items(long, unsigned *, unsigned *, regex_t *);
 struct day_items_nb day_process_storage(struct date *, unsigned);
 void day_write_pad(long, int, int, int);
 void day_write_stdout(long, const char *, const char *, const char *,
-		      const char *);
+		      const char *, int *);
 void day_popup_item(struct day_item *);
 int day_check_if_item(struct date);
 unsigned day_chk_busy_slices(struct date, int, int *);

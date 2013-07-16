@@ -507,11 +507,13 @@ void day_write_pad(long date, int width, int length, int incolor)
 
 /* Write the appointments and events for the selected day to stdout. */
 void day_write_stdout(long date, const char *fmt_apt, const char *fmt_rapt,
-		      const char *fmt_ev, const char *fmt_rev)
+		      const char *fmt_ev, const char *fmt_rev, int *limit)
 {
 	llist_item_t *i;
 
 	LLIST_FOREACH(&day_items, i) {
+		if (*limit == 0)
+			break;
 		struct day_item *day = LLIST_TS_GET_DATA(i);
 
 		switch (day->type) {
@@ -532,6 +534,7 @@ void day_write_stdout(long date, const char *fmt_apt, const char *fmt_rapt,
 			EXIT(_("unknown item type"));
 			/* NOTREACHED */
 		}
+		(*limit)--;
 	}
 }
 
