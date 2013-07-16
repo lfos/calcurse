@@ -621,6 +621,7 @@ void wins_status_bar(void)
 	struct binding today = { _("Today"), KEY_GENERIC_GOTO_TODAY };
 	struct binding nview = { _("Nxt View"), KEY_GENERIC_SCROLL_DOWN };
 	struct binding pview = { _("Prv View"), KEY_GENERIC_SCROLL_UP };
+	struct binding cmd = { _("Command"), KEY_GENERIC_CMD };
 	struct binding up = { _("Up"), KEY_MOVE_UP };
 	struct binding down = { _("Down"), KEY_MOVE_DOWN };
 	struct binding left = { _("Left"), KEY_MOVE_LEFT };
@@ -647,7 +648,7 @@ void wins_status_bar(void)
 		    &gpday, &gnday,
 		&gpweek, &gnweek, &gpmonth, &gnmonth, &gpyear, &gnyear,
 		    &draw, &today,
-		&conf
+		&conf, &cmd
 	};
 
 	struct binding *bindings_apoint[] = {
@@ -657,7 +658,7 @@ void wins_status_bar(void)
 		    &gpday, &gnday,
 		&gpweek, &gnweek, &gpmonth, &gnmonth, &gpyear, &gnyear,
 		    &togo, &today,
-		&conf, &appt, &todo, &copy, &paste
+		&conf, &appt, &todo, &copy, &paste, &cmd
 	};
 
 	struct binding *bindings_todo[] = {
@@ -667,7 +668,7 @@ void wins_status_bar(void)
 		    &gpday, &gnday,
 		&gpweek, &gnweek, &gpmonth, &gnmonth, &gpyear, &gnyear,
 		    &togo, &today,
-		&conf, &appt, &todo, &draw
+		&conf, &appt, &todo, &draw, &cmd
 	};
 
 	enum win active_panel = wins_slctd();

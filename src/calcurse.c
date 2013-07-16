@@ -488,6 +488,17 @@ static inline void key_generic_quit(void)
 	}
 }
 
+static inline void key_generic_cmd(void)
+{
+	char cmd[BUFSIZ] = "";
+
+	status_mesg(_("Command:"), "");
+	if (getstring(win[STA].p, cmd, BUFSIZ, 0, 1) != GETSTRING_VALID)
+		return;
+
+	wins_update(FLAG_STA);
+}
+
 /*
  * Calcurse is a text-based personal organizer which helps keeping track
  * of events and everyday tasks. It contains a calendar, a 'todo' list,
@@ -659,6 +670,7 @@ int main(int argc, char **argv)
 			HANDLE_KEY(KEY_GENERIC_SCROLL_UP, key_generic_scroll_up);
 			HANDLE_KEY(KEY_GENERIC_SCROLL_DOWN, key_generic_scroll_down);
 			HANDLE_KEY(KEY_GENERIC_QUIT, key_generic_quit);
+			HANDLE_KEY(KEY_GENERIC_CMD, key_generic_cmd);
 
 		case KEY_RESIZE:
 		case ERR:

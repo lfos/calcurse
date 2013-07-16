@@ -78,6 +78,7 @@ static struct keydef_s keydef[NBKEYS] = {
 	{"generic-scroll-down", "C-n"},
 	{"generic-scroll-up", "C-p"},
 	{"generic-goto-today", "C-g"},
+	{"generic-command", ":"},
 
 	{"move-right", "l L RGT"},
 	{"move-left", "h H LFT"},
@@ -513,6 +514,7 @@ void keys_popup_info(enum key key)
 	    _("Scroll window up (e.g. when displaying text inside a popup window).");
 	info[KEY_GENERIC_GOTO_TODAY] =
 	    _("Go to today, whichever panel is selected.");
+	info[KEY_GENERIC_CMD] = _("Enter command mode.");
 	info[KEY_MOVE_RIGHT] = _("Move to the right.");
 	info[KEY_MOVE_LEFT] = _("Move to the left.");
 	info[KEY_MOVE_DOWN] = _("Move down.");
