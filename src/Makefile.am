@@ -2,6 +2,7 @@ AUTOMAKE_OPTIONS = foreign
 
 bin_PROGRAMS = calcurse
 
+AM_CPPFLAGS = -DDOCDIR=\"@docdir@\"
 AM_CFLAGS = -std=c99 -pedantic -D_POSIX_C_SOURCE=200809L
 
 calcurse_SOURCES = \

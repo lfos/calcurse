@@ -491,12 +491,41 @@ static inline void key_generic_quit(void)
 static inline void key_generic_cmd(void)
 {
 	char cmd[BUFSIZ] = "";
+	char *cmd_name;
 
 	status_mesg(_("Command:"), "");
 	if (getstring(win[STA].p, cmd, BUFSIZ, 0, 1) != GETSTRING_VALID)
 		return;
 
-	wins_update(FLAG_STA);
+	cmd_name = strtok(cmd, " ");
+
+	if (!strcmp(cmd_name, "help")) {
+		char *topic = strtok(NULL, " ");
+		char path[BUFSIZ];
+
+		snprintf(path, BUFSIZ, DOCDIR "/%s.txt", topic);
+		if (io_file_exist(path)) {
+			wins_launch_external(path, conf.pager);
+		} else {
+			char error_msg[BUFSIZ];
+
+			snprintf(error_msg, BUFSIZ,
+					_("Help topic does not exist: %s"),
+					topic);
+			error_msg[BUFSIZ - 1] = '\0';
+
+			warnbox(error_msg);
+		}
+	} else {
+		char error_msg[BUFSIZ];
+
+		snprintf(error_msg, BUFSIZ, _("No such command: %s"), cmd);
+		error_msg[BUFSIZ - 1] = '\0';
+
+		warnbox(error_msg);
+	}
+
+	wins_update(FLAG_ALL);
 }
 
 /*
