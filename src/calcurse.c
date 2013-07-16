@@ -503,6 +503,9 @@ static inline void key_generic_cmd(void)
 		char *topic = strtok(NULL, " ");
 		char path[BUFSIZ];
 
+		if (!topic)
+			topic = "intro";
+
 		snprintf(path, BUFSIZ, DOCDIR "/%s.txt", topic);
 		if (io_file_exist(path)) {
 			wins_launch_external(path, conf.pager);

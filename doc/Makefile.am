@@ -29,6 +29,7 @@ dist_doc_DATA = \
 	general.txt \
 	goto.txt \
 	import.txt \
+	intro.txt \
 	main.txt \
 	manual.txt \
 	other.txt \
