@@ -719,10 +719,6 @@ struct event *event_scan(FILE *, struct tm, int, char *);
 void event_delete(struct event *);
 void event_paste_item(struct event *, long);
 
-/* help.c */
-void help_wins_init(struct scrollwin *, int, int, int, int);
-void help_screen(void);
-
 /* getstring.c */
 enum getstr getstring(WINDOW *, char *, int, int, int);
 int updatestring(WINDOW *, char **, int, int);

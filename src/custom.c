@@ -208,18 +208,9 @@ static void display_layout_config(struct window *lwin, int mark,
 /* Choose the layout */
 void custom_layout_config(void)
 {
-	struct scrollwin hwin;
 	struct window conf_win;
 	int ch, mark, cursor, need_reset;
 	const char *label = _("layout configuration");
-	const char *help_text =
-	    _("With this configuration menu, one can choose where panels will be\n"
-	     "displayed inside calcurse screen. \n"
-	     "It is possible to choose between eight different configurations.\n"
-	     "\nIn the configuration representations, letters correspond to:\n\n"
-	     "       'c' -> calendar panel\n\n"
-	     "       'a' -> appointment panel\n\n"
-	     "       't' -> todo panel\n\n");
 
 	conf_win.p = NULL;
 	custom_confwin_init(&conf_win, label);
@@ -231,18 +222,6 @@ void custom_layout_config(void)
 		keys_getch(win[KEY].p, NULL, NULL)) != KEY_GENERIC_QUIT) {
 		need_reset = 0;
 		switch (ch) {
-		case KEY_GENERIC_HELP:
-			help_wins_init(&hwin, 0, 0,
-				       (notify_bar())? row - 3 : row - 2,
-				       col);
-			mvwprintw(hwin.pad.p, 1, 0, help_text,
-				  SBARMINWIDTH);
-			hwin.total_lines = 7;
-			wins_scrollwin_display(&hwin);
-			wgetch(hwin.win.p);
-			wins_scrollwin_delete(&hwin);
-			need_reset = 1;
-			break;
 		case KEY_GENERIC_SELECT:
 			mark = cursor;
 			break;
@@ -290,7 +269,6 @@ void custom_layout_config(void)
 /* Sidebar configuration screen. */
 void custom_sidebar_config(void)
 {
-	struct scrollwin hwin;
 	struct binding quit = { _("Exit"), KEY_GENERIC_QUIT };
 	struct binding inc = { _("Width +"), KEY_MOVE_UP };
 	struct binding dec = { _("Width -"), KEY_MOVE_DOWN };
@@ -298,13 +276,6 @@ void custom_sidebar_config(void)
 	struct binding *bindings[] = {
 		&inc, &dec, &help, &quit
 	};
-	const char *help_text =
-	    _("This configuration screen is used to change the width of the side bar.\n"
-	     "The side bar is the part of the screen which contains two panels:\n"
-	     "the calendar and, depending on the chosen layout, either the todo list\n"
-	     "or the appointment list.\n\n"
-	     "The side bar width can be up to 50%% of the total screen width, but\n"
-	     "can't be smaller than %d characters wide.\n\n");
 	int ch, bindings_size;
 
 	bindings_size = ARRAY_SIZE(bindings);
@@ -321,16 +292,6 @@ void custom_sidebar_config(void)
 			break;
 		case KEY_MOVE_DOWN:
 			wins_sbar_wdec();
-			break;
-		case KEY_GENERIC_HELP:
-			help_wins_init(&hwin, 0, 0,
-				       (notify_bar())? row - 3 : row - 2,
-				       col);
-			mvwaddstr(hwin.pad.p, 1, 0, help_text);
-			hwin.total_lines = 6;
-			wins_scrollwin_display(&hwin);
-			wgetch(hwin.win.p);
-			wins_scrollwin_delete(&hwin);
 			break;
 		case KEY_RESIZE:
 			break;

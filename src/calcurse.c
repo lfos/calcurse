@@ -278,8 +278,7 @@ static inline void key_view_note(void)
 
 static inline void key_generic_help(void)
 {
-	wins_status_bar();
-	help_screen();
+	wins_launch_external(DOCDIR "/intro.txt", conf.pager);
 	wins_update(FLAG_ALL);
 }
 
