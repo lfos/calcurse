@@ -56,6 +56,7 @@ enum format_specifier {
 	FS_STARTDATE,
 	FS_DURATION,
 	FS_ENDDATE,
+	FS_REMAINING,
 	FS_MESSAGE,
 	FS_NOTE,
 	FS_NOTEFILE,
@@ -1189,6 +1190,8 @@ static enum format_specifier parse_fs(const char **s, char *extformat)
 			return FS_DURATION;
 		else if (!strcmp(buf, "end"))
 			return FS_ENDDATE;
+		else if (!strcmp(buf, "remaining"))
+			return FS_REMAINING;
 		else if (!strcmp(buf, "message"))
 			return FS_MESSAGE;
 		else if (!strcmp(buf, "noteid"))
@@ -1234,11 +1237,88 @@ static void print_date(long date, long day, const char *extformat)
 	}
 }
 
+/* Print a time difference to stdout. */
+static void print_datediff(long date, const char *extformat)
+{
+	const char *p;
+	const char *numfmt;
+	bool usetotal;
+	long value;
+	time_t difference;
+
+	difference = difftime(date, now());
+
+	if (!strcmp(extformat, "epoch")) {
+		printf("%ld", difference);
+	} else {
+		if (extformat[0] == '\0' || !strcmp(extformat, "default")) {
+			/* Set a default format if none specified. */
+			p = "%EH:%M";
+		} else {
+			p = extformat;
+		}
+		while (*p) {
+			if (*p == '%') {
+				p++;
+				/* Default is to zero-pad, and assume
+				 * the user wants the time unit modulo
+				 * the next biggest time unit. */
+				numfmt = "%02d";
+				usetotal = FALSE;
+				if (*p == '-') {
+					numfmt = "%d";
+					p++;
+				}
+				if (*p == 'E') {
+					usetotal = TRUE;
+					p++;
+				}
+				switch (*p) {
+				case '\0':
+					return;
+				case 'd':
+					value = difference / DAYINSEC;
+					printf(numfmt, value);
+					break;
+				case 'H':
+					value = difference / HOURINSEC;
+					if (!usetotal)
+						value %= DAYINHOURS;
+					printf(numfmt, value);
+					break;
+				case 'M':
+					value = difference / MININSEC;
+					if (!usetotal)
+						value %= HOURINMIN;
+					printf(numfmt, value);
+					break;
+				case 'S':
+					value = difference;
+					if (!usetotal)
+						value %= MININSEC;
+					printf(numfmt, value);
+					break;
+				case '%':
+					putchar('%');
+					break;
+				default:
+					putchar('?');
+					break;
+				}
+			} else {
+				putchar(*p);
+			}
+			p++;
+		}
+	}
+}
+
 /* Print a formatted appointment to stdout. */
 void print_apoint(const char *format, long day, struct apoint *apt)
 {
 	const char *p;
 	char extformat[FS_EXT_MAXLEN];
+
 
 	for (p = format; *p; p++) {
 		if (*p == '%') {
@@ -1253,6 +1333,9 @@ void print_apoint(const char *format, long day, struct apoint *apt)
 			case FS_ENDDATE:
 				print_date(apt->start + apt->dur, day,
 					   extformat);
+				break;
+			case FS_REMAINING:
+				print_datediff(apt->start, extformat);
 				break;
 			case FS_MESSAGE:
 				printf("%s", apt->mesg);
