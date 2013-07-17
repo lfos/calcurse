@@ -872,7 +872,7 @@ int io_check_dir(const char *dir)
 	}
 }
 
-unsigned io_file_exist(const char *file)
+unsigned io_file_exists(const char *file)
 {
 	FILE *fd;
 
@@ -890,7 +890,7 @@ int io_check_file(const char *file)
 		return -1;
 
 	errno = 0;
-	if (io_file_exist(file)) {
+	if (io_file_exists(file)) {
 		return 1;
 	} else {
 		FILE *fd;

@@ -507,7 +507,7 @@ static inline void key_generic_cmd(void)
 			topic_res = "intro";
 		snprintf(path, BUFSIZ, DOCDIR "/%s.txt", topic_res);
 
-		if (!io_file_exist(path) && keys_str2int(topic_res) > 0 &&
+		if (!io_file_exists(path) && keys_str2int(topic_res) > 0 &&
 		    keys_get_action(keys_str2int(topic_res)) > 0) {
 			int ch = keys_str2int(topic_res);
 			enum key action = keys_get_action(ch);
@@ -515,7 +515,7 @@ static inline void key_generic_cmd(void)
 			snprintf(path, BUFSIZ, DOCDIR "/%s.txt", topic_res);
 		}
 
-		if (!io_file_exist(path)) {
+		if (!io_file_exists(path)) {
 			if (!strcmp(topic_res, "generic-credits"))
 				topic_res = "credits";
 			else if (!strcmp(topic_res, "generic-help"))
@@ -598,7 +598,7 @@ static inline void key_generic_cmd(void)
 		}
 
 
-		if (io_file_exist(path)) {
+		if (io_file_exists(path)) {
 			wins_launch_external(path, conf.pager);
 		} else {
 			char error_msg[BUFSIZ];

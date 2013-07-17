@@ -152,12 +152,12 @@ void dmon_start(int parent_exit_status)
 	if (!io_dump_pid(path_dpid))
 		DMON_ABRT(_("Could not set lock file\n"));
 
-	if (!io_file_exist(path_conf))
+	if (!io_file_exists(path_conf))
 		DMON_ABRT(_("Could not access \"%s\": %s\n"), path_conf,
 			  strerror(errno));
 	config_load();
 
-	if (!io_file_exist(path_apts))
+	if (!io_file_exists(path_apts))
 		DMON_ABRT(_("Could not access \"%s\": %s\n"), path_apts,
 			  strerror(errno));
 	apoint_llist_init();
