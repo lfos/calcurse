@@ -1158,6 +1158,8 @@ static enum format_specifier parse_fs(const char **s, char *extformat)
 		return FS_NOTEFILE;
 	case 'p':
 		return FS_PRIORITY;
+	case 'r':
+		return FS_REMAINING;
 	case '(':
 		/* Long format specifier. */
 		for ((*s)++, i = 0; **s != ':' && **s != ')'; (*s)++, i++) {
