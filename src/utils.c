@@ -1325,7 +1325,11 @@ void print_apoint(const char *format, long day, struct apoint *apt)
 				print_date(apt->start, day, extformat);
 				break;
 			case FS_DURATION:
-				printf("%ld", apt->dur);
+				/* Backwards compatibility: Use epoch by
+				 * default. */
+				if (*extformat == '\0')
+					strcpy(extformat, "epoch");
+				print_datediff(apt->dur, extformat);
 				break;
 			case FS_ENDDATE:
 				print_date(apt->start + apt->dur, day,
