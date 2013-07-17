@@ -1238,15 +1238,12 @@ static void print_date(long date, long day, const char *extformat)
 }
 
 /* Print a time difference to stdout. */
-static void print_datediff(long date, const char *extformat)
+static void print_datediff(long difference, const char *extformat)
 {
 	const char *p;
 	const char *numfmt;
 	bool usetotal;
 	long value;
-	time_t difference;
-
-	difference = difftime(date, now());
 
 	if (!strcmp(extformat, "epoch")) {
 		printf("%ld", difference);
@@ -1335,7 +1332,8 @@ void print_apoint(const char *format, long day, struct apoint *apt)
 					   extformat);
 				break;
 			case FS_REMAINING:
-				print_datediff(apt->start, extformat);
+				print_datediff(difftime(apt->start, now()),
+				               extformat);
 				break;
 			case FS_MESSAGE:
 				printf("%s", apt->mesg);
