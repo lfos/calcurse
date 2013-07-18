@@ -475,8 +475,7 @@ static inline void key_generic_quit(void)
 		note_gc();
 
 	if (conf.confirm_quit) {
-		if (status_ask_bool(_("Do you really want to quit?")) ==
-		    1) {
+		if (status_ask_bool(_("Do you really want to quit?")) == 1) {
 			exit_calcurse(EXIT_SUCCESS);
 		} else {
 			wins_erase_status_bar();
@@ -491,12 +490,32 @@ static inline void key_generic_cmd(void)
 {
 	char cmd[BUFSIZ] = "";
 	char *cmd_name;
+	int valid = 0, force = 0;
 
 	status_mesg(_("Command:"), "");
 	if (getstring(win[STA].p, cmd, BUFSIZ, 0, 1) != GETSTRING_VALID)
 		return;
 
 	cmd_name = strtok(cmd, " ");
+	if (cmd_name[strlen(cmd_name) - 1] == '!') {
+		cmd_name[strlen(cmd_name) - 1] = '\0';
+		force = 1;
+	}
+
+	if (!strcmp(cmd_name, "write") || !strcmp(cmd_name, "w") ||
+	    !strcmp(cmd_name, "wq")) {
+		io_save_cal(IO_SAVE_DISPLAY_BAR);
+		valid = 1;
+	}
+	if (!strcmp(cmd_name, "quit") || !strcmp(cmd_name, "q") ||
+	    !strcmp(cmd_name, "wq")) {
+		if (force || !conf.confirm_quit || status_ask_bool(
+				_("Do you really want to quit?")) == 1)
+			exit_calcurse(EXIT_SUCCESS);
+		else
+			wins_erase_status_bar();
+		valid = 1;
+	}
 
 	if (!strcmp(cmd_name, "help")) {
 		char *topic = strtok(NULL, " ");
@@ -511,7 +530,11 @@ static inline void key_generic_cmd(void)
 
 			warnbox(error_msg);
 		}
-	} else {
+
+		valid = 1;
+	}
+
+	if (!valid) {
 		char error_msg[BUFSIZ];
 
 		snprintf(error_msg, BUFSIZ, _("No such command: %s"), cmd);
