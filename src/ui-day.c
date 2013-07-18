@@ -78,11 +78,16 @@ static int day_edit_duration(int start, int dur, unsigned *new_duration)
 	unsigned hr, mn;
 
 	for (;;) {
+		int ret;
+
 		status_mesg(msg_time, "");
-		if (updatestring(win[STA].p, &timestr, 0, 1) !=
-		    GETSTRING_VALID)
+		ret = updatestring(win[STA].p, &timestr, 0, 1);
+		if (ret == GETSTRING_ESC) {
 			return 0;
-		if (*timestr == '+'
+		} else if (ret == GETSTRING_RET) {
+			*new_duration = 0;
+			break;
+		} else if (*timestr == '+'
 		    && parse_duration(timestr + 1, new_duration) == 1) {
 			*new_duration *= MININSEC;
 			break;
