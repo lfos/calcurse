@@ -109,7 +109,7 @@ static int day_edit_duration(int start, int dur, unsigned *new_duration)
 }
 
 /* Request the user to enter a new end time or duration. */
-static void update_start_time(long *start, long *dur)
+static void update_start_time(long *start, long *dur, int update_dur)
 {
 	long newtime;
 	unsigned hr, mn;
@@ -121,6 +121,10 @@ static void update_start_time(long *start, long *dur)
 	do {
 		if (!day_edit_time(*start, &hr, &mn))
 			break;
+		if (!update_dur) {
+			*start = update_time_in_date(*start, hr, mn);
+			return;
+		}
 		newtime = update_time_in_date(*start, hr, mn);
 		if (newtime < *start + *dur) {
 			*dur -= (newtime - *start);
@@ -333,7 +337,7 @@ void ui_day_item_edit(void)
 			(_("Edit: "), choice_recur_appt, 4)) {
 		case 1:
 			need_check_notify = 1;
-			update_start_time(&ra->start, &ra->dur);
+			update_start_time(&ra->start, &ra->dur, 1);
 			break;
 		case 2:
 			update_duration(&ra->start, &ra->dur);
@@ -363,7 +367,7 @@ void ui_day_item_edit(void)
 			(_("Edit: "), choice_appt, 3)) {
 		case 1:
 			need_check_notify = 1;
-			update_start_time(&a->start, &a->dur);
+			update_start_time(&a->start, &a->dur, 1);
 			break;
 		case 2:
 			update_duration(&a->start, &a->dur);
