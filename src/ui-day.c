@@ -327,14 +327,15 @@ void ui_day_item_edit(void)
 		break;
 	case RECUR_APPT:
 		ra = p->item.rapt;
-		const char *choice_recur_appt[4] = {
+		const char *choice_recur_appt[5] = {
 			_("Start time"),
 			_("End time"),
 			_("Description"),
 			_("Repetition"),
+			_("Move"),
 		};
 		switch (status_ask_simplechoice
-			(_("Edit: "), choice_recur_appt, 4)) {
+			(_("Edit: "), choice_recur_appt, 5)) {
 		case 1:
 			need_check_notify = 1;
 			update_start_time(&ra->start, &ra->dur, 1);
@@ -352,19 +353,24 @@ void ui_day_item_edit(void)
 			need_check_notify = 1;
 			update_rept(&ra->rpt, ra->start);
 			break;
+		case 5:
+			need_check_notify = 1;
+			update_start_time(&ra->start, &ra->dur, 0);
+			break;
 		default:
 			return;
 		}
 		break;
 	case APPT:
 		a = p->item.apt;
-		const char *choice_appt[3] = {
+		const char *choice_appt[4] = {
 			_("Start time"),
 			_("End time"),
 			_("Description"),
+			_("Move"),
 		};
 		switch (status_ask_simplechoice
-			(_("Edit: "), choice_appt, 3)) {
+			(_("Edit: "), choice_appt, 4)) {
 		case 1:
 			need_check_notify = 1;
 			update_start_time(&a->start, &a->dur, 1);
@@ -377,6 +383,10 @@ void ui_day_item_edit(void)
 				need_check_notify =
 				    notify_same_item(a->start);
 			update_desc(&a->mesg);
+			break;
+		case 4:
+			need_check_notify = 1;
+			update_start_time(&a->start, &a->dur, 0);
 			break;
 		default:
 			return;
