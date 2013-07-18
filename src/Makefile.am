@@ -19,6 +19,7 @@ calcurse_SOURCES = \
 	day.c \
 	event.c \
 	getstring.c \
+	help.c \
 	ical.c \
 	io.c \
 	keys.c \

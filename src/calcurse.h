@@ -723,6 +723,9 @@ void event_paste_item(struct event *, long);
 enum getstr getstring(WINDOW *, char *, int, int, int);
 int updatestring(WINDOW *, char **, int, int);
 
+/* help.c */
+int display_help(const char *);
+
 /* ical.c */
 void ical_import_data(FILE *, FILE *, unsigned *, unsigned *, unsigned *,
 		      unsigned *, unsigned *);
