@@ -3,10 +3,11 @@ Goto
 
 Jump to a specific day in the calendar.
 
-Using this command, you do not need to travel to that day using
-the displacement keys inside the calendar panel.
-If you hit [ENTER] without specifying any date, Calcurse checks the
-system current date and you will be taken to that date.
+Using this command, you do not need to travel to that day using the
+displacement keys inside the calendar panel.
 
-Notice that pressing '^G', whatever panel is
-selected, will select current day in the calendar.
+If you hit [ENTER] without specifying any date, Calcurse checks the system
+current date and you will be taken to that date.
+
+Notice that pressing '^G', whatever panel is selected, will select current day
+in the calendar.

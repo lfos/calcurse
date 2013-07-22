@@ -1,8 +1,9 @@
 Generic keybindings
 ===================
 
-Some of the keybindings apply whatever panel is selected. They are
-called generic keybinding.
+Some of the keybindings apply whatever panel is selected. They are called
+generic keybinding.
+
 Here is the list of all the generic key bindings, together with their
 corresponding action:
 
@@ -21,7 +22,7 @@ corresponding action:
  'y' : +1 Year         -> move to next year
  '^G' : Goto today      -> move to current day
 
-The '^P' and '^N' keys are used to scroll text upward or downward
-when inside specific screens such the help screens for example.
-They are also used when the calendar screen is selected to switch
-between the available views (monthly and weekly calendar views).
+The '^P' and '^N' keys are used to scroll text upward or downward when inside
+specific screens such the help screens for example.  They are also used when
+the calendar screen is selected to switch between the available views (monthly
+and weekly calendar views).

@@ -2,10 +2,10 @@ Repeat
 ======
 
 Repeat an event or an appointment.
-You must first select the item to be repeated by moving inside the
-appointment panel. Then pressing 'r' will lead you to a set of three
-questions, with which you will be able to specify the repetition
-characteristics:
+
+You must first select the item to be repeated by moving inside the appointment
+panel. Then pressing 'r' will lead you to a set of three questions, with which
+you will be able to specify the repetition characteristics:
 
   o        type: you can choose between a daily, weekly, monthly or
                  yearly repetition by pressing 'D', 'W', 'M' or 'Y'
@@ -23,9 +23,12 @@ characteristics:
                  repetition, enter '0' and the item will be repeated
                  forever.
 
-Notes:
-       o repeated items are marked with an '*' inside the appointment
-         panel, to be easily recognizable from non-repeated ones.
-       o the 'Repeat' and 'Delete' command can be mixed to create
-         complicated configurations, as it is possible to delete only
-         one occurence of a repeated item.
+Notes
+-----
+
+* Repeated items are marked with an '*' inside the appointment panel, to be
+  easily recognizable from non-repeated ones.
+
+* The 'Repeat' and 'Delete' command can be mixed to create complicated
+  configurations, as it is possible to delete only one occurence of a repeated
+  item.

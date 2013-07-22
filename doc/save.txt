@@ -2,6 +2,7 @@ Save
 ====
 
 Save calcurse data.
+
 Data are splitted into four different files which contain :
 
          / ~/.calcurse/conf -> user configuration
@@ -10,5 +11,5 @@ Data are splitted into four different files which contain :
         |  ~/.calcurse/todo -> data related to the todo list
          \ ~/.calcurse/keys -> user-defined key bindings
 
-In the config menu, you can choose to save the Calcurse data
-automatically before quitting.
+In the config menu, you can choose to save the Calcurse data automatically
+before quitting.
