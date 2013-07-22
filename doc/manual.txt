@@ -58,23 +58,17 @@ Overview
 Creation history
 ~~~~~~~~~~~~~~~~
 
-I started thinking about this project when I was finishing my Ph.D.  in
-Astrophysics... It started to be a little hard to organize myself, and I really
-needed a good tool to help me in that difficult task ;)
+Frederic started thinking about this project when he was finishing his Ph.D. in
+Astrophysics as it started to be a little hard to organize himself and he
+really needed a good tool for managing his appointments and todo list.
+Unfortunately, he finished his Ph.D. before finishing `calcurse` but he
+continued working on it, hoping it would be helpful to other people.
 
-I like programs which use Text User Interfaces, because they are simple, fast,
-portable and efficient, so I thought about working on coding a simple calendar
-using such an interface.  Moreover, I wanted to go on learning the `C`
-language, which I only used for a while during my undergraduate studies. So I
-thought that would be the good project to start in order to get organized and
-to learn about a few `C` things !
+In mid-2010, Lukas took over development of `calcurse` and is now the main
+contributor and reviewer of patches.
 
-Unfortunately, I finished my Ph.D. before finishing `calcurse`, but anyway, I
-still wanted to work on it, hoping it would be helpful to other people.  So
-here it is...
-
-But why _calcurse_ anyway ?  Well, it is simply the concatenation of _CALendar_
-and _nCURSEs_, the name of the library used to build the user interface.
+But why `calcurse` anyway?  Well, it is simply the concatenation of *cal*endar
+and *curse*s, the name of the library used to build the user interface.
 
 Important features
 ~~~~~~~~~~~~~~~~~~
