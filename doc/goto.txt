@@ -9,5 +9,5 @@ displacement keys inside the calendar panel.
 If you hit [ENTER] without specifying any date, Calcurse checks the system
 current date and you will be taken to that date.
 
-Notice that pressing '^G', whatever panel is selected, will select current day
-in the calendar.
+Notice that you can also specify a global key binding to return to the current
+day, no matter which panel is currently selected.

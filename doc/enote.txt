@@ -6,9 +6,9 @@ feature is useful if you do not have enough space to store all of your item
 description, or if you would like to add sub-tasks to an already existing todo
 item for example.
 
-Before pressing the 'n' key, you first need to highlight the item you want the
-note to be attached to. Then you will be driven to an external editor to edit
-your note. This editor is chosen the following way:
+You first need to highlight the item you want the note to be attached to. Then,
+after pressing the edit note key, you will be driven to an external editor to
+edit your note. This editor is chosen the following way:
 
 * If the 'VISUAL' environment variable is set, then this will be the default
   editor to be called.
