@@ -732,9 +732,15 @@ Two possible export formats are available: `ical` and `pcal` (see section
 Online help
 ~~~~~~~~~~~
 
-At any time, the built-in help  system  can  be  invoked  by pressing the `?`
-key. Once viewing the help screens, informations on a specific command can be
-accessed  by  pressing the keystroke corresponding to that command.
+At any time, the built-in help system can be invoked by pressing the `?` key.
+By default, it shows an introduction to the help system in an external pager.
+You need to exit the pager in order to get back to calcurse (pressing `q`
+should almost always work). The default pager can be changed by setting the
+PAGER environment variable.
+
+If you want to display help on a specific feature or key binding, type `:help
+<feature>` (e.g. `:help add`) or `:help <key>` (e.g. `:help ^A`) on the main
+screen.
 
 Options
 -------
