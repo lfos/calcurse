@@ -3,7 +3,7 @@ Save
 
 Save calcurse data.
 
-Data are splitted into four different files which contain :
+Data are split into four different files which contain :
 
          / ~/.calcurse/conf -> user configuration
         |                      (layout, color, general options)

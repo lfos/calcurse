@@ -1,8 +1,8 @@
-Generic keybindings
-===================
+Generic key bindings
+====================
 
-Some of the keybindings apply whatever panel is selected. They are called
-generic keybinding.
+Some of the key bindings apply whatever panel is selected. They are called
+generic key binding.
 
 Here is the list of all the generic key bindings, together with their
 corresponding action:

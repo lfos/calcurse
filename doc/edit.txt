@@ -15,9 +15,9 @@ Notes
 -----
 
 * If you choose to edit the item repetition properties, you will be asked to
-  re-enter all of the repetition characteristics (repetition type, frequence,
+  re-enter all of the repetition characteristics (repetition type, frequency,
   and ending date). Moreover, the previous data concerning the deleted
-  occurences will be lost.
+  occurrences will be lost.
 
 * Do not forget to save the calendar data to retrieve the modified properties
   next time you launch Calcurse.

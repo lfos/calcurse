@@ -3,7 +3,7 @@ Config
 
 Open the configuration submenu. From this submenu, you can select between
 color, layout, notification and general options, and you can also configure
-your keybindings.
+your key bindings.
 
 The color submenu lets you choose the color theme.
 
