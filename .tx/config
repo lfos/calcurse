@@ -1,5 +1,6 @@
 [main]
 host = https://www.transifex.com/
+type = PO
 
 [calcurse.calcursepot]
 file_filter = po/<lang>.po
