@@ -1,0 +1,64 @@
+#. extracted from enote.txt
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-07-23 10:28+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Translate Toolkit 1.10.0\n"
+
+#: enote.txt:1
+msgid ""
+"EditNote\n"
+"========"
+msgstr ""
+
+#: enote.txt:4
+msgid ""
+"Attach a note to any type of item, or edit an already existing note.  This\n"
+"feature is useful if you do not have enough space to store all of your item\n"
+"description, or if you would like to add sub-tasks to an already existing "
+"todo\n"
+"item for example."
+msgstr ""
+
+#: enote.txt:9
+msgid ""
+"You first need to highlight the item you want the note to be attached to. "
+"Then,\n"
+"after pressing the edit note key, you will be driven to an external editor "
+"to\n"
+"edit your note. This editor is chosen the following way:"
+msgstr ""
+
+#: enote.txt:13
+msgid ""
+"* If the 'VISUAL' environment variable is set, then this will be the default\n"
+"  editor to be called."
+msgstr ""
+
+#: enote.txt:16
+msgid ""
+"* If 'VISUAL' is not set, then the 'EDITOR' environment variable will be "
+"used\n"
+"  as the default editor."
+msgstr ""
+
+#: enote.txt:19
+msgid ""
+"* If none of the above environment variables is set, then '/usr/bin/vi' will "
+"be\n"
+"  used."
+msgstr ""
+
+#: enote.txt:22
+msgid ""
+"Once the item note is edited and saved, quit your favorite editor.  You will\n"
+"then go back to Calcurse, and the '>' sign will appear in front of the\n"
+"highlighted item, meaning there is a note attached to it."
+msgstr ""

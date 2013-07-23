@@ -1,0 +1,45 @@
+#. extracted from delete.txt
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-07-23 10:28+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Translate Toolkit 1.10.0\n"
+
+#: delete.txt:1
+msgid ""
+"Delete\n"
+"======"
+msgstr ""
+
+#: delete.txt:4
+msgid "Delete an element in the TODO or Appointment list."
+msgstr ""
+
+#: delete.txt:6
+msgid ""
+"Depending on which panel is selected when you press the delete key, the\n"
+"highlighted item of either the TODO or Appointment list will be removed from\n"
+"this list."
+msgstr ""
+
+#: delete.txt:10
+msgid ""
+"If the item to be deleted is recurrent, you will be asked if you wish to\n"
+"suppress all of the item occurrences or just the one you selected."
+msgstr ""
+
+#: delete.txt:13
+msgid ""
+"If the general option 'confirm_delete' is set to 'YES', then you will be "
+"asked\n"
+"for confirmation before deleting the selected event. Do not forget to save "
+"the\n"
+"calendar data to retrieve the modifications next time you launch Calcurse."
+msgstr ""

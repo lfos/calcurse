@@ -7,3 +7,95 @@ file_filter = po/<lang>.po
 source_file = po/calcurse.pot
 source_lang = en
 
+[calcurse.doc-add]
+source_file = po/doc/add.pot
+source_lang = en
+
+[calcurse.doc-config]
+source_file = po/doc/config.pot
+source_lang = en
+
+[calcurse.doc-copy-paste]
+source_file = po/doc/copy-paste.pot
+source_lang = en
+
+[calcurse.doc-credits]
+source_file = po/doc/credits.pot
+source_lang = en
+
+[calcurse.doc-delete]
+source_file = po/doc/delete.pot
+source_lang = en
+
+[calcurse.doc-displacement]
+source_file = po/doc/displacement.pot
+source_lang = en
+
+[calcurse.doc-edit]
+source_file = po/doc/edit.pot
+source_lang = en
+
+[calcurse.doc-enote]
+source_file = po/doc/enote.pot
+source_lang = en
+
+[calcurse.doc-export]
+source_file = po/doc/export.pot
+source_lang = en
+
+[calcurse.doc-flag]
+source_file = po/doc/flag.pot
+source_lang = en
+
+[calcurse.doc-general]
+source_file = po/doc/general.pot
+source_lang = en
+
+[calcurse.doc-goto]
+source_file = po/doc/goto.pot
+source_lang = en
+
+[calcurse.doc-import]
+source_file = po/doc/import.pot
+source_lang = en
+
+[calcurse.doc-intro]
+source_file = po/doc/intro.pot
+source_lang = en
+
+[calcurse.doc-main]
+source_file = po/doc/main.pot
+source_lang = en
+
+[calcurse.doc-other]
+source_file = po/doc/other.pot
+source_lang = en
+
+[calcurse.doc-pipe]
+source_file = po/doc/pipe.pot
+source_lang = en
+
+[calcurse.doc-priority]
+source_file = po/doc/priority.pot
+source_lang = en
+
+[calcurse.doc-repeat]
+source_file = po/doc/repeat.pot
+source_lang = en
+
+[calcurse.doc-save]
+source_file = po/doc/save.pot
+source_lang = en
+
+[calcurse.doc-tab]
+source_file = po/doc/tab.pot
+source_lang = en
+
+[calcurse.doc-view]
+source_file = po/doc/view.pot
+source_lang = en
+
+[calcurse.doc-vnote]
+source_file = po/doc/vnote.pot
+source_lang = en
+

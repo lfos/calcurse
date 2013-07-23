@@ -1,0 +1,59 @@
+#. extracted from displacement.txt
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-07-23 10:28+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Translate Toolkit 1.10.0\n"
+
+#: displacement.txt:1
+msgid ""
+"Displacement keys\n"
+"================="
+msgstr ""
+
+#: displacement.txt:4
+msgid "Move around inside calcurse screens."
+msgstr ""
+
+#: displacement.txt:6
+msgid "The following scheme summarizes how to get around:"
+msgstr ""
+
+#: displacement.txt:8
+msgid ""
+"                               move up\n"
+"                        move to previous week"
+msgstr ""
+
+#: displacement.txt:11
+msgid ""
+"                                 k K UP \n"
+"       move left                  ^  \n"
+" move to previous day             |\n"
+"                      h H LFT \n"
+"                            <--   +  -->\n"
+"                                           l L RGT \n"
+"                                  |            move right\n"
+"                                  v         move to next day\n"
+"                                 j J DWN "
+msgstr ""
+
+#: displacement.txt:21
+msgid ""
+"                          move to next week\n"
+"                              move down"
+msgstr ""
+
+#: displacement.txt:24
+msgid ""
+"Moreover, while inside the calendar panel, the '0' key moves to the first "
+"day\n"
+"of the week, and the '$' key selects the last day of the week."
+msgstr ""
