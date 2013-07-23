@@ -2,7 +2,6 @@
 src/apoint.c
 src/args.c
 src/calcurse.c
-src/calendar.c
 src/config.c
 src/custom.c
 src/day.c
@@ -11,7 +10,6 @@ src/event.c
 src/getstring.c
 src/help.c
 src/ical.c
-src/interaction.c
 src/io.c
 src/keys.c
 src/llist.c
@@ -23,6 +21,9 @@ src/recur.c
 src/sha1.c
 src/sigs.c
 src/todo.c
+src/ui-calendar.c
+src/ui-day.c
+src/ui-todo.c
 src/utf8.c
 src/utils.c
 src/vars.c
