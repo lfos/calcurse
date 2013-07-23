@@ -2,7 +2,7 @@
 host = https://www.transifex.com/
 type = PO
 
-[calcurse.calcursepot]
+[calcurse.calcurse]
 file_filter = po/<lang>.po
 source_file = po/calcurse.pot
 source_lang = en
