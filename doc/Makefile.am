@@ -18,7 +18,7 @@ dist_doc_DATA = \
 	submitting-patches.html \
 	add.txt \
 	config.txt \
-	copy_paste.txt \
+	copy-paste.txt \
 	credits.txt \
 	delete.txt \
 	displacement.txt \
