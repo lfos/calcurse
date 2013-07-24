@@ -11,5 +11,5 @@ Data are split into four different files which contain :
         |  ~/.calcurse/todo -> data related to the todo list
          \ ~/.calcurse/keys -> user-defined key bindings
 
-In the config menu, you can choose to save the Calcurse data automatically
+In the config menu, you can choose to save the calcurse data automatically
 before quitting.

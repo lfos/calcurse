@@ -1,9 +1,9 @@
 Import
 ======
 
-Import data from an icalendar file.
+Import data from an iCal file.
 
-You will be asked to enter the file name from which to load ical items. At the
+You will be asked to enter the file name from which to load iCal items. At the
 end of the import process, and if the general option 'system_dialogs' is set to
 'yes', a report indicating how many items were imported is shown.
 

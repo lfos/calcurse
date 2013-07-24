@@ -3,9 +3,9 @@ Edit Item
 
 Edit the item which is currently selected.
 
-Depending on the item type (appointment, event, or todo), and if it is repeated
-or not, you will be asked to choose one of the item properties to modify. An
-item property is one of the following: the start time, the end time, the
+Depending on the item type (appointment, event or todo) and item repetition,
+you will be asked to choose one of the item properties to modify. An item
+property is one of the following: the start time, the end time, the
 description, or the item repetition.
 
 Once you have chosen the property you want to modify, you will be shown its
