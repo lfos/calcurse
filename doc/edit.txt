@@ -19,5 +19,8 @@ Notes
   and ending date). Moreover, the previous data concerning the deleted
   occurrences will be lost.
 
+* You can enter an empty end time to convert an existing appointment into a
+  punctual appointment.
+
 * Do not forget to save the calendar data to retrieve the modified properties
   next time you launch Calcurse.

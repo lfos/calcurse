@@ -17,7 +17,9 @@ instead of the item start time, and just fill in the event description.
 To enter a new appointment to be added in the appointment list, you will need
 to enter successively the time at which the appointment begins, the appointment
 length (either by specifying the end time in [hh:mm] or the duration in
-[+hh:mm], [+xxdxxhxxm] or [+mm] format), and the description of the event.
+[+hh:mm], [+xxdxxhxxm] or [+mm] format), and the description of the event. If
+you skip the end time by pressing [ENTER], a punctual appointment will be
+created.
 
 The day at which occurs the event or appointment is the day currently selected
 in the calendar, so you need to move to the desired day before.
