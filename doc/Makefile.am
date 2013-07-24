@@ -30,7 +30,6 @@ dist_doc_DATA = \
 	goto.txt \
 	import.txt \
 	intro.txt \
-	main.txt \
 	manual.txt \
 	other.txt \
 	pipe.txt \

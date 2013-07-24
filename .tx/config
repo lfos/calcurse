@@ -63,10 +63,6 @@ source_lang = en
 source_file = po/doc/intro.pot
 source_lang = en
 
-[calcurse.doc-main]
-source_file = po/doc/main.pot
-source_lang = en
-
 [calcurse.doc-other]
 source_file = po/doc/other.pot
 source_lang = en
