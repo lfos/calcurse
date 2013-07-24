@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-23 10:28+0200\n"
+"POT-Creation-Date: 2013-07-24 08:51+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,12 +19,12 @@ msgid ""
 msgstr ""
 
 #: import.txt:4
-msgid "Import data from an icalendar file."
+msgid "Import data from an iCal file."
 msgstr ""
 
 #: import.txt:6
 msgid ""
-"You will be asked to enter the file name from which to load ical items. At "
+"You will be asked to enter the file name from which to load iCal items. At "
 "the\n"
 "end of the import process, and if the general option 'system_dialogs' is set "
 "to\n"

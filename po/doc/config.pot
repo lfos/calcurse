@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-23 10:28+0200\n"
+"POT-Creation-Date: 2013-07-24 08:50+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -31,7 +31,7 @@ msgstr ""
 
 #: config.txt:10
 msgid ""
-"The layout submenu lets you choose the Calcurse screen layout, in other "
+"The layout submenu lets you choose the calcurse screen layout, in other "
 "words\n"
 "where to place the three different panels on the screen."
 msgstr ""
@@ -39,7 +39,7 @@ msgstr ""
 #: config.txt:13
 msgid ""
 "The general options submenu brings a screen with the different options which\n"
-"modifies the way Calcurse interacts with the user."
+"modifies the way calcurse interacts with the user."
 msgstr ""
 
 #: config.txt:16
@@ -53,5 +53,5 @@ msgstr ""
 #: config.txt:20
 msgid ""
 "Do not forget to save the calendar data to retrieve your configuration next\n"
-"time you launch Calcurse."
+"time you launch calcurse."
 msgstr ""

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-23 10:28+0200\n"
+"POT-Creation-Date: 2013-07-24 08:51+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,7 +19,7 @@ msgid ""
 msgstr ""
 
 #: view.txt:4
-msgid "View the item you select in either the Todo or Appointment panel."
+msgid "View the item you select in either the todo or appointment panel."
 msgstr ""
 
 #: view.txt:6
@@ -35,6 +35,6 @@ msgstr ""
 
 #: view.txt:11
 msgid ""
-"Press any key to close the popup window and go back to the main Calcurse\n"
+"Press any key to close the popup window and go back to the main calcurse\n"
 "screen."
 msgstr ""
