@@ -6,7 +6,8 @@ Edit the item which is currently selected.
 Depending on the item type (appointment, event or todo) and item repetition,
 you will be asked to choose one of the item properties to modify. An item
 property is one of the following: the start time, the end time, the
-description, or the item repetition.
+description, or the item repetition. You can also move an item, that is, move
+an item without changing its duration.
 
 Once you have chosen the property you want to modify, you will be shown its
 actual value, and you will be able to change it as you like.
