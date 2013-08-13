@@ -494,7 +494,7 @@ static inline void key_generic_cmd(void)
 
 	status_mesg(_("Command:"), "");
 	if (getstring(win[STA].p, cmd, BUFSIZ, 0, 1) != GETSTRING_VALID)
-		return;
+		goto cleanup;
 
 	cmd_name = strtok(cmd, " ");
 	if (cmd_name[strlen(cmd_name) - 1] == '!') {
@@ -543,6 +543,7 @@ static inline void key_generic_cmd(void)
 		warnbox(error_msg);
 	}
 
+cleanup:
 	wins_update(FLAG_ALL);
 }
 
