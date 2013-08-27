@@ -13,7 +13,9 @@ A2X_ARGS = \
 	-f manpage
 endif
 
-dist_doc_DATA = \
+doc_langs = fr de es nl ru pt_BR
+
+nobase_dist_doc_DATA = \
 	manual.html \
 	submitting-patches.html \
 	add.txt \
@@ -38,7 +40,8 @@ dist_doc_DATA = \
 	save.txt \
 	tab.txt \
 	view.txt \
-	vnote.txt
+	vnote.txt \
+	$(foreach lang, $(doc_langs), $(wildcard $(lang)/*.txt))
 
 dist_man_MANS = \
 	calcurse.1
