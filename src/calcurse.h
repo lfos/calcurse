@@ -757,6 +757,7 @@ void io_load_app(void);
 void io_load_todo(void);
 void io_load_keys(const char *);
 int io_check_dir(const char *);
+unsigned io_dir_exists(const char *);
 unsigned io_file_exists(const char *);
 int io_check_file(const char *);
 int io_check_data_files(void);

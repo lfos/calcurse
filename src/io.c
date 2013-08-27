@@ -872,6 +872,13 @@ int io_check_dir(const char *dir)
 	}
 }
 
+unsigned io_dir_exists(const char *path)
+{
+	struct stat st;
+
+	return (!stat(path, &st) && S_ISDIR(st.st_mode));
+}
+
 unsigned io_file_exists(const char *file)
 {
 	FILE *fd;

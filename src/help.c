@@ -36,21 +36,74 @@
 
 #include "calcurse.h"
 
+static int find_basedir(const char *locale_info[], unsigned n, char *basedir)
+{
+	int i;
+	char *locale = NULL;
+	int ret = 0;
+
+	for (i = 0; i < n; i++) {
+		if (!locale_info[i])
+			continue;
+		locale = strdup(locale_info[i]);
+
+		snprintf(basedir, BUFSIZ, DOCDIR "/%s", locale);
+		if (io_dir_exists(basedir)) {
+			ret = 1;
+			goto cleanup;
+		}
+
+		strtok(locale, ".@");
+
+		snprintf(basedir, BUFSIZ, DOCDIR "/%s", locale);
+		if (io_dir_exists(basedir)) {
+			ret = 1;
+			goto cleanup;
+		}
+
+		strtok(locale, "_");
+
+		snprintf(basedir, BUFSIZ, DOCDIR "/%s", locale);
+		if (io_dir_exists(basedir)) {
+			ret = 1;
+			goto cleanup;
+		}
+
+		free(locale);
+		locale = NULL;
+	}
+
+cleanup:
+	if (locale)
+		free(locale);
+	return ret;
+}
+
 int display_help(const char *topic)
 {
+	const char *locale_info[] = {
+		getenv("LANGUAGE"),
+		getenv("LC_ALL"),
+		getenv("LC_MESSAGE"),
+		getenv("LANG")
+	};
+	char basedir[BUFSIZ];
 	char path[BUFSIZ];
 
 	if (!topic)
 		topic = "intro";
 
-	snprintf(path, BUFSIZ, DOCDIR "/%s.txt", topic);
+	if (!find_basedir(locale_info, ARRAY_SIZE(locale_info), basedir))
+		snprintf(basedir, BUFSIZ, DOCDIR);
+
+	snprintf(path, BUFSIZ, "%s/%s.txt", basedir, topic);
 
 	if (!io_file_exists(path) && keys_str2int(topic) > 0 &&
 	    keys_get_action(keys_str2int(topic)) > 0) {
 		int ch = keys_str2int(topic);
 		enum key action = keys_get_action(ch);
 		topic = keys_get_label(action);
-		snprintf(path, BUFSIZ, DOCDIR "/%s.txt", topic);
+		snprintf(path, BUFSIZ, "%s/%s.txt", basedir, topic);
 	}
 
 	if (!io_file_exists(path)) {
@@ -132,7 +185,7 @@ int display_help(const char *topic)
 			topic = "priority";
 		else if (!strcmp(topic, "lower-priority"))
 			topic = "priority";
-		snprintf(path, BUFSIZ, DOCDIR "/%s.txt", topic);
+		snprintf(path, BUFSIZ, "%s/%s.txt", basedir, topic);
 	}
 
 	if (io_file_exists(path)) {
