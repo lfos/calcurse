@@ -1,0 +1,87 @@
+# 
+# Translators:
+# Alexander Rødseth <rodseth@gmail.com>, 2013
+msgid ""
+msgstr ""
+"Project-Id-Version: calcurse\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-07-24 08:50+0200\n"
+"PO-Revision-Date: 2013-08-13 13:23+0000\n"
+"Last-Translator: Alexander Rødseth <rodseth@gmail.com>\n"
+"Language-Team: Norwegian Bokmål (Norway) (http://www.transifex.com/projects/p/calcurse/language/nb_NO/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: nb_NO\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Translate Toolkit 1.10.0\n"
+
+#: add.txt:1
+msgid ""
+"Add\n"
+"==="
+msgstr "Legg til\n======"
+
+#: add.txt:4
+msgid ""
+"Add an item in either the todo or appointment list, depending on which panel is\n"
+"selected."
+msgstr "Legg til et element i enten todo eller avtalelisten, avhengig av hvilket panel som\ner valgt."
+
+#: add.txt:7
+msgid ""
+"To enter a new item in the todo list, you will need first to enter the\n"
+"description of this new item. Then you will be asked to specify the todo\n"
+"priority. This priority is represented by a number going from 9 for the lowest\n"
+"priority, to 1 for the highest one. It is still possible to change the item\n"
+"priority afterwards, by using the '+' and '-' keys inside the todo panel."
+msgstr "For å skrive inn et nytt element i todo-listen, må du først skrive inn\nen beskrivelse. Så vil du bli spurt om å spesifisere en prioritet. Denne\nprioriteten representeres ved et tall fra 9 for laveste prioritert til 1 for\nhøyeste prioritet. Det er mulig å endre elementets prioritet etterpå ved\nå bruke '+' og '-' knappene i todo-panelet."
+
+#: add.txt:13
+msgid ""
+"If the appointment panel is selected, you will be able to enter either a new\n"
+"appointment or a new all-day long event. To enter a new event, press [ENTER]\n"
+"instead of the item start time, and just fill in the event description."
+msgstr "Dersom avtale-panelet er valgt, vil du kunne skrive inn enten en ny avtale\neller en ny heldags-hendelse. For å skrive inn en ny hendelse, trykk [ENTER]\nistedenfor start-tidspunkt, og fyll inn en beskrivelse."
+
+#: add.txt:17
+msgid ""
+"To enter a new appointment to be added in the appointment list, you will need\n"
+"to enter successively the time at which the appointment begins, the appointment\n"
+"length (either by specifying the end time in [hh:mm] or the duration in\n"
+"[+hh:mm], [+xxdxxhxxm] or [+mm] format), and the description of the event. If\n"
+"you skip the end time by pressing [ENTER], a punctual appointment will be\n"
+"created."
+msgstr "For å skrive inn en ny avtale som skal legges til avtalelisten, så må følgende\nskrives inn: start-tidspunkt, avtalense lengde (enten ved å gi et slutt-tidspunkt\n[hh:mm] eller en lengde som [+hh:mm], [+xxdxxhxxm] eller [+mm]) samt en\nbeskrivelse av hendelsen. Dersom du hopper over slutt-tidspunktet ved å trykke\n[ENTER], så vil en punktlig avtale lages."
+
+#: add.txt:24
+msgid ""
+"The day at which occurs the event or appointment is the day currently selected\n"
+"in the calendar, so you need to move to the desired day before."
+msgstr "Dagen da en hendelse eller avtale skjer, er dagen som nå er valgt i kalenderen,\nså du må bevege deg til ønsket dag først."
+
+#: add.txt:27
+msgid ""
+"Notes\n"
+"-----"
+msgstr "Notater\n-----"
+
+#: add.txt:30
+msgid ""
+"* If an appointment lasts for such a long time that it continues on the next\n"
+"  days, this event will be indicated on all the corresponding days, and the\n"
+"  beginning or ending hour will be replaced by '..' if the event does not begin\n"
+"  or end on the day."
+msgstr "* Dersom en avtale varer så lenge at den fortsetter de neste dagene, så\nvil dette indikeres på alle de korresponderende dagene, og start og\nslutt-time vil bli erstattet med '..' dersom hendelsen ikke begynner eller\nslutter den dagen."
+
+#: add.txt:35
+msgid ""
+"* If you only press [ENTER] at the description prompt, without any description,\n"
+"  no item will be added."
+msgstr "* Dersom du bare trykker [ENTER] ved spørsmål om å skrive inn en beskrivelse,\nog lar feltet være tomt, så vil ikke et nytt element legges til."
+
+#: add.txt:38
+msgid ""
+"* Do not forget to save the calendar data to retrieve the new event next time\n"
+"  you launch calcurse."
+msgstr "* Husk å lagre kalender-data for å kunne hente frem den nye avtalen neste\ngang du starter calcurse."

@@ -1,0 +1,59 @@
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: calcurse\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-07-24 08:50+0200\n"
+"PO-Revision-Date: 2013-08-13 12:18+0000\n"
+"Last-Translator: Lukas Fleischer <transifex@cryptocrack.de>\n"
+"Language-Team: Norwegian Bokmål (Norway) (http://www.transifex.com/projects/p/calcurse/language/nb_NO/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: nb_NO\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Translate Toolkit 1.10.0\n"
+
+#: config.txt:1
+msgid ""
+"Config\n"
+"======"
+msgstr ""
+
+#: config.txt:4
+msgid ""
+"Open the configuration submenu. From this submenu, you can select between\n"
+"color, layout, notification and general options, and you can also configure\n"
+"your key bindings."
+msgstr ""
+
+#: config.txt:8
+msgid "The color submenu lets you choose the color theme."
+msgstr ""
+
+#: config.txt:10
+msgid ""
+"The layout submenu lets you choose the calcurse screen layout, in other words\n"
+"where to place the three different panels on the screen."
+msgstr ""
+
+#: config.txt:13
+msgid ""
+"The general options submenu brings a screen with the different options which\n"
+"modifies the way calcurse interacts with the user."
+msgstr ""
+
+#: config.txt:16
+msgid "The notify submenu allows you to change the notify-bar settings."
+msgstr ""
+
+#: config.txt:18
+msgid "The keys submenu lets you define your own key bindings."
+msgstr ""
+
+#: config.txt:20
+msgid ""
+"Do not forget to save the calendar data to retrieve your configuration next\n"
+"time you launch calcurse."
+msgstr ""

@@ -1,0 +1,32 @@
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: calcurse\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-07-24 08:50+0200\n"
+"PO-Revision-Date: 2013-07-23 08:34+0000\n"
+"Last-Translator: Lukas Fleischer <transifex@cryptocrack.de>\n"
+"Language-Team: French (http://www.transifex.com/projects/p/calcurse/language/fr/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fr\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Translate Toolkit 1.10.0\n"
+
+#: copy-paste.txt:1
+msgid ""
+"Copy and Paste\n"
+"=============="
+msgstr ""
+
+#: copy-paste.txt:4
+msgid ""
+"Copy and paste the currently selected item. This is useful to quickly copy an\n"
+"item from one date to another. To do so, one must first highlight the item that\n"
+"needs to be copied, then press the key assigned to the copy function. Once the\n"
+"new date is chosen in the calendar, the appointment panel must be selected and\n"
+"the paste key must be pressed to paste the item. The item will appear in the\n"
+"appointment panel, assigned to the newly selected date."
+msgstr ""

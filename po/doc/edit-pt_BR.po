@@ -1,0 +1,68 @@
+# 
+# Translators:
+# Rafael Ferreira <rafael.f.f1@gmail.com>, 2013
+msgid ""
+msgstr ""
+"Project-Id-Version: calcurse\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-07-24 08:50+0200\n"
+"PO-Revision-Date: 2013-07-28 01:54+0000\n"
+"Last-Translator: Rafael Ferreira <rafael.f.f1@gmail.com>\n"
+"Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/calcurse/language/pt_BR/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pt_BR\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Translate Toolkit 1.10.0\n"
+
+#: edit.txt:1
+msgid ""
+"Edit Item\n"
+"========="
+msgstr "Editar item\n==========="
+
+#: edit.txt:4
+msgid "Edit the item which is currently selected."
+msgstr "Edita o item selecionado."
+
+#: edit.txt:6
+msgid ""
+"Depending on the item type (appointment, event or todo) and item repetition,\n"
+"you will be asked to choose one of the item properties to modify. An item\n"
+"property is one of the following: the start time, the end time, the\n"
+"description, or the item repetition. You can also move an item, that is, move\n"
+"an item without changing its duration."
+msgstr "Dependendo do tipo do item (agendamento, evento, ou tarefa), e se ele for\nrepetido ou não, a você será solicitado que escolha uma das propriedades\ndo item a modificar. Uma propriedade de item é uma das seguintes: o horário\nde início, o horário de término, a descrição ou a repetição do item. Você\ntambém pode mover um item, isto é, mover um item sem alterar sua duração."
+
+#: edit.txt:12
+msgid ""
+"Once you have chosen the property you want to modify, you will be shown its\n"
+"actual value, and you will be able to change it as you like."
+msgstr "Assim que você tiver escolhido a propriedade que você deseja modificar, será\nmostrado o valor atual e você poderá alterá-lo como quiser."
+
+#: edit.txt:15
+msgid ""
+"Notes\n"
+"-----"
+msgstr "Notas\n------"
+
+#: edit.txt:18
+msgid ""
+"* If you choose to edit the item repetition properties, you will be asked to\n"
+"  re-enter all of the repetition characteristics (repetition type, frequency,\n"
+"  and ending date). Moreover, the previous data concerning the deleted\n"
+"  occurrences will be lost."
+msgstr "* Se você escolher editar as propriedades de repetição do item, a você\n  será solicitado que insira novamente todas as características de repetição\n  (tipo de repetição, frequência e data de término). Ademais, a data anterior\n  referente às ocorrências excluídas será perdida."
+
+#: edit.txt:23
+msgid ""
+"* You can enter an empty end time to convert an existing appointment into a\n"
+"  punctual appointment."
+msgstr "* Você pode inserir um horário de término vazio para converter um agendamento\n  existente em um agendamento pontual."
+
+#: edit.txt:26
+msgid ""
+"* Do not forget to save the calendar data to retrieve the modified properties\n"
+"  next time you launch Calcurse."
+msgstr "* Não esqueça de salvar os dados do calendário para recuperar as propriedades\n  modificadas na próxima vez que iniciar o calcurse."

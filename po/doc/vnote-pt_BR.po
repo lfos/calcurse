@@ -1,0 +1,60 @@
+# 
+# Translators:
+# Rafael Ferreira <rafael.f.f1@gmail.com>, 2013
+msgid ""
+msgstr ""
+"Project-Id-Version: calcurse\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-07-24 08:51+0200\n"
+"PO-Revision-Date: 2013-07-28 14:58+0000\n"
+"Last-Translator: Rafael Ferreira <rafael.f.f1@gmail.com>\n"
+"Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/calcurse/language/pt_BR/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pt_BR\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Translate Toolkit 1.10.0\n"
+
+#: vnote.txt:1
+msgid ""
+"ViewNote\n"
+"========"
+msgstr "VerNota\n======="
+
+#: vnote.txt:4
+msgid ""
+"View a note which was previously attached to an item (an item which owns a note\n"
+"has a '>' sign in front of it)."
+msgstr "Vê uma nota que foi previamente anexada a um item (um item que possui\numa nota tem um sinal \">\" na sua frente)."
+
+#: vnote.txt:7
+msgid ""
+"This command only permits to view the note, not to edit it (to do so, use the\n"
+"'EditNote' command)."
+msgstr "Este comando somente permite que se visualize a note, e não que se edite\n(para fazê-lo, use o comando \"EditarNota\")."
+
+#: vnote.txt:10
+msgid ""
+"Once you highlighted an item with a note attached to it, and the view note key\n"
+"was pressed, you will be driven to an external pager to view that note. The\n"
+"default pager is chosen the following way:"
+msgstr "Assim que você tiver realçado um item contendo uma nota anexada, e a\ntecla de ver nota for pressionada, você será levado para um paginador\nexterno para ver aquela nota. O paginador padrão é escolhido das\nseguintes formas:"
+
+#: vnote.txt:14
+msgid ""
+"* If the 'PAGER' environment variable is set, then this will be the default\n"
+"  viewer to be called."
+msgstr "* se a variávei de ambiente \"PAGER\" estiver definida, então esta\n  será chamada como visualizador padrão."
+
+#: vnote.txt:17
+msgid ""
+"* If the above environment variable is not set, then '/usr/bin/less' will be\n"
+"  used."
+msgstr "* Se a variável de ambiente acima não estiver definida, então\n  \"/usr/bin/less\" será usado."
+
+#: vnote.txt:20
+msgid ""
+"As for editing a note, quit the pager and you will be driven back to "
+"calcurse."
+msgstr "Quanto à edição de notas, saia do paginador e você será levado de volta\nao Calcurse."

@@ -1,0 +1,39 @@
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: calcurse\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-07-24 08:51+0200\n"
+"PO-Revision-Date: 2013-07-23 08:35+0000\n"
+"Last-Translator: Lukas Fleischer <transifex@cryptocrack.de>\n"
+"Language-Team: Georgian (http://www.transifex.com/projects/p/calcurse/language/ka/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ka\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Translate Toolkit 1.10.0\n"
+
+#: other.txt:1
+msgid ""
+"OtherCmd\n"
+"========"
+msgstr ""
+
+#: other.txt:4
+msgid "Switch between status bar help pages."
+msgstr ""
+
+#: other.txt:6
+msgid ""
+"Because the terminal screen is too narrow to display all of the available\n"
+"commands, this command can be used to see the next set of commands together\n"
+"with their key bindings."
+msgstr ""
+
+#: other.txt:10
+msgid ""
+"Once the last status bar page is reached, running the command another time\n"
+"leads you back to the first page."
+msgstr ""

@@ -1,0 +1,67 @@
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: calcurse\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-07-24 08:50+0200\n"
+"PO-Revision-Date: 2013-07-24 06:53+0000\n"
+"Last-Translator: Lukas Fleischer <transifex@cryptocrack.de>\n"
+"Language-Team: German (http://www.transifex.com/projects/p/calcurse/language/de/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Translate Toolkit 1.10.0\n"
+
+#: edit.txt:1
+msgid ""
+"Edit Item\n"
+"========="
+msgstr ""
+
+#: edit.txt:4
+msgid "Edit the item which is currently selected."
+msgstr ""
+
+#: edit.txt:6
+msgid ""
+"Depending on the item type (appointment, event or todo) and item repetition,\n"
+"you will be asked to choose one of the item properties to modify. An item\n"
+"property is one of the following: the start time, the end time, the\n"
+"description, or the item repetition. You can also move an item, that is, move\n"
+"an item without changing its duration."
+msgstr ""
+
+#: edit.txt:12
+msgid ""
+"Once you have chosen the property you want to modify, you will be shown its\n"
+"actual value, and you will be able to change it as you like."
+msgstr ""
+
+#: edit.txt:15
+msgid ""
+"Notes\n"
+"-----"
+msgstr ""
+
+#: edit.txt:18
+msgid ""
+"* If you choose to edit the item repetition properties, you will be asked to\n"
+"  re-enter all of the repetition characteristics (repetition type, frequency,\n"
+"  and ending date). Moreover, the previous data concerning the deleted\n"
+"  occurrences will be lost."
+msgstr ""
+
+#: edit.txt:23
+msgid ""
+"* You can enter an empty end time to convert an existing appointment into a\n"
+"  punctual appointment."
+msgstr ""
+
+#: edit.txt:26
+msgid ""
+"* Do not forget to save the calendar data to retrieve the modified properties\n"
+"  next time you launch Calcurse."
+msgstr ""

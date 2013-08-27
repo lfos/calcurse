@@ -1,0 +1,41 @@
+# 
+# Translators:
+# Rafael Ferreira <rafael.f.f1@gmail.com>, 2013
+msgid ""
+msgstr ""
+"Project-Id-Version: calcurse\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-07-24 08:51+0200\n"
+"PO-Revision-Date: 2013-07-28 14:58+0000\n"
+"Last-Translator: Rafael Ferreira <rafael.f.f1@gmail.com>\n"
+"Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/calcurse/language/pt_BR/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pt_BR\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Translate Toolkit 1.10.0\n"
+
+#: view.txt:1
+msgid ""
+"View\n"
+"===="
+msgstr "Ver\n==="
+
+#: view.txt:4
+msgid "View the item you select in either the todo or appointment panel."
+msgstr "Vê o item que você selecionou em tanto no painel de tarefas quanto de\nagendamentos."
+
+#: view.txt:6
+msgid ""
+"This is useful when an event description is longer than the available space to\n"
+"display it. If that is the case, the description will be shortened and its end\n"
+"replaced by '...'. To be able to read the entire description, just run the view\n"
+"command and a popup window will appear, containing the whole event."
+msgstr "Isto é útil quando a descrição de um evento é maior do que o espaço\ndisponível para exibi-lo. Se esse for o caso, a descrição será\nreduzida e seu final será substituído por \"...\". Para ler a descrição\npor inteiro, basta pressionar \"%s\" e uma janela de pop-up aparecerá,\ncontendo o evento completo."
+
+#: view.txt:11
+msgid ""
+"Press any key to close the popup window and go back to the main calcurse\n"
+"screen."
+msgstr "Pressione qualquer tecla para fechar a janela pop-up e vá para a tela\nprincipal do Calcurse."

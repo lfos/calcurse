@@ -1,0 +1,87 @@
+# 
+# Translators:
+# Tiwu, 2013
+msgid ""
+msgstr ""
+"Project-Id-Version: calcurse\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-07-24 08:50+0200\n"
+"PO-Revision-Date: 2013-08-17 15:05+0000\n"
+"Last-Translator: Tiwu\n"
+"Language-Team: German (http://www.transifex.com/projects/p/calcurse/language/de/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Translate Toolkit 1.10.0\n"
+
+#: add.txt:1
+msgid ""
+"Add\n"
+"==="
+msgstr "Hinzufügen\n=========="
+
+#: add.txt:4
+msgid ""
+"Add an item in either the todo or appointment list, depending on which panel is\n"
+"selected."
+msgstr "In Abhängigkeit davon welches Panel ausgewählt ist, wird entweder ein Termin oder eine Aufgabe hinzugefügt."
+
+#: add.txt:7
+msgid ""
+"To enter a new item in the todo list, you will need first to enter the\n"
+"description of this new item. Then you will be asked to specify the todo\n"
+"priority. This priority is represented by a number going from 9 for the lowest\n"
+"priority, to 1 for the highest one. It is still possible to change the item\n"
+"priority afterwards, by using the '+' and '-' keys inside the todo panel."
+msgstr "Um einen neuen Eintrag in der Zu-erledigen-Liste zu erstellen, müssen Sie als erstes eine Beschreibung eingeben. Anschließend werden Sie aufgefordert, die Priorität anzugeben. Diese wird durch eine Skala von 9 (niedrigste Priorität) bis 1 (höchste Priorität) repräsentiert. Sie können die Priorität auch im Nachhinein noch durch die '+'- und '-'-Tasten verändern."
+
+#: add.txt:13
+msgid ""
+"If the appointment panel is selected, you will be able to enter either a new\n"
+"appointment or a new all-day long event. To enter a new event, press [ENTER]\n"
+"instead of the item start time, and just fill in the event description."
+msgstr "Wenn das Terminpanel ausgewählt ist, können Sie eine neuen Termin oder ein ganztägiges Ereignis erstellen. Für letzteres drücken Sie [ENTER] anstatt eine Startuhrzeit einzugeben und geben lediglich eine Beschreibung an."
+
+#: add.txt:17
+msgid ""
+"To enter a new appointment to be added in the appointment list, you will need\n"
+"to enter successively the time at which the appointment begins, the appointment\n"
+"length (either by specifying the end time in [hh:mm] or the duration in\n"
+"[+hh:mm], [+xxdxxhxxm] or [+mm] format), and the description of the event. If\n"
+"you skip the end time by pressing [ENTER], a punctual appointment will be\n"
+"created."
+msgstr "Um einen neuen Termin hinzuzufügen, müssen Sie die Startuhrzeit, die Dauer (entweder per Enduhrzeit ([hh:mm]) oder per tatsächlicher Dauer ([+hh:mm], [+xxdxxhxxm] oder [+mm]) und die Beschreibung des Ereignisses angeben. Falls Sie keine Enduhrzeit oder Dauer angeben und stattdessen [ENTER] drücken, findet das Ereignis nur exakt zur Startuhrzeit statt."
+
+#: add.txt:24
+msgid ""
+"The day at which occurs the event or appointment is the day currently selected\n"
+"in the calendar, so you need to move to the desired day before."
+msgstr "Der Tag, an dem das Ereignis oder der Termin stattfinden, ist der momente ausgewählte Tag im Kalender. Ergo müssen Sie vorher ggf. den korrekten Tag auswählen."
+
+#: add.txt:27
+msgid ""
+"Notes\n"
+"-----"
+msgstr "Notizen\n-------"
+
+#: add.txt:30
+msgid ""
+"* If an appointment lasts for such a long time that it continues on the next\n"
+"  days, this event will be indicated on all the corresponding days, and the\n"
+"  beginning or ending hour will be replaced by '..' if the event does not begin\n"
+"  or end on the day."
+msgstr "* Falls ein Termin bis in den nächsten Tag hinein dauert, wird er an allen entsprechenden Tagen angezeigt. Falls er nicht an dem jeweilen Tag beginnt bzw. endet, wird die Start- bzw. Endstunde durch '..' ersetzt."
+
+#: add.txt:35
+msgid ""
+"* If you only press [ENTER] at the description prompt, without any description,\n"
+"  no item will be added."
+msgstr "* Falls sie [ENTER] drücken ohne eine Beschreibung eingegeben zu haben, wird kein Eintrag hinzugefügt."
+
+#: add.txt:38
+msgid ""
+"* Do not forget to save the calendar data to retrieve the new event next time\n"
+"  you launch calcurse."
+msgstr "* Vergessen Sie nicht, die Kalenderdaten zu speichern, um sie beim nächsten Start von Calcurse wiederherstellen zu können."

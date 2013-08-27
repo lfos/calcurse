@@ -1,0 +1,44 @@
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: calcurse\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-07-24 08:51+0200\n"
+"PO-Revision-Date: 2013-07-23 08:35+0000\n"
+"Last-Translator: Lukas Fleischer <transifex@cryptocrack.de>\n"
+"Language-Team: Dutch (http://www.transifex.com/projects/p/calcurse/language/nl/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: nl\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Translate Toolkit 1.10.0\n"
+
+#: intro.txt:1
+msgid ""
+"calcurse Online Help\n"
+"===================="
+msgstr ""
+
+#: intro.txt:4
+msgid ""
+"Welcome to the calcurse online help. The online help system allows for easily\n"
+"getting help on specific calcurse features."
+msgstr ""
+
+#: intro.txt:7
+msgid ""
+"On the calcurse main screen, type `:help <feature>` (e.g. `:help add`) or\n"
+"`:help <key>` (e.g. `:help ^A`) to get help on a specific feature or key\n"
+"binding. Type `:help` without any parameter to display this introduction or\n"
+"simply use the corresponding keyboard shortcut (`?` by default)."
+msgstr ""
+
+#: intro.txt:12
+msgid ""
+"All help texts are displayed using an external pager. You need to exit the\n"
+"pager in order to get back to calcurse (pressing `q` should almost always\n"
+"work). The default pager can be changed by setting the PAGER environment\n"
+"variable."
+msgstr ""

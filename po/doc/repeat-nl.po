@@ -1,0 +1,78 @@
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: calcurse\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-07-24 08:51+0200\n"
+"PO-Revision-Date: 2013-07-23 08:35+0000\n"
+"Last-Translator: Lukas Fleischer <transifex@cryptocrack.de>\n"
+"Language-Team: Dutch (http://www.transifex.com/projects/p/calcurse/language/nl/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: nl\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Translate Toolkit 1.10.0\n"
+
+#: repeat.txt:1
+msgid ""
+"Repeat\n"
+"======"
+msgstr ""
+
+#: repeat.txt:4
+msgid "Repeat an event or an appointment."
+msgstr ""
+
+#: repeat.txt:6
+msgid ""
+"You must first select the item to be repeated by moving inside the appointment\n"
+"panel. Then running the repeat command will lead you to a set of three\n"
+"questions, with which you will be able to specify the repetition\n"
+"characteristics:"
+msgstr ""
+
+#: repeat.txt:11
+msgid ""
+"  o        type: you can choose between a daily, weekly, monthly or\n"
+"                 yearly repetition by pressing 'D', 'W', 'M' or 'Y'\n"
+"                 respectively."
+msgstr ""
+
+#: repeat.txt:15
+msgid ""
+"  o   frequency: this indicates how often the item shall be repeated.\n"
+"                 For example, if you want to remember an anniversary,\n"
+"                 choose a 'yearly' repetition with a frequency of '1',\n"
+"                 which means it must be repeated every year. Another\n"
+"                 example: if you go to the restaurant every two days,\n"
+"                 choose a 'daily' repetition with a frequency of '2'."
+msgstr ""
+
+#: repeat.txt:22
+msgid ""
+"  o ending date: this specifies when to stop repeating the selected\n"
+"                 event or appointment. To indicate an endless \n"
+"                 repetition, enter '0' and the item will be repeated\n"
+"                 forever."
+msgstr ""
+
+#: repeat.txt:27
+msgid ""
+"Notes\n"
+"-----"
+msgstr ""
+
+#: repeat.txt:30
+msgid ""
+"* Repeated items are marked with an '*' inside the appointment panel, to be\n"
+"  easily recognizable from non-repeated ones."
+msgstr ""
+
+#: repeat.txt:33
+msgid ""
+"* The 'Repeat' and 'Delete' command can be mixed to create complicated\n"
+"  configurations, as it is possible to delete only one occurrence of a repeated\n"
+"  item."
+msgstr ""

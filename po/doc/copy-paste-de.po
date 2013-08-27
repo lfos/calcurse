@@ -1,0 +1,33 @@
+# 
+# Translators:
+# Tiwu, 2013
+msgid ""
+msgstr ""
+"Project-Id-Version: calcurse\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-07-24 08:50+0200\n"
+"PO-Revision-Date: 2013-08-17 15:11+0000\n"
+"Last-Translator: Tiwu\n"
+"Language-Team: German (http://www.transifex.com/projects/p/calcurse/language/de/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Translate Toolkit 1.10.0\n"
+
+#: copy-paste.txt:1
+msgid ""
+"Copy and Paste\n"
+"=============="
+msgstr "Kopieren und Einfügen\n====================="
+
+#: copy-paste.txt:4
+msgid ""
+"Copy and paste the currently selected item. This is useful to quickly copy an\n"
+"item from one date to another. To do so, one must first highlight the item that\n"
+"needs to be copied, then press the key assigned to the copy function. Once the\n"
+"new date is chosen in the calendar, the appointment panel must be selected and\n"
+"the paste key must be pressed to paste the item. The item will appear in the\n"
+"appointment panel, assigned to the newly selected date."
+msgstr "Kopieren und Einfügen des momenten ausgewählen Eintrages. Dies ist hilfreich, um schnell einen Eintrag von einem Tag zu einem anderen zu verschieben. Hierfür muss zunächst der zu kopierende Eintrag markiert und anschließend die der Kopier-Funktion zugewiesene Taste gedrückt werden. Sobald der neue Tag im Kalender gewählt ist, muss das Terminpanel ausgewählt und die Einfügen-Taste betätigt werden. Das Ereignis wird anschließend im Terminpanel in dem neuen Tag erscheinen."

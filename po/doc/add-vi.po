@@ -1,0 +1,86 @@
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: calcurse\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-07-24 08:50+0200\n"
+"PO-Revision-Date: 2013-07-28 20:16+0000\n"
+"Last-Translator: Lukas Fleischer <transifex@cryptocrack.de>\n"
+"Language-Team: Vietnamese (http://www.transifex.com/projects/p/calcurse/language/vi/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: vi\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Translate Toolkit 1.10.0\n"
+
+#: add.txt:1
+msgid ""
+"Add\n"
+"==="
+msgstr ""
+
+#: add.txt:4
+msgid ""
+"Add an item in either the todo or appointment list, depending on which panel is\n"
+"selected."
+msgstr ""
+
+#: add.txt:7
+msgid ""
+"To enter a new item in the todo list, you will need first to enter the\n"
+"description of this new item. Then you will be asked to specify the todo\n"
+"priority. This priority is represented by a number going from 9 for the lowest\n"
+"priority, to 1 for the highest one. It is still possible to change the item\n"
+"priority afterwards, by using the '+' and '-' keys inside the todo panel."
+msgstr ""
+
+#: add.txt:13
+msgid ""
+"If the appointment panel is selected, you will be able to enter either a new\n"
+"appointment or a new all-day long event. To enter a new event, press [ENTER]\n"
+"instead of the item start time, and just fill in the event description."
+msgstr ""
+
+#: add.txt:17
+msgid ""
+"To enter a new appointment to be added in the appointment list, you will need\n"
+"to enter successively the time at which the appointment begins, the appointment\n"
+"length (either by specifying the end time in [hh:mm] or the duration in\n"
+"[+hh:mm], [+xxdxxhxxm] or [+mm] format), and the description of the event. If\n"
+"you skip the end time by pressing [ENTER], a punctual appointment will be\n"
+"created."
+msgstr ""
+
+#: add.txt:24
+msgid ""
+"The day at which occurs the event or appointment is the day currently selected\n"
+"in the calendar, so you need to move to the desired day before."
+msgstr ""
+
+#: add.txt:27
+msgid ""
+"Notes\n"
+"-----"
+msgstr ""
+
+#: add.txt:30
+msgid ""
+"* If an appointment lasts for such a long time that it continues on the next\n"
+"  days, this event will be indicated on all the corresponding days, and the\n"
+"  beginning or ending hour will be replaced by '..' if the event does not begin\n"
+"  or end on the day."
+msgstr ""
+
+#: add.txt:35
+msgid ""
+"* If you only press [ENTER] at the description prompt, without any description,\n"
+"  no item will be added."
+msgstr ""
+
+#: add.txt:38
+msgid ""
+"* Do not forget to save the calendar data to retrieve the new event next time\n"
+"  you launch calcurse."
+msgstr ""

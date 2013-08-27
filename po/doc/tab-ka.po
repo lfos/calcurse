@@ -1,0 +1,44 @@
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: calcurse\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-07-24 08:51+0200\n"
+"PO-Revision-Date: 2013-07-24 06:54+0000\n"
+"Last-Translator: Lukas Fleischer <transifex@cryptocrack.de>\n"
+"Language-Team: Georgian (http://www.transifex.com/projects/p/calcurse/language/ka/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ka\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Translate Toolkit 1.10.0\n"
+
+#: tab.txt:1
+msgid ""
+"Tab\n"
+"==="
+msgstr ""
+
+#: tab.txt:4
+msgid "Switch between panels."
+msgstr ""
+
+#: tab.txt:6
+msgid "The panel currently in use has its border colorized."
+msgstr ""
+
+#: tab.txt:8
+msgid ""
+"Some actions are possible only if the right panel is selected. For example, if\n"
+"you want to add a task in the todo list, you need first to press the 'TAB' key\n"
+"to get the todo panel selected. Then you can press 'a' to add your item."
+msgstr ""
+
+#: tab.txt:12
+msgid ""
+"Notice that at the bottom of the screen the list of possible actions change\n"
+"while pressing 'TAB', so you always know what action can be performed on the\n"
+"selected panel."
+msgstr ""

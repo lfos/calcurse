@@ -1,0 +1,46 @@
+# 
+# Translators:
+# Rafael Ferreira <rafael.f.f1@gmail.com>, 2013
+msgid ""
+msgstr ""
+"Project-Id-Version: calcurse\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-07-24 08:51+0200\n"
+"PO-Revision-Date: 2013-07-28 05:56+0000\n"
+"Last-Translator: Rafael Ferreira <rafael.f.f1@gmail.com>\n"
+"Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/calcurse/language/pt_BR/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pt_BR\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Translate Toolkit 1.10.0\n"
+
+#: priority.txt:1
+msgid ""
+"Priority\n"
+"========"
+msgstr "Prioridade\n=========="
+
+#: priority.txt:4
+msgid ""
+"Change the priority of the currently selected item in the todo list.\n"
+"Priorities are represented by the number appearing in front of the todo\n"
+"description. This number goes from 9 for the lowest priority to 1 for the\n"
+"highest priority. Todo items having higher priorities are placed first (at the\n"
+"top) inside the todo panel."
+msgstr "Altera a prioridade do item atualmente selecionado na lista de tarefas.\nPrioridades são representadas pelo número que aparece na frente da\ndescrição da tarefa. O número vai desde 9, para a menor prioridade, até\n1, para a maior prioridade. As tarefas que tenham maior prioridade serão\nposicionadas primeiro (no topo) dentro do painel de tarefas."
+
+#: priority.txt:10
+msgid ""
+"By default, if you want to raise the priority of a todo item, you need to press\n"
+"'+'.  In doing so, the number in front of this item will decrease, meaning its\n"
+"priority increases. The item position inside the todo panel may change,\n"
+"depending on the priority of the items above it."
+msgstr "Se você desejar aumentar a prioridade de um item de tarefa, você deverá\npressionar \"%s\". Ao fazer isso, o número da prioridade deste item será\nreduzida, o que significa um aumento na sua prioridade. A posição do\nitem dentro do painel de tarefas pode mudar, dependendo da prioridade dos\nitens acima deste."
+
+#: priority.txt:15
+msgid ""
+"At the opposite, to lower a todo priority, press '-'. The todo position may\n"
+"also change depending on the priority of the items below."
+msgstr "E o contrário, para diminuir a prioridade de uma tarefa, pressione \"-\".\nA posição da tarefa pode também alterar dependendo da prioridade dos\ndemais itens abaixo deste."

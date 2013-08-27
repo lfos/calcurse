@@ -1,0 +1,40 @@
+# 
+# Translators:
+# Rafael Ferreira <rafael.f.f1@gmail.com>, 2013
+msgid ""
+msgstr ""
+"Project-Id-Version: calcurse\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-07-24 08:51+0200\n"
+"PO-Revision-Date: 2013-07-28 05:54+0000\n"
+"Last-Translator: Rafael Ferreira <rafael.f.f1@gmail.com>\n"
+"Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/calcurse/language/pt_BR/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pt_BR\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Translate Toolkit 1.10.0\n"
+
+#: other.txt:1
+msgid ""
+"OtherCmd\n"
+"========"
+msgstr "OutroCmd\n========"
+
+#: other.txt:4
+msgid "Switch between status bar help pages."
+msgstr "Alterna entre páginas de ajuda de barra de status."
+
+#: other.txt:6
+msgid ""
+"Because the terminal screen is too narrow to display all of the available\n"
+"commands, this command can be used to see the next set of commands together\n"
+"with their key bindings."
+msgstr "Por a tela do terminal ser muito estreita para exibir todos os\ncomandos disponíveis, este comando pode ser usado para ver o\npróximo conjunto de comandos junto com suas teclas de atalhos."
+
+#: other.txt:10
+msgid ""
+"Once the last status bar page is reached, running the command another time\n"
+"leads you back to the first page."
+msgstr "Assim que se chegar à última página de barra de status, ao se executar\no comando mais uma vez levará você de volta para a primeira página."

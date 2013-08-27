@@ -1,0 +1,45 @@
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: calcurse\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-07-24 08:51+0200\n"
+"PO-Revision-Date: 2013-07-28 20:16+0000\n"
+"Last-Translator: Lukas Fleischer <transifex@cryptocrack.de>\n"
+"Language-Team: Vietnamese (http://www.transifex.com/projects/p/calcurse/language/vi/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: vi\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Translate Toolkit 1.10.0\n"
+
+#: save.txt:1
+msgid ""
+"Save\n"
+"===="
+msgstr ""
+
+#: save.txt:4
+msgid "Save calcurse data."
+msgstr ""
+
+#: save.txt:6
+msgid "Data are split into four different files which contain :"
+msgstr ""
+
+#: save.txt:8
+msgid ""
+"         / ~/.calcurse/conf -> user configuration\n"
+"        |                      (layout, color, general options)\n"
+"        |  ~/.calcurse/apts -> data related to the appointments\n"
+"        |  ~/.calcurse/todo -> data related to the todo list\n"
+"         \\ ~/.calcurse/keys -> user-defined key bindings"
+msgstr ""
+
+#: save.txt:14
+msgid ""
+"In the config menu, you can choose to save the calcurse data automatically\n"
+"before quitting."
+msgstr ""

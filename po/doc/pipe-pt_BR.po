@@ -1,0 +1,37 @@
+# 
+# Translators:
+# Rafael Ferreira <rafael.f.f1@gmail.com>, 2013
+msgid ""
+msgstr ""
+"Project-Id-Version: calcurse\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-07-24 08:51+0200\n"
+"PO-Revision-Date: 2013-07-28 05:56+0000\n"
+"Last-Translator: Rafael Ferreira <rafael.f.f1@gmail.com>\n"
+"Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/calcurse/language/pt_BR/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pt_BR\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Translate Toolkit 1.10.0\n"
+
+#: pipe.txt:1
+msgid ""
+"Pipe\n"
+"===="
+msgstr "Redirecionar\n============"
+
+#: pipe.txt:4
+msgid "Pipe the selected item to an external program."
+msgstr "Redireciona o item selecionado para um programa externo."
+
+#: pipe.txt:6
+msgid ""
+"Press the '|' key to pipe the currently selected appointment or todo entry to\n"
+"an external program."
+msgstr "Pressione a tecla '|' para redirecionar a entrada de agendamento ou\ntarefa selecionada para um programa externo."
+
+#: pipe.txt:9
+msgid "You will be driven back to calcurse as soon as the program exits."
+msgstr "Você será trazido de volta para o calcurse assim que o programa\nfor finalizado."

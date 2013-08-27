@@ -1,0 +1,40 @@
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: calcurse\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-07-24 08:51+0200\n"
+"PO-Revision-Date: 2013-07-24 06:54+0000\n"
+"Last-Translator: Lukas Fleischer <transifex@cryptocrack.de>\n"
+"Language-Team: Spanish (http://www.transifex.com/projects/p/calcurse/language/es/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: es\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Translate Toolkit 1.10.0\n"
+
+#: view.txt:1
+msgid ""
+"View\n"
+"===="
+msgstr ""
+
+#: view.txt:4
+msgid "View the item you select in either the todo or appointment panel."
+msgstr ""
+
+#: view.txt:6
+msgid ""
+"This is useful when an event description is longer than the available space to\n"
+"display it. If that is the case, the description will be shortened and its end\n"
+"replaced by '...'. To be able to read the entire description, just run the view\n"
+"command and a popup window will appear, containing the whole event."
+msgstr ""
+
+#: view.txt:11
+msgid ""
+"Press any key to close the popup window and go back to the main calcurse\n"
+"screen."
+msgstr ""

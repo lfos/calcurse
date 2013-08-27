@@ -1,0 +1,36 @@
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: calcurse\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-07-24 08:51+0200\n"
+"PO-Revision-Date: 2013-07-23 08:35+0000\n"
+"Last-Translator: Lukas Fleischer <transifex@cryptocrack.de>\n"
+"Language-Team: Spanish (http://www.transifex.com/projects/p/calcurse/language/es/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: es\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Translate Toolkit 1.10.0\n"
+
+#: pipe.txt:1
+msgid ""
+"Pipe\n"
+"===="
+msgstr ""
+
+#: pipe.txt:4
+msgid "Pipe the selected item to an external program."
+msgstr ""
+
+#: pipe.txt:6
+msgid ""
+"Press the '|' key to pipe the currently selected appointment or todo entry to\n"
+"an external program."
+msgstr ""
+
+#: pipe.txt:9
+msgid "You will be driven back to calcurse as soon as the program exits."
+msgstr ""

@@ -1,0 +1,47 @@
+# 
+# Translators:
+# Rafael Ferreira <rafael.f.f1@gmail.com>, 2013
+msgid ""
+msgstr ""
+"Project-Id-Version: calcurse\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-07-24 08:50+0200\n"
+"PO-Revision-Date: 2013-07-28 01:53+0000\n"
+"Last-Translator: Rafael Ferreira <rafael.f.f1@gmail.com>\n"
+"Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/calcurse/language/pt_BR/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pt_BR\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Translate Toolkit 1.10.0\n"
+
+#: delete.txt:1
+msgid ""
+"Delete\n"
+"======"
+msgstr "Excluir\n======="
+
+#: delete.txt:4
+msgid "Delete an element in the todo or appointment list."
+msgstr "Exclui um elemento da lista de tarefas ou de agendamentos."
+
+#: delete.txt:6
+msgid ""
+"Depending on which panel is selected when you press the delete key, the\n"
+"highlighted item of either the todo or appointment list will be removed from\n"
+"this list."
+msgstr "Dependendo do painel selecionado, quando você pressionar a tecla de exclusão,\no item selecionado de tanto a lista de Tarefas quanto de agendamentos será\nexcluído desta lista."
+
+#: delete.txt:10
+msgid ""
+"If the item to be deleted is recurrent, you will be asked if you wish to\n"
+"suppress all of the item occurrences or just the one you selected."
+msgstr "Se o item a ser excluído é recorrente, você será perguntado se você deseja\nsuprimir todas ocorrências deste item ou somente o item que você selecionou."
+
+#: delete.txt:13
+msgid ""
+"If the general option 'confirm_delete' is set to 'YES', then you will be asked\n"
+"for confirmation before deleting the selected event. Do not forget to save the\n"
+"calendar data to retrieve the modifications next time you launch calcurse."
+msgstr "Se a opção geral \"confirm_delete\" estiver definida para \"SIM\", a você\nserá solicitada confirmação antes de excluir o evento selecionado. Não\nesqueça de salvar os dados do calendário para recuperar as modificações na\npróxima vez que iniciar o calcurse."

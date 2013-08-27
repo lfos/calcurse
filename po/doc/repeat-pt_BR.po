@@ -1,0 +1,79 @@
+# 
+# Translators:
+# Rafael Ferreira <rafael.f.f1@gmail.com>, 2013
+msgid ""
+msgstr ""
+"Project-Id-Version: calcurse\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-07-24 08:51+0200\n"
+"PO-Revision-Date: 2013-07-28 05:57+0000\n"
+"Last-Translator: Rafael Ferreira <rafael.f.f1@gmail.com>\n"
+"Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/calcurse/language/pt_BR/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pt_BR\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Translate Toolkit 1.10.0\n"
+
+#: repeat.txt:1
+msgid ""
+"Repeat\n"
+"======"
+msgstr "Repetir\n======="
+
+#: repeat.txt:4
+msgid "Repeat an event or an appointment."
+msgstr "Repete um evento ou um agendamento."
+
+#: repeat.txt:6
+msgid ""
+"You must first select the item to be repeated by moving inside the appointment\n"
+"panel. Then running the repeat command will lead you to a set of three\n"
+"questions, with which you will be able to specify the repetition\n"
+"characteristics:"
+msgstr "Primeiro você deve que selecionar o item a ser repetido movendo-o dentro\ndo painel de agendamentos. Então, ao executar o comando de repetição, levará\nvocê a um conjunto de três perguntas, com as quais você poderá\nespecificar as caraterísticas da repetição:"
+
+#: repeat.txt:11
+msgid ""
+"  o        type: you can choose between a daily, weekly, monthly or\n"
+"                 yearly repetition by pressing 'D', 'W', 'M' or 'Y'\n"
+"                 respectively."
+msgstr "  o        tipo: você pode escolher entre uma repetição diária,\n                 semanal, mensal ou anual pressionando, \"D\",\n                 \"W\",\"M\" ou \"Y\", respectivamente."
+
+#: repeat.txt:15
+msgid ""
+"  o   frequency: this indicates how often the item shall be repeated.\n"
+"                 For example, if you want to remember an anniversary,\n"
+"                 choose a 'yearly' repetition with a frequency of '1',\n"
+"                 which means it must be repeated every year. Another\n"
+"                 example: if you go to the restaurant every two days,\n"
+"                 choose a 'daily' repetition with a frequency of '2'."
+msgstr "  o  frequência: indica com qual frequência o item deve se repetir.\n                 Por exemplo, se você deseja sempre se lembrar de um\n                 aniversário, escolha uma repetição \"anual\" com uma\n                 frequência de \"1\", o que significa que deve repetir\n                 todo ano. Outro exemplo: se você vai ao restaurante\n                 a cada dois dias, escolha uma repetição \"diária\" com\n                 frequência de \"2\"."
+
+#: repeat.txt:22
+msgid ""
+"  o ending date: this specifies when to stop repeating the selected\n"
+"                 event or appointment. To indicate an endless \n"
+"                 repetition, enter '0' and the item will be repeated\n"
+"                 forever."
+msgstr "  o  data final: isso especifica quando deve parar a repetição do\n                 evento ou agendamento selecionado. Para indicar\n                 uma repetição sem fim, insira \"0\" e o item\n                 será repetido para sempre."
+
+#: repeat.txt:27
+msgid ""
+"Notes\n"
+"-----"
+msgstr "Notas\n-----"
+
+#: repeat.txt:30
+msgid ""
+"* Repeated items are marked with an '*' inside the appointment panel, to be\n"
+"  easily recognizable from non-repeated ones."
+msgstr "* Itens repetidos são marcados com um \"*\" dentro do painel de\n  agendamentos, para ser facilmente diferenciável dos não\n  repetidos."
+
+#: repeat.txt:33
+msgid ""
+"* The 'Repeat' and 'Delete' command can be mixed to create complicated\n"
+"  configurations, as it is possible to delete only one occurrence of a repeated\n"
+"  item."
+msgstr "* Os comandos \"Repetir\" e \"Excluir\" podem ser combinados para\n  para criar configurações complicadas, já que é possível\n  excluir somente uma ocorrência de um item repetido."

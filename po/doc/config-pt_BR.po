@@ -1,0 +1,60 @@
+# 
+# Translators:
+# Rafael Ferreira <rafael.f.f1@gmail.com>, 2013
+msgid ""
+msgstr ""
+"Project-Id-Version: calcurse\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-07-24 08:50+0200\n"
+"PO-Revision-Date: 2013-07-28 01:52+0000\n"
+"Last-Translator: Rafael Ferreira <rafael.f.f1@gmail.com>\n"
+"Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/calcurse/language/pt_BR/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pt_BR\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Translate Toolkit 1.10.0\n"
+
+#: config.txt:1
+msgid ""
+"Config\n"
+"======"
+msgstr "Config\n======"
+
+#: config.txt:4
+msgid ""
+"Open the configuration submenu. From this submenu, you can select between\n"
+"color, layout, notification and general options, and you can also configure\n"
+"your key bindings."
+msgstr "Abre os submenus de configuração. A partir deste submenu, você pode\nselecionar dentre várias cores, layout, notificações e opções em geral,\ne você pode até mesmo configurar suas teclas de atalhos."
+
+#: config.txt:8
+msgid "The color submenu lets you choose the color theme."
+msgstr "O submenu de cor permite que você escolha o tema de cores."
+
+#: config.txt:10
+msgid ""
+"The layout submenu lets you choose the calcurse screen layout, in other words\n"
+"where to place the three different panels on the screen."
+msgstr "O submenu de layout permite que você escolha o layout da tela do calcurse.\nEm outras palavras, permite definir onde colocar três painéis diferentes\nna tela."
+
+#: config.txt:13
+msgid ""
+"The general options submenu brings a screen with the different options which\n"
+"modifies the way calcurse interacts with the user."
+msgstr "O submenu de opções gerais, Geral, traz uma tela com opções diferentes,\nque modificam a forma como Calcurse interage com o usuário."
+
+#: config.txt:16
+msgid "The notify submenu allows you to change the notify-bar settings."
+msgstr "O submenu de notificação permite que você altere as configurações da barrade notificação."
+
+#: config.txt:18
+msgid "The keys submenu lets you define your own key bindings."
+msgstr "O submenu de teclas permite que você defina seus próprios atalhos de\nteclado."
+
+#: config.txt:20
+msgid ""
+"Do not forget to save the calendar data to retrieve your configuration next\n"
+"time you launch calcurse."
+msgstr "Não esqueça de salvar os dados do calendário para restaurar sua configuração\nna próxima vez que você iniciar o calcurse."

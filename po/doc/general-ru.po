@@ -1,0 +1,60 @@
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: calcurse\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-07-24 08:51+0200\n"
+"PO-Revision-Date: 2013-07-24 06:53+0000\n"
+"Last-Translator: Lukas Fleischer <transifex@cryptocrack.de>\n"
+"Language-Team: Russian (http://www.transifex.com/projects/p/calcurse/language/ru/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Translate Toolkit 1.10.0\n"
+
+#: general.txt:1
+msgid ""
+"Generic key bindings\n"
+"===================="
+msgstr ""
+
+#: general.txt:4
+msgid ""
+"Some of the key bindings apply whatever panel is selected. They are called\n"
+"generic key bindings."
+msgstr ""
+
+#: general.txt:7
+msgid ""
+"Here is the list of all the generic key bindings, together with their\n"
+"corresponding action:"
+msgstr ""
+
+#: general.txt:10
+msgid ""
+" '^R' : Redraw function -> redraws calcurse panels, this is useful if\n"
+"                           you resize your terminal screen or when\n"
+"                           garbage appears inside the display\n"
+" '^A' : Add Appointment -> add an appointment or an event\n"
+" '^T' : Add TODO        -> add a todo\n"
+" 'T' : -1 Day          -> move to previous day\n"
+" 't' : +1 Day          -> move to next day\n"
+" 'W' : -1 Week         -> move to previous week\n"
+" 'w' : +1 Week         -> move to next week\n"
+" 'M' : -1 Month        -> move to previous month\n"
+" 'm' : +1 Month        -> move to next month\n"
+" 'Y' : -1 Year         -> move to previous year\n"
+" 'y' : +1 Year         -> move to next year\n"
+" '^G' : Goto today      -> move to current day"
+msgstr ""
+
+#: general.txt:25
+msgid ""
+"The '^P' and '^N' keys are used to scroll text upward or downward when inside\n"
+"specific screens such the help screens for example. They are also used when the\n"
+"calendar screen is selected to switch between the available views (monthly and\n"
+"weekly calendar views)."
+msgstr ""

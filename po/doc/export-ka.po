@@ -1,0 +1,61 @@
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: calcurse\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-07-24 08:51+0200\n"
+"PO-Revision-Date: 2013-07-24 06:53+0000\n"
+"Last-Translator: Lukas Fleischer <transifex@cryptocrack.de>\n"
+"Language-Team: Georgian (http://www.transifex.com/projects/p/calcurse/language/ka/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ka\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Translate Toolkit 1.10.0\n"
+
+#: export.txt:1
+msgid ""
+"Export\n"
+"======"
+msgstr ""
+
+#: export.txt:4
+msgid "Export calcurse data (appointments, events and todos)."
+msgstr ""
+
+#: export.txt:6
+msgid ""
+"This leads to the export submenu, from which you can choose between two\n"
+"different export formats: 'ical' and 'pcal'. Choosing one of those formats lets\n"
+"you export calcurse data to iCal or pcal format."
+msgstr ""
+
+#: export.txt:10
+msgid ""
+"You first need to specify the file to which the data will be exported.  By\n"
+"default, this file is:"
+msgstr ""
+
+#: export.txt:13
+msgid "     ~/calcurse.ics"
+msgstr ""
+
+#: export.txt:15
+msgid "for an ical export, and:"
+msgstr ""
+
+#: export.txt:17
+msgid "     ~/calcurse.txt"
+msgstr ""
+
+#: export.txt:19
+msgid "for a pcal export."
+msgstr ""
+
+#: export.txt:21
+msgid ""
+"calcurse data are exported in the following order: events, appointments, "
+"todos."
+msgstr ""

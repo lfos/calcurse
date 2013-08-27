@@ -1,0 +1,46 @@
+# 
+# Translators:
+# Rafael Ferreira <rafael.f.f1@gmail.com>, 2013
+msgid ""
+msgstr ""
+"Project-Id-Version: calcurse\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-07-24 08:51+0200\n"
+"PO-Revision-Date: 2013-07-28 14:56+0000\n"
+"Last-Translator: Rafael Ferreira <rafael.f.f1@gmail.com>\n"
+"Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/calcurse/language/pt_BR/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pt_BR\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Translate Toolkit 1.10.0\n"
+
+#: save.txt:1
+msgid ""
+"Save\n"
+"===="
+msgstr "Salvar\n======"
+
+#: save.txt:4
+msgid "Save calcurse data."
+msgstr "Salva dados do calcurse."
+
+#: save.txt:6
+msgid "Data are split into four different files which contain :"
+msgstr "Dados serão separados em quatro arquivos diferentes contendo :"
+
+#: save.txt:8
+msgid ""
+"         / ~/.calcurse/conf -> user configuration\n"
+"        |                      (layout, color, general options)\n"
+"        |  ~/.calcurse/apts -> data related to the appointments\n"
+"        |  ~/.calcurse/todo -> data related to the todo list\n"
+"         \\ ~/.calcurse/keys -> user-defined key bindings"
+msgstr "         / ~/.calcurse/conf -> configuração do usuário\n        |                      (layout, cores, opções gerais)\n        |  ~/.calcurse/apts -> dados relacionados a agendamentos\n        |  ~/.calcurse/todo -> dados relacionados a lista de tarefas\n         \\ ~/.calcurse/keys -> teclas de atalho do usuário"
+
+#: save.txt:14
+msgid ""
+"In the config menu, you can choose to save the calcurse data automatically\n"
+"before quitting."
+msgstr "No menu Config, você pode escolher salvar os dados do Calcurse\nautomaticamente antes de cada saída."
