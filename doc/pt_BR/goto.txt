@@ -1,0 +1,13 @@
+Ir Para
+=======
+
+Pula para um dia especificado no calendário.
+
+Ao usar este comando, você não precisará viajar até aquele dia
+usando as teclas de movimentação dentro do painel de calendário.
+
+Se você pressionar [ENTER] sem especificar qualquer data, o calcurse
+verifica a data atual do sistema e você será levado àquela data.
+
+Repare que ao especificar uma tecla de atalho global, não importa o
+painel que esteja selecionado, será selecionado o dia atual no calendário.

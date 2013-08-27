@@ -1,0 +1,38 @@
+Hinzufügen
+==========
+
+In Abhängigkeit davon welches Panel ausgewählt ist, wird entweder ein Termin
+oder eine Aufgabe hinzugefügt.
+
+Um einen neuen Eintrag in der Zu-erledigen-Liste zu erstellen, müssen Sie als
+erstes eine Beschreibung eingeben. Anschließend werden Sie aufgefordert, die
+Priorität anzugeben. Diese wird durch eine Skala von 9 (niedrigste Priorität)
+bis 1 (höchste Priorität) repräsentiert. Sie können die Priorität auch im
+Nachhinein noch durch die '+'- und '-'-Tasten verändern.
+
+Wenn das Terminpanel ausgewählt ist, können Sie eine neuen Termin oder ein
+ganztägiges Ereignis erstellen. Für letzteres drücken Sie [ENTER] anstatt eine
+Startuhrzeit einzugeben und geben lediglich eine Beschreibung an.
+
+Um einen neuen Termin hinzuzufügen, müssen Sie die Startuhrzeit, die Dauer
+(entweder per Enduhrzeit ([hh:mm]) oder per tatsächlicher Dauer ([+hh:mm],
+[+xxdxxhxxm] oder [+mm]) und die Beschreibung des Ereignisses angeben. Falls Sie
+keine Enduhrzeit oder Dauer angeben und stattdessen [ENTER] drücken, findet das
+Ereignis nur exakt zur Startuhrzeit statt.
+
+Der Tag, an dem das Ereignis oder der Termin stattfinden, ist der momente
+ausgewählte Tag im Kalender. Ergo müssen Sie vorher ggf. den korrekten Tag
+auswählen.
+
+Notizen
+-------
+
+* Falls ein Termin bis in den nächsten Tag hinein dauert, wird er an allen
+entsprechenden Tagen angezeigt. Falls er nicht an dem jeweilen Tag beginnt bzw.
+endet, wird die Start- bzw. Endstunde durch '..' ersetzt.
+
+* Falls sie [ENTER] drücken ohne eine Beschreibung eingegeben zu haben, wird
+kein Eintrag hinzugefügt.
+
+* Vergessen Sie nicht, die Kalenderdaten zu speichern, um sie beim nächsten
+Start von Calcurse wiederherstellen zu können.

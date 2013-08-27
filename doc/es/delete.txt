@@ -1,0 +1,15 @@
+Delete
+======
+
+Delete an element in the todo or appointment list.
+
+Depending on which panel is selected when you press the delete key, the
+highlighted item of either the todo or appointment list will be removed from
+this list.
+
+If the item to be deleted is recurrent, you will be asked if you wish to
+suppress all of the item occurrences or just the one you selected.
+
+If the general option 'confirm_delete' is set to 'YES', then you will be asked
+for confirmation before deleting the selected event. Do not forget to save the
+calendar data to retrieve the modifications next time you launch calcurse.

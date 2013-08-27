@@ -1,0 +1,12 @@
+View
+====
+
+View the item you select in either the todo or appointment panel.
+
+This is useful when an event description is longer than the available space to
+display it. If that is the case, the description will be shortened and its end
+replaced by '...'. To be able to read the entire description, just run the view
+command and a popup window will appear, containing the whole event.
+
+Press any key to close the popup window and go back to the main calcurse
+screen.

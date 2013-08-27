@@ -1,0 +1,25 @@
+Teclas de deslocamento
+======================
+
+Movimenta pelas telas do calcurse.
+
+O seguinte esquema resume como funciona a movimentação:
+
+                            move para cima
+                      move para semana anterior
+
+                                 k K UP
+   move para esquerda             ^
+ move para dia anterior           |
+                      h H LFT
+                            <--   +  -->
+                                           l L RGT
+                                  |            move para direita
+                                  v         move para dia seguinte
+                                 k K DWN
+
+                      move para semana seguinte
+                           move para baixo
+
+Ademais, enquanto dentro do painel de calendário, a tecla "0" move para
+o primeiro dia da semana, e a tecla "$" seleciona o último dia da semana.

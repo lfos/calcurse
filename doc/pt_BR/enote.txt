@@ -1,0 +1,25 @@
+EditarNota
+==========
+
+Anexa uma nota a qualquer tipo de item, ou edita qualquer nota existente.
+Este recurso é útil se você não tem espaço suficiente para armazenar toda
+descrição de seu item ou se você deseja adicionar subtarefas para um item
+de tarefa já existente, por exemplo.
+
+Você primeiro precisa selecionar o item ao qual você deseja que a nota seja
+anexada. Então, após pressionar a tecla do editor de notas, você será levado
+a um edito externo para editar a sua nota. O editor é escolhido das seguintes
+formas:
+
+* Se a variável de ambiente "VISUAL" estiver definida, então este será o
+  editor padrão a ser chamado.
+
+* Se "VISUAL" não estiver definido, então a variável de ambiente "EDITOR"
+  será usada como o editor padrão.
+
+* Se nenhuma das variáveis de ambiente acima estiverem definidas, então
+  "/usr/bin/vi" será usado.
+
+Assim que a nota do item for editada e salvada, saia do seu editor favorito.
+Então, você voltará para o calcurse, e o sinal ">" aparecerá na frente do
+item selecionado, o que significa haver uma nota anexada a ele.

@@ -1,0 +1,18 @@
+Prioridade
+==========
+
+Altera a prioridade do item atualmente selecionado na lista de tarefas.
+Prioridades são representadas pelo número que aparece na frente da
+descrição da tarefa. O número vai desde 9, para a menor prioridade, até
+1, para a maior prioridade. As tarefas que tenham maior prioridade serão
+posicionadas primeiro (no topo) dentro do painel de tarefas.
+
+Se você desejar aumentar a prioridade de um item de tarefa, você deverá
+pressionar "%s". Ao fazer isso, o número da prioridade deste item será
+reduzida, o que significa um aumento na sua prioridade. A posição do
+item dentro do painel de tarefas pode mudar, dependendo da prioridade dos
+itens acima deste.
+
+E o contrário, para diminuir a prioridade de uma tarefa, pressione "-".
+A posição da tarefa pode também alterar dependendo da prioridade dos
+demais itens abaixo deste.

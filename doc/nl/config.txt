@@ -1,0 +1,21 @@
+Config
+======
+
+Open the configuration submenu. From this submenu, you can select between
+color, layout, notification and general options, and you can also configure
+your key bindings.
+
+The color submenu lets you choose the color theme.
+
+The layout submenu lets you choose the calcurse screen layout, in other words
+where to place the three different panels on the screen.
+
+The general options submenu brings a screen with the different options which
+modifies the way calcurse interacts with the user.
+
+The notify submenu allows you to change the notify-bar settings.
+
+The keys submenu lets you define your own key bindings.
+
+Do not forget to save the calendar data to retrieve your configuration next
+time you launch calcurse.

@@ -1,0 +1,14 @@
+Ver
+===
+
+Vê o item que você selecionou em tanto no painel de tarefas quanto de
+agendamentos.
+
+Isto é útil quando a descrição de um evento é maior do que o espaço
+disponível para exibi-lo. Se esse for o caso, a descrição será
+reduzida e seu final será substituído por "...". Para ler a descrição
+por inteiro, basta pressionar "%s" e uma janela de pop-up aparecerá,
+contendo o evento completo.
+
+Pressione qualquer tecla para fechar a janela pop-up e vá para a tela
+principal do Calcurse.

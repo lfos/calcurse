@@ -1,0 +1,13 @@
+Goto
+====
+
+Переход на заданный день в календаре.
+
+Using this command, you do not need to travel to that day using the
+displacement keys inside the calendar panel.
+
+If you hit [ENTER] without specifying any date, calcurse checks the system
+current date and you will be taken to that date.
+
+Notice that you can also specify a global key binding to return to the current
+day, no matter which panel is currently selected.

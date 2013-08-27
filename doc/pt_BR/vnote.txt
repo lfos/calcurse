@@ -1,0 +1,22 @@
+VerNota
+=======
+
+Vê uma nota que foi previamente anexada a um item (um item que possui
+uma nota tem um sinal ">" na sua frente).
+
+Este comando somente permite que se visualize a note, e não que se edite
+(para fazê-lo, use o comando "EditarNota").
+
+Assim que você tiver realçado um item contendo uma nota anexada, e a
+tecla de ver nota for pressionada, você será levado para um paginador
+externo para ver aquela nota. O paginador padrão é escolhido das
+seguintes formas:
+
+* se a variávei de ambiente "PAGER" estiver definida, então esta
+  será chamada como visualizador padrão.
+
+* Se a variável de ambiente acima não estiver definida, então
+  "/usr/bin/less" será usado.
+
+Quanto à edição de notas, saia do paginador e você será levado de volta
+ao Calcurse.

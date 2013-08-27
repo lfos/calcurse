@@ -1,0 +1,22 @@
+Importar
+========
+
+Importa dados de um arquivo icalendar.
+
+Você será solicitado a inserir o nome de arquivo do qual serão
+carregados itens de ical. No final do processo de importação, e se
+a opção geral 'system_dialogs' estiver definida como 'yes', um
+relatório indicando quantos itens foram importados será mostrado.
+
+Este relatório conterá o número total de linhas lidas, o número de
+de agendamentos, eventos e tarefas que foram importados com
+sucesso, junto com o número de itens que apresentaram problemas e
+que foram ignorados, se houver algum.
+
+Se um ou mais itens não puder ser importados, é possível ler o relatório
+do processo de importação para que se identifique que problemas
+ocorreram.
+
+Neste relatório é exibido um item por linha, com a linha do fluxo de
+entrada em que este item começa, junto com a descrição do porquê o item
+não pôde ser importado.

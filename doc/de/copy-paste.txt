@@ -1,0 +1,11 @@
+Kopieren und Einfügen
+=====================
+
+Kopieren und Einfügen des momenten ausgewählen Eintrages. Dies ist hilfreich, um
+schnell einen Eintrag von einem Tag zu einem anderen zu verschieben. Hierfür
+muss zunächst der zu kopierende Eintrag markiert und anschließend die der
+Kopier-Funktion zugewiesene Taste gedrückt werden. Sobald der neue Tag im
+Kalender gewählt ist, muss das Terminpanel ausgewählt und die Einfügen-Taste
+betätigt werden. Das Ereignis wird anschließend im Terminpanel in dem neuen Tag
+erscheinen.
+

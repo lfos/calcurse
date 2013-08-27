@@ -1,0 +1,27 @@
+Edit Item
+=========
+
+Edit the item which is currently selected.
+
+Depending on the item type (appointment, event or todo) and item repetition,
+you will be asked to choose one of the item properties to modify. An item
+property is one of the following: the start time, the end time, the
+description, or the item repetition. You can also move an item, that is, move
+an item without changing its duration.
+
+Once you have chosen the property you want to modify, you will be shown its
+actual value, and you will be able to change it as you like.
+
+Notes
+-----
+
+* If you choose to edit the item repetition properties, you will be asked to
+  re-enter all of the repetition characteristics (repetition type, frequency,
+  and ending date). Moreover, the previous data concerning the deleted
+  occurrences will be lost.
+
+* You can enter an empty end time to convert an existing appointment into a
+  punctual appointment.
+
+* Do not forget to save the calendar data to retrieve the modified properties
+  next time you launch Calcurse.

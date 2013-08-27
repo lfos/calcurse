@@ -1,0 +1,9 @@
+Pipe
+====
+
+Pipe the selected item to an external program.
+
+Press the '|' key to pipe the currently selected appointment or todo entry to
+an external program.
+
+You will be driven back to calcurse as soon as the program exits.

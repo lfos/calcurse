@@ -1,0 +1,20 @@
+Import
+======
+
+Import data from an iCal file.
+
+You will be asked to enter the file name from which to load iCal items. At the
+end of the import process, and if the general option 'system_dialogs' is set to
+'yes', a report indicating how many items were imported is shown.
+
+This report contains the total number of lines read, the number of
+appointments, events and todo items which were successfully imported, together
+with the number of items for which problems occurred and that were skipped, if
+any.
+
+If one or more items could not be imported, one has the possibility to read the
+import process report in order to identify which problems occurred.
+
+In this report is shown one item per line, with the line in the input stream at
+which this item begins, together with the description of why the item could not
+be imported.

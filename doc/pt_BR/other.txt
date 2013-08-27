@@ -1,0 +1,11 @@
+OutroCmd
+========
+
+Alterna entre páginas de ajuda de barra de status.
+
+Por a tela do terminal ser muito estreita para exibir todos os
+comandos disponíveis, este comando pode ser usado para ver o
+próximo conjunto de comandos junto com suas teclas de atalhos.
+
+Assim que se chegar à última página de barra de status, ao se executar
+o comando mais uma vez levará você de volta para a primeira página.

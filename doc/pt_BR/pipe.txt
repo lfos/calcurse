@@ -1,0 +1,10 @@
+Redirecionar
+============
+
+Redireciona o item selecionado para um programa externo.
+
+Pressione a tecla '|' para redirecionar a entrada de agendamento ou
+tarefa selecionada para um programa externo.
+
+Você será trazido de volta para o calcurse assim que o programa
+for finalizado.

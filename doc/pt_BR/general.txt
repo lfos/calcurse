@@ -1,0 +1,29 @@
+Teclas de Atalhos Genéricas
+===========================
+
+Algumas das teclas de atalhos se aplicam a qualquer painel que esteja
+selecionado. Elas são chamadas teclas de atalhos genéricas.
+
+Aqui está a lista de todas as teclas de atalhos genéricas, junto com
+suas respectivas ações:
+
+ '^R' : Redesenhar    -> redesenha painéis do calcurse, sendo útil se
+                         você redimensionar a sua tela de terminal ou
+                         quando aparece lixo na visão do calcurse
+ '^A' : AdicAgend     -> adiciona um agendamento ou um evento
+ '^T' : AdiTarefa     -> adiciona uma tarefa
+ 'T' : -1 Dia        -> move para dia anterior
+ 't' : +1 Dia        -> move para dia seguinte
+ 'W' : -1 Semana     -> move para semana anterior
+ 'w' : +1 Semana     -> move para semana seguinte
+ 'M'  : -1 Mês        -> move para mês anterior
+ 'm'  : +1 Mês        -> move para mês seguinte
+ 'Y'  : -1 Ano        -> move para ano anterior
+ 'y'  : +1 Ano        -> move para ano seguinte
+ '^G' : IrPara hoje   -> move para o dia de hoje
+
+As teclas '^P' e '^N' são usadas para rolar texto para cima e para
+baixo quando se está dentro de telas específicas, como, por exemplo,
+as telas de ajuda. Elas também são usadas quando a tela de calendário
+está selecionada para se alternar entre as visões disponíveis (visão
+de calendário mensal ou semanal).

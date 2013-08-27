@@ -1,0 +1,23 @@
+Exportar
+========
+
+Exporta dados do calcurse (agendamentos, eventos e tarefas).
+
+Esta opção leva ao submenu de exportação, no qual você pode escolher
+entre dois formatos diferentes de exportação: "ical" e "pcal".
+Escolhendo um destes formatos, será exportado dados do calcurse
+para o formato icalendar ou pcal.
+
+Você primeiro precisa especificar o arquivo para o qual o arquivo será
+exportado. Por padrão, este arquivo será:
+
+     ~/calcurse.ics
+
+para uma exportação em ical, e:
+
+     ~/calcurse.txt
+
+para uma exportação em pcal.
+
+Os dados do calcurse são exportados na seguinte ordem: eventos, agendamentos,
+tarefas.

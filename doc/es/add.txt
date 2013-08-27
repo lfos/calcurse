@@ -1,0 +1,39 @@
+Add
+===
+
+Add an item in either the todo or appointment list, depending on which panel is
+selected.
+
+To enter a new item in the todo list, you will need first to enter the
+description of this new item. Then you will be asked to specify the todo
+priority. This priority is represented by a number going from 9 for the lowest
+priority, to 1 for the highest one. It is still possible to change the item
+priority afterwards, by using the '+' and '-' keys inside the todo panel.
+
+If the appointment panel is selected, you will be able to enter either a new
+appointment or a new all-day long event. To enter a new event, press [ENTER]
+instead of the item start time, and just fill in the event description.
+
+To enter a new appointment to be added in the appointment list, you will need
+to enter successively the time at which the appointment begins, the appointment
+length (either by specifying the end time in [hh:mm] or the duration in
+[+hh:mm], [+xxdxxhxxm] or [+mm] format), and the description of the event. If
+you skip the end time by pressing [ENTER], a punctual appointment will be
+created.
+
+The day at which occurs the event or appointment is the day currently selected
+in the calendar, so you need to move to the desired day before.
+
+Notes
+-----
+
+* If an appointment lasts for such a long time that it continues on the next
+  days, this event will be indicated on all the corresponding days, and the
+  beginning or ending hour will be replaced by '..' if the event does not begin
+  or end on the day.
+
+* If you only press [ENTER] at the description prompt, without any description,
+  no item will be added.
+
+* Do not forget to save the calendar data to retrieve the new event next time
+  you launch calcurse.

@@ -1,0 +1,42 @@
+Adicionar
+=========
+
+Adiciona um item para a lista de tarefas ou de agendamentos, dependendo
+de qual painel está selecionado.
+
+Para inserir um novo item na lista de tarefas, você precisa primeiro inserir
+a descrição deste novo item. Então, você será solicitado para especificar a
+prioridade da tarefa. Esta prioridade é representada por um número que vai de
+9, como a menor prioridade, até 1, como a maior. Também é possível alterar a
+prioridade do item posteriormente, usando as teclas '+' e '-' dentro do
+painel de tarefas.
+
+Se o painel de agendamentos estiver selecionado, você poderá inserir o
+novo agendamento ou um evento para dia inteiro. Para inserir um novo
+evento, pressione [ENTER] ao invés do item de horário de início, e
+simplesmente preencha a descrição do evento.
+
+Para inserir um novo agendamento a ser adicionado à lista de agendamentos,
+será necessário que você insira sucessivamente o horário no que o agendamento
+será iniciado, sua extensão (especificando o horário de término no formato
+[hh:mm] ou a duração, no formato [+hh:mm], [+xxdxxhxxm] ou [+mm]) e a
+descrição do evento. Se você pular o horário de término pressionando [ENTER],
+um agendamento pontual será criado.
+
+O dia em que o evento ou agendamento ocorrerá é o dia atualmente
+selecionado no calendário. Então, você deve mover para o dia desejado
+antes.
+
+Notas
+-----
+
+* Se um agendamento durar por tanto tempo que chegar a continuar pelos
+  próximos dias, este evento será indicado em todos os dias correspondentes,
+  e os horários de início ou término serão substituídos por '..' se o evento
+  não iniciar ou terminar no dia.
+
+* Se você apenas pressionar [ENTER] no prompt de descrição, sem qualquer
+  descrição, nenhum item será adicionado.
+
+* Não se esqueça de salvar os dados do calendário para obter o novo
+  evento na próxima vez que você iniciar o calcurse.

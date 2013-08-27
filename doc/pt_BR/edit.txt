@@ -1,0 +1,27 @@
+Editar item
+===========
+
+Edita o item selecionado.
+
+Dependendo do tipo do item (agendamento, evento, ou tarefa), e se ele for
+repetido ou não, a você será solicitado que escolha uma das propriedades
+do item a modificar. Uma propriedade de item é uma das seguintes: o horário
+de início, o horário de término, a descrição ou a repetição do item. Você
+também pode mover um item, isto é, mover um item sem alterar sua duração.
+
+Assim que você tiver escolhido a propriedade que você deseja modificar, será
+mostrado o valor atual e você poderá alterá-lo como quiser.
+
+Notas
+------
+
+* Se você escolher editar as propriedades de repetição do item, a você
+  será solicitado que insira novamente todas as características de repetição
+  (tipo de repetição, frequência e data de término). Ademais, a data anterior
+  referente às ocorrências excluídas será perdida.
+
+* Você pode inserir um horário de término vazio para converter um agendamento
+  existente em um agendamento pontual.
+
+* Não esqueça de salvar os dados do calendário para recuperar as propriedades
+  modificadas na próxima vez que iniciar o calcurse.

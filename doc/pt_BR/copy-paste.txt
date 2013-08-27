@@ -1,0 +1,11 @@
+Copiar e Colar
+==============
+
+Copia e cola o item atualmente selecionado. Isso é útil para rapidamente
+copiar um item de uma data para outra. Para isso, deve-se primeiro destacar
+o item que precisa ser copiado e, então, pressionar a tecla designada
+para de função de cópia. Assim que a nova data tiver sido escolhida no
+calendário, o painel de agendamentos deve estar selecionado e a tecla
+deve ser pressionado para colar o item. O item vai aparecer o painel de
+agendamentos, atribuído à data selecionada.
+

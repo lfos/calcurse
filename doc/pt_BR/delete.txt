@@ -1,0 +1,16 @@
+Excluir
+=======
+
+Exclui um elemento da lista de tarefas ou de agendamentos.
+
+Dependendo do painel selecionado, quando você pressionar a tecla de exclusão,
+o item selecionado de tanto a lista de Tarefas quanto de agendamentos será
+excluído desta lista.
+
+Se o item a ser excluído é recorrente, você será perguntado se você deseja
+suprimir todas ocorrências deste item ou somente o item que você selecionou.
+
+Se a opção geral "confirm_delete" estiver definida para "SIM", a você
+será solicitada confirmação antes de excluir o evento selecionado. Não
+esqueça de salvar os dados do calendário para recuperar as modificações na
+próxima vez que iniciar o calcurse.

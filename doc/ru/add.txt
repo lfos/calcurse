@@ -1,0 +1,37 @@
+Добавить
+===
+
+Добавление записи в дело или в задачи зависит от текущей выбранной панели.
+
+Чтобы добавить новую запись в список дел, необходимо для начала войти в описание
+этой новой записи, где будет предложено уточнить приоритет дела. Приоритет
+представлен числами от 9 - низкий - до 1 - высокий. Впоследствии возможно
+изменить приоритет дела, используя клавиши '+' и '-' внутри панели дел.
+
+Если выбрана панель задач, то можно  добавить новую задачу или новое
+событие на весь день. Для добавления нового события нажмите [ENTER]
+вместо указания времени начала и просто заполните описание события.
+
+To enter a new appointment to be added in the appointment list, you will need
+to enter successively the time at which the appointment begins, the appointment
+length (either by specifying the end time in [hh:mm] or the duration in
+[+hh:mm], [+xxdxxhxxm] or [+mm] format), and the description of the event. If
+you skip the end time by pressing [ENTER], a punctual appointment will be
+created.
+
+День, отображающий событие или задачу это выбранный день в календаре.
+Выберите нужный вам день.
+
+Заметки
+-----
+
+* If an appointment lasts for such a long time that it continues on the next
+  days, this event will be indicated on all the corresponding days, and the
+  beginning or ending hour will be replaced by '..' if the event does not begin
+  or end on the day.
+
+* Если вы просто нажали [ENTER] в командной строке описания, без заполнения
+оного, то запись не будет создана.
+
+* Не забудьте сохранить данные при выходе, чтобы созданные события
+были доступны при следующем запуске.

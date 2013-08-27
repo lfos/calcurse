@@ -1,0 +1,28 @@
+Generic key bindings
+====================
+
+Some of the key bindings apply whatever panel is selected. They are called
+generic key bindings.
+
+Here is the list of all the generic key bindings, together with their
+corresponding action:
+
+ '^R' : Redraw function -> redraws calcurse panels, this is useful if
+                           you resize your terminal screen or when
+                           garbage appears inside the display
+ '^A' : Add Appointment -> add an appointment or an event
+ '^T' : Add TODO        -> add a todo
+ 'T' : -1 Day          -> move to previous day
+ 't' : +1 Day          -> move to next day
+ 'W' : -1 Week         -> move to previous week
+ 'w' : +1 Week         -> move to next week
+ 'M' : -1 Month        -> move to previous month
+ 'm' : +1 Month        -> move to next month
+ 'Y' : -1 Year         -> move to previous year
+ 'y' : +1 Year         -> move to next year
+ '^G' : Goto today      -> move to current day
+
+The '^P' and '^N' keys are used to scroll text upward or downward when inside
+specific screens such the help screens for example. They are also used when the
+calendar screen is selected to switch between the available views (monthly and
+weekly calendar views).

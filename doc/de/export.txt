@@ -1,0 +1,21 @@
+Export
+======
+
+Export calcurse data (appointments, events and todos).
+
+This leads to the export submenu, from which you can choose between two
+different export formats: 'ical' and 'pcal'. Choosing one of those formats lets
+you export calcurse data to iCal or pcal format.
+
+You first need to specify the file to which the data will be exported.  By
+default, this file is:
+
+     ~/calcurse.ics
+
+for an ical export, and:
+
+     ~/calcurse.txt
+
+for a pcal export.
+
+calcurse data are exported in the following order: events, appointments, todos.

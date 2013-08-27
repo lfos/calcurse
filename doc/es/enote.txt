@@ -1,0 +1,24 @@
+EditNote
+========
+
+Attach a note to any type of item, or edit an already existing note. This
+feature is useful if you do not have enough space to store all of your item
+description, or if you would like to add sub-tasks to an already existing todo
+item for example.
+
+You first need to highlight the item you want the note to be attached to. Then,
+after pressing the edit note key, you will be driven to an external editor to
+edit your note. This editor is chosen the following way:
+
+* If the 'VISUAL' environment variable is set, then this will be the default
+  editor to be called.
+
+* If 'VISUAL' is not set, then the 'EDITOR' environment variable will be used
+  as the default editor.
+
+* If none of the above environment variables is set, then '/usr/bin/vi' will be
+  used.
+
+Once the item note is edited and saved, quit your favorite editor. You will
+then go back to calcurse, and the '>' sign will appear in front of the
+highlighted item, meaning there is a note attached to it.

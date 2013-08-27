@@ -1,0 +1,15 @@
+Save
+====
+
+Save calcurse data.
+
+Data are split into four different files which contain :
+
+         / ~/.calcurse/conf -> user configuration
+        |                      (layout, color, general options)
+        |  ~/.calcurse/apts -> data related to the appointments
+        |  ~/.calcurse/todo -> data related to the todo list
+         \ ~/.calcurse/keys -> user-defined key bindings
+
+In the config menu, you can choose to save the calcurse data automatically
+before quitting.

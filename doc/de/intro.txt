@@ -1,0 +1,15 @@
+calcurse Online Help
+====================
+
+Welcome to the calcurse online help. The online help system allows for easily
+getting help on specific calcurse features.
+
+On the calcurse main screen, type `:help <feature>` (e.g. `:help add`) or
+`:help <key>` (e.g. `:help ^A`) to get help on a specific feature or key
+binding. Type `:help` without any parameter to display this introduction or
+simply use the corresponding keyboard shortcut (`?` by default).
+
+All help texts are displayed using an external pager. You need to exit the
+pager in order to get back to calcurse (pressing `q` should almost always
+work). The default pager can be changed by setting the PAGER environment
+variable.

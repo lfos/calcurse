@@ -1,0 +1,11 @@
+OtherCmd
+========
+
+Switch between status bar help pages.
+
+Because the terminal screen is too narrow to display all of the available
+commands, this command can be used to see the next set of commands together
+with their key bindings.
+
+Once the last status bar page is reached, running the command another time
+leads you back to the first page.

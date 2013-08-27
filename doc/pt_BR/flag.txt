@@ -1,0 +1,19 @@
+Sinalizar Item
+==============
+
+Alterna estado de sinalização de "importante" de um agendamento ou
+de "finalizada" de uma tarefa. Se uma tarefa é sinalizada como
+finalizada, seu número de prioridade será substituído por um sinal
+"X". Tarefas finalizadas não vão mais aparecer nos dados exportados
+ou quando se estiver usando a opção de linha de comando "-t" (a não
+ser que tenha sido especificado "0" como o número de prioridade,
+caso este em que somente tarefas finalizadas serão mostrados).
+
+Se um agendamento é sinalizado como importante, uma exclamação vai
+aparecer na frente dele e você será avisado quando o horário de início
+do agendamento se aproximar.
+
+Para personalizar a forma de notificação, o submenu de configuração
+permite que você escolha o comando a ser executado para avisar o
+usuário de um agendamento próximo e quanto tempo até que ele seja
+notificado.

@@ -1,0 +1,16 @@
+Priority
+========
+
+Change the priority of the currently selected item in the todo list.
+Priorities are represented by the number appearing in front of the todo
+description. This number goes from 9 for the lowest priority to 1 for the
+highest priority. Todo items having higher priorities are placed first (at the
+top) inside the todo panel.
+
+By default, if you want to raise the priority of a todo item, you need to press
+'+'.  In doing so, the number in front of this item will decrease, meaning its
+priority increases. The item position inside the todo panel may change,
+depending on the priority of the items above it.
+
+At the opposite, to lower a todo priority, press '-'. The todo position may
+also change depending on the priority of the items below.

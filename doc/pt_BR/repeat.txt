@@ -1,0 +1,37 @@
+Repetir
+=======
+
+Repete um evento ou um agendamento.
+
+Primeiro você deve que selecionar o item a ser repetido movendo-o dentro
+do painel de agendamentos. Então, ao executar o comando de repetição, levará
+você a um conjunto de três perguntas, com as quais você poderá
+especificar as caraterísticas da repetição:
+
+  o        tipo: você pode escolher entre uma repetição diária,
+                 semanal, mensal ou anual pressionando, "D",
+                 "W","M" ou "Y", respectivamente.
+
+  o  frequência: indica com qual frequência o item deve se repetir.
+                 Por exemplo, se você deseja sempre se lembrar de um
+                 aniversário, escolha uma repetição "anual" com uma
+                 frequência de "1", o que significa que deve repetir
+                 todo ano. Outro exemplo: se você vai ao restaurante
+                 a cada dois dias, escolha uma repetição "diária" com
+                 frequência de "2".
+
+  o  data final: isso especifica quando deve parar a repetição do
+                 evento ou agendamento selecionado. Para indicar
+                 uma repetição sem fim, insira "0" e o item
+                 será repetido para sempre.
+
+Notas
+-----
+
+* Itens repetidos são marcados com um "*" dentro do painel de
+  agendamentos, para ser facilmente diferenciável dos não
+  repetidos.
+
+* Os comandos "Repetir" e "Excluir" podem ser combinados para
+  para criar configurações complicadas, já que é possível
+  excluir somente uma ocorrência de um item repetido.

@@ -1,0 +1,10 @@
+Copy and Paste
+==============
+
+Copy and paste the currently selected item. This is useful to quickly copy an
+item from one date to another. To do so, one must first highlight the item that
+needs to be copied, then press the key assigned to the copy function. Once the
+new date is chosen in the calendar, the appointment panel must be selected and
+the paste key must be pressed to paste the item. The item will appear in the
+appointment panel, assigned to the newly selected date.
+

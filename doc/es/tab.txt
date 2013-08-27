@@ -1,0 +1,14 @@
+Tab
+===
+
+Switch between panels.
+
+The panel currently in use has its border colorized.
+
+Some actions are possible only if the right panel is selected. For example, if
+you want to add a task in the todo list, you need first to press the 'TAB' key
+to get the todo panel selected. Then you can press 'a' to add your item.
+
+Notice that at the bottom of the screen the list of possible actions change
+while pressing 'TAB', so you always know what action can be performed on the
+selected panel.

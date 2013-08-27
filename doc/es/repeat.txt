@@ -1,0 +1,35 @@
+Repeat
+======
+
+Repeat an event or an appointment.
+
+You must first select the item to be repeated by moving inside the appointment
+panel. Then running the repeat command will lead you to a set of three
+questions, with which you will be able to specify the repetition
+characteristics:
+
+  o        type: you can choose between a daily, weekly, monthly or
+                 yearly repetition by pressing 'D', 'W', 'M' or 'Y'
+                 respectively.
+
+  o   frequency: this indicates how often the item shall be repeated.
+                 For example, if you want to remember an anniversary,
+                 choose a 'yearly' repetition with a frequency of '1',
+                 which means it must be repeated every year. Another
+                 example: if you go to the restaurant every two days,
+                 choose a 'daily' repetition with a frequency of '2'.
+
+  o ending date: this specifies when to stop repeating the selected
+                 event or appointment. To indicate an endless 
+                 repetition, enter '0' and the item will be repeated
+                 forever.
+
+Notes
+-----
+
+* Repeated items are marked with an '*' inside the appointment panel, to be
+  easily recognizable from non-repeated ones.
+
+* The 'Repeat' and 'Delete' command can be mixed to create complicated
+  configurations, as it is possible to delete only one occurrence of a repeated
+  item.

@@ -1,0 +1,22 @@
+Calcurse - organizador baseado em texto
+=======================================
+
+Copyright (c) 2004-2013 Equipe de Desenvolvimento do Calcurse
+Todos os direitos reservados.
+
+A redistribuição e uso na forma de código-fonte e binário, com ou
+sem modificações, são permitidas na medida em que as seguintes
+condições sejam cumpridas:
+
+        - As redistribuições de código-fonte devem reter os direitos de
+          propriedade, a presente licença, esta lista de condições e a
+          seguinte ressalva.
+
+        - As redistribuições em forma binária devem reproduzir a
+          presente  licença, esta lista de condições e a seguinte
+          ressalva na documentação e/ou outros materiais fornecidos
+          com a distribuição.
+
+
+Envie seu feedback ou comentários para : misc@calcurse.org
+Homepage do Calcurse : http://calcurse.org

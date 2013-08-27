@@ -1,0 +1,25 @@
+Displacement keys
+=================
+
+Move around inside calcurse screens.
+
+The following scheme summarizes how to get around:
+
+                               move up
+                        move to previous week
+
+                                 k K UP 
+       move left                  ^  
+ move to previous day             |
+                      h H LFT 
+                            <--   +  -->
+                                           l L RGT 
+                                  |            move right
+                                  v         move to next day
+                                 j J DWN 
+
+                          move to next week
+                              move down
+
+Moreover, while inside the calendar panel, the '0' key moves to the first day
+of the week, and the '$' key selects the last day of the week.

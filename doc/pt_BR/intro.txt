@@ -1,0 +1,16 @@
+Ajuda Online do Calcurse
+========================
+
+Bem-vindo à ajuda online do calcurse. O sistema de ajuda online permite a
+obtenção de ajuda sobre recursos específicos do calcurse.
+
+Na tela principal do calcurse, digite ":help <recurso>" (ex.: ":help add")
+ou ":help <tecla>" (ex.: ":help ^A") para obter ajuda sobre um recurso
+específico ou tecla de atalho. Digite ":help" sem qualquer parâmetro para
+exibir esta introdução ou simplesmente use o atalho de teclado correspondente
+("?" por padrão).
+
+Todos os textos de ajuda são exibidos usando um paginador externo. Você
+precisa sair do paginador para voltar ao calcurse (pressionar "q" deve
+quase sempre funcionar). O paginador padrão pode ser alterado ao definir
+a variável de ambiente PAGER.

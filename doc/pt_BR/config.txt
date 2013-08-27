@@ -1,0 +1,24 @@
+Config
+======
+
+Abre os submenus de configuração. A partir deste submenu, você pode
+selecionar dentre várias cores, layout, notificações e opções em geral,
+e você pode até mesmo configurar suas teclas de atalhos.
+
+O submenu de cor permite que você escolha o tema de cores.
+
+O submenu de layout permite que você escolha o layout da tela do calcurse.
+Em outras palavras, permite definir onde colocar três painéis diferentes
+na tela.
+
+O submenu de opções gerais, Geral, traz uma tela com opções diferentes,
+que modificam a forma como Calcurse interage com o usuário.
+
+O submenu de notificação permite que você altere as configurações da barrade
+notificação.
+
+O submenu de teclas permite que você defina seus próprios atalhos de
+teclado.
+
+Não esqueça de salvar os dados do calendário para restaurar sua configuração
+na próxima vez que você iniciar o calcurse.

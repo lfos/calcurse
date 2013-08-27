@@ -1,0 +1,15 @@
+Salvar
+======
+
+Salva dados do calcurse.
+
+Dados serão separados em quatro arquivos diferentes contendo :
+
+         / ~/.calcurse/conf -> configuração do usuário
+        |                      (layout, cores, opções gerais)
+        |  ~/.calcurse/apts -> dados relacionados a agendamentos
+        |  ~/.calcurse/todo -> dados relacionados a lista de tarefas
+         \ ~/.calcurse/keys -> teclas de atalho do usuário
+
+No menu Config, você pode escolher salvar os dados do Calcurse
+automaticamente antes de cada saída.

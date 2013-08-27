@@ -1,0 +1,20 @@
+ViewNote
+========
+
+View a note which was previously attached to an item (an item which owns a note
+has a '>' sign in front of it).
+
+This command only permits to view the note, not to edit it (to do so, use the
+'EditNote' command).
+
+Once you highlighted an item with a note attached to it, and the view note key
+was pressed, you will be driven to an external pager to view that note. The
+default pager is chosen the following way:
+
+* If the 'PAGER' environment variable is set, then this will be the default
+  viewer to be called.
+
+* If the above environment variable is not set, then '/usr/bin/less' will be
+  used.
+
+As for editing a note, quit the pager and you will be driven back to calcurse.

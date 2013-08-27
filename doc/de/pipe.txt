@@ -1,0 +1,9 @@
+Pipe
+====
+
+Das ausgewählte Item an ein externes Programm weiterleiten.
+
+Drücken Sie die '|'-Taste (Pipe), um den momentan ausgewählten Eintrag an ein
+externes Programm weiterzugeben.
+
+Sie werden zurück zu Calcurse geleitet, sobald das Programm beendet ist.

@@ -1,0 +1,16 @@
+Aba
+===
+
+Alterna entre painéis.
+
+O painel em uso no momento tem a sua borda colorizada.
+
+Algumas ações são possíveis somente se o painel correto estiver
+selecionado. Por exemplo, se você quer adicionar uma tarefa na
+lista de TAREFAS, você precisa primeiro pressionar a tecla "TAB"
+para que o painel de tarefas seja selecionado. Então, você poderá
+pressionar "a" para adicionar seu item.
+
+Repare como na parte inferior da tela a lista de ações possíveis muda
+quando se pressiona "TAB", de forma que você sempre saberá qual ação
+pode ser executada no painel selecionado.
