@@ -44,6 +44,11 @@
 #define __BSD_VISIBLE 1
 #endif
 
+#ifndef _DARWIN_C_SOURCE
+/* Needed for SIGWINCH on Darwin. */
+#define _DARWIN_C_SOURCE 1
+#endif
+
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
