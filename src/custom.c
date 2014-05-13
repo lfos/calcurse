@@ -568,7 +568,7 @@ void custom_color_config(void)
 }
 
 /* Prints the general options. */
-static int print_general_options(WINDOW * win)
+static void print_general_option(int i, WINDOW *win, int y, int hilt, void *cb_data)
 {
 	enum {
 		AUTO_SAVE,
@@ -584,8 +584,6 @@ static int print_general_options(WINDOW * win)
 		NB_OPTIONS
 	};
 	const int XPOS = 1;
-	const int YOFF = 3;
-	int y;
 	char *opt[NB_OPTIONS] = {
 		"general.autosave = ",
 		"general.autogc = ",
@@ -599,90 +597,112 @@ static int print_general_options(WINDOW * win)
 		"format.inputdate = "
 	};
 
-	y = 0;
-	mvwprintw(win, y, XPOS, "[1] %s      ", opt[AUTO_SAVE]);
-	print_bool_option_incolor(win, conf.auto_save, y,
-				  XPOS + 4 + strlen(opt[AUTO_SAVE]));
-	mvwaddstr(win, y + 1, XPOS,
-		  _("(if set to YES, automatic save is done when quitting)"));
-	y += YOFF;
-	mvwprintw(win, y, XPOS, "[2] %s      ", opt[AUTO_GC]);
-	print_bool_option_incolor(win, conf.auto_gc, y,
-				  XPOS + 4 + strlen(opt[AUTO_GC]));
-	mvwaddstr(win, y + 1, XPOS,
-		  _("(run the garbage collector when quitting)"));
-	y += YOFF;
-	mvwprintw(win, y, XPOS, "[3] %s      ", opt[PERIODIC_SAVE]);
-	custom_apply_attr(win, ATTR_HIGHEST);
-	mvwprintw(win, y, XPOS + 4 + strlen(opt[PERIODIC_SAVE]), "%d",
-		  conf.periodic_save);
-	custom_remove_attr(win, ATTR_HIGHEST);
-	mvwaddstr(win, y + 1, XPOS,
-		  _("(if not null, automatically save data every 'periodic_save' "
-		   "minutes)"));
-	y += YOFF;
-	mvwprintw(win, y, XPOS, "[4] %s      ", opt[CONFIRM_QUIT]);
-	print_bool_option_incolor(win, conf.confirm_quit, y,
-				  XPOS + 4 + strlen(opt[CONFIRM_QUIT]));
-	mvwaddstr(win, y + 1, XPOS,
-		  _("(if set to YES, confirmation is required before quitting)"));
-	y += YOFF;
-	mvwprintw(win, y, XPOS, "[5] %s      ", opt[CONFIRM_DELETE]);
-	print_bool_option_incolor(win, conf.confirm_delete, y,
-				  XPOS + 4 + strlen(opt[CONFIRM_DELETE]));
-	mvwaddstr(win, y + 1, XPOS,
-		  _("(if set to YES, confirmation is required "
-		    "before deleting an event)"));
-	y += YOFF;
-	mvwprintw(win, y, XPOS, "[6] %s      ", opt[SYSTEM_DIAGS]);
-	print_bool_option_incolor(win, conf.system_dialogs, y,
-				  XPOS + 4 + strlen(opt[SYSTEM_DIAGS]));
-	mvwaddstr(win, y + 1, XPOS,
-		  _("(if set to YES, messages about loaded "
-		    "and saved data will be displayed)"));
-	y += YOFF;
-	mvwprintw(win, y, XPOS, "[7] %s      ", opt[PROGRESS_BAR]);
-	print_bool_option_incolor(win, conf.progress_bar, y,
-				  XPOS + 4 + strlen(opt[PROGRESS_BAR]));
-	mvwaddstr(win, y + 1, XPOS,
-		  _("(if set to YES, progress bar will be displayed "
-		    "when saving data)"));
-	y += YOFF;
-	mvwprintw(win, y, XPOS, "[8] %s      ", opt[FIRST_DAY_OF_WEEK]);
-	custom_apply_attr(win, ATTR_HIGHEST);
-	mvwaddstr(win, y, XPOS + 4 + strlen(opt[FIRST_DAY_OF_WEEK]),
-		  ui_calendar_week_begins_on_monday()? _("Monday") :
-		  _("Sunday"));
-	custom_remove_attr(win, ATTR_HIGHEST);
-	mvwaddstr(win, y + 1, XPOS,
-		  _("(specifies the first day of week in the calendar view)"));
-	y += YOFF;
-	mvwprintw(win, y, XPOS, "[9] %s      ", opt[OUTPUT_DATE_FMT]);
-	custom_apply_attr(win, ATTR_HIGHEST);
-	mvwaddstr(win, y, XPOS + 4 + strlen(opt[OUTPUT_DATE_FMT]),
-		  conf.output_datefmt);
-	custom_remove_attr(win, ATTR_HIGHEST);
-	mvwaddstr(win, y + 1, XPOS,
-		  _("(Format of the date to be displayed in non-interactive mode)"));
-	y += YOFF;
-	mvwprintw(win, y, XPOS, "[0] %s      ", opt[INPUT_DATE_FMT]);
-	custom_apply_attr(win, ATTR_HIGHEST);
-	mvwprintw(win, y, XPOS + 4 + strlen(opt[INPUT_DATE_FMT]), "%d",
-		  conf.input_datefmt);
-	custom_remove_attr(win, ATTR_HIGHEST);
-	mvwaddstr(win, y + 1, XPOS,
-		  _("(Format to be used when entering a date: "));
-	mvwprintw(win, y + 2, XPOS, " (1) %s, (2) %s, (3) %s, (4) %s)",
-		  datefmt_str[0], datefmt_str[1], datefmt_str[2],
-		  datefmt_str[3]);
+	if (hilt)
+		custom_apply_attr(win, ATTR_HIGHEST);
 
-	return y + YOFF;
+	switch (i) {
+	case 0:
+		mvwprintw(win, y, XPOS, "[1] %s      ", opt[AUTO_SAVE]);
+		print_bool_option_incolor(win, conf.auto_save, y,
+					  XPOS + 4 + strlen(opt[AUTO_SAVE]));
+		mvwaddstr(win, y + XPOS, 1,
+			  _("(if set to YES, automatic save is done when quitting)"));
+		break;
+	case 1:
+		mvwprintw(win, y, XPOS, "[2] %s      ", opt[AUTO_GC]);
+		print_bool_option_incolor(win, conf.auto_gc, y,
+					  XPOS + 4 + strlen(opt[AUTO_GC]));
+		mvwaddstr(win, y + 1, XPOS,
+			  _("(run the garbage collector when quitting)"));
+		break;
+	case 2:
+		mvwprintw(win, y, XPOS, "[3] %s      ", opt[PERIODIC_SAVE]);
+		custom_apply_attr(win, ATTR_HIGHEST);
+		mvwprintw(win, y, XPOS + 4 + strlen(opt[PERIODIC_SAVE]), "%d",
+			  conf.periodic_save);
+		custom_remove_attr(win, ATTR_HIGHEST);
+		mvwaddstr(win, y + 1, XPOS,
+			  _("(if not null, automatically save data every 'periodic_save' "
+			   "minutes)"));
+		break;
+	case 3:
+		mvwprintw(win, y, XPOS, "[4] %s      ", opt[CONFIRM_QUIT]);
+		print_bool_option_incolor(win, conf.confirm_quit, y,
+					  XPOS + 4 + strlen(opt[CONFIRM_QUIT]));
+		mvwaddstr(win, y + 1, XPOS,
+			  _("(if set to YES, confirmation is required before quitting)"));
+		break;
+	case 4:
+		mvwprintw(win, y, XPOS, "[5] %s      ", opt[CONFIRM_DELETE]);
+		print_bool_option_incolor(win, conf.confirm_delete, y,
+					  XPOS + 4 + strlen(opt[CONFIRM_DELETE]));
+		mvwaddstr(win, y + 1, XPOS,
+			  _("(if set to YES, confirmation is required "
+			    "before deleting an event)"));
+		break;
+	case 5:
+		mvwprintw(win, y, XPOS, "[6] %s      ", opt[SYSTEM_DIAGS]);
+		print_bool_option_incolor(win, conf.system_dialogs, y,
+					  XPOS + 4 + strlen(opt[SYSTEM_DIAGS]));
+		mvwaddstr(win, y + 1, XPOS,
+			  _("(if set to YES, messages about loaded "
+			    "and saved data will be displayed)"));
+		break;
+	case 6:
+		mvwprintw(win, y, XPOS, "[7] %s      ", opt[PROGRESS_BAR]);
+		print_bool_option_incolor(win, conf.progress_bar, y,
+					  XPOS + 4 + strlen(opt[PROGRESS_BAR]));
+		mvwaddstr(win, y + 1, XPOS,
+			  _("(if set to YES, progress bar will be displayed "
+			    "when saving data)"));
+		break;
+	case 7:
+		mvwprintw(win, y, XPOS, "[8] %s      ", opt[FIRST_DAY_OF_WEEK]);
+		custom_apply_attr(win, ATTR_HIGHEST);
+		mvwaddstr(win, y, XPOS + 4 + strlen(opt[FIRST_DAY_OF_WEEK]),
+			  ui_calendar_week_begins_on_monday()? _("Monday") :
+			  _("Sunday"));
+		custom_remove_attr(win, ATTR_HIGHEST);
+		mvwaddstr(win, y + 1, XPOS,
+			  _("(specifies the first day of week in the calendar view)"));
+		break;
+	case 8:
+		mvwprintw(win, y, XPOS, "[9] %s      ", opt[OUTPUT_DATE_FMT]);
+		custom_apply_attr(win, ATTR_HIGHEST);
+		mvwaddstr(win, y, XPOS + 4 + strlen(opt[OUTPUT_DATE_FMT]),
+			  conf.output_datefmt);
+		custom_remove_attr(win, ATTR_HIGHEST);
+		mvwaddstr(win, y + 1, XPOS,
+			  _("(Format of the date to be displayed in non-interactive mode)"));
+		break;
+	case 9:
+		mvwprintw(win, y, XPOS, "[0] %s      ", opt[INPUT_DATE_FMT]);
+		custom_apply_attr(win, ATTR_HIGHEST);
+		mvwprintw(win, y, XPOS + 4 + strlen(opt[INPUT_DATE_FMT]), "%d",
+			  conf.input_datefmt);
+		custom_remove_attr(win, ATTR_HIGHEST);
+		mvwaddstr(win, y + 1, XPOS,
+			  _("(Format to be used when entering a date: "));
+		mvwprintw(win, y + 2, XPOS, " (1) %s, (2) %s, (3) %s, (4) %s)",
+			  datefmt_str[0], datefmt_str[1], datefmt_str[2],
+			  datefmt_str[3]);
+		break;
+	}
+
+	if (hilt)
+		custom_remove_attr(win, ATTR_HIGHEST);
 }
 
-/* General configuration. */
-void custom_general_config(void)
+static int general_option_height(int i, void *cb_data)
 {
-	struct scrollwin cwin;
+	if (i == 9)
+		return 4;
+	else
+		return 3;
+}
+
+static void general_option_edit(int i)
+{
 	const char *number_str =
 	    _("Enter an option number to change its value");
 	const char *keys =
@@ -692,86 +712,99 @@ void custom_general_config(void)
 	const char *input_datefmt_prefix = _("Enter the date format: ");
 	const char *periodic_save_str =
 	    _("Enter the delay, in minutes, between automatic saves (0 to disable) ");
-	int ch;
 	int val;
-	char *buf;
+	char *buf = malloc(BUFSIZ);
+
+	switch (i) {
+	case 0:
+		conf.auto_save = !conf.auto_save;
+		break;
+	case 1:
+		conf.auto_gc = !conf.auto_gc;
+		break;
+	case 2:
+		status_mesg(periodic_save_str, "");
+		if (updatestring(win[STA].p, &buf, 0, 1) == 0) {
+			val = atoi(buf);
+			if (val >= 0)
+				conf.periodic_save = val;
+			if (conf.periodic_save > 0)
+				io_start_psave_thread();
+			else if (conf.periodic_save == 0)
+				io_stop_psave_thread();
+		}
+		status_mesg(number_str, keys);
+		break;
+	case 3:
+		conf.confirm_quit = !conf.confirm_quit;
+		break;
+	case 4:
+		conf.confirm_delete = !conf.confirm_delete;
+		break;
+	case 5:
+		conf.system_dialogs = !conf.system_dialogs;
+		break;
+	case 6:
+		conf.progress_bar = !conf.progress_bar;
+		break;
+	case 7:
+		ui_calendar_change_first_day_of_week();
+		break;
+	case 8:
+		status_mesg(output_datefmt_str, "");
+		strncpy(buf, conf.output_datefmt,
+			strlen(conf.output_datefmt) + 1);
+		if (updatestring(win[STA].p, &buf, 0, 1) == 0) {
+			strncpy(conf.output_datefmt, buf,
+				strlen(buf) + 1);
+		}
+		status_mesg(number_str, keys);
+		break;
+	case 9:
+		val = status_ask_simplechoice(input_datefmt_prefix,
+					      datefmt_str,
+					      DATE_FORMATS);
+		if (val != -1)
+			conf.input_datefmt = val;
+		break;
+	}
+
+	free(buf);
+}
+
+/* General configuration. */
+void custom_general_config(void)
+{
+	struct listbox lb;
+	int ch;
 
 	clear();
-	wins_scrollwin_init(&cwin, 0, 0, notify_bar() ? row - 3 : row - 2, col, _("general options"));
-	wins_scrollwin_draw_deco(&cwin);
-	status_mesg(number_str, keys);
-	wins_scrollwin_set_linecount(&cwin, print_general_options(cwin.inner));
-	wins_scrollwin_display(&cwin);
+	listbox_init(&lb, 0, 0, notify_bar() ? row - 3 : row - 2, col,
+		     _("general options"), general_option_height,
+		     print_general_option);
+	listbox_load_items(&lb, 10);
+	listbox_draw_deco(&lb);
+	status_mesg("", "");
+	listbox_display(&lb);
 
-	buf = mem_malloc(BUFSIZ);
-	while ((ch = wgetch(win[KEY].p)) != 'q') {
-		buf[0] = '\0';
-
+	while ((ch = keys_getch(win[KEY].p, NULL, NULL)) != KEY_GENERIC_QUIT) {
 		switch (ch) {
-		case CTRL('N'):
-			wins_scrollwin_down(&cwin, 1);
+		case KEY_MOVE_DOWN:
+			listbox_sel_move(&lb, 1);
 			break;
-		case CTRL('P'):
-			wins_scrollwin_up(&cwin, 1);
+		case KEY_MOVE_UP:
+			listbox_sel_move(&lb, -1);
 			break;
-		case '1':
-			conf.auto_save = !conf.auto_save;
-			break;
-		case '2':
-			conf.auto_gc = !conf.auto_gc;
-			break;
-		case '3':
-			status_mesg(periodic_save_str, "");
-			if (updatestring(win[STA].p, &buf, 0, 1) == 0) {
-				val = atoi(buf);
-				if (val >= 0)
-					conf.periodic_save = val;
-				if (conf.periodic_save > 0)
-					io_start_psave_thread();
-				else if (conf.periodic_save == 0)
-					io_stop_psave_thread();
-			}
-			status_mesg(number_str, keys);
-			break;
-		case '4':
-			conf.confirm_quit = !conf.confirm_quit;
-			break;
-		case '5':
-			conf.confirm_delete = !conf.confirm_delete;
-			break;
-		case '6':
-			conf.system_dialogs = !conf.system_dialogs;
-			break;
-		case '7':
-			conf.progress_bar = !conf.progress_bar;
-			break;
-		case '8':
-			ui_calendar_change_first_day_of_week();
-			break;
-		case '9':
-			status_mesg(output_datefmt_str, "");
-			strncpy(buf, conf.output_datefmt,
-				strlen(conf.output_datefmt) + 1);
-			if (updatestring(win[STA].p, &buf, 0, 1) == 0) {
-				strncpy(conf.output_datefmt, buf,
-					strlen(buf) + 1);
-			}
-			status_mesg(number_str, keys);
-			break;
-		case '0':
-			val = status_ask_simplechoice(input_datefmt_prefix,
-						      datefmt_str,
-						      DATE_FORMATS);
-			if (val != -1)
-				conf.input_datefmt = val;
+		case KEY_EDIT_ITEM:
+			general_option_edit(listbox_get_sel(&lb));
 			break;
 		}
 
 		if (resize) {
 			resize = 0;
 			wins_reset();
-			wins_scrollwin_resize(&cwin, 0, 0, notify_bar() ? row - 3 : row - 2, col);
-			wins_scrollwin_draw_deco(&cwin);
+			listbox_resize(&lb, 0, 0, notify_bar() ? row - 3 : row - 2, col);
+			listbox_draw_deco(&lb);
 			delwin(win[STA].p);
 			win[STA].p = newwin(win[STA].h, win[STA].w, win[STA].y, win[STA].x);
 			keypad(win[STA].p, TRUE);
@@ -781,13 +814,11 @@ void custom_general_config(void)
 			}
 		}
 
-		status_mesg(number_str, keys);
-		print_general_options(cwin.inner);
-		wins_scrollwin_display(&cwin);
+		status_mesg("", "");
+		listbox_display(&lb);
 	}
 
-	mem_free(buf);
-	wins_scrollwin_delete(&cwin);
+	listbox_delete(&lb);
 }
 
 static void
