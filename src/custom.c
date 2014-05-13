@@ -599,24 +599,22 @@ static void print_general_option(int i, WINDOW *win, int y, int hilt, void *cb_d
 
 	if (hilt)
 		custom_apply_attr(win, ATTR_HIGHEST);
+	mvwprintw(win, y, XPOS, "%s", opt[i]);
 
 	switch (i) {
 	case 0:
-		mvwprintw(win, y, XPOS, "%s", opt[AUTO_SAVE]);
 		print_bool_option_incolor(win, conf.auto_save, y,
 					  XPOS + strlen(opt[AUTO_SAVE]));
 		mvwaddstr(win, y + XPOS, 1,
 			  _("(if set to YES, automatic save is done when quitting)"));
 		break;
 	case 1:
-		mvwprintw(win, y, XPOS, "%s", opt[AUTO_GC]);
 		print_bool_option_incolor(win, conf.auto_gc, y,
 					  XPOS + strlen(opt[AUTO_GC]));
 		mvwaddstr(win, y + 1, XPOS,
 			  _("(run the garbage collector when quitting)"));
 		break;
 	case 2:
-		mvwprintw(win, y, XPOS, "%s", opt[PERIODIC_SAVE]);
 		custom_apply_attr(win, ATTR_HIGHEST);
 		mvwprintw(win, y, XPOS + strlen(opt[PERIODIC_SAVE]), "%d",
 			  conf.periodic_save);
@@ -626,14 +624,12 @@ static void print_general_option(int i, WINDOW *win, int y, int hilt, void *cb_d
 			   "minutes)"));
 		break;
 	case 3:
-		mvwprintw(win, y, XPOS, "%s", opt[CONFIRM_QUIT]);
 		print_bool_option_incolor(win, conf.confirm_quit, y,
 					  XPOS + strlen(opt[CONFIRM_QUIT]));
 		mvwaddstr(win, y + 1, XPOS,
 			  _("(if set to YES, confirmation is required before quitting)"));
 		break;
 	case 4:
-		mvwprintw(win, y, XPOS, "%s", opt[CONFIRM_DELETE]);
 		print_bool_option_incolor(win, conf.confirm_delete, y,
 					  XPOS + strlen(opt[CONFIRM_DELETE]));
 		mvwaddstr(win, y + 1, XPOS,
@@ -641,7 +637,6 @@ static void print_general_option(int i, WINDOW *win, int y, int hilt, void *cb_d
 			    "before deleting an event)"));
 		break;
 	case 5:
-		mvwprintw(win, y, XPOS, "%s", opt[SYSTEM_DIAGS]);
 		print_bool_option_incolor(win, conf.system_dialogs, y,
 					  XPOS + strlen(opt[SYSTEM_DIAGS]));
 		mvwaddstr(win, y + 1, XPOS,
@@ -649,7 +644,6 @@ static void print_general_option(int i, WINDOW *win, int y, int hilt, void *cb_d
 			    "and saved data will be displayed)"));
 		break;
 	case 6:
-		mvwprintw(win, y, XPOS, "%s", opt[PROGRESS_BAR]);
 		print_bool_option_incolor(win, conf.progress_bar, y,
 					  XPOS + strlen(opt[PROGRESS_BAR]));
 		mvwaddstr(win, y + 1, XPOS,
@@ -657,7 +651,6 @@ static void print_general_option(int i, WINDOW *win, int y, int hilt, void *cb_d
 			    "when saving data)"));
 		break;
 	case 7:
-		mvwprintw(win, y, XPOS, "%s", opt[FIRST_DAY_OF_WEEK]);
 		custom_apply_attr(win, ATTR_HIGHEST);
 		mvwaddstr(win, y, XPOS + strlen(opt[FIRST_DAY_OF_WEEK]),
 			  ui_calendar_week_begins_on_monday()? _("Monday") :
@@ -667,7 +660,6 @@ static void print_general_option(int i, WINDOW *win, int y, int hilt, void *cb_d
 			  _("(specifies the first day of week in the calendar view)"));
 		break;
 	case 8:
-		mvwprintw(win, y, XPOS, "%s", opt[OUTPUT_DATE_FMT]);
 		custom_apply_attr(win, ATTR_HIGHEST);
 		mvwaddstr(win, y, XPOS + strlen(opt[OUTPUT_DATE_FMT]),
 			  conf.output_datefmt);
@@ -676,7 +668,6 @@ static void print_general_option(int i, WINDOW *win, int y, int hilt, void *cb_d
 			  _("(Format of the date to be displayed in non-interactive mode)"));
 		break;
 	case 9:
-		mvwprintw(win, y, XPOS, "%s", opt[INPUT_DATE_FMT]);
 		custom_apply_attr(win, ATTR_HIGHEST);
 		mvwprintw(win, y, XPOS + strlen(opt[INPUT_DATE_FMT]), "%d",
 			  conf.input_datefmt);
