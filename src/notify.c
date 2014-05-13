@@ -555,14 +555,13 @@ void notify_start_main_thread(void)
  */
 static void
 print_option(WINDOW * win, unsigned x, unsigned y, char *name,
-	     char *valstr, unsigned valbool, char *desc, unsigned num)
+	     char *valstr, unsigned valbool, char *desc)
 {
-	const int XOFF = 4;
 	const int MAXCOL = col - 3;
 	int x_opt, len;
 
-	x_opt = x + XOFF + strlen(name);
-	mvwprintw(win, y, x, "[%u] %s", num, name);
+	x_opt = x + strlen(name);
+	mvwprintw(win, y, x, "%s", name);
 	erase_window_part(win, x_opt, y, MAXCOL, y);
 	if ((len = strlen(valstr)) != 0) {
 		unsigned maxlen;
@@ -588,8 +587,6 @@ print_option(WINDOW * win, unsigned x, unsigned y, char *name,
 /* Print options related to the notify-bar. */
 static void print_config_option(int i, WINDOW *win, int y, int hilt, void *cb_data)
 {
-	const int XORIG = 3;
-
 	enum { SHOW, DATE, CLOCK, WARN, CMD, NOTIFY_ALL, DMON, DMON_LOG,
 		    NB_OPT };
 
@@ -654,8 +651,8 @@ static void print_config_option(int i, WINDOW *win, int y, int hilt, void *cb_da
 	if (hilt)
 		custom_apply_attr(win, ATTR_HIGHEST);
 
-	print_option(win, XORIG, y, opt[i].name, opt[i].valstr,
-		     opt[i].valnum, opt[i].desc, i + 1);
+	print_option(win, 1, y, opt[i].name, opt[i].valstr,
+		     opt[i].valnum, opt[i].desc);
 
 	if (hilt)
 		custom_remove_attr(win, ATTR_HIGHEST);

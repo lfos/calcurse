@@ -602,23 +602,23 @@ static void print_general_option(int i, WINDOW *win, int y, int hilt, void *cb_d
 
 	switch (i) {
 	case 0:
-		mvwprintw(win, y, XPOS, "[1] %s      ", opt[AUTO_SAVE]);
+		mvwprintw(win, y, XPOS, "%s", opt[AUTO_SAVE]);
 		print_bool_option_incolor(win, conf.auto_save, y,
-					  XPOS + 4 + strlen(opt[AUTO_SAVE]));
+					  XPOS + strlen(opt[AUTO_SAVE]));
 		mvwaddstr(win, y + XPOS, 1,
 			  _("(if set to YES, automatic save is done when quitting)"));
 		break;
 	case 1:
-		mvwprintw(win, y, XPOS, "[2] %s      ", opt[AUTO_GC]);
+		mvwprintw(win, y, XPOS, "%s", opt[AUTO_GC]);
 		print_bool_option_incolor(win, conf.auto_gc, y,
-					  XPOS + 4 + strlen(opt[AUTO_GC]));
+					  XPOS + strlen(opt[AUTO_GC]));
 		mvwaddstr(win, y + 1, XPOS,
 			  _("(run the garbage collector when quitting)"));
 		break;
 	case 2:
-		mvwprintw(win, y, XPOS, "[3] %s      ", opt[PERIODIC_SAVE]);
+		mvwprintw(win, y, XPOS, "%s", opt[PERIODIC_SAVE]);
 		custom_apply_attr(win, ATTR_HIGHEST);
-		mvwprintw(win, y, XPOS + 4 + strlen(opt[PERIODIC_SAVE]), "%d",
+		mvwprintw(win, y, XPOS + strlen(opt[PERIODIC_SAVE]), "%d",
 			  conf.periodic_save);
 		custom_remove_attr(win, ATTR_HIGHEST);
 		mvwaddstr(win, y + 1, XPOS,
@@ -626,40 +626,40 @@ static void print_general_option(int i, WINDOW *win, int y, int hilt, void *cb_d
 			   "minutes)"));
 		break;
 	case 3:
-		mvwprintw(win, y, XPOS, "[4] %s      ", opt[CONFIRM_QUIT]);
+		mvwprintw(win, y, XPOS, "%s", opt[CONFIRM_QUIT]);
 		print_bool_option_incolor(win, conf.confirm_quit, y,
-					  XPOS + 4 + strlen(opt[CONFIRM_QUIT]));
+					  XPOS + strlen(opt[CONFIRM_QUIT]));
 		mvwaddstr(win, y + 1, XPOS,
 			  _("(if set to YES, confirmation is required before quitting)"));
 		break;
 	case 4:
-		mvwprintw(win, y, XPOS, "[5] %s      ", opt[CONFIRM_DELETE]);
+		mvwprintw(win, y, XPOS, "%s", opt[CONFIRM_DELETE]);
 		print_bool_option_incolor(win, conf.confirm_delete, y,
-					  XPOS + 4 + strlen(opt[CONFIRM_DELETE]));
+					  XPOS + strlen(opt[CONFIRM_DELETE]));
 		mvwaddstr(win, y + 1, XPOS,
 			  _("(if set to YES, confirmation is required "
 			    "before deleting an event)"));
 		break;
 	case 5:
-		mvwprintw(win, y, XPOS, "[6] %s      ", opt[SYSTEM_DIAGS]);
+		mvwprintw(win, y, XPOS, "%s", opt[SYSTEM_DIAGS]);
 		print_bool_option_incolor(win, conf.system_dialogs, y,
-					  XPOS + 4 + strlen(opt[SYSTEM_DIAGS]));
+					  XPOS + strlen(opt[SYSTEM_DIAGS]));
 		mvwaddstr(win, y + 1, XPOS,
 			  _("(if set to YES, messages about loaded "
 			    "and saved data will be displayed)"));
 		break;
 	case 6:
-		mvwprintw(win, y, XPOS, "[7] %s      ", opt[PROGRESS_BAR]);
+		mvwprintw(win, y, XPOS, "%s", opt[PROGRESS_BAR]);
 		print_bool_option_incolor(win, conf.progress_bar, y,
-					  XPOS + 4 + strlen(opt[PROGRESS_BAR]));
+					  XPOS + strlen(opt[PROGRESS_BAR]));
 		mvwaddstr(win, y + 1, XPOS,
 			  _("(if set to YES, progress bar will be displayed "
 			    "when saving data)"));
 		break;
 	case 7:
-		mvwprintw(win, y, XPOS, "[8] %s      ", opt[FIRST_DAY_OF_WEEK]);
+		mvwprintw(win, y, XPOS, "%s", opt[FIRST_DAY_OF_WEEK]);
 		custom_apply_attr(win, ATTR_HIGHEST);
-		mvwaddstr(win, y, XPOS + 4 + strlen(opt[FIRST_DAY_OF_WEEK]),
+		mvwaddstr(win, y, XPOS + strlen(opt[FIRST_DAY_OF_WEEK]),
 			  ui_calendar_week_begins_on_monday()? _("Monday") :
 			  _("Sunday"));
 		custom_remove_attr(win, ATTR_HIGHEST);
@@ -667,18 +667,18 @@ static void print_general_option(int i, WINDOW *win, int y, int hilt, void *cb_d
 			  _("(specifies the first day of week in the calendar view)"));
 		break;
 	case 8:
-		mvwprintw(win, y, XPOS, "[9] %s      ", opt[OUTPUT_DATE_FMT]);
+		mvwprintw(win, y, XPOS, "%s", opt[OUTPUT_DATE_FMT]);
 		custom_apply_attr(win, ATTR_HIGHEST);
-		mvwaddstr(win, y, XPOS + 4 + strlen(opt[OUTPUT_DATE_FMT]),
+		mvwaddstr(win, y, XPOS + strlen(opt[OUTPUT_DATE_FMT]),
 			  conf.output_datefmt);
 		custom_remove_attr(win, ATTR_HIGHEST);
 		mvwaddstr(win, y + 1, XPOS,
 			  _("(Format of the date to be displayed in non-interactive mode)"));
 		break;
 	case 9:
-		mvwprintw(win, y, XPOS, "[0] %s      ", opt[INPUT_DATE_FMT]);
+		mvwprintw(win, y, XPOS, "%s", opt[INPUT_DATE_FMT]);
 		custom_apply_attr(win, ATTR_HIGHEST);
-		mvwprintw(win, y, XPOS + 4 + strlen(opt[INPUT_DATE_FMT]), "%d",
+		mvwprintw(win, y, XPOS + strlen(opt[INPUT_DATE_FMT]), "%d",
 			  conf.input_datefmt);
 		custom_remove_attr(win, ATTR_HIGHEST);
 		mvwaddstr(win, y + 1, XPOS,
