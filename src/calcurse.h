@@ -1093,6 +1093,7 @@ void wins_get_config(void);
 void wins_update_border(int);
 void wins_update_panels(int);
 void wins_update(int);
+void wins_reset_noupdate(void);
 void wins_reset(void);
 void wins_prepare_external(void);
 void wins_unprepare_external(void);

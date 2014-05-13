@@ -584,12 +584,18 @@ void wins_update(int flags)
 }
 
 /* Reset the screen, needed when resizing terminal for example. */
-void wins_reset(void)
+void wins_reset_noupdate(void)
 {
 	endwin();
 	wins_refresh();
 	curs_set(0);
 	wins_reinit();
+}
+
+/* Reset the screen, needed when resizing terminal for example. */
+void wins_reset(void)
+{
+	wins_reset_noupdate();
 	wins_update(FLAG_ALL);
 }
 

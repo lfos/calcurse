@@ -786,7 +786,7 @@ void notify_config_bar(void)
 		if (resize) {
 			resize = 0;
 			wins_get_config();
-			wins_reset();
+			wins_reset_noupdate();
 			listbox_resize(&lb, 0, 0, notify_bar() ? row - 3 : row - 2, col);
 			listbox_draw_deco(&lb);
 			delwin(win[STA].p);
