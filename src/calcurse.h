@@ -515,6 +515,20 @@ struct scrollwin {
 	const char *label;
 };
 
+/* Generic list box structure. */
+typedef int (*listbox_fn_item_height_t) (int, void *);
+typedef void (*listbox_fn_draw_item_t) (int, WINDOW *, int, int, void *);
+
+struct listbox {
+	struct scrollwin sw;
+	unsigned item_count;
+	unsigned item_sel;
+	listbox_fn_item_height_t fn_height;
+	unsigned *ch;
+	listbox_fn_draw_item_t fn_draw;
+	void *cb_data;
+};
+
 /* Pad structure to handle scrolling. */
 struct pad {
 	int width;
@@ -801,6 +815,18 @@ void keys_popup_info(enum key);
 void keys_save_bindings(FILE *);
 int keys_check_missing_bindings(void);
 void keys_fill_missing(void);
+
+/* listbox.c */
+void listbox_init(struct listbox *, int, int, int, int, const char *, listbox_fn_item_height_t, listbox_fn_draw_item_t);
+void listbox_delete(struct listbox *);
+void listbox_resize(struct listbox *, int, int, int, int);
+void listbox_set_cb_data(struct listbox *, void *);
+void listbox_load_items(struct listbox *, int);
+void listbox_draw_deco(struct listbox *);
+void listbox_display(struct listbox *);
+int listbox_get_sel(struct listbox *);
+void listbox_set_sel(struct listbox *, unsigned);
+void listbox_sel_move(struct listbox *, int);
 
 /* mem.c */
 void *xmalloc(size_t);

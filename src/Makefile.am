@@ -23,6 +23,7 @@ calcurse_SOURCES = \
 	ical.c \
 	io.c \
 	keys.c \
+	listbox.c \
 	llist.c \
 	note.c \
 	notify.c \
