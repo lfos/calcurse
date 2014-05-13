@@ -679,19 +679,6 @@ static int print_general_options(WINDOW * win)
 	return y + YOFF;
 }
 
-void custom_set_swsiz(struct scrollwin *sw)
-{
-	sw->win.x = 0;
-	sw->win.y = 0;
-	sw->win.h = (notify_bar())? row - 3 : row - 2;
-	sw->win.w = col;
-
-	sw->pad.x = 1;
-	sw->pad.y = 3;
-	sw->pad.h = BUFSIZ;
-	sw->pad.w = col - 2 * sw->pad.x - 1;
-}
-
 /* General configuration. */
 void custom_general_config(void)
 {
@@ -710,12 +697,10 @@ void custom_general_config(void)
 	char *buf;
 
 	clear();
-	custom_set_swsiz(&cwin);
-	cwin.label = _("general options");
-	wins_scrollwin_init(&cwin);
-	wins_show(cwin.win.p, cwin.label);
+	wins_scrollwin_init(&cwin, 0, 0, notify_bar() ? row - 3 : row - 2, col, _("general options"));
+	wins_scrollwin_draw_deco(&cwin);
 	status_mesg(number_str, keys);
-	cwin.total_lines = print_general_options(cwin.pad.p);
+	wins_scrollwin_set_linecount(&cwin, print_general_options(cwin.inner));
 	wins_scrollwin_display(&cwin);
 
 	buf = mem_malloc(BUFSIZ);
@@ -785,15 +770,10 @@ void custom_general_config(void)
 		if (resize) {
 			resize = 0;
 			wins_reset();
-			wins_scrollwin_delete(&cwin);
-			custom_set_swsiz(&cwin);
-			wins_scrollwin_init(&cwin);
-			wins_show(cwin.win.p, cwin.label);
-			cwin.first_visible_line = 0;
+			wins_scrollwin_resize(&cwin, 0, 0, notify_bar() ? row - 3 : row - 2, col);
+			wins_scrollwin_draw_deco(&cwin);
 			delwin(win[STA].p);
-			win[STA].p =
-			    newwin(win[STA].h, win[STA].w, win[STA].y,
-				   win[STA].x);
+			win[STA].p = newwin(win[STA].h, win[STA].w, win[STA].y, win[STA].x);
 			keypad(win[STA].p, TRUE);
 			if (notify_bar()) {
 				notify_reinit_bar();
@@ -802,9 +782,10 @@ void custom_general_config(void)
 		}
 
 		status_mesg(number_str, keys);
-		cwin.total_lines = print_general_options(cwin.pad.p);
+		print_general_options(cwin.inner);
 		wins_scrollwin_display(&cwin);
 	}
+
 	mem_free(buf);
 	wins_scrollwin_delete(&cwin);
 }
@@ -904,16 +885,13 @@ void custom_keys_config(void)
 	const int LABELLINES = 3;
 
 	clear();
-	custom_set_swsiz(&kwin);
-	nbdisplayed = (kwin.win.h - LABELLINES) / LINESPERKEY;
-	kwin.label = _("keys configuration");
-	wins_scrollwin_init(&kwin);
-	wins_show(kwin.win.p, kwin.label);
+	nbdisplayed = ((notify_bar() ? row - 3 : row - 2) - LABELLINES) / LINESPERKEY;
+	wins_scrollwin_init(&kwin, 0, 0, notify_bar() ? row - 3 : row - 2, col, _("keys configuration"));
+	wins_scrollwin_set_linecount(&kwin, NBKEYS * LINESPERKEY);
+	wins_scrollwin_draw_deco(&kwin);
 	custom_keys_config_bar();
 	selrow = selelm = 0;
-	nbrowelm =
-	    print_keys_bindings(kwin.pad.p, selrow, selelm, LINESPERKEY);
-	kwin.total_lines = NBKEYS * LINESPERKEY;
+	nbrowelm = print_keys_bindings(kwin.inner, selrow, selelm, LINESPERKEY);
 	wins_scrollwin_display(&kwin);
 	firstrow = 0;
 	lastrow = firstrow + nbdisplayed - 1;
@@ -976,9 +954,9 @@ void custom_keys_config(void)
 					not_recognized = 1;
 					WARN_MSG(_("This key is not yet recognized by calcurse, "
 						  "please choose another one."));
-					werase(kwin.pad.p);
+					werase(kwin.inner);
 					nbrowelm =
-					    print_keys_bindings(kwin.pad.p,
+					    print_keys_bindings(kwin.inner,
 								selrow,
 								selelm,
 								LINESPERKEY);
@@ -1002,9 +980,9 @@ void custom_keys_config(void)
 					WARN_MSG(_("This key is already in use for %s, "
 						  "please choose another one."),
 						 keys_get_label(action));
-					werase(kwin.pad.p);
+					werase(kwin.inner);
 					nbrowelm =
-					    print_keys_bindings(kwin.pad.p,
+					    print_keys_bindings(kwin.inner,
 								selrow,
 								selelm,
 								LINESPERKEY);
@@ -1036,9 +1014,9 @@ void custom_keys_config(void)
 			return;
 		}
 		custom_keys_config_bar();
-		werase(kwin.pad.p);
+		werase(kwin.inner);
 		nbrowelm =
-		    print_keys_bindings(kwin.pad.p, selrow, selelm,
+		    print_keys_bindings(kwin.inner, selrow, selelm,
 					LINESPERKEY);
 		wins_scrollwin_display(&kwin);
 	}

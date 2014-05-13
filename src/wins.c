@@ -281,61 +281,114 @@ void wins_init(void)
  * Create a new window and its associated pad, which is used to make the
  * scrolling faster.
  */
-void wins_scrollwin_init(struct scrollwin *sw)
+void wins_scrollwin_init(struct scrollwin *sw, int y, int x, int h, int w, const char *label)
 {
 	EXIT_IF(sw == NULL, "null pointer");
-	sw->win.p = newwin(sw->win.h, sw->win.w, sw->win.y, sw->win.x);
-	sw->pad.p = newpad(sw->pad.h, sw->pad.w);
-	sw->first_visible_line = 0;
-	sw->total_lines = 0;
+	sw->y = y;
+	sw->x = x;
+	sw->h = h;
+	sw->w = w;
+	sw->win = newwin(h, w, y, x);
+	sw->inner = newpad(BUFSIZ, w);
+	sw->line_num = sw->line_off = 0;
+	sw->label = label;
+}
+
+/* Resize a scrolling window. */
+void wins_scrollwin_resize(struct scrollwin *sw, int y, int x, int h, int w)
+{
+	EXIT_IF(sw == NULL, "null pointer");
+	sw->y = y;
+	sw->x = x;
+	sw->h = h;
+	sw->w = w;
+	delwin(sw->inner);
+	delwin(sw->win);
+	sw->win = newwin(h, w, y, x);
+	sw->inner = newpad(BUFSIZ, w);
+}
+
+/*
+ * Set the number of lines to be displayed.
+ */
+void wins_scrollwin_set_linecount(struct scrollwin *sw, unsigned lines)
+{
+	sw->line_num = lines;
 }
 
 /* Free an already created scrollwin. */
 void wins_scrollwin_delete(struct scrollwin *sw)
 {
 	EXIT_IF(sw == NULL, "null pointer");
-	delwin(sw->win.p);
-	delwin(sw->pad.p);
+	delwin(sw->inner);
+	delwin(sw->win);
+}
+
+/* Draw window border and label. */
+void wins_scrollwin_draw_deco(struct scrollwin *sw)
+{
+	box(sw->win, 0, 0);
+
+	if (!conf.compact_panels) {
+		mvwaddch(sw->win, 2, 0, ACS_LTEE);
+		mvwhline(sw->win, 2, 1, ACS_HLINE, sw->w - 2);
+		mvwaddch(sw->win, 2, sw->w - 1, ACS_RTEE);
+
+		print_in_middle(sw->win, 1, 0, sw->w, sw->label);
+	}
 }
 
 /* Display a scrolling window. */
 void wins_scrollwin_display(struct scrollwin *sw)
 {
-	const int visible_lines = sw->win.h - sw->pad.y - 1;
+	int inner_y = (conf.compact_panels ? 1 : 3);
+	int inner_x = 1;
+	int inner_h = sw->h - (conf.compact_panels ? 2 : 4);
+	int inner_w = sw->w - 2;
 
-	if (sw->total_lines > visible_lines) {
-		int sbar_length =
-		    visible_lines * visible_lines / sw->total_lines;
-		int highend =
-		    visible_lines * sw->first_visible_line /
-		    sw->total_lines;
-		int sbar_top = highend + sw->pad.y + 1;
+	if (sw->line_num > inner_h) {
+		int sbar_h = MAX(inner_h * inner_h / sw->line_num, 1);
+		int sbar_y = inner_y + sw->line_off * (inner_h - sbar_h) / (sw->line_num - inner_h);
+		int sbar_x = sw->w - 1;
 
-		if ((sbar_top + sbar_length) > sw->win.h - 1)
-			sbar_length = sw->win.h - sbar_top;
-		draw_scrollbar(sw->win.p, sbar_top,
-			       sw->win.w + sw->win.x - 2, sbar_length,
-			       sw->pad.y + 1, sw->win.h - 1, 1);
+		draw_scrollbar(sw->win, sbar_y, sbar_x, sbar_h, inner_y,
+			       inner_y + inner_h - 1, 1);
 	}
+
 	wmove(win[STA].p, 0, 0);
-	wnoutrefresh(sw->win.p);
-	pnoutrefresh(sw->pad.p, sw->first_visible_line, 0, sw->pad.y,
-		     sw->pad.x, sw->win.h - sw->pad.y + 1,
-		     sw->win.w - sw->win.x);
+	wnoutrefresh(sw->win);
+	pnoutrefresh(sw->inner, sw->line_off, 0, sw->y + inner_y,
+		     sw->x + inner_x, sw->y + inner_y + inner_h - 1,
+		     sw->x + inner_x + inner_w - 1);
 	wins_doupdate();
 }
 
 void wins_scrollwin_up(struct scrollwin *sw, int amount)
 {
-	if (sw->first_visible_line > 0)
-		sw->first_visible_line -= amount;
+	if ((int)sw->line_off - amount > 0)
+		sw->line_off -= amount;
+	else
+		sw->line_off = 0;
 }
 
 void wins_scrollwin_down(struct scrollwin *sw, int amount)
 {
-	if (sw->total_lines >
-	    (sw->first_visible_line + sw->win.h - sw->pad.y - 1))
-		sw->first_visible_line += amount;
+	int inner_h = sw->h - (conf.compact_panels ? 2 : 4);
+
+	sw->line_off += amount;
+
+	if ((int)sw->line_off > (int)sw->line_num - inner_h)
+		sw->line_off = sw->line_num - inner_h;
+}
+
+void wins_scrollwin_ensure_visible(struct scrollwin *sw, unsigned line)
+{
+	int inner_h = sw->h - (conf.compact_panels ? 2 : 4);
+
+	if (line < sw->line_off)
+		sw->line_off = line;
+	else if (line >= sw->line_off + inner_h)
+		sw->line_off = line - inner_h + 1;
 }
 
 void wins_reinit_panels(void)

@@ -668,14 +668,8 @@ static unsigned print_config_options(WINDOW * optwin)
 
 static void reinit_conf_win(struct scrollwin *win)
 {
-	unsigned first_line;
-
-	first_line = win->first_visible_line;
-	wins_scrollwin_delete(win);
-	custom_set_swsiz(win);
-	wins_scrollwin_init(win);
-	wins_show(win->win.p, win->label);
-	win->first_visible_line = first_line;
+	wins_scrollwin_resize(win, 0, 0, notify_bar() ? row - 3 : row - 2, col);
+	wins_scrollwin_draw_deco(win);
 }
 
 /* Notify-bar configuration. */
@@ -697,12 +691,10 @@ void notify_config_bar(void)
 	int ch;
 
 	clear();
-	custom_set_swsiz(&cwin);
-	cwin.label = _("notification options");
-	wins_scrollwin_init(&cwin);
-	wins_show(cwin.win.p, cwin.label);
+	wins_scrollwin_init(&cwin, 0, 0, notify_bar() ? row - 3 : row - 2, col, _("notification options"));
+	wins_scrollwin_draw_deco(&cwin);
 	status_mesg(number_str, keys);
-	cwin.total_lines = print_config_options(cwin.pad.p);
+	wins_scrollwin_set_linecount(&cwin, print_config_options(cwin.inner));
 	wins_scrollwin_display(&cwin);
 
 	buf = mem_malloc(BUFSIZ);
@@ -724,7 +716,6 @@ void notify_config_bar(void)
 				notify_start_main_thread();
 			else
 				notify_stop_main_thread();
-			wins_scrollwin_delete(&cwin);
 			reinit_conf_win(&cwin);
 			break;
 		case '2':
@@ -809,7 +800,7 @@ void notify_config_bar(void)
 		}
 
 		status_mesg(number_str, keys);
-		cwin.total_lines = print_config_options(cwin.pad.p);
+		print_config_options(cwin.inner);
 		wins_scrollwin_display(&cwin);
 	}
 	mem_free(buf);

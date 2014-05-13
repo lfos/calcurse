@@ -504,10 +504,14 @@ struct window {
 
 /* Generic scrolling window structure. */
 struct scrollwin {
-	struct window win;
-	struct window pad;
-	unsigned first_visible_line;
-	unsigned total_lines;
+	WINDOW *win;
+	WINDOW *inner;
+	int y;
+	int x;
+	int h;
+	int w;
+	unsigned line_off;
+	unsigned line_num;
 	const char *label;
 };
 
@@ -1047,11 +1051,15 @@ enum win wins_slctd(void);
 void wins_slctd_set(enum win);
 void wins_slctd_next(void);
 void wins_init(void);
-void wins_scrollwin_init(struct scrollwin *);
+void wins_scrollwin_init(struct scrollwin *, int, int, int, int, const char *);
+void wins_scrollwin_resize(struct scrollwin *, int, int, int, int);
+void wins_scrollwin_set_linecount(struct scrollwin *, unsigned);
 void wins_scrollwin_delete(struct scrollwin *);
+void wins_scrollwin_draw_deco(struct scrollwin *);
 void wins_scrollwin_display(struct scrollwin *);
 void wins_scrollwin_up(struct scrollwin *, int);
 void wins_scrollwin_down(struct scrollwin *, int);
+void wins_scrollwin_ensure_visible(struct scrollwin *, unsigned);
 void wins_reinit(void);
 void wins_reinit_panels(void);
 void wins_show(WINDOW *, const char *);

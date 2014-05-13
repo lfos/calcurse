@@ -499,7 +499,7 @@ void
 draw_scrollbar(WINDOW * win, int y, int x, int length,
 	       int bar_top, int bar_bottom, unsigned hilt)
 {
-	mvwvline(win, bar_top, x, ACS_VLINE, bar_bottom - bar_top);
+	mvwvline(win, bar_top, x, ACS_VLINE, bar_bottom - bar_top + 1);
 	if (hilt)
 		custom_apply_attr(win, ATTR_HIGHEST);
 	wattron(win, A_REVERSE);
