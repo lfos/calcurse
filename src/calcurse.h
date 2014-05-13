@@ -627,7 +627,7 @@ void ui_day_scroll_pad_down(int, int);
 void ui_day_scroll_pad_up(int);
 struct notify_app *apoint_check_next(struct notify_app *, long);
 void apoint_switch_notify(struct apoint *);
-void ui_day_update_panel(int);
+void ui_day_update_panel(int, struct date);
 void apoint_paste_item(struct apoint *, long);
 
 /* args.c */

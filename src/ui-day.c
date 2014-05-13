@@ -923,7 +923,7 @@ void ui_day_scroll_pad_up(int nb_events_inday)
 }
 
 /* Updates the Appointment panel */
-void ui_day_update_panel(int which_pan)
+void ui_day_update_panel(int which_pan, struct date slctd_date)
 {
 	int title_xpos;
 	int bordr = 1;
@@ -931,10 +931,8 @@ void ui_day_update_panel(int which_pan)
 	int app_width = win[APP].w - bordr;
 	int app_length = win[APP].h - bordr - title_lines;
 	long date;
-	struct date slctd_date;
 
 	/* variable inits */
-	slctd_date = *ui_calendar_get_slctd_day();
 	title_xpos =
 	    win[APP].w - (strlen(_(monthnames[slctd_date.mm - 1])) + 16);
 	if (slctd_date.dd < 10)

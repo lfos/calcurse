@@ -507,7 +507,7 @@ void wins_update_border(int flags)
 void wins_update_panels(int flags)
 {
 	if (flags & FLAG_APP)
-		ui_day_update_panel(slctd_win);
+		ui_day_update_panel(slctd_win, *ui_calendar_get_slctd_day());
 	if (flags & FLAG_TOD)
 		ui_todo_update_panel(slctd_win);
 	if (flags & FLAG_CAL)
