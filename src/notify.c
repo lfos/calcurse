@@ -763,7 +763,7 @@ void notify_config_bar(void)
 	clear();
 	listbox_init(&lb, 0, 0, notify_bar() ? row - 3 : row - 2, col, _("notification options"), config_option_height, print_config_option);
 	listbox_load_items(&lb, 8);
-	listbox_draw_deco(&lb);
+	listbox_draw_deco(&lb, 0);
 	status_mesg("", "");
 	listbox_display(&lb);
 
@@ -785,7 +785,7 @@ void notify_config_bar(void)
 			wins_get_config();
 			wins_reset_noupdate();
 			listbox_resize(&lb, 0, 0, notify_bar() ? row - 3 : row - 2, col);
-			listbox_draw_deco(&lb);
+			listbox_draw_deco(&lb, 0);
 			delwin(win[STA].p);
 			win[STA].p =
 			    newwin(win[STA].h, win[STA].w, win[STA].y,

@@ -774,7 +774,7 @@ void custom_general_config(void)
 		     _("general options"), general_option_height,
 		     print_general_option);
 	listbox_load_items(&lb, 10);
-	listbox_draw_deco(&lb);
+	listbox_draw_deco(&lb, 0);
 	status_mesg("", "");
 	listbox_display(&lb);
 
@@ -795,7 +795,7 @@ void custom_general_config(void)
 			resize = 0;
 			wins_reset_noupdate();
 			listbox_resize(&lb, 0, 0, notify_bar() ? row - 3 : row - 2, col);
-			listbox_draw_deco(&lb);
+			listbox_draw_deco(&lb, 0);
 			delwin(win[STA].p);
 			win[STA].p = newwin(win[STA].h, win[STA].w, win[STA].y, win[STA].x);
 			keypad(win[STA].p, TRUE);
@@ -910,7 +910,7 @@ void custom_keys_config(void)
 	nbdisplayed = ((notify_bar() ? row - 3 : row - 2) - LABELLINES) / LINESPERKEY;
 	wins_scrollwin_init(&kwin, 0, 0, notify_bar() ? row - 3 : row - 2, col, _("keys configuration"));
 	wins_scrollwin_set_linecount(&kwin, NBKEYS * LINESPERKEY);
-	wins_scrollwin_draw_deco(&kwin);
+	wins_scrollwin_draw_deco(&kwin, 0);
 	custom_keys_config_bar();
 	selrow = selelm = 0;
 	nbrowelm = print_keys_bindings(kwin.inner, selrow, selelm, LINESPERKEY);

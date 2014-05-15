@@ -325,17 +325,24 @@ void wins_scrollwin_delete(struct scrollwin *sw)
 }
 
 /* Draw window border and label. */
-void wins_scrollwin_draw_deco(struct scrollwin *sw)
+void wins_scrollwin_draw_deco(struct scrollwin *sw, int hilt)
 {
+	if (hilt)
+		wattron(sw->win, A_BOLD | COLOR_PAIR(COLR_CUSTOM));
+
 	box(sw->win, 0, 0);
 
 	if (!conf.compact_panels) {
 		mvwaddch(sw->win, 2, 0, ACS_LTEE);
 		mvwhline(sw->win, 2, 1, ACS_HLINE, sw->w - 2);
 		mvwaddch(sw->win, 2, sw->w - 1, ACS_RTEE);
-
-		print_in_middle(sw->win, 1, 0, sw->w, sw->label);
 	}
+
+	if (hilt)
+		wattroff(sw->win, A_BOLD | COLOR_PAIR(COLR_CUSTOM));
+
+	if (!conf.compact_panels)
+		print_in_middle(sw->win, 1, 0, sw->w, sw->label);
 }
 
 /* Display a scrolling window. */

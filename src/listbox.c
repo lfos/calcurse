@@ -89,9 +89,9 @@ void listbox_load_items(struct listbox *lb, int item_count)
 	wins_scrollwin_set_linecount(&(lb->sw), ch);
 }
 
-void listbox_draw_deco(struct listbox *lb)
+void listbox_draw_deco(struct listbox *lb, int hilt)
 {
-	wins_scrollwin_draw_deco(&(lb->sw));
+	wins_scrollwin_draw_deco(&(lb->sw), hilt);
 }
 
 void listbox_display(struct listbox *lb)
