@@ -45,7 +45,7 @@ llist_t todolist;
 /* Returns a structure containing the selected item. */
 struct todo *todo_get_item(int item_number)
 {
-	return LLIST_GET_DATA(LLIST_NTH(&todolist, item_number - 1));
+	return LLIST_GET_DATA(LLIST_NTH(&todolist, item_number));
 }
 
 static int todo_cmp_id(struct todo *a, struct todo *b)
@@ -131,9 +131,9 @@ int todo_get_position(struct todo *needle)
 	int n = 0;
 
 	LLIST_FOREACH(&todolist, i) {
-		n++;
 		if (LLIST_TS_GET_DATA(i) == needle)
 			return n;
+		n++;
 	}
 
 	EXIT(_("todo not found"));

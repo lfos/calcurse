@@ -758,10 +758,6 @@ void ui_day_item_repeat(void);
 void ui_day_item_cut_free(unsigned);
 void ui_day_item_copy(unsigned *, unsigned *, unsigned);
 void ui_day_item_paste(unsigned *, unsigned *, unsigned);
-void ui_todo_add(void);
-void ui_todo_delete(void);
-void ui_todo_edit(void);
-void ui_todo_pipe(void);
 
 /* io.c */
 unsigned io_fprintln(const char *, const char *, ...);
@@ -950,30 +946,33 @@ void sigs_unignore(void);
 /* todo.c */
 extern llist_t todolist;
 struct todo *todo_get_item(int);
-void ui_todo_hilt_set(int);
-void ui_todo_hilt_decrease(int);
-void ui_todo_hilt_increase(int);
-int ui_todo_hilt(void);
-int ui_todo_nb(void);
-void ui_todo_set_nb(int);
-void ui_todo_set_first(int);
-void ui_todo_first_increase(int);
-void ui_todo_first_decrease(int);
-int ui_todo_hilt_pos(void);
-char *ui_todo_saved_mesg(void);
 struct todo *todo_add(char *, int, char *);
 void todo_write(struct todo *, FILE *);
 void todo_delete_note(struct todo *);
 void todo_delete(struct todo *);
 void todo_flag(struct todo *);
 int todo_get_position(struct todo *);
-void ui_todo_chg_priority(struct todo *, int);
-void ui_todo_update_panel(int);
 void todo_edit_note(struct todo *, const char *);
 void todo_view_note(struct todo *, const char *);
 void todo_free(struct todo *);
 void todo_init_list(void);
 void todo_free_list(void);
+
+/* ui-todo.c */
+void ui_todo_add(void);
+void ui_todo_delete(void);
+void ui_todo_edit(void);
+void ui_todo_pipe(void);
+void ui_todo_draw(int, WINDOW *, int, int, void *);
+int ui_todo_height(int, void *);
+void ui_todo_load_items(void);
+void ui_todo_sel_move(int);
+void ui_todo_update_panel(int);
+void ui_todo_chg_priority(int);
+void ui_todo_popup_item(void);
+void ui_todo_flag(void);
+void ui_todo_view_note(void);
+void ui_todo_edit_note(void);
 
 /* utf8.c */
 int utf8_width(char *);
@@ -1057,6 +1056,7 @@ void vars_init(void);
 
 /* wins.c */
 extern struct window win[NBWINS];
+extern struct listbox lb_todo;
 unsigned wins_nbar_lock(void);
 void wins_nbar_unlock(void);
 void wins_nbar_cleanup(void *);

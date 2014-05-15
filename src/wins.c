@@ -50,6 +50,7 @@
 
 /* Variables to handle calcurse windows. */
 struct window win[NBWINS];
+struct listbox lb_todo;
 
 /* User-configurable side bar width. */
 static unsigned sbarwidth_perc;
@@ -252,14 +253,13 @@ static void wins_init_panels(void)
 	apad.width = win[APP].w - 3;
 	apad.ptrwin = newpad(apad.length, apad.width);
 
-	win[TOD].p =
-	    newwin(win[TOD].h, win[TOD].w, win[TOD].y, win[TOD].x);
-	wins_show(win[TOD].p, _("TODO"));
+	listbox_init(&lb_todo, win[TOD].y, win[TOD].x, win[TOD].h, win[TOD].w,
+		     _("TODO"), ui_todo_height, ui_todo_draw);
+	ui_todo_load_items();
 
 	/* Enable function keys (i.e. arrow keys) in those windows */
 	keypad(win[CAL].p, TRUE);
 	keypad(win[APP].p, TRUE);
-	keypad(win[TOD].p, TRUE);
 }
 
 /* Create all the windows. */
@@ -403,7 +403,7 @@ void wins_reinit_panels(void)
 	delwin(win[CAL].p);
 	delwin(win[APP].p);
 	delwin(apad.ptrwin);
-	delwin(win[TOD].p);
+	listbox_delete(&lb_todo);
 	wins_get_config();
 	wins_init_panels();
 }
@@ -417,7 +417,7 @@ void wins_reinit(void)
 	delwin(win[CAL].p);
 	delwin(win[APP].p);
 	delwin(apad.ptrwin);
-	delwin(win[TOD].p);
+	listbox_delete(&lb_todo);
 	delwin(win[STA].p);
 	delwin(win[KEY].p);
 	wins_get_config();
@@ -556,12 +556,8 @@ void wins_update_border(int flags)
 		else
 			border_nocolor(win[APP].p);
 	}
-	if (flags & FLAG_TOD) {
-		if (slctd_win == TOD)
-			border_color(win[TOD].p);
-		else
-			border_nocolor(win[TOD].p);
-	}
+	if (flags & FLAG_TOD)
+		listbox_draw_deco(&lb_todo, (slctd_win == TOD));
 }
 
 void wins_update_panels(int flags)

@@ -676,7 +676,6 @@ void io_load_todo(void)
 		++nb_tod;
 	}
 	file_close(data_file, __FILE_POS__);
-	ui_todo_set_nb(nb_tod);
 }
 
 static void
@@ -1088,9 +1087,6 @@ void io_import_data(enum import_type type, const char *stream_name)
 		 ngettext("%d todo", "%d todos", stats.todos),
 		 stats.todos);
 	snprintf(stats_str[3], BUFSIZ, _("%d skipped"), stats.skipped);
-
-	/* Update the number of todo items. */
-	ui_todo_set_nb(ui_todo_nb() + stats.todos);
 
 	if (ui_mode == UI_CURSES && conf.system_dialogs) {
 		char read[BUFSIZ], stat[BUFSIZ];
