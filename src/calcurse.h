@@ -667,7 +667,7 @@ void ui_calendar_init_slctd_day(void);
 struct date *ui_calendar_get_slctd_day(void);
 long ui_calendar_get_slctd_day_sec(void);
 void ui_calendar_monthly_view_cache_set_invalid(void);
-void ui_calendar_update_panel(struct window *);
+void ui_calendar_update_panel(void);
 void ui_calendar_goto_today(void);
 void ui_calendar_change_day(int);
 void ui_calendar_move(enum move, int);
@@ -1056,6 +1056,7 @@ void vars_init(void);
 
 /* wins.c */
 extern struct window win[NBWINS];
+extern struct scrollwin sw_cal;
 extern struct listbox lb_todo;
 unsigned wins_nbar_lock(void);
 void wins_nbar_unlock(void);

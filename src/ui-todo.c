@@ -53,7 +53,6 @@ void ui_todo_add(void)
 			ch = wgetch(win[KEY].p);
 		}
 		todo_add(todo_input, ch - '0', NULL);
-		ui_todo_sel_move(1);
 		ui_todo_load_items();
 	}
 }

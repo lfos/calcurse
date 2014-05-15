@@ -50,6 +50,7 @@
 
 /* Variables to handle calcurse windows. */
 struct window win[NBWINS];
+struct scrollwin sw_cal;
 struct listbox lb_todo;
 
 /* User-configurable side bar width. */
@@ -243,9 +244,9 @@ void wins_slctd_next(void)
 
 static void wins_init_panels(void)
 {
-	win[CAL].p = newwin(CALHEIGHT + (conf.compact_panels ? 2 : 4),
-			    wins_sbar_width(), win[CAL].y, win[CAL].x);
-	wins_show(win[CAL].p, _("Calendar"));
+	wins_scrollwin_init(&sw_cal, win[CAL].y, win[CAL].x,
+			    CALHEIGHT + (conf.compact_panels ? 2 : 4),
+			    wins_sbar_width(), _("Calendar"));
 
 	win[APP].p =
 	    newwin(win[APP].h, win[APP].w, win[APP].y, win[APP].x);
@@ -258,7 +259,6 @@ static void wins_init_panels(void)
 	ui_todo_load_items();
 
 	/* Enable function keys (i.e. arrow keys) in those windows */
-	keypad(win[CAL].p, TRUE);
 	keypad(win[APP].p, TRUE);
 }
 
@@ -400,7 +400,7 @@ void wins_scrollwin_ensure_visible(struct scrollwin *sw, unsigned line)
 
 void wins_reinit_panels(void)
 {
-	delwin(win[CAL].p);
+	wins_scrollwin_delete(&sw_cal);
 	delwin(win[APP].p);
 	delwin(apad.ptrwin);
 	listbox_delete(&lb_todo);
@@ -414,7 +414,7 @@ void wins_reinit_panels(void)
  */
 void wins_reinit(void)
 {
-	delwin(win[CAL].p);
+	wins_scrollwin_delete(&sw_cal);
 	delwin(win[APP].p);
 	delwin(apad.ptrwin);
 	listbox_delete(&lb_todo);
@@ -544,10 +544,7 @@ void wins_update_border(int flags)
 {
 	if (flags & FLAG_CAL) {
 		WINS_CALENDAR_LOCK;
-		if (slctd_win == CAL)
-			border_color(win[CAL].p);
-		else
-			border_nocolor(win[CAL].p);
+		wins_scrollwin_draw_deco(&sw_cal, (slctd_win == CAL));
 		WINS_CALENDAR_UNLOCK;
 	}
 	if (flags & FLAG_APP) {
@@ -567,7 +564,7 @@ void wins_update_panels(int flags)
 	if (flags & FLAG_TOD)
 		ui_todo_update_panel(slctd_win);
 	if (flags & FLAG_CAL)
-		ui_calendar_update_panel(&win[CAL]);
+		ui_calendar_update_panel();
 }
 
 /*
