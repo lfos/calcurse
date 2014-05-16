@@ -42,27 +42,27 @@
 
 #include "calcurse.h"
 
-static llist_t day_items;
+static vector_t day_items;
 
 static void day_free(struct day_item *day)
 {
 	mem_free(day);
 }
 
-static void day_init_list(void)
+static void day_init_vector(void)
 {
-	LLIST_INIT(&day_items);
+	VECTOR_INIT(&day_items, 16);
 }
 
 /*
- * Free the current day linked list containing the events and appointments.
+ * Free the current day vector containing the events and appointments.
  * Must not free associated message and note, because their are not dynamically
  * allocated (only pointers to real objects are stored in this structure).
  */
-void day_free_list(void)
+void day_free_vector(void)
 {
-	LLIST_FREE_INNER(&day_items, day_free);
-	LLIST_FREE(&day_items);
+	VECTOR_FREE_INNER(&day_items, day_free);
+	VECTOR_FREE(&day_items);
 }
 
 static int day_cmp_start(struct day_item *a, struct day_item *b)
@@ -88,7 +88,7 @@ static void day_add_item(int type, long start, union aptev_ptr item)
 	day->start = start;
 	day->item = item;
 
-	LLIST_ADD_SORTED(&day_items, day, day_cmp_start);
+	VECTOR_ADD(&day_items, day);
 }
 
 /* Get the message of an item. */
@@ -341,13 +341,15 @@ day_store_items(long date, unsigned *pnb_events, unsigned *pnb_apoints,
 	int nb_events, nb_recur_events;
 	int nb_apoints, nb_recur_apoints;
 
-	day_free_list();
-	day_init_list();
+	day_free_vector();
+	day_init_vector();
 
 	nb_recur_events = day_store_recur_events(date, regex);
 	nb_events = day_store_events(date, regex);
 	nb_recur_apoints = day_store_recur_apoints(date, regex);
 	nb_apoints = day_store_apoints(date, regex);
+
+	VECTOR_SORT(&day_items, day_cmp_start);
 
 	if (pnb_apoints)
 		*pnb_apoints = nb_apoints + nb_recur_apoints;
@@ -470,15 +472,15 @@ display_item(struct day_item *day, int incolor, int width, int y, int x)
  */
 void day_write_pad(long date, int width, int length, int incolor)
 {
-	llist_item_t *i;
+	int i;
 	int line, item_number;
 	const int x_pos = 0;
 	unsigned draw_line = 0;
 
 	line = item_number = 0;
 
-	LLIST_FOREACH(&day_items, i) {
-		struct day_item *day = LLIST_TS_GET_DATA(i);
+	VECTOR_FOREACH(&day_items, i) {
+		struct day_item *day = VECTOR_NTH(&day_items, i);
 
 		/* First print the events for current day. */
 		if (day->type < RECUR_APPT) {
@@ -509,12 +511,12 @@ void day_write_pad(long date, int width, int length, int incolor)
 void day_write_stdout(long date, const char *fmt_apt, const char *fmt_rapt,
 		      const char *fmt_ev, const char *fmt_rev, int *limit)
 {
-	llist_item_t *i;
+	int i;
 
-	LLIST_FOREACH(&day_items, i) {
+	VECTOR_FOREACH(&day_items, i) {
 		if (*limit == 0)
 			break;
-		struct day_item *day = LLIST_TS_GET_DATA(i);
+		struct day_item *day = VECTOR_NTH(&day_items, i);
 
 		switch (day->type) {
 		case APPT:
@@ -727,7 +729,7 @@ int day_paste_item(struct day_item *p, long date)
 /* Returns a structure containing the selected item. */
 struct day_item *day_get_item(int item_number)
 {
-	return LLIST_GET_DATA(LLIST_NTH(&day_items, item_number - 1));
+	return VECTOR_NTH(&day_items, item_number - 1);
 }
 
 /* Attach a note to an appointment or event. */

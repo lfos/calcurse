@@ -697,7 +697,7 @@ void custom_keys_config(void);
 void custom_config_main(void);
 
 /* day.c */
-void day_free_list(void);
+void day_free_vector(void);
 char *day_item_get_mesg(struct day_item *);
 char *day_item_get_note(struct day_item *);
 void day_item_erase_note(struct day_item *);

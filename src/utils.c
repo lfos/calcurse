@@ -102,7 +102,7 @@ void free_user_data(void)
 {
 	unsigned i;
 
-	day_free_list();
+	day_free_vector();
 	event_llist_free();
 	apoint_llist_free();
 	recur_apoint_llist_free();
