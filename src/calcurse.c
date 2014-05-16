@@ -40,44 +40,25 @@
 
 #define HANDLE_KEY(key, fn) case key: fn(); break;
 
-struct day_items_nb inday;
 int count, reg;
 
 /*
  * Store the events and appointments for the selected day and reset the
  * appointment highlight pointer if a new day was selected.
  */
-static struct day_items_nb do_storage(int day_changed)
+static void do_storage(int day_changed)
 {
-	struct day_items_nb inday =
-	    day_process_storage(ui_calendar_get_slctd_day(),
-				day_changed);
+	day_process_storage(ui_calendar_get_slctd_day(), day_changed);
+	ui_day_load_items();
 
-	if (day_changed) {
-		if ((inday.nb_events + inday.nb_apoints) > 0)
-			ui_day_hilt_set(1);
-		else
-			ui_day_hilt_set(0);
-	}
-
-	return inday;
+	if (day_changed)
+		ui_day_sel_reset();
 }
 
 static inline void key_generic_change_view(void)
 {
 	wins_reset_status_page();
 	wins_slctd_next();
-
-	/* Select the event to highlight. */
-	switch (wins_slctd()) {
-	case APP:
-		if ((ui_day_hilt() == 0)
-		    && ((inday.nb_events + inday.nb_apoints) > 0))
-			ui_day_hilt_set(1);
-		break;
-	default:
-		break;
-	}
 	wins_update(FLAG_ALL);
 }
 
@@ -92,7 +73,7 @@ static inline void key_generic_goto(void)
 	wins_erase_status_bar();
 	ui_calendar_set_current_date();
 	ui_calendar_change_day(conf.input_datefmt);
-	inday = do_storage(1);
+	do_storage(1);
 	wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
 }
 
@@ -101,14 +82,14 @@ static inline void key_generic_goto_today(void)
 	wins_erase_status_bar();
 	ui_calendar_set_current_date();
 	ui_calendar_goto_today();
-	inday = do_storage(1);
+	do_storage(1);
 	wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
 }
 
 static inline void key_view_item(void)
 {
-	if ((wins_slctd() == APP) && (ui_day_hilt() != 0))
-		day_popup_item(day_get_item(ui_day_hilt()));
+	if (wins_slctd() == APP)
+		ui_day_popup_item();
 	else if (wins_slctd() == TOD)
 		ui_todo_popup_item();
 	wins_update(FLAG_ALL);
@@ -118,14 +99,14 @@ static inline void key_generic_config_menu(void)
 {
 	wins_erase_status_bar();
 	custom_config_main();
-	inday = do_storage(0);
+	do_storage(0);
 	wins_update(FLAG_ALL);
 }
 
 static inline void key_generic_add_appt(void)
 {
 	ui_day_item_add();
-	inday = do_storage(1);
+	do_storage(1);
 	wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
 }
 
@@ -140,7 +121,7 @@ static inline void key_add_item(void)
 	switch (wins_slctd()) {
 	case APP:
 		ui_day_item_add();
-		inday = do_storage(0);
+		do_storage(0);
 		wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
 		break;
 	case TOD:
@@ -154,9 +135,9 @@ static inline void key_add_item(void)
 
 static inline void key_edit_item(void)
 {
-	if (wins_slctd() == APP && ui_day_hilt() != 0) {
+	if (wins_slctd() == APP) {
 		ui_day_item_edit();
-		inday = do_storage(0);
+		do_storage(0);
 		wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
 	} else if (wins_slctd() == TOD) {
 		ui_todo_edit();
@@ -166,10 +147,9 @@ static inline void key_edit_item(void)
 
 static inline void key_del_item(void)
 {
-	if (wins_slctd() == APP && ui_day_hilt() != 0) {
-		ui_day_item_delete(&inday.nb_events, &inday.nb_apoints,
-				   reg);
-		inday = do_storage(0);
+	if (wins_slctd() == APP) {
+		ui_day_item_delete(reg);
+		do_storage(0);
 		wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
 	} else if (wins_slctd() == TOD) {
 		ui_todo_delete();
@@ -179,9 +159,9 @@ static inline void key_del_item(void)
 
 static inline void key_generic_copy(void)
 {
-	if (wins_slctd() == APP && ui_day_hilt() != 0) {
-		ui_day_item_copy(&inday.nb_events, &inday.nb_apoints, reg);
-		inday = do_storage(0);
+	if (wins_slctd() == APP) {
+		ui_day_item_copy(reg);
+		do_storage(0);
 		wins_update(FLAG_CAL | FLAG_APP);
 	}
 }
@@ -189,26 +169,25 @@ static inline void key_generic_copy(void)
 static inline void key_generic_paste(void)
 {
 	if (wins_slctd() == APP) {
-		ui_day_item_paste(&inday.nb_events, &inday.nb_apoints,
-				  reg);
-		inday = do_storage(0);
+		ui_day_item_paste(reg);
+		do_storage(0);
 		wins_update(FLAG_CAL | FLAG_APP);
 	}
 }
 
 static inline void key_repeat_item(void)
 {
-	if (wins_slctd() == APP && ui_day_hilt() != 0)
+	if (wins_slctd() == APP)
 		ui_day_item_repeat();
-	inday = do_storage(0);
+	do_storage(0);
 	wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
 }
 
 static inline void key_flag_item(void)
 {
-	if (wins_slctd() == APP && ui_day_hilt() != 0) {
-		day_item_switch_notify(day_get_item(ui_day_hilt()));
-		inday = do_storage(0);
+	if (wins_slctd() == APP) {
+		ui_day_flag();
+		do_storage(0);
 		wins_update(FLAG_APP);
 	} else if (wins_slctd() == TOD) {
 		ui_todo_flag();
@@ -218,7 +197,7 @@ static inline void key_flag_item(void)
 
 static inline void key_pipe_item(void)
 {
-	if (wins_slctd() == APP && ui_day_hilt() != 0)
+	if (wins_slctd() == APP)
 		ui_day_item_pipe();
 	else if (wins_slctd() == TOD)
 		ui_todo_pipe();
@@ -245,9 +224,9 @@ static inline void key_lower_priority(void)
 
 static inline void key_edit_note(void)
 {
-	if (wins_slctd() == APP && ui_day_hilt() != 0) {
-		day_edit_note(day_get_item(ui_day_hilt()), conf.editor);
-		inday = do_storage(0);
+	if (wins_slctd() == APP) {
+		ui_day_edit_note();
+		do_storage(0);
 	} else if (wins_slctd() == TOD) {
 		ui_todo_edit_note();
 	}
@@ -256,8 +235,8 @@ static inline void key_edit_note(void)
 
 static inline void key_view_note(void)
 {
-	if (wins_slctd() == APP && ui_day_hilt() != 0)
-		day_view_note(day_get_item(ui_day_hilt()), conf.pager);
+	if (wins_slctd() == APP)
+		ui_day_view_note();
 	else if (wins_slctd() == TOD)
 		ui_todo_view_note();
 	wins_update(FLAG_ALL);
@@ -280,7 +259,7 @@ static inline void key_generic_import(void)
 	wins_erase_status_bar();
 	io_import_data(IO_IMPORT_ICAL, NULL);
 	ui_calendar_monthly_view_cache_set_invalid();
-	inday = do_storage(0);
+	do_storage(0);
 	wins_update(FLAG_ALL);
 }
 
@@ -304,14 +283,14 @@ static inline void key_generic_export()
 		break;
 	}
 
-	inday = do_storage(0);
+	do_storage(0);
 	wins_update(FLAG_ALL);
 }
 
 static inline void key_generic_prev_day(void)
 {
 	ui_calendar_move(DAY_PREV, count);
-	inday = do_storage(1);
+	do_storage(1);
 	wins_update(FLAG_CAL | FLAG_APP);
 }
 
@@ -324,7 +303,7 @@ static inline void key_move_left(void)
 static inline void key_generic_next_day(void)
 {
 	ui_calendar_move(DAY_NEXT, count);
-	inday = do_storage(1);
+	do_storage(1);
 	wins_update(FLAG_CAL | FLAG_APP);
 }
 
@@ -337,7 +316,7 @@ static inline void key_move_right(void)
 static inline void key_generic_prev_week(void)
 {
 	ui_calendar_move(WEEK_PREV, count);
-	inday = do_storage(1);
+	do_storage(1);
 	wins_update(FLAG_CAL | FLAG_APP);
 }
 
@@ -346,10 +325,7 @@ static inline void key_move_up(void)
 	if (wins_slctd() == CAL) {
 		key_generic_prev_week();
 	} else if (wins_slctd() == APP) {
-		if (count >= ui_day_hilt())
-			count = ui_day_hilt() - 1;
-		ui_day_hilt_decrease(count);
-		ui_day_scroll_pad_up(inday.nb_events);
+		ui_day_sel_move(-1);
 		wins_update(FLAG_APP);
 	} else if (wins_slctd() == TOD) {
 		ui_todo_sel_move(-1);
@@ -360,7 +336,7 @@ static inline void key_move_up(void)
 static inline void key_generic_next_week(void)
 {
 	ui_calendar_move(WEEK_NEXT, count);
-	inday = do_storage(1);
+	do_storage(1);
 	wins_update(FLAG_CAL | FLAG_APP);
 }
 
@@ -369,13 +345,7 @@ static inline void key_move_down(void)
 	if (wins_slctd() == CAL) {
 		key_generic_next_week();
 	} else if (wins_slctd() == APP) {
-		if (count >
-		    inday.nb_events + inday.nb_apoints - ui_day_hilt())
-			count =
-			    inday.nb_events + inday.nb_apoints -
-			    ui_day_hilt();
-		ui_day_hilt_increase(count);
-		ui_day_scroll_pad_down(inday.nb_events, win[APP].h);
+		ui_day_sel_move(1);
 		wins_update(FLAG_APP);
 	} else if (wins_slctd() == TOD) {
 		ui_todo_sel_move(1);
@@ -386,28 +356,28 @@ static inline void key_move_down(void)
 static inline void key_generic_prev_month(void)
 {
 	ui_calendar_move(MONTH_PREV, count);
-	inday = do_storage(1);
+	do_storage(1);
 	wins_update(FLAG_CAL | FLAG_APP);
 }
 
 static inline void key_generic_next_month(void)
 {
 	ui_calendar_move(MONTH_NEXT, count);
-	inday = do_storage(1);
+	do_storage(1);
 	wins_update(FLAG_CAL | FLAG_APP);
 }
 
 static inline void key_generic_prev_year(void)
 {
 	ui_calendar_move(YEAR_PREV, count);
-	inday = do_storage(1);
+	do_storage(1);
 	wins_update(FLAG_CAL | FLAG_APP);
 }
 
 static inline void key_generic_next_year(void)
 {
 	ui_calendar_move(YEAR_NEXT, count);
-	inday = do_storage(1);
+	do_storage(1);
 	wins_update(FLAG_CAL | FLAG_APP);
 }
 
@@ -415,7 +385,7 @@ static inline void key_start_of_week(void)
 {
 	if (wins_slctd() == CAL) {
 		ui_calendar_move(WEEK_START, count);
-		inday = do_storage(1);
+		do_storage(1);
 		wins_update(FLAG_CAL | FLAG_APP);
 	}
 }
@@ -424,7 +394,7 @@ static inline void key_end_of_week(void)
 {
 	if (wins_slctd() == CAL) {
 		ui_calendar_move(WEEK_END, count);
-		inday = do_storage(1);
+		do_storage(1);
 		wins_update(FLAG_CAL | FLAG_APP);
 	}
 }
@@ -629,7 +599,7 @@ int main(int argc, char **argv)
 		wins_update(FLAG_ALL);
 		io_startup_screen(no_data_file);
 	}
-	inday = day_process_storage(0, 0);
+	do_storage(1);
 	wins_slctd_set(conf.default_panel);
 	wins_update(FLAG_ALL);
 

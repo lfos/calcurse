@@ -36,7 +36,6 @@
 
 #include "calcurse.h"
 
-static int hilt;
 struct day_item day_cut[38] = { {0, 0, {NULL}} };
 
 /* Request the user to enter a new time. */
@@ -293,14 +292,16 @@ static void update_rept(struct rpt **rpt, const long start)
 /* Edit an already existing item. */
 void ui_day_item_edit(void)
 {
-	struct day_item *p;
 	struct recur_event *re;
 	struct event *e;
 	struct recur_apoint *ra;
 	struct apoint *a;
 	int need_check_notify = 0;
 
-	p = day_get_item(ui_day_hilt());
+	if (day_item_count() <= 0)
+		return;
+
+	struct day_item *p = day_get_item(listbox_get_sel(&lb_apt));
 
 	switch (p->type) {
 	case RECUR_EVNT:
@@ -408,7 +409,11 @@ void ui_day_item_pipe(void)
 	int pout;
 	int pid;
 	FILE *fpout;
-	struct day_item *p;
+
+	if (day_item_count() <= 0)
+		return;
+
+	struct day_item *p = day_get_item(listbox_get_sel(&lb_apt));
 
 	status_mesg(_("Pipe item to external command:"), "");
 	if (getstring(win[STA].p, cmd, BUFSIZ, 0, 1) != GETSTRING_VALID)
@@ -418,7 +423,6 @@ void ui_day_item_pipe(void)
 	if ((pid = shell_exec(NULL, &pout, *arg, arg))) {
 		fpout = fdopen(pout, "w");
 
-		p = day_get_item(ui_day_hilt());
 		switch (p->type) {
 		case RECUR_EVNT:
 			recur_event_write(p->item.rev, fpout);
@@ -541,9 +545,6 @@ void ui_day_item_add(void)
 				  date2sec(*ui_calendar_get_slctd_day(), 0,
 					   0), 1);
 		}
-
-		if (ui_day_hilt() == 0)
-			ui_day_hilt_increase(1);
 	}
 
 	ui_calendar_monthly_view_cache_set_invalid();
@@ -552,8 +553,7 @@ void ui_day_item_add(void)
 }
 
 /* Delete an item from the appointment list. */
-void ui_day_item_delete(unsigned *nb_events, unsigned *nb_apoints,
-			unsigned reg)
+void ui_day_item_delete(unsigned reg)
 {
 	const char *del_app_str =
 	    _("Do you really want to delete this item?");
@@ -569,15 +569,12 @@ void ui_day_item_delete(unsigned *nb_events, unsigned *nb_apoints,
 	      "Delete (i)tem or just its (n)ote?");
 	const char *note_choices = _("[in]");
 	const int nb_note_choices = 2;
-
 	long date = ui_calendar_get_slctd_day_sec();
-	int nb_items = *nb_apoints + *nb_events;
-	int to_be_removed = 0;
 
-	if (nb_items == 0)
+	if (day_item_count() <= 0)
 		return;
 
-	struct day_item *p = day_get_item(ui_day_hilt());
+	struct day_item *p = day_get_item(listbox_get_sel(&lb_apt));
 
 	if (conf.confirm_delete) {
 		if (status_ask_bool(del_app_str) != 1) {
@@ -613,34 +610,11 @@ void ui_day_item_delete(unsigned *nb_events, unsigned *nb_apoints,
 	}
 
 	ui_day_item_cut_free(reg);
-	p = day_cut_item(date, ui_day_hilt());
+	p = day_cut_item(date, listbox_get_sel(&lb_apt));
 	day_cut[reg].type = p->type;
 	day_cut[reg].item = p->item;
 
-	switch (p->type) {
-	case EVNT:
-	case RECUR_EVNT:
-		(*nb_events)--;
-		to_be_removed = 1;
-		break;
-	case APPT:
-	case RECUR_APPT:
-		(*nb_apoints)--;
-		to_be_removed = 3;
-		break;
-	default:
-		EXIT(_("no such type"));
-		/* NOTREACHED */
-	}
-
 	ui_calendar_monthly_view_cache_set_invalid();
-
-	if (ui_day_hilt() > 1)
-		ui_day_hilt_decrease(1);
-	if (apad.first_onscreen >= to_be_removed)
-		apad.first_onscreen = apad.first_onscreen - to_be_removed;
-	if (nb_items == 1)
-		ui_day_hilt_set(0);
 }
 
 /*
@@ -690,7 +664,10 @@ void ui_day_item_repeat(void)
 	struct recur_apoint *ra;
 	long until, date;
 
-	item_nb = ui_day_hilt();
+	if (day_item_count() <= 0)
+		return;
+
+	item_nb = listbox_get_sel(&lb_apt);
 	p = day_get_item(item_nb);
 	if (p->type != APPT && p->type != EVNT) {
 		status_mesg(wrong_type_1, wrong_type_2);
@@ -810,165 +787,110 @@ void ui_day_item_cut_free(unsigned reg)
 }
 
 /* Copy an item, so that it can be pasted somewhere else later. */
-void ui_day_item_copy(unsigned *nb_events, unsigned *nb_apoints,
-		      unsigned reg)
+void ui_day_item_copy(unsigned reg)
 {
-	const int NBITEMS = *nb_apoints + *nb_events;
-
-	if (NBITEMS == 0 || reg == REG_BLACK_HOLE)
+	if (day_item_count() <= 0 || reg == REG_BLACK_HOLE)
 		return;
 
+	struct day_item *item = day_get_item(listbox_get_sel(&lb_apt));
 	ui_day_item_cut_free(reg);
-	day_item_fork(day_get_item(ui_day_hilt()), &day_cut[reg]);
+	day_item_fork(item, &day_cut[reg]);
 }
 
 /* Paste a previously cut item. */
-void ui_day_item_paste(unsigned *nb_events, unsigned *nb_apoints,
-		       unsigned reg)
+void ui_day_item_paste(unsigned reg)
 {
-	int item_type;
 	struct day_item day;
 
 	if (reg == REG_BLACK_HOLE || !day_cut[reg].type)
 		return;
 
 	day_item_fork(&day_cut[reg], &day);
-	item_type = day_paste_item(&day, ui_calendar_get_slctd_day_sec());
+	day_paste_item(&day, ui_calendar_get_slctd_day_sec());
 
 	ui_calendar_monthly_view_cache_set_invalid();
+}
 
-	if (item_type == EVNT || item_type == RECUR_EVNT)
-		(*nb_events)++;
-	else if (item_type == APPT || item_type == RECUR_APPT)
-		(*nb_apoints)++;
+void ui_day_load_items(void)
+{
+	listbox_load_items(&lb_apt, day_item_count());
+}
+
+void ui_day_sel_reset(void)
+{
+	listbox_set_sel(&lb_apt, 0);
+}
+
+void ui_day_sel_move(int delta)
+{
+	listbox_sel_move(&lb_apt, delta);
+}
+
+/* Display appointments in the corresponding panel. */
+void ui_day_draw(int n, WINDOW *win, int y, int hilt, void *cb_data)
+{
+	struct date slctd_date = *ui_calendar_get_slctd_day();
+	long date = date2sec(slctd_date, 0, 0);
+	struct day_item *item = day_get_item(n);
+	int width = lb_apt.sw.w;
+
+	if (item->type < RECUR_APPT) {
+		day_display_item(item, win, !hilt, width, y, 1);
+	} else {
+		day_display_item_date(item, win, !hilt, date, y + 1, 1);
+		day_display_item(item, win, !hilt, width, y + 2, 1);
+	}
+
+}
+
+int ui_day_height(int n, void *cb_data)
+{
+	struct day_item *item = day_get_item(n);
+
+	if (item->type < RECUR_APPT)
+		return 1;
 	else
-		return;
-
-	if (ui_day_hilt() == 0)
-		ui_day_hilt_increase(1);
-}
-
-/* Sets which appointment is highlighted. */
-void ui_day_hilt_set(int highlighted)
-{
-	hilt = highlighted;
-}
-
-void ui_day_hilt_decrease(int n)
-{
-	hilt -= n;
-}
-
-void ui_day_hilt_increase(int n)
-{
-	hilt += n;
-}
-
-/* Return which appointment is highlighted. */
-int ui_day_hilt(void)
-{
-	return hilt;
-}
-
-/*
- * Return the line number of an item (either an appointment or an event) in
- * the appointment panel. This is to help the appointment scroll function
- * to place beggining of the pad correctly.
- */
-static int get_item_line(int item_nb, int nb_events_inday)
-{
-	int separator = 2;
-	int line = 0;
-
-	if (item_nb <= nb_events_inday)
-		line = item_nb - 1;
-	else
-		line = nb_events_inday + separator
-		    + (item_nb - (nb_events_inday + 1)) * 3 - 1;
-	return line;
-}
-
-/*
- * Update (if necessary) the first displayed pad line to make the
- * appointment panel scroll down next time pnoutrefresh is called.
- */
-void ui_day_scroll_pad_down(int nb_events_inday, int win_length)
-{
-	int pad_last_line = 0;
-	int item_first_line = 0, item_last_line = 0;
-	int borders = 6;
-	int awin_length = win_length - borders;
-
-	item_first_line = get_item_line(hilt, nb_events_inday);
-	if (hilt < nb_events_inday)
-		item_last_line = item_first_line;
-	else
-		item_last_line = item_first_line + 1;
-	pad_last_line = apad.first_onscreen + awin_length;
-	if (item_last_line >= pad_last_line)
-		apad.first_onscreen = item_last_line - awin_length;
-}
-
-/*
- * Update (if necessary) the first displayed pad line to make the
- * appointment panel scroll up next time pnoutrefresh is called.
- */
-void ui_day_scroll_pad_up(int nb_events_inday)
-{
-	int item_first_line = 0;
-
-	item_first_line = get_item_line(hilt, nb_events_inday);
-	if (item_first_line < apad.first_onscreen)
-		apad.first_onscreen = item_first_line;
+		return 3;
 }
 
 /* Updates the Appointment panel */
-void ui_day_update_panel(int which_pan, struct date slctd_date)
+void ui_day_update_panel(int which_pan)
 {
-	int title_xpos;
-	int bordr = 1;
-	int title_lines = conf.compact_panels ? 1 : 3;
-	int app_width = win[APP].w - bordr;
-	int app_length = win[APP].h - bordr - title_lines;
-	long date;
+	listbox_display(&lb_apt);
+}
 
-	/* variable inits */
-	title_xpos =
-	    win[APP].w - (strlen(_(monthnames[slctd_date.mm - 1])) + 16);
-	if (slctd_date.dd < 10)
-		title_xpos++;
-	date = date2sec(slctd_date, 0, 0);
-	day_write_pad(date, app_width, app_length,
-		      (which_pan == APP) ? hilt : 0);
+void ui_day_popup_item(void)
+{
+	if (day_item_count() <= 0)
+		return;
 
-	/* Print current date in the top right window corner. */
-	erase_window_part(win[APP].p, 1, title_lines, win[APP].w - 2,
-			  win[APP].h - 2);
-	custom_apply_attr(win[APP].p, ATTR_HIGHEST);
-	mvwprintw(win[APP].p, title_lines, title_xpos, "%s  %s %d, %d",
-		  ui_calendar_get_pom(date),
-		  _(monthnames[slctd_date.mm - 1]), slctd_date.dd,
-		  slctd_date.yyyy);
-	custom_remove_attr(win[APP].p, ATTR_HIGHEST);
+	struct day_item *item = day_get_item(listbox_get_sel(&lb_apt));
+	day_popup_item(item);
+}
 
-	/* Draw the scrollbar if necessary. */
-	if ((apad.length >= app_length) || (apad.first_onscreen > 0)) {
-		int sbar_length = app_length * app_length / apad.length;
-		int highend =
-		    app_length * apad.first_onscreen / apad.length;
-		unsigned hilt_bar = (which_pan == APP) ? 1 : 0;
-		int sbar_top = highend + title_lines + 1;
+void ui_day_flag(void)
+{
+	if (day_item_count() <= 0)
+		return;
 
-		if ((sbar_top + sbar_length) > win[APP].h - 1)
-			sbar_length = win[APP].h - 1 - sbar_top;
-		draw_scrollbar(win[APP].p, sbar_top, win[APP].w - 2,
-			       sbar_length, title_lines + 1,
-			       win[APP].h - 1, hilt_bar);
-	}
+	struct day_item *item = day_get_item(listbox_get_sel(&lb_apt));
+	day_item_switch_notify(item);
+}
 
-	wnoutrefresh(win[APP].p);
-	pnoutrefresh(apad.ptrwin, apad.first_onscreen, 0,
-		     win[APP].y + title_lines + 1, win[APP].x + bordr,
-		     win[APP].y + win[APP].h - 2 * bordr,
-		     win[APP].x + win[APP].w - 3 * bordr);
+void ui_day_view_note(void)
+{
+	if (day_item_count() <= 0)
+		return;
+
+	struct day_item *item = day_get_item(listbox_get_sel(&lb_apt));
+	day_view_note(item, conf.pager);
+}
+
+void ui_day_edit_note(void)
+{
+	if (day_item_count() <= 0)
+		return;
+
+	struct day_item *item = day_get_item(listbox_get_sel(&lb_apt));
+	day_edit_note(item, conf.editor);
 }

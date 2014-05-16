@@ -65,8 +65,11 @@ void day_free_vector(void)
 	VECTOR_FREE(&day_items);
 }
 
-static int day_cmp_start(struct day_item *a, struct day_item *b)
+static int day_cmp_start(struct day_item **pa, struct day_item **pb)
 {
+	struct day_item *a = *pa;
+	struct day_item *b = *pb;
+
 	if (a->type <= EVNT) {
 		if (b->type <= EVNT)
 			return 0;
@@ -334,29 +337,18 @@ static int day_store_recur_apoints(long date, regex_t * regex)
  * and the length of the new pad to write is returned.
  * The number of events and appointments in the current day are also updated.
  */
-int
-day_store_items(long date, unsigned *pnb_events, unsigned *pnb_apoints,
-		regex_t * regex)
+void
+day_store_items(long date, regex_t * regex)
 {
-	int nb_events, nb_recur_events;
-	int nb_apoints, nb_recur_apoints;
-
 	day_free_vector();
 	day_init_vector();
 
-	nb_recur_events = day_store_recur_events(date, regex);
-	nb_events = day_store_events(date, regex);
-	nb_recur_apoints = day_store_recur_apoints(date, regex);
-	nb_apoints = day_store_apoints(date, regex);
+	day_store_recur_events(date, regex);
+	day_store_events(date, regex);
+	day_store_recur_apoints(date, regex);
+	day_store_apoints(date, regex);
 
 	VECTOR_SORT(&day_items, day_cmp_start);
-
-	if (pnb_apoints)
-		*pnb_apoints = nb_apoints + nb_recur_apoints;
-	if (pnb_events)
-		*pnb_events = nb_events + nb_recur_events;
-
-	return nb_events + nb_recur_events + nb_apoints + nb_recur_apoints;
 }
 
 /*
@@ -364,12 +356,10 @@ day_store_items(long date, unsigned *pnb_events, unsigned *pnb_apoints,
  * those items in a pad. If selected day is null, then store items for current
  * day. This is useful to speed up the appointment panel update.
  */
-struct day_items_nb day_process_storage(struct date *slctd_date,
-					unsigned day_changed)
+void day_process_storage(struct date *slctd_date, unsigned day_changed)
 {
 	long date;
 	struct date day;
-	struct day_items_nb inday;
 
 	if (slctd_date)
 		day = *slctd_date;
@@ -383,25 +373,16 @@ struct day_items_nb day_process_storage(struct date *slctd_date,
 		delwin(apad.ptrwin);
 
 	/* Store the events and appointments (recursive and normal items). */
-	day_store_items(date, &inday.nb_events, &inday.nb_apoints, NULL);
-	apad.length = (inday.nb_events + 1 + 3 * inday.nb_apoints);
-
-	/* Create the new pad with its new length. */
-	if (day_changed)
-		apad.first_onscreen = 0;
-	apad.ptrwin = newpad(apad.length, apad.width);
-
-	return inday;
+	day_store_items(date, NULL);
 }
 
 /*
  * Print an item date in the appointment panel.
  */
-static void
-display_item_date(struct day_item *day, int incolor, long date, int y,
-		  int x)
+void
+day_display_item_date(struct day_item *day, WINDOW *win, int incolor,
+		      long date, int y, int x)
 {
-	WINDOW *win;
 	char a_st[100], a_end[100];
 	char ch_recur, ch_notify;
 
@@ -411,7 +392,6 @@ display_item_date(struct day_item *day, int incolor, long date, int y,
 	apt_tmp.start = day->start;
 	apt_tmp.dur = day_item_get_duration(day);
 
-	win = apad.ptrwin;
 	apoint_sec2str(&apt_tmp, date, a_st, a_end);
 	if (incolor == 0)
 		custom_apply_attr(win, ATTR_HIGHEST);
@@ -428,10 +408,10 @@ display_item_date(struct day_item *day, int incolor, long date, int y,
 /*
  * Print an item description in the corresponding panel window.
  */
-static void
-display_item(struct day_item *day, int incolor, int width, int y, int x)
+void
+day_display_item(struct day_item *day, WINDOW *win, int incolor, int width,
+		 int y, int x)
 {
-	WINDOW *win;
 	int ch_recur, ch_note;
 	char buf[width * UTF8_MAXLEN];
 	int i;
@@ -441,7 +421,6 @@ display_item(struct day_item *day, int incolor, int width, int y, int x)
 
 	char *mesg = day_item_get_mesg(day);
 
-	win = apad.ptrwin;
 	ch_recur = (day->type == RECUR_EVNT
 		    || day->type == RECUR_APPT) ? '*' : ' ';
 	ch_note = day_item_get_note(day) ? '>' : ' ';
@@ -463,48 +442,6 @@ display_item(struct day_item *day, int incolor, int width, int y, int x)
 	}
 	if (incolor == 0)
 		custom_remove_attr(win, ATTR_HIGHEST);
-}
-
-/*
- * Write the appointments and events for the selected day in a pad.
- * An horizontal line is drawn between events and appointments, and the
- * item selected by user is highlighted.
- */
-void day_write_pad(long date, int width, int length, int incolor)
-{
-	int i;
-	int line, item_number;
-	const int x_pos = 0;
-	unsigned draw_line = 0;
-
-	line = item_number = 0;
-
-	VECTOR_FOREACH(&day_items, i) {
-		struct day_item *day = VECTOR_NTH(&day_items, i);
-
-		/* First print the events for current day. */
-		if (day->type < RECUR_APPT) {
-			item_number++;
-			display_item(day, item_number - incolor, width - 7,
-				     line, x_pos);
-			line++;
-			draw_line = 1;
-		} else {
-			/* Draw a line between events and appointments. */
-			if (line > 0 && draw_line) {
-				wmove(apad.ptrwin, line, 0);
-				whline(apad.ptrwin, 0, width);
-				draw_line = 0;
-			}
-			/* Last print the appointments for current day. */
-			item_number++;
-			display_item_date(day, item_number - incolor, date,
-					  line + 1, x_pos);
-			display_item(day, item_number - incolor, width - 7,
-				     line + 2, x_pos);
-			line += 3;
-		}
-	}
 }
 
 /* Write the appointments and events for the selected day to stdout. */
@@ -729,7 +666,12 @@ int day_paste_item(struct day_item *p, long date)
 /* Returns a structure containing the selected item. */
 struct day_item *day_get_item(int item_number)
 {
-	return VECTOR_NTH(&day_items, item_number - 1);
+	return VECTOR_NTH(&day_items, item_number);
+}
+
+unsigned day_item_count(void)
+{
+	return VECTOR_COUNT(&day_items);
 }
 
 /* Attach a note to an appointment or event. */

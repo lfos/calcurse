@@ -51,6 +51,7 @@
 /* Variables to handle calcurse windows. */
 struct window win[NBWINS];
 struct scrollwin sw_cal;
+struct listbox lb_apt;
 struct listbox lb_todo;
 
 /* User-configurable side bar width. */
@@ -248,18 +249,13 @@ static void wins_init_panels(void)
 			    CALHEIGHT + (conf.compact_panels ? 2 : 4),
 			    wins_sbar_width(), _("Calendar"));
 
-	win[APP].p =
-	    newwin(win[APP].h, win[APP].w, win[APP].y, win[APP].x);
-	wins_show(win[APP].p, _("Appointments"));
-	apad.width = win[APP].w - 3;
-	apad.ptrwin = newpad(apad.length, apad.width);
+	listbox_init(&lb_apt, win[APP].y, win[APP].x, win[APP].h, win[APP].w,
+		     _("Appointments"), ui_day_height, ui_day_draw);
+	ui_day_load_items();
 
 	listbox_init(&lb_todo, win[TOD].y, win[TOD].x, win[TOD].h, win[TOD].w,
 		     _("TODO"), ui_todo_height, ui_todo_draw);
 	ui_todo_load_items();
-
-	/* Enable function keys (i.e. arrow keys) in those windows */
-	keypad(win[APP].p, TRUE);
 }
 
 /* Create all the windows. */
@@ -401,8 +397,7 @@ void wins_scrollwin_ensure_visible(struct scrollwin *sw, unsigned line)
 void wins_reinit_panels(void)
 {
 	wins_scrollwin_delete(&sw_cal);
-	delwin(win[APP].p);
-	delwin(apad.ptrwin);
+	listbox_delete(&lb_apt);
 	listbox_delete(&lb_todo);
 	wins_get_config();
 	wins_init_panels();
@@ -415,8 +410,7 @@ void wins_reinit_panels(void)
 void wins_reinit(void)
 {
 	wins_scrollwin_delete(&sw_cal);
-	delwin(win[APP].p);
-	delwin(apad.ptrwin);
+	listbox_delete(&lb_apt);
 	listbox_delete(&lb_todo);
 	delwin(win[STA].p);
 	delwin(win[KEY].p);
@@ -547,12 +541,8 @@ void wins_update_border(int flags)
 		wins_scrollwin_draw_deco(&sw_cal, (slctd_win == CAL));
 		WINS_CALENDAR_UNLOCK;
 	}
-	if (flags & FLAG_APP) {
-		if (slctd_win == APP)
-			border_color(win[APP].p);
-		else
-			border_nocolor(win[APP].p);
-	}
+	if (flags & FLAG_APP)
+		listbox_draw_deco(&lb_apt, (slctd_win == APP));
 	if (flags & FLAG_TOD)
 		listbox_draw_deco(&lb_todo, (slctd_win == TOD));
 }
@@ -560,7 +550,7 @@ void wins_update_border(int flags)
 void wins_update_panels(int flags)
 {
 	if (flags & FLAG_APP)
-		ui_day_update_panel(slctd_win, *ui_calendar_get_slctd_day());
+		ui_day_update_panel(slctd_win);
 	if (flags & FLAG_TOD)
 		ui_todo_update_panel(slctd_win);
 	if (flags & FLAG_CAL)

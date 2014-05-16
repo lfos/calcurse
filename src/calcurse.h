@@ -323,12 +323,6 @@ struct todo {
 	char *note;
 };
 
-/* Number of items in current day. */
-struct day_items_nb {
-	unsigned nb_events;
-	unsigned nb_apoints;
-};
-
 struct excp {
 	long st;		/* beggining of the considered day, in seconds */
 };
@@ -632,21 +626,14 @@ struct apoint *apoint_dup(struct apoint *);
 void apoint_free(struct apoint *);
 void apoint_llist_init(void);
 void apoint_llist_free(void);
-void ui_day_hilt_set(int);
-void ui_day_hilt_decrease(int);
-void ui_day_hilt_increase(int);
-int ui_day_hilt(void);
 struct apoint *apoint_new(char *, char *, long, long, char);
 unsigned apoint_inday(struct apoint *, long *);
 void apoint_sec2str(struct apoint *, long, char *, char *);
 void apoint_write(struct apoint *, FILE *);
 struct apoint *apoint_scan(FILE *, struct tm, struct tm, char, char *);
 void apoint_delete(struct apoint *);
-void ui_day_scroll_pad_down(int, int);
-void ui_day_scroll_pad_up(int);
 struct notify_app *apoint_check_next(struct notify_app *, long);
 void apoint_switch_notify(struct apoint *);
-void ui_day_update_panel(int, struct date);
 void apoint_paste_item(struct apoint *, long);
 
 /* args.c */
@@ -705,9 +692,10 @@ long day_item_get_duration(struct day_item *);
 int day_item_get_state(struct day_item *);
 void day_item_add_exc(struct day_item *, long);
 void day_item_fork(struct day_item *, struct day_item *);
-int day_store_items(long, unsigned *, unsigned *, regex_t *);
-struct day_items_nb day_process_storage(struct date *, unsigned);
-void day_write_pad(long, int, int, int);
+void day_store_items(long, regex_t *);
+void day_process_storage(struct date *, unsigned);
+void day_display_item_date(struct day_item *, WINDOW *, int, long, int, int);
+void day_display_item(struct day_item *, WINDOW *, int, int, int, int);
 void day_write_stdout(long, const char *, const char *, const char *,
 		      const char *, int *);
 void day_popup_item(struct day_item *);
@@ -716,6 +704,7 @@ unsigned day_chk_busy_slices(struct date, int, int *);
 struct day_item *day_cut_item(long, int);
 int day_paste_item(struct day_item *, long);
 struct day_item *day_get_item(int);
+unsigned day_item_count(void);
 void day_edit_note(struct day_item *, const char *);
 void day_view_note(struct day_item *, const char *);
 void day_item_switch_notify(struct day_item *);
@@ -749,16 +738,6 @@ int display_help(const char *);
 void ical_import_data(FILE *, FILE *, unsigned *, unsigned *, unsigned *,
 		      unsigned *, unsigned *);
 void ical_export_data(FILE *);
-
-/* interaction.c */
-void ui_day_item_add(void);
-void ui_day_item_delete(unsigned *, unsigned *, unsigned);
-void ui_day_item_edit(void);
-void ui_day_item_pipe(void);
-void ui_day_item_repeat(void);
-void ui_day_item_cut_free(unsigned);
-void ui_day_item_copy(unsigned *, unsigned *, unsigned);
-void ui_day_item_paste(unsigned *, unsigned *, unsigned);
 
 /* io.c */
 unsigned io_fprintln(const char *, const char *, ...);
@@ -959,6 +938,26 @@ void todo_free(struct todo *);
 void todo_init_list(void);
 void todo_free_list(void);
 
+/* ui-day.c */
+void ui_day_item_add(void);
+void ui_day_item_delete(unsigned);
+void ui_day_item_edit(void);
+void ui_day_item_pipe(void);
+void ui_day_item_repeat(void);
+void ui_day_item_cut_free(unsigned);
+void ui_day_item_copy(unsigned);
+void ui_day_item_paste(unsigned);
+void ui_day_load_items(void);
+void ui_day_sel_reset(void);
+void ui_day_sel_move(int);
+void ui_day_draw(int, WINDOW *, int, int, void *);
+int ui_day_height(int, void *);
+void ui_day_update_panel(int);
+void ui_day_popup_item(void);
+void ui_day_flag(void);
+void ui_day_view_note(void);
+void ui_day_edit_note(void);
+
 /* ui-todo.c */
 void ui_todo_add(void);
 void ui_todo_delete(void);
@@ -1058,6 +1057,7 @@ void vars_init(void);
 /* wins.c */
 extern struct window win[NBWINS];
 extern struct scrollwin sw_cal;
+extern struct listbox lb_apt;
 extern struct listbox lb_todo;
 unsigned wins_nbar_lock(void);
 void wins_nbar_unlock(void);

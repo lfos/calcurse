@@ -307,7 +307,9 @@ app_arg(int add_line, struct date *day, long date, const char *fmt_apt,
 	if (date == 0)
 		date = get_sec_date(*day);
 
-	int n = day_store_items(date, NULL, NULL, regex);
+	day_store_items(date, regex);
+
+	int n = day_item_count();
 
 	if (n > 0) {
 		if (add_line)
