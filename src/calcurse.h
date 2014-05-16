@@ -56,6 +56,7 @@
 #include <regex.h>
 
 #include "llist.h"
+#include "vector.h"
 #include "htable.h"
 #include "llist_ts.h"
 
