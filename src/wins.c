@@ -493,47 +493,6 @@ void wins_get_config(void)
 	win[win_slave[0]].w = win[win_slave[1]].w = wins_sbar_width();
 }
 
-/* draw panel border in color */
-static void border_color(WINDOW * window)
-{
-	int color_attr = A_BOLD;
-	int no_color_attr = A_BOLD;
-
-	if (colorize) {
-		wattron(window, color_attr | COLOR_PAIR(COLR_CUSTOM));
-		box(window, 0, 0);
-	} else {
-		wattron(window, no_color_attr);
-		box(window, 0, 0);
-	}
-	if (colorize) {
-		wattroff(window, color_attr | COLOR_PAIR(COLR_CUSTOM));
-	} else {
-		wattroff(window, no_color_attr);
-	}
-	wnoutrefresh(window);
-}
-
-/* draw panel border without any color */
-static void border_nocolor(WINDOW * window)
-{
-	int color_attr = A_BOLD;
-	int no_color_attr = A_DIM;
-
-	if (colorize) {
-		wattron(window, color_attr | COLOR_PAIR(COLR_DEFAULT));
-	} else {
-		wattron(window, no_color_attr);
-	}
-	box(window, 0, 0);
-	if (colorize) {
-		wattroff(window, color_attr | COLOR_PAIR(COLR_DEFAULT));
-	} else {
-		wattroff(window, no_color_attr);
-	}
-	wnoutrefresh(window);
-}
-
 void wins_update_border(int flags)
 {
 	if (flags & FLAG_CAL) {
