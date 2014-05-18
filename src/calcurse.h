@@ -372,11 +372,21 @@ union aptev_ptr {
 	struct recur_event *rev;
 };
 
+/* Available types of items. */
+enum day_item_type {
+	DAY_HEADING = 1,
+	RECUR_EVNT,
+	EVNT,
+	DAY_SEPARATOR,
+	RECUR_APPT,
+	APPT
+};
+
 /* Generic item description (to hold appointments, events...). */
 struct day_item {
-	int type;		/* (recursive or normal) event or appointment */
-	long start;		/* start time of the repetition occurrence */
-	union aptev_ptr item;	/* pointer to the actual item */
+	enum day_item_type type;
+	long start;
+	union aptev_ptr item;
 };
 
 /* Available view for the calendar panel. */
@@ -551,16 +561,6 @@ struct nbar {
 	const char *shell;	/* user shell to launch notif. cmd */
 	unsigned notify_all;	/* notify all appointments */
 	pthread_mutex_t mutex;
-};
-
-/* Available types of items. */
-enum day_item_type {
-	DAY_HEADING = 1,
-	RECUR_EVNT,
-	EVNT,
-	DAY_SEPARATOR,
-	RECUR_APPT,
-	APPT
 };
 
 /* Return codes for the getstring() function. */
