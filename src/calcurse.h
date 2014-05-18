@@ -554,12 +554,13 @@ struct nbar {
 };
 
 /* Available types of items. */
-enum item_type {
-	RECUR_EVNT = 1,
+enum day_item_type {
+	DAY_HEADING = 1,
+	RECUR_EVNT,
 	EVNT,
+	DAY_SEPARATOR,
 	RECUR_APPT,
-	APPT,
-	MAX_TYPES = APPT
+	APPT
 };
 
 /* Return codes for the getstring() function. */
@@ -700,7 +701,7 @@ long day_item_get_duration(struct day_item *);
 int day_item_get_state(struct day_item *);
 void day_item_add_exc(struct day_item *, long);
 void day_item_fork(struct day_item *, struct day_item *);
-void day_store_items(long, regex_t *);
+void day_store_items(long, regex_t *, int);
 void day_process_storage(struct date *, unsigned);
 void day_display_item_date(struct day_item *, WINDOW *, int, long, int, int);
 void day_display_item(struct day_item *, WINDOW *, int, int, int, int);

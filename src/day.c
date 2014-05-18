@@ -70,17 +70,12 @@ static int day_cmp_start(struct day_item **pa, struct day_item **pb)
 	struct day_item *a = *pa;
 	struct day_item *b = *pb;
 
-	if (a->type <= EVNT) {
-		if (b->type <= EVNT)
-			return 0;
-		else
-			return -1;
-	} else if (b->type <= EVNT) {
-		return 1;
-	} else {
-		return a->start < b->start ? -1 : (a->start ==
-						   b->start ? 0 : 1);
+	if ((a->type == APPT || a->type == RECUR_APPT) &&
+	    (b->type == APPT || b->type == RECUR_APPT)) {
+		return a->start - b->start;
 	}
+
+	return a->type - b->type;
 }
 
 /* Add an item to the current day list. */
@@ -338,15 +333,24 @@ static int day_store_recur_apoints(long date, regex_t * regex)
  * The number of events and appointments in the current day are also updated.
  */
 void
-day_store_items(long date, regex_t * regex)
+day_store_items(long date, regex_t * regex, int include_captions)
 {
+	unsigned apts, events;
+	union aptev_ptr p = { NULL };
+
 	day_free_vector();
 	day_init_vector();
 
-	day_store_recur_events(date, regex);
-	day_store_events(date, regex);
-	day_store_recur_apoints(date, regex);
-	day_store_apoints(date, regex);
+	if (include_captions)
+		day_add_item(DAY_HEADING, 0, p);
+
+	events = day_store_recur_events(date, regex);
+	events += day_store_events(date, regex);
+	apts = day_store_recur_apoints(date, regex);
+	apts += day_store_apoints(date, regex);
+
+	if (include_captions && events > 0 && apts > 0)
+		day_add_item(DAY_SEPARATOR, 0, p);
 
 	VECTOR_SORT(&day_items, day_cmp_start);
 }
@@ -373,7 +377,7 @@ void day_process_storage(struct date *slctd_date, unsigned day_changed)
 		delwin(apad.ptrwin);
 
 	/* Store the events and appointments (recursive and normal items). */
-	day_store_items(date, NULL);
+	day_store_items(date, NULL, 1);
 }
 
 /*

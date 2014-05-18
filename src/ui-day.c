@@ -834,28 +834,43 @@ void ui_day_draw(int n, WINDOW *win, int y, int hilt, void *cb_data)
 	struct day_item *item = day_get_item(n);
 	int width = lb_apt.sw.w;
 
-	if (item->type < RECUR_APPT) {
+	if (item->type == EVNT || item->type == RECUR_EVNT) {
 		day_display_item(item, win, !hilt, width, y, 1);
-	} else {
-		day_display_item_date(item, win, !hilt, date, y + 1, 1);
-		day_display_item(item, win, !hilt, width, y + 2, 1);
+	} else if (item->type == APPT || item->type == RECUR_APPT) {
+		day_display_item_date(item, win, !hilt, date, y, 1);
+		day_display_item(item, win, !hilt, width, y + 1, 1);
+	} else if (item->type == DAY_HEADING) {
+		unsigned x = width - (strlen(_(monthnames[slctd_date.mm - 1])) + 17);
+		custom_apply_attr(win, ATTR_HIGHEST);
+		mvwprintw(win, y, x, "%s  %s %02d, %04d",
+			  ui_calendar_get_pom(date),
+			  _(monthnames[slctd_date.mm - 1]), slctd_date.dd,
+			  slctd_date.yyyy);
+		custom_remove_attr(win, ATTR_HIGHEST);
+	} else if (item->type == DAY_SEPARATOR) {
+		wmove(win, y, 0);
+		whline(win, 0, width);
 	}
-
 }
 
-enum listbox_row_type ui_day_row_type(int i, void *cb_data)
+enum listbox_row_type ui_day_row_type(int n, void *cb_data)
 {
-	return LISTBOX_ROW_TEXT;
+	struct day_item *item = day_get_item(n);
+
+	if (item->type == DAY_HEADING || item->type == DAY_SEPARATOR)
+		return LISTBOX_ROW_CAPTION;
+	else
+		return LISTBOX_ROW_TEXT;
 }
 
 int ui_day_height(int n, void *cb_data)
 {
 	struct day_item *item = day_get_item(n);
 
-	if (item->type < RECUR_APPT)
-		return 1;
-	else
+	if (item->type == APPT || item->type == RECUR_APPT)
 		return 3;
+	else
+		return 1;
 }
 
 /* Updates the Appointment panel */
