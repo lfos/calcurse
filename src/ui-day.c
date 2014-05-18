@@ -843,6 +843,11 @@ void ui_day_draw(int n, WINDOW *win, int y, int hilt, void *cb_data)
 
 }
 
+enum listbox_row_type ui_day_row_type(int i, void *cb_data)
+{
+	return LISTBOX_ROW_TEXT;
+}
+
 int ui_day_height(int n, void *cb_data)
 {
 	struct day_item *item = day_get_item(n);

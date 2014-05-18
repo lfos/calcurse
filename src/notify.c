@@ -658,6 +658,11 @@ static void print_config_option(int i, WINDOW *win, int y, int hilt, void *cb_da
 		custom_remove_attr(win, ATTR_HIGHEST);
 }
 
+static enum listbox_row_type config_option_row_type(int i, void *cb_data)
+{
+	return LISTBOX_ROW_TEXT;
+}
+
 static int config_option_height(int i, void *cb_data)
 {
 	return 3;
@@ -761,7 +766,9 @@ void notify_config_bar(void)
 	int ch;
 
 	clear();
-	listbox_init(&lb, 0, 0, notify_bar() ? row - 3 : row - 2, col, _("notification options"), config_option_height, print_config_option);
+	listbox_init(&lb, 0, 0, notify_bar() ? row - 3 : row - 2, col,
+		     _("notification options"), config_option_row_type,
+		     config_option_height, print_config_option);
 	listbox_load_items(&lb, 8);
 	listbox_draw_deco(&lb, 0);
 	status_mesg("", "");

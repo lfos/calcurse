@@ -250,11 +250,13 @@ static void wins_init_panels(void)
 			    wins_sbar_width(), _("Calendar"));
 
 	listbox_init(&lb_apt, win[APP].y, win[APP].x, win[APP].h, win[APP].w,
-		     _("Appointments"), ui_day_height, ui_day_draw);
+		     _("Appointments"), ui_day_row_type, ui_day_height,
+		     ui_day_draw);
 	ui_day_load_items();
 
 	listbox_init(&lb_todo, win[TOD].y, win[TOD].x, win[TOD].h, win[TOD].w,
-		     _("TODO"), ui_todo_height, ui_todo_draw);
+		     _("TODO"), ui_todo_row_type, ui_todo_height,
+		     ui_todo_draw);
 	ui_todo_load_items();
 }
 

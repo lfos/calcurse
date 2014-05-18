@@ -684,6 +684,11 @@ static void print_general_option(int i, WINDOW *win, int y, int hilt, void *cb_d
 		custom_remove_attr(win, ATTR_HIGHEST);
 }
 
+static enum listbox_row_type general_option_row_type(int i, void *cb_data)
+{
+	return LISTBOX_ROW_TEXT;
+}
+
 static int general_option_height(int i, void *cb_data)
 {
 	if (i == 9)
@@ -771,8 +776,8 @@ void custom_general_config(void)
 
 	clear();
 	listbox_init(&lb, 0, 0, notify_bar() ? row - 3 : row - 2, col,
-		     _("general options"), general_option_height,
-		     print_general_option);
+		     _("general options"), general_option_row_type,
+		     general_option_height, print_general_option);
 	listbox_load_items(&lb, 10);
 	listbox_draw_deco(&lb, 0);
 	status_mesg("", "");

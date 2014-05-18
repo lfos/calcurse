@@ -177,6 +177,11 @@ void ui_todo_draw(int n, WINDOW *win, int y, int hilt, void *cb_data)
 	*((llist_item_t **)cb_data) = i->next;
 }
 
+enum listbox_row_type ui_todo_row_type(int i, void *cb_data)
+{
+	return LISTBOX_ROW_TEXT;
+}
+
 int ui_todo_height(int n, void *cb_data)
 {
 	return 1;

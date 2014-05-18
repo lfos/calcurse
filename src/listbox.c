@@ -37,12 +37,15 @@
 #include "calcurse.h"
 
 void listbox_init(struct listbox *lb, int y, int x, int h, int w,
-		  const char *label, listbox_fn_item_height_t fn_height,
+		  const char *label, listbox_fn_item_type_t fn_type,
+		  listbox_fn_item_height_t fn_height,
 		  listbox_fn_draw_item_t fn_draw)
 {
 	EXIT_IF(lb == NULL, "null pointer");
 	wins_scrollwin_init(&(lb->sw), y, x, h, w, label);
 	lb->item_count = lb->item_sel = 0;
+	lb->fn_type = fn_type;
+	lb->type = NULL;
 	lb->fn_height = fn_height;
 	lb->ch = NULL;
 	lb->fn_draw = fn_draw;
@@ -53,6 +56,7 @@ void listbox_delete(struct listbox *lb)
 {
 	EXIT_IF(lb == NULL, "null pointer");
 	wins_scrollwin_delete(&(lb->sw));
+	free(lb->type);
 	free(lb->ch);
 }
 
@@ -78,9 +82,15 @@ void listbox_load_items(struct listbox *lb, int item_count)
 	if (lb->item_sel >= item_count)
 		lb->item_sel = item_count - 1;
 
+	if (item_count == 0)
+		return;
+
+	free(lb->type);
 	free(lb->ch);
+	lb->type = xmalloc(item_count * sizeof(unsigned));
 	lb->ch = xmalloc((item_count + 1) * sizeof(unsigned));
 	for (i = 0, ch = 0; i < item_count; i++) {
+		lb->type[i] = lb->fn_type(i, lb->cb_data);
 		lb->ch[i] = ch;
 		ch += lb->fn_height(i, lb->cb_data);
 	}
@@ -113,12 +123,53 @@ int listbox_get_sel(struct listbox *lb)
 	return lb->item_sel;
 }
 
-void listbox_set_sel(struct listbox *lb, unsigned pos)
+static void listbox_fix_sel(struct listbox *lb, int direction)
 {
-	lb->item_sel = pos;
+	int did_flip = 0;
+
+	if (lb->item_count == 0 || direction == 0)
+		return;
+
+	direction = direction > 0 ? 1 : -1;
+
+	while (lb->type[lb->item_sel] != LISTBOX_ROW_TEXT) {
+		if ((direction == -1 && lb->item_sel == 0) ||
+		    (direction == 1 && lb->item_sel == lb->item_count - 1)) {
+			if (did_flip) {
+				lb->item_sel = -1;
+				return;
+			}
+			direction = -direction;
+			did_flip = 1;
+		} else {
+			lb->item_sel += direction;
+		}
+	}
+}
+
+static void listbox_fix_visible_region(struct listbox *lb)
+{
+	int i;
 
 	wins_scrollwin_ensure_visible(&(lb->sw), lb->ch[lb->item_sel]);
 	wins_scrollwin_ensure_visible(&(lb->sw), lb->ch[lb->item_sel + 1] - 1);
+
+	i = lb->item_sel - 1;
+	while (i >= 0 && lb->type[i] != LISTBOX_ROW_TEXT) {
+		wins_scrollwin_ensure_visible(&(lb->sw), lb->ch[i]);
+		wins_scrollwin_ensure_visible(&(lb->sw), lb->ch[i + 1] - 1);
+		i++;
+	}
+}
+
+void listbox_set_sel(struct listbox *lb, unsigned pos)
+{
+	lb->item_sel = pos;
+	listbox_fix_sel(lb, 1);
+	if (lb->item_sel < 0)
+		return;
+
+	listbox_fix_visible_region(lb);
 }
 
 void listbox_sel_move(struct listbox *lb, int delta)
@@ -126,13 +177,15 @@ void listbox_sel_move(struct listbox *lb, int delta)
 	if (lb->item_count == 0)
 		return;
 
-	if (delta < 0 && lb->item_sel < -delta)
+	lb->item_sel += delta;
+	if (lb->item_sel < 0)
 		lb->item_sel = 0;
-	else if (delta > 0 && lb->item_sel + delta >= lb->item_count)
+	else if (lb->item_sel >= lb->item_count)
 		lb->item_sel = lb->item_count - 1;
-	else
-		lb->item_sel += delta;
 
-	wins_scrollwin_ensure_visible(&(lb->sw), lb->ch[lb->item_sel]);
-	wins_scrollwin_ensure_visible(&(lb->sw), lb->ch[lb->item_sel + 1] - 1);
+	listbox_fix_sel(lb, delta);
+	if (lb->item_sel < 0)
+		return;
+
+	listbox_fix_visible_region(lb);
 }

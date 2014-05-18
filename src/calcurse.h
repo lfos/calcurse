@@ -511,13 +511,21 @@ struct scrollwin {
 };
 
 /* Generic list box structure. */
+enum listbox_row_type {
+	LISTBOX_ROW_TEXT,
+	LISTBOX_ROW_CAPTION
+};
+
+typedef enum listbox_row_type (*listbox_fn_item_type_t) (int, void *);
 typedef int (*listbox_fn_item_height_t) (int, void *);
 typedef void (*listbox_fn_draw_item_t) (int, WINDOW *, int, int, void *);
 
 struct listbox {
 	struct scrollwin sw;
 	unsigned item_count;
-	unsigned item_sel;
+	int item_sel;
+	listbox_fn_item_type_t fn_type;
+	enum listbox_row_type *type;
 	listbox_fn_item_height_t fn_height;
 	unsigned *ch;
 	listbox_fn_draw_item_t fn_draw;
@@ -793,7 +801,9 @@ int keys_check_missing_bindings(void);
 void keys_fill_missing(void);
 
 /* listbox.c */
-void listbox_init(struct listbox *, int, int, int, int, const char *, listbox_fn_item_height_t, listbox_fn_draw_item_t);
+void listbox_init(struct listbox *, int, int, int, int, const char *,
+		  listbox_fn_item_type_t, listbox_fn_item_height_t,
+		  listbox_fn_draw_item_t);
 void listbox_delete(struct listbox *);
 void listbox_resize(struct listbox *, int, int, int, int);
 void listbox_set_cb_data(struct listbox *, void *);
@@ -951,6 +961,7 @@ void ui_day_load_items(void);
 void ui_day_sel_reset(void);
 void ui_day_sel_move(int);
 void ui_day_draw(int, WINDOW *, int, int, void *);
+enum listbox_row_type ui_day_row_type(int, void *);
 int ui_day_height(int, void *);
 void ui_day_update_panel(int);
 void ui_day_popup_item(void);
@@ -964,6 +975,7 @@ void ui_todo_delete(void);
 void ui_todo_edit(void);
 void ui_todo_pipe(void);
 void ui_todo_draw(int, WINDOW *, int, int, void *);
+enum listbox_row_type ui_todo_row_type(int, void *);
 int ui_todo_height(int, void *);
 void ui_todo_load_items(void);
 void ui_todo_sel_move(int);
