@@ -174,8 +174,10 @@ void day_item_add_exc(struct day_item *day, long date)
 	switch (day->type) {
 	case RECUR_EVNT:
 		recur_event_add_exc(day->item.rev, date);
+		break;
 	case RECUR_APPT:
 		recur_apoint_add_exc(day->item.rapt, date);
+		break;
 	}
 }
 
