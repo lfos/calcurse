@@ -867,6 +867,8 @@ int parse_duration(const char *string, unsigned *duration)
 			case STATE_HHMM_MM:
 				return 0;
 				break;
+			default:
+				break;
 			}
 
 			in = 0;

@@ -139,6 +139,8 @@ void day_item_erase_note(struct day_item *day)
 	case RECUR_EVNT:
 		erase_note(&day->item.rev->note);
 		break;
+	default:
+		break;
 	}
 }
 
@@ -177,6 +179,8 @@ void day_item_add_exc(struct day_item *day, long date)
 		break;
 	case RECUR_APPT:
 		recur_apoint_add_exc(day->item.rapt, date);
+		break;
+	default:
 		break;
 	}
 }
@@ -646,9 +650,12 @@ struct day_item *day_cut_item(long date, int item_number)
 /* Paste a previously cut item. */
 int day_paste_item(struct day_item *p, long date)
 {
-	switch (p->type) {
-	case 0:
+	if (!p->type) {
+		/* No previously cut item. */
 		return 0;
+	}
+
+	switch (p->type) {
 	case EVNT:
 		event_paste_item(p->item.ev, date);
 		break;
@@ -701,6 +708,8 @@ void day_edit_note(struct day_item *p, const char *editor)
 	case APPT:
 		p->item.apt->note = note;
 		break;
+	default:
+		break;
 	}
 }
 
@@ -719,6 +728,8 @@ void day_item_switch_notify(struct day_item *p)
 		break;
 	case APPT:
 		apoint_switch_notify(p->item.apt);
+		break;
+	default:
 		break;
 	}
 }

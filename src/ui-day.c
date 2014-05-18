@@ -393,6 +393,8 @@ void ui_day_item_edit(void)
 			return;
 		}
 		break;
+	default:
+		break;
 	}
 
 	ui_calendar_monthly_view_cache_set_invalid();
@@ -435,6 +437,8 @@ void ui_day_item_pipe(void)
 			break;
 		case APPT:
 			apoint_write(p->item.apt, fpout);
+			break;
+		default:
 			break;
 		}
 
@@ -767,10 +771,12 @@ void ui_day_item_repeat(void)
 /* Free the current cut item, if any. */
 void ui_day_item_cut_free(unsigned reg)
 {
+	if (!day_cut[reg].type) {
+		/* No previously cut item, don't free anything. */
+		return;
+	}
+
 	switch (day_cut[reg].type) {
-	case 0:
-		/* No previous item, don't free anything. */
-		break;
 	case APPT:
 		apoint_free(day_cut[reg].item.apt);
 		break;
@@ -782,6 +788,8 @@ void ui_day_item_cut_free(unsigned reg)
 		break;
 	case RECUR_EVNT:
 		recur_event_free(day_cut[reg].item.rev);
+		break;
+	default:
 		break;
 	}
 }
