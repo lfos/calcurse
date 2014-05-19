@@ -64,6 +64,10 @@ void listbox_resize(struct listbox *lb, int y, int x, int h, int w)
 {
 	EXIT_IF(lb == NULL, "null pointer");
 	wins_scrollwin_resize(&(lb->sw), y, x, h, w);
+
+	if (lb->item_sel < 0)
+		return;
+
 	wins_scrollwin_ensure_visible(&(lb->sw), lb->ch[lb->item_sel]);
 	wins_scrollwin_ensure_visible(&(lb->sw), lb->ch[lb->item_sel + 1] - 1);
 }
