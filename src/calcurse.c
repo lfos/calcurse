@@ -589,7 +589,7 @@ int main(int argc, char **argv)
 	io_load_keys(conf.pager);
 	io_load_todo();
 	io_load_app();
-	wins_reinit();
+	wins_resize();
 	/*
 	 * Refresh the hidden key handler window here to prevent wgetch() from
 	 * implicitly calling wrefresh() later (causing ncurses race conditions).

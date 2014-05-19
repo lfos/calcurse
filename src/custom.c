@@ -303,7 +303,7 @@ void custom_sidebar_config(void)
 			resize = 0;
 			wins_reset();
 		} else {
-			wins_reinit_panels();
+			wins_resize_panels();
 			wins_update_border(FLAG_ALL);
 			wins_update_panels(FLAG_ALL);
 			keys_display_bindings_bar(win[STA].p, bindings,

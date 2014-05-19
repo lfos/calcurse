@@ -396,28 +396,34 @@ void wins_scrollwin_ensure_visible(struct scrollwin *sw, unsigned line)
 		sw->line_off = line - inner_h + 1;
 }
 
-void wins_reinit_panels(void)
+void wins_resize_panels(void)
 {
-	wins_scrollwin_delete(&sw_cal);
-	listbox_delete(&lb_apt);
-	listbox_delete(&lb_todo);
 	wins_get_config();
-	wins_init_panels();
+	wins_scrollwin_resize(&sw_cal, win[CAL].y, win[CAL].x,
+			      CALHEIGHT + (conf.compact_panels ? 2 : 4),
+			      wins_sbar_width());
+	listbox_resize(&lb_apt, win[APP].y, win[APP].x, win[APP].h,
+		       win[APP].w);
+	listbox_resize(&lb_todo, win[TOD].y, win[TOD].x, win[TOD].h,
+		       win[TOD].w);
 }
 
 /*
  * Delete the existing windows and recreate them with their new
  * size and placement.
  */
-void wins_reinit(void)
+void wins_resize(void)
 {
-	wins_scrollwin_delete(&sw_cal);
-	listbox_delete(&lb_apt);
-	listbox_delete(&lb_todo);
+	wins_resize_panels();
+
 	delwin(win[STA].p);
 	delwin(win[KEY].p);
-	wins_get_config();
-	wins_init();
+	win[STA].p = newwin(win[STA].h, win[STA].w, win[STA].y, win[STA].x);
+	win[KEY].p = newwin(1, 1, 1, 1);
+
+	keypad(win[STA].p, TRUE);
+	keypad(win[KEY].p, TRUE);
+
 	if (notify_bar())
 		notify_reinit_bar();
 }
@@ -540,7 +546,7 @@ void wins_reset_noupdate(void)
 	endwin();
 	wins_refresh();
 	curs_set(0);
-	wins_reinit();
+	wins_resize();
 }
 
 /* Reset the screen, needed when resizing terminal for example. */
@@ -572,7 +578,7 @@ void wins_unprepare_external(void)
 	curs_set(0);
 	ui_mode = UI_CURSES;
 	wins_refresh();
-	wins_reinit();
+	wins_resize();
 	wins_update(FLAG_ALL);
 	if (notify_bar())
 		notify_start_main_thread();
