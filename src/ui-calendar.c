@@ -283,18 +283,16 @@ draw_monthly_view(struct scrollwin *sw, struct date *current_day,
 	struct date check_day;
 	int c_day, c_day_1, day_1_sav, numdays, j;
 	unsigned yr, mo;
-	int OFFY, OFFX, SBAR_WIDTH, ofs_x, ofs_y;
+	int w, ofs_x, ofs_y;
 	int item_this_day = 0;
 
 	mo = slctd_day.mm;
 	yr = slctd_day.yyyy;
 
 	/* offset for centering calendar in window */
-	SBAR_WIDTH = wins_sbar_width();
-	OFFY = 0;
-	OFFX = (SBAR_WIDTH - 27) / 2;
-	ofs_y = OFFY;
-	ofs_x = OFFX;
+	w = wins_sbar_width() - 2;
+	ofs_y = 0;
+	ofs_x = (w - 27) / 2;
 
 	/* checking the number of days in february */
 	numdays = days[mo - 1];
@@ -313,7 +311,7 @@ draw_monthly_view(struct scrollwin *sw, struct date *current_day,
 	WINS_CALENDAR_LOCK;
 	custom_apply_attr(sw->inner, ATTR_HIGHEST);
 	mvwprintw(sw->inner, ofs_y,
-		  (SBAR_WIDTH - (strlen(_(monthnames[mo - 1])) + 5)) / 2,
+		  (w - (strlen(_(monthnames[mo - 1])) + 5)) / 2,
 		  "%s %d", _(monthnames[mo - 1]), slctd_day.yyyy);
 	custom_remove_attr(sw->inner, ATTR_HIGHEST);
 	++ofs_y;
@@ -351,7 +349,7 @@ draw_monthly_view(struct scrollwin *sw, struct date *current_day,
 		/* Go to next line, the week is over. */
 		if (!c_day_1 && 1 != c_day) {
 			ofs_y++;
-			ofs_x = OFFX - day_1_sav - 4 * c_day;
+			ofs_x = (w - 27) / 2 - day_1_sav - 4 * c_day;
 		}
 
 		WINS_CALENDAR_LOCK;
@@ -469,12 +467,12 @@ draw_weekly_view(struct scrollwin *sw, struct date *current_day,
 		 unsigned sunday_first)
 {
 #define DAYSLICESNO  6
-	const int WCALWIDTH = 30;
+	const int WCALWIDTH = 28;
 	struct tm t;
 	int OFFY, OFFX, j, c_wday, days_to_remove, weeknum;
 
 	OFFY = 0;
-	OFFX = (wins_sbar_width() - WCALWIDTH) / 2 + 1;
+	OFFX = (wins_sbar_width() - 2 - WCALWIDTH) / 2;
 
 	/* Fill in a tm structure with the first day of the selected week. */
 	c_wday = ui_calendar_get_wday(&slctd_day);
@@ -584,7 +582,7 @@ draw_weekly_view(struct scrollwin *sw, struct date *current_day,
 	custom_apply_attr(sw->inner, ATTR_HIGHEST);
 	mvwhline(sw->inner, OFFY + 1 + DAYSLICESNO / 2, OFFX, ACS_S9, 1);
 	mvwhline(sw->inner, OFFY + 1 + DAYSLICESNO / 2,
-		 OFFX + WCALWIDTH - 3, ACS_S9, 1);
+		 OFFX + WCALWIDTH - 1, ACS_S9, 1);
 	custom_remove_attr(sw->inner, ATTR_HIGHEST);
 	WINS_CALENDAR_UNLOCK;
 
