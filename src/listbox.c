@@ -68,6 +68,11 @@ void listbox_resize(struct listbox *lb, int y, int x, int h, int w)
 	if (lb->item_sel < 0)
 		return;
 
+	unsigned last_line = lb->ch[lb->item_count] - 1;
+
+	if (wins_scrollwin_is_visible(&(lb->sw), last_line))
+		wins_scrollwin_set_lower(&(lb->sw), last_line);
+
 	wins_scrollwin_ensure_visible(&(lb->sw), lb->ch[lb->item_sel]);
 	wins_scrollwin_ensure_visible(&(lb->sw), lb->ch[lb->item_sel + 1] - 1);
 }
