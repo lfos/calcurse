@@ -713,7 +713,7 @@ unsigned day_chk_busy_slices(struct date, int, int *);
 struct day_item *day_cut_item(long, int);
 int day_paste_item(struct day_item *, long);
 struct day_item *day_get_item(int);
-unsigned day_item_count(void);
+unsigned day_item_count(int);
 void day_edit_note(struct day_item *, const char *);
 void day_view_note(struct day_item *, const char *);
 void day_item_switch_notify(struct day_item *);

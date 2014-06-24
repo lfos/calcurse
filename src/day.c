@@ -43,6 +43,7 @@
 #include "calcurse.h"
 
 static vector_t day_items;
+static unsigned day_items_nb = 0;
 
 static void day_free(struct day_item *day)
 {
@@ -359,6 +360,7 @@ day_store_items(long date, regex_t * regex, int include_captions)
 		day_add_item(DAY_SEPARATOR, 0, p);
 
 	VECTOR_SORT(&day_items, day_cmp_start);
+	day_items_nb = events + apts;
 }
 
 /*
@@ -682,9 +684,9 @@ struct day_item *day_get_item(int item_number)
 	return VECTOR_NTH(&day_items, item_number);
 }
 
-unsigned day_item_count(void)
+unsigned day_item_count(int include_captions)
 {
-	return VECTOR_COUNT(&day_items);
+	return (include_captions ? VECTOR_COUNT(&day_items) : day_items_nb);
 }
 
 /* Attach a note to an appointment or event. */

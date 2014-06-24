@@ -298,7 +298,7 @@ void ui_day_item_edit(void)
 	struct apoint *a;
 	int need_check_notify = 0;
 
-	if (day_item_count() <= 0)
+	if (day_item_count(0) <= 0)
 		return;
 
 	struct day_item *p = day_get_item(listbox_get_sel(&lb_apt));
@@ -412,7 +412,7 @@ void ui_day_item_pipe(void)
 	int pid;
 	FILE *fpout;
 
-	if (day_item_count() <= 0)
+	if (day_item_count(0) <= 0)
 		return;
 
 	struct day_item *p = day_get_item(listbox_get_sel(&lb_apt));
@@ -575,7 +575,7 @@ void ui_day_item_delete(unsigned reg)
 	const int nb_note_choices = 2;
 	long date = ui_calendar_get_slctd_day_sec();
 
-	if (day_item_count() <= 0)
+	if (day_item_count(0) <= 0)
 		return;
 
 	struct day_item *p = day_get_item(listbox_get_sel(&lb_apt));
@@ -668,7 +668,7 @@ void ui_day_item_repeat(void)
 	struct recur_apoint *ra;
 	long until, date;
 
-	if (day_item_count() <= 0)
+	if (day_item_count(0) <= 0)
 		return;
 
 	item_nb = listbox_get_sel(&lb_apt);
@@ -797,7 +797,7 @@ void ui_day_item_cut_free(unsigned reg)
 /* Copy an item, so that it can be pasted somewhere else later. */
 void ui_day_item_copy(unsigned reg)
 {
-	if (day_item_count() <= 0 || reg == REG_BLACK_HOLE)
+	if (day_item_count(0) <= 0 || reg == REG_BLACK_HOLE)
 		return;
 
 	struct day_item *item = day_get_item(listbox_get_sel(&lb_apt));
@@ -821,7 +821,7 @@ void ui_day_item_paste(unsigned reg)
 
 void ui_day_load_items(void)
 {
-	listbox_load_items(&lb_apt, day_item_count());
+	listbox_load_items(&lb_apt, day_item_count(1));
 }
 
 void ui_day_sel_reset(void)
@@ -889,7 +889,7 @@ void ui_day_update_panel(int which_pan)
 
 void ui_day_popup_item(void)
 {
-	if (day_item_count() <= 0)
+	if (day_item_count(0) <= 0)
 		return;
 
 	struct day_item *item = day_get_item(listbox_get_sel(&lb_apt));
@@ -898,7 +898,7 @@ void ui_day_popup_item(void)
 
 void ui_day_flag(void)
 {
-	if (day_item_count() <= 0)
+	if (day_item_count(0) <= 0)
 		return;
 
 	struct day_item *item = day_get_item(listbox_get_sel(&lb_apt));
@@ -907,7 +907,7 @@ void ui_day_flag(void)
 
 void ui_day_view_note(void)
 {
-	if (day_item_count() <= 0)
+	if (day_item_count(0) <= 0)
 		return;
 
 	struct day_item *item = day_get_item(listbox_get_sel(&lb_apt));
@@ -916,7 +916,7 @@ void ui_day_view_note(void)
 
 void ui_day_edit_note(void)
 {
-	if (day_item_count() <= 0)
+	if (day_item_count(0) <= 0)
 		return;
 
 	struct day_item *item = day_get_item(listbox_get_sel(&lb_apt));
