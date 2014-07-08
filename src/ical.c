@@ -843,13 +843,19 @@ static char *ical_read_summary(char *line)
 {
 	char *p, *summary;
 
-	if ((p = strchr(line, ':')) != NULL) {
-		p++;
-		summary = ical_unformat_line(p);
-		return summary;
-	} else {
+	p = strchr(line, ':');
+	if (!p)
 		return NULL;
-	}
+
+	summary = ical_unformat_line(p + 1);
+	if (!summary)
+		return NULL;
+
+	/* Event summaries must not contain newlines. */
+	for (p = strchr(summary, '\n'); p; p = strchr(p, '\n'))
+		*p = ' ';
+
+	return summary;
 }
 
 static void
