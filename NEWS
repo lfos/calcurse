@@ -1,3 +1,30 @@
+[08 Jul 2014]
+Version 3.2.0:
+- New features:
+  * Support for punctual appointments (appointments without an ending time).
+
+  * A --limit option which allows for limiting the number of appointments
+    returned (thanks to William Pettersson for submitting a patch).
+
+  * Support for %(remaining) and %(duration) modifiers in format strings
+    (thanks to William Pettersson for submitting a patch).
+
+  * The online help system now uses the system pager (e.g. less(1)).
+
+  * A new command prompt allows for browsing the help texts (type ":help" for
+    more information).
+
+  * Several general improvements to the user interface.
+
+- Bug fixes:
+  * Do not garble long notes (reported by Hakan Jerning).
+
+  * Fix compilation under OS X (thanks to Jack Nagel for submitting a patch).
+
+  * Do not break the appointments file when importing an iCal file that
+    contains an item with a newline in the summary (reported by Jonathan
+    McCrohan).
+
 [09 Feb 2013]
 Version 3.1.4:
 - Bug fixes:
