@@ -1,12 +1,13 @@
 # 
 # Translators:
+# Alexander Rødseth <rodseth@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-07-24 08:50+0200\n"
-"PO-Revision-Date: 2013-08-13 12:18+0000\n"
-"Last-Translator: Lukas Fleischer <transifex@cryptocrack.de>\n"
+"PO-Revision-Date: 2013-10-09 14:46+0000\n"
+"Last-Translator: Alexander Rødseth <rodseth@gmail.com>\n"
 "Language-Team: Norwegian Bokmål (Norway) (http://www.transifex.com/projects/p/calcurse/language/nb_NO/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,11 +20,11 @@ msgstr ""
 msgid ""
 "Edit Item\n"
 "========="
-msgstr ""
+msgstr "Rediger element\n============="
 
 #: edit.txt:4
 msgid "Edit the item which is currently selected."
-msgstr ""
+msgstr "Rediger elementet som er valgt."
 
 #: edit.txt:6
 msgid ""
@@ -32,19 +33,19 @@ msgid ""
 "property is one of the following: the start time, the end time, the\n"
 "description, or the item repetition. You can also move an item, that is, move\n"
 "an item without changing its duration."
-msgstr ""
+msgstr "Avhengig av type element (avtale, hendelse eller gjøremål) og elementets\nrepetisjon, vil du bli spurt om å velge en av elementegenskapene for endring.\nEn elementegenskap er en av følgende: starttidspunkt, sluttidspunkt, beskrivelse\neller gjentagelse. Du kan også flytte et element, dvs., flytte et element uten å\nendre varighet."
 
 #: edit.txt:12
 msgid ""
 "Once you have chosen the property you want to modify, you will be shown its\n"
 "actual value, and you will be able to change it as you like."
-msgstr ""
+msgstr "Når du har valgt egenskapen du ønsker å endre, vil du bli vist den faktiske\nverdien, og du kan deretter endre den som du vil."
 
 #: edit.txt:15
 msgid ""
 "Notes\n"
 "-----"
-msgstr ""
+msgstr "Notater\n-----"
 
 #: edit.txt:18
 msgid ""
@@ -52,16 +53,16 @@ msgid ""
 "  re-enter all of the repetition characteristics (repetition type, frequency,\n"
 "  and ending date). Moreover, the previous data concerning the deleted\n"
 "  occurrences will be lost."
-msgstr ""
+msgstr "* Dersom du velger å redigere elementets repetisjonsegenskaper, vil du bli\nspurt om å skrive inn igjen alle repetisjonskarakteristikkene (repetisjonstype,\nfrekvens og sluttdato). Ikke bare det, men tidligere data om de slettede\ntilfellene vil bli tapt."
 
 #: edit.txt:23
 msgid ""
 "* You can enter an empty end time to convert an existing appointment into a\n"
 "  punctual appointment."
-msgstr ""
+msgstr "* Du kan skrive inn et tomt sluttidspunkt for å konvertere en eksisterende\navtale til en punktlig avtale."
 
 #: edit.txt:26
 msgid ""
 "* Do not forget to save the calendar data to retrieve the modified properties\n"
 "  next time you launch Calcurse."
-msgstr ""
+msgstr "* Ikke glem å lagre kalenderdataene for å kunne hente ut de endrede egenskapene\nneste gang du starter Calcurse."

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2013-07-23 10:39+0200\n"
+"POT-Creation-Date: 2014-07-08 15:52+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -189,9 +189,6 @@ msgid "Option '-S' must be used with either '-d', '-r', '-s', '-a' or '-t'\n"
 msgstr ""
 
 msgid "Option '-l' must be used with either '-d', '-r', '-s', '-a' or '-t'\n"
-msgstr ""
-
-msgid "TODO:"
 msgstr ""
 
 msgid "Export to (i)cal or (p)cal format?"
@@ -1211,9 +1208,6 @@ msgstr ""
 msgid "[in]"
 msgstr ""
 
-msgid "no such type"
-msgstr ""
-
 msgid "Enter the repetition type:"
 msgstr ""
 
@@ -1253,6 +1247,9 @@ msgid "[tn]"
 msgstr ""
 
 msgid "Enter the new TODO description:"
+msgstr ""
+
+msgid "TODO:"
 msgstr ""
 
 msgid "/!\\ INTERNAL ERROR /!\\"
