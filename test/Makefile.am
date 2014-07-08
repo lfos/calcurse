@@ -67,7 +67,34 @@ EXTRA_DIST = \
 	$(TESTS) \
 	test-init.sh \
 	data/apts \
+	data/apts-appointment-002 \
+	data/apts-appointment-003 \
+	data/apts-appointment-004 \
+	data/apts-appointment-005 \
+	data/apts-appointment-006 \
+	data/apts-appointment-007 \
+	data/apts-appointment-008 \
+	data/apts-appointment-009 \
+	data/apts-appointment-010 \
+	data/apts-appointment-011 \
+	data/apts-appointment-012 \
+	data/apts-appointment-013 \
+	data/apts-appointment-014 \
+	data/apts-appointment-015 \
+	data/apts-appointment-016 \
+	data/apts-appointment-017 \
+	data/apts-appointment-018 \
+	data/apts-appointment-019 \
+	data/apts-appointment-020 \
+	data/apts-appointment-021 \
+	data/apts-appointment-022 \
 	data/apts-bug-002 \
+	data/apts-event-001 \
+	data/apts-event-002 \
+	data/apts-event-003 \
+	data/apts-event-004 \
+	data/apts-event-005 \
+	data/apts-event-006 \
 	data/apts-recur \
 	data/conf \
 	data/todo
