@@ -600,6 +600,8 @@ int main(int argc, char **argv)
 		io_startup_screen(no_data_file);
 	}
 	do_storage(1);
+	ui_todo_load_items();
+	ui_todo_sel_reset();
 	wins_slctd_set(conf.default_panel);
 	wins_update(FLAG_ALL);
 

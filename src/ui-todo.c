@@ -199,6 +199,11 @@ void ui_todo_load_items(void)
 	listbox_load_items(&lb_todo, n);
 }
 
+void ui_todo_sel_reset(void)
+{
+	listbox_sel_move(&lb_todo, 0);
+}
+
 void ui_todo_sel_move(int delta)
 {
 	listbox_sel_move(&lb_todo, delta);

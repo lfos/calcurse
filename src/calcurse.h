@@ -979,6 +979,7 @@ void ui_todo_draw(int, WINDOW *, int, int, void *);
 enum listbox_row_type ui_todo_row_type(int, void *);
 int ui_todo_height(int, void *);
 void ui_todo_load_items(void);
+void ui_todo_sel_reset(void);
 void ui_todo_sel_move(int);
 void ui_todo_update_panel(int);
 void ui_todo_chg_priority(int);
