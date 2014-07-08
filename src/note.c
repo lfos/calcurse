@@ -83,6 +83,7 @@ void edit_note(char **note, const char *editor)
 	FILE *fp;
 
 	strncpy(tmppath, get_tempdir(), BUFSIZ);
+	tmppath[BUFSIZ - 1] = '\0';
 	strncat(tmppath, "/calcurse-note.", BUFSIZ - strlen(tmppath) - 1);
 	if ((tmpext = new_tempfile(tmppath, TMPEXTSIZ)) == NULL)
 		return;

@@ -600,8 +600,8 @@ unsigned config_save(void)
 		return 1;
 
 	strncpy(tmppath, get_tempdir(), BUFSIZ);
-	strncat(tmppath, "/" CONF_PATH_NAME ".",
-		BUFSIZ - strlen(tmppath) - 1);
+	tmppath[BUFSIZ - 1] = '\0';
+	strncat(tmppath, "/" CONF_PATH_NAME ".", BUFSIZ - strlen(tmppath) - 1);
 	if ((tmpext = new_tempfile(tmppath, TMPEXTSIZ)) == NULL)
 		return 0;
 	strncat(tmppath, tmpext, BUFSIZ - strlen(tmppath) - 1);
