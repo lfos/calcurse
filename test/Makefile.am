@@ -51,18 +51,21 @@ TESTS = \
 	recur-005.sh
 
 TESTS_ENVIRONMENT = \
+	TEST_INIT='$(top_srcdir)/test/test-init.sh' \
 	CALCURSE='$(top_builddir)/src/calcurse' \
 	DATA_DIR='$(top_srcdir)/test/data/'
 
 AM_CFLAGS = -std=c99 -pedantic -D_POSIX_C_SOURCE=200809L
 
 check_PROGRAMS = run-test
-check_SCRIPTS = $(TESTS)
+check_SCRIPTS = test-init.sh
+noinst_SCRIPTS = $(check_SCRIPTS)
 
 run_test_SOURCES = run-test.c
 
 EXTRA_DIST = \
 	$(TESTS) \
+	test-init.sh \
 	data/apts \
 	data/apts-bug-002 \
 	data/apts-recur \

@@ -1,5 +1,5 @@
 #!/bin/sh
 
-. ./test-init.sh
+. "${TEST_INIT:-./test-init.sh}"
 
 true
