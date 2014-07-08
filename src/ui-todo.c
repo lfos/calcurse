@@ -153,6 +153,8 @@ void ui_todo_draw(int n, WINDOW *win, int y, int hilt, void *cb_data)
 	mark[0] = todo->id > 0 ? '0' + todo->id : 'X';
 	mark[1] = todo->note ? '>' : '.';
 
+	hilt = hilt && (wins_slctd() == TOD);
+
 	if (hilt)
 		custom_apply_attr(win, ATTR_HIGHEST);
 

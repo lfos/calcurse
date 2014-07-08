@@ -842,6 +842,8 @@ void ui_day_draw(int n, WINDOW *win, int y, int hilt, void *cb_data)
 	struct day_item *item = day_get_item(n);
 	int width = lb_apt.sw.w;
 
+	hilt = hilt && (wins_slctd() == APP);
+
 	if (item->type == EVNT || item->type == RECUR_EVNT) {
 		day_display_item(item, win, !hilt, width, y, 1);
 	} else if (item->type == APPT || item->type == RECUR_APPT) {
