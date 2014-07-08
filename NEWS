@@ -1,4 +1,11 @@
 [08 Jul 2014]
+Version 3.2.1:
+- Bug fixes:
+  * Load todo items on startup (reported by BARE Willy sprl).
+
+  * Do not highlight items on inactive windows.
+
+[08 Jul 2014]
 Version 3.2.0:
 - New features:
   * Support for punctual appointments (appointments without an ending time).
