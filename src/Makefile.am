@@ -39,6 +39,7 @@ calcurse_SOURCES = \
 	utils.c \
 	vars.c \
 	vector.c \
+	vector.h \
 	wins.c \
 	mem.c \
 	dmon.c
