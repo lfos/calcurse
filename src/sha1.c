@@ -40,6 +40,7 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "sha1.h"
@@ -233,18 +234,21 @@ void sha1_final(sha1_ctx_t * ctx, uint8_t digest[SHA1_DIGESTLEN])
 
 void sha1_digest(const char *data, char *buffer)
 {
+	char *buf = strdup(data);
 	sha1_ctx_t ctx;
 	uint8_t digest[SHA1_DIGESTLEN];
 	int i;
 
 	sha1_init(&ctx);
-	sha1_update(&ctx, (const uint8_t *)data, strlen(data));
+	sha1_update(&ctx, (const uint8_t *)buf, strlen(buf));
 	sha1_final(&ctx, (uint8_t *) digest);
 
 	for (i = 0; i < SHA1_DIGESTLEN; i++) {
 		snprintf(buffer, 3, "%02x", digest[i]);
 		buffer += sizeof(char) * 2;
 	}
+
+	free(buf);
 }
 
 void sha1_stream(FILE * fp, char *buffer)
