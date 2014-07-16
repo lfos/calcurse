@@ -642,7 +642,7 @@ struct day_item *day_cut_item(long date, int item_number)
 		recur_apoint_erase(p->item.rapt);
 		break;
 	default:
-		EXIT(_("unknwon type"));
+		EXIT(_("unknown item type"));
 		/* NOTREACHED */
 	}
 
@@ -671,7 +671,7 @@ int day_paste_item(struct day_item *p, long date)
 		recur_apoint_paste_item(p->item.rapt, date);
 		break;
 	default:
-		EXIT(_("unknwon type"));
+		EXIT(_("unknown item type"));
 		/* NOTREACHED */
 	}
 
