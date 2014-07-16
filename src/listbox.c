@@ -88,6 +88,9 @@ void listbox_load_items(struct listbox *lb, int item_count)
 
 	lb->item_count = item_count;
 
+	if (item_count > 0 && lb->item_sel < 0)
+		lb->item_sel = 0;
+
 	if (lb->item_sel >= item_count)
 		lb->item_sel = item_count - 1;
 
