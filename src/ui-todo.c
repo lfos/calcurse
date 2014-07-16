@@ -54,6 +54,7 @@ void ui_todo_add(void)
 		}
 		todo_add(todo_input, ch - '0', NULL);
 		ui_todo_load_items();
+		io_set_modified();
 	}
 }
 
@@ -88,9 +89,11 @@ void ui_todo_delete(void)
 	case 1:
 		todo_delete(item);
 		ui_todo_load_items();
+		io_set_modified();
 		break;
 	case 2:
 		todo_delete_note(item);
+		io_set_modified();
 		break;
 	default:
 		wins_erase_status_bar();
@@ -109,6 +112,7 @@ void ui_todo_edit(void)
 
 	status_mesg(mesg, "");
 	updatestring(win[STA].p, &item->mesg, 0, 1);
+	io_set_modified();
 }
 
 /* Pipe a todo item to an external program. */
@@ -241,6 +245,7 @@ void ui_todo_chg_priority(int diff)
 
 	item_new = todo_add(item->mesg, id, item->note);
 	todo_delete(item);
+	io_set_modified();
 	listbox_set_sel(&lb_todo, todo_get_position(item_new));
 }
 
@@ -260,6 +265,7 @@ void ui_todo_flag(void)
 
 	struct todo *item = todo_get_item(listbox_get_sel(&lb_todo));
 	todo_flag(item);
+	io_set_modified();
 }
 
 void ui_todo_view_note(void)
@@ -278,4 +284,5 @@ void ui_todo_edit_note(void)
 
 	struct todo *item = todo_get_item(listbox_get_sel(&lb_todo));
 	todo_edit_note(item, conf.editor);
+	io_set_modified();
 }

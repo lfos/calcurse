@@ -83,6 +83,8 @@ HTABLE_PROTOTYPE(ht_keybindings, ht_keybindings_s)
     HTABLE_GENERATE(ht_keybindings, ht_keybindings_s, load_keys_ht_getkey,
 		load_keys_ht_compare)
 
+static int modified = 0;
+
 /* Draw a progress bar while saving, loading or exporting data. */
 static void progress_bar(progress_bar_t type, int progress)
 {
@@ -429,6 +431,8 @@ void io_save_cal(enum save_display display)
 		progress_bar(PROGRESS_BAR_SAVE, PROGRESS_BAR_KEYS);
 	if (!io_save_keys())
 		ERROR_MSG("%s", access_pb);
+
+	io_unset_modified();
 
 	/* Print a message telling data were saved */
 	if (ui_mode == UI_CURSES && conf.system_dialogs) {
@@ -1341,4 +1345,19 @@ int io_file_cp(const char *src, const char *dst)
 	fclose(fp_src);
 
 	return 1;
+}
+
+void io_unset_modified(void)
+{
+	modified = 0;
+}
+
+void io_set_modified(void)
+{
+	modified = 1;
+}
+
+int io_get_modified(void)
+{
+	return modified;
 }

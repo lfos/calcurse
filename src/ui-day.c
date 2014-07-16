@@ -314,9 +314,11 @@ void ui_day_item_edit(void)
 			(_("Edit: "), choice_recur_evnt, 2)) {
 		case 1:
 			update_desc(&re->mesg);
+			io_set_modified();
 			break;
 		case 2:
 			update_rept(&re->rpt, re->day);
+			io_set_modified();
 			break;
 		default:
 			return;
@@ -325,6 +327,7 @@ void ui_day_item_edit(void)
 	case EVNT:
 		e = p->item.ev;
 		update_desc(&e->mesg);
+		io_set_modified();
 		break;
 	case RECUR_APPT:
 		ra = p->item.rapt;
@@ -340,23 +343,28 @@ void ui_day_item_edit(void)
 		case 1:
 			need_check_notify = 1;
 			update_start_time(&ra->start, &ra->dur, 1);
+			io_set_modified();
 			break;
 		case 2:
 			update_duration(&ra->start, &ra->dur);
+			io_set_modified();
 			break;
 		case 3:
 			if (notify_bar())
 				need_check_notify =
 				    notify_same_recur_item(ra);
 			update_desc(&ra->mesg);
+			io_set_modified();
 			break;
 		case 4:
 			need_check_notify = 1;
 			update_rept(&ra->rpt, ra->start);
+			io_set_modified();
 			break;
 		case 5:
 			need_check_notify = 1;
 			update_start_time(&ra->start, &ra->dur, 0);
+			io_set_modified();
 			break;
 		default:
 			return;
@@ -375,19 +383,23 @@ void ui_day_item_edit(void)
 		case 1:
 			need_check_notify = 1;
 			update_start_time(&a->start, &a->dur, 1);
+			io_set_modified();
 			break;
 		case 2:
 			update_duration(&a->start, &a->dur);
+			io_set_modified();
 			break;
 		case 3:
 			if (notify_bar())
 				need_check_notify =
 				    notify_same_item(a->start);
 			update_desc(&a->mesg);
+			io_set_modified();
 			break;
 		case 4:
 			need_check_notify = 1;
 			update_start_time(&a->start, &a->dur, 0);
+			io_set_modified();
 			break;
 		default:
 			return;
@@ -549,6 +561,7 @@ void ui_day_item_add(void)
 				  date2sec(*ui_calendar_get_slctd_day(), 0,
 					   0), 1);
 		}
+		io_set_modified();
 	}
 
 	ui_calendar_monthly_view_cache_set_invalid();
@@ -594,6 +607,7 @@ void ui_day_item_delete(unsigned reg)
 			break;
 		case 2:
 			day_item_erase_note(p);
+			io_set_modified();
 			return;
 		default:	/* User escaped */
 			return;
@@ -607,6 +621,7 @@ void ui_day_item_delete(unsigned reg)
 			break;
 		case 2:
 			day_item_add_exc(p, date);
+			io_set_modified();
 			return;
 		default:
 			return;
@@ -617,6 +632,7 @@ void ui_day_item_delete(unsigned reg)
 	p = day_cut_item(date, listbox_get_sel(&lb_apt));
 	day_cut[reg].type = p->type;
 	day_cut[reg].item = p->item;
+	io_set_modified();
 
 	ui_calendar_monthly_view_cache_set_invalid();
 }
@@ -764,6 +780,7 @@ void ui_day_item_repeat(void)
 	p = day_cut_item(date, item_nb);
 	day_cut[REG_BLACK_HOLE].type = p->type;
 	day_cut[REG_BLACK_HOLE].item = p->item;
+	io_set_modified();
 
 	ui_calendar_monthly_view_cache_set_invalid();
 }
@@ -815,6 +832,7 @@ void ui_day_item_paste(unsigned reg)
 
 	day_item_fork(&day_cut[reg], &day);
 	day_paste_item(&day, ui_calendar_get_slctd_day_sec());
+	io_set_modified();
 
 	ui_calendar_monthly_view_cache_set_invalid();
 }
@@ -905,6 +923,7 @@ void ui_day_flag(void)
 
 	struct day_item *item = day_get_item(listbox_get_sel(&lb_apt));
 	day_item_switch_notify(item);
+	io_set_modified();
 }
 
 void ui_day_view_note(void)
@@ -923,4 +942,5 @@ void ui_day_edit_note(void)
 
 	struct day_item *item = day_get_item(listbox_get_sel(&lb_apt));
 	day_edit_note(item, conf.editor);
+	io_set_modified();
 }

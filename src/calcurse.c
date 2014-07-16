@@ -256,6 +256,13 @@ static inline void key_generic_save(void)
 
 static inline void key_generic_reload(void)
 {
+	if (io_get_modified() && status_ask_bool(_("By reloading items, you "
+			"will lose any unsaved modifications. "
+			"Continue?")) != 1) {
+		wins_update(FLAG_STA);
+		return;
+	}
+
 	/* Reinitialize data structures. */
 	apoint_llist_free();
 	event_llist_free();
@@ -271,6 +278,7 @@ static inline void key_generic_reload(void)
 
 	io_load_todo();
 	io_load_app();
+	io_unset_modified();
 	ui_todo_load_items();
 	ui_todo_sel_reset();
 
@@ -616,6 +624,7 @@ int main(int argc, char **argv)
 	io_load_keys(conf.pager);
 	io_load_todo();
 	io_load_app();
+	io_unset_modified();
 	wins_resize();
 	/*
 	 * Refresh the hidden key handler window here to prevent wgetch() from
