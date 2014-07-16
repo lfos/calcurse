@@ -611,6 +611,22 @@ void wins_launch_external(const char *file, const char *cmd)
 	wins_unprepare_external();
 }
 
+/*
+ * While inside interactive mode, launch the external command cmd on the given
+ * two files.
+ */
+void wins_launch_external2(const char *file1, const char *file2,
+			   const char *cmd)
+{
+	const char *arg[] = { cmd, file1, file2, NULL };
+	int pid;
+
+	wins_prepare_external();
+	if ((pid = shell_exec(NULL, NULL, *arg, arg)))
+		child_wait(NULL, NULL, pid);
+	wins_unprepare_external();
+}
+
 #define NB_CAL_CMDS    28	/* number of commands while in cal view */
 #define NB_APP_CMDS    33	/* same thing while in appointment view */
 #define NB_TOD_CMDS    32	/* same thing while in todo view */

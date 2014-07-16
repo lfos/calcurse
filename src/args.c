@@ -707,8 +707,8 @@ int parse_args(int argc, char **argv)
 				io_load_app();
 				io_load_todo();
 				io_import_data(IO_IMPORT_ICAL, ifile);
-				io_save_apts();
-				io_save_todo();
+				io_save_apts(path_apts);
+				io_save_todo(path_todo);
 				non_interactive = 1;
 			}
 			if (xflag) {

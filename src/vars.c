@@ -126,7 +126,7 @@ struct dmon_conf dmon;
  */
 void vars_init(void)
 {
-	const char *ed, *pg;
+	const char *ed, *pg, *mt;
 
 	/* Variables for user configuration */
 	conf.confirm_quit = 1;
@@ -158,6 +158,11 @@ void vars_init(void)
 	if (pg == NULL || pg[0] == '\0')
 		pg = DEFAULT_PAGER;
 	conf.pager = pg;
+
+	mt = getenv("MERGETOOL");
+	if (mt == NULL || mt[0] == '\0')
+		mt = DEFAULT_MERGETOOL;
+	conf.mergetool = mt;
 
 	wins_set_layout(1);
 

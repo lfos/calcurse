@@ -319,12 +319,22 @@ void io_extract_data(char *dst_data, const char *org, int len)
 
 static pthread_mutex_t io_save_mutex = PTHREAD_MUTEX_INITIALIZER;
 
+void io_save_mutex_lock(void)
+{
+	pthread_mutex_lock(&io_save_mutex);
+}
+
+void io_save_mutex_unlock(void)
+{
+	pthread_mutex_unlock(&io_save_mutex);
+}
+
 /*
  * Save the apts data file, which contains the
  * appointments first, and then the events.
  * Recursive items are written first.
  */
-unsigned io_save_apts(void)
+unsigned io_save_apts(const char *aptsfile)
 {
 	llist_item_t *i;
 	FILE *fp;
@@ -332,7 +342,7 @@ unsigned io_save_apts(void)
 	if (read_only)
 		return 1;
 
-	if ((fp = fopen(path_apts, "w")) == NULL)
+	if ((fp = fopen(aptsfile, "w")) == NULL)
 		return 0;
 
 	recur_save_data(fp);
@@ -356,7 +366,7 @@ unsigned io_save_apts(void)
 }
 
 /* Save the todo data file. */
-unsigned io_save_todo(void)
+unsigned io_save_todo(const char *todofile)
 {
 	llist_item_t *i;
 	FILE *fp;
@@ -364,7 +374,7 @@ unsigned io_save_todo(void)
 	if (read_only)
 		return 1;
 
-	if ((fp = fopen(path_todo, "w")) == NULL)
+	if ((fp = fopen(todofile, "w")) == NULL)
 		return 0;
 
 	LLIST_FOREACH(&todolist, i) {
@@ -419,12 +429,12 @@ void io_save_cal(enum save_display display)
 
 	if (show_bar)
 		progress_bar(PROGRESS_BAR_SAVE, PROGRESS_BAR_TODO);
-	if (!io_save_todo())
+	if (!io_save_todo(path_todo))
 		ERROR_MSG("%s", access_pb);
 
 	if (show_bar)
 		progress_bar(PROGRESS_BAR_SAVE, PROGRESS_BAR_APTS);
-	if (!io_save_apts())
+	if (!io_save_apts(path_apts))
 		ERROR_MSG("%s", access_pb);
 
 	if (show_bar)

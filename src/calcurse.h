@@ -103,8 +103,9 @@
 #define DPID_PATH        DIR_NAME DPID_PATH_NAME
 #define NOTES_DIR        DIR_NAME NOTES_DIR_NAME
 
-#define DEFAULT_EDITOR   "vi"
-#define DEFAULT_PAGER    "less"
+#define DEFAULT_EDITOR     "vi"
+#define DEFAULT_PAGER      "less"
+#define DEFAULT_MERGETOOL  "vimdiff"
 
 #define ATTR_FALSE    0
 #define ATTR_TRUE     1
@@ -259,6 +260,7 @@ struct conf {
 	unsigned progress_bar;
 	const char *editor;
 	const char *pager;
+	const char *mergetool;
 	char output_datefmt[BUFSIZ];	/* format for displaying date */
 	int input_datefmt;	/* format for reading date */
 };
@@ -753,8 +755,10 @@ void ical_export_data(FILE *);
 unsigned io_fprintln(const char *, const char *, ...);
 void io_init(const char *, const char *);
 void io_extract_data(char *, const char *, int);
-unsigned io_save_apts(void);
-unsigned io_save_todo(void);
+void io_save_mutex_lock(void);
+void io_save_mutex_unlock(void);
+unsigned io_save_apts(const char *);
+unsigned io_save_todo(const char *);
 unsigned io_save_keys(void);
 void io_save_cal(enum save_display);
 void io_load_app(void);
@@ -1121,6 +1125,7 @@ void wins_reset(void);
 void wins_prepare_external(void);
 void wins_unprepare_external(void);
 void wins_launch_external(const char *, const char *);
+void wins_launch_external2(const char *, const char *, const char *);
 void wins_status_bar(void);
 void wins_erase_status_bar(void);
 void wins_other_status_page(int);

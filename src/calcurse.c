@@ -256,11 +256,54 @@ static inline void key_generic_save(void)
 
 static inline void key_generic_reload(void)
 {
-	if (io_get_modified() && status_ask_bool(_("By reloading items, you "
-			"will lose any unsaved modifications. "
-			"Continue?")) != 1) {
-		wins_update(FLAG_STA);
-		return;
+	if (io_get_modified()) {
+		const char *msg_um_prefix =
+				_("There are unsaved modifications:");
+		const char *msg_um_discard = _("(d)iscard");
+		const char *msg_um_merge = _("(m)erge");
+		const char *msg_um_keep = _("(k)eep and cancel");
+		const char *msg_um_choice = _("[dmk]");
+
+		char msg_um_asktype[BUFSIZ];
+		snprintf(msg_um_asktype, BUFSIZ, "%s %s, %s, %s",
+			 msg_um_prefix, msg_um_discard, msg_um_merge,
+			 msg_um_keep);
+
+		char *path_apts_backup, *path_todo_backup;
+		const char *backup_ext = ".sav";
+
+		switch (status_ask_choice(msg_um_asktype, msg_um_choice, 3)) {
+		case 1:
+			break;
+		case 2:
+			path_apts_backup = xmalloc(strlen(path_apts) +
+						   strlen(backup_ext) + 1);
+			path_todo_backup = xmalloc(strlen(path_todo) +
+						   strlen(backup_ext) + 1);
+			sprintf(path_apts_backup, "%s%s", path_apts,
+				backup_ext);
+			sprintf(path_todo_backup, "%s%s", path_todo,
+				backup_ext);
+
+			io_save_mutex_lock();
+			io_save_apts(path_apts_backup);
+			io_save_todo(path_todo_backup);
+			io_save_mutex_unlock();
+
+			wins_launch_external2(path_apts, path_apts_backup,
+					      conf.mergetool);
+			wins_launch_external2(path_todo, path_todo_backup,
+					      conf.mergetool);
+
+			xfree(path_apts_backup);
+			xfree(path_todo_backup);
+			break;
+		case 3:
+			/* FALLTHROUGH */
+		default:
+			wins_update(FLAG_STA);
+			return;
+		}
 	}
 
 	/* Reinitialize data structures. */
