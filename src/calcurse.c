@@ -254,6 +254,32 @@ static inline void key_generic_save(void)
 	wins_update(FLAG_STA);
 }
 
+static inline void key_generic_reload(void)
+{
+	/* Reinitialize data structures. */
+	apoint_llist_free();
+	event_llist_free();
+	recur_apoint_llist_free();
+	recur_event_llist_free();
+	todo_free_list();
+
+	apoint_llist_init();
+	event_llist_init();
+	recur_apoint_llist_init();
+	recur_event_llist_init();
+	todo_init_list();
+
+	io_load_todo();
+	io_load_app();
+	ui_todo_load_items();
+	ui_todo_sel_reset();
+
+	do_storage(0);
+	notify_check_next_app(1);
+	ui_calendar_monthly_view_cache_set_invalid();
+	wins_update(FLAG_ALL);
+}
+
 static inline void key_generic_import(void)
 {
 	wins_erase_status_bar();
@@ -650,6 +676,7 @@ int main(int argc, char **argv)
 			HANDLE_KEY(KEY_VIEW_NOTE, key_view_note);
 			HANDLE_KEY(KEY_GENERIC_HELP, key_generic_help);
 			HANDLE_KEY(KEY_GENERIC_SAVE, key_generic_save);
+			HANDLE_KEY(KEY_GENERIC_RELOAD, key_generic_reload);
 			HANDLE_KEY(KEY_GENERIC_IMPORT, key_generic_import);
 			HANDLE_KEY(KEY_GENERIC_EXPORT, key_generic_export);
 			HANDLE_KEY(KEY_GENERIC_PREV_DAY, key_generic_prev_day);

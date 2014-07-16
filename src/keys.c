@@ -56,6 +56,7 @@ static struct keydef_s keydef[NBKEYS] = {
 	{"generic-help", "?"},
 	{"generic-quit", "q Q"},
 	{"generic-save", "s S C-s"},
+	{"generic-reload", "R"},
 	{"generic-copy", "c"},
 	{"generic-paste", "p C-v"},
 	{"generic-change-view", "TAB"},
@@ -92,7 +93,7 @@ static struct keydef_s keydef[NBKEYS] = {
 	{"view-item", "v V"},
 	{"pipe-item", "|"},
 	{"flag-item", "!"},
-	{"repeat", "r R"},
+	{"repeat", "r"},
 	{"edit-note", "n N"},
 	{"view-note", ">"},
 	{"raise-priority", "+"},
@@ -470,6 +471,7 @@ void keys_popup_info(enum key key)
 	info[KEY_GENERIC_QUIT] =
 	    _("Exit from the current menu, or quit calcurse.");
 	info[KEY_GENERIC_SAVE] = _("Save calcurse data.");
+	info[KEY_GENERIC_RELOAD] = _("Reload appointments and todo items.");
 	info[KEY_GENERIC_COPY] =
 	    _("Copy the item that is currently selected.");
 	info[KEY_GENERIC_PASTE] =

@@ -611,9 +611,9 @@ void wins_launch_external(const char *file, const char *cmd)
 	wins_unprepare_external();
 }
 
-#define NB_CAL_CMDS    27	/* number of commands while in cal view */
-#define NB_APP_CMDS    32	/* same thing while in appointment view */
-#define NB_TOD_CMDS    31	/* same thing while in todo view */
+#define NB_CAL_CMDS    28	/* number of commands while in cal view */
+#define NB_APP_CMDS    33	/* same thing while in appointment view */
+#define NB_TOD_CMDS    32	/* same thing while in todo view */
 
 static unsigned status_page;
 
@@ -628,6 +628,7 @@ void wins_status_bar(void)
 	struct binding help = { _("Help"), KEY_GENERIC_HELP };
 	struct binding quit = { _("Quit"), KEY_GENERIC_QUIT };
 	struct binding save = { _("Save"), KEY_GENERIC_SAVE };
+	struct binding reload = { _("Reload"), KEY_GENERIC_RELOAD };
 	struct binding copy = { _("Copy"), KEY_GENERIC_COPY };
 	struct binding paste = { _("Paste"), KEY_GENERIC_PASTE };
 	struct binding chgvu = { _("Chg Win"), KEY_GENERIC_CHANGE_VIEW };
@@ -670,33 +671,26 @@ void wins_status_bar(void)
 	struct binding othr = { _("OtherCmd"), KEY_GENERIC_OTHER_CMD };
 
 	struct binding *bindings_cal[] = {
-		&help, &quit, &save, &chgvu, &nview, &pview, &up, &down,
-		    &left, &right,
-		&togo, &import, &export, &weekb, &weeke, &appt, &todo,
-		    &gpday, &gnday,
-		&gpweek, &gnweek, &gpmonth, &gnmonth, &gpyear, &gnyear,
-		    &draw, &today,
-		&conf, &cmd
+		&help, &quit, &save, &reload, &chgvu, &nview, &pview, &up,
+		&down, &left, &right, &togo, &import, &export, &weekb, &weeke,
+		&appt, &todo, &gpday, &gnday, &gpweek, &gnweek, &gpmonth,
+		&gnmonth, &gpyear, &gnyear, &draw, &today, &conf, &cmd
 	};
 
 	struct binding *bindings_apoint[] = {
-		&help, &quit, &save, &chgvu, &import, &export, &add, &del,
-		    &edit, &view,
-		&pipe, &draw, &rept, &flag, &enote, &vnote, &up, &down,
-		    &gpday, &gnday,
-		&gpweek, &gnweek, &gpmonth, &gnmonth, &gpyear, &gnyear,
-		    &togo, &today,
-		&conf, &appt, &todo, &copy, &paste, &cmd
+		&help, &quit, &save, &reload, &chgvu, &import, &export, &add,
+		&del, &edit, &view, &pipe, &draw, &rept, &flag, &enote, &vnote,
+		&up, &down, &gpday, &gnday, &gpweek, &gnweek, &gpmonth,
+		&gnmonth, &gpyear, &gnyear, &togo, &today, &conf, &appt, &todo,
+		&copy, &paste, &cmd
 	};
 
 	struct binding *bindings_todo[] = {
-		&help, &quit, &save, &chgvu, &import, &export, &add, &del,
-		    &edit, &view,
-		&pipe, &flag, &rprio, &lprio, &enote, &vnote, &up, &down,
-		    &gpday, &gnday,
-		&gpweek, &gnweek, &gpmonth, &gnmonth, &gpyear, &gnyear,
-		    &togo, &today,
-		&conf, &appt, &todo, &draw, &cmd
+		&help, &quit, &save, &reload, &chgvu, &import, &export, &add,
+		&del, &edit, &view, &pipe, &flag, &rprio, &lprio, &enote,
+		&vnote, &up, &down, &gpday, &gnday, &gpweek, &gnweek, &gpmonth,
+		&gnmonth, &gpyear, &gnyear, &togo, &today, &conf, &appt, &todo,
+		&draw, &cmd
 	};
 
 	enum win active_panel = wins_slctd();
