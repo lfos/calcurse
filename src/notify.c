@@ -321,6 +321,15 @@ void notify_update_bar(void)
 	pthread_mutex_unlock(&notify.mutex);
 }
 
+static void
+notify_main_thread_cleanup(void *arg)
+{
+	pthread_mutex_trylock(&notify.mutex);
+	pthread_mutex_unlock(&notify.mutex);
+	pthread_mutex_trylock(&nbar.mutex);
+	pthread_mutex_unlock(&nbar.mutex);
+}
+
 /* Update the notication bar content */
 /* ARGSUSED0 */
 static void *notify_main_thread(void *arg)
@@ -333,6 +342,8 @@ static void *notify_main_thread(void *arg)
 	time_t ntimer;
 
 	elapse = 0;
+
+	pthread_cleanup_push(notify_main_thread_cleanup, NULL);
 
 	for (;;) {
 		ntimer = time(NULL);
@@ -357,6 +368,8 @@ static void *notify_main_thread(void *arg)
 				notify_check_next_app(0);
 		}
 	}
+
+	pthread_cleanup_pop(0);
 	pthread_exit(NULL);
 }
 
