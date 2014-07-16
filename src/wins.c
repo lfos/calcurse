@@ -600,25 +600,8 @@ void wins_unprepare_external(void)
  * While inside interactive mode, launch the external command cmd on the given
  * file.
  */
-void wins_launch_external(const char *file, const char *cmd)
+void wins_launch_external(const char *arg[])
 {
-	const char *arg[] = { cmd, file, NULL };
-	int pid;
-
-	wins_prepare_external();
-	if ((pid = shell_exec(NULL, NULL, *arg, arg)))
-		child_wait(NULL, NULL, pid);
-	wins_unprepare_external();
-}
-
-/*
- * While inside interactive mode, launch the external command cmd on the given
- * two files.
- */
-void wins_launch_external2(const char *file1, const char *file2,
-			   const char *cmd)
-{
-	const char *arg[] = { cmd, file1, file2, NULL };
 	int pid;
 
 	wins_prepare_external();

@@ -95,7 +95,8 @@ void edit_note(char **note, const char *editor)
 		io_file_cp(notepath, tmppath);
 	}
 
-	wins_launch_external(tmppath, editor);
+	const char *arg[] = { editor, tmppath, NULL };
+	wins_launch_external(arg);
 
 	if (io_file_is_empty(tmppath) > 0) {
 		erase_note(note);
@@ -119,7 +120,9 @@ void view_note(const char *note, const char *pager)
 	if (note == NULL)
 		return;
 	snprintf(fullname, BUFSIZ, "%s%s", path_notes, note);
-	wins_launch_external(fullname, pager);
+
+	const char *arg[] = { pager, fullname, NULL };
+	wins_launch_external(arg);
 }
 
 /* Erase a note previously attached to an item. */

@@ -189,7 +189,8 @@ int display_help(const char *topic)
 	}
 
 	if (io_file_exists(path)) {
-		wins_launch_external(path, conf.pager);
+		const char *arg[] = { conf.pager, path, NULL };
+		wins_launch_external(arg);
 		return 1;
 	} else {
 		return 0;

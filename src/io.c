@@ -1175,8 +1175,10 @@ void io_log_display(struct io_file *log, const char *msg,
 				child_wait(NULL, NULL, pid);
 		}
 	} else {
-		if (status_ask_bool(msg) == 1)
-			wins_launch_external(log->name, pager);
+		if (status_ask_bool(msg) == 1) {
+			const char *arg[] = { pager, log->name, NULL };
+			wins_launch_external(arg);
+		}
 		wins_erase_status_bar();
 	}
 }

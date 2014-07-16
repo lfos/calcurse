@@ -290,10 +290,13 @@ static inline void key_generic_reload(void)
 			io_save_todo(path_todo_backup);
 			io_save_mutex_unlock();
 
-			wins_launch_external2(path_apts, path_apts_backup,
-					      conf.mergetool);
-			wins_launch_external2(path_todo, path_todo_backup,
-					      conf.mergetool);
+			const char *arg_apts[] = { conf.mergetool, path_apts,
+						   path_apts_backup, NULL };
+			wins_launch_external(arg_apts);
+
+			const char *arg_todo[] = { conf.mergetool, path_todo,
+						   path_todo_backup, NULL };
+			wins_launch_external(arg_todo);
 
 			xfree(path_apts_backup);
 			xfree(path_todo_backup);
