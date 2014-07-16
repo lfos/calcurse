@@ -1214,10 +1214,14 @@ void io_start_psave_thread(void)
 /* Stop periodic data saves. */
 void io_stop_psave_thread(void)
 {
-	if (io_t_psave) {
-		pthread_cancel(io_t_psave);
-		pthread_join(io_t_psave, NULL);
-	}
+	if (!io_t_psave)
+		return;
+
+	/* Lock the mutex to avoid cancelling the thread during saving. */
+	io_save_mutex_lock();
+	pthread_cancel(io_t_psave);
+	pthread_join(io_t_psave, NULL);
+	io_save_mutex_unlock();
 }
 
 /*
