@@ -518,6 +518,7 @@ int main(int argc, char **argv)
 
 	/* Initialize non-thread-safe data structures. */
 	event_llist_init();
+	recur_event_llist_init();
 	todo_init_list();
 
 	/*

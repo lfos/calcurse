@@ -140,6 +140,11 @@ void recur_apoint_llist_init(void)
 	LLIST_TS_INIT(&recur_alist_p);
 }
 
+void recur_event_llist_init(void)
+{
+	LLIST_INIT(&recur_elist);
+}
+
 void recur_apoint_free(struct recur_apoint *rapt)
 {
 	mem_free(rapt->mesg);

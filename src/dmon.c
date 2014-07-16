@@ -163,6 +163,7 @@ void dmon_start(int parent_exit_status)
 	apoint_llist_init();
 	recur_apoint_llist_init();
 	event_llist_init();
+	recur_event_llist_init();
 	todo_init_list();
 	io_load_app();
 	data_loaded = 1;

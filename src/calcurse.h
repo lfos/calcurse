@@ -892,6 +892,7 @@ void recur_apoint_free_bkp(void);
 void recur_event_free(struct recur_event *);
 void recur_apoint_free(struct recur_apoint *);
 void recur_apoint_llist_init(void);
+void recur_event_llist_init(void);
 void recur_apoint_llist_free(void);
 void recur_event_llist_free(void);
 struct recur_apoint *recur_apoint_new(char *, char *, long, long, char,
