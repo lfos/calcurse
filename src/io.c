@@ -1333,6 +1333,32 @@ int io_file_is_empty(char *file)
 }
 
 /*
+ * Check whether two files are equal.
+ */
+int io_files_equal(const char *file1, const char *file2)
+{
+	FILE *fp1, *fp2;
+	int ret = 0;
+
+	if (!file1 || !file2)
+		return 0;
+
+	fp1 = fopen(file1, "rb");
+	fp2 = fopen(file2, "rb");
+
+	while (!feof(fp1) && !feof(fp2)) {
+		if (fgetc(fp1) != fgetc(fp2))
+			goto cleanup;
+	}
+
+	ret = 1;
+cleanup:
+	fclose(fp1);
+	fclose(fp2);
+	return ret;
+}
+
+/*
  * Copy an existing file to a new location.
  */
 int io_file_cp(const char *src, const char *dst)
