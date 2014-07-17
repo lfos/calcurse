@@ -544,8 +544,10 @@ void wins_update(int flags)
 {
 	wins_update_border(flags);
 	wins_update_panels(flags);
-	if (flags & FLAG_STA)
+	if (flags & FLAG_STA) {
+		wins_update_bindings();
 		wins_status_bar();
+	}
 	if ((flags & FLAG_NOT) && notify_bar())
 		notify_update_bar();
 	wmove(win[STA].p, 0, 0);
@@ -610,16 +612,24 @@ void wins_launch_external(const char *arg[])
 	wins_unprepare_external();
 }
 
+static struct binding **bindings;
+static int bindings_size;
 static unsigned status_page;
-static unsigned nb_items;
+
+/* Sets the current set of key bindings to display in the status bar. */
+void wins_set_bindings(struct binding **new_bindings, int size)
+{
+	bindings = new_bindings;
+	bindings_size = size;
+}
 
 /*
- * Draws the status bar.
+ * Obtains the set of key bindings to display for the active panel.
  *
  * To add a key binding, insert a new binding_t item and add it to the binding
  * table.
  */
-void wins_status_bar()
+void wins_update_bindings(void)
 {
 	struct binding help = { _("Help"), KEY_GENERIC_HELP };
 	struct binding quit = { _("Quit"), KEY_GENERIC_QUIT };
@@ -664,7 +674,6 @@ void wins_status_bar()
 	struct binding vnote = { _("ViewNote"), KEY_VIEW_NOTE };
 	struct binding rprio = { _("Prio.+"), KEY_RAISE_PRIORITY };
 	struct binding lprio = { _("Prio.-"), KEY_LOWER_PRIORITY };
-	struct binding othr = { _("OtherCmd"), KEY_GENERIC_OTHER_CMD };
 
 	struct binding *bindings_cal[] = {
 		&help, &quit, &save, &reload, &chgvu, &nview, &pview, &up,
@@ -691,32 +700,33 @@ void wins_status_bar()
 
 	enum win active_panel = wins_slctd();
 
-	struct binding **bindings;
-	int bindings_size;
 
 	switch (active_panel) {
 	case CAL:
-		bindings = bindings_cal;
-		bindings_size = ARRAY_SIZE(bindings_cal);
+		wins_set_bindings(bindings_cal, ARRAY_SIZE(bindings_cal));
 		break;
 	case APP:
-		bindings = bindings_apoint;
-		bindings_size = ARRAY_SIZE(bindings_apoint);
+		wins_set_bindings(bindings_apoint,
+				ARRAY_SIZE(bindings_apoint));
 		break;
 	case TOD:
-		bindings = bindings_todo;
-		bindings_size = ARRAY_SIZE(bindings_todo);
+		wins_set_bindings(bindings_todo, ARRAY_SIZE(bindings_todo));
 		break;
 	default:
 		EXIT(_("unknown panel"));
 		/* NOTREACHED */
 	}
+}
+
+/* Draws the status bar. */
+void wins_status_bar(void)
+{
+	struct binding othr = { _("OtherCmd"), KEY_GENERIC_OTHER_CMD };
 
 	keys_display_bindings_bar(win[STA].p, bindings, bindings_size,
 				  (KEYS_CMDS_PER_LINE * 2 -
 				   1) * (status_page - 1),
 				  KEYS_CMDS_PER_LINE * 2, &othr);
-	nb_items = bindings_size;
 }
 
 /* Erase status bar. */
@@ -728,10 +738,10 @@ void wins_erase_status_bar(void)
 /* Update the status bar page number to display other commands. */
 void wins_other_status_page(int panel)
 {
-	int max_page = nb_items / (KEYS_CMDS_PER_LINE * 2 - 1) + 1;
+	int max_page = bindings_size / (KEYS_CMDS_PER_LINE * 2 - 1) + 1;
 
 	/* There is no "OtherCmd" on the last page. */
-	if (nb_items % (KEYS_CMDS_PER_LINE * 2 - 1) == 1)
+	if (bindings_size % (KEYS_CMDS_PER_LINE * 2 - 1) == 1)
 		max_page--;
 
 	status_page = (status_page % max_page) + 1;

@@ -1125,6 +1125,8 @@ void wins_reset(void);
 void wins_prepare_external(void);
 void wins_unprepare_external(void);
 void wins_launch_external(const char *[]);
+void wins_set_bindings(struct binding **, int);
+void wins_update_bindings(void);
 void wins_status_bar(void);
 void wins_erase_status_bar(void);
 void wins_other_status_page(int);
