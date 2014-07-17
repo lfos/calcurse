@@ -775,6 +775,11 @@ static void config_option_edit(int i)
 /* Notify-bar configuration. */
 void notify_config_bar(void)
 {
+	struct binding quit = { _("Quit"), KEY_GENERIC_QUIT };
+	struct binding up = { _("Up"), KEY_MOVE_UP };
+	struct binding down = { _("Down"), KEY_MOVE_DOWN };
+	struct binding edit = { _("Edit Itm"), KEY_EDIT_ITEM };
+	struct binding *bindings[] = { &quit, &up, &down, &edit };
 	struct listbox lb;
 	int ch;
 
@@ -784,8 +789,12 @@ void notify_config_bar(void)
 		     config_option_height, print_config_option);
 	listbox_load_items(&lb, 8);
 	listbox_draw_deco(&lb, 0);
-	status_mesg("", "");
 	listbox_display(&lb);
+	wins_set_bindings(bindings, ARRAY_SIZE(bindings));
+	wins_status_bar();
+	wnoutrefresh(win[STA].p);
+	wmove(win[STA].p, 0, 0);
+	wins_doupdate();
 
 	while ((ch = keys_getch(win[KEY].p, NULL, NULL)) != KEY_GENERIC_QUIT) {
 		switch (ch) {
@@ -818,8 +827,11 @@ void notify_config_bar(void)
 			clearok(curscr, TRUE);
 		}
 
-		status_mesg("", "");
 		listbox_display(&lb);
+		wins_status_bar();
+		wnoutrefresh(win[STA].p);
+		wmove(win[STA].p, 0, 0);
+		wins_doupdate();
 	}
 
 	listbox_delete(&lb);
