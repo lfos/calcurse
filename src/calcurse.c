@@ -317,6 +317,9 @@ static inline void key_generic_reload(void)
 		}
 	}
 
+	if (notify_bar())
+		notify_stop_main_thread();
+
 	/* Reinitialize data structures. */
 	apoint_llist_free();
 	event_llist_free();
@@ -335,6 +338,9 @@ static inline void key_generic_reload(void)
 	io_unset_modified();
 	ui_todo_load_items();
 	ui_todo_sel_reset();
+
+	if (notify_bar())
+		notify_start_main_thread();
 
 	do_storage(0);
 	notify_check_next_app(1);
