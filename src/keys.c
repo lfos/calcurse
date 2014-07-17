@@ -100,6 +100,57 @@ static struct keydef_s keydef[NBKEYS] = {
 	{"lower-priority", "-"},
 };
 
+#define gettext_noop(s) s
+static const char *binding_labels[] = {
+	gettext_noop("Cancel"),
+	gettext_noop("Select"),
+	gettext_noop("Credits"),
+	gettext_noop("Help"),
+	gettext_noop("Quit"),
+	gettext_noop("Save"),
+	gettext_noop("Reload"),
+	gettext_noop("Copy"),
+	gettext_noop("Paste"),
+	gettext_noop("Chg Win"),
+	gettext_noop("Import"),
+	gettext_noop("Export"),
+	gettext_noop("Go to"),
+	gettext_noop("OtherCmd"),
+	gettext_noop("Config"),
+	gettext_noop("Redraw"),
+	gettext_noop("Add Appt"),
+	gettext_noop("Add Todo"),
+	gettext_noop("-1 Day"),
+	gettext_noop("+1 Day"),
+	gettext_noop("-1 Week"),
+	gettext_noop("+1 Week"),
+	gettext_noop("-1 Month"),
+	gettext_noop("+1 Month"),
+	gettext_noop("-1 Year"),
+	gettext_noop("+1 Year"),
+	gettext_noop("Nxt View"),
+	gettext_noop("Prv View"),
+	gettext_noop("Today"),
+	gettext_noop("Command"),
+	gettext_noop("Right"),
+	gettext_noop("Left"),
+	gettext_noop("Down"),
+	gettext_noop("Up"),
+	gettext_noop("beg Week"),
+	gettext_noop("end Week"),
+	gettext_noop("Add Item"),
+	gettext_noop("Del Item"),
+	gettext_noop("Edit Itm"),
+	gettext_noop("View"),
+	gettext_noop("Pipe"),
+	gettext_noop("Flag Itm"),
+	gettext_noop("Repeat"),
+	gettext_noop("EditNote"),
+	gettext_noop("ViewNote"),
+	gettext_noop("Prio.+"),
+	gettext_noop("Prio.-")
+};
+
 static void dump_intro(FILE * fd)
 {
 	const char *intro =
@@ -411,9 +462,8 @@ static char *keys_format_label(char *key, int keylen)
 }
 
 void
-keys_display_bindings_bar(WINDOW * win, struct binding *bindings[],
-			  int count, int page_base, int page_size,
-			  struct binding *more)
+keys_display_bindings_bar(WINDOW * win, int *bindings, int count,
+			  int page_base, int page_size)
 {
 	/* Padding between two key bindings. */
 	const int padding =
@@ -431,16 +481,16 @@ keys_display_bindings_bar(WINDOW * win, struct binding *bindings[],
 		const int label_pos_x = key_pos_x + KEYS_KEYLEN + 1;
 		const int label_pos_y = key_pos_y;
 
-		struct binding *binding;
 		char key[KEYS_KEYLEN + 1], *fmtkey;
 
-		if (!more || i < page_size - 1
-		    || page_base + i == count - 1)
-			binding = bindings[page_base + i];
-		else
-			binding = more;
+		int binding_key;
 
-		strncpy(key, keys_action_firstkey(binding->action),
+		if (i < page_size - 1 || page_base + i == count - 1)
+			binding_key = bindings[page_base + i];
+		else
+			binding_key = KEY_GENERIC_OTHER_CMD;
+
+		strncpy(key, keys_action_firstkey(binding_key),
 			KEYS_KEYLEN);
 		key[KEYS_KEYLEN] = '\0';
 		fmtkey = keys_format_label(key, KEYS_KEYLEN);
@@ -448,7 +498,8 @@ keys_display_bindings_bar(WINDOW * win, struct binding *bindings[],
 		custom_apply_attr(win, ATTR_HIGHEST);
 		mvwaddstr(win, key_pos_y, key_pos_x, fmtkey);
 		custom_remove_attr(win, ATTR_HIGHEST);
-		mvwaddstr(win, label_pos_y, label_pos_x, binding->label);
+		mvwaddstr(win, label_pos_y, label_pos_x,
+			  gettext(binding_labels[binding_key]));
 	}
 	wnoutrefresh(win);
 }

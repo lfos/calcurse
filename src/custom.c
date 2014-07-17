@@ -124,21 +124,14 @@ void custom_config_bar(void)
 
 static void layout_selection_bar(void)
 {
-	struct binding quit = { _("Exit"), KEY_GENERIC_QUIT };
-	struct binding select = { _("Select"), KEY_GENERIC_SELECT };
-	struct binding up = { _("Up"), KEY_MOVE_UP };
-	struct binding down = { _("Down"), KEY_MOVE_DOWN };
-	struct binding left = { _("Left"), KEY_MOVE_LEFT };
-	struct binding right = { _("Right"), KEY_MOVE_RIGHT };
-	struct binding help = { _("Help"), KEY_GENERIC_HELP };
-
-	struct binding *bindings[] = {
-		&quit, &select, &up, &down, &left, &right, &help
+	static int bindings[] = {
+		KEY_GENERIC_QUIT, KEY_GENERIC_SELECT, KEY_MOVE_UP,
+		KEY_MOVE_DOWN, KEY_MOVE_LEFT, KEY_MOVE_RIGHT, KEY_GENERIC_HELP
 	};
 	int bindings_size = ARRAY_SIZE(bindings);
 
 	keys_display_bindings_bar(win[STA].p, bindings, bindings_size, 0,
-				  bindings_size, NULL);
+				  bindings_size);
 }
 
 #define NBLAYOUTS     8
@@ -269,19 +262,13 @@ void custom_layout_config(void)
 /* Sidebar configuration screen. */
 void custom_sidebar_config(void)
 {
-	struct binding quit = { _("Exit"), KEY_GENERIC_QUIT };
-	struct binding inc = { _("Width +"), KEY_MOVE_UP };
-	struct binding dec = { _("Width -"), KEY_MOVE_DOWN };
-	struct binding help = { _("Help"), KEY_GENERIC_HELP };
-	struct binding *bindings[] = {
-		&inc, &dec, &help, &quit
+	static int bindings[] = {
+		KEY_GENERIC_QUIT, KEY_MOVE_UP, KEY_MOVE_DOWN, KEY_GENERIC_HELP
 	};
-	int ch, bindings_size;
-
-	bindings_size = ARRAY_SIZE(bindings);
+	int ch, bindings_size = ARRAY_SIZE(bindings);
 
 	keys_display_bindings_bar(win[STA].p, bindings, bindings_size, 0,
-				  bindings_size, NULL);
+				  bindings_size);
 	wins_doupdate();
 
 	while ((ch =
@@ -308,7 +295,7 @@ void custom_sidebar_config(void)
 			wins_update_panels(FLAG_ALL);
 			keys_display_bindings_bar(win[STA].p, bindings,
 						  bindings_size, 0,
-						  bindings_size, NULL);
+						  bindings_size);
 			wins_doupdate();
 		}
 	}
@@ -351,21 +338,14 @@ void custom_confwin_init(struct window *confwin, const char *label)
 
 static void color_selection_bar(void)
 {
-	struct binding quit = { _("Exit"), KEY_GENERIC_QUIT };
-	struct binding select = { _("Select"), KEY_GENERIC_SELECT };
-	struct binding nocolor = { _("No color"), KEY_GENERIC_CANCEL };
-	struct binding up = { _("Up"), KEY_MOVE_UP };
-	struct binding down = { _("Down"), KEY_MOVE_DOWN };
-	struct binding left = { _("Left"), KEY_MOVE_LEFT };
-	struct binding right = { _("Right"), KEY_MOVE_RIGHT };
-
-	struct binding *bindings[] = {
-		&quit, &nocolor, &up, &down, &left, &right, &select
+	static int bindings[] = {
+		KEY_GENERIC_QUIT, KEY_GENERIC_SELECT, KEY_GENERIC_CANCEL,
+		KEY_MOVE_UP, KEY_MOVE_DOWN, KEY_MOVE_LEFT, KEY_GENERIC_SELECT
 	};
 	int bindings_size = ARRAY_SIZE(bindings);
 
 	keys_display_bindings_bar(win[STA].p, bindings, bindings_size, 0,
-				  bindings_size, NULL);
+				  bindings_size);
 }
 
 /*
@@ -771,11 +751,9 @@ static void general_option_edit(int i)
 /* General configuration. */
 void custom_general_config(void)
 {
-	struct binding quit = { _("Quit"), KEY_GENERIC_QUIT };
-	struct binding up = { _("Up"), KEY_MOVE_UP };
-	struct binding down = { _("Down"), KEY_MOVE_DOWN };
-	struct binding edit = { _("Edit Itm"), KEY_EDIT_ITEM };
-	struct binding *bindings[] = { &quit, &up, &down, &edit };
+	static int bindings[] = {
+		KEY_GENERIC_QUIT, KEY_MOVE_UP, KEY_MOVE_DOWN, KEY_EDIT_ITEM
+	};
 	struct listbox lb;
 	int ch;
 
@@ -895,22 +873,14 @@ print_keys_bindings(WINDOW * win, int selected_row, int selected_elm,
 
 static void custom_keys_config_bar(void)
 {
-	struct binding quit = { _("Exit"), KEY_GENERIC_QUIT };
-	struct binding info = { _("Key info"), KEY_GENERIC_HELP };
-	struct binding add = { _("Add key"), KEY_ADD_ITEM };
-	struct binding del = { _("Del key"), KEY_DEL_ITEM };
-	struct binding up = { _("Up"), KEY_MOVE_UP };
-	struct binding down = { _("Down"), KEY_MOVE_DOWN };
-	struct binding left = { _("Prev Key"), KEY_MOVE_LEFT };
-	struct binding right = { _("Next Key"), KEY_MOVE_RIGHT };
-
-	struct binding *bindings[] = {
-		&quit, &info, &add, &del, &up, &down, &left, &right
+	static int bindings[] = {
+		KEY_GENERIC_QUIT, KEY_GENERIC_HELP, KEY_ADD_ITEM, KEY_DEL_ITEM,
+		KEY_MOVE_UP, KEY_MOVE_DOWN, KEY_MOVE_LEFT, KEY_MOVE_RIGHT
 	};
 	int bindings_size = ARRAY_SIZE(bindings);
 
 	keys_display_bindings_bar(win[STA].p, bindings, bindings_size, 0,
-				  bindings_size, NULL);
+				  bindings_size);
 }
 
 void custom_keys_config(void)

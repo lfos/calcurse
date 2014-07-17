@@ -775,11 +775,9 @@ static void config_option_edit(int i)
 /* Notify-bar configuration. */
 void notify_config_bar(void)
 {
-	struct binding quit = { _("Quit"), KEY_GENERIC_QUIT };
-	struct binding up = { _("Up"), KEY_MOVE_UP };
-	struct binding down = { _("Down"), KEY_MOVE_DOWN };
-	struct binding edit = { _("Edit Itm"), KEY_EDIT_ITEM };
-	struct binding *bindings[] = { &quit, &up, &down, &edit };
+	static int bindings[] = {
+		KEY_GENERIC_QUIT, KEY_MOVE_UP, KEY_MOVE_DOWN, KEY_EDIT_ITEM
+	};
 	struct listbox lb;
 	int ch;
 

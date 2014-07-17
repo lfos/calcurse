@@ -466,12 +466,6 @@ enum key {
 	KEY_UNDEF
 };
 
-/* To describe a key binding. */
-struct binding {
-	char *label;
-	enum key action;
-};
-
 #define FLAG_CAL (1 << CAL)
 #define FLAG_APP (1 << APP)
 #define FLAG_TOD (1 << TOD)
@@ -803,8 +797,7 @@ int keys_action_count_keys(enum key);
 const char *keys_action_firstkey(enum key);
 const char *keys_action_nkey(enum key, int);
 char *keys_action_allkeys(enum key);
-void keys_display_bindings_bar(WINDOW *, struct binding *[], int, int,
-			       int, struct binding *);
+void keys_display_bindings_bar(WINDOW *, int *, int, int, int);
 void keys_popup_info(enum key);
 void keys_save_bindings(FILE *);
 int keys_check_missing_bindings(void);
@@ -1126,7 +1119,7 @@ void wins_reset(void);
 void wins_prepare_external(void);
 void wins_unprepare_external(void);
 void wins_launch_external(const char *[]);
-void wins_set_bindings(struct binding **, int);
+void wins_set_bindings(int *, int);
 void wins_update_bindings(void);
 void wins_status_bar(void);
 void wins_erase_status_bar(void);

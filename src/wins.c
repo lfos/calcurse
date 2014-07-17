@@ -612,12 +612,12 @@ void wins_launch_external(const char *arg[])
 	wins_unprepare_external();
 }
 
-static struct binding **bindings;
+static int *bindings;
 static int bindings_size;
 static unsigned status_page;
 
 /* Sets the current set of key bindings to display in the status bar. */
-void wins_set_bindings(struct binding **new_bindings, int size)
+void wins_set_bindings(int *new_bindings, int size)
 {
 	bindings = new_bindings;
 	bindings_size = size;
@@ -631,75 +631,54 @@ void wins_set_bindings(struct binding **new_bindings, int size)
  */
 void wins_update_bindings(void)
 {
-	struct binding help = { _("Help"), KEY_GENERIC_HELP };
-	struct binding quit = { _("Quit"), KEY_GENERIC_QUIT };
-	struct binding save = { _("Save"), KEY_GENERIC_SAVE };
-	struct binding reload = { _("Reload"), KEY_GENERIC_RELOAD };
-	struct binding copy = { _("Copy"), KEY_GENERIC_COPY };
-	struct binding paste = { _("Paste"), KEY_GENERIC_PASTE };
-	struct binding chgvu = { _("Chg Win"), KEY_GENERIC_CHANGE_VIEW };
-	struct binding import = { _("Import"), KEY_GENERIC_IMPORT };
-	struct binding export = { _("Export"), KEY_GENERIC_EXPORT };
-	struct binding togo = { _("Go to"), KEY_GENERIC_GOTO };
-	struct binding conf = { _("Config"), KEY_GENERIC_CONFIG_MENU };
-	struct binding draw = { _("Redraw"), KEY_GENERIC_REDRAW };
-	struct binding appt = { _("Add Appt"), KEY_GENERIC_ADD_APPT };
-	struct binding todo = { _("Add Todo"), KEY_GENERIC_ADD_TODO };
-	struct binding gpday = { _("-1 Day"), KEY_GENERIC_PREV_DAY };
-	struct binding gnday = { _("+1 Day"), KEY_GENERIC_NEXT_DAY };
-	struct binding gpweek = { _("-1 Week"), KEY_GENERIC_PREV_WEEK };
-	struct binding gnweek = { _("+1 Week"), KEY_GENERIC_NEXT_WEEK };
-	struct binding gpmonth = { _("-1 Month"), KEY_GENERIC_PREV_MONTH };
-	struct binding gnmonth = { _("+1 Month"), KEY_GENERIC_NEXT_MONTH };
-	struct binding gpyear = { _("-1 Year"), KEY_GENERIC_PREV_YEAR };
-	struct binding gnyear = { _("+1 Year"), KEY_GENERIC_NEXT_YEAR };
-	struct binding today = { _("Today"), KEY_GENERIC_GOTO_TODAY };
-	struct binding nview = { _("Nxt View"), KEY_GENERIC_SCROLL_DOWN };
-	struct binding pview = { _("Prv View"), KEY_GENERIC_SCROLL_UP };
-	struct binding cmd = { _("Command"), KEY_GENERIC_CMD };
-	struct binding up = { _("Up"), KEY_MOVE_UP };
-	struct binding down = { _("Down"), KEY_MOVE_DOWN };
-	struct binding left = { _("Left"), KEY_MOVE_LEFT };
-	struct binding right = { _("Right"), KEY_MOVE_RIGHT };
-	struct binding weekb = { _("beg Week"), KEY_START_OF_WEEK };
-	struct binding weeke = { _("end Week"), KEY_END_OF_WEEK };
-	struct binding add = { _("Add Item"), KEY_ADD_ITEM };
-	struct binding del = { _("Del Item"), KEY_DEL_ITEM };
-	struct binding edit = { _("Edit Itm"), KEY_EDIT_ITEM };
-	struct binding view = { _("View"), KEY_VIEW_ITEM };
-	struct binding pipe = { _("Pipe"), KEY_PIPE_ITEM };
-	struct binding flag = { _("Flag Itm"), KEY_FLAG_ITEM };
-	struct binding rept = { _("Repeat"), KEY_REPEAT_ITEM };
-	struct binding enote = { _("EditNote"), KEY_EDIT_NOTE };
-	struct binding vnote = { _("ViewNote"), KEY_VIEW_NOTE };
-	struct binding rprio = { _("Prio.+"), KEY_RAISE_PRIORITY };
-	struct binding lprio = { _("Prio.-"), KEY_LOWER_PRIORITY };
-
-	struct binding *bindings_cal[] = {
-		&help, &quit, &save, &reload, &chgvu, &nview, &pview, &up,
-		&down, &left, &right, &togo, &import, &export, &weekb, &weeke,
-		&appt, &todo, &gpday, &gnday, &gpweek, &gnweek, &gpmonth,
-		&gnmonth, &gpyear, &gnyear, &draw, &today, &conf, &cmd
+	static int bindings_cal[] = {
+		KEY_GENERIC_HELP, KEY_GENERIC_QUIT, KEY_GENERIC_SAVE,
+		KEY_GENERIC_RELOAD, KEY_GENERIC_CHANGE_VIEW,
+		KEY_GENERIC_SCROLL_DOWN, KEY_GENERIC_SCROLL_UP, KEY_MOVE_UP,
+		KEY_MOVE_DOWN, KEY_MOVE_LEFT, KEY_MOVE_RIGHT, KEY_GENERIC_GOTO,
+		KEY_GENERIC_IMPORT, KEY_GENERIC_EXPORT, KEY_START_OF_WEEK,
+		KEY_END_OF_WEEK, KEY_GENERIC_ADD_APPT, KEY_GENERIC_ADD_TODO,
+		KEY_GENERIC_PREV_DAY, KEY_GENERIC_NEXT_DAY,
+		KEY_GENERIC_PREV_WEEK, KEY_GENERIC_NEXT_WEEK,
+		KEY_GENERIC_PREV_MONTH, KEY_GENERIC_NEXT_MONTH,
+		KEY_GENERIC_PREV_YEAR, KEY_GENERIC_NEXT_YEAR,
+		KEY_GENERIC_REDRAW, KEY_GENERIC_GOTO_TODAY,
+		KEY_GENERIC_CONFIG_MENU, KEY_GENERIC_CMD
 	};
 
-	struct binding *bindings_apoint[] = {
-		&help, &quit, &save, &reload, &chgvu, &import, &export, &add,
-		&del, &edit, &view, &pipe, &draw, &rept, &flag, &enote, &vnote,
-		&up, &down, &gpday, &gnday, &gpweek, &gnweek, &gpmonth,
-		&gnmonth, &gpyear, &gnyear, &togo, &today, &conf, &appt, &todo,
-		&copy, &paste, &cmd
+	static int bindings_apoint[] = {
+		KEY_GENERIC_HELP, KEY_GENERIC_QUIT, KEY_GENERIC_SAVE,
+		KEY_GENERIC_RELOAD, KEY_GENERIC_CHANGE_VIEW,
+		KEY_GENERIC_IMPORT, KEY_GENERIC_EXPORT, KEY_ADD_ITEM,
+		KEY_DEL_ITEM, KEY_EDIT_ITEM, KEY_VIEW_ITEM, KEY_PIPE_ITEM,
+		KEY_GENERIC_REDRAW, KEY_REPEAT_ITEM, KEY_FLAG_ITEM,
+		KEY_EDIT_NOTE, KEY_VIEW_NOTE, KEY_MOVE_UP, KEY_MOVE_DOWN,
+		KEY_GENERIC_PREV_DAY, KEY_GENERIC_NEXT_DAY,
+		KEY_GENERIC_PREV_WEEK, KEY_GENERIC_NEXT_WEEK,
+		KEY_GENERIC_PREV_MONTH, KEY_GENERIC_NEXT_MONTH,
+		KEY_GENERIC_PREV_YEAR, KEY_GENERIC_NEXT_YEAR, KEY_GENERIC_GOTO,
+		KEY_GENERIC_GOTO_TODAY, KEY_GENERIC_CONFIG_MENU,
+		KEY_GENERIC_ADD_APPT, KEY_GENERIC_ADD_TODO, KEY_GENERIC_COPY,
+		KEY_GENERIC_PASTE, KEY_GENERIC_CMD
 	};
 
-	struct binding *bindings_todo[] = {
-		&help, &quit, &save, &reload, &chgvu, &import, &export, &add,
-		&del, &edit, &view, &pipe, &flag, &rprio, &lprio, &enote,
-		&vnote, &up, &down, &gpday, &gnday, &gpweek, &gnweek, &gpmonth,
-		&gnmonth, &gpyear, &gnyear, &togo, &today, &conf, &appt, &todo,
-		&draw, &cmd
+	static int bindings_todo[] = {
+		KEY_GENERIC_HELP, KEY_GENERIC_QUIT, KEY_GENERIC_SAVE,
+		KEY_GENERIC_RELOAD, KEY_GENERIC_CHANGE_VIEW,
+		KEY_GENERIC_IMPORT, KEY_GENERIC_EXPORT, KEY_ADD_ITEM,
+		KEY_DEL_ITEM, KEY_EDIT_ITEM, KEY_VIEW_ITEM, KEY_PIPE_ITEM,
+		KEY_FLAG_ITEM, KEY_RAISE_PRIORITY, KEY_LOWER_PRIORITY,
+		KEY_EDIT_NOTE, KEY_VIEW_NOTE, KEY_MOVE_UP, KEY_MOVE_DOWN,
+		KEY_GENERIC_PREV_DAY, KEY_GENERIC_NEXT_DAY,
+		KEY_GENERIC_PREV_WEEK, KEY_GENERIC_NEXT_WEEK,
+		KEY_GENERIC_PREV_MONTH, KEY_GENERIC_NEXT_MONTH,
+		KEY_GENERIC_PREV_YEAR, KEY_GENERIC_NEXT_YEAR, KEY_GENERIC_GOTO,
+		KEY_GENERIC_GOTO_TODAY, KEY_GENERIC_CONFIG_MENU,
+		KEY_GENERIC_ADD_APPT, KEY_GENERIC_ADD_TODO, KEY_GENERIC_REDRAW,
+		KEY_GENERIC_CMD
 	};
 
 	enum win active_panel = wins_slctd();
-
 
 	switch (active_panel) {
 	case CAL:
@@ -721,12 +700,11 @@ void wins_update_bindings(void)
 /* Draws the status bar. */
 void wins_status_bar(void)
 {
-	struct binding othr = { _("OtherCmd"), KEY_GENERIC_OTHER_CMD };
+	int page_base = (KEYS_CMDS_PER_LINE * 2 - 1) * (status_page - 1);
+	int page_size = KEYS_CMDS_PER_LINE * 2;
 
 	keys_display_bindings_bar(win[STA].p, bindings, bindings_size,
-				  (KEYS_CMDS_PER_LINE * 2 -
-				   1) * (status_page - 1),
-				  KEYS_CMDS_PER_LINE * 2, &othr);
+				  page_base, page_size);
 }
 
 /* Erase status bar. */
