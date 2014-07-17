@@ -610,19 +610,16 @@ void wins_launch_external(const char *arg[])
 	wins_unprepare_external();
 }
 
-#define NB_CAL_CMDS    28	/* number of commands while in cal view */
-#define NB_APP_CMDS    33	/* same thing while in appointment view */
-#define NB_TOD_CMDS    32	/* same thing while in todo view */
-
 static unsigned status_page;
+static unsigned nb_items;
 
 /*
  * Draws the status bar.
- * To add a keybinding, insert a new binding_t item, add it in the *binding
- * table, and update the NB_CAL_CMDS, NB_APP_CMDS or NB_TOD_CMDS defines,
- * depending on which panel the added keybind is assigned to.
+ *
+ * To add a key binding, insert a new binding_t item and add it to the binding
+ * table.
  */
-void wins_status_bar(void)
+void wins_status_bar()
 {
 	struct binding help = { _("Help"), KEY_GENERIC_HELP };
 	struct binding quit = { _("Quit"), KEY_GENERIC_QUIT };
@@ -719,6 +716,7 @@ void wins_status_bar(void)
 				  (KEYS_CMDS_PER_LINE * 2 -
 				   1) * (status_page - 1),
 				  KEYS_CMDS_PER_LINE * 2, &othr);
+	nb_items = bindings_size;
 }
 
 /* Erase status bar. */
@@ -730,23 +728,12 @@ void wins_erase_status_bar(void)
 /* Update the status bar page number to display other commands. */
 void wins_other_status_page(int panel)
 {
-	int nb_item, max_page;
+	int max_page = nb_items / (KEYS_CMDS_PER_LINE * 2 - 1) + 1;
 
-	switch (panel) {
-	case CAL:
-		nb_item = NB_CAL_CMDS;
-		break;
-	case APP:
-		nb_item = NB_APP_CMDS;
-		break;
-	case TOD:
-		nb_item = NB_TOD_CMDS;
-		break;
-	default:
-		EXIT(_("unknown panel"));
-		/* NOTREACHED */
-	}
-	max_page = nb_item / (KEYS_CMDS_PER_LINE * 2 - 1) + 1;
+	/* There is no "OtherCmd" on the last page. */
+	if (nb_items % (KEYS_CMDS_PER_LINE * 2 - 1) == 1)
+		max_page--;
+
 	status_page = (status_page % max_page) + 1;
 }
 
@@ -755,7 +742,3 @@ void wins_reset_status_page(void)
 {
 	status_page = 1;
 }
-
-#undef NB_CAL_CMDS
-#undef NB_APP_CMDS
-#undef NB_TOD_CMDS
