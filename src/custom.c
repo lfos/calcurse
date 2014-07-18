@@ -689,7 +689,10 @@ static void general_option_edit(int i)
 	const char *periodic_save_str =
 	    _("Enter the delay, in minutes, between automatic saves (0 to disable) ");
 	int val;
-	char *buf = malloc(BUFSIZ);
+	char *buf;
+
+	buf = mem_malloc(BUFSIZ);
+	buf[0] = '\0';
 
 	switch (i) {
 	case 0:

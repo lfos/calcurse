@@ -693,6 +693,7 @@ static void config_option_edit(int i)
 	const char *cmd_str = _("Enter the notification command ");
 
 	buf = mem_malloc(BUFSIZ);
+	buf[0] = '\0';
 
 	switch (i) {
 	case 0:
