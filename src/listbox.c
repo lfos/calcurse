@@ -82,20 +82,18 @@ void listbox_set_cb_data(struct listbox *lb, void *cb_data)
 	lb->cb_data = cb_data;
 }
 
+static void listbox_fix_sel(struct listbox *, int);
+
 void listbox_load_items(struct listbox *lb, int item_count)
 {
 	int i, ch;
 
 	lb->item_count = item_count;
 
-	if (item_count > 0 && lb->item_sel < 0)
-		lb->item_sel = 0;
-
-	if (lb->item_sel >= item_count)
-		lb->item_sel = item_count - 1;
-
-	if (item_count == 0)
+	if (item_count == 0) {
+		lb->item_sel = -1;
 		return;
+	}
 
 	free(lb->type);
 	free(lb->ch);
@@ -109,6 +107,14 @@ void listbox_load_items(struct listbox *lb, int item_count)
 	lb->ch[item_count] = ch;
 
 	wins_scrollwin_set_linecount(&(lb->sw), ch);
+
+	if (item_count > 0 && lb->item_sel < 0) {
+		lb->item_sel = 0;
+		listbox_fix_sel(lb, 1);
+	} else if (lb->item_sel >= item_count) {
+		lb->item_sel = item_count - 1;
+		listbox_fix_sel(lb, -1);
+	}
 }
 
 void listbox_draw_deco(struct listbox *lb, int hilt)
