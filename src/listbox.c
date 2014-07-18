@@ -97,8 +97,8 @@ void listbox_load_items(struct listbox *lb, int item_count)
 
 	free(lb->type);
 	free(lb->ch);
-	lb->type = xmalloc(item_count * sizeof(unsigned));
-	lb->ch = xmalloc((item_count + 1) * sizeof(unsigned));
+	lb->type = mem_malloc(item_count * sizeof(unsigned));
+	lb->ch = mem_malloc((item_count + 1) * sizeof(unsigned));
 	for (i = 0, ch = 0; i < item_count; i++) {
 		lb->type[i] = lb->fn_type(i, lb->cb_data);
 		lb->ch[i] = ch;

@@ -276,10 +276,10 @@ static inline void key_generic_reload(void)
 		case 1:
 			break;
 		case 2:
-			path_apts_backup = xmalloc(strlen(path_apts) +
-						   strlen(backup_ext) + 1);
-			path_todo_backup = xmalloc(strlen(path_todo) +
-						   strlen(backup_ext) + 1);
+			path_apts_backup = mem_malloc(strlen(path_apts) +
+						      strlen(backup_ext) + 1);
+			path_todo_backup = mem_malloc(strlen(path_todo) +
+						      strlen(backup_ext) + 1);
 			sprintf(path_apts_backup, "%s%s", path_apts,
 				backup_ext);
 			sprintf(path_todo_backup, "%s%s", path_todo,

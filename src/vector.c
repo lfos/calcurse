@@ -43,7 +43,7 @@ void vector_init(vector_t *v, unsigned size)
 {
 	v->count = 0;
 	v->size = size;
-	v->data = malloc(size * sizeof(void *));
+	v->data = mem_malloc(size * sizeof(void *));
 }
 
 /*
