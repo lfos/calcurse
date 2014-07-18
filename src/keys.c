@@ -416,6 +416,8 @@ void
 keys_display_bindings_bar(WINDOW * win, int *bindings, int count,
 			  int page_base, int page_size)
 {
+	page_size = MIN(page_size, count - page_base);
+
 	/* Padding between two key bindings. */
 	const int padding =
 	    (col * 2) / page_size - (KEYS_KEYLEN + KEYS_LABELEN + 1);
