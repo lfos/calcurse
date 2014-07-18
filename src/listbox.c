@@ -108,13 +108,11 @@ void listbox_load_items(struct listbox *lb, int item_count)
 
 	wins_scrollwin_set_linecount(&(lb->sw), ch);
 
-	if (item_count > 0 && lb->item_sel < 0) {
+	if (item_count > 0 && lb->item_sel < 0)
 		lb->item_sel = 0;
-		listbox_fix_sel(lb, 1);
-	} else if (lb->item_sel >= item_count) {
+	else if (lb->item_sel >= item_count)
 		lb->item_sel = item_count - 1;
-		listbox_fix_sel(lb, -1);
-	}
+	listbox_fix_sel(lb, 1);
 }
 
 void listbox_draw_deco(struct listbox *lb, int hilt)
