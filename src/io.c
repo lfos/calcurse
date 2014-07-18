@@ -445,7 +445,8 @@ void io_save_cal(enum save_display display)
 	io_unset_modified();
 
 	/* Print a message telling data were saved */
-	if (ui_mode == UI_CURSES && conf.system_dialogs) {
+	if (ui_mode == UI_CURSES && display == IO_SAVE_DISPLAY_BAR &&
+	    conf.system_dialogs) {
 		status_mesg(save_success, enter);
 		wgetch(win[KEY].p);
 	}
