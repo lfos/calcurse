@@ -1168,13 +1168,14 @@ void io_log_display(struct io_file *log, const char *msg,
 	RETURN_IF(log == NULL, _("No log file to display!"));
 	if (ui_mode == UI_CMDLINE) {
 		printf("\n%s [y/n] ", msg);
-		if (fgetc(stdin) == 'y') {
-			const char *arg[] = { pager, log->name, NULL };
-			int pid;
+		if (fgetc(stdin) != 'y')
+			return;
 
-			if ((pid = fork_exec(NULL, NULL, pager, arg)))
-				child_wait(NULL, NULL, pid);
-		}
+		const char *arg[] = { pager, log->name, NULL };
+		int pid;
+
+		if ((pid = fork_exec(NULL, NULL, pager, arg)))
+			child_wait(NULL, NULL, pid);
 	} else {
 		if (status_ask_bool(msg) == 1) {
 			const char *arg[] = { pager, log->name, NULL };
@@ -1262,11 +1263,11 @@ void io_set_lock(void)
 			 "lock file: \n\"%s\"\n"
 			 "and restart calcurse.\n"), path_cpid);
 		exit(EXIT_FAILURE);
-	} else {
-		if (!io_dump_pid(path_cpid))
-			EXIT(_("FATAL ERROR: could not create %s: %s\n"),
-			     path_cpid, strerror(errno));
 	}
+
+	if (!io_dump_pid(path_cpid))
+		EXIT(_("FATAL ERROR: could not create %s: %s\n"),
+		     path_cpid, strerror(errno));
 }
 
 /*
@@ -1319,18 +1320,14 @@ unsigned io_get_pid(char *file)
 int io_file_is_empty(char *file)
 {
 	FILE *fp;
+	int ret = -1;
 
 	if (file && (fp = fopen(file, "r"))) {
-		if ((fgetc(fp) == '\n' && fgetc(fp) == EOF) || feof(fp)) {
-			fclose(fp);
-			return 1;
-		} else {
-			fclose(fp);
-			return 0;
-		}
+		ret = (fgetc(fp) == '\n' && fgetc(fp) == EOF) || feof(fp);
+		fclose(fp);
 	}
 
-	return -1;
+	return ret;
 }
 
 /*
