@@ -93,35 +93,6 @@ void custom_remove_attr(WINDOW * win, int attr_num)
 		wattroff(win, attr.nocolor[attr_num]);
 }
 
-/* Draws the configuration bar */
-void custom_config_bar(void)
-{
-	const int SMLSPC = 2;
-	const int SPC = 15;
-
-	custom_apply_attr(win[STA].p, ATTR_HIGHEST);
-	mvwaddstr(win[STA].p, 0, 2, "Q");
-	mvwaddstr(win[STA].p, 1, 2, "G");
-	mvwaddstr(win[STA].p, 0, 2 + SPC, "L");
-	mvwaddstr(win[STA].p, 1, 2 + SPC, "S");
-	mvwaddstr(win[STA].p, 0, 2 + 2 * SPC, "C");
-	mvwaddstr(win[STA].p, 1, 2 + 2 * SPC, "N");
-	mvwaddstr(win[STA].p, 0, 2 + 3 * SPC, "K");
-	custom_remove_attr(win[STA].p, ATTR_HIGHEST);
-
-	mvwaddstr(win[STA].p, 0, 2 + SMLSPC, _("Exit"));
-	mvwaddstr(win[STA].p, 1, 2 + SMLSPC, _("General"));
-	mvwaddstr(win[STA].p, 0, 2 + SPC + SMLSPC, _("Layout"));
-	mvwaddstr(win[STA].p, 1, 2 + SPC + SMLSPC, _("Sidebar"));
-	mvwaddstr(win[STA].p, 0, 2 + 2 * SPC + SMLSPC, _("Color"));
-	mvwaddstr(win[STA].p, 1, 2 + 2 * SPC + SMLSPC, _("Notify"));
-	mvwaddstr(win[STA].p, 0, 2 + 3 * SPC + SMLSPC, _("Keys"));
-
-	wnoutrefresh(win[STA].p);
-	wmove(win[STA].p, 0, 0);
-	wins_doupdate();
-}
-
 static void layout_selection_bar(void)
 {
 	static int bindings[] = {
@@ -1036,13 +1007,27 @@ void custom_keys_config(void)
 
 void custom_config_main(void)
 {
+	static int bindings[] = {
+		KEY_GENERIC_QUIT, KEY_CONFIGMENU_GENERAL,
+		KEY_CONFIGMENU_LAYOUT, KEY_CONFIGMENU_SIDEBAR,
+		KEY_CONFIGMENU_COLOR, KEY_CONFIGMENU_NOTIFY,
+		KEY_CONFIGMENU_KEYS
+	};
 	const char *no_color_support =
 	    _("Sorry, colors are not supported by your terminal\n"
 	      "(Press [ENTER] to continue)");
 	int ch;
 	int old_layout;
 
-	custom_config_bar();
+	wins_set_bindings(bindings, ARRAY_SIZE(bindings));
+	wins_update_border(FLAG_ALL);
+	wins_update_panels(FLAG_ALL);
+	wins_status_bar();
+	if (notify_bar())
+		notify_update_bar();
+	wmove(win[STA].p, 0, 0);
+	wins_doupdate();
+
 	while ((ch = wgetch(win[KEY].p)) != 'q') {
 		switch (ch) {
 		case 'C':
@@ -1081,10 +1066,16 @@ void custom_config_main(void)
 			custom_sidebar_config();
 			break;
 		default:
-			continue;
+			break;
 		}
-		wins_update(FLAG_ALL);
-		wins_erase_status_bar();
-		custom_config_bar();
+
+		wins_set_bindings(bindings, ARRAY_SIZE(bindings));
+		wins_update_border(FLAG_ALL);
+		wins_update_panels(FLAG_ALL);
+		wins_status_bar();
+		if (notify_bar())
+			notify_update_bar();
+		wmove(win[STA].p, 0, 0);
+		wins_doupdate();
 	}
 }

@@ -443,16 +443,51 @@ keys_display_bindings_bar(WINDOW * win, int *bindings, int count,
 		else
 			binding_key = KEY_GENERIC_OTHER_CMD;
 
-		strncpy(key, keys_action_firstkey(binding_key),
-			KEYS_KEYLEN);
-		key[KEYS_KEYLEN] = '\0';
-		fmtkey = keys_format_label(key, KEYS_KEYLEN);
+		const char *label;
+
+		if (binding_key < NBKEYS) {
+			strncpy(key, keys_action_firstkey(binding_key),
+				KEYS_KEYLEN);
+			key[KEYS_KEYLEN] = '\0';
+			label = gettext(keydef[binding_key].sb_label);
+		} else {
+			switch (binding_key) {
+			case KEY_CONFIGMENU_GENERAL:
+				strcpy(key, "g");
+				label = _("General");
+				break;
+			case KEY_CONFIGMENU_LAYOUT:
+				strcpy(key, "l");
+				label = _("Layout");
+				break;
+			case KEY_CONFIGMENU_SIDEBAR:
+				strcpy(key, "s");
+				label = _("Sidebar");
+				break;
+			case KEY_CONFIGMENU_COLOR:
+				strcpy(key, "c");
+				label = _("Color");
+				break;
+			case KEY_CONFIGMENU_NOTIFY:
+				strcpy(key, "n");
+				label = _("Notify");
+				break;
+			case KEY_CONFIGMENU_KEYS:
+				strcpy(key, "k");
+				label = _("Keys");
+				break;
+			default:
+				strcpy(key, "?");
+				label = _("Unknown");
+				break;
+			}
+		}
 
 		custom_apply_attr(win, ATTR_HIGHEST);
+		fmtkey = keys_format_label(key, KEYS_KEYLEN);
 		mvwaddstr(win, key_pos_y, key_pos_x, fmtkey);
 		custom_remove_attr(win, ATTR_HIGHEST);
-		mvwaddstr(win, label_pos_y, label_pos_x,
-			  gettext(keydef[binding_key].sb_label));
+		mvwaddstr(win, label_pos_y, label_pos_x, label);
 	}
 	wnoutrefresh(win);
 }

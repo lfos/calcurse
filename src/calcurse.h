@@ -463,7 +463,15 @@ enum key {
 	KEY_LOWER_PRIORITY,
 
 	NBKEYS,
-	KEY_UNDEF
+	KEY_UNDEF,
+
+	/* Non-configurable, context sensitive key bindings. */
+	KEY_CONFIGMENU_GENERAL,
+	KEY_CONFIGMENU_LAYOUT,
+	KEY_CONFIGMENU_SIDEBAR,
+	KEY_CONFIGMENU_COLOR,
+	KEY_CONFIGMENU_NOTIFY,
+	KEY_CONFIGMENU_KEYS
 };
 
 #define FLAG_CAL (1 << CAL)
@@ -678,7 +686,6 @@ unsigned config_save(void);
 void custom_init_attr(void);
 void custom_apply_attr(WINDOW *, int);
 void custom_remove_attr(WINDOW *, int);
-void custom_config_bar(void);
 void custom_layout_config(void);
 void custom_sidebar_config(void);
 void custom_color_config(void);
