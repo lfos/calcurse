@@ -156,8 +156,7 @@ static void update_rept(struct rpt **rpt, const long start)
 {
 	int newtype, newfreq;
 	long newuntil;
-	char outstr[BUFSIZ];
-	char *freqstr, *timstr;
+	char *freqstr = NULL, *timstr, *outstr = NULL;
 	const char *msg_rpt_prefix = _("Enter the new repetition type:");
 	const char *msg_rpt_daily = _("(d)aily");
 	const char *msg_rpt_weekly = _("(w)eekly");
@@ -166,7 +165,7 @@ static void update_rept(struct rpt **rpt, const long start)
 
 	/* Find the current repetition type. */
 	const char *rpt_current;
-	char msg_rpt_current[BUFSIZ];
+	char *msg_rpt_current;
 	switch (recur_def2char((*rpt)->type)) {
 	case 'D':
 		rpt_current = msg_rpt_daily;
@@ -185,15 +184,12 @@ static void update_rept(struct rpt **rpt, const long start)
 		rpt_current = msg_rpt_daily;
 	}
 
-	snprintf(msg_rpt_current, BUFSIZ, _("(currently using %s)"),
-		 rpt_current);
+	asprintf(&msg_rpt_current, _("(currently using %s)"), rpt_current);
 
-	char msg_rpt_asktype[BUFSIZ];
-	snprintf(msg_rpt_asktype, BUFSIZ, "%s %s, %s, %s, %s ? %s",
-		 msg_rpt_prefix,
-		 msg_rpt_daily,
-		 msg_rpt_weekly, msg_rpt_monthly, msg_rpt_yearly,
-		 msg_rpt_current);
+	char *msg_rpt_asktype;
+	asprintf(&msg_rpt_asktype, "%s %s, %s, %s, %s ? %s", msg_rpt_prefix,
+		 msg_rpt_daily, msg_rpt_weekly, msg_rpt_monthly,
+		 msg_rpt_yearly, msg_rpt_current);
 
 	const char *msg_rpt_choice = _("[dwmy]");
 	const char *msg_wrong_freq =
@@ -219,17 +215,16 @@ static void update_rept(struct rpt **rpt, const long start)
 		newtype = 'Y';
 		break;
 	default:
-		return;
+		goto cleanup;
 	}
 
 	do {
 		status_mesg(_("Enter the new repetition frequence:"), "");
-		freqstr = mem_malloc(BUFSIZ);
-		snprintf(freqstr, BUFSIZ, "%d", (*rpt)->freq);
+		asprintf(&freqstr, "%d", (*rpt)->freq);
 		if (updatestring(win[STA].p, &freqstr, 0, 1) !=
 		    GETSTRING_VALID) {
 			mem_free(freqstr);
-			return;
+			goto cleanup;
 		}
 		newfreq = atoi(freqstr);
 		mem_free(freqstr);
@@ -246,8 +241,7 @@ static void update_rept(struct rpt **rpt, const long start)
 		struct date new_date;
 		int newmonth, newday, newyear;
 
-		snprintf(outstr, BUFSIZ,
-			 _("Enter the new ending date: [%s] or '0'"),
+		asprintf(&outstr, _("Enter the new ending date: [%s] or '0'"),
 			 DATEFMT_DESC(conf.input_datefmt));
 		status_mesg(outstr, "");
 		timstr =
@@ -255,8 +249,7 @@ static void update_rept(struct rpt **rpt, const long start)
 				      DATEFMT(conf.input_datefmt));
 		if (updatestring(win[STA].p, &timstr, 0, 1) !=
 		    GETSTRING_VALID) {
-			mem_free(timstr);
-			return;
+			goto cleanup;
 		}
 		if (strcmp(timstr, "0") == 0) {
 			newuntil = 0;
@@ -265,7 +258,7 @@ static void update_rept(struct rpt **rpt, const long start)
 		if (!parse_date
 		    (timstr, conf.input_datefmt, &newyear, &newmonth,
 		     &newday, ui_calendar_get_slctd_day())) {
-			snprintf(outstr, BUFSIZ, msg_fmts,
+			asprintf(&outstr, msg_fmts,
 				 DATEFMT_DESC(conf.input_datefmt));
 			status_mesg(msg_wrong_date, outstr);
 			wgetch(win[KEY].p);
@@ -283,10 +276,16 @@ static void update_rept(struct rpt **rpt, const long start)
 		wgetch(win[KEY].p);
 	}
 
-	mem_free(timstr);
 	(*rpt)->type = recur_char2def(newtype);
 	(*rpt)->freq = newfreq;
 	(*rpt)->until = newuntil;
+
+cleanup:
+	mem_free(msg_rpt_current);
+	mem_free(msg_rpt_asktype);
+	mem_free(freqstr);
+	mem_free(outstr);
+	mem_free(timstr);
 }
 
 /* Edit an already existing item. */
@@ -650,7 +649,7 @@ void ui_day_item_repeat(void)
 	time_t t;
 	int year = 0, month = 0, day = 0;
 	struct date until_date;
-	char outstr[BUFSIZ];
+	char *outstr = NULL;
 	char user_input[BUFSIZ] = "";
 	const char *msg_rpt_prefix = _("Enter the repetition type:");
 	const char *msg_rpt_daily = _("(d)aily");
@@ -672,9 +671,8 @@ void ui_day_item_repeat(void)
 	const char *mesg_older =
 	    _("Sorry, the date you entered is older than the item start time.");
 
-	char msg_asktype[BUFSIZ];
-	snprintf(msg_asktype, BUFSIZ, "%s %s, %s, %s, %s",
-		 msg_rpt_prefix,
+	char *msg_asktype;
+	asprintf(&msg_asktype, "%s %s, %s, %s, %s", msg_rpt_prefix,
 		 msg_rpt_daily, msg_rpt_weekly, msg_rpt_monthly,
 		 msg_rpt_yearly);
 
@@ -685,14 +683,14 @@ void ui_day_item_repeat(void)
 	long until, date;
 
 	if (day_item_count(0) <= 0)
-		return;
+		goto cleanup;
 
 	item_nb = listbox_get_sel(&lb_apt);
 	p = day_get_item(item_nb);
 	if (p->type != APPT && p->type != EVNT) {
 		status_mesg(wrong_type_1, wrong_type_2);
 		wgetch(win[KEY].p);
-		return;
+		goto cleanup;
 	}
 
 	switch (status_ask_choice(msg_asktype, msg_type_choice, 4)) {
@@ -709,14 +707,14 @@ void ui_day_item_repeat(void)
 		type = RECUR_YEARLY;
 		break;
 	default:
-		return;
+		goto cleanup;
 	}
 
 	while (freq == 0) {
 		status_mesg(mesg_freq_1, "");
 		if (getstring(win[STA].p, user_input, BUFSIZ, 0, 1) !=
 		    GETSTRING_VALID)
-			return;
+			goto cleanup;
 		freq = atoi(user_input);
 		if (freq == 0) {
 			status_mesg(mesg_wrong_freq, wrong_type_2);
@@ -726,12 +724,12 @@ void ui_day_item_repeat(void)
 	}
 
 	for (;;) {
-		snprintf(outstr, BUFSIZ, mesg_until_1,
+		asprintf(&outstr, mesg_until_1,
 			 DATEFMT_DESC(conf.input_datefmt));
 		status_mesg(outstr, "");
 		if (getstring(win[STA].p, user_input, BUFSIZ, 0, 1) !=
 		    GETSTRING_VALID)
-			return;
+			goto cleanup;
 		if (strlen(user_input) == 1
 		    && strcmp(user_input, "0") == 0) {
 			until = 0;
@@ -752,7 +750,8 @@ void ui_day_item_repeat(void)
 			status_mesg(mesg_older, wrong_type_2);
 			wgetch(win[KEY].p);
 		} else {
-			snprintf(outstr, BUFSIZ, mesg_wrong_2,
+			mem_free(outstr);
+			asprintf(&outstr, mesg_wrong_2,
 				 DATEFMT_DESC(conf.input_datefmt));
 			status_mesg(mesg_wrong_1, outstr);
 			wgetch(win[KEY].p);
@@ -783,6 +782,10 @@ void ui_day_item_repeat(void)
 	io_set_modified();
 
 	ui_calendar_monthly_view_cache_set_invalid();
+
+cleanup:
+	mem_free(msg_asktype);
+	mem_free(outstr);
 }
 
 /* Free the current cut item, if any. */

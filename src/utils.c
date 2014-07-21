@@ -197,7 +197,7 @@ int status_ask_choice(const char *message, const char choice[],
 		      int nb_choice)
 {
 	int i, ch;
-	char tmp[BUFSIZ];
+	char *tmp;
 	/* "[4/2/f/t/w/.../Z] " */
 	char avail_choice[2 * nb_choice + 3];
 
@@ -205,9 +205,9 @@ int status_ask_choice(const char *message, const char choice[],
 	avail_choice[1] = '\0';
 
 	for (i = 1; i <= nb_choice; i++) {
-		snprintf(tmp, BUFSIZ, (i == nb_choice) ? "%c] " : "%c/",
-			 choice[i]);
+		asprintf(&tmp, (i == nb_choice) ? "%c] " : "%c/", choice[i]);
 		strcat(avail_choice, tmp);
+		mem_free(tmp);
 	}
 
 	status_mesg(message, avail_choice);
@@ -248,7 +248,7 @@ status_ask_simplechoice(const char *prefix, const char *choice[],
 			int nb_choice)
 {
 	int i;
-	char tmp[BUFSIZ];
+	char *tmp;
 	/* "(1) Choice1, (2) Choice2, (3) Choice3?" */
 	char choicestr[BUFSIZ];
 	/* Holds the characters to choose from ('1', '2', etc) */
@@ -261,10 +261,11 @@ status_ask_simplechoice(const char *prefix, const char *choice[],
 	strcpy(choicestr, prefix);
 
 	for (i = 0; i < nb_choice; i++) {
-		snprintf(tmp, BUFSIZ,
+		asprintf(&tmp,
 			 ((i + 1) == nb_choice) ? "(%d) %s?" : "(%d) %s, ",
 			 (i + 1), choice[i]);
 		strcat(choicestr, tmp);
+		mem_free(tmp);
 	}
 
 	return (status_ask_choice(choicestr, char_choice, nb_choice));
@@ -984,8 +985,7 @@ shell_exec(int *pfdin, int *pfdout, const char *path,
 	narg[1] = "-c";
 
 	if (argc > 1) {
-		arg0 = mem_malloc(strlen(path) + 6);
-		sprintf(arg0, "%s \"$@\"", path);
+		asprintf(&arg0, "%s \"$@\"", path);
 		narg[2] = arg0;
 
 		for (i = 0; i < argc; i++)
@@ -1049,7 +1049,7 @@ void press_any_key(void)
  */
 static void print_notefile(FILE * out, const char *filename, int nbtab)
 {
-	char path_to_notefile[BUFSIZ];
+	char *path_to_notefile;
 	FILE *notefile;
 	char linestarter[BUFSIZ];
 	char buffer[BUFSIZ];
@@ -1064,8 +1064,9 @@ static void print_notefile(FILE * out, const char *filename, int nbtab)
 		linestarter[0] = '\0';
 	}
 
-	snprintf(path_to_notefile, BUFSIZ, "%s/%s", path_notes, filename);
+	asprintf(&path_to_notefile, "%s/%s", path_notes, filename);
 	notefile = fopen(path_to_notefile, "r");
+	mem_free(path_to_notefile);
 	if (notefile) {
 		while (fgets(buffer, BUFSIZ, notefile) != 0) {
 			if (printlinestarter) {

@@ -166,13 +166,11 @@ static FILE *get_export_stream(enum export_type type)
 	const char *file_ext[IO_EXPORT_NBTYPES] = { "ical", "txt" };
 
 	stream = NULL;
-	stream_name = (char *)mem_malloc(BUFSIZ);
 	if ((home = getenv("HOME")) != NULL)
-		snprintf(stream_name, BUFSIZ, "%s/calcurse.%s", home,
-			 file_ext[type]);
+		asprintf(&stream_name, "%s/calcurse.%s", home, file_ext[type]);
 	else
-		snprintf(stream_name, BUFSIZ, "%s/calcurse.%s",
-			 get_tempdir(), file_ext[type]);
+		asprintf(&stream_name, "%s/calcurse.%s", get_tempdir(),
+			 file_ext[type]);
 
 	while (stream == NULL) {
 		status_mesg(question, "");
@@ -186,8 +184,8 @@ static FILE *get_export_stream(enum export_type type)
 			wgetch(win[KEY].p);
 		}
 	}
-	mem_free(stream_name);
 
+	mem_free(stream_name);
 	return stream;
 }
 
@@ -196,7 +194,7 @@ unsigned io_fprintln(const char *fname, const char *fmt, ...)
 {
 	FILE *fp;
 	va_list ap;
-	char buf[BUFSIZ];
+	char *buf;
 	int ret;
 
 	fp = fopen(fname, "a");
@@ -204,7 +202,7 @@ unsigned io_fprintln(const char *fname, const char *fmt, ...)
 		  strerror(errno));
 
 	va_start(ap, fmt);
-	ret = vsnprintf(buf, sizeof buf, fmt, ap);
+	ret = vasprintf(&buf, fmt, ap);
 	RETVAL_IF(ret < 0, 0, _("Failed to build message\n"));
 	va_end(ap);
 
@@ -215,6 +213,7 @@ unsigned io_fprintln(const char *fname, const char *fmt, ...)
 	RETVAL_IF(ret != 0, 0, _("Failed to close \"%s\" - %s\n"),
 		  fname, strerror(errno));
 
+	mem_free(buf);
 	return 1;
 }
 
@@ -809,14 +808,14 @@ void io_load_keys(const char *pager)
 				int ch;
 
 				if ((ch = keys_str2int(key_ch)) < 0) {
-					char unknown_key[BUFSIZ];
+					char *unknown_key;
 
 					skipped++;
-					(void)snprintf(unknown_key, BUFSIZ,
-						       _("Error reading key: \"%s\""),
-						       key_ch);
-					io_log_print(log, line,
-						     unknown_key);
+					asprintf(&unknown_key,
+						 _("Error reading key: \"%s\""),
+						 key_ch);
+					io_log_print(log, line, unknown_key);
+					mem_free(unknown_key);
 				} else {
 					int used;
 
@@ -825,18 +824,15 @@ void io_load_keys(const char *pager)
 								ht_elm->
 								key);
 					if (used) {
-						char already_assigned
-						    [BUFSIZ];
+						char *already_assigned;
 
 						skipped++;
-						(void)
-						    snprintf
-						    (already_assigned,
-						     BUFSIZ,
-						     _("\"%s\" assigned multiple times!"),
-						     key_ch);
+						asprintf(&already_assigned,
+							 _("\"%s\" assigned multiple times!"),
+							 key_ch);
 						io_log_print(log, line,
 							     already_assigned);
+						mem_free(already_assigned);
 					} else {
 						assigned++;
 					}
@@ -1048,7 +1044,7 @@ void io_import_data(enum import_type type, const char *stream_name)
 {
 	const char *proc_report =
 	    _("Import process report: %04d lines read ");
-	char stats_str[4][BUFSIZ];
+	char *stats_str[4];
 	FILE *stream = NULL;
 	struct io_file *log;
 	struct {
@@ -1092,25 +1088,25 @@ void io_import_data(enum import_type type, const char *stream_name)
 	if (stream != stdin)
 		file_close(stream, __FILE_POS__);
 
-	snprintf(stats_str[0], BUFSIZ,
-		 ngettext("%d app", "%d apps", stats.apoints),
+	asprintf(&stats_str[0], ngettext("%d app", "%d apps", stats.apoints),
 		 stats.apoints);
-	snprintf(stats_str[1], BUFSIZ,
+	asprintf(&stats_str[1],
 		 ngettext("%d event", "%d events", stats.events),
 		 stats.events);
-	snprintf(stats_str[2], BUFSIZ,
-		 ngettext("%d todo", "%d todos", stats.todos),
+	asprintf(&stats_str[2], ngettext("%d todo", "%d todos", stats.todos),
 		 stats.todos);
-	snprintf(stats_str[3], BUFSIZ, _("%d skipped"), stats.skipped);
+	asprintf(&stats_str[3], _("%d skipped"), stats.skipped);
 
 	if (ui_mode == UI_CURSES && conf.system_dialogs) {
-		char read[BUFSIZ], stat[BUFSIZ];
+		char *read, *stat;
 
-		snprintf(read, BUFSIZ, proc_report, stats.lines);
-		snprintf(stat, BUFSIZ, "%s / %s / %s / %s (%s)",
+		asprintf(&read, proc_report, stats.lines);
+		asprintf(&stat, "%s / %s / %s / %s (%s)",
 			 stats_str[0], stats_str[1], stats_str[2],
 			 stats_str[3], _("Press [ENTER] to continue"));
 		status_mesg(read, stat);
+		mem_free(read);
+		mem_free(stat);
 		wgetch(win[KEY].p);
 	} else if (ui_mode == UI_CMDLINE) {
 		printf(proc_report, stats.lines);
@@ -1128,16 +1124,20 @@ void io_import_data(enum import_type type, const char *stream_name)
 
 		io_log_display(log, view_log, conf.pager);
 	}
+
+	mem_free(stats_str[0]);
+	mem_free(stats_str[1]);
+	mem_free(stats_str[2]);
+	mem_free(stats_str[3]);
 	io_log_free(log);
 }
 
 struct io_file *io_log_init(void)
 {
-	char logprefix[BUFSIZ];
-	char *logname;
+	char *logprefix, *logname;
 	struct io_file *log;
 
-	snprintf(logprefix, BUFSIZ, "%s/calcurse_log.", get_tempdir());
+	asprintf(&logprefix, "%s/calcurse_log.", get_tempdir());
 	logname = new_tempfile(logprefix, TMPEXTSIZ);
 	RETVAL_IF(logname == NULL, 0,
 		  _("Warning: could not create temporary log file, Aborting..."));
@@ -1145,6 +1145,7 @@ struct io_file *io_log_init(void)
 	RETVAL_IF(log == NULL, 0,
 		  _("Warning: could not open temporary log file, Aborting..."));
 	snprintf(log->name, sizeof(log->name), "%s%s", logprefix, logname);
+	mem_free(logprefix);
 	mem_free(logname);
 	log->fd = fopen(log->name, "w");
 	if (log->fd == NULL) {

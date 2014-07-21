@@ -803,14 +803,15 @@ print_keys_bindings(WINDOW * win, int selected_row, int selected_elm,
 
 	noelm = y = 0;
 	for (action = 0; action < NBKEYS; action++) {
-		char actionstr[BUFSIZ];
+		char *actionstr;
 		int nbkeys;
 
 		nbkeys = keys_action_count_keys(action);
-		snprintf(actionstr, BUFSIZ, "%s", keys_get_label(action));
+		asprintf(&actionstr, "%s", keys_get_label(action));
 		if (action == selected_row)
 			custom_apply_attr(win, ATTR_HIGHEST);
 		mvwprintw(win, y, XPOS, "%s ", actionstr);
+		mem_free(actionstr);
 		mvwaddstr(win, y, EQUALPOS, "=");
 		if (nbkeys == 0)
 			mvwaddstr(win, y, KEYPOS, _("undefined"));

@@ -256,6 +256,8 @@ static inline void key_generic_save(void)
 
 static inline void key_generic_reload(void)
 {
+	char *msg_um_asktype = NULL;
+
 	if (io_get_modified()) {
 		const char *msg_um_prefix =
 				_("There are unsaved modifications:");
@@ -264,10 +266,8 @@ static inline void key_generic_reload(void)
 		const char *msg_um_keep = _("(k)eep and cancel");
 		const char *msg_um_choice = _("[dmk]");
 
-		char msg_um_asktype[BUFSIZ];
-		snprintf(msg_um_asktype, BUFSIZ, "%s %s, %s, %s",
-			 msg_um_prefix, msg_um_discard, msg_um_merge,
-			 msg_um_keep);
+		asprintf(&msg_um_asktype, "%s %s, %s, %s", msg_um_prefix,
+			 msg_um_discard, msg_um_merge, msg_um_keep);
 
 		char *path_apts_backup, *path_todo_backup;
 		const char *backup_ext = ".sav";
@@ -276,14 +276,10 @@ static inline void key_generic_reload(void)
 		case 1:
 			break;
 		case 2:
-			path_apts_backup = mem_malloc(strlen(path_apts) +
-						      strlen(backup_ext) + 1);
-			path_todo_backup = mem_malloc(strlen(path_todo) +
-						      strlen(backup_ext) + 1);
-			sprintf(path_apts_backup, "%s%s", path_apts,
-				backup_ext);
-			sprintf(path_todo_backup, "%s%s", path_todo,
-				backup_ext);
+			asprintf(&path_apts_backup, "%s%s", path_apts,
+				 backup_ext);
+			asprintf(&path_todo_backup, "%s%s", path_todo,
+				 backup_ext);
 
 			io_save_mutex_lock();
 			io_save_apts(path_apts_backup);
@@ -313,7 +309,7 @@ static inline void key_generic_reload(void)
 			/* FALLTHROUGH */
 		default:
 			wins_update(FLAG_STA);
-			return;
+			goto cleanup;
 		}
 	}
 
@@ -346,6 +342,9 @@ static inline void key_generic_reload(void)
 	notify_check_next_app(1);
 	ui_calendar_monthly_view_cache_set_invalid();
 	wins_update(FLAG_ALL);
+
+cleanup:
+	mem_free(msg_um_asktype);
 }
 
 static inline void key_generic_import(void)
@@ -533,6 +532,7 @@ static inline void key_generic_cmd(void)
 	char cmd[BUFSIZ] = "";
 	char *cmd_name;
 	int valid = 0, force = 0;
+	char *error_msg;
 
 	status_mesg(_("Command:"), "");
 	if (getstring(win[STA].p, cmd, BUFSIZ, 0, 1) != GETSTRING_VALID)
@@ -563,26 +563,19 @@ static inline void key_generic_cmd(void)
 		char *topic = strtok(NULL, " ");
 
 		if (!display_help(topic)) {
-			char error_msg[BUFSIZ];
-
-			snprintf(error_msg, BUFSIZ,
-					_("Help topic does not exist: %s"),
-					topic);
-			error_msg[BUFSIZ - 1] = '\0';
-
+			asprintf(&error_msg,
+				 _("Help topic does not exist: %s"), topic);
 			warnbox(error_msg);
+			mem_free(error_msg);
 		}
 
 		valid = 1;
 	}
 
 	if (!valid) {
-		char error_msg[BUFSIZ];
-
-		snprintf(error_msg, BUFSIZ, _("No such command: %s"), cmd);
-		error_msg[BUFSIZ - 1] = '\0';
-
+		asprintf(&error_msg, _("No such command: %s"), cmd);
 		warnbox(error_msg);
+		mem_free(error_msg);
 	}
 
 cleanup:

@@ -629,7 +629,7 @@ void ui_calendar_change_day(int datefmt)
 {
 #define LDAY 11
 	char selected_day[LDAY] = "";
-	char outstr[BUFSIZ];
+	char *outstr;
 	int dday, dmonth, dyear;
 	int wrong_day = 1;
 	const char *mesg_line1 =
@@ -640,9 +640,9 @@ void ui_calendar_change_day(int datefmt)
 	    _("Enter the day to go to [ENTER for today] : %s");
 
 	while (wrong_day) {
-		snprintf(outstr, BUFSIZ, request_date,
-			 DATEFMT_DESC(datefmt));
+		asprintf(&outstr, request_date, DATEFMT_DESC(datefmt));
 		status_mesg(outstr, "");
+		mem_free(outstr);
 		if (getstring(win[STA].p, selected_day, LDAY, 0, 1) ==
 		    GETSTRING_ESC) {
 			return;

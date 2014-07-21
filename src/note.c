@@ -59,17 +59,18 @@ HTABLE_PROTOTYPE(htp, note_gc_hash)
 char *generate_note(const char *str)
 {
 	char *sha1 = mem_malloc(SHA1_DIGESTLEN * 2 + 1);
-	char notepath[BUFSIZ];
+	char *notepath;
 	FILE *fp;
 
 	sha1_digest(str, sha1);
-	snprintf(notepath, BUFSIZ, "%s%s", path_notes, sha1);
+	asprintf(&notepath, "%s%s", path_notes, sha1);
 	fp = fopen(notepath, "w");
 	EXIT_IF(fp == NULL, _("Warning: could not open %s, Aborting..."),
 		notepath);
 	fputs(str, fp);
 	file_close(fp, __FILE_POS__);
 
+	mem_free(notepath);
 	return sha1;
 }
 
@@ -78,7 +79,7 @@ void edit_note(char **note, const char *editor)
 {
 	char tmppath[BUFSIZ];
 	char *tmpext;
-	char notepath[BUFSIZ];
+	char *notepath = NULL;
 	char *sha1 = mem_malloc(SHA1_DIGESTLEN * 2 + 1);
 	FILE *fp;
 
@@ -91,7 +92,7 @@ void edit_note(char **note, const char *editor)
 	mem_free(tmpext);
 
 	if (*note != NULL) {
-		snprintf(notepath, BUFSIZ, "%s%s", path_notes, *note);
+		asprintf(&notepath, "%s%s", path_notes, *note);
 		io_file_cp(notepath, tmppath);
 	}
 
@@ -105,8 +106,10 @@ void edit_note(char **note, const char *editor)
 		fclose(fp);
 		*note = sha1;
 
-		snprintf(notepath, BUFSIZ, "%s%s", path_notes, *note);
+		mem_free(notepath);
+		asprintf(&notepath, "%s%s", path_notes, *note);
 		io_file_cp(tmppath, notepath);
+		mem_free(notepath);
 	}
 
 	unlink(tmppath);
@@ -115,14 +118,16 @@ void edit_note(char **note, const char *editor)
 /* View a note in an external pager. */
 void view_note(const char *note, const char *pager)
 {
-	char fullname[BUFSIZ];
+	char *fullname;
 
 	if (note == NULL)
 		return;
-	snprintf(fullname, BUFSIZ, "%s%s", path_notes, note);
+	asprintf(&fullname, "%s%s", path_notes, note);
 
 	const char *arg[] = { pager, fullname, NULL };
 	wins_launch_external(arg);
+
+	mem_free(fullname);
 }
 
 /* Erase a note previously attached to an item. */
@@ -172,7 +177,7 @@ void note_gc(void)
 	struct dirent *dp;
 	llist_item_t *i;
 	struct note_gc_hash tmph;
-	char notepath[BUFSIZ];
+	char *notepath;
 
 	if (!(dirp = opendir(path_notes)))
 		return;
@@ -235,7 +240,8 @@ void note_gc(void)
 
 	/* Unlink unused note files. */
 	HTABLE_FOREACH(hp, htp, &gc_htable) {
-		snprintf(notepath, BUFSIZ, "%s%s", path_notes, hp->hash);
+		asprintf(&notepath, "%s%s", path_notes, hp->hash);
 		unlink(notepath);
+		mem_free(notepath);
 	}
 }

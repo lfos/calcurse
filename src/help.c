@@ -36,7 +36,7 @@
 
 #include "calcurse.h"
 
-static int find_basedir(const char *locale_info[], unsigned n, char *basedir)
+static int find_basedir(const char *locale_info[], unsigned n, char **basedir)
 {
 	int i;
 	char *locale = NULL;
@@ -47,29 +47,33 @@ static int find_basedir(const char *locale_info[], unsigned n, char *basedir)
 			continue;
 		locale = strdup(locale_info[i]);
 
-		snprintf(basedir, BUFSIZ, DOCDIR "/%s", locale);
-		if (io_dir_exists(basedir)) {
+		asprintf(basedir, "%s/%s", DOCDIR, locale);
+		if (io_dir_exists(*basedir)) {
 			ret = 1;
 			goto cleanup;
 		}
 
 		strtok(locale, ".@");
 
-		snprintf(basedir, BUFSIZ, DOCDIR "/%s", locale);
-		if (io_dir_exists(basedir)) {
+		mem_free(*basedir);
+		asprintf(basedir, "%s/%s", DOCDIR, locale);
+		if (io_dir_exists(*basedir)) {
 			ret = 1;
 			goto cleanup;
 		}
 
 		strtok(locale, "_");
 
-		snprintf(basedir, BUFSIZ, DOCDIR "/%s", locale);
-		if (io_dir_exists(basedir)) {
+		mem_free(*basedir);
+		asprintf(basedir, "%s/%s", DOCDIR, locale);
+		if (io_dir_exists(*basedir)) {
 			ret = 1;
 			goto cleanup;
 		}
 
-		free(locale);
+		mem_free(*basedir);
+		basedir = NULL;
+		mem_free(locale);
 		locale = NULL;
 	}
 
@@ -87,23 +91,27 @@ int display_help(const char *topic)
 		getenv("LC_MESSAGE"),
 		getenv("LANG")
 	};
-	char basedir[BUFSIZ];
-	char path[BUFSIZ];
+	char *basedir;
+	char *path;
+	int ret = 0;
 
 	if (!topic)
 		topic = "intro";
 
-	if (!find_basedir(locale_info, ARRAY_SIZE(locale_info), basedir))
-		snprintf(basedir, BUFSIZ, DOCDIR);
+	if (!find_basedir(locale_info, ARRAY_SIZE(locale_info), &basedir)) {
+		mem_free(basedir);
+		asprintf(&basedir, "%s", DOCDIR);
+	}
 
-	snprintf(path, BUFSIZ, "%s/%s.txt", basedir, topic);
+	asprintf(&path, "%s/%s.txt", basedir, topic);
 
 	if (!io_file_exists(path) && keys_str2int(topic) > 0 &&
 	    keys_get_action(keys_str2int(topic)) > 0) {
 		int ch = keys_str2int(topic);
 		enum key action = keys_get_action(ch);
 		topic = keys_get_label(action);
-		snprintf(path, BUFSIZ, "%s/%s.txt", basedir, topic);
+		mem_free(path);
+		asprintf(&path, "%s/%s.txt", basedir, topic);
 	}
 
 	if (!io_file_exists(path)) {
@@ -185,14 +193,17 @@ int display_help(const char *topic)
 			topic = "priority";
 		else if (!strcmp(topic, "lower-priority"))
 			topic = "priority";
-		snprintf(path, BUFSIZ, "%s/%s.txt", basedir, topic);
+		mem_free(path);
+		asprintf(&path, "%s/%s.txt", basedir, topic);
 	}
 
 	if (io_file_exists(path)) {
 		const char *arg[] = { conf.pager, path, NULL };
 		wins_launch_external(arg);
-		return 1;
-	} else {
-		return 0;
+		ret = 1;
 	}
+
+	mem_free(basedir);
+	mem_free(path);
+	return ret;
 }

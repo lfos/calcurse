@@ -449,8 +449,7 @@ config_serialize_conf(char *buf, const char *key,
 
 	for (i = 0; i < ARRAY_SIZE(confmap); i++) {
 		if (!strcmp(confmap[i].key, key)) {
-			if (confmap[i].
-			    fn_serialize(buf, confmap[i].target)) {
+			if (confmap[i].fn_serialize(buf, confmap[i].target)) {
 				if (status)
 					status->done[i] = 1;
 				return 1;
