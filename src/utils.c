@@ -619,21 +619,16 @@ const char *get_tempdir(void)
  * Create a new unique file, and return a newly allocated string which contains
  * the random part of the file name.
  */
-char *new_tempfile(const char *prefix, int trailing_len)
+char *new_tempfile(const char *prefix)
 {
-	char fullname[BUFSIZ];
-	int prefix_len, fd;
+	char *fullname;
+	int fd;
 	FILE *file;
 
 	if (prefix == NULL)
 		return NULL;
 
-	prefix_len = strlen(prefix);
-	if (prefix_len + trailing_len >= BUFSIZ)
-		return NULL;
-	memcpy(fullname, prefix, prefix_len);
-	memset(fullname + prefix_len, 'X', trailing_len);
-	fullname[prefix_len + trailing_len] = '\0';
+	asprintf(&fullname, "%s.XXXXXX", prefix);
 	if ((fd = mkstemp(fullname)) == -1
 	    || (file = fdopen(fd, "w+")) == NULL) {
 		if (fd != -1) {
@@ -642,11 +637,13 @@ char *new_tempfile(const char *prefix, int trailing_len)
 		}
 		ERROR_MSG(_("temporary file \"%s\" could not be created"),
 			  fullname);
+
+		mem_free(fullname);
 		return NULL;
 	}
 	fclose(file);
 
-	return mem_strdup(fullname + prefix_len);
+	return fullname;
 }
 
 /*

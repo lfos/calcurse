@@ -590,25 +590,21 @@ static int config_save_junk_cb(const char *data, void *status)
 /* Save the user configuration. */
 unsigned config_save(void)
 {
-	char tmppath[BUFSIZ];
-	char *tmpext;
+	char *tmpprefix = NULL, *tmppath = NULL;
 	struct config_save_status status;
 	int i;
+	int ret = 0;
 
 	if (read_only)
 		return 1;
 
-	strncpy(tmppath, get_tempdir(), BUFSIZ);
-	tmppath[BUFSIZ - 1] = '\0';
-	strncat(tmppath, "/" CONF_PATH_NAME ".", BUFSIZ - strlen(tmppath) - 1);
-	if ((tmpext = new_tempfile(tmppath, TMPEXTSIZ)) == NULL)
-		return 0;
-	strncat(tmppath, tmpext, BUFSIZ - strlen(tmppath) - 1);
-	mem_free(tmpext);
+	asprintf(&tmpprefix, "%s/%s", get_tempdir(), CONF_PATH_NAME);
+	if ((tmppath = new_tempfile(tmpprefix)) == NULL)
+		goto cleanup;
 
 	status.fp = fopen(tmppath, "w");
 	if (!status.fp)
-		return 0;
+		goto cleanup;
 
 	memset(status.done, 0, sizeof(status.done));
 
@@ -626,5 +622,9 @@ unsigned config_save(void)
 	if (io_file_cp(tmppath, path_conf))
 		unlink(tmppath);
 
-	return 1;
+	ret = 1;
+cleanup:
+	mem_free(tmpprefix);
+	mem_free(tmppath);
+	return ret;
 }

@@ -117,7 +117,6 @@
 
 #define STATUSHEIGHT  2
 #define MAX_NOTESIZ   40
-#define TMPEXTSIZ     6
 
 /* Format for appointment hours is: HH:MM */
 #define HRMIN_SIZE 6
@@ -1032,7 +1031,7 @@ long now(void);
 char *nowstr(void);
 void print_bool_option_incolor(WINDOW *, unsigned, int, int);
 const char *get_tempdir(void);
-char *new_tempfile(const char *, int);
+char *new_tempfile(const char *);
 int check_date(unsigned, unsigned, unsigned);
 int parse_date(const char *, enum datefmt, int *, int *, int *,
 	       struct date *);

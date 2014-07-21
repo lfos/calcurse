@@ -1135,25 +1135,32 @@ void io_import_data(enum import_type type, const char *stream_name)
 struct io_file *io_log_init(void)
 {
 	char *logprefix, *logname;
-	struct io_file *log;
+	struct io_file *log = mem_malloc(sizeof(struct io_file));
 
-	asprintf(&logprefix, "%s/calcurse_log.", get_tempdir());
-	logname = new_tempfile(logprefix, TMPEXTSIZ);
-	RETVAL_IF(logname == NULL, 0,
-		  _("Warning: could not create temporary log file, Aborting..."));
-	log = mem_malloc(sizeof(struct io_file));
-	RETVAL_IF(log == NULL, 0,
-		  _("Warning: could not open temporary log file, Aborting..."));
-	snprintf(log->name, sizeof(log->name), "%s%s", logprefix, logname);
-	mem_free(logprefix);
-	mem_free(logname);
+	if (!log) {
+		ERROR_MSG(_("Warning: could not open temporary log file, Aborting..."));
+		return NULL;
+	}
+	asprintf(&logprefix, "%s/calcurse_log", get_tempdir());
+	logname = new_tempfile(logprefix);
+	if (!logname) {
+		ERROR_MSG(_("Warning: could not create temporary log file, Aborting..."));
+		goto error;
+	}
+	strncpy(log->name, logname, sizeof(log->name));
 	log->fd = fopen(log->name, "w");
 	if (log->fd == NULL) {
 		ERROR_MSG(_("Warning: could not open temporary log file, Aborting..."));
-		mem_free(log);
-		return 0;
+		goto error;
 	}
 
+	goto cleanup;
+error:
+	mem_free(log);
+	log = NULL;
+cleanup:
+	mem_free(logprefix);
+	mem_free(logname);
 	return log;
 }
 

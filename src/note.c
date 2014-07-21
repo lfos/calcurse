@@ -77,19 +77,14 @@ char *generate_note(const char *str)
 /* Edit a note with an external editor. */
 void edit_note(char **note, const char *editor)
 {
-	char tmppath[BUFSIZ];
-	char *tmpext;
+	char *tmpprefix = NULL, *tmppath = NULL;
 	char *notepath = NULL;
 	char *sha1 = mem_malloc(SHA1_DIGESTLEN * 2 + 1);
 	FILE *fp;
 
-	strncpy(tmppath, get_tempdir(), BUFSIZ);
-	tmppath[BUFSIZ - 1] = '\0';
-	strncat(tmppath, "/calcurse-note.", BUFSIZ - strlen(tmppath) - 1);
-	if ((tmpext = new_tempfile(tmppath, TMPEXTSIZ)) == NULL)
-		return;
-	strncat(tmppath, tmpext, BUFSIZ - strlen(tmppath) - 1);
-	mem_free(tmpext);
+	asprintf(&tmpprefix, "%s/calcurse-note", get_tempdir());
+	if ((tmppath = new_tempfile(tmpprefix)) == NULL)
+		goto cleanup;
 
 	if (*note != NULL) {
 		asprintf(&notepath, "%s%s", path_notes, *note);
@@ -113,6 +108,10 @@ void edit_note(char **note, const char *editor)
 	}
 
 	unlink(tmppath);
+
+cleanup:
+	mem_free(tmpprefix);
+	mem_free(tmppath);
 }
 
 /* View a note in an external pager. */
