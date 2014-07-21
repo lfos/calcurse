@@ -1051,6 +1051,8 @@ void print_recur_apoint(const char *, long, unsigned,
 			struct recur_apoint *);
 void print_recur_event(const char *, long, struct recur_event *);
 void print_todo(const char *, struct todo *);
+int vasprintf(char **, const char *, va_list);
+int asprintf(char **, const char *, ...);
 
 /* vars.c */
 extern int col, row;

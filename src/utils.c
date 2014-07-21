@@ -1473,3 +1473,41 @@ void print_todo(const char *format, struct todo *todo)
 		}
 	}
 }
+
+#define VASPRINTF_INITIAL_BUFSIZE 128
+
+int
+vasprintf(char **str, const char *format, va_list ap)
+{
+	va_list ap2;
+	int n;
+
+	va_copy(ap2, ap);
+
+	*str = mem_malloc(VASPRINTF_INITIAL_BUFSIZE);
+	n = vsnprintf(*str, VASPRINTF_INITIAL_BUFSIZE, format, ap);
+	if (n >= VASPRINTF_INITIAL_BUFSIZE) {
+		*str = mem_realloc(*str, 1, n + 1);
+		n = vsnprintf(*str, n + 1, format, ap2);
+	}
+
+	if (n < 0) {
+		mem_free(*str);
+		*str = NULL;
+	}
+
+	return n;
+}
+
+int
+asprintf(char **str, const char *format, ...)
+{
+	va_list	ap;
+	int n;
+
+	va_start(ap, format);
+	n = vasprintf(str, format, ap);
+	va_end(ap);
+
+	return n;
+}
