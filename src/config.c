@@ -40,7 +40,7 @@
 #include "calcurse.h"
 
 typedef int (*config_fn_parse_t) (void *, const char *);
-typedef int (*config_fn_serialize_t) (char *, void *);
+typedef int (*config_fn_serialize_t) (char **, void *);
 
 struct confvar {
 	const char *key;
@@ -50,29 +50,29 @@ struct confvar {
 };
 
 static int config_parse_bool(unsigned *, const char *);
-static int config_serialize_bool(char *, unsigned *);
+static int config_serialize_bool(char **, unsigned *);
 static int config_parse_int(int *, const char *);
-static int config_serialize_int(char *, int *);
+static int config_serialize_int(char **, int *);
 static int config_parse_unsigned(unsigned *, const char *);
-static int config_serialize_unsigned(char *, unsigned *);
+static int config_serialize_unsigned(char **, unsigned *);
 static int config_parse_str(char *, const char *);
-static int config_serialize_str(char *, const char *);
+static int config_serialize_str(char **, const char *);
 static int config_parse_calendar_view(void *, const char *);
-static int config_serialize_calendar_view(char *, void *);
+static int config_serialize_calendar_view(char **, void *);
 static int config_parse_default_panel(void *, const char *);
-static int config_serialize_default_panel(char *, void *);
+static int config_serialize_default_panel(char **, void *);
 static int config_parse_first_day_of_week(void *, const char *);
-static int config_serialize_first_day_of_week(char *, void *);
+static int config_serialize_first_day_of_week(char **, void *);
 static int config_parse_color_theme(void *, const char *);
-static int config_serialize_color_theme(char *, void *);
+static int config_serialize_color_theme(char **, void *);
 static int config_parse_layout(void *, const char *);
-static int config_serialize_layout(char *, void *);
+static int config_serialize_layout(char **, void *);
 static int config_parse_sidebar_width(void *, const char *);
-static int config_serialize_sidebar_width(char *, void *);
+static int config_serialize_sidebar_width(char **, void *);
 static int config_parse_output_datefmt(void *, const char *);
-static int config_serialize_output_datefmt(char *, void *);
+static int config_serialize_output_datefmt(char **, void *);
 static int config_parse_input_datefmt(void *, const char *);
-static int config_serialize_input_datefmt(char *, void *);
+static int config_serialize_input_datefmt(char **, void *);
 
 #define CONFIG_HANDLER_BOOL(var) (config_fn_parse_t) config_parse_bool, \
   (config_fn_serialize_t) config_serialize_bool, &(var)
@@ -293,37 +293,27 @@ static int config_set_conf(const char *key, const char *value)
 	return -1;
 }
 
-static int config_serialize_bool(char *dest, unsigned *val)
+static int config_serialize_bool(char **dest, unsigned *val)
 {
-	if (*val) {
-		dest[0] = 'y';
-		dest[1] = 'e';
-		dest[2] = 's';
-		dest[3] = '\0';
-	} else {
-		dest[0] = 'n';
-		dest[1] = 'o';
-		dest[2] = '\0';
-	}
-
+	*dest = mem_strdup(*val ? "yes" : "no");
 	return 1;
 }
 
-static int config_serialize_unsigned(char *dest, unsigned *val)
+static int config_serialize_unsigned(char **dest, unsigned *val)
 {
-	snprintf(dest, BUFSIZ, "%u", *val);
+	asprintf(dest, "%u", *val);
 	return 1;
 }
 
-static int config_serialize_int(char *dest, int *val)
+static int config_serialize_int(char **dest, int *val)
 {
-	snprintf(dest, BUFSIZ, "%d", *val);
+	asprintf(dest, "%d", *val);
 	return 1;
 }
 
-static int config_serialize_str(char *dest, const char *val)
+static int config_serialize_str(char **dest, const char *val)
 {
-	strncpy(dest, val, BUFSIZ);
+	*dest = mem_strdup(val);
 	return 1;
 }
 
@@ -335,13 +325,14 @@ static int config_serialize_str(char *dest, const char *val)
  * If ncurses library was compiled with --enable-ext-funcs,
  * then default color is -1.
  */
-static void config_color_theme_name(char *theme_name)
+static char *config_color_theme_name(void)
 {
 #define MAXCOLORS		8
 #define NBCOLORS		2
 #define DEFAULTCOLOR		255
 #define DEFAULTCOLOR_EXT	-1
 
+	char *theme;
 	int i;
 	short color[NBCOLORS];
 	const char *color_name[NBCOLORS];
@@ -358,88 +349,88 @@ static void config_color_theme_name(char *theme_name)
 	};
 
 	if (!colorize) {
-		strncpy(theme_name, "none", BUFSIZ);
-	} else {
-		pair_content(COLR_CUSTOM, &color[0], &color[1]);
-		for (i = 0; i < NBCOLORS; i++) {
-			if ((color[i] == DEFAULTCOLOR)
-			    || (color[i] == DEFAULTCOLOR_EXT)) {
-				color_name[i] = default_color;
-			} else if (color[i] >= 0 && color[i] <= MAXCOLORS) {
-				color_name[i] = name[color[i]];
-			} else {
-				EXIT(_("unknown color"));
-				/* NOTREACHED */
-			}
-		}
-		snprintf(theme_name, BUFSIZ, "%s on %s", color_name[0],
-			 color_name[1]);
+		return mem_strdup("none");
 	}
+
+	pair_content(COLR_CUSTOM, &color[0], &color[1]);
+	for (i = 0; i < NBCOLORS; i++) {
+		if ((color[i] == DEFAULTCOLOR)
+		    || (color[i] == DEFAULTCOLOR_EXT)) {
+			color_name[i] = default_color;
+		} else if (color[i] >= 0 && color[i] <= MAXCOLORS) {
+			color_name[i] = name[color[i]];
+		} else {
+			EXIT(_("unknown color"));
+			/* NOTREACHED */
+		}
+	}
+	asprintf(&theme, "%s on %s", color_name[0], color_name[1]);
+	return theme;
 }
 
-static int config_serialize_calendar_view(char *buf, void *dummy)
+static int config_serialize_calendar_view(char **buf, void *dummy)
 {
 	if (ui_calendar_get_view() == CAL_WEEK_VIEW)
-		strcpy(buf, "weekly");
+		*buf = mem_strdup("weekly");
 	else
-		strcpy(buf, "monthly");
+		*buf = mem_strdup("monthly");
 
 	return 1;
 }
 
-static int config_serialize_default_panel(char *buf, void *dummy)
+static int config_serialize_default_panel(char **buf, void *dummy)
 {
 	if (conf.default_panel == CAL)
-		strcpy(buf, "calendar");
+		*buf = mem_strdup("calendar");
 	else if (conf.default_panel == APP)
-		strcpy(buf, "appointments");
+		*buf = mem_strdup("appointments");
 	else
-		strcpy(buf, "todo");
+		*buf = mem_strdup("todo");
 
 	return 1;
 }
 
-static int config_serialize_first_day_of_week(char *buf, void *dummy)
+static int config_serialize_first_day_of_week(char **buf, void *dummy)
 {
 	if (ui_calendar_week_begins_on_monday())
-		strcpy(buf, "monday");
+		*buf = mem_strdup("monday");
 	else
-		strcpy(buf, "sunday");
+		*buf = mem_strdup("sunday");
 
 	return 1;
 }
 
-static int config_serialize_color_theme(char *buf, void *dummy)
+static int config_serialize_color_theme(char **buf, void *dummy)
 {
-	config_color_theme_name(buf);
+	*buf = config_color_theme_name();
 	return 1;
 }
 
-static int config_serialize_layout(char *buf, void *dummy)
+static int config_serialize_layout(char **buf, void *dummy)
 {
 	int tmp = wins_layout();
 	return config_serialize_int(buf, &tmp);
 }
 
-static int config_serialize_sidebar_width(char *buf, void *dummy)
+static int config_serialize_sidebar_width(char **buf, void *dummy)
 {
 	int tmp = wins_sbar_wperc();
 	return config_serialize_int(buf, &tmp);
 }
 
-static int config_serialize_output_datefmt(char *buf, void *dummy)
+static int config_serialize_output_datefmt(char **buf, void *dummy)
 {
 	return config_serialize_str(buf, conf.output_datefmt);
 }
 
-static int config_serialize_input_datefmt(char *buf, void *dummy)
+static int config_serialize_input_datefmt(char **buf, void *dummy)
 {
 	return config_serialize_int(buf, &conf.input_datefmt);
 }
 
 /* Serialize the value of a configuration variable. */
 static int
-config_serialize_conf(char *buf, const char *key,
+config_serialize_conf(char **buf, const char *key,
 		      struct config_save_status *status)
 {
 	int i;
@@ -559,9 +550,9 @@ void config_load(void)
 
 static int config_save_cb(const char *key, const char *value, void *status)
 {
-	char buf[BUFSIZ];
+	char *buf;
 	int result =
-	    config_serialize_conf(buf, key,
+	    config_serialize_conf(&buf, key,
 				  (struct config_save_status *)status);
 
 	if (result < 0) {
@@ -578,6 +569,7 @@ static int config_save_cb(const char *key, const char *value, void *status)
 	fputs(buf, ((struct config_save_status *)status)->fp);
 	fputc('\n', ((struct config_save_status *)status)->fp);
 
+	mem_free(buf);
 	return 1;
 }
 
