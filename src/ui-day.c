@@ -156,7 +156,7 @@ static void update_rept(struct rpt **rpt, const long start)
 {
 	int newtype, newfreq;
 	long newuntil;
-	char *freqstr = NULL, *timstr, *outstr = NULL;
+	char *freqstr = NULL, *timstr, *outstr;
 	const char *msg_rpt_prefix = _("Enter the new repetition type:");
 	const char *msg_rpt_daily = _("(d)aily");
 	const char *msg_rpt_weekly = _("(w)eekly");
@@ -220,14 +220,13 @@ static void update_rept(struct rpt **rpt, const long start)
 
 	do {
 		status_mesg(_("Enter the new repetition frequence:"), "");
+		mem_free(freqstr);
 		asprintf(&freqstr, "%d", (*rpt)->freq);
 		if (updatestring(win[STA].p, &freqstr, 0, 1) !=
 		    GETSTRING_VALID) {
-			mem_free(freqstr);
 			goto cleanup;
 		}
 		newfreq = atoi(freqstr);
-		mem_free(freqstr);
 		if (newfreq == 0) {
 			status_mesg(msg_wrong_freq, msg_enter);
 			wgetch(win[KEY].p);
@@ -244,6 +243,7 @@ static void update_rept(struct rpt **rpt, const long start)
 		asprintf(&outstr, _("Enter the new ending date: [%s] or '0'"),
 			 DATEFMT_DESC(conf.input_datefmt));
 		status_mesg(outstr, "");
+		mem_free(outstr);
 		timstr =
 		    date_sec2date_str((*rpt)->until,
 				      DATEFMT(conf.input_datefmt));
@@ -261,6 +261,7 @@ static void update_rept(struct rpt **rpt, const long start)
 			asprintf(&outstr, msg_fmts,
 				 DATEFMT_DESC(conf.input_datefmt));
 			status_mesg(msg_wrong_date, outstr);
+			mem_free(outstr);
 			wgetch(win[KEY].p);
 			continue;
 		}
@@ -284,7 +285,6 @@ cleanup:
 	mem_free(msg_rpt_current);
 	mem_free(msg_rpt_asktype);
 	mem_free(freqstr);
-	mem_free(outstr);
 	mem_free(timstr);
 }
 
@@ -649,7 +649,7 @@ void ui_day_item_repeat(void)
 	time_t t;
 	int year = 0, month = 0, day = 0;
 	struct date until_date;
-	char *outstr = NULL;
+	char *outstr;
 	char user_input[BUFSIZ] = "";
 	const char *msg_rpt_prefix = _("Enter the repetition type:");
 	const char *msg_rpt_daily = _("(d)aily");
@@ -727,6 +727,7 @@ void ui_day_item_repeat(void)
 		asprintf(&outstr, mesg_until_1,
 			 DATEFMT_DESC(conf.input_datefmt));
 		status_mesg(outstr, "");
+		mem_free(outstr);
 		if (getstring(win[STA].p, user_input, BUFSIZ, 0, 1) !=
 		    GETSTRING_VALID)
 			goto cleanup;
@@ -750,10 +751,10 @@ void ui_day_item_repeat(void)
 			status_mesg(mesg_older, wrong_type_2);
 			wgetch(win[KEY].p);
 		} else {
-			mem_free(outstr);
 			asprintf(&outstr, mesg_wrong_2,
 				 DATEFMT_DESC(conf.input_datefmt));
 			status_mesg(mesg_wrong_1, outstr);
+			mem_free(outstr);
 			wgetch(win[KEY].p);
 		}
 	}
@@ -785,7 +786,6 @@ void ui_day_item_repeat(void)
 
 cleanup:
 	mem_free(msg_asktype);
-	mem_free(outstr);
 }
 
 /* Free the current cut item, if any. */
