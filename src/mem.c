@@ -121,7 +121,6 @@ char *xstrdup(const char *str)
 
 void xfree(void *p)
 {
-	EXIT_IF(p == NULL, _("xfree: null pointer"));
 	free(p);
 }
 
