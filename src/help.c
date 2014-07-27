@@ -72,7 +72,7 @@ static int find_basedir(const char *locale_info[], unsigned n, char **basedir)
 		}
 
 		mem_free(*basedir);
-		basedir = NULL;
+		*basedir = NULL;
 		mem_free(locale);
 		locale = NULL;
 	}
@@ -98,10 +98,8 @@ int display_help(const char *topic)
 	if (!topic)
 		topic = "intro";
 
-	if (!find_basedir(locale_info, ARRAY_SIZE(locale_info), &basedir)) {
-		mem_free(basedir);
+	if (!find_basedir(locale_info, ARRAY_SIZE(locale_info), &basedir))
 		asprintf(&basedir, "%s", DOCDIR);
-	}
 
 	asprintf(&path, "%s/%s.txt", basedir, topic);
 
