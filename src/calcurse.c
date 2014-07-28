@@ -257,6 +257,9 @@ static inline void key_generic_save(void)
 static inline void key_generic_reload(void)
 {
 	char *msg_um_asktype = NULL;
+	const char *reload_success =
+		_("The data files were reloaded successfully");
+	const char *enter = _("Press [ENTER] to continue");
 
 	if (io_get_modified()) {
 		const char *msg_um_prefix =
@@ -334,6 +337,11 @@ static inline void key_generic_reload(void)
 	io_unset_modified();
 	ui_todo_load_items();
 	ui_todo_sel_reset();
+
+	if (conf.system_dialogs) {
+		status_mesg(reload_success, enter);
+		wgetch(win[KEY].p);
+	}
 
 	if (notify_bar())
 		notify_start_main_thread();
