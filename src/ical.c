@@ -780,7 +780,6 @@ ical_read_exdate(llist_t * exc, FILE * log, char *exstr,
 	char *p, *q;
 	long date;
 
-	LLIST_INIT(exc);
 	if ((p = strchr(exstr, ':')) != NULL) {
 		p++;
 		while ((q = strchr(p, ',')) != NULL) {
@@ -882,6 +881,7 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 
 	vevent_type = UNDEFINED;
 	memset(&vevent, 0, sizeof vevent);
+	LLIST_INIT(&vevent.exc);
 	skip_alarm = 0;
 	while (ical_readline(fdi, buf, lstore, lineno)) {
 		if (skip_alarm) {
