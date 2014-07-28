@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2014-07-08 15:52+0200\n"
+"POT-Creation-Date: 2014-07-28 12:51+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -191,6 +191,27 @@ msgstr ""
 msgid "Option '-l' must be used with either '-d', '-r', '-s', '-a' or '-t'\n"
 msgstr ""
 
+msgid "The data files were reloaded successfully"
+msgstr ""
+
+msgid "Press [ENTER] to continue"
+msgstr ""
+
+msgid "There are unsaved modifications:"
+msgstr ""
+
+msgid "(d)iscard"
+msgstr ""
+
+msgid "(m)erge"
+msgstr ""
+
+msgid "(k)eep and cancel"
+msgstr ""
+
+msgid "[dmk]"
+msgstr ""
+
 msgid "Export to (i)cal or (p)cal format?"
 msgstr ""
 
@@ -234,55 +255,7 @@ msgstr ""
 msgid "wrong configuration variable format for \"%s\""
 msgstr ""
 
-msgid "Exit"
-msgstr ""
-
-msgid "General"
-msgstr ""
-
-msgid "Layout"
-msgstr ""
-
-msgid "Sidebar"
-msgstr ""
-
-msgid "Color"
-msgstr ""
-
-msgid "Notify"
-msgstr ""
-
-msgid "Keys"
-msgstr ""
-
-msgid "Select"
-msgstr ""
-
-msgid "Up"
-msgstr ""
-
-msgid "Down"
-msgstr ""
-
-msgid "Left"
-msgstr ""
-
-msgid "Right"
-msgstr ""
-
-msgid "Help"
-msgstr ""
-
 msgid "layout configuration"
-msgstr ""
-
-msgid "Width +"
-msgstr ""
-
-msgid "Width -"
-msgstr ""
-
-msgid "No color"
 msgstr ""
 
 msgid "Foreground"
@@ -357,21 +330,6 @@ msgstr ""
 msgid "undefined"
 msgstr ""
 
-msgid "Key info"
-msgstr ""
-
-msgid "Add key"
-msgstr ""
-
-msgid "Del key"
-msgstr ""
-
-msgid "Prev Key"
-msgstr ""
-
-msgid "Next Key"
-msgstr ""
-
 msgid "keys configuration"
 msgstr ""
 
@@ -400,9 +358,6 @@ msgid "Event:"
 msgstr ""
 
 msgid "Appointment:"
-msgstr ""
-
-msgid "unknwon type"
 msgstr ""
 
 #, c-format
@@ -592,9 +547,6 @@ msgstr ""
 msgid "The data files were successfully saved"
 msgstr ""
 
-msgid "Press [ENTER] to continue"
-msgstr ""
-
 msgid "failed to open appointment file"
 msgstr ""
 
@@ -672,7 +624,7 @@ msgid "Enter the file name to import data from:"
 msgstr ""
 
 #, c-format
-msgid "Import process report: %04d lines read "
+msgid "Import process report: %04d lines read"
 msgstr ""
 
 msgid "unknown import type"
@@ -709,10 +661,10 @@ msgstr ""
 msgid "Some items could not be imported, see log file?"
 msgstr ""
 
-msgid "Warning: could not create temporary log file, Aborting..."
+msgid "Warning: could not open temporary log file, Aborting..."
 msgstr ""
 
-msgid "Warning: could not open temporary log file, Aborting..."
+msgid "Warning: could not create temporary log file, Aborting..."
 msgstr ""
 
 msgid "No log file to display!"
@@ -732,6 +684,147 @@ msgid ""
 "If this is not the case, please remove the following lock file: \n"
 "\"%s\"\n"
 "and restart calcurse.\n"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Select"
+msgstr ""
+
+msgid "Credits"
+msgstr ""
+
+msgid "Help"
+msgstr ""
+
+msgid "Quit"
+msgstr ""
+
+msgid "Save"
+msgstr ""
+
+msgid "Reload"
+msgstr ""
+
+msgid "Copy"
+msgstr ""
+
+msgid "Paste"
+msgstr ""
+
+msgid "Chg Win"
+msgstr ""
+
+msgid "Import"
+msgstr ""
+
+msgid "Export"
+msgstr ""
+
+msgid "Go to"
+msgstr ""
+
+msgid "OtherCmd"
+msgstr ""
+
+msgid "Config"
+msgstr ""
+
+msgid "Redraw"
+msgstr ""
+
+msgid "Add Appt"
+msgstr ""
+
+msgid "Add Todo"
+msgstr ""
+
+msgid "-1 Day"
+msgstr ""
+
+msgid "+1 Day"
+msgstr ""
+
+msgid "-1 Week"
+msgstr ""
+
+msgid "+1 Week"
+msgstr ""
+
+msgid "-1 Month"
+msgstr ""
+
+msgid "+1 Month"
+msgstr ""
+
+msgid "-1 Year"
+msgstr ""
+
+msgid "+1 Year"
+msgstr ""
+
+msgid "Nxt View"
+msgstr ""
+
+msgid "Prv View"
+msgstr ""
+
+msgid "Today"
+msgstr ""
+
+msgid "Command"
+msgstr ""
+
+msgid "Right"
+msgstr ""
+
+msgid "Left"
+msgstr ""
+
+msgid "Down"
+msgstr ""
+
+msgid "Up"
+msgstr ""
+
+msgid "beg Week"
+msgstr ""
+
+msgid "end Week"
+msgstr ""
+
+msgid "Add Item"
+msgstr ""
+
+msgid "Del Item"
+msgstr ""
+
+msgid "Edit Itm"
+msgstr ""
+
+msgid "View"
+msgstr ""
+
+msgid "Pipe"
+msgstr ""
+
+msgid "Flag Itm"
+msgstr ""
+
+msgid "Repeat"
+msgstr ""
+
+msgid "EditNote"
+msgstr ""
+
+msgid "ViewNote"
+msgstr ""
+
+msgid "Prio.+"
+msgstr ""
+
+msgid "Prio.-"
 msgstr ""
 
 msgid ""
@@ -765,6 +858,27 @@ msgstr ""
 msgid "FATAL ERROR: key value out of bounds"
 msgstr ""
 
+msgid "General"
+msgstr ""
+
+msgid "Layout"
+msgstr ""
+
+msgid "Sidebar"
+msgstr ""
+
+msgid "Color"
+msgstr ""
+
+msgid "Notify"
+msgstr ""
+
+msgid "Keys"
+msgstr ""
+
+msgid "Unknown"
+msgstr ""
+
 msgid "Cancel the ongoing action."
 msgstr ""
 
@@ -781,6 +895,9 @@ msgid "Exit from the current menu, or quit calcurse."
 msgstr ""
 
 msgid "Save calcurse data."
+msgstr ""
+
+msgid "Reload appointments and todo items."
 msgstr ""
 
 msgid "Copy the item that is currently selected."
@@ -937,9 +1054,6 @@ msgid "xrealloc: overflow"
 msgstr ""
 
 msgid "xrealloc: out of memory"
-msgstr ""
-
-msgid "xfree: null pointer"
 msgstr ""
 
 msgid "could not allocate memory to store block info"
@@ -1366,120 +1480,6 @@ msgid "Appointments"
 msgstr ""
 
 msgid "TODO"
-msgstr ""
-
-msgid "Quit"
-msgstr ""
-
-msgid "Save"
-msgstr ""
-
-msgid "Copy"
-msgstr ""
-
-msgid "Paste"
-msgstr ""
-
-msgid "Chg Win"
-msgstr ""
-
-msgid "Import"
-msgstr ""
-
-msgid "Export"
-msgstr ""
-
-msgid "Go to"
-msgstr ""
-
-msgid "Config"
-msgstr ""
-
-msgid "Redraw"
-msgstr ""
-
-msgid "Add Appt"
-msgstr ""
-
-msgid "Add Todo"
-msgstr ""
-
-msgid "-1 Day"
-msgstr ""
-
-msgid "+1 Day"
-msgstr ""
-
-msgid "-1 Week"
-msgstr ""
-
-msgid "+1 Week"
-msgstr ""
-
-msgid "-1 Month"
-msgstr ""
-
-msgid "+1 Month"
-msgstr ""
-
-msgid "-1 Year"
-msgstr ""
-
-msgid "+1 Year"
-msgstr ""
-
-msgid "Today"
-msgstr ""
-
-msgid "Nxt View"
-msgstr ""
-
-msgid "Prv View"
-msgstr ""
-
-msgid "Command"
-msgstr ""
-
-msgid "beg Week"
-msgstr ""
-
-msgid "end Week"
-msgstr ""
-
-msgid "Add Item"
-msgstr ""
-
-msgid "Del Item"
-msgstr ""
-
-msgid "Edit Itm"
-msgstr ""
-
-msgid "View"
-msgstr ""
-
-msgid "Pipe"
-msgstr ""
-
-msgid "Flag Itm"
-msgstr ""
-
-msgid "Repeat"
-msgstr ""
-
-msgid "EditNote"
-msgstr ""
-
-msgid "ViewNote"
-msgstr ""
-
-msgid "Prio.+"
-msgstr ""
-
-msgid "Prio.-"
-msgstr ""
-
-msgid "OtherCmd"
 msgstr ""
 
 msgid "unknown panel"
