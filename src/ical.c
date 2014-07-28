@@ -488,30 +488,25 @@ static long ical_datetime2long(char *datestr, ical_vevent_e * type)
 
 static long ical_durtime2long(char *timestr)
 {
-	long timelong;
 	char *p;
+	unsigned hour = 0, min = 0, sec = 0;
 
-	if ((p = strchr(timestr, 'T')) == NULL) {
-		timelong = 0;
-	} else {
-		int nbmatch;
-		struct {
-			unsigned hour, min, sec;
-		} time;
+	if ((p = strchr(timestr, 'T')) == NULL)
+		return 0;
 
-		p++;
-		memset(&time, 0, sizeof time);
-		nbmatch =
-		    sscanf(p, "%uH%uM%uS", &time.hour, &time.min,
-			   &time.sec);
-		if (nbmatch < 1 || nbmatch > 3)
-			timelong = 0;
-		else
-			timelong =
-			    time.hour * HOURINSEC + time.min * MININSEC +
-			    time.sec;
+	p++;
+	if (strchr(p, 'H')) {
+		if (sscanf(p, "%uH%uM%uS", &hour, &min, &sec) != 3)
+			return 0;
+	} else if (strchr(p, 'M')) {
+		if (sscanf(p, "%uM%uS", &min, &sec) != 2)
+			return 0;
+	} else if (strchr(p, 'S')) {
+		if (sscanf(p, "%uS", &sec) != 1)
+			return 0;
 	}
-	return timelong;
+
+	return hour * HOURINSEC + min * MININSEC + sec;
 }
 
 /*
