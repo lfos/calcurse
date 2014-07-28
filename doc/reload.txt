@@ -1,0 +1,10 @@
+Reload
+======
+
+Reload appointments and todo items.
+
+When there are unsaved modifications, calcurse asks you whether you want to
+discard the modifications, keep the local modifications (and cancel the reload
+action) or merge the modifications with the content of the data files. The
+merge operation launches an external merge tool (defaults to vimdiff(1), can be
+changed by setting the 'MERGETOOL' environment variable).

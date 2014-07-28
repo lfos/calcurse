@@ -1,0 +1,34 @@
+#. extracted from reload.txt
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-07-28 13:12+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Translate Toolkit 1.11.0\n"
+
+#: reload.txt:1
+msgid ""
+"Reload\n"
+"======"
+msgstr ""
+
+#: reload.txt:4
+msgid "Reload appointments and todo items."
+msgstr ""
+
+#: reload.txt:6
+msgid ""
+"When there are unsaved modifications, calcurse asks you whether you want to\n"
+"discard the modifications, keep the local modifications (and cancel the "
+"reload\n"
+"action) or merge the modifications with the content of the data files. The\n"
+"merge operation launches an external merge tool (defaults to vimdiff(1), can "
+"be\n"
+"changed by setting the 'MERGETOOL' environment variable)."
+msgstr ""

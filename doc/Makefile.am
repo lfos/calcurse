@@ -36,6 +36,7 @@ nobase_dist_doc_DATA = \
 	other.txt \
 	pipe.txt \
 	priority.txt \
+	reload.txt \
 	repeat.txt \
 	save.txt \
 	tab.txt \

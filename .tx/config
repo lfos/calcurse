@@ -92,6 +92,11 @@ file_filter = po/doc/priority-<lang>.po
 source_file = po/doc/priority.pot
 source_lang = en
 
+[calcurse.doc-reload]
+file_filter = po/doc/reload-<lang>.po
+source_file = po/doc/reload.pot
+source_lang = en
+
 [calcurse.doc-repeat]
 file_filter = po/doc/repeat-<lang>.po
 source_file = po/doc/repeat.pot

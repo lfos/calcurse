@@ -119,6 +119,8 @@ int display_help(const char *topic)
 			topic = "intro";
 		else if (!strcmp(topic, "generic-save"))
 			topic = "save";
+		else if (!strcmp(topic, "generic-reload"))
+			topic = "reload";
 		else if (!strcmp(topic, "generic-copy"))
 			topic = "copy_paste";
 		else if (!strcmp(topic, "generic-paste"))
