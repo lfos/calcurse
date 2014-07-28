@@ -1043,7 +1043,7 @@ static FILE *get_import_stream(enum import_type type)
 void io_import_data(enum import_type type, const char *stream_name)
 {
 	const char *proc_report =
-	    _("Import process report: %04d lines read ");
+	    _("Import process report: %04d lines read");
 	char *stats_str[4];
 	FILE *stream = NULL;
 	struct io_file *log;
