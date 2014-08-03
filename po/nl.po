@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2014-07-08 15:52+0200\n"
+"POT-Creation-Date: 2014-07-28 12:51+0200\n"
 "PO-Revision-Date: 2013-07-23 08:52+0000\n"
 "Last-Translator: Lukas Fleischer <transifex@cryptocrack.de>\n"
 "Language-Team: Dutch (http://www.transifex.com/projects/p/calcurse/language/"
@@ -197,6 +197,28 @@ msgstr ""
 msgid "Option '-l' must be used with either '-d', '-r', '-s', '-a' or '-t'\n"
 msgstr ""
 
+#, fuzzy
+msgid "The data files were reloaded successfully"
+msgstr "De databestanden zijn met succes opgeslagen"
+
+msgid "Press [ENTER] to continue"
+msgstr "Druk op [ENTER] om door te gaan)"
+
+msgid "There are unsaved modifications:"
+msgstr ""
+
+msgid "(d)iscard"
+msgstr ""
+
+msgid "(m)erge"
+msgstr ""
+
+msgid "(k)eep and cancel"
+msgstr ""
+
+msgid "[dmk]"
+msgstr ""
+
 msgid "Export to (i)cal or (p)cal format?"
 msgstr ""
 
@@ -240,56 +262,8 @@ msgstr ""
 msgid "wrong configuration variable format for \"%s\""
 msgstr ""
 
-msgid "Exit"
-msgstr "Einde"
-
-msgid "General"
-msgstr "Algemeen"
-
-msgid "Layout"
-msgstr "Layout"
-
-msgid "Sidebar"
-msgstr "Zijbalk"
-
-msgid "Color"
-msgstr "Kleur"
-
-msgid "Notify"
-msgstr "Info"
-
-msgid "Keys"
-msgstr "Toetsen"
-
-msgid "Select"
-msgstr "Selecteer"
-
-msgid "Up"
-msgstr "Omhoog"
-
-msgid "Down"
-msgstr "Omlaag"
-
-msgid "Left"
-msgstr "Links"
-
-msgid "Right"
-msgstr "Rechts"
-
-msgid "Help"
-msgstr "Hulp"
-
 msgid "layout configuration"
 msgstr "layout configuratie"
-
-msgid "Width +"
-msgstr "Breedte +"
-
-msgid "Width -"
-msgstr "Breedte -"
-
-msgid "No color"
-msgstr "Geen kleur"
 
 msgid "Foreground"
 msgstr "Voorgrond"
@@ -366,21 +340,6 @@ msgstr "Niet gekende optie!"
 msgid "undefined"
 msgstr "Ongekend"
 
-msgid "Key info"
-msgstr "Toets informatie"
-
-msgid "Add key"
-msgstr "Voeg toets toe"
-
-msgid "Del key"
-msgstr "Verwijder toets"
-
-msgid "Prev Key"
-msgstr "Vorig toets"
-
-msgid "Next Key"
-msgstr "Volgend toets"
-
 msgid "keys configuration"
 msgstr "Toetsinstellingen"
 
@@ -412,9 +371,6 @@ msgstr ""
 
 msgid "Appointment:"
 msgstr ""
-
-msgid "unknwon type"
-msgstr "ongekend type"
 
 #, c-format
 msgid "Could not stop daemon properly: %s\n"
@@ -603,9 +559,6 @@ msgstr "Probleem bij benaderen databestand ..."
 msgid "The data files were successfully saved"
 msgstr "De databestanden zijn met succes opgeslagen"
 
-msgid "Press [ENTER] to continue"
-msgstr "Druk op [ENTER] om door te gaan)"
-
 msgid "failed to open appointment file"
 msgstr "Afsprakenbestand niet kunnen openen"
 
@@ -687,8 +640,8 @@ msgstr "foute exportmodus"
 msgid "Enter the file name to import data from:"
 msgstr "Kies het bestand voor het importeren van data:"
 
-#, c-format
-msgid "Import process report: %04d lines read "
+#, fuzzy, c-format
+msgid "Import process report: %04d lines read"
 msgstr "Import proces rapport: %04d gelezen regels"
 
 msgid "unknown import type"
@@ -725,11 +678,11 @@ msgstr ""
 msgid "Some items could not be imported, see log file?"
 msgstr ""
 
-msgid "Warning: could not create temporary log file, Aborting..."
-msgstr ""
-
 msgid "Warning: could not open temporary log file, Aborting..."
 msgstr "Pas op: kan tijdelijk logbestand niet openen, Stoppen..."
+
+msgid "Warning: could not create temporary log file, Aborting..."
+msgstr ""
 
 msgid "No log file to display!"
 msgstr ""
@@ -750,6 +703,147 @@ msgid ""
 "\"%s\"\n"
 "and restart calcurse.\n"
 msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Select"
+msgstr "Selecteer"
+
+msgid "Credits"
+msgstr ""
+
+msgid "Help"
+msgstr "Hulp"
+
+msgid "Quit"
+msgstr "Einde"
+
+msgid "Save"
+msgstr "Opslaan"
+
+msgid "Reload"
+msgstr ""
+
+msgid "Copy"
+msgstr ""
+
+msgid "Paste"
+msgstr "Plak"
+
+msgid "Chg Win"
+msgstr ""
+
+msgid "Import"
+msgstr "Import"
+
+msgid "Export"
+msgstr "Export"
+
+msgid "Go to"
+msgstr "Ga naar"
+
+msgid "OtherCmd"
+msgstr "AnderCmd"
+
+msgid "Config"
+msgstr "Config"
+
+msgid "Redraw"
+msgstr "Ververs"
+
+msgid "Add Appt"
+msgstr "Nieuw Afspr"
+
+msgid "Add Todo"
+msgstr "Nieuw Taak"
+
+msgid "-1 Day"
+msgstr "-1 Dag"
+
+msgid "+1 Day"
+msgstr "+1 Dag"
+
+msgid "-1 Week"
+msgstr "-1 Week"
+
+msgid "+1 Week"
+msgstr "+1 Week"
+
+msgid "-1 Month"
+msgstr ""
+
+msgid "+1 Month"
+msgstr ""
+
+msgid "-1 Year"
+msgstr ""
+
+msgid "+1 Year"
+msgstr ""
+
+msgid "Nxt View"
+msgstr ""
+
+msgid "Prv View"
+msgstr ""
+
+msgid "Today"
+msgstr "Vandaag"
+
+msgid "Command"
+msgstr ""
+
+msgid "Right"
+msgstr "Rechts"
+
+msgid "Left"
+msgstr "Links"
+
+msgid "Down"
+msgstr "Omlaag"
+
+msgid "Up"
+msgstr "Omhoog"
+
+msgid "beg Week"
+msgstr "beg Week"
+
+msgid "end Week"
+msgstr "eind Week"
+
+msgid "Add Item"
+msgstr "Nieuw Itm"
+
+msgid "Del Item"
+msgstr "Wis Item"
+
+msgid "Edit Itm"
+msgstr "Wzg Itm"
+
+msgid "View"
+msgstr "Bekijken"
+
+msgid "Pipe"
+msgstr ""
+
+msgid "Flag Itm"
+msgstr "Vlag Itm"
+
+msgid "Repeat"
+msgstr "Herhalen"
+
+msgid "EditNote"
+msgstr "WzgNoot"
+
+msgid "ViewNote"
+msgstr "BekijkNoot"
+
+msgid "Prio.+"
+msgstr "Prio.+"
+
+msgid "Prio.-"
+msgstr "rio.-"
 
 msgid ""
 "#\n"
@@ -782,6 +876,28 @@ msgstr ""
 msgid "FATAL ERROR: key value out of bounds"
 msgstr ""
 
+msgid "General"
+msgstr "Algemeen"
+
+msgid "Layout"
+msgstr "Layout"
+
+msgid "Sidebar"
+msgstr "Zijbalk"
+
+msgid "Color"
+msgstr "Kleur"
+
+msgid "Notify"
+msgstr "Info"
+
+msgid "Keys"
+msgstr "Toetsen"
+
+#, fuzzy
+msgid "Unknown"
+msgstr "Onbekende kleur"
+
 msgid "Cancel the ongoing action."
 msgstr ""
 
@@ -799,6 +915,10 @@ msgstr "Verlaat het huidige menu, of verlaat Calcurse."
 
 msgid "Save calcurse data."
 msgstr ""
+
+#, fuzzy
+msgid "Reload appointments and todo items."
+msgstr "afspraak heeft geen begintijd."
 
 msgid "Copy the item that is currently selected."
 msgstr ""
@@ -956,9 +1076,6 @@ msgid "xrealloc: overflow"
 msgstr ""
 
 msgid "xrealloc: out of memory"
-msgstr ""
-
-msgid "xfree: null pointer"
 msgstr ""
 
 msgid "could not allocate memory to store block info"
@@ -1391,120 +1508,6 @@ msgstr "Afspraken"
 msgid "TODO"
 msgstr ""
 
-msgid "Quit"
-msgstr "Einde"
-
-msgid "Save"
-msgstr "Opslaan"
-
-msgid "Copy"
-msgstr ""
-
-msgid "Paste"
-msgstr "Plak"
-
-msgid "Chg Win"
-msgstr ""
-
-msgid "Import"
-msgstr "Import"
-
-msgid "Export"
-msgstr "Export"
-
-msgid "Go to"
-msgstr "Ga naar"
-
-msgid "Config"
-msgstr "Config"
-
-msgid "Redraw"
-msgstr "Ververs"
-
-msgid "Add Appt"
-msgstr "Nieuw Afspr"
-
-msgid "Add Todo"
-msgstr "Nieuw Taak"
-
-msgid "-1 Day"
-msgstr "-1 Dag"
-
-msgid "+1 Day"
-msgstr "+1 Dag"
-
-msgid "-1 Week"
-msgstr "-1 Week"
-
-msgid "+1 Week"
-msgstr "+1 Week"
-
-msgid "-1 Month"
-msgstr ""
-
-msgid "+1 Month"
-msgstr ""
-
-msgid "-1 Year"
-msgstr ""
-
-msgid "+1 Year"
-msgstr ""
-
-msgid "Today"
-msgstr "Vandaag"
-
-msgid "Nxt View"
-msgstr ""
-
-msgid "Prv View"
-msgstr ""
-
-msgid "Command"
-msgstr ""
-
-msgid "beg Week"
-msgstr "beg Week"
-
-msgid "end Week"
-msgstr "eind Week"
-
-msgid "Add Item"
-msgstr "Nieuw Itm"
-
-msgid "Del Item"
-msgstr "Wis Item"
-
-msgid "Edit Itm"
-msgstr "Wzg Itm"
-
-msgid "View"
-msgstr "Bekijken"
-
-msgid "Pipe"
-msgstr ""
-
-msgid "Flag Itm"
-msgstr "Vlag Itm"
-
-msgid "Repeat"
-msgstr "Herhalen"
-
-msgid "EditNote"
-msgstr "WzgNoot"
-
-msgid "ViewNote"
-msgstr "BekijkNoot"
-
-msgid "Prio.+"
-msgstr "Prio.+"
-
-msgid "Prio.-"
-msgstr "rio.-"
-
-msgid "OtherCmd"
-msgstr "AnderCmd"
-
 msgid "unknown panel"
 msgstr ""
 
@@ -1550,3 +1553,33 @@ msgstr ""
 
 msgid "Remove temporary backup..."
 msgstr ""
+
+#~ msgid "Exit"
+#~ msgstr "Einde"
+
+#~ msgid "Width +"
+#~ msgstr "Breedte +"
+
+#~ msgid "Width -"
+#~ msgstr "Breedte -"
+
+#~ msgid "No color"
+#~ msgstr "Geen kleur"
+
+#~ msgid "Key info"
+#~ msgstr "Toets informatie"
+
+#~ msgid "Add key"
+#~ msgstr "Voeg toets toe"
+
+#~ msgid "Del key"
+#~ msgstr "Verwijder toets"
+
+#~ msgid "Prev Key"
+#~ msgstr "Vorig toets"
+
+#~ msgid "Next Key"
+#~ msgstr "Volgend toets"
+
+#~ msgid "unknwon type"
+#~ msgstr "ongekend type"

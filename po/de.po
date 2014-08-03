@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2014-07-08 15:52+0200\n"
+"POT-Creation-Date: 2014-07-28 12:51+0200\n"
 "PO-Revision-Date: 2013-08-17 14:41+0000\n"
 "Last-Translator: Tim\n"
 "Language-Team: German (http://www.transifex.com/projects/p/calcurse/language/"
@@ -205,6 +205,28 @@ msgstr "Die Option -S braucht entweder -d, -r, -s, -a oder -t.\n"
 msgid "Option '-l' must be used with either '-d', '-r', '-s', '-a' or '-t'\n"
 msgstr "Die Option '-l' braucht entweder '-d', '-r', '-s', '-a' oder '-t'.\n"
 
+#, fuzzy
+msgid "The data files were reloaded successfully"
+msgstr "Die Benutzerdaten wurden erfolgreich gespeichert"
+
+msgid "Press [ENTER] to continue"
+msgstr "[EINGABE]-Taste um fortzufahren"
+
+msgid "There are unsaved modifications:"
+msgstr ""
+
+msgid "(d)iscard"
+msgstr ""
+
+msgid "(m)erge"
+msgstr ""
+
+msgid "(k)eep and cancel"
+msgstr ""
+
+msgid "[dmk]"
+msgstr ""
+
 msgid "Export to (i)cal or (p)cal format?"
 msgstr "In (i)cal- oder (p)cal-Format exportieren?"
 
@@ -250,56 +272,8 @@ msgstr "Konfigurationsvariable unbekannt: \"%s\""
 msgid "wrong configuration variable format for \"%s\""
 msgstr "falsches Konfigurationsvariablenformat für \"%s\""
 
-msgid "Exit"
-msgstr "Beenden"
-
-msgid "General"
-msgstr "Allgemein"
-
-msgid "Layout"
-msgstr "Layout"
-
-msgid "Sidebar"
-msgstr "Seitenleiste"
-
-msgid "Color"
-msgstr "Farbe"
-
-msgid "Notify"
-msgstr "Benachrichtigung"
-
-msgid "Keys"
-msgstr "Tasten"
-
-msgid "Select"
-msgstr "Auswahl"
-
-msgid "Up"
-msgstr "Hoch"
-
-msgid "Down"
-msgstr "Runter"
-
-msgid "Left"
-msgstr "Links"
-
-msgid "Right"
-msgstr "Rechts"
-
-msgid "Help"
-msgstr "Hilfe"
-
 msgid "layout configuration"
 msgstr "Layout Einstellungen"
-
-msgid "Width +"
-msgstr "Breite +"
-
-msgid "Width -"
-msgstr "Breite -"
-
-msgid "No color"
-msgstr "Keine Farbe"
 
 msgid "Foreground"
 msgstr "Vordergrund"
@@ -379,21 +353,6 @@ msgstr "Unbestimmte Einstellung!"
 msgid "undefined"
 msgstr "unbestimmt"
 
-msgid "Key info"
-msgstr "Tasten Informationen"
-
-msgid "Add key"
-msgstr "Neue Taste"
-
-msgid "Del key"
-msgstr "Lösche Taste"
-
-msgid "Prev Key"
-msgstr "Vorherige Taste"
-
-msgid "Next Key"
-msgstr "Nächste Taste"
-
 msgid "keys configuration"
 msgstr "Tasteneinstellung"
 
@@ -425,9 +384,6 @@ msgstr "Ereignis:"
 
 msgid "Appointment:"
 msgstr "Termin:"
-
-msgid "unknwon type"
-msgstr "Unbekannter Typ"
 
 #, c-format
 msgid "Could not stop daemon properly: %s\n"
@@ -618,9 +574,6 @@ msgstr "Probleme beim Zugriff auf Benutzerdaten ..."
 msgid "The data files were successfully saved"
 msgstr "Die Benutzerdaten wurden erfolgreich gespeichert"
 
-msgid "Press [ENTER] to continue"
-msgstr "[EINGABE]-Taste um fortzufahren"
-
 msgid "failed to open appointment file"
 msgstr "konnte Termin-Datei nicht öffnen"
 
@@ -701,8 +654,8 @@ msgstr "Falsches Exportformat"
 msgid "Enter the file name to import data from:"
 msgstr "Dateiname zum Importieren eingeben:"
 
-#, c-format
-msgid "Import process report: %04d lines read "
+#, fuzzy, c-format
+msgid "Import process report: %04d lines read"
 msgstr "Importstatus: %04d Zeilen eingelesen"
 
 msgid "unknown import type"
@@ -740,11 +693,11 @@ msgid "Some items could not be imported, see log file?"
 msgstr ""
 "Einige Einträge konnten nicht importiert werden; Logdatei jetzt ansehen?"
 
-msgid "Warning: could not create temporary log file, Aborting..."
-msgstr "WARNUNG Kann keine temporäre Logdatei anlegen. Abbruch..."
-
 msgid "Warning: could not open temporary log file, Aborting..."
 msgstr "WARNUNG Kann temporäre Logdatei nicht öffnen. Abbruch..."
+
+msgid "Warning: could not create temporary log file, Aborting..."
+msgstr "WARNUNG Kann keine temporäre Logdatei anlegen. Abbruch..."
 
 msgid "No log file to display!"
 msgstr "Keine Logdatei zum ansehen vorhanden!"
@@ -769,6 +722,147 @@ msgstr ""
 "Wenn das nicht der Fall ist, bitte die Sperrdatei löschen:\n"
 "\"%s\"\n"
 "und calcurse neu starten.\n"
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Select"
+msgstr "Auswahl"
+
+msgid "Credits"
+msgstr ""
+
+msgid "Help"
+msgstr "Hilfe"
+
+msgid "Quit"
+msgstr "Beenden"
+
+msgid "Save"
+msgstr "Speichern"
+
+msgid "Reload"
+msgstr ""
+
+msgid "Copy"
+msgstr "Kopieren"
+
+msgid "Paste"
+msgstr "Einfügen"
+
+msgid "Chg Win"
+msgstr "Wechseln"
+
+msgid "Import"
+msgstr "Importieren"
+
+msgid "Export"
+msgstr "Exportieren"
+
+msgid "Go to"
+msgstr "Gehe zu"
+
+msgid "OtherCmd"
+msgstr "Zus. Befehle"
+
+msgid "Config"
+msgstr "Einstellung"
+
+msgid "Redraw"
+msgstr "Neu aufbauen"
+
+msgid "Add Appt"
+msgstr "Neuer Termin"
+
+msgid "Add Todo"
+msgstr "Neue Aufgabe"
+
+msgid "-1 Day"
+msgstr "-1 Tag"
+
+msgid "+1 Day"
+msgstr "+1 Tag"
+
+msgid "-1 Week"
+msgstr "-1 Woche"
+
+msgid "+1 Week"
+msgstr "+1 Woche"
+
+msgid "-1 Month"
+msgstr "-1 Monat"
+
+msgid "+1 Month"
+msgstr "+1 Monat"
+
+msgid "-1 Year"
+msgstr "-1 Jahr"
+
+msgid "+1 Year"
+msgstr "+1 Jahr"
+
+msgid "Nxt View"
+msgstr "Weiter"
+
+msgid "Prv View"
+msgstr "Zurück"
+
+msgid "Today"
+msgstr "Heute"
+
+msgid "Command"
+msgstr "Befehl"
+
+msgid "Right"
+msgstr "Rechts"
+
+msgid "Left"
+msgstr "Links"
+
+msgid "Down"
+msgstr "Runter"
+
+msgid "Up"
+msgstr "Hoch"
+
+msgid "beg Week"
+msgstr "Wochenanfang"
+
+msgid "end Week"
+msgstr "Wochenende"
+
+msgid "Add Item"
+msgstr "Neueintrag"
+
+msgid "Del Item"
+msgstr "Löschen"
+
+msgid "Edit Itm"
+msgstr "Eintrag bearb."
+
+msgid "View"
+msgstr "Ansicht"
+
+msgid "Pipe"
+msgstr "Weiterleiten"
+
+msgid "Flag Itm"
+msgstr "Eigenschaft"
+
+msgid "Repeat"
+msgstr "Wiederholen"
+
+msgid "EditNote"
+msgstr "Notiz bearb."
+
+msgid "ViewNote"
+msgstr "Notiz anz."
+
+msgid "Prio.+"
+msgstr "Prio.+"
+
+msgid "Prio.-"
+msgstr "Prio.-"
 
 msgid ""
 "#\n"
@@ -823,6 +917,28 @@ msgstr ""
 msgid "FATAL ERROR: key value out of bounds"
 msgstr "SCHWERER FEHLER: Tastenwert außerhalb des gültigen Bereiches"
 
+msgid "General"
+msgstr "Allgemein"
+
+msgid "Layout"
+msgstr "Layout"
+
+msgid "Sidebar"
+msgstr "Seitenleiste"
+
+msgid "Color"
+msgstr "Farbe"
+
+msgid "Notify"
+msgstr "Benachrichtigung"
+
+msgid "Keys"
+msgstr "Tasten"
+
+#, fuzzy
+msgid "Unknown"
+msgstr "Unbekannte Farbe"
+
 msgid "Cancel the ongoing action."
 msgstr "Aktuelle Aktion abbrechen."
 
@@ -841,6 +957,10 @@ msgstr "Verlasse aktuelles Menü oder beende calcurse."
 
 msgid "Save calcurse data."
 msgstr "Speichere calcurse-Daten."
+
+#, fuzzy
+msgid "Reload appointments and todo items."
+msgstr "Termin hat keine Startzeit."
 
 msgid "Copy the item that is currently selected."
 msgstr "Das aktuell ausgewählte Item kopieren."
@@ -1010,9 +1130,6 @@ msgstr "xrealloc: Überlauf"
 
 msgid "xrealloc: out of memory"
 msgstr "xrealloc: Speicher ist voll"
-
-msgid "xfree: null pointer"
-msgstr "xfree: Null-Zeiger"
 
 msgid "could not allocate memory to store block info"
 msgstr "konnte kein Speicher für die Block-Info alloziieren"
@@ -1452,120 +1569,6 @@ msgstr "Termine"
 msgid "TODO"
 msgstr "Zu erledigen"
 
-msgid "Quit"
-msgstr "Beenden"
-
-msgid "Save"
-msgstr "Speichern"
-
-msgid "Copy"
-msgstr "Kopieren"
-
-msgid "Paste"
-msgstr "Einfügen"
-
-msgid "Chg Win"
-msgstr "Wechseln"
-
-msgid "Import"
-msgstr "Importieren"
-
-msgid "Export"
-msgstr "Exportieren"
-
-msgid "Go to"
-msgstr "Gehe zu"
-
-msgid "Config"
-msgstr "Einstellung"
-
-msgid "Redraw"
-msgstr "Neu aufbauen"
-
-msgid "Add Appt"
-msgstr "Neuer Termin"
-
-msgid "Add Todo"
-msgstr "Neue Aufgabe"
-
-msgid "-1 Day"
-msgstr "-1 Tag"
-
-msgid "+1 Day"
-msgstr "+1 Tag"
-
-msgid "-1 Week"
-msgstr "-1 Woche"
-
-msgid "+1 Week"
-msgstr "+1 Woche"
-
-msgid "-1 Month"
-msgstr "-1 Monat"
-
-msgid "+1 Month"
-msgstr "+1 Monat"
-
-msgid "-1 Year"
-msgstr "-1 Jahr"
-
-msgid "+1 Year"
-msgstr "+1 Jahr"
-
-msgid "Today"
-msgstr "Heute"
-
-msgid "Nxt View"
-msgstr "Weiter"
-
-msgid "Prv View"
-msgstr "Zurück"
-
-msgid "Command"
-msgstr "Befehl"
-
-msgid "beg Week"
-msgstr "Wochenanfang"
-
-msgid "end Week"
-msgstr "Wochenende"
-
-msgid "Add Item"
-msgstr "Neueintrag"
-
-msgid "Del Item"
-msgstr "Löschen"
-
-msgid "Edit Itm"
-msgstr "Eintrag bearb."
-
-msgid "View"
-msgstr "Ansicht"
-
-msgid "Pipe"
-msgstr "Weiterleiten"
-
-msgid "Flag Itm"
-msgstr "Eigenschaft"
-
-msgid "Repeat"
-msgstr "Wiederholen"
-
-msgid "EditNote"
-msgstr "Notiz bearb."
-
-msgid "ViewNote"
-msgstr "Notiz anz."
-
-msgid "Prio.+"
-msgstr "Prio.+"
-
-msgid "Prio.-"
-msgstr "Prio.-"
-
-msgid "OtherCmd"
-msgstr "Zus. Befehle"
-
 msgid "unknown panel"
 msgstr "unbekannte Ansicht"
 
@@ -1619,6 +1622,39 @@ msgstr "Aktualisiere Konfigurationsanweisungen..."
 
 msgid "Remove temporary backup..."
 msgstr "Entferne temporäres Backup..."
+
+#~ msgid "Exit"
+#~ msgstr "Beenden"
+
+#~ msgid "Width +"
+#~ msgstr "Breite +"
+
+#~ msgid "Width -"
+#~ msgstr "Breite -"
+
+#~ msgid "No color"
+#~ msgstr "Keine Farbe"
+
+#~ msgid "Key info"
+#~ msgstr "Tasten Informationen"
+
+#~ msgid "Add key"
+#~ msgstr "Neue Taste"
+
+#~ msgid "Del key"
+#~ msgstr "Lösche Taste"
+
+#~ msgid "Prev Key"
+#~ msgstr "Vorherige Taste"
+
+#~ msgid "Next Key"
+#~ msgstr "Nächste Taste"
+
+#~ msgid "unknwon type"
+#~ msgstr "Unbekannter Typ"
+
+#~ msgid "xfree: null pointer"
+#~ msgstr "xfree: Null-Zeiger"
 
 #~ msgid "no such type"
 #~ msgstr "Typ nicht gefunden"

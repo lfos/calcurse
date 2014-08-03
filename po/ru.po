@@ -4,14 +4,14 @@
 #
 # Translators:
 # Aleksey Mekhonoshin <linux.kernel.it@gmail.com>, 2011-2012
-# Aleksey Mekhonoshin <linux.kernel.it@gmail.com>, 2012-2013
+# Aleksey Mekhonoshin <linux.kernel.it@gmail.com>, 2012-2014
 # Lukas Fleischer <transifex@cryptocrack.de>, 2011
 msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2014-07-08 15:52+0200\n"
-"PO-Revision-Date: 2013-08-04 11:50+0000\n"
+"POT-Creation-Date: 2014-07-28 12:51+0200\n"
+"PO-Revision-Date: 2014-07-28 18:32+0000\n"
 "Last-Translator: Aleksey Mekhonoshin <linux.kernel.it@gmail.com>\n"
 "Language-Team: Russian (http://www.transifex.com/projects/p/calcurse/"
 "language/ru/)\n"
@@ -274,6 +274,27 @@ msgstr ""
 msgid "Option '-l' must be used with either '-d', '-r', '-s', '-a' or '-t'\n"
 msgstr "Ключ '-l' должен использоваться с '-d','-r', '-s', '-a' or '-t'\n"
 
+msgid "The data files were reloaded successfully"
+msgstr "Файлы данных полностью обновлены"
+
+msgid "Press [ENTER] to continue"
+msgstr "Нажмите [ENTER]"
+
+msgid "There are unsaved modifications:"
+msgstr "Не сохранённые изменения:"
+
+msgid "(d)iscard"
+msgstr "(d)отменить"
+
+msgid "(m)erge"
+msgstr "(m)слияние"
+
+msgid "(k)eep and cancel"
+msgstr ""
+
+msgid "[dmk]"
+msgstr "[dmk]"
+
 msgid "Export to (i)cal or (p)cal format?"
 msgstr "Формат экспорта (i)cal или (p)cal?"
 
@@ -319,56 +340,8 @@ msgstr "неизвестная настройка переменной: \"%s\""
 msgid "wrong configuration variable format for \"%s\""
 msgstr "неверный формат переменной конфигурации для \"%s\""
 
-msgid "Exit"
-msgstr "Выход"
-
-msgid "General"
-msgstr "Основные"
-
-msgid "Layout"
-msgstr "Располож."
-
-msgid "Sidebar"
-msgstr "Обрамление"
-
-msgid "Color"
-msgstr "Цвета"
-
-msgid "Notify"
-msgstr "Уведомление"
-
-msgid "Keys"
-msgstr "Клавиши"
-
-msgid "Select"
-msgstr "Выбрать"
-
-msgid "Up"
-msgstr "Вверх"
-
-msgid "Down"
-msgstr "Вниз"
-
-msgid "Left"
-msgstr "Влево"
-
-msgid "Right"
-msgstr "Вправо"
-
-msgid "Help"
-msgstr "Справка"
-
 msgid "layout configuration"
 msgstr "Настройки расположения"
-
-msgid "Width +"
-msgstr "Ширина +"
-
-msgid "Width -"
-msgstr "Ширина -"
-
-msgid "No color"
-msgstr "Цвет отсутствует"
 
 msgid "Foreground"
 msgstr "Передний фон"
@@ -442,21 +415,6 @@ msgstr "Неопределённая настройка!"
 msgid "undefined"
 msgstr "неопределено"
 
-msgid "Key info"
-msgstr "Инфо клавиши"
-
-msgid "Add key"
-msgstr "Добавить клавишу"
-
-msgid "Del key"
-msgstr "Удалить клавишу"
-
-msgid "Prev Key"
-msgstr "Пред. клавиша"
-
-msgid "Next Key"
-msgstr "След. клавиша"
-
 msgid "keys configuration"
 msgstr "Настройка клавиш"
 
@@ -486,9 +444,6 @@ msgstr "Событие:"
 
 msgid "Appointment:"
 msgstr "Задача:"
-
-msgid "unknwon type"
-msgstr "неизвестный тип"
 
 #, c-format
 msgid "Could not stop daemon properly: %s\n"
@@ -680,9 +635,6 @@ msgstr "Проблемы с доступом к файлу данных..."
 msgid "The data files were successfully saved"
 msgstr "Файл данных успешно сохранён"
 
-msgid "Press [ENTER] to continue"
-msgstr "Нажмите [ENTER]"
-
 msgid "failed to open appointment file"
 msgstr "ошибка открытия файла задач"
 
@@ -764,8 +716,8 @@ msgid "Enter the file name to import data from:"
 msgstr "Имя файла для импорта: "
 
 #, c-format
-msgid "Import process report: %04d lines read "
-msgstr "Отчёт импорта: прочитано %04d строк"
+msgid "Import process report: %04d lines read"
+msgstr "Отчёт процесса импорта:%04d lines read"
 
 msgid "unknown import type"
 msgstr "неизвестный тип импорта"
@@ -804,11 +756,11 @@ msgstr "%d пропущен"
 msgid "Some items could not be imported, see log file?"
 msgstr "Некоторые записи не были импортированы. Открыть log-файл?"
 
-msgid "Warning: could not create temporary log file, Aborting..."
-msgstr "Внимание: невозможно создать временный log-файл. Завершение..."
-
 msgid "Warning: could not open temporary log file, Aborting..."
 msgstr "Внимание: невозможно открыть временный log-файл. Завершение..."
+
+msgid "Warning: could not create temporary log file, Aborting..."
+msgstr "Внимание: невозможно создать временный log-файл. Завершение..."
 
 msgid "No log file to display!"
 msgstr "Нет log-файла для отображения!"
@@ -833,6 +785,147 @@ msgstr ""
 "Если это не так, удалите заблокированный файл: \n"
 "\"%s\"\n"
 "и перезапустите calcurse.\n"
+
+msgid "Cancel"
+msgstr "Отменить"
+
+msgid "Select"
+msgstr "Выбрать"
+
+msgid "Credits"
+msgstr "Авторы"
+
+msgid "Help"
+msgstr "Справка"
+
+msgid "Quit"
+msgstr "Выход"
+
+msgid "Save"
+msgstr "Сохр."
+
+msgid "Reload"
+msgstr "Обновить"
+
+msgid "Copy"
+msgstr "Копир."
+
+msgid "Paste"
+msgstr "Вставить"
+
+msgid "Chg Win"
+msgstr "Панель"
+
+msgid "Import"
+msgstr "Импорт"
+
+msgid "Export"
+msgstr "Экспорт"
+
+msgid "Go to"
+msgstr "Переход"
+
+msgid "OtherCmd"
+msgstr "..."
+
+msgid "Config"
+msgstr "Настройки"
+
+msgid "Redraw"
+msgstr "Обновить"
+
+msgid "Add Appt"
+msgstr "Доб.Задачу"
+
+msgid "Add Todo"
+msgstr "Доб.Дело"
+
+msgid "-1 Day"
+msgstr "День -"
+
+msgid "+1 Day"
+msgstr "День +"
+
+msgid "-1 Week"
+msgstr "Неделя -"
+
+msgid "+1 Week"
+msgstr "Неделя +"
+
+msgid "-1 Month"
+msgstr "Месяц -"
+
+msgid "+1 Month"
+msgstr "Месяц +"
+
+msgid "-1 Year"
+msgstr "Год -"
+
+msgid "+1 Year"
+msgstr "Год +"
+
+msgid "Nxt View"
+msgstr "След."
+
+msgid "Prv View"
+msgstr "Пред."
+
+msgid "Today"
+msgstr "Сегодня"
+
+msgid "Command"
+msgstr "Команда:"
+
+msgid "Right"
+msgstr "Вправо"
+
+msgid "Left"
+msgstr "Влево"
+
+msgid "Down"
+msgstr "Вниз"
+
+msgid "Up"
+msgstr "Вверх"
+
+msgid "beg Week"
+msgstr "Нач.недели"
+
+msgid "end Week"
+msgstr "Кон.недели"
+
+msgid "Add Item"
+msgstr "Доб.Запись"
+
+msgid "Del Item"
+msgstr "Уд.Запись"
+
+msgid "Edit Itm"
+msgstr "Изм.Запись"
+
+msgid "View"
+msgstr "Смотреть"
+
+msgid "Pipe"
+msgstr "Программный канал (pipe)"
+
+msgid "Flag Itm"
+msgstr "Флаг"
+
+msgid "Repeat"
+msgstr "Повтор"
+
+msgid "EditNote"
+msgstr "Изм.Заметку"
+
+msgid "ViewNote"
+msgstr "См.Заметку"
+
+msgid "Prio.+"
+msgstr "Приор. +"
+
+msgid "Prio.-"
+msgstr "Приор. -"
 
 msgid ""
 "#\n"
@@ -889,6 +982,27 @@ msgstr "FATAL ERROR: could not create default keys file."
 msgid "FATAL ERROR: key value out of bounds"
 msgstr "FATAL ERROR: key value out of bounds"
 
+msgid "General"
+msgstr "Основные"
+
+msgid "Layout"
+msgstr "Располож."
+
+msgid "Sidebar"
+msgstr "Обрамление"
+
+msgid "Color"
+msgstr "Цвета"
+
+msgid "Notify"
+msgstr "Уведомление"
+
+msgid "Keys"
+msgstr "Клавиши"
+
+msgid "Unknown"
+msgstr "Незвестный(ая)"
+
 msgid "Cancel the ongoing action."
 msgstr "Отмена постоянного действия."
 
@@ -906,6 +1020,9 @@ msgstr "Выйти из текущего меню или из calcurse"
 
 msgid "Save calcurse data."
 msgstr "Сохр. данные calcurse"
+
+msgid "Reload appointments and todo items."
+msgstr "Обновить задачу и список дел."
 
 msgid "Copy the item that is currently selected."
 msgstr "Копировать выделенную запись (пункт?)"
@@ -1064,9 +1181,6 @@ msgstr "xrealloc: overflow"
 
 msgid "xrealloc: out of memory"
 msgstr "xrealloc: out of memory"
-
-msgid "xfree: null pointer"
-msgstr "xfree: null pointer"
 
 msgid "could not allocate memory to store block info"
 msgstr "could not allocate memory to store block info"
@@ -1500,120 +1614,6 @@ msgstr "Задачи"
 msgid "TODO"
 msgstr "Дело"
 
-msgid "Quit"
-msgstr "Выход"
-
-msgid "Save"
-msgstr "Сохр."
-
-msgid "Copy"
-msgstr "Копир."
-
-msgid "Paste"
-msgstr "Вставить"
-
-msgid "Chg Win"
-msgstr "Панель"
-
-msgid "Import"
-msgstr "Импорт"
-
-msgid "Export"
-msgstr "Экспорт"
-
-msgid "Go to"
-msgstr "Переход"
-
-msgid "Config"
-msgstr "Настройки"
-
-msgid "Redraw"
-msgstr "Обновить"
-
-msgid "Add Appt"
-msgstr "Доб.Задачу"
-
-msgid "Add Todo"
-msgstr "Доб.Дело"
-
-msgid "-1 Day"
-msgstr "День -"
-
-msgid "+1 Day"
-msgstr "День +"
-
-msgid "-1 Week"
-msgstr "Неделя -"
-
-msgid "+1 Week"
-msgstr "Неделя +"
-
-msgid "-1 Month"
-msgstr "Месяц -"
-
-msgid "+1 Month"
-msgstr "Месяц +"
-
-msgid "-1 Year"
-msgstr "Год -"
-
-msgid "+1 Year"
-msgstr "Год +"
-
-msgid "Today"
-msgstr "Сегодня"
-
-msgid "Nxt View"
-msgstr "След."
-
-msgid "Prv View"
-msgstr "Пред."
-
-msgid "Command"
-msgstr "Команда:"
-
-msgid "beg Week"
-msgstr "Нач.недели"
-
-msgid "end Week"
-msgstr "Кон.недели"
-
-msgid "Add Item"
-msgstr "Доб.Запись"
-
-msgid "Del Item"
-msgstr "Уд.Запись"
-
-msgid "Edit Itm"
-msgstr "Изм.Запись"
-
-msgid "View"
-msgstr "Смотреть"
-
-msgid "Pipe"
-msgstr "Программный канал (pipe)"
-
-msgid "Flag Itm"
-msgstr "Флаг"
-
-msgid "Repeat"
-msgstr "Повтор"
-
-msgid "EditNote"
-msgstr "Изм.Заметку"
-
-msgid "ViewNote"
-msgstr "См.Заметку"
-
-msgid "Prio.+"
-msgstr "Приор. +"
-
-msgid "Prio.-"
-msgstr "Приор. -"
-
-msgid "OtherCmd"
-msgstr "..."
-
 msgid "unknown panel"
 msgstr "неизвестная панель"
 
@@ -1665,6 +1665,3 @@ msgstr "Обновление конфигурации..."
 
 msgid "Remove temporary backup..."
 msgstr "Удалить временный архивный файл..."
-
-#~ msgid "no such type"
-#~ msgstr "отсутствие типа"

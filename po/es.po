@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2014-07-08 15:52+0200\n"
+"POT-Creation-Date: 2014-07-28 12:51+0200\n"
 "PO-Revision-Date: 2013-07-23 08:52+0000\n"
 "Last-Translator: Lukas Fleischer <transifex@cryptocrack.de>\n"
 "Language-Team: Spanish (http://www.transifex.com/projects/p/calcurse/"
@@ -195,6 +195,28 @@ msgstr ""
 msgid "Option '-l' must be used with either '-d', '-r', '-s', '-a' or '-t'\n"
 msgstr ""
 
+#, fuzzy
+msgid "The data files were reloaded successfully"
+msgstr "Los archivos de datos se han salvado con exito"
+
+msgid "Press [ENTER] to continue"
+msgstr "Pulsa [INTRO] para continuar"
+
+msgid "There are unsaved modifications:"
+msgstr ""
+
+msgid "(d)iscard"
+msgstr ""
+
+msgid "(m)erge"
+msgstr ""
+
+msgid "(k)eep and cancel"
+msgstr ""
+
+msgid "[dmk]"
+msgstr ""
+
 msgid "Export to (i)cal or (p)cal format?"
 msgstr ""
 
@@ -238,55 +260,7 @@ msgstr ""
 msgid "wrong configuration variable format for \"%s\""
 msgstr ""
 
-msgid "Exit"
-msgstr "Salir"
-
-msgid "General"
-msgstr "General"
-
-msgid "Layout"
-msgstr "Disposicion"
-
-msgid "Sidebar"
-msgstr ""
-
-msgid "Color"
-msgstr "Color"
-
-msgid "Notify"
-msgstr "Notificaciones"
-
-msgid "Keys"
-msgstr ""
-
-msgid "Select"
-msgstr ""
-
-msgid "Up"
-msgstr ""
-
-msgid "Down"
-msgstr ""
-
-msgid "Left"
-msgstr ""
-
-msgid "Right"
-msgstr ""
-
-msgid "Help"
-msgstr "Ayuda"
-
 msgid "layout configuration"
-msgstr ""
-
-msgid "Width +"
-msgstr ""
-
-msgid "Width -"
-msgstr ""
-
-msgid "No color"
 msgstr ""
 
 msgid "Foreground"
@@ -363,21 +337,6 @@ msgstr ""
 msgid "undefined"
 msgstr ""
 
-msgid "Key info"
-msgstr ""
-
-msgid "Add key"
-msgstr ""
-
-msgid "Del key"
-msgstr ""
-
-msgid "Prev Key"
-msgstr ""
-
-msgid "Next Key"
-msgstr ""
-
 msgid "keys configuration"
 msgstr ""
 
@@ -408,9 +367,6 @@ msgid "Event:"
 msgstr ""
 
 msgid "Appointment:"
-msgstr ""
-
-msgid "unknwon type"
 msgstr ""
 
 #, c-format
@@ -600,9 +556,6 @@ msgstr "Problemas al acceder al fichero de datos..."
 msgid "The data files were successfully saved"
 msgstr "Los archivos de datos se han salvado con exito"
 
-msgid "Press [ENTER] to continue"
-msgstr "Pulsa [INTRO] para continuar"
-
 msgid "failed to open appointment file"
 msgstr ""
 
@@ -680,7 +633,7 @@ msgid "Enter the file name to import data from:"
 msgstr ""
 
 #, c-format
-msgid "Import process report: %04d lines read "
+msgid "Import process report: %04d lines read"
 msgstr ""
 
 msgid "unknown import type"
@@ -717,10 +670,10 @@ msgstr ""
 msgid "Some items could not be imported, see log file?"
 msgstr ""
 
-msgid "Warning: could not create temporary log file, Aborting..."
+msgid "Warning: could not open temporary log file, Aborting..."
 msgstr ""
 
-msgid "Warning: could not open temporary log file, Aborting..."
+msgid "Warning: could not create temporary log file, Aborting..."
 msgstr ""
 
 msgid "No log file to display!"
@@ -740,6 +693,147 @@ msgid ""
 "If this is not the case, please remove the following lock file: \n"
 "\"%s\"\n"
 "and restart calcurse.\n"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Select"
+msgstr ""
+
+msgid "Credits"
+msgstr ""
+
+msgid "Help"
+msgstr "Ayuda"
+
+msgid "Quit"
+msgstr "Salir"
+
+msgid "Save"
+msgstr "Guardar"
+
+msgid "Reload"
+msgstr ""
+
+msgid "Copy"
+msgstr ""
+
+msgid "Paste"
+msgstr ""
+
+msgid "Chg Win"
+msgstr ""
+
+msgid "Import"
+msgstr ""
+
+msgid "Export"
+msgstr "Exportar"
+
+msgid "Go to"
+msgstr "Ir a"
+
+msgid "OtherCmd"
+msgstr "Otros comandos"
+
+msgid "Config"
+msgstr "Config"
+
+msgid "Redraw"
+msgstr "Redibujar"
+
+msgid "Add Appt"
+msgstr "Añadir Cita"
+
+msgid "Add Todo"
+msgstr "Añadir tarea"
+
+msgid "-1 Day"
+msgstr ""
+
+msgid "+1 Day"
+msgstr ""
+
+msgid "-1 Week"
+msgstr ""
+
+msgid "+1 Week"
+msgstr ""
+
+msgid "-1 Month"
+msgstr ""
+
+msgid "+1 Month"
+msgstr ""
+
+msgid "-1 Year"
+msgstr ""
+
+msgid "+1 Year"
+msgstr ""
+
+msgid "Nxt View"
+msgstr ""
+
+msgid "Prv View"
+msgstr ""
+
+msgid "Today"
+msgstr ""
+
+msgid "Command"
+msgstr ""
+
+msgid "Right"
+msgstr ""
+
+msgid "Left"
+msgstr ""
+
+msgid "Down"
+msgstr ""
+
+msgid "Up"
+msgstr ""
+
+msgid "beg Week"
+msgstr ""
+
+msgid "end Week"
+msgstr ""
+
+msgid "Add Item"
+msgstr "Añadir elemento"
+
+msgid "Del Item"
+msgstr "Borrar elemento"
+
+msgid "Edit Itm"
+msgstr "Editar elemento"
+
+msgid "View"
+msgstr "Vista"
+
+msgid "Pipe"
+msgstr ""
+
+msgid "Flag Itm"
+msgstr "Marcar elemento"
+
+msgid "Repeat"
+msgstr "Repetir"
+
+msgid "EditNote"
+msgstr ""
+
+msgid "ViewNote"
+msgstr ""
+
+msgid "Prio.+"
+msgstr ""
+
+msgid "Prio.-"
 msgstr ""
 
 msgid ""
@@ -773,6 +867,27 @@ msgstr ""
 msgid "FATAL ERROR: key value out of bounds"
 msgstr ""
 
+msgid "General"
+msgstr "General"
+
+msgid "Layout"
+msgstr "Disposicion"
+
+msgid "Sidebar"
+msgstr ""
+
+msgid "Color"
+msgstr "Color"
+
+msgid "Notify"
+msgstr "Notificaciones"
+
+msgid "Keys"
+msgstr ""
+
+msgid "Unknown"
+msgstr ""
+
 msgid "Cancel the ongoing action."
 msgstr ""
 
@@ -789,6 +904,9 @@ msgid "Exit from the current menu, or quit calcurse."
 msgstr ""
 
 msgid "Save calcurse data."
+msgstr ""
+
+msgid "Reload appointments and todo items."
 msgstr ""
 
 msgid "Copy the item that is currently selected."
@@ -945,9 +1063,6 @@ msgid "xrealloc: overflow"
 msgstr ""
 
 msgid "xrealloc: out of memory"
-msgstr ""
-
-msgid "xfree: null pointer"
 msgstr ""
 
 msgid "could not allocate memory to store block info"
@@ -1380,120 +1495,6 @@ msgstr "Citas y eventos"
 msgid "TODO"
 msgstr ""
 
-msgid "Quit"
-msgstr "Salir"
-
-msgid "Save"
-msgstr "Guardar"
-
-msgid "Copy"
-msgstr ""
-
-msgid "Paste"
-msgstr ""
-
-msgid "Chg Win"
-msgstr ""
-
-msgid "Import"
-msgstr ""
-
-msgid "Export"
-msgstr "Exportar"
-
-msgid "Go to"
-msgstr "Ir a"
-
-msgid "Config"
-msgstr "Config"
-
-msgid "Redraw"
-msgstr "Redibujar"
-
-msgid "Add Appt"
-msgstr "Añadir Cita"
-
-msgid "Add Todo"
-msgstr "Añadir tarea"
-
-msgid "-1 Day"
-msgstr ""
-
-msgid "+1 Day"
-msgstr ""
-
-msgid "-1 Week"
-msgstr ""
-
-msgid "+1 Week"
-msgstr ""
-
-msgid "-1 Month"
-msgstr ""
-
-msgid "+1 Month"
-msgstr ""
-
-msgid "-1 Year"
-msgstr ""
-
-msgid "+1 Year"
-msgstr ""
-
-msgid "Today"
-msgstr ""
-
-msgid "Nxt View"
-msgstr ""
-
-msgid "Prv View"
-msgstr ""
-
-msgid "Command"
-msgstr ""
-
-msgid "beg Week"
-msgstr ""
-
-msgid "end Week"
-msgstr ""
-
-msgid "Add Item"
-msgstr "Añadir elemento"
-
-msgid "Del Item"
-msgstr "Borrar elemento"
-
-msgid "Edit Itm"
-msgstr "Editar elemento"
-
-msgid "View"
-msgstr "Vista"
-
-msgid "Pipe"
-msgstr ""
-
-msgid "Flag Itm"
-msgstr "Marcar elemento"
-
-msgid "Repeat"
-msgstr "Repetir"
-
-msgid "EditNote"
-msgstr ""
-
-msgid "ViewNote"
-msgstr ""
-
-msgid "Prio.+"
-msgstr ""
-
-msgid "Prio.-"
-msgstr ""
-
-msgid "OtherCmd"
-msgstr "Otros comandos"
-
 msgid "unknown panel"
 msgstr ""
 
@@ -1539,3 +1540,6 @@ msgstr ""
 
 msgid "Remove temporary backup..."
 msgstr ""
+
+#~ msgid "Exit"
+#~ msgstr "Salir"

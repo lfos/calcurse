@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse 1.4\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2014-07-08 15:52+0200\n"
+"POT-Creation-Date: 2014-07-28 12:51+0200\n"
 "PO-Revision-Date: 2006-07-03 00:05+0100\n"
 "Last-Translator: Neil Williams <linux@codehelp.co.uk>\n"
 "Language-Team: English/GB <en_GB@li.org>\n"
@@ -221,6 +221,28 @@ msgstr ""
 msgid "Option '-l' must be used with either '-d', '-r', '-s', '-a' or '-t'\n"
 msgstr ""
 
+#, fuzzy
+msgid "The data files were reloaded successfully"
+msgstr "The data files were successfully saved"
+
+msgid "Press [ENTER] to continue"
+msgstr "Press [ENTER] to continue"
+
+msgid "There are unsaved modifications:"
+msgstr ""
+
+msgid "(d)iscard"
+msgstr ""
+
+msgid "(m)erge"
+msgstr ""
+
+msgid "(k)eep and cancel"
+msgstr ""
+
+msgid "[dmk]"
+msgstr ""
+
 msgid "Export to (i)cal or (p)cal format?"
 msgstr ""
 
@@ -267,59 +289,9 @@ msgstr "FATAL ERROR in fill_config_var: wrong configuration variable format.\n"
 msgid "wrong configuration variable format for \"%s\""
 msgstr "FATAL ERROR in fill_config_var: wrong configuration variable format.\n"
 
-msgid "Exit"
-msgstr "Exit"
-
-msgid "General"
-msgstr "General"
-
-msgid "Layout"
-msgstr "Layout"
-
-msgid "Sidebar"
-msgstr ""
-
-msgid "Color"
-msgstr "Colour"
-
-msgid "Notify"
-msgstr ""
-
-msgid "Keys"
-msgstr ""
-
-msgid "Select"
-msgstr ""
-
-msgid "Up"
-msgstr ""
-
-#, fuzzy
-msgid "Down"
-msgstr "Up/Down"
-
-msgid "Left"
-msgstr ""
-
-msgid "Right"
-msgstr ""
-
-msgid "Help"
-msgstr "Help"
-
 #, fuzzy
 msgid "layout configuration"
 msgstr "CalCurse %s | general options"
-
-msgid "Width +"
-msgstr ""
-
-msgid "Width -"
-msgstr ""
-
-#, fuzzy
-msgid "No color"
-msgstr "Colour"
 
 msgid "Foreground"
 msgstr ""
@@ -400,23 +372,6 @@ msgstr ""
 msgid "undefined"
 msgstr ""
 
-msgid "Key info"
-msgstr ""
-
-#, fuzzy
-msgid "Add key"
-msgstr "Add Item"
-
-#, fuzzy
-msgid "Del key"
-msgstr "Del Item"
-
-msgid "Prev Key"
-msgstr ""
-
-msgid "Next Key"
-msgstr ""
-
 #, fuzzy
 msgid "keys configuration"
 msgstr "CalCurse %s | general options"
@@ -451,10 +406,6 @@ msgstr "Event :"
 #, fuzzy
 msgid "Appointment:"
 msgstr "Appointment :"
-
-#, fuzzy
-msgid "unknwon type"
-msgstr "FATAL ERROR in todo_delete_bynum: no such todo\n"
 
 #, fuzzy, c-format
 msgid "Could not stop daemon properly: %s\n"
@@ -652,9 +603,6 @@ msgstr "Problems accessing data file ..."
 msgid "The data files were successfully saved"
 msgstr "The data files were successfully saved"
 
-msgid "Press [ENTER] to continue"
-msgstr "Press [ENTER] to continue"
-
 #, fuzzy
 msgid "failed to open appointment file"
 msgstr "Failed to open config file"
@@ -742,7 +690,7 @@ msgid "Enter the file name to import data from:"
 msgstr ""
 
 #, c-format
-msgid "Import process report: %04d lines read "
+msgid "Import process report: %04d lines read"
 msgstr ""
 
 msgid "unknown import type"
@@ -780,10 +728,10 @@ msgstr ""
 msgid "Some items could not be imported, see log file?"
 msgstr ""
 
-msgid "Warning: could not create temporary log file, Aborting..."
+msgid "Warning: could not open temporary log file, Aborting..."
 msgstr ""
 
-msgid "Warning: could not open temporary log file, Aborting..."
+msgid "Warning: could not create temporary log file, Aborting..."
 msgstr ""
 
 msgid "No log file to display!"
@@ -803,6 +751,163 @@ msgid ""
 "If this is not the case, please remove the following lock file: \n"
 "\"%s\"\n"
 "and restart calcurse.\n"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Select"
+msgstr ""
+
+msgid "Credits"
+msgstr ""
+
+msgid "Help"
+msgstr "Help"
+
+msgid "Quit"
+msgstr "Quit"
+
+msgid "Save"
+msgstr "Save"
+
+msgid "Reload"
+msgstr ""
+
+msgid "Copy"
+msgstr ""
+
+msgid "Paste"
+msgstr ""
+
+#, fuzzy
+msgid "Chg Win"
+msgstr "Chg View"
+
+msgid "Import"
+msgstr ""
+
+msgid "Export"
+msgstr ""
+
+#, fuzzy
+msgid "Go to"
+msgstr "Goto:\n"
+
+msgid "OtherCmd"
+msgstr ""
+
+msgid "Config"
+msgstr "Config"
+
+msgid "Redraw"
+msgstr "Redraw"
+
+#, fuzzy
+msgid "Add Appt"
+msgstr "Add Item"
+
+msgid "Add Todo"
+msgstr ""
+
+#, fuzzy
+msgid "-1 Day"
+msgstr "-/+1 Day"
+
+#, fuzzy
+msgid "+1 Day"
+msgstr "-/+1 Day"
+
+#, fuzzy
+msgid "-1 Week"
+msgstr "-/+1 Week"
+
+#, fuzzy
+msgid "+1 Week"
+msgstr "-/+1 Week"
+
+msgid "-1 Month"
+msgstr ""
+
+msgid "+1 Month"
+msgstr ""
+
+msgid "-1 Year"
+msgstr ""
+
+msgid "+1 Year"
+msgstr ""
+
+#, fuzzy
+msgid "Nxt View"
+msgstr "View"
+
+#, fuzzy
+msgid "Prv View"
+msgstr "View"
+
+msgid "Today"
+msgstr ""
+
+msgid "Command"
+msgstr ""
+
+msgid "Right"
+msgstr ""
+
+msgid "Left"
+msgstr ""
+
+#, fuzzy
+msgid "Down"
+msgstr "Up/Down"
+
+msgid "Up"
+msgstr ""
+
+#, fuzzy
+msgid "beg Week"
+msgstr "-/+1 Week"
+
+#, fuzzy
+msgid "end Week"
+msgstr "-/+1 Week"
+
+msgid "Add Item"
+msgstr "Add Item"
+
+msgid "Del Item"
+msgstr "Del Item"
+
+#, fuzzy
+msgid "Edit Itm"
+msgstr "Add Item"
+
+msgid "View"
+msgstr "View"
+
+msgid "Pipe"
+msgstr ""
+
+#, fuzzy
+msgid "Flag Itm"
+msgstr "Del Item"
+
+msgid "Repeat"
+msgstr ""
+
+#, fuzzy
+msgid "EditNote"
+msgstr "Add Item"
+
+#, fuzzy
+msgid "ViewNote"
+msgstr "View"
+
+msgid "Prio.+"
+msgstr ""
+
+msgid "Prio.-"
 msgstr ""
 
 msgid ""
@@ -838,6 +943,28 @@ msgstr "FATAL ERROR in todo_delete_bynum: no such todo\n"
 msgid "FATAL ERROR: key value out of bounds"
 msgstr "FATAL ERROR in update_windows: no window selected\n"
 
+msgid "General"
+msgstr "General"
+
+msgid "Layout"
+msgstr "Layout"
+
+msgid "Sidebar"
+msgstr ""
+
+msgid "Color"
+msgstr "Colour"
+
+msgid "Notify"
+msgstr ""
+
+msgid "Keys"
+msgstr ""
+
+#, fuzzy
+msgid "Unknown"
+msgstr "Colour"
+
 msgid "Cancel the ongoing action."
 msgstr ""
 
@@ -854,6 +981,9 @@ msgid "Exit from the current menu, or quit calcurse."
 msgstr ""
 
 msgid "Save calcurse data."
+msgstr ""
+
+msgid "Reload appointments and todo items."
 msgstr ""
 
 msgid "Copy the item that is currently selected."
@@ -1012,9 +1142,6 @@ msgid "xrealloc: overflow"
 msgstr ""
 
 msgid "xrealloc: out of memory"
-msgstr ""
-
-msgid "xfree: null pointer"
 msgstr ""
 
 msgid "could not allocate memory to store block info"
@@ -1468,135 +1595,6 @@ msgstr "Appointments"
 msgid "TODO"
 msgstr ""
 
-msgid "Quit"
-msgstr "Quit"
-
-msgid "Save"
-msgstr "Save"
-
-msgid "Copy"
-msgstr ""
-
-msgid "Paste"
-msgstr ""
-
-#, fuzzy
-msgid "Chg Win"
-msgstr "Chg View"
-
-msgid "Import"
-msgstr ""
-
-msgid "Export"
-msgstr ""
-
-#, fuzzy
-msgid "Go to"
-msgstr "Goto:\n"
-
-msgid "Config"
-msgstr "Config"
-
-msgid "Redraw"
-msgstr "Redraw"
-
-#, fuzzy
-msgid "Add Appt"
-msgstr "Add Item"
-
-msgid "Add Todo"
-msgstr ""
-
-#, fuzzy
-msgid "-1 Day"
-msgstr "-/+1 Day"
-
-#, fuzzy
-msgid "+1 Day"
-msgstr "-/+1 Day"
-
-#, fuzzy
-msgid "-1 Week"
-msgstr "-/+1 Week"
-
-#, fuzzy
-msgid "+1 Week"
-msgstr "-/+1 Week"
-
-msgid "-1 Month"
-msgstr ""
-
-msgid "+1 Month"
-msgstr ""
-
-msgid "-1 Year"
-msgstr ""
-
-msgid "+1 Year"
-msgstr ""
-
-msgid "Today"
-msgstr ""
-
-#, fuzzy
-msgid "Nxt View"
-msgstr "View"
-
-#, fuzzy
-msgid "Prv View"
-msgstr "View"
-
-msgid "Command"
-msgstr ""
-
-#, fuzzy
-msgid "beg Week"
-msgstr "-/+1 Week"
-
-#, fuzzy
-msgid "end Week"
-msgstr "-/+1 Week"
-
-msgid "Add Item"
-msgstr "Add Item"
-
-msgid "Del Item"
-msgstr "Del Item"
-
-#, fuzzy
-msgid "Edit Itm"
-msgstr "Add Item"
-
-msgid "View"
-msgstr "View"
-
-msgid "Pipe"
-msgstr ""
-
-#, fuzzy
-msgid "Flag Itm"
-msgstr "Del Item"
-
-msgid "Repeat"
-msgstr ""
-
-#, fuzzy
-msgid "EditNote"
-msgstr "Add Item"
-
-#, fuzzy
-msgid "ViewNote"
-msgstr "View"
-
-msgid "Prio.+"
-msgstr ""
-
-msgid "Prio.-"
-msgstr ""
-
-msgid "OtherCmd"
-msgstr ""
-
 msgid "unknown panel"
 msgstr ""
 
@@ -1645,6 +1643,25 @@ msgstr ""
 
 msgid "Remove temporary backup..."
 msgstr ""
+
+#~ msgid "Exit"
+#~ msgstr "Exit"
+
+#, fuzzy
+#~ msgid "No color"
+#~ msgstr "Colour"
+
+#, fuzzy
+#~ msgid "Add key"
+#~ msgstr "Add Item"
+
+#, fuzzy
+#~ msgid "Del key"
+#~ msgstr "Del Item"
+
+#, fuzzy
+#~ msgid "unknwon type"
+#~ msgstr "FATAL ERROR in todo_delete_bynum: no such todo\n"
 
 #~ msgid "To do :"
 #~ msgstr "To do :"
