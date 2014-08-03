@@ -518,24 +518,29 @@ void custom_color_config(void)
 	delwin(conf_win.p);
 }
 
+enum {
+	COMPACT_PANELS,
+	DEFAULT_PANEL,
+	AUTO_SAVE,
+	AUTO_GC,
+	PERIODIC_SAVE,
+	CONFIRM_QUIT,
+	CONFIRM_DELETE,
+	SYSTEM_DIAGS,
+	PROGRESS_BAR,
+	FIRST_DAY_OF_WEEK,
+	OUTPUT_DATE_FMT,
+	INPUT_DATE_FMT,
+	NB_OPTIONS
+};
+
 /* Prints the general options. */
 static void print_general_option(int i, WINDOW *win, int y, int hilt, void *cb_data)
 {
-	enum {
-		AUTO_SAVE,
-		AUTO_GC,
-		PERIODIC_SAVE,
-		CONFIRM_QUIT,
-		CONFIRM_DELETE,
-		SYSTEM_DIAGS,
-		PROGRESS_BAR,
-		FIRST_DAY_OF_WEEK,
-		OUTPUT_DATE_FMT,
-		INPUT_DATE_FMT,
-		NB_OPTIONS
-	};
 	const int XPOS = 1;
 	char *opt[NB_OPTIONS] = {
+		"appearance.compactpanels = ",
+		"appearance.defaultpanel = ",
 		"general.autosave = ",
 		"general.autogc = ",
 		"general.periodicsave = ",
@@ -547,25 +552,45 @@ static void print_general_option(int i, WINDOW *win, int y, int hilt, void *cb_d
 		"format.outputdate = ",
 		"format.inputdate = "
 	};
+	const char *panel;
 
 	if (hilt)
 		custom_apply_attr(win, ATTR_HIGHEST);
 	mvwprintw(win, y, XPOS, "%s", opt[i]);
 
 	switch (i) {
-	case 0:
+	case COMPACT_PANELS:
+		print_bool_option_incolor(win, conf.compact_panels, y,
+					  XPOS + strlen(opt[COMPACT_PANELS]));
+		mvwaddstr(win, y + XPOS, 1,
+			  _("(if set to YES, compact panels are used)"));
+		break;
+	case DEFAULT_PANEL:
+		if (conf.default_panel == CAL)
+			panel = _("Calendar");
+		else if (conf.default_panel == APP)
+			panel = _("Appointments");
+		else
+			panel = _("TODO");
+		custom_apply_attr(win, ATTR_HIGHEST);
+		mvwaddstr(win, y, XPOS + strlen(opt[DEFAULT_PANEL]), panel);
+		custom_remove_attr(win, ATTR_HIGHEST);
+		mvwaddstr(win, y + 1, XPOS,
+			  _("(specifies the panel that is selected by default)"));
+		break;
+	case AUTO_SAVE:
 		print_bool_option_incolor(win, conf.auto_save, y,
 					  XPOS + strlen(opt[AUTO_SAVE]));
 		mvwaddstr(win, y + XPOS, 1,
 			  _("(if set to YES, automatic save is done when quitting)"));
 		break;
-	case 1:
+	case AUTO_GC:
 		print_bool_option_incolor(win, conf.auto_gc, y,
 					  XPOS + strlen(opt[AUTO_GC]));
 		mvwaddstr(win, y + 1, XPOS,
 			  _("(run the garbage collector when quitting)"));
 		break;
-	case 2:
+	case PERIODIC_SAVE:
 		custom_apply_attr(win, ATTR_HIGHEST);
 		mvwprintw(win, y, XPOS + strlen(opt[PERIODIC_SAVE]), "%d",
 			  conf.periodic_save);
@@ -574,34 +599,34 @@ static void print_general_option(int i, WINDOW *win, int y, int hilt, void *cb_d
 			  _("(if not null, automatically save data every 'periodic_save' "
 			   "minutes)"));
 		break;
-	case 3:
+	case CONFIRM_QUIT:
 		print_bool_option_incolor(win, conf.confirm_quit, y,
 					  XPOS + strlen(opt[CONFIRM_QUIT]));
 		mvwaddstr(win, y + 1, XPOS,
 			  _("(if set to YES, confirmation is required before quitting)"));
 		break;
-	case 4:
+	case CONFIRM_DELETE:
 		print_bool_option_incolor(win, conf.confirm_delete, y,
 					  XPOS + strlen(opt[CONFIRM_DELETE]));
 		mvwaddstr(win, y + 1, XPOS,
 			  _("(if set to YES, confirmation is required "
 			    "before deleting an event)"));
 		break;
-	case 5:
+	case SYSTEM_DIAGS:
 		print_bool_option_incolor(win, conf.system_dialogs, y,
 					  XPOS + strlen(opt[SYSTEM_DIAGS]));
 		mvwaddstr(win, y + 1, XPOS,
 			  _("(if set to YES, messages about loaded "
 			    "and saved data will be displayed)"));
 		break;
-	case 6:
+	case PROGRESS_BAR:
 		print_bool_option_incolor(win, conf.progress_bar, y,
 					  XPOS + strlen(opt[PROGRESS_BAR]));
 		mvwaddstr(win, y + 1, XPOS,
 			  _("(if set to YES, progress bar will be displayed "
 			    "when saving data)"));
 		break;
-	case 7:
+	case FIRST_DAY_OF_WEEK:
 		custom_apply_attr(win, ATTR_HIGHEST);
 		mvwaddstr(win, y, XPOS + strlen(opt[FIRST_DAY_OF_WEEK]),
 			  ui_calendar_week_begins_on_monday()? _("Monday") :
@@ -610,7 +635,7 @@ static void print_general_option(int i, WINDOW *win, int y, int hilt, void *cb_d
 		mvwaddstr(win, y + 1, XPOS,
 			  _("(specifies the first day of week in the calendar view)"));
 		break;
-	case 8:
+	case OUTPUT_DATE_FMT:
 		custom_apply_attr(win, ATTR_HIGHEST);
 		mvwaddstr(win, y, XPOS + strlen(opt[OUTPUT_DATE_FMT]),
 			  conf.output_datefmt);
@@ -618,7 +643,7 @@ static void print_general_option(int i, WINDOW *win, int y, int hilt, void *cb_d
 		mvwaddstr(win, y + 1, XPOS,
 			  _("(Format of the date to be displayed in non-interactive mode)"));
 		break;
-	case 9:
+	case INPUT_DATE_FMT:
 		custom_apply_attr(win, ATTR_HIGHEST);
 		mvwprintw(win, y, XPOS + strlen(opt[INPUT_DATE_FMT]), "%d",
 			  conf.input_datefmt);
@@ -666,13 +691,23 @@ static void general_option_edit(int i)
 	buf[0] = '\0';
 
 	switch (i) {
-	case 0:
+	case COMPACT_PANELS:
+		conf.compact_panels = !conf.compact_panels;
+		resize = 1;
+		break;
+	case DEFAULT_PANEL:
+		if (conf.default_panel == TOD)
+			conf.default_panel = CAL;
+		else
+			conf.default_panel++;
+		break;
+	case AUTO_SAVE:
 		conf.auto_save = !conf.auto_save;
 		break;
-	case 1:
+	case AUTO_GC:
 		conf.auto_gc = !conf.auto_gc;
 		break;
-	case 2:
+	case PERIODIC_SAVE:
 		status_mesg(periodic_save_str, "");
 		if (updatestring(win[STA].p, &buf, 0, 1) == 0) {
 			val = atoi(buf);
@@ -685,22 +720,22 @@ static void general_option_edit(int i)
 		}
 		status_mesg(number_str, keys);
 		break;
-	case 3:
+	case CONFIRM_QUIT:
 		conf.confirm_quit = !conf.confirm_quit;
 		break;
-	case 4:
+	case CONFIRM_DELETE:
 		conf.confirm_delete = !conf.confirm_delete;
 		break;
-	case 5:
+	case SYSTEM_DIAGS:
 		conf.system_dialogs = !conf.system_dialogs;
 		break;
-	case 6:
+	case PROGRESS_BAR:
 		conf.progress_bar = !conf.progress_bar;
 		break;
-	case 7:
+	case FIRST_DAY_OF_WEEK:
 		ui_calendar_change_first_day_of_week();
 		break;
-	case 8:
+	case OUTPUT_DATE_FMT:
 		status_mesg(output_datefmt_str, "");
 		strncpy(buf, conf.output_datefmt,
 			strlen(conf.output_datefmt) + 1);
@@ -710,7 +745,7 @@ static void general_option_edit(int i)
 		}
 		status_mesg(number_str, keys);
 		break;
-	case 9:
+	case INPUT_DATE_FMT:
 		val = status_ask_simplechoice(input_datefmt_prefix,
 					      datefmt_str,
 					      DATE_FORMATS);
