@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2014-07-28 12:51+0200\n"
+"POT-Creation-Date: 2014-08-03 23:51+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -268,6 +268,21 @@ msgid "(terminal's default)"
 msgstr ""
 
 msgid "color theme"
+msgstr ""
+
+msgid "(if set to YES, compact panels are used)"
+msgstr ""
+
+msgid "Calendar"
+msgstr ""
+
+msgid "Appointments"
+msgstr ""
+
+msgid "TODO"
+msgstr ""
+
+msgid "(specifies the panel that is selected by default)"
 msgstr ""
 
 msgid "(if set to YES, automatic save is done when quitting)"
@@ -1471,15 +1486,6 @@ msgid "yyyy/mm/dd"
 msgstr ""
 
 msgid "yyyy-mm-dd"
-msgstr ""
-
-msgid "Calendar"
-msgstr ""
-
-msgid "Appointments"
-msgstr ""
-
-msgid "TODO"
 msgstr ""
 
 msgid "unknown panel"
