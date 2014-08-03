@@ -760,6 +760,12 @@ General options
 
 These options control `calcurse` general behavior, as described below:
 
+`appearance.compactpanels` (default: *no*)::
+  In compact panels mode, all captions are removed from panels.
+
+`appearance.defaultpanel` (default: *calendar*)::
+  This can be used to specify the panel to be selected on startup.
+
 `general.autosave` (default: *yes*)::
   This option allows to automatically save the user's data (if set to *yes*)
   when quitting.  <p class="rq"><span class="valorise">warning:</span> No data
