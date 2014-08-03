@@ -686,6 +686,7 @@ int main(int argc, char **argv)
 	io_load_todo();
 	io_load_app();
 	io_unset_modified();
+	wins_slctd_set(conf.default_panel);
 	wins_resize();
 	/*
 	 * Refresh the hidden key handler window here to prevent wgetch() from
@@ -699,7 +700,6 @@ int main(int argc, char **argv)
 	do_storage(1);
 	ui_todo_load_items();
 	ui_todo_sel_reset();
-	wins_slctd_set(conf.default_panel);
 	wins_update(FLAG_ALL);
 
 	/* Start miscellaneous threads. */
