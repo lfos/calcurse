@@ -152,6 +152,8 @@ struct event *event_scan(FILE * f, struct tm start, int id, char *note,
 	if (filter) {
 		if (!(filter->type_mask & TYPE_MASK_EVNT))
 			return NULL;
+		if (filter->regex && regexec(filter->regex, buf, 0, 0, 0))
+			return NULL;
 		if (filter->start_from >= 0 && tstart < filter->start_from)
 			return NULL;
 		if (filter->start_to >= 0 && tstart > filter->start_to)

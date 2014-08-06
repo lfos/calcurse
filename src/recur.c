@@ -380,6 +380,8 @@ struct recur_apoint *recur_apoint_scan(FILE * f, struct tm start,
 	if (filter) {
 		if (!(filter->type_mask & TYPE_MASK_RECUR_APPT))
 			return NULL;
+		if (filter->regex && regexec(filter->regex, buf, 0, 0, 0))
+			return NULL;
 		if (filter->start_from >= 0 && tstart < filter->start_from)
 			return NULL;
 		if (filter->start_to >= 0 && tstart > filter->start_to)
@@ -436,6 +438,8 @@ struct recur_event *recur_event_scan(FILE * f, struct tm start, int id,
 	/* Filter item. */
 	if (filter) {
 		if (!(filter->type_mask & TYPE_MASK_RECUR_EVNT))
+			return NULL;
+		if (filter->regex && regexec(filter->regex, buf, 0, 0, 0))
 			return NULL;
 		if (filter->start_from >= 0 && tstart < filter->start_from)
 			return NULL;

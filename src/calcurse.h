@@ -394,6 +394,7 @@ enum day_item_type {
 /* Filter settings. */
 struct item_filter {
 	int type_mask;
+	regex_t *regex;
 	long start_from;
 	long start_to;
 	long end_from;
@@ -722,7 +723,7 @@ long day_item_get_duration(struct day_item *);
 int day_item_get_state(struct day_item *);
 void day_item_add_exc(struct day_item *, long);
 void day_item_fork(struct day_item *, struct day_item *);
-void day_store_items(long, regex_t *, int);
+void day_store_items(long, int);
 void day_process_storage(struct date *, unsigned);
 void day_display_item_date(struct day_item *, WINDOW *, int, long, int, int);
 void day_display_item(struct day_item *, WINDOW *, int, int, int, int);

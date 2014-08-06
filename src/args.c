@@ -47,6 +47,7 @@
 /* Long options */
 enum {
 	OPT_FILTER_TYPE = 1000,
+	OPT_FILTER_PATTERN,
 	OPT_FILTER_START_FROM,
 	OPT_FILTER_START_TO,
 	OPT_FILTER_START_AFTER,
@@ -214,10 +215,8 @@ static void status_arg(void)
  * then only todo items that have this priority will be displayed.
  * If priority is < 0, all todos will be displayed.
  * If priority == 0, only completed tasks will be displayed.
- * If regex is not null, only the matching todos are printed.
  */
-static void todo_arg(int priority, const char *format, regex_t * regex,
-			int *limit)
+static void todo_arg(int priority, const char *format, int *limit)
 {
 	llist_item_t *i;
 	int title = 1;
@@ -239,8 +238,6 @@ static void todo_arg(int priority, const char *format, regex_t * regex,
 		if (*limit == 0)
 			return;
 		struct todo *todo = LLIST_TS_GET_DATA(i);
-		if (regex && regexec(regex, todo->mesg, 0, 0, 0) != 0)
-			continue;
 
 		if (todo->id < 0) {	/* completed task */
 			if (priority == 0) {
@@ -304,19 +301,18 @@ static void arg_print_date(long date)
  * Print appointments for given day and exit.
  * If no day is given, the given date is used.
  * If there is also no date given, current date is considered.
- * If regex is not null, only the matching appointments or events are printed.
  */
 static int
 app_arg(int add_line, struct date *day, long date, const char *fmt_apt,
 	const char *fmt_rapt, const char *fmt_ev, const char *fmt_rev,
-	regex_t * regex, int *limit)
+	int *limit)
 {
 	if (*limit == 0)
 		return 0;
 	if (date == 0)
 		date = get_sec_date(*day);
 
-	day_store_items(date, regex, 0);
+	day_store_items(date, 0);
 
 	int n = day_item_count(0);
 
@@ -339,7 +335,7 @@ app_arg(int add_line, struct date *day, long date, const char *fmt_apt,
 static void
 display_app(struct tm *t, int numdays, int add_line, const char *fmt_apt,
 	    const char *fmt_rapt, const char *fmt_ev, const char *fmt_rev,
-	    regex_t * regex, int *limit)
+	    int *limit)
 {
 	int i, app_found;
 	struct date day;
@@ -350,7 +346,7 @@ display_app(struct tm *t, int numdays, int add_line, const char *fmt_apt,
 		day.yyyy = t->tm_year + 1900;
 		app_found =
 		    app_arg(add_line, &day, 0, fmt_apt, fmt_rapt, fmt_ev,
-			    fmt_rev, regex, limit);
+			    fmt_rev, limit);
 		if (app_found)
 			add_line = 1;
 		t->tm_mday++;
@@ -365,7 +361,7 @@ display_app(struct tm *t, int numdays, int add_line, const char *fmt_apt,
 static void
 date_arg(const char *ddate, int add_line, const char *fmt_apt,
 	 const char *fmt_rapt, const char *fmt_ev, const char *fmt_rev,
-	 regex_t * regex, int *limit)
+	 int *limit)
 {
 	struct date day;
 	static struct tm t;
@@ -384,13 +380,13 @@ date_arg(const char *ddate, int add_line, const char *fmt_apt,
 		timer = time(NULL);
 		localtime_r(&timer, &t);
 		display_app(&t, atoi(ddate), add_line, fmt_apt, fmt_rapt,
-			    fmt_ev, fmt_rev, regex, limit);
+			    fmt_ev, fmt_rev, limit);
 	} else {
 		/* A date was entered. */
 		if (parse_date(ddate, conf.input_datefmt, (int *)&day.yyyy,
 			       (int *)&day.mm, (int *)&day.dd, NULL)) {
 			app_arg(add_line, &day, 0, fmt_apt, fmt_rapt,
-				fmt_ev, fmt_rev, regex, limit);
+				fmt_ev, fmt_rev, limit);
 		} else {
 			fputs(_("Argument to the '-d' flag is not valid\n"),
 			      stderr);
@@ -413,8 +409,7 @@ date_arg(const char *ddate, int add_line, const char *fmt_apt,
 static void
 date_arg_extended(const char *startday, const char *range, int add_line,
 		  const char *fmt_apt, const char *fmt_rapt,
-		  const char *fmt_ev, const char *fmt_rev, regex_t * regex,
-		  int *limit)
+		  const char *fmt_ev, const char *fmt_rev, int *limit)
 {
 	int numdays = 1, error = 0;
 	static struct tm t;
@@ -445,7 +440,7 @@ date_arg_extended(const char *startday, const char *range, int add_line,
 	}
 	if (!error) {
 		display_app(&t, numdays, add_line, fmt_apt, fmt_rapt,
-			    fmt_ev, fmt_rev, regex, limit);
+			    fmt_ev, fmt_rev, limit);
 	} else {
 		fputs(_("Argument is not valid\n"), stderr);
 		fprintf(stdout,
@@ -525,7 +520,7 @@ int parse_args(int argc, char **argv)
 	int vflag = 0;		/* -v: print version number */
 	int xflag = 0;		/* -x: export data */
 	/* Filters */
-	struct item_filter filter = { TYPE_MASK_ALL, -1, -1, -1, -1 };
+	struct item_filter filter = { TYPE_MASK_ALL, NULL, -1, -1, -1, -1 };
 	/* Format strings */
 	const char *fmt_apt = " - %S -> %E\n\t%m\n";
 	const char *fmt_rapt = " - %S -> %E\n\t%m\n";
@@ -539,7 +534,7 @@ int parse_args(int argc, char **argv)
 	const char *ddate = "", *cfile = NULL, *range = NULL, *startday =
 	    NULL;
 	const char *datadir = NULL, *ifile = NULL;
-	regex_t reg, *preg = NULL;
+	regex_t reg;
 
 	/* Long options only */
 	int statusflag = 0;	/* --status: get the status of running instances */
@@ -569,6 +564,7 @@ int parse_args(int argc, char **argv)
 		{"export", optional_argument, NULL, 'x'},
 
 		{"filter-type", required_argument, NULL, OPT_FILTER_TYPE},
+		{"filter-pattern", required_argument, NULL, OPT_FILTER_PATTERN},
 		{"filter-start-from", required_argument, NULL, OPT_FILTER_START_FROM},
 		{"filter-start-to", required_argument, NULL, OPT_FILTER_START_TO},
 		{"filter-start-after", required_argument, NULL, OPT_FILTER_START_AFTER},
@@ -643,14 +639,6 @@ int parse_args(int argc, char **argv)
 			load_data++;
 			startday = optarg;
 			break;
-		case 'S':
-			EXIT_IF(Sflag > 0,
-				_("Can not handle more than one regular expression."));
-			Sflag = 1;
-			if (regcomp(&reg, optarg, REG_EXTENDED))
-				EXIT(_("Could not compile regular expression."));
-			preg = &reg;
-			break;
 		case 't':
 			tflag = 1;
 			multiple_flag++;
@@ -695,6 +683,16 @@ int parse_args(int argc, char **argv)
 			filter.type_mask = parse_type_mask(optarg);
 			EXIT_IF(filter.type_mask == 0,
 				_("invalid filter mask"));
+			break;
+		case 'S':
+			Sflag = 1;
+			/* FALLTHROUGH */
+		case OPT_FILTER_PATTERN:
+			EXIT_IF(filter.regex,
+				_("Can not handle more than one regular expression."));
+			if (regcomp(&reg, optarg, REG_EXTENDED))
+				EXIT(_("Could not compile regular expression."));
+			filter.regex = &reg;
 			break;
 		case OPT_FILTER_START_FROM:
 			filter.start_from = parse_datearg(optarg);
@@ -834,7 +832,7 @@ int parse_args(int argc, char **argv)
 			if (tflag) {
 				io_check_file(path_todo);
 				io_load_todo();
-				todo_arg(tnum, fmt_todo, preg, &limit);
+				todo_arg(tnum, fmt_todo, &limit);
 				non_interactive = 1;
 			}
 			if (nflag) {
@@ -851,14 +849,13 @@ int parse_args(int argc, char **argv)
 				if (dflag)
 					date_arg(ddate, add_line, fmt_apt,
 						 fmt_rapt, fmt_ev, fmt_rev,
-						 preg, &limit);
+						 &limit);
 				if (rflag || sflag)
 					date_arg_extended(startday, range,
 							  add_line,
 							  fmt_apt,
 							  fmt_rapt, fmt_ev,
-							  fmt_rev, preg,
-							  &limit);
+							  fmt_rev, &limit);
 				non_interactive = 1;
 			} else if (aflag) {
 				struct date day;
@@ -870,7 +867,7 @@ int parse_args(int argc, char **argv)
 				io_load_app(&filter);
 				day.dd = day.mm = day.yyyy = 0;
 				app_arg(add_line, &day, 0, fmt_apt, fmt_rapt,
-						fmt_ev, fmt_rev, preg, &limit);
+						fmt_ev, fmt_rev, &limit);
 				non_interactive = 1;
 			}
 		} else {
@@ -879,8 +876,9 @@ int parse_args(int argc, char **argv)
 		}
 	}
 
-	if (preg)
-		regfree(preg);
+	/* Free filter parameters. */
+	if (filter.regex)
+		regfree(filter.regex);
 
 	return non_interactive;
 }

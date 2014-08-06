@@ -218,7 +218,7 @@ void day_item_fork(struct day_item *day_in, struct day_item *day_out)
  * dedicated to the selected day.
  * Returns the number of events for the selected day.
  */
-static int day_store_events(long date, regex_t * regex)
+static int day_store_events(long date)
 {
 	llist_item_t *i;
 	union aptev_ptr p;
@@ -226,9 +226,6 @@ static int day_store_events(long date, regex_t * regex)
 
 	LLIST_FIND_FOREACH_CONT(&eventlist, &date, event_inday, i) {
 		struct event *ev = LLIST_TS_GET_DATA(i);
-
-		if (regex && regexec(regex, ev->mesg, 0, 0, 0) != 0)
-			continue;
 
 		p.ev = ev;
 		day_add_item(EVNT, ev->day, p);
@@ -245,7 +242,7 @@ static int day_store_events(long date, regex_t * regex)
  * dedicated to the selected day.
  * Returns the number of recurrent events for the selected day.
  */
-static int day_store_recur_events(long date, regex_t * regex)
+static int day_store_recur_events(long date)
 {
 	llist_item_t *i;
 	union aptev_ptr p;
@@ -253,9 +250,6 @@ static int day_store_recur_events(long date, regex_t * regex)
 
 	LLIST_FIND_FOREACH(&recur_elist, &date, recur_event_inday, i) {
 		struct recur_event *rev = LLIST_TS_GET_DATA(i);
-
-		if (regex && regexec(regex, rev->mesg, 0, 0, 0) != 0)
-			continue;
 
 		p.rev = rev;
 		day_add_item(RECUR_EVNT, rev->day, p);
@@ -272,7 +266,7 @@ static int day_store_recur_events(long date, regex_t * regex)
  * structure dedicated to the selected day.
  * Returns the number of appointments for the selected day.
  */
-static int day_store_apoints(long date, regex_t * regex)
+static int day_store_apoints(long date)
 {
 	llist_item_t *i;
 	union aptev_ptr p;
@@ -281,9 +275,6 @@ static int day_store_apoints(long date, regex_t * regex)
 	LLIST_TS_LOCK(&alist_p);
 	LLIST_TS_FIND_FOREACH(&alist_p, &date, apoint_inday, i) {
 		struct apoint *apt = LLIST_TS_GET_DATA(i);
-
-		if (regex && regexec(regex, apt->mesg, 0, 0, 0) != 0)
-			continue;
 
 		p.apt = apt;
 
@@ -305,7 +296,7 @@ static int day_store_apoints(long date, regex_t * regex)
  * structure dedicated to the selected day.
  * Returns the number of recurrent appointments for the selected day.
  */
-static int day_store_recur_apoints(long date, regex_t * regex)
+static int day_store_recur_apoints(long date)
 {
 	llist_item_t *i;
 	union aptev_ptr p;
@@ -314,9 +305,6 @@ static int day_store_recur_apoints(long date, regex_t * regex)
 	LLIST_TS_LOCK(&recur_alist_p);
 	LLIST_TS_FIND_FOREACH(&recur_alist_p, &date, recur_apoint_inday, i) {
 		struct recur_apoint *rapt = LLIST_TS_GET_DATA(i);
-
-		if (regex && regexec(regex, rapt->mesg, 0, 0, 0) != 0)
-			continue;
 
 		p.rapt = rapt;
 
@@ -340,7 +328,7 @@ static int day_store_recur_apoints(long date, regex_t * regex)
  * The number of events and appointments in the current day are also updated.
  */
 void
-day_store_items(long date, regex_t * regex, int include_captions)
+day_store_items(long date, int include_captions)
 {
 	unsigned apts, events;
 	union aptev_ptr p = { NULL };
@@ -351,10 +339,10 @@ day_store_items(long date, regex_t * regex, int include_captions)
 	if (include_captions)
 		day_add_item(DAY_HEADING, 0, p);
 
-	events = day_store_recur_events(date, regex);
-	events += day_store_events(date, regex);
-	apts = day_store_recur_apoints(date, regex);
-	apts += day_store_apoints(date, regex);
+	events = day_store_recur_events(date);
+	events += day_store_events(date);
+	apts = day_store_recur_apoints(date);
+	apts += day_store_apoints(date);
 
 	if (include_captions && events > 0 && apts > 0)
 		day_add_item(DAY_SEPARATOR, 0, p);
@@ -385,7 +373,7 @@ void day_process_storage(struct date *slctd_date, unsigned day_changed)
 		delwin(apad.ptrwin);
 
 	/* Store the events and appointments (recursive and normal items). */
-	day_store_items(date, NULL, 1);
+	day_store_items(date, 1);
 }
 
 /*
