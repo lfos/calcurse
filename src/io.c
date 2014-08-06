@@ -226,10 +226,7 @@ unsigned io_fprintln(const char *fname, const char *fmt, ...)
  */
 void io_init(const char *cfile, const char *datadir)
 {
-	FILE *data_file;
 	const char *home;
-	char apts_file[BUFSIZ] = "";
-	int ch;
 
 	if (datadir != NULL) {
 		home = datadir;
@@ -265,41 +262,9 @@ void io_init(const char *cfile, const char *datadir)
 			snprintf(path_apts, BUFSIZ, "%s/" APTS_PATH, home);
 		}
 	} else {
-		snprintf(apts_file, BUFSIZ, "%s", cfile);
-		strncpy(path_apts, apts_file, BUFSIZ);
-		/* check if the file exists, otherwise create it */
-		data_file = fopen(path_apts, "r");
-		if (data_file == NULL) {
-			printf(_("%s does not exist, create it now [y/n]? "),
-			       path_apts);
-			ch = getchar();
-			switch (ch) {
-			case 'N':
-			case 'n':
-				puts(_("aborting...\n"));
-				exit_calcurse(EXIT_FAILURE);
-				break;
-
-			case 'Y':
-			case 'y':
-				data_file = fopen(path_apts, "w");
-				if (data_file == NULL) {
-					perror(path_apts);
-					exit_calcurse(EXIT_FAILURE);
-				} else {
-					printf(_("%s successfully created\n"),
-					       path_apts);
-					puts(_("starting interactive mode...\n"));
-				}
-				break;
-
-			default:
-				puts(_("aborting...\n"));
-				exit_calcurse(EXIT_FAILURE);
-				break;
-			}
-		}
-		file_close(data_file, __FILE_POS__);
+		snprintf(path_apts, BUFSIZ, "%s", cfile);
+		EXIT_IF(!io_file_exists(path_apts), _("%s does not exist"),
+			path_apts);
 	}
 }
 
