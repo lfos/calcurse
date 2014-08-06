@@ -669,16 +669,16 @@ int parse_args(int argc, char **argv)
 	} else if (gc) {
 		io_check_file(path_apts);
 		io_check_file(path_todo);
-		io_load_app(&filter);
-		io_load_todo(&filter);
+		io_load_app(NULL);
+		io_load_todo(NULL);
 		note_gc();
 	} else if (import) {
 		io_check_file(path_apts);
 		io_check_file(path_todo);
 		/* Get default pager in case we need to show a log file. */
 		vars_init();
-		io_load_app(&filter);
-		io_load_todo(&filter);
+		io_load_app(NULL);
+		io_load_todo(NULL);
 		io_import_data(IO_IMPORT_ICAL, ifile);
 		io_save_apts(path_apts);
 		io_save_todo(path_todo);
