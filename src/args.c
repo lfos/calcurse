@@ -529,55 +529,55 @@ int parse_args(int argc, char **argv)
 		case 'S':
 		case OPT_FILTER_PATTERN:
 			EXIT_IF(filter.regex,
-				_("Can not handle more than one regular expression."));
+				_("cannot handle more than one regular expression"));
 			if (regcomp(&reg, optarg, REG_EXTENDED))
-				EXIT(_("Could not compile regular expression."));
+				EXIT(_("could not compile regular expression: %s"), optarg);
 			filter.regex = &reg;
 			break;
 		case OPT_FILTER_START_FROM:
 			filter.start_from = parse_datearg(optarg);
 			EXIT_IF(filter.start_from == -1,
-				_("invalid filter start date"));
+				_("invalid date: %s"), optarg);
 			break;
 		case OPT_FILTER_START_TO:
 			filter.start_to = parse_datearg(optarg);
 			EXIT_IF(filter.start_to == -1,
-				_("invalid filter end date"));
+				_("invalid date: %s"), optarg);
 			break;
 		case OPT_FILTER_START_AFTER:
 			filter.start_from = parse_datearg(optarg) + 1;
 			EXIT_IF(filter.start_from == -1,
-				_("invalid filter start date"));
+				_("invalid date: %s"), optarg);
 			break;
 		case OPT_FILTER_START_BEFORE:
 			filter.start_to = parse_datearg(optarg) - 1;
 			EXIT_IF(filter.start_to == -1,
-				_("invalid filter end date"));
+				_("invalid date: %s"), optarg);
 			break;
 		case OPT_FILTER_END_FROM:
 			filter.end_from = parse_datearg(optarg);
 			EXIT_IF(filter.end_from == -1,
-				_("invalid filter start date"));
+				_("invalid date: %s"), optarg);
 			break;
 		case OPT_FILTER_END_TO:
 			filter.end_to = parse_datearg(optarg);
 			EXIT_IF(filter.end_to == -1,
-				_("invalid filter end date"));
+				_("invalid date: %s"), optarg);
 			break;
 		case OPT_FILTER_END_AFTER:
 			filter.end_from = parse_datearg(optarg) + 1;
 			EXIT_IF(filter.end_from == -1,
-				_("invalid filter start date"));
+				_("invalid date: %s"), optarg);
 			break;
 		case OPT_FILTER_END_BEFORE:
 			filter.end_to = parse_datearg(optarg) - 1;
 			EXIT_IF(filter.end_to == -1,
-				_("invalid filter end date"));
+				_("invalid date: %s"), optarg);
 			break;
 		case OPT_FILTER_PRIORITY:
 			filter.priority = atoi(optarg);
 			EXIT_IF(filter.priority < 1 || filter.priority > 9,
-				_("invalid priority"));
+				_("invalid priority: %s"), optarg);
 			break;
 		case OPT_FILTER_COMPLETED:
 			filter.completed = 1;
@@ -587,15 +587,15 @@ int parse_args(int argc, char **argv)
 			break;
 		case OPT_FROM:
 			from = parse_datearg(optarg);
-			EXIT_IF(from == -1, _("invalid start date"));
+			EXIT_IF(from == -1, _("invalid date: %s"), optarg);
 			break;
 		case OPT_TO:
 			to = parse_datearg(optarg);
-			EXIT_IF(to == -1, _("invalid end date"));
+			EXIT_IF(to == -1, _("invalid date: %s"), optarg);
 			break;
 		case OPT_DAYS:
 			range = atoi(optarg);
-			EXIT_IF(range == 0, _("invalid range"));
+			EXIT_IF(range == 0, _("invalid range: %s"), optarg);
 			break;
 		case OPT_FMT_APT:
 			fmt_apt = optarg;
