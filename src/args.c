@@ -61,12 +61,14 @@ enum {
 	OPT_FILTER_UNCOMPLETED,
 	OPT_FROM,
 	OPT_TO,
+	OPT_DAYS,
 	OPT_FMT_APT,
 	OPT_FMT_RAPT,
 	OPT_FMT_EV,
 	OPT_FMT_REV,
 	OPT_FMT_TODO,
-	OPT_READ_ONLY
+	OPT_READ_ONLY,
+	OPT_STATUS
 };
 
 /*
@@ -215,51 +217,27 @@ static void status_arg(void)
 		puts(_("calcurse is not running\n"));
 }
 
-/*
- * Print todo list and exit. If a priority number is given, then only todo
- * then only todo items that have this priority will be displayed.
- * If priority is < 0, all todos will be displayed.
- * If priority == 0, only completed tasks will be displayed.
- */
-static void todo_arg(int priority, const char *format, int *limit)
+/* Print TODO list and exit. */
+static void todo_arg(const char *format, int *limit,
+		     struct item_filter *filter)
 {
-	llist_item_t *i;
+	const char *titlestr =
+		filter->completed ? _("completed tasks:\n") : _("to do:\n");
 	int title = 1;
-	const char *titlestr;
-	const char *all_todos_title = _("to do:\n");
-	const char *completed_title = _("completed tasks:\n");
-
-	titlestr = priority == 0 ? completed_title : all_todos_title;
-
-#define DISPLAY_TITLE  do {                                             \
-  if (title)                                                            \
-    {                                                                   \
-      fputs (titlestr, stdout);                                         \
-      title = 0;                                                        \
-    }                                                                   \
-  } while (0)
+	llist_item_t *i;
 
 	LLIST_FOREACH(&todolist, i) {
 		if (*limit == 0)
 			return;
 		struct todo *todo = LLIST_TS_GET_DATA(i);
 
-		if (todo->id < 0) {	/* completed task */
-			if (priority == 0) {
-				DISPLAY_TITLE;
-				print_todo(format, todo);
-				(*limit)--;
-			}
-		} else {
-			if (priority < 0 || todo->id == priority) {
-				DISPLAY_TITLE;
-				print_todo(format, todo);
-				(*limit)--;
-			}
+		if (title) {
+			fputs(titlestr, stdout);
+			title = 0;
 		}
+		print_todo(format, todo);
+		(*limit)--;
 	}
-
-#undef DISPLAY_TITLE
 }
 
 /* Print the next appointment within the upcoming 24 hours. */
@@ -273,8 +251,8 @@ static void next_arg(void)
 	next_app.got_app = 0;
 	next_app.txt = NULL;
 
-	next_app =
-	    *recur_apoint_check_next(&next_app, current_time, get_today());
+	next_app = *recur_apoint_check_next(&next_app, current_time,
+					    get_today());
 	next_app = *apoint_check_next(&next_app, current_time);
 
 	if (next_app.got_app) {
@@ -303,184 +281,27 @@ static void arg_print_date(long date)
 }
 
 /*
- * Print appointments for given day and exit.
- * If no day is given, the given date is used.
- * If there is also no date given, current date is considered.
- */
-static int
-app_arg(int add_line, struct date *day, long date, const char *fmt_apt,
-	const char *fmt_rapt, const char *fmt_ev, const char *fmt_rev,
-	int *limit)
-{
-	if (*limit == 0)
-		return 0;
-	if (date == 0)
-		date = get_sec_date(*day);
-
-	day_store_items(date, 0);
-
-	int n = day_item_count(0);
-
-	if (n > 0) {
-		if (add_line)
-			fputs("\n", stdout);
-		arg_print_date(date);
-		day_write_stdout(date, fmt_apt, fmt_rapt, fmt_ev, fmt_rev,
-				limit);
-	}
-
-	return n;
-}
-
-/*
- * For a given date, print appointments for each day
- * in the chosen interval. app_found and add_line are used
- * to format the output correctly.
- */
-static void
-display_app(struct tm *t, int numdays, int add_line, const char *fmt_apt,
-	    const char *fmt_rapt, const char *fmt_ev, const char *fmt_rev,
-	    int *limit)
-{
-	int i, app_found;
-	struct date day;
-
-	for (i = 0; i < numdays; i++) {
-		day.dd = t->tm_mday;
-		day.mm = t->tm_mon + 1;
-		day.yyyy = t->tm_year + 1900;
-		app_found =
-		    app_arg(add_line, &day, 0, fmt_apt, fmt_rapt, fmt_ev,
-			    fmt_rev, limit);
-		if (app_found)
-			add_line = 1;
-		t->tm_mday++;
-		mktime(t);
-	}
-}
-
-/*
- * Print appointment for the given date or for the given n upcoming
- * days.
- */
-static void
-date_arg(const char *ddate, int add_line, const char *fmt_apt,
-	 const char *fmt_rapt, const char *fmt_ev, const char *fmt_rev,
-	 int *limit)
-{
-	struct date day;
-	static struct tm t;
-	time_t timer;
-
-	/*
-	 * Check (with the argument length) if a date or a number of days
-	 * was entered, and then call app_arg() to print appointments
-	 */
-	if (strlen(ddate) <= 4 && is_all_digit(ddate)) {
-		/*
-		 * A number of days was entered. Get current date and print appointments
-		 * for each day in the chosen interval. app_found and add_line are used to
-		 * format the output correctly.
-		 */
-		timer = time(NULL);
-		localtime_r(&timer, &t);
-		display_app(&t, atoi(ddate), add_line, fmt_apt, fmt_rapt,
-			    fmt_ev, fmt_rev, limit);
-	} else {
-		/* A date was entered. */
-		if (parse_date(ddate, conf.input_datefmt, (int *)&day.yyyy,
-			       (int *)&day.mm, (int *)&day.dd, NULL)) {
-			app_arg(add_line, &day, 0, fmt_apt, fmt_rapt,
-				fmt_ev, fmt_rev, limit);
-		} else {
-			fputs(_("Argument to the '-d' flag is not valid\n"),
-			      stderr);
-			fprintf(stdout,
-				_("Possible argument format are: '%s' or 'n'\n"),
-				DATEFMT_DESC(conf.input_datefmt));
-			more_info();
-		}
-	}
-}
-
-/*
- * Print appointment from the given date 'startday' for the 'range' upcoming
- * days.
- * If no starday is given (NULL), today is considered
- * If no range is given (NULL), 1 day is considered
- *
- * Many thanks to Erik Saule for providing this function.
- */
-static void
-date_arg_extended(const char *startday, const char *range, int add_line,
-		  const char *fmt_apt, const char *fmt_rapt,
-		  const char *fmt_ev, const char *fmt_rev, int *limit)
-{
-	int numdays = 1, error = 0;
-	static struct tm t;
-	time_t timer;
-
-	/*
-	 * Check arguments and extract information
-	 */
-	if (range != NULL) {
-		if (is_all_digit(range)) {
-			numdays = atoi(range);
-		} else {
-			error = 1;
-		}
-	}
-	timer = time(NULL);
-	localtime_r(&timer, &t);
-	if (startday != NULL) {
-		if (parse_date
-		    (startday, conf.input_datefmt, (int *)&t.tm_year,
-		     (int *)&t.tm_mon, (int *)&t.tm_mday, NULL)) {
-			t.tm_year -= 1900;
-			t.tm_mon--;
-			mktime(&t);
-		} else {
-			error = 1;
-		}
-	}
-	if (!error) {
-		display_app(&t, numdays, add_line, fmt_apt, fmt_rapt,
-			    fmt_ev, fmt_rev, limit);
-	} else {
-		fputs(_("Argument is not valid\n"), stderr);
-		fprintf(stdout,
-			_("Argument format for -s and --startday is: '%s'\n"),
-			DATEFMT_DESC(conf.input_datefmt));
-		fputs(_("Argument format for -r and --range is: 'n'\n"),
-		      stdout);
-		more_info();
-	}
-}
-
-/*
  * Print appointments inside the given query range.
  * If no start day is given (-1), today is considered.
  * If no end date is given (-1), a range of 1 day is considered.
  */
 static void
-date_arg_from_to(long from, long to, int add_line, const char *fmt_apt,
-		 const char *fmt_rapt, const char *fmt_ev, const char *fmt_rev,
-		 int *limit)
+date_arg_from_to(long from, long to, const char *fmt_apt, const char *fmt_rapt,
+		 const char *fmt_ev, const char *fmt_rev, int *limit)
 {
 	long date;
-
-	if (from == -1) {
-		struct date day = { 0, 0, 0 };
-		from = get_sec_date(day);
-	}
-
-	if (to == -1)
-		to = from + DAYINSEC;
+	int add_line = 0;
 
 	for (date = from; date < to; date += DAYINSEC) {
-		if (app_arg(add_line, NULL, date, fmt_apt, fmt_rapt,
-			    fmt_ev, fmt_rev, limit))
-			add_line = 1;
+		day_store_items(date, 0);
+		if (day_item_count(0) == 0)
+			continue;
+		if (add_line)
+			fputs("\n", stdout);
+		arg_print_date(date);
+		day_write_stdout(date, fmt_apt, fmt_rapt, fmt_ev,
+				 fmt_rev, limit);
+		add_line = 1;
 	}
 }
 
@@ -540,47 +361,27 @@ cleanup:
  */
 int parse_args(int argc, char **argv)
 {
-	int ch, add_line = 0;
-	int unknown_flag = 0;
 	/* Command-line flags */
-	int aflag = 0;		/* -a: print appointments for current day */
-	int dflag = 0;		/* -d: print appointments for a specified days */
-	int hflag = 0;		/* -h: print help text */
-	int gflag = 0;		/* -g: run garbage collector */
-	int iflag = 0;		/* -i: import data */
-	int nflag = 0;		/* -n: print next appointment */
-	int Qflag = 0;		/* -Q: query mode */
-	int rflag = 0;		/* -r: specify the range of days to consider */
-	int sflag = 0;		/* -s: specify the first day to consider */
-	int Sflag = 0;		/* -S: specify a regex to search for */
-	int tflag = 0;		/* -t: print todo list */
-	int vflag = 0;		/* -v: print version number */
-	int xflag = 0;		/* -x: export data */
+	int status = 0, query = 0, next = 0, gc = 0, import = 0, export = 0;
 	/* Query ranges */
-	long from = -1, to = -1;
+	long from = -1, range = -1, to = -1;
+	int limit = INT_MAX;
 	/* Filters */
-	struct item_filter filter =
-		{ TYPE_MASK_ALL, NULL, -1, -1, -1, -1, 0, 0, 0 };
+	struct item_filter filter = { 0, NULL, -1, -1, -1, -1, 0, 0, 0 };
 	/* Format strings */
 	const char *fmt_apt = " - %S -> %E\n\t%m\n";
 	const char *fmt_rapt = " - %S -> %E\n\t%m\n";
 	const char *fmt_ev = " * %m\n";
 	const char *fmt_rev = " * %m\n";
 	const char *fmt_todo = "%p. %m\n";
+	/* Import and export parameters */
+	int xfmt = IO_EXPORT_ICAL;
+	/* Data file locations */
+	const char *cfile = NULL, *datadir = NULL, *ifile = NULL;
 
-	int limit = INT_MAX; 	/* indicates no limit requested. */
-	int tnum = 0, xfmt = 0, non_interactive = 0, multiple_flag =
-	    0, load_data = 0;
-	const char *ddate = "", *cfile = NULL, *range = NULL, *startday =
-	    NULL;
-	const char *datadir = NULL, *ifile = NULL;
+	int non_interactive = 1;
+	int ch;
 	regex_t reg;
-
-	/* Long options only */
-	int statusflag = 0;	/* --status: get the status of running instances */
-	enum {
-		STATUS_OPT = CHAR_MAX + 1
-	};
 
 	static const char *optstr = "ghvnNax::t::d:c:r::s::S:D:i:l:Q";
 
@@ -598,7 +399,6 @@ int parse_args(int argc, char **argv)
 		{"range", optional_argument, NULL, 'r'},
 		{"startday", optional_argument, NULL, 's'},
 		{"search", required_argument, NULL, 'S'},
-		{"status", no_argument, NULL, STATUS_OPT},
 		{"todo", optional_argument, NULL, 't'},
 		{"version", no_argument, NULL, 'v'},
 		{"export", optional_argument, NULL, 'x'},
@@ -619,115 +419,104 @@ int parse_args(int argc, char **argv)
 		{"filter-uncompleted", no_argument, NULL, OPT_FILTER_UNCOMPLETED},
 		{"from", required_argument, NULL, OPT_FROM},
 		{"to", required_argument, NULL, OPT_TO},
+		{"days", required_argument, NULL, OPT_DAYS},
 		{"format-apt", required_argument, NULL, OPT_FMT_APT},
 		{"format-recur-apt", required_argument, NULL, OPT_FMT_RAPT},
 		{"format-event", required_argument, NULL, OPT_FMT_EV},
 		{"format-recur-event", required_argument, NULL, OPT_FMT_REV},
 		{"format-todo", required_argument, NULL, OPT_FMT_TODO},
 		{"read-only", no_argument, NULL, OPT_READ_ONLY},
+		{"status", no_argument, NULL, OPT_STATUS},
 		{NULL, no_argument, NULL, 0}
 	};
 
-	while ((ch =
-		getopt_long(argc, argv, optstr, longopts, NULL)) != -1) {
+	while ((ch = getopt_long(argc, argv, optstr, longopts, NULL)) != -1) {
 		switch (ch) {
-		case STATUS_OPT:
-			statusflag = 1;
-			break;
 		case 'a':
-			aflag = 1;
-			multiple_flag++;
-			load_data++;
+			filter.type_mask |= TYPE_MASK_CAL;
+			query = 1;
 			break;
 		case 'c':
-			multiple_flag++;
 			cfile = optarg;
-			load_data++;
 			break;
 		case 'd':
-			dflag = 1;
-			multiple_flag++;
-			load_data++;
-			ddate = optarg;
+			if (is_all_digit(optarg)) {
+				range = atoi(optarg);
+			} else {
+				from = parse_datearg(optarg);
+				EXIT_IF(from == -1, _("invalid date: %s"),
+					optarg);
+			}
+
+			filter.type_mask |= TYPE_MASK_CAL;
+			query = 1;
 			break;
 		case 'D':
 			datadir = optarg;
 			break;
 		case 'h':
-			hflag = 1;
-			break;
+			help_arg();
+			goto cleanup;
 		case 'g':
-			gflag = 1;
+			gc = 1;
 			break;
 		case 'i':
-			iflag = 1;
-			multiple_flag++;
-			load_data++;
+			import = 1;
 			ifile = optarg;
 			break;
 		case 'l':
 			limit = atoi(optarg);
 			break;
 		case 'n':
-			nflag = 1;
-			multiple_flag++;
-			load_data++;
+			next = 1;
 			break;
 		case 'r':
-			rflag = 1;
-			multiple_flag++;
-			load_data++;
-			range = optarg;
+			if (optarg)
+				range = atoi(optarg);
+			else
+				range = 1;
+			EXIT_IF(range == 0, _("invalid range: %s"), optarg);
+			filter.type_mask |= TYPE_MASK_CAL;
+			query = 1;
 			break;
 		case 's':
-			sflag = 1;
-			multiple_flag++;
-			load_data++;
-			startday = optarg;
+			from = parse_datearg(optarg);
+			EXIT_IF(from == -1, _("invalid date: %s"), optarg);
+			filter.type_mask |= TYPE_MASK_CAL;
+			query = 1;
 			break;
 		case 't':
-			tflag = 1;
-			multiple_flag++;
-			load_data++;
-			add_line = 1;
-			if (optarg != NULL) {
-				tnum = atoi(optarg);
-				if (tnum < 0 || tnum > 9) {
-					usage();
-					usage_try();
-					return EXIT_FAILURE;
-				}
+			if (optarg) {
+				EXIT_IF(!is_all_digit(optarg),
+					_("invalid priority: %s"), optarg);
+				filter.priority = atoi(optarg);
+				if (filter.priority == 0)
+					filter.completed = 1;
+				EXIT_IF(filter.priority > 9,
+					_("invalid priority: %s"), optarg);
 			} else {
-				tnum = -1;
+				filter.uncompleted = 1;
 			}
+			filter.type_mask |= TYPE_MASK_TODO;
+			query = 1;
 			break;
 		case 'v':
-			vflag = 1;
-			break;
+			version_arg();
+			goto cleanup;
 		case 'x':
-			xflag = 1;
-			multiple_flag++;
-			load_data++;
-			if (optarg != NULL) {
-				if (strcmp(optarg, "ical") == 0) {
+			export = 1;
+			if (optarg) {
+				if (!strcmp(optarg, "ical"))
 					xfmt = IO_EXPORT_ICAL;
-				} else if (strcmp(optarg, "pcal") == 0) {
+				else if (!strcmp(optarg, "pcal"))
 					xfmt = IO_EXPORT_PCAL;
-				} else {
-					fputs(_("Argument for '-x' should be either "
-					       "'ical' or 'pcal'\n"),
-					      stderr);
-					usage();
-					usage_try();
-					return EXIT_FAILURE;
-				}
-			} else {
-				xfmt = IO_EXPORT_ICAL;
+				else
+					EXIT(_("invalid export format: %s"),
+					     optarg);
 			}
 			break;
 		case 'Q':
-			Qflag = 1;
-			load_data++;
+			query = 1;
 			break;
 		case OPT_FILTER_TYPE:
 			filter.type_mask = parse_type_mask(optarg);
@@ -735,8 +524,6 @@ int parse_args(int argc, char **argv)
 				_("invalid filter mask"));
 			break;
 		case 'S':
-			Sflag = 1;
-			/* FALLTHROUGH */
 		case OPT_FILTER_PATTERN:
 			EXIT_IF(filter.regex,
 				_("Can not handle more than one regular expression."));
@@ -803,6 +590,10 @@ int parse_args(int argc, char **argv)
 			to = parse_datearg(optarg);
 			EXIT_IF(to == -1, _("invalid end date"));
 			break;
+		case OPT_DAYS:
+			range = atoi(optarg);
+			EXIT_IF(range == 0, _("invalid range"));
+			break;
 		case OPT_FMT_APT:
 			fmt_apt = optarg;
 			break;
@@ -821,146 +612,88 @@ int parse_args(int argc, char **argv)
 		case OPT_READ_ONLY:
 			read_only = 1;
 			break;
+		case OPT_STATUS:
+			status = 1;
+			break;
 		default:
 			usage();
 			usage_try();
-			unknown_flag = 1;
-			non_interactive = 1;
-			/* NOTREACHED */
+			goto cleanup;
 		}
 	}
 	argc -= optind;
 
-	if (argc >= 1) {
+	if (filter.type_mask == 0)
+		filter.type_mask = TYPE_MASK_ALL;
+
+	if (status + query + next + gc + import + export > 1) {
+		ERROR_MSG(_("invalid argument combination"));
 		usage();
 		usage_try();
-		return EXIT_FAILURE;
-		/* Incorrect arguments */
-	} else if (Sflag && !(aflag || dflag || rflag || sflag || tflag)) {
-		fputs(_("Option '-S' must be used with either '-d', '-r', '-s', "
-		       "'-a' or '-t'\n"), stderr);
-		usage();
-		usage_try();
-		return EXIT_FAILURE;
-	} else if ((limit != INT_MAX) && !(aflag || dflag || rflag || sflag || tflag)) {
-		fputs(_("Option '-l' must be used with either '-d', '-r', '-s', "
-		       "'-a' or '-t'\n"), stderr);
-		usage();
-		usage_try();
-		return EXIT_FAILURE;
-	} else {
-		if (load_data) {
-			io_init(cfile, datadir);
-			io_check_dir(path_dir);
-			io_check_dir(path_notes);
-		}
-
-		if (unknown_flag) {
-			non_interactive = 1;
-		} else if (hflag) {
-			help_arg();
-			non_interactive = 1;
-		} else if (vflag) {
-			version_arg();
-			non_interactive = 1;
-		} else if (statusflag) {
-			io_init(cfile, datadir);
-			status_arg();
-			non_interactive = 1;
-		} else if (gflag) {
-			io_init(cfile, datadir);
-			io_check_dir(path_dir);
-			io_check_dir(path_notes);
-			io_check_file(path_apts);
-			io_check_file(path_todo);
-			io_load_app(&filter);
-			io_load_todo(&filter);
-			note_gc();
-			non_interactive = 1;
-		} else if (Qflag) {
-			struct date day;
-
-			io_check_file(path_apts);
-			io_check_file(path_todo);
-			io_check_file(path_conf);
-			vars_init();
-			config_load();	/* To get output date format. */
-			io_load_app(&filter);
-			io_load_todo(&filter);
-			day.dd = day.mm = day.yyyy = 0;
-			date_arg_from_to(from, to, 1, fmt_apt, fmt_rapt,
-					 fmt_ev, fmt_rev, &limit);
-			todo_arg(-1, fmt_todo, &limit);
-			non_interactive = 1;
-		} else if (multiple_flag) {
-			if (iflag) {
-				io_check_file(path_apts);
-				io_check_file(path_todo);
-				/* Get default pager in case we need to show a log file. */
-				vars_init();
-				io_load_app(&filter);
-				io_load_todo(&filter);
-				io_import_data(IO_IMPORT_ICAL, ifile);
-				io_save_apts(path_apts);
-				io_save_todo(path_todo);
-				non_interactive = 1;
-			}
-			if (xflag) {
-				io_check_file(path_apts);
-				io_check_file(path_todo);
-				io_load_app(&filter);
-				io_load_todo(&filter);
-				io_export_data(xfmt);
-				non_interactive = 1;
-				return non_interactive;
-			}
-			if (tflag) {
-				io_check_file(path_todo);
-				io_load_todo(&filter);
-				todo_arg(tnum, fmt_todo, &limit);
-				non_interactive = 1;
-			}
-			if (nflag) {
-				io_check_file(path_apts);
-				io_load_app(&filter);
-				next_arg();
-				non_interactive = 1;
-			}
-			if (dflag || rflag || sflag) {
-				io_check_file(path_apts);
-				io_check_file(path_conf);
-				io_load_app(&filter);
-				config_load();	/* To get output date format. */
-				if (dflag)
-					date_arg(ddate, add_line, fmt_apt,
-						 fmt_rapt, fmt_ev, fmt_rev,
-						 &limit);
-				if (rflag || sflag)
-					date_arg_extended(startday, range,
-							  add_line,
-							  fmt_apt,
-							  fmt_rapt, fmt_ev,
-							  fmt_rev, &limit);
-				non_interactive = 1;
-			} else if (aflag) {
-				struct date day;
-
-				io_check_file(path_apts);
-				io_check_file(path_conf);
-				vars_init();
-				config_load();	/* To get output date format. */
-				io_load_app(&filter);
-				day.dd = day.mm = day.yyyy = 0;
-				app_arg(add_line, &day, 0, fmt_apt, fmt_rapt,
-						fmt_ev, fmt_rev, &limit);
-				non_interactive = 1;
-			}
-		} else {
-			non_interactive = 0;
-			io_init(cfile, datadir);
-		}
+		goto cleanup;
 	}
 
+	if (from == -1) {
+		struct date day = { 0, 0, 0 };
+		from = get_sec_date(day);
+	}
+
+	if (to == -1 && range == -1)
+		to = from + DAYINSEC;
+	else if (to == -1 && range >= 0)
+		to = from + range * DAYINSEC;
+	else if (to >= 0 && range >= 0)
+		EXIT_IF(to >= 0, _("cannot specify a range and an end date"));
+
+	io_init(cfile, datadir);
+	io_check_dir(path_dir);
+	io_check_dir(path_notes);
+
+	if (status) {
+		status_arg();
+	} else if (query) {
+		io_check_file(path_apts);
+		io_check_file(path_todo);
+		io_check_file(path_conf);
+		vars_init();
+		config_load();	/* To get output date format. */
+		io_load_app(&filter);
+		io_load_todo(&filter);
+		date_arg_from_to(from, to, fmt_apt, fmt_rapt, fmt_ev, fmt_rev,
+				 &limit);
+		todo_arg(fmt_todo, &limit, &filter);
+	} else if (next) {
+		io_check_file(path_apts);
+		io_load_app(&filter);
+		next_arg();
+	} else if (gc) {
+		io_check_file(path_apts);
+		io_check_file(path_todo);
+		io_load_app(&filter);
+		io_load_todo(&filter);
+		note_gc();
+	} else if (import) {
+		io_check_file(path_apts);
+		io_check_file(path_todo);
+		/* Get default pager in case we need to show a log file. */
+		vars_init();
+		io_load_app(&filter);
+		io_load_todo(&filter);
+		io_import_data(IO_IMPORT_ICAL, ifile);
+		io_save_apts(path_apts);
+		io_save_todo(path_todo);
+	} else if (export) {
+		io_check_file(path_apts);
+		io_check_file(path_todo);
+		io_load_app(&filter);
+		io_load_todo(&filter);
+		io_export_data(xfmt);
+	} else {
+		/* interactive mode */
+		non_interactive = 0;
+	}
+
+cleanup:
 	/* Free filter parameters. */
 	if (filter.regex)
 		regfree(filter.regex);
