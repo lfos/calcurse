@@ -217,18 +217,18 @@ static void status_arg(void)
 		puts(_("calcurse is not running\n"));
 }
 
-/* Print TODO list and exit. */
-static void todo_arg(const char *format, int *limit,
-		     struct item_filter *filter)
+/* Print TODO list and return the number of printed items. */
+static int todo_arg(const char *format, int *limit, struct item_filter *filter)
 {
 	const char *titlestr =
 		filter->completed ? _("completed tasks:\n") : _("to do:\n");
 	int title = 1;
+	int n = 0;
 	llist_item_t *i;
 
 	LLIST_FOREACH(&todolist, i) {
 		if (*limit == 0)
-			return;
+			break;
 		struct todo *todo = LLIST_TS_GET_DATA(i);
 
 		if (title) {
@@ -236,8 +236,11 @@ static void todo_arg(const char *format, int *limit,
 			title = 0;
 		}
 		print_todo(format, todo);
+		n++;
 		(*limit)--;
 	}
+
+	return n;
 }
 
 /* Print the next appointment within the upcoming 24 hours. */
@@ -286,11 +289,11 @@ static void arg_print_date(long date)
  * If no end date is given (-1), a range of 1 day is considered.
  */
 static void
-date_arg_from_to(long from, long to, const char *fmt_apt, const char *fmt_rapt,
-		 const char *fmt_ev, const char *fmt_rev, int *limit)
+date_arg_from_to(long from, long to, int add_line, const char *fmt_apt,
+		 const char *fmt_rapt, const char *fmt_ev, const char *fmt_rev,
+		 int *limit)
 {
 	long date;
-	int add_line = 0;
 
 	for (date = from; date < to; date += DAYINSEC) {
 		day_store_items(date, 0);
@@ -659,9 +662,9 @@ int parse_args(int argc, char **argv)
 		config_load();	/* To get output date format. */
 		io_load_app(&filter);
 		io_load_todo(&filter);
-		date_arg_from_to(from, to, fmt_apt, fmt_rapt, fmt_ev, fmt_rev,
-				 &limit);
-		todo_arg(fmt_todo, &limit, &filter);
+		int add_line = todo_arg(fmt_todo, &limit, &filter);
+		date_arg_from_to(from, to, add_line, fmt_apt, fmt_rapt, fmt_ev,
+				 fmt_rev, &limit);
 	} else if (next) {
 		io_check_file(path_apts);
 		io_load_app(&filter);

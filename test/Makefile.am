@@ -41,6 +41,7 @@ TESTS = \
 	event-004.sh \
 	event-005.sh \
 	event-006.sh \
+	filter-001.sh \
 	ical-001.sh \
 	ical-002.sh \
 	ical-003.sh \
@@ -98,6 +99,7 @@ EXTRA_DIST = \
 	data/apts-event-004 \
 	data/apts-event-005 \
 	data/apts-event-006 \
+	data/apts-filter-001 \
 	data/apts-recur \
 	data/conf \
 	data/ical-001.ical \
