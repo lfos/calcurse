@@ -165,7 +165,7 @@ void dmon_start(int parent_exit_status)
 	event_llist_init();
 	recur_event_llist_init();
 	todo_init_list();
-	io_load_app();
+	io_load_app(NULL);
 	data_loaded = 1;
 
 	DMON_LOG(_("started at %s\n"), nowstr());

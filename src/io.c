@@ -464,7 +464,7 @@ static void io_load_error(const char *filename, unsigned line,
  * and then load either: a new appointment, a new event, or a new
  * recursive item (which can also be either an event or an appointment).
  */
-void io_load_app(void)
+void io_load_app(struct item_filter *filter)
 {
 	FILE *data_file;
 	int c, is_appointment, is_event, is_recursive;
@@ -620,18 +620,19 @@ void io_load_app(void)
 			if (is_recursive) {
 				recur_apoint_scan(data_file, start, end,
 						  type, freq, until, notep,
-						  &exc, state);
+						  &exc, state, filter);
 			} else {
 				apoint_scan(data_file, start, end, state,
-					    notep);
+					    notep, filter);
 			}
 		} else if (is_event) {
 			if (is_recursive) {
 				recur_event_scan(data_file, start, id,
 						 type, freq, until, notep,
-						 &exc);
+						 &exc, filter);
 			} else {
-				event_scan(data_file, start, id, notep);
+				event_scan(data_file, start, id, notep,
+					   filter);
 			}
 		} else {
 			io_load_error(path_apts, line,

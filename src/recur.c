@@ -330,7 +330,8 @@ static void recur_write_exc(llist_t * lexc, FILE * f)
 struct recur_apoint *recur_apoint_scan(FILE * f, struct tm start,
 				       struct tm end, char type, int freq,
 				       struct tm until, char *note,
-				       llist_t * exc, char state)
+				       llist_t * exc, char state,
+				       struct item_filter *filter)
 {
 	char buf[BUFSIZ], *nl;
 	time_t tstart, tend, tuntil;
@@ -375,6 +376,20 @@ struct recur_apoint *recur_apoint_scan(FILE * f, struct tm start,
 	EXIT_IF(tstart == -1 || tend == -1 || tstart > tend
 		|| tuntil == -1, _("date error in appointment"));
 
+	/* Filter item. */
+	if (filter) {
+		if (!(filter->type_mask & TYPE_MASK_RECUR_APPT))
+			return NULL;
+		if (filter->start_from >= 0 && tstart < filter->start_from)
+			return NULL;
+		if (filter->start_to >= 0 && tstart > filter->start_to)
+			return NULL;
+		if (filter->end_from >= 0 && tend < filter->end_from)
+			return NULL;
+		if (filter->end_to >= 0 && tend > filter->end_to)
+			return NULL;
+	}
+
 	return recur_apoint_new(buf, note, tstart, tend - tstart, state,
 				recur_char2def(type), freq, tuntil, exc);
 }
@@ -382,7 +397,8 @@ struct recur_apoint *recur_apoint_scan(FILE * f, struct tm start,
 /* Load the recursive events from file */
 struct recur_event *recur_event_scan(FILE * f, struct tm start, int id,
 				     char type, int freq, struct tm until,
-				     char *note, llist_t * exc)
+				     char *note, llist_t * exc,
+				     struct item_filter *filter)
 {
 	char buf[BUFSIZ], *nl;
 	time_t tstart, tuntil;
@@ -416,6 +432,16 @@ struct recur_event *recur_event_scan(FILE * f, struct tm start, int id,
 	}
 	tstart = mktime(&start);
 	EXIT_IF(tstart == -1 || tuntil == -1, _("date error in event"));
+
+	/* Filter item. */
+	if (filter) {
+		if (!(filter->type_mask & TYPE_MASK_RECUR_EVNT))
+			return NULL;
+		if (filter->start_from >= 0 && tstart < filter->start_from)
+			return NULL;
+		if (filter->start_to >= 0 && tstart > filter->start_to)
+			return NULL;
+	}
 
 	return recur_event_new(buf, note, tstart, id, recur_char2def(type),
 			       freq, tuntil, exc);

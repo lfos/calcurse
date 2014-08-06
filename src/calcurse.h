@@ -383,6 +383,23 @@ enum day_item_type {
 	APPT
 };
 
+/* Available item type masks. */
+#define TYPE_MASK_EVNT (1 << EVNT)
+#define TYPE_MASK_APPT (1 << APPT)
+#define TYPE_MASK_RECUR_EVNT (1 << RECUR_EVNT)
+#define TYPE_MASK_RECUR_APPT (1 << RECUR_APPT)
+#define TYPE_MASK_RECUR (TYPE_MASK_RECUR_EVNT | TYPE_MASK_RECUR_APPT)
+#define TYPE_MASK_ALL (TYPE_MASK_EVNT | TYPE_MASK_APPT | TYPE_MASK_RECUR)
+
+/* Filter settings. */
+struct item_filter {
+	int type_mask;
+	long start_from;
+	long start_to;
+	long end_from;
+	long end_to;
+};
+
 /* Generic item description (to hold appointments, events...). */
 struct day_item {
 	enum day_item_type type;
@@ -643,7 +660,8 @@ struct apoint *apoint_new(char *, char *, long, long, char);
 unsigned apoint_inday(struct apoint *, long *);
 void apoint_sec2str(struct apoint *, long, char *, char *);
 void apoint_write(struct apoint *, FILE *);
-struct apoint *apoint_scan(FILE *, struct tm, struct tm, char, char *);
+struct apoint *apoint_scan(FILE *, struct tm, struct tm, char, char *,
+			   struct item_filter *);
 void apoint_delete(struct apoint *);
 struct notify_app *apoint_check_next(struct notify_app *, long);
 void apoint_switch_notify(struct apoint *);
@@ -735,7 +753,7 @@ void event_llist_free(void);
 struct event *event_new(char *, char *, long, int);
 unsigned event_inday(struct event *, long *);
 void event_write(struct event *, FILE *);
-struct event *event_scan(FILE *, struct tm, int, char *);
+struct event *event_scan(FILE *, struct tm, int, char *, struct item_filter *);
 void event_delete(struct event *);
 void event_paste_item(struct event *, long);
 
@@ -761,7 +779,7 @@ unsigned io_save_apts(const char *);
 unsigned io_save_todo(const char *);
 unsigned io_save_keys(void);
 void io_save_cal(enum save_display);
-void io_load_app(void);
+void io_load_app(struct item_filter *);
 void io_load_todo(void);
 void io_load_keys(const char *);
 int io_check_dir(const char *);
@@ -911,9 +929,10 @@ char recur_def2char(enum recur_type);
 int recur_char2def(char);
 struct recur_apoint *recur_apoint_scan(FILE *, struct tm, struct tm,
 				       char, int, struct tm, char *,
-				       llist_t *, char);
+				       llist_t *, char, struct item_filter *);
 struct recur_event *recur_event_scan(FILE *, struct tm, int, char,
-				     int, struct tm, char *, llist_t *);
+				     int, struct tm, char *, llist_t *,
+				     struct item_filter *);
 void recur_apoint_write(struct recur_apoint *, FILE *);
 void recur_event_write(struct recur_event *, FILE *);
 void recur_save_data(FILE *);

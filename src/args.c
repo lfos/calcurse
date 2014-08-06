@@ -46,7 +46,16 @@
 
 /* Long options */
 enum {
-	OPT_FMT_APT = 1000,
+	OPT_FILTER_TYPE = 1000,
+	OPT_FILTER_START_FROM,
+	OPT_FILTER_START_TO,
+	OPT_FILTER_START_AFTER,
+	OPT_FILTER_START_BEFORE,
+	OPT_FILTER_END_FROM,
+	OPT_FILTER_END_TO,
+	OPT_FILTER_END_AFTER,
+	OPT_FILTER_END_BEFORE,
+	OPT_FMT_APT,
 	OPT_FMT_RAPT,
 	OPT_FMT_EV,
 	OPT_FMT_REV,
@@ -448,6 +457,52 @@ date_arg_extended(const char *startday, const char *range, int add_line,
 	}
 }
 
+static int parse_datearg(const char *str)
+{
+	struct date day;
+
+	if (parse_date(str, DATEFMT_YYYYMMDD, (int *)&day.yyyy,
+			(int *)&day.mm, (int *)&day.dd, NULL))
+		return date2sec(day, 0, 0);
+
+	if (parse_date(str, DATEFMT_MMDDYYYY, (int *)&day.yyyy,
+			(int *)&day.mm, (int *)&day.dd, NULL))
+		return date2sec(day, 0, 0);
+
+	if (parse_date(str, DATEFMT_ISO, (int *)&day.yyyy,
+			(int *)&day.mm, (int *)&day.dd, NULL))
+		return date2sec(day, 0, 0);
+
+	return -1;
+}
+
+static int parse_type_mask(const char *str)
+{
+	char *buf = mem_strdup(str), *p;
+	int mask = 0;
+
+	for (p = strtok(buf, ","); p; p = strtok(NULL, ",")) {
+		if (!strcmp(p, "event")) {
+			mask |= TYPE_MASK_EVNT;
+		} else if (!strcmp(p, "apt")) {
+			mask |= TYPE_MASK_APPT;
+		} else if (!strcmp(p, "recur-event")) {
+			mask |= TYPE_MASK_RECUR_EVNT;
+		} else if (!strcmp(p, "recur-apt")) {
+			mask |= TYPE_MASK_RECUR_APPT;
+		} else if (!strcmp(p, "recur")) {
+			mask |= TYPE_MASK_RECUR;
+		} else {
+			mask = 0;
+			goto cleanup;
+		}
+	}
+
+cleanup:
+	mem_free(buf);
+	return mask;
+}
+
 /*
  * Parse the command-line arguments and call the appropriate
  * routines to handle those arguments. Also initialize the data paths.
@@ -469,6 +524,8 @@ int parse_args(int argc, char **argv)
 	int tflag = 0;		/* -t: print todo list */
 	int vflag = 0;		/* -v: print version number */
 	int xflag = 0;		/* -x: export data */
+	/* Filters */
+	struct item_filter filter = { TYPE_MASK_ALL, -1, -1, -1, -1 };
 	/* Format strings */
 	const char *fmt_apt = " - %S -> %E\n\t%m\n";
 	const char *fmt_rapt = " - %S -> %E\n\t%m\n";
@@ -511,6 +568,15 @@ int parse_args(int argc, char **argv)
 		{"version", no_argument, NULL, 'v'},
 		{"export", optional_argument, NULL, 'x'},
 
+		{"filter-type", required_argument, NULL, OPT_FILTER_TYPE},
+		{"filter-start-from", required_argument, NULL, OPT_FILTER_START_FROM},
+		{"filter-start-to", required_argument, NULL, OPT_FILTER_START_TO},
+		{"filter-start-after", required_argument, NULL, OPT_FILTER_START_AFTER},
+		{"filter-start-before", required_argument, NULL, OPT_FILTER_START_BEFORE},
+		{"filter-end-from", required_argument, NULL, OPT_FILTER_END_FROM},
+		{"filter-end-to", required_argument, NULL, OPT_FILTER_END_TO},
+		{"filter-end-after", required_argument, NULL, OPT_FILTER_END_AFTER},
+		{"filter-end-before", required_argument, NULL, OPT_FILTER_END_BEFORE},
 		{"format-apt", required_argument, NULL, OPT_FMT_APT},
 		{"format-recur-apt", required_argument, NULL, OPT_FMT_RAPT},
 		{"format-event", required_argument, NULL, OPT_FMT_EV},
@@ -625,6 +691,51 @@ int parse_args(int argc, char **argv)
 				xfmt = IO_EXPORT_ICAL;
 			}
 			break;
+		case OPT_FILTER_TYPE:
+			filter.type_mask = parse_type_mask(optarg);
+			EXIT_IF(filter.type_mask == 0,
+				_("invalid filter mask"));
+			break;
+		case OPT_FILTER_START_FROM:
+			filter.start_from = parse_datearg(optarg);
+			EXIT_IF(filter.start_from == -1,
+				_("invalid filter start date"));
+			break;
+		case OPT_FILTER_START_TO:
+			filter.start_to = parse_datearg(optarg);
+			EXIT_IF(filter.start_to == -1,
+				_("invalid filter end date"));
+			break;
+		case OPT_FILTER_START_AFTER:
+			filter.start_from = parse_datearg(optarg) + 1;
+			EXIT_IF(filter.start_from == -1,
+				_("invalid filter start date"));
+			break;
+		case OPT_FILTER_START_BEFORE:
+			filter.start_to = parse_datearg(optarg) - 1;
+			EXIT_IF(filter.start_to == -1,
+				_("invalid filter end date"));
+			break;
+		case OPT_FILTER_END_FROM:
+			filter.end_from = parse_datearg(optarg);
+			EXIT_IF(filter.end_from == -1,
+				_("invalid filter start date"));
+			break;
+		case OPT_FILTER_END_TO:
+			filter.end_to = parse_datearg(optarg);
+			EXIT_IF(filter.end_to == -1,
+				_("invalid filter end date"));
+			break;
+		case OPT_FILTER_END_AFTER:
+			filter.end_from = parse_datearg(optarg) + 1;
+			EXIT_IF(filter.end_from == -1,
+				_("invalid filter start date"));
+			break;
+		case OPT_FILTER_END_BEFORE:
+			filter.end_to = parse_datearg(optarg) - 1;
+			EXIT_IF(filter.end_to == -1,
+				_("invalid filter end date"));
+			break;
 		case OPT_FMT_APT:
 			fmt_apt = optarg;
 			break;
@@ -689,7 +800,7 @@ int parse_args(int argc, char **argv)
 			io_check_dir(path_notes);
 			io_check_file(path_apts);
 			io_check_file(path_todo);
-			io_load_app();
+			io_load_app(&filter);
 			io_load_todo();
 			note_gc();
 			non_interactive = 1;
@@ -704,7 +815,7 @@ int parse_args(int argc, char **argv)
 				io_check_file(path_todo);
 				/* Get default pager in case we need to show a log file. */
 				vars_init();
-				io_load_app();
+				io_load_app(&filter);
 				io_load_todo();
 				io_import_data(IO_IMPORT_ICAL, ifile);
 				io_save_apts(path_apts);
@@ -714,7 +825,7 @@ int parse_args(int argc, char **argv)
 			if (xflag) {
 				io_check_file(path_apts);
 				io_check_file(path_todo);
-				io_load_app();
+				io_load_app(&filter);
 				io_load_todo();
 				io_export_data(xfmt);
 				non_interactive = 1;
@@ -728,14 +839,14 @@ int parse_args(int argc, char **argv)
 			}
 			if (nflag) {
 				io_check_file(path_apts);
-				io_load_app();
+				io_load_app(&filter);
 				next_arg();
 				non_interactive = 1;
 			}
 			if (dflag || rflag || sflag) {
 				io_check_file(path_apts);
 				io_check_file(path_conf);
-				io_load_app();
+				io_load_app(&filter);
 				config_load();	/* To get output date format. */
 				if (dflag)
 					date_arg(ddate, add_line, fmt_apt,
@@ -756,7 +867,7 @@ int parse_args(int argc, char **argv)
 				io_check_file(path_conf);
 				vars_init();
 				config_load();	/* To get output date format. */
-				io_load_app();
+				io_load_app(&filter);
 				day.dd = day.mm = day.yyyy = 0;
 				app_arg(add_line, &day, 0, fmt_apt, fmt_rapt,
 						fmt_ev, fmt_rev, preg, &limit);

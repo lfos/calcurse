@@ -333,7 +333,7 @@ static inline void key_generic_reload(void)
 	todo_init_list();
 
 	io_load_todo();
-	io_load_app();
+	io_load_app(NULL);
 	io_unset_modified();
 	ui_todo_load_items();
 	ui_todo_sel_reset();
@@ -684,7 +684,7 @@ int main(int argc, char **argv)
 	wins_erase_status_bar();
 	io_load_keys(conf.pager);
 	io_load_todo();
-	io_load_app();
+	io_load_app(NULL);
 	io_unset_modified();
 	wins_slctd_set(conf.default_panel);
 	wins_resize();

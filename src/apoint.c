@@ -163,7 +163,7 @@ void apoint_write(struct apoint *o, FILE * f)
 }
 
 struct apoint *apoint_scan(FILE * f, struct tm start, struct tm end,
-			   char state, char *note)
+			   char state, char *note, struct item_filter *filter)
 {
 	char buf[BUFSIZ], *newline;
 	time_t tstart, tend;
@@ -193,6 +193,21 @@ struct apoint *apoint_scan(FILE * f, struct tm start, struct tm end,
 	tend = mktime(&end);
 	EXIT_IF(tstart == -1 || tend == -1 || tstart > tend,
 		_("date error in appointment"));
+
+	/* Filter item. */
+	if (filter) {
+		if (!(filter->type_mask & TYPE_MASK_APPT))
+			return NULL;
+		if (filter->start_from >= 0 && tstart < filter->start_from)
+			return NULL;
+		if (filter->start_to >= 0 && tstart > filter->start_to)
+			return NULL;
+		if (filter->end_from >= 0 && tend < filter->end_from)
+			return NULL;
+		if (filter->end_to >= 0 && tend > filter->end_to)
+			return NULL;
+	}
+
 	return apoint_new(buf, note, tstart, tend - tstart, state);
 }
 

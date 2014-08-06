@@ -120,7 +120,8 @@ void event_write(struct event *o, FILE * f)
 }
 
 /* Load the events from file */
-struct event *event_scan(FILE * f, struct tm start, int id, char *note)
+struct event *event_scan(FILE * f, struct tm start, int id, char *note,
+			 struct item_filter *filter)
 {
 	char buf[BUFSIZ], *nl;
 	time_t tstart;
@@ -146,6 +147,16 @@ struct event *event_scan(FILE * f, struct tm start, int id, char *note)
 
 	tstart = mktime(&start);
 	EXIT_IF(tstart == -1, _("date error in the event\n"));
+
+	/* Filter item. */
+	if (filter) {
+		if (!(filter->type_mask & TYPE_MASK_EVNT))
+			return NULL;
+		if (filter->start_from >= 0 && tstart < filter->start_from)
+			return NULL;
+		if (filter->start_to >= 0 && tstart > filter->start_to)
+			return NULL;
+	}
 
 	return event_new(buf, note, tstart, id);
 }
