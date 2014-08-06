@@ -56,6 +56,8 @@ enum {
 	OPT_FILTER_END_TO,
 	OPT_FILTER_END_AFTER,
 	OPT_FILTER_END_BEFORE,
+	OPT_FROM,
+	OPT_TO,
 	OPT_FMT_APT,
 	OPT_FMT_RAPT,
 	OPT_FMT_EV,
@@ -452,6 +454,33 @@ date_arg_extended(const char *startday, const char *range, int add_line,
 	}
 }
 
+/*
+ * Print appointments inside the given query range.
+ * If no start day is given (-1), today is considered.
+ * If no end date is given (-1), a range of 1 day is considered.
+ */
+static void
+date_arg_from_to(long from, long to, int add_line, const char *fmt_apt,
+		 const char *fmt_rapt, const char *fmt_ev, const char *fmt_rev,
+		 int *limit)
+{
+	long date;
+
+	if (from == -1) {
+		struct date day = { 0, 0, 0 };
+		from = get_sec_date(day);
+	}
+
+	if (to == -1)
+		to = from + DAYINSEC;
+
+	for (date = from; date < to; date += DAYINSEC) {
+		if (app_arg(add_line, NULL, date, fmt_apt, fmt_rapt,
+			    fmt_ev, fmt_rev, limit))
+			add_line = 1;
+	}
+}
+
 static int parse_datearg(const char *str)
 {
 	struct date day;
@@ -513,12 +542,15 @@ int parse_args(int argc, char **argv)
 	int gflag = 0;		/* -g: run garbage collector */
 	int iflag = 0;		/* -i: import data */
 	int nflag = 0;		/* -n: print next appointment */
+	int Qflag = 0;		/* -Q: query mode */
 	int rflag = 0;		/* -r: specify the range of days to consider */
 	int sflag = 0;		/* -s: specify the first day to consider */
 	int Sflag = 0;		/* -S: specify a regex to search for */
 	int tflag = 0;		/* -t: print todo list */
 	int vflag = 0;		/* -v: print version number */
 	int xflag = 0;		/* -x: export data */
+	/* Query ranges */
+	long from = -1, to = -1;
 	/* Filters */
 	struct item_filter filter = { TYPE_MASK_ALL, NULL, -1, -1, -1, -1 };
 	/* Format strings */
@@ -542,7 +574,7 @@ int parse_args(int argc, char **argv)
 		STATUS_OPT = CHAR_MAX + 1
 	};
 
-	static const char *optstr = "ghvnNax::t::d:c:r::s::S:D:i:l:";
+	static const char *optstr = "ghvnNax::t::d:c:r::s::S:D:i:l:Q";
 
 	struct option longopts[] = {
 		{"appointment", no_argument, NULL, 'a'},
@@ -562,6 +594,7 @@ int parse_args(int argc, char **argv)
 		{"todo", optional_argument, NULL, 't'},
 		{"version", no_argument, NULL, 'v'},
 		{"export", optional_argument, NULL, 'x'},
+		{"query", optional_argument, NULL, 'Q'},
 
 		{"filter-type", required_argument, NULL, OPT_FILTER_TYPE},
 		{"filter-pattern", required_argument, NULL, OPT_FILTER_PATTERN},
@@ -573,6 +606,8 @@ int parse_args(int argc, char **argv)
 		{"filter-end-to", required_argument, NULL, OPT_FILTER_END_TO},
 		{"filter-end-after", required_argument, NULL, OPT_FILTER_END_AFTER},
 		{"filter-end-before", required_argument, NULL, OPT_FILTER_END_BEFORE},
+		{"from", required_argument, NULL, OPT_FROM},
+		{"to", required_argument, NULL, OPT_TO},
 		{"format-apt", required_argument, NULL, OPT_FMT_APT},
 		{"format-recur-apt", required_argument, NULL, OPT_FMT_RAPT},
 		{"format-event", required_argument, NULL, OPT_FMT_EV},
@@ -679,6 +714,10 @@ int parse_args(int argc, char **argv)
 				xfmt = IO_EXPORT_ICAL;
 			}
 			break;
+		case 'Q':
+			Qflag = 1;
+			load_data++;
+			break;
 		case OPT_FILTER_TYPE:
 			filter.type_mask = parse_type_mask(optarg);
 			EXIT_IF(filter.type_mask == 0,
@@ -734,6 +773,14 @@ int parse_args(int argc, char **argv)
 			EXIT_IF(filter.end_to == -1,
 				_("invalid filter end date"));
 			break;
+		case OPT_FROM:
+			from = parse_datearg(optarg);
+			EXIT_IF(from == -1, _("invalid start date"));
+			break;
+		case OPT_TO:
+			to = parse_datearg(optarg);
+			EXIT_IF(to == -1, _("invalid end date"));
+			break;
 		case OPT_FMT_APT:
 			fmt_apt = optarg;
 			break;
@@ -780,6 +827,12 @@ int parse_args(int argc, char **argv)
 		usage_try();
 		return EXIT_FAILURE;
 	} else {
+		if (load_data) {
+			io_init(cfile, datadir);
+			io_check_dir(path_dir);
+			io_check_dir(path_notes);
+		}
+
 		if (unknown_flag) {
 			non_interactive = 1;
 		} else if (hflag) {
@@ -802,12 +855,22 @@ int parse_args(int argc, char **argv)
 			io_load_todo();
 			note_gc();
 			non_interactive = 1;
+		} else if (Qflag) {
+			struct date day;
+
+			io_check_file(path_apts);
+			io_check_file(path_todo);
+			io_check_file(path_conf);
+			vars_init();
+			config_load();	/* To get output date format. */
+			io_load_app(&filter);
+			io_load_todo();
+			day.dd = day.mm = day.yyyy = 0;
+			date_arg_from_to(from, to, 1, fmt_apt, fmt_rapt,
+					 fmt_ev, fmt_rev, &limit);
+			todo_arg(-1, fmt_todo, &limit);
+			non_interactive = 1;
 		} else if (multiple_flag) {
-			if (load_data) {
-				io_init(cfile, datadir);
-				io_check_dir(path_dir);
-				io_check_dir(path_notes);
-			}
 			if (iflag) {
 				io_check_file(path_apts);
 				io_check_file(path_todo);
