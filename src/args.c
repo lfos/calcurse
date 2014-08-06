@@ -56,6 +56,9 @@ enum {
 	OPT_FILTER_END_TO,
 	OPT_FILTER_END_AFTER,
 	OPT_FILTER_END_BEFORE,
+	OPT_FILTER_PRIORITY,
+	OPT_FILTER_COMPLETED,
+	OPT_FILTER_UNCOMPLETED,
 	OPT_FROM,
 	OPT_TO,
 	OPT_FMT_APT,
@@ -516,6 +519,10 @@ static int parse_type_mask(const char *str)
 			mask |= TYPE_MASK_RECUR_APPT;
 		} else if (!strcmp(p, "recur")) {
 			mask |= TYPE_MASK_RECUR;
+		} else if (!strcmp(p, "cal")) {
+			mask |= TYPE_MASK_CAL;
+		} else if (!strcmp(p, "todo")) {
+			mask |= TYPE_MASK_TODO;
 		} else {
 			mask = 0;
 			goto cleanup;
@@ -552,7 +559,8 @@ int parse_args(int argc, char **argv)
 	/* Query ranges */
 	long from = -1, to = -1;
 	/* Filters */
-	struct item_filter filter = { TYPE_MASK_ALL, NULL, -1, -1, -1, -1 };
+	struct item_filter filter =
+		{ TYPE_MASK_ALL, NULL, -1, -1, -1, -1, 0, 0, 0 };
 	/* Format strings */
 	const char *fmt_apt = " - %S -> %E\n\t%m\n";
 	const char *fmt_rapt = " - %S -> %E\n\t%m\n";
@@ -606,6 +614,9 @@ int parse_args(int argc, char **argv)
 		{"filter-end-to", required_argument, NULL, OPT_FILTER_END_TO},
 		{"filter-end-after", required_argument, NULL, OPT_FILTER_END_AFTER},
 		{"filter-end-before", required_argument, NULL, OPT_FILTER_END_BEFORE},
+		{"filter-priority", required_argument, NULL, OPT_FILTER_PRIORITY},
+		{"filter-completed", no_argument, NULL, OPT_FILTER_COMPLETED},
+		{"filter-uncompleted", no_argument, NULL, OPT_FILTER_UNCOMPLETED},
 		{"from", required_argument, NULL, OPT_FROM},
 		{"to", required_argument, NULL, OPT_TO},
 		{"format-apt", required_argument, NULL, OPT_FMT_APT},
@@ -773,6 +784,17 @@ int parse_args(int argc, char **argv)
 			EXIT_IF(filter.end_to == -1,
 				_("invalid filter end date"));
 			break;
+		case OPT_FILTER_PRIORITY:
+			filter.priority = atoi(optarg);
+			EXIT_IF(filter.priority < 1 || filter.priority > 9,
+				_("invalid priority"));
+			break;
+		case OPT_FILTER_COMPLETED:
+			filter.completed = 1;
+			break;
+		case OPT_FILTER_UNCOMPLETED:
+			filter.uncompleted = 1;
+			break;
 		case OPT_FROM:
 			from = parse_datearg(optarg);
 			EXIT_IF(from == -1, _("invalid start date"));
@@ -852,7 +874,7 @@ int parse_args(int argc, char **argv)
 			io_check_file(path_apts);
 			io_check_file(path_todo);
 			io_load_app(&filter);
-			io_load_todo();
+			io_load_todo(&filter);
 			note_gc();
 			non_interactive = 1;
 		} else if (Qflag) {
@@ -864,7 +886,7 @@ int parse_args(int argc, char **argv)
 			vars_init();
 			config_load();	/* To get output date format. */
 			io_load_app(&filter);
-			io_load_todo();
+			io_load_todo(&filter);
 			day.dd = day.mm = day.yyyy = 0;
 			date_arg_from_to(from, to, 1, fmt_apt, fmt_rapt,
 					 fmt_ev, fmt_rev, &limit);
@@ -877,7 +899,7 @@ int parse_args(int argc, char **argv)
 				/* Get default pager in case we need to show a log file. */
 				vars_init();
 				io_load_app(&filter);
-				io_load_todo();
+				io_load_todo(&filter);
 				io_import_data(IO_IMPORT_ICAL, ifile);
 				io_save_apts(path_apts);
 				io_save_todo(path_todo);
@@ -887,14 +909,14 @@ int parse_args(int argc, char **argv)
 				io_check_file(path_apts);
 				io_check_file(path_todo);
 				io_load_app(&filter);
-				io_load_todo();
+				io_load_todo(&filter);
 				io_export_data(xfmt);
 				non_interactive = 1;
 				return non_interactive;
 			}
 			if (tflag) {
 				io_check_file(path_todo);
-				io_load_todo();
+				io_load_todo(&filter);
 				todo_arg(tnum, fmt_todo, &limit);
 				non_interactive = 1;
 			}

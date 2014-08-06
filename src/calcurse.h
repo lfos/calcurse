@@ -373,7 +373,7 @@ union aptev_ptr {
 	struct recur_event *rev;
 };
 
-/* Available types of items. */
+/* Available item types in the calendar view. */
 enum day_item_type {
 	DAY_HEADING = 1,
 	RECUR_EVNT,
@@ -383,13 +383,24 @@ enum day_item_type {
 	APPT
 };
 
+/* Available item types. */
+enum item_type {
+	TYPE_EVNT,
+	TYPE_APPT,
+	TYPE_RECUR_EVNT,
+	TYPE_RECUR_APPT,
+	TYPE_TODO
+};
+
 /* Available item type masks. */
-#define TYPE_MASK_EVNT (1 << EVNT)
-#define TYPE_MASK_APPT (1 << APPT)
-#define TYPE_MASK_RECUR_EVNT (1 << RECUR_EVNT)
-#define TYPE_MASK_RECUR_APPT (1 << RECUR_APPT)
+#define TYPE_MASK_EVNT (1 << TYPE_EVNT)
+#define TYPE_MASK_APPT (1 << TYPE_APPT)
+#define TYPE_MASK_RECUR_EVNT (1 << TYPE_RECUR_EVNT)
+#define TYPE_MASK_RECUR_APPT (1 << TYPE_RECUR_APPT)
 #define TYPE_MASK_RECUR (TYPE_MASK_RECUR_EVNT | TYPE_MASK_RECUR_APPT)
-#define TYPE_MASK_ALL (TYPE_MASK_EVNT | TYPE_MASK_APPT | TYPE_MASK_RECUR)
+#define TYPE_MASK_CAL (TYPE_MASK_EVNT | TYPE_MASK_APPT | TYPE_MASK_RECUR)
+#define TYPE_MASK_TODO (1 << TYPE_TODO)
+#define TYPE_MASK_ALL (TYPE_MASK_CAL | TYPE_MASK_TODO)
 
 /* Filter settings. */
 struct item_filter {
@@ -399,6 +410,9 @@ struct item_filter {
 	long start_to;
 	long end_from;
 	long end_to;
+	int priority;
+	int completed;
+	int uncompleted;
 };
 
 /* Generic item description (to hold appointments, events...). */
@@ -781,7 +795,7 @@ unsigned io_save_todo(const char *);
 unsigned io_save_keys(void);
 void io_save_cal(enum save_display);
 void io_load_app(struct item_filter *);
-void io_load_todo(void);
+void io_load_todo(struct item_filter *);
 void io_load_keys(const char *);
 int io_check_dir(const char *);
 unsigned io_dir_exists(const char *);

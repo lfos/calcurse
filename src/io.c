@@ -644,7 +644,7 @@ void io_load_app(struct item_filter *filter)
 }
 
 /* Load the todo data */
-void io_load_todo(void)
+void io_load_todo(struct item_filter *filter)
 {
 	FILE *data_file;
 	char *newline;
@@ -687,6 +687,22 @@ void io_load_todo(void)
 		if (newline)
 			*newline = '\0';
 		io_extract_data(e_todo, buf, sizeof buf);
+
+		/* Filter item. */
+		if (filter) {
+			if (!(filter->type_mask & TYPE_MASK_TODO))
+				continue;
+			if (filter->regex &&
+			    regexec(filter->regex, e_todo, 0, 0, 0))
+				continue;
+			if (filter->priority && id != filter->priority)
+				continue;
+			if (filter->completed && id > 0)
+				continue;
+			if (filter->uncompleted && id < 0)
+				continue;
+		}
+
 		todo_add(e_todo, id, note);
 		++nb_tod;
 	}
