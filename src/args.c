@@ -365,7 +365,8 @@ cleanup:
 int parse_args(int argc, char **argv)
 {
 	/* Command-line flags */
-	int status = 0, query = 0, next = 0, gc = 0, import = 0, export = 0;
+	int grep = 0, query = 0, next = 0;
+	int status = 0, gc = 0, import = 0, export = 0;
 	/* Query ranges */
 	long from = -1, range = -1, to = -1;
 	int limit = INT_MAX;
@@ -386,7 +387,7 @@ int parse_args(int argc, char **argv)
 	int ch;
 	regex_t reg;
 
-	static const char *optstr = "ghvnNax::t::d:c:r::s::S:D:i:l:Q";
+	static const char *optstr = "gGhvnNax::t::d:c:r::s::S:D:i:l:Q";
 
 	struct option longopts[] = {
 		{"appointment", no_argument, NULL, 'a'},
@@ -394,6 +395,7 @@ int parse_args(int argc, char **argv)
 		{"day", required_argument, NULL, 'd'},
 		{"directory", required_argument, NULL, 'D'},
 		{"gc", no_argument, NULL, 'g'},
+		{"grep", no_argument, NULL, 'G'},
 		{"help", no_argument, NULL, 'h'},
 		{"import", required_argument, NULL, 'i'},
 		{"limit", required_argument, NULL, 'l'},
@@ -462,6 +464,9 @@ int parse_args(int argc, char **argv)
 			goto cleanup;
 		case 'g':
 			gc = 1;
+			break;
+		case 'G':
+			grep = 1;
 			break;
 		case 'i':
 			import = 1;
@@ -629,7 +634,7 @@ int parse_args(int argc, char **argv)
 	if (filter.type_mask == 0)
 		filter.type_mask = TYPE_MASK_ALL;
 
-	if (status + query + next + gc + import + export > 1) {
+	if (status + grep + query + next + gc + import + export > 1) {
 		ERROR_MSG(_("invalid argument combination"));
 		usage();
 		usage_try();
@@ -654,6 +659,16 @@ int parse_args(int argc, char **argv)
 
 	if (status) {
 		status_arg();
+	} else if (grep) {
+		io_check_file(path_apts);
+		io_check_file(path_todo);
+		io_check_file(path_conf);
+		vars_init();
+		config_load();	/* To get output date format. */
+		io_load_app(&filter);
+		io_load_todo(&filter);
+		io_save_todo(NULL);
+		io_save_apts(NULL);
 	} else if (query) {
 		io_check_file(path_apts);
 		io_check_file(path_todo);

@@ -303,11 +303,15 @@ unsigned io_save_apts(const char *aptsfile)
 	llist_item_t *i;
 	FILE *fp;
 
-	if (read_only)
-		return 1;
+	if (aptsfile) {
+		if (read_only)
+			return 1;
 
-	if ((fp = fopen(aptsfile, "w")) == NULL)
-		return 0;
+		if ((fp = fopen(aptsfile, "w")) == NULL)
+			return 0;
+	} else {
+		fp = stdout;
+	}
 
 	recur_save_data(fp);
 
@@ -324,7 +328,9 @@ unsigned io_save_apts(const char *aptsfile)
 		struct event *ev = LLIST_TS_GET_DATA(i);
 		event_write(ev, fp);
 	}
-	file_close(fp, __FILE_POS__);
+
+	if (aptsfile)
+		file_close(fp, __FILE_POS__);
 
 	return 1;
 }
@@ -335,17 +341,23 @@ unsigned io_save_todo(const char *todofile)
 	llist_item_t *i;
 	FILE *fp;
 
-	if (read_only)
-		return 1;
+	if (todofile) {
+		if (read_only)
+			return 1;
 
-	if ((fp = fopen(todofile, "w")) == NULL)
-		return 0;
+		if ((fp = fopen(todofile, "w")) == NULL)
+			return 0;
+	} else {
+		fp = stdout;
+	}
 
 	LLIST_FOREACH(&todolist, i) {
 		struct todo *todo = LLIST_TS_GET_DATA(i);
 		todo_write(todo, fp);
 	}
-	file_close(fp, __FILE_POS__);
+
+	if (todofile)
+		file_close(fp, __FILE_POS__);
 
 	return 1;
 }
