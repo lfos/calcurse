@@ -52,10 +52,12 @@ enum {
 	OPT_FILTER_START_TO,
 	OPT_FILTER_START_AFTER,
 	OPT_FILTER_START_BEFORE,
+	OPT_FILTER_START_RANGE,
 	OPT_FILTER_END_FROM,
 	OPT_FILTER_END_TO,
 	OPT_FILTER_END_AFTER,
 	OPT_FILTER_END_BEFORE,
+	OPT_FILTER_END_RANGE,
 	OPT_FILTER_PRIORITY,
 	OPT_FILTER_COMPLETED,
 	OPT_FILTER_UNCOMPLETED,
@@ -327,6 +329,40 @@ static int parse_datearg(const char *str)
 	return -1;
 }
 
+static int parse_daterange(const char *str, long *date_from, long *date_to)
+{
+	int ret = 0;
+	char *s = xstrdup(str);
+	char *p = strchr(s, ',');
+
+	if (!p)
+		goto cleanup;
+
+	*p = '\0';
+	p++;
+
+	if (*s != '\0') {
+		*date_from = parse_datearg(s);
+		if (*date_from == -1)
+			goto cleanup;
+	} else {
+		*date_from = -1;
+	}
+
+	if (*p != '\0') {
+		*date_to = parse_datearg(p);
+		if (*date_to == -1)
+			goto cleanup;
+	} else {
+		*date_to = -1;
+	}
+
+	ret = 1;
+cleanup:
+	free(s);
+	return ret;
+}
+
 static int parse_type_mask(const char *str)
 {
 	char *buf = mem_strdup(str), *p;
@@ -415,10 +451,12 @@ int parse_args(int argc, char **argv)
 		{"filter-start-to", required_argument, NULL, OPT_FILTER_START_TO},
 		{"filter-start-after", required_argument, NULL, OPT_FILTER_START_AFTER},
 		{"filter-start-before", required_argument, NULL, OPT_FILTER_START_BEFORE},
+		{"filter-start-range", required_argument, NULL, OPT_FILTER_START_RANGE},
 		{"filter-end-from", required_argument, NULL, OPT_FILTER_END_FROM},
 		{"filter-end-to", required_argument, NULL, OPT_FILTER_END_TO},
 		{"filter-end-after", required_argument, NULL, OPT_FILTER_END_AFTER},
 		{"filter-end-before", required_argument, NULL, OPT_FILTER_END_BEFORE},
+		{"filter-end-range", required_argument, NULL, OPT_FILTER_END_RANGE},
 		{"filter-priority", required_argument, NULL, OPT_FILTER_PRIORITY},
 		{"filter-completed", no_argument, NULL, OPT_FILTER_COMPLETED},
 		{"filter-uncompleted", no_argument, NULL, OPT_FILTER_UNCOMPLETED},
@@ -559,6 +597,11 @@ int parse_args(int argc, char **argv)
 			EXIT_IF(filter.start_to == -1,
 				_("invalid date: %s"), optarg);
 			break;
+		case OPT_FILTER_START_RANGE:
+			EXIT_IF(!parse_daterange(optarg, &filter.start_from,
+						 &filter.start_to),
+				_("invalid date range: %s"), optarg);
+			break;
 		case OPT_FILTER_END_FROM:
 			filter.end_from = parse_datearg(optarg);
 			EXIT_IF(filter.end_from == -1,
@@ -578,6 +621,11 @@ int parse_args(int argc, char **argv)
 			filter.end_to = parse_datearg(optarg) - 1;
 			EXIT_IF(filter.end_to == -1,
 				_("invalid date: %s"), optarg);
+			break;
+		case OPT_FILTER_END_RANGE:
+			EXIT_IF(!parse_daterange(optarg, &filter.end_from,
+						 &filter.end_to),
+				_("invalid date range: %s"), optarg);
 			break;
 		case OPT_FILTER_PRIORITY:
 			filter.priority = atoi(optarg);
