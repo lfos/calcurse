@@ -353,9 +353,9 @@ static int parse_datetimearg(const char *str)
 	}
 
 	ret = parse_datearg(date);
-	if (!ret) {
+	if (ret < 0) {
 		/* No date specified, use time only. */
-		if (!parse_time(time, &hour, &min))
+		if (!parse_time(date, &hour, &min))
 			return -1;
 		return get_today() + hour * HOURINSEC + min * MININSEC;
 	}
