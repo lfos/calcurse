@@ -329,6 +329,40 @@ static int parse_datearg(const char *str)
 	return -1;
 }
 
+static int parse_datetimearg(const char *str)
+{
+	char *date = mem_strdup(str);
+	char *time;
+	unsigned hour, min;
+	long ret;
+
+	time = strchr(date, ' ');
+	if (time) {
+		/* Date and time. */
+		*time = '\0';
+		time++;
+
+		if (!parse_time(time, &hour, &min))
+			return -1;
+		ret = parse_datearg(date);
+		if (!ret)
+			return -1;
+		ret += hour * HOURINSEC + min * MININSEC;
+
+		return ret;
+	}
+
+	ret = parse_datearg(date);
+	if (!ret) {
+		/* No date specified, use time only. */
+		if (!parse_time(time, &hour, &min))
+			return -1;
+		return get_today() + hour * HOURINSEC + min * MININSEC;
+	}
+
+	return ret;
+}
+
 static int parse_daterange(const char *str, long *date_from, long *date_to)
 {
 	int ret = 0;
@@ -342,7 +376,7 @@ static int parse_daterange(const char *str, long *date_from, long *date_to)
 	p++;
 
 	if (*s != '\0') {
-		*date_from = parse_datearg(s);
+		*date_from = parse_datetimearg(s);
 		if (*date_from == -1)
 			goto cleanup;
 	} else {
@@ -350,7 +384,7 @@ static int parse_daterange(const char *str, long *date_from, long *date_to)
 	}
 
 	if (*p != '\0') {
-		*date_to = parse_datearg(p);
+		*date_to = parse_datetimearg(p);
 		if (*date_to == -1)
 			goto cleanup;
 	} else {
@@ -486,7 +520,7 @@ int parse_args(int argc, char **argv)
 			if (is_all_digit(optarg)) {
 				range = atoi(optarg);
 			} else {
-				from = parse_datearg(optarg);
+				from = parse_datetimearg(optarg);
 				EXIT_IF(from == -1, _("invalid date: %s"),
 					optarg);
 			}
@@ -526,7 +560,7 @@ int parse_args(int argc, char **argv)
 			query = 1;
 			break;
 		case 's':
-			from = parse_datearg(optarg);
+			from = parse_datetimearg(optarg);
 			EXIT_IF(from == -1, _("invalid date: %s"), optarg);
 			filter.type_mask |= TYPE_MASK_CAL;
 			query = 1;
@@ -578,22 +612,22 @@ int parse_args(int argc, char **argv)
 			filter.regex = &reg;
 			break;
 		case OPT_FILTER_START_FROM:
-			filter.start_from = parse_datearg(optarg);
+			filter.start_from = parse_datetimearg(optarg);
 			EXIT_IF(filter.start_from == -1,
 				_("invalid date: %s"), optarg);
 			break;
 		case OPT_FILTER_START_TO:
-			filter.start_to = parse_datearg(optarg);
+			filter.start_to = parse_datetimearg(optarg);
 			EXIT_IF(filter.start_to == -1,
 				_("invalid date: %s"), optarg);
 			break;
 		case OPT_FILTER_START_AFTER:
-			filter.start_from = parse_datearg(optarg) + 1;
+			filter.start_from = parse_datetimearg(optarg) + 1;
 			EXIT_IF(filter.start_from == -1,
 				_("invalid date: %s"), optarg);
 			break;
 		case OPT_FILTER_START_BEFORE:
-			filter.start_to = parse_datearg(optarg) - 1;
+			filter.start_to = parse_datetimearg(optarg) - 1;
 			EXIT_IF(filter.start_to == -1,
 				_("invalid date: %s"), optarg);
 			break;
@@ -603,22 +637,22 @@ int parse_args(int argc, char **argv)
 				_("invalid date range: %s"), optarg);
 			break;
 		case OPT_FILTER_END_FROM:
-			filter.end_from = parse_datearg(optarg);
+			filter.end_from = parse_datetimearg(optarg);
 			EXIT_IF(filter.end_from == -1,
 				_("invalid date: %s"), optarg);
 			break;
 		case OPT_FILTER_END_TO:
-			filter.end_to = parse_datearg(optarg);
+			filter.end_to = parse_datetimearg(optarg);
 			EXIT_IF(filter.end_to == -1,
 				_("invalid date: %s"), optarg);
 			break;
 		case OPT_FILTER_END_AFTER:
-			filter.end_from = parse_datearg(optarg) + 1;
+			filter.end_from = parse_datetimearg(optarg) + 1;
 			EXIT_IF(filter.end_from == -1,
 				_("invalid date: %s"), optarg);
 			break;
 		case OPT_FILTER_END_BEFORE:
-			filter.end_to = parse_datearg(optarg) - 1;
+			filter.end_to = parse_datetimearg(optarg) - 1;
 			EXIT_IF(filter.end_to == -1,
 				_("invalid date: %s"), optarg);
 			break;
@@ -639,11 +673,11 @@ int parse_args(int argc, char **argv)
 			filter.uncompleted = 1;
 			break;
 		case OPT_FROM:
-			from = parse_datearg(optarg);
+			from = parse_datetimearg(optarg);
 			EXIT_IF(from == -1, _("invalid date: %s"), optarg);
 			break;
 		case OPT_TO:
-			to = parse_datearg(optarg);
+			to = parse_datetimearg(optarg);
 			EXIT_IF(to == -1, _("invalid date: %s"), optarg);
 			break;
 		case OPT_DAYS:
