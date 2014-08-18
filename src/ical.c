@@ -399,8 +399,12 @@ ical_readline_init(FILE * fdi, char *buf, char *lstore, unsigned *ln)
 
 	*buf = *lstore = '\0';
 	if (fgets(lstore, BUFSIZ, fdi)) {
-		if ((eol = strchr(lstore, '\n')) != NULL)
-			*eol = '\0';
+		if ((eol = strchr(lstore, '\n')) != NULL) {
+			if (*(eol - 1) == '\r')
+				*(eol - 1) = '\0';
+			else
+				*eol = '\0';
+		}
 		(*ln)++;
 	}
 }
@@ -413,8 +417,12 @@ static int ical_readline(FILE * fdi, char *buf, char *lstore, unsigned *ln)
 	(*ln)++;
 
 	while (fgets(lstore, BUFSIZ, fdi) != NULL) {
-		if ((eol = strchr(lstore, '\n')) != NULL)
-			*eol = '\0';
+		if ((eol = strchr(lstore, '\n')) != NULL) {
+			if (*(eol - 1) == '\r')
+				*(eol - 1) = '\0';
+			else
+				*eol = '\0';
+		}
 		if (*lstore != SPACE && *lstore != TAB)
 			break;
 		strncat(buf, lstore + 1, BUFSIZ - strlen(buf) - 1);

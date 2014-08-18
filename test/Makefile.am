@@ -45,6 +45,7 @@ TESTS = \
 	ical-001.sh \
 	ical-002.sh \
 	ical-003.sh \
+	ical-004.sh \
 	next-001.sh \
 	search-001.sh \
 	bug-002.sh \
@@ -105,4 +106,5 @@ EXTRA_DIST = \
 	data/ical-001.ical \
 	data/ical-002.ical \
 	data/ical-003.ical \
+	data/ical-004.ical \
 	data/todo
