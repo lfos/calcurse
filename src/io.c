@@ -274,7 +274,7 @@ void io_extract_data(char *dst_data, const char *org, int len)
 
 	for (; *org == ' ' || *org == '\t'; org++) ;
 	for (i = 0; i < len - 1; i++) {
-		if (*org == '\n' || *org == '\0' || *org == '#')
+		if (*org == '\n' || *org == '\0')
 			break;
 		*dst_data++ = *org++;
 	}

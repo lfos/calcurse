@@ -470,7 +470,7 @@ config_file_walk(config_fn_walk_cb_t fn_cb,
 			break;
 		io_extract_data(e_conf, buf, sizeof buf);
 
-		if (*e_conf == '\0') {
+		if (*e_conf == '\0' || *e_conf == '#') {
 			if (fn_junk_cb)
 				fn_junk_cb(buf, data);
 			continue;
@@ -517,6 +517,8 @@ config_file_walk(config_fn_walk_cb_t fn_cb,
 			if (fgets(buf, sizeof buf, data_file) == NULL)
 				break;
 			io_extract_data(e_conf, buf, sizeof buf);
+			if (*e_conf == '#')
+				*e_conf = '\0';
 			value = e_conf;
 		}
 
