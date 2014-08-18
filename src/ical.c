@@ -510,6 +510,7 @@ static long ical_datetime2long(char *datestr, ical_vevent_e * type)
 static long ical_durtime2long(char *timestr)
 {
 	char *p;
+	int bytes_read;
 	unsigned hour = 0, min = 0, sec = 0;
 
 	if ((p = strchr(timestr, 'T')) == NULL)
@@ -517,15 +518,23 @@ static long ical_durtime2long(char *timestr)
 
 	p++;
 	if (strchr(p, 'H')) {
-		if (sscanf(p, "%uH%uM%uS", &hour, &min, &sec) != 3)
+		if (sscanf(p, "%uH%n", &hour, &bytes_read) != 1)
 			return 0;
-	} else if (strchr(p, 'M')) {
-		if (sscanf(p, "%uM%uS", &min, &sec) != 2)
-			return 0;
-	} else if (strchr(p, 'S')) {
-		if (sscanf(p, "%uS", &sec) != 1)
-			return 0;
+		p += bytes_read;
 	}
+	if (strchr(p, 'M')) {
+		if (sscanf(p, "%uM%n", &min, &bytes_read) != 1)
+			return 0;
+		p += bytes_read;
+	}
+	if (strchr(p, 'S')) {
+		if (sscanf(p, "%uM%n", &sec, &bytes_read) != 1)
+			return 0;
+		p += bytes_read;
+	}
+
+	if (hour == 0 && min == 0 && sec == 0)
+		return 0;
 
 	return hour * HOURINSEC + min * MININSEC + sec;
 }
