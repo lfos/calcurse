@@ -302,19 +302,32 @@ ical_store_event(char *mesg, char *note, long day, long end,
 		recur_event_new(mesg, note, day, EVENTID, rpt->type,
 				rpt->freq, rpt->until, exc);
 		mem_free(rpt);
-	} else if (end && end != day) {
-		/* Here we have an event that spans over several days. */
-		rpt = mem_malloc(sizeof(ical_rpt_t));
-		rpt->type = RECUR_DAILY;
-		rpt->freq = 1;
-		rpt->count = 0;
-		rpt->until = end;
-		recur_event_new(mesg, note, day, EVENTID, rpt->type,
-				rpt->freq, rpt->until, exc);
-		mem_free(rpt);
-	} else {
-		event_new(mesg, note, day, EVENTID);
+		goto cleanup;
 	}
+
+	if (end == 0 || end - day <= DAYINSEC) {
+		event_new(mesg, note, day, EVENTID);
+		goto cleanup;
+	}
+
+	/*
+	 * Here we have an event that spans over several days.
+	 *
+	 * In iCal, the end specifies when the event is supposed to end, in
+	 * calcurse, the end specifies the time that the last occurrence of the
+	 * event starts, so we need to do some conversion here.
+	 */
+	end = day + ((end - day - 1) / DAYINSEC) * DAYINSEC;
+	rpt = mem_malloc(sizeof(ical_rpt_t));
+	rpt->type = RECUR_DAILY;
+	rpt->freq = 1;
+	rpt->count = 0;
+	rpt->until = end;
+	recur_event_new(mesg, note, day, EVENTID, rpt->type,
+			rpt->freq, rpt->until, exc);
+	mem_free(rpt);
+
+cleanup:
 	mem_free(mesg);
 	erase_note(&note);
 }
