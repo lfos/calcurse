@@ -686,6 +686,13 @@ void io_load_todo(struct item_filter *filter)
 	file_close(data_file, __FILE_POS__);
 }
 
+/* Load appointments and todo items */
+void io_load_data(struct item_filter *filter)
+{
+	io_load_app(filter);
+	io_load_todo(filter);
+}
+
 static void
 load_keys_ht_getkey(struct ht_keybindings_s *data, const char **key,
 		    int *len)

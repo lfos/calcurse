@@ -796,6 +796,7 @@ unsigned io_save_keys(void);
 void io_save_cal(enum save_display);
 void io_load_app(struct item_filter *);
 void io_load_todo(struct item_filter *);
+void io_load_data(struct item_filter *);
 void io_load_keys(const char *);
 int io_check_dir(const char *);
 unsigned io_dir_exists(const char *);
