@@ -625,6 +625,11 @@ int main(int argc, char **argv)
 			wins_reset();
 		}
 
+		if (want_reload) {
+			want_reload = 0;
+			key_generic_reload();
+		}
+
 		key = keys_getch(win[KEY].p, &count, &reg);
 		switch (key) {
 		case KEY_GENERIC_REDRAW:

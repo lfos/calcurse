@@ -61,6 +61,9 @@ enum ui_mode ui_mode = UI_CMDLINE;
 /* Don't save anything if this is set. */
 int read_only = 0;
 
+/* Applications can trigger a reload by sending SIGUSR1. */
+int want_reload = 0;
+
 /* Strings describing each input date format. */
 const char *datefmt_str[DATE_FORMATS];
 

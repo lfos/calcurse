@@ -1096,6 +1096,7 @@ extern unsigned colorize;
 extern int foreground, background;
 extern enum ui_mode ui_mode;
 extern int read_only;
+extern int want_reload;
 extern const char *datefmt_str[DATE_FORMATS];
 extern int days[12];
 extern const char *monthnames[12];
