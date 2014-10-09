@@ -256,102 +256,11 @@ static inline void key_generic_save(void)
 
 static inline void key_generic_reload(void)
 {
-	char *msg_um_asktype = NULL;
-	const char *reload_success =
-		_("The data files were reloaded successfully");
-	const char *enter = _("Press [ENTER] to continue");
-
-	if (io_get_modified()) {
-		const char *msg_um_prefix =
-				_("There are unsaved modifications:");
-		const char *msg_um_discard = _("(d)iscard");
-		const char *msg_um_merge = _("(m)erge");
-		const char *msg_um_keep = _("(k)eep and cancel");
-		const char *msg_um_choice = _("[dmk]");
-
-		asprintf(&msg_um_asktype, "%s %s, %s, %s", msg_um_prefix,
-			 msg_um_discard, msg_um_merge, msg_um_keep);
-
-		char *path_apts_backup, *path_todo_backup;
-		const char *backup_ext = ".sav";
-
-		switch (status_ask_choice(msg_um_asktype, msg_um_choice, 3)) {
-		case 1:
-			break;
-		case 2:
-			asprintf(&path_apts_backup, "%s%s", path_apts,
-				 backup_ext);
-			asprintf(&path_todo_backup, "%s%s", path_todo,
-				 backup_ext);
-
-			io_save_mutex_lock();
-			io_save_apts(path_apts_backup);
-			io_save_todo(path_todo_backup);
-			io_save_mutex_unlock();
-
-			if (!io_files_equal(path_apts, path_apts_backup)) {
-				const char *arg_apts[] = { conf.mergetool,
-							   path_apts,
-							   path_apts_backup,
-							   NULL };
-				wins_launch_external(arg_apts);
-			}
-
-			if (!io_files_equal(path_todo, path_todo_backup)) {
-				const char *arg_todo[] = { conf.mergetool,
-							   path_todo,
-							   path_todo_backup,
-							   NULL };
-				wins_launch_external(arg_todo);
-			}
-
-			xfree(path_apts_backup);
-			xfree(path_todo_backup);
-			break;
-		case 3:
-			/* FALLTHROUGH */
-		default:
-			wins_update(FLAG_STA);
-			goto cleanup;
-		}
-	}
-
-	if (notify_bar())
-		notify_stop_main_thread();
-
-	/* Reinitialize data structures. */
-	apoint_llist_free();
-	event_llist_free();
-	recur_apoint_llist_free();
-	recur_event_llist_free();
-	todo_free_list();
-
-	apoint_llist_init();
-	event_llist_init();
-	recur_apoint_llist_init();
-	recur_event_llist_init();
-	todo_init_list();
-
-	io_load_data(NULL);
-	io_unset_modified();
-	ui_todo_load_items();
-	ui_todo_sel_reset();
-
-	if (conf.system_dialogs) {
-		status_mesg(reload_success, enter);
-		wgetch(win[KEY].p);
-	}
-
-	if (notify_bar())
-		notify_start_main_thread();
-
+	io_reload_data();
 	do_storage(0);
 	notify_check_next_app(1);
 	ui_calendar_monthly_view_cache_set_invalid();
 	wins_update(FLAG_ALL);
-
-cleanup:
-	mem_free(msg_um_asktype);
 }
 
 static inline void key_generic_import(void)
