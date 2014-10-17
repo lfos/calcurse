@@ -309,6 +309,10 @@ draw_monthly_view(struct scrollwin *sw, struct date *current_day,
 
 	/* Write the current month and year on top of the calendar */
 	WINS_CALENDAR_LOCK;
+	if (yr * YEARINMONTHS + mo != monthly_view_cache_month) {
+		/* erase the window if a new month is selected */
+		werase(sw_cal.inner);
+	}
 	custom_apply_attr(sw->inner, ATTR_HIGHEST);
 	mvwprintw(sw->inner, ofs_y,
 		  (w - (strlen(_(monthnames[mo - 1])) + 5)) / 2,
@@ -491,6 +495,7 @@ draw_weekly_view(struct scrollwin *sw, struct date *current_day,
 	/* Print the week number. */
 	weeknum = ISO8601weeknum(&t);
 	WINS_CALENDAR_LOCK;
+	werase(sw_cal.inner);
 	custom_apply_attr(sw->inner, ATTR_HIGHEST);
 	mvwprintw(sw->win, conf.compact_panels ? 0 : 2, sw->w - 9,
 		  "(# %02d)", weeknum);
@@ -596,15 +601,8 @@ void ui_calendar_update_panel(void)
 	unsigned sunday_first;
 
 	ui_calendar_store_current_date(&current_day);
-
-	WINS_CALENDAR_LOCK;
-	werase(sw_cal.inner);
-	WINS_CALENDAR_UNLOCK;
-
-	sunday_first = ui_calendar_week_begins_on_monday()? 0 : 1;
-
+	sunday_first = !ui_calendar_week_begins_on_monday();
 	draw_calendar[ui_calendar_view] (&sw_cal, &current_day, sunday_first);
-
 	wins_scrollwin_display(&sw_cal);
 }
 
