@@ -310,7 +310,7 @@ date_arg_from_to(long from, long to, int add_line, const char *fmt_apt,
 	}
 }
 
-static int parse_datearg(const char *str)
+static long parse_datearg(const char *str)
 {
 	struct date day;
 
@@ -329,7 +329,7 @@ static int parse_datearg(const char *str)
 	return -1;
 }
 
-static int parse_datetimearg(const char *str)
+static long parse_datetimearg(const char *str)
 {
 	char *date = mem_strdup(str);
 	char *time;

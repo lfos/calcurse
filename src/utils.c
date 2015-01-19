@@ -651,10 +651,8 @@ char *new_tempfile(const char *prefix)
  */
 int check_date(unsigned year, unsigned month, unsigned day)
 {
-	return (year >= 1902 && year <= 2037 && month >= 1 && month <= 12
-		&& day >= 1 && day <= days[month - 1] + (month == 2
-							 && ISLEAP(year)) ?
-		1 : 0);
+	return (year >= 1902 && month >= 1 && month <= 12 && day >= 1 &&
+		day <= days[month - 1] + (month == 2 && ISLEAP(year)) ? 1 : 0);
 }
 
 /*

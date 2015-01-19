@@ -630,9 +630,7 @@ void ui_calendar_change_day(int datefmt)
 	char *outstr;
 	int dday, dmonth, dyear;
 	int wrong_day = 1;
-	const char *mesg_line1 =
-	    _("The day you entered is not valid "
-	      "(should be between 01/01/1902 and 12/31/2037)");
+	const char *mesg_line1 = _("The day you entered is not valid");
 	const char *mesg_line2 = _("Press [ENTER] to continue");
 	const char *request_date =
 	    _("Enter the day to go to [ENTER for today] : %s");
@@ -739,10 +737,6 @@ void ui_calendar_move(enum move move, int count)
 			t.tm_mday = 1;
 			t.tm_mon = 0;
 			t.tm_year = 2;
-		} else if (t.tm_year > 137) {
-			t.tm_mday = 31;
-			t.tm_mon = 11;
-			t.tm_year = 137;
 		}
 
 		slctd_day.dd = t.tm_mday;
