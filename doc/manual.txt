@@ -196,9 +196,6 @@ days will be returned.  As an example, typing `calcurse -d  3`  will  display
 your  appointments  for  today, tomorrow, and the day after tomorrow.
 The first form is equivalent to `-Q --filter-type cal --from <date>`, the
 second form is equivalent to `-Q --filter-type cal --days <num>`.
-Possible formats for specifying the date are defined inside the general
-configuration menu (see <<options_general,General options>>), using the
-`format.inputdate` variable.
 +
 Note: as for the `-a` flag, the calendar  from which to  read  the appointments
 can be specified using the `-c` flag.
@@ -968,7 +965,7 @@ These options control `calcurse` general behavior, as described below:
 
 `format.inputdate` (default: *1*)::
   This option indicates the format that will be used to enter dates in
-  *calcurse*. Four choices are available:
+  interactive mode. Four choices are available:
 +
 1. mm/dd/yyyy
 2. dd/mm/yyyy

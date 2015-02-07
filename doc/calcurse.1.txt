@@ -88,16 +88,6 @@ today, tomorrow, and the day after tomorrow. The first form is equivalent to
 *-Q --filter-type cal --from <date>*, the second form is equivalent to *-Q
 --filter-type cal --days <num>*.
 +
-The  date  format  used  is  the  one  specified in the ``General options''
-menu.  Four formats are available:
-+
---
-  1. mm/dd/yyyy
-  2. dd/mm/yyyy
-  3. yyyy/mm/dd
-  4. yyyy-mm-dd
---
-+
 'Note:' as for the *-a* flag, the calendar  from which to  read  the
 appointments can be specified using the *-c* flag.
 
