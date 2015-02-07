@@ -23,7 +23,7 @@ msgstr ""
 
 #: credits.txt:4
 msgid ""
-"Copyright (c) 2004-2013 calcurse Development Team\n"
+"Copyright (c) 2004-2015 calcurse Development Team\n"
 "All rights reserved."
 msgstr ""
 

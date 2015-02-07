@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004-2013 calcurse Development Team <misc@calcurse.org>
+ * Copyright (c) 2004-2015 calcurse Development Team <misc@calcurse.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
