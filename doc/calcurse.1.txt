@@ -98,9 +98,59 @@ menu.  Four formats are available:
 'Note:' as for the *-a* flag, the calendar  from which to  read  the
 appointments can be specified using the *-c* flag.
 
+*--days* <num>::
+  Specify the length of the range (in days) when used with *-Q*. Cannot be
+  combined with *--to*.
+
 *-D* <dir>, *--directory* <dir>::
   Specify the data directory to use. If not specified, the default directory is
   *~/.calcurse/*.
+
+*--filter-type* <type>::
+  Ignore any items that do not match the type mask. See 'FILTERS' for details.
+
+*--filter-pattern* <pattern>::
+  Ignore any items with a description that does not match the pattern. See
+  'FILTERS' for details.
+
+*--filter-start-from* <date>::
+  Ignore any items that start before a given date. See 'FILTERS' for details.
+
+*--filter-start-to* <date>::
+  Ignore any items that start after a given date. See 'FILTERS' for details.
+
+*--filter-start-after* <date>::
+  Only include items that start after a given date. See 'FILTERS' for details.
+
+*--filter-start-before* <date>::
+  Only include items that start before a given date. See 'FILTERS' for details.
+
+*--filter-start-range* <range>::
+  Only include items within a given range. See 'FILTERS' for details.
+
+*--filter-end-from* <date>::
+  Ignore any items that end before a given date. See 'FILTERS' for details.
+
+*--filter-end-to* <date>::
+  Ignore any items that end after a given date. See 'FILTERS' for details.
+
+*--filter-end-after* <date>::
+  Only include items that end after a given date. See 'FILTERS' for details.
+
+*--filter-end-before* <date>::
+  Only include items that end before a given date. See 'FILTERS' for details.
+
+*--filter-end-range* <range>::
+  Only include items within a given range. See 'FILTERS' for details.
+
+*--filter-priority* <priority>::
+  Only include items with a given priority. See 'FILTERS' for details.
+
+*--filter-completed*::
+  Only include completed TODO items. See 'FILTERS' for details.
+
+*--filter-uncompleted*::
+  Only include uncompleted TODO items. See 'FILTERS' for details.
 
 *--format-apt* <format>::
   Specify a format to control the output of appointments in non-interactive
@@ -125,8 +175,16 @@ appointments can be specified using the *-c* flag.
   Specify a format to control the output of todo items in non-interactive mode.
   See the 'FORMAT STRINGS' section for detailed information on format strings.
 
+*--from* <date>::
+  Specify the start date of the range when used with *-Q*.
+
 *-g*, *--gc*::
   Run the garbage collector for note files and exit.
+
+*-G*, *--grep*::
+  Print appointments and TODO items using the calcurse data file format. The
+  filter interface can be used to further restrict the output. See also:
+  'FILTERS'.
 
 *-h*, *--help*::
   Print  a  short  help  text  describing  the  supported command-line options,
@@ -144,6 +202,12 @@ appointments can be specified using the *-c* flag.
 +
 'Note:' the calendar from which to read the appointments can be specified using
 the *-c* flag.
+
+*-Q*, *--query*::
+  Print all appointments inside a given query range, followed by all TODO
+  items. The query range defaults to the current day and can be changed by
+  using the *--from* and *--to* (or *--days*) parameters. The filter interface
+  can be used to further restrict the output. See also: 'FILTERS'.
 
 *-r*[num], *--range*[=num]::
   Print events and appointments for the 'num' number of days and exit. If no
@@ -175,6 +239,10 @@ in read-only mode, all changes from this session will be lost without warning!
   specify *0* for the priority, in which case only completed tasks will be
   shown.
 
+*--to* <date>::
+  Specify the end date of the range when used with *-Q*. Cannot be combined
+  with *--days*.
+
 *-v*, *--version*::
   Display *calcurse* version and exit.
 
@@ -193,6 +261,65 @@ $ calcurse --export > my_data.dat
 
 'Note:' The *-N* option has been removed in calcurse 3.0.0. See the 'FORMAT
 STRINGS' section on how to print note along with appointments and events.
+
+Filters
+-------
+
+Filters can be used to restrict the set of items which are loaded from the
+appointments file when using calcurse in non-interactive mode. The following
+filters are currently supported:
+
+*--filter-type* <type>::
+  Ignore any items that do not match the type mask. The type mask is a
+  comma-separated list of valid type descriptions which include 'event', 'apt',
+  'recur-event', 'recur-apt' and 'todo'. You can also use 'recur' as a
+  shorthand for 'recur-event,recur-apt' and 'cal' as a shorthand for
+  'event,apt,recur'.
+
+*--filter-pattern* <pattern>::
+  Ignore any items with a description that does not match the pattern. The
+  pattern is interpreted as extended regular expression.
+
+*--filter-start-from* <date>::
+  Ignore any items that start before a given date.
+
+*--filter-start-to* <date>::
+  Ignore any items that start after a given date.
+
+*--filter-start-after* <date>::
+  Only include items that start after a given date.
+
+*--filter-start-before* <date>::
+  Only include items that start before a given date.
+
+*--filter-start-range* <range>::
+  Only include items with a start date that falls within a given range. A range
+  consists of a start date and an end date, separated by a comma.
+
+*--filter-end-from* <date>::
+  Ignore any items that end before a given date.
+
+*--filter-end-to* <date>::
+  Ignore any items that end after a given date.
+
+*--filter-end-after* <date>::
+  Only include items that end after a given date.
+
+*--filter-end-before* <date>::
+  Only include items that end before a given date.
+
+*--filter-end-range* <range>::
+  Only include items with an end date that falls within a given range. A range
+  consists of a start date and an end date, separated by a comma.
+
+*--filter-priority* <priority>::
+  Only include items with a given priority.
+
+*--filter-completed*::
+  Only include completed TODO items.
+
+*--filter-uncompleted*::
+  Only include uncompleted TODO items.
 
 Format strings
 --------------
