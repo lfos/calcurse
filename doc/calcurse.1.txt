@@ -42,9 +42,14 @@ Synopsis
 --------
 
 [verse]
-*calcurse* [*-h*|*-v*] [*-an*] [*-t*[num]] [*-c*<file>] [*-D*<dir>]
-         [*-i*<file>] [*-x*[format]] [*-d* <date>|<num>] [*-s*[date]]
-         [*-l* <num>] [*-r*[range]] [*-S* <regex>] [*--status*]
+'calcurse' *-Q* [options] [*--from* <date>] [*--to* <date>|*--days* <num>]
+'calcurse' *-G* [options]
+'calcurse' *-i*<file>
+'calcurse' *-x*<format>
+'calcurse' *--gc*
+'calcurse' *--status*
+'calcurse' *--version*
+'calcurse' *--help*
 
 Description
 -----------
