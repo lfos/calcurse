@@ -171,8 +171,9 @@ Command line arguments
 long options are supported):
 
 `-a, --appointment`::
-  Print the appointments and events for the current day and exit.  The calendar
-  from which to read the  appointments can be specified using the `-c` flag.
+  Print the appointments and events for the current day and exit. Equivalent to
+  `-Q --filter-type cal`. The calendar from which to read the  appointments can
+  be specified using the `-c` flag.
 
 `-c <file>, --calendar <file>`::
   Specify the calendar file to use. The default calendar is `~/.calcurse/apts`
@@ -192,9 +193,11 @@ long options are supported):
 In the first  case,  the  appointment  list  for  the specified  date will be
 returned, while in the second case the appointment list for the `n`  upcoming
 days will be returned.  As an example, typing `calcurse -d  3`  will  display
-your  appointments  for  today, tomorrow, and the day after tomorrow.  Possible
-formats for specifying the date are defined inside the general configuration
-menu (see <<options_general,General options>>), using the
+your  appointments  for  today, tomorrow, and the day after tomorrow.
+The first form is equivalent to `-Q --filter-type cal --from <date>`, the
+second form is equivalent to `-Q --filter-type cal --days <num>`.
+Possible formats for specifying the date are defined inside the general
+configuration menu (see <<options_general,General options>>), using the
 `format.inputdate` variable.
 +
 Note: as for the `-a` flag, the calendar  from which to  read  the appointments
@@ -330,7 +333,8 @@ the `-c` flag.
 
 `-r[num], --range[=num]`::
   Print events and appointments for the num number of days and exit. If no num
-  is given, a range of 1 day is considered.
+  is given, a range of 1 day is considered. Equivalent to `-Q --filter-type cal
+  --days <num>`.
 
 `--read-only`::
   Don't save configuration nor appointments/todos.
@@ -340,11 +344,13 @@ in read-only mode, all changes from this session will be lost without warning!
 
 `-s[date], --startday[=date]`::
   Print  events  and appointments from date and exit.  If no date is given, the
-  current day is considered.
+  current day is considered. Equivalent to `-Q --filter-type cal --from
+  <date>`.
 
 `-S<regex>, --search=<regex>`::
   When used with the `-a`, `-d`, `-r`, `-s`, or `-t` flag, print only the items
-  having a description that matches the given regular expression.
+  having a description that matches the given regular expression. Equivalent to
+  `-Q --filter-pattern <regex>`.
 
 `--status`::
   Display  the  status of running instances of calcurse. If calcurse is
@@ -356,7 +362,8 @@ in read-only mode, all changes from this session will be lost without warning!
   only todos having a priority equal to `num` will be returned. The priority
   number must be between 1 (highest) and 9 (lowest). It is also possible to
   specify `0` for the priority, in which case only completed tasks will be
-  shown.
+  shown. Equivalent to `-Q --filter-type todo`, combined with
+  `--filter-priority` and `--filter-completed` or `--filter-uncompleted`.
 
 `--to <date>`::
   Specify the end date of the range when used with `-Q`. Cannot be combined
