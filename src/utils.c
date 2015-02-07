@@ -36,6 +36,7 @@
 
 #include <time.h>
 #include <string.h>
+#include <strings.h>
 #include <stdlib.h>
 #include <limits.h>
 #include <unistd.h>
@@ -646,6 +647,16 @@ char *new_tempfile(const char *prefix)
 	return fullname;
 }
 
+static void ymd_from_time_t(int *year, int *month, int *day, time_t t)
+{
+	struct tm tm;
+
+	localtime_r(&t, &tm);
+	*day = tm.tm_mday;
+	*month = tm.tm_mon + 1;
+	*year = tm.tm_year + 1900;
+}
+
 /*
  * Check if a date is valid.
  */
@@ -678,6 +689,20 @@ parse_date(const char *date_string, enum datefmt datefmt, int *year,
 
 	if (!date_string)
 		return 0;
+
+	if (!strcasecmp(date_string, "today")) {
+		ymd_from_time_t(year, month, day, get_today());
+		return 1;
+	} else if (!strcasecmp(date_string, "yesterday")) {
+		ymd_from_time_t(year, month, day, get_today() - DAYINSEC);
+		return 1;
+	} else if (!strcasecmp(date_string, "tomorrow")) {
+		ymd_from_time_t(year, month, day, get_today() + DAYINSEC);
+		return 1;
+	} else if (!strcasecmp(date_string, "now")) {
+		ymd_from_time_t(year, month, day, now());
+		return 1;
+	}
 
 	/* parse string into in[], read up to three integers */
 	for (p = date_string; *p; p++) {
