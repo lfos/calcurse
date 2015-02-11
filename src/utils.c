@@ -647,9 +647,27 @@ char *new_tempfile(const char *prefix)
 	return fullname;
 }
 
-static void ymd_from_time_t(int *year, int *month, int *day, time_t t)
+static void get_ymd(int *year, int *month, int *day, time_t t)
 {
 	struct tm tm;
+
+	localtime_r(&t, &tm);
+	*day = tm.tm_mday;
+	*month = tm.tm_mon + 1;
+	*year = tm.tm_year + 1900;
+}
+
+static void get_weekday_ymd(int *year, int *month, int *day, int weekday)
+{
+	time_t t = get_today();
+	struct tm tm;
+	int delta;
+
+	localtime_r(&t, &tm);
+	delta = weekday - tm.tm_wday;
+	if (delta <= 0)
+		delta += 7;
+	t += delta * DAYINSEC;
 
 	localtime_r(&t, &tm);
 	*day = tm.tm_mday;
@@ -691,16 +709,44 @@ parse_date(const char *date_string, enum datefmt datefmt, int *year,
 		return 0;
 
 	if (!strcasecmp(date_string, "today")) {
-		ymd_from_time_t(year, month, day, get_today());
+		get_ymd(year, month, day, get_today());
 		return 1;
 	} else if (!strcasecmp(date_string, "yesterday")) {
-		ymd_from_time_t(year, month, day, get_today() - DAYINSEC);
+		get_ymd(year, month, day, get_today() - DAYINSEC);
 		return 1;
 	} else if (!strcasecmp(date_string, "tomorrow")) {
-		ymd_from_time_t(year, month, day, get_today() + DAYINSEC);
+		get_ymd(year, month, day, get_today() + DAYINSEC);
 		return 1;
 	} else if (!strcasecmp(date_string, "now")) {
-		ymd_from_time_t(year, month, day, now());
+		get_ymd(year, month, day, now());
+		return 1;
+	} else if (!strcasecmp(date_string, "sunday") ||
+		   !strcasecmp(date_string, "sun")) {
+		get_weekday_ymd(year, month, day, 0);
+		return 1;
+	} else if (!strcasecmp(date_string, "monday") ||
+		   !strcasecmp(date_string, "mon")) {
+		get_weekday_ymd(year, month, day, 1);
+		return 1;
+	} else if (!strcasecmp(date_string, "tuesday") ||
+		   !strcasecmp(date_string, "tue")) {
+		get_weekday_ymd(year, month, day, 2);
+		return 1;
+	} else if (!strcasecmp(date_string, "wednesday") ||
+		   !strcasecmp(date_string, "wed")) {
+		get_weekday_ymd(year, month, day, 3);
+		return 1;
+	} else if (!strcasecmp(date_string, "thursday") ||
+		   !strcasecmp(date_string, "thu")) {
+		get_weekday_ymd(year, month, day, 4);
+		return 1;
+	} else if (!strcasecmp(date_string, "friday") ||
+		   !strcasecmp(date_string, "fri")) {
+		get_weekday_ymd(year, month, day, 5);
+		return 1;
+	} else if (!strcasecmp(date_string, "saturday") ||
+		   !strcasecmp(date_string, "sat")) {
+		get_weekday_ymd(year, month, day, 6);
 		return 1;
 	}
 
