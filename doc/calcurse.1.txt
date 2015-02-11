@@ -465,8 +465,7 @@ $HOME/.calcurse/
 
 The 'notes' subdirectory contains descriptions of the notes which are attached
 to appointments, events or todos. One text file is created per note, whose name
-is built using mkstemp(3) and should be unique, but with no relation with the
-corresponding item's description.
+is the SHA1 message digest of the note itself.
 
 The 'conf' file contains the user configuration. The 'keys' file contains the
 user-defined key bindings. The 'apts' file contains all of the user's
