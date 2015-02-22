@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2014-08-03 23:51+0200\n"
+"POT-Creation-Date: 2015-02-22 10:37+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -150,66 +150,49 @@ msgstr ""
 msgid "calcurse is not running\n"
 msgstr ""
 
-msgid "to do:\n"
+msgid "completed tasks:\n"
 msgstr ""
 
-msgid "completed tasks:\n"
+msgid "to do:\n"
 msgstr ""
 
 msgid "next appointment:\n"
 msgstr ""
 
-msgid "Argument to the '-d' flag is not valid\n"
+#, c-format
+msgid "invalid date: %s"
 msgstr ""
 
 #, c-format
-msgid "Possible argument format are: '%s' or 'n'\n"
-msgstr ""
-
-msgid "Argument is not valid\n"
+msgid "invalid range: %s"
 msgstr ""
 
 #, c-format
-msgid "Argument format for -s and --startday is: '%s'\n"
+msgid "invalid priority: %s"
 msgstr ""
 
-msgid "Argument format for -r and --range is: 'n'\n"
+#, c-format
+msgid "invalid export format: %s"
 msgstr ""
 
-msgid "Can not handle more than one regular expression."
+msgid "invalid filter mask"
 msgstr ""
 
-msgid "Could not compile regular expression."
+msgid "cannot handle more than one regular expression"
 msgstr ""
 
-msgid "Argument for '-x' should be either 'ical' or 'pcal'\n"
+#, c-format
+msgid "could not compile regular expression: %s"
 msgstr ""
 
-msgid "Option '-S' must be used with either '-d', '-r', '-s', '-a' or '-t'\n"
+#, c-format
+msgid "invalid date range: %s"
 msgstr ""
 
-msgid "Option '-l' must be used with either '-d', '-r', '-s', '-a' or '-t'\n"
+msgid "invalid argument combination"
 msgstr ""
 
-msgid "The data files were reloaded successfully"
-msgstr ""
-
-msgid "Press [ENTER] to continue"
-msgstr ""
-
-msgid "There are unsaved modifications:"
-msgstr ""
-
-msgid "(d)iscard"
-msgstr ""
-
-msgid "(m)erge"
-msgstr ""
-
-msgid "(k)eep and cancel"
-msgstr ""
-
-msgid "[dmk]"
+msgid "cannot specify a range and an end date"
 msgstr ""
 
 msgid "Export to (i)cal or (p)cal format?"
@@ -543,23 +526,16 @@ msgid "Failed to close \"%s\" - %s\n"
 msgstr ""
 
 #, c-format
-msgid "%s does not exist, create it now [y/n]? "
-msgstr ""
-
-msgid "aborting...\n"
-msgstr ""
-
-#, c-format
-msgid "%s successfully created\n"
-msgstr ""
-
-msgid "starting interactive mode...\n"
+msgid "%s does not exist"
 msgstr ""
 
 msgid "Problems accessing data file ..."
 msgstr ""
 
 msgid "The data files were successfully saved"
+msgstr ""
+
+msgid "Press [ENTER] to continue"
 msgstr ""
 
 msgid "failed to open appointment file"
@@ -584,6 +560,24 @@ msgid "syntax error in item repetition"
 msgstr ""
 
 msgid "failed to open todo file"
+msgstr ""
+
+msgid "The data files were reloaded successfully"
+msgstr ""
+
+msgid "There are unsaved modifications:"
+msgstr ""
+
+msgid "(d)iscard"
+msgstr ""
+
+msgid "(m)erge"
+msgstr ""
+
+msgid "(k)eep and cancel"
+msgstr ""
+
+msgid "[dmk]"
 msgstr ""
 
 msgid "failed to open key file"
@@ -1221,9 +1215,7 @@ msgstr ""
 msgid "ERROR setting first day of week"
 msgstr ""
 
-msgid ""
-"The day you entered is not valid (should be between 01/01/1902 and "
-"12/31/2037)"
+msgid "The day you entered is not valid"
 msgstr ""
 
 #, c-format

@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse 1.4\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2014-07-28 12:51+0200\n"
+"POT-Creation-Date: 2015-02-22 10:37+0100\n"
 "PO-Revision-Date: 2006-07-03 00:05+0100\n"
 "Last-Translator: Neil Williams <linux@codehelp.co.uk>\n"
 "Language-Team: English/GB <en_GB@li.org>\n"
@@ -178,69 +178,50 @@ msgstr ""
 msgid "calcurse is not running\n"
 msgstr ""
 
-msgid "to do:\n"
-msgstr "to do:\n"
-
 msgid "completed tasks:\n"
 msgstr ""
+
+msgid "to do:\n"
+msgstr "to do:\n"
 
 #, fuzzy
 msgid "next appointment:\n"
 msgstr "Appointment :"
 
-msgid "Argument to the '-d' flag is not valid\n"
-msgstr "Argument to the '-d' flag is not valid\n"
-
-#, fuzzy, c-format
-msgid "Possible argument format are: '%s' or 'n'\n"
-msgstr "Possible argument formats are : 'mm/dd/yyyy' or 'n'\n"
-
-#, fuzzy
-msgid "Argument is not valid\n"
-msgstr "Argument to the '-d' flag is not valid\n"
+#, c-format
+msgid "invalid date: %s"
+msgstr ""
 
 #, c-format
-msgid "Argument format for -s and --startday is: '%s'\n"
+msgid "invalid range: %s"
 msgstr ""
 
-msgid "Argument format for -r and --range is: 'n'\n"
+#, c-format
+msgid "invalid priority: %s"
 msgstr ""
 
-msgid "Can not handle more than one regular expression."
+#, c-format
+msgid "invalid export format: %s"
 msgstr ""
 
-msgid "Could not compile regular expression."
+msgid "invalid filter mask"
 msgstr ""
 
-msgid "Argument for '-x' should be either 'ical' or 'pcal'\n"
+msgid "cannot handle more than one regular expression"
 msgstr ""
 
-msgid "Option '-S' must be used with either '-d', '-r', '-s', '-a' or '-t'\n"
+#, c-format
+msgid "could not compile regular expression: %s"
 msgstr ""
 
-msgid "Option '-l' must be used with either '-d', '-r', '-s', '-a' or '-t'\n"
+#, c-format
+msgid "invalid date range: %s"
 msgstr ""
 
-#, fuzzy
-msgid "The data files were reloaded successfully"
-msgstr "The data files were successfully saved"
-
-msgid "Press [ENTER] to continue"
-msgstr "Press [ENTER] to continue"
-
-msgid "There are unsaved modifications:"
+msgid "invalid argument combination"
 msgstr ""
 
-msgid "(d)iscard"
-msgstr ""
-
-msgid "(m)erge"
-msgstr ""
-
-msgid "(k)eep and cancel"
-msgstr ""
-
-msgid "[dmk]"
+msgid "cannot specify a range and an end date"
 msgstr ""
 
 msgid "Export to (i)cal or (p)cal format?"
@@ -305,6 +286,22 @@ msgstr ""
 #, fuzzy
 msgid "color theme"
 msgstr "CalCurse %s | help"
+
+#, fuzzy
+msgid "(if set to YES, compact panels are used)"
+msgstr "(if set to YES, progress bar will not be displayed when saving data)"
+
+msgid "Calendar"
+msgstr "Calendar"
+
+msgid "Appointments"
+msgstr "Appointments"
+
+msgid "TODO"
+msgstr ""
+
+msgid "(specifies the panel that is selected by default)"
+msgstr ""
 
 msgid "(if set to YES, automatic save is done when quitting)"
 msgstr "(if set to YES, automatic save is done when quitting)"
@@ -583,25 +580,18 @@ msgstr ""
 msgid "Failed to close \"%s\" - %s\n"
 msgstr ""
 
-#, fuzzy, c-format
-msgid "%s does not exist, create it now [y/n]? "
-msgstr "%s does not exist, create it now [y or n] ? "
-
-msgid "aborting...\n"
-msgstr "aborting...\n"
-
 #, c-format
-msgid "%s successfully created\n"
-msgstr "%s successfully created\n"
-
-msgid "starting interactive mode...\n"
-msgstr "starting interactive mode...\n"
+msgid "%s does not exist"
+msgstr ""
 
 msgid "Problems accessing data file ..."
 msgstr "Problems accessing data file ..."
 
 msgid "The data files were successfully saved"
 msgstr "The data files were successfully saved"
+
+msgid "Press [ENTER] to continue"
+msgstr "Press [ENTER] to continue"
 
 #, fuzzy
 msgid "failed to open appointment file"
@@ -634,6 +624,25 @@ msgstr "FATAL ERROR in load_app: syntax error in the item date\n"
 #, fuzzy
 msgid "failed to open todo file"
 msgstr "Failed to open todo file"
+
+#, fuzzy
+msgid "The data files were reloaded successfully"
+msgstr "The data files were successfully saved"
+
+msgid "There are unsaved modifications:"
+msgstr ""
+
+msgid "(d)iscard"
+msgstr ""
+
+msgid "(m)erge"
+msgstr ""
+
+msgid "(k)eep and cancel"
+msgstr ""
+
+msgid "[dmk]"
+msgstr ""
 
 #, fuzzy
 msgid "failed to open key file"
@@ -1300,10 +1309,8 @@ msgstr ""
 msgid "ERROR setting first day of week"
 msgstr ""
 
-msgid ""
-"The day you entered is not valid (should be between 01/01/1902 and "
-"12/31/2037)"
-msgstr ""
+msgid "The day you entered is not valid"
+msgstr "The day you entered is not valid"
 
 #, fuzzy, c-format
 msgid "Enter the day to go to [ENTER for today] : %s"
@@ -1586,15 +1593,6 @@ msgstr ""
 msgid "yyyy-mm-dd"
 msgstr ""
 
-msgid "Calendar"
-msgstr "Calendar"
-
-msgid "Appointments"
-msgstr "Appointments"
-
-msgid "TODO"
-msgstr ""
-
 msgid "unknown panel"
 msgstr ""
 
@@ -1643,6 +1641,30 @@ msgstr ""
 
 msgid "Remove temporary backup..."
 msgstr ""
+
+#~ msgid "Argument to the '-d' flag is not valid\n"
+#~ msgstr "Argument to the '-d' flag is not valid\n"
+
+#, fuzzy
+#~ msgid "Possible argument format are: '%s' or 'n'\n"
+#~ msgstr "Possible argument formats are : 'mm/dd/yyyy' or 'n'\n"
+
+#, fuzzy
+#~ msgid "Argument is not valid\n"
+#~ msgstr "Argument to the '-d' flag is not valid\n"
+
+#, fuzzy
+#~ msgid "%s does not exist, create it now [y/n]? "
+#~ msgstr "%s does not exist, create it now [y or n] ? "
+
+#~ msgid "aborting...\n"
+#~ msgstr "aborting...\n"
+
+#~ msgid "%s successfully created\n"
+#~ msgstr "%s successfully created\n"
+
+#~ msgid "starting interactive mode...\n"
+#~ msgstr "starting interactive mode...\n"
 
 #~ msgid "Exit"
 #~ msgstr "Exit"
@@ -2310,9 +2332,6 @@ msgstr ""
 #, fuzzy
 #~ msgid "FATAL ERROR in wins_prop: property unknown\n"
 #~ msgstr "FATAL ERROR in todo_delete_bynum: no such todo\n"
-
-#~ msgid "The day you entered is not valid"
-#~ msgstr "The day you entered is not valid"
 
 #~ msgid ""
 #~ "Please resize your terminal screen\n"

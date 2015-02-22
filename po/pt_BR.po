@@ -3,13 +3,13 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Translators:
-# Rafael Ferreira <rafael.f.f1@gmail.com>, 2012-2013
+# Rafael Ferreira <rafael.f.f1@gmail.com>, 2012-2014
 msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2014-07-28 12:51+0200\n"
-"PO-Revision-Date: 2013-07-28 03:58+0000\n"
+"POT-Creation-Date: 2015-02-22 10:37+0100\n"
+"PO-Revision-Date: 2014-09-08 17:32+0000\n"
 "Last-Translator: Rafael Ferreira <rafael.f.f1@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/"
 "calcurse/language/pt_BR/)\n"
@@ -42,6 +42,7 @@ msgstr ""
 msgid "Try 'calcurse -h' for more information.\n"
 msgstr "Tente \"calcurse -h\" para maiores informações.\n"
 
+#, fuzzy
 msgid ""
 "\n"
 "Copyright (c) 2004-2015 calcurse Development Team.\n"
@@ -237,70 +238,50 @@ msgstr "calcurse está em execução em plano de fundo (pid %d)\n"
 msgid "calcurse is not running\n"
 msgstr "calcurse não está em execução\n"
 
-msgid "to do:\n"
-msgstr "tarefa:\n"
-
 msgid "completed tasks:\n"
 msgstr "tarefas finalizadas:\n"
+
+msgid "to do:\n"
+msgstr "tarefa:\n"
 
 msgid "next appointment:\n"
 msgstr "próximo agendamento:\n"
 
-msgid "Argument to the '-d' flag is not valid\n"
-msgstr "Argumento para a sinalização \"-d\" não é válido\n"
+#, fuzzy, c-format
+msgid "invalid date: %s"
+msgstr "Atraso inválido"
 
 #, c-format
-msgid "Possible argument format are: '%s' or 'n'\n"
-msgstr "Possíveis formatos de argumentos são: \"%s\" ou \"n\"\n"
-
-msgid "Argument is not valid\n"
-msgstr "Argumento não é válido\n"
+msgid "invalid range: %s"
+msgstr ""
 
 #, c-format
-msgid "Argument format for -s and --startday is: '%s'\n"
-msgstr "Formato de argumento para -s e --startday é: '%s'\n"
-
-msgid "Argument format for -r and --range is: 'n'\n"
-msgstr "Formato de argumento para -r e --range é: \"n\"\n"
-
-msgid "Can not handle more than one regular expression."
-msgstr "Não é possível utilizar mais de um expressão regular."
-
-msgid "Could not compile regular expression."
-msgstr "Não foi possível compilar expressão regular."
-
-msgid "Argument for '-x' should be either 'ical' or 'pcal'\n"
-msgstr "Argumento para \"-x\" deveria ser \"ical\" ou \"pcal\"\n"
-
-msgid "Option '-S' must be used with either '-d', '-r', '-s', '-a' or '-t'\n"
+msgid "invalid priority: %s"
 msgstr ""
-"Opção \"-S\" deve ser usada com \"-d\", \"-r\", \"-s\", \"-a\" ou \"-t\"\n"
 
-msgid "Option '-l' must be used with either '-d', '-r', '-s', '-a' or '-t'\n"
+#, c-format
+msgid "invalid export format: %s"
 msgstr ""
-"A saída de \"-l\" deve ser usada com \"-d\", \"-r\", \"-s\", \"-a\" ou \"-t"
-"\"\n"
+
+msgid "invalid filter mask"
+msgstr ""
 
 #, fuzzy
-msgid "The data files were reloaded successfully"
-msgstr "Os arquivos de dados foram salvos com sucesso"
+msgid "cannot handle more than one regular expression"
+msgstr "Não é possível utilizar mais de um expressão regular."
 
-msgid "Press [ENTER] to continue"
-msgstr "Pressione [ENTER] para continuar"
+#, fuzzy, c-format
+msgid "could not compile regular expression: %s"
+msgstr "Não foi possível compilar expressão regular."
 
-msgid "There are unsaved modifications:"
+#, c-format
+msgid "invalid date range: %s"
 msgstr ""
 
-msgid "(d)iscard"
+msgid "invalid argument combination"
 msgstr ""
 
-msgid "(m)erge"
-msgstr ""
-
-msgid "(k)eep and cancel"
-msgstr ""
-
-msgid "[dmk]"
+msgid "cannot specify a range and an end date"
 msgstr ""
 
 msgid "Export to (i)cal or (p)cal format?"
@@ -362,6 +343,21 @@ msgstr "(padrão do terminal)"
 
 msgid "color theme"
 msgstr "Tema de Cor"
+
+msgid "(if set to YES, compact panels are used)"
+msgstr "(se definido para SIM, painéis compactos são usados) "
+
+msgid "Calendar"
+msgstr "Calendário"
+
+msgid "Appointments"
+msgstr "Agendamentos"
+
+msgid "TODO"
+msgstr "TAREFA"
+
+msgid "(specifies the panel that is selected by default)"
+msgstr "(especifica o painel que fica selecionado por padrão)"
 
 msgid "(if set to YES, automatic save is done when quitting)"
 msgstr ""
@@ -640,25 +636,18 @@ msgstr "Falha na exibição da mensagem \"%s\"\n"
 msgid "Failed to close \"%s\" - %s\n"
 msgstr "Falha no fechamento de \"%s\" - %s\n"
 
-#, c-format
-msgid "%s does not exist, create it now [y/n]? "
-msgstr "%s não existe; criá-lo agora [s/n]?"
-
-msgid "aborting...\n"
-msgstr "abortando...\n"
-
-#, c-format
-msgid "%s successfully created\n"
-msgstr "%s criado com sucesso\n"
-
-msgid "starting interactive mode...\n"
-msgstr "iniciando modo interativo...\n"
+#, fuzzy, c-format
+msgid "%s does not exist"
+msgstr "Tópico de ajuda não existe: %s"
 
 msgid "Problems accessing data file ..."
 msgstr "Problemas no acesso do arquivo de dados..."
 
 msgid "The data files were successfully saved"
 msgstr "Os arquivos de dados foram salvos com sucesso"
+
+msgid "Press [ENTER] to continue"
+msgstr "Pressione [ENTER] para continuar"
 
 msgid "failed to open appointment file"
 msgstr "falha na abertura do arquivo de agendamento"
@@ -683,6 +672,24 @@ msgstr "erro de sintaxe na repetição do item"
 
 msgid "failed to open todo file"
 msgstr "falha na abertura do arquivo de tarefas"
+
+msgid "The data files were reloaded successfully"
+msgstr "Os arquivos de dados foram recarregados com sucesso"
+
+msgid "There are unsaved modifications:"
+msgstr "Há modificações não salvas:"
+
+msgid "(d)iscard"
+msgstr "(d)escartar"
+
+msgid "(m)erge"
+msgstr "(m)esclar"
+
+msgid "(k)eep and cancel"
+msgstr "manter e (c)cancelar"
+
+msgid "[dmk]"
+msgstr "[dmc]"
 
 msgid "failed to open key file"
 msgstr "falha na abertura do arquivo de teclas"
@@ -742,9 +749,9 @@ msgstr "modo de exportação errado"
 msgid "Enter the file name to import data from:"
 msgstr "Entre com o nome do arquivo de onde serão importados os dados:"
 
-#, fuzzy, c-format
+#, c-format
 msgid "Import process report: %04d lines read"
-msgstr "Relatório de processo importação: %04d linhas lidas"
+msgstr "relatório do processo de importação: %04d linhas lidas"
 
 msgid "unknown import type"
 msgstr "tipo de importação desconhecida"
@@ -813,13 +820,13 @@ msgstr ""
 "e reinicie calcurse.\n"
 
 msgid "Cancel"
-msgstr ""
+msgstr "Cancelar"
 
 msgid "Select"
 msgstr "Selecionar"
 
 msgid "Credits"
-msgstr ""
+msgstr "Créditos"
 
 msgid "Help"
 msgstr "Ajuda"
@@ -831,7 +838,7 @@ msgid "Save"
 msgstr "Salvar"
 
 msgid "Reload"
-msgstr ""
+msgstr "Recarregar"
 
 msgid "Copy"
 msgstr "Copiar"
@@ -1029,9 +1036,8 @@ msgstr "Notificação"
 msgid "Keys"
 msgstr "Teclas"
 
-#, fuzzy
 msgid "Unknown"
-msgstr "cor desconhecida"
+msgstr "Desconhecido"
 
 msgid "Cancel the ongoing action."
 msgstr "Cancela a ação em andamento."
@@ -1051,9 +1057,8 @@ msgstr "Sai deste menu, ou sai do calcurse."
 msgid "Save calcurse data."
 msgstr "Salva dados do calcurse."
 
-#, fuzzy
 msgid "Reload appointments and todo items."
-msgstr "agendamento não tem hora de início."
+msgstr "Recarrega agendamentos e lista de tarefas."
 
 msgid "Copy the item that is currently selected."
 msgstr "Copia o item que está selecionado no momento."
@@ -1393,11 +1398,9 @@ msgstr "tarefa não encontrada"
 msgid "ERROR setting first day of week"
 msgstr "ERRO na configuração do primeiro dia do mês"
 
-msgid ""
-"The day you entered is not valid (should be between 01/01/1902 and "
-"12/31/2037)"
-msgstr ""
-"O dia inserido não é válido (deveria ser entre 01/01/1902 e 12/31/2037)"
+#, fuzzy
+msgid "The day you entered is not valid"
+msgstr "A frequência informada não é válida."
 
 #, c-format
 msgid "Enter the day to go to [ENTER for today] : %s"
@@ -1674,15 +1677,6 @@ msgstr "yyyy/mm/dd"
 msgid "yyyy-mm-dd"
 msgstr "yyyy-mm-dd"
 
-msgid "Calendar"
-msgstr "Calendário"
-
-msgid "Appointments"
-msgstr "Agendamentos"
-
-msgid "TODO"
-msgstr "TAREFA"
-
 msgid "unknown panel"
 msgstr "painel desconhecido"
 
@@ -1736,38 +1730,49 @@ msgstr "Atualizar diretivas de configuração..."
 msgid "Remove temporary backup..."
 msgstr "Excluir backup temporário..."
 
-#~ msgid "Exit"
-#~ msgstr "Sair"
+#~ msgid "Argument to the '-d' flag is not valid\n"
+#~ msgstr "Argumento para a sinalização \"-d\" não é válido\n"
 
-#~ msgid "Width +"
-#~ msgstr "Largura +"
+#~ msgid "Possible argument format are: '%s' or 'n'\n"
+#~ msgstr "Possíveis formatos de argumentos são: \"%s\" ou \"n\"\n"
 
-#~ msgid "Width -"
-#~ msgstr "Largura -"
+#~ msgid "Argument is not valid\n"
+#~ msgstr "Argumento não é válido\n"
 
-#~ msgid "No color"
-#~ msgstr "Nenhuma cor"
+#~ msgid "Argument format for -s and --startday is: '%s'\n"
+#~ msgstr "Formato de argumento para -s e --startday é: '%s'\n"
 
-#~ msgid "Key info"
-#~ msgstr "InfoTecla"
+#~ msgid "Argument format for -r and --range is: 'n'\n"
+#~ msgstr "Formato de argumento para -r e --range é: \"n\"\n"
 
-#~ msgid "Add key"
-#~ msgstr "AdicionarTecla"
+#~ msgid "Argument for '-x' should be either 'ical' or 'pcal'\n"
+#~ msgstr "Argumento para \"-x\" deveria ser \"ical\" ou \"pcal\"\n"
 
-#~ msgid "Del key"
-#~ msgstr "ExcluirTecla"
+#~ msgid ""
+#~ "Option '-S' must be used with either '-d', '-r', '-s', '-a' or '-t'\n"
+#~ msgstr ""
+#~ "Opção \"-S\" deve ser usada com \"-d\", \"-r\", \"-s\", \"-a\" ou \"-t\"\n"
 
-#~ msgid "Prev Key"
-#~ msgstr "TeclaAnterior"
+#~ msgid ""
+#~ "Option '-l' must be used with either '-d', '-r', '-s', '-a' or '-t'\n"
+#~ msgstr ""
+#~ "A saída de \"-l\" deve ser usada com \"-d\", \"-r\", \"-s\", \"-a\" ou \"-"
+#~ "t\"\n"
 
-#~ msgid "Next Key"
-#~ msgstr "Tecla Seguinte"
+#~ msgid "%s does not exist, create it now [y/n]? "
+#~ msgstr "%s não existe; criá-lo agora [s/n]?"
 
-#~ msgid "unknwon type"
-#~ msgstr "tipo desconhecido"
+#~ msgid "aborting...\n"
+#~ msgstr "abortando...\n"
 
-#~ msgid "xfree: null pointer"
-#~ msgstr "xfree: ponteiro nulo"
+#~ msgid "%s successfully created\n"
+#~ msgstr "%s criado com sucesso\n"
 
-#~ msgid "no such type"
-#~ msgstr "tipo inexistente"
+#~ msgid "starting interactive mode...\n"
+#~ msgstr "iniciando modo interativo...\n"
+
+#~ msgid ""
+#~ "The day you entered is not valid (should be between 01/01/1902 and "
+#~ "12/31/2037)"
+#~ msgstr ""
+#~ "O dia inserido não é válido (deveria ser entre 01/01/1902 e 12/31/2037)"

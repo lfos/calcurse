@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2014-07-28 12:51+0200\n"
-"PO-Revision-Date: 2013-07-23 08:52+0000\n"
+"POT-Creation-Date: 2015-02-22 10:37+0100\n"
+"PO-Revision-Date: 2014-08-03 21:51+0000\n"
 "Last-Translator: Lukas Fleischer <transifex@cryptocrack.de>\n"
 "Language-Team: Dutch (http://www.transifex.com/projects/p/calcurse/language/"
 "nl/)\n"
@@ -154,69 +154,50 @@ msgstr "calcurse draait op de achtergrond (pid%d)\n"
 msgid "calcurse is not running\n"
 msgstr "calcurse is niet actief\n"
 
-msgid "to do:\n"
-msgstr "Taken:\n"
-
 msgid "completed tasks:\n"
 msgstr "afgewerkte taken:\n"
+
+msgid "to do:\n"
+msgstr "Taken:\n"
 
 msgid "next appointment:\n"
 msgstr "Volgende afspraak :\n"
 
-msgid "Argument to the '-d' flag is not valid\n"
-msgstr "Argument van '-d' is niet geldig.\n"
+#, c-format
+msgid "invalid date: %s"
+msgstr ""
 
 #, c-format
-msgid "Possible argument format are: '%s' or 'n'\n"
+msgid "invalid range: %s"
 msgstr ""
-
-msgid "Argument is not valid\n"
-msgstr "Argument is niet geldig.\n"
 
 #, c-format
-msgid "Argument format for -s and --startday is: '%s'\n"
+msgid "invalid priority: %s"
 msgstr ""
 
-msgid "Argument format for -r and --range is: 'n'\n"
-msgstr "Argument formaat voor -r en --range is: 'n'\n"
-
-msgid "Can not handle more than one regular expression."
-msgstr "Kan niet meer dan een reguliere expressie behandelen."
-
-msgid "Could not compile regular expression."
-msgstr "Kan de reguliere expressie niet compileren."
-
-msgid "Argument for '-x' should be either 'ical' or 'pcal'\n"
-msgstr "Argument voor '-x' moet of 'ical' of 'pcal' zijn\n"
-
-msgid "Option '-S' must be used with either '-d', '-r', '-s', '-a' or '-t'\n"
+#, c-format
+msgid "invalid export format: %s"
 msgstr ""
-"Optie '-S' moet met een van volgende worden gebruikt '-d', '-r', '-s', '-"
-"a','-' of '-t'\n"
 
-msgid "Option '-l' must be used with either '-d', '-r', '-s', '-a' or '-t'\n"
+msgid "invalid filter mask"
 msgstr ""
 
 #, fuzzy
-msgid "The data files were reloaded successfully"
-msgstr "De databestanden zijn met succes opgeslagen"
+msgid "cannot handle more than one regular expression"
+msgstr "Kan niet meer dan een reguliere expressie behandelen."
 
-msgid "Press [ENTER] to continue"
-msgstr "Druk op [ENTER] om door te gaan)"
+#, fuzzy, c-format
+msgid "could not compile regular expression: %s"
+msgstr "Kan de reguliere expressie niet compileren."
 
-msgid "There are unsaved modifications:"
+#, c-format
+msgid "invalid date range: %s"
 msgstr ""
 
-msgid "(d)iscard"
+msgid "invalid argument combination"
 msgstr ""
 
-msgid "(m)erge"
-msgstr ""
-
-msgid "(k)eep and cancel"
-msgstr ""
-
-msgid "[dmk]"
+msgid "cannot specify a range and an end date"
 msgstr ""
 
 msgid "Export to (i)cal or (p)cal format?"
@@ -276,6 +257,21 @@ msgstr "standaard van terminal"
 
 msgid "color theme"
 msgstr "Kleurthema"
+
+msgid "(if set to YES, compact panels are used)"
+msgstr ""
+
+msgid "Calendar"
+msgstr "Kalender"
+
+msgid "Appointments"
+msgstr "Afspraken"
+
+msgid "TODO"
+msgstr ""
+
+msgid "(specifies the panel that is selected by default)"
+msgstr ""
 
 msgid "(if set to YES, automatic save is done when quitting)"
 msgstr "(Bij JA, wordt er automatisch opgeslagen bij einde programma)"
@@ -540,24 +536,17 @@ msgid "Failed to close \"%s\" - %s\n"
 msgstr "Fout bij sluiten \"%s\" - %s\n"
 
 #, c-format
-msgid "%s does not exist, create it now [y/n]? "
+msgid "%s does not exist"
 msgstr ""
-
-msgid "aborting...\n"
-msgstr "afbreken...\n"
-
-#, c-format
-msgid "%s successfully created\n"
-msgstr "%s met succes aangemaakt\n"
-
-msgid "starting interactive mode...\n"
-msgstr "interactieve modus gestart...\n"
 
 msgid "Problems accessing data file ..."
 msgstr "Probleem bij benaderen databestand ..."
 
 msgid "The data files were successfully saved"
 msgstr "De databestanden zijn met succes opgeslagen"
+
+msgid "Press [ENTER] to continue"
+msgstr "Druk op [ENTER] om door te gaan)"
 
 msgid "failed to open appointment file"
 msgstr "Afsprakenbestand niet kunnen openen"
@@ -582,6 +571,24 @@ msgstr "syntaxfout in de herhaling van het item"
 
 msgid "failed to open todo file"
 msgstr "kon het todo-bestand niet openen"
+
+msgid "The data files were reloaded successfully"
+msgstr ""
+
+msgid "There are unsaved modifications:"
+msgstr ""
+
+msgid "(d)iscard"
+msgstr ""
+
+msgid "(m)erge"
+msgstr ""
+
+msgid "(k)eep and cancel"
+msgstr ""
+
+msgid "[dmk]"
+msgstr ""
 
 msgid "failed to open key file"
 msgstr ""
@@ -640,9 +647,9 @@ msgstr "foute exportmodus"
 msgid "Enter the file name to import data from:"
 msgstr "Kies het bestand voor het importeren van data:"
 
-#, fuzzy, c-format
+#, c-format
 msgid "Import process report: %04d lines read"
-msgstr "Import proces rapport: %04d gelezen regels"
+msgstr ""
 
 msgid "unknown import type"
 msgstr "onbekend type om te importeren"
@@ -894,9 +901,8 @@ msgstr "Info"
 msgid "Keys"
 msgstr "Toetsen"
 
-#, fuzzy
 msgid "Unknown"
-msgstr "Onbekende kleur"
+msgstr ""
 
 msgid "Cancel the ongoing action."
 msgstr ""
@@ -916,9 +922,8 @@ msgstr "Verlaat het huidige menu, of verlaat Calcurse."
 msgid "Save calcurse data."
 msgstr ""
 
-#, fuzzy
 msgid "Reload appointments and todo items."
-msgstr "afspraak heeft geen begintijd."
+msgstr ""
 
 msgid "Copy the item that is currently selected."
 msgstr ""
@@ -1230,12 +1235,9 @@ msgstr "todo niet gevonden"
 msgid "ERROR setting first day of week"
 msgstr "FOUT in het instellen van de eerste dag van de week"
 
-msgid ""
-"The day you entered is not valid (should be between 01/01/1902 and "
-"12/31/2037)"
-msgstr ""
-"De ingevoerde datum is ongeldig (voer datum tussen 01/01/1902 en 12/31/2037) "
-"in"
+#, fuzzy
+msgid "The day you entered is not valid"
+msgstr "Het ingevoerde interval is ongeldig."
 
 #, c-format
 msgid "Enter the day to go to [ENTER for today] : %s"
@@ -1499,15 +1501,6 @@ msgstr ""
 msgid "yyyy-mm-dd"
 msgstr ""
 
-msgid "Calendar"
-msgstr "Kalender"
-
-msgid "Appointments"
-msgstr "Afspraken"
-
-msgid "TODO"
-msgstr ""
-
 msgid "unknown panel"
 msgstr ""
 
@@ -1554,32 +1547,36 @@ msgstr ""
 msgid "Remove temporary backup..."
 msgstr ""
 
-#~ msgid "Exit"
-#~ msgstr "Einde"
+#~ msgid "Argument to the '-d' flag is not valid\n"
+#~ msgstr "Argument van '-d' is niet geldig.\n"
 
-#~ msgid "Width +"
-#~ msgstr "Breedte +"
+#~ msgid "Argument is not valid\n"
+#~ msgstr "Argument is niet geldig.\n"
 
-#~ msgid "Width -"
-#~ msgstr "Breedte -"
+#~ msgid "Argument format for -r and --range is: 'n'\n"
+#~ msgstr "Argument formaat voor -r en --range is: 'n'\n"
 
-#~ msgid "No color"
-#~ msgstr "Geen kleur"
+#~ msgid "Argument for '-x' should be either 'ical' or 'pcal'\n"
+#~ msgstr "Argument voor '-x' moet of 'ical' of 'pcal' zijn\n"
 
-#~ msgid "Key info"
-#~ msgstr "Toets informatie"
+#~ msgid ""
+#~ "Option '-S' must be used with either '-d', '-r', '-s', '-a' or '-t'\n"
+#~ msgstr ""
+#~ "Optie '-S' moet met een van volgende worden gebruikt '-d', '-r', '-s', '-"
+#~ "a','-' of '-t'\n"
 
-#~ msgid "Add key"
-#~ msgstr "Voeg toets toe"
+#~ msgid "aborting...\n"
+#~ msgstr "afbreken...\n"
 
-#~ msgid "Del key"
-#~ msgstr "Verwijder toets"
+#~ msgid "%s successfully created\n"
+#~ msgstr "%s met succes aangemaakt\n"
 
-#~ msgid "Prev Key"
-#~ msgstr "Vorig toets"
+#~ msgid "starting interactive mode...\n"
+#~ msgstr "interactieve modus gestart...\n"
 
-#~ msgid "Next Key"
-#~ msgstr "Volgend toets"
-
-#~ msgid "unknwon type"
-#~ msgstr "ongekend type"
+#~ msgid ""
+#~ "The day you entered is not valid (should be between 01/01/1902 and "
+#~ "12/31/2037)"
+#~ msgstr ""
+#~ "De ingevoerde datum is ongeldig (voer datum tussen 01/01/1902 en "
+#~ "12/31/2037) in"

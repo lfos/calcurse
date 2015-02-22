@@ -10,9 +10,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2014-07-28 12:51+0200\n"
-"PO-Revision-Date: 2014-07-28 18:32+0000\n"
-"Last-Translator: Aleksey Mekhonoshin <linux.kernel.it@gmail.com>\n"
+"POT-Creation-Date: 2015-02-22 10:37+0100\n"
+"PO-Revision-Date: 2014-08-03 21:51+0000\n"
+"Last-Translator: Lukas Fleischer <transifex@cryptocrack.de>\n"
 "Language-Team: Russian (http://www.transifex.com/projects/p/calcurse/"
 "language/ru/)\n"
 "Language: ru\n"
@@ -45,13 +45,14 @@ msgstr ""
 msgid "Try 'calcurse -h' for more information.\n"
 msgstr "Выполните 'calcurse -h' для получения справки.\n"
 
+#, fuzzy
 msgid ""
 "\n"
 "Copyright (c) 2004-2015 calcurse Development Team.\n"
 "This is free software; see the source for copying conditions.\n"
 msgstr ""
 "\n"
-"Copyright (c) 2004-2015 calcurse Development Team.\n"
+"Copyright (c) 2004-2013 calcurse Development Team.\n"
 "This is free software; see the source for copying conditions.\n"
 
 #, c-format
@@ -231,69 +232,51 @@ msgstr "calcurse запущен в фоновом режиме (pid: %d)\n"
 msgid "calcurse is not running\n"
 msgstr "calcurse не запущен\n"
 
-msgid "to do:\n"
-msgstr "Список дел:\n"
-
 msgid "completed tasks:\n"
 msgstr "Выполненные задачи:\n"
+
+msgid "to do:\n"
+msgstr "Список дел:\n"
 
 msgid "next appointment:\n"
 msgstr "Следующая задача:\n"
 
-msgid "Argument to the '-d' flag is not valid\n"
-msgstr "Аргумент ключа '-d' неверен\n"
+#, fuzzy, c-format
+msgid "invalid date: %s"
+msgstr "Неверная задержка"
 
 #, c-format
-msgid "Possible argument format are: '%s' or 'n'\n"
-msgstr "Возможный формат аргумента: '%s' или 'n'\n"
-
-msgid "Argument is not valid\n"
-msgstr "Аргумент неверен\n"
+msgid "invalid range: %s"
+msgstr ""
 
 #, c-format
-msgid "Argument format for -s and --startday is: '%s'\n"
-msgstr "Формат аргумента для -s и --startday: '%s'\n"
+msgid "invalid priority: %s"
+msgstr ""
 
-msgid "Argument format for -r and --range is: 'n'\n"
-msgstr "Формат аргумента для -r и --range: 'n'\n"
+#, c-format
+msgid "invalid export format: %s"
+msgstr ""
 
-msgid "Can not handle more than one regular expression."
+msgid "invalid filter mask"
+msgstr ""
+
+#, fuzzy
+msgid "cannot handle more than one regular expression"
 msgstr "Невозможно обработать более одного регулярного выражения."
 
-msgid "Could not compile regular expression."
+#, fuzzy, c-format
+msgid "could not compile regular expression: %s"
 msgstr "Невозможно скомпилировать регулярное выражение."
 
-msgid "Argument for '-x' should be either 'ical' or 'pcal'\n"
-msgstr "Аргумент для '-x': 'ical' либо 'pcal'\n"
-
-msgid "Option '-S' must be used with either '-d', '-r', '-s', '-a' or '-t'\n"
-msgstr ""
-"Ключ '-S' должен использоваться с любым из след.: '-d'. '-r', '-s', '-a', '-"
-"t'\n"
-
-msgid "Option '-l' must be used with either '-d', '-r', '-s', '-a' or '-t'\n"
-msgstr "Ключ '-l' должен использоваться с '-d','-r', '-s', '-a' or '-t'\n"
-
-msgid "The data files were reloaded successfully"
-msgstr "Файлы данных полностью обновлены"
-
-msgid "Press [ENTER] to continue"
-msgstr "Нажмите [ENTER]"
-
-msgid "There are unsaved modifications:"
-msgstr "Не сохранённые изменения:"
-
-msgid "(d)iscard"
-msgstr "(d)отменить"
-
-msgid "(m)erge"
-msgstr "(m)слияние"
-
-msgid "(k)eep and cancel"
+#, c-format
+msgid "invalid date range: %s"
 msgstr ""
 
-msgid "[dmk]"
-msgstr "[dmk]"
+msgid "invalid argument combination"
+msgstr ""
+
+msgid "cannot specify a range and an end date"
+msgstr ""
 
 msgid "Export to (i)cal or (p)cal format?"
 msgstr "Формат экспорта (i)cal или (p)cal?"
@@ -354,6 +337,21 @@ msgstr "(цвета терминала)"
 
 msgid "color theme"
 msgstr "Цветовая схема"
+
+msgid "(if set to YES, compact panels are used)"
+msgstr ""
+
+msgid "Calendar"
+msgstr "Календарь"
+
+msgid "Appointments"
+msgstr "Задачи"
+
+msgid "TODO"
+msgstr "Дело"
+
+msgid "(specifies the panel that is selected by default)"
+msgstr ""
 
 msgid "(if set to YES, automatic save is done when quitting)"
 msgstr "(yes/no) Автосохранение при выходе из программы"
@@ -615,25 +613,18 @@ msgstr "Ошибка вывода сообщения \"%s\"\n"
 msgid "Failed to close \"%s\" - %s\n"
 msgstr "Ошибка закрытия \"%s\" - %s\n"
 
-#, c-format
-msgid "%s does not exist, create it now [y/n]? "
-msgstr "%s не существует, создать его [y/n]? "
-
-msgid "aborting...\n"
-msgstr "завершение...\n"
-
-#, c-format
-msgid "%s successfully created\n"
-msgstr "%s создание завершено\n"
-
-msgid "starting interactive mode...\n"
-msgstr "запускается интерактивный режим...\n"
+#, fuzzy, c-format
+msgid "%s does not exist"
+msgstr "Раздел справки не существует: %s"
 
 msgid "Problems accessing data file ..."
 msgstr "Проблемы с доступом к файлу данных..."
 
 msgid "The data files were successfully saved"
 msgstr "Файл данных успешно сохранён"
+
+msgid "Press [ENTER] to continue"
+msgstr "Нажмите [ENTER]"
 
 msgid "failed to open appointment file"
 msgstr "ошибка открытия файла задач"
@@ -658,6 +649,24 @@ msgstr "опечатка в записи повторения"
 
 msgid "failed to open todo file"
 msgstr "ошибка открытия todo-файла"
+
+msgid "The data files were reloaded successfully"
+msgstr "Файлы данных полностью обновлены"
+
+msgid "There are unsaved modifications:"
+msgstr "Не сохранённые изменения:"
+
+msgid "(d)iscard"
+msgstr "(d)отменить"
+
+msgid "(m)erge"
+msgstr "(m)слияние"
+
+msgid "(k)eep and cancel"
+msgstr ""
+
+msgid "[dmk]"
+msgstr "[dmk]"
 
 msgid "failed to open key file"
 msgstr "ошибка открытия файла ключа"
@@ -1333,10 +1342,9 @@ msgstr "дело не найдено"
 msgid "ERROR setting first day of week"
 msgstr "ОШИБКА настройки первого дня недели"
 
-msgid ""
-"The day you entered is not valid (should be between 01/01/1902 and "
-"12/31/2037)"
-msgstr "Введённый день должен быть между 01/01/1902 и 12/31/2037"
+#, fuzzy
+msgid "The day you entered is not valid"
+msgstr "Неверно введена частота повторения."
 
 #, c-format
 msgid "Enter the day to go to [ENTER for today] : %s"
@@ -1605,15 +1613,6 @@ msgstr "гггг/мм/дд"
 msgid "yyyy-mm-dd"
 msgstr "гггг-мм-дд"
 
-msgid "Calendar"
-msgstr "Календарь"
-
-msgid "Appointments"
-msgstr "Задачи"
-
-msgid "TODO"
-msgstr "Дело"
-
 msgid "unknown panel"
 msgstr "неизвестная панель"
 
@@ -1665,3 +1664,48 @@ msgstr "Обновление конфигурации..."
 
 msgid "Remove temporary backup..."
 msgstr "Удалить временный архивный файл..."
+
+#~ msgid "Argument to the '-d' flag is not valid\n"
+#~ msgstr "Аргумент ключа '-d' неверен\n"
+
+#~ msgid "Possible argument format are: '%s' or 'n'\n"
+#~ msgstr "Возможный формат аргумента: '%s' или 'n'\n"
+
+#~ msgid "Argument is not valid\n"
+#~ msgstr "Аргумент неверен\n"
+
+#~ msgid "Argument format for -s and --startday is: '%s'\n"
+#~ msgstr "Формат аргумента для -s и --startday: '%s'\n"
+
+#~ msgid "Argument format for -r and --range is: 'n'\n"
+#~ msgstr "Формат аргумента для -r и --range: 'n'\n"
+
+#~ msgid "Argument for '-x' should be either 'ical' or 'pcal'\n"
+#~ msgstr "Аргумент для '-x': 'ical' либо 'pcal'\n"
+
+#~ msgid ""
+#~ "Option '-S' must be used with either '-d', '-r', '-s', '-a' or '-t'\n"
+#~ msgstr ""
+#~ "Ключ '-S' должен использоваться с любым из след.: '-d'. '-r', '-s', '-a', "
+#~ "'-t'\n"
+
+#~ msgid ""
+#~ "Option '-l' must be used with either '-d', '-r', '-s', '-a' or '-t'\n"
+#~ msgstr "Ключ '-l' должен использоваться с '-d','-r', '-s', '-a' or '-t'\n"
+
+#~ msgid "%s does not exist, create it now [y/n]? "
+#~ msgstr "%s не существует, создать его [y/n]? "
+
+#~ msgid "aborting...\n"
+#~ msgstr "завершение...\n"
+
+#~ msgid "%s successfully created\n"
+#~ msgstr "%s создание завершено\n"
+
+#~ msgid "starting interactive mode...\n"
+#~ msgstr "запускается интерактивный режим...\n"
+
+#~ msgid ""
+#~ "The day you entered is not valid (should be between 01/01/1902 and "
+#~ "12/31/2037)"
+#~ msgstr "Введённый день должен быть между 01/01/1902 и 12/31/2037"

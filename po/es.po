@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2014-07-28 12:51+0200\n"
-"PO-Revision-Date: 2013-07-23 08:52+0000\n"
+"POT-Creation-Date: 2015-02-22 10:37+0100\n"
+"PO-Revision-Date: 2014-08-03 21:51+0000\n"
 "Last-Translator: Lukas Fleischer <transifex@cryptocrack.de>\n"
 "Language-Team: Spanish (http://www.transifex.com/projects/p/calcurse/"
 "language/es/)\n"
@@ -154,67 +154,49 @@ msgstr ""
 msgid "calcurse is not running\n"
 msgstr ""
 
-msgid "to do:\n"
-msgstr "Tareas pendientes:\n"
-
 msgid "completed tasks:\n"
 msgstr ""
+
+msgid "to do:\n"
+msgstr "Tareas pendientes:\n"
 
 msgid "next appointment:\n"
 msgstr "Proxima cita:\n"
 
-msgid "Argument to the '-d' flag is not valid\n"
-msgstr "El argumento pasado a la opcion -d no es valido\n"
-
 #, c-format
-msgid "Possible argument format are: '%s' or 'n'\n"
-msgstr ""
-
-msgid "Argument is not valid\n"
+msgid "invalid date: %s"
 msgstr ""
 
 #, c-format
-msgid "Argument format for -s and --startday is: '%s'\n"
+msgid "invalid range: %s"
 msgstr ""
 
-msgid "Argument format for -r and --range is: 'n'\n"
+#, c-format
+msgid "invalid priority: %s"
 msgstr ""
 
-msgid "Can not handle more than one regular expression."
+#, c-format
+msgid "invalid export format: %s"
 msgstr ""
 
-msgid "Could not compile regular expression."
+msgid "invalid filter mask"
 msgstr ""
 
-msgid "Argument for '-x' should be either 'ical' or 'pcal'\n"
+msgid "cannot handle more than one regular expression"
 msgstr ""
 
-msgid "Option '-S' must be used with either '-d', '-r', '-s', '-a' or '-t'\n"
+#, c-format
+msgid "could not compile regular expression: %s"
 msgstr ""
 
-msgid "Option '-l' must be used with either '-d', '-r', '-s', '-a' or '-t'\n"
+#, c-format
+msgid "invalid date range: %s"
 msgstr ""
 
-#, fuzzy
-msgid "The data files were reloaded successfully"
-msgstr "Los archivos de datos se han salvado con exito"
-
-msgid "Press [ENTER] to continue"
-msgstr "Pulsa [INTRO] para continuar"
-
-msgid "There are unsaved modifications:"
+msgid "invalid argument combination"
 msgstr ""
 
-msgid "(d)iscard"
-msgstr ""
-
-msgid "(m)erge"
-msgstr ""
-
-msgid "(k)eep and cancel"
-msgstr ""
-
-msgid "[dmk]"
+msgid "cannot specify a range and an end date"
 msgstr ""
 
 msgid "Export to (i)cal or (p)cal format?"
@@ -273,6 +255,21 @@ msgid "(terminal's default)"
 msgstr "(el del terminal por defecto)"
 
 msgid "color theme"
+msgstr ""
+
+msgid "(if set to YES, compact panels are used)"
+msgstr ""
+
+msgid "Calendar"
+msgstr "Calendario"
+
+msgid "Appointments"
+msgstr "Citas y eventos"
+
+msgid "TODO"
+msgstr ""
+
+msgid "(specifies the panel that is selected by default)"
 msgstr ""
 
 msgid "(if set to YES, automatic save is done when quitting)"
@@ -537,24 +534,17 @@ msgid "Failed to close \"%s\" - %s\n"
 msgstr ""
 
 #, c-format
-msgid "%s does not exist, create it now [y/n]? "
+msgid "%s does not exist"
 msgstr ""
-
-msgid "aborting...\n"
-msgstr "abortando...\n"
-
-#, c-format
-msgid "%s successfully created\n"
-msgstr "%s creado con exito\n"
-
-msgid "starting interactive mode...\n"
-msgstr "arrancando modo interactivo...\n"
 
 msgid "Problems accessing data file ..."
 msgstr "Problemas al acceder al fichero de datos..."
 
 msgid "The data files were successfully saved"
 msgstr "Los archivos de datos se han salvado con exito"
+
+msgid "Press [ENTER] to continue"
+msgstr "Pulsa [INTRO] para continuar"
 
 msgid "failed to open appointment file"
 msgstr ""
@@ -578,6 +568,24 @@ msgid "syntax error in item repetition"
 msgstr ""
 
 msgid "failed to open todo file"
+msgstr ""
+
+msgid "The data files were reloaded successfully"
+msgstr ""
+
+msgid "There are unsaved modifications:"
+msgstr ""
+
+msgid "(d)iscard"
+msgstr ""
+
+msgid "(m)erge"
+msgstr ""
+
+msgid "(k)eep and cancel"
+msgstr ""
+
+msgid "[dmk]"
 msgstr ""
 
 msgid "failed to open key file"
@@ -1219,10 +1227,9 @@ msgstr ""
 msgid "ERROR setting first day of week"
 msgstr ""
 
-msgid ""
-"The day you entered is not valid (should be between 01/01/1902 and "
-"12/31/2037)"
-msgstr ""
+#, fuzzy
+msgid "The day you entered is not valid"
+msgstr "La frecuencia que has introducido no es valida."
 
 #, c-format
 msgid "Enter the day to go to [ENTER for today] : %s"
@@ -1486,15 +1493,6 @@ msgstr ""
 msgid "yyyy-mm-dd"
 msgstr ""
 
-msgid "Calendar"
-msgstr "Calendario"
-
-msgid "Appointments"
-msgstr "Citas y eventos"
-
-msgid "TODO"
-msgstr ""
-
 msgid "unknown panel"
 msgstr ""
 
@@ -1541,5 +1539,14 @@ msgstr ""
 msgid "Remove temporary backup..."
 msgstr ""
 
-#~ msgid "Exit"
-#~ msgstr "Salir"
+#~ msgid "Argument to the '-d' flag is not valid\n"
+#~ msgstr "El argumento pasado a la opcion -d no es valido\n"
+
+#~ msgid "aborting...\n"
+#~ msgstr "abortando...\n"
+
+#~ msgid "%s successfully created\n"
+#~ msgstr "%s creado con exito\n"
+
+#~ msgid "starting interactive mode...\n"
+#~ msgstr "arrancando modo interactivo...\n"
