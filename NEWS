@@ -1,3 +1,33 @@
+[22 Feb 2015]
+Version 4.0.0:
+- New features:
+  * Support for reloading appointments via a key binding and via SIGUSR1
+    (thanks to Tim Hentenaar for submitting a patch).
+
+  * The compact mode and default panel options are no longer hidden.
+
+  * A powerful set of new command line options. The new main operations in
+    non-interactive mode are --grep and --query. There are filter switches to
+    restrict the set of items that are read from the appointments file. All
+    old command line options are still supported for backwards compatibility.
+
+  * Support for shorthands such as "tomorrow" or "monday" as date specifiers.
+
+  * Support for dates beyond 2038 on platforms with 64-bit time_t.
+
+- Bug fixes:
+  * Several fixes to the user interface.
+
+  * Handle CRLF line endings in iCal files (reported by Hakan Jerning).
+
+  * Gracefully handle all day events in iCal imports (reported by Jörn
+    Tillmanns and by Hakan Jerning).
+
+  * Retain comments in descriptions and configuration values (reported by Hakan
+    Jerning).
+
+  * Support all types of iCal durations (reported by Hakan Jerning).
+
 [08 Jul 2014]
 Version 3.2.1:
 - Bug fixes:
