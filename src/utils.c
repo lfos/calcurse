@@ -665,9 +665,7 @@ static void get_weekday_ymd(int *year, int *month, int *day, int weekday)
 
 	localtime_r(&t, &tm);
 	delta = weekday - tm.tm_wday;
-	if (delta <= 0)
-		delta += 7;
-	t += delta * DAYINSEC;
+	t = date_sec_change(t, 0, delta > 0 ? delta : 7);
 
 	localtime_r(&t, &tm);
 	*day = tm.tm_mday;
@@ -712,10 +710,10 @@ parse_date(const char *date_string, enum datefmt datefmt, int *year,
 		get_ymd(year, month, day, get_today());
 		return 1;
 	} else if (!strcasecmp(date_string, "yesterday")) {
-		get_ymd(year, month, day, get_today() - DAYINSEC);
+		get_ymd(year, month, day, date_sec_change(get_today(), 0, -1));
 		return 1;
 	} else if (!strcasecmp(date_string, "tomorrow")) {
-		get_ymd(year, month, day, get_today() + DAYINSEC);
+		get_ymd(year, month, day, date_sec_change(get_today(), 0, 1));
 		return 1;
 	} else if (!strcasecmp(date_string, "now")) {
 		get_ymd(year, month, day, now());
@@ -1290,13 +1288,14 @@ static void print_date(long date, long day, const char *extformat)
 	if (!strcmp(extformat, "epoch")) {
 		printf("%ld", date);
 	} else {
+		time_t day_end = date_sec_change(day, 0, 1);
 		time_t t = date;
 		struct tm lt;
 
 		localtime_r((time_t *) & t, &lt);
 
 		if (extformat[0] == '\0' || !strcmp(extformat, "default")) {
-			if (date >= day && date <= day + DAYINSEC)
+			if (date >= day && date <= day_end)
 				strftime(buf, BUFSIZ, "%H:%M", &lt);
 			else
 				strftime(buf, BUFSIZ, "..:..", &lt);

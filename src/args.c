@@ -252,7 +252,7 @@ static void next_arg(void)
 	const long current_time = now();
 	int time_left, hours_left, min_left;
 
-	next_app.time = current_time + DAYINSEC;
+	next_app.time = date_sec_change(current_time, 0, 1);
 	next_app.got_app = 0;
 	next_app.txt = NULL;
 
@@ -297,7 +297,7 @@ date_arg_from_to(long from, long to, int add_line, const char *fmt_apt,
 {
 	long date;
 
-	for (date = from; date < to; date += DAYINSEC) {
+	for (date = from; date < to; date = date_sec_change(date, 0, 1)) {
 		day_store_items(date, 0);
 		if (day_item_count(0) == 0)
 			continue;
@@ -729,9 +729,9 @@ int parse_args(int argc, char **argv)
 	}
 
 	if (to == -1 && range == -1)
-		to = from + DAYINSEC;
+		to = date_sec_change(from, 0, 1);
 	else if (to == -1 && range >= 0)
-		to = from + range * DAYINSEC;
+		to = date_sec_change(from, 0, range);
 	else if (to >= 0 && range >= 0)
 		EXIT_IF(to >= 0, _("cannot specify a range and an end date"));
 
