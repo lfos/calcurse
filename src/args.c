@@ -326,7 +326,7 @@ static long parse_datearg(const char *str)
 			(int *)&day.mm, (int *)&day.dd, NULL))
 		return date2sec(day, 0, 0);
 
-	return -1;
+	return LONG_MAX;
 }
 
 static long parse_datetimearg(const char *str)
@@ -345,7 +345,7 @@ static long parse_datetimearg(const char *str)
 		if (!parse_time(time, &hour, &min))
 			return -1;
 		ret = parse_datearg(date);
-		if (!ret)
+		if (ret == LONG_MAX)
 			return -1;
 		ret += hour * HOURINSEC + min * MININSEC;
 
@@ -353,7 +353,7 @@ static long parse_datetimearg(const char *str)
 	}
 
 	ret = parse_datearg(date);
-	if (ret < 0) {
+	if (ret == LONG_MAX) {
 		/* No date specified, use time only. */
 		if (!parse_time(date, &hour, &min))
 			return -1;
