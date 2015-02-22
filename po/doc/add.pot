@@ -1,16 +1,17 @@
 #. extracted from add.txt
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-24 08:50+0200\n"
+"POT-Creation-Date: 2015-02-22 10:27+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Translate Toolkit 1.10.0\n"
+"X-Generator: Translate Toolkit 1.12.0\n"
 
 #: add.txt:1
 msgid ""
@@ -37,8 +38,10 @@ msgstr ""
 
 #: add.txt:13
 msgid ""
-"If the appointment panel is selected, you will be able to enter either a new\n"
-"appointment or a new all-day long event. To enter a new event, press [ENTER]\n"
+"If the appointment panel is selected, you will be able to enter either a "
+"new\n"
+"appointment or a new all-day long event. To enter a new event, press [ENTER]"
+"\n"
 "instead of the item start time, and just fill in the event description."
 msgstr ""
 
@@ -70,7 +73,8 @@ msgstr ""
 
 #: add.txt:30
 msgid ""
-"* If an appointment lasts for such a long time that it continues on the next\n"
+"* If an appointment lasts for such a long time that it continues on the "
+"next\n"
 "  days, this event will be indicated on all the corresponding days, and the\n"
 "  beginning or ending hour will be replaced by '..' if the event does not "
 "begin\n"
