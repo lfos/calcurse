@@ -120,6 +120,7 @@ static inline void key_add_item(void)
 {
 	switch (wins_slctd()) {
 	case APP:
+	case CAL:
 		ui_day_item_add();
 		do_storage(0);
 		wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
