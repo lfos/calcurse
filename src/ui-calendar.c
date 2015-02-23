@@ -87,6 +87,9 @@ void ui_calendar_view_next(void)
 	ui_calendar_view++;
 	if (ui_calendar_view == CAL_VIEWS)
 		ui_calendar_view = 0;
+
+	/* The calendar panel needs to be erased when switching views. */
+	monthly_view_cache_month = 0;
 }
 
 void ui_calendar_view_prev(void)
@@ -94,6 +97,9 @@ void ui_calendar_view_prev(void)
 	if (ui_calendar_view == 0)
 		ui_calendar_view = CAL_VIEWS;
 	ui_calendar_view--;
+
+	/* The calendar panel needs to be erased when switching views. */
+	monthly_view_cache_month = 0;
 }
 
 void ui_calendar_set_view(int view)
