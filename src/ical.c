@@ -477,7 +477,7 @@ ical_chk_header(FILE * fd, char *buf, char *lstore, unsigned *lineno,
  * where DATE is 'YYYYMMDD' and TIME is 'HHMMSS'.
  * The time and 'T' separator are optional (in the case of an day-long event).
  *
- * Optionnaly, if the type pointer is given, specify if it is an event
+ * Optionally, if the type pointer is given, specify if it is an event
  * (no time is given, meaning it is an all-day event), or an appointment
  * (time is given).
  *
@@ -485,22 +485,27 @@ ical_chk_header(FILE * fd, char *buf, char *lstore, unsigned *lineno,
  */
 static long ical_datetime2long(char *datestr, ical_vevent_e * type)
 {
-	const int NOTFOUND = 0, FORMAT_DATE = 3, FORMAT_DATETIME = 5;
+	const int NOTFOUND = 0, FORMAT_DATE = 3, FORMAT_DATETIME = 6,
+	      FORMAT_DATETIMEZ = 7;
 	struct date date;
-	unsigned hour, min;
-	long datelong;
+	unsigned hour, min, sec;
+	char c;
+	long datelong ;
 	int format;
 
-	format = sscanf(datestr, "%04u%02u%02uT%02u%02u",
-			&date.yyyy, &date.mm, &date.dd, &hour, &min);
+	format = sscanf(datestr, "%04u%02u%02uT%02u%02u%02u%c",
+			&date.yyyy, &date.mm, &date.dd, &hour, &min, &sec, &c);
 	if (format == FORMAT_DATE) {
 		if (type)
 			*type = EVENT;
 		datelong = date2sec(date, 0, 0);
-	} else if (format == FORMAT_DATETIME) {
+	} else if (format == FORMAT_DATETIME || format == FORMAT_DATETIMEZ) {
 		if (type)
 			*type = APPOINTMENT;
-		datelong = date2sec(date, hour, min);
+		if (format == FORMAT_DATETIMEZ && c == 'Z')
+			datelong = utcdate2sec(date, hour, min);
+		else
+			datelong = date2sec(date, hour, min);
 	} else {
 		datelong = NOTFOUND;
 	}

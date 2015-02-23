@@ -386,6 +386,31 @@ long date2sec(struct date day, unsigned hour, unsigned min)
 	return t;
 }
 
+time_t
+utcdate2sec(struct date day, unsigned hour, unsigned min)
+{
+	char *tz;
+	time_t t;
+
+	tz = getenv("TZ");
+	if (tz)
+		tz = mem_strdup(tz);
+	setenv("TZ", "", 1);
+	tzset();
+
+	t = date2sec(day, hour, min);
+
+	if (tz) {
+		setenv("TZ", tz, 1);
+		mem_free(tz);
+	} else {
+	    unsetenv("TZ");
+	}
+	tzset();
+
+	return t;
+}
+
 /* Return a string containing the date, given a date in seconds. */
 char *date_sec2date_str(long sec, const char *datefmt)
 {
