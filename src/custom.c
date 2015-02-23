@@ -1032,6 +1032,26 @@ void custom_keys_config(void)
 			wins_scrollwin_delete(&kwin);
 			return;
 		}
+
+		if (resize) {
+			resize = 0;
+			wins_reset_noupdate();
+			nbdisplayed = ((notify_bar() ? row - 3 : row - 2) -
+					LABELLINES) / LINESPERKEY;
+			lastrow = firstrow + nbdisplayed - 1;
+			wins_scrollwin_resize(&kwin, 0, 0,
+					notify_bar() ? row - 3 : row - 2, col);
+			wins_scrollwin_draw_deco(&kwin, 0);
+			delwin(win[STA].p);
+			win[STA].p = newwin(win[STA].h, win[STA].w, win[STA].y,
+					win[STA].x);
+			keypad(win[STA].p, TRUE);
+			if (notify_bar()) {
+				notify_reinit_bar();
+				notify_update_bar();
+			}
+		}
+
 		custom_keys_config_bar();
 		werase(kwin.inner);
 		nbrowelm =
@@ -1102,6 +1122,11 @@ void custom_config_main(void)
 			break;
 		default:
 			break;
+		}
+
+		if (resize) {
+			resize = 0;
+			wins_reset();
 		}
 
 		wins_set_bindings(bindings, ARRAY_SIZE(bindings));
