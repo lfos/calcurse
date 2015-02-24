@@ -32,8 +32,9 @@
 autopoint --force
 if ! grep -F -q datarootdir po/Makefile.in.in
 then
-  sed -i '/^datadir =/i\
-datarootdir = @datarootdir@\' po/Makefile.in.in
+  sed '/^datadir =/i\
+datarootdir = @datarootdir@\' po/Makefile.in.in >po/Makefile.in.in.tmp
+  mv po/Makefile.in.in.tmp po/Makefile.in.in
 fi
 aclocal -I m4
 autoheader
