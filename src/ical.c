@@ -569,45 +569,39 @@ static long ical_durtime2long(char *timestr)
  */
 static long ical_dur2long(char *durstr)
 {
-	const int NOTFOUND = -1;
-	long durlong;
 	char *p;
 	struct {
 		unsigned week, day;
 	} date;
 
 	memset(&date, 0, sizeof date);
-	if ((p = strchr(durstr, 'P')) == NULL) {
-		durlong = NOTFOUND;
-	} else {
-		p++;
-		if (*p == '-')
-			return NOTFOUND;
-		else if (*p == '+')
-			p++;
 
-		if (*p == 'T') {	/* dur-time */
-			durlong = ical_durtime2long(p);
-		} else if (strchr(p, 'W')) {	/* dur-week */
-			if (sscanf(p, "%u", &date.week) == 1)
-				durlong =
-				    date.week * WEEKINDAYS * DAYINSEC;
-			else
-				durlong = NOTFOUND;
-		} else {
-			if (strchr(p, 'D')) {	/* dur-date */
-				if (sscanf(p, "%uD", &date.day) == 1) {
-					durlong = date.day * DAYINSEC;
-					durlong += ical_durtime2long(p);
-				} else {
-					durlong = NOTFOUND;
-				}
-			} else {
-				durlong = NOTFOUND;
-			}
+	p = strchr(durstr, 'P');
+	if (!p)
+		return -1;
+	p++;
+
+	if (*p == '-')
+		return -1;
+	if (*p == '+')
+		p++;
+
+	if (*p == 'T') {
+		/* dur-time */
+		return ical_durtime2long(p);
+	} else if (strchr(p, 'W')) {
+		/* dur-week */
+		if (sscanf(p, "%u", &date.week) == 1)
+			return date.week * WEEKINDAYS * DAYINSEC;
+	} else if (strchr(p, 'D')) {
+		/* dur-date */
+		if (sscanf(p, "%uD", &date.day) == 1) {
+			return date.day * DAYINSEC +
+				ical_durtime2long(p);
 		}
 	}
-	return durlong;
+
+	return -1;
 }
 
 /*
@@ -620,35 +614,20 @@ static long ical_dur2long(char *durstr)
  */
 static long ical_compute_rpt_until(long start, ical_rpt_t * rpt)
 {
-	long until;
-
 	switch (rpt->type) {
 	case RECUR_DAILY:
-		until =
-		    date_sec_change(start, 0,
-				    rpt->freq * (rpt->count - 1));
-		break;
+		return date_sec_change(start, 0, rpt->freq * (rpt->count - 1));
 	case RECUR_WEEKLY:
-		until = date_sec_change(start, 0,
-					rpt->freq * WEEKINDAYS *
-					(rpt->count - 1));
-		break;
+		return date_sec_change(start, 0,
+				rpt->freq * WEEKINDAYS * (rpt->count - 1));
 	case RECUR_MONTHLY:
-		until =
-		    date_sec_change(start, rpt->freq * (rpt->count - 1),
-				    0);
-		break;
+		return date_sec_change(start, rpt->freq * (rpt->count - 1), 0);
 	case RECUR_YEARLY:
-		until =
-		    date_sec_change(start,
+		return date_sec_change(start,
 				    rpt->freq * 12 * (rpt->count - 1), 0);
-		break;
 	default:
-		until = 0;
-		break;
-		/* NOTREACHED */
+		return 0;
 	}
-	return until;
 }
 
 /*
@@ -693,99 +672,89 @@ static ical_rpt_t *ical_read_rrule(FILE * log, char *rrulestr,
 {
 	const char count[] = "COUNT=";
 	const char interv[] = "INTERVAL=";
+	char freqstr[BUFSIZ];
 	unsigned interval;
 	ical_rpt_t *rpt;
 	char *p;
 
-	rpt = NULL;
-	if ((p = strchr(rrulestr, ':')) != NULL) {
-		char freqstr[BUFSIZ];
-
-		p++;
-		rpt = mem_malloc(sizeof(ical_rpt_t));
-		memset(rpt, 0, sizeof(ical_rpt_t));
-		if (sscanf(p, "FREQ=%s", freqstr) != 1) {
-			ical_log(log, ICAL_VEVENT, itemline,
-				 _("recurrence frequence not found."));
-			(*noskipped)++;
-			mem_free(rpt);
-			return NULL;
-		} else {
-			if (starts_with(freqstr, "DAILY")) {
-				rpt->type = RECUR_DAILY;
-			} else if (starts_with(freqstr, "WEEKLY")) {
-				rpt->type = RECUR_WEEKLY;
-			} else if (starts_with(freqstr, "MONTHLY")) {
-				rpt->type = RECUR_MONTHLY;
-			} else if (starts_with(freqstr, "YEARLY")) {
-				rpt->type = RECUR_YEARLY;
-			} else {
-				ical_log(log, ICAL_VEVENT, itemline,
-					 _("recurrence frequence not recognized."));
-				(*noskipped)++;
-				mem_free(rpt);
-				return NULL;
-			}
-		}
-		/*
-		   The UNTIL rule part defines a date-time value which bounds the
-		   recurrence rule in an inclusive manner.  If not present, and the
-		   COUNT rule part is also not present, the RRULE is considered to
-		   repeat forever.
-
-		   The COUNT rule part defines the number of occurrences at which to
-		   range-bound the recurrence.  The "DTSTART" property value, if
-		   specified, counts as the first occurrence.
-		 */
-		if ((p = strstr(rrulestr, "UNTIL")) != NULL) {
-			char *untilstr;
-
-			untilstr = strchr(p, '=');
-			rpt->until = ical_datetime2long(++untilstr, NULL);
-		} else {
-			unsigned cnt;
-			char *countstr;
-
-			if ((countstr = strstr(rrulestr, count)) != NULL) {
-				countstr += sizeof(count) - 1;
-				if (sscanf(countstr, "%u", &cnt) != 1) {
-					rpt->until = 0;
-					/* endless repetition */
-				} else {
-					rpt->count = cnt;
-				}
-			} else {
-				rpt->until = 0;
-			}
-		}
-
-		if ((p = strstr(rrulestr, interv)) != NULL) {
-			p += sizeof(interv) - 1;
-			if (sscanf(p, "%u", &interval) != 1) {
-				rpt->freq = 1;
-				/* default frequence if none specified */
-			} else {
-				rpt->freq = interval;
-			}
-		} else {
-			rpt->freq = 1;
-		}
-	} else {
+	p = strchr(rrulestr, ':');
+	if (!p) {
 		ical_log(log, ICAL_VEVENT, itemline,
 			 _("recurrence rule malformed."));
 		(*noskipped)++;
+		return NULL;
 	}
+	p++;
+
+	rpt = mem_malloc(sizeof(ical_rpt_t));
+	memset(rpt, 0, sizeof(ical_rpt_t));
+	if (sscanf(p, "FREQ=%s", freqstr) != 1) {
+		ical_log(log, ICAL_VEVENT, itemline,
+			 _("recurrence frequence not found."));
+		(*noskipped)++;
+		mem_free(rpt);
+		return NULL;
+	}
+
+	if (starts_with(freqstr, "DAILY")) {
+		rpt->type = RECUR_DAILY;
+	} else if (starts_with(freqstr, "WEEKLY")) {
+		rpt->type = RECUR_WEEKLY;
+	} else if (starts_with(freqstr, "MONTHLY")) {
+		rpt->type = RECUR_MONTHLY;
+	} else if (starts_with(freqstr, "YEARLY")) {
+		rpt->type = RECUR_YEARLY;
+	} else {
+		ical_log(log, ICAL_VEVENT, itemline,
+			 _("recurrence frequence not recognized."));
+		(*noskipped)++;
+		mem_free(rpt);
+		return NULL;
+	}
+
+	/*
+	 * The UNTIL rule part defines a date-time value which bounds the
+	 * recurrence rule in an inclusive manner.  If not present, and the
+	 * COUNT rule part is also not present, the RRULE is considered to
+	 * repeat forever.
+
+	 * The COUNT rule part defines the number of occurrences at which to
+	 * range-bound the recurrence.  The "DTSTART" property value, if
+	 * specified, counts as the first occurrence.
+	 */
+	if ((p = strstr(rrulestr, "UNTIL")) != NULL) {
+		rpt->until = ical_datetime2long(strchr(p, '=') + 1, NULL);
+	} else {
+		unsigned cnt;
+		char *countstr;
+
+		rpt->until = 0;
+		if ((countstr = strstr(rrulestr, count))) {
+			countstr += sizeof(count) - 1;
+			if (sscanf(countstr, "%u", &cnt) == 1)
+				rpt->count = cnt;
+		}
+	}
+
+	rpt->freq = 1;
+	if ((p = strstr(rrulestr, interv))) {
+		p += sizeof(interv) - 1;
+		if (sscanf(p, "%u", &interval) == 1)
+			rpt->freq = interval;
+	}
+
 	return rpt;
 }
 
 static void ical_add_exc(llist_t * exc_head, long date)
 {
-	if (date != 0) {
-		struct excp *exc = mem_malloc(sizeof(struct excp));
-		exc->st = date;
+	if (date == 0)
+		return;
 
-		LLIST_ADD(exc_head, exc);
-	}
+	struct excp *exc = mem_malloc(sizeof(struct excp));
+	exc->st = date;
+
+	LLIST_ADD(exc_head, exc);
 }
 
 /*
@@ -799,25 +768,27 @@ ical_read_exdate(llist_t * exc, FILE * log, char *exstr,
 	char *p, *q;
 	long date;
 
-	if ((p = strchr(exstr, ':')) != NULL) {
-		p++;
-		while ((q = strchr(p, ',')) != NULL) {
-			char buf[BUFSIZ];
-			const int buflen = q - p;
-
-			strncpy(buf, p, buflen);
-			buf[buflen] = '\0';
-			date = ical_datetime2long(buf, NULL);
-			ical_add_exc(exc, date);
-			p = ++q;
-		}
-		date = ical_datetime2long(p, NULL);
-		ical_add_exc(exc, date);
-	} else {
+	p = strchr(exstr, ':');
+	if (!p) {
 		ical_log(log, ICAL_VEVENT, itemline,
 			 _("recurrence exception dates malformed."));
 		(*noskipped)++;
+		return;
 	}
+	p++;
+
+	while ((q = strchr(p, ',')) != NULL) {
+		char buf[BUFSIZ];
+		const int buflen = q - p;
+
+		strncpy(buf, p, buflen);
+		buf[buflen] = '\0';
+		date = ical_datetime2long(buf, NULL);
+		ical_add_exc(exc, date);
+		p = ++q;
+	}
+	date = ical_datetime2long(p, NULL);
+	ical_add_exc(exc, date);
 }
 
 /* Return an allocated string containing the name of the newly created note. */
@@ -827,27 +798,28 @@ static char *ical_read_note(char *line, unsigned *noskipped,
 {
 	char *p, *notestr, *note;
 
-	if ((p = strchr(line, ':')) != NULL) {
-		p++;
-		notestr = ical_unformat_line(p);
-		if (notestr == NULL) {
-			ical_log(log, item_type, itemline,
-				 _("could not get entire item description."));
-			(*noskipped)++;
-			return NULL;
-		} else if (strlen(notestr) == 0) {
-			mem_free(notestr);
-			return NULL;
-		} else {
-			note = generate_note(notestr);
-			mem_free(notestr);
-			return note;
-		}
-	} else {
+	p = strchr(line, ':');
+	if (!p) {
 		ical_log(log, item_type, itemline,
 			 _("description malformed."));
 		(*noskipped)++;
 		return NULL;
+	}
+	p++;
+
+	notestr = ical_unformat_line(p);
+	if (notestr == NULL) {
+		ical_log(log, item_type, itemline,
+			 _("could not get entire item description."));
+		(*noskipped)++;
+		return NULL;
+	} else if (strlen(notestr) == 0) {
+		mem_free(notestr);
+		return NULL;
+	} else {
+		note = generate_note(notestr);
+		mem_free(notestr);
+		return note;
 	}
 }
 
@@ -902,147 +874,119 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 				skip_alarm = 0;
 			continue;
 		}
-		if (starts_with_ci(buf, "END:VEVENT")) {
-			if (vevent.mesg) {
-				if (vevent.rpt && vevent.rpt->count)
-					vevent.rpt->until =
-					    ical_compute_rpt_until(vevent.
-								   start,
-								   vevent.
-								   rpt);
 
-				switch (vevent_type) {
-				case APPOINTMENT:
-					if (vevent.start == 0) {
-						ical_log(log, ICAL_VEVENT,
-							 ITEMLINE,
-							 _("appointment has no start time."));
-						goto cleanup;
-					}
-					if (vevent.dur == 0) {
-						if (vevent.end == 0) {
-							ical_log(log,
-								 ICAL_VEVENT,
-								 ITEMLINE,
-								 _("could not compute duration "
-								  "(no end time)."));
-							goto cleanup;
-						} else if (vevent.start ==
-							   vevent.end) {
-							vevent_type =
-							    EVENT;
-							vevent.end = 0L;
-							ical_store_event
-							    (vevent.mesg,
-							     vevent.note,
-							     vevent.start,
-							     vevent.end,
-							     vevent.rpt,
-							     &vevent.exc);
-							(*noevents)++;
-							return;
-						} else {
-							vevent.dur =
-							    vevent.end -
-							    vevent.start;
-							if (vevent.dur < 0) {
-								ical_log
-								    (log,
-								     ICAL_VEVENT,
-								     ITEMLINE,
-								     _("item has a negative duration."));
-								goto cleanup;
-							}
-						}
-					}
-					ical_store_apoint(vevent.mesg,
-							  vevent.note,
-							  vevent.start,
-							  vevent.dur,
-							  vevent.rpt,
-							  &vevent.exc,
-							  vevent.
-							  has_alarm);
-					(*noapoints)++;
-					break;
-				case EVENT:
-					if (vevent.start == 0) {
-						ical_log(log, ICAL_VEVENT,
-							 ITEMLINE,
-							 _("event date is not defined."));
-						goto cleanup;
-					}
-					ical_store_event(vevent.mesg,
-							 vevent.note,
-							 vevent.start,
-							 vevent.end,
-							 vevent.rpt,
-							 &vevent.exc);
-					(*noevents)++;
-					break;
-				case UNDEFINED:
-					ical_log(log, ICAL_VEVENT,
-						 ITEMLINE,
-						 _("item could not be identified."));
-					goto cleanup;
-					break;
-				}
-			} else {
+		if (starts_with_ci(buf, "END:VEVENT")) {
+			if (!vevent.mesg) {
 				ical_log(log, ICAL_VEVENT, ITEMLINE,
 					 _("could not retrieve item summary."));
 				goto cleanup;
 			}
-			return;
-		} else {
-			if (starts_with_ci(buf, "DTSTART")) {
-				if ((p = strchr(buf, ':')) != NULL)
-					vevent.start =
-					    ical_datetime2long(++p,
-							       &vevent_type);
-				if (!vevent.start) {
-					ical_log(log, ICAL_VEVENT,
-						 ITEMLINE,
-						 _("could not retrieve event start time."));
-					goto cleanup;
-				}
-			} else if (starts_with_ci(buf, "DTEND")) {
-				if ((p = strchr(buf, ':')) != NULL)
-					vevent.end =
-					    ical_datetime2long(++p,
-							       &vevent_type);
-				if (!vevent.end) {
-					ical_log(log, ICAL_VEVENT,
-						 ITEMLINE,
-						 _("could not retrieve event end time."));
-					goto cleanup;
-				}
-			} else if (starts_with_ci(buf, "DURATION")) {
-				if ((vevent.dur = ical_dur2long(buf)) <= 0) {
-					ical_log(log, ICAL_VEVENT,
-						 ITEMLINE,
-						 _("item duration malformed."));
-					goto cleanup;
-				}
-			} else if (starts_with_ci(buf, "RRULE")) {
-				vevent.rpt =
-				    ical_read_rrule(log, buf, noskipped,
-						    ITEMLINE);
-			} else if (starts_with_ci(buf, "EXDATE")) {
-				ical_read_exdate(&vevent.exc, log, buf,
-						 noskipped, ITEMLINE);
-			} else if (starts_with_ci(buf, "SUMMARY")) {
-				vevent.mesg = ical_read_summary(buf);
-			} else if (starts_with_ci(buf, "BEGIN:VALARM")) {
-				skip_alarm = 1;
-				vevent.has_alarm = 1;
-			} else if (starts_with_ci(buf, "DESCRIPTION")) {
-				vevent.note =
-				    ical_read_note(buf, noskipped,
-						   ICAL_VEVENT, ITEMLINE,
-						   log);
+			if (vevent.start == 0) {
+				ical_log(log, ICAL_VEVENT, ITEMLINE,
+					 _("item start date is not defined."));
+				goto cleanup;
 			}
+
+			if (vevent_type == APPOINTMENT && vevent.dur == 0) {
+				if (vevent.end == 0) {
+					ical_log(log, ICAL_VEVENT, ITEMLINE,
+						 _("could not compute duration "
+						  "(no end time)."));
+					goto cleanup;
+				}
+
+				vevent.dur = vevent.end - vevent.start;
+				if (vevent.dur == 0) {
+					vevent_type = EVENT;
+					vevent.end = 0L;
+				} else if (vevent.dur < 0) {
+					ical_log(log, ICAL_VEVENT, ITEMLINE,
+						_("item has a negative duration."));
+					goto cleanup;
+				}
+			}
+
+			if (vevent.rpt && vevent.rpt->count) {
+				vevent.rpt->until =
+					ical_compute_rpt_until(vevent.start,
+							vevent.rpt);
+			}
+
+			switch (vevent_type) {
+			case APPOINTMENT:
+				ical_store_apoint(vevent.mesg, vevent.note,
+						vevent.start, vevent.dur,
+						vevent.rpt, &vevent.exc,
+						vevent.has_alarm);
+				(*noapoints)++;
+				break;
+			case EVENT:
+				ical_store_event(vevent.mesg, vevent.note,
+						vevent.start, vevent.end,
+						vevent.rpt, &vevent.exc);
+				(*noevents)++;
+				break;
+			case UNDEFINED:
+				ical_log(log, ICAL_VEVENT, ITEMLINE,
+					 _("item could not be identified."));
+				goto cleanup;
+				break;
+			}
+
+			return;
+		}
+
+		if (starts_with_ci(buf, "DTSTART")) {
+			p = strchr(buf, ':');
+			if (!p) {
+				ical_log(log, ICAL_VEVENT, ITEMLINE,
+					 _("event start time malformed."));
+				goto cleanup;
+			}
+
+			vevent.start = ical_datetime2long(++p, &vevent_type);
+			if (!vevent.start) {
+				ical_log(log, ICAL_VEVENT, ITEMLINE,
+					 _("could not retrieve event start time."));
+				goto cleanup;
+			}
+		} else if (starts_with_ci(buf, "DTEND")) {
+			p = strchr(buf, ':');
+			if (!p) {
+				ical_log(log, ICAL_VEVENT, ITEMLINE,
+					 _("event end time malformed."));
+				goto cleanup;
+			}
+
+			vevent.end = ical_datetime2long(++p, &vevent_type);
+			if (!vevent.end) {
+				ical_log(log, ICAL_VEVENT, ITEMLINE,
+					 _("could not retrieve event end time."));
+				goto cleanup;
+			}
+		} else if (starts_with_ci(buf, "DURATION")) {
+			vevent.dur = ical_dur2long(buf);
+			if (vevent.dur <= 0) {
+				ical_log(log, ICAL_VEVENT, ITEMLINE,
+					 _("item duration malformed."));
+				goto cleanup;
+			}
+		} else if (starts_with_ci(buf, "RRULE")) {
+			vevent.rpt = ical_read_rrule(log, buf, noskipped,
+					ITEMLINE);
+		} else if (starts_with_ci(buf, "EXDATE")) {
+			ical_read_exdate(&vevent.exc, log, buf, noskipped,
+					ITEMLINE);
+		} else if (starts_with_ci(buf, "SUMMARY")) {
+			vevent.mesg = ical_read_summary(buf);
+		} else if (starts_with_ci(buf, "BEGIN:VALARM")) {
+			skip_alarm = vevent.has_alarm = 1;
+		} else if (starts_with_ci(buf, "DESCRIPTION")) {
+			vevent.note = ical_read_note(buf, noskipped,
+					ICAL_VEVENT, ITEMLINE, log);
 		}
 	}
+
 	ical_log(log, ICAL_VEVENT, ITEMLINE,
 		 _("The ical file seems to be malformed. "
 		   "The end of item was not found."));
@@ -1084,51 +1028,46 @@ ical_read_todo(FILE * fdi, FILE * log, unsigned *notodos,
 				skip_alarm = 0;
 			continue;
 		}
+
 		if (starts_with_ci(buf, "END:VTODO")) {
 			if (!vtodo.has_priority)
 				vtodo.priority = LOWEST;
-			if (vtodo.mesg) {
-				ical_store_todo(vtodo.priority, vtodo.mesg,
-						vtodo.note);
-				(*notodos)++;
-			} else {
+			if (!vtodo.mesg) {
 				ical_log(log, ICAL_VTODO, ITEMLINE,
 					 _("could not retrieve item summary."));
 				goto cleanup;
 			}
-			return;
-		} else {
-			int tmpint;
 
-			if (starts_with_ci(buf, "PRIORITY:")) {
-				sscanf(buf, "%d", &tmpint);
-				if (tmpint <= 9 && tmpint >= 1) {
-					vtodo.priority = tmpint;
-					vtodo.has_priority = 1;
-				} else {
-					ical_log(log, ICAL_VTODO, ITEMLINE,
-						 _("item priority is not acceptable "
-						  "(must be between 1 and 9)."));
-					vtodo.priority = LOWEST;
-				}
-			} else if (starts_with_ci(buf, "SUMMARY")) {
-				vtodo.mesg = ical_read_summary(buf);
-			} else if (starts_with_ci(buf, "BEGIN:VALARM")) {
-				skip_alarm = 1;
-			} else if (starts_with_ci(buf, "DESCRIPTION")) {
-				vtodo.note =
-				    ical_read_note(buf, noskipped,
-						   ICAL_VTODO, ITEMLINE,
-						   log);
+			ical_store_todo(vtodo.priority, vtodo.mesg,
+					vtodo.note);
+			(*notodos)++;
+			return;
+		}
+
+		if (starts_with_ci(buf, "PRIORITY:")) {
+			sscanf(buf, "%d", &vtodo.priority);
+			if (vtodo.priority >= 1 && vtodo.priority <= 9) {
+				vtodo.has_priority = 1;
+			} else {
+				ical_log(log, ICAL_VTODO, ITEMLINE,
+					 _("item priority is not acceptable "
+					  "(must be between 1 and 9)."));
 			}
+		} else if (starts_with_ci(buf, "SUMMARY")) {
+			vtodo.mesg = ical_read_summary(buf);
+		} else if (starts_with_ci(buf, "BEGIN:VALARM")) {
+			skip_alarm = 1;
+		} else if (starts_with_ci(buf, "DESCRIPTION")) {
+			vtodo.note = ical_read_note(buf, noskipped, ICAL_VTODO,
+					ITEMLINE, log);
 		}
 	}
+
 	ical_log(log, ICAL_VTODO, ITEMLINE,
 		 _("The ical file seems to be malformed. "
 		   "The end of item was not found."));
 
 cleanup:
-
 	if (vtodo.note)
 		mem_free(vtodo.note);
 	if (vtodo.mesg)
