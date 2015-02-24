@@ -197,19 +197,17 @@ void status_mesg(const char *msg1, const char *msg2)
 int status_ask_choice(const char *message, const char choice[],
 		      int nb_choice)
 {
-	int i, ch;
-	char *tmp;
 	/* "[4/2/f/t/w/.../Z] " */
 	char avail_choice[2 * nb_choice + 3];
+	int i, ch;
 
 	avail_choice[0] = '[';
-	avail_choice[1] = '\0';
-
 	for (i = 1; i <= nb_choice; i++) {
-		asprintf(&tmp, (i == nb_choice) ? "%c] " : "%c/", choice[i]);
-		strcat(avail_choice, tmp);
-		mem_free(tmp);
+		avail_choice[i * 2 - 1] = choice[i];
+		avail_choice[i * 2] = '/';
 	}
+	avail_choice[nb_choice * 2] = ']';
+	avail_choice[nb_choice * 2 + 1] = '\0';
 
 	status_mesg(message, avail_choice);
 
