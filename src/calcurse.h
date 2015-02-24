@@ -1089,6 +1089,8 @@ void print_recur_event(const char *, long, struct recur_event *);
 void print_todo(const char *, struct todo *);
 int vasprintf(char **, const char *, va_list);
 int asprintf(char **, const char *, ...);
+int starts_with(const char *, const char *);
+int starts_with_ci(const char *, const char *);
 
 /* vars.c */
 extern int col, row;

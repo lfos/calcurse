@@ -275,48 +275,36 @@ void keys_remove_binding(int key, enum key action)
 
 int keys_str2int(const char *key)
 {
-	const char CONTROL_KEY[] = "C-";
-	const char TAB_KEY[] = "TAB";
-	const char SPACE_KEY[] = "SPC";
-	const char ESCAPE_KEY[] = "ESC";
-	const char CURSES_KEY_UP[] = "UP";
-	const char CURSES_KEY_DOWN[] = "DWN";
-	const char CURSES_KEY_LEFT[] = "LFT";
-	const char CURSES_KEY_RIGHT[] = "RGT";
-	const char CURSES_KEY_HOME[] = "KEY_HOME";
-	const char CURSES_KEY_END[] = "KEY_END";
-
 	if (!key)
 		return -1;
-	if (strlen(key) == 1) {
+
+	if (strlen(key) == 1)
 		return (int)key[0];
-	} else {
-		if (key[0] == '^')
-			return CTRL((int)key[1]);
-		else if (!strncmp
-			 (key, CONTROL_KEY, sizeof(CONTROL_KEY) - 1))
-			return CTRL((int)key[sizeof(CONTROL_KEY) - 1]);
-		else if (!strcmp(key, TAB_KEY))
-			return TAB;
-		else if (!strcmp(key, ESCAPE_KEY))
-			return ESCAPE;
-		else if (!strcmp(key, SPACE_KEY))
-			return SPACE;
-		else if (!strcmp(key, CURSES_KEY_UP))
-			return KEY_UP;
-		else if (!strcmp(key, CURSES_KEY_DOWN))
-			return KEY_DOWN;
-		else if (!strcmp(key, CURSES_KEY_LEFT))
-			return KEY_LEFT;
-		else if (!strcmp(key, CURSES_KEY_RIGHT))
-			return KEY_RIGHT;
-		else if (!strcmp(key, CURSES_KEY_HOME))
-			return KEY_HOME;
-		else if (!strcmp(key, CURSES_KEY_END))
-			return KEY_END;
-		else
-			return -1;
-	}
+
+	if (key[0] == '^')
+		return CTRL((int)key[1]);
+	else if (starts_with(key, "C-"))
+		return CTRL((int)key[strlen("C-")]);
+	else if (!strcmp(key, "TAB"))
+		return TAB;
+	else if (!strcmp(key, "ESC"))
+		return ESCAPE;
+	else if (!strcmp(key, "SPC"))
+		return SPACE;
+	else if (!strcmp(key, "UP"))
+		return KEY_UP;
+	else if (!strcmp(key, "DWN"))
+		return KEY_DOWN;
+	else if (!strcmp(key, "LFT"))
+		return KEY_LEFT;
+	else if (!strcmp(key, "RGT"))
+		return KEY_RIGHT;
+	else if (!strcmp(key, "KEY_HOME"))
+		return KEY_HOME;
+	else if (!strcmp(key, "KEY_END"))
+		return KEY_END;
+
+	return -1;
 }
 
 const char *keys_int2str(int key)

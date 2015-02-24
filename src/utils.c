@@ -1602,3 +1602,15 @@ asprintf(char **str, const char *format, ...)
 
 	return n;
 }
+
+int starts_with(const char *s, const char *p)
+{
+	for (; *p && *p == *s; s++, p++);
+	return (*p == '\0');
+}
+
+int starts_with_ci(const char *s, const char *p)
+{
+	for (; *p && tolower(*p) == tolower(*s); s++, p++);
+	return (*p == '\0');
+}
