@@ -365,7 +365,7 @@ int get_item_min(long date)
 	return lt.tm_min;
 }
 
-long date2sec(struct date day, unsigned hour, unsigned min)
+time_t date2sec(struct date day, unsigned hour, unsigned min)
 {
 	time_t t = now();
 	struct tm start;
@@ -386,8 +386,7 @@ long date2sec(struct date day, unsigned hour, unsigned min)
 	return t;
 }
 
-time_t
-utcdate2sec(struct date day, unsigned hour, unsigned min)
+time_t utcdate2sec(struct date day, unsigned hour, unsigned min)
 {
 	char *tz;
 	time_t t;
@@ -488,11 +487,10 @@ long update_time_in_date(long date, unsigned hr, unsigned mn)
  * Returns the date in seconds from year 1900.
  * If no date is entered, current date is chosen.
  */
-long get_sec_date(struct date date)
+time_t get_sec_date(struct date date)
 {
 	struct tm ptrtime;
 	time_t timer;
-	long long_date;
 	char current_day[] = "dd ";
 	char current_month[] = "mm ";
 	char current_year[] = "yyyy ";
@@ -501,16 +499,14 @@ long get_sec_date(struct date date)
 		timer = time(NULL);
 		localtime_r(&timer, &ptrtime);
 		strftime(current_day, strlen(current_day), "%d", &ptrtime);
-		strftime(current_month, strlen(current_month), "%m",
-			 &ptrtime);
-		strftime(current_year, strlen(current_year), "%Y",
-			 &ptrtime);
+		strftime(current_month, strlen(current_month), "%m", &ptrtime);
+		strftime(current_year, strlen(current_year), "%Y", &ptrtime);
 		date.mm = atoi(current_month);
 		date.dd = atoi(current_day);
 		date.yyyy = atoi(current_year);
 	}
-	long_date = date2sec(date, 0, 0);
-	return long_date;
+
+	return date2sec(date, 0, 0);
 }
 
 long min2sec(unsigned minutes)
@@ -566,11 +562,10 @@ item_in_popup(const char *a_start, const char *a_end, const char *msg,
 }
 
 /* Returns the beginning of current day in seconds from 1900. */
-long get_today(void)
+time_t get_today(void)
 {
 	struct tm lt;
 	time_t current_time;
-	long current_day;
 	struct date day;
 
 	current_time = time(NULL);
@@ -578,9 +573,8 @@ long get_today(void)
 	day.mm = lt.tm_mon + 1;
 	day.dd = lt.tm_mday;
 	day.yyyy = lt.tm_year + 1900;
-	current_day = date2sec(day, 0, 0);
 
-	return current_day;
+	return date2sec(day, 0, 0);
 }
 
 /* Returns the current time in seconds. */
@@ -1500,7 +1494,7 @@ void print_event(const char *format, long day, struct event *ev)
 
 /* Print a formatted recurrent appointment to stdout. */
 void
-print_recur_apoint(const char *format, long day, unsigned occurrence,
+print_recur_apoint(const char *format, long day, time_t occurrence,
 		   struct recur_apoint *rapt)
 {
 	struct apoint apt;

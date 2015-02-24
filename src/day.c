@@ -308,7 +308,7 @@ static int day_store_recur_apoints(long date)
 
 		p.rapt = rapt;
 
-		unsigned real_start;
+		time_t real_start;
 		if (recur_apoint_find_occurrence(rapt, date, &real_start)) {
 			day_add_item(RECUR_APPT, real_start, p);
 			a_nb++;
@@ -358,7 +358,6 @@ day_store_items(long date, int include_captions)
  */
 void day_process_storage(struct date *slctd_date, unsigned day_changed)
 {
-	long date;
 	struct date day;
 
 	if (slctd_date)
@@ -366,14 +365,12 @@ void day_process_storage(struct date *slctd_date, unsigned day_changed)
 	else
 		ui_calendar_store_current_date(&day);
 
-	date = date2sec(day, 0, 0);
-
 	/* Inits */
 	if (apad.length != 0)
 		delwin(apad.ptrwin);
 
 	/* Store the events and appointments (recursive and normal items). */
-	day_store_items(date, 1);
+	day_store_items(date2sec(day, 0, 0), 1);
 }
 
 /*
@@ -508,25 +505,24 @@ void day_popup_item(struct day_item *day)
  */
 int day_check_if_item(struct date day)
 {
-	const long date = date2sec(day, 0, 0);
+	const time_t t = date2sec(day, 0, 0);
 
-	if (LLIST_FIND_FIRST
-	    (&recur_elist, (long *)&date, recur_event_inday))
+	if (LLIST_FIND_FIRST(&recur_elist, (time_t *)&t, recur_event_inday))
 		return 1;
 
 	LLIST_TS_LOCK(&recur_alist_p);
-	if (LLIST_TS_FIND_FIRST
-	    (&recur_alist_p, (long *)&date, recur_apoint_inday)) {
+	if (LLIST_TS_FIND_FIRST(&recur_alist_p, (time_t *)&t,
+				recur_apoint_inday)) {
 		LLIST_TS_UNLOCK(&recur_alist_p);
 		return 1;
 	}
 	LLIST_TS_UNLOCK(&recur_alist_p);
 
-	if (LLIST_FIND_FIRST(&eventlist, (long *)&date, event_inday))
+	if (LLIST_FIND_FIRST(&eventlist, (time_t *)&t, event_inday))
 		return 1;
 
 	LLIST_TS_LOCK(&alist_p);
-	if (LLIST_TS_FIND_FIRST(&alist_p, (long *)&date, apoint_inday)) {
+	if (LLIST_TS_FIND_FIRST(&alist_p, (time_t *)&t, apoint_inday)) {
 		LLIST_TS_UNLOCK(&alist_p);
 		return 1;
 	}
@@ -558,24 +554,24 @@ static unsigned fill_slices(int *slices, int slicesno, int first, int last)
  */
 unsigned day_chk_busy_slices(struct date day, int slicesno, int *slices)
 {
+	const time_t t = date2sec(day, 0, 0);
 	llist_item_t *i;
 	int slicelen;
-	const long date = date2sec(day, 0, 0);
 
 	slicelen = DAYINSEC / slicesno;
 
 #define  SLICENUM(tsec)  ((tsec) / slicelen % slicesno)
 
 	LLIST_TS_LOCK(&recur_alist_p);
-	LLIST_TS_FIND_FOREACH(&recur_alist_p, (long *)&date,
+	LLIST_TS_FIND_FOREACH(&recur_alist_p, (time_t *)&t,
 			      recur_apoint_inday, i) {
 		struct apoint *rapt = LLIST_TS_GET_DATA(i);
 		long start = get_item_time(rapt->start);
 		long end = get_item_time(rapt->start + rapt->dur);
 
-		if (rapt->start < date)
+		if (rapt->start < t)
 			start = 0;
-		if (rapt->start + rapt->dur >= date + DAYINSEC)
+		if (rapt->start + rapt->dur >= t + DAYINSEC)
 			end = DAYINSEC - 1;
 
 		if (!fill_slices
@@ -587,16 +583,16 @@ unsigned day_chk_busy_slices(struct date day, int slicesno, int *slices)
 	LLIST_TS_UNLOCK(&recur_alist_p);
 
 	LLIST_TS_LOCK(&alist_p);
-	LLIST_TS_FIND_FOREACH(&alist_p, (long *)&date, apoint_inday, i) {
+	LLIST_TS_FIND_FOREACH(&alist_p, (time_t *)&t, apoint_inday, i) {
 		struct apoint *apt = LLIST_TS_GET_DATA(i);
 		long start = get_item_time(apt->start);
 		long end = get_item_time(apt->start + apt->dur);
 
-		if (apt->start >= date + DAYINSEC)
+		if (apt->start >= t + DAYINSEC)
 			break;
-		if (apt->start < date)
+		if (apt->start < t)
 			start = 0;
-		if (apt->start + apt->dur >= date + DAYINSEC)
+		if (apt->start + apt->dur >= t + DAYINSEC)
 			end = DAYINSEC - 1;
 
 		if (!fill_slices

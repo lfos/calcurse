@@ -310,7 +310,7 @@ date_arg_from_to(long from, long to, int add_line, const char *fmt_apt,
 	}
 }
 
-static long parse_datearg(const char *str)
+static time_t parse_datearg(const char *str)
 {
 	struct date day;
 
@@ -329,12 +329,12 @@ static long parse_datearg(const char *str)
 	return LONG_MAX;
 }
 
-static long parse_datetimearg(const char *str)
+static time_t parse_datetimearg(const char *str)
 {
 	char *date = mem_strdup(str);
 	char *time;
 	unsigned hour, min;
-	long ret;
+	time_t ret;
 
 	time = strchr(date, ' ');
 	if (time) {
@@ -363,7 +363,7 @@ static long parse_datetimearg(const char *str)
 	return ret;
 }
 
-static int parse_daterange(const char *str, long *date_from, long *date_to)
+static int parse_daterange(const char *str, time_t *date_from, time_t *date_to)
 {
 	int ret = 0;
 	char *s = xstrdup(str);
@@ -438,7 +438,8 @@ int parse_args(int argc, char **argv)
 	int grep = 0, query = 0, next = 0;
 	int status = 0, gc = 0, import = 0, export = 0;
 	/* Query ranges */
-	long from = -1, range = -1, to = -1;
+	time_t from = -1, to = -1;
+	int range = -1;
 	int limit = INT_MAX;
 	/* Filters */
 	struct item_filter filter = { 0, NULL, -1, -1, -1, -1, 0, 0, 0 };

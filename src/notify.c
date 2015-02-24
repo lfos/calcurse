@@ -499,9 +499,8 @@ void notify_check_added(char *mesg, long start, char state)
 /* Check if the newly repeated appointment is to be notified. */
 void notify_check_repeated(struct recur_apoint *i)
 {
-	unsigned real_app_time;
+	time_t current_time, real_app_time;
 	int update_notify = 0;
-	time_t current_time;
 
 	current_time = time(NULL);
 	pthread_mutex_lock(&notify_app.mutex);
@@ -541,7 +540,7 @@ int notify_same_item(long time)
 int notify_same_recur_item(struct recur_apoint *i)
 {
 	int same = 0;
-	unsigned item_start = 0;
+	time_t item_start = 0;
 
 	recur_item_find_occurrence(i->start, i->dur, &i->exc, i->rpt->type,
 				   i->rpt->freq, i->rpt->until,

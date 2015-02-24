@@ -155,7 +155,7 @@ static void update_desc(char **desc)
 static void update_rept(struct rpt **rpt, const long start)
 {
 	int newtype, newfreq;
-	long newuntil;
+	time_t newuntil;
 	char *freqstr = NULL, *timstr, *outstr;
 	const char *msg_rpt_prefix = _("Enter the new repetition type:");
 	const char *msg_rpt_daily = _("(d)aily");
@@ -480,7 +480,7 @@ void ui_day_item_add(void)
 	const char *enter_str = _("Press [Enter] to continue");
 	char item_time[LDUR] = "";
 	char item_mesg[BUFSIZ] = "";
-	long apoint_start;
+	time_t apoint_start;
 	unsigned heures, minutes;
 	unsigned apoint_duration;
 	unsigned end_h, end_m;
@@ -680,7 +680,7 @@ void ui_day_item_repeat(void)
 	int item_nb;
 	struct day_item *p;
 	struct recur_apoint *ra;
-	long until, date;
+	time_t until, date;
 
 	if (day_item_count(0) <= 0)
 		goto cleanup;
@@ -744,8 +744,7 @@ void ui_day_item_repeat(void)
 			until_date.dd = day;
 			until_date.mm = month;
 			until_date.yyyy = year;
-			until =
-			    date2sec(until_date, lt.tm_hour, lt.tm_min);
+			until = date2sec(until_date, lt.tm_hour, lt.tm_min);
 			if (until >= p->start)
 				break;
 			status_mesg(mesg_older, wrong_type_2);
@@ -859,7 +858,7 @@ void ui_day_sel_move(int delta)
 void ui_day_draw(int n, WINDOW *win, int y, int hilt, void *cb_data)
 {
 	struct date slctd_date = *ui_calendar_get_slctd_day();
-	long date = date2sec(slctd_date, 0, 0);
+	time_t date = date2sec(slctd_date, 0, 0);
 	struct day_item *item = day_get_item(n);
 	int width = lb_apt.sw.w;
 

@@ -481,14 +481,13 @@ ical_chk_header(FILE * fd, char *buf, char *lstore, unsigned *lineno,
  *
  * The timezone is not yet handled by calcurse.
  */
-static long ical_datetime2long(char *datestr, ical_vevent_e * type)
+static time_t ical_datetime2time_t(char *datestr, ical_vevent_e * type)
 {
-	const int NOTFOUND = 0, FORMAT_DATE = 3, FORMAT_DATETIME = 6,
-	      FORMAT_DATETIMEZ = 7;
+	const int FORMAT_DATE = 3, FORMAT_DATETIME = 6, FORMAT_DATETIMEZ = 7;
 	struct date date;
 	unsigned hour, min, sec;
 	char c;
-	long datelong ;
+	time_t t = 0;
 	int format;
 
 	format = sscanf(datestr, "%04u%02u%02uT%02u%02u%02u%c",
@@ -496,18 +495,16 @@ static long ical_datetime2long(char *datestr, ical_vevent_e * type)
 	if (format == FORMAT_DATE) {
 		if (type)
 			*type = EVENT;
-		datelong = date2sec(date, 0, 0);
+		t = date2sec(date, 0, 0);
 	} else if (format == FORMAT_DATETIME || format == FORMAT_DATETIMEZ) {
 		if (type)
 			*type = APPOINTMENT;
 		if (format == FORMAT_DATETIMEZ && c == 'Z')
-			datelong = utcdate2sec(date, hour, min);
+			t = utcdate2sec(date, hour, min);
 		else
-			datelong = date2sec(date, hour, min);
-	} else {
-		datelong = NOTFOUND;
+			t = date2sec(date, hour, min);
 	}
-	return datelong;
+	return t;
 }
 
 static long ical_durtime2long(char *timestr)
@@ -723,7 +720,7 @@ static ical_rpt_t *ical_read_rrule(FILE * log, char *rrulestr,
 	 * specified, counts as the first occurrence.
 	 */
 	if ((p = strstr(rrulestr, "UNTIL")) != NULL) {
-		rpt->until = ical_datetime2long(strchr(p, '=') + 1, NULL);
+		rpt->until = ical_datetime2time_t(strchr(p, '=') + 1, NULL);
 	} else {
 		unsigned cnt;
 		char *countstr;
@@ -766,7 +763,6 @@ ical_read_exdate(llist_t * exc, FILE * log, char *exstr,
 		 unsigned *noskipped, const int itemline)
 {
 	char *p, *q;
-	long date;
 
 	p = strchr(exstr, ':');
 	if (!p) {
@@ -783,12 +779,10 @@ ical_read_exdate(llist_t * exc, FILE * log, char *exstr,
 
 		strncpy(buf, p, buflen);
 		buf[buflen] = '\0';
-		date = ical_datetime2long(buf, NULL);
-		ical_add_exc(exc, date);
+		ical_add_exc(exc, ical_datetime2time_t(buf, NULL));
 		p = ++q;
 	}
-	date = ical_datetime2long(p, NULL);
-	ical_add_exc(exc, date);
+	ical_add_exc(exc, ical_datetime2time_t(p, NULL));
 }
 
 /* Return an allocated string containing the name of the newly created note. */
@@ -944,7 +938,7 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 				goto cleanup;
 			}
 
-			vevent.start = ical_datetime2long(++p, &vevent_type);
+			vevent.start = ical_datetime2time_t(++p, &vevent_type);
 			if (!vevent.start) {
 				ical_log(log, ICAL_VEVENT, ITEMLINE,
 					 _("could not retrieve event start time."));
@@ -958,7 +952,7 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 				goto cleanup;
 			}
 
-			vevent.end = ical_datetime2long(++p, &vevent_type);
+			vevent.end = ical_datetime2time_t(++p, &vevent_type);
 			if (!vevent.end) {
 				ical_log(log, ICAL_VEVENT, ITEMLINE,
 					 _("could not retrieve event end time."));

@@ -610,7 +610,7 @@ unsigned
 recur_item_find_occurrence(long item_start, long item_dur,
 			   llist_t * item_exc, int rpt_type, int rpt_freq,
 			   long rpt_until, long day_start,
-			   unsigned *occurrence)
+			   time_t *occurrence)
 {
 	struct date start_date;
 	long diff, span;
@@ -696,7 +696,7 @@ recur_item_find_occurrence(long item_start, long item_dur,
 
 unsigned
 recur_apoint_find_occurrence(struct recur_apoint *rapt, long day_start,
-			     unsigned *occurrence)
+			     time_t *occurrence)
 {
 	return recur_item_find_occurrence(rapt->start, rapt->dur,
 					  &rapt->exc, rapt->rpt->type,
@@ -707,7 +707,7 @@ recur_apoint_find_occurrence(struct recur_apoint *rapt, long day_start,
 
 unsigned
 recur_event_find_occurrence(struct recur_event *rev, long day_start,
-			    unsigned *occurrence)
+			    time_t *occurrence)
 {
 	return recur_item_find_occurrence(rev->day, DAYINSEC, &rev->exc,
 					  rev->rpt->type, rev->rpt->freq,
@@ -841,7 +841,7 @@ struct notify_app *recur_apoint_check_next(struct notify_app *app,
 					   long start, long day)
 {
 	llist_item_t *i;
-	unsigned real_recur_start_time;
+	time_t real_recur_start_time;
 
 	LLIST_TS_LOCK(&recur_alist_p);
 	LLIST_TS_FIND_FOREACH(&recur_alist_p, &app->time,
