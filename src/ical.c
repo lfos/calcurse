@@ -126,10 +126,7 @@ static void ical_export_recur_events(FILE * stream)
 				date_sec2date_fmt(exc->st, ICALDATEFMT,
 						  ical_date);
 				fprintf(stream, "%s", ical_date);
-				if (LLIST_NEXT(j))
-					fputc(',', stream);
-				else
-					fputc('\n', stream);
+				fputc(LLIST_NEXT(j) ? ',' : '\n', stream);
 			}
 		}
 
@@ -188,10 +185,7 @@ static void ical_export_recur_apoints(FILE * stream)
 				date_sec2date_fmt(exc->st, ICALDATEFMT,
 						  ical_date);
 				fprintf(stream, "%s", ical_date);
-				if (LLIST_NEXT(j))
-					fputc(',', stream);
-				else
-					fputc('\n', stream);
+				fputc(LLIST_NEXT(j) ? ',' : '\n', stream);
 			}
 		}
 
@@ -281,8 +275,10 @@ static void ical_log(FILE * log, ical_types_e type, unsigned lineno,
 	const char *typestr[ICAL_TYPES] = { "VEVENT", "VTODO" };
 
 	RETURN_IF(type < 0 || type >= ICAL_TYPES, _("unknown ical type"));
-	if (log)
-		fprintf(log, "%s [%d]: %s\n", typestr[type], lineno, msg);
+	if (!log)
+		return;
+
+	fprintf(log, "%s [%d]: %s\n", typestr[type], lineno, msg);
 }
 
 static void ical_store_todo(int priority, char *mesg, char *note)
@@ -487,7 +483,6 @@ static time_t ical_datetime2time_t(char *datestr, ical_vevent_e * type)
 	struct date date;
 	unsigned hour, min, sec;
 	char c;
-	time_t t = 0;
 	int format;
 
 	format = sscanf(datestr, "%04u%02u%02uT%02u%02u%02u%c",
@@ -495,16 +490,16 @@ static time_t ical_datetime2time_t(char *datestr, ical_vevent_e * type)
 	if (format == FORMAT_DATE) {
 		if (type)
 			*type = EVENT;
-		t = date2sec(date, 0, 0);
+		return date2sec(date, 0, 0);
 	} else if (format == FORMAT_DATETIME || format == FORMAT_DATETIMEZ) {
 		if (type)
 			*type = APPOINTMENT;
 		if (format == FORMAT_DATETIMEZ && c == 'Z')
-			t = utcdate2sec(date, hour, min);
+			return utcdate2sec(date, hour, min);
 		else
-			t = date2sec(date, hour, min);
+			return date2sec(date, hour, min);
 	}
-	return t;
+	return 0;
 }
 
 static long ical_durtime2long(char *timestr)
