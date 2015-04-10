@@ -394,6 +394,7 @@ draw_monthly_view(struct scrollwin *sw, struct date *current_day,
 	unsigned yr, mo;
 	int w, ofs_x, ofs_y;
 	int item_this_day = 0;
+	struct tm t = get_first_weekday(sunday_first);
 
 	mo = slctd_day.mm;
 	yr = slctd_day.yyyy;
@@ -415,6 +416,9 @@ draw_monthly_view(struct scrollwin *sw, struct date *current_day,
 	c_day_1 =
 	    (int)((ymd_to_scalar(yr, mo, 1 + sunday_first) -
 		   (long)1) % 7L);
+
+	/* Print the week number. */
+	draw_week_number(sw, t);
 
 	/* Write the current month and year on top of the calendar */
 	WINS_CALENDAR_LOCK;
