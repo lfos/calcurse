@@ -378,8 +378,12 @@ static void draw_week_number(struct scrollwin *sw, struct tm t)
 	WINS_CALENDAR_LOCK;
 	werase(sw_cal.inner);
 	custom_apply_attr(sw->inner, ATTR_HIGHEST);
+	if (wins_slctd() == CAL)
+		wattron(sw->win, COLOR_PAIR(COLR_CUSTOM));
 	mvwprintw(sw->win, conf.compact_panels ? 0 : 2, sw->w - 9,
 		  "(# %02d)", weeknum);
+	if (wins_slctd() == CAL)
+		wattroff(sw->win, COLOR_PAIR(COLR_CUSTOM));
 	custom_remove_attr(sw->inner, ATTR_HIGHEST);
 	WINS_CALENDAR_UNLOCK;
 }
