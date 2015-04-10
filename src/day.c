@@ -567,16 +567,19 @@ unsigned day_chk_busy_slices(struct date day, int slicesno, int *slices)
 			      recur_apoint_inday, i) {
 		struct recur_apoint *rapt = LLIST_TS_GET_DATA(i);
 		time_t occurrence;
-		long start;
-		long end = get_item_time(rapt->start + rapt->dur);
+		long start, end;
 
 		if (!recur_apoint_find_occurrence(rapt, t, &occurrence))
 			continue;
-		start = get_item_time(occurrence);
 
-		if (rapt->start < t)
+		if (occurrence >= t)
+			start = get_item_time(occurrence);
+		else
 			start = 0;
-		if (rapt->start + rapt->dur >= t + DAYINSEC)
+
+		if (occurrence + rapt->dur < t + DAYINSEC)
+			end = get_item_time(occurrence + rapt->dur);
+		else
 			end = DAYINSEC - 1;
 
 		if (!fill_slices
