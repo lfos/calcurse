@@ -363,7 +363,7 @@ int get_item_min(long date)
 	return lt.tm_min;
 }
 
-time_t date2sec(struct date day, unsigned hour, unsigned min)
+struct tm date2tm(struct date day, unsigned hour, unsigned min)
 {
 	time_t t = now();
 	struct tm start;
@@ -378,7 +378,14 @@ time_t date2sec(struct date day, unsigned hour, unsigned min)
 	start.tm_sec = 0;
 	start.tm_isdst = -1;
 
-	t = mktime(&start);
+	return start;
+}
+
+time_t date2sec(struct date day, unsigned hour, unsigned min)
+{
+	struct tm start = date2tm(day, hour, min);
+	time_t t = mktime(&start);
+
 	EXIT_IF(t == -1, _("failure in mktime"));
 
 	return t;

@@ -281,6 +281,109 @@ void ui_calendar_monthly_view_cache_set_invalid(void)
 	monthly_view_cache_valid = 0;
 }
 
+static int weeknum(const struct tm *t, int firstweekday)
+{
+	int wday, wnum;
+
+	wday = t->tm_wday;
+	if (firstweekday == MONDAY) {
+		if (wday == SUNDAY)
+			wday = 6;
+		else
+			wday--;
+	}
+	wnum = ((t->tm_yday + WEEKINDAYS - wday) / WEEKINDAYS);
+	if (wnum < 0)
+		wnum = 0;
+
+	return wnum;
+}
+
+/*
+ * Compute the week number according to ISO 8601.
+ */
+static int ISO8601weeknum(const struct tm *t)
+{
+	int wnum, jan1day;
+
+	wnum = weeknum(t, MONDAY);
+
+	jan1day = t->tm_wday - (t->tm_yday % WEEKINDAYS);
+	if (jan1day < 0)
+		jan1day += WEEKINDAYS;
+
+	switch (jan1day) {
+	case MONDAY:
+		break;
+	case TUESDAY:
+	case WEDNESDAY:
+	case THURSDAY:
+		wnum++;
+		break;
+	case FRIDAY:
+	case SATURDAY:
+	case SUNDAY:
+		if (wnum == 0) {
+			/* Get week number of last week of last year. */
+			struct tm dec31ly;	/* 12/31 last year */
+
+			dec31ly = *t;
+			dec31ly.tm_year--;
+			dec31ly.tm_mon = 11;
+			dec31ly.tm_mday = 31;
+			dec31ly.tm_wday =
+			    (jan1day == SUNDAY) ? 6 : jan1day - 1;
+			dec31ly.tm_yday =
+			    364 + ISLEAP(dec31ly.tm_year + 1900);
+			wnum = ISO8601weeknum(&dec31ly);
+		}
+		break;
+	}
+
+	if (t->tm_mon == 11) {
+		int wday, mday;
+
+		wday = t->tm_wday;
+		mday = t->tm_mday;
+		if ((wday == MONDAY && (mday >= 29 && mday <= 31))
+		    || (wday == TUESDAY && (mday == 30 || mday == 31))
+		    || (wday == WEDNESDAY && mday == 31))
+			wnum = 1;
+	}
+
+	return wnum;
+}
+
+static struct tm get_first_weekday(unsigned sunday_first)
+{
+	int c_wday, days_to_remove;
+	struct tm t;
+
+	c_wday = ui_calendar_get_wday(&slctd_day);
+	if (sunday_first)
+		days_to_remove = c_wday;
+	else
+		days_to_remove = c_wday == 0 ? WEEKINDAYS - 1 : c_wday - 1;
+
+	t = date2tm(slctd_day, 0, 0);
+	date_change(&t, 0, -days_to_remove);
+
+	return t;
+}
+
+static void draw_week_number(struct scrollwin *sw, struct tm t)
+{
+	int weeknum = ISO8601weeknum(&t);
+
+	WINS_CALENDAR_LOCK;
+	werase(sw_cal.inner);
+	custom_apply_attr(sw->inner, ATTR_HIGHEST);
+	mvwprintw(sw->win, conf.compact_panels ? 0 : 2, sw->w - 9,
+		  "(# %02d)", weeknum);
+	custom_remove_attr(sw->inner, ATTR_HIGHEST);
+	WINS_CALENDAR_UNLOCK;
+}
+
 /* Draw the monthly view inside calendar panel. */
 static void
 draw_monthly_view(struct scrollwin *sw, struct date *current_day,
@@ -398,79 +501,6 @@ draw_monthly_view(struct scrollwin *sw, struct date *current_day,
 	monthly_view_cache_valid = 1;
 }
 
-static int weeknum(const struct tm *t, int firstweekday)
-{
-	int wday, wnum;
-
-	wday = t->tm_wday;
-	if (firstweekday == MONDAY) {
-		if (wday == SUNDAY)
-			wday = 6;
-		else
-			wday--;
-	}
-	wnum = ((t->tm_yday + WEEKINDAYS - wday) / WEEKINDAYS);
-	if (wnum < 0)
-		wnum = 0;
-
-	return wnum;
-}
-
-/*
- * Compute the week number according to ISO 8601.
- */
-static int ISO8601weeknum(const struct tm *t)
-{
-	int wnum, jan1day;
-
-	wnum = weeknum(t, MONDAY);
-
-	jan1day = t->tm_wday - (t->tm_yday % WEEKINDAYS);
-	if (jan1day < 0)
-		jan1day += WEEKINDAYS;
-
-	switch (jan1day) {
-	case MONDAY:
-		break;
-	case TUESDAY:
-	case WEDNESDAY:
-	case THURSDAY:
-		wnum++;
-		break;
-	case FRIDAY:
-	case SATURDAY:
-	case SUNDAY:
-		if (wnum == 0) {
-			/* Get week number of last week of last year. */
-			struct tm dec31ly;	/* 12/31 last year */
-
-			dec31ly = *t;
-			dec31ly.tm_year--;
-			dec31ly.tm_mon = 11;
-			dec31ly.tm_mday = 31;
-			dec31ly.tm_wday =
-			    (jan1day == SUNDAY) ? 6 : jan1day - 1;
-			dec31ly.tm_yday =
-			    364 + ISLEAP(dec31ly.tm_year + 1900);
-			wnum = ISO8601weeknum(&dec31ly);
-		}
-		break;
-	}
-
-	if (t->tm_mon == 11) {
-		int wday, mday;
-
-		wday = t->tm_wday;
-		mday = t->tm_mday;
-		if ((wday == MONDAY && (mday >= 29 && mday <= 31))
-		    || (wday == TUESDAY && (mday == 30 || mday == 31))
-		    || (wday == WEDNESDAY && mday == 31))
-			wnum = 1;
-	}
-
-	return wnum;
-}
-
 /* Draw the weekly view inside calendar panel. */
 static void
 draw_weekly_view(struct scrollwin *sw, struct date *current_day,
@@ -478,35 +508,14 @@ draw_weekly_view(struct scrollwin *sw, struct date *current_day,
 {
 #define DAYSLICESNO  6
 	const int WCALWIDTH = 28;
-	struct tm t;
-	int OFFY, OFFX, j, c_wday, days_to_remove, weeknum;
+	struct tm t = get_first_weekday(sunday_first);
+	int OFFY, OFFX, j;
 
 	OFFY = 0;
 	OFFX = (wins_sbar_width() - 2 - WCALWIDTH) / 2;
 
-	/* Fill in a tm structure with the first day of the selected week. */
-	c_wday = ui_calendar_get_wday(&slctd_day);
-	if (sunday_first)
-		days_to_remove = c_wday;
-	else
-		days_to_remove = c_wday == 0 ? WEEKINDAYS - 1 : c_wday - 1;
-
-	memset(&t, 0, sizeof(struct tm));
-	t.tm_mday = slctd_day.dd;
-	t.tm_mon = slctd_day.mm - 1;
-	t.tm_year = slctd_day.yyyy - 1900;
-	mktime(&t);
-	date_change(&t, 0, -days_to_remove);
-
 	/* Print the week number. */
-	weeknum = ISO8601weeknum(&t);
-	WINS_CALENDAR_LOCK;
-	werase(sw_cal.inner);
-	custom_apply_attr(sw->inner, ATTR_HIGHEST);
-	mvwprintw(sw->win, conf.compact_panels ? 0 : 2, sw->w - 9,
-		  "(# %02d)", weeknum);
-	custom_remove_attr(sw->inner, ATTR_HIGHEST);
-	WINS_CALENDAR_UNLOCK;
+	draw_week_number(sw, t);
 
 	/* Now draw calendar view. */
 	for (j = 0; j < WEEKINDAYS; j++) {

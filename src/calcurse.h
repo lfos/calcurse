@@ -1051,6 +1051,7 @@ int is_all_digit(const char *);
 long get_item_time(long);
 int get_item_hour(long);
 int get_item_min(long);
+struct tm date2tm(struct date, unsigned, unsigned);
 time_t date2sec(struct date, unsigned, unsigned);
 time_t utcdate2sec(struct date, unsigned, unsigned);
 char *date_sec2date_str(long, const char *);
