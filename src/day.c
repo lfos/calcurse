@@ -565,9 +565,14 @@ unsigned day_chk_busy_slices(struct date day, int slicesno, int *slices)
 	LLIST_TS_LOCK(&recur_alist_p);
 	LLIST_TS_FIND_FOREACH(&recur_alist_p, (time_t *)&t,
 			      recur_apoint_inday, i) {
-		struct apoint *rapt = LLIST_TS_GET_DATA(i);
-		long start = get_item_time(rapt->start);
+		struct recur_apoint *rapt = LLIST_TS_GET_DATA(i);
+		time_t occurrence;
+		long start;
 		long end = get_item_time(rapt->start + rapt->dur);
+
+		if (!recur_apoint_find_occurrence(rapt, t, &occurrence))
+			continue;
+		start = get_item_time(occurrence);
 
 		if (rapt->start < t)
 			start = 0;
