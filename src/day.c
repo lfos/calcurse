@@ -582,8 +582,15 @@ unsigned day_chk_busy_slices(struct date day, int slicesno, int *slices)
 		else
 			end = DAYINSEC - 1;
 
-		if (!fill_slices
-		    (slices, slicesno, SLICENUM(start), SLICENUM(end))) {
+		/*
+		 * If an item ends on 12:00, we do not want the 12:00 slot to
+		 * be marked busy.
+		 */
+		if (end > start)
+			end--;
+
+		if (!fill_slices(slices, slicesno, SLICENUM(start),
+					SLICENUM(end))) {
 			LLIST_TS_UNLOCK(&recur_alist_p);
 			return 0;
 		}
@@ -603,8 +610,15 @@ unsigned day_chk_busy_slices(struct date day, int slicesno, int *slices)
 		if (apt->start + apt->dur >= t + DAYINSEC)
 			end = DAYINSEC - 1;
 
-		if (!fill_slices
-		    (slices, slicesno, SLICENUM(start), SLICENUM(end))) {
+		/*
+		 * If an item ends on 12:00, we do not want the 12:00 slot to
+		 * be marked busy.
+		 */
+		if (end > start)
+			end--;
+
+		if (!fill_slices(slices, slicesno, SLICENUM(start),
+					SLICENUM(end))) {
 			LLIST_TS_UNLOCK(&alist_p);
 			return 0;
 		}
