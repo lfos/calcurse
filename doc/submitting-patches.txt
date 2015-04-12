@@ -120,7 +120,7 @@ case there are any errors during import) failing.
 Fix this by calling vars_init() before io_import_data().
 
 Reported-by: Andraž 'ruskie' Levstik <ruskie@codemages.net>
-Signed-off-by: Lukas Fleischer <calcurse@cryptocrack.de>
+Signed-off-by: Lukas Fleischer <lfleischer@calcurse.org>
 ----
 
 The `-s` in the `git commit` invocation makes Git add a "Signed-off-by" line to

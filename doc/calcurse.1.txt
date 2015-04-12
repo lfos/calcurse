@@ -488,7 +488,7 @@ Authors
 -------
 
 * *Frederic Culot* <frederic@culot.org>
-* *Lukas Fleischer* <calcurse@cryptocrack.de>
+* *Lukas Fleischer* <lfleischer@calcurse.org>
 
 Copyright
 ---------
