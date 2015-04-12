@@ -1,20 +1,21 @@
 calcurse
 ========
 
-Read `INSTALL` for instructions on how to build and install calcurse.
+Building
+--------
 
-Check `TODO` for things that still need to be done.
+If you are using a release tarball, the following commands can be used to build
+and install calcurse:
 
-Browse the file `doc/manual.html` (or its source `doc/manual.txt`) for
-detailed descriptions on how to use calcurse.
+    $ ./configure
+    $ make
+    $ make install
+
+Note that `make install` needs to be run as root. When working on a Git
+checkout, you need to run `./autogen.sh` before `./configure`.
 
 Package Overview
 ----------------
-
-You should be reading this file in a directory called: `calcurse-x.y.z`, where
-`x.y.z` is the current version number.
-
-There should be four subdirectories:
 
 * `src`: contains calcurse sources
 * `test`: contains a test suite and test cases for calcurse
@@ -24,8 +25,8 @@ There should be four subdirectories:
 Authors
 -------
 
-* Frederic Culot (Founder)
-* Lukas Fleischer (Developer)
+* Lukas Fleischer (Maintainer)
+* Frederic Culot (Original Author)
 
 Contributors
 ------------
