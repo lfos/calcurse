@@ -243,6 +243,13 @@ static inline void key_view_note(void)
 	wins_update(FLAG_ALL);
 }
 
+static inline void key_generic_credits(void)
+{
+	if (!display_help("credits"))
+		warnbox(_("Unable to find documentation."));
+	wins_update(FLAG_ALL);
+}
+
 static inline void key_generic_help(void)
 {
 	if (!display_help(NULL))
@@ -658,6 +665,7 @@ int main(int argc, char **argv)
 			HANDLE_KEY(KEY_LOWER_PRIORITY, key_lower_priority);
 			HANDLE_KEY(KEY_EDIT_NOTE, key_edit_note);
 			HANDLE_KEY(KEY_VIEW_NOTE, key_view_note);
+			HANDLE_KEY(KEY_GENERIC_CREDITS, key_generic_credits);
 			HANDLE_KEY(KEY_GENERIC_HELP, key_generic_help);
 			HANDLE_KEY(KEY_GENERIC_SAVE, key_generic_save);
 			HANDLE_KEY(KEY_GENERIC_RELOAD, key_generic_reload);
