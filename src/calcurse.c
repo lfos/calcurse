@@ -245,7 +245,8 @@ static inline void key_view_note(void)
 
 static inline void key_generic_help(void)
 {
-	display_help(NULL);
+	if (!display_help(NULL))
+		warnbox(_("Unable to find documentation."));
 	wins_update(FLAG_ALL);
 }
 
