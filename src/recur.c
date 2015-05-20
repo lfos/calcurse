@@ -403,7 +403,7 @@ struct recur_event *recur_event_scan(FILE * f, struct tm start, int id,
 				     struct item_filter *filter)
 {
 	char buf[BUFSIZ], *nl;
-	time_t tstart, tuntil;
+	time_t tstart, tend, tuntil;
 
 	EXIT_IF(!check_date(start.tm_year, start.tm_mon, start.tm_mday) ||
 		!check_time(start.tm_hour, start.tm_min) ||
@@ -434,6 +434,7 @@ struct recur_event *recur_event_scan(FILE * f, struct tm start, int id,
 	}
 	tstart = mktime(&start);
 	EXIT_IF(tstart == -1 || tuntil == -1, _("date error in event"));
+	tend = tstart + DAYINSEC - 1;
 
 	/* Filter item. */
 	if (filter) {
@@ -444,6 +445,10 @@ struct recur_event *recur_event_scan(FILE * f, struct tm start, int id,
 		if (filter->start_from >= 0 && tstart < filter->start_from)
 			return NULL;
 		if (filter->start_to >= 0 && tstart > filter->start_to)
+			return NULL;
+		if (filter->end_from >= 0 && tend < filter->end_from)
+			return NULL;
+		if (filter->end_to >= 0 && tend > filter->end_to)
 			return NULL;
 	}
 

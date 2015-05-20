@@ -124,7 +124,7 @@ struct event *event_scan(FILE * f, struct tm start, int id, char *note,
 			 struct item_filter *filter)
 {
 	char buf[BUFSIZ], *nl;
-	time_t tstart;
+	time_t tstart, tend;
 
 	EXIT_IF(!check_date(start.tm_year, start.tm_mon, start.tm_mday) ||
 		!check_time(start.tm_hour, start.tm_min),
@@ -147,6 +147,7 @@ struct event *event_scan(FILE * f, struct tm start, int id, char *note,
 
 	tstart = mktime(&start);
 	EXIT_IF(tstart == -1, _("date error in the event\n"));
+	tend = tstart + DAYINSEC - 1;
 
 	/* Filter item. */
 	if (filter) {
@@ -157,6 +158,10 @@ struct event *event_scan(FILE * f, struct tm start, int id, char *note,
 		if (filter->start_from >= 0 && tstart < filter->start_from)
 			return NULL;
 		if (filter->start_to >= 0 && tstart > filter->start_to)
+			return NULL;
+		if (filter->end_from >= 0 && tend < filter->end_from)
+			return NULL;
+		if (filter->end_to >= 0 && tend > filter->end_to)
 			return NULL;
 	}
 
