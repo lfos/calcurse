@@ -667,7 +667,7 @@ static enum listbox_row_type general_option_row_type(int i, void *cb_data)
 
 static int general_option_height(int i, void *cb_data)
 {
-	if (i == 9)
+	if (i == 11)
 		return 4;
 	else
 		return 3;
@@ -770,7 +770,7 @@ void custom_general_config(void)
 	listbox_init(&lb, 0, 0, notify_bar() ? row - 3 : row - 2, col,
 		     _("general options"), general_option_row_type,
 		     general_option_height, print_general_option);
-	listbox_load_items(&lb, 10);
+	listbox_load_items(&lb, NB_OPTIONS);
 	listbox_draw_deco(&lb, 0);
 	listbox_display(&lb);
 	wins_set_bindings(bindings, ARRAY_SIZE(bindings));
