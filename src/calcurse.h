@@ -93,6 +93,7 @@
 #define DPID_PATH_NAME   ".daemon.pid"
 #define DLOG_PATH_NAME   "daemon.log"
 #define NOTES_DIR_NAME   "notes/"
+#define HOOKS_DIR_NAME   "hooks/"
 
 #define TODO_PATH        DIR_NAME TODO_PATH_NAME
 #define APTS_PATH        DIR_NAME APTS_PATH_NAME
@@ -102,6 +103,7 @@
 #define DLOG_PATH        DIR_NAME DLOG_PATH_NAME
 #define DPID_PATH        DIR_NAME DPID_PATH_NAME
 #define NOTES_DIR        DIR_NAME NOTES_DIR_NAME
+#define HOOKS_DIR        DIR_NAME HOOKS_DIR_NAME
 
 #define DEFAULT_EDITOR     "vi"
 #define DEFAULT_PAGER      "less"
@@ -779,6 +781,9 @@ int updatestring(WINDOW *, char **, int, int);
 /* help.c */
 int display_help(const char *);
 
+/* hooks.c */
+int run_hook(const char *);
+
 /* ical.c */
 void ical_import_data(FILE *, FILE *, unsigned *, unsigned *, unsigned *,
 		      unsigned *, unsigned *);
@@ -1111,6 +1116,7 @@ extern char path_notes[BUFSIZ];
 extern char path_cpid[BUFSIZ];
 extern char path_dpid[BUFSIZ];
 extern char path_dmon_log[BUFSIZ];
+extern char path_hooks[BUFSIZ];
 extern struct conf conf;
 extern struct pad apad;
 extern struct nbar nbar;

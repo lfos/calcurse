@@ -20,6 +20,7 @@ calcurse_SOURCES = \
 	event.c \
 	getstring.c \
 	help.c \
+	hooks.c \
 	ical.c \
 	io.c \
 	keys.c \

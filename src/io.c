@@ -239,6 +239,7 @@ void io_init(const char *cfile, const char *datadir)
 		snprintf(path_dpid, BUFSIZ, "%s/" DPID_PATH_NAME, home);
 		snprintf(path_dmon_log, BUFSIZ, "%s/" DLOG_PATH_NAME,
 			 home);
+		snprintf(path_hooks, BUFSIZ, "%s/" HOOKS_DIR_NAME, home);
 	} else {
 		home = getenv("HOME");
 		if (home == NULL) {
@@ -252,6 +253,7 @@ void io_init(const char *cfile, const char *datadir)
 		snprintf(path_dpid, BUFSIZ, "%s/" DPID_PATH, home);
 		snprintf(path_dmon_log, BUFSIZ, "%s/" DLOG_PATH, home);
 		snprintf(path_notes, BUFSIZ, "%s/" NOTES_DIR, home);
+		snprintf(path_hooks, BUFSIZ, "%s/" HOOKS_DIR, home);
 	}
 
 	if (cfile == NULL) {
@@ -391,6 +393,7 @@ void io_save_cal(enum save_display display)
 	if (read_only)
 		return;
 
+	run_hook("pre-save");
 	pthread_mutex_lock(&io_save_mutex);
 
 	show_bar = 0;
@@ -428,6 +431,7 @@ void io_save_cal(enum save_display display)
 	}
 
 	pthread_mutex_unlock(&io_save_mutex);
+	run_hook("post-save");
 }
 
 static void io_load_error(const char *filename, unsigned line,

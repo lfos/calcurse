@@ -111,6 +111,7 @@ char path_keys[] = "";
 char path_cpid[] = "";
 char path_dpid[] = "";
 char path_dmon_log[] = "";
+char path_hooks[] = "";
 
 /* Variable to store global configuration. */
 struct conf conf;
