@@ -693,8 +693,10 @@ void io_load_todo(struct item_filter *filter)
 /* Load appointments and todo items */
 void io_load_data(struct item_filter *filter)
 {
+	run_hook("pre-load");
 	io_load_app(filter);
 	io_load_todo(filter);
+	run_hook("post-load");
 }
 
 void io_reload_data(void)
