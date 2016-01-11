@@ -407,6 +407,7 @@ enum item_type {
 /* Filter settings. */
 struct item_filter {
 	int type_mask;
+	char *hash;
 	regex_t *regex;
 	time_t start_from;
 	time_t start_to;
@@ -1120,6 +1121,7 @@ int vasprintf(char **, const char *, va_list);
 int asprintf(char **, const char *, ...);
 int starts_with(const char *, const char *);
 int starts_with_ci(const char *, const char *);
+int hash_matches(const char *, const char *);
 
 /* vars.c */
 extern int col, row;

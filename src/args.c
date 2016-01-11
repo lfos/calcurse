@@ -47,6 +47,7 @@
 /* Long options */
 enum {
 	OPT_FILTER_TYPE = 1000,
+	OPT_FILTER_HASH,
 	OPT_FILTER_PATTERN,
 	OPT_FILTER_START_FROM,
 	OPT_FILTER_START_TO,
@@ -442,7 +443,7 @@ int parse_args(int argc, char **argv)
 	int range = -1;
 	int limit = INT_MAX;
 	/* Filters */
-	struct item_filter filter = { 0, NULL, -1, -1, -1, -1, 0, 0, 0 };
+	struct item_filter filter = { 0, NULL, NULL, -1, -1, -1, -1, 0, 0, 0 };
 	/* Format strings */
 	const char *fmt_apt = " - %S -> %E\n\t%m\n";
 	const char *fmt_rapt = " - %S -> %E\n\t%m\n";
@@ -481,6 +482,7 @@ int parse_args(int argc, char **argv)
 		{"query", optional_argument, NULL, 'Q'},
 
 		{"filter-type", required_argument, NULL, OPT_FILTER_TYPE},
+		{"filter-hash", required_argument, NULL, OPT_FILTER_HASH},
 		{"filter-pattern", required_argument, NULL, OPT_FILTER_PATTERN},
 		{"filter-start-from", required_argument, NULL, OPT_FILTER_START_FROM},
 		{"filter-start-to", required_argument, NULL, OPT_FILTER_START_TO},
@@ -603,6 +605,9 @@ int parse_args(int argc, char **argv)
 			filter.type_mask = parse_type_mask(optarg);
 			EXIT_IF(filter.type_mask == 0,
 				_("invalid filter mask"));
+			break;
+		case OPT_FILTER_HASH:
+			filter.hash = mem_strdup(optarg);
 			break;
 		case 'S':
 		case OPT_FILTER_PATTERN:

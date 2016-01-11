@@ -336,6 +336,7 @@ struct recur_apoint *recur_apoint_scan(FILE * f, struct tm start,
 {
 	char buf[BUFSIZ], *nl;
 	time_t tstart, tend, tuntil;
+	struct recur_apoint *rapt;
 
 	EXIT_IF(!check_date(start.tm_year, start.tm_mon, start.tm_mday) ||
 		!check_date(end.tm_year, end.tm_mon, end.tm_mday) ||
@@ -393,8 +394,20 @@ struct recur_apoint *recur_apoint_scan(FILE * f, struct tm start,
 			return NULL;
 	}
 
-	return recur_apoint_new(buf, note, tstart, tend - tstart, state,
+	rapt = recur_apoint_new(buf, note, tstart, tend - tstart, state,
 				recur_char2def(type), freq, tuntil, exc);
+
+	/* Filter by hash. */
+	if (filter && filter->hash) {
+		char *hash = recur_apoint_hash(rapt);
+		if (!hash_matches(filter->hash, hash)) {
+			recur_apoint_erase(rapt);
+			rapt = NULL;
+		}
+		mem_free(hash);
+	}
+
+	return rapt;
 }
 
 /* Load the recursive events from file */
@@ -405,6 +418,7 @@ struct recur_event *recur_event_scan(FILE * f, struct tm start, int id,
 {
 	char buf[BUFSIZ], *nl;
 	time_t tstart, tend, tuntil;
+	struct recur_event *rev;
 
 	EXIT_IF(!check_date(start.tm_year, start.tm_mon, start.tm_mday) ||
 		!check_time(start.tm_hour, start.tm_min) ||
@@ -453,8 +467,20 @@ struct recur_event *recur_event_scan(FILE * f, struct tm start, int id,
 			return NULL;
 	}
 
-	return recur_event_new(buf, note, tstart, id, recur_char2def(type),
-			       freq, tuntil, exc);
+	rev = recur_event_new(buf, note, tstart, id, recur_char2def(type),
+			      freq, tuntil, exc);
+
+	/* Filter by hash. */
+	if (filter && filter->hash) {
+		char *hash = recur_event_hash(rev);
+		if (!hash_matches(filter->hash, hash)) {
+			recur_event_erase(rev);
+			rev = NULL;
+		}
+		mem_free(hash);
+	}
+
+	return rev;
 }
 
 char *recur_apoint_tostr(struct recur_apoint *o)

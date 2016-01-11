@@ -1641,3 +1641,15 @@ int starts_with_ci(const char *s, const char *p)
 	for (; *p && tolower(*p) == tolower(*s); s++, p++);
 	return (*p == '\0');
 }
+
+int hash_matches(const char *pattern, const char *hash)
+{
+	int invert = 0;
+
+	if (pattern[0] == '!') {
+		invert = 1;
+		pattern++;
+	}
+
+	return (starts_with(hash, pattern) != invert);
+}

@@ -190,6 +190,7 @@ struct apoint *apoint_scan(FILE * f, struct tm start, struct tm end,
 {
 	char buf[BUFSIZ], *newline;
 	time_t tstart, tend;
+	struct apoint *apt;
 
 	EXIT_IF(!check_date(start.tm_year, start.tm_mon, start.tm_mday) ||
 		!check_date(end.tm_year, end.tm_mon, end.tm_mday) ||
@@ -233,7 +234,19 @@ struct apoint *apoint_scan(FILE * f, struct tm start, struct tm end,
 			return NULL;
 	}
 
-	return apoint_new(buf, note, tstart, tend - tstart, state);
+	apt = apoint_new(buf, note, tstart, tend - tstart, state);
+
+	/* Filter by hash. */
+	if (filter && filter->hash) {
+		char *hash = apoint_hash(apt);
+		if (!hash_matches(filter->hash, hash)) {
+			apoint_delete(apt);
+			apt = NULL;
+		}
+		mem_free(hash);
+	}
+
+	return apt;
 }
 
 void apoint_delete(struct apoint *apt)

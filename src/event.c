@@ -147,6 +147,7 @@ struct event *event_scan(FILE * f, struct tm start, int id, char *note,
 {
 	char buf[BUFSIZ], *nl;
 	time_t tstart, tend;
+	struct event *ev;
 
 	EXIT_IF(!check_date(start.tm_year, start.tm_mon, start.tm_mday) ||
 		!check_time(start.tm_hour, start.tm_min),
@@ -187,7 +188,19 @@ struct event *event_scan(FILE * f, struct tm start, int id, char *note,
 			return NULL;
 	}
 
-	return event_new(buf, note, tstart, id);
+	ev = event_new(buf, note, tstart, id);
+
+	/* Filter by hash. */
+	if (filter && filter->hash) {
+		char *hash = event_hash(ev);
+		if (!hash_matches(filter->hash, hash)) {
+			event_delete(ev);
+			ev = NULL;
+		}
+		mem_free(hash);
+	}
+
+	return ev;
 }
 
 /* Delete an event from the list. */

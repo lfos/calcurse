@@ -684,8 +684,20 @@ void io_load_todo(struct item_filter *filter)
 				continue;
 		}
 
-		todo_add(e_todo, id, note);
-		++nb_tod;
+		struct todo *todo = todo_add(e_todo, id, note);
+
+		/* Filter by hash. */
+		if (filter && filter->hash) {
+			char *hash = todo_hash(todo);
+			if (!hash_matches(filter->hash, hash)) {
+				todo_delete(todo);
+				todo = NULL;
+			}
+			mem_free(hash);
+		}
+
+		if (todo)
+			++nb_tod;
 	}
 	file_close(data_file, __FILE_POS__);
 }
