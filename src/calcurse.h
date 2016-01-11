@@ -964,7 +964,9 @@ struct recur_apoint *recur_apoint_scan(FILE *, struct tm, struct tm,
 struct recur_event *recur_event_scan(FILE *, struct tm, int, char,
 				     int, struct tm, char *, llist_t *,
 				     struct item_filter *);
+char *recur_apoint_tostr(struct recur_apoint *);
 void recur_apoint_write(struct recur_apoint *, FILE *);
+char *recur_event_tostr(struct recur_event *);
 void recur_event_write(struct recur_event *, FILE *);
 void recur_save_data(FILE *);
 unsigned recur_item_find_occurrence(long, long, llist_t *, int,
