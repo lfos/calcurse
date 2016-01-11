@@ -136,30 +136,42 @@ void apoint_sec2str(struct apoint *o, long day, char *start, char *end)
 	}
 }
 
-void apoint_write(struct apoint *o, FILE * f)
+char *apoint_tostr(struct apoint *o)
 {
+	struct string s;
 	struct tm lt;
 	time_t t;
 
+	string_init(&s);
+
 	t = o->start;
 	localtime_r(&t, &lt);
-	fprintf(f, "%02u/%02u/%04u @ %02u:%02u", lt.tm_mon + 1, lt.tm_mday,
-		1900 + lt.tm_year, lt.tm_hour, lt.tm_min);
+	string_catf(&s, "%02u/%02u/%04u @ %02u:%02u", lt.tm_mon + 1,
+		lt.tm_mday, 1900 + lt.tm_year, lt.tm_hour, lt.tm_min);
 
 	t = o->start + o->dur;
 	localtime_r(&t, &lt);
-	fprintf(f, " -> %02u/%02u/%04u @ %02u:%02u ", lt.tm_mon + 1,
+	string_catf(&s, " -> %02u/%02u/%04u @ %02u:%02u", lt.tm_mon + 1,
 		lt.tm_mday, 1900 + lt.tm_year, lt.tm_hour, lt.tm_min);
 
-	if (o->note != NULL)
-		fprintf(f, ">%s ", o->note);
+	if (o->note)
+		string_catf(&s, ">%s ", o->note);
 
 	if (o->state & APOINT_NOTIFY)
-		fputc('!', f);
+		string_catf(&s, "%c", '!');
 	else
-		fputc('|', f);
+		string_catf(&s, "%c", '|');
 
-	fprintf(f, "%s\n", o->mesg);
+	string_catf(&s, "%s", o->mesg);
+
+	return string_buf(&s);
+}
+
+void apoint_write(struct apoint *o, FILE * f)
+{
+	char *str = apoint_tostr(o);
+	fprintf(f, "%s\n", str);
+	mem_free(str);
 }
 
 struct apoint *apoint_scan(FILE * f, struct tm start, struct tm end,

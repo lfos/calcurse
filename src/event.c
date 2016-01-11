@@ -104,19 +104,30 @@ unsigned event_inday(struct event *i, long *start)
 	return (i->day < *start + DAYINSEC && i->day >= *start);
 }
 
-/* Write to file the event in user-friendly format */
-void event_write(struct event *o, FILE * f)
+char *event_tostr(struct event *o)
 {
+	struct string s;
 	struct tm lt;
 	time_t t;
 
+	string_init(&s);
+
 	t = o->day;
 	localtime_r(&t, &lt);
-	fprintf(f, "%02u/%02u/%04u [%d] ", lt.tm_mon + 1, lt.tm_mday,
+	string_catf(&s, "%02u/%02u/%04u [%d] ", lt.tm_mon + 1, lt.tm_mday,
 		1900 + lt.tm_year, o->id);
 	if (o->note != NULL)
-		fprintf(f, ">%s ", o->note);
-	fprintf(f, "%s\n", o->mesg);
+		string_catf(&s, ">%s ", o->note);
+	string_catf(&s, "%s", o->mesg);
+
+	return string_buf(&s);
+}
+
+void event_write(struct event *o, FILE * f)
+{
+	char *str = event_tostr(o);
+	fprintf(f, "%s\n", str);
+	mem_free(str);
 }
 
 /* Load the events from file */

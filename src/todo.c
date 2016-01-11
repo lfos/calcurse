@@ -79,13 +79,23 @@ struct todo *todo_add(char *mesg, int id, char *note)
 	return todo;
 }
 
+char *todo_tostr(struct todo *todo)
+{
+	char *res;
+
+	if (todo->note)
+		asprintf(&res, "[%d]>%s %s", todo->id, todo->note, todo->mesg);
+	else
+		asprintf(&res, "[%d] %s", todo->id, todo->mesg);
+
+	return res;
+}
+
 void todo_write(struct todo *todo, FILE * f)
 {
-	if (todo->note)
-		fprintf(f, "[%d]>%s %s\n", todo->id, todo->note,
-			todo->mesg);
-	else
-		fprintf(f, "[%d] %s\n", todo->id, todo->mesg);
+	char *str = todo_tostr(todo);
+	fprintf(f, "%s\n", str);
+	mem_free(str);
 }
 
 /* Delete a note previously attached to a todo item. */
