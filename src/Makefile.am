@@ -32,6 +32,7 @@ calcurse_SOURCES = \
 	recur.c \
 	sha1.c \
 	sigs.c \
+	strings.c \
 	todo.c \
 	ui-calendar.c \
 	ui-day.c \

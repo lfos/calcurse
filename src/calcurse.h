@@ -601,6 +601,13 @@ struct nbar {
 	pthread_mutex_t mutex;
 };
 
+/* Dynamic strings. */
+struct string {
+	char *buf;
+	int bufsize;
+	int len;
+};
+
 /* Return codes for the getstring() function. */
 enum getstr {
 	GETSTRING_VALID,
@@ -981,6 +988,15 @@ void sigs_init(void);
 unsigned sigs_set_hdlr(int, void (*)(int));
 void sigs_ignore(void);
 void sigs_unignore(void);
+
+/* strings.c */
+void string_init(struct string *);
+void string_reset(struct string *);
+int string_grow(struct string *, int);
+char *string_buf(struct string *);
+int string_catf(struct string *, const char *, ...);
+int string_vcatf(struct string *, const char *, va_list);
+int string_printf(struct string *, const char *, ...);
 
 /* todo.c */
 extern llist_t todolist;
