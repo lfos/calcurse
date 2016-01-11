@@ -40,6 +40,7 @@
 #include <time.h>
 
 #include "calcurse.h"
+#include "sha1.h"
 
 llist_t eventlist;
 
@@ -121,6 +122,16 @@ char *event_tostr(struct event *o)
 	string_catf(&s, "%s", o->mesg);
 
 	return string_buf(&s);
+}
+
+char *event_hash(struct event *ev)
+{
+	char *raw = event_tostr(ev);
+	char *sha1 = mem_malloc(SHA1_DIGESTLEN * 2 + 1);
+	sha1_digest(raw, sha1);
+	mem_free(raw);
+
+	return sha1;
 }
 
 void event_write(struct event *o, FILE * f)

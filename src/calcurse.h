@@ -684,6 +684,7 @@ struct apoint *apoint_new(char *, char *, long, long, char);
 unsigned apoint_inday(struct apoint *, long *);
 void apoint_sec2str(struct apoint *, long, char *, char *);
 char *apoint_tostr(struct apoint *);
+char *apoint_hash(struct apoint *);
 void apoint_write(struct apoint *, FILE *);
 struct apoint *apoint_scan(FILE *, struct tm, struct tm, char, char *,
 			   struct item_filter *);
@@ -778,6 +779,7 @@ void event_llist_free(void);
 struct event *event_new(char *, char *, long, int);
 unsigned event_inday(struct event *, long *);
 char *event_tostr(struct event *);
+char *event_hash(struct event *);
 void event_write(struct event *, FILE *);
 struct event *event_scan(FILE *, struct tm, int, char *, struct item_filter *);
 void event_delete(struct event *);
@@ -965,8 +967,10 @@ struct recur_event *recur_event_scan(FILE *, struct tm, int, char,
 				     int, struct tm, char *, llist_t *,
 				     struct item_filter *);
 char *recur_apoint_tostr(struct recur_apoint *);
+char *recur_apoint_hash(struct recur_apoint *);
 void recur_apoint_write(struct recur_apoint *, FILE *);
 char *recur_event_tostr(struct recur_event *);
+char *recur_event_hash(struct recur_event *);
 void recur_event_write(struct recur_event *, FILE *);
 void recur_save_data(FILE *);
 unsigned recur_item_find_occurrence(long, long, llist_t *, int,
@@ -1007,6 +1011,7 @@ extern llist_t todolist;
 struct todo *todo_get_item(int);
 struct todo *todo_add(char *, int, char *);
 char *todo_tostr(struct todo *);
+char *todo_hash(struct todo *);
 void todo_write(struct todo *, FILE *);
 void todo_delete_note(struct todo *);
 void todo_delete(struct todo *);

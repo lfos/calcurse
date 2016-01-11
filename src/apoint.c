@@ -40,6 +40,7 @@
 #include <time.h>
 
 #include "calcurse.h"
+#include "sha1.h"
 
 llist_ts_t alist_p;
 
@@ -165,6 +166,16 @@ char *apoint_tostr(struct apoint *o)
 	string_catf(&s, "%s", o->mesg);
 
 	return string_buf(&s);
+}
+
+char *apoint_hash(struct apoint *apt)
+{
+	char *raw = apoint_tostr(apt);
+	char *sha1 = mem_malloc(SHA1_DIGESTLEN * 2 + 1);
+	sha1_digest(raw, sha1);
+	mem_free(raw);
+
+	return sha1;
 }
 
 void apoint_write(struct apoint *o, FILE * f)

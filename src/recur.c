@@ -41,6 +41,7 @@
 #include <time.h>
 
 #include "calcurse.h"
+#include "sha1.h"
 
 llist_ts_t recur_alist_p;
 llist_t recur_elist;
@@ -498,6 +499,16 @@ char *recur_apoint_tostr(struct recur_apoint *o)
 	return string_buf(&s);
 }
 
+char *recur_apoint_hash(struct recur_apoint *rapt)
+{
+	char *raw = recur_apoint_tostr(rapt);
+	char *sha1 = mem_malloc(SHA1_DIGESTLEN * 2 + 1);
+	sha1_digest(raw, sha1);
+	mem_free(raw);
+
+	return sha1;
+}
+
 void recur_apoint_write(struct recur_apoint *o, FILE * f)
 {
 	char *str = recur_apoint_tostr(o);
@@ -543,6 +554,16 @@ char *recur_event_tostr(struct recur_event *o)
 	string_catf(&s, "%s", o->mesg);
 
 	return string_buf(&s);
+}
+
+char *recur_event_hash(struct recur_event *rev)
+{
+	char *raw = recur_event_tostr(rev);
+	char *sha1 = mem_malloc(SHA1_DIGESTLEN * 2 + 1);
+	sha1_digest(raw, sha1);
+	mem_free(raw);
+
+	return sha1;
 }
 
 void recur_event_write(struct recur_event *o, FILE * f)

@@ -48,6 +48,7 @@
 #include <termios.h>
 
 #include "calcurse.h"
+#include "sha1.h"
 
 #define ISLEAP(y) ((((y) % 4) == 0 && ((y) % 100) != 0) || ((y) % 400) == 0)
 
@@ -62,6 +63,8 @@ enum format_specifier {
 	FS_NOTE,
 	FS_NOTEFILE,
 	FS_PRIORITY,
+	FS_RAW,
+	FS_HASH,
 	FS_PSIGN,
 	FS_EOF,
 	FS_UNKNOWN
@@ -1293,6 +1296,10 @@ static enum format_specifier parse_fs(const char **s, char *extformat)
 			return FS_NOTEFILE;
 		else if (!strcmp(buf, "priority"))
 			return FS_PRIORITY;
+		else if (!strcmp(buf, "raw"))
+			return FS_RAW;
+		else if (!strcmp(buf, "hash"))
+			return FS_HASH;
 		else
 			return FS_UNKNOWN;
 	case '%':
@@ -1405,11 +1412,11 @@ static void print_datediff(long difference, const char *extformat)
 }
 
 /* Print a formatted appointment to stdout. */
-void print_apoint(const char *format, long day, struct apoint *apt)
+static void print_apoint_helper(const char *format, long day,
+				struct apoint *apt, struct recur_apoint *rapt)
 {
 	const char *p;
 	char extformat[FS_EXT_MAXLEN];
-
 
 	for (p = format; *p; p++) {
 		if (*p == '%') {
@@ -1442,6 +1449,18 @@ void print_apoint(const char *format, long day, struct apoint *apt)
 			case FS_NOTEFILE:
 				print_notefile(stdout, apt->note, 1);
 				break;
+			case FS_RAW:
+				if (rapt)
+					recur_apoint_write(rapt, stdout);
+				else
+					apoint_write(apt, stdout);
+				break;
+			case FS_HASH:
+				if (rapt)
+					printf("%s", recur_apoint_hash(rapt));
+				else
+					printf("%s", apoint_hash(apt));
+				break;
 			case FS_PSIGN:
 				putchar('%');
 				break;
@@ -1461,7 +1480,8 @@ void print_apoint(const char *format, long day, struct apoint *apt)
 }
 
 /* Print a formatted event to stdout. */
-void print_event(const char *format, long day, struct event *ev)
+static void print_event_helper(const char *format, long day, struct event *ev,
+			       struct recur_event *rev)
 {
 	const char *p;
 	char extformat[FS_EXT_MAXLEN];
@@ -1482,6 +1502,18 @@ void print_event(const char *format, long day, struct event *ev)
 			case FS_PSIGN:
 				putchar('%');
 				break;
+			case FS_RAW:
+				if (rev)
+					recur_event_write(rev, stdout);
+				else
+					event_write(ev, stdout);
+				break;
+			case FS_HASH:
+				if (rev)
+					printf("%s", recur_event_tostr(rev));
+				else
+					printf("%s", event_tostr(ev));
+				break;
 			case FS_EOF:
 				return;
 				break;
@@ -1497,6 +1529,18 @@ void print_event(const char *format, long day, struct event *ev)
 	}
 }
 
+/* Print a formatted appointment to stdout. */
+void print_apoint(const char *format, long day, struct apoint *apt)
+{
+	print_apoint_helper(format, day, apt, NULL);
+}
+
+/* Print a formatted event to stdout. */
+void print_event(const char *format, long day, struct event *ev)
+{
+	print_event_helper(format, day, ev, NULL);
+}
+
 /* Print a formatted recurrent appointment to stdout. */
 void
 print_recur_apoint(const char *format, long day, time_t occurrence,
@@ -1509,7 +1553,7 @@ print_recur_apoint(const char *format, long day, time_t occurrence,
 	apt.mesg = rapt->mesg;
 	apt.note = rapt->note;
 
-	print_apoint(format, day, &apt);
+	print_apoint_helper(format, day, &apt, rapt);
 }
 
 /* Print a formatted recurrent event to stdout. */
@@ -1521,7 +1565,7 @@ void print_recur_event(const char *format, long day,
 	ev.mesg = rev->mesg;
 	ev.note = rev->note;
 
-	print_event(format, day, &ev);
+	print_event_helper(format, day, &ev, rev);
 }
 
 /* Print a formatted todo item to stdout. */
@@ -1545,6 +1589,12 @@ void print_todo(const char *format, struct todo *todo)
 				break;
 			case FS_NOTEFILE:
 				print_notefile(stdout, todo->note, 1);
+				break;
+			case FS_RAW:
+				todo_write(todo, stdout);
+				break;
+			case FS_HASH:
+				printf("%s", todo_hash(todo));
 				break;
 			case FS_PSIGN:
 				putchar('%');

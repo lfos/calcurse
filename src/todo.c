@@ -39,6 +39,7 @@
 #include <unistd.h>
 
 #include "calcurse.h"
+#include "sha1.h"
 
 llist_t todolist;
 
@@ -89,6 +90,16 @@ char *todo_tostr(struct todo *todo)
 		asprintf(&res, "[%d] %s", todo->id, todo->mesg);
 
 	return res;
+}
+
+char *todo_hash(struct todo *todo)
+{
+	char *raw = todo_tostr(todo);
+	char *sha1 = mem_malloc(SHA1_DIGESTLEN * 2 + 1);
+	sha1_digest(raw, sha1);
+	mem_free(raw);
+
+	return sha1;
 }
 
 void todo_write(struct todo *todo, FILE * f)
