@@ -459,7 +459,7 @@ int parse_args(int argc, char **argv)
 	int ch;
 	regex_t reg;
 
-	static const char *optstr = "FgGhvnNax::t::d:c:r::s::S:D:i:l:Q";
+	static const char *optstr = "FgGhvnNax::t::d:c:r::s::S:D:i:l:qQ";
 
 	struct option longopts[] = {
 		{"appointment", no_argument, NULL, 'a'},
@@ -480,6 +480,7 @@ int parse_args(int argc, char **argv)
 		{"todo", optional_argument, NULL, 't'},
 		{"version", no_argument, NULL, 'v'},
 		{"export", optional_argument, NULL, 'x'},
+		{"quiet", no_argument, NULL, 'q'},
 		{"query", optional_argument, NULL, 'Q'},
 
 		{"filter-type", required_argument, NULL, OPT_FILTER_TYPE},
@@ -601,6 +602,9 @@ int parse_args(int argc, char **argv)
 					EXIT(_("invalid export format: %s"),
 					     optarg);
 			}
+			break;
+		case 'q':
+			quiet = 1;
 			break;
 		case 'Q':
 			query = 1;

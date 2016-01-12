@@ -610,7 +610,7 @@ int main(int argc, char **argv)
 	 * implicitly calling wrefresh() later (causing ncurses race conditions).
 	 */
 	wins_wrefresh(win[KEY].p);
-	if (conf.system_dialogs) {
+	if (show_dialogs()) {
 		wins_update(FLAG_ALL);
 		io_startup_screen(no_data_file);
 	}

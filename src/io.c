@@ -425,7 +425,7 @@ void io_save_cal(enum save_display display)
 
 	/* Print a message telling data were saved */
 	if (ui_mode == UI_CURSES && display == IO_SAVE_DISPLAY_BAR &&
-	    conf.system_dialogs) {
+	    show_dialogs()) {
 		status_mesg(save_success, enter);
 		wgetch(win[KEY].p);
 	}
@@ -794,7 +794,7 @@ void io_reload_data(void)
 	ui_todo_load_items();
 	ui_todo_sel_reset();
 
-	if (conf.system_dialogs) {
+	if (show_dialogs()) {
 		status_mesg(reload_success, enter);
 		wgetch(win[KEY].p);
 	}
@@ -1113,7 +1113,7 @@ void io_export_data(enum export_type type)
 	else if (type == IO_EXPORT_PCAL)
 		pcal_export_data(stream);
 
-	if (conf.system_dialogs && ui_mode == UI_CURSES) {
+	if (show_dialogs() && ui_mode == UI_CURSES) {
 		status_mesg(success, enter);
 		wgetch(win[KEY].p);
 	}
@@ -1211,7 +1211,7 @@ void io_import_data(enum import_type type, const char *stream_name)
 		 stats.todos);
 	asprintf(&stats_str[3], _("%d skipped"), stats.skipped);
 
-	if (ui_mode == UI_CURSES && conf.system_dialogs) {
+	if (ui_mode == UI_CURSES && show_dialogs()) {
 		char *read, *stat;
 
 		asprintf(&read, proc_report, stats.lines);
