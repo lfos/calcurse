@@ -436,7 +436,7 @@ cleanup:
 int parse_args(int argc, char **argv)
 {
 	/* Command-line flags */
-	int grep = 0, query = 0, next = 0;
+	int grep = 0, grep_filter = 0, query = 0, next = 0;
 	int status = 0, gc = 0, import = 0, export = 0;
 	/* Query ranges */
 	time_t from = -1, to = -1;
@@ -459,13 +459,14 @@ int parse_args(int argc, char **argv)
 	int ch;
 	regex_t reg;
 
-	static const char *optstr = "gGhvnNax::t::d:c:r::s::S:D:i:l:Q";
+	static const char *optstr = "FgGhvnNax::t::d:c:r::s::S:D:i:l:Q";
 
 	struct option longopts[] = {
 		{"appointment", no_argument, NULL, 'a'},
 		{"calendar", required_argument, NULL, 'c'},
 		{"day", required_argument, NULL, 'd'},
 		{"directory", required_argument, NULL, 'D'},
+		{"filter", no_argument, NULL, 'F'},
 		{"gc", no_argument, NULL, 'g'},
 		{"grep", no_argument, NULL, 'G'},
 		{"help", no_argument, NULL, 'h'},
@@ -533,6 +534,9 @@ int parse_args(int argc, char **argv)
 			break;
 		case 'D':
 			datadir = optarg;
+			break;
+		case 'F':
+			grep_filter = grep = 1;
 			break;
 		case 'h':
 			help_arg();
@@ -754,8 +758,8 @@ int parse_args(int argc, char **argv)
 		vars_init();
 		config_load();	/* To get output date format. */
 		io_load_data(&filter);
-		io_save_todo(NULL);
-		io_save_apts(NULL);
+		io_save_todo(grep_filter ? path_todo : NULL);
+		io_save_apts(grep_filter ? path_apts : NULL);
 	} else if (query) {
 		io_check_file(path_apts);
 		io_check_file(path_todo);
