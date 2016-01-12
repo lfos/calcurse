@@ -281,28 +281,45 @@ static void ical_log(FILE * log, ical_types_e type, unsigned lineno,
 	fprintf(log, "%s [%d]: %s\n", typestr[type], lineno, msg);
 }
 
-static void ical_store_todo(int priority, char *mesg, char *note)
+static void ical_store_todo(int priority, char *mesg, char *note, int list)
 {
-	todo_add(mesg, priority, note);
+	struct todo *todo = todo_add(mesg, priority, note);
+	if (list) {
+		char *hash = todo_hash(todo);
+		printf("%s\n", hash);
+		mem_free(hash);
+	}
 	mem_free(mesg);
 	erase_note(&note);
 }
 
 static void
 ical_store_event(char *mesg, char *note, long day, long end,
-		 ical_rpt_t * rpt, llist_t * exc)
+		 ical_rpt_t * rpt, llist_t * exc, int list)
 {
 	const int EVENTID = 1;
+	struct event *ev;
+	struct recur_event *rev;
 
 	if (rpt) {
-		recur_event_new(mesg, note, day, EVENTID, rpt->type,
-				rpt->freq, rpt->until, exc);
+		rev = recur_event_new(mesg, note, day, EVENTID, rpt->type,
+				      rpt->freq, rpt->until, exc);
 		mem_free(rpt);
+		if (list) {
+			char *hash = recur_event_hash(rev);
+			printf("%s\n", hash);
+			mem_free(hash);
+		}
 		goto cleanup;
 	}
 
 	if (end == 0 || end - day <= DAYINSEC) {
-		event_new(mesg, note, day, EVENTID);
+		ev = event_new(mesg, note, day, EVENTID);
+		if (list) {
+			char *hash = event_hash(ev);
+			printf("%s\n", hash);
+			mem_free(hash);
+		}
 		goto cleanup;
 	}
 
@@ -319,9 +336,14 @@ ical_store_event(char *mesg, char *note, long day, long end,
 	rpt->freq = 1;
 	rpt->count = 0;
 	rpt->until = end;
-	recur_event_new(mesg, note, day, EVENTID, rpt->type,
-			rpt->freq, rpt->until, exc);
+	rev = recur_event_new(mesg, note, day, EVENTID, rpt->type,
+			      rpt->freq, rpt->until, exc);
 	mem_free(rpt);
+	if (list) {
+		char *hash = recur_event_hash(rev);
+		printf("%s\n", hash);
+		mem_free(hash);
+	}
 
 cleanup:
 	mem_free(mesg);
@@ -330,18 +352,30 @@ cleanup:
 
 static void
 ical_store_apoint(char *mesg, char *note, long start, long dur,
-		  ical_rpt_t * rpt, llist_t * exc, int has_alarm)
+		  ical_rpt_t * rpt, llist_t * exc, int has_alarm, int list)
 {
 	char state = 0L;
+	struct apoint *apt;
+	struct recur_apoint *rapt;
 
 	if (has_alarm)
 		state |= APOINT_NOTIFY;
 	if (rpt) {
-		recur_apoint_new(mesg, note, start, dur, state, rpt->type,
-				 rpt->freq, rpt->until, exc);
+		rapt = recur_apoint_new(mesg, note, start, dur, state,
+					rpt->type, rpt->freq, rpt->until, exc);
 		mem_free(rpt);
+		if (list) {
+			char *hash = recur_apoint_hash(rapt);
+			printf("%s\n", hash);
+			mem_free(hash);
+		}
 	} else {
-		apoint_new(mesg, note, start, dur, state);
+		apt = apoint_new(mesg, note, start, dur, state);
+		if (list) {
+			char *hash = apoint_hash(apt);
+			printf("%s\n", hash);
+			mem_free(hash);
+		}
 	}
 	mem_free(mesg);
 	erase_note(&note);
@@ -833,7 +867,7 @@ static char *ical_read_summary(char *line)
 }
 
 static void
-ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
+ical_read_event(FILE * fdi, FILE * log, int list, unsigned *noevents,
 		unsigned *noapoints, unsigned *noskipped, char *buf,
 		char *lstore, unsigned *lineno)
 {
@@ -906,13 +940,13 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 				ical_store_apoint(vevent.mesg, vevent.note,
 						vevent.start, vevent.dur,
 						vevent.rpt, &vevent.exc,
-						vevent.has_alarm);
+						vevent.has_alarm, list);
 				(*noapoints)++;
 				break;
 			case EVENT:
 				ical_store_event(vevent.mesg, vevent.note,
 						vevent.start, vevent.end,
-						vevent.rpt, &vevent.exc);
+						vevent.rpt, &vevent.exc, list);
 				(*noevents)++;
 				break;
 			case UNDEFINED:
@@ -993,7 +1027,7 @@ cleanup:
 }
 
 static void
-ical_read_todo(FILE * fdi, FILE * log, unsigned *notodos,
+ical_read_todo(FILE * fdi, FILE * log, int list, unsigned *notodos,
 	       unsigned *noskipped, char *buf, char *lstore,
 	       unsigned *lineno)
 {
@@ -1028,7 +1062,7 @@ ical_read_todo(FILE * fdi, FILE * log, unsigned *notodos,
 			}
 
 			ical_store_todo(vtodo.priority, vtodo.mesg,
-					vtodo.note);
+					vtodo.note, list);
 			(*notodos)++;
 			return;
 		}
@@ -1066,7 +1100,7 @@ cleanup:
 
 /* Import calcurse data. */
 void
-ical_import_data(FILE * stream, FILE * log, unsigned *events,
+ical_import_data(FILE * stream, FILE * log, int list, unsigned *events,
 		 unsigned *apoints, unsigned *todos, unsigned *lines,
 		 unsigned *skipped)
 {
@@ -1084,10 +1118,10 @@ ical_import_data(FILE * stream, FILE * log, unsigned *events,
 	while (ical_readline(stream, buf, lstore, lines)) {
 		(*lines)++;
 		if (starts_with_ci(buf, "BEGIN:VEVENT")) {
-			ical_read_event(stream, log, events, apoints,
+			ical_read_event(stream, log, list, events, apoints,
 					skipped, buf, lstore, lines);
 		} else if (starts_with_ci(buf, "BEGIN:VTODO")) {
-			ical_read_todo(stream, log, todos, skipped, buf,
+			ical_read_todo(stream, log, list, todos, skipped, buf,
 				       lstore, lines);
 		}
 	}

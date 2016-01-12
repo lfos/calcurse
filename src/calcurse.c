@@ -276,7 +276,7 @@ static inline void key_generic_reload(void)
 static inline void key_generic_import(void)
 {
 	wins_erase_status_bar();
-	io_import_data(IO_IMPORT_ICAL, NULL);
+	io_import_data(IO_IMPORT_ICAL, NULL, 0);
 	ui_calendar_monthly_view_cache_set_invalid();
 	do_storage(0);
 	wins_update(FLAG_ALL);

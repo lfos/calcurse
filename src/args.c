@@ -70,6 +70,7 @@ enum {
 	OPT_FMT_EV,
 	OPT_FMT_REV,
 	OPT_FMT_TODO,
+	OPT_LIST_IMPORTED,
 	OPT_READ_ONLY,
 	OPT_STATUS
 };
@@ -452,6 +453,7 @@ int parse_args(int argc, char **argv)
 	const char *fmt_todo = "%p. %m\n";
 	/* Import and export parameters */
 	int xfmt = IO_EXPORT_ICAL;
+	int list_imported = 0;
 	/* Data file locations */
 	const char *cfile = NULL, *datadir = NULL, *ifile = NULL;
 
@@ -507,6 +509,7 @@ int parse_args(int argc, char **argv)
 		{"format-event", required_argument, NULL, OPT_FMT_EV},
 		{"format-recur-event", required_argument, NULL, OPT_FMT_REV},
 		{"format-todo", required_argument, NULL, OPT_FMT_TODO},
+		{"list-imported", no_argument, NULL, OPT_LIST_IMPORTED},
 		{"read-only", no_argument, NULL, OPT_READ_ONLY},
 		{"status", no_argument, NULL, OPT_STATUS},
 		{NULL, no_argument, NULL, 0}
@@ -713,6 +716,9 @@ int parse_args(int argc, char **argv)
 		case OPT_FMT_TODO:
 			fmt_todo = optarg;
 			break;
+		case OPT_LIST_IMPORTED:
+			list_imported = 1;
+			break;
 		case OPT_READ_ONLY:
 			read_only = 1;
 			break;
@@ -789,7 +795,7 @@ int parse_args(int argc, char **argv)
 		/* Get default pager in case we need to show a log file. */
 		vars_init();
 		io_load_data(NULL);
-		io_import_data(IO_IMPORT_ICAL, ifile);
+		io_import_data(IO_IMPORT_ICAL, ifile, list_imported);
 		io_save_apts(path_apts);
 		io_save_todo(path_todo);
 	} else if (export) {
