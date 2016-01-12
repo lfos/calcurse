@@ -1036,6 +1036,7 @@ ical_read_todo(FILE * fdi, FILE * log, int list, unsigned *notodos,
 	struct {
 		char *mesg, *note;
 		int has_priority, priority;
+		int completed;
 	} vtodo;
 	int skip_alarm;
 
@@ -1055,6 +1056,8 @@ ical_read_todo(FILE * fdi, FILE * log, int list, unsigned *notodos,
 		if (starts_with_ci(buf, "END:VTODO")) {
 			if (!vtodo.has_priority)
 				vtodo.priority = LOWEST;
+			if (vtodo.completed)
+				vtodo.priority = -vtodo.priority;
 			if (!vtodo.mesg) {
 				ical_log(log, ICAL_VTODO, ITEMLINE,
 					 _("could not retrieve item summary."));
@@ -1076,6 +1079,8 @@ ical_read_todo(FILE * fdi, FILE * log, int list, unsigned *notodos,
 					 _("item priority is not acceptable "
 					  "(must be between 1 and 9)."));
 			}
+		} else if (starts_with_ci(buf, "STATUS:COMPLETED")) {
+			vtodo.completed = 1;
 		} else if (starts_with_ci(buf, "SUMMARY")) {
 			vtodo.mesg = ical_read_summary(buf);
 		} else if (starts_with_ci(buf, "BEGIN:VALARM")) {
