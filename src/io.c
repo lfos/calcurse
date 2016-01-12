@@ -1222,7 +1222,7 @@ void io_import_data(enum import_type type, const char *stream_name, int list)
 		mem_free(read);
 		mem_free(stat);
 		wgetch(win[KEY].p);
-	} else if (ui_mode == UI_CMDLINE) {
+	} else if (ui_mode == UI_CMDLINE && show_dialogs()) {
 		printf(proc_report, stats.lines);
 		printf("\n%s / %s / %s / %s\n", stats_str[0], stats_str[1],
 		       stats_str[2], stats_str[3]);
