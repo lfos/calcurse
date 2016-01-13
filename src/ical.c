@@ -230,11 +230,14 @@ static void ical_export_todo(FILE * stream)
 
 	LLIST_FOREACH(&todolist, i) {
 		struct todo *todo = LLIST_TS_GET_DATA(i);
-		if (todo->id < 0)	/* completed items */
-			continue;
+		int priority = todo->id;
 
 		fputs("BEGIN:VTODO\n", stream);
-		fprintf(stream, "PRIORITY:%d\n", todo->id);
+		if (todo->id < 0) {
+			fprintf(stream, "STATUS:COMPLETED\n");
+			priority = -priority;
+		}
+		fprintf(stream, "PRIORITY:%d\n", priority);
 		fprintf(stream, "SUMMARY:%s\n", todo->mesg);
 		fputs("END:VTODO\n", stream);
 	}
