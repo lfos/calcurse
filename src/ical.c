@@ -529,14 +529,14 @@ static time_t ical_datetime2time_t(char *datestr, ical_vevent_e * type)
 
 static long ical_durtime2long(char *timestr)
 {
-	char *p;
+	char *p = timestr;
 	int bytes_read;
 	unsigned hour = 0, min = 0, sec = 0;
 
-	if ((p = strchr(timestr, 'T')) == NULL)
+	if (*p != 'T')
 		return 0;
-
 	p++;
+
 	if (strchr(p, 'H')) {
 		if (sscanf(p, "%uH%n", &hour, &bytes_read) != 1)
 			return 0;
@@ -548,13 +548,10 @@ static long ical_durtime2long(char *timestr)
 		p += bytes_read;
 	}
 	if (strchr(p, 'S')) {
-		if (sscanf(p, "%uM%n", &sec, &bytes_read) != 1)
+		if (sscanf(p, "%uS%n", &sec, &bytes_read) != 1)
 			return 0;
 		p += bytes_read;
 	}
-
-	if (hour == 0 && min == 0 && sec == 0)
-		return 0;
 
 	return hour * HOURINSEC + min * MININSEC + sec;
 }
@@ -587,6 +584,7 @@ static long ical_durtime2long(char *timestr)
 static long ical_dur2long(char *durstr)
 {
 	char *p;
+	int bytes_read;
 	struct {
 		unsigned week, day;
 	} date;
@@ -612,9 +610,9 @@ static long ical_dur2long(char *durstr)
 			return date.week * WEEKINDAYS * DAYINSEC;
 	} else if (strchr(p, 'D')) {
 		/* dur-date */
-		if (sscanf(p, "%uD", &date.day) == 1) {
-			return date.day * DAYINSEC +
-				ical_durtime2long(p);
+		if (sscanf(p, "%uD%n", &date.day, &bytes_read) == 1) {
+			p += bytes_read;
+			return date.day * DAYINSEC + ical_durtime2long(p);
 		}
 	}
 
