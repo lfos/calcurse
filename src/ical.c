@@ -387,55 +387,43 @@ ical_store_apoint(char *mesg, char *note, long start, long dur,
 /*
  * Returns an allocated string representing the string given in argument once
  * unformatted.
- *
- * Note:
- * Even if the RFC2445 recommends not to have more than 75 octets on one line of
- * text, I prefer not to restrict the parsing to this size, thus I use a buffer
- * of size BUFSIZ.
- *
- * Extract from RFC2445:
- * Lines of text SHOULD NOT be longer than 75 octets, excluding the line
- * break.
  */
 static char *ical_unformat_line(char *line)
 {
-	char *p, uline[BUFSIZ];
-	int len;
+	struct string s;
+	char *p;
 
-	if (strlen(line) >= BUFSIZ)
-		return NULL;
-
-	memset(uline, 0, BUFSIZ);
-	for (len = 0, p = line; *p; p++) {
+	string_init(&s);
+	for (p = line; *p; p++) {
 		switch (*p) {
 		case '\\':
 			switch (*(p + 1)) {
 			case 'n':
-				uline[len++] = '\n';
+				string_catf(&s, "%c", '\n');
 				p++;
 				break;
 			case 't':
-				uline[len++] = '\t';
+				string_catf(&s, "%c", '\t');
 				p++;
 				break;
 			case ';':
 			case ':':
 			case ',':
-				uline[len++] = *(p + 1);
+				string_catf(&s, "%c", *(p + 1));
 				p++;
 				break;
 			default:
-				uline[len++] = *p;
+				string_catf(&s, "%c", *p);
 				break;
 			}
 			break;
 		default:
-			uline[len++] = *p;
+			string_catf(&s, "%c", *p);
 			break;
 		}
 	}
 
-	return mem_strdup(uline);
+	return string_buf(&s);
 }
 
 static void
