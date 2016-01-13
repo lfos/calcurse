@@ -166,7 +166,13 @@ static void ical_export_recur_apoints(FILE * stream)
 				  ical_datetime);
 		fputs("BEGIN:VEVENT\n", stream);
 		fprintf(stream, "DTSTART:%s\n", ical_datetime);
-		fprintf(stream, "DURATION:PT0H0M%ldS\n", rapt->dur);
+		if (rapt->dur > 0) {
+			fprintf(stream, "DURATION:P%ldDT%ldH%ldM%ldS\n",
+				rapt->dur / DAYINSEC,
+				(rapt->dur / HOURINSEC) % DAYINHOURS,
+				(rapt->dur / MININSEC) % HOURINMIN,
+				rapt->dur % MININSEC);
+		}
 		fprintf(stream, "RRULE:FREQ=%s;INTERVAL=%d",
 			ical_recur_type[rapt->rpt->type], rapt->rpt->freq);
 
@@ -210,11 +216,13 @@ static void ical_export_apoints(FILE * stream)
 				  ical_datetime);
 		fputs("BEGIN:VEVENT\n", stream);
 		fprintf(stream, "DTSTART:%s\n", ical_datetime);
-		fprintf(stream, "DURATION:P%ldDT%ldH%ldM%ldS\n",
-			apt->dur / DAYINSEC,
-			(apt->dur / HOURINSEC) % DAYINHOURS,
-			(apt->dur / MININSEC) % HOURINMIN,
-			apt->dur % MININSEC);
+		if (apt->dur > 0) {
+			fprintf(stream, "DURATION:P%ldDT%ldH%ldM%ldS\n",
+				apt->dur / DAYINSEC,
+				(apt->dur / HOURINSEC) % DAYINHOURS,
+				(apt->dur / MININSEC) % HOURINMIN,
+				apt->dur % MININSEC);
+		}
 		fprintf(stream, "SUMMARY:%s\n", apt->mesg);
 		if (apt->state & APOINT_NOTIFY)
 			ical_export_valarm(stream);
@@ -900,18 +908,11 @@ ical_read_event(FILE * fdi, FILE * log, int list, unsigned *noevents,
 			}
 
 			if (vevent_type == APPOINTMENT && vevent.dur == 0) {
-				if (vevent.end == 0) {
-					ical_log(log, ICAL_VEVENT, ITEMLINE,
-						 _("could not compute duration "
-						  "(no end time)."));
-					goto cleanup;
+				if (vevent.end != 0) {
+					vevent.dur = vevent.end - vevent.start;
 				}
 
-				vevent.dur = vevent.end - vevent.start;
-				if (vevent.dur == 0) {
-					vevent_type = EVENT;
-					vevent.end = 0L;
-				} else if (vevent.dur < 0) {
+				if (vevent.dur < 0) {
 					ical_log(log, ICAL_VEVENT, ITEMLINE,
 						_("item has a negative duration."));
 					goto cleanup;
