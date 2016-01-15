@@ -746,6 +746,14 @@ void io_reload_data(void)
 			io_save_todo(path_todo_backup);
 			io_save_mutex_unlock();
 
+			/*
+			 * We do not directly write to the data files here;
+			 * however, the external merge tool might incorporate
+			 * changes from the backup file into the main data
+			 * files.
+			 */
+			run_hook("pre-save");
+
 			if (!io_files_equal(path_apts, path_apts_backup)) {
 				const char *arg_apts[] = { conf.mergetool,
 							   path_apts,
@@ -764,6 +772,15 @@ void io_reload_data(void)
 
 			xfree(path_apts_backup);
 			xfree(path_todo_backup);
+
+			/*
+			 * We do not directly write to the data files here;
+			 * however, the external merge tool will likely have
+			 * incorporated changes from the backup file into the
+			 * main data files at this point.
+			 */
+			run_hook("post-save");
+
 			break;
 		case 3:
 			/* FALLTHROUGH */
