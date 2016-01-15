@@ -293,6 +293,16 @@ can be specified using the `-c` flag.
   See the <<basics_format_strings,Format strings>> section for detailed
   information on format strings.
 
+`--export-uid`::
+  When exporting items, add the hash of each item to the exported object as an
+  UID property.
+
+`-F`, `--filter`::
+  Read items from the data files and write them back. The filter interface can
+  be used to drop specific items. Be careful with this option, specifying a
+  wrong filter might result it data loss! It is highly recommended to test the
+  effect of filters with -G first. See also: <<basics_filters,Filters>>.
+
 `--from <date>`::
   Specify the start date of the range when used with `-Q`.
 
@@ -314,12 +324,18 @@ can be specified using the `-c` flag.
 `-l <num>, --limit <num>`::
   Limit the number of results printed to 'num'.
 
+`--list-imported`::
+  When importing items, print the hash of each newly created object to stdout.
+
 `-n, --next`::
   Print the next appointment within upcoming 24 hours and exit.  The indicated
   time is the number of hours and minutes left before this appointment.
 +
 Note: the calendar from which to read the appointments can be specified using
 the `-c` flag.
+
+`-q`, `--quiet`::
+  Be quiet. Do not show system dialogs.
 
 `-Q, --query`::
   Print all appointments inside a given query range, followed by all TODO
@@ -393,6 +409,10 @@ Filters
 Filters can be used to restrict the set of items which are loaded from the
 appointments file when using calcurse in non-interactive mode. The following
 filters are currently supported:
+
+`--filter-hash <pattern>`::
+  Only include items with a hash starting with the specified pattern. The
+  pattern can be inverted by prepending an exclamation mark (`!`).
 
 `--filter-type <type>`::
   Ignore any items that do not match the type mask. The type mask is a
@@ -549,6 +569,13 @@ units modulo the next larger time unit. For example, an appointment in
 show 50:00 with the formatting string `%EH:%M`. Note that if you are
 combining the `-` and `E` options, the `-` must come first. The default
 format for the `(remaining)` specifier is `%EH:%M`.
+
+There are two additional long format specifiers that do not have any
+corresponding short options. They can be used to print an item's hash or its
+internal representation and were designed to be used for scripting:
+
+* `(hash)`
+* `(raw)`
 
 [[basics_invocation_variable]]
 Environment variable for i18n
