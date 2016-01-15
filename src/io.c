@@ -1084,7 +1084,7 @@ void io_startup_screen(int no_data_file)
 }
 
 /* Export calcurse data. */
-void io_export_data(enum export_type type)
+void io_export_data(enum export_type type, int export_uid)
 {
 	FILE *stream = NULL;
 	const char *success = _("The data were successfully exported");
@@ -1109,7 +1109,7 @@ void io_export_data(enum export_type type)
 		return;
 
 	if (type == IO_EXPORT_ICAL)
-		ical_export_data(stream);
+		ical_export_data(stream, export_uid);
 	else if (type == IO_EXPORT_PCAL)
 		pcal_export_data(stream);
 

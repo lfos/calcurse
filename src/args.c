@@ -71,6 +71,7 @@ enum {
 	OPT_FMT_REV,
 	OPT_FMT_TODO,
 	OPT_LIST_IMPORTED,
+	OPT_EXPORT_UID,
 	OPT_READ_ONLY,
 	OPT_STATUS
 };
@@ -453,7 +454,7 @@ int parse_args(int argc, char **argv)
 	const char *fmt_todo = "%p. %m\n";
 	/* Import and export parameters */
 	int xfmt = IO_EXPORT_ICAL;
-	int list_imported = 0;
+	int list_imported = 0, export_uid = 0;
 	/* Data file locations */
 	const char *cfile = NULL, *datadir = NULL, *ifile = NULL;
 
@@ -509,6 +510,7 @@ int parse_args(int argc, char **argv)
 		{"format-event", required_argument, NULL, OPT_FMT_EV},
 		{"format-recur-event", required_argument, NULL, OPT_FMT_REV},
 		{"format-todo", required_argument, NULL, OPT_FMT_TODO},
+		{"export-uid", no_argument, NULL, OPT_EXPORT_UID},
 		{"list-imported", no_argument, NULL, OPT_LIST_IMPORTED},
 		{"read-only", no_argument, NULL, OPT_READ_ONLY},
 		{"status", no_argument, NULL, OPT_STATUS},
@@ -719,6 +721,9 @@ int parse_args(int argc, char **argv)
 		case OPT_LIST_IMPORTED:
 			list_imported = 1;
 			break;
+		case OPT_EXPORT_UID:
+			export_uid = 1;
+			break;
 		case OPT_READ_ONLY:
 			read_only = 1;
 			break;
@@ -802,7 +807,7 @@ int parse_args(int argc, char **argv)
 		io_check_file(path_apts);
 		io_check_file(path_todo);
 		io_load_data(&filter);
-		io_export_data(xfmt);
+		io_export_data(xfmt, export_uid);
 	} else {
 		/* interactive mode */
 		non_interactive = 0;

@@ -62,11 +62,11 @@ typedef struct {
 } ical_rpt_t;
 
 static void ical_export_header(FILE *);
-static void ical_export_recur_events(FILE *);
-static void ical_export_events(FILE *);
-static void ical_export_recur_apoints(FILE *);
-static void ical_export_apoints(FILE *);
-static void ical_export_todo(FILE *);
+static void ical_export_recur_events(FILE *, int);
+static void ical_export_events(FILE *, int);
+static void ical_export_recur_apoints(FILE *, int);
+static void ical_export_apoints(FILE *, int);
+static void ical_export_todo(FILE *, int);
 static void ical_export_footer(FILE *);
 
 static const char *ical_recur_type[RECUR_TYPES] =
@@ -98,7 +98,7 @@ static void ical_export_footer(FILE * stream)
 }
 
 /* Export recurrent events. */
-static void ical_export_recur_events(FILE * stream)
+static void ical_export_recur_events(FILE * stream, int export_uid)
 {
 	llist_item_t *i, *j;
 	char ical_date[BUFSIZ];
@@ -131,12 +131,19 @@ static void ical_export_recur_events(FILE * stream)
 		}
 
 		fprintf(stream, "SUMMARY:%s\n", rev->mesg);
+
+		if (export_uid) {
+			char *hash = recur_event_hash(rev);
+			fprintf(stream, "UID:%s\n", hash);
+			mem_free(hash);
+		}
+
 		fputs("END:VEVENT\n", stream);
 	}
 }
 
 /* Export events. */
-static void ical_export_events(FILE * stream)
+static void ical_export_events(FILE * stream, int export_uid)
 {
 	llist_item_t *i;
 	char ical_date[BUFSIZ];
@@ -147,12 +154,19 @@ static void ical_export_events(FILE * stream)
 		fputs("BEGIN:VEVENT\n", stream);
 		fprintf(stream, "DTSTART:%s\n", ical_date);
 		fprintf(stream, "SUMMARY:%s\n", ev->mesg);
+
+		if (export_uid) {
+			char *hash = event_hash(ev);
+			fprintf(stream, "UID:%s\n", hash);
+			mem_free(hash);
+		}
+
 		fputs("END:VEVENT\n", stream);
 	}
 }
 
 /* Export recurrent appointments. */
-static void ical_export_recur_apoints(FILE * stream)
+static void ical_export_recur_apoints(FILE * stream, int export_uid)
 {
 	llist_item_t *i, *j;
 	char ical_datetime[BUFSIZ];
@@ -198,13 +212,20 @@ static void ical_export_recur_apoints(FILE * stream)
 		fprintf(stream, "SUMMARY:%s\n", rapt->mesg);
 		if (rapt->state & APOINT_NOTIFY)
 			ical_export_valarm(stream);
+
+		if (export_uid) {
+			char *hash = recur_apoint_hash(rapt);
+			fprintf(stream, "UID:%s\n", hash);
+			mem_free(hash);
+		}
+
 		fputs("END:VEVENT\n", stream);
 	}
 	LLIST_TS_UNLOCK(&recur_alist_p);
 }
 
 /* Export appointments. */
-static void ical_export_apoints(FILE * stream)
+static void ical_export_apoints(FILE * stream, int export_uid)
 {
 	llist_item_t *i;
 	char ical_datetime[BUFSIZ];
@@ -226,13 +247,20 @@ static void ical_export_apoints(FILE * stream)
 		fprintf(stream, "SUMMARY:%s\n", apt->mesg);
 		if (apt->state & APOINT_NOTIFY)
 			ical_export_valarm(stream);
+
+		if (export_uid) {
+			char *hash = apoint_hash(apt);
+			fprintf(stream, "UID:%s\n", hash);
+			mem_free(hash);
+		}
+
 		fputs("END:VEVENT\n", stream);
 	}
 	LLIST_TS_UNLOCK(&alist_p);
 }
 
 /* Export todo items. */
-static void ical_export_todo(FILE * stream)
+static void ical_export_todo(FILE * stream, int export_uid)
 {
 	llist_item_t *i;
 
@@ -247,6 +275,13 @@ static void ical_export_todo(FILE * stream)
 		}
 		fprintf(stream, "PRIORITY:%d\n", priority);
 		fprintf(stream, "SUMMARY:%s\n", todo->mesg);
+
+		if (export_uid) {
+			char *hash = todo_hash(todo);
+			fprintf(stream, "UID:%s\n", hash);
+			mem_free(hash);
+		}
+
 		fputs("END:VTODO\n", stream);
 	}
 }
@@ -1123,13 +1158,13 @@ ical_import_data(FILE * stream, FILE * log, int list, unsigned *events,
 }
 
 /* Export calcurse data. */
-void ical_export_data(FILE * stream)
+void ical_export_data(FILE * stream, int export_uid)
 {
 	ical_export_header(stream);
-	ical_export_recur_events(stream);
-	ical_export_events(stream);
-	ical_export_recur_apoints(stream);
-	ical_export_apoints(stream);
-	ical_export_todo(stream);
+	ical_export_recur_events(stream, export_uid);
+	ical_export_events(stream, export_uid);
+	ical_export_recur_apoints(stream, export_uid);
+	ical_export_apoints(stream, export_uid);
+	ical_export_todo(stream, export_uid);
 	ical_export_footer(stream);
 }

@@ -293,10 +293,10 @@ static inline void key_generic_export()
 	switch (status_ask_choice
 		(export_msg, export_choices, nb_export_choices)) {
 	case 1:
-		io_export_data(IO_EXPORT_ICAL);
+		io_export_data(IO_EXPORT_ICAL, 0);
 		break;
 	case 2:
-		io_export_data(IO_EXPORT_PCAL);
+		io_export_data(IO_EXPORT_PCAL, 0);
 		break;
 	default:		/* User escaped */
 		break;
