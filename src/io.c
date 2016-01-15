@@ -1169,7 +1169,10 @@ void io_import_data(enum import_type type, const char *stream_name, int list)
 		|| type >= IO_IMPORT_NBTYPES, _("unknown import type"));
 	switch (ui_mode) {
 	case UI_CMDLINE:
-		stream = fopen(stream_name, "r");
+		if (!strcmp(stream_name, "-"))
+			stream = stdin;
+		else
+			stream = fopen(stream_name, "r");
 		EXIT_IF(stream == NULL,
 			_("FATAL ERROR: the input file cannot be accessed, "
 			 "Aborting..."));
