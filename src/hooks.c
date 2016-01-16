@@ -51,13 +51,17 @@ int run_hook(const char *name)
 	if (!io_file_exists(hook_path))
 		return 0;
 
-	wins_prepare_external();
+	if (ui_mode == UI_CURSES)
+		wins_prepare_external();
+
 	if ((pid = shell_exec(NULL, NULL, *arg, arg))) {
 		ret = child_wait(NULL, NULL, pid);
 		if (ret)
 			press_any_key();
 	}
-	wins_unprepare_external();
+
+	if (ui_mode == UI_CURSES)
+		wins_unprepare_external();
 
 	return ret;
 }
