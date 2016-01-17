@@ -50,13 +50,13 @@ void ui_todo_add(void)
 	int ch = 0;
 	const char *mesg = _("Enter the new TODO item:");
 	const char *mesg_id =
-	    _("Enter the TODO priority [1 (highest) - 9 (lowest)]:");
+	    _("Enter the TODO priority [0 (none), 1 (highest) - 9 (lowest)]:");
 	char todo_input[BUFSIZ] = "";
 
 	status_mesg(mesg, "");
 	if (getstring(win[STA].p, todo_input, BUFSIZ, 0, 1) ==
 	    GETSTRING_VALID) {
-		while ((ch < '1') || (ch > '9')) {
+		while ((ch < '0') || (ch > '9')) {
 			status_mesg(mesg_id, "");
 			ch = wgetch(win[KEY].p);
 		}
@@ -259,8 +259,8 @@ void ui_todo_chg_priority(int diff)
 	int id = item->id + diff;
 	struct todo *item_new;
 
-	if (id < 1)
-		id = 1;
+	if (id < 0)
+		id = 0;
 	else if (id > 9)
 		id = 9;
 

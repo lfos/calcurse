@@ -1054,11 +1054,10 @@ ical_read_todo(FILE * fdi, FILE * log, int list, unsigned *notodos,
 	       unsigned *noskipped, char *buf, char *lstore,
 	       unsigned *lineno)
 {
-	const int LOWEST = 9;
 	const int ITEMLINE = *lineno;
 	struct {
 		char *mesg, *note;
-		int has_priority, priority;
+		int priority;
 		int completed;
 	} vtodo;
 	int skip_alarm;
@@ -1077,8 +1076,6 @@ ical_read_todo(FILE * fdi, FILE * log, int list, unsigned *notodos,
 		}
 
 		if (starts_with_ci(buf, "END:VTODO")) {
-			if (!vtodo.has_priority)
-				vtodo.priority = LOWEST;
 			if (!vtodo.mesg) {
 				ical_log(log, ICAL_VTODO, ITEMLINE,
 					 _("could not retrieve item summary."));
@@ -1093,12 +1090,10 @@ ical_read_todo(FILE * fdi, FILE * log, int list, unsigned *notodos,
 
 		if (starts_with_ci(buf, "PRIORITY:")) {
 			sscanf(buf, "%d", &vtodo.priority);
-			if (vtodo.priority >= 1 && vtodo.priority <= 9) {
-				vtodo.has_priority = 1;
-			} else {
+			if (vtodo.priority < 0 || vtodo.priority > 9) {
 				ical_log(log, ICAL_VTODO, ITEMLINE,
-					 _("item priority is not acceptable "
-					  "(must be between 1 and 9)."));
+					 _("item priority is invalid "
+					  "(must be between 0 and 9)."));
 			}
 		} else if (starts_with_ci(buf, "STATUS:COMPLETED")) {
 			vtodo.completed = 1;
