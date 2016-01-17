@@ -266,14 +266,11 @@ static void ical_export_todo(FILE * stream, int export_uid)
 
 	LLIST_FOREACH(&todolist, i) {
 		struct todo *todo = LLIST_TS_GET_DATA(i);
-		int priority = todo->id;
 
 		fputs("BEGIN:VTODO\n", stream);
-		if (todo->id < 0) {
+		if (todo->completed)
 			fprintf(stream, "STATUS:COMPLETED\n");
-			priority = -priority;
-		}
-		fprintf(stream, "PRIORITY:%d\n", priority);
+		fprintf(stream, "PRIORITY:%d\n", todo->id);
 		fprintf(stream, "SUMMARY:%s\n", todo->mesg);
 
 		if (export_uid) {
@@ -327,9 +324,10 @@ static void ical_log(FILE * log, ical_types_e type, unsigned lineno,
 	fprintf(log, "%s [%d]: %s\n", typestr[type], lineno, msg);
 }
 
-static void ical_store_todo(int priority, char *mesg, char *note, int list)
+static void ical_store_todo(int priority, int completed, char *mesg,
+			    char *note, int list)
 {
-	struct todo *todo = todo_add(mesg, priority, note);
+	struct todo *todo = todo_add(mesg, priority, completed, note);
 	if (list) {
 		char *hash = todo_hash(todo);
 		printf("%s\n", hash);
@@ -1081,16 +1079,14 @@ ical_read_todo(FILE * fdi, FILE * log, int list, unsigned *notodos,
 		if (starts_with_ci(buf, "END:VTODO")) {
 			if (!vtodo.has_priority)
 				vtodo.priority = LOWEST;
-			if (vtodo.completed)
-				vtodo.priority = -vtodo.priority;
 			if (!vtodo.mesg) {
 				ical_log(log, ICAL_VTODO, ITEMLINE,
 					 _("could not retrieve item summary."));
 				goto cleanup;
 			}
 
-			ical_store_todo(vtodo.priority, vtodo.mesg,
-					vtodo.note, list);
+			ical_store_todo(vtodo.priority, vtodo.completed,
+					vtodo.mesg, vtodo.note, list);
 			(*notodos)++;
 			return;
 		}

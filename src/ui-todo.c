@@ -60,7 +60,7 @@ void ui_todo_add(void)
 			status_mesg(mesg_id, "");
 			ch = wgetch(win[KEY].p);
 		}
-		todo_add(todo_input, ch - '0', NULL);
+		todo_add(todo_input, ch - '0', 0, NULL);
 		ui_todo_load_items();
 		io_set_modified();
 	}
@@ -163,14 +163,14 @@ void ui_todo_draw(int n, WINDOW *win, int y, int hilt, void *cb_data)
 	int j;
 
 	if (ui_todo_view == TODO_HIDE_COMPLETED_VIEW) {
-		while (i && todo->id < 0) {
+		while (i && todo->completed) {
 			i = i->next;
 			if (i)
 				todo = LLIST_TS_GET_DATA(i);
 		}
 	}
 
-	mark[0] = todo->id > 0 ? '0' + todo->id : 'X';
+	mark[0] = todo->completed ? 'X' : '0' + todo->id;
 	mark[1] = todo->note ? '>' : '.';
 
 	hilt = hilt && (wins_slctd() == TOD);
@@ -217,7 +217,8 @@ void ui_todo_load_items(void)
 	/* TODO: Optimize this by keeping the list size in a variable. */
 	LLIST_FOREACH(&todolist, i) {
 		struct todo *todo = LLIST_TS_GET_DATA(i);
-		if (ui_todo_view == TODO_HIDE_COMPLETED_VIEW && todo->id < 0)
+		if (ui_todo_view == TODO_HIDE_COMPLETED_VIEW &&
+		    todo->completed)
 			continue;
 		n++;
 	}
@@ -263,7 +264,7 @@ void ui_todo_chg_priority(int diff)
 	else if (id > 9)
 		id = 9;
 
-	item_new = todo_add(item->mesg, id, item->note);
+	item_new = todo_add(item->mesg, id, item->completed, item->note);
 	todo_delete(item);
 	io_set_modified();
 	listbox_set_sel(&lb_todo, todo_get_position(item_new));

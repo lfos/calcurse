@@ -630,7 +630,7 @@ void io_load_todo(struct item_filter *filter)
 	FILE *data_file;
 	char *newline;
 	int nb_tod = 0;
-	int c, id;
+	int c, id, completed;
 	char buf[BUFSIZ], e_todo[BUFSIZ], note[MAX_NOTESIZ + 1];
 	unsigned line = 0;
 
@@ -642,7 +642,15 @@ void io_load_todo(struct item_filter *filter)
 		c = getc(data_file);
 		if (c == EOF) {
 			break;
-		} else if (c == '[') {	/* new style with id */
+		} else if (c == '[') {
+			/* new style with id */
+			c = getc(data_file);
+			if (c == '-') {
+				completed = 1;
+			} else {
+				completed = 0;
+				ungetc(c, data_file);
+			}
 			if (fscanf(data_file, " %d ", &id) != 1
 			    || getc(data_file) != ']')
 				io_load_error(path_todo, line,
@@ -651,6 +659,7 @@ void io_load_todo(struct item_filter *filter)
 			ungetc(c, data_file);
 		} else {
 			id = 9;
+			completed = 0;
 			ungetc(c, data_file);
 		}
 		/* Now read the attached note, if any. */
@@ -678,13 +687,13 @@ void io_load_todo(struct item_filter *filter)
 				continue;
 			if (filter->priority && id != filter->priority)
 				continue;
-			if (filter->completed && id > 0)
+			if (filter->completed && !completed)
 				continue;
-			if (filter->uncompleted && id < 0)
+			if (filter->uncompleted && completed)
 				continue;
 		}
 
-		struct todo *todo = todo_add(e_todo, id, note);
+		struct todo *todo = todo_add(e_todo, id, completed, note);
 
 		/* Filter by hash. */
 		if (filter && filter->hash) {

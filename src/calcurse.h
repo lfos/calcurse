@@ -323,6 +323,7 @@ struct event {
 struct todo {
 	char *mesg;
 	int id;
+	int completed;
 	char *note;
 };
 
@@ -1017,7 +1018,7 @@ int string_printf(struct string *, const char *, ...);
 /* todo.c */
 extern llist_t todolist;
 struct todo *todo_get_item(int, int);
-struct todo *todo_add(char *, int, char *);
+struct todo *todo_add(char *, int, int, char *);
 char *todo_tostr(struct todo *);
 char *todo_hash(struct todo *);
 void todo_write(struct todo *, FILE *);

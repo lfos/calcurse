@@ -45,7 +45,7 @@ llist_t todolist;
 
 static int todo_is_uncompleted(struct todo *todo, void *cbdata)
 {
-	return todo->id >= 0;
+	return !todo->completed;
 }
 
 /* Returns a structure containing the selected item. */
@@ -64,27 +64,20 @@ struct todo *todo_get_item(int item_number, int skip_completed)
 
 static int todo_cmp_id(struct todo *a, struct todo *b)
 {
-	/*
-	 * As of version 2.6, todo items can have a negative id, which means they
-	 * were completed. To keep them sorted, we need to consider the absolute id
-	 * value.
-	 */
-	int abs_a = abs(a->id);
-	int abs_b = abs(b->id);
-
-	return abs_a < abs_b ? -1 : (abs_a == abs_b ? 0 : 1);
+	return a->id - b->id;
 }
 
 /*
  * Add an item in the todo linked list.
  */
-struct todo *todo_add(char *mesg, int id, char *note)
+struct todo *todo_add(char *mesg, int id, int completed, char *note)
 {
 	struct todo *todo;
 
 	todo = mem_malloc(sizeof(struct todo));
 	todo->mesg = mem_strdup(mesg);
 	todo->id = id;
+	todo->completed = completed;
 	todo->note = (note != NULL
 		      && note[0] != '\0') ? mem_strdup(note) : NULL;
 
@@ -96,11 +89,13 @@ struct todo *todo_add(char *mesg, int id, char *note)
 char *todo_tostr(struct todo *todo)
 {
 	char *res;
+	const char *cstr = todo->completed ? "-" : "";
 
 	if (todo->note)
-		asprintf(&res, "[%d]>%s %s", todo->id, todo->note, todo->mesg);
+		asprintf(&res, "[%s%d]>%s %s", cstr, todo->id, todo->note,
+			 todo->mesg);
 	else
-		asprintf(&res, "[%d] %s", todo->id, todo->mesg);
+		asprintf(&res, "[%s%d] %s", cstr, todo->id, todo->mesg);
 
 	return res;
 }
@@ -144,15 +139,10 @@ void todo_delete(struct todo *todo)
 	mem_free(todo);
 }
 
-/*
- * Flag a todo item (for now on, only the 'completed' state is available).
- * Internally, a completed item keeps its priority, but it becomes negative.
- * This way, it is easy to retrive its original priority if the user decides
- * that in fact it was not completed.
- */
+/* Flag a todo item. */
 void todo_flag(struct todo *t)
 {
-	t->id = -t->id;
+	t->completed = !t->completed;
 }
 
 /*

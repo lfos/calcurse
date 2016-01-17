@@ -311,7 +311,7 @@ static void pcal_export_todo(FILE * stream)
 	fputs("#\n# Todos\n#\n", stream);
 	LLIST_FOREACH(&todolist, i) {
 		struct todo *todo = LLIST_TS_GET_DATA(i);
-		if (todo->id < 0)	/* completed items */
+		if (todo->completed)
 			continue;
 
 		fputs("note all  ", stream);
