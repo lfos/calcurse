@@ -425,11 +425,18 @@ struct day_item {
 	union aptev_ptr item;
 };
 
-/* Available view for the calendar panel. */
+/* Available views for the calendar panel. */
 enum {
 	CAL_MONTH_VIEW,
 	CAL_WEEK_VIEW,
 	CAL_VIEWS
+};
+
+/* Available views for the todo panel. */
+enum {
+	TODO_SHOW_COMPLETED_VIEW,
+	TODO_HIDE_COMPLETED_VIEW,
+	TODO_VIEWS
 };
 
 struct notify_app {
@@ -1009,7 +1016,7 @@ int string_printf(struct string *, const char *, ...);
 
 /* todo.c */
 extern llist_t todolist;
-struct todo *todo_get_item(int);
+struct todo *todo_get_item(int, int);
 struct todo *todo_add(char *, int, char *);
 char *todo_tostr(struct todo *);
 char *todo_hash(struct todo *);
@@ -1062,6 +1069,8 @@ void ui_todo_popup_item(void);
 void ui_todo_flag(void);
 void ui_todo_view_note(void);
 void ui_todo_edit_note(void);
+void ui_todo_view_prev(void);
+void ui_todo_view_next(void);
 
 /* utf8.c */
 int utf8_width(char *);

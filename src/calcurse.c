@@ -423,6 +423,9 @@ static inline void key_generic_scroll_up(void)
 	if (wins_slctd() == CAL) {
 		ui_calendar_view_prev();
 		wins_update(FLAG_CAL | FLAG_APP);
+	} else if (wins_slctd() == TOD) {
+		ui_todo_view_prev();
+		wins_update(FLAG_TOD | FLAG_APP);
 	}
 }
 
@@ -431,6 +434,9 @@ static inline void key_generic_scroll_down(void)
 	if (wins_slctd() == CAL) {
 		ui_calendar_view_next();
 		wins_update(FLAG_CAL | FLAG_APP);
+	} else if (wins_slctd() == TOD) {
+		ui_todo_view_next();
+		wins_update(FLAG_TOD | FLAG_APP);
 	}
 }
 

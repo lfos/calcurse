@@ -43,10 +43,23 @@
 
 llist_t todolist;
 
-/* Returns a structure containing the selected item. */
-struct todo *todo_get_item(int item_number)
+static int todo_is_uncompleted(struct todo *todo, void *cbdata)
 {
-	return LLIST_GET_DATA(LLIST_NTH(&todolist, item_number));
+	return todo->id >= 0;
+}
+
+/* Returns a structure containing the selected item. */
+struct todo *todo_get_item(int item_number, int skip_completed)
+{
+	llist_item_t *i;
+
+	if (skip_completed)
+		i = LLIST_FIND_NTH(&todolist, item_number, NULL,
+				   todo_is_uncompleted);
+	else
+		i = LLIST_NTH(&todolist, item_number);
+
+	return LLIST_GET_DATA(i);
 }
 
 static int todo_cmp_id(struct todo *a, struct todo *b)

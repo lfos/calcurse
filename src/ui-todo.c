@@ -36,6 +36,14 @@
 
 #include "calcurse.h"
 
+static unsigned ui_todo_view = 0;
+
+static struct todo *ui_todo_selitem(void)
+{
+	return todo_get_item(listbox_get_sel(&lb_todo),
+			     ui_todo_view == TODO_HIDE_COMPLETED_VIEW);
+}
+
 /* Request user to enter a new todo item. */
 void ui_todo_add(void)
 {
@@ -77,7 +85,7 @@ void ui_todo_delete(void)
 		return;
 	}
 
-	struct todo *item = todo_get_item(listbox_get_sel(&lb_todo));
+	struct todo *item = ui_todo_selitem();
 
 	if (item->note)
 		answer = status_ask_choice(erase_warning, erase_choice,
@@ -107,7 +115,7 @@ void ui_todo_edit(void)
 	if (!LLIST_FIRST(&todolist))
 		return;
 
-	struct todo *item = todo_get_item(listbox_get_sel(&lb_todo));
+	struct todo *item = ui_todo_selitem();
 	const char *mesg = _("Enter the new TODO description:");
 
 	status_mesg(mesg, "");
@@ -127,7 +135,7 @@ void ui_todo_pipe(void)
 	if (!LLIST_FIRST(&todolist))
 		return;
 
-	struct todo *item = todo_get_item(listbox_get_sel(&lb_todo));
+	struct todo *item = ui_todo_selitem();
 
 	status_mesg(_("Pipe item to external command:"), "");
 	if (getstring(win[STA].p, cmd, BUFSIZ, 0, 1) != GETSTRING_VALID)
@@ -153,6 +161,14 @@ void ui_todo_draw(int n, WINDOW *win, int y, int hilt, void *cb_data)
 	int width = lb_todo.sw.w;
 	char buf[width * UTF8_MAXLEN];
 	int j;
+
+	if (ui_todo_view == TODO_HIDE_COMPLETED_VIEW) {
+		while (i && todo->id < 0) {
+			i = i->next;
+			if (i)
+				todo = LLIST_TS_GET_DATA(i);
+		}
+	}
 
 	mark[0] = todo->id > 0 ? '0' + todo->id : 'X';
 	mark[1] = todo->note ? '>' : '.';
@@ -199,8 +215,12 @@ void ui_todo_load_items(void)
 	llist_item_t *i;
 
 	/* TODO: Optimize this by keeping the list size in a variable. */
-	LLIST_FOREACH(&todolist, i)
+	LLIST_FOREACH(&todolist, i) {
+		struct todo *todo = LLIST_TS_GET_DATA(i);
+		if (ui_todo_view == TODO_HIDE_COMPLETED_VIEW && todo->id < 0)
+			continue;
 		n++;
+	}
 
 	listbox_load_items(&lb_todo, n);
 }
@@ -219,7 +239,7 @@ void ui_todo_sel_move(int delta)
 void ui_todo_update_panel(int which_pan)
 {
 	/*
-	 * This is used and modified by display_todo_item() to avoid quadratic
+	 * This is used and modified by ui_todo_draw() to avoid quadratic
 	 * running time.
 	 */
 	llist_item_t *p = LLIST_FIRST(&todolist);
@@ -234,7 +254,7 @@ void ui_todo_chg_priority(int diff)
 	if (!LLIST_FIRST(&todolist))
 		return;
 
-	struct todo *item = todo_get_item(listbox_get_sel(&lb_todo));
+	struct todo *item = ui_todo_selitem();
 	int id = item->id + diff;
 	struct todo *item_new;
 
@@ -254,7 +274,7 @@ void ui_todo_popup_item(void)
 	if (!LLIST_FIRST(&todolist))
 		return;
 
-	struct todo *item = todo_get_item(listbox_get_sel(&lb_todo));
+	struct todo *item = ui_todo_selitem();
 	item_in_popup(NULL, NULL, item->mesg, _("TODO:"));
 }
 
@@ -263,8 +283,10 @@ void ui_todo_flag(void)
 	if (!LLIST_FIRST(&todolist))
 		return;
 
-	struct todo *item = todo_get_item(listbox_get_sel(&lb_todo));
+	struct todo *item = ui_todo_selitem();
 	todo_flag(item);
+	if (ui_todo_view == TODO_HIDE_COMPLETED_VIEW)
+		ui_todo_load_items();
 	io_set_modified();
 }
 
@@ -273,7 +295,7 @@ void ui_todo_view_note(void)
 	if (!LLIST_FIRST(&todolist))
 		return;
 
-	struct todo *item = todo_get_item(listbox_get_sel(&lb_todo));
+	struct todo *item = ui_todo_selitem();
 	todo_view_note(item, conf.pager);
 }
 
@@ -282,7 +304,25 @@ void ui_todo_edit_note(void)
 	if (!LLIST_FIRST(&todolist))
 		return;
 
-	struct todo *item = todo_get_item(listbox_get_sel(&lb_todo));
+	struct todo *item = ui_todo_selitem();
 	todo_edit_note(item, conf.editor);
 	io_set_modified();
+}
+
+/* Switch to next todo view. */
+void ui_todo_view_next(void)
+{
+	ui_todo_view++;
+	if (ui_todo_view == TODO_VIEWS)
+		ui_todo_view = 0;
+	ui_todo_load_items();
+}
+
+/* Switch to previous todo view. */
+void ui_todo_view_prev(void)
+{
+	if (ui_todo_view == 0)
+		ui_todo_view = TODO_VIEWS;
+	ui_todo_view--;
+	ui_todo_load_items();
 }
