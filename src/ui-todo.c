@@ -120,7 +120,11 @@ void ui_todo_edit(void)
 
 	status_mesg(mesg, "");
 	updatestring(win[STA].p, &item->mesg, 0, 1);
+	todo_resort(item);
+	ui_todo_load_items();
 	io_set_modified();
+
+	listbox_set_sel(&lb_todo, todo_get_position(item));
 }
 
 /* Pipe a todo item to an external program. */
@@ -287,6 +291,7 @@ void ui_todo_chg_priority(int diff)
 	item_new = todo_add(item->mesg, id, item->completed, item->note);
 	todo_delete(item);
 	io_set_modified();
+
 	listbox_set_sel(&lb_todo, todo_get_position(item_new));
 }
 
@@ -306,9 +311,10 @@ void ui_todo_flag(void)
 
 	struct todo *item = ui_todo_selitem();
 	todo_flag(item);
-	if (ui_todo_view == TODO_HIDE_COMPLETED_VIEW)
-		ui_todo_load_items();
+	ui_todo_load_items();
 	io_set_modified();
+
+	listbox_set_sel(&lb_todo, todo_get_position(item));
 }
 
 void ui_todo_view_note(void)

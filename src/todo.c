@@ -62,8 +62,15 @@ struct todo *todo_get_item(int item_number, int skip_completed)
 	return LLIST_GET_DATA(i);
 }
 
-static int todo_cmp_id(struct todo *a, struct todo *b)
+static int todo_cmp(struct todo *a, struct todo *b)
 {
+	if (a->completed && !b->completed)
+		return 1;
+	if (b->completed && !a->completed)
+		return -1;
+	if (a->id == b->id)
+		return strcmp(a->mesg, b->mesg);
+
 	return a->id - b->id;
 }
 
@@ -81,7 +88,7 @@ struct todo *todo_add(char *mesg, int id, int completed, char *note)
 	todo->note = (note != NULL
 		      && note[0] != '\0') ? mem_strdup(note) : NULL;
 
-	LLIST_ADD_SORTED(&todolist, todo, todo_cmp_id);
+	LLIST_ADD_SORTED(&todolist, todo, todo_cmp);
 
 	return todo;
 }
@@ -139,10 +146,21 @@ void todo_delete(struct todo *todo)
 	mem_free(todo);
 }
 
+/*
+ * Make sure an item is located at the right position within the sorted list.
+ */
+void todo_resort(struct todo *t)
+{
+	llist_item_t *i = LLIST_FIND_FIRST(&todolist, t, NULL);
+	LLIST_REMOVE(&todolist, i);
+	LLIST_ADD_SORTED(&todolist, t, todo_cmp);
+}
+
 /* Flag a todo item. */
 void todo_flag(struct todo *t)
 {
 	t->completed = !t->completed;
+	todo_resort(t);
 }
 
 /*

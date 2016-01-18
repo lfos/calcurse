@@ -1024,6 +1024,7 @@ char *todo_hash(struct todo *);
 void todo_write(struct todo *, FILE *);
 void todo_delete_note(struct todo *);
 void todo_delete(struct todo *);
+void todo_resort(struct todo *);
 void todo_flag(struct todo *);
 int todo_get_position(struct todo *);
 void todo_edit_note(struct todo *, const char *);
