@@ -44,6 +44,14 @@ static struct todo *ui_todo_selitem(void)
 			     ui_todo_view == TODO_HIDE_COMPLETED_VIEW);
 }
 
+static void ui_todo_set_selitem(struct todo *todo)
+{
+	int n = todo_get_position(todo,
+				  ui_todo_view == TODO_HIDE_COMPLETED_VIEW);
+	if (n >= 0)
+		listbox_set_sel(&lb_todo, n);
+}
+
 /* Request user to enter a new todo item. */
 void ui_todo_add(void)
 {
@@ -60,9 +68,10 @@ void ui_todo_add(void)
 			status_mesg(mesg_id, "");
 			ch = wgetch(win[KEY].p);
 		}
-		todo_add(todo_input, ch - '0', 0, NULL);
+		struct todo *todo = todo_add(todo_input, ch - '0', 0, NULL);
 		ui_todo_load_items();
 		io_set_modified();
+		ui_todo_set_selitem(todo);
 	}
 }
 
@@ -123,8 +132,7 @@ void ui_todo_edit(void)
 	todo_resort(item);
 	ui_todo_load_items();
 	io_set_modified();
-
-	listbox_set_sel(&lb_todo, todo_get_position(item));
+	ui_todo_set_selitem(item);
 }
 
 /* Pipe a todo item to an external program. */
@@ -291,8 +299,7 @@ void ui_todo_chg_priority(int diff)
 	item_new = todo_add(item->mesg, id, item->completed, item->note);
 	todo_delete(item);
 	io_set_modified();
-
-	listbox_set_sel(&lb_todo, todo_get_position(item_new));
+	ui_todo_set_selitem(item_new);
 }
 
 void ui_todo_popup_item(void)
@@ -313,8 +320,7 @@ void ui_todo_flag(void)
 	todo_flag(item);
 	ui_todo_load_items();
 	io_set_modified();
-
-	listbox_set_sel(&lb_todo, todo_get_position(item));
+	ui_todo_set_selitem(item);
 }
 
 void ui_todo_view_note(void)

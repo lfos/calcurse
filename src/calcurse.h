@@ -1026,7 +1026,7 @@ void todo_delete_note(struct todo *);
 void todo_delete(struct todo *);
 void todo_resort(struct todo *);
 void todo_flag(struct todo *);
-int todo_get_position(struct todo *);
+int todo_get_position(struct todo *, int);
 void todo_edit_note(struct todo *, const char *);
 void todo_view_note(struct todo *, const char *);
 void todo_free(struct todo *);

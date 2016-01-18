@@ -167,19 +167,26 @@ void todo_flag(struct todo *t)
  * Returns the position into the linked list corresponding to the
  * given todo item.
  */
-int todo_get_position(struct todo *needle)
+int todo_get_position(struct todo *needle, int skip_completed)
 {
 	llist_item_t *i;
 	int n = 0;
 
-	LLIST_FOREACH(&todolist, i) {
-		if (LLIST_TS_GET_DATA(i) == needle)
-			return n;
-		n++;
+	if (skip_completed) {
+		LLIST_FIND_FOREACH(&todolist, NULL, todo_is_uncompleted, i) {
+			if (LLIST_TS_GET_DATA(i) == needle)
+				return n;
+			n++;
+		}
+	} else {
+		LLIST_FOREACH(&todolist, i) {
+			if (LLIST_TS_GET_DATA(i) == needle)
+				return n;
+			n++;
+		}
 	}
 
-	EXIT(_("todo not found"));
-	return -1;		/* avoid compiler warnings */
+	return -1;
 }
 
 /* Attach a note to a todo */
