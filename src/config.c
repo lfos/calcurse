@@ -59,6 +59,8 @@ static int config_parse_str(char *, const char *);
 static int config_serialize_str(char **, const char *);
 static int config_parse_calendar_view(void *, const char *);
 static int config_serialize_calendar_view(char **, void *);
+static int config_parse_todo_view(void *, const char *);
+static int config_serialize_todo_view(char **, void *);
 static int config_parse_default_panel(void *, const char *);
 static int config_serialize_default_panel(char **, void *);
 static int config_parse_first_day_of_week(void *, const char *);
@@ -91,6 +93,7 @@ static const struct confvar confmap[] = {
 	{"appearance.notifybar", CONFIG_HANDLER_BOOL(nbar.show)},
 	{"appearance.sidebarwidth", config_parse_sidebar_width, config_serialize_sidebar_width, NULL},
 	{"appearance.theme", config_parse_color_theme, config_serialize_color_theme, NULL},
+	{"appearance.todoview", config_parse_todo_view, config_serialize_todo_view, NULL},
 	{"daemon.enable", CONFIG_HANDLER_BOOL(dmon.enable)},
 	{"daemon.log", CONFIG_HANDLER_BOOL(dmon.log)},
 	{"format.inputdate", config_parse_input_datefmt, config_serialize_input_datefmt, NULL},
@@ -200,6 +203,18 @@ static int config_parse_calendar_view(void *dummy, const char *val)
 		ui_calendar_set_view(CAL_MONTH_VIEW);
 	else if (!strcmp(val, "weekly"))
 		ui_calendar_set_view(CAL_WEEK_VIEW);
+	else
+		return 0;
+
+	return 1;
+}
+
+static int config_parse_todo_view(void *dummy, const char *val)
+{
+	if (!strcmp(val, "show-completed"))
+		ui_todo_set_view(TODO_SHOW_COMPLETED_VIEW);
+	else if (!strcmp(val, "hide-completed"))
+		ui_todo_set_view(TODO_HIDE_COMPLETED_VIEW);
 	else
 		return 0;
 
@@ -374,6 +389,16 @@ static int config_serialize_calendar_view(char **buf, void *dummy)
 		*buf = mem_strdup("weekly");
 	else
 		*buf = mem_strdup("monthly");
+
+	return 1;
+}
+
+static int config_serialize_todo_view(char **buf, void *dummy)
+{
+	if (ui_todo_get_view() == TODO_SHOW_COMPLETED_VIEW)
+		*buf = mem_strdup("show-completed");
+	else
+		*buf = mem_strdup("hide-completed");
 
 	return 1;
 }

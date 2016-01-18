@@ -327,3 +327,14 @@ void ui_todo_view_prev(void)
 	ui_todo_view--;
 	ui_todo_load_items();
 }
+
+void ui_todo_set_view(int view)
+{
+	ui_todo_view = (view < 0 || view >= TODO_VIEWS) ?
+		       TODO_SHOW_COMPLETED_VIEW : view;
+}
+
+int ui_todo_get_view(void)
+{
+	return (int)ui_todo_view;
+}

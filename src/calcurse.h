@@ -1072,6 +1072,8 @@ void ui_todo_view_note(void);
 void ui_todo_edit_note(void);
 void ui_todo_view_prev(void);
 void ui_todo_view_next(void);
+int ui_todo_get_view(void);
+void ui_todo_set_view(int);
 
 /* utf8.c */
 int utf8_width(char *);
