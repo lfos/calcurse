@@ -157,9 +157,10 @@ void ui_todo_draw(int n, WINDOW *win, int y, int hilt, void *cb_data)
 {
 	llist_item_t *i = *((llist_item_t **)cb_data);
 	struct todo *todo = LLIST_TS_GET_DATA(i);
-	int mark[2];
-	int width = lb_todo.sw.w;
+	char mark[] = { 0, 0, 0, 0 };
+	int width = lb_todo.sw.w - 2;
 	char buf[width * UTF8_MAXLEN];
+	char *mesg;
 	int j;
 
 	if (ui_todo_view == TODO_HIDE_COMPLETED_VIEW) {
@@ -170,8 +171,20 @@ void ui_todo_draw(int n, WINDOW *win, int y, int hilt, void *cb_data)
 		}
 	}
 
-	mark[0] = todo->completed ? 'X' : '0' + todo->id;
-	mark[1] = todo->note ? '>' : '.';
+	mark[0] = todo->completed ? 'X' : (todo->id > 0 ? '0' + todo->id : 0);
+	if (todo->note) {
+		if (mark[0] == '\0') {
+			mark[0] = '>';
+			mark[1] = ' ';
+		} else {
+			mark[1] = '>';
+			mark[2] = ' ';
+		}
+	} else if (mark[0] != '\0') {
+		mark[1] = '.';
+		mark[2] = ' ';
+	}
+	width -= strlen(mark);
 
 	hilt = hilt && (wins_slctd() == TOD);
 
@@ -179,19 +192,26 @@ void ui_todo_draw(int n, WINDOW *win, int y, int hilt, void *cb_data)
 		custom_apply_attr(win, ATTR_HIGHEST);
 
 	if (utf8_strwidth(todo->mesg) < width) {
-		mvwprintw(win, y, 0, "%c%c %s", mark[0], mark[1], todo->mesg);
+		mesg = todo->mesg;
 	} else {
+		width -= 3;
 		for (j = 0; todo->mesg[j] && width > 0; j++) {
 			if (!UTF8_ISCONT(todo->mesg[j]))
 				width -= utf8_width(&todo->mesg[j]);
 			buf[j] = todo->mesg[j];
 		}
-		if (j)
-			buf[j - 1] = 0;
-		else
+		if (j) {
+			buf[j - 1] = '.';
+			buf[j] = '.';
+			buf[j + 1] = '.';
+			buf[j + 2] = '\0';
+		} else {
 			buf[0] = 0;
-		mvwprintw(win, y, 0, "%c%c %s...", mark[0], mark[1], buf);
+		}
+		mesg = buf;
 	}
+
+	mvwprintw(win, y, 0, "%s%s", mark, mesg);
 
 	if (hilt)
 		custom_remove_attr(win, ATTR_HIGHEST);
