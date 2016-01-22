@@ -1,0 +1,50 @@
+calcurse-caldav
+===============
+
+calcurse-caldav is a simple Python script that can be used to synchronize
+calcurse with a CalDAV server. Please note that the script is alpha software!
+This means that:
+
+* We are eagerly looking for testers to run the script and give feedback! If
+  you find any bugs, please report them to the calcurse mailing lists or to the
+  GitHub bug tracker. If the script works fine for you, please report back as
+  well!
+
+* The script might still have bugs. Make backups, especially before running
+  calcurse-caldav for the first time!
+
+Usage
+-----
+
+calcurse-caldav requires an up-to-date version of calcurse and a configuration
+file located at ~/.calcurse/caldav/config. An example configuration file can be
+found under contrib/caldav/config.sample in the calcurse source tree.
+
+If you run calcurse-caldav for the first time, you need to provide the --init
+argument. You can choose between the following initialization modes:
+
+    --init=keep-remote Remove all local calcurse items and import remote objects
+    --init=keep-local  Remove all remote objects and push local calcurse items
+    --init=two-way     Copy local objects to the CalDAV server and vice versa
+ 
+For subsequent calcurse-caldav invocations, you don't need to specify any
+additional parameters.
+
+How It Works
+------------
+
+calcurse-caldav creates a so-called synchronization database at
+~/.calcurse/caldav/sync.db that always keeps a snapshot of the last time the
+script was executed. When running the script, it compares the objects on the
+server and the local objects with that snapshot to identify items that were
+added or deleted. It then
+
+* downloads new objects from the server and imports them into calcurse,
+* deletes local objects that no longer exist on the server,
+* uploads objects to the server that were added locally,
+* deleted objects from the server that were deleted locally,
+* updates the synchronization database with the new snapshot.
+
+Note that, since calcurse does not use unique identifiers for items, it cannot
+keep track of moved/edited items. Thus, changing an item is equivalent to
+deleting the old item and creating a new one.

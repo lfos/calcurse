@@ -1,0 +1,31 @@
+# If you want to synchronize calcurse with a CalDAV server using
+# calcurse-caldav, create a new directory ~/.calcurse/caldav/, copy this file
+# to ~/.calcurse/caldav/config and adjust the configuration below.
+
+[General]
+# Path to the calcurse binary that is used for importing/exporting items.
+Binary = calcurse
+
+# Host name of the server that hosts CalDAV.
+Hostname = some.hostname.com
+
+# Path to the CalDAV calendar on the host specified above.
+Path = /path/to/calendar/on/the/server/
+
+# Enable this if you want to skip SSL certificate checks.
+InsecureSSL = No
+
+# Disable this option to actually enable synchronization. If it is enabled,
+# nothing is actually written to the server or to the local data files. If you
+# combine DryRun = Yes with Verbose = Yes, you get a log of what would have
+# happened with this option disabled.
+DryRun = Yes
+
+# Enable this if you want detailed logs written to stdout.
+Verbose = Yes
+
+# Credentials for HTTP Basic Authentication. Leave this commented out if you do
+# not want to use authentication.
+#[Auth]
+#Username = user
+#Password = pass
