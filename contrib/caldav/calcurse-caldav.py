@@ -15,9 +15,11 @@ import xml.etree.ElementTree as etree
 def die(msg):
     newmsg = ""
     for line in msg.splitlines():
-        newmsg += textwrap.fill(line, 80) + '\n'
-    newmsg = newmsg.rstrip('\n')
-    sys.exit(newmsg)
+        newmsg += textwrap.fill(line, 72) + '\n'
+    msg = ""
+    for line in newmsg.splitlines():
+        msg += 'error: ' + line + '\n'
+    sys.exit(msg.rstrip('\n'))
 
 def die_atnode(msg, node):
     if verbose:
