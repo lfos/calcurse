@@ -385,12 +385,19 @@ open(lockfn, 'w')
 try:
     # Connect to the server via HTTPs.
     if insecure_ssl:
-        context = ssl._create_unverified_context()
+        try:
+            context = ssl._create_unverified_context()
+            conn = http.client.HTTPSConnection(hostname, context=context)
+        except AttributeError:
+            # Python versions prior to 3.4 do not support
+            # ssl._create_unverified_context(). However, these versions do not
+            # seem to verify certificates by default so we can simply fall back
+            # to http.client.HTTPSConnection().
+            conn = http.client.HTTPSConnection(hostname)
     else:
-        context = ssl._create_default_https_context()
+        conn = http.client.HTTPSConnection(hostname)
     if verbose:
         print('Connecting to ' + hostname + '...')
-    conn = http.client.HTTPSConnection(hostname, context=context)
 
     if init:
         # In initialization mode, start with an empty synchronization database.
