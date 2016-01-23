@@ -335,7 +335,11 @@ except FileNotFoundError as e:
 
 hostname = config.get('General', 'HostName')
 path = config.get('General', 'Path').rstrip('/') + '/'
-insecure_ssl = config.getboolean('General', 'InsecureSSL')
+
+if config.has_option('General', 'InsecureSSL'):
+    insecure_ssl = config.getboolean('General', 'InsecureSSL')
+else:
+    insecure_ssl = False
 
 if config.has_option('General', 'Binary'):
     calcurse = config.get('General', 'Binary')
