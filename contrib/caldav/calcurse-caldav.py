@@ -352,7 +352,7 @@ else:
     dry_run = True
 
 if not verbose and config.has_option('General', 'Verbose'):
-    dry_run = config.getboolean('General', 'Verbose')
+    verbose = config.getboolean('General', 'Verbose')
 
 if config.has_option('Auth', 'UserName'):
     username = config.get('Auth', 'UserName')
