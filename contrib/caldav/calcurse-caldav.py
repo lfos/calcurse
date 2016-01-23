@@ -80,14 +80,35 @@ def get_auth_headers():
     headers = { 'Authorization' : 'Basic %s' % user_password }
     return headers
 
-def get_headers():
+def remote_query(cmd, path, additional_headers, body):
     headers = get_auth_headers()
     headers['Content-Type'] = 'Content-Type: text/calendar; charset=utf-8'
-    return headers
+    headers.update(additional_headers)
+
+    if debug:
+        print("> " + repr(headers))
+        if body:
+            for line in body.splitlines():
+                print("> " + line)
+
+    conn.request(cmd, path, headers=headers, body=body)
+
+    resp = conn.getresponse()
+
+    if not resp:
+        return (None, None)
+
+    headers = resp.getheaders()
+    body = resp.read().decode('utf-8')
+
+    if debug:
+        print("< " + repr(headers))
+        for line in body.splitlines():
+            print("< " + line)
+
+    return (headers, body)
 
 def get_hrefmap(conn, uid=None):
-    headers = get_headers()
-
     if uid:
         propfilter = '<c:prop-filter name="UID">' +\
                      '<c:text-match collation="i;octet" >%s</c:text-match>' +\
@@ -99,16 +120,10 @@ def get_hrefmap(conn, uid=None):
            '<d:prop><d:getetag /></d:prop><c:filter>' +\
            '<c:comp-filter name="VCALENDAR">' + propfilter + '</c:comp-filter>' +\
            '</c:filter></c:calendar-query>'
-
-    conn.request("REPORT", path, body=body, headers=headers)
-
-    resp = conn.getresponse()
-    resp = resp.read().decode('utf-8')
-
-    if not resp:
+    headers, body = remote_query("REPORT", path, {}, body)
+    if not headers:
         return {}
-
-    root = etree.fromstring(resp)
+    root = etree.fromstring(body)
 
     hrefmap = {}
     for node in root.findall(".//D:response", namespaces=nsmap):
@@ -132,12 +147,7 @@ def remote_wipe(conn):
     if dry_run:
         return
 
-    headers = get_headers()
-    conn.request("DELETE", path, headers=headers)
-
-    resp = conn.getresponse()
-    if resp:
-        resp.read()
+    remote_query("DELETE", path, headers, None)
 
 def get_syncdb(fn):
     if not os.path.exists(fn):
@@ -165,18 +175,13 @@ def save_syncdb(fn, syncdb):
             print("%s %s" % (etag, objhash), file=f)
 
 def push_object(conn, objhash):
-    href = path + objhash + ".ics"
-
-    headers = get_headers()
     body = calcurse_export(objhash)
-    conn.request("PUT", href, body=body, headers=headers)
+    headers, body = remote_query("PUT", path + objhash + ".ics", {}, body)
 
-    resp = conn.getresponse()
-    if not resp:
+    if not 'ETag' in headers:
         return None
-    resp.read()
 
-    etag = resp.getheader('ETag')
+    etag = headers['ETag']
     while not etag:
         hrefmap = get_hrefmap(conn, objhash)
         if len(hrefmap.keys()) > 0:
@@ -186,13 +191,8 @@ def push_object(conn, objhash):
     return etag
 
 def remove_remote_object(conn, etag, href):
-    headers = get_headers()
-    headers['If-Match'] = '"' + etag + '"'
-    conn.request("DELETE", href, headers=headers)
-
-    resp = conn.getresponse()
-    if resp:
-        resp.read()
+    headers = { 'If-Match' : '"' + etag + '"' }
+    remote_query("DELETE", href, headers, None)
 
 def push_objects(conn, syncdb, hrefmap):
     objhashes = calcurse_hashset()
@@ -240,19 +240,14 @@ def pull_objects(conn, syncdb, hrefmap):
     orphan = set(syncdb.keys()) - set(hrefmap.keys())
 
     # Download and import new objects from the server.
-    headers = get_headers()
     body = '<c:calendar-multiget xmlns:d="DAV:" xmlns:c="urn:ietf:params:xml:ns:caldav">' +\
            '<d:prop><d:getetag /><c:calendar-data /></d:prop>'
     for etag in missing:
         body += '<d:href>%s</d:href>' % (hrefmap[etag])
     body += '</c:calendar-multiget>'
-    conn.request("REPORT", path, body=body, headers=headers)
+    headers, body = remote_query("REPORT", path, {}, body)
 
-    resp = conn.getresponse()
-    if not resp:
-        return
-    resp = resp.read().decode('utf-8')
-    root = etree.fromstring(resp)
+    root = etree.fromstring(body)
 
     added = deleted = 0
 
@@ -316,6 +311,8 @@ parser.add_argument('--syncdb', action='store', dest='syncdbfn',
 parser.add_argument('-v', '--verbose', action='store_true', dest='verbose',
                     default=False,
                     help='print status messages to stdout')
+parser.add_argument('--debug', action='store_true', dest='debug',
+                    default=False, help='print debug messages to stdout')
 args = parser.parse_args()
 
 init = args.init is not None
@@ -323,6 +320,7 @@ configfn = args.configfn
 lockfn = args.lockfn
 syncdbfn = args.syncdbfn
 verbose = args.verbose
+debug = args.debug
 
 # Read configuration.
 config = configparser.RawConfigParser()
@@ -353,6 +351,9 @@ else:
 
 if not verbose and config.has_option('General', 'Verbose'):
     verbose = config.getboolean('General', 'Verbose')
+
+if not debug and config.has_option('General', 'Debug'):
+    debug = config.getboolean('General', 'Debug')
 
 if config.has_option('Auth', 'UserName'):
     username = config.get('Auth', 'UserName')
@@ -388,6 +389,8 @@ open(lockfn, 'w')
 
 try:
     # Connect to the server via HTTPs.
+    if verbose:
+        print('Connecting to ' + hostname + '...')
     if insecure_ssl:
         try:
             context = ssl._create_unverified_context()
@@ -400,8 +403,6 @@ try:
             conn = http.client.HTTPSConnection(hostname)
     else:
         conn = http.client.HTTPSConnection(hostname)
-    if verbose:
-        print('Connecting to ' + hostname + '...')
 
     if init:
         # In initialization mode, start with an empty synchronization database.
