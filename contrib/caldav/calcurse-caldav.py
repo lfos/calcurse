@@ -332,7 +332,7 @@ except FileNotFoundError as e:
     die('Configuration file not found: %s' % (configfn))
 
 hostname = config.get('General', 'HostName')
-path = config.get('General', 'Path').rstrip('/') + '/'
+path = '/' + config.get('General', 'Path').strip('/') + '/'
 
 if config.has_option('General', 'InsecureSSL'):
     insecure_ssl = config.getboolean('General', 'InsecureSSL')
