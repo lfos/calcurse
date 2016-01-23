@@ -86,10 +86,12 @@ def remote_query(cmd, path, additional_headers, body):
     headers.update(additional_headers)
 
     if debug:
-        print("> " + repr(headers))
+        print("> %s %s" % (cmd, path))
+        print("> Headers: " + repr(headers))
         if body:
             for line in body.splitlines():
                 print("> " + line)
+        print()
 
     conn.request(cmd, path, headers=headers, body=body)
 
@@ -102,9 +104,10 @@ def remote_query(cmd, path, additional_headers, body):
     body = resp.read().decode('utf-8')
 
     if debug:
-        print("< " + repr(headers))
+        print("< Headers: " + repr(headers))
         for line in body.splitlines():
             print("< " + line)
+        print()
 
     return (headers, body)
 
