@@ -120,16 +120,17 @@ def remote_query(cmd, path, additional_headers, body):
 
 def get_hrefmap(conn, uid=None):
     if uid:
-        propfilter = '<c:prop-filter name="UID">' +\
-                     '<c:text-match collation="i;octet" >%s</c:text-match>' +\
-                     '</c:prop-filter>' % (uid)
+        propfilter = '<C:prop-filter name="UID">' +\
+                     '<C:text-match collation="i;octet" >%s</C:text-match>' +\
+                     '</C:prop-filter>' % (uid)
     else:
         propfilter = ''
 
-    body = '<c:calendar-query xmlns:d="DAV:" xmlns:c="urn:ietf:params:xml:ns:caldav">' +\
-           '<d:prop><d:getetag /></d:prop><c:filter>' +\
-           '<c:comp-filter name="VCALENDAR">' + propfilter + '</c:comp-filter>' +\
-           '</c:filter></c:calendar-query>'
+    body = '<?xml version="1.0" encoding="utf-8" ?>' +\
+           '<C:calendar-query xmlns:D="DAV:" xmlns:C="urn:ietf:params:xml:ns:caldav">' +\
+           '<D:prop><D:getetag /></D:prop><C:filter>' +\
+           '<C:comp-filter name="VCALENDAR">' + propfilter + '</C:comp-filter>' +\
+           '</C:filter></C:calendar-query>'
     headers, body = remote_query("REPORT", path, {}, body)
     if not headers:
         return {}
@@ -250,11 +251,12 @@ def pull_objects(conn, syncdb, hrefmap):
     orphan = set(syncdb.keys()) - set(hrefmap.keys())
 
     # Download and import new objects from the server.
-    body = '<c:calendar-multiget xmlns:d="DAV:" xmlns:c="urn:ietf:params:xml:ns:caldav">' +\
-           '<d:prop><d:getetag /><c:calendar-data /></d:prop>'
+    body = '<?xml version="1.0" encoding="utf-8" ?>' +\
+           '<C:calendar-multiget xmlns:D="DAV:" xmlns:C="urn:ietf:params:xml:ns:caldav">' +\
+           '<D:prop><D:getetag /><C:calendar-data /></D:prop>'
     for etag in missing:
-        body += '<d:href>%s</d:href>' % (hrefmap[etag])
-    body += '</c:calendar-multiget>'
+        body += '<D:href>%s</D:href>' % (hrefmap[etag])
+    body += '</C:calendar-multiget>'
     headers, body = remote_query("REPORT", path, {}, body)
 
     root = etree.fromstring(body)
