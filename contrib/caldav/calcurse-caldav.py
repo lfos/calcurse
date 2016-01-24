@@ -102,11 +102,6 @@ def remote_query(cmd, path, additional_headers, body):
     if not resp:
         return (None, None)
 
-    if resp.status - (resp.status % 100) != 200:
-        die(("The server at %s replied with HTTP status code %d (%s) " +
-             "while trying to access %s.") %
-            (hostname, resp.status, resp.reason, path))
-
     headers = resp.getheaders()
     body = resp.read().decode('utf-8')
 
@@ -115,6 +110,11 @@ def remote_query(cmd, path, additional_headers, body):
         for line in body.splitlines():
             print("< " + line)
         print()
+
+    if resp.status - (resp.status % 100) != 200:
+        die(("The server at %s replied with HTTP status code %d (%s) " +
+             "while trying to access %s.") %
+            (hostname, resp.status, resp.reason, path))
 
     return (headers, body)
 
