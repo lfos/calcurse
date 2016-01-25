@@ -6,6 +6,7 @@ import configparser
 import hashlib
 import http.client
 import os
+import re
 import ssl
 import subprocess
 import sys
@@ -63,16 +64,11 @@ def calcurse_remove(objhash):
 
 def calcurse_version():
     p = subprocess.Popen([calcurse, '--version'], stdout=subprocess.PIPE)
-    tokens = p.communicate()[0].decode('utf-8').rstrip().split(" ")
-
-    if len(tokens) < 2:
+    m = re.match('Calcurse ([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9]+)-)?',
+                 p.communicate()[0].decode('utf-8'))
+    if not m:
         return None
-    if tokens[0] != 'Calcurse':
-        return None
-    tokens = tokens[1].split(".")
-    if len(tokens) < 2:
-        return None
-    return int(tokens[0]) * 10 + int(tokens[1])
+    return tuple(map(int, m.groups(0)))
 
 def get_auth_headers():
     if not username or not password:
@@ -397,8 +393,8 @@ ver = calcurse_version()
 if ver is None:
     die('Invalid calcurse binary. Make sure that the file specified in ' +
         'the configuration is a valid and up-to-date calcurse binary.')
-elif ver < 40:
-    die('Incompatible calcurse binary detected. Version >=4.0.0 is required ' +
+elif ver < (4, 0, 0, 73):
+    die('Incompatible calcurse binary detected. Version >=4.1.0 is required ' +
         'to synchronize with CalDAV servers.')
 
 # Create lock file.
