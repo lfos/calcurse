@@ -161,7 +161,7 @@ def remote_wipe(conn):
     if dry_run:
         return
 
-    remote_query("DELETE", path, headers, None)
+    remote_query("DELETE", path, {}, None)
 
 def get_syncdb(fn):
     if not os.path.exists(fn):
