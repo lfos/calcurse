@@ -10,7 +10,7 @@ This means that:
   GitHub bug tracker. If the script works fine for you, please report back as
   well!
 
-* The script might still have bugs. Make backups, especially before running
+* The script might still have bugs. MAKE BACKUPS, especially before running
   calcurse-caldav for the first time!
 
 Usage
@@ -43,8 +43,8 @@ added or deleted. It then
 * deletes local objects that no longer exist on the server,
 * uploads objects to the server that were added locally,
 * deleted objects from the server that were deleted locally,
-* updates the synchronization database with the new snapshot.
+* updates the synchronization database with a new snapshot.
 
-Note that, since calcurse does not use unique identifiers for items, it cannot
-keep track of moved/edited items. Thus, changing an item is equivalent to
-deleting the old item and creating a new one.
+Note: Since calcurse does not use unique identifiers for items, it cannot keep
+track of moved/edited items. Thus, modifying an item is equivalent to deleting
+the old item and creating a new one.
