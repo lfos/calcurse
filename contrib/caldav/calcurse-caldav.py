@@ -84,7 +84,10 @@ def get_auth_headers():
 
 def remote_query(cmd, path, additional_headers, body):
     headers = get_auth_headers()
-    headers['Content-Type'] = 'Content-Type: text/calendar; charset=utf-8'
+    if cmd == 'PUT':
+        headers['Content-Type'] = 'Content-Type: text/calendar; charset=utf-8'
+    else:
+        headers['Content-Type'] = 'Content-Type: application/xml; charset=utf-8'
     headers.update(additional_headers)
 
     if debug:
