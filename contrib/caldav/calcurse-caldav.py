@@ -83,7 +83,8 @@ def get_auth_headers():
     return headers
 
 def remote_query(cmd, path, additional_headers, body):
-    headers = get_auth_headers()
+    headers = custom_headers.copy()
+    headers.update(get_auth_headers())
     if cmd == 'PUT':
         headers['Content-Type'] = 'text/calendar; charset=utf-8'
     else:
@@ -379,6 +380,11 @@ if config.has_option('Auth', 'Password'):
     password = config.get('Auth', 'Password')
 else:
     password = None
+
+if config.has_section('CustomHeaders'):
+    custom_headers = dict(config.items('CustomHeaders'))
+else:
+    custom_headers = {}
 
 # Show disclaimer when performing a dry run.
 if dry_run:

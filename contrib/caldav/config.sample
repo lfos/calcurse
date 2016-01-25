@@ -29,3 +29,7 @@ Verbose = Yes
 #[Auth]
 #Username = user
 #Password = pass
+
+# Optionally specify additional HTTP headers here.
+#[CustomHeaders]
+#User-Agent = Mac_OS_X/10.9.2 (13C64) CalendarAgent/176
