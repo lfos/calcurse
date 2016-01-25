@@ -13,7 +13,7 @@ then
   git update-index --refresh > /dev/null 2>&1
   VERSION=`git describe --abbrev=4 --match='v[0-9]*' --dirty 2>/dev/null`
   VERSION=`echo "$VERSION" | sed 's/^v//'`
-  [ -n "$VERSION" ] && echo -n "$VERSION" > "$VERFILE"
+  [ -n "$VERSION" ] && printf "%s" "$VERSION" > "$VERFILE"
 fi
 
 if [ -f "$VERFILE" ]
