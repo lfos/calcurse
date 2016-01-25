@@ -22,7 +22,7 @@ def die(msg):
     sys.exit(msg.rstrip('\n'))
 
 def die_atnode(msg, node):
-    if verbose:
+    if debug:
         msg += '\n\n'
         msg += 'The error occurred while processing the following XML node:\n'
         msg += etree.tostring(node).decode('utf-8')
