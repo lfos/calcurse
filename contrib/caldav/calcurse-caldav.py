@@ -192,7 +192,10 @@ def push_object(conn, objhash):
     if not headers:
         return None
 
-    etag = [header[1] for header in headers if header[0] == 'ETag'][0]
+    etag = None
+    headerdict = dict((key.lower(), value) for key, value in headers)
+    if 'etag' in headerdict:
+        etag = headerdict['etag']
     while not etag:
         hrefmap = get_hrefmap(conn, objhash)
         if len(hrefmap.keys()) > 0:
