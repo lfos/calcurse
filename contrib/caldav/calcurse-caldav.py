@@ -192,10 +192,10 @@ def push_object(conn, objhash):
     body = calcurse_export(objhash)
     headers, body = remote_query("PUT", path + objhash + ".ics", {}, body)
 
-    if not 'ETag' in headers:
+    if not headers:
         return None
 
-    etag = headers['ETag']
+    etag = [header[1] for header in headers if header[0] == 'ETag'][0]
     while not etag:
         hrefmap = get_hrefmap(conn, objhash)
         if len(hrefmap.keys()) > 0:
