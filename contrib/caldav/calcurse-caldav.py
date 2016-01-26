@@ -120,9 +120,9 @@ def remote_query(cmd, path, additional_headers, body):
 
 def get_hrefmap(conn, uid=None):
     if uid:
-        propfilter = '<C:prop-filter name="UID">' +\
-                     '<C:text-match collation="i;octet" >%s</C:text-match>' +\
-                     '</C:prop-filter>' % (uid)
+        propfilter = ('<C:prop-filter name="UID">' +
+                      '<C:text-match collation="i;octet" >%s</C:text-match>' +
+                      '</C:prop-filter>') % (uid)
     else:
         propfilter = ''
 
