@@ -118,19 +118,21 @@ def remote_query(cmd, path, additional_headers, body):
 
     return (headers, body)
 
-def get_hrefmap(conn, uid=None):
-    if uid:
-        propfilter = ('<C:prop-filter name="UID">' +
-                      '<C:text-match collation="i;octet" >%s</C:text-match>' +
-                      '</C:prop-filter>') % (uid)
+def get_hrefmap(conn, hrefs=[]):
+    if len(hrefs) > 0:
+        body = '<?xml version="1.0" encoding="utf-8" ?>' +\
+               '<C:calendar-multiget xmlns:D="DAV:" xmlns:C="urn:ietf:params:xml:ns:caldav">' +\
+               '<D:prop><D:getetag /></D:prop>'
+        for href in hrefs:
+            body += '<D:href>{}</D:href>'.format(href)
+        body += '</C:calendar-multiget>'
     else:
-        propfilter = ''
+        body = '<?xml version="1.0" encoding="utf-8" ?>' +\
+               '<C:calendar-query xmlns:D="DAV:" xmlns:C="urn:ietf:params:xml:ns:caldav">' +\
+               '<D:prop><D:getetag /></D:prop><C:filter>' +\
+               '<C:comp-filter name="VCALENDAR"></C:comp-filter>' +\
+               '</C:filter></C:calendar-query>'
 
-    body = '<?xml version="1.0" encoding="utf-8" ?>' +\
-           '<C:calendar-query xmlns:D="DAV:" xmlns:C="urn:ietf:params:xml:ns:caldav">' +\
-           '<D:prop><D:getetag /></D:prop><C:filter>' +\
-           '<C:comp-filter name="VCALENDAR">' + propfilter + '</C:comp-filter>' +\
-           '</C:filter></C:calendar-query>'
     headers, body = remote_query("REPORT", path, {}, body)
     if not headers:
         return {}
@@ -186,8 +188,9 @@ def save_syncdb(fn, syncdb):
             print("%s %s" % (etag, objhash), file=f)
 
 def push_object(conn, objhash):
+    href = path + objhash + ".ics"
     body = calcurse_export(objhash)
-    headers, body = remote_query("PUT", path + objhash + ".ics", {}, body)
+    headers, body = remote_query("PUT", href, {}, body)
 
     if not headers:
         return None
@@ -197,9 +200,9 @@ def push_object(conn, objhash):
     if 'etag' in headerdict:
         etag = headerdict['etag']
     while not etag:
-        hrefmap = get_hrefmap(conn, objhash)
+        hrefmap = get_hrefmap(conn, [href])
         if len(hrefmap.keys()) > 0:
-            etag = hrefmap.keys()[0]
+            etag = next(iter(hrefmap.keys()))
     etag = etag.strip('"')
 
     return etag
