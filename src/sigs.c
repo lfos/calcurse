@@ -37,6 +37,10 @@
 #ifndef _BSD_SOURCE
 /* Needed for SIGWINCH on OpenBSD. */
 #define _BSD_SOURCE
+/* Silence compiler warning about _BSD_SOURCE being deprecated. */
+#ifndef _DEFAULT_SOURCE
+#define _DEFAULT_SOURCE
+#endif
 #endif
 
 #ifndef __BSD_VISIBLE
