@@ -66,6 +66,11 @@ static unsigned data_loaded;
 
 static void dmon_sigs_hdlr(int sig)
 {
+	if (sig == SIGUSR1) {
+		want_reload = 1;
+		return;
+	}
+
 	if (data_loaded)
 		free_user_data();
 
@@ -138,6 +143,7 @@ static unsigned daemonize(int status)
 	    || !sigs_set_hdlr(SIGTERM, dmon_sigs_hdlr)
 	    || !sigs_set_hdlr(SIGALRM, dmon_sigs_hdlr)
 	    || !sigs_set_hdlr(SIGQUIT, dmon_sigs_hdlr)
+	    || !sigs_set_hdlr(SIGUSR1, dmon_sigs_hdlr)
 	    || !sigs_set_hdlr(SIGCHLD, SIG_IGN))
 		return 0;
 
@@ -171,6 +177,12 @@ void dmon_start(int parent_exit_status)
 	DMON_LOG(_("started at %s\n"), nowstr());
 	for (;;) {
 		int left;
+
+		if (want_reload) {
+			want_reload = 0;
+			io_reload_data();
+			notify_check_next_app(1);
+		}
 
 		if (!notify_get_next_bkgd())
 			DMON_ABRT(_("error loading next appointment\n"));
