@@ -75,6 +75,8 @@ static int config_parse_output_datefmt(void *, const char *);
 static int config_serialize_output_datefmt(char **, void *);
 static int config_parse_input_datefmt(void *, const char *);
 static int config_serialize_input_datefmt(char **, void *);
+static int config_parse_notifyall(void *, const char *);
+static int config_serialize_notifyall(char **, void *);
 
 #define CONFIG_HANDLER_BOOL(var) (config_fn_parse_t) config_parse_bool, \
   (config_fn_serialize_t) config_serialize_bool, &(var)
@@ -109,7 +111,7 @@ static const struct confvar confmap[] = {
 	{"general.progressbar", CONFIG_HANDLER_BOOL(conf.progress_bar)},
 	{"general.systemdialogs", CONFIG_HANDLER_BOOL(conf.system_dialogs)},
 	{"notification.command", CONFIG_HANDLER_STR(nbar.cmd)},
-	{"notification.notifyall", CONFIG_HANDLER_BOOL(nbar.notify_all)},
+	{"notification.notifyall", config_parse_notifyall, config_serialize_notifyall, NULL},
 	{"notification.warning", CONFIG_HANDLER_INT(nbar.cntdwn)}
 };
 
@@ -291,6 +293,19 @@ static int config_parse_input_datefmt(void *dummy, const char *val)
 	}
 }
 
+static int config_parse_notifyall(void *dummy, const char *val)
+{
+	if (strcmp(val, "flagged-only") == 0)
+		nbar.notify_all = NOTIFY_FLAGGED_ONLY;
+	else if (strcmp(val, "unflagged-only") == 0)
+		nbar.notify_all = NOTIFY_UNFLAGGED_ONLY;
+	else if (strcmp(val, "all") == 0)
+		nbar.notify_all = NOTIFY_ALL;
+	else
+		return config_parse_bool(&nbar.notify_all, val);
+	return 1;
+}
+
 /* Set a configuration variable. */
 static int config_set_conf(const char *key, const char *value)
 {
@@ -451,6 +466,19 @@ static int config_serialize_output_datefmt(char **buf, void *dummy)
 static int config_serialize_input_datefmt(char **buf, void *dummy)
 {
 	return config_serialize_int(buf, &conf.input_datefmt);
+}
+
+static int config_serialize_notifyall(char **buf, void *dummy)
+{
+	if (nbar.notify_all == NOTIFY_FLAGGED_ONLY)
+		*buf = mem_strdup("flagged-only");
+	else if (nbar.notify_all == NOTIFY_UNFLAGGED_ONLY)
+		*buf = mem_strdup("unflagged-only");
+	else if (nbar.notify_all == NOTIFY_ALL)
+		*buf = mem_strdup("all");
+	else
+		return 0;
+	return 1;
 }
 
 /* Serialize the value of a configuration variable. */

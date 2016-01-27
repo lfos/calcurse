@@ -598,6 +598,10 @@ struct pad {
 };
 
 /* Notification bar definition. */
+#define NOTIFY_FLAGGED_ONLY    0
+#define NOTIFY_UNFLAGGED_ONLY  1
+#define NOTIFY_ALL             2
+
 struct nbar {
 	unsigned show;		/* display or hide the notify-bar */
 	int cntdwn;		/* warn when time left before next app

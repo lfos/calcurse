@@ -71,18 +71,27 @@ int notify_time_left(void)
 	return left > 0 ? left : 0;
 }
 
+static unsigned notify_trigger(void)
+{
+	int flagged = notify_app.state & APOINT_NOTIFY;
+
+	if (!notify_app.got_app)
+		return 0;
+	if (nbar.notify_all == NOTIFY_ALL)
+		return 1;
+	if (nbar.notify_all == NOTIFY_UNFLAGGED_ONLY)
+		flagged = !flagged;
+	return flagged;
+}
+
 /*
- * Return 1 if the reminder was not sent already for the upcoming
- * appointment.
+ * Return 1 if the reminder was not sent already for the upcoming appointment.
  */
 unsigned notify_needs_reminder(void)
 {
-	if (notify_app.got_app
-	    && (((notify_app.state & APOINT_NOTIFY) && !nbar.notify_all) ||
-		(!(notify_app.state & APOINT_NOTIFY) && nbar.notify_all))
-	    && !(notify_app.state & APOINT_NOTIFIED))
-		return 1;
-	return 0;
+	if (notify_app.state & APOINT_NOTIFIED)
+		return 0;
+	return notify_trigger();
 }
 
 /*
@@ -274,14 +283,7 @@ void notify_update_bar(void)
 			     hours_left * HOURINSEC) / MININSEC;
 			pthread_mutex_lock(&nbar.mutex);
 
-			if (time_left < nbar.cntdwn &&
-			    (((notify_app.state & APOINT_NOTIFY)
-			      && !nbar.notify_all)
-			     || (!(notify_app.state & APOINT_NOTIFY)
-				 && nbar.notify_all)))
-				blinking = 1;
-			else
-				blinking = 0;
+			blinking = time_left < nbar.cntdwn && notify_trigger();
 
 			WINS_NBAR_LOCK;
 			if (blinking)
@@ -599,7 +601,7 @@ print_option(WINDOW * win, unsigned x, unsigned y, char *name,
 /* Print options related to the notify-bar. */
 static void print_config_option(int i, WINDOW *win, int y, int hilt, void *cb_data)
 {
-	enum { SHOW, DATE, CLOCK, WARN, CMD, NOTIFY_ALL, DMON, DMON_LOG,
+	enum { SHOW, DATE, CLOCK, WARN, CMD, NOTIFYALL, DMON, DMON_LOG,
 		    NB_OPT };
 
 	struct opt_s {
@@ -629,8 +631,8 @@ static void print_config_option(int i, WINDOW *win, int y, int hilt, void *cb_da
 	opt[CMD].desc =
 	    _("(Command used to notify user of an upcoming appointment)");
 
-	opt[NOTIFY_ALL].name = "notification.notifyall = ";
-	opt[NOTIFY_ALL].desc =
+	opt[NOTIFYALL].name = "notification.notifyall = ";
+	opt[NOTIFYALL].desc =
 	    _("(Notify all appointments instead of flagged ones only)");
 
 	opt[DMON].name = "daemon.enable = ";
@@ -651,14 +653,21 @@ static void print_config_option(int i, WINDOW *win, int y, int hilt, void *cb_da
 
 	/* Boolean options */
 	opt[SHOW].valnum = nbar.show;
-	opt[NOTIFY_ALL].valnum = nbar.notify_all;
 	pthread_mutex_unlock(&nbar.mutex);
 
 	opt[DMON].valnum = dmon.enable;
 	opt[DMON_LOG].valnum = dmon.log;
 
-	opt[SHOW].valstr[0] = opt[NOTIFY_ALL].valstr[0] =
-	    opt[DMON].valstr[0] = opt[DMON_LOG].valstr[0] = '\0';
+	opt[SHOW].valstr[0] = opt[DMON].valstr[0] =
+		opt[DMON_LOG].valstr[0] = '\0';
+
+	opt[NOTIFYALL].valnum = nbar.notify_all;
+	if (opt[NOTIFYALL].valnum == NOTIFY_FLAGGED_ONLY)
+		strcpy(opt[NOTIFYALL].valstr, "flagged-only");
+	else if (opt[NOTIFYALL].valnum == NOTIFY_UNFLAGGED_ONLY)
+		strcpy(opt[NOTIFYALL].valstr, "unflagged-only");
+	else if (opt[NOTIFYALL].valnum == NOTIFY_ALL)
+		strcpy(opt[NOTIFYALL].valstr, "all");
 
 	if (hilt)
 		custom_apply_attr(win, ATTR_HIGHEST);
@@ -757,7 +766,7 @@ static void config_option_edit(int i)
 		break;
 	case 5:
 		pthread_mutex_lock(&nbar.mutex);
-		nbar.notify_all = !nbar.notify_all;
+		nbar.notify_all = (nbar.notify_all + 1) % 3;
 		pthread_mutex_unlock(&nbar.mutex);
 		notify_check_next_app(1);
 		break;

@@ -1133,9 +1133,12 @@ $ calcurse --next | mail -s "[calcurse] upcoming appointment!" user@host.com
 ----
 ====
 
-`notification.notifyall` (default: *no*)::
-  Invert the sense of flagging an appointment as `important`. If this is
-  enabled, all appointments will be notified - except for flagged ones.
+`notification.notifyall` (default: *flagged-only*)::
+  If set to flagged-only, you are only notified of flagged items. If set to
+  unflagged-only, you are only notified of unflagged items. If set to all,
+  notifications are always sent, independent of whether an item is flagged or
+  not. For historical reasons, this option also accepts boolean values where
+  yes equals flagged-only and no equals unflagged-only.
 
 `daemon.enable` (default: *no*)::
   If set to yes, daemon mode will be enabled, meaning `calcurse` will run into
