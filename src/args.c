@@ -73,7 +73,8 @@ enum {
 	OPT_LIST_IMPORTED,
 	OPT_EXPORT_UID,
 	OPT_READ_ONLY,
-	OPT_STATUS
+	OPT_STATUS,
+	OPT_DAEMON
 };
 
 /*
@@ -439,7 +440,7 @@ int parse_args(int argc, char **argv)
 {
 	/* Command-line flags */
 	int grep = 0, grep_filter = 0, query = 0, next = 0;
-	int status = 0, gc = 0, import = 0, export = 0;
+	int status = 0, gc = 0, import = 0, export = 0, daemon = 0;
 	/* Query ranges */
 	time_t from = -1, to = -1;
 	int range = -1;
@@ -514,6 +515,7 @@ int parse_args(int argc, char **argv)
 		{"list-imported", no_argument, NULL, OPT_LIST_IMPORTED},
 		{"read-only", no_argument, NULL, OPT_READ_ONLY},
 		{"status", no_argument, NULL, OPT_STATUS},
+		{"daemon", no_argument, NULL, OPT_DAEMON},
 		{NULL, no_argument, NULL, 0}
 	};
 
@@ -730,6 +732,9 @@ int parse_args(int argc, char **argv)
 		case OPT_STATUS:
 			status = 1;
 			break;
+		case OPT_DAEMON:
+			daemon = 1;
+			break;
 		default:
 			usage();
 			usage_try();
@@ -741,7 +746,7 @@ int parse_args(int argc, char **argv)
 	if (filter.type_mask == 0)
 		filter.type_mask = TYPE_MASK_ALL;
 
-	if (status + grep + query + next + gc + import + export > 1) {
+	if (status + grep + query + next + gc + import + export + daemon > 1) {
 		ERROR_MSG(_("invalid argument combination"));
 		usage();
 		usage_try();
@@ -808,6 +813,9 @@ int parse_args(int argc, char **argv)
 		io_check_file(path_todo);
 		io_load_data(&filter);
 		io_export_data(xfmt, export_uid);
+	} else if (daemon) {
+		notify_init_vars();
+		dmon_start(0);
 	} else {
 		/* interactive mode */
 		non_interactive = 0;
