@@ -68,6 +68,10 @@ static int todo_cmp(struct todo *a, struct todo *b)
 		return 1;
 	if (b->completed && !a->completed)
 		return -1;
+	if (a->id > 0 && b->id == 0)
+		return -1;
+	if (b->id > 0 && a->id == 0)
+		return 1;
 	if (a->id == b->id)
 		return strcmp(a->mesg, b->mesg);
 
