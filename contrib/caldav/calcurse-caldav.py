@@ -64,7 +64,7 @@ def calcurse_remove(objhash):
 
 def calcurse_version():
     p = subprocess.Popen([calcurse, '--version'], stdout=subprocess.PIPE)
-    m = re.match('Calcurse ([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9]+)-)?',
+    m = re.match('calcurse ([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9]+)-)?',
                  p.communicate()[0].decode('utf-8'))
     if not m:
         return None
