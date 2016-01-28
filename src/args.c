@@ -82,19 +82,14 @@ enum {
  */
 static void usage(void)
 {
-	const char *arg_usage =
-	    _("Usage: calcurse [-g|-h|-v] [-an] [-t[num]] [-i<file>] [-x[format]]\n"
-	     "                [-d <date>|<num>] [-s[date]] [-r[range]]\n"
-	     "                [-c<file>] [-D<dir>] [-S<regex>] [--status]\n"
-	     "                [--read-only]\n");
-	fputs(arg_usage, stdout);
+	printf("%s\n", _("usage: calcurse [--daemon|-F|-G|-g|-i<file>|-Q|--status|-x[<format>]]\n"
+			 "                [-c<file>] [-D<path>] [-h] [-q] [--read-only] [-v]\n"
+			 "                [--filter-*] [--format-*]"));
 }
 
 static void usage_try(void)
 {
-	const char *arg_usage_try =
-	    _("Try 'calcurse -h' for more information.\n");
-	fputs(arg_usage_try, stdout);
+	printf("%s\n", _("Try `calcurse -h` for more information."));
 }
 
 /*
@@ -102,22 +97,10 @@ static void usage_try(void)
  */
 static void version_arg(void)
 {
-	const char *vtext =
-	    _("\nCopyright (c) 2004-2015 calcurse Development Team.\n"
-	      "This is free software; see the source for copying conditions.\n");
-
-	fprintf(stdout, _("Calcurse %s - text-based organizer\n"),
-		VERSION);
-	fputs(vtext, stdout);
-}
-
-static void more_info(void)
-{
-	fputs(_("\nFor more information, type '?' from within Calcurse, "
-		"or read the manpage.\n"), stdout);
-	fputs(_("Mail feature requests and suggestions to <misc@calcurse.org>.\n"),
-	      stdout);
-	fputs(_("Mail bug reports to <bugs@calcurse.org>.\n"), stdout);
+	printf(_("calcurse %s -- text-based organizer\n"), VERSION);
+	putchar('\n');
+	printf("%s\n", _("Copyright (c) 2004-2015 calcurse Development Team."));
+	printf("%s\n", _("This is free software; see the source for copying conditions."));
 }
 
 /*
@@ -125,68 +108,32 @@ static void more_info(void)
  */
 static void help_arg(void)
 {
-	const char *htext =
-	    _("\nMiscellaneous:\n"
-	      "  -h, --help\n"
-	      "	print this help and exit.\n"
-	      "\n  -v, --version\n"
-	      "	print calcurse version and exit.\n"
-	      "\n  --status\n"
-	      "	display the status of running instances of calcurse.\n"
-	      "\n  --read-only\n"
-	      "	Don't save configuration nor appointments/todos. Use with care.\n"
-	      "\nFiles:\n"
-	      "  -c <file>, --calendar <file>\n"
-	      "	specify the calendar <file> to use (has precedence over '-D').\n"
-	      "\n  -D <dir>, --directory <dir>\n"
-	      "	specify the data directory to use.\n"
-	      "\tIf not specified, the default directory is ~/.calcurse\n"
-	      "\nNon-interactive:\n"
-	      "  -a, --appointment\n"
-	      " 	print events and appointments for current day and exit.\n"
-	      "\n  -d <date|num>, --day <date|num>\n"
-	      "	print events and appointments for <date> or <num> upcoming days and"
-	      "\n\texit. To specify both a starting date and a range, use the\n"
-	      "\t'--startday' and the '--range' option.\n"
-	      "\n  -g, --gc\n"
-	      "	run the garbage collector for note files and exit. \n"
-	      "\n  -i <file>, --import <file>\n"
-	      "	import the icalendar data contained in <file>. \n"
-	      "\n  -n, --next\n"
-	      "	print next appointment within upcoming 24 hours "
-	      "and exit. Also given\n\tis the remaining time before this "
-	      "next appointment.\n"
-	      "\n  -l <num>, --limit <num>\n"
-	      "	only print information regarding the next <num> items. \n"
-	      "\n  -r[num], --range[=num]\n"
-	      "	print events and appointments for the [num] number of days"
-	      "\n\tand exit. If no [num] is given, a range of 1 day is considered.\n"
-	      "\n  -s[date], --startday[=date]\n"
-	      "	print events and appointments from [date] and exit.\n"
-	      "\tIf no [date] is given, the current day is considered.\n"
-	      "\n  -S<regex>, --search=<regex>\n"
-	      "	search for the given regular expression within events, appointments,\n"
-	      "\tand todos description.\n"
-	      "\n  -t[num], --todo[=num]\n"
-	      "	print todo list and exit. If the optional number [num] is given,\n"
-	      "\tthen only todos having a priority equal to [num] will be returned.\n"
-	      "\tThe priority number must be between 1 (highest) and 9 (lowest).\n"
-	      "\tIt is also possible to specify '0' for the priority, in which case\n"
-	      "\tonly completed tasks will be shown.\n"
-	      "\n  -x[format], --export[=format]\n"
-	      "	export user data to the specified format. Events, appointments and\n"
-	      "\ttodos are converted and echoed to stdout.\n"
-	      "\tTwo possible formats are available: 'ical' and 'pcal'.\n"
-	      "\tIf the optional argument format is not given, ical format is\n"
-	      "\tselected by default.\n"
-	      "\tnote: redirect standard output to export data to a file,\n"
-	      "\tby issuing a command such as: calcurse --export > calcurse.dat\n");
-
-	fprintf(stdout, _("Calcurse %s - text-based organizer\n"),
-		VERSION);
 	usage();
-	fputs(htext, stdout);
-	more_info();
+	putchar('\n');
+	printf("%s\n", _("Operations in non-interactive mode:"));
+	printf("%s\n", _("  -F, --filter  Read items, filter them, and write them back"));
+	printf("%s\n", _("  -G, --grep    Grep items from the data files"));
+	printf("%s\n", _("  -Q, --query   Print items in a given query range"));
+	putchar('\n');
+	printf("%s\n", _("Note that -F, -G and -Q can be combined with filter options --filter-*\n"
+			 "and formatting options --format-*. Consult the man page for details."));
+	putchar('\n');
+	printf("%s\n", _("Miscellaneous:"));
+	printf("%s\n", _("  -c, --calendar <file>   Specify the calendar data file to use"));
+	printf("%s\n", _("  --daemon                Run notification daemon in the background"));
+	printf("%s\n", _("  -D, --directory <path>  Specify the data directory to use"));
+	printf("%s\n", _("  -g, --gc                Run the garbage collector and exit"));
+	printf("%s\n", _("  -h, --help              Show this help text and exit"));
+	printf("%s\n", _("  -i, --import <file>     Import iCal data from a file"));
+	printf("%s\n", _("  -q, --quiet             Do not show system dialogs"));
+	printf("%s\n", _("  --read-only             Do not save configuration or data files"));
+	printf("%s\n", _("  --status                Display the status of running instances"));
+	printf("%s\n", _("  -v, --version           Show version information and exit"));
+	printf("%s\n", _("  -x, --export [<format>] Export items, valid formats: ical, pcal"));
+	putchar('\n');
+	printf("%s\n", _("For more information, type '?' from within calcurse, or read the manpage."));
+	printf("%s\n", _("Submit feature requests and suggestions to <misc@calcurse.org>."));
+	printf("%s\n", _("Submit bug reports to <bugs@calcurse.org>."));
 }
 
 /*
