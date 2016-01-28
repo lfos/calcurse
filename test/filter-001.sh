@@ -8,8 +8,8 @@ if [ "$1" = 'actual' ]; then
 elif [ "$1" = 'expected' ]; then
   cat <<EOD
 to do:
-9. Gloriously slams
 9. Beefburger's
+9. Gloriously slams
 9. Seasons
 
 02/23/13:

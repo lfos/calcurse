@@ -534,6 +534,8 @@ int parse_args(int argc, char **argv)
 				filter.priority = atoi(optarg);
 				if (filter.priority == 0)
 					filter.completed = 1;
+				else
+					filter.uncompleted = 1;
 				EXIT_IF(filter.priority > 9,
 					_("invalid priority: %s"), optarg);
 			} else {

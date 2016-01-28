@@ -183,10 +183,10 @@ in read-only mode, all changes from this session will be lost without warning!
 
 *-t*[num], *--todo*[=num]::
   Print the *todo* list and exit. If the optional number 'num' is given, then
-  only todos having a priority equal to 'num' will be returned. The priority
-  number must be between 1 (highest) and 9 (lowest). It is also possible to
-  specify *0* for the priority, in which case only completed tasks will be
-  shown. Equivalent to *-Q --filter-type todo*, combined with
+  only uncompleted todos having a priority equal to 'num' will be returned. The
+  priority number must be between 1 (highest) and 9 (lowest). It is also
+  possible to specify *0* for the priority, in which case only completed tasks
+  will be shown. Equivalent to *-Q --filter-type todo*, combined with
   *--filter-priority* and *--filter-completed* or *--filter-uncompleted*.
 
 *--to* <date>::
