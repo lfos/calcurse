@@ -21,7 +21,7 @@ Import process report: 0017 lines read
  - ..:.. -> 09:18
 	Calibrator's
 to do:
-9. Nary parabled Louvre's fleetest mered
+0. Nary parabled Louvre's fleetest mered
 EOD
 else
   ./run-test "$0"
