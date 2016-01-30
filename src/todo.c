@@ -1,7 +1,7 @@
 /*
  * Calcurse - text-based organizer
  *
- * Copyright (c) 2004-2015 calcurse Development Team <misc@calcurse.org>
+ * Copyright (c) 2004-2016 calcurse Development Team <misc@calcurse.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

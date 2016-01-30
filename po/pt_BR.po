@@ -45,7 +45,7 @@ msgstr "Tente \"calcurse -h\" para maiores informações.\n"
 #, fuzzy
 msgid ""
 "\n"
-"Copyright (c) 2004-2015 calcurse Development Team.\n"
+"Copyright (c) 2004-2016 calcurse Development Team.\n"
 "This is free software; see the source for copying conditions.\n"
 msgstr ""
 "\n"
