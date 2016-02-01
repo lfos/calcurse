@@ -13,6 +13,7 @@ import sys
 import textwrap
 import xml.etree.ElementTree as etree
 
+
 def die(msg):
     newmsg = ""
     for line in msg.splitlines():
@@ -22,12 +23,14 @@ def die(msg):
         msg += 'error: ' + line + '\n'
     sys.exit(msg.rstrip('\n'))
 
+
 def die_atnode(msg, node):
     if debug:
         msg += '\n\n'
         msg += 'The error occurred while processing the following XML node:\n'
         msg += etree.tostring(node).decode('utf-8')
     die(msg)
+
 
 def calcurse_wipe():
     if verbose:
@@ -36,15 +39,18 @@ def calcurse_wipe():
         return
     subprocess.call([calcurse, '-F', '--filter-hash=XXX'])
 
+
 def calcurse_import(icaldata):
     p = subprocess.Popen([calcurse, '-i', '-', '--list-imported', '-q'],
                          stdin=subprocess.PIPE, stdout=subprocess.PIPE)
     return p.communicate(icaldata.encode('utf-8'))[0].decode('utf-8').rstrip()
 
+
 def calcurse_export(objhash):
     p = subprocess.Popen([calcurse, '-x', 'ical', '--export-uid',
                           '--filter-hash=' + objhash], stdout=subprocess.PIPE)
     return p.communicate()[0].decode('utf-8').rstrip()
+
 
 def calcurse_hashset():
     p = subprocess.Popen([calcurse, '-G'], stdout=subprocess.PIPE)
@@ -59,26 +65,30 @@ def calcurse_hashset():
         hashes.add(sha1.hexdigest())
     return hashes
 
+
 def calcurse_remove(objhash):
     subprocess.call([calcurse, '-F', '--filter-hash=!' + objhash])
 
+
 def calcurse_version():
     p = subprocess.Popen([calcurse, '--version'], stdout=subprocess.PIPE)
-    m = re.match('calcurse ([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9]+)-)?',
+    m = re.match(r'calcurse ([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9]+)-)?',
                  p.communicate()[0].decode('utf-8'))
     if not m:
         return None
-    return tuple(map(int, m.groups(0)))
+    return tuple([int(group) for group in m.groups(0)])
+
 
 def get_auth_headers():
     if not username or not password:
         return {}
     user_password = ('%s:%s' % (username, password)).encode('ascii')
     user_password = base64.b64encode(user_password).decode('ascii')
-    headers = { 'Authorization' : 'Basic %s' % user_password }
+    headers = {'Authorization': 'Basic %s' % user_password}
     return headers
 
-def remote_query(cmd, path, additional_headers, body):
+
+def remote_query(conn, cmd, path, additional_headers, body):
     headers = custom_headers.copy()
     headers.update(get_auth_headers())
     if cmd == 'PUT':
@@ -118,22 +128,24 @@ def remote_query(cmd, path, additional_headers, body):
 
     return (headers, body)
 
+
 def get_hrefmap(conn, hrefs=[]):
     if len(hrefs) > 0:
-        body = '<?xml version="1.0" encoding="utf-8" ?>' +\
-               '<C:calendar-multiget xmlns:D="DAV:" xmlns:C="urn:ietf:params:xml:ns:caldav">' +\
-               '<D:prop><D:getetag /></D:prop>'
+        body = ('<?xml version="1.0" encoding="utf-8" ?>'
+                '<C:calendar-multiget xmlns:D="DAV:" '
+                '                     xmlns:C="urn:ietf:params:xml:ns:caldav">'
+                '<D:prop><D:getetag /></D:prop>')
         for href in hrefs:
             body += '<D:href>{}</D:href>'.format(href)
         body += '</C:calendar-multiget>'
     else:
-        body = '<?xml version="1.0" encoding="utf-8" ?>' +\
-               '<C:calendar-query xmlns:D="DAV:" xmlns:C="urn:ietf:params:xml:ns:caldav">' +\
-               '<D:prop><D:getetag /></D:prop><C:filter>' +\
-               '<C:comp-filter name="VCALENDAR"></C:comp-filter>' +\
-               '</C:filter></C:calendar-query>'
-
-    headers, body = remote_query("REPORT", path, {}, body)
+        body = ('<?xml version="1.0" encoding="utf-8" ?>'
+                '<C:calendar-query xmlns:D="DAV:" '
+                '                  xmlns:C="urn:ietf:params:xml:ns:caldav">'
+                '<D:prop><D:getetag /></D:prop>'
+                '<C:filter><C:comp-filter name="VCALENDAR" /></C:filter>'
+                '</C:calendar-query>')
+    headers, body = remote_query(conn, "REPORT", path, {}, body)
     if not headers:
         return {}
     root = etree.fromstring(body)
@@ -154,13 +166,15 @@ def get_hrefmap(conn, hrefs=[]):
 
     return hrefmap
 
+
 def remote_wipe(conn):
     if verbose:
         print('Removing all objects from the CalDAV server...')
     if dry_run:
         return
 
-    remote_query("DELETE", path, {}, None)
+    remote_query(conn, "DELETE", path, {}, None)
+
 
 def get_syncdb(fn):
     if not os.path.exists(fn):
@@ -177,6 +191,7 @@ def get_syncdb(fn):
 
     return syncdb
 
+
 def save_syncdb(fn, syncdb):
     if verbose:
         print('Saving synchronization database to ' + fn + '...')
@@ -187,10 +202,11 @@ def save_syncdb(fn, syncdb):
         for etag, objhash in syncdb.items():
             print("%s %s" % (etag, objhash), file=f)
 
+
 def push_object(conn, objhash):
     href = path + objhash + ".ics"
     body = calcurse_export(objhash)
-    headers, body = remote_query("PUT", href, {}, body)
+    headers, body = remote_query(conn, "PUT", href, {}, body)
 
     if not headers:
         return None
@@ -207,9 +223,11 @@ def push_object(conn, objhash):
 
     return etag
 
+
 def remove_remote_object(conn, etag, href):
-    headers = { 'If-Match' : '"' + etag + '"' }
-    remote_query("DELETE", href, headers, None)
+    headers = {'If-Match': '"' + etag + '"'}
+    remote_query(conn, "DELETE", href, headers, None)
+
 
 def push_objects(conn, syncdb, hrefmap):
     objhashes = calcurse_hashset()
@@ -237,7 +255,7 @@ def push_objects(conn, syncdb, hrefmap):
                 deletags.append(key)
 
         for etag in deletags:
-            if not etag in hrefmap:
+            if etag not in hrefmap:
                 continue
             href = hrefmap[etag]
 
@@ -252,18 +270,20 @@ def push_objects(conn, syncdb, hrefmap):
 
     return (added, deleted)
 
+
 def pull_objects(conn, syncdb, hrefmap):
     missing = set(hrefmap.keys()) - set(syncdb.keys())
     orphan = set(syncdb.keys()) - set(hrefmap.keys())
 
     # Download and import new objects from the server.
-    body = '<?xml version="1.0" encoding="utf-8" ?>' +\
-           '<C:calendar-multiget xmlns:D="DAV:" xmlns:C="urn:ietf:params:xml:ns:caldav">' +\
-           '<D:prop><D:getetag /><C:calendar-data /></D:prop>'
+    body = ('<?xml version="1.0" encoding="utf-8" ?>'
+            '<C:calendar-multiget xmlns:D="DAV:" '
+            '                     xmlns:C="urn:ietf:params:xml:ns:caldav">'
+            '<D:prop><D:getetag /><C:calendar-data /></D:prop>')
     for etag in missing:
         body += '<D:href>%s</D:href>' % (hrefmap[etag])
     body += '</C:calendar-multiget>'
-    headers, body = remote_query("REPORT", path, {}, body)
+    headers, body = remote_query(conn, "REPORT", path, {}, body)
 
     root = etree.fromstring(body)
 
@@ -304,8 +324,9 @@ def pull_objects(conn, syncdb, hrefmap):
 
     return (added, deleted)
 
+
 # Initialize the XML namespace map.
-nsmap = { "D": "DAV:", "C": "urn:ietf:params:xml:ns:caldav" }
+nsmap = {"D": "DAV:", "C": "urn:ietf:params:xml:ns:caldav"}
 
 # Initialize default values.
 configfn = os.path.expanduser("~/.calcurse/caldav/config")
@@ -429,9 +450,9 @@ try:
 
     if init:
         # In initialization mode, start with an empty synchronization database.
-        if (args.init == 'keep-remote'):
+        if args.init == 'keep-remote':
             calcurse_wipe()
-        elif (args.init == 'keep-local'):
+        elif args.init == 'keep-local':
             remote_wipe(conn)
         syncdb = {}
     else:
@@ -441,9 +462,9 @@ try:
         if not syncdb:
             die('Sync database not found or empty. Please initialize the ' +
                 'database first.\n\nSupported initialization modes are:\n' +
-                '  --init=keep-remote Remove all local calcurse items and import remote objects\n' +
-                '  --init=keep-local  Remove all remote objects and push local calcurse items\n' +
-                '  --init=two-way     Copy local objects to the CalDAV server and vice versa')
+                '  --init=keep-remote Remove all local calcurse items\n' +
+                '  --init=keep-local  Remove all remote objects\n' +
+                '  --init=two-way     Copy local items to the server and vice versa')
 
     # Query the server and build a dictionary that maps ETags to paths on the
     # server.
