@@ -14,14 +14,19 @@ import textwrap
 import xml.etree.ElementTree as etree
 
 
-def die(msg):
-    newmsg = ""
+def msgfmt(msg, prefix=''):
+    lines = []
     for line in msg.splitlines():
-        newmsg += textwrap.fill(line, 72) + '\n'
-    msg = ""
-    for line in newmsg.splitlines():
-        msg += 'error: ' + line + '\n'
-    sys.exit(msg.rstrip('\n'))
+        lines += textwrap.wrap(line, 80 - len(prefix))
+    return '\n'.join([prefix + line for line in lines])
+
+
+def warn(msg):
+    print(msgfmt(msg, "warning: "))
+
+
+def die(msg):
+    sys.exit(msgfmt(msg, "error: "))
 
 
 def die_atnode(msg, node):
@@ -129,7 +134,7 @@ def remote_query(conn, cmd, path, additional_headers, body):
     return (headers, body)
 
 
-def get_hrefmap(conn, hrefs=[]):
+def get_etags(conn, hrefs=[]):
     if len(hrefs) > 0:
         body = ('<?xml version="1.0" encoding="utf-8" ?>'
                 '<C:calendar-multiget xmlns:D="DAV:" '
@@ -150,7 +155,7 @@ def get_hrefmap(conn, hrefs=[]):
         return {}
     root = etree.fromstring(body)
 
-    hrefmap = {}
+    etagdict = {}
     for node in root.findall(".//D:response", namespaces=nsmap):
         etagnode = node.find("./D:propstat/D:prop/D:getetag", namespaces=nsmap)
         if etagnode is None:
@@ -162,9 +167,9 @@ def get_hrefmap(conn, hrefs=[]):
             die_atnode('Missing href.', node)
         href = hrefnode.text
 
-        hrefmap[etag] = href
+        etagdict[href] = etag
 
-    return hrefmap
+    return etagdict
 
 
 def remote_wipe(conn):
@@ -186,8 +191,8 @@ def get_syncdb(fn):
     syncdb = {}
     with open(fn, 'r') as f:
         for line in f.readlines():
-            etag, objhash = line.rstrip().split(' ')
-            syncdb[etag] = objhash
+            href, etag, objhash = line.rstrip().split(' ')
+            syncdb[href] = (etag, objhash)
 
     return syncdb
 
@@ -199,8 +204,8 @@ def save_syncdb(fn, syncdb):
         return
 
     with open(fn, 'w') as f:
-        for etag, objhash in syncdb.items():
-            print("%s %s" % (etag, objhash), file=f)
+        for href, (etag, objhash) in syncdb.items():
+            print("%s %s %s" % (href, etag, objhash), file=f)
 
 
 def push_object(conn, objhash):
@@ -216,12 +221,12 @@ def push_object(conn, objhash):
     if 'etag' in headerdict:
         etag = headerdict['etag']
     while not etag:
-        hrefmap = get_hrefmap(conn, [href])
-        if len(hrefmap.keys()) > 0:
-            etag = next(iter(hrefmap.keys()))
+        etagdict = get_etags(conn, [href])
+        if etagdict:
+            etag = next(iter(etagdict.values()))
     etag = etag.strip('"')
 
-    return etag
+    return (href, etag)
 
 
 def remove_remote_object(conn, etag, href):
@@ -229,10 +234,10 @@ def remove_remote_object(conn, etag, href):
     remote_query(conn, "DELETE", href, headers, None)
 
 
-def push_objects(conn, syncdb, hrefmap):
+def push_objects(conn, syncdb, etagdict):
     objhashes = calcurse_hashset()
-    new = objhashes - set(syncdb.values())
-    gone = set(syncdb.values()) - objhashes
+    new = objhashes - set([entry[1] for entry in syncdb.values()])
+    gone = set([entry[1] for entry in syncdb.values()]) - objhashes
 
     added = deleted = 0
 
@@ -243,21 +248,27 @@ def push_objects(conn, syncdb, hrefmap):
         if dry_run:
             continue
 
-        etag = push_object(conn, objhash)
-        syncdb[etag] = objhash
+        href, etag = push_object(conn, objhash)
+        syncdb[href] = (etag, objhash)
         added += 1
 
     # Remove locally deleted objects from the server.
     for objhash in gone:
-        deletags = []
-        for key, value in syncdb.items():
-            if value == objhash:
-                deletags.append(key)
+        queue = []
+        for href, entry in syncdb.items():
+            if entry[1] == objhash:
+                queue.append(href)
 
-        for etag in deletags:
-            if etag not in hrefmap:
+        for href in queue:
+            etag = syncdb[href][0]
+
+            if etagdict[href] != etag:
+                warn(('%s was deleted locally but modified in the CalDAV '
+                      'calendar. Keeping the modified version on the server. '
+                      'Run the script again to import the modified object.') %
+                     (objhash))
+                syncdb.pop(href, None)
                 continue
-            href = hrefmap[etag]
 
             if verbose:
                 print("Removing remote object %s (%s)." % (etag, href))
@@ -265,23 +276,29 @@ def push_objects(conn, syncdb, hrefmap):
                 continue
 
             remove_remote_object(conn, etag, href)
-            syncdb.pop(etag, None)
+            syncdb.pop(href, None)
             deleted += 1
 
     return (added, deleted)
 
 
-def pull_objects(conn, syncdb, hrefmap):
-    missing = set(hrefmap.keys()) - set(syncdb.keys())
-    orphan = set(syncdb.keys()) - set(hrefmap.keys())
+def pull_objects(conn, syncdb, etagdict):
+    missing = set()
+    modified = set()
+    for href in set(etagdict.keys()):
+        if href not in syncdb:
+            missing.add(href)
+        elif etagdict[href] != syncdb[href][0]:
+            modified.add(href)
+    orphan = set(syncdb.keys()) - set(etagdict.keys())
 
     # Download and import new objects from the server.
     body = ('<?xml version="1.0" encoding="utf-8" ?>'
             '<C:calendar-multiget xmlns:D="DAV:" '
             '                     xmlns:C="urn:ietf:params:xml:ns:caldav">'
             '<D:prop><D:getetag /><C:calendar-data /></D:prop>')
-    for etag in missing:
-        body += '<D:href>%s</D:href>' % (hrefmap[etag])
+    for href in (missing | modified):
+        body += '<D:href>%s</D:href>' % (href)
     body += '</C:calendar-multiget>'
     headers, body = remote_query(conn, "REPORT", path, {}, body)
 
@@ -289,29 +306,43 @@ def pull_objects(conn, syncdb, hrefmap):
 
     added = deleted = 0
 
-    for node in root.findall(".//D:prop", namespaces=nsmap):
-        etagnode = node.find("./D:getetag", namespaces=nsmap)
+    for node in root.findall(".//D:response", namespaces=nsmap):
+        hrefnode = node.find("./D:href", namespaces=nsmap)
+        if hrefnode is None:
+            die_atnode('Missing href.', node)
+        href = hrefnode.text
+
+        etagnode = node.find("./D:propstat/D:prop/D:getetag", namespaces=nsmap)
         if etagnode is None:
             die_atnode('Missing ETag.', node)
         etag = etagnode.text.strip('"')
 
-        cdatanode = node.find("./C:calendar-data", namespaces=nsmap)
+        cdatanode = node.find("./D:propstat/D:prop/C:calendar-data",
+                              namespaces=nsmap)
         if cdatanode is None:
             die_atnode('Missing calendar data.', node)
         cdata = cdatanode.text
 
-        if verbose:
-            print("Importing new object %s." % (etag))
-        if dry_run:
-            continue
+        if href in modified:
+            if verbose:
+                print("Replacing object %s." % (etag))
+            if dry_run:
+                continue
+            objhash = syncdb[href][1]
+            calcurse_remove(objhash)
+        else:
+            if verbose:
+                print("Importing new object %s." % (etag))
+            if dry_run:
+                continue
 
         objhash = calcurse_import(cdata)
-        syncdb[etag] = objhash
+        syncdb[href] = (etag, objhash)
         added += 1
 
     # Delete objects that no longer exist on the server.
-    for etag in orphan:
-        objhash = syncdb[etag]
+    for href in orphan:
+        etag, objhash = syncdb[href]
 
         if verbose:
             print("Removing local object %s." % (objhash))
@@ -319,7 +350,7 @@ def pull_objects(conn, syncdb, hrefmap):
             continue
 
         calcurse_remove(objhash)
-        syncdb.pop(etag, None)
+        syncdb.pop(href, None)
         deleted += 1
 
     return (added, deleted)
@@ -468,15 +499,15 @@ try:
 
     # Query the server and build a dictionary that maps ETags to paths on the
     # server.
-    hrefmap = get_hrefmap(conn)
+    etagdict = get_etags(conn)
 
     # Retrieve new objects from the server, delete local items that no longer
     # exist on the server.
-    local_new, local_del = pull_objects(conn, syncdb, hrefmap)
+    local_new, local_del = pull_objects(conn, syncdb, etagdict)
 
     # Push new objects to the server, remove items from the server if they no
     # longer exist locally.
-    remote_new, remote_del = push_objects(conn, syncdb, hrefmap)
+    remote_new, remote_del = push_objects(conn, syncdb, etagdict)
 
     # Write the synchronization database.
     save_syncdb(syncdbfn, syncdb)
