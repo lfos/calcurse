@@ -87,9 +87,9 @@ def calcurse_version():
 def get_auth_headers():
     if not username or not password:
         return {}
-    user_password = ('%s:%s' % (username, password)).encode('ascii')
+    user_password = ('{}:{}'.format(username, password)).encode('ascii')
     user_password = base64.b64encode(user_password).decode('ascii')
-    headers = {'Authorization': 'Basic %s' % user_password}
+    headers = {'Authorization': 'Basic {}'.format(user_password)}
     return headers
 
 
@@ -103,7 +103,7 @@ def remote_query(conn, cmd, path, additional_headers, body):
     headers.update(additional_headers)
 
     if debug:
-        print("> %s %s" % (cmd, path))
+        print("> {} {}".format(cmd, path))
         print("> Headers: " + repr(headers))
         if body:
             for line in body.splitlines():
@@ -127,9 +127,9 @@ def remote_query(conn, cmd, path, additional_headers, body):
         print()
 
     if resp.status - (resp.status % 100) != 200:
-        die(("The server at %s replied with HTTP status code %d (%s) " +
-             "while trying to access %s.") %
-            (hostname, resp.status, resp.reason, path))
+        die(("The server at {} replied with HTTP status code {} ({}) " +
+             "while trying to access {}.").format(hostname, resp.status,
+                                                  resp.reason, path))
 
     return (headers, body)
 
@@ -205,7 +205,7 @@ def save_syncdb(fn, syncdb):
 
     with open(fn, 'w') as f:
         for href, (etag, objhash) in syncdb.items():
-            print("%s %s %s" % (href, etag, objhash), file=f)
+            print("{} {} {}".format(href, etag, objhash), file=f)
 
 
 def push_object(conn, objhash):
@@ -244,7 +244,7 @@ def push_objects(conn, syncdb, etagdict):
     # Copy new objects to the server.
     for objhash in new:
         if verbose:
-            print("Pushing new object %s to the server." % (objhash))
+            print("Pushing new object {} to the server.".format(objhash))
         if dry_run:
             continue
 
@@ -263,15 +263,15 @@ def push_objects(conn, syncdb, etagdict):
             etag = syncdb[href][0]
 
             if etagdict[href] != etag:
-                warn(('%s was deleted locally but modified in the CalDAV '
+                warn(('{} was deleted locally but modified in the CalDAV '
                       'calendar. Keeping the modified version on the server. '
-                      'Run the script again to import the modified object.') %
-                     (objhash))
+                      'Run the script again to import the modified '
+                      'object.').format(objhash))
                 syncdb.pop(href, None)
                 continue
 
             if verbose:
-                print("Removing remote object %s (%s)." % (etag, href))
+                print("Removing remote object {} ({}).".format(etag, href))
             if dry_run:
                 continue
 
@@ -298,7 +298,7 @@ def pull_objects(conn, syncdb, etagdict):
             '                     xmlns:C="urn:ietf:params:xml:ns:caldav">'
             '<D:prop><D:getetag /><C:calendar-data /></D:prop>')
     for href in (missing | modified):
-        body += '<D:href>%s</D:href>' % (href)
+        body += '<D:href>{}</D:href>'.format(href)
     body += '</C:calendar-multiget>'
     headers, body = remote_query(conn, "REPORT", path, {}, body)
 
@@ -325,14 +325,14 @@ def pull_objects(conn, syncdb, etagdict):
 
         if href in modified:
             if verbose:
-                print("Replacing object %s." % (etag))
+                print("Replacing object {}.".format(etag))
             if dry_run:
                 continue
             objhash = syncdb[href][1]
             calcurse_remove(objhash)
         else:
             if verbose:
-                print("Importing new object %s." % (etag))
+                print("Importing new object {}.".format(etag))
             if dry_run:
                 continue
 
@@ -345,7 +345,7 @@ def pull_objects(conn, syncdb, etagdict):
         etag, objhash = syncdb[href]
 
         if verbose:
-            print("Removing local object %s." % (objhash))
+            print("Removing local object {}.".format(objhash))
         if dry_run:
             continue
 
@@ -399,7 +399,7 @@ if verbose:
 try:
     config.readfp(open(configfn))
 except FileNotFoundError as e:
-    die('Configuration file not found: %s' % (configfn))
+    die('Configuration file not found: {}'.format(configfn))
 
 hostname = config.get('General', 'HostName')
 path = '/' + config.get('General', 'Path').strip('/') + '/'
@@ -519,6 +519,7 @@ finally:
     os.remove(lockfn)
 
 # Print a summary to stdout.
-print("%d items imported, %d items removed locally." % (local_new, local_del))
-print("%d items exported, %d items removed from the server." %
-      (remote_new, remote_del))
+print("{} items imported, {} items removed locally.".
+      format(local_new, local_del))
+print("{} items exported, {} items removed from the server.".
+      format(remote_new, remote_del))
