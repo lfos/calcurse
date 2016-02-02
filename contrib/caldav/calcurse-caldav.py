@@ -442,9 +442,9 @@ else:
 
 # Show disclaimer when performing a dry run.
 if dry_run:
-    print('Dry run. Nothing is actually imported/exported.')
-    print('Edit the configuration file and add "DryRun = No" to the [General] section')
-    print('to enable synchronization.')
+    warn(('Dry run; nothing is imported/exported. Add "DryRun = No" to the '
+          '[General] section in the configuration file to enable '
+          'synchronization.'))
 
 # Check whether the specified calcurse binary is executable and compatible.
 ver = calcurse_version()
