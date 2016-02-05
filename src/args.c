@@ -395,11 +395,11 @@ int parse_args(int argc, char **argv)
 	/* Filters */
 	struct item_filter filter = { 0, NULL, NULL, -1, -1, -1, -1, 0, 0, 0 };
 	/* Format strings */
-	const char *fmt_apt = " - %S -> %E\n\t%m\n";
-	const char *fmt_rapt = " - %S -> %E\n\t%m\n";
-	const char *fmt_ev = " * %m\n";
-	const char *fmt_rev = " * %m\n";
-	const char *fmt_todo = "%p. %m\n";
+	const char *fmt_apt = NULL;
+	const char *fmt_rapt = NULL;
+	const char *fmt_ev = NULL;
+	const char *fmt_rev = NULL;
+	const char *fmt_todo = NULL;
 	/* Import and export parameters */
 	int xfmt = IO_EXPORT_ICAL;
 	int list_imported = 0, export_uid = 0;
@@ -731,8 +731,17 @@ int parse_args(int argc, char **argv)
 			io_save_todo(path_todo);
 			io_save_apts(path_apts);
 		} else {
-			io_dump_todo("%(raw)");
-			io_dump_apts("%(raw)", "%(raw)", "%(raw)", "%(raw)");
+			/*
+			 * Use default values for non-specified format strings.
+			 */
+			fmt_apt = fmt_apt ? fmt_apt : "%(raw)";
+			fmt_rapt = fmt_rapt ? fmt_rapt : "%(raw)";
+			fmt_ev = fmt_ev ? fmt_ev : "%(raw)";
+			fmt_rev = fmt_rev ? fmt_rev : "%(raw)";
+			fmt_todo = fmt_todo ? fmt_todo : "%(raw)";
+
+			io_dump_todo(fmt_todo);
+			io_dump_apts(fmt_apt, fmt_rapt, fmt_ev, fmt_rev);
 		}
 	} else if (query) {
 		io_check_file(path_apts);
@@ -741,6 +750,14 @@ int parse_args(int argc, char **argv)
 		vars_init();
 		config_load();	/* To get output date format. */
 		io_load_data(&filter);
+
+		/* Use default values for non-specified format strings. */
+		fmt_apt = fmt_apt ? fmt_apt : " - %S -> %E\n\t%m\n";
+		fmt_rapt = fmt_rapt ? fmt_rapt : " - %S -> %E\n\t%m\n";
+		fmt_ev = fmt_ev ? fmt_ev : " * %m\n";
+		fmt_rev = fmt_rev ? fmt_rev : " * %m\n";
+		fmt_todo = fmt_todo ? fmt_todo : "%p. %m\n";
+
 		int add_line = todo_arg(fmt_todo, &limit, &filter);
 		date_arg_from_to(from, to, add_line, fmt_apt, fmt_rapt, fmt_ev,
 				 fmt_rev, &limit);
