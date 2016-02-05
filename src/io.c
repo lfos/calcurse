@@ -295,6 +295,37 @@ void io_save_mutex_unlock(void)
 	pthread_mutex_unlock(&io_save_mutex);
 }
 
+/* Print all appointments and events to stdout. */
+void io_dump_apts(const char *fmt_apt, const char *fmt_rapt,
+		  const char *fmt_ev, const char *fmt_rev)
+{
+	llist_item_t *i;
+
+	LLIST_FOREACH(&recur_elist, i) {
+		struct recur_event *rev = LLIST_GET_DATA(i);
+		time_t day = update_time_in_date(rev->day, 0, 0);
+		print_recur_event(fmt_rev, day, rev);
+	}
+
+	LLIST_TS_FOREACH(&recur_alist_p, i) {
+		struct recur_apoint *rapt = LLIST_GET_DATA(i);
+		time_t day = update_time_in_date(rapt->start, 0, 0);
+		print_recur_apoint(fmt_rapt, day, rapt->start, rapt);
+	}
+
+	LLIST_TS_FOREACH(&alist_p, i) {
+		struct apoint *apt = LLIST_TS_GET_DATA(i);
+		time_t day = update_time_in_date(apt->start, 0, 0);
+		print_apoint(fmt_apt, day, apt);
+	}
+
+	LLIST_FOREACH(&eventlist, i) {
+		struct event *ev = LLIST_TS_GET_DATA(i);
+		time_t day = update_time_in_date(ev->day, 0, 0);
+		print_event(fmt_ev, day, ev);
+	}
+}
+
 /*
  * Save the apts data file, which contains the
  * appointments first, and then the events.
@@ -335,6 +366,17 @@ unsigned io_save_apts(const char *aptsfile)
 		file_close(fp, __FILE_POS__);
 
 	return 1;
+}
+
+/* Print all todo items to stdout. */
+void io_dump_todo(const char *fmt_todo)
+{
+	llist_item_t *i;
+
+	LLIST_FOREACH(&todolist, i) {
+		struct todo *todo = LLIST_TS_GET_DATA(i);
+		print_todo(fmt_todo, todo);
+	}
 }
 
 /* Save the todo data file. */

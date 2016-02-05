@@ -485,6 +485,7 @@ long update_time_in_date(long date, unsigned hr, unsigned mn)
 	localtime_r(&t, &lt);
 	lt.tm_hour = hr;
 	lt.tm_min = mn;
+	lt.tm_sec = 0;
 	new_date = mktime(&lt);
 	EXIT_IF(new_date == -1, _("error in mktime"));
 

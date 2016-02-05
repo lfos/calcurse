@@ -727,8 +727,13 @@ int parse_args(int argc, char **argv)
 		vars_init();
 		config_load();	/* To get output date format. */
 		io_load_data(&filter);
-		io_save_todo(grep_filter ? path_todo : NULL);
-		io_save_apts(grep_filter ? path_apts : NULL);
+		if (grep_filter) {
+			io_save_todo(path_todo);
+			io_save_apts(path_apts);
+		} else {
+			io_dump_todo("%(raw)");
+			io_dump_apts("%(raw)", "%(raw)", "%(raw)", "%(raw)");
+		}
 	} else if (query) {
 		io_check_file(path_apts);
 		io_check_file(path_todo);
