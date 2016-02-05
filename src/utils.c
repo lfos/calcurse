@@ -1511,9 +1511,9 @@ static void print_event_helper(const char *format, long day, struct event *ev,
 				break;
 			case FS_HASH:
 				if (rev)
-					printf("%s", recur_event_tostr(rev));
+					printf("%s", recur_event_hash(rev));
 				else
-					printf("%s", event_tostr(ev));
+					printf("%s", event_hash(ev));
 				break;
 			case FS_EOF:
 				return;
