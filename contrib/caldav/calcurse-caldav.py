@@ -3,7 +3,6 @@
 import argparse
 import base64
 import configparser
-import hashlib
 import http.client
 import os
 import re
@@ -58,17 +57,12 @@ def calcurse_export(objhash):
 
 
 def calcurse_hashset():
-    p = subprocess.Popen([calcurse, '-G'], stdout=subprocess.PIPE)
-    out = p.communicate()[0]
-
-    hashes = set()
-    for line in out.split(b'\n'):
-        if not line:
-            continue
-        sha1 = hashlib.new('sha1')
-        sha1.update(line)
-        hashes.add(sha1.hexdigest())
-    return hashes
+    p = subprocess.Popen([calcurse, '-G', '--format-apt=%(hash)\\n',
+                          '--format-recur-apt=%(hash)\\n',
+                          '--format-event=%(hash)\\n',
+                          '--format-recur-event=%(hash)\\n',
+                          '--format-todo=%(hash)\\n'], stdout=subprocess.PIPE)
+    return set(p.communicate()[0].decode('utf-8').rstrip().splitlines())
 
 
 def calcurse_remove(objhash):
@@ -451,7 +445,7 @@ ver = calcurse_version()
 if ver is None:
     die('Invalid calcurse binary. Make sure that the file specified in ' +
         'the configuration is a valid and up-to-date calcurse binary.')
-elif ver < (4, 0, 0, 73):
+elif ver < (4, 0, 0, 96):
     die('Incompatible calcurse binary detected. Version >=4.1.0 is required ' +
         'to synchronize with CalDAV servers.')
 
