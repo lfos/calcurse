@@ -350,6 +350,13 @@ def pull_objects(conn, syncdb, etagdict):
     return (added, deleted)
 
 
+def run_hook(name):
+    hook_path = hookdir + '/' + name
+    if not os.path.exists(hook_path):
+        return
+    subprocess.call(hook_path, shell=True)
+
+
 # Initialize the XML namespace map.
 nsmap = {"D": "DAV:", "C": "urn:ietf:params:xml:ns:caldav"}
 
@@ -357,6 +364,7 @@ nsmap = {"D": "DAV:", "C": "urn:ietf:params:xml:ns:caldav"}
 configfn = os.path.expanduser("~/.calcurse/caldav/config")
 lockfn = os.path.expanduser("~/.calcurse/caldav/lock")
 syncdbfn = os.path.expanduser("~/.calcurse/caldav/sync.db")
+hookdir = os.path.expanduser("~/.calcurse/caldav/hooks/")
 
 # Parse command line arguments.
 parser = argparse.ArgumentParser('calcurse-caldav')
@@ -372,6 +380,9 @@ parser.add_argument('--lockfile', action='store', dest='lockfn',
 parser.add_argument('--syncdb', action='store', dest='syncdbfn',
                     default=syncdbfn,
                     help='path to the calcurse-caldav sync DB')
+parser.add_argument('--hookdir', action='store', dest='hookdir',
+                    default=hookdir,
+                    help='path to the calcurse-caldav hooks directory')
 parser.add_argument('-v', '--verbose', action='store_true', dest='verbose',
                     default=False,
                     help='print status messages to stdout')
@@ -383,6 +394,7 @@ init = args.init is not None
 configfn = args.configfn
 lockfn = args.lockfn
 syncdbfn = args.syncdbfn
+hookdir = args.hookdir
 verbose = args.verbose
 debug = args.debug
 
@@ -449,6 +461,9 @@ elif ver < (4, 0, 0, 96):
     die('Incompatible calcurse binary detected. Version >=4.1.0 is required ' +
         'to synchronize with CalDAV servers.')
 
+# Run the pre-sync hook.
+run_hook('pre-sync')
+
 # Create lock file.
 if os.path.exists(lockfn):
     die('Leftover lock file detected. If there is no other synchronization ' +
@@ -511,6 +526,9 @@ try:
 finally:
     # Remove lock file.
     os.remove(lockfn)
+
+# Run the post-sync hook.
+run_hook('post-sync')
 
 # Print a summary to stdout.
 print("{} items imported, {} items removed locally.".

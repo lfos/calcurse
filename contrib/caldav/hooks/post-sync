@@ -1,0 +1,12 @@
+#!/bin/sh
+#
+# Copy this file into ~/.calcurse/caldav/hooks/ and mark it executable to
+# automatically commit changes after syncing using Git.
+
+cd "$HOME"/.calcurse/
+
+git add *
+if ! git diff-index --quiet --cached HEAD; then
+	git commit -m "Automatic commit by the post-sync hook"
+fi
+
