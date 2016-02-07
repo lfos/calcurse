@@ -5,7 +5,7 @@
 
 cd "$HOME"/.calcurse/
 
-git add *
+git add apts conf keys todo
 if ! git diff-index --quiet --cached HEAD; then
 	git commit -m "Automatic commit by the post-sync hook"
 fi

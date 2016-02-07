@@ -8,7 +8,7 @@ cd "$HOME"/.calcurse/
 # Do not make commits when synchronizing with a CalDAV server.
 [ -f caldav/lock ] && exit
 
-git add *
+git add apts conf keys todo
 if ! git diff-index --quiet --cached HEAD; then
 	git commit -m "Automatic commit by the post-save hook"
 fi
