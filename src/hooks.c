@@ -43,6 +43,7 @@ int run_hook(const char *name)
 	char *hook_path;
 	char const *arg[2];
 	int pid, ret = -127;
+	int prepare_wins = (ui_mode == UI_CURSES);
 
 	asprintf(&hook_path, "%s/%s", path_hooks, name);
 	arg[0] = hook_path;
@@ -51,7 +52,7 @@ int run_hook(const char *name)
 	if (!io_file_exists(hook_path))
 		return 0;
 
-	if (ui_mode == UI_CURSES)
+	if (prepare_wins)
 		wins_prepare_external();
 
 	if ((pid = shell_exec(NULL, NULL, *arg, arg))) {
@@ -60,7 +61,7 @@ int run_hook(const char *name)
 			press_any_key();
 	}
 
-	if (ui_mode == UI_CURSES)
+	if (prepare_wins)
 		wins_unprepare_external();
 
 	return ret;
