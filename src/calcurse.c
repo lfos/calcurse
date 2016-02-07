@@ -620,6 +620,7 @@ int main(int argc, char **argv)
 		wins_update(FLAG_ALL);
 		io_startup_screen(no_data_file);
 	}
+	ui_calendar_monthly_view_cache_set_invalid();
 	do_storage(1);
 	ui_todo_load_items();
 	ui_todo_sel_reset();
