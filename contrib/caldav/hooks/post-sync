@@ -1,12 +1,17 @@
 #!/bin/sh
 #
-# Copy this file into ~/.calcurse/caldav/hooks/ and mark it executable to
-# automatically commit changes after syncing using Git.
+# This is an example hook. If the calcurse data directory contains a Git
+# repository, it automatically makes a commit whenever synchronizing with a
+# CalDAV server.
+#
+# In order to install this hook, copy this file to ~/.calcurse/caldav/hooks/.
 
 cd "$HOME"/.calcurse/
 
-git add apts conf keys todo
-if ! git diff-index --quiet --cached HEAD; then
-	git commit -m "Automatic commit by the post-sync hook"
+# If the data directory is under version control, create a Git commit.
+if [ -d .git -a -x "$(which git)" ]; then
+	git add apts conf keys todo
+	if ! git diff-index --quiet --cached HEAD; then
+		git commit -m "Automatic commit by the post-sync hook"
+	fi
 fi
-

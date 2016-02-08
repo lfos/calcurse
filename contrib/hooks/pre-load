@@ -1,0 +1,21 @@
+#!/bin/sh
+#
+# This is an example hook. It synchronizes calcurse with a CalDAV server before
+# loading the data files.
+#
+# In order to install this hook, copy this file to ~/.calcurse/hooks/.
+
+cd "$HOME"/.calcurse/
+
+# Do not do anything when synchronizing with a CalDAV server.
+[ -f caldav/lock ] && exit
+
+# Run the CalDAV synchronization script in the background.
+if [ -d caldav -a -x "$(which calcurse-caldav)" ]; then
+	(
+		date="$(date +'%b %d %H:%M:%S')"
+		echo "$date Running calcurse-caldav from the pre-load hook..."
+		calcurse-caldav
+		echo
+	) >>caldav/log 2>&1 &
+fi

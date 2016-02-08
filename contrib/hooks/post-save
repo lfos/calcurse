@@ -1,14 +1,31 @@
 #!/bin/sh
 #
-# Copy this file into ~/.calcurse/hooks/ and mark it executable to
-# automatically commit any changes to the calcurse data files using Git.
+# This is an example hook. It does two things whenever you save the data files:
+#
+# 1. Make a commit if the calcurse data directory contains a Git repository.
+# 2. Synchronize with a CalDAV server if calcurse-caldav is configured.
+#
+# In order to install this hook, copy this file to ~/.calcurse/hooks/.
 
 cd "$HOME"/.calcurse/
 
-# Do not make commits when synchronizing with a CalDAV server.
+# Do not do anything when synchronizing with a CalDAV server.
 [ -f caldav/lock ] && exit
 
-git add apts conf keys todo
-if ! git diff-index --quiet --cached HEAD; then
-	git commit -m "Automatic commit by the post-save hook"
+# If the data directory is under version control, create a Git commit.
+if [ -d .git -a -x "$(which git)" ]; then
+	git add apts conf keys todo
+	if ! git diff-index --quiet --cached HEAD; then
+		git commit -m "Automatic commit by the post-save hook"
+	fi
+fi
+
+# Optionally run the CalDAV synchronization script in the background.
+if [ -d caldav -a -x "$(which calcurse-caldav)" ]; then
+	(
+		date="$(date +'%b %d %H:%M:%S')"
+		echo "$date Running calcurse-caldav from the post-save hook..."
+		calcurse-caldav
+		echo
+	) >>caldav/log 2>&1 &
 fi
