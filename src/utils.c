@@ -907,7 +907,7 @@ int parse_duration(const char *string, unsigned *duration)
 	} state = STATE_INITIAL;
 
 	const char *p;
-	unsigned in = 0;
+	unsigned in = 0, frac = 0, denom = 1;
 	unsigned dur = 0;
 
 	if (!string || *string == '\0')
@@ -919,20 +919,26 @@ int parse_duration(const char *string, unsigned *duration)
 			return 0;
 		} else if ((*p >= '0') && (*p <= '9')) {
 			in = in * 10 + (int)(*p - '0');
+			if (frac)
+				denom *= 10;
+		} else if (*p == '.') {
+			if (frac)
+				return 0;
+			frac++;
 		} else {
 			switch (state) {
 			case STATE_INITIAL:
 				if (*p == ':') {
-					dur += in * HOURINMIN;
+					dur += in * HOURINMIN / denom;
 					state = STATE_HHMM_MM;
 				} else if (*p == 'd') {
-					dur += in * DAYINMIN;
+					dur += in * DAYINMIN / denom;
 					state = STATE_DDHHMM_HH;
 				} else if (*p == 'h') {
-					dur += in * HOURINMIN;
+					dur += in * HOURINMIN / denom;
 					state = STATE_DDHHMM_MM;
 				} else if (*p == 'm') {
-					dur += in;
+					dur += in / denom;
 					state = STATE_DONE;
 				} else {
 					return 0;
@@ -940,10 +946,10 @@ int parse_duration(const char *string, unsigned *duration)
 				break;
 			case STATE_DDHHMM_HH:
 				if (*p == 'h') {
-					dur += in * HOURINMIN;
+					dur += in * HOURINMIN / denom;
 					state = STATE_DDHHMM_MM;
 				} else if (*p == 'm') {
-					dur += in;
+					dur += in / denom;
 					state = STATE_DONE;
 				} else {
 					return 0;
@@ -951,7 +957,7 @@ int parse_duration(const char *string, unsigned *duration)
 				break;
 			case STATE_DDHHMM_MM:
 				if (*p == 'm') {
-					dur += in;
+					dur += in / denom;
 					state = STATE_DONE;
 				} else {
 					return 0;
@@ -964,7 +970,8 @@ int parse_duration(const char *string, unsigned *duration)
 				break;
 			}
 
-			in = 0;
+			in = frac = 0;
+			denom = 1;
 		}
 	}
 
