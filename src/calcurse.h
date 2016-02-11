@@ -809,8 +809,9 @@ int display_help(const char *);
 int run_hook(const char *);
 
 /* ical.c */
-void ical_import_data(FILE *, FILE *, int, unsigned *, unsigned *, unsigned *,
-		      unsigned *, unsigned *);
+void ical_import_data(FILE *, FILE *, unsigned *, unsigned *, unsigned *,
+		      unsigned *, unsigned *, const char *, const char *,
+		      const char *, const char *, const char *);
 void ical_export_data(FILE *, int);
 
 /* io.c */
@@ -837,7 +838,8 @@ int io_check_file(const char *);
 int io_check_data_files(void);
 void io_startup_screen(int);
 void io_export_data(enum export_type, int);
-void io_import_data(enum import_type, const char *, int);
+void io_import_data(enum import_type, const char *, const char *, const char *,
+		    const char *, const char *, const char *);
 struct io_file *io_log_init(void);
 void io_log_print(struct io_file *, int, const char *);
 void io_log_display(struct io_file *, const char *, const char *);

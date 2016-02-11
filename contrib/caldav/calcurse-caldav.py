@@ -45,7 +45,11 @@ def calcurse_wipe():
 
 
 def calcurse_import(icaldata):
-    p = subprocess.Popen([calcurse, '-i', '-', '--list-imported', '-q'],
+    p = subprocess.Popen([calcurse, '-i', '-', '--dump-imported', '-q',
+                          '--format-recur-apt=%(hash)\\n',
+                          '--format-event=%(hash)\\n',
+                          '--format-recur-event=%(hash)\\n',
+                          '--format-todo=%(hash)\\n'],
                          stdin=subprocess.PIPE, stdout=subprocess.PIPE)
     return p.communicate(icaldata.encode('utf-8'))[0].decode('utf-8').rstrip()
 

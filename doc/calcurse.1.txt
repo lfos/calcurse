@@ -135,8 +135,10 @@ appointments can be specified using the *-c* flag.
 *-l* <num>, *--limit* <num>::
   Limit the number of results printed to 'num'.
 
-*--list-imported*::
-  When importing items, print the hash of each newly created object to stdout.
+*--dump-imported*::
+  When importing items, print each newly created object to stdout. Format
+  strings can be used to specify which details are printed. See also:
+  'Formatting Options'.
 
 *-n*, *--next*::
   Print the next appointment within upcoming 24 hours and exit.  The indicated

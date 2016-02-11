@@ -1222,7 +1222,10 @@ static FILE *get_import_stream(enum import_type type)
  * A temporary log file is created in /tmp to store the import process report,
  * and is cleared at the end.
  */
-void io_import_data(enum import_type type, const char *stream_name, int list)
+void io_import_data(enum import_type type, const char *stream_name,
+		    const char *fmt_ev, const char *fmt_rev,
+		    const char *fmt_apt, const char *fmt_rapt,
+		    const char *fmt_todo)
 {
 	const char *proc_report =
 	    _("Import process report: %04d lines read");
@@ -1266,9 +1269,10 @@ void io_import_data(enum import_type type, const char *stream_name, int list)
 	}
 
 	if (type == IO_IMPORT_ICAL)
-		ical_import_data(stream, log->fd, list, &stats.events,
+		ical_import_data(stream, log->fd, &stats.events,
 				 &stats.apoints, &stats.todos,
-				 &stats.lines, &stats.skipped);
+				 &stats.lines, &stats.skipped, fmt_ev, fmt_rev,
+				 fmt_apt, fmt_rapt, fmt_todo);
 
 	if (stream != stdin)
 		file_close(stream, __FILE_POS__);
