@@ -181,15 +181,28 @@ void recur_event_llist_free(void)
 }
 
 static int
-recur_apoint_cmp_start(struct recur_apoint *a, struct recur_apoint *b)
+recur_apoint_cmp(struct recur_apoint *a, struct recur_apoint *b)
 {
-	return a->start < b->start ? -1 : (a->start == b->start ? 0 : 1);
+	if (a->start < b->start)
+		return -1;
+	if (a->start > b->start)
+		return 1;
+	if ((a->state & APOINT_NOTIFY) && !(b->state & APOINT_NOTIFY))
+		return -1;
+	if (!(a->state & APOINT_NOTIFY) && (b->state & APOINT_NOTIFY))
+		return 1;
+
+	return strcmp(a->mesg, b->mesg);
 }
 
-static int recur_event_cmp_day(struct recur_event *a,
-			       struct recur_event *b)
+static int recur_event_cmp(struct recur_event *a, struct recur_event *b)
 {
-	return a->day < b->day ? -1 : (a->day == b->day ? 0 : 1);
+	if (a->day < b->day)
+		return -1;
+	if (a->day > b->day)
+		return 1;
+
+	return strcmp(a->mesg, b->mesg);
 }
 
 /* Insert a new recursive appointment in the general linked list */
@@ -218,7 +231,7 @@ struct recur_apoint *recur_apoint_new(char *mesg, char *note, long start,
 	}
 
 	LLIST_TS_LOCK(&recur_alist_p);
-	LLIST_TS_ADD_SORTED(&recur_alist_p, rapt, recur_apoint_cmp_start);
+	LLIST_TS_ADD_SORTED(&recur_alist_p, rapt, recur_apoint_cmp);
 	LLIST_TS_UNLOCK(&recur_alist_p);
 
 	return rapt;
@@ -246,7 +259,7 @@ struct recur_event *recur_event_new(char *mesg, char *note, long day,
 		LLIST_INIT(&rev->exc);
 	}
 
-	LLIST_ADD_SORTED(&recur_elist, rev, recur_event_cmp_day);
+	LLIST_ADD_SORTED(&recur_elist, rev, recur_event_cmp);
 
 	return rev;
 }
@@ -966,7 +979,7 @@ void recur_event_paste_item(struct recur_event *rev, long date)
 		exc->st += time_shift;
 	}
 
-	LLIST_ADD_SORTED(&recur_elist, rev, recur_event_cmp_day);
+	LLIST_ADD_SORTED(&recur_elist, rev, recur_event_cmp);
 }
 
 void recur_apoint_paste_item(struct recur_apoint *rapt, long date)
@@ -986,7 +999,7 @@ void recur_apoint_paste_item(struct recur_apoint *rapt, long date)
 	}
 
 	LLIST_TS_LOCK(&recur_alist_p);
-	LLIST_TS_ADD_SORTED(&recur_alist_p, rapt, recur_apoint_cmp_start);
+	LLIST_TS_ADD_SORTED(&recur_alist_p, rapt, recur_apoint_cmp);
 	LLIST_TS_UNLOCK(&recur_alist_p);
 
 	if (notify_bar())

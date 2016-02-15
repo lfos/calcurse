@@ -78,9 +78,14 @@ void event_llist_free(void)
 	LLIST_FREE(&eventlist);
 }
 
-static int event_cmp_day(struct event *a, struct event *b)
+static int event_cmp(struct event *a, struct event *b)
 {
-	return a->day < b->day ? -1 : (a->day == b->day ? 0 : 1);
+	if (a->day < b->day)
+		return -1;
+	if (a->day > b->day)
+		return 1;
+
+	return strcmp(a->mesg, b->mesg);
 }
 
 /* Create a new event */
@@ -94,7 +99,7 @@ struct event *event_new(char *mesg, char *note, long day, int id)
 	ev->id = id;
 	ev->note = (note != NULL) ? mem_strdup(note) : NULL;
 
-	LLIST_ADD_SORTED(&eventlist, ev, event_cmp_day);
+	LLIST_ADD_SORTED(&eventlist, ev, event_cmp);
 
 	return ev;
 }
@@ -217,5 +222,5 @@ void event_delete(struct event *ev)
 void event_paste_item(struct event *ev, long date)
 {
 	ev->day = date;
-	LLIST_ADD_SORTED(&eventlist, ev, event_cmp_day);
+	LLIST_ADD_SORTED(&eventlist, ev, event_cmp);
 }

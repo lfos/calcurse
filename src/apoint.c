@@ -84,9 +84,18 @@ void apoint_llist_free(void)
 	LLIST_TS_FREE(&alist_p);
 }
 
-static int apoint_cmp_start(struct apoint *a, struct apoint *b)
+static int apoint_cmp(struct apoint *a, struct apoint *b)
 {
-	return a->start < b->start ? -1 : (a->start == b->start ? 0 : 1);
+	if (a->start < b->start)
+		return -1;
+	if (a->start > b->start)
+		return 1;
+	if ((a->state & APOINT_NOTIFY) && !(b->state & APOINT_NOTIFY))
+		return -1;
+	if (!(a->state & APOINT_NOTIFY) && (b->state & APOINT_NOTIFY))
+		return 1;
+
+	return strcmp(a->mesg, b->mesg);
 }
 
 struct apoint *apoint_new(char *mesg, char *note, long start, long dur,
@@ -102,7 +111,7 @@ struct apoint *apoint_new(char *mesg, char *note, long start, long dur,
 	apt->dur = dur;
 
 	LLIST_TS_LOCK(&alist_p);
-	LLIST_TS_ADD_SORTED(&alist_p, apt, apoint_cmp_start);
+	LLIST_TS_ADD_SORTED(&alist_p, apt, apoint_cmp);
 	LLIST_TS_UNLOCK(&alist_p);
 
 	return apt;
@@ -319,7 +328,7 @@ void apoint_paste_item(struct apoint *apt, long date)
 	apt->start = date + get_item_time(apt->start);
 
 	LLIST_TS_LOCK(&alist_p);
-	LLIST_TS_ADD_SORTED(&alist_p, apt, apoint_cmp_start);
+	LLIST_TS_ADD_SORTED(&alist_p, apt, apoint_cmp);
 	LLIST_TS_UNLOCK(&alist_p);
 
 	if (notify_bar())

@@ -66,14 +66,30 @@ void day_free_vector(void)
 	VECTOR_FREE(&day_items);
 }
 
-static int day_cmp_start(struct day_item **pa, struct day_item **pb)
+static int day_cmp(struct day_item **pa, struct day_item **pb)
 {
 	struct day_item *a = *pa;
 	struct day_item *b = *pb;
+	int a_state, b_state;
 
 	if ((a->type == APPT || a->type == RECUR_APPT) &&
 	    (b->type == APPT || b->type == RECUR_APPT)) {
-		return a->start - b->start;
+		if (a->start < b->start)
+			return -1;
+		if (a->start > b->start)
+			return 1;
+
+		a_state = day_item_get_state(a);
+		b_state = day_item_get_state(b);
+		if ((a_state & APOINT_NOTIFY) && !(b_state & APOINT_NOTIFY))
+			return -1;
+		if (!(a_state & APOINT_NOTIFY) && (b_state & APOINT_NOTIFY))
+			return 1;
+
+		return strcmp(day_item_get_mesg(a), day_item_get_mesg(b));
+	} else if ((a->type == EVNT || a->type == RECUR_EVNT) &&
+		   (b->type == EVNT || b->type == RECUR_EVNT)) {
+		return strcmp(day_item_get_mesg(a), day_item_get_mesg(b));
 	}
 
 	return a->type - b->type;
@@ -347,7 +363,7 @@ day_store_items(long date, int include_captions)
 	if (include_captions && events > 0 && apts > 0)
 		day_add_item(DAY_SEPARATOR, 0, p);
 
-	VECTOR_SORT(&day_items, day_cmp_start);
+	VECTOR_SORT(&day_items, day_cmp);
 	day_items_nb = events + apts;
 }
 
