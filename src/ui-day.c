@@ -38,6 +38,21 @@
 
 struct day_item day_cut[38] = { {0, 0, {NULL}} };
 
+struct day_item *ui_day_selitem(void)
+{
+	if (day_item_count(0) <= 0)
+		return NULL;
+
+	return day_get_item(listbox_get_sel(&lb_apt));
+}
+
+void ui_day_set_selitem(struct day_item *day)
+{
+	int n = day_get_position(day);
+	if (n >= 0)
+		listbox_set_sel(&lb_apt, n);
+}
+
 /* Request the user to enter a new time. */
 static int day_edit_time(int time, unsigned *new_hour,
 			 unsigned *new_minute)

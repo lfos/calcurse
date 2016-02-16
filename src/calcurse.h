@@ -772,6 +772,7 @@ int day_check_if_item(struct date);
 unsigned day_chk_busy_slices(struct date, int, int *);
 struct day_item *day_cut_item(long, int);
 int day_paste_item(struct day_item *, long);
+int day_get_position(struct day_item *);
 struct day_item *day_get_item(int);
 unsigned day_item_count(int);
 void day_edit_note(struct day_item *, const char *);
@@ -1042,6 +1043,8 @@ void todo_init_list(void);
 void todo_free_list(void);
 
 /* ui-day.c */
+struct day_item *ui_day_selitem(void);
+void ui_day_set_selitem(struct day_item *);
 void ui_day_item_add(void);
 void ui_day_item_delete(unsigned);
 void ui_day_item_edit(void);

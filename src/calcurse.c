@@ -48,11 +48,15 @@ int count, reg;
  */
 static void do_storage(int day_changed)
 {
+	struct day_item *day = ui_day_selitem();
+
 	day_process_storage(ui_calendar_get_slctd_day(), day_changed);
 	ui_day_load_items();
 
 	if (day_changed)
 		ui_day_sel_reset();
+	else if (day)
+		ui_day_set_selitem(day);
 }
 
 static inline void key_generic_change_view(void)

@@ -700,6 +700,21 @@ int day_paste_item(struct day_item *p, long date)
 	return p->type;
 }
 
+/* Returns the position corresponding to a given item. */
+int day_get_position(struct day_item *needle)
+{
+	int n = 0;
+
+	VECTOR_FOREACH(&day_items, n) {
+		struct day_item *p = VECTOR_NTH(&day_items, n);
+		/* Compare pointers. */
+		if (p->item.ev == needle->item.ev)
+			return n;
+	}
+
+	return -1;
+}
+
 /* Returns a structure containing the selected item. */
 struct day_item *day_get_item(int item_number)
 {
