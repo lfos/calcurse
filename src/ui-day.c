@@ -315,7 +315,7 @@ void ui_day_item_edit(void)
 	if (day_item_count(0) <= 0)
 		return;
 
-	struct day_item *p = day_get_item(listbox_get_sel(&lb_apt));
+	struct day_item *p = ui_day_selitem();
 
 	switch (p->type) {
 	case RECUR_EVNT:
@@ -441,7 +441,7 @@ void ui_day_item_pipe(void)
 	if (day_item_count(0) <= 0)
 		return;
 
-	struct day_item *p = day_get_item(listbox_get_sel(&lb_apt));
+	struct day_item *p = ui_day_selitem();
 
 	status_mesg(_("Pipe item to external command:"), "");
 	if (getstring(win[STA].p, cmd, BUFSIZ, 0, 1) != GETSTRING_VALID)
@@ -605,7 +605,7 @@ void ui_day_item_delete(unsigned reg)
 	if (day_item_count(0) <= 0)
 		return;
 
-	struct day_item *p = day_get_item(listbox_get_sel(&lb_apt));
+	struct day_item *p = ui_day_selitem();
 
 	if (conf.confirm_delete) {
 		if (status_ask_bool(del_app_str) != 1) {
@@ -834,7 +834,7 @@ void ui_day_item_copy(unsigned reg)
 	if (day_item_count(0) <= 0 || reg == REG_BLACK_HOLE)
 		return;
 
-	struct day_item *item = day_get_item(listbox_get_sel(&lb_apt));
+	struct day_item *item = ui_day_selitem();
 	ui_day_item_cut_free(reg);
 	day_item_fork(item, &day_cut[reg]);
 }
@@ -929,7 +929,7 @@ void ui_day_popup_item(void)
 	if (day_item_count(0) <= 0)
 		return;
 
-	struct day_item *item = day_get_item(listbox_get_sel(&lb_apt));
+	struct day_item *item = ui_day_selitem();
 	day_popup_item(item);
 }
 
@@ -938,7 +938,7 @@ void ui_day_flag(void)
 	if (day_item_count(0) <= 0)
 		return;
 
-	struct day_item *item = day_get_item(listbox_get_sel(&lb_apt));
+	struct day_item *item = ui_day_selitem();
 	day_item_switch_notify(item);
 	io_set_modified();
 }
@@ -948,7 +948,7 @@ void ui_day_view_note(void)
 	if (day_item_count(0) <= 0)
 		return;
 
-	struct day_item *item = day_get_item(listbox_get_sel(&lb_apt));
+	struct day_item *item = ui_day_selitem();
 	day_view_note(item, conf.pager);
 }
 
@@ -957,7 +957,7 @@ void ui_day_edit_note(void)
 	if (day_item_count(0) <= 0)
 		return;
 
-	struct day_item *item = day_get_item(listbox_get_sel(&lb_apt));
+	struct day_item *item = ui_day_selitem();
 	day_edit_note(item, conf.editor);
 	io_set_modified();
 }
