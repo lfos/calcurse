@@ -13,14 +13,6 @@ elif [ "$1" = 'expected' ]; then
 Import process report: 0078 lines read
 12 apps / 0 events / 0 todos / 0 skipped
 06/01/12:
- - 15:00 -> 20:00
-	5 hours
- - 15:00 -> 20:00
-	5 hours
- - 15:00 -> 20:00
-	5 hours
- - 15:00 -> 20:00
-	5 hours
  - 15:00 -> 15:30
 	30 minutes
  - 15:00 -> 15:30
@@ -29,12 +21,20 @@ Import process report: 0078 lines read
 	30 minutes
  - 15:00 -> 15:30
 	30 minutes
- - 15:00 -> 20:30
-	5 hours and 30 minutes
- - 15:00 -> 20:30
-	5 hours and 30 minutes
+ - 15:00 -> 20:00
+	5 hours
+ - 15:00 -> 20:00
+	5 hours
+ - 15:00 -> 20:00
+	5 hours
+ - 15:00 -> 20:00
+	5 hours
  - 15:00 -> 20:00
 	5 hours and 10 seconds
+ - 15:00 -> 20:30
+	5 hours and 30 minutes
+ - 15:00 -> 20:30
+	5 hours and 30 minutes
  - 15:00 -> 20:30
 	5 hours, 30 minutes and 10 seconds
 EOD

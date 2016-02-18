@@ -13,10 +13,10 @@ elif [ "$1" = 'expected' ]; then
 Import process report: 0030 lines read
 0 apps / 4 events / 0 todos / 0 skipped
 10/03/13:
- * Two days
  * All day
  * On day 1
  * On day 2
+ * Two days
 
 10/04/13:
  * Two days
