@@ -254,6 +254,7 @@ static void update_rept(struct rpt **rpt, const long start)
 		time_t t;
 		struct date new_date;
 		int newmonth, newday, newyear;
+		unsigned days;
 
 		asprintf(&outstr, _("Enter the new ending date: [%s] or '0'"),
 			 DATEFMT_DESC(conf.input_datefmt));
@@ -270,21 +271,38 @@ static void update_rept(struct rpt **rpt, const long start)
 			newuntil = 0;
 			break;
 		}
-		if (!parse_date
-		    (timstr, conf.input_datefmt, &newyear, &newmonth,
-		     &newday, ui_calendar_get_slctd_day())) {
-			asprintf(&outstr, msg_fmts,
-				 DATEFMT_DESC(conf.input_datefmt));
-			status_mesg(msg_wrong_date, outstr);
-			mem_free(outstr);
-			wgetch(win[KEY].p);
-			continue;
+		if (*timstr == '+') {
+			if (!parse_date_duration(timstr + 1, &days)) {
+				asprintf(&outstr, msg_fmts,
+					 DATEFMT_DESC(conf.input_datefmt));
+				status_mesg(msg_wrong_date, outstr);
+				mem_free(outstr);
+				wgetch(win[KEY].p);
+				continue;
+			}
+			t = start;
+			localtime_r(&t, &lt);
+			date_change(&lt, 0, days);
+			new_date.dd = lt.tm_mday;
+			new_date.mm = lt.tm_mon + 1;
+			new_date.yyyy = lt.tm_year + 1900;
+		} else {
+			if (!parse_date(timstr, conf.input_datefmt, &newyear,
+					&newmonth, &newday,
+					ui_calendar_get_slctd_day())) {
+				asprintf(&outstr, msg_fmts,
+					 DATEFMT_DESC(conf.input_datefmt));
+				status_mesg(msg_wrong_date, outstr);
+				mem_free(outstr);
+				wgetch(win[KEY].p);
+				continue;
+			}
+			t = start;
+			localtime_r(&t, &lt);
+			new_date.dd = newday;
+			new_date.mm = newmonth;
+			new_date.yyyy = newyear;
 		}
-		t = start;
-		localtime_r(&t, &lt);
-		new_date.dd = newday;
-		new_date.mm = newmonth;
-		new_date.yyyy = newyear;
 		newuntil = date2sec(new_date, lt.tm_hour, lt.tm_min);
 		if (newuntil >= start)
 			break;

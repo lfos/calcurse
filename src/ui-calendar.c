@@ -256,26 +256,6 @@ static long ymd_to_scalar(unsigned year, unsigned month, unsigned day)
 	return scalar;
 }
 
-/*
- * Used to change date by adding a certain amount of days or weeks.
- * Returns 0 on success, 1 otherwise.
- */
-static int date_change(struct tm *date, int delta_month, int delta_day)
-{
-	struct tm t;
-
-	t = *date;
-	t.tm_mon += delta_month;
-	t.tm_mday += delta_day;
-
-	if (mktime(&t) == -1) {
-		return 1;
-	} else {
-		*date = t;
-		return 0;
-	}
-}
-
 void ui_calendar_monthly_view_cache_set_invalid(void)
 {
 	monthly_view_cache_valid = 0;

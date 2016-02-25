@@ -455,6 +455,26 @@ void date_sec2date_fmt(long sec, const char *fmt, char *datef)
 
 /*
  * Used to change date by adding a certain amount of days or weeks.
+ * Returns 0 on success, 1 otherwise.
+ */
+int date_change(struct tm *date, int delta_month, int delta_day)
+{
+	struct tm t;
+
+	t = *date;
+	t.tm_mon += delta_month;
+	t.tm_mday += delta_day;
+
+	if (mktime(&t) == -1) {
+		return 1;
+	} else {
+		*date = t;
+		return 0;
+	}
+}
+
+/*
+ * Used to change date by adding a certain amount of days or weeks.
  */
 long date_sec_change(long date, int delta_month, int delta_day)
 {
@@ -835,6 +855,77 @@ parse_date(const char *date_string, enum datefmt datefmt, int *year,
 		*month = m;
 	if (day)
 		*day = d;
+
+	return 1;
+}
+
+/*
+ * Convert a date duration string into a number of days.
+ *
+ * Returns 1 on success and 0 on failure.
+ */
+int parse_date_duration(const char *string, unsigned *days)
+{
+	enum {
+		STATE_INITIAL,
+		STATE_WWDD_DD,
+		STATE_DONE
+	} state = STATE_INITIAL;
+
+	const char *p;
+	unsigned in = 0, frac = 0, denom = 1;
+	unsigned dur = 0;
+
+	if (!string || *string == '\0')
+		return 0;
+
+	/* parse string using a simple state machine */
+	for (p = string; *p; p++) {
+		if (state == STATE_DONE) {
+			return 0;
+		} else if ((*p >= '0') && (*p <= '9')) {
+			in = in * 10 + (int)(*p - '0');
+			if (frac)
+				denom *= 10;
+		} else if (*p == '.') {
+			if (frac)
+				return 0;
+			frac++;
+		} else {
+			switch (state) {
+			case STATE_INITIAL:
+				if (*p == 'w') {
+					dur += in * WEEKINDAYS / denom;
+					state = STATE_WWDD_DD;
+				} else if (*p == 'd') {
+					dur += in / denom;
+					state = STATE_DONE;
+				} else {
+					return 0;
+				}
+				break;
+			case STATE_WWDD_DD:
+				if (*p == 'd') {
+					dur += in / denom;
+					state = STATE_DONE;
+				} else {
+					return 0;
+				}
+				break;
+			default:
+				break;
+			}
+
+			in = frac = 0;
+			denom = 1;
+		}
+	}
+
+	if (state == STATE_DONE && in > 0)
+		return 0;
+
+	dur += in;
+	*days = dur;
 
 	return 1;
 }

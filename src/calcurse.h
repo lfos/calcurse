@@ -1113,6 +1113,7 @@ time_t date2sec(struct date, unsigned, unsigned);
 time_t utcdate2sec(struct date, unsigned, unsigned);
 char *date_sec2date_str(long, const char *);
 void date_sec2date_fmt(long, const char *, char *);
+int date_change(struct tm *, int, int);
 long date_sec_change(long, int, int);
 long update_time_in_date(long, unsigned, unsigned);
 time_t get_sec_date(struct date);
@@ -1131,6 +1132,7 @@ int parse_date(const char *, enum datefmt, int *, int *, int *,
 int check_time(unsigned, unsigned);
 int parse_time(const char *, unsigned *, unsigned *);
 int parse_duration(const char *, unsigned *);
+int parse_date_duration(const char *, unsigned *);
 void file_close(FILE *, const char *);
 void psleep(unsigned);
 int fork_exec(int *, int *, const char *, const char *const *);
