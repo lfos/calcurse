@@ -427,7 +427,6 @@ day_display_item(struct day_item *day, WINDOW *win, int incolor, int width,
 {
 	int ch_recur, ch_note;
 	char buf[width * UTF8_MAXLEN];
-	int i;
 
 	if (width <= 0)
 		return;
@@ -437,23 +436,15 @@ day_display_item(struct day_item *day, WINDOW *win, int incolor, int width,
 	ch_recur = (day->type == RECUR_EVNT
 		    || day->type == RECUR_APPT) ? '*' : ' ';
 	ch_note = day_item_get_note(day) ? '>' : ' ';
-	if (incolor == 0)
+
+	strncpy(buf, mesg, width * UTF8_MAXLEN);
+	buf[sizeof(buf) - 1] = '\0';
+	utf8_chop(buf, width - 3);
+
+	if (!incolor)
 		custom_apply_attr(win, ATTR_HIGHEST);
-	if (utf8_strwidth(mesg) < width) {
-		mvwprintw(win, y, x, " %c%c%s", ch_recur, ch_note, mesg);
-	} else {
-		for (i = 0; mesg[i] && width > 0; i++) {
-			if (!UTF8_ISCONT(mesg[i]))
-				width -= utf8_width(&mesg[i]);
-			buf[i] = mesg[i];
-		}
-		if (i)
-			buf[i - 1] = 0;
-		else
-			buf[0] = 0;
-		mvwprintw(win, y, x, " %c%c%s...", ch_recur, ch_note, buf);
-	}
-	if (incolor == 0)
+	mvwprintw(win, y, x, " %c%c%s", ch_recur, ch_note, buf);
+	if (!incolor)
 		custom_remove_attr(win, ATTR_HIGHEST);
 }
 

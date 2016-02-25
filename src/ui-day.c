@@ -875,17 +875,17 @@ void ui_day_draw(int n, WINDOW *win, int y, int hilt, void *cb_data)
 	struct date slctd_date = *ui_calendar_get_slctd_day();
 	time_t date = date2sec(slctd_date, 0, 0);
 	struct day_item *item = day_get_item(n);
-	int width = lb_apt.sw.w;
+	int width = lb_apt.sw.w - 2;
 
 	hilt = hilt && (wins_slctd() == APP);
 
 	if (item->type == EVNT || item->type == RECUR_EVNT) {
-		day_display_item(item, win, !hilt, width, y, 1);
+		day_display_item(item, win, !hilt, width - 1, y, 1);
 	} else if (item->type == APPT || item->type == RECUR_APPT) {
 		day_display_item_date(item, win, !hilt, date, y, 1);
-		day_display_item(item, win, !hilt, width, y + 1, 1);
+		day_display_item(item, win, !hilt, width - 1, y + 1, 1);
 	} else if (item->type == DAY_HEADING) {
-		unsigned x = width - (strlen(_(monthnames[slctd_date.mm - 1])) + 17);
+		unsigned x = width - (strlen(_(monthnames[slctd_date.mm - 1])) + 15);
 		custom_apply_attr(win, ATTR_HIGHEST);
 		mvwprintw(win, y, x, "%s  %s %02d, %04d",
 			  ui_calendar_get_pom(date),

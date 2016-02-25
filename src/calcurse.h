@@ -1090,6 +1090,7 @@ void ui_todo_set_view(int);
 /* utf8.c */
 int utf8_width(char *);
 int utf8_strwidth(char *);
+int utf8_chop(char *, int);
 
 /* utils.c */
 void exit_calcurse(int) __attribute__ ((__noreturn__));

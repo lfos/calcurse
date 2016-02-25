@@ -336,3 +336,26 @@ int utf8_strwidth(char *s)
 
 	return width;
 }
+
+/* Trim a UTF-8 string if it is too long, possibly adding dots for padding. */
+int utf8_chop(char *s, int width)
+{
+	int i, n = 0;
+
+	for (i = 0; s[i] && width > 0; i++) {
+		if (!UTF8_ISCONT(s[i]))
+			width -= utf8_width(&s[i]);
+		if (width >= 3)
+			n = i + 1;
+	}
+
+	if (s[i] == '\0')
+		return 0;
+
+	if (s[n] != '\0' && s[n + 1] != '\0' && s[n + 2] != '\0') {
+		s[n] = s[n + 1] = s[n + 2] = '.';
+		s[n + 3] = '\0';
+	}
+
+	return 1;
+}
