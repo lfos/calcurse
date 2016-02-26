@@ -242,9 +242,8 @@ unsigned notify_launch_cmd(void)
 void notify_update_bar(void)
 {
 	const int space = 3;
-	int file_pos, date_pos, app_pos, txt_max_len, too_long = 0;
+	int file_pos, date_pos, app_pos, txt_max_len;
 	int time_left, blinking;
-	char buf[BUFSIZ];
 
 	date_pos = space;
 	pthread_mutex_lock(&notify.mutex);
@@ -252,7 +251,7 @@ void notify_update_bar(void)
 	file_pos =
 	    strlen(notify.date) + strlen(notify.time) + 7 + 2 * space;
 	app_pos = file_pos + strlen(notify.apts_file) + 2 + space;
-	txt_max_len = col - (app_pos + 12 + space);
+	txt_max_len = MAX(col - (app_pos + 12 + space), 3);
 
 	WINS_NBAR_LOCK;
 	custom_apply_attr(notify.win, ATTR_HIGHEST);
@@ -265,14 +264,12 @@ void notify_update_bar(void)
 
 	pthread_mutex_lock(&notify_app.mutex);
 	if (notify_app.got_app) {
-		if (strlen(notify_app.txt) > txt_max_len) {
-			int shrink_len;
+		char buf[txt_max_len * UTF8_MAXLEN];
 
-			too_long = 1;
-			shrink_len = txt_max_len > 3 ? txt_max_len - 3 : 1;
-			strncpy(buf, notify_app.txt, shrink_len);
-			buf[shrink_len] = '\0';
-		}
+		strncpy(buf, notify_app.txt, txt_max_len * UTF8_MAXLEN);
+		buf[sizeof(buf) - 1] = '\0';
+		utf8_chop(buf, txt_max_len);
+
 		time_left = notify_time_left();
 		if (time_left > 0) {
 			int hours_left, minutes_left;
@@ -288,15 +285,9 @@ void notify_update_bar(void)
 			WINS_NBAR_LOCK;
 			if (blinking)
 				wattron(notify.win, A_BLINK);
-			if (too_long)
-				mvwprintw(notify.win, 0, app_pos,
-					  "> %02d:%02d :: %s.. <",
-					  hours_left, minutes_left, buf);
-			else
-				mvwprintw(notify.win, 0, app_pos,
-					  "> %02d:%02d :: %s <",
-					  hours_left, minutes_left,
-					  notify_app.txt);
+			mvwprintw(notify.win, 0, app_pos,
+				  "> %02d:%02d :: %s <", hours_left,
+				  minutes_left, buf);
 			if (blinking)
 				wattroff(notify.win, A_BLINK);
 			WINS_NBAR_UNLOCK;
@@ -578,19 +569,15 @@ print_option(WINDOW * win, unsigned x, unsigned y, char *name,
 	mvwprintw(win, y, x, "%s", name);
 	erase_window_part(win, x_opt, y, MAXCOL, y);
 	if ((len = strlen(valstr)) != 0) {
-		unsigned maxlen;
+		unsigned maxlen = MAX(MAXCOL - x_opt - 2, 3);
+		char buf[maxlen * UTF8_MAXLEN];
 
-		maxlen = MAXCOL - x_opt - 2;
+		strncpy(buf, valstr, maxlen * UTF8_MAXLEN);
+		buf[maxlen * UTF8_MAXLEN - 1] = '\0';
+		utf8_chop(buf, maxlen);
+
 		custom_apply_attr(win, ATTR_HIGHEST);
-		if (len < maxlen) {
-			mvwaddstr(win, y, x_opt, valstr);
-		} else {
-			char buf[BUFSIZ];
-
-			strncpy(buf, valstr, maxlen - 1);
-			buf[maxlen - 1] = '\0';
-			mvwprintw(win, y, x_opt, "%s...", buf);
-		}
+		mvwaddstr(win, y, x_opt, buf);
 		custom_remove_attr(win, ATTR_HIGHEST);
 	} else {
 		print_bool_option_incolor(win, valbool, y, x_opt);
