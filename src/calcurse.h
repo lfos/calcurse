@@ -1111,6 +1111,7 @@ int get_item_min(long);
 struct tm date2tm(struct date, unsigned, unsigned);
 time_t date2sec(struct date, unsigned, unsigned);
 time_t utcdate2sec(struct date, unsigned, unsigned);
+int date_cmp_day(time_t, time_t);
 char *date_sec2date_str(long, const char *);
 void date_sec2date_fmt(long, const char *, char *);
 int date_change(struct tm *, int, int);

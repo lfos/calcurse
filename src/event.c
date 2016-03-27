@@ -107,7 +107,7 @@ struct event *event_new(char *mesg, char *note, long day, int id)
 /* Check if the event belongs to the selected day */
 unsigned event_inday(struct event *i, long *start)
 {
-	return (i->day < *start + DAYINSEC && i->day >= *start);
+	return (date_cmp_day(i->day, *start) == 0);
 }
 
 char *event_tostr(struct event *o)

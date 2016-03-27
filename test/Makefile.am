@@ -52,6 +52,7 @@ TESTS = \
 	next-001.sh \
 	search-001.sh \
 	bug-002.sh \
+	regress-001.sh \
 	recur-001.sh \
 	recur-002.sh \
 	recur-003.sh \
@@ -105,6 +106,7 @@ EXTRA_DIST = \
 	data/apts-event-006 \
 	data/apts-filter-001 \
 	data/apts-recur \
+	data/apts-regress-001 \
 	data/conf \
 	data/ical-001.ical \
 	data/ical-002.ical \

@@ -683,7 +683,7 @@ static long diff_years(struct tm lt_start, struct tm lt_end)
 
 static int exc_inday(struct excp *exc, long *day_start)
 {
-	return (exc->st >= *day_start && exc->st < *day_start + DAYINSEC);
+	return (date_cmp_day(exc->st, *day_start) == 0);
 }
 
 /*
@@ -706,7 +706,7 @@ recur_item_find_occurrence(long item_start, long item_dur,
 	struct tm lt_day, lt_item, lt_item_day;
 	time_t t;
 
-	if (day_start < item_start - DAYINSEC + 1)
+	if (date_cmp_day(day_start, item_start) < 0)
 		return 0;
 
 	if (rpt_until != 0 && day_start >= rpt_until + item_dur)

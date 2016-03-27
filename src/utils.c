@@ -418,6 +418,30 @@ time_t utcdate2sec(struct date day, unsigned hour, unsigned min)
 	return t;
 }
 
+/* Compare two dates (without comparing times). */
+int date_cmp_day(time_t d1, time_t d2)
+{
+	struct tm lt1, lt2;
+
+	localtime_r((time_t *)&d1, &lt1);
+	localtime_r((time_t *)&d2, &lt2);
+
+	if (lt1.tm_year < lt2.tm_year)
+		return -1;
+	if (lt1.tm_year > lt2.tm_year)
+		return 1;
+	if (lt1.tm_mon < lt2.tm_mon)
+		return -1;
+	if (lt1.tm_mon > lt2.tm_mon)
+		return 1;
+	if (lt1.tm_mday < lt2.tm_mday)
+		return -1;
+	if (lt1.tm_mday > lt2.tm_mday)
+		return 1;
+
+	return 0;
+}
+
 /* Return a string containing the date, given a date in seconds. */
 char *date_sec2date_str(long sec, const char *datefmt)
 {
