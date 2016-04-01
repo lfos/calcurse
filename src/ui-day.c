@@ -256,7 +256,8 @@ static void update_rept(struct rpt **rpt, const long start)
 		int newmonth, newday, newyear;
 		unsigned days;
 
-		asprintf(&outstr, _("Enter the new ending date: [%s] or '0'"),
+		asprintf(&outstr,
+			 _("Enter end date ([%s]), duration ([+xxwxxd]) or '0':"),
 			 DATEFMT_DESC(conf.input_datefmt));
 		status_mesg(outstr, "");
 		mem_free(outstr);
@@ -694,10 +695,10 @@ void ui_day_item_repeat(void)
 	const char *mesg_wrong_freq =
 	    _("The frequence you entered is not valid.");
 	const char *mesg_until_1 =
-	    _("Enter the ending date: [%s] or '0' for an endless repetition");
+	    _("Enter end date ([%s]), duration ([+xxwxxd]) or '0' for endless repetition:");
 	const char *mesg_wrong_1 = _("The entered date is not valid.");
 	const char *mesg_wrong_2 =
-	    _("Possible formats are [%s] or '0' for an endless repetition");
+	    _("Possible formats are [%s], [+xxwxxd] or '0'.");
 	const char *wrong_type_1 =
 	    _("This item is already a repeated one.");
 	const char *wrong_type_2 = _("Press [ENTER] to continue.");
@@ -714,6 +715,7 @@ void ui_day_item_repeat(void)
 	struct day_item *p;
 	struct recur_apoint *ra;
 	time_t until, date;
+	unsigned days;
 
 	if (day_item_count(0) <= 0)
 		goto cleanup;
@@ -764,31 +766,47 @@ void ui_day_item_repeat(void)
 		if (getstring(win[STA].p, user_input, BUFSIZ, 0, 1) !=
 		    GETSTRING_VALID)
 			goto cleanup;
-		if (strlen(user_input) == 1
-		    && strcmp(user_input, "0") == 0) {
+		if (strlen(user_input) == 1 && strcmp(user_input, "0") == 0) {
 			until = 0;
 			break;
 		}
-		if (parse_date(user_input, conf.input_datefmt,
-			       &year, &month, &day,
-			       ui_calendar_get_slctd_day())) {
+		if (*user_input == '+') {
+			if (!parse_date_duration(user_input + 1, &days)) {
+				asprintf(&outstr, mesg_wrong_2,
+					 DATEFMT_DESC(conf.input_datefmt));
+				status_mesg(mesg_wrong_1, outstr);
+				mem_free(outstr);
+				wgetch(win[KEY].p);
+				continue;
+			}
+			t = p->start;
+			localtime_r(&t, &lt);
+			date_change(&lt, 0, days);
+			until_date.dd = lt.tm_mday;
+			until_date.mm = lt.tm_mon + 1;
+			until_date.yyyy = lt.tm_year + 1900;
+		} else if (parse_date(user_input, conf.input_datefmt,
+				      &year, &month, &day,
+				      ui_calendar_get_slctd_day())) {
 			t = p->start;
 			localtime_r(&t, &lt);
 			until_date.dd = day;
 			until_date.mm = month;
 			until_date.yyyy = year;
-			until = date2sec(until_date, lt.tm_hour, lt.tm_min);
-			if (until >= p->start)
-				break;
-			status_mesg(mesg_older, wrong_type_2);
-			wgetch(win[KEY].p);
 		} else {
 			asprintf(&outstr, mesg_wrong_2,
 				 DATEFMT_DESC(conf.input_datefmt));
 			status_mesg(mesg_wrong_1, outstr);
 			mem_free(outstr);
 			wgetch(win[KEY].p);
+			continue;
 		}
+
+		until = date2sec(until_date, lt.tm_hour, lt.tm_min);
+		if (until >= p->start)
+			break;
+		status_mesg(mesg_older, wrong_type_2);
+		wgetch(win[KEY].p);
 	}
 
 	date = ui_calendar_get_slctd_day_sec();
