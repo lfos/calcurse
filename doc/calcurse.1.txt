@@ -413,6 +413,25 @@ internal representation and were designed to be used for scripting:
 * *(hash)*
 * *(raw)*
 
+Hooks
+-----
+
+You can place scripts in `$HOME/.calcurse/hooks/` to trigger actions at certain
+events. To enable a hook, add a script with one of the following names to this
+directory. Also make sure the scripts are executable.
+
+*pre-load*::
+  Executed before the data files are loaded.
+*post-load*::
+  Executed after the data files are saved.
+*pre-save*::
+  Executed before the data files are loaded.
+*post-save*::
+  Executed after the data files are saved.
+
+Some examples can be found in the `contrib/hooks/` directory of the calcurse
+source tree.
+
 Notes
 -----
 
