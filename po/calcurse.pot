@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2016-01-30 11:22+0100\n"
+"POT-Creation-Date: 2016-04-02 08:45+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1253,7 +1253,7 @@ msgid "Enter the new repetition frequence:"
 msgstr ""
 
 #, c-format
-msgid "Enter the new ending date: [%s] or '0'"
+msgid "Enter end date ([%s]), duration ([+xxwxxd]) or '0':"
 msgstr ""
 
 msgid "Description"
@@ -1313,11 +1313,12 @@ msgid "Enter the repetition frequence:"
 msgstr ""
 
 #, c-format
-msgid "Enter the ending date: [%s] or '0' for an endless repetition"
+msgid ""
+"Enter end date ([%s]), duration ([+xxwxxd]) or '0' for endless repetition:"
 msgstr ""
 
 #, c-format
-msgid "Possible formats are [%s] or '0' for an endless repetition"
+msgid "Possible formats are [%s], [+xxwxxd] or '0'."
 msgstr ""
 
 msgid "This item is already a repeated one."
