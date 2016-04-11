@@ -10,17 +10,18 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2015-02-22 10:37+0100\n"
-"PO-Revision-Date: 2014-08-03 21:51+0000\n"
+"POT-Creation-Date: 2016-04-02 08:45+0200\n"
+"PO-Revision-Date: 2016-04-02 06:45+0000\n"
 "Last-Translator: Lukas Fleischer <transifex@cryptocrack.de>\n"
-"Language-Team: Russian (http://www.transifex.com/projects/p/calcurse/"
+"Language-Team: Russian (http://www.transifex.com/lfleischer/calcurse/"
 "language/ru/)\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
+"%100>=11 && n%100<=14)? 2 : 3);\n"
 
 msgid "null pointer"
 msgstr "пустой указатель"
@@ -32,184 +33,86 @@ msgid "no such appointment"
 msgstr "задача отсутствует"
 
 msgid ""
-"Usage: calcurse [-g|-h|-v] [-an] [-t[num]] [-i<file>] [-x[format]]\n"
-"                [-d <date>|<num>] [-s[date]] [-r[range]]\n"
-"                [-c<file>] [-D<dir>] [-S<regex>] [--status]\n"
-"                [--read-only]\n"
+"usage: calcurse [--daemon|-F|-G|-g|-i<file>|-Q|--status|-x[<format>]]\n"
+"                [-c<file>] [-D<path>] [-h] [-q] [--read-only] [-v]\n"
+"                [--filter-*] [--format-*]"
 msgstr ""
-"Команда: calcurse [-g|-h|-v] [-an] [-t[num]] [-i<file>] [-x[format]]\n"
-"                [-d <date>|<num>] [-s[date]] [-r[range]]\n"
-"                [-c<file> | -D<dir>] [-S<regex>] [--status]\n"
-"                [--read-only]\n"
 
-msgid "Try 'calcurse -h' for more information.\n"
-msgstr "Выполните 'calcurse -h' для получения справки.\n"
-
-#, fuzzy
-msgid ""
-"\n"
-"Copyright (c) 2004-2016 calcurse Development Team.\n"
-"This is free software; see the source for copying conditions.\n"
+msgid "Try `calcurse -h` for more information."
 msgstr ""
-"\n"
-"Copyright (c) 2004-2013 calcurse Development Team.\n"
-"This is free software; see the source for copying conditions.\n"
 
 #, c-format
-msgid "Calcurse %s - text-based organizer\n"
-msgstr "Calcurse %s - текстовый органайзер\n"
+msgid "calcurse %s -- text-based organizer\n"
+msgstr ""
+
+msgid "Copyright (c) 2004-2016 calcurse Development Team."
+msgstr ""
+
+msgid "This is free software; see the source for copying conditions."
+msgstr ""
+
+msgid "Operations in non-interactive mode:"
+msgstr ""
+
+msgid "  -F, --filter  Read items, filter them, and write them back"
+msgstr ""
+
+msgid "  -G, --grep    Grep items from the data files"
+msgstr ""
+
+msgid "  -Q, --query   Print items in a given query range"
+msgstr ""
 
 msgid ""
-"\n"
-"For more information, type '?' from within Calcurse, or read the manpage.\n"
+"Note that -F, -G and -Q can be combined with filter options --filter-*\n"
+"and formatting options --format-*. Consult the man page for details."
 msgstr ""
-"\n"
-"Для получения справки, нажмите '?' в Calcurse или смотрите man-страницу.\n"
 
-msgid "Mail feature requests and suggestions to <misc@calcurse.org>.\n"
-msgstr "Найденные ошибки или ваши идеи, присылайте на <misc@calcurse.org>.\n"
+msgid "Miscellaneous:"
+msgstr ""
 
-msgid "Mail bug reports to <bugs@calcurse.org>.\n"
-msgstr "Найденные ошибки высылайте на <bugs@calcurse.org>.\n"
+msgid "  -c, --calendar <file>   Specify the calendar data file to use"
+msgstr ""
+
+msgid "  --daemon                Run notification daemon in the background"
+msgstr ""
+
+msgid "  -D, --directory <path>  Specify the data directory to use"
+msgstr ""
+
+msgid "  -g, --gc                Run the garbage collector and exit"
+msgstr ""
+
+msgid "  -h, --help              Show this help text and exit"
+msgstr ""
+
+msgid "  -i, --import <file>     Import iCal data from a file"
+msgstr ""
+
+msgid "  -q, --quiet             Do not show system dialogs"
+msgstr ""
+
+msgid "  --read-only             Do not save configuration or data files"
+msgstr ""
+
+msgid "  --status                Display the status of running instances"
+msgstr ""
+
+msgid "  -v, --version           Show version information and exit"
+msgstr ""
+
+msgid "  -x, --export [<format>] Export items, valid formats: ical, pcal"
+msgstr ""
 
 msgid ""
-"\n"
-"Miscellaneous:\n"
-"  -h, --help\n"
-"\tprint this help and exit.\n"
-"\n"
-"  -v, --version\n"
-"\tprint calcurse version and exit.\n"
-"\n"
-"  --status\n"
-"\tdisplay the status of running instances of calcurse.\n"
-"\n"
-"  --read-only\n"
-"\tDon't save configuration nor appointments/todos. Use with care.\n"
-"\n"
-"Files:\n"
-"  -c <file>, --calendar <file>\n"
-"\tspecify the calendar <file> to use (has precedence over '-D').\n"
-"\n"
-"  -D <dir>, --directory <dir>\n"
-"\tspecify the data directory to use.\n"
-"\tIf not specified, the default directory is ~/.calcurse\n"
-"\n"
-"Non-interactive:\n"
-"  -a, --appointment\n"
-" \tprint events and appointments for current day and exit.\n"
-"\n"
-"  -d <date|num>, --day <date|num>\n"
-"\tprint events and appointments for <date> or <num> upcoming days and\n"
-"\texit. To specify both a starting date and a range, use the\n"
-"\t'--startday' and the '--range' option.\n"
-"\n"
-"  -g, --gc\n"
-"\trun the garbage collector for note files and exit. \n"
-"\n"
-"  -i <file>, --import <file>\n"
-"\timport the icalendar data contained in <file>. \n"
-"\n"
-"  -n, --next\n"
-"\tprint next appointment within upcoming 24 hours and exit. Also given\n"
-"\tis the remaining time before this next appointment.\n"
-"\n"
-"  -l <num>, --limit <num>\n"
-"\tonly print information regarding the next <num> items. \n"
-"\n"
-"  -r[num], --range[=num]\n"
-"\tprint events and appointments for the [num] number of days\n"
-"\tand exit. If no [num] is given, a range of 1 day is considered.\n"
-"\n"
-"  -s[date], --startday[=date]\n"
-"\tprint events and appointments from [date] and exit.\n"
-"\tIf no [date] is given, the current day is considered.\n"
-"\n"
-"  -S<regex>, --search=<regex>\n"
-"\tsearch for the given regular expression within events, appointments,\n"
-"\tand todos description.\n"
-"\n"
-"  -t[num], --todo[=num]\n"
-"\tprint todo list and exit. If the optional number [num] is given,\n"
-"\tthen only todos having a priority equal to [num] will be returned.\n"
-"\tThe priority number must be between 1 (highest) and 9 (lowest).\n"
-"\tIt is also possible to specify '0' for the priority, in which case\n"
-"\tonly completed tasks will be shown.\n"
-"\n"
-"  -x[format], --export[=format]\n"
-"\texport user data to the specified format. Events, appointments and\n"
-"\ttodos are converted and echoed to stdout.\n"
-"\tTwo possible formats are available: 'ical' and 'pcal'.\n"
-"\tIf the optional argument format is not given, ical format is\n"
-"\tselected by default.\n"
-"\tnote: redirect standard output to export data to a file,\n"
-"\tby issuing a command such as: calcurse --export > calcurse.dat\n"
+"For more information, type '?' from within calcurse, or read the manpage."
 msgstr ""
-"\n"
-"Разное: \n"
-"-h, --help\n"
-"показать справку. \n"
-"\n"
-"-v, --version\n"
-"показать версию calcurse. \n"
-"\n"
-"--status\n"
-"показать статус calcurse.\n"
-"\n"
-"--read-only\n"
-"Не сохр. настройки, задачи и дела (будьте внимательны).\n"
-"\n"
-"Файлы:\n"
-"-c <file>, --calendar <file> использование файла <file> календаря "
-"(приоритетен перед ключом '-D').\n"
-"\n"
-"-D <dir>, --directory <dir> использование конкретной директории. Директория "
-"по-умолчанию ~/.calcurse\n"
-"\n"
-"Не интерактивные:\n"
-"-a, --appointment\n"
-"показать события и задачи на текущий день.\n"
-"\n"
-"-d <date|num>, --day <date|num>\n"
-"показать события и задачи на дату <date> или на кол-во <num> грядущих дней. "
-"Для одновременного использования '--startday' и '--range'.\n"
-"\n"
-"-g, --gc\n"
-"запустить сборщик мусора для файлов заметок.\n"
-"\n"
-"-i <file>, --import <file>\n"
-"импортировать данные icalendar в файл <file>.\n"
-"\n"
-"-l <num>, --limit <num>\n"
-"выводит информацию о следующих <num> значениях.\n"
-"\n"
-"-n, --next\n"
-"показать след. задачу и время до неё в пределах 24 часов.\n"
-"\n"
-"-r[num], --range[=num]\n"
-"показать события и задачи на [num] дней. По-умолчанию значение [num] равно "
-"одному дню.\n"
-"\n"
-"-s[date], --startday[=date]\n"
-"показать события и задачи на указанную дату [date]. По-умолчанию значение "
-"[date] равно текущему дню.\n"
-"\n"
-"-S<regex>, --search=<regex>\n"
-"поиск регулярных выражений внутри описания событий, задач и дел.\n"
-"\n"
-"-t[num], --todo[=num]\n"
-"показать список дел. Если задано [num], будут показаны дела, имеющие "
-"приоритет равный значению [num]. Значение приоритета находится между 1 "
-"(высокий) и 9 (низкий). Установка значения равного '0', покажет только "
-"завершённые дела.\n"
-"\n"
-"-x[format], --export[=format]\n"
-"экспорт данных пользователя в файл. События, задачи и дела будут "
-"конвертированы, а пользователь уведомлён об этом. Существуют два формата для "
-"экспорта: 'ical' and 'pcal'. Форматом по-умолчанию является ical. \n"
-"Примечание: перенаправление потока экспорта данных в файл, возможно след. "
-"образом: calcurse --export > calcurse.dat\n"
-"\n"
+
+msgid "Submit feature requests and suggestions to <misc@calcurse.org>."
+msgstr ""
+
+msgid "Submit bug reports to <bugs@calcurse.org>."
+msgstr ""
 
 #, c-format
 msgid ""
@@ -241,9 +144,9 @@ msgstr "Список дел:\n"
 msgid "next appointment:\n"
 msgstr "Следующая задача:\n"
 
-#, fuzzy, c-format
+#, c-format
 msgid "invalid date: %s"
-msgstr "Неверная задержка"
+msgstr ""
 
 #, c-format
 msgid "invalid range: %s"
@@ -260,13 +163,12 @@ msgstr ""
 msgid "invalid filter mask"
 msgstr ""
 
-#, fuzzy
 msgid "cannot handle more than one regular expression"
-msgstr "Невозможно обработать более одного регулярного выражения."
+msgstr ""
 
-#, fuzzy, c-format
+#, c-format
 msgid "could not compile regular expression: %s"
-msgstr "Невозможно скомпилировать регулярное выражение."
+msgstr ""
 
 #, c-format
 msgid "invalid date range: %s"
@@ -276,6 +178,9 @@ msgid "invalid argument combination"
 msgstr ""
 
 msgid "cannot specify a range and an end date"
+msgstr ""
+
+msgid "Unable to find documentation."
 msgstr ""
 
 msgid "Export to (i)cal or (p)cal format?"
@@ -497,6 +402,7 @@ msgid_plural "sleeping at %s for %d seconds\n"
 msgstr[0] "спящий режим %s на %d сек.\n"
 msgstr[1] "спящий режим %s на %d сек.\n"
 msgstr[2] "спящий режим %s на %d сек.\n"
+msgstr[3] "спящий режим %s на %d сек.\n"
 
 #, c-format
 msgid "awakened at %s\n"
@@ -521,44 +427,44 @@ msgstr "нехватка памяти"
 msgid "unknown ical type"
 msgstr "неизвестный тип ical"
 
+msgid "recurrence rule malformed."
+msgstr "рекурентные правила повреждены."
+
 msgid "recurrence frequence not found."
 msgstr "частота повторений не найдена."
 
 msgid "recurrence frequence not recognized."
 msgstr "частота повторений не распознана."
 
-msgid "recurrence rule malformed."
-msgstr "рекурентные правила повреждены."
-
 msgid "recurrence exception dates malformed."
 msgstr "рекурентные соотношения дат повреждены."
-
-msgid "could not get entire item description."
-msgstr "невозможно получить описание полностью."
 
 msgid "description malformed."
 msgstr "описание повреждено."
 
-msgid "appointment has no start time."
-msgstr "задача не имеет начального времени."
-
-msgid "could not compute duration (no end time)."
-msgstr "невозможно вычислить продолжительность (нет времени окончания)."
-
-msgid "item has a negative duration."
-msgstr "значение имеет отрицательную продолжительность."
-
-msgid "event date is not defined."
-msgstr "дата события не определена."
-
-msgid "item could not be identified."
-msgstr "значение не может быть распознано."
+msgid "could not get entire item description."
+msgstr "невозможно получить описание полностью."
 
 msgid "could not retrieve item summary."
 msgstr "невозможно восстановить суммарные записи."
 
+msgid "item start date is not defined."
+msgstr ""
+
+msgid "item has a negative duration."
+msgstr "значение имеет отрицательную продолжительность."
+
+msgid "item could not be identified."
+msgstr "значение не может быть распознано."
+
+msgid "event start time malformed."
+msgstr ""
+
 msgid "could not retrieve event start time."
 msgstr "невозможно восстановить время начала события."
+
+msgid "event end time malformed."
+msgstr ""
 
 msgid "could not retrieve event end time."
 msgstr "невозможно восстановить время окончания события."
@@ -569,8 +475,8 @@ msgstr "значение продолжительности повреждено
 msgid "The ical file seems to be malformed. The end of item was not found."
 msgstr "Файл ical скорее всего повреждён. Не найдено окончание записи."
 
-msgid "item priority is not acceptable (must be between 1 and 9)."
-msgstr "Значение приоритета должно быть между 1 и 9."
+msgid "item priority is invalid (must be between 0 and 9)."
+msgstr ""
 
 msgid "Warning: ical header malformed or wrong version number. Aborting..."
 msgstr ""
@@ -613,9 +519,9 @@ msgstr "Ошибка вывода сообщения \"%s\"\n"
 msgid "Failed to close \"%s\" - %s\n"
 msgstr "Ошибка закрытия \"%s\" - %s\n"
 
-#, fuzzy, c-format
+#, c-format
 msgid "%s does not exist"
-msgstr "Раздел справки не существует: %s"
+msgstr ""
 
 msgid "Problems accessing data file ..."
 msgstr "Проблемы с доступом к файлу данных..."
@@ -743,6 +649,7 @@ msgid_plural "%d apps"
 msgstr[0] "%d app"
 msgstr[1] "%d apps"
 msgstr[2] "%d apps"
+msgstr[3] "%d apps"
 
 #, c-format
 msgid "%d event"
@@ -750,6 +657,7 @@ msgid_plural "%d events"
 msgstr[0] "%d событие"
 msgstr[1] "%d события"
 msgstr[2] "%d события"
+msgstr[3] "%d события"
 
 #, c-format
 msgid "%d todo"
@@ -757,6 +665,7 @@ msgid_plural "%d todos"
 msgstr[0] "%d дело"
 msgstr[1] "%d дела"
 msgstr[2] "%d дела"
+msgstr[3] "%d дела"
 
 #, c-format
 msgid "%d skipped"
@@ -1336,15 +1245,11 @@ msgstr "записка отсутствует"
 msgid "no such todo"
 msgstr "дело не найдено"
 
-msgid "todo not found"
-msgstr "дело не найдено"
-
 msgid "ERROR setting first day of week"
 msgstr "ОШИБКА настройки первого дня недели"
 
-#, fuzzy
 msgid "The day you entered is not valid"
-msgstr "Неверно введена частота повторения."
+msgstr ""
 
 #, c-format
 msgid "Enter the day to go to [ENTER for today] : %s"
@@ -1404,8 +1309,8 @@ msgid "Enter the new repetition frequence:"
 msgstr "Новая частота повторения:"
 
 #, c-format
-msgid "Enter the new ending date: [%s] or '0'"
-msgstr "Новая дата окончания: [%s] или '0'"
+msgid "Enter end date ([%s]), duration ([+xxwxxd]) or '0':"
+msgstr ""
 
 msgid "Description"
 msgstr "Описание"
@@ -1469,12 +1374,13 @@ msgid "Enter the repetition frequence:"
 msgstr "Количество повторений: "
 
 #, c-format
-msgid "Enter the ending date: [%s] or '0' for an endless repetition"
-msgstr "Конечная дата: [%s] или '0' для окончания повторения"
+msgid ""
+"Enter end date ([%s]), duration ([+xxwxxd]) or '0' for endless repetition:"
+msgstr ""
 
 #, c-format
-msgid "Possible formats are [%s] or '0' for an endless repetition"
-msgstr "Возможные форматы [%s] или '0' для окончания повторения"
+msgid "Possible formats are [%s], [+xxwxxd] or '0'."
+msgstr ""
 
 msgid "This item is already a repeated one."
 msgstr "Эта запись уже повторяется."
@@ -1488,8 +1394,8 @@ msgstr "неправильный тип записи"
 msgid "Enter the new TODO item:"
 msgstr "Дело: "
 
-msgid "Enter the TODO priority [1 (highest) - 9 (lowest)]:"
-msgstr "Приоритет дела [1 (высокий) - 9 (низкий)] :"
+msgid "Enter the TODO priority [0 (none), 1 (highest) - 9 (lowest)]:"
+msgstr ""
 
 msgid "Do you really want to delete this task?"
 msgstr "Удалить эту запись?"
@@ -1619,6 +1525,12 @@ msgstr "неизвестная панель"
 msgid "Usage: calcurse-upgrade [-h|-v|--config <file>]"
 msgstr "Использовать: calcurse-upgrade [-h|-v|--config <file>]"
 
+msgid ""
+"\n"
+"Copyright (c) 2004-2016 calcurse Development Team.\n"
+"This is free software; see the source for copying conditions.\n"
+msgstr ""
+
 msgid "unrecognized option:"
 msgstr "неизвестная опция:"
 
@@ -1664,48 +1576,3 @@ msgstr "Обновление конфигурации..."
 
 msgid "Remove temporary backup..."
 msgstr "Удалить временный архивный файл..."
-
-#~ msgid "Argument to the '-d' flag is not valid\n"
-#~ msgstr "Аргумент ключа '-d' неверен\n"
-
-#~ msgid "Possible argument format are: '%s' or 'n'\n"
-#~ msgstr "Возможный формат аргумента: '%s' или 'n'\n"
-
-#~ msgid "Argument is not valid\n"
-#~ msgstr "Аргумент неверен\n"
-
-#~ msgid "Argument format for -s and --startday is: '%s'\n"
-#~ msgstr "Формат аргумента для -s и --startday: '%s'\n"
-
-#~ msgid "Argument format for -r and --range is: 'n'\n"
-#~ msgstr "Формат аргумента для -r и --range: 'n'\n"
-
-#~ msgid "Argument for '-x' should be either 'ical' or 'pcal'\n"
-#~ msgstr "Аргумент для '-x': 'ical' либо 'pcal'\n"
-
-#~ msgid ""
-#~ "Option '-S' must be used with either '-d', '-r', '-s', '-a' or '-t'\n"
-#~ msgstr ""
-#~ "Ключ '-S' должен использоваться с любым из след.: '-d'. '-r', '-s', '-a', "
-#~ "'-t'\n"
-
-#~ msgid ""
-#~ "Option '-l' must be used with either '-d', '-r', '-s', '-a' or '-t'\n"
-#~ msgstr "Ключ '-l' должен использоваться с '-d','-r', '-s', '-a' or '-t'\n"
-
-#~ msgid "%s does not exist, create it now [y/n]? "
-#~ msgstr "%s не существует, создать его [y/n]? "
-
-#~ msgid "aborting...\n"
-#~ msgstr "завершение...\n"
-
-#~ msgid "%s successfully created\n"
-#~ msgstr "%s создание завершено\n"
-
-#~ msgid "starting interactive mode...\n"
-#~ msgstr "запускается интерактивный режим...\n"
-
-#~ msgid ""
-#~ "The day you entered is not valid (should be between 01/01/1902 and "
-#~ "12/31/2037)"
-#~ msgstr "Введённый день должен быть между 01/01/1902 и 12/31/2037"

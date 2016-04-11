@@ -9,10 +9,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2015-02-22 10:37+0100\n"
-"PO-Revision-Date: 2014-08-03 21:51+0000\n"
+"POT-Creation-Date: 2016-04-02 08:45+0200\n"
+"PO-Revision-Date: 2016-04-02 06:45+0000\n"
 "Last-Translator: Lukas Fleischer <transifex@cryptocrack.de>\n"
-"Language-Team: Dutch (http://www.transifex.com/projects/p/calcurse/language/"
+"Language-Team: Dutch (http://www.transifex.com/lfleischer/calcurse/language/"
 "nl/)\n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
@@ -30,110 +30,85 @@ msgid "no such appointment"
 msgstr ""
 
 msgid ""
-"Usage: calcurse [-g|-h|-v] [-an] [-t[num]] [-i<file>] [-x[format]]\n"
-"                [-d <date>|<num>] [-s[date]] [-r[range]]\n"
-"                [-c<file>] [-D<dir>] [-S<regex>] [--status]\n"
-"                [--read-only]\n"
+"usage: calcurse [--daemon|-F|-G|-g|-i<file>|-Q|--status|-x[<format>]]\n"
+"                [-c<file>] [-D<path>] [-h] [-q] [--read-only] [-v]\n"
+"                [--filter-*] [--format-*]"
 msgstr ""
 
-msgid "Try 'calcurse -h' for more information.\n"
-msgstr "Gebruik 'calcurse -h', voor meer informatie.\n"
-
-msgid ""
-"\n"
-"Copyright (c) 2004-2016 calcurse Development Team.\n"
-"This is free software; see the source for copying conditions.\n"
+msgid "Try `calcurse -h` for more information."
 msgstr ""
 
 #, c-format
-msgid "Calcurse %s - text-based organizer\n"
-msgstr "Calcurse %s - tekst-gebaseerde organizer\n"
+msgid "calcurse %s -- text-based organizer\n"
+msgstr ""
+
+msgid "Copyright (c) 2004-2016 calcurse Development Team."
+msgstr ""
+
+msgid "This is free software; see the source for copying conditions."
+msgstr ""
+
+msgid "Operations in non-interactive mode:"
+msgstr ""
+
+msgid "  -F, --filter  Read items, filter them, and write them back"
+msgstr ""
+
+msgid "  -G, --grep    Grep items from the data files"
+msgstr ""
+
+msgid "  -Q, --query   Print items in a given query range"
+msgstr ""
 
 msgid ""
-"\n"
-"For more information, type '?' from within Calcurse, or read the manpage.\n"
-msgstr ""
-"\n"
-"Typ '?' in Calcurse voor meer informatie, of lees de man-pagina.\n"
-
-msgid "Mail feature requests and suggestions to <misc@calcurse.org>.\n"
+"Note that -F, -G and -Q can be combined with filter options --filter-*\n"
+"and formatting options --format-*. Consult the man page for details."
 msgstr ""
 
-msgid "Mail bug reports to <bugs@calcurse.org>.\n"
+msgid "Miscellaneous:"
+msgstr ""
+
+msgid "  -c, --calendar <file>   Specify the calendar data file to use"
+msgstr ""
+
+msgid "  --daemon                Run notification daemon in the background"
+msgstr ""
+
+msgid "  -D, --directory <path>  Specify the data directory to use"
+msgstr ""
+
+msgid "  -g, --gc                Run the garbage collector and exit"
+msgstr ""
+
+msgid "  -h, --help              Show this help text and exit"
+msgstr ""
+
+msgid "  -i, --import <file>     Import iCal data from a file"
+msgstr ""
+
+msgid "  -q, --quiet             Do not show system dialogs"
+msgstr ""
+
+msgid "  --read-only             Do not save configuration or data files"
+msgstr ""
+
+msgid "  --status                Display the status of running instances"
+msgstr ""
+
+msgid "  -v, --version           Show version information and exit"
+msgstr ""
+
+msgid "  -x, --export [<format>] Export items, valid formats: ical, pcal"
 msgstr ""
 
 msgid ""
-"\n"
-"Miscellaneous:\n"
-"  -h, --help\n"
-"\tprint this help and exit.\n"
-"\n"
-"  -v, --version\n"
-"\tprint calcurse version and exit.\n"
-"\n"
-"  --status\n"
-"\tdisplay the status of running instances of calcurse.\n"
-"\n"
-"  --read-only\n"
-"\tDon't save configuration nor appointments/todos. Use with care.\n"
-"\n"
-"Files:\n"
-"  -c <file>, --calendar <file>\n"
-"\tspecify the calendar <file> to use (has precedence over '-D').\n"
-"\n"
-"  -D <dir>, --directory <dir>\n"
-"\tspecify the data directory to use.\n"
-"\tIf not specified, the default directory is ~/.calcurse\n"
-"\n"
-"Non-interactive:\n"
-"  -a, --appointment\n"
-" \tprint events and appointments for current day and exit.\n"
-"\n"
-"  -d <date|num>, --day <date|num>\n"
-"\tprint events and appointments for <date> or <num> upcoming days and\n"
-"\texit. To specify both a starting date and a range, use the\n"
-"\t'--startday' and the '--range' option.\n"
-"\n"
-"  -g, --gc\n"
-"\trun the garbage collector for note files and exit. \n"
-"\n"
-"  -i <file>, --import <file>\n"
-"\timport the icalendar data contained in <file>. \n"
-"\n"
-"  -n, --next\n"
-"\tprint next appointment within upcoming 24 hours and exit. Also given\n"
-"\tis the remaining time before this next appointment.\n"
-"\n"
-"  -l <num>, --limit <num>\n"
-"\tonly print information regarding the next <num> items. \n"
-"\n"
-"  -r[num], --range[=num]\n"
-"\tprint events and appointments for the [num] number of days\n"
-"\tand exit. If no [num] is given, a range of 1 day is considered.\n"
-"\n"
-"  -s[date], --startday[=date]\n"
-"\tprint events and appointments from [date] and exit.\n"
-"\tIf no [date] is given, the current day is considered.\n"
-"\n"
-"  -S<regex>, --search=<regex>\n"
-"\tsearch for the given regular expression within events, appointments,\n"
-"\tand todos description.\n"
-"\n"
-"  -t[num], --todo[=num]\n"
-"\tprint todo list and exit. If the optional number [num] is given,\n"
-"\tthen only todos having a priority equal to [num] will be returned.\n"
-"\tThe priority number must be between 1 (highest) and 9 (lowest).\n"
-"\tIt is also possible to specify '0' for the priority, in which case\n"
-"\tonly completed tasks will be shown.\n"
-"\n"
-"  -x[format], --export[=format]\n"
-"\texport user data to the specified format. Events, appointments and\n"
-"\ttodos are converted and echoed to stdout.\n"
-"\tTwo possible formats are available: 'ical' and 'pcal'.\n"
-"\tIf the optional argument format is not given, ical format is\n"
-"\tselected by default.\n"
-"\tnote: redirect standard output to export data to a file,\n"
-"\tby issuing a command such as: calcurse --export > calcurse.dat\n"
+"For more information, type '?' from within calcurse, or read the manpage."
+msgstr ""
+
+msgid "Submit feature requests and suggestions to <misc@calcurse.org>."
+msgstr ""
+
+msgid "Submit bug reports to <bugs@calcurse.org>."
 msgstr ""
 
 #, c-format
@@ -182,13 +157,12 @@ msgstr ""
 msgid "invalid filter mask"
 msgstr ""
 
-#, fuzzy
 msgid "cannot handle more than one regular expression"
-msgstr "Kan niet meer dan een reguliere expressie behandelen."
+msgstr ""
 
-#, fuzzy, c-format
+#, c-format
 msgid "could not compile regular expression: %s"
-msgstr "Kan de reguliere expressie niet compileren."
+msgstr ""
 
 #, c-format
 msgid "invalid date range: %s"
@@ -198,6 +172,9 @@ msgid "invalid argument combination"
 msgstr ""
 
 msgid "cannot specify a range and an end date"
+msgstr ""
+
+msgid "Unable to find documentation."
 msgstr ""
 
 msgid "Export to (i)cal or (p)cal format?"
@@ -445,44 +422,44 @@ msgstr ""
 msgid "unknown ical type"
 msgstr "onbekend ical type"
 
+msgid "recurrence rule malformed."
+msgstr "herhalingsregel onjuist"
+
 msgid "recurrence frequence not found."
 msgstr "herhalingsfrequentie niet gevonden."
 
 msgid "recurrence frequence not recognized."
 msgstr "herhalingsfrequentie niet herkend"
 
-msgid "recurrence rule malformed."
-msgstr "herhalingsregel onjuist"
-
 msgid "recurrence exception dates malformed."
 msgstr "herhaling exceptie datum onjuist"
-
-msgid "could not get entire item description."
-msgstr "onvolledige item omschrijving"
 
 msgid "description malformed."
 msgstr "omschrijving beschadigd"
 
-msgid "appointment has no start time."
-msgstr "afspraak heeft geen begintijd."
-
-msgid "could not compute duration (no end time)."
-msgstr "kan tijdsduur niet berekenen (geen eindtijd)."
-
-msgid "item has a negative duration."
-msgstr "item heeft een negatieve tijdsduur"
-
-msgid "event date is not defined."
-msgstr "datum van de gebeurtenis is niet gespecifieerd"
-
-msgid "item could not be identified."
-msgstr "item onbekend"
+msgid "could not get entire item description."
+msgstr "onvolledige item omschrijving"
 
 msgid "could not retrieve item summary."
 msgstr "kan item onderwerp niet ophalen"
 
+msgid "item start date is not defined."
+msgstr ""
+
+msgid "item has a negative duration."
+msgstr "item heeft een negatieve tijdsduur"
+
+msgid "item could not be identified."
+msgstr "item onbekend"
+
+msgid "event start time malformed."
+msgstr ""
+
 msgid "could not retrieve event start time."
 msgstr "kan begintijd van gebeurtenis niet ophalen"
+
+msgid "event end time malformed."
+msgstr ""
 
 msgid "could not retrieve event end time."
 msgstr "kan eindtijd van gebeurtenis niet ophalen"
@@ -493,8 +470,8 @@ msgstr "item tijdsduur onjuist"
 msgid "The ical file seems to be malformed. The end of item was not found."
 msgstr "Ical-bestand oogt onjuist. Het einde van item niet gevonden."
 
-msgid "item priority is not acceptable (must be between 1 and 9)."
-msgstr "Prioriteit van item is onjuist (kies nr tussen 1 en 9)"
+msgid "item priority is invalid (must be between 0 and 9)."
+msgstr ""
 
 msgid "Warning: ical header malformed or wrong version number. Aborting..."
 msgstr "Pas op: ical header onjuist of verkeerde versie. Stoppen..."
@@ -1229,15 +1206,11 @@ msgstr "geen noot bijgevoegd"
 msgid "no such todo"
 msgstr "Er is zo geen todo"
 
-msgid "todo not found"
-msgstr "todo niet gevonden"
-
 msgid "ERROR setting first day of week"
 msgstr "FOUT in het instellen van de eerste dag van de week"
 
-#, fuzzy
 msgid "The day you entered is not valid"
-msgstr "Het ingevoerde interval is ongeldig."
+msgstr ""
 
 #, c-format
 msgid "Enter the day to go to [ENTER for today] : %s"
@@ -1297,7 +1270,7 @@ msgid "Enter the new repetition frequence:"
 msgstr "Voer herhalingsinterval in:"
 
 #, c-format
-msgid "Enter the new ending date: [%s] or '0'"
+msgid "Enter end date ([%s]), duration ([+xxwxxd]) or '0':"
 msgstr ""
 
 msgid "Description"
@@ -1357,12 +1330,13 @@ msgid "Enter the repetition frequence:"
 msgstr "Geef de herhalingsinterval:"
 
 #, c-format
-msgid "Enter the ending date: [%s] or '0' for an endless repetition"
-msgstr "Geef einddatum: [%s] of '0' voor oneindige herhaling"
+msgid ""
+"Enter end date ([%s]), duration ([+xxwxxd]) or '0' for endless repetition:"
+msgstr ""
 
 #, c-format
-msgid "Possible formats are [%s] or '0' for an endless repetition"
-msgstr "Mogelijk formaat is: [%s] of '0' voor oneindig."
+msgid "Possible formats are [%s], [+xxwxxd] or '0'."
+msgstr ""
 
 msgid "This item is already a repeated one."
 msgstr "Dit item wordt al herhaald."
@@ -1376,7 +1350,7 @@ msgstr ""
 msgid "Enter the new TODO item:"
 msgstr ""
 
-msgid "Enter the TODO priority [1 (highest) - 9 (lowest)]:"
+msgid "Enter the TODO priority [0 (none), 1 (highest) - 9 (lowest)]:"
 msgstr ""
 
 msgid "Do you really want to delete this task?"
@@ -1507,6 +1481,12 @@ msgstr ""
 msgid "Usage: calcurse-upgrade [-h|-v|--config <file>]"
 msgstr ""
 
+msgid ""
+"\n"
+"Copyright (c) 2004-2016 calcurse Development Team.\n"
+"This is free software; see the source for copying conditions.\n"
+msgstr ""
+
 msgid "unrecognized option:"
 msgstr ""
 
@@ -1546,37 +1526,3 @@ msgstr ""
 
 msgid "Remove temporary backup..."
 msgstr ""
-
-#~ msgid "Argument to the '-d' flag is not valid\n"
-#~ msgstr "Argument van '-d' is niet geldig.\n"
-
-#~ msgid "Argument is not valid\n"
-#~ msgstr "Argument is niet geldig.\n"
-
-#~ msgid "Argument format for -r and --range is: 'n'\n"
-#~ msgstr "Argument formaat voor -r en --range is: 'n'\n"
-
-#~ msgid "Argument for '-x' should be either 'ical' or 'pcal'\n"
-#~ msgstr "Argument voor '-x' moet of 'ical' of 'pcal' zijn\n"
-
-#~ msgid ""
-#~ "Option '-S' must be used with either '-d', '-r', '-s', '-a' or '-t'\n"
-#~ msgstr ""
-#~ "Optie '-S' moet met een van volgende worden gebruikt '-d', '-r', '-s', '-"
-#~ "a','-' of '-t'\n"
-
-#~ msgid "aborting...\n"
-#~ msgstr "afbreken...\n"
-
-#~ msgid "%s successfully created\n"
-#~ msgstr "%s met succes aangemaakt\n"
-
-#~ msgid "starting interactive mode...\n"
-#~ msgstr "interactieve modus gestart...\n"
-
-#~ msgid ""
-#~ "The day you entered is not valid (should be between 01/01/1902 and "
-#~ "12/31/2037)"
-#~ msgstr ""
-#~ "De ingevoerde datum is ongeldig (voer datum tussen 01/01/1902 en "
-#~ "12/31/2037) in"
