@@ -1,3 +1,46 @@
+[12 Apr 2016]
+Version 4.1.0:
+- New features:
+  * Hook support: Run scripts before/after loading or saving items. This
+    feature can be used to automatically make Git commits or synchronize with a
+    server when the data files are written. Example hooks can be found in the
+    calcurse source tree.
+
+  * Experimental CalDAV support: The calcurse distribution tarball now includes
+    an experimental script called calcurse-caldav that can be used to
+    synchronize calcurse with your mobile devices or any other computer. For
+    details, please refer to contrib/caldav/README in the calcurse source tree.
+
+  * Support for a filter mode -F that is identical to -G but writes the
+    filtered items back to the calcurse data files instead of stdout. Can be
+    used to remove certain items from a script. Use with care!
+
+  * New long format specifiers "raw" and "hash".
+
+  * A --daemon command line option to start calcurse in daemon mode.
+
+  * A --quiet command line option to disable system dialogs.
+
+  * Support for todo items with an undefined priority.
+
+  * Support for durations when specifying recurrence end dates.
+
+  * Support for decimal values when specifying durations.
+
+  * Support for UTC times when importing iCal events.
+
+  * Support for sending notifications for all appointments (both flagged and
+    unflagged items).
+
+  * The "Add Item" key binding now works from the calendar panel.
+
+  * Week numbers in the monthly view (requested by Hakan Jerning).
+
+- Bug fixes:
+  * Fixes to the slice computation (reported by Hakan Jerning).
+
+  * Various fixes to the iCal import and export functionality.
+
 [22 Feb 2015]
 Version 4.0.0:
 - New features:
