@@ -108,6 +108,9 @@ def remote_query(conn, cmd, path, additional_headers, body):
                 print("> " + line)
         print()
 
+    if isinstance(body, str):
+        body = body.encode('utf-8')
+
     conn.request(cmd, path, headers=headers, body=body)
 
     resp = conn.getresponse()
