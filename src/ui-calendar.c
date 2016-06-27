@@ -471,12 +471,18 @@ draw_monthly_view(struct scrollwin *sw, struct date *current_day,
 				  ofs_x + day_1_sav + 4 * c_day + 1, "%2d",
 				  c_day);
 			custom_remove_attr(sw->inner, ATTR_HIGHEST);
-		} else if (item_this_day) {
+		} else if (item_this_day == 1) {
 			custom_apply_attr(sw->inner, ATTR_LOW);
 			mvwprintw(sw->inner, ofs_y + 1,
 				  ofs_x + day_1_sav + 4 * c_day + 1, "%2d",
 				  c_day);
 			custom_remove_attr(sw->inner, ATTR_LOW);
+		} else if (item_this_day == 2) {
+			custom_apply_attr(sw->inner, ATTR_TRUE);
+			mvwprintw(sw->inner, ofs_y + 1,
+				  ofs_x + day_1_sav + 4 * c_day + 1, "%2d",
+				  c_day);
+			custom_remove_attr(sw->inner, ATTR_TRUE);
 		} else {
 			/* otherwise, print normal days in black */
 			mvwprintw(sw->inner, ofs_y + 1,
@@ -531,8 +537,10 @@ draw_weekly_view(struct scrollwin *sw, struct date *current_day,
 			attr = ATTR_LOWEST;	/* today, but not selected */
 		else if (t.tm_mday == slctd_day.dd)
 			attr = ATTR_HIGHEST;	/* selected day */
-		else if (item_this_day)
+		else if (item_this_day == 1)
 			attr = ATTR_LOW;
+		else if (item_this_day == 2)
+			attr = ATTR_TRUE;
 		else
 			attr = 0;
 
