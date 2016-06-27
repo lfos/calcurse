@@ -435,6 +435,8 @@ draw_monthly_view(struct scrollwin *sw, struct date *current_day,
 	}
 
 	for (c_day = 1; c_day <= numdays; ++c_day, ++c_day_1, c_day_1 %= 7) {
+		unsigned attr;
+
 		check_day.dd = c_day;
 		check_day.mm = slctd_day.mm;
 		check_day.yyyy = slctd_day.yyyy;
@@ -453,42 +455,27 @@ draw_monthly_view(struct scrollwin *sw, struct date *current_day,
 			ofs_x = (w - 27) / 2 - day_1_sav - 4 * c_day;
 		}
 
-		WINS_CALENDAR_LOCK;
 		if (c_day == current_day->dd
 		    && current_day->mm == slctd_day.mm
 		    && current_day->yyyy == slctd_day.yyyy
-		    && current_day->dd != slctd_day.dd) {
-			/* This is today, so print it in yellow. */
-			custom_apply_attr(sw->inner, ATTR_LOWEST);
-			mvwprintw(sw->inner, ofs_y + 1,
-				  ofs_x + day_1_sav + 4 * c_day + 1, "%2d",
-				  c_day);
-			custom_remove_attr(sw->inner, ATTR_LOWEST);
-		} else if (c_day == slctd_day.dd) {
-			/* This is the selected day, print it according to user's theme. */
-			custom_apply_attr(sw->inner, ATTR_HIGHEST);
-			mvwprintw(sw->inner, ofs_y + 1,
-				  ofs_x + day_1_sav + 4 * c_day + 1, "%2d",
-				  c_day);
-			custom_remove_attr(sw->inner, ATTR_HIGHEST);
-		} else if (item_this_day == 1) {
-			custom_apply_attr(sw->inner, ATTR_LOW);
-			mvwprintw(sw->inner, ofs_y + 1,
-				  ofs_x + day_1_sav + 4 * c_day + 1, "%2d",
-				  c_day);
-			custom_remove_attr(sw->inner, ATTR_LOW);
-		} else if (item_this_day == 2) {
-			custom_apply_attr(sw->inner, ATTR_TRUE);
-			mvwprintw(sw->inner, ofs_y + 1,
-				  ofs_x + day_1_sav + 4 * c_day + 1, "%2d",
-				  c_day);
-			custom_remove_attr(sw->inner, ATTR_TRUE);
-		} else {
-			/* otherwise, print normal days in black */
-			mvwprintw(sw->inner, ofs_y + 1,
-				  ofs_x + day_1_sav + 4 * c_day + 1, "%2d",
-				  c_day);
-		}
+		    && current_day->dd != slctd_day.dd)
+			attr = ATTR_LOWEST;
+		else if (c_day == slctd_day.dd)
+			attr = ATTR_HIGHEST;
+		else if (item_this_day == 1)
+			attr = ATTR_LOW;
+		else if (item_this_day == 2)
+			attr = ATTR_TRUE;
+		else
+			attr = 0;
+
+		WINS_CALENDAR_LOCK;
+		if (attr)
+			custom_apply_attr(sw->inner, attr);
+		mvwprintw(sw->inner, ofs_y + 1,
+			  ofs_x + day_1_sav + 4 * c_day + 1, "%2d", c_day);
+		if (attr)
+			custom_remove_attr(sw->inner, attr);
 		WINS_CALENDAR_UNLOCK;
 	}
 
@@ -534,9 +521,9 @@ draw_weekly_view(struct scrollwin *sw, struct date *current_day,
 		    && current_day->mm == slctd_day.mm
 		    && current_day->yyyy == slctd_day.yyyy
 		    && current_day->dd != slctd_day.dd)
-			attr = ATTR_LOWEST;	/* today, but not selected */
+			attr = ATTR_LOWEST;
 		else if (t.tm_mday == slctd_day.dd)
-			attr = ATTR_HIGHEST;	/* selected day */
+			attr = ATTR_HIGHEST;
 		else if (item_this_day == 1)
 			attr = ATTR_LOW;
 		else if (item_this_day == 2)
