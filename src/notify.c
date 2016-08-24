@@ -549,6 +549,9 @@ int notify_same_recur_item(struct recur_apoint *i)
 /* Launch the notify-bar main thread. */
 void notify_start_main_thread(void)
 {
+	/* Avoid starting the notification bar thread twice. */
+	notify_stop_main_thread();
+
 	pthread_create(&notify_t_main, NULL, notify_main_thread, NULL);
 	notify_check_next_app(0);
 }
