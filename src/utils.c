@@ -75,6 +75,9 @@ void exit_calcurse(int status)
 {
 	int was_interactive;
 
+	ui_calendar_stop_date_thread();
+	io_stop_psave_thread();
+
 	if (ui_mode == UI_CURSES) {
 		notify_stop_main_thread();
 		clear();
@@ -86,11 +89,10 @@ void exit_calcurse(int status)
 		was_interactive = 0;
 	}
 
-	ui_calendar_stop_date_thread();
-	io_stop_psave_thread();
 	free_user_data();
 	keys_free();
 	mem_stats();
+
 	if (was_interactive) {
 		if (unlink(path_cpid) != 0)
 			EXIT(_("Could not remove calcurse lock file: %s\n"),
