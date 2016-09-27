@@ -717,11 +717,24 @@ void wins_erase_status_bar(void)
 /* Update the status bar page number to display other commands. */
 void wins_other_status_page(int panel)
 {
-	int max_page = bindings_size / (KEYS_CMDS_PER_LINE * 2 - 1) + 1;
+	/*
+	 * Determine the number of completely filled pages of key bindings.
+	 * There are two lines of bindings and KEYS_CMDS_PER_LINE bindings per
+	 * line. On each page (other than the last page), one slot is reserved
+	 * for OtherCmd.
+	 */
+	const int slots_per_page = KEYS_CMDS_PER_LINE * 2 - 1;
+	int max_page = bindings_size / slots_per_page;
 
-	/* There is no "OtherCmd" on the last page. */
-	if (bindings_size % (KEYS_CMDS_PER_LINE * 2 - 1) == 1)
-		max_page--;
+	/*
+	 * The result of the previous computation might have been rounded down.
+	 * In this case, there are some bindings left. If there is exactly one
+	 * binding left, it can be squashed onto the last page in place of the
+	 * OtherCmd binding. If there are at least two bindings left, we need
+	 * to add another page.
+	 */
+	if (bindings_size % slots_per_page > 1)
+		max_page++;
 
 	status_page = (status_page % max_page) + 1;
 }
