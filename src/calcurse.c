@@ -49,6 +49,15 @@ int count, reg;
 static void do_storage(int day_changed)
 {
 	struct day_item *day = ui_day_selitem();
+	union aptev_ptr item;
+
+	if (day) {
+		/*
+		 * day_process_storage() rebuilds the vector of day items, so
+		 * we need to save the reference to the actual item here.
+		 */
+		item = day->item;
+	}
 
 	day_process_storage(ui_calendar_get_slctd_day(), day_changed);
 	ui_day_load_items();
@@ -56,7 +65,7 @@ static void do_storage(int day_changed)
 	if (day_changed)
 		ui_day_sel_reset();
 	else if (day)
-		ui_day_set_selitem(day);
+		ui_day_set_selitem_by_aptev_ptr(item);
 }
 
 static inline void key_generic_change_view(void)

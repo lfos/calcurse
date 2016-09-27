@@ -46,11 +46,16 @@ struct day_item *ui_day_selitem(void)
 	return day_get_item(listbox_get_sel(&lb_apt));
 }
 
-void ui_day_set_selitem(struct day_item *day)
+void ui_day_set_selitem_by_aptev_ptr(union aptev_ptr p)
 {
-	int n = day_get_position(day);
+	int n = day_get_position_by_aptev_ptr(p);
 	if (n >= 0)
 		listbox_set_sel(&lb_apt, n);
+}
+
+void ui_day_set_selitem(struct day_item *day)
+{
+	ui_day_set_selitem_by_aptev_ptr(day->item);
 }
 
 /* Request the user to enter a new time. */
