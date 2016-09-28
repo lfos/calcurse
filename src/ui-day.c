@@ -524,6 +524,7 @@ void ui_day_item_add(void)
 	unsigned apoint_duration;
 	unsigned end_h, end_m;
 	int is_appointment = 1;
+	union aptev_ptr item;
 
 	/* Get the starting time */
 	for (;;) {
@@ -580,26 +581,28 @@ void ui_day_item_add(void)
 			status_mesg(format_message_2, enter_str);
 			wgetch(win[KEY].p);
 		}
+	} else {
+		heures = minutes = 0;
 	}
 
 	status_mesg(mesg_3, "");
 	if (getstring(win[STA].p, item_mesg, BUFSIZ, 0, 1) ==
 	    GETSTRING_VALID) {
+		apoint_start = date2sec(*ui_calendar_get_slctd_day(), heures,
+					minutes);
 		if (is_appointment) {
-			apoint_start =
-			    date2sec(*ui_calendar_get_slctd_day(), heures,
-				     minutes);
-			apoint_new(item_mesg, 0L, apoint_start,
-				   min2sec(apoint_duration), 0L);
+			item.apt = apoint_new(item_mesg, 0L, apoint_start,
+					      min2sec(apoint_duration), 0L);
 			if (notify_bar())
 				notify_check_added(item_mesg, apoint_start,
 						   0L);
 		} else {
-			event_new(item_mesg, 0L,
-				  date2sec(*ui_calendar_get_slctd_day(), 0,
-					   0), 1);
+			item.ev = event_new(item_mesg, 0L, apoint_start, 1);
 		}
 		io_set_modified();
+		day_process_storage(ui_calendar_get_slctd_day(), 0);
+		ui_day_load_items();
+		ui_day_set_selitem_by_aptev_ptr(item);
 	}
 
 	ui_calendar_monthly_view_cache_set_invalid();

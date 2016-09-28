@@ -120,7 +120,6 @@ static inline void key_generic_config_menu(void)
 static inline void key_generic_add_appt(void)
 {
 	ui_day_item_add();
-	do_storage(1);
 	wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
 }
 
@@ -136,7 +135,6 @@ static inline void key_add_item(void)
 	case APP:
 	case CAL:
 		ui_day_item_add();
-		do_storage(0);
 		wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
 		break;
 	case TOD:
