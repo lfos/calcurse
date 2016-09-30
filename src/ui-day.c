@@ -61,26 +61,42 @@ void ui_day_set_selitem(struct day_item *day)
 /* Request the user to enter a new time. */
 static int day_edit_time(int time)
 {
-	char *timestr = date_sec2date_str(time, "%H:%M");
+	char *input = date_sec2date_str(time, "%H:%M");
 	const char *msg_time =
-	    _("Enter start time ([hh:mm] or [hhmm]):");
+	    _("Enter start time ([hh:mm] or [hhmm]) or date:");
 	const char *enter_str = _("Press [Enter] to continue");
 	const char *fmt_msg =
 	    _("You entered an invalid time, should be [hh:mm] or [hhmm]");
-	int hour, minute;
+	unsigned int hour, minute;
+	int year, month, day;
+	struct date new_date;
 
 	for (;;) {
 		status_mesg(msg_time, "");
-		if (updatestring(win[STA].p, &timestr, 0, 1) !=
-		    GETSTRING_VALID)
+		if (updatestring(win[STA].p, &input, 0, 1) != GETSTRING_VALID)
 			return 0;
-		if (parse_time(timestr, &hour, &minute) == 1) {
-			mem_free(timestr);
-			return update_time_in_date(time, hour, minute);
-		} else {
-			status_mesg(fmt_msg, enter_str);
-			wgetch(win[KEY].p);
+		char *inputcpy = mem_strdup(input);
+		char *p = strtok(inputcpy, " ");
+		while (p) {
+			if (parse_date(p, conf.input_datefmt, &year, &month,
+				       &day, ui_calendar_get_slctd_day())) {
+				new_date.dd = day;
+				new_date.mm = month;
+				new_date.yyyy = year;
+				time = date2sec(new_date, 0, 0) +
+				       get_item_time(time);
+			} else if (parse_time(p, &hour, &minute) == 1) {
+				time = update_time_in_date(time, hour, minute);
+			} else {
+				status_mesg(fmt_msg, enter_str);
+				wgetch(win[KEY].p);
+				break;
+			}
+			p = strtok(NULL, " ");
 		}
+		mem_free(inputcpy);
+		if (!p)
+			return time;
 	}
 }
 
