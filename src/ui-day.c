@@ -59,8 +59,7 @@ void ui_day_set_selitem(struct day_item *day)
 }
 
 /* Request the user to enter a new time. */
-static int day_edit_time(int time, unsigned *new_hour,
-			 unsigned *new_minute)
+static int day_edit_time(int time)
 {
 	char *timestr = date_sec2date_str(time, "%H:%M");
 	const char *msg_time =
@@ -68,15 +67,16 @@ static int day_edit_time(int time, unsigned *new_hour,
 	const char *enter_str = _("Press [Enter] to continue");
 	const char *fmt_msg =
 	    _("You entered an invalid time, should be [hh:mm] or [hhmm]");
+	int hour, minute;
 
 	for (;;) {
 		status_mesg(msg_time, "");
 		if (updatestring(win[STA].p, &timestr, 0, 1) !=
 		    GETSTRING_VALID)
 			return 0;
-		if (parse_time(timestr, new_hour, new_minute) == 1) {
+		if (parse_time(timestr, &hour, &minute) == 1) {
 			mem_free(timestr);
-			return 1;
+			return update_time_in_date(time, hour, minute);
 		} else {
 			status_mesg(fmt_msg, enter_str);
 			wgetch(win[KEY].p);
@@ -131,20 +131,19 @@ static int day_edit_duration(int start, int dur, unsigned *new_duration)
 static void update_start_time(long *start, long *dur, int update_dur)
 {
 	long newtime;
-	unsigned hr, mn;
 	int valid_date;
 	const char *msg_wrong_time =
 	    _("Invalid time: start time must be before end time!");
 	const char *msg_enter = _("Press [Enter] to continue");
 
 	do {
-		if (!day_edit_time(*start, &hr, &mn))
+		newtime = day_edit_time(*start);
+		if (!newtime)
 			break;
 		if (!update_dur) {
-			*start = update_time_in_date(*start, hr, mn);
+			*start = newtime;
 			return;
 		}
-		newtime = update_time_in_date(*start, hr, mn);
 		if (newtime < *start + *dur) {
 			*dur -= (newtime - *start);
 			*start = newtime;
