@@ -1103,6 +1103,45 @@ int parse_duration(const char *string, unsigned *duration)
 	return 1;
 }
 
+/*
+ * Converts a string containing a date or a time into a time stamp.
+ *
+ * Takes a date/time string and a time stamp. If the string only contains a
+ * date, the date of the time stamp is updated while the time remains
+ * untouched. If the string only contains a time, the time of the time stamp is
+ * updated and the date remains the same. If the string contains both a date
+ * and a time, the time stamp is updated to match the given string.
+ *
+ * Returns 1 on success and 0 on failure.
+ */
+int parse_datetime(const char *string, long *ts)
+{
+	char *t = mem_strdup(string);
+	char *p = strtok(t, " ");
+
+	unsigned int hour, minute;
+	int year, month, day;
+	struct date new_date;
+
+	while (p) {
+		if (parse_date(p, conf.input_datefmt, &year, &month, &day,
+			       ui_calendar_get_slctd_day())) {
+			new_date.dd = day;
+			new_date.mm = month;
+			new_date.yyyy = year;
+			*ts = date2sec(new_date, 0, 0) + get_item_time(*ts);
+		} else if (parse_time(p, &hour, &minute) == 1) {
+			*ts = update_time_in_date(*ts, hour, minute);
+		} else {
+			return 0;
+		}
+		p = strtok(NULL, " ");
+	}
+
+	mem_free(t);
+	return 1;
+}
+
 void file_close(FILE * f, const char *pos)
 {
 	EXIT_IF((fclose(f)) != 0, _("Error when closing file at %s"), pos);
