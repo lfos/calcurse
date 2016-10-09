@@ -89,7 +89,7 @@ static int day_edit_duration(int start, int dur, unsigned *new_duration)
 	const char *enter_str = _("Press [Enter] to continue");
 	const char *fmt_msg =
 	    _("You entered an invalid time, should be [hh:mm] or [hhmm]");
-	long newtime;
+	long newtime = start + dur;
 	unsigned hr, mn;
 
 	for (;;) {
@@ -112,6 +112,9 @@ static int day_edit_duration(int start, int dur, unsigned *new_duration)
 			    (newtime >
 			     start) ? newtime - start : DAYINSEC +
 			    newtime - start;
+			break;
+		} else if (parse_datetime(timestr, &newtime)) {
+			*new_duration = newtime - start;
 			break;
 		} else {
 			status_mesg(fmt_msg, enter_str);
@@ -500,7 +503,7 @@ void ui_day_item_pipe(void)
  */
 void ui_day_item_add(void)
 {
-#define LTIME 6
+#define LTIME 16
 #define LDUR 12
 	const char *mesg_1 =
 	    _("Enter start time ([hh:mm] or [hhmm]), leave blank for an all-day event:");
@@ -514,11 +517,11 @@ void ui_day_item_add(void)
 	const char *enter_str = _("Press [Enter] to continue");
 	char item_time[LDUR] = "";
 	char item_mesg[BUFSIZ] = "";
-	time_t apoint_start;
-	unsigned heures, minutes;
+	time_t start = date2sec(*ui_calendar_get_slctd_day(), 0, 0), end;
 	unsigned apoint_duration;
 	unsigned end_h, end_m;
 	int is_appointment = 1;
+	int ret;
 	union aptev_ptr item;
 
 	/* Get the starting time */
@@ -531,7 +534,10 @@ void ui_day_item_add(void)
 			is_appointment = 0;
 			break;
 		}
-		if (parse_time(item_time, &heures, &minutes) == 1)
+		ret = parse_datetime(item_time, &start);
+		if (!(ret & 2))
+			is_appointment = 0;
+		if (ret)
 			break;
 		status_mesg(format_message_1, enter_str);
 		wgetch(win[KEY].p);
@@ -553,46 +559,37 @@ void ui_day_item_add(void)
 				apoint_duration = 0;
 				break;
 			}
-			if (*item_time == '+'
-			    && parse_duration(item_time + 1,
-					      &apoint_duration) == 1)
+			if (*item_time == '+' && parse_duration(item_time + 1,
+						&apoint_duration) == 1) {
+				apoint_duration *= MININSEC;
 				break;
+			}
 			if (parse_time(item_time, &end_h, &end_m) == 1) {
-				if (end_h < heures
-				    || ((end_h == heures)
-					&& (end_m < minutes))) {
-					apoint_duration =
-					    MININSEC - minutes + end_m +
-					    (24 + end_h -
-					     (heures + 1)) * MININSEC;
-				} else {
-					apoint_duration =
-					    MININSEC - minutes + end_m +
-					    (end_h -
-					     (heures + 1)) * MININSEC;
-				}
+				end = update_time_in_date(start, end_h, end_m);
+				apoint_duration = (end > start) ? end - start :
+					DAYINSEC + end - start;
+				break;
+			}
+			end = start;
+			if (parse_datetime(item_time, &end)) {
+				apoint_duration = end - start;
 				break;
 			}
 			status_mesg(format_message_2, enter_str);
 			wgetch(win[KEY].p);
 		}
-	} else {
-		heures = minutes = 0;
 	}
 
 	status_mesg(mesg_3, "");
 	if (getstring(win[STA].p, item_mesg, BUFSIZ, 0, 1) ==
 	    GETSTRING_VALID) {
-		apoint_start = date2sec(*ui_calendar_get_slctd_day(), heures,
-					minutes);
 		if (is_appointment) {
-			item.apt = apoint_new(item_mesg, 0L, apoint_start,
-					      min2sec(apoint_duration), 0L);
+			item.apt = apoint_new(item_mesg, 0L, start,
+					      apoint_duration, 0L);
 			if (notify_bar())
-				notify_check_added(item_mesg, apoint_start,
-						   0L);
+				notify_check_added(item_mesg, start, 0L);
 		} else {
-			item.ev = event_new(item_mesg, 0L, apoint_start, 1);
+			item.ev = event_new(item_mesg, 0L, start, 1);
 		}
 		io_set_modified();
 		day_process_storage(ui_calendar_get_slctd_day(), 0);

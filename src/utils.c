@@ -1112,7 +1112,8 @@ int parse_duration(const char *string, unsigned *duration)
  * updated and the date remains the same. If the string contains both a date
  * and a time, the time stamp is updated to match the given string.
  *
- * Returns 1 on success and 0 on failure.
+ * Returns a positive value on success and 0 on failure. The least-significant
+ * bit is set if the date was updated. Bit 1 is set if the time was updated.
  */
 int parse_datetime(const char *string, long *ts)
 {
@@ -1122,6 +1123,7 @@ int parse_datetime(const char *string, long *ts)
 	unsigned int hour, minute;
 	int year, month, day;
 	struct date new_date;
+	int ret = 0;
 
 	while (p) {
 		if (parse_date(p, conf.input_datefmt, &year, &month, &day,
@@ -1130,8 +1132,10 @@ int parse_datetime(const char *string, long *ts)
 			new_date.mm = month;
 			new_date.yyyy = year;
 			*ts = date2sec(new_date, 0, 0) + get_item_time(*ts);
+			ret |= 1;
 		} else if (parse_time(p, &hour, &minute) == 1) {
 			*ts = update_time_in_date(*ts, hour, minute);
+			ret |= 2;
 		} else {
 			return 0;
 		}
@@ -1139,7 +1143,7 @@ int parse_datetime(const char *string, long *ts)
 	}
 
 	mem_free(t);
-	return 1;
+	return ret;
 }
 
 void file_close(FILE * f, const char *pos)
