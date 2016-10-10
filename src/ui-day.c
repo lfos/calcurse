@@ -115,7 +115,7 @@ static int day_edit_duration(int start, int dur, unsigned *new_duration)
 		 * the start time, assume that the time belongs to the
 		 * next day.
 		 */
-		if (ret == 2 && end < start)
+		if (!(ret & PARSE_DATETIME_HAS_DATE) && end < start)
 			end = date_sec_change(end, 0, 1);
 		if (ret) {
 			*new_duration = end - start;
@@ -537,7 +537,7 @@ void ui_day_item_add(void)
 			break;
 		}
 		ret = parse_datetime(item_time, &start);
-		if (!(ret & 2))
+		if (!(ret & PARSE_DATETIME_HAS_TIME))
 			is_appointment = 0;
 		if (ret)
 			break;
@@ -574,7 +574,7 @@ void ui_day_item_add(void)
 			 * the start time, assume that the time belongs to the
 			 * next day.
 			 */
-			if (ret == 2 && end < start)
+			if (!(ret & PARSE_DATETIME_HAS_DATE) && end < start)
 				end = date_sec_change(end, 0, 1);
 			if (ret) {
 				dur = end - start;

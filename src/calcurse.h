@@ -628,6 +628,10 @@ enum getstr {
 	GETSTRING_RET		/* return was pressed without entering any text. */
 };
 
+/* Return codes for parse_datetime(). */
+#define PARSE_DATETIME_HAS_DATE (1 << 0)
+#define PARSE_DATETIME_HAS_TIME (1 << 1)
+
 /* Week days. */
 enum wday {
 	SUNDAY,

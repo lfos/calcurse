@@ -1132,10 +1132,10 @@ int parse_datetime(const char *string, long *ts)
 			new_date.mm = month;
 			new_date.yyyy = year;
 			*ts = date2sec(new_date, 0, 0) + get_item_time(*ts);
-			ret |= 1;
+			ret |= PARSE_DATETIME_HAS_DATE;
 		} else if (parse_time(p, &hour, &minute) == 1) {
 			*ts = update_time_in_date(*ts, hour, minute);
-			ret |= 2;
+			ret |= PARSE_DATETIME_HAS_TIME;
 		} else {
 			return 0;
 		}
