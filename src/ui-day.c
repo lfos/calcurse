@@ -89,8 +89,7 @@ static int day_edit_duration(int start, int dur, unsigned *new_duration)
 	const char *enter_str = _("Press [Enter] to continue");
 	const char *fmt_msg =
 	    _("You entered an invalid time, should be [hh:mm] or [hhmm]");
-	long newtime = start + dur;
-	unsigned hr, mn;
+	long end;
 
 	for (;;) {
 		int ret;
@@ -102,24 +101,28 @@ static int day_edit_duration(int start, int dur, unsigned *new_duration)
 		} else if (ret == GETSTRING_RET) {
 			*new_duration = 0;
 			break;
-		} else if (*timestr == '+'
-		    && parse_duration(timestr + 1, new_duration) == 1) {
-			*new_duration *= MININSEC;
-			break;
-		} else if (parse_time(timestr, &hr, &mn) == 1) {
-			newtime = update_time_in_date(start + dur, hr, mn);
-			*new_duration =
-			    (newtime >
-			     start) ? newtime - start : DAYINSEC +
-			    newtime - start;
-			break;
-		} else if (parse_datetime(timestr, &newtime)) {
-			*new_duration = newtime - start;
-			break;
-		} else {
-			status_mesg(fmt_msg, enter_str);
-			wgetch(win[KEY].p);
 		}
+		if (*timestr == '+') {
+			if (parse_duration(timestr + 1, new_duration)) {
+				*new_duration *= MININSEC;
+				break;
+			}
+		}
+		end = start + dur;
+		ret = parse_datetime(timestr, &end);
+		/*
+		 * If the user enters a end time which is smaller than
+		 * the start time, assume that the time belongs to the
+		 * next day.
+		 */
+		if (ret == 2 && end < start)
+			end = date_sec_change(end, 0, 1);
+		if (ret) {
+			*new_duration = end - start;
+			break;
+		}
+		status_mesg(fmt_msg, enter_str);
+		wgetch(win[KEY].p);
 	}
 
 	mem_free(timestr);
@@ -518,8 +521,7 @@ void ui_day_item_add(void)
 	char item_time[LDUR] = "";
 	char item_mesg[BUFSIZ] = "";
 	time_t start = date2sec(*ui_calendar_get_slctd_day(), 0, 0), end;
-	unsigned apoint_duration;
-	unsigned end_h, end_m;
+	unsigned dur;
 	int is_appointment = 1;
 	int ret;
 	union aptev_ptr item;
@@ -556,23 +558,26 @@ void ui_day_item_add(void)
 			    GETSTRING_ESC)
 				return;
 			if (strlen(item_time) == 0) {
-				apoint_duration = 0;
+				dur = 0;
 				break;
 			}
-			if (*item_time == '+' && parse_duration(item_time + 1,
-						&apoint_duration) == 1) {
-				apoint_duration *= MININSEC;
-				break;
-			}
-			if (parse_time(item_time, &end_h, &end_m) == 1) {
-				end = update_time_in_date(start, end_h, end_m);
-				apoint_duration = (end > start) ? end - start :
-					DAYINSEC + end - start;
-				break;
+			if (*item_time == '+') {
+				if (parse_duration(item_time + 1, &dur)) {
+					dur *= MININSEC;
+					break;
+				}
 			}
 			end = start;
-			if (parse_datetime(item_time, &end)) {
-				apoint_duration = end - start;
+			ret = parse_datetime(item_time, &end);
+			/*
+			 * If the user enters a end time which is smaller than
+			 * the start time, assume that the time belongs to the
+			 * next day.
+			 */
+			if (ret == 2 && end < start)
+				end = date_sec_change(end, 0, 1);
+			if (ret) {
+				dur = end - start;
 				break;
 			}
 			status_mesg(format_message_2, enter_str);
@@ -584,8 +589,7 @@ void ui_day_item_add(void)
 	if (getstring(win[STA].p, item_mesg, BUFSIZ, 0, 1) ==
 	    GETSTRING_VALID) {
 		if (is_appointment) {
-			item.apt = apoint_new(item_mesg, 0L, start,
-					      apoint_duration, 0L);
+			item.apt = apoint_new(item_mesg, 0L, start, dur, 0L);
 			if (notify_bar())
 				notify_check_added(item_mesg, start, 0L);
 		} else {
