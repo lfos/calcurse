@@ -1,3 +1,24 @@
+[12 Oct 2016]
+Version 4.2.0:
+- New features:
+  * In the calendar panel, days with non-recurrent items now have another color
+    as days containing recurrent items only.
+
+  * Automatically select new appointments/events after creation.
+
+  * Support for (optional) dates when specifying the start/end time of items.
+    Allows for easily moving items and adding appointments without switching
+    the selected day beforehand.
+
+- Bug fixes:
+  * Encoding fixes in calcurse-caldav (reported by Raf Czlonka).
+
+  * Avoid notification bar artifacts after leaving calcurse.
+
+  * Fixes to the key binding pagination (reported by Kevin Wang).
+
+  * Do not change selection unexpectedly after modifying items.
+
 [12 Apr 2016]
 Version 4.1.0:
 - New features:
