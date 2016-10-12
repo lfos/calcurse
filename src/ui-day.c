@@ -177,7 +177,7 @@ static void update_rept(struct rpt **rpt, const long start)
 {
 	int newtype, newfreq;
 	time_t newuntil;
-	char *freqstr = NULL, *timstr, *outstr;
+	char *freqstr = NULL, *timstr = NULL, *outstr;
 	const char *msg_rpt_prefix = _("Enter the new repetition type:");
 	const char *msg_rpt_daily = _("(d)aily");
 	const char *msg_rpt_weekly = _("(w)eekly");
