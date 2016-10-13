@@ -317,7 +317,7 @@ static time_t parse_datetimearg(const char *str)
 static int parse_daterange(const char *str, time_t *date_from, time_t *date_to)
 {
 	int ret = 0;
-	char *s = xstrdup(str);
+	char *s = mem_strdup(str);
 	char *p = strchr(s, ',');
 
 	if (!p)
@@ -344,7 +344,7 @@ static int parse_daterange(const char *str, time_t *date_from, time_t *date_to)
 
 	ret = 1;
 cleanup:
-	free(s);
+	mem_free(s);
 	return ret;
 }
 

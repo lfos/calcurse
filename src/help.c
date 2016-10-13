@@ -45,7 +45,7 @@ static int find_basedir(const char *locale_info[], unsigned n, char **basedir)
 	for (i = 0; i < n; i++) {
 		if (!locale_info[i])
 			continue;
-		locale = strdup(locale_info[i]);
+		locale = mem_strdup(locale_info[i]);
 
 		asprintf(basedir, "%s/%s", DOCDIR, locale);
 		if (io_dir_exists(*basedir)) {
@@ -79,7 +79,7 @@ static int find_basedir(const char *locale_info[], unsigned n, char **basedir)
 
 cleanup:
 	if (locale)
-		free(locale);
+		mem_free(locale);
 	return ret;
 }
 

@@ -56,8 +56,8 @@ void listbox_delete(struct listbox *lb)
 {
 	EXIT_IF(lb == NULL, "null pointer");
 	wins_scrollwin_delete(&(lb->sw));
-	free(lb->type);
-	free(lb->ch);
+	mem_free(lb->type);
+	mem_free(lb->ch);
 }
 
 void listbox_resize(struct listbox *lb, int y, int x, int h, int w)
@@ -95,8 +95,8 @@ void listbox_load_items(struct listbox *lb, int item_count)
 		return;
 	}
 
-	free(lb->type);
-	free(lb->ch);
+	mem_free(lb->type);
+	mem_free(lb->ch);
 	lb->type = mem_malloc(item_count * sizeof(unsigned));
 	lb->ch = mem_malloc((item_count + 1) * sizeof(unsigned));
 	for (i = 0, ch = 0; i < item_count; i++) {

@@ -754,7 +754,7 @@ static void general_option_edit(int i)
 		break;
 	}
 
-	free(buf);
+	mem_free(buf);
 }
 
 /* General configuration. */

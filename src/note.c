@@ -201,7 +201,7 @@ void note_gc(void)
 		struct apoint *apt = LLIST_GET_DATA(i);
 		if (apt->note) {
 			tmph.hash = apt->note;
-			free(HTABLE_REMOVE(htp, &gc_htable, &tmph));
+			mem_free(HTABLE_REMOVE(htp, &gc_htable, &tmph));
 		}
 	}
 
@@ -209,7 +209,7 @@ void note_gc(void)
 		struct event *ev = LLIST_GET_DATA(i);
 		if (ev->note) {
 			tmph.hash = ev->note;
-			free(HTABLE_REMOVE(htp, &gc_htable, &tmph));
+			mem_free(HTABLE_REMOVE(htp, &gc_htable, &tmph));
 		}
 	}
 
@@ -217,7 +217,7 @@ void note_gc(void)
 		struct recur_apoint *rapt = LLIST_GET_DATA(i);
 		if (rapt->note) {
 			tmph.hash = rapt->note;
-			free(HTABLE_REMOVE(htp, &gc_htable, &tmph));
+			mem_free(HTABLE_REMOVE(htp, &gc_htable, &tmph));
 		}
 	}
 
@@ -225,7 +225,7 @@ void note_gc(void)
 		struct recur_event *rev = LLIST_GET_DATA(i);
 		if (rev->note) {
 			tmph.hash = rev->note;
-			free(HTABLE_REMOVE(htp, &gc_htable, &tmph));
+			mem_free(HTABLE_REMOVE(htp, &gc_htable, &tmph));
 		}
 	}
 
@@ -233,7 +233,7 @@ void note_gc(void)
 		struct todo *todo = LLIST_GET_DATA(i);
 		if (todo->note) {
 			tmph.hash = todo->note;
-			free(HTABLE_REMOVE(htp, &gc_htable, &tmph));
+			mem_free(HTABLE_REMOVE(htp, &gc_htable, &tmph));
 		}
 	}
 

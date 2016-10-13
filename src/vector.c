@@ -53,7 +53,7 @@ void vector_free(vector_t *v)
 {
 	v->count = 0;
 	v->size = 0;
-	free(v->data);
+	mem_free(v->data);
 	v->data = NULL;
 }
 
@@ -100,7 +100,7 @@ void vector_add(vector_t *v, void *data)
 {
 	if (v->count >= v->size) {
 		v->size *= 2;
-		v->data = realloc(v->data, v->size * sizeof(void *));
+		v->data = mem_realloc(v->data, v->size, sizeof(void *));
 	}
 
 	v->data[v->count] = data;

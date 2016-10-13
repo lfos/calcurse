@@ -821,8 +821,8 @@ void io_reload_data(void)
 				wins_launch_external(arg_todo);
 			}
 
-			xfree(path_apts_backup);
-			xfree(path_todo_backup);
+			mem_free(path_apts_backup);
+			mem_free(path_todo_backup);
 
 			/*
 			 * We do not directly write to the data files here;
