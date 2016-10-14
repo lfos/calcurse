@@ -59,6 +59,9 @@ struct todo *todo_get_item(int item_number, int skip_completed)
 	else
 		i = LLIST_NTH(&todolist, item_number);
 
+	if (!i)
+		return NULL;
+
 	return LLIST_GET_DATA(i);
 }
 

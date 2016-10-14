@@ -87,14 +87,13 @@ void ui_todo_delete(void)
 	const int nb_erase_choice = 2;
 	int answer;
 
-	if (!LLIST_FIRST(&todolist) ||
-	    (conf.confirm_delete
-	     && (status_ask_bool(del_todo_str) != 1))) {
+	struct todo *item = ui_todo_selitem();
+
+	if (!item || (conf.confirm_delete &&
+		      (status_ask_bool(del_todo_str) != 1))) {
 		wins_erase_status_bar();
 		return;
 	}
-
-	struct todo *item = ui_todo_selitem();
 
 	if (item->note)
 		answer = status_ask_choice(erase_warning, erase_choice,
@@ -121,11 +120,11 @@ void ui_todo_delete(void)
 /* Edit the description of an already existing todo item. */
 void ui_todo_edit(void)
 {
-	if (!LLIST_FIRST(&todolist))
-		return;
-
 	struct todo *item = ui_todo_selitem();
 	const char *mesg = _("Enter the new TODO description:");
+
+	if (!item)
+		return;
 
 	status_mesg(mesg, "");
 	updatestring(win[STA].p, &item->mesg, 0, 1);
@@ -144,10 +143,10 @@ void ui_todo_pipe(void)
 	int pid;
 	FILE *fpout;
 
-	if (!LLIST_FIRST(&todolist))
-		return;
-
 	struct todo *item = ui_todo_selitem();
+
+	if (!item)
+		return;
 
 	status_mesg(_("Pipe item to external command:"), "");
 	if (getstring(win[STA].p, cmd, BUFSIZ, 0, 1) != GETSTRING_VALID)
@@ -284,10 +283,11 @@ void ui_todo_update_panel(int which_pan)
 /* Change an item priority by pressing '+' or '-' inside TODO panel. */
 void ui_todo_chg_priority(int diff)
 {
-	if (!LLIST_FIRST(&todolist))
+	struct todo *item = ui_todo_selitem();
+
+	if (!item)
 		return;
 
-	struct todo *item = ui_todo_selitem();
 	int id = item->id + diff;
 	struct todo *item_new;
 
@@ -304,19 +304,21 @@ void ui_todo_chg_priority(int diff)
 
 void ui_todo_popup_item(void)
 {
-	if (!LLIST_FIRST(&todolist))
+	struct todo *item = ui_todo_selitem();
+
+	if (!item)
 		return;
 
-	struct todo *item = ui_todo_selitem();
 	item_in_popup(NULL, NULL, item->mesg, _("TODO:"));
 }
 
 void ui_todo_flag(void)
 {
-	if (!LLIST_FIRST(&todolist))
+	struct todo *item = ui_todo_selitem();
+
+	if (!item)
 		return;
 
-	struct todo *item = ui_todo_selitem();
 	todo_flag(item);
 	ui_todo_load_items();
 	io_set_modified();
@@ -325,19 +327,21 @@ void ui_todo_flag(void)
 
 void ui_todo_view_note(void)
 {
-	if (!LLIST_FIRST(&todolist))
+	struct todo *item = ui_todo_selitem();
+
+	if (!item)
 		return;
 
-	struct todo *item = ui_todo_selitem();
 	todo_view_note(item, conf.pager);
 }
 
 void ui_todo_edit_note(void)
 {
-	if (!LLIST_FIRST(&todolist))
+	struct todo *item = ui_todo_selitem();
+
+	if (!item)
 		return;
 
-	struct todo *item = ui_todo_selitem();
 	todo_edit_note(item, conf.editor);
 	io_set_modified();
 }
