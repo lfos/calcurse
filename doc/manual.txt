@@ -201,8 +201,8 @@ Note: as for the `-a` flag, the calendar  from which to  read  the appointments
 can be specified using the `-c` flag.
 
 `--daemon`::
-  Start calcurse in background mode. See <<basics_daemon,Background mode>> for
-  details.
+  Start calcurse in background mode. Restart if the daemon was already running.
+  See <<basics_daemon,Background mode>> for details.
 
 `--days <num>`::
   Specify the length of the range (in days) when used with `-Q`. Cannot be

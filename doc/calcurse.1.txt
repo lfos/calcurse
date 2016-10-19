@@ -97,7 +97,7 @@ today, tomorrow, and the day after tomorrow. The first form is equivalent to
 appointments can be specified using the *-c* flag.
 
 *--daemon*::
-  Start calcurse in background mode.
+  Start calcurse in background mode. Restart if the daemon was already running.
 
 *--days* <num>::
   Specify the length of the range (in days) when used with *-Q*. Cannot be

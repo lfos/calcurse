@@ -803,6 +803,7 @@ int parse_args(int argc, char **argv)
 		io_export_data(xfmt, export_uid);
 	} else if (daemon) {
 		notify_init_vars();
+		dmon_stop();
 		dmon_start(0);
 	} else {
 		/* interactive mode */
