@@ -60,6 +60,25 @@ void listbox_delete(struct listbox *lb)
 	mem_free(lb->ch);
 }
 
+static void listbox_fix_visible_region(struct listbox *lb)
+{
+	unsigned last_line = lb->ch[lb->item_count] - 1;
+	int i;
+
+	wins_scrollwin_ensure_visible(&(lb->sw), lb->ch[lb->item_sel]);
+	wins_scrollwin_ensure_visible(&(lb->sw), lb->ch[lb->item_sel + 1] - 1);
+
+	i = lb->item_sel - 1;
+	while (i >= 0 && lb->type[i] != LISTBOX_ROW_TEXT) {
+		wins_scrollwin_ensure_visible(&(lb->sw), lb->ch[i]);
+		wins_scrollwin_ensure_visible(&(lb->sw), lb->ch[i + 1] - 1);
+		i++;
+	}
+
+	if (wins_scrollwin_is_visible(&(lb->sw), last_line))
+		wins_scrollwin_set_lower(&(lb->sw), last_line);
+}
+
 void listbox_resize(struct listbox *lb, int y, int x, int h, int w)
 {
 	EXIT_IF(lb == NULL, "null pointer");
@@ -68,13 +87,7 @@ void listbox_resize(struct listbox *lb, int y, int x, int h, int w)
 	if (lb->item_sel < 0)
 		return;
 
-	unsigned last_line = lb->ch[lb->item_count] - 1;
-
-	if (wins_scrollwin_is_visible(&(lb->sw), last_line))
-		wins_scrollwin_set_lower(&(lb->sw), last_line);
-
-	wins_scrollwin_ensure_visible(&(lb->sw), lb->ch[lb->item_sel]);
-	wins_scrollwin_ensure_visible(&(lb->sw), lb->ch[lb->item_sel + 1] - 1);
+	listbox_fix_visible_region(lb);
 }
 
 void listbox_set_cb_data(struct listbox *lb, void *cb_data)
@@ -160,21 +173,6 @@ static void listbox_fix_sel(struct listbox *lb, int direction)
 		} else {
 			lb->item_sel += direction;
 		}
-	}
-}
-
-static void listbox_fix_visible_region(struct listbox *lb)
-{
-	int i;
-
-	wins_scrollwin_ensure_visible(&(lb->sw), lb->ch[lb->item_sel]);
-	wins_scrollwin_ensure_visible(&(lb->sw), lb->ch[lb->item_sel + 1] - 1);
-
-	i = lb->item_sel - 1;
-	while (i >= 0 && lb->type[i] != LISTBOX_ROW_TEXT) {
-		wins_scrollwin_ensure_visible(&(lb->sw), lb->ch[i]);
-		wins_scrollwin_ensure_visible(&(lb->sw), lb->ch[i + 1] - 1);
-		i++;
 	}
 }
 
