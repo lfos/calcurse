@@ -1,3 +1,18 @@
+[30 Oct 2016]
+Version 4.2.1:
+- Bug fixes:
+  * Do not crash when editing the repetition of an appointment and passing an
+    empty repetition value (reported and fixed by Vlad Glagolev).
+
+  * Avoid a crash when all todo items are hidden and an interactive action is
+    performed (reported by Vlad Glagolev).
+
+  * Documentation for the --daemon command line option.
+
+  * Avoid starting the daemon more than once (reported by Vlad Glagolev).
+
+  * Improvements to scrolling within list boxes.
+
 [12 Oct 2016]
 Version 4.2.0:
 - New features:
