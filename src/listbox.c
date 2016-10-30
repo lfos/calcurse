@@ -126,6 +126,7 @@ void listbox_load_items(struct listbox *lb, int item_count)
 	else if (lb->item_sel >= item_count)
 		lb->item_sel = item_count - 1;
 	listbox_fix_sel(lb, 1);
+	listbox_fix_visible_region(lb);
 }
 
 void listbox_draw_deco(struct listbox *lb, int hilt)
