@@ -46,6 +46,7 @@ def calcurse_wipe():
 
 def calcurse_import(icaldata):
     p = subprocess.Popen([calcurse, '-i', '-', '--dump-imported', '-q',
+                          '--format-apt=%(hash)\\n',
                           '--format-recur-apt=%(hash)\\n',
                           '--format-event=%(hash)\\n',
                           '--format-recur-event=%(hash)\\n',
