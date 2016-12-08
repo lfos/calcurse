@@ -198,6 +198,18 @@ def get_syncdb(fn):
     return syncdb
 
 
+def syncdb_add(syncdb, href, etag, objhash):
+    syncdb[href] = (etag, objhash)
+    if debug:
+        print('New sync database entry: {} {} {}'.format(href, etag, objhash))
+
+
+def syncdb_remove(syncdb, href):
+    syncdb.pop(href, None)
+    if debug:
+        print('Removing sync database entry: {}'.format(href))
+
+
 def save_syncdb(fn, syncdb):
     if verbose:
         print('Saving synchronization database to ' + fn + '...')
@@ -243,7 +255,7 @@ def push_objects(conn, syncdb, etagdict):
             continue
 
         href, etag = push_object(conn, objhash)
-        syncdb[href] = (etag, objhash)
+        syncdb_add(syncdb, href, etag, objhash)
         added += 1
 
     return added
@@ -274,7 +286,7 @@ def remove_remote_objects(conn, syncdb, etagdict):
                       'calendar. Keeping the modified version on the server. '
                       'Run the script again to import the modified '
                       'object.').format(objhash))
-                syncdb.pop(href, None)
+                syncdb_remove(syncdb, href)
                 continue
 
             if verbose:
@@ -283,7 +295,7 @@ def remove_remote_objects(conn, syncdb, etagdict):
                 continue
 
             remove_remote_object(conn, etag, href)
-            syncdb.pop(href, None)
+            syncdb_remove(syncdb, href)
             deleted += 1
 
     return deleted
@@ -346,7 +358,7 @@ def pull_objects(conn, syncdb, etagdict):
                 continue
 
         objhash = calcurse_import(cdata)
-        syncdb[href] = (etag, objhash)
+        syncdb_add(syncdb, href, etag, objhash)
         added += 1
 
     return added
@@ -366,7 +378,7 @@ def remove_local_objects(conn, syncdb, etagdict):
             continue
 
         calcurse_remove(objhash)
-        syncdb.pop(href, None)
+        syncdb_remove(syncdb, href)
         deleted += 1
 
     return deleted
