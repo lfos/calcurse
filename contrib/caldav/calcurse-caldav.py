@@ -230,19 +230,12 @@ def push_object(conn, objhash):
     return (href, etag)
 
 
-def remove_remote_object(conn, etag, href):
-    headers = {'If-Match': '"' + etag + '"'}
-    remote_query(conn, "DELETE", href, headers, None)
-
-
 def push_objects(conn, syncdb, etagdict):
     objhashes = calcurse_hashset()
     new = objhashes - set([entry[1] for entry in syncdb.values()])
-    gone = set([entry[1] for entry in syncdb.values()]) - objhashes
-
-    added = deleted = 0
 
     # Copy new objects to the server.
+    added = 0
     for objhash in new:
         if verbose:
             print("Pushing new object {} to the server.".format(objhash))
@@ -253,7 +246,20 @@ def push_objects(conn, syncdb, etagdict):
         syncdb[href] = (etag, objhash)
         added += 1
 
+    return added
+
+
+def remove_remote_object(conn, etag, href):
+    headers = {'If-Match': '"' + etag + '"'}
+    remote_query(conn, "DELETE", href, headers, None)
+
+
+def remove_remote_objects(conn, syncdb, etagdict):
+    objhashes = calcurse_hashset()
+    gone = set([entry[1] for entry in syncdb.values()]) - objhashes
+
     # Remove locally deleted objects from the server.
+    deleted = 0
     for objhash in gone:
         queue = []
         for href, entry in syncdb.items():
@@ -280,7 +286,7 @@ def push_objects(conn, syncdb, etagdict):
             syncdb.pop(href, None)
             deleted += 1
 
-    return (added, deleted)
+    return deleted
 
 
 def pull_objects(conn, syncdb, etagdict):
@@ -291,7 +297,6 @@ def pull_objects(conn, syncdb, etagdict):
             missing.add(href)
         elif etagdict[href] != syncdb[href][0]:
             modified.add(href)
-    orphan = set(syncdb.keys()) - set(etagdict.keys())
 
     # Download and import new objects from the server.
     body = ('<?xml version="1.0" encoding="utf-8" ?>'
@@ -305,7 +310,7 @@ def pull_objects(conn, syncdb, etagdict):
 
     root = etree.fromstring(body)
 
-    added = deleted = 0
+    added = 0
 
     for node in root.findall(".//D:response", namespaces=nsmap):
         hrefnode = node.find("./D:href", namespaces=nsmap)
@@ -341,7 +346,14 @@ def pull_objects(conn, syncdb, etagdict):
         syncdb[href] = (etag, objhash)
         added += 1
 
+    return added
+
+
+def remove_local_objects(conn, syncdb, etagdict):
+    orphan = set(syncdb.keys()) - set(etagdict.keys())
+
     # Delete objects that no longer exist on the server.
+    deleted = 0
     for href in orphan:
         etag, objhash = syncdb[href]
 
@@ -354,7 +366,7 @@ def pull_objects(conn, syncdb, etagdict):
         syncdb.pop(href, None)
         deleted += 1
 
-    return (added, deleted)
+    return deleted
 
 
 def run_hook(name):
@@ -517,13 +529,17 @@ try:
     # server.
     etagdict = get_etags(conn)
 
-    # Retrieve new objects from the server, delete local items that no longer
-    # exist on the server.
-    local_new, local_del = pull_objects(conn, syncdb, etagdict)
+    # Retrieve new objects from the server
+    local_new = pull_objects(conn, syncdb, etagdict)
 
-    # Push new objects to the server, remove items from the server if they no
-    # longer exist locally.
-    remote_new, remote_del = push_objects(conn, syncdb, etagdict)
+    # Delete local items that no longer exist on the server.
+    local_del = remove_local_objects(conn, syncdb, etagdict)
+
+    # Push new objects to the server.
+    remote_new = push_objects(conn, syncdb, etagdict)
+
+    # Remove items from the server if they no longer exist locally.
+    remote_del = remove_remote_objects(conn, syncdb, etagdict)
 
     # Write the synchronization database.
     save_syncdb(syncdbfn, syncdb)
