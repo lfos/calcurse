@@ -138,6 +138,7 @@ def remote_query(conn, cmd, path, additional_headers, body):
 
 def get_etags(conn, hrefs=[]):
     if len(hrefs) > 0:
+        headers = {}
         body = ('<?xml version="1.0" encoding="utf-8" ?>'
                 '<C:calendar-multiget xmlns:D="DAV:" '
                 '                     xmlns:C="urn:ietf:params:xml:ns:caldav">'
@@ -146,13 +147,14 @@ def get_etags(conn, hrefs=[]):
             body += '<D:href>{}</D:href>'.format(href)
         body += '</C:calendar-multiget>'
     else:
+        headers = {'Depth': '1'}
         body = ('<?xml version="1.0" encoding="utf-8" ?>'
                 '<C:calendar-query xmlns:D="DAV:" '
                 '                  xmlns:C="urn:ietf:params:xml:ns:caldav">'
                 '<D:prop><D:getetag /></D:prop>'
                 '<C:filter><C:comp-filter name="VCALENDAR" /></C:filter>'
                 '</C:calendar-query>')
-    headers, body = remote_query(conn, "REPORT", path, {}, body)
+    headers, body = remote_query(conn, "REPORT", path, headers, body)
     if not headers:
         return {}
     root = etree.fromstring(body)
