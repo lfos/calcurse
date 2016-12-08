@@ -298,6 +298,9 @@ def pull_objects(conn, syncdb, etagdict):
         elif etagdict[href] != syncdb[href][0]:
             modified.add(href)
 
+    if not missing and not modified:
+        return 0
+
     # Download and import new objects from the server.
     body = ('<?xml version="1.0" encoding="utf-8" ?>'
             '<C:calendar-multiget xmlns:D="DAV:" '
