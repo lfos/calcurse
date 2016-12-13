@@ -525,8 +525,8 @@ try:
                 '  --init=keep-local  Remove all remote objects\n' +
                 '  --init=two-way     Copy local items to the server and vice versa')
 
-    # Query the server and build a dictionary that maps ETags to paths on the
-    # server.
+    # Query the server and compute a lookup table that maps each path to its
+    # current ETag.
     etagdict = get_etags(conn)
 
     # Compute object diffs.
