@@ -243,13 +243,10 @@ def push_object(conn, objhash):
     return (href, etag)
 
 
-def push_objects(conn, syncdb, etagdict):
-    objhashes = calcurse_hashset()
-    new = objhashes - set([entry[1] for entry in syncdb.values()])
-
+def push_objects(objhashes, conn, syncdb, etagdict):
     # Copy new objects to the server.
     added = 0
-    for objhash in new:
+    for objhash in objhashes:
         if verbose:
             print("Pushing new object {} to the server.".format(objhash))
         if dry_run:
@@ -267,13 +264,10 @@ def remove_remote_object(conn, etag, href):
     remote_query(conn, "DELETE", href, headers, None)
 
 
-def remove_remote_objects(conn, syncdb, etagdict):
-    objhashes = calcurse_hashset()
-    gone = set([entry[1] for entry in syncdb.values()]) - objhashes
-
+def remove_remote_objects(objhashes, conn, syncdb, etagdict):
     # Remove locally deleted objects from the server.
     deleted = 0
-    for objhash in gone:
+    for objhash in objhashes:
         queue = []
         for href, entry in syncdb.items():
             if entry[1] == objhash:
@@ -302,16 +296,8 @@ def remove_remote_objects(conn, syncdb, etagdict):
     return deleted
 
 
-def pull_objects(conn, syncdb, etagdict):
-    missing = set()
-    modified = set()
-    for href in set(etagdict.keys()):
-        if href not in syncdb:
-            missing.add(href)
-        elif etagdict[href] != syncdb[href][0]:
-            modified.add(href)
-
-    if not missing and not modified:
+def pull_objects(hrefs_missing, hrefs_modified, conn, syncdb, etagdict):
+    if not hrefs_missing and not hrefs_modified:
         return 0
 
     # Download and import new objects from the server.
@@ -319,7 +305,7 @@ def pull_objects(conn, syncdb, etagdict):
             '<C:calendar-multiget xmlns:D="DAV:" '
             '                     xmlns:C="urn:ietf:params:xml:ns:caldav">'
             '<D:prop><D:getetag /><C:calendar-data /></D:prop>')
-    for href in (missing | modified):
+    for href in (hrefs_missing | hrefs_modified):
         body += '<D:href>{}</D:href>'.format(href)
     body += '</C:calendar-multiget>'
     headers, body = remote_query(conn, "REPORT", path, {}, body)
@@ -345,7 +331,7 @@ def pull_objects(conn, syncdb, etagdict):
             die_atnode('Missing calendar data.', node)
         cdata = cdatanode.text
 
-        if href in modified:
+        if href in hrefs_modified:
             if verbose:
                 print("Replacing object {}.".format(etag))
             if dry_run:
@@ -365,12 +351,10 @@ def pull_objects(conn, syncdb, etagdict):
     return added
 
 
-def remove_local_objects(conn, syncdb, etagdict):
-    orphan = set(syncdb.keys()) - set(etagdict.keys())
-
+def remove_local_objects(hrefs, conn, syncdb, etagdict):
     # Delete objects that no longer exist on the server.
     deleted = 0
-    for href in orphan:
+    for href in hrefs:
         etag, objhash = syncdb[href]
 
         if verbose:
@@ -545,17 +529,31 @@ try:
     # server.
     etagdict = get_etags(conn)
 
-    # Retrieve new objects from the server
-    local_new = pull_objects(conn, syncdb, etagdict)
+    # Compute object diffs.
+    objhashes = calcurse_hashset()
+    new = objhashes - set([entry[1] for entry in syncdb.values()])
+    gone = set([entry[1] for entry in syncdb.values()]) - objhashes
+
+    missing = set()
+    modified = set()
+    for href in set(etagdict.keys()):
+        if href not in syncdb:
+            missing.add(href)
+        elif etagdict[href] != syncdb[href][0]:
+            modified.add(href)
+    orphan = set(syncdb.keys()) - set(etagdict.keys())
+
+    # Retrieve new objects from the server.
+    local_new = pull_objects(new, conn, syncdb, etagdict)
 
     # Delete local items that no longer exist on the server.
-    local_del = remove_local_objects(conn, syncdb, etagdict)
+    local_del = remove_local_objects(gone, conn, syncdb, etagdict)
 
     # Push new objects to the server.
-    remote_new = push_objects(conn, syncdb, etagdict)
+    remote_new = push_objects(missing, modified, conn, syncdb, etagdict)
 
     # Remove items from the server if they no longer exist locally.
-    remote_del = remove_remote_objects(conn, syncdb, etagdict)
+    remote_del = remove_remote_objects(orphan, conn, syncdb, etagdict)
 
     # Write the synchronization database.
     save_syncdb(syncdbfn, syncdb)
