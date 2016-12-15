@@ -530,10 +530,6 @@ try:
     etagdict = get_etags(conn)
 
     # Compute object diffs.
-    objhashes = calcurse_hashset()
-    new = objhashes - set([entry[1] for entry in syncdb.values()])
-    gone = set([entry[1] for entry in syncdb.values()]) - objhashes
-
     missing = set()
     modified = set()
     for href in set(etagdict.keys()):
@@ -543,17 +539,21 @@ try:
             modified.add(href)
     orphan = set(syncdb.keys()) - set(etagdict.keys())
 
+    objhashes = calcurse_hashset()
+    new = objhashes - set([entry[1] for entry in syncdb.values()])
+    gone = set([entry[1] for entry in syncdb.values()]) - objhashes
+
     # Retrieve new objects from the server.
-    local_new = pull_objects(new, conn, syncdb, etagdict)
+    local_new = pull_objects(missing, modified, conn, syncdb, etagdict)
 
     # Delete local items that no longer exist on the server.
-    local_del = remove_local_objects(gone, conn, syncdb, etagdict)
+    local_del = remove_local_objects(orphan, conn, syncdb, etagdict)
 
     # Push new objects to the server.
-    remote_new = push_objects(missing, modified, conn, syncdb, etagdict)
+    remote_new = push_objects(new, conn, syncdb, etagdict)
 
     # Remove items from the server if they no longer exist locally.
-    remote_del = remove_remote_objects(orphan, conn, syncdb, etagdict)
+    remote_del = remove_remote_objects(gone, conn, syncdb, etagdict)
 
     # Write the synchronization database.
     save_syncdb(syncdbfn, syncdb)
