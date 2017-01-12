@@ -1,7 +1,7 @@
 Calcurse - organizador baseado em texto
 =======================================
 
-Copyright (c) 2004-2016 Equipe de Desenvolvimento do Calcurse
+Copyright (c) 2004-2017 Equipe de Desenvolvimento do Calcurse
 Todos os direitos reservados.
 
 A redistribuição e uso na forma de código-fonte e binário, com ou

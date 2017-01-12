@@ -41,7 +41,7 @@ msgstr ""
 msgid "calcurse %s -- text-based organizer\n"
 msgstr ""
 
-msgid "Copyright (c) 2004-2016 calcurse Development Team."
+msgid "Copyright (c) 2004-2017 calcurse Development Team."
 msgstr ""
 
 msgid "This is free software; see the source for copying conditions."
@@ -1475,7 +1475,7 @@ msgstr ""
 
 msgid ""
 "\n"
-"Copyright (c) 2004-2016 calcurse Development Team.\n"
+"Copyright (c) 2004-2017 calcurse Development Team.\n"
 "This is free software; see the source for copying conditions.\n"
 msgstr ""
 
