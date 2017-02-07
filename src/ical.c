@@ -671,6 +671,21 @@ static long ical_compute_rpt_until(long start, ical_rpt_t * rpt)
 }
 
 /*
+ * Skip to the value part of an iCalendar content line.
+ */
+static char *ical_get_value(char *p)
+{
+	for (; *p != ':'; p++) {
+		if (*p == '\0')
+			return NULL;
+		if (*p == '"')
+			for (p++; *p != '"'; p++);
+	}
+
+	return p + 1;
+}
+
+/*
  * Read a recurrence rule from an iCalendar RRULE string.
  *
  * Value Name: RECUR
@@ -717,14 +732,13 @@ static ical_rpt_t *ical_read_rrule(FILE * log, char *rrulestr,
 	ical_rpt_t *rpt;
 	char *p;
 
-	p = strchr(rrulestr, ':');
+	p = ical_get_value(rrulestr);
 	if (!p) {
 		ical_log(log, ICAL_VEVENT, itemline,
 			 _("recurrence rule malformed."));
 		(*noskipped)++;
 		return NULL;
 	}
-	p++;
 
 	rpt = mem_malloc(sizeof(ical_rpt_t));
 	memset(rpt, 0, sizeof(ical_rpt_t));
@@ -807,14 +821,13 @@ ical_read_exdate(llist_t * exc, FILE * log, char *exstr,
 {
 	char *p, *q;
 
-	p = strchr(exstr, ':');
+	p = ical_get_value(exstr);
 	if (!p) {
 		ical_log(log, ICAL_VEVENT, itemline,
 			 _("recurrence exception dates malformed."));
 		(*noskipped)++;
 		return;
 	}
-	p++;
 
 	while ((q = strchr(p, ',')) != NULL) {
 		char buf[BUFSIZ];
@@ -835,14 +848,13 @@ static char *ical_read_note(char *line, unsigned *noskipped,
 {
 	char *p, *notestr, *note;
 
-	p = strchr(line, ':');
+	p = ical_get_value(line);
 	if (!p) {
 		ical_log(log, item_type, itemline,
 			 _("description malformed."));
 		(*noskipped)++;
 		return NULL;
 	}
-	p++;
 
 	notestr = ical_unformat_line(p);
 	if (notestr == NULL) {
@@ -865,11 +877,11 @@ static char *ical_read_summary(char *line)
 {
 	char *p, *summary;
 
-	p = strchr(line, ':');
+	p = ical_get_value(line);
 	if (!p)
 		return NULL;
 
-	summary = ical_unformat_line(p + 1);
+	summary = ical_unformat_line(p);
 	if (!summary)
 		return NULL;
 
@@ -970,28 +982,28 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 		}
 
 		if (starts_with_ci(buf, "DTSTART")) {
-			p = strchr(buf, ':');
+			p = ical_get_value(buf);
 			if (!p) {
 				ical_log(log, ICAL_VEVENT, ITEMLINE,
 					 _("event start time malformed."));
 				goto cleanup;
 			}
 
-			vevent.start = ical_datetime2time_t(++p, &vevent_type);
+			vevent.start = ical_datetime2time_t(p, &vevent_type);
 			if (!vevent.start) {
 				ical_log(log, ICAL_VEVENT, ITEMLINE,
 					 _("could not retrieve event start time."));
 				goto cleanup;
 			}
 		} else if (starts_with_ci(buf, "DTEND")) {
-			p = strchr(buf, ':');
+			p = ical_get_value(buf);
 			if (!p) {
 				ical_log(log, ICAL_VEVENT, ITEMLINE,
 					 _("event end time malformed."));
 				goto cleanup;
 			}
 
-			vevent.end = ical_datetime2time_t(++p, &vevent_type);
+			vevent.end = ical_datetime2time_t(p, &vevent_type);
 			if (!vevent.end) {
 				ical_log(log, ICAL_VEVENT, ITEMLINE,
 					 _("could not retrieve event end time."));
