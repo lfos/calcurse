@@ -676,10 +676,10 @@ static long ical_compute_rpt_until(long start, ical_rpt_t * rpt)
 static char *ical_get_value(char *p)
 {
 	for (; *p != ':'; p++) {
+		if (*p == '"')
+			for (p++; *p != '"' && *p != '\0'; p++);
 		if (*p == '\0')
 			return NULL;
-		if (*p == '"')
-			for (p++; *p != '"'; p++);
 	}
 
 	return p + 1;
