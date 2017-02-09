@@ -917,9 +917,9 @@ void recur_exc_scan(llist_t * lexc, FILE * data_file)
 	}
 }
 
-static int recur_apoint_starts_before(struct recur_apoint *rapt, long time)
+static int recur_apoint_starts_before(struct recur_apoint *rapt, long *time)
 {
-	return rapt->start < time;
+	return rapt->start < *time;
 }
 
 /*
@@ -933,6 +933,12 @@ struct notify_app *recur_apoint_check_next(struct notify_app *app,
 	time_t real_recur_start_time;
 
 	LLIST_TS_LOCK(&recur_alist_p);
+	/*
+	 * Iterate over all recurrent items starting before the current "next"
+	 * appointment. We cannot filter by start time because a recurrent item
+	 * can actually start (several days) before the current "next" item and
+	 * still have an occurrence which is the next item to be notified.
+	 */
 	LLIST_TS_FIND_FOREACH(&recur_alist_p, &app->time,
 			      recur_apoint_starts_before, i) {
 		struct recur_apoint *rapt = LLIST_TS_GET_DATA(i);
