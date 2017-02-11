@@ -943,9 +943,14 @@ struct notify_app *recur_apoint_check_next(struct notify_app *app,
 			      recur_apoint_starts_before, i) {
 		struct recur_apoint *rapt = LLIST_TS_GET_DATA(i);
 
+		/*
+		 * Check whether the recurrent appointment contains an
+		 * occurrence which is the next item to be notified.
+		 */
 		if (recur_apoint_find_occurrence
 		    (rapt, day, &real_recur_start_time)
-		    && real_recur_start_time > start) {
+		    && real_recur_start_time > start
+		    && real_recur_start_time < app->time) {
 			app->time = real_recur_start_time;
 			app->txt = mem_strdup(rapt->mesg);
 			app->state = rapt->state;
