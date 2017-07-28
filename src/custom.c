@@ -349,7 +349,7 @@ display_color_config(struct window *cwin, int *mark_fore, int *mark_back,
 	enum { YPOS, XPOS, NBPOS };
 	unsigned i;
 	int pos[SIZE][NBPOS];
-	short colr_fore, colr_back;
+	short colr_fore, colr_back, dummy;
 	int colr[SIZE] = {
 		COLR_RED, COLR_GREEN, COLR_YELLOW, COLR_BLUE,
 		COLR_MAGENTA, COLR_CYAN, COLR_DEFAULT,
@@ -366,10 +366,10 @@ display_color_config(struct window *cwin, int *mark_fore, int *mark_back,
 
 	if (colorize) {
 		if (theme_changed) {
-			pair_content(colr[*mark_fore], &colr_fore, 0L);
+			pair_content(colr[*mark_fore], &colr_fore, &dummy);
 			if (colr_fore == 255)
 				colr_fore = -1;
-			pair_content(colr[*mark_back], &colr_back, 0L);
+			pair_content(colr[*mark_back], &colr_back, &dummy);
 			if (colr_back == 255)
 				colr_back = -1;
 			init_pair(COLR_CUSTOM, colr_fore, colr_back);
