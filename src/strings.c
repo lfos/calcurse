@@ -34,6 +34,8 @@
  *
  */
 
+#include <stdarg.h>
+
 #include "calcurse.h"
 
 #define STRING_INITIAL_BUFSIZE 128
