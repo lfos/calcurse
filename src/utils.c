@@ -135,6 +135,7 @@ void fatalbox(const char *errmsg)
 		return;
 
 	strncpy(msg, errmsg, MSGLEN);
+	msg[MSGLEN - 1] = '\0';
 	errwin =
 	    newwin(WINROW, WINCOL, (row - WINROW) / 2, (col - WINCOL) / 2);
 	custom_apply_attr(errwin, ATTR_HIGHEST);
@@ -162,6 +163,7 @@ void warnbox(const char *msg)
 		return;
 
 	strncpy(displmsg, msg, MSGLEN);
+	displmsg[MSGLEN - 1] = '\0';
 	warnwin =
 	    newwin(WINROW, WINCOL, (row - WINROW) / 2, (col - WINCOL) / 2);
 	custom_apply_attr(warnwin, ATTR_HIGHEST);
