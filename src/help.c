@@ -103,13 +103,14 @@ int display_help(const char *topic)
 
 	asprintf(&path, "%s/%s.txt", basedir, topic);
 
-	if (!io_file_exists(path) && keys_str2int(topic) > 0 &&
-	    keys_get_action(keys_str2int(topic)) > 0) {
+	if (!io_file_exists(path)) {
 		int ch = keys_str2int(topic);
 		enum key action = keys_get_action(ch);
-		topic = keys_get_label(action);
-		mem_free(path);
-		asprintf(&path, "%s/%s.txt", basedir, topic);
+		if (ch > 0 && action > 0 && action != KEY_UNDEF) {
+			topic = keys_get_label(action);
+			mem_free(path);
+			asprintf(&path, "%s/%s.txt", basedir, topic);
+		}
 	}
 
 	if (!io_file_exists(path)) {
