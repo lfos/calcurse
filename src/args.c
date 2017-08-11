@@ -522,6 +522,8 @@ int parse_args(int argc, char **argv)
 			query = 1;
 			break;
 		case 's':
+			if (!optarg)
+				optarg = "today";
 			from = parse_datetimearg(optarg);
 			EXIT_IF(from == -1, _("invalid date: %s"), optarg);
 			filter.type_mask |= TYPE_MASK_CAL;
