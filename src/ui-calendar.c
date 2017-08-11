@@ -461,7 +461,7 @@ draw_monthly_view(struct scrollwin *sw, struct date *current_day,
 		    && current_day->dd != slctd_day.dd)
 			attr = ATTR_LOWEST;
 		else if (c_day == slctd_day.dd)
-			attr = ATTR_HIGHEST;
+			attr = ATTR_MIDDLE;
 		else if (item_this_day == 1)
 			attr = ATTR_LOW;
 		else if (item_this_day == 2)
@@ -523,7 +523,7 @@ draw_weekly_view(struct scrollwin *sw, struct date *current_day,
 		    && current_day->dd != slctd_day.dd)
 			attr = ATTR_LOWEST;
 		else if (t.tm_mday == slctd_day.dd)
-			attr = ATTR_HIGHEST;
+			attr = ATTR_MIDDLE;
 		else if (item_this_day == 1)
 			attr = ATTR_LOW;
 		else if (item_this_day == 2)

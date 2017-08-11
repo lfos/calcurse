@@ -60,7 +60,7 @@ void custom_init_attr(void)
 {
 	attr.color[ATTR_HIGHEST] = COLOR_PAIR(COLR_CUSTOM);
 	attr.color[ATTR_HIGH] = COLOR_PAIR(COLR_HIGH);
-	attr.color[ATTR_MIDDLE] = COLOR_PAIR(COLR_RED);
+	attr.color[ATTR_MIDDLE] = COLOR_PAIR(COLR_RED) | A_BOLD;
 	attr.color[ATTR_LOW] = COLOR_PAIR(COLR_CYAN);
 	attr.color[ATTR_LOWEST] = COLOR_PAIR(COLR_YELLOW);
 	attr.color[ATTR_TRUE] = COLOR_PAIR(COLR_GREEN);
