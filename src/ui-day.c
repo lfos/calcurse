@@ -909,6 +909,17 @@ void ui_day_sel_move(int delta)
 	listbox_sel_move(&lb_apt, delta);
 }
 
+static char *fmt_day_heading(time_t date)
+{
+	struct tm tm;
+	struct string s;
+
+	localtime_r(&date, &tm);
+	string_printf(&s, "%s ", ui_calendar_get_pom(date));
+	string_catftime(&s, conf.day_heading, &tm);
+	return string_buf(&s);
+}
+
 /* Display appointments in the corresponding panel. */
 void ui_day_draw(int n, WINDOW *win, int y, int hilt, void *cb_data)
 {
@@ -918,20 +929,18 @@ void ui_day_draw(int n, WINDOW *win, int y, int hilt, void *cb_data)
 	int width = lb_apt.sw.w - 2;
 
 	hilt = hilt && (wins_slctd() == APP);
-
 	if (item->type == EVNT || item->type == RECUR_EVNT) {
 		day_display_item(item, win, !hilt, width - 1, y, 1);
 	} else if (item->type == APPT || item->type == RECUR_APPT) {
 		day_display_item_date(item, win, !hilt, date, y, 1);
 		day_display_item(item, win, !hilt, width - 1, y + 1, 1);
 	} else if (item->type == DAY_HEADING) {
-		unsigned x = width - (strlen(_(monthnames[slctd_date.mm - 1])) + 15);
+		char *buf = fmt_day_heading(date);
+		utf8_chop(buf, width);
 		custom_apply_attr(win, ATTR_HIGHEST);
-		mvwprintw(win, y, x, "%s  %s %02d, %04d",
-			  ui_calendar_get_pom(date),
-			  _(monthnames[slctd_date.mm - 1]), slctd_date.dd,
-			  slctd_date.yyyy);
+		mvwprintw(win, y, width - utf8_strwidth(buf) - 1, "%s", buf);
 		custom_remove_attr(win, ATTR_HIGHEST);
+		mem_free(buf);
 	} else if (item->type == DAY_SEPARATOR) {
 		wmove(win, y, 0);
 		whline(win, 0, width);

@@ -102,6 +102,7 @@ static const struct confvar confmap[] = {
 	{"format.notifydate", CONFIG_HANDLER_STR(nbar.datefmt)},
 	{"format.notifytime", CONFIG_HANDLER_STR(nbar.timefmt)},
 	{"format.outputdate", config_parse_output_datefmt, config_serialize_output_datefmt, NULL},
+	{"format.dayheading", CONFIG_HANDLER_STR(conf.day_heading)},
 	{"general.autogc", CONFIG_HANDLER_BOOL(conf.auto_gc)},
 	{"general.autosave", CONFIG_HANDLER_BOOL(conf.auto_save)},
 	{"general.confirmdelete", CONFIG_HANDLER_BOOL(conf.confirm_delete)},

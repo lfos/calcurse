@@ -264,6 +264,7 @@ struct conf {
 	const char *mergetool;
 	char output_datefmt[BUFSIZ];	/* format for displaying date */
 	int input_datefmt;	/* format for reading date */
+	char day_heading[BUFSIZ];	/* format for displaying heading in appts panel */
 };
 
 /* Daemon-related configuration. */
@@ -290,6 +291,9 @@ enum datefmt {
 #define DATEFMT_DESC(datefmt) (datefmt == DATEFMT_MMDDYYYY ?                  \
     _("mm/dd/yyyy") : (datefmt == DATEFMT_DDMMYYYY ? _("dd/mm/yyyy") :        \
     (datefmt == DATEFMT_YYYYMMDD ? _("yyyy/mm/dd") : _("yyyy-mm-dd"))))
+
+/* Day heading default format. */
+#define DAY_HEADING_DEFAULT "%B %-d, %Y"
 
 struct date {
 	unsigned dd;

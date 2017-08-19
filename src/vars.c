@@ -147,6 +147,7 @@ void vars_init(void)
 	conf.progress_bar = 1;
 	strncpy(conf.output_datefmt, "%D", 3);
 	conf.input_datefmt = 1;
+	strcpy(conf.day_heading, DAY_HEADING_DEFAULT);
 
 	datefmt_str[0] = _("mm/dd/yyyy");
 	datefmt_str[1] = _("dd/mm/yyyy");

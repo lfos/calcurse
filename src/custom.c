@@ -531,6 +531,7 @@ enum {
 	FIRST_DAY_OF_WEEK,
 	OUTPUT_DATE_FMT,
 	INPUT_DATE_FMT,
+	DAY_HEADING_FMT,
 	NB_OPTIONS
 };
 
@@ -550,7 +551,8 @@ static void print_general_option(int i, WINDOW *win, int y, int hilt, void *cb_d
 		"general.progressbar = ",
 		"general.firstdayofweek = ",
 		"format.outputdate = ",
-		"format.inputdate = "
+		"format.inputdate = ",
+		"format.dayheading = "
 	};
 	const char *panel;
 
@@ -654,6 +656,14 @@ static void print_general_option(int i, WINDOW *win, int y, int hilt, void *cb_d
 			  datefmt_str[0], datefmt_str[1], datefmt_str[2],
 			  datefmt_str[3]);
 		break;
+	case DAY_HEADING_FMT:
+		custom_apply_attr(win, ATTR_HIGHEST);
+		mvwaddstr(win, y, XPOS + strlen(opt[DAY_HEADING_FMT]),
+			  conf.day_heading);
+		custom_remove_attr(win, ATTR_HIGHEST);
+		mvwaddstr(win, y + 1, XPOS,
+			  _("(Format of the date displayed in the appointments panel)"));
+		break;
 	}
 
 	if (hilt)
@@ -751,6 +761,14 @@ static void general_option_edit(int i)
 					      DATE_FORMATS);
 		if (val != -1)
 			conf.input_datefmt = val;
+		break;
+	case DAY_HEADING_FMT:
+		status_mesg(output_datefmt_str, "");
+		strcpy(buf, conf.day_heading);
+		if (updatestring(win[STA].p, &buf, 0, 1) == 0) {
+			strcpy(conf.day_heading, buf);
+		}
+		status_mesg(number_str, keys);
 		break;
 	}
 
