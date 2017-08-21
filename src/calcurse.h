@@ -1028,6 +1028,8 @@ char *string_buf(struct string *);
 int string_catf(struct string *, const char *, ...);
 int string_vcatf(struct string *, const char *, va_list);
 int string_printf(struct string *, const char *, ...);
+int string_catftime(struct string *, const char *, const struct tm *);
+int string_strftime(struct string *, const char *, const struct tm *);
 
 /* todo.c */
 extern llist_t todolist;

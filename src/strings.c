@@ -112,3 +112,23 @@ int string_printf(struct string *sb, const char *format, ...)
 
 	return n;
 }
+
+int string_catftime(struct string *sb, const char *format, const struct tm *tm)
+{
+	int n = 0;
+
+	while (!n) {
+		string_grow(sb, sb->bufsize * 2);
+		n = strftime(sb->buf + sb->len, sb->bufsize - sb->len, format,
+			     tm);
+	}
+	sb->len += n;
+
+	return n;
+}
+
+int string_strftime(struct string *sb, const char *format, const struct tm *tm)
+{
+	string_reset(sb);
+	return string_catftime(sb, format, tm);
+}
