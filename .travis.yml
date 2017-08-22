@@ -1,0 +1,10 @@
+language: c
+
+addons:
+    apt:
+        packages:
+        - asciidoc
+        - autopoint
+        - xmlto
+
+script: ./autogen.sh && ./configure && make && make check
