@@ -685,10 +685,6 @@ static int general_option_height(int i, void *cb_data)
 
 static void general_option_edit(int i)
 {
-	const char *number_str =
-	    _("Enter an option number to change its value");
-	const char *keys =
-	    _("(Press '^P' or '^N' to move up or down, 'Q' to quit)");
 	const char *output_datefmt_str =
 	    _("Enter the date format (see 'man 3 strftime' for possible formats) ");
 	const char *input_datefmt_prefix = _("Enter the date format: ");
@@ -728,7 +724,6 @@ static void general_option_edit(int i)
 			else if (conf.periodic_save == 0)
 				io_stop_psave_thread();
 		}
-		status_mesg(number_str, keys);
 		break;
 	case CONFIRM_QUIT:
 		conf.confirm_quit = !conf.confirm_quit;
@@ -753,7 +748,6 @@ static void general_option_edit(int i)
 			strncpy(conf.output_datefmt, buf,
 				strlen(buf) + 1);
 		}
-		status_mesg(number_str, keys);
 		break;
 	case INPUT_DATE_FMT:
 		val = status_ask_simplechoice(input_datefmt_prefix,
@@ -768,7 +762,6 @@ static void general_option_edit(int i)
 		if (updatestring(win[STA].p, &buf, 0, 1) == 0) {
 			strcpy(conf.day_heading, buf);
 		}
-		status_mesg(number_str, keys);
 		break;
 	}
 
