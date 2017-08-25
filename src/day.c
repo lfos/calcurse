@@ -433,8 +433,7 @@ day_display_item(struct day_item *day, WINDOW *win, int incolor, int width,
 
 	char *mesg = day_item_get_mesg(day);
 
-	ch_recur = (day->type == RECUR_EVNT
-		    || day->type == RECUR_APPT) ? '*' : ' ';
+	ch_recur = (day->type == RECUR_EVNT) ? '*' : ' ';
 	ch_note = day_item_get_note(day) ? '>' : ' ';
 
 	strncpy(buf, mesg, width * UTF8_MAXLEN);
