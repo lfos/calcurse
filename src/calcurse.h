@@ -742,7 +742,6 @@ long ui_calendar_end_of_year(void);
 const char *ui_calendar_get_pom(time_t);
 
 /* config.c */
-
 void config_load(void);
 unsigned config_save(void);
 
@@ -1176,8 +1175,6 @@ extern int quiet;
 extern int want_reload;
 extern const char *datefmt_str[DATE_FORMATS];
 extern int days[12];
-extern const char *monthnames[12];
-extern const char *daynames[8];
 extern char path_dir[BUFSIZ];
 extern char path_todo[BUFSIZ];
 extern char path_apts[BUFSIZ];

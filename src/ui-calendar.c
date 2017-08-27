@@ -40,6 +40,7 @@
 #include <sys/types.h>
 #include <time.h>
 #include <math.h>
+#include <langinfo.h>
 
 #include "calcurse.h"
 
@@ -379,6 +380,7 @@ draw_monthly_view(struct scrollwin *sw, struct date *current_day,
 	int w, ofs_x, ofs_y;
 	int item_this_day = 0;
 	struct tm t = get_first_weekday(sunday_first);
+	char *cp;
 
 	mo = slctd_day.mm;
 	yr = slctd_day.yyyy;
@@ -411,9 +413,9 @@ draw_monthly_view(struct scrollwin *sw, struct date *current_day,
 		werase(sw_cal.inner);
 	}
 	custom_apply_attr(sw->inner, ATTR_HIGHEST);
-	mvwprintw(sw->inner, ofs_y,
-		  (w - (strlen(_(monthnames[mo - 1])) + 5)) / 2,
-		  "%s %d", _(monthnames[mo - 1]), slctd_day.yyyy);
+	cp = nl_langinfo(MON_1 + mo - 1);
+	mvwprintw(sw->inner, ofs_y, (w - (strlen(cp) + 5)) / 2,
+		  "%s %d", cp, slctd_day.yyyy);
 	custom_remove_attr(sw->inner, ATTR_HIGHEST);
 	++ofs_y;
 
@@ -421,7 +423,7 @@ draw_monthly_view(struct scrollwin *sw, struct date *current_day,
 	custom_apply_attr(sw->inner, ATTR_HIGHEST);
 	for (j = 0; j < WEEKINDAYS; j++) {
 		mvwaddstr(sw->inner, ofs_y, ofs_x + 4 * j,
-			  _(daynames[1 + j - sunday_first]));
+			nl_langinfo(ABDAY_1 + (1 + j - sunday_first) % WEEKINDAYS));
 	}
 	custom_remove_attr(sw->inner, ATTR_HIGHEST);
 	WINS_CALENDAR_UNLOCK;
@@ -507,7 +509,7 @@ draw_weekly_view(struct scrollwin *sw, struct date *current_day,
 		/* print the day names, with regards to the first day of the week */
 		custom_apply_attr(sw->inner, ATTR_HIGHEST);
 		mvwaddstr(sw->inner, OFFY, OFFX + 4 * j,
-			  _(daynames[1 + j - sunday_first]));
+			  nl_langinfo(ABDAY_1 + (1 + j - sunday_first) % WEEKINDAYS));
 		custom_remove_attr(sw->inner, ATTR_HIGHEST);
 
 		/* Check if the day to be printed has an item or not. */

@@ -71,35 +71,9 @@ int want_reload = 0;
 const char *datefmt_str[DATE_FORMATS];
 
 /*
- * variables to store calendar names
+ * variable to store month lengths
  */
 int days[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
-
-const char *monthnames[12] = {
-	N_("January"),
-	N_("February"),
-	N_("March"),
-	N_("April"),
-	N_("May"),
-	N_("June"),
-	N_("July"),
-	N_("August"),
-	N_("September"),
-	N_("October"),
-	N_("November"),
-	N_("December")
-};
-
-const char *daynames[8] = {
-	N_("Sun"),
-	N_("Mon"),
-	N_("Tue"),
-	N_("Wed"),
-	N_("Thu"),
-	N_("Fri"),
-	N_("Sat"),
-	N_("Sun")
-};
 
 /*
  * variables to store data path names, which are initialized in
