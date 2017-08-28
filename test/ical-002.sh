@@ -21,6 +21,8 @@ Import process report: 0036 lines read
 	One hour, one minute and one second
  - 00:00 -> 00:01
 	One minute and one second
+ - 00:00 -> 00:00
+	One second
 
 01/02/00:
  - ..:.. -> 01:01
