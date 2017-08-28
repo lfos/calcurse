@@ -119,8 +119,9 @@ struct apoint *apoint_new(char *mesg, char *note, long start, long dur,
 
 unsigned apoint_inday(struct apoint *i, long *start)
 {
-	return (date_cmp_day(i->start, *start) <= 0 &&
-		date_cmp_day(i->start + i->dur - 1, *start) >= 0);
+	return (date_cmp_day(i->start, *start) == 0 ||
+		(date_cmp_day(i->start, *start) < 0 &&
+		 date_cmp_day(i->start + i->dur - 1, *start) >= 0));
 }
 
 void apoint_sec2str(struct apoint *o, long day, char *start, char *end)
