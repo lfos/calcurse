@@ -229,11 +229,17 @@ enum getstr getstring(WINDOW * win, char *str, int l, int x, int y)
 				bell();
 			}
 			break;
+                case CTRL('U'): /* delete to beginning-of-line */
+                        while(st.pos) {
+                                st.pos--;
+				getstr_del_char(&st);
+                        }
+                        break;
 		case CTRL('K'):	/* delete to end-of-line */
 			st.s[st.ci[st.pos].offset] = 0;
 			st.len = st.pos;
 			break;
-		case CTRL('A'):	/* go to begginning of string */
+		case CTRL('A'):	/* go to beginning of string */
 			st.pos = 0;
 			break;
 		case CTRL('E'):	/* go to end of string */
