@@ -778,7 +778,7 @@ void notify_config_bar(void)
 		KEY_GENERIC_QUIT, KEY_MOVE_UP, KEY_MOVE_DOWN, KEY_EDIT_ITEM
 	};
 	struct listbox lb;
-	int ch;
+	int key;
 
 	clear();
 	listbox_init(&lb, 0, 0, notify_bar() ? row - 3 : row - 2, col,
@@ -793,8 +793,8 @@ void notify_config_bar(void)
 	wmove(win[STA].p, 0, 0);
 	wins_doupdate();
 
-	while ((ch = keys_getch(win[KEY].p, NULL, NULL)) != KEY_GENERIC_QUIT) {
-		switch (ch) {
+	while ((key = keys_get(win[KEY].p, NULL, NULL)) != KEY_GENERIC_QUIT) {
+		switch (key) {
 		case KEY_MOVE_DOWN:
 			listbox_sel_move(&lb, 1);
 			break;

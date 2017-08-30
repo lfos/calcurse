@@ -658,7 +658,7 @@ int main(int argc, char **argv)
 			key_generic_reload();
 		}
 
-		key = keys_getch(win[KEY].p, &count, &reg);
+		key = keys_get(win[KEY].p, &count, &reg);
 		switch (key) {
 		HANDLE_KEY(KEY_GENERIC_CHANGE_VIEW, key_generic_change_view);
 		HANDLE_KEY(KEY_GENERIC_OTHER_CMD, key_generic_other_cmd);

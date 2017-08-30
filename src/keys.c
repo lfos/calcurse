@@ -187,7 +187,7 @@ enum key keys_get_action(int pressed)
 		return actions[pressed];
 }
 
-enum key keys_getch(WINDOW * win, int *count, int *reg)
+enum key keys_get(WINDOW *win, int *count, int *reg)
 {
 	int ch = '0';
 
@@ -582,7 +582,7 @@ void keys_popup_info(enum key key)
 	infowin =
 	    popup(WINROW, WINCOL, (row - WINROW) / 2, (col - WINCOL) / 2,
 		  keydef[key].label, info[key], 1);
-	keys_getch(infowin, NULL, NULL);
+	keys_get(infowin, NULL, NULL);
 	delwin(infowin);
 #undef WINROW
 #undef WINCOL

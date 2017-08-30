@@ -173,7 +173,7 @@ static void display_layout_config(struct window *lwin, int mark,
 void custom_layout_config(void)
 {
 	struct window conf_win;
-	int ch, mark, cursor, need_reset;
+	int key, mark, cursor, need_reset;
 	const char *label = _("layout configuration");
 
 	conf_win.p = NULL;
@@ -182,10 +182,9 @@ void custom_layout_config(void)
 	display_layout_config(&conf_win, mark, cursor);
 	clear();
 
-	while ((ch =
-		keys_getch(win[KEY].p, NULL, NULL)) != KEY_GENERIC_QUIT) {
+	while ((key = keys_get(win[KEY].p, NULL, NULL)) != KEY_GENERIC_QUIT) {
 		need_reset = 0;
-		switch (ch) {
+		switch (key) {
 		case KEY_GENERIC_SELECT:
 			mark = cursor;
 			break;
@@ -236,15 +235,14 @@ void custom_sidebar_config(void)
 	static int bindings[] = {
 		KEY_GENERIC_QUIT, KEY_MOVE_UP, KEY_MOVE_DOWN, KEY_GENERIC_HELP
 	};
-	int ch, bindings_size = ARRAY_SIZE(bindings);
+	int key, bindings_size = ARRAY_SIZE(bindings);
 
 	keys_display_bindings_bar(win[STA].p, bindings, bindings_size, 0,
 				  bindings_size);
 	wins_doupdate();
 
-	while ((ch =
-		keys_getch(win[KEY].p, NULL, NULL)) != KEY_GENERIC_QUIT) {
-		switch (ch) {
+	while ((key = keys_get(win[KEY].p, NULL, NULL)) != KEY_GENERIC_QUIT) {
+		switch (key) {
 		case KEY_MOVE_UP:
 			wins_sbar_winc();
 			break;
@@ -445,7 +443,7 @@ display_color_config(struct window *cwin, int *mark_fore, int *mark_back,
 void custom_color_config(void)
 {
 	struct window conf_win;
-	int ch, cursor, need_reset, theme_changed;
+	int key, cursor, need_reset, theme_changed;
 	int mark_fore, mark_back;
 	const char *label = _("color theme");
 
@@ -459,12 +457,11 @@ void custom_color_config(void)
 			     theme_changed);
 	clear();
 
-	while ((ch =
-		keys_getch(win[KEY].p, NULL, NULL)) != KEY_GENERIC_QUIT) {
+	while ((key = keys_get(win[KEY].p, NULL, NULL)) != KEY_GENERIC_QUIT) {
 		need_reset = 0;
 		theme_changed = 0;
 
-		switch (ch) {
+		switch (key) {
 		case KEY_GENERIC_SELECT:
 			colorize = 1;
 			need_reset = 1;
@@ -775,7 +772,7 @@ void custom_general_config(void)
 		KEY_GENERIC_QUIT, KEY_MOVE_UP, KEY_MOVE_DOWN, KEY_EDIT_ITEM
 	};
 	struct listbox lb;
-	int ch;
+	int key;
 
 	clear();
 	listbox_init(&lb, 0, 0, notify_bar() ? row - 3 : row - 2, col,
@@ -790,8 +787,8 @@ void custom_general_config(void)
 	wmove(win[STA].p, 0, 0);
 	wins_doupdate();
 
-	while ((ch = keys_getch(win[KEY].p, NULL, NULL)) != KEY_GENERIC_QUIT) {
-		switch (ch) {
+	while ((key = keys_get(win[KEY].p, NULL, NULL)) != KEY_GENERIC_QUIT) {
+		switch (key) {
 		case KEY_MOVE_DOWN:
 			listbox_sel_move(&lb, 1);
 			break;
@@ -908,7 +905,7 @@ void custom_keys_config(void)
 {
 	struct scrollwin kwin;
 	int selrow, selelm, firstrow, lastrow, nbrowelm, nbdisplayed;
-	int keyval, used, not_recognized;
+	int ch, used, not_recognized;
 	const char *keystr;
 	WINDOW *grabwin;
 	const int LINESPERKEY = 2;
@@ -926,10 +923,9 @@ void custom_keys_config(void)
 	firstrow = 0;
 	lastrow = firstrow + nbdisplayed - 1;
 	for (;;) {
-		int ch;
+		int key = keys_get(win[KEY].p, NULL, NULL);
 
-		ch = keys_getch(win[KEY].p, NULL, NULL);
-		switch (ch) {
+		switch (key) {
 		case KEY_MOVE_UP:
 			if (selrow > 0) {
 				selrow--;
@@ -976,11 +972,10 @@ void custom_keys_config(void)
 					  (col - WINCOL) / 2,
 					  _("Press the key you want to assign to:"),
 					  keys_get_label(selrow), 0);
-				keyval = wgetch(grabwin);
+				ch = wgetch(grabwin);
 
 				/* First check if this key would be recognized by calcurse. */
-				if (keys_str2int(keys_int2str(keyval)) ==
-				    -1) {
+				if (keys_str2int(keys_int2str(ch)) == -1) {
 					not_recognized = 1;
 					WARN_MSG(_("This key is not yet recognized by calcurse, "
 						  "please choose another one."));
@@ -997,16 +992,16 @@ void custom_keys_config(void)
 				}
 
 				/* Is the binding used by this action already? If so, just end the reassignment */
-				if (selrow == keys_get_action(keyval)) {
+				if (selrow == keys_get_action(ch)) {
 					delwin(grabwin);
 					break;
 				}
 
-				used = keys_assign_binding(keyval, selrow);
+				used = keys_assign_binding(ch, selrow);
 				if (used) {
 					enum key action;
 
-					action = keys_get_action(keyval);
+					action = keys_get_action(ch);
 					WARN_MSG(_("This key is already in use for %s, "
 						  "please choose another one."),
 						 keys_get_label(action));
@@ -1029,8 +1024,8 @@ void custom_keys_config(void)
 			break;
 		case KEY_DEL_ITEM:
 			keystr = keys_action_nkey(selrow, selelm);
-			keyval = keys_str2int(keystr);
-			keys_remove_binding(keyval, selrow);
+			ch = keys_str2int(keystr);
+			keys_remove_binding(ch, selrow);
 			nbrowelm--;
 			if (selelm > 0 && selelm <= nbrowelm)
 				selelm--;
