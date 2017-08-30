@@ -972,10 +972,10 @@ void custom_keys_config(void)
 					  (col - WINCOL) / 2,
 					  _("Press the key you want to assign to:"),
 					  keys_get_label(selrow), 0);
-				ch = wgetch(grabwin);
+				ch = keys_wgetch(grabwin);
 
 				/* First check if this key would be recognized by calcurse. */
-				if (keys_str2int(keys_int2str(ch)) == -1) {
+				if (ch < 0) {
 					not_recognized = 1;
 					WARN_MSG(_("This key is not yet recognized by calcurse, "
 						  "please choose another one."));

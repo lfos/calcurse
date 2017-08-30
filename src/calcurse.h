@@ -230,6 +230,7 @@
     ((unsigned char)ch >= 0xF0 ? 4 : \
     ((unsigned char)ch >= 0xE0 ? 3 : \
     ((unsigned char)ch >= 0xC0 ? 2 : 1)))))
+#define UTF8_ISMULTI(ch) ((unsigned char)ch >= 0x80)
 #define UTF8_ISCONT(ch) ((unsigned char)ch >= 0x80 && \
     (unsigned char)ch <= 0xBF)
 
@@ -871,11 +872,12 @@ void keys_free(void);
 void keys_dump_defaults(char *);
 const char *keys_get_label(enum key);
 enum key keys_get_action(int);
+int keys_wgetch(WINDOW *);
 enum key keys_get(WINDOW *, int *, int *);
 int keys_assign_binding(int, enum key);
 void keys_remove_binding(int, enum key);
 int keys_str2int(const char *);
-const char *keys_int2str(int);
+char *keys_int2str(int);
 int keys_action_count_keys(enum key);
 const char *keys_action_firstkey(enum key);
 const char *keys_action_nkey(enum key, int);

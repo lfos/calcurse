@@ -50,6 +50,13 @@ struct keydef_s {
 static llist_t keys[NBKEYS];
 static enum key actions[MAXKEYVAL];
 
+struct key_ext {
+	int ch;
+	enum key action;
+};
+
+llist_t actions_ext;
+
 #define gettext_noop(s) s
 static struct keydef_s keydef[NBKEYS] = {
 	{ "generic-cancel", "ESC", gettext_noop("Cancel") },
@@ -135,6 +142,7 @@ void keys_init(void)
 
 	for (i = 0; i < MAXKEYVAL; i++)
 		actions[i] = KEY_UNDEF;
+	LLIST_INIT(&actions_ext);
 	for (i = 0; i < NBKEYS; i++)
 		LLIST_INIT(&keys[i]);
 }
@@ -179,12 +187,56 @@ const char *keys_get_label(enum key key)
 	return keydef[key].label;
 }
 
+static int key_ext_hasch(struct key_ext *k, void *cbdata)
+{
+	return (k->ch == *((int *)cbdata));
+}
+
 enum key keys_get_action(int pressed)
 {
-	if (pressed < 0 || pressed > MAXKEYVAL)
+	if (pressed < 0) {
 		return -1;
-	else
+	} else if (pressed > MAXKEYVAL) {
+		llist_item_t *i = LLIST_FIND_FIRST(&actions_ext, &pressed,
+						   key_ext_hasch);
+		if (!i)
+			return KEY_UNDEF;
+
+		struct key_ext *k = LLIST_GET_DATA(i);
+		return k->action;
+	} else {
 		return actions[pressed];
+	}
+}
+
+int keys_wgetch(WINDOW *win)
+{
+	int ch, i;
+	char buf[UTF8_MAXLEN];
+
+	ch = wgetch(win);
+
+	if (ch > 255) {
+		if (ch == KEY_UP || ch == KEY_DOWN || ch == KEY_LEFT ||
+		    ch == KEY_RIGHT || ch == KEY_HOME || ch == KEY_END) {
+			return ch;
+		}
+		return -1;
+	}
+
+	if (UTF8_ISMULTI(ch) && !UTF8_ISCONT(ch)) {
+		buf[0] = ch;
+		for (i = 1; i < UTF8_LENGTH(ch); i++) {
+			ch = wgetch(win);
+			if (!UTF8_ISCONT(ch))
+				return -1;
+			buf[i] = ch;
+		}
+		return utf8_ord(buf);
+	} else {
+		return ch;
+	}
+
 }
 
 enum key keys_get(WINDOW *win, int *count, int *reg)
@@ -196,7 +248,7 @@ enum key keys_get(WINDOW *win, int *count, int *reg)
 		*reg = 0;
 		do {
 			*count = *count * 10 + ch - '0';
-			ch = wgetch(win);
+			ch = keys_wgetch(win);
 		}
 		while ((ch == '0' && *count > 0)
 		       || (ch >= '1' && ch <= '9'));
@@ -205,7 +257,7 @@ enum key keys_get(WINDOW *win, int *count, int *reg)
 			*count = 1;
 
 		if (ch == '"') {
-			ch = wgetch(win);
+			ch = keys_wgetch(win);
 			if (ch >= '1' && ch <= '9') {
 				*reg = ch - '1' + 1;
 			} else if (ch >= 'a' && ch <= 'z') {
@@ -213,10 +265,10 @@ enum key keys_get(WINDOW *win, int *count, int *reg)
 			} else if (ch == '_') {
 				*reg = REG_BLACK_HOLE;
 			}
-			ch = wgetch(win);
+			ch = keys_wgetch(win);
 		}
 	} else {
-		ch = wgetch(win);
+		ch = keys_wgetch(win);
 	}
 
 	switch (ch) {
@@ -232,17 +284,23 @@ static void add_key_str(enum key action, int key)
 	if (action > NBKEYS)
 		return;
 
-	LLIST_ADD(&keys[action], mem_strdup(keys_int2str(key)));
+	LLIST_ADD(&keys[action], keys_int2str(key));
 }
 
 int keys_assign_binding(int key, enum key action)
 {
-	if (key < 0 || key > MAXKEYVAL || actions[key] != KEY_UNDEF) {
+	if (key < 0 || actions[key] != KEY_UNDEF) {
 		return 1;
+	} else if (key > MAXKEYVAL) {
+		struct key_ext *k = mem_malloc(sizeof(struct key_ext));
+		k->ch = key;
+		k->action = action;
+		LLIST_ADD(&actions_ext, k);
 	} else {
 		actions[key] = action;
-		add_key_str(action, key);
 	}
+
+	add_key_str(action, key);
 
 	return 0;
 }
@@ -250,27 +308,40 @@ int keys_assign_binding(int key, enum key action)
 static void del_key_str(enum key action, int key)
 {
 	llist_item_t *i;
-	char oldstr[BUFSIZ];
+	char *oldstr = keys_int2str(key);;
 
 	if (action > NBKEYS)
 		return;
 
-	strncpy(oldstr, keys_int2str(key), BUFSIZ);
-
 	LLIST_FOREACH(&keys[action], i) {
 		if (strcmp(LLIST_GET_DATA(i), oldstr) == 0) {
 			LLIST_REMOVE(&keys[action], i);
-			return;
+			goto cleanup;
 		}
 	}
+
+cleanup:
+	mem_free(oldstr);
 }
 
 void keys_remove_binding(int key, enum key action)
 {
-	if (key >= 0 && key <= MAXKEYVAL) {
+	if (key < 0)
+	       return;
+
+	if (key <= MAXKEYVAL) {
 		actions[key] = KEY_UNDEF;
-		del_key_str(action, key);
+	} else {
+		llist_item_t *i = LLIST_FIND_FIRST(&actions_ext, &key,
+						   key_ext_hasch);
+		if (i) {
+			struct key_ext *k = LLIST_GET_DATA(i);
+			LLIST_REMOVE(&actions_ext, i);
+			mem_free(k);
+		}
 	}
+
+	del_key_str(action, key);
 }
 
 int keys_str2int(const char *key)
@@ -285,6 +356,8 @@ int keys_str2int(const char *key)
 		return CTRL((int)key[1]);
 	else if (starts_with(key, "C-"))
 		return CTRL((int)key[strlen("C-")]);
+	else if (starts_with(key, "U+"))
+		return strtol(&key[2], NULL, 16);
 	else if (!strcmp(key, "TAB"))
 		return TAB;
 	else if (!strcmp(key, "ESC"))
@@ -307,29 +380,36 @@ int keys_str2int(const char *key)
 	return -1;
 }
 
-const char *keys_int2str(int key)
+char *keys_int2str(int key)
 {
+	char *res;
+
 	switch (key) {
 	case TAB:
-		return "TAB";
+		return strdup("TAB");
 	case SPACE:
-		return "SPC";
+		return strdup("SPC");
 	case ESCAPE:
-		return "ESC";
+		return strdup("ESC");
 	case KEY_UP:
-		return "UP";
+		return strdup("UP");
 	case KEY_DOWN:
-		return "DWN";
+		return strdup("DWN");
 	case KEY_LEFT:
-		return "LFT";
+		return strdup("LFT");
 	case KEY_RIGHT:
-		return "RGT";
+		return strdup("RGT");
 	case KEY_HOME:
-		return "KEY_HOME";
+		return strdup("KEY_HOME");
 	case KEY_END:
-		return "KEY_END";
-	default:
-		return (char *)keyname(key);
+		return strdup("KEY_END");
+	}
+
+	if (key >= 0x80) {
+		asprintf(&res, "U+%04X", key);
+		return res;
+	} else {
+		return strdup((char *)keyname(key));
 	}
 }
 
