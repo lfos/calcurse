@@ -269,43 +269,42 @@ static const struct utf8_range utf8_widthtab[] = {
 	{0xe0100, 0xe01ef, 0}
 };
 
-/* Get the width of a UTF-8 character. */
-int utf8_width(char *s)
+/* Decode a UTF-8 code point. */
+int utf8_ord(const char *s)
 {
-	int val, low, high, cur;
-
 	if (UTF8_ISCONT(*s))
 		return 0;
 
 	switch (UTF8_LENGTH(*s)) {
 	case 1:
-		val = s[0];
-		break;
+		return s[0];
 	case 2:
-		val = (s[1] & 0x3f) | (s[0] & 0x1f) << 6;
-		break;
+		return (s[1] & 0x3f) | (s[0] & 0x1f) << 6;
 	case 3:
-		val = ((s[2] & 0x3f) | (s[1] & 0x3f) << 6) |
+		return ((s[2] & 0x3f) | (s[1] & 0x3f) << 6) |
 			(s[0] & 0x0f) << 12;
-		break;
 	case 4:
-		val = (((s[3] & 0x3f) | (s[2] & 0x3f) << 6) |
+		return (((s[3] & 0x3f) | (s[2] & 0x3f) << 6) |
 			(s[1] & 0x3f) << 12) | (s[0] & 0x3f) << 18;
-		break;
 	case 5:
-		val = ((((s[4] & 0x3f) | (s[3] & 0x3f) << 6) |
+		return ((((s[4] & 0x3f) | (s[3] & 0x3f) << 6) |
 			(s[2] & 0x3f) << 12) | (s[1] & 0x3f) << 18) |
 			(s[0] & 0x3f) << 24;
-		break;
 	case 6:
-		val = (((((s[5] & 0x3f) | (s[4] & 0x3f) << 6) |
+		return (((((s[5] & 0x3f) | (s[4] & 0x3f) << 6) |
 			(s[3] & 0x3f) << 12) | (s[2] & 0x3f) << 18) |
 			(s[1] & 0x3f) << 24) | (s[0] & 0x3f) << 30;
-		break;
 	default:
 		return 0;
 	}
+}
 
+/* Get the width of a UTF-8 character. */
+int utf8_width(char *s)
+{
+	int val, low, high, cur;
+
+	val = utf8_ord(s);
 	low = 0;
 	high = ARRAY_SIZE(utf8_widthtab);
 	do {
