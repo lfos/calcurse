@@ -843,8 +843,22 @@ static void adj360(double *deg)
 }
 
 /*
+ * Phase of the Moon.  Calculates the current phase of the moon.
+ * Based on routines from `Practical Astronomy with Your Calculator',
+ * by Duffett-Smith.  Comments give the section from the book that
+ * particular piece of code was adapted from.
+ *
+ * -- Keith E. Brandt  VIII 1984
+ *
+ * Updated to the Third Edition of Duffett-Smith's book, IX 1998
+ *
+ */
+
+/*
  * potm --
- *	return phase of the moon
+ *	given number of days since January 1st 1990, 00:00
+ *	(incl. hours and minutes as a fraction of a day),
+ *	return phase of the moon as a percentage.
  */
 static double potm(double days)
 {
@@ -877,17 +891,6 @@ static double potm(double days)
 	return 50.0 * (1 - cos(dtor(D)));	/* sec 67 #3 */
 }
 
-/*
- * Phase of the Moon.  Calculates the current phase of the moon.
- * Based on routines from `Practical Astronomy with Your Calculator',
- * by Duffett-Smith.  Comments give the section from the book that
- * particular piece of code was adapted from.
- *
- * -- Keith E. Brandt  VIII 1984
- *
- * Updated to the Third Edition of Duffett-Smith's book, IX 1998
- *
- */
 static double pom(time_t tmpt)
 {
 	struct tm *GMT;
@@ -908,30 +911,30 @@ static double pom(time_t tmpt)
 
 /*
  * Return a pictogram representing the current phase of the moon.
- * Careful: date is the selected day in calendar at 00:00, so it represents
- * the phase of the moon for previous day.
+ * Careful: date is the selected day in calendar at 00:00,
+ * and so represents the phase of the moon at midnight.
  */
 const char *ui_calendar_get_pom(time_t date)
 {
 	const char *pom_pict[MOON_PHASES] =
 	    { "   ", "|) ", "(|)", "(| ", " | " };
 	enum pom phase = NO_POM;
-	double pom_today, relative_pom, pom_yesterday, pom_tomorrow;
 	const double half = 50.0;
 
-	pom_yesterday = pom(date);
-	pom_today = pom(date + DAYINSEC);
-	relative_pom = abs(pom_today - half);
-	pom_tomorrow = pom(date + 2 * DAYINSEC);
-	if (pom_today > pom_yesterday && pom_today > pom_tomorrow)
-		phase = FULL_MOON;
-	else if (pom_today < pom_yesterday && pom_today < pom_tomorrow)
-		phase = NEW_MOON;
-	else if (relative_pom < abs(pom_yesterday - half)
-		 && relative_pom < abs(pom_tomorrow - half))
-		phase =
-		    (pom_tomorrow >
-		     pom_today) ? FIRST_QUARTER : LAST_QUARTER;
+	date += DAYINSEC / 2;				/* adjust to noon */
+	double pom_n_b = pom(date - DAYINSEC);	 	/* noon before */
+	double pom_m_b = pom(date - DAYINSEC / 2);	/* midnight before */
+	double pom_n   = pom(date); 			/* noon */
+	double pom_m_a = pom(date + DAYINSEC / 2);	/* midnight after */
+	double pom_n_a = pom(date + DAYINSEC);	 	/* noon after */
 
+	if (pom_n > pom_n_b && pom_n > pom_n_a)
+		phase = FULL_MOON;
+	else if (pom_n < pom_n_b && pom_n < pom_n_a)
+		phase = NEW_MOON;
+	else if (pom_m_b < half && half < pom_m_a)
+		phase = FIRST_QUARTER;
+	else if (pom_m_b > half && half > pom_m_a)
+		phase = LAST_QUARTER;
 	return pom_pict[phase];
 }
