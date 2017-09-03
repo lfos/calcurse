@@ -220,7 +220,7 @@ int status_ask_choice(const char *message, const char choice[],
 	status_mesg(message, avail_choice);
 
 	for (;;) {
-		ch = wgetch(win[KEY].p);
+		ch = keys_wgetch(win[KEY].p);
 		for (i = 1; i <= nb_choice; i++)
 			if (ch == choice[i])
 				return i;

@@ -66,7 +66,7 @@ void ui_todo_add(void)
 	    GETSTRING_VALID) {
 		while ((ch < '0') || (ch > '9')) {
 			status_mesg(mesg_id, "");
-			ch = wgetch(win[KEY].p);
+			ch = keys_wgetch(win[KEY].p);
 		}
 		struct todo *todo = todo_add(todo_input, ch - '0', 0, NULL);
 		ui_todo_load_items();
