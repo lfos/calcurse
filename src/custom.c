@@ -739,11 +739,11 @@ static void general_option_edit(int i)
 		break;
 	case OUTPUT_DATE_FMT:
 		status_mesg(output_datefmt_str, "");
-		strncpy(buf, conf.output_datefmt,
-			strlen(conf.output_datefmt) + 1);
+		strncpy(buf, conf.output_datefmt, BUFSIZ);
+		buf[BUFSIZ - 1] = '\0';
 		if (updatestring(win[STA].p, &buf, 0, 1) == 0) {
-			strncpy(conf.output_datefmt, buf,
-				strlen(buf) + 1);
+			strncpy(conf.output_datefmt, buf, BUFSIZ);
+			conf.output_datefmt[BUFSIZ - 1] = '\0';
 		}
 		break;
 	case INPUT_DATE_FMT:
@@ -755,9 +755,11 @@ static void general_option_edit(int i)
 		break;
 	case DAY_HEADING_FMT:
 		status_mesg(output_datefmt_str, "");
-		strcpy(buf, conf.day_heading);
+		strncpy(buf, conf.day_heading, BUFSIZ);
+		buf[BUFSIZ - 1] = '\0';
 		if (updatestring(win[STA].p, &buf, 0, 1) == 0) {
-			strcpy(conf.day_heading, buf);
+			strncpy(conf.day_heading, buf, BUFSIZ);
+			conf.output_datefmt[BUFSIZ - 1] = '\0';
 		}
 		break;
 	}
