@@ -239,6 +239,11 @@ int keys_wgetch(WINDOW *win)
 
 }
 
+void keys_wait_for_any_key(WINDOW *win)
+{
+	keys_wgetch(win);
+}
+
 enum key keys_get(WINDOW *win, int *count, int *reg)
 {
 	int ch = '0';

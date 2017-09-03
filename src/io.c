@@ -182,7 +182,7 @@ static FILE *get_export_stream(enum export_type type)
 		stream = fopen(stream_name, "w");
 		if (stream == NULL) {
 			status_mesg(wrong_name, press_enter);
-			wgetch(win[KEY].p);
+			keys_wait_for_any_key(win[KEY].p);
 		}
 	}
 
@@ -470,7 +470,7 @@ void io_save_cal(enum save_display display)
 	if (ui_mode == UI_CURSES && display == IO_SAVE_DISPLAY_BAR &&
 	    show_dialogs()) {
 		status_mesg(save_success, enter);
-		wgetch(win[KEY].p);
+		keys_wait_for_any_key(win[KEY].p);
 	}
 
 	pthread_mutex_unlock(&io_save_mutex);
@@ -873,7 +873,7 @@ void io_reload_data(void)
 
 	if (show_dialogs()) {
 		status_mesg(reload_success, enter);
-		wgetch(win[KEY].p);
+		keys_wait_for_any_key(win[KEY].p);
 	}
 
 	if (notify_bar())
@@ -1157,7 +1157,7 @@ void io_startup_screen(int no_data_file)
 		status_mesg(_("Data files found. Data will be loaded now."),
 			    enter);
 
-	wgetch(win[KEY].p);
+	keys_wait_for_any_key(win[KEY].p);
 }
 
 /* Export calcurse data. */
@@ -1192,7 +1192,7 @@ void io_export_data(enum export_type type, int export_uid)
 
 	if (show_dialogs() && ui_mode == UI_CURSES) {
 		status_mesg(success, enter);
-		wgetch(win[KEY].p);
+		keys_wait_for_any_key(win[KEY].p);
 	}
 }
 
@@ -1217,7 +1217,7 @@ static FILE *get_import_stream(enum import_type type)
 		stream = fopen(stream_name, "r");
 		if (stream == NULL) {
 			status_mesg(wrong_file, press_enter);
-			wgetch(win[KEY].p);
+			keys_wait_for_any_key(win[KEY].p);
 		}
 	}
 	mem_free(stream_name);
@@ -1305,7 +1305,7 @@ void io_import_data(enum import_type type, const char *stream_name,
 		status_mesg(read, stat);
 		mem_free(read);
 		mem_free(stat);
-		wgetch(win[KEY].p);
+		keys_wait_for_any_key(win[KEY].p);
 	} else if (ui_mode == UI_CMDLINE && show_dialogs()) {
 		printf(proc_report, stats.lines);
 		printf("\n%s / %s / %s / %s\n", stats_str[0], stats_str[1],

@@ -873,6 +873,7 @@ void keys_dump_defaults(char *);
 const char *keys_get_label(enum key);
 enum key keys_get_action(int);
 int keys_wgetch(WINDOW *);
+void keys_wait_for_any_key(WINDOW *);
 enum key keys_get(WINDOW *, int *, int *);
 int keys_assign_binding(int, enum key);
 void keys_remove_binding(int, enum key);

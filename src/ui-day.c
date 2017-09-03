@@ -76,7 +76,7 @@ static int day_edit_time(int time)
 		if (parse_datetime(input, &ts))
 			return ts;
 		status_mesg(fmt_msg, enter_str);
-		wgetch(win[KEY].p);
+		keys_wait_for_any_key(win[KEY].p);
 	}
 }
 
@@ -122,7 +122,7 @@ static int day_edit_duration(int start, int dur, unsigned *new_duration)
 			break;
 		}
 		status_mesg(fmt_msg, enter_str);
-		wgetch(win[KEY].p);
+		keys_wait_for_any_key(win[KEY].p);
 	}
 
 	mem_free(timestr);
@@ -152,7 +152,7 @@ static void update_start_time(long *start, long *dur, int update_dur)
 			valid_date = 1;
 		} else {
 			status_mesg(msg_wrong_time, msg_enter);
-			wgetch(win[KEY].p);
+			keys_wait_for_any_key(win[KEY].p);
 			valid_date = 0;
 		}
 	}
@@ -250,7 +250,7 @@ static void update_rept(struct rpt **rpt, const long start)
 		newfreq = atoi(freqstr);
 		if (newfreq == 0) {
 			status_mesg(msg_wrong_freq, msg_enter);
-			wgetch(win[KEY].p);
+			keys_wait_for_any_key(win[KEY].p);
 		}
 	}
 	while (newfreq == 0);
@@ -284,7 +284,7 @@ static void update_rept(struct rpt **rpt, const long start)
 					 DATEFMT_DESC(conf.input_datefmt));
 				status_mesg(msg_wrong_date, outstr);
 				mem_free(outstr);
-				wgetch(win[KEY].p);
+				keys_wait_for_any_key(win[KEY].p);
 				continue;
 			}
 			t = start;
@@ -301,7 +301,7 @@ static void update_rept(struct rpt **rpt, const long start)
 					 DATEFMT_DESC(conf.input_datefmt));
 				status_mesg(msg_wrong_date, outstr);
 				mem_free(outstr);
-				wgetch(win[KEY].p);
+				keys_wait_for_any_key(win[KEY].p);
 				continue;
 			}
 			t = start;
@@ -314,7 +314,7 @@ static void update_rept(struct rpt **rpt, const long start)
 		if (newuntil >= start)
 			break;
 		status_mesg(msg_wrong_time, msg_enter);
-		wgetch(win[KEY].p);
+		keys_wait_for_any_key(win[KEY].p);
 	}
 
 	(*rpt)->type = recur_char2def(newtype);
@@ -542,7 +542,7 @@ void ui_day_item_add(void)
 		if (ret)
 			break;
 		status_mesg(format_message_1, enter_str);
-		wgetch(win[KEY].p);
+		keys_wait_for_any_key(win[KEY].p);
 	}
 
 	/*
@@ -581,7 +581,7 @@ void ui_day_item_add(void)
 				break;
 			}
 			status_mesg(format_message_2, enter_str);
-			wgetch(win[KEY].p);
+			keys_wait_for_any_key(win[KEY].p);
 		}
 	}
 
@@ -728,7 +728,7 @@ void ui_day_item_repeat(void)
 	p = day_get_item(item_nb);
 	if (p->type != APPT && p->type != EVNT) {
 		status_mesg(wrong_type_1, wrong_type_2);
-		wgetch(win[KEY].p);
+		keys_wait_for_any_key(win[KEY].p);
 		goto cleanup;
 	}
 
@@ -757,7 +757,7 @@ void ui_day_item_repeat(void)
 		freq = atoi(user_input);
 		if (freq == 0) {
 			status_mesg(mesg_wrong_freq, wrong_type_2);
-			wgetch(win[KEY].p);
+			keys_wait_for_any_key(win[KEY].p);
 		}
 		user_input[0] = '\0';
 	}
@@ -780,7 +780,7 @@ void ui_day_item_repeat(void)
 					 DATEFMT_DESC(conf.input_datefmt));
 				status_mesg(mesg_wrong_1, outstr);
 				mem_free(outstr);
-				wgetch(win[KEY].p);
+				keys_wait_for_any_key(win[KEY].p);
 				continue;
 			}
 			t = p->start;
@@ -802,7 +802,7 @@ void ui_day_item_repeat(void)
 				 DATEFMT_DESC(conf.input_datefmt));
 			status_mesg(mesg_wrong_1, outstr);
 			mem_free(outstr);
-			wgetch(win[KEY].p);
+			keys_wait_for_any_key(win[KEY].p);
 			continue;
 		}
 
@@ -810,7 +810,7 @@ void ui_day_item_repeat(void)
 		if (until >= p->start)
 			break;
 		status_mesg(mesg_older, wrong_type_2);
-		wgetch(win[KEY].p);
+		keys_wait_for_any_key(win[KEY].p);
 	}
 
 	date = ui_calendar_get_slctd_day_sec();

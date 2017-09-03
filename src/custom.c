@@ -1102,7 +1102,7 @@ void custom_config_main(void)
 				colorize = 0;
 				wins_erase_status_bar();
 				mvwaddstr(win[STA].p, 0, 0, no_color_support);
-				wgetch(win[KEY].p);
+				keys_wait_for_any_key(win[KEY].p);
 			}
 			break;
 		case 'L':

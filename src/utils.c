@@ -145,7 +145,7 @@ void fatalbox(const char *errmsg)
 	mvwaddstr(errwin, 5, (WINCOL - strlen(msg)) / 2, msg);
 	custom_remove_attr(errwin, ATTR_HIGHEST);
 	wins_wrefresh(errwin);
-	wgetch(errwin);
+	keys_wait_for_any_key(errwin);
 	delwin(errwin);
 	wins_doupdate();
 }
@@ -172,7 +172,7 @@ void warnbox(const char *msg)
 	mvwaddstr(warnwin, 5, (WINCOL - strlen(displmsg)) / 2, displmsg);
 	custom_remove_attr(warnwin, ATTR_HIGHEST);
 	wins_wrefresh(warnwin);
-	wgetch(warnwin);
+	keys_wait_for_any_key(warnwin);
 	delwin(warnwin);
 	wins_doupdate();
 }
@@ -614,7 +614,7 @@ item_in_popup(const char *a_start, const char *a_end, const char *msg,
 	wmove(win[STA].p, 0, 0);
 	pnoutrefresh(pad, 0, 0, margin_top + 2, margin_left, padl, winw);
 	wins_doupdate();
-	wgetch(popup_win);
+	keys_wait_for_any_key(popup_win);
 	delwin(pad);
 	delwin(popup_win);
 }

@@ -658,7 +658,7 @@ void ui_calendar_change_day(int datefmt)
 			}
 			if (wrong_day) {
 				status_mesg(mesg_line1, mesg_line2);
-				wgetch(win[KEY].p);
+				keys_wait_for_any_key(win[KEY].p);
 			}
 		}
 	}
