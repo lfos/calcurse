@@ -1014,13 +1014,13 @@ void custom_keys_config(void)
 								selelm,
 								LINESPERKEY);
 					wins_scrollwin_display(&kwin);
+				} else {
+					nbrowelm++;
+					selelm = nbrowelm - 1;
 				}
 				delwin(grabwin);
 			}
 			while (used || not_recognized);
-			nbrowelm++;
-			if (selelm < nbrowelm - 1)
-				selelm++;
 #undef WINROW
 #undef WINCOL
 			break;
@@ -1029,7 +1029,7 @@ void custom_keys_config(void)
 			ch = keys_str2int(keystr);
 			keys_remove_binding(ch, selrow);
 			nbrowelm--;
-			if (selelm > 0 && selelm <= nbrowelm)
+			if (selelm > 0 && selelm >= nbrowelm)
 				selelm--;
 			break;
 		case KEY_GENERIC_QUIT:
