@@ -51,8 +51,6 @@
 #include "calcurse.h"
 #include "sha1.h"
 
-#define ISLEAP(y) ((((y) % 4) == 0 && ((y) % 100) != 0) || ((y) % 400) == 0)
-
 #define FS_EXT_MAXLEN 64
 
 enum format_specifier {

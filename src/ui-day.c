@@ -916,7 +916,6 @@ static char *fmt_day_heading(time_t date)
 
 	localtime_r(&date, &tm);
 	string_init(&s);
-	string_printf(&s, "%s ", ui_calendar_get_pom(date));
 	string_catftime(&s, conf.day_heading, &tm);
 	return string_buf(&s);
 }

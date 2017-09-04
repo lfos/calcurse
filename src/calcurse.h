@@ -302,6 +302,8 @@ struct date {
 	unsigned yyyy;
 };
 
+#define ISLEAP(y) ((((y) % 4) == 0 && ((y) % 100) != 0) || ((y) % 400) == 0)
+
 /* Appointment definition. */
 struct apoint {
 	long start;		/* seconds since 1 jan 1970 */
@@ -740,7 +742,6 @@ void ui_calendar_change_day(int);
 void ui_calendar_move(enum move, int);
 long ui_calendar_start_of_year(void);
 long ui_calendar_end_of_year(void);
-const char *ui_calendar_get_pom(time_t);
 
 /* config.c */
 void config_load(void);
