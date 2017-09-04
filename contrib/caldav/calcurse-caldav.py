@@ -12,6 +12,14 @@ import textwrap
 import urllib.parse
 import xml.etree.ElementTree as etree
 
+# Optional libraries for OAuth2 authentication
+try:
+    from oauth2client.client import OAuth2WebServerFlow, HttpAccessTokenRefreshError
+    from oauth2client.file import Storage
+    import webbrowser
+except ModuleNotFoundError:
+    pass
+
 
 def msgfmt(msg, prefix=''):
     lines = []
@@ -90,6 +98,65 @@ def get_auth_headers():
     user_password = base64.b64encode(user_password).decode('ascii')
     headers = {'Authorization': 'Basic {}'.format(user_password)}
     return headers
+
+
+def init_auth(client_id, client_secret, scope, redirect_uri, authcode):
+    # Create OAuth2 session
+    oauth2_client = OAuth2WebServerFlow(client_id=client_id,
+                                        client_secret=client_secret,
+                                        scope=scope,
+                                        redirect_uri=redirect_uri)
+
+    # If auth code is missing, tell user run script with auth code
+    if not authcode:
+        # Generate and open URL for user to authorize
+        auth_uri = oauth2_client.step1_get_authorize_url()
+        webbrowser.open(auth_uri)
+
+        prompt = ('\nIf a browser window did not open, go to the URL '
+                  'below and log in to authorize syncing. '
+                  'Once authorized, pass the string after "code=" from '
+                  'the URL in your browser\'s address bar to '
+                  'calcurse-caldav.py using the "--authcode" flag. '
+                  "Example: calcurse-caldav --authcode "
+                  "'your_auth_code_here'\n\n{}\n".format(auth_uri))
+        print(prompt)
+        die("Access token is missing or refresh token is expired.")
+
+    # Create and return Credential object from auth code
+    credentials = oauth2_client.step2_exchange(authcode)
+
+    # Setup storage file and store credentials
+    storage = Storage(oauth_file)
+    credentials.set_store(storage)
+    storage.put(credentials)
+
+    return credentials
+
+
+def run_auth(authcode):
+    # Check if credentials file exists
+    if os.path.isfile(oauth_file):
+
+        # Retrieve token from file
+        storage = Storage(oauth_file)
+        credentials = storage.get()
+
+        # Set file to store it in for future functions
+        credentials.set_store(storage)
+
+        # Refresh the access token if it is expired
+        if credentials.invalid:
+            try:
+                credentials.refresh(httplib2.Http())
+            except HttpAccessTokenRefreshError:
+                # Initialize OAuth2 again if refresh token becomes invalid
+                credentials = init_auth(client_id, client_secret, scope, redirect_uri, authcode)
+    else:
+        # Initialize OAuth2 credentials
+        credentials = init_auth(client_id, client_secret, scope, redirect_uri, authcode)
+
+    return credentials
 
 
 def remote_query(conn, cmd, path, additional_headers, body):
@@ -384,6 +451,7 @@ configfn = os.path.expanduser("~/.calcurse/caldav/config")
 lockfn = os.path.expanduser("~/.calcurse/caldav/lock")
 syncdbfn = os.path.expanduser("~/.calcurse/caldav/sync.db")
 hookdir = os.path.expanduser("~/.calcurse/caldav/hooks/")
+oauth_file = os.path.expanduser("~/.calcurse/caldav/oauth2_cred")
 
 # Parse command line arguments.
 parser = argparse.ArgumentParser('calcurse-caldav')
@@ -402,6 +470,9 @@ parser.add_argument('--syncdb', action='store', dest='syncdbfn',
 parser.add_argument('--hookdir', action='store', dest='hookdir',
                     default=hookdir,
                     help='path to the calcurse-caldav hooks directory')
+parser.add_argument('--authcode', action='store', dest='authcode',
+                    default=None,
+                    help='auth code for OAuth2 authentication')
 parser.add_argument('-v', '--verbose', action='store_true', dest='verbose',
                     default=False,
                     help='print status messages to stdout')
@@ -414,6 +485,7 @@ configfn = args.configfn
 lockfn = args.lockfn
 syncdbfn = args.syncdbfn
 hookdir = args.hookdir
+authcode = args.authcode
 verbose = args.verbose
 debug = args.debug
 
@@ -452,6 +524,11 @@ if not verbose and config.has_option('General', 'Verbose'):
 if not debug and config.has_option('General', 'Debug'):
     debug = config.getboolean('General', 'Debug')
 
+if config.has_option('General', 'AuthMethod'):
+    authmethod = config.get('General', 'AuthMethod').lower()
+else:
+    authmethod = 'basic'
+
 if config.has_option('Auth', 'UserName'):
     username = config.get('Auth', 'UserName')
 else:
@@ -466,6 +543,26 @@ if config.has_section('CustomHeaders'):
     custom_headers = dict(config.items('CustomHeaders'))
 else:
     custom_headers = {}
+
+if config.has_option('OAuth2', 'ClientID'):
+    client_id = config.get('OAuth2', 'ClientID')
+else:
+    client_id = None
+
+if config.has_option('OAuth2', 'ClientSecret'):
+    client_secret = config.get('OAuth2', 'ClientSecret')
+else:
+    client_secret = None
+
+if config.has_option('OAuth2', 'Scope'):
+   scope = config.get('OAuth2', 'Scope')
+else:
+   scope = None
+
+if config.has_option('OAuth2', 'RedirectURI'):
+    redirect_uri = config.get('OAuth2', 'RedirectURI')
+else:
+    redirect_uri = 'http://127.0.0.1'
 
 # Show disclaimer when performing a dry run.
 if dry_run:
@@ -499,6 +596,13 @@ try:
     conn = httplib2.Http()
     if insecure_ssl:
         conn.disable_ssl_certificate_validation = True
+
+    if authmethod == 'oauth2':
+        # Authenticate with OAuth2 and authorize HTTP object
+        cred = run_auth(authcode)
+        conn = cred.authorize(conn)
+    elif authmethod != 'basic':
+        die('Invalid option for AuthMethod in config file. Use "basic" or "oauth2"')
 
     if init:
         # In initialization mode, start with an empty synchronization database.
@@ -550,6 +654,10 @@ try:
 
     # Write the synchronization database.
     save_syncdb(syncdbfn, syncdb)
+
+    #Clear OAuth2 credentials if used
+    if authmethod == 'oauth2':
+        conn.clear_credentials()
 
 finally:
     # Remove lock file.
