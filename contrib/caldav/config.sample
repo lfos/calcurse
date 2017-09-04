@@ -12,6 +12,9 @@ Hostname = some.hostname.com
 # Path to the CalDAV calendar on the host specified above.
 Path = /path/to/calendar/on/the/server/
 
+# Type of authentication to use. Must be "basic" or "oauth2"
+#AuthMethod = basic
+
 # Enable this if you want to skip SSL certificate checks.
 InsecureSSL = No
 
@@ -33,3 +36,16 @@ Verbose = Yes
 # Optionally specify additional HTTP headers here.
 #[CustomHeaders]
 #User-Agent = Mac_OS_X/10.9.2 (13C64) CalendarAgent/176
+
+# Use the following to synchronize with an OAuth2-based service
+# such as Google Calendar.
+#[OAuth2]
+#ClientID = your_client_id
+#ClientSecret = your_client_secret
+
+# Scope of access for API calls. Synchronization requires read/write.
+#Scope = https://example.com/resource/scope
+
+# Change the redirect URI if you receive errors, but ensure that it is identical
+# to the redirect URI you specified in the API settings.
+#RedirectURI = http://127.0.0.1
