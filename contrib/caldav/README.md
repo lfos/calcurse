@@ -22,7 +22,7 @@ found under contrib/caldav/config.sample in the calcurse source tree. You will
 also need to install *httplib2* for Python 3 using *pip* (e.g. `pip3 install
 --user httplib2`) or your distribution's package manager.
 
-If you run calcurse-caldav for the first time, you need to provide the --init
+If you run calcurse-caldav for the first time, you need to provide the `--init`
 argument. You can choose between the following initialization modes:
 
     --init=keep-remote Remove all local calcurse items and import remote objects
@@ -51,7 +51,7 @@ How It Works
 ------------
 
 calcurse-caldav creates a so-called synchronization database at
-~/.calcurse/caldav/sync.db that always keeps a snapshot of the last time the
+`~/.calcurse/caldav/sync.db` that always keeps a snapshot of the last time the
 script was executed. When running the script, it compares the objects on the
 server and the local objects with that snapshot to identify items that were
 added or deleted. It then
