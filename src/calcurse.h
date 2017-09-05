@@ -249,6 +249,12 @@ enum win {
 	NBWINS
 };
 
+enum pos {
+	LEFT,
+	CENTER,
+	RIGHT
+};
+
 /* General configuration variables. */
 struct conf {
 	unsigned auto_save;
@@ -265,6 +271,7 @@ struct conf {
 	const char *mergetool;
 	char output_datefmt[BUFSIZ];	/* format for displaying date */
 	int input_datefmt;	/* format for reading date */
+	enum pos heading_pos; /* left/center/right for heading in appts panel */
 	char day_heading[BUFSIZ];	/* format for displaying heading in appts panel */
 };
 

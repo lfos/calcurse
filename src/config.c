@@ -77,6 +77,8 @@ static int config_parse_input_datefmt(void *, const char *);
 static int config_serialize_input_datefmt(char **, void *);
 static int config_parse_notifyall(void *, const char *);
 static int config_serialize_notifyall(char **, void *);
+static int config_parse_heading_pos(void *, const char *);
+static int config_serialize_heading_pos(char **, void *);
 
 #define CONFIG_HANDLER_BOOL(var) (config_fn_parse_t) config_parse_bool, \
   (config_fn_serialize_t) config_serialize_bool, &(var)
@@ -96,6 +98,7 @@ static const struct confvar confmap[] = {
 	{"appearance.sidebarwidth", config_parse_sidebar_width, config_serialize_sidebar_width, NULL},
 	{"appearance.theme", config_parse_color_theme, config_serialize_color_theme, NULL},
 	{"appearance.todoview", config_parse_todo_view, config_serialize_todo_view, NULL},
+	{"appearance.headingpos", config_parse_heading_pos, config_serialize_heading_pos, NULL},
 	{"daemon.enable", CONFIG_HANDLER_BOOL(dmon.enable)},
 	{"daemon.log", CONFIG_HANDLER_BOOL(dmon.log)},
 	{"format.inputdate", config_parse_input_datefmt, config_serialize_input_datefmt, NULL},
@@ -307,6 +310,19 @@ static int config_parse_notifyall(void *dummy, const char *val)
 	return 1;
 }
 
+static int config_parse_heading_pos(void *dummy, const char *val)
+{
+	if (!strcmp(val, "left-justified"))
+		conf.heading_pos = LEFT;
+	else if (!strcmp(val, "centered"))
+		conf.heading_pos = CENTER;
+	else if (!strcmp(val, "right-justified"))
+		conf.heading_pos = RIGHT;
+	else
+		return 0;
+	return 1;
+}
+
 /* Set a configuration variable. */
 static int config_set_conf(const char *key, const char *value)
 {
@@ -479,6 +495,17 @@ static int config_serialize_notifyall(char **buf, void *dummy)
 		*buf = mem_strdup("all");
 	else
 		return 0;
+	return 1;
+}
+
+static int config_serialize_heading_pos(char **buf, void *dummy)
+{
+	if (conf.heading_pos == LEFT)
+		*buf = mem_strdup("left-justified");
+	else if (conf.heading_pos == CENTER)
+		*buf = mem_strdup("centered");
+	else
+		*buf = mem_strdup("right-justified");
 	return 1;
 }
 

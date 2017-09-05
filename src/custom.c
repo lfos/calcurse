@@ -528,6 +528,7 @@ enum {
 	FIRST_DAY_OF_WEEK,
 	OUTPUT_DATE_FMT,
 	INPUT_DATE_FMT,
+	HEADING_POS,
 	DAY_HEADING_FMT,
 	NB_OPTIONS
 };
@@ -549,9 +550,11 @@ static void print_general_option(int i, WINDOW *win, int y, int hilt, void *cb_d
 		"general.firstdayofweek = ",
 		"format.outputdate = ",
 		"format.inputdate = ",
+		"appearance.headingposition = ",
 		"format.dayheading = "
 	};
 	const char *panel;
+	const char *position;
 
 	if (hilt)
 		custom_apply_attr(win, ATTR_HIGHEST);
@@ -653,6 +656,19 @@ static void print_general_option(int i, WINDOW *win, int y, int hilt, void *cb_d
 			  datefmt_str[0], datefmt_str[1], datefmt_str[2],
 			  datefmt_str[3]);
 		break;
+	case HEADING_POS:
+		if (conf.heading_pos == LEFT)
+			position = _("to the left");
+		else if (conf.heading_pos == CENTER)
+			position = _("in the middle");
+		else
+			position = _("to the right");
+		custom_apply_attr(win, ATTR_HIGHEST);
+		mvwaddstr(win, y, XPOS + strlen(opt[HEADING_POS]), position);
+		custom_remove_attr(win, ATTR_HIGHEST);
+		mvwaddstr(win, y + 1, XPOS,
+			  _("(position of the heading in the appointments panel)"));
+		break;
 	case DAY_HEADING_FMT:
 		custom_apply_attr(win, ATTR_HIGHEST);
 		mvwaddstr(win, y, XPOS + strlen(opt[DAY_HEADING_FMT]),
@@ -674,7 +690,7 @@ static enum listbox_row_type general_option_row_type(int i, void *cb_data)
 
 static int general_option_height(int i, void *cb_data)
 {
-	if (i == 11)
+	if (i == INPUT_DATE_FMT)
 		return 4;
 	else
 		return 3;
@@ -703,6 +719,12 @@ static void general_option_edit(int i)
 			conf.default_panel = CAL;
 		else
 			conf.default_panel++;
+		break;
+	case HEADING_POS:
+		if (conf.heading_pos == RIGHT)
+			conf.heading_pos = LEFT;
+		else
+			conf.heading_pos++;
 		break;
 	case AUTO_SAVE:
 		conf.auto_save = !conf.auto_save;

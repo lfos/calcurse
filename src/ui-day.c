@@ -938,7 +938,10 @@ void ui_day_draw(int n, WINDOW *win, int y, int hilt, void *cb_data)
 		char *buf = fmt_day_heading(date);
 		utf8_chop(buf, width);
 		custom_apply_attr(win, ATTR_HIGHEST);
-		mvwprintw(win, y, width - utf8_strwidth(buf) - 1, "%s", buf);
+		mvwprintw(win, y,
+			conf.heading_pos == RIGHT ? width - utf8_strwidth(buf) - 1 :
+			conf.heading_pos == LEFT ? 1 :
+			(width - utf8_strwidth(buf)) / 2, "%s", buf);
 		custom_remove_attr(win, ATTR_HIGHEST);
 		mem_free(buf);
 	} else if (item->type == DAY_SEPARATOR) {
