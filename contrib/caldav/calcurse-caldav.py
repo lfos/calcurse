@@ -10,6 +10,7 @@ import ssl
 import subprocess
 import sys
 import textwrap
+import urllib.parse
 import xml.etree.ElementTree as etree
 
 
@@ -242,7 +243,7 @@ def push_object(conn, objhash):
             etag = next(iter(etagdict.values()))
     etag = etag.strip('"')
 
-    return (href, etag)
+    return (urllib.parse.quote(href), etag)
 
 
 def push_objects(objhashes, conn, syncdb, etagdict):
