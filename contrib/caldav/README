@@ -18,7 +18,9 @@ Usage
 
 calcurse-caldav requires an up-to-date version of calcurse and a configuration
 file located at ~/.calcurse/caldav/config. An example configuration file can be
-found under contrib/caldav/config.sample in the calcurse source tree.
+found under contrib/caldav/config.sample in the calcurse source tree. You will
+also need to install *httplib2* for Python 3 using *pip* (e.g. `pip3 install
+--user httplib2`) or your distribution's package manager.
 
 If you run calcurse-caldav for the first time, you need to provide the --init
 argument. You can choose between the following initialization modes:

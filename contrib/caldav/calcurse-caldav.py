@@ -3,10 +3,9 @@
 import argparse
 import base64
 import configparser
-import http.client
+import httplib2
 import os
 import re
-import ssl
 import subprocess
 import sys
 import textwrap
@@ -113,18 +112,14 @@ def remote_query(conn, cmd, path, additional_headers, body):
     if isinstance(body, str):
         body = body.encode('utf-8')
 
-    conn.request(cmd, path, headers=headers, body=body)
-
-    resp = conn.getresponse()
+    resp, body = conn.request(path, cmd, body=body, headers=headers)
+    body = body.decode('utf-8')
 
     if not resp:
         return (None, None)
 
-    headers = resp.getheaders()
-    body = resp.read().decode('utf-8')
-
     if debug:
-        print("< Headers: " + repr(headers))
+        print("< Headers: " + repr(resp))
         for line in body.splitlines():
             print("< " + line)
         print()
@@ -134,7 +129,7 @@ def remote_query(conn, cmd, path, additional_headers, body):
              "while trying to access {}.").format(hostname, resp.status,
                                                   resp.reason, path))
 
-    return (headers, body)
+    return (resp, body)
 
 
 def get_etags(conn, hrefs=[]):
@@ -155,7 +150,7 @@ def get_etags(conn, hrefs=[]):
                 '<D:prop><D:getetag /></D:prop>'
                 '<C:filter><C:comp-filter name="VCALENDAR" /></C:filter>'
                 '</C:calendar-query>')
-    headers, body = remote_query(conn, "REPORT", path, headers, body)
+    headers, body = remote_query(conn, "REPORT", absolute_uri, headers, body)
     if not headers:
         return {}
     root = etree.fromstring(body)
@@ -230,13 +225,13 @@ def save_syncdb(fn, syncdb):
 def push_object(conn, objhash):
     href = path + objhash + ".ics"
     body = calcurse_export(objhash)
-    headers, body = remote_query(conn, "PUT", href, {}, body)
+    headers, body = remote_query(conn, "PUT", hostname_uri + href, {}, body)
 
     if not headers:
         return None
 
     etag = None
-    headerdict = dict((key.lower(), value) for key, value in headers)
+    headerdict = dict(headers)
     if 'etag' in headerdict:
         etag = headerdict['etag']
     while not etag:
@@ -266,7 +261,7 @@ def push_objects(objhashes, conn, syncdb, etagdict):
 
 def remove_remote_object(conn, etag, href):
     headers = {'If-Match': '"' + etag + '"'}
-    remote_query(conn, "DELETE", href, headers, None)
+    remote_query(conn, "DELETE", hostname_uri + href, headers, None)
 
 
 def remove_remote_objects(objhashes, conn, syncdb, etagdict):
@@ -313,7 +308,7 @@ def pull_objects(hrefs_missing, hrefs_modified, conn, syncdb, etagdict):
     for href in (hrefs_missing | hrefs_modified):
         body += '<D:href>{}</D:href>'.format(href)
     body += '</C:calendar-multiget>'
-    headers, body = remote_query(conn, "REPORT", path, {}, body)
+    headers, body = remote_query(conn, "REPORT", absolute_uri, {}, body)
 
     root = etree.fromstring(body)
 
@@ -433,6 +428,8 @@ except FileNotFoundError as e:
 
 hostname = config.get('General', 'HostName')
 path = '/' + config.get('General', 'Path').strip('/') + '/'
+hostname_uri = 'https://' + hostname
+absolute_uri = hostname_uri + path
 
 if config.has_option('General', 'InsecureSSL'):
     insecure_ssl = config.getboolean('General', 'InsecureSSL')
@@ -499,18 +496,9 @@ try:
     # Connect to the server via HTTPs.
     if verbose:
         print('Connecting to ' + hostname + '...')
+    conn = httplib2.Http()
     if insecure_ssl:
-        try:
-            context = ssl._create_unverified_context()
-            conn = http.client.HTTPSConnection(hostname, context=context)
-        except AttributeError:
-            # Python versions prior to 3.4.3 do not support
-            # ssl._create_unverified_context(). However, these versions do not
-            # seem to verify certificates by default so we can simply fall back
-            # to http.client.HTTPSConnection().
-            conn = http.client.HTTPSConnection(hostname)
-    else:
-        conn = http.client.HTTPSConnection(hostname)
+        conn.disable_ssl_certificate_validation = True
 
     if init:
         # In initialization mode, start with an empty synchronization database.
@@ -563,8 +551,6 @@ try:
     # Write the synchronization database.
     save_syncdb(syncdbfn, syncdb)
 
-    # Close the HTTPs connection.
-    conn.close()
 finally:
     # Remove lock file.
     os.remove(lockfn)
