@@ -130,19 +130,25 @@ void vars_init(void)
 	datefmt_str[3] = _("yyyy-mm-dd");
 
 	/* Default external editor and pager */
-	ed = getenv("VISUAL");
+	ed = getenv("CALCURSE_EDITOR");
+	if (ed == NULL || ed[0] == '\0')
+		ed = getenv("VISUAL");
 	if (ed == NULL || ed[0] == '\0')
 		ed = getenv("EDITOR");
 	if (ed == NULL || ed[0] == '\0')
 		ed = DEFAULT_EDITOR;
 	conf.editor = ed;
 
-	pg = getenv("PAGER");
+	pg = getenv("CALCURSE_PAGER");
+	if (pg == NULL || pg[0] == '\0')
+		pg = getenv("PAGER");
 	if (pg == NULL || pg[0] == '\0')
 		pg = DEFAULT_PAGER;
 	conf.pager = pg;
 
-	mt = getenv("MERGETOOL");
+	mt = getenv("CALCURSE_MERGETOOL");
+	if (mt == NULL || mt[0] == '\0')
+		mt = getenv("MERGETOOL");
 	if (mt == NULL || mt[0] == '\0')
 		mt = DEFAULT_MERGETOOL;
 	conf.mergetool = mt;
