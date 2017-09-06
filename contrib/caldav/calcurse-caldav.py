@@ -183,7 +183,9 @@ def remote_wipe(conn):
     if dry_run:
         return
 
-    remote_query(conn, "DELETE", path, {}, None)
+    remote_items = get_etags(conn)
+    for href in remote_items:
+        remove_remote_object(conn, remote_items[href], href)
 
 
 def get_syncdb(fn):
