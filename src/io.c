@@ -426,43 +426,43 @@ unsigned io_save_keys(void)
 
 static void io_merge_data(void)
 {
-	char *path_apts_backup, *path_todo_backup;
-	const char *backup_ext = ".sav";
+	char *path_apts_new, *path_todo_new;
+	const char *new_ext = ".new";
 
-	asprintf(&path_apts_backup, "%s%s", path_apts, backup_ext);
-	asprintf(&path_todo_backup, "%s%s", path_todo, backup_ext);
+	asprintf(&path_apts_new, "%s%s", path_apts, new_ext);
+	asprintf(&path_todo_new, "%s%s", path_todo, new_ext);
 
 	io_save_mutex_lock();
-	io_save_apts(path_apts_backup);
-	io_save_todo(path_todo_backup);
+	io_save_apts(path_apts_new);
+	io_save_todo(path_todo_new);
 	io_save_mutex_unlock();
 
 	/*
 	 * We do not directly write to the data files here; however, the
-	 * external merge tool might incorporate changes from the backup file
-	 * into the main data files.
+	 * external merge tool might incorporate changes from the new file into
+	 * the main data files.
 	 */
 	run_hook("pre-save");
 
-	if (!io_files_equal(path_apts, path_apts_backup)) {
+	if (!io_files_equal(path_apts, path_apts_new)) {
 		const char *arg_apts[] = { conf.mergetool, path_apts,
-					   path_apts_backup, NULL };
+					   path_apts_new, NULL };
 		wins_launch_external(arg_apts);
 	}
 
-	if (!io_files_equal(path_todo, path_todo_backup)) {
+	if (!io_files_equal(path_todo, path_todo_new)) {
 		const char *arg_todo[] = { conf.mergetool, path_todo,
-					   path_todo_backup, NULL };
+					   path_todo_new, NULL };
 		wins_launch_external(arg_todo);
 	}
 
-	mem_free(path_apts_backup);
-	mem_free(path_todo_backup);
+	mem_free(path_apts_new);
+	mem_free(path_todo_new);
 
 	/*
 	 * We do not directly write to the data files here; however, the
 	 * external merge tool will likely have incorporated changes from the
-	 * backup file into the main data files at this point.
+	 * new file into the main data files at this point.
 	 */
 	run_hook("post-save");
 }
