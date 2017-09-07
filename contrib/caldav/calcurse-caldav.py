@@ -3,14 +3,22 @@
 import argparse
 import base64
 import configparser
-import http.client
+import httplib2
 import os
 import re
-import ssl
 import subprocess
 import sys
 import textwrap
+import urllib.parse
 import xml.etree.ElementTree as etree
+
+# Optional libraries for OAuth2 authentication
+try:
+    from oauth2client.client import OAuth2WebServerFlow, HttpAccessTokenRefreshError
+    from oauth2client.file import Storage
+    import webbrowser
+except ModuleNotFoundError:
+    pass
 
 
 def msgfmt(msg, prefix=''):
@@ -92,6 +100,65 @@ def get_auth_headers():
     return headers
 
 
+def init_auth(client_id, client_secret, scope, redirect_uri, authcode):
+    # Create OAuth2 session
+    oauth2_client = OAuth2WebServerFlow(client_id=client_id,
+                                        client_secret=client_secret,
+                                        scope=scope,
+                                        redirect_uri=redirect_uri)
+
+    # If auth code is missing, tell user run script with auth code
+    if not authcode:
+        # Generate and open URL for user to authorize
+        auth_uri = oauth2_client.step1_get_authorize_url()
+        webbrowser.open(auth_uri)
+
+        prompt = ('\nIf a browser window did not open, go to the URL '
+                  'below and log in to authorize syncing. '
+                  'Once authorized, pass the string after "code=" from '
+                  'the URL in your browser\'s address bar to '
+                  'calcurse-caldav.py using the "--authcode" flag. '
+                  "Example: calcurse-caldav --authcode "
+                  "'your_auth_code_here'\n\n{}\n".format(auth_uri))
+        print(prompt)
+        die("Access token is missing or refresh token is expired.")
+
+    # Create and return Credential object from auth code
+    credentials = oauth2_client.step2_exchange(authcode)
+
+    # Setup storage file and store credentials
+    storage = Storage(oauth_file)
+    credentials.set_store(storage)
+    storage.put(credentials)
+
+    return credentials
+
+
+def run_auth(authcode):
+    # Check if credentials file exists
+    if os.path.isfile(oauth_file):
+
+        # Retrieve token from file
+        storage = Storage(oauth_file)
+        credentials = storage.get()
+
+        # Set file to store it in for future functions
+        credentials.set_store(storage)
+
+        # Refresh the access token if it is expired
+        if credentials.invalid:
+            try:
+                credentials.refresh(httplib2.Http())
+            except HttpAccessTokenRefreshError:
+                # Initialize OAuth2 again if refresh token becomes invalid
+                credentials = init_auth(client_id, client_secret, scope, redirect_uri, authcode)
+    else:
+        # Initialize OAuth2 credentials
+        credentials = init_auth(client_id, client_secret, scope, redirect_uri, authcode)
+
+    return credentials
+
+
 def remote_query(conn, cmd, path, additional_headers, body):
     headers = custom_headers.copy()
     headers.update(get_auth_headers())
@@ -112,18 +179,14 @@ def remote_query(conn, cmd, path, additional_headers, body):
     if isinstance(body, str):
         body = body.encode('utf-8')
 
-    conn.request(cmd, path, headers=headers, body=body)
-
-    resp = conn.getresponse()
+    resp, body = conn.request(path, cmd, body=body, headers=headers)
+    body = body.decode('utf-8')
 
     if not resp:
         return (None, None)
 
-    headers = resp.getheaders()
-    body = resp.read().decode('utf-8')
-
     if debug:
-        print("< Headers: " + repr(headers))
+        print("< Headers: " + repr(resp))
         for line in body.splitlines():
             print("< " + line)
         print()
@@ -133,7 +196,7 @@ def remote_query(conn, cmd, path, additional_headers, body):
              "while trying to access {}.").format(hostname, resp.status,
                                                   resp.reason, path))
 
-    return (headers, body)
+    return (resp, body)
 
 
 def get_etags(conn, hrefs=[]):
@@ -154,7 +217,7 @@ def get_etags(conn, hrefs=[]):
                 '<D:prop><D:getetag /></D:prop>'
                 '<C:filter><C:comp-filter name="VCALENDAR" /></C:filter>'
                 '</C:calendar-query>')
-    headers, body = remote_query(conn, "REPORT", path, headers, body)
+    headers, body = remote_query(conn, "REPORT", absolute_uri, headers, body)
     if not headers:
         return {}
     root = etree.fromstring(body)
@@ -182,7 +245,9 @@ def remote_wipe(conn):
     if dry_run:
         return
 
-    remote_query(conn, "DELETE", path, {}, None)
+    remote_items = get_etags(conn)
+    for href in remote_items:
+        remove_remote_object(conn, remote_items[href], href)
 
 
 def get_syncdb(fn):
@@ -227,13 +292,13 @@ def save_syncdb(fn, syncdb):
 def push_object(conn, objhash):
     href = path + objhash + ".ics"
     body = calcurse_export(objhash)
-    headers, body = remote_query(conn, "PUT", href, {}, body)
+    headers, body = remote_query(conn, "PUT", hostname_uri + href, {}, body)
 
     if not headers:
         return None
 
     etag = None
-    headerdict = dict((key.lower(), value) for key, value in headers)
+    headerdict = dict(headers)
     if 'etag' in headerdict:
         etag = headerdict['etag']
     while not etag:
@@ -242,7 +307,7 @@ def push_object(conn, objhash):
             etag = next(iter(etagdict.values()))
     etag = etag.strip('"')
 
-    return (href, etag)
+    return (urllib.parse.quote(href), etag)
 
 
 def push_objects(objhashes, conn, syncdb, etagdict):
@@ -263,7 +328,7 @@ def push_objects(objhashes, conn, syncdb, etagdict):
 
 def remove_remote_object(conn, etag, href):
     headers = {'If-Match': '"' + etag + '"'}
-    remote_query(conn, "DELETE", href, headers, None)
+    remote_query(conn, "DELETE", hostname_uri + href, headers, None)
 
 
 def remove_remote_objects(objhashes, conn, syncdb, etagdict):
@@ -310,7 +375,7 @@ def pull_objects(hrefs_missing, hrefs_modified, conn, syncdb, etagdict):
     for href in (hrefs_missing | hrefs_modified):
         body += '<D:href>{}</D:href>'.format(href)
     body += '</C:calendar-multiget>'
-    headers, body = remote_query(conn, "REPORT", path, {}, body)
+    headers, body = remote_query(conn, "REPORT", absolute_uri, {}, body)
 
     root = etree.fromstring(body)
 
@@ -386,6 +451,7 @@ configfn = os.path.expanduser("~/.calcurse/caldav/config")
 lockfn = os.path.expanduser("~/.calcurse/caldav/lock")
 syncdbfn = os.path.expanduser("~/.calcurse/caldav/sync.db")
 hookdir = os.path.expanduser("~/.calcurse/caldav/hooks/")
+oauth_file = os.path.expanduser("~/.calcurse/caldav/oauth2_cred")
 
 # Parse command line arguments.
 parser = argparse.ArgumentParser('calcurse-caldav')
@@ -404,6 +470,9 @@ parser.add_argument('--syncdb', action='store', dest='syncdbfn',
 parser.add_argument('--hookdir', action='store', dest='hookdir',
                     default=hookdir,
                     help='path to the calcurse-caldav hooks directory')
+parser.add_argument('--authcode', action='store', dest='authcode',
+                    default=None,
+                    help='auth code for OAuth2 authentication')
 parser.add_argument('-v', '--verbose', action='store_true', dest='verbose',
                     default=False,
                     help='print status messages to stdout')
@@ -416,6 +485,7 @@ configfn = args.configfn
 lockfn = args.lockfn
 syncdbfn = args.syncdbfn
 hookdir = args.hookdir
+authcode = args.authcode
 verbose = args.verbose
 debug = args.debug
 
@@ -430,6 +500,8 @@ except FileNotFoundError as e:
 
 hostname = config.get('General', 'HostName')
 path = '/' + config.get('General', 'Path').strip('/') + '/'
+hostname_uri = 'https://' + hostname
+absolute_uri = hostname_uri + path
 
 if config.has_option('General', 'InsecureSSL'):
     insecure_ssl = config.getboolean('General', 'InsecureSSL')
@@ -452,6 +524,11 @@ if not verbose and config.has_option('General', 'Verbose'):
 if not debug and config.has_option('General', 'Debug'):
     debug = config.getboolean('General', 'Debug')
 
+if config.has_option('General', 'AuthMethod'):
+    authmethod = config.get('General', 'AuthMethod').lower()
+else:
+    authmethod = 'basic'
+
 if config.has_option('Auth', 'UserName'):
     username = config.get('Auth', 'UserName')
 else:
@@ -466,6 +543,26 @@ if config.has_section('CustomHeaders'):
     custom_headers = dict(config.items('CustomHeaders'))
 else:
     custom_headers = {}
+
+if config.has_option('OAuth2', 'ClientID'):
+    client_id = config.get('OAuth2', 'ClientID')
+else:
+    client_id = None
+
+if config.has_option('OAuth2', 'ClientSecret'):
+    client_secret = config.get('OAuth2', 'ClientSecret')
+else:
+    client_secret = None
+
+if config.has_option('OAuth2', 'Scope'):
+   scope = config.get('OAuth2', 'Scope')
+else:
+   scope = None
+
+if config.has_option('OAuth2', 'RedirectURI'):
+    redirect_uri = config.get('OAuth2', 'RedirectURI')
+else:
+    redirect_uri = 'http://127.0.0.1'
 
 # Show disclaimer when performing a dry run.
 if dry_run:
@@ -496,18 +593,16 @@ try:
     # Connect to the server via HTTPs.
     if verbose:
         print('Connecting to ' + hostname + '...')
+    conn = httplib2.Http()
     if insecure_ssl:
-        try:
-            context = ssl._create_unverified_context()
-            conn = http.client.HTTPSConnection(hostname, context=context)
-        except AttributeError:
-            # Python versions prior to 3.4.3 do not support
-            # ssl._create_unverified_context(). However, these versions do not
-            # seem to verify certificates by default so we can simply fall back
-            # to http.client.HTTPSConnection().
-            conn = http.client.HTTPSConnection(hostname)
-    else:
-        conn = http.client.HTTPSConnection(hostname)
+        conn.disable_ssl_certificate_validation = True
+
+    if authmethod == 'oauth2':
+        # Authenticate with OAuth2 and authorize HTTP object
+        cred = run_auth(authcode)
+        conn = cred.authorize(conn)
+    elif authmethod != 'basic':
+        die('Invalid option for AuthMethod in config file. Use "basic" or "oauth2"')
 
     if init:
         # In initialization mode, start with an empty synchronization database.
@@ -560,8 +655,10 @@ try:
     # Write the synchronization database.
     save_syncdb(syncdbfn, syncdb)
 
-    # Close the HTTPs connection.
-    conn.close()
+    #Clear OAuth2 credentials if used
+    if authmethod == 'oauth2':
+        conn.clear_credentials()
+
 finally:
     # Remove lock file.
     os.remove(lockfn)
