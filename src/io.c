@@ -85,6 +85,8 @@ HTABLE_PROTOTYPE(ht_keybindings, ht_keybindings_s)
 		load_keys_ht_compare)
 
 static int modified = 0;
+static char apts_sha1[SHA1_DIGESTLEN * 2 + 1];
+static char todo_sha1[SHA1_DIGESTLEN * 2 + 1];
 
 /* Draw a progress bar while saving, loading or exporting data. */
 static void progress_bar(progress_bar_t type, int progress)
@@ -467,6 +469,37 @@ static void io_merge_data(void)
 	run_hook("post-save");
 }
 
+static int resolve_save_conflict(void)
+{
+	char *msg_um_asktype = NULL;
+	const char *msg_um_prefix =
+			_("Data files were changed since reading:");
+	const char *msg_um_overwrite = _("(o)verwrite");
+	const char *msg_um_merge = _("(m)erge");
+	const char *msg_um_keep = _("(k)eep and cancel");
+	const char *msg_um_choice = _("[omk]");
+	int ret = 1;
+
+	asprintf(&msg_um_asktype, "%s %s, %s, %s", msg_um_prefix,
+		 msg_um_overwrite, msg_um_merge, msg_um_keep);
+
+	switch (status_ask_choice(msg_um_asktype, msg_um_choice, 3)) {
+	case 1:
+		ret = 0;
+		break;
+	case 2:
+		io_merge_data();
+		break;
+	case 3:
+		/* FALLTHROUGH */
+	default:
+		wins_update(FLAG_STA);
+	}
+
+	mem_free(msg_um_asktype);
+	return ret;
+}
+
 /* Save the calendar data */
 void io_save_cal(enum save_display display)
 {
@@ -475,8 +508,28 @@ void io_save_cal(enum save_display display)
 	    _("The data files were successfully saved");
 	const char *enter = _("Press [ENTER] to continue");
 	int show_bar;
+	FILE *fp;
+	char sha1_new[SHA1_DIGESTLEN * 2 + 1];
+	int conflict = 0;
 
 	if (read_only)
+		return;
+
+	if ((fp = fopen(path_apts, "r"))) {
+		sha1_stream(fp, sha1_new);
+		fclose(fp);
+		if (strncmp(sha1_new, apts_sha1, SHA1_DIGESTLEN * 2) != 0)
+			conflict = 1;
+	}
+
+	if (!conflict && (fp = fopen(path_todo, "r"))) {
+		sha1_stream(fp, sha1_new);
+		fclose(fp);
+		if (strncmp(sha1_new, todo_sha1, SHA1_DIGESTLEN * 2) != 0)
+			conflict = 1;
+	}
+
+	if (conflict && resolve_save_conflict())
 		return;
 
 	run_hook("pre-save");
@@ -550,6 +603,9 @@ void io_load_app(struct item_filter *filter)
 
 	data_file = fopen(path_apts, "r");
 	EXIT_IF(data_file == NULL, _("failed to open appointment file"));
+
+	sha1_stream(data_file, apts_sha1);
+	rewind(data_file);
 
 	for (;;) {
 		LLIST_INIT(&exc);
@@ -722,6 +778,9 @@ void io_load_todo(struct item_filter *filter)
 
 	data_file = fopen(path_todo, "r");
 	EXIT_IF(data_file == NULL, _("failed to open todo file"));
+
+	sha1_stream(data_file, todo_sha1);
+	rewind(data_file);
 
 	for (;;) {
 		line++;
