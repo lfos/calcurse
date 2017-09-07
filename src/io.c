@@ -424,6 +424,49 @@ unsigned io_save_keys(void)
 	return 1;
 }
 
+static void io_merge_data(void)
+{
+	char *path_apts_backup, *path_todo_backup;
+	const char *backup_ext = ".sav";
+
+	asprintf(&path_apts_backup, "%s%s", path_apts, backup_ext);
+	asprintf(&path_todo_backup, "%s%s", path_todo, backup_ext);
+
+	io_save_mutex_lock();
+	io_save_apts(path_apts_backup);
+	io_save_todo(path_todo_backup);
+	io_save_mutex_unlock();
+
+	/*
+	 * We do not directly write to the data files here; however, the
+	 * external merge tool might incorporate changes from the backup file
+	 * into the main data files.
+	 */
+	run_hook("pre-save");
+
+	if (!io_files_equal(path_apts, path_apts_backup)) {
+		const char *arg_apts[] = { conf.mergetool, path_apts,
+					   path_apts_backup, NULL };
+		wins_launch_external(arg_apts);
+	}
+
+	if (!io_files_equal(path_todo, path_todo_backup)) {
+		const char *arg_todo[] = { conf.mergetool, path_todo,
+					   path_todo_backup, NULL };
+		wins_launch_external(arg_todo);
+	}
+
+	mem_free(path_apts_backup);
+	mem_free(path_todo_backup);
+
+	/*
+	 * We do not directly write to the data files here; however, the
+	 * external merge tool will likely have incorporated changes from the
+	 * backup file into the main data files at this point.
+	 */
+	run_hook("post-save");
+}
+
 /* Save the calendar data */
 void io_save_cal(enum save_display display)
 {
@@ -781,58 +824,11 @@ void io_reload_data(void)
 		asprintf(&msg_um_asktype, "%s %s, %s, %s", msg_um_prefix,
 			 msg_um_discard, msg_um_merge, msg_um_keep);
 
-		char *path_apts_backup, *path_todo_backup;
-		const char *backup_ext = ".sav";
-
 		switch (status_ask_choice(msg_um_asktype, msg_um_choice, 3)) {
 		case 1:
 			break;
 		case 2:
-			asprintf(&path_apts_backup, "%s%s", path_apts,
-				 backup_ext);
-			asprintf(&path_todo_backup, "%s%s", path_todo,
-				 backup_ext);
-
-			io_save_mutex_lock();
-			io_save_apts(path_apts_backup);
-			io_save_todo(path_todo_backup);
-			io_save_mutex_unlock();
-
-			/*
-			 * We do not directly write to the data files here;
-			 * however, the external merge tool might incorporate
-			 * changes from the backup file into the main data
-			 * files.
-			 */
-			run_hook("pre-save");
-
-			if (!io_files_equal(path_apts, path_apts_backup)) {
-				const char *arg_apts[] = { conf.mergetool,
-							   path_apts,
-							   path_apts_backup,
-							   NULL };
-				wins_launch_external(arg_apts);
-			}
-
-			if (!io_files_equal(path_todo, path_todo_backup)) {
-				const char *arg_todo[] = { conf.mergetool,
-							   path_todo,
-							   path_todo_backup,
-							   NULL };
-				wins_launch_external(arg_todo);
-			}
-
-			mem_free(path_apts_backup);
-			mem_free(path_todo_backup);
-
-			/*
-			 * We do not directly write to the data files here;
-			 * however, the external merge tool will likely have
-			 * incorporated changes from the backup file into the
-			 * main data files at this point.
-			 */
-			run_hook("post-save");
-
+			io_merge_data();
 			break;
 		case 3:
 			/* FALLTHROUGH */
