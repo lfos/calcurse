@@ -426,6 +426,18 @@ unsigned io_save_keys(void)
 	return 1;
 }
 
+static int io_compute_hash(const char *path, char *buf)
+{
+	FILE *fp = fopen(path, "r");
+
+	if (!fp)
+		return 0;
+	sha1_stream(fp, buf);
+	fclose(fp);
+
+	return 1;
+}
+
 static void io_merge_data(void)
 {
 	char *path_apts_new, *path_todo_new;
@@ -502,22 +514,17 @@ static int resolve_save_conflict(void)
 
 static int io_check_data_files_modified()
 {
-	FILE *fp;
 	char sha1_new[SHA1_DIGESTLEN * 2 + 1];
 	int ret = 1;
 
 	io_mutex_lock();
 
-	if ((fp = fopen(path_apts, "r"))) {
-		sha1_stream(fp, sha1_new);
-		fclose(fp);
+	if (io_compute_hash(path_apts, sha1_new)) {
 		if (strncmp(sha1_new, apts_sha1, SHA1_DIGESTLEN * 2) != 0)
 			goto cleanup;
 	}
 
-	if ((fp = fopen(path_todo, "r"))) {
-		sha1_stream(fp, sha1_new);
-		fclose(fp);
+	if (io_compute_hash(path_todo, sha1_new)) {
 		if (strncmp(sha1_new, todo_sha1, SHA1_DIGESTLEN * 2) != 0)
 			goto cleanup;
 	}
