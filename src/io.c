@@ -500,6 +500,28 @@ static int resolve_save_conflict(void)
 	return ret;
 }
 
+static int io_check_data_files_modified()
+{
+	FILE *fp;
+	char sha1_new[SHA1_DIGESTLEN * 2 + 1];
+
+	if ((fp = fopen(path_apts, "r"))) {
+		sha1_stream(fp, sha1_new);
+		fclose(fp);
+		if (strncmp(sha1_new, apts_sha1, SHA1_DIGESTLEN * 2) != 0)
+			return 1;
+	}
+
+	if ((fp = fopen(path_todo, "r"))) {
+		sha1_stream(fp, sha1_new);
+		fclose(fp);
+		if (strncmp(sha1_new, todo_sha1, SHA1_DIGESTLEN * 2) != 0)
+			return 1;
+	}
+
+	return 0;
+}
+
 /* Save the calendar data */
 void io_save_cal(enum save_display display)
 {
@@ -508,28 +530,11 @@ void io_save_cal(enum save_display display)
 	    _("The data files were successfully saved");
 	const char *enter = _("Press [ENTER] to continue");
 	int show_bar;
-	FILE *fp;
-	char sha1_new[SHA1_DIGESTLEN * 2 + 1];
-	int conflict = 0;
 
 	if (read_only)
 		return;
 
-	if ((fp = fopen(path_apts, "r"))) {
-		sha1_stream(fp, sha1_new);
-		fclose(fp);
-		if (strncmp(sha1_new, apts_sha1, SHA1_DIGESTLEN * 2) != 0)
-			conflict = 1;
-	}
-
-	if (!conflict && (fp = fopen(path_todo, "r"))) {
-		sha1_stream(fp, sha1_new);
-		fclose(fp);
-		if (strncmp(sha1_new, todo_sha1, SHA1_DIGESTLEN * 2) != 0)
-			conflict = 1;
-	}
-
-	if (conflict && resolve_save_conflict())
+	if (io_check_data_files_modified() && resolve_save_conflict())
 		return;
 
 	run_hook("pre-save");
