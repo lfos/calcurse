@@ -575,6 +575,8 @@ void wins_prepare_external(void)
 {
 	if (notify_bar())
 		notify_stop_main_thread();
+	if (conf.periodic_save > 0)
+		io_stop_psave_thread();
 	def_prog_mode();
 	ui_mode = UI_CMDLINE;
 	clear();
@@ -596,6 +598,8 @@ void wins_unprepare_external(void)
 	wins_update(FLAG_ALL);
 	if (notify_bar())
 		notify_start_main_thread();
+	if (conf.periodic_save > 0)
+		io_start_psave_thread();
 }
 
 /*
