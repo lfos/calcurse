@@ -588,6 +588,9 @@ void io_save_cal(enum save_display display)
 		keys_wait_for_any_key(win[KEY].p);
 	}
 
+	io_compute_hash(path_apts, apts_sha1);
+	io_compute_hash(path_todo, todo_sha1);
+
 	io_mutex_unlock();
 	run_hook("post-save");
 }
