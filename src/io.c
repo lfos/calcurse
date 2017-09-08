@@ -286,16 +286,16 @@ void io_extract_data(char *dst_data, const char *org, int len)
 	*dst_data = '\0';
 }
 
-static pthread_mutex_t io_save_mutex = PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t io_mutex = PTHREAD_MUTEX_INITIALIZER;
 
-void io_save_mutex_lock(void)
+static void io_mutex_lock(void)
 {
-	pthread_mutex_lock(&io_save_mutex);
+	pthread_mutex_lock(&io_mutex);
 }
 
-void io_save_mutex_unlock(void)
+static void io_mutex_unlock(void)
 {
-	pthread_mutex_unlock(&io_save_mutex);
+	pthread_mutex_unlock(&io_mutex);
 }
 
 /* Print all appointments and events to stdout. */
@@ -434,10 +434,10 @@ static void io_merge_data(void)
 	asprintf(&path_apts_new, "%s%s", path_apts, new_ext);
 	asprintf(&path_todo_new, "%s%s", path_todo, new_ext);
 
-	io_save_mutex_lock();
+	io_mutex_lock();
 	io_save_apts(path_apts_new);
 	io_save_todo(path_todo_new);
-	io_save_mutex_unlock();
+	io_mutex_unlock();
 
 	/*
 	 * We do not directly write to the data files here; however, the
@@ -504,22 +504,29 @@ static int io_check_data_files_modified()
 {
 	FILE *fp;
 	char sha1_new[SHA1_DIGESTLEN * 2 + 1];
+	int ret = 1;
+
+	io_mutex_lock();
 
 	if ((fp = fopen(path_apts, "r"))) {
 		sha1_stream(fp, sha1_new);
 		fclose(fp);
 		if (strncmp(sha1_new, apts_sha1, SHA1_DIGESTLEN * 2) != 0)
-			return 1;
+			goto cleanup;
 	}
 
 	if ((fp = fopen(path_todo, "r"))) {
 		sha1_stream(fp, sha1_new);
 		fclose(fp);
 		if (strncmp(sha1_new, todo_sha1, SHA1_DIGESTLEN * 2) != 0)
-			return 1;
+			goto cleanup;
 	}
 
-	return 0;
+	ret = 0;
+
+cleanup:
+	io_mutex_unlock();
+	return ret;
 }
 
 /* Save the calendar data */
@@ -538,7 +545,7 @@ void io_save_cal(enum save_display display)
 		return;
 
 	run_hook("pre-save");
-	pthread_mutex_lock(&io_save_mutex);
+	io_mutex_lock();
 
 	show_bar = 0;
 	if (ui_mode == UI_CURSES && display == IO_SAVE_DISPLAY_BAR
@@ -574,7 +581,7 @@ void io_save_cal(enum save_display display)
 		keys_wait_for_any_key(win[KEY].p);
 	}
 
-	pthread_mutex_unlock(&io_save_mutex);
+	io_mutex_unlock();
 	run_hook("post-save");
 }
 
@@ -865,8 +872,10 @@ void io_load_todo(struct item_filter *filter)
 void io_load_data(struct item_filter *filter)
 {
 	run_hook("pre-load");
+	io_mutex_lock();
 	io_load_app(filter);
 	io_load_todo(filter);
+	io_mutex_unlock();
 	run_hook("post-load");
 }
 
@@ -1495,10 +1504,10 @@ void io_stop_psave_thread(void)
 		return;
 
 	/* Lock the mutex to avoid cancelling the thread during saving. */
-	io_save_mutex_lock();
+	io_mutex_lock();
 	pthread_cancel(io_t_psave);
 	pthread_join(io_t_psave, NULL);
-	io_save_mutex_unlock();
+	io_mutex_unlock();
 }
 
 /*
