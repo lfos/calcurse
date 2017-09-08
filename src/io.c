@@ -473,6 +473,8 @@ static void io_merge_data(void)
 	mem_free(path_apts_new);
 	mem_free(path_todo_new);
 
+	io_unset_modified();
+
 	/*
 	 * We do not directly write to the data files here; however, the
 	 * external merge tool will likely have incorporated changes from the
