@@ -6,6 +6,7 @@ then
   exit 1
 fi
 
+DEF_VER=4.2.2.dev
 VERFILE="$1"
 
 if [ -d '.git' ]
@@ -13,14 +14,9 @@ then
   git update-index --refresh > /dev/null 2>&1
   VERSION=`git describe --abbrev=4 --match='v[0-9]*' --dirty 2>/dev/null`
   VERSION=`echo "$VERSION" | sed 's/^v//'`
-  [ -n "$VERSION" ] && printf "%s" "$VERSION" > "$VERFILE"
+  [ -n "$VERSION" ] && printf "%s" "$VERSION" >"$VERFILE"
 fi
 
-if [ -f "$VERFILE" ]
-then
-  cat "$VERFILE"
-else
-  echo "git-version-gen: unknown version number." >&2
-  exit 1
-fi
+[ -f "$VERFILE" ] || printf "%s" "$DEF_VER" >"$VERFILE"
 
+cat "$VERFILE"
