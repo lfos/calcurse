@@ -870,12 +870,13 @@ void io_load_data(struct item_filter *filter)
 	run_hook("post-load");
 }
 
-void io_reload_data(void)
+int io_reload_data(void)
 {
 	char *msg_um_asktype = NULL;
 	const char *reload_success =
 		_("The data files were reloaded successfully");
 	const char *enter = _("Press [ENTER] to continue");
+	int ret = 0;
 
 	if (io_get_modified()) {
 		const char *msg_um_prefix =
@@ -901,6 +902,9 @@ void io_reload_data(void)
 			goto cleanup;
 		}
 	}
+
+	if (!io_check_data_files_modified())
+		goto cleanup;
 
 	if (notify_bar())
 		notify_stop_main_thread();
@@ -939,8 +943,11 @@ void io_reload_data(void)
 	if (notify_bar())
 		notify_start_main_thread();
 
+	ret = 1;
+
 cleanup:
 	mem_free(msg_um_asktype);
+	return ret;
 }
 
 static void

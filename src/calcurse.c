@@ -277,11 +277,12 @@ static inline void key_generic_save(void)
 
 static inline void key_generic_reload(void)
 {
-	io_reload_data();
-	do_storage(0);
-	notify_check_next_app(1);
-	ui_calendar_monthly_view_cache_set_invalid();
-	wins_update(FLAG_ALL);
+	if (io_reload_data()) {
+		do_storage(0);
+		notify_check_next_app(1);
+		ui_calendar_monthly_view_cache_set_invalid();
+		wins_update(FLAG_ALL);
+	}
 }
 
 static inline void key_generic_import(void)
