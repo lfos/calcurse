@@ -550,8 +550,17 @@ void io_save_cal(enum save_display display)
 	if (read_only)
 		return;
 
-	if (io_check_data_files_modified() && resolve_save_conflict())
+	if (io_check_data_files_modified() && resolve_save_conflict()) {
+		if (io_reload_data()) {
+			day_process_storage(ui_calendar_get_slctd_day(), 1);
+			ui_day_load_items();
+			ui_day_sel_reset();
+			notify_check_next_app(1);
+			ui_calendar_monthly_view_cache_set_invalid();
+			wins_update(FLAG_ALL);
+		}
 		return;
+	}
 
 	run_hook("pre-save");
 	io_mutex_lock();
