@@ -195,7 +195,6 @@ enum getstr getstring(WINDOW * win, char *str, int l, int x, int y)
 			break;
 		switch (ch) {
 		case KEY_BACKSPACE:	/* delete one character */
-		case 330:
 		case 127:
 		case CTRL('H'):
 			if (st.pos > 0) {
@@ -205,6 +204,7 @@ enum getstr getstring(WINDOW * win, char *str, int l, int x, int y)
 				bell();
 			}
 			break;
+		case KEY_DC:
 		case CTRL('D'):	/* delete next character */
 			if (st.pos < st.len)
 				getstr_del_char(&st);
