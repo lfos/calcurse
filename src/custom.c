@@ -998,11 +998,14 @@ void custom_keys_config(void)
 					  keys_get_label(selrow), 0);
 				ch = keys_wgetch(grabwin);
 
-				/* First check if this key would be recognized by calcurse. */
-				if (ch < 0) {
+				/* Check if this is a ncurses pseudo key accepted by calcurse. */
+				if (ch >= KEY_MIN && ch <= KEY_MAX && !(
+				    ch == KEY_UP || ch == KEY_DOWN ||
+				    ch == KEY_LEFT || ch == KEY_RIGHT ||
+				    ch == KEY_HOME || ch == KEY_END)) {
 					not_recognized = 1;
-					WARN_MSG(_("This key is not yet recognized by calcurse, "
-						  "please choose another one."));
+					WARN_MSG(_("The key '%s' is not accepted by calcurse. "
+						  "Choose another one."), keyname(ch));
 					werase(kwin.inner);
 					nbrowelm =
 					    print_keys_bindings(kwin.inner,
@@ -1026,9 +1029,12 @@ void custom_keys_config(void)
 					enum key action;
 
 					action = keys_get_action(ch);
-					WARN_MSG(_("This key is already in use for %s, "
-						  "please choose another one."),
+					char *keystr = keys_int2str(ch);
+					WARN_MSG(_("The key '%s' is already used for %s. "
+						  "Choose another one."),
+						 keystr,
 						 keys_get_label(action));
+					mem_free(keystr);
 					werase(kwin.inner);
 					nbrowelm =
 					    print_keys_bindings(kwin.inner,

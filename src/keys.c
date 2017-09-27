@@ -214,29 +214,22 @@ int keys_wgetch(WINDOW *win)
 	int ch, i;
 	char buf[UTF8_MAXLEN];
 
-	ch = wgetch(win);
-
-	if (ch > 255) {
-		if (ch == KEY_UP || ch == KEY_DOWN || ch == KEY_LEFT ||
-		    ch == KEY_RIGHT || ch == KEY_HOME || ch == KEY_END) {
-			return ch;
-		}
-		return -1;
-	}
-
-	if (UTF8_ISMULTI(ch) && !UTF8_ISCONT(ch)) {
-		buf[0] = ch;
-		for (i = 1; i < UTF8_LENGTH(ch); i++) {
-			ch = wgetch(win);
-			if (!UTF8_ISCONT(ch))
-				return -1;
-			buf[i] = ch;
-		}
-		return utf8_ord(buf);
-	} else {
+	/* Handle curses pseudo characters. */
+	if ((ch = wgetch(win)) >= KEY_MIN)
 		return ch;
-	}
 
+	/* Handle 1-byte UTF-8 characters. */
+	if (UTF8_LENGTH(ch) == 1)
+		return ch;
+
+	/*
+	 * Map multibyte UTF-8 characters to code point values
+	 * and add KEY_MAX to avoid the curses range.
+	 */
+	buf[0] = ch;
+	for (i = 1; i < UTF8_LENGTH(buf[0]); i++)
+		buf[i] = wgetch(win);
+	return utf8_ord(buf) + KEY_MAX;
 }
 
 void keys_wait_for_any_key(WINDOW *win)
@@ -294,19 +287,22 @@ static void add_key_str(enum key action, int key)
 
 int keys_assign_binding(int key, enum key action)
 {
-	if (key < 0 || actions[key] != KEY_UNDEF) {
+	if (key < 0)
 		return 1;
-	} else if (key > MAXKEYVAL) {
+	if (key > KEY_MAX) {
+		llist_item_t *i = LLIST_FIND_FIRST(&actions_ext, &key, key_ext_hasch);
+		if (i)
+			return 1;
 		struct key_ext *k = mem_malloc(sizeof(struct key_ext));
 		k->ch = key;
 		k->action = action;
 		LLIST_ADD(&actions_ext, k);
 	} else {
+		if (actions[key] != KEY_UNDEF)
+			return 1;
 		actions[key] = action;
 	}
-
 	add_key_str(action, key);
-
 	return 0;
 }
 
@@ -362,7 +358,7 @@ int keys_str2int(const char *key)
 	else if (starts_with(key, "C-"))
 		return CTRL((int)key[strlen("C-")]);
 	else if (starts_with(key, "U+"))
-		return strtol(&key[2], NULL, 16);
+		return strtol(&key[2], NULL, 16) + KEY_MAX;
 	else if (!strcmp(key, "TAB"))
 		return TAB;
 	else if (!strcmp(key, "ESC"))
@@ -387,6 +383,7 @@ int keys_str2int(const char *key)
 
 char *keys_int2str(int key)
 {
+	const char *ch;
 	char *res;
 
 	switch (key) {
@@ -409,13 +406,10 @@ char *keys_int2str(int key)
 	case KEY_END:
 		return strdup("KEY_END");
 	}
-
-	if (key >= 0x80) {
-		asprintf(&res, "U+%04X", key);
-		return res;
-	} else {
-		return strdup((char *)keyname(key));
-	}
+	if ((ch = keyname(key)))
+		return mem_strdup(ch);
+	asprintf(&res, "U+%04X", key - KEY_MAX);
+	return res;
 }
 
 int keys_action_count_keys(enum key action)
