@@ -470,6 +470,9 @@ parser.add_argument('--syncdb', action='store', dest='syncdbfn',
 parser.add_argument('--hookdir', action='store', dest='hookdir',
                     default=hookdir,
                     help='path to the calcurse-caldav hooks directory')
+parser.add_argument('--password', action='store', dest='password',
+                    default=None,
+                    help='password for basic authentication')
 parser.add_argument('--authcode', action='store', dest='authcode',
                     default=None,
                     help='auth code for OAuth2 authentication')
@@ -485,6 +488,7 @@ configfn = args.configfn
 lockfn = args.lockfn
 syncdbfn = args.syncdbfn
 hookdir = args.hookdir
+password = args.password
 authcode = args.authcode
 verbose = args.verbose
 debug = args.debug
@@ -534,10 +538,8 @@ if config.has_option('Auth', 'UserName'):
 else:
     username = None
 
-if config.has_option('Auth', 'Password'):
+if config.has_option('Auth', 'Password') and not password:
     password = config.get('Auth', 'Password')
-else:
-    password = None
 
 if config.has_section('CustomHeaders'):
     custom_headers = dict(config.items('CustomHeaders'))
