@@ -356,7 +356,7 @@ draw_monthly_view(struct scrollwin *sw, struct date *current_day,
 	unsigned yr, mo;
 	int w, ofs_x, ofs_y;
 	int item_this_day = 0;
-	struct tm t = get_first_weekday(sunday_first);
+	struct tm t;
 	char *cp;
 
 	mo = slctd_day.mm;
@@ -380,7 +380,8 @@ draw_monthly_view(struct scrollwin *sw, struct date *current_day,
 	    (int)((ymd_to_scalar(yr, mo, 1 + sunday_first) -
 		   (long)1) % 7L);
 
-	/* Print the week number. */
+	/* Print the week number, calculated from monday. */
+	t = get_first_weekday(0);
 	draw_week_number(sw, t);
 
 	/* Write the current month and year on top of the calendar */
@@ -468,17 +469,24 @@ draw_weekly_view(struct scrollwin *sw, struct date *current_day,
 {
 #define DAYSLICESNO  6
 	const int WCALWIDTH = 28;
-	struct tm t = get_first_weekday(sunday_first);
+	struct tm t;
 	int OFFY, OFFX, j;
 
 	OFFY = 0;
 	OFFX = (wins_sbar_width() - 2 - WCALWIDTH) / 2;
 
-	/* Print the week number. */
+	/* Print the week number, calculated from monday. */
+	t = get_first_weekday(0);
 	draw_week_number(sw, t);
 
 	/* Now draw calendar view. */
 	for (j = 0; j < WEEKINDAYS; j++) {
+		/* get next day */
+		if (j == 0)
+			t = get_first_weekday(sunday_first);
+		else
+			date_change(&t, 0, 1);
+
 		struct date date;
 		unsigned attr, item_this_day;
 		int i, slices[DAYSLICESNO];
@@ -554,9 +562,6 @@ draw_weekly_view(struct scrollwin *sw, struct date *current_day,
 				}
 			}
 		}
-
-		/* get next day */
-		date_change(&t, 0, 1);
 	}
 
 	/* Draw marks to indicate midday on the sides of the calendar. */
