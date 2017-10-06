@@ -256,6 +256,7 @@ enum getstr getstring(WINDOW * win, char *str, int l, int x, int y)
 				st.pos++;
 			break;
 		case ESCAPE:	/* cancel editing */
+		case CTRL('G'):
 			return GETSTRING_ESC;
 			break;
 		default:	/* insert one character */
