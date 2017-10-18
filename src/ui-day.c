@@ -80,55 +80,6 @@ static int day_edit_time(int time)
 	}
 }
 
-/* Request the user to enter a new time or duration. */
-static int day_edit_duration(int start, int dur, unsigned *new_duration)
-{
-	char *timestr = date_sec2date_str(start + dur, "%H:%M");
-	const char *msg_time =
-	    _("Enter end time ([hh:mm], [hhmm]) or duration ([+hh:mm], [+xxxdxxhxxm]):");
-	const char *enter_str = _("Press [Enter] to continue");
-	const char *fmt_msg =
-	    _("You entered an invalid time, should be [hh:mm] or [hhmm]");
-	long end;
-
-	for (;;) {
-		int ret;
-
-		status_mesg(msg_time, "");
-		ret = updatestring(win[STA].p, &timestr, 0, 1);
-		if (ret == GETSTRING_ESC) {
-			return 0;
-		} else if (ret == GETSTRING_RET) {
-			*new_duration = 0;
-			break;
-		}
-		if (*timestr == '+') {
-			if (parse_duration(timestr + 1, new_duration)) {
-				*new_duration *= MININSEC;
-				break;
-			}
-		}
-		end = start + dur;
-		ret = parse_datetime(timestr, &end);
-		/*
-		 * If the user enters a end time which is smaller than
-		 * the start time, assume that the time belongs to the
-		 * next day.
-		 */
-		if (!(ret & PARSE_DATETIME_HAS_DATE) && end < start)
-			end = date_sec_change(end, 0, 1);
-		if (ret) {
-			*new_duration = end - start;
-			break;
-		}
-		status_mesg(fmt_msg, enter_str);
-		keys_wait_for_any_key(win[KEY].p);
-	}
-
-	mem_free(timestr);
-	return 1;
-}
-
 /* Request the user to enter a new end time or duration. */
 static void update_start_time(long *start, long *dur, int update_dur)
 {
@@ -159,12 +110,55 @@ static void update_start_time(long *start, long *dur, int update_dur)
 	while (valid_date == 0);
 }
 
+/* Request the user to enter a new end time or duration. */
 static void update_duration(long *start, long *dur)
 {
+	char *timestr = date_sec2date_str(*start + *dur, "%H:%M");
+	const char *msg_time =
+	    _("Enter end time ([hh:mm], [hhmm]) or duration ([+hh:mm], [+xxxdxxhxxm]):");
+	const char *enter_str = _("Press [Enter] to continue");
+	const char *fmt_msg =
+	    _("You entered an invalid time, should be [hh:mm] or [hhmm]");
+	long end;
 	unsigned newdur;
 
-	if (day_edit_duration(*start, *dur, &newdur))
-		*dur = newdur;
+
+	for (;;) {
+		int ret;
+
+		status_mesg(msg_time, "");
+		ret = updatestring(win[STA].p, &timestr, 0, 1);
+		if (ret == GETSTRING_ESC)
+			return;
+		if (ret == GETSTRING_RET) {
+			newdur = 0;
+			break;
+		}
+		if (*timestr == '+') {
+			if (parse_duration(timestr + 1, &newdur)) {
+				newdur *= MININSEC;
+				break;
+			}
+		}
+		end = *start + *dur;
+		ret = parse_datetime(timestr, &end);
+		/*
+		 * If the user enters a end time which is smaller than
+		 * the start time, assume that the time belongs to the
+		 * next day.
+		 */
+		if (!(ret & PARSE_DATETIME_HAS_DATE) && end < *start)
+			end = date_sec_change(end, 0, 1);
+		if (ret) {
+			newdur = end - *start;
+			break;
+		}
+		status_mesg(fmt_msg, enter_str);
+		wgetch(win[KEY].p);
+	}
+
+	mem_free(timestr);
+	*dur = newdur;
 }
 
 static void update_desc(char **desc)
