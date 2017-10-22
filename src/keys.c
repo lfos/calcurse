@@ -64,30 +64,30 @@ static struct keydef_s keydef[NBKEYS] = {
 	{ "generic-credits", "@", gettext_noop("Credits") },
 	{ "generic-help", "?", gettext_noop("Help") },
 	{ "generic-quit", "q Q", gettext_noop("Quit") },
-	{ "generic-save", "s S C-s", gettext_noop("Save") },
+	{ "generic-save", "s S ^S", gettext_noop("Save") },
 	{ "generic-reload", "R", gettext_noop("Reload") },
 	{ "generic-copy", "c", gettext_noop("Copy") },
-	{ "generic-paste", "p C-v", gettext_noop("Paste") },
+	{ "generic-paste", "p ^V", gettext_noop("Paste") },
 	{ "generic-change-view", "TAB", gettext_noop("Chg Win") },
 	{ "generic-import", "i I", gettext_noop("Import") },
 	{ "generic-export", "x X", gettext_noop("Export") },
 	{ "generic-goto", "g G", gettext_noop("Go to") },
 	{ "generic-other-cmd", "o O", gettext_noop("OtherCmd") },
 	{ "generic-config-menu", "C", gettext_noop("Config") },
-	{ "generic-redraw", "C-r", gettext_noop("Redraw") },
-	{ "generic-add-appt", "C-a", gettext_noop("Add Appt") },
-	{ "generic-add-todo", "C-t", gettext_noop("Add Todo") },
-	{ "generic-prev-day", "T C-h", gettext_noop("-1 Day") },
-	{ "generic-next-day", "t C-l", gettext_noop("+1 Day") },
-	{ "generic-prev-week", "W C-k", gettext_noop("-1 Week") },
-	{ "generic-next-week", "w C-j", gettext_noop("+1 Week") },
+	{ "generic-redraw", "^R", gettext_noop("Redraw") },
+	{ "generic-add-appt", "^A", gettext_noop("Add Appt") },
+	{ "generic-add-todo", "^T", gettext_noop("Add Todo") },
+	{ "generic-prev-day", "T ^H", gettext_noop("-1 Day") },
+	{ "generic-next-day", "t ^L", gettext_noop("+1 Day") },
+	{ "generic-prev-week", "W ^K", gettext_noop("-1 Week") },
+	{ "generic-next-week", "w ^J", gettext_noop("+1 Week") },
 	{ "generic-prev-month", "M", gettext_noop("-1 Month") },
 	{ "generic-next-month", "m", gettext_noop("+1 Month") },
 	{ "generic-prev-year", "Y", gettext_noop("-1 Year") },
 	{ "generic-next-year", "y", gettext_noop("+1 Year") },
-	{ "generic-scroll-down", "C-n", gettext_noop("Nxt View") },
-	{ "generic-scroll-up", "C-p", gettext_noop("Prv View") },
-	{ "generic-goto-today", "C-g", gettext_noop("Today") },
+	{ "generic-scroll-down", "^N", gettext_noop("Nxt View") },
+	{ "generic-scroll-up", "^P", gettext_noop("Prv View") },
+	{ "generic-goto-today", "^G", gettext_noop("Today") },
 	{ "generic-command", ":", gettext_noop("Command") },
 
 	{ "move-right", "l L RGT", gettext_noop("Right") },
@@ -109,29 +109,20 @@ static struct keydef_s keydef[NBKEYS] = {
 	{ "lower-priority", "-", gettext_noop("Prio.-") }
 };
 
+/*
+ * Table of cached keynames indexed by key codes.
+ */
+static char *keynames[KEY_MAX];
+
 static void dump_intro(FILE * fd)
 {
 	const char *intro =
 	    _("#\n"
 	      "# Calcurse keys configuration file\n#\n"
-	      "# This file sets the keybindings used by Calcurse.\n"
-	      "# Lines beginning with \"#\" are comments, and ignored by Calcurse.\n"
-	      "# To assign a keybinding to an action, this file must contain a line\n"
-	      "# with the following syntax:\n#\n"
-	      "#        ACTION  KEY1  KEY2  ...  KEYn\n#\n"
-	      "# Where ACTION is what will be performed when KEY1, KEY2, ..., or KEYn\n"
-	      "# will be pressed.\n"
-	      "#\n"
-	      "# To define bindings which use the CONTROL key, prefix the key with "
-	      "'C-'.\n"
-	      "# The escape, space bar and horizontal Tab key can be specified using\n"
-	      "# the 'ESC', 'SPC' and 'TAB' keyword, respectively.\n"
-	      "# Arrow keys can also be specified with the UP, DWN, LFT, RGT keywords.\n"
-	      "# Last, Home and End keys can be assigned using 'KEY_HOME' and 'KEY_END'\n"
-	      "# keywords."
-	      "\n#\n"
-	      "# A description of what each ACTION keyword is used for is available\n"
-	      "# from calcurse online configuration menu.\n");
+	      "# In this file the keybindings used by Calcurse are defined.\n"
+	      "# It is generated automatically by Calcurse and is maintained\n"
+	      "# via the key configuration menu of the interactive user\n"
+	      "# interface. It should not be edited directly.\n");
 
 	fprintf(fd, "%s\n", intro);
 }
@@ -139,12 +130,54 @@ static void dump_intro(FILE * fd)
 void keys_init(void)
 {
 	int i;
+	const char *cp;
 
 	for (i = 0; i < MAXKEYVAL; i++)
 		actions[i] = KEY_UNDEF;
 	LLIST_INIT(&actions_ext);
 	for (i = 0; i < NBKEYS; i++)
 		LLIST_INIT(&keys[i]);
+
+	/* Initialization of the keynames table. */
+	for (i = 0; i < KEY_MAX; i++)
+		keynames[i] = "";
+
+	 /* Insertion of ncurses names in the ASCII range ...  */
+	for (i = 1; i < 128; i++)
+		if ((cp = keyname(i)))
+			keynames[i] = mem_strdup(cp);
+	/* ... and for the ncurses escape keys (pseudokeys). */
+	for (i = KEY_MIN; i < KEY_MAX; i++)
+		if ((cp = keyname(i)))
+			keynames[i] = mem_strdup(cp);
+
+	/* Replace some with calcurse short forms. */
+	keynames[TAB] =		"TAB";
+	keynames[RETURN] =	"RET";
+	keynames[ESCAPE] =	"ESC";
+	keynames[SPACE] =	"SPC";
+	keynames[KEY_UP] =	"UP";
+	keynames[KEY_DOWN] =	"DWN";
+	keynames[KEY_LEFT] =	"LFT";
+	keynames[KEY_RIGHT] =	"RGT";
+	keynames[KEY_HOME] =	"HOM";
+	keynames[KEY_END] =	"END";
+	keynames[KEY_NPAGE] =	"PgD";
+	keynames[KEY_PPAGE] =	"PgU";
+	keynames[KEY_IC] =	"INS";
+	keynames[KEY_DC] =	"DEL";
+	keynames[KEY_F(1)] =	"F1";
+	keynames[KEY_F(2)] =	"F2";
+	keynames[KEY_F(3)] =	"F3";
+	keynames[KEY_F(4)] =	"F4";
+	keynames[KEY_F(5)] =	"F5";
+	keynames[KEY_F(6)] =	"F6";
+	keynames[KEY_F(7)] =	"F7";
+	keynames[KEY_F(8)] =	"F8";
+	keynames[KEY_F(9)] =	"F9";
+	keynames[KEY_F(10)] =	"F10";
+	keynames[KEY_F(11)] =	"F11";
+	keynames[KEY_F(12)] =	"F12";
 }
 
 static void key_free(char *s)
@@ -350,66 +383,43 @@ int keys_str2int(const char *key)
 	if (!key)
 		return -1;
 
-	if (strlen(key) == 1)
-		return (int)key[0];
-
-	if (key[0] == '^')
-		return CTRL((int)key[1]);
-	else if (starts_with(key, "C-"))
-		return CTRL((int)key[strlen("C-")]);
-	else if (starts_with(key, "U+"))
-		return strtol(&key[2], NULL, 16) + KEY_MAX;
-	else if (!strcmp(key, "TAB"))
-		return TAB;
-	else if (!strcmp(key, "ESC"))
-		return ESCAPE;
-	else if (!strcmp(key, "SPC"))
-		return SPACE;
-	else if (!strcmp(key, "UP"))
-		return KEY_UP;
-	else if (!strcmp(key, "DWN"))
-		return KEY_DOWN;
-	else if (!strcmp(key, "LFT"))
-		return KEY_LEFT;
-	else if (!strcmp(key, "RGT"))
-		return KEY_RIGHT;
-	else if (!strcmp(key, "KEY_HOME"))
+	/* For backwards compatibility. */
+	if (strcmp(key, "^J") == 0)
+		return RETURN;
+	else if (strcmp(key, "KEY_HOME") == 0)
 		return KEY_HOME;
-	else if (!strcmp(key, "KEY_END"))
+	else if (strcmp(key, "KEY_END") == 0)
 		return KEY_END;
+
+	/* UTF-8 multibyte keys. */
+	if (starts_with(key, "U+"))
+		return strtol(&key[strlen("U+")], NULL, 16) + KEY_MAX;
+
+	/* Lookup in the keynames table. */
+	for (int i = 1; i < 128; i++)
+		if (strcmp(key, keynames[i]) == 0)
+			return i;
+	for (int i = KEY_MIN; i < KEY_MAX; i++)
+		if (strcmp(key, keynames[i]) == 0)
+			return i;
+
 
 	return -1;
 }
 
 char *keys_int2str(int key)
 {
-	const char *ch;
 	char *res;
 
-	switch (key) {
-	case TAB:
-		return strdup("TAB");
-	case SPACE:
-		return strdup("SPC");
-	case ESCAPE:
-		return strdup("ESC");
-	case KEY_UP:
-		return strdup("UP");
-	case KEY_DOWN:
-		return strdup("DWN");
-	case KEY_LEFT:
-		return strdup("LFT");
-	case KEY_RIGHT:
-		return strdup("RGT");
-	case KEY_HOME:
-		return strdup("KEY_HOME");
-	case KEY_END:
-		return strdup("KEY_END");
+	if (key < KEY_MAX) {
+		if (strcmp(keynames[key], "") == 0)
+			return NULL;
+		else
+			return mem_strdup(keynames[key]);
+	} else {
+		asprintf(&res, "U+%04X", key - KEY_MAX);
+		return res;
 	}
-	if ((ch = keyname(key)))
-		return mem_strdup(ch);
-	asprintf(&res, "U+%04X", key - KEY_MAX);
-	return res;
 }
 
 int keys_action_count_keys(enum key action)

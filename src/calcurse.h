@@ -153,11 +153,12 @@
 #define CALHEIGHT       8
 
 /* Key definitions. */
-#define CTRLVAL                 0x1F
-#define CTRL(x)                 ((x) & CTRLVAL)
-#define ESCAPE                  27
-#define TAB                     9
-#define SPACE                   32
+#define CTRLVAL         0x1F
+#define CTRL(x)         ((x) & CTRLVAL)
+#define ESCAPE          27
+#define TAB             9
+#define RETURN          10
+#define SPACE           32
 
 #define KEYS_KEYLEN         3	/* length of each keybinding */
 #define KEYS_LABELEN        8	/* length of command description */
