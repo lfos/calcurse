@@ -213,8 +213,7 @@ static void update_rept(struct rpt **rpt, const long start)
 		 msg_rpt_yearly, msg_rpt_current);
 
 	const char *msg_rpt_choice = _("[dwmy]");
-	const char *msg_wrong_freq =
-	    _("The frequence you entered is not valid.");
+	const char *msg_wrong_freq = _("Invalid frequency.");
 	const char *msg_wrong_time =
 	    _("Invalid time: start time must be before end time!");
 	const char *msg_wrong_date = _("The entered date is not valid.");
@@ -240,7 +239,7 @@ static void update_rept(struct rpt **rpt, const long start)
 	}
 
 	do {
-		status_mesg(_("Enter the new repetition frequence:"), "");
+		status_mesg(_("Enter the new repetition frequency:"), "");
 		mem_free(freqstr);
 		asprintf(&freqstr, "%d", (*rpt)->freq);
 		if (updatestring(win[STA].p, &freqstr, 0, 1) !=
@@ -677,7 +676,7 @@ void ui_day_item_delete(unsigned reg)
 /*
  * Ask user for repetition characteristics:
  * 	o repetition type: daily, weekly, monthly, yearly
- *	o repetition frequence: every X days, weeks, ...
+ *	o repetition frequency: every X days, weeks, ...
  *	o repetition end date
  * and then delete the selected item to recreate it as a recurrent one
  */
@@ -695,9 +694,8 @@ void ui_day_item_repeat(void)
 	const char *msg_rpt_monthly = _("(m)onthly");
 	const char *msg_rpt_yearly = _("(y)early");
 	const char *msg_type_choice = _("[dwmy]");
-	const char *mesg_freq_1 = _("Enter the repetition frequence:");
-	const char *mesg_wrong_freq =
-	    _("The frequence you entered is not valid.");
+	const char *mesg_freq_1 = _("Enter the repetition frequency:");
+	const char *mesg_wrong_freq = _("Invalid frequency.");
 	const char *mesg_until_1 =
 	    _("Enter end date ([%s]), duration ([+xxwxxd]) or '0' for endless repetition:");
 	const char *mesg_wrong_1 = _("The entered date is not valid.");

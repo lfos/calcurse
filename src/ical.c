@@ -744,7 +744,7 @@ static ical_rpt_t *ical_read_rrule(FILE * log, char *rrulestr,
 	memset(rpt, 0, sizeof(ical_rpt_t));
 	if (sscanf(p, "FREQ=%s", freqstr) != 1) {
 		ical_log(log, ICAL_VEVENT, itemline,
-			 _("recurrence frequence not found."));
+			 _("recurrence frequency not found."));
 		(*noskipped)++;
 		mem_free(rpt);
 		return NULL;
@@ -760,7 +760,7 @@ static ical_rpt_t *ical_read_rrule(FILE * log, char *rrulestr,
 		rpt->type = RECUR_YEARLY;
 	} else {
 		ical_log(log, ICAL_VEVENT, itemline,
-			 _("recurrence frequence not recognized."));
+			 _("recurrence frequency not recognized."));
 		(*noskipped)++;
 		mem_free(rpt);
 		return NULL;

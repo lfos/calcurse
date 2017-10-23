@@ -358,7 +358,7 @@ enum recur_type {
 /* To describe an item's repetition. */
 struct rpt {
 	enum recur_type type;	/* repetition type */
-	int freq;		/* repetition frequence */
+	int freq;		/* repetition frequency */
 	long until;		/* ending date for repeated event */
 };
 
