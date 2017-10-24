@@ -929,7 +929,7 @@ void custom_keys_config(void)
 {
 	struct scrollwin kwin;
 	int selrow, selelm, firstrow, lastrow, nbrowelm, nbdisplayed;
-	int ch, used, not_recognized;
+	int ch;
 	const char *keystr;
 	WINDOW *grabwin;
 	const int LINESPERKEY = 2;
@@ -988,47 +988,23 @@ void custom_keys_config(void)
 		case KEY_ADD_ITEM:
 #define WINROW 10
 #define WINCOL 50
-			do {
-				used = 0;
+			for (;;) {
 				grabwin =
 				    popup(WINROW, WINCOL,
 					  (row - WINROW) / 2,
 					  (col - WINCOL) / 2,
 					  _("Press the key you want to assign to:"),
 					  keys_get_label(selrow), 0);
+
 				ch = keys_wgetch(grabwin);
-
-				/* Check if this is a ncurses pseudo key accepted by calcurse. */
-				if (ch >= KEY_MIN && ch <= KEY_MAX && !(
-				    ch == KEY_UP || ch == KEY_DOWN ||
-				    ch == KEY_LEFT || ch == KEY_RIGHT ||
-				    ch == KEY_HOME || ch == KEY_END)) {
-					not_recognized = 1;
-					WARN_MSG(_("The key '%s' is not accepted by calcurse. "
-						  "Choose another one."), keyname(ch));
-					werase(kwin.inner);
-					nbrowelm =
-					    print_keys_bindings(kwin.inner,
-								selrow,
-								selelm,
-								LINESPERKEY);
-					wins_scrollwin_display(&kwin);
-					continue;
-				} else {
-					not_recognized = 0;
-				}
-
-				/* Is the binding used by this action already? If so, just end the reassignment */
-				if (selrow == keys_get_action(ch)) {
+				enum key action = keys_get_action(ch);
+				/* Is the key already used by this action? */
+				if (action == selrow) {
 					delwin(grabwin);
 					break;
 				}
-
-				used = keys_assign_binding(ch, selrow);
-				if (used) {
-					enum key action;
-
-					action = keys_get_action(ch);
+				/* Is the key used by another action? */
+				if (keys_assign_binding(ch, selrow)) {
 					char *keystr = keys_int2str(ch);
 					WARN_MSG(_("The key '%s' is already used for %s. "
 						  "Choose another one."),
@@ -1042,13 +1018,13 @@ void custom_keys_config(void)
 								selelm,
 								LINESPERKEY);
 					wins_scrollwin_display(&kwin);
-				} else {
-					nbrowelm++;
-					selelm = nbrowelm - 1;
+					continue;
 				}
+				nbrowelm++;
+				selelm = nbrowelm - 1;
 				delwin(grabwin);
+				break;
 			}
-			while (used || not_recognized);
 #undef WINROW
 #undef WINCOL
 			break;
