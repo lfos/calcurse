@@ -18,6 +18,13 @@ Path = /path/to/calendar/on/the/server/
 # Enable this if you want to skip SSL certificate checks.
 InsecureSSL = No
 
+# This option allows you to filter the type of tasks synced and the valid options are
+# event, apt, recur-event, recur-apt, todo, recur, cal exactly like the command line option
+# --filter-type, including the lack of whitespace between the comma seperated values
+# Set this option to cal if the configured CalDAV server doesn't support tasks
+# such as Google Calendar.
+SyncFilter = cal,todo
+
 # Disable this option to actually enable synchronization. If it is enabled,
 # nothing is actually written to the server or to the local data files. If you
 # combine DryRun = Yes with Verbose = Yes, you get a log of what would have

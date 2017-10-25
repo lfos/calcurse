@@ -44,6 +44,11 @@ def die_atnode(msg, node):
     die(msg)
 
 
+def validate_sync_filter():
+    valid_sync_filter_values = {'event', 'apt', 'recur-event', 'recur-apt', 'todo', 'recur', 'cal'}
+    return set(sync_filter.split(',')) - valid_sync_filter_values
+
+
 def calcurse_wipe():
     if verbose:
         print('Removing all local calcurse objects...')
@@ -53,13 +58,20 @@ def calcurse_wipe():
 
 
 def calcurse_import(icaldata):
-    p = subprocess.Popen([calcurse, '-i', '-', '--dump-imported', '-q',
-                          '--format-apt=%(hash)\\n',
-                          '--format-recur-apt=%(hash)\\n',
-                          '--format-event=%(hash)\\n',
-                          '--format-recur-event=%(hash)\\n',
-                          '--format-todo=%(hash)\\n'],
-                         stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    command = [
+        calcurse,
+        '-i', '-',
+        '--dump-imported',
+        '-q',
+        '--filter-type', sync_filter,
+        '--format-apt=%(hash)\\n',
+        '--format-recur-apt=%(hash)\\n',
+        '--format-event=%(hash)\\n',
+        '--format-recur-event=%(hash)\\n',
+        '--format-todo=%(hash)\\n'
+    ]
+
+    p = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
     return p.communicate(icaldata.encode('utf-8'))[0].decode('utf-8').rstrip()
 
 
@@ -70,11 +82,18 @@ def calcurse_export(objhash):
 
 
 def calcurse_hashset():
-    p = subprocess.Popen([calcurse, '-G', '--format-apt=%(hash)\\n',
-                          '--format-recur-apt=%(hash)\\n',
-                          '--format-event=%(hash)\\n',
-                          '--format-recur-event=%(hash)\\n',
-                          '--format-todo=%(hash)\\n'], stdout=subprocess.PIPE)
+    command = [
+        calcurse,
+        '-G',
+        '--filter-type', sync_filter,
+        '--format-apt=%(hash)\\n',
+        '--format-recur-apt=%(hash)\\n',
+        '--format-event=%(hash)\\n',
+        '--format-recur-event=%(hash)\\n',
+        '--format-todo=%(hash)\\n'
+    ]
+
+    p = subprocess.Popen(command, stdout=subprocess.PIPE)
     return set(p.communicate()[0].decode('utf-8').rstrip().splitlines())
 
 
@@ -532,6 +551,16 @@ if config.has_option('General', 'AuthMethod'):
     authmethod = config.get('General', 'AuthMethod').lower()
 else:
     authmethod = 'basic'
+
+if config.has_option('General', 'SyncFilter'):
+    sync_filter = config.get('General', 'SyncFilter')
+
+    invalid_filter_values = validate_sync_filter()
+
+    if len(invalid_filter_values):
+        die('Invalid value(s) in SyncFilter option: ' + ', '.join(invalid_filter_values))
+else:
+    sync_filter = 'cal,todo'
 
 if config.has_option('Auth', 'UserName'):
     username = config.get('Auth', 'UserName')
