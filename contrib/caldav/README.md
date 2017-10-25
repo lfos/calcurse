@@ -108,6 +108,7 @@ The following options should also be changed in your config file:
 Hostname = apidata.googleusercontent.com
 Path = /caldav/v2/*your_calendar_id_here*/events/
 Scope = https://www.googleapis.com/auth/calendar
+SyncFilter = cal
 ```
 
 Your Calendar ID for "*Path*" should be your email for the default calendar.
@@ -127,6 +128,7 @@ A complete config file for example@gmail.com would have the following options:
 Hostname = apidata.googleusercontent.com
 Path = /caldav/v2/example@gmail.com/events/
 AuthMethod = oauth2
+SyncFilter = cal
 
 ...
 
