@@ -293,9 +293,8 @@ static void update_rept(struct rpt **rpt, const long start)
 			new_date.mm = lt.tm_mon + 1;
 			new_date.yyyy = lt.tm_year + 1900;
 		} else {
-			if (!parse_date(timstr, conf.input_datefmt, &newyear,
-					&newmonth, &newday,
-					ui_calendar_get_slctd_day())) {
+			if (!parse_date_interactive(timstr, &newyear,
+						    &newmonth, &newday)) {
 				asprintf(&outstr, msg_fmts,
 					 DATEFMT_DESC(conf.input_datefmt));
 				status_mesg(msg_wrong_date, outstr);
@@ -787,9 +786,8 @@ void ui_day_item_repeat(void)
 			until_date.dd = lt.tm_mday;
 			until_date.mm = lt.tm_mon + 1;
 			until_date.yyyy = lt.tm_year + 1900;
-		} else if (parse_date(user_input, conf.input_datefmt,
-				      &year, &month, &day,
-				      ui_calendar_get_slctd_day())) {
+		} else if (parse_date_interactive(user_input, &year, &month,
+						  &day)) {
 			t = p->start;
 			localtime_r(&t, &lt);
 			until_date.dd = day;

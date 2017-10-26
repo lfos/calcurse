@@ -1150,8 +1150,8 @@ void print_bool_option_incolor(WINDOW *, unsigned, int, int);
 const char *get_tempdir(void);
 char *new_tempfile(const char *);
 int check_date(unsigned, unsigned, unsigned);
-int parse_date(const char *, enum datefmt, int *, int *, int *,
-	       struct date *);
+int parse_date(const char *, enum datefmt, int *, int *, int *, struct date *);
+int parse_date_interactive(const char *, int *, int *, int *);
 int check_time(unsigned, unsigned);
 int parse_time(const char *, unsigned *, unsigned *);
 int parse_duration(const char *, unsigned *);

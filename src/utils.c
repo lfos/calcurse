@@ -886,6 +886,13 @@ parse_date(const char *date_string, enum datefmt datefmt, int *year,
 	return 1;
 }
 
+int
+parse_date_interactive(const char *datestr, int *year, int *month, int *day)
+{
+	return parse_date(datestr, conf.input_datefmt, year, month, day,
+			  ui_calendar_get_slctd_day());
+}
+
 /*
  * Convert a date duration string into a number of days.
  *
