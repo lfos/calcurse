@@ -1126,29 +1126,34 @@ int parse_duration(const char *string, unsigned *duration)
 int parse_datetime(const char *string, long *ts)
 {
 	char *t = mem_strdup(string);
-	char *p = strtok(t, " ");
+	char *p = strchr(t, ' ');
 
 	unsigned int hour, minute;
 	int year, month, day;
 	struct date new_date;
 	int ret = 0;
 
-	while (p) {
-		if (parse_date(p, conf.input_datefmt, &year, &month, &day,
-			       ui_calendar_get_slctd_day())) {
-			new_date.dd = day;
-			new_date.mm = month;
-			new_date.yyyy = year;
-			*ts = date2sec(new_date, 0, 0) + get_item_time(*ts);
-			ret |= PARSE_DATETIME_HAS_DATE;
-		} else if (parse_time(p, &hour, &minute) == 1) {
-			*ts = update_time_in_date(*ts, hour, minute);
-			ret |= PARSE_DATETIME_HAS_TIME;
-		} else {
-			return 0;
+	if (p) {
+		*p = '\0';
+		if (parse_date_interactive(t, &year, &month, &day) &&
+		    parse_time(p + 1, &hour, &minute)) {
+			ret |= PARSE_DATETIME_HAS_DATE |
+			       PARSE_DATETIME_HAS_TIME;
 		}
-		p = strtok(NULL, " ");
+	} else if (parse_date_interactive(t, &year, &month, &day)) {
+		ret |= PARSE_DATETIME_HAS_DATE;
+	} else if (parse_time(t, &hour, &minute)) {
+		ret |= PARSE_DATETIME_HAS_TIME;
 	}
+
+	if (ret & PARSE_DATETIME_HAS_DATE) {
+		new_date.dd = day;
+		new_date.mm = month;
+		new_date.yyyy = year;
+		*ts = date2sec(new_date, 0, 0) + get_item_time(*ts);
+	}
+	if (ret & PARSE_DATETIME_HAS_TIME)
+		*ts = update_time_in_date(*ts, hour, minute);
 
 	mem_free(t);
 	return ret;
