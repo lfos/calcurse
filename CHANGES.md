@@ -1,6 +1,87 @@
 Release Notes
 =============
 
+Version 4.3.0 (2017-11-05)
+--------------------------
+
+- Compatibility notes:
+
+    * Month names and abbreviated day names now honor the locale setting
+      (suggested and implemented by Lars Henriksen).
+
+    * The phase of moon feature was removed (suggested and implemented by Lars
+      Henriksen).
+
+- New features:
+
+    * The selected day in the calendar now stands out (suggested and
+      implemented by Lars Henriksen).
+
+    * Both the position and the date format used for the heading in the
+      appointments panel are configurable (suggested and implemented by Lars
+      Henriksen).
+
+    * Support for `CTRL-U` and `CTRL-G` in prompts (implemented by Quentin
+      Hibon).
+
+    * Support for using all keys recognized by ncurses, particularly UTF-8
+      keys, in key bindings (partly implemented by Lars Henriksen).
+
+    * Support for `CALCURSE_EDITOR`, `CALCURSE_PAGER` and `CALCURSE_MERGETOOL`
+      environment variables to override the default editor, pager and merge
+      tool.
+
+    * Several improvements to the reload and save routines. The save routine
+      now detects external changes to the data files and no longer blindly
+      overwrites data which was edited externally. In case of external changes,
+      different options are offered, one of them being the execution of the
+      merge tool to merge external changes and changes done from the running
+      calcurse instance.  The reload routine also no longer performs a reload
+      if both the external data files and the local data are unchanged.
+
+    * Several improvements to the CalDAV synchronization script, including
+      OAuth2 support and instructions on how to synchronize calcurse with
+      Google Calendar (requested and implemented by Randy Ramos).
+
+    * Support for passing the password as a command-line argument to the CalDAV
+      synchronization script (suggested by azarus and implemented by Randy
+      Ramos).
+
+    * A new utility, called `calcurse-dateutil`, which can be used to create
+      "extended recurrent events" such as events occurring on the third
+      Thursday of each month.
+
+- Bug Fixes:
+
+    * Gracefully parse iCal parameters with colons (reported by Hakan Jerning).
+
+    * Fixes to the notification feature affecting recurrent appointments
+      (reported by rgc69).
+
+    * Do not crash when changing colors (reported by Randy Ramos).
+
+    * Build fix for NetBSD (reported by Thomas Klausner).
+
+    * Avoid fatal error when using the help command (reported and fixed by Lars
+      Henriksen).
+
+    * Avoid empty warning box when key is already in use (reported and fixed by
+      Lars Henriksen).
+
+    * Several fixes to the calcurse-caldav synchronization script to allow for
+      synchronizing with NextCloud servers (reported by Geoffroy Tremblay).
+
+    * Proper support for punctual appointments starting at 00:00 (reported by
+      Maximiliano Redigonda).
+
+    * Proper ISO 8601 week numbering (reported and fixed by Lars Henriksen).
+
+    * The delete key no longer acts as backspace (reported by Zekario and fixed
+      by cryptolmath).
+
+    * Proper parsing of date-time strings (reported and fix suggested by Lars
+      Henriksen).
+
 Version 4.2.2 (2017-01-14)
 --------------------------
 
