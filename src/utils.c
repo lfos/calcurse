@@ -1140,10 +1140,10 @@ int parse_datetime(const char *string, long *ts)
 			ret |= PARSE_DATETIME_HAS_DATE |
 			       PARSE_DATETIME_HAS_TIME;
 		}
-	} else if (parse_date_interactive(t, &year, &month, &day)) {
-		ret |= PARSE_DATETIME_HAS_DATE;
 	} else if (parse_time(t, &hour, &minute)) {
 		ret |= PARSE_DATETIME_HAS_TIME;
+	} else if (parse_date_interactive(t, &year, &month, &day)) {
+		ret |= PARSE_DATETIME_HAS_DATE;
 	}
 
 	if (ret & PARSE_DATETIME_HAS_DATE) {
