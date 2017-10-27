@@ -163,6 +163,17 @@ int wins_doupdate(void)
 	return rc;
 }
 
+int wins_redrawwin(WINDOW *win)
+{
+	int rc;
+
+	SCREEN_ACQUIRE;
+	rc = redrawwin(win);
+	SCREEN_RELEASE;
+
+	return rc;
+}
+
 /* Get the current layout. */
 int wins_layout(void)
 {

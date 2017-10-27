@@ -988,21 +988,16 @@ void custom_keys_config(void)
 		case KEY_ADD_ITEM:
 #define WINROW 10
 #define WINCOL 50
+			grabwin = popup(WINROW, WINCOL,
+					(row - WINROW) / 2, (col - WINCOL) / 2,
+					_("Press the key you want to assign to:"),
+					keys_get_label(selrow), 0);
 			for (;;) {
-				grabwin =
-				    popup(WINROW, WINCOL,
-					  (row - WINROW) / 2,
-					  (col - WINCOL) / 2,
-					  _("Press the key you want to assign to:"),
-					  keys_get_label(selrow), 0);
-
 				ch = keys_wgetch(grabwin);
 				enum key action = keys_get_action(ch);
 				/* Is the key already used by this action? */
-				if (action == selrow) {
-					delwin(grabwin);
+				if (action == selrow)
 					break;
-				}
 				/* Is the key used by another action? */
 				if (keys_assign_binding(ch, selrow)) {
 					char *keystr = keys_int2str(ch);
@@ -1018,13 +1013,14 @@ void custom_keys_config(void)
 								selelm,
 								LINESPERKEY);
 					wins_scrollwin_display(&kwin);
+					wins_redrawwin(grabwin);
 					continue;
 				}
 				nbrowelm++;
 				selelm = nbrowelm - 1;
-				delwin(grabwin);
 				break;
 			}
+			delwin(grabwin);
 #undef WINROW
 #undef WINCOL
 			break;

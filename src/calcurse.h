@@ -1216,6 +1216,7 @@ void wins_calendar_cleanup(void *);
 int wins_refresh(void);
 int wins_wrefresh(WINDOW *);
 int wins_doupdate(void);
+int wins_redrawwin(WINDOW *);
 int wins_layout(void);
 void wins_set_layout(int);
 unsigned wins_sbar_width(void);
