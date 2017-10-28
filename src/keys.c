@@ -247,8 +247,12 @@ int keys_wgetch(WINDOW *win)
 	int ch, i;
 	char buf[UTF8_MAXLEN];
 
+	ch = wgetch(win);
+	if (ch == ERR)
+		return ch;
+
 	/* Handle curses pseudo characters. */
-	if ((ch = wgetch(win)) >= KEY_MIN)
+	if (ch >= KEY_MIN)
 		return ch;
 
 	/* Handle 1-byte UTF-8 characters. */
