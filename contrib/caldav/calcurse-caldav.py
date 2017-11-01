@@ -386,6 +386,9 @@ def pull_objects(hrefs_missing, hrefs_modified, conn, syncdb, etagdict):
         if hrefnode is None:
             die_atnode('Missing href.', node)
         href = hrefnode.text
+        if hrefnode.text.endswith('/'):
+            # ignore directory enties
+            continue
 
         etagnode = node.find("./D:propstat/D:prop/D:getetag", namespaces=nsmap)
         if etagnode is None:
@@ -632,6 +635,9 @@ try:
     missing = set()
     modified = set()
     for href in set(etagdict.keys()):
+        if href.endswith('/'):
+            # ignore directory enties
+            continue
         if href not in syncdb:
             missing.add(href)
         elif etagdict[href] != syncdb[href][0]:
