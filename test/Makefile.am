@@ -116,4 +116,5 @@ EXTRA_DIST = \
 	data/ical-005.ical \
 	data/ical-006.ical \
 	data/ical-007.ical \
+	data/ical-008.ical \
 	data/todo
