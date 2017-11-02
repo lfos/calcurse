@@ -1,12 +1,13 @@
 # 
 # Translators:
+# David Sommerseth <dazo@eurephia.org>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-02-22 10:27+0200\n"
-"PO-Revision-Date: 2013-08-13 12:18+0000\n"
-"Last-Translator: Lukas Fleischer <transifex@cryptocrack.de>\n"
+"PO-Revision-Date: 2017-09-19 19:05+0000\n"
+"Last-Translator: David Sommerseth <dazo@eurephia.org>\n"
 "Language-Team: Norwegian Bokmål (Norway) (http://www.transifex.com/lfleischer/calcurse/language/nb_NO/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,11 +20,11 @@ msgstr ""
 msgid ""
 "View\n"
 "===="
-msgstr ""
+msgstr "Visning\n======="
 
 #: view.txt:4
 msgid "View the item you select in either the todo or appointment panel."
-msgstr ""
+msgstr "Vis oppføringen du har valgt i enten oppgavelisten eller panelet for avtaler."
 
 #: view.txt:6
 msgid ""
@@ -31,10 +32,10 @@ msgid ""
 "display it. If that is the case, the description will be shortened and its end\n"
 "replaced by '...'. To be able to read the entire description, just run the view\n"
 "command and a popup window will appear, containing the whole event."
-msgstr ""
+msgstr "Denne funksjonen er nyttig når beskrivelsen på en oppføring er lengre enn det er plass til å vise.  Hvis dette er tilfellet vil beskrivelsen bli forkortet og slutten bli bli endret til '...'.  For å være i stand til å lese hele beskrivelsen kan man bruke denne visningsfunksjonen og et nytt vindu dukker opp hvor hele oppføringen vises i sin helhet."
 
 #: view.txt:11
 msgid ""
 "Press any key to close the popup window and go back to the main calcurse\n"
 "screen."
-msgstr ""
+msgstr "Trykk en tast for å lukke vundet og gå tilbake til hovedskjemen i calcurse."

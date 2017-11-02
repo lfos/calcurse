@@ -1,12 +1,13 @@
 # 
 # Translators:
+# Alexander F Rødseth <rodseth@gmail.com>, 2017
 msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-02-22 10:27+0200\n"
-"PO-Revision-Date: 2013-08-13 12:18+0000\n"
-"Last-Translator: Lukas Fleischer <transifex@cryptocrack.de>\n"
+"PO-Revision-Date: 2017-09-19 19:05+0000\n"
+"Last-Translator: Alexander F Rødseth <rodseth@gmail.com>\n"
 "Language-Team: Norwegian Bokmål (Norway) (http://www.transifex.com/lfleischer/calcurse/language/nb_NO/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,7 +20,7 @@ msgstr ""
 msgid ""
 "Copy and Paste\n"
 "=============="
-msgstr ""
+msgstr "Kopier og lim inn\n================"
 
 #: copy-paste.txt:4
 msgid ""
@@ -29,4 +30,4 @@ msgid ""
 "new date is chosen in the calendar, the appointment panel must be selected and\n"
 "the paste key must be pressed to paste the item. The item will appear in the\n"
 "appointment panel, assigned to the newly selected date."
-msgstr ""
+msgstr "Kopier og lim inn det valgte elementet. Dette er nyttig for å raskt kopier et element\nfra en dato til en annen. For å gjøre dette må man først velge elementet som\nskal kopieres, for så å trykke hurtigtasten som er knyttet til kopi-funksjonen. Når den\nnye datoen har blitt valgt i kalenderen må avatale-panelet velges og\nhurtigtasten for å lime inn må trykkes for å lime inn elementet. Elementet vil vises\ni avtale-panelet, plassert på den nylig valgte datoen."

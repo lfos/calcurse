@@ -1,12 +1,13 @@
 # 
 # Translators:
+# Алексей Мехоношин <ruskidecko@gmail.com>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-02-22 10:27+0200\n"
-"PO-Revision-Date: 2013-07-24 06:53+0000\n"
-"Last-Translator: Lukas Fleischer <transifex@cryptocrack.de>\n"
+"PO-Revision-Date: 2017-09-19 18:32+0000\n"
+"Last-Translator: Алексей Мехоношин <ruskidecko@gmail.com>\n"
 "Language-Team: Russian (http://www.transifex.com/lfleischer/calcurse/language/ru/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,7 +20,7 @@ msgstr ""
 msgid ""
 "EditNote\n"
 "========"
-msgstr ""
+msgstr "Правка примечания\n==================="
 
 #: enote.txt:4
 msgid ""
@@ -27,36 +28,36 @@ msgid ""
 "feature is useful if you do not have enough space to store all of your item\n"
 "description, or if you would like to add sub-tasks to an already existing todo\n"
 "item for example."
-msgstr ""
+msgstr "Добавить примечание к любому типу записи или изменить уже существующее.\nЭта возможность будет полезна, если у вас не хватает места для описания вашей записи,\nили если вы хотите добавить подзадачу к, например, уже существующему делу."
 
 #: enote.txt:9
 msgid ""
 "You first need to highlight the item you want the note to be attached to. Then,\n"
 "after pressing the edit note key, you will be driven to an external editor to\n"
 "edit your note. This editor is chosen the following way:"
-msgstr ""
+msgstr "Сначала необходимо выбрать запись, к которой вы хотите добавит примечание.\nПосле нажатия клавиши, ответственной за правку записи, вы будете\nперемещены во внешний редактор\nдля правки примечания. Этот редактор выбирается следующим образом:"
 
 #: enote.txt:13
 msgid ""
 "* If the 'VISUAL' environment variable is set, then this will be the default\n"
 "  editor to be called."
-msgstr ""
+msgstr "* Если переменная окружения 'VISUAL' задана, её значение и будет\nредактором по умолчанию."
 
 #: enote.txt:16
 msgid ""
 "* If 'VISUAL' is not set, then the 'EDITOR' environment variable will be used\n"
 "  as the default editor."
-msgstr ""
+msgstr "* Если переменная окружения 'VISUAL' не задана, в качестве редактора\nбудет выбрано значение переменной окружения 'EDITOR'."
 
 #: enote.txt:19
 msgid ""
 "* If none of the above environment variables is set, then '/usr/bin/vi' will be\n"
 "  used."
-msgstr ""
+msgstr "* Если не заданы обе переменные окружения, тогда, в качестве редактора,\nбудет использован '/usr/bin/vi'."
 
 #: enote.txt:22
 msgid ""
 "Once the item note is edited and saved, quit your favorite editor. You will\n"
 "then go back to calcurse, and the '>' sign will appear in front of the\n"
 "highlighted item, meaning there is a note attached to it."
-msgstr ""
+msgstr "После правки записи и сохранения изменений, выйдите из редактора.\nВы будете перемещены обратно в calcurse и перед выбранной записью увидите знак '>', означающий, что примечание было успешно добавлено."

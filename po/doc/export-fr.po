@@ -1,12 +1,14 @@
 # 
 # Translators:
+# SubS0, 2017
+# SubS0, 2017
 msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-02-22 10:27+0200\n"
-"PO-Revision-Date: 2013-07-24 06:53+0000\n"
-"Last-Translator: Lukas Fleischer <transifex@cryptocrack.de>\n"
+"PO-Revision-Date: 2017-09-19 18:32+0000\n"
+"Last-Translator: SubS0\n"
 "Language-Team: French (http://www.transifex.com/lfleischer/calcurse/language/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,43 +21,43 @@ msgstr ""
 msgid ""
 "Export\n"
 "======"
-msgstr ""
+msgstr "Exporter\n======="
 
 #: export.txt:4
 msgid "Export calcurse data (appointments, events and todos)."
-msgstr ""
+msgstr "Exporter les données de calcurse (rendez-vous, événements, tâches)."
 
 #: export.txt:6
 msgid ""
 "This leads to the export submenu, from which you can choose between two\n"
 "different export formats: 'ical' and 'pcal'. Choosing one of those formats lets\n"
 "you export calcurse data to iCal or pcal format."
-msgstr ""
+msgstr "Cette action ouvre le sous-menu Exporter à partir duquel vous pouvez choisir \nentre deux formats d'exportation différents : 'ical' et 'pcal'. Le choix de l'un de \nces formats vous permet d'exporter les données de calcurse au format iCal ou pcal."
 
 #: export.txt:10
 msgid ""
 "You first need to specify the file to which the data will be exported.  By\n"
 "default, this file is:"
-msgstr ""
+msgstr "Il faut d'abord indiquer le fichier où les données seront exportées. \nPar défaut, ce fichier est :"
 
 #: export.txt:13
 msgid "     ~/calcurse.ics"
-msgstr ""
+msgstr "~/calcurse.ics"
 
 #: export.txt:15
 msgid "for an ical export, and:"
-msgstr ""
+msgstr "pour un export au format ical, et "
 
 #: export.txt:17
 msgid "     ~/calcurse.txt"
-msgstr ""
+msgstr "~/calcurse.txt"
 
 #: export.txt:19
 msgid "for a pcal export."
-msgstr ""
+msgstr "pour un export au format pcal."
 
 #: export.txt:21
 msgid ""
 "calcurse data are exported in the following order: events, appointments, "
 "todos."
-msgstr ""
+msgstr "Les données de calcurse sont exportées dans l'ordre suivant : événements, rendez-vous, tâches."

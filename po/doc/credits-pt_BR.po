@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-02-22 10:27+0200\n"
-"PO-Revision-Date: 2016-01-30 10:22+0000\n"
+"PO-Revision-Date: 2017-09-19 18:32+0000\n"
 "Last-Translator: Lukas Fleischer <transifex@cryptocrack.de>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/lfleischer/calcurse/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
@@ -24,7 +24,7 @@ msgstr "Calcurse - organizador baseado em texto\n===============================
 
 #: credits.txt:4
 msgid ""
-"Copyright (c) 2004-2017 calcurse Development Team\n"
+"Copyright (c) 2004-2016 calcurse Development Team\n"
 "All rights reserved."
 msgstr ""
 

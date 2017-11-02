@@ -1,12 +1,13 @@
 # 
 # Translators:
+# SubS0, 2017
 msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-02-22 10:27+0200\n"
-"PO-Revision-Date: 2013-07-23 08:35+0000\n"
-"Last-Translator: Lukas Fleischer <transifex@cryptocrack.de>\n"
+"PO-Revision-Date: 2017-09-19 18:32+0000\n"
+"Last-Translator: SubS0\n"
 "Language-Team: French (http://www.transifex.com/lfleischer/calcurse/language/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,11 +20,11 @@ msgstr ""
 msgid ""
 "Repeat\n"
 "======"
-msgstr ""
+msgstr "Répéter\n======="
 
 #: repeat.txt:4
 msgid "Repeat an event or an appointment."
-msgstr ""
+msgstr "Répéter un événement ou un rendez-vous."
 
 #: repeat.txt:6
 msgid ""
@@ -31,14 +32,14 @@ msgid ""
 "panel. Then running the repeat command will lead you to a set of three\n"
 "questions, with which you will be able to specify the repetition\n"
 "characteristics:"
-msgstr ""
+msgstr "Il faut d'abord séléctionner l'élément dans le panneau des rendez-vous.\nLe lancement de la commande répéter vous posera trois questions, grâce \nauxquelles vous pourrez définir les caractéristiques de la répétition :"
 
 #: repeat.txt:11
 msgid ""
 "  o        type: you can choose between a daily, weekly, monthly or\n"
 "                 yearly repetition by pressing 'D', 'W', 'M' or 'Y'\n"
 "                 respectively."
-msgstr ""
+msgstr "o type : vous pouvez choisir entre journalier, hebdomadaire, \nmensuel ou annuel en pressant respectivement 'd', 'w', 'm' ou 'y'."
 
 #: repeat.txt:15
 msgid ""
@@ -48,7 +49,7 @@ msgid ""
 "                 which means it must be repeated every year. Another\n"
 "                 example: if you go to the restaurant every two days,\n"
 "                 choose a 'daily' repetition with a frequency of '2'."
-msgstr ""
+msgstr "o fréquence : cette option indique combien de fois l'élément doit être \nrépété. Par exemple, si vous souhaitez répéter un anniversaire,\nchoisissez la répétition 'annuelle' avec une fréquence de '1',\nce qui signifie que l'événement sera répété chaque année. Autre exemple :\nif vous allez au restaurant tous les deux jours, choisissez 'journalier'\navec une fréquence de '2'."
 
 #: repeat.txt:22
 msgid ""
@@ -56,23 +57,23 @@ msgid ""
 "                 event or appointment. To indicate an endless \n"
 "                 repetition, enter '0' and the item will be repeated\n"
 "                 forever."
-msgstr ""
+msgstr "o date de fin : spécifie quand la répétition de l'événement ou du rendez-vous\nprendra fin. Pour indiquer une répétition inifinie, entrez '0' et l'élément sera\nrépété pour toujours."
 
 #: repeat.txt:27
 msgid ""
 "Notes\n"
 "-----"
-msgstr ""
+msgstr "Notes\n-----"
 
 #: repeat.txt:30
 msgid ""
 "* Repeated items are marked with an '*' inside the appointment panel, to be\n"
 "  easily recognizable from non-repeated ones."
-msgstr ""
+msgstr "* Les éléments répétés sont marqués par un \"*' à l'intérieur du panneau des \nrendez-vous afin de les différencier rapidement des non-répétés."
 
 #: repeat.txt:33
 msgid ""
 "* The 'Repeat' and 'Delete' command can be mixed to create complicated\n"
 "  configurations, as it is possible to delete only one occurrence of a repeated\n"
 "  item."
-msgstr ""
+msgstr "* Les commandes 'Répéter' et 'Supprimer' peuvent être combinées pour \ncréer des configurations complexes, de manière à ne supprimer qu'une seule\noccurence d'un élément répété."

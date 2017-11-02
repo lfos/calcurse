@@ -1,12 +1,13 @@
 # 
 # Translators:
+# Алексей Мехоношин <ruskidecko@gmail.com>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-02-22 10:27+0200\n"
-"PO-Revision-Date: 2013-07-24 06:53+0000\n"
-"Last-Translator: Lukas Fleischer <transifex@cryptocrack.de>\n"
+"PO-Revision-Date: 2017-09-23 19:05+0000\n"
+"Last-Translator: Алексей Мехоношин <ruskidecko@gmail.com>\n"
 "Language-Team: Russian (http://www.transifex.com/lfleischer/calcurse/language/ru/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,19 +20,19 @@ msgstr ""
 msgid ""
 "Generic key bindings\n"
 "===================="
-msgstr ""
+msgstr "Основные гор.клавиши\n======================"
 
 #: general.txt:4
 msgid ""
 "Some of the key bindings apply whatever panel is selected. They are called\n"
 "generic key bindings."
-msgstr ""
+msgstr "Некоторые гор.клавиши доступны без относительно выбранной панели.\nТакие клавиши называются основными."
 
 #: general.txt:7
 msgid ""
 "Here is the list of all the generic key bindings, together with their\n"
 "corresponding action:"
-msgstr ""
+msgstr "Ниже список всех основных гор.клавиш, а так же их действий:"
 
 #: general.txt:10
 msgid ""
@@ -49,7 +50,7 @@ msgid ""
 " 'Y' : -1 Year         -> move to previous year\n"
 " 'y' : +1 Year         -> move to next year\n"
 " '^G' : Goto today      -> move to current day"
-msgstr ""
+msgstr "'^R' : Обновить -> обновляет панели calcurse, это поможет когда\nбыл изменён размер окна с терминалом или когда\nв терминале отображается символьный мусор.\n'^A' : Добавить задачу -> добавляет задачу или событие\n'^T' : Add TODO -> добавить дело\n'T' : -1 Day          -> перейти к пред.дню\n't' : +1 Day          -> перейти к след.дню\n'W' : -1 Week         -> перейти к пред.недели\n'w' : +1 Week         -> перейти к след.недели\n'M' : -1 Month        -> перейти к пред.месяцу\n'm' : +1 Month        -> перейти к след.месяцу\n'Y' : -1 Year         -> перейти к пред.году\n'y' : +1 Year         -> перейти к след.году\n'^G' : Goto today      -> перейти к текущ.дню"
 
 #: general.txt:25
 msgid ""
@@ -57,4 +58,4 @@ msgid ""
 "specific screens such the help screens for example. They are also used when the\n"
 "calendar screen is selected to switch between the available views (monthly and\n"
 "weekly calendar views)."
-msgstr ""
+msgstr "Клавиши  '^P' и '^N' используются для прокрутки экрана вверх или вниз\nв определённых экранах, например экран Справки. Они так же используются\nв случае, когда выбрана панель Календарь для переключения режимов\nотображения (месяц, неделя)."

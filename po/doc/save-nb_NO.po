@@ -1,12 +1,13 @@
 # 
 # Translators:
+# Alexander F Rødseth <rodseth@gmail.com>, 2017
 msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-02-22 10:27+0200\n"
-"PO-Revision-Date: 2013-08-13 12:18+0000\n"
-"Last-Translator: Lukas Fleischer <transifex@cryptocrack.de>\n"
+"PO-Revision-Date: 2017-09-19 19:05+0000\n"
+"Last-Translator: Alexander F Rødseth <rodseth@gmail.com>\n"
 "Language-Team: Norwegian Bokmål (Norway) (http://www.transifex.com/lfleischer/calcurse/language/nb_NO/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,15 +20,15 @@ msgstr ""
 msgid ""
 "Save\n"
 "===="
-msgstr ""
+msgstr "Lagre\n====="
 
 #: save.txt:4
 msgid "Save calcurse data."
-msgstr ""
+msgstr "Lagre calcurse-data."
 
 #: save.txt:6
 msgid "Data are split into four different files which contain :"
-msgstr ""
+msgstr "Data er delt inn i fire forskjellige filer som inneholder:"
 
 #: save.txt:8
 msgid ""
@@ -36,10 +37,10 @@ msgid ""
 "        |  ~/.calcurse/apts -> data related to the appointments\n"
 "        |  ~/.calcurse/todo -> data related to the todo list\n"
 "         \\ ~/.calcurse/keys -> user-defined key bindings"
-msgstr ""
+msgstr "         / ~/.calcurse/conf -> brukerkonfigurasjon\n        |                      (oppsett, farger, generelle valg)\n        |  ~/.calcurse/apts -> data relatert til avtaler\n        |  ~/.calcurse/todo -> data relatert til gjøremål\n         \\ ~/.calcurse/keys -> brukerdefinerte hurtigtaster"
 
 #: save.txt:14
 msgid ""
 "In the config menu, you can choose to save the calcurse data automatically\n"
 "before quitting."
-msgstr ""
+msgstr "I konfigurasjonsmenyen kan du velge å lager calcurse-data automatisk\nved avslutning."

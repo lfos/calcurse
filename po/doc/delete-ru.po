@@ -1,12 +1,13 @@
 # 
 # Translators:
+# Алексей Мехоношин <ruskidecko@gmail.com>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-02-22 10:27+0200\n"
-"PO-Revision-Date: 2013-07-24 06:53+0000\n"
-"Last-Translator: Lukas Fleischer <transifex@cryptocrack.de>\n"
+"PO-Revision-Date: 2017-09-19 18:32+0000\n"
+"Last-Translator: Алексей Мехоношин <ruskidecko@gmail.com>\n"
 "Language-Team: Russian (http://www.transifex.com/lfleischer/calcurse/language/ru/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,28 +20,28 @@ msgstr ""
 msgid ""
 "Delete\n"
 "======"
-msgstr ""
+msgstr "Удаление\n========="
 
 #: delete.txt:4
 msgid "Delete an element in the todo or appointment list."
-msgstr ""
+msgstr "Удаляет элемент из списка дел или задач."
 
 #: delete.txt:6
 msgid ""
 "Depending on which panel is selected when you press the delete key, the\n"
 "highlighted item of either the todo or appointment list will be removed from\n"
 "this list."
-msgstr ""
+msgstr "В зависимости от выбранной панели, при нажатии клавиши удаления,\nвыбранная в списке дел или задач запись будет удалена из этого списка."
 
 #: delete.txt:10
 msgid ""
 "If the item to be deleted is recurrent, you will be asked if you wish to\n"
 "suppress all of the item occurrences or just the one you selected."
-msgstr ""
+msgstr "Если удаляемая запись является повторяющейся, вам будет задан вопрос\nудалить ли только эту запись или всю цепочку."
 
 #: delete.txt:13
 msgid ""
 "If the general option 'confirm_delete' is set to 'YES', then you will be asked\n"
 "for confirmation before deleting the selected event. Do not forget to save the\n"
 "calendar data to retrieve the modifications next time you launch calcurse."
-msgstr ""
+msgstr "Если в общих настройках параметр 'confirm_delete' имеет значение 'YES',\nтогда вам необходимо будет подтверждать удаление выбранной записи .\nНе забудьте сохранить данные календаря для того, чтобы ваши настройки\nбыли использованы при следующем запуске calcurse."

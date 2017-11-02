@@ -1,12 +1,13 @@
 # 
 # Translators:
+# SubS0, 2017
 msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-02-22 10:27+0200\n"
-"PO-Revision-Date: 2013-07-24 06:53+0000\n"
-"Last-Translator: Lukas Fleischer <transifex@cryptocrack.de>\n"
+"PO-Revision-Date: 2017-09-19 18:32+0000\n"
+"Last-Translator: SubS0\n"
 "Language-Team: French (http://www.transifex.com/lfleischer/calcurse/language/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,19 +20,19 @@ msgstr ""
 msgid ""
 "Generic key bindings\n"
 "===================="
-msgstr ""
+msgstr "Raccourcis clavier génériques\n===================="
 
 #: general.txt:4
 msgid ""
 "Some of the key bindings apply whatever panel is selected. They are called\n"
 "generic key bindings."
-msgstr ""
+msgstr "Certains raccourcis clavier s'appliquent quel que soit le panneau sélectionné.\nCes raccourcis sont nommés « raccourcis clavier génériques »."
 
 #: general.txt:7
 msgid ""
 "Here is the list of all the generic key bindings, together with their\n"
 "corresponding action:"
-msgstr ""
+msgstr "Voici la liste des raccourcis clavier génériques et leurs actions correspondantes :"
 
 #: general.txt:10
 msgid ""
@@ -49,7 +50,7 @@ msgid ""
 " 'Y' : -1 Year         -> move to previous year\n"
 " 'y' : +1 Year         -> move to next year\n"
 " '^G' : Goto today      -> move to current day"
-msgstr ""
+msgstr "'^R' : Rafraîchir -> rafraîchis les panneaux de calcurse. \nUtile si vous redimensionnez votre terminal ou en cas d'erreur d'affichage\n'^A' : Ajouter un rendez-vous -> ajouter un rendez-vous ou un événement\n'^T' : Ajouter une tâche -> ajouter une tâche\n'T' : -1 jour -> aller au jour précédent\n't' : +1 jour -> aller au jour suivant\n'W' : -1 semaine -> aller à la semaine précédente\n'w' : +1 semaine -> aller à la semaine suivante\n'M' : -1 mois -> aller au mois précédent\n'm' : +1 mois -> aller au mois suivant\n'Y' : -1 an -> aller à l'année précédente\n'y' : +1 an -> aller à l'année suivante\n'^G' : Aujourd'hui -> aller au jour actuel"
 
 #: general.txt:25
 msgid ""
@@ -57,4 +58,4 @@ msgid ""
 "specific screens such the help screens for example. They are also used when the\n"
 "calendar screen is selected to switch between the available views (monthly and\n"
 "weekly calendar views)."
-msgstr ""
+msgstr "Les raccourcis '^P' et '^N' sont utilisés pour faire défiler le texte vers le haut ou\nle bas à l'intérieur des fenêtres telles que l'aide. Elle sont également utilisées\nquand la vue calendrier est séléctionnée pour basculer entre les vues\ndisponibles (vues mensuelles et hebdomadaires)."

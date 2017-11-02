@@ -1,12 +1,13 @@
 # 
 # Translators:
+# David Sommerseth <dazo@eurephia.org>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-02-22 10:27+0200\n"
-"PO-Revision-Date: 2013-08-13 12:18+0000\n"
-"Last-Translator: Lukas Fleischer <transifex@cryptocrack.de>\n"
+"PO-Revision-Date: 2017-09-19 19:05+0000\n"
+"Last-Translator: David Sommerseth <dazo@eurephia.org>\n"
 "Language-Team: Norwegian Bokmål (Norway) (http://www.transifex.com/lfleischer/calcurse/language/nb_NO/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,28 +20,28 @@ msgstr ""
 msgid ""
 "Delete\n"
 "======"
-msgstr ""
+msgstr "Sletting\n======="
 
 #: delete.txt:4
 msgid "Delete an element in the todo or appointment list."
-msgstr ""
+msgstr "Slett en oppføring i oppgavelisten eller i avtalelisten."
 
 #: delete.txt:6
 msgid ""
 "Depending on which panel is selected when you press the delete key, the\n"
 "highlighted item of either the todo or appointment list will be removed from\n"
 "this list."
-msgstr ""
+msgstr "Avhengig av hvilket panel som er valgt når du trykke på slette-tastet, vil enten den markerte oppgaven eller avtalen bli slettet fra listen."
 
 #: delete.txt:10
 msgid ""
 "If the item to be deleted is recurrent, you will be asked if you wish to\n"
 "suppress all of the item occurrences or just the one you selected."
-msgstr ""
+msgstr "Hvis oppføringen er en repeterende hendelse, vil du bli spurt om du ønsker å slette alle oppføringene eller kun for den du har valgt."
 
 #: delete.txt:13
 msgid ""
 "If the general option 'confirm_delete' is set to 'YES', then you will be asked\n"
 "for confirmation before deleting the selected event. Do not forget to save the\n"
 "calendar data to retrieve the modifications next time you launch calcurse."
-msgstr ""
+msgstr "Hvis 'confirm_delete' under generelle innstillinger er satt til 'YES', vil du bli spurt om å bekrefte sletting av valgt element. Husk å lagre kalederdataene for å laste inn endringene neste gang du starter calcurse igjen."

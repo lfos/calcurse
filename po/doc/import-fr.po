@@ -1,12 +1,13 @@
 # 
 # Translators:
+# SubS0, 2017
 msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-02-22 10:27+0200\n"
-"PO-Revision-Date: 2013-07-24 06:53+0000\n"
-"Last-Translator: Lukas Fleischer <transifex@cryptocrack.de>\n"
+"PO-Revision-Date: 2017-09-19 18:32+0000\n"
+"Last-Translator: SubS0\n"
 "Language-Team: French (http://www.transifex.com/lfleischer/calcurse/language/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,18 +20,18 @@ msgstr ""
 msgid ""
 "Import\n"
 "======"
-msgstr ""
+msgstr "Importer\n======="
 
 #: import.txt:4
 msgid "Import data from an iCal file."
-msgstr ""
+msgstr "Importer des données depuis un fichier iCal."
 
 #: import.txt:6
 msgid ""
 "You will be asked to enter the file name from which to load iCal items. At the\n"
 "end of the import process, and if the general option 'system_dialogs' is set to\n"
 "'yes', a report indicating how many items were imported is shown."
-msgstr ""
+msgstr "Il vous sera demandé d'entrer un nom de fichier contenant des éléments iCal. À la fin du processus d'importation, si l'option générale 'system_dialogs' est fixée à 'yes', un rapport indiquant le nombre d'éléments importés sera affiché."
 
 #: import.txt:10
 msgid ""
@@ -38,17 +39,17 @@ msgid ""
 "appointments, events and todo items which were successfully imported, together\n"
 "with the number of items for which problems occurred and that were skipped, if\n"
 "any."
-msgstr ""
+msgstr "Ce rapport contient le total de lignes lues, le nombre de rendez-vous, d'événements et de tâches importés avec succès, ainsi que le nombre d'éléments pour lesquels une erreur s'est produite et qui sont ignorés, s'il y en a."
 
 #: import.txt:15
 msgid ""
 "If one or more items could not be imported, one has the possibility to read the\n"
 "import process report in order to identify which problems occurred."
-msgstr ""
+msgstr "Si un ou plusieurs éléments n'ont pas pu être importés, il est possible de consulter le rapport d'importation afin de les identifier."
 
 #: import.txt:18
 msgid ""
 "In this report is shown one item per line, with the line in the input stream at\n"
 "which this item begins, together with the description of why the item could not\n"
 "be imported."
-msgstr ""
+msgstr "Ce rapport affiche un élément par ligne, contenant la ligne du flux d'entrée auquel il correspond, ainsi qu'une description de l'erreur empêchant l'importation de l'élément."

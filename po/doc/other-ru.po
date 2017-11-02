@@ -1,12 +1,13 @@
 # 
 # Translators:
+# Алексей Мехоношин <ruskidecko@gmail.com>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-02-22 10:27+0200\n"
-"PO-Revision-Date: 2013-07-23 08:35+0000\n"
-"Last-Translator: Lukas Fleischer <transifex@cryptocrack.de>\n"
+"PO-Revision-Date: 2017-09-19 18:32+0000\n"
+"Last-Translator: Алексей Мехоношин <ruskidecko@gmail.com>\n"
 "Language-Team: Russian (http://www.transifex.com/lfleischer/calcurse/language/ru/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,21 +20,21 @@ msgstr ""
 msgid ""
 "OtherCmd\n"
 "========"
-msgstr ""
+msgstr "Другие команды\n==============="
 
 #: other.txt:4
 msgid "Switch between status bar help pages."
-msgstr ""
+msgstr "Переключение между описанием команд в области статуса."
 
 #: other.txt:6
 msgid ""
 "Because the terminal screen is too narrow to display all of the available\n"
 "commands, this command can be used to see the next set of commands together\n"
 "with their key bindings."
-msgstr ""
+msgstr "Из-за того, что экран терминала не позволяет отобразить\nвсе доступные команды,\nиспользование этой клавиши позволит увидеть список следующих команд вместе\nс привязанными к ним гор.клавишами."
 
 #: other.txt:10
 msgid ""
 "Once the last status bar page is reached, running the command another time\n"
 "leads you back to the first page."
-msgstr ""
+msgstr "После того, как будет достигнута последняя страница с командами, нажмите\nклавишу ещё раз и вы перейдёте к первой странице."

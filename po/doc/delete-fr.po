@@ -1,12 +1,13 @@
 # 
 # Translators:
+# SubS0, 2017
 msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-02-22 10:27+0200\n"
-"PO-Revision-Date: 2013-07-24 06:53+0000\n"
-"Last-Translator: Lukas Fleischer <transifex@cryptocrack.de>\n"
+"PO-Revision-Date: 2017-09-19 18:32+0000\n"
+"Last-Translator: SubS0\n"
 "Language-Team: French (http://www.transifex.com/lfleischer/calcurse/language/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,28 +20,28 @@ msgstr ""
 msgid ""
 "Delete\n"
 "======"
-msgstr ""
+msgstr "Supprimer\n======"
 
 #: delete.txt:4
 msgid "Delete an element in the todo or appointment list."
-msgstr ""
+msgstr "Supprimer un élément de la liste des choses à faire ou des rendez-vous."
 
 #: delete.txt:6
 msgid ""
 "Depending on which panel is selected when you press the delete key, the\n"
 "highlighted item of either the todo or appointment list will be removed from\n"
 "this list."
-msgstr ""
+msgstr "Selon le panneau qui est sélectionné au moment où vous appuyez sur la touche supprimer,\nl'élément sélectionné de la liste des choses à faire ou des rendez-vous sera supprimé de la liste."
 
 #: delete.txt:10
 msgid ""
 "If the item to be deleted is recurrent, you will be asked if you wish to\n"
 "suppress all of the item occurrences or just the one you selected."
-msgstr ""
+msgstr "Si l'élément à supprimer est récurrent, il vous sera demandé si vous \nsouhaitez supprimer l'ensemble de ses occurences ou uniquement \ncelle que vous avez sélectionnée."
 
 #: delete.txt:13
 msgid ""
 "If the general option 'confirm_delete' is set to 'YES', then you will be asked\n"
 "for confirmation before deleting the selected event. Do not forget to save the\n"
 "calendar data to retrieve the modifications next time you launch calcurse."
-msgstr ""
+msgstr "Si l'option globale 'confirm_delete' est fixée à 'OUI', il vous sera demandé \nconfirmation avant la suppression de l'élément sélectionné. \nN'oubliez pas de sauvegarder le calendrier si vous souhaitez retrouver \nvos modifications au prochain lancement de calcurse."

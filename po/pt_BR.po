@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2016-04-02 08:45+0200\n"
+"POT-Creation-Date: 2017-11-02 08:41+0100\n"
 "PO-Revision-Date: 2016-04-02 06:45+0000\n"
 "Last-Translator: Lukas Fleischer <transifex@cryptocrack.de>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/lfleischer/"
@@ -300,13 +300,23 @@ msgstr "(formato da data a ser exibido no modo não interativo)"
 msgid "(Format to be used when entering a date: "
 msgstr "(formato a ser usado ao informar uma data: "
 
-msgid "Enter an option number to change its value"
-msgstr "Entre com o número de uma opção para alterar seu valor"
+#, fuzzy
+msgid "to the left"
+msgstr "Move para a esquerda."
 
-msgid "(Press '^P' or '^N' to move up or down, 'Q' to quit)"
+msgid "in the middle"
 msgstr ""
-"(Pressione \"^P\" ou \"^N\" para mover para cima ou para baixo, \"Q\" para "
-"sair)"
+
+#, fuzzy
+msgid "to the right"
+msgstr "Move para a direita."
+
+msgid "(position of the heading in the appointments panel)"
+msgstr ""
+
+#, fuzzy
+msgid "(Format of the date displayed in the appointments panel)"
+msgstr "(formato da data a ser exibido no modo não interativo)"
 
 msgid "Enter the date format (see 'man 3 strftime' for possible formats) "
 msgstr ""
@@ -335,11 +345,8 @@ msgstr "Configuração das Teclas"
 msgid "Press the key you want to assign to:"
 msgstr "Pressione a tecla que você quer designar para:"
 
-msgid "This key is not yet recognized by calcurse, please choose another one."
-msgstr "Essa tecla não é reconhecida ainda pelo calcurse, favor escolha outra."
-
-#, c-format
-msgid "This key is already in use for %s, please choose another one."
+#, fuzzy, c-format
+msgid "The key '%s' is already used for %s. Choose another one."
 msgstr "Essa tecla está sendo usada por %s, favor escolha outra."
 
 msgid "Some actions do not have any associated key bindings!"
@@ -441,10 +448,12 @@ msgstr "tipo de ical desconhecido"
 msgid "recurrence rule malformed."
 msgstr "regra de recorrência mal-formulada."
 
-msgid "recurrence frequence not found."
+#, fuzzy
+msgid "recurrence frequency not found."
 msgstr "frequência de recorrência não encontrada."
 
-msgid "recurrence frequence not recognized."
+#, fuzzy
+msgid "recurrence frequency not recognized."
 msgstr "frequência de recorrência não reconhecida."
 
 msgid "recurrence exception dates malformed."
@@ -535,6 +544,21 @@ msgstr "Falha no fechamento de \"%s\" - %s\n"
 msgid "%s does not exist"
 msgstr ""
 
+msgid "Data files were changed since reading:"
+msgstr ""
+
+msgid "(o)verwrite"
+msgstr ""
+
+msgid "(m)erge"
+msgstr "(m)esclar"
+
+msgid "(k)eep and cancel"
+msgstr "manter e (c)cancelar"
+
+msgid "[omk]"
+msgstr ""
+
 msgid "Problems accessing data file ..."
 msgstr "Problemas no acesso do arquivo de dados..."
 
@@ -576,12 +600,6 @@ msgstr "Há modificações não salvas:"
 
 msgid "(d)iscard"
 msgstr "(d)escartar"
-
-msgid "(m)erge"
-msgstr "(m)esclar"
-
-msgid "(k)eep and cancel"
-msgstr "manter e (c)cancelar"
 
 msgid "[dmk]"
 msgstr "[dmc]"
@@ -859,53 +877,11 @@ msgid ""
 "#\n"
 "# Calcurse keys configuration file\n"
 "#\n"
-"# This file sets the keybindings used by Calcurse.\n"
-"# Lines beginning with \"#\" are comments, and ignored by Calcurse.\n"
-"# To assign a keybinding to an action, this file must contain a line\n"
-"# with the following syntax:\n"
-"#\n"
-"#        ACTION  KEY1  KEY2  ...  KEYn\n"
-"#\n"
-"# Where ACTION is what will be performed when KEY1, KEY2, ..., or KEYn\n"
-"# will be pressed.\n"
-"#\n"
-"# To define bindings which use the CONTROL key, prefix the key with 'C-'.\n"
-"# The escape, space bar and horizontal Tab key can be specified using\n"
-"# the 'ESC', 'SPC' and 'TAB' keyword, respectively.\n"
-"# Arrow keys can also be specified with the UP, DWN, LFT, RGT keywords.\n"
-"# Last, Home and End keys can be assigned using 'KEY_HOME' and 'KEY_END'\n"
-"# keywords.\n"
-"#\n"
-"# A description of what each ACTION keyword is used for is available\n"
-"# from calcurse online configuration menu.\n"
+"# In this file the keybindings used by Calcurse are defined.\n"
+"# It is generated automatically by Calcurse and is maintained\n"
+"# via the key configuration menu of the interactive user\n"
+"# interface. It should not be edited directly.\n"
 msgstr ""
-"#\n"
-"# Calcurse - arquivo de configuração de teclas\n"
-"#\n"
-"# Este arquivo define as teclas de atalhos (keybindings) usadas pelo "
-"Calcurse.\n"
-"# Linhas iniciadas com \"#\" são comentários, e são ignoradas pelo "
-"Calcurse.\n"
-"# Para designar uma tecla de atalho para uma ação, o arquivo deve conter "
-"uma\n"
-"# linha com a seguinte sintaxe:\n"
-"#\n"
-"#        AÇÃO  TECLA1  TECLA2  ...  TECLAn\n"
-"#\n"
-"# Onde AÇÃO é o que será executado quando TECLA1, TECLA2, ..., ou TECLAn\n"
-"# for pressionada.\n"
-"#\n"
-"# Para definir atalhos que usem a tecla CONTROL, insira antes 'C-' na "
-"tecla.\n"
-"# Para as teclas ESC, barra de espaço e Tab horizontal, podem ser# "
-"especificadas as palavras-chave 'ESC', 'SPC' e 'TAB', respectivamente.\n"
-"# Teclas de setas podem também ser especificadas com as palavras-chave UP, "
-"DWN,# LFT e RGT.# Por último, teclas Home e End podem ser designadas usando "
-"as palavras-chave\n"
-"# 'KEY_HOME' e 'KEY_END'.#\n"
-"# Uma descrição do como cada palavra-chave de AÇÃO é está disponível no "
-"menu\n"
-"# de configuração online do calcurse.\n"
 
 msgid "FATAL ERROR: could not create default keys file."
 msgstr "ERRO FATAL: não foi possível criar arquivo de teclas padrões."
@@ -1297,7 +1273,8 @@ msgstr ""
 msgid "Enter the day to go to [ENTER for today] : %s"
 msgstr "Insira o dia para ir para [ENTER para hoje] : %s"
 
-msgid "Enter start time ([hh:mm] or [hhmm]):"
+#, fuzzy
+msgid "Enter start time ([hh:mm] or [hhmm]) or date:"
 msgstr "Insira o horário início ([hh:mm] ou [hhmm]):"
 
 msgid "Press [Enter] to continue"
@@ -1340,8 +1317,9 @@ msgstr "(atualmente usando %s)"
 msgid "[dwmy]"
 msgstr "[dsma]"
 
-msgid "The frequence you entered is not valid."
-msgstr "A frequência informada não é válida."
+#, fuzzy
+msgid "Invalid frequency."
+msgstr "Atraso inválido"
 
 msgid "The entered date is not valid."
 msgstr "A data informada não é válida."
@@ -1350,7 +1328,8 @@ msgstr "A data informada não é válida."
 msgid "Possible formats are [%s] or '0' for an endless repetition."
 msgstr "Formatos possíveis são [%s] ou \"0\" para repetição sem fim."
 
-msgid "Enter the new repetition frequence:"
+#, fuzzy
+msgid "Enter the new repetition frequency:"
 msgstr "Entre com uma nova frequência de repetição:"
 
 #, c-format
@@ -1418,7 +1397,8 @@ msgstr "[in]"
 msgid "Enter the repetition type:"
 msgstr "Insira o tipo da repetição:"
 
-msgid "Enter the repetition frequence:"
+#, fuzzy
+msgid "Enter the repetition frequency:"
 msgstr "Insira a frequência de repetição:"
 
 #, c-format
@@ -1500,63 +1480,6 @@ msgstr "Erro em fechar arquivo em %s"
 msgid "No note file found\n"
 msgstr "Nenhuma nota encontrada\n"
 
-msgid "January"
-msgstr "Janeiro"
-
-msgid "February"
-msgstr "Fevereiro"
-
-msgid "March"
-msgstr "Março"
-
-msgid "April"
-msgstr "Abril"
-
-msgid "May"
-msgstr "Maio"
-
-msgid "June"
-msgstr "Junho"
-
-msgid "July"
-msgstr "Julho"
-
-msgid "August"
-msgstr "Agosto"
-
-msgid "September"
-msgstr "Setembro"
-
-msgid "October"
-msgstr "Outubro"
-
-msgid "November"
-msgstr "Novembro"
-
-msgid "December"
-msgstr "Dezembro"
-
-msgid "Sun"
-msgstr "Dom"
-
-msgid "Mon"
-msgstr "Seg"
-
-msgid "Tue"
-msgstr "Ter"
-
-msgid "Wed"
-msgstr "Qua"
-
-msgid "Thu"
-msgstr "Qui"
-
-msgid "Fri"
-msgstr "Sex"
-
-msgid "Sat"
-msgstr "Sab"
-
 msgid "mm/dd/yyyy"
 msgstr "mm/dd/yyyy"
 
@@ -1627,3 +1550,129 @@ msgstr "Atualizar diretivas de configuração..."
 
 msgid "Remove temporary backup..."
 msgstr "Excluir backup temporário..."
+
+#~ msgid "Enter an option number to change its value"
+#~ msgstr "Entre com o número de uma opção para alterar seu valor"
+
+#~ msgid "(Press '^P' or '^N' to move up or down, 'Q' to quit)"
+#~ msgstr ""
+#~ "(Pressione \"^P\" ou \"^N\" para mover para cima ou para baixo, \"Q\" "
+#~ "para sair)"
+
+#~ msgid ""
+#~ "This key is not yet recognized by calcurse, please choose another one."
+#~ msgstr ""
+#~ "Essa tecla não é reconhecida ainda pelo calcurse, favor escolha outra."
+
+#~ msgid ""
+#~ "#\n"
+#~ "# Calcurse keys configuration file\n"
+#~ "#\n"
+#~ "# This file sets the keybindings used by Calcurse.\n"
+#~ "# Lines beginning with \"#\" are comments, and ignored by Calcurse.\n"
+#~ "# To assign a keybinding to an action, this file must contain a line\n"
+#~ "# with the following syntax:\n"
+#~ "#\n"
+#~ "#        ACTION  KEY1  KEY2  ...  KEYn\n"
+#~ "#\n"
+#~ "# Where ACTION is what will be performed when KEY1, KEY2, ..., or KEYn\n"
+#~ "# will be pressed.\n"
+#~ "#\n"
+#~ "# To define bindings which use the CONTROL key, prefix the key with "
+#~ "'C-'.\n"
+#~ "# The escape, space bar and horizontal Tab key can be specified using\n"
+#~ "# the 'ESC', 'SPC' and 'TAB' keyword, respectively.\n"
+#~ "# Arrow keys can also be specified with the UP, DWN, LFT, RGT keywords.\n"
+#~ "# Last, Home and End keys can be assigned using 'KEY_HOME' and 'KEY_END'\n"
+#~ "# keywords.\n"
+#~ "#\n"
+#~ "# A description of what each ACTION keyword is used for is available\n"
+#~ "# from calcurse online configuration menu.\n"
+#~ msgstr ""
+#~ "#\n"
+#~ "# Calcurse - arquivo de configuração de teclas\n"
+#~ "#\n"
+#~ "# Este arquivo define as teclas de atalhos (keybindings) usadas pelo "
+#~ "Calcurse.\n"
+#~ "# Linhas iniciadas com \"#\" são comentários, e são ignoradas pelo "
+#~ "Calcurse.\n"
+#~ "# Para designar uma tecla de atalho para uma ação, o arquivo deve conter "
+#~ "uma\n"
+#~ "# linha com a seguinte sintaxe:\n"
+#~ "#\n"
+#~ "#        AÇÃO  TECLA1  TECLA2  ...  TECLAn\n"
+#~ "#\n"
+#~ "# Onde AÇÃO é o que será executado quando TECLA1, TECLA2, ..., ou TECLAn\n"
+#~ "# for pressionada.\n"
+#~ "#\n"
+#~ "# Para definir atalhos que usem a tecla CONTROL, insira antes 'C-' na "
+#~ "tecla.\n"
+#~ "# Para as teclas ESC, barra de espaço e Tab horizontal, podem ser# "
+#~ "especificadas as palavras-chave 'ESC', 'SPC' e 'TAB', respectivamente.\n"
+#~ "# Teclas de setas podem também ser especificadas com as palavras-chave "
+#~ "UP, DWN,# LFT e RGT.# Por último, teclas Home e End podem ser designadas "
+#~ "usando as palavras-chave\n"
+#~ "# 'KEY_HOME' e 'KEY_END'.#\n"
+#~ "# Uma descrição do como cada palavra-chave de AÇÃO é está disponível no "
+#~ "menu\n"
+#~ "# de configuração online do calcurse.\n"
+
+#~ msgid "The frequence you entered is not valid."
+#~ msgstr "A frequência informada não é válida."
+
+#~ msgid "January"
+#~ msgstr "Janeiro"
+
+#~ msgid "February"
+#~ msgstr "Fevereiro"
+
+#~ msgid "March"
+#~ msgstr "Março"
+
+#~ msgid "April"
+#~ msgstr "Abril"
+
+#~ msgid "May"
+#~ msgstr "Maio"
+
+#~ msgid "June"
+#~ msgstr "Junho"
+
+#~ msgid "July"
+#~ msgstr "Julho"
+
+#~ msgid "August"
+#~ msgstr "Agosto"
+
+#~ msgid "September"
+#~ msgstr "Setembro"
+
+#~ msgid "October"
+#~ msgstr "Outubro"
+
+#~ msgid "November"
+#~ msgstr "Novembro"
+
+#~ msgid "December"
+#~ msgstr "Dezembro"
+
+#~ msgid "Sun"
+#~ msgstr "Dom"
+
+#~ msgid "Mon"
+#~ msgstr "Seg"
+
+#~ msgid "Tue"
+#~ msgstr "Ter"
+
+#~ msgid "Wed"
+#~ msgstr "Qua"
+
+#~ msgid "Thu"
+#~ msgstr "Qui"
+
+#~ msgid "Fri"
+#~ msgstr "Sex"
+
+#~ msgid "Sat"
+#~ msgstr "Sab"

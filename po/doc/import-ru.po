@@ -1,12 +1,13 @@
 # 
 # Translators:
+# Алексей Мехоношин <ruskidecko@gmail.com>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-02-22 10:27+0200\n"
-"PO-Revision-Date: 2013-07-24 06:53+0000\n"
-"Last-Translator: Lukas Fleischer <transifex@cryptocrack.de>\n"
+"PO-Revision-Date: 2017-09-19 18:32+0000\n"
+"Last-Translator: Алексей Мехоношин <ruskidecko@gmail.com>\n"
 "Language-Team: Russian (http://www.transifex.com/lfleischer/calcurse/language/ru/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,18 +20,18 @@ msgstr ""
 msgid ""
 "Import\n"
 "======"
-msgstr ""
+msgstr "Импорт\n======="
 
 #: import.txt:4
 msgid "Import data from an iCal file."
-msgstr ""
+msgstr "Импорт данных из iCal-файла. "
 
 #: import.txt:6
 msgid ""
 "You will be asked to enter the file name from which to load iCal items. At the\n"
 "end of the import process, and if the general option 'system_dialogs' is set to\n"
 "'yes', a report indicating how many items were imported is shown."
-msgstr ""
+msgstr "Вам будет предложено ввести имя файла, из которого необходимо загрузить записи формата iCal.\nВ конце процесса импорта, если в общих настройках в значение переменой\n'system_dialogs' установлено 'yes', будет выведен отчёт о количестве импортированных\nзаписей."
 
 #: import.txt:10
 msgid ""
@@ -38,17 +39,17 @@ msgid ""
 "appointments, events and todo items which were successfully imported, together\n"
 "with the number of items for which problems occurred and that were skipped, if\n"
 "any."
-msgstr ""
+msgstr "Этот отчёт содержит общее количество прочитанных строк. количество\nзадач, событий и дел, которые были успешно импортированы,\nа так же количество записей, при импорте которых возникли проблемы,\nи которые были пропущены.\nЕсли таковые имеются."
 
 #: import.txt:15
 msgid ""
 "If one or more items could not be imported, one has the possibility to read the\n"
 "import process report in order to identify which problems occurred."
-msgstr ""
+msgstr "Если одна или более записей не может быть импортирована, \nможно будет просмотреть процесс импорта чтобы понять, где возникла проблема."
 
 #: import.txt:18
 msgid ""
 "In this report is shown one item per line, with the line in the input stream at\n"
 "which this item begins, together with the description of why the item could not\n"
 "be imported."
-msgstr ""
+msgstr "В одной строке отчёта показана информация по одной записи, с номером\nстроки входного потока, с которого начинается эта запись. Так же\nв строке будет описание, почему запись не может быть импортирована."

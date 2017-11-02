@@ -1,12 +1,13 @@
 # 
 # Translators:
+# SubS0, 2017
 msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-02-22 10:27+0200\n"
-"PO-Revision-Date: 2013-07-23 08:35+0000\n"
-"Last-Translator: Lukas Fleischer <transifex@cryptocrack.de>\n"
+"PO-Revision-Date: 2017-09-19 18:32+0000\n"
+"Last-Translator: SubS0\n"
 "Language-Team: French (http://www.transifex.com/lfleischer/calcurse/language/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,18 +20,18 @@ msgstr ""
 msgid ""
 "Pipe\n"
 "===="
-msgstr ""
+msgstr "Pipe\n===="
 
 #: pipe.txt:4
 msgid "Pipe the selected item to an external program."
-msgstr ""
+msgstr "Envoyer l'élément sélectionné à un programme externe."
 
 #: pipe.txt:6
 msgid ""
 "Press the '|' key to pipe the currently selected appointment or todo entry to\n"
 "an external program."
-msgstr ""
+msgstr "Appuyez sur la touche '|' pour envoyer le rendez-vous ou la tâche actuellement\nséléctionné à un programme extérieur."
 
 #: pipe.txt:9
 msgid "You will be driven back to calcurse as soon as the program exits."
-msgstr ""
+msgstr "Vous reviendrez à calcurse dès que le programme se termine."

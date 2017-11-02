@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse 1.4\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2016-04-02 08:45+0200\n"
+"POT-Creation-Date: 2017-11-02 08:41+0100\n"
 "PO-Revision-Date: 2006-07-03 00:05+0100\n"
 "Last-Translator: Neil Williams <linux@codehelp.co.uk>\n"
 "Language-Team: English/GB <en_GB@li.org>\n"
@@ -311,11 +311,19 @@ msgstr ""
 msgid "(Format to be used when entering a date: "
 msgstr ""
 
-#, fuzzy
-msgid "Enter an option number to change its value"
-msgstr "Enter an option number to change its value [Q to quit] "
+msgid "to the left"
+msgstr ""
 
-msgid "(Press '^P' or '^N' to move up or down, 'Q' to quit)"
+msgid "in the middle"
+msgstr ""
+
+msgid "to the right"
+msgstr ""
+
+msgid "(position of the heading in the appointments panel)"
+msgstr ""
+
+msgid "(Format of the date displayed in the appointments panel)"
 msgstr ""
 
 msgid "Enter the date format (see 'man 3 strftime' for possible formats) "
@@ -345,11 +353,8 @@ msgstr "CalCurse %s | general options"
 msgid "Press the key you want to assign to:"
 msgstr ""
 
-msgid "This key is not yet recognized by calcurse, please choose another one."
-msgstr ""
-
 #, c-format
-msgid "This key is already in use for %s, please choose another one."
+msgid "The key '%s' is already used for %s. Choose another one."
 msgstr ""
 
 msgid "Some actions do not have any associated key bindings!"
@@ -457,10 +462,10 @@ msgstr "FATAL ERROR in todo_delete_bynum: no such todo\n"
 msgid "recurrence rule malformed."
 msgstr ""
 
-msgid "recurrence frequence not found."
+msgid "recurrence frequency not found."
 msgstr ""
 
-msgid "recurrence frequence not recognized."
+msgid "recurrence frequency not recognized."
 msgstr ""
 
 msgid "recurrence exception dates malformed."
@@ -553,6 +558,21 @@ msgstr ""
 msgid "%s does not exist"
 msgstr ""
 
+msgid "Data files were changed since reading:"
+msgstr ""
+
+msgid "(o)verwrite"
+msgstr ""
+
+msgid "(m)erge"
+msgstr ""
+
+msgid "(k)eep and cancel"
+msgstr ""
+
+msgid "[omk]"
+msgstr ""
+
 msgid "Problems accessing data file ..."
 msgstr "Problems accessing data file ..."
 
@@ -602,12 +622,6 @@ msgid "There are unsaved modifications:"
 msgstr ""
 
 msgid "(d)iscard"
-msgstr ""
-
-msgid "(m)erge"
-msgstr ""
-
-msgid "(k)eep and cancel"
 msgstr ""
 
 msgid "[dmk]"
@@ -892,25 +906,10 @@ msgid ""
 "#\n"
 "# Calcurse keys configuration file\n"
 "#\n"
-"# This file sets the keybindings used by Calcurse.\n"
-"# Lines beginning with \"#\" are comments, and ignored by Calcurse.\n"
-"# To assign a keybinding to an action, this file must contain a line\n"
-"# with the following syntax:\n"
-"#\n"
-"#        ACTION  KEY1  KEY2  ...  KEYn\n"
-"#\n"
-"# Where ACTION is what will be performed when KEY1, KEY2, ..., or KEYn\n"
-"# will be pressed.\n"
-"#\n"
-"# To define bindings which use the CONTROL key, prefix the key with 'C-'.\n"
-"# The escape, space bar and horizontal Tab key can be specified using\n"
-"# the 'ESC', 'SPC' and 'TAB' keyword, respectively.\n"
-"# Arrow keys can also be specified with the UP, DWN, LFT, RGT keywords.\n"
-"# Last, Home and End keys can be assigned using 'KEY_HOME' and 'KEY_END'\n"
-"# keywords.\n"
-"#\n"
-"# A description of what each ACTION keyword is used for is available\n"
-"# from calcurse online configuration menu.\n"
+"# In this file the keybindings used by Calcurse are defined.\n"
+"# It is generated automatically by Calcurse and is maintained\n"
+"# via the key configuration menu of the interactive user\n"
+"# interface. It should not be edited directly.\n"
 msgstr ""
 
 #, fuzzy
@@ -1283,7 +1282,7 @@ msgid "Enter the day to go to [ENTER for today] : %s"
 msgstr "Enter the day to go to [ENTER for today] : dd/mm/yyyy"
 
 #, fuzzy
-msgid "Enter start time ([hh:mm] or [hhmm]):"
+msgid "Enter start time ([hh:mm] or [hhmm]) or date:"
 msgstr "Enter end time ([hh:mm] or [h:mm]) or duration (in minutes) : "
 
 msgid "Press [Enter] to continue"
@@ -1327,9 +1326,8 @@ msgstr ""
 msgid "[dwmy]"
 msgstr ""
 
-#, fuzzy
-msgid "The frequence you entered is not valid."
-msgstr "The day you entered is not valid"
+msgid "Invalid frequency."
+msgstr ""
 
 #, fuzzy
 msgid "The entered date is not valid."
@@ -1339,8 +1337,9 @@ msgstr "The day you entered is not valid"
 msgid "Possible formats are [%s] or '0' for an endless repetition."
 msgstr "Possible argument formats are : 'mm/dd/yyyy' or 'n'\n"
 
-msgid "Enter the new repetition frequence:"
-msgstr ""
+#, fuzzy
+msgid "Enter the new repetition frequency:"
+msgstr "Enter description :"
 
 #, fuzzy, c-format
 msgid "Enter end date ([%s]), duration ([+xxwxxd]) or '0':"
@@ -1408,8 +1407,9 @@ msgstr ""
 msgid "Enter the repetition type:"
 msgstr "Enter description :"
 
-msgid "Enter the repetition frequence:"
-msgstr ""
+#, fuzzy
+msgid "Enter the repetition frequency:"
+msgstr "Enter description :"
 
 #, fuzzy, c-format
 msgid ""
@@ -1491,63 +1491,6 @@ msgstr ""
 msgid "No note file found\n"
 msgstr ""
 
-msgid "January"
-msgstr "January"
-
-msgid "February"
-msgstr "February"
-
-msgid "March"
-msgstr "March"
-
-msgid "April"
-msgstr "April"
-
-msgid "May"
-msgstr "May"
-
-msgid "June"
-msgstr "June"
-
-msgid "July"
-msgstr "July"
-
-msgid "August"
-msgstr "August"
-
-msgid "September"
-msgstr "September"
-
-msgid "October"
-msgstr "October"
-
-msgid "November"
-msgstr "November"
-
-msgid "December"
-msgstr "December"
-
-msgid "Sun"
-msgstr "Sun"
-
-msgid "Mon"
-msgstr "Mon"
-
-msgid "Tue"
-msgstr "Tue"
-
-msgid "Wed"
-msgstr "Wed"
-
-msgid "Thu"
-msgstr "Thu"
-
-msgid "Fri"
-msgstr "Fri"
-
-msgid "Sat"
-msgstr "Sat"
-
 msgid "mm/dd/yyyy"
 msgstr ""
 
@@ -1618,6 +1561,71 @@ msgstr ""
 
 msgid "Remove temporary backup..."
 msgstr ""
+
+#, fuzzy
+#~ msgid "Enter an option number to change its value"
+#~ msgstr "Enter an option number to change its value [Q to quit] "
+
+#, fuzzy
+#~ msgid "The frequence you entered is not valid."
+#~ msgstr "The day you entered is not valid"
+
+#~ msgid "January"
+#~ msgstr "January"
+
+#~ msgid "February"
+#~ msgstr "February"
+
+#~ msgid "March"
+#~ msgstr "March"
+
+#~ msgid "April"
+#~ msgstr "April"
+
+#~ msgid "May"
+#~ msgstr "May"
+
+#~ msgid "June"
+#~ msgstr "June"
+
+#~ msgid "July"
+#~ msgstr "July"
+
+#~ msgid "August"
+#~ msgstr "August"
+
+#~ msgid "September"
+#~ msgstr "September"
+
+#~ msgid "October"
+#~ msgstr "October"
+
+#~ msgid "November"
+#~ msgstr "November"
+
+#~ msgid "December"
+#~ msgstr "December"
+
+#~ msgid "Sun"
+#~ msgstr "Sun"
+
+#~ msgid "Mon"
+#~ msgstr "Mon"
+
+#~ msgid "Tue"
+#~ msgstr "Tue"
+
+#~ msgid "Wed"
+#~ msgstr "Wed"
+
+#~ msgid "Thu"
+#~ msgstr "Thu"
+
+#~ msgid "Fri"
+#~ msgstr "Fri"
+
+#~ msgid "Sat"
+#~ msgstr "Sat"
 
 #, fuzzy
 #~ msgid ""

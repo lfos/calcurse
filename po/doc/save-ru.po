@@ -1,12 +1,13 @@
 # 
 # Translators:
+# Алексей Мехоношин <ruskidecko@gmail.com>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-02-22 10:27+0200\n"
-"PO-Revision-Date: 2013-07-24 06:54+0000\n"
-"Last-Translator: Lukas Fleischer <transifex@cryptocrack.de>\n"
+"PO-Revision-Date: 2017-09-19 18:32+0000\n"
+"Last-Translator: Алексей Мехоношин <ruskidecko@gmail.com>\n"
 "Language-Team: Russian (http://www.transifex.com/lfleischer/calcurse/language/ru/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,15 +20,15 @@ msgstr ""
 msgid ""
 "Save\n"
 "===="
-msgstr ""
+msgstr "Сохранение\n==========="
 
 #: save.txt:4
 msgid "Save calcurse data."
-msgstr ""
+msgstr "Сохранение данных calcurse."
 
 #: save.txt:6
 msgid "Data are split into four different files which contain :"
-msgstr ""
+msgstr "Данные будут размещены в четырёх разных файлах, в зависимости от контекста:"
 
 #: save.txt:8
 msgid ""
@@ -36,10 +37,10 @@ msgid ""
 "        |  ~/.calcurse/apts -> data related to the appointments\n"
 "        |  ~/.calcurse/todo -> data related to the todo list\n"
 "         \\ ~/.calcurse/keys -> user-defined key bindings"
-msgstr ""
+msgstr "         / ~/.calcurse/conf -> пользовательские настройки\n        |                      (панели, цвета, общие настройки)\n        |  ~/.calcurse/apts -> данные, относящиеся к задачам\n        |  ~/.calcurse/todo -> данные, относящиеся к списку дел\n         \\ ~/.calcurse/keys -> заданные пользователем гор.клавиши"
 
 #: save.txt:14
 msgid ""
 "In the config menu, you can choose to save the calcurse data automatically\n"
 "before quitting."
-msgstr ""
+msgstr "В меню настроек вы можете выбрать автоматическое сохранение\nданных calcurse перед выходом."
