@@ -1255,7 +1255,7 @@ void wins_set_bindings(int *, int);
 void wins_update_bindings(void);
 void wins_status_bar(void);
 void wins_erase_status_bar(void);
-void wins_other_status_page(int);
+void wins_other_status_page();
 void wins_reset_status_page(void);
 
 #endif /* CALCURSE_H */

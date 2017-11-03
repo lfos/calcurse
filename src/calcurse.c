@@ -77,7 +77,7 @@ static inline void key_generic_change_view(void)
 
 static inline void key_generic_other_cmd(void)
 {
-	wins_other_status_page(wins_slctd());
+	wins_other_status_page();
 	wins_update(FLAG_STA);
 }
 
