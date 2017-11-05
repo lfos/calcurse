@@ -778,6 +778,16 @@ int check_date(unsigned year, unsigned month, unsigned day)
 }
 
 /*
+ * Check that a time in seconds is a valid calcurse date (ignoring hour:min:sec).
+ */
+int check_sec(time_t *time)
+{
+	struct tm tm;
+	localtime_r(time, &tm);
+	return check_date(tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday);
+}
+
+/*
  * Convert a string containing a date into three integers containing the year,
  * month and day.
  *
@@ -1858,4 +1868,30 @@ int hash_matches(const char *pattern, const char *hash)
 int show_dialogs(void)
 {
 	return (!quiet) && conf.system_dialogs;
+}
+
+/*
+ * Overflow check for addition with positive second term.
+ */
+int overflow_add(int x, int y, int *z)
+{
+	if (y < 0)
+		return 1;
+	if (INT_MAX - y < x)
+		return 1;
+	*z = x + y;
+	return 0;
+}
+
+/*
+ * Overflow check for multiplication with positive terms.
+ */
+int overflow_mul(int x, int y, int *z)
+{
+	if (x < 0 || y <= 0)
+		return 1;
+	if (INT_MAX / y < x)
+		return 1;
+	*z = x * y;
+	return 0;
 }
