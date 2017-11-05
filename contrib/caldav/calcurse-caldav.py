@@ -202,25 +202,53 @@ def remote_query(conn, cmd, path, additional_headers, body):
 def get_etags(conn, hrefs=[]):
     if len(hrefs) > 0:
         headers = {}
-        body = ('<?xml version="1.0" encoding="utf-8" ?>'
+        body_etags = ('<?xml version="1.0" encoding="utf-8" ?>'
                 '<C:calendar-multiget xmlns:D="DAV:" '
                 '                     xmlns:C="urn:ietf:params:xml:ns:caldav">'
                 '<D:prop><D:getetag /></D:prop>')
         for href in hrefs:
-            body += '<D:href>{}</D:href>'.format(href)
-        body += '</C:calendar-multiget>'
+            body_etags += '<D:href>{}</D:href>'.format(href)
+        body_etags += '</C:calendar-multiget>'
+        headers_etags, body_etags = remote_query(conn, "REPORT", absolute_uri, headers, body_etags)
+        if not headers_etags:
+            return {}
+        root = etree.fromstring(body_etags)
+
     else:
         headers = {'Depth': '1'}
-        body = ('<?xml version="1.0" encoding="utf-8" ?>'
+        body_events = ('<?xml version="1.0" encoding="utf-8" ?>'
                 '<C:calendar-query xmlns:D="DAV:" '
                 '                  xmlns:C="urn:ietf:params:xml:ns:caldav">'
-                '<D:prop><D:getetag /></D:prop>'
-                '<C:filter><C:comp-filter name="VCALENDAR" /></C:filter>'
+                '<D:prop>'
+                '  <D:getetag />'
+                '</D:prop>'
+                '<C:filter>'
+                '  <C:comp-filter name="VCALENDAR">'
+                '    <C:comp-filter name="VEVENT" />'
+                '  </C:comp-filter>'
+                '</C:filter>'
                 '</C:calendar-query>')
-    headers, body = remote_query(conn, "REPORT", absolute_uri, headers, body)
-    if not headers:
-        return {}
-    root = etree.fromstring(body)
+
+        body_todos = ('<?xml version="1.0" encoding="utf-8" ?>'
+                '<C:calendar-query xmlns:D="DAV:" '
+                '                  xmlns:C="urn:ietf:params:xml:ns:caldav">'
+                '<D:prop>'
+                '  <D:getetag />'
+                '</D:prop>'
+                '<C:filter>'
+                '  <C:comp-filter name="VCALENDAR">'
+                '    <C:comp-filter name="VTODO" />'
+                '  </C:comp-filter>'
+                '</C:filter>'
+                '</C:calendar-query>')
+
+        headers_events, body_events = remote_query(conn, "REPORT", absolute_uri, headers, body_events)
+        headers_todos, body_todos = remote_query(conn, "REPORT", absolute_uri, headers, body_todos)
+        if not headers_events and not headers_todos:
+            return {}
+
+        root = etree.fromstring(body_events)
+        root.append(etree.fromstring(body_todos))
 
     etagdict = {}
     for node in root.findall(".//D:response", namespaces=nsmap):
@@ -661,9 +689,6 @@ try:
 
     new = objhashes - set(objhashes_syncdb_expanded)
     gone = set(objhashes_syncdb_expanded) - objhashes
-
-    new = objhashes - set([entry[1] for entry in syncdb.values()])
-    gone = set([entry[1] for entry in syncdb.values()]) - objhashes
 
     # Retrieve new objects from the server.
     local_new = pull_objects(missing, modified, conn, syncdb, etagdict)
