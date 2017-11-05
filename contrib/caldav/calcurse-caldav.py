@@ -415,7 +415,12 @@ def pull_objects(hrefs_missing, hrefs_modified, conn, syncdb, etagdict):
                 continue
 
         objhash = calcurse_import(cdata)
-        syncdb_add(syncdb, href, etag, objhash)
+
+        # if multiple hashes are returned, save them as a semicolon separated list
+        combined_hash = objhash.replace("\n", ";")
+        if debug:
+            print("Adding HREF({}) ETAG({}) HASH({})".format(href, etag, combined_hash))
+        syncdb_add(syncdb, href, etag, combined_hash)
         added += 1
 
     return added
@@ -645,6 +650,18 @@ try:
     orphan = set(syncdb.keys()) - set(etagdict.keys())
 
     objhashes = calcurse_hashset()
+    objhashes_syncdb = set([entry[1] for entry in syncdb.values()])
+
+    # Some hashes are a csv list, expand those
+    objhashes_syncdb_expanded = []
+    for entry in objhashes_syncdb:
+        expandedEntry = entry.split(";")
+        for singleHash in expandedEntry:
+            objhashes_syncdb_expanded.append(singleHash)
+
+    new = objhashes - set(objhashes_syncdb_expanded)
+    gone = set(objhashes_syncdb_expanded) - objhashes
+
     new = objhashes - set([entry[1] for entry in syncdb.values()])
     gone = set([entry[1] for entry in syncdb.values()]) - objhashes
 
