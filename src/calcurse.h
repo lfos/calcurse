@@ -1159,6 +1159,7 @@ char *new_tempfile(const char *);
 int check_date(unsigned, unsigned, unsigned);
 int parse_date(const char *, enum datefmt, int *, int *, int *, struct date *);
 int parse_date_interactive(const char *, int *, int *, int *);
+int check_sec(time_t *);
 int check_time(unsigned, unsigned);
 int parse_time(const char *, unsigned *, unsigned *);
 int parse_duration(const char *, unsigned *);
@@ -1181,6 +1182,8 @@ int starts_with(const char *, const char *);
 int starts_with_ci(const char *, const char *);
 int hash_matches(const char *, const char *);
 int show_dialogs(void);
+int overflow_add(int, int, int *);
+int overflow_mul(int, int, int *);
 
 /* vars.c */
 extern int col, row;
