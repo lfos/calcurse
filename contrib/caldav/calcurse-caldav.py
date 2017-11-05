@@ -92,9 +92,9 @@ def calcurse_version():
 
 
 def get_auth_headers():
-    if not username or not password:
+    if not auth_data[account][2] or not auth_data[account][3]:
         return {}
-    user_password = ('{}:{}'.format(username, password)).encode('ascii')
+    user_password = ('{}:{}'.format(auth_data[account][2], auth_data[account][3])).encode('ascii')
     user_password = base64.b64encode(user_password).decode('ascii')
     headers = {'Authorization': 'Basic {}'.format(user_password)}
     return headers
@@ -151,10 +151,10 @@ def run_auth(authcode):
                 credentials.refresh(httplib2.Http())
             except HttpAccessTokenRefreshError:
                 # Initialize OAuth2 again if refresh token becomes invalid
-                credentials = init_auth(client_id, client_secret, scope, redirect_uri, authcode)
+                credentials = init_auth(oauth_data[account][0], oauth_data[account][1], oauth_data[account][2],oauth_data[account][3], authcode)
     else:
         # Initialize OAuth2 credentials
-        credentials = init_auth(client_id, client_secret, scope, redirect_uri, authcode)
+        credentials = init_auth(oauth_data[account][0], oauth_data[account][1], oauth_data[account][2],oauth_data[account][3], authcode)
 
     return credentials
 
@@ -169,7 +169,7 @@ def remote_query(conn, cmd, path, additional_headers, body):
     headers.update(additional_headers)
 
     if debug:
-        print("> {} {}".format(cmd, path))
+        print("> {} {}".format(cmd, account_data[account][1]))
         print("> Headers: " + repr(headers))
         if body:
             for line in body.splitlines():
@@ -179,7 +179,7 @@ def remote_query(conn, cmd, path, additional_headers, body):
     if isinstance(body, str):
         body = body.encode('utf-8')
 
-    resp, body = conn.request(path, cmd, body=body, headers=headers)
+    resp, body = conn.request(account_data[account][3], cmd, body=body, headers=headers)
     body = body.decode('utf-8')
 
     if not resp:
@@ -193,8 +193,8 @@ def remote_query(conn, cmd, path, additional_headers, body):
 
     if resp.status - (resp.status % 100) != 200:
         die(("The server at {} replied with HTTP status code {} ({}) " +
-             "while trying to access {}.").format(hostname, resp.status,
-                                                  resp.reason, path))
+             "while trying to access {}.").format(account_data[account][0], resp.status,
+                                                  resp.reason, account_data[account][1]))
 
     return (resp, body)
 
@@ -217,7 +217,7 @@ def get_etags(conn, hrefs=[]):
                 '<D:prop><D:getetag /></D:prop>'
                 '<C:filter><C:comp-filter name="VCALENDAR" /></C:filter>'
                 '</C:calendar-query>')
-    headers, body = remote_query(conn, "REPORT", absolute_uri, headers, body)
+    headers, body = remote_query(conn, "REPORT", account_data[account][3], headers, body)
     if not headers:
         return {}
     root = etree.fromstring(body)
@@ -290,9 +290,9 @@ def save_syncdb(fn, syncdb):
 
 
 def push_object(conn, objhash):
-    href = path + objhash + ".ics"
+    href = account_data[account][1] + objhash + ".ics"
     body = calcurse_export(objhash)
-    headers, body = remote_query(conn, "PUT", hostname_uri + href, {}, body)
+    headers, body = remote_query(conn, "PUT", account_data[account][3] + href, {}, body)
 
     if not headers:
         return None
@@ -328,7 +328,7 @@ def push_objects(objhashes, conn, syncdb, etagdict):
 
 def remove_remote_object(conn, etag, href):
     headers = {'If-Match': '"' + etag + '"'}
-    remote_query(conn, "DELETE", hostname_uri + href, headers, None)
+    remote_query(conn, "DELETE", account_data[account][2] + href, headers, None)
 
 
 def remove_remote_objects(objhashes, conn, syncdb, etagdict):
@@ -375,7 +375,7 @@ def pull_objects(hrefs_missing, hrefs_modified, conn, syncdb, etagdict):
     for href in (hrefs_missing | hrefs_modified):
         body += '<D:href>{}</D:href>'.format(href)
     body += '</C:calendar-multiget>'
-    headers, body = remote_query(conn, "REPORT", absolute_uri, {}, body)
+    headers, body = remote_query(conn, "REPORT", account_data[account][3], {}, body)
 
     root = etree.fromstring(body)
 
@@ -502,16 +502,6 @@ try:
 except FileNotFoundError as e:
     die('Configuration file not found: {}'.format(configfn))
 
-hostname = config.get('General', 'HostName')
-path = '/' + config.get('General', 'Path').strip('/') + '/'
-hostname_uri = 'https://' + hostname
-absolute_uri = hostname_uri + path
-
-if config.has_option('General', 'InsecureSSL'):
-    insecure_ssl = config.getboolean('General', 'InsecureSSL')
-else:
-    insecure_ssl = False
-
 if config.has_option('General', 'Binary'):
     calcurse = config.get('General', 'Binary')
 else:
@@ -528,43 +518,68 @@ if not verbose and config.has_option('General', 'Verbose'):
 if not debug and config.has_option('General', 'Debug'):
     debug = config.getboolean('General', 'Debug')
 
-if config.has_option('General', 'AuthMethod'):
-    authmethod = config.get('General', 'AuthMethod').lower()
-else:
-    authmethod = 'basic'
+accounts = config.get('General', 'Accounts');
 
-if config.has_option('Auth', 'UserName'):
-    username = config.get('Auth', 'UserName')
-else:
-    username = None
+account_data = {}
+auth_data = {}
+oauth_data = {}
 
-if config.has_option('Auth', 'Password') and not password:
-    password = config.get('Auth', 'Password')
+for account in accounts.split(','):
+    account = account.strip(' ')
+    print("\nLoading Account: {}".format(account))
+    acc_type = config.get(account, 'Type')
+    hostname = config.get(account, 'HostName')
+    path = '/' + config.get(account, 'Path').strip('/') + '/'
+    hostname_uri = 'https://' + hostname
+    absolute_uri = hostname_uri + path
+    account_data[account] = (hostname, path, hostname_uri, absolute_uri, acc_type)
+
+    if config.has_option(account, 'InsecureSSL'):
+        insecure_ssl = config.getboolean(account, 'InsecureSSL')
+    else:
+        insecure_ssl = False
+
+    if config.has_option(account, 'AuthMethod'):
+        authmethod = config.get(account, 'AuthMethod').lower()
+    else:
+        authmethod = 'basic'
+    
+    if config.has_option(account, 'UserName'):
+        username = config.get(account, 'UserName')
+    else:
+        username = None
+    
+    if config.has_option(account, 'Password') and not password:
+        password = config.get(account, 'Password')
+    
+    auth_data[account] = (insecure_ssl, authmethod, username, password)
+
+    if config.has_option(account, 'ClientID'):
+        client_id = config.get(account, 'ClientID')
+    else:
+        client_id = None
+    
+    if config.has_option(account, 'ClientSecret'):
+        client_secret = config.get(account, 'ClientSecret')
+    else:
+        client_secret = None
+    
+    if config.has_option(account, 'Scope'):
+       scope = config.get(account, 'Scope')
+    else:
+       scope = None
+    
+    if config.has_option(account, 'RedirectURI'):
+        redirect_uri = config.get(account, 'RedirectURI')
+    else:
+        redirect_uri = 'http://127.0.0.1'
+
+    oauth_data[account] = (client_id, client_secret, scope, redirect_uri)
 
 if config.has_section('CustomHeaders'):
     custom_headers = dict(config.items('CustomHeaders'))
 else:
     custom_headers = {}
-
-if config.has_option('OAuth2', 'ClientID'):
-    client_id = config.get('OAuth2', 'ClientID')
-else:
-    client_id = None
-
-if config.has_option('OAuth2', 'ClientSecret'):
-    client_secret = config.get('OAuth2', 'ClientSecret')
-else:
-    client_secret = None
-
-if config.has_option('OAuth2', 'Scope'):
-   scope = config.get('OAuth2', 'Scope')
-else:
-   scope = None
-
-if config.has_option('OAuth2', 'RedirectURI'):
-    redirect_uri = config.get('OAuth2', 'RedirectURI')
-else:
-    redirect_uri = 'http://127.0.0.1'
 
 # Show disclaimer when performing a dry run.
 if dry_run:
@@ -592,74 +607,104 @@ if os.path.exists(lockfn):
 open(lockfn, 'w')
 
 try:
-    # Connect to the server via HTTPs.
-    if verbose:
-        print('Connecting to ' + hostname + '...')
-    conn = httplib2.Http()
-    if insecure_ssl:
-        conn.disable_ssl_certificate_validation = True
 
-    if authmethod == 'oauth2':
-        # Authenticate with OAuth2 and authorize HTTP object
-        cred = run_auth(authcode)
-        conn = cred.authorize(conn)
-    elif authmethod != 'basic':
-        die('Invalid option for AuthMethod in config file. Use "basic" or "oauth2"')
+    for account in accounts.split(','):
+        account = account.strip();
 
-    if init:
-        # In initialization mode, start with an empty synchronization database.
-        if args.init == 'keep-remote':
-            calcurse_wipe()
-        elif args.init == 'keep-local':
-            remote_wipe(conn)
+        print("Syncing Account: {}".format(account_data[account][1]))
+
+        # Connect to the server via HTTPs.
+        if verbose:
+            print('Connecting to ' + account_data[account][0] + '...')
+        conn = httplib2.Http()
+
+        if auth_data[account][0]:
+            conn.disable_ssl_certificate_validation = True
+
+        if auth_data[account][1] == 'oauth2':
+            # Authenticate with OAuth2 and authorize HTTP object
+            cred = run_auth(authcode)
+            conn = cred.authorize(conn)
+        elif auth_data[account][1] != 'basic':
+            die('Invalid option for AuthMethod in config file. Use "basic" or "oauth2"')
+
+        if init:
+            # In initialization mode, start with an empty synchronization database.
+            if args.init == 'keep-remote':
+                calcurse_wipe()
+            elif args.init == 'keep-local':
+                remote_wipe(conn)
+            syncdb = {}
+        else:
+            # Read the synchronization database.
+            syncdb_full = get_syncdb(syncdbfn)
+
+            if not syncdb_full:
+                die('Sync database not found or empty. Please initialize the ' +
+                    'database first.\n\nSupported initialization modes are:\n' +
+                    '  --init=keep-remote Remove all local calcurse items\n' +
+                    '  --init=keep-local  Remove all remote objects\n' +
+                    '  --init=two-way     Copy local items to the server and vice versa')
+
+        # Filter syncdb
         syncdb = {}
-    else:
-        # Read the synchronization database.
-        syncdb = get_syncdb(syncdbfn)
+        if account_data[account][1] in syncdb_full:
+            syndb.add(entry)
 
-        if not syncdb:
-            die('Sync database not found or empty. Please initialize the ' +
-                'database first.\n\nSupported initialization modes are:\n' +
-                '  --init=keep-remote Remove all local calcurse items\n' +
-                '  --init=keep-local  Remove all remote objects\n' +
-                '  --init=two-way     Copy local items to the server and vice versa')
+        # Query the server and compute a lookup table that maps each path to its
+        # current ETag.
+        etagdict = get_etags(conn)
 
-    # Query the server and compute a lookup table that maps each path to its
-    # current ETag.
-    etagdict = get_etags(conn)
+        # Compute object diffs.
+        missing = set()
+        modified = set()
+        for href in set(etagdict.keys()):
+            if href not in syncdb:
+                missing.add(href)
+            elif etagdict[href] != syncdb[href][0]:
+                modified.add(href)
+        orphan = set(syncdb.keys()) - set(etagdict.keys())
 
-    # Compute object diffs.
-    missing = set()
-    modified = set()
-    for href in set(etagdict.keys()):
-        if href not in syncdb:
-            missing.add(href)
-        elif etagdict[href] != syncdb[href][0]:
-            modified.add(href)
-    orphan = set(syncdb.keys()) - set(etagdict.keys())
+        # TODO
+        # Filter objhashes to only return the ons valid for the current URL
+        # This is currently not possible, because the calcurse binary does
+        # not know about multiple accounts. We can check for all entries we
+        # know about, but we don't know in which calendar we should create
+        # new entries.
+        objhashes_full = calcurse_hashset()
 
-    objhashes = calcurse_hashset()
-    new = objhashes - set([entry[1] for entry in syncdb.values()])
-    gone = set([entry[1] for entry in syncdb.values()]) - objhashes
+        objhashes = set()
 
-    # Retrieve new objects from the server.
-    local_new = pull_objects(missing, modified, conn, syncdb, etagdict)
+        # Loop at all hashes
+        for entry in objhashes_full:
+            for line in syncdb:
+                # if line is found
+                if account_data[account][1] in line:
+                    objhashes.add(line)
+                else:
+                    continue
 
-    # Delete local items that no longer exist on the server.
-    local_del = remove_local_objects(orphan, conn, syncdb, etagdict)
+        new = objhashes - set([entry[1] for entry in syncdb.values()])
+        gone = set([entry[1] for entry in syncdb.values()]) - objhashes
 
-    # Push new objects to the server.
-    remote_new = push_objects(new, conn, syncdb, etagdict)
+        # Retrieve new objects from the server.
+        local_new = pull_objects(missing, modified, conn, syncdb, etagdict)
 
-    # Remove items from the server if they no longer exist locally.
-    remote_del = remove_remote_objects(gone, conn, syncdb, etagdict)
+        # Delete local items that no longer exist on the server.
+        local_del = remove_local_objects(orphan, conn, syncdb, etagdict)
 
-    # Write the synchronization database.
-    save_syncdb(syncdbfn, syncdb)
+        # Push new objects to the server.
+        remote_new = push_objects(new, conn, syncdb, etagdict)
 
-    #Clear OAuth2 credentials if used
-    if authmethod == 'oauth2':
-        conn.clear_credentials()
+        # Remove items from the server if they no longer exist locally.
+        remote_del = remove_remote_objects(gone, conn, syncdb, etagdict)
+
+        # Write the synchronization database.
+        save_syncdb(syncdbfn, syncdb)
+
+        #Clear OAuth2 credentials if used
+        if auth_data[account][1] == 'oauth2':
+            conn.clear_credentials()
 
 finally:
     # Remove lock file.
