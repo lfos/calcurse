@@ -936,10 +936,11 @@ parse_date_interactive(const char *datestr, int *year, int *month, int *day)
 
 /*
  * Convert a date duration string into a number of days.
+ * If start is non-zero, the final end time is validated.
  *
  * Returns 1 on success and 0 on failure.
  */
-int parse_date_duration(const char *string, unsigned *days)
+int parse_date_duration(const char *string, unsigned *days, time_t start)
 {
 	enum {
 		STATE_INITIAL,
@@ -1000,6 +1001,17 @@ int parse_date_duration(const char *string, unsigned *days)
 		return 0;
 
 	dur += in;
+	if (start) {
+		/* wanted: start = start + dur * DAYINSEC */
+		int p, s;
+		if (overflow_mul(dur, DAYINSEC, &p))
+			return 0;
+		if (overflow_add(start, p, &s))
+			return 0;
+		start = s;
+		if (!check_sec(&start))
+			return 0;
+	}
 	*days = dur;
 
 	return 1;
@@ -1051,6 +1063,7 @@ int parse_time(const char *string, unsigned *hour, unsigned *minute)
 
 /*
  * Converts a duration string into minutes.
+ * If start time is non-zero, the final end time is validated.
  *
  * Allowed formats (noted as regular expressions):
  *
@@ -1062,7 +1075,7 @@ int parse_time(const char *string, unsigned *hour, unsigned *minute)
  *
  * Returns 1 on success and 0 on failure.
  */
-int parse_duration(const char *string, unsigned *duration)
+int parse_duration(const char *string, unsigned *duration, time_t start)
 {
 	enum {
 		STATE_INITIAL,
@@ -1140,13 +1153,23 @@ int parse_duration(const char *string, unsigned *duration)
 			denom = 1;
 		}
 	}
-
 	if ((state == STATE_HHMM_MM && in >= HOURINMIN) ||
 	    ((state == STATE_DDHHMM_HH || state == STATE_DDHHMM_MM)
 	     && in > 0))
 		return 0;
-
 	dur += in;
+	if (start) {
+		/* wanted: end = start + dur * MININSEC */
+		time_t end;
+		int p, s;
+		if (overflow_mul(dur, MININSEC, &p))
+			return 0;
+		if (overflow_add(start, p, &s))
+			return 0;
+		end = s;
+		if (!check_sec(&end) || end < start)
+			return 0;
+	}
 	*duration = dur;
 
 	return 1;
@@ -1161,10 +1184,13 @@ int parse_duration(const char *string, unsigned *duration)
  * updated and the date remains the same. If the string contains both a date
  * and a time, the time stamp is updated to match the given string.
  *
+ * The final time is validated. In addition, if a positive duration is given,
+ * time + duration validated (zero duration needs no validation).
+ *
  * Returns a positive value on success and 0 on failure. The least-significant
  * bit is set if the date was updated. Bit 1 is set if the time was updated.
  */
-int parse_datetime(const char *string, long *ts)
+int parse_datetime(const char *string, time_t *ts, time_t dur)
 {
 	char *t = mem_strdup(string);
 	char *p = strchr(t, ' ');
@@ -1197,6 +1223,19 @@ int parse_datetime(const char *string, long *ts)
 		*ts = update_time_in_date(*ts, hour, minute);
 
 	mem_free(t);
+	/* Is the resulting time a valid (start or end) time? */
+	if (!check_sec(ts))
+		return 0;
+	/* Is the resulting time + dur a valid end time? */
+	if (dur) {
+		/* want: sec = *ts + dur */
+		int s;
+		if (overflow_add(*ts, dur, &s))
+			return 0;
+		time_t sec = s;
+		if (!check_sec(&sec))
+			return 0;
+	}
 	return ret;
 }
 
