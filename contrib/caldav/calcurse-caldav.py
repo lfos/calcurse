@@ -320,7 +320,17 @@ def save_syncdb(fn, syncdb):
 def push_object(conn, objhash):
     href = path + objhash + ".ics"
     body = calcurse_export(objhash)
-    headers, body = remote_query(conn, "PUT", hostname_uri + href, {}, body)
+
+    # Inject DTEND in case it is not present
+    body_repaired = ""
+    for line in body.splitlines():
+        body_repaired += line
+        if "DTSTART" in line:
+            if "DTEND" not in body:
+                body_repaired += "\n" + line.replace("DTSTART", "DTEND")
+        body_repaired += "\n"
+
+    headers, body = remote_query(conn, "PUT", hostname_uri + href, {}, body_repaired)
 
     if not headers:
         return None
