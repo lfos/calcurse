@@ -58,105 +58,146 @@ void ui_day_set_selitem(struct day_item *day)
 	ui_day_set_selitem_by_aptev_ptr(day->item);
 }
 
-/* Request the user to enter a new time. */
-static int day_edit_time(int time)
+/*
+ * Request the user to enter a new start time.
+ * Input: start time and duration in seconds.
+ * Output: return value is new start time.
+ * If move = 1, the new start time is for a move, and duration is passed on
+ * for validation of the new end time.
+ * If move = 0, the new end time is calculated by the caller.
+ */
+static int day_edit_time(int start, int duration, int move)
 {
-	char *input = date_sec2date_str(time, "%H:%M");
-	const char *msg_time =
-	    _("Enter start time ([hh:mm] or [hhmm]) or date:");
+	const char *msg_time = _("Enter start date [%s] and/or time ([hh:mm] or [hhmm]):");
 	const char *enter_str = _("Press [Enter] to continue");
-	const char *fmt_msg =
-	    _("You entered an invalid time, should be [hh:mm] or [hhmm]");
-	long ts = time;
+	const char *fmt_msg = _("Invalid date or time.");
+	char *input, *outstr;
+	time_t ts;
+	int ret;
 
+	asprintf(&outstr, "%s %s", DATEFMT(conf.input_datefmt), "%H:%M");
+	input = date_sec2date_str(start, outstr);
+	mem_free(outstr);
 	for (;;) {
-		status_mesg(msg_time, "");
-		if (updatestring(win[STA].p, &input, 0, 1) != GETSTRING_VALID)
-			return 0;
-		if (parse_datetime(input, &ts))
-			return ts;
+		asprintf(&outstr, msg_time, DATEFMT_DESC(conf.input_datefmt));
+		status_mesg(outstr, "");
+		mem_free(outstr);
+		if (updatestring(win[STA].p, &input, 0, 1) != GETSTRING_VALID) {
+			ret = 0;
+			break;
+		}
+		ts = start;
+		if (parse_datetime(input, &ts, move ? duration : 0)) {
+			ret = ts;
+			break;
+		}
 		status_mesg(fmt_msg, enter_str);
 		keys_wait_for_any_key(win[KEY].p);
 	}
+	mem_free(input);
+	return ret;
 }
 
-/* Request the user to enter a new end time or duration. */
-static void update_start_time(long *start, long *dur, int update_dur)
+/*
+ * Change start time or move an item.
+ * Input/output: start and dur.
+ * If move = 0, end time is fixed, and the new duration is calculated
+ * when the new start time is known.
+ * If move = 1, duration is fixed, but passed on for validation of new end time.
+ */
+static void update_start_time(long *start, long *dur, int move)
 {
 	long newtime;
-	int valid_date;
 	const char *msg_wrong_time =
-	    _("Invalid time: start time must be before end time!");
+	    _("Invalid time: start time must come before end time!");
 	const char *msg_enter = _("Press [Enter] to continue");
 
-	do {
-		newtime = day_edit_time(*start);
+	for (;;) {
+		newtime = day_edit_time(*start, *dur, move);
 		if (!newtime)
 			break;
-		if (!update_dur) {
+		if (move) {
 			*start = newtime;
-			return;
-		}
-		if (newtime < *start + *dur) {
-			*dur -= (newtime - *start);
-			*start = newtime;
-			valid_date = 1;
+			break;
 		} else {
-			status_mesg(msg_wrong_time, msg_enter);
-			keys_wait_for_any_key(win[KEY].p);
-			valid_date = 0;
+			if (newtime <= *start + *dur) {
+				*dur -= (newtime - *start);
+				*start = newtime;
+				break;
+			}
 		}
+		status_mesg(msg_wrong_time, msg_enter);
+		keys_wgetch(win[KEY].p);
 	}
-	while (valid_date == 0);
+	return;
 }
 
 /* Request the user to enter a new end time or duration. */
 static void update_duration(long *start, long *dur)
 {
-	char *timestr = date_sec2date_str(*start + *dur, "%H:%M");
 	const char *msg_time =
-	    _("Enter end time ([hh:mm], [hhmm]) or duration ([+hh:mm], [+xxxdxxhxxm]):");
+	    _("Enter end date (and/or time) or duration ('?' for input formats):");
+	const char *msg_help_1 =
+		_("Date: %s, year or month may be omitted.");
+	const char *msg_help_2 =
+		_("Time: hh:mm (hh: or :mm) or hhmm. Duration: +mm, +hh:mm, +??d??h??m.");
 	const char *enter_str = _("Press [Enter] to continue");
-	const char *fmt_msg =
-	    _("You entered an invalid time, should be [hh:mm] or [hhmm]");
+	const char *fmt_msg_1 = _("Invalid time or duration.");
+	const char *fmt_msg_2 = _("Invalid date: end time must come after start time.");
 	long end;
 	unsigned newdur;
+	char *timestr, *outstr;
 
-
+	end = *start + *dur;
+	asprintf(&outstr, "%s %s", DATEFMT(conf.input_datefmt), "%H:%M");
+	timestr = date_sec2date_str(end, outstr);
+	mem_free(outstr);
 	for (;;) {
-		int ret;
-
+		int ret, early = 0;
 		status_mesg(msg_time, "");
 		ret = updatestring(win[STA].p, &timestr, 0, 1);
 		if (ret == GETSTRING_ESC)
 			return;
+		if (*(timestr + strlen(timestr) - 1) == '?') {
+			asprintf(&outstr, "%s %s", DATEFMT(conf.input_datefmt), "%H:%M");
+			timestr = date_sec2date_str(end, outstr);
+			asprintf(&outstr, msg_help_1, DATEFMT_DESC(conf.input_datefmt));
+			status_mesg(outstr, msg_help_2);
+			mem_free(outstr);
+			keys_wgetch(win[KEY].p);
+			continue;
+		}
 		if (ret == GETSTRING_RET) {
 			newdur = 0;
 			break;
 		}
 		if (*timestr == '+') {
-			if (parse_duration(timestr + 1, &newdur)) {
+			if (parse_duration(timestr + 1, &newdur, *start)) {
 				newdur *= MININSEC;
 				break;
 			}
+		} else {
+			int val = 1;
+			ret = parse_datetime(timestr, &end, 0);
+			/*
+			 * If same day and end time is earlier than start time,
+			 * assume that it belongs to the next day.
+			 */
+			if (ret == PARSE_DATETIME_HAS_TIME && end < *start) {
+				end = date_sec_change(end, 0, 1);
+				/* Still valid? */
+				val = check_sec(&end);
+			}
+			if (ret && val && *start <= end) {
+				newdur = end - *start;
+				break;
+			}
+			/* Valid format, but too early? */
+			early = ret && val && end < *start;
 		}
-		end = *start + *dur;
-		ret = parse_datetime(timestr, &end);
-		/*
-		 * If the user enters a end time which is smaller than
-		 * the start time, assume that the time belongs to the
-		 * next day.
-		 */
-		if (!(ret & PARSE_DATETIME_HAS_DATE) && end < *start)
-			end = date_sec_change(end, 0, 1);
-		if (ret) {
-			newdur = end - *start;
-			break;
-		}
-		status_mesg(fmt_msg, enter_str);
-		wgetch(win[KEY].p);
+		status_mesg(early ? fmt_msg_2 : fmt_msg_1 , enter_str);
+		keys_wgetch(win[KEY].p);
 	}
-
 	mem_free(timestr);
 	*dur = newdur;
 }
@@ -169,9 +210,8 @@ static void update_desc(char **desc)
 
 static void update_rept(struct rpt **rpt, const long start)
 {
-	int newtype, newfreq;
-	time_t newuntil;
-	char *freqstr = NULL, *timstr = NULL, *outstr;
+	/* Update repetition type. */
+	int newtype;
 	const char *msg_rpt_prefix = _("Enter the new repetition type:");
 	const char *msg_rpt_daily = _("(d)aily");
 	const char *msg_rpt_weekly = _("(w)eekly");
@@ -198,23 +238,12 @@ static void update_rept(struct rpt **rpt, const long start)
 		/* NOTREACHED, but makes the compiler happier. */
 		rpt_current = msg_rpt_daily;
 	}
-
 	asprintf(&msg_rpt_current, _("(currently using %s)"), rpt_current);
-
 	char *msg_rpt_asktype;
-	asprintf(&msg_rpt_asktype, "%s %s, %s, %s, %s ? %s", msg_rpt_prefix,
+	asprintf(&msg_rpt_asktype, "%s %s, %s, %s, %s? %s", msg_rpt_prefix,
 		 msg_rpt_daily, msg_rpt_weekly, msg_rpt_monthly,
 		 msg_rpt_yearly, msg_rpt_current);
-
 	const char *msg_rpt_choice = _("[dwmy]");
-	const char *msg_wrong_freq = _("Invalid frequency.");
-	const char *msg_wrong_time =
-	    _("Invalid time: start time must be before end time!");
-	const char *msg_wrong_date = _("The entered date is not valid.");
-	const char *msg_fmts =
-	    _("Possible formats are [%s] or '0' for an endless repetition.");
-	const char *msg_enter = _("Press [Enter] to continue");
-
 	switch (status_ask_choice(msg_rpt_asktype, msg_rpt_choice, 4)) {
 	case 1:
 		newtype = 'D';
@@ -232,8 +261,13 @@ static void update_rept(struct rpt **rpt, const long start)
 		goto cleanup;
 	}
 
+	/* Update frequency. */
+	int newfreq;
+	char *freqstr = NULL;
+	const char *msg_wrong_freq = _("Invalid frequency.");
+	const char *msg_enter = _("Press [Enter] to continue");
 	do {
-		status_mesg(_("Enter the new repetition frequency:"), "");
+		status_mesg(_("Enter the repetition frequency:"), "");
 		mem_free(freqstr);
 		asprintf(&freqstr, "%d", (*rpt)->freq);
 		if (updatestring(win[STA].p, &freqstr, 0, 1) !=
@@ -248,65 +282,67 @@ static void update_rept(struct rpt **rpt, const long start)
 	}
 	while (newfreq == 0);
 
-	for (;;) {
-		struct tm lt;
-		time_t t;
-		struct date new_date;
-		int newmonth, newday, newyear;
-		unsigned days;
+	/* Update end date. */
+	char *timstr = NULL;
+	char *outstr = NULL;
+	time_t newuntil;
+	const char *msg_until_1 =
+		_("Enter end date or duration ('?' for input formats):");
+	const char *msg_help_1 =
+		_("Date: %s (year or month may be omitted). Endless duration: 0.");
+	const char *msg_help_2 =
+		_("Duration in days: +dd. Duration in weeks and days: +??w??d.");
+	const char *msg_wrong_time =
+		_("Invalid date: end date must come after start date (%s).");
+	const char *msg_wrong_date = _("Invalid date.");
 
-		asprintf(&outstr,
-			 _("Enter end date ([%s]), duration ([+xxwxxd]) or '0':"),
-			 DATEFMT_DESC(conf.input_datefmt));
-		status_mesg(outstr, "");
-		mem_free(outstr);
-		timstr =
-		    date_sec2date_str((*rpt)->until,
-				      DATEFMT(conf.input_datefmt));
+	for (;;) {
+		mem_free(timstr);
+		timstr = date_sec2date_str((*rpt)->until, DATEFMT(conf.input_datefmt));
+		status_mesg(msg_until_1, "");
 		if (updatestring(win[STA].p, &timstr, 0, 1) !=
 		    GETSTRING_VALID) {
 			goto cleanup;
+		}
+		if (*(timstr + strlen(timstr) - 1) == '?') {
+			mem_free(outstr);
+			asprintf(&outstr, msg_help_1, DATEFMT_DESC(conf.input_datefmt));
+			status_mesg(outstr, msg_help_2);
+			keys_wgetch(win[KEY].p);
+			continue;
 		}
 		if (strcmp(timstr, "0") == 0) {
 			newuntil = 0;
 			break;
 		}
 		if (*timstr == '+') {
-			if (!parse_date_duration(timstr + 1, &days)) {
-				asprintf(&outstr, msg_fmts,
-					 DATEFMT_DESC(conf.input_datefmt));
-				status_mesg(msg_wrong_date, outstr);
-				mem_free(outstr);
-				keys_wait_for_any_key(win[KEY].p);
+			unsigned days;
+			if (!parse_date_duration(timstr + 1, &days, start)) {
+				status_mesg(msg_wrong_date, msg_enter);
+				keys_wgetch(win[KEY].p);
 				continue;
 			}
-			t = start;
-			localtime_r(&t, &lt);
-			date_change(&lt, 0, days);
-			new_date.dd = lt.tm_mday;
-			new_date.mm = lt.tm_mon + 1;
-			new_date.yyyy = lt.tm_year + 1900;
+			newuntil = start + days * DAYINSEC;
 		} else {
-			if (!parse_date_interactive(timstr, &newyear,
-						    &newmonth, &newday)) {
-				asprintf(&outstr, msg_fmts,
-					 DATEFMT_DESC(conf.input_datefmt));
-				status_mesg(msg_wrong_date, outstr);
-				mem_free(outstr);
-				keys_wait_for_any_key(win[KEY].p);
+			int year, month, day;
+			if (!parse_date(timstr, conf.input_datefmt, &year,
+			    &month, &day, ui_calendar_get_slctd_day())) {
+				status_mesg(msg_wrong_date, msg_enter);
+				keys_wgetch(win[KEY].p);
 				continue;
 			}
-			t = start;
-			localtime_r(&t, &lt);
-			new_date.dd = newday;
-			new_date.mm = newmonth;
-			new_date.yyyy = newyear;
+			struct date d = { day, month, year };
+			newuntil = date2sec(d, 0, 0);
 		}
-		newuntil = date2sec(new_date, lt.tm_hour, lt.tm_min);
 		if (newuntil >= start)
 			break;
-		status_mesg(msg_wrong_time, msg_enter);
-		keys_wait_for_any_key(win[KEY].p);
+
+		mem_free(timstr);
+		mem_free(outstr);
+		timstr = date_sec2date_str(start, DATEFMT(conf.input_datefmt));
+		asprintf(&outstr, msg_wrong_time, timstr);
+		status_mesg(outstr, msg_enter);
+		keys_wgetch(win[KEY].p);
 	}
 
 	(*rpt)->type = recur_char2def(newtype);
@@ -318,11 +354,14 @@ cleanup:
 	mem_free(msg_rpt_asktype);
 	mem_free(freqstr);
 	mem_free(timstr);
+	mem_free(outstr);
 }
 
 /* Edit an already existing item. */
 void ui_day_item_edit(void)
 {
+#define OLDDURATION	1
+#define NEWDURATION	0
 	struct recur_event *re;
 	struct event *e;
 	struct recur_apoint *ra;
@@ -373,7 +412,7 @@ void ui_day_item_edit(void)
 			(_("Edit: "), choice_recur_appt, 5)) {
 		case 1:
 			need_check_notify = 1;
-			update_start_time(&ra->start, &ra->dur, 1);
+			update_start_time(&ra->start, &ra->dur, NEWDURATION);
 			io_set_modified();
 			break;
 		case 2:
@@ -394,7 +433,7 @@ void ui_day_item_edit(void)
 			break;
 		case 5:
 			need_check_notify = 1;
-			update_start_time(&ra->start, &ra->dur, 0);
+			update_start_time(&ra->start, &ra->dur, OLDDURATION);
 			io_set_modified();
 			break;
 		default:
@@ -413,7 +452,7 @@ void ui_day_item_edit(void)
 			(_("Edit: "), choice_appt, 4)) {
 		case 1:
 			need_check_notify = 1;
-			update_start_time(&a->start, &a->dur, 1);
+			update_start_time(&a->start, &a->dur, NEWDURATION);
 			io_set_modified();
 			break;
 		case 2:
@@ -429,7 +468,7 @@ void ui_day_item_edit(void)
 			break;
 		case 4:
 			need_check_notify = 1;
-			update_start_time(&a->start, &a->dur, 0);
+			update_start_time(&a->start, &a->dur, OLDDURATION);
 			io_set_modified();
 			break;
 		default:
@@ -503,19 +542,21 @@ void ui_day_item_add(void)
 	const char *mesg_1 =
 	    _("Enter start time ([hh:mm] or [hhmm]), leave blank for an all-day event:");
 	const char *mesg_2 =
-	    _("Enter end time ([hh:mm], [hhmm]) or duration ([+hh:mm], [+xxxdxxhxxm]):");
+	    _("Enter end time as date (and/or time) or duration ('?' for input formats):");
 	const char *mesg_3 = _("Enter description:");
-	const char *format_message_1 =
-	    _("You entered an invalid start time, should be [hh:mm] or [hhmm]");
-	const char *format_message_2 =
-	    _("Invalid end time/duration, should be [hh:mm], [hhmm], [+hh:mm], [+xxxdxxhxxm] or [+mm]");
+	const char *mesg_help_1 =
+		_("Date: %s (and/or time), year or month may be omitted.");
+	const char *mesg_help_2 =
+		_("Time: hh:mm (hh: or :mm) or hhmm. Duration: +mm, +hh:mm, +??d??h??m.");
+	const char *format_message_1 = _("Invalid start time.");
+	const char *format_message_2 = _("Invalid time or duration.");
+	const char *format_message_3 = _("Invalid date: end time must come after start time.");
 	const char *enter_str = _("Press [Enter] to continue");
 	char item_time[LDUR] = "";
 	char item_mesg[BUFSIZ] = "";
-	time_t start = date2sec(*ui_calendar_get_slctd_day(), 0, 0), end;
+	time_t start = date2sec(*ui_calendar_get_slctd_day(), 0, 0), end, saved = start;
 	unsigned dur;
 	int is_appointment = 1;
-	int ret;
 	union aptev_ptr item;
 
 	/* Get the starting time */
@@ -528,10 +569,10 @@ void ui_day_item_add(void)
 			is_appointment = 0;
 			break;
 		}
-		ret = parse_datetime(item_time, &start);
-		if (!(ret & PARSE_DATETIME_HAS_TIME))
-			is_appointment = 0;
-		if (ret)
+		start = saved;
+		/* Only time, no date, allowed. */
+		if (parse_datetime(item_time, &start, 0) ==
+		    PARSE_DATETIME_HAS_TIME)
 			break;
 		status_mesg(format_message_1, enter_str);
 		keys_wait_for_any_key(win[KEY].p);
@@ -545,41 +586,58 @@ void ui_day_item_add(void)
 	if (is_appointment) {	/* Get the appointment duration */
 		item_time[0] = '\0';
 		for (;;) {
+			int early = 0;
 			status_mesg(mesg_2, "");
 			if (getstring(win[STA].p, item_time, LDUR, 0, 1) ==
 			    GETSTRING_ESC)
 				return;
+			if (*item_time == '?') {
+				char *outstr;
+				item_time[0] = '\0';
+				asprintf(&outstr, mesg_help_1, DATEFMT_DESC(conf.input_datefmt));
+				status_mesg(outstr, mesg_help_2);
+				mem_free(outstr);
+				wgetch(win[KEY].p);
+				continue;
+			}
 			if (strlen(item_time) == 0) {
 				dur = 0;
 				break;
 			}
 			if (*item_time == '+') {
-				if (parse_duration(item_time + 1, &dur)) {
+				if (parse_duration(item_time + 1, &dur, start)) {
 					dur *= MININSEC;
 					break;
 				}
+			} else {
+				int ret, val = 1;
+				/* Same day? */
+				end = start;
+				ret = parse_datetime(item_time, &end, 0);
+				/*
+				 * If same day and end time is earlier than start time,
+				 * assume that it belongs to the next day.
+				 */
+				if (ret == PARSE_DATETIME_HAS_TIME && end < start) {
+					end = date_sec_change(end, 0, 1);
+					/* Still valid? */
+					val = check_sec(&end);
+				}
+				if (ret && val && start <= end) {
+					dur = end - start;
+					break;
+				}
+				/* Valid format, but too early? */
+				early = ret && val && end < start;
+					
 			}
-			end = start;
-			ret = parse_datetime(item_time, &end);
-			/*
-			 * If the user enters a end time which is smaller than
-			 * the start time, assume that the time belongs to the
-			 * next day.
-			 */
-			if (!(ret & PARSE_DATETIME_HAS_DATE) && end < start)
-				end = date_sec_change(end, 0, 1);
-			if (ret) {
-				dur = end - start;
-				break;
-			}
-			status_mesg(format_message_2, enter_str);
-			keys_wait_for_any_key(win[KEY].p);
+			status_mesg(early ? format_message_3 : format_message_2 , enter_str);
+			keys_wgetch(win[KEY].p);
 		}
 	}
 
 	status_mesg(mesg_3, "");
-	if (getstring(win[STA].p, item_mesg, BUFSIZ, 0, 1) ==
-	    GETSTRING_VALID) {
+	if (getstring(win[STA].p, item_mesg, BUFSIZ, 0, 1) == GETSTRING_VALID) {
 		if (is_appointment) {
 			item.apt = apoint_new(item_mesg, 0L, start, dur, 0L);
 			if (notify_bar())
@@ -675,11 +733,6 @@ void ui_day_item_delete(unsigned reg)
  */
 void ui_day_item_repeat(void)
 {
-	struct tm lt;
-	time_t t;
-	int year = 0, month = 0, day = 0;
-	struct date until_date;
-	char *outstr;
 	char user_input[BUFSIZ] = "";
 	const char *msg_rpt_prefix = _("Enter the repetition type:");
 	const char *msg_rpt_daily = _("(d)aily");
@@ -689,16 +742,14 @@ void ui_day_item_repeat(void)
 	const char *msg_type_choice = _("[dwmy]");
 	const char *mesg_freq_1 = _("Enter the repetition frequency:");
 	const char *mesg_wrong_freq = _("Invalid frequency.");
-	const char *mesg_until_1 =
-	    _("Enter end date ([%s]), duration ([+xxwxxd]) or '0' for endless repetition:");
-	const char *mesg_wrong_1 = _("The entered date is not valid.");
-	const char *mesg_wrong_2 =
-	    _("Possible formats are [%s], [+xxwxxd] or '0'.");
-	const char *wrong_type_1 =
-	    _("This item is already a repeated one.");
+	const char *mesg_until_1 = _("Enter end date or duration ('?' for input formats):");
+	const char *mesg_help_1 = _("Date: %s (year or month may be omitted). Endless duration: '0'.");
+	const char *mesg_help_2 = _("Duration in days: +dd. Duration in weeks and days: +??w??d.");
+	const char *mesg_wrong_1 = _("Invalid date.");
+	const char *mesg_wrong_2 = _("Press [ENTER] to continue.");
+	const char *wrong_type_1 = _("This item is already a repeated one.");
 	const char *wrong_type_2 = _("Press [ENTER] to continue.");
-	const char *mesg_older =
-	    _("Sorry, the date you entered is older than the item start time.");
+	const char *mesg_older = _("Invalid date: end date must come after start date (%s).");
 
 	char *msg_asktype;
 	asprintf(&msg_asktype, "%s %s, %s, %s, %s", msg_rpt_prefix,
@@ -753,54 +804,51 @@ void ui_day_item_repeat(void)
 		user_input[0] = '\0';
 	}
 
+	char *outstr, *datestr;
 	for (;;) {
-		asprintf(&outstr, mesg_until_1,
-			 DATEFMT_DESC(conf.input_datefmt));
-		status_mesg(outstr, "");
-		mem_free(outstr);
+		status_mesg(mesg_until_1, "");
 		if (getstring(win[STA].p, user_input, BUFSIZ, 0, 1) !=
 		    GETSTRING_VALID)
 			goto cleanup;
-		if (strlen(user_input) == 1 && strcmp(user_input, "0") == 0) {
+		if (*user_input == '?') {
+			user_input[0] = '\0';
+			asprintf(&outstr, mesg_help_1, DATEFMT_DESC(conf.input_datefmt));
+			status_mesg(outstr, mesg_help_2);
+			mem_free(outstr);
+			wgetch(win[KEY].p);
+			continue;
+		}
+		if (strcmp(user_input, "0") == 0) {
 			until = 0;
 			break;
 		}
 		if (*user_input == '+') {
-			if (!parse_date_duration(user_input + 1, &days)) {
-				asprintf(&outstr, mesg_wrong_2,
-					 DATEFMT_DESC(conf.input_datefmt));
-				status_mesg(mesg_wrong_1, outstr);
-				mem_free(outstr);
-				keys_wait_for_any_key(win[KEY].p);
+			if (!parse_date_duration(user_input + 1, &days, p->start)) {
+				status_mesg(mesg_wrong_1, mesg_wrong_2);
+				keys_wgetch(win[KEY].p);
 				continue;
 			}
-			t = p->start;
-			localtime_r(&t, &lt);
-			date_change(&lt, 0, days);
-			until_date.dd = lt.tm_mday;
-			until_date.mm = lt.tm_mon + 1;
-			until_date.yyyy = lt.tm_year + 1900;
-		} else if (parse_date_interactive(user_input, &year, &month,
-						  &day)) {
-			t = p->start;
-			localtime_r(&t, &lt);
-			until_date.dd = day;
-			until_date.mm = month;
-			until_date.yyyy = year;
+			until = p->start + days * DAYINSEC;
 		} else {
-			asprintf(&outstr, mesg_wrong_2,
-				 DATEFMT_DESC(conf.input_datefmt));
-			status_mesg(mesg_wrong_1, outstr);
-			mem_free(outstr);
-			keys_wait_for_any_key(win[KEY].p);
-			continue;
+			int year, month, day;
+			if (!parse_date(user_input, conf.input_datefmt,
+			    &year, &month, &day, ui_calendar_get_slctd_day())) {
+				status_mesg(mesg_wrong_1, mesg_wrong_2);
+				keys_wgetch(win[KEY].p);
+				continue;
+			}
+			struct date d = { day, month, year };
+			until = date2sec(d, 0, 0);
 		}
-
-		until = date2sec(until_date, lt.tm_hour, lt.tm_min);
 		if (until >= p->start)
 			break;
-		status_mesg(mesg_older, wrong_type_2);
-		keys_wait_for_any_key(win[KEY].p);
+
+		datestr = date_sec2date_str(p->start, DATEFMT(conf.input_datefmt));
+		asprintf(&outstr, mesg_older, datestr);
+		status_mesg(outstr, wrong_type_2);
+		mem_free(datestr);
+		mem_free(outstr);
+		keys_wgetch(win[KEY].p);
 	}
 
 	date = ui_calendar_get_slctd_day_sec();
