@@ -147,7 +147,7 @@ this URL on any other device if you cannot open a browser locally (e.g., on
 a headless server). Once you authorize synchronization, you will be redirected
 to your Redirect URI with a code attached to the end, e.g.,
 `http://127.0.0.1/?code=4/Ok6mBNW2nppfIwyL-Q1ZPVkEk3zZdZN3mHcY#`. You will need
-to copy the code after `http://12.0.0.1?code=`. In this case, it would be
+to copy the code after `http://127.0.0.1/?code=`. In this case, it would be
 `4/Ok6mBNW2nppfIwyL-Q1ZPVkEk3zZdZN3mHcY#`.
 
 Finally pass this authorization code to calcurse-caldav with the `--authcode`
