@@ -4,6 +4,16 @@ calcurse
 Building
 --------
 
+Install the following build dependencies. If your distro segments development
+files from core packages (i.e., \*-devel or \*-dev packages), you may need to
+install those as well:
+
+* gcc
+* automake
+* asciidoc
+* gettext with development files
+* ncurses with development files
+
 If you are using a release tarball, the following commands can be used to build
 and install calcurse:
 
