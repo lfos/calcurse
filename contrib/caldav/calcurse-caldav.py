@@ -508,6 +508,9 @@ authcode = args.authcode
 verbose = args.verbose
 debug = args.debug
 
+# Read environment variables
+password = os.getenv('CALCURSE_CALDAV_PASSWORD')
+
 # Read configuration.
 config = configparser.RawConfigParser()
 if verbose:
@@ -563,10 +566,8 @@ if config.has_option('Auth', 'UserName'):
 else:
     username = None
 
-if config.has_option('Auth', 'Password'):
+if config.has_option('Auth', 'Password') and not password:
     password = config.get('Auth', 'Password')
-else:
-    password = None
 
 if config.has_section('CustomHeaders'):
     custom_headers = dict(config.items('CustomHeaders'))
