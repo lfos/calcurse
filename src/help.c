@@ -114,18 +114,24 @@ int display_help(const char *topic)
 	}
 
 	if (!io_file_exists(path)) {
-		if (!strcmp(topic, "generic-credits"))
-			topic = "credits";
+		if (!strcmp(topic, "generic-cancel"))
+			topic = "general";
+		else if (!strcmp(topic, "generic-select"))
+			topic = "general";
+		else if (!strcmp(topic, "generic-credits"))
+			topic = "intro";
 		else if (!strcmp(topic, "generic-help"))
 			topic = "intro";
+		else if (!strcmp(topic, "generic-quit"))
+			topic = "general";
 		else if (!strcmp(topic, "generic-save"))
 			topic = "save";
 		else if (!strcmp(topic, "generic-reload"))
 			topic = "reload";
 		else if (!strcmp(topic, "generic-copy"))
-			topic = "copy_paste";
+			topic = "copy-paste";
 		else if (!strcmp(topic, "generic-paste"))
-			topic = "copy_paste";
+			topic = "copy-paste";
 		else if (!strcmp(topic, "generic-change-view"))
 			topic = "tab";
 		else if (!strcmp(topic, "generic-import"))
@@ -138,6 +144,8 @@ int display_help(const char *topic)
 			topic = "other";
 		else if (!strcmp(topic, "generic-config-menu"))
 			topic = "config";
+		else if (!strcmp(topic, "generic-redraw"))
+			topic = "general";
 		else if (!strcmp(topic, "generic-add-appt"))
 			topic = "general";
 		else if (!strcmp(topic, "generic-add-todo"))
@@ -158,7 +166,13 @@ int display_help(const char *topic)
 			topic = "general";
 		else if (!strcmp(topic, "generic-next-year"))
 			topic = "general";
+		else if (!strcmp(topic, "generic-scroll-down"))
+			topic = "general";
+		else if (!strcmp(topic, "generic-scroll-up"))
+			topic = "general";
 		else if (!strcmp(topic, "generic-goto-today"))
+			topic = "general";
+		else if (!strcmp(topic, "generic-command"))
 			topic = "general";
 		else if (!strcmp(topic, "move-right"))
 			topic = "displacement";
