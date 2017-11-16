@@ -1137,8 +1137,7 @@ void io_load_keys(const char *pager)
 	file_close(log->fd, __FILE_POS__);
 	if (skipped > 0) {
 		const char *view_log =
-		    _("There were some errors when loading keys file, see log file?");
-
+			_("There were some errors when loading keys file.");
 		io_log_display(log, view_log, pager);
 	}
 	io_log_free(log);
@@ -1414,9 +1413,7 @@ void io_import_data(enum import_type type, const char *stream_name,
 	 */
 	file_close(log->fd, __FILE_POS__);
 	if (stats.skipped > 0) {
-		const char *view_log =
-		    _("Some items could not be imported, see log file?");
-
+		const char *view_log = _("Some items could not be imported.");
 		io_log_display(log, view_log, conf.pager);
 	}
 
@@ -1465,25 +1462,22 @@ void io_log_print(struct io_file *log, int line, const char *msg)
 		fprintf(log->fd, "line %d: %s\n", line, msg);
 }
 
-void io_log_display(struct io_file *log, const char *msg,
-		    const char *pager)
+void io_log_display(struct io_file *log, const char *msg, const char *pager)
 {
+	char *msgq;
+
 	RETURN_IF(log == NULL, _("No log file to display!"));
 	if (ui_mode == UI_CMDLINE) {
-		printf("\n%s [y/n] ", msg);
-		if (fgetc(stdin) != 'y')
-			return;
-
-		const char *arg[] = { pager, log->name, NULL };
-		int pid;
-
-		if ((pid = fork_exec(NULL, NULL, pager, arg)))
-			child_wait(NULL, NULL, pid);
+		fprintf(stderr, "\n%s\n", msg);
+		fprintf(stderr, _("See %s for details."), log->name);
+		fputc('\n', stderr);
 	} else {
-		if (status_ask_bool(msg) == 1) {
+		asprintf(&msgq, "%s %s", msg, _("Display log file?"));
+		if (status_ask_bool(msgq) == 1) {
 			const char *arg[] = { pager, log->name, NULL };
 			wins_launch_external(arg);
 		}
+		mem_free(msgq);
 		wins_erase_status_bar();
 	}
 }
