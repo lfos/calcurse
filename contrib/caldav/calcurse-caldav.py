@@ -431,8 +431,15 @@ def pull_objects(hrefs_missing, hrefs_modified, conn, syncdb, etagdict):
                 continue
 
         objhash = calcurse_import(cdata)
-        syncdb_add(syncdb, href, etag, objhash)
-        added += 1
+
+        # TODO: Add support for importing multiple events at once, see GitHub
+        # issue #20 for details.
+        if re.match(r'[0-ga-f]+$', objhash):
+            syncdb_add(syncdb, href, etag, objhash)
+            added += 1
+        else:
+            print("Failed to import object: {} ({})".format(etag, href),
+                  file=sys.stderr)
 
     return added
 
