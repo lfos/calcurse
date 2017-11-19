@@ -304,10 +304,15 @@ enum datefmt {
 /* Day heading default format. */
 #define DAY_HEADING_DEFAULT "%B %-d, %Y"
 
+/*
+ * Calcurse representation of the date of a day in the calendar.
+ * When time_t is a 32-bit signed integer, the year range is 1902 - 2037.
+ */
+#define YEAR1902_2037 (sizeof(time_t) == 4)
 struct date {
-	unsigned dd;
-	unsigned mm;
-	unsigned yyyy;
+	unsigned dd;		/* day: 1 - 31 */
+	unsigned mm;		/* month: 1 - 12 */
+	unsigned yyyy;		/* year AD */
 };
 
 #define ISLEAP(y) ((((y) % 4) == 0 && ((y) % 100) != 0) || ((y) % 400) == 0)

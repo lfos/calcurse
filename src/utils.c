@@ -481,7 +481,7 @@ void date_sec2date_fmt(long sec, const char *fmt, char *datef)
 }
 
 /*
- * Used to change date by adding a certain amount of days or weeks.
+ * Used to change date by adding a certain amount of days or months.
  * Returns 0 on success, 1 otherwise.
  */
 int date_change(struct tm *date, int delta_month, int delta_day)
@@ -501,7 +501,7 @@ int date_change(struct tm *date, int delta_month, int delta_day)
 }
 
 /*
- * Used to change date by adding a certain amount of days or weeks.
+ * Used to change date by adding a certain amount of days or months.
  */
 long date_sec_change(long date, int delta_month, int delta_day)
 {
@@ -540,7 +540,7 @@ long update_time_in_date(long date, unsigned hr, unsigned mn)
 }
 
 /*
- * Returns the date in seconds from year 1900.
+ * Returns the date in seconds from year 1970.
  * If no date is entered, current date is chosen.
  */
 time_t get_sec_date(struct date date)
@@ -617,7 +617,7 @@ item_in_popup(const char *a_start, const char *a_end, const char *msg,
 	delwin(popup_win);
 }
 
-/* Returns the beginning of current day in seconds from 1900. */
+/* Returns the beginning of current day in seconds from 1970. */
 time_t get_today(void)
 {
 	struct tm lt;
@@ -749,11 +749,13 @@ static void get_weekday_ymd(int *year, int *month, int *day, int weekday)
 }
 
 /*
- * Check if a date is valid.
+ * Check if a calcurse date is valid.
  */
 int check_date(unsigned year, unsigned month, unsigned day)
 {
-	return (year >= 1902 && month >= 1 && month <= 12 && day >= 1 &&
+	return ((YEAR1902_2037 ? year >= 1902 && year <= 2037 : 1) &&
+		month >= 1 && month <= 12 &&
+		day >= 1 &&
 		day <= days[month - 1] + (month == 2 && ISLEAP(year)) ? 1 : 0);
 }
 
