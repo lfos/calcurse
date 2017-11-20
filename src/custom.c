@@ -93,6 +93,41 @@ void custom_remove_attr(WINDOW * win, int attr_num)
 		wattroff(win, attr.nocolor[attr_num]);
 }
 
+static void set_confwin_attr(struct window *cwin)
+{
+	cwin->h = (notify_bar())? row - 3 : row - 2;
+	cwin->w = col;
+	cwin->x = cwin->y = 0;
+}
+
+/*
+ * Create a configuration window and initialize status and notification bar
+ * (useful in case of window resize).
+ */
+static void confwin_init(struct window *confwin, const char *label)
+{
+	if (confwin->p) {
+		erase_window_part(confwin->p, confwin->x, confwin->y,
+				  confwin->x + confwin->w,
+				  confwin->y + confwin->h);
+		delwin(confwin->p);
+	}
+
+	wins_get_config();
+	set_confwin_attr(confwin);
+	confwin->p = newwin(confwin->h, col, 0, 0);
+	box(confwin->p, 0, 0);
+	wins_show(confwin->p, label);
+	delwin(win[STA].p);
+	win[STA].p =
+	    newwin(win[STA].h, win[STA].w, win[STA].y, win[STA].x);
+	keypad(win[STA].p, TRUE);
+	if (notify_bar()) {
+		notify_reinit_bar();
+		notify_update_bar();
+	}
+}
+
 static void layout_selection_bar(void)
 {
 	static int bindings[] = {
@@ -177,7 +212,7 @@ void custom_layout_config(void)
 	const char *label = _("layout configuration");
 
 	conf_win.p = NULL;
-	custom_confwin_init(&conf_win, label);
+	confwin_init(&conf_win, label);
 	cursor = mark = wins_layout() - 1;
 	display_layout_config(&conf_win, mark, cursor);
 	clear();
@@ -218,7 +253,7 @@ void custom_layout_config(void)
 		}
 
 		if (need_reset)
-			custom_confwin_init(&conf_win, label);
+			confwin_init(&conf_win, label);
 
 		display_layout_config(&conf_win, mark, cursor);
 	}
@@ -267,41 +302,6 @@ void custom_sidebar_config(void)
 						  bindings_size);
 			wins_doupdate();
 		}
-	}
-}
-
-static void set_confwin_attr(struct window *cwin)
-{
-	cwin->h = (notify_bar())? row - 3 : row - 2;
-	cwin->w = col;
-	cwin->x = cwin->y = 0;
-}
-
-/*
- * Create a configuration window and initialize status and notification bar
- * (useful in case of window resize).
- */
-void custom_confwin_init(struct window *confwin, const char *label)
-{
-	if (confwin->p) {
-		erase_window_part(confwin->p, confwin->x, confwin->y,
-				  confwin->x + confwin->w,
-				  confwin->y + confwin->h);
-		delwin(confwin->p);
-	}
-
-	wins_get_config();
-	set_confwin_attr(confwin);
-	confwin->p = newwin(confwin->h, col, 0, 0);
-	box(confwin->p, 0, 0);
-	wins_show(confwin->p, label);
-	delwin(win[STA].p);
-	win[STA].p =
-	    newwin(win[STA].h, win[STA].w, win[STA].y, win[STA].x);
-	keypad(win[STA].p, TRUE);
-	if (notify_bar()) {
-		notify_reinit_bar();
-		notify_update_bar();
 	}
 }
 
@@ -448,7 +448,7 @@ void custom_color_config(void)
 	const char *label = _("color theme");
 
 	conf_win.p = 0;
-	custom_confwin_init(&conf_win, label);
+	confwin_init(&conf_win, label);
 	mark_fore = NBUSERCOLORS;
 	mark_back = SIZE - 1;
 	cursor = 0;
@@ -507,7 +507,7 @@ void custom_color_config(void)
 		}
 
 		if (need_reset)
-			custom_confwin_init(&conf_win, label);
+			confwin_init(&conf_win, label);
 
 		display_color_config(&conf_win, &mark_fore, &mark_back,
 				     cursor, theme_changed);
