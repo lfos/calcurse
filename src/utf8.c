@@ -269,11 +269,11 @@ static const struct utf8_range utf8_widthtab[] = {
 	{0xe0100, 0xe01ef, 0}
 };
 
-/* Decode a UTF-8 code point. */
+/* Decode a UTF-8 encoded character. Return the Unicode code point. */
 int utf8_ord(const char *s)
 {
 	if (UTF8_ISCONT(*s))
-		return 0;
+		return -1;
 
 	switch (UTF8_LENGTH(*s)) {
 	case 1:
@@ -285,17 +285,9 @@ int utf8_ord(const char *s)
 			(s[0] & 0x0f) << 12;
 	case 4:
 		return (((s[3] & 0x3f) | (s[2] & 0x3f) << 6) |
-			(s[1] & 0x3f) << 12) | (s[0] & 0x3f) << 18;
-	case 5:
-		return ((((s[4] & 0x3f) | (s[3] & 0x3f) << 6) |
-			(s[2] & 0x3f) << 12) | (s[1] & 0x3f) << 18) |
-			(s[0] & 0x3f) << 24;
-	case 6:
-		return (((((s[5] & 0x3f) | (s[4] & 0x3f) << 6) |
-			(s[3] & 0x3f) << 12) | (s[2] & 0x3f) << 18) |
-			(s[1] & 0x3f) << 24) | (s[0] & 0x3f) << 30;
+			(s[1] & 0x3f) << 12) | (s[0] & 0x7) << 18;
 	default:
-		return 0;
+		return -1;
 	}
 }
 
@@ -304,6 +296,8 @@ int utf8_width(char *s)
 {
 	int val, low, high, cur;
 
+	if (UTF8_ISCONT(*s))
+		return 0;
 	val = utf8_ord(s);
 	low = 0;
 	high = ARRAY_SIZE(utf8_widthtab);
@@ -328,11 +322,8 @@ int utf8_strwidth(char *s)
 {
 	int width = 0;
 
-	for (; s && *s; s++) {
-		if (!UTF8_ISCONT(*s))
-			width += utf8_width(s);
-	}
-
+	for (; *s; s++)
+		width += utf8_width(s);
 	return width;
 }
 
