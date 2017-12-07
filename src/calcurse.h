@@ -675,7 +675,11 @@ enum move {
 	YEAR_NEXT
 };
 
-/* Available color pairs. */
+/*
+ * Available color pairs.
+ * The numbering must agree with
+ * the colour numbers 1-6, see custom.c.
+ */
 enum {
 	COLR_RED = 1,
 	COLR_GREEN,

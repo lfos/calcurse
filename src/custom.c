@@ -58,7 +58,13 @@ static struct attribute attr;
  */
 void custom_init_attr(void)
 {
-	attr.color[ATTR_HIGHEST] = COLOR_PAIR(COLR_CUSTOM);
+	short col_fg;
+	pair_content(COLR_CUSTOM, &col_fg, NULL);
+
+	attr.color[ATTR_HIGHEST] =
+		(col_fg == -1 || col_fg == 255) ?
+		COLOR_PAIR(COLR_CUSTOM) | A_BOLD :
+		COLOR_PAIR(COLR_CUSTOM);
 	attr.color[ATTR_HIGH] = COLOR_PAIR(COLR_HIGH);
 	attr.color[ATTR_MIDDLE] = COLOR_PAIR(COLR_RED) | A_BOLD;
 	attr.color[ATTR_LOW] = COLOR_PAIR(COLR_CYAN);
@@ -371,6 +377,7 @@ display_color_config(struct window *cwin, int *mark_fore, int *mark_back,
 			if (colr_back == 255)
 				colr_back = -1;
 			init_pair(COLR_CUSTOM, colr_fore, colr_back);
+			custom_init_attr();
 		} else {
 			/* Retrieve the actual color theme. */
 			pair_content(COLR_CUSTOM, &colr_fore, &colr_back);
@@ -379,7 +386,8 @@ display_color_config(struct window *cwin, int *mark_fore, int *mark_back,
 			    || (colr_fore == DEFAULTCOLOR_EXT)) {
 				*mark_fore = NBUSERCOLORS;
 			} else {
-				for (i = 0; i < NBUSERCOLORS + 1; i++)
+				for (i = 0; i < NBUSERCOLORS; i++)
+				/* WARNING. Colour pair number used as colour number. */
 					if (colr_fore == colr[i])
 						*mark_fore = i;
 			}
@@ -388,7 +396,8 @@ display_color_config(struct window *cwin, int *mark_fore, int *mark_back,
 			    || (colr_back == DEFAULTCOLOR_EXT)) {
 				*mark_back = SIZE - 1;
 			} else {
-				for (i = 0; i < NBUSERCOLORS + 1; i++)
+				for (i = 0; i < NBUSERCOLORS; i++)
+				/* WARNING. Colour pair number used as colour number. */
 					if (colr_back ==
 					    colr[NBUSERCOLORS + 1 + i])
 						*mark_back =

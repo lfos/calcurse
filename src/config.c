@@ -263,6 +263,7 @@ static int config_parse_color_theme(void *dummy, const char *val)
 	if (!config_parse_color_pair(&color1, &color2, val))
 		return 0;
 	init_pair(COLR_CUSTOM, color1, color2);
+	custom_init_attr();
 	return 1;
 }
 

@@ -669,6 +669,12 @@ print_bool_option_incolor(WINDOW * win, unsigned option, int pos_y,
 		EXIT(_("option not defined"));
 	}
 
+	/*
+	 * Possibly nested custom_apply_attr() calls. Turn
+	 * custom_apply_attr(ATTR_HIGHEST) off explicitly,
+	 * while it may have other attributes besides the colour.
+	 */
+	custom_remove_attr(win, ATTR_HIGHEST);
 	custom_apply_attr(win, color);
 	mvwaddstr(win, pos_y, pos_x, option_value);
 	custom_remove_attr(win, color);
