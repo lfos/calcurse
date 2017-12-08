@@ -1144,7 +1144,7 @@ long date_sec_change(long, int, int);
 long update_time_in_date(long, unsigned, unsigned);
 time_t get_sec_date(struct date);
 long min2sec(unsigned);
-void draw_scrollbar(WINDOW *, int, int, int, int, int, unsigned);
+void draw_scrollbar(struct scrollwin *);
 void item_in_popup(const char *, const char *, const char *, const char *);
 time_t get_today(void);
 long now(void);

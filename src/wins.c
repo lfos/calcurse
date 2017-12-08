@@ -357,25 +357,32 @@ void wins_scrollwin_draw_deco(struct scrollwin *sw, int hilt)
 /* Display a scrolling window. */
 void wins_scrollwin_display(struct scrollwin *sw)
 {
-	int inner_y = (conf.compact_panels ? 1 : 3);
-	int inner_x = 1;
+	int inner_y = sw->y + (conf.compact_panels ? 1 : 3);
+	int inner_x = sw->x + 1;
 	int inner_h = sw->h - (conf.compact_panels ? 2 : 4);
 	int inner_w = sw->w - 2;
 
-	if (sw->line_num > inner_h) {
-		int sbar_h = MAX(inner_h * inner_h / sw->line_num, 1);
-		int sbar_y = inner_y + sw->line_off * (inner_h - sbar_h) / (sw->line_num - inner_h);
-		int sbar_x = sw->w - 1;
-
-		draw_scrollbar(sw->win, sbar_y, sbar_x, sbar_h, inner_y,
-			       inner_y + inner_h - 1, 1);
-	}
-
+	if (sw->line_num > inner_h)
+		draw_scrollbar(sw);
 	wmove(win[STA].p, 0, 0);
 	wnoutrefresh(sw->win);
-	pnoutrefresh(sw->inner, sw->line_off, 0, sw->y + inner_y,
-		     sw->x + inner_x, sw->y + inner_y + inner_h - 1,
-		     sw->x + inner_x + inner_w - 1);
+	/*
+	(sw->line_off, 0): upper left corner in pad to display;
+	scrolling is achieved by in/decreasing sw->line_off
+	between 0 and line_num - inner.h
+
+	(Y,X)=(inner_y,inner_x): upper left corner in screen window
+	(Y,X) + (inner_h - 1,inner_w - 1): lower right corner in screen window
+
+                        |-inner_w-|
+	        (Y,X)-> +---------+     -
+	                |         |     |
+	                |  (pad)  |    inner_h
+	                |         |     |
+	                +---------+ <-  -
+	*/
+	pnoutrefresh(sw->inner, sw->line_off, 0, inner_y, inner_x,
+		     inner_y + inner_h - 1, inner_x + inner_w - 1);
 	wins_doupdate();
 }
 

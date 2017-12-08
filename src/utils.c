@@ -575,17 +575,36 @@ long min2sec(unsigned minutes)
  * can not be displayed inside the corresponding panel.
  */
 void
-draw_scrollbar(WINDOW * win, int y, int x, int length,
-	       int bar_top, int bar_bottom, unsigned hilt)
+draw_scrollbar(struct scrollwin *sw)
 {
-	mvwvline(win, bar_top, x, ACS_VLINE, bar_bottom - bar_top + 1);
+	int y = (conf.compact_panels ? 1 : 3);
+	int h = sw->h - (conf.compact_panels ? 2 : 4);
+
+	int sbar_h = MAX(h * h / sw->line_num, 1);
+	int sbar_y = y + sw->line_off * (h - sbar_h) / (sw->line_num - h);
+	int sbar_x = sw->w - 1;
+
+	/* which scrollwin am I? */
+	enum win swid = -1;
+	if (strcmp(sw->label, _("TODO")) == 0)
+		swid = TOD;
+	else if (strcmp(sw->label, _("Appointments")) == 0)
+		swid = APP;
+	/*
+	 * Redraw the vertical right border.
+	 * For APP and TOD this is done as part of the move up/down.
+	 */
+	if (swid == -1)
+		mvwvline(sw->win, y, sbar_x, ACS_VLINE, h);
+
+	int hilt = swid == wins_slctd();
 	if (hilt)
-		custom_apply_attr(win, ATTR_HIGHEST);
-	wattron(win, A_REVERSE);
-	mvwvline(win, y, x, ' ', length);
-	wattroff(win, A_REVERSE);
+		custom_apply_attr(sw->win, ATTR_HIGHEST);
+	wattron(sw->win, A_REVERSE);
+	mvwvline(sw->win, sbar_y, sbar_x, ' ', sbar_h);
+	wattroff(sw->win, A_REVERSE);
 	if (hilt)
-		custom_remove_attr(win, ATTR_HIGHEST);
+		custom_remove_attr(sw->win, ATTR_HIGHEST);
 }
 
 /*
