@@ -67,7 +67,7 @@ void ui_calendar_view_next(void)
 		ui_calendar_view = 0;
 
 	/* The calendar panel needs to be erased when switching views. */
-	monthly_view_cache_month = 0;
+	werase(sw_cal.inner);
 }
 
 void ui_calendar_view_prev(void)
@@ -77,7 +77,7 @@ void ui_calendar_view_prev(void)
 	ui_calendar_view--;
 
 	/* The calendar panel needs to be erased when switching views. */
-	monthly_view_cache_month = 0;
+	werase(sw_cal.inner);
 }
 
 void ui_calendar_set_view(int view)
@@ -334,15 +334,10 @@ static void draw_week_number(struct scrollwin *sw, struct tm t)
 	int weeknum = ISO8601weeknum(&t);
 
 	WINS_CALENDAR_LOCK;
-	werase(sw_cal.inner);
-	custom_apply_attr(sw->inner, ATTR_HIGHEST);
-	if (wins_slctd() == CAL)
-		wattron(sw->win, COLOR_PAIR(COLR_CUSTOM));
+	custom_apply_attr(sw->win, ATTR_HIGHEST);
 	mvwprintw(sw->win, conf.compact_panels ? 0 : 2, sw->w - 9,
 		  "(# %02d)", weeknum);
-	if (wins_slctd() == CAL)
-		wattroff(sw->win, COLOR_PAIR(COLR_CUSTOM));
-	custom_remove_attr(sw->inner, ATTR_HIGHEST);
+	custom_remove_attr(sw->win, ATTR_HIGHEST);
 	WINS_CALENDAR_UNLOCK;
 }
 

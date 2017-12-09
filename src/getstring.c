@@ -69,8 +69,8 @@ static void getstr_print(WINDOW * win, int x, int y,
 	mvwprintw(win, y, col - 2, " %c", c);
 
 	/* print cursor */
-	wmove(win, y, st->ci[st->pos].dpyoff - st->ci[st->scrpos].dpyoff);
-	wchgat(win, 1, A_REVERSE, COLR_CUSTOM, NULL);
+	mvwaddch(win, y, st->ci[st->pos].dpyoff - st->ci[st->scrpos].dpyoff,
+		SPACE | A_REVERSE);
 }
 
 /* Delete a character at the given position in string. */

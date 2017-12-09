@@ -337,7 +337,7 @@ void wins_scrollwin_delete(struct scrollwin *sw)
 void wins_scrollwin_draw_deco(struct scrollwin *sw, int hilt)
 {
 	if (hilt)
-		wattron(sw->win, A_BOLD | COLOR_PAIR(COLR_CUSTOM));
+		custom_apply_attr(sw->win, ATTR_HIGHEST);
 
 	box(sw->win, 0, 0);
 
@@ -348,7 +348,7 @@ void wins_scrollwin_draw_deco(struct scrollwin *sw, int hilt)
 	}
 
 	if (hilt)
-		wattroff(sw->win, A_BOLD | COLOR_PAIR(COLR_CUSTOM));
+		custom_remove_attr(sw->win, ATTR_HIGHEST);
 
 	if (!conf.compact_panels)
 		print_in_middle(sw->win, 1, 0, sw->w, sw->label);
