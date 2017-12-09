@@ -537,8 +537,7 @@ void ui_day_item_pipe(void)
  */
 void ui_day_item_add(void)
 {
-#define LTIME 16
-#define LDUR 12
+#define LTIME 17
 	const char *mesg_1 =
 	    _("Enter start time ([hh:mm] or [hhmm]), leave blank for an all-day event:");
 	const char *mesg_2 =
@@ -552,7 +551,7 @@ void ui_day_item_add(void)
 	const char *format_message_2 = _("Invalid time or duration.");
 	const char *format_message_3 = _("Invalid date: end time must come after start time.");
 	const char *enter_str = _("Press [Enter] to continue");
-	char item_time[LDUR] = "";
+	char item_time[LTIME] = "";
 	char item_mesg[BUFSIZ] = "";
 	time_t start = date2sec(*ui_calendar_get_slctd_day(), 0, 0), end, saved = start;
 	unsigned dur;
@@ -588,7 +587,7 @@ void ui_day_item_add(void)
 		for (;;) {
 			int early = 0;
 			status_mesg(mesg_2, "");
-			if (getstring(win[STA].p, item_time, LDUR, 0, 1) ==
+			if (getstring(win[STA].p, item_time, LTIME, 0, 1) ==
 			    GETSTRING_ESC)
 				return;
 			if (*item_time == '?') {
