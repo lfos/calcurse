@@ -390,7 +390,7 @@ int parse_args(int argc, char **argv)
 	int status = 0, gc = 0, import = 0, export = 0, daemon = 0;
 	/* Query ranges */
 	time_t from = -1, to = -1;
-	int range = -1;
+	int range = 0;
 	int limit = INT_MAX;
 	/* Filters */
 	struct item_filter filter = { 0, NULL, NULL, -1, -1, -1, -1, 0, 0, 0 };
@@ -476,8 +476,11 @@ int parse_args(int argc, char **argv)
 			cfile = optarg;
 			break;
 		case 'd':
-			if (is_all_digit(optarg)) {
+			if (is_all_digit(optarg) ||
+			    (*optarg == '-' && is_all_digit(optarg + 1))) {
 				range = atoi(optarg);
+				EXIT_IF(range == 0, _("invalid range: %s"),
+					optarg);
 			} else {
 				from = parse_datetimearg(optarg);
 				EXIT_IF(from == -1, _("invalid date: %s"),
@@ -704,17 +707,18 @@ int parse_args(int argc, char **argv)
 		goto cleanup;
 	}
 
-	if (from == -1) {
-		struct date day = { 0, 0, 0 };
-		from = get_sec_date(day);
-	}
+	EXIT_IF(to >= 0 && range > 0, _("cannot specify a range and an end date"));
+	EXIT_IF(from >= 0 && range < 0, _("cannot specify a negative range and a start date"));
 
-	if (to == -1 && range == -1)
+	if (from == -1)
+		from = get_today();
+	if (to == -1)
 		to = date_sec_change(from, 0, 1);
-	else if (to == -1 && range >= 0)
+
+	if (range > 0)
 		to = date_sec_change(from, 0, range);
-	else if (to >= 0 && range >= 0)
-		EXIT_IF(to >= 0, _("cannot specify a range and an end date"));
+	else if (range < 0)
+		from = date_sec_change(to, 0, range);
 
 	io_init(cfile, datadir);
 	io_check_dir(path_dir);
