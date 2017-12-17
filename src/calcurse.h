@@ -170,6 +170,9 @@
 /* Size of the hash table the note garbage collector uses. */
 #define NOTE_GC_HSIZE 1024
 
+/* Mnemonics */
+#define NOHILT		0 	/* 'No highlight' argument */
+
 #define ERROR_MSG(...) do {                                                   \
   char msg[BUFSIZ];                                                           \
   int len;                                                                    \
@@ -908,7 +911,7 @@ void listbox_resize(struct listbox *, int, int, int, int);
 void listbox_set_cb_data(struct listbox *, void *);
 void listbox_load_items(struct listbox *, int);
 void listbox_draw_deco(struct listbox *, int);
-void listbox_display(struct listbox *);
+void listbox_display(struct listbox *, int);
 int listbox_get_sel(struct listbox *);
 void listbox_set_sel(struct listbox *, unsigned);
 void listbox_sel_move(struct listbox *, int);
@@ -1144,7 +1147,7 @@ long date_sec_change(long, int, int);
 long update_time_in_date(long, unsigned, unsigned);
 time_t get_sec_date(struct date);
 long min2sec(unsigned);
-void draw_scrollbar(struct scrollwin *);
+void draw_scrollbar(struct scrollwin *, int);
 void item_in_popup(const char *, const char *, const char *, const char *);
 time_t get_today(void);
 long now(void);
@@ -1236,7 +1239,7 @@ void wins_scrollwin_resize(struct scrollwin *, int, int, int, int);
 void wins_scrollwin_set_linecount(struct scrollwin *, unsigned);
 void wins_scrollwin_delete(struct scrollwin *);
 void wins_scrollwin_draw_deco(struct scrollwin *, int);
-void wins_scrollwin_display(struct scrollwin *);
+void wins_scrollwin_display(struct scrollwin *, int);
 void wins_scrollwin_up(struct scrollwin *, int);
 void wins_scrollwin_down(struct scrollwin *, int);
 int wins_scrollwin_is_visible(struct scrollwin *, unsigned);

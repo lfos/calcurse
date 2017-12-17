@@ -967,9 +967,9 @@ int ui_day_height(int n, void *cb_data)
 }
 
 /* Updates the Appointment panel */
-void ui_day_update_panel(int which_pan)
+void ui_day_update_panel(int hilt)
 {
-	listbox_display(&lb_apt);
+	listbox_display(&lb_apt, hilt);
 }
 
 void ui_day_popup_item(void)

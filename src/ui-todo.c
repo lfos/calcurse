@@ -268,7 +268,7 @@ void ui_todo_sel_move(int delta)
 }
 
 /* Updates the TODO panel. */
-void ui_todo_update_panel(int which_pan)
+void ui_todo_update_panel(int hilt)
 {
 	/*
 	 * This is used and modified by ui_todo_draw() to avoid quadratic
@@ -277,7 +277,7 @@ void ui_todo_update_panel(int which_pan)
 	llist_item_t *p = LLIST_FIRST(&todolist);
 
 	listbox_set_cb_data(&lb_todo, &p);
-	listbox_display(&lb_todo);
+	listbox_display(&lb_todo, hilt);
 }
 
 /* Change an item priority by pressing '+' or '-' inside TODO panel. */

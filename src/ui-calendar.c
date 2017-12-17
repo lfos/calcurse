@@ -580,7 +580,7 @@ void ui_calendar_update_panel(void)
 	ui_calendar_store_current_date(&current_day);
 	sunday_first = !ui_calendar_week_begins_on_monday();
 	draw_calendar[ui_calendar_view] (&sw_cal, &current_day, sunday_first);
-	wins_scrollwin_display(&sw_cal);
+	wins_scrollwin_display(&sw_cal, NOHILT);
 }
 
 /* Set the selected day in calendar to current day. */
