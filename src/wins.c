@@ -355,7 +355,7 @@ void wins_scrollwin_draw_deco(struct scrollwin *sw, int hilt)
 }
 
 /* Display a scrolling window. */
-void wins_scrollwin_display(struct scrollwin *sw)
+void wins_scrollwin_display(struct scrollwin *sw, int hilt)
 {
 	int inner_y = sw->y + (conf.compact_panels ? 1 : 3);
 	int inner_x = sw->x + 1;
@@ -363,7 +363,7 @@ void wins_scrollwin_display(struct scrollwin *sw)
 	int inner_w = sw->w - 2;
 
 	if (sw->line_num > inner_h)
-		draw_scrollbar(sw);
+		draw_scrollbar(sw, hilt);
 	wmove(win[STA].p, 0, 0);
 	wnoutrefresh(sw->win);
 	/*
@@ -547,9 +547,9 @@ void wins_update_border(int flags)
 void wins_update_panels(int flags)
 {
 	if (flags & FLAG_APP)
-		ui_day_update_panel(slctd_win);
+		ui_day_update_panel(slctd_win == APP);
 	if (flags & FLAG_TOD)
-		ui_todo_update_panel(slctd_win);
+		ui_todo_update_panel(slctd_win == TOD);
 	if (flags & FLAG_CAL)
 		ui_calendar_update_panel();
 }

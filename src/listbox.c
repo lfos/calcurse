@@ -134,7 +134,7 @@ void listbox_draw_deco(struct listbox *lb, int hilt)
 	wins_scrollwin_draw_deco(&(lb->sw), hilt);
 }
 
-void listbox_display(struct listbox *lb)
+void listbox_display(struct listbox *lb, int hilt)
 {
 	int i;
 
@@ -145,7 +145,7 @@ void listbox_display(struct listbox *lb)
 		lb->fn_draw(i, lb->sw.inner, lb->ch[i], is_sel, lb->cb_data);
 	}
 
-	wins_scrollwin_display(&(lb->sw));
+	wins_scrollwin_display(&(lb->sw), hilt);
 }
 
 int listbox_get_sel(struct listbox *lb)

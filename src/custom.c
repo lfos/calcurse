@@ -813,7 +813,7 @@ void custom_general_config(void)
 		     general_option_height, print_general_option);
 	listbox_load_items(&lb, NB_OPTIONS);
 	listbox_draw_deco(&lb, 0);
-	listbox_display(&lb);
+	listbox_display(&lb, NOHILT);
 	wins_set_bindings(bindings, ARRAY_SIZE(bindings));
 	wins_status_bar();
 	wnoutrefresh(win[STA].p);
@@ -847,7 +847,7 @@ void custom_general_config(void)
 			}
 		}
 
-		listbox_display(&lb);
+		listbox_display(&lb, NOHILT);
 		wins_status_bar();
 		wnoutrefresh(win[STA].p);
 		wmove(win[STA].p, 0, 0);
@@ -952,7 +952,7 @@ void custom_keys_config(void)
 	custom_keys_config_bar();
 	selrow = selelm = 0;
 	nbrowelm = print_keys_bindings(kwin.inner, selrow, selelm, LINESPERKEY);
-	wins_scrollwin_display(&kwin);
+	wins_scrollwin_display(&kwin, NOHILT);
 	firstrow = 0;
 	lastrow = firstrow + nbdisplayed - 1;
 	for (;;) {
@@ -1021,7 +1021,7 @@ void custom_keys_config(void)
 								selrow,
 								selelm,
 								LINESPERKEY);
-					wins_scrollwin_display(&kwin);
+					wins_scrollwin_display(&kwin, NOHILT);
 					wins_redrawwin(grabwin);
 					continue;
 				}
@@ -1074,7 +1074,7 @@ void custom_keys_config(void)
 		nbrowelm =
 		    print_keys_bindings(kwin.inner, selrow, selelm,
 					LINESPERKEY);
-		wins_scrollwin_display(&kwin);
+		wins_scrollwin_display(&kwin, NOHILT);
 	}
 }
 

@@ -786,7 +786,7 @@ void notify_config_bar(void)
 		     config_option_height, print_config_option);
 	listbox_load_items(&lb, 8);
 	listbox_draw_deco(&lb, 0);
-	listbox_display(&lb);
+	listbox_display(&lb, NOHILT);
 	wins_set_bindings(bindings, ARRAY_SIZE(bindings));
 	wins_status_bar();
 	wnoutrefresh(win[STA].p);
@@ -824,7 +824,7 @@ void notify_config_bar(void)
 			clearok(curscr, TRUE);
 		}
 
-		listbox_display(&lb);
+		listbox_display(&lb, NOHILT);
 		wins_status_bar();
 		wnoutrefresh(win[STA].p);
 		wmove(win[STA].p, 0, 0);

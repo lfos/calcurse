@@ -574,8 +574,7 @@ long min2sec(unsigned minutes)
  * Display a scroll bar when there are so many items that they
  * can not be displayed inside the corresponding panel.
  */
-void
-draw_scrollbar(struct scrollwin *sw)
+void draw_scrollbar(struct scrollwin *sw, int hilt)
 {
 	int y = (conf.compact_panels ? 1 : 3);
 	int h = sw->h - (conf.compact_panels ? 2 : 4);
@@ -584,20 +583,14 @@ draw_scrollbar(struct scrollwin *sw)
 	int sbar_y = y + sw->line_off * (h - sbar_h) / (sw->line_num - h);
 	int sbar_x = sw->w - 1;
 
-	/* which scrollwin am I? */
-	enum win swid = -1;
-	if (strcmp(sw->label, _("TODO")) == 0)
-		swid = TOD;
-	else if (strcmp(sw->label, _("Appointments")) == 0)
-		swid = APP;
-	/*
-	 * Redraw the vertical right border.
-	 * For APP and TOD this is done as part of the move up/down.
-	 */
-	if (swid == -1)
-		mvwvline(sw->win, y, sbar_x, ACS_VLINE, h);
+	/* Redraw part of the border. */
+	if (hilt)
+		custom_apply_attr(sw->win, ATTR_HIGHEST);
+	mvwvline(sw->win, y, sbar_x, ACS_VLINE, h);
+	if (hilt)
+		custom_remove_attr(sw->win, ATTR_HIGHEST);
 
-	int hilt = swid == wins_slctd();
+	/* Draw the scrollbar. */
 	if (hilt)
 		custom_apply_attr(sw->win, ATTR_HIGHEST);
 	wattron(sw->win, A_REVERSE);
