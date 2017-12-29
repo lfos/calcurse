@@ -274,57 +274,19 @@ date_arg_from_to(long from, long to, int add_line, const char *fmt_apt,
 	}
 }
 
+/*
+ * Convert a string with a date into the Unix time for midnight of that day.
+ * The date format is taken from the user configuration.
+ */
 static time_t parse_datearg(const char *str)
 {
 	struct date day;
 
-	if (parse_date(str, DATEFMT_YYYYMMDD, (int *)&day.yyyy,
-			(int *)&day.mm, (int *)&day.dd, NULL))
+	if (parse_date(str, conf.input_datefmt,
+		       (int *)&day.yyyy, (int *)&day.mm, (int *)&day.dd, NULL))
 		return date2sec(day, 0, 0);
-
-	if (parse_date(str, DATEFMT_MMDDYYYY, (int *)&day.yyyy,
-			(int *)&day.mm, (int *)&day.dd, NULL))
-		return date2sec(day, 0, 0);
-
-	if (parse_date(str, DATEFMT_ISO, (int *)&day.yyyy,
-			(int *)&day.mm, (int *)&day.dd, NULL))
-		return date2sec(day, 0, 0);
-
-	return LONG_MAX;
-}
-
-static time_t parse_datetimearg(const char *str)
-{
-	char *date = mem_strdup(str);
-	char *time;
-	unsigned hour, min;
-	time_t ret;
-
-	time = strchr(date, ' ');
-	if (time) {
-		/* Date and time. */
-		*time = '\0';
-		time++;
-
-		if (!parse_time(time, &hour, &min))
-			return -1;
-		ret = parse_datearg(date);
-		if (ret == LONG_MAX)
-			return -1;
-		ret += hour * HOURINSEC + min * MININSEC;
-
-		return ret;
-	}
-
-	ret = parse_datearg(date);
-	if (ret == LONG_MAX) {
-		/* No date specified, use time only. */
-		if (!parse_time(date, &hour, &min))
-			return -1;
-		return get_today() + hour * HOURINSEC + min * MININSEC;
-	}
-
-	return ret;
+	else
+		return -1;
 }
 
 static int parse_daterange(const char *str, time_t *date_from, time_t *date_to)
@@ -340,7 +302,7 @@ static int parse_daterange(const char *str, time_t *date_from, time_t *date_to)
 	p++;
 
 	if (*s != '\0') {
-		*date_from = parse_datetimearg(s);
+		*date_from = parse_datearg(s);
 		if (*date_from == -1)
 			goto cleanup;
 	} else {
@@ -348,7 +310,7 @@ static int parse_daterange(const char *str, time_t *date_from, time_t *date_to)
 	}
 
 	if (*p != '\0') {
-		*date_to = parse_datetimearg(p);
+		*date_to = parse_datearg(p);
 		if (*date_to == -1)
 			goto cleanup;
 	} else {
@@ -395,10 +357,11 @@ cleanup:
 /*
  * Parse the command-line arguments and call the appropriate
  * routines to handle those arguments. Also initialize the data paths.
+ * Returns the non-interactive value.
  */
 int parse_args(int argc, char **argv)
 {
-	/* Command-line flags */
+	/* Command-line flags - NOTE that read_only is global */
 	int grep = 0, purge = 0, query = 0, next = 0;
 	int status = 0, gc = 0, import = 0, export = 0, daemon = 0;
 	int filter_opt = 0, format_opt = 0, query_range = 0;
@@ -483,6 +446,28 @@ int parse_args(int argc, char **argv)
 		{NULL, no_argument, NULL, 0}
 	};
 
+	/*
+	 * Load the configuration file first to get the input date format for
+	 * parsing the remaining options.
+	 */
+	while ((ch = getopt_long(argc, argv, optstr, longopts, NULL)) != -1) {
+		switch (ch) {
+		case 'C':
+			confdir = optarg;
+			break;
+		case 'D':
+			datadir = optarg;
+			break;
+		}
+	}
+	io_init(cfile, datadir, confdir);
+	vars_init();
+	notify_init_vars();
+	if (io_file_exists(path_conf))
+		config_load();
+
+	/* Parse the remaining options. */
+	optind = 1;
 	while ((ch = getopt_long(argc, argv, optstr, longopts, NULL)) != -1) {
 		switch (ch) {
 		case 'a':
@@ -491,9 +476,9 @@ int parse_args(int argc, char **argv)
 			break;
 		case 'c':
 			cfile = optarg;
+			io_init(cfile, datadir, confdir);
 			break;
 		case 'C':
-			confdir = optarg;
 			break;
 		case 'd':
 			if (is_all_digit(optarg) ||
@@ -502,7 +487,7 @@ int parse_args(int argc, char **argv)
 				EXIT_IF(range == 0, _("invalid range: %s"),
 					optarg);
 			} else {
-				from = parse_datetimearg(optarg);
+				from = parse_datearg(optarg);
 				EXIT_IF(from == -1, _("invalid date: %s"),
 					optarg);
 			}
@@ -511,7 +496,6 @@ int parse_args(int argc, char **argv)
 			query = 1;
 			break;
 		case 'D':
-			datadir = optarg;
 			break;
 		case 'F':
 			purge = grep = 1;
@@ -550,7 +534,7 @@ int parse_args(int argc, char **argv)
 		case 's':
 			if (!optarg)
 				optarg = "today";
-			from = parse_datetimearg(optarg);
+			from = parse_datearg(optarg);
 			EXIT_IF(from == -1, _("invalid date: %s"), optarg);
 			filter.type_mask |= TYPE_MASK_CAL;
 			query = 1;
@@ -613,25 +597,25 @@ int parse_args(int argc, char **argv)
 			filter_opt = 1;
 			break;
 		case OPT_FILTER_START_FROM:
-			filter.start_from = parse_datetimearg(optarg);
+			filter.start_from = parse_datearg(optarg);
 			EXIT_IF(filter.start_from == -1,
 				_("invalid date: %s"), optarg);
 			filter_opt = 1;
 			break;
 		case OPT_FILTER_START_TO:
-			filter.start_to = parse_datetimearg(optarg);
+			filter.start_to = parse_datearg(optarg);
 			EXIT_IF(filter.start_to == -1,
 				_("invalid date: %s"), optarg);
 			filter_opt = 1;
 			break;
 		case OPT_FILTER_START_AFTER:
-			filter.start_from = parse_datetimearg(optarg) + 1;
+			filter.start_from = parse_datearg(optarg) + 1;
 			EXIT_IF(filter.start_from == -1,
 				_("invalid date: %s"), optarg);
 			filter_opt = 1;
 			break;
 		case OPT_FILTER_START_BEFORE:
-			filter.start_to = parse_datetimearg(optarg) - 1;
+			filter.start_to = parse_datearg(optarg) - 1;
 			EXIT_IF(filter.start_to == -1,
 				_("invalid date: %s"), optarg);
 			filter_opt = 1;
@@ -643,25 +627,25 @@ int parse_args(int argc, char **argv)
 			filter_opt = 1;
 			break;
 		case OPT_FILTER_END_FROM:
-			filter.end_from = parse_datetimearg(optarg);
+			filter.end_from = parse_datearg(optarg);
 			EXIT_IF(filter.end_from == -1,
 				_("invalid date: %s"), optarg);
 			filter_opt = 1;
 			break;
 		case OPT_FILTER_END_TO:
-			filter.end_to = parse_datetimearg(optarg);
+			filter.end_to = parse_datearg(optarg);
 			EXIT_IF(filter.end_to == -1,
 				_("invalid date: %s"), optarg);
 			filter_opt = 1;
 			break;
 		case OPT_FILTER_END_AFTER:
-			filter.end_from = parse_datetimearg(optarg) + 1;
+			filter.end_from = parse_datearg(optarg) + 1;
 			EXIT_IF(filter.end_from == -1,
 				_("invalid date: %s"), optarg);
 			filter_opt = 1;
 			break;
 		case OPT_FILTER_END_BEFORE:
-			filter.end_to = parse_datetimearg(optarg) - 1;
+			filter.end_to = parse_datearg(optarg) - 1;
 			EXIT_IF(filter.end_to == -1,
 				_("invalid date: %s"), optarg);
 			filter_opt = 1;
@@ -687,12 +671,12 @@ int parse_args(int argc, char **argv)
 			filter_opt = 1;
 			break;
 		case OPT_FROM:
-			from = parse_datetimearg(optarg);
+			from = parse_datearg(optarg);
 			EXIT_IF(from == -1, _("invalid date: %s"), optarg);
 			query_range = 1;
 			break;
 		case OPT_TO:
-			to = parse_datetimearg(optarg);
+			to = parse_datearg(optarg);
 			EXIT_IF(to == -1, _("invalid date: %s"), optarg);
 			query_range = 1;
 			break;
@@ -768,20 +752,17 @@ int parse_args(int argc, char **argv)
 	else if (range < 0)
 		from = date_sec_change(to, 0, range + 1);
 
-	io_init(cfile, datadir, confdir);
 	io_check_dir(path_ddir);
 	io_check_dir(path_notes);
 	io_check_dir(path_cdir);
 	io_check_dir(path_hooks);
 
-	vars_init();
 	if (status) {
 		status_arg();
 	} else if (grep) {
 		io_check_file(path_apts);
 		io_check_file(path_todo);
 		io_check_file(path_conf);
-		config_load();	/* To get output date format. */
 		io_load_data(&filter, FORCE);
 		if (purge) {
 			io_save_todo(path_todo);
@@ -803,7 +784,6 @@ int parse_args(int argc, char **argv)
 		io_check_file(path_apts);
 		io_check_file(path_todo);
 		io_check_file(path_conf);
-		config_load();	/* To get output date format. */
 		io_load_data(&filter, FORCE);
 
 		/* Use default values for non-specified format strings. */
@@ -855,7 +835,6 @@ int parse_args(int argc, char **argv)
 		io_load_data(&filter, FORCE);
 		io_export_data(xfmt, export_uid);
 	} else if (daemon) {
-		notify_init_vars();
 		dmon_stop();
 		dmon_start(0);
 	} else {
