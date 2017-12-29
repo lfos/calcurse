@@ -629,12 +629,9 @@ static int config_load_cb(const char *key, const char *value, void *dummy)
 	int result = config_set_conf(key, value);
 
 	if (result < 0) {
-		EXIT(_("configuration variable unknown: \"%s\""), key);
-		/* NOTREACHED */
+		WARN_MSG(_("unknown user option: \"%s\""), key);
 	} else if (result == 0) {
-		EXIT(_("wrong configuration variable format for \"%s\""),
-		     key);
-		/* NOTREACHED */
+		WARN_MSG(_("invalid option format: \"%s\""), key);
 	}
 
 	return 1;
