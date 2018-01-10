@@ -153,7 +153,6 @@ static void layout_selection_bar(void)
 static void display_layout_config(struct window *lwin, int mark,
 				  int cursor)
 {
-#define CURSOR			(32 | A_REVERSE)
 #define MARK			88
 #define LAYOUTH                  5
 #define LAYOUTW                  9
@@ -199,8 +198,9 @@ static void display_layout_config(struct window *lwin, int mark,
 			custom_remove_attr(lwin->p, ATTR_HIGHEST);
 	}
 	mvwaddch(lwin->p, pos[mark][YPOS] + 2, pos[mark][XPOS] + 1, MARK);
-	mvwaddch(lwin->p, pos[cursor][YPOS] + 2, pos[cursor][XPOS] + 1,
-		 CURSOR);
+	/* print cursor */
+	wmove(lwin->p, pos[cursor][YPOS] + 2, pos[cursor][XPOS] + 1);
+	wchgat(lwin->p, 1, A_REVERSE, (colorize ? COLR_CUSTOM : 0), NULL);
 
 	layout_selection_bar();
 	wnoutrefresh(win[STA].p);
@@ -334,7 +334,6 @@ display_color_config(struct window *cwin, int *mark_fore, int *mark_back,
 #define	SIZE 			(2 * (NBUSERCOLORS + 1))
 #define DEFAULTCOLOR		255
 #define DEFAULTCOLOR_EXT	-1
-#define CURSOR			(32 | A_REVERSE)
 #define MARK			88
 
 	const char *fore_txt = _("Foreground");
@@ -438,8 +437,8 @@ display_color_config(struct window *cwin, int *mark_fore, int *mark_back,
 			 pos[*mark_back][XPOS] + 1, MARK);
 	}
 
-	mvwaddch(cwin->p, pos[cursor][YPOS], pos[cursor][XPOS] + 1,
-		 CURSOR);
+	wmove(cwin->p, pos[cursor][YPOS], pos[cursor][XPOS] + 1);
+	wchgat(cwin->p, 1, A_REVERSE, (colorize ? COLR_CUSTOM : 0), NULL);
 	color_selection_bar();
 	wnoutrefresh(win[STA].p);
 	wnoutrefresh(cwin->p);
