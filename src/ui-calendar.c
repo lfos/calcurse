@@ -64,9 +64,6 @@ void ui_calendar_view_next(void)
 	ui_calendar_view++;
 	if (ui_calendar_view == CAL_VIEWS)
 		ui_calendar_view = 0;
-
-	/* The calendar panel needs to be erased when switching views. */
-	werase(sw_cal.inner);
 }
 
 void ui_calendar_view_prev(void)
@@ -74,9 +71,6 @@ void ui_calendar_view_prev(void)
 	if (ui_calendar_view == 0)
 		ui_calendar_view = CAL_VIEWS;
 	ui_calendar_view--;
-
-	/* The calendar panel needs to be erased when switching views. */
-	werase(sw_cal.inner);
 }
 
 void ui_calendar_set_view(int view)
@@ -362,6 +356,8 @@ draw_monthly_view(struct scrollwin *sw, struct date *current_day,
 	struct tm t;
 	char *cp;
 
+	werase(sw->inner);
+
 	mo = slctd_day.mm;
 	yr = slctd_day.yyyy;
 
@@ -389,10 +385,6 @@ draw_monthly_view(struct scrollwin *sw, struct date *current_day,
 
 	/* Write the current month and year on top of the calendar */
 	WINS_CALENDAR_LOCK;
-	if (yr * YEARINMONTHS + mo != monthly_view_cache_month) {
-		/* erase the window if a new month is selected */
-		werase(sw_cal.inner);
-	}
 	custom_apply_attr(sw->inner, ATTR_HIGHEST);
 	cp = nl_langinfo(MON_1 + mo - 1);
 	mvwprintw(sw->inner, ofs_y, (w - (strlen(cp) + 5)) / 2,
@@ -474,6 +466,8 @@ draw_weekly_view(struct scrollwin *sw, struct date *current_day,
 	const int WCALWIDTH = 28;
 	struct tm t;
 	int OFFY, OFFX, j;
+
+	werase(sw->inner);
 
 	OFFY = 0;
 	OFFX = (wins_sbar_width() - 2 - WCALWIDTH) / 2;
