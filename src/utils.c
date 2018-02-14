@@ -192,7 +192,7 @@ void status_mesg(const char *msg1, const char *msg2)
 /*
  * Prompts the user to make a choice between named alternatives.
  *
- * The available choices are described by a string of the form
+ * The available choices are described (in po-files) by a string of the form
  * "[ynp]". The first and last char are ignored (they are only here to
  * make the translators' life easier), and every other char indicates
  * a key the user is allowed to press.
@@ -203,25 +203,36 @@ void status_mesg(const char *msg1, const char *msg2)
 int status_ask_choice(const char *message, const char choice[],
 		      int nb_choice)
 {
-	/* "[4/2/f/t/w/.../Z] " */
-	char avail_choice[2 * nb_choice + 3];
-	int i, ch;
+	/* Turn "[42w...Z]" into * "[4/2/w/.../Z]". */
+	char avail_choice[nb_choice * UTF8_MAXLEN + nb_choice + 1];
+	int ichoice[nb_choice];
+	int i, j, k, n, ch;
 
 	avail_choice[0] = '[';
-	for (i = 1; i <= nb_choice; i++) {
-		avail_choice[i * 2 - 1] = choice[i];
-		avail_choice[i * 2] = '/';
+	for (n = 0, i = 1, j = 1; n < nb_choice; n++, i += k) {
+		for (k = 0; k < UTF8_LENGTH(choice[i]); k++) {
+			avail_choice[j] = choice[i + k];
+			j++;
+		}
+		avail_choice[j] = '/';
+		j++;
 	}
-	avail_choice[nb_choice * 2] = ']';
-	avail_choice[nb_choice * 2 + 1] = '\0';
+	avail_choice[j - 1] = ']';
+	avail_choice[j] = '\0';
 
 	status_mesg(message, avail_choice);
 
+	/* Convert the character choices to internal integer codes. */
+	for (n = 0, i = 1; n < nb_choice; n++, i += j) {
+		j = UTF8_LENGTH(choice[i]);
+		ichoice[n] = utf8_decode(choice + i) + (j > 1 ? KEY_MAX : 0);
+	}
+
 	for (;;) {
 		ch = keys_wgetch(win[KEY].p);
-		for (i = 1; i <= nb_choice; i++)
-			if (ch == choice[i])
-				return i;
+		for (i = 0; i < nb_choice; i++)
+			if (ch == ichoice[i])
+				return i + 1;
 		if (ch == ESCAPE)
 			return (-1);
 		if (resize) {
