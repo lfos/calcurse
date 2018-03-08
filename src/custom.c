@@ -744,12 +744,12 @@ static void general_option_edit(int i)
 		status_mesg(periodic_save_str, "");
 		if (updatestring(win[STA].p, &buf, 0, 1) == 0) {
 			val = atoi(buf);
-			if (val >= 0)
+			if (val >= 0) {
 				conf.periodic_save = val;
-			if (conf.periodic_save > 0)
-				io_start_psave_thread();
-			else if (conf.periodic_save == 0)
 				io_stop_psave_thread();
+				if (conf.periodic_save > 0)
+					io_start_psave_thread();
+			}
 		}
 		break;
 	case CONFIRM_QUIT:
