@@ -291,7 +291,44 @@ int utf8_decode(const char *s)
 	}
 }
 
-/* Get the width of a UTF-8 character. */
+/*
+ * Encode a Unicode code point.
+ * Return a pointer to the resulting UTF-8 encoded character.
+ */
+char *utf8_encode(int u)
+{
+	static char c[5]; /* 4 bytes + string termination */
+
+	/* 0x0000 - 0x007F: 0xxxxxxx */
+	if (u < 0x80) {
+		*(c + 1) = '\0';
+		*c = u;
+	/* 0x0080 - 0x07FF: 110xxxxx 10xxxxxx */
+	} else if (u < 0x800) {
+		*(c + 2) = '\0';
+		*(c + 1) = (u       & 0x3F) | 0x80;
+		*c       = (u >> 6)         | 0xC0;
+	/* 0x0800 - 0xFFFF: 1110xxxx 10xxxxxx 10xxxxxx */
+	} else if (u < 0x10000) {
+		*(c + 3) = '\0';
+		*(c + 2) = (u       & 0x3F) | 0x80;
+		*(c + 1) = (u >> 6  & 0x3F) | 0x80;
+		*c       = (u >> 12)        | 0xE0;
+	} else if (u < 0x110000) {
+	/* 0x10000 - 0x10FFFF: 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx */
+		*(c + 4) = '\0';
+		*(c + 3) = (u       & 0x3F) | 0x80;
+		*(c + 2) = (u >> 6  & 0x3F) | 0x80;
+		*(c + 1) = (u >> 12 & 0x3F) | 0x80;
+		*c       = (u >> 18)        | 0xF0;
+	} else {
+		return NULL;
+	}
+
+	return c;
+}
+
+/* Get the display width of a UTF-8 character. */
 int utf8_width(char *s)
 {
 	int val, low, high, cur;

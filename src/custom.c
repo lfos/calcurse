@@ -908,7 +908,7 @@ print_keys_bindings(WINDOW * win, int selected_row, int selected_elm,
 						mvwprintw(win, y, pos,
 							  "%s ", key);
 					noelm++;
-					pos += strlen(key) + 1;
+					pos += utf8_strwidth((char *)key) + 1;
 				}
 			} else {
 				mvwaddstr(win, y, KEYPOS,
