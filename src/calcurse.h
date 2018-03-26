@@ -1119,6 +1119,7 @@ int utf8_decode(const char *);
 int utf8_width(char *);
 int utf8_strwidth(char *);
 int utf8_chop(char *, int);
+char *utf8_encode(int);
 
 /* utils.c */
 void exit_calcurse(int) __attribute__ ((__noreturn__));

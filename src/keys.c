@@ -395,9 +395,6 @@ int keys_str2int(const char *key)
 	else if (strcmp(key, "KEY_END") == 0)
 		return KEY_END;
 
-	/* UTF-8 multibyte keys. */
-	if (starts_with(key, "U+"))
-		return strtol(&key[strlen("U+")], NULL, 16) + KEY_MAX;
 
 	/* Lookup in the keynames table. */
 	for (int i = 1; i < 128; i++)
@@ -407,8 +404,8 @@ int keys_str2int(const char *key)
 		if (strcmp(key, keynames[i]) == 0)
 			return i;
 
-
-	return -1;
+	/* UTF-8 multibyte keys. */
+	return utf8_decode(key) + KEY_MAX;
 }
 
 char *keys_int2str(int key)
@@ -421,7 +418,7 @@ char *keys_int2str(int key)
 		else
 			return mem_strdup(keynames[key]);
 	} else {
-		asprintf(&res, "U+%04X", key - KEY_MAX);
+		asprintf(&res, "%s", utf8_encode(key - KEY_MAX));
 		return res;
 	}
 }
@@ -476,7 +473,7 @@ char *keys_action_allkeys(enum key action)
 static char *keys_format_label(char *key, int keylen)
 {
 	static char fmtkey[BUFSIZ];
-	const int len = strlen(key);
+	const int len = utf8_strwidth(key);
 	const char dot = '.';
 	int i;
 
@@ -520,7 +517,7 @@ keys_display_bindings_bar(WINDOW * win, int *bindings, int count,
 		const int label_pos_x = key_pos_x + KEYS_KEYLEN + 1;
 		const int label_pos_y = key_pos_y;
 
-		char key[KEYS_KEYLEN + 1], *fmtkey;
+		char key[UTF8_MAXLEN + 1], *fmtkey;
 
 		int binding_key;
 
@@ -532,9 +529,8 @@ keys_display_bindings_bar(WINDOW * win, int *bindings, int count,
 		const char *label;
 
 		if (binding_key < NBKEYS) {
-			strncpy(key, keys_action_firstkey(binding_key),
-				KEYS_KEYLEN);
-			key[KEYS_KEYLEN] = '\0';
+			strncpy(key, keys_action_firstkey(binding_key), UTF8_MAXLEN);
+			key[UTF8_MAXLEN] = '\0';
 			label = gettext(keydef[binding_key].sb_label);
 		} else {
 			switch (binding_key) {
