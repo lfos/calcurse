@@ -99,8 +99,11 @@ void *llist_get_data(llist_item_t *);
 void llist_add(llist_t *, void *);
 void llist_add_sorted(llist_t *, void *, llist_fn_cmp_t);
 void llist_remove(llist_t *, llist_item_t *);
+void llist_reorder(llist_t *, void *, llist_fn_cmp_t);
 
 #define LLIST_ADD(l, data) llist_add(l, data)
 #define LLIST_ADD_SORTED(l, data, fn_cmp)                                     \
   llist_add_sorted(l, data, (llist_fn_cmp_t)fn_cmp)
 #define LLIST_REMOVE(l, i) llist_remove(l, i)
+#define LLIST_REORDER(l, data, fn_cmp)                                        \
+  llist_reorder(l, data, (llist_fn_cmp_t)fn_cmp)

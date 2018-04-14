@@ -90,3 +90,5 @@ struct llist_ts {
 #define LLIST_TS_REMOVE(l_ts, i) llist_remove ((llist_t *)l_ts, i)
 #define LLIST_TS_ADD_SORTED(l_ts, data, fn_cmp)                               \
   llist_add_sorted ((llist_t *)l_ts, data, (llist_fn_cmp_t)fn_cmp)
+#define LLIST_TS_REORDER(l_ts, data, fn_cmp)                                  \
+  llist_reorder((llist_t *)l_ts, data, (llist_fn_cmp_t)fn_cmp)

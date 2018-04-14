@@ -109,6 +109,34 @@ llist_item_t *llist_next(llist_item_t * i)
 }
 
 /*
+ * Return the predecessor of a list item or, if head, the list item itself,
+ * or if not in the list, NULL.
+ * The list item may be supplied either directly (i) or as a pointer to
+ * the contents (data); the first case takes precedence.
+ */
+static llist_item_t *llist_prev(llist_t *l, llist_item_t *i, void *data)
+{
+	llist_item_t *j;
+
+	if (!i && !data)
+		return NULL;
+
+	if (l->head == i || l->head->data == data)
+		return l->head;
+
+	if (i) {
+		for (j = l->head; j; j = j->next)
+			if (j->next == i)
+				return j;
+	} else {
+		for (j = l->head; j && j->next; j = j->next)
+			if (j->next->data == data)
+				return j;
+	}
+	return NULL;
+}
+
+/*
  * Return the successor of a list item if it is matched by some filter
  * callback. Return NULL otherwise.
  */
@@ -150,34 +178,94 @@ void llist_add(llist_t * l, void *data)
 }
 
 /*
+ * Insert an existing item in a sorted list.
+ */
+static void llist_relink(llist_t *l, llist_item_t *i, llist_fn_cmp_t fn_cmp)
+{
+	llist_item_t *j;
+
+	if (!i)
+		return;
+
+	i->next = NULL;
+	if (!l->head) {
+		l->head = l->tail = i;
+	} else if (fn_cmp(i->data, l->tail->data) >= 0) {
+		l->tail->next = i;
+		l->tail = i;
+	} else if (fn_cmp(i->data, l->head->data) < 0) {
+		i->next = l->head;
+		l->head = i;
+	} else {
+		j = l->head;
+		while (j->next && fn_cmp(i->data, j->next->data) >= 0)
+			j = j->next;
+		i->next = j->next;
+		j->next = i;
+	}
+}
+
+/*
+ * Unlink an item from a list and return it.
+ */
+static llist_item_t *llist_unlink(llist_t *l, llist_item_t *i)
+{
+	llist_item_t *p;
+
+	if (!i)
+		return NULL;
+
+	p = llist_prev(l, i, NULL);
+	if (!p)
+		return NULL;
+
+	if (i == l->tail)
+		l->tail = (i == l->head) ? NULL : p;
+	if (i == l->head)
+		l->head = i->next;
+	else
+		p->next = i->next;
+	i->next = NULL;
+	return i;
+}
+
+/*
+ * Find an item matched by some filter callback; start from a specified item.
+ */
+static llist_item_t *llist_find_from(llist_item_t *i, void *data,
+				     llist_fn_match_t fn_match)
+{
+	if (!i)
+		return NULL;
+
+	if (fn_match) {
+		for (; i; i = i->next) {
+			if (fn_match(i->data, data))
+				return i;
+		}
+	} else {
+		for (; i; i = i->next) {
+			if (i->data == data)
+				return i;
+		}
+	}
+
+	return NULL;
+}
+
+/*
  * Add an item to a sorted list.
  */
 void llist_add_sorted(llist_t * l, void *data, llist_fn_cmp_t fn_cmp)
 {
 	llist_item_t *o = mem_malloc(sizeof(llist_item_t));
-	llist_item_t *i;
 
 	if (o) {
 		o->data = data;
 		o->next = NULL;
-
-		if (!l->head) {
-			l->head = l->tail = o;
-		} else if (fn_cmp(o->data, l->tail->data) >= 0) {
-			l->tail->next = o;
-			l->tail = o;
-		} else if (fn_cmp(o->data, l->head->data) < 0) {
-			o->next = l->head;
-			l->head = o;
-		} else {
-			i = l->head;
-			while (i->next
-			       && fn_cmp(o->data, i->next->data) >= 0)
-				i = i->next;
-			o->next = i->next;
-			i->next = o;
-		}
 	}
+
+	llist_relink(l, o, fn_cmp);
 }
 
 /*
@@ -209,21 +297,7 @@ void llist_remove(llist_t * l, llist_item_t * i)
 llist_item_t *llist_find_first(llist_t * l, void *data,
 			       llist_fn_match_t fn_match)
 {
-	llist_item_t *i;
-
-	if (fn_match) {
-		for (i = l->head; i; i = i->next) {
-			if (fn_match(i->data, data))
-				return i;
-		}
-	} else {
-		for (i = l->head; i; i = i->next) {
-			if (i->data == data)
-				return i;
-		}
-	}
-
-	return NULL;
+	return l ? llist_find_from(l->head, data, fn_match) : NULL;
 }
 
 /*
@@ -232,22 +306,7 @@ llist_item_t *llist_find_first(llist_t * l, void *data,
 llist_item_t *llist_find_next(llist_item_t * i, void *data,
 			      llist_fn_match_t fn_match)
 {
-	if (i) {
-		i = i->next;
-		if (fn_match) {
-			for (; i; i = i->next) {
-				if (fn_match(i->data, data))
-					return i;
-			}
-		} else {
-			for (; i; i = i->next) {
-				if (i->data == data)
-					return i;
-			}
-		}
-	}
-
-	return NULL;
+	return i ? llist_find_from(i->next, data, fn_match) : NULL;
 }
 
 /*
@@ -261,17 +320,42 @@ llist_item_t *llist_find_nth(llist_t * l, int n, void *data,
 	if (n < 0)
 		return NULL;
 
-	if (fn_match) {
-		for (i = l->head; i; i = i->next) {
-			if (fn_match(i->data, data) && (n-- == 0))
-				return i;
-		}
-	} else {
-		for (i = l->head; i; i = i->next) {
-			if ((i->data == data) && (n-- == 0))
-				return i;
-		}
+	for (i = l->head; i; i = i->next, n--) {
+		i = llist_find_from(i, data, fn_match);
+		if (!i || !n)
+			return i;
 	}
 
 	return NULL;
+}
+
+/*
+ * Reorder a sorted linked list when an item has changed.
+ */
+void llist_reorder(llist_t *l, void *data, llist_fn_cmp_t fn_cmp)
+{
+	llist_item_t *o, *p;
+
+	if (!(p = llist_prev(l, NULL, data)))
+		return;
+
+	/* List head? */
+	if (p->data == data)
+		o = p;
+	else
+		o = p->next;
+
+	/* Sorted already?
+	 * Note: p is either the previous element or o itself.
+	 */
+	if (o->next &&
+	    fn_cmp(p->data, o->data) <= 0 &&
+	    fn_cmp(o->data, o->next->data) <= 0)
+		return;
+	if (!o->next &&
+	    fn_cmp(p->data, o->data) <= 0)
+		return;
+
+	/* Link manipulation only. */
+	llist_relink(l, llist_unlink(l, o), fn_cmp);
 }
