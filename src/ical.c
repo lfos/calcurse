@@ -152,7 +152,7 @@ static void ical_export_events(FILE * stream, int export_uid)
 		struct event *ev = LLIST_TS_GET_DATA(i);
 		date_sec2date_fmt(ev->day, ICALDATEFMT, ical_date);
 		fputs("BEGIN:VEVENT\n", stream);
-		fprintf(stream, "DTSTART:%s\n", ical_date);
+		fprintf(stream, "DTSTART;VALUE=DATE:%s\n", ical_date);
 		fprintf(stream, "SUMMARY:%s\n", ev->mesg);
 
 		if (export_uid) {
