@@ -58,8 +58,8 @@ static struct attribute attr;
  */
 void custom_init_attr(void)
 {
-	short col_fg;
-	pair_content(COLR_CUSTOM, &col_fg, NULL);
+	short col_fg, dummy;
+	pair_content(COLR_CUSTOM, &col_fg, &dummy);
 
 	attr.color[ATTR_HIGHEST] =
 		(col_fg == -1 || col_fg == 255) ?
