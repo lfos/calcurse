@@ -592,6 +592,11 @@ void io_save_cal(enum save_display display)
 
 	io_unset_modified();
 
+	io_compute_hash(path_apts, apts_sha1);
+	io_compute_hash(path_todo, todo_sha1);
+
+	io_mutex_unlock();
+
 	/* Print a message telling data were saved */
 	if (ui_mode == UI_CURSES && display == IO_SAVE_DISPLAY_BAR &&
 	    show_dialogs()) {
@@ -599,10 +604,6 @@ void io_save_cal(enum save_display display)
 		keys_wait_for_any_key(win[KEY].p);
 	}
 
-	io_compute_hash(path_apts, apts_sha1);
-	io_compute_hash(path_todo, todo_sha1);
-
-	io_mutex_unlock();
 	run_hook("post-save");
 }
 
