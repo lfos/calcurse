@@ -189,7 +189,10 @@ def remote_query(conn, cmd, path, additional_headers, body):
 
     if debug:
         print("> {} {}".format(cmd, path))
-        print("> Headers: " + repr(headers))
+        headers_sanitized = headers
+        if not debug_raw:
+            headers_sanitized.pop('Authorization', None)
+        print("> Headers: " + repr(headers_sanitized))
         if body:
             for line in body.splitlines():
                 print("> " + line)
@@ -504,6 +507,8 @@ parser.add_argument('-v', '--verbose', action='store_true', dest='verbose',
                     help='print status messages to stdout')
 parser.add_argument('--debug', action='store_true', dest='debug',
                     default=False, help='print debug messages to stdout')
+parser.add_argument('--debug-raw', action='store_true', dest='debug_raw',
+                    default=False, help='do not sanitize debug messages')
 args = parser.parse_args()
 
 init = args.init is not None
@@ -514,6 +519,7 @@ hookdir = args.hookdir
 authcode = args.authcode
 verbose = args.verbose
 debug = args.debug
+debug_raw = args.debug_raw
 
 # Read environment variables
 password = os.getenv('CALCURSE_CALDAV_PASSWORD')
