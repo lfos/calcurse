@@ -731,7 +731,7 @@ void keys_fill_missing(void)
 							  "\"%s\" was already assigned!"),
 							 keydef[i].label,
 							 key_ch);
-					p += strlen(key_ch) + 1;
+					p += strlen(key_ch);
 				} else {
 					break;
 				}
