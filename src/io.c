@@ -893,12 +893,10 @@ void io_load_todo(struct item_filter *filter)
 /* Load appointments and todo items */
 void io_load_data(struct item_filter *filter)
 {
-	run_hook("pre-load");
 	io_mutex_lock();
 	io_load_app(filter);
 	io_load_todo(filter);
 	io_mutex_unlock();
-	run_hook("post-load");
 }
 
 int io_reload_data(void)
@@ -934,6 +932,8 @@ int io_reload_data(void)
 		}
 	}
 
+	run_hook("pre-load");
+
 	if (!io_check_data_files_modified())
 		goto cleanup;
 
@@ -962,6 +962,8 @@ int io_reload_data(void)
 	ui_todo_sel_reset();
 
 	io_load_data(NULL);
+	run_hook("post-load");
+
 	io_unset_modified();
 	ui_todo_load_items();
 	ui_todo_sel_reset();

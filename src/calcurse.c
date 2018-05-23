@@ -619,7 +619,11 @@ int main(int argc, char **argv)
 	config_load();
 	wins_erase_status_bar();
 	io_load_keys(conf.pager);
+
+	run_hook("pre-load");
 	io_load_data(NULL);
+	run_hook("post-load");
+
 	io_unset_modified();
 	wins_slctd_set(conf.default_panel);
 	wins_resize();
