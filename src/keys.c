@@ -452,18 +452,23 @@ char *keys_action_allkeys(enum key action)
 {
 	llist_item_t *i;
 	static char keystr[BUFSIZ];
-	const char *CHAR_SPACE = " ";
+	int keystrlen = 0;
+	int entrylen;
 
 	if (!LLIST_FIRST(&keys[action]))
 		return NULL;
 
 	keystr[0] = '\0';
 	LLIST_FOREACH(&keys[action], i) {
-		const int MAXLEN = sizeof(keystr) - 1 - strlen(keystr);
-		strncat(keystr, LLIST_GET_DATA(i), MAXLEN - 1);
-		strncat(keystr, CHAR_SPACE, 1);
+		entrylen = strlen(LLIST_GET_DATA(i)) + 1;
+		if (keystrlen + entrylen >= BUFSIZ)
+			break;
+		memcpy(keystr + keystrlen, LLIST_GET_DATA(i), entrylen - 1);
+		keystr[keystrlen + entrylen - 1] = ' ';
+		keystrlen += entrylen;
 	}
 
+	keystr[keystrlen] = '\0';
 	return keystr;
 }
 
