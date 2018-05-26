@@ -720,6 +720,7 @@ void keys_fill_missing(void)
 			char *p, tmpbuf[BUFSIZ];
 
 			strncpy(tmpbuf, keydef[i].binding, BUFSIZ);
+			tmpbuf[BUFSIZ - 1] = '\0';
 			p = tmpbuf;
 			for (;;) {
 				char key_ch[BUFSIZ];
