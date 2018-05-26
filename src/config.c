@@ -162,7 +162,12 @@ static int config_parse_int(int *dest, const char *val)
 
 static int config_parse_str(char *dest, const char *val)
 {
-	strncpy(dest, val, BUFSIZ);
+	int len = strlen(val);
+
+	if (len >= BUFSIZ)
+		return 0;
+
+	memcpy(dest, val, len + 1);
 	return 1;
 }
 
