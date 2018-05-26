@@ -1095,6 +1095,7 @@ void io_load_keys(const char *pager)
 			while (*p == ' ')
 				p++;
 			(void)strncpy(tmpbuf, p, BUFSIZ);
+			tmpbuf[BUFSIZ - 1] = '\0';
 			if (sscanf(tmpbuf, "%s", key_ch) == AWAITED) {
 				int ch;
 
