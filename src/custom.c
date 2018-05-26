@@ -789,7 +789,7 @@ static void general_option_edit(int i)
 		buf[BUFSIZ - 1] = '\0';
 		if (updatestring(win[STA].p, &buf, 0, 1) == 0) {
 			strncpy(conf.day_heading, buf, BUFSIZ);
-			conf.output_datefmt[BUFSIZ - 1] = '\0';
+			conf.day_heading[BUFSIZ - 1] = '\0';
 		}
 		break;
 	}
