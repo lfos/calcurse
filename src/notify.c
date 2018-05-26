@@ -130,9 +130,12 @@ void notify_init_vars(void)
 	pthread_mutex_init(&nbar.mutex, NULL);
 	nbar.show = 1;
 	nbar.cntdwn = 300;
-	strncpy(nbar.datefmt, date_format, strlen(date_format) + 1);
-	strncpy(nbar.timefmt, time_format, strlen(time_format) + 1);
-	strncpy(nbar.cmd, cmd, strlen(cmd) + 1);
+	strncpy(nbar.datefmt, date_format, BUFSIZ);
+	nbar.datefmt[BUFSIZ - 1] = '\0';
+	strncpy(nbar.timefmt, time_format, BUFSIZ);
+	nbar.timefmt[BUFSIZ - 1] = '\0';
+	strncpy(nbar.cmd, cmd, BUFSIZ);
+	nbar.cmd[BUFSIZ - 1] = '\0';
 
 	if ((nbar.shell = getenv("SHELL")) == NULL)
 		nbar.shell = "/bin/sh";
@@ -707,26 +710,26 @@ static void config_option_edit(int i)
 	case 1:
 		status_mesg(date_str, "");
 		pthread_mutex_lock(&nbar.mutex);
-		strncpy(buf, nbar.datefmt,
-			strlen(nbar.datefmt) + 1);
+		strncpy(buf, nbar.datefmt, BUFSIZ);
+		buf[BUFSIZ - 1] = '\0';
 		pthread_mutex_unlock(&nbar.mutex);
 		if (updatestring(win[STA].p, &buf, 0, 1) == 0) {
 			pthread_mutex_lock(&nbar.mutex);
-			strncpy(nbar.datefmt, buf,
-				strlen(buf) + 1);
+			strncpy(nbar.datefmt, buf, BUFSIZ);
+			nbar.datefmt[BUFSIZ - 1] = '\0';
 			pthread_mutex_unlock(&nbar.mutex);
 		}
 		break;
 	case 2:
 		status_mesg(time_str, "");
 		pthread_mutex_lock(&nbar.mutex);
-		strncpy(buf, nbar.timefmt,
-			strlen(nbar.timefmt) + 1);
+		strncpy(buf, nbar.timefmt, BUFSIZ);
+		buf[BUFSIZ - 1] = '\0';
 		pthread_mutex_unlock(&nbar.mutex);
 		if (updatestring(win[STA].p, &buf, 0, 1) == 0) {
 			pthread_mutex_lock(&nbar.mutex);
-			strncpy(nbar.timefmt, buf,
-				strlen(buf) + 1);
+			strncpy(nbar.timefmt, buf, BUFSIZ);
+			nbar.timefmt[BUFSIZ - 1] = '\0';
 			pthread_mutex_unlock(&nbar.mutex);
 		}
 		break;
@@ -746,11 +749,13 @@ static void config_option_edit(int i)
 	case 4:
 		status_mesg(cmd_str, "");
 		pthread_mutex_lock(&nbar.mutex);
-		strncpy(buf, nbar.cmd, strlen(nbar.cmd) + 1);
+		strncpy(buf, nbar.cmd, BUFSIZ);
+		buf[BUFSIZ - 1] = '\0';
 		pthread_mutex_unlock(&nbar.mutex);
 		if (updatestring(win[STA].p, &buf, 0, 1) == 0) {
 			pthread_mutex_lock(&nbar.mutex);
-			strncpy(nbar.cmd, buf, strlen(buf) + 1);
+			strncpy(nbar.cmd, buf, BUFSIZ);
+			nbar.cmd[BUFSIZ - 1] = '\0';
 			pthread_mutex_unlock(&nbar.mutex);
 		}
 		break;
