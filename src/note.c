@@ -187,6 +187,7 @@ void note_gc(void)
 			hp = mem_malloc(sizeof(struct note_gc_hash));
 
 			strncpy(hp->buf, dp->d_name, MAX_NOTESIZ + 1);
+			hp->buf[MAX_NOTESIZ] = '\0';
 			hp->hash = hp->buf;
 
 			HTABLE_INSERT(htp, &gc_htable, hp);
