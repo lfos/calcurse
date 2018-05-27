@@ -837,7 +837,7 @@ void ical_export_data(FILE *, int);
 
 /* io.c */
 unsigned io_fprintln(const char *, const char *, ...);
-void io_init(const char *, const char *);
+void io_init(const char *, const char *, const char *);
 void io_extract_data(char *, const char *, int);
 void io_dump_apts(const char *, const char *, const char *, const char *);
 unsigned io_save_apts(const char *);

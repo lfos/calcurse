@@ -83,7 +83,7 @@ enum {
 static void usage(void)
 {
 	printf("%s\n", _("usage: calcurse [--daemon|-F|-G|-g|-i<file>|-Q|--status|-x[<format>]]\n"
-			 "                [-c<file>] [-D<path>] [-h] [-q] [--read-only] [-v]\n"
+			 "                [-c<file>] [-C<file] [-D<path>] [-h] [-q] [--read-only] [-v]\n"
 			 "                [--filter-*] [--format-*]"));
 }
 
@@ -120,6 +120,7 @@ static void help_arg(void)
 	putchar('\n');
 	printf("%s\n", _("Miscellaneous:"));
 	printf("%s\n", _("  -c, --calendar <file>   Specify the calendar data file to use"));
+	printf("%s\n", _("  -C, --conf <file>       Specify the configuration file to use"));
 	printf("%s\n", _("  --daemon                Run notification daemon in the background"));
 	printf("%s\n", _("  -D, --directory <path>  Specify the data directory to use"));
 	printf("%s\n", _("  -g, --gc                Run the garbage collector and exit"));
@@ -404,17 +405,19 @@ int parse_args(int argc, char **argv)
 	int xfmt = IO_EXPORT_ICAL;
 	int dump_imported = 0, export_uid = 0;
 	/* Data file locations */
-	const char *cfile = NULL, *datadir = NULL, *ifile = NULL;
+	const char *cfile = NULL, *datadir = NULL, *ifile = NULL,
+	      *conffile = NULL;
 
 	int non_interactive = 1;
 	int ch;
 	regex_t reg;
 
-	static const char *optstr = "FgGhvnNax::t::d:c:r::s::S:D:i:l:qQ";
+	static const char *optstr = "FgGhvnNax::t::C:d:c:r::s::S:D:i:l:qQ";
 
 	struct option longopts[] = {
 		{"appointment", no_argument, NULL, 'a'},
 		{"calendar", required_argument, NULL, 'c'},
+		{"conf", required_argument, NULL, 'C'},
 		{"day", required_argument, NULL, 'd'},
 		{"directory", required_argument, NULL, 'D'},
 		{"filter", no_argument, NULL, 'F'},
@@ -474,6 +477,9 @@ int parse_args(int argc, char **argv)
 			break;
 		case 'c':
 			cfile = optarg;
+			break;
+		case 'C':
+			conffile = optarg;
 			break;
 		case 'd':
 			if (is_all_digit(optarg)) {
@@ -716,7 +722,7 @@ int parse_args(int argc, char **argv)
 	else if (to >= 0 && range >= 0)
 		EXIT_IF(to >= 0, _("cannot specify a range and an end date"));
 
-	io_init(cfile, datadir);
+	io_init(cfile, datadir, conffile);
 	io_check_dir(path_dir);
 	io_check_dir(path_notes);
 
