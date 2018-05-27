@@ -226,16 +226,20 @@ unsigned io_fprintln(const char *fname, const char *fmt, ...)
  * one (~/.calcurse/apts) is taken. If the one given does not exist, it
  * is created.
  * The datadir argument can be use to specify an alternative data root dir.
+ * The conffile argument can be use to specify an alternative configuration file.
  */
-void io_init(const char *cfile, const char *datadir)
+void io_init(const char *cfile, const char *datadir, const char *conffile)
 {
 	const char *home;
 
 	if (datadir != NULL) {
 		home = datadir;
 		snprintf(path_dir, BUFSIZ, "%s", home);
+		if (conffile)
+			snprintf(path_conf, BUFSIZ, "%s", conffile);
+		else
+			snprintf(path_conf, BUFSIZ, "%s/" CONF_PATH_NAME, home);
 		snprintf(path_todo, BUFSIZ, "%s/" TODO_PATH_NAME, home);
-		snprintf(path_conf, BUFSIZ, "%s/" CONF_PATH_NAME, home);
 		snprintf(path_notes, BUFSIZ, "%s/" NOTES_DIR_NAME, home);
 		snprintf(path_keys, BUFSIZ, "%s/" KEYS_PATH_NAME, home);
 		snprintf(path_cpid, BUFSIZ, "%s/" CPID_PATH_NAME, home);
@@ -248,9 +252,12 @@ void io_init(const char *cfile, const char *datadir)
 		if (home == NULL) {
 			home = ".";
 		}
+		if (conffile)
+			snprintf(path_conf, BUFSIZ, "%s", conffile);
+		else
+			snprintf(path_conf, BUFSIZ, "%s/" CONF_PATH, home);
 		snprintf(path_dir, BUFSIZ, "%s/" DIR_NAME, home);
 		snprintf(path_todo, BUFSIZ, "%s/" TODO_PATH, home);
-		snprintf(path_conf, BUFSIZ, "%s/" CONF_PATH, home);
 		snprintf(path_keys, BUFSIZ, "%s/" KEYS_PATH, home);
 		snprintf(path_cpid, BUFSIZ, "%s/" CPID_PATH, home);
 		snprintf(path_dpid, BUFSIZ, "%s/" DPID_PATH, home);
