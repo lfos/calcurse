@@ -151,12 +151,15 @@ static int config_parse_unsigned(unsigned *dest, const char *val)
 
 static int config_parse_int(int *dest, const char *val)
 {
-	if ((*val == '+' || *val == '-' || isdigit(*val))
-	    && is_all_digit(val + 1))
+	char *cp = (char *)val;
+
+	if (*val == '+' || *val == '-')
+		cp++;
+	/* Test for empty string before checking for digits only. */
+	if (*cp && is_all_digit(cp))
 		*dest = atoi(val);
 	else
 		return 0;
-
 	return 1;
 }
 
