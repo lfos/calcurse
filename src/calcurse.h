@@ -1115,7 +1115,7 @@ int ui_todo_get_view(void);
 void ui_todo_set_view(int);
 
 /* utf8.c */
-int utf8_ord(const char *);
+int utf8_decode(const char *);
 int utf8_width(char *);
 int utf8_strwidth(char *);
 int utf8_chop(char *, int);

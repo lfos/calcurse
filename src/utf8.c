@@ -270,7 +270,7 @@ static const struct utf8_range utf8_widthtab[] = {
 };
 
 /* Decode a UTF-8 encoded character. Return the Unicode code point. */
-int utf8_ord(const char *s)
+int utf8_decode(const char *s)
 {
 	if (UTF8_ISCONT(*s))
 		return -1;
@@ -298,7 +298,7 @@ int utf8_width(char *s)
 
 	if (UTF8_ISCONT(*s))
 		return 0;
-	val = utf8_ord(s);
+	val = utf8_decode(s);
 	low = 0;
 	high = ARRAY_SIZE(utf8_widthtab);
 	do {
