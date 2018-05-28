@@ -266,7 +266,7 @@ int keys_wgetch(WINDOW *win)
 	buf[0] = ch;
 	for (i = 1; i < UTF8_LENGTH(buf[0]); i++)
 		buf[i] = wgetch(win);
-	return utf8_ord(buf) + KEY_MAX;
+	return utf8_decode(buf) + KEY_MAX;
 }
 
 void keys_wait_for_any_key(WINDOW *win)
