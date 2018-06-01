@@ -161,10 +161,13 @@ static void update_duration(long *start, long *dur)
 		int ret, early = 0;
 		status_mesg(msg_time, "");
 		ret = updatestring(win[STA].p, &timestr, 0, 1);
-		if (ret == GETSTRING_ESC)
+		if (ret == GETSTRING_ESC) {
+			mem_free(timestr);
 			return;
+		}
 		if (*(timestr + strlen(timestr) - 1) == '?') {
 			asprintf(&outstr, "%s %s", DATEFMT(conf.input_datefmt), "%H:%M");
+			mem_free(timestr);
 			timestr = date_sec2date_str(end, outstr);
 			asprintf(&outstr, msg_help_1, DATEFMT_DESC(conf.input_datefmt));
 			status_mesg(outstr, msg_help_2);
