@@ -215,6 +215,13 @@ static void update_desc(char **desc)
 
 static void update_rept(struct rpt **rpt, const long start)
 {
+	/* Pointers to dynamically allocated memory. */
+	char *msg_rpt_current = NULL;
+	char *msg_rpt_asktype = NULL;
+	char *freqstr = NULL;
+	char *timstr = NULL;
+	char *outstr = NULL;
+
 	/* Update repetition type. */
 	int newtype;
 	const char *msg_rpt_prefix = _("Enter the new repetition type:");
@@ -225,7 +232,6 @@ static void update_rept(struct rpt **rpt, const long start)
 
 	/* Find the current repetition type. */
 	const char *rpt_current;
-	char *msg_rpt_current;
 	switch (recur_def2char((*rpt)->type)) {
 	case 'D':
 		rpt_current = msg_rpt_daily;
@@ -244,7 +250,6 @@ static void update_rept(struct rpt **rpt, const long start)
 		rpt_current = msg_rpt_daily;
 	}
 	asprintf(&msg_rpt_current, _("(currently using %s)"), rpt_current);
-	char *msg_rpt_asktype;
 	asprintf(&msg_rpt_asktype, "%s %s, %s, %s, %s? %s", msg_rpt_prefix,
 		 msg_rpt_daily, msg_rpt_weekly, msg_rpt_monthly,
 		 msg_rpt_yearly, msg_rpt_current);
@@ -268,7 +273,6 @@ static void update_rept(struct rpt **rpt, const long start)
 
 	/* Update frequency. */
 	int newfreq;
-	char *freqstr = NULL;
 	const char *msg_wrong_freq = _("Invalid frequency.");
 	const char *msg_enter = _("Press [Enter] to continue");
 	do {
@@ -288,8 +292,6 @@ static void update_rept(struct rpt **rpt, const long start)
 	while (newfreq == 0);
 
 	/* Update end date. */
-	char *timstr = NULL;
-	char *outstr = NULL;
 	time_t newuntil;
 	const char *msg_until_1 =
 		_("Enter end date or duration ('?' for input formats):");
