@@ -927,6 +927,13 @@ parse_date_interactive(const char *datestr, int *year, int *month, int *day)
  * Convert a date duration string into a number of days.
  * If start is non-zero, the final end time is validated.
  *
+ * Allowed formats in lenient BNF:
+ * <duration> ::= <days> | <period>
+ * <period>   ::= [ <weeks>w ][ <days>d ]
+ * Notes:
+ *            <days> and <weeks> are any integer >= 0.
+ *            <period> must have at least one non-terminal.
+ *
  * Returns 1 on success and 0 on failure.
  */
 int parse_date_duration(const char *string, unsigned *days, time_t start)
@@ -985,10 +992,8 @@ int parse_date_duration(const char *string, unsigned *days, time_t start)
 			denom = 1;
 		}
 	}
-
 	if (state == STATE_DONE && in > 0)
 		return 0;
-
 	dur += in;
 	if (start) {
 		/* wanted: start = start + dur * DAYINSEC */
@@ -1002,7 +1007,6 @@ int parse_date_duration(const char *string, unsigned *days, time_t start)
 			return 0;
 	}
 	*days = dur;
-
 	return 1;
 }
 
@@ -1016,7 +1020,9 @@ int check_time(unsigned hours, unsigned minutes)
 
 /*
  * Converts a time string into hours and minutes. Short forms like "23:"
- * (23:00) or ":45" (0:45) are allowed.
+ * (23:00) or ":45" (0:45) are allowed as well as "2345". Note: the latter
+ * clashes with date formats 0001 .. 0031 and must be picked up before
+ * dates when parsing in parse_datetime.
  *
  * Returns 1 on success and 0 on failure.
  */
@@ -1033,13 +1039,17 @@ int parse_time(const char *string, unsigned *hour, unsigned *minute)
 		if (*p == ':') {
 			if ((++n) > 1)
 				return 0;
-		} else if ((*p >= '0') && (*p <= '9')) {
-			if ((n == 0) && (p == (string + 2)) && *(p + 1))
-				n++;
-			in[n] = in[n] * 10 + (int)(*p - '0');
+		} else if (isdigit(*p)) {
+			in[n] = in[n] * 10 + *p - '0';
 		} else {
 			return 0;
 		}
+	}
+	/* 24-hour format without ':' (hhmm)? */
+	if (n == 0 && strlen(string) == 4) {
+		in[1] = in[0] % 100;
+		in[0] = in[0] / 100;
+		n = 1;
 	}
 
 	if (n != 1 || !check_time(in[0], in[1]))
@@ -1054,13 +1064,15 @@ int parse_time(const char *string, unsigned *hour, unsigned *minute)
  * Converts a duration string into minutes.
  * If start time is non-zero, the final end time is validated.
  *
- * Allowed formats (noted as regular expressions):
- *
- * - \d*:\d*
- * - (\d*m|\d*h(|\d*m)|\d*d(|\d*m|\d*h(|\d*m)))
- * - \d+
- *
- * "\d" is used as a placeholder for "(0|1|2|3|4|5|6|7|8|9)".
+ * Allowed formats in lenient BNF:
+ * <duration> ::= <minutes> | <time> | <period>
+ * <time>     ::= <hours>:<min>
+ * <period>   ::= [ <days>d ][ <hours>h ][ <minutes>m ]
+ * <min>      ::= integer in the range 0-59
+ * Notes:
+ *            <days>, <hours> and <minutes> are any sequence of
+ *	      the characters 1,2,..,9,0.
+ *            <period> must have at least one non-terminal.
  *
  * Returns 1 on success and 0 on failure.
  */
@@ -1133,7 +1145,6 @@ int parse_duration(const char *string, unsigned *duration, time_t start)
 				break;
 			case STATE_HHMM_MM:
 				return 0;
-				break;
 			default:
 				break;
 			}
@@ -1143,8 +1154,7 @@ int parse_duration(const char *string, unsigned *duration, time_t start)
 		}
 	}
 	if ((state == STATE_HHMM_MM && in >= HOURINMIN) ||
-	    ((state == STATE_DDHHMM_HH || state == STATE_DDHHMM_MM)
-	     && in > 0))
+	    ((state == STATE_DDHHMM_HH || state == STATE_DDHHMM_MM) && in > 0))
 		return 0;
 	dur += in;
 	if (start) {
@@ -1160,7 +1170,6 @@ int parse_duration(const char *string, unsigned *duration, time_t start)
 			return 0;
 	}
 	*duration = dur;
-
 	return 1;
 }
 
@@ -1181,37 +1190,35 @@ int parse_duration(const char *string, unsigned *duration, time_t start)
  */
 int parse_datetime(const char *string, time_t *ts, time_t dur)
 {
-	char *t = mem_strdup(string);
-	char *p = strchr(t, ' ');
-
-	unsigned int hour, minute;
+	unsigned hour, minute;
 	int year, month, day;
-	struct date new_date;
 	int ret = 0;
 
-	if (p) {
-		*p = '\0';
-		if (parse_date_interactive(t, &year, &month, &day) &&
-		    parse_time(p + 1, &hour, &minute)) {
+	char *d = mem_strdup(string);
+	/* Split into date and time, if possible. */
+	char *t = strchr(d, ' ');
+	if (t)
+		*t++ = '\0';
+	if (t) {
+		if (parse_date_interactive(d, &year, &month, &day) &&
+	            parse_time(t, &hour, &minute)) {
 			ret |= PARSE_DATETIME_HAS_DATE |
 			       PARSE_DATETIME_HAS_TIME;
 		}
-	} else if (parse_time(t, &hour, &minute)) {
+	/* Time before date, see comments in parse_time(). */
+	} else if (parse_time(d, &hour, &minute)) {
 		ret |= PARSE_DATETIME_HAS_TIME;
-	} else if (parse_date_interactive(t, &year, &month, &day)) {
+	} else if (parse_date_interactive(d, &year, &month, &day)) {
 		ret |= PARSE_DATETIME_HAS_DATE;
 	}
-
 	if (ret & PARSE_DATETIME_HAS_DATE) {
-		new_date.dd = day;
-		new_date.mm = month;
-		new_date.yyyy = year;
-		*ts = date2sec(new_date, 0, 0) + get_item_time(*ts);
+		struct date date = { day , month, year };
+		*ts = date2sec(date, 0, 0) + get_item_time(*ts);
 	}
 	if (ret & PARSE_DATETIME_HAS_TIME)
 		*ts = update_time_in_date(*ts, hour, minute);
+	mem_free(d);
 
-	mem_free(t);
 	/* Is the resulting time a valid (start or end) time? */
 	if (!check_sec(ts))
 		return 0;
