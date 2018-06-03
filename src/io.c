@@ -570,7 +570,6 @@ void io_save_cal(enum save_display display)
 	}
 
 	run_hook("pre-save");
-	io_mutex_lock();
 
 	show_bar = 0;
 	if (ui_mode == UI_CURSES && display == IO_SAVE_DISPLAY_BAR
@@ -597,11 +596,10 @@ void io_save_cal(enum save_display display)
 	if (!io_save_keys())
 		ERROR_MSG("%s", access_pb);
 
+	io_mutex_lock();
 	io_unset_modified();
-
 	io_compute_hash(path_apts, apts_sha1);
 	io_compute_hash(path_todo, todo_sha1);
-
 	io_mutex_unlock();
 
 	/* Print a message telling data were saved */
