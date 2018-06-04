@@ -534,11 +534,11 @@ void ui_day_item_add(void)
 			is_appointment = 0;
 			break;
 		}
-		ret = parse_datetime(item_time, &start);
-		if (!(ret & PARSE_DATETIME_HAS_TIME))
-			is_appointment = 0;
-		if (ret)
+		if ((ret = parse_datetime(item_time, &start))) {
+			if (!(ret & PARSE_DATETIME_HAS_TIME))
+				is_appointment = 0;
 			break;
+		}
 		status_mesg(format_message_1, enter_str);
 		keys_wait_for_any_key(win[KEY].p);
 	}
