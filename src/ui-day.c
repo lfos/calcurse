@@ -111,13 +111,14 @@ static int day_edit_duration(int start, int dur, unsigned *new_duration)
 		end = start + dur;
 		ret = parse_datetime(timestr, &end);
 		/*
-		 * If the user enters a end time which is smaller than
-		 * the start time, assume that the time belongs to the
+		 * If the user enters no date and an end time which is smaller
+		 * than the start time, assume that the time belongs to the
 		 * next day.
 		 */
 		if (!(ret & PARSE_DATETIME_HAS_DATE) && end < start)
 			end = date_sec_change(end, 0, 1);
-		if (ret) {
+		/* Always check that the end comes after the start. */
+		if (ret && start <= end) {
 			*new_duration = end - start;
 			break;
 		}
@@ -568,13 +569,14 @@ void ui_day_item_add(void)
 			end = start;
 			ret = parse_datetime(item_time, &end);
 			/*
-			 * If the user enters a end time which is smaller than
-			 * the start time, assume that the time belongs to the
-			 * next day.
+			 * If the user enters no date and an end time which is
+			 * smaller than the start time, assume that the time
+			 * belongs to the next day.
 			 */
 			if (!(ret & PARSE_DATETIME_HAS_DATE) && end < start)
 				end = date_sec_change(end, 0, 1);
-			if (ret) {
+			/* Always check that the end comes after the start. */
+			if (ret && start <= end) {
 				dur = end - start;
 				break;
 			}
