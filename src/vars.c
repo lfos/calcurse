@@ -103,6 +103,15 @@ struct nbar nbar;
 struct dmon_conf dmon;
 
 /*
+ * Thread id variables for threads that never exit.
+ *
+ * Each variable either carries the identifier of the corresponding thread. If
+ * one of the threads is not running, the corresponding variable is assigned
+ * the identifier of the main thread instead.
+ */
+pthread_t notify_t_main, io_t_psave, ui_calendar_t_date;
+
+/*
  * Variables init
  */
 void vars_init(void)
@@ -166,4 +175,7 @@ void vars_init(void)
 
 	/* Start at the current date */
 	ui_calendar_init_slctd_day();
+
+	/* Threads not yet running. */
+	notify_t_main = io_t_psave = ui_calendar_t_date = pthread_self();
 }
