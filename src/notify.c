@@ -54,8 +54,6 @@ struct notify_vars {
 static struct notify_vars notify;
 static struct notify_app notify_app;
 static pthread_attr_t detached_thread_attr;
-static pthread_t notify_t_main;
-static int notify_t_main_running;
 
 /*
  * Return the number of seconds before next appointment
@@ -194,12 +192,13 @@ void notify_free_app(void)
 /* Stop the notify-bar main thread. */
 void notify_stop_main_thread(void)
 {
-	if (!notify_t_main_running)
+	/* Is the thread running? */
+	if (pthread_equal(notify_t_main, pthread_self()))
 		return;
 
 	pthread_cancel(notify_t_main);
 	pthread_join(notify_t_main, NULL);
-	notify_t_main_running = 0;
+	notify_t_main = pthread_self();
 }
 
 /*
@@ -555,12 +554,10 @@ int notify_same_recur_item(struct recur_apoint *i)
 /* Launch the notify-bar main thread. */
 void notify_start_main_thread(void)
 {
-	if (notify_t_main_running)
-		return;
+        /* Avoid starting the notification bar thread twice. */
+	notify_stop_main_thread();
 
 	pthread_create(&notify_t_main, NULL, notify_main_thread, NULL);
-	notify_t_main_running = 1;
-
 	notify_check_next_app(0);
 }
 

@@ -1208,6 +1208,7 @@ extern struct pad apad;
 extern struct nbar nbar;
 extern struct dmon_conf dmon;
 void vars_init(void);
+extern pthread_t notify_t_main, io_t_psave, ui_calendar_t_date;
 
 /* wins.c */
 extern struct window win[NBWINS];
