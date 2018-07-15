@@ -1049,8 +1049,7 @@ void recur_apoint_add_exc(struct recur_apoint *, long);
 void recur_event_erase(struct recur_event *);
 void recur_apoint_erase(struct recur_apoint *);
 void recur_exc_scan(llist_t *, FILE *);
-struct notify_app *recur_apoint_check_next(struct notify_app *, long,
-					   long);
+void recur_apoint_check_next(struct notify_app *, time_t, time_t);
 void recur_apoint_switch_notify(struct recur_apoint *);
 void recur_event_paste_item(struct recur_event *, long);
 void recur_apoint_paste_item(struct recur_apoint *, long);

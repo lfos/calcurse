@@ -922,36 +922,31 @@ void recur_exc_scan(llist_t * lexc, FILE * data_file)
 	}
 }
 
-static int recur_apoint_starts_before(struct recur_apoint *rapt, long *time)
-{
-	return rapt->start < *time;
-}
-
 /*
- * Look in the appointment list if we have an item which starts before the item
- * stored in the notify_app structure (which is the next item to be notified).
+ * Look in the appointment list if we have an item which starts after start and
+ * before the item stored in the notify_app structure (which is the next item
+ * to be notified). Note, the search may change the notify_app structure.
  */
-struct notify_app *recur_apoint_check_next(struct notify_app *app,
-					   long start, long day)
+void recur_apoint_check_next(struct notify_app *app, time_t start, time_t day)
 {
 	llist_item_t *i;
 	time_t real_recur_start_time;
 
 	LLIST_TS_LOCK(&recur_alist_p);
-	/*
-	 * Iterate over all recurrent items starting before the current "next"
-	 * appointment. We cannot filter by start time because a recurrent item
-	 * can actually start (several days) before the current "next" item and
-	 * still have an occurrence which is the next item to be notified.
-	 */
-	LLIST_TS_FIND_FOREACH(&recur_alist_p, &app->time,
-			      recur_apoint_starts_before, i) {
+	LLIST_TS_FOREACH(&recur_alist_p, i) {
 		struct recur_apoint *rapt = LLIST_TS_GET_DATA(i);
 
-		/*
-		 * Check whether the recurrent appointment contains an
-		 * occurrence which is the next item to be notified.
-		 */
+		/* Tomorrow? */
+		if (recur_apoint_find_occurrence
+		    (rapt, day + DAYINSEC, &real_recur_start_time)
+		    && real_recur_start_time > start
+		    && real_recur_start_time < app->time) {
+			app->time = real_recur_start_time;
+			app->txt = mem_strdup(rapt->mesg);
+			app->state = rapt->state;
+			app->got_app = 1;
+		}
+		/* Today? */
 		if (recur_apoint_find_occurrence
 		    (rapt, day, &real_recur_start_time)
 		    && real_recur_start_time > start
@@ -963,8 +958,6 @@ struct notify_app *recur_apoint_check_next(struct notify_app *app,
 		}
 	}
 	LLIST_TS_UNLOCK(&recur_alist_p);
-
-	return app;
 }
 
 /* Switch recurrent item notification state. */

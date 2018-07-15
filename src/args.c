@@ -231,8 +231,7 @@ static void next_arg(void)
 	next_app.got_app = 0;
 	next_app.txt = NULL;
 
-	next_app = *recur_apoint_check_next(&next_app, current_time,
-					    get_today());
+	recur_apoint_check_next(&next_app, current_time, get_today());
 	next_app = *apoint_check_next(&next_app, current_time);
 
 	if (next_app.got_app) {
