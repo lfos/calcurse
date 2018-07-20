@@ -533,15 +533,16 @@ try:
 except FileNotFoundError as e:
     die('Configuration file not found: {}'.format(configfn))
 
-hostname = config.get('General', 'HostName')
-path = '/' + config.get('General', 'Path').strip('/') + '/'
-hostname_uri = 'https://' + hostname
-absolute_uri = hostname_uri + path
-
 if config.has_option('General', 'InsecureSSL'):
     insecure_ssl = config.getboolean('General', 'InsecureSSL')
 else:
     insecure_ssl = False
+
+# Read config for "HTTPS" option (default=True)
+if config.has_option('General', 'HTTPS'):
+    https = config.getboolean('General', 'HTTPS')
+else:
+    https = True
 
 if config.has_option('General', 'Binary'):
     calcurse = config.get('General', 'Binary')
@@ -607,6 +608,17 @@ if config.has_option('OAuth2', 'RedirectURI'):
 else:
     redirect_uri = 'http://127.0.0.1'
 
+# Change URl prefix according to HTTP/HTTPS
+if https:
+    urlprefix = "https://"
+else:
+    urlprefix = "http://"
+
+hostname = config.get('General', 'HostName')
+path = '/' + config.get('General', 'Path').strip('/') + '/'
+hostname_uri = urlprefix + hostname
+absolute_uri = hostname_uri + path
+
 # Show disclaimer when performing a dry run.
 if dry_run:
     warn(('Dry run; nothing is imported/exported. Add "DryRun = No" to the '
@@ -633,7 +645,7 @@ if os.path.exists(lockfn):
 open(lockfn, 'w')
 
 try:
-    # Connect to the server via HTTPs.
+    # Connect to the server.
     if verbose:
         print('Connecting to ' + hostname + '...')
     conn = httplib2.Http()
