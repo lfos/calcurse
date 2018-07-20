@@ -656,6 +656,11 @@ try:
         # Authenticate with OAuth2 and authorize HTTP object
         cred = run_auth(authcode)
         conn = cred.authorize(conn)
+        
+    # Add credentials to httplib2 to be used when request requires authentication
+    if authmethod == 'basic':
+        conn.add_credentials(username, password)
+        
     elif authmethod != 'basic':
         die('Invalid option for AuthMethod in config file. Use "basic" or "oauth2"')
 
