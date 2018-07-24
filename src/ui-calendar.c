@@ -47,7 +47,6 @@
 static struct date today, slctd_day;
 static unsigned ui_calendar_view, week_begins_on_monday;
 static pthread_mutex_t date_thread_mutex = PTHREAD_MUTEX_INITIALIZER;
-static pthread_t ui_calendar_t_date;
 
 static void draw_monthly_view(struct scrollwin *, struct date *, unsigned);
 static void draw_weekly_view(struct scrollwin *, struct date *, unsigned);
@@ -120,10 +119,13 @@ void ui_calendar_start_date_thread(void)
 /* Stop the calendar date thread. */
 void ui_calendar_stop_date_thread(void)
 {
-	if (ui_calendar_t_date) {
-		pthread_cancel(ui_calendar_t_date);
-		pthread_join(ui_calendar_t_date, NULL);
-	}
+	/* Is the thread running? */
+	if (pthread_equal(ui_calendar_t_date, pthread_self()))
+		return;
+
+	pthread_cancel(ui_calendar_t_date);
+	pthread_join(ui_calendar_t_date, NULL);
+	ui_calendar_t_date = pthread_self();
 }
 
 /* Set static variable today to current date */

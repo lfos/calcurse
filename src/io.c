@@ -1501,8 +1501,6 @@ void io_log_free(struct io_file *log)
 	mem_free(log);
 }
 
-static pthread_t io_t_psave;
-
 /* Thread used to periodically save data. */
 static void *io_psave_thread(void *arg)
 {
@@ -1524,7 +1522,8 @@ void io_start_psave_thread(void)
 /* Stop periodic data saves. */
 void io_stop_psave_thread(void)
 {
-	if (!io_t_psave)
+	/* Is the thread running? */
+	if (pthread_equal(io_t_psave, pthread_self()))
 		return;
 
 	/* Lock the mutex to avoid cancelling the thread during saving. */
@@ -1532,6 +1531,7 @@ void io_stop_psave_thread(void)
 	pthread_cancel(io_t_psave);
 	pthread_join(io_t_psave, NULL);
 	io_mutex_unlock();
+	io_t_psave = pthread_self();
 }
 
 /*
