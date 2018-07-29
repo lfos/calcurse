@@ -225,45 +225,48 @@ unsigned io_fprintln(const char *fname, const char *fmt, ...)
  * which contains the calendar file. If none is given, then the default
  * one (~/.calcurse/apts) is taken. If the one given does not exist, it
  * is created.
- * The datadir argument can be use to specify an alternative data root dir.
- * The conffile argument can be use to specify an alternative configuration file.
+ * The datadir argument can be used to specify an alternative data root dir.
+ * The confdir argument can be used to specify an alternative configuration dir.
  */
-void io_init(const char *cfile, const char *datadir, const char *conffile)
+void io_init(const char *cfile, const char *datadir, const char *confdir)
 {
 	const char *home;
 
 	if (datadir != NULL) {
 		home = datadir;
+
 		snprintf(path_dir, BUFSIZ, "%s", home);
-		if (conffile)
-			snprintf(path_conf, BUFSIZ, "%s", conffile);
-		else
-			snprintf(path_conf, BUFSIZ, "%s/" CONF_PATH_NAME, home);
+		if (!confdir)
+			confdir = path_dir;
+
+		snprintf(path_conf, BUFSIZ, "%s/" CONF_PATH_NAME, confdir);
+		snprintf(path_keys, BUFSIZ, "%s/" KEYS_PATH_NAME, confdir);
+		snprintf(path_hooks, BUFSIZ, "%s/" HOOKS_DIR_NAME, confdir);
+
 		snprintf(path_todo, BUFSIZ, "%s/" TODO_PATH_NAME, home);
-		snprintf(path_notes, BUFSIZ, "%s/" NOTES_DIR_NAME, home);
-		snprintf(path_keys, BUFSIZ, "%s/" KEYS_PATH_NAME, home);
 		snprintf(path_cpid, BUFSIZ, "%s/" CPID_PATH_NAME, home);
 		snprintf(path_dpid, BUFSIZ, "%s/" DPID_PATH_NAME, home);
-		snprintf(path_dmon_log, BUFSIZ, "%s/" DLOG_PATH_NAME,
-			 home);
-		snprintf(path_hooks, BUFSIZ, "%s/" HOOKS_DIR_NAME, home);
+		snprintf(path_notes, BUFSIZ, "%s/" NOTES_DIR_NAME, home);
+		snprintf(path_dmon_log, BUFSIZ, "%s/" DLOG_PATH_NAME, home);
 	} else {
 		home = getenv("HOME");
 		if (home == NULL) {
 			home = ".";
 		}
-		if (conffile)
-			snprintf(path_conf, BUFSIZ, "%s", conffile);
-		else
-			snprintf(path_conf, BUFSIZ, "%s/" CONF_PATH, home);
+
 		snprintf(path_dir, BUFSIZ, "%s/" DIR_NAME, home);
+		if (!confdir)
+			confdir = path_dir;
+
+		snprintf(path_conf, BUFSIZ, "%s/" CONF_PATH_NAME, confdir);
+		snprintf(path_keys, BUFSIZ, "%s/" KEYS_PATH_NAME, confdir);
+		snprintf(path_hooks, BUFSIZ, "%s/" HOOKS_DIR_NAME, confdir);
+
 		snprintf(path_todo, BUFSIZ, "%s/" TODO_PATH, home);
-		snprintf(path_keys, BUFSIZ, "%s/" KEYS_PATH, home);
 		snprintf(path_cpid, BUFSIZ, "%s/" CPID_PATH, home);
 		snprintf(path_dpid, BUFSIZ, "%s/" DPID_PATH, home);
-		snprintf(path_dmon_log, BUFSIZ, "%s/" DLOG_PATH, home);
 		snprintf(path_notes, BUFSIZ, "%s/" NOTES_DIR, home);
-		snprintf(path_hooks, BUFSIZ, "%s/" HOOKS_DIR, home);
+		snprintf(path_dmon_log, BUFSIZ, "%s/" DLOG_PATH, home);
 	}
 
 	if (cfile == NULL) {
