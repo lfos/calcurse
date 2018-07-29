@@ -83,7 +83,7 @@ enum {
 static void usage(void)
 {
 	printf("%s\n", _("usage: calcurse [--daemon|-F|-G|-g|-i<file>|-Q|--status|-x[<format>]]\n"
-			 "                [-c<file>] [-C<file] [-D<path>] [-h] [-q] [--read-only] [-v]\n"
+			 "                [-c<file>] [-C<path>] [-D<path>] [-h] [-q] [--read-only] [-v]\n"
 			 "                [--filter-*] [--format-*]"));
 }
 
@@ -120,7 +120,7 @@ static void help_arg(void)
 	putchar('\n');
 	printf("%s\n", _("Miscellaneous:"));
 	printf("%s\n", _("  -c, --calendar <file>   Specify the calendar data file to use"));
-	printf("%s\n", _("  -C, --conf <file>       Specify the configuration file to use"));
+	printf("%s\n", _("  -C, --conf <path>       Specify the configuration path to use"));
 	printf("%s\n", _("  --daemon                Run notification daemon in the background"));
 	printf("%s\n", _("  -D, --directory <path>  Specify the data directory to use"));
 	printf("%s\n", _("  -g, --gc                Run the garbage collector and exit"));
@@ -406,7 +406,7 @@ int parse_args(int argc, char **argv)
 	int dump_imported = 0, export_uid = 0;
 	/* Data file locations */
 	const char *datadir = NULL;
-	const char *cfile = NULL, *ifile = NULL, *conffile = NULL;
+	const char *cfile = NULL, *ifile = NULL, *confdir = NULL;
 
 	int non_interactive = 1;
 	int ch;
@@ -479,7 +479,7 @@ int parse_args(int argc, char **argv)
 			cfile = optarg;
 			break;
 		case 'C':
-			conffile = optarg;
+			confdir = optarg;
 			break;
 		case 'd':
 			if (is_all_digit(optarg) ||
@@ -726,7 +726,7 @@ int parse_args(int argc, char **argv)
 	else if (range < 0)
 		from = date_sec_change(to, 0, range);
 
-	io_init(cfile, datadir, conffile);
+	io_init(cfile, datadir, confdir);
 	io_check_dir(path_dir);
 	io_check_dir(path_notes);
 
