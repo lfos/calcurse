@@ -730,13 +730,13 @@ int parse_args(int argc, char **argv)
 	io_check_dir(path_dir);
 	io_check_dir(path_notes);
 
+	vars_init();
 	if (status) {
 		status_arg();
 	} else if (grep) {
 		io_check_file(path_apts);
 		io_check_file(path_todo);
 		io_check_file(path_conf);
-		vars_init();
 		config_load();	/* To get output date format. */
 		io_load_data(&filter);
 		if (grep_filter) {
@@ -759,7 +759,6 @@ int parse_args(int argc, char **argv)
 		io_check_file(path_apts);
 		io_check_file(path_todo);
 		io_check_file(path_conf);
-		vars_init();
 		config_load();	/* To get output date format. */
 		io_load_data(&filter);
 
@@ -786,7 +785,6 @@ int parse_args(int argc, char **argv)
 		io_check_file(path_apts);
 		io_check_file(path_todo);
 		/* Get default pager in case we need to show a log file. */
-		vars_init();
 		io_load_data(NULL);
 		if (dump_imported) {
 			/*
