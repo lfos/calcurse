@@ -95,16 +95,6 @@
 #define NOTES_DIR_NAME   "notes/"
 #define HOOKS_DIR_NAME   "hooks/"
 
-#define TODO_PATH        DIR_NAME TODO_PATH_NAME
-#define APTS_PATH        DIR_NAME APTS_PATH_NAME
-#define CONF_PATH        DIR_NAME CONF_PATH_NAME
-#define KEYS_PATH        DIR_NAME KEYS_PATH_NAME
-#define CPID_PATH        DIR_NAME CPID_PATH_NAME
-#define DLOG_PATH        DIR_NAME DLOG_PATH_NAME
-#define DPID_PATH        DIR_NAME DPID_PATH_NAME
-#define NOTES_DIR        DIR_NAME NOTES_DIR_NAME
-#define HOOKS_DIR        DIR_NAME HOOKS_DIR_NAME
-
 #define DEFAULT_EDITOR     "vi"
 #define DEFAULT_PAGER      "less"
 #define DEFAULT_MERGETOOL  "vimdiff"
@@ -1219,19 +1209,19 @@ extern enum ui_mode ui_mode;
 extern int read_only;
 extern int quiet;
 extern int want_reload;
-extern const char *datefmt_str[DATE_FORMATS];
-extern int days[12];
-extern char path_dir[BUFSIZ];
-extern char path_conf_dir[BUFSIZ];
-extern char path_todo[BUFSIZ];
-extern char path_apts[BUFSIZ];
-extern char path_conf[BUFSIZ];
-extern char path_keys[BUFSIZ];
-extern char path_notes[BUFSIZ];
-extern char path_cpid[BUFSIZ];
-extern char path_dpid[BUFSIZ];
-extern char path_dmon_log[BUFSIZ];
-extern char path_hooks[BUFSIZ];
+extern const char *datefmt_str[];
+extern int days[];
+extern char *path_ddir;
+extern char *path_cdir;
+extern char *path_todo;
+extern char *path_apts;
+extern char *path_conf;
+extern char *path_keys;
+extern char *path_notes;
+extern char *path_cpid;
+extern char *path_dpid;
+extern char *path_dmon_log;
+extern char *path_hooks;
 extern struct conf conf;
 extern struct pad apad;
 extern struct nbar nbar;

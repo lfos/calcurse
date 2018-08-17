@@ -727,8 +727,10 @@ int parse_args(int argc, char **argv)
 		from = date_sec_change(to, 0, range);
 
 	io_init(cfile, datadir, confdir);
-	io_check_dir(path_dir);
+	io_check_dir(path_ddir);
 	io_check_dir(path_notes);
+	io_check_dir(path_cdir);
+	io_check_dir(path_hooks);
 
 	vars_init();
 	if (status) {
