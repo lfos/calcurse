@@ -140,67 +140,45 @@ unsigned io_fprintln(const char *fname, const char *fmt, ...)
  * is created.
  * The datadir argument can be used to specify an alternative data root dir.
  * The confdir argument can be used to specify an alternative configuration dir.
+ *
+ * The statically allocated buffers (in vars.c) have BUFSIZ bytes for each path.
+ * Allow BUFSIZ - 20 for the externally supplied directory part.
  */
 void io_init(const char *cfile, const char *datadir, const char *confdir)
 {
-	const char *home;
-	const char *conf_home;
+#define SNPRINTF(d, s1, s2) \
+  EXIT_IF(snprintf(d, BUFSIZ - 20, "%s%s", s1, s2) >= BUFSIZ - 20, \
+          _("Directory name too long: %s (limit %d)"), s1, BUFSIZ - 21);
 
-	if (datadir != NULL) {
-		home = datadir;
-		if (confdir == NULL)
-			conf_home = home;
-		else
-			conf_home = confdir;
+	if (!datadir) {
+		if (!(datadir = getenv("HOME")))
+			datadir = ".";
+		SNPRINTF(path_ddir, datadir, "/" DIR_NAME);
+	} else
+		SNPRINTF(path_ddir, datadir, "/");
 
-		snprintf(path_dir, BUFSIZ, "%s", home);
+	if (!confdir)
+		strcpy(path_cdir, path_ddir);
+	else
+		SNPRINTF(path_cdir, confdir, "/");
 
-		snprintf(path_conf_dir, BUFSIZ, "%s",  conf_home);
-		snprintf(path_conf, BUFSIZ, "%s/" CONF_PATH_NAME, conf_home);
-		snprintf(path_keys, BUFSIZ, "%s/" KEYS_PATH_NAME, conf_home);
-		snprintf(path_hooks, BUFSIZ, "%s/" HOOKS_DIR_NAME, conf_home);
-
-		snprintf(path_todo, BUFSIZ, "%s/" TODO_PATH_NAME, home);
-		snprintf(path_cpid, BUFSIZ, "%s/" CPID_PATH_NAME, home);
-		snprintf(path_dpid, BUFSIZ, "%s/" DPID_PATH_NAME, home);
-		snprintf(path_notes, BUFSIZ, "%s/" NOTES_DIR_NAME, home);
-		snprintf(path_dmon_log, BUFSIZ, "%s/" DLOG_PATH_NAME, home);
-	} else {
-		home = getenv("HOME");
-		if (home == NULL) {
-			home = ".";
-		}
-		if (confdir == NULL)
-			conf_home = home;
-		else
-			conf_home = confdir;
-
-		snprintf(path_dir, BUFSIZ, "%s/" DIR_NAME, home);
-
-		snprintf(path_conf_dir, BUFSIZ, "%s",  conf_home);
-		snprintf(path_conf, BUFSIZ, "%s/" CONF_PATH, conf_home);
-		snprintf(path_keys, BUFSIZ, "%s/" KEYS_PATH, conf_home);
-		snprintf(path_hooks, BUFSIZ, "%s/" HOOKS_DIR, conf_home);
-
-		snprintf(path_todo, BUFSIZ, "%s/" TODO_PATH, home);
-		snprintf(path_cpid, BUFSIZ, "%s/" CPID_PATH, home);
-		snprintf(path_dpid, BUFSIZ, "%s/" DPID_PATH, home);
-		snprintf(path_notes, BUFSIZ, "%s/" NOTES_DIR, home);
-		snprintf(path_dmon_log, BUFSIZ, "%s/" DLOG_PATH, home);
-	}
-
-	if (cfile == NULL) {
-		if (datadir != NULL) {
-			snprintf(path_apts, BUFSIZ, "%s/" APTS_PATH_NAME,
-				 home);
-		} else {
-			snprintf(path_apts, BUFSIZ, "%s/" APTS_PATH, home);
-		}
-	} else {
-		snprintf(path_apts, BUFSIZ, "%s", cfile);
+	/* Data files */
+	sprintf(path_apts, "%s%s", path_ddir, APTS_PATH_NAME);
+	sprintf(path_todo, "%s%s", path_ddir, TODO_PATH_NAME);
+	sprintf(path_cpid, "%s%s", path_ddir, CPID_PATH_NAME);
+	sprintf(path_dpid, "%s%s", path_ddir, DPID_PATH_NAME);
+	sprintf(path_notes, "%s%s", path_ddir, NOTES_DIR_NAME);
+	sprintf(path_dmon_log, "%s%s", path_ddir, DLOG_PATH_NAME);
+	if (cfile) {
+		SNPRINTF(path_apts, cfile, "");
 		EXIT_IF(!io_file_exists(path_apts), _("%s does not exist"),
 			path_apts);
 	}
+
+	/* Configuration files */
+	sprintf(path_conf, "%s%s", path_cdir, CONF_PATH_NAME);
+	sprintf(path_keys, "%s%s", path_cdir, KEYS_PATH_NAME);
+	sprintf(path_hooks, "%s%s", path_cdir, HOOKS_DIR_NAME);
 }
 
 void io_extract_data(char *dst_data, const char *org, int len)
@@ -1146,24 +1124,23 @@ int io_check_file(const char *file)
  * Checks if data files exist. If not, create them.
  * The following structure has to be created:
  *
- *	$HOME/.calcurse/
- *                 |
- *                 +--- notes/
- *                 |___ conf
- *                 |___ keys
- *                 |___ apts
- *                 |___ todo
+ *   <datadir>   <configdir> (default for both: $HOME/.calcurse/)
+ *        |             |
+ *        |__ apts      |___ conf
+ *        |__ todo      |___ keys
+ *        |__ notes/    |___ hooks/
  */
 int io_check_data_files(void)
 {
 	int missing = 0;
 
-	missing += io_check_dir(path_dir) ? 0 : 1;
-	missing += io_check_dir(path_conf_dir) ? 0 : 1;
+	missing += io_check_dir(path_ddir) ? 0 : 1;
 	missing += io_check_dir(path_notes) ? 0 : 1;
 	missing += io_check_file(path_todo) ? 0 : 1;
 	missing += io_check_file(path_apts) ? 0 : 1;
+	missing += io_check_dir(path_cdir) ? 0 : 1;
 	missing += io_check_file(path_conf) ? 0 : 1;
+	missing += io_check_dir(path_hooks) ? 0 : 1;
 
 	if (!io_check_file(path_keys)) {
 		missing++;
