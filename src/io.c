@@ -935,7 +935,6 @@ int io_reload_data(void)
 		case 3:
 			/* FALLTHROUGH */
 		default:
-			wins_update(FLAG_STA);
 			goto cleanup;
 		}
 	}
@@ -961,20 +960,10 @@ int io_reload_data(void)
 	recur_event_llist_init();
 	todo_init_list();
 
-	/*
-	 * Temporarily reinitialize the todo list box without any items to make
-	 * sure wins_unprepare_external() does not fail when it is called after
-	 * executing the pre-load hook.
-	 */
-	ui_todo_load_items();
-	ui_todo_sel_reset();
-
 	io_load_data(NULL);
 	run_hook("post-load");
 
 	io_unset_modified();
-	ui_todo_load_items();
-	ui_todo_sel_reset();
 
 	if (show_dialogs()) {
 		status_mesg(reload_success, enter);
