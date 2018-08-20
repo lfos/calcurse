@@ -613,7 +613,6 @@ void wins_unprepare_external(void)
 	ui_mode = UI_CURSES;
 	wins_refresh();
 	wins_resize();
-	wins_update(FLAG_ALL);
 	if (notify_bar())
 		notify_start_main_thread();
 	if (conf.periodic_save > 0)
