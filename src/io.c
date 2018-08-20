@@ -944,9 +944,6 @@ int io_reload_data(void)
 	if (!io_check_data_files_modified())
 		goto cleanup;
 
-	if (notify_bar())
-		notify_stop_main_thread();
-
 	/* Reinitialize data structures. */
 	apoint_llist_free();
 	event_llist_free();
@@ -970,11 +967,7 @@ int io_reload_data(void)
 		keys_wait_for_any_key(win[KEY].p);
 	}
 
-	if (notify_bar())
-		notify_start_main_thread();
-
 	ret = 1;
-
 cleanup:
 	mem_free(msg_um_asktype);
 	return ret;
