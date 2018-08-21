@@ -208,6 +208,7 @@ def remote_query(conn, cmd, path, additional_headers, body):
         return (None, None)
 
     if debug:
+        print("< Status: {} ({})".format(resp.status, resp.reason))
         print("< Headers: " + repr(resp))
         for line in body.splitlines():
             print("< " + line)
