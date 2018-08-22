@@ -905,6 +905,7 @@ void io_load_data(struct item_filter *filter)
 	io_load_app(filter);
 	io_load_todo(filter);
 	io_mutex_unlock();
+	io_unset_modified();
 }
 
 int io_reload_data(void)
@@ -958,9 +959,8 @@ int io_reload_data(void)
 	todo_init_list();
 
 	io_load_data(NULL);
-	run_hook("post-load");
 
-	io_unset_modified();
+	run_hook("post-load");
 
 	if (show_dialogs()) {
 		status_mesg(reload_success, enter);
