@@ -652,6 +652,13 @@ enum getstr {
 #define PARSE_DATETIME_HAS_DATE (1 << 0)
 #define PARSE_DATETIME_HAS_TIME (1 << 1)
 
+/* Return codes for the io_save_cal() function. */
+enum {
+	IO_SAVE_CTINUE,
+	IO_SAVE_RELOAD,
+	IO_SAVE_CANCEL
+};
+
 /* Week days. */
 enum wday {
 	SUNDAY,
@@ -848,7 +855,7 @@ unsigned io_save_apts(const char *);
 void io_dump_todo(const char *);
 unsigned io_save_todo(const char *);
 unsigned io_save_keys(void);
-void io_save_cal(enum save_display);
+int io_save_cal(enum save_display);
 void io_load_app(struct item_filter *);
 void io_load_todo(struct item_filter *);
 void io_load_data(struct item_filter *);
