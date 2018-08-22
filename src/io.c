@@ -448,6 +448,7 @@ static int io_compute_hash(const char *path, char *buf)
 	return 1;
 }
 
+/* A merge implies a save operation and must be followed by reload of data. */
 static void io_merge_data(void)
 {
 	char *path_apts_new, *path_todo_new;
@@ -483,41 +484,48 @@ static void io_merge_data(void)
 	mem_free(path_apts_new);
 	mem_free(path_todo_new);
 
-	io_unset_modified();
-
 	/*
 	 * We do not directly write to the data files here; however, the
 	 * external merge tool will likely have incorporated changes from the
 	 * new file into the main data files at this point.
 	 */
 	run_hook("post-save");
+
+	/*
+	 * The user has merged, so override the modified flag
+	 * (and follow up with reload of the data files).
+	 */
+	io_unset_modified();
 }
 
+/* For the return values, see io_save_cal() below. */
 static int resolve_save_conflict(void)
 {
 	char *msg_um_asktype = NULL;
 	const char *msg_um_prefix =
-			_("Data files were changed since reading:");
+			_("Data files were changed since loaded:");
 	const char *msg_um_overwrite = _("(o)verwrite");
 	const char *msg_um_merge = _("(m)erge");
-	const char *msg_um_keep = _("(k)eep and cancel");
-	const char *msg_um_choice = _("[omk]");
-	int ret = 1;
+	const char *msg_um_keep = _("(c)ancel");
+	const char *msg_um_choice = _("[omc]");
+	int ret;
 
 	asprintf(&msg_um_asktype, "%s %s, %s, %s", msg_um_prefix,
 		 msg_um_overwrite, msg_um_merge, msg_um_keep);
 
 	switch (status_ask_choice(msg_um_asktype, msg_um_choice, 3)) {
 	case 1:
-		ret = 0;
+		ret = IO_SAVE_CTINUE;
 		break;
 	case 2:
 		io_merge_data();
+		io_reload_data();
+		ret = IO_SAVE_RELOAD;
 		break;
 	case 3:
 		/* FALLTHROUGH */
 	default:
-		;
+		ret = IO_SAVE_CANCEL;
 	}
 
 	mem_free(msg_um_asktype);
@@ -548,31 +556,29 @@ cleanup:
 	return ret;
 }
 
-/* Save the calendar data */
-void io_save_cal(enum save_display display)
+/*
+ * Save the calendar data.
+ * The return value tells how a possible save conflict should be/was resolved:
+ * IO_SAVE_CTINUE: continue save operation and overwrite the data files
+ * IO_SAVE_RELOAD: cancel save operation (data files changed and reloaded)
+ * IO_SAVE_CANCEL: cancel save operation (keep data files, no reload)
+ */
+int io_save_cal(enum save_display display)
 {
 	const char *access_pb = _("Problems accessing data file ...");
 	const char *save_success =
 	    _("The data files were successfully saved");
 	const char *enter = _("Press [ENTER] to continue");
-	int show_bar;
+	int show_bar, ret = IO_SAVE_CTINUE;
 
 	if (read_only)
-		return;
+		return IO_SAVE_CANCEL;
 
-	if (io_check_data_files_modified() && resolve_save_conflict()) {
-		if (io_reload_data()) {
-			day_process_storage(ui_calendar_get_slctd_day(), 1);
-			ui_day_load_items();
-			ui_day_sel_reset();
-			notify_check_next_app(1);
-			ui_calendar_monthly_view_cache_set_invalid();
-			wins_update(FLAG_ALL);
-		}
-		return;
-	}
+	if (io_check_data_files_modified() && (ret = resolve_save_conflict()))
+		return ret;
 
 	run_hook("pre-save");
+	io_mutex_lock();
 
 	show_bar = 0;
 	if (ui_mode == UI_CURSES && display == IO_SAVE_DISPLAY_BAR
@@ -599,11 +605,7 @@ void io_save_cal(enum save_display display)
 	if (!io_save_keys())
 		ERROR_MSG("%s", access_pb);
 
-	io_mutex_lock();
 	io_unset_modified();
-	io_compute_hash(path_apts, apts_sha1);
-	io_compute_hash(path_todo, todo_sha1);
-	io_mutex_unlock();
 
 	/* Print a message telling data were saved */
 	if (ui_mode == UI_CURSES && display == IO_SAVE_DISPLAY_BAR &&
@@ -612,7 +614,12 @@ void io_save_cal(enum save_display display)
 		keys_wait_for_any_key(win[KEY].p);
 	}
 
+	io_compute_hash(path_apts, apts_sha1);
+	io_compute_hash(path_todo, todo_sha1);
+
+	io_mutex_unlock();
 	run_hook("post-save");
+	return ret;
 }
 
 static void io_load_error(const char *filename, unsigned line,
@@ -921,8 +928,8 @@ int io_reload_data(void)
 				_("There are unsaved modifications:");
 		const char *msg_um_discard = _("(d)iscard");
 		const char *msg_um_merge = _("(m)erge");
-		const char *msg_um_keep = _("(k)eep and cancel");
-		const char *msg_um_choice = _("[dmk]");
+		const char *msg_um_keep = _("(c)ancel");
+		const char *msg_um_choice = _("[dmc]");
 
 		asprintf(&msg_um_asktype, "%s %s, %s, %s", msg_um_prefix,
 			 msg_um_discard, msg_um_merge, msg_um_keep);

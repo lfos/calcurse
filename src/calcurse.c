@@ -271,7 +271,13 @@ static inline void key_generic_help(void)
 
 static inline void key_generic_save(void)
 {
-	io_save_cal(IO_SAVE_DISPLAY_BAR);
+	if (io_save_cal(IO_SAVE_DISPLAY_BAR) == IO_SAVE_RELOAD) {
+		ui_todo_load_items();
+		ui_todo_sel_reset();
+		do_storage(0);
+		notify_check_next_app(1);
+		ui_calendar_monthly_view_cache_set_invalid();
+	}
 	wins_update(FLAG_ALL);
 }
 
