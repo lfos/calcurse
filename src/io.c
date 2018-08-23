@@ -503,7 +503,7 @@ static int resolve_save_conflict(void)
 {
 	char *msg_um_asktype = NULL;
 	const char *msg_um_prefix =
-			_("Data files were changed since loaded:");
+			_("Data have changed since loaded:");
 	const char *msg_um_overwrite = _("(o)verwrite");
 	const char *msg_um_merge = _("(m)erge");
 	const char *msg_um_keep = _("(c)ancel");
@@ -532,24 +532,36 @@ static int resolve_save_conflict(void)
 	return ret;
 }
 
-static int io_check_data_files_modified()
+/* Return codes for new_data(). */
+#define NONEW		0
+#define APTS		1
+#define TODO		2
+#define APTS_TODO	3
+#define NOKNOW		4
+static int new_data()
 {
 	char sha1_new[SHA1_DIGESTLEN * 2 + 1];
-	int ret = 1;
+	int ret = NONEW;
 
 	io_mutex_lock();
 
 	if (io_compute_hash(path_apts, sha1_new)) {
-		if (strncmp(sha1_new, apts_sha1, SHA1_DIGESTLEN * 2) != 0)
-			goto cleanup;
+		if (strncmp(sha1_new, apts_sha1, SHA1_DIGESTLEN * 2) != 0) {
+			ret |= APTS;
+		}
+	} else {
+		ret = NOKNOW;
+		goto cleanup;
 	}
 
 	if (io_compute_hash(path_todo, sha1_new)) {
-		if (strncmp(sha1_new, todo_sha1, SHA1_DIGESTLEN * 2) != 0)
-			goto cleanup;
+		if (strncmp(sha1_new, todo_sha1, SHA1_DIGESTLEN * 2) != 0) {
+			ret |= TODO;
+		}
+	} else {
+		ret = NOKNOW;
+		goto cleanup;
 	}
-
-	ret = 0;
 
 cleanup:
 	io_mutex_unlock();
@@ -574,7 +586,7 @@ int io_save_cal(enum save_display display)
 	if (read_only)
 		return IO_SAVE_CANCEL;
 
-	if (io_check_data_files_modified() && (ret = resolve_save_conflict()))
+	if (new_data() && (ret = resolve_save_conflict()))
 		return ret;
 
 	run_hook("pre-save");
@@ -905,14 +917,42 @@ void io_load_todo(struct item_filter *filter)
 	file_close(data_file, __FILE_POS__);
 }
 
-/* Load appointments and todo items */
-void io_load_data(struct item_filter *filter)
+/*
+ * Load appointments and todo items.
+ * Unless told otherwise, the function will only load a file that has changed
+ * since last saved or loaded, see new_data() return codes.
+ */
+void io_load_data(struct item_filter *filter, int force)
 {
+	run_hook("pre-load");
+	if (force)
+		force = APTS_TODO;
+	else
+		force = new_data();
+
 	io_mutex_lock();
-	io_load_app(filter);
-	io_load_todo(filter);
-	io_mutex_unlock();
+
+	if (force & APTS) {
+		apoint_llist_free();
+		event_llist_free();
+		recur_apoint_llist_free();
+		recur_event_llist_free();
+		apoint_llist_init();
+		event_llist_init();
+		recur_apoint_llist_init();
+		recur_event_llist_init();
+		io_load_app(filter);
+	}
+	if (force & TODO) {
+		todo_free_list();
+		todo_init_list();
+		io_load_todo(filter);
+	}
+
 	io_unset_modified();
+
+	io_mutex_unlock();
+	run_hook("post-load");
 }
 
 int io_reload_data(void)
@@ -922,6 +962,7 @@ int io_reload_data(void)
 		_("The data files were reloaded successfully");
 	const char *enter = _("Press [ENTER] to continue");
 	int ret = 0;
+	int load = NOFORCE;
 
 	if (io_get_modified()) {
 		const char *msg_um_prefix =
@@ -936,9 +977,11 @@ int io_reload_data(void)
 
 		switch (status_ask_choice(msg_um_asktype, msg_um_choice, 3)) {
 		case 1:
+			load = FORCE;
 			break;
 		case 2:
 			io_merge_data();
+			load = FORCE;
 			break;
 		case 3:
 			/* FALLTHROUGH */
@@ -947,27 +990,7 @@ int io_reload_data(void)
 		}
 	}
 
-	run_hook("pre-load");
-
-	if (!io_check_data_files_modified())
-		goto cleanup;
-
-	/* Reinitialize data structures. */
-	apoint_llist_free();
-	event_llist_free();
-	recur_apoint_llist_free();
-	recur_event_llist_free();
-	todo_free_list();
-
-	apoint_llist_init();
-	event_llist_init();
-	recur_apoint_llist_init();
-	recur_event_llist_init();
-	todo_init_list();
-
-	io_load_data(NULL);
-
-	run_hook("post-load");
+	io_load_data(NULL, load);
 
 	if (show_dialogs()) {
 		status_mesg(reload_success, enter);

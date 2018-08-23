@@ -172,6 +172,8 @@
 
 /* Mnemonics */
 #define NOHILT		0 	/* 'No highlight' argument */
+#define NOFORCE		0
+#define FORCE		1
 
 #define ERROR_MSG(...) do {                                                   \
   char msg[BUFSIZ];                                                           \
@@ -858,7 +860,7 @@ unsigned io_save_keys(void);
 int io_save_cal(enum save_display);
 void io_load_app(struct item_filter *);
 void io_load_todo(struct item_filter *);
-void io_load_data(struct item_filter *);
+void io_load_data(struct item_filter *, int);
 int io_reload_data(void);
 void io_load_keys(const char *);
 int io_check_dir(const char *);

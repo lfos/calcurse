@@ -551,15 +551,6 @@ int main(int argc, char **argv)
 	textdomain(PACKAGE);
 #endif /* ENABLE_NLS */
 
-	/* Thread-safe data structure init */
-	apoint_llist_init();
-	recur_apoint_llist_init();
-
-	/* Initialize non-thread-safe data structures. */
-	event_llist_init();
-	recur_event_llist_init();
-	todo_init_list();
-
 	/*
 	 * Begin by parsing and handling command line arguments.
 	 * The data path is also initialized here.
@@ -627,11 +618,7 @@ int main(int argc, char **argv)
 	config_load();
 	wins_erase_status_bar();
 	io_load_keys(conf.pager);
-
-	run_hook("pre-load");
-	io_load_data(NULL);
-	run_hook("post-load");
-
+	io_load_data(NULL, FORCE);
 	wins_slctd_set(conf.default_panel);
 	wins_resize();
 	/*
