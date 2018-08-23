@@ -738,7 +738,7 @@ int parse_args(int argc, char **argv)
 		io_check_file(path_todo);
 		io_check_file(path_conf);
 		config_load();	/* To get output date format. */
-		io_load_data(&filter);
+		io_load_data(&filter, FORCE);
 		if (grep_filter) {
 			io_save_todo(path_todo);
 			io_save_apts(path_apts);
@@ -760,7 +760,7 @@ int parse_args(int argc, char **argv)
 		io_check_file(path_todo);
 		io_check_file(path_conf);
 		config_load();	/* To get output date format. */
-		io_load_data(&filter);
+		io_load_data(&filter, FORCE);
 
 		/* Use default values for non-specified format strings. */
 		fmt_apt = fmt_apt ? fmt_apt : " - %S -> %E\n\t%m\n";
@@ -779,13 +779,12 @@ int parse_args(int argc, char **argv)
 	} else if (gc) {
 		io_check_file(path_apts);
 		io_check_file(path_todo);
-		io_load_data(NULL);
+		io_load_data(NULL, FORCE);
 		note_gc();
 	} else if (import) {
 		io_check_file(path_apts);
 		io_check_file(path_todo);
-		/* Get default pager in case we need to show a log file. */
-		io_load_data(NULL);
+		io_load_data(NULL, FORCE);
 		if (dump_imported) {
 			/*
 			 * Use default values for non-specified format strings.
@@ -809,7 +808,7 @@ int parse_args(int argc, char **argv)
 	} else if (export) {
 		io_check_file(path_apts);
 		io_check_file(path_todo);
-		io_load_data(&filter);
+		io_load_data(&filter, FORCE);
 		io_export_data(xfmt, export_uid);
 	} else if (daemon) {
 		notify_init_vars();
