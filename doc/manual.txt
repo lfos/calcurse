@@ -1495,7 +1495,7 @@ Thanks
 ------
 
 Its time now to thank other people without whom this program would not exist!
-So here is a list of contributing persons I would like to thank :
+So here is a list of contributing persons I would like to thank:
 
 * Alex for its patches, help and advices with `C` programming
 
@@ -1519,8 +1519,8 @@ So here is a list of contributing persons I would like to thank :
 
 * Jeremy Roon for the Dutch translation
 
-* Frédéric Culot, Toucouch, Erik Saule, Stéphane Aulery
-  and Baptiste Jonglez for the French translation
+* Frédéric Culot, Toucouch, Erik Saule, Stéphane Aulery and Baptiste Jonglez
+  for the French translation
 
 * Michael Schulz, Chris M., Benjamin Moeller and Lukas Fleischer for the German
   translation
@@ -1535,9 +1535,15 @@ So here is a list of contributing persons I would like to thank :
   and for implementing the date format configuration options
 
 * Erik Saule for its patch implementing the `-N`, `-s`, `-S`, `-r` and `-D`
-  flags
+  flags as well as support for regular expressions!
 
-* people who write softwares I like and which inspired me, especially :
+* Baptiste Jonglez and Lars Henriksen for their awesome work on many important
+  features of calcurse!
+
+* Randy Ramos for his improvements to the calcurse-caldav synchronization
+  script.
+
+* people who write software I like and which inspired me, especially:
 
   - `vim` for the displacement keys
   - `orpheus` and `abook` for documentation

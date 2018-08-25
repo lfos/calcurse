@@ -27,34 +27,32 @@ checkout, you need to run `./autogen.sh` before `./configure`.
 Package Overview
 ----------------
 
-* `src`: contains calcurse sources
-* `test`: contains a test suite and test cases for calcurse
-* `scripts`: contains additional scripts, such as `calcurse-upgrade`
-* `doc`: contains detailed documentation in plain text and HTML
+* `build-aux`: auxiliary files for the build process
+* `contrib`: useful tools such as hooks or the CalDAV synchronization script
+* `doc`: detailed documentation in plain text and HTML
+* `po`: translations and i18n-related files
+* `scripts`: additional official scripts, such as `calcurse-upgrade`
+* `src`: the actual calcurse source files
+* `test`: test suite and test cases for calcurse
 
 Authors
 -------
 
-* Lukas Fleischer (Maintainer)
-* Frederic Culot (Original Author)
+calcurse was originally authored by Frederic Culot and is currently maintained
+by Lukas Fleischer.
 
-Contributors
-------------
+Of course, there are numerous other contributors. Check the Git commit log and
+the `Thanks` section in the manual for a list of people who have contributed by
+reporting bugs, sending fixes, or suggesting improvements.
 
-* RegEx support: Erik Saule
-* Dutch translation: Jeremy Roon, 2007-2010
-* French translation: Frédéric Culot, 2006-2010
-* French translation: Toucouch, 2007
-* French translation: Erik Saule, 2011-2012
-* French translation: Stéphane Aulery, 2012
-* French translation: Baptiste Jonglez, 2012
-* German translation: Michael Schulz, 2006-2010
-* German translation: Chris M., 2006
-* German translation: Benjamin Moeller, 2010
-* German translation: Lukas Fleischer, 2011-2012
-* Portuguese (Brazil) translation: Rafael Ferreira, 2012
-* Russian translation: Aleksey Mechonoshin, 2011-2012
-* Spanish translation: Jose Lopez, 2006-2010
+Contributing and Donations
+--------------------------
 
-Also check the `Thanks` section in the manual for a list of people who have
-contributed by reporting bugs, sending fixes, or suggesting improvements.
+Patches, bug reports and other requests are always welcome! You can submit them
+to one of our mailing lists (check the [patch submission
+guidelines](doc/submitting-patches.txt) for details) or via GitHub.
+
+We are also extremely grateful for donations which help us continue developing
+calcurse as open source software and are used to cover recurring costs, such as
+for our servers. You can use https://calcurse.org/donate/ for a one-time
+payment. If you prefer another form of donation, do not hesitate to contact us!
