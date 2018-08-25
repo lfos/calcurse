@@ -83,13 +83,16 @@ static int day_edit_time(int time)
 /* Request the user to enter a new time or duration. */
 static int day_edit_duration(int start, int dur, unsigned *new_duration)
 {
-	char *timestr = date_sec2date_str(start + dur, "%H:%M");
+	char *timestr = mem_strdup("");
 	const char *msg_time =
 	    _("Enter end time ([hh:mm], [hhmm]) or duration ([+hh:mm], [+xxxdxxhxxm]):");
 	const char *enter_str = _("Press [Enter] to continue");
 	const char *fmt_msg =
 	    _("You entered an invalid time, should be [hh:mm] or [hhmm]");
 	long end;
+
+	if (dur > 0)
+		timestr = date_sec2date_str(start + dur, "%H:%M");
 
 	for (;;) {
 		int ret;
@@ -380,7 +383,7 @@ void ui_day_item_edit(void)
 			(_("Edit: "), choice_recur_appt, 5)) {
 		case 1:
 			need_check_notify = 1;
-			update_start_time(&ra->start, &ra->dur, 1);
+			update_start_time(&ra->start, &ra->dur, ra->dur > 0);
 			io_set_modified();
 			break;
 		case 2:
@@ -420,7 +423,7 @@ void ui_day_item_edit(void)
 			(_("Edit: "), choice_appt, 4)) {
 		case 1:
 			need_check_notify = 1;
-			update_start_time(&a->start, &a->dur, 1);
+			update_start_time(&a->start, &a->dur, a->dur > 0);
 			io_set_modified();
 			break;
 		case 2:
