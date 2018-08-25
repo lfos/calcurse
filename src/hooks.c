@@ -40,7 +40,7 @@
 
 int run_hook(const char *name)
 {
-	char *hook_path;
+	char *hook_path = NULL;
 	char const *arg[2];
 	int pid, ret = -127;
 	int prepare_wins = (ui_mode == UI_CURSES);
@@ -50,7 +50,7 @@ int run_hook(const char *name)
 	arg[1] = NULL;
 
 	if (!io_file_exists(hook_path))
-		return 0;
+		goto cleanup;
 
 	if (prepare_wins)
 		wins_prepare_external();
@@ -64,5 +64,7 @@ int run_hook(const char *name)
 	if (prepare_wins)
 		wins_unprepare_external();
 
+cleanup:
+	mem_free(hook_path);
 	return ret;
 }
