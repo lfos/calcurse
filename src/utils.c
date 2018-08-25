@@ -74,11 +74,11 @@ void exit_calcurse(int status)
 {
 	int was_interactive;
 
-	ui_calendar_stop_date_thread();
-	io_stop_psave_thread();
-
 	if (ui_mode == UI_CURSES) {
 		notify_stop_main_thread();
+		ui_calendar_stop_date_thread();
+		io_stop_psave_thread();
+
 		clear();
 		wins_refresh();
 		endwin();
