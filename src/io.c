@@ -586,8 +586,12 @@ int io_save_cal(enum save_display display)
 	if (read_only)
 		return IO_SAVE_CANCEL;
 
-	if (new_data() && (ret = resolve_save_conflict()))
-		return ret;
+	if (new_data()) {
+		if ((ret = resolve_save_conflict()))
+			return ret;
+	} else
+		if (!io_get_modified())
+			return IO_SAVE_CANCEL;
 
 	run_hook("pre-save");
 	io_mutex_lock();

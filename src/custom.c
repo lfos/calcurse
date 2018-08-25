@@ -1154,4 +1154,8 @@ void custom_config_main(void)
 		wmove(win[STA].p, 0, 0);
 		wins_doupdate();
 	}
+	if (!config_save())
+		EXIT(_("Could not save %s."), path_conf);
+	if (!io_save_keys())
+		EXIT(_("Could not save %s."), path_keys);
 }
