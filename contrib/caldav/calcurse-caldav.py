@@ -54,7 +54,13 @@ def calcurse_wipe():
         print('Removing all local calcurse objects...')
     if dry_run:
         return
-    subprocess.call([calcurse, '-F', '--filter-hash=XXX'])
+
+    command = [calcurse, '-F', '--filter-hash=XXX']
+
+    if debug:
+        print('Running command: {}'.format(command))
+
+    subprocess.call(command)
 
 
 def calcurse_import(icaldata):
@@ -71,13 +77,25 @@ def calcurse_import(icaldata):
         '--format-todo=%(hash)\\n'
     ]
 
+    if debug:
+        print('Running command: {}'.format(command))
+
     p = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
     return p.communicate(icaldata.encode('utf-8'))[0].decode('utf-8').rstrip()
 
 
 def calcurse_export(objhash):
-    p = subprocess.Popen([calcurse, '-x', 'ical', '--export-uid',
-                          '--filter-hash=' + objhash], stdout=subprocess.PIPE)
+    command = [
+        calcurse,
+        '-x', 'ical',
+        '--export-uid',
+        '--filter-hash=' + objhash
+    ]
+
+    if debug:
+        print('Running command: {}'.format(command))
+
+    p = subprocess.Popen(command, stdout=subprocess.PIPE)
     return p.communicate()[0].decode('utf-8').rstrip()
 
 
@@ -93,16 +111,29 @@ def calcurse_hashset():
         '--format-todo=%(hash)\\n'
     ]
 
+    if debug:
+        print('Running command: {}'.format(command))
+
     p = subprocess.Popen(command, stdout=subprocess.PIPE)
     return set(p.communicate()[0].decode('utf-8').rstrip().splitlines())
 
 
 def calcurse_remove(objhash):
-    subprocess.call([calcurse, '-F', '--filter-hash=!' + objhash])
+    command = [calcurse, '-F', '--filter-hash=!' + objhash]
+
+    if debug:
+        print('Running command: {}'.format(command))
+
+    subprocess.call(command)
 
 
 def calcurse_version():
-    p = subprocess.Popen([calcurse, '--version'], stdout=subprocess.PIPE)
+    command = [calcurse, '--version']
+
+    if debug:
+        print('Running command: {}'.format(command))
+
+    p = subprocess.Popen(command, stdout=subprocess.PIPE)
     m = re.match(r'calcurse ([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9]+)-)?',
                  p.communicate()[0].decode('utf-8'))
     if not m:
