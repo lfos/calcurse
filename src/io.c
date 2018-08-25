@@ -231,17 +231,22 @@ unsigned io_fprintln(const char *fname, const char *fmt, ...)
 void io_init(const char *cfile, const char *datadir, const char *confdir)
 {
 	const char *home;
+	const char *conf_home;
+
 
 	if (datadir != NULL) {
 		home = datadir;
+		if (confdir == NULL)
+			conf_home = home;
+		else
+			conf_home = confdir;
 
 		snprintf(path_dir, BUFSIZ, "%s", home);
-		if (!confdir)
-			confdir = path_dir;
 
-		snprintf(path_conf, BUFSIZ, "%s/" CONF_PATH_NAME, confdir);
-		snprintf(path_keys, BUFSIZ, "%s/" KEYS_PATH_NAME, confdir);
-		snprintf(path_hooks, BUFSIZ, "%s/" HOOKS_DIR_NAME, confdir);
+		snprintf(path_conf_dir, BUFSIZ, "%s",  conf_home);
+		snprintf(path_conf, BUFSIZ, "%s/" CONF_PATH_NAME, conf_home);
+		snprintf(path_keys, BUFSIZ, "%s/" KEYS_PATH_NAME, conf_home);
+		snprintf(path_hooks, BUFSIZ, "%s/" HOOKS_DIR_NAME, conf_home);
 
 		snprintf(path_todo, BUFSIZ, "%s/" TODO_PATH_NAME, home);
 		snprintf(path_cpid, BUFSIZ, "%s/" CPID_PATH_NAME, home);
@@ -253,14 +258,17 @@ void io_init(const char *cfile, const char *datadir, const char *confdir)
 		if (home == NULL) {
 			home = ".";
 		}
+		if (confdir == NULL)
+			conf_home = home;
+		else
+			conf_home = confdir;
 
 		snprintf(path_dir, BUFSIZ, "%s/" DIR_NAME, home);
-		if (!confdir)
-			confdir = path_dir;
 
-		snprintf(path_conf, BUFSIZ, "%s/" CONF_PATH_NAME, confdir);
-		snprintf(path_keys, BUFSIZ, "%s/" KEYS_PATH_NAME, confdir);
-		snprintf(path_hooks, BUFSIZ, "%s/" HOOKS_DIR_NAME, confdir);
+		snprintf(path_conf_dir, BUFSIZ, "%s",  conf_home);
+		snprintf(path_conf, BUFSIZ, "%s/" CONF_PATH_NAME, conf_home);
+		snprintf(path_keys, BUFSIZ, "%s/" KEYS_PATH_NAME, conf_home);
+		snprintf(path_hooks, BUFSIZ, "%s/" HOOKS_DIR_NAME, conf_home);
 
 		snprintf(path_todo, BUFSIZ, "%s/" TODO_PATH, home);
 		snprintf(path_cpid, BUFSIZ, "%s/" CPID_PATH, home);
@@ -1240,6 +1248,7 @@ int io_check_data_files(void)
 	int missing = 0;
 
 	missing += io_check_dir(path_dir) ? 0 : 1;
+	missing += io_check_dir(path_conf_dir) ? 0 : 1;
 	missing += io_check_dir(path_notes) ? 0 : 1;
 	missing += io_check_file(path_todo) ? 0 : 1;
 	missing += io_check_file(path_apts) ? 0 : 1;

@@ -1194,6 +1194,7 @@ extern int want_reload;
 extern const char *datefmt_str[DATE_FORMATS];
 extern int days[12];
 extern char path_dir[BUFSIZ];
+extern char path_conf_dir[BUFSIZ];
 extern char path_todo[BUFSIZ];
 extern char path_apts[BUFSIZ];
 extern char path_conf[BUFSIZ];
