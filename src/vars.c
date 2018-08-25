@@ -80,6 +80,7 @@ int days[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
  * io_init()
  */
 char path_dir[] = "";
+char path_conf_dir[] = "";
 char path_todo[] = "";
 char path_apts[] = "";
 char path_conf[] = "";
