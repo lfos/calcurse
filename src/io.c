@@ -503,12 +503,12 @@ static int resolve_save_conflict(void)
 {
 	char *msg_um_asktype = NULL;
 	const char *msg_um_prefix =
-			_("Data have changed since loaded:");
-	const char *msg_um_overwrite = _("(o)verwrite");
+			_("Data files have changed and will be overwritten:");
+	const char *msg_um_overwrite = _("(c)ontinue");
 	const char *msg_um_merge = _("(m)erge");
-	const char *msg_um_keep = _("(c)ancel");
-	const char *msg_um_choice = _("[omc]");
-	int ret;
+	const char *msg_um_keep = _("c(a)ncel");
+	const char *msg_um_choice = _("[cma]");
+	int ret = IO_SAVE_CANCEL;
 
 	asprintf(&msg_um_asktype, "%s %s, %s, %s", msg_um_prefix,
 		 msg_um_overwrite, msg_um_merge, msg_um_keep);
@@ -519,7 +519,7 @@ static int resolve_save_conflict(void)
 		break;
 	case 2:
 		io_merge_data();
-		io_reload_data();
+		io_load_data(NULL, FORCE);
 		ret = IO_SAVE_RELOAD;
 		break;
 	case 3:
@@ -573,14 +573,12 @@ cleanup:
  * The return value tells how a possible save conflict should be/was resolved:
  * IO_SAVE_CTINUE: continue save operation and overwrite the data files
  * IO_SAVE_RELOAD: cancel save operation (data files changed and reloaded)
- * IO_SAVE_CANCEL: cancel save operation (keep data files, no reload)
+ * IO_SAVE_CANCEL: cancel save operation (user's decision, keep data files, no reload)
+ * IO_SAVE_NOOP: cancel save operation (nothing has changed)
  */
 int io_save_cal(enum save_display display)
 {
 	const char *access_pb = _("Problems accessing data file ...");
-	const char *save_success =
-	    _("The data files were successfully saved");
-	const char *enter = _("Press [ENTER] to continue");
 	int show_bar, ret = IO_SAVE_CTINUE;
 
 	if (read_only)
@@ -591,7 +589,7 @@ int io_save_cal(enum save_display display)
 			return ret;
 	} else
 		if (!io_get_modified())
-			return IO_SAVE_CANCEL;
+			return IO_SAVE_NOOP;
 
 	run_hook("pre-save");
 	io_mutex_lock();
@@ -622,13 +620,6 @@ int io_save_cal(enum save_display display)
 		ERROR_MSG("%s", access_pb);
 
 	io_unset_modified();
-
-	/* Print a message telling data were saved */
-	if (ui_mode == UI_CURSES && display == IO_SAVE_DISPLAY_BAR &&
-	    show_dialogs()) {
-		status_mesg(save_success, enter);
-		keys_wait_for_any_key(win[KEY].p);
-	}
 
 	io_compute_hash(path_apts, apts_sha1);
 	io_compute_hash(path_todo, todo_sha1);
@@ -925,8 +916,9 @@ void io_load_todo(struct item_filter *filter)
  * Load appointments and todo items.
  * Unless told otherwise, the function will only load a file that has changed
  * since last saved or loaded, see new_data() return codes.
+ * Return codes are for use in io_reload_data() only.
  */
-void io_load_data(struct item_filter *filter, int force)
+int io_load_data(struct item_filter *filter, int force)
 {
 	run_hook("pre-load");
 	if (force)
@@ -957,24 +949,25 @@ void io_load_data(struct item_filter *filter, int force)
 
 	io_mutex_unlock();
 	run_hook("post-load");
+	return force;
 }
 
+/*
+ * The return codes reflect the user choice in case of unsaved in-memory changes.
+ */
 int io_reload_data(void)
 {
 	char *msg_um_asktype = NULL;
-	const char *reload_success =
-		_("The data files were reloaded successfully");
-	const char *enter = _("Press [ENTER] to continue");
-	int ret = 0;
 	int load = NOFORCE;
+	int ret = IO_RELOAD_LOAD;
 
 	if (io_get_modified()) {
 		const char *msg_um_prefix =
-				_("There are unsaved modifications:");
-		const char *msg_um_discard = _("(d)iscard");
+				_("Screen data have changed and will be lost:");
+		const char *msg_um_discard = _("(c)ontinue");
 		const char *msg_um_merge = _("(m)erge");
-		const char *msg_um_keep = _("(c)ancel");
-		const char *msg_um_choice = _("[dmc]");
+		const char *msg_um_keep = _("c(a)ncel");
+		const char *msg_um_choice = _("[cma]");
 
 		asprintf(&msg_um_asktype, "%s %s, %s, %s", msg_um_prefix,
 			 msg_um_discard, msg_um_merge, msg_um_keep);
@@ -982,26 +975,25 @@ int io_reload_data(void)
 		switch (status_ask_choice(msg_um_asktype, msg_um_choice, 3)) {
 		case 1:
 			load = FORCE;
+			ret = IO_RELOAD_CTINUE;
 			break;
 		case 2:
 			io_merge_data();
 			load = FORCE;
+			ret = IO_RELOAD_MERGE;
 			break;
 		case 3:
+			ret = IO_RELOAD_CANCEL;
 			/* FALLTHROUGH */
 		default:
 			goto cleanup;
 		}
 	}
 
-	io_load_data(NULL, load);
+	load = io_load_data(NULL, load);
+	if (load == NONEW)
+		ret = IO_RELOAD_NOOP;
 
-	if (show_dialogs()) {
-		status_mesg(reload_success, enter);
-		keys_wait_for_any_key(win[KEY].p);
-	}
-
-	ret = 1;
 cleanup:
 	mem_free(msg_um_asktype);
 	return ret;
