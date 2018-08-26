@@ -658,7 +658,17 @@ enum getstr {
 enum {
 	IO_SAVE_CTINUE,
 	IO_SAVE_RELOAD,
-	IO_SAVE_CANCEL
+	IO_SAVE_CANCEL,
+	IO_SAVE_NOOP
+};
+
+/* Return codes for the io_reload_data() function. */
+enum {
+	IO_RELOAD_LOAD,
+	IO_RELOAD_CTINUE,
+	IO_RELOAD_MERGE,
+	IO_RELOAD_CANCEL,
+	IO_RELOAD_NOOP
 };
 
 /* Week days. */
@@ -860,7 +870,7 @@ unsigned io_save_keys(void);
 int io_save_cal(enum save_display);
 void io_load_app(struct item_filter *);
 void io_load_todo(struct item_filter *);
-void io_load_data(struct item_filter *, int);
+int io_load_data(struct item_filter *, int);
 int io_reload_data(void);
 void io_load_keys(const char *);
 int io_check_dir(const char *);

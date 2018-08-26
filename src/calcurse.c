@@ -271,7 +271,12 @@ static inline void key_generic_help(void)
 
 static inline void key_generic_save(void)
 {
-	if (io_save_cal(IO_SAVE_DISPLAY_BAR) == IO_SAVE_RELOAD) {
+	char *msg = NULL;
+	int ret;
+
+	ret = io_save_cal(IO_SAVE_DISPLAY_BAR);
+
+	if (ret == IO_SAVE_RELOAD) {
 		ui_todo_load_items();
 		ui_todo_sel_reset();
 		do_storage(0);
@@ -279,11 +284,30 @@ static inline void key_generic_save(void)
 		ui_calendar_monthly_view_cache_set_invalid();
 	}
 	wins_update(FLAG_ALL);
+	switch (ret) {
+	case IO_SAVE_CTINUE:
+		msg = _("Data were saved successfully");
+		break;
+	case IO_SAVE_RELOAD:
+		msg = _("Data were saved/reloaded successfully");
+		break;
+	case IO_SAVE_CANCEL:
+		msg = _("Save cancelled");
+		break;
+	case IO_SAVE_NOOP:
+		msg = _("Data were already saved");
+		break;
+	}
+	status_mesg(msg, "");
 }
 
 static inline void key_generic_reload(void)
 {
-	if (io_reload_data()) {
+	char *msg = NULL;
+	int ret;
+
+	ret = io_reload_data();
+	if (ret != IO_RELOAD_CANCEL && ret != IO_RELOAD_NOOP) {
 		ui_todo_load_items();
 		ui_todo_sel_reset();
 		do_storage(0);
@@ -291,6 +315,22 @@ static inline void key_generic_reload(void)
 		ui_calendar_monthly_view_cache_set_invalid();
 	}
 	wins_update(FLAG_ALL);
+	switch (ret) {
+	case IO_RELOAD_LOAD:
+	case IO_RELOAD_CTINUE:
+		msg = _("Data were reloaded successfully");
+		break;
+	case IO_RELOAD_MERGE:
+		msg = _("Date were merged/reloaded successfully");
+		break;
+	case IO_RELOAD_CANCEL:
+		msg = _("Reload cancelled");
+		break;
+	case IO_RELOAD_NOOP:
+		msg = _("Data were already loaded");
+		break;
+	}
+	status_mesg(msg, "");
 }
 
 static inline void key_generic_import(void)
