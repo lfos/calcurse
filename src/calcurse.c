@@ -274,7 +274,7 @@ static inline void key_generic_save(void)
 	char *msg = NULL;
 	int ret;
 
-	ret = io_save_cal(IO_SAVE_DISPLAY_BAR);
+	ret = io_save_cal();
 
 	if (ret == IO_SAVE_RELOAD) {
 		ui_todo_load_items();
@@ -297,6 +297,8 @@ static inline void key_generic_save(void)
 	case IO_SAVE_NOOP:
 		msg = _("Data were already saved");
 		break;
+	case IO_SAVE_ERROR:
+		EXIT(_("Cannot open data file"));
 	}
 	status_mesg(msg, "");
 }
@@ -503,7 +505,7 @@ static inline void key_generic_scroll_down(void)
 static inline void key_generic_quit(void)
 {
 	if (conf.auto_save)
-		io_save_cal(IO_SAVE_DISPLAY_BAR);
+		io_save_cal();
 	if (conf.auto_gc)
 		note_gc();
 
@@ -538,7 +540,7 @@ static inline void key_generic_cmd(void)
 
 	if (!strcmp(cmd_name, "write") || !strcmp(cmd_name, "w") ||
 	    !strcmp(cmd_name, "wq")) {
-		io_save_cal(IO_SAVE_DISPLAY_BAR);
+		io_save_cal();
 		valid = 1;
 	}
 	if (!strcmp(cmd_name, "quit") || !strcmp(cmd_name, "q") ||
