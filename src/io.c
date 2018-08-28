@@ -517,7 +517,7 @@ static int resolve_save_conflict(void)
 	case 3:
 		/* FALLTHROUGH */
 	default:
-		wins_update(FLAG_STA);
+		;
 	}
 
 	mem_free(msg_um_asktype);
