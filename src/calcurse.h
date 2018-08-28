@@ -659,7 +659,8 @@ enum {
 	IO_SAVE_CTINUE,
 	IO_SAVE_RELOAD,
 	IO_SAVE_CANCEL,
-	IO_SAVE_NOOP
+	IO_SAVE_NOOP,
+	IO_SAVE_ERROR
 };
 
 /* Return codes for the io_reload_data() function. */
@@ -725,12 +726,6 @@ enum export_type {
 	IO_EXPORT_ICAL,
 	IO_EXPORT_PCAL,
 	IO_EXPORT_NBTYPES
-};
-
-/* To customize the display when saving data. */
-enum save_display {
-	IO_SAVE_DISPLAY_BAR,
-	IO_SAVE_DISPLAY_NONE
 };
 
 /* apoint.c */
@@ -867,7 +862,7 @@ unsigned io_save_apts(const char *);
 void io_dump_todo(const char *);
 unsigned io_save_todo(const char *);
 unsigned io_save_keys(void);
-int io_save_cal(enum save_display);
+int io_save_cal(void);
 void io_load_app(struct item_filter *);
 void io_load_todo(struct item_filter *);
 int io_load_data(struct item_filter *, int);

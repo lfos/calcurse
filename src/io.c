@@ -48,25 +48,6 @@
 #include "calcurse.h"
 #include "sha1.h"
 
-typedef enum {
-	PROGRESS_BAR_SAVE,
-	PROGRESS_BAR_LOAD,
-	PROGRESS_BAR_EXPORT
-} progress_bar_t;
-
-enum {
-	PROGRESS_BAR_CONF,
-	PROGRESS_BAR_TODO,
-	PROGRESS_BAR_APTS,
-	PROGRESS_BAR_KEYS
-};
-
-enum {
-	PROGRESS_BAR_EXPORT_EVENTS,
-	PROGRESS_BAR_EXPORT_APOINTS,
-	PROGRESS_BAR_EXPORT_TODO
-};
-
 struct ht_keybindings_s {
 	const char *label;
 	enum key key;
@@ -87,74 +68,6 @@ HTABLE_PROTOTYPE(ht_keybindings, ht_keybindings_s)
 static int modified = 0;
 static char apts_sha1[SHA1_DIGESTLEN * 2 + 1];
 static char todo_sha1[SHA1_DIGESTLEN * 2 + 1];
-
-/* Draw a progress bar while saving, loading or exporting data. */
-static void progress_bar(progress_bar_t type, int progress)
-{
-#define NBFILES		4
-#define NBEXPORTED      3
-#define LABELENGTH      15
-	int i, step, steps;
-	const char *mesg_sav = _("Saving...");
-	const char *mesg_load = _("Loading...");
-	const char *mesg_export = _("Exporting...");
-	const char *error_msg =
-	    _("Internal error while displaying progress bar");
-	const char *barchar = "|";
-	const char *file[NBFILES] = {
-		"[    conf    ]",
-		"[    todo    ]",
-		"[    apts    ]",
-		"[    keys    ]"
-	};
-	const char *data[NBEXPORTED] = {
-		"[   events   ]",
-		"[appointments]",
-		"[    todo    ]"
-	};
-	int ipos = LABELENGTH + 2;
-	int epos[NBFILES];
-
-	/* progress bar length init. */
-	ipos = LABELENGTH + 2;
-	steps = (type == PROGRESS_BAR_EXPORT) ? NBEXPORTED : NBFILES;
-	step = floor(col / (steps + 1));
-	for (i = 0; i < steps - 1; i++)
-		epos[i] = (i + 2) * step;
-	epos[steps - 1] = col - 2;
-
-	switch (type) {
-	case PROGRESS_BAR_SAVE:
-		EXIT_IF(progress < 0
-			|| progress > PROGRESS_BAR_KEYS, "%s", error_msg);
-		status_mesg(mesg_sav, file[progress]);
-		break;
-	case PROGRESS_BAR_LOAD:
-		EXIT_IF(progress < 0
-			|| progress > PROGRESS_BAR_KEYS, "%s", error_msg);
-		status_mesg(mesg_load, file[progress]);
-		break;
-	case PROGRESS_BAR_EXPORT:
-		EXIT_IF(progress < 0
-			|| progress > PROGRESS_BAR_EXPORT_TODO, "%s",
-			error_msg);
-		status_mesg(mesg_export, data[progress]);
-		break;
-	}
-
-	/* Draw the progress bar. */
-	mvwaddstr(win[STA].p, 1, ipos, barchar);
-	mvwaddstr(win[STA].p, 1, epos[steps - 1], barchar);
-	custom_apply_attr(win[STA].p, ATTR_HIGHEST);
-	for (i = ipos + 1; i < epos[progress]; i++)
-		mvwaddch(win[STA].p, 1, i, ' ' | A_REVERSE);
-	custom_remove_attr(win[STA].p, ATTR_HIGHEST);
-	wmove(win[STA].p, 0, 0);
-	wins_wrefresh(win[STA].p);
-#undef NBFILES
-#undef NBEXPORTED
-#undef LABELENGTH
-}
 
 /* Ask user for a file name to export data to. */
 static FILE *get_export_stream(enum export_type type)
@@ -575,55 +488,44 @@ cleanup:
  * IO_SAVE_RELOAD: cancel save operation (data files changed and reloaded)
  * IO_SAVE_CANCEL: cancel save operation (user's decision, keep data files, no reload)
  * IO_SAVE_NOOP: cancel save operation (nothing has changed)
+ * IO_SAVE_ERROR: cannot access data
  */
-int io_save_cal(enum save_display display)
+int io_save_cal(void)
 {
-	const char *access_pb = _("Problems accessing data file ...");
-	int show_bar, ret = IO_SAVE_CTINUE;
+	int ret;
 
 	if (read_only)
 		return IO_SAVE_CANCEL;
 
-	if (new_data()) {
+	if ((ret = new_data()) == NOKNOW) {
+		return IO_SAVE_ERROR;
+	} else if (ret) { /* New data */
 		if ((ret = resolve_save_conflict()))
 			return ret;
-	} else
+	} else /* No new data */
 		if (!io_get_modified())
 			return IO_SAVE_NOOP;
+
+	ret = IO_SAVE_CTINUE;
 
 	run_hook("pre-save");
 	io_mutex_lock();
 
-	show_bar = 0;
-	if (ui_mode == UI_CURSES && display == IO_SAVE_DISPLAY_BAR
-	    && conf.progress_bar)
-		show_bar = 1;
-
-	if (show_bar)
-		progress_bar(PROGRESS_BAR_SAVE, PROGRESS_BAR_CONF);
-	if (!config_save())
-		ERROR_MSG("%s", access_pb);
-
-	if (show_bar)
-		progress_bar(PROGRESS_BAR_SAVE, PROGRESS_BAR_TODO);
-	if (!io_save_todo(path_todo))
-		ERROR_MSG("%s", access_pb);
-
-	if (show_bar)
-		progress_bar(PROGRESS_BAR_SAVE, PROGRESS_BAR_APTS);
-	if (!io_save_apts(path_apts))
-		ERROR_MSG("%s", access_pb);
-
-	if (show_bar)
-		progress_bar(PROGRESS_BAR_SAVE, PROGRESS_BAR_KEYS);
-	if (!io_save_keys())
-		ERROR_MSG("%s", access_pb);
+	if (!io_save_todo(path_todo)) {
+		ret = IO_SAVE_ERROR;
+		goto cleanup;
+	}
+	if (!io_save_apts(path_apts)) {
+		ret = IO_SAVE_ERROR;
+		goto cleanup;
+	}
 
 	io_unset_modified();
 
 	io_compute_hash(path_apts, apts_sha1);
 	io_compute_hash(path_todo, todo_sha1);
 
+cleanup:
 	io_mutex_unlock();
 	run_hook("post-save");
 	return ret;
@@ -1520,7 +1422,7 @@ static void *io_psave_thread(void *arg)
 
 	for (;;) {
 		sleep(delay * MININSEC);
-		io_save_cal(IO_SAVE_DISPLAY_NONE);
+		io_save_cal();
 	}
 }
 
