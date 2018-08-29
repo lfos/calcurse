@@ -56,3 +56,8 @@ We are also extremely grateful for donations which help us continue developing
 calcurse as open source software and are used to cover recurring costs, such as
 for our servers. You can use https://calcurse.org/donate/ for a one-time
 payment. If you prefer another form of donation, do not hesitate to contact us!
+
+Demo
+----
+
+![Demo](https://calcurse.org/images/demo.gif)
