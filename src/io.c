@@ -490,16 +490,20 @@ cleanup:
  * IO_SAVE_NOOP: cancel save operation (nothing has changed)
  * IO_SAVE_ERROR: cannot access data
  */
-int io_save_cal(void)
+int io_save_cal(enum save_type s_t)
 {
 	int ret;
 
 	if (read_only)
 		return IO_SAVE_CANCEL;
 
-	if ((ret = new_data()) == NOKNOW) {
+	if ((ret = new_data()) == NOKNOW)
 		return IO_SAVE_ERROR;
-	} else if (ret) { /* New data */
+
+	if (ret) { /* New data */
+		if (s_t == periodic)
+			return IO_SAVE_CANCEL;
+		/* Interactively decide what to do. */
 		if ((ret = resolve_save_conflict()))
 			return ret;
 	} else /* No new data */
@@ -1422,7 +1426,7 @@ static void *io_psave_thread(void *arg)
 
 	for (;;) {
 		sleep(delay * MININSEC);
-		io_save_cal();
+		io_save_cal(periodic);
 	}
 }
 

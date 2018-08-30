@@ -274,7 +274,7 @@ static inline void key_generic_save(void)
 	char *msg = NULL;
 	int ret;
 
-	ret = io_save_cal();
+	ret = io_save_cal(interactive);
 
 	if (ret == IO_SAVE_RELOAD) {
 		ui_todo_load_items();
@@ -505,7 +505,7 @@ static inline void key_generic_scroll_down(void)
 static inline void key_generic_quit(void)
 {
 	if (conf.auto_save)
-		io_save_cal();
+		io_save_cal(interactive);
 	if (conf.auto_gc)
 		note_gc();
 
@@ -540,7 +540,7 @@ static inline void key_generic_cmd(void)
 
 	if (!strcmp(cmd_name, "write") || !strcmp(cmd_name, "w") ||
 	    !strcmp(cmd_name, "wq")) {
-		io_save_cal();
+		io_save_cal(interactive);
 		valid = 1;
 	}
 	if (!strcmp(cmd_name, "quit") || !strcmp(cmd_name, "q") ||
