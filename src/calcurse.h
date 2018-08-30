@@ -654,7 +654,11 @@ enum getstr {
 #define PARSE_DATETIME_HAS_DATE (1 << 0)
 #define PARSE_DATETIME_HAS_TIME (1 << 1)
 
-/* Return codes for the io_save_cal() function. */
+/* Save types and return codes for the io_save_cal() function. */
+enum save_type {
+	interactive,
+	periodic
+};
 enum {
 	IO_SAVE_CTINUE,
 	IO_SAVE_RELOAD,
@@ -862,7 +866,7 @@ unsigned io_save_apts(const char *);
 void io_dump_todo(const char *);
 unsigned io_save_todo(const char *);
 unsigned io_save_keys(void);
-int io_save_cal(void);
+int io_save_cal(enum save_type);
 void io_load_app(struct item_filter *);
 void io_load_todo(struct item_filter *);
 int io_load_data(struct item_filter *, int);
