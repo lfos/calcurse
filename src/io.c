@@ -217,6 +217,7 @@ void io_extract_data(char *dst_data, const char *org, int len)
 }
 
 static pthread_mutex_t io_mutex = PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t io_periodic_save_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 static void io_mutex_lock(void)
 {
@@ -1432,9 +1433,12 @@ static void *io_psave_thread(void *arg)
 	int delay = conf.periodic_save;
 	EXIT_IF(delay < 0, _("Invalid delay"));
 
+	pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
 	for (;;) {
 		sleep(delay * MININSEC);
+		pthread_mutex_lock(&io_periodic_save_mutex);
 		io_save_cal(periodic);
+		pthread_mutex_unlock(&io_periodic_save_mutex);
 	}
 }
 
@@ -1452,10 +1456,10 @@ void io_stop_psave_thread(void)
 		return;
 
 	/* Lock the mutex to avoid cancelling the thread during saving. */
-	io_mutex_lock();
+	pthread_mutex_lock(&io_periodic_save_mutex);
 	pthread_cancel(io_t_psave);
 	pthread_join(io_t_psave, NULL);
-	io_mutex_unlock();
+	pthread_mutex_unlock(&io_periodic_save_mutex);
 	io_t_psave = pthread_self();
 }
 
