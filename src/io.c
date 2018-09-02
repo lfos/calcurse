@@ -378,10 +378,8 @@ static void io_merge_data(void)
 	asprintf(&path_apts_new, "%s%s", path_apts, new_ext);
 	asprintf(&path_todo_new, "%s%s", path_todo, new_ext);
 
-	io_mutex_lock();
 	io_save_apts(path_apts_new);
 	io_save_todo(path_todo_new);
-	io_mutex_unlock();
 
 	/*
 	 * We do not directly write to the data files here; however, the
@@ -464,15 +462,13 @@ static int new_data()
 	char sha1_new[SHA1_DIGESTLEN * 2 + 1];
 	int ret = NONEW;
 
-	io_mutex_lock();
-
 	if (io_compute_hash(path_apts, sha1_new)) {
 		if (strncmp(sha1_new, apts_sha1, SHA1_DIGESTLEN * 2) != 0) {
 			ret |= APTS;
 		}
 	} else {
 		ret = NOKNOW;
-		goto cleanup;
+		goto exit;
 	}
 
 	if (io_compute_hash(path_todo, sha1_new)) {
@@ -481,11 +477,9 @@ static int new_data()
 		}
 	} else {
 		ret = NOKNOW;
-		goto cleanup;
+		goto exit;
 	}
-
-cleanup:
-	io_mutex_unlock();
+   exit:
 	return ret;
 }
 
@@ -500,46 +494,43 @@ cleanup:
  */
 int io_save_cal(enum save_type s_t)
 {
-	int ret;
+	int ret, new;
 
 	if (read_only)
 		return IO_SAVE_CANCEL;
 
-	if ((ret = new_data()) == NOKNOW)
-		return IO_SAVE_ERROR;
-
-	if (ret) { /* New data */
-		if (s_t == periodic)
-			return IO_SAVE_CANCEL;
+	io_mutex_lock();
+	if ((new = new_data()) == NOKNOW) {
+		ret = IO_SAVE_ERROR;
+		goto cleanup;
+	}
+	if (new) { /* New data */
+		if (s_t == periodic) {
+			ret = IO_SAVE_CANCEL;
+			goto cleanup;
+		}
 		/* Interactively decide what to do. */
 		if ((ret = resolve_save_conflict()))
-			return ret;
+			goto cleanup;
 	} else /* No new data */
-		if (!io_get_modified())
-			return IO_SAVE_NOOP;
+		if (!io_get_modified()) {
+			ret = IO_SAVE_NOOP;
+			goto cleanup;
+		}
 
 	ret = IO_SAVE_CTINUE;
-
 	run_hook("pre-save");
-	io_mutex_lock();
-
-	if (!io_save_todo(path_todo)) {
+	if (io_save_todo(path_todo) &&
+	    io_save_apts(path_apts)) {
+		io_compute_hash(path_apts, apts_sha1);
+		io_compute_hash(path_todo, todo_sha1);
+		io_unset_modified();
+	} else
 		ret = IO_SAVE_ERROR;
-		goto cleanup;
-	}
-	if (!io_save_apts(path_apts)) {
-		ret = IO_SAVE_ERROR;
-		goto cleanup;
-	}
-
-	io_unset_modified();
-
-	io_compute_hash(path_apts, apts_sha1);
-	io_compute_hash(path_todo, todo_sha1);
+	run_hook("post-save");
 
 cleanup:
 	io_mutex_unlock();
-	run_hook("post-save");
 	return ret;
 }
 
@@ -840,8 +831,6 @@ int io_load_data(struct item_filter *filter, int force)
 	else
 		force = new_data();
 
-	io_mutex_lock();
-
 	if (force & APTS) {
 		apoint_llist_free();
 		event_llist_free();
@@ -861,7 +850,6 @@ int io_load_data(struct item_filter *filter, int force)
 
 	io_unset_modified();
 
-	io_mutex_unlock();
 	run_hook("post-load");
 	return force;
 }
@@ -875,6 +863,7 @@ int io_reload_data(void)
 	int load = NOFORCE;
 	int ret = IO_RELOAD_LOAD;
 
+	io_mutex_lock();
 	if (io_get_modified()) {
 		const char *msg_um_prefix =
 				_("Screen data have changed and will be lost:");
@@ -907,8 +896,8 @@ int io_reload_data(void)
 	load = io_load_data(NULL, load);
 	if (load == NONEW)
 		ret = IO_RELOAD_NOOP;
-
 cleanup:
+	io_mutex_unlock();
 	mem_free(msg_um_asktype);
 	return ret;
 }
