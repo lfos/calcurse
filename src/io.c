@@ -451,12 +451,15 @@ static int resolve_save_conflict(void)
 	return ret;
 }
 
-/* Return codes for new_data(). */
+/*
+ * Return codes for new_data() and io_load_data().
+ * Note that they are file internal.
+ */
 #define NONEW		0
-#define APTS		1
-#define TODO		2
-#define APTS_TODO	3
-#define NOKNOW		4
+#define APTS		(1 << 0)
+#define TODO		(1 << 1)
+#define APTS_TODO	APTS | TODO
+#define NOKNOW		-1
 static int new_data()
 {
 	char sha1_new[SHA1_DIGESTLEN * 2 + 1];
@@ -820,8 +823,8 @@ void io_load_todo(struct item_filter *filter)
 /*
  * Load appointments and todo items.
  * Unless told otherwise, the function will only load a file that has changed
- * since last saved or loaded, see new_data() return codes.
- * Return codes are for use in io_reload_data() only.
+ * since last saved or loaded. The new_data() return code is passed on when
+ * force is false. When force is true (FORCE), the return code is of no use.
  */
 int io_load_data(struct item_filter *filter, int force)
 {
@@ -830,6 +833,9 @@ int io_load_data(struct item_filter *filter, int force)
 		force = APTS_TODO;
 	else
 		force = new_data();
+
+	if (force == NOKNOW)
+		goto exit;
 
 	if (force & APTS) {
 		apoint_llist_free();
@@ -849,7 +855,7 @@ int io_load_data(struct item_filter *filter, int force)
 	}
 
 	io_unset_modified();
-
+   exit:
 	run_hook("post-load");
 	return force;
 }
@@ -896,6 +902,8 @@ int io_reload_data(void)
 	load = io_load_data(NULL, load);
 	if (load == NONEW)
 		ret = IO_RELOAD_NOOP;
+	else if (load == NOKNOW)
+		ret = IO_RELOAD_ERROR;
 cleanup:
 	io_mutex_unlock();
 	mem_free(msg_um_asktype);

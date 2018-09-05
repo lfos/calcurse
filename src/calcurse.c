@@ -309,7 +309,9 @@ static inline void key_generic_reload(void)
 	int ret;
 
 	ret = io_reload_data();
-	if (ret != IO_RELOAD_CANCEL && ret != IO_RELOAD_NOOP) {
+	if (ret == IO_RELOAD_LOAD ||
+	    ret == IO_RELOAD_CTINUE ||
+	    ret == IO_RELOAD_MERGE) {
 		ui_todo_load_items();
 		ui_todo_sel_reset();
 		do_storage(0);
@@ -331,6 +333,8 @@ static inline void key_generic_reload(void)
 	case IO_RELOAD_NOOP:
 		msg = _("Data were already loaded");
 		break;
+	case IO_RELOAD_ERROR:
+		EXIT(_("Cannot open data file"));
 	}
 	status_mesg(msg, "");
 }
