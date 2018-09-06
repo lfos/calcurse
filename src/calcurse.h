@@ -268,7 +268,6 @@ struct conf {
 	enum win default_panel;
 	unsigned compact_panels;
 	unsigned system_dialogs;
-	unsigned progress_bar;
 	const char *editor;
 	const char *pager;
 	const char *mergetool;

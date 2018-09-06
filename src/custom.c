@@ -532,7 +532,6 @@ enum {
 	CONFIRM_QUIT,
 	CONFIRM_DELETE,
 	SYSTEM_DIAGS,
-	PROGRESS_BAR,
 	FIRST_DAY_OF_WEEK,
 	OUTPUT_DATE_FMT,
 	INPUT_DATE_FMT,
@@ -554,7 +553,6 @@ static void print_general_option(int i, WINDOW *win, int y, int hilt, void *cb_d
 		"general.confirmquit = ",
 		"general.confirmdelete = ",
 		"general.systemdialogs = ",
-		"general.progressbar = ",
 		"general.firstdayofweek = ",
 		"format.outputdate = ",
 		"format.inputdate = ",
@@ -628,13 +626,6 @@ static void print_general_option(int i, WINDOW *win, int y, int hilt, void *cb_d
 		mvwaddstr(win, y + 1, XPOS,
 			  _("(if set to YES, messages about loaded "
 			    "and saved data will be displayed)"));
-		break;
-	case PROGRESS_BAR:
-		print_bool_option_incolor(win, conf.progress_bar, y,
-					  XPOS + strlen(opt[PROGRESS_BAR]));
-		mvwaddstr(win, y + 1, XPOS,
-			  _("(if set to YES, progress bar will be displayed "
-			    "when saving data)"));
 		break;
 	case FIRST_DAY_OF_WEEK:
 		custom_apply_attr(win, ATTR_HIGHEST);
@@ -760,9 +751,6 @@ static void general_option_edit(int i)
 		break;
 	case SYSTEM_DIAGS:
 		conf.system_dialogs = !conf.system_dialogs;
-		break;
-	case PROGRESS_BAR:
-		conf.progress_bar = !conf.progress_bar;
 		break;
 	case FIRST_DAY_OF_WEEK:
 		ui_calendar_change_first_day_of_week();
