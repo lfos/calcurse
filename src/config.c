@@ -112,7 +112,6 @@ static const struct confvar confmap[] = {
 	{"general.confirmquit", CONFIG_HANDLER_BOOL(conf.confirm_quit)},
 	{"general.firstdayofweek", config_parse_first_day_of_week, config_serialize_first_day_of_week, NULL},
 	{"general.periodicsave", CONFIG_HANDLER_UNSIGNED(conf.periodic_save)},
-	{"general.progressbar", CONFIG_HANDLER_BOOL(conf.progress_bar)},
 	{"general.systemdialogs", CONFIG_HANDLER_BOOL(conf.system_dialogs)},
 	{"notification.command", CONFIG_HANDLER_STR(nbar.cmd)},
 	{"notification.notifyall", config_parse_notifyall, config_serialize_notifyall, NULL},
@@ -601,6 +600,12 @@ config_file_walk(config_fn_walk_cb_t fn_cb,
 			WARN_MSG(_("Pre-3.0.0 configuration file format detected, "
 				  "please upgrade running `calcurse-upgrade`."));
 		}
+		/*
+		 * Backwards compatibility for removed configuration options:
+		 * ignored on load, omitted on save.
+		 */
+		if (strcmp(key, "general.progressbar") == 0)
+			continue;
 
 		if (value && (*value == '\0' || *value == '\n')) {
 			/* Backward compatibility mode. */

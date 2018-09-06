@@ -128,7 +128,6 @@ void vars_init(void)
 	conf.default_panel = CAL;
 	conf.compact_panels = 0;
 	conf.system_dialogs = 1;
-	conf.progress_bar = 1;
 	strncpy(conf.output_datefmt, "%D", 3);
 	conf.input_datefmt = 1;
 	conf.heading_pos = RIGHT;
