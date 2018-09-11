@@ -509,7 +509,11 @@ static inline void key_generic_scroll_down(void)
 static inline void key_generic_quit(void)
 {
 	if (conf.auto_save)
-		io_save_cal(interactive);
+		if (io_save_cal(interactive) == IO_SAVE_CANCEL) {
+			/* Cancel quit as well. */
+			wins_update(FLAG_STA);
+			return;
+		}
 	if (conf.auto_gc)
 		note_gc();
 
@@ -544,7 +548,12 @@ static inline void key_generic_cmd(void)
 
 	if (!strcmp(cmd_name, "write") || !strcmp(cmd_name, "w") ||
 	    !strcmp(cmd_name, "wq")) {
-		io_save_cal(interactive);
+		if (io_save_cal(interactive) == IO_SAVE_CANCEL &&
+		    strcmp(cmd_name, "wq") == 0) {
+			/* Cancel quit as well. */
+			wins_update(FLAG_STA);
+			return;
+		}
 		valid = 1;
 	}
 	if (!strcmp(cmd_name, "quit") || !strcmp(cmd_name, "q") ||
