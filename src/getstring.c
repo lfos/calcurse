@@ -259,6 +259,10 @@ enum getstr getstring(WINDOW * win, char *str, int l, int x, int y)
 		case CTRL('G'):
 			return GETSTRING_ESC;
 			break;
+		case ERR:
+			continue;
+		case KEY_RESIZE:
+			return GETSTRING_ESC;
 		default:	/* insert one character */
 			c[0] = ch;
 			for (k = 1;
