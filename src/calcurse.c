@@ -619,6 +619,9 @@ int main(int argc, char **argv)
 		io_set_lock();
 	}
 
+	/* System message queue. */
+	que_init();
+
 	/* Begin of interactive mode with ncurses interface. */
 	sigs_init();		/* signal handling init */
 	initscr();		/* start the curses mode */
@@ -702,6 +705,14 @@ int main(int argc, char **argv)
 	for (;;) {
 		int key;
 
+		while (que_ued()) {
+			que_show();
+			que_save();
+			do_storage(0);
+			wins_update(FLAG_ALL);
+			que_rem();
+		}
+
 		if (resize) {
 			resize = 0;
 			wins_reset();
@@ -712,7 +723,10 @@ int main(int argc, char **argv)
 			key_generic_reload();
 		}
 
+		/* Check input loop once every minute. */
+		wtimeout(win[KEY].p, 60000);
 		key = keys_get(win[KEY].p, &count, &reg);
+		wtimeout(win[KEY].p, -1);
 		switch (key) {
 		HANDLE_KEY(KEY_GENERIC_CHANGE_VIEW, key_generic_change_view);
 		HANDLE_KEY(KEY_GENERIC_OTHER_CMD, key_generic_other_cmd);

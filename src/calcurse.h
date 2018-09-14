@@ -1287,4 +1287,11 @@ void wins_erase_status_bar(void);
 void wins_other_status_page();
 void wins_reset_status_page(void);
 
+/* queue.c */
+void que_init(void);
+int que_ued(void);
+struct event *que_ins(char *, time_t, int);
+void que_rem(void);
+void que_show(void);
+void que_save(void);
 #endif /* CALCURSE_H */
