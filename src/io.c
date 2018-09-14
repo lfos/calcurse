@@ -1421,12 +1421,14 @@ static void *io_psave_thread(void *arg)
 {
 	int delay = conf.periodic_save;
 	EXIT_IF(delay < 0, _("Invalid delay"));
+	char *mesg = _("Periodic save: data files have changed. Save cancelled.");
 
 	pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
 	for (;;) {
 		sleep(delay * MININSEC);
 		pthread_mutex_lock(&io_periodic_save_mutex);
-		io_save_cal(periodic);
+		if (io_save_cal(periodic) == IO_SAVE_CANCEL)
+			que_ins(mesg, now(), 2);
 		pthread_mutex_unlock(&io_periodic_save_mutex);
 	}
 }
