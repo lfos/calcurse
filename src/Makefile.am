@@ -29,6 +29,7 @@ calcurse_SOURCES = \
 	note.c \
 	notify.c \
 	pcal.c \
+	queue.c \
 	recur.c \
 	sha1.c \
 	sigs.c \
