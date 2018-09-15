@@ -4,6 +4,7 @@
  * A queue for calcurse system messages.
  */
 llist_t sysqueue;
+static pthread_mutex_t que_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 void que_init(void)
 {
@@ -30,7 +31,9 @@ struct event *que_ins(char *mesg, time_t time, int id)
 	ev->day = time;
 	ev->id = id;
 	ev->note = NULL;
+	pthread_mutex_lock(&que_mutex);
 	LLIST_ADD(&sysqueue, ev);
+	pthread_mutex_unlock(&que_mutex);
 
 	return ev;
 }
@@ -52,11 +55,14 @@ void que_rem(void)
 
 	if (!sysqueue.head)
 		return;
-	else
-		ev = sysqueue.head->data;
+	ev = sysqueue.head->data;
+
+	pthread_mutex_lock(&que_mutex);
+	LLIST_REMOVE(&sysqueue, sysqueue.head);
+	pthread_mutex_unlock(&que_mutex);
+
 	mem_free(ev->mesg);
 	mem_free(ev);
-	LLIST_REMOVE(&sysqueue, sysqueue.head);
 }
 
 /*
