@@ -707,8 +707,10 @@ int main(int argc, char **argv)
 
 		while (que_ued()) {
 			que_show();
-			que_save();
-			do_storage(0);
+			if (conf.systemevents) {
+				que_save();
+				do_storage(0);
+			}
 			wins_update(FLAG_ALL);
 			que_rem();
 		}

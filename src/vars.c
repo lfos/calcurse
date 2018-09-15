@@ -125,6 +125,7 @@ void vars_init(void)
 	conf.auto_save = 1;
 	conf.auto_gc = 0;
 	conf.periodic_save = 0;
+	conf.systemevents = 1;
 	conf.default_panel = CAL;
 	conf.compact_panels = 0;
 	conf.system_dialogs = 1;

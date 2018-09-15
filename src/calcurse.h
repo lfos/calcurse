@@ -263,6 +263,7 @@ struct conf {
 	unsigned auto_save;
 	unsigned auto_gc;
 	unsigned periodic_save;
+	unsigned systemevents;
 	unsigned confirm_quit;
 	unsigned confirm_delete;
 	enum win default_panel;

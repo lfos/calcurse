@@ -529,6 +529,7 @@ enum {
 	AUTO_SAVE,
 	AUTO_GC,
 	PERIODIC_SAVE,
+	SYSTEM_EVENTS,
 	CONFIRM_QUIT,
 	CONFIRM_DELETE,
 	SYSTEM_DIAGS,
@@ -550,6 +551,7 @@ static void print_general_option(int i, WINDOW *win, int y, int hilt, void *cb_d
 		"general.autosave = ",
 		"general.autogc = ",
 		"general.periodicsave = ",
+		"general.systemevents = ",
 		"general.confirmquit = ",
 		"general.confirmdelete = ",
 		"general.systemdialogs = ",
@@ -606,6 +608,12 @@ static void print_general_option(int i, WINDOW *win, int y, int hilt, void *cb_d
 		mvwaddstr(win, y + 1, XPOS,
 			  _("(if not null, automatically save data every 'periodic_save' "
 			   "minutes)"));
+		break;
+	case SYSTEM_EVENTS:
+		print_bool_option_incolor(win, conf.systemevents, y,
+					  XPOS + strlen(opt[SYSTEM_EVENTS]));
+		mvwaddstr(win, y + 1, XPOS,
+			  _("(if YES, system events are turned into appointments (or else deleted))"));
 		break;
 	case CONFIRM_QUIT:
 		print_bool_option_incolor(win, conf.confirm_quit, y,
@@ -742,6 +750,9 @@ static void general_option_edit(int i)
 					io_start_psave_thread();
 			}
 		}
+		break;
+	case SYSTEM_EVENTS:
+		conf.systemevents = !conf.systemevents;
 		break;
 	case CONFIRM_QUIT:
 		conf.confirm_quit = !conf.confirm_quit;
