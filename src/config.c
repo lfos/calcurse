@@ -112,6 +112,7 @@ static const struct confvar confmap[] = {
 	{"general.confirmquit", CONFIG_HANDLER_BOOL(conf.confirm_quit)},
 	{"general.firstdayofweek", config_parse_first_day_of_week, config_serialize_first_day_of_week, NULL},
 	{"general.periodicsave", CONFIG_HANDLER_UNSIGNED(conf.periodic_save)},
+	{"general.systemevents", CONFIG_HANDLER_BOOL(conf.systemevents)},
 	{"general.systemdialogs", CONFIG_HANDLER_BOOL(conf.system_dialogs)},
 	{"notification.command", CONFIG_HANDLER_STR(nbar.cmd)},
 	{"notification.notifyall", config_parse_notifyall, config_serialize_notifyall, NULL},
