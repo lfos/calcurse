@@ -182,6 +182,12 @@ static void ical_export_recur_events(FILE * stream, int export_uid)
 
 		fprintf(stream, "SUMMARY:%s\n", rev->mesg);
 
+		if (rev->note) {
+			char* note = read_note_content(rev->note);
+			fprintf(stream,"DESCRIPTION:%s",note);
+			free(note);
+		}
+
 		if (export_uid) {
 			char *hash = recur_event_hash(rev);
 			fprintf(stream, "UID:%s\n", hash);
@@ -204,6 +210,12 @@ static void ical_export_events(FILE * stream, int export_uid)
 		fputs("BEGIN:VEVENT\n", stream);
 		fprintf(stream, "DTSTART;VALUE=DATE:%s\n", ical_date);
 		fprintf(stream, "SUMMARY:%s\n", ev->mesg);
+
+		if (ev->note) {
+			char* note = read_note_content(ev->note);
+			fprintf(stream,"DESCRIPTION:%s",note);
+			free(note);
+		}
 
 		if (export_uid) {
 			char *hash = event_hash(ev);
