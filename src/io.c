@@ -181,7 +181,7 @@ static FILE *get_export_stream(enum export_type type)
 			mem_free(stream_name);
 			return NULL;
 		}
-		stream = fopen(stream_name, "w");
+		stream = fopen(stream_name, "w+");
 		if (stream == NULL) {
 			status_mesg(wrong_name, press_enter);
 			keys_wait_for_any_key(win[KEY].p);

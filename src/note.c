@@ -155,6 +155,35 @@ void note_read(char *buffer, FILE * fp)
 	buffer[MAX_NOTESIZ] = '\0';
 }
 
+char* read_note_content(char *file_name) 
+{
+	FILE *data_file;
+	char* full_path;
+	long length;
+	char* buffer;
+
+	asprintf(&full_path, "%s%s", path_notes, file_name);
+
+	data_file = fopen(full_path, "rb");
+	EXIT_IF(data_file == NULL, _("failed to open note file"));
+	
+	fseek(data_file, 0, SEEK_END);
+	length = ftell(data_file);	
+	fseek(data_file, 0, SEEK_SET);
+
+	buffer = malloc(length+1);	
+	
+	if (buffer) {
+		if (!fread(buffer, 1, length, data_file)) {
+			free(buffer);
+			return NULL;
+		}
+	}
+	buffer[length] = '\0';
+	fclose(data_file);
+	return buffer;
+}
+
 static void
 note_gc_extract_key(struct note_gc_hash *data, const char **key, int *len)
 {

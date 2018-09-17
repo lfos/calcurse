@@ -97,6 +97,56 @@ static void ical_export_footer(FILE * stream)
 	fputs("END:VCALENDAR\n", stream);
 }
 
+static void ical_format_newlines(FILE * stream) 
+{
+	char *buffer;
+	long length,newlines = 0;
+	int c,i = 0;
+
+	fseek(stream,0,SEEK_SET);
+
+	while (c != EOF) {
+		c = getc(stream);
+		if (c == '\r') {
+			c = getc(stream);
+		}
+		else if (c == '\n') {
+			newlines++;
+		}
+	}
+	
+	fseek(stream,0,SEEK_END);
+	length = ftell(stream) + newlines;
+
+	buffer = malloc(length+1);
+
+	fseek(stream,0,SEEK_SET);
+
+	c = 0;
+	while (c != EOF) {
+		c = getc(stream);
+		if (c == '\r') {
+			buffer[i] = c;
+			c = getc(stream);
+		}
+		else if (c == '\n') {
+			buffer[i] = '\r';
+			i++;
+		}
+		buffer[i] = c;
+		i++;
+	}
+
+	buffer[length] = '\0';
+
+	fseek(stream,0,SEEK_SET);
+
+	fwrite(buffer,1,length,stream);
+
+	free(buffer);
+	fseek(stream,0,SEEK_SET);
+}
+
 /* Export recurrent events. */
 static void ical_export_recur_events(FILE * stream, int export_uid)
 {
@@ -187,16 +237,6 @@ static void ical_export_recur_apoints(FILE * stream, int export_uid)
 				(rapt->dur / MININSEC) % HOURINMIN,
 				rapt->dur % MININSEC);
 		}
-		fprintf(stream, "RRULE:FREQ=%s;INTERVAL=%d",
-			ical_recur_type[rapt->rpt->type], rapt->rpt->freq);
-
-		if (rapt->rpt->until != 0) {
-			date_sec2date_fmt(rapt->rpt->until + HOURINSEC,
-					  ICALDATEFMT, ical_date);
-			fprintf(stream, ";UNTIL=%s\n", ical_date);
-		} else {
-			fputc('\n', stream);
-		}
 
 		if (LLIST_FIRST(&rapt->exc)) {
 			fputs("EXDATE:", stream);
@@ -209,6 +249,24 @@ static void ical_export_recur_apoints(FILE * stream, int export_uid)
 			}
 		}
 
+		fprintf(stream, "RRULE:FREQ=%s;INTERVAL=%d",
+			ical_recur_type[rapt->rpt->type], rapt->rpt->freq);
+
+		if (rapt->rpt->until != 0) {
+			date_sec2date_fmt(rapt->rpt->until + HOURINSEC,
+					  ICALDATEFMT, ical_date);
+			fprintf(stream, ";UNTIL=%s\n", ical_date);
+		} else {
+			fputc('\n', stream);
+		}
+
+		if (rapt->note) {
+			char* note = read_note_content(rapt->note);
+			fprintf(stream,"DESCRIPTION:%s",note);
+			free(note);
+		}
+		//fprintf(stream,"STATUS:CONFIRMED\n");
+
 		fprintf(stream, "SUMMARY:%s\n", rapt->mesg);
 		if (rapt->state & APOINT_NOTIFY)
 			ical_export_valarm(stream);
@@ -217,6 +275,7 @@ static void ical_export_recur_apoints(FILE * stream, int export_uid)
 			char *hash = recur_apoint_hash(rapt);
 			fprintf(stream, "UID:%s\n", hash);
 			mem_free(hash);
+
 		}
 
 		fputs("END:VEVENT\n", stream);
@@ -244,6 +303,13 @@ static void ical_export_apoints(FILE * stream, int export_uid)
 				(apt->dur / MININSEC) % HOURINMIN,
 				apt->dur % MININSEC);
 		}
+
+		if (apt->note) {
+			char* note = read_note_content(apt->note);
+			fprintf(stream,"DESCRIPTION:%s",note);
+			free(note);
+		}
+
 		fprintf(stream, "SUMMARY:%s\n", apt->mesg);
 		if (apt->state & APOINT_NOTIFY)
 			ical_export_valarm(stream);
@@ -271,6 +337,13 @@ static void ical_export_todo(FILE * stream, int export_uid)
 		if (todo->completed)
 			fprintf(stream, "STATUS:COMPLETED\n");
 		fprintf(stream, "PRIORITY:%d\n", todo->id);
+
+		if (todo->note) {
+			char* note = read_note_content(todo->note);
+			fprintf(stream,"DESCRIPTION:%s",note);
+			free(note);
+		}
+
 		fprintf(stream, "SUMMARY:%s\n", todo->mesg);
 
 		if (export_uid) {
@@ -1159,4 +1232,5 @@ void ical_export_data(FILE * stream, int export_uid)
 	ical_export_apoints(stream, export_uid);
 	ical_export_todo(stream, export_uid);
 	ical_export_footer(stream);
+	ical_format_newlines(stream);
 }
