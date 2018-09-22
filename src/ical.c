@@ -254,8 +254,12 @@ static void ical_export_recur_apoints(FILE * stream, int export_uid)
 			fputs("EXDATE:", stream);
 			LLIST_FOREACH(&rapt->exc, j) {
 				struct excp *exc = LLIST_GET_DATA(j);
-				date_sec2date_fmt(exc->st, ICALDATEFMT,
+				date_sec2date_fmt(exc->st, ICALDATETIMEFMT,
 						  ical_date);
+				for (int i=0;i<5;i++) {
+					ical_date[9+i] = ical_datetime[9+i];
+				}
+				
 				fprintf(stream, "%s", ical_date);
 				fputc(LLIST_NEXT(j) ? ',' : '\n', stream);
 			}
