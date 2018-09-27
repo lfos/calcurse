@@ -97,56 +97,6 @@ static void ical_export_footer(FILE * stream)
 	fputs("END:VCALENDAR\n", stream);
 }
 
-static void ical_format_newlines(FILE * stream) 
-{
-	char *buffer;
-	long length,newlines = 0;
-	int c,i = 0;
-
-	fseek(stream,0,SEEK_SET);
-
-	while (c != EOF) {
-		c = getc(stream);
-		if (c == '\r') {
-			c = getc(stream);
-		}
-		else if (c == '\n') {
-			newlines++;
-		}
-	}
-	
-	fseek(stream,0,SEEK_END);
-	length = ftell(stream) + newlines;
-
-	buffer = malloc(length+1);
-
-	fseek(stream,0,SEEK_SET);
-
-	c = 0;
-	while (c != EOF) {
-		c = getc(stream);
-		if (c == '\r') {
-			buffer[i] = c;
-			c = getc(stream);
-		}
-		else if (c == '\n') {
-			buffer[i] = '\r';
-			i++;
-		}
-		buffer[i] = c;
-		i++;
-	}
-
-	buffer[length] = '\0';
-
-	fseek(stream,0,SEEK_SET);
-
-	fwrite(buffer,1,length,stream);
-
-	free(buffer);
-	fseek(stream,0,SEEK_SET);
-}
-
 /* Export recurrent events. */
 static void ical_export_recur_events(FILE * stream, int export_uid)
 {
@@ -254,12 +204,8 @@ static void ical_export_recur_apoints(FILE * stream, int export_uid)
 			fputs("EXDATE:", stream);
 			LLIST_FOREACH(&rapt->exc, j) {
 				struct excp *exc = LLIST_GET_DATA(j);
-				date_sec2date_fmt(exc->st, ICALDATETIMEFMT,
+				date_sec2date_fmt(exc->st, ICALDATEFMT,
 						  ical_date);
-				for (int i=0;i<5;i++) {
-					ical_date[9+i] = ical_datetime[9+i];
-				}
-				
 				fprintf(stream, "%s", ical_date);
 				fputc(LLIST_NEXT(j) ? ',' : '\n', stream);
 			}
@@ -1248,5 +1194,4 @@ void ical_export_data(FILE * stream, int export_uid)
 	ical_export_apoints(stream, export_uid);
 	ical_export_todo(stream, export_uid);
 	ical_export_footer(stream);
-	ical_format_newlines(stream);
 }
