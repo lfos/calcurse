@@ -955,6 +955,7 @@ void edit_note(char **, const char *);
 void view_note(const char *, const char *);
 void erase_note(char **);
 void note_read(char *, FILE *);
+char* read_note_content(char *);
 void note_gc(void);
 
 /* notify.c */

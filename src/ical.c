@@ -227,7 +227,6 @@ static void ical_export_recur_apoints(FILE * stream, int export_uid)
 			fprintf(stream,"DESCRIPTION:%s",note);
 			free(note);
 		}
-		//fprintf(stream,"STATUS:CONFIRMED\n");
 
 		fprintf(stream, "SUMMARY:%s\n", rapt->mesg);
 		if (rapt->state & APOINT_NOTIFY)
@@ -237,7 +236,6 @@ static void ical_export_recur_apoints(FILE * stream, int export_uid)
 			char *hash = recur_apoint_hash(rapt);
 			fprintf(stream, "UID:%s\n", hash);
 			mem_free(hash);
-
 		}
 
 		fputs("END:VEVENT\n", stream);
