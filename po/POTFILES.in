@@ -17,6 +17,7 @@ src/mem.c
 src/note.c
 src/notify.c
 src/pcal.c
+src/queue.c
 src/recur.c
 src/sha1.c
 src/sigs.c
