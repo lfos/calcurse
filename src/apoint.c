@@ -137,7 +137,7 @@ void apoint_sec2str(struct apoint *o, long day, char *start, char *end)
 		snprintf(start, HRMIN_SIZE, "%02u:%02u", lt.tm_hour,
 			 lt.tm_min);
 	}
-	if (o->start + o->dur > day + DAYINSEC) {
+	if (o->start + o->dur > day + DAYLEN(day)) {
 		strncpy(end, "..:..", 6);
 	} else {
 		t = o->start + o->dur;

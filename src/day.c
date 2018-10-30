@@ -294,7 +294,7 @@ static int day_store_apoints(long date)
 
 		p.apt = apt;
 
-		if (apt->start >= date + DAYINSEC)
+		if (apt->start >= date + DAYLEN(date))
 			break;
 
 		day_add_item(APPT, apt->start, p);
