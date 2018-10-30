@@ -97,7 +97,7 @@ static void *ui_calendar_date_thread(void *arg)
 	time_t actual, tomorrow;
 
 	for (;;) {
-		tomorrow = (time_t) (get_today() + DAYINSEC);
+		tomorrow = date2sec(today, 24, 0);
 
 		while ((actual = time(NULL)) < tomorrow)
 			sleep(tomorrow - actual);

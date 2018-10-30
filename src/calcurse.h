@@ -144,7 +144,13 @@
 #define WEEKINMIN       (WEEKINHOURS * HOURINMIN)
 #define WEEKINSEC       (WEEKINMIN * MININSEC)
 #define DAYINMIN        (DAYINHOURS * HOURINMIN)
+/*
+ * Note the difference between the number of seconds in a day and daylength
+ * in seconds. The two may differ when DST is in effect (daylength is either
+ * 23, 24 or 25 hours. The argument to DAYLEN is of type time_t.
+ */
 #define DAYINSEC        (DAYINMIN * MININSEC)
+#define DAYLEN(date)	(date_sec_change((date), 0, 1) - (date))
 #define HOURINSEC       (HOURINMIN * MININSEC)
 
 #define MAXDAYSPERMONTH 31
