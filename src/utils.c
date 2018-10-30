@@ -530,24 +530,20 @@ long date_sec_change(long date, int delta_month, int delta_day)
 	return t;
 }
 
-/*
- * Return a long containing the date which is updated taking into account
- * the new time and date entered by the user.
- */
-long update_time_in_date(long date, unsigned hr, unsigned mn)
+/* A time in seconds is updated with new hour and minutes and returned. */
+time_t update_time_in_date(time_t date, unsigned hr, unsigned mn)
 {
 	struct tm lt;
-	time_t t, new_date;
 
-	t = date;
-	localtime_r(&t, &lt);
+	localtime_r(&date, &lt);
 	lt.tm_hour = hr;
 	lt.tm_min = mn;
 	lt.tm_sec = 0;
-	new_date = mktime(&lt);
-	EXIT_IF(new_date == -1, _("error in mktime"));
+	lt.tm_isdst = -1;
+	date = mktime(&lt);
+	EXIT_IF(date == -1, _("error in mktime"));
 
-	return new_date;
+	return date;
 }
 
 /*
