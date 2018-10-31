@@ -995,18 +995,23 @@ void recur_event_paste_item(struct recur_event *rev, long date)
 
 void recur_apoint_paste_item(struct recur_apoint *rapt, long date)
 {
-	long time_shift;
+	long ostart = rapt->start;
+	int days;
 	llist_item_t *i;
+	struct tm t;
 
-	time_shift = (date + get_item_time(rapt->start)) - rapt->start;
-	rapt->start += time_shift;
+	localtime_r((time_t *)&rapt->start, &t);
+	rapt->start = update_time_in_date(date, t.tm_hour, t.tm_min);
+
+	/* The number of days shifted. */
+	days = (rapt->start - ostart) / DAYINSEC;
 
 	if (rapt->rpt->until != 0)
-		rapt->rpt->until += time_shift;
+		rapt->rpt->until = date_sec_change(rapt->rpt->until, 0, days);
 
 	LLIST_FOREACH(&rapt->exc, i) {
 		struct excp *exc = LLIST_GET_DATA(i);
-		exc->st += time_shift;
+		exc->st = date_sec_change(exc->st, 0, days);
 	}
 
 	LLIST_TS_LOCK(&recur_alist_p);

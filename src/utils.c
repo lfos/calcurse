@@ -530,7 +530,27 @@ long date_sec_change(long date, int delta_month, int delta_day)
 	return t;
 }
 
-/* A time in seconds is updated with new hour and minutes and returned. */
+/*
+ * A date in seconds is updated with new day, month and year and returned.
+ */
+static time_t update_date_in_date(time_t date, int day, int month, int year)
+{
+	struct tm lt;
+
+	localtime_r(&date, &lt);
+	lt.tm_mday = day;
+	lt.tm_mon = month - 1;
+	lt.tm_year = year - 1900;
+	lt.tm_isdst = -1;
+	date = mktime(&lt);
+	EXIT_IF(date == -1, _("error in mktime"));
+
+	return date;
+}
+
+/*
+ * A date in seconds is updated with new hour and minutes and returned.
+ */
 time_t update_time_in_date(time_t date, unsigned hr, unsigned mn)
 {
 	struct tm lt;
@@ -1218,10 +1238,8 @@ int parse_datetime(const char *string, time_t *ts, time_t dur)
 	} else if (parse_date_interactive(d, &year, &month, &day)) {
 		ret |= PARSE_DATETIME_HAS_DATE;
 	}
-	if (ret & PARSE_DATETIME_HAS_DATE) {
-		struct date date = { day , month, year };
-		*ts = date2sec(date, 0, 0) + get_item_time(*ts);
-	}
+	if (ret & PARSE_DATETIME_HAS_DATE)
+		*ts = update_date_in_date(*ts, day, month, year);
 	if (ret & PARSE_DATETIME_HAS_TIME)
 		*ts = update_time_in_date(*ts, hour, minute);
 	mem_free(d);

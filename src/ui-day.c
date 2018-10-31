@@ -332,7 +332,7 @@ static void update_rept(struct rpt **rpt, const long start)
 				keys_wgetch(win[KEY].p);
 				continue;
 			}
-			newuntil = start + days * DAYINSEC;
+			newuntil = date_sec_change(start, 0, days);
 		} else {
 			int year, month, day;
 			if (!parse_date(timstr, conf.input_datefmt, &year,
@@ -836,7 +836,7 @@ void ui_day_item_repeat(void)
 				keys_wgetch(win[KEY].p);
 				continue;
 			}
-			until = p->start + days * DAYINSEC;
+			until = date_sec_change(p->start, 0, days);
 		} else {
 			int year, month, day;
 			if (!parse_date(user_input, conf.input_datefmt,
