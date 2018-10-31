@@ -326,7 +326,10 @@ void apoint_switch_notify(struct apoint *apt)
 
 void apoint_paste_item(struct apoint *apt, long date)
 {
-	apt->start = date + get_item_time(apt->start);
+	struct tm t;
+
+	localtime_r((time_t *)&apt->start, &t);
+	apt->start = update_time_in_date(date, t.tm_hour, t.tm_min);
 
 	LLIST_TS_LOCK(&alist_p);
 	LLIST_TS_ADD_SORTED(&alist_p, apt, apoint_cmp);
