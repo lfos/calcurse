@@ -249,7 +249,7 @@ date_arg_from_to(long from, long to, int add_line, const char *fmt_apt,
 {
 	long date;
 
-	for (date = from; date < to; date = date_sec_change(date, 0, 1)) {
+	for (date = from; date <= to; date = date_sec_change(date, 0, 1)) {
 		day_store_items(date, 0);
 		if (day_item_count(0) == 0)
 			continue;
@@ -713,18 +713,16 @@ int parse_args(int argc, char **argv)
 		goto cleanup;
 	}
 
-	EXIT_IF(to >= 0 && range > 0, _("cannot specify a range and an end date"));
-	EXIT_IF(from >= 0 && range < 0, _("cannot specify a negative range and a start date"));
-
+	EXIT_IF(to >= 0 && range, _("cannot specify a range and an end date"));
 	if (from == -1)
 		from = get_today();
 	if (to == -1)
-		to = date_sec_change(from, 0, 1);
-
+		to = from;
+	EXIT_IF(to < from, _("end date cannot come before start date"));
 	if (range > 0)
-		to = date_sec_change(from, 0, range);
+		to = date_sec_change(from, 0, range - 1);
 	else if (range < 0)
-		from = date_sec_change(to, 0, range);
+		from = date_sec_change(to, 0, range + 1);
 
 	io_init(cfile, datadir, confdir);
 	io_check_dir(path_ddir);
