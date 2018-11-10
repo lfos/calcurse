@@ -178,9 +178,9 @@ void io_init(const char *cfile, const char *datadir, const char *confdir)
 		snprintf(path_dir, BUFSIZ, "%s/" DIR_NAME, home);
 
 		snprintf(path_conf_dir, BUFSIZ, "%s",  conf_home);
-		snprintf(path_conf, BUFSIZ, "%s/" CONF_PATH_NAME, conf_home);
-		snprintf(path_keys, BUFSIZ, "%s/" KEYS_PATH_NAME, conf_home);
-		snprintf(path_hooks, BUFSIZ, "%s/" HOOKS_DIR_NAME, conf_home);
+		snprintf(path_conf, BUFSIZ, "%s/" CONF_PATH, conf_home);
+		snprintf(path_keys, BUFSIZ, "%s/" KEYS_PATH, conf_home);
+		snprintf(path_hooks, BUFSIZ, "%s/" HOOKS_DIR, conf_home);
 
 		snprintf(path_todo, BUFSIZ, "%s/" TODO_PATH, home);
 		snprintf(path_cpid, BUFSIZ, "%s/" CPID_PATH, home);
