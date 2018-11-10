@@ -82,9 +82,11 @@ enum {
  */
 static void usage(void)
 {
-	printf("%s\n", _("usage: calcurse [--daemon|-F|-G|-g|-i<file>|-Q|--status|-x[<format>]]\n"
-			 "                [-c<file>] [-C<path>] [-D<path>] [-h] [-q] [--read-only] [-v]\n"
-			 "                [--filter-*] [--format-*]"));
+	printf("%s\n", _("Usage:\n"
+			 "calcurse [-D <directory>] [-C <directory>] [-c <calendar file>]\n"
+			 "calcurse -Q [--from <date>] [--to <date>] [--days <number>]\n"
+			 "calcurse -a | -d <date> | -d <number> | -n | -r[<number>] | -s[<date>] | -t[<number>]\n"
+			 "calcurse -h | -v | --status | -G | -P | -g | -i <file> | -x[<file>] | --daemon"));
 }
 
 static void usage_try(void)
@@ -110,27 +112,37 @@ static void help_arg(void)
 {
 	usage();
 	putchar('\n');
-	printf("%s\n", _("Operations in non-interactive mode:"));
-	printf("%s\n", _("  -F, --filter  Read items, filter them, and write them back"));
-	printf("%s\n", _("  -G, --grep    Grep items from the data files"));
+	printf("%s\n", _("Operations in command line mode:"));
 	printf("%s\n", _("  -Q, --query   Print items in a given query range"));
+	printf("%s\n", _("  -G, --grep    Grep items from the data files"));
+	printf("%s\n", _("  -P, --purge   Read items and write them back"));
+	printf("%s\n", _("Query short forms:\n"
+			 "-a, -d <date>|<number>, -n, -r[<number>], -s[<date>], -t<number>"));
 	putchar('\n');
-	printf("%s\n", _("Note that -F, -G and -Q can be combined with filter options --filter-*\n"
-			 "and formatting options --format-*. Consult the man page for details."));
+	printf("%s\n", _("Note that filter, format and day-range options affect input or output:"));
+	printf("%s\n", _("  --filter-*              Filter items loaded by -Q, -G, -P and -x"));
+	printf("%s\n", _("  --format-*              Rewrite output from -Q, -G and --dump-imported"));
+	printf("%s\n", _("  --from <date>           Limit day range of -Q."));
+	printf("%s\n", _("  --to <date>             Limit day range of -Q."));
+	printf("%s\n", _("  --days <number>         Limit day range of -Q."));
+	putchar('\n');
+	printf("%s\n", _("  --limit, -l <number>    Limit number of query results"));
+	printf("%s\n", _("  --search, -S <regexp>   Match regular expression in queries"));
+	printf("%s\n", _("Consult the man page for details."));
 	putchar('\n');
 	printf("%s\n", _("Miscellaneous:"));
-	printf("%s\n", _("  -c, --calendar <file>   Specify the calendar data file to use"));
-	printf("%s\n", _("  -C, --conf <path>       Specify the configuration path to use"));
+	printf("%s\n", _("  -c, --calendar <file>   The calendar data file to use"));
+	printf("%s\n", _("  -C, --conf <directory>  The configuration directory to use"));
 	printf("%s\n", _("  --daemon                Run notification daemon in the background"));
-	printf("%s\n", _("  -D, --directory <path>  Specify the data directory to use"));
-	printf("%s\n", _("  -g, --gc                Run the garbage collector and exit"));
-	printf("%s\n", _("  -h, --help              Show this help text and exit"));
-	printf("%s\n", _("  -i, --import <file>     Import iCal data from a file"));
-	printf("%s\n", _("  -q, --quiet             Do not show system dialogs"));
+	printf("%s\n", _("  -D, --directory <dir>   The data directory to use"));
+	printf("%s\n", _("  -g, --gc                Run the garbage collector"));
+	printf("%s\n", _("  -h, --help              Show this help text"));
+	printf("%s\n", _("  -i, --import <file>     Import iCal data from file"));
+	printf("%s\n", _("  -q, --quiet             Suppress system dialogs"));
 	printf("%s\n", _("  --read-only             Do not save configuration or data files"));
-	printf("%s\n", _("  --status                Display the status of running instances"));
-	printf("%s\n", _("  -v, --version           Show version information and exit"));
-	printf("%s\n", _("  -x, --export [<format>] Export items, valid formats: ical, pcal"));
+	printf("%s\n", _("  --status                Display status of running instances"));
+	printf("%s\n", _("  -v, --version           Show version information"));
+	printf("%s\n", _("  -x, --export[<format>]  Export to stdout in ical (default) or pcal format"));
 	putchar('\n');
 	printf("%s\n", _("For more information, type '?' from within calcurse, or read the manpage."));
 	printf("%s\n", _("Submit feature requests and suggestions to <misc@calcurse.org>."));
@@ -168,7 +180,7 @@ static void status_arg(void)
 			_("calcurse is running in background (pid %d)\n"),
 			dpid);
 	else
-		puts(_("calcurse is not running\n"));
+		puts(_("calcurse is not running"));
 }
 
 /* Print TODO list and return the number of printed items. */
@@ -387,8 +399,9 @@ cleanup:
 int parse_args(int argc, char **argv)
 {
 	/* Command-line flags */
-	int grep = 0, grep_filter = 0, query = 0, next = 0;
+	int grep = 0, purge = 0, query = 0, next = 0;
 	int status = 0, gc = 0, import = 0, export = 0, daemon = 0;
+	int filter_opt = 0, format_opt = 0, query_range = 0;
 	/* Query ranges */
 	time_t from = -1, to = -1;
 	int range = 0;
@@ -412,7 +425,7 @@ int parse_args(int argc, char **argv)
 	int ch;
 	regex_t reg;
 
-	static const char *optstr = "FgGhvnNax::t::C:d:c:r::s::S:D:i:l:qQ";
+	static const char *optstr = "PFgGhvnNax::t::C:d:c:r::s::S:D:i:l:qQ";
 
 	struct option longopts[] = {
 		{"appointment", no_argument, NULL, 'a'},
@@ -428,6 +441,7 @@ int parse_args(int argc, char **argv)
 		{"limit", required_argument, NULL, 'l'},
 		{"next", no_argument, NULL, 'n'},
 		{"note", no_argument, NULL, 'N'},
+		{"purge", no_argument, NULL, 'P'},
 		{"range", optional_argument, NULL, 'r'},
 		{"startday", optional_argument, NULL, 's'},
 		{"search", required_argument, NULL, 'S'},
@@ -500,7 +514,7 @@ int parse_args(int argc, char **argv)
 			datadir = optarg;
 			break;
 		case 'F':
-			grep_filter = grep = 1;
+			purge = grep = 1;
 			break;
 		case 'h':
 			help_arg();
@@ -520,6 +534,9 @@ int parse_args(int argc, char **argv)
 			break;
 		case 'n':
 			next = 1;
+			break;
+		case 'P':
+			purge = grep = 1;
 			break;
 		case 'r':
 			if (optarg)
@@ -580,9 +597,11 @@ int parse_args(int argc, char **argv)
 			filter.type_mask = parse_type_mask(optarg);
 			EXIT_IF(filter.type_mask == 0,
 				_("invalid filter mask"));
+			filter_opt = 1;
 			break;
 		case OPT_FILTER_HASH:
 			filter.hash = mem_strdup(optarg);
+			filter_opt = 1;
 			break;
 		case 'S':
 		case OPT_FILTER_PATTERN:
@@ -591,94 +610,116 @@ int parse_args(int argc, char **argv)
 			if (regcomp(&reg, optarg, REG_EXTENDED))
 				EXIT(_("could not compile regular expression: %s"), optarg);
 			filter.regex = &reg;
+			filter_opt = 1;
 			break;
 		case OPT_FILTER_START_FROM:
 			filter.start_from = parse_datetimearg(optarg);
 			EXIT_IF(filter.start_from == -1,
 				_("invalid date: %s"), optarg);
+			filter_opt = 1;
 			break;
 		case OPT_FILTER_START_TO:
 			filter.start_to = parse_datetimearg(optarg);
 			EXIT_IF(filter.start_to == -1,
 				_("invalid date: %s"), optarg);
+			filter_opt = 1;
 			break;
 		case OPT_FILTER_START_AFTER:
 			filter.start_from = parse_datetimearg(optarg) + 1;
 			EXIT_IF(filter.start_from == -1,
 				_("invalid date: %s"), optarg);
+			filter_opt = 1;
 			break;
 		case OPT_FILTER_START_BEFORE:
 			filter.start_to = parse_datetimearg(optarg) - 1;
 			EXIT_IF(filter.start_to == -1,
 				_("invalid date: %s"), optarg);
+			filter_opt = 1;
 			break;
 		case OPT_FILTER_START_RANGE:
 			EXIT_IF(!parse_daterange(optarg, &filter.start_from,
 						 &filter.start_to),
 				_("invalid date range: %s"), optarg);
+			filter_opt = 1;
 			break;
 		case OPT_FILTER_END_FROM:
 			filter.end_from = parse_datetimearg(optarg);
 			EXIT_IF(filter.end_from == -1,
 				_("invalid date: %s"), optarg);
+			filter_opt = 1;
 			break;
 		case OPT_FILTER_END_TO:
 			filter.end_to = parse_datetimearg(optarg);
 			EXIT_IF(filter.end_to == -1,
 				_("invalid date: %s"), optarg);
+			filter_opt = 1;
 			break;
 		case OPT_FILTER_END_AFTER:
 			filter.end_from = parse_datetimearg(optarg) + 1;
 			EXIT_IF(filter.end_from == -1,
 				_("invalid date: %s"), optarg);
+			filter_opt = 1;
 			break;
 		case OPT_FILTER_END_BEFORE:
 			filter.end_to = parse_datetimearg(optarg) - 1;
 			EXIT_IF(filter.end_to == -1,
 				_("invalid date: %s"), optarg);
+			filter_opt = 1;
 			break;
 		case OPT_FILTER_END_RANGE:
 			EXIT_IF(!parse_daterange(optarg, &filter.end_from,
 						 &filter.end_to),
 				_("invalid date range: %s"), optarg);
+			filter_opt = 1;
 			break;
 		case OPT_FILTER_PRIORITY:
 			filter.priority = atoi(optarg);
 			EXIT_IF(filter.priority < 1 || filter.priority > 9,
 				_("invalid priority: %s"), optarg);
+			filter_opt = 1;
 			break;
 		case OPT_FILTER_COMPLETED:
 			filter.completed = 1;
+			filter_opt = 1;
 			break;
 		case OPT_FILTER_UNCOMPLETED:
 			filter.uncompleted = 1;
+			filter_opt = 1;
 			break;
 		case OPT_FROM:
 			from = parse_datetimearg(optarg);
 			EXIT_IF(from == -1, _("invalid date: %s"), optarg);
+			query_range = 1;
 			break;
 		case OPT_TO:
 			to = parse_datetimearg(optarg);
 			EXIT_IF(to == -1, _("invalid date: %s"), optarg);
+			query_range = 1;
 			break;
 		case OPT_DAYS:
 			range = atoi(optarg);
 			EXIT_IF(range == 0, _("invalid range: %s"), optarg);
+			query_range = 1;
 			break;
 		case OPT_FMT_APT:
 			fmt_apt = optarg;
+			format_opt = 1;
 			break;
 		case OPT_FMT_RAPT:
 			fmt_rapt = optarg;
+			format_opt = 1;
 			break;
 		case OPT_FMT_EV:
 			fmt_ev = optarg;
+			format_opt = 1;
 			break;
 		case OPT_FMT_REV:
 			fmt_rev = optarg;
+			format_opt = 1;
 			break;
 		case OPT_FMT_TODO:
 			fmt_todo = optarg;
+			format_opt = 1;
 			break;
 		case OPT_DUMP_IMPORTED:
 			dump_imported = 1;
@@ -701,12 +742,15 @@ int parse_args(int argc, char **argv)
 			goto cleanup;
 		}
 	}
-	argc -= optind;
 
 	if (filter.type_mask == 0)
 		filter.type_mask = TYPE_MASK_ALL;
 
-	if (status + grep + query + next + gc + import + export + daemon > 1) {
+	if (status + grep + query + next + gc + import + export + daemon > 1 ||
+	    optind < argc ||
+	    (filter_opt && !(grep + query + export)) ||
+	    (format_opt && !(grep + query + dump_imported)) ||
+	    (query_range && !query)) {
 		ERROR_MSG(_("invalid argument combination"));
 		usage();
 		usage_try();
@@ -739,7 +783,7 @@ int parse_args(int argc, char **argv)
 		io_check_file(path_conf);
 		config_load();	/* To get output date format. */
 		io_load_data(&filter, FORCE);
-		if (grep_filter) {
+		if (purge) {
 			io_save_todo(path_todo);
 			io_save_apts(path_apts);
 		} else {
