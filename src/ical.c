@@ -1087,7 +1087,7 @@ ical_read_todo(FILE * fdi, FILE * log, unsigned *notodos, unsigned *noskipped,
 		}
 
 		if (starts_with_ci(buf, "PRIORITY:")) {
-			sscanf(buf, "%d", &vtodo.priority);
+			sscanf(buf, "PRIORITY:%d\n", &vtodo.priority);
 			if (vtodo.priority < 0 || vtodo.priority > 9) {
 				ical_log(log, ICAL_VTODO, ITEMLINE,
 					 _("item priority is invalid "
