@@ -1593,7 +1593,10 @@ static enum format_specifier parse_fs(const char **s, char *extformat)
 	}
 }
 
-/* Print a formatted date to stdout. */
+/*
+ * Print date to stdout, formatted to be displayed for day.
+ * The "day" argument may be any time belonging to that day.
+ */
 static void print_date(long date, long day, const char *extformat)
 {
 	char buf[BUFSIZ];
@@ -1601,14 +1604,14 @@ static void print_date(long date, long day, const char *extformat)
 	if (!strcmp(extformat, "epoch")) {
 		printf("%ld", date);
 	} else {
-		time_t day_end = date_sec_change(day, 0, 1);
-		time_t t = date;
+		time_t day_start = update_time_in_date(day, 0, 0);
+		time_t day_end = date_sec_change(day_start, 0, 1);
 		struct tm lt;
 
-		localtime_r((time_t *) & t, &lt);
+		localtime_r((time_t *) &date, &lt);
 
 		if (extformat[0] == '\0' || !strcmp(extformat, "default")) {
-			if (date >= day && date <= day_end)
+			if (date >= day_start && date <= day_end)
 				strftime(buf, BUFSIZ, "%H:%M", &lt);
 			else
 				strftime(buf, BUFSIZ, "..:..", &lt);
