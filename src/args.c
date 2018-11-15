@@ -315,6 +315,8 @@ static int parse_daterange(const char *str, time_t *date_from, time_t *date_to)
 		*date_to = parse_datearg(p);
 		if (*date_to == -1)
 			goto cleanup;
+		/* One second before next midnight. */
+		*date_to = date_sec_change(*date_to, 0, 1) - 1;
 	} else {
 		*date_to = -1;
 	}
@@ -604,7 +606,9 @@ int parse_args(int argc, char **argv)
 			filter.regex = &reg;
 			filter_opt = 1;
 			break;
+		/* Assume that the date argument is midnight of the given day. */
 		case OPT_FILTER_START_FROM:
+			/* Midnight. */
 			filter.start_from = parse_datearg(optarg);
 			EXIT_IF(filter.start_from == -1,
 				_("invalid date: %s"), optarg);
@@ -614,18 +618,24 @@ int parse_args(int argc, char **argv)
 			filter.start_to = parse_datearg(optarg);
 			EXIT_IF(filter.start_to == -1,
 				_("invalid date: %s"), optarg);
+			/* Next midnight less one second. */
+			filter.start_to = date_sec_change(filter.start_to, 0, 1) - 1;
 			filter_opt = 1;
 			break;
 		case OPT_FILTER_START_AFTER:
-			filter.start_from = parse_datearg(optarg) + 1;
+			filter.start_from = parse_datearg(optarg);
 			EXIT_IF(filter.start_from == -1,
 				_("invalid date: %s"), optarg);
+			/* Next midnight (belongs to the next day). */
+			filter.start_from = date_sec_change(filter.start_from, 0, 1);
 			filter_opt = 1;
 			break;
 		case OPT_FILTER_START_BEFORE:
-			filter.start_to = parse_datearg(optarg) - 1;
+			filter.start_to = parse_datearg(optarg);
 			EXIT_IF(filter.start_to == -1,
 				_("invalid date: %s"), optarg);
+			/* One second before midnight. */
+			filter.start_to--;
 			filter_opt = 1;
 			break;
 		case OPT_FILTER_START_RANGE:
@@ -635,6 +645,7 @@ int parse_args(int argc, char **argv)
 			filter_opt = 1;
 			break;
 		case OPT_FILTER_END_FROM:
+			/* Midnight. */
 			filter.end_from = parse_datearg(optarg);
 			EXIT_IF(filter.end_from == -1,
 				_("invalid date: %s"), optarg);
@@ -644,18 +655,24 @@ int parse_args(int argc, char **argv)
 			filter.end_to = parse_datearg(optarg);
 			EXIT_IF(filter.end_to == -1,
 				_("invalid date: %s"), optarg);
+			/* Next midnight less one second. */
+			filter.end_to = date_sec_change(filter.end_to, 0, 1) - 1;
 			filter_opt = 1;
 			break;
 		case OPT_FILTER_END_AFTER:
-			filter.end_from = parse_datearg(optarg) + 1;
+			filter.end_from = parse_datearg(optarg);
 			EXIT_IF(filter.end_from == -1,
 				_("invalid date: %s"), optarg);
+			/* Next midnight (belongs to the next day). */
+			filter.end_from = date_sec_change(filter.end_from, 0, 1);
 			filter_opt = 1;
 			break;
 		case OPT_FILTER_END_BEFORE:
-			filter.end_to = parse_datearg(optarg) - 1;
+			filter.end_to = parse_datearg(optarg);
 			EXIT_IF(filter.end_to == -1,
 				_("invalid date: %s"), optarg);
+			/* One second before midnight. */
+			filter.end_to--;
 			filter_opt = 1;
 			break;
 		case OPT_FILTER_END_RANGE:
