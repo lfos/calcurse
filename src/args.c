@@ -74,7 +74,9 @@ enum {
 	OPT_EXPORT_UID,
 	OPT_READ_ONLY,
 	OPT_STATUS,
-	OPT_DAEMON
+	OPT_DAEMON,
+	OPT_INPUT_DATEFMT,
+	OPT_OUTPUT_DATEFMT
 };
 
 /*
@@ -364,7 +366,8 @@ int parse_args(int argc, char **argv)
 	/* Command-line flags - NOTE that read_only is global */
 	int grep = 0, purge = 0, query = 0, next = 0;
 	int status = 0, gc = 0, import = 0, export = 0, daemon = 0;
-	int filter_opt = 0, format_opt = 0, query_range = 0;
+	/* Command line invocation */
+	int filter_opt = 0, format_opt = 0, query_range = 0, cmd_line = 0;
 	/* Query ranges */
 	time_t from = -1, to = -1;
 	int range = 0;
@@ -387,6 +390,9 @@ int parse_args(int argc, char **argv)
 	int non_interactive = 1;
 	int ch;
 	regex_t reg;
+	char buf[BUFSIZ];
+	struct tm tm;
+	time_t t;
 
 	static const char *optstr = "PFgGhvnNax::t::C:d:c:r::s::S:D:i:l:qQ";
 
@@ -443,6 +449,8 @@ int parse_args(int argc, char **argv)
 		{"read-only", no_argument, NULL, OPT_READ_ONLY},
 		{"status", no_argument, NULL, OPT_STATUS},
 		{"daemon", no_argument, NULL, OPT_DAEMON},
+		{"input-datefmt", required_argument, NULL, OPT_INPUT_DATEFMT},
+		{"output-datefmt", required_argument, NULL, OPT_OUTPUT_DATEFMT},
 		{NULL, no_argument, NULL, 0}
 	};
 
@@ -719,6 +727,24 @@ int parse_args(int argc, char **argv)
 			break;
 		case OPT_DAEMON:
 			daemon = 1;
+			filter.type_mask = TYPE_MASK_APPT | TYPE_MASK_RECUR_APPT;
+			break;
+		case OPT_INPUT_DATEFMT:
+			conf.input_datefmt = atoi(optarg);
+			EXIT_IF(conf.input_datefmt < 1 || conf.input_datefmt > 4,
+				_("invalid input date format: %s"), optarg);
+			cmd_line = 1;
+			break;
+		case OPT_OUTPUT_DATEFMT:
+			time(&t);
+			localtime_r(&t, &tm);
+			EXIT_IF(!strftime(buf, sizeof(buf), optarg, &tm),
+			       _("invalid output date format: %s"), optarg);
+			strncpy(conf.output_datefmt, optarg,
+				sizeof(conf.output_datefmt) - 1);
+			conf.output_datefmt[sizeof(conf.output_datefmt) - 1] =
+				'\0';
+			cmd_line = 1;
 			break;
 		default:
 			usage();
@@ -837,7 +863,7 @@ int parse_args(int argc, char **argv)
 	} else if (daemon) {
 		dmon_stop();
 		dmon_start(0);
-	} else {
+	} else if (!cmd_line) {
 		/* interactive mode */
 		non_interactive = 0;
 	}
