@@ -183,13 +183,13 @@ struct event *event_scan(FILE * f, struct tm start, int id, char *note,
 			return NULL;
 		if (filter->regex && regexec(filter->regex, buf, 0, 0, 0))
 			return NULL;
-		if (filter->start_from >= 0 && tstart < filter->start_from)
+		if (filter->start_from != -1 && tstart < filter->start_from)
 			return NULL;
-		if (filter->start_to >= 0 && tstart > filter->start_to)
+		if (filter->start_to != -1 && tstart > filter->start_to)
 			return NULL;
-		if (filter->end_from >= 0 && tend < filter->end_from)
+		if (filter->end_from != -1 && tend < filter->end_from)
 			return NULL;
-		if (filter->end_to >= 0 && tend > filter->end_to)
+		if (filter->end_to != -1 && tend > filter->end_to)
 			return NULL;
 	}
 
