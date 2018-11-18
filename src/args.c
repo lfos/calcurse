@@ -390,7 +390,7 @@ int parse_args(int argc, char **argv)
 	const char *cfile = NULL, *ifile = NULL, *confdir = NULL;
 
 	int non_interactive = 1;
-	int ch;
+	int ch, cpid;
 	regex_t reg;
 	char buf[BUFSIZ];
 	struct tm tm;
@@ -743,6 +743,8 @@ int parse_args(int argc, char **argv)
 			status = 1;
 			break;
 		case OPT_DAEMON:
+			EXIT_IF(cpid = io_get_pid(path_cpid),
+				_("calcurse is running (pid = %d)"), cpid);
 			daemon = 1;
 			filter.type_mask = TYPE_MASK_APPT | TYPE_MASK_RECUR_APPT;
 			break;
