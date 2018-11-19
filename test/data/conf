@@ -24,7 +24,7 @@ general.confirmquit=yes
 general.confirmdelete=yes
 
 # If this option is set to yes, messages about loaded and saved data will not be displayed
-general.systemdialogs=no
+general.systemdialogs=yes
 
 # If this option is set to yes, progress bar appearing when saving data will not be displayed
 general.progressbar=no
