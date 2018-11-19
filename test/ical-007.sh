@@ -7,7 +7,7 @@ if [ "$1" = 'actual' ]; then
   cp "$DATA_DIR/conf" .calcurse || exit 1
   TZ="America/New_York" "$CALCURSE" -D "$PWD/.calcurse" \
     -i "$DATA_DIR/ical-007.ical"
-  "$CALCURSE" -D "$PWD/.calcurse" -s2015-02-23
+  "$CALCURSE" -D "$PWD/.calcurse" -s02/23/2015
   rm -rf .calcurse || exit 1
 elif [ "$1" = 'expected' ]; then
   cat <<EOD
