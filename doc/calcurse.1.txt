@@ -30,519 +30,733 @@
  */
 ////
 
-calcurse(1)
+CALCURSE(1)
 ===========
 
-Name
+NAME
 ----
 
-calcurse - text-based organizer
+calcurse - terminal-based organizer for interactive and command line use
 
-Synopsis
+SYNOPSIS
 --------
 
-[verse]
-'calcurse' *-Q* [options] [*--from* <date>] [*--to* <date>|*--days* <num>]
-'calcurse' *-G* [options]
-'calcurse' *-i*<file>
-'calcurse' *-x*<format>
-'calcurse' *--gc*
-'calcurse' *--status*
-'calcurse' *--version*
-'calcurse' *--help*
+--
+*calcurse* [-D 'directory'] [-C 'confdir'] [-c 'calendar-file']
 
-Description
+*calcurse* -Q [*--from* 'date'] [*--to* 'date' | *--days* 'number']
+
+*calcurse* -a | -d 'date' | -d 'number' | -n | -r['number'] | -s['date'] | -t['number']
+
+*calcurse*  -G ['filter options'] ['format options'] | -P ['filter options'] ['format options']
+
+*calcurse* -h | --status |  -g | -i 'file'  | -x['file'] | --daemon
+--
+
+The first form shows how to invoke calcurse interactively; the remainder is
+command line forms.
+
+The second form shows queries (as opposed to interactive use). For
+convenience, common queries have abbriviated forms shown in the third line.
+All queries may be combined with filter options as well as format options.
+
+The fourth form shows operations on the calcurse data files, one for
+display of entries, the other for removal of them.
+
+The fifth form is miscellaneous help and support functions.
+
+All details are in <<_options,OPTIONS>>.
+
+DESCRIPTION
 -----------
 
-Calcurse is a text-based calendar and scheduling application. It helps keeping
-track of events, appointments and everyday tasks.  A configurable notification
-system reminds user of upcoming deadlines, and the curses based interface can
-be customized to suit user needs.  All of the commands are documented within an
-online help system.  
+calcurse is a calendar and scheduling application for use in a terminal
+session (terminal emulator). When invoked without options, calcurse enters
+interactive mode; in most other cases, calcurse produces output on the
+terminal and exits.  It helps keeping track of events, appointments and
+everyday tasks. Interactive mode is used when data are entered or when already
+existing entries are inspected or edited. All data are saved to disk as text
+files. Command line mode is used for queries and administrative tasks and for
+automating tasks in scripts.
 
-Options
+The interactive interface is based on ncurses and can be customized to suit
+user preferences. Customization includes program behaviour as well as visual
+appearance and key bindings, and is performed interactively; the result is
+automatically saved to disk and loaded on every invocation. Available actions
+are documented in an online help system. A configurable notification system
+issues reminders of upcoming deadlines.
+
+When leaving the interactive program, a background daemon may continue running
+and issue reminders; it stops automatically when the interactive mode is
+reentered.
+
+This man page mainly describes the command-line mode. The following two
+subsectiions contain some general desriptions of command line options and usage.
+
+Input and Output Date Format
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Many options require a 'date' argument, and query results per day are set apart 
+by a leading 'date line'.
+
+The input format of 'date' options and the output format of 'date lines' are
+taken from the configuration file (see <<_files,FILES>>). The formats are set
+in the "General Options" submenu in interactive mode.  Particularly in scripts
+it may be desirable that formats are independent of the local user
+configuration. For this purpose use the options *--input-datefmt* and
+*--output-datefmt*.
+
+An input date consists of 'date', 'month' and 'year'. Here 'day' must be in
+the range 1-31 and 'month' in 1-12. Depending on the operating system 'year'
+must be in the range 1902-2037 or 1902-?.  Additionally, some short forms are
+allowed with the obvious meaning: +today+, +tomorrow+, +yesterday+, +now+ and
+weekdays +mon+, ..., +sun+.
+
+Optionally, a 'date' argument for a filter option (see
+<<_filter_options,Filter Options>>) may be followed by a time-of-day
+specification in hours and minutes (24-hour clock). The specification has the
+fixed format hh:mm (example: +"2018-12-1 20:30"+ when the input date format is
+the ISO standard format). Note that the entire date specification must be
+quoted to create one argument.
+
+Filter, format and day range options
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+These options do not accomplish anything in and of themselves. They influence
+other options and are in a way opposites: filter options affect the input to,
+format and day range options the output from calcurse. Specifically, filter
+options limit what is loaded from the data files into calcurse, day range
+options limit what is output (see <<_query,-Q>>), and
+<<_format_options,format options>> describe how it is presented.
+
+Filter options have effect on queries (*-Q* and query short-forms), grep
+(*-G*), purge (*-P*) and export (*-x*). Format options have effect on queries,
+grep and *--dump-imported*. Day range options have effect on queries only.
+
+OPTIONS
 -------
 
-The following options are supported:
+Most options imply command line mode. Options compatible with interactive mode
+are marked "('also interactively')".
 
 *-a*, *--appointment*::
-  Print the appointments and events for the current day and exit. Equivalent to
-  *-Q --filter-type cal*. 'Note:' The calendar from which to read the
-  appointments can be specified using the *-c* flag.
+  Print the appointments and events for the current day. Equivalent to *-Q
+  --filter-type cal*.
 
-*-c* <file>, *--calendar* <file>::
-  Specify the calendar file to use. The default calendar is *~/.calcurse/apts*
-  (see section 'FILES' below). This option has precedence over *-D*.
+*-c* 'file', *--calendar* 'file'::
+  ('also interactively') Specify the calendar file to use. The default
+  calendar is *~/.calcurse/apts* (see <<_files,FILES>>). If 'file' is not an
+  absolute path name, it is interpreted relative to the current working
+  directory. The option has precedence over *-D*.
 
-*-d* <date|num>, *--day* <date|num>::
-  Print the appointments for the given date  or  for  the given  number  of
-  upcoming days, depending on the argument format. Two possible formats are
-  supported:
+*-C* 'dir', *--conf* 'dir'::
+  ('also interactively') Specify the configuration directory to use. If not
+  specified, the default directory is *~/.calcurse/*. See <<_files,FILES>> for
+  the interaction with *-D*.
+
+*-D* 'dir', *--directory* 'dir'::
+  ('also interactively') Specify the (data) directory to use. If not specified,
+  the default directory is *~/.calcurse/*.  See section <<_files,FILES>> for
+  the interaction with *-C*.
+
+*-d* 'date|num', *--day* 'date|num'::
+  Print appointments and events for the given date or given range of days,
+  depending on the argument format:
 +
 --
-  * a date (possible formats described below).
-  * a number *n*.
+  * a 'date'
+  * a number 'num'
 --
 +
-In the first  case,  the  appointment  list  for  the specified  date will be
-returned, while in the second case the appointment list for the *n*  upcoming
-days will be returned.
-+
-As an example, typing *calcurse -d  3*  will  display your  appointments  for
-today, tomorrow, and the day after tomorrow. The first form is equivalent to
-*-Q --filter-type cal --from <date>*, the second form is equivalent to *-Q
---filter-type cal --days <num>*.
-+
-'Note:' as for the *-a* flag, the calendar  from which to  read  the
-appointments can be specified using the *-c* flag.
+In the first case, appointments and events for 'date' are returned, while in
+the second case those for 'num' days are returned.  Positive values of 'num'
+means the future, negative the past; the range either starts or ends with the
+current day. As an example +calcurse -d 3+ displays appointments and events
+for today, tomorrow and the day after tomorrow, while +calcurse -d -2+
+displays those for yesterday and today. The first form is equivalent to *-Q
+--filter-type cal --from* 'date', the second to *-Q --filter-type cal --days*
+'num'.
 
 *--daemon*::
-  Start calcurse in background mode. Restart if the daemon was already running.
+  Start calcurse in background mode; restart, if the daemon was already
+  running. Usually done automatically by setting the configuration option
+  +daemon.enable+ in the 'Notify' submenu in interactive mode.
 
-*--days* <num>::
-  Specify the length of the range (in days) when used with *-Q*. Cannot be
-  combined with *--to*.
+*--days* 'num'::
+  Specify the range of days when used with *-Q*. Can be combined with
+  *--from*, but not with *--to*. Without *--from*, the first day of the range
+  defaults to the current day. The number may be negative, see
+  <<_query,-Q --query>>.
+
+*--dump-imported*::
+  When importing items, print each newly created object to stdout.  Format
+  options can be used to specify which details are printed. See also
+  <<_format_options,Format Options>>.
 
 *--export-uid*::
   When exporting items, add the hash of each item to the exported object as an
   UID property.
 
-*-D* <dir>, *--directory* <dir>::
-  Specify the data directory to use. If not specified, the default directory is
-  *~/.calcurse/*.
+*--from* 'date'::
+  Specify the start date of the day range when used with *-Q*. When used
+  without *-to* or *--days* the range is one day (the specified day), see
+  <<_query,-Q --query>>.
 
 *-F*, *--filter*::
-  Read items from the data files and write them back. The filter interface can
-  be used to drop specific items. Be careful with this option, specifying a
-  wrong filter might result it data loss! It is highly recommended to test the
-  effect of filters with -G first. See also: 'Filter Options'.
-
-*--from* <date>::
-  Specify the start date of the range when used with *-Q*.
+  Deprecated, see <<_purge,-P, --purge>>. Note that this option is for
+  backward compatibility and not the same as *-P* (it does not use the invert
+  filter option.
 
 *-g*, *--gc*::
-  Run the garbage collector for note files and exit.
+  Run the garbage collector for note files. The garbage collector removes
+  files from the +notes+ directory (see <<_files,FILES>>) that are no longer
+  linked to an item. Ususally done automatically by setting the configuration
+  option +general.autogc+ in the 'General Options' submenu in interactive mode.
 
 *-G*, *--grep*::
-  Print appointments and TODO items using the calcurse data file format. The
-  filter interface can be used to further restrict the output. See also:
-  'Filter Options'.
+  Print appointments, events and TODO items in calcurse data file format.
 
 *-h*, *--help*::
-  Print  a  short  help  text  describing  the  supported command-line options,
-  and exit.
+  Print a short help text describing the supported command-line options.
 
-*-i* <file>, *--import* <file>::
+*-i* 'file', *--import* 'file'::
   Import the icalendar data contained in 'file'.
 
-*-l* <num>, *--limit* <num>::
+*--input-datefmt* 'format'::
+  For command line and script use only: override the configuration file
+  setting of the option +format.inputdate+ ('General Options' submenu in
+  interactive mode).  A valid 'format' is any of 1, 2, 3, or 4, with 1 =
+  mm/dd/yyyy, 2 = dd/mm/yyyy, 3 = yyyy/mm/dd, 4 = yyyy-mm-dd.
+
+*-l* 'num', *--limit* 'num'::
   Limit the number of results printed to 'num'.
 
-*--dump-imported*::
-  When importing items, print each newly created object to stdout. Format
-  strings can be used to specify which details are printed. See also:
-  'Formatting Options'.
-
 *-n*, *--next*::
-  Print the next appointment within upcoming 24 hours and exit.  The indicated
-  time is the number of hours and minutes left before this appointment.
+  Print the first appointment within the next 24 hours. The printed time is
+  the number of hours and minutes left before this appointment.
+
+*--output-datefmt* 'format'::
+  For command line and script use only: override the configuration file
+  setting of the option +format.outputdate+ ('General Options' submenu in
+  interactive mode).  A valid 'format' is any strftime(3) format string.
+
+*-P*, *--purge*[[_purge]]::
+  Load items from the data files and save them back; the items are described
+  by suitable filter options (see <<_filter_options,Filter Options>>). It may
+  be used to drop specific items from the data files, see
+  <<_examples,EXAMPLES>>.
 +
-'Note:' the calendar from which to read the appointments can be specified using
-the *-c* flag.
+The matching items are (silently) 'removed' from the data files. Any
+combination of filter options, except +--filter-invert+, may be used in
+describing the items to be removed. The invert filter is used internally by
+the purge option, and its simultaneous use on the command line may result in
+unpredictable behaviour.
++
+'Warning:' Be careful with this option, specifying the wrong filter options
+may result in data loss. It is highly recommended to test with *-G* first
+and fine-tune the filters to show the items to be removed.  Then run the
+same command with +-P+ instead of +-G+.  In any case, make a backup of the
+data files in advance.
 
 *-q*, *--quiet*::
-  Be quiet. Do not show system dialogs.
+  ('also interactively') Be quiet. Do not show system dialogs.
 
-*-Q*, *--query*::
-  Print all appointments inside a given query range, followed by all TODO
-  items. The query range defaults to the current day and can be changed by
-  using the *--from* and *--to* (or *--days*) parameters. The filter interface
-  can be used to further restrict the output. See also: 'Filter Options',
-  'Formatting Options'.
+*-Q*, *--query*[[_query]]::
+  Print all appointments and events in a given 'range of days' followed by all
+  TODO items. The calendar part is displayed per day with a leading line
+  containing the date and a trailing empty line (much like the calendar panel
+  in interactive mode).
++
+The 'day range' defaults to the current day and is changed with the options
+*--from* and *--to*/*--days*.  The range +--from+ 'a' +--to+ 'z' includes both
+'a' and 'z'. The range +--from+ 'a' +--days+ 'n', includes 'a' as the first
+day, if 'n' is positive, or last day, if 'n' is negative.
++
+Day range has an effect on queries only.
 
-*-r*[num], *--range*[=num]::
-  Print events and appointments for the 'num' number of days and exit. If no
-  'num' is given, a range of 1 day is considered. Equivalent to *-Q
-  --filter-type cal --days <num>*.
+*-r*['num'], *--range*[='num']::
+  Print appointments and events for 'num' number of days starting with the
+  current day. If 'num' is left out, a range of 1 day is used. The number may
+  be negative in which case the range is in the past, ending with the current
+  day. Equivalent to *-Q --filter-type cal --days* 'num'.
 
 *--read-only*::
-  Don't save configuration nor appointments/todos.
+  ('also interactively') Do not save configuration nor appointments and todos.
 +
-'Warning:' Use this this with care! If you run an interactive calcurse instance
-in read-only mode, all changes from this session will be lost without warning!
+'Warning:' If you run calcurse interactively in read-only mode, all changes
+from that session will be lost without warning!
 
-*-s*[date], *--startday*[=date]::
-  Print  events  and appointments from 'date' and exit.  If no 'date' is given,
-  the current day is considered. Equivalent to *-Q --filter-type cal --from
-  <date>*.
+*-s*['date'], *--startday*[='date']::
+  Print events and appointments from the optional 'date'; default is the
+  current day. Equivalent to *-Q --filter-type cal --from* 'date'.
 
-*-S*<regex>, *--search*=<regex>::
-  When used with the *-a*, *-d*, *-r*, *-s*, or *-t* flag, print only the items
-  having a description that matches the given regular expression. Equivalent to
-  *-Q --filter-pattern <regex>*.
+*-S* 'regex', *--search* 'regex'::
+  When used with any of *-a*, *-d*, *-r*, *-s*, or *-t* print only the
+  items having a description that matches the given regular expression.
+  Equivalent to *-Q --filter-pattern* 'regex'.
 
 *--status*::
-  Display  the  status of running instances of calcurse. If calcurse is
-  running, this will tell  if  the  interactive mode  was  launched  or  if
-  calcurse is running in background.  The process pid will also be indicated.
+  Display the status of running instances of calcurse, interactive or
+  background mode. The process pid is also printed.
 
-*-t*[num], *--todo*[=num]::
-  Print the *todo* list and exit. If the optional number 'num' is given, then
-  only uncompleted todos having a priority equal to 'num' will be returned. The
-  priority number must be between 1 (highest) and 9 (lowest). It is also
-  possible to specify *0* for the priority, in which case only completed tasks
-  will be shown. Equivalent to *-Q --filter-type todo*, combined with
-  *--filter-priority* and *--filter-completed* or *--filter-uncompleted*.
+*-t*['num'], *--todo*[='num']::
+  Print the *todo* list. If the optional number 'num' is given, then only
+  uncompleted (open) todos having a priority equal to 'num' will be returned.
+  The priority number must be between +1+ (highest) and +9+ (lowest). It is
+  also possible to specify +0+ for the priority, in which case only completed
+  (closed)  tasks will be shown. Equivalent to *-Q --filter-type todo*,
+  combined with *--filter-priority* and *--filter-completed* or
+  *--filter-uncompleted*.
 
-*--to* <date>::
-  Specify the end date of the range when used with *-Q*. Cannot be combined
-  with *--days*.
+*--to* 'date'::
+  Specify the end date of the day range when used with *-Q*. When used without
+  *--from* the start day is the current day. Cannot be combined with *--days*,
+  see <<_query,-Q --query>>.
 
 *-v*, *--version*::
-  Display *calcurse* version and exit.
+  Display *calcurse* version.
 
-*-x*[format], *--export*[=format]::
-  Export user data to specified format. Events, appointments and todos are
-  converted and echoed to stdout.  Two possible formats are available: 'ical'
-  and 'pcal'.  If the optional argument 'format' is not given, ical format is
-  selected by default.
-+
-'Note:' redirect standard output to export data to a file, by issuing a command
-such as:
-+
-----
-$ calcurse --export > my_data.dat
-----
+*-x*['format'], *--export*[='format']::
+  Export user data in the specified format. Events, appointments and todos are
+  converted and echoed to stdout. Two formats are available: +ical+ and
+  +pcal+. The default 'format' is +ical+.
 
-'Note:' The *-N* option has been removed in calcurse 3.0.0. See the 'FORMAT
-STRINGS' section on how to print note along with appointments and events.
-
-Filter Options
-~~~~~~~~~~~~~~
-
-Filters can be used to restrict the set of items which are loaded from the
-appointments file when using calcurse in non-interactive mode. The following
-filters are currently supported:
-
-*--filter-hash <pattern>*::
-  Only include items with a hash starting with the specified pattern. The
-  pattern can be inverted by prepending an exclamation mark ('!').
-
-*--filter-type* <type>::
-  Ignore any items that do not match the type mask. The type mask is a
-  comma-separated list of valid type descriptions which include 'event', 'apt',
-  'recur-event', 'recur-apt' and 'todo'. You can also use 'recur' as a
-  shorthand for 'recur-event,recur-apt' and 'cal' as a shorthand for
-  'event,apt,recur'.
-
-*--filter-pattern* <pattern>::
-  Ignore any items with a description that does not match the pattern. The
-  pattern is interpreted as extended regular expression.
-
-*--filter-start-from* <date>::
-  Ignore any items that start before a given date.
-
-*--filter-start-to* <date>::
-  Ignore any items that start after a given date.
-
-*--filter-start-after* <date>::
-  Only include items that start after a given date.
-
-*--filter-start-before* <date>::
-  Only include items that start before a given date.
-
-*--filter-start-range* <range>::
-  Only include items with a start date that falls within a given range. A range
-  consists of a start date and an end date, separated by a comma.
-
-*--filter-end-from* <date>::
-  Ignore any items that end before a given date.
-
-*--filter-end-to* <date>::
-  Ignore any items that end after a given date.
-
-*--filter-end-after* <date>::
-  Only include items that end after a given date.
-
-*--filter-end-before* <date>::
-  Only include items that end before a given date.
-
-*--filter-end-range* <range>::
-  Only include items with an end date that falls within a given range. A range
-  consists of a start date and an end date, separated by a comma.
-
-*--filter-priority* <priority>::
-  Only include items with a given priority.
-
-*--filter-completed*::
-  Only include completed TODO items.
-
-*--filter-uncompleted*::
-  Only include uncompleted TODO items.
-
-Formatting Options
-~~~~~~~~~~~~~~~~~~
-
-*--format-apt* <format>::
-  Specify a format to control the output of appointments in non-interactive
-  mode. See the 'FORMAT STRINGS' section for detailed information on format
-  strings.
-
-*--format-recur-apt* <format>::
-  Specify a format to control the output of recurrent appointments in
-  non-interactive mode. See the 'FORMAT STRINGS' section for detailed
-  information on format strings.
-
-*--format-event* <format>::
-  Specify a format to control the output of events in non-interactive mode. See
-  the 'FORMAT STRINGS' section for detailed information on format strings.
-
-*--format-recur-event* <format>::
-  Specify a format to control the output of recurrent events in non-interactive
-  mode. See the 'FORMAT STRINGS' section for detailed information on format
-  strings.
-
-*--format-todo* <format>::
-  Specify a format to control the output of todo items in non-interactive mode.
-  See the 'FORMAT STRINGS' section for detailed information on format strings.
-
-Format strings
+FILTER OPTIONS
 --------------
 
-Format strings are composed of printf()-style format specifiers -- ordinary
-characters are copied to stdout without modification. Each specifier is
-introduced by a *%* and is followed by a character which specifies the field to
-print. The set of available fields depends on the item type.
+Filter options have effect on queries (*-Q* and query short-forms), grep
+(*-G*), purge (*-P*) and export (*-x*), see also options in the
+<<_filter_format_and_day_range_options,DESCRIPTION>> section.
 
-Format specifiers for appointments
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Several filter options may be given. For an item to be loaded into calcurse it
+must match all filters. In other words, filters are logically "and"-ed.
+The *--filter-type* option has a default value which matches any item.
+All other filter options have no default value and only apply when explicitly
+set.
 
-*s*::
-  Print the start time of the appointment as UNIX time stamp
-*S*::
-  Print the start time of the appointment using the *hh:mm* format
-*d*::
+The filter options fall into three groups: general, calendar, todo. The
+'general filters' apply to all items, the 'calendar filters' concern start and end
+times and apply to appointments and events only, and the 'todo filters' concern
+priority and completeness and apply to TODOs only.
+
+Outside the three groups is the invert filter.
+
+*--filter-invert* ::
+  Invert the combined effect of any other filters, i.e. load the items that
+  do 'not' match them.
+
+General filters
+~~~~~~~~~~~~~~~
+
+*--filter-type* 'type'::
+  Include items that match 'type'. The type value is a comma-separated
+  list of type descriptions selected from +event+, +apt+, +recur-event+,
+  +recur-apt+ and +todo+. You can also use +recur+ as a shorthand for
+  +recur-event,recur-apt+ and +cal+ as a shorthand for +event,apt,recur+.
+
+*--filter-pattern* 'pattern'::
+  Include items with a description that matches the pattern. The pattern is
+  interpreted as an extended regular expression.
+
+*--filter-hash* 'string'::
+  Include items with a hash starting with 'string'. The filter can be negated
+  by prepending an exclamation mark (+!+): include items with a hash string
+  'not' starting with 'string'. For the (SHA1) hash of an item refer to
+  <<_extended_format_specifiers,Extended format specifiers>>.
+
+Calendar filters
+~~~~~~~~~~~~~~~~
+
+For filter options ending in *-from*, *-to*, *-after*, *-before* and *-range*,
+start or end time is the filter criterion.
+
+An event is an all-day appointment for which no times are displayed.  The
+start time of an event is the beginning of the event day (midnight), the end
+time is the end of the event day (one second before next midnight).
+
+The *-start-* options ending in *-from*, *-after* and *-range* refer to the
+same filter criterion and cannot be used together. The same is the case for
+options ending in *-to*, *-before* and *-range*. Similar restrictions apply to
+*-end-* options.
+
+Start and end times of a recurrent item refer to the very first occurrence, not
+to those of any of the repetitions. If a recurrent item meets the criterion,
+all of the repetitions are displayed in queries, even though they may not meet the
+criterion. If they are unwanted, they may be removed from the output with the
+<<_query,day range>> options, although this will also remove other items in
+that range.
+
+*--filter-start-from* 'date'::
+  Include items that start at or after a given date.
+
+*--filter-start-to* 'date'::
+  Include items that start at or before a given date.
+
+*--filter-start-after* 'date'::
+  Include items that start after a given date.
+
+*--filter-start-before* 'date'::
+  Include items that start before a given date.
+
+*--filter-start-range* 'range'::
+  Include items with a start date that belongs to a given range. A range
+  consists of a start date and an end date, separated by a comma.
+
+*--filter-end-from* 'date'::
+  Include items that end at or after a given date.
+
+*--filter-end-to* 'date'::
+  Include items that end at or before a given date.
+
+*--filter-end-after* 'date'::
+  Include items that end after a given date.
+
+*--filter-end-before* 'date'::
+  Include items that end before a given date.
+
+*--filter-end-range* 'range'::
+  Include items with an end date that belongs to a given range. A range
+  consists of a start date and an end date, separated by a comma.
+
+Todo filters
+~~~~~~~~~~~~
+
+*--filter-priority* 'priority'::
+  Include TODO items with a given priority.
+
+*--filter-completed*::
+  Include completed TODO items.
+
+*--filter-uncompleted*::
+  Include uncompleted TODO items.
+
+FORMAT OPTIONS
+--------------
+
+Format options have effect on queries, grep and *--dump-imported*.
+
+The options specify a format for appointments, recurring appointments, events,
+recurring events or todo items, respectively.
+
+*--format-apt* 'format'::
+
+*--format-recur-apt* 'format'::
+
+*--format-event* 'format'::
+
+*--format-recur-event* 'format'::
+
+*--format-todo* 'format'::
+  The 'format' argument is a string composed of printf-style format
+  specifiers, which are replaced as explained below, and ordinary characters,
+  which are copied to stdout without modification. Each option has a default
+  'format' string which is used when the option is not given. Default strings
+  are described in <<_default_format_strings,Default Format Strings>>.
++
+'Note': Use of a format option requires explicit formatting of field
+separation and line spacing.
+
+Default format strings
+~~~~~~~~~~~~~~~~~~~~~~
+
+Each specifier is introduced by a +%+ followed by a character which tells what to
+print. The available specifiers depend on the item type. Times are printed as
+hours and minutes (+hh:mm+) unless otherwise noted; time formats can be
+changed with <<_extended_format_specifiers,extended specifiers>>.
+
+For each format option there is a default format string which is used when the option
+is not given. In query results the default format options are:
+
+  --format-apt " - %S -> %E\n\t%m\n"
+  --format-recur-apt " - %S -> %E\n\t%m\n"
+  --format-event " * %m\n"
+  --format-recur-event " * %m\n"
+  --format-todo "%p. %m\n"
+
+In all other cases (grep and dump-imported) the default format string is +"%(raw)"+.
+
+Appointments
+~~~~~~~~~~~~
+
+*%d*::
   Print the duration of the appointment in seconds
-*e*::
-  Print the end time of the appointment as UNIX time stamp
-*E*::
-  Print the end time of the appointment using the *hh:mm* format
-*m*::
+*%e*::
+  Print the end time of the appointment as the Unix time in seconds
+*%E*::
+  Print the end time of the appointment or the marker +..:..+ if
+  it ends after midnight
+*%m*::
   Print the description of the item
-*n*::
+*%n*::
   Print the name of the note file belonging to the item
-*N*::
+*%N*::
+  Print the note belonging to the item
+*%r*::
+  Print the remaining time before the appointment
+*%s*::
+  Print the start time of the appointment as the Unix time in seconds
+*%S*::
+  Print the start time of the appointment or the marker +..:..+ if it begins
+  before midnight
+
+Events
+~~~~~~
+
+*%m*::
+  Print the description of the item
+*%n*::
+  Print the name of the note file belonging to the item
+*%N*::
   Print the note belonging to the item
 
-Format specifiers for events
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Todo items
+~~~~~~~~~~
 
-*m*::
+*%m*::
   Print the description of the item
-*n*::
+*%n*::
   Print the name of the note file belonging to the item
-*N*::
+*%N*::
   Print the note belonging to the item
-
-Format specifiers for todo items
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-*p*::
+*%p*::
   Print the priority of the item
-*m*::
-  Print the description of the item
-*n*::
-  Print the name of the note file belonging to the item
-*N*::
-  Print the note belonging to the item
-
-Examples
-~~~~~~~~
-
-*`calcurse -r7 --format-apt='- %S -> %E\n\t%m\n%N'`*::
-  Print appointments and events for the next seven days. Also, print the notes
-  attached to each regular appointment (simulates *-N* for appointments).
-
-*`calcurse -r7 --format-apt=' - %m (%S to %E)\n' --format-recur-apt=' - %m (%S to %E)\n'`*::
-  Print appointments and events for the next seven days and use a custom format
-  for (recurrent) appointments: * - Some appointment (18:30 to 21:30)*.
-
-*`calcurse -t --format-todo '(%p) %m\n'`*::
-  List all todo items and put parentheses around the priority specifiers.
 
 Extended format specifiers
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Extended format specifiers can be used if you want to specify advanced
-formatting options. Extended specifiers are introduced by *%(* and are
-terminated by a closing parenthesis (*)*). The following list includes all
-short specifiers and corresponding long options:
+Extended format specifiers can be used to control the printing of times for
+some of the single-letter specifiers. Additionally there are two specifiers
+that do not have any corresponding short form and are intended for use in
+scripting.
 
-* *s*: *(start)*
-* *S*: *(start:epoch)*
-* *e*: *(end)*
-* *E*: *(end:epoch)*
-* *d*: *(duration)*
-* *r*: *(remaining)*
-* *m*: *(message)*
-* *n*: *(noteid)*
-* *N*: *(note)*
-* *p*: *(priority)*
+*%(duration*`[`*:*'format'`]`*)*::
+  extended form of *%d*
+*%(remaining*`[`*:*'format'`]`*)*::
+  extended form of *%r*
++
+'format' may contain any of the strftime(3) specifiers *%d*, *%H*, *%M* or
+*%S* with the following modifications: 1) days are not limited to the
+"calendar" values 0-31 (hours, minutes and seconds are "clock" values, but see
+*E* in the following) 2) each number is by default padded with zeros to two
+decimal places, 3) the *%* character may be followed by one or two optional
+flags: *-*, which suppresses the zero-padding, *E*, which will suppress the
+"clock" limits on *%H*, *%M* and *%S*; if both are used, *-* must precede *E*,
+4) no other flags or width specifications are supported
 
-The *(start)* and *(end)* specifiers support strftime()-style extended
-formatting options that can be used for fine-grained formatting. Additionally,
-the special formats *epoch* (which is equivalent to *(start:%s)* or *(end:%s)*)
-and *default* (which is mostly equivalent to *(start:%H:%M)* or *(end:%H:%M)*
-but displays *..:..* if the item doesn't start/end at the current day) are
-supported.
+*%(start*`[`*:*'format'`]`*)*::
+  extended form of *%s*
+*%(end*`[`*:*'format'`]`*)*::
+  extended form of *%e*
++
+'format' may be any strftime(3) format specifier or one of the strings *epoch*
+or *default*; the former is equivalent to the (calcurse) specifiers *%s* and
+*%e* (seconds since the Epoch); the latter is equivalent to the (calcurse)
+specifiers *%S* and *%E* or the (strftime) format string *%H:%M*, except that
+the continuation marker +..:..+ is printed if the start/end time belongs to
+another day
 
-The *(remaining)* and *(duration)* specifiers support a subset of the
-strftime()-style formatting options, along with two extra qualifiers.
-The supported options are *%d*, *%H*, *%M* and *%S*, and by default each
-of these is zero-padded to two decimal places. To avoid the
-zero-padding, add *-* in front of the formatting option (for example,
-*%-d*). Additionally, the *E* option will display the total number of
-time units until the appointment, rather than showing the remaining
-number of time units modulo the next larger time unit. For example, an
-appointment in 50 hours will show as 02:00 with the formatting string
-*%H:%M*, but will show 50:00 with the formatting string *%EH:%M*. Note
-that if you are combining the *-* and *E* options, the *-* must come
-first. The default format for the *(remaining)* specifier is *%EH:%M*.
+*%(raw)*::
+  the text file format of an item as saved on disk; the default format for
+  the grep and dump-imported options; can be used with all format options
 
-There are two additional long format specifiers that do not have any
-corresponding short options. They can be used to print an item's hash or its
-internal representation and were designed to be used for scripting:
+*%(hash)*::
+  the (SHA1) hash of the above; can be used with all format options
 
-* *(hash)*
-* *(raw)*
+EXAMPLES
+--------
 
-Hooks
+`calcurse -d tomorrow`::
+  Display the calendar for tomorrow (same as `calcurse -Q --filter-type
+  cal --from tomorrow`).
+
+`calcurse -d friday`::
+  Display the calendar for the upcoming friday.
+
+`calcurse -d 7`::
+  Display the calendar for the next seven days (same as `calcurse -Q
+  -filter-type cal --days 7`).
+
+`calcurse -r7 --format-apt " - %S -> %E\n\t%m\n%N"`::
+  Print appointments and events for the next seven days. Also, print the notes
+  attached to each regular appointment.
+
+`calcurse -r7 --format-apt " - %m (%S to %E)\n" --format-recur-apt " - %m (%S to %E)\n"`::
+  Print appointments and events for the next seven days and use a custom format
+  for (recurrent) appointments:
++
+`- Some appointment (18:30 to 21:30)`
+
+`calcurse -t --format-todo "(%p) %m\n"`::
+  List all todo items and put parentheses around the priority specifiers.
+
+If the calcurse data files contain many entries which are no longer needed or
+wanted, they can, of course, be removed interactively. If there are many, it
+can be a tedious task and may be done better as in the following two examples.
+
+`calcurse --input-datefmt 4 -G --filter-start-before 2015-1-1`::
+  List event and appointment entries in the data files with a start time
+  before 1 January 2015, and all TODO entries.
++
+*Purge*. When +-G+ is replaced by +-P+, those entries are removed. This may
+remove recurring items that have occurrences after 1 January 2015.
+
+`calcurse --input-datefmt 1 -G --filter-start-from 11/1/2015 --filter-type event,apt`::
+  List (ordinary) event and appointment entries with a start time of 1
+  November 2015 or later.
+
+`calcurse -G --filter-type apt --format-apt "%(hash) %m\n"`::
+  For each appointment list the SHA1 hash of the data file entry followed by
+  the description.
+
+`calcurse -G --filter-type apt --format-apt "%(duration:%d/%EH/%EM)\t%m\n"`::
+  For each appointment list the (total) duration as either days, hours or
+  minutes followed by the description.
+
+`calcurse -G --filter-type apt --format-apt "%(start:%c) %(duration:%d %H:%M)\t%m\n"`::
+  For each appointment list the start time in a localized standard format,
+  followed by the duration in days, hours and minutes, followed by the
+  description.
+
+FILES
 -----
 
-You can place scripts in `$HOME/.calcurse/hooks/` to trigger actions at certain
+The following structure is created by default in your home directory the
+first time calcurse is run without any options:
+
+----
+$HOME/.calcurse/
+          |___apts
+          |___conf
+          |___hooks/
+          |___keys
+          |___notes/
+          |___todo
+----
+
+The files are of two different kinds: data and configuration. The data files
+constitute the calcurse database and are independent of the calcurse release
+version; the configuration files depend on the calcurse version although
+backwards compatibility is always aimed at.
+
+Data files
+~~~~~~~~~~
+
+The calendar file +apts+ contains all of the user's appointments and events,
+and the +todo+ file contains the todo list.  The +notes+ subdirectory contains
+the notes which are attached to appointments, events or todos.  One text file
+is created per note, whose name is the SHA1 message digest of the note itself.
+
+The (hidden) lock files of the calcurse (+.calcurse.pid+) and daemon
+(+.daemon.log+) programs are present when they are running.  If daemon log
+activity has been enabled in the notification configuration menu, the file
++daemon.log+ is present.
+
+An alternative calendar file may be specified with the *-c* option.
+
+Configuration files
+~~~~~~~~~~~~~~~~~~~
+
+The +conf+ file contains the user configuration and the +keys+ file 
+the user-defined key bindings. The +hooks+ directory contains user-supplied
+scripts, see <<_hooks,Hooks>>.
+
+Directory configuration
+~~~~~~~~~~~~~~~~~~~~~~~
+
+An alternative directory to the default +$HOME/.calcurse+ may be specified
+with the *-D* option.
+
+An alternative directory for the configuration files 'only' may be specified
+with the *-C* option; in that case data files are either in the default
+directory or in the directory specified by *-D*. If both *-D* and
+*-C* are present, configuration files in the data directory, if any, are
+ignored.
+
+----
+<datadir>      <confdir>
+     |             |
+     |__ apts      |___ conf
+     |__ todo      |___ keys
+     |__ notes/    |___ hooks/
+
+default for both: $HOME/.calcurse/
+----
+
+calcurse may switch between two configuration setups, but still access
+the same data files e.g. with:
+
+----
+$ calcurse
+
+$ calcurse -C "$HOME/.calcurse/config"
+----
+
+Hooks
+~~~~~
+
+Scripts placed in +$HOME/.calcurse/hooks/+ trigger actions at certain
 events. To enable a hook, add a script with one of the following names to this
-directory. Also make sure the scripts are executable.
+directory. Also make sure the script is executable.
 
 *pre-load*::
   Executed before the data files are loaded.
 *post-load*::
-  Executed after the data files are saved.
+  Executed after the data files are loaded.
 *pre-save*::
-  Executed before the data files are loaded.
+  Executed before the data files are saved.
 *post-save*::
   Executed after the data files are saved.
 
-Some examples can be found in the `contrib/hooks/` directory of the calcurse
+Some examples can be found in the +contrib/hooks/+ directory of the calcurse
 source tree.
 
-Notes
------
-
-Calcurse interface contains three different panels (calendar, appointment list,
-and todo list) on which you can perform different actions. All the possible
-actions, together with their associated keystrokes, are listed on the status
-bar. This status bar takes place at the bottom of the screen.
-
-At any time, the built-in help system can be invoked by pressing the '?' key.
-Once viewing the help screens, informations on a specific command can be
-accessed by pressing the keystroke corresponding to that command.
-
-Configuration
--------------
-
-The calcurse options can be changed from the configuration menu (shown when 'C'
-is hit). Five possible categories are to be chosen from : the color scheme, the
-layout (the location of the three panels on the screen), notification options,
-key bindings configuration menu, and more general options (such as automatic
-save before quitting).  All of these options are detailed in the configuration
-menu.
-
-Files
------
-
-The following structure is created in your $HOME directory (or in the directory
-you specified with the *-D* option), the first time calcurse is run:
-
-----
-$HOME/.calcurse/
-          |___notes/
-          |___conf 
-          |___keys
-          |___apts 
-          |___todo
-----
-
-The 'notes' subdirectory contains descriptions of the notes which are attached
-to appointments, events or todos. One text file is created per note, whose name
-is the SHA1 message digest of the note itself.
-
-The 'conf' file contains the user configuration. The 'keys' file contains the
-user-defined key bindings. The 'apts' file contains all of the user's
-appointments and events, and the 'todo' file contains the todo list.
-
-'Note:' if the logging of calcurse daemon activity was set in the notification
-configuration menu, the extra file 'daemon.log' will appear in calcurse data
-directory. This file contains logs about calcurse activity when running in
-background.
-
-Environment
+ENVIRONMENT
 -----------
 
-This section describes the environment variables that affect how calcurse
-operates. 
+A few environment variables affect how calcurse operates.
 
+*CALCURSE_EDITOR*::
 *VISUAL*::
-  Specifies the external editor to use for writing notes.
 *EDITOR*::
-  If the 'VISUAL' environment variable is not set, then 'EDITOR' will be used
-  as the default external editor. If none of those variables are set, then
-  '/usr/bin/vi' is used instead.
-*PAGER*::
-  Specifies the default viewer to be used for reading notes. If this variable
-  is not set, then '/usr/bin/less' is used.
+  Specifies the external editor to use for writing notes. They are tried in
+  the order listed until one is found. If none of them are set, +vi+ is used.
 
-Bugs
+*CALCURSE_PAGER*::
+*PAGER*::
+  Specifies - as for the editor - the default viewer to be used for reading
+  notes. Default is +less+.
+
+*MERGETOOL*::
+  Tool used to merge two files to solve a save conflict. Default is +vimdiff+.
+  The program is called with two file names as the only arguments.
+
+BUGS
 ----
 
-Incorrect highlighting of items appear when using calcurse black and white
-theme together with a *$TERM* variable set to 'xterm-color'.  To fix this bug,
-and as advised by Thomas E. Dickey (xterm maintainer), 'xterm-xfree86' should
-be used instead of 'xterm-color' to set the *$TERM* variable:
+If you find a bug, please send a report to bugs@calcurse.org, or, if you are a
+Github user, raise an issue at https://github.com/lfos/calcurse.
 
-    "The xterm-color value for $TERM is a bad choice for 
-     XFree86 xterm because it is commonly used for a 
-     terminfo entry which happens to not support bce. 
-     Use the xterm-xfree86 entry which is distributed 
-     with XFree86 xterm (or the similar one distributed 
-     with ncurses)."
-
-If you find other bugs, please send a report to bugs@calcurse.org or to one of
-the authors, below.
-
-See also
+SEE ALSO
 --------
-
-vi(1), less(1), ncurses(3), mkstemp(3)
 
 The ical specification (rfc2445) can be found at:
 http://tools.ietf.org/html/rfc2445
 
 The pcal project page: http://pcal.sourceforge.net/
 
-Calcurse home page: http://calcurse.org/
+calcurse home page: http://calcurse.org/
 
-Calcurse complete manual, translated in many languages and maintained in
-html format, can be found in the doc/ directory of the source package, 
-or at: http://calcurse.org/files/manual.html
+calcurse at GitHub: https://github.com/lfos/calcurse
 
-Authors
+The complete manual, maintained in html format, can be found in the doc/
+directory of the source package, or at: http://calcurse.org/files/manual.html
+
+AUTHORS
 -------
 
 * *Frederic Culot* <frederic@culot.org>
 * *Lukas Fleischer* <lfleischer@calcurse.org>
 
-Copyright
+COPYRIGHT
 ---------
 
-Copyright (c) 2004-2017 calcurse Development Team.
+Copyright (c) 2004-2018 calcurse Development Team.
 This software is released under the BSD License.
