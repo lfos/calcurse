@@ -508,7 +508,11 @@ static inline void key_generic_scroll_down(void)
 
 static inline void key_generic_quit(void)
 {
-	if (conf.auto_save)
+	/* In read-only mode, quit unconditionally without saving. */
+	if (!read_only &&
+	    (conf.auto_save || (io_get_modified() &&
+	     status_ask_bool(_("There are unsaved changes. "
+	    "Should they be saved?")) == 1)))
 		if (io_save_cal(interactive) == IO_SAVE_CANCEL) {
 			/* Cancel quit as well. */
 			wins_update(FLAG_STA);
@@ -518,28 +522,30 @@ static inline void key_generic_quit(void)
 		note_gc();
 
 	if (conf.confirm_quit) {
-		if (status_ask_bool(_("Do you really want to quit?")) == 1) {
+		if (status_ask_bool(_("Do you really want to quit?")) == 1)
 			exit_calcurse(EXIT_SUCCESS);
-		} else {
-			wins_erase_status_bar();
+		else
 			wins_update(FLAG_STA);
-		}
 	} else {
 		exit_calcurse(EXIT_SUCCESS);
 	}
 }
 
+/*
+ * Safety exit.
+ * Auto_save is ignored, but modifications are checked for.
+ * Use of force(=!) will override configuration settings and --read-only option.
+ */
 static inline void key_generic_cmd(void)
 {
 	char cmd[BUFSIZ] = "";
 	char *cmd_name;
-	int valid = 0, force = 0;
+	int valid = 0, force = 0, ret;
 	char *error_msg;
 
-	status_mesg(_("Command:"), "");
+	status_mesg(_("Command: [ h(elp) | w(rite)(!) | q(uit)(!) | wq(!) ]"), "");
 	if (getstring(win[STA].p, cmd, BUFSIZ, 0, 1) != GETSTRING_VALID)
 		goto cleanup;
-
 	cmd_name = strtok(cmd, " ");
 	if (cmd_name[strlen(cmd_name) - 1] == '!') {
 		cmd_name[strlen(cmd_name) - 1] = '\0';
@@ -548,25 +554,35 @@ static inline void key_generic_cmd(void)
 
 	if (!strcmp(cmd_name, "write") || !strcmp(cmd_name, "w") ||
 	    !strcmp(cmd_name, "wq")) {
-		if (io_save_cal(interactive) == IO_SAVE_CANCEL &&
-		    strcmp(cmd_name, "wq") == 0) {
-			/* Cancel quit as well. */
-			wins_update(FLAG_STA);
-			return;
+		if (force)
+			read_only = 0;
+		ret = io_save_cal(interactive);
+		/* Either the save was cancelled or read_only mode is on */
+		if (ret == IO_SAVE_CANCEL) {
+			if (read_only) {
+				status_mesg(_("Read-only mode - use w!"), "");
+				return;
+			} else if (!strcmp(cmd_name, "wq")) {
+				/* Cancel quit as well. */
+				goto cleanup;
+			}
 		}
 		valid = 1;
 	}
 	if (!strcmp(cmd_name, "quit") || !strcmp(cmd_name, "q") ||
 	    !strcmp(cmd_name, "wq")) {
+		if (!force && io_get_modified()) {
+			status_mesg(
+			    _("There are unsaved changes - use w or q!"), "");
+			return;
+		}
 		if (force || !conf.confirm_quit || status_ask_bool(
-				_("Do you really want to quit?")) == 1)
+		    _("Do you really want to quit?")) == 1)
 			exit_calcurse(EXIT_SUCCESS);
-		else
-			wins_erase_status_bar();
 		valid = 1;
 	}
 
-	if (!strcmp(cmd_name, "help")) {
+	if (!strcmp(cmd_name, "help") || !strcmp(cmd_name, "h")) {
 		char *topic = strtok(NULL, " ");
 
 		if (!display_help(topic)) {
@@ -581,8 +597,9 @@ static inline void key_generic_cmd(void)
 
 	if (!valid) {
 		asprintf(&error_msg, _("No such command: %s"), cmd);
-		warnbox(error_msg);
+		status_mesg(error_msg, "");
 		mem_free(error_msg);
+		keys_wgetch(win[KEY].p);
 	}
 
 cleanup:
