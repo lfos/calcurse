@@ -144,6 +144,12 @@ void ui_calendar_set_current_date(void)
 	pthread_mutex_unlock(&date_thread_mutex);
 }
 
+/* Return the current date. */
+struct date *ui_calendar_get_today(void)
+{
+	return &today;
+}
+
 /* Needed to display sunday or monday as the first day of week in calendar. */
 void ui_calendar_set_first_day_of_week(enum wday first_day)
 {
