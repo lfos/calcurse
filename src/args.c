@@ -44,6 +44,14 @@
 
 #include "calcurse.h"
 
+/* Input types for parse_datetimearg() */
+enum {
+	ARG_DATE,
+	ARG_DATE_TIME,
+	ARG_TIME,
+	ARG_ERR
+};
+
 /* Long options */
 enum {
 	OPT_FILTER_TYPE = 1000,
@@ -277,23 +285,53 @@ date_arg_from_to(long from, long to, int add_line, const char *fmt_apt,
 }
 
 /*
- * Convert a string with a date into the Unix time for midnight of that day.
+ * Convert a string with a (local time) date, date-time or time into
+ * the Unix time for that point in time as follows:
+ * - a date only is converted to midnight (beginning) of that day
+ * - a date-time is converted to that day and time
+ * - a time only is converted to that time of the current day
  * The date format is taken from the user configuration.
+ * The type of the input string is returned in the type argument.
  */
-static time_t parse_datearg(const char *str)
-{
-	struct date day;
 
-	if (parse_date(str, conf.input_datefmt,
-		       (int *)&day.yyyy, (int *)&day.mm, (int *)&day.dd, NULL))
-		return date2sec(day, 0, 0);
-	else
+static time_t parse_datetimearg(const char *str, int *type)
+{
+	char *date = mem_strdup(str);
+	*type = ARG_ERR;
+	char *time;
+	struct date day;
+	unsigned hour, min;
+	time_t ret;
+
+	time = strchr(date, ' ');
+	if (time) { /* Date and time? */
+		*time++ = '\0';
+		if (!parse_time(time, &hour, &min))
+			return -1;
+		if (!parse_date(date, conf.input_datefmt,
+		    (int *)&day.yyyy, (int *)&day.mm, (int *)&day.dd, NULL))
+			return -1;
+		ret = date2sec(day, hour, min);
+		*type = ARG_DATE_TIME;
+	} else /* Date?*/ if (parse_date(date, conf.input_datefmt,
+		    (int *)&day.yyyy, (int *)&day.mm, (int *)&day.dd, NULL)) {
+		ret = date2sec(day, 0, 0);
+		*type = ARG_DATE;
+	} else /* Time? */ if (parse_time(date, &hour, &min)) {
+		ret = date2sec(*ui_calendar_get_today(), hour, min);
+		*type = ARG_TIME;
+	} else
 		return -1;
+	return ret;
 }
 
+/*
+ * Parse a "from,to" date range.
+ * For an open-end range no change occurs at the open end.
+ */
 static int parse_daterange(const char *str, time_t *date_from, time_t *date_to)
 {
-	int ret = 0;
+	int type, ret = 0;
 	char *s = mem_strdup(str);
 	char *p = strchr(s, ',');
 
@@ -304,21 +342,17 @@ static int parse_daterange(const char *str, time_t *date_from, time_t *date_to)
 	p++;
 
 	if (*s != '\0') {
-		*date_from = parse_datearg(s);
+		*date_from = parse_datetimearg(s, &type);
 		if (*date_from == -1)
 			goto cleanup;
-	} else {
-		*date_from = -1;
 	}
 
 	if (*p != '\0') {
-		*date_to = parse_datearg(p);
+		*date_to = parse_datetimearg(p, &type);
 		if (*date_to == -1)
 			goto cleanup;
-		/* One second before next midnight. */
-		*date_to = date_sec_change(*date_to, 0, 1) - 1;
-	} else {
-		*date_to = -1;
+		if (type == ARG_DATE)
+			*date_to = ENDOFDAY(*date_to);
 	}
 
 	ret = 1;
@@ -390,7 +424,7 @@ int parse_args(int argc, char **argv)
 	const char *cfile = NULL, *ifile = NULL, *confdir = NULL;
 
 	int non_interactive = 1;
-	int ch, cpid;
+	int ch, cpid, type;
 	regex_t reg;
 	char buf[BUFSIZ];
 	struct tm tm;
@@ -497,9 +531,9 @@ int parse_args(int argc, char **argv)
 				EXIT_IF(range == 0, _("invalid range: %s"),
 					optarg);
 			} else {
-				from = parse_datearg(optarg);
-				EXIT_IF(from == -1, _("invalid date: %s"),
-					optarg);
+				from = parse_datetimearg(optarg, &type);
+				EXIT_IF(from == -1 || type != ARG_DATE,
+					_("invalid date: %s"), optarg);
 			}
 
 			filter.type_mask |= TYPE_MASK_CAL;
@@ -544,8 +578,9 @@ int parse_args(int argc, char **argv)
 		case 's':
 			if (!optarg)
 				optarg = "today";
-			from = parse_datearg(optarg);
-			EXIT_IF(from == -1, _("invalid date: %s"), optarg);
+			from = parse_datetimearg(optarg, &type);
+			EXIT_IF(from == -1 || type != ARG_DATE,
+				_("invalid date: %s"), optarg);
 			filter.type_mask |= TYPE_MASK_CAL;
 			query = 1;
 			break;
@@ -606,78 +641,84 @@ int parse_args(int argc, char **argv)
 			filter.regex = &reg;
 			filter_opt = 1;
 			break;
-		/* Assume that the date argument is midnight of the given day. */
+		/*
+		 * A date only is a time span (a day) and interpreted thus:
+		 * "to" means "to end of day"
+		 * "after" means "from start of next day"
+		 */
 		case OPT_FILTER_START_FROM:
-			/* Midnight. */
-			filter.start_from = parse_datearg(optarg);
+			filter.start_from = parse_datetimearg(optarg, &type);
 			EXIT_IF(filter.start_from == -1,
 				_("invalid date: %s"), optarg);
 			filter_opt = 1;
 			break;
 		case OPT_FILTER_START_TO:
-			filter.start_to = parse_datearg(optarg);
+			filter.start_to = parse_datetimearg(optarg, &type);
 			EXIT_IF(filter.start_to == -1,
 				_("invalid date: %s"), optarg);
-			/* Next midnight less one second. */
-			filter.start_to = date_sec_change(filter.start_to, 0, 1) - 1;
+			if (type == ARG_DATE)
+				filter.start_to = ENDOFDAY(filter.start_to);
 			filter_opt = 1;
 			break;
 		case OPT_FILTER_START_AFTER:
-			filter.start_from = parse_datearg(optarg);
+			filter.start_from = parse_datetimearg(optarg, &type);
 			EXIT_IF(filter.start_from == -1,
 				_("invalid date: %s"), optarg);
-			/* Next midnight (belongs to the next day). */
-			filter.start_from = date_sec_change(filter.start_from, 0, 1);
+			if (type == ARG_DATE)
+				filter.start_from = NEXTDAY(filter.start_from);
+			else
+				filter.start_from++;
 			filter_opt = 1;
 			break;
 		case OPT_FILTER_START_BEFORE:
-			filter.start_to = parse_datearg(optarg);
+			filter.start_to = parse_datetimearg(optarg, &type);
 			EXIT_IF(filter.start_to == -1,
 				_("invalid date: %s"), optarg);
-			/* One second before midnight. */
 			filter.start_to--;
 			filter_opt = 1;
 			break;
 		case OPT_FILTER_START_RANGE:
-			EXIT_IF(!parse_daterange(optarg, &filter.start_from,
-						 &filter.start_to),
+			/* Set initialization values in case of open-end range. */
+			filter.start_from = filter.start_to = -1;
+			EXIT_IF(!parse_daterange(optarg, &filter.start_from, &filter.start_to),
 				_("invalid date range: %s"), optarg);
 			filter_opt = 1;
 			break;
 		case OPT_FILTER_END_FROM:
-			/* Midnight. */
-			filter.end_from = parse_datearg(optarg);
+			filter.end_from = parse_datetimearg(optarg, &type);
 			EXIT_IF(filter.end_from == -1,
 				_("invalid date: %s"), optarg);
 			filter_opt = 1;
 			break;
 		case OPT_FILTER_END_TO:
-			filter.end_to = parse_datearg(optarg);
+			filter.end_to = parse_datetimearg(optarg, &type);
 			EXIT_IF(filter.end_to == -1,
 				_("invalid date: %s"), optarg);
-			/* Next midnight less one second. */
-			filter.end_to = date_sec_change(filter.end_to, 0, 1) - 1;
+			if (type == ARG_DATE)
+				filter.end_to = ENDOFDAY(filter.end_to);
 			filter_opt = 1;
 			break;
 		case OPT_FILTER_END_AFTER:
-			filter.end_from = parse_datearg(optarg);
+			filter.end_from = parse_datetimearg(optarg, &type);
 			EXIT_IF(filter.end_from == -1,
 				_("invalid date: %s"), optarg);
-			/* Next midnight (belongs to the next day). */
-			filter.end_from = date_sec_change(filter.end_from, 0, 1);
+			if (type == ARG_DATE)
+				filter.end_from = NEXTDAY(filter.end_from);
+			else
+				filter.end_from++;
 			filter_opt = 1;
 			break;
 		case OPT_FILTER_END_BEFORE:
-			filter.end_to = parse_datearg(optarg);
+			filter.end_to = parse_datetimearg(optarg, &type);
 			EXIT_IF(filter.end_to == -1,
 				_("invalid date: %s"), optarg);
-			/* One second before midnight. */
 			filter.end_to--;
 			filter_opt = 1;
 			break;
 		case OPT_FILTER_END_RANGE:
-			EXIT_IF(!parse_daterange(optarg, &filter.end_from,
-						 &filter.end_to),
+			/* Set default values in case of open-ended range. */
+			filter.start_from = filter.start_to = -1;
+			EXIT_IF(!parse_daterange(optarg, &filter.end_from, &filter.end_to),
 				_("invalid date range: %s"), optarg);
 			filter_opt = 1;
 			break;
@@ -696,13 +737,15 @@ int parse_args(int argc, char **argv)
 			filter_opt = 1;
 			break;
 		case OPT_FROM:
-			from = parse_datearg(optarg);
-			EXIT_IF(from == -1, _("invalid date: %s"), optarg);
+			from = parse_datetimearg(optarg, &type);
+			EXIT_IF(from == -1 || type != ARG_DATE,
+				_("invalid date: %s"), optarg);
 			query_range = 1;
 			break;
 		case OPT_TO:
-			to = parse_datearg(optarg);
-			EXIT_IF(to == -1, _("invalid date: %s"), optarg);
+			to = parse_datetimearg(optarg, &type);
+			EXIT_IF(to == -1 || type != ARG_DATE,
+				_("invalid date: %s"), optarg);
 			query_range = 1;
 			break;
 		case OPT_DAYS:
@@ -790,7 +833,7 @@ int parse_args(int argc, char **argv)
 	if (from == -1)
 		from = get_today();
 	if (to == -1)
-		to = from;
+		to = ENDOFDAY(from);
 	EXIT_IF(to < from, _("end date cannot come before start date"));
 	if (range > 0)
 		to = date_sec_change(from, 0, range - 1);
