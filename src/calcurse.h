@@ -137,10 +137,12 @@
 /*
  * Note the difference between the number of seconds in a day and daylength
  * in seconds. The two may differ when DST is in effect (daylength is either
- * 23, 24 or 25 hours. The argument to DAYLEN is of type time_t.
+ * 23, 24 or 25 hours. The argument "date" is assumed to be of type time_t.
  */
 #define DAYINSEC        (DAYINMIN * MININSEC)
-#define DAYLEN(date)	(date_sec_change((date), 0, 1) - (date))
+#define NEXTDAY(date)	date_sec_change((date), 0, 1)
+#define DAYLEN(date)	(NEXTDAY(date) - (date))
+#define ENDOFDAY(date)	(NEXTDAY(date) - 1)
 #define HOURINSEC       (HOURINMIN * MININSEC)
 
 #define MAXDAYSPERMONTH 31
@@ -760,6 +762,7 @@ int ui_calendar_get_view(void);
 void ui_calendar_start_date_thread(void);
 void ui_calendar_stop_date_thread(void);
 void ui_calendar_set_current_date(void);
+struct date *ui_calendar_get_today(void);
 void ui_calendar_set_first_day_of_week(enum wday);
 void ui_calendar_change_first_day_of_week(void);
 unsigned ui_calendar_week_begins_on_monday(void);
