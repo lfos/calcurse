@@ -404,6 +404,7 @@ int parse_args(int argc, char **argv)
 	int status = 0, gc = 0, import = 0, export = 0, daemon = 0;
 	/* Command line invocation */
 	int filter_opt = 0, format_opt = 0, query_range = 0, cmd_line = 0;
+	int start_from = 0, start_to = 0, end_from = 0, end_to = 0;
 	/* Query ranges */
 	time_t from = -1, to = -1;
 	int range = 0;
@@ -647,20 +648,28 @@ int parse_args(int argc, char **argv)
 		 * "after" means "from start of next day"
 		 */
 		case OPT_FILTER_START_FROM:
+			EXIT_IF(start_from,
+			    _("filter criterion already in use: %s"), argv[optind - 2]);
 			filter.start_from = parse_datetimearg(optarg, &type);
 			EXIT_IF(filter.start_from == -1,
 				_("invalid date: %s"), optarg);
+			start_from = 1;
 			filter_opt = 1;
 			break;
 		case OPT_FILTER_START_TO:
+			EXIT_IF(start_to,
+			    _("filter criterion already in use: %s"), argv[optind - 2]);
 			filter.start_to = parse_datetimearg(optarg, &type);
 			EXIT_IF(filter.start_to == -1,
 				_("invalid date: %s"), optarg);
 			if (type == ARG_DATE)
 				filter.start_to = ENDOFDAY(filter.start_to);
+			start_to = 1;
 			filter_opt = 1;
 			break;
 		case OPT_FILTER_START_AFTER:
+			EXIT_IF(start_from,
+			    _("filter criterion already in use: %s"), argv[optind - 2]);
 			filter.start_from = parse_datetimearg(optarg, &type);
 			EXIT_IF(filter.start_from == -1,
 				_("invalid date: %s"), optarg);
@@ -668,37 +677,55 @@ int parse_args(int argc, char **argv)
 				filter.start_from = NEXTDAY(filter.start_from);
 			else
 				filter.start_from++;
+			start_from = 1;
 			filter_opt = 1;
 			break;
 		case OPT_FILTER_START_BEFORE:
+			EXIT_IF(start_to,
+			    _("filter criterion already in use: %s"), argv[optind - 2]);
 			filter.start_to = parse_datetimearg(optarg, &type);
 			EXIT_IF(filter.start_to == -1,
 				_("invalid date: %s"), optarg);
 			filter.start_to--;
+			start_to = 1;
 			filter_opt = 1;
 			break;
 		case OPT_FILTER_START_RANGE:
+			EXIT_IF(start_from,
+			    _("filter criterion already in use: %s"), argv[optind - 2]);
+			EXIT_IF(start_to,
+			    _("filter criterion already in use: %s"), argv[optind - 2]);
 			/* Set initialization values in case of open-end range. */
 			filter.start_from = filter.start_to = -1;
 			EXIT_IF(!parse_daterange(optarg, &filter.start_from, &filter.start_to),
 				_("invalid date range: %s"), optarg);
+			start_from = 1;
+			start_to = 1;
 			filter_opt = 1;
 			break;
 		case OPT_FILTER_END_FROM:
+			EXIT_IF(end_from,
+			    _("filter criterion already in use: %s"), argv[optind - 2]);
 			filter.end_from = parse_datetimearg(optarg, &type);
 			EXIT_IF(filter.end_from == -1,
 				_("invalid date: %s"), optarg);
+			end_from = 1;
 			filter_opt = 1;
 			break;
 		case OPT_FILTER_END_TO:
+			EXIT_IF(end_to,
+			    _("filter criterion already in use: %s"), argv[optind - 2]);
 			filter.end_to = parse_datetimearg(optarg, &type);
 			EXIT_IF(filter.end_to == -1,
 				_("invalid date: %s"), optarg);
 			if (type == ARG_DATE)
 				filter.end_to = ENDOFDAY(filter.end_to);
+			end_to = 1;
 			filter_opt = 1;
 			break;
 		case OPT_FILTER_END_AFTER:
+			EXIT_IF(end_from,
+			    _("filter criterion already in use: %s"), argv[optind - 2]);
 			filter.end_from = parse_datetimearg(optarg, &type);
 			EXIT_IF(filter.end_from == -1,
 				_("invalid date: %s"), optarg);
@@ -706,20 +733,30 @@ int parse_args(int argc, char **argv)
 				filter.end_from = NEXTDAY(filter.end_from);
 			else
 				filter.end_from++;
+			end_from = 1;
 			filter_opt = 1;
 			break;
 		case OPT_FILTER_END_BEFORE:
+			EXIT_IF(end_to,
+			    _("filter criterion already in use: %s"), argv[optind - 2]);
 			filter.end_to = parse_datetimearg(optarg, &type);
 			EXIT_IF(filter.end_to == -1,
 				_("invalid date: %s"), optarg);
 			filter.end_to--;
+			end_to = 1;
 			filter_opt = 1;
 			break;
 		case OPT_FILTER_END_RANGE:
+			EXIT_IF(end_from,
+			    _("filter criterion already in use: %s"), argv[optind - 2]);
+			EXIT_IF(end_to,
+			    _("filter criterion already in use: %s"), argv[optind - 2]);
 			/* Set default values in case of open-ended range. */
 			filter.start_from = filter.start_to = -1;
 			EXIT_IF(!parse_daterange(optarg, &filter.end_from, &filter.end_to),
 				_("invalid date range: %s"), optarg);
+			end_from = 1;
+			end_to = 1;
 			filter_opt = 1;
 			break;
 		case OPT_FILTER_PRIORITY:
