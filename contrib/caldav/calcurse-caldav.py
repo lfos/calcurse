@@ -220,7 +220,7 @@ def remote_query(conn, cmd, path, additional_headers, body):
 
     if debug:
         print("> {} {}".format(cmd, path))
-        headers_sanitized = headers
+        headers_sanitized = headers.copy()
         if not debug_raw:
             headers_sanitized.pop('Authorization', None)
         print("> Headers: " + repr(headers_sanitized))
