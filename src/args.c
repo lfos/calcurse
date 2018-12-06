@@ -401,7 +401,7 @@ cleanup:
 int parse_args(int argc, char **argv)
 {
 	/* Command-line flags - NOTE that read_only is global */
-	int grep = 0, purge = 0, query = 0, next = 0;
+	int grep = 0, grep_filter = 0, purge = 0, query = 0, next = 0;
 	int status = 0, gc = 0, import = 0, export = 0, daemon = 0;
 	/* Command line invocation */
 	int filter_opt = 0, format_opt = 0, query_range = 0, cmd_line = 0;
@@ -545,7 +545,7 @@ int parse_args(int argc, char **argv)
 		case 'D':
 			break;
 		case 'F':
-			purge = grep = 1;
+			grep_filter = grep = 1;
 			break;
 		case 'h':
 			help_arg();
@@ -567,6 +567,7 @@ int parse_args(int argc, char **argv)
 			next = 1;
 			break;
 		case 'P':
+			filter.invert = 1;
 			purge = grep = 1;
 			break;
 		case 'r':
@@ -865,7 +866,9 @@ int parse_args(int argc, char **argv)
 	    optind < argc ||
 	    (filter_opt && !(grep + query + export)) ||
 	    (format_opt && !(grep + query + dump_imported)) ||
-	    (query_range && !query)) {
+	    (query_range && !query) ||
+	    (purge && !filter.invert)
+	   ) {
 		ERROR_MSG(_("invalid argument combination"));
 		usage();
 		usage_try();
@@ -895,7 +898,7 @@ int parse_args(int argc, char **argv)
 		io_check_file(path_todo);
 		io_check_file(path_conf);
 		io_load_data(&filter, FORCE);
-		if (purge) {
+		if (purge || grep_filter) {
 			io_save_todo(path_todo);
 			io_save_apts(path_apts);
 		} else {
