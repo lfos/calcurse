@@ -54,7 +54,8 @@ enum {
 
 /* Long options */
 enum {
-	OPT_FILTER_TYPE = 1000,
+	OPT_FILTER_INVERT = 1000,
+	OPT_FILTER_TYPE,
 	OPT_FILTER_HASH,
 	OPT_FILTER_PATTERN,
 	OPT_FILTER_START_FROM,
@@ -410,7 +411,7 @@ int parse_args(int argc, char **argv)
 	int range = 0;
 	int limit = INT_MAX;
 	/* Filters */
-	struct item_filter filter = { 0, NULL, NULL, -1, -1, -1, -1, 0, 0, 0 };
+	struct item_filter filter = { 0, 0, NULL, NULL, -1, -1, -1, -1, 0, 0, 0 };
 	/* Format strings */
 	const char *fmt_apt = NULL;
 	const char *fmt_rapt = NULL;
@@ -457,6 +458,7 @@ int parse_args(int argc, char **argv)
 		{"quiet", no_argument, NULL, 'q'},
 		{"query", optional_argument, NULL, 'Q'},
 
+		{"filter-invert", no_argument, NULL, OPT_FILTER_INVERT},
 		{"filter-type", required_argument, NULL, OPT_FILTER_TYPE},
 		{"filter-hash", required_argument, NULL, OPT_FILTER_HASH},
 		{"filter-pattern", required_argument, NULL, OPT_FILTER_PATTERN},
@@ -622,6 +624,10 @@ int parse_args(int argc, char **argv)
 			break;
 		case 'Q':
 			query = 1;
+			break;
+		case OPT_FILTER_INVERT:
+			filter.invert = !filter.invert;
+			filter_opt = 1;
 			break;
 		case OPT_FILTER_TYPE:
 			filter.type_mask = parse_type_mask(optarg);

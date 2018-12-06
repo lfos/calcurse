@@ -152,7 +152,8 @@ struct event *event_scan(FILE * f, struct tm start, int id, char *note,
 {
 	char buf[BUFSIZ], *nl;
 	time_t tstart, tend;
-	struct event *ev;
+	struct event *ev = NULL;
+	int cond;
 
 	EXIT_IF(!check_date(start.tm_year, start.tm_mon, start.tm_mday) ||
 		!check_time(start.tm_hour, start.tm_min),
@@ -179,31 +180,29 @@ struct event *event_scan(FILE * f, struct tm start, int id, char *note,
 
 	/* Filter item. */
 	if (filter) {
-		if (!(filter->type_mask & TYPE_MASK_EVNT))
-			return NULL;
-		if (filter->regex && regexec(filter->regex, buf, 0, 0, 0))
-			return NULL;
-		if (filter->start_from != -1 && tstart < filter->start_from)
-			return NULL;
-		if (filter->start_to != -1 && tstart > filter->start_to)
-			return NULL;
-		if (filter->end_from != -1 && tend < filter->end_from)
-			return NULL;
-		if (filter->end_to != -1 && tend > filter->end_to)
-			return NULL;
-	}
-
-	ev = event_new(buf, note, tstart, id);
-
-	/* Filter by hash. */
-	if (filter && filter->hash) {
-		char *hash = event_hash(ev);
-		if (!hash_matches(filter->hash, hash)) {
-			event_delete(ev);
-			ev = NULL;
+		cond = (
+		    !(filter->type_mask & TYPE_MASK_EVNT) ||
+		    (filter->regex && regexec(filter->regex, buf, 0, 0, 0)) ||
+		    (filter->start_from != -1 && tstart < filter->start_from) ||
+		    (filter->start_to != -1 && tstart > filter->start_to) ||
+		    (filter->end_from != -1 && tend < filter->end_from) ||
+		    (filter->end_to != -1 && tend > filter->end_to)
+		);
+		if (filter->hash) {
+			ev = event_new(buf, note, tstart, id);
+			char *hash = event_hash(ev);
+			cond = cond || !hash_matches(filter->hash, hash);
+			mem_free(hash);
 		}
-		mem_free(hash);
+
+		if ((!filter->invert && cond) || (filter->invert && !cond)) {
+			if (filter->hash)
+				event_delete(ev);
+			return NULL;
+		}
 	}
+	if (!ev)
+		ev = event_new(buf, note, tstart, id);
 
 	return ev;
 }

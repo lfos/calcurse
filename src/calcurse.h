@@ -427,6 +427,7 @@ enum item_type {
 
 /* Filter settings. */
 struct item_filter {
+	int invert;
 	int type_mask;
 	char *hash;
 	regex_t *regex;

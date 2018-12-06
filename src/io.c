@@ -707,8 +707,7 @@ void io_load_todo(struct item_filter *filter)
 {
 	FILE *data_file;
 	char *newline;
-	int nb_tod = 0;
-	int c, id, completed;
+	int c, id, completed, cond;
 	char buf[BUFSIZ], e_todo[BUFSIZ], note[MAX_NOTESIZ + 1];
 	unsigned line = 0;
 
@@ -760,34 +759,31 @@ void io_load_todo(struct item_filter *filter)
 		io_extract_data(e_todo, buf, sizeof buf);
 
 		/* Filter item. */
+		struct todo *todo = NULL;
 		if (filter) {
-			if (!(filter->type_mask & TYPE_MASK_TODO))
-				continue;
-			if (filter->regex &&
-			    regexec(filter->regex, e_todo, 0, 0, 0))
-				continue;
-			if (filter->priority && id != filter->priority)
-				continue;
-			if (filter->completed && !completed)
-				continue;
-			if (filter->uncompleted && completed)
-				continue;
-		}
-
-		struct todo *todo = todo_add(e_todo, id, completed, note);
-
-		/* Filter by hash. */
-		if (filter && filter->hash) {
-			char *hash = todo_hash(todo);
-			if (!hash_matches(filter->hash, hash)) {
-				todo_delete(todo);
-				todo = NULL;
+			cond = (
+				!(filter->type_mask & TYPE_MASK_TODO) ||
+				(filter->regex && regexec(filter->regex, e_todo, 0, 0, 0)) ||
+				(filter->priority && id != filter->priority) ||
+				(filter->completed && !completed) ||
+				(filter->uncompleted && completed)
+			);
+			if (filter->hash) {
+				todo = todo_add(e_todo, id, completed, note);
+				char *hash = todo_hash(todo);
+				cond = cond || !hash_matches(filter->hash, hash);
+				mem_free(hash);
 			}
-			mem_free(hash);
+
+			if ((!filter->invert && cond) || (filter->invert && !cond)) {
+				if (filter->hash)
+					todo_delete(todo);
+				continue;
+			}
 		}
 
-		if (todo)
-			++nb_tod;
+		if (!todo)
+			todo = todo_add(e_todo, id, completed, note);
 	}
 	file_close(data_file, __FILE_POS__);
 }
