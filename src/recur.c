@@ -349,7 +349,8 @@ struct recur_apoint *recur_apoint_scan(FILE * f, struct tm start,
 {
 	char buf[BUFSIZ], *nl;
 	time_t tstart, tend, tuntil;
-	struct recur_apoint *rapt;
+	struct recur_apoint *rapt = NULL;
+	int cond;
 
 	EXIT_IF(!check_date(start.tm_year, start.tm_mon, start.tm_mday) ||
 		!check_date(end.tm_year, end.tm_mon, end.tm_mday) ||
@@ -393,32 +394,34 @@ struct recur_apoint *recur_apoint_scan(FILE * f, struct tm start,
 
 	/* Filter item. */
 	if (filter) {
-		if (!(filter->type_mask & TYPE_MASK_RECUR_APPT))
-			return NULL;
-		if (filter->regex && regexec(filter->regex, buf, 0, 0, 0))
-			return NULL;
-		if (filter->start_from != -1 && tstart < filter->start_from)
-			return NULL;
-		if (filter->start_to != -1 && tstart > filter->start_to)
-			return NULL;
-		if (filter->end_from != -1 && tend < filter->end_from)
-			return NULL;
-		if (filter->end_to != -1 && tend > filter->end_to)
-			return NULL;
-	}
-
-	rapt = recur_apoint_new(buf, note, tstart, tend - tstart, state,
-				recur_char2def(type), freq, tuntil, exc);
-
-	/* Filter by hash. */
-	if (filter && filter->hash) {
-		char *hash = recur_apoint_hash(rapt);
-		if (!hash_matches(filter->hash, hash)) {
-			recur_apoint_erase(rapt);
-			rapt = NULL;
+		cond = (
+		    !(filter->type_mask & TYPE_MASK_RECUR_APPT) ||
+		    (filter->regex && regexec(filter->regex, buf, 0, 0, 0)) ||
+		    (filter->start_from != -1 && tstart < filter->start_from) ||
+		    (filter->start_to != -1 && tstart > filter->start_to) ||
+		    (filter->end_from != -1 && tend < filter->end_from) ||
+		    (filter->end_to != -1 && tend > filter->end_to)
+		);
+		if (filter->hash) {
+			rapt = recur_apoint_new(buf, note, tstart,
+						tend - tstart, state,
+						recur_char2def(type),
+						freq, tuntil, exc);
+			char *hash = recur_apoint_hash(rapt);
+			cond = cond || !hash_matches(filter->hash, hash);
+			mem_free(hash);
 		}
-		mem_free(hash);
+
+		if ((!filter->invert && cond) || (filter->invert && !cond)) {
+			if (filter->hash)
+				recur_apoint_erase(rapt);
+			return NULL;
+		}
 	}
+	if (!rapt)
+		rapt = recur_apoint_new(buf, note, tstart, tend - tstart,
+					state, recur_char2def(type), freq,
+					tuntil, exc);
 
 	return rapt;
 }
@@ -431,7 +434,8 @@ struct recur_event *recur_event_scan(FILE * f, struct tm start, int id,
 {
 	char buf[BUFSIZ], *nl;
 	time_t tstart, tend, tuntil;
-	struct recur_event *rev;
+	struct recur_event *rev = NULL;
+	int cond;
 
 	EXIT_IF(!check_date(start.tm_year, start.tm_mon, start.tm_mday) ||
 		!check_time(start.tm_hour, start.tm_min) ||
@@ -466,32 +470,33 @@ struct recur_event *recur_event_scan(FILE * f, struct tm start, int id,
 
 	/* Filter item. */
 	if (filter) {
-		if (!(filter->type_mask & TYPE_MASK_RECUR_EVNT))
-			return NULL;
-		if (filter->regex && regexec(filter->regex, buf, 0, 0, 0))
-			return NULL;
-		if (filter->start_from != -1 && tstart < filter->start_from)
-			return NULL;
-		if (filter->start_to != -1 && tstart > filter->start_to)
-			return NULL;
-		if (filter->end_from != -1 && tend < filter->end_from)
-			return NULL;
-		if (filter->end_to != -1 && tend > filter->end_to)
-			return NULL;
-	}
-
-	rev = recur_event_new(buf, note, tstart, id, recur_char2def(type),
-			      freq, tuntil, exc);
-
-	/* Filter by hash. */
-	if (filter && filter->hash) {
-		char *hash = recur_event_hash(rev);
-		if (!hash_matches(filter->hash, hash)) {
-			recur_event_erase(rev);
-			rev = NULL;
+		cond = (
+		    !(filter->type_mask & TYPE_MASK_RECUR_EVNT) ||
+		    (filter->regex && regexec(filter->regex, buf, 0, 0, 0)) ||
+		    (filter->start_from != -1 && tstart < filter->start_from) ||
+		    (filter->start_to != -1 && tstart > filter->start_to) ||
+		    (filter->end_from != -1 && tend < filter->end_from) ||
+		    (filter->end_to != -1 && tend > filter->end_to)
+		);
+		if (filter->hash) {
+			rev = recur_event_new(buf, note, tstart, id,
+					      recur_char2def(type),
+					      freq, tuntil, exc);
+			char *hash = recur_event_hash(rev);
+			cond = cond || !hash_matches(filter->hash, hash);
+			mem_free(hash);
 		}
-		mem_free(hash);
+
+		if ((!filter->invert && cond) || (filter->invert && !cond)) {
+			if (filter->hash)
+				recur_event_erase(rev);
+			return NULL;
+		}
 	}
+	if (!rev)
+		rev = recur_event_new(buf, note, tstart, id,
+				      recur_char2def(type),
+				      freq, tuntil, exc);
 
 	return rev;
 }

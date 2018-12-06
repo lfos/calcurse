@@ -200,7 +200,8 @@ struct apoint *apoint_scan(FILE * f, struct tm start, struct tm end,
 {
 	char buf[BUFSIZ], *newline;
 	time_t tstart, tend;
-	struct apoint *apt;
+	struct apoint *apt = NULL;
+	int cond;
 
 	EXIT_IF(!check_date(start.tm_year, start.tm_mon, start.tm_mday) ||
 		!check_date(end.tm_year, end.tm_mon, end.tm_mday) ||
@@ -230,31 +231,30 @@ struct apoint *apoint_scan(FILE * f, struct tm start, struct tm end,
 
 	/* Filter item. */
 	if (filter) {
-		if (!(filter->type_mask & TYPE_MASK_APPT))
-			return NULL;
-		if (filter->regex && regexec(filter->regex, buf, 0, 0, 0))
-			return NULL;
-		if (filter->start_from != -1 && tstart < filter->start_from)
-			return NULL;
-		if (filter->start_to != -1 && tstart > filter->start_to)
-			return NULL;
-		if (filter->end_from != -1 && tend < filter->end_from)
-			return NULL;
-		if (filter->end_to != -1 && tend > filter->end_to)
-			return NULL;
-	}
-
-	apt = apoint_new(buf, note, tstart, tend - tstart, state);
-
-	/* Filter by hash. */
-	if (filter && filter->hash) {
-		char *hash = apoint_hash(apt);
-		if (!hash_matches(filter->hash, hash)) {
-			apoint_delete(apt);
-			apt = NULL;
+		cond = (
+		    !(filter->type_mask & TYPE_MASK_APPT) ||
+		    (filter->regex && regexec(filter->regex, buf, 0, 0, 0)) ||
+		    (filter->start_from != -1 && tstart < filter->start_from) ||
+		    (filter->start_to != -1 && tstart > filter->start_to) ||
+		    (filter->end_from != -1 && tend < filter->end_from) ||
+		    (filter->end_to != -1 && tend > filter->end_to)
+		);
+		if (filter->hash) {
+			apt = apoint_new(
+				buf, note, tstart, tend - tstart, state);
+			char *hash = apoint_hash(apt);
+			cond = cond || !hash_matches(filter->hash, hash);
+			mem_free(hash);
 		}
-		mem_free(hash);
+
+		if ((!filter->invert && cond) || (filter->invert && !cond)) {
+			if (filter->hash)
+				apoint_delete(apt);
+			return NULL;
+		}
 	}
+	if (!apt)
+		apt = apoint_new(buf, note, tstart, tend - tstart, state);
 
 	return apt;
 }
