@@ -79,17 +79,17 @@ int days[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
  * variables to store data path names, which are initialized in
  * io_init()
  */
-char path_ddir[BUFSIZ] = "";
-char path_cdir[BUFSIZ] = "";
-char path_todo[BUFSIZ] = "";
-char path_apts[BUFSIZ] = "";
-char path_conf[BUFSIZ] = "";
-char path_notes[BUFSIZ] = "";
-char path_keys[BUFSIZ] = "";
-char path_cpid[BUFSIZ] = "";
-char path_dpid[BUFSIZ] = "";
-char path_dmon_log[BUFSIZ] = "";
-char path_hooks[BUFSIZ] = "";
+char *path_ddir = NULL;
+char *path_cdir = NULL;
+char *path_todo = NULL;
+char *path_apts = NULL;
+char *path_conf = NULL;
+char *path_notes = NULL;
+char *path_keys = NULL;
+char *path_cpid = NULL;
+char *path_dpid = NULL;
+char *path_dmon_log = NULL;
+char *path_hooks = NULL;
 
 /* Variable to store global configuration. */
 struct conf conf;

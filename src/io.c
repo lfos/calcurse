@@ -140,45 +140,43 @@ unsigned io_fprintln(const char *fname, const char *fmt, ...)
  * is created.
  * The datadir argument can be used to specify an alternative data root dir.
  * The confdir argument can be used to specify an alternative configuration dir.
- *
- * The statically allocated buffers (in vars.c) have BUFSIZ bytes for each path.
- * Allow BUFSIZ - 20 for the externally supplied directory part.
  */
 void io_init(const char *cfile, const char *datadir, const char *confdir)
 {
-#define SNPRINTF(d, s1, s2) \
-  EXIT_IF(snprintf(d, BUFSIZ - 20, "%s%s", s1, s2) >= BUFSIZ - 20, \
-          _("Directory name too long: %s (limit %d)"), s1, BUFSIZ - 21);
-
+#define ASPRINTF(p, s1, s2)	\
+do {				\
+  mem_free(p);			\
+  asprintf(&p, "%s%s", s1, s2);	\
+} while (0)
 	if (!datadir) {
 		if (!(datadir = getenv("HOME")))
 			datadir = ".";
-		SNPRINTF(path_ddir, datadir, "/" DIR_NAME);
+		ASPRINTF(path_ddir, datadir, "/" DIR_NAME);
 	} else
-		SNPRINTF(path_ddir, datadir, "/");
+		ASPRINTF(path_ddir, datadir, "/");
 
 	if (!confdir)
-		strcpy(path_cdir, path_ddir);
+		ASPRINTF(path_cdir, path_ddir, "");
 	else
-		SNPRINTF(path_cdir, confdir, "/");
+		ASPRINTF(path_cdir, confdir, "/");
 
 	/* Data files */
-	sprintf(path_apts, "%s%s", path_ddir, APTS_PATH_NAME);
-	sprintf(path_todo, "%s%s", path_ddir, TODO_PATH_NAME);
-	sprintf(path_cpid, "%s%s", path_ddir, CPID_PATH_NAME);
-	sprintf(path_dpid, "%s%s", path_ddir, DPID_PATH_NAME);
-	sprintf(path_notes, "%s%s", path_ddir, NOTES_DIR_NAME);
-	sprintf(path_dmon_log, "%s%s", path_ddir, DLOG_PATH_NAME);
+	ASPRINTF(path_apts, path_ddir, APTS_PATH_NAME);
+	ASPRINTF(path_todo, path_ddir, TODO_PATH_NAME);
+	ASPRINTF(path_cpid, path_ddir, CPID_PATH_NAME);
+	ASPRINTF(path_dpid, path_ddir, DPID_PATH_NAME);
+	ASPRINTF(path_notes, path_ddir, NOTES_DIR_NAME);
+	ASPRINTF(path_dmon_log, path_ddir, DLOG_PATH_NAME);
 	if (cfile) {
-		SNPRINTF(path_apts, cfile, "");
+		ASPRINTF(path_apts, cfile, "");
 		EXIT_IF(!io_file_exists(path_apts), _("%s does not exist"),
 			path_apts);
 	}
 
 	/* Configuration files */
-	sprintf(path_conf, "%s%s", path_cdir, CONF_PATH_NAME);
-	sprintf(path_keys, "%s%s", path_cdir, KEYS_PATH_NAME);
-	sprintf(path_hooks, "%s%s", path_cdir, HOOKS_DIR_NAME);
+	ASPRINTF(path_conf, path_cdir, CONF_PATH_NAME);
+	ASPRINTF(path_keys, path_cdir, KEYS_PATH_NAME);
+	ASPRINTF(path_hooks, path_cdir, HOOKS_DIR_NAME);
 }
 
 void io_extract_data(char *dst_data, const char *org, int len)
