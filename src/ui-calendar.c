@@ -193,12 +193,6 @@ struct date *ui_calendar_get_slctd_day(void)
 	return &slctd_day;
 }
 
-/* Returned value represents the selected day in calendar (in seconds) */
-time_t ui_calendar_get_slctd_day_sec(void)
-{
-	return date2sec(slctd_day, 0, 0);
-}
-
 static int ui_calendar_get_wday(struct date *date)
 {
 	struct tm t;
