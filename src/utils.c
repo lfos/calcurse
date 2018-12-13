@@ -672,6 +672,12 @@ time_t get_today(void)
 	return date2sec(day, 0, 0);
 }
 
+/* Returns the beginning of the selected day in the calendar. */
+time_t get_slctd_day(void)
+{
+	return date2sec(*ui_calendar_get_slctd_day(), 0, 0);
+}
+
 /* Returns the current time in seconds. */
 time_t now(void)
 {

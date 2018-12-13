@@ -369,28 +369,6 @@ day_store_items(time_t date, int include_captions)
 }
 
 /*
- * Store the events and appointments for the selected day, and write
- * those items in a pad. If selected day is null, then store items for current
- * day. This is useful to speed up the appointment panel update.
- */
-void day_process_storage(struct date *slctd_date, unsigned day_changed)
-{
-	struct date day;
-
-	if (slctd_date)
-		day = *slctd_date;
-	else
-		ui_calendar_store_current_date(&day);
-
-	/* Inits */
-	if (apad.length != 0)
-		delwin(apad.ptrwin);
-
-	/* Store the events and appointments (recursive and normal items). */
-	day_store_items(date2sec(day, 0, 0), 1);
-}
-
-/*
  * Print an item date in the appointment panel.
  */
 void
@@ -495,8 +473,7 @@ void day_popup_item(struct day_item *day)
 		struct apoint apt_tmp;
 		apt_tmp.start = day->start;
 		apt_tmp.dur = day_item_get_duration(day);
-		apoint_sec2str(&apt_tmp, ui_calendar_get_slctd_day_sec(),
-			       a_st, a_end);
+		apoint_sec2str(&apt_tmp, get_slctd_day(), a_st, a_end);
 
 		item_in_popup(a_st, a_end, day_item_get_mesg(day),
 			      _("Appointment:"));

@@ -672,7 +672,7 @@ void ui_day_item_add(void)
 			item.ev = event_new(item_mesg, 0L, start, 1);
 		}
 		io_set_modified();
-		day_process_storage(ui_calendar_get_slctd_day(), 0);
+		day_store_items(get_slctd_day(), 1);
 		ui_day_load_items();
 		ui_day_set_selitem_by_aptev_ptr(item);
 	}
@@ -734,7 +734,7 @@ void ui_day_item_delete(unsigned reg)
 			break;
 		case 2:
 			if (p->type == RECUR_EVNT) {
-				date = ui_calendar_get_slctd_day_sec();
+				date = get_slctd_day();
 				day_item_add_exc(p, date);
 			} else {
 				date = update_time_in_date(p->start, 0, 0);
@@ -888,7 +888,7 @@ void ui_day_item_repeat(void)
 		keys_wgetch(win[KEY].p);
 	}
 
-	date = ui_calendar_get_slctd_day_sec();
+	date = get_slctd_day();
 	if (p->type == EVNT) {
 		struct event *ev = p->item.ev;
 		recur_event_new(ev->mesg, ev->note, ev->day, ev->id, type,
@@ -963,7 +963,7 @@ void ui_day_item_paste(unsigned reg)
 		return;
 
 	day_item_fork(&day_cut[reg], &day);
-	day_paste_item(&day, ui_calendar_get_slctd_day_sec());
+	day_paste_item(&day, get_slctd_day());
 	io_set_modified();
 
 	ui_calendar_monthly_view_cache_set_invalid();
