@@ -275,7 +275,7 @@ date_arg_from_to(long from, long to, int add_line, const char *fmt_apt,
 	long date;
 
 	for (date = from; date <= to; date = date_sec_change(date, 0, 1)) {
-		day_store_items(date, 0);
+		day_store_items(date, 0, 1);
 		if (day_item_count(0) == 0)
 			continue;
 		if (add_line)

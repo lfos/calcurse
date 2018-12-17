@@ -42,8 +42,14 @@
 
 #include "calcurse.h"
 
+static unsigned day_nb = 7;
 static vector_t day_items;
 static unsigned day_items_nb = 0;
+
+int day_get_nb(void)
+{
+	return day_nb;
+}
 
 static void day_free(struct day_item *day)
 {
@@ -73,6 +79,11 @@ static int day_cmp(struct day_item **pa, struct day_item **pb)
 	struct day_item *b = *pb;
 	int a_state, b_state;
 
+	if (a->order < b->order)
+		return -1;
+	if (a->order > b->order)
+		return 1;
+
 	if ((a->type == APPT || a->type == RECUR_APPT) &&
 	    (b->type == APPT || b->type == RECUR_APPT)) {
 		if (a->start < b->start)
@@ -97,11 +108,12 @@ static int day_cmp(struct day_item **pa, struct day_item **pb)
 }
 
 /* Add an item to the current day list. */
-static void day_add_item(int type, time_t start, union aptev_ptr item)
+static void day_add_item(int type, time_t start, time_t order, union aptev_ptr item)
 {
 	struct day_item *day = mem_malloc(sizeof(struct day_item));
 	day->type = type;
 	day->start = start;
+	day->order = order;
 	day->item = item;
 
 	VECTOR_ADD(&day_items, day);
@@ -208,6 +220,7 @@ void day_item_fork(struct day_item *day_in, struct day_item *day_out)
 {
 	day_out->type = day_in->type;
 	day_out->start = day_in->start;
+	day_out->order = day_in->order;
 
 	switch (day_in->type) {
 	case APPT:
@@ -245,7 +258,7 @@ static int day_store_events(time_t date)
 		struct event *ev = LLIST_TS_GET_DATA(i);
 
 		p.ev = ev;
-		day_add_item(EVNT, ev->day, p);
+		day_add_item(EVNT, ev->day, ev->day, p);
 		e_nb++;
 	}
 
@@ -269,8 +282,11 @@ static int day_store_recur_events(time_t date)
 		struct recur_event *rev = LLIST_TS_GET_DATA(i);
 
 		p.rev = rev;
-		day_add_item(RECUR_EVNT, rev->day, p);
-		e_nb++;
+		time_t occurrence;
+		if (recur_event_find_occurrence(rev, date, &occurrence)) {
+			day_add_item(RECUR_EVNT, rev->day, occurrence, p);
+			e_nb++;
+		}
 	}
 
 	return e_nb;
@@ -294,11 +310,14 @@ static int day_store_apoints(time_t date)
 		struct apoint *apt = LLIST_TS_GET_DATA(i);
 
 		p.apt = apt;
-
-		if (apt->start >= date + DAYLEN(date))
-			break;
-
-		day_add_item(APPT, apt->start, p);
+		/*
+		 * For appointments continuing from the previous day, order is
+		 * set to midnight to sort it before appointments of the day.
+		 */
+		day_add_item(APPT,
+			     apt->start,
+			     apt->start < date ? date : apt->start,
+			     p);
 		a_nb++;
 	}
 	LLIST_TS_UNLOCK(&alist_p);
@@ -325,9 +344,13 @@ static int day_store_recur_apoints(time_t date)
 
 		p.rapt = rapt;
 
-		time_t real_start;
-		if (recur_apoint_find_occurrence(rapt, date, &real_start)) {
-			day_add_item(RECUR_APPT, real_start, p);
+		time_t occurrence;
+		/* As for appointments */
+		if (recur_apoint_find_occurrence(rapt, date, &occurrence)) {
+			day_add_item(RECUR_APPT,
+				     occurrence,
+				     occurrence < date ? date : occurrence,
+				     p);
 			a_nb++;
 		}
 	}
@@ -337,35 +360,49 @@ static int day_store_recur_apoints(time_t date)
 }
 
 /*
- * Store all of the items to be displayed for the selected day.
- * Items are of four types: recursive events, normal events,
+ * Store all of the items to be displayed for the selected day and the following
+ * (n - 1) days. Items are of four types: recursive events, normal events,
  * recursive appointments and normal appointments.
- * The items are stored in the linked list pointed by day_items
- * and the length of the new pad to write is returned.
- * The number of events and appointments in the current day are also updated.
+ * The items are stored in the day_items vector; the number of events and
+ * appointments in the vector is stored in day_items_nb,
  */
 void
-day_store_items(time_t date, int include_captions)
+day_store_items(time_t date, int include_captions, int n)
 {
 	unsigned apts, events;
-	union aptev_ptr p = { NULL };
+	union aptev_ptr p = { NULL }, d;
+	int i;
 
 	day_free_vector();
 	day_init_vector();
 
-	if (include_captions)
-		day_add_item(DAY_HEADING, 0, p);
+	for (i = 0; i < n; i++, date = NEXTDAY(date)) {
+		if (include_captions)
+			day_add_item(DAY_HEADING, 0, date, p);
 
-	events = day_store_recur_events(date);
-	events += day_store_events(date);
-	apts = day_store_recur_apoints(date);
-	apts += day_store_apoints(date);
+		events = day_store_recur_events(date);
+		events += day_store_events(date);
+		apts = day_store_recur_apoints(date);
+		apts += day_store_apoints(date);
 
-	if (include_captions && events > 0 && apts > 0)
-		day_add_item(DAY_SEPARATOR, 0, p);
+		if (include_captions && events > 0 && apts > 0)
+			day_add_item(EVNT_SEPARATOR, 0, date, p);
+
+		day_items_nb += events + apts;
+
+		if (events == 0 && apts == 0) {
+			/* Insert dummy event. */
+			d.ev = &dummy;
+			dummy.mesg = _("(none)");
+			day_add_item(EVNT, DUMMY, date, d);
+			day_items_nb++;
+		}
+
+		if (include_captions && i < n - 1)
+			day_add_item(DAY_SEPARATOR, 0, ENDOFDAY(date), p);
+	}
 
 	VECTOR_SORT(&day_items, day_cmp);
-	day_items_nb = events + apts;
 }
 
 /*
@@ -473,8 +510,7 @@ void day_popup_item(struct day_item *day)
 		struct apoint apt_tmp;
 		apt_tmp.start = day->start;
 		apt_tmp.dur = day_item_get_duration(day);
-		apoint_sec2str(&apt_tmp, get_slctd_day(), a_st, a_end);
-
+		apoint_sec2str(&apt_tmp, ui_day_selday(), a_st, a_end);
 		item_in_popup(a_st, a_end, day_item_get_mesg(day),
 			      _("Appointment:"));
 	} else {
