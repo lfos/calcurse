@@ -43,6 +43,8 @@
 #include "sha1.h"
 
 llist_t eventlist;
+/* Dummy event for the APP panel for an otherwise empty day. */
+struct event dummy = { DUMMY, 0, "", NULL };
 
 void event_free(struct event *ev)
 {
@@ -222,4 +224,10 @@ void event_paste_item(struct event *ev, time_t date)
 {
 	ev->day = date;
 	LLIST_ADD_SORTED(&eventlist, ev, event_cmp);
+}
+
+/* Return true if the day_item is the dummy event. */
+int event_dummy(struct day_item *item)
+{
+	return item->item.ev == &dummy;
 }
