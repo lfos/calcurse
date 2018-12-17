@@ -36,14 +36,25 @@
 
 #include "calcurse.h"
 
-struct day_item day_cut[38] = { {0, 0, {NULL}} };
+struct day_item day_cut[38] = { {0, 0, 0, {NULL}} };
 
+/*
+ * Return the selected item in the APP panel.
+ */
 struct day_item *ui_day_selitem(void)
 {
 	if (day_item_count(0) <= 0)
 		return NULL;
 
 	return day_get_item(listbox_get_sel(&lb_apt));
+}
+
+/*
+ * Return the day (midnight) of the selected item in the APP panel.
+ */
+time_t ui_day_selday(void)
+{
+	return update_time_in_date(ui_day_selitem()->order, 0, 0);
 }
 
 void ui_day_set_selitem_by_aptev_ptr(union aptev_ptr p)
@@ -579,7 +590,7 @@ void ui_day_item_add(void)
 	const char *enter_str = _("Press [Enter] to continue");
 	char item_time[LTIME] = "";
 	char item_mesg[BUFSIZ] = "";
-	time_t start = date2sec(*ui_calendar_get_slctd_day(), 0, 0), end, saved = start;
+	time_t start = ui_day_selday(), end, saved = start;
 	unsigned dur;
 	int is_appointment = 1;
 	union aptev_ptr item;
@@ -672,7 +683,7 @@ void ui_day_item_add(void)
 			item.ev = event_new(item_mesg, 0L, start, 1);
 		}
 		io_set_modified();
-		day_store_items(get_slctd_day(), 1);
+		day_store_items(get_slctd_day(), 1, day_get_nb());
 		ui_day_load_items();
 		ui_day_set_selitem_by_aptev_ptr(item);
 	}
@@ -963,7 +974,7 @@ void ui_day_item_paste(unsigned reg)
 		return;
 
 	day_item_fork(&day_cut[reg], &day);
-	day_paste_item(&day, get_slctd_day());
+	day_paste_item(&day, ui_day_selday());
 	io_set_modified();
 
 	ui_calendar_monthly_view_cache_set_invalid();
@@ -998,9 +1009,9 @@ static char *fmt_day_heading(time_t date)
 /* Display appointments in the corresponding panel. */
 void ui_day_draw(int n, WINDOW *win, int y, int hilt, void *cb_data)
 {
-	struct date slctd_date = *ui_calendar_get_slctd_day();
-	time_t date = date2sec(slctd_date, 0, 0);
 	struct day_item *item = day_get_item(n);
+	/* The item order always indicates the date. */
+	time_t date = update_time_in_date(item->order, 0, 0);
 	int width = lb_apt.sw.w - 2;
 
 	hilt = hilt && (wins_slctd() == APP);
@@ -1019,7 +1030,7 @@ void ui_day_draw(int n, WINDOW *win, int y, int hilt, void *cb_data)
 			(width - utf8_strwidth(buf)) / 2, "%s", buf);
 		custom_remove_attr(win, ATTR_HIGHEST);
 		mem_free(buf);
-	} else if (item->type == DAY_SEPARATOR) {
+	} else if (item->type == EVNT_SEPARATOR) {
 		wmove(win, y, 0);
 		whline(win, 0, width);
 	}
@@ -1029,7 +1040,9 @@ enum listbox_row_type ui_day_row_type(int n, void *cb_data)
 {
 	struct day_item *item = day_get_item(n);
 
-	if (item->type == DAY_HEADING || item->type == DAY_SEPARATOR)
+	if (item->type == DAY_HEADING ||
+	    item->type == EVNT_SEPARATOR ||
+	    item->type == DAY_SEPARATOR)
 		return LISTBOX_ROW_CAPTION;
 	else
 		return LISTBOX_ROW_TEXT;
@@ -1041,6 +1054,8 @@ int ui_day_height(int n, void *cb_data)
 
 	if (item->type == APPT || item->type == RECUR_APPT)
 		return 3;
+	else if (item->type == DAY_SEPARATOR)
+		return 2;
 	else
 		return 1;
 }

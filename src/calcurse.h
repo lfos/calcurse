@@ -172,6 +172,7 @@
 #define NOHILT		0 	/* 'No highlight' argument */
 #define NOFORCE		0
 #define FORCE		1
+#define DUMMY		-1	/* The dummy event */
 
 #define ERROR_MSG(...) do {                                                   \
   char msg[BUFSIZ];                                                           \
@@ -417,9 +418,10 @@ enum day_item_type {
 	DAY_HEADING = 1,
 	RECUR_EVNT,
 	EVNT,
-	DAY_SEPARATOR,
+	EVNT_SEPARATOR,
 	RECUR_APPT,
-	APPT
+	APPT,
+	DAY_SEPARATOR
 };
 
 /* Available item types. */
@@ -460,6 +462,7 @@ struct item_filter {
 struct day_item {
 	enum day_item_type type;
 	time_t start;
+	time_t order;
 	union aptev_ptr item;
 };
 
@@ -797,6 +800,7 @@ void custom_keys_config(void);
 void custom_config_main(void);
 
 /* day.c */
+int day_get_nb(void);
 void day_free_vector(void);
 char *day_item_get_mesg(struct day_item *);
 char *day_item_get_note(struct day_item *);
@@ -805,7 +809,7 @@ long day_item_get_duration(struct day_item *);
 int day_item_get_state(struct day_item *);
 void day_item_add_exc(struct day_item *, time_t);
 void day_item_fork(struct day_item *, struct day_item *);
-void day_store_items(time_t, int);
+void day_store_items(time_t, int, int);
 void day_display_item_date(struct day_item *, WINDOW *, int, time_t, int, int);
 void day_display_item(struct day_item *, WINDOW *, int, int, int, int);
 void day_write_stdout(time_t, const char *, const char *, const char *,
@@ -829,6 +833,7 @@ void dmon_stop(void);
 
 /* event.c */
 extern llist_t eventlist;
+extern struct event dummy;
 void event_free_bkp(void);
 struct event *event_dup(struct event *);
 void event_free(struct event *);
@@ -842,6 +847,7 @@ void event_write(struct event *, FILE *);
 struct event *event_scan(FILE *, struct tm, int, char *, struct item_filter *);
 void event_delete(struct event *);
 void event_paste_item(struct event *, time_t);
+int event_dummy(struct day_item *);
 
 /* getstring.c */
 enum getstr getstring(WINDOW *, char *, int, int, int);
@@ -1092,6 +1098,7 @@ void todo_free_list(void);
 
 /* ui-day.c */
 struct day_item *ui_day_selitem(void);
+time_t ui_day_selday(void);
 void ui_day_set_selitem_by_aptev_ptr(union aptev_ptr);
 void ui_day_set_selitem(struct day_item *);
 void ui_day_item_add(void);
