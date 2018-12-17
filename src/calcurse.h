@@ -137,10 +137,12 @@
 /*
  * Note the difference between the number of seconds in a day and daylength
  * in seconds. The two may differ when DST is in effect (daylength is either
- * 23, 24 or 25 hours. The argument to DAYLEN is of type time_t.
+ * 23, 24 or 25 hours. The argument "date" is assumed to be of type time_t.
  */
 #define DAYINSEC        (DAYINMIN * MININSEC)
-#define DAYLEN(date)	(date_sec_change((date), 0, 1) - (date))
+#define NEXTDAY(date)	date_sec_change((date), 0, 1)
+#define DAYLEN(date)	(NEXTDAY(date) - (date))
+#define ENDOFDAY(date)	(NEXTDAY(date) - 1)
 #define HOURINSEC       (HOURINMIN * MININSEC)
 
 #define MAXDAYSPERMONTH 31
@@ -170,6 +172,7 @@
 #define NOHILT		0 	/* 'No highlight' argument */
 #define NOFORCE		0
 #define FORCE		1
+#define DUMMY		-1	/* The dummy event */
 
 #define ERROR_MSG(...) do {                                                   \
   char msg[BUFSIZ];                                                           \
@@ -399,9 +402,10 @@ enum day_item_type {
 	DAY_HEADING = 1,
 	RECUR_EVNT,
 	EVNT,
-	DAY_SEPARATOR,
+	EVNT_SEPARATOR,
 	RECUR_APPT,
-	APPT
+	APPT,
+	DAY_SEPARATOR
 };
 
 /* Available item types. */
@@ -441,6 +445,7 @@ struct item_filter {
 struct day_item {
 	enum day_item_type type;
 	long start;
+	long order;
 	union aptev_ptr item;
 };
 
@@ -790,6 +795,7 @@ void custom_keys_config(void);
 void custom_config_main(void);
 
 /* day.c */
+int day_get_nb(void);
 void day_free_vector(void);
 char *day_item_get_mesg(struct day_item *);
 char *day_item_get_note(struct day_item *);
@@ -798,7 +804,7 @@ long day_item_get_duration(struct day_item *);
 int day_item_get_state(struct day_item *);
 void day_item_add_exc(struct day_item *, long);
 void day_item_fork(struct day_item *, struct day_item *);
-void day_store_items(long, int);
+void day_store_items(long, int, int);
 void day_display_item_date(struct day_item *, WINDOW *, int, long, int, int);
 void day_display_item(struct day_item *, WINDOW *, int, int, int, int);
 void day_write_stdout(long, const char *, const char *, const char *,
@@ -822,6 +828,7 @@ void dmon_stop(void);
 
 /* event.c */
 extern llist_t eventlist;
+extern struct event dummy;
 void event_free_bkp(void);
 struct event *event_dup(struct event *);
 void event_free(struct event *);
@@ -1083,6 +1090,8 @@ void todo_free_list(void);
 
 /* ui-day.c */
 struct day_item *ui_day_selitem(void);
+time_t ui_day_selday(void);
+int ui_day_dummy(void);
 void ui_day_set_selitem_by_aptev_ptr(union aptev_ptr);
 void ui_day_set_selitem(struct day_item *);
 void ui_day_item_add(void);

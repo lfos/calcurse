@@ -54,7 +54,7 @@ static void do_storage(int day_changed)
 	if (day)
 		item = day->item;
 
-	day_store_items(get_slctd_day(), 1);
+	day_store_items(get_slctd_day(), 1, day_get_nb());
 	ui_day_load_items();
 
 	if (day_changed)
@@ -143,7 +143,7 @@ static inline void key_add_item(void)
 
 static inline void key_edit_item(void)
 {
-	if (wins_slctd() == APP) {
+	if (wins_slctd() == APP && !ui_day_dummy()) {
 		ui_day_item_edit();
 		do_storage(0);
 		wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
@@ -155,7 +155,7 @@ static inline void key_edit_item(void)
 
 static inline void key_del_item(void)
 {
-	if (wins_slctd() == APP) {
+	if (wins_slctd() == APP && !ui_day_dummy()) {
 		ui_day_item_delete(reg);
 		do_storage(0);
 		wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
@@ -167,7 +167,7 @@ static inline void key_del_item(void)
 
 static inline void key_generic_copy(void)
 {
-	if (wins_slctd() == APP) {
+	if (wins_slctd() == APP && !ui_day_dummy()) {
 		ui_day_item_copy(reg);
 		do_storage(0);
 		wins_update(FLAG_CAL | FLAG_APP);
@@ -185,7 +185,7 @@ static inline void key_generic_paste(void)
 
 static inline void key_repeat_item(void)
 {
-	if (wins_slctd() == APP)
+	if (wins_slctd() == APP && !ui_day_dummy())
 		ui_day_item_repeat();
 	do_storage(0);
 	wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
@@ -193,7 +193,7 @@ static inline void key_repeat_item(void)
 
 static inline void key_flag_item(void)
 {
-	if (wins_slctd() == APP) {
+	if (wins_slctd() == APP && !ui_day_dummy()) {
 		ui_day_flag();
 		do_storage(0);
 		wins_update(FLAG_APP);
@@ -232,7 +232,7 @@ static inline void key_lower_priority(void)
 
 static inline void key_edit_note(void)
 {
-	if (wins_slctd() == APP) {
+	if (wins_slctd() == APP && !ui_day_dummy()) {
 		ui_day_edit_note();
 		do_storage(0);
 	} else if (wins_slctd() == TOD) {

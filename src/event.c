@@ -43,6 +43,8 @@
 #include "sha1.h"
 
 llist_t eventlist;
+/* Dummy event for the APP panel for an otherwise empty day. */
+struct event dummy = { DUMMY, 0, "", NULL };
 
 void event_free(struct event *ev)
 {
