@@ -48,19 +48,11 @@ int count, reg;
  */
 static void do_storage(int day_changed)
 {
-	/* * Save the selected item before rebuilding the day vector. */
-	struct day_item *day = ui_day_selitem();
-	union aptev_ptr item;
-	if (day)
-		item = day->item;
-
 	day_store_items(get_slctd_day(), 1, day_get_nb());
 	ui_day_load_items();
 
 	if (day_changed)
 		ui_day_sel_reset();
-	else if (day)
-		ui_day_set_selitem_by_aptev_ptr(item);
 }
 
 static inline void key_generic_change_view(void)

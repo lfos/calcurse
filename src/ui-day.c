@@ -67,18 +67,6 @@ int ui_day_dummy(void)
 	return d ? d->start == DUMMY : 0;
 }
 
-void ui_day_set_selitem_by_aptev_ptr(union aptev_ptr p)
-{
-	int n = day_get_position_by_aptev_ptr(p);
-	if (n >= 0)
-		listbox_set_sel(&lb_apt, n);
-}
-
-void ui_day_set_selitem(struct day_item *day)
-{
-	ui_day_set_selitem_by_aptev_ptr(day->item);
-}
-
 /*
  * Request the user to enter a new start time.
  * Input: start time and duration in seconds.
@@ -677,7 +665,6 @@ void ui_day_item_add(void)
 		io_set_modified();
 		day_store_items(get_slctd_day(), 1, day_get_nb());
 		ui_day_load_items();
-		ui_day_set_selitem_by_aptev_ptr(item);
 	}
 
 	ui_calendar_monthly_view_cache_set_invalid();

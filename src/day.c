@@ -707,26 +707,6 @@ int day_paste_item(struct day_item *p, long date)
 	return p->type;
 }
 
-/* Returns the position corresponding to a given item. */
-int day_get_position_by_aptev_ptr(union aptev_ptr aptevp)
-{
-	int n = 0;
-
-	VECTOR_FOREACH(&day_items, n) {
-		struct day_item *p = VECTOR_NTH(&day_items, n);
-		/* Compare pointers. */
-		if (p->item.ev == aptevp.ev)
-			return n;
-	}
-
-	return -1;
-}
-
-int day_get_position(struct day_item *needle)
-{
-	return day_get_position_by_aptev_ptr(needle->item);
-}
-
 /* Returns a structure containing the selected item. */
 struct day_item *day_get_item(int item_number)
 {
