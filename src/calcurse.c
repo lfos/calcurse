@@ -41,26 +41,35 @@
 #define HANDLE_KEY(key, fn) case key: fn(); break;
 
 int count, reg;
-
 /*
- * Store the events and appointments for the selected day and reset the
- * appointment highlight pointer if a new day was selected.
+ * Store events and appointments for a range of days in the day vector -
+ * beginning with the selected day - and load them into the APP listbox. If no
+ * day-change occurs, reset the selected APP item and with it the selected day,
+ * thereby storing and loading the same range of days.
  */
 static void do_storage(int day_changed)
 {
-	/* * Save the selected item before rebuilding the day vector. */
-	struct day_item *day = ui_day_selitem();
-	union aptev_ptr item;
-	if (day)
-		item = day->item;
+	/*
+	 * Save the selected item before rebuilding the day vector -
+	 * unless already set.
+	 */
+	if (!day_check_sel_data())
+		day_set_sel_data(ui_day_get_sel());
 
+	if (!day_changed)
+		ui_day_sel_reset();
+
+	/* The day_items vector. */
 	day_store_items(get_slctd_day(), 1, day_get_nb());
+	/* The APP listbox. */
 	ui_day_load_items();
 
 	if (day_changed)
 		ui_day_sel_reset();
-	else if (day)
-		ui_day_set_selitem_by_aptev_ptr(item);
+	else
+		ui_day_find_sel();
+
+	day_set_sel_data(&empty_day);
 }
 
 static inline void key_generic_change_view(void)
@@ -115,6 +124,7 @@ static inline void key_generic_config_menu(void)
 static inline void key_generic_add_appt(void)
 {
 	ui_day_item_add();
+	do_storage(0);
 	wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
 }
 
@@ -130,6 +140,7 @@ static inline void key_add_item(void)
 	case APP:
 	case CAL:
 		ui_day_item_add();
+		do_storage(0);
 		wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
 		break;
 	case TOD:
@@ -143,7 +154,7 @@ static inline void key_add_item(void)
 
 static inline void key_edit_item(void)
 {
-	if (wins_slctd() == APP && !event_dummy(ui_day_selitem())) {
+	if (wins_slctd() == APP && !event_dummy(ui_day_get_sel())) {
 		ui_day_item_edit();
 		do_storage(0);
 		wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
@@ -155,7 +166,7 @@ static inline void key_edit_item(void)
 
 static inline void key_del_item(void)
 {
-	if (wins_slctd() == APP && !event_dummy(ui_day_selitem())) {
+	if (wins_slctd() == APP && !event_dummy(ui_day_get_sel())) {
 		ui_day_item_delete(reg);
 		do_storage(0);
 		wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
@@ -167,11 +178,8 @@ static inline void key_del_item(void)
 
 static inline void key_generic_copy(void)
 {
-	if (wins_slctd() == APP && !event_dummy(ui_day_selitem())) {
+	if (wins_slctd() == APP && !event_dummy(ui_day_get_sel()))
 		ui_day_item_copy(reg);
-		do_storage(0);
-		wins_update(FLAG_CAL | FLAG_APP);
-	}
 }
 
 static inline void key_generic_paste(void)
@@ -185,15 +193,16 @@ static inline void key_generic_paste(void)
 
 static inline void key_repeat_item(void)
 {
-	if (wins_slctd() == APP && !event_dummy(ui_day_selitem()))
+	if (wins_slctd() == APP && !event_dummy(ui_day_get_sel())) {
 		ui_day_item_repeat();
-	do_storage(0);
-	wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
+		do_storage(0);
+		wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
+	}
 }
 
 static inline void key_flag_item(void)
 {
-	if (wins_slctd() == APP && !event_dummy(ui_day_selitem())) {
+	if (wins_slctd() == APP && !event_dummy(ui_day_get_sel())) {
 		ui_day_flag();
 		do_storage(0);
 		wins_update(FLAG_APP);
@@ -232,7 +241,7 @@ static inline void key_lower_priority(void)
 
 static inline void key_edit_note(void)
 {
-	if (wins_slctd() == APP && !event_dummy(ui_day_selitem())) {
+	if (wins_slctd() == APP && !event_dummy(ui_day_get_sel())) {
 		ui_day_edit_note();
 		do_storage(0);
 	} else if (wins_slctd() == TOD) {

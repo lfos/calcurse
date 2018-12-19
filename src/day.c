@@ -46,6 +46,67 @@ static unsigned day_nb = 7;
 static vector_t day_items;
 static unsigned day_items_nb = 0;
 
+struct day_item empty_day = { 0, 0, 0, {NULL}};
+
+/*
+ * The day vector, day_items, is continuously rebuilt for display as the
+ * selected day changes, items are added, edited or deleted etc. To keep track
+ * of the selected item of the day vector across rebuilds, data are saved in
+ * here that may later be used to refind the item in the rebuilt day
+ * vector.
+ */
+static struct day_item sel_data = { 0, 0, 0, {NULL}};
+
+/*
+ * Save the item to become the selected APP item.
+ * Public function used to override the setting in do_storage().
+ */
+int day_set_sel_data(struct day_item *d)
+{
+	if (!d)
+		return 0;
+
+	sel_data = *d;
+	return 1;
+}
+
+/*
+ * Return selection data if available.
+ */
+int day_check_sel_data()
+{
+	return (sel_data.order || sel_data.item.apt) ? 1 : 0;
+}
+
+/*
+ * Return the position of the saved selection in the day vector.
+ */
+int day_sel_index(void)
+{
+	int i = 0;
+	struct day_item *p;
+
+	VECTOR_FOREACH(&day_items, i) {
+		p = VECTOR_NTH(&day_items, i);
+		if (p->order == sel_data.order &&
+		    p->item.apt == sel_data.item.apt)
+			return i;
+	}
+	/* Needed as long as ui_day_item_paste() does not set order. */
+	VECTOR_FOREACH(&day_items, i) {
+		p = VECTOR_NTH(&day_items, i);
+		if (p->item.apt == sel_data.item.apt)
+			return i;
+	}
+	/* If still not found, stay on the same day. */
+	VECTOR_FOREACH(&day_items, i) {
+		p = VECTOR_NTH(&day_items, i);
+		if (p->order == update_time_in_date(sel_data.order, 0, 0))
+			return i;
+	}
+	return -1;
+}
+
 int day_get_nb(void)
 {
 	return day_nb;
@@ -510,7 +571,7 @@ void day_popup_item(struct day_item *day)
 		struct apoint apt_tmp;
 		apt_tmp.start = day->start;
 		apt_tmp.dur = day_item_get_duration(day);
-		apoint_sec2str(&apt_tmp, ui_day_selday(), a_st, a_end);
+		apoint_sec2str(&apt_tmp, ui_day_sel_date(), a_st, a_end);
 		item_in_popup(a_st, a_end, day_item_get_mesg(day),
 			      _("Appointment:"));
 	} else {
@@ -732,26 +793,6 @@ int day_paste_item(struct day_item *p, time_t date)
 	}
 
 	return p->type;
-}
-
-/* Returns the position corresponding to a given item. */
-int day_get_position_by_aptev_ptr(union aptev_ptr aptevp)
-{
-	int n = 0;
-
-	VECTOR_FOREACH(&day_items, n) {
-		struct day_item *p = VECTOR_NTH(&day_items, n);
-		/* Compare pointers. */
-		if (p->item.ev == aptevp.ev)
-			return n;
-	}
-
-	return -1;
-}
-
-int day_get_position(struct day_item *needle)
-{
-	return day_get_position_by_aptev_ptr(needle->item);
 }
 
 /* Returns a structure containing the selected item. */
