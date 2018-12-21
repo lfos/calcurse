@@ -681,7 +681,7 @@ void ui_day_item_delete(unsigned reg)
 	      "Delete (i)tem or just its (n)ote?");
 	const char *note_choices = _("[in]");
 	const int nb_note_choices = 2;
-	long date = ui_calendar_get_slctd_day_sec();
+	time_t date = 0, occurrence;
 
 	if (day_item_count(0) <= 0)
 		return;
@@ -715,7 +715,16 @@ void ui_day_item_delete(unsigned reg)
 		case 1:
 			break;
 		case 2:
-			day_item_add_exc(p, date);
+			if (p->type == RECUR_EVNT) {
+				date = ui_calendar_get_slctd_day_sec();
+				day_item_add_exc(p, date);
+			} else {
+				date = update_time_in_date(p->start, 0, 0);
+				recur_apoint_find_occurrence(p->item.rapt,
+							     date,
+							     &occurrence);
+				day_item_add_exc(p, occurrence);
+			}
 			io_set_modified();
 			return;
 		default:
