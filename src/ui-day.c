@@ -722,13 +722,21 @@ void ui_day_item_delete(unsigned reg)
 	}
 
 	if (p->type == RECUR_EVNT || p->type == RECUR_APPT) {
+		time_t occurrence;
 		switch (status_ask_choice
 			(erase_warning, erase_choices, nb_erase_choices)) {
 		case 1:
 			break;
 		case 2:
-			date = ui_day_sel_day();
-			day_item_add_exc(p, date);
+			if (p->type == RECUR_EVNT)
+				recur_event_find_occurrence(p->item.rev,
+							    ui_day_sel_day(),
+							    &occurrence);
+			else
+				recur_apoint_find_occurrence(p->item.rapt,
+							     ui_day_sel_day(),
+							     &occurrence);
+			day_item_add_exc(p, occurrence);
 			io_set_modified();
 			return;
 		default:
