@@ -758,6 +758,10 @@ void apoint_paste_item(struct apoint *, long);
 int parse_args(int, char **);
 
 /* calendar.c */
+extern struct day_item empty_day;
+int cal_set_slctd_item(struct day_item *);
+
+/* ui_calendar.c */
 void ui_calendar_view_next(void);
 void ui_calendar_view_prev(void);
 void ui_calendar_set_view(int);
@@ -814,6 +818,7 @@ int day_check_if_item(struct date);
 unsigned day_chk_busy_slices(struct date, int, int *);
 struct day_item *day_cut_item(long, int);
 int day_paste_item(struct day_item *, long);
+int day_get_position(time_t, union aptev_ptr);
 struct day_item *day_get_item(int);
 unsigned day_item_count(int);
 void day_edit_note(struct day_item *, const char *);
@@ -1087,10 +1092,7 @@ void todo_init_list(void);
 void todo_free_list(void);
 
 /* ui-day.c */
-struct day_item *ui_day_selitem(void);
-time_t ui_day_selday(void);
 int ui_day_dummy(void);
-void ui_day_set_selitem(struct day_item *);
 void ui_day_item_add(void);
 void ui_day_item_delete(unsigned);
 void ui_day_item_edit(void);
@@ -1100,7 +1102,10 @@ void ui_day_item_cut_free(unsigned);
 void ui_day_item_copy(unsigned);
 void ui_day_item_paste(unsigned);
 void ui_day_load_items(void);
+struct day_item *ui_day_sel(void);
+time_t ui_day_sel_day(void);
 void ui_day_sel_reset(void);
+void ui_day_set_sel(struct day_item *);
 void ui_day_sel_move(int);
 void ui_day_draw(int, WINDOW *, int, int, void *);
 enum listbox_row_type ui_day_row_type(int, void *);

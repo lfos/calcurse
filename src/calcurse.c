@@ -41,18 +41,56 @@
 #define HANDLE_KEY(key, fn) case key: fn(); break;
 
 int count, reg;
+struct day_item empty_day = { 0, 0, 0, {NULL}};
 
 /*
- * Store the events and appointments for the selected day and reset the
- * appointment highlight pointer if a new day was selected.
+ * The day vector, day_items, is continuously being rebuilt for display, as the
+ * selected day changes, items are added, edited or deleted etc. The problem is,
+ * how to keep track of the selected item of the day vector? Pointers to the
+ * items of the vector are of no use across rebuilds. Instead data from the
+ * selected item is saved in this location and later used to refind the item in
+ * the rebuilt day vector.
+ */
+static struct day_item slctd_item = { 0, 0, 0, {NULL}};
+
+/*
+ * Save the item to become the selected APP item.
+ * Public function used to override the setting in do_storage().
+ */
+int cal_set_slctd_item(struct day_item *d)
+{
+	if (!d)
+		return 0;
+
+	slctd_item = *d;
+	return 1;
+}
+
+/*
+ * Store the events and appointments for the selected day in the day vector,
+ * load them into the APP listbox, and reset the selected APP item if a new day
+ * was selected.
  */
 static void do_storage(int day_changed)
 {
+	/*
+	 * Save the selected APP item before rebuilding the day vector -
+	 * unless already done from elsewhere.
+	 */
+	if (!slctd_item.item.apt)
+		slctd_item = *ui_day_sel();
+
+	/* The day_items vector. */
 	day_store_items(get_slctd_day(), 1, day_get_nb());
+	/* The APP listbox. */
 	ui_day_load_items();
 
 	if (day_changed)
 		ui_day_sel_reset();
+	else
+		ui_day_set_sel(&slctd_item);
+
+	slctd_item = empty_day;
 }
 
 static inline void key_generic_change_view(void)
@@ -107,6 +145,7 @@ static inline void key_generic_config_menu(void)
 static inline void key_generic_add_appt(void)
 {
 	ui_day_item_add();
+	do_storage(0);
 	wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
 }
 
@@ -122,6 +161,7 @@ static inline void key_add_item(void)
 	case APP:
 	case CAL:
 		ui_day_item_add();
+		do_storage(0);
 		wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
 		break;
 	case TOD:
@@ -159,11 +199,8 @@ static inline void key_del_item(void)
 
 static inline void key_generic_copy(void)
 {
-	if (wins_slctd() == APP && !ui_day_dummy()) {
+	if (wins_slctd() == APP && !ui_day_dummy())
 		ui_day_item_copy(reg);
-		do_storage(0);
-		wins_update(FLAG_CAL | FLAG_APP);
-	}
 }
 
 static inline void key_generic_paste(void)
@@ -177,10 +214,11 @@ static inline void key_generic_paste(void)
 
 static inline void key_repeat_item(void)
 {
-	if (wins_slctd() == APP && !ui_day_dummy())
+	if (wins_slctd() == APP && !ui_day_dummy()) {
 		ui_day_item_repeat();
-	do_storage(0);
-	wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
+		do_storage(0);
+		wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
+	}
 }
 
 static inline void key_flag_item(void)

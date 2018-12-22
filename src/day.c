@@ -510,7 +510,7 @@ void day_popup_item(struct day_item *day)
 		struct apoint apt_tmp;
 		apt_tmp.start = day->start;
 		apt_tmp.dur = day_item_get_duration(day);
-		apoint_sec2str(&apt_tmp, ui_day_selday(), a_st, a_end);
+		apoint_sec2str(&apt_tmp, ui_day_sel_day(), a_st, a_end);
 		item_in_popup(a_st, a_end, day_item_get_mesg(day),
 			      _("Appointment:"));
 	} else {
@@ -705,6 +705,32 @@ int day_paste_item(struct day_item *p, long date)
 	}
 
 	return p->type;
+}
+
+/*
+ * Returns the position of a day_item in the day_items vector.
+ * An item (event/appointment) may have several occurrences as day_item,
+ * but at most one on any day. This is found by (order, item) or by
+ * item alone.
+ */
+int day_get_position(time_t order, union aptev_ptr item)
+{
+	int i = 0;
+	struct day_item *p;
+
+	VECTOR_FOREACH(&day_items, i) {
+		p = VECTOR_NTH(&day_items, i);
+		/* Same day and item? */
+		if (p->order == order && p->item.apt == item.apt)
+			return i;
+	}
+	VECTOR_FOREACH(&day_items, i) {
+		p = VECTOR_NTH(&day_items, i);
+		/* Same item? */
+		if (p->item.apt == item.apt)
+			return i;
+	}
+	return -1;
 }
 
 /* Returns a structure containing the selected item. */
