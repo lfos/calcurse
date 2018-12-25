@@ -78,7 +78,7 @@ static void do_storage(int day_changed)
 	 * unless already done from elsewhere.
 	 */
 	if (!slctd_item.item.apt)
-		slctd_item = *ui_day_sel();
+		slctd_item = *ui_day_get_sel();
 
 	/* The day_items vector. */
 	day_store_items(get_slctd_day(), 1, day_get_days());
@@ -88,7 +88,7 @@ static void do_storage(int day_changed)
 	if (day_changed)
 		ui_day_sel_reset();
 	else
-		ui_day_set_sel(&slctd_item);
+		ui_day_set_saved_sel(&slctd_item);
 
 	slctd_item = empty_day;
 }

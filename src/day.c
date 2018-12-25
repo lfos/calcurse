@@ -510,7 +510,7 @@ void day_popup_item(struct day_item *day)
 		struct apoint apt_tmp;
 		apt_tmp.start = day->start;
 		apt_tmp.dur = day_item_get_duration(day);
-		apoint_sec2str(&apt_tmp, ui_day_sel_day(), a_st, a_end);
+		apoint_sec2str(&apt_tmp, ui_day_sel_date(), a_st, a_end);
 		item_in_popup(a_st, a_end, day_item_get_mesg(day),
 			      _("Appointment:"));
 	} else {

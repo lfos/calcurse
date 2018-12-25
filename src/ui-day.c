@@ -40,9 +40,10 @@ struct day_item day_cut[38] = { {0, 0, 0, {NULL}} };
 
 /*
  * Return the selected APP item.
- * This is a pointer into the day vector and invalid after a day vector rebuild.
+ * This is a pointer into the day vector and invalid after a day vector rebuild,
+ * but the (order, item) data may be used to refind the object.
  */
-struct day_item *ui_day_sel(void)
+struct day_item *ui_day_get_sel(void)
 {
 	if (day_item_count(0) <= 0)
 		return &empty_day;
@@ -51,11 +52,25 @@ struct day_item *ui_day_sel(void)
 }
 
 /*
- * Return the day (midnight) of the selected item in the APP panel.
+ * Set the selected APP item from a saved day_item.
  */
-time_t ui_day_sel_day(void)
+void ui_day_set_saved_sel(struct day_item *d)
 {
-	return update_time_in_date(ui_day_sel()->order, 0, 0);
+	if (!d)
+		return;
+	/* Get the position in the day_items vector ... */
+	int n = day_get_position(d->order, d->item);
+	/* ... and set the selection in the APP listbox. */
+	if (n != -1)
+		listbox_set_sel(&lb_apt, n);
+}
+
+/*
+ * Return the date (midnight) of the selected item in the APP panel.
+ */
+time_t ui_day_sel_date(void)
+{
+	return update_time_in_date(ui_day_get_sel()->order, 0, 0);
 }
 
 /*
@@ -63,7 +78,7 @@ time_t ui_day_sel_day(void)
  */
 int ui_day_dummy(void)
 {
-	struct day_item *d = ui_day_sel();
+	struct day_item *d = ui_day_get_sel();
 
 	return d ? d->start == DUMMY : 0;
 }
@@ -389,7 +404,7 @@ void ui_day_item_edit(void)
 	if (day_item_count(0) <= 0)
 		return;
 
-	struct day_item *p = ui_day_sel();
+	struct day_item *p = ui_day_get_sel();
 
 	switch (p->type) {
 	case RECUR_EVNT:
@@ -515,7 +530,7 @@ void ui_day_item_pipe(void)
 	if (day_item_count(0) <= 0)
 		return;
 
-	struct day_item *p = ui_day_sel();
+	struct day_item *p = ui_day_get_sel();
 
 	status_mesg(_("Pipe item to external command:"), "");
 	if (getstring(win[STA].p, cmd, BUFSIZ, 0, 1) != GETSTRING_VALID)
@@ -571,7 +586,7 @@ void ui_day_item_add(void)
 	const char *enter_str = _("Press [Enter] to continue");
 	char item_time[LTIME] = "";
 	char item_mesg[BUFSIZ] = "";
-	time_t start = ui_day_sel_day(), end, saved = start;
+	time_t start = ui_day_sel_date(), end, saved = start;
 	unsigned dur;
 	int is_appointment = 1;
 	union aptev_ptr item;
@@ -698,7 +713,7 @@ void ui_day_item_delete(unsigned reg)
 	if (day_item_count(0) <= 0)
 		return;
 
-	struct day_item *p = ui_day_sel();
+	struct day_item *p = ui_day_get_sel();
 
 	if (conf.confirm_delete) {
 		if (status_ask_bool(del_app_str) != 1) {
@@ -730,11 +745,11 @@ void ui_day_item_delete(unsigned reg)
 		case 2:
 			if (p->type == RECUR_EVNT)
 				recur_event_find_occurrence(p->item.rev,
-							    ui_day_sel_day(),
+							    ui_day_sel_date(),
 							    &occurrence);
 			else
 				recur_apoint_find_occurrence(p->item.rapt,
-							     ui_day_sel_day(),
+							     ui_day_sel_date(),
 							     &occurrence);
 			day_item_add_exc(p, occurrence);
 			io_set_modified();
@@ -945,7 +960,7 @@ void ui_day_item_copy(unsigned reg)
 	if (day_item_count(0) <= 0 || reg == REG_BLACK_HOLE)
 		return;
 
-	struct day_item *item = ui_day_sel();
+	struct day_item *item = ui_day_get_sel();
 	ui_day_item_cut_free(reg);
 	day_item_fork(item, &day_cut[reg]);
 }
@@ -959,7 +974,7 @@ void ui_day_item_paste(unsigned reg)
 		return;
 
 	day_item_fork(&day_cut[reg], &day);
-	day_paste_item(&day, ui_day_sel_day());
+	day_paste_item(&day, ui_day_sel_date());
 	cal_set_slctd_item(&day);
 	io_set_modified();
 	ui_calendar_monthly_view_cache_set_invalid();
@@ -973,20 +988,6 @@ void ui_day_load_items(void)
 void ui_day_sel_reset(void)
 {
 	listbox_set_sel(&lb_apt, 0);
-}
-
-/*
- * Set the selected APP item from a saved day_item.
- */
-void ui_day_set_sel(struct day_item *d)
-{
-	if (!d)
-		return;
-	/* Get the position in the day_items vector ... */
-	int n = day_get_position(d->order, d->item);
-	/* ... and set the selection in the APP listbox. */
-	if (n != -1)
-		listbox_set_sel(&lb_apt, n);
 }
 
 int ui_day_sel_move(int delta)
@@ -1092,7 +1093,7 @@ void ui_day_popup_item(void)
 	if (day_item_count(0) <= 0)
 		return;
 
-	struct day_item *item = ui_day_sel();
+	struct day_item *item = ui_day_get_sel();
 	day_popup_item(item);
 }
 
@@ -1101,7 +1102,7 @@ void ui_day_flag(void)
 	if (day_item_count(0) <= 0)
 		return;
 
-	struct day_item *item = ui_day_sel();
+	struct day_item *item = ui_day_get_sel();
 	day_item_switch_notify(item);
 	io_set_modified();
 }
@@ -1111,7 +1112,7 @@ void ui_day_view_note(void)
 	if (day_item_count(0) <= 0)
 		return;
 
-	struct day_item *item = ui_day_sel();
+	struct day_item *item = ui_day_get_sel();
 	day_view_note(item, conf.pager);
 }
 
@@ -1120,7 +1121,7 @@ void ui_day_edit_note(void)
 	if (day_item_count(0) <= 0)
 		return;
 
-	struct day_item *item = ui_day_sel();
+	struct day_item *item = ui_day_get_sel();
 	day_edit_note(item, conf.editor);
 	io_set_modified();
 }
