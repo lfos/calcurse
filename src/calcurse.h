@@ -761,7 +761,7 @@ int parse_args(int, char **);
 extern struct day_item empty_day;
 int cal_set_slctd_item(struct day_item *);
 
-/* ui_calendar.c */
+/* ui-calendar.c */
 void ui_calendar_view_next(void);
 void ui_calendar_view_prev(void);
 void ui_calendar_set_view(int);
@@ -799,7 +799,7 @@ void custom_keys_config(void);
 void custom_config_main(void);
 
 /* day.c */
-int day_get_nb(void);
+int day_get_days(void);
 void day_free_vector(void);
 char *day_item_get_mesg(struct day_item *);
 char *day_item_get_note(struct day_item *);
@@ -937,7 +937,7 @@ void listbox_draw_deco(struct listbox *, int);
 void listbox_display(struct listbox *, int);
 int listbox_get_sel(struct listbox *);
 void listbox_set_sel(struct listbox *, unsigned);
-void listbox_sel_move(struct listbox *, int);
+int listbox_sel_move(struct listbox *, int);
 
 /* mem.c */
 void *xmalloc(size_t);
@@ -1106,7 +1106,8 @@ struct day_item *ui_day_sel(void);
 time_t ui_day_sel_day(void);
 void ui_day_sel_reset(void);
 void ui_day_set_sel(struct day_item *);
-void ui_day_sel_move(int);
+int ui_day_sel_move(int);
+void ui_day_sel_daybegin();
 void ui_day_draw(int, WINDOW *, int, int, void *);
 enum listbox_row_type ui_day_row_type(int, void *);
 int ui_day_height(int, void *);

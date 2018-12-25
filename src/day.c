@@ -42,13 +42,13 @@
 
 #include "calcurse.h"
 
-static unsigned day_nb = 7;
+static unsigned day_days = 5;
 static vector_t day_items;
 static unsigned day_items_nb = 0;
 
-int day_get_nb(void)
+int day_get_days(void)
 {
-	return day_nb;
+	return day_days;
 }
 
 static void day_free(struct day_item *day)
@@ -398,7 +398,7 @@ day_store_items(long date, int include_captions, int n)
 			day_items_nb++;
 		}
 
-		if (include_captions && i < n - 1)
+		if (include_captions)
 			day_add_item(DAY_SEPARATOR, 0, ENDOFDAY(date), p);
 	}
 

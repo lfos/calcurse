@@ -187,10 +187,14 @@ void listbox_set_sel(struct listbox *lb, unsigned pos)
 	listbox_fix_visible_region(lb);
 }
 
-void listbox_sel_move(struct listbox *lb, int delta)
+/* Returns true if the move succeeded. */
+int listbox_sel_move(struct listbox *lb, int delta)
 {
+
+	int saved_sel = lb->item_sel;
+
 	if (lb->item_count == 0)
-		return;
+		return 0;
 
 	lb->item_sel += delta;
 	if (lb->item_sel < 0)
@@ -200,7 +204,9 @@ void listbox_sel_move(struct listbox *lb, int delta)
 
 	listbox_fix_sel(lb, delta);
 	if (lb->item_sel < 0)
-		return;
+		return 0;
 
 	listbox_fix_visible_region(lb);
+
+	return lb->item_sel != saved_sel;
 }

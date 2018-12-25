@@ -981,9 +981,31 @@ void ui_day_set_sel(struct day_item *d)
 		listbox_set_sel(&lb_apt, n);
 }
 
-void ui_day_sel_move(int delta)
+int ui_day_sel_move(int delta)
 {
-	listbox_sel_move(&lb_apt, delta);
+	return listbox_sel_move(&lb_apt, delta);
+}
+
+/* Move the selection to the beginning of next or last day. */
+static void daybegin(void)
+{
+	int i = listbox_get_sel(&lb_apt);
+
+	while (day_get_item(i)->type != DAY_SEPARATOR)
+		i++;
+	if (i == lb_apt.item_count - 1) {
+		while (day_get_item(i)->type != DAY_HEADING)
+			i--;
+	 } else
+		i++;
+	listbox_set_sel(&lb_apt, i);
+}
+
+/* Move the selection n days forward. */
+void ui_day_sel_daybegin(unsigned n)
+{
+	for (int i = 1; i < n; i++)
+		daybegin();
 }
 
 static char *fmt_day_heading(time_t date)
