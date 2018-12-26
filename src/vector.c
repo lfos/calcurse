@@ -124,5 +124,5 @@ void vector_remove(vector_t *v, unsigned n)
 
 	v->count--;
 	for (i = n; i < v->count; i++)
-		v->data[i + 1] = v->data[i];
+		v->data[i] = v->data[i + 1];
 }
