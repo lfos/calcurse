@@ -298,7 +298,7 @@ static int day_store_recur_events(long date)
  * structure dedicated to the selected day.
  * Returns the number of appointments for the selected day.
  */
-static int day_store_apoints(long date)
+static int day_store_apoints(long date, int include_captions)
 {
 	llist_item_t *i;
 	union aptev_ptr p;
@@ -319,6 +319,14 @@ static int day_store_apoints(long date)
 			     apt->start < date ? date + 1 : apt->start,
 			     p);
 		a_nb++;
+		if (include_captions) {
+			day_add_item(
+				APPT_SEPARATOR,
+				0,
+				apt->start < date ? date + 2 : apt->start + 1,
+				p);
+			a_nb++;
+		}
 	}
 	LLIST_TS_UNLOCK(&alist_p);
 
@@ -332,10 +340,11 @@ static int day_store_apoints(long date)
  * structure dedicated to the selected day.
  * Returns the number of recurrent appointments for the selected day.
  */
-static int day_store_recur_apoints(long date)
+static int day_store_recur_apoints(long date, int include_captions)
 {
 	llist_item_t *i;
 	union aptev_ptr p;
+	time_t occur;
 	int a_nb = 0;
 
 	LLIST_TS_LOCK(&recur_alist_p);
@@ -343,15 +352,21 @@ static int day_store_recur_apoints(long date)
 		struct recur_apoint *rapt = LLIST_TS_GET_DATA(i);
 
 		p.rapt = rapt;
-
-		time_t occurrence;
 		/* As for appointments */
-		if (recur_apoint_find_occurrence(rapt, date, &occurrence)) {
+		if (recur_apoint_find_occurrence(rapt, date, &occur)) {
 			day_add_item(RECUR_APPT,
-				     occurrence,
-				     occurrence < date ? date + 1 : occurrence,
+				     occur,
+				     occur < date ? date + 1 : occur,
 				     p);
 			a_nb++;
+			if (include_captions) {
+				day_add_item(
+					APPT_SEPARATOR,
+					0,
+					occur < date ? date + 2 : occur + 1,
+					p);
+				a_nb++;
+			}
 		}
 	}
 	LLIST_TS_UNLOCK(&recur_alist_p);
@@ -382,8 +397,8 @@ day_store_items(long date, int include_captions, int n)
 
 		events = day_store_recur_events(date);
 		events += day_store_events(date);
-		apts = day_store_recur_apoints(date);
-		apts += day_store_apoints(date);
+		apts = day_store_recur_apoints(date, include_captions);
+		apts += day_store_apoints(date, include_captions);
 
 		if (include_captions && events > 0 && apts > 0)
 			day_add_item(EVNT_SEPARATOR, 0, date, p);
@@ -403,6 +418,17 @@ day_store_items(long date, int include_captions, int n)
 	}
 
 	VECTOR_SORT(&day_items, day_cmp);
+
+	if (!include_captions)
+		return;
+
+	/* Remove the last APPT_SEPARATOR of each day, if any. */
+#define ITEM_TYPE(n)	((struct day_item *)VECTOR_NTH(&day_items, (n)))->type
+	i = 0;
+	VECTOR_FOREACH(&day_items, i)
+		if (ITEM_TYPE(i) == DAY_SEPARATOR &&
+		    ITEM_TYPE(i - 1) == APPT_SEPARATOR)
+			VECTOR_REMOVE(&day_items, i - 1);
 }
 
 /*

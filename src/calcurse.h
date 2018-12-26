@@ -405,6 +405,7 @@ enum day_item_type {
 	EVNT_SEPARATOR,
 	RECUR_APPT,
 	APPT,
+	APPT_SEPARATOR,
 	DAY_SEPARATOR
 };
 

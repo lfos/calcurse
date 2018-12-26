@@ -1064,6 +1064,7 @@ enum listbox_row_type ui_day_row_type(int n, void *cb_data)
 
 	if (item->type == DAY_HEADING ||
 	    item->type == EVNT_SEPARATOR ||
+	    item->type == APPT_SEPARATOR ||
 	    item->type == DAY_SEPARATOR)
 		return LISTBOX_ROW_CAPTION;
 	else
@@ -1074,9 +1075,9 @@ int ui_day_height(int n, void *cb_data)
 {
 	struct day_item *item = day_get_item(n);
 
-	if (item->type == APPT || item->type == RECUR_APPT)
-		return 3;
-	else if (item->type == DAY_SEPARATOR)
+	if (item->type == APPT ||
+	    item->type == RECUR_APPT ||
+	    item->type == DAY_SEPARATOR)
 		return 2;
 	else
 		return 1;
