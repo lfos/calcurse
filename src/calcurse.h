@@ -1093,7 +1093,7 @@ void todo_init_list(void);
 void todo_free_list(void);
 
 /* ui-day.c */
-int ui_day_dummy(void);
+int ui_day_dummy(struct day_item *);
 void ui_day_item_add(void);
 void ui_day_item_delete(unsigned);
 void ui_day_item_edit(void);

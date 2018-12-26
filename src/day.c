@@ -42,7 +42,7 @@
 
 #include "calcurse.h"
 
-static unsigned day_days = 5;
+static unsigned day_days = 1;
 static vector_t day_items;
 static unsigned day_items_nb = 0;
 
@@ -405,7 +405,7 @@ day_store_items(long date, int include_captions, int n)
 
 		day_items_nb += events + apts;
 
-		if (events == 0 && apts == 0) {
+		if (include_captions && events == 0 && apts == 0) {
 			/* Insert dummy event. */
 			d.ev = &dummy;
 			dummy.mesg = _("(none)");

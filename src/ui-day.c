@@ -74,13 +74,11 @@ time_t ui_day_sel_date(void)
 }
 
 /*
- * Return true if the selected APP item is the dummy event.
+ * Return true if the day_item is the dummy event.
  */
-int ui_day_dummy(void)
+int ui_day_dummy(struct day_item *item)
 {
-	struct day_item *d = ui_day_get_sel();
-
-	return d ? d->start == DUMMY : 0;
+	return item->item.ev == &dummy;
 }
 
 /*
