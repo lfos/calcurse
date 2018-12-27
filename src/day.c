@@ -42,7 +42,7 @@
 
 #include "calcurse.h"
 
-static unsigned day_days = 1;
+static unsigned day_days = 5;
 static vector_t day_items;
 static unsigned day_items_nb = 0;
 

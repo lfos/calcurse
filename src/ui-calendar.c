@@ -343,15 +343,24 @@ draw_monthly_view(struct scrollwin *sw, struct date *current_day,
 		  unsigned sunday_first)
 {
 	struct date check_day;
-	int c_day, c_day_1, day_1_sav, numdays, j;
+	int c_day, w_day, numdays, j;
 	unsigned yr, mo;
-	int w, ofs_x, ofs_y;
-	int item_this_day = 0;
+	int w, monthw, ofs_x, ofs_y;
+	int day_attr = 0;
 	struct tm t;
 	char *cp;
+	char bo, bc;
+	int day_bar = 0, bracket_open, bracket_close;
 
-	mo = slctd_day.mm;
-	yr = slctd_day.yyyy;
+	mo = check_day.mm = slctd_day.mm;
+	yr = check_day.yyyy = slctd_day.yyyy;
+
+	/* Brackets for (multiple) days in the APP panel. */
+	bracket_open = slctd_day.dd;
+	bracket_close = slctd_day.dd + day_get_days() - 1;
+
+	/* Width of monthly display is 7 * 4 - 1. */
+	monthw = 27;
 
 	/* offset for centering calendar in window */
 	w = wins_sbar_width() - 2;
@@ -364,12 +373,11 @@ draw_monthly_view(struct scrollwin *sw, struct date *current_day,
 		++numdays;
 
 	/*
-	 * the first calendar day will be monday or sunday, depending on
+	 * the first week day will be monday or sunday, depending on
 	 * 'week_begins_on_monday' value
 	 */
-	c_day_1 =
-	    (int)((ymd_to_scalar(yr, mo, 1 + sunday_first) -
-		   (long)1) % 7L);
+	w_day =
+	    (int)((ymd_to_scalar(yr, mo, 1 + sunday_first) - (long)1) % 7L);
 
 	/* Print the week number, calculated from monday. */
 	t = get_first_weekday(0);
@@ -397,59 +405,75 @@ draw_monthly_view(struct scrollwin *sw, struct date *current_day,
 	custom_remove_attr(sw->inner, ATTR_HIGHEST);
 	WINS_CALENDAR_UNLOCK;
 
-	day_1_sav = (c_day_1 + 1) * 3 + c_day_1 - 7;
-
 	/* invalidate cache if a new month is selected */
 	if (yr * YEARINMONTHS + mo != monthly_view_cache_month) {
 		monthly_view_cache_month = yr * YEARINMONTHS + mo;
 		monthly_view_cache_valid = 0;
 	}
 
-	for (c_day = 1; c_day <= numdays; ++c_day, ++c_day_1, c_day_1 %= 7) {
+	for (c_day = 1; c_day <= numdays; ++c_day, ++w_day, w_day %= 7) {
 		unsigned attr;
 
-		check_day.dd = c_day;
-		check_day.mm = slctd_day.mm;
-		check_day.yyyy = slctd_day.yyyy;
+		/* Next line, week over. */
+		if (!w_day && 1 != c_day) {
+			ofs_y++;
+			ofs_x = (w - monthw) / 2;
+		}
+
+		/* The days visible in the APP panel. */
+		bo =  bc = ' ';
+		if (c_day == bracket_open)
+			bo = '[';
+		if (c_day == bracket_close)
+			bc = ']';
 
 		/* check if the day contains an event or an appointment */
+		check_day.dd = c_day;
 		if (monthly_view_cache_valid) {
-			item_this_day = monthly_view_cache[c_day - 1];
+			day_attr = monthly_view_cache[c_day - 1];
 		} else {
-			item_this_day = monthly_view_cache[c_day - 1] =
+			day_attr = monthly_view_cache[c_day - 1] =
 			    day_check_if_item(check_day);
 		}
 
-		/* Go to next line, the week is over. */
-		if (!c_day_1 && 1 != c_day) {
-			ofs_y++;
-			ofs_x = (w - 27) / 2 - day_1_sav - 4 * c_day;
-		}
-
+		/* Set day colours. */
 		if (c_day == current_day->dd
 		    && current_day->mm == slctd_day.mm
-		    && current_day->yyyy == slctd_day.yyyy
-		    && current_day->dd != slctd_day.dd)
+		    && current_day->yyyy == slctd_day.yyyy)
 			attr = ATTR_LOWEST;
-		else if (c_day == slctd_day.dd)
-			attr = ATTR_MIDDLE;
-		else if (item_this_day == 1)
-			attr = ATTR_LOW;
-		else if (item_this_day == 2)
-			attr = ATTR_TRUE;
 		else
-			attr = 0;
+			attr = day_attr;
 
 		WINS_CALENDAR_LOCK;
 		if (attr)
 			custom_apply_attr(sw->inner, attr);
 		mvwprintw(sw->inner, ofs_y + 1,
-			  ofs_x + day_1_sav + 4 * c_day + 1, "%2d", c_day);
+				     ofs_x  + w_day * 4,
+				     "%c%2d%c", bo, c_day, bc);
+		/* Attributes for the APP day range. */
+		if (day_bar) {
+			if (c_day >= slctd_day.dd &&
+			    c_day < slctd_day.dd + day_get_days())
+				mvwchgat(sw->inner,
+					 ofs_y + 1, ofs_x + w_day * 4,
+					 4, A_REVERSE,
+					 (colorize ? COLR_DEFAULT : 0), NULL);
+		} else { /* red brackets */
+			if (bo != ' ')
+				mvwchgat(sw->inner,
+					 ofs_y + 1, ofs_x + w_day * 4,
+					 1, A_BOLD,
+					 (colorize ? COLR_RED : 0), NULL);
+			if (bc != ' ')
+				mvwchgat(sw->inner,
+					 ofs_y + 1, ofs_x + 3 + w_day * 4,
+					 1,  A_BOLD,
+					 (colorize ? COLR_RED : 0), NULL);
+		}
 		if (attr)
 			custom_remove_attr(sw->inner, attr);
 		WINS_CALENDAR_UNLOCK;
 	}
-
 	monthly_view_cache_valid = 1;
 }
 
