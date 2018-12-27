@@ -437,6 +437,9 @@ day_store_items(time_t date, int include_captions, int n)
 	day_init_vector();
 
 	for (i = 0; i < n; i++, date = NEXTDAY(date)) {
+		if (YEAR1902_2037 && !check_sec(&date))
+			break;
+
 		if (include_captions)
 			day_add_item(DAY_HEADING, 0, date, p);
 
@@ -584,10 +587,10 @@ void day_popup_item(struct day_item *day)
 }
 
 /*
- * Check whether there is an item on a given day.
- *
- * Returns 2 if the selected day contains a regular event or appointment.
- * Returns 1 if the selected day does not contain a regular event or
+ * Check whether there is an item on a given day and return the colour
+ * attribute for the item:
+ * ATTR_TRUE if the selected day contains a regular event or appointment,
+ * ATTR_LOW if the selected day does not contain a regular event or
  * appointment but an occurrence of a recurrent item. Returns 0 otherwise.
  */
 int day_check_if_item(struct date day)
@@ -595,23 +598,23 @@ int day_check_if_item(struct date day)
 	const time_t t = date2sec(day, 0, 0);
 
 	if (LLIST_FIND_FIRST(&eventlist, (time_t *)&t, event_inday))
-		return 2;
+		return ATTR_TRUE;
 
 	LLIST_TS_LOCK(&alist_p);
 	if (LLIST_TS_FIND_FIRST(&alist_p, (time_t *)&t, apoint_inday)) {
 		LLIST_TS_UNLOCK(&alist_p);
-		return 2;
+		return ATTR_TRUE;
 	}
 	LLIST_TS_UNLOCK(&alist_p);
 
 	if (LLIST_FIND_FIRST(&recur_elist, (time_t *)&t, recur_event_inday))
-		return 1;
+		return ATTR_LOW;
 
 	LLIST_TS_LOCK(&recur_alist_p);
 	if (LLIST_TS_FIND_FIRST(&recur_alist_p, (time_t *)&t,
 				recur_apoint_inday)) {
 		LLIST_TS_UNLOCK(&recur_alist_p);
-		return 1;
+		return ATTR_LOW;
 	}
 	LLIST_TS_UNLOCK(&recur_alist_p);
 
