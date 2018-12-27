@@ -145,8 +145,6 @@
 #define ENDOFDAY(date)	(NEXTDAY(date) - 1)
 #define HOURINSEC       (HOURINMIN * MININSEC)
 
-#define MAXDAYSPERMONTH 31
-
 /* Calendar window. */
 #define CALHEIGHT       8
 
@@ -1176,6 +1174,7 @@ int get_item_min(time_t);
 struct tm date2tm(struct date, unsigned, unsigned);
 time_t date2sec(struct date, unsigned, unsigned);
 time_t utcdate2sec(struct date, unsigned, unsigned);
+int date_cmp(struct date *, struct date *);
 int date_cmp_day(time_t, time_t);
 char *date_sec2date_str(time_t, const char *);
 void date_sec2date_fmt(time_t, const char *, char *);
