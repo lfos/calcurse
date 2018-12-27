@@ -800,6 +800,7 @@ static void general_option_edit(int i)
 		break;
 	case FIRST_DAY_OF_WEEK:
 		ui_calendar_change_first_day_of_week();
+		ui_calendar_monthly_view_cache_set_invalid();
 		break;
 	case OUTPUT_DATE_FMT:
 		status_mesg(output_datefmt_str, "");

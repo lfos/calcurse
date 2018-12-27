@@ -54,7 +54,8 @@ static void (*draw_calendar[CAL_VIEWS]) (struct scrollwin *, struct date *,
 					 unsigned) = {
 draw_monthly_view, draw_weekly_view};
 
-static int monthly_view_cache[MAXDAYSPERMONTH];
+/* Six weeks cover a month. */
+static int monthly_view_cache[WEEKINDAYS * 6];
 static int monthly_view_cache_valid = 0;
 static int monthly_view_cache_month = 0;
 
@@ -207,29 +208,6 @@ static int ui_calendar_get_wday(struct date *date)
 	return t.tm_wday;
 }
 
-static unsigned months_to_days(unsigned month)
-{
-	return (month * 3057 - 3007) / 100;
-}
-
-static long years_to_days(unsigned year)
-{
-	return year * 365L + year / 4 - year / 100 + year / 400;
-}
-
-static long ymd_to_scalar(unsigned year, unsigned month, unsigned day)
-{
-	long scalar;
-
-	scalar = day + months_to_days(month);
-	if (month > 2)
-		scalar -= ISLEAP(year) ? 1 : 2;
-	year--;
-	scalar += years_to_days(year);
-
-	return scalar;
-}
-
 void ui_calendar_monthly_view_cache_set_invalid(void)
 {
 	monthly_view_cache_valid = 0;
@@ -308,6 +286,29 @@ static int ISO8601weeknum(const struct tm *t)
 	return wnum;
 }
 
+/*
+ * Return the tm structure for the first day of the first week
+ * (containing a day) of the selected month.
+ */
+static struct tm get_first_day(unsigned sunday_first)
+{
+	struct tm t;
+	struct date d;
+
+	d = slctd_day;
+
+	/* get the first day of the month */
+	d.dd = 1;
+	t = date2tm(d, 0, 0);
+	mktime(&t);
+	/* get the first day of the week */
+	date_change(&t, 0,
+		    -(sunday_first ?
+		      t.tm_wday :
+		      (t.tm_wday + WEEKINDAYS - 1) % WEEKINDAYS));
+	return t;
+}
+
 static struct tm get_first_weekday(unsigned sunday_first)
 {
 	int c_wday, days_to_remove;
@@ -342,60 +343,50 @@ static void
 draw_monthly_view(struct scrollwin *sw, struct date *current_day,
 		  unsigned sunday_first)
 {
-	struct date check_day;
-	int c_day, c_day_1, day_1_sav, numdays, j;
+	struct date c_day;
+	int slctd, w_day, numdays, j, week = 0;
 	unsigned yr, mo;
-	int w, ofs_x, ofs_y;
-	int item_this_day = 0;
-	struct tm t;
+	int w, monthw, weekw, dayw, ofs_x, ofs_y;
+	struct tm t, t_first;
 	char *cp;
+	char bo, bc;
+	unsigned attr, day_attr;
+	int first_day, last_day;
 
 	werase(sw->inner);
+
+	/*
+	 * number of days to display
+	 */
+	first_day = last_day = 0;
+	/* days in the selected month */
+	numdays = days[slctd_day.mm - 1];
+	if (2 == slctd_day.mm && ISLEAP(slctd_day.yyyy))
+		++numdays;
+	/*
+	 * Step forward by week until past the last day of the month.
+	 * The first day of the first week may belong to the previous month.
+	 */
+	t = t_first = get_first_day(sunday_first);
+	t.tm_mday += WEEKINDAYS;
+	mktime(&t);
+	last_day += WEEKINDAYS;
+	/* following weeks */
+	for (j = t.tm_mday; j <= numdays; j += WEEKINDAYS )
+		last_day += WEEKINDAYS;
 
 	mo = slctd_day.mm;
 	yr = slctd_day.yyyy;
 
+	/* a week column plus seven day columns */
+	weekw = 3;
+	dayw = 4;
+	monthw = weekw + 7 * dayw;
+
 	/* offset for centering calendar in window */
 	w = wins_sbar_width() - 2;
 	ofs_y = 0;
-	ofs_x = (w - 27) / 2;
-
-	/* checking the number of days in february */
-	numdays = days[mo - 1];
-	if (2 == mo && ISLEAP(yr))
-		++numdays;
-
-	/*
-	 * the first calendar day will be monday or sunday, depending on
-	 * 'week_begins_on_monday' value
-	 */
-	c_day_1 =
-	    (int)((ymd_to_scalar(yr, mo, 1 + sunday_first) -
-		   (long)1) % 7L);
-
-	/* Print the week number, calculated from monday. */
-	t = get_first_weekday(0);
-	draw_week_number(sw, t);
-
-	/* Write the current month and year on top of the calendar */
-	WINS_CALENDAR_LOCK;
-	custom_apply_attr(sw->inner, ATTR_HIGHEST);
-	cp = nl_langinfo(MON_1 + mo - 1);
-	mvwprintw(sw->inner, ofs_y, (w - (strlen(cp) + 5)) / 2,
-		  "%s %d", cp, slctd_day.yyyy);
-	custom_remove_attr(sw->inner, ATTR_HIGHEST);
-	++ofs_y;
-
-	/* print the days, with regards to the first day of the week */
-	custom_apply_attr(sw->inner, ATTR_HIGHEST);
-	for (j = 0; j < WEEKINDAYS; j++) {
-		mvwaddstr(sw->inner, ofs_y, ofs_x + 4 * j,
-			nl_langinfo(ABDAY_1 + (1 + j - sunday_first) % WEEKINDAYS));
-	}
-	custom_remove_attr(sw->inner, ATTR_HIGHEST);
-	WINS_CALENDAR_UNLOCK;
-
-	day_1_sav = (c_day_1 + 1) * 3 + c_day_1 - 7;
+	ofs_x = (w - monthw) / 2;
 
 	/* invalidate cache if a new month is selected */
 	if (yr * YEARINMONTHS + mo != monthly_view_cache_month) {
@@ -403,51 +394,109 @@ draw_monthly_view(struct scrollwin *sw, struct date *current_day,
 		monthly_view_cache_valid = 0;
 	}
 
-	for (c_day = 1; c_day <= numdays; ++c_day, ++c_day_1, c_day_1 %= 7) {
-		unsigned attr;
+	WINS_CALENDAR_LOCK;
+	/* Print the day number. */
+	t = date2tm(slctd_day, 0, 0);
+	mktime(&t);
+	custom_apply_attr(sw->win, ATTR_HIGHEST);
+	mvwprintw(sw->win, conf.compact_panels ? 0 : 2,
+			   ofs_x + monthw - 6,
+			   "(#%3d)", t.tm_yday + 1);
+	custom_remove_attr(sw->win, ATTR_HIGHEST);
 
-		check_day.dd = c_day;
-		check_day.mm = slctd_day.mm;
-		check_day.yyyy = slctd_day.yyyy;
+	/* Write the current month and year on top of the calendar */
+	custom_apply_attr(sw->inner, ATTR_HIGHEST);
+	cp = nl_langinfo(MON_1 + mo - 1);
+	mvwprintw(sw->inner, ofs_y, (w - (strlen(cp) + 5)) / 2,
+		  "%s %d", cp, slctd_day.yyyy);
+	custom_remove_attr(sw->inner, ATTR_HIGHEST);
+
+	++ofs_y;
+
+	/* print the days with regard to the first day of the week */
+	custom_apply_attr(sw->inner, ATTR_HIGHEST);
+	for (j = 0; j < WEEKINDAYS; j++) {
+		mvwaddstr(sw->inner, ofs_y, ofs_x + weekw + 4 * j,
+			nl_langinfo(ABDAY_1 + (1 + j - sunday_first) % WEEKINDAYS));
+	}
+	custom_remove_attr(sw->inner, ATTR_HIGHEST);
+	WINS_CALENDAR_UNLOCK;
+
+	++ofs_y;
+
+	/* print the dates */
+	for (j = first_day, t = t_first, w_day = 0;
+	     j < last_day;
+	     j++, date_change(&t, 0, 1), w_day++, w_day %= WEEKINDAYS) {
+
+		c_day.dd = t.tm_mday;
+		c_day.mm = t.tm_mon + 1;
+		c_day.yyyy = t.tm_year + 1900;
+		slctd = !date_cmp(&c_day, &slctd_day);
+
+		/* Next line, week over. */
+		if (!w_day && j != first_day) {
+			ofs_y++;
+			ofs_x = (w - monthw) / 2;
+		}
+
+		/* Week number, beware of first and last week of the year. */
+		if (!w_day) {
+			if (j == first_day ||
+			    (mo == 1 && j == WEEKINDAYS) ||
+			    (mo == 12 && j >= 4 * WEEKINDAYS)) {
+				if (sunday_first)
+					date_change(&t, 0, 1);
+				week = ISO8601weeknum(&t);
+				if (sunday_first)
+					date_change(&t, 0, -1);
+			} else
+				week++;
+		}
+
+		/* Brackets for the selected day. */
+		bo = slctd ? '[' : ' ';
+		bc = slctd ? ']' : ' ';
 
 		/* check if the day contains an event or an appointment */
 		if (monthly_view_cache_valid) {
-			item_this_day = monthly_view_cache[c_day - 1];
+			day_attr = monthly_view_cache[j];
 		} else {
-			item_this_day = monthly_view_cache[c_day - 1] =
-			    day_check_if_item(check_day);
+			day_attr = monthly_view_cache[j] =
+			    day_check_if_item(c_day);
 		}
 
-		/* Go to next line, the week is over. */
-		if (!c_day_1 && 1 != c_day) {
-			ofs_y++;
-			ofs_x = (w - 27) / 2 - day_1_sav - 4 * c_day;
-		}
-
-		if (c_day == current_day->dd
-		    && current_day->mm == slctd_day.mm
-		    && current_day->yyyy == slctd_day.yyyy
-		    && current_day->dd != slctd_day.dd)
+		/* Set day colours. */
+		if (date_cmp(&c_day, current_day) == 0)
 			attr = ATTR_LOWEST;
-		else if (c_day == slctd_day.dd)
-			attr = ATTR_MIDDLE;
-		else if (item_this_day == 1)
-			attr = ATTR_LOW;
-		else if (item_this_day == 2)
-			attr = ATTR_TRUE;
 		else
-			attr = 0;
+			attr = day_attr;
 
 		WINS_CALENDAR_LOCK;
+		/* Print week number. */
+		if (!w_day) {
+			custom_apply_attr(sw->inner, ATTR_HIGHEST);
+			mvwprintw(sw->inner, ofs_y, ofs_x, "%2d", week);
+			custom_remove_attr(sw->inner, ATTR_HIGHEST);
+		}
+		/* Print date with attributes.*/
 		if (attr)
 			custom_apply_attr(sw->inner, attr);
-		mvwprintw(sw->inner, ofs_y + 1,
-			  ofs_x + day_1_sav + 4 * c_day + 1, "%2d", c_day);
+		mvwprintw(sw->inner, ofs_y, ofs_x  + weekw + w_day * 4,
+			  "%c%2d%c", bo, c_day.dd, bc);
 		if (attr)
 			custom_remove_attr(sw->inner, attr);
+		/* Colour the brackets. */
+		if (slctd) {
+			mvwchgat(sw->inner, ofs_y, ofs_x + weekw + w_day * 4,
+				 1, A_BOLD,
+				 (colorize ? (COLR_RED | A_BOLD) : 0), NULL);
+			mvwchgat(sw->inner, ofs_y, ofs_x + weekw + 3 + w_day * 4,
+				 1,  A_BOLD,
+				 (colorize ? (COLR_RED | A_BOLD) : 0), NULL);
+		}
 		WINS_CALENDAR_UNLOCK;
 	}
-
 	monthly_view_cache_valid = 1;
 }
 
@@ -704,10 +753,9 @@ void ui_calendar_move(enum move move, int count)
 		ret = 1;
 		/* NOTREACHED */
 	}
-	if (ret == 1 || (YEAR1902_2037 && t.tm_year < 2)
-		     || (YEAR1902_2037 && t.tm_year > 137)) {
-		char *out, *msg = _("The move failed (%d/%d/%d, ret=%d)."), ch;
-		asprintf(&out, msg, t.tm_mday, t.tm_mon + 1, t.tm_year + 1900, ret);
+	if (ret || !check_date(t.tm_year + 1900, t.tm_mon + 1, t.tm_mday)) {
+		char *out, *msg = _("The move failed (%d/%d/%d)."), ch;
+		asprintf(&out, msg, t.tm_mday, t.tm_mon + 1, t.tm_year + 1900);
 		do {
 			status_mesg(out, _("Press [ENTER] to continue"));
 			ch = keys_wgetch(win[KEY].p);

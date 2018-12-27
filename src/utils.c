@@ -432,6 +432,24 @@ time_t utcdate2sec(struct date day, unsigned hour, unsigned min)
 	return t;
 }
 
+/* Compare two calcurse dates. */
+int date_cmp(struct date *d1, struct date *d2)
+{
+	if (d1->yyyy < d2->yyyy)
+		return -1;
+	if (d1->yyyy > d2->yyyy)
+		return 1;
+	if (d1->mm < d2->mm)
+		return -1;
+	if (d1->mm > d2->mm)
+		return 1;
+	if (d1->dd < d2->dd)
+		return -1;
+	if (d1->dd > d2->dd)
+		return 1;
+	return 0;
+}
+
 /* Compare two dates (without comparing times). */
 int date_cmp_day(time_t d1, time_t d2)
 {
