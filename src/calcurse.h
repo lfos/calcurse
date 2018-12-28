@@ -282,6 +282,9 @@ struct conf {
 	enum win default_panel;
 	unsigned compact_panels;
 	unsigned system_dialogs;
+	unsigned multiple_days;
+	unsigned dayseparator;
+	unsigned empty_appt_line;
 	const char *editor;
 	const char *pager;
 	const char *mergetool;

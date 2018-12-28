@@ -1144,7 +1144,9 @@ int ui_day_height(int n, void *cb_data)
 
 	if (item->type == APPT ||
 	    item->type == RECUR_APPT)
-		return 3;
+		return conf.empty_appt_line ? 3 : 2;
+	else if (item->type == DAY_SEPARATOR)
+		return conf.dayseparator;
 	else
 		return 1;
 }
