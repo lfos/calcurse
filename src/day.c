@@ -42,7 +42,6 @@
 
 #include "calcurse.h"
 
-static unsigned day_days = 5;
 static vector_t day_items;
 static unsigned day_items_nb = 0;
 
@@ -109,7 +108,7 @@ int day_sel_index(void)
 
 int day_get_days(void)
 {
-	return day_days;
+	return conf.multiple_days;
 }
 
 static void day_free(struct day_item *day)
@@ -462,8 +461,8 @@ day_store_items(time_t date, int include_captions, int n)
 		}
 
 		if (include_captions) {
-			/* Two empty lines between days. */
-			if (apts == 0)
+			/* Empty line at end of day if appointments have one. */
+			if (apts == 0 && conf.empty_appt_line)
 				day_add_item(EMPTY_SEPARATOR, 0, ENDOFDAY(date), p);
 			day_add_item(DAY_SEPARATOR, 0, ENDOFDAY(date), p);
 		}
