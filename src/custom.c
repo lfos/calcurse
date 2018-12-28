@@ -528,6 +528,9 @@ enum {
 	DEFAULT_PANEL,
 	CAL_VIEW,
 	TODO_VIEW,
+	MULTIPLE_DAYS,
+	DAYSEPARATOR,
+	EMPTY_APPT_LINE,
 	AUTO_SAVE,
 	AUTO_GC,
 	PERIODIC_SAVE,
@@ -552,6 +555,9 @@ static void print_general_option(int i, WINDOW *win, int y, int hilt, void *cb_d
 		"appearance.defaultpanel = ",
 		"appearance.calendarview = ",
 		"appearance.todoview = ",
+		"general.multipledays = ",
+		"appearance.dayseparator = ",
+		"appearance.emptyline = ",
 		"general.autosave = ",
 		"general.autogc = ",
 		"general.periodicsave = ",
@@ -608,6 +614,30 @@ static void print_general_option(int i, WINDOW *win, int y, int hilt, void *cb_d
 		custom_remove_attr(win, ATTR_HIGHEST);
 		mvwaddstr(win, y + 1, XPOS, _("(preferred todo display)"));
 		break;
+	case DAYSEPARATOR:
+		custom_apply_attr(win, ATTR_HIGHEST);
+		mvwprintw(win, y, XPOS + strlen(opt[DAYSEPARATOR]), "%d",
+			  conf.dayseparator);
+		custom_remove_attr(win, ATTR_HIGHEST);
+		mvwaddstr(win, y + 1, XPOS,
+			  _("(lines between days in the appointments "
+			  "panel)"));
+		break;
+	case EMPTY_APPT_LINE:
+		print_bool_option_incolor(win, conf.empty_appt_line, y,
+					  XPOS + strlen(opt[EMPTY_APPT_LINE]));
+		mvwaddstr(win, y + 1, XPOS,
+			  _("(insert an empty line after each appointment)"));
+		break;
+	case MULTIPLE_DAYS:
+		custom_apply_attr(win, ATTR_HIGHEST);
+		mvwprintw(win, y, XPOS + strlen(opt[MULTIPLE_DAYS]), "%d",
+			  conf.multiple_days);
+		custom_remove_attr(win, ATTR_HIGHEST);
+		mvwaddstr(win, y + 1, XPOS,
+			  _("(number of days (1..21) to display in the appointments "
+			  "panel)"));
+		break;
 	case AUTO_SAVE:
 		print_bool_option_incolor(win, conf.auto_save, y,
 					  XPOS + strlen(opt[AUTO_SAVE]));
@@ -626,14 +656,15 @@ static void print_general_option(int i, WINDOW *win, int y, int hilt, void *cb_d
 			  conf.periodic_save);
 		custom_remove_attr(win, ATTR_HIGHEST);
 		mvwaddstr(win, y + 1, XPOS,
-			  _("(if not null, automatically save data every 'periodic_save' "
-			   "minutes)"));
+			  _("(if not null, automatically save data every "
+			  "'periodic_save' minutes)"));
 		break;
 	case SYSTEM_EVENTS:
 		print_bool_option_incolor(win, conf.systemevents, y,
 					  XPOS + strlen(opt[SYSTEM_EVENTS]));
 		mvwaddstr(win, y + 1, XPOS,
-			  _("(if YES, system events are turned into appointments (or else deleted))"));
+			  _("(if YES, system events are turned into "
+			  "appointments (or else deleted))"));
 		break;
 	case CONFIRM_QUIT:
 		print_bool_option_incolor(win, conf.confirm_quit, y,
@@ -761,6 +792,21 @@ static void general_option_edit(int i)
 			conf.todo_view++;
 		ui_todo_set_view(conf.todo_view);
 		ui_todo_load_items();
+		break;
+	case EMPTY_APPT_LINE:
+		conf.empty_appt_line = !conf.empty_appt_line;
+		break;
+	case MULTIPLE_DAYS:
+		if (conf.multiple_days == 21)
+			conf.multiple_days = 1;
+		else
+			conf.multiple_days++;
+		break;
+	case DAYSEPARATOR:
+		if (conf.dayseparator == 2)
+			conf.dayseparator = 0;
+		else
+			conf.dayseparator++;
 		break;
 	case HEADING_POS:
 		if (conf.heading_pos == RIGHT)
