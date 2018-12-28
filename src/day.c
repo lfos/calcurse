@@ -42,13 +42,12 @@
 
 #include "calcurse.h"
 
-static unsigned day_days = 5;
 static vector_t day_items;
 static unsigned day_items_nb = 0;
 
 int day_get_days(void)
 {
-	return day_days;
+	return conf.multiple_days;
 }
 
 static void day_free(struct day_item *day)

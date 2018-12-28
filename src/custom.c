@@ -526,6 +526,8 @@ void custom_color_config(void)
 enum {
 	COMPACT_PANELS,
 	DEFAULT_PANEL,
+	MULTIPLE_DAYS,
+	DAYS_BAR,
 	AUTO_SAVE,
 	AUTO_GC,
 	PERIODIC_SAVE,
@@ -548,6 +550,8 @@ static void print_general_option(int i, WINDOW *win, int y, int hilt, void *cb_d
 	char *opt[NB_OPTIONS] = {
 		"appearance.compactpanels = ",
 		"appearance.defaultpanel = ",
+		"general.multipledays = ",
+		"appearance.multipledaysbar = ",
 		"general.autosave = ",
 		"general.autogc = ",
 		"general.periodicsave = ",
@@ -588,6 +592,22 @@ static void print_general_option(int i, WINDOW *win, int y, int hilt, void *cb_d
 		mvwaddstr(win, y + 1, XPOS,
 			  _("(specifies the panel that is selected by default)"));
 		break;
+	case MULTIPLE_DAYS:
+		custom_apply_attr(win, ATTR_HIGHEST);
+		mvwprintw(win, y, XPOS + strlen(opt[MULTIPLE_DAYS]), "%d",
+			  conf.multiple_days);
+		custom_remove_attr(win, ATTR_HIGHEST);
+		mvwaddstr(win, y + 1, XPOS,
+			  _("(number of days displayed in the appointments "
+			  "panel)"));
+		break;
+	case DAYS_BAR:
+		print_bool_option_incolor(win, conf.days_bar, y,
+					  XPOS + strlen(opt[DAYS_BAR]));
+		mvwaddstr(win, y + XPOS, 1,
+			  _("(if set to YES, a bar replaces the brackets "
+			  "around displayed dates)"));
+		break;
 	case AUTO_SAVE:
 		print_bool_option_incolor(win, conf.auto_save, y,
 					  XPOS + strlen(opt[AUTO_SAVE]));
@@ -606,14 +626,15 @@ static void print_general_option(int i, WINDOW *win, int y, int hilt, void *cb_d
 			  conf.periodic_save);
 		custom_remove_attr(win, ATTR_HIGHEST);
 		mvwaddstr(win, y + 1, XPOS,
-			  _("(if not null, automatically save data every 'periodic_save' "
-			   "minutes)"));
+			  _("(if not null, automatically save data every "
+			  "'periodic_save' minutes)"));
 		break;
 	case SYSTEM_EVENTS:
 		print_bool_option_incolor(win, conf.systemevents, y,
 					  XPOS + strlen(opt[SYSTEM_EVENTS]));
 		mvwaddstr(win, y + 1, XPOS,
-			  _("(if YES, system events are turned into appointments (or else deleted))"));
+			  _("(if YES, system events are turned into "
+			  "appointments (or else deleted))"));
 		break;
 	case CONFIRM_QUIT:
 		print_bool_option_incolor(win, conf.confirm_quit, y,
@@ -705,6 +726,8 @@ static int general_option_height(int i, void *cb_data)
 
 static void general_option_edit(int i)
 {
+	const char *multiple_days_str =
+	    _("Enter the number of days (1,..,7) to display in the appointments panel");
 	const char *output_datefmt_str =
 	    _("Enter the date format (see 'man 3 strftime' for possible formats) ");
 	const char *input_datefmt_prefix = _("Enter the date format: ");
@@ -726,6 +749,18 @@ static void general_option_edit(int i)
 			conf.default_panel = CAL;
 		else
 			conf.default_panel++;
+		break;
+	case MULTIPLE_DAYS:
+		status_mesg(multiple_days_str, "");
+		/* At most a week (one digit). */
+		if (getstring(win[STA].p, buf, 2, 0, 1) == GETSTRING_VALID) {
+			val = atoi(buf);
+			if (val > 0 && val < 8)
+				conf.multiple_days = val;
+		}
+		break;
+	case DAYS_BAR:
+		conf.days_bar = !conf.days_bar;
 		break;
 	case HEADING_POS:
 		if (conf.heading_pos == RIGHT)

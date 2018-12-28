@@ -119,7 +119,8 @@ void vars_init(void)
 {
 	const char *ed, *pg, *mt;
 
-	/* Variables for user configuration */
+	conf.multiple_days = 5;
+	conf.days_bar = 0;
 	conf.confirm_quit = 1;
 	conf.confirm_delete = 1;
 	conf.auto_save = 1;

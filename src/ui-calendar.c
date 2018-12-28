@@ -350,7 +350,7 @@ draw_monthly_view(struct scrollwin *sw, struct date *current_day,
 	struct tm t;
 	char *cp;
 	char bo, bc;
-	int day_bar = 0, bracket_open, bracket_close;
+	int bracket_open, bracket_close;
 
 	mo = check_day.mm = slctd_day.mm;
 	yr = check_day.yyyy = slctd_day.yyyy;
@@ -422,10 +422,12 @@ draw_monthly_view(struct scrollwin *sw, struct date *current_day,
 
 		/* The days visible in the APP panel. */
 		bo =  bc = ' ';
-		if (c_day == bracket_open)
-			bo = '[';
-		if (c_day == bracket_close)
-			bc = ']';
+		if (!conf.days_bar) {
+			if (c_day == bracket_open)
+				bo = '[';
+			if (c_day == bracket_close)
+				bc = ']';
+		}
 
 		/* check if the day contains an event or an appointment */
 		check_day.dd = c_day;
@@ -451,7 +453,7 @@ draw_monthly_view(struct scrollwin *sw, struct date *current_day,
 				     ofs_x  + w_day * 4,
 				     "%c%2d%c", bo, c_day, bc);
 		/* Attributes for the APP day range. */
-		if (day_bar) {
+		if (conf.days_bar) {
 			if (c_day >= slctd_day.dd &&
 			    c_day < slctd_day.dd + day_get_days())
 				mvwchgat(sw->inner,
