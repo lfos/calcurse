@@ -62,7 +62,6 @@ void listbox_delete(struct listbox *lb)
 
 static void listbox_fix_visible_region(struct listbox *lb)
 {
-	unsigned last_line = lb->ch[lb->item_count] - 1;
 	int i;
 
 	wins_scrollwin_ensure_visible(&(lb->sw), lb->ch[lb->item_sel]);
@@ -74,9 +73,6 @@ static void listbox_fix_visible_region(struct listbox *lb)
 		wins_scrollwin_ensure_visible(&(lb->sw), lb->ch[i + 1] - 1);
 		i++;
 	}
-
-	if (wins_scrollwin_is_visible(&(lb->sw), last_line))
-		wins_scrollwin_set_lower(&(lb->sw), last_line);
 }
 
 void listbox_resize(struct listbox *lb, int y, int x, int h, int w)
@@ -118,8 +114,7 @@ void listbox_load_items(struct listbox *lb, int item_count)
 		ch += lb->fn_height(i, lb->cb_data);
 	}
 	lb->ch[item_count] = ch;
-
-	wins_scrollwin_set_linecount(&(lb->sw), ch);
+	wins_scrollwin_set_pad(&(lb->sw), ch);
 
 	if (item_count > 0 && lb->item_sel < 0)
 		lb->item_sel = 0;

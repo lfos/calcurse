@@ -980,7 +980,7 @@ void custom_keys_config(void)
 	clear();
 	nbdisplayed = ((notify_bar() ? row - 3 : row - 2) - LABELLINES) / LINESPERKEY;
 	wins_scrollwin_init(&kwin, 0, 0, notify_bar() ? row - 3 : row - 2, col, _("keys configuration"));
-	wins_scrollwin_set_linecount(&kwin, NBKEYS * LINESPERKEY);
+	wins_scrollwin_set_pad(&kwin, NBKEYS * LINESPERKEY);
 	wins_scrollwin_draw_deco(&kwin, 0);
 	custom_keys_config_bar();
 	selrow = selelm = 0;
