@@ -315,14 +315,25 @@ void wins_scrollwin_resize(struct scrollwin *sw, int y, int x, int h, int w)
 	delwin(sw->win);
 	sw->win = newwin(h, w, y, x);
 	sw->inner = newpad(BUFSIZ, w);
+	wins_scrollwin_set_pad(sw, sw->line_num);
 }
 
 /*
- * Set the number of lines to be displayed.
+ * Set the number of lines (pad size) and the line offset
+ * (the part of the pad to be displayed in the viewport).
  */
-void wins_scrollwin_set_linecount(struct scrollwin *sw, unsigned lines)
+void wins_scrollwin_set_pad(struct scrollwin *sw, unsigned lines)
 {
+	int inner_h = sw->h - (conf.compact_panels ? 2 : 4);
+
 	sw->line_num = lines;
+	if (lines > inner_h) {
+		/* pad partly displayed in viewport */
+		if (sw->line_off > lines - inner_h)
+			/* offset too big */
+			sw->line_off = lines - inner_h;
+	} else
+		sw->line_off = 0;
 }
 
 /* Free an already created scrollwin. */
@@ -404,12 +415,6 @@ void wins_scrollwin_down(struct scrollwin *sw, int amount)
 		sw->line_off = sw->line_num - inner_h;
 }
 
-int wins_scrollwin_is_visible(struct scrollwin *sw, unsigned line)
-{
-	int inner_h = sw->h - (conf.compact_panels ? 2 : 4);
-	return ((line >= sw->line_off) && (line < sw->line_off + inner_h));
-}
-
 void wins_scrollwin_ensure_visible(struct scrollwin *sw, unsigned line)
 {
 	int inner_h = sw->h - (conf.compact_panels ? 2 : 4);
@@ -418,12 +423,6 @@ void wins_scrollwin_ensure_visible(struct scrollwin *sw, unsigned line)
 		sw->line_off = line;
 	else if (line >= sw->line_off + inner_h)
 		sw->line_off = line - inner_h + 1;
-}
-
-void wins_scrollwin_set_lower(struct scrollwin *sw, unsigned line)
-{
-	int inner_h = sw->h - (conf.compact_panels ? 2 : 4);
-	sw->line_off = MAX((int)line - inner_h + 1, 0);
 }
 
 void wins_resize_panels(void)
