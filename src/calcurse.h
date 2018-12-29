@@ -1270,7 +1270,7 @@ void wins_slctd_next(void);
 void wins_init(void);
 void wins_scrollwin_init(struct scrollwin *, int, int, int, int, const char *);
 void wins_scrollwin_resize(struct scrollwin *, int, int, int, int);
-void wins_scrollwin_set_linecount(struct scrollwin *, unsigned);
+void wins_scrollwin_set_pad(struct scrollwin *, unsigned);
 void wins_scrollwin_delete(struct scrollwin *);
 void wins_scrollwin_draw_deco(struct scrollwin *, int);
 void wins_scrollwin_display(struct scrollwin *, int);

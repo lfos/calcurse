@@ -318,11 +318,21 @@ void wins_scrollwin_resize(struct scrollwin *sw, int y, int x, int h, int w)
 }
 
 /*
- * Set the number of lines to be displayed.
+ * Set the number of lines (pad size) and the line offset
+ * (the part of the pad to be displayed in the viewport).
  */
-void wins_scrollwin_set_linecount(struct scrollwin *sw, unsigned lines)
+void wins_scrollwin_set_pad(struct scrollwin *sw, unsigned lines)
 {
+	int inner_h = sw->h - (conf.compact_panels ? 2 : 4);
+
 	sw->line_num = lines;
+	if (lines > inner_h) {
+		/* pad partly displayed in viewport */
+		if (sw->line_off > lines - inner_h)
+			/* offset too big */
+			sw->line_off = lines - inner_h;
+	} else
+		sw->line_off = 0;
 }
 
 /* Free an already created scrollwin. */
