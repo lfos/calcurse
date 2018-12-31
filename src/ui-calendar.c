@@ -54,7 +54,8 @@ static void (*draw_calendar[CAL_VIEWS]) (struct scrollwin *, struct date *,
 					 unsigned) = {
 draw_monthly_view, draw_weekly_view};
 
-static int monthly_view_cache[MAXDAYSPERMONTH];
+/* Six weeks cover a month. */
+static int monthly_view_cache[WEEKINDAYS * 6];
 static int monthly_view_cache_valid = 0;
 static int monthly_view_cache_month = 0;
 
@@ -207,29 +208,6 @@ static int ui_calendar_get_wday(struct date *date)
 	return t.tm_wday;
 }
 
-static unsigned months_to_days(unsigned month)
-{
-	return (month * 3057 - 3007) / 100;
-}
-
-static long years_to_days(unsigned year)
-{
-	return year * 365L + year / 4 - year / 100 + year / 400;
-}
-
-static long ymd_to_scalar(unsigned year, unsigned month, unsigned day)
-{
-	long scalar;
-
-	scalar = day + months_to_days(month);
-	if (month > 2)
-		scalar -= ISLEAP(year) ? 1 : 2;
-	year--;
-	scalar += years_to_days(year);
-
-	return scalar;
-}
-
 void ui_calendar_monthly_view_cache_set_invalid(void)
 {
 	monthly_view_cache_valid = 0;
@@ -308,6 +286,29 @@ static int ISO8601weeknum(const struct tm *t)
 	return wnum;
 }
 
+/*
+ * Return the tm structure for the first day of the first week
+ * (containing a day) of the selected month.
+ */
+static struct tm get_first_day(unsigned sunday_first)
+{
+	struct tm t;
+	struct date d;
+
+	d = slctd_day;
+
+	/* get the first day of the month */
+	d.dd = 1;
+	t = date2tm(d, 0, 0);
+	mktime(&t);
+	/* get the first day of the week */
+	date_change(&t, 0,
+		    -(sunday_first ?
+		      t.tm_wday :
+		      (t.tm_wday + WEEKINDAYS - 1) % WEEKINDAYS));
+	return t;
+}
+
 static struct tm get_first_weekday(unsigned sunday_first)
 {
 	int c_wday, days_to_remove;
@@ -342,22 +343,34 @@ static void
 draw_monthly_view(struct scrollwin *sw, struct date *current_day,
 		  unsigned sunday_first)
 {
-	struct date check_day;
-	int c_day, w_day, numdays, j;
+	struct date c_day;
+	int w_day, numdays, j;
 	unsigned yr, mo;
 	int w, monthw, ofs_x, ofs_y;
-	int day_attr = 0;
-	struct tm t;
+	struct tm t, t_first;
 	char *cp;
 	char bo, bc;
+	unsigned attr, day_attr;
+	int first_day, last_day;
 	int bracket_open, bracket_close;
 
-	mo = check_day.mm = slctd_day.mm;
-	yr = check_day.yyyy = slctd_day.yyyy;
+	/*
+	 * number of days to display
+	 */
+	first_day = last_day = 0;
+	/* days in the selected month */
+	numdays = days[slctd_day.mm - 1];
+	if (2 == slctd_day.mm && ISLEAP(slctd_day.yyyy))
+		++numdays;
+	/* step forward by week until past the last day of the month */
+	t = t_first = get_first_day(sunday_first);
+	t.tm_mday += WEEKINDAYS; mktime(&t);
+	last_day += WEEKINDAYS;
+	for (j = t.tm_mday; j <= numdays; j += WEEKINDAYS )
+		last_day += WEEKINDAYS;
 
-	/* Brackets for (multiple) days in the APP panel. */
-	bracket_open = slctd_day.dd;
-	bracket_close = slctd_day.dd + day_get_days() - 1;
+	mo = slctd_day.mm;
+	yr = slctd_day.yyyy;
 
 	/* Width of monthly display is 7 * 4 - 1. */
 	monthw = 27;
@@ -367,36 +380,29 @@ draw_monthly_view(struct scrollwin *sw, struct date *current_day,
 	ofs_y = 0;
 	ofs_x = (w - 27) / 2;
 
-	/* checking the number of days in february */
-	numdays = days[mo - 1];
-	if (2 == mo && ISLEAP(yr))
-		++numdays;
-
-	/*
-	 * the first week day will be monday or sunday, depending on
-	 * 'week_begins_on_monday' value
-	 */
-	w_day =
-	    (int)((ymd_to_scalar(yr, mo, 1 + sunday_first) - (long)1) % 7L);
+	/* invalidate cache if a new month is selected */
+	if (yr * YEARINMONTHS + mo != monthly_view_cache_month) {
+		monthly_view_cache_month = yr * YEARINMONTHS + mo;
+		monthly_view_cache_valid = 0;
+	}
 
 	/* Print the week number, calculated from monday. */
 	t = get_first_weekday(0);
 	draw_week_number(sw, t);
 
-	/* Write the current month and year on top of the calendar */
 	WINS_CALENDAR_LOCK;
-	if (yr * YEARINMONTHS + mo != monthly_view_cache_month) {
-		/* erase the window if a new month is selected */
+	if (!monthly_view_cache_valid);
 		werase(sw_cal.inner);
-	}
+	/* Write the current month and year on top of the calendar */
 	custom_apply_attr(sw->inner, ATTR_HIGHEST);
 	cp = nl_langinfo(MON_1 + mo - 1);
 	mvwprintw(sw->inner, ofs_y, (w - (strlen(cp) + 5)) / 2,
 		  "%s %d", cp, slctd_day.yyyy);
 	custom_remove_attr(sw->inner, ATTR_HIGHEST);
+
 	++ofs_y;
 
-	/* print the days, with regards to the first day of the week */
+	/* print the days with regard to the first day of the week */
 	custom_apply_attr(sw->inner, ATTR_HIGHEST);
 	for (j = 0; j < WEEKINDAYS; j++) {
 		mvwaddstr(sw->inner, ofs_y, ofs_x + 4 * j,
@@ -405,43 +411,46 @@ draw_monthly_view(struct scrollwin *sw, struct date *current_day,
 	custom_remove_attr(sw->inner, ATTR_HIGHEST);
 	WINS_CALENDAR_UNLOCK;
 
-	/* invalidate cache if a new month is selected */
-	if (yr * YEARINMONTHS + mo != monthly_view_cache_month) {
-		monthly_view_cache_month = yr * YEARINMONTHS + mo;
-		monthly_view_cache_valid = 0;
-	}
+	/* print the dates */
+	for (j = first_day, t = t_first, w_day = 0, bracket_open = bracket_close = -1;
+	     j < last_day;
+	     j++, date_change(&t, 0, 1), w_day++, w_day %= WEEKINDAYS) {
 
-	for (c_day = 1; c_day <= numdays; ++c_day, ++w_day, w_day %= 7) {
-		unsigned attr;
+		c_day.dd = t.tm_mday;
+		c_day.mm = t.tm_mon + 1;
+		c_day.yyyy = t.tm_year + 1900;
 
 		/* Next line, week over. */
-		if (!w_day && 1 != c_day) {
+		if (!w_day && j != first_day) {
 			ofs_y++;
 			ofs_x = (w - monthw) / 2;
+		}
+
+		/* Brackets for (multiple) days in the APP panel. */
+		if (date_cmp(&c_day, &slctd_day) == 0) {
+			bracket_open = j;
+			bracket_close = j + day_get_days() - 1;
 		}
 
 		/* The days visible in the APP panel. */
 		bo =  bc = ' ';
 		if (!conf.days_bar) {
-			if (c_day == bracket_open)
+			if (j == bracket_open)
 				bo = '[';
-			if (c_day == bracket_close)
+			if (j == bracket_close)
 				bc = ']';
 		}
 
 		/* check if the day contains an event or an appointment */
-		check_day.dd = c_day;
 		if (monthly_view_cache_valid) {
-			day_attr = monthly_view_cache[c_day - 1];
+			day_attr = monthly_view_cache[j];
 		} else {
-			day_attr = monthly_view_cache[c_day - 1] =
-			    day_check_if_item(check_day);
+			day_attr = monthly_view_cache[j] =
+			    day_check_if_item(c_day);
 		}
 
 		/* Set day colours. */
-		if (c_day == current_day->dd
-		    && current_day->mm == slctd_day.mm
-		    && current_day->yyyy == slctd_day.yyyy)
+		if (date_cmp(&c_day, current_day) == 0)
 			attr = ATTR_LOWEST;
 		else
 			attr = day_attr;
@@ -451,22 +460,22 @@ draw_monthly_view(struct scrollwin *sw, struct date *current_day,
 			custom_apply_attr(sw->inner, attr);
 		mvwprintw(sw->inner, ofs_y + 1,
 				     ofs_x  + w_day * 4,
-				     "%c%2d%c", bo, c_day, bc);
+				     "%c%2d%c", bo, c_day.dd, bc);
 		/* Attributes for the APP day range. */
 		if (conf.days_bar) {
-			if (c_day >= slctd_day.dd &&
-			    c_day < slctd_day.dd + day_get_days())
+			if (j >= bracket_open &&
+			    j <= bracket_close)
 				mvwchgat(sw->inner,
 					 ofs_y + 1, ofs_x + w_day * 4,
 					 4, A_REVERSE,
 					 (colorize ? COLR_DEFAULT : 0), NULL);
 		} else { /* red brackets */
-			if (bo != ' ')
+			if (j == bracket_open)
 				mvwchgat(sw->inner,
 					 ofs_y + 1, ofs_x + w_day * 4,
 					 1, A_BOLD,
 					 (colorize ? COLR_RED : 0), NULL);
-			if (bc != ' ')
+			if (j == bracket_close)
 				mvwchgat(sw->inner,
 					 ofs_y + 1, ofs_x + 3 + w_day * 4,
 					 1,  A_BOLD,
