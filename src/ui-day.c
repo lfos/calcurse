@@ -82,6 +82,46 @@ int ui_day_dummy(struct day_item *item)
 }
 
 /*
+ * If possible, move the selection to the beginning
+ * of previous, current or next day.
+ */
+static void daybegin(int dir)
+{
+	dir = dir > 0 ? 1 : (dir < 0 ? -1 : 0);
+	int sel = listbox_get_sel(&lb_apt);
+
+	switch (dir) {
+	case -1:
+		while (day_get_item(sel)->type != DAY_HEADING)
+			sel--;
+		if (sel == 0)
+			goto leave;
+		sel--;
+		while (day_get_item(sel)->type != DAY_HEADING)
+			sel--;
+		break;
+	case 0:
+		while (day_get_item(sel)->type != DAY_HEADING)
+			sel--;
+		break;
+	case 1:
+		while (day_get_item(sel)->type != DAY_SEPARATOR)
+			sel++;
+		if (sel == lb_apt.item_count - 1) {
+			while (day_get_item(sel)->type != DAY_HEADING)
+				sel--;
+			goto leave;
+		} else
+			sel++;
+		while (day_get_item(sel)->type != DAY_HEADING)
+			sel++;
+		break;
+	}
+  leave:
+	listbox_set_sel(&lb_apt, sel);
+}
+
+/*
  * Request the user to enter a new start time.
  * Input: start time and duration in seconds.
  * Output: return value is new start time.
@@ -761,6 +801,8 @@ void ui_day_item_delete(unsigned reg)
 	p = day_cut_item(date, listbox_get_sel(&lb_apt));
 	day_cut[reg].type = p->type;
 	day_cut[reg].item = p->item;
+	/* Keep the selection on the same day. */
+	daybegin(0);
 	io_set_modified();
 
 	ui_calendar_monthly_view_cache_set_invalid();
@@ -993,26 +1035,11 @@ int ui_day_sel_move(int delta)
 	return listbox_sel_move(&lb_apt, delta);
 }
 
-/* Move the selection to the beginning of next or last day. */
-static void daybegin(void)
-{
-	int i = listbox_get_sel(&lb_apt);
-
-	while (day_get_item(i)->type != DAY_SEPARATOR)
-		i++;
-	if (i == lb_apt.item_count - 1) {
-		while (day_get_item(i)->type != DAY_HEADING)
-			i--;
-	 } else
-		i++;
-	listbox_set_sel(&lb_apt, i);
-}
-
 /* Move the selection n days forward. */
 void ui_day_sel_daybegin(unsigned n)
 {
 	for (int i = 1; i < n; i++)
-		daybegin();
+		daybegin(1);
 }
 
 static char *fmt_day_heading(time_t date)
