@@ -113,12 +113,11 @@ static void daybegin(int dir)
 			goto leave;
 		} else
 			sel++;
-		while (day_get_item(sel)->type != DAY_HEADING)
-			sel++;
 		break;
 	}
   leave:
 	listbox_set_sel(&lb_apt, sel);
+	listbox_item_in_view(&lb_apt, sel);
 }
 
 /*
@@ -1042,11 +1041,20 @@ int ui_day_sel_move(int delta)
 	return ret;
 }
 
-/* Move the selection n days forward. */
-void ui_day_sel_daybegin(unsigned n)
+/*
+ * Move the selection to the beginning of the current day or
+ * the day n days before or after.
+ */
+void ui_day_sel_daybegin(int n)
 {
-	for (int i = 1; i < n; i++)
-		daybegin(1);
+	if (n == 0) {
+		daybegin(0);
+		return;
+	}
+	int dir = n > 0 ? 1 : -1;
+	n = dir * n;
+	for (int i = 0; i < n; i++)
+		daybegin(dir);
 }
 
 static char *fmt_day_heading(time_t date)

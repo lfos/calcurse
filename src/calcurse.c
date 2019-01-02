@@ -461,8 +461,8 @@ static inline void key_move_down(void)
 	} else if (wins_slctd() == APP) {
 		if (!ui_day_sel_move(1)) {
 			ui_calendar_move(DAY_NEXT, 1);
-			do_storage(0);
-			ui_day_sel_daybegin(day_get_days());
+			do_storage(1);
+			ui_day_sel_daybegin(day_get_days() - 1);
 			wins_update(FLAG_CAL);
 		}
 		wins_update(FLAG_APP);
