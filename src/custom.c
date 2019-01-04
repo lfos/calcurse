@@ -526,6 +526,8 @@ void custom_color_config(void)
 enum {
 	COMPACT_PANELS,
 	DEFAULT_PANEL,
+	CAL_VIEW,
+	TODO_VIEW,
 	AUTO_SAVE,
 	AUTO_GC,
 	PERIODIC_SAVE,
@@ -548,6 +550,8 @@ static void print_general_option(int i, WINDOW *win, int y, int hilt, void *cb_d
 	char *opt[NB_OPTIONS] = {
 		"appearance.compactpanels = ",
 		"appearance.defaultpanel = ",
+		"appearance.calendarview = ",
+		"appearance.todoview = ",
 		"general.autosave = ",
 		"general.autogc = ",
 		"general.periodicsave = ",
@@ -587,6 +591,22 @@ static void print_general_option(int i, WINDOW *win, int y, int hilt, void *cb_d
 		custom_remove_attr(win, ATTR_HIGHEST);
 		mvwaddstr(win, y + 1, XPOS,
 			  _("(specifies the panel that is selected by default)"));
+		break;
+	case CAL_VIEW:
+		custom_apply_attr(win, ATTR_HIGHEST);
+		mvwaddstr(win, y, XPOS + strlen(opt[CAL_VIEW]),
+			  conf.cal_view == CAL_MONTH_VIEW ?
+			  _("monthly") : _("weekly"));
+		custom_remove_attr(win, ATTR_HIGHEST);
+		mvwaddstr(win, y + 1, XPOS, _("(preferred calendar display)"));
+		break;
+	case TODO_VIEW:
+		custom_apply_attr(win, ATTR_HIGHEST);
+		mvwaddstr(win, y, XPOS + strlen(opt[TODO_VIEW]),
+			  conf.todo_view == TODO_SHOW_COMPLETED_VIEW ?
+			  _("show completed") : _("hide completed"));
+		custom_remove_attr(win, ATTR_HIGHEST);
+		mvwaddstr(win, y + 1, XPOS, _("(preferred todo display)"));
 		break;
 	case AUTO_SAVE:
 		print_bool_option_incolor(win, conf.auto_save, y,
@@ -726,6 +746,21 @@ static void general_option_edit(int i)
 			conf.default_panel = CAL;
 		else
 			conf.default_panel++;
+		break;
+	case CAL_VIEW:
+		if (conf.cal_view == CAL_WEEK_VIEW)
+			conf.cal_view = CAL_MONTH_VIEW;
+		else
+			conf.cal_view++;
+		ui_calendar_set_view(conf.cal_view);
+		break;
+	case TODO_VIEW:
+		if (conf.todo_view == TODO_HIDE_COMPLETED_VIEW)
+			conf.todo_view = TODO_SHOW_COMPLETED_VIEW;
+		else
+			conf.todo_view++;
+		ui_todo_set_view(conf.todo_view);
+		ui_todo_load_items();
 		break;
 	case HEADING_POS:
 		if (conf.heading_pos == RIGHT)

@@ -213,11 +213,13 @@ static int config_parse_color_pair(int *dest1, int *dest2, const char *val)
 
 static int config_parse_calendar_view(void *dummy, const char *val)
 {
-	if (!strcmp(val, "monthly"))
+	if (!strcmp(val, "monthly")) {
 		ui_calendar_set_view(CAL_MONTH_VIEW);
-	else if (!strcmp(val, "weekly"))
+		conf.cal_view = CAL_MONTH_VIEW;
+	} else if (!strcmp(val, "weekly")) {
 		ui_calendar_set_view(CAL_WEEK_VIEW);
-	else
+		conf.cal_view = CAL_WEEK_VIEW;
+	} else
 		return 0;
 
 	return 1;
@@ -225,11 +227,13 @@ static int config_parse_calendar_view(void *dummy, const char *val)
 
 static int config_parse_todo_view(void *dummy, const char *val)
 {
-	if (!strcmp(val, "show-completed"))
+	if (!strcmp(val, "show-completed")) {
 		ui_todo_set_view(TODO_SHOW_COMPLETED_VIEW);
-	else if (!strcmp(val, "hide-completed"))
+		conf.todo_view = TODO_SHOW_COMPLETED_VIEW;
+	} else if (!strcmp(val, "hide-completed")) {
 		ui_todo_set_view(TODO_HIDE_COMPLETED_VIEW);
-	else
+		conf.todo_view = TODO_HIDE_COMPLETED_VIEW;
+	} else
 		return 0;
 
 	return 1;
@@ -426,7 +430,7 @@ static char *config_color_theme_name(void)
 
 static int config_serialize_calendar_view(char **buf, void *dummy)
 {
-	if (ui_calendar_get_view() == CAL_WEEK_VIEW)
+	if (conf.cal_view == CAL_WEEK_VIEW)
 		*buf = mem_strdup("weekly");
 	else
 		*buf = mem_strdup("monthly");
@@ -436,7 +440,7 @@ static int config_serialize_calendar_view(char **buf, void *dummy)
 
 static int config_serialize_todo_view(char **buf, void *dummy)
 {
-	if (ui_todo_get_view() == TODO_SHOW_COMPLETED_VIEW)
+	if (conf.todo_view == TODO_SHOW_COMPLETED_VIEW)
 		*buf = mem_strdup("show-completed");
 	else
 		*buf = mem_strdup("hide-completed");

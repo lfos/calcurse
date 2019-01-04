@@ -256,8 +256,24 @@ enum pos {
 	RIGHT
 };
 
+/* Available views for the calendar panel. */
+enum cal_view {
+	CAL_MONTH_VIEW,
+	CAL_WEEK_VIEW,
+	CAL_VIEWS
+};
+
+/* Available views for the todo panel. */
+enum todo_view {
+	TODO_SHOW_COMPLETED_VIEW,
+	TODO_HIDE_COMPLETED_VIEW,
+	TODO_VIEWS
+};
+
 /* General configuration variables. */
 struct conf {
+	enum cal_view cal_view;
+	enum todo_view todo_view;
 	unsigned auto_save;
 	unsigned auto_gc;
 	unsigned periodic_save;
@@ -447,20 +463,7 @@ struct day_item {
 	union aptev_ptr item;
 };
 
-/* Available views for the calendar panel. */
-enum {
-	CAL_MONTH_VIEW,
-	CAL_WEEK_VIEW,
-	CAL_VIEWS
-};
-
-/* Available views for the todo panel. */
-enum {
-	TODO_SHOW_COMPLETED_VIEW,
-	TODO_HIDE_COMPLETED_VIEW,
-	TODO_VIEWS
-};
-
+/* Shared variables for the notification threads. */
 struct notify_app {
 	long time;
 	int got_app;
