@@ -318,14 +318,6 @@ static int day_store_apoints(long date, int include_captions)
 			     apt->start < date ? date + 1 : apt->start,
 			     p);
 		a_nb++;
-		if (include_captions) {
-			day_add_item(
-				APPT_SEPARATOR,
-				0,
-				apt->start < date ? date + 2 : apt->start + 1,
-				p);
-			a_nb++;
-		}
 	}
 	LLIST_TS_UNLOCK(&alist_p);
 
@@ -358,14 +350,6 @@ static int day_store_recur_apoints(long date, int include_captions)
 				     occur < date ? date + 1 : occur,
 				     p);
 			a_nb++;
-			if (include_captions) {
-				day_add_item(
-					APPT_SEPARATOR,
-					0,
-					occur < date ? date + 2 : occur + 1,
-					p);
-				a_nb++;
-			}
 		}
 	}
 	LLIST_TS_UNLOCK(&recur_alist_p);
@@ -412,22 +396,15 @@ day_store_items(long date, int include_captions, int n)
 			day_items_nb++;
 		}
 
-		if (include_captions)
+		if (include_captions) {
+			/* Two empty lines between days. */
+			if (apts == 0)
+				day_add_item(EMPTY_SEPARATOR, 0, ENDOFDAY(date), p);
 			day_add_item(DAY_SEPARATOR, 0, ENDOFDAY(date), p);
+		}
 	}
 
 	VECTOR_SORT(&day_items, day_cmp);
-
-	if (!include_captions)
-		return;
-
-	/* Remove the last APPT_SEPARATOR of each day, if any. */
-#define ITEM_TYPE(n)	((struct day_item *)VECTOR_NTH(&day_items, (n)))->type
-	i = 0;
-	VECTOR_FOREACH(&day_items, i)
-		if (ITEM_TYPE(i) == DAY_SEPARATOR &&
-		    ITEM_TYPE(i - 1) == APPT_SEPARATOR)
-			VECTOR_REMOVE(&day_items, i - 1);
 }
 
 /*
