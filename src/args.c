@@ -505,6 +505,9 @@ int parse_args(int argc, char **argv)
 		case 'D':
 			datadir = optarg;
 			break;
+		case 'c':
+			cfile = optarg;
+			break;
 		}
 	}
 	io_init(cfile, datadir, confdir);
@@ -522,8 +525,6 @@ int parse_args(int argc, char **argv)
 			query = 1;
 			break;
 		case 'c':
-			cfile = optarg;
-			io_init(cfile, datadir, confdir);
 			break;
 		case 'C':
 			break;
