@@ -527,6 +527,8 @@ enum {
 	COMPACT_PANELS,
 	DEFAULT_PANEL,
 	MULTIPLE_DAYS,
+	DAYSEPARATOR,
+	EMPTY_APPT_LINE,
 	DAYS_BAR,
 	AUTO_SAVE,
 	AUTO_GC,
@@ -551,6 +553,8 @@ static void print_general_option(int i, WINDOW *win, int y, int hilt, void *cb_d
 		"appearance.compactpanels = ",
 		"appearance.defaultpanel = ",
 		"general.multipledays = ",
+		"appearance.dayseparator = ",
+		"appearance.emptyline = ",
 		"appearance.multipledaysbar = ",
 		"general.autosave = ",
 		"general.autogc = ",
@@ -591,6 +595,21 @@ static void print_general_option(int i, WINDOW *win, int y, int hilt, void *cb_d
 		custom_remove_attr(win, ATTR_HIGHEST);
 		mvwaddstr(win, y + 1, XPOS,
 			  _("(specifies the panel that is selected by default)"));
+		break;
+	case DAYSEPARATOR:
+		custom_apply_attr(win, ATTR_HIGHEST);
+		mvwprintw(win, y, XPOS + strlen(opt[DAYSEPARATOR]), "%d",
+			  conf.dayseparator);
+		custom_remove_attr(win, ATTR_HIGHEST);
+		mvwaddstr(win, y + 1, XPOS,
+			  _("(lines between days in the appointments "
+			  "panel)"));
+		break;
+	case EMPTY_APPT_LINE:
+		print_bool_option_incolor(win, conf.empty_appt_line, y,
+					  XPOS + strlen(opt[EMPTY_APPT_LINE]));
+		mvwaddstr(win, y + 1, XPOS,
+			  _("(insert an empty line after each appointment)"));
 		break;
 	case MULTIPLE_DAYS:
 		custom_apply_attr(win, ATTR_HIGHEST);
@@ -750,6 +769,9 @@ static void general_option_edit(int i)
 		else
 			conf.default_panel++;
 		break;
+	case EMPTY_APPT_LINE:
+		conf.empty_appt_line = !conf.empty_appt_line;
+		break;
 	case MULTIPLE_DAYS:
 		status_mesg(multiple_days_str, "");
 		/* At most a week (one digit). */
@@ -758,6 +780,12 @@ static void general_option_edit(int i)
 			if (val > 0 && val < 8)
 				conf.multiple_days = val;
 		}
+		break;
+	case DAYSEPARATOR:
+		if (conf.dayseparator == 2)
+			conf.dayseparator = 0;
+		else
+			conf.dayseparator++;
 		break;
 	case DAYS_BAR:
 		conf.days_bar = !conf.days_bar;

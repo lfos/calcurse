@@ -94,6 +94,8 @@ static const struct confvar confmap[] = {
 	{"appearance.compactpanels", CONFIG_HANDLER_BOOL(conf.compact_panels)},
 	{"appearance.defaultpanel", config_parse_default_panel, config_serialize_default_panel, NULL},
 	{"appearance.layout", config_parse_layout, config_serialize_layout, NULL},
+	{"appearance.dayseparator", CONFIG_HANDLER_UNSIGNED(conf.dayseparator)},
+	{"appearance.emptyline", CONFIG_HANDLER_BOOL(conf.empty_appt_line)},
 	{"appearance.multipledaysbar", CONFIG_HANDLER_BOOL(conf.days_bar)},
 	{"appearance.notifybar", CONFIG_HANDLER_BOOL(nbar.show)},
 	{"appearance.sidebarwidth", config_parse_sidebar_width, config_serialize_sidebar_width, NULL},

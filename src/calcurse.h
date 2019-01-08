@@ -268,6 +268,8 @@ struct conf {
 	unsigned system_dialogs;
 	unsigned multiple_days;
 	unsigned days_bar;
+	unsigned dayseparator;
+	unsigned empty_appt_line;
 	const char *editor;
 	const char *pager;
 	const char *mergetool;
