@@ -743,7 +743,7 @@ void ui_calendar_move(enum move move, int count)
 }
 
 /* Returns the beginning of current year as a long. */
-long ui_calendar_start_of_year(void)
+time_t ui_calendar_start_of_year(void)
 {
 	time_t timer;
 	struct tm tm;
@@ -757,10 +757,10 @@ long ui_calendar_start_of_year(void)
 	tm.tm_sec = 0;
 	timer = mktime(&tm);
 
-	return (long)timer;
+	return timer;
 }
 
-long ui_calendar_end_of_year(void)
+time_t ui_calendar_end_of_year(void)
 {
 	time_t timer;
 	struct tm tm;
@@ -775,5 +775,5 @@ long ui_calendar_end_of_year(void)
 	tm.tm_year++;
 	timer = mktime(&tm);
 
-	return (long)(timer - 1);
+	return (timer - 1);
 }

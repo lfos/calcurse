@@ -358,25 +358,25 @@ int is_all_digit(const char *string)
 }
 
 /* Given an item date expressed in seconds, return its start time in seconds. */
-long get_item_time(long date)
+long get_item_time(time_t date)
 {
 	return (long)(get_item_hour(date) * HOURINSEC +
 		      get_item_min(date) * MININSEC);
 }
 
-int get_item_hour(long date)
+int get_item_hour(time_t date)
 {
 	struct tm lt;
 
-	localtime_r((time_t *) & date, &lt);
+	localtime_r(&date, &lt);
 	return lt.tm_hour;
 }
 
-int get_item_min(long date)
+int get_item_min(time_t date)
 {
 	struct tm lt;
 
-	localtime_r((time_t *) & date, &lt);
+	localtime_r(&date, &lt);
 	return lt.tm_min;
 }
 
@@ -457,7 +457,7 @@ int date_cmp_day(time_t d1, time_t d2)
 }
 
 /* Return a string containing the date, given a date in seconds. */
-char *date_sec2date_str(long sec, const char *datefmt)
+char *date_sec2date_str(time_t sec, const char *datefmt)
 {
 	struct tm lt;
 	char *datestr = (char *)mem_calloc(BUFSIZ, sizeof(char));
@@ -465,7 +465,7 @@ char *date_sec2date_str(long sec, const char *datefmt)
 	if (sec == 0) {
 		strncpy(datestr, "0", BUFSIZ);
 	} else {
-		localtime_r((time_t *) & sec, &lt);
+		localtime_r(&sec, &lt);
 		strftime(datestr, BUFSIZ, datefmt, &lt);
 	}
 
@@ -473,7 +473,7 @@ char *date_sec2date_str(long sec, const char *datefmt)
 }
 
 /* Generic function to format date. */
-void date_sec2date_fmt(long sec, const char *fmt, char *datef)
+void date_sec2date_fmt(time_t sec, const char *fmt, char *datef)
 {
 #if ENABLE_NLS
 	/* TODO: Find a better way to deal with localization and strftime(). */
@@ -482,7 +482,7 @@ void date_sec2date_fmt(long sec, const char *fmt, char *datef)
 #endif
 
 	struct tm lt;
-	localtime_r((time_t *) & sec, &lt);
+	localtime_r(&sec, &lt);
 	strftime(datef, BUFSIZ, fmt, &lt);
 
 #if ENABLE_NLS
@@ -514,7 +514,7 @@ int date_change(struct tm *date, int delta_month, int delta_day)
 /*
  * Used to change date by adding a certain amount of days or months.
  */
-long date_sec_change(long date, int delta_month, int delta_day)
+time_t date_sec_change(time_t date, int delta_month, int delta_day)
 {
 	struct tm lt;
 	time_t t;
@@ -673,9 +673,9 @@ time_t get_today(void)
 }
 
 /* Returns the current time in seconds. */
-long now(void)
+time_t now(void)
 {
-	return (long)time(NULL);
+	return time(NULL);
 }
 
 char *nowstr(void)
@@ -1597,12 +1597,12 @@ static enum format_specifier parse_fs(const char **s, char *extformat)
  * Print date to stdout, formatted to be displayed for day.
  * The "day" argument may be any time belonging to that day.
  */
-static void print_date(long date, long day, const char *extformat)
+static void print_date(time_t date, time_t day, const char *extformat)
 {
 	char buf[BUFSIZ];
 
 	if (!strcmp(extformat, "epoch")) {
-		printf("%ld", date);
+		printf("%ld", (long)date);
 	} else {
 		time_t day_start = update_time_in_date(day, 0, 0);
 		time_t day_end = date_sec_change(day_start, 0, 1);
@@ -1697,7 +1697,7 @@ static void print_datediff(long difference, const char *extformat)
 }
 
 /* Print a formatted appointment to stdout. */
-static void print_apoint_helper(const char *format, long day,
+static void print_apoint_helper(const char *format, time_t day,
 				struct apoint *apt, struct recur_apoint *rapt)
 {
 	const char *p;
@@ -1765,7 +1765,7 @@ static void print_apoint_helper(const char *format, long day,
 }
 
 /* Print a formatted event to stdout. */
-static void print_event_helper(const char *format, long day, struct event *ev,
+static void print_event_helper(const char *format, time_t day, struct event *ev,
 			       struct recur_event *rev)
 {
 	const char *p;
@@ -1815,20 +1815,20 @@ static void print_event_helper(const char *format, long day, struct event *ev,
 }
 
 /* Print a formatted appointment to stdout. */
-void print_apoint(const char *format, long day, struct apoint *apt)
+void print_apoint(const char *format, time_t day, struct apoint *apt)
 {
 	print_apoint_helper(format, day, apt, NULL);
 }
 
 /* Print a formatted event to stdout. */
-void print_event(const char *format, long day, struct event *ev)
+void print_event(const char *format, time_t day, struct event *ev)
 {
 	print_event_helper(format, day, ev, NULL);
 }
 
 /* Print a formatted recurrent appointment to stdout. */
 void
-print_recur_apoint(const char *format, long day, time_t occurrence,
+print_recur_apoint(const char *format, time_t day, time_t occurrence,
 		   struct recur_apoint *rapt)
 {
 	struct apoint apt;
@@ -1842,7 +1842,7 @@ print_recur_apoint(const char *format, long day, time_t occurrence,
 }
 
 /* Print a formatted recurrent event to stdout. */
-void print_recur_event(const char *format, long day,
+void print_recur_event(const char *format, time_t day,
 		       struct recur_event *rev)
 {
 	struct event ev;

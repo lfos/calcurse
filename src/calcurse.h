@@ -335,7 +335,7 @@ struct date {
 
 /* Appointment definition. */
 struct apoint {
-	long start;		/* seconds since 1 jan 1970 */
+	time_t start;		/* seconds since 1 jan 1970 */
 	long dur;		/* duration of the appointment in seconds */
 
 #define APOINT_NULL      0x0
@@ -350,7 +350,7 @@ struct apoint {
 /* Event definition. */
 struct event {
 	int id;			/* event identifier */
-	long day;		/* seconds since 1 jan 1970 */
+	time_t day;		/* seconds since 1 jan 1970 */
 	char *mesg;
 	char *note;
 };
@@ -364,7 +364,7 @@ struct todo {
 };
 
 struct excp {
-	long st;		/* beggining of the considered day, in seconds */
+	time_t st;		/* beggining of the considered day, in seconds */
 };
 
 enum recur_type {
@@ -380,14 +380,14 @@ enum recur_type {
 struct rpt {
 	enum recur_type type;	/* repetition type */
 	int freq;		/* repetition frequency */
-	long until;		/* ending date for repeated event */
+	time_t until;		/* ending date for repeated event */
 };
 
 /* Recurrent appointment definition. */
 struct recur_apoint {
 	struct rpt *rpt;	/* information about repetition */
 	llist_t exc;		/* days when the item should not be repeated */
-	long start;		/* beggining of the appointment */
+	time_t start;		/* beggining of the appointment */
 	long dur;		/* duration of the appointment */
 	char state;		/* 8 bits to store item state */
 	char *mesg;		/* appointment description */
@@ -399,7 +399,7 @@ struct recur_event {
 	struct rpt *rpt;	/* information about repetition */
 	llist_t exc;		/* days when the item should not be repeated */
 	int id;			/* event type */
-	long day;		/* day at which event occurs */
+	time_t day;		/* day at which event occurs */
 	char *mesg;		/* event description */
 	char *note;		/* note attached to event */
 };
@@ -459,13 +459,13 @@ struct item_filter {
 /* Generic item description (to hold appointments, events...). */
 struct day_item {
 	enum day_item_type type;
-	long start;
+	time_t start;
 	union aptev_ptr item;
 };
 
 /* Shared variables for the notification threads. */
 struct notify_app {
-	long time;
+	time_t time;
 	int got_app;
 	char *txt;
 	char state;
@@ -742,18 +742,18 @@ struct apoint *apoint_dup(struct apoint *);
 void apoint_free(struct apoint *);
 void apoint_llist_init(void);
 void apoint_llist_free(void);
-struct apoint *apoint_new(char *, char *, long, long, char);
-unsigned apoint_inday(struct apoint *, long *);
-void apoint_sec2str(struct apoint *, long, char *, char *);
+struct apoint *apoint_new(char *, char *, time_t, long, char);
+unsigned apoint_inday(struct apoint *, time_t *);
+void apoint_sec2str(struct apoint *, time_t, char *, char *);
 char *apoint_tostr(struct apoint *);
 char *apoint_hash(struct apoint *);
 void apoint_write(struct apoint *, FILE *);
 struct apoint *apoint_scan(FILE *, struct tm, struct tm, char, char *,
 			   struct item_filter *);
 void apoint_delete(struct apoint *);
-struct notify_app *apoint_check_next(struct notify_app *, long);
+struct notify_app *apoint_check_next(struct notify_app *, time_t);
 void apoint_switch_notify(struct apoint *);
-void apoint_paste_item(struct apoint *, long);
+void apoint_paste_item(struct apoint *, time_t);
 
 /* args.c */
 int parse_args(int, char **);
@@ -779,8 +779,8 @@ void ui_calendar_update_panel(void);
 void ui_calendar_goto_today(void);
 void ui_calendar_change_day(int);
 void ui_calendar_move(enum move, int);
-long ui_calendar_start_of_year(void);
-long ui_calendar_end_of_year(void);
+time_t ui_calendar_start_of_year(void);
+time_t ui_calendar_end_of_year(void);
 
 /* config.c */
 void config_load(void);
@@ -804,19 +804,19 @@ char *day_item_get_note(struct day_item *);
 void day_item_erase_note(struct day_item *);
 long day_item_get_duration(struct day_item *);
 int day_item_get_state(struct day_item *);
-void day_item_add_exc(struct day_item *, long);
+void day_item_add_exc(struct day_item *, time_t);
 void day_item_fork(struct day_item *, struct day_item *);
-void day_store_items(long, int);
+void day_store_items(time_t, int);
 void day_process_storage(struct date *, unsigned);
-void day_display_item_date(struct day_item *, WINDOW *, int, long, int, int);
+void day_display_item_date(struct day_item *, WINDOW *, int, time_t, int, int);
 void day_display_item(struct day_item *, WINDOW *, int, int, int, int);
-void day_write_stdout(long, const char *, const char *, const char *,
+void day_write_stdout(time_t, const char *, const char *, const char *,
 		      const char *, int *);
 void day_popup_item(struct day_item *);
 int day_check_if_item(struct date);
 unsigned day_chk_busy_slices(struct date, int, int *);
-struct day_item *day_cut_item(long, int);
-int day_paste_item(struct day_item *, long);
+struct day_item *day_cut_item(time_t, int);
+int day_paste_item(struct day_item *, time_t);
 int day_get_position_by_aptev_ptr(union aptev_ptr);
 int day_get_position(struct day_item *);
 struct day_item *day_get_item(int);
@@ -836,14 +836,14 @@ struct event *event_dup(struct event *);
 void event_free(struct event *);
 void event_llist_init(void);
 void event_llist_free(void);
-struct event *event_new(char *, char *, long, int);
-unsigned event_inday(struct event *, long *);
+struct event *event_new(char *, char *, time_t, int);
+unsigned event_inday(struct event *, time_t *);
 char *event_tostr(struct event *);
 char *event_hash(struct event *);
 void event_write(struct event *, FILE *);
 struct event *event_scan(FILE *, struct tm, int, char *, struct item_filter *);
 void event_delete(struct event *);
-void event_paste_item(struct event *, long);
+void event_paste_item(struct event *, time_t);
 
 /* getstring.c */
 enum getstr getstring(WINDOW *, char *, int, int, int);
@@ -982,7 +982,7 @@ void note_gc(void);
 /* notify.c */
 int notify_time_left(void);
 unsigned notify_needs_reminder(void);
-void notify_update_app(long, char, char *);
+void notify_update_app(time_t, char, char *);
 int notify_bar(void);
 void notify_init_vars(void);
 void notify_init_bar(void);
@@ -996,9 +996,9 @@ unsigned notify_get_next(struct notify_app *);
 unsigned notify_get_next_bkgd(void);
 char *notify_app_txt(void);
 void notify_check_next_app(int);
-void notify_check_added(char *, long, char);
+void notify_check_added(char *, time_t, char);
 void notify_check_repeated(struct recur_apoint *);
-int notify_same_item(long);
+int notify_same_item(time_t);
 int notify_same_recur_item(struct recur_apoint *);
 void notify_config_bar(void);
 
@@ -1018,10 +1018,10 @@ void recur_apoint_llist_init(void);
 void recur_event_llist_init(void);
 void recur_apoint_llist_free(void);
 void recur_event_llist_free(void);
-struct recur_apoint *recur_apoint_new(char *, char *, long, long, char,
-				      int, int, long, llist_t *);
-struct recur_event *recur_event_new(char *, char *, long, int, int, int,
-				    long, llist_t *);
+struct recur_apoint *recur_apoint_new(char *, char *, time_t, long, char,
+				      int, int, time_t, llist_t *);
+struct recur_event *recur_event_new(char *, char *, time_t, int, int, int,
+				    time_t, llist_t *);
 char recur_def2char(enum recur_type);
 int recur_char2def(char);
 struct recur_apoint *recur_apoint_scan(FILE *, struct tm, struct tm,
@@ -1037,22 +1037,22 @@ char *recur_event_tostr(struct recur_event *);
 char *recur_event_hash(struct recur_event *);
 void recur_event_write(struct recur_event *, FILE *);
 void recur_save_data(FILE *);
-unsigned recur_item_find_occurrence(long, long, llist_t *, int,
-				    int, long, long, time_t *);
-unsigned recur_apoint_find_occurrence(struct recur_apoint *, long, time_t *);
-unsigned recur_event_find_occurrence(struct recur_event *, long, time_t *);
-unsigned recur_item_inday(long, long, llist_t *, int, int, long, long);
-unsigned recur_apoint_inday(struct recur_apoint *, long *);
-unsigned recur_event_inday(struct recur_event *, long *);
-void recur_event_add_exc(struct recur_event *, long);
-void recur_apoint_add_exc(struct recur_apoint *, long);
+unsigned recur_item_find_occurrence(time_t, long, llist_t *, int,
+				    int, time_t, time_t, time_t *);
+unsigned recur_apoint_find_occurrence(struct recur_apoint *, time_t, time_t *);
+unsigned recur_event_find_occurrence(struct recur_event *, time_t, time_t *);
+unsigned recur_item_inday(time_t, long, llist_t *, int, int, time_t, time_t);
+unsigned recur_apoint_inday(struct recur_apoint *, time_t *);
+unsigned recur_event_inday(struct recur_event *, time_t *);
+void recur_event_add_exc(struct recur_event *, time_t);
+void recur_apoint_add_exc(struct recur_apoint *, time_t);
 void recur_event_erase(struct recur_event *);
 void recur_apoint_erase(struct recur_apoint *);
 void recur_exc_scan(llist_t *, FILE *);
 void recur_apoint_check_next(struct notify_app *, time_t, time_t);
 void recur_apoint_switch_notify(struct recur_apoint *);
-void recur_event_paste_item(struct recur_event *, long);
-void recur_apoint_paste_item(struct recur_apoint *, long);
+void recur_event_paste_item(struct recur_event *, time_t);
+void recur_apoint_paste_item(struct recur_apoint *, time_t);
 
 /* sigs.c */
 void sigs_init(void);
@@ -1155,24 +1155,24 @@ void erase_window_part(WINDOW *, int, int, int, int);
 WINDOW *popup(int, int, int, int, const char *, const char *, int);
 void print_in_middle(WINDOW *, int, int, int, const char *);
 int is_all_digit(const char *);
-long get_item_time(long);
-int get_item_hour(long);
-int get_item_min(long);
+long get_item_time(time_t);
+int get_item_hour(time_t);
+int get_item_min(time_t);
 struct tm date2tm(struct date, unsigned, unsigned);
 time_t date2sec(struct date, unsigned, unsigned);
 time_t utcdate2sec(struct date, unsigned, unsigned);
 int date_cmp_day(time_t, time_t);
-char *date_sec2date_str(long, const char *);
-void date_sec2date_fmt(long, const char *, char *);
+char *date_sec2date_str(time_t, const char *);
+void date_sec2date_fmt(time_t, const char *, char *);
 int date_change(struct tm *, int, int);
-long date_sec_change(long, int, int);
-long update_time_in_date(long, unsigned, unsigned);
+time_t date_sec_change(time_t, int, int);
+time_t update_time_in_date(time_t, unsigned, unsigned);
 time_t get_sec_date(struct date);
 long min2sec(unsigned);
 void draw_scrollbar(struct scrollwin *, int);
 void item_in_popup(const char *, const char *, const char *, const char *);
 time_t get_today(void);
-long now(void);
+time_t now(void);
 char *nowstr(void);
 void print_bool_option_incolor(WINDOW *, unsigned, int, int);
 const char *get_tempdir(void);
@@ -1192,10 +1192,10 @@ int fork_exec(int *, int *, const char *, const char *const *);
 int shell_exec(int *, int *, const char *, const char *const *);
 int child_wait(int *, int *, int);
 void press_any_key(void);
-void print_apoint(const char *, long, struct apoint *);
-void print_event(const char *, long, struct event *);
-void print_recur_apoint(const char *, long, time_t, struct recur_apoint *);
-void print_recur_event(const char *, long, struct recur_event *);
+void print_apoint(const char *, time_t, struct apoint *);
+void print_event(const char *, time_t, struct event *);
+void print_recur_apoint(const char *, time_t, time_t, struct recur_apoint *);
+void print_recur_event(const char *, time_t, struct recur_event *);
 void print_todo(const char *, struct todo *);
 int vasprintf(char **, const char *, va_list);
 int asprintf(char **, const char *, ...);

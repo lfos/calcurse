@@ -98,7 +98,7 @@ unsigned notify_needs_reminder(void)
  * Note: the mutex associated with this structure must be locked by the
  * caller!
  */
-void notify_update_app(long start, char state, char *msg)
+void notify_update_app(time_t start, char state, char *msg)
 {
 	notify_free_app();
 	notify_app.got_app = 1;
@@ -469,7 +469,7 @@ void notify_check_next_app(int force)
 }
 
 /* Check if the newly created appointment is to be notified. */
-void notify_check_added(char *mesg, long start, char state)
+void notify_check_added(char *mesg, time_t start, char state)
 {
 	time_t current_time;
 	int update_notify = 0;
@@ -523,7 +523,7 @@ void notify_check_repeated(struct recur_apoint *i)
 	notify_update_bar();
 }
 
-int notify_same_item(long time)
+int notify_same_item(time_t time)
 {
 	int same = 0;
 

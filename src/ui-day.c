@@ -66,7 +66,7 @@ void ui_day_set_selitem(struct day_item *day)
  * for validation of the new end time.
  * If move = 0, the new end time is calculated by the caller.
  */
-static int day_edit_time(int start, int duration, int move)
+static time_t day_edit_time(time_t start, long duration, int move)
 {
 	const char *msg_time = _("Enter start date [%s] and/or time ([hh:mm] or [hhmm]):");
 	const char *enter_str = _("Press [Enter] to continue");
@@ -105,9 +105,9 @@ static int day_edit_time(int start, int duration, int move)
  * when the new start time is known.
  * If move = 1, duration is fixed, but passed on for validation of new end time.
  */
-static void update_start_time(long *start, long *dur, int move)
+static void update_start_time(time_t *start, long *dur, int move)
 {
-	long newtime;
+	time_t newtime;
 	const char *msg_wrong_time =
 	    _("Invalid time: start time must come before end time!");
 	const char *msg_enter = _("Press [Enter] to continue");
@@ -133,7 +133,7 @@ static void update_start_time(long *start, long *dur, int move)
 }
 
 /* Request the user to enter a new end time or duration. */
-static void update_duration(long *start, long *dur)
+static void update_duration(time_t *start, long *dur)
 {
 	const char *msg_time =
 	    _("Enter end date (and/or time) or duration ('?' for input formats):");
@@ -144,7 +144,7 @@ static void update_duration(long *start, long *dur)
 	const char *enter_str = _("Press [Enter] to continue");
 	const char *fmt_msg_1 = _("Invalid time or duration.");
 	const char *fmt_msg_2 = _("Invalid date: end time must come after start time.");
-	long end;
+	time_t end;
 	unsigned newdur;
 	char *timestr, *outstr;
 

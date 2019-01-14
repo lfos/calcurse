@@ -96,7 +96,7 @@ static int day_cmp(struct day_item **pa, struct day_item **pb)
 }
 
 /* Add an item to the current day list. */
-static void day_add_item(int type, long start, union aptev_ptr item)
+static void day_add_item(int type, time_t start, union aptev_ptr item)
 {
 	struct day_item *day = mem_malloc(sizeof(struct day_item));
 	day->type = type;
@@ -188,7 +188,7 @@ int day_item_get_state(struct day_item *day)
 }
 
 /* Add an exception to an item. */
-void day_item_add_exc(struct day_item *day, long date)
+void day_item_add_exc(struct day_item *day, time_t date)
 {
 	switch (day->type) {
 	case RECUR_EVNT:
@@ -234,7 +234,7 @@ void day_item_fork(struct day_item *day_in, struct day_item *day_out)
  * dedicated to the selected day.
  * Returns the number of events for the selected day.
  */
-static int day_store_events(long date)
+static int day_store_events(time_t date)
 {
 	llist_item_t *i;
 	union aptev_ptr p;
@@ -258,7 +258,7 @@ static int day_store_events(long date)
  * dedicated to the selected day.
  * Returns the number of recurrent events for the selected day.
  */
-static int day_store_recur_events(long date)
+static int day_store_recur_events(time_t date)
 {
 	llist_item_t *i;
 	union aptev_ptr p;
@@ -282,7 +282,7 @@ static int day_store_recur_events(long date)
  * structure dedicated to the selected day.
  * Returns the number of appointments for the selected day.
  */
-static int day_store_apoints(long date)
+static int day_store_apoints(time_t date)
 {
 	llist_item_t *i;
 	union aptev_ptr p;
@@ -312,7 +312,7 @@ static int day_store_apoints(long date)
  * structure dedicated to the selected day.
  * Returns the number of recurrent appointments for the selected day.
  */
-static int day_store_recur_apoints(long date)
+static int day_store_recur_apoints(time_t date)
 {
 	llist_item_t *i;
 	union aptev_ptr p;
@@ -344,7 +344,7 @@ static int day_store_recur_apoints(long date)
  * The number of events and appointments in the current day are also updated.
  */
 void
-day_store_items(long date, int include_captions)
+day_store_items(time_t date, int include_captions)
 {
 	unsigned apts, events;
 	union aptev_ptr p = { NULL };
@@ -394,7 +394,7 @@ void day_process_storage(struct date *slctd_date, unsigned day_changed)
  */
 void
 day_display_item_date(struct day_item *day, WINDOW *win, int incolor,
-		      long date, int y, int x)
+		      time_t date, int y, int x)
 {
 	char a_st[100], a_end[100];
 	char ch_recur, ch_notify;
@@ -448,7 +448,7 @@ day_display_item(struct day_item *day, WINDOW *win, int incolor, int width,
 }
 
 /* Write the appointments and events for the selected day to stdout. */
-void day_write_stdout(long date, const char *fmt_apt, const char *fmt_rapt,
+void day_write_stdout(time_t date, const char *fmt_apt, const char *fmt_rapt,
 		      const char *fmt_ev, const char *fmt_rev, int *limit)
 {
 	int i;
@@ -576,7 +576,7 @@ unsigned day_chk_busy_slices(struct date day, int slicesno, int *slices)
 			      recur_apoint_inday, i) {
 		struct recur_apoint *rapt = LLIST_TS_GET_DATA(i);
 		time_t occurrence;
-		long start, end;
+		time_t start, end;
 
 		if (!recur_apoint_find_occurrence(rapt, t, &occurrence))
 			continue;
@@ -609,8 +609,8 @@ unsigned day_chk_busy_slices(struct date day, int slicesno, int *slices)
 	LLIST_TS_LOCK(&alist_p);
 	LLIST_TS_FIND_FOREACH(&alist_p, (time_t *)&t, apoint_inday, i) {
 		struct apoint *apt = LLIST_TS_GET_DATA(i);
-		long start = get_item_time(apt->start);
-		long end = get_item_time(apt->start + apt->dur);
+		time_t start = get_item_time(apt->start);
+		time_t end = get_item_time(apt->start + apt->dur);
 
 		if (apt->start >= t + DAYINSEC)
 			break;
@@ -639,7 +639,7 @@ unsigned day_chk_busy_slices(struct date day, int slicesno, int *slices)
 }
 
 /* Cut an item so it can be pasted somewhere else later. */
-struct day_item *day_cut_item(long date, int item_number)
+struct day_item *day_cut_item(time_t date, int item_number)
 {
 	struct day_item *p = day_get_item(item_number);
 
@@ -665,7 +665,7 @@ struct day_item *day_cut_item(long date, int item_number)
 }
 
 /* Paste a previously cut item. */
-int day_paste_item(struct day_item *p, long date)
+int day_paste_item(struct day_item *p, time_t date)
 {
 	if (!p->type) {
 		/* No previously cut item. */

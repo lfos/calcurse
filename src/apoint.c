@@ -98,7 +98,7 @@ static int apoint_cmp(struct apoint *a, struct apoint *b)
 	return strcmp(a->mesg, b->mesg);
 }
 
-struct apoint *apoint_new(char *mesg, char *note, long start, long dur,
+struct apoint *apoint_new(char *mesg, char *note, time_t start, long dur,
 			  char state)
 {
 	struct apoint *apt;
@@ -117,14 +117,14 @@ struct apoint *apoint_new(char *mesg, char *note, long start, long dur,
 	return apt;
 }
 
-unsigned apoint_inday(struct apoint *i, long *start)
+unsigned apoint_inday(struct apoint *i, time_t *start)
 {
 	return (date_cmp_day(i->start, *start) == 0 ||
 		(date_cmp_day(i->start, *start) < 0 &&
 		 date_cmp_day(i->start + i->dur - 1, *start) >= 0));
 }
 
-void apoint_sec2str(struct apoint *o, long day, char *start, char *end)
+void apoint_sec2str(struct apoint *o, time_t day, char *start, char *end)
 {
 	struct tm lt;
 	time_t t;
@@ -278,7 +278,7 @@ void apoint_delete(struct apoint *apt)
 	LLIST_TS_UNLOCK(&alist_p);
 }
 
-static int apoint_starts_after(struct apoint *apt, long *time)
+static int apoint_starts_after(struct apoint *apt, time_t *time)
 {
 	return apt->start > *time;
 }
@@ -287,7 +287,7 @@ static int apoint_starts_after(struct apoint *apt, long *time)
  * Look in the appointment list if we have an item which starts before the item
  * stored in the notify_app structure (which is the next item to be notified).
  */
-struct notify_app *apoint_check_next(struct notify_app *app, long start)
+struct notify_app *apoint_check_next(struct notify_app *app, time_t start)
 {
 	llist_item_t *i;
 
@@ -324,7 +324,7 @@ void apoint_switch_notify(struct apoint *apt)
 	LLIST_TS_UNLOCK(&alist_p);
 }
 
-void apoint_paste_item(struct apoint *apt, long date)
+void apoint_paste_item(struct apoint *apt, time_t date)
 {
 	struct tm t;
 

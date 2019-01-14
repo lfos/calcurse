@@ -89,7 +89,7 @@ static int event_cmp(struct event *a, struct event *b)
 }
 
 /* Create a new event */
-struct event *event_new(char *mesg, char *note, long day, int id)
+struct event *event_new(char *mesg, char *note, time_t day, int id)
 {
 	struct event *ev;
 
@@ -105,7 +105,7 @@ struct event *event_new(char *mesg, char *note, long day, int id)
 }
 
 /* Check if the event belongs to the selected day */
-unsigned event_inday(struct event *i, long *start)
+unsigned event_inday(struct event *i, time_t *start)
 {
 	return (date_cmp_day(i->day, *start) == 0);
 }
@@ -218,7 +218,7 @@ void event_delete(struct event *ev)
 	LLIST_REMOVE(&eventlist, i);
 }
 
-void event_paste_item(struct event *ev, long date)
+void event_paste_item(struct event *ev, time_t date)
 {
 	ev->day = date;
 	LLIST_ADD_SORTED(&eventlist, ev, event_cmp);
