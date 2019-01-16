@@ -1203,8 +1203,8 @@ int starts_with(const char *, const char *);
 int starts_with_ci(const char *, const char *);
 int hash_matches(const char *, const char *);
 int show_dialogs(void);
-int overflow_add(int, int, int *);
-int overflow_mul(int, int, int *);
+long overflow_add(long, long, long *);
+long overflow_mul(long, long, long *);
 
 /* vars.c */
 extern int col, row;

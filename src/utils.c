@@ -1024,12 +1024,11 @@ int parse_date_duration(const char *string, unsigned *days, time_t start)
 	dur += in;
 	if (start) {
 		/* wanted: start = start + dur * DAYINSEC */
-		int p, s;
+		long p;
 		if (overflow_mul(dur, DAYINSEC, &p))
 			return 0;
-		if (overflow_add(start, p, &s))
+		if (overflow_add(start, p, &start))
 			return 0;
-		start = s;
 		if (!check_sec(&start))
 			return 0;
 	}
@@ -1115,7 +1114,7 @@ int parse_duration(const char *string, unsigned *duration, time_t start)
 
 	const char *p;
 	unsigned in = 0, frac = 0, denom = 1;
-	unsigned dur = 0;
+	long dur = 0;
 
 	if (!string || *string == '\0')
 		return 0;
@@ -1187,7 +1186,7 @@ int parse_duration(const char *string, unsigned *duration, time_t start)
 	if (start) {
 		/* wanted: end = start + dur * MININSEC */
 		time_t end;
-		int p, s;
+		long p, s;
 		if (overflow_mul(dur, MININSEC, &p))
 			return 0;
 		if (overflow_add(start, p, &s))
@@ -1250,10 +1249,9 @@ int parse_datetime(const char *string, time_t *ts, time_t dur)
 	/* Is the resulting time + dur a valid end time? */
 	if (dur) {
 		/* want: sec = *ts + dur */
-		int s;
-		if (overflow_add(*ts, dur, &s))
+		time_t sec;
+		if (overflow_add(*ts, dur, &sec))
 			return 0;
-		time_t sec = s;
 		if (!check_sec(&sec))
 			return 0;
 	}
@@ -1947,12 +1945,16 @@ int show_dialogs(void)
 /*
  * Overflow check for addition with positive second term.
  */
-int overflow_add(int x, int y, int *z)
+long overflow_add(long x, long y, long *z)
 {
+	if (!YEAR1902_2037)
+		goto exit;
+
 	if (y < 0)
 		return 1;
 	if (INT_MAX - y < x)
 		return 1;
+   exit:
 	*z = x + y;
 	return 0;
 }
@@ -1960,12 +1962,16 @@ int overflow_add(int x, int y, int *z)
 /*
  * Overflow check for multiplication with positive terms.
  */
-int overflow_mul(int x, int y, int *z)
+long overflow_mul(long x, long y, long *z)
 {
+	if (!YEAR1902_2037)
+		goto exit;
+
 	if (x < 0 || y <= 0)
 		return 1;
 	if (INT_MAX / y < x)
 		return 1;
+   exit:
 	*z = x * y;
 	return 0;
 }

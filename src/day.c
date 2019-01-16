@@ -671,19 +671,46 @@ int day_paste_item(struct day_item *p, time_t date)
 		/* No previously cut item. */
 		return 0;
 	}
+	/*
+	 * Valid until date of recurrent items?
+	 * Careful: p->start is not yet set.
+	 */
+	time_t until;
 
 	switch (p->type) {
 	case EVNT:
 		event_paste_item(p->item.ev, date);
 		break;
 	case RECUR_EVNT:
-		recur_event_paste_item(p->item.rev, date);
+		/* want: until = shift + old_until */
+		if (p->item.rev->rpt->until &&
+		    overflow_add(
+			date - p->item.rev->day,
+			p->item.rev->rpt->until,
+			&until)
+		)
+			return 0;
+		if (check_sec(&until))
+			recur_event_paste_item(p->item.rev, date);
+		else
+			return 0;
 		break;
 	case APPT:
 		apoint_paste_item(p->item.apt, date);
 		break;
 	case RECUR_APPT:
-		recur_apoint_paste_item(p->item.rapt, date);
+		/* wanted: until = shift + old_until */
+		if (p->item.rapt->rpt->until &&
+		    overflow_add(
+			date - update_time_in_date(p->item.rapt->start, 0, 0),
+			p->item.rapt->rpt->until,
+			&until)
+		)
+			return 0;
+		if (check_sec(&until))
+			recur_apoint_paste_item(p->item.rapt, date);
+		else
+			return 0;
 		break;
 	default:
 		EXIT(_("unknown item type"));
