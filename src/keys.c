@@ -470,29 +470,11 @@ char *keys_action_allkeys(enum key action)
 }
 
 /* Need this to display keys properly inside status bar. */
-static char *keys_format_label(char *key, int keylen)
+static unsigned keys_format_label(char **s, char *key, int width)
 {
-	static char fmtkey[BUFSIZ];
-	const int len = utf8_strwidth(key);
-	const char dot = '.';
-	int i;
-
-	if (keylen > BUFSIZ)
-		return NULL;
-
-	memset(fmtkey, 0, sizeof(fmtkey));
-	if (len == 0) {
-		strncpy(fmtkey, "?", sizeof(fmtkey));
-	} else if (len <= keylen) {
-		for (i = 0; i < keylen - len; i++)
-			fmtkey[i] = ' ';
-		strncat(fmtkey, key, keylen);
-	} else {
-		for (i = 0; i < keylen - 1; i++)
-			fmtkey[i] = key[i];
-		fmtkey[keylen - 1] = dot;
-	}
-	return fmtkey;
+	*s = mem_strdup(key);
+	utf8_chop(*s, width);
+	return utf8_strwidth(*s);
 }
 
 void
@@ -518,6 +500,7 @@ keys_display_bindings_bar(WINDOW * win, int *bindings, int count,
 		const int label_pos_y = key_pos_y;
 
 		char key[UTF8_MAXLEN + 1], *fmtkey;
+		unsigned dpywidth, shift_x;
 
 		int binding_key;
 
@@ -566,8 +549,10 @@ keys_display_bindings_bar(WINDOW * win, int *bindings, int count,
 		}
 
 		custom_apply_attr(win, ATTR_HIGHEST);
-		fmtkey = keys_format_label(key, KEYS_KEYLEN);
-		mvwaddstr(win, key_pos_y, key_pos_x, fmtkey);
+		dpywidth = keys_format_label(&fmtkey, key, KEYS_KEYLEN);
+		shift_x = KEYS_KEYLEN - dpywidth;
+		mvwaddstr(win, key_pos_y, key_pos_x + shift_x, fmtkey);
+		mem_free(fmtkey);
 		custom_remove_attr(win, ATTR_HIGHEST);
 		mvwaddstr(win, label_pos_y, label_pos_x, label);
 	}
