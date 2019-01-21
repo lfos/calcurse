@@ -344,9 +344,9 @@ draw_monthly_view(struct scrollwin *sw, struct date *current_day,
 		  unsigned sunday_first)
 {
 	struct date c_day;
-	int w_day, numdays, j;
+	int w_day, numdays, j, week = 0;
 	unsigned yr, mo;
-	int w, monthw, ofs_x, ofs_y;
+	int w, monthw, weekw, dayw, ofs_x, ofs_y;
 	struct tm t, t_first;
 	char *cp;
 	char bo, bc;
@@ -362,23 +362,30 @@ draw_monthly_view(struct scrollwin *sw, struct date *current_day,
 	numdays = days[slctd_day.mm - 1];
 	if (2 == slctd_day.mm && ISLEAP(slctd_day.yyyy))
 		++numdays;
-	/* step forward by week until past the last day of the month */
+	/*
+	 * Step forward by week until past the last day of the month.
+	 * The first day of the first week may belong to the previous month.
+	 */
 	t = t_first = get_first_day(sunday_first);
-	t.tm_mday += WEEKINDAYS; mktime(&t);
+	t.tm_mday += WEEKINDAYS;
+	mktime(&t);
 	last_day += WEEKINDAYS;
+	/* following weeks */
 	for (j = t.tm_mday; j <= numdays; j += WEEKINDAYS )
 		last_day += WEEKINDAYS;
 
 	mo = slctd_day.mm;
 	yr = slctd_day.yyyy;
 
-	/* Width of monthly display is 7 * 4 - 1. */
-	monthw = 27;
+	/* a week column plus seven day columns */
+	weekw = 2;
+	dayw = 4;
+	monthw = weekw + 7 * dayw;
 
 	/* offset for centering calendar in window */
 	w = wins_sbar_width() - 2;
 	ofs_y = 0;
-	ofs_x = (w - 27) / 2;
+	ofs_x = (w - monthw) / 2;
 
 	/* invalidate cache if a new month is selected */
 	if (yr * YEARINMONTHS + mo != monthly_view_cache_month) {
@@ -386,13 +393,19 @@ draw_monthly_view(struct scrollwin *sw, struct date *current_day,
 		monthly_view_cache_valid = 0;
 	}
 
-	/* Print the week number, calculated from monday. */
-	t = get_first_weekday(0);
-	draw_week_number(sw, t);
-
 	WINS_CALENDAR_LOCK;
-	if (!monthly_view_cache_valid);
+	if (!monthly_view_cache_valid)
 		werase(sw_cal.inner);
+
+	/* Print the day number. */
+	t = date2tm(slctd_day, 0, 0);
+	mktime(&t);
+	custom_apply_attr(sw->win, ATTR_HIGHEST);
+	mvwprintw(sw->win, conf.compact_panels ? 0 : 2,
+			   ofs_x + monthw - 6,
+			   "(#%3d)", t.tm_yday + 1);
+	custom_remove_attr(sw->win, ATTR_HIGHEST);
+
 	/* Write the current month and year on top of the calendar */
 	custom_apply_attr(sw->inner, ATTR_HIGHEST);
 	cp = nl_langinfo(MON_1 + mo - 1);
@@ -405,11 +418,13 @@ draw_monthly_view(struct scrollwin *sw, struct date *current_day,
 	/* print the days with regard to the first day of the week */
 	custom_apply_attr(sw->inner, ATTR_HIGHEST);
 	for (j = 0; j < WEEKINDAYS; j++) {
-		mvwaddstr(sw->inner, ofs_y, ofs_x + 4 * j,
+		mvwaddstr(sw->inner, ofs_y, ofs_x + weekw + 4 * j,
 			nl_langinfo(ABDAY_1 + (1 + j - sunday_first) % WEEKINDAYS));
 	}
 	custom_remove_attr(sw->inner, ATTR_HIGHEST);
 	WINS_CALENDAR_UNLOCK;
+
+	++ofs_y;
 
 	/* print the dates */
 	for (j = first_day, t = t_first, w_day = 0, bracket_open = bracket_close = -1;
@@ -456,28 +471,41 @@ draw_monthly_view(struct scrollwin *sw, struct date *current_day,
 			attr = day_attr;
 
 		WINS_CALENDAR_LOCK;
+		/* Print week number, beware of first and last week of the year. */
+		if (!w_day) {
+			if (j == first_day ||
+			    (mo == 1 && j == WEEKINDAYS) ||
+			    (mo == 12 && j >= 4 * WEEKINDAYS)) {
+				if (sunday_first)
+					date_change(&t, 0, 1);
+				week = ISO8601weeknum(&t);
+				if (sunday_first)
+					date_change(&t, 0, -1);
+			} else
+				week++;
+			mvwprintw(sw->inner, ofs_y, ofs_x, "%2d", week);
+		}
 		if (attr)
 			custom_apply_attr(sw->inner, attr);
-		mvwprintw(sw->inner, ofs_y + 1,
-				     ofs_x  + w_day * 4,
-				     "%c%2d%c", bo, c_day.dd, bc);
+		mvwprintw(sw->inner, ofs_y, ofs_x  + weekw + w_day * 4,
+			  "%c%2d%c", bo, c_day.dd, bc);
 		/* Attributes for the APP day range. */
 		if (conf.days_bar) {
 			if (j >= bracket_open &&
 			    j <= bracket_close)
 				mvwchgat(sw->inner,
-					 ofs_y + 1, ofs_x + w_day * 4,
+					 ofs_y, ofs_x + weekw + w_day * 4,
 					 4, A_REVERSE,
 					 (colorize ? COLR_DEFAULT : 0), NULL);
 		} else { /* red brackets */
 			if (j == bracket_open)
 				mvwchgat(sw->inner,
-					 ofs_y + 1, ofs_x + w_day * 4,
+					 ofs_y, ofs_x + weekw + w_day * 4,
 					 1, A_BOLD,
 					 (colorize ? COLR_RED : 0), NULL);
 			if (j == bracket_close)
 				mvwchgat(sw->inner,
-					 ofs_y + 1, ofs_x + 3 + w_day * 4,
+					 ofs_y, ofs_x + weekw + 3 + w_day * 4,
 					 1,  A_BOLD,
 					 (colorize ? COLR_RED : 0), NULL);
 		}
