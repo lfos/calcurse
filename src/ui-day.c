@@ -1027,17 +1027,19 @@ void ui_day_load_items(void)
 void ui_day_sel_reset(void)
 {
 	listbox_set_sel(&lb_apt, 0);
+	/* Make the day visible. */
+	if (lb_apt.item_sel)
+		listbox_item_in_view(&lb_apt, lb_apt.item_sel - 1);
 }
 
 int ui_day_sel_move(int delta)
 {
-	int ret, prev;
+	int ret;
 
 	ret = listbox_sel_move(&lb_apt, delta);
-	prev = lb_apt.item_sel - 1;
-	/* When moving up, make the day visible. */
-	if (ret && delta < 0 && lb_apt.type[prev] == DAY_HEADING)
-		listbox_item_in_view(&lb_apt, prev);
+	/* When moving up, make the line above visible. */
+	if (delta < 0 && ret && lb_apt.item_sel)
+		listbox_item_in_view(&lb_apt, lb_apt.item_sel - 1);
 	return ret;
 }
 
