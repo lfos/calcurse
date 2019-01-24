@@ -8,8 +8,7 @@ sign. Completed tasks will no longer appear in exported data or when using the
 case only completed tasks will be shown).
 
 If an appointment is flagged as important, an exclamation mark appears in front
-of it, and you will be warned if time gets closed to the appointment start
-time.
+of it, and you will be warned if time gets close to the appointment start time.
 
 To customize the way one gets notified, the configuration submenu lets you
 choose the command launched to warn user of an upcoming appointment, and how
