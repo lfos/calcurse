@@ -529,7 +529,6 @@ enum {
 	MULTIPLE_DAYS,
 	DAYSEPARATOR,
 	EMPTY_APPT_LINE,
-	DAYS_BAR,
 	AUTO_SAVE,
 	AUTO_GC,
 	PERIODIC_SAVE,
@@ -555,7 +554,6 @@ static void print_general_option(int i, WINDOW *win, int y, int hilt, void *cb_d
 		"general.multipledays = ",
 		"appearance.dayseparator = ",
 		"appearance.emptyline = ",
-		"appearance.multipledaysbar = ",
 		"general.autosave = ",
 		"general.autogc = ",
 		"general.periodicsave = ",
@@ -619,13 +617,6 @@ static void print_general_option(int i, WINDOW *win, int y, int hilt, void *cb_d
 		mvwaddstr(win, y + 1, XPOS,
 			  _("(number of days displayed in the appointments "
 			  "panel)"));
-		break;
-	case DAYS_BAR:
-		print_bool_option_incolor(win, conf.days_bar, y,
-					  XPOS + strlen(opt[DAYS_BAR]));
-		mvwaddstr(win, y + XPOS, 1,
-			  _("(if set to YES, a bar replaces the brackets "
-			  "around displayed dates)"));
 		break;
 	case AUTO_SAVE:
 		print_bool_option_incolor(win, conf.auto_save, y,
@@ -786,9 +777,6 @@ static void general_option_edit(int i)
 			conf.dayseparator = 0;
 		else
 			conf.dayseparator++;
-		break;
-	case DAYS_BAR:
-		conf.days_bar = !conf.days_bar;
 		break;
 	case HEADING_POS:
 		if (conf.heading_pos == RIGHT)

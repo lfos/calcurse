@@ -344,7 +344,7 @@ draw_monthly_view(struct scrollwin *sw, struct date *current_day,
 		  unsigned sunday_first)
 {
 	struct date c_day;
-	int w_day, numdays, j, week = 0;
+	int slctd, w_day, numdays, j, week = 0;
 	unsigned yr, mo;
 	int w, monthw, weekw, dayw, ofs_x, ofs_y;
 	struct tm t, t_first;
@@ -352,7 +352,6 @@ draw_monthly_view(struct scrollwin *sw, struct date *current_day,
 	char bo, bc;
 	unsigned attr, day_attr;
 	int first_day, last_day;
-	int bracket_open, bracket_close;
 
 	/*
 	 * number of days to display
@@ -427,13 +426,14 @@ draw_monthly_view(struct scrollwin *sw, struct date *current_day,
 	++ofs_y;
 
 	/* print the dates */
-	for (j = first_day, t = t_first, w_day = 0, bracket_open = bracket_close = -1;
+	for (j = first_day, t = t_first, w_day = 0;
 	     j < last_day;
 	     j++, date_change(&t, 0, 1), w_day++, w_day %= WEEKINDAYS) {
 
 		c_day.dd = t.tm_mday;
 		c_day.mm = t.tm_mon + 1;
 		c_day.yyyy = t.tm_year + 1900;
+		slctd = !date_cmp(&c_day, &slctd_day);
 
 		/* Next line, week over. */
 		if (!w_day && j != first_day) {
@@ -441,20 +441,23 @@ draw_monthly_view(struct scrollwin *sw, struct date *current_day,
 			ofs_x = (w - monthw) / 2;
 		}
 
-		/* Brackets for (multiple) days in the APP panel. */
-		if (date_cmp(&c_day, &slctd_day) == 0) {
-			bracket_open = j;
-			bracket_close = j + day_get_days() - 1;
+		/* Week number, beware of first and last week of the year. */
+		if (!w_day) {
+			if (j == first_day ||
+			    (mo == 1 && j == WEEKINDAYS) ||
+			    (mo == 12 && j >= 4 * WEEKINDAYS)) {
+				if (sunday_first)
+					date_change(&t, 0, 1);
+				week = ISO8601weeknum(&t);
+				if (sunday_first)
+					date_change(&t, 0, -1);
+			} else
+				week++;
 		}
 
-		/* The days visible in the APP panel. */
-		bo =  bc = ' ';
-		if (!conf.days_bar) {
-			if (j == bracket_open)
-				bo = '[';
-			if (j == bracket_close)
-				bc = ']';
-		}
+		/* Brackets for the selected day. */
+		bo = slctd ? '[' : ' ';
+		bc = slctd ? ']' : ' ';
 
 		/* check if the day contains an event or an appointment */
 		if (monthly_view_cache_valid) {
@@ -471,46 +474,26 @@ draw_monthly_view(struct scrollwin *sw, struct date *current_day,
 			attr = day_attr;
 
 		WINS_CALENDAR_LOCK;
-		/* Print week number, beware of first and last week of the year. */
+		/* Print week number. */
 		if (!w_day) {
-			if (j == first_day ||
-			    (mo == 1 && j == WEEKINDAYS) ||
-			    (mo == 12 && j >= 4 * WEEKINDAYS)) {
-				if (sunday_first)
-					date_change(&t, 0, 1);
-				week = ISO8601weeknum(&t);
-				if (sunday_first)
-					date_change(&t, 0, -1);
-			} else
-				week++;
 			mvwprintw(sw->inner, ofs_y, ofs_x, "%2d", week);
 		}
+		/* Print date with attributes.*/
 		if (attr)
 			custom_apply_attr(sw->inner, attr);
 		mvwprintw(sw->inner, ofs_y, ofs_x  + weekw + w_day * 4,
 			  "%c%2d%c", bo, c_day.dd, bc);
-		/* Attributes for the APP day range. */
-		if (conf.days_bar) {
-			if (j >= bracket_open &&
-			    j <= bracket_close)
-				mvwchgat(sw->inner,
-					 ofs_y, ofs_x + weekw + w_day * 4,
-					 4, A_REVERSE,
-					 (colorize ? COLR_DEFAULT : 0), NULL);
-		} else { /* red brackets */
-			if (j == bracket_open)
-				mvwchgat(sw->inner,
-					 ofs_y, ofs_x + weekw + w_day * 4,
-					 1, A_BOLD,
-					 (colorize ? COLR_RED : 0), NULL);
-			if (j == bracket_close)
-				mvwchgat(sw->inner,
-					 ofs_y, ofs_x + weekw + 3 + w_day * 4,
-					 1,  A_BOLD,
-					 (colorize ? COLR_RED : 0), NULL);
-		}
 		if (attr)
 			custom_remove_attr(sw->inner, attr);
+		/* Colour the brackets. */
+		if (slctd) {
+			mvwchgat(sw->inner, ofs_y, ofs_x + weekw + w_day * 4,
+				 1, A_BOLD,
+				 (colorize ? (COLR_RED | A_BOLD) : 0), NULL);
+			mvwchgat(sw->inner, ofs_y, ofs_x + weekw + 3 + w_day * 4,
+				 1,  A_BOLD,
+				 (colorize ? (COLR_RED | A_BOLD) : 0), NULL);
+		}
 		WINS_CALENDAR_UNLOCK;
 	}
 	monthly_view_cache_valid = 1;
