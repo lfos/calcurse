@@ -719,7 +719,7 @@ unsigned day_chk_busy_slices(struct date day, int slicesno, int *slices)
 }
 
 /* Cut an item so it can be pasted somewhere else later. */
-struct day_item *day_cut_item(time_t date, int item_number)
+struct day_item *day_cut_item(int item_number)
 {
 	struct day_item *p = day_get_item(item_number);
 

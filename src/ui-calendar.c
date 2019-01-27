@@ -208,6 +208,12 @@ static int ui_calendar_get_wday(struct date *date)
 	return t.tm_wday;
 }
 
+/* Set the selected day in the calendar. */
+void ui_calendar_set_slctd_day(struct date day)
+{
+	slctd_day = day;
+}
+
 void ui_calendar_monthly_view_cache_set_invalid(void)
 {
 	monthly_view_cache_valid = 0;

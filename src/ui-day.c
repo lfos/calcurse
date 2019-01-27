@@ -39,6 +39,14 @@
 struct day_item day_cut[38] = { {0, 0, 0, {NULL}} };
 
 /*
+ * Set the selected day in the calendar from the selected item in the APP panel.
+ */
+static void set_slctd_day(void)
+{
+	ui_calendar_set_slctd_day(sec2date(ui_day_get_sel()->order));
+}
+
+/*
  * Return the selected APP item.
  * This is a pointer into the day vector and invalid after a day vector rebuild,
  * but the (order, item) data may be used to refind the object.
@@ -52,7 +60,7 @@ struct day_item *ui_day_get_sel(void)
 }
 
 /*
- * Set the selected item from the saved day_item.
+ * Set the selected item and day from the saved day_item.
  */
 void ui_day_find_sel(void)
 {
@@ -60,6 +68,7 @@ void ui_day_find_sel(void)
 
 	if ((n = day_sel_index()) != -1)
 		listbox_set_sel(&lb_apt, n);
+	set_slctd_day();
 }
 
 /*
@@ -107,6 +116,7 @@ static void daybegin(int dir)
   leave:
 	listbox_set_sel(&lb_apt, sel);
 	listbox_item_in_view(&lb_apt, sel);
+	set_slctd_day();
 }
 
 /*
@@ -752,7 +762,7 @@ void ui_day_item_delete(unsigned reg)
 	      "Delete (i)tem or just its (n)ote?");
 	const char *note_choices = _("[in]");
 	const int nb_note_choices = 2;
-	time_t date = 0, occurrence;
+	time_t occurrence;
 
 	if (day_item_count(0) <= 0)
 		return;
@@ -808,7 +818,7 @@ void ui_day_item_delete(unsigned reg)
 	}
 
 	ui_day_item_cut_free(reg);
-	p = day_cut_item(date, listbox_get_sel(&lb_apt));
+	p = day_cut_item(listbox_get_sel(&lb_apt));
 	day_cut[reg].type = p->type;
 	day_cut[reg].item = p->item;
 	/* Keep the selection on the same day. */
@@ -853,7 +863,7 @@ void ui_day_item_repeat(void)
 	int item_nb;
 	struct day_item *p;
 	struct recur_apoint *ra;
-	time_t until, date;
+	time_t until;
 	unsigned days;
 
 	if (day_item_count(0) <= 0)
@@ -944,7 +954,6 @@ void ui_day_item_repeat(void)
 		keys_wgetch(win[KEY].p);
 	}
 
-	date = get_slctd_day();
 	/* Set the selected APP item. */
 	struct day_item d = empty_day;
 	if (p->type == EVNT) {
@@ -966,7 +975,7 @@ void ui_day_item_repeat(void)
 	day_set_sel_data(&d);
 
 	ui_day_item_cut_free(REG_BLACK_HOLE);
-	p = day_cut_item(date, item_nb);
+	p = day_cut_item(item_nb);
 	day_cut[REG_BLACK_HOLE].type = p->type;
 	day_cut[REG_BLACK_HOLE].item = p->item;
 	io_set_modified();
@@ -1040,6 +1049,7 @@ void ui_day_sel_reset(void)
 	/* Make the day visible. */
 	if (lb_apt.item_sel)
 		listbox_item_in_view(&lb_apt, lb_apt.item_sel - 1);
+	set_slctd_day();
 }
 
 int ui_day_sel_move(int delta)
@@ -1050,6 +1060,7 @@ int ui_day_sel_move(int delta)
 	/* When moving up, make the line above visible. */
 	if (delta < 0 && ret && lb_apt.item_sel)
 		listbox_item_in_view(&lb_apt, lb_apt.item_sel - 1);
+	set_slctd_day();
 	return ret;
 }
 
