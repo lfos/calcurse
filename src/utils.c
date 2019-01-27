@@ -408,6 +408,19 @@ time_t date2sec(struct date day, unsigned hour, unsigned min)
 	return t;
 }
 
+/* Return the (calcurse) date of a (Unix) time in seconds. */
+struct date sec2date(time_t t)
+{
+	struct tm tm;
+	struct date d;
+
+	localtime_r(&t, &tm);
+	d.dd = tm.tm_mday;
+	d.mm = tm.tm_mon + 1;
+	d.yyyy = tm.tm_year + 1900;
+	return d;
+}
+
 time_t utcdate2sec(struct date day, unsigned hour, unsigned min)
 {
 	char *tz;

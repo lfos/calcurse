@@ -38,6 +38,20 @@
 
 struct day_item day_cut[38] = { {0, 0, 0, {NULL}} };
 
+/* Return the (calcurse) date of the selected item in the APP panel. */
+static struct date get_sel_date(void)
+{
+	return sec2date(ui_day_get_sel()->order);
+}
+
+/*
+ * Set the selected day in the calendar from the selected item in the APP panel.
+ */
+static void set_slctd_day(void)
+{
+	ui_calendar_set_slctd_day(get_sel_date());
+}
+
 /*
  * Return the selected APP item.
  * This is a pointer into the day vector and invalid after a day vector rebuild,
@@ -63,6 +77,7 @@ void ui_day_set_saved_sel(struct day_item *d)
 	/* ... and set the selection in the APP listbox. */
 	if (n != -1)
 		listbox_set_sel(&lb_apt, n);
+	set_slctd_day();
 }
 
 /*
@@ -118,6 +133,7 @@ static void daybegin(int dir)
   leave:
 	listbox_set_sel(&lb_apt, sel);
 	listbox_item_in_view(&lb_apt, sel);
+	set_slctd_day();
 }
 
 /*
@@ -1030,6 +1046,7 @@ void ui_day_sel_reset(void)
 	/* Make the day visible. */
 	if (lb_apt.item_sel)
 		listbox_item_in_view(&lb_apt, lb_apt.item_sel - 1);
+	set_slctd_day();
 }
 
 int ui_day_sel_move(int delta)
@@ -1040,6 +1057,7 @@ int ui_day_sel_move(int delta)
 	/* When moving up, make the line above visible. */
 	if (delta < 0 && ret && lb_apt.item_sel)
 		listbox_item_in_view(&lb_apt, lb_apt.item_sel - 1);
+	set_slctd_day();
 	return ret;
 }
 
