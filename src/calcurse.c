@@ -418,9 +418,8 @@ static inline void key_move_up(void)
 			ui_calendar_move(DAY_PREV, 1);
 			do_storage(1);
 			ui_day_sel_dayend();
-			wins_update(FLAG_CAL);
 		}
-		wins_update(FLAG_APP);
+		wins_update(FLAG_APP | FLAG_CAL);
 	} else if (wins_slctd() == TOD) {
 		ui_todo_sel_move(-1);
 		wins_update(FLAG_TOD);
@@ -440,12 +439,11 @@ static inline void key_move_down(void)
 		key_generic_next_week();
 	} else if (wins_slctd() == APP) {
 		if (!ui_day_sel_move(1)) {
-			ui_calendar_move(DAY_NEXT, 1);
+			ui_calendar_move(DAY_PREV, day_get_days() - 2);
 			do_storage(1);
 			ui_day_sel_daybegin(day_get_days() - 1);
-			wins_update(FLAG_CAL);
 		}
-		wins_update(FLAG_APP);
+		wins_update(FLAG_APP | FLAG_CAL);
 	} else if (wins_slctd() == TOD) {
 		ui_todo_sel_move(1);
 		wins_update(FLAG_TOD);
