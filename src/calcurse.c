@@ -77,7 +77,7 @@ static void do_storage(int day_changed)
 	 * Save the selected APP item before rebuilding the day vector -
 	 * unless already done from elsewhere.
 	 */
-	if (!slctd_item.item.apt)
+	if (!(slctd_item.item.apt || slctd_item.order))
 		slctd_item = *ui_day_get_sel();
 
 	/*

@@ -806,6 +806,10 @@ void ui_day_item_delete(unsigned reg)
 							     &occurrence);
 			day_item_add_exc(p, occurrence);
 			io_set_modified();
+			/* Keep the selection on the same day. */
+			cal_set_slctd_item(
+				day_get_item(listbox_get_sel(&lb_apt) - 1)
+			);
 			return;
 		default:
 			return;
@@ -817,7 +821,7 @@ void ui_day_item_delete(unsigned reg)
 	day_cut[reg].type = p->type;
 	day_cut[reg].item = p->item;
 	/* Keep the selection on the same day. */
-	daybegin(0);
+	cal_set_slctd_item(day_get_item(listbox_get_sel(&lb_apt) - 1));
 	io_set_modified();
 
 	ui_calendar_monthly_view_cache_set_invalid();
