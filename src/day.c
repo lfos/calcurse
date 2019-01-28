@@ -375,6 +375,9 @@ day_store_items(long date, int include_captions, int n)
 	day_init_vector();
 
 	for (i = 0; i < n; i++, date = NEXTDAY(date)) {
+		if (YEAR1902_2037 && !check_sec(&date))
+			break;
+
 		if (include_captions)
 			day_add_item(DAY_HEADING, 0, date, p);
 

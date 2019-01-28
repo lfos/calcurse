@@ -756,10 +756,9 @@ void ui_calendar_move(enum move move, int count)
 		ret = 1;
 		/* NOTREACHED */
 	}
-	if (ret == 1 || (YEAR1902_2037 && t.tm_year < 2)
-		     || (YEAR1902_2037 && t.tm_year > 137)) {
-		char *out, *msg = _("The move failed (%d/%d/%d, ret=%d)."), ch;
-		asprintf(&out, msg, t.tm_mday, t.tm_mon + 1, t.tm_year + 1900, ret);
+	if (ret || !check_date(t.tm_year + 1900, t.tm_mon + 1, t.tm_mday)) {
+		char *out, *msg = _("The move failed (%d/%d/%d)."), ch;
+		asprintf(&out, msg, t.tm_mday, t.tm_mon + 1, t.tm_year + 1900);
 		do {
 			status_mesg(out, _("Press [ENTER] to continue"));
 			ch = keys_wgetch(win[KEY].p);
