@@ -69,7 +69,6 @@ def calcurse_import(icaldata):
         '-i', '-',
         '--dump-imported',
         '-q',
-        '--filter-type', sync_filter,
         '--format-apt=%(hash)\\n',
         '--format-recur-apt=%(hash)\\n',
         '--format-event=%(hash)\\n',
