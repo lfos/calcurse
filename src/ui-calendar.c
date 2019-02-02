@@ -482,7 +482,9 @@ draw_monthly_view(struct scrollwin *sw, struct date *current_day,
 		WINS_CALENDAR_LOCK;
 		/* Print week number. */
 		if (!w_day) {
+			custom_apply_attr(sw->inner, ATTR_HIGHEST);
 			mvwprintw(sw->inner, ofs_y, ofs_x, "%2d", week);
+			custom_remove_attr(sw->inner, ATTR_HIGHEST);
 		}
 		/* Print date with attributes.*/
 		if (attr)
