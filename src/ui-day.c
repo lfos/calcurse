@@ -725,7 +725,9 @@ void ui_day_item_delete(unsigned reg)
 							     &occurrence);
 				day_item_add_exc(p, occurrence);
 			}
+
 			io_set_modified();
+			ui_calendar_monthly_view_cache_set_invalid();
 			return;
 		default:
 			return;
@@ -736,8 +738,8 @@ void ui_day_item_delete(unsigned reg)
 	p = day_cut_item(date, listbox_get_sel(&lb_apt));
 	day_cut[reg].type = p->type;
 	day_cut[reg].item = p->item;
-	io_set_modified();
 
+	io_set_modified();
 	ui_calendar_monthly_view_cache_set_invalid();
 }
 
