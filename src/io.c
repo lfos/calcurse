@@ -1186,6 +1186,7 @@ void io_export_data(enum export_type type, int export_uid)
 		pcal_export_data(stream);
 
 	if (show_dialogs() && ui_mode == UI_CURSES) {
+		fclose(stream);
 		status_mesg(success, enter);
 		keys_wait_for_any_key(win[KEY].p);
 	}
