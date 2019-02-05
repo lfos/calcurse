@@ -367,6 +367,22 @@ cleanup:
 	mem_free(outstr);
 }
 
+/* Edit the list of exception days for a recurrent item. */
+static void update_exc(llist_t *exc)
+{
+	if (!exc->head)
+		return;
+	char *days;
+	enum getstr ret;
+
+	status_mesg(_("Exception days:"), "");
+	days = recur_exc2str(exc);
+	ret = updatestring(win[STA].p, &days, 0, 1);
+	if (ret == GETSTRING_VALID || ret == GETSTRING_RET)
+		recur_update_exc(exc, days);
+	mem_free(days);
+}
+
 /* Edit an already existing item. */
 void ui_day_item_edit(void)
 {
@@ -386,7 +402,7 @@ void ui_day_item_edit(void)
 		re = p->item.rev;
 		const char *choice_recur_evnt[2] = {
 			_("Description"),
-			_("Repetition"),
+			_("Repetition")
 		};
 		switch (status_ask_simplechoice
 			(_("Edit: "), choice_recur_evnt, 2)) {
@@ -396,6 +412,7 @@ void ui_day_item_edit(void)
 			break;
 		case 2:
 			update_rept(&re->rpt, re->day);
+			update_exc(&re->exc);
 			io_set_modified();
 			break;
 		default:
@@ -437,6 +454,7 @@ void ui_day_item_edit(void)
 		case 4:
 			need_check_notify = 1;
 			update_rept(&ra->rpt, ra->start);
+			update_exc(&ra->exc);
 			io_set_modified();
 			break;
 		case 5:

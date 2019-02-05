@@ -84,6 +84,57 @@ static void exc_dup(llist_t * in, llist_t * exc)
 	}
 }
 
+/* Return a string containing the exception days. */
+char *recur_exc2str(llist_t *exc)
+{
+	llist_item_t *i;
+	struct excp *p;
+	struct string s;
+	struct tm tm;
+
+	string_init(&s);
+	LLIST_FOREACH(exc, i) {
+		p = LLIST_GET_DATA(i);
+		localtime_r(&p->st, &tm);
+		string_catftime(&s, DATEFMT(conf.input_datefmt), &tm);
+		string_catf(&s, "%c", ' ');
+	}
+	return string_buf(&s);
+}
+
+/*
+ * Update the list of exceptions from a string of days. Any positive number of
+ * spaces are allowed before, between and after the days.
+ */
+void recur_update_exc(llist_t *exc, char *days)
+{
+	char *d;
+	time_t t = get_today();
+	llist_t nexc;
+	LLIST_INIT(&nexc);
+
+	while (1) {
+		while (*days == ' ')
+			days++;
+		if ((d = strchr(days, ' ')))
+			*d = '\0';
+		else if (!strlen(days))
+			break;
+		if (parse_datetime(days, &t, 0))
+			recur_add_exc(&nexc, t);
+		else
+			goto cleanup;
+		if (d)
+			days = d + 1;
+		else
+			break;
+	}
+	free_exc_list(exc);
+	exc_dup(exc, &nexc);
+cleanup:
+	free_exc_list(&nexc);
+}
+
 struct recur_event *recur_event_dup(struct recur_event *in)
 {
 	EXIT_IF(!in, _("null pointer"));
