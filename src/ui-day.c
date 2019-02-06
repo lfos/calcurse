@@ -1117,8 +1117,8 @@ void ui_day_draw(int n, WINDOW *win, int y, int hilt, void *cb_data)
 		custom_remove_attr(win, ATTR_HIGHEST);
 		mem_free(buf);
 	} else if (item->type == EVNT_SEPARATOR) {
-		wmove(win, y, 0);
-		whline(win, 0, width);
+		wmove(win, y, 1);
+		whline(win, 0, width - 2);
 	}
 }
 
