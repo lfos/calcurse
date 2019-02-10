@@ -191,7 +191,8 @@ enum getstr getstring(WINDOW * win, char *str, int l, int x, int y)
 		getstr_print(win, x, y, &st);
 		wins_doupdate();
 
-		if ((ch = wgetch(win)) == '\n')
+		ch = wgetch(win);
+		if ((ch == '\n') || (ch == KEY_ENTER))
 			break;
 		switch (ch) {
 		case KEY_BACKSPACE:	/* delete one character */
