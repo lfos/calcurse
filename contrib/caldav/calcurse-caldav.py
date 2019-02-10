@@ -86,7 +86,7 @@ def calcurse_import(icaldata):
 def calcurse_export(objhash):
     command = [
         calcurse,
-        '-x', 'ical',
+        '-xical',
         '--export-uid',
         '--filter-hash=' + objhash
     ]
