@@ -318,7 +318,7 @@ enum datefmt {
     (datefmt == DATEFMT_YYYYMMDD ? _("yyyy/mm/dd") : _("yyyy-mm-dd"))))
 
 /* Day heading default format. */
-#define DAY_HEADING_DEFAULT "%B %-d, %Y"
+#define DAY_HEADING_DEFAULT "%B %e, %Y"
 
 /*
  * Calcurse representation of the date of a day in the calendar.
