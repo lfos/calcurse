@@ -45,6 +45,7 @@ void string_init(struct string *sb)
 	sb->buf = mem_malloc(STRING_INITIAL_BUFSIZE);
 	sb->bufsize = STRING_INITIAL_BUFSIZE;
 	sb->len = 0;
+	*sb->buf = '\0';
 }
 
 void string_reset(struct string *sb)
