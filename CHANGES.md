@@ -1,6 +1,86 @@
 Release Notes
 =============
 
+Version 4.4.0 (2019-02-21)
+--------------------------
+
+- Compatibility notes:
+
+    * The -F option was renamed to -P; please use -P instead.
+
+- New features:
+
+    * Major overhaul of the input routines in interactive mode (implemented by
+      Lars Henriksen).
+
+    * Support for separate data and configuration file directories (partly
+      implemented by Quentin Hibon).
+
+    * A --filter-invert option which inverts the other filter options
+      (implemented by Lars Henriksen).
+
+    * Support for negative date ranges when using the -d command line option.
+
+- New calcurse-caldav features:
+
+    * The SyncFilter configuration option which allows for specifying the types
+      of items synced from/to the server (implemented by Satvik Sharma).
+
+    * Support for a CALCURSE_CALDAV_PASSWORD environment variable which can be
+      used to pass a password securely from another program (implemented by
+      Randy Ramos).
+
+    * HTTP support (implemented by Dino Macri).
+
+    * Authorization removed from debug logs by default.
+
+- Bug fixes:
+
+    * Fix for an appointment becoming an event when entering an invalid start
+      time (implemented by Lars Henriksen).
+
+    * Fix for the deletion of a multi-day recurrent appointment (implemented by
+      Lars Henriksen).
+
+    * Fixes for potential database inconsistencies caused by appointments which
+      end before they begin (implemented by Lars Henriksen).
+
+    * Several fixes dealing with DST (implemented by Lars Henriksen).
+
+    * Fixes for date range queries (implemented by Lars Henriksen).
+
+    * Fix for segmentation fault with recent ncurses implementations.
+
+    * Fix for potential segmentation fault in mutex handling.
+
+    * RFC5545-compliant DTSTART in iCal exports (patch by Quentin Hibon).
+
+    * Fix for not closing the stream after exporting iCal items (patch by
+      crvs).
+
+    * Fix for priority parsing in iCal imports (patch by dott).
+
+    * Various improvements to the change detection and save conflict resolution
+      code (implemented by Lars Henriksen).
+
+    * Several improvements to concurrency control (implemented by Lars
+      Henriksen).
+
+    * Various fixes to the scrollbar (implemented by Lars Henriksen).
+
+    * Various potential buffer overflow fixes.
+
+    * A more robust command line argument parser (implemented by Lars
+      Henriksen).
+
+    * Various improvements to the UTF-8 handling code (implemented by Lars
+      Henriksen).
+
+    * Several stability and portability fixes (partly provided by Mikolaj
+      Kucharski).
+
+    * Several stability fixes in the calcurse-caldav script.
+
 Version 4.3.0 (2017-11-05)
 --------------------------
 
@@ -51,7 +131,7 @@ Version 4.3.0 (2017-11-05)
       "extended recurrent events" such as events occurring on the third
       Thursday of each month.
 
-- Bug Fixes:
+- Bug fixes:
 
     * Gracefully parse iCal parameters with colons (reported by Hakan Jerning).
 
