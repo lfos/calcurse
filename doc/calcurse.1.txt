@@ -203,7 +203,7 @@ displays those for yesterday and today. The first form is equivalent to *-Q
 *-F*, *--filter*::
   Deprecated, see <<_purge,-P, --purge>>. Note that this option is for
   backward compatibility and not the same as *-P* (it does not use the invert
-  filter option.
+  filter option).
 
 *-g*, *--gc*::
   Run the garbage collector for note files. The garbage collector removes

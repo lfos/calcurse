@@ -6,7 +6,9 @@ Version 4.4.0 (2019-02-21)
 
 - Compatibility notes:
 
-    * The -F option was renamed to -P; please use -P instead.
+    * The -F option is superseded by -P which can be used to *remove* certain
+      entries from the data file (instead of keeping them). Please consult the
+      man page for details.
 
 - New features:
 
