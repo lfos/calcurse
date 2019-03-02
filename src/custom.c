@@ -615,7 +615,7 @@ static void print_general_option(int i, WINDOW *win, int y, int hilt, void *cb_d
 			  conf.multiple_days);
 		custom_remove_attr(win, ATTR_HIGHEST);
 		mvwaddstr(win, y + 1, XPOS,
-			  _("(number of days displayed in the appointments "
+			  _("(number of days (1..21) to display in the appointments "
 			  "panel)"));
 		break;
 	case AUTO_SAVE:
@@ -736,8 +736,6 @@ static int general_option_height(int i, void *cb_data)
 
 static void general_option_edit(int i)
 {
-	const char *multiple_days_str =
-	    _("Enter the number of days (1,..,7) to display in the appointments panel");
 	const char *output_datefmt_str =
 	    _("Enter the date format (see 'man 3 strftime' for possible formats) ");
 	const char *input_datefmt_prefix = _("Enter the date format: ");
@@ -764,13 +762,10 @@ static void general_option_edit(int i)
 		conf.empty_appt_line = !conf.empty_appt_line;
 		break;
 	case MULTIPLE_DAYS:
-		status_mesg(multiple_days_str, "");
-		/* At most a week (one digit). */
-		if (getstring(win[STA].p, buf, 2, 0, 1) == GETSTRING_VALID) {
-			val = atoi(buf);
-			if (val > 0 && val < 8)
-				conf.multiple_days = val;
-		}
+		if (conf.multiple_days == 21)
+			conf.multiple_days = 1;
+		else
+			conf.multiple_days++;
 		break;
 	case DAYSEPARATOR:
 		if (conf.dayseparator == 2)

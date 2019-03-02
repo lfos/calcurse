@@ -120,7 +120,7 @@ void vars_init(void)
 	const char *ed, *pg, *mt;
 
 	conf.empty_appt_line = 1;
-	conf.multiple_days = 5;
+	conf.multiple_days = 7;
 	conf.dayseparator = 2;
 	conf.confirm_quit = 1;
 	conf.confirm_delete = 1;
