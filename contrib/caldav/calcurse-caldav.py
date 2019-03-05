@@ -36,6 +36,11 @@ def die(msg):
     sys.exit(msgfmt(msg, "error: "))
 
 
+def check_dir(dir):
+    if not os.path.isdir(dir):
+        die("invalid directory: {0}".format(dir))
+
+
 def die_atnode(msg, node):
     if debug:
         msg += '\n\n'
@@ -55,7 +60,7 @@ def calcurse_wipe():
     if dry_run:
         return
 
-    command = [calcurse, '-F', '--filter-hash=XXX']
+    command = calcurse + ['-F', '--filter-hash=XXX']
 
     if debug:
         print('Running command: {}'.format(command))
@@ -64,8 +69,7 @@ def calcurse_wipe():
 
 
 def calcurse_import(icaldata):
-    command = [
-        calcurse,
+    command = calcurse + [
         '-i', '-',
         '--dump-imported',
         '-q',
@@ -84,8 +88,7 @@ def calcurse_import(icaldata):
 
 
 def calcurse_export(objhash):
-    command = [
-        calcurse,
+    command = calcurse + [
         '-xical',
         '--export-uid',
         '--filter-hash=' + objhash
@@ -99,8 +102,7 @@ def calcurse_export(objhash):
 
 
 def calcurse_hashset():
-    command = [
-        calcurse,
+    command = calcurse + [
         '-G',
         '--filter-type', sync_filter,
         '--format-apt=%(hash)\\n',
@@ -118,7 +120,7 @@ def calcurse_hashset():
 
 
 def calcurse_remove(objhash):
-    command = [calcurse, '-F', '--filter-hash=!' + objhash]
+    command = calcurse + ['-F', '--filter-hash=!' + objhash]
 
     if debug:
         print('Running command: {}'.format(command))
@@ -127,7 +129,7 @@ def calcurse_remove(objhash):
 
 
 def calcurse_version():
-    command = [calcurse, '--version']
+    command = calcurse + ['--version']
 
     if debug:
         print('Running command: {}'.format(command))
@@ -521,6 +523,9 @@ parser.add_argument('--init', action='store', dest='init', default=None,
 parser.add_argument('--config', action='store', dest='configfn',
                     default=configfn,
                     help='path to the calcurse-caldav configuration')
+parser.add_argument('--datadir', action='store', dest='datadir',
+                    default=None,
+                    help='path to the calcurse data directory')
 parser.add_argument('--lockfile', action='store', dest='lockfn',
                     default=lockfn,
                     help='path to the calcurse-caldav lock file')
@@ -546,6 +551,7 @@ init = args.init is not None
 configfn = args.configfn
 lockfn = args.lockfn
 syncdbfn = args.syncdbfn
+datadir = args.datadir
 hookdir = args.hookdir
 authcode = args.authcode
 verbose = args.verbose
@@ -576,9 +582,13 @@ else:
     https = True
 
 if config.has_option('General', 'Binary'):
-    calcurse = config.get('General', 'Binary')
+    calcurse = [config.get('General', 'Binary')]
 else:
-    calcurse = 'calcurse'
+    calcurse = ['calcurse']
+
+if datadir:
+    check_dir(datadir)
+    calcurse += ['-D', datadir]
 
 if config.has_option('General', 'DryRun'):
     dry_run = config.getboolean('General', 'DryRun')
