@@ -52,6 +52,7 @@ static void day_free(struct day_item *day)
 
 static void day_init_vector(void)
 {
+	day_items_nb = 0;
 	VECTOR_INIT(&day_items, 16);
 }
 
