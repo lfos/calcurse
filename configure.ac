@@ -92,6 +92,11 @@ if test x"$use_asciidoc" = x"auto"; then
   if test -z "$ASCIIDOC"; then
     have_asciidoc=no
     AC_MSG_WARN([AsciiDoc not found - cannot rebuild documentation!])
+    if test -f "doc/manual.html" && test -f "doc/submitting-patches.html"; then
+      AC_MSG_WARN([Using pre-built documentation.])
+    else
+      AC_MSG_ERROR(Asciidoc is required to build documentation.)
+    fi
   else
     have_asciidoc=yes
   fi
@@ -99,6 +104,11 @@ if test x"$use_asciidoc" = x"auto"; then
   if test -z "$A2X"; then
     have_a2x=no
     AC_MSG_WARN([a2x not found - cannot rebuild man pages!])
+    if test -f "doc/calcurse.1"; then
+      AC_MSG_WARN([Using pre-built man pages.])
+    else
+      AC_MSG_ERROR(a2x is required to build man pages.)
+    fi
   else
     have_a2x=yes
   fi
