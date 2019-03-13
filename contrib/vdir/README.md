@@ -46,16 +46,11 @@ using the `-D` flag if it differs from the default `~/.calcurse`.
 Integration with vdirsyncer
 ---------------------------
 
-The following alias can be used in order to syncronize local calcurse data
-with a remote using vdirsyncer:
-
-```sh
-alias calsync='calcurse-vdir export <vdir> -f && \
-               vdirsyncer sync && \
-               calcurse-vdir import <vdir> -f'
-```
-
-
+A vdirsyncer synchronisation script `calcurse-vdirsyncer` is can be found in the
+`contrib` directory.
+This script wraps event export, vdirsyncer synchronization and imports in a
+single call.
+Run `calcurse-vdirsyncer -h` for more information.
 
 Planned Updates
 ---------------

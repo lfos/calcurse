@@ -1,0 +1,71 @@
+#!/bin/sh
+
+set -e
+
+usage() {
+	echo "usage: calcurse-vdirsyncer vdir [-h] [-f] [-v] [-D] datadir "
+	exit
+}
+
+set_vdir() {
+	if [ ! -d "$1" ]; then
+		echo "error: $1 is not a valid vdir directory."
+		exit 1
+	else
+		VDIR="$1"
+	fi
+}
+
+set_datadir() {
+	if [ -z "$1" ]; then
+		echo "error: no datadir specified."
+		usage
+	fi
+	if [ ! -d "$1" ]; then
+		echo "error: $1 is not a valid data directory."
+		exit 1
+	else
+		DATADIR="$1"
+		shift
+	fi
+}
+
+if [ "$#" -lt 1 ] || [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+	usage
+fi
+
+DATADIR="$HOME/.calcurse"
+VERBOSE=""
+FORCE=""
+
+set_vdir "$1"
+shift
+
+while [ $# -gt 0 ]; do
+	case "$1" in
+			-D|--datadir)
+				shift
+				set_datadir "$1"
+				shift
+			;;
+			-h|--help)
+				usage
+			;;
+			-f|--force)
+				FORCE="-f"
+				shift
+			;;
+			-v|--verbose)
+				VERBOSE="-v"
+				shift
+			;;
+			*)
+				echo "Invalid argument $1"
+				usage
+			;;
+	esac
+done
+
+calcurse-vdir export "$VDIR" -D "$DATADIR" "$FORCE" "$VERBOSE" && \
+	vdirsyncer sync && \
+	calcurse-vdir import "$VDIR" -D "$DATADIR" "$FORCE" "$VERBOSE"
