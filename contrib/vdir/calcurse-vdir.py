@@ -147,7 +147,7 @@ def vdir_to_calcurse():
             calcurse_remove(file[:-4])
 
 
-parser = argparse.ArgumentParser('calcurse-vdirsyncer')
+parser = argparse.ArgumentParser('calcurse-vdir')
 parser.add_argument('action', choices=['import', 'export'],
                     help='export or import calcurse data')
 parser.add_argument('vdir',

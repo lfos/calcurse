@@ -144,7 +144,7 @@ AM_CONDITIONAL(CALCURSE_MEMORY_DEBUG, test x$memdebug = xyes)
 #-------------------------------------------------------------------------------
 AC_OUTPUT(Makefile doc/Makefile src/Makefile test/Makefile \
           scripts/Makefile po/Makefile.in po/Makefile \
-          contrib/caldav/Makefile contrib/vdirsyncer/Makefile)
+          contrib/caldav/Makefile contrib/vdir/Makefile)
 #-------------------------------------------------------------------------------
 #                                                                        Summary
 #-------------------------------------------------------------------------------

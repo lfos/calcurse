@@ -1,8 +1,8 @@
-calcurse-vdirsyncer
+calcurse-vdir
 ===============
 
-calcurse-vdirsyncer is a Python script designed to export and import data
-to and from directories following the
+calcurse-vdir is a Python script designed to export and import data to and
+from directories following the
 [vdir](http://vdirsyncer.pimutils.org/en/stable/vdir.html) storage format.
 This data can then be synced with various remotes using tools like
 [vdirsyncer](https://github.com/pimutils/vdirsyncer).
@@ -14,24 +14,24 @@ Please note that the script is alpha software! This means that:
   well!
 
 * The script might still have bugs. MAKE BACKUPS, especially before running
-  calcurse-vdirsyncer for the first time!
+  calcurse-vdir with the `-f` flag!
 
 Usage
 -----
 
-calcurse-vdirsyncer requires an up-to-date version of calcurse and python.
-To run calcurse-vdirsyncer, call the script using
+calcurse-vdir requires an up-to-date version of calcurse and python.
+To run calcurse-vdir, call the script using
 
 ```sh
-calcurse-vdirsyncer <action> <vdir>
+calcurse-vdir <action> <vdir>
 ```
 
 where `action` is either `import` or `export` and where `vdir` is the local
 directory to interact with.
 
-When importing events, calcurse-vdirsyncer imports every event found in the
-vdir directory that is not also present in calcurse.
-When exporting events, calcurse-vdirsyncer does the opposite and writes any new
+When importing events, calcurse-vdir imports every event found in the vdir
+directory that is not also present in calcurse.
+When exporting events, calcurse-vdir does the opposite and writes any new
 event to the vdir directory.
 
 These operations are non-destructive by default, meaning that no event will be
@@ -42,6 +42,20 @@ the origin.
 
 You can optionally specify an alternative directory for local calcurse data
 using the `-D` flag if it differs from the default `~/.calcurse`.
+
+Integration with vdirsyncer
+---------------------------
+
+The following alias can be used in order to syncronize local calcurse data
+with a remote using vdirsyncer:
+
+```sh
+alias calsync='calcurse-vdir export <vdir> -f && \
+               vdirsyncer sync && \
+               calcurse-vdir import <vdir> -f'
+```
+
+
 
 Planned Updates
 ---------------

@@ -2,7 +2,7 @@ AUTOMAKE_OPTIONS= foreign
 
 ACLOCAL_AMFLAGS = -I m4
 
-SUBDIRS = po src test scripts contrib/caldav contrib/vdirsyncer
+SUBDIRS = po src test scripts contrib/caldav contrib/vdir
 
 if ENABLE_DOCS
 SUBDIRS += doc
