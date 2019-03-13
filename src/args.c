@@ -143,9 +143,9 @@ static void help_arg(void)
 	putchar('\n');
 	printf("%s\n", _("Miscellaneous:"));
 	printf("%s\n", _("  -c, --calendar <file>   The calendar data file to use"));
-	printf("%s\n", _("  -C, --conf <directory>  The configuration directory to use"));
+	printf("%s\n", _("  -C, --confdir <dir>     The configuration directory to use"));
 	printf("%s\n", _("  --daemon                Run notification daemon in the background"));
-	printf("%s\n", _("  -D, --directory <dir>   The data directory to use"));
+	printf("%s\n", _("  -D, --datadir <dir>     The data directory to use"));
 	printf("%s\n", _("  -g, --gc                Run the garbage collector"));
 	printf("%s\n", _("  -h, --help              Show this help text"));
 	printf("%s\n", _("  -i, --import <file>     Import iCal data from file"));
@@ -436,8 +436,12 @@ int parse_args(int argc, char **argv)
 	struct option longopts[] = {
 		{"appointment", no_argument, NULL, 'a'},
 		{"calendar", required_argument, NULL, 'c'},
+		/* Deprecated */
 		{"conf", required_argument, NULL, 'C'},
+		{"confdir", required_argument, NULL, 'C'},
 		{"day", required_argument, NULL, 'd'},
+		{"datadir", required_argument, NULL, 'D'},
+		/* Deprecated */
 		{"directory", required_argument, NULL, 'D'},
 		{"filter", no_argument, NULL, 'F'},
 		{"gc", no_argument, NULL, 'g'},

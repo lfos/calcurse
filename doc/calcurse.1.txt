@@ -42,7 +42,7 @@ SYNOPSIS
 --------
 
 --
-*calcurse* [-D 'directory'] [-C 'confdir'] [-c 'calendar-file']
+*calcurse* [-D 'datadir'] [-C 'confdir'] [-c 'calendar-file']
 
 *calcurse* -Q [*--from* 'date'] [*--to* 'date' | *--days* 'number']
 
@@ -147,12 +147,12 @@ are marked "('also interactively')".
   absolute path name, it is interpreted relative to the current working
   directory. The option has precedence over *-D*.
 
-*-C* 'dir', *--conf* 'dir'::
+*-C* 'dir', *--confdir* 'dir'::
   ('also interactively') Specify the configuration directory to use. If not
   specified, the default directory is *~/.calcurse/*. See <<_files,FILES>> for
   the interaction with *-D*.
 
-*-D* 'dir', *--directory* 'dir'::
+*-D* 'dir', *--datadir* 'dir'::
   ('also interactively') Specify the (data) directory to use. If not specified,
   the default directory is *~/.calcurse/*.  See section <<_files,FILES>> for
   the interaction with *-C*.
@@ -654,7 +654,7 @@ An alternative calendar file may be specified with the *-c* option.
 Configuration files
 ~~~~~~~~~~~~~~~~~~~
 
-The +conf+ file contains the user configuration and the +keys+ file 
+The +conf+ file contains the user configuration and the +keys+ file
 the user-defined key bindings. The +hooks+ directory contains user-supplied
 scripts, see <<_hooks,Hooks>>.
 
