@@ -415,13 +415,14 @@ void wins_scrollwin_down(struct scrollwin *sw, int amount)
 		sw->line_off = sw->line_num - inner_h;
 }
 
-void wins_scrollwin_ensure_visible(struct scrollwin *sw, unsigned line)
+/* Keep 'line' in the viewport of a scrollwindow. */
+void wins_scrollwin_in_view(struct scrollwin *sw, unsigned line)
 {
 	int inner_h = sw->h - (conf.compact_panels ? 2 : 4);
 
 	if (line < sw->line_off)
 		sw->line_off = line;
-	else if (line >= sw->line_off + inner_h)
+	else if (line > sw->line_off + inner_h - 1)
 		sw->line_off = line - inner_h + 1;
 }
 

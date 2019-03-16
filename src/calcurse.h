@@ -580,8 +580,8 @@ struct window {
 
 /* Generic scrolling window structure. */
 struct scrollwin {
-	WINDOW *win;
-	WINDOW *inner;
+	WINDOW *win;		/* viewport */
+	WINDOW *inner;		/* pad */
 	int y;
 	int x;
 	int h;
@@ -936,7 +936,8 @@ void listbox_draw_deco(struct listbox *, int);
 void listbox_display(struct listbox *, int);
 int listbox_get_sel(struct listbox *);
 void listbox_set_sel(struct listbox *, unsigned);
-void listbox_sel_move(struct listbox *, int);
+void listbox_item_in_view(struct listbox *, int);
+int listbox_sel_move(struct listbox *, int);
 
 /* mem.c */
 void *xmalloc(size_t);
@@ -1271,7 +1272,7 @@ void wins_scrollwin_draw_deco(struct scrollwin *, int);
 void wins_scrollwin_display(struct scrollwin *, int);
 void wins_scrollwin_up(struct scrollwin *, int);
 void wins_scrollwin_down(struct scrollwin *, int);
-void wins_scrollwin_ensure_visible(struct scrollwin *, unsigned);
+void wins_scrollwin_in_view(struct scrollwin *, unsigned);
 void wins_resize(void);
 void wins_resize_panels(void);
 void wins_show(WINDOW *, const char *);
