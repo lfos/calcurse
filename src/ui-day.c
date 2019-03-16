@@ -71,6 +71,45 @@ time_t ui_day_sel_date(void)
 }
 
 /*
+ * If possible, move the selection to the beginning
+ * of previous, current or next day.
+ */
+static void daybegin(int dir)
+{
+	dir = dir > 0 ? 1 : (dir < 0 ? -1 : 0);
+	int sel = listbox_get_sel(&lb_apt);
+
+	switch (dir) {
+	case -1:
+		while (day_get_item(sel)->type != DAY_HEADING)
+			sel--;
+		if (sel == 0)
+			goto leave;
+		sel--;
+		while (day_get_item(sel)->type != DAY_HEADING)
+			sel--;
+		break;
+	case 0:
+		while (day_get_item(sel)->type != DAY_HEADING)
+			sel--;
+		break;
+	case 1:
+		while (day_get_item(sel)->type != DAY_SEPARATOR)
+			sel++;
+		if (sel == lb_apt.item_count - 1) {
+			while (day_get_item(sel)->type != DAY_HEADING)
+				sel--;
+			goto leave;
+		} else
+			sel++;
+		break;
+	}
+  leave:
+	listbox_set_sel(&lb_apt, sel);
+	listbox_item_in_view(&lb_apt, sel);
+}
+
+/*
  * Request the user to enter a new start time.
  * Input: start time and duration in seconds.
  * Output: return value is new start time.
@@ -758,6 +797,10 @@ void ui_day_item_delete(unsigned reg)
 
 			io_set_modified();
 			ui_calendar_monthly_view_cache_set_invalid();
+			/* Keep the selection on the same day. */
+			day_set_sel_data(
+				day_get_item(listbox_get_sel(&lb_apt) - 1)
+			);
 			return;
 		default:
 			return;
@@ -768,7 +811,8 @@ void ui_day_item_delete(unsigned reg)
 	p = day_cut_item(date, listbox_get_sel(&lb_apt));
 	day_cut[reg].type = p->type;
 	day_cut[reg].item = p->item;
-
+	/* Keep the selection on the same day. */
+	day_set_sel_data(day_get_item(listbox_get_sel(&lb_apt) - 1));
 	io_set_modified();
 	ui_calendar_monthly_view_cache_set_invalid();
 }
@@ -993,11 +1037,51 @@ void ui_day_load_items(void)
 void ui_day_sel_reset(void)
 {
 	listbox_set_sel(&lb_apt, 0);
+	/* Make the day visible. */
+	if (lb_apt.item_sel)
+		listbox_item_in_view(&lb_apt, lb_apt.item_sel - 1);
 }
 
-void ui_day_sel_move(int delta)
+int ui_day_sel_move(int delta)
 {
-	listbox_sel_move(&lb_apt, delta);
+	int ret;
+
+	ret = listbox_sel_move(&lb_apt, delta);
+	/* When moving up, make the line above visible. */
+	if (delta < 0 && ret && lb_apt.item_sel)
+		listbox_item_in_view(&lb_apt, lb_apt.item_sel - 1);
+	return ret;
+}
+
+/*
+ * Move the selection to the beginning of the current day or
+ * the day n days before or after.
+ */
+void ui_day_sel_daybegin(int n)
+{
+	if (n == 0) {
+		daybegin(0);
+		return;
+	}
+	int dir = n > 0 ? 1 : -1;
+	n = dir * n;
+	for (int i = 0; i < n; i++)
+		daybegin(dir);
+}
+
+/*
+ * Move the selection to the end of the current day.
+ */
+void ui_day_sel_dayend(void)
+{
+	int sel = listbox_get_sel(&lb_apt);
+
+	while (day_get_item(sel)->type != DAY_SEPARATOR)
+		sel++;
+	while (lb_apt.type[sel] != LISTBOX_ROW_TEXT)
+		sel--;
+	listbox_set_sel(&lb_apt, sel);
+	listbox_item_in_view(&lb_apt, sel);
 }
 
 static char *fmt_day_heading(time_t date)
@@ -1036,8 +1120,8 @@ void ui_day_draw(int n, WINDOW *win, int y, int hilt, void *cb_data)
 		custom_remove_attr(win, ATTR_HIGHEST);
 		mem_free(buf);
 	} else if (item->type == EVNT_SEPARATOR) {
-		wmove(win, y, 0);
-		whline(win, 0, width);
+		wmove(win, y, 1);
+		whline(win, 0, width - 2);
 	}
 }
 
@@ -1047,6 +1131,7 @@ enum listbox_row_type ui_day_row_type(int n, void *cb_data)
 
 	if (item->type == DAY_HEADING ||
 	    item->type == EVNT_SEPARATOR ||
+	    item->type == EMPTY_SEPARATOR ||
 	    item->type == DAY_SEPARATOR)
 		return LISTBOX_ROW_CAPTION;
 	else
@@ -1057,10 +1142,9 @@ int ui_day_height(int n, void *cb_data)
 {
 	struct day_item *item = day_get_item(n);
 
-	if (item->type == APPT || item->type == RECUR_APPT)
+	if (item->type == APPT ||
+	    item->type == RECUR_APPT)
 		return 3;
-	else if (item->type == DAY_SEPARATOR)
-		return 2;
 	else
 		return 1;
 }

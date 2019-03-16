@@ -42,7 +42,7 @@
 
 #include "calcurse.h"
 
-static unsigned day_nb = 7;
+static unsigned day_days = 5;
 static vector_t day_items;
 static unsigned day_items_nb = 0;
 
@@ -107,9 +107,9 @@ int day_sel_index(void)
 	return -1;
 }
 
-int day_get_nb(void)
+int day_get_days(void)
 {
-	return day_nb;
+	return day_days;
 }
 
 static void day_free(struct day_item *day)
@@ -397,6 +397,7 @@ static int day_store_recur_apoints(time_t date)
 {
 	llist_item_t *i;
 	union aptev_ptr p;
+	time_t occurrence;
 	int a_nb = 0;
 
 	LLIST_TS_LOCK(&recur_alist_p);
@@ -404,8 +405,6 @@ static int day_store_recur_apoints(time_t date)
 		struct recur_apoint *rapt = LLIST_TS_GET_DATA(i);
 
 		p.rapt = rapt;
-
-		time_t occurrence;
 		/* As for appointments */
 		if (recur_apoint_find_occurrence(rapt, date, &occurrence)) {
 			day_add_item(RECUR_APPT,
@@ -451,7 +450,7 @@ day_store_items(time_t date, int include_captions, int n)
 
 		day_items_nb += events + apts;
 
-		if (events == 0 && apts == 0) {
+		if (include_captions && events == 0 && apts == 0) {
 			/* Insert dummy event. */
 			d.ev = &dummy;
 			dummy.mesg = _("(none)");
@@ -459,8 +458,12 @@ day_store_items(time_t date, int include_captions, int n)
 			day_items_nb++;
 		}
 
-		if (include_captions && i < n - 1)
+		if (include_captions) {
+			/* Two empty lines between days. */
+			if (apts == 0)
+				day_add_item(EMPTY_SEPARATOR, 0, ENDOFDAY(date), p);
 			day_add_item(DAY_SEPARATOR, 0, ENDOFDAY(date), p);
+		}
 	}
 
 	VECTOR_SORT(&day_items, day_cmp);

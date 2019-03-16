@@ -60,7 +60,7 @@ static void do_storage(int day_changed)
 		ui_day_sel_reset();
 
 	/* The day_items vector. */
-	day_store_items(get_slctd_day(), 1, day_get_nb());
+	day_store_items(get_slctd_day(), 1, day_get_days());
 	/* The APP listbox. */
 	ui_day_load_items();
 
@@ -414,7 +414,12 @@ static inline void key_move_up(void)
 	if (wins_slctd() == CAL) {
 		key_generic_prev_week();
 	} else if (wins_slctd() == APP) {
-		ui_day_sel_move(-1);
+		if (!ui_day_sel_move(-1)) {
+			ui_calendar_move(DAY_PREV, 1);
+			do_storage(1);
+			ui_day_sel_dayend();
+			wins_update(FLAG_CAL);
+		}
 		wins_update(FLAG_APP);
 	} else if (wins_slctd() == TOD) {
 		ui_todo_sel_move(-1);
@@ -434,7 +439,12 @@ static inline void key_move_down(void)
 	if (wins_slctd() == CAL) {
 		key_generic_next_week();
 	} else if (wins_slctd() == APP) {
-		ui_day_sel_move(1);
+		if (!ui_day_sel_move(1)) {
+			ui_calendar_move(DAY_NEXT, 1);
+			do_storage(1);
+			ui_day_sel_daybegin(day_get_days() - 1);
+			wins_update(FLAG_CAL);
+		}
 		wins_update(FLAG_APP);
 	} else if (wins_slctd() == TOD) {
 		ui_todo_sel_move(1);
