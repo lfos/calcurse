@@ -36,6 +36,9 @@
 
 #include "calcurse.h"
 
+static void listbox_fix_sel(struct listbox *, int);
+static void listbox_sel_in_view(struct listbox *);
+
 void listbox_init(struct listbox *lb, int y, int x, int h, int w,
 		  const char *label, listbox_fn_item_type_t fn_type,
 		  listbox_fn_item_height_t fn_height,
@@ -60,21 +63,6 @@ void listbox_delete(struct listbox *lb)
 	mem_free(lb->ch);
 }
 
-static void listbox_fix_visible_region(struct listbox *lb)
-{
-	int i;
-
-	wins_scrollwin_ensure_visible(&(lb->sw), lb->ch[lb->item_sel]);
-	wins_scrollwin_ensure_visible(&(lb->sw), lb->ch[lb->item_sel + 1] - 1);
-
-	i = lb->item_sel - 1;
-	while (i >= 0 && lb->type[i] != LISTBOX_ROW_TEXT) {
-		wins_scrollwin_ensure_visible(&(lb->sw), lb->ch[i]);
-		wins_scrollwin_ensure_visible(&(lb->sw), lb->ch[i + 1] - 1);
-		i++;
-	}
-}
-
 void listbox_resize(struct listbox *lb, int y, int x, int h, int w)
 {
 	EXIT_IF(lb == NULL, "null pointer");
@@ -83,7 +71,7 @@ void listbox_resize(struct listbox *lb, int y, int x, int h, int w)
 	if (lb->item_sel < 0)
 		return;
 
-	listbox_fix_visible_region(lb);
+	listbox_sel_in_view(lb);
 }
 
 void listbox_set_cb_data(struct listbox *lb, void *cb_data)
@@ -91,14 +79,11 @@ void listbox_set_cb_data(struct listbox *lb, void *cb_data)
 	lb->cb_data = cb_data;
 }
 
-static void listbox_fix_sel(struct listbox *, int);
-
 void listbox_load_items(struct listbox *lb, int item_count)
 {
 	int i, ch;
 
 	lb->item_count = item_count;
-
 	if (item_count == 0) {
 		lb->item_sel = -1;
 		return;
@@ -114,14 +99,13 @@ void listbox_load_items(struct listbox *lb, int item_count)
 		ch += lb->fn_height(i, lb->cb_data);
 	}
 	lb->ch[item_count] = ch;
+
+	/* The pad lines: 0,.., ch - 1. */
 	wins_scrollwin_set_pad(&(lb->sw), ch);
 
-	if (item_count > 0 && lb->item_sel < 0)
-		lb->item_sel = 0;
-	else if (lb->item_sel >= item_count)
-		lb->item_sel = item_count - 1;
+	/* Adjust the selection. */
 	listbox_fix_sel(lb, 1);
-	listbox_fix_visible_region(lb);
+	listbox_sel_in_view(lb);
 }
 
 void listbox_draw_deco(struct listbox *lb, int hilt)
@@ -148,6 +132,7 @@ int listbox_get_sel(struct listbox *lb)
 	return lb->item_sel;
 }
 
+/* Avoid non-text items. */
 static void listbox_fix_sel(struct listbox *lb, int direction)
 {
 	int did_flip = 0;
@@ -156,6 +141,11 @@ static void listbox_fix_sel(struct listbox *lb, int direction)
 		return;
 
 	direction = direction > 0 ? 1 : -1;
+
+	if (lb->item_sel < 0)
+		lb->item_sel = 0;
+	else if (lb->item_sel >= lb->item_count)
+		lb->item_sel = lb->item_count - 1;
 
 	while (lb->type[lb->item_sel] != LISTBOX_ROW_TEXT) {
 		if ((direction == -1 && lb->item_sel == 0) ||
@@ -179,23 +169,40 @@ void listbox_set_sel(struct listbox *lb, unsigned pos)
 	if (lb->item_sel < 0)
 		return;
 
-	listbox_fix_visible_region(lb);
+	listbox_sel_in_view(lb);
 }
 
-void listbox_sel_move(struct listbox *lb, int delta)
+void listbox_item_in_view(struct listbox *lb, int item)
 {
+	int first_line = lb->ch[item];
+	int last_line = lb->ch[item + 1] - 1;
+
+	wins_scrollwin_in_view(&(lb->sw), first_line);
+	if (last_line != first_line)
+		wins_scrollwin_in_view(&(lb->sw), last_line);
+}
+
+/* Keep the selection in view. */
+static void listbox_sel_in_view(struct listbox *lb)
+{
+	listbox_item_in_view(lb, lb->item_sel);
+}
+
+/* Returns true if the move succeeded. */
+int listbox_sel_move(struct listbox *lb, int delta)
+{
+
+	int saved_sel = lb->item_sel;
+
 	if (lb->item_count == 0)
-		return;
+		return 0;
 
 	lb->item_sel += delta;
-	if (lb->item_sel < 0)
-		lb->item_sel = 0;
-	else if (lb->item_sel >= lb->item_count)
-		lb->item_sel = lb->item_count - 1;
-
 	listbox_fix_sel(lb, delta);
 	if (lb->item_sel < 0)
-		return;
+		return 0;
 
-	listbox_fix_visible_region(lb);
+	listbox_sel_in_view(lb);
+
+	return lb->item_sel != saved_sel;
 }
