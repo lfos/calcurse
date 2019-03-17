@@ -633,9 +633,9 @@ static int config_load_cb(const char *key, const char *value, void *dummy)
 	int result = config_set_conf(key, value);
 
 	if (result < 0) {
-		WARN_MSG(_("unknown user option: \"%s\""), key);
+		WARN_MSG(_("unknown user option: \"%s\" (ignored)"), key);
 	} else if (result == 0) {
-		WARN_MSG(_("invalid option format: \"%s\""), key);
+		WARN_MSG(_("invalid option format: \"%s\" (ignored)"), key);
 	}
 
 	return 1;
@@ -655,12 +655,13 @@ static int config_save_cb(const char *key, const char *value, void *status)
 				  (struct config_save_status *)status);
 
 	if (result < 0) {
-		EXIT(_("configuration variable unknown: \"%s\""), key);
-		/* NOTREACHED */
+		WARN_MSG(_("unknown user option: \"%s\" (disabled)"), key);
 	} else if (result == 0) {
-		EXIT(_("wrong configuration variable format for \"%s\""),
-		     key);
-		/* NOTREACHED */
+		WARN_MSG(_("invalid option format: \"%s\" (disabled)"), key);
+	}
+	if (result <= 0) {
+		fputc('#', ((struct config_save_status *)status)->fp);
+		buf = mem_strdup(value);
 	}
 
 	fputs(key, ((struct config_save_status *)status)->fp);
