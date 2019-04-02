@@ -285,7 +285,7 @@ void notify_update_bar(void)
 			     hours_left * HOURINSEC) / MININSEC;
 			pthread_mutex_lock(&nbar.mutex);
 
-			blinking = time_left < nbar.cntdwn && notify_trigger();
+			blinking = time_left <= nbar.cntdwn && notify_trigger();
 
 			WINS_NBAR_LOCK;
 			if (blinking)
