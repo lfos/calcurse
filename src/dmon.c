@@ -188,8 +188,9 @@ void dmon_start(int parent_exit_status)
 			DMON_ABRT(_("error loading next appointment\n"));
 
 		left = notify_time_left();
-		if (left > 0 && left <= nbar.cntdwn
-		    && notify_needs_reminder()) {
+		if (left > 0 &&
+		    left <= MAX(DMON_SLEEP_TIME, nbar.cntdwn) &&
+		    notify_needs_reminder()) {
 			DMON_LOG(_("launching notification at %s for: \"%s\"\n"),
 				 nowstr(), notify_app_txt());
 			if (!notify_launch_cmd())
