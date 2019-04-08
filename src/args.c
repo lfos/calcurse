@@ -236,8 +236,11 @@ static void next_arg(void)
 
 	if (next_app.got_app) {
 		time_left = next_app.time - current_time;
-		hours_left = (time_left / HOURINSEC);
-		min_left = (time_left - hours_left * HOURINSEC) / MININSEC;
+		/* In minutes rounded up. */
+		min_left = time_left / MININSEC +
+			   (time_left % MININSEC ? 1 : 0);
+		hours_left = min_left / HOURINMIN;
+		min_left = min_left % HOURINMIN;
 		fputs(_("next appointment:\n"), stdout);
 		fprintf(stdout, "   [%02d:%02d] %s\n", hours_left,
 			min_left, next_app.txt);
