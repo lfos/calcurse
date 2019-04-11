@@ -51,6 +51,8 @@ TESTS = \
 	ical-007.sh \
 	ical-008.sh \
 	next-001.sh \
+	next-002.sh \
+	next-003.sh \
 	search-001.sh \
 	bug-002.sh \
 	regress-001.sh \
