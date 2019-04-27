@@ -60,7 +60,8 @@ TESTS = \
 	recur-002.sh \
 	recur-003.sh \
 	recur-004.sh \
-	recur-005.sh
+	recur-005.sh \
+	recur-006.sh
 
 TESTS_ENVIRONMENT = \
 	TEST_INIT='$(top_srcdir)/test/test-init.sh' \

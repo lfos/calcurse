@@ -10,3 +10,5 @@
 01/01/2000 @ 16:00 -> 01/02/2000 @ 02:00 {2D} |Recurrent appointment
 01/01/2000 @ 00:00 -> 01/07/2000 @ 00:00 {1W} |Another recurrent appointment
 01/01/2000 @ 00:00 -> 01/07/2000 @ 00:00 {1D} |Third recurrent appointment
+05/31/2019 @ 07:25 -> 05/31/2019 @ 07:45 {1M} |Ignore impossible dates
+02/29/2020 [1] {1Y} Every 29 February since 2020
