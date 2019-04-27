@@ -815,6 +815,18 @@ recur_item_find_occurrence(time_t item_start, long item_dur,
 	lt_item_day.tm_isdst = lt_day.tm_isdst;
 	t = mktime(&lt_item_day);
 
+	/*
+	 * Impossible dates must be ignored (according to RFC 5545). Changing
+	 * only the year or the month may lead to dates like 29 February in
+	 * non-leap years or 31 November.
+	 */
+	if (rpt_type == RECUR_MONTHLY || rpt_type == RECUR_YEARLY) {
+		localtime_r(&t, &lt_item_day);
+		if (lt_item_day.tm_mday != lt_item.tm_mday)
+			return 0;
+	}
+
+	/* Exception day? */
 	if (LLIST_FIND_FIRST(item_exc, &t, exc_inday))
 		return 0;
 
