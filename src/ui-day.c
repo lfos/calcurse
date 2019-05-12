@@ -103,7 +103,7 @@ static void daybegin(int dir)
 			sel--;
 		break;
 	case 1:
-		while (day_get_item(sel)->type != DAY_SEPARATOR)
+		while (day_get_item(sel)->type != END_SEPARATOR)
 			sel++;
 		if (sel == lb_apt.item_count - 1) {
 			while (day_get_item(sel)->type != DAY_HEADING)
@@ -1087,7 +1087,7 @@ void ui_day_sel_dayend(void)
 {
 	int sel = listbox_get_sel(&lb_apt);
 
-	while (day_get_item(sel)->type != DAY_SEPARATOR)
+	while (day_get_item(sel)->type != END_SEPARATOR)
 		sel++;
 	while (lb_apt.type[sel] != LISTBOX_ROW_TEXT)
 		sel--;
@@ -1121,18 +1121,19 @@ void ui_day_draw(int n, WINDOW *win, int y, int hilt, void *cb_data)
 		day_display_item_date(item, win, !hilt, date, y, 1);
 		day_display_item(item, win, !hilt, width - 1, y + 1, 1);
 	} else if (item->type == DAY_HEADING) {
+		if (conf.header_line && n) {
+			wmove(win, y, 0);
+			whline(win, ACS_HLINE, width);
+		}
 		char *buf = fmt_day_heading(date);
 		utf8_chop(buf, width);
 		custom_apply_attr(win, ATTR_HIGHEST);
-		mvwprintw(win, y,
+		mvwprintw(win, y + (conf.header_line && n),
 			conf.heading_pos == RIGHT ? width - utf8_strwidth(buf) - 1 :
 			conf.heading_pos == LEFT ? 1 :
 			(width - utf8_strwidth(buf)) / 2, "%s", buf);
 		custom_remove_attr(win, ATTR_HIGHEST);
 		mem_free(buf);
-	} else if (item->type == EVNT_SEPARATOR) {
-		wmove(win, y, 1);
-		whline(win, 0, width - 2);
 	}
 }
 
@@ -1143,7 +1144,7 @@ enum listbox_row_type ui_day_row_type(int n, void *cb_data)
 	if (item->type == DAY_HEADING ||
 	    item->type == EVNT_SEPARATOR ||
 	    item->type == EMPTY_SEPARATOR ||
-	    item->type == DAY_SEPARATOR)
+	    item->type == END_SEPARATOR)
 		return LISTBOX_ROW_CAPTION;
 	else
 		return LISTBOX_ROW_TEXT;
@@ -1153,11 +1154,14 @@ int ui_day_height(int n, void *cb_data)
 {
 	struct day_item *item = day_get_item(n);
 
-	if (item->type == APPT ||
-	    item->type == RECUR_APPT)
+	if (item->type == DAY_HEADING)
+		return 1 + (conf.header_line && n);
+	else if (item->type == APPT || item->type == RECUR_APPT)
 		return conf.empty_appt_line ? 3 : 2;
-	else if (item->type == DAY_SEPARATOR)
-		return conf.dayseparator;
+	else if (item->type == EVNT_SEPARATOR)
+		return conf.event_separator;
+	else if (item->type == END_SEPARATOR)
+		return conf.day_separator;
 	else
 		return 1;
 }
