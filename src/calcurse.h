@@ -283,7 +283,9 @@ struct conf {
 	unsigned compact_panels;
 	unsigned system_dialogs;
 	unsigned multiple_days;
-	unsigned dayseparator;
+	unsigned header_line;
+	unsigned event_separator;
+	unsigned day_separator;
 	unsigned empty_appt_line;
 	const char *editor;
 	const char *pager;
@@ -423,7 +425,7 @@ enum day_item_type {
 	RECUR_APPT,
 	APPT,
 	EMPTY_SEPARATOR,
-	DAY_SEPARATOR
+	END_SEPARATOR
 };
 
 /* Available item types. */
