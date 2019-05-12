@@ -122,9 +122,11 @@ void vars_init(void)
 	/* Variables for user configuration */
 	conf.cal_view = CAL_MONTH_VIEW;
 	conf.todo_view = TODO_HIDE_COMPLETED_VIEW;
-	conf.empty_appt_line = 1;
 	conf.multiple_days = 7;
-	conf.dayseparator = 2;
+	conf.header_line = 1;
+	conf.event_separator = 1;
+	conf.day_separator = 1;
+	conf.empty_appt_line = 1;
 	conf.confirm_quit = 1;
 	conf.confirm_delete = 1;
 	conf.auto_save = 1;

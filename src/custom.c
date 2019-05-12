@@ -529,7 +529,9 @@ enum {
 	CAL_VIEW,
 	TODO_VIEW,
 	MULTIPLE_DAYS,
-	DAYSEPARATOR,
+	HEADER_LINE,
+	EVENT_SEPARATOR,
+	DAY_SEPARATOR,
 	EMPTY_APPT_LINE,
 	AUTO_SAVE,
 	AUTO_GC,
@@ -556,6 +558,8 @@ static void print_general_option(int i, WINDOW *win, int y, int hilt, void *cb_d
 		"appearance.calendarview = ",
 		"appearance.todoview = ",
 		"general.multipledays = ",
+		"appearance.headerline = ",
+		"appearance.eventseparator = ",
 		"appearance.dayseparator = ",
 		"appearance.emptyline = ",
 		"general.autosave = ",
@@ -614,14 +618,23 @@ static void print_general_option(int i, WINDOW *win, int y, int hilt, void *cb_d
 		custom_remove_attr(win, ATTR_HIGHEST);
 		mvwaddstr(win, y + 1, XPOS, _("(preferred todo display)"));
 		break;
-	case DAYSEPARATOR:
-		custom_apply_attr(win, ATTR_HIGHEST);
-		mvwprintw(win, y, XPOS + strlen(opt[DAYSEPARATOR]), "%d",
-			  conf.dayseparator);
-		custom_remove_attr(win, ATTR_HIGHEST);
-		mvwaddstr(win, y + 1, XPOS,
-			  _("(lines between days in the appointments "
-			  "panel)"));
+	case HEADER_LINE:
+		print_bool_option_incolor(win, conf.header_line, y,
+					  XPOS + strlen(opt[HEADER_LINE]));
+		mvwaddstr(win, y + XPOS, 1,
+			  _("(horisontal line above the day heading)"));
+		break;
+	case EVENT_SEPARATOR:
+		print_bool_option_incolor(win, conf.event_separator, y,
+					  XPOS + strlen(opt[EVENT_SEPARATOR]));
+		mvwaddstr(win, y + XPOS, 1,
+			  _("(empty line between events and appointments)"));
+		break;
+	case DAY_SEPARATOR:
+		print_bool_option_incolor(win, conf.day_separator, y,
+					  XPOS + strlen(opt[DAY_SEPARATOR]));
+		mvwaddstr(win, y + XPOS, 1,
+			  _("(each day ends with an empty line)"));
 		break;
 	case EMPTY_APPT_LINE:
 		print_bool_option_incolor(win, conf.empty_appt_line, y,
@@ -793,20 +806,23 @@ static void general_option_edit(int i)
 		ui_todo_set_view(conf.todo_view);
 		ui_todo_load_items();
 		break;
-	case EMPTY_APPT_LINE:
-		conf.empty_appt_line = !conf.empty_appt_line;
-		break;
 	case MULTIPLE_DAYS:
 		if (conf.multiple_days == 21)
 			conf.multiple_days = 1;
 		else
 			conf.multiple_days++;
 		break;
-	case DAYSEPARATOR:
-		if (conf.dayseparator == 2)
-			conf.dayseparator = 0;
-		else
-			conf.dayseparator++;
+	case HEADER_LINE:
+		conf.header_line = !conf.header_line;
+		break;
+	case EVENT_SEPARATOR:
+		conf.event_separator = !conf.event_separator;
+		break;
+	case DAY_SEPARATOR:
+		conf.day_separator = !conf.day_separator;
+		break;
+	case EMPTY_APPT_LINE:
+		conf.empty_appt_line = !conf.empty_appt_line;
 		break;
 	case HEADING_POS:
 		if (conf.heading_pos == RIGHT)

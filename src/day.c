@@ -464,7 +464,7 @@ day_store_items(time_t date, int include_captions, int n)
 			/* Empty line at end of day if appointments have one. */
 			if (apts == 0 && conf.empty_appt_line)
 				day_add_item(EMPTY_SEPARATOR, 0, ENDOFDAY(date), p);
-			day_add_item(DAY_SEPARATOR, 0, ENDOFDAY(date), p);
+			day_add_item(END_SEPARATOR, 0, ENDOFDAY(date), p);
 		}
 	}
 
