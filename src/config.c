@@ -115,7 +115,7 @@ static const struct confvar confmap[] = {
 	{"general.confirmdelete", CONFIG_HANDLER_BOOL(conf.confirm_delete)},
 	{"general.confirmquit", CONFIG_HANDLER_BOOL(conf.confirm_quit)},
 	{"general.firstdayofweek", config_parse_first_day_of_week, config_serialize_first_day_of_week, NULL},
-	{"general.multipledays", CONFIG_HANDLER_UNSIGNED(conf.multiple_days)},
+	{"general.multipledays", CONFIG_HANDLER_BOOL(conf.multiple_days)},
 	{"general.periodicsave", CONFIG_HANDLER_UNSIGNED(conf.periodic_save)},
 	{"general.systemevents", CONFIG_HANDLER_BOOL(conf.systemevents)},
 	{"general.systemdialogs", CONFIG_HANDLER_BOOL(conf.system_dialogs)},
