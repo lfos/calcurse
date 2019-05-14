@@ -643,13 +643,10 @@ static void print_general_option(int i, WINDOW *win, int y, int hilt, void *cb_d
 			  _("(insert an empty line after each appointment)"));
 		break;
 	case MULTIPLE_DAYS:
-		custom_apply_attr(win, ATTR_HIGHEST);
-		mvwprintw(win, y, XPOS + strlen(opt[MULTIPLE_DAYS]), "%d",
-			  conf.multiple_days);
-		custom_remove_attr(win, ATTR_HIGHEST);
+		print_bool_option_incolor(win, conf.multiple_days, y,
+					  XPOS + strlen(opt[MULTIPLE_DAYS]));
 		mvwaddstr(win, y + 1, XPOS,
-			  _("(number of days (1..21) to display in the appointments "
-			  "panel)"));
+			  _("(display more than one day in the appointments panel)"));
 		break;
 	case AUTO_SAVE:
 		print_bool_option_incolor(win, conf.auto_save, y,
@@ -807,10 +804,7 @@ static void general_option_edit(int i)
 		ui_todo_load_items();
 		break;
 	case MULTIPLE_DAYS:
-		if (conf.multiple_days == 21)
-			conf.multiple_days = 1;
-		else
-			conf.multiple_days++;
+		conf.multiple_days = !conf.multiple_days;
 		break;
 	case HEADER_LINE:
 		conf.header_line = !conf.header_line;
