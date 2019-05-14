@@ -106,9 +106,22 @@ int day_sel_index(void)
 	return -1;
 }
 
+/*
+ * Return the number of days to load in the appointments panel.
+ */
 int day_get_days(void)
 {
-	return conf.multiple_days;
+	int panel, day;
+
+	if (!conf.multiple_days)
+		return 1;
+
+	panel = win[APP].h - (conf.compact_panels ? 2 : 4);
+	/* Assume one event per day (no event separator). */
+	day = 2 + conf.header_line + conf.day_separator + conf.empty_appt_line;
+
+	/* Round up. */
+	return panel / day + (panel % day != 0);
 }
 
 static void day_free(struct day_item *day)
