@@ -566,7 +566,7 @@ config = configparser.RawConfigParser()
 if verbose:
     print('Loading configuration from ' + configfn + '...')
 try:
-    config.readfp(open(configfn))
+    config.read_file(open(configfn))
 except FileNotFoundError as e:
     die('Configuration file not found: {}'.format(configfn))
 
