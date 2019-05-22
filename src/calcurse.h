@@ -1060,11 +1060,11 @@ char *recur_event_tostr(struct recur_event *);
 char *recur_event_hash(struct recur_event *);
 void recur_event_write(struct recur_event *, FILE *);
 void recur_save_data(FILE *);
-unsigned recur_item_find_occurrence(time_t, long, llist_t *, int,
-				    int, time_t, time_t, time_t *);
+unsigned recur_item_find_occurrence(time_t, long, struct rpt *, llist_t *,
+				    time_t, time_t *);
 unsigned recur_apoint_find_occurrence(struct recur_apoint *, time_t, time_t *);
 unsigned recur_event_find_occurrence(struct recur_event *, time_t, time_t *);
-unsigned recur_item_inday(time_t, long, llist_t *, int, int, time_t, time_t);
+unsigned recur_item_inday(time_t, long, struct rpt *, llist_t *, time_t);
 unsigned recur_apoint_inday(struct recur_apoint *, time_t *);
 unsigned recur_event_inday(struct recur_event *, time_t *);
 void recur_event_add_exc(struct recur_event *, time_t);
