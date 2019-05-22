@@ -56,24 +56,22 @@ typedef void (*cb_dump_t) (FILE *, long, long, char *);
  */
 static void
 foreach_date_dump(const long date_end, struct rpt *rpt, llist_t * exc,
-		  long item_first_date, long item_dur, char *item_mesg,
+		  long item_start, long item_dur, char *item_mesg,
 		  cb_dump_t cb_dump, FILE * stream)
 {
 	long date, item_time;
 	struct tm lt;
 	time_t t;
 
-	t = item_first_date;
+	t = item_start;
 	localtime_r(&t, &lt);
 	lt.tm_hour = lt.tm_min = lt.tm_sec = 0;
 	lt.tm_isdst = -1;
 	date = mktime(&lt);
-	item_time = item_first_date - date;
+	item_time = item_start - date;
 
 	while (date <= date_end && date <= rpt->until) {
-		if (recur_item_inday
-		    (item_first_date, item_dur, exc, rpt->type, rpt->freq,
-		     rpt->until, date)) {
+		if (recur_item_inday(item_start, item_dur, rpt, exc, date)) {
 			(*cb_dump) (stream, date + item_time, item_dur,
 				    item_mesg);
 		}
