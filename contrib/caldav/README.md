@@ -153,10 +153,10 @@ Upon your first run with the `--init` flag, you will be asked to go to a URL to
 log in and authorize synchronization with your Google account. You can access
 this URL on any other device if you cannot open a browser locally (e.g., on
 a headless server). Once you authorize synchronization, you will be redirected
-to your Redirect URI with a code attached to the end, e.g.,
-`http://127.0.0.1/?code=4/Ok6mBNW2nppfIwyL-Q1ZPVkEk3zZdZN3mHcY#`. You will need
-to copy the code after `http://127.0.0.1/?code=`. In this case, it would be
-`4/Ok6mBNW2nppfIwyL-Q1ZPVkEk3zZdZN3mHcY#`.
+to your Redirect URI with a code embedded in it, e.g.,
+`http://127.0.0.1/?code=4/Ok6mBNW2nppfIwyL-Q1ZPVkEk3zZdZN3mHcY#&scope=https://www.googleapis.com/auth/calendar`.
+You will need to copy the code after `http://127.0.0.1/?code=` and before `&scope=https://www.googleapis.com/auth/calendar`. In this case,
+it would be `4/Ok6mBNW2nppfIwyL-Q1ZPVkEk3zZdZN3mHcY#`.
 
 Finally pass this authorization code to calcurse-caldav with the `--authcode`
 flag and initialize the synchronization database like so (note that the quotes
