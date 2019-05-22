@@ -91,7 +91,7 @@ and issue reminders; it stops automatically when the interactive mode is
 reentered.
 
 This man page mainly describes the command-line mode. The following two
-subsectiions contain some general desriptions of command line options and usage.
+subsections contain some general desriptions of command line options and usage.
 
 Input and Output Date Format
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
