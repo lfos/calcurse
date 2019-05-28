@@ -631,9 +631,13 @@ long min2sec(unsigned minutes)
 /*
  * Display a scroll bar when there are so many items that they
  * can not be displayed inside the corresponding panel.
+ * Leave it out in the appointments panel in when multiple days mode.
  */
 void draw_scrollbar(struct scrollwin *sw, int hilt)
 {
+	if (sw == &lb_apt.sw && conf.multiple_days)
+		return;
+
 	int y = (conf.compact_panels ? 1 : 3);
 	int h = sw->h - (conf.compact_panels ? 2 : 4);
 
