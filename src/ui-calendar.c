@@ -392,7 +392,7 @@ draw_monthly_view(struct scrollwin *sw, struct date *current_day,
 	/* offset for centering calendar in window */
 	w = wins_sbar_width() - 2;
 	ofs_y = 0;
-	ofs_x = (w - monthw) / 2;
+	ofs_x = (w - monthw) / 2 + ((w - monthw) % 2);
 
 	/* invalidate cache if a new month is selected */
 	if (yr * YEARINMONTHS + mo != monthly_view_cache_month) {
@@ -441,10 +441,8 @@ draw_monthly_view(struct scrollwin *sw, struct date *current_day,
 		slctd = !date_cmp(&c_day, &slctd_day);
 
 		/* Next line, week over. */
-		if (!w_day && j != first_day) {
+		if (!w_day && j != first_day)
 			ofs_y++;
-			ofs_x = (w - monthw) / 2;
-		}
 
 		/* Week number, beware of first and last week of the year. */
 		if (!w_day) {

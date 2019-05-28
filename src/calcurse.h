@@ -117,7 +117,7 @@
 #define NBUSERCOLORS  6
 
 /* Side bar width acceptable boundaries. */
-#define SBARMINWIDTH     32
+#define SBARMINWIDTH     34
 #define SBARMAXWIDTHPERC 50
 
 /* Related to date manipulation. */
