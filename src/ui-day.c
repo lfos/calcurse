@@ -1112,7 +1112,7 @@ void ui_day_draw(int n, WINDOW *win, int y, int hilt, void *cb_data)
 	struct day_item *item = day_get_item(n);
 	/* The item order always indicates the date. */
 	time_t date = update_time_in_date(item->order, 0, 0);
-	int width = lb_apt.sw.w - 2;
+	int width = lb_apt.sw.w - 2, is_slctd;
 
 	hilt = hilt && (wins_slctd() == APP);
 	if (item->type == EVNT || item->type == RECUR_EVNT) {
@@ -1121,18 +1121,19 @@ void ui_day_draw(int n, WINDOW *win, int y, int hilt, void *cb_data)
 		day_display_item_date(item, win, !hilt, date, y, 1);
 		day_display_item(item, win, !hilt, width - 1, y + 1, 1);
 	} else if (item->type == DAY_HEADING) {
+		is_slctd = conf.multiple_days && (date == get_slctd_day());
 		if (conf.header_line && n) {
 			wmove(win, y, 0);
 			whline(win, ACS_HLINE, width);
 		}
 		char *buf = fmt_day_heading(date);
 		utf8_chop(buf, width);
-		custom_apply_attr(win, ATTR_HIGHEST);
+		custom_apply_attr(win, is_slctd ? ATTR_MIDDLE : ATTR_HIGHEST);
 		mvwprintw(win, y + (conf.header_line && n),
 			conf.heading_pos == RIGHT ? width - utf8_strwidth(buf) - 1 :
 			conf.heading_pos == LEFT ? 1 :
 			(width - utf8_strwidth(buf)) / 2, "%s", buf);
-		custom_remove_attr(win, ATTR_HIGHEST);
+		custom_remove_attr(win, is_slctd ? ATTR_MIDDLE : ATTR_HIGHEST);
 		mem_free(buf);
 	}
 }
