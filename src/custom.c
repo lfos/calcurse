@@ -52,7 +52,7 @@ static struct attribute attr;
  * Define window attributes (for both color and non-color terminals):
  * ATTR_HIGHEST are for window titles
  * ATTR_HIGH are for month and days names
- * ATTR_MIDDLE are for the selected day inside calendar panel
+ * ATTR_MIDDLE are for the selected day inside calendar and appointments panel
  * ATTR_LOW are for days inside calendar panel which contains an event
  * ATTR_LOWEST are for current day inside calendar panel
  */
