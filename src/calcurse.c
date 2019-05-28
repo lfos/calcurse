@@ -747,6 +747,10 @@ int main(int argc, char **argv)
 		if (resize) {
 			resize = 0;
 			wins_reset();
+			if (conf.multiple_days) {
+				do_storage(0);
+				wins_update(FLAG_APP);
+			}
 		}
 
 		if (want_reload) {
