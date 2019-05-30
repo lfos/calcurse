@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2019-01-12 10:01+0100\n"
+"POT-Creation-Date: 2019-05-30 07:52-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -101,13 +101,13 @@ msgstr ""
 msgid "  -c, --calendar <file>   The calendar data file to use"
 msgstr ""
 
-msgid "  -C, --conf <directory>  The configuration directory to use"
+msgid "  -C, --confdir <dir>     The configuration directory to use"
 msgstr ""
 
 msgid "  --daemon                Run notification daemon in the background"
 msgstr ""
 
-msgid "  -D, --directory <dir>   The data directory to use"
+msgid "  -D, --datadir <dir>     The data directory to use"
 msgstr ""
 
 msgid "  -g, --gc                Run the garbage collector"
@@ -302,19 +302,19 @@ msgid ""
 msgstr ""
 
 #, c-format
-msgid "unknown user option: \"%s\""
+msgid "unknown user option: \"%s\" (ignored)"
 msgstr ""
 
 #, c-format
-msgid "invalid option format: \"%s\""
+msgid "invalid option format: \"%s\" (ignored)"
 msgstr ""
 
 #, c-format
-msgid "configuration variable unknown: \"%s\""
+msgid "unknown user option: \"%s\" (disabled)"
 msgstr ""
 
 #, c-format
-msgid "wrong configuration variable format for \"%s\""
+msgid "invalid option format: \"%s\" (disabled)"
 msgstr ""
 
 msgid "layout configuration"
@@ -363,6 +363,21 @@ msgid "hide completed"
 msgstr ""
 
 msgid "(preferred todo display)"
+msgstr ""
+
+msgid "(horizontal line above the day heading)"
+msgstr ""
+
+msgid "(empty line between events and appointments)"
+msgstr ""
+
+msgid "(each day ends with an empty line)"
+msgstr ""
+
+msgid "(insert an empty line after each appointment)"
+msgstr ""
+
+msgid "(display more than one day in the appointments panel)"
 msgstr ""
 
 msgid "(if set to YES, automatic save is done when quitting)"
@@ -457,6 +472,9 @@ msgid "Could not save %s."
 msgstr ""
 
 msgid "unknown item type"
+msgstr ""
+
+msgid "(none)"
 msgstr ""
 
 msgid "Event:"
@@ -1307,7 +1325,7 @@ msgid "Enter the day to go to [ENTER for today] : %s"
 msgstr ""
 
 #, c-format
-msgid "The move failed (%d/%d/%d, ret=%d)."
+msgid "The move failed (%d/%d/%d)."
 msgstr ""
 
 #, c-format
@@ -1385,6 +1403,9 @@ msgid "Invalid date: end date must come after start date (%s)."
 msgstr ""
 
 msgid "Invalid date."
+msgstr ""
+
+msgid "Exception days:"
 msgstr ""
 
 msgid "Description"
