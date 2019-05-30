@@ -120,8 +120,11 @@ int day_get_days(void)
 	/* Assume one event per day (no event separator). */
 	day = 2 + conf.header_line + conf.day_separator + conf.empty_appt_line;
 
+	if (panel <= day)
+		return 2;
+
 	/* Round up. */
-	return panel / day + (panel % day != 0);
+	return panel / day + (panel % day ? 1 : 0);
 }
 
 static void day_free(struct day_item *day)
