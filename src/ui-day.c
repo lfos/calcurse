@@ -209,15 +209,10 @@ static void update_duration(time_t *start, long *dur)
 	unsigned newdur;
 	char *timestr, *outstr;
 
-	if (*dur > 0) {
-		end = *start + *dur;
-		asprintf(&outstr, "%s %s", DATEFMT(conf.input_datefmt), "%H:%M");
-		timestr = date_sec2date_str(end, outstr);
-		mem_free(outstr);
-	} else {
-		timestr = mem_strdup("");
-	}
-
+	end = *start + *dur;
+	asprintf(&outstr, "%s %s", DATEFMT(conf.input_datefmt), "%H:%M");
+	timestr = date_sec2date_str(end, outstr);
+	mem_free(outstr);
 	for (;;) {
 		int ret, early = 0;
 		status_mesg(msg_time, "");
