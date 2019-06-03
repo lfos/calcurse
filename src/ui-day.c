@@ -366,9 +366,11 @@ static void update_rept(struct rpt **rpt, const long start)
 		mem_free(timstr);
 		timstr = date_sec2date_str((*rpt)->until, DATEFMT(conf.input_datefmt));
 		status_mesg(msg_until_1, "");
-		if (updatestring(win[STA].p, &timstr, 0, 1) !=
-		    GETSTRING_VALID) {
+		if (updatestring(win[STA].p, &timstr, 0, 1) == GETSTRING_ESC)
 			goto cleanup;
+		if (strcmp(timstr, "") == 0 || strcmp(timstr, "0") == 0) {
+			newuntil = 0;
+			break;
 		}
 		if (*(timstr + strlen(timstr) - 1) == '?') {
 			mem_free(outstr);
@@ -376,10 +378,6 @@ static void update_rept(struct rpt **rpt, const long start)
 			status_mesg(outstr, msg_help_2);
 			keys_wgetch(win[KEY].p);
 			continue;
-		}
-		if (strcmp(timstr, "0") == 0) {
-			newuntil = 0;
-			break;
 		}
 		if (*timstr == '+') {
 			unsigned days;
@@ -905,9 +903,12 @@ void ui_day_item_repeat(void)
 	char *outstr, *datestr;
 	for (;;) {
 		status_mesg(mesg_until_1, "");
-		if (getstring(win[STA].p, user_input, BUFSIZ, 0, 1) !=
-		    GETSTRING_VALID)
+		if (getstring(win[STA].p, user_input, BUFSIZ, 0, 1) == GETSTRING_ESC)
 			goto cleanup;
+		if (strcmp(user_input, "") == 0 || strcmp(user_input, "0") == 0) {
+			until = 0;
+			break;
+		}
 		if (*user_input == '?') {
 			user_input[0] = '\0';
 			asprintf(&outstr, mesg_help_1, DATEFMT_DESC(conf.input_datefmt));
@@ -915,10 +916,6 @@ void ui_day_item_repeat(void)
 			mem_free(outstr);
 			wgetch(win[KEY].p);
 			continue;
-		}
-		if (strcmp(user_input, "0") == 0) {
-			until = 0;
-			break;
 		}
 		if (*user_input == '+') {
 			if (!parse_date_duration(user_input + 1, &days, p->start)) {
