@@ -975,16 +975,20 @@ void ui_day_item_repeat(void)
 
 	/* Set the selected APP item. */
 	struct day_item d = empty_day;
+	struct rpt rpt;
+	rpt.type = type;
+	rpt.freq = freq;
+	rpt.until = until;
+	LLIST_INIT(&rpt.exc);
 	if (p->type == EVNT) {
 		struct event *ev = p->item.ev;
 		d.item.rev = recur_event_new(ev->mesg, ev->note, ev->day,
-					     ev->id, type, freq, until, NULL);
+					      ev->id, &rpt);
 	} else if (p->type == APPT) {
 		struct apoint *apt = p->item.apt;
 		d.item.rapt = ra = recur_apoint_new(apt->mesg, apt->note,
 						    apt->start, apt->dur,
-						    apt->state, type, freq,
-						    until, NULL);
+						    apt->state, &rpt);
 		if (notify_bar())
 			notify_check_repeated(ra);
 	} else {
