@@ -261,28 +261,25 @@ static int recur_event_cmp(struct recur_event *a, struct recur_event *b)
 
 /* Insert a new recursive appointment in the general linked list */
 struct recur_apoint *recur_apoint_new(char *mesg, char *note, time_t start,
-				      long dur, char state, int type,
-				      int freq, time_t until,
-				      llist_t * except)
+				      long dur, char state, struct rpt *rpt)
 {
 	struct recur_apoint *rapt =
 	    mem_malloc(sizeof(struct recur_apoint));
 
-	rapt->rpt = mem_malloc(sizeof(struct rpt));
 	rapt->mesg = mem_strdup(mesg);
 	rapt->note = (note != NULL) ? mem_strdup(note) : 0;
 	rapt->start = start;
-	rapt->state = state;
 	rapt->dur = dur;
-	rapt->rpt->type = type;
-	rapt->rpt->freq = freq;
-	rapt->rpt->until = until;
-	if (except) {
-		exc_dup(&rapt->exc, except);
-		free_exc_list(except);
-	} else {
-		LLIST_INIT(&rapt->exc);
-	}
+	rapt->state = state;
+	rapt->rpt = mem_malloc(sizeof(struct rpt));
+	*rapt->rpt = *rpt;
+	/*
+	 * Note. The exception dates are in the list rapt->exc.
+	 * The (empty) list rapt->rpt->exc is not used.
+	 */
+	exc_dup(&rapt->exc, &rpt->exc);
+	free_exc_list(&rpt->exc);
+	LLIST_INIT(&rapt->rpt->exc);
 
 	LLIST_TS_LOCK(&recur_alist_p);
 	LLIST_TS_ADD_SORTED(&recur_alist_p, rapt, recur_apoint_cmp);
@@ -293,25 +290,20 @@ struct recur_apoint *recur_apoint_new(char *mesg, char *note, time_t start,
 
 /* Insert a new recursive event in the general linked list */
 struct recur_event *recur_event_new(char *mesg, char *note, time_t day,
-				    int id, int type, int freq, time_t until,
-				    llist_t * except)
+				    int id, struct rpt *rpt)
 {
 	struct recur_event *rev = mem_malloc(sizeof(struct recur_event));
 
-	rev->rpt = mem_malloc(sizeof(struct rpt));
 	rev->mesg = mem_strdup(mesg);
 	rev->note = (note != NULL) ? mem_strdup(note) : 0;
 	rev->day = day;
 	rev->id = id;
-	rev->rpt->type = type;
-	rev->rpt->freq = freq;
-	rev->rpt->until = until;
-	if (except) {
-		exc_dup(&rev->exc, except);
-		free_exc_list(except);
-	} else {
-		LLIST_INIT(&rev->exc);
-	}
+	rev->rpt = mem_malloc(sizeof(struct rpt));
+	*rev->rpt = *rpt;
+	/* Similarly as for recurrent appointment. */
+	exc_dup(&rev->exc, &rpt->exc);
+	free_exc_list(&rpt->exc);
+	LLIST_INIT(&rev->rpt->exc);
 
 	LLIST_ADD_SORTED(&recur_elist, rev, recur_event_cmp);
 
@@ -395,24 +387,20 @@ static void recur_exc_append(struct string *s, llist_t *lexc)
 }
 
 /* Load the recursive appointment description */
-struct recur_apoint *recur_apoint_scan(FILE * f, struct tm start,
-				       struct tm end, char type, int freq,
-				       struct tm until, char *note,
-				       llist_t * exc, char state,
-				       struct item_filter *filter)
+struct recur_apoint *recur_apoint_scan(FILE *f, struct tm start, struct tm end,
+				       char state, char *note,
+				       struct item_filter *filter,
+				       struct rpt *rpt)
 {
 	char buf[BUFSIZ], *nl;
-	time_t tstart, tend, tuntil;
+	time_t tstart, tend;
 	struct recur_apoint *rapt = NULL;
 	int cond;
 
 	EXIT_IF(!check_date(start.tm_year, start.tm_mon, start.tm_mday) ||
 		!check_date(end.tm_year, end.tm_mon, end.tm_mday) ||
 		!check_time(start.tm_hour, start.tm_min) ||
-		!check_time(end.tm_hour, end.tm_min) ||
-		(until.tm_year != 0
-		 && !check_date(until.tm_year, until.tm_mon,
-				until.tm_mday)),
+		!check_time(end.tm_hour, end.tm_min),
 		_("date error in appointment"));
 
 	/* Read the appointment description */
@@ -432,19 +420,8 @@ struct recur_apoint *recur_apoint_scan(FILE * f, struct tm start,
 	tstart = mktime(&start);
 	tend = mktime(&end);
 
-	if (until.tm_year != 0) {
-		until.tm_hour = 0;
-		until.tm_min = 0;
-		until.tm_sec = 0;
-		until.tm_isdst = -1;
-		until.tm_year -= 1900;
-		until.tm_mon--;
-		tuntil = mktime(&until);
-	} else {
-		tuntil = 0;
-	}
-	EXIT_IF(tstart == -1 || tend == -1 || tstart > tend
-		|| tuntil == -1, _("date error in appointment"));
+	EXIT_IF(tstart == -1 || tend == -1 || tstart > tend,
+		 _("date error in appointment"));
 
 	/* Filter item. */
 	if (filter) {
@@ -458,9 +435,8 @@ struct recur_apoint *recur_apoint_scan(FILE * f, struct tm start,
 		);
 		if (filter->hash) {
 			rapt = recur_apoint_new(buf, note, tstart,
-						tend - tstart, state,
-						recur_char2def(type),
-						freq, tuntil, exc);
+						 tend - tstart, state,
+						 rpt);
 			char *hash = recur_apoint_hash(rapt);
 			cond = cond || !hash_matches(filter->hash, hash);
 			mem_free(hash);
@@ -473,29 +449,25 @@ struct recur_apoint *recur_apoint_scan(FILE * f, struct tm start,
 		}
 	}
 	if (!rapt)
-		rapt = recur_apoint_new(buf, note, tstart, tend - tstart,
-					state, recur_char2def(type), freq,
-					tuntil, exc);
+		rapt = recur_apoint_new(buf, note, tstart, tend - tstart, state,
+					 rpt);
 
 	return rapt;
 }
 
 /* Load the recursive events from file */
 struct recur_event *recur_event_scan(FILE * f, struct tm start, int id,
-				     char type, int freq, struct tm until,
-				     char *note, llist_t * exc,
-				     struct item_filter *filter)
+				     char *note, struct item_filter *filter,
+				     struct rpt *rpt)
 {
 	char buf[BUFSIZ], *nl;
-	time_t tstart, tend, tuntil;
+	time_t tstart, tend;
 	struct recur_event *rev = NULL;
 	int cond;
 
 	EXIT_IF(!check_date(start.tm_year, start.tm_mon, start.tm_mday) ||
-		!check_time(start.tm_hour, start.tm_min) ||
-		(until.tm_year != 0
-		 && !check_date(until.tm_year, until.tm_mon,
-				until.tm_mday)), _("date error in event"));
+		!check_time(start.tm_hour, start.tm_min),
+		("date error in event"));
 
 	/* Read the event description */
 	if (!fgets(buf, sizeof buf, f))
@@ -505,22 +477,16 @@ struct recur_event *recur_event_scan(FILE * f, struct tm start, int id,
 	if (nl) {
 		*nl = '\0';
 	}
-	start.tm_hour = until.tm_hour = 0;
-	start.tm_min = until.tm_min = 0;
-	start.tm_sec = until.tm_sec = 0;
-	start.tm_isdst = until.tm_isdst = -1;
+	start.tm_hour = 0;
+	start.tm_min = 0;
+	start.tm_sec = 0;
+	start.tm_isdst = -1;
 	start.tm_year -= 1900;
 	start.tm_mon--;
-	if (until.tm_year != 0) {
-		until.tm_year -= 1900;
-		until.tm_mon--;
-		tuntil = mktime(&until);
-	} else {
-		tuntil = 0;
-	}
+
 	tstart = mktime(&start);
-	EXIT_IF(tstart == -1 || tuntil == -1, _("date error in event"));
-	tend = tstart + DAYINSEC - 1;
+	EXIT_IF(tstart == -1, _("date error in event"));
+	tend = ENDOFDAY(tstart);
 
 	/* Filter item. */
 	if (filter) {
@@ -534,8 +500,7 @@ struct recur_event *recur_event_scan(FILE * f, struct tm start, int id,
 		);
 		if (filter->hash) {
 			rev = recur_event_new(buf, note, tstart, id,
-					      recur_char2def(type),
-					      freq, tuntil, exc);
+					       rpt);
 			char *hash = recur_event_hash(rev);
 			cond = cond || !hash_matches(filter->hash, hash);
 			mem_free(hash);
@@ -548,9 +513,7 @@ struct recur_event *recur_event_scan(FILE * f, struct tm start, int id,
 		}
 	}
 	if (!rev)
-		rev = recur_event_new(buf, note, tstart, id,
-				      recur_char2def(type),
-				      freq, tuntil, exc);
+		rev = recur_event_new(buf, note, tstart, id, rpt);
 
 	return rev;
 }
@@ -977,6 +940,7 @@ void recur_exc_scan(llist_t * lexc, FILE * data_file)
 		exc->st = mktime(&day);
 		LLIST_ADD(lexc, exc);
 	}
+	ungetc(c, data_file);
 }
 
 /*

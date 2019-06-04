@@ -379,40 +379,44 @@ struct excp {
 };
 
 enum recur_type {
-	RECUR_NO,
 	RECUR_DAILY,
 	RECUR_WEEKLY,
 	RECUR_MONTHLY,
 	RECUR_YEARLY,
-	RECUR_TYPES
+	NBRECUR
 };
 
-/* To describe an item's repetition. */
+/*
+ * Recurrence rule according to RFC5545; used
+ * - in each recurrent appointment/event instance
+ * - in passing parameters as a single function argument
+ */
 struct rpt {
-	enum recur_type type;	/* repetition type */
-	int freq;		/* repetition frequency */
-	time_t until;		/* ending date for repeated event */
+	enum recur_type type;	/* FREQ */
+	int freq;		/* INTERVAL */
+	time_t until;		/* UNTIL */
+	llist_t exc;		/* EXDATE's */
 };
 
 /* Recurrent appointment definition. */
 struct recur_apoint {
-	struct rpt *rpt;	/* information about repetition */
-	llist_t exc;		/* days when the item should not be repeated */
-	time_t start;		/* beggining of the appointment */
-	long dur;		/* duration of the appointment */
-	char state;		/* 8 bits to store item state */
-	char *mesg;		/* appointment description */
-	char *note;		/* note attached to appointment */
+	struct rpt *rpt;	/* recurrence rule */
+	llist_t exc;		/* recurrence exceptions (NOT rpt->exc) */
+	time_t start;		/* start time */
+	long dur;		/* duration */
+	char state;		/* item state */
+	char *mesg;		/* description */
+	char *note;		/* attached note */
 };
 
-/* Reccurent event definition. */
+/* Recurrent event definition. */
 struct recur_event {
-	struct rpt *rpt;	/* information about repetition */
-	llist_t exc;		/* days when the item should not be repeated */
+	struct rpt *rpt;	/* recurrence rule */
+	llist_t exc;		/* recurrence exceptions (NOT rpt->exc) */
 	int id;			/* event type */
-	time_t day;		/* day at which event occurs */
-	char *mesg;		/* event description */
-	char *note;		/* note attached to event */
+	time_t day;		/* day of the event */
+	char *mesg;		/* description */
+	char *note;		/* attached note */
 };
 
 /* Generic pointer data type for appointments and events. */
@@ -1042,17 +1046,16 @@ void recur_event_llist_init(void);
 void recur_apoint_llist_free(void);
 void recur_event_llist_free(void);
 struct recur_apoint *recur_apoint_new(char *, char *, time_t, long, char,
-				      int, int, time_t, llist_t *);
-struct recur_event *recur_event_new(char *, char *, time_t, int, int, int,
-				    time_t, llist_t *);
+				      struct rpt *);
+struct recur_event *recur_event_new(char *, char *, time_t, int,
+				     struct rpt *);
 char recur_def2char(enum recur_type);
 int recur_char2def(char);
-struct recur_apoint *recur_apoint_scan(FILE *, struct tm, struct tm,
-				       char, int, struct tm, char *,
-				       llist_t *, char, struct item_filter *);
-struct recur_event *recur_event_scan(FILE *, struct tm, int, char,
-				     int, struct tm, char *, llist_t *,
-				     struct item_filter *);
+struct recur_apoint *recur_apoint_scan(FILE *, struct tm, struct tm, char,
+				       char *, struct item_filter *,
+				       struct rpt *);
+struct recur_event *recur_event_scan(FILE *, struct tm, int, char *,
+				     struct item_filter *, struct rpt *);
 char *recur_apoint_tostr(struct recur_apoint *);
 char *recur_apoint_hash(struct recur_apoint *);
 void recur_apoint_write(struct recur_apoint *, FILE *);

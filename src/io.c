@@ -553,10 +553,9 @@ void io_load_app(struct item_filter *filter)
 	FILE *data_file;
 	int c, is_appointment, is_event, is_recursive;
 	struct tm start, end, until, lt;
-	llist_t exc;
+	struct rpt rpt;
 	time_t t;
 	int id = 0;
-	int freq;
 	char type, state = 0L;
 	char note[MAX_NOTESIZ + 1], *notep;
 	unsigned line = 0;
@@ -572,7 +571,6 @@ void io_load_app(struct item_filter *filter)
 	rewind(data_file);
 
 	for (;;) {
-		LLIST_INIT(&exc);
 		is_appointment = is_event = is_recursive = 0;
 		line++;
 		c = getc(data_file);
@@ -630,96 +628,83 @@ void io_load_app(struct item_filter *filter)
 
 		if (c == '{') {
 			is_recursive = 1;
-			if (fscanf(data_file, " %d%c ", &freq, &type) != 2)
+			if (fscanf(data_file, " %d%c ", &rpt.freq, &type) != 2)
 				io_load_error(path_apts, line,
 					      _("syntax error in item repetition"));
-
+			else
+				rpt.type = recur_char2def(type);
 			c = getc(data_file);
-			if (c == '}') {	/* endless recurrent item */
-				until.tm_year = 0;
-				while ((c = getc(data_file)) == ' ') ;
-				ungetc(c, data_file);
-			} else if (c == '-' && getc(data_file) == '>') {
+			/* Optional until date */
+			if (c == '-' && getc(data_file) == '>') {
 				if (fscanf
 				    (data_file, " %d / %d / %d ",
 				     &until.tm_mon, &until.tm_mday,
 				     &until.tm_year) != 3)
 					io_load_error(path_apts, line,
 						      _("syntax error in item repetition"));
-				c = getc(data_file);
-				if (c == '!') {
-					ungetc(c, data_file);
-					recur_exc_scan(&exc, data_file);
-					while ((c =
-						getc(data_file)) == ' ') ;
-					ungetc(c, data_file);
-				} else if (c == '}') {
-					while ((c =
-						getc(data_file)) == ' ') ;
-					ungetc(c, data_file);
-				} else {
+				if (!check_date(until.tm_year, until.tm_mon,
+						until.tm_mday))
 					io_load_error(path_apts, line,
-						      _("syntax error in item repetition"));
-				}
-			} else if (c == '!') {	/* endless item with exceptions */
+						      _("until date error"));
+				until.tm_hour = 0;
+				until.tm_min = 0;
+				until.tm_sec = 0;
+				until.tm_isdst = -1;
+				until.tm_year -= 1900;
+				until.tm_mon--;
+				rpt.until = mktime(&until);
+				c = getc(data_file);
+			} else
+				rpt.until = 0;
+			/* Optional exception dates */
+			if (c == '!') {
 				ungetc(c, data_file);
-				recur_exc_scan(&exc, data_file);
-				while ((c = getc(data_file)) == ' ') ;
-				ungetc(c, data_file);
-				until.tm_year = 0;
-			} else {
+				recur_exc_scan(&rpt.exc, data_file);
+				c = getc(data_file);
+			} else
+				LLIST_INIT(&rpt.exc);
+			/* End of recurrence rule */
+			if (c != '}')
 				io_load_error(path_apts, line,
-					      _("wrong format in the appointment or event"));
-				/* NOTREACHED */
-			}
-		} else {
-			ungetc(c, data_file);
+					      _("missing end of recurrence"));
+			while ((c = getc(data_file)) == ' ') ;
 		}
 
 		/* Check if a note is attached to the item. */
-		c = getc(data_file);
 		if (c == '>') {
 			note_read(note, data_file);
+			c = getc(data_file);
 			notep = note;
-		} else {
+		} else
 			notep = NULL;
-			ungetc(c, data_file);
-		}
 
 		/*
 		 * Last: read the item description and load it into its
 		 * corresponding linked list, depending on the item type.
 		 */
 		if (is_appointment) {
-			c = getc(data_file);
-			if (c == '!') {
+			if (c == '!')
 				state |= APOINT_NOTIFY;
-				while ((c = getc(data_file)) == ' ') ;
-				ungetc(c, data_file);
-			} else if (c == '|') {
+			else if (c == '|')
 				state = 0L;
-				while ((c = getc(data_file)) == ' ') ;
-				ungetc(c, data_file);
-			} else {
+			else
 				io_load_error(path_apts, line,
-					      _("syntax error in item repetition"));
-			}
+					      _("syntax error in item state"));
+
 			if (is_recursive) {
-				recur_apoint_scan(data_file, start, end,
-						  type, freq, until, notep,
-						  &exc, state, filter);
+				recur_apoint_scan(data_file, start, end, state,
+						  notep, filter, &rpt);
 			} else {
 				apoint_scan(data_file, start, end, state,
 					    notep, filter);
 			}
 		} else if (is_event) {
+			ungetc(c, data_file);
 			if (is_recursive) {
-				recur_event_scan(data_file, start, id,
-						 type, freq, until, notep,
-						 &exc, filter);
+				recur_event_scan(data_file, start, id, notep,
+						 filter, &rpt);
 			} else {
-				event_scan(data_file, start, id, notep,
-					   filter);
+				event_scan(data_file, start, id, notep, filter);
 			}
 		} else {
 			io_load_error(path_apts, line,
