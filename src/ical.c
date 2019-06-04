@@ -69,8 +69,8 @@ static void ical_export_apoints(FILE *, int);
 static void ical_export_todo(FILE *, int);
 static void ical_export_footer(FILE *);
 
-static const char *ical_recur_type[RECUR_TYPES] =
-    { "", "DAILY", "WEEKLY", "MONTHLY", "YEARLY" };
+static const char *ical_recur_type[NBRECUR] =
+    { "DAILY", "WEEKLY", "MONTHLY", "YEARLY" };
 
 /* iCal alarm notification. */
 static void ical_export_valarm(FILE * stream)
@@ -336,17 +336,21 @@ static void ical_store_todo(int priority, int completed, char *mesg,
 
 static void
 ical_store_event(char *mesg, char *note, long day, long end,
-		 ical_rpt_t * rpt, llist_t * exc, const char *fmt_ev,
+		 ical_rpt_t *irpt, llist_t *exc, const char *fmt_ev,
 		 const char *fmt_rev)
 {
 	const int EVENTID = 1;
 	struct event *ev;
 	struct recur_event *rev;
 
-	if (rpt) {
-		rev = recur_event_new(mesg, note, day, EVENTID, rpt->type,
-				      rpt->freq, rpt->until, exc);
-		mem_free(rpt);
+	if (irpt) {
+		struct rpt rpt;
+		rpt.type = irpt->type;
+		rpt.freq = irpt->freq;
+		rpt.until = irpt->until;
+		rpt.exc = *exc;
+		rev = recur_event_new(mesg, note, day, EVENTID, &rpt);
+		mem_free(irpt);
 		if (fmt_rev)
 			print_recur_event(fmt_rev, day, rev);
 		goto cleanup;
@@ -367,14 +371,12 @@ ical_store_event(char *mesg, char *note, long day, long end,
 	 * event starts, so we need to do some conversion here.
 	 */
 	end = day + ((end - day - 1) / DAYINSEC) * DAYINSEC;
-	rpt = mem_malloc(sizeof(ical_rpt_t));
-	rpt->type = RECUR_DAILY;
-	rpt->freq = 1;
-	rpt->count = 0;
-	rpt->until = end;
-	rev = recur_event_new(mesg, note, day, EVENTID, rpt->type,
-			      rpt->freq, rpt->until, exc);
-	mem_free(rpt);
+	struct rpt rpt;
+	rpt.type = RECUR_DAILY;
+	rpt.freq = 1;
+	rpt.until = end;
+	rpt.exc = *exc;
+	rev = recur_event_new(mesg, note, day, EVENTID, &rpt);
 	if (fmt_rev)
 		print_recur_event(fmt_rev, day, rev);
 
@@ -385,7 +387,7 @@ cleanup:
 
 static void
 ical_store_apoint(char *mesg, char *note, long start, long dur,
-		  ical_rpt_t * rpt, llist_t * exc, int has_alarm,
+		  ical_rpt_t * irpt, llist_t * exc, int has_alarm,
 		  const char *fmt_apt, const char *fmt_rapt)
 {
 	char state = 0L;
@@ -394,10 +396,14 @@ ical_store_apoint(char *mesg, char *note, long start, long dur,
 
 	if (has_alarm)
 		state |= APOINT_NOTIFY;
-	if (rpt) {
-		rapt = recur_apoint_new(mesg, note, start, dur, state,
-					rpt->type, rpt->freq, rpt->until, exc);
-		mem_free(rpt);
+	if (irpt) {
+		struct rpt rpt;
+		rpt.type = irpt->type;
+		rpt.freq = irpt->freq;
+		rpt.until = irpt->until;
+		rpt.exc = *exc;
+		rapt = recur_apoint_new(mesg, note, start, dur, state, &rpt);
+		mem_free(irpt);
 		if (fmt_rapt)
 			print_recur_apoint(fmt_rapt, start, rapt->start, rapt);
 	} else {
