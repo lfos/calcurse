@@ -487,22 +487,6 @@ int date_cmp_day(time_t d1, time_t d2)
 	return 0;
 }
 
-/* Return a string containing the date, given a date in seconds. */
-char *date_sec2date_str(time_t sec, const char *datefmt)
-{
-	struct tm lt;
-	char *datestr = (char *)mem_calloc(BUFSIZ, sizeof(char));
-
-	if (sec == 0) {
-		strncpy(datestr, "0", BUFSIZ);
-	} else {
-		localtime_r(&sec, &lt);
-		strftime(datestr, BUFSIZ, datefmt, &lt);
-	}
-
-	return datestr;
-}
-
 /* Generic function to format date. */
 void date_sec2date_fmt(time_t sec, const char *fmt, char *datef)
 {
@@ -520,6 +504,14 @@ void date_sec2date_fmt(time_t sec, const char *fmt, char *datef)
 	setlocale(LC_ALL, locale_old);
 	mem_free(locale_old);
 #endif
+}
+
+/* Return a string containing the date, given a date in seconds. */
+char *date_sec2date_str(time_t sec, const char *datefmt)
+{
+	char *datestr = (char *)mem_calloc(BUFSIZ, sizeof(char));
+	date_sec2date_fmt(sec, datefmt, datestr);
+	return datestr;
 }
 
 /*

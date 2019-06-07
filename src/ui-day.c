@@ -364,7 +364,10 @@ static void update_rept(struct rpt **rpt, const long start)
 
 	for (;;) {
 		mem_free(timstr);
-		timstr = date_sec2date_str((*rpt)->until, DATEFMT(conf.input_datefmt));
+		if ((*rpt)->until)
+			timstr = date_sec2date_str((*rpt)->until, DATEFMT(conf.input_datefmt));
+		else
+			timstr = mem_strdup("");
 		status_mesg(msg_until_1, "");
 		if (updatestring(win[STA].p, &timstr, 0, 1) == GETSTRING_ESC)
 			goto cleanup;
