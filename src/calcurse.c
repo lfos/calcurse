@@ -105,7 +105,7 @@ static inline void key_generic_goto_today(void)
 
 static inline void key_view_item(void)
 {
-	if (wins_slctd() == APP)
+	if (wins_slctd() == APP && !event_dummy(ui_day_get_sel()))
 		ui_day_popup_item();
 	else if (wins_slctd() == TOD)
 		ui_todo_popup_item();
@@ -252,7 +252,7 @@ static inline void key_edit_note(void)
 
 static inline void key_view_note(void)
 {
-	if (wins_slctd() == APP)
+	if (wins_slctd() == APP && !event_dummy(ui_day_get_sel()))
 		ui_day_view_note();
 	else if (wins_slctd() == TOD)
 		ui_todo_view_note();
