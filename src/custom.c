@@ -832,6 +832,7 @@ static void general_option_edit(int i)
 		break;
 	case PERIODIC_SAVE:
 		status_mesg(periodic_save_str, "");
+		snprintf(buf, BUFSIZ, "%d", conf.periodic_save);
 		if (updatestring(win[STA].p, &buf, 0, 1) == 0) {
 			val = atoi(buf);
 			if (val >= 0) {
