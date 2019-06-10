@@ -272,7 +272,29 @@ static void update_desc(char **desc)
 	updatestring(win[STA].p, desc, 0, 1);
 }
 
-static void update_rept(struct rpt **rpt, const long start)
+/* Edit the list of exception days for a recurrent item. */
+static int update_exc(llist_t *exc)
+{
+	int updated = 0;
+
+	if (!exc->head)
+		return updated;
+	char *days;
+	enum getstr ret;
+
+	status_mesg(_("Exception days:"), "");
+	days = recur_exc2str(exc);
+	ret = updatestring(win[STA].p, &days, 0, 1);
+	if (ret == GETSTRING_VALID || ret == GETSTRING_RET) {
+		recur_update_exc(exc, days);
+		updated = 1;
+	}
+	mem_free(days);
+
+	return updated;
+}
+
+static void update_rept(struct rpt **rpt, const time_t start, llist_t *exc)
 {
 	/* Pointers to dynamically allocated memory. */
 	char *msg_rpt_current = NULL;
@@ -412,6 +434,10 @@ static void update_rept(struct rpt **rpt, const long start)
 		keys_wgetch(win[KEY].p);
 	}
 
+	/* Update exception list. */
+	if (!update_exc(exc))
+		goto cleanup;
+
 	(*rpt)->type = recur_char2def(newtype);
 	(*rpt)->freq = newfreq;
 	(*rpt)->until = newuntil;
@@ -422,22 +448,6 @@ cleanup:
 	mem_free(freqstr);
 	mem_free(timstr);
 	mem_free(outstr);
-}
-
-/* Edit the list of exception days for a recurrent item. */
-static void update_exc(llist_t *exc)
-{
-	if (!exc->head)
-		return;
-	char *days;
-	enum getstr ret;
-
-	status_mesg(_("Exception days:"), "");
-	days = recur_exc2str(exc);
-	ret = updatestring(win[STA].p, &days, 0, 1);
-	if (ret == GETSTRING_VALID || ret == GETSTRING_RET)
-		recur_update_exc(exc, days);
-	mem_free(days);
 }
 
 /* Edit an already existing item. */
@@ -468,8 +478,7 @@ void ui_day_item_edit(void)
 			io_set_modified();
 			break;
 		case 2:
-			update_rept(&re->rpt, re->day);
-			update_exc(&re->exc);
+			update_rept(&re->rpt, re->day, &re->exc);
 			io_set_modified();
 			break;
 		default:
@@ -510,8 +519,7 @@ void ui_day_item_edit(void)
 			break;
 		case 4:
 			need_check_notify = 1;
-			update_rept(&ra->rpt, ra->start);
-			update_exc(&ra->exc);
+			update_rept(&ra->rpt, ra->start, &ra->exc);
 			io_set_modified();
 			break;
 		case 5:
