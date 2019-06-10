@@ -1022,7 +1022,7 @@ void pcal_export_data(FILE *);
 /* recur.c */
 extern llist_ts_t recur_alist_p;
 extern llist_t recur_elist;
-void recur_update_exc(llist_t *, char *);
+int recur_update_exc(llist_t *, char *);
 char *recur_exc2str(llist_t *);
 struct recur_event *recur_event_dup(struct recur_event *);
 struct recur_apoint *recur_apoint_dup(struct recur_apoint *);

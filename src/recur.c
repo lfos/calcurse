@@ -106,8 +106,9 @@ char *recur_exc2str(llist_t *exc)
  * Update the list of exceptions from a string of days. Any positive number of
  * spaces are allowed before, between and after the days.
  */
-void recur_update_exc(llist_t *exc, char *days)
+int recur_update_exc(llist_t *exc, char *days)
 {
+	int updated = 0;
 	char *d;
 	time_t t = get_today();
 	llist_t nexc;
@@ -131,8 +132,10 @@ void recur_update_exc(llist_t *exc, char *days)
 	}
 	free_exc_list(exc);
 	exc_dup(exc, &nexc);
+	updated = 1;
 cleanup:
 	free_exc_list(&nexc);
+	return updated;
 }
 
 struct recur_event *recur_event_dup(struct recur_event *in)
