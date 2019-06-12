@@ -165,3 +165,13 @@ around the authorization code might be necessary or not, depending on your shell
 ```
 calcurse-caldav --init keep-remote --authcode '4/Ok6mBNW2nppfIwyL-Q1ZPVkEk3zZdZN3mHcY#'
 ```
+
+Troubleshooting
+---------------
+
+### 403 (Forbidden) When Submitting Auth Code for Google Calendar
+
+- Ensure that both the CalDAV API and the Google Calendar API are enabled for
+your Google Developer project
+- Ensure that your authcode consists of only the `code` parameter's value when
+extracting from the returned URL 
