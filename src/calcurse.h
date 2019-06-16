@@ -148,6 +148,12 @@
 
 /* Calendar window. */
 #define CALHEIGHT       8
+/*
+ * Week day numbering (0, 1,..., 6) which depends on the first day of the week.
+ * The argument (d) is the "Sunday"-numbering of member tm_wday in struct tm.
+ */
+#define WDAY(d) \
+    (ui_calendar_week_begins_on_monday() ? ((d ? d : WEEKINDAYS) - 1) : d)
 
 /* Key definitions. */
 #define CTRLVAL         0x1F
@@ -395,6 +401,9 @@ struct rpt {
 	enum recur_type type;	/* FREQ */
 	int freq;		/* INTERVAL */
 	time_t until;		/* UNTIL */
+	llist_t bymonth;	/* BYMONTH list */
+	llist_t bywday;		/* BY(WEEK)DAY list */
+	llist_t bymonthday;	/* BYMONTHDAY list */
 	llist_t exc;		/* EXDATE's */
 };
 
@@ -1076,6 +1085,9 @@ void recur_event_add_exc(struct recur_event *, time_t);
 void recur_apoint_add_exc(struct recur_apoint *, time_t);
 void recur_event_erase(struct recur_event *);
 void recur_apoint_erase(struct recur_apoint *);
+void recur_bymonth(llist_t *, FILE *);
+void recur_bywday(enum recur_type, llist_t *, FILE *);
+void recur_bymonthday(llist_t *, FILE *);
 void recur_exc_scan(llist_t *, FILE *);
 void recur_apoint_check_next(struct notify_app *, time_t, time_t);
 void recur_apoint_switch_notify(struct recur_apoint *);
@@ -1240,6 +1252,9 @@ int hash_matches(const char *, const char *);
 int show_dialogs(void);
 long overflow_add(long, long, long *);
 long overflow_mul(long, long, long *);
+time_t next_wday(time_t, int);
+int wday_per_year(int, int);
+int wday_per_month(int, int, int);
 
 /* vars.c */
 extern int col, row;
