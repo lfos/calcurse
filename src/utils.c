@@ -2009,3 +2009,61 @@ long overflow_mul(long x, long y, long *z)
 	*z = x * y;
 	return 0;
 }
+
+/*
+ * Return the upcoming weekday from day (possibly day itself).
+ */
+time_t next_wday(time_t day, int weekday)
+{
+	struct tm tm;
+
+	localtime_r(&day, &tm);
+	return date_sec_change(
+		day, 0, (weekday - tm.tm_wday + WEEKINDAYS) % WEEKINDAYS
+	);
+
+}
+
+/*
+ * Return the number of weekdays of the year.
+ */
+int wday_per_year(int year, int weekday)
+{
+	struct tm y_end;
+	struct date day;
+	int last_wday;
+
+	/* Find weekday and yearday of the last day of the year.  */
+	day.dd = 31;
+	day.mm = 12;
+	day.yyyy = year;
+	y_end = date2tm(day, 0, 0);
+	mktime(&y_end);
+
+	/* Find date of the last weekday of the year. */
+	last_wday = (y_end.tm_yday + 1) - (y_end.tm_wday - weekday + 7) % 7;
+
+	return last_wday / 7 + (last_wday % 7 > 0);
+}
+
+/*
+ * Return the number of weekdays in month of year.
+ */
+int wday_per_month(int month, int year, int weekday)
+{
+	struct tm m_end;
+	struct date day;
+	int last_wday, m_days = days[month - 1] + (month == 2 && ISLEAP(year) ? 1 : 0);
+
+	/* Find weekday of the last day of the month. */
+	day.dd = m_days;
+	day.mm = month;
+	day.yyyy = year;
+	m_end = date2tm(day, 0, 0);
+	mktime(&m_end);
+
+	/* Find date of the last weekday of the month. */
+	last_wday = m_days - (m_end.tm_wday - weekday + 7) % 7;
+
+	return last_wday / 7 + (last_wday % 7 > 0);
+}

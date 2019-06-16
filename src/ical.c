@@ -387,6 +387,9 @@ ical_store_event(char *mesg, char *note, long day, long end,
 		rpt.type = irpt->type;
 		rpt.freq = irpt->freq;
 		rpt.until = irpt->until;
+		LLIST_INIT(&rpt.bymonth);
+		LLIST_INIT(&rpt.bywday);
+		LLIST_INIT(&rpt.bymonthday);
 		rpt.exc = *exc;
 		rev = recur_event_new(mesg, note, day, EVENTID, &rpt);
 		mem_free(irpt);
@@ -414,6 +417,9 @@ ical_store_event(char *mesg, char *note, long day, long end,
 	rpt.type = RECUR_DAILY;
 	rpt.freq = 1;
 	rpt.until = end;
+	LLIST_INIT(&rpt.bymonth);
+	LLIST_INIT(&rpt.bywday);
+	LLIST_INIT(&rpt.bymonthday);
 	rpt.exc = *exc;
 	rev = recur_event_new(mesg, note, day, EVENTID, &rpt);
 	if (fmt_rev)
@@ -440,6 +446,9 @@ ical_store_apoint(char *mesg, char *note, long start, long dur,
 		rpt.type = irpt->type;
 		rpt.freq = irpt->freq;
 		rpt.until = irpt->until;
+		LLIST_INIT(&rpt.bymonth);
+		LLIST_INIT(&rpt.bywday);
+		LLIST_INIT(&rpt.bymonthday);
 		rpt.exc = *exc;
 		rapt = recur_apoint_new(mesg, note, start, dur, state, &rpt);
 		mem_free(irpt);
