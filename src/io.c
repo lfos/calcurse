@@ -644,7 +644,7 @@ void io_load_app(struct item_filter *filter)
 				     &until.tm_mon, &until.tm_mday,
 				     &until.tm_year) != 3)
 					io_load_error(path_apts, line,
-						      _("syntax error in item repetition"));
+						      _("syntax error in until date"));
 				if (!check_date(until.tm_year, until.tm_mon,
 						until.tm_mday))
 					io_load_error(path_apts, line,
@@ -659,6 +659,30 @@ void io_load_app(struct item_filter *filter)
 				c = getc(data_file);
 			} else
 				rpt.until = 0;
+			/* Optional bymonthday list */
+			if (c == 'd') {
+				if (rpt.type == RECUR_WEEKLY)
+					io_load_error(path_apts, line,
+						      _("BYMONTHDAY illegal with WEEKLY"));
+				ungetc(c, data_file);
+				recur_bymonthday(&rpt.bymonthday, data_file);
+				c = getc(data_file);
+			} else
+				LLIST_INIT(&rpt.bymonthday);
+			/* Optional bywday list */
+			if (c == 'w') {
+				ungetc(c, data_file);
+				recur_bywday(rpt.type, &rpt.bywday, data_file);
+				c = getc(data_file);
+			} else
+				LLIST_INIT(&rpt.bywday);
+			/* Optional bymonth list */
+			if (c == 'm') {
+				ungetc(c, data_file);
+				recur_bymonth(&rpt.bymonth, data_file);
+				c = getc(data_file);
+			} else
+				LLIST_INIT(&rpt.bymonth);
 			/* Optional exception dates */
 			if (c == '!') {
 				ungetc(c, data_file);

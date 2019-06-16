@@ -987,6 +987,9 @@ void ui_day_item_repeat(void)
 	rpt.type = type;
 	rpt.freq = freq;
 	rpt.until = until;
+	LLIST_INIT(&rpt.bymonth);
+	LLIST_INIT(&rpt.bywday);
+	LLIST_INIT(&rpt.bymonthday);
 	LLIST_INIT(&rpt.exc);
 	if (p->type == EVNT) {
 		struct event *ev = p->item.ev;
