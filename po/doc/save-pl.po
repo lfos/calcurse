@@ -1,12 +1,13 @@
 # 
 # Translators:
+# Rafał Szczerski <rafal.szczerski@gmail.com>, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-02-22 10:27+0200\n"
-"PO-Revision-Date: 2017-08-03 11:58+0000\n"
-"Last-Translator: Lukas Fleischer <transifex@cryptocrack.de>\n"
+"PO-Revision-Date: 2018-10-27 20:27+0000\n"
+"Last-Translator: Rafał Szczerski <rafal.szczerski@gmail.com>\n"
 "Language-Team: Polish (http://www.transifex.com/lfleischer/calcurse/language/pl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,15 +20,15 @@ msgstr ""
 msgid ""
 "Save\n"
 "===="
-msgstr ""
+msgstr "Zapisywanie\n==========="
 
 #: save.txt:4
 msgid "Save calcurse data."
-msgstr ""
+msgstr "Zapis danych calcurse"
 
 #: save.txt:6
 msgid "Data are split into four different files which contain :"
-msgstr ""
+msgstr "Dane podzielone są na cztery różne pliki, których zawartość to:"
 
 #: save.txt:8
 msgid ""
@@ -36,10 +37,10 @@ msgid ""
 "        |  ~/.calcurse/apts -> data related to the appointments\n"
 "        |  ~/.calcurse/todo -> data related to the todo list\n"
 "         \\ ~/.calcurse/keys -> user-defined key bindings"
-msgstr ""
+msgstr " / ~/.calcurse/conf -> konfiguracja użytkownika \n | (układ, kolory, opcje ogólne) \n | ~/.calcurse/apts -> dane związane ze spotkaniami \n | ~/.calcurse/todo -> dane związane ze sprawami do zrobienia \n \\ ~/.calcurse/keys -> skróty klawiszowe użytkownika "
 
 #: save.txt:14
 msgid ""
 "In the config menu, you can choose to save the calcurse data automatically\n"
 "before quitting."
-msgstr ""
+msgstr "W menu konfiguracji można wybrać, aby program calcurse dokonywał automatycznego\nzapisu przez zamknięciem. "

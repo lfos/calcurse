@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2019-05-30 07:52-0400\n"
+"POT-Creation-Date: 2019-06-16 15:27-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1360,6 +1360,12 @@ msgstr ""
 msgid "Enter the new item description:"
 msgstr ""
 
+msgid "Exception days:"
+msgstr ""
+
+msgid "Invalid date format - try again:."
+msgstr ""
+
 msgid "Enter the new repetition type:"
 msgstr ""
 
@@ -1403,9 +1409,6 @@ msgid "Invalid date: end date must come after start date (%s)."
 msgstr ""
 
 msgid "Invalid date."
-msgstr ""
-
-msgid "Exception days:"
 msgstr ""
 
 msgid "Description"

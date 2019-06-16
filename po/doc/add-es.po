@@ -1,12 +1,13 @@
 # 
 # Translators:
+# Victorhck <victorhck@opensuse.org>, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-02-22 10:27+0200\n"
-"PO-Revision-Date: 2017-08-03 11:57+0000\n"
-"Last-Translator: Lukas Fleischer <transifex@cryptocrack.de>\n"
+"PO-Revision-Date: 2018-10-26 10:33+0000\n"
+"Last-Translator: Victorhck <victorhck@opensuse.org>\n"
 "Language-Team: Spanish (http://www.transifex.com/lfleischer/calcurse/language/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,13 +20,13 @@ msgstr ""
 msgid ""
 "Add\n"
 "==="
-msgstr ""
+msgstr "Añadir\n==="
 
 #: add.txt:4
 msgid ""
 "Add an item in either the todo or appointment list, depending on which panel is\n"
 "selected."
-msgstr ""
+msgstr "Añadir un elemento ya sea en la lista de Tareas o de Citas y eventos, dependiendo de qué panel\neste seleccionado."
 
 #: add.txt:7
 msgid ""
@@ -34,14 +35,14 @@ msgid ""
 "priority. This priority is represented by a number going from 9 for the lowest\n"
 "priority, to 1 for the highest one. It is still possible to change the item\n"
 "priority afterwards, by using the '+' and '-' keys inside the todo panel."
-msgstr ""
+msgstr "Para introducir un nuevo elemento en la lista de Tareas, primero necesitará introducir la\ndescripción de ese nuevo elemento. Después se le preguntará que especifique la prioridad.\nEsa prioridad está representada por un número que va desde el 9 para la prioridad más baja,\na 1 para la prioridad más alta. Es posible cambiar la prioridad de un elemento\nutilizando las teclas '+' y '-' dentro del panel de Tareas."
 
 #: add.txt:13
 msgid ""
 "If the appointment panel is selected, you will be able to enter either a new\n"
 "appointment or a new all-day long event. To enter a new event, press [ENTER]\n"
 "instead of the item start time, and just fill in the event description."
-msgstr ""
+msgstr "Si el panel de citas es seleccionado, podrás introducir una nueva\ncita o un evento que ocupe todo el día. Para introducir un nuevo evento pulsa la tecla [INTRO]\nen vez de especificar una hora de comienzo del elemento y simplemente rellena la descripción del evento."
 
 #: add.txt:17
 msgid ""
@@ -51,19 +52,19 @@ msgid ""
 "[+hh:mm], [+xxdxxhxxm] or [+mm] format), and the description of the event. If\n"
 "you skip the end time by pressing [ENTER], a punctual appointment will be\n"
 "created."
-msgstr ""
+msgstr "Para introducir una nueva cita y que sea añadida a la lista de citas, necesitarás\nintroducir correctamente la hora a la que la cita comienza, la duración de la cita\n(ya sea especificando el final de la fecha en formato [hh:mm] o la duración en\n[+hh:mm], [+xxdxxhxxm] o [+mm]) y la descripción del evento. Si omites\nla hora de finalización pulsado la tecla [INTRO], se creará una cita puntual."
 
 #: add.txt:24
 msgid ""
 "The day at which occurs the event or appointment is the day currently selected\n"
 "in the calendar, so you need to move to the desired day before."
-msgstr ""
+msgstr "El día en el que ocurrirá el evento o la cita es el día seleccionado actualmente en el panel del \ncalendario, así que necesitas moverte primero a la fecha deseada."
 
 #: add.txt:27
 msgid ""
 "Notes\n"
 "-----"
-msgstr ""
+msgstr "Notas\n-----"
 
 #: add.txt:30
 msgid ""
@@ -71,16 +72,16 @@ msgid ""
 "  days, this event will be indicated on all the corresponding days, and the\n"
 "  beginning or ending hour will be replaced by '..' if the event does not begin\n"
 "  or end on the day."
-msgstr ""
+msgstr "* Si una cita dura tanto tiempo que continua en los días siguientes,\nese evento será indicado en los días correspondientes y la hora del principio o final\nserá reemplazada por '..' si el evento no comienza o finaliza en ese mismo día."
 
 #: add.txt:35
 msgid ""
 "* If you only press [ENTER] at the description prompt, without any description,\n"
 "  no item will be added."
-msgstr ""
+msgstr "* Si solo presionas [INTRO] a la hora de añadir la descripción, sin ninguna descripción\nno se añadirá ningún elemento."
 
 #: add.txt:38
 msgid ""
 "* Do not forget to save the calendar data to retrieve the new event next time\n"
 "  you launch calcurse."
-msgstr ""
+msgstr "* No olvides guardar los datos del calendario para poder recuperar el nuevo evento\nla próxima vez que ejecute calcurse."

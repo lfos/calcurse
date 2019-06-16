@@ -1,12 +1,13 @@
 # 
 # Translators:
+# Rafał Szczerski <rafal.szczerski@gmail.com>, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-02-22 10:27+0200\n"
-"PO-Revision-Date: 2017-08-03 11:57+0000\n"
-"Last-Translator: Lukas Fleischer <transifex@cryptocrack.de>\n"
+"PO-Revision-Date: 2018-10-27 18:22+0000\n"
+"Last-Translator: Rafał Szczerski <rafal.szczerski@gmail.com>\n"
 "Language-Team: Polish (http://www.transifex.com/lfleischer/calcurse/language/pl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,41 +20,41 @@ msgstr ""
 msgid ""
 "Config\n"
 "======"
-msgstr ""
+msgstr "Konfiguracja\n==========="
 
 #: config.txt:4
 msgid ""
 "Open the configuration submenu. From this submenu, you can select between\n"
 "color, layout, notification and general options, and you can also configure\n"
 "your key bindings."
-msgstr ""
+msgstr "Otwórz podmenu konfiguracji. Z podmenu możesz wybrać kolorystykę, układ \npaneli, sposób powiadamiania i ogólne opcje; możesz również ustawić \nwłasne skróty klawiszowe. "
 
 #: config.txt:8
 msgid "The color submenu lets you choose the color theme."
-msgstr ""
+msgstr "Podmenu koloru pozwala wybrać schemat kolorów."
 
 #: config.txt:10
 msgid ""
 "The layout submenu lets you choose the calcurse screen layout, in other words\n"
 "where to place the three different panels on the screen."
-msgstr ""
+msgstr "Podmenu układu pozwala wybrać układ paneli programu calcurse. Innymi słowy\npozwala wybrać gdzie trzy panele mają być umieszczone na ekranie."
 
 #: config.txt:13
 msgid ""
 "The general options submenu brings a screen with the different options which\n"
 "modifies the way calcurse interacts with the user."
-msgstr ""
+msgstr "Podmenu ogólnych opcji pozwala na zmianę różnych opcji, które wpływają na\nsposób w jaki calcurse komunikuje się z użytkownikiem."
 
 #: config.txt:16
 msgid "The notify submenu allows you to change the notify-bar settings."
-msgstr ""
+msgstr "Podmenu powiadomień pozwala zmienić ustawienia paska powiadomień. "
 
 #: config.txt:18
 msgid "The keys submenu lets you define your own key bindings."
-msgstr ""
+msgstr "Podmenu klawiszy pozwala określić własne przypisania skrótów klawiszowych."
 
 #: config.txt:20
 msgid ""
 "Do not forget to save the calendar data to retrieve your configuration next\n"
 "time you launch calcurse."
-msgstr ""
+msgstr "Pamiętaj o zapisywaniu wprowadzonych zmian w kalendarzu, aby móc odczytać nowe\nustawienia przy następnym uruchomieniu calcurse."

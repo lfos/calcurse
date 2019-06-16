@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse 1.4\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2019-01-12 10:01+0100\n"
+"POT-Creation-Date: 2019-06-16 15:27-0400\n"
 "PO-Revision-Date: 2006-07-03 00:05+0100\n"
 "Last-Translator: Neil Williams <linux@codehelp.co.uk>\n"
 "Language-Team: English/GB <en_GB@li.org>\n"
@@ -113,13 +113,13 @@ msgstr ""
 msgid "  -c, --calendar <file>   The calendar data file to use"
 msgstr ""
 
-msgid "  -C, --conf <directory>  The configuration directory to use"
+msgid "  -C, --confdir <dir>     The configuration directory to use"
 msgstr ""
 
 msgid "  --daemon                Run notification daemon in the background"
 msgstr ""
 
-msgid "  -D, --directory <dir>   The data directory to use"
+msgid "  -D, --datadir <dir>     The data directory to use"
 msgstr ""
 
 msgid "  -g, --gc                Run the garbage collector"
@@ -328,20 +328,20 @@ msgid ""
 msgstr ""
 
 #, c-format
-msgid "unknown user option: \"%s\""
+msgid "unknown user option: \"%s\" (ignored)"
 msgstr ""
+
+#, fuzzy, c-format
+msgid "invalid option format: \"%s\" (ignored)"
+msgstr "Enter the new ToDo item : "
 
 #, c-format
-msgid "invalid option format: \"%s\""
+msgid "unknown user option: \"%s\" (disabled)"
 msgstr ""
 
 #, fuzzy, c-format
-msgid "configuration variable unknown: \"%s\""
-msgstr "FATAL ERROR in fill_config_var: wrong configuration variable format.\n"
-
-#, fuzzy, c-format
-msgid "wrong configuration variable format for \"%s\""
-msgstr "FATAL ERROR in fill_config_var: wrong configuration variable format.\n"
+msgid "invalid option format: \"%s\" (disabled)"
+msgstr "Enter the new ToDo item : "
 
 #, fuzzy
 msgid "layout configuration"
@@ -392,6 +392,21 @@ msgid "hide completed"
 msgstr ""
 
 msgid "(preferred todo display)"
+msgstr ""
+
+msgid "(horizontal line above the day heading)"
+msgstr ""
+
+msgid "(empty line between events and appointments)"
+msgstr ""
+
+msgid "(each day ends with an empty line)"
+msgstr ""
+
+msgid "(insert an empty line after each appointment)"
+msgstr ""
+
+msgid "(display more than one day in the appointments panel)"
 msgstr ""
 
 msgid "(if set to YES, automatic save is done when quitting)"
@@ -493,6 +508,9 @@ msgid "Could not save %s."
 msgstr "Enter description :"
 
 msgid "unknown item type"
+msgstr ""
+
+msgid "(none)"
 msgstr ""
 
 #, fuzzy
@@ -1392,7 +1410,7 @@ msgid "Enter the day to go to [ENTER for today] : %s"
 msgstr "Enter the day to go to [ENTER for today] : dd/mm/yyyy"
 
 #, c-format
-msgid "The move failed (%d/%d/%d, ret=%d)."
+msgid "The move failed (%d/%d/%d)."
 msgstr ""
 
 #, fuzzy, c-format
@@ -1428,6 +1446,13 @@ msgstr ""
 #, fuzzy
 msgid "Enter the new item description:"
 msgstr "Enter description :"
+
+msgid "Exception days:"
+msgstr ""
+
+#, fuzzy
+msgid "Invalid date format - try again:."
+msgstr "FATAL ERROR in load_app: syntax error in the item date\n"
 
 #, fuzzy
 msgid "Enter the new repetition type:"
@@ -1682,6 +1707,16 @@ msgstr ""
 
 msgid "Remove temporary backup..."
 msgstr ""
+
+#, fuzzy
+#~ msgid "configuration variable unknown: \"%s\""
+#~ msgstr ""
+#~ "FATAL ERROR in fill_config_var: wrong configuration variable format.\n"
+
+#, fuzzy
+#~ msgid "wrong configuration variable format for \"%s\""
+#~ msgstr ""
+#~ "FATAL ERROR in fill_config_var: wrong configuration variable format.\n"
 
 #, fuzzy
 #~ msgid "(if set to YES, progress bar will be displayed when saving data)"

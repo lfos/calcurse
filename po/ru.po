@@ -3,16 +3,17 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Translators:
-# Aleksey Mekhonoshin <linux.kernel.it@gmail.com>, 2011-2012
-# Aleksey Mekhonoshin <linux.kernel.it@gmail.com>, 2012-2014
+# Алексей Мехоношин <ruskidecko@gmail.com>, 2011-2012
+# Алексей Мехоношин <ruskidecko@gmail.com>, 2012-2014,2016
 # Lukas Fleischer <transifex@cryptocrack.de>, 2011
+# Алексей Мехоношин <ruskidecko@gmail.com>, 2016-2017,2019
 msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2019-01-12 10:01+0100\n"
-"PO-Revision-Date: 2016-04-02 06:45+0000\n"
-"Last-Translator: Lukas Fleischer <transifex@cryptocrack.de>\n"
+"POT-Creation-Date: 2019-06-16 15:27-0400\n"
+"PO-Revision-Date: 2019-05-30 21:49+0000\n"
+"Last-Translator: Алексей Мехоношин <ruskidecko@gmail.com>\n"
 "Language-Team: Russian (http://www.transifex.com/lfleischer/calcurse/"
 "language/ru/)\n"
 "Language: ru\n"
@@ -43,26 +44,30 @@ msgid ""
 msgstr ""
 
 msgid "Try `calcurse -h` for more information."
-msgstr ""
+msgstr "Выполните 'calcurse -h' для получения справки."
 
 #, c-format
 msgid "calcurse %s -- text-based organizer\n"
-msgstr ""
+msgstr "calcurse %s - текстовый органайзер\n"
 
 msgid "Copyright (c) 2004-2017 calcurse Development Team."
-msgstr ""
+msgstr "Copyright (c) 2004-2017 calcurse Development Team."
 
 msgid "This is free software; see the source for copying conditions."
 msgstr ""
+"Это свободное ПО. Для ознакомления с условиями копирования ПО, ознакомьтесь "
+"с исходным кодом."
 
 msgid "Operations in command line mode:"
 msgstr ""
 
 msgid "  -Q, --query   Print items in a given query range"
 msgstr ""
+"-Q, --query Вывод записей в соответствии с заданным диапазоном запросов"
 
 msgid "  -G, --grep    Grep items from the data files"
 msgstr ""
+"-G, --grep Использование рег. выражений для поиска записей в файлах данных."
 
 msgid "  -P, --purge   Read items and write them back"
 msgstr ""
@@ -101,18 +106,18 @@ msgid "Consult the man page for details."
 msgstr ""
 
 msgid "Miscellaneous:"
-msgstr ""
+msgstr "Разное:"
 
 msgid "  -c, --calendar <file>   The calendar data file to use"
 msgstr ""
 
-msgid "  -C, --conf <directory>  The configuration directory to use"
+msgid "  -C, --confdir <dir>     The configuration directory to use"
 msgstr ""
 
 msgid "  --daemon                Run notification daemon in the background"
-msgstr ""
+msgstr "--daemon Запустить демон уведомлений в фоне"
 
-msgid "  -D, --directory <dir>   The data directory to use"
+msgid "  -D, --datadir <dir>     The data directory to use"
 msgstr ""
 
 msgid "  -g, --gc                Run the garbage collector"
@@ -128,7 +133,7 @@ msgid "  -q, --quiet             Suppress system dialogs"
 msgstr ""
 
 msgid "  --read-only             Do not save configuration or data files"
-msgstr ""
+msgstr "--read-only Не сохранять настройки или файлы с данными"
 
 msgid "  --status                Display status of running instances"
 msgstr ""
@@ -143,12 +148,14 @@ msgstr ""
 msgid ""
 "For more information, type '?' from within calcurse, or read the manpage."
 msgstr ""
+"Для дополнительной информации используйте клавишу '?' внутри calcurse или "
+"обратитесь к man."
 
 msgid "Submit feature requests and suggestions to <misc@calcurse.org>."
-msgstr ""
+msgstr "Пожелания или ваши идеи присылайте на <misc@calcurse.org>."
 
 msgid "Submit bug reports to <bugs@calcurse.org>."
-msgstr ""
+msgstr "Обнаруженные ошибки присылайте на <bugs@calcurse.org>."
 
 #, c-format
 msgid ""
@@ -168,9 +175,8 @@ msgstr "calcurse запущен (pid: %d)\n"
 msgid "calcurse is running in background (pid %d)\n"
 msgstr "calcurse запущен в фоновом режиме (pid: %d)\n"
 
-#, fuzzy
 msgid "calcurse is not running"
-msgstr "calcurse не запущен\n"
+msgstr ""
 
 msgid "completed tasks:\n"
 msgstr "Выполненные задачи:\n"
@@ -183,29 +189,29 @@ msgstr "Следующая задача:\n"
 
 #, c-format
 msgid "invalid range: %s"
-msgstr ""
+msgstr "неверный диапазон: %s"
 
 #, c-format
 msgid "invalid date: %s"
-msgstr ""
+msgstr "неверная дата: %s"
 
 #, c-format
 msgid "invalid priority: %s"
-msgstr ""
+msgstr "неверный приоритет: %s"
 
 #, c-format
 msgid "invalid export format: %s"
-msgstr ""
+msgstr "неверный формат экспорта: %s"
 
 msgid "invalid filter mask"
-msgstr ""
+msgstr "неверная маска фильтра"
 
 msgid "cannot handle more than one regular expression"
-msgstr ""
+msgstr "невозможно использовать более одного рег. выражения"
 
 #, c-format
 msgid "could not compile regular expression: %s"
-msgstr ""
+msgstr "невозможно скомпилировать рег. выражение: %s"
 
 #, c-format
 msgid "filter criterion already in use: %s"
@@ -213,58 +219,52 @@ msgstr ""
 
 #, c-format
 msgid "invalid date range: %s"
+msgstr "неверный диапазон дат: %s"
+
+#, c-format
+msgid "calcurse is running (pid = %d)"
 msgstr ""
 
-#, fuzzy, c-format
-msgid "calcurse is running (pid = %d)"
-msgstr "calcurse запущен (pid: %d)\n"
-
-#, fuzzy, c-format
+#, c-format
 msgid "invalid input date format: %s"
-msgstr "Задайте формат даты: "
+msgstr ""
 
-#, fuzzy, c-format
+#, c-format
 msgid "invalid output date format: %s"
-msgstr "Задайте формат даты: "
+msgstr ""
 
 msgid "invalid argument combination"
-msgstr ""
+msgstr "неверная комбинация аргументов"
 
 msgid "cannot specify a range and an end date"
-msgstr ""
+msgstr "невозможно задать диапазон и конечную дату"
 
 msgid "end date cannot come before start date"
 msgstr ""
 
 msgid "Unable to find documentation."
+msgstr "Невозможно найти документацию"
+
+msgid "Data were saved successfully"
 msgstr ""
 
-#, fuzzy
-msgid "Data were saved successfully"
-msgstr "Файлы данных полностью обновлены"
-
-#, fuzzy
 msgid "Data were saved/reloaded successfully"
-msgstr "Файлы данных полностью обновлены"
+msgstr ""
 
-#, fuzzy
 msgid "Save cancelled"
-msgstr "Сохр. данные calcurse"
+msgstr ""
 
 msgid "Data were already saved"
 msgstr ""
 
-#, fuzzy
 msgid "Cannot open data file"
-msgstr "ошибка открытия todo-файла"
+msgstr ""
 
-#, fuzzy
 msgid "Data were reloaded successfully"
-msgstr "Файлы данных полностью обновлены"
+msgstr ""
 
-#, fuzzy
 msgid "Date were merged/reloaded successfully"
-msgstr "Файлы данных полностью обновлены"
+msgstr ""
 
 msgid "Reload cancelled"
 msgstr ""
@@ -290,9 +290,8 @@ msgstr ""
 msgid "Read-only mode - use w!"
 msgstr ""
 
-#, fuzzy
 msgid "There are unsaved changes - use w or q!"
-msgstr "Не сохранённые изменения:"
+msgstr ""
 
 #, c-format
 msgid "Help topic does not exist: %s"
@@ -319,21 +318,21 @@ msgstr ""
 "Обнаружен конфгурационный файл версии ниже 3.0.0. Обновите, пожалуйста, "
 "запустив `calcurse-upgrade`."
 
-#, fuzzy, c-format
-msgid "unknown user option: \"%s\""
-msgstr "неизвестный тип повторения"
-
-#, fuzzy, c-format
-msgid "invalid option format: \"%s\""
-msgstr "invalid configuration directive: \"%s\""
+#, c-format
+msgid "unknown user option: \"%s\" (ignored)"
+msgstr ""
 
 #, c-format
-msgid "configuration variable unknown: \"%s\""
-msgstr "неизвестная настройка переменной: \"%s\""
+msgid "invalid option format: \"%s\" (ignored)"
+msgstr ""
 
 #, c-format
-msgid "wrong configuration variable format for \"%s\""
-msgstr "неверный формат переменной конфигурации для \"%s\""
+msgid "unknown user option: \"%s\" (disabled)"
+msgstr ""
+
+#, c-format
+msgid "invalid option format: \"%s\" (disabled)"
+msgstr ""
 
 msgid "layout configuration"
 msgstr "Настройки расположения"
@@ -351,7 +350,7 @@ msgid "color theme"
 msgstr "Цветовая схема"
 
 msgid "(if set to YES, compact panels are used)"
-msgstr ""
+msgstr "(Если выбрано ДА/YES,  будет использован компактный вид панелей)"
 
 msgid "Calendar"
 msgstr "Календарь"
@@ -360,18 +359,16 @@ msgid "Appointments"
 msgstr "Задачи"
 
 msgid "TODO"
-msgstr "Дело"
+msgstr "Дела"
 
 msgid "(specifies the panel that is selected by default)"
+msgstr "(Задаёт панель, которая будет активна по умолчанию)"
+
+msgid "monthly"
 msgstr ""
 
-#, fuzzy
-msgid "monthly"
-msgstr "(m)ежемесячно"
-
-#, fuzzy
 msgid "weekly"
-msgstr "(w)еженедельно"
+msgstr ""
 
 msgid "(preferred calendar display)"
 msgstr ""
@@ -383,6 +380,21 @@ msgid "hide completed"
 msgstr ""
 
 msgid "(preferred todo display)"
+msgstr ""
+
+msgid "(horizontal line above the day heading)"
+msgstr ""
+
+msgid "(empty line between events and appointments)"
+msgstr ""
+
+msgid "(each day ends with an empty line)"
+msgstr ""
+
+msgid "(insert an empty line after each appointment)"
+msgstr ""
+
+msgid "(display more than one day in the appointments panel)"
 msgstr ""
 
 msgid "(if set to YES, automatic save is done when quitting)"
@@ -421,23 +433,20 @@ msgstr "Формат даты отображается в неинтеракти
 msgid "(Format to be used when entering a date: "
 msgstr "Формат для ввода даты: "
 
-#, fuzzy
 msgid "to the left"
-msgstr "Влево"
+msgstr "влево"
 
 msgid "in the middle"
-msgstr ""
+msgstr "посередине"
 
-#, fuzzy
 msgid "to the right"
-msgstr "Вправо"
+msgstr "вправо"
 
 msgid "(position of the heading in the appointments panel)"
 msgstr ""
 
-#, fuzzy
 msgid "(Format of the date displayed in the appointments panel)"
-msgstr "Формат даты отображается в неинтерактивном режиме"
+msgstr "(Формат даты, которая отображается в панели задач)"
 
 msgid "Enter the date format (see 'man 3 strftime' for possible formats) "
 msgstr "Задайте формат даты (см. 'man 3 strftime' для возможных форматов)"
@@ -463,9 +472,9 @@ msgstr "Настройка клавиш"
 msgid "Press the key you want to assign to:"
 msgstr "Нажмите клавишу, чтобы привязать её к:"
 
-#, fuzzy, c-format
+#, c-format
 msgid "The key '%s' is already used for %s. Choose another one."
-msgstr "Эта клавиша уже используется для %s, попробуйте другую."
+msgstr "Ключ '%s' уже используется для %s. Выберите другой ключ."
 
 msgid "Some actions do not have any associated key bindings!"
 msgstr "Некоторые действия не привязаны к клавишам!"
@@ -475,12 +484,15 @@ msgid ""
 "(Press [ENTER] to continue)"
 msgstr "Цвета не поддерживаются вашим терминалом (Нажмите [ENTER])"
 
-#, fuzzy, c-format
+#, c-format
 msgid "Could not save %s."
-msgstr "Невозможно разделить: %s\n"
+msgstr ""
 
 msgid "unknown item type"
 msgstr "неизвестный тип записи"
+
+msgid "(none)"
+msgstr ""
 
 msgid "Event:"
 msgstr "Событие:"
@@ -568,15 +580,13 @@ msgid "unknown ical type"
 msgstr "неизвестный тип ical"
 
 msgid "recurrence rule malformed."
-msgstr "рекурентные правила повреждены."
+msgstr "рекуррентные правила повреждены."
 
-#, fuzzy
 msgid "recurrence frequency not found."
-msgstr "частота повторений не найдена."
+msgstr "рекуррентная частота не найдена"
 
-#, fuzzy
 msgid "recurrence frequency not recognized."
-msgstr "частота повторений не распознана."
+msgstr "рекуррентная частота не распознана"
 
 msgid "recurrence exception dates malformed."
 msgstr "рекурентные соотношения дат повреждены."
@@ -591,7 +601,7 @@ msgid "could not retrieve item summary."
 msgstr "невозможно восстановить суммарные записи."
 
 msgid "item start date is not defined."
-msgstr ""
+msgstr "время начала события не определено."
 
 msgid "item has a negative duration."
 msgstr "значение имеет отрицательную продолжительность."
@@ -600,13 +610,13 @@ msgid "item could not be identified."
 msgstr "значение не может быть распознано."
 
 msgid "event start time malformed."
-msgstr ""
+msgstr "время начала события неверно оформлено"
 
 msgid "could not retrieve event start time."
 msgstr "невозможно восстановить время начала события."
 
 msgid "event end time malformed."
-msgstr ""
+msgstr "событие и время неверно оформлены"
 
 msgid "could not retrieve event end time."
 msgstr "невозможно восстановить время окончания события."
@@ -618,7 +628,7 @@ msgid "The ical file seems to be malformed. The end of item was not found."
 msgstr "Файл ical скорее всего повреждён. Не найдено окончание записи."
 
 msgid "item priority is invalid (must be between 0 and 9)."
-msgstr ""
+msgstr "приоритет записи в неверном формате (должно быть число между 0 и 9)"
 
 msgid "Warning: ical header malformed or wrong version number. Aborting..."
 msgstr ""
@@ -651,11 +661,10 @@ msgstr "Ошибка закрытия \"%s\" - %s\n"
 
 #, c-format
 msgid "%s does not exist"
-msgstr ""
+msgstr "%s не существует"
 
-#, fuzzy
 msgid "Data files have changed and will be overwritten:"
-msgstr "Данные найдены и будут загружены"
+msgstr ""
 
 msgid "(c)ontinue"
 msgstr ""
@@ -663,9 +672,8 @@ msgstr ""
 msgid "(m)erge"
 msgstr "(m)слияние"
 
-#, fuzzy
 msgid "c(a)ncel"
-msgstr "Отменить"
+msgstr ""
 
 msgid "[cma]"
 msgstr ""
@@ -725,9 +733,8 @@ msgstr "Ошибка чтения клавиши: \"%s\""
 msgid "\"%s\" assigned multiple times!"
 msgstr "\"%s\" определено множество времён!"
 
-#, fuzzy
 msgid "There were some errors when loading keys file."
-msgstr "Возникли ошибки при загрузке keys-файла. Смотреть log-файл?"
+msgstr ""
 
 msgid "Too many errors while reading keys file, aborting..."
 msgstr "Обнаружены ошибки при чтении keys-файла, отмена..."
@@ -798,9 +805,8 @@ msgstr[3] "%d дела"
 msgid "%d skipped"
 msgstr "%d пропущен"
 
-#, fuzzy
 msgid "Some items could not be imported."
-msgstr "Некоторые записи не были импортированы. Открыть log-файл?"
+msgstr ""
 
 msgid "Warning: could not open temporary log file, Aborting..."
 msgstr "Внимание: невозможно открыть временный log-файл. Завершение..."
@@ -992,6 +998,13 @@ msgid ""
 "# via the key configuration menu of the interactive user\n"
 "# interface. It should not be edited directly.\n"
 msgstr ""
+"#\n"
+"# Файл настройки быстрых клавиш Calcurse\n"
+"#\n"
+"# В этом файле определены быстрые клавиши, которые используются в Calcurse.\n"
+"# Calcurse создал их автоматически и редактируются они в меню настроек в "
+"программе.\n"
+"# Напрямую редактировать быстрые клавиши нельзя.\n"
 
 msgid "FATAL ERROR: could not create default keys file."
 msgstr "FATAL ERROR: could not create default keys file."
@@ -1003,7 +1016,7 @@ msgid "General"
 msgstr "Основные"
 
 msgid "Layout"
-msgstr "Располож."
+msgstr "Панель"
 
 msgid "Sidebar"
 msgstr "Обрамление"
@@ -1312,9 +1325,8 @@ msgstr "настройки уведомления"
 msgid "incoherent repetition type"
 msgstr "бессвязный тип повторения"
 
-#, fuzzy
 msgid "System event"
-msgstr "%d событие"
+msgstr ""
 
 msgid "unknown repetition type"
 msgstr "неизвестный тип повторения"
@@ -1352,32 +1364,32 @@ msgid "ERROR setting first day of week"
 msgstr "ОШИБКА настройки первого дня недели"
 
 msgid "The day you entered is not valid"
-msgstr ""
+msgstr "День введён вами с ошибкой"
 
 #, c-format
 msgid "Enter the day to go to [ENTER for today] : %s"
 msgstr "Переход на N-ый день [ENTER для текущего дня] : %s"
 
 #, c-format
-msgid "The move failed (%d/%d/%d, ret=%d)."
+msgid "The move failed (%d/%d/%d)."
 msgstr ""
 
-#, fuzzy, c-format
+#, c-format
 msgid "Enter start date [%s] and/or time ([hh:mm] or [hhmm]):"
-msgstr "Начало ([чч:мм] или [ччмм]): "
+msgstr ""
 
 msgid "Press [Enter] to continue"
 msgstr "Нажмите [Enter]"
 
 msgid "Invalid date or time."
-msgstr ""
+msgstr "Неверная дата или время."
 
-#, fuzzy
 msgid "Invalid time: start time must come before end time!"
 msgstr "Неверное время: время начала должно идти до времени конца"
 
 msgid "Enter end date (and/or time) or duration ('?' for input formats):"
 msgstr ""
+"Введите конечную дату (и/или время) или продолжительность ('?' см. форматы):"
 
 #, c-format
 msgid "Date: %s, year or month may be omitted."
@@ -1385,17 +1397,24 @@ msgstr ""
 
 msgid "Time: hh:mm (hh: or :mm) or hhmm. Duration: +mm, +hh:mm, +??d??h??m."
 msgstr ""
+"Время: hh:mm (hh: или :mm) или hhmm. Продолжительность: +mm, +hh:mm, +??d??"
+"h??m."
 
-#, fuzzy
 msgid "Invalid time or duration."
-msgstr "опечатка в записи даты или продолжительности"
+msgstr "Неверное время или продолжительность."
 
-#, fuzzy
 msgid "Invalid date: end time must come after start time."
-msgstr "Неверное время: время начала должно идти до времени конца"
+msgstr "Неверная дата: конечное время должно идти после начального  времени."
 
 msgid "Enter the new item description:"
 msgstr "Описание: "
+
+msgid "Exception days:"
+msgstr ""
+
+#, fuzzy
+msgid "Invalid date format - try again:."
+msgstr "Неверная дата или время."
 
 msgid "Enter the new repetition type:"
 msgstr "Введите тип повторения:"
@@ -1419,17 +1438,14 @@ msgstr "(используется %s)"
 msgid "[dwmy]"
 msgstr "[днмг]"
 
-#, fuzzy
 msgid "Invalid frequency."
-msgstr "Неверная задержка"
+msgstr "Неверная частота."
 
-#, fuzzy
 msgid "Enter the repetition frequency:"
-msgstr "Количество повторений: "
+msgstr "Введите частоту повторения:"
 
-#, fuzzy
 msgid "Enter end date or duration ('?' for input formats):"
-msgstr "Задайте формат даты (см. 'man 3 strftime' для возможных форматов)"
+msgstr "Введите конечную дату или продолжительность ('?' см. форматы):"
 
 #, c-format
 msgid "Date: %s (year or month may be omitted). Endless duration: 0."
@@ -1437,14 +1453,14 @@ msgstr ""
 
 msgid "Duration in days: +dd. Duration in weeks and days: +??w??d."
 msgstr ""
+"Продолжительность в днях: +dd. Продолжительность в неделях и днях: +??w??d"
 
 #, c-format
 msgid "Invalid date: end date must come after start date (%s)."
-msgstr ""
+msgstr "Неверная дата: конечная дата должны идти после начальной даты (%s)."
 
-#, fuzzy
 msgid "Invalid date."
-msgstr "Неверная задержка"
+msgstr "Неверная дата."
 
 msgid "Description"
 msgstr "Описание"
@@ -1482,9 +1498,8 @@ msgstr "Описание: "
 msgid "Date: %s (and/or time), year or month may be omitted."
 msgstr ""
 
-#, fuzzy
 msgid "Invalid start time."
-msgstr "Начальное время"
+msgstr "Неверное начальное время."
 
 msgid "Do you really want to delete this item?"
 msgstr "Удалить?"
@@ -1520,7 +1535,7 @@ msgid "Enter the new TODO item:"
 msgstr "Дело: "
 
 msgid "Enter the TODO priority [0 (none), 1 (highest) - 9 (lowest)]:"
-msgstr ""
+msgstr "Введите приоритет Дела [0 (без приоритета), 1 (высокий) - 9 (низкий)]:"
 
 msgid "Do you really want to delete this task?"
 msgstr "Удалить эту запись?"
@@ -1627,7 +1642,7 @@ msgid "done"
 msgstr "завершено"
 
 msgid "Old temporary file found:"
-msgstr "Обнаружен предыдущий файл временного хранения данных:"
+msgstr "Обнаружен предыдущий временный файл данных:"
 
 msgid ""
 "\n"
@@ -1644,185 +1659,3 @@ msgstr "Обновление конфигурации..."
 
 msgid "Remove temporary backup..."
 msgstr "Удалить временный архивный файл..."
-
-#~ msgid "Command:"
-#~ msgstr "Команда:"
-
-#~ msgid "(if set to YES, progress bar will be displayed when saving data)"
-#~ msgstr "(yes/no) Отображение полосы загрузки сохранения данных"
-
-#~ msgid "Saving..."
-#~ msgstr "Сохранение..."
-
-#~ msgid "Loading..."
-#~ msgstr "Загрузка..."
-
-#~ msgid "Exporting..."
-#~ msgstr "Экспорт..."
-
-#~ msgid "Internal error while displaying progress bar"
-#~ msgstr "Внутренняя ошибка во время вывода полосы загрузки"
-
-#~ msgid "Problems accessing data file ..."
-#~ msgstr "Проблемы с доступом к файлу данных..."
-
-#~ msgid "The data files were successfully saved"
-#~ msgstr "Файл данных успешно сохранён"
-
-#~ msgid "(d)iscard"
-#~ msgstr "(d)отменить"
-
-#~ msgid "[dmk]"
-#~ msgstr "[dmk]"
-
-#~ msgid "You entered an invalid time, should be [hh:mm] or [hhmm]"
-#~ msgstr "Неверно указано время, должно быть [чч:мм] или [ччмм]"
-
-#~ msgid ""
-#~ "Enter end time ([hh:mm], [hhmm]) or duration ([+hh:mm], [+xxxdxxhxxm]):"
-#~ msgstr ""
-#~ "Окончание ([чч:мм], [ччмм]) или задержка ([+чч:мм], [+хххdххhххm]): "
-
-#~ msgid "The entered date is not valid."
-#~ msgstr "Неверно введена дата."
-
-#~ msgid "Possible formats are [%s] or '0' for an endless repetition."
-#~ msgstr "[%s] или '0'- возможные форматы для окончания повторения."
-
-#, fuzzy
-#~ msgid "Enter the new repetition frequency:"
-#~ msgstr "Новая частота повторения:"
-
-#~ msgid "You entered an invalid start time, should be [hh:mm] or [hhmm]"
-#~ msgstr "Неверно указано начальное время, должно быть [чч:мм] или [ччмм]"
-
-#~ msgid ""
-#~ "Invalid end time/duration, should be [hh:mm], [hhmm], [+hh:mm], "
-#~ "[+xxxdxxhxxm] or [+mm]"
-#~ msgstr ""
-#~ "Неверно указано конечное время/задержка, должно быть [+чч:мм], "
-#~ "[+хххДххЧххМ] или [+мм]"
-
-#~ msgid "Sorry, the date you entered is older than the item start time."
-#~ msgstr "Заданная дата не соответствует времени начала записи."
-
-#~ msgid "Enter an option number to change its value"
-#~ msgstr "Введите номер настройки для изменения её параметра"
-
-#~ msgid "(Press '^P' or '^N' to move up or down, 'Q' to quit)"
-#~ msgstr "'^P' или '^N' - вверх/вниз, 'Q' - выхода"
-
-#~ msgid ""
-#~ "This key is not yet recognized by calcurse, please choose another one."
-#~ msgstr "Эта клавиша ещё не распознаётся calcurse, попробуйте другую."
-
-#~ msgid ""
-#~ "#\n"
-#~ "# Calcurse keys configuration file\n"
-#~ "#\n"
-#~ "# This file sets the keybindings used by Calcurse.\n"
-#~ "# Lines beginning with \"#\" are comments, and ignored by Calcurse.\n"
-#~ "# To assign a keybinding to an action, this file must contain a line\n"
-#~ "# with the following syntax:\n"
-#~ "#\n"
-#~ "#        ACTION  KEY1  KEY2  ...  KEYn\n"
-#~ "#\n"
-#~ "# Where ACTION is what will be performed when KEY1, KEY2, ..., or KEYn\n"
-#~ "# will be pressed.\n"
-#~ "#\n"
-#~ "# To define bindings which use the CONTROL key, prefix the key with "
-#~ "'C-'.\n"
-#~ "# The escape, space bar and horizontal Tab key can be specified using\n"
-#~ "# the 'ESC', 'SPC' and 'TAB' keyword, respectively.\n"
-#~ "# Arrow keys can also be specified with the UP, DWN, LFT, RGT keywords.\n"
-#~ "# Last, Home and End keys can be assigned using 'KEY_HOME' and 'KEY_END'\n"
-#~ "# keywords.\n"
-#~ "#\n"
-#~ "# A description of what each ACTION keyword is used for is available\n"
-#~ "# from calcurse online configuration menu.\n"
-#~ msgstr ""
-#~ "#\n"
-#~ "#Конфигурационный файл горячих клавиш calcurse\n"
-#~ "#\n"
-#~ "#Файл задаёт привязку действий к клавишам Calcurse.\n"
-#~ "#Линии, начинающиеся с \"#\", есть комментарии и игнорируются Calcurse.\n"
-#~ "#Для привязки горячей клавиши к действию, в файл необходимо написать "
-#~ "строку,\n"
-#~ "#используя следующий синтаксис:\n"
-#~ "#\n"
-#~ "#\tДЕЙСТВИЕ   КЛАВ.1   КЛАВ.2   ...   КЛАВ.N\n"
-#~ "#\n"
-#~ "#Где ДЕЙСТВИЕ - это ЧТО должно происходить при нажатии на клавиши "
-#~ "КЛАВ.1, \n"
-#~ "# ..., или КЛАВ.N\n"
-#~ "#\n"
-#~ "#Для использования связки Ctrl + \"горячая клавиша\", используйте префикс "
-#~ "'C-'.\n"
-#~ "#Escape, пробел, клавиша табуляции - обозначаются 'ESC', 'SPC' и 'TAB'\n"
-#~ "#соответственно.\n"
-#~ "#Клавиши стрелок обозначаются как UP, DWN, LFT, RGT.\n"
-#~ "#Последнее, клавиши Home и End имеют обозначение 'KEY_HOME'\n"
-#~ "#и 'KEY_END'.\n"
-#~ "#\n"
-#~ "#Описание каждой используемой клавиши ДЕЙСТВИЕ доступно\n"
-#~ "#из меню настроек calcurse\n"
-
-#~ msgid "The frequence you entered is not valid."
-#~ msgstr "Неверно введена частота повторения."
-
-#~ msgid "January"
-#~ msgstr "Январь"
-
-#~ msgid "February"
-#~ msgstr "Февраль"
-
-#~ msgid "March"
-#~ msgstr "Март"
-
-#~ msgid "April"
-#~ msgstr "Апрель"
-
-#~ msgid "May"
-#~ msgstr "Май"
-
-#~ msgid "June"
-#~ msgstr "Июнь"
-
-#~ msgid "July"
-#~ msgstr "Июль"
-
-#~ msgid "August"
-#~ msgstr "Август"
-
-#~ msgid "September"
-#~ msgstr "Сентябрь"
-
-#~ msgid "October"
-#~ msgstr "Октябрь"
-
-#~ msgid "November"
-#~ msgstr "Ноябрь"
-
-#~ msgid "December"
-#~ msgstr "Декабрь"
-
-#~ msgid "Sun"
-#~ msgstr "Вс"
-
-#~ msgid "Mon"
-#~ msgstr "Пн"
-
-#~ msgid "Tue"
-#~ msgstr "Вт"
-
-#~ msgid "Wed"
-#~ msgstr "Ср"
-
-#~ msgid "Thu"
-#~ msgstr "Чт"
-
-#~ msgid "Fri"
-#~ msgstr "Пт"
-
-#~ msgid "Sat"
-#~ msgstr "Сб"

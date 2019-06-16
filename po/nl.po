@@ -3,15 +3,17 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Translators:
+# Frob Nicator <mart@martlubbers.net>, 2016
 # Lukas Fleischer <transifex@cryptocrack.de>, 2011
+# Marco van Hulten <marco@hulten.org>, 2018
 # bucovaina78 <wannessmet@gmail.com>, 2012
 msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2019-01-12 10:01+0100\n"
-"PO-Revision-Date: 2016-04-02 06:45+0000\n"
-"Last-Translator: Lukas Fleischer <transifex@cryptocrack.de>\n"
+"POT-Creation-Date: 2019-06-16 15:27-0400\n"
+"PO-Revision-Date: 2019-05-30 11:52+0000\n"
+"Last-Translator: Lukas Fleischer\n"
 "Language-Team: Dutch (http://www.transifex.com/lfleischer/calcurse/language/"
 "nl/)\n"
 "Language: nl\n"
@@ -21,13 +23,13 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgid "null pointer"
-msgstr ""
+msgstr "null pointer"
 
 msgid "date error in appointment"
-msgstr "gegevensfout in de afspraak"
+msgstr "datumfout in de afspraak"
 
 msgid "no such appointment"
-msgstr ""
+msgstr "geen dergelijke afspraak"
 
 msgid ""
 "Usage:\n"
@@ -40,17 +42,17 @@ msgid ""
 msgstr ""
 
 msgid "Try `calcurse -h` for more information."
-msgstr ""
+msgstr "Probeer `calcurse -h` voor meer informatie."
 
 #, c-format
 msgid "calcurse %s -- text-based organizer\n"
-msgstr ""
+msgstr "calcurse %s -- tekst gebaseerde agenda\n"
 
 msgid "Copyright (c) 2004-2017 calcurse Development Team."
 msgstr ""
 
 msgid "This is free software; see the source for copying conditions."
-msgstr ""
+msgstr "Dit is vrije software; bekijk de broncode voor de kopieer voorwaarden"
 
 msgid "Operations in command line mode:"
 msgstr ""
@@ -103,13 +105,13 @@ msgstr ""
 msgid "  -c, --calendar <file>   The calendar data file to use"
 msgstr ""
 
-msgid "  -C, --conf <directory>  The configuration directory to use"
+msgid "  -C, --confdir <dir>     The configuration directory to use"
 msgstr ""
 
 msgid "  --daemon                Run notification daemon in the background"
 msgstr ""
 
-msgid "  -D, --directory <dir>   The data directory to use"
+msgid "  -D, --datadir <dir>     The data directory to use"
 msgstr ""
 
 msgid "  -g, --gc                Run the garbage collector"
@@ -145,7 +147,7 @@ msgid "Submit feature requests and suggestions to <misc@calcurse.org>."
 msgstr ""
 
 msgid "Submit bug reports to <bugs@calcurse.org>."
-msgstr ""
+msgstr "Stuur foutrapportages naar <bugs@calcurse.org>."
 
 #, c-format
 msgid ""
@@ -162,9 +164,8 @@ msgstr "calcurse draait (pid%d)\n"
 msgid "calcurse is running in background (pid %d)\n"
 msgstr "calcurse draait op de achtergrond (pid%d)\n"
 
-#, fuzzy
 msgid "calcurse is not running"
-msgstr "calcurse is niet actief\n"
+msgstr ""
 
 msgid "completed tasks:\n"
 msgstr "afgewerkte taken:\n"
@@ -209,9 +210,9 @@ msgstr ""
 msgid "invalid date range: %s"
 msgstr ""
 
-#, fuzzy, c-format
+#, c-format
 msgid "calcurse is running (pid = %d)"
-msgstr "calcurse draait (pid%d)\n"
+msgstr ""
 
 #, c-format
 msgid "invalid input date format: %s"
@@ -233,9 +234,8 @@ msgstr ""
 msgid "Unable to find documentation."
 msgstr ""
 
-#, fuzzy
 msgid "Data were saved successfully"
-msgstr "De data is met succes geëxporteerd"
+msgstr ""
 
 msgid "Data were saved/reloaded successfully"
 msgstr ""
@@ -246,13 +246,11 @@ msgstr ""
 msgid "Data were already saved"
 msgstr ""
 
-#, fuzzy
 msgid "Cannot open data file"
-msgstr "kon het todo-bestand niet openen"
+msgstr ""
 
-#, fuzzy
 msgid "Data were reloaded successfully"
-msgstr "De data is met succes geëxporteerd"
+msgstr ""
 
 msgid "Date were merged/reloaded successfully"
 msgstr ""
@@ -290,13 +288,13 @@ msgstr ""
 
 #, c-format
 msgid "No such command: %s"
-msgstr ""
+msgstr "Geen dergelijk commando: %s"
 
 msgid "unknown color"
 msgstr "Onbekende kleur"
 
 msgid "failed to open configuration file"
-msgstr ""
+msgstr "kon configuratiebestand niet openen"
 
 #, c-format
 msgid "invalid configuration directive: \"%s\""
@@ -306,21 +304,23 @@ msgid ""
 "Pre-3.0.0 configuration file format detected, please upgrade running "
 "`calcurse-upgrade`."
 msgstr ""
+"Pre-3.0.0 configuratiebestandsformaat gevonden, gelieve bij te werken met "
+"`calcurse-upgrade`."
 
 #, c-format
-msgid "unknown user option: \"%s\""
+msgid "unknown user option: \"%s\" (ignored)"
 msgstr ""
 
 #, c-format
-msgid "invalid option format: \"%s\""
+msgid "invalid option format: \"%s\" (ignored)"
 msgstr ""
 
 #, c-format
-msgid "configuration variable unknown: \"%s\""
+msgid "unknown user option: \"%s\" (disabled)"
 msgstr ""
 
 #, c-format
-msgid "wrong configuration variable format for \"%s\""
+msgid "invalid option format: \"%s\" (disabled)"
 msgstr ""
 
 msgid "layout configuration"
@@ -351,15 +351,13 @@ msgid "TODO"
 msgstr ""
 
 msgid "(specifies the panel that is selected by default)"
+msgstr "(specificeert het paneel dat standaard geselecteerd is)"
+
+msgid "monthly"
 msgstr ""
 
-#, fuzzy
-msgid "monthly"
-msgstr "(m)aandelijks"
-
-#, fuzzy
 msgid "weekly"
-msgstr "(w)ekelijks"
+msgstr ""
 
 msgid "(preferred calendar display)"
 msgstr ""
@@ -371,6 +369,21 @@ msgid "hide completed"
 msgstr ""
 
 msgid "(preferred todo display)"
+msgstr ""
+
+msgid "(horizontal line above the day heading)"
+msgstr ""
+
+msgid "(empty line between events and appointments)"
+msgstr ""
+
+msgid "(each day ends with an empty line)"
+msgstr ""
+
+msgid "(insert an empty line after each appointment)"
+msgstr ""
+
+msgid "(display more than one day in the appointments panel)"
 msgstr ""
 
 msgid "(if set to YES, automatic save is done when quitting)"
@@ -395,10 +408,10 @@ msgid "(if set to YES, messages about loaded and saved data will be displayed)"
 msgstr ""
 
 msgid "Monday"
-msgstr ""
+msgstr "maandag"
 
 msgid "Sunday"
-msgstr ""
+msgstr "zondag"
 
 msgid "(specifies the first day of week in the calendar view)"
 msgstr ""
@@ -409,23 +422,20 @@ msgstr "(Formaat van de datum in niet-interactieve modus)"
 msgid "(Format to be used when entering a date: "
 msgstr "Het te gebruiken formaat bij datuminvoer: "
 
-#, fuzzy
 msgid "to the left"
-msgstr "Ga naar links."
+msgstr ""
 
 msgid "in the middle"
 msgstr ""
 
-#, fuzzy
 msgid "to the right"
-msgstr "Ga naar rechts."
+msgstr ""
 
 msgid "(position of the heading in the appointments panel)"
 msgstr ""
 
-#, fuzzy
 msgid "(Format of the date displayed in the appointments panel)"
-msgstr "(Formaat van de datum in niet-interactieve modus)"
+msgstr ""
 
 msgid "Enter the date format (see 'man 3 strftime' for possible formats) "
 msgstr "Geef het formaat van de datum (zie 'man 3 strftime')"
@@ -453,9 +463,9 @@ msgstr "Toetsinstellingen"
 msgid "Press the key you want to assign to:"
 msgstr "Druk de toets die u wilt toewijzen:"
 
-#, fuzzy, c-format
+#, c-format
 msgid "The key '%s' is already used for %s. Choose another one."
-msgstr "Deze toets is al in gebruik voor %s, kies aub een andere."
+msgstr ""
 
 msgid "Some actions do not have any associated key bindings!"
 msgstr ""
@@ -467,12 +477,15 @@ msgstr ""
 "Helaas wordt kleur niet door uw terminal ondersteund.\n"
 "(druk op [ENTER] om door te gaan)"
 
-#, fuzzy, c-format
+#, c-format
 msgid "Could not save %s."
-msgstr "Geen toegang tot \"%s\": %s\n"
+msgstr ""
 
 msgid "unknown item type"
 msgstr "ongekend type item"
+
+msgid "(none)"
+msgstr ""
 
 msgid "Event:"
 msgstr ""
@@ -560,13 +573,11 @@ msgstr "onbekend ical type"
 msgid "recurrence rule malformed."
 msgstr "herhalingsregel onjuist"
 
-#, fuzzy
 msgid "recurrence frequency not found."
-msgstr "herhalingsfrequentie niet gevonden."
+msgstr ""
 
-#, fuzzy
 msgid "recurrence frequency not recognized."
-msgstr "herhalingsfrequentie niet herkend"
+msgstr ""
 
 msgid "recurrence exception dates malformed."
 msgstr "herhaling exceptie datum onjuist"
@@ -641,9 +652,8 @@ msgstr "Fout bij sluiten \"%s\" - %s\n"
 msgid "%s does not exist"
 msgstr ""
 
-#, fuzzy
 msgid "Data files have changed and will be overwritten:"
-msgstr "Databestanden gevonden. Data wordt geladen."
+msgstr ""
 
 msgid "(c)ontinue"
 msgstr ""
@@ -712,10 +722,8 @@ msgstr ""
 msgid "\"%s\" assigned multiple times!"
 msgstr "\"%s\" meer dan eens toegewezen!"
 
-#, fuzzy
 msgid "There were some errors when loading keys file."
 msgstr ""
-"Teveel fouten bij het laden van het sneltoetsenbestand, wordt afgebroken ..."
 
 msgid "Too many errors while reading keys file, aborting..."
 msgstr ""
@@ -781,9 +789,8 @@ msgstr[1] ""
 msgid "%d skipped"
 msgstr ""
 
-#, fuzzy
 msgid "Some items could not be imported."
-msgstr "item onbekend"
+msgstr ""
 
 msgid "Warning: could not open temporary log file, Aborting..."
 msgstr "Pas op: kan tijdelijk logbestand niet openen, Stoppen..."
@@ -1338,7 +1345,7 @@ msgid "Enter the day to go to [ENTER for today] : %s"
 msgstr ""
 
 #, c-format
-msgid "The move failed (%d/%d/%d, ret=%d)."
+msgid "The move failed (%d/%d/%d)."
 msgstr ""
 
 #, c-format
@@ -1351,9 +1358,8 @@ msgstr "Druk op [Enter] om door te gaan)"
 msgid "Invalid date or time."
 msgstr ""
 
-#, fuzzy
 msgid "Invalid time: start time must come before end time!"
-msgstr "Ongeldige tijd: aanvangstijd moet voor eindtijd zijn!"
+msgstr ""
 
 msgid "Enter end date (and/or time) or duration ('?' for input formats):"
 msgstr ""
@@ -1365,16 +1371,20 @@ msgstr ""
 msgid "Time: hh:mm (hh: or :mm) or hhmm. Duration: +mm, +hh:mm, +??d??h??m."
 msgstr ""
 
-#, fuzzy
 msgid "Invalid time or duration."
-msgstr "syntaxfout in itemtijd of duurtijd van het item"
+msgstr ""
 
-#, fuzzy
 msgid "Invalid date: end time must come after start time."
-msgstr "Ongeldige tijd: aanvangstijd moet voor eindtijd zijn!"
+msgstr ""
 
 msgid "Enter the new item description:"
 msgstr "Voer een nieuwe beschrijving in:"
+
+msgid "Exception days:"
+msgstr ""
+
+msgid "Invalid date format - try again:."
+msgstr ""
 
 msgid "Enter the new repetition type:"
 msgstr ""
@@ -1401,13 +1411,11 @@ msgstr "[dwmy]"
 msgid "Invalid frequency."
 msgstr ""
 
-#, fuzzy
 msgid "Enter the repetition frequency:"
-msgstr "Geef de herhalingsinterval:"
+msgstr ""
 
-#, fuzzy
 msgid "Enter end date or duration ('?' for input formats):"
-msgstr "Geef het formaat van de datum (zie 'man 3 strftime')"
+msgstr ""
 
 #, c-format
 msgid "Date: %s (year or month may be omitted). Endless duration: 0."
@@ -1611,103 +1619,3 @@ msgstr ""
 
 msgid "Remove temporary backup..."
 msgstr ""
-
-#~ msgid "Saving..."
-#~ msgstr "Opslaan..."
-
-#~ msgid "Loading..."
-#~ msgstr "Laden..."
-
-#~ msgid "Exporting..."
-#~ msgstr "Exporteren..."
-
-#~ msgid "Internal error while displaying progress bar"
-#~ msgstr "Interne fout bij het tonen van de voortgangsbalk"
-
-#~ msgid "Problems accessing data file ..."
-#~ msgstr "Probleem bij benaderen databestand ..."
-
-#~ msgid "The data files were successfully saved"
-#~ msgstr "De databestanden zijn met succes opgeslagen"
-
-#~ msgid "The entered date is not valid."
-#~ msgstr "De ingevoerde datum is ongeldig."
-
-#, fuzzy
-#~ msgid "Enter the new repetition frequency:"
-#~ msgstr "Voer herhalingsinterval in:"
-
-#~ msgid "Sorry, the date you entered is older than the item start time."
-#~ msgstr "Sorry, de ingevoerde datum is ouder dan de aanvangstijd."
-
-#~ msgid "Enter an option number to change its value"
-#~ msgstr "Voer een nummer in om de waarde te veranderen"
-
-#~ msgid "(Press '^P' or '^N' to move up or down, 'Q' to quit)"
-#~ msgstr ""
-#~ "(Druk '^P' of '^N' om omhoog of omlaag te bewegen, 'Q' om af te sluiten)"
-
-#~ msgid ""
-#~ "This key is not yet recognized by calcurse, please choose another one."
-#~ msgstr ""
-#~ "Deze toets wordt nog niet door Calcurse herkend, kies een andere aub."
-
-#~ msgid "The frequence you entered is not valid."
-#~ msgstr "Het ingevoerde interval is ongeldig."
-
-#~ msgid "January"
-#~ msgstr "januari"
-
-#~ msgid "February"
-#~ msgstr "februari"
-
-#~ msgid "March"
-#~ msgstr "maart"
-
-#~ msgid "April"
-#~ msgstr "april"
-
-#~ msgid "May"
-#~ msgstr "mei"
-
-#~ msgid "June"
-#~ msgstr "juni"
-
-#~ msgid "July"
-#~ msgstr "juli"
-
-#~ msgid "August"
-#~ msgstr "augustus"
-
-#~ msgid "September"
-#~ msgstr "september"
-
-#~ msgid "October"
-#~ msgstr "oktober"
-
-#~ msgid "November"
-#~ msgstr "november"
-
-#~ msgid "December"
-#~ msgstr "december"
-
-#~ msgid "Sun"
-#~ msgstr " zo"
-
-#~ msgid "Mon"
-#~ msgstr " ma"
-
-#~ msgid "Tue"
-#~ msgstr " di"
-
-#~ msgid "Wed"
-#~ msgstr " wo"
-
-#~ msgid "Thu"
-#~ msgstr " do"
-
-#~ msgid "Fri"
-#~ msgstr " vr"
-
-#~ msgid "Sat"
-#~ msgstr " za"

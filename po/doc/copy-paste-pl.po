@@ -1,12 +1,13 @@
 # 
 # Translators:
+# Rafał Szczerski <rafal.szczerski@gmail.com>, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-02-22 10:27+0200\n"
-"PO-Revision-Date: 2017-08-03 11:57+0000\n"
-"Last-Translator: Lukas Fleischer <transifex@cryptocrack.de>\n"
+"PO-Revision-Date: 2018-10-27 18:31+0000\n"
+"Last-Translator: Rafał Szczerski <rafal.szczerski@gmail.com>\n"
 "Language-Team: Polish (http://www.transifex.com/lfleischer/calcurse/language/pl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,7 +20,7 @@ msgstr ""
 msgid ""
 "Copy and Paste\n"
 "=============="
-msgstr ""
+msgstr "Kopiowanie i wklejanie\n===================="
 
 #: copy-paste.txt:4
 msgid ""
@@ -29,4 +30,4 @@ msgid ""
 "new date is chosen in the calendar, the appointment panel must be selected and\n"
 "the paste key must be pressed to paste the item. The item will appear in the\n"
 "appointment panel, assigned to the newly selected date."
-msgstr ""
+msgstr "Kopiujemy i wklejamy bieżąco zaznaczone pozycje. Jest to przydatna funkcja\ngdy chcemy szybko skopiować pozycję z jednego terminu do innego. Polega to\nna wybraniu pozycji, którą chcemy skopiować i naciśnięciu przycisku przypisanego\ndo funkcji kopiowania. Następnie wybieramy nowy termin w kalendarzu, przechodzimy\ndo panelu spotkań i aby wkleić pozycję naciskamy przycisk do którego przypisana \njest funkcja wklejania. Pozycja pojawi się w panelu spotkań i zostanie przypisana do\nnowo wybranego terminu."
