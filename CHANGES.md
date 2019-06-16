@@ -1,6 +1,50 @@
 Release Notes
 =============
 
+Version 4.5.0 (2019-06-17)
+--------------------------
+
+- Compatibility notes:
+
+    * The --conf command line option has been renamed to --confdir and the
+      --directory option has been renamed to --datadir.
+
+- New features:
+
+    * Multiple days support: Preview appointments for multiple days without
+      having to navigate in the calendar panel (implemented by Lars Henriksen).
+      There are five new configuration variables: one that turns the feature
+      on/off and four that affect the number of lines used by each day and with
+      it the number of days on display.
+
+    * Experimental vdir support: The calcurse distribution tarball now includes
+      an experimental script called calcurse-vdir that can be used as an
+      alternative to calurse-caldav (implemented by vxid). For details, please
+      refer to contrib/vdir/README.md in the calcurse source tree.
+
+    * Support for editing recurrence exceptions (implemented by Lars
+      Henriksen).
+
+- New calcurse-caldav features:
+
+    * Custom data directory support (implemented by vxid).
+
+    * A new Troubleshooting section in the calcurse-caldav README.md (added by
+      Randy Ramos).
+
+- Bug fixes:
+
+    * Various fixes in the notification system (implemented by Lars Henriksen).
+
+    * Fix for a calendar redraw issue (implemented by Lars Henriksen).
+
+    * Fix a potential deadlock (implemented by Lars Henriksen).
+
+    * Use ICALDATETIMEFMT for EXDATE in iCal exports (implemented by Henrik
+      Grimler).
+
+    * Fix for the compile-time AsciiDoc check (implemented by Brandon Munger).
+
 Version 4.4.0 (2019-02-21)
 --------------------------
 
