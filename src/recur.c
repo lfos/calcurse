@@ -798,17 +798,18 @@ recur_item_find_occurrence(time_t item_start, long item_dur,
 		break;
 	case RECUR_MONTHLY:
 		diff = diff_months(lt_item_day, lt_day) % rpt_freq;
-		if (lt_day.tm_mday < lt_item_day.tm_mday)
-			diff++;
+		if (!diff && lt_day.tm_mday < lt_item_day.tm_mday)
+			diff += rpt_freq;
 		lt_item_day.tm_mon = lt_day.tm_mon - diff;
 		lt_item_day.tm_year = lt_day.tm_year;
 		break;
 	case RECUR_YEARLY:
 		diff = diff_years(lt_item_day, lt_day) % rpt_freq;
-		if (lt_day.tm_mon < lt_item_day.tm_mon ||
+		if (!diff &&
+		    (lt_day.tm_mon < lt_item_day.tm_mon ||
 		    (lt_day.tm_mon == lt_item_day.tm_mon &&
-		     lt_day.tm_mday < lt_item_day.tm_mday))
-			diff++;
+		     lt_day.tm_mday < lt_item_day.tm_mday)))
+			diff += rpt_freq;
 		lt_item_day.tm_year = lt_day.tm_year - diff;
 		break;
 	default:
