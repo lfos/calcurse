@@ -278,7 +278,7 @@ static int update_exc(llist_t *exc)
 	int updated = 0;
 
 	if (!exc->head)
-		return updated;
+		return !updated;
 	char *days;
 	enum getstr ret;
 
