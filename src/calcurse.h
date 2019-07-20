@@ -504,6 +504,7 @@ enum key {
 	KEY_GENERIC_REDRAW,
 	KEY_GENERIC_ADD_APPT,
 	KEY_GENERIC_ADD_TODO,
+	KEY_GENERIC_ADD_APPT_FROM_TODO,
 	KEY_GENERIC_PREV_DAY,
 	KEY_GENERIC_NEXT_DAY,
 	KEY_GENERIC_PREV_WEEK,
@@ -1106,7 +1107,7 @@ void todo_init_list(void);
 void todo_free_list(void);
 
 /* ui-day.c */
-void ui_day_item_add(void);
+void ui_day_item_add(char *default_item_mesg);
 void ui_day_item_delete(unsigned);
 void ui_day_item_edit(void);
 void ui_day_item_pipe(void);
@@ -1136,6 +1137,7 @@ void ui_day_edit_note(void);
 void ui_todo_add(void);
 void ui_todo_delete(void);
 void ui_todo_edit(void);
+void ui_todo_make_appt(void);
 void ui_todo_pipe(void);
 void ui_todo_draw(int, WINDOW *, int, int, void *);
 enum listbox_row_type ui_todo_row_type(int, void *);

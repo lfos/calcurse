@@ -134,6 +134,14 @@ void ui_todo_edit(void)
 	ui_todo_set_selitem(item);
 }
 
+void ui_todo_make_appt(void) {
+	struct todo *item_todo = ui_todo_selitem();
+	if(item_todo == NULL)
+		return;
+
+	ui_day_item_add(item_todo->mesg);
+}
+
 /* Pipe a todo item to an external program. */
 void ui_todo_pipe(void)
 {

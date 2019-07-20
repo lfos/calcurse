@@ -635,7 +635,7 @@ void ui_day_item_pipe(void)
  * Add an item in either the appointment or the event list,
  * depending if the start time is entered or not.
  */
-void ui_day_item_add(void)
+void ui_day_item_add(char *default_item_mesg)
 {
 #define LTIME 17
 	const char *mesg_1 =
@@ -657,6 +657,10 @@ void ui_day_item_add(void)
 	unsigned dur;
 	int is_appointment = 1;
 	union aptev_ptr item;
+
+	if (default_item_mesg != NULL) {
+		strncpy(item_mesg, default_item_mesg, BUFSIZ-1);
+	}
 
 	/* Get the starting time */
 	for (;;) {

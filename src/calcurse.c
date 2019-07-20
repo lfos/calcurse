@@ -123,7 +123,7 @@ static inline void key_generic_config_menu(void)
 
 static inline void key_generic_add_appt(void)
 {
-	ui_day_item_add();
+	ui_day_item_add(NULL);
 	do_storage(0);
 	wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
 }
@@ -134,12 +134,18 @@ static inline void key_generic_add_todo(void)
 	wins_update(FLAG_TOD | FLAG_STA);
 }
 
+static inline void key_make_todo_into_appt(void) {
+	ui_todo_make_appt();
+	do_storage(0);
+	wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
+}
+
 static inline void key_add_item(void)
 {
 	switch (wins_slctd()) {
 	case APP:
 	case CAL:
-		ui_day_item_add();
+		ui_day_item_add(NULL);
 		do_storage(0);
 		wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
 		break;
@@ -807,6 +813,7 @@ int main(int argc, char **argv)
 		HANDLE_KEY(KEY_GENERIC_SCROLL_DOWN, key_generic_scroll_down);
 		HANDLE_KEY(KEY_GENERIC_QUIT, key_generic_quit);
 		HANDLE_KEY(KEY_GENERIC_CMD, key_generic_cmd);
+		HANDLE_KEY(KEY_GENERIC_ADD_APPT_FROM_TODO, key_make_todo_into_appt);
 		case KEY_GENERIC_REDRAW:
 			resize = 1;
 			break;
