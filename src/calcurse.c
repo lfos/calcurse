@@ -134,22 +134,28 @@ static inline void key_generic_add_todo(void)
 	wins_update(FLAG_TOD | FLAG_STA);
 }
 
-static inline void key_add_item(void)
+static inline int key_add_item(void)
 {
+	int add = 0;
 	switch (wins_slctd()) {
 	case APP:
 	case CAL:
-		ui_day_item_add();
+		add = ui_day_item_add();
 		do_storage(0);
 		wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
 		break;
 	case TOD:
-		ui_todo_add();
+		add = ui_todo_add();
 		wins_update(FLAG_TOD | FLAG_STA);
 		break;
 	default:
 		break;
 	}
+	return add;
+}
+
+static inline void key_add_batch(void) {
+	while (key_add_item()) ;
 }
 
 static inline void key_edit_item(void)
@@ -772,6 +778,7 @@ int main(int argc, char **argv)
 		HANDLE_KEY(KEY_GENERIC_ADD_APPT, key_generic_add_appt);
 		HANDLE_KEY(KEY_GENERIC_ADD_TODO, key_generic_add_todo);
 		HANDLE_KEY(KEY_ADD_ITEM, key_add_item);
+		HANDLE_KEY(KEY_ADD_BATCH, key_add_batch);
 		HANDLE_KEY(KEY_EDIT_ITEM, key_edit_item);
 		HANDLE_KEY(KEY_DEL_ITEM, key_del_item);
 		HANDLE_KEY(KEY_GENERIC_COPY, key_generic_copy);

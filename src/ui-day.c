@@ -635,7 +635,7 @@ void ui_day_item_pipe(void)
  * Add an item in either the appointment or the event list,
  * depending if the start time is entered or not.
  */
-void ui_day_item_add(void)
+int ui_day_item_add(void)
 {
 #define LTIME 17
 	const char *mesg_1 =
@@ -663,7 +663,7 @@ void ui_day_item_add(void)
 		status_mesg(mesg_1, "");
 		if (getstring(win[STA].p, item_time, LTIME, 0, 1) ==
 		    GETSTRING_ESC)
-			return;
+			return 0;
 		if (strlen(item_time) == 0) {
 			is_appointment = 0;
 			break;
@@ -690,7 +690,7 @@ void ui_day_item_add(void)
 			status_mesg(mesg_2, "");
 			if (getstring(win[STA].p, item_time, LTIME, 0, 1) ==
 			    GETSTRING_ESC)
-				return;
+				return 0;
 			if (*item_time == '?') {
 				char *outstr;
 				item_time[0] = '\0';
@@ -736,6 +736,7 @@ void ui_day_item_add(void)
 		}
 	}
 
+	int valid = 0;
 	status_mesg(mesg_3, "");
 	if (getstring(win[STA].p, item_mesg, BUFSIZ, 0, 1) == GETSTRING_VALID) {
 		if (is_appointment) {
@@ -751,11 +752,15 @@ void ui_day_item_add(void)
 		d.order = start;
 		d.item = item;
 		day_set_sel_data(&d);
+		valid = 1;
 	}
 
 	ui_calendar_monthly_view_cache_set_invalid();
 
 	wins_erase_status_bar();
+
+	return valid;
+	
 }
 
 /* Delete an item from the appointment list. */

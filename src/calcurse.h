@@ -524,6 +524,7 @@ enum key {
 	KEY_START_OF_WEEK,
 	KEY_END_OF_WEEK,
 	KEY_ADD_ITEM,
+	KEY_ADD_BATCH,
 	KEY_DEL_ITEM,
 	KEY_EDIT_ITEM,
 	KEY_VIEW_ITEM,
@@ -1106,7 +1107,7 @@ void todo_init_list(void);
 void todo_free_list(void);
 
 /* ui-day.c */
-void ui_day_item_add(void);
+int ui_day_item_add(void);
 void ui_day_item_delete(unsigned);
 void ui_day_item_edit(void);
 void ui_day_item_pipe(void);
@@ -1133,7 +1134,7 @@ void ui_day_view_note(void);
 void ui_day_edit_note(void);
 
 /* ui-todo.c */
-void ui_todo_add(void);
+int ui_todo_add(void);
 void ui_todo_delete(void);
 void ui_todo_edit(void);
 void ui_todo_pipe(void);

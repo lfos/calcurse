@@ -97,6 +97,7 @@ static struct keydef_s keydef[NBKEYS] = {
 	{ "start-of-week", "0", gettext_noop("beg Week") },
 	{ "end-of-week", "$", gettext_noop("end Week") },
 	{ "add-item", "a A", gettext_noop("Add Item") },
+	{ "add-batch", "b B", gettext_noop("Add Batch") },
 	{ "del-item", "d D", gettext_noop("Del Item") },
 	{ "edit-item", "e E", gettext_noop("Edit Itm") },
 	{ "view-item", "v V RET", gettext_noop("View") },

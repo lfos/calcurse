@@ -53,7 +53,7 @@ static void ui_todo_set_selitem(struct todo *todo)
 }
 
 /* Request user to enter a new todo item. */
-void ui_todo_add(void)
+int ui_todo_add(void)
 {
 	int ch = 0;
 	const char *mesg = _("Enter the new TODO item:");
@@ -72,7 +72,9 @@ void ui_todo_add(void)
 		ui_todo_load_items();
 		io_set_modified();
 		ui_todo_set_selitem(todo);
+		return 1;
 	}
+	return 0;
 }
 
 /* Delete an item from the TODO list. */
