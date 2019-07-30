@@ -561,7 +561,7 @@ static inline void key_generic_cmd(void)
 	int valid = 0, force = 0, ret;
 	char *error_msg;
 
-	status_mesg(_("Command: [ h(elp) | w(rite)(!) | q(uit)(!) | wq(!) ]"), "");
+	status_mesg(_("Command: [ h(elp) | w(rite)(!) | q(uit)(!) | wq(!) | (za)ppt-from-todo]"), "");
 	if (getstring(win[STA].p, cmd, BUFSIZ, 0, 1) != GETSTRING_VALID)
 		goto cleanup;
 	cmd_name = strtok(cmd, " ");
@@ -610,6 +610,13 @@ static inline void key_generic_cmd(void)
 			mem_free(error_msg);
 		}
 
+		valid = 1;
+	}
+
+	if (!strcmp(cmd_name, "appt-from-todo") || !strcmp(cmd_name, "za")) {
+		ui_todo_make_appt();
+		do_storage(0);
+		wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
 		valid = 1;
 	}
 
@@ -813,7 +820,6 @@ int main(int argc, char **argv)
 		HANDLE_KEY(KEY_GENERIC_SCROLL_DOWN, key_generic_scroll_down);
 		HANDLE_KEY(KEY_GENERIC_QUIT, key_generic_quit);
 		HANDLE_KEY(KEY_GENERIC_CMD, key_generic_cmd);
-		HANDLE_KEY(KEY_GENERIC_ADD_APPT_FROM_TODO, key_make_todo_into_appt);
 		case KEY_GENERIC_REDRAW:
 			resize = 1;
 			break;

@@ -77,7 +77,6 @@ static struct keydef_s keydef[NBKEYS] = {
 	{ "generic-redraw", "^R", gettext_noop("Redraw") },
 	{ "generic-add-appt", "^A", gettext_noop("Add Appt") },
 	{ "generic-add-todo", "^T", gettext_noop("Add Todo") },
-	{ "generic-add-appt-from-todo", "Z", gettext_noop("Make into Appt") },
 	{ "generic-prev-day", "T ^H", gettext_noop("-1 Day") },
 	{ "generic-next-day", "t ^L", gettext_noop("+1 Day") },
 	{ "generic-prev-week", "W ^K", gettext_noop("-1 Week") },
