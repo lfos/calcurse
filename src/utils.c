@@ -525,10 +525,11 @@ int date_change(struct tm *date, int delta_month, int delta_day)
 	t = *date;
 	t.tm_mon += delta_month;
 	t.tm_mday += delta_day;
-
+	t.tm_isdst = -1;
 	if (mktime(&t) == -1) {
 		return 1;
 	} else {
+		t.tm_isdst = -1;
 		*date = t;
 		return 0;
 	}
