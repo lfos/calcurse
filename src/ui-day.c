@@ -420,7 +420,11 @@ static void update_rept(struct rpt **rpt, const time_t start, llist_t *exc)
 				keys_wgetch(win[KEY].p);
 				continue;
 			}
-			newuntil = date_sec_change(start, 0, days);
+			/* Until is midnight of the day. */
+			newuntil = date_sec_change(
+					update_time_in_date(start, 0, 0),
+					0, days
+				   );
 		} else {
 			int year, month, day;
 			if (!parse_date(timstr, conf.input_datefmt, &year,
@@ -432,7 +436,8 @@ static void update_rept(struct rpt **rpt, const time_t start, llist_t *exc)
 			struct date d = { day, month, year };
 			newuntil = date2sec(d, 0, 0);
 		}
-		if (newuntil >= start)
+		/* Conmpare days (midnights) - until-day may equal start day. */
+		if (newuntil >= update_time_in_date(start, 0, 0))
 			break;
 
 		mem_free(timstr);
@@ -943,7 +948,11 @@ void ui_day_item_repeat(void)
 				keys_wgetch(win[KEY].p);
 				continue;
 			}
-			until = date_sec_change(p->start, 0, days);
+			/* Until is midnight of the day. */
+			until = date_sec_change(
+					update_time_in_date(p->start, 0, 0),
+					0, days
+				);
 		} else {
 			int year, month, day;
 			if (!parse_date(user_input, conf.input_datefmt,
@@ -955,7 +964,8 @@ void ui_day_item_repeat(void)
 			struct date d = { day, month, year };
 			until = date2sec(d, 0, 0);
 		}
-		if (until >= p->start)
+		/* Compare days (midnights) - until-day may equal start day. */
+		if (until >= get_slctd_day())
 			break;
 
 		datestr = date_sec2date_str(p->start, DATEFMT(conf.input_datefmt));
