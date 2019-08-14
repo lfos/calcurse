@@ -433,8 +433,8 @@ struct recur_apoint *recur_apoint_scan(FILE * f, struct tm start,
 	tend = mktime(&end);
 
 	if (until.tm_year != 0) {
-		until.tm_hour = 23;
-		until.tm_min = 59;
+		until.tm_hour = 0;
+		until.tm_min = 0;
 		until.tm_sec = 0;
 		until.tm_isdst = -1;
 		until.tm_year -= 1900;
@@ -768,7 +768,8 @@ recur_item_find_occurrence(time_t item_start, long item_dur,
 	if (date_cmp_day(day_start, item_start) < 0)
 		return 0;
 
-	if (rpt_until != 0 && day_start >= rpt_until + item_dur)
+	if (rpt_until != 0 && day_start >= rpt_until +
+	    (item_start - update_time_in_date(item_start, 0, 0)) + item_dur)
 		return 0;
 
 	t = day_start;
@@ -834,7 +835,7 @@ recur_item_find_occurrence(time_t item_start, long item_dur,
 	if (LLIST_FIND_FIRST(item_exc, &t, exc_inday))
 		return 0;
 
-	if (rpt_until != 0 && t > rpt_until)
+	if (rpt_until != 0 && t >= NEXTDAY(rpt_until))
 		return 0;
 
 	localtime_r(&t, &lt_item_day);
