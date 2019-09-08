@@ -760,29 +760,35 @@ recur_item_find_occurrence(time_t item_start, long item_dur,
 			   time_t rpt_until, time_t day_start,
 			   time_t *occurrence)
 {
-	struct date start_date;
-	long diff, span;
+/*
+ * Function-internal duration
+ * 1) To avoid an item ending on midnight (which belongs to the next day),
+ *    duration is always diminished by 1 second.
+ * 2) An event has no explicit duration, but lasts for an entire day, which
+ *    in turn depends on DST.
+ */
+#define ITEM_DUR(d) ((item_dur == -1 ? DAYLEN(d) : item_dur) - 1)
+
+	long diff;
 	struct tm lt_day, lt_item, lt_item_day;
-	time_t t;
+	time_t occ, item_day_start;
 
-	if (date_cmp_day(day_start, item_start) < 0)
+	item_day_start = update_time_in_date(item_start, 0, 0);
+
+	if (day_start < item_day_start)
 		return 0;
 
-	if (rpt_until != 0 && day_start >= rpt_until +
-	    (item_start - update_time_in_date(item_start, 0, 0)) + item_dur)
+	if (rpt_until && day_start >=
+	    rpt_until + (item_start - item_day_start) + ITEM_DUR(rpt_until))
 		return 0;
 
-	t = day_start;
-	localtime_r(&t, &lt_day);
+	localtime_r(&day_start, &lt_day);	/* selected day */
+	localtime_r(&item_start, &lt_item);	/* first occurrence */
+	lt_item_day = lt_item;			/* recent occurrence */
 
-	t = item_start;
-	localtime_r(&t, &lt_item);
-
-	lt_item_day = lt_item;
-	lt_item_day.tm_sec = lt_item_day.tm_min = lt_item_day.tm_hour = 0;
-
-	span = (item_start - mktime(&lt_item_day) + item_dur - 1) / DAYINSEC;
-
+	/*
+	 * Update to the most recent occurrence before or on the selected day.
+	 */
 	switch (rpt_type) {
 	case RECUR_DAILY:
 		diff = diff_days(lt_item_day, lt_day) % rpt_freq;
@@ -817,8 +823,9 @@ recur_item_find_occurrence(time_t item_start, long item_dur,
 		EXIT(_("unknown item type"));
 	}
 
-	lt_item_day.tm_isdst = lt_day.tm_isdst;
-	t = mktime(&lt_item_day);
+	/* Switch to calendar (Unix) time. */
+	lt_item_day.tm_isdst = -1;
+	occ = mktime(&lt_item_day);
 
 	/*
 	 * Impossible dates must be ignored (according to RFC 5545). Changing
@@ -826,34 +833,28 @@ recur_item_find_occurrence(time_t item_start, long item_dur,
 	 * non-leap years or 31 November.
 	 */
 	if (rpt_type == RECUR_MONTHLY || rpt_type == RECUR_YEARLY) {
-		localtime_r(&t, &lt_item_day);
+		localtime_r(&occ, &lt_item_day);
 		if (lt_item_day.tm_mday != lt_item.tm_mday)
 			return 0;
 	}
 
 	/* Exception day? */
-	if (LLIST_FIND_FIRST(item_exc, &t, exc_inday))
+	if (LLIST_FIND_FIRST(item_exc, &occ, exc_inday))
 		return 0;
 
-	if (rpt_until != 0 && t >= NEXTDAY(rpt_until))
+	/* After until day? */
+	if (rpt_until && occ >= NEXTDAY(rpt_until))
 		return 0;
 
-	localtime_r(&t, &lt_item_day);
-	diff = diff_days(lt_item_day, lt_day);
-
-	if (diff > span)
+	/* Does it span the selected day? */
+	if (occ + ITEM_DUR(occ) < day_start)
 		return 0;
 
-	if (occurrence) {
-		start_date.dd = lt_item_day.tm_mday;
-		start_date.mm = lt_item_day.tm_mon + 1;
-		start_date.yyyy = lt_item_day.tm_year + 1900;
-
-		*occurrence = date2sec(start_date, lt_item.tm_hour,
-				lt_item.tm_min);
-	}
+	if (occurrence)
+		*occurrence = occ;
 
 	return 1;
+#undef ITEM_DUR
 }
 
 unsigned
@@ -871,7 +872,7 @@ unsigned
 recur_event_find_occurrence(struct recur_event *rev, time_t day_start,
 			    time_t *occurrence)
 {
-	return recur_item_find_occurrence(rev->day, DAYINSEC, &rev->exc,
+	return recur_item_find_occurrence(rev->day, -1, &rev->exc,
 					  rev->rpt->type, rev->rpt->freq,
 					  rev->rpt->until, day_start,
 					  occurrence);
@@ -899,7 +900,7 @@ unsigned recur_apoint_inday(struct recur_apoint *rapt, time_t *day_start)
 
 unsigned recur_event_inday(struct recur_event *rev, time_t *day_start)
 {
-	return recur_item_inday(rev->day, DAYINSEC, &rev->exc,
+	return recur_item_inday(rev->day, -1, &rev->exc,
 				rev->rpt->type, rev->rpt->freq,
 				rev->rpt->until, *day_start);
 }
