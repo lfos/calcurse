@@ -1507,7 +1507,7 @@ msgid "Do you really want to delete this item?"
 msgstr "Möchten Sie diesen Eintrag wirklich löschen?"
 
 msgid "This item is recurrent. Delete (a)ll occurences or just this (o)ne?"
-msgstr "Dieser Eintrag ist wiederkehrend. Lösche (a)lle oder nur einen (o)?"
+msgstr "Dieser Eintrag ist wiederkehrend. Lösche (a)lle oder nur (e)inen?"
 
 msgid "[ao]"
 msgstr "[ae]"
