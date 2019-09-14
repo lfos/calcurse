@@ -35,6 +35,7 @@
  */
 
 #include "calcurse.h"
+#include <ctype.h>
 
 static unsigned ui_todo_view = 0;
 
@@ -55,7 +56,7 @@ static void ui_todo_set_selitem(struct todo *todo)
 /* Request user to enter a new todo item. */
 void ui_todo_add(void)
 {
-	int ch = 0;
+	int ch;
 	const char *mesg = _("Enter the new TODO item:");
 	const char *mesg_id =
 	    _("Enter the TODO priority [0 (none), 1 (highest) - 9 (lowest)]:");
@@ -64,10 +65,12 @@ void ui_todo_add(void)
 	status_mesg(mesg, "");
 	if (getstring(win[STA].p, todo_input, BUFSIZ, 0, 1) ==
 	    GETSTRING_VALID) {
-		while ((ch < '0') || (ch > '9')) {
+		do {
 			status_mesg(mesg_id, "");
-			ch = keys_wgetch(win[KEY].p);
-		}
+			if ((ch = keys_wgetch(win[KEY].p)) == 10) {
+				ch = '0';
+			}
+		} while (!isdigit(ch));
 		struct todo *todo = todo_add(todo_input, ch - '0', 0, NULL);
 		ui_todo_load_items();
 		io_set_modified();
