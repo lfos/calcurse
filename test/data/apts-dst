@@ -1,0 +1,7 @@
+03/29/2019 @ 12:00 -> 03/30/2019 @ 11:00 {2D -> 04/03/2019} |two-day - every other day - not on 1/4
+03/31/2019 @ 12:00 -> 03/31/2019 @ 13:00 {1D -> 04/01/2019} |daily - not on 31/3, twice on 1/4
+03/31/2019 @ 04:00 -> 03/31/2019 @ 05:00 {1W} |weekly - appears after one week
+03/31/2019 @ 12:00 -> 03/31/2019 @ 12:00 {1M} |monthly - never appears
+03/31/2019 @ 12:00 -> 03/31/2019 @ 12:00 {1Y} |yearly - never appears
+10/20/2019 @ 00:00 -> 10/21/2019 @ 01:00 {1W -> 11/03/2019} |25 hours - ends on 27th, but continues on 28th
+03/24/2019 @ 00:00 -> 03/25/2019 @ 00:00 {1W -> 04/07/2019} |24 hours - does not continue on April 1
