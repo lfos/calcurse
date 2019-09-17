@@ -98,6 +98,7 @@ static const struct confvar confmap[] = {
 	{"appearance.eventseparator", CONFIG_HANDLER_BOOL(conf.event_separator)},
 	{"appearance.dayseparator", CONFIG_HANDLER_BOOL(conf.day_separator)},
 	{"appearance.emptyline", CONFIG_HANDLER_BOOL(conf.empty_appt_line)},
+	{"appearance.emptyday", CONFIG_HANDLER_STR(conf.empty_day)},
 	{"appearance.notifybar", CONFIG_HANDLER_BOOL(nbar.show)},
 	{"appearance.sidebarwidth", config_parse_sidebar_width, config_serialize_sidebar_width, NULL},
 	{"appearance.theme", config_parse_color_theme, config_serialize_color_theme, NULL},

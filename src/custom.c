@@ -533,6 +533,7 @@ enum {
 	EVENT_SEPARATOR,
 	DAY_SEPARATOR,
 	EMPTY_APPT_LINE,
+	EMPTY_DAY,
 	AUTO_SAVE,
 	AUTO_GC,
 	PERIODIC_SAVE,
@@ -562,6 +563,7 @@ static void print_general_option(int i, WINDOW *win, int y, int hilt, void *cb_d
 		"appearance.eventseparator = ",
 		"appearance.dayseparator = ",
 		"appearance.emptyline = ",
+		"appearance.emptyday = ",
 		"general.autosave = ",
 		"general.autogc = ",
 		"general.periodicsave = ",
@@ -641,6 +643,14 @@ static void print_general_option(int i, WINDOW *win, int y, int hilt, void *cb_d
 					  XPOS + strlen(opt[EMPTY_APPT_LINE]));
 		mvwaddstr(win, y + 1, XPOS,
 			  _("(insert an empty line after each appointment)"));
+		break;
+	case EMPTY_DAY:
+		custom_apply_attr(win, ATTR_HIGHEST);
+		mvwaddstr(win, y, XPOS + strlen(opt[EMPTY_DAY]),
+			  conf.empty_day);
+		custom_remove_attr(win, ATTR_HIGHEST);
+		mvwaddstr(win, y + 1, XPOS,
+			  _("(text for a day without events and appointments)"));
 		break;
 	case MULTIPLE_DAYS:
 		print_bool_option_incolor(win, conf.multiple_days, y,
@@ -766,6 +776,8 @@ static int general_option_height(int i, void *cb_data)
 
 static void general_option_edit(int i)
 {
+	const char *empty_day_str =
+	    _("Enter a text string (an empty string for the default text)");
 	const char *output_datefmt_str =
 	    _("Enter the date format (see 'man 3 strftime' for possible formats) ");
 	const char *input_datefmt_prefix = _("Enter the date format: ");
@@ -817,6 +829,15 @@ static void general_option_edit(int i)
 		break;
 	case EMPTY_APPT_LINE:
 		conf.empty_appt_line = !conf.empty_appt_line;
+		break;
+	case EMPTY_DAY:
+		status_mesg(empty_day_str, "");
+		strcpy(buf, conf.empty_day);
+		val = getstring(win[STA].p, buf, 80, 0, 1);
+		if (val == GETSTRING_VALID)
+			strcpy(conf.empty_day, buf);
+		else if (val == GETSTRING_RET)
+			strcpy(conf.empty_day, EMPTY_DAY_DEFAULT);
 		break;
 	case HEADING_POS:
 		if (conf.heading_pos == RIGHT)

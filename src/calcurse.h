@@ -287,6 +287,7 @@ struct conf {
 	unsigned event_separator;
 	unsigned day_separator;
 	unsigned empty_appt_line;
+	char empty_day[BUFSIZ];
 	const char *editor;
 	const char *pager;
 	const char *mergetool;
@@ -295,6 +296,8 @@ struct conf {
 	enum pos heading_pos; /* left/center/right for heading in appts panel */
 	char day_heading[BUFSIZ];	/* format for displaying heading in appts panel */
 };
+
+#define EMPTY_DAY_DEFAULT "--"
 
 /* Daemon-related configuration. */
 struct dmon_conf {
