@@ -3,7 +3,6 @@
 import argparse
 import base64
 import configparser
-import httplib2
 import os
 import re
 import subprocess
@@ -11,6 +10,8 @@ import sys
 import textwrap
 import urllib.parse
 import xml.etree.ElementTree as etree
+
+import httplib2
 
 # Optional libraries for OAuth2 authentication
 try:
@@ -23,8 +24,10 @@ except ModuleNotFoundError:
 
 def msgfmt(msg, prefix=''):
     lines = []
+
     for line in msg.splitlines():
         lines += textwrap.wrap(line, 80 - len(prefix))
+
     return '\n'.join([prefix + line for line in lines])
 
 
@@ -50,13 +53,17 @@ def die_atnode(msg, node):
 
 
 def validate_sync_filter():
-    valid_sync_filter_values = {'event', 'apt', 'recur-event', 'recur-apt', 'todo', 'recur', 'cal'}
+    valid_sync_filter_values = {
+        'event', 'apt', 'recur-event', 'recur-apt', 'todo', 'recur', 'cal'
+    }
+
     return set(sync_filter.split(',')) - valid_sync_filter_values
 
 
 def calcurse_wipe():
     if verbose:
         print('Removing all local calcurse objects...')
+
     if dry_run:
         return
 
@@ -70,52 +77,44 @@ def calcurse_wipe():
 
 def calcurse_import(icaldata):
     command = calcurse + [
-        '-i', '-',
-        '--dump-imported',
-        '-q',
-        '--format-apt=%(hash)\\n',
-        '--format-recur-apt=%(hash)\\n',
-        '--format-event=%(hash)\\n',
-        '--format-recur-event=%(hash)\\n',
-        '--format-todo=%(hash)\\n'
+        '-i', '-', '--dump-imported', '-q', '--format-apt=%(hash)\\n',
+        '--format-recur-apt=%(hash)\\n', '--format-event=%(hash)\\n',
+        '--format-recur-event=%(hash)\\n', '--format-todo=%(hash)\\n'
     ]
 
     if debug:
         print('Running command: {}'.format(command))
 
-    p = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    p = subprocess.Popen(command,
+                         stdin=subprocess.PIPE,
+                         stdout=subprocess.PIPE)
+
     return p.communicate(icaldata.encode('utf-8'))[0].decode('utf-8').rstrip()
 
 
 def calcurse_export(objhash):
-    command = calcurse + [
-        '-xical',
-        '--export-uid',
-        '--filter-hash=' + objhash
-    ]
+    command = calcurse + ['-xical', '--export-uid', '--filter-hash=' + objhash]
 
     if debug:
         print('Running command: {}'.format(command))
 
     p = subprocess.Popen(command, stdout=subprocess.PIPE)
+
     return p.communicate()[0].decode('utf-8').rstrip()
 
 
 def calcurse_hashset():
     command = calcurse + [
-        '-G',
-        '--filter-type', sync_filter,
-        '--format-apt=%(hash)\\n',
-        '--format-recur-apt=%(hash)\\n',
-        '--format-event=%(hash)\\n',
-        '--format-recur-event=%(hash)\\n',
-        '--format-todo=%(hash)\\n'
+        '-G', '--filter-type', sync_filter, '--format-apt=%(hash)\\n',
+        '--format-recur-apt=%(hash)\\n', '--format-event=%(hash)\\n',
+        '--format-recur-event=%(hash)\\n', '--format-todo=%(hash)\\n'
     ]
 
     if debug:
         print('Running command: {}'.format(command))
 
     p = subprocess.Popen(command, stdout=subprocess.PIPE)
+
     return set(p.communicate()[0].decode('utf-8').rstrip().splitlines())
 
 
@@ -137,8 +136,10 @@ def calcurse_version():
     p = subprocess.Popen(command, stdout=subprocess.PIPE)
     m = re.match(r'calcurse ([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9]+)-)?',
                  p.communicate()[0].decode('utf-8'))
+
     if not m:
         return None
+
     return tuple([int(group) for group in m.groups(0)])
 
 
@@ -148,6 +149,7 @@ def get_auth_headers():
     user_password = ('{}:{}'.format(username, password)).encode('ascii')
     user_password = base64.b64encode(user_password).decode('ascii')
     headers = {'Authorization': 'Basic {}'.format(user_password)}
+
     return headers
 
 
@@ -159,6 +161,7 @@ def init_auth(client_id, client_secret, scope, redirect_uri, authcode):
                                         redirect_uri=redirect_uri)
 
     # If auth code is missing, tell user run script with auth code
+
     if not authcode:
         # Generate and open URL for user to authorize
         auth_uri = oauth2_client.step1_get_authorize_url()
@@ -187,6 +190,7 @@ def init_auth(client_id, client_secret, scope, redirect_uri, authcode):
 
 def run_auth(authcode):
     # Check if credentials file exists
+
     if os.path.isfile(oauth_file):
 
         # Retrieve token from file
@@ -197,15 +201,18 @@ def run_auth(authcode):
         credentials.set_store(storage)
 
         # Refresh the access token if it is expired
+
         if credentials.invalid:
             try:
                 credentials.refresh(httplib2.Http())
             except HttpAccessTokenRefreshError:
                 # Initialize OAuth2 again if refresh token becomes invalid
-                credentials = init_auth(client_id, client_secret, scope, redirect_uri, authcode)
+                credentials = init_auth(client_id, client_secret, scope,
+                                        redirect_uri, authcode)
     else:
         # Initialize OAuth2 credentials
-        credentials = init_auth(client_id, client_secret, scope, redirect_uri, authcode)
+        credentials = init_auth(client_id, client_secret, scope, redirect_uri,
+                                authcode)
 
     return credentials
 
@@ -213,6 +220,7 @@ def run_auth(authcode):
 def remote_query(conn, cmd, path, additional_headers, body):
     headers = custom_headers.copy()
     headers.update(get_auth_headers())
+
     if cmd == 'PUT':
         headers['Content-Type'] = 'text/calendar; charset=utf-8'
     else:
@@ -222,9 +230,11 @@ def remote_query(conn, cmd, path, additional_headers, body):
     if debug:
         print("> {} {}".format(cmd, path))
         headers_sanitized = headers.copy()
+
         if not debug_raw:
             headers_sanitized.pop('Authorization', None)
         print("> Headers: " + repr(headers_sanitized))
+
         if body:
             for line in body.splitlines():
                 print("> " + line)
@@ -242,6 +252,7 @@ def remote_query(conn, cmd, path, additional_headers, body):
     if debug:
         print("< Status: {} ({})".format(resp.status, resp.reason))
         print("< Headers: " + repr(resp))
+
         for line in body.splitlines():
             print("< " + line)
         print()
@@ -261,6 +272,7 @@ def get_etags(conn, hrefs=[]):
                 '<C:calendar-multiget xmlns:D="DAV:" '
                 '                     xmlns:C="urn:ietf:params:xml:ns:caldav">'
                 '<D:prop><D:getetag /></D:prop>')
+
         for href in hrefs:
             body += '<D:href>{}</D:href>'.format(href)
         body += '</C:calendar-multiget>'
@@ -273,18 +285,22 @@ def get_etags(conn, hrefs=[]):
                 '<C:filter><C:comp-filter name="VCALENDAR" /></C:filter>'
                 '</C:calendar-query>')
     headers, body = remote_query(conn, "REPORT", absolute_uri, headers, body)
+
     if not headers:
         return {}
     root = etree.fromstring(body)
 
     etagdict = {}
+
     for node in root.findall(".//D:response", namespaces=nsmap):
         etagnode = node.find("./D:propstat/D:prop/D:getetag", namespaces=nsmap)
+
         if etagnode is None:
             die_atnode('Missing ETag.', node)
         etag = etagnode.text.strip('"')
 
         hrefnode = node.find("./D:href", namespaces=nsmap)
+
         if hrefnode is None:
             die_atnode('Missing href.', node)
         href = hrefnode.text
@@ -297,10 +313,12 @@ def get_etags(conn, hrefs=[]):
 def remote_wipe(conn):
     if verbose:
         print('Removing all objects from the CalDAV server...')
+
     if dry_run:
         return
 
     remote_items = get_etags(conn)
+
     for href in remote_items:
         remove_remote_object(conn, remote_items[href], href)
 
@@ -323,12 +341,14 @@ def get_syncdb(fn):
 
 def syncdb_add(syncdb, href, etag, objhash):
     syncdb[href] = (etag, objhash)
+
     if debug:
         print('New sync database entry: {} {} {}'.format(href, etag, objhash))
 
 
 def syncdb_remove(syncdb, href):
     syncdb.pop(href, None)
+
     if debug:
         print('Removing sync database entry: {}'.format(href))
 
@@ -336,6 +356,7 @@ def syncdb_remove(syncdb, href):
 def save_syncdb(fn, syncdb):
     if verbose:
         print('Saving synchronization database to ' + fn + '...')
+
     if dry_run:
         return
 
@@ -354,10 +375,13 @@ def push_object(conn, objhash):
 
     etag = None
     headerdict = dict(headers)
+
     if 'etag' in headerdict:
         etag = headerdict['etag']
+
     while not etag:
         etagdict = get_etags(conn, [href])
+
         if etagdict:
             etag = next(iter(etagdict.values()))
     etag = etag.strip('"')
@@ -368,9 +392,11 @@ def push_object(conn, objhash):
 def push_objects(objhashes, conn, syncdb, etagdict):
     # Copy new objects to the server.
     added = 0
+
     for objhash in objhashes:
         if verbose:
             print("Pushing new object {} to the server.".format(objhash))
+
         if dry_run:
             continue
 
@@ -389,8 +415,10 @@ def remove_remote_object(conn, etag, href):
 def remove_remote_objects(objhashes, conn, syncdb, etagdict):
     # Remove locally deleted objects from the server.
     deleted = 0
+
     for objhash in objhashes:
         queue = []
+
         for href, entry in syncdb.items():
             if entry[1] == objhash:
                 queue.append(href)
@@ -404,10 +432,12 @@ def remove_remote_objects(objhashes, conn, syncdb, etagdict):
                       'Run the script again to import the modified '
                       'object.').format(objhash))
                 syncdb_remove(syncdb, href)
+
                 continue
 
             if verbose:
                 print("Removing remote object {} ({}).".format(etag, href))
+
             if dry_run:
                 continue
 
@@ -427,6 +457,7 @@ def pull_objects(hrefs_missing, hrefs_modified, conn, syncdb, etagdict):
             '<C:calendar-multiget xmlns:D="DAV:" '
             '                     xmlns:C="urn:ietf:params:xml:ns:caldav">'
             '<D:prop><D:getetag /><C:calendar-data /></D:prop>')
+
     for href in (hrefs_missing | hrefs_modified):
         body += '<D:href>{}</D:href>'.format(href)
     body += '</C:calendar-multiget>'
@@ -438,17 +469,34 @@ def pull_objects(hrefs_missing, hrefs_modified, conn, syncdb, etagdict):
 
     for node in root.findall(".//D:response", namespaces=nsmap):
         hrefnode = node.find("./D:href", namespaces=nsmap)
+
         if hrefnode is None:
             die_atnode('Missing href.', node)
         href = hrefnode.text
 
+        statusnode = node.find("./D:status", namespaces=nsmap)
+
+        if statusnode is not None:
+            status = re.match(r'HTTP.*(\d\d\d)', statusnode.text)
+
+            if status is None:
+                die_atnode('Could not parse status.', node)
+            statuscode = status.group(1)
+
+            if statuscode == '404':
+                print('Skipping missing item: {}'.format(href))
+
+                continue
+
         etagnode = node.find("./D:propstat/D:prop/D:getetag", namespaces=nsmap)
+
         if etagnode is None:
             die_atnode('Missing ETag.', node)
         etag = etagnode.text.strip('"')
 
         cdatanode = node.find("./D:propstat/D:prop/C:calendar-data",
                               namespaces=nsmap)
+
         if cdatanode is None:
             die_atnode('Missing calendar data.', node)
         cdata = cdatanode.text
@@ -456,6 +504,7 @@ def pull_objects(hrefs_missing, hrefs_modified, conn, syncdb, etagdict):
         if href in hrefs_modified:
             if verbose:
                 print("Replacing object {}.".format(etag))
+
             if dry_run:
                 continue
             objhash = syncdb[href][1]
@@ -463,6 +512,7 @@ def pull_objects(hrefs_missing, hrefs_modified, conn, syncdb, etagdict):
         else:
             if verbose:
                 print("Importing new object {}.".format(etag))
+
             if dry_run:
                 continue
 
@@ -470,6 +520,7 @@ def pull_objects(hrefs_missing, hrefs_modified, conn, syncdb, etagdict):
 
         # TODO: Add support for importing multiple events at once, see GitHub
         # issue #20 for details.
+
         if re.match(r'[0-ga-f]+$', objhash):
             syncdb_add(syncdb, href, etag, objhash)
             added += 1
@@ -483,11 +534,13 @@ def pull_objects(hrefs_missing, hrefs_modified, conn, syncdb, etagdict):
 def remove_local_objects(hrefs, conn, syncdb, etagdict):
     # Delete objects that no longer exist on the server.
     deleted = 0
+
     for href in hrefs:
         etag, objhash = syncdb[href]
 
         if verbose:
             print("Removing local object {}.".format(objhash))
+
         if dry_run:
             continue
 
@@ -500,6 +553,7 @@ def remove_local_objects(hrefs, conn, syncdb, etagdict):
 
 def run_hook(name):
     hook_path = hookdir + '/' + name
+
     if not os.path.exists(hook_path):
         return
     subprocess.call(hook_path, shell=True)
@@ -517,34 +571,58 @@ oauth_file = os.path.expanduser("~/.calcurse/caldav/oauth2_cred")
 
 # Parse command line arguments.
 parser = argparse.ArgumentParser('calcurse-caldav')
-parser.add_argument('--init', action='store', dest='init', default=None,
+parser.add_argument('--init',
+                    action='store',
+                    dest='init',
+                    default=None,
                     choices=['keep-remote', 'keep-local', 'two-way'],
                     help='initialize the sync database')
-parser.add_argument('--config', action='store', dest='configfn',
+parser.add_argument('--config',
+                    action='store',
+                    dest='configfn',
                     default=configfn,
                     help='path to the calcurse-caldav configuration')
-parser.add_argument('--datadir', action='store', dest='datadir',
+parser.add_argument('--datadir',
+                    action='store',
+                    dest='datadir',
                     default=None,
                     help='path to the calcurse data directory')
-parser.add_argument('--lockfile', action='store', dest='lockfn',
+parser.add_argument('--lockfile',
+                    action='store',
+                    dest='lockfn',
                     default=lockfn,
                     help='path to the calcurse-caldav lock file')
-parser.add_argument('--syncdb', action='store', dest='syncdbfn',
+parser.add_argument('--syncdb',
+                    action='store',
+                    dest='syncdbfn',
                     default=syncdbfn,
                     help='path to the calcurse-caldav sync DB')
-parser.add_argument('--hookdir', action='store', dest='hookdir',
+parser.add_argument('--hookdir',
+                    action='store',
+                    dest='hookdir',
                     default=hookdir,
                     help='path to the calcurse-caldav hooks directory')
-parser.add_argument('--authcode', action='store', dest='authcode',
+parser.add_argument('--authcode',
+                    action='store',
+                    dest='authcode',
                     default=None,
                     help='auth code for OAuth2 authentication')
-parser.add_argument('-v', '--verbose', action='store_true', dest='verbose',
+parser.add_argument('-v',
+                    '--verbose',
+                    action='store_true',
+                    dest='verbose',
                     default=False,
                     help='print status messages to stdout')
-parser.add_argument('--debug', action='store_true', dest='debug',
-                    default=False, help='print debug messages to stdout')
-parser.add_argument('--debug-raw', action='store_true', dest='debug_raw',
-                    default=False, help='do not sanitize debug messages')
+parser.add_argument('--debug',
+                    action='store_true',
+                    dest='debug',
+                    default=False,
+                    help='print debug messages to stdout')
+parser.add_argument('--debug-raw',
+                    action='store_true',
+                    dest='debug_raw',
+                    default=False,
+                    help='do not sanitize debug messages')
 args = parser.parse_args()
 
 init = args.init is not None
@@ -563,6 +641,7 @@ password = os.getenv('CALCURSE_CALDAV_PASSWORD')
 
 # Read configuration.
 config = configparser.RawConfigParser()
+
 if verbose:
     print('Loading configuration from ' + configfn + '...')
 try:
@@ -576,6 +655,7 @@ else:
     insecure_ssl = False
 
 # Read config for "HTTPS" option (default=True)
+
 if config.has_option('General', 'HTTPS'):
     https = config.getboolean('General', 'HTTPS')
 else:
@@ -612,7 +692,8 @@ if config.has_option('General', 'SyncFilter'):
     invalid_filter_values = validate_sync_filter()
 
     if len(invalid_filter_values):
-        die('Invalid value(s) in SyncFilter option: ' + ', '.join(invalid_filter_values))
+        die('Invalid value(s) in SyncFilter option: ' +
+            ', '.join(invalid_filter_values))
 else:
     sync_filter = 'cal,todo'
 
@@ -640,9 +721,9 @@ else:
     client_secret = None
 
 if config.has_option('OAuth2', 'Scope'):
-   scope = config.get('OAuth2', 'Scope')
+    scope = config.get('OAuth2', 'Scope')
 else:
-   scope = None
+    scope = None
 
 if config.has_option('OAuth2', 'RedirectURI'):
     redirect_uri = config.get('OAuth2', 'RedirectURI')
@@ -650,6 +731,7 @@ else:
     redirect_uri = 'http://127.0.0.1'
 
 # Change URl prefix according to HTTP/HTTPS
+
 if https:
     urlprefix = "https://"
 else:
@@ -661,6 +743,7 @@ hostname_uri = urlprefix + hostname
 absolute_uri = hostname_uri + path
 
 # Show disclaimer when performing a dry run.
+
 if dry_run:
     warn(('Dry run; nothing is imported/exported. Add "DryRun = No" to the '
           '[General] section in the configuration file to enable '
@@ -668,6 +751,7 @@ if dry_run:
 
 # Check whether the specified calcurse binary is executable and compatible.
 ver = calcurse_version()
+
 if ver is None:
     die('Invalid calcurse binary. Make sure that the file specified in ' +
         'the configuration is a valid and up-to-date calcurse binary.')
@@ -679,6 +763,7 @@ elif ver < (4, 0, 0, 96):
 run_hook('pre-sync')
 
 # Create lock file.
+
 if os.path.exists(lockfn):
     die('Leftover lock file detected. If there is no other synchronization ' +
         'instance running, please remove the lock file manually and try ' +
@@ -687,9 +772,11 @@ open(lockfn, 'w')
 
 try:
     # Connect to the server.
+
     if verbose:
         print('Connecting to ' + hostname + '...')
     conn = httplib2.Http()
+
     if insecure_ssl:
         conn.disable_ssl_certificate_validation = True
 
@@ -701,10 +788,12 @@ try:
         # Add credentials to httplib2
         conn.add_credentials(username, password)
     else:
-        die('Invalid option for AuthMethod in config file. Use "basic" or "oauth2"')
+        die('Invalid option for AuthMethod in config file. Use "basic" or "oauth2"'
+            )
 
     if init:
         # In initialization mode, start with an empty synchronization database.
+
         if args.init == 'keep-remote':
             calcurse_wipe()
         elif args.init == 'keep-local':
@@ -719,7 +808,8 @@ try:
                 'database first.\n\nSupported initialization modes are:\n' +
                 '  --init=keep-remote Remove all local calcurse items\n' +
                 '  --init=keep-local  Remove all remote objects\n' +
-                '  --init=two-way     Copy local items to the server and vice versa')
+                '  --init=two-way     Copy local items to the server and vice versa'
+                )
 
     # Query the server and compute a lookup table that maps each path to its
     # current ETag.
@@ -728,6 +818,7 @@ try:
     # Compute object diffs.
     missing = set()
     modified = set()
+
     for href in set(etagdict.keys()):
         if href not in syncdb:
             missing.add(href)
@@ -755,6 +846,7 @@ try:
     save_syncdb(syncdbfn, syncdb)
 
     #Clear OAuth2 credentials if used
+
     if authmethod == 'oauth2':
         conn.clear_credentials()
 
@@ -766,7 +858,7 @@ finally:
 run_hook('post-sync')
 
 # Print a summary to stdout.
-print("{} items imported, {} items removed locally.".
-      format(local_new, local_del))
-print("{} items exported, {} items removed from the server.".
-      format(remote_new, remote_del))
+print("{} items imported, {} items removed locally.".format(
+    local_new, local_del))
+print("{} items exported, {} items removed from the server.".format(
+    remote_new, remote_del))
