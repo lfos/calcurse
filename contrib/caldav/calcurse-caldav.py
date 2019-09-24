@@ -442,6 +442,16 @@ def pull_objects(hrefs_missing, hrefs_modified, conn, syncdb, etagdict):
             die_atnode('Missing href.', node)
         href = hrefnode.text
 
+        statusnode = node.find("./D:status", namespaces=nsmap)
+        if statusnode is not None:
+            status = re.match(r'HTTP.*(\d\d\d)', statusnode.text)
+            if status is None:
+                die_atnode('Could not parse status.', node)
+            statuscode = status.group(1)
+            if statuscode == '404':
+                print('Skipping missing item: {}'.format(href))
+                continue
+
         etagnode = node.find("./D:propstat/D:prop/D:getetag", namespaces=nsmap)
         if etagnode is None:
             die_atnode('Missing ETag.', node)
