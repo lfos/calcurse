@@ -67,7 +67,7 @@ void ui_todo_add(void)
 	    GETSTRING_VALID) {
 		do {
 			status_mesg(mesg_id, "");
-			if ((ch = keys_wgetch(win[KEY].p)) == 10) {
+			if ((ch = keys_wgetch(win[KEY].p)) == RETURN) {
 				ch = '0';
 			}
 		} while (!isdigit(ch));
