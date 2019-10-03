@@ -67,9 +67,11 @@ void ui_todo_add(void)
 	    GETSTRING_VALID) {
 		do {
 			status_mesg(mesg_id, "");
-			if ((ch = keys_wgetch(win[KEY].p)) == RETURN) {
+			ch = keys_wgetch(win[KEY].p);
+			if (ch == RETURN)
 				ch = '0';
-			}
+			else if (ch == ESCAPE)
+				return;
 		} while (!isdigit(ch));
 		struct todo *todo = todo_add(todo_input, ch - '0', 0, NULL);
 		ui_todo_load_items();
