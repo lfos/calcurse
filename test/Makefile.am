@@ -73,7 +73,9 @@ TESTS = \
 	recur-005.sh \
 	recur-006.sh \
 	recur-007.sh \
-	recur-008.sh
+	recur-008.sh \
+	recur-009.sh \
+	recur-010.sh
 
 TESTS_ENVIRONMENT = \
 	TEST_INIT='$(top_srcdir)/test/test-init.sh' \
@@ -136,5 +138,6 @@ EXTRA_DIST = \
 	data/ical-008.ical \
 	data/ical-009.ical \
 	data/ical-012.ical \
+	data/rfc5545 \
 	data/todo \
 	data/todo-export
