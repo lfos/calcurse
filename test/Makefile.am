@@ -104,6 +104,7 @@ EXTRA_DIST = \
 	data/apts-appointment-021 \
 	data/apts-appointment-022 \
 	data/apts-bug-002 \
+	data/apts-dst \
 	data/apts-event-001 \
 	data/apts-event-002 \
 	data/apts-event-003 \
