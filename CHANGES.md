@@ -1,6 +1,20 @@
 Release Notes
 =============
 
+Version 4.5.1 (2019-10-18)
+--------------------------
+
+- Bug fixes:
+
+    * Restore ability to edit recurrent items without exceptions (reported and
+      fixed by Lars Henriksen).
+
+    * Fix monthly and yearly recurrence algorithms for frequencies greater than
+      one (reported and fixed by Lars Henriksen).
+
+    * Fix DST issues (reported by Lars Henriksen and others, fixed by Lars
+      Henriksen).
+
 Version 4.5.0 (2019-06-17)
 --------------------------
 
