@@ -51,7 +51,7 @@ static void free_exc(struct excp *exc)
 	mem_free(exc);
 }
 
-static void free_exc_list(llist_t * exc)
+void recur_free_exc_list(llist_t * exc)
 {
 	LLIST_FREE_INNER(exc, free_exc);
 	LLIST_FREE(exc);
@@ -70,7 +70,7 @@ static void recur_add_exc(llist_t * exc, time_t day)
 	LLIST_ADD_SORTED(exc, o, exc_cmp_day);
 }
 
-static void exc_dup(llist_t * in, llist_t * exc)
+void recur_exc_dup(llist_t * in, llist_t * exc)
 {
 	llist_item_t *i;
 
@@ -103,10 +103,10 @@ char *recur_exc2str(llist_t *exc)
 }
 
 /*
- * Update the list of exceptions from a string of days. Any positive number of
+ * Update a list of exceptions from a string of days. Any positive number of
  * spaces are allowed before, between and after the days.
  */
-int recur_update_exc(llist_t *exc, char *days)
+int recur_str2exc(llist_t *exc, char *days)
 {
 	int updated = 0;
 	char *d;
@@ -130,11 +130,11 @@ int recur_update_exc(llist_t *exc, char *days)
 		else
 			break;
 	}
-	free_exc_list(exc);
-	exc_dup(exc, &nexc);
+	recur_free_exc_list(exc);
+	recur_exc_dup(exc, &nexc);
 	updated = 1;
 cleanup:
-	free_exc_list(&nexc);
+	recur_free_exc_list(&nexc);
 	return updated;
 }
 
@@ -153,7 +153,7 @@ struct recur_event *recur_event_dup(struct recur_event *in)
 	rev->rpt->freq = in->rpt->freq;
 	rev->rpt->until = in->rpt->until;
 
-	exc_dup(&rev->exc, &in->exc);
+	recur_exc_dup(&rev->exc, &in->exc);
 
 	if (in->note)
 		rev->note = mem_strdup(in->note);
@@ -180,7 +180,7 @@ struct recur_apoint *recur_apoint_dup(struct recur_apoint *in)
 	rapt->rpt->freq = in->rpt->freq;
 	rapt->rpt->until = in->rpt->until;
 
-	exc_dup(&rapt->exc, &in->exc);
+	recur_exc_dup(&rapt->exc, &in->exc);
 
 	if (in->note)
 		rapt->note = mem_strdup(in->note);
@@ -207,7 +207,7 @@ void recur_apoint_free(struct recur_apoint *rapt)
 		mem_free(rapt->note);
 	if (rapt->rpt)
 		mem_free(rapt->rpt);
-	free_exc_list(&rapt->exc);
+	recur_free_exc_list(&rapt->exc);
 	mem_free(rapt);
 }
 
@@ -218,7 +218,7 @@ void recur_event_free(struct recur_event *rev)
 		mem_free(rev->note);
 	if (rev->rpt)
 		mem_free(rev->rpt);
-	free_exc_list(&rev->exc);
+	recur_free_exc_list(&rev->exc);
 	mem_free(rev);
 }
 
@@ -277,8 +277,8 @@ struct recur_apoint *recur_apoint_new(char *mesg, char *note, time_t start,
 	 * Note. The exception dates are in the list rapt->exc.
 	 * The (empty) list rapt->rpt->exc is not used.
 	 */
-	exc_dup(&rapt->exc, &rpt->exc);
-	free_exc_list(&rpt->exc);
+	recur_exc_dup(&rapt->exc, &rpt->exc);
+	recur_free_exc_list(&rpt->exc);
 	LLIST_INIT(&rapt->rpt->exc);
 
 	LLIST_TS_LOCK(&recur_alist_p);
@@ -301,8 +301,8 @@ struct recur_event *recur_event_new(char *mesg, char *note, time_t day,
 	rev->rpt = mem_malloc(sizeof(struct rpt));
 	*rev->rpt = *rpt;
 	/* Similarly as for recurrent appointment. */
-	exc_dup(&rev->exc, &rpt->exc);
-	free_exc_list(&rpt->exc);
+	recur_exc_dup(&rev->exc, &rpt->exc);
+	recur_free_exc_list(&rpt->exc);
 	LLIST_INIT(&rev->rpt->exc);
 
 	LLIST_ADD_SORTED(&recur_elist, rev, recur_event_cmp);
