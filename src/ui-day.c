@@ -273,8 +273,8 @@ static void update_desc(char **desc)
 	updatestring(win[STA].p, desc, 0, 1);
 }
 
-/* Edit the list of exception days for a recurrent item. */
-static int update_exc(llist_t *exc)
+/* Edit a list of exception days for a recurrent item. */
+static int edit_exc(llist_t *exc)
 {
 	int updated = 0;
 
@@ -288,7 +288,7 @@ static int update_exc(llist_t *exc)
 	while (1) {
 		ret = updatestring(win[STA].p, &days, 0, 1);
 		if (ret == GETSTRING_VALID || ret == GETSTRING_RET) {
-			if (recur_update_exc(exc, days)) {
+			if (recur_str2exc(exc, days)) {
 				updated = 1;
 				break;
 			} else {
@@ -313,7 +313,7 @@ static void update_rept(struct rpt **rpt, const time_t start, llist_t *exc)
 	char *timstr = NULL;
 	char *outstr = NULL;
 
-	/* Update repetition type. */
+	/* Edit repetition type. */
 	int newtype;
 	const char *msg_rpt_prefix = _("Enter the new repetition type:");
 	const char *msg_rpt_daily = _("(d)aily");
@@ -362,7 +362,7 @@ static void update_rept(struct rpt **rpt, const time_t start, llist_t *exc)
 		goto cleanup;
 	}
 
-	/* Update frequency. */
+	/* Edit frequency. */
 	int newfreq;
 	const char *msg_wrong_freq = _("Invalid frequency.");
 	const char *msg_enter = _("Press [Enter] to continue");
@@ -382,7 +382,7 @@ static void update_rept(struct rpt **rpt, const time_t start, llist_t *exc)
 	}
 	while (newfreq == 0);
 
-	/* Update end date. */
+	/* Edit end date. */
 	time_t newuntil;
 	const char *msg_until_1 =
 		_("Enter end date or duration ('?' for input formats):");
@@ -449,13 +449,21 @@ static void update_rept(struct rpt **rpt, const time_t start, llist_t *exc)
 		keys_wgetch(win[KEY].p);
 	}
 
-	/* Update exception list. */
-	if (!update_exc(exc))
+	/* Edit exception list. */
+	llist_t newexc;
+	recur_exc_dup(&newexc, exc);
+	if (!edit_exc(&newexc)) {
+		recur_free_exc_list(&newexc);
 		goto cleanup;
+	}
 
+	/* Update all recurrence parameters. */
 	(*rpt)->type = recur_char2def(newtype);
 	(*rpt)->freq = newfreq;
 	(*rpt)->until = newuntil;
+	recur_free_exc_list(exc);
+	recur_exc_dup(exc, &newexc);
+	recur_free_exc_list(&newexc);
 
 cleanup:
 	mem_free(msg_rpt_current);
