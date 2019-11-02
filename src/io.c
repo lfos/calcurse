@@ -1282,6 +1282,10 @@ void io_import_data(enum import_type type, const char *stream_name,
 	if (stream != stdin)
 		file_close(stream, __FILE_POS__);
 
+	if (ui_mode == UI_CURSES &&
+	    (stats.apoints > 0 || stats.events > 0 || stats.todos > 0))
+		io_set_modified();
+
 	asprintf(&stats_str[0], ngettext("%d app", "%d apps", stats.apoints),
 		 stats.apoints);
 	asprintf(&stats_str[1],
