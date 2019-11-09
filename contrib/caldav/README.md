@@ -90,7 +90,7 @@ will need to:
 oauth2client`) or your distribution's package manager
 
 Synchronization With Google Calendar
--------------------------------------
+------------------------------------
 
 You will need to use your Google account to create a Google API project and
 enable both the CalDAV API and the Google Calendar API. We will be doing this to
@@ -167,11 +167,34 @@ calcurse-caldav --init keep-remote --authcode '4/Ok6mBNW2nppfIwyL-Q1ZPVkEk3zZdZN
 ```
 
 Troubleshooting
----------------
+~~~~~~~~~~~~~~~
 
 ### 403 (Forbidden) When Submitting Auth Code for Google Calendar
 
 - Ensure that both the CalDAV API and the Google Calendar API are enabled for
 your Google Developer project
 - Ensure that your authcode consists of only the `code` parameter's value when
-extracting from the returned URL 
+extracting from the returned URL
+
+Synchronization With Yahoo's Calendar Server
+--------------------------------------------
+
+The following configuration has been reported to work with Yahoo's calendar
+server:
+
+```
+[General]
+Binary = calcurse
+Hostname = caldav.calendar.yahoo.com
+Path = dav/*YOUR_USERNAME*/Calendar/*YOUR_CALENDAR_NAME*/
+AuthMethod = basic
+InsecureSSL = No
+
+[Auth]
+Username = *<username>*
+Password = *<password>*
+
+[CustomHeaders]
+Scope = https://caldav.calendar.yahoo.com/
+User-Agent = Mac_OS_X/10.15.1 (13C64) CalendarAgent/176
+```
