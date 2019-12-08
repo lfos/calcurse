@@ -387,7 +387,7 @@ static void recur_exc_append(struct string *s, llist_t *lexc)
 }
 
 /* Load the recursive appointment description */
-struct recur_apoint *recur_apoint_scan(FILE *f, struct tm start, struct tm end,
+char *recur_apoint_scan(FILE *f, struct tm start, struct tm end,
 				       char state, char *note,
 				       struct item_filter *filter,
 				       struct rpt *rpt)
@@ -397,15 +397,15 @@ struct recur_apoint *recur_apoint_scan(FILE *f, struct tm start, struct tm end,
 	struct recur_apoint *rapt = NULL;
 	int cond;
 
-	EXIT_IF(!check_date(start.tm_year, start.tm_mon, start.tm_mday) ||
-		!check_date(end.tm_year, end.tm_mon, end.tm_mday) ||
-		!check_time(start.tm_hour, start.tm_min) ||
-		!check_time(end.tm_hour, end.tm_min),
-		_("date error in appointment"));
+	if (!check_date(start.tm_year, start.tm_mon, start.tm_mday) ||
+	    !check_date(end.tm_year, end.tm_mon, end.tm_mday) ||
+	    !check_time(start.tm_hour, start.tm_min) ||
+	    !check_time(end.tm_hour, end.tm_min))
+		return _("illegal date in appointment");
 
 	/* Read the appointment description */
 	if (!fgets(buf, sizeof buf, f))
-		return NULL;
+		return _("error in appointment description");
 
 	nl = strchr(buf, '\n');
 	if (nl) {
@@ -420,8 +420,8 @@ struct recur_apoint *recur_apoint_scan(FILE *f, struct tm start, struct tm end,
 	tstart = mktime(&start);
 	tend = mktime(&end);
 
-	EXIT_IF(tstart == -1 || tend == -1 || tstart > tend,
-		 _("date error in appointment"));
+	if (tstart == -1 || tend == -1 || tstart > tend)
+		 return _("date error in appointment");
 
 	/* Filter item. */
 	if (filter) {
@@ -451,12 +451,11 @@ struct recur_apoint *recur_apoint_scan(FILE *f, struct tm start, struct tm end,
 	if (!rapt)
 		rapt = recur_apoint_new(buf, note, tstart, tend - tstart, state,
 					 rpt);
-
-	return rapt;
+	return NULL;
 }
 
 /* Load the recursive events from file */
-struct recur_event *recur_event_scan(FILE * f, struct tm start, int id,
+char *recur_event_scan(FILE * f, struct tm start, int id,
 				     char *note, struct item_filter *filter,
 				     struct rpt *rpt)
 {
@@ -465,13 +464,13 @@ struct recur_event *recur_event_scan(FILE * f, struct tm start, int id,
 	struct recur_event *rev = NULL;
 	int cond;
 
-	EXIT_IF(!check_date(start.tm_year, start.tm_mon, start.tm_mday) ||
-		!check_time(start.tm_hour, start.tm_min),
-		("date error in event"));
+	if (!check_date(start.tm_year, start.tm_mon, start.tm_mday) ||
+	    !check_time(start.tm_hour, start.tm_min))
+		return _("illegel date in event");
 
 	/* Read the event description */
 	if (!fgets(buf, sizeof buf, f))
-		return NULL;
+		return _("error in appointment description");
 
 	nl = strchr(buf, '\n');
 	if (nl) {
@@ -485,7 +484,8 @@ struct recur_event *recur_event_scan(FILE * f, struct tm start, int id,
 	start.tm_mon--;
 
 	tstart = mktime(&start);
-	EXIT_IF(tstart == -1, _("date error in event"));
+	if (tstart == -1)
+		return _("date error in event");
 	tend = ENDOFDAY(tstart);
 
 	/* Filter item. */
@@ -514,8 +514,7 @@ struct recur_event *recur_event_scan(FILE * f, struct tm start, int id,
 	}
 	if (!rev)
 		rev = recur_event_new(buf, note, tstart, id, rpt);
-
-	return rev;
+	return NULL;
 }
 
 char *recur_apoint_tostr(struct recur_apoint *o)
