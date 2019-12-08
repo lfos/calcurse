@@ -407,6 +407,16 @@ struct rpt {
 	llist_t exc;		/* EXDATE's */
 };
 
+/* Types of integers in rrule lists. */
+typedef enum {
+	BYMONTH,
+	BYDAY_W,
+	BYDAY_M,
+	BYDAY_Y,
+	BYMONTHDAY,
+	NOLL
+} int_list_t;
+
 /* Recurrent appointment definition. */
 struct recur_apoint {
 	struct rpt *rpt;	/* recurrence rule */
@@ -1042,6 +1052,8 @@ void pcal_export_data(FILE *);
 /* recur.c */
 extern llist_ts_t recur_alist_p;
 extern llist_t recur_elist;
+void recur_free_int_list(llist_t *);
+void recur_int_list_dup(llist_t *, llist_t *);
 void recur_free_exc_list(llist_t *);
 void recur_exc_dup(llist_t *, llist_t *);
 int recur_str2exc(llist_t *, char *);
