@@ -51,13 +51,13 @@ static void free_int(int *i)
 	mem_free(i);
 }
 
-static void free_int_list(llist_t *ilist)
+void recur_free_int_list(llist_t *ilist)
 {
 	LLIST_FREE_INNER(ilist, free_int);
 	LLIST_FREE(ilist);
 }
 
-static void int_list_dup(llist_t *l, llist_t *ilist)
+void recur_int_list_dup(llist_t *l, llist_t *ilist)
 {
 	llist_item_t *i;
 	int *o, *p;
@@ -187,9 +187,14 @@ struct recur_event *recur_event_dup(struct recur_event *in)
 	rev->mesg = mem_strdup(in->mesg);
 
 	rev->rpt = mem_malloc(sizeof(struct rpt));
+	/* Note. The linked lists are NOT copied and no memory allocated. */
 	rev->rpt->type = in->rpt->type;
 	rev->rpt->freq = in->rpt->freq;
 	rev->rpt->until = in->rpt->until;
+	LLIST_INIT(&rev->rpt->bymonth);
+	LLIST_INIT(&rev->rpt->bywday);
+	LLIST_INIT(&rev->rpt->bymonthday);
+	LLIST_INIT(&rev->rpt->exc);
 
 	recur_exc_dup(&rev->exc, &in->exc);
 
@@ -214,9 +219,14 @@ struct recur_apoint *recur_apoint_dup(struct recur_apoint *in)
 	rapt->mesg = mem_strdup(in->mesg);
 
 	rapt->rpt = mem_malloc(sizeof(struct rpt));
+	/* Note. The linked lists are NOT copied and no memory allocated. */
 	rapt->rpt->type = in->rpt->type;
 	rapt->rpt->freq = in->rpt->freq;
 	rapt->rpt->until = in->rpt->until;
+	LLIST_INIT(&rapt->rpt->bymonth);
+	LLIST_INIT(&rapt->rpt->bywday);
+	LLIST_INIT(&rapt->rpt->bymonthday);
+	LLIST_INIT(&rapt->rpt->exc);
 
 	recur_exc_dup(&rapt->exc, &in->exc);
 
@@ -311,12 +321,12 @@ struct recur_apoint *recur_apoint_new(char *mesg, char *note, time_t start,
 	rapt->state = state;
 	rapt->rpt = mem_malloc(sizeof(struct rpt));
 	*rapt->rpt = *rpt;
-	int_list_dup(&rapt->rpt->bymonth, &rpt->bymonth);
-	free_int_list(&rpt->bymonth);
-	int_list_dup(&rapt->rpt->bywday, &rpt->bywday);
-	free_int_list(&rpt->bywday);
-	int_list_dup(&rapt->rpt->bymonthday, &rpt->bymonthday);
-	free_int_list(&rpt->bymonthday);
+	recur_int_list_dup(&rapt->rpt->bymonth, &rpt->bymonth);
+	recur_free_int_list(&rpt->bymonth);
+	recur_int_list_dup(&rapt->rpt->bywday, &rpt->bywday);
+	recur_free_int_list(&rpt->bywday);
+	recur_int_list_dup(&rapt->rpt->bymonthday, &rpt->bymonthday);
+	recur_free_int_list(&rpt->bymonthday);
 	/*
 	 * Note. The exception dates are in the list rapt->exc.
 	 * The (empty) list rapt->rpt->exc is not used.
@@ -344,12 +354,12 @@ struct recur_event *recur_event_new(char *mesg, char *note, time_t day,
 	rev->id = id;
 	rev->rpt = mem_malloc(sizeof(struct rpt));
 	*rev->rpt = *rpt;
-	int_list_dup(&rev->rpt->bymonth, &rpt->bymonth);
-	free_int_list(&rpt->bymonth);
-	int_list_dup(&rev->rpt->bywday, &rpt->bywday);
-	free_int_list(&rpt->bywday);
-	int_list_dup(&rev->rpt->bymonthday, &rpt->bymonthday);
-	free_int_list(&rpt->bymonthday);
+	recur_int_list_dup(&rev->rpt->bymonth, &rpt->bymonth);
+	recur_free_int_list(&rpt->bymonth);
+	recur_int_list_dup(&rev->rpt->bywday, &rpt->bywday);
+	recur_free_int_list(&rpt->bywday);
+	recur_int_list_dup(&rev->rpt->bymonthday, &rpt->bymonthday);
+	recur_free_int_list(&rpt->bymonthday);
 	/* Similarly as for recurrent appointment. */
 	recur_exc_dup(&rev->exc, &rpt->exc);
 	recur_free_exc_list(&rpt->exc);
@@ -506,6 +516,12 @@ char *recur_apoint_scan(FILE *f, struct tm start, struct tm end,
 	if (tstart == -1 || tend == -1 || tstart > tend)
 		 return _("date error in appointment");
 
+	/* Does it occur on the start day? */
+	if (!recur_item_find_occurrence(tstart, tend - tstart, rpt, NULL,
+					update_time_in_date(tstart, 0, 0),
+					NULL))
+		return _("recurrence error: not on start day");
+
 	/* Filter item. */
 	if (filter) {
 		cond = (
@@ -570,6 +586,12 @@ char *recur_event_scan(FILE * f, struct tm start, int id,
 	if (tstart == -1)
 		return _("date error in event");
 	tend = ENDOFDAY(tstart);
+
+	/* Does it occur on the start day? */
+	if (!recur_item_find_occurrence(tstart, -1, rpt, NULL,
+					update_time_in_date(tstart, 0, 0),
+					NULL))
+		return _("recurrence error: not on start day");
 
 	/* Filter item. */
 	if (filter) {
@@ -973,7 +995,7 @@ static int find_occurrence(time_t start, long dur, struct rpt *rpt, llist_t *exc
 		return 0;
 
 	/* Exception day? */
-	if (LLIST_FIND_FIRST(exc, &t, exc_inday))
+	if (exc && LLIST_FIND_FIRST(exc, &t, exc_inday))
 		return 0;
 
 	/* Extraneous day? */
@@ -988,7 +1010,6 @@ static int find_occurrence(time_t start, long dur, struct rpt *rpt, llist_t *exc
 		*occurrence = t;
 
 	return 1;
-#undef ITEM_DUR
 }
 #undef DUR
 

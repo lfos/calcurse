@@ -34,6 +34,8 @@
  *
  */
 
+#include <limits.h>
+#include <langinfo.h>
 #include "calcurse.h"
 
 /* Cut & paste registers. */
@@ -163,32 +165,44 @@ static time_t day_edit_time(time_t start, long duration, int move)
 /*
  * Change start time or move an item.
  * Input/output: start and dur.
+ * For recurrent items the new start time must match the repetition pattern.
  * If move = 0, end time is fixed, and the new duration is calculated
  * when the new start time is known.
  * If move = 1, duration is fixed, but passed on for validation of new end time.
  */
-static void update_start_time(time_t *start, long *dur, int move)
+static void update_start_time(time_t *start, long *dur, struct rpt *rpt, int move)
 {
 	time_t newtime;
 	const char *msg_wrong_time =
 	    _("Invalid time: start time must come before end time!");
+	const char *msg_match =
+		_("Repetition must begin on start day.");
 	const char *msg_enter = _("Press [Enter] to continue");
+	char *msg;
 
 	for (;;) {
 		newtime = day_edit_time(*start, *dur, move);
 		if (!newtime)
 			break;
-		if (move) {
-			*start = newtime;
-			break;
+		if (rpt && !recur_item_find_occurrence(
+				newtime, *dur, rpt, NULL,
+				update_time_in_date(newtime, 0, 0),
+				NULL)) {
+			msg = (char *)msg_match;
 		} else {
-			if (newtime <= *start + *dur) {
-				*dur -= (newtime - *start);
+			if (move) {
 				*start = newtime;
 				break;
+			} else {
+				if (newtime <= *start + *dur) {
+					*dur -= (newtime - *start);
+					*start = newtime;
+					break;
+				}
 			}
+			msg = (char *)msg_wrong_time;
 		}
-		status_mesg(msg_wrong_time, msg_enter);
+		status_mesg(msg, msg_enter);
 		keys_wgetch(win[KEY].p);
 	}
 	return;
@@ -304,22 +318,267 @@ static int edit_exc(llist_t *exc)
 	return updated;
 }
 
-static void update_rept(struct rpt **rpt, const time_t start, llist_t *exc)
+/*
+ * Decode an integer representing a weekday or ordered weekday.
+ * The return value is the (abbreviated) localized day name.
+ * The order is returned in the second argument.
+ */
+static char *int2wday(int i, int *ord, int_list_t type)
 {
-	/* Pointers to dynamically allocated memory. */
+	if (type == BYDAY_W ||
+	    ((type == BYDAY_M || type == BYDAY_Y) && -1 < i && i < 7))
+		*ord = 0;
+	else if ((type == BYDAY_M && 6 < i && i < 42) ||
+	    (type == BYDAY_Y && 6 < i && i < 378))
+		*ord = i / 7;
+	else if ((type == BYDAY_M && -42 < i && i < -6) ||
+	    (type == BYDAY_Y && -378 < i && i < -6)) {
+		i = -i;
+		*ord = -(i / 7);
+	} else
+		return NULL;
+
+	return nl_langinfo(ABDAY_1 + i % 7);
+}
+
+/*
+ * Given a (linked) list of integers representing weekdays, monthdays or months.
+ * Return a string containing the weekdays or integers separated by spaces.
+ */
+static char *int2str(llist_t *il, int_list_t type)
+{
+	llist_item_t *i;
+	int *p, ord = 0;
+	char *wday;
+	struct string s;
+
+	string_init(&s);
+	LLIST_FOREACH(il, i) {
+		p = LLIST_GET_DATA(i);
+		wday = int2wday(*p, &ord, type);
+		if (wday)
+			string_catf(&s, ord ? "%d%s " : "%.0d%s ", ord, wday);
+		else
+			string_catf(&s, "%i ", *p);
+	}
+
+	return string_buf(&s);
+}
+
+/*
+ * Encode a weekday or ordered weekday as an integer.
+ */
+static int wday2int(char *s)
+{
+	int i, ord;
+	char *tail;
+
+	i = strtol(s, &tail, 10);
+	if (!i && tail == s)
+		ord = 0;
+	else
+		ord = i > 0 ? i : -i;
+
+	if (!strcmp(tail, nl_langinfo(ABDAY_1)))
+		return (i < 0 ? -1 : 1) * (ord * 7 + 0);
+	else if (!strcmp(tail, nl_langinfo(ABDAY_2)))
+		return (i < 0 ? -1 : 1) * (ord * 7 + 1);
+	else if (!strcmp(tail, nl_langinfo(ABDAY_3)))
+		return (i < 0 ? -1 : 1) * (ord * 7 + 2);
+	else if (!strcmp(tail, nl_langinfo(ABDAY_4)))
+		return (i < 0 ? -1 : 1) * (ord * 7 + 3);
+	else if (!strcmp(tail, nl_langinfo(ABDAY_5)))
+		return (i < 0 ? -1 : 1) * (ord * 7 + 4);
+	else if (!strcmp(tail, nl_langinfo(ABDAY_6)))
+		return (i < 0 ? -1 : 1) * (ord * 7 + 5);
+	else if (!strcmp(tail, nl_langinfo(ABDAY_7)))
+		return (i < 0 ? -1 : 1) * (ord * 7 + 6);
+	else
+		return -1;
+}
+
+/*
+ * Parse an integer or weekday string. Valid values depend on type.
+ * On success the integer or integer code is returned in *i.
+ */
+static int parse_int(char *s, long *i, int_list_t type)
+{
+	char *eos;
+
+	if (type == BYDAY_W || type == BYDAY_M || type == BYDAY_Y) {
+		*i = wday2int(s);
+		if (*i == -1)
+			return 0;
+	} else {
+		*i = strtol(s, &eos, 10);
+		if (*eos || *i > INT_MAX)
+			return 0;
+	}
+
+	switch (type) {
+	case BYMONTH:
+		/* 1,..,12 */
+		if (0 < *i && *i < 13)
+			return 1;
+		break;
+	case BYDAY_W:
+		/* 0,..,6 */
+		if (-1 < *i && *i < 7)
+			return 1;
+		break;
+	case BYDAY_M:
+		/* 0,..,6 or 7,..,41 or -7,..,-41 */
+		/* 41 = 5*7 + 6, i.e. fifth Saturday of the month */
+		if ((-42 < *i && *i < -6) || (-1 < *i && *i < 42))
+			return 1;
+		break;
+	case BYDAY_Y:
+		/* 0,..,6 or 7,..,377 or -7,..,-377 */
+		/* 377 = 53*7 + 6, i.e. 53th Saturday of the year */
+		if ((-378 < *i && *i < -6) || (-1 < *i && *i < 378))
+			return 1;
+		break;
+	case BYMONTHDAY:
+		/* 1,..,31 or -1,..,-31 */
+		if ((0 < *i && *i < 32) || (-32 < *i && *i < 0))
+			return 1;
+		break;
+	default:
+		return 0;
+	}
+	return 0;
+}
+
+/*
+ * Update a (linked) list of integer values from a string of such values. Any
+ * positive number of spaces are allowed before, between and after the values.
+ */
+static int str2int(llist_t *l, char *s, int type) {
+	int *j, updated = 0;
+	char *c;
+	long i;
+	llist_t nl;
+	LLIST_INIT(&nl);
+
+	while (1) {
+		while (*s == ' ')
+			s++;
+		if ((c = strchr(s, ' ')))
+			*c = '\0';
+		else if (!strlen(s))
+			break;
+		if (parse_int(s, &i, type)) {
+			j = mem_malloc(sizeof(int));
+			*j = i;
+			LLIST_ADD(&nl, j);
+		} else
+			goto cleanup;
+		if (c)
+			s = c + 1;
+		else
+			break;
+	}
+	recur_free_int_list(l);
+	recur_int_list_dup(l, &nl);
+	updated = 1;
+cleanup:
+	recur_free_int_list(&nl);
+	return updated;
+}
+
+/* Edit an rrule (linked) list of integers. */
+static int edit_ilist(llist_t *ilist, int_list_t type)
+{
+	char *msg;
+	char *msg_wday = NULL;
+	char *msg_format_w = _("Weekdays (%s|..|%s):");
+	char *msg_format_m =
+		_("Weekdays (%s|..|%s, optional prefix 1..5 or -1..-5)):");
+	char *msg_format_y =
+		_("Weekdays (%s|..|%s, optional prefix 1..53 or -1..-53):");
+	char *msg_month = _("Months (1..12):");
+	char *msg_mday = _("Monthdays (1..31 or -1..-31):");
+	char *msg_invalid = _("Invalid format - try again.");
+	char *msg_cont = _("Press any key to continue.");
+	int updated = 0;
+
+	if (type == NOLL)
+		return !updated;
+	char *istr;
+	enum getstr ret;
+
+	switch (type) {
+	case BYDAY_W:
+		asprintf(&msg_wday, msg_format_w,
+			 nl_langinfo(ABDAY_2), nl_langinfo(ABDAY_1));
+		msg = msg_wday;
+		break;
+	case BYDAY_M:
+		asprintf(&msg_wday, msg_format_m,
+			 nl_langinfo(ABDAY_2), nl_langinfo(ABDAY_1));
+		msg = msg_wday;
+		break;
+	case BYDAY_Y:
+		asprintf(&msg_wday, msg_format_y,
+			 nl_langinfo(ABDAY_2), nl_langinfo(ABDAY_1));
+		msg = msg_wday;
+		break;
+	case BYMONTH:
+		msg = msg_month;
+		break;
+	case BYMONTHDAY:
+		msg = msg_mday;
+		break;
+	default:
+		msg = NULL;
+		break;
+	}
+	status_mesg(msg, "");
+	istr = int2str(ilist, type);
+	while (1) {
+		ret = updatestring(win[STA].p, &istr, 0, 1);
+		if (ret == GETSTRING_VALID || ret == GETSTRING_RET) {
+			if (str2int(ilist, istr, type)) {
+				updated = 1;
+				break;
+			} else {
+				status_mesg(msg_invalid, msg_cont);
+				keys_wgetch(win[KEY].p);
+				mem_free(istr);
+				status_mesg(msg, "");
+				istr = int2str(ilist, type);
+			}
+		} else if (ret == GETSTRING_ESC)
+			break;
+	}
+	mem_free(istr);
+	mem_free(msg_wday);
+
+	return updated;
+}
+
+static void update_rept(time_t start, long dur, struct rpt **rpt, llist_t *exc)
+{
+	struct rpt nrpt;
 	char *msg_rpt_current = NULL;
 	char *msg_rpt_asktype = NULL;
 	char *freqstr = NULL;
 	char *timstr = NULL;
 	char *outstr = NULL;
+	const char *msg_cont = _("Press any key to continue.");
+
+	LLIST_INIT(&nrpt.exc);
+	LLIST_INIT(&nrpt.bywday);
+	LLIST_INIT(&nrpt.bymonth);
+	LLIST_INIT(&nrpt.bymonthday);
 
 	/* Edit repetition type. */
-	int newtype;
-	const char *msg_rpt_prefix = _("Enter the new repetition type:");
+	const char *msg_rpt_prefix = _("Enter the repetition type:");
 	const char *msg_rpt_daily = _("(d)aily");
 	const char *msg_rpt_weekly = _("(w)eekly");
 	const char *msg_rpt_monthly = _("(m)onthly");
 	const char *msg_rpt_yearly = _("(y)early");
+	const char *msg_rpt_choice = _("[dwmy]");
 
 	/* Find the current repetition type. */
 	const char *rpt_current;
@@ -340,50 +599,48 @@ static void update_rept(struct rpt **rpt, const time_t start, llist_t *exc)
 		/* NOTREACHED, but makes the compiler happier. */
 		rpt_current = msg_rpt_daily;
 	}
-	asprintf(&msg_rpt_current, _("(currently using %s)"), rpt_current);
+	asprintf(&msg_rpt_current, _("(p.t. %s)"), rpt_current);
 	asprintf(&msg_rpt_asktype, "%s %s, %s, %s, %s? %s", msg_rpt_prefix,
 		 msg_rpt_daily, msg_rpt_weekly, msg_rpt_monthly,
 		 msg_rpt_yearly, msg_rpt_current);
-	const char *msg_rpt_choice = _("[dwmy]");
 	switch (status_ask_choice(msg_rpt_asktype, msg_rpt_choice, 4)) {
 	case 1:
-		newtype = 'D';
+		nrpt.type = 'D';
 		break;
 	case 2:
-		newtype = 'W';
+		nrpt.type = 'W';
 		break;
 	case 3:
-		newtype = 'M';
+		nrpt.type = 'M';
 		break;
 	case 4:
-		newtype = 'Y';
+		nrpt.type = 'Y';
 		break;
 	default:
 		goto cleanup;
 	}
+	nrpt.type = recur_char2def(nrpt.type);
 
 	/* Edit frequency. */
-	int newfreq;
+	const char *msg_freq = _("Enter the repetition frequency:");
 	const char *msg_wrong_freq = _("Invalid frequency.");
-	const char *msg_enter = _("Press [Enter] to continue");
 	do {
-		status_mesg(_("Enter the repetition frequency:"), "");
+		status_mesg(msg_freq, "");
 		mem_free(freqstr);
 		asprintf(&freqstr, "%d", (*rpt)->freq);
 		if (updatestring(win[STA].p, &freqstr, 0, 1) !=
 		    GETSTRING_VALID) {
 			goto cleanup;
 		}
-		newfreq = atoi(freqstr);
-		if (newfreq == 0) {
-			status_mesg(msg_wrong_freq, msg_enter);
+		nrpt.freq = atoi(freqstr);
+		if (nrpt.freq == 0) {
+			status_mesg(msg_wrong_freq, msg_cont);
 			keys_wait_for_any_key(win[KEY].p);
 		}
 	}
-	while (newfreq == 0);
+	while (nrpt.freq == 0);
 
 	/* Edit end date. */
-	time_t newuntil;
 	const char *msg_until_1 =
 		_("Enter end date or duration ('?' for input formats):");
 	const char *msg_help_1 =
@@ -404,7 +661,7 @@ static void update_rept(struct rpt **rpt, const time_t start, llist_t *exc)
 		if (updatestring(win[STA].p, &timstr, 0, 1) == GETSTRING_ESC)
 			goto cleanup;
 		if (strcmp(timstr, "") == 0 || strcmp(timstr, "0") == 0) {
-			newuntil = 0;
+			nrpt.until = 0;
 			break;
 		}
 		if (*(timstr + strlen(timstr) - 1) == '?') {
@@ -417,12 +674,12 @@ static void update_rept(struct rpt **rpt, const time_t start, llist_t *exc)
 		if (*timstr == '+') {
 			unsigned days;
 			if (!parse_date_duration(timstr + 1, &days, start)) {
-				status_mesg(msg_wrong_date, msg_enter);
+				status_mesg(msg_wrong_date, msg_cont);
 				keys_wgetch(win[KEY].p);
 				continue;
 			}
 			/* Until is midnight of the day. */
-			newuntil = date_sec_change(
+			nrpt.until = date_sec_change(
 					update_time_in_date(start, 0, 0),
 					0, days
 				   );
@@ -430,40 +687,97 @@ static void update_rept(struct rpt **rpt, const time_t start, llist_t *exc)
 			int year, month, day;
 			if (!parse_date(timstr, conf.input_datefmt, &year,
 			    &month, &day, ui_calendar_get_slctd_day())) {
-				status_mesg(msg_wrong_date, msg_enter);
+				status_mesg(msg_wrong_date, msg_cont);
 				keys_wgetch(win[KEY].p);
 				continue;
 			}
 			struct date d = { day, month, year };
-			newuntil = date2sec(d, 0, 0);
+			nrpt.until = date2sec(d, 0, 0);
 		}
 		/* Conmpare days (midnights) - until-day may equal start day. */
-		if (newuntil >= update_time_in_date(start, 0, 0))
+		if (nrpt.until >= update_time_in_date(start, 0, 0))
 			break;
 
 		mem_free(timstr);
 		mem_free(outstr);
 		timstr = date_sec2date_str(start, DATEFMT(conf.input_datefmt));
 		asprintf(&outstr, msg_wrong_time, timstr);
-		status_mesg(outstr, msg_enter);
+		status_mesg(outstr, msg_cont);
 		keys_wgetch(win[KEY].p);
 	}
 
 	/* Edit exception list. */
-	llist_t newexc;
-	recur_exc_dup(&newexc, exc);
-	if (!edit_exc(&newexc)) {
-		recur_free_exc_list(&newexc);
+	recur_exc_dup(&nrpt.exc, exc);
+	if (!edit_exc(&nrpt.exc))
+		goto cleanup;
+
+	/* Edit BYDAY list. */
+	int_list_t byday_type;
+	switch (nrpt.type) {
+	case RECUR_DAILY:
+		byday_type = BYDAY_W;
+		break;
+	case RECUR_WEEKLY:
+		byday_type = BYDAY_W;
+		break;
+	case RECUR_MONTHLY:
+		byday_type = BYDAY_M;
+		break;
+	case RECUR_YEARLY:
+		byday_type = BYDAY_Y;
+		break;
+	default:
+		byday_type = NOLL;
+		break;
+	}
+	recur_int_list_dup(&nrpt.bywday, &(*rpt)->bywday);
+	if (!edit_ilist(&nrpt.bywday, byday_type))
+		goto cleanup;
+
+	/* Edit BYMONTH list. */
+	recur_int_list_dup(&nrpt.bymonth, &(*rpt)->bymonth);
+	if (!edit_ilist(&nrpt.bymonth, BYMONTH))
+		goto cleanup;
+
+	/* Edit BYMONTHDAY list. */
+	if (nrpt.type != RECUR_WEEKLY) {
+		recur_int_list_dup(&nrpt.bymonthday, &(*rpt)->bymonthday);
+		if (!edit_ilist(&nrpt.bymonthday, BYMONTHDAY))
+			goto cleanup;
+	}
+
+	/*
+	 * Check whether the start occurrence matches the recurrence rule, in
+	 * other words, does it occur on the start day?  This is required by
+	 * RFC5545 and ensures that the recurrence set is non-empty (unless it
+	 * is an exception day).
+	 */
+	const char *msg_match =
+		_("Repetition must begin on start day; any change discarded.");
+	if (!recur_item_find_occurrence(start, dur, &nrpt, NULL,
+					update_time_in_date(start, 0, 0),
+					NULL)) {
+		status_mesg(msg_match, msg_cont);
+		keys_wgetch(win[KEY].p);
 		goto cleanup;
 	}
 
 	/* Update all recurrence parameters. */
-	(*rpt)->type = recur_char2def(newtype);
-	(*rpt)->freq = newfreq;
-	(*rpt)->until = newuntil;
+	(*rpt)->type = nrpt.type;
+	(*rpt)->freq = nrpt.freq;
+	(*rpt)->until = nrpt.until;
+
 	recur_free_exc_list(exc);
-	recur_exc_dup(exc, &newexc);
-	recur_free_exc_list(&newexc);
+	recur_exc_dup(exc, &nrpt.exc);
+
+	recur_free_int_list(&(*rpt)->bywday);
+	recur_int_list_dup(&(*rpt)->bywday, &nrpt.bywday);
+
+	recur_free_int_list(&(*rpt)->bymonth);
+	recur_int_list_dup(&(*rpt)->bymonth, &nrpt.bymonth);
+
+	recur_free_int_list(&(*rpt)->bymonthday);
+	recur_int_list_dup(&(*rpt)->bymonthday, &nrpt.bymonthday);
 
 cleanup:
 	mem_free(msg_rpt_current);
@@ -471,6 +785,10 @@ cleanup:
 	mem_free(freqstr);
 	mem_free(timstr);
 	mem_free(outstr);
+	recur_free_exc_list(&nrpt.exc);
+	recur_free_int_list(&nrpt.bywday);
+	recur_free_int_list(&nrpt.bymonth);
+	recur_free_int_list(&nrpt.bymonthday);
 }
 
 /* Edit an already existing item. */
@@ -490,7 +808,7 @@ void ui_day_item_edit(void)
 	switch (p->type) {
 	case RECUR_EVNT:
 		re = p->item.rev;
-		const char *choice_recur_evnt[2] = {
+		const char *choice_recur_evnt[] = {
 			_("Description"),
 			_("Repetition")
 		};
@@ -498,11 +816,9 @@ void ui_day_item_edit(void)
 			(_("Edit: "), choice_recur_evnt, 2)) {
 		case 1:
 			update_desc(&re->mesg);
-			io_set_modified();
 			break;
 		case 2:
-			update_rept(&re->rpt, re->day, &re->exc);
-			io_set_modified();
+			update_rept(re->day, -1, &re->rpt, &re->exc);
 			break;
 		default:
 			return;
@@ -511,7 +827,6 @@ void ui_day_item_edit(void)
 	case EVNT:
 		e = p->item.ev;
 		update_desc(&e->mesg);
-		io_set_modified();
 		break;
 	case RECUR_APPT:
 		ra = p->item.rapt;
@@ -526,29 +841,24 @@ void ui_day_item_edit(void)
 			(_("Edit: "), choice_recur_appt, 5)) {
 		case 1:
 			need_check_notify = 1;
-			update_start_time(&ra->start, &ra->dur, ra->dur == 0);
-			io_set_modified();
+			update_start_time(&ra->start, &ra->dur, ra->rpt, ra->dur == 0);
 			break;
 		case 2:
 			update_duration(&ra->start, &ra->dur);
-			io_set_modified();
 			break;
 		case 3:
 			if (notify_bar())
 				need_check_notify =
 				    notify_same_recur_item(ra);
 			update_desc(&ra->mesg);
-			io_set_modified();
 			break;
 		case 4:
 			need_check_notify = 1;
-			update_rept(&ra->rpt, ra->start, &ra->exc);
-			io_set_modified();
+			update_rept(ra->start, ra->dur, &ra->rpt, &ra->exc);
 			break;
 		case 5:
 			need_check_notify = 1;
-			update_start_time(&ra->start, &ra->dur, 1);
-			io_set_modified();
+			update_start_time(&ra->start, &ra->dur, ra->rpt, 1);
 			break;
 		default:
 			return;
@@ -566,24 +876,20 @@ void ui_day_item_edit(void)
 			(_("Edit: "), choice_appt, 4)) {
 		case 1:
 			need_check_notify = 1;
-			update_start_time(&a->start, &a->dur, a->dur == 0);
-			io_set_modified();
+			update_start_time(&a->start, &a->dur, NULL, a->dur == 0);
 			break;
 		case 2:
 			update_duration(&a->start, &a->dur);
-			io_set_modified();
 			break;
 		case 3:
 			if (notify_bar())
 				need_check_notify =
 				    notify_same_item(a->start);
 			update_desc(&a->mesg);
-			io_set_modified();
 			break;
 		case 4:
 			need_check_notify = 1;
-			update_start_time(&a->start, &a->dur, 1);
-			io_set_modified();
+			update_start_time(&a->start, &a->dur, NULL, 1);
 			break;
 		default:
 			return;
@@ -592,7 +898,7 @@ void ui_day_item_edit(void)
 	default:
 		break;
 	}
-
+	io_set_modified();
 	ui_calendar_monthly_view_cache_set_invalid();
 
 	if (need_check_notify)
