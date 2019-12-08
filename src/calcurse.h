@@ -766,7 +766,7 @@ void apoint_sec2str(struct apoint *, time_t, char *, char *);
 char *apoint_tostr(struct apoint *);
 char *apoint_hash(struct apoint *);
 void apoint_write(struct apoint *, FILE *);
-struct apoint *apoint_scan(FILE *, struct tm, struct tm, char, char *,
+char *apoint_scan(FILE *, struct tm, struct tm, char, char *,
 			   struct item_filter *);
 void apoint_delete(struct apoint *);
 struct notify_app *apoint_check_next(struct notify_app *, time_t);
@@ -864,7 +864,7 @@ unsigned event_inday(struct event *, time_t *);
 char *event_tostr(struct event *);
 char *event_hash(struct event *);
 void event_write(struct event *, FILE *);
-struct event *event_scan(FILE *, struct tm, int, char *, struct item_filter *);
+char *event_scan(FILE *, struct tm, int, char *, struct item_filter *);
 void event_delete(struct event *);
 void event_paste_item(struct event *, time_t);
 int event_dummy(struct day_item *);
@@ -1051,10 +1051,10 @@ struct recur_event *recur_event_new(char *, char *, time_t, int,
 				     struct rpt *);
 char recur_def2char(enum recur_type);
 int recur_char2def(char);
-struct recur_apoint *recur_apoint_scan(FILE *, struct tm, struct tm, char,
+char *recur_apoint_scan(FILE *, struct tm, struct tm, char,
 				       char *, struct item_filter *,
 				       struct rpt *);
-struct recur_event *recur_event_scan(FILE *, struct tm, int, char *,
+char *recur_event_scan(FILE *, struct tm, int, char *,
 				     struct item_filter *, struct rpt *);
 char *recur_apoint_tostr(struct recur_apoint *);
 char *recur_apoint_hash(struct recur_apoint *);

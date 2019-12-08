@@ -559,6 +559,7 @@ void io_load_app(struct item_filter *filter)
 	char type, state = 0L;
 	char note[MAX_NOTESIZ + 1], *notep;
 	unsigned line = 0;
+	char *scan_error;
 
 	t = time(NULL);
 	localtime_r(&t, &lt);
@@ -573,6 +574,8 @@ void io_load_app(struct item_filter *filter)
 	for (;;) {
 		is_appointment = is_event = is_recursive = 0;
 		line++;
+		scan_error = NULL;
+
 		c = getc(data_file);
 		if (c == EOF)
 			break;
@@ -691,26 +694,26 @@ void io_load_app(struct item_filter *filter)
 				io_load_error(path_apts, line,
 					      _("syntax error in item state"));
 
-			if (is_recursive) {
-				recur_apoint_scan(data_file, start, end, state,
+			if (is_recursive)
+				scan_error = recur_apoint_scan(data_file, start, end, state,
 						  notep, filter, &rpt);
-			} else {
-				apoint_scan(data_file, start, end, state,
+			else
+				scan_error = apoint_scan(data_file, start, end, state,
 					    notep, filter);
-			}
 		} else if (is_event) {
 			ungetc(c, data_file);
-			if (is_recursive) {
-				recur_event_scan(data_file, start, id, notep,
+			if (is_recursive)
+				scan_error = recur_event_scan(data_file, start, id, notep,
 						 filter, &rpt);
-			} else {
-				event_scan(data_file, start, id, notep, filter);
-			}
+			else
+				scan_error = event_scan(data_file, start, id, notep, filter);
 		} else {
 			io_load_error(path_apts, line,
 				      _("wrong format in the appointment or event"));
 			/* NOTREACHED */
 		}
+		if (scan_error)
+			io_load_error(path_apts, line, scan_error);
 	}
 	file_close(data_file, __FILE_POS__);
 }
