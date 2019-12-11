@@ -537,11 +537,20 @@ int notify_same_item(time_t time)
 	return same;
 }
 
+/*
+ * Check if an occurrence of a recurrent appointment is currently the "next
+ * upcoming appointment" in the notify bar.
+ */
 int notify_same_recur_item(struct recur_apoint *i)
 {
 	int same = 0;
-	time_t item_start = 0;
+	time_t item_start;
 
+	/* Tomorrow? */
+	recur_item_find_occurrence(i->start, i->dur, &i->exc, i->rpt->type,
+				   i->rpt->freq, i->rpt->until,
+				   NEXTDAY(get_today()), &item_start);
+	/* Today? */
 	recur_item_find_occurrence(i->start, i->dur, &i->exc, i->rpt->type,
 				   i->rpt->freq, i->rpt->until,
 				   get_today(), &item_start);
