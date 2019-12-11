@@ -280,7 +280,13 @@ enum getstr getstring(WINDOW * win, char *str, int l, int x, int y)
 	return st.len == 0 ? GETSTRING_RET : GETSTRING_VALID;
 }
 
-/* Update an already existing string. */
+/*
+ * Safe edit of a dynamically allocated string.
+ * A copy of the original is edited. The internal buffer size
+ * is the only limit on the length of the edited string. After editing
+ * additional memory is allocated for the original if needed. The original
+ * remains intact if editing is interrupted.
+ */
 int updatestring(WINDOW * win, char **str, int x, int y)
 {
 	int len = strlen(*str);
@@ -299,8 +305,8 @@ int updatestring(WINDOW * win, char **str, int x, int y)
 		*str = mem_realloc(*str, len + 1, 1);
 		EXIT_IF(*str == NULL, _("out of memory"));
 		memcpy(*str, buf, len + 1);
-	}
-
+	} else if (ret == GETSTRING_RET)
+		**str = '\0';
 	mem_free(buf);
 	return ret;
 }
