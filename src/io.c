@@ -1053,19 +1053,42 @@ int io_check_dir(const char *dir)
 	if (read_only)
 		return -1;
 
+	char *path = mem_strdup(dir);
+	char *index;
+	asprintf(&path, "%s", dir);
+
+	int existed = 1;
 	errno = 0;
-	if (mkdir(dir, 0700) != 0) {
+	for (index = path + 1; *index; index++) {
+		if (*index == '/') {
+			*index = '\0';
+			if (mkdir(path, 0700) != 0) {
+				if (errno != EEXIST) {
+					fprintf(stderr,
+						_("FATAL ERROR: could not create %s: %s\n"),
+						path, strerror(errno));
+					exit_calcurse(EXIT_FAILURE);
+				}
+			} else {
+				existed = 0;
+			}
+			*index = '/';
+		}
+	}
+
+	if (mkdir(path, 0700) != 0) {
 		if (errno != EEXIST) {
 			fprintf(stderr,
 				_("FATAL ERROR: could not create %s: %s\n"),
-				dir, strerror(errno));
+				path, strerror(errno));
 			exit_calcurse(EXIT_FAILURE);
-		} else {
-			return 1;
 		}
 	} else {
-		return 0;
+		existed = 0;
 	}
+
+	mem_free(path);
+	return existed;
 }
 
 unsigned io_dir_exists(const char *path)
