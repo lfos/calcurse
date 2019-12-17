@@ -34,7 +34,7 @@ if [ "$#" -lt 1 ] || [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
 	usage
 fi
 
-DATADIR="$HOME/.calcurse"
+[ -d "$HOME/.calcurse" ] && DATADIR="$HOME/.calcurse" || DATADIR="${XDG_DATA_HOME:-$HOME/.local/share}/calcurse"
 VERBOSE=""
 FORCE=""
 
