@@ -5,7 +5,9 @@
 # 1. Make a commit if the calcurse data directory contains a Git repository.
 # 2. Synchronize with a CalDAV server if calcurse-caldav is configured.
 #
-# In order to install this hook, copy this file to ~/.calcurse/hooks/.
+# In order to install this hook, copy this file to
+# $XDG_CONFIG_HOME/calcurse/hooks/ (~/.config/calcurse/hooks/) or
+# ~/.calcurse/hooks/ if using ~/.calcurse.
 
 cd "$HOME"/.calcurse/
 

@@ -95,7 +95,7 @@ subsections contain some general desriptions of command line options and usage.
 
 Input and Output Date Format
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Many options require a 'date' argument, and query results per day are set apart 
+Many options require a 'date' argument, and query results per day are set apart
 by a leading 'date line'.
 
 The input format of 'date' options and the output format of 'date lines' are
@@ -143,19 +143,22 @@ are marked "('also interactively')".
 
 *-c* 'file', *--calendar* 'file'::
   ('also interactively') Specify the calendar file to use. The default
-  calendar is *~/.calcurse/apts* (see <<_files,FILES>>). If 'file' is not an
-  absolute path name, it is interpreted relative to the current working
-  directory. The option has precedence over *-D*.
+  calendar is *$XDG_DATA_HOME/apts* (*\~/.local/share/calcurse/apts*) or
+  *\~/.calcurse/apts* if *~/.calcurse* exists.  (see <<_files,FILES>>). If
+  'file' is not an absolute path name, it is interpreted relative to the current
+  working directory. The option has precedence over *-D*.
 
 *-C* 'dir', *--confdir* 'dir'::
   ('also interactively') Specify the configuration directory to use. If not
-  specified, the default directory is *~/.calcurse/*. See <<_files,FILES>> for
-  the interaction with *-D*.
+  specified, the default directory is *$XDG_CONFIG_HOME/calcurse/*
+  (*\~/.config/calcurse/*) or *~/.calcurse* if it exists.  See <<_files,FILES>>
+  for the interaction with *-D*.
 
 *-D* 'dir', *--datadir* 'dir'::
   ('also interactively') Specify the (data) directory to use. If not specified,
-  the default directory is *~/.calcurse/*.  See section <<_files,FILES>> for
-  the interaction with *-C*.
+  the default directory is *$XDG_DATA_HOME/calcurse*
+  (*\~/.local/share/calcurse/*) or *~/.calcurse* if it exists.  See section
+  <<_files,FILES>> for the interaction with *-C*.
 
 *-d* 'date|num', *--day* 'date|num'::
   Print appointments and events for the given date or given range of days,
@@ -622,14 +625,14 @@ The following structure is created by default in your home directory the
 first time calcurse is run without any options:
 
 ----
-$HOME/.calcurse/
-          |___apts
-          |___conf
-          |___hooks/
-          |___keys
-          |___notes/
-          |___todo
+$XDG_DATA_HOME/calcurse/        $XDG_CONFIG_HOME/calcurse/
+                  |___apts                          |___conf
+                  |___notes/                        |___hooks/
+                  |___todo                          |___keys
 ----
+
++$XDG_DATA_HOME+ defaults to +\~/.local/share+ and +$XDG_CONFIG_HOME+ defaults to
++~/.config+.
 
 The files are of two different kinds: data and configuration. The data files
 constitute the calcurse database and are independent of the calcurse release
@@ -661,14 +664,18 @@ scripts, see <<_hooks,Hooks>>.
 Directory configuration
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-An alternative directory to the default +$HOME/.calcurse+ may be specified
-with the *-D* option.
+An alternative directory to the defaults +$XDG_DATA_HOME/calcurse+
+(+$HOME/.local/share/calcurse+) and +$XDG_CONFIG_HOME/calcurse+
+(+$HOME/.config/calcurse+) may be specified with the *-D* option.
 
 An alternative directory for the configuration files 'only' may be specified
 with the *-C* option; in that case data files are either in the default
 directory or in the directory specified by *-D*. If both *-D* and
 *-C* are present, configuration files in the data directory, if any, are
 ignored.
+
+If +$HOME/.calcurse+ exists, then it will be used as the default for both the
+data directory and the configuration directory.
 
 ----
 <datadir>      <confdir>
@@ -677,7 +684,10 @@ ignored.
      |__ todo      |___ keys
      |__ notes/    |___ hooks/
 
-default for both: $HOME/.calcurse/
+defaults:
+     <datadir>: $XDG_DATA_HOME/calcurse ($HOME/.local/share/calcurse)
+     <confdir>: $XDG_CONFIG_HOME/calcurse ($HOME/.config/calcurse)
+     both: $HOME/.calcurse (only if it exists)
 ----
 
 calcurse may switch between two configuration setups, but still access
@@ -686,15 +696,16 @@ the same data files e.g. with:
 ----
 $ calcurse
 
-$ calcurse -C "$HOME/.calcurse/config"
+$ calcurse -C "$HOME/.config/calcurse/config"
 ----
 
 Hooks
 ~~~~~
 
-Scripts placed in +$HOME/.calcurse/hooks/+ trigger actions at certain
-events. To enable a hook, add a script with one of the following names to this
-directory. Also make sure the script is executable.
+Scripts placed in +$XDG_CONFIG_HOME/calcurse/hooks/+
+(+$HOME/.config/calcurse/hooks+) trigger actions at certain events. To enable a
+hook, add a script with one of the following names to this directory. Also make
+sure the script is executable.
 
 *pre-load*::
   Executed before the data files are loaded.

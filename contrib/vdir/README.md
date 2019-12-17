@@ -39,7 +39,8 @@ destination, potentially deleting events in the destination that are no longer
 present in the origin.
 
 You can optionally specify an alternative directory for local calcurse data
-using the `-D` flag if it differs from the default `~/.calcurse`.
+using the `-D` flag if it differs from the default `$XDG_DATA_HOME/calcurse`
+(`~/.local/share/calcurse`) or `~/.calcurse`.
 
 Integration with vdirsyncer
 ---------------------------

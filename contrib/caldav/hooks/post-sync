@@ -4,7 +4,9 @@
 # repository, it automatically makes a commit whenever synchronizing with a
 # CalDAV server.
 #
-# In order to install this hook, copy this file to ~/.calcurse/caldav/hooks/.
+# In order to install this hook, copy this file to
+# $XDG_CONFIG_HOME/calcurse/caldav/hooks/ (~/.config/calcurse/caldav/hooks/) or
+# ~/.calcurse/caldav/hooks/ if using ~/.calcurse.
 
 cd "$HOME"/.calcurse/
 
