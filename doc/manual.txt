@@ -176,9 +176,10 @@ long options are supported):
   be specified using the `-c` flag.
 
 `-c <file>, --calendar <file>`::
-  Specify the calendar file to use. The default calendar is `~/.calcurse/apts`
-  (see section <<basics_files,calcurse files>>). This option has precedence
-  over `-D`.
+  Specify the calendar file to use. The default calendar is
+  `$XDG_DATA_HOME/calcurse/apts` (`~/.local/share/calcurse/apts`) or
+  `~/.calcurse/apts` if `~/.calcurse` exists. (see section
+  <<basics_files,calcurse files>>). This option has precedence over `-D`.
 
 `-d <date|num>, --day <date|num>`::
   Print the appointments for the given date  or  for  the given  number  of
@@ -210,7 +211,8 @@ can be specified using the `-c` flag.
 
 `-D <dir>, --directory <dir>`::
   Specify the data directory to use. If not specified, the default directory is
-  `~/.calcurse/`.
+  `$XDG_DATA_HOME/calcurse/` (`~/.local/share/calcurse/`) or `~/.calcurse` if
+  it exists.
 
 `--filter-type <type>`::
   Ignore any items that do not match the type mask. See
@@ -635,9 +637,10 @@ The following environment variables affect the way `calcurse` operates:
 Hooks
 ~~~~~
 
-You can place scripts in `$HOME/.calcurse/hooks/` to trigger actions at certain
-events. To enable a hook, add a script with one of the following names to this
-directory. Also make sure the scripts are executable.
+You can place scripts in `$XDG_CONFIG_HOME/calcurse/hooks/`
+(`$HOME/.config/calcurse/hooks/`) to trigger actions at certain events. To
+enable a hook, add a script with one of the following names to this directory.
+Also make sure the scripts are executable.
 
 *pre-load*::
   Executed before the data files are loaded.
@@ -850,17 +853,15 @@ NOTE: To stop the daemon, just send the `TERM` signal to it, using a command
 calcurse files
 ~~~~~~~~~~~~~~
 
-The following structure is created in your `$HOME`  directory (or in the
-directory you specified with  the  -D  option) the first time `calcurse` is run
-:
+The following structure is created in your `$XDG_CONFIG_HOME` (`$HOME/.config`)
+and in your `$XDG_DATA_HOME` (`$HOME/.local/share`) directories (or in the
+directory you specified with the -D option) the first time calcurse is run:
 
 ----
-$HOME/.calcurse/
-           |___notes/
-           |___conf
-           |___keys
-           |___apts
-           |___todo
+$XDG_DATA_HOME/calcurse/        $XDG_CONFIG_HOME/calcurse/
+                  |___notes/                        |___conf
+                  |___apts                          |___keys
+                  |___todo
 ----
 `notes/`::
   this subdirectory contains descriptions of the notes which are attached to
@@ -868,19 +869,19 @@ $HOME/.calcurse/
   SHA1 hash of the note itself, multiple items can share the same note file.
   calcurse provides a garbage collector (see the `-g` command line parameter)
   that can be used to remove note files which are no longer linked to any item.
-`conf`::
-  this file contains the user configuration
-`keys`::
-  this file contains the user-defined key bindings
 `apts`::
   this file contains  all  of the events and user's appointments
 `todo`::
   this file contains the todo list
+`conf`::
+  this file contains the user configuration
+`keys`::
+  this file contains the user-defined key bindings
 
 NOTE: If the logging of calcurse daemon activity was set in the notification
-      configuration menu, the extra file `daemon.log` will appear in calcurse
-      data directory. This file contains logs about calcurse activity when
-      running in background.
+      configuration menu, the extra file `daemon.log` will appear in the
+      calcurse data directory. This file contains logs about calcurse activity
+      when running in background.
 
 Import/Export capabilities
 ~~~~~~~~~~~~~~~~~~~~~~~~~~

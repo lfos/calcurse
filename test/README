@@ -22,7 +22,7 @@ alternative calcurse binary and data directory.
 Passing another data directory might cause some failures since many tests are
 adapted for the `test/` directory provided by the test suite:
 
-    $ CALCURSE=../src/calcurse DATA_DIR="$HOME/.calcurse/" ./next-001.sh
+    $ CALCURSE=../src/calcurse DATA_DIR="$HOME/.local/share/calcurse/" ./next-001.sh
     Running ./next-001.sh... FAIL
 
 Writing tests

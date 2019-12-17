@@ -17,10 +17,12 @@ Usage
 -----
 
 calcurse-caldav requires an up-to-date version of calcurse and a configuration
-file located at ~/.calcurse/caldav/config. An example configuration file can be
-found under contrib/caldav/config.sample in the calcurse source tree. You will
-also need to install *httplib2* for Python 3 using *pip* (e.g. `pip3 install
---user httplib2`) or your distribution's package manager.
+file located at $XDG_CONFIG_HOME/calcurse/caldav/config
+(~/.local/share/calcurse/caldav/config) or ~/.calcurse/caldav/config if
+~/.calcurse exists. An example configuration file can be found under
+contrib/caldav/config.sample in the calcurse source tree.  You will also need to
+install *httplib2* for Python 3 using *pip* (e.g. `pip3 install --user
+httplib2`) or your distribution's package manager.
 
 If you run calcurse-caldav for the first time, you need to provide the `--init`
 argument. You can choose between the following initialization modes:
@@ -43,9 +45,11 @@ CALCURSE_CALDAV_PASSWORD=$(pass show calcurse) calcurse-caldav
 Hooks
 -----
 
-You can place scripts in `$HOME/.calcurse/caldav/hooks/` to trigger actions at
-certain events. To enable a hook, add a script with one of the following names
-to this directory. Also make sure the scripts are executable.
+You can place scripts in `$XDG_CONFIG_HOME/calcurse/caldav/hooks/`
+(`~/.config/calcurse/caldav/hooks`) or `~/.calcurse/caldav/hooks` if
+`~/.calcurse` exists in order to trigger actions at certain events. To enable a
+hook, add a script with one of the following names to this directory. Also make
+sure the scripts are executable.
 
 *pre-sync*::
   Executed before the data files are synchronized.
@@ -59,10 +63,12 @@ How It Works
 ------------
 
 calcurse-caldav creates a so-called synchronization database at
-`~/.calcurse/caldav/sync.db` that always keeps a snapshot of the last time the
-script was executed. When running the script, it compares the objects on the
-server and the local objects with that snapshot to identify items that were
-added or deleted. It then
+`$XDG_DATA_HOME/calcurse/caldav/sync.db`
+(`~/.local/share/calcurse/caldav/sync.db`) or `~/.calcurse/caldav/sync.db` if
+`~/.calcurse` exists that always keeps a snapshot of the last time the script
+was executed. When running the script, it compares the objects on the server
+and the local objects with that snapshot to identify items that were added or
+deleted. It then
 
 * downloads new objects from the server and imports them into calcurse,
 * deletes local objects that no longer exist on the server,

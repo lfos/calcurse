@@ -1,6 +1,11 @@
 # If you want to synchronize calcurse with a CalDAV server using
-# calcurse-caldav, create a new directory ~/.calcurse/caldav/, copy this file
-# to ~/.calcurse/caldav/config and adjust the configuration below.
+# calcurse-caldav, create a new directory at $XDG_CONFIG_HOME/calcurse/caldav/
+# (~/.config/calcurse/caldav/) and $XDG_DATA_HOME/calcurse/caldav/
+# (~/.local/share/calcurse/caldav/) and copy this file to
+# $XDG_CONFIG_HOME/calcurse/caldav/config and adjust the configuration below.
+# Alternatively, if using ~/.calcurse, create a new directory at
+# ~/.calcurse/caldav/ and copy this file to ~/.calcurse/caldav/config and adjust
+# the configuration file below.
 
 [General]
 # Path to the calcurse binary that is used for importing/exporting items.
