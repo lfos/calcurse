@@ -84,7 +84,8 @@
 #endif /* ENABLE_NLS */
 
 /* Paths configuration. */
-#define DIR_NAME         ".calcurse/"
+#define DIR_NAME         "calcurse/"
+#define DIR_NAME_LEGACY  ".calcurse/"
 #define TODO_PATH_NAME   "todo"
 #define APTS_PATH_NAME   "apts"
 #define CONF_PATH_NAME   "conf"
