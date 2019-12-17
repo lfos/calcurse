@@ -143,17 +143,44 @@ unsigned io_fprintln(const char *fname, const char *fmt, ...)
  */
 void io_init(const char *cfile, const char *datadir, const char *confdir)
 {
-	if (!datadir) {
-		if (!(datadir = getenv("HOME")))
-			datadir = ".";
-		asprintf(&path_ddir, "%s%s", datadir, "/" DIR_NAME);
-	} else
-		asprintf(&path_ddir, "%s%s", datadir, "/");
+	char* home_dir = getenv("HOME");
+	char* legacy_dir = NULL;
 
-	if (!confdir)
-		asprintf(&path_cdir, "%s%s", path_ddir, "/");
+	if (home_dir) {
+		asprintf(&legacy_dir, "%s%s", home_dir, "/" DIR_NAME_LEGACY);
+		if (!io_dir_exists(legacy_dir)) {
+			mem_free(legacy_dir);
+			legacy_dir = NULL;
+		}
+	}
+
+	if (datadir)
+		asprintf(&path_ddir, "%s%s", datadir, "/");
+	else if (legacy_dir)
+		path_ddir = mem_strdup(legacy_dir);
+	else if ((path_ddir = getenv("XDG_DATA_HOME")))
+		asprintf(&path_ddir, "%s%s", path_ddir, "/" DIR_NAME);
+	else if (home_dir)
+		asprintf(&path_ddir, "%s%s", home_dir, "/.local/share/" DIR_NAME);
 	else
+		path_ddir = mem_strdup("./." DIR_NAME);
+
+
+	if (confdir)
 		asprintf(&path_cdir, "%s%s", confdir, "/");
+	else if (datadir)
+		path_cdir = mem_strdup(path_ddir);
+	else if (legacy_dir)
+		path_cdir = mem_strdup(legacy_dir);
+	else if ((path_cdir = getenv("XDG_CONFIG_HOME")))
+		asprintf(&path_cdir, "%s%s", path_cdir, "/" DIR_NAME);
+	else if (home_dir)
+		asprintf(&path_cdir, "%s%s", home_dir, "/.config/" DIR_NAME);
+	else
+		path_cdir = mem_strdup("./." DIR_NAME);
+
+	if (legacy_dir)
+		mem_free(legacy_dir);
 
 	/* Data files */
 	if (cfile) {
