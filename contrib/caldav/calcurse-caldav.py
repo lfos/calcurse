@@ -519,11 +519,21 @@ def run_hook(name):
 nsmap = {"D": "DAV:", "C": "urn:ietf:params:xml:ns:caldav"}
 
 # Initialize default values.
-configfn = os.path.expanduser("~/.calcurse/caldav/config")
-lockfn = os.path.expanduser("~/.calcurse/caldav/lock")
-syncdbfn = os.path.expanduser("~/.calcurse/caldav/sync.db")
-hookdir = os.path.expanduser("~/.calcurse/caldav/hooks/")
-oauth_file = os.path.expanduser("~/.calcurse/caldav/oauth2_cred")
+if os.path.isdir(os.path.expanduser("~/.calcurse")):
+    configfn = os.path.expanduser("~/.calcurse/caldav/config")
+    lockfn = os.path.expanduser("~/.calcurse/caldav/lock")
+    syncdbfn = os.path.expanduser("~/.calcurse/caldav/sync.db")
+    hookdir = os.path.expanduser("~/.calcurse/caldav/hooks/")
+    oauth_file = os.path.expanduser("~/.calcurse/caldav/oauth2_cred")
+else:
+    calcurse_data = os.getenv("XDG_DATA_HOME", os.path.expanduser("~/.local/share")) + "/calcurse"
+    calcurse_config = os.getenv("XDG_CONFIG_HOME", os.path.expanduser("~/.local/share")) + "/calcurse"
+
+    configfn = os.path.expanduser(calcurse_config + "/caldav/config")
+    lockfn = os.path.expanduser(calcurse_data + "/caldav/lock")
+    syncdbfn = os.path.expanduser(calcurse_data + "/caldav/sync.db")
+    hookdir = os.path.expanduser(calcurse_config + "/caldav/hooks/")
+    oauth_file = os.path.expanduser(calcurse_config + "/caldav/oauth2_cred")
 
 # Parse command line arguments.
 parser = argparse.ArgumentParser('calcurse-caldav')
