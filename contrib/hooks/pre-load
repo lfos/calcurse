@@ -3,7 +3,9 @@
 # This is an example hook. It synchronizes calcurse with a CalDAV server before
 # loading the data files.
 #
-# In order to install this hook, copy this file to ~/.calcurse/hooks/.
+# In order to install this hook, copy this file to
+# $XDG_CONFIG_HOME/calcurse/hooks/ (~/.config/calcurse/hooks/) or
+# ~/.calcurse/hooks/ if using ~/.calcurse.
 
 cd "$HOME"/.calcurse/
 

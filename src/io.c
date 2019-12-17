@@ -136,10 +136,11 @@ unsigned io_fprintln(const char *fname, const char *fmt, ...)
 /*
  * Initialization of data paths. The cfile argument is the variable
  * which contains the calendar file. If none is given, then the default
- * one (~/.calcurse/apts) is taken. If the one given does not exist, it
- * is created.
+ * one (~/.local/share/calcurse/apts) is taken. If the one given does not exist,
+ * it is created.
  * The datadir argument can be used to specify an alternative data root dir.
  * The confdir argument can be used to specify an alternative configuration dir.
+ * If ~/.calcurse exists, it will be used instead for backward compatibility.
  */
 void io_init(const char *cfile, const char *datadir, const char *confdir)
 {
@@ -1164,11 +1165,15 @@ int io_check_file(const char *file)
  * Checks if data files exist. If not, create them.
  * The following structure has to be created:
  *
- *   <datadir>   <configdir> (default for both: $HOME/.calcurse/)
+ *   <datadir>   <configdir>
  *        |             |
  *        |__ apts      |___ conf
  *        |__ todo      |___ keys
  *        |__ notes/    |___ hooks/
+ *
+ * Defaults:
+ * - datadir: $XDG_DATA_HOME/calcurse (~/.local/share/calcurse)
+ * - configdir: $XDG_CONFIG_HOME/calcurse (~/.config/calcurse)
  */
 int io_check_data_files(void)
 {
