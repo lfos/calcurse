@@ -7,13 +7,15 @@
 # $XDG_CONFIG_HOME/calcurse/hooks/ (~/.config/calcurse/hooks/) or
 # ~/.calcurse/hooks/ if using ~/.calcurse.
 
-cd "$HOME"/.calcurse/
+[ -d "$HOME/.calcurse" ] && data_dir="$HOME/.calcurse" || data_dir="${XDG_DATA_HOME:-$HOME/.local/share}/calcurse"
+
+cd "$data_dir" || exit
 
 # Do not do anything when synchronizing with a CalDAV server.
 [ -f caldav/lock ] && exit
 
 # Run the CalDAV synchronization script in the background.
-if [ -d caldav -a -x "$(which calcurse-caldav)" ]; then
+if [ -d caldav ] && command -v calcurse-caldav >/dev/null; then
 	(
 		date="$(date +'%b %d %H:%M:%S')"
 		echo "$date Running calcurse-caldav from the pre-load hook..."
