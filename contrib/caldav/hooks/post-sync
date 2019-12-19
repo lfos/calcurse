@@ -8,12 +8,28 @@
 # $XDG_CONFIG_HOME/calcurse/caldav/hooks/ (~/.config/calcurse/caldav/hooks/) or
 # ~/.calcurse/caldav/hooks/ if using ~/.calcurse.
 
-cd "$HOME"/.calcurse/
+data_dir="$HOME/.calcurse"
+config_dir="$HOME/.calcurse"
 
-# If the data directory is under version control, create a Git commit.
-if [ -d .git -a -x "$(which git)" ]; then
-	git add apts conf keys todo
-	if ! git diff-index --quiet --cached HEAD; then
-		git commit -m "Automatic commit by the post-sync hook"
-	fi
+if [ ! -d "$data_dir" ]; then
+	data_dir="${XDG_DATA_HOME:-$HOME/.local/share}/calcurse"
+	config_dir="${XDG_CONFIG_HOME:-$HOME/.config}/calcurse"
 fi
+
+# Do not do anything when synchronizing with a CalDAV server.
+[ -f "$data_dir/caldav/lock" ] && exit
+
+# If the directory is under version control, create a Git commit.
+commit_dir() {
+	cd "$1" >/dev/null 2>&1 || return
+	shift
+	if [ -d .git ] && command -v git >/dev/null; then
+		git add "$@"
+		if ! git diff-index --quiet --cached HEAD; then
+			git commit -m "Automatic commit by the post-save hook"
+		fi
+	fi
+}
+
+commit_dir "$data_dir" apts todo
+commit_dir "$config_dir" conf keys
