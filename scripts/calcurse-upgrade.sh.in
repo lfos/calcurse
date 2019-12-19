@@ -4,7 +4,7 @@ export TEXTDOMAIN='calcurse'
 
 set -e
 
-CONFFILE=$HOME/.calcurse/conf
+[ -d "$HOME/.calcurse" ] && CONFFILE="$HOME/.calcurse/conf" || CONFFILE="${XDG_CONFIG_HOME:-$HOME/.config}/calcurse/conf"
 
 if [ "$#" -gt 0 ]; then
   if [ "$1" = "--config" ]; then
