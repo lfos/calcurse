@@ -4,6 +4,12 @@ TESTS = \
 	true-001.sh \
 	run-test-001.sh \
 	run-test-002.sh \
+	io-001.sh \
+	io-002.sh \
+	io-003.sh \
+	io-004.sh \
+	io-005.sh \
+	io-006.sh \
 	todo-001.sh \
 	todo-002.sh \
 	todo-003.sh \
