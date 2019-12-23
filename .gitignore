@@ -33,4 +33,6 @@ src/.deps/
 src/calcurse
 
 test/*.o
+test/*.log
+test/*.trs
 test/run-test
