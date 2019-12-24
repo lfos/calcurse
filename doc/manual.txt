@@ -176,10 +176,14 @@ long options are supported):
   be specified using the `-c` flag.
 
 `-c <file>, --calendar <file>`::
-  Specify the calendar file to use. The default calendar is
-  `$XDG_DATA_HOME/calcurse/apts` (`~/.local/share/calcurse/apts`) or
-  `~/.calcurse/apts` if `~/.calcurse` exists. (see section
-  <<basics_files,calcurse files>>). This option has precedence over `-D`.
+  Specify the calendar file to use. The default calendar is located at
+  `<datadir>/apts` (see section <<basics_files,calcurse files>>). This option
+  has precedence over `-D`.
+
+`-C <dir>, --directory <dir>`::
+  Specify the configuration directory to use. See
+  <<basics_files,calcurse files>> for the default directory and for the
+  interaction with `-D`.
 
 `-d <date|num>, --day <date|num>`::
   Print the appointments for the given date  or  for  the given  number  of
@@ -210,9 +214,8 @@ can be specified using the `-c` flag.
   combined with `--to`.
 
 `-D <dir>, --directory <dir>`::
-  Specify the data directory to use. If not specified, the default directory is
-  `$XDG_DATA_HOME/calcurse/` (`~/.local/share/calcurse/`) or `~/.calcurse` if
-  it exists.
+  Specify the (data) directory to use. See <<basics_files,calcurse files>> for
+  the default directory and for the interaction with `-C`.
 
 `--filter-type <type>`::
   Ignore any items that do not match the type mask. See
@@ -634,13 +637,15 @@ The following environment variables affect the way `calcurse` operates:
   Specifies the default viewer to be used for reading notes.  If this variable
   is not set, then `/usr/bin/less` is used.
 
+See also <<basics_files,calcurse files>>.
+
 Hooks
 ~~~~~
 
-You can place scripts in `$XDG_CONFIG_HOME/calcurse/hooks/`
-(`$HOME/.config/calcurse/hooks/`) to trigger actions at certain events. To
-enable a hook, add a script with one of the following names to this directory.
-Also make sure the scripts are executable.
+You can place scripts in `<confdir>/hooks/`
+(see section <<basics_files,calcurse files>>) to trigger actions at certain
+events. To enable a hook, add a script with one of the following names to this
+directory. Also make sure the scripts are executable.
 
 *pre-load*::
   Executed before the data files are loaded.
@@ -853,15 +858,28 @@ NOTE: To stop the daemon, just send the `TERM` signal to it, using a command
 calcurse files
 ~~~~~~~~~~~~~~
 
-The following structure is created in your `$XDG_CONFIG_HOME` (`$HOME/.config`)
-and in your `$XDG_DATA_HOME` (`$HOME/.local/share`) directories (or in the
-directory you specified with the -D option) the first time calcurse is run:
+An alternative directory for 'both' the configuration files and the data
+directory may be specified with the `-D` option.
+
+An alternative directory for the configuration files 'only' may be specified
+with the `-C` option; in that case data files are either in the default
+directory or in the directory specified by `-D`. If both `-D` and `-C` are
+present, configuration files in the data directory, if any, are ignored.
+
+If +$HOME/.calcurse+ exists, then it will be used as the default for both the
+data directory and the configuration directory.
 
 ----
-$XDG_DATA_HOME/calcurse/        $XDG_CONFIG_HOME/calcurse/
-                  |___notes/                        |___conf
-                  |___apts                          |___keys
-                  |___todo
+<datadir>      <confdir>
+     |             |
+     |__ apts      |___ conf
+     |__ todo      |___ keys
+     |__ notes/    |___ hooks/
+
+defaults:
+     <datadir>: $XDG_DATA_HOME/calcurse ($HOME/.local/share/calcurse)
+     <confdir>: $XDG_CONFIG_HOME/calcurse ($HOME/.config/calcurse)
+     both: $HOME/.calcurse (only if it exists)
 ----
 `notes/`::
   this subdirectory contains descriptions of the notes which are attached to
@@ -877,6 +895,9 @@ $XDG_DATA_HOME/calcurse/        $XDG_CONFIG_HOME/calcurse/
   this file contains the user configuration
 `keys`::
   this file contains the user-defined key bindings
+`hooks/`::
+  this subdirectory contains scripts that you can use to trigger actions at
+  certain events (see <<_hooks,Hooks>>)
 
 NOTE: If the logging of calcurse daemon activity was set in the notification
       configuration menu, the extra file `daemon.log` will appear in the
