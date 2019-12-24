@@ -1084,17 +1084,15 @@ int io_check_dir(const char *dir)
 	char *path = mem_strdup(dir);
 	char *index;
 
-	int existed = 1;
+	int existed = 1, failed = 0;
 	errno = 0;
 	for (index = path + 1; *index; index++) {
 		if (*index == '/') {
 			*index = '\0';
 			if (mkdir(path, 0700) != 0) {
 				if (errno != EEXIST) {
-					fprintf(stderr,
-						_("FATAL ERROR: could not create %s: %s\n"),
-						path, strerror(errno));
-					exit_calcurse(EXIT_FAILURE);
+					failed = 1;
+					break;
 				}
 			} else {
 				existed = 0;
@@ -1103,15 +1101,18 @@ int io_check_dir(const char *dir)
 		}
 	}
 
-	if (mkdir(path, 0700) != 0) {
-		if (errno != EEXIST) {
-			fprintf(stderr,
-				_("FATAL ERROR: could not create %s: %s\n"),
-				path, strerror(errno));
-			exit_calcurse(EXIT_FAILURE);
-		}
+	if (!failed && mkdir(path, 0700) != 0) {
+		if (errno != EEXIST)
+			failed = 1;
 	} else {
 		existed = 0;
+	}
+
+	if(failed) {
+		fprintf(stderr,
+			_("FATAL ERROR: could not create %s: %s\n"),
+			path, strerror(errno));
+		exit_calcurse(EXIT_FAILURE);
 	}
 
 	mem_free(path);
