@@ -143,22 +143,17 @@ are marked "('also interactively')".
 
 *-c* 'file', *--calendar* 'file'::
   ('also interactively') Specify the calendar file to use. The default
-  calendar is *$XDG_DATA_HOME/apts* (*\~/.local/share/calcurse/apts*) or
-  *\~/.calcurse/apts* if *~/.calcurse* exists.  (see <<_files,FILES>>). If
-  'file' is not an absolute path name, it is interpreted relative to the current
-  working directory. The option has precedence over *-D*.
+  calendar is located at *<datadir>/apts* (see <<_files,FILES>>). If 'file' is
+  not an absolute path name, it is interpreted relative to the current working
+  directory. The option has precedence over *-D*.
 
 *-C* 'dir', *--confdir* 'dir'::
-  ('also interactively') Specify the configuration directory to use. If not
-  specified, the default directory is *$XDG_CONFIG_HOME/calcurse/*
-  (*\~/.config/calcurse/*) or *~/.calcurse* if it exists.  See <<_files,FILES>>
-  for the interaction with *-D*.
+  ('also interactively') Specify the configuration directory to use. See section
+  <<_files,FILES>> for the default directory and the interaction with *-D*.
 
 *-D* 'dir', *--datadir* 'dir'::
-  ('also interactively') Specify the (data) directory to use. If not specified,
-  the default directory is *$XDG_DATA_HOME/calcurse*
-  (*\~/.local/share/calcurse/*) or *~/.calcurse* if it exists.  See section
-  <<_files,FILES>> for the interaction with *-C*.
+  ('also interactively') Specify the (data) directory to use. See section
+  <<_files,FILES>> for the default directory and the interaction with *-C*.
 
 *-d* 'date|num', *--day* 'date|num'::
   Print appointments and events for the given date or given range of days,
@@ -631,8 +626,8 @@ $XDG_DATA_HOME/calcurse/        $XDG_CONFIG_HOME/calcurse/
                   |___todo                          |___keys
 ----
 
-+$XDG_DATA_HOME+ defaults to +\~/.local/share+ and +$XDG_CONFIG_HOME+ defaults to
-+~/.config+.
++$XDG_DATA_HOME+ defaults to +$HOME/.local/share+ and +$XDG_CONFIG_HOME+
+defaults to +$HOME/.config+.
 
 The files are of two different kinds: data and configuration. The data files
 constitute the calcurse database and are independent of the calcurse release
@@ -664,15 +659,13 @@ scripts, see <<_hooks,Hooks>>.
 Directory configuration
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-An alternative directory to the defaults +$XDG_DATA_HOME/calcurse+
-(+$HOME/.local/share/calcurse+) and +$XDG_CONFIG_HOME/calcurse+
-(+$HOME/.config/calcurse+) may be specified with the *-D* option.
+An alternative directory for 'both' the configuration files and the data
+directory may be specified with the *-D* option.
 
 An alternative directory for the configuration files 'only' may be specified
 with the *-C* option; in that case data files are either in the default
-directory or in the directory specified by *-D*. If both *-D* and
-*-C* are present, configuration files in the data directory, if any, are
-ignored.
+directory or in the directory specified by *-D*. If both *-D* and *-C* are
+present, configuration files in the data directory, if any, are ignored.
 
 If +$HOME/.calcurse+ exists, then it will be used as the default for both the
 data directory and the configuration directory.
@@ -702,10 +695,10 @@ $ calcurse -C "$HOME/.config/calcurse/config"
 Hooks
 ~~~~~
 
-Scripts placed in +$XDG_CONFIG_HOME/calcurse/hooks/+
-(+$HOME/.config/calcurse/hooks+) trigger actions at certain events. To enable a
-hook, add a script with one of the following names to this directory. Also make
-sure the script is executable.
+Scripts placed in +<confdir>/calcurse/hooks/+
+(see <<_directory_configuration,Directory configuration>>) trigger actions at
+certain events.  To enable a hook, add a script with one of the following names
+to this directory. Also make sure the script is executable.
 
 *pre-load*::
   Executed before the data files are loaded.
@@ -738,6 +731,8 @@ A few environment variables affect how calcurse operates.
 *MERGETOOL*::
   Tool used to merge two files to solve a save conflict. Default is +vimdiff+.
   The program is called with two file names as the only arguments.
+
+See also <<_files,FILES>>.
 
 BUGS
 ----
