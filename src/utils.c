@@ -112,7 +112,7 @@ void free_user_data(void)
 	apoint_llist_free();
 	recur_apoint_llist_free();
 	recur_event_llist_free();
-	for (i = 0; i <= 37; i++)
+	for (i = 0; i <= REG_BLACK_HOLE; i++)
 		ui_day_item_cut_free(i);
 	todo_free_list();
 	notify_free_app();

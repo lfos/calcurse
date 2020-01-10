@@ -297,8 +297,6 @@ enum key keys_get(WINDOW *win, int *count, int *reg)
 				*reg = ch - '1' + 1;
 			} else if (ch >= 'a' && ch <= 'z') {
 				*reg = ch - 'a' + 10;
-			} else if (ch == '_') {
-				*reg = REG_BLACK_HOLE;
 			}
 			ch = keys_wgetch(win);
 		}

@@ -161,8 +161,11 @@
 #define KEYS_LABELEN        8	/* length of command description */
 #define KEYS_CMDS_PER_LINE  6	/* max number of commands per line */
 
-/* Register definitions. */
-#define REG_BLACK_HOLE 37
+/*
+ * Register definitions, see ui_day.c.
+ * Index 0-35 is used for '0'-'9' and 'a'-'z', see keys_get().
+ */
+#define REG_BLACK_HOLE 36
 
 /* Size of the hash table the note garbage collector uses. */
 #define NOTE_GC_HSIZE 1024
@@ -1115,6 +1118,7 @@ void ui_day_item_delete(unsigned);
 void ui_day_item_edit(void);
 void ui_day_item_pipe(void);
 void ui_day_item_repeat(void);
+void ui_day_item_cut(unsigned);
 void ui_day_item_cut_free(unsigned);
 void ui_day_item_copy(unsigned);
 void ui_day_item_paste(unsigned);

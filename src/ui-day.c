@@ -36,7 +36,8 @@
 
 #include "calcurse.h"
 
-struct day_item day_cut[38] = { {0, 0, 0, {NULL}} };
+/* Cut & paste registers. */
+static struct day_item day_cut[REG_BLACK_HOLE + 1];
 
 /*
  * Set the selected day in the calendar from the selected item in the APP panel.
@@ -834,11 +835,7 @@ void ui_day_item_delete(unsigned reg)
 			return;
 		}
 	}
-
-	ui_day_item_cut_free(reg);
-	p = day_cut_item(listbox_get_sel(&lb_apt));
-	day_cut[reg].type = p->type;
-	day_cut[reg].item = p->item;
+	ui_day_item_cut(reg);
 	/* Keep the selection on the same day. */
 	day_set_sel_data(day_get_item(listbox_get_sel(&lb_apt) - 1));
 	io_set_modified();
@@ -995,11 +992,7 @@ void ui_day_item_repeat(void)
 		/* NOTREACHED */
 	}
 	day_set_sel_data(&d);
-
-	ui_day_item_cut_free(REG_BLACK_HOLE);
-	p = day_cut_item(item_nb);
-	day_cut[REG_BLACK_HOLE].type = p->type;
-	day_cut[REG_BLACK_HOLE].item = p->item;
+	ui_day_item_cut(REG_BLACK_HOLE);
 	io_set_modified();
 
 	ui_calendar_monthly_view_cache_set_invalid();
@@ -1008,9 +1001,23 @@ cleanup:
 	mem_free(msg_asktype);
 }
 
+/* Delete an item and save it in a register. */
+void ui_day_item_cut(unsigned reg)
+{
+	struct day_item *p;
+
+	ui_day_item_cut_free(reg);
+
+	p = day_cut_item(listbox_get_sel(&lb_apt));
+	day_cut[reg].type = p->type;
+	day_cut[reg].item = p->item;
+}
+
 /* Free the current cut item, if any. */
 void ui_day_item_cut_free(unsigned reg)
 {
+	EXIT_IF(reg > REG_BLACK_HOLE, "illegal register");
+
 	if (!day_cut[reg].type) {
 		/* No previously cut item, don't free anything. */
 		return;
