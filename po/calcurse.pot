@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2019-06-16 15:27-0400\n"
+"POT-Creation-Date: 2020-01-30 19:14+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -377,6 +377,9 @@ msgstr ""
 msgid "(insert an empty line after each appointment)"
 msgstr ""
 
+msgid "(text for a day without events and appointments)"
+msgstr ""
+
 msgid "(display more than one day in the appointments panel)"
 msgstr ""
 
@@ -431,6 +434,9 @@ msgstr ""
 msgid "(Format of the date displayed in the appointments panel)"
 msgstr ""
 
+msgid "Enter a text string (an empty string for the default text)"
+msgstr ""
+
 msgid "Enter the date format (see 'man 3 strftime' for possible formats) "
 msgstr ""
 
@@ -472,9 +478,6 @@ msgid "Could not save %s."
 msgstr ""
 
 msgid "unknown item type"
-msgstr ""
-
-msgid "(none)"
 msgstr ""
 
 msgid "Event:"
