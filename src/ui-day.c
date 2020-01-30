@@ -544,10 +544,10 @@ static int edit_ilist(llist_t *ilist, int_list_t type)
 			} else {
 				status_mesg(msg_invalid, msg_cont);
 				keys_wgetch(win[KEY].p);
-				mem_free(istr);
-				status_mesg(msg, "");
-				istr = int2str(ilist, type);
 			}
+			mem_free(istr);
+			status_mesg(msg, "");
+			istr = int2str(ilist, type);
 		} else if (ret == GETSTRING_ESC)
 			break;
 	}
@@ -557,11 +557,12 @@ static int edit_ilist(llist_t *ilist, int_list_t type)
 	return updated;
 }
 
-static void update_rept(time_t start, long dur, struct rpt **rpt, llist_t *exc)
+static int update_rept(time_t start, long dur, struct rpt **rpt, llist_t *exc,
+			int simple)
 {
+	int updated = 0;
 	struct rpt nrpt;
-	char *msg_rpt_current = NULL;
-	char *msg_rpt_asktype = NULL;
+	char *types = NULL;
 	char *freqstr = NULL;
 	char *timstr = NULL;
 	char *outstr = NULL;
@@ -573,37 +574,37 @@ static void update_rept(time_t start, long dur, struct rpt **rpt, llist_t *exc)
 	LLIST_INIT(&nrpt.bymonthday);
 
 	/* Edit repetition type. */
-	const char *msg_rpt_prefix = _("Enter the repetition type:");
-	const char *msg_rpt_daily = _("(d)aily");
-	const char *msg_rpt_weekly = _("(w)eekly");
-	const char *msg_rpt_monthly = _("(m)onthly");
-	const char *msg_rpt_yearly = _("(y)early");
-	const char *msg_rpt_choice = _("[dwmy]");
+	const char *msg_prefix = _("Repetition type:");
+	const char *daily = _("(d)aily");
+	const char *weekly = _("(w)eekly");
+	const char *monthly = _("(m)onthly");
+	const char *yearly = _("(y)early");
+	const char *dwmy = _("[dwmy]");
 
 	/* Find the current repetition type. */
-	const char *rpt_current;
+	const char *current;
 	switch (recur_def2char((*rpt)->type)) {
 	case 'D':
-		rpt_current = msg_rpt_daily;
+		current = daily;
 		break;
 	case 'W':
-		rpt_current = msg_rpt_weekly;
+		current = weekly;
 		break;
 	case 'M':
-		rpt_current = msg_rpt_monthly;
+		current = monthly;
 		break;
 	case 'Y':
-		rpt_current = msg_rpt_yearly;
+		current = yearly;
 		break;
 	default:
-		/* NOTREACHED, but makes the compiler happier. */
-		rpt_current = msg_rpt_daily;
+		/* New item. */
+		current = "";
 	}
-	asprintf(&msg_rpt_current, _("(p.t. %s)"), rpt_current);
-	asprintf(&msg_rpt_asktype, "%s %s, %s, %s, %s? %s", msg_rpt_prefix,
-		 msg_rpt_daily, msg_rpt_weekly, msg_rpt_monthly,
-		 msg_rpt_yearly, msg_rpt_current);
-	switch (status_ask_choice(msg_rpt_asktype, msg_rpt_choice, 4)) {
+	asprintf(&types, "%s %s, %s, %s, %s?",
+		 msg_prefix, daily, weekly, monthly, yearly);
+	if (current[0])
+		asprintf(&types, "%s (now %s)", types, current);
+	switch (status_ask_choice(types, dwmy, 4)) {
 	case 1:
 		nrpt.type = 'D';
 		break;
@@ -622,8 +623,8 @@ static void update_rept(time_t start, long dur, struct rpt **rpt, llist_t *exc)
 	nrpt.type = recur_char2def(nrpt.type);
 
 	/* Edit frequency. */
-	const char *msg_freq = _("Enter the repetition frequency:");
-	const char *msg_wrong_freq = _("Invalid frequency.");
+	const char *msg_freq = _("Repetition frequency:");
+	const char *msg_inv_freq = _("Invalid frequency.");
 	do {
 		status_mesg(msg_freq, "");
 		mem_free(freqstr);
@@ -633,23 +634,23 @@ static void update_rept(time_t start, long dur, struct rpt **rpt, llist_t *exc)
 			goto cleanup;
 		}
 		nrpt.freq = atoi(freqstr);
-		if (nrpt.freq == 0) {
-			status_mesg(msg_wrong_freq, msg_cont);
+		if (nrpt.freq <= 0) {
+			status_mesg(msg_inv_freq, msg_cont);
 			keys_wait_for_any_key(win[KEY].p);
 		}
 	}
-	while (nrpt.freq == 0);
+	while (nrpt.freq <= 0);
 
-	/* Edit end date. */
+	/* Edit until date. */
 	const char *msg_until_1 =
-		_("Enter end date or duration ('?' for input formats):");
+		_("Until date or duration ('?' for input formats):");
 	const char *msg_help_1 =
 		_("Date: %s (year or month may be omitted). Endless duration: 0.");
 	const char *msg_help_2 =
 		_("Duration in days: +dd. Duration in weeks and days: +??w??d.");
-	const char *msg_wrong_time =
-		_("Invalid date: end date must come after start date (%s).");
-	const char *msg_wrong_date = _("Invalid date.");
+	const char *msg_inv_until =
+		_("Invalid date: until date must come after start date (%s).");
+	const char *msg_inv_date = _("Invalid date.");
 
 	for (;;) {
 		mem_free(timstr);
@@ -674,7 +675,7 @@ static void update_rept(time_t start, long dur, struct rpt **rpt, llist_t *exc)
 		if (*timstr == '+') {
 			unsigned days;
 			if (!parse_date_duration(timstr + 1, &days, start)) {
-				status_mesg(msg_wrong_date, msg_cont);
+				status_mesg(msg_inv_date, msg_cont);
 				keys_wgetch(win[KEY].p);
 				continue;
 			}
@@ -687,7 +688,7 @@ static void update_rept(time_t start, long dur, struct rpt **rpt, llist_t *exc)
 			int year, month, day;
 			if (!parse_date(timstr, conf.input_datefmt, &year,
 			    &month, &day, ui_calendar_get_slctd_day())) {
-				status_mesg(msg_wrong_date, msg_cont);
+				status_mesg(msg_inv_date, msg_cont);
 				keys_wgetch(win[KEY].p);
 				continue;
 			}
@@ -701,9 +702,17 @@ static void update_rept(time_t start, long dur, struct rpt **rpt, llist_t *exc)
 		mem_free(timstr);
 		mem_free(outstr);
 		timstr = date_sec2date_str(start, DATEFMT(conf.input_datefmt));
-		asprintf(&outstr, msg_wrong_time, timstr);
+		asprintf(&outstr, msg_inv_until, timstr);
 		status_mesg(outstr, msg_cont);
 		keys_wgetch(win[KEY].p);
+	}
+
+	if (simple) {
+		(*rpt)->type = nrpt.type;
+		(*rpt)->freq = nrpt.freq;
+		(*rpt)->until = nrpt.until;
+		updated = 1;
+		goto cleanup;
 	}
 
 	/* Edit exception list. */
@@ -779,9 +788,9 @@ static void update_rept(time_t start, long dur, struct rpt **rpt, llist_t *exc)
 	recur_free_int_list(&(*rpt)->bymonthday);
 	recur_int_list_dup(&(*rpt)->bymonthday, &nrpt.bymonthday);
 
+	updated = 1;
 cleanup:
-	mem_free(msg_rpt_current);
-	mem_free(msg_rpt_asktype);
+	mem_free(types);
 	mem_free(freqstr);
 	mem_free(timstr);
 	mem_free(outstr);
@@ -789,9 +798,12 @@ cleanup:
 	recur_free_int_list(&nrpt.bywday);
 	recur_free_int_list(&nrpt.bymonth);
 	recur_free_int_list(&nrpt.bymonthday);
+
+	return updated;
 }
 
 /* Edit an already existing item. */
+#define ADVANCED 0
 void ui_day_item_edit(void)
 {
 	struct recur_event *re;
@@ -818,7 +830,7 @@ void ui_day_item_edit(void)
 			update_desc(&re->mesg);
 			break;
 		case 2:
-			update_rept(re->day, -1, &re->rpt, &re->exc);
+			update_rept(re->day, -1, &re->rpt, &re->exc, ADVANCED);
 			break;
 		default:
 			return;
@@ -854,7 +866,8 @@ void ui_day_item_edit(void)
 			break;
 		case 4:
 			need_check_notify = 1;
-			update_rept(ra->start, ra->dur, &ra->rpt, &ra->exc);
+			update_rept(ra->start, ra->dur, &ra->rpt, &ra->exc,
+				    ADVANCED);
 			break;
 		case 5:
 			need_check_notify = 1;
@@ -904,6 +917,7 @@ void ui_day_item_edit(void)
 	if (need_check_notify)
 		notify_check_next_app(1);
 }
+#undef ADVANCED
 
 /* Pipe an appointment or event to an external program. */
 void ui_day_item_pipe(void)
@@ -1165,161 +1179,69 @@ void ui_day_item_delete(unsigned reg)
  */
 void ui_day_item_repeat(void)
 {
-	char user_input[BUFSIZ] = "";
-	const char *msg_rpt_prefix = _("Enter the repetition type:");
-	const char *msg_rpt_daily = _("(d)aily");
-	const char *msg_rpt_weekly = _("(w)eekly");
-	const char *msg_rpt_monthly = _("(m)onthly");
-	const char *msg_rpt_yearly = _("(y)early");
-	const char *msg_type_choice = _("[dwmy]");
-	const char *mesg_freq_1 = _("Enter the repetition frequency:");
-	const char *mesg_wrong_freq = _("Invalid frequency.");
-	const char *mesg_until_1 = _("Enter end date or duration ('?' for input formats):");
-	const char *mesg_help_1 = _("Date: %s (year or month may be omitted). Endless duration: '0'.");
-	const char *mesg_help_2 = _("Duration in days: +dd. Duration in weeks and days: +??w??d.");
-	const char *mesg_wrong_1 = _("Invalid date.");
-	const char *mesg_wrong_2 = _("Press [ENTER] to continue.");
-	const char *wrong_type_1 = _("This item is already a repeated one.");
-	const char *wrong_type_2 = _("Press [ENTER] to continue.");
-	const char *mesg_older = _("Invalid date: end date must come after start date (%s).");
-
-	char *msg_asktype;
-	asprintf(&msg_asktype, "%s %s, %s, %s, %s", msg_rpt_prefix,
-		 msg_rpt_daily, msg_rpt_weekly, msg_rpt_monthly,
-		 msg_rpt_yearly);
-
-	int type = 0, freq = 0;
-	int item_nb;
+	int item_nb, simple;
 	struct day_item *p;
-	struct recur_apoint *ra;
-	time_t until;
-	unsigned days;
+	long dur;
+	struct rpt rpt, *r;
+	const char *already = _("Already repeated.");
+	const char *cont = _("Press any key to continue.");
+	const char *repetition = _("A (s)imple or (a)dvanced repetition?");
+	const char *sa = _("[sa]");
 
 	if (day_item_count(0) <= 0)
-		goto cleanup;
+		return;
 
 	item_nb = listbox_get_sel(&lb_apt);
 	p = day_get_item(item_nb);
 	if (p->type != APPT && p->type != EVNT) {
-		status_mesg(wrong_type_1, wrong_type_2);
+		status_mesg(already, cont);
 		keys_wait_for_any_key(win[KEY].p);
-		goto cleanup;
+		return;
 	}
 
-	switch (status_ask_choice(msg_asktype, msg_type_choice, 4)) {
+	switch (status_ask_choice(repetition, sa, 2)) {
 	case 1:
-		type = RECUR_DAILY;
+		simple = 1;
 		break;
 	case 2:
-		type = RECUR_WEEKLY;
-		break;
-	case 3:
-		type = RECUR_MONTHLY;
-		break;
-	case 4:
-		type = RECUR_YEARLY;
+		simple = 0;
 		break;
 	default:
-		goto cleanup;
+		return;
 	}
 
-	while (freq == 0) {
-		status_mesg(mesg_freq_1, "");
-		if (getstring(win[STA].p, user_input, BUFSIZ, 0, 1) !=
-		    GETSTRING_VALID)
-			goto cleanup;
-		freq = atoi(user_input);
-		if (freq == 0) {
-			status_mesg(mesg_wrong_freq, wrong_type_2);
-			keys_wait_for_any_key(win[KEY].p);
-		}
-		user_input[0] = '\0';
-	}
-
-	char *outstr, *datestr;
-	for (;;) {
-		status_mesg(mesg_until_1, "");
-		if (getstring(win[STA].p, user_input, BUFSIZ, 0, 1) == GETSTRING_ESC)
-			goto cleanup;
-		if (strcmp(user_input, "") == 0 || strcmp(user_input, "0") == 0) {
-			until = 0;
-			break;
-		}
-		if (*user_input == '?') {
-			user_input[0] = '\0';
-			asprintf(&outstr, mesg_help_1, DATEFMT_DESC(conf.input_datefmt));
-			status_mesg(outstr, mesg_help_2);
-			mem_free(outstr);
-			wgetch(win[KEY].p);
-			continue;
-		}
-		if (*user_input == '+') {
-			if (!parse_date_duration(user_input + 1, &days, p->start)) {
-				status_mesg(mesg_wrong_1, mesg_wrong_2);
-				keys_wgetch(win[KEY].p);
-				continue;
-			}
-			/* Until is midnight of the day. */
-			until = date_sec_change(
-					update_time_in_date(p->start, 0, 0),
-					0, days
-				);
-		} else {
-			int year, month, day;
-			if (!parse_date(user_input, conf.input_datefmt,
-			    &year, &month, &day, ui_calendar_get_slctd_day())) {
-				status_mesg(mesg_wrong_1, mesg_wrong_2);
-				keys_wgetch(win[KEY].p);
-				continue;
-			}
-			struct date d = { day, month, year };
-			until = date2sec(d, 0, 0);
-		}
-		/* Compare days (midnights) - until-day may equal start day. */
-		if (until >= get_slctd_day())
-			break;
-
-		datestr = date_sec2date_str(p->start, DATEFMT(conf.input_datefmt));
-		asprintf(&outstr, mesg_older, datestr);
-		status_mesg(outstr, wrong_type_2);
-		mem_free(datestr);
-		mem_free(outstr);
-		keys_wgetch(win[KEY].p);
-	}
-
-	/* Set the selected APP item. */
-	struct day_item d = empty_day;
-	struct rpt rpt;
-	rpt.type = type;
-	rpt.freq = freq;
-	rpt.until = until;
+	if (p->type == APPT)
+		dur = p->item.apt->dur;
+	else
+		dur = -1;
+	rpt.type = -1;
+	rpt.freq = 1;
+	rpt.until = 0;
 	LLIST_INIT(&rpt.bymonth);
 	LLIST_INIT(&rpt.bywday);
 	LLIST_INIT(&rpt.bymonthday);
 	LLIST_INIT(&rpt.exc);
+	r = &rpt;
+	if (!update_rept(p->start, dur, &r, &rpt.exc, simple))
+		return;
+
+	struct day_item d = empty_day;
 	if (p->type == EVNT) {
 		struct event *ev = p->item.ev;
 		d.item.rev = recur_event_new(ev->mesg, ev->note, ev->day,
-					      ev->id, &rpt);
-	} else if (p->type == APPT) {
+					     ev->id, &rpt);
+	} else {
 		struct apoint *apt = p->item.apt;
-		d.item.rapt = ra = recur_apoint_new(apt->mesg, apt->note,
+		d.item.rapt = recur_apoint_new(apt->mesg, apt->note,
 						    apt->start, apt->dur,
 						    apt->state, &rpt);
 		if (notify_bar())
-			notify_check_repeated(ra);
-	} else {
-		EXIT(_("wrong item type"));
-		/* NOTREACHED */
+			notify_check_repeated(d.item.rapt);
 	}
-	day_set_sel_data(&d);
 	ui_day_item_cut(REG_BLACK_HOLE);
+	day_set_sel_data(&d);
 	io_set_modified();
-
 	ui_calendar_monthly_view_cache_set_invalid();
-
-cleanup:
-	mem_free(msg_asktype);
 }
 
 /* Delete an item and save it in a register. */
