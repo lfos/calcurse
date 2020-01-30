@@ -392,8 +392,7 @@ char recur_def2char(enum recur_type define)
 		recur_char = 'Y';
 		break;
 	default:
-		EXIT(_("unknown repetition type"));
-		return 0;
+		recur_char = 0;
 	}
 
 	return recur_char;
