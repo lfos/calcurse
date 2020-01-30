@@ -1,7 +1,7 @@
 /*
  * Calcurse - text-based organizer
  *
- * Copyright (c) 2004-2017 calcurse Development Team <misc@calcurse.org>
+ * Copyright (c) 2004-2020 calcurse Development Team <misc@calcurse.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -112,7 +112,7 @@ static void version_arg(void)
 {
 	printf(_("calcurse %s -- text-based organizer\n"), VERSION);
 	putchar('\n');
-	printf("%s\n", _("Copyright (c) 2004-2017 calcurse Development Team."));
+	printf("%s\n", _("Copyright (c) 2004-2020 calcurse Development Team."));
 	printf("%s\n", _("This is free software; see the source for copying conditions."));
 }
 
