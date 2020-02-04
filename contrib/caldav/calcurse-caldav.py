@@ -527,7 +527,7 @@ if os.path.isdir(os.path.expanduser("~/.calcurse")):
     oauth_file = os.path.expanduser("~/.calcurse/caldav/oauth2_cred")
 else:
     calcurse_data = os.getenv("XDG_DATA_HOME", os.path.expanduser("~/.local/share")) + "/calcurse"
-    calcurse_config = os.getenv("XDG_CONFIG_HOME", os.path.expanduser("~/.local/share")) + "/calcurse"
+    calcurse_config = os.getenv("XDG_CONFIG_HOME", os.path.expanduser("~/.config")) + "/calcurse"
 
     configfn = os.path.expanduser(calcurse_config + "/caldav/config")
     lockfn = os.path.expanduser(calcurse_data + "/caldav/lock")
