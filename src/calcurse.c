@@ -49,11 +49,12 @@ int count, reg;
  */
 static void do_storage(int day_changed)
 {
+	int pre_sel;
 	/*
 	 * Save the selected item before rebuilding the day vector -
-	 * unless already set.
+	 * unless a preselection is already set.
 	 */
-	if (!day_check_sel_data())
+	if (!(pre_sel = day_check_sel_data()))
 		day_set_sel_data(ui_day_get_sel());
 
 	if (!day_changed)
@@ -64,7 +65,7 @@ static void do_storage(int day_changed)
 	/* The APP listbox. */
 	ui_day_load_items();
 
-	if (day_changed)
+	if (day_changed && !pre_sel)
 		ui_day_sel_reset();
 	else
 		ui_day_find_sel();
