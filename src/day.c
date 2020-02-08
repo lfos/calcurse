@@ -360,7 +360,7 @@ static int day_store_recur_events(time_t date)
 		p.rev = rev;
 		time_t occurrence;
 		if (recur_event_find_occurrence(rev, date, &occurrence)) {
-			day_add_item(RECUR_EVNT, rev->day, occurrence, p);
+			day_add_item(RECUR_EVNT, occurrence, occurrence, p);
 			e_nb++;
 		}
 	}
