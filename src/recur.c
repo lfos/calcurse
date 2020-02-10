@@ -1772,3 +1772,27 @@ void recur_apoint_paste_item(struct recur_apoint *rapt, time_t date)
 	if (notify_bar())
 		notify_check_repeated(rapt);
 }
+
+/*
+ * Finds the next occurrence of a recurrent item and returns it in the provided
+ * buffer. Useful for test of a repeated item.
+ */
+int recur_next_occurrence(time_t s, long d, struct rpt *r, llist_t *e,
+			  time_t occur, time_t *next)
+{
+	int ret = 0;
+
+	if (r->until && r->until <= occur)
+		return ret;
+
+	while (!r->until || occur < r->until) {
+		occur = NEXTDAY(occur);
+		if (!check_sec(&occur))
+			break;
+		if (recur_item_find_occurrence(s, d, r, e, occur, next)) {
+			ret = 1;
+			break;
+		}
+	}
+	return ret;
+}
