@@ -4,32 +4,144 @@ Repeat
 Repeat an event or an appointment.
 
 You must first select the item to be repeated by moving inside the appointment
-panel. Then running the repeat command will lead you to a set of three
-questions, with which you will be able to specify the repetition
-characteristics:
+panel. Then invoke the repeat command, and you  will be asked you to select a
+simple or advanced repetition. A simple repetition will lead you to a set of
+three questions with which you specify the basic repetition characteristics:
 
-  o        type: you can choose between a daily, weekly, monthly or
-                 yearly repetition by pressing 'D', 'W', 'M' or 'Y'
-                 respectively.
+  o        type: choose between a daily, weekly, monthly or yearly base period
 
-  o   frequency: this indicates how often the item shall be repeated.
-                 For example, if you want to remember an anniversary,
-                 choose a 'yearly' repetition with a frequency of '1',
-                 which means it must be repeated every year. Another
-                 example: if you go to the restaurant every two days,
-                 choose a 'daily' repetition with a frequency of '2'.
+  o   frequency: choose the interval between base periods. '1' means every day
+                 (week, month or year), '2' means every other day (week, ...).
+                 For example, if you want to remember an anniversary, choose a
+		 yearly type with a frequency of 1, which means it will be
+		 repeated every year. Another example: if you go to a restaurant
+		 every second day, choose a daily type with a frequency of 2.
 
-  o ending date: this specifies when to stop repeating the selected
-                 event or appointment. To indicate an endless 
-                 repetition, enter '0' and the item will be repeated
-                 forever.
+  o  until date: specifies a day after which the repetitions do not occur.  To
+                 indicate an endless repetition, enter 0 (zero) or RETURN, and
+		 the item will be repeated forever.
 
-Notes
------
+For an advanced repetition you may, in addition to the basic characteristics,
+specify three lists of either days of the week, months of the year or days of
+the month. The three lists modify the simple repetition in some way by either
+limiting or expanding the basic pattern.
 
-* Repeated items are marked with an '*' inside the appointment panel, to be
-  easily recognizable from non-repeated ones.
+  o    Weekdays: abbriviated names of days of the week (as they appear above
+                 the calendar). For monthly or yearly repetitions the name may
+		 have a numerical prefix (1, 2, ... or -1, -2, ...) to specify
+		 a particular weekday of the month or year, counted from either
+		 the start or the end of the month or year.
 
-* The 'Repeat' and 'Delete' command can be mixed to create complicated
-  configurations, as it is possible to delete only one occurrence of a repeated
-  item.
+  o      Months: the numerical name of a month (1, 2,..., 12).
+
+  o   Monthdays: the numerical name of a day of the month (1, 2,..., 31) or the
+                 opposites (-1, -2,..., -31) which count from the end of the
+		 month.
+
+For each list you may enter one or several values separated by spaces. The
+prompt for the list gives a hint as to the format. If you enter '?' only, you
+get very terse, context dependent information as to the effect on the
+repetition. Note that both format and effect depend on the basic type. The
+combined effect on the basic type of the listed days and months is derived
+from the iCalendar specification (RFC5545).
+
+Briefly, a weekday or monthday limits the repetitions of type daily, but
+expands those of type weekly, monthly and yearly. For example, with 'Weekdays'
+set to 'Sat Sun' a daily type (with frequency one) is only repeated on
+Saturdays and Sundays (two instead of seven repetitions per week), while a
+weekly type is also repeated on the extra day (two instead of one repetition
+per week).
+
+Similarly, a month limits the repetitions of type daily, weekly and monthly,
+but expands those of type yearly. For example, with 'Months' set to '3 10', a
+weekly type is only repeated in March and October, while a yearly type is also
+repeated in the extra month (two instead of one yearly repetition).
+
+Mnemonic. If the list type (day or month) is shorter than the basic type (day,
+week, month, year), it expands the repetitions of the basic type, if not, it
+limits them.
+
+There are a some important exceptions, though, for 'Weekdays':
+
+  o For a monthly type, the expanded repetitions are special: a weekday with a
+    prefix expands to that particular weekday of the month ('3Mon' = third
+    Monday), while a weekday without prefix expands to all weekdays of the
+    month ('Wed' = all Wednesdays). Furthermore, repetitions are limited if
+    'Monthdays' is also set (for example, if 'Weekdays' is set to 'Fri' with
+    'Monthdays' set to '13', the monthly repetition occurs only on Friday 13th).
+
+  o For a yearly type, the expanded repetitions are special and depend also on
+    the setting of 'Months'. A weekday with a prefix expands to that particular
+    weekday of the year ('-1Sun' = last Sunday of the year), or, if 'Months' is
+    also set, to that weekday of the listed months. A weekday without prefix
+    expands to all weekdays ('Thu' = all Thurdays in either the year or listed
+    months). Furthermore, repetitions are limited if 'Monthdays' is also set
+    as for monthly type.
+
+When you are finished setting up the repeating item, you may test it
+interactively with the 'next' command, a subcommand of the generic command
+(default ': n'). Invoked with a repeating item selected in the appointments
+panel, it will go to the next repetition. By doing this repeatedly, you may
+step through the repetitions one by one.
+
+If you edit an item that is already repeating, you will be led through all six
+characteristics and can modify any of them.
+
+Here are some typical examples. It is assumed that you have invoked the repeat
+command on what will become the first repetition and have selected an advanced
+repetition, that your date input format is dd/mm/yyyy, and that your language
+is english.
+
+  o an event that occurs every Tuesday and Thursday forever
+    type:      weekly
+    frequency: 1
+    until:     0
+    weekdays:  Tue Thu
+    months:    (empty)
+    monthdays: (not possible)
+
+  o an event that occurs on workdays except in July forever (holidays are not
+    taken into account)
+    type:      daily
+    frequency: 1
+    until:     0
+    weekdays:  Mon Tue Wed Thu Fri
+    months:    1 2 3 4 5 6 8 9 10 11 12
+    monthdays: (empty)
+
+  o an appointment that occurs on the first and last Monday of the month forever
+    type:      monthly
+    frequency: 1
+    until:     0
+    weekdays:  1Mon -1Mon
+    months:    (empty)
+    monthdays: (empty)
+
+  o an appointment that occurs on all Wednesdays in June and July until the
+    end of June 2022
+    type:      monthly
+    frequency: 1
+    until:     30/6/2022
+    weekdays:  Wed
+    months:    6 7
+    monthdays: (empty)
+
+  o an event that occurs when Daylight Saving Time begins in the EU (last
+    Sunday in March)
+    type:      yearly
+    frequency: 1
+    until:     0
+    weekdays:  -1Sun
+    months:    3
+    monthdays: (empty)
+
+  o an event that occurs on the penultimate day of February forever
+    type:      monthly
+    frequency: 1
+    until:     0
+    weekdays:  (empty)
+    months:    2
+    monthdays: -2
+
+For an example that is not possible to specify consider an event that occurs
+on the last workday of each month.

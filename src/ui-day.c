@@ -486,73 +486,170 @@ cleanup:
 	return updated;
 }
 
+static void help_ilist(int_list_t list, int rule)
+{
+	char *msg1 = "";
+	char *msg2 = "";
+	char *byday_w_d = _("only on these weekdays");
+	char *byday_w_w = _("also on these weekdays");
+	char *byday_m_m_1 =
+		_("also on these weekdays of month - or only on given monthdays");
+	char *byday_m_m_2 =
+		_("either all weekdays or 1st, 2nd, ... weekday or 1st, 2nd, ... from the end");
+	char *byday_y_y_1 =
+		_("also on these weekdays of year or given months - or only on given monthdays");
+	char *byday_y_y_2 =
+		_("positive: 1st, 2nd,... weekday of month or year, negative: 1st, 2nd,... from end");
+	char *bymonth_dwm =
+		_("only in these months");
+	char *bymonth_y =
+		_("also in these months");
+	char *bymonthday_d = _("only on these days of the month");
+	char *bymonthday_my = _("also on these days of the month");
+
+
+	switch (list) {
+	case BYDAY_W:
+		switch (rule) {
+		case RECUR_DAILY:
+			msg1 = byday_w_d;
+			msg2 = "";
+			break;
+		case RECUR_WEEKLY:
+			msg1 = byday_w_w;
+			msg2 = "";
+			break;
+		default:
+			EXIT("internal inconsistency");
+		}
+		break;
+	case BYDAY_M:
+		switch (rule) {
+		case RECUR_MONTHLY:
+			msg1 = byday_m_m_1;
+			msg2 = byday_m_m_2;
+			break;
+		default:
+			EXIT("internal inconsistency");
+		}
+		break;
+	case BYDAY_Y:
+		switch (rule) {
+		case RECUR_YEARLY:
+			msg1 = byday_y_y_1;
+			msg2 = byday_y_y_2;
+			break;
+		default:
+			EXIT("internal inconsistency");
+		}
+		break;
+	case BYMONTH:
+		switch (rule) {
+		case RECUR_DAILY:
+		case RECUR_WEEKLY:
+		case RECUR_MONTHLY:
+			msg1 = bymonth_dwm;
+			msg2 = "";
+			break;
+		case RECUR_YEARLY:
+			msg1 = bymonth_y;
+			msg2 = "";
+			break;
+		default:
+			break;
+		}
+		break;
+	case BYMONTHDAY:
+		switch (rule) {
+		case RECUR_DAILY:
+			msg1 = bymonthday_d;
+			msg2 = "";
+			break;
+		case RECUR_MONTHLY:
+		case RECUR_YEARLY:
+			msg1 = bymonthday_my;
+			msg2 = "";
+			break;
+		default:
+			break;
+		}
+		break;
+	default:
+		break;
+	}
+	status_mesg(msg1, msg2);
+	keys_wgetch(win[KEY].p);
+}
+
 /* Edit an rrule (linked) list of integers. */
-static int edit_ilist(llist_t *ilist, int_list_t type)
+static int edit_ilist(llist_t *ilist, int_list_t list_type, int rule_type)
 {
 	char *msg;
-	char *msg_wday = NULL;
-	char *msg_format_w = _("Weekdays (%s|..|%s):");
-	char *msg_format_m =
-		_("Weekdays (%s|..|%s, optional prefix 1..5 or -1..-5)):");
-	char *msg_format_y =
-		_("Weekdays (%s|..|%s, optional prefix 1..53 or -1..-53):");
-	char *msg_month = _("Months (1..12):");
-	char *msg_mday = _("Monthdays (1..31 or -1..-31):");
-	char *msg_invalid = _("Invalid format - try again.");
-	char *msg_cont = _("Press any key to continue.");
+	char *wday = NULL;
+	char *wday_w = _("Weekdays (%s|..|%s), '?' for help:");
+	char *wday_m =
+		_("Weekdays (%1$s|..|%2$s or 1%1$s|..|5%2$s or -1%1$s|..|-5%2$s), '?' for help:");
+	char *wday_y =
+		_("Weekdays (%1$s|..|%2$s or 1%1$s|..|53%2$s or -1%1$s|..|-53%2$s), '?' for help:");
+	char *month = _("Months (1..12), '?' for help:");
+	char *mday = _("Monthdays (1..31 or -1..-31), '?' for help:");
+	char *invalid = _("Invalid format - try again.");
+	char *cont = _("Press any key to continue.");
 	int updated = 0;
 
-	if (type == NOLL)
+	if (list_type == NOLL)
 		return !updated;
 	char *istr;
 	enum getstr ret;
 
-	switch (type) {
+	switch (list_type) {
 	case BYDAY_W:
-		asprintf(&msg_wday, msg_format_w,
+		asprintf(&wday, wday_w,
 			 nl_langinfo(ABDAY_2), nl_langinfo(ABDAY_1));
-		msg = msg_wday;
+		msg = wday;
 		break;
 	case BYDAY_M:
-		asprintf(&msg_wday, msg_format_m,
+		asprintf(&wday, wday_m,
 			 nl_langinfo(ABDAY_2), nl_langinfo(ABDAY_1));
-		msg = msg_wday;
+		msg = wday;
 		break;
 	case BYDAY_Y:
-		asprintf(&msg_wday, msg_format_y,
+		asprintf(&wday, wday_y,
 			 nl_langinfo(ABDAY_2), nl_langinfo(ABDAY_1));
-		msg = msg_wday;
+		msg = wday;
 		break;
 	case BYMONTH:
-		msg = msg_month;
+		msg = month;
 		break;
 	case BYMONTHDAY:
-		msg = msg_mday;
+		msg = mday;
 		break;
 	default:
 		msg = NULL;
 		break;
 	}
 	status_mesg(msg, "");
-	istr = int2str(ilist, type);
+	istr = int2str(ilist, list_type);
 	while (1) {
 		ret = updatestring(win[STA].p, &istr, 0, 1);
 		if (ret == GETSTRING_VALID || ret == GETSTRING_RET) {
-			if (str2int(ilist, istr, type)) {
+			if (*(istr + strlen(istr) - 1) == '?')
+				help_ilist(list_type, rule_type);
+			else if (str2int(ilist, istr, list_type)) {
 				updated = 1;
 				break;
 			} else {
-				status_mesg(msg_invalid, msg_cont);
+				status_mesg(invalid, cont);
 				keys_wgetch(win[KEY].p);
 			}
 			mem_free(istr);
 			status_mesg(msg, "");
-			istr = int2str(ilist, type);
+			istr = int2str(ilist, list_type);
 		} else if (ret == GETSTRING_ESC)
 			break;
 	}
 	mem_free(istr);
-	mem_free(msg_wday);
+	mem_free(wday);
 
 	return updated;
 }
@@ -740,18 +837,18 @@ static int update_rept(time_t start, long dur, struct rpt **rpt, llist_t *exc,
 		break;
 	}
 	recur_int_list_dup(&nrpt.bywday, &(*rpt)->bywday);
-	if (!edit_ilist(&nrpt.bywday, byday_type))
+	if (!edit_ilist(&nrpt.bywday, byday_type, nrpt.type))
 		goto cleanup;
 
 	/* Edit BYMONTH list. */
 	recur_int_list_dup(&nrpt.bymonth, &(*rpt)->bymonth);
-	if (!edit_ilist(&nrpt.bymonth, BYMONTH))
+	if (!edit_ilist(&nrpt.bymonth, BYMONTH, nrpt.type))
 		goto cleanup;
 
 	/* Edit BYMONTHDAY list. */
 	if (nrpt.type != RECUR_WEEKLY) {
 		recur_int_list_dup(&nrpt.bymonthday, &(*rpt)->bymonthday);
-		if (!edit_ilist(&nrpt.bymonthday, BYMONTHDAY))
+		if (!edit_ilist(&nrpt.bymonthday, BYMONTHDAY, nrpt.type))
 			goto cleanup;
 	}
 
