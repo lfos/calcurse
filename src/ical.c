@@ -508,8 +508,13 @@ ical_chk_header(FILE * fd, char *buf, char *lstore, unsigned *lineno,
 		return 0;
 
 	while (!sscanf(buf, "VERSION:%d.%d", major, minor)) {
-		if (!ical_readline(fd, buf, lstore, lineno))
-			return 0;
+		if (!ical_readline(fd, buf, lstore, lineno)) {
+			// If no version info was found, assume "VERSION:2.0"
+			// 1.0 -> VCalendar (old)
+			// 2.0 -> iCalendar
+			major = 2;
+			minor = 0;
+		}
 	}
 
 	return 1;
