@@ -13,7 +13,7 @@ stamp-h1
 autom4te.cache/
 m4/
 
-./config.*
+/config.*
 
 doc/*.1
 doc/*.html
