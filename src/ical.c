@@ -73,7 +73,7 @@ static const char *ical_recur_type[RECUR_TYPES] =
     { "", "DAILY", "WEEKLY", "MONTHLY", "YEARLY" };
 
 /* Escape characters in field before printing */
-static void escape_value_and_print(FILE * stream, char * field, char * msg)
+static void ical_format_line(FILE * stream, char * field, char * msg)
 {
 	char * p;
 
@@ -151,7 +151,7 @@ static void ical_export_recur_events(FILE * stream, int export_uid)
 			}
 		}
 
-		escape_value_and_print(stream, "SUMMARY:", rev->mesg);
+		ical_format_line(stream, "SUMMARY:", rev->mesg);
 
 		if (export_uid) {
 			char *hash = recur_event_hash(rev);
@@ -174,7 +174,7 @@ static void ical_export_events(FILE * stream, int export_uid)
 		date_sec2date_fmt(ev->day, ICALDATEFMT, ical_date);
 		fputs("BEGIN:VEVENT\n", stream);
 		fprintf(stream, "DTSTART;VALUE=DATE:%s\n", ical_date);
-		escape_value_and_print(stream, "SUMMARY:", ev->mesg);
+		ical_format_line(stream, "SUMMARY:", ev->mesg);
 
 		if (export_uid) {
 			char *hash = event_hash(ev);
@@ -230,7 +230,7 @@ static void ical_export_recur_apoints(FILE * stream, int export_uid)
 			}
 		}
 
-		escape_value_and_print(stream, "SUMMARY:", rapt->mesg);
+		ical_format_line(stream, "SUMMARY:", rapt->mesg);
 		if (rapt->state & APOINT_NOTIFY)
 			ical_export_valarm(stream);
 
@@ -265,7 +265,7 @@ static void ical_export_apoints(FILE * stream, int export_uid)
 				(apt->dur / MININSEC) % HOURINMIN,
 				apt->dur % MININSEC);
 		}
-		escape_value_and_print(stream, "SUMMARY:", apt->mesg);
+		ical_format_line(stream, "SUMMARY:", apt->mesg);
 		if (apt->state & APOINT_NOTIFY)
 			ical_export_valarm(stream);
 
@@ -292,7 +292,7 @@ static void ical_export_todo(FILE * stream, int export_uid)
 		if (todo->completed)
 			fprintf(stream, "STATUS:COMPLETED\n");
 		fprintf(stream, "PRIORITY:%d\n", todo->id);
-		escape_value_and_print(stream, "SUMMARY:", todo->mesg);
+		ical_format_line(stream, "SUMMARY:", todo->mesg);
 
 		if (export_uid) {
 			char *hash = todo_hash(todo);
