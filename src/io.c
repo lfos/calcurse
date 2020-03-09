@@ -1247,31 +1247,29 @@ void io_export_data(enum export_type type, int export_uid)
 	}
 }
 
-static FILE *get_import_stream(enum import_type type)
+static FILE *get_import_stream(enum import_type type, char **stream_name)
 {
 	FILE *stream = NULL;
-	char *stream_name;
 	const char *ask_fname =
 	    _("Enter the file name to import data from:");
 	const char *wrong_file =
 	    _("The file cannot be accessed, please enter another file name.");
 	const char *press_enter = _("Press [ENTER] to continue.");
 
-	stream_name = mem_malloc(BUFSIZ);
-	memset(stream_name, 0, BUFSIZ);
+	*stream_name = mem_malloc(BUFSIZ);
+	memset(*stream_name, 0, BUFSIZ);
 	while (stream == NULL) {
 		status_mesg(ask_fname, "");
-		if (updatestring(win[STA].p, &stream_name, 0, 1)) {
-			mem_free(stream_name);
+		if (updatestring(win[STA].p, stream_name, 0, 1)) {
+			mem_free(*stream_name);
 			return NULL;
 		}
-		stream = fopen(stream_name, "r");
+		stream = fopen(*stream_name, "r");
 		if (stream == NULL) {
 			status_mesg(wrong_file, press_enter);
 			keys_wait_for_any_key(win[KEY].p);
 		}
 	}
-	mem_free(stream_name);
 
 	return stream;
 }
@@ -1282,7 +1280,7 @@ static FILE *get_import_stream(enum import_type type)
  * A temporary log file is created in /tmp to store the import process report,
  * and is cleared at the end.
  */
-void io_import_data(enum import_type type, const char *stream_name,
+void io_import_data(enum import_type type, char *stream_name,
 		    const char *fmt_ev, const char *fmt_rev,
 		    const char *fmt_apt, const char *fmt_rapt,
 		    const char *fmt_todo)
@@ -1309,7 +1307,7 @@ void io_import_data(enum import_type type, const char *stream_name,
 			 "Aborting..."));
 		break;
 	case UI_CURSES:
-		stream = get_import_stream(type);
+		stream = get_import_stream(type, &stream_name);
 		break;
 	default:
 		EXIT(_("FATAL ERROR: wrong import mode"));
@@ -1329,7 +1327,7 @@ void io_import_data(enum import_type type, const char *stream_name,
 	}
 
 	if (type == IO_IMPORT_ICAL)
-		ical_import_data(stream, log->fd, &stats.events,
+		ical_import_data(stream_name, stream, log->fd, &stats.events,
 				 &stats.apoints, &stats.todos,
 				 &stats.lines, &stats.skipped, fmt_ev, fmt_rev,
 				 fmt_apt, fmt_rapt, fmt_todo);
@@ -1380,7 +1378,10 @@ void io_import_data(enum import_type type, const char *stream_name,
 	mem_free(stats_str[1]);
 	mem_free(stats_str[2]);
 	mem_free(stats_str[3]);
-	io_log_free(log);
+	if (ui_mode == UI_CURSES)
+		mem_free(stream_name);
+	if (!stats.skipped)
+		io_log_free(log);
 }
 
 struct io_file *io_log_init(void)

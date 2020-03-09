@@ -425,7 +425,8 @@ int parse_args(int argc, char **argv)
 	int dump_imported = 0, export_uid = 0;
 	/* Data file locations */
 	const char *datadir = NULL;
-	const char *cfile = NULL, *ifile = NULL, *confdir = NULL;
+	const char *cfile = NULL, *confdir = NULL;
+	char *ifile = NULL;
 
 	int non_interactive = 1;
 	int ch, cpid, type;

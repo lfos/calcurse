@@ -10,7 +10,7 @@ if [ "$1" = 'actual' ]; then
   rm -rf .calcurse || exit 1
 elif [ "$1" = 'expected' ]; then
   cat <<EOD
-Import process report: 0030 lines read
+Import process report: 0023 lines read
 0 apps / 4 events / 0 todos / 0 skipped
 10/03/13:
  * All day

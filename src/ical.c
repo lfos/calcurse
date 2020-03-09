@@ -305,26 +305,35 @@ static void ical_export_todo(FILE * stream, int export_uid)
 }
 
 /* Print a header to describe import log report format. */
-static void ical_log_init(FILE * log, int major, int minor)
+static void ical_log_init(const char *file, FILE * log, int major, int minor)
 {
 	const char *header =
 	    "+-------------------------------------------------------------------+\n"
 	    "| Calcurse icalendar import log.                                    |\n"
 	    "|                                                                   |\n"
-	    "| Items imported from icalendar file, version %d.%d                   |\n"
-	    "| Some items could not be imported, they are described hereafter.   |\n"
+	    "| Import from icalendar file                                        |\n"
+	    "|       %-60s|\n"
+	    "| version %d.%d at %s.                                  |\n"
+	    "|                                                                   |\n"
+	    "| Items which could not be imported are described below.            |\n"
 	    "| The log line format is as follows:                                |\n"
 	    "|                                                                   |\n"
 	    "|       TYPE [LINE]: DESCRIPTION                                    |\n"
 	    "|                                                                   |\n"
 	    "| where:                                                            |\n"
-	    "|  * TYPE represents the item type ('VEVENT' or 'VTODO')            |\n"
-	    "|  * LINE is the line in the input stream at which this item begins |\n"
-	    "|  * DESCRIPTION indicates why the item could not be imported       |\n"
+	    "|  * TYPE is the item type, 'VEVENT' or 'VTODO'                     |\n"
+	    "|  * LINE is the line in the import file where the item begins      |\n"
+	    "|  * DESCRIPTION explains why the item could not be imported        |\n"
 	    "+-------------------------------------------------------------------+\n\n";
 
+	char *date, *fmt;
+
+	asprintf(&fmt, "%s %s", DATEFMT(conf.input_datefmt), "%H:%M");
+	date = date_sec2date_str(now(), fmt);
 	if (log)
-		fprintf(log, header, major, minor);
+		fprintf(log, header, file, major, minor, date);
+	mem_free(fmt);
+	mem_free(date);
 }
 
 /*
@@ -479,13 +488,13 @@ ical_readline_init(FILE * fdi, char *buf, char *lstore, unsigned *ln)
 
 	*buf = *lstore = '\0';
 	if (fgets(lstore, BUFSIZ, fdi)) {
+		(*ln)++;
 		if ((eol = strchr(lstore, '\n')) != NULL) {
 			if (*(eol - 1) == '\r')
 				*(eol - 1) = '\0';
 			else
 				*eol = '\0';
 		}
-		(*ln)++;
 	}
 }
 
@@ -494,9 +503,9 @@ static int ical_readline(FILE * fdi, char *buf, char *lstore, unsigned *ln)
 	char *eol;
 
 	strncpy(buf, lstore, BUFSIZ);
-	(*ln)++;
 
 	while (fgets(lstore, BUFSIZ, fdi) != NULL) {
+		(*ln)++;
 		if ((eol = strchr(lstore, '\n')) != NULL) {
 			if (*(eol - 1) == '\r')
 				*(eol - 1) = '\0';
@@ -506,7 +515,6 @@ static int ical_readline(FILE * fdi, char *buf, char *lstore, unsigned *ln)
 		if (*lstore != SPACE && *lstore != TAB)
 			break;
 		strncat(buf, lstore + 1, BUFSIZ - strlen(buf) - 1);
-		(*ln)++;
 	}
 
 	if (feof(fdi)) {
@@ -919,7 +927,7 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 		char *lstore, unsigned *lineno, const char *fmt_ev,
 		const char *fmt_rev, const char *fmt_apt, const char *fmt_rapt)
 {
-	const int ITEMLINE = *lineno;
+	const int ITEMLINE = *lineno - !feof(fdi);
 	ical_vevent_e vevent_type;
 	char *p;
 	struct {
@@ -1073,7 +1081,7 @@ static void
 ical_read_todo(FILE * fdi, FILE * log, unsigned *notodos, unsigned *noskipped,
 	       char *buf, char *lstore, unsigned *lineno, const char *fmt_todo)
 {
-	const int ITEMLINE = *lineno;
+	const int ITEMLINE = *lineno - !feof(fdi);
 	struct {
 		char *mesg, *note;
 		int priority;
@@ -1140,7 +1148,7 @@ cleanup:
 
 /* Import calcurse data. */
 void
-ical_import_data(FILE * stream, FILE * log, unsigned *events,
+ical_import_data(const char *file, FILE * stream, FILE * log, unsigned *events,
 		 unsigned *apoints, unsigned *todos, unsigned *lines,
 		 unsigned *skipped, const char *fmt_ev, const char *fmt_rev,
 		 const char *fmt_apt, const char *fmt_rapt,
@@ -1155,10 +1163,9 @@ ical_import_data(FILE * stream, FILE * log, unsigned *events,
 		  _("Warning: ical header malformed or wrong version number. "
 		   "Aborting..."));
 
-	ical_log_init(log, major, minor);
+	ical_log_init(file, log, major, minor);
 
 	while (ical_readline(stream, buf, lstore, lines)) {
-		(*lines)++;
 		if (starts_with_ci(buf, "BEGIN:VEVENT")) {
 			ical_read_event(stream, log, events, apoints,
 					skipped, buf, lstore, lines, fmt_ev,
