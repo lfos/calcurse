@@ -349,6 +349,7 @@ static inline void key_generic_import(void)
 	io_import_data(IO_IMPORT_ICAL, NULL, NULL, NULL, NULL, NULL, NULL);
 	ui_calendar_monthly_view_cache_set_invalid();
 	do_storage(0);
+	ui_todo_load_items();
 	wins_update(FLAG_ALL);
 }
 
