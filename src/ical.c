@@ -704,6 +704,8 @@ static long ical_compute_rpt_until(long start, ical_rpt_t * rpt)
  */
 static char *ical_get_value(char *p)
 {
+	if (!(p && *p))
+		return NULL;
 	for (; *p != ':'; p++) {
 		if (*p == '"')
 			for (p++; *p != '"' && *p != '\0'; p++);
@@ -764,7 +766,7 @@ static ical_rpt_t *ical_read_rrule(FILE * log, char *rrulestr,
 	p = ical_get_value(rrulestr);
 	if (!p) {
 		ical_log(log, ICAL_VEVENT, itemline,
-			 _("recurrence rule malformed."));
+			 _("malformed recurrence line."));
 		(*noskipped)++;
 		return NULL;
 	}
@@ -844,7 +846,7 @@ static void ical_add_exc(llist_t * exc_head, long date)
  * This property defines the list of date/time exceptions for a
  * recurring calendar component.
  */
-static void
+static int
 ical_read_exdate(llist_t * exc, FILE * log, char *exstr,
 		 unsigned *noskipped, const int itemline)
 {
@@ -853,9 +855,9 @@ ical_read_exdate(llist_t * exc, FILE * log, char *exstr,
 	p = ical_get_value(exstr);
 	if (!p) {
 		ical_log(log, ICAL_VEVENT, itemline,
-			 _("recurrence exception dates malformed."));
+			 _("malformed exceptions line."));
 		(*noskipped)++;
-		return;
+		return 0;
 	}
 
 	while ((q = strchr(p, ',')) != NULL) {
@@ -868,6 +870,8 @@ ical_read_exdate(llist_t * exc, FILE * log, char *exstr,
 		p = ++q;
 	}
 	ical_add_exc(exc, ical_datetime2time_t(p, NULL));
+
+	return 1;
 }
 
 /* Return an allocated string containing the name of the newly created note. */
@@ -880,19 +884,20 @@ static char *ical_read_note(char *line, unsigned *noskipped,
 	p = ical_get_value(line);
 	if (!p) {
 		ical_log(log, item_type, itemline,
-			 _("description malformed."));
+			 _("malformed description line."));
 		(*noskipped)++;
 		return NULL;
 	}
 
 	notestr = ical_unformat_line(p);
-	if (notestr == NULL) {
-		ical_log(log, item_type, itemline,
-			 _("could not get entire item description."));
+	if (!notestr) {
+		ical_log(log, item_type, itemline, _("malformed description."));
 		(*noskipped)++;
 		return NULL;
 	} else if (strlen(notestr) == 0) {
 		mem_free(notestr);
+		ical_log(log, item_type, itemline, _("empty description."));
+		(*noskipped)++;
 		return NULL;
 	} else {
 		note = generate_note(notestr);
@@ -902,17 +907,25 @@ static char *ical_read_note(char *line, unsigned *noskipped,
 }
 
 /* Returns an allocated string containing the ical item summary. */
-static char *ical_read_summary(char *line)
+static char *ical_read_summary(char *line, unsigned *noskipped,
+			       ical_types_e item_type, const int itemline,
+			       FILE * log)
 {
 	char *p, *summary;
 
 	p = ical_get_value(line);
-	if (!p)
+	if (!p) {
+		ical_log(log, item_type, itemline, _("malformed summary line"));
+		(*noskipped)++;
 		return NULL;
+	}
 
 	summary = ical_unformat_line(p);
-	if (!summary)
+	if (!summary) {
+		ical_log(log, item_type, itemline, _("malformed summary."));
+		(*noskipped)++;
 		return NULL;
+	}
 
 	/* Event summaries must not contain newlines. */
 	for (p = strchr(summary, '\n'); p; p = strchr(p, '\n'))
@@ -958,12 +971,12 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 			if (!vevent.mesg) {
 				ical_log(log, ICAL_VEVENT, ITEMLINE,
 					 _("could not retrieve item summary."));
-				goto cleanup;
+				goto skip;
 			}
 			if (vevent.start == 0) {
 				ical_log(log, ICAL_VEVENT, ITEMLINE,
 					 _("item start date is not defined."));
-				goto cleanup;
+				goto skip;
 			}
 
 			if (vevent_type == APPOINTMENT && vevent.dur == 0) {
@@ -974,7 +987,7 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 				if (vevent.dur < 0) {
 					ical_log(log, ICAL_VEVENT, ITEMLINE,
 						_("item has a negative duration."));
-					goto cleanup;
+					goto skip;
 				}
 			}
 
@@ -1003,7 +1016,7 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 			case UNDEFINED:
 				ical_log(log, ICAL_VEVENT, ITEMLINE,
 					 _("item could not be identified."));
-				goto cleanup;
+				goto skip;
 				break;
 			}
 
@@ -1014,50 +1027,58 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 			p = ical_get_value(buf);
 			if (!p) {
 				ical_log(log, ICAL_VEVENT, ITEMLINE,
-					 _("event start time malformed."));
-				goto cleanup;
+					 _("malformed start time line."));
+				goto skip;
 			}
 
 			vevent.start = ical_datetime2time_t(p, &vevent_type);
 			if (!vevent.start) {
 				ical_log(log, ICAL_VEVENT, ITEMLINE,
 					 _("could not retrieve event start time."));
-				goto cleanup;
+				goto skip;
 			}
 		} else if (starts_with_ci(buf, "DTEND")) {
 			p = ical_get_value(buf);
 			if (!p) {
 				ical_log(log, ICAL_VEVENT, ITEMLINE,
-					 _("event end time malformed."));
-				goto cleanup;
+					 _("malformed end time line."));
+				goto skip;
 			}
 
 			vevent.end = ical_datetime2time_t(p, &vevent_type);
 			if (!vevent.end) {
 				ical_log(log, ICAL_VEVENT, ITEMLINE,
 					 _("could not retrieve event end time."));
-				goto cleanup;
+				goto skip;
 			}
 		} else if (starts_with_ci(buf, "DURATION")) {
 			vevent.dur = ical_dur2long(buf);
 			if (vevent.dur <= 0) {
 				ical_log(log, ICAL_VEVENT, ITEMLINE,
 					 _("item duration malformed."));
-				goto cleanup;
+				goto skip;
 			}
 		} else if (starts_with_ci(buf, "RRULE")) {
 			vevent.rpt = ical_read_rrule(log, buf, noskipped,
 					ITEMLINE);
+			if (!vevent.rpt)
+				goto cleanup;
 		} else if (starts_with_ci(buf, "EXDATE")) {
-			ical_read_exdate(&vevent.exc, log, buf, noskipped,
-					ITEMLINE);
+			if (!ical_read_exdate(&vevent.exc, log, buf, noskipped,
+					      ITEMLINE))
+				goto cleanup;
 		} else if (starts_with_ci(buf, "SUMMARY")) {
-			vevent.mesg = ical_read_summary(buf);
+			vevent.mesg = ical_read_summary(buf, noskipped,
+					ICAL_VEVENT, ITEMLINE, log);
+			if (!vevent.mesg)
+				goto cleanup;
 		} else if (starts_with_ci(buf, "BEGIN:VALARM")) {
 			skip_alarm = vevent.has_alarm = 1;
 		} else if (starts_with_ci(buf, "DESCRIPTION")) {
 			vevent.note = ical_read_note(buf, noskipped,
 					ICAL_VEVENT, ITEMLINE, log);
+			if (!vevent.note)
+				goto cleanup;
 		}
 	}
 
@@ -1065,8 +1086,10 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 		 _("The ical file seems to be malformed. "
 		   "The end of item was not found."));
 
-cleanup:
+skip:
+	(*noskipped)++;
 
+cleanup:
 	if (vevent.note)
 		mem_free(vevent.note);
 	if (vevent.mesg)
@@ -1074,7 +1097,6 @@ cleanup:
 	if (vevent.rpt)
 		mem_free(vevent.rpt);
 	LLIST_FREE(&vevent.exc);
-	(*noskipped)++;
 }
 
 static void
@@ -1121,16 +1143,23 @@ ical_read_todo(FILE * fdi, FILE * log, unsigned *notodos, unsigned *noskipped,
 				ical_log(log, ICAL_VTODO, ITEMLINE,
 					 _("item priority is invalid "
 					  "(must be between 0 and 9)."));
+				goto skip;
 			}
 		} else if (starts_with_ci(buf, "STATUS:COMPLETED")) {
 			vtodo.completed = 1;
 		} else if (starts_with_ci(buf, "SUMMARY")) {
-			vtodo.mesg = ical_read_summary(buf);
+			vtodo.mesg =
+				ical_read_summary(buf, noskipped, ICAL_VTODO,
+						  ITEMLINE, log);
+			if (!vtodo.mesg)
+				goto cleanup;
 		} else if (starts_with_ci(buf, "BEGIN:VALARM")) {
 			skip_alarm = 1;
 		} else if (starts_with_ci(buf, "DESCRIPTION")) {
 			vtodo.note = ical_read_note(buf, noskipped, ICAL_VTODO,
 					ITEMLINE, log);
+			if (!vtodo.note)
+				goto cleanup;
 		}
 	}
 
@@ -1138,12 +1167,13 @@ ical_read_todo(FILE * fdi, FILE * log, unsigned *notodos, unsigned *noskipped,
 		 _("The ical file seems to be malformed. "
 		   "The end of item was not found."));
 
+skip:
+	(*noskipped)++;
 cleanup:
 	if (vtodo.note)
 		mem_free(vtodo.note);
 	if (vtodo.mesg)
 		mem_free(vtodo.mesg);
-	(*noskipped)++;
 }
 
 /* Import calcurse data. */
