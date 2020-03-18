@@ -8,12 +8,12 @@ END:VEVENT
 BEGIN:VEVENT
 DTSTART:20000101T000000
 DURATION:P1DT1H1M1S
-SUMMARY:One day, one hour, one minute and one second
+SUMMARY:One day\, one hour\, one minute and one second
 END:VEVENT
 BEGIN:VEVENT
 DTSTART:20000101T000000
 DURATION:PT1H1M1S
-SUMMARY:One hour, one minute and one second
+SUMMARY:One hour\, one minute and one second
 END:VEVENT
 BEGIN:VEVENT
 DTSTART:20000101T000000
