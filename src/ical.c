@@ -440,8 +440,9 @@ ical_store_apoint(char *mesg, char *note, long start, long dur,
 }
 
 /*
- * Returns an allocated string representing the string given in argument once
- * unformatted.
+ * Returns an allocated string representing the argument string with escaped
+ * characters decoded, or NULL on error.
+ * The string is assumed to be the value part of a SUMMARY or DESCRIPTION line.
  */
 static char *ical_unformat_line(char *line)
 {
@@ -453,25 +454,29 @@ static char *ical_unformat_line(char *line)
 		switch (*p) {
 		case '\\':
 			switch (*(p + 1)) {
+			case 'N':
 			case 'n':
 				string_catf(&s, "%c", '\n');
 				p++;
 				break;
-			case 't':
-				string_catf(&s, "%c", '\t');
-				p++;
-				break;
+			case '\\':
 			case ';':
-			case ':':
 			case ',':
 				string_catf(&s, "%c", *(p + 1));
 				p++;
 				break;
 			default:
-				string_catf(&s, "%c", *p);
-				break;
+				mem_free(s.buf);
+				return NULL;
 			}
 			break;
+		case ',':
+		case ';':
+			/*
+			 * No list or field separator allowed.
+			 */
+			mem_free(s.buf);
+			return NULL;
 		default:
 			string_catf(&s, "%c", *p);
 			break;
@@ -928,8 +933,12 @@ static char *ical_read_summary(char *line, unsigned *noskipped,
 	}
 
 	/* Event summaries must not contain newlines. */
-	for (p = strchr(summary, '\n'); p; p = strchr(p, '\n'))
-		*p = ' ';
+	if (strchr(summary, '\n')) {
+		ical_log(log, item_type, itemline, _("line break in summary."));
+		(*noskipped)++;
+		mem_free(summary);
+		return NULL;
+	}
 
 	return summary;
 }
