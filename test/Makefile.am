@@ -56,6 +56,9 @@ TESTS = \
 	ical-006.sh \
 	ical-007.sh \
 	ical-008.sh \
+	ical-009.sh \
+	ical-010.sh \
+	ical-011.sh \
 	next-001.sh \
 	next-002.sh \
 	next-003.sh \
@@ -117,6 +120,7 @@ EXTRA_DIST = \
 	data/apts-event-004 \
 	data/apts-event-005 \
 	data/apts-event-006 \
+	data/apts-export \
 	data/apts-filter-001 \
 	data/apts-recur \
 	data/apts-regress-001 \
@@ -129,4 +133,6 @@ EXTRA_DIST = \
 	data/ical-006.ical \
 	data/ical-007.ical \
 	data/ical-008.ical \
-	data/todo
+	data/ical-009.ical \
+	data/todo \
+	data/todo-export
