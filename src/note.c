@@ -59,8 +59,12 @@ HTABLE_PROTOTYPE(htp, note_gc_hash)
 char *generate_note(const char *str)
 {
 	char *sha1 = mem_malloc(SHA1_DIGESTLEN * 2 + 1);
-	char *notepath;
+	char *notepath, *s;
 	FILE *fp;
+
+	/* Temporary hack */
+	asprintf(&s, "%s\n", str);
+	str = s;
 
 	sha1_digest(str, sha1);
 	asprintf(&notepath, "%s%s", path_notes, sha1);
@@ -70,6 +74,7 @@ char *generate_note(const char *str)
 	fputs(str, fp);
 	file_close(fp, __FILE_POS__);
 
+	mem_free(s);
 	mem_free(notepath);
 	return sha1;
 }
