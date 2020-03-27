@@ -11,9 +11,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2019-06-16 15:27-0400\n"
-"PO-Revision-Date: 2019-05-30 21:49+0000\n"
-"Last-Translator: Алексей Мехоношин <ruskidecko@gmail.com>\n"
+"POT-Creation-Date: 2020-03-27 18:58-0400\n"
+"PO-Revision-Date: 2020-01-30 18:17+0000\n"
+"Last-Translator: Lukas Fleischer\n"
 "Language-Team: Russian (http://www.transifex.com/lfleischer/calcurse/"
 "language/ru/)\n"
 "Language: ru\n"
@@ -50,7 +50,8 @@ msgstr "Выполните 'calcurse -h' для получения справк�
 msgid "calcurse %s -- text-based organizer\n"
 msgstr "calcurse %s - текстовый органайзер\n"
 
-msgid "Copyright (c) 2004-2017 calcurse Development Team."
+#, fuzzy
+msgid "Copyright (c) 2004-2020 calcurse Development Team."
 msgstr "Copyright (c) 2004-2017 calcurse Development Team."
 
 msgid "This is free software; see the source for copying conditions."
@@ -394,6 +395,9 @@ msgstr ""
 msgid "(insert an empty line after each appointment)"
 msgstr ""
 
+msgid "(text for a day without events and appointments)"
+msgstr ""
+
 msgid "(display more than one day in the appointments panel)"
 msgstr ""
 
@@ -448,6 +452,9 @@ msgstr ""
 msgid "(Format of the date displayed in the appointments panel)"
 msgstr "(Формат даты, которая отображается в панели задач)"
 
+msgid "Enter a text string (an empty string for the default text)"
+msgstr ""
+
 msgid "Enter the date format (see 'man 3 strftime' for possible formats) "
 msgstr "Задайте формат даты (см. 'man 3 strftime' для возможных форматов)"
 
@@ -490,9 +497,6 @@ msgstr ""
 
 msgid "unknown item type"
 msgstr "неизвестный тип записи"
-
-msgid "(none)"
-msgstr ""
 
 msgid "Event:"
 msgstr "Событие:"
@@ -579,8 +583,8 @@ msgstr "нехватка памяти"
 msgid "unknown ical type"
 msgstr "неизвестный тип ical"
 
-msgid "recurrence rule malformed."
-msgstr "рекуррентные правила повреждены."
+msgid "malformed recurrence line."
+msgstr ""
 
 msgid "recurrence frequency not found."
 msgstr "рекуррентная частота не найдена"
@@ -588,14 +592,29 @@ msgstr "рекуррентная частота не найдена"
 msgid "recurrence frequency not recognized."
 msgstr "рекуррентная частота не распознана"
 
-msgid "recurrence exception dates malformed."
-msgstr "рекурентные соотношения дат повреждены."
+msgid "malformed exceptions line."
+msgstr ""
 
-msgid "description malformed."
+#, fuzzy
+msgid "malformed description line."
 msgstr "описание повреждено."
 
-msgid "could not get entire item description."
-msgstr "невозможно получить описание полностью."
+#, fuzzy
+msgid "malformed description."
+msgstr "Описание: "
+
+#, fuzzy
+msgid "empty description."
+msgstr "Описание: "
+
+msgid "malformed summary line"
+msgstr ""
+
+msgid "malformed summary."
+msgstr ""
+
+msgid "line break in summary."
+msgstr ""
 
 msgid "could not retrieve item summary."
 msgstr "невозможно восстановить суммарные записи."
@@ -609,14 +628,15 @@ msgstr "значение имеет отрицательную продолжи�
 msgid "item could not be identified."
 msgstr "значение не может быть распознано."
 
-msgid "event start time malformed."
-msgstr "время начала события неверно оформлено"
+#, fuzzy
+msgid "malformed start time line."
+msgstr "Неверное начальное время."
 
 msgid "could not retrieve event start time."
 msgstr "невозможно восстановить время начала события."
 
-msgid "event end time malformed."
-msgstr "событие и время неверно оформлены"
+msgid "malformed end time line."
+msgstr ""
 
 msgid "could not retrieve event end time."
 msgstr "невозможно восстановить время окончания события."
@@ -1412,9 +1432,8 @@ msgstr "Описание: "
 msgid "Exception days:"
 msgstr ""
 
-#, fuzzy
 msgid "Invalid date format - try again:."
-msgstr "Неверная дата или время."
+msgstr ""
 
 msgid "Enter the new repetition type:"
 msgstr "Введите тип повторения:"
@@ -1608,11 +1627,14 @@ msgstr "неизвестная панель"
 msgid "Usage: calcurse-upgrade [-h|-v|--config <file>]"
 msgstr "Использовать: calcurse-upgrade [-h|-v|--config <file>]"
 
+#, fuzzy
 msgid ""
 "\n"
-"Copyright (c) 2004-2017 calcurse Development Team.\n"
+"Copyright (c) 2004-2020 calcurse Development Team.\n"
 "This is free software; see the source for copying conditions.\n"
 msgstr ""
+"Это свободное ПО. Для ознакомления с условиями копирования ПО, ознакомьтесь "
+"с исходным кодом."
 
 msgid "unrecognized option:"
 msgstr "неизвестная опция:"
@@ -1659,3 +1681,18 @@ msgstr "Обновление конфигурации..."
 
 msgid "Remove temporary backup..."
 msgstr "Удалить временный архивный файл..."
+
+#~ msgid "recurrence rule malformed."
+#~ msgstr "рекуррентные правила повреждены."
+
+#~ msgid "recurrence exception dates malformed."
+#~ msgstr "рекурентные соотношения дат повреждены."
+
+#~ msgid "could not get entire item description."
+#~ msgstr "невозможно получить описание полностью."
+
+#~ msgid "event start time malformed."
+#~ msgstr "время начала события неверно оформлено"
+
+#~ msgid "event end time malformed."
+#~ msgstr "событие и время неверно оформлены"

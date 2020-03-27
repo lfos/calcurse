@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse 1.4\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2019-06-16 15:27-0400\n"
+"POT-Creation-Date: 2020-03-27 18:58-0400\n"
 "PO-Revision-Date: 2006-07-03 00:05+0100\n"
 "Last-Translator: Neil Williams <linux@codehelp.co.uk>\n"
 "Language-Team: English/GB <en_GB@li.org>\n"
@@ -48,7 +48,7 @@ msgid "calcurse %s -- text-based organizer\n"
 msgstr "Calcurse %s - text-based organizer\n"
 
 #, fuzzy
-msgid "Copyright (c) 2004-2017 calcurse Development Team."
+msgid "Copyright (c) 2004-2020 calcurse Development Team."
 msgstr ""
 "\n"
 "Copyright (c) 2004-2006 Frederic Culot.\n"
@@ -406,6 +406,9 @@ msgstr ""
 msgid "(insert an empty line after each appointment)"
 msgstr ""
 
+msgid "(text for a day without events and appointments)"
+msgstr ""
+
 msgid "(display more than one day in the appointments panel)"
 msgstr ""
 
@@ -462,6 +465,9 @@ msgstr ""
 msgid "(Format of the date displayed in the appointments panel)"
 msgstr ""
 
+msgid "Enter a text string (an empty string for the default text)"
+msgstr ""
+
 msgid "Enter the date format (see 'man 3 strftime' for possible formats) "
 msgstr ""
 
@@ -508,9 +514,6 @@ msgid "Could not save %s."
 msgstr "Enter description :"
 
 msgid "unknown item type"
-msgstr ""
-
-msgid "(none)"
 msgstr ""
 
 #, fuzzy
@@ -602,7 +605,7 @@ msgstr ""
 msgid "unknown ical type"
 msgstr "FATAL ERROR in todo_delete_bynum: no such todo\n"
 
-msgid "recurrence rule malformed."
+msgid "malformed recurrence line."
 msgstr ""
 
 msgid "recurrence frequency not found."
@@ -611,15 +614,28 @@ msgstr ""
 msgid "recurrence frequency not recognized."
 msgstr ""
 
-msgid "recurrence exception dates malformed."
+msgid "malformed exceptions line."
 msgstr ""
 
-msgid "description malformed."
+msgid "malformed description line."
 msgstr ""
 
 #, fuzzy
-msgid "could not get entire item description."
+msgid "malformed description."
 msgstr "Enter description :"
+
+#, fuzzy
+msgid "empty description."
+msgstr "Enter description :"
+
+msgid "malformed summary line"
+msgstr ""
+
+msgid "malformed summary."
+msgstr ""
+
+msgid "line break in summary."
+msgstr ""
 
 #, fuzzy
 msgid "could not retrieve item summary."
@@ -635,13 +651,13 @@ msgstr ""
 msgid "item could not be identified."
 msgstr ""
 
-msgid "event start time malformed."
+msgid "malformed start time line."
 msgstr ""
 
 msgid "could not retrieve event start time."
 msgstr ""
 
-msgid "event end time malformed."
+msgid "malformed end time line."
 msgstr ""
 
 msgid "could not retrieve event end time."
@@ -1658,7 +1674,7 @@ msgstr ""
 #, fuzzy
 msgid ""
 "\n"
-"Copyright (c) 2004-2017 calcurse Development Team.\n"
+"Copyright (c) 2004-2020 calcurse Development Team.\n"
 "This is free software; see the source for copying conditions.\n"
 msgstr ""
 "\n"
@@ -1707,6 +1723,10 @@ msgstr ""
 
 msgid "Remove temporary backup..."
 msgstr ""
+
+#, fuzzy
+#~ msgid "could not get entire item description."
+#~ msgstr "Enter description :"
 
 #, fuzzy
 #~ msgid "configuration variable unknown: \"%s\""

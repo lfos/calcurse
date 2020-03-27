@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2020-01-30 19:14+0100\n"
+"POT-Creation-Date: 2020-03-27 18:58-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -44,7 +44,7 @@ msgstr ""
 msgid "calcurse %s -- text-based organizer\n"
 msgstr ""
 
-msgid "Copyright (c) 2004-2017 calcurse Development Team."
+msgid "Copyright (c) 2004-2020 calcurse Development Team."
 msgstr ""
 
 msgid "This is free software; see the source for copying conditions."
@@ -563,7 +563,7 @@ msgstr ""
 msgid "unknown ical type"
 msgstr ""
 
-msgid "recurrence rule malformed."
+msgid "malformed recurrence line."
 msgstr ""
 
 msgid "recurrence frequency not found."
@@ -572,13 +572,25 @@ msgstr ""
 msgid "recurrence frequency not recognized."
 msgstr ""
 
-msgid "recurrence exception dates malformed."
+msgid "malformed exceptions line."
 msgstr ""
 
-msgid "description malformed."
+msgid "malformed description line."
 msgstr ""
 
-msgid "could not get entire item description."
+msgid "malformed description."
+msgstr ""
+
+msgid "empty description."
+msgstr ""
+
+msgid "malformed summary line"
+msgstr ""
+
+msgid "malformed summary."
+msgstr ""
+
+msgid "line break in summary."
 msgstr ""
 
 msgid "could not retrieve item summary."
@@ -593,13 +605,13 @@ msgstr ""
 msgid "item could not be identified."
 msgstr ""
 
-msgid "event start time malformed."
+msgid "malformed start time line."
 msgstr ""
 
 msgid "could not retrieve event start time."
 msgstr ""
 
-msgid "event end time malformed."
+msgid "malformed end time line."
 msgstr ""
 
 msgid "could not retrieve event end time."
@@ -1559,7 +1571,7 @@ msgstr ""
 
 msgid ""
 "\n"
-"Copyright (c) 2004-2017 calcurse Development Team.\n"
+"Copyright (c) 2004-2020 calcurse Development Team.\n"
 "This is free software; see the source for copying conditions.\n"
 msgstr ""
 

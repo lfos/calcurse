@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2019-06-16 15:27-0400\n"
-"PO-Revision-Date: 2019-05-30 11:52+0000\n"
+"POT-Creation-Date: 2020-03-27 18:58-0400\n"
+"PO-Revision-Date: 2020-01-30 18:17+0000\n"
 "Last-Translator: Lukas Fleischer\n"
 "Language-Team: French (http://www.transifex.com/lfleischer/calcurse/language/"
 "fr/)\n"
@@ -58,7 +58,8 @@ msgstr "Tapez `calcurse -h` pour plus d'informations"
 msgid "calcurse %s -- text-based organizer\n"
 msgstr "calcurse %s -- organiseur en mode texte\n"
 
-msgid "Copyright (c) 2004-2017 calcurse Development Team."
+#, fuzzy
+msgid "Copyright (c) 2004-2020 calcurse Development Team."
 msgstr ""
 "(c) 2004-2017. L'équipe de développement de calcurse. Tous droits réservés."
 
@@ -415,6 +416,9 @@ msgstr ""
 msgid "(insert an empty line after each appointment)"
 msgstr ""
 
+msgid "(text for a day without events and appointments)"
+msgstr ""
+
 msgid "(display more than one day in the appointments panel)"
 msgstr ""
 
@@ -476,6 +480,9 @@ msgstr "(position de l'entête dans le panneau rendez-vous)"
 msgid "(Format of the date displayed in the appointments panel)"
 msgstr "(Format de la date affichée dans le panneau rendez-vous)"
 
+msgid "Enter a text string (an empty string for the default text)"
+msgstr ""
+
 msgid "Enter the date format (see 'man 3 strftime' for possible formats) "
 msgstr ""
 "Saisir le format de date (voir 'man 3 strftime' pour les formats possibles)"
@@ -523,9 +530,6 @@ msgstr "N'a pu sauvegarder %s."
 
 msgid "unknown item type"
 msgstr "type d'élément inconnu"
-
-msgid "(none)"
-msgstr ""
 
 msgid "Event:"
 msgstr "Événement :"
@@ -610,8 +614,8 @@ msgstr "dépassement de mémoire"
 msgid "unknown ical type"
 msgstr "type ical inconnu"
 
-msgid "recurrence rule malformed."
-msgstr "règle de répétition mal formée."
+msgid "malformed recurrence line."
+msgstr ""
 
 msgid "recurrence frequency not found."
 msgstr "fréquence de répétition introuvable."
@@ -619,14 +623,29 @@ msgstr "fréquence de répétition introuvable."
 msgid "recurrence frequency not recognized."
 msgstr "fréquence de répétition non reconnue."
 
-msgid "recurrence exception dates malformed."
-msgstr "dates de répétition exceptées mal formées."
+msgid "malformed exceptions line."
+msgstr ""
 
-msgid "description malformed."
+#, fuzzy
+msgid "malformed description line."
 msgstr "description mal formée."
 
-msgid "could not get entire item description."
-msgstr "impossible de trouver la description entière de l'élément."
+#, fuzzy
+msgid "malformed description."
+msgstr "Saisir la description :"
+
+#, fuzzy
+msgid "empty description."
+msgstr "Saisir la description :"
+
+msgid "malformed summary line"
+msgstr ""
+
+msgid "malformed summary."
+msgstr ""
+
+msgid "line break in summary."
+msgstr ""
 
 msgid "could not retrieve item summary."
 msgstr "impossible de récupérer le résumé de l'événement."
@@ -640,14 +659,15 @@ msgstr "l'élément a une durée négative."
 msgid "item could not be identified."
 msgstr "l'élément n'a pu être identifié."
 
-msgid "event start time malformed."
-msgstr "heure de début de l'événement mal formée."
+#, fuzzy
+msgid "malformed start time line."
+msgstr "Heure de départ non valide."
 
 msgid "could not retrieve event start time."
 msgstr "impossible de récupérer l'heure de début de l'événement."
 
-msgid "event end time malformed."
-msgstr "heure de fin de l'événement mal formée."
+msgid "malformed end time line."
+msgstr ""
 
 msgid "could not retrieve event end time."
 msgstr "impossible de récupérer l'heure de fin de l'événement."
@@ -1485,9 +1505,8 @@ msgstr "Saisir la description du nouvel élément :"
 msgid "Exception days:"
 msgstr ""
 
-#, fuzzy
 msgid "Invalid date format - try again:."
-msgstr "Date ou heure non valide."
+msgstr ""
 
 msgid "Enter the new repetition type:"
 msgstr "Saisir le nouveau type de répétition :"
@@ -1691,9 +1710,10 @@ msgstr "panneau inconnu"
 msgid "Usage: calcurse-upgrade [-h|-v|--config <file>]"
 msgstr "Utilisation : calcurse-upgrade [-h|-v|--config <fichier>]"
 
+#, fuzzy
 msgid ""
 "\n"
-"Copyright (c) 2004-2017 calcurse Development Team.\n"
+"Copyright (c) 2004-2020 calcurse Development Team.\n"
 "This is free software; see the source for copying conditions.\n"
 msgstr ""
 "\n"
@@ -1748,3 +1768,18 @@ msgstr "Mise à jour des instructions de configuration..."
 
 msgid "Remove temporary backup..."
 msgstr "Suppression de la sauvegarde temporaire..."
+
+#~ msgid "recurrence rule malformed."
+#~ msgstr "règle de répétition mal formée."
+
+#~ msgid "recurrence exception dates malformed."
+#~ msgstr "dates de répétition exceptées mal formées."
+
+#~ msgid "could not get entire item description."
+#~ msgstr "impossible de trouver la description entière de l'élément."
+
+#~ msgid "event start time malformed."
+#~ msgstr "heure de début de l'événement mal formée."
+
+#~ msgid "event end time malformed."
+#~ msgstr "heure de fin de l'événement mal formée."

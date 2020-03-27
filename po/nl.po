@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2019-06-16 15:27-0400\n"
-"PO-Revision-Date: 2019-05-30 11:52+0000\n"
+"POT-Creation-Date: 2020-03-27 18:58-0400\n"
+"PO-Revision-Date: 2020-01-30 18:17+0000\n"
 "Last-Translator: Lukas Fleischer\n"
 "Language-Team: Dutch (http://www.transifex.com/lfleischer/calcurse/language/"
 "nl/)\n"
@@ -48,7 +48,7 @@ msgstr "Probeer `calcurse -h` voor meer informatie."
 msgid "calcurse %s -- text-based organizer\n"
 msgstr "calcurse %s -- tekst gebaseerde agenda\n"
 
-msgid "Copyright (c) 2004-2017 calcurse Development Team."
+msgid "Copyright (c) 2004-2020 calcurse Development Team."
 msgstr ""
 
 msgid "This is free software; see the source for copying conditions."
@@ -383,6 +383,9 @@ msgstr ""
 msgid "(insert an empty line after each appointment)"
 msgstr ""
 
+msgid "(text for a day without events and appointments)"
+msgstr ""
+
 msgid "(display more than one day in the appointments panel)"
 msgstr ""
 
@@ -437,6 +440,9 @@ msgstr ""
 msgid "(Format of the date displayed in the appointments panel)"
 msgstr ""
 
+msgid "Enter a text string (an empty string for the default text)"
+msgstr ""
+
 msgid "Enter the date format (see 'man 3 strftime' for possible formats) "
 msgstr "Geef het formaat van de datum (zie 'man 3 strftime')"
 
@@ -483,9 +489,6 @@ msgstr ""
 
 msgid "unknown item type"
 msgstr "ongekend type item"
-
-msgid "(none)"
-msgstr ""
 
 msgid "Event:"
 msgstr ""
@@ -570,8 +573,8 @@ msgstr ""
 msgid "unknown ical type"
 msgstr "onbekend ical type"
 
-msgid "recurrence rule malformed."
-msgstr "herhalingsregel onjuist"
+msgid "malformed recurrence line."
+msgstr ""
 
 msgid "recurrence frequency not found."
 msgstr ""
@@ -579,14 +582,28 @@ msgstr ""
 msgid "recurrence frequency not recognized."
 msgstr ""
 
-msgid "recurrence exception dates malformed."
-msgstr "herhaling exceptie datum onjuist"
+msgid "malformed exceptions line."
+msgstr ""
 
-msgid "description malformed."
+#, fuzzy
+msgid "malformed description line."
 msgstr "omschrijving beschadigd"
 
-msgid "could not get entire item description."
-msgstr "onvolledige item omschrijving"
+msgid "malformed description."
+msgstr ""
+
+#, fuzzy
+msgid "empty description."
+msgstr "omschrijving beschadigd"
+
+msgid "malformed summary line"
+msgstr ""
+
+msgid "malformed summary."
+msgstr ""
+
+msgid "line break in summary."
+msgstr ""
 
 msgid "could not retrieve item summary."
 msgstr "kan item onderwerp niet ophalen"
@@ -600,13 +617,13 @@ msgstr "item heeft een negatieve tijdsduur"
 msgid "item could not be identified."
 msgstr "item onbekend"
 
-msgid "event start time malformed."
+msgid "malformed start time line."
 msgstr ""
 
 msgid "could not retrieve event start time."
 msgstr "kan begintijd van gebeurtenis niet ophalen"
 
-msgid "event end time malformed."
+msgid "malformed end time line."
 msgstr ""
 
 msgid "could not retrieve event end time."
@@ -1574,11 +1591,12 @@ msgstr ""
 msgid "Usage: calcurse-upgrade [-h|-v|--config <file>]"
 msgstr ""
 
+#, fuzzy
 msgid ""
 "\n"
-"Copyright (c) 2004-2017 calcurse Development Team.\n"
+"Copyright (c) 2004-2020 calcurse Development Team.\n"
 "This is free software; see the source for copying conditions.\n"
-msgstr ""
+msgstr "Dit is vrije software; bekijk de broncode voor de kopieer voorwaarden"
 
 msgid "unrecognized option:"
 msgstr ""
@@ -1619,3 +1637,12 @@ msgstr ""
 
 msgid "Remove temporary backup..."
 msgstr ""
+
+#~ msgid "recurrence rule malformed."
+#~ msgstr "herhalingsregel onjuist"
+
+#~ msgid "recurrence exception dates malformed."
+#~ msgstr "herhaling exceptie datum onjuist"
+
+#~ msgid "could not get entire item description."
+#~ msgstr "onvolledige item omschrijving"

@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2019-06-16 15:27-0400\n"
-"PO-Revision-Date: 2019-05-30 11:52+0000\n"
+"POT-Creation-Date: 2020-03-27 18:58-0400\n"
+"PO-Revision-Date: 2020-01-30 18:17+0000\n"
 "Last-Translator: Lukas Fleischer\n"
 "Language-Team: Spanish (http://www.transifex.com/lfleischer/calcurse/"
 "language/es/)\n"
@@ -49,7 +49,8 @@ msgstr "Consulte `calcurse -h` para más información."
 msgid "calcurse %s -- text-based organizer\n"
 msgstr "calcurse %s -- organizador basado en texto\n"
 
-msgid "Copyright (c) 2004-2017 calcurse Development Team."
+#, fuzzy
+msgid "Copyright (c) 2004-2020 calcurse Development Team."
 msgstr "Copyright (c) 2004-2017 Equipo de desarrollo de calcurse."
 
 msgid "This is free software; see the source for copying conditions."
@@ -393,6 +394,9 @@ msgstr ""
 msgid "(insert an empty line after each appointment)"
 msgstr ""
 
+msgid "(text for a day without events and appointments)"
+msgstr ""
+
 msgid "(display more than one day in the appointments panel)"
 msgstr ""
 
@@ -451,6 +455,9 @@ msgstr "(posición de la cabecera en el panel de citas)"
 msgid "(Format of the date displayed in the appointments panel)"
 msgstr "(Formato de la fecha mostrado en el panel de citas)"
 
+msgid "Enter a text string (an empty string for the default text)"
+msgstr ""
+
 msgid "Enter the date format (see 'man 3 strftime' for possible formats) "
 msgstr ""
 "Ingrese el formato de la fecha (ver 'man 3 strftime' para los formatos "
@@ -499,9 +506,6 @@ msgstr ""
 
 msgid "unknown item type"
 msgstr "tipo de elemento desconocido"
-
-msgid "(none)"
-msgstr ""
 
 msgid "Event:"
 msgstr "Evento:"
@@ -586,8 +590,8 @@ msgstr "memoria agotada"
 msgid "unknown ical type"
 msgstr "tipo ical desconocido"
 
-msgid "recurrence rule malformed."
-msgstr "regla de recurrencia mal formada"
+msgid "malformed recurrence line."
+msgstr ""
 
 msgid "recurrence frequency not found."
 msgstr "frecuencia recurrente no encontrada."
@@ -595,14 +599,29 @@ msgstr "frecuencia recurrente no encontrada."
 msgid "recurrence frequency not recognized."
 msgstr "frecuencia recurrente no reconocida."
 
-msgid "recurrence exception dates malformed."
-msgstr "excepción de recurrencia mal formada."
+msgid "malformed exceptions line."
+msgstr ""
 
-msgid "description malformed."
+#, fuzzy
+msgid "malformed description line."
 msgstr "descripción mal formada."
 
-msgid "could not get entire item description."
-msgstr "no se pudo obtener la descripción completa del elemento."
+#, fuzzy
+msgid "malformed description."
+msgstr "Ingrese descripción:"
+
+#, fuzzy
+msgid "empty description."
+msgstr "Ingrese descripción:"
+
+msgid "malformed summary line"
+msgstr ""
+
+msgid "malformed summary."
+msgstr ""
+
+msgid "line break in summary."
+msgstr ""
 
 msgid "could not retrieve item summary."
 msgstr "no se pudo recuperar el resumen del elemento."
@@ -616,14 +635,15 @@ msgstr "el elemento tiene una duración negativa."
 msgid "item could not be identified."
 msgstr "el elemento no pudo ser identificado."
 
-msgid "event start time malformed."
+#, fuzzy
+msgid "malformed start time line."
 msgstr "fecha de comienzo del evento mal formada."
 
 msgid "could not retrieve event start time."
 msgstr "no se pudo recuperar la fecha de comienzo del evento."
 
-msgid "event end time malformed."
-msgstr "fecha de finalización del evento mal formada."
+msgid "malformed end time line."
+msgstr ""
 
 msgid "could not retrieve event end time."
 msgstr "no se pudo recuperar la fecha de finalización del evento."
@@ -1643,9 +1663,10 @@ msgstr "panel desconocido"
 msgid "Usage: calcurse-upgrade [-h|-v|--config <file>]"
 msgstr "Uso: calcurse-upgrade [-h|-v|--config <file>]"
 
+#, fuzzy
 msgid ""
 "\n"
-"Copyright (c) 2004-2017 calcurse Development Team.\n"
+"Copyright (c) 2004-2020 calcurse Development Team.\n"
 "This is free software; see the source for copying conditions.\n"
 msgstr ""
 "\n"
@@ -1702,3 +1723,15 @@ msgstr "Actualizar directivas de configuración..."
 
 msgid "Remove temporary backup..."
 msgstr "Eliminar respaldo temporal..."
+
+#~ msgid "recurrence rule malformed."
+#~ msgstr "regla de recurrencia mal formada"
+
+#~ msgid "recurrence exception dates malformed."
+#~ msgstr "excepción de recurrencia mal formada."
+
+#~ msgid "could not get entire item description."
+#~ msgstr "no se pudo obtener la descripción completa del elemento."
+
+#~ msgid "event end time malformed."
+#~ msgstr "fecha de finalización del evento mal formada."
