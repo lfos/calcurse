@@ -143,7 +143,7 @@ Install process
 First you need to gunzip and untar the source archive:
 
 ----
-$ tar zxvf calcurse-4.5.1.tar.gz
+$ tar zxvf calcurse-4.6.0.tar.gz
 ----
 
 Once you meet the requirements and have extracted the archive, the install

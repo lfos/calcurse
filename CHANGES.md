@@ -1,6 +1,37 @@
 Release Notes
 =============
 
+Version 4.6.0 (2020-03-27)
+--------------------------
+
+- New features:
+
+    * XDG base directory support: While using ~/.calcurse/ is still supported
+      for backwards compatibility, we recommend putting your configuration
+      files in ~/.config/calcurse/ and your data files in
+      ~/.local/share/calcurse/ instead (implemented by Nitroretro).
+
+    * Configurable text for empty days (implemented by Lars Henriksen).
+
+    * Support RET to set the todo item priority to 0 (implemented by Issam
+      Maghni).
+
+    * Various improvements in iCal imports (implemented by Lars Henriksen).
+
+- New calcurse-caldav features:
+
+    * Documentation for Yahoo's Calendar Server.
+
+- Bug fixes:
+
+    * Escape necessary characters in SUMMARY on export (implemented by Kelvin
+      Jackson).
+
+    * Update notification bar properly when certain recurrent appointments are
+      deleted (implemented by Lars Henriksen).
+
+    * Fix save of interactively imported data (implemented by Lars Henriksen).
+
 Version 4.5.1 (2019-10-18)
 --------------------------
 
