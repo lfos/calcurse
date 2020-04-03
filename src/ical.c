@@ -899,11 +899,6 @@ static char *ical_read_note(char *line, unsigned *noskipped,
 		ical_log(log, item_type, itemline, _("malformed description."));
 		(*noskipped)++;
 		return NULL;
-	} else if (strlen(notestr) == 0) {
-		mem_free(notestr);
-		ical_log(log, item_type, itemline, _("empty description."));
-		(*noskipped)++;
-		return NULL;
 	} else {
 		note = generate_note(notestr);
 		mem_free(notestr);
