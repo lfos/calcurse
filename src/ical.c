@@ -54,6 +54,15 @@ typedef enum {
 	EVENT
 } ical_vevent_e;
 
+typedef enum {
+	NO_PROPERTY,
+	SUMMARY,
+	DESCRIPTION,
+	LOCATION,
+	COMMENT,
+	STATUS
+} ical_property_e;
+
 typedef struct {
 	enum recur_type type;
 	int freq;
@@ -440,14 +449,16 @@ ical_store_apoint(char *mesg, char *note, long start, long dur,
 }
 
 /*
- * Returns an allocated string representing the argument string with escaped
- * characters decoded, or NULL on error.
- * The string is assumed to be the value part of a SUMMARY or DESCRIPTION line.
+ * Return an allocated string containing the decoded 'line' or NULL on error.
+ * The last arguments are used to format a note file entry.
+ * The line is assumed to be the value part of a content line of type TEXT or
+ * INTEGER (RFC 5545, 3.3.11 and 3.3.8) without list or field separators (3.1.1).
  */
-static char *ical_unformat_line(char *line)
+static char *ical_unformat_line(char *line, int eol, int indentation)
 {
 	struct string s;
 	char *p;
+	const char *INDENT = "    ";
 
 	string_init(&s);
 	for (p = line; *p; p++) {
@@ -457,6 +468,8 @@ static char *ical_unformat_line(char *line)
 			case 'N':
 			case 'n':
 				string_catf(&s, "%c", '\n');
+				if (indentation)
+					string_catf(&s, "%s", INDENT);
 				p++;
 				break;
 			case '\\':
@@ -472,9 +485,7 @@ static char *ical_unformat_line(char *line)
 			break;
 		case ',':
 		case ';':
-			/*
-			 * No list or field separator allowed.
-			 */
+			/* No list or field separator allowed. */
 			mem_free(s.buf);
 			return NULL;
 		default:
@@ -482,6 +493,9 @@ static char *ical_unformat_line(char *line)
 			break;
 		}
 	}
+	/* Add the final EOL removed by ical_readline(). */
+	if (eol)
+		string_catf(&s, "\n");
 
 	return string_buf(&s);
 }
@@ -879,31 +893,54 @@ ical_read_exdate(llist_t * exc, FILE * log, char *exstr,
 	return 1;
 }
 
-/* Return an allocated string containing the name of the newly created note. */
-static char *ical_read_note(char *line, unsigned *noskipped,
+/*
+ * Return an allocated string containing a property value to be written in a
+ * note file or NULL on error.
+ */
+static char *ical_read_note(char *line, ical_property_e property, unsigned *noskipped,
 			    ical_types_e item_type, const int itemline,
 			    FILE * log)
 {
-	char *p, *notestr, *note;
+	const int EOL = 1,
+		  INDENT = (property != DESCRIPTION);
+	char *p, *pname, *notestr;
 
+	switch (property) {
+	case DESCRIPTION:
+		pname = "description";
+		break;
+	case LOCATION:
+		pname = "location";
+		break;
+	case COMMENT:
+		pname = "comment";
+		break;
+	case STATUS:
+		pname = "status";
+		break;
+	default:
+		pname = "no property";
+
+	}
 	p = ical_get_value(line);
 	if (!p) {
-		ical_log(log, item_type, itemline,
-			 _("malformed description line."));
+		asprintf(&p, _("malformed %s line."), pname);
+		ical_log(log, item_type, itemline, p);
+		mem_free(p);
 		(*noskipped)++;
-		return NULL;
+		notestr = NULL;
+		goto leave;
 	}
 
-	notestr = ical_unformat_line(p);
+	notestr = ical_unformat_line(p, EOL, INDENT);
 	if (!notestr) {
-		ical_log(log, item_type, itemline, _("malformed description."));
+		asprintf(&p, _("malformed %s."), pname);
+		ical_log(log, item_type, itemline, p);
+		mem_free(p);
 		(*noskipped)++;
-		return NULL;
-	} else {
-		note = generate_note(notestr);
-		mem_free(notestr);
-		return note;
 	}
+  leave:
+	return notestr;
 }
 
 /* Returns an allocated string containing the ical item summary. */
@@ -911,30 +948,31 @@ static char *ical_read_summary(char *line, unsigned *noskipped,
 			       ical_types_e item_type, const int itemline,
 			       FILE * log)
 {
-	char *p, *summary;
+	const int EOL = 0, INDENT = 0;
+	char *p, *summary = NULL;
 
 	p = ical_get_value(line);
 	if (!p) {
-		ical_log(log, item_type, itemline, _("malformed summary line"));
+		ical_log(log, item_type, itemline, _("malformed summary line."));
 		(*noskipped)++;
-		return NULL;
+		goto leave;
 	}
 
-	summary = ical_unformat_line(p);
+	summary = ical_unformat_line(p, EOL, INDENT);
 	if (!summary) {
 		ical_log(log, item_type, itemline, _("malformed summary."));
 		(*noskipped)++;
-		return NULL;
+		goto leave;
 	}
 
-	/* Event summaries must not contain newlines. */
+	/* An event summary is one line only. */
 	if (strchr(summary, '\n')) {
 		ical_log(log, item_type, itemline, _("line break in summary."));
 		(*noskipped)++;
 		mem_free(summary);
-		return NULL;
+		summary = NULL;
 	}
-
+  leave:
 	return summary;
 }
 
@@ -946,21 +984,26 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 {
 	const int ITEMLINE = *lineno - !feof(fdi);
 	ical_vevent_e vevent_type;
-	char *p;
+	ical_property_e property;
+	char *p, *note = NULL, *comment;
+	const char *SEPARATOR = "-- \n";
+	struct string s;
 	struct {
 		llist_t exc;
 		ical_rpt_t *rpt;
-		char *mesg, *note;
+		char *mesg, *desc, *loc, *comm, *stat, *note;
 		long start, end, dur;
 		int has_alarm;
 	} vevent;
-	int skip_alarm;
+	int skip_alarm, has_note, separator;
 
 	vevent_type = UNDEFINED;
 	memset(&vevent, 0, sizeof vevent);
 	LLIST_INIT(&vevent.exc);
-	skip_alarm = 0;
+	skip_alarm = has_note = separator = 0;
 	while (ical_readline(fdi, buf, lstore, lineno)) {
+		note = NULL;
+		property = NO_PROPERTY;
 		if (skip_alarm) {
 			/*
 			 * Need to skip VALARM properties because some keywords
@@ -970,7 +1013,6 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 				skip_alarm = 0;
 			continue;
 		}
-
 		if (starts_with_ci(buf, "END:VEVENT")) {
 			if (!vevent.mesg) {
 				ical_log(log, ICAL_VEVENT, ITEMLINE,
@@ -982,7 +1024,6 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 					 _("item start date is not defined."));
 				goto skip;
 			}
-
 			if (vevent_type == APPOINTMENT && vevent.dur == 0) {
 				if (vevent.end != 0) {
 					vevent.dur = vevent.end - vevent.start;
@@ -994,13 +1035,38 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 					goto skip;
 				}
 			}
-
 			if (vevent.rpt && vevent.rpt->count) {
 				vevent.rpt->until =
 					ical_compute_rpt_until(vevent.start,
 							vevent.rpt);
 			}
-
+			if (has_note) {
+				/* Construct string with note file contents. */
+				string_init(&s);
+				if (vevent.desc) {
+					string_catf(&s, "%s", vevent.desc);
+					mem_free(vevent.desc);
+					if (separator)
+						string_catf(&s, SEPARATOR);
+				}
+				if (vevent.loc) {
+					string_catf(&s, _("Location: %s"),
+						    vevent.loc);
+					mem_free(vevent.loc);
+				}
+				if (vevent.comm) {
+					string_catf(&s, _("Comment: %s"),
+						    vevent.comm);
+					mem_free(vevent.comm);
+				}
+				if (vevent.stat) {
+					string_catf(&s, _("Status: %s"),
+						    vevent.stat);
+					mem_free(vevent.stat);
+				}
+				vevent.note = generate_note(string_buf(&s));
+				mem_free(s.buf);
+			}
 			switch (vevent_type) {
 			case APPOINTMENT:
 				ical_store_apoint(vevent.mesg, vevent.note,
@@ -1023,10 +1089,8 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 				goto skip;
 				break;
 			}
-
 			return;
 		}
-
 		if (starts_with_ci(buf, "DTSTART")) {
 			p = ical_get_value(buf);
 			if (!p) {
@@ -1079,23 +1143,84 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 		} else if (starts_with_ci(buf, "BEGIN:VALARM")) {
 			skip_alarm = vevent.has_alarm = 1;
 		} else if (starts_with_ci(buf, "DESCRIPTION")) {
-			vevent.note = ical_read_note(buf, noskipped,
-					ICAL_VEVENT, ITEMLINE, log);
-			if (!vevent.note)
+			property = DESCRIPTION;
+		} else if (starts_with_ci(buf, "LOCATION")) {
+			property = LOCATION;
+		} else if (starts_with_ci(buf, "COMMENT")) {
+			property = COMMENT;
+		} else if (starts_with_ci(buf, "STATUS")) {
+			property = STATUS;
+		}
+		if (property) {
+			note = ical_read_note(buf, property, noskipped,
+					      ICAL_VEVENT, ITEMLINE, log);
+			if (!note)
 				goto cleanup;
+			separator = (property != DESCRIPTION);
+			has_note = 1;
+		}
+		switch (property) {
+		case DESCRIPTION:
+			if (vevent.desc) {
+				ical_log(log, ICAL_VEVENT, ITEMLINE,
+					 _("only one description allowed."));
+				goto skip;
+			}
+			vevent.desc = note;
+			break;
+		case LOCATION:
+			if (vevent.loc) {
+				ical_log(log, ICAL_VEVENT, ITEMLINE,
+					 _("only one location allowed."));
+				goto skip;
+			}
+			vevent.loc = note;
+			break;
+		case COMMENT:
+			/* There may be more than one. */
+			if (vevent.comm) {
+				asprintf(&comment, "%sComment: %s",
+					 vevent.comm, note);
+				mem_free(vevent.comm);
+				vevent.comm = comment;
+			} else
+				vevent.comm = note;
+			break;
+		case STATUS:
+			if (vevent.stat) {
+				ical_log(log, ICAL_VEVENT, ITEMLINE,
+					 _("only one status allowed."));
+				goto skip;
+			}
+			if (!(starts_with(note, "TENTATIVE") ||
+			      starts_with(note, "CONFIRMED") ||
+			      starts_with(note, "CANCELLED"))) {
+				ical_log(log, ICAL_VEVENT, ITEMLINE,
+					 _("invalid status value."));
+				goto skip;
+			}
+			vevent.stat = note;
+			break;
+		default:
+			break;
 		}
 	}
-
 	ical_log(log, ICAL_VEVENT, ITEMLINE,
 		 _("The ical file seems to be malformed. "
 		   "The end of item was not found."));
-
-skip:
+   skip:
 	(*noskipped)++;
-
 cleanup:
-	if (vevent.note)
-		mem_free(vevent.note);
+	if (note)
+		mem_free(note);
+	if (vevent.desc)
+		mem_free(vevent.desc);
+	if (vevent.loc)
+		mem_free(vevent.loc);
+	if (vevent.comm)
+		mem_free(vevent.comm);
+	if (vevent.stat)
+		mem_free(vevent.stat);
 	if (vevent.mesg)
 		mem_free(vevent.mesg);
 	if (vevent.rpt)
@@ -1108,16 +1233,22 @@ ical_read_todo(FILE * fdi, FILE * log, unsigned *notodos, unsigned *noskipped,
 	       char *buf, char *lstore, unsigned *lineno, const char *fmt_todo)
 {
 	const int ITEMLINE = *lineno - !feof(fdi);
+	ical_property_e property;
+	char *note = NULL, *comment;
+	const char *SEPARATOR = "-- \n";
+	struct string s;
 	struct {
-		char *mesg, *note;
+		char *mesg, *desc, *loc, *comm, *stat, *note;
 		int priority;
 		int completed;
 	} vtodo;
-	int skip_alarm;
+	int skip_alarm, has_note, separator;
 
 	memset(&vtodo, 0, sizeof vtodo);
-	skip_alarm = 0;
+	skip_alarm = has_note = separator = 0;
 	while (ical_readline(fdi, buf, lstore, lineno)) {
+		note = NULL;
+		property = NO_PROPERTY;
 		if (skip_alarm) {
 			/*
 			 * Need to skip VALARM properties because some keywords
@@ -1127,20 +1258,44 @@ ical_read_todo(FILE * fdi, FILE * log, unsigned *notodos, unsigned *noskipped,
 				skip_alarm = 0;
 			continue;
 		}
-
 		if (starts_with_ci(buf, "END:VTODO")) {
 			if (!vtodo.mesg) {
 				ical_log(log, ICAL_VTODO, ITEMLINE,
 					 _("could not retrieve item summary."));
 				goto cleanup;
 			}
-
+			if (has_note) {
+				/* Construct string with note file contents. */
+				string_init(&s);
+				if (vtodo.desc) {
+					string_catf(&s, "%s", vtodo.desc);
+					mem_free(vtodo.desc);
+					if (separator)
+						string_catf(&s, SEPARATOR);
+				}
+				if (vtodo.loc) {
+					string_catf(&s, _("Location: %s"),
+						    vtodo.loc);
+					mem_free(vtodo.loc);
+				}
+				if (vtodo.comm) {
+					string_catf(&s, _("Comment: %s"),
+						    vtodo.comm);
+					mem_free(vtodo.comm);
+				}
+				if (vtodo.stat) {
+					string_catf(&s, _("Status: %s"),
+						    vtodo.stat);
+					mem_free(vtodo.stat);
+				}
+				vtodo.note = generate_note(string_buf(&s));
+				mem_free(s.buf);
+			}
 			ical_store_todo(vtodo.priority, vtodo.completed,
 					vtodo.mesg, vtodo.note, fmt_todo);
 			(*notodos)++;
 			return;
 		}
-
 		if (starts_with_ci(buf, "PRIORITY:")) {
 			sscanf(buf, "PRIORITY:%d\n", &vtodo.priority);
 			if (vtodo.priority < 0 || vtodo.priority > 9) {
@@ -1151,6 +1306,7 @@ ical_read_todo(FILE * fdi, FILE * log, unsigned *notodos, unsigned *noskipped,
 			}
 		} else if (starts_with_ci(buf, "STATUS:COMPLETED")) {
 			vtodo.completed = 1;
+			property = STATUS;
 		} else if (starts_with_ci(buf, "SUMMARY")) {
 			vtodo.mesg =
 				ical_read_summary(buf, noskipped, ICAL_VTODO,
@@ -1160,22 +1316,85 @@ ical_read_todo(FILE * fdi, FILE * log, unsigned *notodos, unsigned *noskipped,
 		} else if (starts_with_ci(buf, "BEGIN:VALARM")) {
 			skip_alarm = 1;
 		} else if (starts_with_ci(buf, "DESCRIPTION")) {
-			vtodo.note = ical_read_note(buf, noskipped, ICAL_VTODO,
-					ITEMLINE, log);
-			if (!vtodo.note)
+			property = DESCRIPTION;
+		} else if (starts_with_ci(buf, "LOCATION")) {
+			property = LOCATION;
+		} else if (starts_with_ci(buf, "COMMENT")) {
+			property = COMMENT;
+		} else if (starts_with_ci(buf, "STATUS")) {
+			property = STATUS;
+		}
+		if (property) {
+			note = ical_read_note(buf, property, noskipped,
+					       ICAL_VTODO, ITEMLINE, log);
+			if (!note)
 				goto cleanup;
+			separator = (property != DESCRIPTION);
+			has_note = 1;
+		}
+		switch (property) {
+		case DESCRIPTION:
+			if (vtodo.desc) {
+				ical_log(log, ICAL_VTODO, ITEMLINE,
+					 _("only one description allowed."));
+				goto skip;
+			}
+			vtodo.desc = note;
+			break;
+		case LOCATION:
+			if (vtodo.loc) {
+				ical_log(log, ICAL_VTODO, ITEMLINE,
+					 _("only one location allowed."));
+				goto skip;
+			}
+			vtodo.loc = note;
+			break;
+		case COMMENT:
+			/* There may be more than one. */
+			if (vtodo.comm) {
+				asprintf(&comment, "%sComment: %s",
+					 vtodo.comm, note);
+				mem_free(vtodo.comm);
+				vtodo.comm = comment;
+			} else
+				vtodo.comm = note;
+			break;
+		case STATUS:
+			if (vtodo.stat) {
+				ical_log(log, ICAL_VTODO, ITEMLINE,
+					 _("only one status allowed."));
+				goto skip;
+			}
+			if (!(starts_with(note, "NEEDS-ACTION") ||
+			      starts_with(note, "COMPLETED") ||
+			      starts_with(note, "IN-PROCESS") ||
+			      starts_with(note, "CANCELLED"))) {
+				ical_log(log, ICAL_VTODO, ITEMLINE,
+					 _("invalid status value."));
+				goto skip;
+			}
+			vtodo.stat = note;
+			break;
+		default:
+			break;
 		}
 	}
-
 	ical_log(log, ICAL_VTODO, ITEMLINE,
 		 _("The ical file seems to be malformed. "
 		   "The end of item was not found."));
-
-skip:
+   skip:
 	(*noskipped)++;
 cleanup:
-	if (vtodo.note)
-		mem_free(vtodo.note);
+	if (note)
+		mem_free(note);
+	if (vtodo.desc)
+		mem_free(vtodo.desc);
+	if (vtodo.loc)
+		mem_free(vtodo.loc);
+	if (vtodo.comm)
+		mem_free(vtodo.comm);
+	if (vtodo.stat)
+		mem_free(vtodo.stat);
 	if (vtodo.mesg)
 		mem_free(vtodo.mesg);
 }
