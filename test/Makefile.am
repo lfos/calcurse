@@ -59,6 +59,7 @@ TESTS = \
 	ical-009.sh \
 	ical-010.sh \
 	ical-011.sh \
+	ical-012.sh \
 	next-001.sh \
 	next-002.sh \
 	next-003.sh \
@@ -134,5 +135,6 @@ EXTRA_DIST = \
 	data/ical-007.ical \
 	data/ical-008.ical \
 	data/ical-009.ical \
+	data/ical-012.ical \
 	data/todo \
 	data/todo-export
