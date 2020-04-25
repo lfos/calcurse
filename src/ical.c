@@ -128,7 +128,7 @@ static void ical_export_recur_events(FILE * stream, int export_uid)
 		struct recur_event *rev = LLIST_GET_DATA(i);
 		date_sec2date_fmt(rev->day, ICALDATEFMT, ical_date);
 		fputs("BEGIN:VEVENT\n", stream);
-		fprintf(stream, "DTSTART:%s\n", ical_date);
+		fprintf(stream, "DTSTART;VALUE=DATE:%s\n", ical_date);
 		fprintf(stream, "RRULE:FREQ=%s;INTERVAL=%d",
 			ical_recur_type[rev->rpt->type], rev->rpt->freq);
 
