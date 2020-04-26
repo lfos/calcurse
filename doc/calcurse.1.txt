@@ -57,7 +57,7 @@ The first form shows how to invoke calcurse interactively; the remainder is
 command line forms.
 
 The second form shows queries (as opposed to interactive use). For
-convenience, common queries have abbriviated forms shown in the third line.
+convenience, common queries have abbreviated forms shown in the third line.
 All queries may be combined with filter options as well as format options.
 
 The fourth form shows operations on the calcurse data files, one for
@@ -91,7 +91,7 @@ and issue reminders; it stops automatically when the interactive mode is
 reentered.
 
 This man page mainly describes the command-line mode. The following two
-subsections contain some general desriptions of command line options and usage.
+subsections contain some general descriptions of command line options and usage.
 
 Input and Output Date Format
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -206,7 +206,7 @@ displays those for yesterday and today. The first form is equivalent to *-Q
 *-g*, *--gc*::
   Run the garbage collector for note files. The garbage collector removes
   files from the +notes+ directory (see <<_files,FILES>>) that are no longer
-  linked to an item. Ususally done automatically by setting the configuration
+  linked to an item. Usually done automatically by setting the configuration
   option +general.autogc+ in the 'General Options' submenu in interactive mode.
 
 *-G*, *--grep*::
