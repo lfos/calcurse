@@ -522,20 +522,26 @@ nsmap = {"D": "DAV:", "C": "urn:ietf:params:xml:ns:caldav"}
 
 # Initialize default values.
 if os.path.isdir(os.path.expanduser("~/.calcurse")):
-    configfn = os.path.expanduser("~/.calcurse/caldav/config")
-    lockfn = os.path.expanduser("~/.calcurse/caldav/lock")
-    syncdbfn = os.path.expanduser("~/.calcurse/caldav/sync.db")
-    hookdir = os.path.expanduser("~/.calcurse/caldav/hooks/")
-    oauth_file = os.path.expanduser("~/.calcurse/caldav/oauth2_cred")
-else:
-    calcurse_data = os.getenv("XDG_DATA_HOME", os.path.expanduser("~/.local/share")) + "/calcurse"
-    calcurse_config = os.getenv("XDG_CONFIG_HOME", os.path.expanduser("~/.config")) + "/calcurse"
+    caldav_path = os.path.expanduser("~/.calcurse/caldav")
+    check_dir(caldav_path)
 
-    configfn = os.path.expanduser(calcurse_config + "/caldav/config")
-    lockfn = os.path.expanduser(calcurse_data + "/caldav/lock")
-    syncdbfn = os.path.expanduser(calcurse_data + "/caldav/sync.db")
-    hookdir = os.path.expanduser(calcurse_config + "/caldav/hooks/")
-    oauth_file = os.path.expanduser(calcurse_config + "/caldav/oauth2_cred")
+    configfn = os.path.join(caldav_path, "config")
+    hookdir = os.path.join(caldav_path, "hooks")
+    oauth_file = os.path.join(caldav_path, "oauth2_cred")
+    lockfn = os.path.join(caldav_path, "lock")
+    syncdbfn = os.path.join(caldav_path, "sync.db")
+else:
+    caldav_config = os.path.join(os.getenv("XDG_CONFIG_HOME", os.path.expanduser("~/.config")), "calcurse", "caldav")
+    caldav_data = os.path.join(os.getenv("XDG_DATA_HOME", os.path.expanduser("~/.local/share")), "calcurse", "caldav")
+    check_dir(caldav_config)
+    check_dir(caldav_data)
+
+    configfn = os.path.join(caldav_config, "config")
+    hookdir = os.path.join(caldav_config, "hooks")
+    oauth_file = os.path.join(caldav_config, "oauth2_cred")
+
+    lockfn = os.path.join(caldav_data, "lock")
+    syncdbfn = os.path.join(caldav_data, "sync.db")
 
 # Parse command line arguments.
 parser = argparse.ArgumentParser('calcurse-caldav')
