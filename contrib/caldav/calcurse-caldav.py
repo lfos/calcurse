@@ -4,6 +4,7 @@ import argparse
 import base64
 import configparser
 import httplib2
+import pathlib
 import os
 import re
 import subprocess
@@ -37,9 +38,10 @@ def die(msg):
 
 
 def check_dir(dir):
-    if not os.path.isdir(dir):
-        die("invalid directory: {0}".format(dir))
-
+    try:
+        pathlib.Path(dir).mkdir(parents=True, exist_ok=True)
+    except FileExistsError:
+        die("{} is not a directory".format(dir))
 
 def die_atnode(msg, node):
     if debug:
