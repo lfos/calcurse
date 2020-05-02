@@ -579,39 +579,57 @@ ical_chk_header(FILE * fd, char *buf, char *lstore, unsigned *lineno,
 }
 
 /*
+ * Return event type from a DTSTART/DTEND/EXDATE property.
+ */
+static ical_vevent_e ical_get_type(char *c_line)
+{
+	const char vparam[] = ";VALUE=DATE";
+	char *p;
+
+	if ((p = strstr(c_line, vparam))) {
+		p += sizeof(vparam) - 1;
+		if (*p == ':' || *p == ';')
+			return EVENT;
+	}
+
+	return APPOINTMENT;
+}
+
+/*
  * iCalendar date-time format is based on the ISO 8601 complete
  * representation. It should be something like : DATE 'T' TIME
  * where DATE is 'YYYYMMDD' and TIME is 'HHMMSS'.
  * The time and 'T' separator are optional (in the case of an day-long event).
  *
- * Optionally, if the type pointer is given, specify if it is an event
- * (no time is given, meaning it is an all-day event), or an appointment
- * (time is given).
+ * The type argument is either APPOINTMENT or EVENT and the time format must
+ * agree.
  *
  * The timezone is not yet handled by calcurse.
  */
-static time_t ical_datetime2time_t(char *datestr, ical_vevent_e * type)
+static time_t ical_datetime2time_t(char *datestr, ical_vevent_e type)
 {
-	const int FORMAT_DATE = 3, FORMAT_DATETIME = 6, FORMAT_DATETIMEZ = 7;
+	const int INVALID = 0, DATE = 3, DATETIME = 6, DATETIMEZ = 7;
 	struct date date;
 	unsigned hour, min, sec;
 	char c;
 	int format;
 
+	EXIT_IF(type == UNDEFINED, "event type not set");
+
 	format = sscanf(datestr, "%04u%02u%02uT%02u%02u%02u%c",
 			&date.yyyy, &date.mm, &date.dd, &hour, &min, &sec, &c);
-	if (format == FORMAT_DATE) {
-		if (type)
-			*type = EVENT;
+	if (format == DATE && strlen(datestr) > 8)
+		format = INVALID;
+	if (format == DATETIMEZ && c != 'Z')
+		format = DATETIME;
+
+	if (format == DATE && type == EVENT)
 		return date2sec(date, 0, 0);
-	} else if (format == FORMAT_DATETIME || format == FORMAT_DATETIMEZ) {
-		if (type)
-			*type = APPOINTMENT;
-		if (format == FORMAT_DATETIMEZ && c == 'Z')
-			return utcdate2sec(date, hour, min);
-		else
-			return date2sec(date, hour, min);
-	}
+	else if (format == DATETIME && type == APPOINTMENT)
+		return date2sec(date, hour, min);
+	else if (format == DATETIMEZ && type == APPOINTMENT)
+		return utcdate2sec(date, hour, min);
+
 	return 0;
 }
 
@@ -645,15 +663,22 @@ static long ical_durtime2long(char *timestr)
 }
 
 /*
- * Extract from RFC2445:
+ * Extract from RFC2445 section 3.8.2.5:
+ *
+ * Property Name: DURATION
+ *
+ * Purpose:  This property specifies a positive duration of time.
+ *
+ * Value Type: DURATION
+ *
+ * and section 3.3.6:
  *
  * Value Name: DURATION
  *
  * Purpose: This value type is used to identify properties that contain
- * duration of time.
+ * a duration of time.
  *
- * Formal Definition: The value type is defined by the following
- * notation:
+ * Format Definition: The value type is defined by the following notation:
  *
  * dur-value  = (["+"] / "-") "P" (dur-date / dur-time / dur-week)
  * dur-date   = dur-day [dur-time]
@@ -669,42 +694,36 @@ static long ical_durtime2long(char *timestr)
  * A duration of 7 weeks would be:
  * P7W
  */
-static long ical_dur2long(char *durstr)
+static long ical_dur2long(char *durstr, ical_vevent_e type)
 {
-	char *p;
+	char *p = durstr, c;
 	int bytes_read;
-	struct {
-		unsigned week, day;
-	} date;
-
-	memset(&date, 0, sizeof date);
-
-	p = strchr(durstr, 'P');
-	if (!p)
-		return -1;
-	p++;
+	unsigned week, day;
 
 	if (*p == '-')
-		return -1;
+		return 0;
 	if (*p == '+')
 		p++;
+	if (*p != 'P')
+		return 0;
 
-	if (*p == 'T') {
+	p++;
+	if (*p == 'T' && type == APPOINTMENT)
 		/* dur-time */
 		return ical_durtime2long(p);
-	} else if (strchr(p, 'W')) {
+	else if (sscanf(p, "%u%c", &week, &c) == 2 && c == 'W')
 		/* dur-week */
-		if (sscanf(p, "%u", &date.week) == 1)
-			return date.week * WEEKINDAYS * DAYINSEC;
-	} else if (strchr(p, 'D')) {
+		return week * WEEKINDAYS * DAYINSEC;
+	else if (sscanf(p, "%u%c%n", &day, &c, &bytes_read) == 2 && c == 'D') {
 		/* dur-date */
-		if (sscanf(p, "%uD%n", &date.day, &bytes_read) == 1) {
-			p += bytes_read;
-			return date.day * DAYINSEC + ical_durtime2long(p);
-		}
+		p += bytes_read;
+		if (*p == 'T' && type == APPOINTMENT)
+			return day * DAYINSEC + ical_durtime2long(p);
+		else if (*p != 'T' && type == EVENT)
+			return day * DAYINSEC;
 	}
 
-	return -1;
+	return 0;
 }
 
 /*
@@ -742,8 +761,8 @@ static char *ical_get_value(char *p)
 		return NULL;
 	for (; *p != ':'; p++) {
 		if (*p == '"')
-			for (p++; *p != '"' && *p != '\0'; p++);
-		if (*p == '\0')
+			for (p++; *p && *p != '"'; p++);
+		if (!*p)
 			return NULL;
 	}
 
@@ -787,8 +806,10 @@ static char *ical_get_value(char *p)
  * ( ";" x-name "=" text )
  * )
 */
-static ical_rpt_t *ical_read_rrule(FILE * log, char *rrulestr,
-				   unsigned *noskipped, const int itemline)
+static ical_rpt_t *ical_read_rrule(FILE *log, char *rrulestr,
+				   unsigned *noskipped,
+				   const int itemline,
+				   ical_vevent_e type)
 {
 	const char count[] = "COUNT=";
 	const char interv[] = "INTERVAL=";
@@ -797,6 +818,12 @@ static ical_rpt_t *ical_read_rrule(FILE * log, char *rrulestr,
 	ical_rpt_t *rpt;
 	char *p;
 
+	/* See DTSTART. */
+	if (type == UNDEFINED) {
+		ical_log(log, ICAL_VEVENT, itemline,
+			 _("need DTSTART to determine event type."));
+		return NULL;
+	}
 	p = ical_get_value(rrulestr);
 	if (!p) {
 		ical_log(log, ICAL_VEVENT, itemline,
@@ -842,7 +869,14 @@ static ical_rpt_t *ical_read_rrule(FILE * log, char *rrulestr,
 	 * specified, counts as the first occurrence.
 	 */
 	if ((p = strstr(rrulestr, "UNTIL")) != NULL) {
-		rpt->until = ical_datetime2time_t(strchr(p, '=') + 1, NULL);
+		rpt->until = ical_datetime2time_t(strchr(p, '=') + 1, type);
+		if (!(rpt->until)) {
+			ical_log(log, ICAL_VEVENT, itemline,
+				 _("invalid until format."));
+			(*noskipped)++;
+			mem_free(rpt);
+			return NULL;
+		}
 	} else {
 		unsigned cnt;
 		char *countstr;
@@ -865,11 +899,8 @@ static ical_rpt_t *ical_read_rrule(FILE * log, char *rrulestr,
 	return rpt;
 }
 
-static void ical_add_exc(llist_t * exc_head, long date)
+static void ical_add_exc(llist_t * exc_head, time_t date)
 {
-	if (date == 0)
-		return;
-
 	struct excp *exc = mem_malloc(sizeof(struct excp));
 	exc->st = date;
 
@@ -877,15 +908,30 @@ static void ical_add_exc(llist_t * exc_head, long date)
 }
 
 /*
- * This property defines the list of date/time exceptions for a
+ * This property defines a comma-separated list of date/time exceptions for a
  * recurring calendar component.
  */
 static int
-ical_read_exdate(llist_t * exc, FILE * log, char *exstr,
-		 unsigned *noskipped, const int itemline)
+ical_read_exdate(llist_t * exc, FILE * log, char *exstr, unsigned *noskipped,
+		 const int itemline, ical_vevent_e type)
 {
 	char *p, *q;
+	time_t t;
+	int n;
 
+	/* See DTSTART. */
+	if (type == UNDEFINED) {
+		ical_log(log, ICAL_VEVENT, itemline,
+			 _("need DTSTART to determine event type."));
+		(*noskipped)++;
+		return 0;
+	}
+	if (type != ical_get_type(exstr)) {
+		ical_log(log, ICAL_VEVENT, itemline,
+			 _("invalid exception date value type."));
+		(*noskipped)++;
+		return 0;
+	}
 	p = ical_get_value(exstr);
 	if (!p) {
 		ical_log(log, ICAL_VEVENT, itemline,
@@ -894,16 +940,20 @@ ical_read_exdate(llist_t * exc, FILE * log, char *exstr,
 		return 0;
 	}
 
-	while ((q = strchr(p, ',')) != NULL) {
-		char buf[BUFSIZ];
-		const int buflen = q - p;
-
-		strncpy(buf, p, buflen);
-		buf[buflen] = '\0';
-		ical_add_exc(exc, ical_datetime2time_t(buf, NULL));
-		p = ++q;
+	/* Count the exceptions and replace commas by zeroes */
+	for (q = p, n = 1; (q = strchr(q, ',')); *q = '\0', q++, n++)
+		;
+	while (n) {
+		if (!(t = ical_datetime2time_t(p, type))) {
+			ical_log(log, ICAL_VEVENT, itemline,
+				 _("invalid exception."));
+			(*noskipped)++;
+			return 0;
+		}
+		ical_add_exc(exc, t);
+		p = strchr(p, '\0') + 1;
+		n--;
 	}
-	ical_add_exc(exc, ical_datetime2time_t(p, NULL));
 
 	return 1;
 }
@@ -1107,6 +1157,16 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 			return;
 		}
 		if (starts_with_ci(buf, "DTSTART")) {
+			/*
+			 * DTSTART has a value type: either DATE-TIME (by
+			 * default) or DATE. Properties DTEND, DURATION and
+			 * EXDATE and rrule part UNTIL must agree.
+			 * Assume that DTSTART comes before the others even
+			 * though RFC 5545 allows any order.
+			 * In calcurse DATE-TIME implies an appointment, DATE an
+			 * event.
+			 */
+			vevent_type = ical_get_type(buf);
 			p = ical_get_value(buf);
 			if (!p) {
 				ical_log(log, ICAL_VEVENT, ITEMLINE,
@@ -1114,13 +1174,26 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 				goto skip;
 			}
 
-			vevent.start = ical_datetime2time_t(p, &vevent_type);
+			vevent.start = ical_datetime2time_t(p, vevent_type);
 			if (!vevent.start) {
 				ical_log(log, ICAL_VEVENT, ITEMLINE,
-					 _("could not retrieve event start time."));
+					 _("invalid or malformed event "
+					 "start time."));
 				goto skip;
 			}
 		} else if (starts_with_ci(buf, "DTEND")) {
+			/* See DTSTART. */
+			if (vevent_type == UNDEFINED) {
+				ical_log(log, ICAL_VEVENT, ITEMLINE,
+					 _("need DTSTART to determine "
+					 "event type."));
+				goto skip;
+			}
+			if (vevent_type != ical_get_type(buf)) {
+				ical_log(log, ICAL_VEVENT, ITEMLINE,
+					 _("invalid end time value type."));
+				goto skip;
+			}
 			p = ical_get_value(buf);
 			if (!p) {
 				ical_log(log, ICAL_VEVENT, ITEMLINE,
@@ -1128,27 +1201,40 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 				goto skip;
 			}
 
-			vevent.end = ical_datetime2time_t(p, &vevent_type);
+			vevent.end = ical_datetime2time_t(p, vevent_type);
 			if (!vevent.end) {
 				ical_log(log, ICAL_VEVENT, ITEMLINE,
-					 _("could not retrieve event end time."));
+					 _("malformed event end time."));
 				goto skip;
 			}
 		} else if (starts_with_ci(buf, "DURATION")) {
-			vevent.dur = ical_dur2long(buf);
-			if (vevent.dur <= 0) {
+			/* See DTSTART. */
+			if (vevent_type == UNDEFINED) {
 				ical_log(log, ICAL_VEVENT, ITEMLINE,
-					 _("item duration malformed."));
+					 _("need DTSTART to determine "
+					 "event type."));
+				goto skip;
+			}
+			p = ical_get_value(buf);
+			if (!p) {
+				ical_log(log, ICAL_VEVENT, ITEMLINE,
+					 _("malformed duration line."));
+				goto skip;
+			}
+			vevent.dur = ical_dur2long(p, vevent_type);
+			if (!vevent.dur) {
+				ical_log(log, ICAL_VEVENT, ITEMLINE,
+					 _("invalid duration."));
 				goto skip;
 			}
 		} else if (starts_with_ci(buf, "RRULE")) {
 			vevent.rpt = ical_read_rrule(log, buf, noskipped,
-					ITEMLINE);
+					ITEMLINE, vevent_type);
 			if (!vevent.rpt)
 				goto cleanup;
 		} else if (starts_with_ci(buf, "EXDATE")) {
 			if (!ical_read_exdate(&vevent.exc, log, buf, noskipped,
-					      ITEMLINE))
+					      ITEMLINE, vevent_type))
 				goto cleanup;
 		} else if (starts_with_ci(buf, "SUMMARY")) {
 			vevent.mesg = ical_read_summary(buf, noskipped,

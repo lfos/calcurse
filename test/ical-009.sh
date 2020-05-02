@@ -17,9 +17,9 @@ if [ "$1" = 'actual' ]; then
   rm -rf .calcurse || exit 1
 elif [ "$1" = 'expected' ]; then
   cat <<EOD
-Import process report: 0081 lines read
-2 apps / 0 events / 1 todo / 12 skipped
-VEVENT [12]: could not retrieve event start time.
+Import process report: 0116 lines read
+2 apps / 0 events / 1 todo / 18 skipped
+VEVENT [12]: invalid or malformed event start time.
 VEVENT [17]: recurrence frequency not recognized.
 VEVENT [23]: malformed summary line.
 VTODO [28]: item priority is invalid (must be between 0 and 9).
@@ -30,7 +30,13 @@ VEVENT [50]: malformed description.
 VTODO [62]: malformed summary.
 VEVENT [66]: invalid status value.
 VEVENT [72]: only one location allowed.
-VTODO [79]: The ical file seems to be malformed. The end of item was not found.
+VEVENT [79]: invalid duration.
+VEVENT [84]: invalid or malformed event start time.
+VEVENT [89]: invalid end time value type.
+VEVENT [94]: invalid until format.
+VEVENT [100]: invalid exception date value type.
+VEVENT [107]: invalid exception.
+VTODO [114]: The ical file seems to be malformed. The end of item was not found.
 101
 EOD
 else
