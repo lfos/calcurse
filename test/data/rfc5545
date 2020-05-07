@@ -25,3 +25,4 @@
 12/25/1997 [1] {3Y w-11} Last Thursday of the year every third year, forever (FREQ=YEARLY;INTERVAL=3;BYDAY=-1TH)
 06/22/1997 [1] {2Y w0 w1} Every Sunday and Monday, every other year (FREQ=YEARLY;INTERVAL=2;BYDAY=SU,MO)
 02/01/1997 [1] {1Y -> 01/31/2005 d1 d29 m2} Every year on February 1 and 29 for eight years (RRULE:FREQ=YEARLY;UNTIL=20050131T000000Z;BYMONTH=2;BYMONTHDAY=1,29)
+08/01/2020 @ 08:41 -> 08/01/2020 @ 10:11 {1M w-41} |negative ordered weekday may not exist

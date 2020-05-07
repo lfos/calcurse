@@ -6,6 +6,13 @@
 if [ "$1" = 'actual' ]; then
   "$CALCURSE" --read-only -D "$DATA_DIR"/ -c "$DATA_DIR/rfc5545" \
   -Q --from 1/1/1996 --to 12/31/2007 --filter-type recur
+  echo ""
+  echo "Floating point exception?"
+  "$CALCURSE" --read-only -D "$DATA_DIR"/ -c "$DATA_DIR/rfc5545" \
+  -Q --day 8/1/2020 --filter-type recur &&
+  "$CALCURSE" --read-only -D "$DATA_DIR"/ -c "$DATA_DIR/rfc5545" \
+  -Q --day 11/1/2020 --filter-type recur &&
+  echo "No Floating point exception on November 1, 2020"
 elif [ "$1" = 'expected' ]; then
   cat <<EOD
 11/05/96:
@@ -5323,6 +5330,12 @@ elif [ "$1" = 'expected' ]; then
 
 12/31/07:
  * Every Sunday and Monday, every other year (FREQ=YEARLY;INTERVAL=2;BYDAY=SU,MO)
+
+Floating point exception?
+08/01/20:
+ - 08:41 -> 10:11
+	negative ordered weekday may not exist
+No Floating point exception on November 1, 2020
 EOD
 else
   ./run-test "$0"

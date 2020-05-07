@@ -1173,7 +1173,7 @@ static int expand_monthly(time_t start, long dur, struct rpt *rpt, llist_t *exc,
 		LLIST_FOREACH(&rpt->bywday, i) {
 			w = LLIST_GET_DATA(i);
 
-			int order, wday;
+			int order, wday, nbwd;
 
 			localtime_r(&start, &tm_start);
 			/*
@@ -1188,6 +1188,11 @@ static int expand_monthly(time_t start, long dur, struct rpt *rpt, llist_t *exc,
 				 */
 				order = *w / WEEKINDAYS;
 				wday = *w % WEEKINDAYS;
+				nbwd = wday_per_month(tm_day.tm_mon + 1,
+						      tm_day.tm_year + 1900,
+						      wday);
+				if (nbwd < order)
+					return 0;
 				r.freq = order;
 				tm_start.tm_mday = 1;
 				tm_start.tm_mon = tm_day.tm_mon;
@@ -1218,11 +1223,12 @@ static int expand_monthly(time_t start, long dur, struct rpt *rpt, llist_t *exc,
 				 */
 				order = -(*w) / WEEKINDAYS;
 				wday = -(*w) % WEEKINDAYS;
-				r.freq = wday_per_month(
-						tm_day.tm_mon + 1,
-						tm_day.tm_year + 1900,
-						wday
-					 ) - order + 1;
+				nbwd = wday_per_month(tm_day.tm_mon + 1,
+						      tm_day.tm_year + 1900,
+						      wday);
+				if (nbwd < order)
+					return 0;
+				r.freq = nbwd - order + 1;
 				tm_start.tm_mday = 1;
 				tm_start.tm_mon = tm_day.tm_mon;
 				tm_start.tm_year = tm_day.tm_year;
@@ -1259,7 +1265,7 @@ static int expand_yearly(time_t start, long dur, struct rpt *rpt, llist_t *exc,
 {
 	struct tm tm_start, tm_day;
 	llist_item_t *i, *j;
-	int *m, *w, mday, wday, order;
+	int *m, *w, mday, wday, order, nbwd;
 	time_t nstart;
 	struct rpt r;
 
@@ -1312,6 +1318,19 @@ static int expand_yearly(time_t start, long dur, struct rpt *rpt, llist_t *exc,
 				 */
 				order = *w / WEEKINDAYS;
 				wday = *w % WEEKINDAYS;
+				if (rpt->bymonth.head)
+					nbwd = wday_per_month(
+						tm_day.tm_mon + 1,
+						tm_day.tm_year + 1900,
+						wday
+					       );
+				else
+					nbwd = wday_per_year(
+						tm_day.tm_year + 1900,
+						wday
+					       );
+				if (nbwd < order)
+					return 0;
 				r.freq = order;
 				tm_start.tm_mday = 1;
 				if (rpt->bymonth.head)
@@ -1344,21 +1363,25 @@ static int expand_yearly(time_t start, long dur, struct rpt *rpt, llist_t *exc,
 				 */
 				order = -(*w) / WEEKINDAYS;
 				wday = -(*w) % WEEKINDAYS;
-				if (rpt->bymonth.head) {
-					r.freq = wday_per_month(
-							tm_day.tm_mon + 1,
-							tm_day.tm_year + 1900,
-							wday
-						 ) - order + 1;
-					tm_start.tm_mon = tm_day.tm_mon;
-				} else {
-					r.freq = wday_per_year(
-							tm_day.tm_year + 1900,
-							wday
-						 ) - order + 1;
-					tm_start.tm_mon = 0;
-				}
+				if (rpt->bymonth.head)
+					nbwd = wday_per_month(
+						tm_day.tm_mon + 1,
+						tm_day.tm_year + 1900,
+						wday
+					       );
+				else
+					nbwd = wday_per_year(
+						tm_day.tm_year + 1900,
+						wday
+					       );
+				if (nbwd < order)
+					return 0;
+				r.freq = nbwd - order + 1;
 				tm_start.tm_mday = 1;
+				if (rpt->bymonth.head)
+					tm_start.tm_mon = tm_day.tm_mon;
+				else
+					tm_start.tm_mon = 0;
 				tm_start.tm_year = tm_day.tm_year;
 				tm_start.tm_isdst = -1;
 				nstart = date_sec_change(
