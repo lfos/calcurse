@@ -672,11 +672,11 @@ static int update_rept(time_t start, long dur, struct rpt **rpt, llist_t *exc,
 	LLIST_INIT(&nrpt.bymonthday);
 
 	/* Edit repetition type. */
-	const char *msg_prefix = _("Repetition type:");
-	const char *daily = _("(d)aily");
-	const char *weekly = _("(w)eekly");
-	const char *monthly = _("(m)onthly");
-	const char *yearly = _("(y)early");
+	const char *msg_prefix = _("Base period:");
+	const char *daily = _("day");
+	const char *weekly = _("week");
+	const char *monthly = _("month");
+	const char *yearly = _("year");
 	const char *dwmy = _("[dwmy]");
 
 	/* Find the current repetition type. */
@@ -698,30 +698,34 @@ static int update_rept(time_t start, long dur, struct rpt **rpt, llist_t *exc,
 		/* New item. */
 		current = "";
 	}
-	asprintf(&types, "%s %s, %s, %s, %s?",
+	asprintf(&types, "%s %s/%s/%s/%s?",
 		 msg_prefix, daily, weekly, monthly, yearly);
 	if (current[0])
-		asprintf(&types, "%s (now %s)", types, current);
+		asprintf(&types, "%s [%s]", types, current);
 	switch (status_ask_choice(types, dwmy, 4)) {
 	case 1:
-		nrpt.type = 'D';
+		nrpt.type = recur_char2def('D');
 		break;
 	case 2:
-		nrpt.type = 'W';
+		nrpt.type = recur_char2def('W');
 		break;
 	case 3:
-		nrpt.type = 'M';
+		nrpt.type = recur_char2def('M');
 		break;
 	case 4:
-		nrpt.type = 'Y';
+		nrpt.type = recur_char2def('Y');
 		break;
+	case -2: /* user typed RETURN */
+		if (current[0]) {
+			nrpt.type = (*rpt)->type;
+			break;
+		}
 	default:
 		goto cleanup;
 	}
-	nrpt.type = recur_char2def(nrpt.type);
 
 	/* Edit frequency. */
-	const char *msg_freq = _("Repetition frequency:");
+	const char *msg_freq = _("Frequency:");
 	const char *msg_inv_freq = _("Invalid frequency.");
 	do {
 		status_mesg(msg_freq, "");

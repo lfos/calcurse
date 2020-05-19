@@ -235,6 +235,8 @@ int status_ask_choice(const char *message, const char choice[],
 				return i + 1;
 		if (ch == ESCAPE)
 			return (-1);
+		if (ch == RETURN)
+			return (-2);
 		if (resize) {
 			resize = 0;
 			wins_reset();
