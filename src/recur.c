@@ -1801,18 +1801,21 @@ void recur_apoint_paste_item(struct recur_apoint *rapt, time_t date)
  * buffer. Useful for test of a repeated item.
  */
 int recur_next_occurrence(time_t s, long d, struct rpt *r, llist_t *e,
-			  time_t occur, time_t *next)
+			  time_t day, time_t *next)
 {
 	int ret = 0;
 
-	if (r->until && r->until <= occur)
+	if (r->until && r->until <= day)
 		return ret;
 
-	while (!r->until || occur < r->until) {
-		occur = NEXTDAY(occur);
-		if (!check_sec(&occur))
+	while (!r->until || day < r->until) {
+		day = NEXTDAY(day);
+		if (!check_sec(&day))
 			break;
-		if (recur_item_find_occurrence(s, d, r, e, occur, next)) {
+		if (recur_item_find_occurrence(s, d, r, e, day, next)) {
+			/* Multi-day appointment. */
+			if (*next < day)
+				continue;
 			ret = 1;
 			break;
 		}
