@@ -175,8 +175,8 @@ static void update_start_time(time_t *start, long *dur, struct rpt *rpt, int mov
 	time_t newtime;
 	const char *msg_wrong_time =
 	    _("Invalid time: start time must come before end time!");
-	const char *msg_match =
-		_("Repetition must begin on start day.");
+	char *msg_match =
+		_("Repetition must begin on start day (%s).");
 	const char *msg_enter = _("Press [Enter] to continue");
 	char *msg;
 
@@ -188,7 +188,9 @@ static void update_start_time(time_t *start, long *dur, struct rpt *rpt, int mov
 				newtime, *dur, rpt, NULL,
 				update_time_in_date(newtime, 0, 0),
 				NULL)) {
-			msg = (char *)msg_match;
+			msg = day_ins(&msg_match, newtime);
+			status_mesg(msg, msg_enter);
+			mem_free(msg);
 		} else {
 			if (move) {
 				*start = newtime;
@@ -200,9 +202,8 @@ static void update_start_time(time_t *start, long *dur, struct rpt *rpt, int mov
 					break;
 				}
 			}
-			msg = (char *)msg_wrong_time;
+			status_mesg(msg_wrong_time, msg_enter);
 		}
-		status_mesg(msg, msg_enter);
 		keys_wgetch(win[KEY].p);
 	}
 	return;
@@ -858,12 +859,14 @@ static int update_rept(time_t start, long dur, struct rpt **rpt, llist_t *exc,
 	 * RFC5545 and ensures that the recurrence set is non-empty (unless it
 	 * is an exception day).
 	 */
-	const char *msg_match =
-		_("Repetition must begin on start day; any change discarded.");
+	char *msg_match =
+		_("Repetition must begin on start day (%s); any change discarded.");
 	if (!recur_item_find_occurrence(start, dur, &nrpt, NULL,
 					update_time_in_date(start, 0, 0),
 					NULL)) {
-		status_mesg(msg_match, msg_cont);
+		mem_free(outstr);
+		outstr = day_ins(&msg_match, start);
+		status_mesg(outstr, msg_cont);
 		keys_wgetch(win[KEY].p);
 		goto cleanup;
 	}

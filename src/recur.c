@@ -518,8 +518,10 @@ char *recur_apoint_scan(FILE *f, struct tm start, struct tm end,
 	/* Does it occur on the start day? */
 	if (!recur_item_find_occurrence(tstart, tend - tstart, rpt, NULL,
 					update_time_in_date(tstart, 0, 0),
-					NULL))
-		return _("recurrence error: not on start day");
+					NULL)) {
+		char *fmt = _("recurrence error: not on start day (%s)");
+		return day_ins(&fmt, tstart);
+	}
 
 	/* Filter item. */
 	if (filter) {
@@ -589,8 +591,10 @@ char *recur_event_scan(FILE * f, struct tm start, int id,
 	/* Does it occur on the start day? */
 	if (!recur_item_find_occurrence(tstart, -1, rpt, NULL,
 					update_time_in_date(tstart, 0, 0),
-					NULL))
-		return _("recurrence error: not on start day");
+					NULL)) {
+		char *fmt = _("recurrence error: not on start day (%s)");
+		return day_ins(&fmt, tstart);
+	}
 
 	/* Filter item. */
 	if (filter) {

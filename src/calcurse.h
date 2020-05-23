@@ -1269,6 +1269,7 @@ long overflow_mul(long, long, long *);
 time_t next_wday(time_t, int);
 int wday_per_year(int, int);
 int wday_per_month(int, int, int);
+char *day_ins(char **, time_t);
 
 /* vars.c */
 extern int col, row;

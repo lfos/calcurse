@@ -2067,3 +2067,19 @@ int wday_per_month(int month, int year, int weekday)
 
 	return last_wday / 7 + (last_wday % 7 > 0);
 }
+
+/*
+ * Return allocated string with day of 't' inserted in 'template' in the user's
+ * preferred format; template must be a "printf" template with exactly one
+ * string conversion (%s).
+ */
+char *day_ins(char **template, time_t t)
+{
+	char *day, *msg;
+
+	day = date_sec2date_str(update_time_in_date(t, 0 , 0),
+				DATEFMT(conf.input_datefmt));
+	asprintf(&msg, *template, day);
+	mem_free(day);
+	return msg;
+}
