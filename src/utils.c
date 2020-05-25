@@ -423,22 +423,25 @@ struct date sec2date(time_t t)
 	return d;
 }
 
-time_t utcdate2sec(struct date day, unsigned hour, unsigned min)
+time_t tzdate2sec(struct date day, unsigned hour, unsigned min, char *tznew)
 {
-	char *tz;
+	char *tzold;
 	time_t t;
 
-	tz = getenv("TZ");
-	if (tz)
-		tz = mem_strdup(tz);
-	setenv("TZ", "", 1);
-	tzset();
+	if (!tznew)
+		return date2sec(day, hour, min);
 
+	tzold = getenv("TZ");
+	if (tzold)
+		tzold = mem_strdup(tzold);
+
+	setenv("TZ", tznew, 1);
+	tzset();
 	t = date2sec(day, hour, min);
 
-	if (tz) {
-		setenv("TZ", tz, 1);
-		mem_free(tz);
+	if (tzold) {
+		setenv("TZ", tzold, 1);
+		mem_free(tzold);
 	} else {
 	    unsetenv("TZ");
 	}

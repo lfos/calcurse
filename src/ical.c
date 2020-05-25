@@ -579,6 +579,32 @@ ical_chk_header(FILE * fd, char *buf, char *lstore, unsigned *lineno,
 }
 
 /*
+ * Return the TZID property parameter value from a DTSTART/DTEND/EXDATE property
+ * in an allocated string. The value may be any text string not containing the
+ * characters '"', ';', ':' and ',' (RFC 5545, sections 3.2.19 and 3.1).
+ */
+static char *ical_get_tzid(char *p)
+{
+	const char param[] = ";TZID=";
+	char *q;
+	int s;
+
+	if (!(p = strstr(p, param)))
+		return NULL;
+	p += sizeof(param) - 1;
+	if (*p == '"')
+		return NULL;
+
+	q = strpbrk(p, ":;");
+	s = q - p + 1;
+	q = mem_malloc(s);
+	strncpy(q, p, s);
+	q[s - 1] = '\0';
+
+	return q;
+}
+
+/*
  * Return event type from a DTSTART/DTEND/EXDATE property.
  */
 static ical_vevent_e ical_get_type(char *c_line)
@@ -601,23 +627,23 @@ static ical_vevent_e ical_get_type(char *c_line)
  * where DATE is 'YYYYMMDD' and TIME is 'HHMMSS'.
  * The time and 'T' separator are optional (in the case of an day-long event).
  *
- * The type argument is either APPOINTMENT or EVENT and the time format must
- * agree.
- *
- * The timezone is not yet handled by calcurse.
+ * The type argument is either APPOINTMENT or EVENT, and the time format must
+ * match (either DATE-TIME or DATE). The time zone identifier is ignored in an
+ * EVENT or in an APPOINTMENT with UTC time.
  */
-static time_t ical_datetime2time_t(char *datestr, ical_vevent_e type)
+static time_t ical_datetime2time_t(char *datestr, char *tzid, ical_vevent_e type)
 {
 	const int INVALID = 0, DATE = 3, DATETIME = 6, DATETIMEZ = 7;
 	struct date date;
 	unsigned hour, min, sec;
-	char c;
+	char c, UTC[] = "";
 	int format;
 
 	EXIT_IF(type == UNDEFINED, "event type not set");
 
 	format = sscanf(datestr, "%04u%02u%02uT%02u%02u%02u%c",
 			&date.yyyy, &date.mm, &date.dd, &hour, &min, &sec, &c);
+
 	if (format == DATE && strlen(datestr) > 8)
 		format = INVALID;
 	if (format == DATETIMEZ && c != 'Z')
@@ -626,9 +652,9 @@ static time_t ical_datetime2time_t(char *datestr, ical_vevent_e type)
 	if (format == DATE && type == EVENT)
 		return date2sec(date, 0, 0);
 	else if (format == DATETIME && type == APPOINTMENT)
-		return date2sec(date, hour, min);
+		return tzdate2sec(date, hour, min, tzid);
 	else if (format == DATETIMEZ && type == APPOINTMENT)
-		return utcdate2sec(date, hour, min);
+		return tzdate2sec(date, hour, min, UTC);
 
 	return 0;
 }
@@ -869,7 +895,7 @@ static ical_rpt_t *ical_read_rrule(FILE *log, char *rrulestr,
 	 * specified, counts as the first occurrence.
 	 */
 	if ((p = strstr(rrulestr, "UNTIL")) != NULL) {
-		rpt->until = ical_datetime2time_t(strchr(p, '=') + 1, type);
+		rpt->until = ical_datetime2time_t(strchr(p, '=') + 1, NULL, type);
 		if (!(rpt->until)) {
 			ical_log(log, ICAL_VEVENT, itemline,
 				 _("invalid until format."));
@@ -915,47 +941,47 @@ static int
 ical_read_exdate(llist_t * exc, FILE * log, char *exstr, unsigned *noskipped,
 		 const int itemline, ical_vevent_e type)
 {
-	char *p, *q;
+	char *p, *q, *tzid = NULL;
 	time_t t;
 	int n;
 
-	/* See DTSTART. */
 	if (type == UNDEFINED) {
 		ical_log(log, ICAL_VEVENT, itemline,
 			 _("need DTSTART to determine event type."));
-		(*noskipped)++;
-		return 0;
+		goto cleanup;
 	}
 	if (type != ical_get_type(exstr)) {
 		ical_log(log, ICAL_VEVENT, itemline,
 			 _("invalid exception date value type."));
-		(*noskipped)++;
-		return 0;
+		goto cleanup;
 	}
 	p = ical_get_value(exstr);
 	if (!p) {
 		ical_log(log, ICAL_VEVENT, itemline,
 			 _("malformed exceptions line."));
-		(*noskipped)++;
-		return 0;
+		goto cleanup;
 	}
-
+	tzid = ical_get_tzid(exstr);
 	/* Count the exceptions and replace commas by zeroes */
 	for (q = p, n = 1; (q = strchr(q, ',')); *q = '\0', q++, n++)
 		;
 	while (n) {
-		if (!(t = ical_datetime2time_t(p, type))) {
+		if (!(t = ical_datetime2time_t(p, tzid, type))) {
 			ical_log(log, ICAL_VEVENT, itemline,
 				 _("invalid exception."));
-			(*noskipped)++;
-			return 0;
+			goto cleanup;
 		}
 		ical_add_exc(exc, t);
 		p = strchr(p, '\0') + 1;
 		n--;
 	}
-
 	return 1;
+
+cleanup:
+	(*noskipped)++;
+	if (tzid)
+		mem_free(tzid);
+	return 0;
 }
 
 /*
@@ -1050,13 +1076,13 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 	const int ITEMLINE = *lineno - !feof(fdi);
 	ical_vevent_e vevent_type;
 	ical_property_e property;
-	char *p, *note = NULL, *comment;
+	char *p, *note = NULL, *tmp, *tzid;
 	const char *SEPARATOR = "-- \n";
 	struct string s;
 	struct {
 		llist_t exc;
 		ical_rpt_t *rpt;
-		char *mesg, *desc, *loc, *comm, *stat, *note;
+		char *mesg, *desc, *loc, *comm, *stat, *imp, *note;
 		long start, end, dur;
 		int has_alarm;
 	} vevent;
@@ -1129,6 +1155,11 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 						    vevent.stat);
 					mem_free(vevent.stat);
 				}
+				if (vevent.imp) {
+					string_catf(&s, ("Import: %s\n"),
+						    vevent.imp);
+					mem_free(vevent.imp);
+				}
 				vevent.note = generate_note(string_buf(&s));
 				mem_free(s.buf);
 			}
@@ -1167,6 +1198,18 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 			 * event.
 			 */
 			vevent_type = ical_get_type(buf);
+			if ((tzid = ical_get_tzid(buf)) &&
+			    vevent_type == APPOINTMENT) {
+				/* Add note on TZID. */
+				if (vevent.imp) {
+					asprintf(&tmp, "%s, TZID=%s",
+						 vevent.imp, tzid);
+					mem_free(vevent.imp);
+					vevent.imp = tmp;
+				} else
+					asprintf(&vevent.imp, "TZID=%s", tzid);
+				has_note = separator = 1;
+			}
 			p = ical_get_value(buf);
 			if (!p) {
 				ical_log(log, ICAL_VEVENT, ITEMLINE,
@@ -1174,7 +1217,9 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 				goto skip;
 			}
 
-			vevent.start = ical_datetime2time_t(p, vevent_type);
+			vevent.start = ical_datetime2time_t(p, tzid, vevent_type);
+			if (tzid)
+				mem_free(tzid);
 			if (!vevent.start) {
 				ical_log(log, ICAL_VEVENT, ITEMLINE,
 					 _("invalid or malformed event "
@@ -1194,6 +1239,7 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 					 _("invalid end time value type."));
 				goto skip;
 			}
+			tzid = ical_get_tzid(buf);
 			p = ical_get_value(buf);
 			if (!p) {
 				ical_log(log, ICAL_VEVENT, ITEMLINE,
@@ -1201,7 +1247,9 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 				goto skip;
 			}
 
-			vevent.end = ical_datetime2time_t(p, vevent_type);
+			vevent.end = ical_datetime2time_t(p, tzid, vevent_type);
+			if (tzid)
+				mem_free(tzid);
 			if (!vevent.end) {
 				ical_log(log, ICAL_VEVENT, ITEMLINE,
 					 _("malformed event end time."));
@@ -1257,7 +1305,8 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 					      ICAL_VEVENT, ITEMLINE, log);
 			if (!note)
 				goto cleanup;
-			separator = (property != DESCRIPTION);
+			if (!separator)
+				separator = (property != DESCRIPTION);
 			has_note = 1;
 		}
 		switch (property) {
@@ -1280,10 +1329,10 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 		case COMMENT:
 			/* There may be more than one. */
 			if (vevent.comm) {
-				asprintf(&comment, "%sComment: %s",
+				asprintf(&tmp, "%sComment: %s",
 					 vevent.comm, note);
 				mem_free(vevent.comm);
-				vevent.comm = comment;
+				vevent.comm = tmp;
 			} else
 				vevent.comm = note;
 			break;
@@ -1322,6 +1371,8 @@ cleanup:
 		mem_free(vevent.comm);
 	if (vevent.stat)
 		mem_free(vevent.stat);
+	if (vevent.imp)
+		mem_free(vevent.imp);
 	if (vevent.mesg)
 		mem_free(vevent.mesg);
 	if (vevent.rpt)
@@ -1335,7 +1386,7 @@ ical_read_todo(FILE * fdi, FILE * log, unsigned *notodos, unsigned *noskipped,
 {
 	const int ITEMLINE = *lineno - !feof(fdi);
 	ical_property_e property;
-	char *note = NULL, *comment;
+	char *note = NULL, *tmp;
 	const char *SEPARATOR = "-- \n";
 	struct string s;
 	struct {
@@ -1430,7 +1481,8 @@ ical_read_todo(FILE * fdi, FILE * log, unsigned *notodos, unsigned *noskipped,
 					       ICAL_VTODO, ITEMLINE, log);
 			if (!note)
 				goto cleanup;
-			separator = (property != DESCRIPTION);
+			if (!separator)
+				separator = (property != DESCRIPTION);
 			has_note = 1;
 		}
 		switch (property) {
@@ -1453,10 +1505,10 @@ ical_read_todo(FILE * fdi, FILE * log, unsigned *notodos, unsigned *noskipped,
 		case COMMENT:
 			/* There may be more than one. */
 			if (vtodo.comm) {
-				asprintf(&comment, "%sComment: %s",
+				asprintf(&tmp, "%sComment: %s",
 					 vtodo.comm, note);
 				mem_free(vtodo.comm);
-				vtodo.comm = comment;
+				vtodo.comm = tmp;
 			} else
 				vtodo.comm = note;
 			break;
