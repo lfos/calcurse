@@ -1219,7 +1219,7 @@ int get_item_min(time_t);
 struct tm date2tm(struct date, unsigned, unsigned);
 time_t date2sec(struct date, unsigned, unsigned);
 struct date sec2date(time_t);
-time_t utcdate2sec(struct date, unsigned, unsigned);
+time_t tzdate2sec(struct date, unsigned, unsigned, char *);
 int date_cmp(struct date *, struct date *);
 int date_cmp_day(time_t, time_t);
 char *date_sec2date_str(time_t, const char *);
