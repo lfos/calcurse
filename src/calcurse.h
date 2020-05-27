@@ -1106,6 +1106,7 @@ void recur_apoint_switch_notify(struct recur_apoint *);
 void recur_event_paste_item(struct recur_event *, time_t);
 void recur_apoint_paste_item(struct recur_apoint *, time_t);
 int recur_next_occurrence(time_t, long, struct rpt *, llist_t *, time_t, time_t *);
+int recur_nth_occurrence(time_t, long, struct rpt *, llist_t *, int, time_t *);
 
 
 /* sigs.c */

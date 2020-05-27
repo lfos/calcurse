@@ -1826,3 +1826,23 @@ int recur_next_occurrence(time_t s, long d, struct rpt *r, llist_t *e,
 	}
 	return ret;
 }
+
+/*
+ * Finds the nth occurrence of a recurrence rule (s, d, r, e) (incl. the start)
+ * and returns it in the provided buffer.
+ */
+int recur_nth_occurrence(time_t s, long d, struct rpt *r, llist_t *e, int n,
+			 time_t *nth)
+{
+	time_t day;
+
+	if (n <= 0)
+		return 0;
+
+	for (n--, *nth = s; n > 0; n--) {
+		day = update_time_in_date(*nth, 0, 0);
+		if (!recur_next_occurrence(s, d, r, e, day, nth))
+			break;
+	}
+	return !n;
+}

@@ -7,6 +7,7 @@ if [ "$1" = 'actual' ]; then
   cp "$DATA_DIR/conf" .calcurse || exit 1
   "$CALCURSE" -D "$PWD/.calcurse" -i "$DATA_DIR/ical-005.ical"
   "$CALCURSE" -D "$PWD/.calcurse" -s10/03/2013 -r3
+  cat "$PWD/.calcurse/notes"/*
   rm -rf .calcurse || exit 1
 elif [ "$1" = 'expected' ]; then
   cat <<EOD
@@ -20,6 +21,7 @@ Import process report: 0023 lines read
 
 10/04/13:
  * Two days
+Import: multi-day event changed to one-day event
 EOD
 else
   ./run-test "$0"
