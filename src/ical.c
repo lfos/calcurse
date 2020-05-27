@@ -65,8 +65,8 @@ typedef enum {
 
 typedef struct {
 	enum recur_type type;
-	int freq;
-	long until;
+	unsigned freq;
+	time_t until;
 	unsigned count;
 } ical_rpt_t;
 
@@ -373,8 +373,12 @@ static void ical_store_todo(int priority, int completed, char *mesg,
 	erase_note(&note);
 }
 
+/*
+ * Calcurse limitation: events are one-day (all-day), and all multi-day events
+ * are turned into one-day events; a note has been added by ical_read_event().
+ */
 static void
-ical_store_event(char *mesg, char *note, long day, long end,
+ical_store_event(char *mesg, char *note, time_t day, time_t end,
 		 ical_rpt_t *irpt, llist_t *exc, const char *fmt_ev,
 		 const char *fmt_rev)
 {
@@ -382,6 +386,10 @@ ical_store_event(char *mesg, char *note, long day, long end,
 	struct event *ev;
 	struct recur_event *rev;
 
+	/*
+	 * Repeating event. The end day is ignored, and the event becomes
+	 * one-day even if multi-day.
+	 */
 	if (irpt) {
 		struct rpt rpt;
 		rpt.type = irpt->type;
@@ -398,7 +406,8 @@ ical_store_event(char *mesg, char *note, long day, long end,
 		goto cleanup;
 	}
 
-	if (end == 0 || end - day <= DAYINSEC) {
+	/* Ordinary one-day event. */
+	if (end - day <= DAYINSEC) {
 		ev = event_new(mesg, note, day, EVENTID);
 		if (fmt_ev)
 			print_event(fmt_ev, day, ev);
@@ -406,17 +415,14 @@ ical_store_event(char *mesg, char *note, long day, long end,
 	}
 
 	/*
-	 * Here we have an event that spans over several days.
-	 *
-	 * In iCal, the end specifies when the event is supposed to end, in
-	 * calcurse, the end specifies the time that the last occurrence of the
-	 * event starts, so we need to do some conversion here.
+	 * Ordinary multi-day event. The event is turned into a daily repeating
+	 * event until the day before the end. In iCal, the end day is
+	 * exclusive, the until day inclusive.
 	 */
-	end = day + ((end - day - 1) / DAYINSEC) * DAYINSEC;
 	struct rpt rpt;
 	rpt.type = RECUR_DAILY;
 	rpt.freq = 1;
-	rpt.until = end;
+	rpt.until = day + ((end - day - 1) / DAYINSEC) * DAYINSEC;
 	LLIST_INIT(&rpt.bymonth);
 	LLIST_INIT(&rpt.bywday);
 	LLIST_INIT(&rpt.bymonthday);
@@ -431,13 +437,14 @@ cleanup:
 }
 
 static void
-ical_store_apoint(char *mesg, char *note, long start, long dur,
+ical_store_apoint(char *mesg, char *note, time_t start, long dur,
 		  ical_rpt_t * irpt, llist_t * exc, int has_alarm,
 		  const char *fmt_apt, const char *fmt_rapt)
 {
 	char state = 0L;
 	struct apoint *apt;
 	struct recur_apoint *rapt;
+	time_t day;
 
 	if (has_alarm)
 		state |= APOINT_NOTIFY;
@@ -450,8 +457,25 @@ ical_store_apoint(char *mesg, char *note, long start, long dur,
 		LLIST_INIT(&rpt.bywday);
 		LLIST_INIT(&rpt.bymonthday);
 		rpt.exc = *exc;
-		rapt = recur_apoint_new(mesg, note, start, dur, state, &rpt);
+		/*
+		 * In calcurse, "until" is interpreted as a day (DATE) - hours,
+		 * minutes and seconds are ignored - whereas in iCal the full
+		 * DATE-TIME value of "until" is taken into account. It follows
+		 * that if the event in calcurse has an occurrence on the until
+		 * day, and the start time is after the until value, the
+		 * calcurse until day must be changed to the day before.
+		 */
+		if (rpt.until) {
+			day = update_time_in_date(rpt.until, 0, 0);
+			if (recur_item_find_occurrence(start, dur, &rpt, NULL,
+						       day, NULL) &&
+			    get_item_time(rpt.until) < get_item_time(start))
+				rpt.until = date_sec_change(day, 0, -1);
+			else
+				rpt.until = day;
+		}
 		mem_free(irpt);
+		rapt = recur_apoint_new(mesg, note, start, dur, state, &rpt);
 		if (fmt_rapt)
 			print_recur_apoint(fmt_rapt, start, rapt->start, rapt);
 	} else {
@@ -715,6 +739,7 @@ static long ical_durtime2long(char *timestr)
  * dur-second = 1*DIGIT "S"
  * dur-day    = 1*DIGIT "D"
  *
+ * For events, duration must be days or weeks.
  * Example: A duration of 15 days, 5 hours and 20 seconds would be:
  * P15DT5H0M20S
  * A duration of 7 weeks would be:
@@ -743,39 +768,32 @@ static long ical_dur2long(char *durstr, ical_vevent_e type)
 	else if (sscanf(p, "%u%c%n", &day, &c, &bytes_read) == 2 && c == 'D') {
 		/* dur-date */
 		p += bytes_read;
-		if (*p == 'T' && type == APPOINTMENT)
-			return day * DAYINSEC + ical_durtime2long(p);
-		else if (*p != 'T' && type == EVENT)
-			return day * DAYINSEC;
+		return day * DAYINSEC + (*p == 'T' && type == APPOINTMENT ?
+					 ical_durtime2long(p) :
+					 0);
 	}
 
 	return 0;
 }
 
 /*
- * Compute the vevent repetition end date from the repetition count.
- *
- * Extract from RFC2445:
- * The COUNT rule part defines the number of occurrences at which to
- * range-bound the recurrence. The "DTSTART" property value, if specified,
- * counts as the first occurrence.
+ * Set repetition until date from repetition count
+ * for an ical recurrence rule (s, d, i, e).
  */
-static long ical_compute_rpt_until(long start, ical_rpt_t * rpt)
+static void ical_count2until(time_t s, long d, ical_rpt_t *i, llist_t *e,
+			     ical_vevent_e type)
 {
-	switch (rpt->type) {
-	case RECUR_DAILY:
-		return date_sec_change(start, 0, rpt->freq * (rpt->count - 1));
-	case RECUR_WEEKLY:
-		return date_sec_change(start, 0,
-				rpt->freq * WEEKINDAYS * (rpt->count - 1));
-	case RECUR_MONTHLY:
-		return date_sec_change(start, rpt->freq * (rpt->count - 1), 0);
-	case RECUR_YEARLY:
-		return date_sec_change(start,
-				    rpt->freq * 12 * (rpt->count - 1), 0);
-	default:
-		return 0;
-	}
+	struct rpt rpt;
+
+	if (type == EVENT)
+		d = -1;
+	rpt.type = i->type;
+	rpt.freq = i->freq;
+	rpt.until = 0;
+	LLIST_INIT(&rpt.bymonth);
+	LLIST_INIT(&rpt.bywday);
+	LLIST_INIT(&rpt.bymonthday);
+	recur_nth_occurrence(s, d, &rpt, e, i->count, &i->until);
 }
 
 /*
@@ -803,53 +821,52 @@ static char *ical_get_value(char *p)
  * Purpose: This value type is used to identify properties that contain
  * a recurrence rule specification.
  *
- * Formal Definition: The value type is defined by the following
+ * Format Definition: The value type is defined by the following
  * notation:
  *
- * recur      = "FREQ"=freq *(
+ * recur           = recur-rule-part *( ";" recur-rule-part )
+ *                 ;
+ *                 ; The rule parts are not ordered in any particular sequence.
+ *                 ;
+ *                 ; The FREQ rule part is REQUIRED,
+ *                 ; but MUST NOT occur more than once.
+ *                 ;
+ *                 ; The UNTIL or COUNT rule parts are OPTIONAL,
+ *                 ; but they MUST NOT occur in the same 'recur'.
+ *                 ;
+ *                 ; The other rule parts are OPTIONAL,
+ *                 ; but MUST NOT occur more than once.
  *
- * ; either UNTIL or COUNT may appear in a 'recur',
- * ; but UNTIL and COUNT MUST NOT occur in the same 'recur'
- *
- * ( ";" "UNTIL" "=" enddate ) /
- * ( ";" "COUNT" "=" 1*DIGIT ) /
- *
- * ; the rest of these keywords are optional,
- * ; but MUST NOT occur more than
- * ; once
- *
- * ( ";" "INTERVAL" "=" 1*DIGIT )          /
- * ( ";" "BYSECOND" "=" byseclist )        /
- * ( ";" "BYMINUTE" "=" byminlist )        /
- * ( ";" "BYHOUR" "=" byhrlist )           /
- * ( ";" "BYDAY" "=" bywdaylist )          /
- * ( ";" "BYMONTHDAY" "=" bymodaylist )    /
- * ( ";" "BYYEARDAY" "=" byyrdaylist )     /
- * ( ";" "BYWEEKNO" "=" bywknolist )       /
- * ( ";" "BYMONTH" "=" bymolist )          /
- * ( ";" "BYSETPOS" "=" bysplist )         /
- * ( ";" "WKST" "=" weekday )              /
- * ( ";" x-name "=" text )
- * )
-*/
+ * recur-rule-part = ( "FREQ"=freq )
+ *                 / ( "UNTIL" "=" enddate )
+ *                 / ( "COUNT" "=" 1*DIGIT )
+ *                 / ( "INTERVAL" "=" 1*DIGIT )
+ *                 / ( "BYSECOND" "=" byseclist )
+ *                 / ( "BYMINUTE" "=" byminlist )
+ *                 / ( "BYHOUR" "=" byhrlist )
+ *                 / ( "BYDAY" "=" bywdaylist )
+ *                 / ( "BYMONTHDAY" "=" bymodaylist )
+ *                 / ( "BYYEARDAY" "=" byyrdaylist )
+ *                 / ( "BYWEEKNO" "=" bywknolist )
+ *                 / ( "BYMONTH" "=" bymolist )
+ *                 / ( "BYSETPOS" "=" bysplist )
+ *                 / ( "WKST" "=" weekday )
+ */
 static ical_rpt_t *ical_read_rrule(FILE *log, char *rrulestr,
 				   unsigned *noskipped,
 				   const int itemline,
 				   ical_vevent_e type)
 {
-	const char count[] = "COUNT=";
-	const char interv[] = "INTERVAL=";
-	char freqstr[BUFSIZ];
-	unsigned interval;
+	char freqstr[8];
 	ical_rpt_t *rpt;
-	char *p;
+	char *p, *q;
 
-	/* See DTSTART. */
 	if (type == UNDEFINED) {
 		ical_log(log, ICAL_VEVENT, itemline,
 			 _("need DTSTART to determine event type."));
 		return NULL;
 	}
+
 	p = ical_get_value(rrulestr);
 	if (!p) {
 		ical_log(log, ICAL_VEVENT, itemline,
@@ -857,69 +874,90 @@ static ical_rpt_t *ical_read_rrule(FILE *log, char *rrulestr,
 		(*noskipped)++;
 		return NULL;
 	}
+	/* Prepare for scanf(): replace semicolons by spaces. */
+	for (q = p; (q = strchr(q, ';')); *q = ' ', q++)
+		;
 
 	rpt = mem_malloc(sizeof(ical_rpt_t));
 	memset(rpt, 0, sizeof(ical_rpt_t));
-	if (sscanf(p, "FREQ=%s", freqstr) != 1) {
-		ical_log(log, ICAL_VEVENT, itemline,
-			 _("recurrence frequency not found."));
-		(*noskipped)++;
-		mem_free(rpt);
-		return NULL;
-	}
 
-	if (starts_with(freqstr, "DAILY")) {
-		rpt->type = RECUR_DAILY;
-	} else if (starts_with(freqstr, "WEEKLY")) {
-		rpt->type = RECUR_WEEKLY;
-	} else if (starts_with(freqstr, "MONTHLY")) {
-		rpt->type = RECUR_MONTHLY;
-	} else if (starts_with(freqstr, "YEARLY")) {
-		rpt->type = RECUR_YEARLY;
+	/* FREQ rule part */
+	if ((p = strstr(rrulestr, "FREQ="))) {
+		if (sscanf(p, "FREQ=%s", freqstr) != 1) {
+			ical_log(log, ICAL_VEVENT, itemline,
+				 _("frequency not set in rrule."));
+			(*noskipped)++;
+			mem_free(rpt);
+			return NULL;
+		}
 	} else {
 		ical_log(log, ICAL_VEVENT, itemline,
-			 _("recurrence frequency not recognized."));
+			 _("frequency absent in rrule."));
 		(*noskipped)++;
 		mem_free(rpt);
 		return NULL;
 	}
 
-	/*
-	 * The UNTIL rule part defines a date-time value which bounds the
-	 * recurrence rule in an inclusive manner.  If not present, and the
-	 * COUNT rule part is also not present, the RRULE is considered to
-	 * repeat forever.
+	if (!strcmp(freqstr, "DAILY"))
+		rpt->type = RECUR_DAILY;
+	else if (!strcmp(freqstr, "WEEKLY"))
+		rpt->type = RECUR_WEEKLY;
+	else if (!strcmp(freqstr, "MONTHLY"))
+		rpt->type = RECUR_MONTHLY;
+	else if (!strcmp(freqstr, "YEARLY"))
+		rpt->type = RECUR_YEARLY;
+	else {
+		ical_log(log, ICAL_VEVENT, itemline,
+			 _("rrule frequency not supported."));
+		(*noskipped)++;
+		mem_free(rpt);
+		return NULL;
+	}
 
-	 * The COUNT rule part defines the number of occurrences at which to
-	 * range-bound the recurrence.  The "DTSTART" property value, if
-	 * specified, counts as the first occurrence.
-	 */
-	if ((p = strstr(rrulestr, "UNTIL")) != NULL) {
+	/* INTERVAL rule part */
+	rpt->freq = 1;
+	if ((p = strstr(rrulestr, "INTERVAL="))) {
+		if (sscanf(p, "INTERVAL=%u", &rpt->freq) != 1) {
+			ical_log(log, ICAL_VEVENT, itemline, _("invalid interval."));
+			(*noskipped)++;
+			mem_free(rpt);
+			return NULL;
+		}
+	}
+
+	/* UNTIL and COUNT rule parts */
+	if (strstr(rrulestr, "UNTIL=") && strstr(rrulestr, "COUNT=")) {
+		ical_log(log, ICAL_VEVENT, itemline,
+			 _("either until or count."));
+		(*noskipped)++;
+		mem_free(rpt);
+		return NULL;
+	}
+
+	if ((p = strstr(rrulestr, "UNTIL="))) {
 		rpt->until = ical_datetime2time_t(strchr(p, '=') + 1, NULL, type);
-		if (!(rpt->until)) {
+		if (!rpt->until) {
 			ical_log(log, ICAL_VEVENT, itemline,
 				 _("invalid until format."));
 			(*noskipped)++;
 			mem_free(rpt);
 			return NULL;
 		}
-	} else {
-		unsigned cnt;
-		char *countstr;
-
-		rpt->until = 0;
-		if ((countstr = strstr(rrulestr, count))) {
-			countstr += sizeof(count) - 1;
-			if (sscanf(countstr, "%u", &cnt) == 1)
-				rpt->count = cnt;
-		}
 	}
 
-	rpt->freq = 1;
-	if ((p = strstr(rrulestr, interv))) {
-		p += sizeof(interv) - 1;
-		if (sscanf(p, "%u", &interval) == 1)
-			rpt->freq = interval;
+	/*
+	 * COUNT is converted to UNTIL in ical_read_event() once all recurrence
+	 * parameters are known.
+	 */
+	if ((p = strstr(rrulestr, "COUNT="))) {
+		p = strchr(p, '=') + 1;
+		if (!(sscanf(p, "%u", &rpt->count) == 1 && rpt->count)) {
+			ical_log(log, ICAL_VEVENT, itemline,
+				 _("invalid count value."));
+			(*noskipped)++;
+			mem_free(rpt);
+			return NULL;
+		}
 	}
 
 	return rpt;
@@ -1083,7 +1121,8 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 		llist_t exc;
 		ical_rpt_t *rpt;
 		char *mesg, *desc, *loc, *comm, *stat, *imp, *note;
-		long start, end, dur;
+		time_t start, end;
+		long dur;
 		int has_alarm;
 	} vevent;
 	int skip_alarm, has_note, separator;
@@ -1115,22 +1154,35 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 					 _("item start date is not defined."));
 				goto skip;
 			}
-			if (vevent_type == APPOINTMENT && vevent.dur == 0) {
-				if (vevent.end != 0) {
-					vevent.dur = vevent.end - vevent.start;
-				}
-
-				if (vevent.dur < 0) {
-					ical_log(log, ICAL_VEVENT, ITEMLINE,
-						_("item has a negative duration."));
-					goto skip;
+			/* An APPOINTMENT must always have a duration. */
+			if (vevent_type == APPOINTMENT && !vevent.dur) {
+				vevent.dur = vevent.end ?
+					     vevent.end - vevent.start :
+					     0;
+			}
+			/* An EVENT must always have an end. */
+			if (vevent_type == EVENT) {
+				if (!vevent.end)
+					vevent.end = vevent.start + vevent.dur;
+				vevent.dur = vevent.end - vevent.start;
+				if (vevent.dur > DAYINSEC) {
+					/* Add note on multi-day events. */
+					char *md = _("multi-day event changed "
+						   "to one-day event");
+					if (vevent.imp) {
+						asprintf(&tmp, "%s, %s",
+							 vevent.imp, md);
+						mem_free(vevent.imp);
+						vevent.imp = tmp;
+					} else
+						asprintf(&vevent.imp, "%s", md);
+					has_note = separator = 1;
 				}
 			}
-			if (vevent.rpt && vevent.rpt->count) {
-				vevent.rpt->until =
-					ical_compute_rpt_until(vevent.start,
-							vevent.rpt);
-			}
+			if (vevent.rpt && vevent.rpt->count)
+				ical_count2until(vevent.start, vevent.dur,
+						 vevent.rpt, &vevent.exc,
+						 vevent_type);
 			if (has_note) {
 				/* Construct string with note file contents. */
 				string_init(&s);
@@ -1227,7 +1279,11 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 				goto skip;
 			}
 		} else if (starts_with_ci(buf, "DTEND")) {
-			/* See DTSTART. */
+			if (vevent.dur) {
+				ical_log(log, ICAL_VEVENT, ITEMLINE,
+					 _("either end or duration."));
+				goto skip;
+			}
 			if (vevent_type == UNDEFINED) {
 				ical_log(log, ICAL_VEVENT, ITEMLINE,
 					 _("need DTSTART to determine "
@@ -1255,8 +1311,17 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 					 _("malformed event end time."));
 				goto skip;
 			}
+			if (vevent.end <= vevent.start) {
+				ical_log(log, ICAL_VEVENT, ITEMLINE,
+					 _("end must be later than start."));
+				goto skip;
+			}
 		} else if (starts_with_ci(buf, "DURATION")) {
-			/* See DTSTART. */
+			if (vevent.end) {
+				ical_log(log, ICAL_VEVENT, ITEMLINE,
+					 _("either end or duration."));
+				goto skip;
+			}
 			if (vevent_type == UNDEFINED) {
 				ical_log(log, ICAL_VEVENT, ITEMLINE,
 					 _("need DTSTART to determine "
