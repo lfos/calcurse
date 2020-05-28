@@ -8,13 +8,13 @@ if [ "$1" = 'actual' ]; then
   cp "$DATA_DIR/conf" .calcurse || exit 1
   "$CALCURSE" -D "$PWD/.calcurse" -i "$DATA_DIR/ical-003.ical"
   "$CALCURSE" -D "$PWD/.calcurse" -s01/01/2000 -r365
-  "$CALCURSE" -D "$PWD/.calcurse" -s05/01/2020 --to 01/01/2022
+  "$CALCURSE" -D "$PWD/.calcurse" -s05/01/2020 --to 01/01/2023
   cat "$PWD/.calcurse/notes"/*
   rm -rf .calcurse || exit 1
 elif [ "$1" = 'expected' ]; then
   cat <<EOD
-Import process report: 0052 lines read
-6 apps / 1 event / 0 todos / 0 skipped
+Import process report: 0070 lines read
+7 apps / 2 events / 0 todos / 0 skipped
 01/01/00:
  - 00:00 -> 01:30
 	Recurring appointment
@@ -136,9 +136,14 @@ Import process report: 0052 lines read
 	Recurring appointment
 05/02/20:
  * First weekend in May
+ * First weekend in May
+ - 00:00 -> ..:..
+	First weekend in May
 
 05/03/20:
  * First weekend in May
+ - ..:.. -> 00:00
+	First weekend in May
 
 05/26/20:
  - 12:00 -> 13:17
@@ -182,6 +187,15 @@ Import process report: 0052 lines read
  - 21:45 -> 22:00
 	monthly on 31th, count 10, exceptions 31/7/2020 and 31/1/2021
 
+05/01/21:
+ * First weekend in May
+ - 00:00 -> ..:..
+	First weekend in May
+
+05/02/21:
+ - ..:.. -> 00:00
+	First weekend in May
+
 05/31/21:
  - 21:45 -> 22:00
 	monthly on 31th, count 10, exceptions 31/7/2020 and 31/1/2021
@@ -201,7 +215,23 @@ Import process report: 0052 lines read
 12/31/21:
  - 21:45 -> 22:00
 	monthly on 31th, count 10, exceptions 31/7/2020 and 31/1/2021
+
+05/07/22:
+ * First weekend in May
+ - 00:00 -> ..:..
+	First weekend in May
+
+05/08/22:
+ - ..:.. -> 00:00
+	First weekend in May
+First weekend in May is a two-day event!
+Repeating appointment.
 The first weekend in May is a two-day event.
+Non-repeating event.
+-- 
+Import: multi-day event changed to one-day event
+First weekend in May is a two-day event!
+Repeating event, three years.
 -- 
 Import: multi-day event changed to one-day event
 EOD

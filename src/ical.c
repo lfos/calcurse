@@ -68,6 +68,9 @@ typedef struct {
 	unsigned freq;
 	time_t until;
 	unsigned count;
+	llist_t bymonth;
+	llist_t bywday;
+	llist_t bymonthday;
 } ical_rpt_t;
 
 static void ical_export_header(FILE *);
@@ -377,7 +380,7 @@ static void ical_store_todo(int priority, int completed, char *mesg,
  * Calcurse limitation: events are one-day (all-day), and all multi-day events
  * are turned into one-day events; a note has been added by ical_read_event().
  */
-static void
+static int
 ical_store_event(char *mesg, char *note, time_t day, time_t end,
 		 ical_rpt_t *irpt, llist_t *exc, const char *fmt_ev,
 		 const char *fmt_rev)
@@ -395,12 +398,14 @@ ical_store_event(char *mesg, char *note, time_t day, time_t end,
 		rpt.type = irpt->type;
 		rpt.freq = irpt->freq;
 		rpt.until = irpt->until;
-		LLIST_INIT(&rpt.bymonth);
-		LLIST_INIT(&rpt.bywday);
-		LLIST_INIT(&rpt.bymonthday);
+		rpt.bymonth = irpt->bymonth;
+		rpt.bywday = irpt->bywday;
+		rpt.bymonthday = irpt->bymonthday;
 		rpt.exc = *exc;
-		rev = recur_event_new(mesg, note, day, EVENTID, &rpt);
+		if (!recur_item_find_occurrence(day, -1, &rpt, NULL, day, NULL))
+			return 0;
 		mem_free(irpt);
+		rev = recur_event_new(mesg, note, day, EVENTID, &rpt);
 		if (fmt_rev)
 			print_recur_event(fmt_rev, day, rev);
 		goto cleanup;
@@ -434,9 +439,10 @@ ical_store_event(char *mesg, char *note, time_t day, time_t end,
 cleanup:
 	mem_free(mesg);
 	erase_note(&note);
+	return 1;
 }
 
-static void
+static int
 ical_store_apoint(char *mesg, char *note, time_t start, long dur,
 		  ical_rpt_t * irpt, llist_t * exc, int has_alarm,
 		  const char *fmt_apt, const char *fmt_rapt)
@@ -446,6 +452,7 @@ ical_store_apoint(char *mesg, char *note, time_t start, long dur,
 	struct recur_apoint *rapt;
 	time_t day;
 
+	day = update_time_in_date(start, 0, 0);
 	if (has_alarm)
 		state |= APOINT_NOTIFY;
 	if (irpt) {
@@ -453,10 +460,13 @@ ical_store_apoint(char *mesg, char *note, time_t start, long dur,
 		rpt.type = irpt->type;
 		rpt.freq = irpt->freq;
 		rpt.until = irpt->until;
-		LLIST_INIT(&rpt.bymonth);
-		LLIST_INIT(&rpt.bywday);
-		LLIST_INIT(&rpt.bymonthday);
+		rpt.bymonth = irpt->bymonth;
+		rpt.bywday = irpt->bywday;
+		rpt.bymonthday = irpt->bymonthday;
 		rpt.exc = *exc;
+		if (!recur_item_find_occurrence(start, dur, &rpt, NULL,
+						day, NULL))
+			return 0;
 		/*
 		 * In calcurse, "until" is interpreted as a day (DATE) - hours,
 		 * minutes and seconds are ignored - whereas in iCal the full
@@ -485,6 +495,7 @@ ical_store_apoint(char *mesg, char *note, time_t start, long dur,
 	}
 	mem_free(mesg);
 	erase_note(&note);
+	return 1;
 }
 
 /*
@@ -790,9 +801,9 @@ static void ical_count2until(time_t s, long d, ical_rpt_t *i, llist_t *e,
 	rpt.type = i->type;
 	rpt.freq = i->freq;
 	rpt.until = 0;
-	LLIST_INIT(&rpt.bymonth);
-	LLIST_INIT(&rpt.bywday);
-	LLIST_INIT(&rpt.bymonthday);
+	rpt.bymonth = i->bymonth;
+	rpt.bywday = i->bywday;
+	rpt.bymonthday = i->bymonthday;
 	recur_nth_occurrence(s, d, &rpt, e, i->count, &i->until);
 }
 
@@ -814,7 +825,106 @@ static char *ical_get_value(char *p)
 }
 
 /*
+ * Fill in the bymonth linked list from a comma-separated list of
+ * unsigned integers terminated by a space or end of string.
+ */
+static int ical_bymonth(llist_t *ll, char *cl)
+{
+	unsigned mon;
+	int *i, n;
+
+	while (!(*cl == ' ' || *cl == '\0')) {
+		if (!(sscanf(cl, "%u%n", &mon, &n) == 1))
+			return 0;
+		i = mem_malloc(sizeof(int));
+		*i = mon;
+		LLIST_ADD(ll, i);
+		cl += n;
+		cl += (*cl == ',');
+	}
+	return 1;
+}
+
+/*
+ * Fill in the bymonthday linked list from a comma-separated list of
+ * (signed) integers terminated by a space or end of string.
+ */
+static int ical_bymonthday(llist_t *ll, char *cl)
+{
+	int mday;
+	int *i, n;
+
+	while (!(*cl == ' ' || *cl == '\0')) {
+		if (!(sscanf(cl, "%d%n", &mday, &n) == 1))
+			return 0;
+		i = mem_malloc(sizeof(int));
+		*i = mday;
+		LLIST_ADD(ll, i);
+		cl += n;
+		cl += (*cl == ',');
+	}
+	return 1;
+}
+
+/*
+ * Fill in the bywday linked list from a comma-separated list of (ordered)
+ * weekday names (+1SU, MO, -5SA, 25TU, etc.) terminated by a space or end of
+ * string.
+ */
+static int ical_bywday(llist_t *ll, char *cl)
+{
+	int sign, order, wday, n, *i;
+	char *owd;
+
+	while (!(*cl == ' ' || *cl == '\0')) {
+		/* find list separator */
+		for (owd = cl; !(*cl == ',' || *cl == ' ' || *cl == '\0'); cl++)
+			;
+		cl += (*cl == ',');
+
+		if (!(sscanf(owd, "%d%n", &order, &n) == 1))
+			order = n = 0;
+		sign = (order < 0) ? -1 : 1;
+		order *= sign;
+		owd += n;
+		if (starts_with(owd, "SU"))
+			wday = 0;
+		else if (starts_with(owd, "MO"))
+			wday = 1;
+		else if (starts_with(owd, "TU"))
+			wday = 2;
+		else if (starts_with(owd, "WE"))
+			wday = 3;
+		else if (starts_with(owd, "TH"))
+			wday = 4;
+		else if (starts_with(owd, "FR"))
+			wday = 5;
+		else if (starts_with(owd, "SA"))
+			wday = 6;
+		else
+			return 0;
+
+		wday = sign * (wday + order * WEEKINDAYS);
+		i = mem_malloc(sizeof(int));
+		*i = wday;
+		LLIST_ADD(ll, i);
+	}
+	return 1;
+}
+
+/*
  * Read a recurrence rule from an iCalendar RRULE string.
+ *
+ * RFC 5545, section 3.8.5.3:
+ *
+ * Property Name:  RRULE
+ *
+ * Purpose:  This property defines a rule or repeating pattern for
+ * recurring events, to-dos, journal entries, or time zone definitions.
+ *
+ * Value Type:  RECUR
+ *
+ * RFC 5545, section 3.3.10:
  *
  * Value Name: RECUR
  *
@@ -855,7 +965,8 @@ static char *ical_get_value(char *p)
 static ical_rpt_t *ical_read_rrule(FILE *log, char *rrulestr,
 				   unsigned *noskipped,
 				   const int itemline,
-				   ical_vevent_e type)
+				   ical_vevent_e type,
+				   time_t start)
 {
 	char freqstr[8];
 	ical_rpt_t *rpt;
@@ -880,6 +991,9 @@ static ical_rpt_t *ical_read_rrule(FILE *log, char *rrulestr,
 
 	rpt = mem_malloc(sizeof(ical_rpt_t));
 	memset(rpt, 0, sizeof(ical_rpt_t));
+	LLIST_INIT(&rpt->bymonth);
+	LLIST_INIT(&rpt->bywday);
+	LLIST_INIT(&rpt->bymonthday);
 
 	/* FREQ rule part */
 	if ((p = strstr(rrulestr, "FREQ="))) {
@@ -954,6 +1068,42 @@ static ical_rpt_t *ical_read_rrule(FILE *log, char *rrulestr,
 		if (!(sscanf(p, "%u", &rpt->count) == 1 && rpt->count)) {
 			ical_log(log, ICAL_VEVENT, itemline,
 				 _("invalid count value."));
+			(*noskipped)++;
+			mem_free(rpt);
+			return NULL;
+		}
+	}
+
+	/* BYMONTH rule part */
+	if ((p = strstr(rrulestr, "BYMONTH="))) {
+		p = strchr(p, '=') + 1;
+		if (!ical_bymonth(&rpt->bymonth, p)) {
+			ical_log(log, ICAL_VEVENT, itemline,
+				 _("invalid bymonth list."));
+			(*noskipped)++;
+			mem_free(rpt);
+			return NULL;
+		}
+	}
+
+	/* BYMONTHDAY rule part */
+	if ((p = strstr(rrulestr, "BYMONTHDAY="))) {
+		p = strchr(p, '=') + 1;
+		if (!ical_bymonthday(&rpt->bymonthday, p)) {
+			ical_log(log, ICAL_VEVENT, itemline,
+				 _("invalid bymonthday list."));
+			(*noskipped)++;
+			mem_free(rpt);
+			return NULL;
+		}
+	}
+
+	/* BYDAY rule part */
+	if ((p = strstr(rrulestr, "BYDAY="))) {
+		p = strchr(p, '=') + 1;
+		if (!ical_bywday(&rpt->bywday, p)) {
+			ical_log(log, ICAL_VEVENT, itemline,
+				 _("invalid byday list."));
 			(*noskipped)++;
 			mem_free(rpt);
 			return NULL;
@@ -1214,21 +1364,38 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 				}
 				vevent.note = generate_note(string_buf(&s));
 				mem_free(s.buf);
+				/*
+				 * Necessary to prevent double-free if item
+				 * creation fails below.
+				 */
+				vevent.desc = vevent.loc = vevent.comm =
+					vevent.stat = vevent.imp = NULL;
 			}
+			char *msg = _("rrule does not match start day (%s).");
 			switch (vevent_type) {
 			case APPOINTMENT:
-				ical_store_apoint(vevent.mesg, vevent.note,
-						vevent.start, vevent.dur,
-						vevent.rpt, &vevent.exc,
-						vevent.has_alarm, fmt_apt,
-						fmt_rapt);
+				if (!ical_store_apoint(vevent.mesg, vevent.note,
+						       vevent.start, vevent.dur,
+						       vevent.rpt, &vevent.exc,
+						       vevent.has_alarm,
+						       fmt_apt, fmt_rapt)) {
+					char *l = day_ins(&msg, vevent.start);
+					ical_log(log, ICAL_VEVENT, ITEMLINE, l);
+					mem_free(l);
+					goto skip;
+				}
 				(*noapoints)++;
 				break;
 			case EVENT:
-				ical_store_event(vevent.mesg, vevent.note,
-						vevent.start, vevent.end,
-						vevent.rpt, &vevent.exc,
-						fmt_ev, fmt_rev);
+				if (!ical_store_event(vevent.mesg, vevent.note,
+						      vevent.start, vevent.end,
+						      vevent.rpt, &vevent.exc,
+						      fmt_ev, fmt_rev)) {
+					char *l = day_ins(&msg, vevent.start);
+					ical_log(log, ICAL_VEVENT, ITEMLINE, l);
+					mem_free(l);
+					goto skip;
+				}
 				(*noevents)++;
 				break;
 			case UNDEFINED:
@@ -1342,7 +1509,7 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 			}
 		} else if (starts_with_ci(buf, "RRULE")) {
 			vevent.rpt = ical_read_rrule(log, buf, noskipped,
-					ITEMLINE, vevent_type);
+					ITEMLINE, vevent_type, vevent.start);
 			if (!vevent.rpt)
 				goto cleanup;
 		} else if (starts_with_ci(buf, "EXDATE")) {

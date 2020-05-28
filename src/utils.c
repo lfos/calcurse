@@ -434,9 +434,9 @@ time_t tzdate2sec(struct date day, unsigned hour, unsigned min, char *tznew)
 	tzold = getenv("TZ");
 	if (tzold)
 		tzold = mem_strdup(tzold);
-
 	setenv("TZ", tznew, 1);
 	tzset();
+
 	t = date2sec(day, hour, min);
 
 	if (tzold) {
