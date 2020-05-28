@@ -46,7 +46,25 @@ DTSTAMP:
 UID:
 DTSTART;VALUE=DATE:20200502
 DTEND;VALUE=DATE:20200504
-DESCRIPTION:The first weekend in May is a two-day event.
+DESCRIPTION:The first weekend in May is a two-day event.\nNon-repeating event.
 SUMMARY:First weekend in May
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:
+UID:
+DTSTART;VALUE=DATE:20200502
+DTEND;VALUE=DATE:20200504
+DESCRIPTION:First weekend in May is a two-day event!\nRepeating event\, three years.
+SUMMARY:First weekend in May
+RRULE:FREQ=YEARLY;BYDAY=1SA;BYMONTH=5;COUNT=3
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:
+UID:
+DTSTART:20200502T000000
+DTEND:20200504T000000
+DESCRIPTION:First weekend in May is a two-day event!\nRepeating appointment.
+SUMMARY:First weekend in May
+RRULE:FREQ=YEARLY;BYDAY=1SA;BYMONTH=5;COUNT=3
 END:VEVENT
 END:VCALENDAR

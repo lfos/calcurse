@@ -1828,7 +1828,7 @@ int recur_next_occurrence(time_t s, long d, struct rpt *r, llist_t *e,
 }
 
 /*
- * Finds the nth occurrence of a recurrence rule (s, d, r, e) (incl. the start)
+ * Finds the nth occurrence (incl. start)  of a recurrence rule (s, d, r, e)
  * and returns it in the provided buffer.
  */
 int recur_nth_occurrence(time_t s, long d, struct rpt *r, llist_t *e, int n,
