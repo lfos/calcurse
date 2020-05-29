@@ -990,11 +990,11 @@ parse_date_interactive(const char *datestr, int *year, int *month, int *day)
 }
 
 /*
- * Convert a date duration string into a number of days.
+ * Convert a date increment string into a number of days.
  * If start is non-zero, the final end time is validated.
  *
  * Allowed formats in lenient BNF:
- * <duration> ::= <days> | <period>
+ * <increment>::= <days> | <period>
  * <period>   ::= [ <weeks>w ][ <days>d ]
  * Notes:
  *            <days> and <weeks> are any integer >= 0.
@@ -1002,7 +1002,7 @@ parse_date_interactive(const char *datestr, int *year, int *month, int *day)
  *
  * Returns 1 on success and 0 on failure.
  */
-int parse_date_duration(const char *string, unsigned *days, time_t start)
+int parse_date_increment(const char *string, unsigned *days, time_t start)
 {
 	enum {
 		STATE_INITIAL,
@@ -1012,7 +1012,7 @@ int parse_date_duration(const char *string, unsigned *days, time_t start)
 
 	const char *p;
 	unsigned in = 0, frac = 0, denom = 1;
-	unsigned dur = 0;
+	unsigned incr = 0;
 
 	if (!string || *string == '\0')
 		return 0;
@@ -1033,10 +1033,10 @@ int parse_date_duration(const char *string, unsigned *days, time_t start)
 			switch (state) {
 			case STATE_INITIAL:
 				if (*p == 'w') {
-					dur += in * WEEKINDAYS / denom;
+					incr += in * WEEKINDAYS / denom;
 					state = STATE_WWDD_DD;
 				} else if (*p == 'd') {
-					dur += in / denom;
+					incr += in / denom;
 					state = STATE_DONE;
 				} else {
 					return 0;
@@ -1044,7 +1044,7 @@ int parse_date_duration(const char *string, unsigned *days, time_t start)
 				break;
 			case STATE_WWDD_DD:
 				if (*p == 'd') {
-					dur += in / denom;
+					incr += in / denom;
 					state = STATE_DONE;
 				} else {
 					return 0;
@@ -1060,18 +1060,18 @@ int parse_date_duration(const char *string, unsigned *days, time_t start)
 	}
 	if (state == STATE_DONE && in > 0)
 		return 0;
-	dur += in;
+	incr += in;
 	if (start) {
-		/* wanted: start = start + dur * DAYINSEC */
+		/* wanted: start = start + incr * DAYINSEC */
 		long p;
-		if (overflow_mul(dur, DAYINSEC, &p))
+		if (overflow_mul(incr, DAYINSEC, &p))
 			return 0;
 		if (overflow_add(start, p, &start))
 			return 0;
 		if (!check_sec(&start))
 			return 0;
 	}
-	*days = dur;
+	*days = incr;
 	return 1;
 }
 

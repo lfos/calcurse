@@ -1246,7 +1246,7 @@ int check_sec(time_t *);
 int check_time(unsigned, unsigned);
 int parse_time(const char *, unsigned *, unsigned *);
 int parse_duration(const char *, unsigned *, time_t);
-int parse_date_duration(const char *, unsigned *, time_t);
+int parse_date_increment(const char *, unsigned *, time_t);
 int parse_datetime(const char *, time_t *, time_t);
 void file_close(FILE *, const char *);
 void psleep(unsigned);

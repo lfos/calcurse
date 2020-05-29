@@ -658,8 +658,9 @@ static int edit_ilist(llist_t *ilist, int_list_t list_type, int rule_type)
 static int update_rept(time_t start, long dur, struct rpt **rpt, llist_t *exc,
 			int simple)
 {
-	int updated = 0;
+	int updated = 0, count;
 	struct rpt nrpt;
+	time_t until;
 	char *types = NULL;
 	char *freqstr = NULL;
 	char *timstr = NULL;
@@ -745,16 +746,19 @@ static int update_rept(time_t start, long dur, struct rpt **rpt, llist_t *exc,
 
 	/* Edit until date. */
 	const char *msg_until_1 =
-		_("Until date or duration ('?' for input formats):");
+		_("Until date, increment or repeat count ('?' for input formats):");
 	const char *msg_help_1 =
-		_("Date: %s (year or month may be omitted). Endless duration: 0.");
+		_("Date: %s (year, month may be omitted, endless: 0).");
 	const char *msg_help_2 =
-		_("Duration in days: +dd. Duration in weeks and days: +??w??d.");
+		_("Increment: +?? (days) or: +??w??d (weeks). "
+		"Repeat count: #?? (number).");
 	const char *msg_inv_until =
 		_("Invalid date: until date must come after start date (%s).");
 	const char *msg_inv_date = _("Invalid date.");
+	const char *msg_count = _("Repeat count is too big.");
 
 	for (;;) {
+		count = 0;
 		mem_free(timstr);
 		if ((*rpt)->until)
 			timstr = date_sec2date_str((*rpt)->until, DATEFMT(conf.input_datefmt));
@@ -776,7 +780,7 @@ static int update_rept(time_t start, long dur, struct rpt **rpt, llist_t *exc,
 		}
 		if (*timstr == '+') {
 			unsigned days;
-			if (!parse_date_duration(timstr + 1, &days, start)) {
+			if (!parse_date_increment(timstr + 1, &days, start)) {
 				status_mesg(msg_inv_date, msg_cont);
 				keys_wgetch(win[KEY].p);
 				continue;
@@ -786,6 +790,20 @@ static int update_rept(time_t start, long dur, struct rpt **rpt, llist_t *exc,
 					update_time_in_date(start, 0, 0),
 					0, days
 				   );
+		} else if (*timstr == '#') {
+			char *eos;
+			count = strtol(timstr + 1, &eos, 10);
+			if (*eos || !(count > 0))
+				continue;
+			nrpt.until = 0;
+			if (!recur_nth_occurrence(start, dur, &nrpt, exc,
+						  count, &until)) {
+				status_mesg(msg_count, msg_cont);
+				keys_wgetch(win[KEY].p);
+				continue;
+			}
+			nrpt.until = update_time_in_date(until, 0, 0);
+			break;
 		} else {
 			int year, month, day;
 			if (!parse_date(timstr, conf.input_datefmt, &year,
@@ -857,6 +875,17 @@ static int update_rept(time_t start, long dur, struct rpt **rpt, llist_t *exc,
 			goto cleanup;
 	}
 
+	/* The new until may no longer be valid. */
+	if (count) {
+		nrpt.until = 0;
+		if (!recur_nth_occurrence(start, dur, &nrpt, exc,
+					  count, &until)) {
+			status_mesg(msg_count, msg_cont);
+			keys_wgetch(win[KEY].p);
+			goto cleanup;
+		}
+		nrpt.until = update_time_in_date(until, 0, 0);
+	}
 	/*
 	 * Check whether the start occurrence matches the recurrence rule, in
 	 * other words, does it occur on the start day?  This is required by
@@ -864,7 +893,8 @@ static int update_rept(time_t start, long dur, struct rpt **rpt, llist_t *exc,
 	 * is an exception day).
 	 */
 	char *msg_match =
-		_("Repetition must begin on start day (%s); any change discarded.");
+		_("Repetition must begin on start day (%s); "
+		"any change discarded.");
 	if (!recur_item_find_occurrence(start, dur, &nrpt, NULL,
 					update_time_in_date(start, 0, 0),
 					NULL)) {
