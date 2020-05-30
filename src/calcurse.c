@@ -670,8 +670,6 @@ cleanup:
  */
 int main(int argc, char **argv)
 {
-	int no_data_file = 1;
-
 #if ENABLE_NLS
 	setlocale(LC_ALL, "");
 	bindtextdomain(PACKAGE, LOCALEDIR);
@@ -686,7 +684,7 @@ int main(int argc, char **argv)
 		/* Non-interactive mode. */
 		exit_calcurse(EXIT_SUCCESS);
 	} else {
-		no_data_file = io_check_data_files();
+		io_check_data_files();
 		dmon_stop();
 		io_set_lock();
 	}
@@ -756,10 +754,6 @@ int main(int argc, char **argv)
 	 * implicitly calling wrefresh() later (causing ncurses race conditions).
 	 */
 	wins_wrefresh(win[KEY].p);
-	if (show_dialogs()) {
-		wins_update(FLAG_ALL);
-		io_startup_screen(no_data_file);
-	}
 	ui_calendar_monthly_view_cache_set_invalid();
 	do_storage(1);
 	ui_todo_load_items();

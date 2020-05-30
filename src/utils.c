@@ -1976,11 +1976,6 @@ int hash_matches(const char *pattern, const char *hash)
 	return (starts_with(hash, pattern) != invert);
 }
 
-int show_dialogs(void)
-{
-	return (!quiet) && conf.system_dialogs;
-}
-
 /*
  * Overflow check for addition with positive second term.
  */

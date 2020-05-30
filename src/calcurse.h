@@ -291,7 +291,6 @@ struct conf {
 	unsigned confirm_delete;
 	enum win default_panel;
 	unsigned compact_panels;
-	unsigned system_dialogs;
 	unsigned multiple_days;
 	unsigned header_line;
 	unsigned event_separator;
@@ -924,7 +923,6 @@ unsigned io_dir_exists(const char *);
 unsigned io_file_exists(const char *);
 int io_check_file(const char *);
 int io_check_data_files(void);
-void io_startup_screen(int);
 void io_export_data(enum export_type, int);
 void io_import_data(enum import_type, char *, const char *, const char *,
 		    const char *, const char *, const char *);
@@ -1264,7 +1262,6 @@ int asprintf(char **, const char *, ...);
 int starts_with(const char *, const char *);
 int starts_with_ci(const char *, const char *);
 int hash_matches(const char *, const char *);
-int show_dialogs(void);
 long overflow_add(long, long, long *);
 long overflow_mul(long, long, long *);
 time_t next_wday(time_t, int);

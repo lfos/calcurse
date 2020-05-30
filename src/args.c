@@ -97,7 +97,7 @@ static void usage(void)
 			 "calcurse [-D <directory>] [-C <directory>] [-c <calendar file>]\n"
 			 "calcurse -Q [--from <date>] [--to <date>] [--days <number>]\n"
 			 "calcurse -a | -d <date> | -d <number> | -n | -r[<number>] | -s[<date>] | -t[<number>]\n"
-			 "calcurse -h | -v | --status | -G | -P | -g | -i <file> | -x[<file>] | --daemon"));
+			 "calcurse -h | -v | --status | -G | -P | -g | -i <file> | -x[<format>] | --daemon"));
 }
 
 static void usage_try(void)
@@ -149,7 +149,7 @@ static void help_arg(void)
 	printf("%s\n", _("  -g, --gc                Run the garbage collector"));
 	printf("%s\n", _("  -h, --help              Show this help text"));
 	printf("%s\n", _("  -i, --import <file>     Import iCal data from file"));
-	printf("%s\n", _("  -q, --quiet             Suppress system dialogs"));
+	printf("%s\n", _("  -q, --quiet             Suppress import/export result message"));
 	printf("%s\n", _("  --read-only             Do not save configuration or data files"));
 	printf("%s\n", _("  --status                Display status of running instances"));
 	printf("%s\n", _("  -v, --version           Show version information"));
