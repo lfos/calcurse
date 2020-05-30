@@ -540,7 +540,6 @@ enum {
 	SYSTEM_EVENTS,
 	CONFIRM_QUIT,
 	CONFIRM_DELETE,
-	SYSTEM_DIAGS,
 	FIRST_DAY_OF_WEEK,
 	OUTPUT_DATE_FMT,
 	INPUT_DATE_FMT,
@@ -570,7 +569,6 @@ static void print_general_option(int i, WINDOW *win, int y, int hilt, void *cb_d
 		"general.systemevents = ",
 		"general.confirmquit = ",
 		"general.confirmdelete = ",
-		"general.systemdialogs = ",
 		"general.firstdayofweek = ",
 		"format.outputdate = ",
 		"format.inputdate = ",
@@ -698,13 +696,6 @@ static void print_general_option(int i, WINDOW *win, int y, int hilt, void *cb_d
 		mvwaddstr(win, y + 1, XPOS,
 			  _("(if set to YES, confirmation is required "
 			    "before deleting an event)"));
-		break;
-	case SYSTEM_DIAGS:
-		print_bool_option_incolor(win, conf.system_dialogs, y,
-					  XPOS + strlen(opt[SYSTEM_DIAGS]));
-		mvwaddstr(win, y + 1, XPOS,
-			  _("(if set to YES, messages about loaded "
-			    "and saved data will be displayed)"));
 		break;
 	case FIRST_DAY_OF_WEEK:
 		custom_apply_attr(win, ATTR_HIGHEST);
@@ -872,9 +863,6 @@ static void general_option_edit(int i)
 		break;
 	case CONFIRM_DELETE:
 		conf.confirm_delete = !conf.confirm_delete;
-		break;
-	case SYSTEM_DIAGS:
-		conf.system_dialogs = !conf.system_dialogs;
 		break;
 	case FIRST_DAY_OF_WEEK:
 		ui_calendar_change_first_day_of_week();

@@ -119,7 +119,6 @@ static const struct confvar confmap[] = {
 	{"general.multipledays", CONFIG_HANDLER_BOOL(conf.multiple_days)},
 	{"general.periodicsave", CONFIG_HANDLER_UNSIGNED(conf.periodic_save)},
 	{"general.systemevents", CONFIG_HANDLER_BOOL(conf.systemevents)},
-	{"general.systemdialogs", CONFIG_HANDLER_BOOL(conf.system_dialogs)},
 	{"notification.command", CONFIG_HANDLER_STR(nbar.cmd)},
 	{"notification.notifyall", config_parse_notifyall, config_serialize_notifyall, NULL},
 	{"notification.warning", CONFIG_HANDLER_INT(nbar.cntdwn)}
@@ -615,7 +614,8 @@ config_file_walk(config_fn_walk_cb_t fn_cb,
 		 * Backwards compatibility for removed configuration options:
 		 * ignored on load, omitted on save.
 		 */
-		if (strcmp(key, "general.progressbar") == 0)
+		if (strcmp(key, "general.progressbar") == 0 ||
+		    strcmp(key, "general.systemdialogs") == 0)
 			continue;
 
 		if (value && (*value == '\0' || *value == '\n')) {

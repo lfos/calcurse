@@ -61,7 +61,7 @@ enum ui_mode ui_mode = UI_CMDLINE;
 /* Don't save anything if this is set. */
 int read_only = 0;
 
-/* Hide system dialogs if set. */
+/* Hide import/export message if set. */
 int quiet = 0;
 
 /* Applications can trigger a reload by sending SIGUSR1. */
@@ -136,7 +136,6 @@ void vars_init(void)
 	conf.systemevents = 1;
 	conf.default_panel = CAL;
 	conf.compact_panels = 0;
-	conf.system_dialogs = 1;
 	strncpy(conf.output_datefmt, "%D", 3);
 	conf.input_datefmt = 1;
 	conf.heading_pos = RIGHT;

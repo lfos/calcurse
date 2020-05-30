@@ -1207,21 +1207,6 @@ int io_check_data_files(void)
 	return missing;
 }
 
-/* Draw the startup screen */
-void io_startup_screen(int no_data_file)
-{
-	const char *enter = _("Press [ENTER] to continue");
-
-	if (no_data_file)
-		status_mesg(_("Welcome to Calcurse. Missing data files were created."),
-			    enter);
-	else
-		status_mesg(_("Data files found. Data will be loaded now."),
-			    enter);
-
-	keys_wait_for_any_key(win[KEY].p);
-}
-
 /* Export calcurse data. */
 void io_export_data(enum export_type type, int export_uid)
 {
@@ -1252,7 +1237,7 @@ void io_export_data(enum export_type type, int export_uid)
 	else if (type == IO_EXPORT_PCAL)
 		pcal_export_data(stream);
 
-	if (show_dialogs() && ui_mode == UI_CURSES) {
+	if (!quiet && ui_mode == UI_CURSES) {
 		fclose(stream);
 		status_mesg(success, enter);
 		keys_wait_for_any_key(win[KEY].p);
@@ -1360,7 +1345,7 @@ void io_import_data(enum import_type type, char *stream_name,
 		 stats.todos);
 	asprintf(&stats_str[3], _("%d skipped"), stats.skipped);
 
-	if (ui_mode == UI_CURSES && show_dialogs()) {
+	if (ui_mode == UI_CURSES && !quiet) {
 		char *read, *stat;
 
 		asprintf(&read, proc_report, stats.lines);
@@ -1371,7 +1356,7 @@ void io_import_data(enum import_type type, char *stream_name,
 		mem_free(read);
 		mem_free(stat);
 		keys_wait_for_any_key(win[KEY].p);
-	} else if (ui_mode == UI_CMDLINE && show_dialogs()) {
+	} else if (ui_mode == UI_CMDLINE && !quiet) {
 		printf(proc_report, stats.lines);
 		printf("\n%s / %s / %s / %s\n", stats_str[0], stats_str[1],
 		       stats_str[2], stats_str[3]);
