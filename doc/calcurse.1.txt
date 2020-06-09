@@ -190,7 +190,7 @@ displays those for yesterday and today. The first form is equivalent to *-Q
   <<_format_options,Format Options>>.
 
 *--export-uid*::
-  When exporting items, add the hash of each item to the exported object as an
+  When exporting items, add the hash of each item to the exported object as a
   UID property.
 
 *--from* 'date'::

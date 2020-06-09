@@ -117,7 +117,7 @@ gettext library
 `gettext` utilities. This means `calcurse` can produce multi-lingual messages
 if compiled with native language support (i.e. *NLS*).
 
-However, *NLS* is optionnal and if you do not want to have support for
+However, *NLS* is optional and if you do not want to have support for
 multi-lingual messages, you can disable this feature.  This is done by giving
 the `--disable-nls` option to `configure` (see section
 <<install_process,Install process>>).  To check if the `gettext` utilities are
@@ -303,7 +303,7 @@ can be specified using the `-c` flag.
   information on format strings.
 
 `--export-uid`::
-  When exporting items, add the hash of each item to the exported object as an
+  When exporting items, add the hash of each item to the exported object as a
   UID property.
 
 `-F`, `--filter`::
@@ -596,7 +596,7 @@ Environment variable for i18n
 <<install_requirements_gettext,gettext library>>). Thus, if you wish to have
 messages displayed into your native language, first make sure it is available
 by looking at the `po/LINGUAS` file.  This file indicates the set of available
-languages by showing the two-letters corresponding code (for exemple, *fr*
+languages by showing the two-letters corresponding code (for example, *fr*
 stands for french).  If you do not find your language, it would be greatly
 appreciated if you could help translating `calcurse` (see the <<contribute,How
 to contribute?>> section).
@@ -607,7 +607,7 @@ If your language is available, run `calcurse` with the following command:
 $ LC_ALL=fr_FR calcurse
 ----
 
-... where *fr_FR* is the locale name in this exemple, but should be replaced by
+... where *fr_FR* is the locale name in this example, but should be replaced by
 the locale corresponding to the desired language.
 
 You should also specify the charset to be used, because in some cases the
@@ -933,7 +933,7 @@ Here are the properties that are not implemented:
 
 * negative time durations are not taken into account (item is skipped)
 
-* some recurence frequences are not recognize: "SECONDLY" / "MINUTELY" /
+* some recurrence frequencies are not recognize: "SECONDLY" / "MINUTELY" /
   "HOURLY"
 
 * some recurrence keywords are not recognized (all those starting with `BY`):
@@ -1096,7 +1096,7 @@ applied.  It is possible to keep the terminal's default colors by selecting the
 corresponding choice in the list.
 
 The chosen color theme will then be applied to the panel borders, to the
-titles, to the keystrokes, and to general informations displayed inside status
+titles, to the keystrokes, and to general information displayed inside status
 bar. A black and white theme is also available, in order to support non-color
 terminals.
 
@@ -1241,7 +1241,7 @@ native language, it would be appreciated if you could help translating it.
 
 To do so, just copy one of the existing manual file to `manual_XX.html`, where
 *XX* identifies your language. Then translate this newly created file and send
-it to the author (see <<bugs,Reporting bugs and feeback>>), so that it can be
+it to the author (see <<bugs,Reporting bugs and feedback>>), so that it can be
 included in the next `calcurse` release.
 
 calcurse i18n
@@ -1251,10 +1251,10 @@ As already mentioned, `gettext` utilities are used by `calcurse` to produce
 multi-lingual messages. We are currently using
 http://www.transifex.net/[Transifex] to manage those translations.
 
-This section provides informations about how to translate those messages into
+This section provides information about how to translate those messages into
 your native language. However, this howto is deliberately incomplete, focusing
 on working with `gettext` for `calcurse` specifically.  For more comprehensive
-informations or to grasp the Big Picture of Native Language Support, you should
+information or to grasp the Big Picture of Native Language Support, you should
 refer to the `GNU gettext` manual at:
 http://www.gnu.org/software/gettext/manual/
 
@@ -1379,19 +1379,19 @@ msgid ""
 You should also fill in the Last-Translator field, so that potential
 contributors can contact you if they want to join you in the translation team,
 or have remarks/typo fixes to give about the translations. You can either just
-give your name/nick, or add an email address, for exemple:
+give your name/nick, or add an email address, for example:
 +
 ----
 "Last-Translator: Frederic Culot <frederic@culot.org>\n"
 ----
 
 *Comments*::
-  Adding comments (lines begining with the `#` character) can be a good way to
+  Adding comments (lines beginning with the `#` character) can be a good way to
   point out problems or translation difficulties to proofreaders or other
   members of your team.
 
 *Strings size*::
-  `calcurse` is a curses/console program, thus it can be heavily dependant on
+  `calcurse` is a curses/console program, thus it can be heavily dependent on
   the terminal size (number of columns). You should think about this when
   translating. Often, a string must fit into a single line (standard length is
   80 characters). Don't translate blindly, try to look where your string will
@@ -1519,7 +1519,7 @@ Thanks
 Its time now to thank other people without whom this program would not exist!
 So here is a list of contributing persons I would like to thank:
 
-* Alex for its patches, help and advices with `C` programming
+* Alex for its patches, help and advice with `C` programming
 
 * Gwen for testing and general discussions about how to improve `calcurse`
 
