@@ -26,7 +26,7 @@ specify three lists of either days of the week, months of the year or days of
 the month. The three lists modify the simple repetition in some way by either
 limiting or expanding the basic pattern.
 
-  o    Weekdays: abbriviated names of days of the week (as they appear above
+  o    Weekdays: abbreviated names of days of the week (as they appear above
                  the calendar). For monthly or yearly repetitions the name may
 		 have a numerical prefix (1, 2, ... or -1, -2, ...) to specify
 		 a particular weekday of the month or year, counted from either
@@ -74,7 +74,7 @@ There are a some important exceptions, though, for 'Weekdays':
     the setting of 'Months'. A weekday with a prefix expands to that particular
     weekday of the year ('-1Sun' = last Sunday of the year), or, if 'Months' is
     also set, to that weekday of the listed months. A weekday without prefix
-    expands to all weekdays ('Thu' = all Thurdays in either the year or listed
+    expands to all weekdays ('Thu' = all Thursdays in either the year or listed
     months). Furthermore, repetitions are limited if 'Monthdays' is also set
     as for monthly type.
 
@@ -90,7 +90,7 @@ characteristics and can modify any of them.
 Here are some typical examples. It is assumed that you have invoked the repeat
 command on what will become the first repetition and have selected an advanced
 repetition, that your date input format is dd/mm/yyyy, and that your language
-is english.
+is English.
 
   o an event that occurs every Tuesday and Thursday forever
     type:      weekly
