@@ -19,7 +19,10 @@ three questions with which you specify the basic repetition characteristics:
 
   o  until date: specifies a day after which the repetitions do not occur.  To
                  indicate an endless repetition, enter 0 (zero) or RETURN, and
-		 the item will be repeated forever.
+		 the item will be repeated forever. To obtain a specific
+		 number of repetitions (a repeat count) enter '#' followed by
+		 a number (e.g. #10); it will be turned into the appropriate
+		 until date.
 
 For an advanced repetition you may, in addition to the basic characteristics,
 specify three lists of either days of the week, months of the year or days of

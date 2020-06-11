@@ -491,22 +491,22 @@ static void help_ilist(int_list_t list, int rule)
 {
 	char *msg1 = "";
 	char *msg2 = "";
-	char *byday_w_d = _("only on these weekdays");
-	char *byday_w_w = _("also on these weekdays");
+	char *byday_w_d = _("Limit repetition to listed days.");
+	char *byday_w_w = _("Expand repetition to listed days.");
 	char *byday_m_m_1 =
-		_("also on these weekdays of month - or only on given monthdays");
+		_("Expand repetition to listed days, either all or 1st, 2nd, ... of month.");
 	char *byday_m_m_2 =
-		_("either all weekdays or 1st, 2nd, ... weekday or 1st, 2nd, ... from the end");
+		_("Note: limit to monthdays, if any.");
 	char *byday_y_y_1 =
-		_("also on these weekdays of year or given months - or only on given monthdays");
+		_("Expand repetition to listed days, either all or 1st, 2nd, ... of year.");
 	char *byday_y_y_2 =
-		_("positive: 1st, 2nd,... weekday of month or year, negative: 1st, 2nd,... from end");
+		_("Note: expand to listed months, if any; limit to monthdays, if any.");
 	char *bymonth_dwm =
-		_("only in these months");
+		_("Limit repetition to listed months.");
 	char *bymonth_y =
-		_("also in these months");
-	char *bymonthday_d = _("only on these days of the month");
-	char *bymonthday_my = _("also on these days of the month");
+		_("Expand repetition to listed months.");
+	char *bymonthday_d = _("Limit repetition to listed days of month.");
+	char *bymonthday_my = _("Expand repetition to listed days of month.");
 
 
 	switch (list) {
@@ -587,13 +587,13 @@ static int edit_ilist(llist_t *ilist, int_list_t list_type, int rule_type)
 {
 	char *msg;
 	char *wday = NULL;
-	char *wday_w = _("Weekdays (%s|..|%s), '?' for help:");
+	char *wday_w = _("Weekdays %s|..|%s, space-separated list, '?' for help:");
 	char *wday_m =
-		_("Weekdays (%1$s|..|%2$s or 1%1$s|..|5%2$s or -1%1$s|..|-5%2$s), '?' for help:");
+		_("Weekdays [n]%s|..|[n]%s, space-separated list, n=1,-1,..,5,-5, '?' for help:");
 	char *wday_y =
-		_("Weekdays (%1$s|..|%2$s or 1%1$s|..|53%2$s or -1%1$s|..|-53%2$s), '?' for help:");
-	char *month = _("Months (1..12), '?' for help:");
-	char *mday = _("Monthdays (1..31 or -1..-31), '?' for help:");
+		_("Weekdays [n]%s|..|[n]%s, space-separated list, n=1,-1,..,53,-53, '?' for help:");
+	char *month = _("Months 1|..|12, space-separated list, '?' for help:");
+	char *mday = _("Monthdays 1|..|31 or -1|..|-31, space-separated list, '?' for help:");
 	char *invalid = _("Invalid format - try again.");
 	char *cont = _("Press any key to continue.");
 	int updated = 0;
