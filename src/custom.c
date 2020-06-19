@@ -1201,7 +1201,10 @@ void custom_config_main(void)
 	wmove(win[STA].p, 0, 0);
 	wins_doupdate();
 
-	while ((ch = keys_wgetch(win[KEY].p)) != 'q') {
+	while (1) {
+		ch = keys_wgetch(win[KEY].p);
+		if (keys_get_action(ch) == KEY_GENERIC_QUIT)
+			break;
 		switch (ch) {
 		case 'C':
 		case 'c':
