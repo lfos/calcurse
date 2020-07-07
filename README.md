@@ -3,6 +3,12 @@ calcurse
 
 ![Demo](https://calcurse.org/images/demo.gif)
 
+Installation
+------------
+
+MacOS
+`brew install calcurse`
+
 Building
 --------
 
