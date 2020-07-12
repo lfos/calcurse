@@ -35,36 +35,41 @@
  */
 
 #include <stddef.h>
+#include <sys/wait.h>
 
 #include "calcurse.h"
 
 int run_hook(const char *name)
 {
-	char *hook_path = NULL;
+	char *hook_cmd = NULL, *mesg;
 	char const *arg[2];
 	int pid, ret = -127;
-	int prepare_wins = (ui_mode == UI_CURSES);
 
-	asprintf(&hook_path, "%s/%s", path_hooks, name);
-	arg[0] = hook_path;
-	arg[1] = NULL;
-
-	if (!io_file_exists(hook_path))
+	asprintf(&hook_cmd, "%s/%s", path_hooks, name);
+	if (!io_file_exists(hook_cmd))
 		goto cleanup;
 
-	if (prepare_wins)
-		wins_prepare_external();
+	asprintf(&hook_cmd, "%s <&- >&- 2>&-", hook_cmd);
+	arg[0] = hook_cmd;
+	arg[1] = NULL;
 
 	if ((pid = shell_exec(NULL, NULL, *arg, arg))) {
 		ret = child_wait(NULL, NULL, pid);
-		if (ret)
-			press_any_key();
+		if (ret > 0 && WIFEXITED(ret)) {
+			asprintf(&mesg, "%s hook: exit status %d",
+				 name,
+				 WEXITSTATUS(ret));
+			que_ins(mesg, now(), 3);
+			mem_free(mesg);
+		} else if (ret != 0) {
+			asprintf(&mesg, "%s hook: abnormal termination",
+				 name);
+			que_ins(mesg, now(), 4);
+			mem_free(mesg);
+		}
 	}
 
-	if (prepare_wins)
-		wins_unprepare_external();
-
 cleanup:
-	mem_free(hook_path);
+	mem_free(hook_cmd);
 	return ret;
 }
