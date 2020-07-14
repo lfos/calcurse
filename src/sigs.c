@@ -68,27 +68,18 @@
 
 /*
  * General signal handling routine.
- * Catch return values from children (user-defined notification commands).
- * This is needed to avoid zombie processes running on system.
- * Also catch CTRL-C (SIGINT), and SIGWINCH to resize screen automatically.
+ * Catch SIGWINCH to resize screen automatically.
  */
 static void generic_hdlr(int sig)
 {
 	switch (sig) {
-	case SIGCHLD:
-		while (waitpid(WAIT_MYPGRP, NULL, WNOHANG) > 0) ;
-		break;
 	case SIGWINCH:
 		resize = 1;
 		clearok(curscr, TRUE);
 		ungetch(KEY_RESIZE);
 		break;
 	case SIGTERM:
-		if (unlink(path_cpid) != 0) {
-			EXIT(_("Could not remove calcurse lock file: %s\n"),
-			     strerror(errno));
-		}
-		exit(EXIT_SUCCESS);
+		exit_calcurse(EXIT_SUCCESS);
 		break;
 	case SIGUSR1:
 		want_reload = 1;
@@ -117,12 +108,11 @@ unsigned sigs_set_hdlr(int sig, void (*handler) (int))
 /* Signal handling init. */
 void sigs_init()
 {
-	if (!sigs_set_hdlr(SIGCHLD, generic_hdlr)
-	    || !sigs_set_hdlr(SIGWINCH, generic_hdlr)
+	if (!sigs_set_hdlr(SIGWINCH, generic_hdlr)
 	    || !sigs_set_hdlr(SIGTERM, generic_hdlr)
 	    || !sigs_set_hdlr(SIGUSR1, generic_hdlr)
 	    || !sigs_set_hdlr(SIGINT, SIG_IGN))
-		exit_calcurse(1);
+		exit_calcurse(EXIT_FAILURE);
 }
 
 /* Ignore SIGWINCH and SIGTERM signals. */

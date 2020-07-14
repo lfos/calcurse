@@ -34,7 +34,7 @@
  *
  */
 
-#include <sys/types.h>
+#include <sys/wait.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <paths.h>
@@ -143,8 +143,7 @@ static unsigned daemonize(int status)
 	    || !sigs_set_hdlr(SIGTERM, dmon_sigs_hdlr)
 	    || !sigs_set_hdlr(SIGALRM, dmon_sigs_hdlr)
 	    || !sigs_set_hdlr(SIGQUIT, dmon_sigs_hdlr)
-	    || !sigs_set_hdlr(SIGUSR1, dmon_sigs_hdlr)
-	    || !sigs_set_hdlr(SIGCHLD, SIG_IGN))
+	    || !sigs_set_hdlr(SIGUSR1, dmon_sigs_hdlr))
 		return 0;
 
 	return 1;
@@ -203,6 +202,9 @@ void dmon_start(int parent_exit_status)
 			 DMON_SLEEP_TIME);
 		psleep(DMON_SLEEP_TIME);
 		DMON_LOG(_("awakened at %s\n"), nowstr());
+		/* Reap the user-defined notifications. */
+		while (waitpid(0, NULL, WNOHANG) > 0)
+			;
 	}
 }
 
