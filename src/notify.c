@@ -34,6 +34,7 @@
  *
  */
 
+#include <sys/wait.h>
 #include <time.h>
 #include <stdlib.h>
 #include <string.h>
@@ -358,6 +359,9 @@ static void *notify_main_thread(void *arg)
 		pthread_mutex_unlock(&notify.mutex);
 		notify_update_bar();
 		psleep(thread_sleep);
+		/* Reap the user-defined notifications. */
+		while (waitpid(0, NULL, WNOHANG) > 0)
+			;
 		elapse += thread_sleep;
 		if (elapse >= check_app) {
 			elapse = 0;

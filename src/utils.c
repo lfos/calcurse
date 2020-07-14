@@ -1425,8 +1425,10 @@ int child_wait(int *pfdin, int *pfdout, int pid)
 	if (pfdout)
 		close(*pfdout);
 
-	waitpid(pid, &stat, 0);
-	return stat;
+	if (waitpid(pid, &stat, 0) == pid)
+		return stat;
+	else
+		return -1;
 }
 
 /* Display "Press any key to continue..." and wait for a key press. */
