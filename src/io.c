@@ -1454,7 +1454,8 @@ static void *io_psave_thread(void *arg)
 {
 	int delay = conf.periodic_save;
 	EXIT_IF(delay < 0, _("Invalid delay"));
-	char *mesg = _("Periodic save: data files have changed. Save cancelled.");
+	char *mesg = _("Periodic save cancelled. Data files have changed. "
+		     "Save and merge interactively");
 
 	pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
 	for (;;) {
