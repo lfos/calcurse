@@ -59,8 +59,7 @@ typedef enum {
 	SUMMARY,
 	DESCRIPTION,
 	LOCATION,
-	COMMENT,
-	STATUS
+	COMMENT
 } ical_property_e;
 
 typedef struct {
@@ -1194,9 +1193,6 @@ static char *ical_read_note(char *line, ical_property_e property, unsigned *nosk
 	case COMMENT:
 		pname = "comment";
 		break;
-	case STATUS:
-		pname = "status";
-		break;
 	default:
 		pname = "no property";
 
@@ -1270,7 +1266,7 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 	struct {
 		llist_t exc;
 		ical_rpt_t *rpt;
-		char *mesg, *desc, *loc, *comm, *stat, *imp, *note;
+		char *mesg, *desc, *loc, *comm, *imp, *note;
 		time_t start, end;
 		long dur;
 		int has_alarm;
@@ -1339,9 +1335,9 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 				if (vevent.desc) {
 					string_catf(&s, "%s", vevent.desc);
 					mem_free(vevent.desc);
-					if (separator)
-						string_catf(&s, SEPARATOR);
 				}
+				if (separator)
+					string_catf(&s, SEPARATOR);
 				if (vevent.loc) {
 					string_catf(&s, _("Location: %s"),
 						    vevent.loc);
@@ -1351,11 +1347,6 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 					string_catf(&s, _("Comment: %s"),
 						    vevent.comm);
 					mem_free(vevent.comm);
-				}
-				if (vevent.stat) {
-					string_catf(&s, _("Status: %s"),
-						    vevent.stat);
-					mem_free(vevent.stat);
 				}
 				if (vevent.imp) {
 					string_catf(&s, ("Import: %s\n"),
@@ -1369,7 +1360,7 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 				 * creation fails below.
 				 */
 				vevent.desc = vevent.loc = vevent.comm =
-					vevent.stat = vevent.imp = NULL;
+					vevent.imp = NULL;
 			}
 			char *msg = _("rrule does not match start day (%s).");
 			switch (vevent_type) {
@@ -1529,8 +1520,6 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 			property = LOCATION;
 		} else if (starts_with_ci(buf, "COMMENT")) {
 			property = COMMENT;
-		} else if (starts_with_ci(buf, "STATUS")) {
-			property = STATUS;
 		}
 		if (property) {
 			note = ical_read_note(buf, property, noskipped,
@@ -1568,21 +1557,6 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 			} else
 				vevent.comm = note;
 			break;
-		case STATUS:
-			if (vevent.stat) {
-				ical_log(log, ICAL_VEVENT, ITEMLINE,
-					 _("only one status allowed."));
-				goto skip;
-			}
-			if (!(starts_with(note, "TENTATIVE") ||
-			      starts_with(note, "CONFIRMED") ||
-			      starts_with(note, "CANCELLED"))) {
-				ical_log(log, ICAL_VEVENT, ITEMLINE,
-					 _("invalid status value."));
-				goto skip;
-			}
-			vevent.stat = note;
-			break;
 		default:
 			break;
 		}
@@ -1601,8 +1575,6 @@ cleanup:
 		mem_free(vevent.loc);
 	if (vevent.comm)
 		mem_free(vevent.comm);
-	if (vevent.stat)
-		mem_free(vevent.stat);
 	if (vevent.imp)
 		mem_free(vevent.imp);
 	if (vevent.mesg)
@@ -1622,7 +1594,7 @@ ical_read_todo(FILE * fdi, FILE * log, unsigned *notodos, unsigned *noskipped,
 	const char *SEPARATOR = "-- \n";
 	struct string s;
 	struct {
-		char *mesg, *desc, *loc, *comm, *stat, *note;
+		char *mesg, *desc, *loc, *comm, *note;
 		int priority;
 		int completed;
 	} vtodo;
@@ -1654,9 +1626,9 @@ ical_read_todo(FILE * fdi, FILE * log, unsigned *notodos, unsigned *noskipped,
 				if (vtodo.desc) {
 					string_catf(&s, "%s", vtodo.desc);
 					mem_free(vtodo.desc);
-					if (separator)
-						string_catf(&s, SEPARATOR);
 				}
+				if (separator)
+					string_catf(&s, SEPARATOR);
 				if (vtodo.loc) {
 					string_catf(&s, _("Location: %s"),
 						    vtodo.loc);
@@ -1666,11 +1638,6 @@ ical_read_todo(FILE * fdi, FILE * log, unsigned *notodos, unsigned *noskipped,
 					string_catf(&s, _("Comment: %s"),
 						    vtodo.comm);
 					mem_free(vtodo.comm);
-				}
-				if (vtodo.stat) {
-					string_catf(&s, _("Status: %s"),
-						    vtodo.stat);
-					mem_free(vtodo.stat);
 				}
 				vtodo.note = generate_note(string_buf(&s));
 				mem_free(s.buf);
@@ -1690,7 +1657,6 @@ ical_read_todo(FILE * fdi, FILE * log, unsigned *notodos, unsigned *noskipped,
 			}
 		} else if (starts_with_ci(buf, "STATUS:COMPLETED")) {
 			vtodo.completed = 1;
-			property = STATUS;
 		} else if (starts_with_ci(buf, "SUMMARY")) {
 			vtodo.mesg =
 				ical_read_summary(buf, noskipped, ICAL_VTODO,
@@ -1705,8 +1671,6 @@ ical_read_todo(FILE * fdi, FILE * log, unsigned *notodos, unsigned *noskipped,
 			property = LOCATION;
 		} else if (starts_with_ci(buf, "COMMENT")) {
 			property = COMMENT;
-		} else if (starts_with_ci(buf, "STATUS")) {
-			property = STATUS;
 		}
 		if (property) {
 			note = ical_read_note(buf, property, noskipped,
@@ -1744,22 +1708,6 @@ ical_read_todo(FILE * fdi, FILE * log, unsigned *notodos, unsigned *noskipped,
 			} else
 				vtodo.comm = note;
 			break;
-		case STATUS:
-			if (vtodo.stat) {
-				ical_log(log, ICAL_VTODO, ITEMLINE,
-					 _("only one status allowed."));
-				goto skip;
-			}
-			if (!(starts_with(note, "NEEDS-ACTION") ||
-			      starts_with(note, "COMPLETED") ||
-			      starts_with(note, "IN-PROCESS") ||
-			      starts_with(note, "CANCELLED"))) {
-				ical_log(log, ICAL_VTODO, ITEMLINE,
-					 _("invalid status value."));
-				goto skip;
-			}
-			vtodo.stat = note;
-			break;
 		default:
 			break;
 		}
@@ -1778,8 +1726,6 @@ cleanup:
 		mem_free(vtodo.loc);
 	if (vtodo.comm)
 		mem_free(vtodo.comm);
-	if (vtodo.stat)
-		mem_free(vtodo.stat);
 	if (vtodo.mesg)
 		mem_free(vtodo.mesg);
 }

@@ -14,11 +14,10 @@ if [ "$1" = 'actual' ]; then
   rm -rf .calcurse || exit 1
 elif [ "$1" = 'expected' ]; then
   cat <<EOD
-Import process report: 0093 lines read
+Import process report: 0089 lines read
 6 apps / 0 events / 6 todos / 0 skipped
 todo with
 description
-status
 comment
 and location,
 but no priority
@@ -27,13 +26,10 @@ Location:  Right here
 Comment: mostly a repetition of description:
     todo with
     description
-    status
     comment
     and location
-Status: IN-PROCESS
 event with
 description
-status
 comment
 and location
 -- 
@@ -41,18 +37,16 @@ Location:  Right here
 Comment: just a repetition of description:
     event with
     description
-    status
     comment
     and location
-Status: CANCELLED
-Comment: Todo with out description. A comment
-    streching over
-    three lines
-Status: NEEDS-ACTION
+-- 
 Comment: Event without description: a comment
     streching over
     three lines
-Status: CONFIRMED
+-- 
+Comment: Todo without description. A comment
+    streching over
+    three lines
 event with description
 and location
 -- 
@@ -66,9 +60,6 @@ Location:  Right here
 Comment: event with empty description
 event with one-line description
 todo with one-line description
-
--- 
-Status: COMPLETED
 
 EOD
 else

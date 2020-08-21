@@ -16,11 +16,12 @@ Import process report: 0023 lines read
 10/03/13:
  * All day
  * On day 1
- * On day 2
  * Two days
 
 10/04/13:
+ * On day 2
  * Two days
+-- 
 Import: multi-day event changed to one-day event
 EOD
 else

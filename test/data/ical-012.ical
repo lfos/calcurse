@@ -19,9 +19,8 @@ END:VEVENT
 BEGIN:VEVENT
 DTSTART:20200404T084100
 DURATION:PT1H30M0S
-SUMMARY:No description. Comment and status
+SUMMARY:no description\, but comment
 COMMENT:Event without description: a comment\nstreching over\nthree lines
-STATUS:CONFIRMED
 END:VEVENT
 
 BEGIN:VEVENT
@@ -42,11 +41,10 @@ END:VEVENT
 BEGIN:VEVENT
 DTSTART:20200404T204500
 DURATION:PT1H30M0S
-SUMMARY:description\, status\, comment and location
-DESCRIPTION:event with\ndescription\nstatus\ncomment\nand location
+SUMMARY:description\, comment and location
+DESCRIPTION:event with\ndescription\ncomment\nand location
 LOCATION: Right here
-COMMENT:just a repetition of description:\nevent with\ndescription\nstatus\ncomment\nand location
-STATUS:CANCELLED
+COMMENT:just a repetition of description:\nevent with\ndescription\ncomment\nand location
 END:VEVENT
 
 BEGIN:VTODO
@@ -64,9 +62,8 @@ END:VTODO
 
 BEGIN:VTODO
 PRIORITY:4
-SUMMARY:Comment and status
-COMMENT:Todo with out description. A comment\nstreching over\nthree lines
-STATUS:NEEDS-ACTION
+SUMMARY:no description\, but comment
+COMMENT:Todo without description. A comment\nstreching over\nthree lines
 END:VTODO
 
 BEGIN:VTODO
@@ -77,17 +74,16 @@ END:VTODO
 
 BEGIN:VTODO
 PRIORITY:6
-SUMMARY:Empty description\,but status
+SUMMARY:Empty description
 DESCRIPTION:
-STATUS:COMPLETED
 END:VTODO
 
 BEGIN:VTODO
-SUMMARY:todo with description\, status\, comment and location
-DESCRIPTION:todo with\ndescription\nstatus\ncomment\nand location\,\nbut no priority
+SUMMARY:todo with description\, comment and location
+DESCRIPTION:todo with\ndescription\ncomment\nand location\,\nbut no priority
 LOCATION: Right here
-COMMENT:mostly a repetition of description:\ntodo with\ndescription\nstatus\ncomment\nand location
-STATUS:IN-PROCESS
+COMMENT:mostly a repetition of description:\ntodo with\ndescription\ncomment\nand location
+STATUS:COMPLETED
 END:VTODO
 
 END:VCALENDAR

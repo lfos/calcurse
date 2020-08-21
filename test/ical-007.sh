@@ -21,6 +21,7 @@ Import process report: 0018 lines read
 	UTC
  - 11:00 -> 12:00
 	Local time
+-- 
 Import: TZID=CET
 EOD
 else
