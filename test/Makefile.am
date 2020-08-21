@@ -61,6 +61,7 @@ TESTS = \
 	ical-011.sh \
 	ical-012.sh \
 	ical-013.sh \
+	ical-014.sh \
 	next-001.sh \
 	next-002.sh \
 	next-003.sh \

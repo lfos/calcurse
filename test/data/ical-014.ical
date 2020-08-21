@@ -1,0 +1,106 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+
+BEGIN:VEVENT
+DTSTART:20200404T204500
+DURATION:PT1H30M0S
+SUMMARY:event with one-line description
+DESCRIPTION:event with one-line description
+END:VEVENT
+
+BEGIN:VEVENT
+DTSTART:20200404T204500
+DURATION:PT1H30M0S
+SUMMARY:description and location
+DESCRIPTION:event with description\nand location
+LOCATION:Right here
+END:VEVENT
+
+BEGIN:VEVENT
+DTSTART:20200404T084100
+DURATION:PT1H30M0S
+SUMMARY:no description\, but comment
+COMMENT:Event without description: a comment\nstreching over\nthree lines
+END:VEVENT
+
+BEGIN:VEVENT
+DTSTART:20200404T084100
+DURATION:PT1H30M0S
+SUMMARY:Empty description
+DESCRIPTION:
+END:VEVENT
+
+BEGIN:VEVENT
+DTSTART:20200404T084100
+DURATION:PT1H30M0S
+SUMMARY:Empty description\, but comment
+DESCRIPTION:
+COMMENT:event with empty description
+END:VEVENT
+
+BEGIN:VEVENT
+DTSTART:20200404T204500
+DURATION:PT1H30M0S
+SUMMARY:description\, comment and location
+DESCRIPTION:event with\ndescription\ncomment\nand location
+LOCATION:Right here
+COMMENT:just a repetition of description:\nevent with\ndescription\ncomment\nand location
+END:VEVENT
+
+BEGIN:VTODO
+PRIORITY:2
+SUMMARY:todo with one-line description
+DESCRIPTION:todo with one-line description
+END:VTODO
+
+BEGIN:VTODO
+PRIORITY:3
+SUMMARY:description and location
+DESCRIPTION:todo with description\nand location
+LOCATION:Right here
+END:VTODO
+
+BEGIN:VTODO
+PRIORITY:4
+SUMMARY:no description\, but comment
+COMMENT:Todo without description. A comment\nstreching over\nthree lines
+END:VTODO
+
+BEGIN:VTODO
+PRIORITY:5
+SUMMARY:Empty description
+DESCRIPTION:
+END:VTODO
+
+BEGIN:VTODO
+PRIORITY:6
+SUMMARY:Empty description
+DESCRIPTION:
+END:VTODO
+
+BEGIN:VTODO
+SUMMARY:todo with description\, comment and location
+DESCRIPTION:todo with\ndescription\ncomment\nand location\,\nbut no priority
+LOCATION:Right here
+COMMENT:mostly a repetition of description:\ntodo with\ndescription\ncomment\nand location
+STATUS:COMPLETED
+END:VTODO
+
+BEGIN:VEVENT
+SUMMARY:Five days
+DESCRIPTION:A five-day event turned into a recurring one-day event
+COMMENT:Note file has Comment: and Import:
+DTSTART;VALUE=DATE:20200819
+DTEND;VALUE=DATE:20200824
+END:VEVENT
+
+BEGIN:VEVENT
+SUMMARY:CET
+DESCRIPTION:Date with local time and time zone reference
+LOCATION:Central Europe
+COMMENT:\nCET\n\n
+DTSTART;TZID=CET:20150223T110000
+DURATION:PT1H
+END:VEVENT
+
+END:VCALENDAR

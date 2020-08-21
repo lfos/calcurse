@@ -36,11 +36,14 @@
 
 #include <strings.h>
 #include <sys/types.h>
+#include <ctype.h>
 
 #include "calcurse.h"
 
 #define ICALDATEFMT      "%Y%m%d"
 #define ICALDATETIMEFMT  "%Y%m%dT%H%M%S"
+#define SEPARATOR        "-- \n"
+#define INDENT           "    "
 
 typedef enum {
 	ICAL_VEVENT,
@@ -83,22 +86,29 @@ static void ical_export_footer(FILE *);
 static const char *ical_recur_type[NBRECUR] =
     { "DAILY", "WEEKLY", "MONTHLY", "YEARLY" };
 
-/* Escape characters in field before printing */
-static void ical_format_line(FILE * stream, char * field, char * msg)
+static const char *ical_wday[] =
+    {"SU", "MO", "TU", "WE", "TH", "FR", "SA"};
+
+/*
+ * Encode a string as a property value of type TEXT (RFC 5545, 3.3.11).
+ */
+static void ical_format_line(FILE *stream, char *property, char *msg)
 {
 	char * p;
 
-	fputs(field, stream);
+	fputs(property, stream);
 	for (p = msg; *p; p++) {
 		switch (*p) {
+                       case '\n':
+                               fprintf(stream, "\\%c", 'n');
+                               break;
 			case ',':
 			case ';':
 			case '\\':
 				fprintf(stream, "\\%c", *p);
 				break;
 			default:
-			fputc(*p, stream);
-                break;
+				fputc(*p, stream);
 		}
 	}
 	fputc('\n', stream);
@@ -115,12 +125,154 @@ static void ical_export_valarm(FILE * stream)
 	fputs("END:VALARM\n", stream);
 }
 
+static void ical_export_rrule(FILE *stream, struct rpt *rpt, ical_vevent_e item,
+			      char *buf)
+{
+	llist_item_t *j;
+	int d;
+	char *fmt = item == EVENT ? ICALDATEFMT :
+		    item == APPOINTMENT ? ICALDATETIMEFMT :
+		    NULL;
+
+	fprintf(stream, "RRULE:FREQ=%s", ical_recur_type[rpt->type]);
+	if (rpt->freq > 1)
+		fprintf(stream, ";INTERVAL=%d", rpt->freq);
+	if (rpt->until) {
+		date_sec2date_fmt(rpt->until, fmt, buf);
+		fprintf(stream, ";UNTIL=%s", buf);
+	}
+	if (LLIST_FIRST(&rpt->bymonth)) {
+		fputs(";BYMONTH=", stream);
+		LLIST_FOREACH(&rpt->bymonth, j) {
+			d = *(int *)LLIST_GET_DATA(j);
+			fprintf(stream, "%d", d);
+			if (LLIST_NEXT(j))
+				fputc(',', stream);
+		}
+	}
+	if (LLIST_FIRST(&rpt->bywday)) {
+		int ord;
+		char sign;
+
+		fputs(";BYDAY=", stream);
+		LLIST_FOREACH(&rpt->bywday, j) {
+			d = *(int *)LLIST_GET_DATA(j);
+			sign = d < 0 ? '-' : '+';
+			d = abs(d);
+			ord = d / 7;
+			d = d % 7;
+			if (ord == 0)
+				fprintf(stream, "%s", ical_wday[d]);
+			else
+				fprintf(stream, "%c%d%s", sign, ord, ical_wday[d]);
+			if (LLIST_NEXT(j))
+				fputc(',', stream);
+		}
+	}
+	if (LLIST_FIRST(&rpt->bymonthday)) {
+		fputs(";BYMONTHDAY=", stream);
+		LLIST_FOREACH(&rpt->bymonthday, j) {
+			d = *(int *)LLIST_GET_DATA(j);
+			fprintf(stream, "%d", d);
+			if (LLIST_NEXT(j))
+				fputc(',', stream);
+		}
+	}
+	fputc('\n', stream);
+}
+
+/*
+ * Copy the characters (lines) between "a" and "z" into an allocated string,
+ * un-indent it and return it.  Note that the final character, a newline, is
+ * overwritten with '\0'.
+ */
+static char *ical_unindent(char *a, char *z)
+{
+	char *p, *q; int len;
+
+	len = z - a + 1;
+
+	p = mem_malloc(len);
+	strncpy(p, a, len);
+	p[len - 1] = '\0';
+	while ((q = strstr(p, "\n" INDENT))) {
+		while (*(q + 1 + strlen(INDENT))) {
+			*(q + 1) = *(q + 1 + strlen(INDENT));
+			q++;
+		}
+		*(q + 1) = '\0';
+	}
+	return p;
+}
+
+static void ical_export_note(FILE *stream, char *name)
+{
+	char *note_file, *p, *q, *r, *rest;
+	char *property[] = {
+		"Location: ",
+		"Comment: ",
+		NULL
+	};
+	char *PROPERTY[] = {
+		"LOCATION:",
+		"COMMENT:"
+	};
+	struct string note;
+	char lbuf[BUFSIZ];
+	FILE *fp;
+	int has_desc, has_prop, i;
+
+	asprintf(&note_file, "%s/%s", path_notes, name);
+	if (!(fp = fopen(note_file, "r")))
+		return;
+	string_init(&note);
+	while (fgets(lbuf, BUFSIZ, fp))
+		string_catf(&note, "%s", lbuf);
+	fclose(fp);
+
+	has_desc = has_prop = 0;
+	rest = note.buf;
+	if ((p = strstr(note.buf, SEPARATOR))) {
+		has_prop = 1;
+		rest = p + strlen(SEPARATOR);
+		if (p != note.buf) {
+			has_desc = 1;
+			*(--p) = '\0';
+		}
+	} else {
+		has_desc = 1;
+		note.buf[strlen(note.buf) - 1] = '\0';
+	}
+
+	if (has_desc)
+		ical_format_line(stream, "DESCRIPTION:", note.buf);
+
+	if (!has_prop)
+		goto cleanup;
+	for (i = 0; property[i]; i++) {
+		if ((p = strstr(rest, property[i])))
+			p += strlen(property[i]);
+		else
+			continue;
+		/* Find end of property. */
+		for (q = p;
+		     (q = strchr(q, '\n')) && starts_with(q + 1, INDENT);
+		     q++) ;
+		/* Extract property line(s). */
+		r = ical_unindent(p, q);
+		ical_format_line(stream, PROPERTY[i], r);
+		mem_free(r);
+	}
+cleanup:
+	mem_free(note.buf);
+}
+
 /* Export header. */
 static void ical_export_header(FILE * stream)
 {
 	fputs("BEGIN:VCALENDAR\n", stream);
-	fprintf(stream, "PRODID:-//calcurse//NONSGML v%s//EN\n", VERSION);
 	fputs("VERSION:2.0\n", stream);
+	fprintf(stream, "PRODID:-//calcurse//NONSGML v%s//EN\n", VERSION);
 }
 
 /* Export footer. */
@@ -133,26 +285,21 @@ static void ical_export_footer(FILE * stream)
 static void ical_export_recur_events(FILE * stream, int export_uid)
 {
 	llist_item_t *i, *j;
-	char ical_date[BUFSIZ];
+	char ical_date[BUFSIZ], *hash;
 
 	LLIST_FOREACH(&recur_elist, i) {
 		struct recur_event *rev = LLIST_GET_DATA(i);
-		date_sec2date_fmt(rev->day, ICALDATEFMT, ical_date);
 		fputs("BEGIN:VEVENT\n", stream);
-		fprintf(stream, "DTSTART;VALUE=DATE:%s\n", ical_date);
-		fprintf(stream, "RRULE:FREQ=%s;INTERVAL=%d",
-			ical_recur_type[rev->rpt->type], rev->rpt->freq);
-
-		if (rev->rpt->until != 0) {
-			date_sec2date_fmt(rev->rpt->until, ICALDATEFMT,
-					  ical_date);
-			fprintf(stream, ";UNTIL=%s\n", ical_date);
-		} else {
-			fputc('\n', stream);
+		if (export_uid) {
+			hash = recur_event_hash(rev);
+			fprintf(stream, "UID:%s\n", hash);
+			mem_free(hash);
 		}
-
+		date_sec2date_fmt(rev->day, ICALDATEFMT, ical_date);
+		fprintf(stream, "DTSTART;VALUE=DATE:%s\n", ical_date);
+		ical_export_rrule(stream, rev->rpt, EVENT, ical_date);
 		if (LLIST_FIRST(&rev->exc)) {
-			fputs("EXDATE:", stream);
+			fputs("EXDATE;VALUE=DATE:", stream);
 			LLIST_FOREACH(&rev->exc, j) {
 				struct excp *exc = LLIST_GET_DATA(j);
 				date_sec2date_fmt(exc->st, ICALDATETIMEFMT,
@@ -161,15 +308,9 @@ static void ical_export_recur_events(FILE * stream, int export_uid)
 				fputc(LLIST_NEXT(j) ? ',' : '\n', stream);
 			}
 		}
-
 		ical_format_line(stream, "SUMMARY:", rev->mesg);
-
-		if (export_uid) {
-			char *hash = recur_event_hash(rev);
-			fprintf(stream, "UID:%s\n", hash);
-			mem_free(hash);
-		}
-
+		if (rev->note)
+			ical_export_note(stream, rev->note);
 		fputs("END:VEVENT\n", stream);
 	}
 }
@@ -178,21 +319,21 @@ static void ical_export_recur_events(FILE * stream, int export_uid)
 static void ical_export_events(FILE * stream, int export_uid)
 {
 	llist_item_t *i;
-	char ical_date[BUFSIZ];
+	char ical_date[BUFSIZ], *hash;
 
 	LLIST_FOREACH(&eventlist, i) {
 		struct event *ev = LLIST_TS_GET_DATA(i);
-		date_sec2date_fmt(ev->day, ICALDATEFMT, ical_date);
 		fputs("BEGIN:VEVENT\n", stream);
-		fprintf(stream, "DTSTART;VALUE=DATE:%s\n", ical_date);
-		ical_format_line(stream, "SUMMARY:", ev->mesg);
-
 		if (export_uid) {
-			char *hash = event_hash(ev);
+			hash = event_hash(ev);
 			fprintf(stream, "UID:%s\n", hash);
 			mem_free(hash);
 		}
-
+		date_sec2date_fmt(ev->day, ICALDATEFMT, ical_date);
+		fprintf(stream, "DTSTART;VALUE=DATE:%s\n", ical_date);
+		ical_format_line(stream, "SUMMARY:", ev->mesg);
+		if (ev->note)
+			ical_export_note(stream, ev->note);
 		fputs("END:VEVENT\n", stream);
 	}
 }
@@ -201,16 +342,30 @@ static void ical_export_events(FILE * stream, int export_uid)
 static void ical_export_recur_apoints(FILE * stream, int export_uid)
 {
 	llist_item_t *i, *j;
-	char ical_datetime[BUFSIZ];
-	char ical_date[BUFSIZ];
+	char ical_datetime[BUFSIZ], *hash;
+	time_t tod;
 
 	LLIST_TS_LOCK(&recur_alist_p);
 	LLIST_TS_FOREACH(&recur_alist_p, i) {
 		struct recur_apoint *rapt = LLIST_TS_GET_DATA(i);
 
+		/*
+		 * Add time-of-day to UNTIL/EXDATE.
+		 * In calcurse until/exception is a date (midnight), but in
+		 * RFC 5545 UNTIL/EXDATE is a DATE-TIME value type by default.
+		 */
+		tod = get_item_time(rapt->start);
+		if (rapt->rpt->until)
+			rapt->rpt->until += tod;
+
 		date_sec2date_fmt(rapt->start, ICALDATETIMEFMT,
 				  ical_datetime);
 		fputs("BEGIN:VEVENT\n", stream);
+		if (export_uid) {
+			hash = recur_apoint_hash(rapt);
+			fprintf(stream, "UID:%s\n", hash);
+			mem_free(hash);
+		}
 		fprintf(stream, "DTSTART:%s\n", ical_datetime);
 		if (rapt->dur > 0) {
 			fprintf(stream, "DURATION:P%ldDT%ldH%ldM%ldS\n",
@@ -219,38 +374,22 @@ static void ical_export_recur_apoints(FILE * stream, int export_uid)
 				(rapt->dur / MININSEC) % HOURINMIN,
 				rapt->dur % MININSEC);
 		}
-		fprintf(stream, "RRULE:FREQ=%s;INTERVAL=%d",
-			ical_recur_type[rapt->rpt->type], rapt->rpt->freq);
-
-		if (rapt->rpt->until != 0) {
-			date_sec2date_fmt(rapt->rpt->until + HOURINSEC,
-					  ICALDATEFMT, ical_date);
-			fprintf(stream, ";UNTIL=%s\n", ical_date);
-		} else {
-			fputc('\n', stream);
-		}
-
+		ical_export_rrule(stream, rapt->rpt, APPOINTMENT, ical_datetime);
 		if (LLIST_FIRST(&rapt->exc)) {
 			fputs("EXDATE:", stream);
 			LLIST_FOREACH(&rapt->exc, j) {
 				struct excp *exc = LLIST_GET_DATA(j);
-				date_sec2date_fmt(exc->st, ICALDATETIMEFMT,
-						  ical_date);
-				fprintf(stream, "%s", ical_date);
+				date_sec2date_fmt(exc->st + tod, ICALDATETIMEFMT,
+						  ical_datetime);
+				fprintf(stream, "%s", ical_datetime);
 				fputc(LLIST_NEXT(j) ? ',' : '\n', stream);
 			}
 		}
-
 		ical_format_line(stream, "SUMMARY:", rapt->mesg);
+		if (rapt->note)
+			ical_export_note(stream, rapt->note);
 		if (rapt->state & APOINT_NOTIFY)
 			ical_export_valarm(stream);
-
-		if (export_uid) {
-			char *hash = recur_apoint_hash(rapt);
-			fprintf(stream, "UID:%s\n", hash);
-			mem_free(hash);
-		}
-
 		fputs("END:VEVENT\n", stream);
 	}
 	LLIST_TS_UNLOCK(&recur_alist_p);
@@ -260,14 +399,19 @@ static void ical_export_recur_apoints(FILE * stream, int export_uid)
 static void ical_export_apoints(FILE * stream, int export_uid)
 {
 	llist_item_t *i;
-	char ical_datetime[BUFSIZ];
+	char ical_datetime[BUFSIZ], *hash;
 
 	LLIST_TS_LOCK(&alist_p);
 	LLIST_TS_FOREACH(&alist_p, i) {
 		struct apoint *apt = LLIST_TS_GET_DATA(i);
+		fputs("BEGIN:VEVENT\n", stream);
+		if (export_uid) {
+			hash = apoint_hash(apt);
+			fprintf(stream, "UID:%s\n", hash);
+			mem_free(hash);
+		}
 		date_sec2date_fmt(apt->start, ICALDATETIMEFMT,
 				  ical_datetime);
-		fputs("BEGIN:VEVENT\n", stream);
 		fprintf(stream, "DTSTART:%s\n", ical_datetime);
 		if (apt->dur > 0) {
 			fprintf(stream, "DURATION:P%ldDT%ldH%ldM%ldS\n",
@@ -277,15 +421,10 @@ static void ical_export_apoints(FILE * stream, int export_uid)
 				apt->dur % MININSEC);
 		}
 		ical_format_line(stream, "SUMMARY:", apt->mesg);
+		if (apt->note)
+			ical_export_note(stream, apt->note);
 		if (apt->state & APOINT_NOTIFY)
 			ical_export_valarm(stream);
-
-		if (export_uid) {
-			char *hash = apoint_hash(apt);
-			fprintf(stream, "UID:%s\n", hash);
-			mem_free(hash);
-		}
-
 		fputs("END:VEVENT\n", stream);
 	}
 	LLIST_TS_UNLOCK(&alist_p);
@@ -295,22 +434,23 @@ static void ical_export_apoints(FILE * stream, int export_uid)
 static void ical_export_todo(FILE * stream, int export_uid)
 {
 	llist_item_t *i;
+	char *hash;
 
 	LLIST_FOREACH(&todolist, i) {
 		struct todo *todo = LLIST_TS_GET_DATA(i);
 
 		fputs("BEGIN:VTODO\n", stream);
-		if (todo->completed)
-			fprintf(stream, "STATUS:COMPLETED\n");
-		fprintf(stream, "PRIORITY:%d\n", todo->id);
-		ical_format_line(stream, "SUMMARY:", todo->mesg);
-
 		if (export_uid) {
-			char *hash = todo_hash(todo);
+			hash = todo_hash(todo);
 			fprintf(stream, "UID:%s\n", hash);
 			mem_free(hash);
 		}
-
+		fprintf(stream, "PRIORITY:%d\n", todo->id);
+		ical_format_line(stream, "SUMMARY:", todo->mesg);
+		if (todo->note)
+			ical_export_note(stream, todo->note);
+		if (todo->completed)
+			fprintf(stream, "STATUS:COMPLETED\n");
 		fputs("END:VTODO\n", stream);
 	}
 }
@@ -507,7 +647,6 @@ static char *ical_unformat_line(char *line, int eol, int indentation)
 {
 	struct string s;
 	char *p;
-	const char *INDENT = "    ";
 
 	string_init(&s);
 	for (p = line; *p; p++) {
@@ -1180,7 +1319,7 @@ static char *ical_read_note(char *line, ical_property_e property, unsigned *nosk
 			    FILE * log)
 {
 	const int EOL = 1,
-		  INDENT = (property != DESCRIPTION);
+		  IND = (property != DESCRIPTION);
 	char *p, *pname, *notestr;
 
 	switch (property) {
@@ -1207,7 +1346,7 @@ static char *ical_read_note(char *line, ical_property_e property, unsigned *nosk
 		goto leave;
 	}
 
-	notestr = ical_unformat_line(p, EOL, INDENT);
+	notestr = ical_unformat_line(p, EOL, IND);
 	if (!notestr) {
 		asprintf(&p, _("malformed %s."), pname);
 		ical_log(log, item_type, itemline, p);
@@ -1223,7 +1362,7 @@ static char *ical_read_summary(char *line, unsigned *noskipped,
 			       ical_types_e item_type, const int itemline,
 			       FILE * log)
 {
-	const int EOL = 0, INDENT = 0;
+	const int EOL = 0, IND = 0;
 	char *p, *summary = NULL;
 
 	p = ical_get_value(line);
@@ -1233,7 +1372,7 @@ static char *ical_read_summary(char *line, unsigned *noskipped,
 		goto leave;
 	}
 
-	summary = ical_unformat_line(p, EOL, INDENT);
+	summary = ical_unformat_line(p, EOL, IND);
 	if (!summary) {
 		ical_log(log, item_type, itemline, _("malformed summary."));
 		(*noskipped)++;
@@ -1261,7 +1400,6 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 	ical_vevent_e vevent_type;
 	ical_property_e property;
 	char *p, *note = NULL, *tmp, *tzid;
-	const char *SEPARATOR = "-- \n";
 	struct string s;
 	struct {
 		llist_t exc;
@@ -1591,7 +1729,6 @@ ical_read_todo(FILE * fdi, FILE * log, unsigned *notodos, unsigned *noskipped,
 	const int ITEMLINE = *lineno - !feof(fdi);
 	ical_property_e property;
 	char *note = NULL, *tmp;
-	const char *SEPARATOR = "-- \n";
 	struct string s;
 	struct {
 		char *mesg, *desc, *loc, *comm, *note;
