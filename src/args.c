@@ -398,7 +398,7 @@ cleanup:
 /*
  * Parse the command-line arguments and call the appropriate
  * routines to handle those arguments. Also initialize the data paths.
- * Returns the non-interactive value.
+ * Exit here in case of errors else return the non-interactive value.
  */
 int parse_args(int argc, char **argv)
 {
@@ -515,6 +515,10 @@ int parse_args(int argc, char **argv)
 		case 'c':
 			cfile = optarg;
 			break;
+		case '?':
+			usage();
+			usage_try();
+			exit(EXIT_FAILURE);                                             \
 		}
 	}
 	io_init(cfile, datadir, confdir);
@@ -557,7 +561,7 @@ int parse_args(int argc, char **argv)
 			break;
 		case 'h':
 			help_arg();
-			goto cleanup;
+			exit(EXIT_SUCCESS);
 		case 'g':
 			gc = 1;
 			break;
@@ -615,7 +619,7 @@ int parse_args(int argc, char **argv)
 			break;
 		case 'v':
 			version_arg();
-			goto cleanup;
+			exit(EXIT_SUCCESS);
 		case 'x':
 			export = 1;
 			if (optarg) {
@@ -860,10 +864,6 @@ int parse_args(int argc, char **argv)
 				'\0';
 			cmd_line = 1;
 			break;
-		default:
-			usage();
-			usage_try();
-			goto cleanup;
 		}
 	}
 
@@ -876,12 +876,8 @@ int parse_args(int argc, char **argv)
 	    (format_opt && !(grep + query + dump_imported)) ||
 	    (query_range && !query) ||
 	    (purge && !filter.invert)
-	   ) {
-		ERROR_MSG(_("invalid argument combination"));
-		usage();
-		usage_try();
-		goto cleanup;
-	}
+	   )
+		EXIT(_("invalid argument combination"));
 
 	EXIT_IF(to >= 0 && range, _("cannot specify a range and an end date"));
 	if (from == -1)
@@ -984,7 +980,6 @@ int parse_args(int argc, char **argv)
 		non_interactive = 0;
 	}
 
-cleanup:
 	/* Free filter parameters. */
 	if (filter.regex)
 		regfree(filter.regex);
