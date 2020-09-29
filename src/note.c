@@ -155,6 +155,17 @@ void note_read(char *buffer, FILE * fp)
 	buffer[MAX_NOTESIZ] = '\0';
 }
 
+/* Read the contents of a note file */
+void note_read_contents(char *buffer, size_t buffer_len, FILE * fp)
+{
+	size_t read_count = fread(buffer, 1, buffer_len, fp);
+	if (read_count != buffer_len)
+		buffer[read_count] = '\0';
+	else
+		memcpy(&buffer[buffer_len - 4], "...\0", 4);
+}
+
+
 static void
 note_gc_extract_key(struct note_gc_hash *data, const char **key, int *len)
 {
