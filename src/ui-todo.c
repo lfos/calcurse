@@ -314,7 +314,27 @@ void ui_todo_popup_item(void)
 	if (!item)
 		return;
 
-	item_in_popup(NULL, NULL, item->mesg, _("TODO:"));
+	if (item->note) {
+		/* Assign a sane default note size that will cleanly
+		 * truncate long notes */
+		const char *note_heading = _("Note:");
+		size_t note_size = 3500;
+		char note[note_size];
+		char *notepath, *msg;
+		FILE *fp;
+
+		asprintf(&notepath, "%s%s", path_notes, item->note);
+		fp = fopen(notepath, "r");
+		note_read_contents(note, note_size, fp);
+		fclose(fp);
+		mem_free(notepath);
+
+		asprintf(&msg, "%s\n\n%s\n%s", item->mesg, note_heading, note);
+		item_in_popup(NULL, NULL, msg, _("TODO:"));
+		mem_free(msg);
+	} else {
+		item_in_popup(NULL, NULL, item->mesg, _("TODO:"));
+	}
 }
 
 void ui_todo_flag(void)

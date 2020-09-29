@@ -1019,6 +1019,7 @@ void edit_note(char **, const char *);
 void view_note(const char *, const char *);
 void erase_note(char **);
 void note_read(char *, FILE *);
+void note_read_contents(char *, size_t, FILE *);
 void note_gc(void);
 
 /* notify.c */
