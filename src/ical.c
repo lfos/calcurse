@@ -65,16 +65,6 @@ typedef enum {
 	COMMENT
 } ical_property_e;
 
-typedef struct {
-	enum recur_type type;
-	unsigned freq;
-	time_t until;
-	unsigned count;
-	llist_t bymonth;
-	llist_t bywday;
-	llist_t bymonthday;
-} ical_rpt_t;
-
 static void ical_export_header(FILE *);
 static void ical_export_recur_events(FILE *, int);
 static void ical_export_events(FILE *, int);
@@ -519,9 +509,9 @@ static void ical_store_todo(int priority, int completed, char *mesg,
  * Calcurse limitation: events are one-day (all-day), and all multi-day events
  * are turned into one-day events; a note has been added by ical_read_event().
  */
-static int
+static void
 ical_store_event(char *mesg, char *note, time_t day, time_t end,
-		 ical_rpt_t *irpt, llist_t *exc, const char *fmt_ev,
+		 struct rpt *rpt, llist_t *exc, const char *fmt_ev,
 		 const char *fmt_rev)
 {
 	const int EVENTID = 1;
@@ -532,19 +522,9 @@ ical_store_event(char *mesg, char *note, time_t day, time_t end,
 	 * Repeating event. The end day is ignored, and the event becomes
 	 * one-day even if multi-day.
 	 */
-	if (irpt) {
-		struct rpt rpt;
-		rpt.type = irpt->type;
-		rpt.freq = irpt->freq;
-		rpt.until = irpt->until;
-		rpt.bymonth = irpt->bymonth;
-		rpt.bywday = irpt->bywday;
-		rpt.bymonthday = irpt->bymonthday;
-		rpt.exc = *exc;
-		if (!recur_item_find_occurrence(day, -1, &rpt, NULL, day, NULL))
-			return 0;
-		mem_free(irpt);
-		rev = recur_event_new(mesg, note, day, EVENTID, &rpt);
+	if (rpt) {
+		rpt->exc = *exc;
+		rev = recur_event_new(mesg, note, day, EVENTID, rpt);
 		if (fmt_rev)
 			print_recur_event(fmt_rev, day, rev);
 		goto cleanup;
@@ -563,27 +543,26 @@ ical_store_event(char *mesg, char *note, time_t day, time_t end,
 	 * event until the day before the end. In iCal, the end day is
 	 * exclusive, the until day inclusive.
 	 */
-	struct rpt rpt;
-	rpt.type = RECUR_DAILY;
-	rpt.freq = 1;
-	rpt.until = day + ((end - day - 1) / DAYINSEC) * DAYINSEC;
-	LLIST_INIT(&rpt.bymonth);
-	LLIST_INIT(&rpt.bywday);
-	LLIST_INIT(&rpt.bymonthday);
-	rpt.exc = *exc;
-	rev = recur_event_new(mesg, note, day, EVENTID, &rpt);
+	struct rpt tmp;
+	tmp.type = RECUR_DAILY;
+	tmp.freq = 1;
+	tmp.until = day + ((end - day - 1) / DAYINSEC) * DAYINSEC;
+	LLIST_INIT(&tmp.bymonth);
+	LLIST_INIT(&tmp.bywday);
+	LLIST_INIT(&tmp.bymonthday);
+	tmp.exc = *exc;
+	rev = recur_event_new(mesg, note, day, EVENTID, &tmp);
 	if (fmt_rev)
 		print_recur_event(fmt_rev, day, rev);
 
 cleanup:
 	mem_free(mesg);
 	erase_note(&note);
-	return 1;
 }
 
-static int
+static void
 ical_store_apoint(char *mesg, char *note, time_t start, long dur,
-		  ical_rpt_t * irpt, llist_t * exc, int has_alarm,
+		  struct rpt *rpt, llist_t *exc, int has_alarm,
 		  const char *fmt_apt, const char *fmt_rapt)
 {
 	char state = 0L;
@@ -591,21 +570,9 @@ ical_store_apoint(char *mesg, char *note, time_t start, long dur,
 	struct recur_apoint *rapt;
 	time_t day;
 
-	day = update_time_in_date(start, 0, 0);
 	if (has_alarm)
 		state |= APOINT_NOTIFY;
-	if (irpt) {
-		struct rpt rpt;
-		rpt.type = irpt->type;
-		rpt.freq = irpt->freq;
-		rpt.until = irpt->until;
-		rpt.bymonth = irpt->bymonth;
-		rpt.bywday = irpt->bywday;
-		rpt.bymonthday = irpt->bymonthday;
-		rpt.exc = *exc;
-		if (!recur_item_find_occurrence(start, dur, &rpt, NULL,
-						day, NULL))
-			return 0;
+	if (rpt) {
 		/*
 		 * In calcurse, "until" is interpreted as a day (DATE) - hours,
 		 * minutes and seconds are ignored - whereas in iCal the full
@@ -614,17 +581,17 @@ ical_store_apoint(char *mesg, char *note, time_t start, long dur,
 		 * day, and the start time is after the until value, the
 		 * calcurse until day must be changed to the day before.
 		 */
-		if (rpt.until) {
-			day = update_time_in_date(rpt.until, 0, 0);
-			if (recur_item_find_occurrence(start, dur, &rpt, NULL,
+		if (rpt->until) {
+			day = update_time_in_date(rpt->until, 0, 0);
+			if (recur_item_find_occurrence(start, dur, rpt, NULL,
 						       day, NULL) &&
-			    get_item_time(rpt.until) < get_item_time(start))
-				rpt.until = date_sec_change(day, 0, -1);
+			    get_item_time(rpt->until) < get_item_time(start))
+				rpt->until = date_sec_change(day, 0, -1);
 			else
-				rpt.until = day;
+				rpt->until = day;
 		}
-		mem_free(irpt);
-		rapt = recur_apoint_new(mesg, note, start, dur, state, &rpt);
+		rpt->exc = *exc;
+		rapt = recur_apoint_new(mesg, note, start, dur, state, rpt);
 		if (fmt_rapt)
 			print_recur_apoint(fmt_rapt, start, rapt->start, rapt);
 	} else {
@@ -634,7 +601,6 @@ ical_store_apoint(char *mesg, char *note, time_t start, long dur,
 	}
 	mem_free(mesg);
 	erase_note(&note);
-	return 1;
 }
 
 /*
@@ -926,26 +892,6 @@ static long ical_dur2long(char *durstr, ical_vevent_e type)
 }
 
 /*
- * Set repetition until date from repetition count
- * for an ical recurrence rule (s, d, i, e).
- */
-static void ical_count2until(time_t s, long d, ical_rpt_t *i, llist_t *e,
-			     ical_vevent_e type)
-{
-	struct rpt rpt;
-
-	if (type == EVENT)
-		d = -1;
-	rpt.type = i->type;
-	rpt.freq = i->freq;
-	rpt.until = 0;
-	rpt.bymonth = i->bymonth;
-	rpt.bywday = i->bywday;
-	rpt.bymonthday = i->bymonthday;
-	recur_nth_occurrence(s, d, &rpt, e, i->count, &i->until);
-}
-
-/*
  * Skip to the value part of an iCalendar content line.
  */
 static char *ical_get_value(char *p)
@@ -1100,14 +1046,15 @@ static int ical_bywday(llist_t *ll, char *cl)
  *                 / ( "BYSETPOS" "=" bysplist )
  *                 / ( "WKST" "=" weekday )
  */
-static ical_rpt_t *ical_read_rrule(FILE *log, char *rrulestr,
+static struct rpt *ical_read_rrule(FILE *log, char *rrulestr,
 				   unsigned *noskipped,
 				   const int itemline,
 				   ical_vevent_e type,
-				   time_t start)
+				   time_t start,
+				   int *count)
 {
 	char freqstr[8];
-	ical_rpt_t *rpt;
+	struct rpt *rpt;
 	char *p, *q;
 
 	if (type == UNDEFINED) {
@@ -1127,8 +1074,8 @@ static ical_rpt_t *ical_read_rrule(FILE *log, char *rrulestr,
 	for (q = p; (q = strchr(q, ';')); *q = ' ', q++)
 		;
 
-	rpt = mem_malloc(sizeof(ical_rpt_t));
-	memset(rpt, 0, sizeof(ical_rpt_t));
+	rpt = mem_malloc(sizeof(struct rpt));
+	memset(rpt, 0, sizeof(struct rpt));
 	LLIST_INIT(&rpt->bymonth);
 	LLIST_INIT(&rpt->bywday);
 	LLIST_INIT(&rpt->bymonthday);
@@ -1169,7 +1116,7 @@ static ical_rpt_t *ical_read_rrule(FILE *log, char *rrulestr,
 	/* INTERVAL rule part */
 	rpt->freq = 1;
 	if ((p = strstr(rrulestr, "INTERVAL="))) {
-		if (sscanf(p, "INTERVAL=%u", &rpt->freq) != 1) {
+		if (sscanf(p, "INTERVAL=%d", &rpt->freq) != 1) {
 			ical_log(log, ICAL_VEVENT, itemline, _("invalid interval."));
 			(*noskipped)++;
 			mem_free(rpt);
@@ -1203,7 +1150,7 @@ static ical_rpt_t *ical_read_rrule(FILE *log, char *rrulestr,
 	 */
 	if ((p = strstr(rrulestr, "COUNT="))) {
 		p = strchr(p, '=') + 1;
-		if (!(sscanf(p, "%u", &rpt->count) == 1 && rpt->count)) {
+		if (!(sscanf(p, "%d", count) == 1 && *count)) {
 			ical_log(log, ICAL_VEVENT, itemline,
 				 _("invalid count value."));
 			(*noskipped)++;
@@ -1403,7 +1350,8 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 	struct string s;
 	struct {
 		llist_t exc;
-		ical_rpt_t *rpt;
+		struct rpt *rpt;
+		int count;
 		char *mesg, *desc, *loc, *comm, *imp, *note;
 		time_t start, end;
 		long dur;
@@ -1463,10 +1411,6 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 					has_note = separator = 1;
 				}
 			}
-			if (vevent.rpt && vevent.rpt->count)
-				ical_count2until(vevent.start, vevent.dur,
-						 vevent.rpt, &vevent.exc,
-						 vevent_type);
 			if (has_note) {
 				/* Construct string with note file contents. */
 				string_init(&s);
@@ -1493,38 +1437,51 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 				}
 				vevent.note = generate_note(string_buf(&s));
 				mem_free(s.buf);
-				/*
-				 * Necessary to prevent double-free if item
-				 * creation fails below.
-				 */
-				vevent.desc = vevent.loc = vevent.comm =
-					vevent.imp = NULL;
 			}
-			char *msg = _("rrule does not match start day (%s).");
+			if (vevent.rpt) {
+				time_t day, until;
+				long dur;
+				char *msg;
+
+				dur = vevent_type == EVENT ? -1 : vevent.dur;
+				day = update_time_in_date(vevent.start, 0, 0);
+				msg = _("rrule does not match start day (%s).");
+
+				if (vevent.count) {
+					recur_nth_occurrence(vevent.start,
+							     dur,
+							     vevent.rpt,
+							     &vevent.exc,
+							     vevent.count,
+							     &until);
+					vevent.rpt->until = until;
+				}
+				if (!recur_item_find_occurrence(vevent.start,
+								dur,
+								vevent.rpt,
+								NULL,
+								day,
+								NULL)) {
+					char *l = day_ins(&msg, vevent.start);
+					ical_log(log, ICAL_VEVENT, ITEMLINE, l);
+					mem_free(l);
+					goto skip;
+				}
+			}
 			switch (vevent_type) {
 			case APPOINTMENT:
-				if (!ical_store_apoint(vevent.mesg, vevent.note,
+				ical_store_apoint(vevent.mesg, vevent.note,
 						       vevent.start, vevent.dur,
 						       vevent.rpt, &vevent.exc,
 						       vevent.has_alarm,
-						       fmt_apt, fmt_rapt)) {
-					char *l = day_ins(&msg, vevent.start);
-					ical_log(log, ICAL_VEVENT, ITEMLINE, l);
-					mem_free(l);
-					goto skip;
-				}
+						       fmt_apt, fmt_rapt);
 				(*noapoints)++;
 				break;
 			case EVENT:
-				if (!ical_store_event(vevent.mesg, vevent.note,
+				ical_store_event(vevent.mesg, vevent.note,
 						      vevent.start, vevent.end,
 						      vevent.rpt, &vevent.exc,
-						      fmt_ev, fmt_rev)) {
-					char *l = day_ins(&msg, vevent.start);
-					ical_log(log, ICAL_VEVENT, ITEMLINE, l);
-					mem_free(l);
-					goto skip;
-				}
+						      fmt_ev, fmt_rev);
 				(*noevents)++;
 				break;
 			case UNDEFINED:
@@ -1638,7 +1595,8 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 			}
 		} else if (starts_with_ci(buf, "RRULE")) {
 			vevent.rpt = ical_read_rrule(log, buf, noskipped,
-					ITEMLINE, vevent_type, vevent.start);
+					ITEMLINE, vevent_type, vevent.start,
+					&vevent.count);
 			if (!vevent.rpt)
 				goto cleanup;
 		} else if (starts_with_ci(buf, "EXDATE")) {
