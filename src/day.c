@@ -582,8 +582,30 @@ void day_write_stdout(time_t date, const char *fmt_apt, const char *fmt_rapt,
 void day_popup_item(struct day_item *day)
 {
 	if (day->type == EVNT || day->type == RECUR_EVNT) {
-		item_in_popup(NULL, NULL, day_item_get_mesg(day),
-			      _("Event:"));
+		if (day_item_get_note(day)) {
+			size_t note_size = 3500;
+			char note[note_size];
+
+			char *notepath;
+			FILE *fp;
+			asprintf(&notepath, "%s%s", path_notes, day_item_get_note(day));
+
+			fp = fopen(notepath, "r");
+			mem_free(notepath);
+
+			note_read_contents(note, note_size, fp);
+			fclose(fp);
+
+			char *msg;
+
+			asprintf(&msg, "%s\n\nNOTES:\n%s", day_item_get_mesg(day), note);
+
+			item_in_popup(NULL, NULL, msg, _("Event:"));
+
+			mem_free(msg);
+		} else {
+			item_in_popup(NULL, NULL, day_item_get_mesg(day), _("Event:"));
+		}
 	} else if (day->type == APPT || day->type == RECUR_APPT) {
 		char a_st[100], a_end[100];
 
@@ -593,8 +615,30 @@ void day_popup_item(struct day_item *day)
 		apt_tmp.start = day->start;
 		apt_tmp.dur = day_item_get_duration(day);
 		apoint_sec2str(&apt_tmp, ui_day_sel_date(), a_st, a_end);
-		item_in_popup(a_st, a_end, day_item_get_mesg(day),
-			      _("Appointment:"));
+
+		if (day_item_get_note(day)) {
+			size_t note_size = 3500;
+			char note[note_size];
+
+			char *notepath;
+			FILE *fp;
+			asprintf(&notepath, "%s%s", path_notes, day_item_get_note(day));
+
+			fp = fopen(notepath, "r");
+			mem_free(notepath);
+
+			note_read_contents(note, note_size, fp);
+			fclose(fp);
+
+			char *msg;
+
+			asprintf(&msg, "%s\n\nNOTES:\n%s", day_item_get_mesg(day), note);
+			item_in_popup(a_st, a_end, msg, _("Appointment:"));
+
+			mem_free(msg);
+		} else {
+			item_in_popup(a_st, a_end, day_item_get_mesg(day), _("Appointment:"));
+		}
 	} else {
 		EXIT(_("unknown item type"));
 		/* NOTREACHED */
