@@ -1846,3 +1846,27 @@ int recur_nth_occurrence(time_t s, long d, struct rpt *r, llist_t *e, int n,
 	}
 	return !n;
 }
+
+/*
+ * Finds the previous occurrence - the most recent before day - and returns it
+ * in the provided buffer.
+ */
+int recur_prev_occurrence(time_t s, long d, struct rpt *r, llist_t *e,
+			  time_t day, time_t *prev)
+{
+	time_t prev_day, next;
+
+	if (day <= update_time_in_date(s, 0, 0))
+		return 0;
+	next = *prev = s;
+	while (update_time_in_date(next, 0, 0) < day) {
+		/* Set new previous and next. */
+		*prev = next;
+		prev_day = update_time_in_date(*prev, 0, 0);
+		recur_next_occurrence(s, d, r, e, prev_day, &next);
+		/* Multi-day appointment */
+		if (next == *prev)
+			next = NEXTDAY(*prev);
+	}
+	return 1;
+}

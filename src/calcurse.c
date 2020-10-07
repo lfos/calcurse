@@ -557,7 +557,8 @@ static inline void key_generic_cmd(void)
 	int valid = 0, force = 0, ret;
 	char *error_msg;
 
-	status_mesg(_("Command: [ h(elp) | w(rite)(!) | q(uit)(!) | wq(!) | n(ext) ]"), "");
+	status_mesg(_("Command: "
+		"[ h(elp) | w(rite)(!) | q(uit)(!) | wq(!) | n(ext) | p(rev) ]"), "");
 	if (getstring(win[STA].p, cmd, BUFSIZ, 0, 1) != GETSTRING_VALID)
 		goto cleanup;
 	cmd_name = strtok(cmd, " ");
@@ -638,12 +639,57 @@ static inline void key_generic_cmd(void)
 			goto cleanup;
 		}
 		if (!more) {
-			error_msg = _("Last repetition.");
+			error_msg = _("Last occurrence.");
 			warnbox(error_msg);
 			goto cleanup;
 		}
-		item->start = next;
+		item->order = next;
 		ui_calendar_set_slctd_day(sec2date(next));
+		day_set_sel_data(item);
+		do_storage(1);
+
+		valid = 1;
+	}
+	if (!strcmp(cmd_name, "prev") || !strcmp(cmd_name, "p")) {
+		struct day_item *item;
+		time_t day, prev;
+		struct recur_apoint *rapt;
+		struct recur_event *rev;
+		int more = 0;
+
+		if (wins_slctd() != APP) {
+			error_msg = _("Select a repeating item in the"
+				" appointments panel.");
+			warnbox(error_msg);
+			goto cleanup;
+		}
+		item = ui_day_get_sel();
+		/*
+		 * The selected day need not be the (item) start day
+		 * for multi-day occurrences.
+		 */
+		day = update_time_in_date(item->start, 0, 0);
+		if (item->type == RECUR_EVNT) {
+			rev = item->item.rev;
+			more = recur_prev_occurrence(rev->day, -1, rev->rpt,
+						     &rev->exc, day, &prev);
+		} else if (item->type == RECUR_APPT) {
+			rapt = item->item.rapt;
+			more = recur_prev_occurrence(rapt->start, rapt->dur,
+						     rapt->rpt, &rapt->exc,
+						     day, &prev);
+		} else {
+			error_msg = _("Not a repeating item.");
+			warnbox(error_msg);
+			goto cleanup;
+		}
+		if (!more) {
+			error_msg = _("First occurrence.");
+			warnbox(error_msg);
+			goto cleanup;
+		}
+		item->order = prev;
+		ui_calendar_set_slctd_day(sec2date(prev));
 		day_set_sel_data(item);
 		do_storage(1);
 
