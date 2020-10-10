@@ -510,7 +510,7 @@ struct notify_app {
 
 struct io_file {
 	FILE *fd;
-	char name[BUFSIZ];
+	char *name;
 };
 
 /* Available keys. */

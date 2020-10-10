@@ -1396,7 +1396,7 @@ struct io_file *io_log_init(void)
 		ERROR_MSG(_("Warning: could not create temporary log file, Aborting..."));
 		goto error;
 	}
-	strncpy(log->name, logname, sizeof(log->name));
+	log->name = mem_strdup(logname);
 	log->fd = fopen(log->name, "w");
 	if (log->fd == NULL) {
 		ERROR_MSG(_("Warning: could not open temporary log file, Aborting..."));
@@ -1446,6 +1446,7 @@ void io_log_free(struct io_file *log)
 	EXIT_IF(unlink(log->name) != 0,
 		_("Warning: could not erase temporary log file %s, Aborting..."),
 		log->name);
+	mem_free(log->name);
 	mem_free(log);
 }
 
