@@ -41,15 +41,15 @@
 
 int run_hook(const char *name)
 {
-	char *hook_cmd = NULL, *mesg;
+	char *hook_path = NULL, *hook_cmd = NULL, *mesg;
 	char const *arg[2];
 	int pid, ret = -127;
 
-	asprintf(&hook_cmd, "%s/%s", path_hooks, name);
-	if (!io_file_exists(hook_cmd))
+	asprintf(&hook_path, "%s/%s", path_hooks, name);
+	if (!io_file_exists(hook_path))
 		goto cleanup;
 
-	asprintf(&hook_cmd, "%s <&- >&- 2>&-", hook_cmd);
+	asprintf(&hook_cmd, "%s <&- >&- 2>&-", hook_path);
 	arg[0] = hook_cmd;
 	arg[1] = NULL;
 
@@ -70,6 +70,7 @@ int run_hook(const char *name)
 	}
 
 cleanup:
+	mem_free(hook_path);
 	mem_free(hook_cmd);
 	return ret;
 }
