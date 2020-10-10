@@ -1229,77 +1229,85 @@ void ui_day_item_add(void)
 /* Delete an item from the appointment list. */
 void ui_day_item_delete(unsigned reg)
 {
-	const char *del_app_str =
-	    _("Do you really want to delete this item?");
+	const char *msg, *choices;
+	int nb_choices;
 
-	const char *erase_warning =
-	    _("This item is recurrent. "
-	      "Delete (a)ll occurences or just this (o)ne?");
-	const char *erase_choices = _("[ao]");
-	const int nb_erase_choices = 2;
-
-	const char *note_warning =
-	    _("This item has a note attached to it. "
-	      "Delete (i)tem or just its (n)ote?");
-	const char *note_choices = _("[in]");
-	const int nb_note_choices = 2;
 	time_t occurrence;
 
 	if (day_item_count(0) <= 0)
 		return;
 
 	struct day_item *p = ui_day_get_sel();
+	int has_note = (day_item_get_note(p) != NULL);
+	int is_recur = (p->type == RECUR_EVNT || p->type == RECUR_APPT);
 
-	if (conf.confirm_delete) {
-		if (status_ask_bool(del_app_str) != 1) {
-			wins_erase_status_bar();
-			return;
-		}
+	if (has_note && is_recur) {
+		msg = _("This item is recurrent and has a note attached to it. "
+			"Delete (s)elected occurrence, (a)ll occurrences, "
+			"or just its (n)ote?");
+		choices = _("[san]");
+		nb_choices = 3;
+	} else if (has_note) {
+		msg = _("This item has a note attached to it. "
+			"Delete (s)elected occurrence or just its (n)ote?");
+		choices = _("[sn]");
+		nb_choices = 2;
+	} else if (is_recur) {
+		msg = _("This item is recurrent. "
+			"Delete (s)elected occurrence or (a)ll occurrences?");
+		choices = _("[sa]");
+		nb_choices = 2;
+	} else {
+		msg = _("Confirm deletion. "
+			"Delete (s)elected occurrence? Press (s) to confirm.");
+		choices = _("[s]");
+		nb_choices = 1;
 	}
 
-	if (day_item_get_note(p)) {
-		switch (status_ask_choice
-			(note_warning, note_choices, nb_note_choices)) {
-		case 1:
-			break;
-		case 2:
-			day_item_erase_note(p);
-			io_set_modified();
-			return;
-		default:	/* User escaped */
-			return;
-		}
+	int answer = 1;
+	if (nb_choices > 1 || conf.confirm_delete) {
+		answer = status_ask_choice(msg, choices, nb_choices);
 	}
 
-	if (p->type == RECUR_EVNT || p->type == RECUR_APPT) {
-		switch (status_ask_choice
-			(erase_warning, erase_choices, nb_erase_choices)) {
-		case 1:
-			break;
-		case 2:
-			if (p->type == RECUR_EVNT) {
-				day_item_add_exc(p, ui_day_sel_date());
-			} else {
-				recur_apoint_find_occurrence(p->item.rapt,
-							     ui_day_sel_date(),
-							     &occurrence);
-				day_item_add_exc(p, occurrence);
-			}
+	/* Always map "all occurrences" to 2 and "note" to 3. */
+	if (has_note && !is_recur && answer == 2)
+		answer = 3;
+	/*
+	 * The option "selected occurrence" should be treated like "all
+	 * occurrences" for a non-recurrent item (delete the whole item).
+	 */
+	if (!is_recur && answer == 1)
+		answer = 2;
 
-			io_set_modified();
-			ui_calendar_monthly_view_cache_set_invalid();
-			/* Keep the selection on the same day. */
-			day_set_sel_data(
-				day_get_item(listbox_get_sel(&lb_apt) - 1)
-			);
-			return;
-		default:
-			return;
+	switch (answer) {
+	case 1:
+		/* Delete selected occurrence (of a recurrent item) only. */
+		if (p->type == RECUR_EVNT) {
+			day_item_add_exc(p, ui_day_sel_date());
+		} else {
+			recur_apoint_find_occurrence(p->item.rapt,
+						     ui_day_sel_date(),
+						     &occurrence);
+			day_item_add_exc(p, occurrence);
 		}
+		/* Keep the selection on the same day. */
+		day_set_sel_data(day_get_item(listbox_get_sel(&lb_apt) - 1));
+		break;
+	case 2:
+		/* Delete all occurrences (or a non-recurrent item). */
+		ui_day_item_cut(reg);
+		/* Keep the selection on the same day. */
+		day_set_sel_data(day_get_item(listbox_get_sel(&lb_apt) - 1));
+		break;
+	case 3:
+		/* Delete note. */
+		day_item_erase_note(p);
+		break;
+	default:
+		/* User escaped, do nothing. */
+		return;
 	}
-	ui_day_item_cut(reg);
-	/* Keep the selection on the same day. */
-	day_set_sel_data(day_get_item(listbox_get_sel(&lb_apt) - 1));
+
 	io_set_modified();
 	ui_calendar_monthly_view_cache_set_invalid();
 }
