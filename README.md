@@ -40,8 +40,9 @@ Package Overview
 Authors
 -------
 
-calcurse was originally authored by Frederic Culot and is currently maintained
-by Lukas Fleischer.
+calcurse was created by Frederic Culot in 2004. Since 2011, the project is
+maintained by Lukas Fleischer. Many core features added to calcurse since 2017
+were designed and implemented by Lars Henriksen.
 
 Of course, there are numerous other contributors. Check the Git commit log and
 the `Thanks` section in the manual for a list of people who have contributed by

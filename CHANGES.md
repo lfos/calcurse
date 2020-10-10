@@ -1,6 +1,64 @@
 Release Notes
 =============
 
+Version 4.7.0 (2020-10-12)
+--------------------------
+
+- Compatibility notes:
+
+    * Note file contents are now exported as DESCRIPTION in iCal exports. For
+      notes that should not be exported, please use the "-- " separator
+      (dash-dash-space-newline); everything below that separator (including the
+      separator itself) is ignored during export.
+
+    * The item deletion menu has been redesigned and now looks as follows:
+
+          Delete (s)elected occurrence, (a)ll occurrences, or only the (n)ote?
+
+      Options that are not available (e.g. because the item is not recurrent
+      or does not have a note) are omitted.
+
+    * The systemdialogs option has been removed from the configuration. The
+      welcome window has been removed, import/export status messages are now
+      always displayed unless the --quiet command line flag is used.
+
+- New features:
+
+    * Support for advanced recurrence rules (e.g. "every year on last Sunday in
+      October"). Supported in the UI and in iCal imports. For details on how to
+      use advanced recurrences, run :help repeat. Sample iCal files with
+      advanced recurrence rules can be found in contrib/import/ in the calcurse
+      source tree.
+
+    * Repeat counts are accepted in the UI as an alternative to repetition end
+      dates for recurrent items (e.g. "#3" to specify that an item should have
+      three occurrences).
+
+    * The :previous and :next commands can be used to jump to the previous/next
+      occurrence of the currently selected recurrent item. This is useful for
+      verifying that a new (advanced) recurrence rule works as intended.
+
+    * Various improvements in iCal imports: Location, comment and status of
+      iCal events are now imported as special fields in the note file. The time
+      zone identifier (TZID) is now recognized, time fields are converted to a
+      local time and the zone identifier is logged in the note file.
+
+    * Notes are now displayed in the item view dialog (implemented by Ambika
+      Eshwar).
+
+- Bug fixes:
+
+    * Fixed formatting of DTSTART for recurrent events (implemented by
+      Jerem-K).
+
+    * Improvements in hook execution. Hooks are background jobs and must not
+      interfere with the terminal (stdin, stdout, stderr).
+
+- calcurse-caldav bug fixes:
+
+    * Checks to make sure the config and data dirs exist (implemented by
+      Nitroretro).
+
 Version 4.6.0 (2020-03-27)
 --------------------------
 
