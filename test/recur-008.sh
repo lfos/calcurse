@@ -4,7 +4,7 @@
 
 if [ "$1" = 'actual' ]; then
   TZ='Europe/Copenhagen' "$CALCURSE" --read-only -D "$DATA_DIR"/ -c "$DATA_DIR/apts-dst" \
-  -Q --from 03/24/2019 --to 03/31/2020 --filter-type recur-apt
+    -Q --from 03/24/2019 --to 03/31/2020 --filter-type recur-apt
 elif [ "$1" = 'expected' ]; then
   cat <<EOD
 03/24/19:

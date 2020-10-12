@@ -5,13 +5,13 @@
 
 if [ "$1" = 'actual' ]; then
   "$CALCURSE" --read-only -D "$DATA_DIR"/ -c "$DATA_DIR/rfc5545" \
-  -Q --from 1/1/1996 --to 12/31/2007 --filter-type recur
+    -Q --from 1/1/1996 --to 12/31/2007 --filter-type recur
   echo ""
   echo "Floating point exception?"
   "$CALCURSE" --read-only -D "$DATA_DIR"/ -c "$DATA_DIR/rfc5545" \
-  -Q --day 8/1/2020 --filter-type recur &&
+    -Q --day 8/1/2020 --filter-type recur &&
   "$CALCURSE" --read-only -D "$DATA_DIR"/ -c "$DATA_DIR/rfc5545" \
-  -Q --day 11/1/2020 --filter-type recur &&
+    -Q --day 11/1/2020 --filter-type recur &&
   echo "No Floating point exception on November 1, 2020"
 elif [ "$1" = 'expected' ]; then
   cat <<EOD
