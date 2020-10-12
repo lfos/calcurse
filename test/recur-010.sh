@@ -5,14 +5,21 @@
 . "${TEST_INIT:-./test-init.sh}"
 
 if [ "$1" = 'actual' ]; then
-  TMP=tmp
-  mkdir "$TMP"
-  cp "$DATA_DIR"/conf "$TMP"
-  sed -n '/page 131/p' "$DATA_DIR"/rfc5545 > "$TMP"/apts
-  "$CALCURSE" -D "$TMP" -Q --filter-type cal --startday=08/01/1997 --range=31
-  sed 's/=monday/=sunday/' "$DATA_DIR"/conf > "$TMP"/conf
-  "$CALCURSE" -D "$TMP" -Q --filter-type cal --startday=08/01/1997 --range=31
-  rm -rf "$TMP"
+  tmpdir=$(mktemp -d)
+  grep 'page 131' "$DATA_DIR"/rfc5545 >"$tmpdir"/apts
+  cp "$DATA_DIR"/conf "$DATA_DIR"/todo "$tmpdir"
+  "$CALCURSE" --read-only -D "$tmpdir" -Q --filter-type cal \
+    --startday=08/01/1997 --range=31
+  rm -rf "$tmpdir"
+
+  tmpdir=$(mktemp -d)
+  grep 'page 131' "$DATA_DIR"/rfc5545 >"$tmpdir"/apts
+  cp "$DATA_DIR"/todo "$tmpdir"
+  sed 's/general.firstdayofweek=monday/general.firstdayofweek=sunday/' \
+    "$DATA_DIR"/conf >"$tmpdir"/conf
+  "$CALCURSE" --read-only -D "$tmpdir" -Q --filter-type cal \
+    --startday=08/01/1997 --range=31
+  rm -rf "$tmpdir"
 elif [ "$1" = 'expected' ]; then
   cat <<EOD
 08/05/97:
