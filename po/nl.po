@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2020-03-27 18:58-0400\n"
+"POT-Creation-Date: 2020-10-12 10:38-0400\n"
 "PO-Revision-Date: 2020-01-30 18:17+0000\n"
 "Last-Translator: Lukas Fleischer\n"
 "Language-Team: Dutch (http://www.transifex.com/lfleischer/calcurse/language/"
@@ -25,6 +25,14 @@ msgstr ""
 msgid "null pointer"
 msgstr "null pointer"
 
+#, fuzzy
+msgid "illegal date in appointment"
+msgstr "datumfout in de afspraak"
+
+#, fuzzy
+msgid "error in appointment description"
+msgstr "datumfout in de afspraak"
+
 msgid "date error in appointment"
 msgstr "datumfout in de afspraak"
 
@@ -37,7 +45,7 @@ msgid ""
 "calcurse -Q [--from <date>] [--to <date>] [--days <number>]\n"
 "calcurse -a | -d <date> | -d <number> | -n | -r[<number>] | -s[<date>] | -"
 "t[<number>]\n"
-"calcurse -h | -v | --status | -G | -P | -g | -i <file> | -x[<file>] | --"
+"calcurse -h | -v | --status | -G | -P | -g | -i <file> | -x[<format>] | --"
 "daemon"
 msgstr ""
 
@@ -123,7 +131,7 @@ msgstr ""
 msgid "  -i, --import <file>     Import iCal data from file"
 msgstr ""
 
-msgid "  -q, --quiet             Suppress system dialogs"
+msgid "  -q, --quiet             Suppress import/export result message"
 msgstr ""
 
 msgid "  --read-only             Do not save configuration or data files"
@@ -273,7 +281,7 @@ msgstr ""
 msgid "Do you really want to quit?"
 msgstr ""
 
-msgid "Command: [ h(elp) | w(rite)(!) | q(uit)(!) | wq(!) ]"
+msgid "Command: [ h(elp) | w(rite)(!) | q(uit)(!) | wq(!) | n(ext) | p(rev) ]"
 msgstr ""
 
 msgid "Read-only mode - use w!"
@@ -284,6 +292,19 @@ msgstr ""
 
 #, c-format
 msgid "Help topic does not exist: %s"
+msgstr ""
+
+msgid "Select a repeating item in the appointments panel."
+msgstr ""
+
+#, fuzzy
+msgid "Not a repeating item."
+msgstr "Herhaal item"
+
+msgid "Last occurrence."
+msgstr ""
+
+msgid "First occurrence."
 msgstr ""
 
 #, c-format
@@ -407,9 +428,6 @@ msgstr "(Bij JA, wordt er een bevestiging gevraagd bij eindigen programma"
 msgid "(if set to YES, confirmation is required before deleting an event)"
 msgstr "(Bij JA, is een bevestiging nodig voor het wissen van een gebeurtenis)"
 
-msgid "(if set to YES, messages about loaded and saved data will be displayed)"
-msgstr ""
-
 msgid "Monday"
 msgstr "maandag"
 
@@ -490,6 +508,10 @@ msgstr ""
 msgid "unknown item type"
 msgstr "ongekend type item"
 
+#, fuzzy
+msgid "Note:"
+msgstr "WzgNoot"
+
 msgid "Event:"
 msgstr ""
 
@@ -558,11 +580,13 @@ msgstr ""
 msgid "Could not stop calcurse daemon: %s\n"
 msgstr ""
 
-msgid "date error in event"
+#, fuzzy
+msgid "illegal date in event"
 msgstr "datumfout in gebeurtenis"
 
-msgid "date error in the event\n"
-msgstr ""
+#, fuzzy
+msgid "date error in event\n"
+msgstr "datumfout in gebeurtenis"
 
 msgid "Internal error: line too long"
 msgstr "Interne fout: lijn te lang"
@@ -573,31 +597,62 @@ msgstr ""
 msgid "unknown ical type"
 msgstr "onbekend ical type"
 
+msgid "need DTSTART to determine event type."
+msgstr ""
+
 msgid "malformed recurrence line."
 msgstr ""
 
-msgid "recurrence frequency not found."
+msgid "frequency not set in rrule."
 msgstr ""
 
-msgid "recurrence frequency not recognized."
+msgid "frequency absent in rrule."
+msgstr ""
+
+msgid "rrule frequency not supported."
+msgstr ""
+
+msgid "invalid interval."
+msgstr ""
+
+msgid "either until or count."
+msgstr ""
+
+msgid "invalid until format."
+msgstr ""
+
+msgid "invalid count value."
+msgstr ""
+
+msgid "invalid bymonth list."
+msgstr ""
+
+msgid "invalid bymonthday list."
+msgstr ""
+
+msgid "invalid byday list."
+msgstr ""
+
+msgid "invalid exception date value type."
 msgstr ""
 
 msgid "malformed exceptions line."
 msgstr ""
 
-#, fuzzy
-msgid "malformed description line."
-msgstr "omschrijving beschadigd"
-
-msgid "malformed description."
+msgid "invalid exception."
 msgstr ""
 
-#, fuzzy
-msgid "empty description."
+#, fuzzy, c-format
+msgid "malformed %s line."
 msgstr "omschrijving beschadigd"
 
-msgid "malformed summary line"
-msgstr ""
+#, fuzzy, c-format
+msgid "malformed %s."
+msgstr "omschrijving beschadigd"
+
+#, fuzzy
+msgid "malformed summary line."
+msgstr "omschrijving beschadigd"
 
 msgid "malformed summary."
 msgstr ""
@@ -611,8 +666,20 @@ msgstr "kan item onderwerp niet ophalen"
 msgid "item start date is not defined."
 msgstr ""
 
-msgid "item has a negative duration."
-msgstr "item heeft een negatieve tijdsduur"
+msgid "multi-day event changed to one-day event"
+msgstr ""
+
+#, c-format
+msgid "Location: %s"
+msgstr ""
+
+#, c-format
+msgid "Comment: %s"
+msgstr ""
+
+#, c-format
+msgid "rrule does not match start day (%s)."
+msgstr ""
 
 msgid "item could not be identified."
 msgstr "item onbekend"
@@ -620,17 +687,41 @@ msgstr "item onbekend"
 msgid "malformed start time line."
 msgstr ""
 
-msgid "could not retrieve event start time."
+#, fuzzy
+msgid "invalid or malformed event start time."
 msgstr "kan begintijd van gebeurtenis niet ophalen"
+
+#, fuzzy
+msgid "either end or duration."
+msgstr "syntaxfout in itemtijd of duurtijd van het item"
+
+msgid "invalid end time value type."
+msgstr ""
 
 msgid "malformed end time line."
 msgstr ""
 
-msgid "could not retrieve event end time."
+#, fuzzy
+msgid "malformed event end time."
 msgstr "kan eindtijd van gebeurtenis niet ophalen"
 
-msgid "item duration malformed."
-msgstr "item tijdsduur onjuist"
+msgid "end must be later than start."
+msgstr ""
+
+#, fuzzy
+msgid "malformed duration line."
+msgstr "omschrijving beschadigd"
+
+#, fuzzy
+msgid "invalid duration."
+msgstr "item heeft een negatieve tijdsduur"
+
+#, fuzzy
+msgid "only one description allowed."
+msgstr "omschrijving beschadigd"
+
+msgid "only one location allowed."
+msgstr ""
 
 msgid "The ical file seems to be malformed. The end of item was not found."
 msgstr "Ical-bestand oogt onjuist. Het einde van item niet gevonden."
@@ -705,6 +796,23 @@ msgstr "fout formaat in de afspraak of gebeurtenis"
 msgid "syntax error in item repetition"
 msgstr "syntaxfout in de herhaling van het item"
 
+#, fuzzy
+msgid "syntax error in until date"
+msgstr "syntaxfout in datum van item"
+
+msgid "until date error"
+msgstr ""
+
+msgid "BYMONTHDAY illegal with WEEKLY"
+msgstr ""
+
+msgid "missing end of recurrence"
+msgstr ""
+
+#, fuzzy
+msgid "syntax error in item state"
+msgstr "syntaxfout in datum van item"
+
 msgid "failed to open todo file"
 msgstr "kon het todo-bestand niet openen"
 
@@ -750,17 +858,11 @@ msgstr ""
 msgid "FATAL ERROR: could not create %s: %s\n"
 msgstr "FATALE FOUT: kan %s niet aanmaken: %s\n"
 
-msgid "Press [ENTER] to continue"
-msgstr "Druk op [ENTER] om door te gaan)"
-
-msgid "Welcome to Calcurse. Missing data files were created."
-msgstr "Welkom bij Calcurse. De missende databestanden zijn aangemaakt."
-
-msgid "Data files found. Data will be loaded now."
-msgstr "Databestanden gevonden. Data wordt geladen."
-
 msgid "The data were successfully exported"
 msgstr "De data is met succes geëxporteerd"
+
+msgid "Press [ENTER] to continue"
+msgstr "Druk op [ENTER] om door te gaan)"
 
 msgid "unknown export type"
 msgstr "onbekend exporttype"
@@ -833,7 +935,9 @@ msgstr ""
 msgid "Invalid delay"
 msgstr ""
 
-msgid "Periodic save: data files have changed. Save cancelled."
+msgid ""
+"Periodic save cancelled. Data files have changed. Save and merge "
+"interactively"
 msgstr ""
 
 #, c-format
@@ -1319,11 +1423,28 @@ msgstr "Herhalingstype is niet coherent"
 msgid "System event"
 msgstr ""
 
-msgid "unknown repetition type"
-msgstr ""
-
 msgid "unknown character"
 msgstr "onbekend karakter"
+
+#, c-format
+msgid "recurrence error: not on start day (%s)"
+msgstr ""
+
+#, fuzzy
+msgid "illegel date in event"
+msgstr "datumfout in gebeurtenis"
+
+msgid "date error in event"
+msgstr "datumfout in gebeurtenis"
+
+msgid "month day is zero"
+msgstr ""
+
+msgid "no daily frequency check"
+msgstr ""
+
+msgid "illegal BYDAY value"
+msgstr ""
 
 msgid "event not found"
 msgstr "Gebeurtenis niet gevonden"
@@ -1331,14 +1452,25 @@ msgstr "Gebeurtenis niet gevonden"
 msgid "appointment not found"
 msgstr "afspraak niet gevonden"
 
+#, fuzzy
+msgid "syntax error in bymonthday"
+msgstr "syntaxfout in datum van item"
+
+#, fuzzy
+msgid "syntax error in bywday"
+msgstr "syntaxfout in datum van item"
+
+#, fuzzy
+msgid "syntax error in bymonth"
+msgstr "syntaxfout in datum van item"
+
+msgid "illegal bymonth value"
+msgstr ""
+
 msgid "syntax error in item date"
 msgstr "syntaxfout in datum van item"
 
 msgid "date error in item exception"
-msgstr ""
-
-#, c-format
-msgid "Could not remove calcurse lock file: %s\n"
 msgstr ""
 
 #, c-format
@@ -1378,6 +1510,10 @@ msgstr ""
 msgid "Invalid time: start time must come before end time!"
 msgstr ""
 
+#, c-format
+msgid "Repetition must begin on start day (%s)."
+msgstr ""
+
 msgid "Enter end date (and/or time) or duration ('?' for input formats):"
 msgstr ""
 
@@ -1403,49 +1539,112 @@ msgstr ""
 msgid "Invalid date format - try again:."
 msgstr ""
 
-msgid "Enter the new repetition type:"
+msgid "Limit repetition to listed days."
 msgstr ""
 
-msgid "(d)aily"
-msgstr "(d)agelijks"
+msgid "Expand repetition to listed days."
+msgstr ""
 
-msgid "(w)eekly"
-msgstr "(w)ekelijks"
+msgid "Expand repetition to listed days, either all or 1st, 2nd, ... of month."
+msgstr ""
 
-msgid "(m)onthly"
-msgstr "(m)aandelijks"
+msgid "Note: limit to monthdays, if any."
+msgstr ""
 
-msgid "(y)early"
-msgstr "(y)aarlijks"
+msgid "Expand repetition to listed days, either all or 1st, 2nd, ... of year."
+msgstr ""
+
+msgid "Note: expand to listed months, if any; limit to monthdays, if any."
+msgstr ""
+
+msgid "Limit repetition to listed months."
+msgstr ""
+
+msgid "Expand repetition to listed months."
+msgstr ""
+
+msgid "Limit repetition to listed days of month."
+msgstr ""
+
+msgid "Expand repetition to listed days of month."
+msgstr ""
 
 #, c-format
-msgid "(currently using %s)"
+msgid "Weekdays %s|..|%s, space-separated list, '?' for help:"
+msgstr ""
+
+#, c-format
+msgid ""
+"Weekdays [n]%s|..|[n]%s, space-separated list, n=1,-1,..,5,-5, '?' for help:"
+msgstr ""
+
+#, c-format
+msgid ""
+"Weekdays [n]%s|..|[n]%s, space-separated list, n=1,-1,..,53,-53, '?' for "
+"help:"
+msgstr ""
+
+msgid "Months 1|..|12, space-separated list, '?' for help:"
+msgstr ""
+
+msgid "Monthdays 1|..|31 or -1|..|-31, space-separated list, '?' for help:"
+msgstr ""
+
+msgid "Invalid format - try again."
+msgstr ""
+
+#, fuzzy
+msgid "Press any key to continue."
+msgstr "Druk op een toets om door te gaan..."
+
+msgid "Base period:"
+msgstr ""
+
+#, fuzzy
+msgid "day"
+msgstr "Vandaag"
+
+msgid "week"
+msgstr ""
+
+#, fuzzy
+msgid "month"
+msgstr "(m)aandelijks"
+
+msgid "year"
 msgstr ""
 
 msgid "[dwmy]"
 msgstr "[dwmy]"
 
+msgid "Frequency:"
+msgstr ""
+
 msgid "Invalid frequency."
 msgstr ""
 
-msgid "Enter the repetition frequency:"
-msgstr ""
-
-msgid "Enter end date or duration ('?' for input formats):"
+msgid "Until date, increment or repeat count ('?' for input formats):"
 msgstr ""
 
 #, c-format
-msgid "Date: %s (year or month may be omitted). Endless duration: 0."
+msgid "Date: %s (year, month may be omitted, endless: 0)."
 msgstr ""
 
-msgid "Duration in days: +dd. Duration in weeks and days: +??w??d."
+msgid "Increment: +?? (days) or: +??w??d (weeks). Repeat count: #?? (number)."
 msgstr ""
 
 #, c-format
-msgid "Invalid date: end date must come after start date (%s)."
+msgid "Invalid date: until date must come after start date (%s)."
 msgstr ""
 
 msgid "Invalid date."
+msgstr ""
+
+msgid "Repeat count is too big."
+msgstr ""
+
+#, c-format
+msgid "Repetition must begin on start day (%s); any change discarded."
 msgstr ""
 
 msgid "Description"
@@ -1486,32 +1685,40 @@ msgstr ""
 msgid "Invalid start time."
 msgstr ""
 
-msgid "Do you really want to delete this item?"
+msgid ""
+"This item is recurrent and has a note attached to it. Delete (s)elected "
+"occurrence, (a)ll occurrences, or just its (n)ote?"
 msgstr ""
 
-msgid "This item is recurrent. Delete (a)ll occurences or just this (o)ne?"
+msgid "[san]"
 msgstr ""
 
-msgid "[ao]"
+msgid ""
+"This item has a note attached to it. Delete (s)elected occurrence or just "
+"its (n)ote?"
 msgstr ""
 
-msgid "This item has a note attached to it. Delete (i)tem or just its (n)ote?"
+msgid "[sn]"
 msgstr ""
 
-msgid "[in]"
+msgid ""
+"This item is recurrent. Delete (s)elected occurrence or (a)ll occurrences?"
 msgstr ""
 
-msgid "Enter the repetition type:"
+msgid "[sa]"
 msgstr ""
 
-#, c-format
-msgid "Date: %s (year or month may be omitted). Endless duration: '0'."
+msgid "Confirm deletion. Delete (s)elected occurrence? Press (s) to confirm."
 msgstr ""
 
-msgid "This item is already a repeated one."
+msgid "[s]"
+msgstr ""
+
+#, fuzzy
+msgid "Already repeated."
 msgstr "Dit item wordt al herhaald."
 
-msgid "wrong item type"
+msgid "A (s)imple or (a)dvanced repetition?"
 msgstr ""
 
 msgid "Enter the new TODO item:"
@@ -1533,6 +1740,10 @@ msgid "Enter the new TODO description:"
 msgstr ""
 
 msgid "TODO:"
+msgstr ""
+
+#, c-format
+msgid "Could not remove calcurse lock file: %s\n"
 msgstr ""
 
 msgid "/!\\ INTERNAL ERROR /!\\"
@@ -1637,6 +1848,28 @@ msgstr ""
 
 msgid "Remove temporary backup..."
 msgstr ""
+
+#, fuzzy
+#~ msgid "empty description."
+#~ msgstr "omschrijving beschadigd"
+
+#~ msgid "item duration malformed."
+#~ msgstr "item tijdsduur onjuist"
+
+#~ msgid "Welcome to Calcurse. Missing data files were created."
+#~ msgstr "Welkom bij Calcurse. De missende databestanden zijn aangemaakt."
+
+#~ msgid "Data files found. Data will be loaded now."
+#~ msgstr "Databestanden gevonden. Data wordt geladen."
+
+#~ msgid "(d)aily"
+#~ msgstr "(d)agelijks"
+
+#~ msgid "(w)eekly"
+#~ msgstr "(w)ekelijks"
+
+#~ msgid "(y)early"
+#~ msgstr "(y)aarlijks"
 
 #~ msgid "recurrence rule malformed."
 #~ msgstr "herhalingsregel onjuist"
