@@ -4,11 +4,11 @@
 . "${TEST_INIT:-./test-init.sh}"
 
 if [ "$1" = 'actual' ]; then
-  mkdir .calcurse || exit 1
-  cp "$DATA_DIR/conf" .calcurse || exit 1
-  TZ=America/New_York "$CALCURSE" -D "$PWD/.calcurse" -i "$DATA_DIR/rfc5545.ical"
-  "$CALCURSE" -D "$PWD/.calcurse" -s09/01/1997 -r365
-  rm -rf .calcurse || exit 1
+  tmpdir=$(mktemp -d)
+  cp "$DATA_DIR/conf" "$tmpdir" || exit 1
+  TZ=America/New_York "$CALCURSE" -D "$tmpdir" -i "$DATA_DIR/rfc5545.ical"
+  "$CALCURSE" -D "$tmpdir" -s09/01/1997 -r365
+  rm -rf "$tmpdir" || exit 1
 elif [ "$1" = 'expected' ]; then
   cat <<EOD
 Import process report: 0238 lines read

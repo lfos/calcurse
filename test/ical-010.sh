@@ -4,12 +4,12 @@
 . "${TEST_INIT:-./test-init.sh}"
 
 if [ "$1" = 'actual' ]; then
-  mkdir .calcurse || exit 1
-  cp "$DATA_DIR/conf" .calcurse || exit 1
-  cp "$DATA_DIR/apts-export" .calcurse/apts || exit 1
-  cp "$DATA_DIR/todo-export" .calcurse/todo || exit 1
-  "$CALCURSE" -D "$PWD/.calcurse" --export=ical | sed '/^PRODID/d'
-  rm -rf .calcurse || exit 1
+  tmpdir=$(mktemp -d)
+  cp "$DATA_DIR/conf" "$tmpdir" || exit 1
+  cp "$DATA_DIR/apts-export" "$tmpdir"/apts || exit 1
+  cp "$DATA_DIR/todo-export" "$tmpdir"/todo || exit 1
+  "$CALCURSE" -D "$tmpdir" --export=ical | sed '/^PRODID/d'
+  rm -rf "$tmpdir" || exit 1
 elif [ "$1" = 'expected' ]; then
   cat <<EOD
 BEGIN:VCALENDAR

@@ -4,17 +4,17 @@
 . "${TEST_INIT:-./test-init.sh}"
 
 if [ "$1" = 'actual' ]; then
-  mkdir .calcurse || exit 1
-  cp "$DATA_DIR/conf" .calcurse || exit 1
-  out=$("$CALCURSE" -D "$PWD/.calcurse" -i "$DATA_DIR/ical-009.ical" 2>&1)
+  tmpdir=$(mktemp -d)
+  cp "$DATA_DIR/conf" "$tmpdir" || exit 1
+  out=$("$CALCURSE" -D "$tmpdir" -i "$DATA_DIR/ical-009.ical" 2>&1)
   # Print the import report (stdout).
   echo "$out" | awk '$1 == "Import"; $2 == "apps"'
   # Find the log file and print the log messages (stderr).
   logfile=$(echo "$out" | awk '$1 == "See" { print $2 }')
   sed '1,18d' "$logfile"
   # One empty note file.
-  cat "$PWD/.calcurse/notes"/* | wc | awk '{ print $1 $2 $3 }'
-  rm -rf .calcurse || exit 1
+  cat "$tmpdir/notes"/* | wc | awk '{ print $1 $2 $3 }'
+  rm -rf "$tmpdir" || exit 1
 elif [ "$1" = 'expected' ]; then
   cat <<EOD
 Import process report: 0121 lines read
