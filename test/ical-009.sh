@@ -17,27 +17,29 @@ if [ "$1" = 'actual' ]; then
   rm -rf "$tmpdir" || exit 1
 elif [ "$1" = 'expected' ]; then
   cat <<EOD
-Import process report: 0121 lines read
-2 apps / 0 events / 1 todo / 19 skipped
+Import process report: 0131 lines read
+2 apps / 0 events / 1 todo / 21 skipped
 VEVENT [12]: invalid or malformed event start time.
-VEVENT [17]: rrule frequency not supported.
-VEVENT [23]: malformed summary line.
-VTODO [28]: item priority is invalid (must be between 0 and 9).
-VEVENT [32]: malformed exceptions line.
-VEVENT [39]: line break in summary.
-VEVENT [44]: malformed description line.
-VEVENT [50]: malformed description.
-VTODO [62]: malformed summary.
-VEVENT [66]: only one location allowed.
-VEVENT [73]: invalid duration.
-VEVENT [78]: invalid or malformed event start time.
-VEVENT [83]: invalid end time value type.
-VEVENT [88]: invalid until format.
-VEVENT [94]: invalid exception date value type.
-VEVENT [101]: invalid exception.
-VEVENT [108]: either end or duration.
-VEVENT [114]: end must be later than start.
-VTODO [119]: The ical file seems to be malformed. The end of item was not found.
+VEVENT [17]: item start date not defined.
+VEVENT [21]: rrule frequency not supported.
+VEVENT [27]: malformed summary line.
+VTODO [32]: item priority is invalid (must be between 0 and 9).
+VEVENT [36]: malformed exceptions line.
+VEVENT [43]: exception date, but no recurrence rule.
+VEVENT [49]: line break in summary.
+VEVENT [54]: malformed description line.
+VEVENT [60]: malformed description.
+VTODO [72]: malformed summary.
+VEVENT [76]: only one location allowed.
+VEVENT [83]: invalid duration.
+VEVENT [88]: invalid or malformed event start time.
+VEVENT [93]: invalid end time value type.
+VEVENT [98]: invalid until format.
+VEVENT [104]: invalid exception date value type.
+VEVENT [111]: invalid exception.
+VEVENT [118]: either end or duration.
+VEVENT [124]: end must be later than start.
+VTODO [129]: The ical file seems to be malformed. The end of item was not found.
 101
 EOD
 else

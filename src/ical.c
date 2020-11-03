@@ -1218,11 +1218,6 @@ ical_read_exdate(llist_t * exc, FILE * log, char *exstr, unsigned *noskipped,
 	time_t t;
 	int n;
 
-	if (type == UNDEFINED) {
-		ical_log(log, ICAL_VEVENT, itemline,
-			 _("need DTSTART to determine event type."));
-		goto cleanup;
-	}
 	if (type != ical_get_type(exstr)) {
 		ical_log(log, ICAL_VEVENT, itemline,
 			 _("invalid exception date value type."));
@@ -1346,8 +1341,9 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 	const int ITEMLINE = *lineno - !feof(fdi);
 	ical_vevent_e vevent_type;
 	ical_property_e property;
-	char *p, *note = NULL, *tmp, *tzid;
-	struct string s;
+	char *p, *note, *tzid;
+	char *dtstart, *dtend, *duration, *rrule;
+	struct string s, exdate;
 	struct {
 		llist_t exc;
 		struct rpt *rpt;
@@ -1357,12 +1353,13 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 		long dur;
 		int has_alarm;
 	} vevent;
-	int skip_alarm, has_note, separator;
+	int skip_alarm, has_note, separator, has_exdate;
 
 	vevent_type = UNDEFINED;
 	memset(&vevent, 0, sizeof vevent);
 	LLIST_INIT(&vevent.exc);
-	skip_alarm = has_note = separator = 0;
+	note = dtstart = dtend = duration = rrule = NULL;
+	skip_alarm = has_note = separator = has_exdate =0;
 	while (ical_readline(fdi, buf, lstore, lineno)) {
 		note = NULL;
 		property = NO_PROPERTY;
@@ -1376,16 +1373,108 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 			continue;
 		}
 		if (starts_with_ci(buf, "END:VEVENT")) {
-			if (!vevent.mesg) {
+			/* DTSTART and related properties (picked up earlier). */
+			if (!dtstart) {
 				ical_log(log, ICAL_VEVENT, ITEMLINE,
-					 _("could not retrieve item summary."));
+					 _("item start date not defined."));
 				goto skip;
 			}
-			if (vevent.start == 0) {
+			vevent_type = ical_get_type(dtstart);
+			if ((tzid = ical_get_tzid(dtstart)) &&
+			    vevent_type == APPOINTMENT) {
+				if (vevent.imp) {
+					asprintf(&p, "%s, TZID=%s",
+						 vevent.imp, tzid);
+					mem_free(vevent.imp);
+					vevent.imp = p;
+				} else
+					asprintf(&vevent.imp, "TZID=%s", tzid);
+				has_note = separator = 1;
+			}
+			p = ical_get_value(dtstart);
+			if (!p) {
 				ical_log(log, ICAL_VEVENT, ITEMLINE,
-					 _("item start date is not defined."));
+					 _("malformed start time line."));
 				goto skip;
 			}
+			vevent.start = ical_datetime2time_t(p, tzid, vevent_type);
+			if (tzid)
+				mem_free(tzid);
+			if (!vevent.start) {
+				ical_log(log, ICAL_VEVENT, ITEMLINE,
+					 _("invalid or malformed event "
+					 "start time."));
+				goto skip;
+			}
+			/* DTEND */
+			if (!dtend)
+				goto duration;
+			if (vevent_type != ical_get_type(dtend)) {
+				ical_log(log, ICAL_VEVENT, ITEMLINE,
+					 _("invalid end time value type."));
+				goto skip;
+			}
+			tzid = ical_get_tzid(dtend);
+			p = ical_get_value(dtend);
+			if (!p) {
+				ical_log(log, ICAL_VEVENT, ITEMLINE,
+					 _("malformed end time line."));
+				goto skip;
+			}
+			vevent.end = ical_datetime2time_t(p, tzid, vevent_type);
+			if (tzid)
+				mem_free(tzid);
+			if (!vevent.end) {
+				ical_log(log, ICAL_VEVENT, ITEMLINE,
+					 _("malformed event end time."));
+				goto skip;
+			}
+			if (vevent.end <= vevent.start) {
+				ical_log(log, ICAL_VEVENT, ITEMLINE,
+					 _("end must be later than start."));
+				goto skip;
+			}
+	      duration:
+			if (!duration)
+				goto rrule;
+			if (vevent.end) {
+				ical_log(log, ICAL_VEVENT, ITEMLINE,
+					 _("either end or duration."));
+				goto skip;
+			}
+			p = ical_get_value(duration);
+			if (!p) {
+				ical_log(log, ICAL_VEVENT, ITEMLINE,
+					 _("malformed duration line."));
+				goto skip;
+			}
+			vevent.dur = ical_dur2long(p, vevent_type);
+			if (!vevent.dur) {
+				ical_log(log, ICAL_VEVENT, ITEMLINE,
+					 _("invalid duration."));
+				goto skip;
+			}
+		 rrule:
+			if (!rrule)
+				goto exdate;
+			vevent.rpt = ical_read_rrule(log, rrule, noskipped,
+					ITEMLINE, vevent_type, vevent.start,
+					&vevent.count);
+			if (!vevent.rpt)
+				goto cleanup;
+		exdate:
+			if (!has_exdate)
+				goto duration_end;
+			if (!rrule) {
+				ical_log(log, ICAL_VEVENT, ITEMLINE,
+					 _("exception date, but no recurrence "
+					 "rule."));
+				goto skip;
+			}
+			if (!ical_read_exdate(&vevent.exc, log, exdate.buf,
+					      noskipped, ITEMLINE, vevent_type))
+				goto cleanup;
+	  duration_end:
 			/* An APPOINTMENT must always have a duration. */
 			if (vevent_type == APPOINTMENT && !vevent.dur) {
 				vevent.dur = vevent.end ?
@@ -1402,10 +1491,10 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 					char *md = _("multi-day event changed "
 						   "to one-day event");
 					if (vevent.imp) {
-						asprintf(&tmp, "%s, %s",
+						asprintf(&p, "%s, %s",
 							 vevent.imp, md);
 						mem_free(vevent.imp);
-						vevent.imp = tmp;
+						vevent.imp = p;
 					} else
 						asprintf(&vevent.imp, "%s", md);
 					has_note = separator = 1;
@@ -1494,115 +1583,28 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 		}
 		if (starts_with_ci(buf, "DTSTART")) {
 			/*
-			 * DTSTART has a value type: either DATE-TIME (by
-			 * default) or DATE. Properties DTEND, DURATION and
-			 * EXDATE and rrule part UNTIL must agree.
-			 * Assume that DTSTART comes before the others even
-			 * though RFC 5545 allows any order.
+			 * DTSTART has a value type: either DATE-TIME or DATE.
 			 * In calcurse DATE-TIME implies an appointment, DATE an
 			 * event.
+			 * Properties DTEND, DURATION and EXDATE and rrule part
+			 * UNTIL must match the DTSTART value type.
 			 */
-			vevent_type = ical_get_type(buf);
-			if ((tzid = ical_get_tzid(buf)) &&
-			    vevent_type == APPOINTMENT) {
-				/* Add note on TZID. */
-				if (vevent.imp) {
-					asprintf(&tmp, "%s, TZID=%s",
-						 vevent.imp, tzid);
-					mem_free(vevent.imp);
-					vevent.imp = tmp;
-				} else
-					asprintf(&vevent.imp, "TZID=%s", tzid);
-				has_note = separator = 1;
-			}
-			p = ical_get_value(buf);
-			if (!p) {
-				ical_log(log, ICAL_VEVENT, ITEMLINE,
-					 _("malformed start time line."));
-				goto skip;
-			}
-
-			vevent.start = ical_datetime2time_t(p, tzid, vevent_type);
-			if (tzid)
-				mem_free(tzid);
-			if (!vevent.start) {
-				ical_log(log, ICAL_VEVENT, ITEMLINE,
-					 _("invalid or malformed event "
-					 "start time."));
-				goto skip;
-			}
+			asprintf(&dtstart, "%s", buf);
 		} else if (starts_with_ci(buf, "DTEND")) {
-			if (vevent.dur) {
-				ical_log(log, ICAL_VEVENT, ITEMLINE,
-					 _("either end or duration."));
-				goto skip;
-			}
-			if (vevent_type == UNDEFINED) {
-				ical_log(log, ICAL_VEVENT, ITEMLINE,
-					 _("need DTSTART to determine "
-					 "event type."));
-				goto skip;
-			}
-			if (vevent_type != ical_get_type(buf)) {
-				ical_log(log, ICAL_VEVENT, ITEMLINE,
-					 _("invalid end time value type."));
-				goto skip;
-			}
-			tzid = ical_get_tzid(buf);
-			p = ical_get_value(buf);
-			if (!p) {
-				ical_log(log, ICAL_VEVENT, ITEMLINE,
-					 _("malformed end time line."));
-				goto skip;
-			}
-
-			vevent.end = ical_datetime2time_t(p, tzid, vevent_type);
-			if (tzid)
-				mem_free(tzid);
-			if (!vevent.end) {
-				ical_log(log, ICAL_VEVENT, ITEMLINE,
-					 _("malformed event end time."));
-				goto skip;
-			}
-			if (vevent.end <= vevent.start) {
-				ical_log(log, ICAL_VEVENT, ITEMLINE,
-					 _("end must be later than start."));
-				goto skip;
-			}
+			asprintf(&dtend, "%s", buf);
 		} else if (starts_with_ci(buf, "DURATION")) {
-			if (vevent.end) {
-				ical_log(log, ICAL_VEVENT, ITEMLINE,
-					 _("either end or duration."));
-				goto skip;
-			}
-			if (vevent_type == UNDEFINED) {
-				ical_log(log, ICAL_VEVENT, ITEMLINE,
-					 _("need DTSTART to determine "
-					 "event type."));
-				goto skip;
-			}
-			p = ical_get_value(buf);
-			if (!p) {
-				ical_log(log, ICAL_VEVENT, ITEMLINE,
-					 _("malformed duration line."));
-				goto skip;
-			}
-			vevent.dur = ical_dur2long(p, vevent_type);
-			if (!vevent.dur) {
-				ical_log(log, ICAL_VEVENT, ITEMLINE,
-					 _("invalid duration."));
-				goto skip;
-			}
+			asprintf(&duration, "%s", buf);
 		} else if (starts_with_ci(buf, "RRULE")) {
-			vevent.rpt = ical_read_rrule(log, buf, noskipped,
-					ITEMLINE, vevent_type, vevent.start,
-					&vevent.count);
-			if (!vevent.rpt)
-				goto cleanup;
+			asprintf(&rrule, "%s", buf);
 		} else if (starts_with_ci(buf, "EXDATE")) {
-			if (!ical_read_exdate(&vevent.exc, log, buf, noskipped,
-					      ITEMLINE, vevent_type))
-				goto cleanup;
+			if (!has_exdate) {
+				has_exdate = 1;
+				string_init(&exdate);
+				string_catf(&exdate, "%s", buf);
+			} else {
+				p = ical_get_value(buf);
+				string_catf(&exdate, ",%s", p);
+			}
 		} else if (starts_with_ci(buf, "SUMMARY")) {
 			vevent.mesg = ical_read_summary(buf, noskipped,
 					ICAL_VEVENT, ITEMLINE, log);
@@ -1646,10 +1648,10 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 		case COMMENT:
 			/* There may be more than one. */
 			if (vevent.comm) {
-				asprintf(&tmp, "%sComment: %s",
+				asprintf(&p, "%sComment: %s",
 					 vevent.comm, note);
 				mem_free(vevent.comm);
-				vevent.comm = tmp;
+				vevent.comm = p;
 			} else
 				vevent.comm = note;
 			break;
@@ -1663,6 +1665,16 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
    skip:
 	(*noskipped)++;
 cleanup:
+	if (dtstart)
+		mem_free(dtstart);
+	if (dtend)
+		mem_free(dtend);
+	if (duration)
+		mem_free(duration);
+	if (rrule)
+		mem_free(rrule);
+	if (has_exdate)
+		mem_free(exdate.buf);
 	if (note)
 		mem_free(note);
 	if (vevent.desc)
@@ -1686,7 +1698,7 @@ ical_read_todo(FILE * fdi, FILE * log, unsigned *notodos, unsigned *noskipped,
 {
 	const int ITEMLINE = *lineno - !feof(fdi);
 	ical_property_e property;
-	char *note = NULL, *tmp;
+	char *p, *note;
 	struct string s;
 	struct {
 		char *mesg, *desc, *loc, *comm, *note;
@@ -1696,6 +1708,7 @@ ical_read_todo(FILE * fdi, FILE * log, unsigned *notodos, unsigned *noskipped,
 	int skip_alarm, has_note, separator;
 
 	memset(&vtodo, 0, sizeof vtodo);
+	note = NULL;
 	skip_alarm = has_note = separator = 0;
 	while (ical_readline(fdi, buf, lstore, lineno)) {
 		note = NULL;
@@ -1796,10 +1809,10 @@ ical_read_todo(FILE * fdi, FILE * log, unsigned *notodos, unsigned *noskipped,
 		case COMMENT:
 			/* There may be more than one. */
 			if (vtodo.comm) {
-				asprintf(&tmp, "%sComment: %s",
+				asprintf(&p, "%sComment: %s",
 					 vtodo.comm, note);
 				mem_free(vtodo.comm);
-				vtodo.comm = tmp;
+				vtodo.comm = p;
 			} else
 				vtodo.comm = note;
 			break;
