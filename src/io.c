@@ -1277,7 +1277,7 @@ static FILE *get_import_stream(enum import_type type, char **stream_name)
  * A temporary log file is created in /tmp to store the import process report,
  * and is cleared at the end.
  */
-void io_import_data(enum import_type type, char *stream_name,
+int  io_import_data(enum import_type type, char *stream_name,
 		    const char *fmt_ev, const char *fmt_rev,
 		    const char *fmt_apt, const char *fmt_rapt,
 		    const char *fmt_todo)
@@ -1312,7 +1312,7 @@ void io_import_data(enum import_type type, char *stream_name,
 	}
 
 	if (stream == NULL)
-		return;
+		return 0;
 
 	memset(&stats, 0, sizeof stats);
 
@@ -1320,7 +1320,7 @@ void io_import_data(enum import_type type, char *stream_name,
 	if (log == NULL) {
 		if (stream != stdin)
 			file_close(stream, __FILE_POS__);
-		return;
+		return 0;
 	}
 
 	if (type == IO_IMPORT_ICAL)
@@ -1377,8 +1377,11 @@ void io_import_data(enum import_type type, char *stream_name,
 	mem_free(stats_str[3]);
 	if (ui_mode == UI_CURSES)
 		mem_free(stream_name);
-	if (!stats.skipped)
+	if (!stats.skipped) {
 		io_log_free(log);
+		return 1;
+	} else
+		return 0;
 }
 
 struct io_file *io_log_init(void)

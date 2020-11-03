@@ -428,7 +428,7 @@ int parse_args(int argc, char **argv)
 	const char *cfile = NULL, *confdir = NULL;
 	char *ifile = NULL;
 
-	int non_interactive = 1;
+	int ret, non_interactive = 1;
 	int ch, cpid, type;
 	regex_t reg;
 	char buf[BUFSIZ];
@@ -963,10 +963,12 @@ int parse_args(int argc, char **argv)
 			fmt_apt = fmt_rapt = fmt_ev = fmt_rev = NULL;
 			fmt_todo = NULL;
 		}
-		io_import_data(IO_IMPORT_ICAL, ifile, fmt_ev, fmt_rev, fmt_apt,
-			       fmt_rapt, fmt_todo);
+		ret = io_import_data(IO_IMPORT_ICAL, ifile, fmt_ev, fmt_rev,
+				     fmt_apt, fmt_rapt, fmt_todo);
 		io_save_apts(path_apts);
 		io_save_todo(path_todo);
+		if (!ret)
+			exit_calcurse(EXIT_FAILURE);
 	} else if (export) {
 		io_check_file(path_apts);
 		io_check_file(path_todo);

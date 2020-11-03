@@ -924,7 +924,7 @@ unsigned io_file_exists(const char *);
 int io_check_file(const char *);
 int io_check_data_files(void);
 void io_export_data(enum export_type, int);
-void io_import_data(enum import_type, char *, const char *, const char *,
+int io_import_data(enum import_type, char *, const char *, const char *,
 		    const char *, const char *, const char *);
 struct io_file *io_log_init(void);
 void io_log_print(struct io_file *, int, const char *);
