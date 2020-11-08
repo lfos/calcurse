@@ -1398,8 +1398,10 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 				goto skip;
 			}
 			vevent.start = ical_datetime2time_t(p, tzid, vevent_type);
-			if (tzid)
+			if (tzid) {
 				mem_free(tzid);
+				tzid = NULL;
+			}
 			if (!vevent.start) {
 				ical_log(log, ICAL_VEVENT, ITEMLINE,
 					 _("invalid or malformed event "
@@ -1422,8 +1424,10 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 				goto skip;
 			}
 			vevent.end = ical_datetime2time_t(p, tzid, vevent_type);
-			if (tzid)
+			if (tzid) {
 				mem_free(tzid);
+				tzid = NULL;
+			}
 			if (!vevent.end) {
 				ical_log(log, ICAL_VEVENT, ITEMLINE,
 					 _("malformed event end time."));
@@ -1506,6 +1510,7 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 				if (vevent.desc) {
 					string_catf(&s, "%s", vevent.desc);
 					mem_free(vevent.desc);
+					vevent.desc = NULL;
 				}
 				if (separator)
 					string_catf(&s, SEPARATOR);
@@ -1513,16 +1518,19 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 					string_catf(&s, _("Location: %s"),
 						    vevent.loc);
 					mem_free(vevent.loc);
+					vevent.loc = NULL;
 				}
 				if (vevent.comm) {
 					string_catf(&s, _("Comment: %s"),
 						    vevent.comm);
 					mem_free(vevent.comm);
+					vevent.comm = NULL;
 				}
 				if (vevent.imp) {
 					string_catf(&s, ("Import: %s\n"),
 						    vevent.imp);
 					mem_free(vevent.imp);
+					vevent.imp = NULL;
 				}
 				vevent.note = generate_note(string_buf(&s));
 				mem_free(s.buf);
@@ -1734,6 +1742,7 @@ ical_read_todo(FILE * fdi, FILE * log, unsigned *notodos, unsigned *noskipped,
 				if (vtodo.desc) {
 					string_catf(&s, "%s", vtodo.desc);
 					mem_free(vtodo.desc);
+					vtodo.desc = NULL;
 				}
 				if (separator)
 					string_catf(&s, SEPARATOR);
@@ -1741,11 +1750,13 @@ ical_read_todo(FILE * fdi, FILE * log, unsigned *notodos, unsigned *noskipped,
 					string_catf(&s, _("Location: %s"),
 						    vtodo.loc);
 					mem_free(vtodo.loc);
+					vtodo.loc = NULL;
 				}
 				if (vtodo.comm) {
 					string_catf(&s, _("Comment: %s"),
 						    vtodo.comm);
 					mem_free(vtodo.comm);
+					vtodo.comm = NULL;
 				}
 				vtodo.note = generate_note(string_buf(&s));
 				mem_free(s.buf);
