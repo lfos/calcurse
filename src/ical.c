@@ -1055,7 +1055,7 @@ static struct rpt *ical_read_rrule(FILE *log, char *rrulestr,
 				   time_t start,
 				   int *count)
 {
-	char freqstr[8];
+	char freqstr[8], datestr[17];
 	struct rpt *rpt;
 	char *p, *q;
 
@@ -1084,7 +1084,7 @@ static struct rpt *ical_read_rrule(FILE *log, char *rrulestr,
 
 	/* FREQ rule part */
 	if ((p = strstr(rrulestr, "FREQ="))) {
-		if (sscanf(p, "FREQ=%s", freqstr) != 1) {
+		if (sscanf(p, "FREQ=%7s", freqstr) != 1) {
 			ical_log(log, ICAL_VEVENT, itemline,
 				 _("frequency not set in rrule."));
 			(*noskipped)++;
@@ -1136,7 +1136,14 @@ static struct rpt *ical_read_rrule(FILE *log, char *rrulestr,
 	}
 
 	if ((p = strstr(rrulestr, "UNTIL="))) {
-		rpt->until = ical_datetime2time_t(strchr(p, '=') + 1, NULL, type);
+		if (sscanf(p, "UNTIL=%16s", datestr) != 1) {
+			ical_log(log, ICAL_VEVENT, itemline,
+				 _("missing until value."));
+			(*noskipped)++;
+			mem_free(rpt);
+			return NULL;
+		}
+		rpt->until = ical_datetime2time_t(datestr, NULL, type);
 		if (!rpt->until) {
 			ical_log(log, ICAL_VEVENT, itemline,
 				 _("invalid until format."));
