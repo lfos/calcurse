@@ -39,7 +39,7 @@
 
 static unsigned ui_todo_view = 0;
 
-static struct todo *ui_todo_selitem(void)
+struct todo *ui_todo_selitem(void)
 {
 	return todo_get_item(listbox_get_sel(&lb_todo),
 			     ui_todo_view == TODO_HIDE_COMPLETED_VIEW);
