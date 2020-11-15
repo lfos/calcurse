@@ -1643,7 +1643,7 @@ static void print_date(time_t date, time_t day, const char *extformat)
 	if (!strcmp(extformat, "epoch")) {
 		printf("%ld", (long)date);
 	} else {
-		time_t day_start = update_time_in_date(day, 0, 0);
+		time_t day_start = DAY(day);
 		time_t day_end = date_sec_change(day_start, 0, 1);
 		struct tm lt;
 
@@ -2079,8 +2079,7 @@ char *day_ins(char **template, time_t t)
 {
 	char *day, *msg;
 
-	day = date_sec2date_str(update_time_in_date(t, 0 , 0),
-				DATEFMT(conf.input_datefmt));
+	day = date_sec2date_str(DAY(t), DATEFMT(conf.input_datefmt));
 	asprintf(&msg, *template, day);
 	mem_free(day);
 	return msg;

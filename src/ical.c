@@ -584,7 +584,7 @@ ical_store_apoint(char *mesg, char *note, time_t start, long dur,
 		 * calcurse until day must be changed to the day before.
 		 */
 		if (rpt->until) {
-			day = update_time_in_date(rpt->until, 0, 0);
+			day = DAY(rpt->until);
 			if (recur_item_find_occurrence(start, dur, rpt, NULL,
 						       day, NULL) &&
 			    get_item_time(rpt->until) < get_item_time(start))
@@ -1550,7 +1550,7 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 				char *msg;
 
 				dur = vevent_type == EVENT ? -1 : vevent.dur;
-				day = update_time_in_date(vevent.start, 0, 0);
+				day = DAY(vevent.start);
 				msg = _("rrule does not match start day (%s).");
 
 				if (vevent.count) {

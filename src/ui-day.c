@@ -79,7 +79,7 @@ void ui_day_find_sel(void)
  */
 time_t ui_day_sel_date(void)
 {
-	return update_time_in_date(ui_day_get_sel()->order, 0, 0);
+	return DAY(ui_day_get_sel()->order);
 }
 
 /*
@@ -184,10 +184,9 @@ static void update_start_time(time_t *start, long *dur, struct rpt *rpt, int mov
 		newtime = day_edit_time(*start, *dur, move);
 		if (!newtime)
 			break;
-		if (rpt && !recur_item_find_occurrence(
-				newtime, *dur, rpt, NULL,
-				update_time_in_date(newtime, 0, 0),
-				NULL)) {
+		if (rpt && !recur_item_find_occurrence(newtime, *dur, rpt, NULL,
+						       DAY(newtime),
+						       NULL)) {
 			msg = day_ins(&msg_match, newtime);
 			status_mesg(msg, msg_enter);
 			mem_free(msg);
@@ -786,10 +785,7 @@ static int update_rept(time_t start, long dur, struct rpt **rpt, llist_t *exc,
 				continue;
 			}
 			/* Until is midnight of the day. */
-			nrpt.until = date_sec_change(
-					update_time_in_date(start, 0, 0),
-					0, days
-				   );
+			nrpt.until = date_sec_change(DAY(start), 0, days);
 		} else if (*timstr == '#') {
 			char *eos;
 			count = strtol(timstr + 1, &eos, 10);
@@ -802,7 +798,7 @@ static int update_rept(time_t start, long dur, struct rpt **rpt, llist_t *exc,
 				keys_wgetch(win[KEY].p);
 				continue;
 			}
-			nrpt.until = update_time_in_date(until, 0, 0);
+			nrpt.until = DAY(until);
 			break;
 		} else {
 			int year, month, day;
@@ -816,7 +812,7 @@ static int update_rept(time_t start, long dur, struct rpt **rpt, llist_t *exc,
 			nrpt.until = date2sec(d, 0, 0);
 		}
 		/* Conmpare days (midnights) - until-day may equal start day. */
-		if (nrpt.until >= update_time_in_date(start, 0, 0))
+		if (nrpt.until >= DAY(start))
 			break;
 
 		mem_free(timstr);
@@ -884,7 +880,7 @@ static int update_rept(time_t start, long dur, struct rpt **rpt, llist_t *exc,
 			keys_wgetch(win[KEY].p);
 			goto cleanup;
 		}
-		nrpt.until = update_time_in_date(until, 0, 0);
+		nrpt.until = DAY(until);
 	}
 	/*
 	 * Check whether the start occurrence matches the recurrence rule, in
@@ -895,8 +891,7 @@ static int update_rept(time_t start, long dur, struct rpt **rpt, llist_t *exc,
 	char *msg_match =
 		_("Repetition must begin on start day (%s); "
 		"any change discarded.");
-	if (!recur_item_find_occurrence(start, dur, &nrpt, NULL,
-					update_time_in_date(start, 0, 0),
+	if (!recur_item_find_occurrence(start, dur, &nrpt, NULL, DAY(start),
 					NULL)) {
 		mem_free(outstr);
 		outstr = day_ins(&msg_match, start);
@@ -1525,7 +1520,7 @@ void ui_day_draw(int n, WINDOW *win, int y, int hilt, void *cb_data)
 {
 	struct day_item *item = day_get_item(n);
 	/* The item order always indicates the date. */
-	time_t date = update_time_in_date(item->order, 0, 0);
+	time_t date = DAY(item->order);
 	int width = lb_apt.sw.w - 2, is_slctd;
 
 	hilt = hilt && (wins_slctd() == APP);

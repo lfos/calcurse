@@ -517,8 +517,7 @@ char *recur_apoint_scan(FILE *f, struct tm start, struct tm end,
 
 	/* Does it occur on the start day? */
 	if (!recur_item_find_occurrence(tstart, tend - tstart, rpt, NULL,
-					update_time_in_date(tstart, 0, 0),
-					NULL)) {
+					DAY(tstart), NULL)) {
 		char *fmt = _("recurrence error: not on start day (%s)");
 		return day_ins(&fmt, tstart);
 	}
@@ -590,8 +589,7 @@ char *recur_event_scan(FILE * f, struct tm start, int id,
 
 	/* Does it occur on the start day? */
 	if (!recur_item_find_occurrence(tstart, -1, rpt, NULL,
-					update_time_in_date(tstart, 0, 0),
-					NULL)) {
+					DAY(tstart), NULL)) {
 		char *fmt = _("recurrence error: not on start day (%s)");
 		return day_ins(&fmt, tstart);
 	}
@@ -1209,7 +1207,7 @@ static int expand_monthly(time_t start, long dur, struct rpt *rpt, llist_t *exc,
 					-WEEKINDAYS
 				);
 				r.until = date_sec_change(
-					update_time_in_date(nstart, 0, 0),
+					DAY(nstart),
 					0,
 					r.freq * WEEKINDAYS
 				);
@@ -1243,7 +1241,7 @@ static int expand_monthly(time_t start, long dur, struct rpt *rpt, llist_t *exc,
 					-WEEKINDAYS
 				);
 				r.until = date_sec_change(
-					update_time_in_date(nstart, 0, 0),
+					DAY(nstart),
 					0,
 					r.freq * WEEKINDAYS
 				);
@@ -1349,7 +1347,7 @@ static int expand_yearly(time_t start, long dur, struct rpt *rpt, llist_t *exc,
 					-WEEKINDAYS
 				);
 				r.until = date_sec_change(
-					update_time_in_date(nstart, 0, 0),
+					DAY(nstart),
 					0,
 					r.freq * WEEKINDAYS
 				);
@@ -1394,7 +1392,7 @@ static int expand_yearly(time_t start, long dur, struct rpt *rpt, llist_t *exc,
 					-WEEKINDAYS
 				);
 				r.until = date_sec_change(
-					update_time_in_date(nstart, 0, 0),
+					DAY(nstart),
 					0,
 					r.freq * WEEKINDAYS
 				);
@@ -1840,7 +1838,7 @@ int recur_nth_occurrence(time_t s, long d, struct rpt *r, llist_t *e, int n,
 		return 0;
 
 	for (n--, *nth = s; n > 0; n--) {
-		day = update_time_in_date(*nth, 0, 0);
+		day = DAY(*nth);
 		if (!recur_next_occurrence(s, d, r, e, day, nth))
 			break;
 	}
@@ -1856,13 +1854,13 @@ int recur_prev_occurrence(time_t s, long d, struct rpt *r, llist_t *e,
 {
 	time_t prev_day, next;
 
-	if (day <= update_time_in_date(s, 0, 0))
+	if (day <= DAY(s))
 		return 0;
 	next = *prev = s;
-	while (update_time_in_date(next, 0, 0) < day) {
+	while (DAY(next) < day) {
 		/* Set new previous and next. */
 		*prev = next;
-		prev_day = update_time_in_date(*prev, 0, 0);
+		prev_day = DAY(*prev);
 		recur_next_occurrence(s, d, r, e, prev_day, &next);
 		/* Multi-day appointment */
 		if (next == *prev)

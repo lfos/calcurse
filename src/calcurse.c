@@ -668,7 +668,7 @@ static inline void key_generic_cmd(void)
 		 * The selected day need not be the (item) start day
 		 * for multi-day occurrences.
 		 */
-		day = update_time_in_date(item->start, 0, 0);
+		day = DAY(item->start);
 		if (item->type == RECUR_EVNT) {
 			rev = item->item.rev;
 			more = recur_prev_occurrence(rev->day, -1, rev->rpt,

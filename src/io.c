@@ -237,25 +237,25 @@ void io_dump_apts(const char *fmt_apt, const char *fmt_rapt,
 
 	LLIST_FOREACH(&recur_elist, i) {
 		struct recur_event *rev = LLIST_GET_DATA(i);
-		time_t day = update_time_in_date(rev->day, 0, 0);
+		time_t day = DAY(rev->day);
 		print_recur_event(fmt_rev, day, rev);
 	}
 
 	LLIST_TS_FOREACH(&recur_alist_p, i) {
 		struct recur_apoint *rapt = LLIST_GET_DATA(i);
-		time_t day = update_time_in_date(rapt->start, 0, 0);
+		time_t day = DAY(rapt->start);
 		print_recur_apoint(fmt_rapt, day, rapt->start, rapt);
 	}
 
 	LLIST_TS_FOREACH(&alist_p, i) {
 		struct apoint *apt = LLIST_TS_GET_DATA(i);
-		time_t day = update_time_in_date(apt->start, 0, 0);
+		time_t day = DAY(apt->start);
 		print_apoint(fmt_apt, day, apt);
 	}
 
 	LLIST_FOREACH(&eventlist, i) {
 		struct event *ev = LLIST_TS_GET_DATA(i);
-		time_t day = update_time_in_date(ev->day, 0, 0);
+		time_t day = DAY(ev->day);
 		print_event(fmt_ev, day, ev);
 	}
 }

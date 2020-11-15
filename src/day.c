@@ -100,7 +100,7 @@ int day_sel_index(void)
 	/* If still not found, stay on the same day. */
 	VECTOR_FOREACH(&day_items, i) {
 		p = VECTOR_NTH(&day_items, i);
-		if (p->order == update_time_in_date(sel_data.order, 0, 0))
+		if (p->order == DAY(sel_data.order))
 			return i;
 	}
 	return -1;
@@ -832,7 +832,7 @@ int day_paste_item(struct day_item *p, time_t date)
 		/* wanted: until = shift + old_until */
 		if (p->item.rapt->rpt->until &&
 		    overflow_add(
-			date - update_time_in_date(p->item.rapt->start, 0, 0),
+			date - DAY(p->item.rapt->start),
 			p->item.rapt->rpt->until,
 			&until)
 		)

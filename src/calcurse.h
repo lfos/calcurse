@@ -145,6 +145,7 @@
 #define DAYLEN(date)	(NEXTDAY(date) - (date))
 #define ENDOFDAY(date)	(NEXTDAY(date) - 1)
 #define HOURINSEC       (HOURINMIN * MININSEC)
+#define DAY(date)	(update_time_in_date(date, 0, 0))
 
 /* Calendar window. */
 #define CALHEIGHT       8
