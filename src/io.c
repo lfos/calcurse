@@ -1579,22 +1579,6 @@ unsigned io_get_pid(char *file)
 }
 
 /*
- * Check whether a file is empty.
- */
-int io_file_is_empty(char *file)
-{
-	FILE *fp;
-	int ret = -1;
-
-	if (file && (fp = fopen(file, "r"))) {
-		ret = (fgetc(fp) == '\n' && fgetc(fp) == EOF) || feof(fp);
-		fclose(fp);
-	}
-
-	return ret;
-}
-
-/*
  * Check whether two files are equal.
  */
 int io_files_equal(const char *file1, const char *file2)
