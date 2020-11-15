@@ -142,6 +142,7 @@
  */
 #define DAYINSEC        (DAYINMIN * MININSEC)
 #define NEXTDAY(date)	date_sec_change((date), 0, 1)
+#define PREVDAY(date)	date_sec_change((date), 0, -1)
 #define DAYLEN(date)	(NEXTDAY(date) - (date))
 #define ENDOFDAY(date)	(NEXTDAY(date) - 1)
 #define HOURINSEC       (HOURINMIN * MININSEC)

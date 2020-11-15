@@ -623,8 +623,12 @@ static inline void key_generic_cmd(void)
 			warnbox(error_msg);
 			goto cleanup;
 		}
-		day = date2sec(*ui_calendar_get_slctd_day(), 0, 0);
 		item = ui_day_get_sel();
+		/*
+		 * The selected day need not be the (item) start day
+		 * for multi-day occurrences.
+		 */
+		day = DAY(item->start);
 		if (item->type == RECUR_EVNT) {
 			rev = item->item.rev;
 			more = recur_next_occurrence(rev->day, -1, rev->rpt, &rev->exc,

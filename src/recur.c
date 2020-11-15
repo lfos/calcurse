@@ -1852,19 +1852,20 @@ int recur_nth_occurrence(time_t s, long d, struct rpt *r, llist_t *e, int n,
 int recur_prev_occurrence(time_t s, long d, struct rpt *r, llist_t *e,
 			  time_t day, time_t *prev)
 {
-	time_t prev_day, next;
+	int ret = 0;
 
 	if (day <= DAY(s))
-		return 0;
-	next = *prev = s;
-	while (DAY(next) < day) {
-		/* Set new previous and next. */
-		*prev = next;
-		prev_day = DAY(*prev);
-		recur_next_occurrence(s, d, r, e, prev_day, &next);
-		/* Multi-day appointment */
-		if (next == *prev)
-			next = NEXTDAY(*prev);
+		return ret;
+
+	while (DAY(s) < day) {
+		day = PREVDAY(day);
+		if (recur_item_find_occurrence(s, d, r, e, day, prev)) {
+			/* Multi-day appointment. */
+			if (d != -1 && *prev < day && day < *prev + d)
+				continue;
+			ret = 1;
+			break;
+		}
 	}
-	return 1;
+	return ret;
 }
