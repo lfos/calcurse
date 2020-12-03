@@ -147,8 +147,8 @@ def calcurse_version():
 def get_auth_headers():
     if not username or not password:
         return {}
-    user_password = ('{}:{}'.format(username, password)).encode('ascii')
-    user_password = base64.b64encode(user_password).decode('ascii')
+    user_password = ('{}:{}'.format(username, password)).encode('utf-8')
+    user_password = base64.b64encode(user_password).decode('utf-8')
     headers = {'Authorization': 'Basic {}'.format(user_password)}
     return headers
 
