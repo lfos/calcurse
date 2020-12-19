@@ -63,7 +63,7 @@ static int layout;
 /*
  * The screen_mutex mutex and wins_refresh(), wins_wrefresh(), wins_doupdate()
  * functions are used to prevent concurrent updates of the screen.
- * It was observed that the display could get screwed up when mulitple threads
+ * It was observed that the display could get screwed up when multiple threads
  * tried to refresh the screen at the same time.
  *
  * Note (2010-03-21):
