@@ -150,12 +150,29 @@ void llist_add(llist_t * l, void *data)
 }
 
 /*
+ *  return 1 if events are duplicates, 0 otherwise
+ */
+static int event_is_duplicate(struct apoint *a, struct apoint *b)
+{
+        if ((a->start == b->start)          &&
+            (a->dur   == b->dur)            &&
+            ((! a->mesg && ! b->mesg) || 
+             ( a->mesg && b->mesg && (! strcmp(a->mesg, b->mesg))))  &&
+            ((! a->note && ! b->note) || 
+             ( a->note && b->note && (! strcmp(a->note, b->note))))) {
+           return 1;
+        }
+        return 0;
+}
+
+/*
  * Add an item to a sorted list.
  */
 void llist_add_sorted(llist_t * l, void *data, llist_fn_cmp_t fn_cmp)
 {
 	llist_item_t *o = mem_malloc(sizeof(llist_item_t));
 	llist_item_t *i;
+	char *cp;
 
 	if (o) {
 		o->data = data;
@@ -163,9 +180,22 @@ void llist_add_sorted(llist_t * l, void *data, llist_fn_cmp_t fn_cmp)
 
 		if (!l->head) {
 			l->head = l->tail = o;
-		} else if (fn_cmp(o->data, l->tail->data) >= 0) {
+		} else if (fn_cmp(o->data, l->tail->data) > 0) {
 			l->tail->next = o;
 			l->tail = o;
+		 } else if (fn_cmp(o->data, l->tail->data) == 0) {
+                        if (! event_is_duplicate(o->data, l->tail->data)) {
+                            l->tail->next = o;
+                            l->tail = o;
+                        } else {
+                            cp = ctime(&(((struct apoint *)data)->start)); 
+                            *(cp + strlen(cp) - 1) = '\0';
+                            printf("Not adding duplicate entry at %s: duration %ld, mesg %s, note %s\n", 
+                               cp,
+                               ((struct apoint *)data)->dur, 
+                               ((struct apoint *)data)->mesg ? ((struct apoint *)data)->mesg  : "",
+                               ((struct apoint *)data)->note ? ((struct apoint *)data)->note  : "");
+			}
 		} else if (fn_cmp(o->data, l->head->data) < 0) {
 			o->next = l->head;
 			l->head = o;
@@ -174,8 +204,19 @@ void llist_add_sorted(llist_t * l, void *data, llist_fn_cmp_t fn_cmp)
 			while (i->next
 			       && fn_cmp(o->data, i->next->data) >= 0)
 				i = i->next;
-			o->next = i->next;
-			i->next = o;
+			if (! event_is_duplicate(o->data, i->data)) {
+                          // insert new entry after entry i
+                          o->next = i->next;
+                          i->next = o;
+                        } else {
+                          cp = ctime(&(((struct apoint *)data)->start)); 
+                          *(cp + strlen(cp) - 1) = '\0';
+                          printf("Not adding duplicate entry at %s: duration %ld, mesg %s, note %s\n", 
+                             cp,
+                             ((struct apoint *)data)->dur, 
+                             ((struct apoint *)data)->mesg ? ((struct apoint *)data)->mesg  : "",
+                             ((struct apoint *)data)->note ? ((struct apoint *)data)->note  : "");
+			}
 		}
 	}
 }
