@@ -140,6 +140,7 @@ void vars_init(void)
 	conf.input_datefmt = 1;
 	conf.heading_pos = RIGHT;
 	strcpy(conf.day_heading, DAY_HEADING_DEFAULT);
+	strcpy(conf.timefmt, APPT_TIME_DEFAULT);
 
 	datefmt_str[0] = _("mm/dd/yyyy");
 	datefmt_str[1] = _("dd/mm/yyyy");

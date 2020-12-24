@@ -111,9 +111,6 @@
 #define STATUSHEIGHT  2
 #define MAX_NOTESIZ   40
 
-/* Format for appointment hours is: HH:MM */
-#define HRMIN_SIZE 6
-
 /* Maximum number of colors available. */
 #define NBUSERCOLORS  6
 
@@ -306,6 +303,7 @@ struct conf {
 	int input_datefmt;	/* format for reading date */
 	enum pos heading_pos; /* left/center/right for heading in appts panel */
 	char day_heading[BUFSIZ];	/* format for displaying heading in appts panel */
+	char timefmt[BUFSIZ];	/* format for displaying time in appts panel*/
 };
 
 #define EMPTY_DAY_DEFAULT "--"
@@ -337,6 +335,9 @@ enum datefmt {
 
 /* Day heading default format. */
 #define DAY_HEADING_DEFAULT "%B %e, %Y"
+
+/* Appointment time default format. */
+#define APPT_TIME_DEFAULT "%H:%M"
 
 /*
  * Calcurse representation of the date of a day in the calendar.
