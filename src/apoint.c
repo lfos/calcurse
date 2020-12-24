@@ -42,6 +42,8 @@
 #include "calcurse.h"
 #include "sha1.h"
 
+#define APPT_TIME_LENGTH 25
+
 llist_ts_t alist_p;
 
 void apoint_free(struct apoint *apt)
@@ -134,16 +136,14 @@ void apoint_sec2str(struct apoint *o, time_t day, char *start, char *end)
 	} else {
 		t = o->start;
 		localtime_r(&t, &lt);
-		snprintf(start, HRMIN_SIZE, "%02u:%02u", lt.tm_hour,
-			 lt.tm_min);
+		strftime(start, APPT_TIME_LENGTH, conf.timefmt, &lt);
 	}
 	if (o->start + o->dur > day + DAYLEN(day)) {
 		strncpy(end, "..:..", 6);
 	} else {
 		t = o->start + o->dur;
 		localtime_r(&t, &lt);
-		snprintf(end, HRMIN_SIZE, "%02u:%02u", lt.tm_hour,
-			 lt.tm_min);
+		strftime(end, APPT_TIME_LENGTH, conf.timefmt, &lt);
 	}
 }
 

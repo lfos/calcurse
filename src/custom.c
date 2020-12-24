@@ -545,6 +545,7 @@ enum {
 	INPUT_DATE_FMT,
 	HEADING_POS,
 	DAY_HEADING_FMT,
+	APPOINTMENT_TIME_FMT,
 	NB_OPTIONS
 };
 
@@ -573,7 +574,8 @@ static void print_general_option(int i, WINDOW *win, int y, int hilt, void *cb_d
 		"format.outputdate = ",
 		"format.inputdate = ",
 		"appearance.headingposition = ",
-		"format.dayheading = "
+		"format.dayheading = ",
+		"format.appointmenttime = "
 	};
 	const char *panel;
 	const char *position;
@@ -746,6 +748,14 @@ static void print_general_option(int i, WINDOW *win, int y, int hilt, void *cb_d
 		mvwaddstr(win, y + 1, XPOS,
 			  _("(Format of the date displayed in the appointments panel)"));
 		break;
+	case APPOINTMENT_TIME_FMT:
+		custom_apply_attr(win, ATTR_HIGHEST);
+		mvwaddstr(win, y, XPOS + strlen(opt[APPOINTMENT_TIME_FMT]),
+			  conf.timefmt);
+		custom_remove_attr(win, ATTR_HIGHEST);
+		mvwaddstr(win, y + 1, XPOS,
+			  _("(Format of the time displayed in the appointments panel)"));
+		break;
 	}
 
 	if (hilt)
@@ -771,6 +781,8 @@ static void general_option_edit(int i)
 	    _("Enter a text string (an empty string for the default text)");
 	const char *output_datefmt_str =
 	    _("Enter the date format (see 'man 3 strftime' for possible formats) ");
+	const char *output_timefmt_str =
+	    _("Enter the time format (see 'man 3 strftime' for possible formats) ");
 	const char *input_datefmt_prefix = _("Enter the date format: ");
 	const char *periodic_save_str =
 	    _("Enter the delay, in minutes, between automatic saves (0 to disable) ");
@@ -891,6 +903,15 @@ static void general_option_edit(int i)
 		if (updatestring(win[STA].p, &buf, 0, 1) == 0) {
 			strncpy(conf.day_heading, buf, BUFSIZ);
 			conf.day_heading[BUFSIZ - 1] = '\0';
+		}
+		break;
+	case APPOINTMENT_TIME_FMT:
+		status_mesg(output_timefmt_str, "");
+		strncpy(buf, conf.timefmt, BUFSIZ);
+		buf[BUFSIZ - 1] = '\0';
+		if (updatestring(win[STA].p, &buf, 0, 1) == 0) {
+			strncpy(conf.timefmt, buf, BUFSIZ);
+			conf.timefmt[BUFSIZ - 1] = '\0';
 		}
 		break;
 	}
