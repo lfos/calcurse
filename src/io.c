@@ -50,8 +50,8 @@
 
 struct ht_keybindings_s {
 	const char *label;
-	enum key key;
-	 HTABLE_ENTRY(ht_keybindings_s);
+	enum vkey key;
+	HTABLE_ENTRY(ht_keybindings_s);
 };
 
 static void load_keys_ht_getkey(struct ht_keybindings_s *, const char **,
@@ -940,16 +940,6 @@ load_keys_ht_compare(struct ht_keybindings_s *data1,
 }
 
 /*
- * isblank(3) is protected by the __BSD_VISIBLE macro and this fails to be
- * visible in some specific cases. Thus replace it by the following is_blank()
- * function.
- */
-static int is_blank(int c)
-{
-	return c == ' ' || c == '\t';
-}
-
-/*
  * Load user-definable keys from file.
  * A hash table is used to speed up loading process in avoiding string
  * comparisons.
@@ -958,21 +948,21 @@ static int is_blank(int c)
  */
 void io_load_keys(const char *pager)
 {
-	struct ht_keybindings_s keys[NBKEYS];
+	struct ht_keybindings_s virt_keys[NBVKEYS], *ht_elm, ht_entry;
 	FILE *keyfp;
-	char buf[BUFSIZ];
+	char buf[BUFSIZ], key_label[BUFSIZ], key_str[BUFSIZ];
+	char *p, *msg;
 	struct io_file *log;
-	int i, skipped, loaded, line;
-	const int MAX_ERRORS = 5;
+	int i, n, skipped, loaded, line, assigned, undefined, key;
 
 	keys_init();
 
 	struct ht_keybindings ht_keys = HTABLE_INITIALIZER(&ht_keys);
 
-	for (i = 0; i < NBKEYS; i++) {
-		keys[i].key = (enum key)i;
-		keys[i].label = keys_get_label((enum key)i);
-		HTABLE_INSERT(ht_keybindings, &ht_keys, &keys[i]);
+	for (i = 0; i < NBVKEYS; i++) {
+		virt_keys[i].key = (enum vkey)i;
+		virt_keys[i].label = keys_get_label((enum vkey)i);
+		HTABLE_INSERT(ht_keybindings, &ht_keys, &virt_keys[i]);
 	}
 
 	keyfp = fopen(path_keys, "r");
@@ -981,111 +971,97 @@ void io_load_keys(const char *pager)
 	log = io_log_init();
 	skipped = loaded = line = 0;
 	while (fgets(buf, BUFSIZ, keyfp) != NULL) {
-		char key_label[BUFSIZ], *p;
-		struct ht_keybindings_s *ht_elm, ht_entry;
-		const int AWAITED = 1;
-		int assigned;
-
 		line++;
-		if (skipped > MAX_ERRORS) {
-			const char *too_many =
-			    _("\nToo many errors while reading configuration file!\n"
-			     "Please backup your keys file, remove it from directory, "
-			     "and launch calcurse again.\n");
-
-			io_log_print(log, line, too_many);
-			break;
-		}
-		for (p = buf; is_blank((int)*p); p++) ;
-		if (p != buf)
-			memmove(buf, p, strlen(p));
-		if (buf[0] == '#' || buf[0] == '\n')
+		p = buf;
+		while (*p == ' ' || *p == '\t') p++;
+		if (*p == '#' || *p == '\n')
 			continue;
 
-		if (sscanf(buf, "%s", key_label) != AWAITED) {
+		/* Find the virtual key by key label. */
+		if (sscanf(p, "%s", key_label) != 1) {
 			skipped++;
 			io_log_print(log, line,
 				     _("Could not read key label"));
 			continue;
 		}
-
-		/* Skip legacy entries. */
-		if (strcmp(key_label, "generic-cut") == 0)
-			continue;
-
+		p += strlen(key_label);
 		ht_entry.label = key_label;
-		p = buf + strlen(key_label) + 1;
-		ht_elm =
-		    HTABLE_LOOKUP(ht_keybindings, &ht_keys, &ht_entry);
+		ht_elm = HTABLE_LOOKUP(ht_keybindings, &ht_keys, &ht_entry);
 		if (!ht_elm) {
 			skipped++;
-			io_log_print(log, line,
-				     _("Key label not recognized"));
+			asprintf(&msg,
+				 _("Key label not recognized: \"%s\""),
+				 key_label);
+			io_log_print(log, line, msg);
+			mem_free(msg);
 			continue;
 		}
-		assigned = 0;
+
+		/* Assign keyboard keys to the virtual key. */
+		assigned = undefined = 0;
 		for (;;) {
-			char key_ch[BUFSIZ], tmpbuf[BUFSIZ];
-
-			while (*p == ' ')
-				p++;
-			(void)strncpy(tmpbuf, p, BUFSIZ);
-			tmpbuf[BUFSIZ - 1] = '\0';
-			if (sscanf(tmpbuf, "%s", key_ch) == AWAITED) {
-				int ch;
-
-				if ((ch = keys_str2int(key_ch)) < 0) {
-					char *unknown_key;
-
-					skipped++;
-					asprintf(&unknown_key,
-						 _("Error reading key: \"%s\""),
-						 key_ch);
-					io_log_print(log, line, unknown_key);
-					mem_free(unknown_key);
-				} else {
-					int used;
-
-					used =
-					    keys_assign_binding(ch,
-								ht_elm->
-								key);
-					if (used) {
-						char *already_assigned;
-
-						skipped++;
-						asprintf(&already_assigned,
-							 _("\"%s\" assigned multiple times!"),
-							 key_ch);
-						io_log_print(log, line,
-							     already_assigned);
-						mem_free(already_assigned);
-					} else {
-						assigned++;
-					}
-				}
-				p += strlen(key_ch) + 1;
-			} else {
-				if (assigned)
+			if (sscanf(p, "%s%n", key_str, &n) != 1) {
+				if (assigned || undefined)
 					loaded++;
+				else {
+					skipped++;
+					asprintf(&msg,
+						 _("No keys assigned to "
+						   "\"%s\"."),
+						 key_label);
+					io_log_print(log, line, msg);
+					mem_free(msg);
+				}
 				break;
 			}
+			p += n;
+			if (!strcmp(key_str, "UNDEFINED")) {
+				undefined++;
+				keys_assign_binding(-1, ht_elm->key);
+			} else if ((key = keys_str2int(key_str)) < 0) {
+				skipped++;
+				asprintf(&msg,
+					 _("Keyname not recognized: \"%s\""),
+					 key_str);
+				io_log_print(log, line, msg);
+				mem_free(msg);
+			} else if (keys_assign_binding(key, ht_elm->key)) {
+				skipped++;
+				asprintf(&msg,
+					 _("\"%s\" assigned twice: \"%s\"."),
+					 key_str, key_label);
+				io_log_print(log, line, msg);
+				mem_free(msg);
+			} else
+				assigned++;
 		}
 	}
 	file_close(keyfp, __FILE_POS__);
+	if (loaded < NBVKEYS && (i = keys_fill_missing()) < 1) {
+		skipped++;
+		strcpy(key_label, keys_get_label((enum vkey)(-i)));
+		strcpy(key_str, keys_get_binding((enum vkey)(-i)));
+		asprintf(&msg, _("Action \"%s\" absent, but default key \"%s\" "
+				 "assigned to another action."),
+				 key_label, key_str);
+		io_log_print(log, line, msg);
+		mem_free(msg);
+	}
 	file_close(log->fd, __FILE_POS__);
 	if (skipped > 0) {
-		const char *view_log =
-			_("There were some errors when loading keys file.");
-		io_log_display(log, view_log, pager);
+		msg = _("Errors in the keys file.");
+		io_log_display(log, msg, pager);
+		WARN_MSG(_("Remove offending line(s) from the keys file, "
+			   "aborting..."));
+		exit_calcurse(EXIT_FAILURE);
 	}
 	io_log_free(log);
-	EXIT_IF(skipped > MAX_ERRORS,
-		_("Too many errors while reading keys file, aborting..."));
-	if (loaded < NBKEYS)
-		keys_fill_missing();
-	if (keys_check_missing_bindings())
-		WARN_MSG(_("Some actions do not have any associated key bindings!"));
+	/* Default keys were inserted. */
+	if (loaded < NBVKEYS)
+		io_save_keys();
+	/* Should never occur. */
+	EXIT_IF(keys_check_missing(),
+		_("Some actions do not have any associated key bindings!"));
 }
 
 int io_check_dir(const char *dir)

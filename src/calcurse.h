@@ -515,8 +515,8 @@ struct io_file {
 	char *name;
 };
 
-/* Available keys. */
-enum key {
+/* Virtual keys. */
+enum vkey {
 	KEY_GENERIC_CANCEL,
 	KEY_GENERIC_SELECT,
 	KEY_GENERIC_CREDITS,
@@ -566,7 +566,7 @@ enum key {
 	KEY_RAISE_PRIORITY,
 	KEY_LOWER_PRIORITY,
 
-	NBKEYS,
+	NBVKEYS,
 	KEY_UNDEF,
 
 	/* Non-configurable, context sensitive key bindings. */
@@ -946,24 +946,26 @@ int io_get_modified(void);
 void keys_init(void);
 void keys_free(void);
 void keys_dump_defaults(char *);
-const char *keys_get_label(enum key);
-enum key keys_get_action(int);
+const char *keys_get_label(enum vkey);
+const char *keys_get_binding(enum vkey);
+enum vkey keys_get_action(int);
 int keys_wgetch(WINDOW *);
 void keys_wait_for_any_key(WINDOW *);
-enum key keys_get(WINDOW *, int *, int *);
-int keys_assign_binding(int, enum key);
-void keys_remove_binding(int, enum key);
+enum vkey keys_get(WINDOW * win, int *, int *);
+int keys_assign_binding(int, enum vkey);
+void keys_remove_binding(int, enum vkey);
 int keys_str2int(const char *);
 char *keys_int2str(int);
-int keys_action_count_keys(enum key);
-const char *keys_action_firstkey(enum key);
-const char *keys_action_nkey(enum key, int);
-char *keys_action_allkeys(enum key);
+int keys_action_count_keys(enum vkey);
+const char *keys_action_firstkey(enum vkey);
+const char *keys_action_nkey(enum vkey, int);
+char *keys_action_allkeys(enum vkey);
 void keys_display_bindings_bar(WINDOW *, int *, int, int, int);
-void keys_popup_info(enum key);
+void keys_popup_info(enum vkey);
 void keys_save_bindings(FILE *);
-int keys_check_missing_bindings(void);
-void keys_fill_missing(void);
+int keys_check_missing(void);
+int keys_check_undefined(void);
+int keys_fill_missing(void);
 
 /* listbox.c */
 void listbox_init(struct listbox *, int, int, int, int, const char *,

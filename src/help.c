@@ -105,7 +105,7 @@ int display_help(const char *topic)
 
 	if (!io_file_exists(path)) {
 		int ch = keys_str2int(topic);
-		enum key action = keys_get_action(ch);
+		enum vkey action = keys_get_action(ch);
 		if (ch > 0 && action > 0 && action != KEY_UNDEF) {
 			topic = keys_get_label(action);
 			mem_free(path);

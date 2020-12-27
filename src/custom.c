@@ -975,10 +975,11 @@ print_keys_bindings(WINDOW * win, int selected_row, int selected_elm,
 	const int XPOS = 1;
 	const int EQUALPOS = 23;
 	const int KEYPOS = 25;
-	int noelm, action, y;
+	int noelm, action, y, pos;
+	const char *key = NULL;
 
 	noelm = y = 0;
-	for (action = 0; action < NBKEYS; action++) {
+	for (action = 0; action < NBVKEYS; action++) {
 		char *actionstr;
 		int nbkeys;
 
@@ -990,18 +991,15 @@ print_keys_bindings(WINDOW * win, int selected_row, int selected_elm,
 		mem_free(actionstr);
 		mvwaddstr(win, y, EQUALPOS, "=");
 		if (nbkeys == 0)
-			mvwaddstr(win, y, KEYPOS, _("undefined"));
+			mvwaddstr(win, y, KEYPOS, _("UNDEFINED"));
 		if (action == selected_row)
 			custom_remove_attr(win, ATTR_HIGHEST);
 		if (nbkeys > 0) {
 			if (action == selected_row) {
-				const char *key;
-				int pos;
-
+				/* Elements may have been added or deleted. */
+				wclrtoeol(win);
 				pos = KEYPOS;
-				while ((key =
-					keys_action_nkey(action,
-							 noelm)) != NULL) {
+				while ((key = keys_action_nkey(action, noelm))) {
 					if (noelm == selected_elm)
 						print_key_incolor(win, key,
 								  y, pos);
@@ -1012,8 +1010,9 @@ print_keys_bindings(WINDOW * win, int selected_row, int selected_elm,
 					pos += utf8_strwidth((char *)key) + 1;
 				}
 			} else {
-				mvwaddstr(win, y, KEYPOS,
-					  keys_action_allkeys(action));
+				key = keys_action_allkeys(action);
+				mvwaddstr(win, y, KEYPOS, key);
+				mem_free((char *)key);
 			}
 		}
 		y += yoff;
@@ -1045,9 +1044,11 @@ void custom_keys_config(void)
 	const int LABELLINES = 3;
 
 	clear();
-	nbdisplayed = ((notify_bar() ? row - 3 : row - 2) - LABELLINES) / LINESPERKEY;
-	wins_scrollwin_init(&kwin, 0, 0, notify_bar() ? row - 3 : row - 2, col, _("keys configuration"));
-	wins_scrollwin_set_pad(&kwin, NBKEYS * LINESPERKEY);
+	nbdisplayed = ((notify_bar() ? row - 3 : row - 2) -
+		       LABELLINES) / LINESPERKEY;
+	wins_scrollwin_init(&kwin, 0, 0, notify_bar() ? row - 3 : row - 2, col,
+			    _("keys configuration"));
+	wins_scrollwin_set_pad(&kwin, NBVKEYS * LINESPERKEY);
 	wins_scrollwin_draw_deco(&kwin, 0);
 	custom_keys_config_bar();
 	selrow = selelm = 0;
@@ -1072,7 +1073,7 @@ void custom_keys_config(void)
 			}
 			break;
 		case KEY_MOVE_DOWN:
-			if (selrow < NBKEYS - 1) {
+			if (selrow < NBVKEYS - 1) {
 				selrow++;
 				selelm = 0;
 				if (selrow == lastrow) {
@@ -1103,7 +1104,7 @@ void custom_keys_config(void)
 					keys_get_label(selrow), 0);
 			for (;;) {
 				ch = keys_wgetch(grabwin);
-				enum key action = keys_get_action(ch);
+				enum vkey action = keys_get_action(ch);
 				/* Is the key already used by this action? */
 				if (action == selrow)
 					break;
@@ -1142,10 +1143,8 @@ void custom_keys_config(void)
 				selelm--;
 			break;
 		case KEY_GENERIC_QUIT:
-			if (keys_check_missing_bindings() != 0) {
-				WARN_MSG(_("Some actions do not have any associated "
-					  "key bindings!"));
-			}
+			if (keys_check_undefined())
+				WARN_MSG(_("Some actions are left undefined!"));
 			wins_scrollwin_delete(&kwin);
 			return;
 		}
