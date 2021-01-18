@@ -254,6 +254,15 @@ void wins_slctd_next(void)
 		slctd_win++;
 }
 
+/* Shift-TAB key was hit in the interface, need to select previous window. */
+void wins_slctd_prev(void)
+{
+	if (slctd_win == CAL)
+		slctd_win = TOD;
+	else
+		slctd_win--;
+}
+
 static void wins_init_panels(void)
 {
 	wins_scrollwin_init(&sw_cal, win[CAL].y, win[CAL].x,
@@ -651,6 +660,7 @@ void wins_update_bindings(void)
 	static int bindings_cal[] = {
 		KEY_GENERIC_HELP, KEY_GENERIC_QUIT, KEY_GENERIC_SAVE,
 		KEY_GENERIC_RELOAD, KEY_GENERIC_CHANGE_VIEW,
+		KEY_GENERIC_CHANGE_VIEW_PREV,
 		KEY_GENERIC_SCROLL_DOWN, KEY_GENERIC_SCROLL_UP, KEY_MOVE_UP,
 		KEY_MOVE_DOWN, KEY_MOVE_LEFT, KEY_MOVE_RIGHT, KEY_GENERIC_GOTO,
 		KEY_GENERIC_IMPORT, KEY_GENERIC_EXPORT, KEY_START_OF_WEEK,
@@ -666,6 +676,7 @@ void wins_update_bindings(void)
 	static int bindings_apoint[] = {
 		KEY_GENERIC_HELP, KEY_GENERIC_QUIT, KEY_GENERIC_SAVE,
 		KEY_GENERIC_RELOAD, KEY_GENERIC_CHANGE_VIEW,
+		KEY_GENERIC_CHANGE_VIEW_PREV,
 		KEY_GENERIC_IMPORT, KEY_GENERIC_EXPORT, KEY_ADD_ITEM,
 		KEY_DEL_ITEM, KEY_EDIT_ITEM, KEY_VIEW_ITEM, KEY_PIPE_ITEM,
 		KEY_GENERIC_REDRAW, KEY_REPEAT_ITEM, KEY_FLAG_ITEM,
@@ -682,6 +693,7 @@ void wins_update_bindings(void)
 	static int bindings_todo[] = {
 		KEY_GENERIC_HELP, KEY_GENERIC_QUIT, KEY_GENERIC_SAVE,
 		KEY_GENERIC_RELOAD, KEY_GENERIC_CHANGE_VIEW,
+		KEY_GENERIC_CHANGE_VIEW_PREV,
 		KEY_GENERIC_SCROLL_DOWN, KEY_GENERIC_SCROLL_UP,
 		KEY_GENERIC_IMPORT, KEY_GENERIC_EXPORT, KEY_ADD_ITEM,
 		KEY_DEL_ITEM, KEY_EDIT_ITEM, KEY_VIEW_ITEM, KEY_PIPE_ITEM,
