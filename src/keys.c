@@ -116,6 +116,7 @@ static struct keydef_s keydef[NBVKEYS] = {
 	{ "generic-copy", "c", gettext_noop("Copy") },
 	{ "generic-paste", "p ^V", gettext_noop("Paste") },
 	{ "generic-change-view", "TAB", gettext_noop("Chg Win") },
+	{ "generic-prev-view", "KEY_BTAB", gettext_noop("Prev Win") },
 	{ "generic-import", "i I", gettext_noop("Import") },
 	{ "generic-export", "x X", gettext_noop("Export") },
 	{ "generic-goto", "g G", gettext_noop("Go to") },
@@ -664,6 +665,8 @@ void keys_popup_info(enum vkey key)
 	    _("Paste an item at the current position.");
 	info[KEY_GENERIC_CHANGE_VIEW] =
 	    _("Select next panel in calcurse main screen.");
+	info[KEY_GENERIC_PREV_VIEW] =
+	    _("Select previous panel in calcurse main screen.");
 	info[KEY_GENERIC_IMPORT] = _("Import data from an external file.");
 	info[KEY_GENERIC_EXPORT] = _("Export data to a new file format.");
 	info[KEY_GENERIC_GOTO] = _("Select the day to go to.");

@@ -527,6 +527,7 @@ enum vkey {
 	KEY_GENERIC_COPY,
 	KEY_GENERIC_PASTE,
 	KEY_GENERIC_CHANGE_VIEW,
+	KEY_GENERIC_PREV_VIEW,
 	KEY_GENERIC_IMPORT,
 	KEY_GENERIC_EXPORT,
 	KEY_GENERIC_GOTO,
@@ -1327,6 +1328,7 @@ void wins_sbar_wdec(void);
 enum win wins_slctd(void);
 void wins_slctd_set(enum win);
 void wins_slctd_next(void);
+void wins_slctd_prev(void);
 void wins_init(void);
 void wins_scrollwin_init(struct scrollwin *, int, int, int, int, const char *);
 void wins_scrollwin_resize(struct scrollwin *, int, int, int, int);
