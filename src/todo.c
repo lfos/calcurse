@@ -158,9 +158,7 @@ void todo_delete(struct todo *todo)
  */
 void todo_resort(struct todo *t)
 {
-	llist_item_t *i = LLIST_FIND_FIRST(&todolist, t, NULL);
-	LLIST_REMOVE(&todolist, i);
-	LLIST_ADD_SORTED(&todolist, t, todo_cmp);
+	LLIST_REORDER(&todolist, t, todo_cmp);
 }
 
 /* Flag a todo item. */
