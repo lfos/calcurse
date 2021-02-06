@@ -99,7 +99,7 @@ static int apoint_cmp(struct apoint *a, struct apoint *b)
 }
 
 struct apoint *apoint_new(char *mesg, char *note, time_t start, long dur,
-			  char state)
+			  char state, taglist_t tags)
 {
 	struct apoint *apt;
 
@@ -109,6 +109,11 @@ struct apoint *apoint_new(char *mesg, char *note, time_t start, long dur,
 	apt->state = state;
 	apt->start = start;
 	apt->dur = dur;
+	if(tags) {
+		tags_copy(apt->tags, tags);
+	} else {
+		tags_init(apt->tags);
+	}
 
 	LLIST_TS_LOCK(&alist_p);
 	LLIST_TS_ADD_SORTED(&alist_p, apt, apoint_cmp);
@@ -168,6 +173,8 @@ char *apoint_tostr(struct apoint *o)
 	if (o->note)
 		string_catf(&s, ">%s ", o->note);
 
+	tags_serialize(o->tags, &s, 0);
+
 	if (o->state & APOINT_NOTIFY)
 		string_catf(&s, "%c", '!');
 	else
@@ -196,7 +203,8 @@ void apoint_write(struct apoint *o, FILE * f)
 }
 
 char *apoint_scan(FILE * f, struct tm start, struct tm end,
-			   char state, char *note, struct item_filter *filter)
+			   char state, char *note, struct item_filter *filter,
+			   taglist_t tags)
 {
 	char buf[BUFSIZ], *newline;
 	time_t tstart, tend;
@@ -241,7 +249,7 @@ char *apoint_scan(FILE * f, struct tm start, struct tm end,
 		);
 		if (filter->hash) {
 			apt = apoint_new(
-				buf, note, tstart, tend - tstart, state);
+				buf, note, tstart, tend - tstart, state, tags);
 			char *hash = apoint_hash(apt);
 			cond = cond || !hash_matches(filter->hash, hash);
 			mem_free(hash);
@@ -254,7 +262,7 @@ char *apoint_scan(FILE * f, struct tm start, struct tm end,
 		}
 	}
 	if (!apt)
-		apt = apoint_new(buf, note, tstart, tend - tstart, state);
+		apt = apoint_new(buf, note, tstart, tend - tstart, state, tags);
 	return NULL;
 }
 
@@ -319,6 +327,15 @@ void apoint_switch_notify(struct apoint *apt)
 	apt->state ^= APOINT_NOTIFY;
 	if (notify_bar())
 		notify_check_added(apt->mesg, apt->start, apt->state);
+
+	LLIST_TS_UNLOCK(&alist_p);
+}
+
+void apoint_toggle_tag(struct apoint *apt, int tag)
+{
+	LLIST_TS_LOCK(&alist_p);
+
+	tags_toggle(apt->tags, tag);
 
 	LLIST_TS_UNLOCK(&alist_p);
 }

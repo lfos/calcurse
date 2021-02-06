@@ -417,6 +417,7 @@ static void ical_export_apoints(FILE * stream, int export_uid)
 			ical_export_note(stream, apt->note);
 		if (apt->state & APOINT_NOTIFY)
 			ical_export_valarm(stream);
+		tags_export(apt->tags, stream);
 		fputs("END:VEVENT\n", stream);
 	}
 	LLIST_TS_UNLOCK(&alist_p);
@@ -597,7 +598,7 @@ ical_store_apoint(char *mesg, char *note, time_t start, long dur,
 		if (fmt_rapt)
 			print_recur_apoint(fmt_rapt, start, rapt->start, rapt);
 	} else {
-		apt = apoint_new(mesg, note, start, dur, state);
+		apt = apoint_new(mesg, note, start, dur, state, NULL);
 		if (fmt_apt)
 			print_apoint(fmt_apt, start, apt);
 	}

@@ -558,6 +558,7 @@ void io_load_app(struct item_filter *filter)
 	int id = 0;
 	char type, state = 0L;
 	char note[MAX_NOTESIZ + 1], *notep;
+	taglist_t tags;
 	unsigned line = 0;
 	char *scan_error;
 
@@ -573,6 +574,7 @@ void io_load_app(struct item_filter *filter)
 
 	for (;;) {
 		is_appointment = is_event = is_recursive = 0;
+		tags_init(tags);
 		line++;
 		scan_error = NULL;
 
@@ -705,6 +707,11 @@ void io_load_app(struct item_filter *filter)
 		} else
 			notep = NULL;
 
+		if (c == '\'') {
+			tags_deserialize(data_file, tags);
+			c = getc(data_file);
+		}
+
 		/*
 		 * Last: read the item description and load it into its
 		 * corresponding linked list, depending on the item type.
@@ -723,7 +730,7 @@ void io_load_app(struct item_filter *filter)
 						  notep, filter, &rpt);
 			else
 				scan_error = apoint_scan(data_file, start, end, state,
-					    notep, filter);
+					    notep, filter, tags);
 		} else if (is_event) {
 			ungetc(c, data_file);
 			if (is_recursive)

@@ -240,6 +240,17 @@ static inline void key_lower_priority(void)
 	change_priority(-1);
 }
 
+static inline void key_toggle_tag(void)
+{
+	if (wins_slctd() == APP) {
+		int ch;
+		ch = keys_wgetch(win[KEY].p);
+		ui_toggle_tag(ch);
+		do_storage(0);
+		wins_update(FLAG_ALL);
+	}
+}
+
 static inline void key_edit_note(void)
 {
 	if (wins_slctd() == APP && !event_dummy(ui_day_get_sel())) {
@@ -894,6 +905,7 @@ int main(int argc, char **argv)
 		HANDLE_KEY(KEY_GENERIC_SCROLL_DOWN, key_generic_scroll_down);
 		HANDLE_KEY(KEY_GENERIC_QUIT, key_generic_quit);
 		HANDLE_KEY(KEY_GENERIC_CMD, key_generic_cmd);
+		HANDLE_KEY(KEY_TOGGLE_TAG, key_toggle_tag);
 		case KEY_GENERIC_REDRAW:
 			resize = 1;
 			break;

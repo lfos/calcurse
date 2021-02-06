@@ -1202,7 +1202,7 @@ void ui_day_item_add(void)
 	status_mesg(mesg_3, "");
 	if (getstring(win[STA].p, item_mesg, BUFSIZ, 0, 1) == GETSTRING_VALID) {
 		if (is_appointment) {
-			item.apt = apoint_new(item_mesg, 0L, start, dur, 0L);
+			item.apt = apoint_new(item_mesg, 0L, start, dur, 0L, NULL);
 			if (notify_bar())
 				notify_check_added(item_mesg, start, 0L);
 		} else {
@@ -1598,6 +1598,13 @@ void ui_day_flag(void)
 
 	struct day_item *item = ui_day_get_sel();
 	day_item_switch_notify(item);
+	io_set_modified();
+}
+
+void ui_toggle_tag(int tag)
+{
+	struct day_item *item = ui_day_get_sel();
+	day_item_toggle_tag(item, tag);
 	io_set_modified();
 }
 

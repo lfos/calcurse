@@ -351,6 +351,9 @@ struct date {
 
 #define ISLEAP(y) ((((y) % 4) == 0 && ((y) % 100) != 0) || ((y) % 400) == 0)
 
+#define TAGS_MAX 8
+typedef char taglist_t[TAGS_MAX];
+
 /* Appointment definition. */
 struct apoint {
 	time_t start;		/* seconds since 1 jan 1970 */
@@ -363,6 +366,7 @@ struct apoint {
 
 	char *mesg;
 	char *note;
+	taglist_t tags;
 };
 
 /* Event definition. */
@@ -565,6 +569,7 @@ enum key {
 	KEY_VIEW_NOTE,
 	KEY_RAISE_PRIORITY,
 	KEY_LOWER_PRIORITY,
+	KEY_TOGGLE_TAG,
 
 	NBKEYS,
 	KEY_UNDEF,
@@ -780,17 +785,18 @@ struct apoint *apoint_dup(struct apoint *);
 void apoint_free(struct apoint *);
 void apoint_llist_init(void);
 void apoint_llist_free(void);
-struct apoint *apoint_new(char *, char *, time_t, long, char);
+struct apoint *apoint_new(char *, char *, time_t, long, char, taglist_t);
 unsigned apoint_inday(struct apoint *, time_t *);
 void apoint_sec2str(struct apoint *, time_t, char *, char *);
 char *apoint_tostr(struct apoint *);
 char *apoint_hash(struct apoint *);
 void apoint_write(struct apoint *, FILE *);
 char *apoint_scan(FILE *, struct tm, struct tm, char, char *,
-			   struct item_filter *);
+			   struct item_filter *, taglist_t);
 void apoint_delete(struct apoint *);
 struct notify_app *apoint_check_next(struct notify_app *, time_t);
 void apoint_switch_notify(struct apoint *);
+void apoint_toggle_tag(struct apoint *, int);
 void apoint_paste_item(struct apoint *, time_t);
 
 /* args.c */
@@ -866,6 +872,7 @@ unsigned day_item_count(int);
 void day_edit_note(struct day_item *, const char *);
 void day_view_note(struct day_item *, const char *);
 void day_item_switch_notify(struct day_item *);
+void day_item_toggle_tag(struct day_item *, int);
 
 /* dmon.c */
 void dmon_start(int);
@@ -1145,6 +1152,16 @@ void todo_free(struct todo *);
 void todo_init_list(void);
 void todo_free_list(void);
 
+/* tags.c */
+void tags_init(taglist_t);
+void tags_copy(taglist_t, taglist_t);
+void tags_toggle(taglist_t, int);
+void tags_serialize(taglist_t, struct string *, int);
+void tags_deserialize(FILE *, taglist_t);
+void tags_print(WINDOW *, int, int, taglist_t);
+void tags_export(taglist_t, FILE *);
+// TODO: tags_import
+
 /* ui-day.c */
 void ui_day_item_add(void);
 void ui_day_item_delete(unsigned);
@@ -1170,6 +1187,7 @@ int ui_day_height(int, void *);
 void ui_day_update_panel(int);
 void ui_day_popup_item(void);
 void ui_day_flag(void);
+void ui_toggle_tag(int);
 void ui_day_view_note(void);
 void ui_day_edit_note(void);
 
