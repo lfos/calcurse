@@ -26,7 +26,7 @@ with the `-s` option.
 **Tipp:** On failiure the new events should simple by at the end of your `app` file
 of calcurse and it should be easy to remove them again
 
-Examples:
+Example:
 --------
 ```yaml
 holiday.yaml
@@ -42,13 +42,12 @@ holiday date
 #       The weekday is specified as 1->Monday 2->Thuesday ...
 irregular holiday:
     - Eastersunday: "easter +0 day"
-	- Eastermonday: "easter +1 day"
-	- Thanksgiving: 11-01 +4 4
+    - Eastermonday: "easter +1 day"
+    - Thanksgiving: 11-01 +4 4
 ```
 
-`calcurse-holiday holiday.yaml 2021 2022` this will read the holiday
-template from the `holiday.yaml` File and create the holiday events for
-the years `2021` and `2022`
+`calcurse-holiday holiday.yaml 2021 2022` will read the holiday template from the
+`holiday.yaml` file and create the holiday events for the years `2021` and `2022`
 
 Notes
 -----
