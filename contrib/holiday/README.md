@@ -43,7 +43,7 @@ holiday date
 irregular holiday:
     - Eastersunday: "easter +0 day"
     - Eastermonday: "easter +1 day"
-    - Thanksgiving: 11-01 +4 4
+    - Thanksgiving: "11-01 +3 4"
 ```
 
 `calcurse-holiday holiday.yaml 2021 2022` will read the holiday template from the

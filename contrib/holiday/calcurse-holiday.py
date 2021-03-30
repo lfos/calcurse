@@ -101,8 +101,8 @@ def createForYears(file:str, years:list[int], simu:bool):
                 else:
                     print("Failed to read entry", dateDesc, file=sys.stderr)
         if simu:
-            print("This ical would have been imported")
-            print(ical)
+            print("\nThis ical (+header) would have been imported")
+            print("\n".join(ical))
         else:
             toCalcurse(ical)
 
