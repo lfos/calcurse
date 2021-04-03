@@ -22,6 +22,70 @@ except ModuleNotFoundError:
     pass
 
 
+class Config:
+    _map = {}
+
+    def __init__(self, fn):
+        self._map = {
+            'Auth': {
+                'Password': None,
+                'Username': None,
+            },
+            'CustomHeaders': {},
+            'General': {
+                'AuthMethod': 'basic',
+                'Binary': 'calcurse',
+                'Debug': False,
+                'DryRun': True,
+                'HTTPS': True,
+                'Hostname': None,
+                'InsecureSSL': False,
+                'Path': None,
+                'SyncFilter': 'cal,todo',
+                'Verbose': False,
+            },
+            'OAuth2': {
+                'ClientID': None,
+                'ClientSecret': None,
+                'RedirectURI': 'http://127.0.0.1',
+                'Scope': None,
+            },
+        }
+
+        config = configparser.RawConfigParser()
+        config.optionxform = str
+        if verbose:
+            print('Loading configuration from ' + configfn + '...')
+        try:
+            config.read_file(open(fn))
+        except FileNotFoundError as e:
+            die('Configuration file not found: {}'.format(fn))
+
+        for sec in config.sections():
+            if sec not in self._map:
+                die('Unexpected config section: {}'.format(sec))
+
+            if not self._map[sec]:
+                # Import section with custom key-value pairs.
+                self._map[sec] = dict(config.items(sec))
+                continue
+
+            # Import section with predefined keys.
+            for key, val in config.items(sec):
+                if key not in self._map[sec]:
+                    die('Unexpected config key in section {}: {}'.format(sec, key))
+                if type(self._map[sec][key]) == bool:
+                    self._map[sec][key] = config.getboolean(sec, key)
+                else:
+                    self._map[sec][key] = val
+
+    def section(self, section):
+        return self._map[section]
+
+    def get(self, section, key):
+        return self._map[section][key]
+
+
 def msgfmt(msg, prefix=''):
     lines = []
     for line in msg.splitlines():
@@ -592,101 +656,46 @@ debug_raw = args.debug_raw
 password = os.getenv('CALCURSE_CALDAV_PASSWORD')
 
 # Read configuration.
-config = configparser.RawConfigParser()
-if verbose:
-    print('Loading configuration from ' + configfn + '...')
-try:
-    config.read_file(open(configfn))
-except FileNotFoundError as e:
-    die('Configuration file not found: {}'.format(configfn))
+config = Config(configfn)
 
-if config.has_option('General', 'InsecureSSL'):
-    insecure_ssl = config.getboolean('General', 'InsecureSSL')
-else:
-    insecure_ssl = False
+authmethod = config.get('General', 'AuthMethod').lower()
+calcurse = [config.get('General', 'Binary')]
+debug = debug or config.get('General', 'Debug')
+dry_run = config.get('General', 'DryRun')
+hostname = config.get('General', 'Hostname')
+https = config.get('General', 'HTTPS')
+insecure_ssl = config.get('General', 'InsecureSSL')
+path = config.get('General', 'Path')
+sync_filter = config.get('General', 'SyncFilter')
+verbose = verbose or config.get('General', 'Verbose')
 
-# Read config for "HTTPS" option (default=True)
-if config.has_option('General', 'HTTPS'):
-    https = config.getboolean('General', 'HTTPS')
-else:
-    https = True
+password = password or config.get('Auth', 'Password')
+username = config.get('Auth', 'Username')
 
-if config.has_option('General', 'Binary'):
-    calcurse = [config.get('General', 'Binary')]
-else:
-    calcurse = ['calcurse']
+client_id = config.get('OAuth2', 'ClientID')
+client_secret = config.get('OAuth2', 'ClientSecret')
+redirect_uri = config.get('OAuth2', 'RedirectURI')
+scope = config.get('OAuth2', 'Scope')
 
+custom_headers = config.section('CustomHeaders')
+
+# Append data directory to calcurse command.
 if datadir:
     check_dir(datadir)
     calcurse += ['-D', datadir]
 
-if config.has_option('General', 'DryRun'):
-    dry_run = config.getboolean('General', 'DryRun')
-else:
-    dry_run = True
+# Validate sync filter.
+invalid_filter_values = validate_sync_filter()
+if len(invalid_filter_values):
+    die('Invalid value(s) in SyncFilter option: ' + ', '.join(invalid_filter_values))
 
-if not verbose and config.has_option('General', 'Verbose'):
-    verbose = config.getboolean('General', 'Verbose')
-
-if not debug and config.has_option('General', 'Debug'):
-    debug = config.getboolean('General', 'Debug')
-
-if config.has_option('General', 'AuthMethod'):
-    authmethod = config.get('General', 'AuthMethod').lower()
-else:
-    authmethod = 'basic'
-
-if config.has_option('General', 'SyncFilter'):
-    sync_filter = config.get('General', 'SyncFilter')
-
-    invalid_filter_values = validate_sync_filter()
-
-    if len(invalid_filter_values):
-        die('Invalid value(s) in SyncFilter option: ' + ', '.join(invalid_filter_values))
-else:
-    sync_filter = 'cal,todo'
-
-if config.has_option('Auth', 'UserName'):
-    username = config.get('Auth', 'UserName')
-else:
-    username = None
-
-if config.has_option('Auth', 'Password') and not password:
-    password = config.get('Auth', 'Password')
-
-if config.has_section('CustomHeaders'):
-    custom_headers = dict(config.items('CustomHeaders'))
-else:
-    custom_headers = {}
-
-if config.has_option('OAuth2', 'ClientID'):
-    client_id = config.get('OAuth2', 'ClientID')
-else:
-    client_id = None
-
-if config.has_option('OAuth2', 'ClientSecret'):
-    client_secret = config.get('OAuth2', 'ClientSecret')
-else:
-    client_secret = None
-
-if config.has_option('OAuth2', 'Scope'):
-   scope = config.get('OAuth2', 'Scope')
-else:
-   scope = None
-
-if config.has_option('OAuth2', 'RedirectURI'):
-    redirect_uri = config.get('OAuth2', 'RedirectURI')
-else:
-    redirect_uri = 'http://127.0.0.1'
-
-# Change URl prefix according to HTTP/HTTPS
-if https:
-    urlprefix = "https://"
-else:
-    urlprefix = "http://"
-
-hostname = config.get('General', 'HostName')
-path = '/' + config.get('General', 'Path').strip('/') + '/'
+# Ensure host name and path are defined and initialize *_uri.
+if not hostname:
+    die('Hostname missing in configuration.')
+if not path:
+    die('Path missing in configuration.')
+urlprefix = "https://" if https else "http://"
+path = '/{}/'.format(path.strip('/'))
 hostname_uri = urlprefix + hostname
 absolute_uri = hostname_uri + path
 
