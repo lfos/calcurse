@@ -1,6 +1,9 @@
 calcurse
 ========
 
+[![Build and test](https://github.com/lfos/calcurse/actions/workflows/make.yml/badge.svg)](https://github.com/lfos/calcurse/actions/workflows/make.yml)
+[![Lint Python](https://github.com/lfos/calcurse/actions/workflows/lint_python.yml/badge.svg)](https://github.com/lfos/calcurse/actions/workflows/lint_python.yml)
+
 ![Demo](https://calcurse.org/images/demo.gif)
 
 Building
