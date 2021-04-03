@@ -11,10 +11,12 @@
 # Path to the calcurse binary that is used for importing/exporting items.
 Binary = calcurse
 
-# Host name of the server that hosts CalDAV.
+# Host name of the server that hosts CalDAV. Do NOT prepend a protocol prefix,
+# such as http:// or https://. Append :<port> for a port other than 80.
 Hostname = some.hostname.com
 
-# Path to the CalDAV calendar on the host specified above.
+# Path to the CalDAV calendar on the host specified above. This is the base
+# path following your host name in the URL.
 Path = /path/to/calendar/on/the/server/
 
 # Type of authentication to use. Must be "basic" or "oauth2"
