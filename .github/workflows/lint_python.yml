@@ -1,0 +1,21 @@
+name: Lint Python
+
+on:
+  pull_request:
+    paths: ['contrib/**']
+  push:
+    paths: ['contrib/**']
+
+jobs:
+  lint_python:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: contrib
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+      - run: pip install codespell flake8 isort
+      - run: codespell --quiet-level=2 || true
+      - run: flake8 --count --show-source --statistics
+      - run: isort --check-only --profile black .
