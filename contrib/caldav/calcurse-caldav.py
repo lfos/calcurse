@@ -3,9 +3,8 @@
 import argparse
 import base64
 import configparser
-import httplib2
-import pathlib
 import os
+import pathlib
 import re
 import subprocess
 import sys
@@ -13,11 +12,14 @@ import textwrap
 import urllib.parse
 import xml.etree.ElementTree as etree
 
+import httplib2
+
 # Optional libraries for OAuth2 authentication
 try:
-    from oauth2client.client import OAuth2WebServerFlow, HttpAccessTokenRefreshError
-    from oauth2client.file import Storage
     import webbrowser
+
+    from oauth2client.client import HttpAccessTokenRefreshError, OAuth2WebServerFlow
+    from oauth2client.file import Storage
 except ModuleNotFoundError:
     pass
 
@@ -58,7 +60,7 @@ class Config:
             print('Loading configuration from ' + configfn + '...')
         try:
             config.read_file(open(fn))
-        except FileNotFoundError as e:
+        except FileNotFoundError:
             die('Configuration file not found: {}'.format(fn))
 
         for sec in config.sections():
@@ -106,6 +108,7 @@ def check_dir(dir):
         pathlib.Path(dir).mkdir(parents=True, exist_ok=True)
     except FileExistsError:
         die("{} is not a directory".format(dir))
+
 
 def die_atnode(msg, node):
     if debug:
@@ -793,7 +796,7 @@ try:
     # Write the synchronization database.
     save_syncdb(syncdbfn, syncdb)
 
-    #Clear OAuth2 credentials if used
+    # Clear OAuth2 credentials if used.
     if authmethod == 'oauth2':
         conn.clear_credentials()
 
