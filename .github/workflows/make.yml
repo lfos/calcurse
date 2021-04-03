@@ -1,0 +1,49 @@
+name: Build and test
+
+on:
+  push:
+    branches: [master, pu]
+    paths-ignore:
+    - 'contrib/**'
+    - 'doc/**'
+    - 'po/**'
+  pull_request:
+    branches: [master, pu]
+    paths-ignore:
+    - 'contrib/**'
+    - 'doc/**'
+    - 'po/**'
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: ['ubuntu-latest', 'macos-latest']
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install dependencies (Ubuntu)
+      run: sudo apt-get install asciidoc autopoint gettext xmlto
+      if: matrix.os == 'ubuntu-latest'
+    - name: Install dependencies (MacOS)
+      run: |
+        brew update
+        brew install automake
+        brew install asciidoc
+        brew install gettext
+        brew install xmlto
+        brew link --force gettext
+        sudo mkdir /etc/xml
+        sudo ln -s /usr/local/etc/xml/catalog /etc/xml/catalog
+      if: matrix.os == 'macos-latest'
+    - name: autogen.sh
+      run: ./autogen.sh
+    - name: configure
+      run: ./configure
+    - name: make
+      run: make
+    - name: make check
+      run: make check
+    - name: make distcheck
+      run: make distcheck
