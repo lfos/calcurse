@@ -221,7 +221,7 @@ unsigned notify_launch_cmd(void)
 
 	notify_app.state |= APOINT_NOTIFIED;
 
-	if ((pid = shell_exec(&pin, &pout, &perr, *arg, arg))) {
+	if ((pid = shell_exec(&pin, &pout, &perr, 1, *arg, arg))) {
 		close(pin);
 		close(pout);
 		close(perr);

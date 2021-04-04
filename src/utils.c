@@ -1319,9 +1319,11 @@ void psleep(unsigned secs)
  *
  * If pfdin/pfdout/pfderr point to a valid address, a pipe is created and the
  * appropriate file descriptors are written to pfdin/pfdout/pfderr.
+ *
+ * If new_session is non-zero, setsid() is called after forking.
  */
-int fork_exec(int *pfdin, int *pfdout, int *pfderr, const char *path,
-	      const char *const *arg)
+int fork_exec(int *pfdin, int *pfdout, int *pfderr, int new_session,
+              const char *path, const char *const *arg)
 {
 	int pin[2], pout[2], perr[2];
 	int pid;
@@ -1353,6 +1355,11 @@ int fork_exec(int *pfdin, int *pfdout, int *pfderr, const char *path,
 				_exit(127);
 			close(pin[0]);
 			close(pin[1]);
+		}
+
+		if (new_session) {
+			if ((setsid() < 0))
+				_exit(127);
 		}
 
 		execvp(path, (char *const *)arg);
@@ -1393,8 +1400,8 @@ int fork_exec(int *pfdin, int *pfdout, int *pfderr, const char *path,
 
 /* Execute an external program in a shell. */
 int
-shell_exec(int *pfdin, int *pfdout, int *pfderr, const char *path,
-	   const char *const *arg)
+shell_exec(int *pfdin, int *pfdout, int *pfderr, int new_session,
+           const char *path, const char *const *arg)
 {
 	int argc, i;
 	const char **narg;
@@ -1423,7 +1430,7 @@ shell_exec(int *pfdin, int *pfdout, int *pfderr, const char *path,
 		narg[3] = NULL;
 	}
 
-	ret = fork_exec(pfdin, pfdout, pfderr, *narg, narg);
+	ret = fork_exec(pfdin, pfdout, pfderr, new_session, *narg, narg);
 
 	if (arg0)
 		mem_free(arg0);

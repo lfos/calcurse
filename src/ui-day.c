@@ -1067,7 +1067,7 @@ void ui_day_item_pipe(void)
 		return;
 
 	wins_prepare_external();
-	if ((pid = shell_exec(NULL, &pout, NULL, *arg, arg))) {
+	if ((pid = shell_exec(NULL, &pout, NULL, 0, *arg, arg))) {
 		fpout = fdopen(pout, "w");
 
 		switch (p->type) {
