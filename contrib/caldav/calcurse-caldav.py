@@ -9,7 +9,6 @@ import re
 import subprocess
 import sys
 import textwrap
-import urllib.parse
 import xml.etree.ElementTree as etree
 
 import httplib2
@@ -420,18 +419,21 @@ def push_object(conn, objhash):
 
     if not headers:
         return None
-
-    etag = None
     headerdict = dict(headers)
-    if 'etag' in headerdict:
-        etag = headerdict['etag']
-    while not etag:
-        etagdict = get_etags(conn, [href])
-        if etagdict:
-            etag = next(iter(etagdict.values()))
-    etag = etag.strip('"')
 
-    return (urllib.parse.quote(href), etag)
+    # Retrieve href from server to match server-side format. Retrieve ETag
+    # unless it can be extracted from the PUT response already.
+    ret_href, ret_etag = None, headerdict.get('etag')
+    while not ret_etag or not ret_href:
+        etagdict = get_etags(conn, [href])
+        if not etagdict:
+            continue
+        ret_href, new_etag = next(iter(etagdict.items()))
+        # Favor ETag from PUT response to avoid race condition.
+        if not ret_etag:
+            ret_etag = new_etag
+
+    return (ret_href, ret_etag.strip('"'))
 
 
 def push_objects(objhashes, conn, syncdb, etagdict):
