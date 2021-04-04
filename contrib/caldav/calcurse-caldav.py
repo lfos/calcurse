@@ -9,7 +9,6 @@ import re
 import subprocess
 import sys
 import textwrap
-import urllib.parse
 import xml.etree.ElementTree as etree
 
 import httplib2
@@ -425,13 +424,17 @@ def push_object(conn, objhash):
     headerdict = dict(headers)
     if 'etag' in headerdict:
         etag = headerdict['etag']
-    while not etag:
+
+    returned_href = None
+    while not etag or not returned_href:
         etagdict = get_etags(conn, [href])
         if etagdict:
-            etag = next(iter(etagdict.values()))
-    etag = etag.strip('"')
+            returned_href, returned_etag = next(iter(etagdict.items()))
+            if not etag:
+                etag = returned_etag
 
-    return (urllib.parse.quote(href), etag)
+    etag = etag.strip('"')
+    return (returned_href, etag)
 
 
 def push_objects(objhashes, conn, syncdb, etagdict):
