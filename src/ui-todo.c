@@ -158,11 +158,11 @@ void ui_todo_pipe(void)
 		return;
 
 	wins_prepare_external();
-	if ((pid = shell_exec(NULL, &pout, *arg, arg))) {
+	if ((pid = shell_exec(NULL, &pout, NULL, *arg, arg))) {
 		fpout = fdopen(pout, "w");
 		todo_write(item, fpout);
 		fclose(fpout);
-		child_wait(NULL, &pout, pid);
+		child_wait(NULL, &pout, NULL, pid);
 		press_any_key();
 	}
 	wins_unprepare_external();

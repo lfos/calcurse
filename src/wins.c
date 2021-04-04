@@ -624,8 +624,8 @@ void wins_launch_external(const char *arg[])
 	int pid;
 
 	wins_prepare_external();
-	if ((pid = shell_exec(NULL, NULL, *arg, arg)))
-		child_wait(NULL, NULL, pid);
+	if ((pid = shell_exec(NULL, NULL, NULL, *arg, arg)))
+		child_wait(NULL, NULL, NULL, pid);
 	wins_unprepare_external();
 }
 

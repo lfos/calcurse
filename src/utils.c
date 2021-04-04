@@ -1317,21 +1317,30 @@ void psleep(unsigned secs)
 /*
  * Fork and execute an external process.
  *
- * If pfdin and/or pfdout point to a valid address, a pipe is created and the
- * appropriate file descriptors are written to pfdin/pfdout.
+ * If pfdin/pfdout/pfderr point to a valid address, a pipe is created and the
+ * appropriate file descriptors are written to pfdin/pfdout/pfderr.
  */
-int fork_exec(int *pfdin, int *pfdout, const char *path,
+int fork_exec(int *pfdin, int *pfdout, int *pfderr, const char *path,
 	      const char *const *arg)
 {
-	int pin[2], pout[2];
+	int pin[2], pout[2], perr[2];
 	int pid;
 
 	if (pfdin && (pipe(pin) == -1))
 		return 0;
 	if (pfdout && (pipe(pout) == -1))
 		return 0;
+	if (pfderr && (pipe(perr) == -1))
+		return 0;
 
 	if ((pid = fork()) == 0) {
+		if (pfderr) {
+			if (dup2(perr[0], STDERR_FILENO) < 0)
+				_exit(127);
+			close(perr[0]);
+			close(perr[1]);
+		}
+
 		if (pfdout) {
 			if (dup2(pout[0], STDIN_FILENO) < 0)
 				_exit(127);
@@ -1353,6 +1362,8 @@ int fork_exec(int *pfdin, int *pfdout, const char *path,
 			close(pin[1]);
 		if (pfdout)
 			close(pout[0]);
+		if (pfderr)
+			close(perr[0]);
 
 		if (pid > 0) {
 			if (pfdin) {
@@ -1363,11 +1374,17 @@ int fork_exec(int *pfdin, int *pfdout, const char *path,
 				fcntl(pout[1], F_SETFD, FD_CLOEXEC);
 				*pfdout = pout[1];
 			}
+			if (pfderr) {
+				fcntl(perr[1], F_SETFD, FD_CLOEXEC);
+				*pfderr = perr[1];
+			}
 		} else {
 			if (pfdin)
 				close(pin[0]);
 			if (pfdout)
 				close(pout[1]);
+			if (pfderr)
+				close(perr[1]);
 			return 0;
 		}
 	}
@@ -1376,7 +1393,7 @@ int fork_exec(int *pfdin, int *pfdout, const char *path,
 
 /* Execute an external program in a shell. */
 int
-shell_exec(int *pfdin, int *pfdout, const char *path,
+shell_exec(int *pfdin, int *pfdout, int *pfderr, const char *path,
 	   const char *const *arg)
 {
 	int argc, i;
@@ -1406,7 +1423,7 @@ shell_exec(int *pfdin, int *pfdout, const char *path,
 		narg[3] = NULL;
 	}
 
-	ret = fork_exec(pfdin, pfdout, *narg, narg);
+	ret = fork_exec(pfdin, pfdout, pfderr, *narg, narg);
 
 	if (arg0)
 		mem_free(arg0);
@@ -1416,7 +1433,7 @@ shell_exec(int *pfdin, int *pfdout, const char *path,
 }
 
 /* Wait for a child process to terminate. */
-int child_wait(int *pfdin, int *pfdout, int pid)
+int child_wait(int *pfdin, int *pfdout, int *pfderr, int pid)
 {
 	int stat;
 
@@ -1424,6 +1441,8 @@ int child_wait(int *pfdin, int *pfdout, int pid)
 		close(*pfdin);
 	if (pfdout)
 		close(*pfdout);
+	if (pfderr)
+		close(*pfderr);
 
 	if (waitpid(pid, &stat, 0) == pid)
 		return stat;

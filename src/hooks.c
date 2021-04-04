@@ -53,8 +53,8 @@ int run_hook(const char *name)
 	arg[0] = hook_cmd;
 	arg[1] = NULL;
 
-	if ((pid = shell_exec(NULL, NULL, *arg, arg))) {
-		ret = child_wait(NULL, NULL, pid);
+	if ((pid = shell_exec(NULL, NULL, NULL, *arg, arg))) {
+		ret = child_wait(NULL, NULL, NULL, pid);
 		if (ret > 0 && WIFEXITED(ret)) {
 			asprintf(&mesg, "%s hook: exit status %d",
 				 name,
