@@ -137,9 +137,6 @@ void notify_init_vars(void)
 	strncpy(nbar.cmd, cmd, BUFSIZ);
 	nbar.cmd[BUFSIZ - 1] = '\0';
 
-	if ((nbar.shell = getenv("SHELL")) == NULL)
-		nbar.shell = "/bin/sh";
-
 	nbar.notify_all = 0;
 
 	pthread_attr_init(&detached_thread_attr);
@@ -216,26 +213,18 @@ void notify_reinit_bar(void)
 /* Launch user defined command as a notification. */
 unsigned notify_launch_cmd(void)
 {
-	int pid;
+	char const *arg[2] = { nbar.cmd, NULL };
+	int pid, pin, pout, perr;
 
 	if (notify_app.state & APOINT_NOTIFIED)
 		return 1;
 
 	notify_app.state |= APOINT_NOTIFIED;
 
-	pid = fork();
-
-	if (pid < 0) {
-		ERROR_MSG(_("error while launching command: could not fork"));
-		return 0;
-	} else if (pid == 0) {
-		/* Child: launch user defined command */
-		if (execlp(nbar.shell, nbar.shell, "-c", nbar.cmd, NULL) <
-		    0) {
-			ERROR_MSG(_("error while launching command"));
-			_exit(1);
-		}
-		_exit(0);
+	if ((pid = shell_exec(&pin, &pout, &perr, *arg, arg))) {
+		close(pin);
+		close(pout);
+		close(perr);
 	}
 
 	return 1;

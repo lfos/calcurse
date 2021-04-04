@@ -41,20 +41,18 @@
 
 int run_hook(const char *name)
 {
-	char *hook_path = NULL, *hook_cmd = NULL, *mesg;
+	char *hook_path = NULL, *mesg;
+	int pid, pin, pout, perr, ret = -127;
 	char const *arg[2];
-	int pid, ret = -127;
 
 	asprintf(&hook_path, "%s/%s", path_hooks, name);
 	if (!io_file_exists(hook_path))
 		goto cleanup;
-
-	asprintf(&hook_cmd, "%s <&- >&- 2>&-", hook_path);
-	arg[0] = hook_cmd;
+	arg[0] = hook_path;
 	arg[1] = NULL;
 
-	if ((pid = shell_exec(NULL, NULL, NULL, *arg, arg))) {
-		ret = child_wait(NULL, NULL, NULL, pid);
+	if ((pid = shell_exec(&pin, &pout, &perr, *arg, arg))) {
+		ret = child_wait(&pin, &pout, &perr, pid);
 		if (ret > 0 && WIFEXITED(ret)) {
 			asprintf(&mesg, "%s hook: exit status %d",
 				 name,
@@ -71,6 +69,5 @@ int run_hook(const char *name)
 
 cleanup:
 	mem_free(hook_path);
-	mem_free(hook_cmd);
 	return ret;
 }
