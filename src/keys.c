@@ -68,7 +68,7 @@ static struct keydef_s keydef[NBKEYS] = {
 	{ "generic-reload", "R", gettext_noop("Reload") },
 	{ "generic-copy", "c", gettext_noop("Copy") },
 	{ "generic-paste", "p ^V", gettext_noop("Paste") },
-	{ "generic-next-view", "TAB", gettext_noop("Chg Win") },
+	{ "generic-change-view", "TAB", gettext_noop("Chg Win") },
 	{ "generic-prev-view", "KEY_BTAB", gettext_noop("Prev Win") },
 	{ "generic-import", "i I", gettext_noop("Import") },
 	{ "generic-export", "x X", gettext_noop("Export") },
