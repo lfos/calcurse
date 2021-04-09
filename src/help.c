@@ -132,7 +132,9 @@ int display_help(const char *topic)
 			topic = "copy-paste";
 		else if (!strcmp(topic, "generic-paste"))
 			topic = "copy-paste";
-		else if (!strcmp(topic, "generic-change-view"))
+		else if (!strcmp(topic, "generic-next-view"))
+			topic = "tab";
+		else if (!strcmp(topic, "generic-prev-view"))
 			topic = "tab";
 		else if (!strcmp(topic, "generic-import"))
 			topic = "import";
