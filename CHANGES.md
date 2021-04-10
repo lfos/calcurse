@@ -1,6 +1,34 @@
 Release Notes
 =============
 
+Version 4.7.1 (2021-04-11)
+--------------------------
+
+- Bug fixes:
+
+    * Multiple iCal import fixes: Make iCal event import independent of
+      property ordering. Return failure if an item is skipped. Avoid double
+      free on import errors. Fix parsing of UNTIL.
+
+    * Do not remove an empty note file after edit session.
+
+    * Keep internal linked list sorted when moving items.
+
+    * Prevent external hook/notification commands from interacting with the UI.
+
+- calcurse-caldav bug fixes:
+
+    * Allow non-ASCII characters in username and password (fixed by Henrik
+      Grimler).
+
+    * Improved error handling for the configuration file. Unknown keys are now
+      reported as errors instead of ignored.
+
+    * Always request href from server after pushing a new object to prevent
+      items from being erroneously deleted or created when path contains
+      characters that need to be URL-encoded (reported and fixed by Max
+      Deineko).
+
 Version 4.7.0 (2020-10-12)
 --------------------------
 
