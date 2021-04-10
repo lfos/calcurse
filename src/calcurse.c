@@ -80,7 +80,7 @@ static inline void key_generic_change_view(void)
 	wins_update(FLAG_ALL);
 }
 
-static inline void key_generic_change_view_prev(void)
+static inline void key_generic_prev_view(void)
 {
 	wins_reset_status_page();
 	wins_slctd_prev();
@@ -858,7 +858,7 @@ int main(int argc, char **argv)
 		wtimeout(win[KEY].p, -1);
 		switch (key) {
 		HANDLE_KEY(KEY_GENERIC_CHANGE_VIEW, key_generic_change_view);
-		HANDLE_KEY(KEY_GENERIC_CHANGE_VIEW_PREV, key_generic_change_view_prev);
+		HANDLE_KEY(KEY_GENERIC_PREV_VIEW, key_generic_prev_view);
 		HANDLE_KEY(KEY_GENERIC_OTHER_CMD, key_generic_other_cmd);
 		HANDLE_KEY(KEY_GENERIC_GOTO, key_generic_goto);
 		HANDLE_KEY(KEY_GENERIC_GOTO_TODAY, key_generic_goto_today);

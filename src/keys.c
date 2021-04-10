@@ -583,7 +583,7 @@ void keys_popup_info(enum key key)
 	    _("Paste an item at the current position.");
 	info[KEY_GENERIC_CHANGE_VIEW] =
 	    _("Select next panel in calcurse main screen.");
-	info[KEY_GENERIC_CHANGE_VIEW_PREV] =
+	info[KEY_GENERIC_PREV_VIEW] =
 	    _("Select previous panel in calcurse main screen.");
 	info[KEY_GENERIC_IMPORT] = _("Import data from an external file.");
 	info[KEY_GENERIC_EXPORT] = _("Export data to a new file format.");
