@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2020-10-12 10:38-0400\n"
+"POT-Creation-Date: 2021-04-10 09:12-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -602,6 +602,9 @@ msgstr ""
 msgid "either until or count."
 msgstr ""
 
+msgid "missing until value."
+msgstr ""
+
 msgid "invalid until format."
 msgstr ""
 
@@ -643,10 +646,37 @@ msgstr ""
 msgid "line break in summary."
 msgstr ""
 
-msgid "could not retrieve item summary."
+msgid "item start date not defined."
 msgstr ""
 
-msgid "item start date is not defined."
+msgid "malformed start time line."
+msgstr ""
+
+msgid "invalid or malformed event start time."
+msgstr ""
+
+msgid "invalid end time value type."
+msgstr ""
+
+msgid "malformed end time line."
+msgstr ""
+
+msgid "malformed event end time."
+msgstr ""
+
+msgid "end must be later than start."
+msgstr ""
+
+msgid "either end or duration."
+msgstr ""
+
+msgid "malformed duration line."
+msgstr ""
+
+msgid "invalid duration."
+msgstr ""
+
+msgid "exception date, but no recurrence rule."
 msgstr ""
 
 msgid "multi-day event changed to one-day event"
@@ -667,33 +697,6 @@ msgstr ""
 msgid "item could not be identified."
 msgstr ""
 
-msgid "malformed start time line."
-msgstr ""
-
-msgid "invalid or malformed event start time."
-msgstr ""
-
-msgid "either end or duration."
-msgstr ""
-
-msgid "invalid end time value type."
-msgstr ""
-
-msgid "malformed end time line."
-msgstr ""
-
-msgid "malformed event end time."
-msgstr ""
-
-msgid "end must be later than start."
-msgstr ""
-
-msgid "malformed duration line."
-msgstr ""
-
-msgid "invalid duration."
-msgstr ""
-
 msgid "only one description allowed."
 msgstr ""
 
@@ -701,6 +704,9 @@ msgid "only one location allowed."
 msgstr ""
 
 msgid "The ical file seems to be malformed. The end of item was not found."
+msgstr ""
+
+msgid "could not retrieve item summary."
 msgstr ""
 
 msgid "item priority is invalid (must be between 0 and 9)."
@@ -1337,12 +1343,6 @@ msgstr ""
 
 #, c-format
 msgid "Warning: could not open %s, Aborting..."
-msgstr ""
-
-msgid "error while launching command: could not fork"
-msgstr ""
-
-msgid "error while launching command"
 msgstr ""
 
 msgid "(if set to YES, notify-bar will be displayed)"

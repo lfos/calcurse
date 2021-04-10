@@ -1,6 +1,6 @@
 # 
 # Translators:
-# Alexander F Rødseth <rodseth@gmail.com>, 2017
+# Alexander F. Rødseth <rodseth@gmail.com>, 2017
 msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"

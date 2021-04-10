@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse 1.4\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2020-10-12 10:38-0400\n"
+"POT-Creation-Date: 2021-04-10 09:12-0400\n"
 "PO-Revision-Date: 2006-07-03 00:05+0100\n"
 "Last-Translator: Neil Williams <linux@codehelp.co.uk>\n"
 "Language-Team: English/GB <en_GB@li.org>\n"
@@ -646,6 +646,9 @@ msgstr "Enter the new ToDo item : "
 msgid "either until or count."
 msgstr ""
 
+msgid "missing until value."
+msgstr ""
+
 #, fuzzy
 msgid "invalid until format."
 msgstr "Enter the new ToDo item : "
@@ -691,12 +694,41 @@ msgid "line break in summary."
 msgstr ""
 
 #, fuzzy
-msgid "could not retrieve item summary."
+msgid "item start date not defined."
+msgstr "The day you entered is not valid"
+
+msgid "malformed start time line."
+msgstr ""
+
+msgid "invalid or malformed event start time."
+msgstr ""
+
+msgid "invalid end time value type."
+msgstr ""
+
+msgid "malformed end time line."
+msgstr ""
+
+msgid "malformed event end time."
+msgstr ""
+
+msgid "end must be later than start."
+msgstr ""
+
+#, fuzzy
+msgid "either end or duration."
+msgstr "FATAL ERROR in load_app: syntax error in the item date\n"
+
+#, fuzzy
+msgid "malformed duration line."
 msgstr "Enter description :"
 
 #, fuzzy
-msgid "item start date is not defined."
-msgstr "The day you entered is not valid"
+msgid "invalid duration."
+msgstr "FATAL ERROR in load_app: syntax error in the item date\n"
+
+msgid "exception date, but no recurrence rule."
+msgstr ""
 
 msgid "multi-day event changed to one-day event"
 msgstr ""
@@ -716,36 +748,6 @@ msgstr ""
 msgid "item could not be identified."
 msgstr ""
 
-msgid "malformed start time line."
-msgstr ""
-
-msgid "invalid or malformed event start time."
-msgstr ""
-
-#, fuzzy
-msgid "either end or duration."
-msgstr "FATAL ERROR in load_app: syntax error in the item date\n"
-
-msgid "invalid end time value type."
-msgstr ""
-
-msgid "malformed end time line."
-msgstr ""
-
-msgid "malformed event end time."
-msgstr ""
-
-msgid "end must be later than start."
-msgstr ""
-
-#, fuzzy
-msgid "malformed duration line."
-msgstr "Enter description :"
-
-#, fuzzy
-msgid "invalid duration."
-msgstr "FATAL ERROR in load_app: syntax error in the item date\n"
-
 #, fuzzy
 msgid "only one description allowed."
 msgstr "Enter description :"
@@ -755,6 +757,10 @@ msgstr ""
 
 msgid "The ical file seems to be malformed. The end of item was not found."
 msgstr ""
+
+#, fuzzy
+msgid "could not retrieve item summary."
+msgstr "Enter description :"
 
 msgid "item priority is invalid (must be between 0 and 9)."
 msgstr ""
@@ -1430,13 +1436,6 @@ msgid "Warning: could not open %s, Aborting..."
 msgstr ""
 
 #, fuzzy
-msgid "error while launching command: could not fork"
-msgstr "FATAL ERROR in todo_delete_bynum: no such todo\n"
-
-msgid "error while launching command"
-msgstr ""
-
-#, fuzzy
 msgid "(if set to YES, notify-bar will be displayed)"
 msgstr "(if set to YES, progress bar will not be displayed when saving data)"
 
@@ -1924,6 +1923,10 @@ msgstr ""
 
 msgid "Remove temporary backup..."
 msgstr ""
+
+#, fuzzy
+#~ msgid "error while launching command: could not fork"
+#~ msgstr "FATAL ERROR in todo_delete_bynum: no such todo\n"
 
 #, fuzzy
 #~ msgid ""

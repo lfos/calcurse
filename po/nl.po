@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2020-10-12 10:38-0400\n"
-"PO-Revision-Date: 2020-01-30 18:17+0000\n"
+"POT-Creation-Date: 2021-04-10 09:12-0400\n"
+"PO-Revision-Date: 2020-10-12 15:20+0000\n"
 "Last-Translator: Lukas Fleischer\n"
 "Language-Team: Dutch (http://www.transifex.com/lfleischer/calcurse/language/"
 "nl/)\n"
@@ -618,6 +618,9 @@ msgstr ""
 msgid "either until or count."
 msgstr ""
 
+msgid "missing until value."
+msgstr ""
+
 msgid "invalid until format."
 msgstr ""
 
@@ -642,17 +645,16 @@ msgstr ""
 msgid "invalid exception."
 msgstr ""
 
-#, fuzzy, c-format
+#, c-format
 msgid "malformed %s line."
-msgstr "omschrijving beschadigd"
+msgstr ""
 
-#, fuzzy, c-format
+#, c-format
 msgid "malformed %s."
-msgstr "omschrijving beschadigd"
+msgstr ""
 
-#, fuzzy
 msgid "malformed summary line."
-msgstr "omschrijving beschadigd"
+msgstr ""
 
 msgid "malformed summary."
 msgstr ""
@@ -660,10 +662,42 @@ msgstr ""
 msgid "line break in summary."
 msgstr ""
 
-msgid "could not retrieve item summary."
-msgstr "kan item onderwerp niet ophalen"
+#, fuzzy
+msgid "item start date not defined."
+msgstr "item onbekend"
 
-msgid "item start date is not defined."
+msgid "malformed start time line."
+msgstr ""
+
+#, fuzzy
+msgid "invalid or malformed event start time."
+msgstr "kan begintijd van gebeurtenis niet ophalen"
+
+msgid "invalid end time value type."
+msgstr ""
+
+msgid "malformed end time line."
+msgstr ""
+
+#, fuzzy
+msgid "malformed event end time."
+msgstr "kan eindtijd van gebeurtenis niet ophalen"
+
+msgid "end must be later than start."
+msgstr ""
+
+#, fuzzy
+msgid "either end or duration."
+msgstr "syntaxfout in itemtijd of duurtijd van het item"
+
+msgid "malformed duration line."
+msgstr ""
+
+#, fuzzy
+msgid "invalid duration."
+msgstr "item heeft een negatieve tijdsduur"
+
+msgid "exception date, but no recurrence rule."
 msgstr ""
 
 msgid "multi-day event changed to one-day event"
@@ -684,47 +718,17 @@ msgstr ""
 msgid "item could not be identified."
 msgstr "item onbekend"
 
-msgid "malformed start time line."
-msgstr ""
-
-#, fuzzy
-msgid "invalid or malformed event start time."
-msgstr "kan begintijd van gebeurtenis niet ophalen"
-
-#, fuzzy
-msgid "either end or duration."
-msgstr "syntaxfout in itemtijd of duurtijd van het item"
-
-msgid "invalid end time value type."
-msgstr ""
-
-msgid "malformed end time line."
-msgstr ""
-
-#, fuzzy
-msgid "malformed event end time."
-msgstr "kan eindtijd van gebeurtenis niet ophalen"
-
-msgid "end must be later than start."
-msgstr ""
-
-#, fuzzy
-msgid "malformed duration line."
-msgstr "omschrijving beschadigd"
-
-#, fuzzy
-msgid "invalid duration."
-msgstr "item heeft een negatieve tijdsduur"
-
-#, fuzzy
 msgid "only one description allowed."
-msgstr "omschrijving beschadigd"
+msgstr ""
 
 msgid "only one location allowed."
 msgstr ""
 
 msgid "The ical file seems to be malformed. The end of item was not found."
 msgstr "Ical-bestand oogt onjuist. Het einde van item niet gevonden."
+
+msgid "could not retrieve item summary."
+msgstr "kan item onderwerp niet ophalen"
 
 msgid "item priority is invalid (must be between 0 and 9)."
 msgstr ""
@@ -1372,12 +1376,6 @@ msgstr ""
 msgid "Warning: could not open %s, Aborting..."
 msgstr "Pas op: bestand %s niet te openen. Stoppen..."
 
-msgid "error while launching command: could not fork"
-msgstr ""
-
-msgid "error while launching command"
-msgstr "fout bij uitvoeren commando"
-
 msgid "(if set to YES, notify-bar will be displayed)"
 msgstr "(Bij JA, wordt de informatiebalk weergegeven)"
 
@@ -1802,12 +1800,11 @@ msgstr ""
 msgid "Usage: calcurse-upgrade [-h|-v|--config <file>]"
 msgstr ""
 
-#, fuzzy
 msgid ""
 "\n"
 "Copyright (c) 2004-2020 calcurse Development Team.\n"
 "This is free software; see the source for copying conditions.\n"
-msgstr "Dit is vrije software; bekijk de broncode voor de kopieer voorwaarden"
+msgstr ""
 
 msgid "unrecognized option:"
 msgstr ""
@@ -1849,10 +1846,6 @@ msgstr ""
 msgid "Remove temporary backup..."
 msgstr ""
 
-#, fuzzy
-#~ msgid "empty description."
-#~ msgstr "omschrijving beschadigd"
-
 #~ msgid "item duration malformed."
 #~ msgstr "item tijdsduur onjuist"
 
@@ -1862,6 +1855,9 @@ msgstr ""
 #~ msgid "Data files found. Data will be loaded now."
 #~ msgstr "Databestanden gevonden. Data wordt geladen."
 
+#~ msgid "error while launching command"
+#~ msgstr "fout bij uitvoeren commando"
+
 #~ msgid "(d)aily"
 #~ msgstr "(d)agelijks"
 
@@ -1870,12 +1866,3 @@ msgstr ""
 
 #~ msgid "(y)early"
 #~ msgstr "(y)aarlijks"
-
-#~ msgid "recurrence rule malformed."
-#~ msgstr "herhalingsregel onjuist"
-
-#~ msgid "recurrence exception dates malformed."
-#~ msgstr "herhaling exceptie datum onjuist"
-
-#~ msgid "could not get entire item description."
-#~ msgstr "onvolledige item omschrijving"

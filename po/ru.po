@@ -6,14 +6,14 @@
 # Алексей Мехоношин <ruskidecko@gmail.com>, 2011-2012
 # Алексей Мехоношин <ruskidecko@gmail.com>, 2012-2014,2016
 # Lukas Fleischer <transifex@cryptocrack.de>, 2011
-# Алексей Мехоношин <ruskidecko@gmail.com>, 2016-2017,2019
+# Алексей Мехоношин <ruskidecko@gmail.com>, 2016-2017,2019-2020
 msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2020-10-12 10:38-0400\n"
-"PO-Revision-Date: 2020-01-30 18:17+0000\n"
-"Last-Translator: Lukas Fleischer\n"
+"POT-Creation-Date: 2021-04-10 09:12-0400\n"
+"PO-Revision-Date: 2020-10-12 17:52+0000\n"
+"Last-Translator: Алексей Мехоношин <ruskidecko@gmail.com>\n"
 "Language-Team: Russian (http://www.transifex.com/lfleischer/calcurse/"
 "language/ru/)\n"
 "Language: ru\n"
@@ -41,6 +41,7 @@ msgstr "ошибка даты в задаче"
 msgid "no such appointment"
 msgstr "задача отсутствует"
 
+#, fuzzy
 msgid ""
 "Usage:\n"
 "calcurse [-D <directory>] [-C <directory>] [-c <calendar file>]\n"
@@ -50,6 +51,11 @@ msgid ""
 "calcurse -h | -v | --status | -G | -P | -g | -i <file> | -x[<format>] | --"
 "daemon"
 msgstr ""
+"Использование:\n"
+"calcurse [-D ] [-C ] [-c ]\n"
+"calcurse -Q [--from ] [--to ] [--days ]\n"
+"calcurse -a | -d | -d | -n | -r[] | -s[] | -t[]\n"
+"calcurse -h | -v | --status | -G | -P | -g | -i | -x[] | --daemon"
 
 msgid "Try `calcurse -h` for more information."
 msgstr "Выполните 'calcurse -h' для получения справки."
@@ -58,9 +64,8 @@ msgstr "Выполните 'calcurse -h' для получения справк�
 msgid "calcurse %s -- text-based organizer\n"
 msgstr "calcurse %s - текстовый органайзер\n"
 
-#, fuzzy
 msgid "Copyright (c) 2004-2020 calcurse Development Team."
-msgstr "Copyright (c) 2004-2017 calcurse Development Team."
+msgstr "Копирайт (c) 2004-2020 calcurse Development Team."
 
 msgid "This is free software; see the source for copying conditions."
 msgstr ""
@@ -68,7 +73,7 @@ msgstr ""
 "с исходным кодом."
 
 msgid "Operations in command line mode:"
-msgstr ""
+msgstr "Операции в режиме командной строки:"
 
 msgid "  -Q, --query   Print items in a given query range"
 msgstr ""
@@ -112,7 +117,7 @@ msgid "  --search, -S <regexp>   Match regular expression in queries"
 msgstr ""
 
 msgid "Consult the man page for details."
-msgstr ""
+msgstr "Подробности смотрите в man-странице"
 
 msgid "Miscellaneous:"
 msgstr "Разное:"
@@ -130,10 +135,10 @@ msgid "  -D, --datadir <dir>     The data directory to use"
 msgstr ""
 
 msgid "  -g, --gc                Run the garbage collector"
-msgstr ""
+msgstr "-g, --gc Запустить сборщик мусора"
 
 msgid "  -h, --help              Show this help text"
-msgstr ""
+msgstr "-h, --help Показать эту справку"
 
 msgid "  -i, --import <file>     Import iCal data from file"
 msgstr ""
@@ -148,7 +153,7 @@ msgid "  --status                Display status of running instances"
 msgstr ""
 
 msgid "  -v, --version           Show version information"
-msgstr ""
+msgstr " -v, --version Показать информацию о версии"
 
 msgid ""
 "  -x, --export[<format>]  Export to stdout in ical (default) or pcal format"
@@ -185,7 +190,7 @@ msgid "calcurse is running in background (pid %d)\n"
 msgstr "calcurse запущен в фоновом режиме (pid: %d)\n"
 
 msgid "calcurse is not running"
-msgstr ""
+msgstr "calcurse не запущен"
 
 msgid "completed tasks:\n"
 msgstr "Выполненные задачи:\n"
@@ -232,7 +237,7 @@ msgstr "неверный диапазон дат: %s"
 
 #, c-format
 msgid "calcurse is running (pid = %d)"
-msgstr ""
+msgstr "calcurse запущен (pid = %d)"
 
 #, c-format
 msgid "invalid input date format: %s"
@@ -249,7 +254,7 @@ msgid "cannot specify a range and an end date"
 msgstr "невозможно задать диапазон и конечную дату"
 
 msgid "end date cannot come before start date"
-msgstr ""
+msgstr "конечная дата не может быть до даты начала"
 
 msgid "Unable to find documentation."
 msgstr "Невозможно найти документацию"
@@ -261,7 +266,7 @@ msgid "Data were saved/reloaded successfully"
 msgstr ""
 
 msgid "Save cancelled"
-msgstr ""
+msgstr "Сохранение отменено"
 
 msgid "Data were already saved"
 msgstr ""
@@ -388,10 +393,10 @@ msgid "(specifies the panel that is selected by default)"
 msgstr "(Задаёт панель, которая будет активна по умолчанию)"
 
 msgid "monthly"
-msgstr ""
+msgstr "ежемесячно"
 
 msgid "weekly"
-msgstr ""
+msgstr "еженедельно"
 
 msgid "(preferred calendar display)"
 msgstr ""
@@ -631,6 +636,9 @@ msgstr "неверная маска фильтра"
 msgid "either until or count."
 msgstr ""
 
+msgid "missing until value."
+msgstr ""
+
 #, fuzzy
 msgid "invalid until format."
 msgstr "неверный формат экспорта: %s"
@@ -660,17 +668,16 @@ msgstr ""
 msgid "invalid exception."
 msgstr "Неверная частота."
 
-#, fuzzy, c-format
+#, c-format
 msgid "malformed %s line."
-msgstr "Неверное начальное время."
+msgstr ""
 
-#, fuzzy, c-format
+#, c-format
 msgid "malformed %s."
-msgstr "Описание: "
+msgstr ""
 
-#, fuzzy
 msgid "malformed summary line."
-msgstr "Неверное начальное время."
+msgstr ""
 
 msgid "malformed summary."
 msgstr ""
@@ -678,11 +685,44 @@ msgstr ""
 msgid "line break in summary."
 msgstr ""
 
-msgid "could not retrieve item summary."
-msgstr "невозможно восстановить суммарные записи."
-
-msgid "item start date is not defined."
+#, fuzzy
+msgid "item start date not defined."
 msgstr "время начала события не определено."
+
+msgid "malformed start time line."
+msgstr ""
+
+#, fuzzy
+msgid "invalid or malformed event start time."
+msgstr "невозможно восстановить время начала события."
+
+#, fuzzy
+msgid "invalid end time value type."
+msgstr "Неверная дата или время."
+
+msgid "malformed end time line."
+msgstr ""
+
+#, fuzzy
+msgid "malformed event end time."
+msgstr "невозможно восстановить время окончания события."
+
+msgid "end must be later than start."
+msgstr ""
+
+#, fuzzy
+msgid "either end or duration."
+msgstr "Неверное время или продолжительность."
+
+msgid "malformed duration line."
+msgstr ""
+
+#, fuzzy
+msgid "invalid duration."
+msgstr "Неверное время или продолжительность."
+
+msgid "exception date, but no recurrence rule."
+msgstr ""
 
 msgid "multi-day event changed to one-day event"
 msgstr ""
@@ -702,49 +742,17 @@ msgstr ""
 msgid "item could not be identified."
 msgstr "значение не может быть распознано."
 
-#, fuzzy
-msgid "malformed start time line."
-msgstr "Неверное начальное время."
-
-#, fuzzy
-msgid "invalid or malformed event start time."
-msgstr "невозможно восстановить время начала события."
-
-#, fuzzy
-msgid "either end or duration."
-msgstr "Неверное время или продолжительность."
-
-#, fuzzy
-msgid "invalid end time value type."
-msgstr "Неверная дата или время."
-
-msgid "malformed end time line."
-msgstr ""
-
-#, fuzzy
-msgid "malformed event end time."
-msgstr "невозможно восстановить время окончания события."
-
-msgid "end must be later than start."
-msgstr ""
-
-#, fuzzy
-msgid "malformed duration line."
-msgstr "описание повреждено."
-
-#, fuzzy
-msgid "invalid duration."
-msgstr "Неверное время или продолжительность."
-
-#, fuzzy
 msgid "only one description allowed."
-msgstr "описание повреждено."
+msgstr ""
 
 msgid "only one location allowed."
 msgstr ""
 
 msgid "The ical file seems to be malformed. The end of item was not found."
 msgstr "Файл ical скорее всего повреждён. Не найдено окончание записи."
+
+msgid "could not retrieve item summary."
+msgstr "невозможно восстановить суммарные записи."
 
 msgid "item priority is invalid (must be between 0 and 9)."
 msgstr "приоритет записи в неверном формате (должно быть число между 0 и 9)"
@@ -1410,12 +1418,6 @@ msgstr "   unfreed blocks: %u\n"
 msgid "Warning: could not open %s, Aborting..."
 msgstr "Внимание: невозможно открыть %s, Завершение..."
 
-msgid "error while launching command: could not fork"
-msgstr "ошибка во время запуска команды: невозможно разделиться (fork)"
-
-msgid "error while launching command"
-msgstr "ошибка во время запуска команды"
-
 msgid "(if set to YES, notify-bar will be displayed)"
 msgstr "(Если выбрано yes, будет выводится окно уведомления)"
 
@@ -1537,7 +1539,7 @@ msgstr ""
 
 #, c-format
 msgid "Enter start date [%s] and/or time ([hh:mm] or [hhmm]):"
-msgstr ""
+msgstr "Введите дату начала [%s] и/или время ([hh:mm] or [hhmm]):"
 
 msgid "Press [Enter] to continue"
 msgstr "Нажмите [Enter]"
@@ -1578,7 +1580,7 @@ msgid "Exception days:"
 msgstr ""
 
 msgid "Invalid date format - try again:."
-msgstr ""
+msgstr "Неверный формат даты - попробуйте снова:."
 
 msgid "Limit repetition to listed days."
 msgstr ""
@@ -1633,7 +1635,7 @@ msgstr ""
 
 #, fuzzy
 msgid "Invalid format - try again."
-msgstr "Неверная дата или время."
+msgstr "Неверный формат даты - попробуйте снова:."
 
 #, fuzzy
 msgid "Press any key to continue."
@@ -1646,12 +1648,13 @@ msgstr ""
 msgid "day"
 msgstr "Сегодня"
 
+#, fuzzy
 msgid "week"
-msgstr ""
+msgstr "еженедельно"
 
 #, fuzzy
 msgid "month"
-msgstr "(m)ежемесячно"
+msgstr "ежемесячно"
 
 msgid "year"
 msgstr ""
@@ -1851,14 +1854,11 @@ msgstr "неизвестная панель"
 msgid "Usage: calcurse-upgrade [-h|-v|--config <file>]"
 msgstr "Использовать: calcurse-upgrade [-h|-v|--config <file>]"
 
-#, fuzzy
 msgid ""
 "\n"
 "Copyright (c) 2004-2020 calcurse Development Team.\n"
 "This is free software; see the source for copying conditions.\n"
 msgstr ""
-"Это свободное ПО. Для ознакомления с условиями копирования ПО, ознакомьтесь "
-"с исходным кодом."
 
 msgid "unrecognized option:"
 msgstr "неизвестная опция:"
@@ -1916,10 +1916,6 @@ msgstr "Удалить временный архивный файл..."
 #~ msgid "recurrence frequency not recognized."
 #~ msgstr "рекуррентная частота не распознана"
 
-#, fuzzy
-#~ msgid "empty description."
-#~ msgstr "Описание: "
-
 #~ msgid "item has a negative duration."
 #~ msgstr "значение имеет отрицательную продолжительность."
 
@@ -1933,6 +1929,12 @@ msgstr "Удалить временный архивный файл..."
 #~ msgid "Data files found. Data will be loaded now."
 #~ msgstr "Данные найдены и будут загружены"
 
+#~ msgid "error while launching command: could not fork"
+#~ msgstr "ошибка во время запуска команды: невозможно разделиться (fork)"
+
+#~ msgid "error while launching command"
+#~ msgstr "ошибка во время запуска команды"
+
 #~ msgid "unknown repetition type"
 #~ msgstr "неизвестный тип повторения"
 
@@ -1944,6 +1946,9 @@ msgstr "Удалить временный архивный файл..."
 
 #~ msgid "(w)eekly"
 #~ msgstr "(w)еженедельно"
+
+#~ msgid "(m)onthly"
+#~ msgstr "(m)ежемесячно"
 
 #~ msgid "(y)early"
 #~ msgstr "(y)ежегодно"
@@ -1973,18 +1978,3 @@ msgstr "Удалить временный архивный файл..."
 
 #~ msgid "wrong item type"
 #~ msgstr "неправильный тип записи"
-
-#~ msgid "recurrence rule malformed."
-#~ msgstr "рекуррентные правила повреждены."
-
-#~ msgid "recurrence exception dates malformed."
-#~ msgstr "рекурентные соотношения дат повреждены."
-
-#~ msgid "could not get entire item description."
-#~ msgstr "невозможно получить описание полностью."
-
-#~ msgid "event start time malformed."
-#~ msgstr "время начала события неверно оформлено"
-
-#~ msgid "event end time malformed."
-#~ msgstr "событие и время неверно оформлены"

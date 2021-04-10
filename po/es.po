@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2020-10-12 10:38-0400\n"
-"PO-Revision-Date: 2020-01-30 18:17+0000\n"
+"POT-Creation-Date: 2021-04-10 09:12-0400\n"
+"PO-Revision-Date: 2020-10-12 15:20+0000\n"
 "Last-Translator: Lukas Fleischer\n"
 "Language-Team: Spanish (http://www.transifex.com/lfleischer/calcurse/"
 "language/es/)\n"
@@ -57,9 +57,8 @@ msgstr "Consulte `calcurse -h` para más información."
 msgid "calcurse %s -- text-based organizer\n"
 msgstr "calcurse %s -- organizador basado en texto\n"
 
-#, fuzzy
 msgid "Copyright (c) 2004-2020 calcurse Development Team."
-msgstr "Copyright (c) 2004-2017 Equipo de desarrollo de calcurse."
+msgstr ""
 
 msgid "This is free software; see the source for copying conditions."
 msgstr ""
@@ -637,6 +636,9 @@ msgstr "máscara de filtrado inválida"
 msgid "either until or count."
 msgstr ""
 
+msgid "missing until value."
+msgstr ""
+
 #, fuzzy
 msgid "invalid until format."
 msgstr "formato de exportación inválido: %s"
@@ -665,17 +667,16 @@ msgstr ""
 msgid "invalid exception."
 msgstr "Frecuencia inválida."
 
-#, fuzzy, c-format
+#, c-format
 msgid "malformed %s line."
-msgstr "fecha de comienzo del evento mal formada."
+msgstr ""
 
-#, fuzzy, c-format
+#, c-format
 msgid "malformed %s."
-msgstr "Ingrese descripción:"
+msgstr ""
 
-#, fuzzy
 msgid "malformed summary line."
-msgstr "fecha de comienzo del evento mal formada."
+msgstr ""
 
 msgid "malformed summary."
 msgstr ""
@@ -683,11 +684,44 @@ msgstr ""
 msgid "line break in summary."
 msgstr ""
 
-msgid "could not retrieve item summary."
-msgstr "no se pudo recuperar el resumen del elemento."
-
-msgid "item start date is not defined."
+#, fuzzy
+msgid "item start date not defined."
 msgstr "la fecha de comienzo del elemento no está definida."
+
+msgid "malformed start time line."
+msgstr ""
+
+#, fuzzy
+msgid "invalid or malformed event start time."
+msgstr "no se pudo recuperar la fecha de comienzo del evento."
+
+#, fuzzy
+msgid "invalid end time value type."
+msgstr "rango de fecha inválido: %s"
+
+msgid "malformed end time line."
+msgstr ""
+
+#, fuzzy
+msgid "malformed event end time."
+msgstr "no se pudo recuperar la fecha de finalización del evento."
+
+msgid "end must be later than start."
+msgstr ""
+
+#, fuzzy
+msgid "either end or duration."
+msgstr "error de sintaxis en la hora o duración del evento"
+
+msgid "malformed duration line."
+msgstr ""
+
+#, fuzzy
+msgid "invalid duration."
+msgstr "fecha inválida: %s"
+
+msgid "exception date, but no recurrence rule."
+msgstr ""
 
 msgid "multi-day event changed to one-day event"
 msgstr ""
@@ -707,43 +741,8 @@ msgstr ""
 msgid "item could not be identified."
 msgstr "el elemento no pudo ser identificado."
 
-#, fuzzy
-msgid "malformed start time line."
-msgstr "fecha de comienzo del evento mal formada."
-
-#, fuzzy
-msgid "invalid or malformed event start time."
-msgstr "no se pudo recuperar la fecha de comienzo del evento."
-
-#, fuzzy
-msgid "either end or duration."
-msgstr "error de sintaxis en la hora o duración del evento"
-
-#, fuzzy
-msgid "invalid end time value type."
-msgstr "rango de fecha inválido: %s"
-
-msgid "malformed end time line."
-msgstr ""
-
-#, fuzzy
-msgid "malformed event end time."
-msgstr "no se pudo recuperar la fecha de finalización del evento."
-
-msgid "end must be later than start."
-msgstr ""
-
-#, fuzzy
-msgid "malformed duration line."
-msgstr "descripción mal formada."
-
-#, fuzzy
-msgid "invalid duration."
-msgstr "fecha inválida: %s"
-
-#, fuzzy
 msgid "only one description allowed."
-msgstr "descripción mal formada."
+msgstr ""
 
 msgid "only one location allowed."
 msgstr ""
@@ -752,6 +751,9 @@ msgid "The ical file seems to be malformed. The end of item was not found."
 msgstr ""
 "El archivo ical parece estar mal formado. No se pudo encontrar el fin del "
 "elemento."
+
+msgid "could not retrieve item summary."
+msgstr "no se pudo recuperar el resumen del elemento."
 
 msgid "item priority is invalid (must be between 0 and 9)."
 msgstr "La prioridad del elemento es inválida (debe estar entre 0 y 9)."
@@ -1439,12 +1441,6 @@ msgstr "   bloques sin liberar: %u\n"
 msgid "Warning: could not open %s, Aborting..."
 msgstr "Advertencia: no pudo abrirse %s. Abortando..."
 
-msgid "error while launching command: could not fork"
-msgstr "error al lanzar comando: no pudo realizarse fork"
-
-msgid "error while launching command"
-msgstr "error al lanzar comando"
-
 msgid "(if set to YES, notify-bar will be displayed)"
 msgstr "(si selecciona SÍ, se mostrará la barra de notificaciones)"
 
@@ -1885,16 +1881,11 @@ msgstr "panel desconocido"
 msgid "Usage: calcurse-upgrade [-h|-v|--config <file>]"
 msgstr "Uso: calcurse-upgrade [-h|-v|--config <file>]"
 
-#, fuzzy
 msgid ""
 "\n"
 "Copyright (c) 2004-2020 calcurse Development Team.\n"
 "This is free software; see the source for copying conditions.\n"
 msgstr ""
-"\n"
-"Copyright (c) 2004-2017 Equipo de desarrollo de calcurse. \n"
-"Esto es software libre; consulte el código fuente para las condiciones de "
-"copia.\n"
 
 msgid "unrecognized option:"
 msgstr "opción no reconocida:"
@@ -1958,10 +1949,6 @@ msgstr "Eliminar respaldo temporal..."
 #~ msgid "recurrence frequency not recognized."
 #~ msgstr "frecuencia recurrente no reconocida."
 
-#, fuzzy
-#~ msgid "empty description."
-#~ msgstr "Ingrese descripción:"
-
 #~ msgid "item has a negative duration."
 #~ msgstr "el elemento tiene una duración negativa."
 
@@ -1974,6 +1961,12 @@ msgstr "Eliminar respaldo temporal..."
 
 #~ msgid "Data files found. Data will be loaded now."
 #~ msgstr "Archivos de datos encontrados. Ahora se cargaran los datos."
+
+#~ msgid "error while launching command: could not fork"
+#~ msgstr "error al lanzar comando: no pudo realizarse fork"
+
+#~ msgid "error while launching command"
+#~ msgstr "error al lanzar comando"
 
 #~ msgid "unknown repetition type"
 #~ msgstr "tipo de repetición desconocido"
@@ -2011,15 +2004,3 @@ msgstr "Eliminar respaldo temporal..."
 
 #~ msgid "wrong item type"
 #~ msgstr "tipo de elemento inválido"
-
-#~ msgid "recurrence rule malformed."
-#~ msgstr "regla de recurrencia mal formada"
-
-#~ msgid "recurrence exception dates malformed."
-#~ msgstr "excepción de recurrencia mal formada."
-
-#~ msgid "could not get entire item description."
-#~ msgstr "no se pudo obtener la descripción completa del elemento."
-
-#~ msgid "event end time malformed."
-#~ msgstr "fecha de finalización del evento mal formada."

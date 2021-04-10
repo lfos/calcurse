@@ -4,7 +4,7 @@
 #
 # Translators:
 # delix, 2012
-# delix, 2012
+# 854c965733f966783769d2df566aaebe_fdcf60e, 2012
 # Lukas Fleischer, 2019
 # Stefan Schroeder <ondekoza@gmail.com>, 2017
 # Tim, 2013
@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2020-10-12 10:38-0400\n"
-"PO-Revision-Date: 2020-01-30 18:17+0000\n"
+"POT-Creation-Date: 2021-04-10 09:12-0400\n"
+"PO-Revision-Date: 2020-10-12 15:20+0000\n"
 "Last-Translator: Lukas Fleischer\n"
 "Language-Team: German (http://www.transifex.com/lfleischer/calcurse/language/"
 "de/)\n"
@@ -59,9 +59,8 @@ msgstr "Der Aufruf `calcurse -h` zeigt weitere Hilfen."
 msgid "calcurse %s -- text-based organizer\n"
 msgstr "calcurse %s -- Terminplaner im Textmodus\n"
 
-#, fuzzy
 msgid "Copyright (c) 2004-2020 calcurse Development Team."
-msgstr "Copyright (c) 2004-2017 calcurse Entwickler-Team."
+msgstr ""
 
 msgid "This is free software; see the source for copying conditions."
 msgstr "This is free software; see the source for copying conditions."
@@ -630,6 +629,9 @@ msgstr "Ungültiger Filter"
 msgid "either until or count."
 msgstr ""
 
+msgid "missing until value."
+msgstr ""
+
 #, fuzzy
 msgid "invalid until format."
 msgstr "Ungültiges Exportformat: %s"
@@ -658,17 +660,16 @@ msgstr ""
 msgid "invalid exception."
 msgstr "Ungültige Wiederholungsrate."
 
-#, fuzzy, c-format
+#, c-format
 msgid "malformed %s line."
-msgstr "Startzeit des Ereignisses hat ein ungültiges Format."
+msgstr ""
 
-#, fuzzy, c-format
+#, c-format
 msgid "malformed %s."
-msgstr "Beschreibung eingeben:"
+msgstr ""
 
-#, fuzzy
 msgid "malformed summary line."
-msgstr "Startzeit des Ereignisses hat ein ungültiges Format."
+msgstr ""
 
 msgid "malformed summary."
 msgstr ""
@@ -676,11 +677,44 @@ msgstr ""
 msgid "line break in summary."
 msgstr ""
 
-msgid "could not retrieve item summary."
-msgstr "Kann die Zusammenfassung des Eintrags nicht lesen."
-
-msgid "item start date is not defined."
+#, fuzzy
+msgid "item start date not defined."
 msgstr "Anfangsdatum des Eintrags fehlt."
+
+msgid "malformed start time line."
+msgstr ""
+
+#, fuzzy
+msgid "invalid or malformed event start time."
+msgstr "Kann die Startzeit des Ereignis nicht lesen."
+
+#, fuzzy
+msgid "invalid end time value type."
+msgstr "Ungültiger Zeitraum: %s"
+
+msgid "malformed end time line."
+msgstr ""
+
+#, fuzzy
+msgid "malformed event end time."
+msgstr "Kann die Endzeit des Ereignis nicht lesen."
+
+msgid "end must be later than start."
+msgstr ""
+
+#, fuzzy
+msgid "either end or duration."
+msgstr "Syntaxfehler in Item-Zeit oder -Dauer"
+
+msgid "malformed duration line."
+msgstr ""
+
+#, fuzzy
+msgid "invalid duration."
+msgstr "Ungültiges Datum: %s"
+
+msgid "exception date, but no recurrence rule."
+msgstr ""
 
 msgid "multi-day event changed to one-day event"
 msgstr ""
@@ -700,49 +734,17 @@ msgstr ""
 msgid "item could not be identified."
 msgstr "Element kann nicht erkannt werden."
 
-#, fuzzy
-msgid "malformed start time line."
-msgstr "Startzeit des Ereignisses hat ein ungültiges Format."
-
-#, fuzzy
-msgid "invalid or malformed event start time."
-msgstr "Kann die Startzeit des Ereignis nicht lesen."
-
-#, fuzzy
-msgid "either end or duration."
-msgstr "Syntaxfehler in Item-Zeit oder -Dauer"
-
-#, fuzzy
-msgid "invalid end time value type."
-msgstr "Ungültiger Zeitraum: %s"
-
-msgid "malformed end time line."
-msgstr ""
-
-#, fuzzy
-msgid "malformed event end time."
-msgstr "Kann die Endzeit des Ereignis nicht lesen."
-
-msgid "end must be later than start."
-msgstr ""
-
-#, fuzzy
-msgid "malformed duration line."
-msgstr "Beschreibung Fehlerhaft."
-
-#, fuzzy
-msgid "invalid duration."
-msgstr "Ungültiges Datum: %s"
-
-#, fuzzy
 msgid "only one description allowed."
-msgstr "Beschreibung Fehlerhaft."
+msgstr ""
 
 msgid "only one location allowed."
 msgstr ""
 
 msgid "The ical file seems to be malformed. The end of item was not found."
 msgstr "Die ICal Datei ist fehlerhaft. Keine Enddatum des Eintrags gefunden."
+
+msgid "could not retrieve item summary."
+msgstr "Kann die Zusammenfassung des Eintrags nicht lesen."
 
 msgid "item priority is invalid (must be between 0 and 9)."
 msgstr "Priorität des Eintrags ist ungültig (gültig sind 0 bis 9)"
@@ -1415,12 +1417,6 @@ msgstr "   belegte Blöcke: %u\n"
 msgid "Warning: could not open %s, Aborting..."
 msgstr "WARNUNG: Kann %s nicht öffnen. Abbruch..."
 
-msgid "error while launching command: could not fork"
-msgstr "Fehler beim Ausführen einer Befehlszeile: Kann nicht Ausführen"
-
-msgid "error while launching command"
-msgstr "Fehler beim Ausführen einer Befehlszeile"
-
 msgid "(if set to YES, notify-bar will be displayed)"
 msgstr "(Ist JA gewählt, wird die Benachrichtigungszeile angezeigt)"
 
@@ -1853,16 +1849,11 @@ msgstr "unbekannte Ansicht"
 msgid "Usage: calcurse-upgrade [-h|-v|--config <file>]"
 msgstr "Verwendung: calcurse-upgrade [-h|-v|--config <file>]"
 
-#, fuzzy
 msgid ""
 "\n"
 "Copyright (c) 2004-2020 calcurse Development Team.\n"
 "This is free software; see the source for copying conditions.\n"
 msgstr ""
-"\n"
-"Copyright (c) 2004-2017 calcurse Entwickler-Team.\n"
-"Calcurse ist freie Software; die Lizenzbedingungen sind in den Quelltexten "
-"vermerkt.\n"
 
 msgid "unrecognized option:"
 msgstr "unbekannte Option:"
@@ -1924,10 +1915,6 @@ msgstr "Entferne temporäres Backup..."
 #~ msgid "recurrence frequency not recognized."
 #~ msgstr "Wiederholung nicht erkannt."
 
-#, fuzzy
-#~ msgid "empty description."
-#~ msgstr "Beschreibung eingeben:"
-
 #~ msgid "item has a negative duration."
 #~ msgstr "Eintrag hat eine negative Dauer."
 
@@ -1939,6 +1926,12 @@ msgstr "Entferne temporäres Backup..."
 
 #~ msgid "Data files found. Data will be loaded now."
 #~ msgstr "Benutzerdaten gefunden. Daten werden geladen."
+
+#~ msgid "error while launching command: could not fork"
+#~ msgstr "Fehler beim Ausführen einer Befehlszeile: Kann nicht Ausführen"
+
+#~ msgid "error while launching command"
+#~ msgstr "Fehler beim Ausführen einer Befehlszeile"
 
 #~ msgid "unknown repetition type"
 #~ msgstr "Unbekannter Wiederholungstyp"
@@ -1976,15 +1969,3 @@ msgstr "Entferne temporäres Backup..."
 
 #~ msgid "wrong item type"
 #~ msgstr "Falscher Typ des Eintrags"
-
-#~ msgid "recurrence rule malformed."
-#~ msgstr "Wiederholungstyp falsch."
-
-#~ msgid "recurrence exception dates malformed."
-#~ msgstr "Ausnahmen des Wiederholungstyp falsch."
-
-#~ msgid "could not get entire item description."
-#~ msgstr "Kann nicht die ganze Beschreibung lesen."
-
-#~ msgid "event end time malformed."
-#~ msgstr "Ereignis-Endzeit hat ein ungültiges Format."
