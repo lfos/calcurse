@@ -281,6 +281,29 @@ static void update_duration(time_t *start, long *dur)
 	*dur = newdur;
 }
 
+static void toggle_or_add_checkmark(struct event *ev) {
+    const size_t flaglen = 4;
+    const char *checkoff = "[ ] ";
+    const char *checkon  = "[x] ";
+    
+    if(strncmp(checkoff, ev->mesg, flaglen) == 0) {
+        // Toggle checkmark ON
+        ev->mesg[1] = 'x';
+    } else if(strncmp(checkon, ev->mesg, flaglen) == 0) {
+        // Toggle checkmark OFF
+        ev->mesg[1] = ' ';
+    } else {        
+        // Prepend empty checkmark to a newly allocated buffer
+    	size_t len = strlen(ev->mesg);
+        char *nbuf = mem_malloc(len + flaglen + 1); // +1 for \0
+        memset(nbuf, 0, len + flaglen + 1);
+        memcpy(nbuf, checkoff, flaglen);
+        memcpy(nbuf + flaglen, ev->mesg, len);
+        ev->mesg = nbuf;
+    }
+}
+
+
 static void update_desc(char **desc)
 {
 	status_mesg(_("Enter the new item description:"), "");
@@ -1219,6 +1242,49 @@ void ui_day_item_add(void)
 	ui_calendar_monthly_view_cache_set_invalid();
 
 	wins_erase_status_bar();
+}
+
+void ui_day_item_copy_note_to_event()
+{
+	time_t start = ui_day_sel_date(); //, end, saved = start;
+	union aptev_ptr item;
+	struct day_item d = empty_day;
+	
+	struct todo *todoitem = ui_todo_selitem();
+	// This plus `toggle` call below potentially causes two mallocs one
+	// after another
+	// Thing is, we can't just copy the message pointer because if
+	// TODO item mesg happens to start with `[ ] `, then `toggle` won't
+	// allocate a new buffer and once we delete TODO - we'll be having a
+	// dangling pointer
+	//
+	// This can be fixed by breaking up `toggle` functionality, either
+	// by copying the `strncmp` part of the code into separate allocation
+	// function, or by passing in a custom allocation function ptr.
+	//
+	// Either way - this is 2020, I do love me not-stupid code,
+	// but I don't think this is much to worry about, and I think not
+	// increasing complexity for this is probably the best course of action
+	
+	size_t len = strlen(todoitem->mesg);
+	char *nmesg = mem_malloc(len);
+	memcpy(nmesg, todoitem->mesg, len);
+	item.ev = event_new(nmesg, 0L, start, 1);
+	toggle_or_add_checkmark(item.ev);
+
+	d.order = start;
+	d.item = item;
+	day_set_sel_data(&d);
+}
+
+void ui_day_item_toggle_check()
+{
+    struct day_item *item = ui_day_get_sel();
+
+    // Only allow toggling on daily events first
+    if(item->type == EVNT) {
+        toggle_or_add_checkmark(item->item.ev);
+    }
 }
 
 /* Delete an item from the appointment list. */

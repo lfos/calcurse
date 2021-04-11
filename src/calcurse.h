@@ -565,6 +565,7 @@ enum vkey {
 	KEY_REPEAT_ITEM,
 	KEY_EDIT_NOTE,
 	KEY_VIEW_NOTE,
+	KEY_PROMOTE_NOTE,
 	KEY_RAISE_PRIORITY,
 	KEY_LOWER_PRIORITY,
 
@@ -1150,6 +1151,8 @@ void todo_free_list(void);
 
 /* ui-day.c */
 void ui_day_item_add(void);
+void ui_day_item_copy_note_to_event(void);
+void ui_day_item_toggle_check(void);
 void ui_day_item_delete(unsigned);
 void ui_day_item_edit(void);
 void ui_day_item_pipe(void);
@@ -1177,6 +1180,7 @@ void ui_day_view_note(void);
 void ui_day_edit_note(void);
 
 /* ui-todo.c */
+struct todo *ui_todo_selitem(void);
 void ui_todo_add(void);
 void ui_todo_delete(void);
 void ui_todo_edit(void);

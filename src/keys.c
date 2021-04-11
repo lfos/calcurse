@@ -153,8 +153,10 @@ static struct keydef_s keydef[NBVKEYS] = {
 	{ "repeat", "r", gettext_noop("Repeat") },
 	{ "edit-note", "n N", gettext_noop("EditNote") },
 	{ "view-note", ">", gettext_noop("ViewNote") },
+	{ "promote-note", "P", gettext_noop("PromoteNote") },
 	{ "raise-priority", "+", gettext_noop("Prio.+") },
 	{ "lower-priority", "-", gettext_noop("Prio.-") }
+
 };
 
 /*

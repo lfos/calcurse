@@ -211,7 +211,13 @@ static inline void key_repeat_item(void)
 static inline void key_flag_item(void)
 {
 	if (wins_slctd() == APP && !event_dummy(ui_day_get_sel())) {
-		ui_day_flag();
+		struct day_item *item = ui_day_get_sel();
+		if(item->type == EVNT) {
+			ui_day_item_toggle_check();
+		} else {
+			ui_day_flag();
+		}
+		
 		do_storage(0);
 		wins_update(FLAG_APP);
 	} else if (wins_slctd() == TOD) {
@@ -265,6 +271,21 @@ static inline void key_view_note(void)
 	else if (wins_slctd() == TOD)
 		ui_todo_view_note();
 	wins_update(FLAG_ALL);
+}
+
+static inline void key_promote_note(void)
+{
+	if(wins_slctd() == TOD) {
+		ui_day_item_copy_note_to_event();
+		
+		struct todo *item = ui_todo_selitem();
+		todo_delete(item);
+		ui_todo_load_items();
+		io_set_modified();
+
+		do_storage(0);
+		wins_update(FLAG_CAL | FLAG_APP | FLAG_STA | FLAG_TOD);
+    }
 }
 
 static inline void key_generic_credits(void)
@@ -878,6 +899,7 @@ int main(int argc, char **argv)
 		HANDLE_KEY(KEY_LOWER_PRIORITY, key_lower_priority);
 		HANDLE_KEY(KEY_EDIT_NOTE, key_edit_note);
 		HANDLE_KEY(KEY_VIEW_NOTE, key_view_note);
+		HANDLE_KEY(KEY_PROMOTE_NOTE, key_promote_note);
 		HANDLE_KEY(KEY_GENERIC_CREDITS, key_generic_credits);
 		HANDLE_KEY(KEY_GENERIC_HELP, key_generic_help);
 		HANDLE_KEY(KEY_GENERIC_SAVE, key_generic_save);
