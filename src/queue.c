@@ -127,6 +127,6 @@ void que_save(void)
 	if (!que_ued())
 		return;
 	ev = que_get();
-	apoint_new(ev->mesg, NULL, ev->day, 0, APOINT_NULL);
+	apoint_new(ev->mesg, NULL, ev->day, 0, APOINT_NULL, NULL);
 	io_set_modified();
 }

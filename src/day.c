@@ -510,8 +510,14 @@ day_display_item_date(struct day_item *day, WINDOW *win, int incolor,
 			day->type == RECUR_APPT) ? '*' : '-';
 	ch_notify = (day_item_get_state(day) & APOINT_NOTIFY) ? '!' : ' ';
 	mvwprintw(win, y, x, " %c%c%s", ch_recur, ch_notify, a_st);
-	if (apt_tmp.dur)
-		mvwprintw(win, y, x + 3 + strlen(a_st), " -> %s", a_end);
+	x += 3 + strlen(a_st);
+	if (apt_tmp.dur) {
+		mvwprintw(win, y, x, " -> %s", a_end);
+		x += 4 + strlen(a_end);
+	}
+	if (day->type == APPT) {
+		tags_print(win, y, x, day->item.apt->tags);
+	}
 	if (incolor == 0)
 		custom_remove_attr(win, ATTR_HIGHEST);
 }
@@ -902,6 +908,17 @@ void day_item_switch_notify(struct day_item *p)
 		break;
 	case APPT:
 		apoint_switch_notify(p->item.apt);
+		break;
+	default:
+		break;
+	}
+}
+
+void day_item_toggle_tag(struct day_item *p, int tag)
+{
+	switch (p->type) {
+	case APPT:
+		apoint_toggle_tag(p->item.apt, tag);
 		break;
 	default:
 		break;

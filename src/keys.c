@@ -154,7 +154,8 @@ static struct keydef_s keydef[NBVKEYS] = {
 	{ "edit-note", "n N", gettext_noop("EditNote") },
 	{ "view-note", ">", gettext_noop("ViewNote") },
 	{ "raise-priority", "+", gettext_noop("Prio.+") },
-	{ "lower-priority", "-", gettext_noop("Prio.-") }
+	{ "lower-priority", "-", gettext_noop("Prio.-") },
+	{ "toggle-tag", "'", gettext_noop("Tag") }
 };
 
 /*
@@ -735,6 +736,8 @@ void keys_popup_info(enum vkey key)
 	    _("Raise a task priority inside the todo panel.");
 	info[KEY_LOWER_PRIORITY] =
 	    _("Lower a task priority inside the todo panel.");
+	info[KEY_TOGGLE_TAG] =
+		_("Toggle a tag");
 
 	if (key > NBVKEYS)
 		return;
