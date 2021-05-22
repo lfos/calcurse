@@ -241,9 +241,11 @@ enum getstr getstring(WINDOW * win, char *str, int l, int x, int y)
 			st.len = st.pos;
 			break;
 		case CTRL('A'):	/* go to beginning of string */
+		case KEY_HOME:
 			st.pos = 0;
 			break;
 		case CTRL('E'):	/* go to end of string */
+		case KEY_END:
 			st.pos = st.len;
 			break;
 		case KEY_LEFT:	/* move one char backward  */
