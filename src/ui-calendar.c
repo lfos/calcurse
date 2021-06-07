@@ -159,7 +159,9 @@ void ui_calendar_set_first_day_of_week(enum wday first_day)
 /* Swap first day of week in calendar. */
 void ui_calendar_change_first_day_of_week(void)
 {
-	wday_start = !wday_start;
+	wday_start++;
+	if(wday_start >= WEEKINDAYS)
+		wday_start = 0;
 }
 
 /* Return 1 if week begins on monday, 0 otherwise. */

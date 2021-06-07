@@ -38,6 +38,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <ctype.h>
+#include <langinfo.h>
 
 #include "calcurse.h"
 
@@ -702,8 +703,7 @@ static void print_general_option(int i, WINDOW *win, int y, int hilt, void *cb_d
 	case FIRST_DAY_OF_WEEK:
 		custom_apply_attr(win, ATTR_HIGHEST);
 		mvwaddstr(win, y, XPOS + strlen(opt[FIRST_DAY_OF_WEEK]),
-			  ui_calendar_get_wday_start()? _("Monday") :
-			  _("Sunday"));
+			  nl_langinfo(DAY_1 + ui_calendar_get_wday_start()));
 		custom_remove_attr(win, ATTR_HIGHEST);
 		mvwaddstr(win, y + 1, XPOS,
 			  _("(specifies the first day of week in the calendar view)"));

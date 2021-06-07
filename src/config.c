@@ -36,6 +36,8 @@
 
 #include <ctype.h>
 #include <unistd.h>
+#include <string.h>
+#include <strings.h>
 
 #include "calcurse.h"
 
@@ -261,14 +263,16 @@ static int config_parse_default_panel(void *dummy, const char *val)
 
 static int config_parse_first_day_of_week(void *dummy, const char *val)
 {
-	if (!strcmp(val, "monday"))
-		ui_calendar_set_first_day_of_week(MONDAY);
-	else if (!strcmp(val, "sunday"))
-		ui_calendar_set_first_day_of_week(SUNDAY);
-	else
-		return 0;
+	int i;
 
-	return 1;
+	for (i = 0; i < WEEKINDAYS; i++) {
+		if(!strcasecmp(val, get_wday_default_string(i))) {
+			ui_calendar_set_first_day_of_week(i);
+			return 1;
+		}
+	}
+
+	return 0;
 }
 
 static int config_parse_color_theme(void *dummy, const char *val)
