@@ -702,7 +702,7 @@ static void print_general_option(int i, WINDOW *win, int y, int hilt, void *cb_d
 	case FIRST_DAY_OF_WEEK:
 		custom_apply_attr(win, ATTR_HIGHEST);
 		mvwaddstr(win, y, XPOS + strlen(opt[FIRST_DAY_OF_WEEK]),
-			  ui_calendar_week_begins_on_monday()? _("Monday") :
+			  ui_calendar_get_wday_start()? _("Monday") :
 			  _("Sunday"));
 		custom_remove_attr(win, ATTR_HIGHEST);
 		mvwaddstr(win, y + 1, XPOS,

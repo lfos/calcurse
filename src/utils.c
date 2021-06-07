@@ -626,6 +626,42 @@ long min2sec(unsigned minutes)
 	return minutes * MININSEC;
 }
 
+int modify_wday(int wday, int shift)
+{
+	return (WEEKINDAYS + wday + shift) % WEEKINDAYS;
+}
+
+/* returns char* representing a wday, used for internal functions */
+char *get_wday_default_string(int wday)
+{
+	switch(wday) {
+		case MONDAY:
+			return "Monday";
+			break;
+		case TUESDAY:
+			return "Tuesday";
+			break;
+		case WEDNESDAY:
+			return "Wednesday";
+			break;
+		case THURSDAY:
+			return "Thursday";
+			break;
+		case FRIDAY:
+			return "Friday";
+			break;
+		case SATURDAY:
+			return "Saturday";
+			break;
+		case SUNDAY:
+			return "Sunday";
+			break;
+		default:
+			return "Sunday";
+			break;
+	}
+}
+
 /*
  * Display a scroll bar when there are so many items that they
  * can not be displayed inside the corresponding panel.
