@@ -468,10 +468,9 @@ static int config_serialize_default_panel(char **buf, void *dummy)
 
 static int config_serialize_first_day_of_week(char **buf, void *dummy)
 {
-	if (ui_calendar_week_begins_on_monday())
-		*buf = mem_strdup("monday");
-	else
-		*buf = mem_strdup("sunday");
+	*buf = mem_strdup(get_wday_default_string(ui_calendar_get_wday_start()));
+	/* now stores string with uppercase first letter, changing to lower */
+	**buf = tolower(**buf);
 
 	return 1;
 }

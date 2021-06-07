@@ -45,14 +45,14 @@
 #include "calcurse.h"
 
 static struct date today, slctd_day;
-static unsigned ui_calendar_view, week_begins_on_monday;
+static unsigned ui_calendar_view;
+static int wday_start; /* this is used in signed arithmetic */
 static pthread_mutex_t date_thread_mutex = PTHREAD_MUTEX_INITIALIZER;
 
-static void draw_monthly_view(struct scrollwin *, struct date *, unsigned);
-static void draw_weekly_view(struct scrollwin *, struct date *, unsigned);
-static void (*draw_calendar[CAL_VIEWS]) (struct scrollwin *, struct date *,
-					 unsigned) = {
-draw_monthly_view, draw_weekly_view};
+static void draw_monthly_view(struct scrollwin *, struct date *);
+static void draw_weekly_view(struct scrollwin *, struct date *);
+static void (*draw_calendar[CAL_VIEWS]) (struct scrollwin *,
+		struct date *) = {draw_monthly_view, draw_weekly_view};
 
 /* Six weeks cover a month. */
 static int monthly_view_cache[WEEKINDAYS * 6];
@@ -148,30 +148,24 @@ struct date *ui_calendar_get_today(void)
 /* Needed to display sunday or monday as the first day of week in calendar. */
 void ui_calendar_set_first_day_of_week(enum wday first_day)
 {
-	switch (first_day) {
-	case SUNDAY:
-		week_begins_on_monday = 0;
-		break;
-	case MONDAY:
-		week_begins_on_monday = 1;
-		break;
-	default:
+	if (first_day >= 0 && first_day <= 6)
+		wday_start = first_day;
+	else {
 		ERROR_MSG(_("ERROR setting first day of week"));
-		week_begins_on_monday = 0;
-		/* NOTREACHED */
+		wday_start = 0;
 	}
 }
 
 /* Swap first day of week in calendar. */
 void ui_calendar_change_first_day_of_week(void)
 {
-	week_begins_on_monday = !week_begins_on_monday;
+	wday_start = !wday_start;
 }
 
 /* Return 1 if week begins on monday, 0 otherwise. */
-unsigned ui_calendar_week_begins_on_monday(void)
+int ui_calendar_get_wday_start(void)
 {
-	return week_begins_on_monday;
+	return wday_start;
 }
 
 /* Fill in the given variable with the current date. */
@@ -219,18 +213,14 @@ void ui_calendar_monthly_view_cache_set_invalid(void)
 	monthly_view_cache_valid = 0;
 }
 
-static int weeknum(const struct tm *t, int firstweekday)
+static int weeknum(const struct tm *t, int wday_start)
 {
 	int wday, wnum;
 
 	wday = t->tm_wday;
-	if (firstweekday == MONDAY) {
-		if (wday == SUNDAY)
-			wday = 6;
-		else
-			wday--;
-	}
-	wnum = ((t->tm_yday + WEEKINDAYS - wday) / WEEKINDAYS);
+	wnum = ((t->tm_yday + WEEKINDAYS + -modify_wday(wday, -wday_start))
+			/ WEEKINDAYS);
+
 	if (wnum < 0)
 		wnum = 0;
 
@@ -296,7 +286,7 @@ static int ISO8601weeknum(const struct tm *t)
  * Return the tm structure for the first day of the first week
  * (containing a day) of the selected month.
  */
-static struct tm get_first_day(unsigned sunday_first)
+static struct tm get_first_day(int wday_start)
 {
 	struct tm t;
 	struct date d;
@@ -308,26 +298,20 @@ static struct tm get_first_day(unsigned sunday_first)
 	t = date2tm(d, 0, 0);
 	mktime(&t);
 	/* get the first day of the week */
-	date_change(&t, 0,
-		    -(sunday_first ?
-		      t.tm_wday :
-		      (t.tm_wday + WEEKINDAYS - 1) % WEEKINDAYS));
+	date_change(&t, 0, -modify_wday(t.tm_wday, -wday_start));
+
 	return t;
 }
 
-static struct tm get_first_weekday(unsigned sunday_first)
+static struct tm get_first_weekday(int wday_start)
 {
-	int c_wday, days_to_remove;
+	int c_wday;
 	struct tm t;
 
 	c_wday = ui_calendar_get_wday(&slctd_day);
-	if (sunday_first)
-		days_to_remove = c_wday;
-	else
-		days_to_remove = c_wday == 0 ? WEEKINDAYS - 1 : c_wday - 1;
-
 	t = date2tm(slctd_day, 0, 0);
-	date_change(&t, 0, -days_to_remove);
+
+	date_change(&t, 0, -modify_wday(c_wday, -wday_start));
 
 	return t;
 }
@@ -346,8 +330,7 @@ static void draw_week_number(struct scrollwin *sw, struct tm t)
 
 /* Draw the monthly view inside calendar panel. */
 static void
-draw_monthly_view(struct scrollwin *sw, struct date *current_day,
-		  unsigned sunday_first)
+draw_monthly_view(struct scrollwin *sw, struct date *current_day)
 {
 	struct date c_day;
 	int slctd, w_day, numdays, j, week = 0;
@@ -373,7 +356,7 @@ draw_monthly_view(struct scrollwin *sw, struct date *current_day,
 	 * Step forward by week until past the last day of the month.
 	 * The first day of the first week may belong to the previous month.
 	 */
-	t = t_first = get_first_day(sunday_first);
+	t = t_first = get_first_day(wday_start);
 	t.tm_mday += WEEKINDAYS;
 	mktime(&t);
 	last_day += WEEKINDAYS;
@@ -423,7 +406,7 @@ draw_monthly_view(struct scrollwin *sw, struct date *current_day,
 	custom_apply_attr(sw->inner, ATTR_HIGHEST);
 	for (j = 0; j < WEEKINDAYS; j++) {
 		mvwaddstr(sw->inner, ofs_y, ofs_x + weekw + 4 * j,
-			nl_langinfo(ABDAY_1 + (1 + j - sunday_first) % WEEKINDAYS));
+			nl_langinfo(ABDAY_1 + modify_wday(j, wday_start)));
 	}
 	custom_remove_attr(sw->inner, ATTR_HIGHEST);
 	WINS_CALENDAR_UNLOCK;
@@ -449,11 +432,9 @@ draw_monthly_view(struct scrollwin *sw, struct date *current_day,
 			if (j == first_day ||
 			    (mo == 1 && j == WEEKINDAYS) ||
 			    (mo == 12 && j >= 4 * WEEKINDAYS)) {
-				if (sunday_first)
-					date_change(&t, 0, 1);
+				date_change(&t, 0, WDAY(MONDAY));
 				week = ISO8601weeknum(&t);
-				if (sunday_first)
-					date_change(&t, 0, -1);
+				date_change(&t, 0, -WDAY(MONDAY));
 			} else
 				week++;
 		}
@@ -506,8 +487,7 @@ draw_monthly_view(struct scrollwin *sw, struct date *current_day,
 
 /* Draw the weekly view inside calendar panel. */
 static void
-draw_weekly_view(struct scrollwin *sw, struct date *current_day,
-		 unsigned sunday_first)
+draw_weekly_view(struct scrollwin *sw, struct date *current_day)
 {
 #define DAYSLICESNO  6
 	const int WCALWIDTH = 28;
@@ -520,14 +500,14 @@ draw_weekly_view(struct scrollwin *sw, struct date *current_day,
 	OFFX = (wins_sbar_width() - 2 - WCALWIDTH) / 2;
 
 	/* Print the week number, calculated from monday. */
-	t = get_first_weekday(0);
+	t = get_first_weekday(MONDAY);
 	draw_week_number(sw, t);
 
 	/* Now draw calendar view. */
 	for (j = 0; j < WEEKINDAYS; j++) {
 		/* get next day */
 		if (j == 0)
-			t = get_first_weekday(sunday_first);
+			t = get_first_weekday(wday_start);
 		else
 			date_change(&t, 0, 1);
 
@@ -538,7 +518,7 @@ draw_weekly_view(struct scrollwin *sw, struct date *current_day,
 		/* print the day names, with regards to the first day of the week */
 		custom_apply_attr(sw->inner, ATTR_HIGHEST);
 		mvwaddstr(sw->inner, OFFY, OFFX + 4 * j,
-			  nl_langinfo(ABDAY_1 + (1 + j - sunday_first) % WEEKINDAYS));
+			nl_langinfo(ABDAY_1 + modify_wday(j, wday_start)));
 		custom_remove_attr(sw->inner, ATTR_HIGHEST);
 
 		/* Check if the day to be printed has an item or not. */
@@ -624,11 +604,9 @@ draw_weekly_view(struct scrollwin *sw, struct date *current_day,
 void ui_calendar_update_panel(void)
 {
 	struct date current_day;
-	unsigned sunday_first;
 
 	ui_calendar_store_current_date(&current_day);
-	sunday_first = !ui_calendar_week_begins_on_monday();
-	draw_calendar[ui_calendar_view] (&sw_cal, &current_day, sunday_first);
+	draw_calendar[ui_calendar_view] (&sw_cal, &current_day);
 	wins_scrollwin_display(&sw_cal, NOHILT);
 }
 
@@ -728,28 +706,14 @@ void ui_calendar_move(enum move move, int count)
 		ret = date_change(&t, count * YEARINMONTHS, 0);
 		break;
 	case WEEK_START:
-		/* Normalize struct tm to get week day number. */
 		mktime(&t);
-		if (ui_calendar_week_begins_on_monday())
-			days_to_remove =
-			    ((t.tm_wday ==
-			      0) ? WEEKINDAYS - 1 : t.tm_wday - 1);
-		else
-			days_to_remove =
-			    ((t.tm_wday == 0) ? 0 : t.tm_wday);
+		days_to_remove = WDAY(t.tm_wday);
 		days_to_remove += (count - 1) * WEEKINDAYS;
 		ret = date_change(&t, 0, -days_to_remove);
 		break;
 	case WEEK_END:
 		mktime(&t);
-		if (ui_calendar_week_begins_on_monday())
-			days_to_add =
-			    ((t.tm_wday ==
-			      0) ? 0 : WEEKINDAYS - t.tm_wday);
-		else
-			days_to_add = ((t.tm_wday == 0) ?
-				       WEEKINDAYS - 1 : WEEKINDAYS - 1 -
-				       t.tm_wday);
+		days_to_add = modify_wday(-t.tm_wday, wday_start - 1);
 		days_to_add += (count - 1) * WEEKINDAYS;
 		ret = date_change(&t, 0, days_to_add);
 		break;
