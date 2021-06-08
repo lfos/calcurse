@@ -36,6 +36,8 @@
 
 #include <ctype.h>
 #include <unistd.h>
+#include <string.h>
+#include <strings.h>
 
 #include "calcurse.h"
 
@@ -261,14 +263,16 @@ static int config_parse_default_panel(void *dummy, const char *val)
 
 static int config_parse_first_day_of_week(void *dummy, const char *val)
 {
-	if (!strcmp(val, "monday"))
-		ui_calendar_set_first_day_of_week(MONDAY);
-	else if (!strcmp(val, "sunday"))
-		ui_calendar_set_first_day_of_week(SUNDAY);
-	else
-		return 0;
+	int i;
 
-	return 1;
+	for (i = 0; i < WEEKINDAYS; i++) {
+		if(!strcasecmp(val, get_wday_default_string(i))) {
+			ui_calendar_set_first_day_of_week(i);
+			return 1;
+		}
+	}
+
+	return 0;
 }
 
 static int config_parse_color_theme(void *dummy, const char *val)
@@ -468,10 +472,9 @@ static int config_serialize_default_panel(char **buf, void *dummy)
 
 static int config_serialize_first_day_of_week(char **buf, void *dummy)
 {
-	if (ui_calendar_week_begins_on_monday())
-		*buf = mem_strdup("monday");
-	else
-		*buf = mem_strdup("sunday");
+	*buf = mem_strdup(get_wday_default_string(ui_calendar_get_wday_start()));
+	/* now stores string with uppercase first letter, changing to lower */
+	**buf = tolower(**buf);
 
 	return 1;
 }

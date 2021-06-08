@@ -102,8 +102,8 @@ static void pcal_export_header(FILE * stream)
 {
 	fputs("# calcurse pcal export\n", stream);
 	fputs("\n# =======\n# options\n# =======\n", stream);
-	fprintf(stream, "opt -A -K -l -m -F %s\n",
-		ui_calendar_week_begins_on_monday()? "Monday" : "Sunday");
+	fprintf(stream, "opt -A -K -l -m -F %s\n", get_wday_default_string(
+		ui_calendar_get_wday_start()));
 	fputs("# Display week number (i.e. 1-52) on every Monday\n",
 	      stream);
 	fprintf(stream, "all monday in all week %%w\n");

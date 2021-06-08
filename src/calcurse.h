@@ -152,7 +152,7 @@
  * The argument (d) is the "Sunday"-numbering of member tm_wday in struct tm.
  */
 #define WDAY(d) \
-    (ui_calendar_week_begins_on_monday() ? ((d ? d : WEEKINDAYS) - 1) : d)
+	(modify_wday(d, -ui_calendar_get_wday_start()))
 
 /* Key definitions. */
 #define CTRLVAL         0x1F
@@ -811,7 +811,7 @@ void ui_calendar_set_current_date(void);
 struct date *ui_calendar_get_today(void);
 void ui_calendar_set_first_day_of_week(enum wday);
 void ui_calendar_change_first_day_of_week(void);
-unsigned ui_calendar_week_begins_on_monday(void);
+int ui_calendar_get_wday_start(void);
 void ui_calendar_store_current_date(struct date *);
 void ui_calendar_init_slctd_day(void);
 struct date *ui_calendar_get_slctd_day(void);
@@ -1234,6 +1234,8 @@ time_t date_sec_change(time_t, int, int);
 time_t update_time_in_date(time_t, unsigned, unsigned);
 time_t get_sec_date(struct date);
 long min2sec(unsigned);
+int modify_wday(int,int);
+char *get_wday_default_string(int);
 void draw_scrollbar(struct scrollwin *, int);
 void item_in_popup(const char *, const char *, const char *, const char *);
 time_t get_today(void);
