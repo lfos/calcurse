@@ -175,6 +175,8 @@ void vars_init(void)
 
 	ui_calendar_set_first_day_of_week(MONDAY);
 
+	wins_set_sbar_width(col * SBARMINWIDTH / 100);
+
 	/* Pad structure to scroll text inside the appointment panel */
 	apad.length = 1;
 	apad.first_onscreen = 0;

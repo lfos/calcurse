@@ -229,7 +229,7 @@ void wins_sbar_winc(void)
 
 void wins_sbar_wdec(void)
 {
-	if (sbarwidth_perc > 0)
+	if (col * sbarwidth_perc / 100 > SBARMINWIDTH)
 		sbarwidth_perc--;
 }
 
