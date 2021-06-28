@@ -1242,7 +1242,7 @@ void custom_config_main(void)
 			old_layout = wins_layout();
 			custom_layout_config();
 			if (wins_layout() != old_layout)
-				wins_reset();
+				wins_resize();
 			break;
 		case 'G':
 		case 'g':
@@ -1268,7 +1268,11 @@ void custom_config_main(void)
 			resize = 0;
 			wins_reset();
 		}
-
+		
+		/* needed to update app list */
+		day_do_storage(0);
+		
+		/* wins_update(FLAG_ALL), but with custom bindings */
 		wins_set_bindings(bindings, ARRAY_SIZE(bindings));
 		wins_update_border(FLAG_ALL);
 		wins_update_panels(FLAG_ALL);
