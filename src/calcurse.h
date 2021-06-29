@@ -857,6 +857,7 @@ void day_display_item_date(struct day_item *, WINDOW *, int, time_t, int, int);
 void day_display_item(struct day_item *, WINDOW *, int, int, int, int);
 void day_write_stdout(time_t, const char *, const char *, const char *,
 		      const char *, int *);
+void day_do_storage(int day_changed);
 void day_popup_item(struct day_item *);
 int day_check_if_item(struct date);
 unsigned day_chk_busy_slices(struct date, int, int *);

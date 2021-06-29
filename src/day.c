@@ -58,7 +58,7 @@ static struct day_item sel_data = { 0, 0, 0, {NULL}};
 
 /*
  * Save the item to become the selected APP item.
- * Public function used to override the setting in do_storage().
+ * Public function used to override the setting in day_do_storage().
  */
 int day_set_sel_data(struct day_item *d)
 {
@@ -576,6 +576,38 @@ void day_write_stdout(time_t date, const char *fmt_apt, const char *fmt_rapt,
 		}
 		(*limit)--;
 	}
+}
+
+/*
+ * Store events and appointments for a range of days in the day vector -
+ * beginning with the selected day - and load them into the APP listbox. If no
+ * day-change occurs, reset the selected APP item and with it the selected day,
+ * thereby storing and loading the same range of days.
+ */
+void day_do_storage(int day_changed)
+{
+	int pre_sel;
+	/*
+	 * Save the selected item before rebuilding the day vector -
+	 * unless a preselection is already set.
+	 */
+	if(!(pre_sel = day_check_sel_data()))
+		day_set_sel_data(ui_day_get_sel());
+
+	if (!day_changed)
+		ui_day_sel_reset();
+
+	/* The day_items vector. */
+	day_store_items(get_slctd_day(), 1, day_get_days());
+	/* The APP listbox. */
+	ui_day_load_items();
+
+	if (day_changed && !pre_sel)
+		ui_day_sel_reset();
+	else
+		ui_day_find_sel();
+
+	day_set_sel_data(&empty_day);
 }
 
 /* Display an item inside a popup window. */
