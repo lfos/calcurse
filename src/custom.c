@@ -1211,7 +1211,6 @@ void custom_config_main(void)
 	      "(Press [ENTER] to continue)");
 	int ch;
 	int old_layout;
-	int old_max_days = day_get_days();
 
 	wins_set_bindings(bindings, ARRAY_SIZE(bindings));
 	wins_update_border(FLAG_ALL);
@@ -1270,6 +1269,9 @@ void custom_config_main(void)
 			wins_reset();
 		}
 		
+		/* needed to update app list */
+		day_do_storage(0);
+		
 		/* wins_update(FLAG_ALL), but with custom bindings */
 		wins_set_bindings(bindings, ARRAY_SIZE(bindings));
 		wins_update_border(FLAG_ALL);
@@ -1278,19 +1280,8 @@ void custom_config_main(void)
 		if (notify_bar())
 			notify_update_bar();
 		wmove(win[STA].p, 0, 0);
-
-		/* had to update panels above before checking day_get_days() */
-		if(day_get_days() != old_max_days){
-			day_do_storage(0);
-			old_max_days = day_get_days();
-
-			wins_update_panels(FLAG_APP);
-			if (notify_bar())
-				notify_update_bar();
-			wmove(win[STA].p, 0, 0);
-		}
-
 		wins_doupdate();
+
 	}
 	if (!config_save())
 		EXIT(_("Could not save %s."), path_conf);
