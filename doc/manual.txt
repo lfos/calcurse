@@ -650,9 +650,9 @@ directory. Also make sure the scripts are executable.
 *pre-load*::
   Executed before the data files are loaded.
 *post-load*::
-  Executed after the data files are saved.
+  Executed after the data files are loaded.
 *pre-save*::
-  Executed before the data files are loaded.
+  Executed before the data files are saved.
 *post-save*::
   Executed after the data files are saved.
 
