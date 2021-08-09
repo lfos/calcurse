@@ -26,7 +26,7 @@ commit_dir() {
 	if [ -d .git ] && command -v git >/dev/null; then
 		git add "$@"
 		if ! git diff-index --quiet --cached HEAD; then
-			git commit -m "Automatic commit by the post-save hook"
+			git commit -m "Automatic commit by the post-sync hook"
 		fi
 	fi
 }
