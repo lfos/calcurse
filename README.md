@@ -15,6 +15,7 @@ install those as well:
 
 * gcc
 * automake
+* autopoint
 * asciidoc
 * gettext with development files
 * ncurses with development files
