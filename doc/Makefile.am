@@ -57,8 +57,6 @@ CLEANFILES = \
 	submitting-patches.html \
 	calcurse.1
 
-docdir = $(datadir)/doc/$(PACKAGE)
-
 .txt.html:
 if HAVE_ASCIIDOC
 	$(AM_V_GEN) $(ASCIIDOC) $(ASCIIDOC_ARGS) $<
