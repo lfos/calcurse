@@ -47,7 +47,11 @@
 
 #define rol(val, n) (((val) << (n)) | ((val) >> (32 - (n))))
 
-#ifdef WORDS_BIGENDIAN
+/* We check for host system byte order using the __BYTE_ORDER__
+ * CPP macro which is available on many platforms but not mandated by
+ * the POSIX or C standard. As such, if __BYTE_ORDER__ is not set, we
+ * silently assume little endian byte order. */
+#if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
 #define blk0(i) block->l[i]
 #else
 #define blk0(i) (block->l[i] = (rol (block->l[i], 24) & \
