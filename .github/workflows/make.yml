@@ -24,7 +24,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Install dependencies (Ubuntu)
-      run: sudo apt-get install asciidoc autopoint gettext xmlto
+      run: sudo apt-get install asciidoc autopoint gettext xmlto autoconf-archive
       if: matrix.os == 'ubuntu-latest'
     - name: Install dependencies (MacOS)
       run: |
@@ -33,6 +33,7 @@ jobs:
         brew install asciidoc
         brew install gettext
         brew install xmlto
+        brew install autoconf-archive
         brew link --force gettext
         sudo mkdir /etc/xml
         sudo ln -s /usr/local/etc/xml/catalog /etc/xml/catalog

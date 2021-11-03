@@ -29,27 +29,12 @@ AC_CHECK_HEADERS([ctype.h getopt.h locale.h math.h signal.h stdio.h stdlib.h   \
 #-------------------------------------------------------------------------------
 #                                                         Checks for system libs
 #-------------------------------------------------------------------------------
-AC_CHECK_FUNC(initscr,,
-[
-  available_ncurses="none"
-  for lib in ncursesw ncurses
-  do
-    AC_CHECK_LIB($lib, initscr,
-                 [available_ncurses="$lib"; break])
-  done
-  if test "$available_ncurses" = none; then
-    AC_MSG_ERROR(Either ncurses or ncursesw library is required to build calcurse!)
-  elif test "$available_ncurses" = ncursesw; then
-    AC_CHECK_HEADERS([ncursesw/ncurses.h],,
-                     [AC_CHECK_HEADERS([ncurses.h],,
-                                       AC_MSG_ERROR([Missing ncursesw header file]))])
-  else
-    AC_CHECK_HEADERS([ncurses/ncurses.h],,
-                     [AC_CHECK_HEADERS([ncurses.h],,
-                                       AC_MSG_ERROR([Missing ncurses header file]))])
-  fi
-  LIBS="$LIBS -l$available_ncurses"
-])
+AX_WITH_CURSES
+if test "x$ax_cv_ncursesw" != xyes && test "x$ax_cv_ncurses" != xyes; then
+  AC_MSG_ERROR(Either ncurses or ncursesw library is required to build calcurse!)
+fi
+
+LIBS="$LIBS $CURSES_LIBS"
 
 AC_CHECK_HEADERS([pthread.h], [
     AC_CHECK_LIB(pthread, pthread_create, [

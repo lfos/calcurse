@@ -14,6 +14,7 @@ files from core packages (i.e., \*-devel or \*-dev packages), you may need to
 install those as well:
 
 * gcc
+* autoconf-archive
 * automake
 * autopoint
 * asciidoc
