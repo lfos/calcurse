@@ -18,7 +18,7 @@ if [ "$1" = 'actual' ]; then
 elif [ "$1" = 'expected' ]; then
   cat <<EOD
 Import process report: 0131 lines read
-2 apps / 0 events / 1 todo / 21 skipped
+3 apps / 0 events / 1 todo / 20 skipped
 VEVENT [12]: invalid or malformed event start time.
 VEVENT [17]: item start date not defined.
 VEVENT [21]: rrule frequency not supported.
@@ -26,7 +26,6 @@ VEVENT [27]: malformed summary line.
 VTODO [32]: item priority is invalid (must be between 0 and 9).
 VEVENT [36]: malformed exceptions line.
 VEVENT [43]: exception date, but no recurrence rule.
-VEVENT [49]: line break in summary.
 VEVENT [54]: malformed description line.
 VEVENT [60]: malformed description.
 VTODO [72]: malformed summary.

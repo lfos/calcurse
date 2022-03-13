@@ -1331,12 +1331,9 @@ static char *ical_read_summary(char *line, unsigned *noskipped,
 	}
 
 	/* An event summary is one line only. */
-	if (strchr(summary, '\n')) {
-		ical_log(log, item_type, itemline, _("line break in summary."));
-		(*noskipped)++;
-		mem_free(summary);
-		summary = NULL;
-	}
+	for (p = summary; *p; p++)
+		if (*p == '\n')
+			*p = ' ';
   leave:
 	return summary;
 }
