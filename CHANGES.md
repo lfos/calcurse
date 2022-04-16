@@ -1,6 +1,44 @@
 Release Notes
 =============
 
+Version 4.8.0 (2022-04-16)
+--------------------------
+
+- New features:
+
+    * Support any weekday as first day of week; previously, only Sunday and
+      Monday were allowed (implemented by Morgan Seltzer).
+
+    * Configuration of the format in which appointment time is displayed
+      (implemented by mercurialmoon).
+
+    * Actions without key bindings.
+
+    * generic-prev-view key binding to cycle backwards through windows
+      (implemented by Aurora).
+
+    * Support for Home/End keys in text input mode.
+
+- Bug fixes:
+
+    * Support compilation on big-endian systems (reported by nmeum).
+
+    * Fixed --docdir support (fixed by Marco Sirabella).
+
+    * Allow newlines in iCal SUMMARY by replacing them with blanks (reported by
+      Matthias Braun).
+
+    * Fixed sidebar configuration sometimes not increasing width (fixed by
+      Morgan Seltzer).
+
+    * Layout change recognizes changed appointment space; before this change, a
+      layout change did not update the maximum number of appointments visible
+      until the config menu was left (fixed by Morgan Seltzer).
+
+- calcurse-caldav bug fixes:
+
+    * Fixed InsecureSSL support (reported by Pitido).
+
 Version 4.7.1 (2021-04-11)
 --------------------------
 
