@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2021-04-10 09:12-0400\n"
+"POT-Creation-Date: 2022-04-16 18:30-0400\n"
 "PO-Revision-Date: 2020-10-12 15:20+0000\n"
 "Last-Translator: Lukas Fleischer\n"
 "Language-Team: French (http://www.transifex.com/lfleischer/calcurse/language/"
@@ -67,7 +67,7 @@ msgstr "Tapez `calcurse -h` pour plus d'informations"
 msgid "calcurse %s -- text-based organizer\n"
 msgstr "calcurse %s -- organiseur en mode texte\n"
 
-msgid "Copyright (c) 2004-2020 calcurse Development Team."
+msgid "Copyright (c) 2004-2022 calcurse Development Team."
 msgstr ""
 
 msgid "This is free software; see the source for copying conditions."
@@ -468,12 +468,6 @@ msgid "(if set to YES, confirmation is required before deleting an event)"
 msgstr ""
 "(si fixé à OUI, il est nécessaire de confirmer avant d'effacer un élément)"
 
-msgid "Monday"
-msgstr "Lundi"
-
-msgid "Sunday"
-msgstr "Dimanche"
-
 msgid "(specifies the first day of week in the calendar view)"
 msgstr "(indique le premier jour de la semaine dans la vue de calendrier)"
 
@@ -498,12 +492,21 @@ msgstr "(position de l'entête dans le panneau rendez-vous)"
 msgid "(Format of the date displayed in the appointments panel)"
 msgstr "(Format de la date affichée dans le panneau rendez-vous)"
 
+#, fuzzy
+msgid "(Format of the time displayed in the appointments panel)"
+msgstr "(Format de la date affichée dans le panneau rendez-vous)"
+
 msgid "Enter a text string (an empty string for the default text)"
 msgstr ""
 
 msgid "Enter the date format (see 'man 3 strftime' for possible formats) "
 msgstr ""
 "Saisir le format de date (voir 'man 3 strftime' pour les formats possibles)"
+
+msgid "Enter the time format (see 'man 3 strftime' for possible formats) "
+msgstr ""
+"Saisir le format de l'heure (voir 'man 3 strftime' pour les formats "
+"possibles)"
 
 msgid "Enter the date format: "
 msgstr "Saisir le format de date : "
@@ -519,8 +522,8 @@ msgstr "options générales"
 msgid "Undefined option!"
 msgstr "Option inconnue !"
 
-msgid "undefined"
-msgstr "inconnue"
+msgid "UNDEFINED"
+msgstr ""
 
 msgid "keys configuration"
 msgstr "Configuration des raccourcis"
@@ -532,8 +535,9 @@ msgstr "Pressez la touche que vous voulez assigner :"
 msgid "The key '%s' is already used for %s. Choose another one."
 msgstr "Le raccourci '%s' est déjà utilisé for %s. Choisissez en un autre."
 
-msgid "Some actions do not have any associated key bindings!"
-msgstr "Certaines actions n'ont pas de raccourcis clavier associés !"
+#, fuzzy
+msgid "Some actions are left undefined!"
+msgstr "option non définie"
 
 msgid ""
 "Sorry, colors are not supported by your terminal\n"
@@ -707,9 +711,6 @@ msgstr ""
 msgid "malformed summary."
 msgstr ""
 
-msgid "line break in summary."
-msgstr ""
-
 #, fuzzy
 msgid "item start date not defined."
 msgstr "la date de début de l'élément n'est pas définie."
@@ -880,39 +881,40 @@ msgstr "Les données à l'écran ont été modifiées et seront perdues :"
 msgid "failed to open key file"
 msgstr "impossible d'ouvrir le fichier des raccourcis clavier"
 
-msgid ""
-"\n"
-"Too many errors while reading configuration file!\n"
-"Please backup your keys file, remove it from directory, and launch calcurse "
-"again.\n"
-msgstr ""
-"\n"
-"Trop d'erreurs à la lecture du fichier de configuration !\n"
-"Veuillez faire une sauvegarde de votre fichier de raccourcis, supprimer le "
-"du répertoire, puis relancer calcurse.\n"
-
 msgid "Could not read key label"
 msgstr "Impossible de lire le libellé de la touche"
 
-msgid "Key label not recognized"
+#, fuzzy, c-format
+msgid "Key label not recognized: \"%s\""
 msgstr "Libellé de la touche non reconnu"
 
 #, c-format
-msgid "Error reading key: \"%s\""
-msgstr "Erreur de lecture de la touche : \"%s\""
+msgid "No keys assigned to \"%s\"."
+msgstr ""
 
-#, c-format
-msgid "\"%s\" assigned multiple times!"
+#, fuzzy, c-format
+msgid "Keyname not recognized: \"%s\""
+msgstr "Libellé de la touche non reconnu"
+
+#, fuzzy, c-format
+msgid "\"%s\" assigned twice: \"%s\"."
 msgstr "\"%s\" est assignée plusieurs fois !"
 
-msgid "There were some errors when loading keys file."
+#, c-format
+msgid ""
+"Action \"%s\" absent, but default key \"%s\" assigned to another action."
 msgstr ""
-"Il y a eu des erreurs au chargement du fichier de configuration des "
-"raccourcis."
 
-msgid "Too many errors while reading keys file, aborting..."
+msgid "Errors in the keys file."
+msgstr ""
+
+#, fuzzy
+msgid "Remove offending line(s) from the keys file, aborting..."
 msgstr ""
 "Trop d'erreurs durant la lecture du fichier de raccourcis, annulation..."
+
+msgid "Some actions do not have any associated key bindings!"
+msgstr "Certaines actions n'ont pas de raccourcis clavier associés !"
 
 #, c-format
 msgid "FATAL ERROR: could not create %s: %s\n"
@@ -1047,6 +1049,9 @@ msgstr "Coller"
 
 msgid "Chg Win"
 msgstr "Chg.Fen."
+
+msgid "Prev Win"
+msgstr ""
 
 msgid "Import"
 msgstr "Importer"
@@ -1237,6 +1242,10 @@ msgstr "Coller un élément à la position actuelle."
 msgid "Select next panel in calcurse main screen."
 msgstr "Sélectionner le panneau suivant dans l'écran général de calcurse."
 
+#, fuzzy
+msgid "Select previous panel in calcurse main screen."
+msgstr "Sélectionner le panneau suivant dans l'écran général de calcurse."
+
 msgid "Import data from an external file."
 msgstr "Importer les données d'un fichier externe."
 
@@ -1376,10 +1385,8 @@ msgid "FATAL ERROR: null file pointer."
 msgstr "ERREUR FATALE : pointeur de fichier nul."
 
 #, c-format
-msgid "When adding default key for \"%s\", \"%s\" was already assigned!"
+msgid "Default key(s) assigned to %d action%s."
 msgstr ""
-"Pendant l'ajout de la touche par défaut pour \"%s\", \"%s\" était déjà "
-"assignée !"
 
 msgid "xmalloc: zero size"
 msgstr "xmalloc : taille nulle"
@@ -1503,11 +1510,6 @@ msgstr ""
 
 msgid "(Log activity when running in background)"
 msgstr "(Enregistrer l'activité lors de l'exécution en arrière-plan)"
-
-msgid "Enter the time format (see 'man 3 strftime' for possible formats) "
-msgstr ""
-"Saisir le format de l'heure (voir 'man 3 strftime' pour les formats "
-"possibles)"
 
 msgid "Enter the number of seconds (0 not to be warned before an appointment)"
 msgstr ""
@@ -1934,11 +1936,14 @@ msgstr "panneau inconnu"
 msgid "Usage: calcurse-upgrade [-h|-v|--config <file>]"
 msgstr "Utilisation : calcurse-upgrade [-h|-v|--config <fichier>]"
 
+#, fuzzy
 msgid ""
 "\n"
-"Copyright (c) 2004-2020 calcurse Development Team.\n"
+"Copyright (c) 2004-2022 calcurse Development Team.\n"
 "This is free software; see the source for copying conditions.\n"
 msgstr ""
+"Ceci est un logiciel libre : consultez le code source pour connaître les "
+"conditions légales d'utilisation."
 
 msgid "unrecognized option:"
 msgstr "option non reconnue :"
@@ -1987,6 +1992,41 @@ msgstr "Mise à jour des instructions de configuration..."
 
 msgid "Remove temporary backup..."
 msgstr "Suppression de la sauvegarde temporaire..."
+
+#~ msgid "Monday"
+#~ msgstr "Lundi"
+
+#~ msgid "Sunday"
+#~ msgstr "Dimanche"
+
+#~ msgid "undefined"
+#~ msgstr "inconnue"
+
+#~ msgid ""
+#~ "\n"
+#~ "Too many errors while reading configuration file!\n"
+#~ "Please backup your keys file, remove it from directory, and launch "
+#~ "calcurse again.\n"
+#~ msgstr ""
+#~ "\n"
+#~ "Trop d'erreurs à la lecture du fichier de configuration !\n"
+#~ "Veuillez faire une sauvegarde de votre fichier de raccourcis, supprimer "
+#~ "le du répertoire, puis relancer calcurse.\n"
+
+#, c-format
+#~ msgid "Error reading key: \"%s\""
+#~ msgstr "Erreur de lecture de la touche : \"%s\""
+
+#~ msgid "There were some errors when loading keys file."
+#~ msgstr ""
+#~ "Il y a eu des erreurs au chargement du fichier de configuration des "
+#~ "raccourcis."
+
+#, c-format
+#~ msgid "When adding default key for \"%s\", \"%s\" was already assigned!"
+#~ msgstr ""
+#~ "Pendant l'ajout de la touche par défaut pour \"%s\", \"%s\" était déjà "
+#~ "assignée !"
 
 #~ msgid ""
 #~ "(if set to YES, messages about loaded and saved data will be displayed)"

@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2021-04-10 09:12-0400\n"
+"POT-Creation-Date: 2022-04-16 18:30-0400\n"
 "PO-Revision-Date: 2020-10-12 15:20+0000\n"
 "Last-Translator: Lukas Fleischer\n"
 "Language-Team: Dutch (http://www.transifex.com/lfleischer/calcurse/language/"
@@ -56,7 +56,7 @@ msgstr "Probeer `calcurse -h` voor meer informatie."
 msgid "calcurse %s -- text-based organizer\n"
 msgstr "calcurse %s -- tekst gebaseerde agenda\n"
 
-msgid "Copyright (c) 2004-2020 calcurse Development Team."
+msgid "Copyright (c) 2004-2022 calcurse Development Team."
 msgstr ""
 
 msgid "This is free software; see the source for copying conditions."
@@ -428,12 +428,6 @@ msgstr "(Bij JA, wordt er een bevestiging gevraagd bij eindigen programma"
 msgid "(if set to YES, confirmation is required before deleting an event)"
 msgstr "(Bij JA, is een bevestiging nodig voor het wissen van een gebeurtenis)"
 
-msgid "Monday"
-msgstr "maandag"
-
-msgid "Sunday"
-msgstr "zondag"
-
 msgid "(specifies the first day of week in the calendar view)"
 msgstr ""
 
@@ -458,11 +452,18 @@ msgstr ""
 msgid "(Format of the date displayed in the appointments panel)"
 msgstr ""
 
+#, fuzzy
+msgid "(Format of the time displayed in the appointments panel)"
+msgstr "(Formaat van de tijd in de informatiebalk.)"
+
 msgid "Enter a text string (an empty string for the default text)"
 msgstr ""
 
 msgid "Enter the date format (see 'man 3 strftime' for possible formats) "
 msgstr "Geef het formaat van de datum (zie 'man 3 strftime')"
+
+msgid "Enter the time format (see 'man 3 strftime' for possible formats) "
+msgstr "Geef het formaat van de tijd (zie 'man 3 strftime')"
 
 msgid "Enter the date format: "
 msgstr ""
@@ -478,8 +479,8 @@ msgstr "Algemene opties"
 msgid "Undefined option!"
 msgstr "Niet gekende optie!"
 
-msgid "undefined"
-msgstr "Ongekend"
+msgid "UNDEFINED"
+msgstr ""
 
 msgid "keys configuration"
 msgstr "Toetsinstellingen"
@@ -491,7 +492,7 @@ msgstr "Druk de toets die u wilt toewijzen:"
 msgid "The key '%s' is already used for %s. Choose another one."
 msgstr ""
 
-msgid "Some actions do not have any associated key bindings!"
+msgid "Some actions are left undefined!"
 msgstr ""
 
 msgid ""
@@ -659,9 +660,6 @@ msgstr ""
 msgid "malformed summary."
 msgstr ""
 
-msgid "line break in summary."
-msgstr ""
-
 #, fuzzy
 msgid "item start date not defined."
 msgstr "item onbekend"
@@ -826,37 +824,40 @@ msgstr ""
 msgid "failed to open key file"
 msgstr ""
 
-msgid ""
-"\n"
-"Too many errors while reading configuration file!\n"
-"Please backup your keys file, remove it from directory, and launch calcurse "
-"again.\n"
-msgstr ""
-"\n"
-"Teveel fouten tijdens het lezen van het configuratiebestand!\n"
-"Maak een backup van het sneltoetsenbestand, verwijder het van de map en "
-"start calcurse opnieuw op.\n"
-
 msgid "Could not read key label"
 msgstr ""
 
-msgid "Key label not recognized"
+#, c-format
+msgid "Key label not recognized: \"%s\""
 msgstr ""
 
 #, c-format
-msgid "Error reading key: \"%s\""
+msgid "No keys assigned to \"%s\"."
 msgstr ""
 
 #, c-format
-msgid "\"%s\" assigned multiple times!"
+msgid "Keyname not recognized: \"%s\""
+msgstr ""
+
+#, fuzzy, c-format
+msgid "\"%s\" assigned twice: \"%s\"."
 msgstr "\"%s\" meer dan eens toegewezen!"
 
-msgid "There were some errors when loading keys file."
+#, c-format
+msgid ""
+"Action \"%s\" absent, but default key \"%s\" assigned to another action."
 msgstr ""
 
-msgid "Too many errors while reading keys file, aborting..."
+msgid "Errors in the keys file."
+msgstr ""
+
+#, fuzzy
+msgid "Remove offending line(s) from the keys file, aborting..."
 msgstr ""
 "Teveel fouten bij het laden van het sneltoetsenbestand, wordt afgebroken ..."
+
+msgid "Some actions do not have any associated key bindings!"
+msgstr ""
 
 #, c-format
 msgid "FATAL ERROR: could not create %s: %s\n"
@@ -981,6 +982,9 @@ msgid "Paste"
 msgstr "Plak"
 
 msgid "Chg Win"
+msgstr ""
+
+msgid "Prev Win"
 msgstr ""
 
 msgid "Import"
@@ -1161,6 +1165,9 @@ msgstr ""
 msgid "Select next panel in calcurse main screen."
 msgstr ""
 
+msgid "Select previous panel in calcurse main screen."
+msgstr ""
+
 msgid "Import data from an external file."
 msgstr "Importeer gegevens uit een extern bestand."
 
@@ -1283,7 +1290,7 @@ msgid "FATAL ERROR: null file pointer."
 msgstr ""
 
 #, c-format
-msgid "When adding default key for \"%s\", \"%s\" was already assigned!"
+msgid "Default key(s) assigned to %d action%s."
 msgstr ""
 
 msgid "xmalloc: zero size"
@@ -1402,9 +1409,6 @@ msgstr ""
 
 msgid "(Log activity when running in background)"
 msgstr ""
-
-msgid "Enter the time format (see 'man 3 strftime' for possible formats) "
-msgstr "Geef het formaat van de tijd (zie 'man 3 strftime')"
 
 msgid "Enter the number of seconds (0 not to be warned before an appointment)"
 msgstr "Geef het aantal seconden (0 voor geen waarschuwing voor een afspraak)."
@@ -1800,11 +1804,12 @@ msgstr ""
 msgid "Usage: calcurse-upgrade [-h|-v|--config <file>]"
 msgstr ""
 
+#, fuzzy
 msgid ""
 "\n"
-"Copyright (c) 2004-2020 calcurse Development Team.\n"
+"Copyright (c) 2004-2022 calcurse Development Team.\n"
 "This is free software; see the source for copying conditions.\n"
-msgstr ""
+msgstr "Dit is vrije software; bekijk de broncode voor de kopieer voorwaarden"
 
 msgid "unrecognized option:"
 msgstr ""
@@ -1845,6 +1850,26 @@ msgstr ""
 
 msgid "Remove temporary backup..."
 msgstr ""
+
+#~ msgid "Monday"
+#~ msgstr "maandag"
+
+#~ msgid "Sunday"
+#~ msgstr "zondag"
+
+#~ msgid "undefined"
+#~ msgstr "Ongekend"
+
+#~ msgid ""
+#~ "\n"
+#~ "Too many errors while reading configuration file!\n"
+#~ "Please backup your keys file, remove it from directory, and launch "
+#~ "calcurse again.\n"
+#~ msgstr ""
+#~ "\n"
+#~ "Teveel fouten tijdens het lezen van het configuratiebestand!\n"
+#~ "Maak een backup van het sneltoetsenbestand, verwijder het van de map en "
+#~ "start calcurse opnieuw op.\n"
 
 #~ msgid "item duration malformed."
 #~ msgstr "item tijdsduur onjuist"
