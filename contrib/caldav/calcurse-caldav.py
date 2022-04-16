@@ -733,9 +733,7 @@ try:
     # Connect to the server.
     if verbose:
         print('Connecting to ' + hostname + '...')
-    conn = httplib2.Http()
-    if insecure_ssl:
-        conn.disable_ssl_certificate_validation = True
+    conn = httplib2.Http(disable_ssl_certificate_validation=insecure_ssl)
 
     if authmethod == 'oauth2':
         # Authenticate with OAuth2 and authorize HTTP object
