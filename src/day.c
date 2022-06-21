@@ -198,11 +198,17 @@ static void day_add_item(int type, time_t start, time_t order, union aptev_ptr i
 /* Get the message of an item. */
 char *day_item_get_mesg(struct day_item *day)
 {
-	switch (day->type) {
+	char *message;
+	switch (day->type)
+	{
 	case APPT:
 		return day->item.apt->mesg;
 	case EVNT:
-		return day->item.ev->mesg;
+		message = day->item.ev->mesg;
+		if (*message != '\0')
+			return message;
+		else
+			return EMPTY_EVENT_DESC_DEFAULT;
 	case RECUR_APPT:
 		return day->item.rapt->mesg;
 	case RECUR_EVNT:
