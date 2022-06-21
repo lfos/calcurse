@@ -307,6 +307,7 @@ struct conf {
 };
 
 #define EMPTY_DAY_DEFAULT "--"
+#define EMPTY_EVENT_DESC_DEFAULT _("(empty description)")
 
 /* Daemon-related configuration. */
 struct dmon_conf {
