@@ -34,13 +34,12 @@ argument. You can choose between the following initialization modes:
 For subsequent calcurse-caldav invocations, you don't need to specify any
 additional parameters.
 
-You can specify a username and password for basic authentication in the
-config file. Alternatively, the password can be passed securely from another
-program (such as *pass*) via the `CALCURSE_CALDAV_PASSWORD` environment variable like
-so:
-```
-CALCURSE_CALDAV_PASSWORD=$(pass show calcurse) calcurse-caldav
-```
+Specify your HTTP Basic authentication credentials under the config file's
+`Auth` section. The most secure approach is to save your password in a CLI
+encrypted password store (_e.g.,_ [pass](https://www.passwordstore.org/)), and
+then set `PasswordCommand` to the shell command used to retrieve it.
+If security is not a priority, you may store your password in plain text
+instead.
 
 Hooks
 -----

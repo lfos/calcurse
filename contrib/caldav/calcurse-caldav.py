@@ -6,6 +6,7 @@ import configparser
 import os
 import pathlib
 import re
+import shlex
 import subprocess
 import sys
 import textwrap
@@ -30,6 +31,7 @@ class Config:
         self._map = {
             'Auth': {
                 'Password': None,
+                'PasswordCommand': None,
                 'Username': None,
             },
             'CustomHeaders': {},
@@ -657,9 +659,6 @@ verbose = args.verbose
 debug = args.debug
 debug_raw = args.debug_raw
 
-# Read environment variables
-password = os.getenv('CALCURSE_CALDAV_PASSWORD')
-
 # Read configuration.
 config = Config(configfn)
 
@@ -674,7 +673,17 @@ path = config.get('General', 'Path')
 sync_filter = config.get('General', 'SyncFilter')
 verbose = verbose or config.get('General', 'Verbose')
 
-password = password or config.get('Auth', 'Password')
+if os.getenv('CALCURSE_CALDAV_PASSWORD'):
+    # This approach is deprecated, but preserved for backwards compatibility
+    password = os.getenv('CALCURSE_CALDAV_PASSWORD')
+elif config.get('Auth', 'Password'):
+    password = config.get('Auth', 'Password')
+elif config.get('Auth', 'PasswordCommand'):
+    tokenized_cmd = shlex.split(config.get('Auth', 'PasswordCommand'))
+    password = subprocess.run(tokenized_cmd, capture_output=True).stdout.decode('UTF-8')
+else:
+    password = None
+
 username = config.get('Auth', 'Username')
 
 client_id = config.get('OAuth2', 'ClientID')

@@ -48,11 +48,13 @@ DryRun = Yes
 # Enable this if you want detailed logs written to stdout.
 Verbose = Yes
 
-# Credentials for HTTP Basic Authentication. Leave this commented out if you do
-# not want to use authentication.
+# Credentials for HTTP Basic Authentication (if required).
+# Set `Password` to your password in plaintext (unsafe),
+# or `PasswordCommand` to a shell command that retrieves it (recommended).
 #[Auth]
 #Username = user
-#Password = pass
+#Password = password
+#PasswordCommand = pass baikal
 
 # Optionally specify additional HTTP headers here.
 #[CustomHeaders]
