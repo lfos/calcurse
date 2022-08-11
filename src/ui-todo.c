@@ -327,6 +327,11 @@ void ui_todo_popup_item(void)
 
 		asprintf(&notepath, "%s%s", path_notes, item->note);
 		fp = fopen(notepath, "r");
+		if (fp == NULL) {
+			item_in_popup(NULL, NULL, item->mesg, _("TODO:"));
+			return;
+		}
+
 		note_read_contents(note, note_size, fp);
 		fclose(fp);
 		mem_free(notepath);

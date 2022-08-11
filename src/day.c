@@ -634,6 +634,10 @@ void day_popup_item(struct day_item *day)
 
 			asprintf(&notepath, "%s%s", path_notes, day_item_get_note(day));
 			fp = fopen(notepath, "r");
+			if (fp == NULL) {
+				item_in_popup(NULL, NULL, day_item_get_mesg(day), _("Event:"));
+				return;
+			}
 			note_read_contents(note, note_size, fp);
 			fclose(fp);
 			mem_free(notepath);
@@ -661,6 +665,10 @@ void day_popup_item(struct day_item *day)
 
 			asprintf(&notepath, "%s%s", path_notes, day_item_get_note(day));
 			fp = fopen(notepath, "r");
+			if (fp == NULL) {
+				item_in_popup(a_st, a_end, day_item_get_mesg(day), _("Appointment:"));
+				return;
+			}
 			note_read_contents(note, note_size, fp);
 			fclose(fp);
 			mem_free(notepath);
