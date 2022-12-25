@@ -207,14 +207,16 @@ void ui_todo_draw(int n, WINDOW *win, int y, int hilt, void *cb_data)
 	if (hilt)
 		custom_apply_attr(win, ATTR_HIGHEST);
 
-	if (utf8_strwidth(todo->mesg) < width) {
-		mesg = todo->mesg;
-	} else {
+	mesg = todo->mesg;
+	if (mesg[0] == '\0')
+		mesg = EMPTY_EVENT_DESC_DEFAULT;
+
+	if (utf8_strwidth(mesg) >= width) {
 		width -= 3;
-		for (j = 0; todo->mesg[j] && width > 0; j++) {
-			if (!UTF8_ISCONT(todo->mesg[j]))
-				width -= utf8_width(&todo->mesg[j]);
-			buf[j] = todo->mesg[j];
+		for (j = 0; mesg[j] && width > 0; j++) {
+			if (!UTF8_ISCONT(mesg[j]))
+				width -= utf8_width(&mesg[j]);
+			buf[j] = mesg[j];
 		}
 		if (j) {
 			buf[j - 1] = '.';

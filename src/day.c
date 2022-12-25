@@ -198,16 +198,12 @@ static void day_add_item(int type, time_t start, time_t order, union aptev_ptr i
 /* Get the message of an item. */
 char *day_item_get_mesg(struct day_item *day)
 {
-	char *message;
 	switch (day->type)
 	{
 	case APPT:
 		return day->item.apt->mesg;
 	case EVNT:
-		message = day->item.ev->mesg;
-		if (*message == '\0')
-			return EMPTY_EVENT_DESC_DEFAULT;
-		return message;
+		return day->item.ev->mesg;
 	case RECUR_APPT:
 		return day->item.rapt->mesg;
 	case RECUR_EVNT:
@@ -215,6 +211,15 @@ char *day_item_get_mesg(struct day_item *day)
 	default:
 		return NULL;
 	}
+}
+
+/* Get the display message of an item. */
+char *day_item_get_display_mesg(struct day_item *day)
+{
+	char *msg = day_item_get_mesg(day);
+	if (msg[0] == '\0')
+		return EMPTY_EVENT_DESC_DEFAULT;
+	return msg;
 }
 
 /* Get the note attached to an item. */
@@ -534,7 +539,7 @@ day_display_item(struct day_item *day, WINDOW *win, int incolor, int width,
 	if (width <= 0)
 		return;
 
-	char *mesg = day_item_get_mesg(day);
+	char *mesg = day_item_get_display_mesg(day);
 
 	ch_recur = (day->type == RECUR_EVNT) ? '*' : ' ';
 	ch_note = day_item_get_note(day) ? '>' : ' ';
@@ -633,11 +638,11 @@ void day_popup_item(struct day_item *day)
 			fclose(fp);
 			mem_free(notepath);
 
-			asprintf(&msg, "%s\n\n%s\n%s", day_item_get_mesg(day), note_heading, note);
+			asprintf(&msg, "%s\n\n%s\n%s", day_item_get_display_mesg(day), note_heading, note);
 			item_in_popup(NULL, NULL, msg, _("Event:"));
 			mem_free(msg);
 		} else {
-			item_in_popup(NULL, NULL, day_item_get_mesg(day), _("Event:"));
+			item_in_popup(NULL, NULL, day_item_get_display_mesg(day), _("Event:"));
 		}
 	} else if (day->type == APPT || day->type == RECUR_APPT) {
 		char a_st[100], a_end[100];
@@ -660,11 +665,11 @@ void day_popup_item(struct day_item *day)
 			fclose(fp);
 			mem_free(notepath);
 
-			asprintf(&msg, "%s\n\n%s\n%s", day_item_get_mesg(day), note_heading, note);
+			asprintf(&msg, "%s\n\n%s\n%s", day_item_get_display_mesg(day), note_heading, note);
 			item_in_popup(a_st, a_end, msg, _("Appointment:"));
 			mem_free(msg);
 		} else {
-			item_in_popup(a_st, a_end, day_item_get_mesg(day), _("Appointment:"));
+			item_in_popup(a_st, a_end, day_item_get_display_mesg(day), _("Appointment:"));
 		}
 	} else {
 		EXIT(_("unknown item type"));
