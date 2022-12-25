@@ -205,10 +205,9 @@ char *day_item_get_mesg(struct day_item *day)
 		return day->item.apt->mesg;
 	case EVNT:
 		message = day->item.ev->mesg;
-		if (*message != '\0')
-			return message;
-		else
+		if (*message == '\0')
 			return EMPTY_EVENT_DESC_DEFAULT;
+		return message;
 	case RECUR_APPT:
 		return day->item.rapt->mesg;
 	case RECUR_EVNT:
