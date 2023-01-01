@@ -1003,14 +1003,20 @@ static int find_occurrence(time_t start, long dur, struct rpt *rpt, llist_t *exc
 	if (rpt->until && t >= NEXTDAY(rpt->until))
 		return 0;
 
-	/* Does it span the given day? */
-	if (t + DUR(t) < day)
+	/* Does it span the given day?
+	 *
+	 * NOTE: An appointment ending at 00:00 is not considered to span the
+	 * given day, unless the appointment is an appointment without
+	 * specified end time, which is internally treated as appointment with
+	 * duration 0.
+	 */
+	if (t + DUR(t) >= day || (t == day && dur == 0)) {
+		if (occurrence)
+			*occurrence = t;
+		return 1;
+	} else {
 		return 0;
-
-	if (occurrence)
-		*occurrence = t;
-
-	return 1;
+	}
 }
 #undef DUR
 
