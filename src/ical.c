@@ -519,6 +519,8 @@ ical_store_event(char *mesg, char *note, time_t day, time_t end,
 	const int EVENTID = 1;
 	struct event *ev;
 	struct recur_event *rev;
+	mesg = (mesg != NULL) ? mesg : strdup("<empty>");
+	EXIT_IF(mesg == NULL, _("ical_store_event: out of memory"));
 
 	/*
 	 * Repeating event. The end day is ignored, and the event becomes
@@ -571,6 +573,8 @@ ical_store_apoint(char *mesg, char *note, time_t start, long dur,
 	struct apoint *apt;
 	struct recur_apoint *rapt;
 	time_t day;
+	mesg = (mesg != NULL) ? mesg : strdup("<empty>");
+	EXIT_IF(mesg == NULL, _("ical_store_apoint: out of memory"));
 
 	if (has_alarm)
 		state |= APOINT_NOTIFY;
