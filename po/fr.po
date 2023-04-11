@@ -67,7 +67,7 @@ msgstr "Tapez `calcurse -h` pour plus d'informations"
 msgid "calcurse %s -- text-based organizer\n"
 msgstr "calcurse %s -- organiseur en mode texte\n"
 
-msgid "Copyright (c) 2004-2022 calcurse Development Team."
+msgid "Copyright (c) 2004-2023 calcurse Development Team."
 msgstr ""
 
 msgid "This is free software; see the source for copying conditions."
@@ -1939,7 +1939,7 @@ msgstr "Utilisation : calcurse-upgrade [-h|-v|--config <fichier>]"
 #, fuzzy
 msgid ""
 "\n"
-"Copyright (c) 2004-2022 calcurse Development Team.\n"
+"Copyright (c) 2004-2023 calcurse Development Team.\n"
 "This is free software; see the source for copying conditions.\n"
 msgstr ""
 "Ceci est un logiciel libre : consultez le code source pour connaître les "

@@ -65,7 +65,7 @@ msgid "calcurse %s -- text-based organizer\n"
 msgstr "calcurse %s - текстовый органайзер\n"
 
 #, fuzzy
-msgid "Copyright (c) 2004-2022 calcurse Development Team."
+msgid "Copyright (c) 2004-2023 calcurse Development Team."
 msgstr "Копирайт (c) 2004-2020 calcurse Development Team."
 
 msgid "This is free software; see the source for copying conditions."
@@ -1864,7 +1864,7 @@ msgstr "Использовать: calcurse-upgrade [-h|-v|--config <file>]"
 #, fuzzy
 msgid ""
 "\n"
-"Copyright (c) 2004-2022 calcurse Development Team.\n"
+"Copyright (c) 2004-2023 calcurse Development Team.\n"
 "This is free software; see the source for copying conditions.\n"
 msgstr ""
 "Это свободное ПО. Для ознакомления с условиями копирования ПО, ознакомьтесь "
