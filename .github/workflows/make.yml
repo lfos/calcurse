@@ -29,6 +29,7 @@ jobs:
     - name: Install dependencies (MacOS)
       run: |
         brew update
+        brew install --overwrite python
         brew install automake
         brew install asciidoc
         brew install gettext
