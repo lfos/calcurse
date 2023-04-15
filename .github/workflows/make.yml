@@ -24,7 +24,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Install dependencies (Ubuntu)
-      run: sudo apt-get install asciidoc autopoint gettext xmlto autoconf-archive
+      run: |
+        sudo apt-get update
+        sudo apt-get install asciidoc autopoint gettext xmlto autoconf-archive
       if: matrix.os == 'ubuntu-latest'
     - name: Install dependencies (MacOS)
       run: |
