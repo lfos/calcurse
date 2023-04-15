@@ -1,16 +1,14 @@
 #-------------------------------------------------------------------------------
 #                                                                           Init
 #-------------------------------------------------------------------------------
-AC_PREREQ(2.59)
-AC_INIT([calcurse],
-        m4_esyscmd([build-aux/git-version-gen .version]),
-        [bugs@calcurse.org])
+AC_PREREQ([2.71])
+AC_INIT([calcurse],[m4_esyscmd(build-aux/git-version-gen .version)],[bugs@calcurse.org])
 AM_INIT_AUTOMAKE
 #m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
 AM_GNU_GETTEXT([external])
-AM_GNU_GETTEXT_VERSION([0.14.1])
+AM_GNU_GETTEXT_VERSION([0.19.8])
 AC_CONFIG_SRCDIR([src/calcurse.c])
-AC_CONFIG_HEADER([config.h])
+AC_CONFIG_HEADERS([config.h])
 #-------------------------------------------------------------------------------
 #                                                         Checks for system type
 #-------------------------------------------------------------------------------
@@ -23,7 +21,6 @@ AC_C_BIGENDIAN
 #-------------------------------------------------------------------------------
 #                                                        Checks for header files
 #-------------------------------------------------------------------------------
-AC_HEADER_STDC
 AC_CHECK_HEADERS([ctype.h getopt.h locale.h math.h signal.h stdio.h stdlib.h   \
 		  string.h sys/stat.h sys/types.h sys/wait.h time.h unistd.h   \
 		  fcntl.h paths.h errno.h limits.h regex.h])
@@ -137,9 +134,10 @@ AM_CONDITIONAL(CALCURSE_MEMORY_DEBUG, test x$memdebug = xyes)
 #-------------------------------------------------------------------------------
 #                                                               Create Makefiles
 #-------------------------------------------------------------------------------
-AC_OUTPUT(Makefile doc/Makefile src/Makefile test/Makefile \
+AC_CONFIG_FILES([Makefile doc/Makefile src/Makefile test/Makefile \
           scripts/Makefile po/Makefile.in po/Makefile \
-          contrib/caldav/Makefile contrib/vdir/Makefile)
+          contrib/caldav/Makefile contrib/vdir/Makefile])
+AC_OUTPUT
 #-------------------------------------------------------------------------------
 #                                                                        Summary
 #-------------------------------------------------------------------------------
