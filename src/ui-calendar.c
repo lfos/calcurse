@@ -560,9 +560,8 @@ draw_weekly_view(struct scrollwin *sw, struct date *current_day)
 				if (j != WEEKINDAYS - 1
 				    && i != DAYSLICESNO - 1) {
 					WINS_CALENDAR_LOCK;
-					mvwhline(sw->inner, OFFY + 2 + i,
-						 OFFX + 3 + 4 * j, ACS_S9,
-						 2);
+					mvwaddstr(sw->inner, OFFY + 2 + i,
+						 OFFX + 3 + 4 * j, "__");
 					WINS_CALENDAR_UNLOCK;
 				}
 				if (slices[i]) {
@@ -593,9 +592,9 @@ draw_weekly_view(struct scrollwin *sw, struct date *current_day)
 	/* Draw marks to indicate midday on the sides of the calendar. */
 	WINS_CALENDAR_LOCK;
 	custom_apply_attr(sw->inner, ATTR_HIGHEST);
-	mvwhline(sw->inner, OFFY + 1 + DAYSLICESNO / 2, OFFX, ACS_S9, 1);
-	mvwhline(sw->inner, OFFY + 1 + DAYSLICESNO / 2,
-		 OFFX + WCALWIDTH - 1, ACS_S9, 1);
+	mvwaddch(sw->inner, OFFY + 1 + DAYSLICESNO / 2, OFFX, '<');
+	mvwaddch(sw->inner, OFFY + 1 + DAYSLICESNO / 2,
+		 OFFX + WCALWIDTH - 1, '>');
 	custom_remove_attr(sw->inner, ATTR_HIGHEST);
 	WINS_CALENDAR_UNLOCK;
 
