@@ -62,7 +62,6 @@ AC_ARG_ENABLE(docs,
               [enabledocs=$enableval], [enabledocs=yes])
 if test x"$enabledocs" != x"yes"; then
   enabledocs=no
-  AC_MSG_WARN([Skipping documentation!])
 fi
 AC_MSG_CHECKING([whether to include documentation])
 AC_MSG_RESULT($enabledocs)
@@ -73,7 +72,21 @@ AC_ARG_WITH(asciidoc,
                            [use AsciiDoc to regenerate documentation]),
                            [use_asciidoc=$withval],
                            [use_asciidoc="auto"])
-if test x"$use_asciidoc" = x"auto"; then
+if test x"$enabledocs" = x"no" -o x"$use_asciidoc" = x"no"; then
+  AC_MSG_WARN([Will not rebuild documentation!])
+  have_asciidoc=no
+  have_a2x=no
+elif test x"$use_asciidoc" = x"yes"; then
+  AC_PATH_PROG([ASCIIDOC], [asciidoc])
+  if test -z "$ASCIIDOC"; then
+    AC_MSG_ERROR([AsciiDoc not found and "--with-asciidoc" specified!])
+  fi
+  AC_PATH_PROG([A2X], [a2x])
+  if test -z "$A2X"; then
+    AC_MSG_ERROR([a2x not found and "--with-asciidoc" specified!])
+  fi
+  have_asciidoc=yes
+elif test x"$use_asciidoc" = x"auto"; then
   AC_PATH_PROG([ASCIIDOC], [asciidoc])
   if test -z "$ASCIIDOC"; then
     have_asciidoc=no
@@ -98,20 +111,6 @@ if test x"$use_asciidoc" = x"auto"; then
   else
     have_a2x=yes
   fi
-elif test x"$use_asciidoc" = x"yes"; then
-  AC_PATH_PROG([ASCIIDOC], [asciidoc])
-  if test -z "$ASCIIDOC"; then
-    AC_MSG_ERROR([AsciiDoc not found and "--with-asciidoc" specified!])
-  fi
-  AC_PATH_PROG([A2X], [a2x])
-  if test -z "$A2X"; then
-    AC_MSG_ERROR([a2x not found and "--with-asciidoc" specified!])
-  fi
-  have_asciidoc=yes
-elif test x"$use_asciidoc" = x"no"; then
-  AC_MSG_WARN([Will not rebuild documentation!])
-  have_asciidoc=no
-  have_a2x=no
 fi
 AM_CONDITIONAL(HAVE_ASCIIDOC, test $have_asciidoc = yes)
 AM_CONDITIONAL(HAVE_A2X, test $have_a2x = yes)
