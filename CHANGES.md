@@ -1,6 +1,32 @@
 Release Notes
 =============
 
+Version 4.8.1 (2023-05-22)
+--------------------------
+
+- Bug fixes:
+
+    * Fixed characters in weekly view.
+
+    * AsciiDoc checks are skipped if --disable-docs is used.
+
+    * Fixed import for iCal files with empty description (fixed by Marian
+      Buschsieweke).
+
+    * Fixed handling of note files edited outside calcurse (fixed by Nicholas
+      Johnson).
+
+    * Fixed handling of recurrent open-ended appointments at 00:00.
+
+    * Default description for items with empty descriptions (reported and
+      partially implemented by Jonathan van der Steege).
+
+- New calcurse-caldav features:
+
+    * The PasswordCommand option can now be used to manage passwords in an
+      external program and is the new recommended way of storing passwords for
+      calcurse-caldav (implemented by Ryan Lue).
+
 Version 4.8.0 (2022-04-16)
 --------------------------
 
