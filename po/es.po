@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2022-04-16 18:30-0400\n"
+"POT-Creation-Date: 2023-05-22 14:19-0400\n"
 "PO-Revision-Date: 2020-10-12 15:20+0000\n"
 "Last-Translator: Lukas Fleischer\n"
 "Language-Team: Spanish (http://www.transifex.com/lfleischer/calcurse/"
@@ -616,6 +616,13 @@ msgstr "memoria agotada"
 
 msgid "unknown ical type"
 msgstr "tipo ical desconocido"
+
+msgid "(empty)"
+msgstr ""
+
+#, fuzzy
+msgid "ical_store_event: out of memory"
+msgstr "xcalloc: memoria agotada"
 
 msgid "need DTSTART to determine event type."
 msgstr ""

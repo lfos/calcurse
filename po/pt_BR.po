@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2022-04-16 18:30-0400\n"
+"POT-Creation-Date: 2023-05-22 14:19-0400\n"
 "PO-Revision-Date: 2020-10-12 15:20+0000\n"
 "Last-Translator: Lukas Fleischer\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/lfleischer/"
@@ -636,6 +636,13 @@ msgstr "memória insuficiente"
 
 msgid "unknown ical type"
 msgstr "tipo de ical desconhecido"
+
+msgid "(empty)"
+msgstr ""
+
+#, fuzzy
+msgid "ical_store_event: out of memory"
+msgstr "xcalloc: memória insuficiente"
 
 msgid "need DTSTART to determine event type."
 msgstr ""
@@ -1473,8 +1480,8 @@ msgstr "(Formato de horário a ser exibido dentro da barra de notificação)"
 msgid ""
 "(Warn user if an appointment is within next 'notify-bar_warning' seconds)"
 msgstr ""
-"(Avisa o usuário se um agendamento ocorrerá nos próximos \"notify-bar_warning"
-"\" segundos)"
+"(Avisa o usuário se um agendamento ocorrerá nos próximos \"notify-"
+"bar_warning\" segundos)"
 
 msgid "(Command used to notify user of an upcoming appointment)"
 msgstr "(Comando usado para notificar usuário de um agendamento próximo)"

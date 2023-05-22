@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2022-04-16 18:30-0400\n"
+"POT-Creation-Date: 2023-05-22 14:19-0400\n"
 "PO-Revision-Date: 2006-07-03 00:05+0100\n"
 "Last-Translator: Neil Williams <linux@codehelp.co.uk>\n"
 "Language-Team: English/GB <en_GB@li.org>\n"
@@ -580,6 +580,12 @@ msgid "out of memory"
 msgstr ""
 
 msgid "unknown ical type"
+msgstr ""
+
+msgid "(empty)"
+msgstr ""
+
+msgid "ical_store_event: out of memory"
 msgstr ""
 
 msgid "need DTSTART to determine event type."

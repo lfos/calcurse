@@ -1,123 +1,122 @@
 [main]
 host = https://www.transifex.com
-type = PO
 
-[calcurse.calcurse]
+[o:lfleischer:p:calcurse:r:calcurse]
 file_filter = po/<lang>.po
 source_file = po/calcurse.pot
 source_lang = en
 
-[calcurse.doc-add]
+[o:lfleischer:p:calcurse:r:doc-add]
 file_filter = po/doc/add-<lang>.po
 source_file = po/doc/add.pot
 source_lang = en
 
-[calcurse.doc-config]
+[o:lfleischer:p:calcurse:r:doc-config]
 file_filter = po/doc/config-<lang>.po
 source_file = po/doc/config.pot
 source_lang = en
 
-[calcurse.doc-copy-paste]
+[o:lfleischer:p:calcurse:r:doc-copy-paste]
 file_filter = po/doc/copy-paste-<lang>.po
 source_file = po/doc/copy-paste.pot
 source_lang = en
 
-[calcurse.doc-credits]
+[o:lfleischer:p:calcurse:r:doc-credits]
 file_filter = po/doc/credits-<lang>.po
 source_file = po/doc/credits.pot
 source_lang = en
 
-[calcurse.doc-delete]
+[o:lfleischer:p:calcurse:r:doc-delete]
 file_filter = po/doc/delete-<lang>.po
 source_file = po/doc/delete.pot
 source_lang = en
 
-[calcurse.doc-displacement]
+[o:lfleischer:p:calcurse:r:doc-displacement]
 file_filter = po/doc/displacement-<lang>.po
 source_file = po/doc/displacement.pot
 source_lang = en
 
-[calcurse.doc-edit]
+[o:lfleischer:p:calcurse:r:doc-edit]
 file_filter = po/doc/edit-<lang>.po
 source_file = po/doc/edit.pot
 source_lang = en
 
-[calcurse.doc-enote]
+[o:lfleischer:p:calcurse:r:doc-enote]
 file_filter = po/doc/enote-<lang>.po
 source_file = po/doc/enote.pot
 source_lang = en
 
-[calcurse.doc-export]
+[o:lfleischer:p:calcurse:r:doc-export]
 file_filter = po/doc/export-<lang>.po
 source_file = po/doc/export.pot
 source_lang = en
 
-[calcurse.doc-flag]
+[o:lfleischer:p:calcurse:r:doc-flag]
 file_filter = po/doc/flag-<lang>.po
 source_file = po/doc/flag.pot
 source_lang = en
 
-[calcurse.doc-general]
+[o:lfleischer:p:calcurse:r:doc-general]
 file_filter = po/doc/general-<lang>.po
 source_file = po/doc/general.pot
 source_lang = en
 
-[calcurse.doc-goto]
+[o:lfleischer:p:calcurse:r:doc-goto]
 file_filter = po/doc/goto-<lang>.po
 source_file = po/doc/goto.pot
 source_lang = en
 
-[calcurse.doc-import]
+[o:lfleischer:p:calcurse:r:doc-import]
 file_filter = po/doc/import-<lang>.po
 source_file = po/doc/import.pot
 source_lang = en
 
-[calcurse.doc-intro]
+[o:lfleischer:p:calcurse:r:doc-intro]
 file_filter = po/doc/intro-<lang>.po
 source_file = po/doc/intro.pot
 source_lang = en
 
-[calcurse.doc-other]
+[o:lfleischer:p:calcurse:r:doc-other]
 file_filter = po/doc/other-<lang>.po
 source_file = po/doc/other.pot
 source_lang = en
 
-[calcurse.doc-pipe]
+[o:lfleischer:p:calcurse:r:doc-pipe]
 file_filter = po/doc/pipe-<lang>.po
 source_file = po/doc/pipe.pot
 source_lang = en
 
-[calcurse.doc-priority]
+[o:lfleischer:p:calcurse:r:doc-priority]
 file_filter = po/doc/priority-<lang>.po
 source_file = po/doc/priority.pot
 source_lang = en
 
-[calcurse.doc-reload]
+[o:lfleischer:p:calcurse:r:doc-reload]
 file_filter = po/doc/reload-<lang>.po
 source_file = po/doc/reload.pot
 source_lang = en
 
-[calcurse.doc-repeat]
+[o:lfleischer:p:calcurse:r:doc-repeat]
 file_filter = po/doc/repeat-<lang>.po
 source_file = po/doc/repeat.pot
 source_lang = en
 
-[calcurse.doc-save]
+[o:lfleischer:p:calcurse:r:doc-save]
 file_filter = po/doc/save-<lang>.po
 source_file = po/doc/save.pot
 source_lang = en
 
-[calcurse.doc-tab]
+[o:lfleischer:p:calcurse:r:doc-tab]
 file_filter = po/doc/tab-<lang>.po
 source_file = po/doc/tab.pot
 source_lang = en
 
-[calcurse.doc-view]
+[o:lfleischer:p:calcurse:r:doc-view]
 file_filter = po/doc/view-<lang>.po
 source_file = po/doc/view.pot
 source_lang = en
 
-[calcurse.doc-vnote]
+[o:lfleischer:p:calcurse:r:doc-vnote]
 file_filter = po/doc/vnote-<lang>.po
 source_file = po/doc/vnote.pot
 source_lang = en
