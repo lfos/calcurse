@@ -77,7 +77,7 @@ class Config:
             for key, val in config.items(sec):
                 if key not in self._map[sec]:
                     die('Unexpected config key in section {}: {}'.format(sec, key))
-                if type(self._map[sec][key]) == bool:
+                if isinstance(self._map[sec][key], bool):
                     self._map[sec][key] = config.getboolean(sec, key)
                 else:
                     self._map[sec][key] = val
