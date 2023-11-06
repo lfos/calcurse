@@ -54,7 +54,7 @@
 
 #define DMON_ABRT(...) do {                                     \
   DMON_LOG (__VA_ARGS__);                                       \
-  if (kill (getpid (), SIGINT) < 0)                             \
+  if (kill (getpid (), SIGINT) == -1)                           \
     {                                                           \
       DMON_LOG (_("Could not stop daemon properly: %s\n"),      \
                 strerror (errno));                              \
