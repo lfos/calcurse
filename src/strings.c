@@ -85,6 +85,7 @@ int string_vcatf(struct string *sb, const char *format, va_list ap)
 			      ap2);
 	}
 	sb->len += n;
+	va_end(ap2);
 
 	return n;
 }
