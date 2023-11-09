@@ -253,8 +253,13 @@ void recur_apoint_free(struct recur_apoint *rapt)
 	mem_free(rapt->mesg);
 	if (rapt->note)
 		mem_free(rapt->note);
-	if (rapt->rpt)
+	if (rapt->rpt) {
+		recur_free_exc_list(&rapt->rpt->exc);
+		recur_free_int_list(&rapt->rpt->bywday);
+		recur_free_int_list(&rapt->rpt->bymonth);
+		recur_free_int_list(&rapt->rpt->bymonthday);
 		mem_free(rapt->rpt);
+	}
 	recur_free_exc_list(&rapt->exc);
 	mem_free(rapt);
 }
@@ -264,8 +269,13 @@ void recur_event_free(struct recur_event *rev)
 	mem_free(rev->mesg);
 	if (rev->note)
 		mem_free(rev->note);
-	if (rev->rpt)
+	if (rev->rpt) {
+		recur_free_exc_list(&rev->rpt->exc);
+		recur_free_int_list(&rev->rpt->bywday);
+		recur_free_int_list(&rev->rpt->bymonth);
+		recur_free_int_list(&rev->rpt->bymonthday);
 		mem_free(rev->rpt);
+	}
 	recur_free_exc_list(&rev->exc);
 	mem_free(rev);
 }
