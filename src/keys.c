@@ -162,6 +162,47 @@ static struct keydef_s keydef[NBVKEYS] = {
  */
 static char *keynames[KEY_MAX];
 
+/* Maps a key code to a custom key name */
+struct custom_keyname_s {
+	int keycode;
+	char* keyname;
+};
+
+#define CUSTOM_KEYS 26
+
+/*
+ * Customized key names with calcurse short forms
+ */
+static struct custom_keyname_s custom_keynames[CUSTOM_KEYS] = {
+	{ TAB, "TAB" },
+	{ RETURN, "RET" },
+	{ ESCAPE, "ESC" },
+	{ SPACE, "SPC" },
+	{ KEY_UP, "UP" },
+	{ KEY_DOWN, "DWN" },
+	{ KEY_LEFT, "LFT" },
+	{ KEY_RIGHT, "RGT" },
+	{ KEY_HOME, "HOM" },
+	{ KEY_END, "END" },
+	{ KEY_NPAGE, "PgD" },
+	{ KEY_PPAGE, "PgU" },
+	{ KEY_IC, "INS" },
+	{ KEY_DC, "DEL" },
+	{ KEY_F(1), "F1" },
+	{ KEY_F(2), "F2" },
+	{ KEY_F(3), "F3" },
+	{ KEY_F(4), "F4" },
+	{ KEY_F(5), "F5" },
+	{ KEY_F(6), "F6" },
+	{ KEY_F(7), "F7" },
+	{ KEY_F(8), "F8" },
+	{ KEY_F(9), "F9" },
+	{ KEY_F(10), "F10" },
+	{ KEY_F(11), "F11" },
+	{ KEY_F(12), "F12" },
+};
+
+
 static void dump_intro(FILE * fd)
 {
 	const char *intro =
@@ -173,6 +214,16 @@ static void dump_intro(FILE * fd)
 	      "# interface. It should not be edited directly.\n");
 
 	fprintf(fd, "%s\n", intro);
+}
+
+static bool is_customized(int c) {
+	int i;
+
+	for (i = 0; i < CUSTOM_KEYS; i++)
+		if (c == custom_keynames[i].keycode)
+			return true;
+
+	return false;
 }
 
 void keys_init(void)
@@ -193,40 +244,20 @@ void keys_init(void)
 
 	 /* Insertion of ncurses names in the ASCII range ...  */
 	for (i = 1; i < 128; i++)
-		if ((cp = keyname(i)))
-			keynames[i] = mem_strdup(cp);
+		if (!is_customized(i))
+			if ((cp = keyname(i)))
+				keynames[i] = mem_strdup(cp);
+
 	/* ... and for the ncurses pseudo-characters. */
 	for (i = KEY_MIN; i < KEY_MAX; i++)
-		if ((cp = keyname(i)))
-			keynames[i] = mem_strdup(cp);
+		if (!is_customized(i))
+			if ((cp = keyname(i)))
+				keynames[i] = mem_strdup(cp);
 
 	/* Replace some with calcurse short forms. */
-	keynames[TAB] =		"TAB";
-	keynames[RETURN] =	"RET";
-	keynames[ESCAPE] =	"ESC";
-	keynames[SPACE] =	"SPC";
-	keynames[KEY_UP] =	"UP";
-	keynames[KEY_DOWN] =	"DWN";
-	keynames[KEY_LEFT] =	"LFT";
-	keynames[KEY_RIGHT] =	"RGT";
-	keynames[KEY_HOME] =	"HOM";
-	keynames[KEY_END] =	"END";
-	keynames[KEY_NPAGE] =	"PgD";
-	keynames[KEY_PPAGE] =	"PgU";
-	keynames[KEY_IC] =	"INS";
-	keynames[KEY_DC] =	"DEL";
-	keynames[KEY_F(1)] =	"F1";
-	keynames[KEY_F(2)] =	"F2";
-	keynames[KEY_F(3)] =	"F3";
-	keynames[KEY_F(4)] =	"F4";
-	keynames[KEY_F(5)] =	"F5";
-	keynames[KEY_F(6)] =	"F6";
-	keynames[KEY_F(7)] =	"F7";
-	keynames[KEY_F(8)] =	"F8";
-	keynames[KEY_F(9)] =	"F9";
-	keynames[KEY_F(10)] =	"F10";
-	keynames[KEY_F(11)] =	"F11";
-	keynames[KEY_F(12)] =	"F12";
+	for (i = 0; i < CUSTOM_KEYS; i++) {
+		keynames[custom_keynames[i].keycode] = custom_keynames[i].keyname;
+	}
 }
 
 static void key_free(char *s)
