@@ -1,20 +1,25 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR calcurse Development Team <misc@calcurse.org>
-# This file is distributed under the same license as the PACKAGE package.
+# This file is distributed under the same license as the calcurse package.
 #
 # Translators:
 # Алексей Мехоношин <ruskidecko@gmail.com>, 2011-2012
 # Алексей Мехоношин <ruskidecko@gmail.com>, 2012-2014,2016
+# Vladimir Kalashnikov, 2023
 # Lukas Fleischer <transifex@cryptocrack.de>, 2011
+# Vladimir Kalashnikov, 2023
+# Vladimir Kalashnikov, 2023
+# Vlad Savikin, 2021
+# Vlad Savikin, 2021
 # Алексей Мехоношин <ruskidecko@gmail.com>, 2016-2017,2019-2020
 msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2023-05-22 14:19-0400\n"
-"PO-Revision-Date: 2020-10-12 17:52+0000\n"
-"Last-Translator: Алексей Мехоношин <ruskidecko@gmail.com>\n"
-"Language-Team: Russian (http://www.transifex.com/lfleischer/calcurse/"
+"POT-Creation-Date: 2024-01-26 18:28+0100\n"
+"PO-Revision-Date: 2013-07-23 08:43+0000\n"
+"Last-Translator: Vlad Savikin, 2021\n"
+"Language-Team: Russian (http://app.transifex.com/lfleischer/calcurse/"
 "language/ru/)\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
@@ -25,23 +30,25 @@ msgstr ""
 "(n%100>=11 && n%100<=14)? 2 : 3);\n"
 
 msgid "null pointer"
-msgstr "пустой указатель"
+msgstr ""
+"Ошибка в работе программы: null pointer (указатель не указывает на "
+"корректные данные)."
 
-#, fuzzy
 msgid "illegal date in appointment"
-msgstr "ошибка даты в задаче"
+msgstr "Несуществующая дата для мероприятия."
 
-#, fuzzy
 msgid "error in appointment description"
-msgstr "ошибка даты в задаче"
+msgstr "Ошибка в описании мероприятия."
 
 msgid "date error in appointment"
-msgstr "ошибка даты в задаче"
+msgstr ""
+"Ошибка в работе программы: date error in appointment (некорректно указана "
+"дата мероприятия)."
 
 msgid "no such appointment"
-msgstr "задача отсутствует"
+msgstr ""
+"Ошибка в работе программы: no such appointment (мероприятие не найдено)."
 
-#, fuzzy
 msgid ""
 "Usage:\n"
 "calcurse [-D <directory>] [-C <directory>] [-c <calendar file>]\n"
@@ -51,11 +58,13 @@ msgid ""
 "calcurse -h | -v | --status | -G | -P | -g | -i <file> | -x[<format>] | --"
 "daemon"
 msgstr ""
-"Использование:\n"
-"calcurse [-D ] [-C ] [-c ]\n"
-"calcurse -Q [--from ] [--to ] [--days ]\n"
-"calcurse -a | -d | -d | -n | -r[] | -s[] | -t[]\n"
-"calcurse -h | -v | --status | -G | -P | -g | -i | -x[] | --daemon"
+"Используйте:\n"
+"calcurse [-D <directory>] [-C <directory>] [-c <calendar file>]\n"
+"calcurse -Q [--from <date>] [--to <date>] [--days <number>]\n"
+"calcurse -a | -d <date> | -d <number> | -n | -r[<number>] | -s[<date>] | -"
+"t[<number>]\n"
+"calcurse -h | -v | --status | -G | -P | -g | -i <file> | -x[<format>] | --"
+"daemon"
 
 msgid "Try `calcurse -h` for more information."
 msgstr "Выполните 'calcurse -h' для получения справки."
@@ -64,14 +73,14 @@ msgstr "Выполните 'calcurse -h' для получения справк�
 msgid "calcurse %s -- text-based organizer\n"
 msgstr "calcurse %s - текстовый органайзер\n"
 
-#, fuzzy
 msgid "Copyright (c) 2004-2023 calcurse Development Team."
-msgstr "Копирайт (c) 2004-2020 calcurse Development Team."
+msgstr "Copyright (c) 2004-2023 calcurse Development Team."
 
 msgid "This is free software; see the source for copying conditions."
 msgstr ""
-"Это свободное ПО. Для ознакомления с условиями копирования ПО, ознакомьтесь "
-"с исходным кодом."
+"Это свободное программное обеспечение.\n"
+"Для ознакомления с условиями копирования этого программного обеспечения,\n"
+"ознакомьтесь с исходным кодом."
 
 msgid "Operations in command line mode:"
 msgstr "Операции в режиме командной строки:"
@@ -86,79 +95,92 @@ msgstr ""
 
 msgid "  -P, --purge   Read items and write them back"
 msgstr ""
+"    -P, --purge Использование рег. выражений для удаления записей в календаре"
 
 msgid ""
 "Query short forms:\n"
 "-a, -d <date>|<number>, -n, -r[<number>], -s[<date>], -t<number>"
 msgstr ""
+"    Краткие запросы:\n"
+"        -a, -d <date>|<number>, -n, -r[<number>], -s[<date>], -t<number>"
 
 msgid "Note that filter, format and day-range options affect input or output:"
 msgstr ""
+"    Заметьте, есть опции для фильтра, формата и временного диапазона "
+"влияющие на ввод или вывод: "
 
 msgid "  --filter-*              Filter items loaded by -Q, -G, -P and -x"
 msgstr ""
+"        --filter-*              Фильтрует загруженные элементы для -Q, -G, -"
+"P и -x"
 
 msgid ""
 "  --format-*              Rewrite output from -Q, -G and --dump-imported"
 msgstr ""
+"        --format-*              Переоформить вывод -Q, -G и --dump-imported"
 
 msgid "  --from <date>           Limit day range of -Q."
-msgstr ""
+msgstr "        --from <date>           Начало временного диапазона для -Q"
 
 msgid "  --to <date>             Limit day range of -Q."
-msgstr ""
+msgstr "        --to <date>             Конец временного диапазона для -Q"
 
 msgid "  --days <number>         Limit day range of -Q."
-msgstr ""
+msgstr "        --days <number>         От \"Сегодня\" отсчёт дней для -Q"
 
 msgid "  --limit, -l <number>    Limit number of query results"
-msgstr ""
+msgstr "        --limit, -l <number>    Ограничение вывода (количественно)"
 
 msgid "  --search, -S <regexp>   Match regular expression in queries"
 msgstr ""
+"        --search, -S <regexp>   Использование рег. выражений в запросах"
 
 msgid "Consult the man page for details."
-msgstr "Подробности смотрите в man-странице"
+msgstr "    Подробности смотрите в man-странице"
 
 msgid "Miscellaneous:"
 msgstr "Разное:"
 
 msgid "  -c, --calendar <file>   The calendar data file to use"
-msgstr ""
+msgstr "    -c, --calendar <file>   Выбор файла с данными нужного календаря"
 
 msgid "  -C, --confdir <dir>     The configuration directory to use"
-msgstr ""
+msgstr "    -C, --confdir <dir>     Выбор рабочей директории для настроек"
 
 msgid "  --daemon                Run notification daemon in the background"
-msgstr "--daemon Запустить демон уведомлений в фоне"
+msgstr "    --daemon                Запустить демон уведомлений в фоне"
 
 msgid "  -D, --datadir <dir>     The data directory to use"
-msgstr ""
+msgstr "    -D, --datadir <dir>     Выбор рабочей директории для данных"
 
 msgid "  -g, --gc                Run the garbage collector"
-msgstr "-g, --gc Запустить сборщик мусора"
+msgstr "    -g, --gc                Запустить сборщик мусора"
 
 msgid "  -h, --help              Show this help text"
-msgstr "-h, --help Показать эту справку"
+msgstr "    -h, --help              Показать эту справку"
 
 msgid "  -i, --import <file>     Import iCal data from file"
-msgstr ""
+msgstr "    -i, --import <file>     Импорт данных в формате iCalendar (*.ics)"
 
 msgid "  -q, --quiet             Suppress import/export result message"
-msgstr ""
+msgstr "    -q, --quiet             Подавить вывод при импорте/экспорте"
 
 msgid "  --read-only             Do not save configuration or data files"
-msgstr "--read-only Не сохранять настройки или файлы с данными"
+msgstr "    --read-only             Не сохранять настройки или файлы с данными"
 
 msgid "  --status                Display status of running instances"
 msgstr ""
+"    --status                Показать информацию о запущенных экземплярах "
+"программы"
 
 msgid "  -v, --version           Show version information"
-msgstr " -v, --version Показать информацию о версии"
+msgstr "    -v, --version           Показать информацию о версии программы"
 
 msgid ""
 "  -x, --export[<format>]  Export to stdout in ical (default) or pcal format"
 msgstr ""
+"    -x, --export[<format>]  Экспорт в iCalendar (по умолчанию) (*.ics) или "
+"Pcal (*.ps)"
 
 msgid ""
 "For more information, type '?' from within calcurse, or read the manpage."
@@ -167,7 +189,7 @@ msgstr ""
 "обратитесь к man."
 
 msgid "Submit feature requests and suggestions to <misc@calcurse.org>."
-msgstr "Пожелания или ваши идеи присылайте на <misc@calcurse.org>."
+msgstr "Пожелания и/или Ваши идеи присылайте на <misc@calcurse.org>."
 
 msgid "Submit bug reports to <bugs@calcurse.org>."
 msgstr "Обнаруженные ошибки присылайте на <bugs@calcurse.org>."
@@ -194,47 +216,47 @@ msgid "calcurse is not running"
 msgstr "calcurse не запущен"
 
 msgid "completed tasks:\n"
-msgstr "Выполненные задачи:\n"
+msgstr "Прошедшие мероприятия:\n"
 
 msgid "to do:\n"
 msgstr "Список дел:\n"
 
 msgid "next appointment:\n"
-msgstr "Следующая задача:\n"
+msgstr "Следующее мероприятие:\n"
 
 #, c-format
 msgid "invalid range: %s"
-msgstr "неверный диапазон: %s"
+msgstr "Неверный диапазон: %s."
 
 #, c-format
 msgid "invalid date: %s"
-msgstr "неверная дата: %s"
+msgstr "Неверная дата: %s."
 
 #, c-format
 msgid "invalid priority: %s"
-msgstr "неверный приоритет: %s"
+msgstr "Неверный приоритет: %s."
 
 #, c-format
 msgid "invalid export format: %s"
-msgstr "неверный формат экспорта: %s"
+msgstr "Неверный формат экспорта: %s."
 
 msgid "invalid filter mask"
-msgstr "неверная маска фильтра"
+msgstr "Неверная маска фильтра."
 
 msgid "cannot handle more than one regular expression"
-msgstr "невозможно использовать более одного рег. выражения"
+msgstr "Невозможно использовать более одного рег. выражения."
 
 #, c-format
 msgid "could not compile regular expression: %s"
-msgstr "невозможно скомпилировать рег. выражение: %s"
+msgstr "Невозможно скомпилировать рег. выражение: %s."
 
 #, c-format
 msgid "filter criterion already in use: %s"
-msgstr ""
+msgstr "Критерий уже использован: %s."
 
 #, c-format
 msgid "invalid date range: %s"
-msgstr "неверный диапазон дат: %s"
+msgstr "Неверный диапазон дат: %s."
 
 #, c-format
 msgid "calcurse is running (pid = %d)"
@@ -242,50 +264,50 @@ msgstr "calcurse запущен (pid = %d)"
 
 #, c-format
 msgid "invalid input date format: %s"
-msgstr ""
+msgstr "Неверный формат ввода даты %s."
 
 #, c-format
 msgid "invalid output date format: %s"
-msgstr ""
+msgstr "Неверный формат вывода даты %s."
 
 msgid "invalid argument combination"
-msgstr "неверная комбинация аргументов"
+msgstr "Неверная комбинация аргументов."
 
 msgid "cannot specify a range and an end date"
-msgstr "невозможно задать диапазон и конечную дату"
+msgstr "Невозможно задать диапазон и конечную дату."
 
 msgid "end date cannot come before start date"
-msgstr "конечная дата не может быть до даты начала"
+msgstr "Конечная дата не может быть до даты начала."
 
 msgid "Unable to find documentation."
-msgstr "Невозможно найти документацию"
+msgstr "Невозможно найти документацию."
 
 msgid "Data were saved successfully"
-msgstr ""
+msgstr "Данные успешно сохранены."
 
 msgid "Data were saved/reloaded successfully"
-msgstr ""
+msgstr "Данные успешно сохранены/обновлены."
 
 msgid "Save cancelled"
-msgstr "Сохранение отменено"
+msgstr "Сохранение отменено."
 
 msgid "Data were already saved"
-msgstr ""
+msgstr "Данные уже были сохранены."
 
 msgid "Cannot open data file"
-msgstr ""
+msgstr "Невозможно открыть файл данных."
 
 msgid "Data were reloaded successfully"
-msgstr ""
+msgstr "Данные успешно обновлены."
 
 msgid "Date were merged/reloaded successfully"
-msgstr ""
+msgstr "Данные успешно синхронизированы."
 
 msgid "Reload cancelled"
-msgstr ""
+msgstr "Обновление отменено."
 
 msgid "Data were already loaded"
-msgstr ""
+msgstr "Данные уже были загружены."
 
 msgid "Export to (i)cal or (p)cal format?"
 msgstr "Формат экспорта (i)cal или (p)cal?"
@@ -294,51 +316,51 @@ msgid "[ip]"
 msgstr "[ip]"
 
 msgid "There are unsaved changes. Should they be saved?"
-msgstr ""
+msgstr "Имеются несохранённые изменения. Сохранить?"
 
 msgid "Do you really want to quit?"
 msgstr "Вы уверены, что хотите выйти?"
 
 msgid "Command: [ h(elp) | w(rite)(!) | q(uit)(!) | wq(!) | n(ext) | p(rev) ]"
-msgstr ""
+msgstr "Команды: [ h(elp) | w(rite)(!) | q(uit)(!) | wq(!) | n(ext) | p(rev) ]"
 
 msgid "Read-only mode - use w!"
-msgstr ""
+msgstr "Режим чтения - используйте w!"
 
 msgid "There are unsaved changes - use w or q!"
 msgstr ""
+"Имеются несохранённые изменения - используйте w (запись) или q! (выход без "
+"сохранения)."
 
 #, c-format
 msgid "Help topic does not exist: %s"
-msgstr "Раздел справки не существует: %s"
+msgstr "Раздел справки не существует: %s."
 
-#, fuzzy
 msgid "Select a repeating item in the appointments panel."
-msgstr "(Формат даты, которая отображается в панели задач)"
+msgstr "Выберете повторяющуюся запись на панели Мероприятий."
 
-#, fuzzy
 msgid "Not a repeating item."
-msgstr "Повторить запись"
+msgstr "Не повторяющаяся запись."
 
 msgid "Last occurrence."
-msgstr ""
+msgstr "Последний пункт из последовательности."
 
 msgid "First occurrence."
-msgstr ""
+msgstr "Первый пункт из последовательности."
 
 #, c-format
 msgid "No such command: %s"
-msgstr "Команда не обнаружено:  %s"
+msgstr "Команда не обнаружена: %s."
 
 msgid "unknown color"
-msgstr "неизвестный цвет"
+msgstr "Неизвестный цвет."
 
 msgid "failed to open configuration file"
-msgstr "ошибка отрытия файла конфигурации"
+msgstr "Ошибка открытия файла конфигурации."
 
 #, c-format
 msgid "invalid configuration directive: \"%s\""
-msgstr "invalid configuration directive: \"%s\""
+msgstr "Неверные параметры конфигурации: \"%s\""
 
 msgid ""
 "Pre-3.0.0 configuration file format detected, please upgrade running "
@@ -349,19 +371,19 @@ msgstr ""
 
 #, c-format
 msgid "unknown user option: \"%s\" (ignored)"
-msgstr ""
+msgstr "Неизвестная опция: \"%s\" (игнорируется)"
 
 #, c-format
 msgid "invalid option format: \"%s\" (ignored)"
-msgstr ""
+msgstr "Неверный формат опции: \"%s\" (игнорируется)"
 
 #, c-format
 msgid "unknown user option: \"%s\" (disabled)"
-msgstr ""
+msgstr "Неизвестная опция: \"%s\" (отключена)"
 
 #, c-format
 msgid "invalid option format: \"%s\" (disabled)"
-msgstr ""
+msgstr "Неверный формат опции: \"%s\" (отключена)"
 
 msgid "layout configuration"
 msgstr "Настройки расположения"
@@ -379,76 +401,77 @@ msgid "color theme"
 msgstr "Цветовая схема"
 
 msgid "(if set to YES, compact panels are used)"
-msgstr "(Если выбрано ДА/YES,  будет использован компактный вид панелей)"
+msgstr "(да/нет) Компактное отображение"
 
 msgid "Calendar"
 msgstr "Календарь"
 
 msgid "Appointments"
-msgstr "Задачи"
+msgstr "Мероприятия"
 
 msgid "TODO"
-msgstr "Дела"
+msgstr "Список дел"
 
 msgid "(specifies the panel that is selected by default)"
-msgstr "(Задаёт панель, которая будет активна по умолчанию)"
+msgstr "Определение панели выделенной по умолчанию"
 
 msgid "monthly"
-msgstr "ежемесячно"
+msgstr "Ежемесячно"
 
 msgid "weekly"
-msgstr "еженедельно"
+msgstr "Еженедельно"
 
 msgid "(preferred calendar display)"
-msgstr ""
+msgstr "Предпочитаемый вид календаря"
 
 msgid "show completed"
-msgstr ""
+msgstr "Показывать выполненные"
 
 msgid "hide completed"
-msgstr ""
+msgstr "Спрятать выполненные"
 
 msgid "(preferred todo display)"
-msgstr ""
+msgstr "Предпочитаемый вид списка дел"
 
 msgid "(horizontal line above the day heading)"
 msgstr ""
+"(да/нет) Отобразить разделительную линию между днями в панели календаря"
 
 msgid "(empty line between events and appointments)"
-msgstr ""
+msgstr "(да/нет) Добавить расстояние между мероприятиями и встречами"
 
 msgid "(each day ends with an empty line)"
-msgstr ""
+msgstr "(да/нет) Окончить представления дня пустой строкой"
 
 msgid "(insert an empty line after each appointment)"
-msgstr ""
+msgstr "(да/нет) Добавить пустую строку между мероприятиями"
 
 msgid "(text for a day without events and appointments)"
-msgstr ""
+msgstr "Отображаемый текст на поле свободного дня"
 
 msgid "(display more than one day in the appointments panel)"
-msgstr ""
+msgstr "(да/нет) Показывать несколько дней на панели мероприятий"
 
 msgid "(if set to YES, automatic save is done when quitting)"
-msgstr "(yes/no) Автосохранение при выходе из программы"
+msgstr "(да/нет) Автоматическое сохранение при выходе из программы"
 
 msgid "(run the garbage collector when quitting)"
-msgstr "(yes/no) запустить сборщик мусора при выходе"
+msgstr "(да/нет) Запустить сборщик мусора при выходе"
 
 msgid "(if not null, automatically save data every 'periodic_save' minutes)"
-msgstr "(N/0) Автосохранение каждые N минут. (для отмены '0')"
+msgstr "Автоматическое сохранение каждые n минут. (для отмены '0')"
 
 msgid "(if YES, system events are turned into appointments (or else deleted))"
-msgstr ""
+msgstr "(да/нет) Все системные мероприятия добавляются в общие (или нет)"
 
 msgid "(if set to YES, confirmation is required before quitting)"
-msgstr "(yes/no) Подтверждение выхода из программы"
+msgstr "(да/нет) Подтверждение выхода из программы"
 
 msgid "(if set to YES, confirmation is required before deleting an event)"
-msgstr "(yes/no) Подтверждение удаления событий"
+msgstr "(да/нет) Подтверждение удаления событий"
 
 msgid "(specifies the first day of week in the calendar view)"
-msgstr "(указание первого дня недели в календаре)"
+msgstr "Указание первого дня недели в календаре"
 
 msgid "(Format of the date to be displayed in non-interactive mode)"
 msgstr "Формат даты отображается в неинтерактивном режиме"
@@ -466,17 +489,17 @@ msgid "to the right"
 msgstr "вправо"
 
 msgid "(position of the heading in the appointments panel)"
-msgstr ""
+msgstr "Расположение шапки на панели мероприятий"
 
 msgid "(Format of the date displayed in the appointments panel)"
-msgstr "(Формат даты, которая отображается в панели задач)"
+msgstr "Формат даты, которая отображается в панели задач"
 
-#, fuzzy
 msgid "(Format of the time displayed in the appointments panel)"
-msgstr "(Формат даты, которая отображается в панели задач)"
+msgstr "Формат времени, которое отображается в панели задач"
 
 msgid "Enter a text string (an empty string for the default text)"
 msgstr ""
+"Добавить текстовую строку (иначе будет отображаться текст по умолчанию)"
 
 msgid "Enter the date format (see 'man 3 strftime' for possible formats) "
 msgstr "Задайте формат даты (см. 'man 3 strftime' для возможных форматов)"
@@ -488,16 +511,18 @@ msgid "Enter the date format: "
 msgstr "Задайте формат даты: "
 
 msgid "Enter the delay, in minutes, between automatic saves (0 to disable) "
-msgstr "Введите задержку между автосохранениями (в минутах) или 0 для отмены "
+msgstr ""
+"Введите задержку между автоматическими сохранениями (в минутах) или 0 для "
+"отмены "
 
 msgid "general options"
 msgstr "Основные настройки"
 
 msgid "Undefined option!"
-msgstr "Неопределённая настройка!"
+msgstr "Некорректная настройка!"
 
 msgid "UNDEFINED"
-msgstr ""
+msgstr "Отсутствует инициализация!"
 
 msgid "keys configuration"
 msgstr "Настройка клавиш"
@@ -507,33 +532,33 @@ msgstr "Нажмите клавишу, чтобы привязать её к:"
 
 #, c-format
 msgid "The key '%s' is already used for %s. Choose another one."
-msgstr "Ключ '%s' уже используется для %s. Выберите другой ключ."
+msgstr "Клавиша '%s' уже используется для %s. Выберите другую клавишу."
 
-#, fuzzy
 msgid "Some actions are left undefined!"
-msgstr "параметр не установлен"
+msgstr "Некоторые действия не определены!"
 
 msgid ""
 "Sorry, colors are not supported by your terminal\n"
 "(Press [ENTER] to continue)"
-msgstr "Цвета не поддерживаются вашим терминалом (Нажмите [ENTER])"
+msgstr ""
+"Цвета не поддерживаются вашим терминалом\n"
+"(Нажмите [ENTER], чтобы продолжить)"
 
 #, c-format
 msgid "Could not save %s."
-msgstr ""
+msgstr "Невоможно сохранить %s"
 
 msgid "unknown item type"
-msgstr "неизвестный тип записи"
+msgstr "Неизвестный тип записи"
 
-#, fuzzy
 msgid "Note:"
-msgstr "Изм.Заметку"
+msgstr "Заметка:"
 
 msgid "Event:"
 msgstr "Событие:"
 
 msgid "Appointment:"
-msgstr "Задача:"
+msgstr "Мероприятие:"
 
 #, c-format
 msgid "Could not stop daemon properly: %s\n"
@@ -541,7 +566,7 @@ msgstr "Невозможно остановить демон должным об
 
 #, c-format
 msgid "terminated at %s with signal %d\n"
-msgstr "завершено %s с сигналом %d\n"
+msgstr "Завершено %s с сигналом %d\n"
 
 #, c-format
 msgid "Could not remove daemon lock file: %s\n"
@@ -557,13 +582,13 @@ msgstr "Невозможно прервать с управляющего тер
 
 #, c-format
 msgid "Could not change working directory: %s\n"
-msgstr "Невозможно выбрать рабочую директориюг: %s\n"
+msgstr "Невозможно выбрать рабочую директорию: %s\n"
 
 msgid "Cannot daemonize, aborting\n"
-msgstr "Невозможно демонизировать процесс. Завершение\n"
+msgstr "Невозможно демонизировать процесс. Завершение...\n"
 
 msgid "Could not set lock file\n"
-msgstr "Невозможно выбрать заблокированный файл\n"
+msgstr "Не удалось создать файл блокировки\n"
 
 #, c-format
 msgid "Could not access \"%s\": %s\n"
@@ -571,202 +596,188 @@ msgstr "Нет доступа \"%s\": %s\n"
 
 #, c-format
 msgid "started at %s\n"
-msgstr "запуск в %s\n"
+msgstr "Запуск в %s\n"
 
 msgid "error loading next appointment\n"
-msgstr "ошибка при загрузке следующей задачи\n"
+msgstr "Ошибка при загрузке следующего мероприятия\n"
 
 #, c-format
 msgid "launching notification at %s for: \"%s\"\n"
-msgstr "запуск уведомления %s для: \"%s\"\n"
+msgstr "Запуск уведомления %s для: \"%s\"\n"
 
 msgid "error while sending notification\n"
-msgstr "ошибка во время отправки уведомления\n"
+msgstr "Ошибка во время отправки уведомления\n"
 
 #, c-format
 msgid "sleeping at %s for %d second\n"
 msgid_plural "sleeping at %s for %d seconds\n"
-msgstr[0] "спящий режим %s на %d сек.\n"
+msgstr[0] "Спящий режим %s на %d сек.\n"
 msgstr[1] "спящий режим %s на %d сек.\n"
 msgstr[2] "спящий режим %s на %d сек.\n"
-msgstr[3] "спящий режим %s на %d сек.\n"
+msgstr[3] "Спящий режим %s на %d сек.\n"
 
 #, c-format
 msgid "awakened at %s\n"
-msgstr "пробуждение %s\n"
+msgstr "Пробуждение %s\n"
 
 #, c-format
 msgid "Could not stop calcurse daemon: %s\n"
 msgstr "Невозможно остановить демон calcurse: %s\n"
 
-#, fuzzy
 msgid "illegal date in event"
-msgstr "ошибка даты в событии"
+msgstr "Ошибка в дате мероприятия."
 
-#, fuzzy
 msgid "date error in event\n"
-msgstr "ошибка даты в событии"
+msgstr "Ошибка в дате мероприятия.\n"
 
 msgid "Internal error: line too long"
 msgstr "Внутренняя ошибка: слишком длинная строка"
 
 msgid "out of memory"
-msgstr "нехватка памяти"
+msgstr "Не хватает памяти"
 
 msgid "unknown ical type"
-msgstr "неизвестный тип ical"
+msgstr "Неизвестный тип файла iCalendar"
 
 msgid "(empty)"
-msgstr ""
+msgstr "(пусто)"
 
-#, fuzzy
 msgid "ical_store_event: out of memory"
-msgstr "xcalloc: out of memory"
+msgstr "ical_store_event: не хватает памяти"
 
 msgid "need DTSTART to determine event type."
-msgstr ""
+msgstr "Необходим DTSTART для определения типа мероприятия."
 
 msgid "malformed recurrence line."
-msgstr ""
+msgstr "Некорректно сформированная в строчке последовательность."
 
 msgid "frequency not set in rrule."
-msgstr ""
+msgstr "Не задана продолжительность повторений для последовательности."
 
 msgid "frequency absent in rrule."
 msgstr ""
+"Не соответствует стандарту продолжительность повторений для "
+"последовательности."
 
-#, fuzzy
 msgid "rrule frequency not supported."
-msgstr "рекуррентная частота не найдена"
+msgstr "Для последовательности заданная частота повторений не поддерживается."
 
-#, fuzzy
 msgid "invalid interval."
-msgstr "неверная маска фильтра"
+msgstr "Некорректный интервал."
 
 msgid "either until or count."
-msgstr ""
+msgstr "Выберете дату или продолжительность."
 
 msgid "missing until value."
-msgstr ""
+msgstr "Отсутствует значения для последовательности."
 
-#, fuzzy
 msgid "invalid until format."
-msgstr "неверный формат экспорта: %s"
+msgstr "Некорректный формат для последовательности."
 
-#, fuzzy
 msgid "invalid count value."
-msgstr "Неверная дата."
+msgstr "Некорректное значение для продолжительности."
 
 msgid "invalid bymonth list."
-msgstr ""
+msgstr "Некорректно задан список по месяцам."
 
-#, fuzzy
 msgid "invalid bymonthday list."
-msgstr "неверная дата: %s"
+msgstr "Некорректно задан список по дням в месяце."
 
-#, fuzzy
 msgid "invalid byday list."
-msgstr "Неверная дата."
+msgstr "Некорректно задан список по дням."
 
 msgid "invalid exception date value type."
-msgstr ""
+msgstr "Некорректный тип для значения даты исключения."
 
 msgid "malformed exceptions line."
-msgstr ""
+msgstr "Некорректно сформированное в строке исключение."
 
-#, fuzzy
 msgid "invalid exception."
-msgstr "Неверная частота."
+msgstr "Некорректное исключение."
 
 #, c-format
 msgid "malformed %s line."
-msgstr ""
+msgstr "Некорректно сформированная %s строка."
 
 #, c-format
 msgid "malformed %s."
-msgstr ""
+msgstr "Некорректно сформированный %s."
 
 msgid "malformed summary line."
-msgstr ""
+msgstr "Некорректно сформированная в строке краткая информация "
 
 msgid "malformed summary."
-msgstr ""
+msgstr "Некорректно сформированная краткая информация."
 
-#, fuzzy
 msgid "item start date not defined."
-msgstr "время начала события не определено."
+msgstr "Дата начала мероприятия не определена."
 
 msgid "malformed start time line."
-msgstr ""
+msgstr "Некорректно сформировано время начала."
 
-#, fuzzy
 msgid "invalid or malformed event start time."
-msgstr "невозможно восстановить время начала события."
+msgstr "Недопустимое или некорректно сформированное время начала мероприятия."
 
-#, fuzzy
 msgid "invalid end time value type."
-msgstr "Неверная дата или время."
+msgstr "Некорректный тип значения времени окончания."
 
 msgid "malformed end time line."
-msgstr ""
+msgstr "Некорректно сформировано время окончания."
 
-#, fuzzy
 msgid "malformed event end time."
-msgstr "невозможно восстановить время окончания события."
+msgstr "Некорректно сформировано время окончания мероприятия. "
 
 msgid "end must be later than start."
-msgstr ""
+msgstr "Окончание должно быть после начала."
 
-#, fuzzy
 msgid "either end or duration."
-msgstr "Неверное время или продолжительность."
+msgstr "Либо окончание, либо продолжительность."
 
 msgid "malformed duration line."
-msgstr ""
+msgstr "Не правильный формат для продолжительности."
 
-#, fuzzy
 msgid "invalid duration."
-msgstr "Неверное время или продолжительность."
+msgstr "Некорректная продолжительность."
 
 msgid "exception date, but no recurrence rule."
-msgstr ""
+msgstr "Дата-исключение, но не задано правило повтора."
 
 msgid "multi-day event changed to one-day event"
-msgstr ""
+msgstr "Многодневное мероприятие изменено на однодневное."
 
-#, fuzzy, c-format
+#, c-format
 msgid "Location: %s"
-msgstr "  allocated in: %s\n"
+msgstr "Расположение: %s"
 
 #, c-format
 msgid "Comment: %s"
-msgstr ""
+msgstr "Комментарий: %s"
 
 #, c-format
 msgid "rrule does not match start day (%s)."
-msgstr ""
+msgstr "Некорректная задача последовательности относительно даты начала (%s)."
 
 msgid "item could not be identified."
-msgstr "значение не может быть распознано."
+msgstr "Запись не может быть идентифицирована."
 
 msgid "only one description allowed."
-msgstr ""
+msgstr "Допустимо лишь одно описание. "
 
 msgid "only one location allowed."
-msgstr ""
+msgstr "Допустимо лишь одно расположение."
 
 msgid "The ical file seems to be malformed. The end of item was not found."
-msgstr "Файл ical скорее всего повреждён. Не найдено окончание записи."
+msgstr "Файл iСalendar скорее-всего повреждён. Не найдено окончание записи."
 
 msgid "could not retrieve item summary."
-msgstr "невозможно восстановить суммарные записи."
+msgstr "Невозможно получить краткое описание записи."
 
 msgid "item priority is invalid (must be between 0 and 9)."
-msgstr "приоритет записи в неверном формате (должно быть число между 0 и 9)"
+msgstr "Приоритет записи в неверном формате (должно быть число от 0 и до 9)."
 
 msgid "Warning: ical header malformed or wrong version number. Aborting..."
 msgstr ""
-"Внимание: заголовок ical повреждён или неправильный номер версии. "
+"Внимание: заголовок iCalendar повреждён или его версия не поддерживается. "
 "Завершение..."
 
 msgid "Choose the file used to export calcurse data:"
@@ -776,159 +787,162 @@ msgid "The file cannot be accessed, please enter another file name."
 msgstr "Файл не может быть добавлен, попробуйте другое имя файла."
 
 msgid "Press [ENTER] to continue."
-msgstr "Нажмите [ENTER]."
+msgstr "Нажмите [Enter], чтобы продолжить..."
 
 #, c-format
 msgid "Failed to open \"%s\", - %s\n"
-msgstr "Ошибка открытия \"%s\", - %s\n"
+msgstr "Ошибка открытия \"%s\", - %s.\n"
 
 msgid "Failed to build message\n"
-msgstr "Ошибка создания сообщения\n"
+msgstr "Ошибка создания сообщения.\n"
 
 #, c-format
 msgid "Failed to print message \"%s\"\n"
-msgstr "Ошибка вывода сообщения \"%s\"\n"
+msgstr "Ошибка вывода сообщения \"%s\".\n"
 
 #, c-format
 msgid "Failed to close \"%s\" - %s\n"
-msgstr "Ошибка закрытия \"%s\" - %s\n"
+msgstr "Ошибка закрытия \"%s\" - %s.\n"
 
 #, c-format
 msgid "%s does not exist"
-msgstr "%s не существует"
+msgstr "%s не существует."
 
 msgid "Data files have changed and will be overwritten:"
-msgstr ""
+msgstr "Файлы данных были изменены и будут перезаписаны:"
 
 msgid "(c)ontinue"
-msgstr ""
+msgstr "(c)продолжить"
 
 msgid "(m)erge"
 msgstr "(m)слияние"
 
 msgid "c(a)ncel"
-msgstr ""
+msgstr "(a)отмена"
 
 msgid "[cma]"
-msgstr ""
+msgstr "[cma]"
 
 msgid "failed to open appointment file"
-msgstr "ошибка открытия файла задач"
+msgstr "Ошибка открытия файла с мероприятиями."
 
 msgid "syntax error in the item date"
-msgstr "опечатка в записе даты"
+msgstr "Опечатка даты в записи"
 
 msgid "no event nor appointment found"
-msgstr "события и задачи не найдены"
+msgstr "Мероприятия отсутствуют."
 
 msgid "syntax error in item time or duration"
-msgstr "опечатка в записи даты или продолжительности"
+msgstr "Опечатка во времени или в продолжительности записи."
 
 msgid "syntax error in item identifier"
-msgstr "опечатка в записи опознавателя"
+msgstr "Опечатка в идентификаторе записи."
 
 msgid "wrong format in the appointment or event"
-msgstr "неверный формат события или задачи"
+msgstr "Неверный формат мероприятия."
 
 msgid "syntax error in item repetition"
-msgstr "опечатка в записи повторения"
+msgstr "Опечатка в записи повторения."
 
-#, fuzzy
 msgid "syntax error in until date"
-msgstr "опечатка в записи даты"
+msgstr "Опечатка в дате окончания последовательности."
 
 msgid "until date error"
-msgstr ""
+msgstr "Ошибка в дате окончания последовательности."
 
 msgid "BYMONTHDAY illegal with WEEKLY"
-msgstr ""
+msgstr "Несовместимые параметры."
 
 msgid "missing end of recurrence"
-msgstr ""
+msgstr "Отсутствует дата окончания последовательности."
 
-#, fuzzy
 msgid "syntax error in item state"
-msgstr "опечатка в записи даты"
+msgstr "Синтаксическая ошибка в данных записи."
 
 msgid "failed to open todo file"
-msgstr "ошибка открытия todo-файла"
+msgstr "Не удалось открыть файл со списком дел."
 
 msgid "Screen data have changed and will be lost:"
-msgstr ""
+msgstr "Обнаружены несохранённые изменения, которые могут быть утрачены:"
 
 msgid "failed to open key file"
-msgstr "ошибка открытия файла ключа"
+msgstr "Не удалось открыть файл с управляющими клавишами."
 
 msgid "Could not read key label"
-msgstr "Невозможно распознать клавишу"
+msgstr "Некорректный формат для управляющей клавиши."
 
-#, fuzzy, c-format
+#, c-format
 msgid "Key label not recognized: \"%s\""
-msgstr "Клавиша не опознана"
+msgstr "Нераспознанная управляющая клавиша: \"%s\""
 
 #, c-format
 msgid "No keys assigned to \"%s\"."
-msgstr ""
+msgstr "Не назначено управляющей клавиши для \"%s\"."
 
-#, fuzzy, c-format
+#, c-format
 msgid "Keyname not recognized: \"%s\""
-msgstr "Клавиша не опознана"
+msgstr "Управляющая клавиша не распознана: \"%s\"."
 
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" assigned twice: \"%s\"."
-msgstr "\"%s\" определено множество времён!"
+msgstr "\"%s\" присвоена дважды: \"%s\"."
 
 #, c-format
 msgid ""
 "Action \"%s\" absent, but default key \"%s\" assigned to another action."
 msgstr ""
+"Команда \"%s\" невыполнима, управ. клавиша \"%s\" назначена для другой "
+"команды."
 
 msgid "Errors in the keys file."
-msgstr ""
+msgstr "Ошибки в файле с управляющими клавишами."
 
-#, fuzzy
 msgid "Remove offending line(s) from the keys file, aborting..."
-msgstr "Обнаружены ошибки при чтении keys-файла, отмена..."
+msgstr ""
+"Удалите некорректную строку(и) из файла с управляющими клавишами. "
+"Завершение..."
 
 msgid "Some actions do not have any associated key bindings!"
-msgstr "Некоторые действия не привязаны к клавишам!"
+msgstr "Для некоторых действий не назначены клавиши!"
 
 #, c-format
 msgid "FATAL ERROR: could not create %s: %s\n"
-msgstr "ФАТАЛЬНАЯ ОШИБКА: невозможно создать %s: %s\n"
+msgstr "Аварийное завершение программы: не удалось создать %s: %s\n"
 
 msgid "The data were successfully exported"
-msgstr "Данные успешно экспортированы"
+msgstr "Данные успешно экспортированы."
 
 msgid "Press [ENTER] to continue"
-msgstr "Нажмите [ENTER]"
+msgstr "Нажмите [Enter], чтобы продолжить"
 
 msgid "unknown export type"
-msgstr "неизвестный тип экспорта"
+msgstr "Неизвестный тип экспорта."
 
 msgid "wrong export mode"
-msgstr "ошибочный режим экспорта"
+msgstr "Ошибочный режим экспорта."
 
 msgid "Enter the file name to import data from:"
-msgstr "Имя файла для импорта: "
+msgstr "Имя файла для импорта:"
 
 #, c-format
 msgid "Import process report: %04d lines read"
-msgstr "Отчёт процесса импорта:%04d lines read"
+msgstr "Отчёт процесса импорта: %04d строк прочитано"
 
 msgid "unknown import type"
-msgstr "неизвестный тип импорта"
+msgstr "Неизвестный тип импорта"
 
 msgid "FATAL ERROR: the input file cannot be accessed, Aborting..."
-msgstr "ФАТАЛЬНАЯ ОШИБКА: входящий файл не может быть добавлен. Завершение..."
+msgstr ""
+"Аварийное завершение программы: входящий файл не может быть добавлен. "
+"Завершение..."
 
 msgid "FATAL ERROR: wrong import mode"
-msgstr "ФАТАЛЬНАЯ ОШИБКА: неправильный режим импорта"
+msgstr "Аварийное завершение программы: неправильный режим импорта."
 
 #, c-format
 msgid "%d app"
 msgid_plural "%d apps"
-msgstr[0] "%d app"
+msgstr[0] "%d мероприятий"
 msgstr[1] "%d apps"
 msgstr[2] "%d apps"
 msgstr[3] "%d apps"
@@ -936,7 +950,7 @@ msgstr[3] "%d apps"
 #, c-format
 msgid "%d event"
 msgid_plural "%d events"
-msgstr[0] "%d событие"
+msgstr[0] "%d событий"
 msgstr[1] "%d события"
 msgstr[2] "%d события"
 msgstr[3] "%d события"
@@ -944,17 +958,17 @@ msgstr[3] "%d события"
 #, c-format
 msgid "%d todo"
 msgid_plural "%d todos"
-msgstr[0] "%d дело"
+msgstr[0] "%d дел"
 msgstr[1] "%d дела"
 msgstr[2] "%d дела"
 msgstr[3] "%d дела"
 
 #, c-format
 msgid "%d skipped"
-msgstr "%d пропущен"
+msgstr "%d пропущено"
 
 msgid "Some items could not be imported."
-msgstr ""
+msgstr "Некоторые записи не прошли импорт. "
 
 msgid "Warning: could not open temporary log file, Aborting..."
 msgstr "Внимание: невозможно открыть временный log-файл. Завершение..."
@@ -967,22 +981,24 @@ msgstr "Нет log-файла для отображения!"
 
 #, c-format
 msgid "See %s for details."
-msgstr ""
+msgstr "Детали в %s."
 
 msgid "Display log file?"
-msgstr ""
+msgstr "Отобразить лог файл?"
 
 #, c-format
 msgid "Warning: could not erase temporary log file %s, Aborting..."
 msgstr "Внимание: невозможно очистить временный log-файл %s. Завершение..."
 
 msgid "Invalid delay"
-msgstr "Неверная задержка"
+msgstr "Некорректный интервал для уведомления."
 
 msgid ""
 "Periodic save cancelled. Data files have changed. Save and merge "
 "interactively"
 msgstr ""
+"Автосохранение не выполнено. Данные изменены. Сохр./объедините данные "
+"вручную."
 
 #, c-format
 msgid ""
@@ -1026,10 +1042,10 @@ msgid "Paste"
 msgstr "Вставить"
 
 msgid "Chg Win"
-msgstr "Панель"
+msgstr "След.Панель"
 
 msgid "Prev Win"
-msgstr ""
+msgstr "Пред.Панель"
 
 msgid "Import"
 msgstr "Импорт"
@@ -1041,7 +1057,7 @@ msgid "Go to"
 msgstr "Переход"
 
 msgid "OtherCmd"
-msgstr "..."
+msgstr ". . ."
 
 msgid "Config"
 msgstr "Настройки"
@@ -1050,7 +1066,7 @@ msgid "Redraw"
 msgstr "Обновить"
 
 msgid "Add Appt"
-msgstr "Доб.Задачу"
+msgstr "Доб.Меропр."
 
 msgid "Add Todo"
 msgstr "Доб.Дело"
@@ -1119,10 +1135,10 @@ msgid "Edit Itm"
 msgstr "Изм.Запись"
 
 msgid "View"
-msgstr "Смотреть"
+msgstr "Просмотреть"
 
 msgid "Pipe"
-msgstr "Программный канал (pipe)"
+msgstr "Передать ->"
 
 msgid "Flag Itm"
 msgstr "Флаг"
@@ -1154,16 +1170,21 @@ msgstr ""
 "#\n"
 "# Файл настройки быстрых клавиш Calcurse\n"
 "#\n"
-"# В этом файле определены быстрые клавиши, которые используются в Calcurse.\n"
+"# В этом файле определены управляющие клавиши, которые используются в "
+"Calcurse.\n"
 "# Calcurse создал их автоматически и редактируются они в меню настроек в "
 "программе.\n"
 "# Напрямую редактировать быстрые клавиши нельзя.\n"
 
 msgid "FATAL ERROR: could not create default keys file."
-msgstr "FATAL ERROR: could not create default keys file."
+msgstr ""
+"Аварийное завершение программы: не удалось создать файл с управляющими "
+"клавишами."
 
 msgid "FATAL ERROR: key value out of bounds"
-msgstr "FATAL ERROR: key value out of bounds"
+msgstr ""
+"Аварийное завершение программы: значение для управляющей клавиши не "
+"корректно. "
 
 msgid "General"
 msgstr "Основные"
@@ -1187,38 +1208,37 @@ msgid "Unknown"
 msgstr "Незвестный(ая)"
 
 msgid "Cancel the ongoing action."
-msgstr "Отмена постоянного действия."
+msgstr "Прервать выполняемое действие."
 
 msgid "Select the highlighted item."
 msgstr "Выбрать подсвеченную запись."
 
 msgid "Print general information about calcurse's authors, license, etc."
-msgstr "Просмотреть основную информацию об авторах, лицензии и т.п."
+msgstr "Просмотреть основную информацию об авторах, лицензии и прочем."
 
 msgid "Display hints whenever some help screens are available."
 msgstr "Показать справку, если таковая имеется."
 
 msgid "Exit from the current menu, or quit calcurse."
-msgstr "Выйти из текущего меню или из calcurse"
+msgstr "Выйти из текущего меню, или из calcurse."
 
 msgid "Save calcurse data."
-msgstr "Сохр. данные calcurse"
+msgstr "Сохр. данные calcurse."
 
 msgid "Reload appointments and todo items."
-msgstr "Обновить задачу и список дел."
+msgstr "Обновить записи мероприятий и списка дел."
 
 msgid "Copy the item that is currently selected."
-msgstr "Копировать выделенную запись (пункт?)"
+msgstr "Копировать выделенную запись."
 
 msgid "Paste an item at the current position."
-msgstr "Вставить запись в текущую позицию"
+msgstr "Вставить запись в текущую позицию."
 
 msgid "Select next panel in calcurse main screen."
-msgstr "Выбрать след. панель на главном экране calcurse"
+msgstr "Выбрать след. панель на главном экране calcurse."
 
-#, fuzzy
 msgid "Select previous panel in calcurse main screen."
-msgstr "Выбрать след. панель на главном экране calcurse"
+msgstr "Выбрать пред. панель на главном экране calcurse."
 
 msgid "Import data from an external file."
 msgstr "Импортированть данные с внешнего файла."
@@ -1227,19 +1247,19 @@ msgid "Export data to a new file format."
 msgstr "Экспортировать данные в файл."
 
 msgid "Select the day to go to."
-msgstr "Выбрать день для перехода на него."
+msgstr "Выбрать день для перехода к нему."
 
 msgid "Show next possible actions inside status bar."
-msgstr "Отобразить в полосе статуса ещё одни возможные действия. "
+msgstr "Отобразить в полосе статуса ещё одни возможные действия."
 
 msgid "Enter the configuration menu."
 msgstr "Войти в меню настроек."
 
 msgid "Redraw calcurse's screen."
-msgstr "Обновить экран calcurse"
+msgstr "Обновить экран calcurse."
 
 msgid "Add an appointment, whichever panel is currently selected."
-msgstr "Добавить Задачу. Может быть выбрана любая панель."
+msgstr "Добавить Мероприятие. Может быть выбрана любая панель."
 
 msgid "Add a todo item, whichever panel is currently selected."
 msgstr "Добавить Дело. Может быть выбрана любая панель."
@@ -1282,7 +1302,7 @@ msgid "Go to today, whichever panel is selected."
 msgstr "Текущая дата. Может быть выбрана любая панель."
 
 msgid "Enter command mode."
-msgstr "Введите командный режим."
+msgstr "Введите в командном режиме."
 
 msgid "Move to the right."
 msgstr "Вправо"
@@ -1322,15 +1342,14 @@ msgid "Repeat an item"
 msgstr "Повторить запись"
 
 msgid "Pipe the currently selected item to an external program."
-msgstr ""
-"Открыть программный канал (pipe) выбранной записи с внешней программой."
+msgstr "Передать выбранный элемент на обработку внешней программе."
 
 msgid "Attach (or edit if one exists) a note to the currently selected item"
 msgstr ""
-"Привязать (или задать, если не существует) заметку для выбранной записи"
+"Добавить (или редактировать, если существует) заметку для выбранной записи"
 
 msgid "View the note attached to the currently selected item."
-msgstr "Просмотр вложенной записки."
+msgstr "Просмотреть заметку, прикреплённую к выбранному элементу."
 
 msgid "Raise a task priority inside the todo panel."
 msgstr "Повысить приоритет дела внутри панели дел."
@@ -1339,484 +1358,484 @@ msgid "Lower a task priority inside the todo panel."
 msgstr "Понизить приоритет дела внутри списка дел."
 
 msgid "FATAL ERROR: null file pointer."
-msgstr "FATAL ERROR: null file pointer."
+msgstr ""
+"Аварийное завершение программы: указатель указывает на некорректные данные."
 
 #, c-format
 msgid "Default key(s) assigned to %d action%s."
-msgstr ""
+msgstr "По умолчанию используется клавиша(и) %d для выполнения %s."
 
 msgid "xmalloc: zero size"
-msgstr "xmalloc: zero size"
+msgstr "xmalloc: попытка выделить память нулевого размера"
 
 msgid "xmalloc: out of memory"
-msgstr "xmalloc: out of memory"
+msgstr "xmalloc: не хватает памяти"
 
 msgid "xcalloc: zero size"
-msgstr "xcalloc: zero size"
+msgstr "xcalloc: попытка выделить память нулевого размера"
 
 msgid "xcalloc: overflow"
-msgstr "xcalloc: overflow"
+msgstr "xcalloc: переполнение"
 
 msgid "xcalloc: out of memory"
-msgstr "xcalloc: out of memory"
+msgstr "xcalloc: не хватает памяти"
 
 msgid "xrealloc: zero size"
-msgstr "xrealloc: zero size"
+msgstr "xrealloc: попытка выделить память нулевого размера"
 
 msgid "xrealloc: overflow"
-msgstr "xrealloc: overflow"
+msgstr "xrealloc: переполнение"
 
 msgid "xrealloc: out of memory"
-msgstr "xrealloc: out of memory"
+msgstr "xrealloc: не хватает памяти"
 
 msgid "could not allocate memory to store block info"
-msgstr "could not allocate memory to store block info"
+msgstr "Не удалось выделить память для хранения информации о блоке"
 
 msgid "Block not found"
-msgstr "Block not found"
+msgstr "Блок не обнаружен"
 
 #, c-format
 msgid "overflow at %s"
-msgstr "overflow at %s"
+msgstr "Переполнение в %s"
 
 #, c-format
 msgid "dbg_free: null pointer at %s"
-msgstr "dbg_free: null pointer at %s"
+msgstr "dbg_free: нулевой указатель в %s"
 
 #, c-format
 msgid "block seems already freed at %s"
-msgstr "block seems already freed at %s"
+msgstr "Блок памяти уже был высвобожден в %s"
 
 #, c-format
 msgid "corrupt block header at %s"
-msgstr "corrupt block header at %s"
+msgstr "Повреждённый заголовок блока в %s"
 
 #, c-format
 msgid "corrupt block end at %s, (end = %u, should be %d)"
-msgstr "corrupt block end at %s, (end = %u, should be %d)"
+msgstr "Повреждённый конец блока в %s, (окончание = %u, ожидалось %d)"
 
 msgid "---==== MEMORY BLOCK ====----------------\n"
-msgstr "---==== MEMORY BLOCK ====----------------\n"
+msgstr "---==== БЛОК ПАМЯТИ ====-----------------\n"
 
 #, c-format
 msgid "            id: %u\n"
-msgstr "            id: %u\n"
+msgstr "    Идентификатор: %u\n"
 
 #, c-format
 msgid "          size: %u\n"
-msgstr "          size: %u\n"
+msgstr "           Размер: %u\n"
 
 #, c-format
 msgid "  allocated in: %s\n"
-msgstr "  allocated in: %s\n"
+msgstr "       Выделено в: %s\n"
 
 msgid "-----------------------------------------\n"
 msgstr "-----------------------------------------\n"
 
 msgid "+------------------------------+\n"
-msgstr "+------------------------------+\n"
+msgstr "+----------------------------------------+\n"
 
 msgid "| calcurse memory usage report |\n"
-msgstr "| calcurse memory usage report |\n"
+msgstr "| отчёт об использовании памяти calcurse |\n"
 
 #, c-format
 msgid "  number of calls: %u\n"
-msgstr "  number of calls: %u\n"
+msgstr "    Количество вызовов: %u\n"
 
 #, c-format
 msgid " allocated blocks: %u\n"
-msgstr " allocated blocks: %u\n"
+msgstr "    Выделенные блоки для данных: %u\n"
 
 #, c-format
 msgid "   unfreed blocks: %u\n"
-msgstr "   unfreed blocks: %u\n"
+msgstr "    Не высбождённые блоки: %u\n"
 
 #, c-format
 msgid "Warning: could not open %s, Aborting..."
 msgstr "Внимание: невозможно открыть %s, Завершение..."
 
 msgid "(if set to YES, notify-bar will be displayed)"
-msgstr "(Если выбрано yes, будет выводится окно уведомления)"
+msgstr "(да/нет) Выводить окно уведомления"
 
 msgid "(Format of the date to be displayed inside notify-bar)"
-msgstr "(Формат даты выводится внутри окна уведомления)"
+msgstr "Формат даты внутри окна уведомления"
 
 msgid "(Format of the time to be displayed inside notify-bar)"
-msgstr "(Формат времени выводится внутри окна уведомления)"
+msgstr "Формат времени внутри окна уведомления"
 
 msgid ""
 "(Warn user if an appointment is within next 'notify-bar_warning' seconds)"
-msgstr "(Предупреждать пользователя о событии за 'notify-bar_warning' секунд)"
+msgstr "Предупреждать пользователя о мероприятии за n секунд"
 
 msgid "(Command used to notify user of an upcoming appointment)"
-msgstr "(Команда уведомляет пользователя о грядущем событии)"
+msgstr "Команда уведомляет пользователя о грядущем событии"
 
 msgid "(Notify all appointments instead of flagged ones only)"
-msgstr ""
-"(Извещать обо всех задачах, вместо тех, которые помечены для извещения)"
+msgstr "Извещать обо всех задачах, вместо тех, которые помечены для извещения"
 
 msgid "(Run in background to get notifications after exiting)"
-msgstr "(Запустить в фоновом режиме, для возможности получать уведомления)"
+msgstr "(да/нет) Запустить уведомления в фоновом режиме"
 
 msgid "(Log activity when running in background)"
-msgstr "(Лог активен во время фонового режима)"
+msgstr "(да/нет) Вести журналирование во время фонового режима"
 
 msgid "Enter the number of seconds (0 not to be warned before an appointment)"
-msgstr "Введите количество секунд (0 - отмена оповещения до события)"
+msgstr "Введите количество секунд (0 - отмена оповещения до мероприятия)"
 
 msgid "Enter the notification command "
 msgstr "Введите команду уведомления "
 
 msgid "notification options"
-msgstr "настройки уведомления"
+msgstr "Настройки уведомления"
 
 msgid "incoherent repetition type"
-msgstr "бессвязный тип повторения"
+msgstr "Бессвязный тип повторения."
 
 msgid "System event"
-msgstr ""
+msgstr "Системное событие."
 
 msgid "unknown character"
-msgstr "неизвестный символ"
+msgstr "Неизвестный символ."
 
 #, c-format
 msgid "recurrence error: not on start day (%s)"
-msgstr ""
+msgstr "Ошибка при повторении: не совпадение с днём начала (%s). "
 
-#, fuzzy
 msgid "illegel date in event"
-msgstr "ошибка даты в событии"
+msgstr "Недопустимая дата для события"
 
 msgid "date error in event"
-msgstr "ошибка даты в событии"
+msgstr "Ошибка при записи даты события"
 
 msgid "month day is zero"
-msgstr ""
+msgstr "Ошибка при численном обозначении дня месяца."
 
-#, fuzzy
 msgid "no daily frequency check"
-msgstr "Неверная частота."
+msgstr "Отсутствует контроль за повторениями."
 
 msgid "illegal BYDAY value"
-msgstr ""
+msgstr "Недопустимое значение для обозначения дня"
 
 msgid "event not found"
-msgstr "событие не найдено"
+msgstr "Событий не найдено"
 
 msgid "appointment not found"
-msgstr "задача не найдена"
+msgstr "Мероприятий не найдено"
 
-#, fuzzy
 msgid "syntax error in bymonthday"
-msgstr "опечатка в записи даты"
+msgstr "Ошибка при записи дня месяца."
 
-#, fuzzy
 msgid "syntax error in bywday"
-msgstr "опечатка в записи даты"
+msgstr "Ошибка при записи дня недели."
 
-#, fuzzy
 msgid "syntax error in bymonth"
-msgstr "опечатка в записи даты"
+msgstr "Ошибка при записи месяца."
 
 msgid "illegal bymonth value"
-msgstr ""
+msgstr "Недопустимое значение для обозначения месяца."
 
 msgid "syntax error in item date"
-msgstr "опечатка в записи даты"
+msgstr "Ошибка при записи даты."
 
 msgid "date error in item exception"
-msgstr "ошибка даты в значении"
+msgstr "Ошибка в дате при обозначении исключений."
 
 #, c-format
 msgid "Error setting signal #%d : %s\n"
-msgstr "Сигнал ошибки настройки #%d : %s\n"
+msgstr "Ошибка установки сигнала #%d : %s\n"
 
 msgid "no note attached"
-msgstr "записка отсутствует"
+msgstr "Заметка отсутствует"
 
 msgid "no such todo"
-msgstr "дело не найдено"
+msgstr "Дел не найдено"
 
 msgid "ERROR setting first day of week"
 msgstr "ОШИБКА настройки первого дня недели"
 
 msgid "The day you entered is not valid"
-msgstr "День введён вами с ошибкой"
+msgstr "Введённые данные о желаемом дне не являются корректными."
 
 #, c-format
 msgid "Enter the day to go to [ENTER for today] : %s"
-msgstr "Переход на N-ый день [ENTER для текущего дня] : %s"
+msgstr "Переход [Enter для текущего дня] на n-ый день: %s"
 
 #, c-format
 msgid "The move failed (%d/%d/%d)."
-msgstr ""
+msgstr "Ошибка перемещения файла (%d/%d/%d)."
 
 #, c-format
 msgid "Enter start date [%s] and/or time ([hh:mm] or [hhmm]):"
-msgstr "Введите дату начала [%s] и/или время ([hh:mm] or [hhmm]):"
+msgstr "Введите дату [%s] и/или время ([ЧЧ:ММ] или [ЧЧММ]) начала:"
 
 msgid "Press [Enter] to continue"
-msgstr "Нажмите [Enter]"
+msgstr "Нажмите [Enter] для продолжения..."
 
 msgid "Invalid date or time."
-msgstr "Неверная дата или время."
+msgstr "Некорректно задано дата или время."
 
 msgid "Invalid time: start time must come before end time!"
-msgstr "Неверное время: время начала должно идти до времени конца"
+msgstr ""
+"Некорректно задано время: начальное время должно идти до времени окончания!"
 
 #, c-format
 msgid "Repetition must begin on start day (%s)."
-msgstr ""
+msgstr "Повторение должно начинаться с изначально указанного дня (%s)."
 
 msgid "Enter end date (and/or time) or duration ('?' for input formats):"
 msgstr ""
-"Введите конечную дату (и/или время) или продолжительность ('?' см. форматы):"
+"Введите дату окончания (и/или время) или продолжительность ('?' см. справку):"
 
 #, c-format
 msgid "Date: %s, year or month may be omitted."
-msgstr ""
+msgstr "Дата: %s, год или месяц можно пропустить."
 
 msgid "Time: hh:mm (hh: or :mm) or hhmm. Duration: +mm, +hh:mm, +??d??h??m."
 msgstr ""
-"Время: hh:mm (hh: или :mm) или hhmm. Продолжительность: +mm, +hh:mm, +??d??"
-"h??m."
+"Время: ЧЧ:ММ (ЧЧ: или :ММ) или ЧЧММ. Продолжительность: +ММ, +ЧЧ:ММ, +??д??"
+"ч??м"
 
 msgid "Invalid time or duration."
-msgstr "Неверное время или продолжительность."
+msgstr "Некорректно задано время или продолжительность."
 
 msgid "Invalid date: end time must come after start time."
-msgstr "Неверная дата: конечное время должно идти после начального  времени."
+msgstr "Некорректно задана дата: окончание должно идти после начала."
 
 msgid "Enter the new item description:"
-msgstr "Описание: "
+msgstr "Описание:"
 
 msgid "Exception days:"
-msgstr ""
+msgstr "Исключаемые дни:"
 
 msgid "Invalid date format - try again:."
-msgstr "Неверный формат даты - попробуйте снова:."
+msgstr "Некорректный формат даты - попробуйте снова."
 
 msgid "Limit repetition to listed days."
-msgstr ""
+msgstr "В краткой записи обозначить по каким именно дням ограничить."
 
 msgid "Expand repetition to listed days."
-msgstr ""
+msgstr "В краткой записи обозначить по каким именно дням повторять."
 
 msgid "Expand repetition to listed days, either all or 1st, 2nd, ... of month."
 msgstr ""
+"Численно обозначить по каким именно дням в месяце повторять: 1 2 .. 22 .."
 
 msgid "Note: limit to monthdays, if any."
-msgstr ""
+msgstr "Примечание: ограничения по конкретным дням месяца (опционально)."
 
 msgid "Expand repetition to listed days, either all or 1st, 2nd, ... of year."
 msgstr ""
+"Численно обозначить по каким именно дням в году повторять: 1 2 .. 322 .."
 
 msgid "Note: expand to listed months, if any; limit to monthdays, if any."
 msgstr ""
+"Примечание: расширить по месяцам и/или ограничить по дням (опционально)."
 
 msgid "Limit repetition to listed months."
-msgstr ""
+msgstr "Численно обозначить по каким именно месяцам ограничить."
 
 msgid "Expand repetition to listed months."
-msgstr ""
+msgstr "Численно обозначить по каким именно месяцам повторять."
 
 msgid "Limit repetition to listed days of month."
-msgstr ""
+msgstr "Численно обозначить по каким именно дням в месяце ограничить."
 
 msgid "Expand repetition to listed days of month."
-msgstr ""
+msgstr "Численно обозначить по каким именно дням в месяце повторять."
 
 #, c-format
 msgid "Weekdays %s|..|%s, space-separated list, '?' for help:"
-msgstr ""
+msgstr "Задайте днями %s .. %s, разделяя пробелом ('?' см. справку):"
 
 #, c-format
 msgid ""
 "Weekdays [n]%s|..|[n]%s, space-separated list, n=1,-1,..,5,-5, '?' for help:"
 msgstr ""
+"Задайте днями [n]%s .. [n]%s (-5<=n<=5), разделяя пробелом ('?' см. справку):"
 
 #, c-format
 msgid ""
 "Weekdays [n]%s|..|[n]%s, space-separated list, n=1,-1,..,53,-53, '?' for "
 "help:"
 msgstr ""
+"Задайте днями [n]%s .. [n]%s (-53<=n<=53), разделяя пробелом ('?' см. "
+"справку):"
 
 msgid "Months 1|..|12, space-separated list, '?' for help:"
 msgstr ""
+"Задайте месяцы 1 2 .. n (1<=n<=12), разделяя пробелом ('?' см. справку):"
 
 msgid "Monthdays 1|..|31 or -1|..|-31, space-separated list, '?' for help:"
 msgstr ""
+"Задайте дни месяца 1 2 .. 31 или -1 .. -31, разделяя пробелом ('?' см."
+"справку):"
 
-#, fuzzy
 msgid "Invalid format - try again."
-msgstr "Неверный формат даты - попробуйте снова:."
+msgstr "Указан некорректный формат. Пожалуйста, попробуйте ещё раз."
 
-#, fuzzy
 msgid "Press any key to continue."
 msgstr "Нажмите любую клавишу..."
 
 msgid "Base period:"
-msgstr ""
+msgstr "Базовый период:"
 
-#, fuzzy
 msgid "day"
-msgstr "Сегодня"
+msgstr "(d)день"
 
-#, fuzzy
 msgid "week"
-msgstr "еженедельно"
+msgstr "(w)неделя"
 
-#, fuzzy
 msgid "month"
-msgstr "ежемесячно"
+msgstr "(m)месяц"
 
 msgid "year"
-msgstr ""
+msgstr "(y)год"
 
 msgid "[dwmy]"
-msgstr "[днмг]"
+msgstr "[dwmy]"
 
 msgid "Frequency:"
-msgstr ""
+msgstr "Частота повторов:"
 
 msgid "Invalid frequency."
-msgstr "Неверная частота."
+msgstr "Указано некорректное значение для частоты повторов."
 
-#, fuzzy
 msgid "Until date, increment or repeat count ('?' for input formats):"
-msgstr "Введите конечную дату или продолжительность ('?' см. форматы):"
+msgstr ""
+"Задайте дату окончания повторений, период. или кол-во повтор. ('?' см. "
+"справку)"
 
 #, c-format
 msgid "Date: %s (year, month may be omitted, endless: 0)."
 msgstr ""
+"Дата: %s (год, месяц могут быть опущены или вписать \"0\" - бесконечно)."
 
 msgid "Increment: +?? (days) or: +??w??d (weeks). Repeat count: #?? (number)."
 msgstr ""
+"Повторять: +?? (дней) или: +??н??д (недель). Кол-во повторений: #?? (числом)"
 
-#, fuzzy, c-format
+#, c-format
 msgid "Invalid date: until date must come after start date (%s)."
-msgstr "Неверная дата: конечная дата должны идти после начальной даты (%s)."
+msgstr "Дата окончания должна следовать за датой начала (%s)."
 
 msgid "Invalid date."
-msgstr "Неверная дата."
+msgstr "Указано некорректное значение даты."
 
 msgid "Repeat count is too big."
-msgstr ""
+msgstr "Элементов в последовательности мероприятий слишком много."
 
 #, c-format
 msgid "Repetition must begin on start day (%s); any change discarded."
-msgstr ""
+msgstr "Последовательность должна идти от начала (%s); сброс изменений."
 
 msgid "Description"
-msgstr "Описание"
+msgstr "описание"
 
 msgid "Repetition"
-msgstr "Повторение"
+msgstr "послед."
 
 msgid "Edit: "
-msgstr "Редактировать:"
+msgstr "Изм.:"
 
 msgid "Start time"
-msgstr "Начальное время"
+msgstr "начало"
 
 msgid "End time"
-msgstr "Конечное время"
+msgstr "окончание"
 
 msgid "Move"
-msgstr "Вперёд"
+msgstr "сдвиг"
 
 msgid "Pipe item to external command:"
-msgstr "Программный канал (pipe) во внешнюю команду:"
+msgstr "Передать элемент во внешнюю команду:"
 
 msgid "Enter start time ([hh:mm] or [hhmm]), leave blank for an all-day event:"
 msgstr ""
-"Начало ([чч:мм] или [ччмм]). Оставьте пустым если событие займёт весь день: "
+"Начало ([ЧЧ:ММ] или [ЧЧММ]). Оставьте пустым если событие займёт весь день:"
 
 msgid ""
 "Enter end time as date (and/or time) or duration ('?' for input formats):"
 msgstr ""
+"Введите дату окончания (и/или время) или продолжительность ('?' см. справку):"
 
 msgid "Enter description:"
-msgstr "Описание: "
+msgstr "Введите описание:"
 
 #, c-format
 msgid "Date: %s (and/or time), year or month may be omitted."
-msgstr ""
+msgstr "Дата: %s (и/или время), год и месяц можно опустить."
 
 msgid "Invalid start time."
-msgstr "Неверное начальное время."
+msgstr "Указан некорректный формат для времени начала мероприятия."
 
-#, fuzzy
 msgid ""
 "This item is recurrent and has a note attached to it. Delete (s)elected "
 "occurrence, (a)ll occurrences, or just its (n)ote?"
-msgstr "Эта запись содержит заметку. Удалить (i)запись или только (n)заметку ?"
+msgstr ""
+"Последов. мероприятий с заметкой. Удаляем (s)одно, (a)всё или (n)заметку?"
 
 msgid "[san]"
-msgstr ""
+msgstr "[san]"
 
-#, fuzzy
 msgid ""
 "This item has a note attached to it. Delete (s)elected occurrence or just "
 "its (n)ote?"
-msgstr "Эта запись содержит заметку. Удалить (i)запись или только (n)заметку ?"
+msgstr "Мероприятие с заметкой. Удаляем всё (s)выбранное или (n)заметку?"
 
 msgid "[sn]"
-msgstr ""
+msgstr "[sn]"
 
-#, fuzzy
 msgid ""
 "This item is recurrent. Delete (s)elected occurrence or (a)ll occurrences?"
-msgstr ""
-"Эта запись имеет повторения. Удалить (a)все подобные записи или только "
-"(o)эту ?"
+msgstr "Последовательность мероприятий. Удаляем (s)одно или (a)всё?"
 
 msgid "[sa]"
-msgstr ""
+msgstr "[sa]"
 
 msgid "Confirm deletion. Delete (s)elected occurrence? Press (s) to confirm."
-msgstr ""
+msgstr "Подтвердите удаление. Удалить (s)выбранное?"
 
 msgid "[s]"
-msgstr ""
+msgstr "[s]"
 
-#, fuzzy
 msgid "Already repeated."
-msgstr "Эта запись уже повторяется."
+msgstr "Уже повторяется."
 
 msgid "A (s)imple or (a)dvanced repetition?"
-msgstr ""
+msgstr "Требуется (s)простое или (a)замысловатое повторение?"
 
 msgid "Enter the new TODO item:"
 msgstr "Дело: "
 
 msgid "Enter the TODO priority [0 (none), 1 (highest) - 9 (lowest)]:"
-msgstr "Введите приоритет Дела [0 (без приоритета), 1 (высокий) - 9 (низкий)]:"
+msgstr ""
+"Введите приоритет для Дела [0 (без приоритета), 1 (высокий), … , 9 (низкий)]:"
 
 msgid "Do you really want to delete this task?"
 msgstr "Удалить эту запись?"
 
 msgid "This item has a note attached to it. Delete (t)odo or just its (n)ote?"
-msgstr "К делу прикреплена записка. Удалить (t)дело или только (n)записку ?"
+msgstr "К делу прикреплена заметка. Удалить всё (t)дело или (n)заметку?"
 
 msgid "[tn]"
 msgstr "[tn]"
 
 msgid "Enter the new TODO description:"
-msgstr "Описание дела: "
+msgstr "Описание Дела:"
 
 msgid "TODO:"
-msgstr "Дело:"
+msgstr "Дела:"
 
 #, c-format
 msgid "Could not remove calcurse lock file: %s\n"
-msgstr "Невозможно удалить занятый файл: %s\n"
+msgstr "Невозможно удалить файл блокировки для calcurse: %s\n"
 
 msgid "/!\\ INTERNAL ERROR /!\\"
-msgstr "/!\\ INTERNAL ERROR /!\\"
+msgstr "/!\\ НЕПОНЯТНАЯ ОШИБКА /!\\"
 
 msgid "Please report the following bug:"
-msgstr "Сообщите об ошибке:"
+msgstr "Пожалуйста, сообщите об ошибке:"
 
 msgid "[yn]"
 msgstr "[yn]"
@@ -1825,60 +1844,62 @@ msgid "Press any key to continue..."
 msgstr "Нажмите любую клавишу..."
 
 msgid "failure in mktime"
-msgstr "ошибка в mktime"
+msgstr "Сбой в mktime"
 
 msgid "error in mktime"
-msgstr "ошибка в mktime"
+msgstr "Ошибка в mktime"
 
 msgid "yes"
-msgstr "yes"
+msgstr "Да"
 
 msgid "no"
-msgstr "no"
+msgstr "Нет"
 
 msgid "option not defined"
-msgstr "параметр не установлен"
+msgstr "Опция не определена"
 
 #, c-format
 msgid "temporary file \"%s\" could not be created"
-msgstr "временный файл \"%s\" не может быть создан"
+msgstr "Временный файл \"%s\" не может быть создан"
 
 #, c-format
 msgid "Error when closing file at %s"
-msgstr "Ошибка во время закрытия файла %s"
+msgstr "Ошибка в процессе закрытия файла %s"
 
 msgid "No note file found\n"
 msgstr "Файл с заметкой не найден\n"
 
 msgid "mm/dd/yyyy"
-msgstr "мм/дд/гггг"
+msgstr "ММ/ДД/ГГГГ"
 
 msgid "dd/mm/yyyy"
-msgstr "дд/мм/гггг"
+msgstr "ДД/ММ/ГГГГ"
 
 msgid "yyyy/mm/dd"
-msgstr "гггг/мм/дд"
+msgstr "ГГГГ/ММ/ДД"
 
 msgid "yyyy-mm-dd"
-msgstr "гггг-мм-дд"
+msgstr "ГГГГ-ММ-ДД"
 
 msgid "unknown panel"
-msgstr "неизвестная панель"
+msgstr "Нераспознанная панель"
 
 msgid "Usage: calcurse-upgrade [-h|-v|--config <file>]"
-msgstr "Использовать: calcurse-upgrade [-h|-v|--config <file>]"
+msgstr "Используйте: calcurse-upgrade [ -h | -v | --config <file> ]"
 
-#, fuzzy
 msgid ""
 "\n"
 "Copyright (c) 2004-2023 calcurse Development Team.\n"
 "This is free software; see the source for copying conditions.\n"
 msgstr ""
-"Это свободное ПО. Для ознакомления с условиями копирования ПО, ознакомьтесь "
-"с исходным кодом."
+"\n"
+"Copyright (c) 2004-2023 calcurse Development Team.\n"
+"Это свободное программное обеспечение.\n"
+"Для ознакомления с условиями копирования этого программного обеспечения,\n"
+"ознакомьтесь с исходным кодом.\n"
 
 msgid "unrecognized option:"
-msgstr "неизвестная опция:"
+msgstr "Неизвестная опция:"
 
 msgid "Configuration file not found:"
 msgstr "Файл конфигурации не найден:"
@@ -1890,7 +1911,7 @@ msgid "Create temporary backup of the configuration file..."
 msgstr "Создать временную архивную копию файла конфигурации..."
 
 msgid "Old backup file found:"
-msgstr "Предыдущий файл архивной копии найден:"
+msgstr "Найденная предыдущая копия архива данных:"
 
 msgid ""
 "\n"
@@ -1898,14 +1919,14 @@ msgid ""
 "configuration from this backup and then remove the backup file."
 msgstr ""
 "\n"
-"Если предыдущая конвертация не завершилась, восстановите вашу конфигурацию "
-"из этого архивного файла, затем его удалив."
+"Если предыдущая конвертация не завершилась,\n"
+"восстановите вашу конфигурацию из этого архивного файла, затем его удалив."
 
 msgid "done"
-msgstr "завершено"
+msgstr "Готово"
 
 msgid "Old temporary file found:"
-msgstr "Обнаружен предыдущий временный файл данных:"
+msgstr "Найденный предыдущий временный файл:"
 
 msgid ""
 "\n"
@@ -1914,112 +1935,11 @@ msgid ""
 "start over with a backup of your old configuration file."
 msgstr ""
 "\n"
-"Если предыдущая конвертация не завершилась, удалите файл и попробуйте снова, "
-"используя архивный файл с предыдущей конфигурацией."
+"Если предыдущая конвертация не завершилась, удалите файл и\n"
+"попробуйте снова, используя архивный файл с предыдущей конфигурацией."
 
 msgid "Upgrade configuration directives..."
 msgstr "Обновление конфигурации..."
 
 msgid "Remove temporary backup..."
-msgstr "Удалить временный архивный файл..."
-
-#~ msgid "Monday"
-#~ msgstr "Пн"
-
-#~ msgid "Sunday"
-#~ msgstr "Вс"
-
-#~ msgid "undefined"
-#~ msgstr "неопределено"
-
-#~ msgid ""
-#~ "\n"
-#~ "Too many errors while reading configuration file!\n"
-#~ "Please backup your keys file, remove it from directory, and launch "
-#~ "calcurse again.\n"
-#~ msgstr ""
-#~ "\n"
-#~ "Обнаружены ошибки при чтении файла настроек!\n"
-#~ "Сделайте копию keys-файла, удалите его из каталога и запустите calcurse "
-#~ "снова.\n"
-
-#, c-format
-#~ msgid "Error reading key: \"%s\""
-#~ msgstr "Ошибка чтения клавиши: \"%s\""
-
-#, c-format
-#~ msgid "When adding default key for \"%s\", \"%s\" was already assigned!"
-#~ msgstr "При назначении клав. \"%s\", \"%s\" уже была назначена!"
-
-#~ msgid ""
-#~ "(if set to YES, messages about loaded and saved data will be displayed)"
-#~ msgstr "(yes/no) Отображение уведомления о загрузке и сохранении данных"
-
-#~ msgid "date error in the event\n"
-#~ msgstr "ошибка даты в событии\n"
-
-#~ msgid "recurrence frequency not recognized."
-#~ msgstr "рекуррентная частота не распознана"
-
-#~ msgid "item has a negative duration."
-#~ msgstr "значение имеет отрицательную продолжительность."
-
-#~ msgid "item duration malformed."
-#~ msgstr "значение продолжительности повреждено."
-
-#~ msgid "Welcome to Calcurse. Missing data files were created."
-#~ msgstr ""
-#~ "Добро пожаловать в Calcurse. Отсутствующие файлы данных будут созданы."
-
-#~ msgid "Data files found. Data will be loaded now."
-#~ msgstr "Данные найдены и будут загружены"
-
-#~ msgid "error while launching command: could not fork"
-#~ msgstr "ошибка во время запуска команды: невозможно разделиться (fork)"
-
-#~ msgid "error while launching command"
-#~ msgstr "ошибка во время запуска команды"
-
-#~ msgid "unknown repetition type"
-#~ msgstr "неизвестный тип повторения"
-
-#~ msgid "Enter the new repetition type:"
-#~ msgstr "Введите тип повторения:"
-
-#~ msgid "(d)aily"
-#~ msgstr "(d)ежедневно"
-
-#~ msgid "(w)eekly"
-#~ msgstr "(w)еженедельно"
-
-#~ msgid "(m)onthly"
-#~ msgstr "(m)ежемесячно"
-
-#~ msgid "(y)early"
-#~ msgstr "(y)ежегодно"
-
-#, c-format
-#~ msgid "(currently using %s)"
-#~ msgstr "(используется %s)"
-
-#~ msgid "Enter the repetition frequency:"
-#~ msgstr "Введите частоту повторения:"
-
-#~ msgid "Duration in days: +dd. Duration in weeks and days: +??w??d."
-#~ msgstr ""
-#~ "Продолжительность в днях: +dd. Продолжительность в неделях и днях: +??w??d"
-
-#~ msgid "Do you really want to delete this item?"
-#~ msgstr "Удалить?"
-
-#~ msgid "[ao]"
-#~ msgstr "[ао]"
-
-#~ msgid "[in]"
-#~ msgstr "[в]"
-
-#~ msgid "Enter the repetition type:"
-#~ msgstr "Назначить тип повторения:"
-
-#~ msgid "wrong item type"
-#~ msgstr "неправильный тип записи"
+msgstr "Удаление временной копии архива данных..."

@@ -1,6 +1,6 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR calcurse Development Team <misc@calcurse.org>
-# This file is distributed under the same license as the PACKAGE package.
+# This file is distributed under the same license as the calcurse package.
 #
 # Translators:
 # delix, 2012
@@ -9,15 +9,15 @@
 # Stefan Schroeder <ondekoza@gmail.com>, 2017
 # Tim, 2013
 # Tim Summerer <summerer.tim@gmail.com>, 2019
-# Tim, 2013
+# 8eda48bac0dbbe266f569e2487f7fa50_208ec8f, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2023-05-22 14:19-0400\n"
-"PO-Revision-Date: 2020-10-12 15:20+0000\n"
-"Last-Translator: Lukas Fleischer\n"
-"Language-Team: German (http://www.transifex.com/lfleischer/calcurse/language/"
+"POT-Creation-Date: 2024-01-26 18:28+0100\n"
+"PO-Revision-Date: 2013-07-23 08:43+0000\n"
+"Last-Translator: Tim Summerer <summerer.tim@gmail.com>, 2019\n"
+"Language-Team: German (http://app.transifex.com/lfleischer/calcurse/language/"
 "de/)\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
@@ -28,13 +28,11 @@ msgstr ""
 msgid "null pointer"
 msgstr "Null-Zeiger"
 
-#, fuzzy
 msgid "illegal date in appointment"
-msgstr "Datumsfehler im Termin"
+msgstr ""
 
-#, fuzzy
 msgid "error in appointment description"
-msgstr "Datumsfehler im Termin"
+msgstr ""
 
 msgid "date error in appointment"
 msgstr "Datumsfehler im Termin"
@@ -300,13 +298,11 @@ msgstr ""
 msgid "Help topic does not exist: %s"
 msgstr "Hilfethema existiert nicht: %s"
 
-#, fuzzy
 msgid "Select a repeating item in the appointments panel."
-msgstr "(Position des Titels in der Terminleiste)"
+msgstr ""
 
-#, fuzzy
 msgid "Not a repeating item."
-msgstr "Ein Item wiederholen"
+msgstr ""
 
 msgid "Last occurrence."
 msgstr ""
@@ -461,9 +457,8 @@ msgstr "(Position des Titels in der Terminleiste)"
 msgid "(Format of the date displayed in the appointments panel)"
 msgstr "(Format des Datums in der Termin-Anzeige)"
 
-#, fuzzy
 msgid "(Format of the time displayed in the appointments panel)"
-msgstr "(Format des Datums in der Termin-Anzeige)"
+msgstr ""
 
 msgid "Enter a text string (an empty string for the default text)"
 msgstr ""
@@ -501,9 +496,8 @@ msgstr "Taste drücken, die zugewiesen werden soll:"
 msgid "The key '%s' is already used for %s. Choose another one."
 msgstr "Die Taste '%s' wird schon von %s benutzt. Wählen Sie eine andere."
 
-#, fuzzy
 msgid "Some actions are left undefined!"
-msgstr "Option nicht definiert"
+msgstr ""
 
 msgid ""
 "Sorry, colors are not supported by your terminal\n"
@@ -519,9 +513,8 @@ msgstr ""
 msgid "unknown item type"
 msgstr "Unbekannte Position"
 
-#, fuzzy
 msgid "Note:"
-msgstr "Notiz bearb."
+msgstr ""
 
 msgid "Event:"
 msgstr "Ereignis:"
@@ -591,13 +584,11 @@ msgstr "Aufgeweckt als %s\n"
 msgid "Could not stop calcurse daemon: %s\n"
 msgstr "Kann den calcurse-Dienst nicht beenden: %s\n"
 
-#, fuzzy
 msgid "illegal date in event"
-msgstr "Datumsfehler im Ereignis"
+msgstr ""
 
-#, fuzzy
 msgid "date error in event\n"
-msgstr "Datumsfehler im Ereignis"
+msgstr ""
 
 msgid "Internal error: line too long"
 msgstr "INTERNER FEHLER: Die Zeile ist zu lang"
@@ -611,9 +602,8 @@ msgstr "Unbekannter ICal-Typ"
 msgid "(empty)"
 msgstr ""
 
-#, fuzzy
 msgid "ical_store_event: out of memory"
-msgstr "xcalloc: Speicher ist voll"
+msgstr ""
 
 msgid "need DTSTART to determine event type."
 msgstr ""
@@ -627,13 +617,11 @@ msgstr ""
 msgid "frequency absent in rrule."
 msgstr ""
 
-#, fuzzy
 msgid "rrule frequency not supported."
-msgstr "Wiederholung nicht gefunden."
+msgstr ""
 
-#, fuzzy
 msgid "invalid interval."
-msgstr "Ungültiger Filter"
+msgstr ""
 
 msgid "either until or count."
 msgstr ""
@@ -641,9 +629,8 @@ msgstr ""
 msgid "missing until value."
 msgstr ""
 
-#, fuzzy
 msgid "invalid until format."
-msgstr "Ungültiges Exportformat: %s"
+msgstr ""
 
 msgid "invalid count value."
 msgstr ""
@@ -651,13 +638,11 @@ msgstr ""
 msgid "invalid bymonth list."
 msgstr ""
 
-#, fuzzy
 msgid "invalid bymonthday list."
-msgstr "Ungültiges Datum: %s"
+msgstr ""
 
-#, fuzzy
 msgid "invalid byday list."
-msgstr "Ungültiges Datum: %s"
+msgstr ""
 
 msgid "invalid exception date value type."
 msgstr ""
@@ -665,9 +650,8 @@ msgstr ""
 msgid "malformed exceptions line."
 msgstr ""
 
-#, fuzzy
 msgid "invalid exception."
-msgstr "Ungültige Wiederholungsrate."
+msgstr ""
 
 #, c-format
 msgid "malformed %s line."
@@ -683,41 +667,35 @@ msgstr ""
 msgid "malformed summary."
 msgstr ""
 
-#, fuzzy
 msgid "item start date not defined."
-msgstr "Anfangsdatum des Eintrags fehlt."
+msgstr ""
 
 msgid "malformed start time line."
 msgstr ""
 
-#, fuzzy
 msgid "invalid or malformed event start time."
-msgstr "Kann die Startzeit des Ereignis nicht lesen."
+msgstr ""
 
-#, fuzzy
 msgid "invalid end time value type."
-msgstr "Ungültiger Zeitraum: %s"
+msgstr ""
 
 msgid "malformed end time line."
 msgstr ""
 
-#, fuzzy
 msgid "malformed event end time."
-msgstr "Kann die Endzeit des Ereignis nicht lesen."
+msgstr ""
 
 msgid "end must be later than start."
 msgstr ""
 
-#, fuzzy
 msgid "either end or duration."
-msgstr "Syntaxfehler in Item-Zeit oder -Dauer"
+msgstr ""
 
 msgid "malformed duration line."
 msgstr ""
 
-#, fuzzy
 msgid "invalid duration."
-msgstr "Ungültiges Datum: %s"
+msgstr ""
 
 msgid "exception date, but no recurrence rule."
 msgstr ""
@@ -725,9 +703,9 @@ msgstr ""
 msgid "multi-day event changed to one-day event"
 msgstr ""
 
-#, fuzzy, c-format
+#, c-format
 msgid "Location: %s"
-msgstr "alloziiert bei: %s\n"
+msgstr ""
 
 #, c-format
 msgid "Comment: %s"
@@ -824,9 +802,8 @@ msgstr "Falsches Format für den Termin oder das Ereignis"
 msgid "syntax error in item repetition"
 msgstr "Syntaxfehler in Item-Wiederholung"
 
-#, fuzzy
 msgid "syntax error in until date"
-msgstr "Eingabefehler im Datum"
+msgstr ""
 
 msgid "until date error"
 msgstr ""
@@ -837,9 +814,8 @@ msgstr ""
 msgid "missing end of recurrence"
 msgstr ""
 
-#, fuzzy
 msgid "syntax error in item state"
-msgstr "Eingabefehler im Datum"
+msgstr ""
 
 msgid "failed to open todo file"
 msgstr "konnte Aufgaben-Datei nicht öffnen"
@@ -853,21 +829,21 @@ msgstr "Konnte Tastenkonfigurationsdatei nicht öffnen"
 msgid "Could not read key label"
 msgstr "Tastenbezeichnung nicht lesbar"
 
-#, fuzzy, c-format
+#, c-format
 msgid "Key label not recognized: \"%s\""
-msgstr "Tastenbezeichnung nicht erkannt"
+msgstr ""
 
 #, c-format
 msgid "No keys assigned to \"%s\"."
 msgstr ""
 
-#, fuzzy, c-format
+#, c-format
 msgid "Keyname not recognized: \"%s\""
-msgstr "Tastenbezeichnung nicht erkannt"
+msgstr ""
 
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" assigned twice: \"%s\"."
-msgstr "\"%s\" ist mehrfach zugeordnet!"
+msgstr ""
 
 #, c-format
 msgid ""
@@ -877,9 +853,8 @@ msgstr ""
 msgid "Errors in the keys file."
 msgstr ""
 
-#, fuzzy
 msgid "Remove offending line(s) from the keys file, aborting..."
-msgstr "Zu viele Fehler beim Lesen der 'keys'-Datei, Abbruch..."
+msgstr ""
 
 msgid "Some actions do not have any associated key bindings!"
 msgstr "Einige Aktionen haben keine Tastenzuordnung!"
@@ -1203,9 +1178,8 @@ msgstr "Item an aktueller Position einfügen."
 msgid "Select next panel in calcurse main screen."
 msgstr "Wähle nächstes Fenster im calcurse-Hauptbildschirm."
 
-#, fuzzy
 msgid "Select previous panel in calcurse main screen."
-msgstr "Wähle nächstes Fenster im calcurse-Hauptbildschirm."
+msgstr ""
 
 msgid "Import data from an external file."
 msgstr "Importiere Daten von einer externen Datei."
@@ -1480,9 +1454,8 @@ msgstr "Unbekanntes Zeichen"
 msgid "recurrence error: not on start day (%s)"
 msgstr ""
 
-#, fuzzy
 msgid "illegel date in event"
-msgstr "Datumsfehler im Ereignis"
+msgstr ""
 
 msgid "date error in event"
 msgstr "Datumsfehler im Ereignis"
@@ -1490,9 +1463,8 @@ msgstr "Datumsfehler im Ereignis"
 msgid "month day is zero"
 msgstr ""
 
-#, fuzzy
 msgid "no daily frequency check"
-msgstr "Ungültige Wiederholungsrate."
+msgstr ""
 
 msgid "illegal BYDAY value"
 msgstr ""
@@ -1503,17 +1475,14 @@ msgstr "Ereignis nicht gefunden"
 msgid "appointment not found"
 msgstr "Termin nicht gefunden"
 
-#, fuzzy
 msgid "syntax error in bymonthday"
-msgstr "Eingabefehler im Datum"
+msgstr ""
 
-#, fuzzy
 msgid "syntax error in bywday"
-msgstr "Eingabefehler im Datum"
+msgstr ""
 
-#, fuzzy
 msgid "syntax error in bymonth"
-msgstr "Eingabefehler im Datum"
+msgstr ""
 
 msgid "illegal bymonth value"
 msgstr ""
@@ -1644,23 +1613,20 @@ msgstr ""
 msgid "Invalid format - try again."
 msgstr ""
 
-#, fuzzy
 msgid "Press any key to continue."
-msgstr "Eine beliebige Taste um fortzufahren..."
+msgstr ""
 
 msgid "Base period:"
 msgstr ""
 
-#, fuzzy
 msgid "day"
-msgstr "Heute"
+msgstr ""
 
 msgid "week"
 msgstr ""
 
-#, fuzzy
 msgid "month"
-msgstr "(m)onatlich"
+msgstr ""
 
 msgid "year"
 msgstr ""
@@ -1738,30 +1704,25 @@ msgstr ""
 msgid "Invalid start time."
 msgstr ""
 
-#, fuzzy
 msgid ""
 "This item is recurrent and has a note attached to it. Delete (s)elected "
 "occurrence, (a)ll occurrences, or just its (n)ote?"
 msgstr ""
-"An diesem Eintrag ist eine Notiz. E(i)ntrag löschen oder nur die (n)otiz?"
 
 msgid "[san]"
 msgstr ""
 
-#, fuzzy
 msgid ""
 "This item has a note attached to it. Delete (s)elected occurrence or just "
 "its (n)ote?"
 msgstr ""
-"An diesem Eintrag ist eine Notiz. E(i)ntrag löschen oder nur die (n)otiz?"
 
 msgid "[sn]"
 msgstr ""
 
-#, fuzzy
 msgid ""
 "This item is recurrent. Delete (s)elected occurrence or (a)ll occurrences?"
-msgstr "Dieser Eintrag ist wiederkehrend. Lösche (a)lle oder nur (e)inen?"
+msgstr ""
 
 msgid "[sa]"
 msgstr ""
@@ -1772,9 +1733,8 @@ msgstr ""
 msgid "[s]"
 msgstr ""
 
-#, fuzzy
 msgid "Already repeated."
-msgstr "Es handelt sich bereits um einen wiederkehrenden Eintrag."
+msgstr ""
 
 msgid "A (s)imple or (a)dvanced repetition?"
 msgstr ""
@@ -1861,12 +1821,11 @@ msgstr "unbekannte Ansicht"
 msgid "Usage: calcurse-upgrade [-h|-v|--config <file>]"
 msgstr "Verwendung: calcurse-upgrade [-h|-v|--config <file>]"
 
-#, fuzzy
 msgid ""
 "\n"
 "Copyright (c) 2004-2023 calcurse Development Team.\n"
 "This is free software; see the source for copying conditions.\n"
-msgstr "This is free software; see the source for copying conditions."
+msgstr ""
 
 msgid "unrecognized option:"
 msgstr "unbekannte Option:"
@@ -1915,100 +1874,3 @@ msgstr "Aktualisiere Konfigurationsanweisungen..."
 
 msgid "Remove temporary backup..."
 msgstr "Entferne temporäres Backup..."
-
-#~ msgid "Monday"
-#~ msgstr "Montag"
-
-#~ msgid "Sunday"
-#~ msgstr "Sonntag"
-
-#~ msgid "undefined"
-#~ msgstr "unbestimmt"
-
-#~ msgid ""
-#~ "\n"
-#~ "Too many errors while reading configuration file!\n"
-#~ "Please backup your keys file, remove it from directory, and launch "
-#~ "calcurse again.\n"
-#~ msgstr ""
-#~ "\n"
-#~ "Zu viele Fehler beim Lesen der Konfigurationsdatei!\n"
-#~ "Bitte die Einstellungsdatei der Tastaturkürzel sichern, diese aus dem\n"
-#~ "Verzeichnis löschen und calcurse neu starten.\n"
-
-#, c-format
-#~ msgid "Error reading key: \"%s\""
-#~ msgstr "Fehler beim Lesen der Taste \"%s\""
-
-#, c-format
-#~ msgid "When adding default key for \"%s\", \"%s\" was already assigned!"
-#~ msgstr ""
-#~ "Beim Hinzufügen einer Default-Taste für \"%s\" war \"%s\" bereits "
-#~ "zugewiesen!"
-
-#~ msgid ""
-#~ "(if set to YES, messages about loaded and saved data will be displayed)"
-#~ msgstr ""
-#~ "(Ist JA gewählt, werden Nachrichten über geladene und gespeicherte Daten "
-#~ "angezeigt)"
-
-#~ msgid "date error in the event\n"
-#~ msgstr "Fehlerhafte Zeit für das Ereignis\n"
-
-#~ msgid "recurrence frequency not recognized."
-#~ msgstr "Wiederholung nicht erkannt."
-
-#~ msgid "item has a negative duration."
-#~ msgstr "Eintrag hat eine negative Dauer."
-
-#~ msgid "item duration malformed."
-#~ msgstr "Dauer des Eintrags fehlerhaft."
-
-#~ msgid "Welcome to Calcurse. Missing data files were created."
-#~ msgstr "Willkommen zu calcurse. Fehlende Dateien werden erzeugt."
-
-#~ msgid "Data files found. Data will be loaded now."
-#~ msgstr "Benutzerdaten gefunden. Daten werden geladen."
-
-#~ msgid "error while launching command: could not fork"
-#~ msgstr "Fehler beim Ausführen einer Befehlszeile: Kann nicht Ausführen"
-
-#~ msgid "error while launching command"
-#~ msgstr "Fehler beim Ausführen einer Befehlszeile"
-
-#~ msgid "unknown repetition type"
-#~ msgstr "Unbekannter Wiederholungstyp"
-
-#~ msgid "Enter the new repetition type:"
-#~ msgstr "Neuen Wiederholungstyp eingeben:"
-
-#~ msgid "(d)aily"
-#~ msgstr "(t)äglich"
-
-#~ msgid "(w)eekly"
-#~ msgstr "(w)öchentlich"
-
-#~ msgid "(y)early"
-#~ msgstr "(j)ährlich"
-
-#, c-format
-#~ msgid "(currently using %s)"
-#~ msgstr "(verwende momentan %s)"
-
-#~ msgid "Enter the repetition frequency:"
-#~ msgstr "Eingabe der Wiederholungsrate:"
-
-#~ msgid "Do you really want to delete this item?"
-#~ msgstr "Möchten Sie diesen Eintrag wirklich löschen?"
-
-#~ msgid "[ao]"
-#~ msgstr "[ae]"
-
-#~ msgid "[in]"
-#~ msgstr "[in]"
-
-#~ msgid "Enter the repetition type:"
-#~ msgstr "Wiederholungstyp eingeben:"
-
-#~ msgid "wrong item type"
-#~ msgstr "Falscher Typ des Eintrags"

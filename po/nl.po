@@ -1,6 +1,6 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR calcurse Development Team <misc@calcurse.org>
-# This file is distributed under the same license as the PACKAGE package.
+# This file is distributed under the same license as the calcurse package.
 #
 # Translators:
 # Frob Nicator <mart@martlubbers.net>, 2016
@@ -11,10 +11,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2023-05-22 14:19-0400\n"
-"PO-Revision-Date: 2020-10-12 15:20+0000\n"
-"Last-Translator: Lukas Fleischer\n"
-"Language-Team: Dutch (http://www.transifex.com/lfleischer/calcurse/language/"
+"POT-Creation-Date: 2024-01-26 18:28+0100\n"
+"PO-Revision-Date: 2013-07-23 08:43+0000\n"
+"Last-Translator: Marco van Hulten <marco@hulten.org>, 2018\n"
+"Language-Team: Dutch (http://app.transifex.com/lfleischer/calcurse/language/"
 "nl/)\n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
@@ -25,13 +25,11 @@ msgstr ""
 msgid "null pointer"
 msgstr "null pointer"
 
-#, fuzzy
 msgid "illegal date in appointment"
-msgstr "datumfout in de afspraak"
+msgstr ""
 
-#, fuzzy
 msgid "error in appointment description"
-msgstr "datumfout in de afspraak"
+msgstr ""
 
 msgid "date error in appointment"
 msgstr "datumfout in de afspraak"
@@ -297,9 +295,8 @@ msgstr ""
 msgid "Select a repeating item in the appointments panel."
 msgstr ""
 
-#, fuzzy
 msgid "Not a repeating item."
-msgstr "Herhaal item"
+msgstr ""
 
 msgid "Last occurrence."
 msgstr ""
@@ -452,9 +449,8 @@ msgstr ""
 msgid "(Format of the date displayed in the appointments panel)"
 msgstr ""
 
-#, fuzzy
 msgid "(Format of the time displayed in the appointments panel)"
-msgstr "(Formaat van de tijd in de informatiebalk.)"
+msgstr ""
 
 msgid "Enter a text string (an empty string for the default text)"
 msgstr ""
@@ -509,9 +505,8 @@ msgstr ""
 msgid "unknown item type"
 msgstr "ongekend type item"
 
-#, fuzzy
 msgid "Note:"
-msgstr "WzgNoot"
+msgstr ""
 
 msgid "Event:"
 msgstr ""
@@ -581,13 +576,11 @@ msgstr ""
 msgid "Could not stop calcurse daemon: %s\n"
 msgstr ""
 
-#, fuzzy
 msgid "illegal date in event"
-msgstr "datumfout in gebeurtenis"
+msgstr ""
 
-#, fuzzy
 msgid "date error in event\n"
-msgstr "datumfout in gebeurtenis"
+msgstr ""
 
 msgid "Internal error: line too long"
 msgstr "Interne fout: lijn te lang"
@@ -666,16 +659,14 @@ msgstr ""
 msgid "malformed summary."
 msgstr ""
 
-#, fuzzy
 msgid "item start date not defined."
-msgstr "item onbekend"
+msgstr ""
 
 msgid "malformed start time line."
 msgstr ""
 
-#, fuzzy
 msgid "invalid or malformed event start time."
-msgstr "kan begintijd van gebeurtenis niet ophalen"
+msgstr ""
 
 msgid "invalid end time value type."
 msgstr ""
@@ -683,23 +674,20 @@ msgstr ""
 msgid "malformed end time line."
 msgstr ""
 
-#, fuzzy
 msgid "malformed event end time."
-msgstr "kan eindtijd van gebeurtenis niet ophalen"
+msgstr ""
 
 msgid "end must be later than start."
 msgstr ""
 
-#, fuzzy
 msgid "either end or duration."
-msgstr "syntaxfout in itemtijd of duurtijd van het item"
+msgstr ""
 
 msgid "malformed duration line."
 msgstr ""
 
-#, fuzzy
 msgid "invalid duration."
-msgstr "item heeft een negatieve tijdsduur"
+msgstr ""
 
 msgid "exception date, but no recurrence rule."
 msgstr ""
@@ -804,9 +792,8 @@ msgstr "fout formaat in de afspraak of gebeurtenis"
 msgid "syntax error in item repetition"
 msgstr "syntaxfout in de herhaling van het item"
 
-#, fuzzy
 msgid "syntax error in until date"
-msgstr "syntaxfout in datum van item"
+msgstr ""
 
 msgid "until date error"
 msgstr ""
@@ -817,9 +804,8 @@ msgstr ""
 msgid "missing end of recurrence"
 msgstr ""
 
-#, fuzzy
 msgid "syntax error in item state"
-msgstr "syntaxfout in datum van item"
+msgstr ""
 
 msgid "failed to open todo file"
 msgstr "kon het todo-bestand niet openen"
@@ -845,9 +831,9 @@ msgstr ""
 msgid "Keyname not recognized: \"%s\""
 msgstr ""
 
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" assigned twice: \"%s\"."
-msgstr "\"%s\" meer dan eens toegewezen!"
+msgstr ""
 
 #, c-format
 msgid ""
@@ -857,10 +843,8 @@ msgstr ""
 msgid "Errors in the keys file."
 msgstr ""
 
-#, fuzzy
 msgid "Remove offending line(s) from the keys file, aborting..."
 msgstr ""
-"Teveel fouten bij het laden van het sneltoetsenbestand, wordt afgebroken ..."
 
 msgid "Some actions do not have any associated key bindings!"
 msgstr ""
@@ -1438,9 +1422,8 @@ msgstr "onbekend karakter"
 msgid "recurrence error: not on start day (%s)"
 msgstr ""
 
-#, fuzzy
 msgid "illegel date in event"
-msgstr "datumfout in gebeurtenis"
+msgstr ""
 
 msgid "date error in event"
 msgstr "datumfout in gebeurtenis"
@@ -1460,17 +1443,14 @@ msgstr "Gebeurtenis niet gevonden"
 msgid "appointment not found"
 msgstr "afspraak niet gevonden"
 
-#, fuzzy
 msgid "syntax error in bymonthday"
-msgstr "syntaxfout in datum van item"
+msgstr ""
 
-#, fuzzy
 msgid "syntax error in bywday"
-msgstr "syntaxfout in datum van item"
+msgstr ""
 
-#, fuzzy
 msgid "syntax error in bymonth"
-msgstr "syntaxfout in datum van item"
+msgstr ""
 
 msgid "illegal bymonth value"
 msgstr ""
@@ -1601,23 +1581,20 @@ msgstr ""
 msgid "Invalid format - try again."
 msgstr ""
 
-#, fuzzy
 msgid "Press any key to continue."
-msgstr "Druk op een toets om door te gaan..."
+msgstr ""
 
 msgid "Base period:"
 msgstr ""
 
-#, fuzzy
 msgid "day"
-msgstr "Vandaag"
+msgstr ""
 
 msgid "week"
 msgstr ""
 
-#, fuzzy
 msgid "month"
-msgstr "(m)aandelijks"
+msgstr ""
 
 msgid "year"
 msgstr ""
@@ -1722,9 +1699,8 @@ msgstr ""
 msgid "[s]"
 msgstr ""
 
-#, fuzzy
 msgid "Already repeated."
-msgstr "Dit item wordt al herhaald."
+msgstr ""
 
 msgid "A (s)imple or (a)dvanced repetition?"
 msgstr ""
@@ -1810,12 +1786,11 @@ msgstr ""
 msgid "Usage: calcurse-upgrade [-h|-v|--config <file>]"
 msgstr ""
 
-#, fuzzy
 msgid ""
 "\n"
 "Copyright (c) 2004-2023 calcurse Development Team.\n"
 "This is free software; see the source for copying conditions.\n"
-msgstr "Dit is vrije software; bekijk de broncode voor de kopieer voorwaarden"
+msgstr ""
 
 msgid "unrecognized option:"
 msgstr ""
@@ -1856,44 +1831,3 @@ msgstr ""
 
 msgid "Remove temporary backup..."
 msgstr ""
-
-#~ msgid "Monday"
-#~ msgstr "maandag"
-
-#~ msgid "Sunday"
-#~ msgstr "zondag"
-
-#~ msgid "undefined"
-#~ msgstr "Ongekend"
-
-#~ msgid ""
-#~ "\n"
-#~ "Too many errors while reading configuration file!\n"
-#~ "Please backup your keys file, remove it from directory, and launch "
-#~ "calcurse again.\n"
-#~ msgstr ""
-#~ "\n"
-#~ "Teveel fouten tijdens het lezen van het configuratiebestand!\n"
-#~ "Maak een backup van het sneltoetsenbestand, verwijder het van de map en "
-#~ "start calcurse opnieuw op.\n"
-
-#~ msgid "item duration malformed."
-#~ msgstr "item tijdsduur onjuist"
-
-#~ msgid "Welcome to Calcurse. Missing data files were created."
-#~ msgstr "Welkom bij Calcurse. De missende databestanden zijn aangemaakt."
-
-#~ msgid "Data files found. Data will be loaded now."
-#~ msgstr "Databestanden gevonden. Data wordt geladen."
-
-#~ msgid "error while launching command"
-#~ msgstr "fout bij uitvoeren commando"
-
-#~ msgid "(d)aily"
-#~ msgstr "(d)agelijks"
-
-#~ msgid "(w)eekly"
-#~ msgstr "(w)ekelijks"
-
-#~ msgid "(y)early"
-#~ msgstr "(y)aarlijks"
