@@ -30,8 +30,8 @@ jobs:
       if: matrix.os == 'ubuntu-latest'
     - name: Install dependencies (MacOS)
       run: |
-        brew update
         brew install --overwrite python
+        brew update
         brew install automake
         brew install asciidoc
         brew install gettext
