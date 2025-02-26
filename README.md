@@ -21,7 +21,7 @@ may need to install those as well:
 * autoconf-archive
 * automake
 * autopoint
-* asciidoc
+* asciidoc (only needed for building documentation, can be skipped with --disable-docs)
 * gettext with development files
 * ncurses with development files
 
