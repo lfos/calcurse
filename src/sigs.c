@@ -85,6 +85,9 @@ static void generic_hdlr(int sig)
 		want_reload = 1;
 		ungetch(KEY_RESIZE);
 		break;
+	case SIGCHLD:
+		wait(NULL);
+		break;
 	}
 }
 
@@ -111,6 +114,7 @@ void sigs_init()
 	if (!sigs_set_hdlr(SIGWINCH, generic_hdlr)
 	    || !sigs_set_hdlr(SIGTERM, generic_hdlr)
 	    || !sigs_set_hdlr(SIGUSR1, generic_hdlr)
+	    || !sigs_set_hdlr(SIGCHLD, generic_hdlr)
 	    || !sigs_set_hdlr(SIGINT, SIG_IGN))
 		exit_calcurse(EXIT_FAILURE);
 }
