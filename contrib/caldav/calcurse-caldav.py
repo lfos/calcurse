@@ -3,6 +3,7 @@
 import argparse
 import base64
 import configparser
+import fcntl
 import os
 import pathlib
 import re
@@ -736,12 +737,12 @@ elif ver < (4, 0, 0, 96):
 # Run the pre-sync hook.
 run_hook('pre-sync')
 
-# Create lock file.
-if os.path.exists(lockfn):
-    die('Leftover lock file detected. If there is no other synchronization ' +
-        'instance running, please remove the lock file manually and try ' +
-        'again.')
-open(lockfn, 'w')
+# Obtain lock.
+try:
+    lockfile = open(lockfn, 'w')
+    fcntl.flock(lockfile, fcntl.LOCK_EX | fcntl.LOCK_NB)
+except OSError:
+    die('Another synchronization instance is already running.')
 
 try:
     # Connect to the server.
@@ -815,8 +816,7 @@ try:
         conn.clear_credentials()
 
 finally:
-    # Remove lock file.
-    os.remove(lockfn)
+    pass
 
 # Run the post-sync hook.
 run_hook('post-sync')
