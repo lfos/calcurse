@@ -113,14 +113,15 @@ to "set a product name on the consent screen", click on *Configure consent
 screen* to do so. Any product name will do. Upon saving and returning to the
 "Create client ID" screen, choose *Other* as the Application type and click
 *Create*. You now have your Client ID and Client Secret to put into your
-calcurse-caldav config file!
+calcurse-caldav config file! Use `https://www.googleapis.com/auth/calendar` for
+the Scope field.
 
 The following options should also be changed in your config file:
 
 ```
 Hostname = apidata.googleusercontent.com
 Path = /caldav/v2/*your_calendar_id_here*/events/
-Scope = https://www.googleapis.com/auth/calendar
+AuthMethod = oauth2
 SyncFilter = cal
 ```
 
