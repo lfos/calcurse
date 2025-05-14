@@ -248,7 +248,7 @@ def init_auth(client_id, client_secret, scope, redirect_uri, authcode):
     credentials = oauth2_client.step2_exchange(authcode)
 
     # Setup storage file and store credentials
-    storage = Storage(oauth_file)
+    storage = Storage(oauthfn)
     credentials.set_store(storage)
     storage.put(credentials)
 
@@ -257,10 +257,10 @@ def init_auth(client_id, client_secret, scope, redirect_uri, authcode):
 
 def run_auth(authcode):
     # Check if credentials file exists
-    if os.path.isfile(oauth_file):
+    if os.path.isfile(oauthfn):
 
         # Retrieve token from file
-        storage = Storage(oauth_file)
+        storage = Storage(oauthfn)
         credentials = storage.get()
 
         # Set file to store it in for future functions
@@ -598,7 +598,7 @@ if os.path.isdir(os.path.expanduser("~/.calcurse")):
 
     configfn = os.path.join(caldav_path, "config")
     hookdir = os.path.join(caldav_path, "hooks")
-    oauth_file = os.path.join(caldav_path, "oauth2_cred")
+    oauthfn = os.path.join(caldav_path, "oauth2_cred")
     lockfn = os.path.join(caldav_path, "lock")
     syncdbfn = os.path.join(caldav_path, "sync.db")
 else:
@@ -611,7 +611,7 @@ else:
 
     configfn = os.path.join(caldav_config, "config")
     hookdir = os.path.join(caldav_config, "hooks")
-    oauth_file = os.path.join(caldav_config, "oauth2_cred")
+    oauthfn = os.path.join(caldav_config, "oauth2_cred")
 
     lockfn = os.path.join(caldav_data, "lock")
     syncdbfn = os.path.join(caldav_data, "sync.db")
@@ -633,6 +633,9 @@ parser.add_argument('--lockfile', action='store', dest='lockfn',
 parser.add_argument('--syncdb', action='store', dest='syncdbfn',
                     default=syncdbfn,
                     help='path to the calcurse-caldav sync DB')
+parser.add_argument('--oauthfile', action='store', dest='oauthfn',
+                    default=oauthfn,
+                    help='path to the OAuth2 credentials file')
 parser.add_argument('--hookdir', action='store', dest='hookdir',
                     default=hookdir,
                     help='path to the calcurse-caldav hooks directory')
@@ -652,6 +655,7 @@ init = args.init is not None
 configfn = args.configfn
 lockfn = args.lockfn
 syncdbfn = args.syncdbfn
+oauthfn = args.oauthfn
 datadir = args.datadir
 hookdir = args.hookdir
 authcode = args.authcode
