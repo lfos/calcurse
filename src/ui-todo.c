@@ -34,6 +34,7 @@
  *
  */
 
+ #define _XOPEN_SOURCE
 #include "calcurse.h"
 #include <ctype.h>
 
@@ -60,24 +61,38 @@ void ui_todo_add(void)
 	const char *mesg = _("Enter the new TODO item:");
 	const char *mesg_id =
 	    _("Enter the TODO priority [0 (none), 1 (highest) - 9 (lowest)]:");
+	char *prompt;
 	char todo_input[BUFSIZ] = "";
+	char date_input[BUFSIZ] = "";
+	time_t due = 0;
 
 	status_mesg(mesg, "");
-	if (getstring(win[STA].p, todo_input, BUFSIZ, 0, 1) ==
-	    GETSTRING_VALID) {
-		do {
-			status_mesg(mesg_id, "");
-			ch = keys_wgetch(win[KEY].p);
-			if (ch == RETURN)
-				ch = '0';
-			else if (ch == ESCAPE)
-				return;
-		} while (!isdigit(ch));
-		struct todo *todo = todo_add(todo_input, ch - '0', 0, NULL);
-		ui_todo_load_items();
-		io_set_modified();
-		ui_todo_set_selitem(todo);
+	if (getstring(win[STA].p, todo_input, BUFSIZ, 0, 1) != GETSTRING_VALID)
+		return;
+
+	do {
+		status_mesg(mesg_id, "");
+		ch = keys_wgetch(win[KEY].p);
+		if (ch == RETURN)
+			ch = '0';
+		else if (ch == ESCAPE)
+			return;
+	} while (!isdigit(ch));
+
+	asprintf(&prompt, _("Enter due date [%s] or leave blank:"), DATEFMT_DESC(conf.input_datefmt));
+	status_mesg(prompt, "");
+	mem_free(prompt);
+
+	if (getstring(win[STA].p, date_input, sizeof(date_input), 0, 1) == GETSTRING_VALID) {
+		time_t ts = 0;
+		if (parse_datetime(date_input, &ts, 0))
+			due = ts;
 	}
+
+	struct todo *todo = todo_add(todo_input, ch - '0', 0, NULL, due);
+	ui_todo_load_items();
+	io_set_modified();
+	ui_todo_set_selitem(todo);
 }
 
 /* Delete an item from the TODO list. */
@@ -126,13 +141,36 @@ void ui_todo_delete(void)
 void ui_todo_edit(void)
 {
 	struct todo *item = ui_todo_selitem();
-	const char *mesg = _("Enter the new TODO description:");
+	const char *mesg_desc = _("Enter the new TODO description:");
+	char *prompt;
+	char date_input[BUFSIZ] = "";
+	time_t ts = 0;
 
 	if (!item)
 		return;
 
-	status_mesg(mesg, "");
+	/* Edit description */
+	status_mesg(mesg_desc, "");
 	updatestring(win[STA].p, &item->mesg, 0, 1);
+
+	/* Edit due date */
+	asprintf(&prompt, _("Enter the new due date [%s], leave empty to keep current, '-' to remove:"),
+	         DATEFMT_DESC(conf.input_datefmt));
+	status_mesg(prompt, "");
+	mem_free(prompt);
+
+	if (getstring(win[STA].p, date_input, BUFSIZ, 0, 1) == GETSTRING_VALID) {
+		if (strcmp(date_input, "-") == 0) {
+			item->due = 0;
+		} else if (strlen(date_input) > 0) {
+			ts = item->due;  /* fallback if parse fails */
+			if (parse_datetime(date_input, &ts, 0))
+				item->due = ts;
+			else
+				status_mesg(_("Invalid date format."), "");
+		}
+	}
+
 	todo_resort(item);
 	ui_todo_load_items();
 	io_set_modified();
@@ -228,8 +266,17 @@ void ui_todo_draw(int n, WINDOW *win, int y, int hilt, void *cb_data)
 		}
 		mesg = buf;
 	}
+	// Print mark + message + (optional due date)
+	wmove(win, y, 0);
+	wprintw(win, "%s %s", mark, mesg);
 
-	mvwprintw(win, y, 0, "%s%s", mark, mesg);
+	if (todo->due > 0) {
+		char datebuf[64];
+		strftime(datebuf, sizeof(datebuf), DATEFMT(conf.input_datefmt), localtime(&todo->due));
+		wattron(win, A_DIM);
+		wprintw(win, " %s", datebuf);  // Add space after message
+		wattroff(win, A_DIM);
+	}
 
 	if (hilt)
 		custom_remove_attr(win, ATTR_HIGHEST);
@@ -303,7 +350,7 @@ void ui_todo_chg_priority(int diff)
 	else if (id > 9)
 		id = 9;
 
-	item_new = todo_add(item->mesg, id, item->completed, item->note);
+	item_new = todo_add(item->mesg, id, item->completed, item->note, item->due);
 	todo_delete(item);
 	io_set_modified();
 	ui_todo_set_selitem(item_new);
@@ -316,19 +363,29 @@ void ui_todo_popup_item(void)
 	if (!item)
 		return;
 
+	const char *note_heading = _("Note:");
+	const char *todo_heading = _("TODO:");
+	char datebuf[64] = "";
+	char *msg;
+
+	if (item->due > 0) {
+		snprintf(datebuf, sizeof(datebuf), "%s ", _("Due date:"));
+		strftime(datebuf + strlen(datebuf), sizeof(datebuf) - strlen(datebuf),
+				DATEFMT(conf.input_datefmt), localtime(&item->due));
+	}
+
 	if (item->note) {
-		/* Assign a sane default note size that will cleanly
-		 * truncate long notes */
-		const char *note_heading = _("Note:");
 		size_t note_size = 3500;
 		char note[note_size];
-		char *notepath, *msg;
+		char *notepath;
 		FILE *fp;
 
 		asprintf(&notepath, "%s%s", path_notes, item->note);
 		fp = fopen(notepath, "r");
 		if (fp == NULL) {
-			item_in_popup(NULL, NULL, item->mesg, _("TODO:"));
+			asprintf(&msg, "%s\n%s", datebuf, item->mesg);
+			item_in_popup(NULL, NULL, msg, todo_heading);
+			mem_free(msg);
 			return;
 		}
 
@@ -336,11 +393,17 @@ void ui_todo_popup_item(void)
 		fclose(fp);
 		mem_free(notepath);
 
-		asprintf(&msg, "%s\n\n%s\n%s", item->mesg, note_heading, note);
-		item_in_popup(NULL, NULL, msg, _("TODO:"));
+		asprintf(&msg, "%s\n%s\n\n%s\n%s", item->mesg, datebuf, note_heading, note);
+		item_in_popup(NULL, NULL, msg, todo_heading);
 		mem_free(msg);
 	} else {
-		item_in_popup(NULL, NULL, item->mesg, _("TODO:"));
+		if (item->due > 0)
+			asprintf(&msg, "%s\n\n%s", item->mesg, datebuf);
+		else
+			asprintf(&msg, "%s", item->mesg);
+
+		item_in_popup(NULL, NULL, msg, todo_heading);
+		mem_free(msg);
 	}
 }
 
