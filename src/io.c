@@ -33,7 +33,7 @@
  * Calcurse home page : http://calcurse.org
  *
  */
-
+#define _XOPEN_SOURCE 700
 #include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
@@ -749,6 +749,7 @@ void io_load_todo(struct item_filter *filter)
 	char *newline;
 	int c, id, completed, cond;
 	char buf[BUFSIZ], e_todo[BUFSIZ], note[MAX_NOTESIZ + 1];
+	char due_str[11];
 	unsigned line = 0;
 
 	data_file = fopen(path_todo, "r");
@@ -759,11 +760,13 @@ void io_load_todo(struct item_filter *filter)
 
 	for (;;) {
 		line++;
+		time_t due = 0;
+        memset(due_str, 0, sizeof due_str);
 		c = getc(data_file);
 		if (c == EOF) {
 			break;
 		} else if (c == '[') {
-			/* new style with id */
+			/* new style with id (and optional due date) */
 			c = getc(data_file);
 			if (c == '-') {
 				completed = 1;
@@ -771,17 +774,32 @@ void io_load_todo(struct item_filter *filter)
 				completed = 0;
 				ungetc(c, data_file);
 			}
-			if (fscanf(data_file, " %d ", &id) != 1
-			    || getc(data_file) != ']')
-				io_load_error(path_todo, line,
-					      _("syntax error in item identifier"));
-			while ((c = getc(data_file)) == ' ') ;
+
+			if (fscanf(data_file, " %d", &id) != 1)
+				io_load_error(path_todo, line, _("syntax error in item identifier"));
+
+			c = getc(data_file);
+			if (c == '|') {
+				if (fscanf(data_file, "%10[0-9-]", due_str) == 1) {
+					struct tm tm = {0};
+					if (strptime(due_str, "%Y-%m-%d", &tm))
+						due = mktime(&tm);
+				}
+				c = getc(data_file);
+			}
+
+			if (c != ']')
+				io_load_error(path_todo, line, _("syntax error in item identifier"));
+
+			while ((c = getc(data_file)) == ' ')
+				;
 			ungetc(c, data_file);
 		} else {
 			id = 9;
 			completed = 0;
 			ungetc(c, data_file);
 		}
+
 		/* Now read the attached note, if any. */
 		c = getc(data_file);
 		if (c == '>') {
@@ -790,6 +808,7 @@ void io_load_todo(struct item_filter *filter)
 			note[0] = '\0';
 			ungetc(c, data_file);
 		}
+
 		/* Then read todo description. */
 		if (!fgets(buf, sizeof buf, data_file))
 			buf[0] = '\0';
@@ -808,8 +827,9 @@ void io_load_todo(struct item_filter *filter)
 				(filter->completed && !completed) ||
 				(filter->uncompleted && completed)
 			);
+
 			if (filter->hash) {
-				todo = todo_add(e_todo, id, completed, note);
+				todo = todo_add(e_todo, id, completed, note, due);
 				char *hash = todo_hash(todo);
 				cond = cond || !hash_matches(filter->hash, hash);
 				mem_free(hash);
@@ -823,8 +843,9 @@ void io_load_todo(struct item_filter *filter)
 		}
 
 		if (!todo)
-			todo = todo_add(e_todo, id, completed, note);
+			todo = todo_add(e_todo, id, completed, note, due);
 	}
+
 	file_close(data_file, __FILE_POS__);
 }
 

@@ -499,9 +499,9 @@ static void ical_log(FILE * log, ical_types_e type, unsigned lineno,
 }
 
 static void ical_store_todo(int priority, int completed, char *mesg,
-			    char *note, const char *fmt_todo)
+			    char *note, const char *fmt_todo, time_t due)
 {
-	struct todo *todo = todo_add(mesg, priority, completed, note);
+	struct todo *todo = todo_add(mesg, priority, completed, note, due);
 	if (fmt_todo)
 		print_todo(fmt_todo, todo);
 	mem_free(mesg);
@@ -1727,6 +1727,7 @@ ical_read_todo(FILE * fdi, FILE * log, unsigned *notodos, unsigned *noskipped,
 		char *mesg, *desc, *loc, *comm, *note;
 		int priority;
 		int completed;
+		time_t due;
 	} vtodo;
 	int skip_alarm, has_note, separator;
 
@@ -1777,7 +1778,7 @@ ical_read_todo(FILE * fdi, FILE * log, unsigned *notodos, unsigned *noskipped,
 				mem_free(s.buf);
 			}
 			ical_store_todo(vtodo.priority, vtodo.completed,
-					vtodo.mesg, vtodo.note, fmt_todo);
+					vtodo.mesg, vtodo.note, fmt_todo, vtodo.due);
 			(*notodos)++;
 			return;
 		}
@@ -1791,6 +1792,8 @@ ical_read_todo(FILE * fdi, FILE * log, unsigned *notodos, unsigned *noskipped,
 			}
 		} else if (starts_with_ci(buf, "STATUS:COMPLETED")) {
 			vtodo.completed = 1;
+		} else if (starts_with_ci(buf, "DUE:")) {
+			vtodo.due = ical_datetime2time_t(buf + 4, NULL, EVENT);
 		} else if (starts_with_ci(buf, "SUMMARY")) {
 			vtodo.mesg =
 				ical_read_summary(buf, noskipped, ICAL_VTODO,

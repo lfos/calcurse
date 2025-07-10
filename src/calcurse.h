@@ -380,6 +380,7 @@ struct todo {
 	char *mesg;
 	int id;
 	int completed;
+	time_t due;
 	char *note;
 };
 
@@ -1135,7 +1136,7 @@ int string_strftime(struct string *, const char *, const struct tm *);
 /* todo.c */
 extern llist_t todolist;
 struct todo *todo_get_item(int, int);
-struct todo *todo_add(char *, int, int, char *);
+struct todo *todo_add(char *, int, int, char *, time_t);
 char *todo_tostr(struct todo *);
 char *todo_hash(struct todo *);
 void todo_write(struct todo *, FILE *);

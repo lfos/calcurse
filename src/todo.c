@@ -84,7 +84,7 @@ static int todo_cmp(struct todo *a, struct todo *b)
 /*
  * Add an item in the todo linked list.
  */
-struct todo *todo_add(char *mesg, int id, int completed, char *note)
+struct todo *todo_add(char *mesg, int id, int completed, char *note, time_t due)
 {
 	struct todo *todo;
 
@@ -92,6 +92,7 @@ struct todo *todo_add(char *mesg, int id, int completed, char *note)
 	todo->mesg = mem_strdup(mesg);
 	todo->id = id;
 	todo->completed = completed;
+	todo->due = due;
 	todo->note = (note != NULL
 		      && note[0] != '\0') ? mem_strdup(note) : NULL;
 
@@ -105,11 +106,14 @@ char *todo_tostr(struct todo *todo)
 	char *res;
 	const char *cstr = todo->completed ? "-" : "";
 
+	char datebuf[11] = ""; // "YYYY-MM-DD" + null
+	if (todo->due)
+	   strftime(datebuf, sizeof(datebuf), "%Y-%m-%d", localtime(&todo->due));
+
 	if (todo->note)
-		asprintf(&res, "[%s%d]>%s %s", cstr, todo->id, todo->note,
-			 todo->mesg);
+		asprintf(&res, "[%s%d|%s]>%s %s", cstr, todo->id, datebuf, todo->note, todo->mesg);
 	else
-		asprintf(&res, "[%s%d] %s", cstr, todo->id, todo->mesg);
+		asprintf(&res, "[%s%d|%s] %s", cstr, todo->id, datebuf, todo->mesg);
 
 	return res;
 }
@@ -124,11 +128,25 @@ char *todo_hash(struct todo *todo)
 	return sha1;
 }
 
-void todo_write(struct todo *todo, FILE * f)
+void todo_write(struct todo *todo, FILE *f)
 {
-	char *str = todo_tostr(todo);
-	fprintf(f, "%s\n", str);
-	mem_free(str);
+	char datebuf[11] = "";
+	const char *cstr = todo->completed ? "-" : "";
+
+	if (todo->due > 0)
+		strftime(datebuf, sizeof(datebuf), "%Y-%m-%d", localtime(&todo->due));
+
+	if (todo->note && todo->note[0] != '\0') {
+		if (todo->due > 0)
+			fprintf(f, "[%s%d|%s]>%s %s\n", cstr, todo->id, datebuf, todo->note, todo->mesg);
+		else
+			fprintf(f, "[%s%d]>%s %s\n", cstr, todo->id, todo->note, todo->mesg);
+	} else {
+		if (todo->due > 0)
+			fprintf(f, "[%s%d|%s] %s\n", cstr, todo->id, datebuf, todo->mesg);
+		else
+			fprintf(f, "[%s%d] %s\n", cstr, todo->id, todo->mesg);
+	}
 }
 
 /* Delete a note previously attached to a todo item. */
