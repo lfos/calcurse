@@ -444,6 +444,11 @@ static void ical_export_todo(FILE * stream, int export_uid)
 			ical_export_note(stream, todo->note);
 		if (todo->completed)
 			fprintf(stream, "STATUS:COMPLETED\n");
+		if (todo->due > 0) {
+			char due_str[BUFSIZ];
+			date_sec2date_fmt(todo->due, "%Y%m%dT%H%M%S", due_str);
+    		fprintf(stream, "DUE:%s\n", due_str);
+		}
 		fputs("END:VTODO\n", stream);
 	}
 }
@@ -1793,7 +1798,7 @@ ical_read_todo(FILE * fdi, FILE * log, unsigned *notodos, unsigned *noskipped,
 		} else if (starts_with_ci(buf, "STATUS:COMPLETED")) {
 			vtodo.completed = 1;
 		} else if (starts_with_ci(buf, "DUE:")) {
-			vtodo.due = ical_datetime2time_t(buf + 4, NULL, EVENT);
+			vtodo.due = ical_datetime2time_t(buf + 4, NULL, APPOINTMENT);
 		} else if (starts_with_ci(buf, "SUMMARY")) {
 			vtodo.mesg =
 				ical_read_summary(buf, noskipped, ICAL_VTODO,
