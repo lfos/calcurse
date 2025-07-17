@@ -274,7 +274,7 @@ void ui_todo_draw(int n, WINDOW *win, int y, int hilt, void *cb_data)
 		char datebuf[64];
 		strftime(datebuf, sizeof(datebuf), DATEFMT(conf.input_datefmt), localtime(&todo->due));
 		wattron(win, A_DIM);
-		wprintw(win, " %s", datebuf);  // Add space after message
+		wprintw(win, " %s", datebuf);
 		wattroff(win, A_DIM);
 	}
 

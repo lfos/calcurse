@@ -106,7 +106,7 @@ char *todo_tostr(struct todo *todo)
 	char *res;
 	const char *cstr = todo->completed ? "-" : "";
 
-	char datebuf[11] = ""; // "YYYY-MM-DD" + null
+	char datebuf[11] = "";
 	if (todo->due)
 	   strftime(datebuf, sizeof(datebuf), "%Y-%m-%d", localtime(&todo->due));
 
@@ -130,11 +130,11 @@ char *todo_hash(struct todo *todo)
 
 void todo_write(struct todo *todo, FILE *f)
 {
-	char datebuf[11] = "";
+	char datebuf[20] = "";
 	const char *cstr = todo->completed ? "-" : "";
 
 	if (todo->due > 0)
-		strftime(datebuf, sizeof(datebuf), "%Y-%m-%d", localtime(&todo->due));
+		strftime(datebuf, sizeof(datebuf), "%Y-%m-%d %H:%M", localtime(&todo->due));
 
 	if (todo->note && todo->note[0] != '\0') {
 		if (todo->due > 0)
