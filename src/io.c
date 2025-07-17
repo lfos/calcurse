@@ -780,9 +780,9 @@ void io_load_todo(struct item_filter *filter)
 
 			c = getc(data_file);
 			if (c == '|') {
-				if (fscanf(data_file, "%10[0-9-]", due_str) == 1) {
+				if (fscanf(data_file, "%19[0-9:- ]", due_str) == 1) {
 					struct tm tm = {0};
-					if (strptime(due_str, "%Y-%m-%d", &tm))
+					if (strptime(due_str, "%Y-%m-%d %H:%M", &tm))
 						due = mktime(&tm);
 				}
 				c = getc(data_file);

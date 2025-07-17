@@ -1797,8 +1797,10 @@ ical_read_todo(FILE * fdi, FILE * log, unsigned *notodos, unsigned *noskipped,
 			}
 		} else if (starts_with_ci(buf, "STATUS:COMPLETED")) {
 			vtodo.completed = 1;
-		} else if (starts_with_ci(buf, "DUE:")) {
-			vtodo.due = ical_datetime2time_t(buf + 4, NULL, APPOINTMENT);
+		} else if (starts_with_ci(buf, "DUE")) {
+			const char *val = strchr(buf, ':');
+		if (val)
+			vtodo.due = ical_datetime2time_t((char *)(val + 1), NULL, APPOINTMENT);
 		} else if (starts_with_ci(buf, "SUMMARY")) {
 			vtodo.mesg =
 				ical_read_summary(buf, noskipped, ICAL_VTODO,
