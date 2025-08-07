@@ -109,7 +109,7 @@ static void ical_export_valarm(FILE * stream)
 {
 	fputs("BEGIN:VALARM\n", stream);
 	pthread_mutex_lock(&nbar.mutex);
-	fprintf(stream, "TRIGGER:-P%dS\n", nbar.cntdwn);
+	fprintf(stream, "TRIGGER:-PT%dS\n", nbar.cntdwn);
 	pthread_mutex_unlock(&nbar.mutex);
 	fputs("ACTION:DISPLAY\n", stream);
 	fputs("END:VALARM\n", stream);
