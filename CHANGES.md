@@ -1,6 +1,38 @@
 Release Notes
 =============
 
+Version 4.8.2 (2025-08-07)
+--------------------------
+
+- Bug fixes:
+
+    * Fixed iCal export with VALARM calendar components (implemented by dymn).
+
+    * Fixed buffer overflows in configuration file and key binding parser
+      (reported by kingroryg).
+
+    * Fixed out-of-bounds access and two memory leaks (implemented by Max
+      Kunzelmann).
+
+    * Fixed segmentation fault for iCal exports with deleted note files
+      (implemented by Benedikt Wildenhain).
+
+    * Minor documentation and status message fixes (contributed by Naught and
+      by NotRexButCaesar).
+
+- New calcurse-caldav features:
+
+    * Support for configuring the path to the OAuth credentials file via
+      command-line arguments.
+
+    * Relaxed DTEND check for iCal imports (reported by Klaus Ethgen).
+
+    * Improved locking mechanism (contributed by Flying-Toast).
+
+    * Improved PasswordCommand output handling (contributed by Max Kunzelmann).
+
+    * Improved Google calendar sync instructions.
+
 Version 4.8.1 (2023-05-22)
 --------------------------
 
