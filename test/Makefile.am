@@ -62,6 +62,7 @@ TESTS = \
 	ical-012.sh \
 	ical-013.sh \
 	ical-014.sh \
+	ical-015.sh \
 	next-001.sh \
 	next-002.sh \
 	next-003.sh \
@@ -140,6 +141,7 @@ EXTRA_DIST = \
 	data/ical-008.ical \
 	data/ical-009.ical \
 	data/ical-012.ical \
+	data/ical-015.ical \
 	data/rfc5545.ical \
 	data/rfc5545 \
 	data/todo \

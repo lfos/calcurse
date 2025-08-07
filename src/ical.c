@@ -1448,7 +1448,7 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 					 _("malformed event end time."));
 				goto skip;
 			}
-			if (vevent.end <= vevent.start) {
+			if (vevent.end < vevent.start) {
 				ical_log(log, ICAL_VEVENT, ITEMLINE,
 					 _("end must be later than start."));
 				goto skip;
