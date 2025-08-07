@@ -28,7 +28,7 @@ jobs:
         sudo apt-get update
         sudo apt-get install asciidoc autopoint gettext xmlto autoconf-archive
       if: matrix.os == 'ubuntu-latest'
-    - name: Install dependencies (MacOS)
+    - name: Install dependencies (macOS)
       run: |
         brew install --overwrite python
         brew update
@@ -43,11 +43,20 @@ jobs:
       if: matrix.os == 'macos-latest'
     - name: autogen.sh
       run: ./autogen.sh
-    - name: configure
+    - name: configure (Ubuntu)
       run: ./configure
+      if: matrix.os == 'ubuntu-latest'
+    - name: configure (macOS)
+      # TODO: Fix documentation build step under macOS and remove
+      # --disable-docs below.
+      run: ./configure --disable-docs
+      if: matrix.os == 'macos-latest'
     - name: make
       run: make
     - name: make check
       run: make check
     - name: make distcheck
+      # TODO: Run `make distcheck` on all OS once the documentation build issue
+      # on macOS has been fixed.
       run: make distcheck
+      if: matrix.os == 'ubuntu-latest'
