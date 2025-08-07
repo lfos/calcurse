@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2024-01-26 18:28+0100\n"
+"POT-Creation-Date: 2025-08-07 16:05-0400\n"
 "PO-Revision-Date: 2013-07-23 08:43+0000\n"
 "Last-Translator: Gwendal Rogel <pythot@yahoo.fr>, 2018-2019\n"
 "Language-Team: French (http://app.transifex.com/lfleischer/calcurse/language/"
@@ -45,8 +45,8 @@ msgid ""
 "Usage:\n"
 "calcurse [-D <directory>] [-C <directory>] [-c <calendar file>]\n"
 "calcurse -Q [--from <date>] [--to <date>] [--days <number>]\n"
-"calcurse -a | -d <date> | -d <number> | -n | -r[<number>] | -s[<date>] | -"
-"t[<number>]\n"
+"calcurse -a | -d <date> | -d <number> | -n | -r[<number>] | -s[<date>] | "
+"-t[<number>]\n"
 "calcurse -h | -v | --status | -G | -P | -g | -i <file> | -x[<format>] | --"
 "daemon"
 msgstr ""
@@ -264,31 +264,37 @@ msgstr "la date de fin ne peut être antérieure à la date de départ"
 msgid "Unable to find documentation."
 msgstr "Impossible de trouver la documentation."
 
-msgid "Data were saved successfully"
+#, fuzzy
+msgid "Data was saved successfully"
 msgstr "Les données ont été sauvegardées avec réussite"
 
-msgid "Data were saved/reloaded successfully"
+#, fuzzy
+msgid "Data was saved/reloaded successfully"
 msgstr "Les données ont été sauvegardées/rechargées avec réussite"
 
 msgid "Save cancelled"
 msgstr "Sauvegarde annulée"
 
-msgid "Data were already saved"
+#, fuzzy
+msgid "Data was already saved"
 msgstr "Les données ont déjà été sauvegardées"
 
 msgid "Cannot open data file"
 msgstr "Le fichier de données ne peut être ouvert"
 
-msgid "Data were reloaded successfully"
+#, fuzzy
+msgid "Data was reloaded successfully"
 msgstr "Les données ont été rechargées avec réussite"
 
-msgid "Date were merged/reloaded successfully"
+#, fuzzy
+msgid "Date was merged/reloaded successfully"
 msgstr "Les données ont été fusionnées/rechargées avec réussite"
 
 msgid "Reload cancelled"
 msgstr "Recharge annulée"
 
-msgid "Data were already loaded"
+#, fuzzy
+msgid "Data was already loaded"
 msgstr "Les données étaient déjà chargées"
 
 msgid "Export to (i)cal or (p)cal format?"

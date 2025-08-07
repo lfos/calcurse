@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2024-01-26 18:28+0100\n"
+"POT-Creation-Date: 2025-08-07 16:05-0400\n"
 "PO-Revision-Date: 2013-07-23 08:43+0000\n"
 "Last-Translator: Vitor Henrique, 2023\n"
 "Language-Team: Portuguese (Brazil) (http://app.transifex.com/lfleischer/"
@@ -41,8 +41,8 @@ msgid ""
 "Usage:\n"
 "calcurse [-D <directory>] [-C <directory>] [-c <calendar file>]\n"
 "calcurse -Q [--from <date>] [--to <date>] [--days <number>]\n"
-"calcurse -a | -d <date> | -d <number> | -n | -r[<number>] | -s[<date>] | -"
-"t[<number>]\n"
+"calcurse -a | -d <date> | -d <number> | -n | -r[<number>] | -s[<date>] | "
+"-t[<number>]\n"
 "calcurse -h | -v | --status | -G | -P | -g | -i <file> | -x[<format>] | --"
 "daemon"
 msgstr ""
@@ -258,31 +258,37 @@ msgstr "a data final não pode vir antes da data inicial"
 msgid "Unable to find documentation."
 msgstr "Não foi possível encontrar a documentação."
 
-msgid "Data were saved successfully"
+#, fuzzy
+msgid "Data was saved successfully"
 msgstr "Informações salvas com sucesso"
 
-msgid "Data were saved/reloaded successfully"
+#, fuzzy
+msgid "Data was saved/reloaded successfully"
 msgstr "Informações foram salvas/recuperadas com sucesso"
 
 msgid "Save cancelled"
 msgstr "Salvamento cancelado"
 
-msgid "Data were already saved"
+#, fuzzy
+msgid "Data was already saved"
 msgstr "Informações já foram salvas anteriormente"
 
 msgid "Cannot open data file"
 msgstr "Não foi possível abrir o arquivo"
 
-msgid "Data were reloaded successfully"
+#, fuzzy
+msgid "Data was reloaded successfully"
 msgstr "Informações foram recuperadas com sucesso"
 
-msgid "Date were merged/reloaded successfully"
+#, fuzzy
+msgid "Date was merged/reloaded successfully"
 msgstr "Informações foram combinadas/recuperadas com sucesso"
 
 msgid "Reload cancelled"
 msgstr "Recuperação cancelada"
 
-msgid "Data were already loaded"
+#, fuzzy
+msgid "Data was already loaded"
 msgstr "Informações já foram carregadas"
 
 msgid "Export to (i)cal or (p)cal format?"

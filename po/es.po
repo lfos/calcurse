@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2024-01-26 18:28+0100\n"
+"POT-Creation-Date: 2025-08-07 16:05-0400\n"
 "PO-Revision-Date: 2013-07-23 08:43+0000\n"
 "Last-Translator: Victorhck <victorhck@opensuse.org>, 2018\n"
 "Language-Team: Spanish (http://app.transifex.com/lfleischer/calcurse/"
@@ -43,8 +43,8 @@ msgid ""
 "Usage:\n"
 "calcurse [-D <directory>] [-C <directory>] [-c <calendar file>]\n"
 "calcurse -Q [--from <date>] [--to <date>] [--days <number>]\n"
-"calcurse -a | -d <date> | -d <number> | -n | -r[<number>] | -s[<date>] | -"
-"t[<number>]\n"
+"calcurse -a | -d <date> | -d <number> | -n | -r[<number>] | -s[<date>] | "
+"-t[<number>]\n"
 "calcurse -h | -v | --status | -G | -P | -g | -i <file> | -x[<format>] | --"
 "daemon"
 msgstr ""
@@ -251,31 +251,33 @@ msgstr ""
 msgid "Unable to find documentation."
 msgstr "No se pudo encontrar la documentación."
 
-msgid "Data were saved successfully"
-msgstr ""
+#, fuzzy
+msgid "Data was saved successfully"
+msgstr "Los datos se han exportado correctamente"
 
-msgid "Data were saved/reloaded successfully"
+msgid "Data was saved/reloaded successfully"
 msgstr ""
 
 msgid "Save cancelled"
 msgstr ""
 
-msgid "Data were already saved"
+msgid "Data was already saved"
 msgstr ""
 
 msgid "Cannot open data file"
 msgstr ""
 
-msgid "Data were reloaded successfully"
-msgstr ""
+#, fuzzy
+msgid "Data was reloaded successfully"
+msgstr "Los datos se han exportado correctamente"
 
-msgid "Date were merged/reloaded successfully"
+msgid "Date was merged/reloaded successfully"
 msgstr ""
 
 msgid "Reload cancelled"
 msgstr ""
 
-msgid "Data were already loaded"
+msgid "Data was already loaded"
 msgstr ""
 
 msgid "Export to (i)cal or (p)cal format?"

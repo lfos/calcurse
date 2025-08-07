@@ -16,7 +16,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2024-01-26 18:28+0100\n"
+"POT-Creation-Date: 2025-08-07 16:05-0400\n"
 "PO-Revision-Date: 2013-07-23 08:43+0000\n"
 "Last-Translator: Vlad Savikin, 2021\n"
 "Language-Team: Russian (http://app.transifex.com/lfleischer/calcurse/"
@@ -53,16 +53,16 @@ msgid ""
 "Usage:\n"
 "calcurse [-D <directory>] [-C <directory>] [-c <calendar file>]\n"
 "calcurse -Q [--from <date>] [--to <date>] [--days <number>]\n"
-"calcurse -a | -d <date> | -d <number> | -n | -r[<number>] | -s[<date>] | -"
-"t[<number>]\n"
+"calcurse -a | -d <date> | -d <number> | -n | -r[<number>] | -s[<date>] | "
+"-t[<number>]\n"
 "calcurse -h | -v | --status | -G | -P | -g | -i <file> | -x[<format>] | --"
 "daemon"
 msgstr ""
 "Используйте:\n"
 "calcurse [-D <directory>] [-C <directory>] [-c <calendar file>]\n"
 "calcurse -Q [--from <date>] [--to <date>] [--days <number>]\n"
-"calcurse -a | -d <date> | -d <number> | -n | -r[<number>] | -s[<date>] | -"
-"t[<number>]\n"
+"calcurse -a | -d <date> | -d <number> | -n | -r[<number>] | -s[<date>] | "
+"-t[<number>]\n"
 "calcurse -h | -v | --status | -G | -P | -g | -i <file> | -x[<format>] | --"
 "daemon"
 
@@ -111,8 +111,8 @@ msgstr ""
 
 msgid "  --filter-*              Filter items loaded by -Q, -G, -P and -x"
 msgstr ""
-"        --filter-*              Фильтрует загруженные элементы для -Q, -G, -"
-"P и -x"
+"        --filter-*              Фильтрует загруженные элементы для -Q, -G, "
+"-P и -x"
 
 msgid ""
 "  --format-*              Rewrite output from -Q, -G and --dump-imported"
@@ -282,31 +282,37 @@ msgstr "Конечная дата не может быть до даты нач�
 msgid "Unable to find documentation."
 msgstr "Невозможно найти документацию."
 
-msgid "Data were saved successfully"
+#, fuzzy
+msgid "Data was saved successfully"
 msgstr "Данные успешно сохранены."
 
-msgid "Data were saved/reloaded successfully"
+#, fuzzy
+msgid "Data was saved/reloaded successfully"
 msgstr "Данные успешно сохранены/обновлены."
 
 msgid "Save cancelled"
 msgstr "Сохранение отменено."
 
-msgid "Data were already saved"
+#, fuzzy
+msgid "Data was already saved"
 msgstr "Данные уже были сохранены."
 
 msgid "Cannot open data file"
 msgstr "Невозможно открыть файл данных."
 
-msgid "Data were reloaded successfully"
+#, fuzzy
+msgid "Data was reloaded successfully"
 msgstr "Данные успешно обновлены."
 
-msgid "Date were merged/reloaded successfully"
+#, fuzzy
+msgid "Date was merged/reloaded successfully"
 msgstr "Данные успешно синхронизированы."
 
 msgid "Reload cancelled"
 msgstr "Обновление отменено."
 
-msgid "Data were already loaded"
+#, fuzzy
+msgid "Data was already loaded"
 msgstr "Данные уже были загружены."
 
 msgid "Export to (i)cal or (p)cal format?"
@@ -1668,8 +1674,8 @@ msgstr ""
 
 msgid "Monthdays 1|..|31 or -1|..|-31, space-separated list, '?' for help:"
 msgstr ""
-"Задайте дни месяца 1 2 .. 31 или -1 .. -31, разделяя пробелом ('?' см."
-"справку):"
+"Задайте дни месяца 1 2 .. 31 или -1 .. -31, разделяя пробелом ('?' "
+"см.справку):"
 
 msgid "Invalid format - try again."
 msgstr "Указан некорректный формат. Пожалуйста, попробуйте ещё раз."
