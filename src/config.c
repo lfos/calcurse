@@ -210,9 +210,9 @@ static int config_parse_color(int *dest, const char *val)
 
 static int config_parse_color_pair(int *dest1, int *dest2, const char *val)
 {
-	char s1[BUFSIZ], s2[BUFSIZ];
+	char s1[16], s2[16];
 
-	if (sscanf(val, "%s on %s", s1, s2) != 2)
+	if (sscanf(val, "%15s on %15s", s1, s2) != 2)
 		return 0;
 
 	return (config_parse_color(dest1, s1)

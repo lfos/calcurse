@@ -950,7 +950,7 @@ void io_load_keys(const char *pager)
 {
 	struct ht_keybindings_s virt_keys[NBVKEYS], *ht_elm, ht_entry;
 	FILE *keyfp;
-	char buf[BUFSIZ], key_label[BUFSIZ], key_str[BUFSIZ];
+	char buf[BUFSIZ], key_label[256], key_str[256];
 	char *p, *msg;
 	struct io_file *log;
 	int i, n, skipped, loaded, line, assigned, undefined, key;
@@ -978,7 +978,7 @@ void io_load_keys(const char *pager)
 			continue;
 
 		/* Find the virtual key by key label. */
-		if (sscanf(p, "%s", key_label) != 1) {
+		if (sscanf(p, "%255s", key_label) != 1) {
 			skipped++;
 			io_log_print(log, line,
 				     _("Could not read key label"));
@@ -1000,7 +1000,7 @@ void io_load_keys(const char *pager)
 		/* Assign keyboard keys to the virtual key. */
 		assigned = undefined = 0;
 		for (;;) {
-			if (sscanf(p, "%s%n", key_str, &n) != 1) {
+			if (sscanf(p, "%255s%n", key_str, &n) != 1) {
 				if (assigned || undefined)
 					loaded++;
 				else {

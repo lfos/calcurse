@@ -826,7 +826,7 @@ int keys_check_missing(void)
 int keys_fill_missing(void)
 {
 	int i, ch, assign, assigned;
-	char *p, key_ch[BUFSIZ];
+	char *p, key_ch[256];
 
 	for (i = assigned = 0; i < NBVKEYS; i++) {
 		if (LLIST_FIRST(&keys[i]))
@@ -836,7 +836,7 @@ int keys_fill_missing(void)
 		for (assign = 0;;) {
 			while (*p == ' ')
 				p++;
-			if (sscanf(p, "%s", key_ch) == 1) {
+			if (sscanf(p, "%255s", key_ch) == 1) {
 				ch = keys_str2int(key_ch);
 				if (keys_assign_binding(ch, i))
 					return -i;
