@@ -79,7 +79,7 @@ static FILE *get_export_stream(enum export_type type)
 	const char *wrong_name =
 	    _("The file cannot be accessed, please enter another file name.");
 	const char *press_enter = _("Press [ENTER] to continue.");
-	const char *file_ext[IO_EXPORT_NBTYPES] = { "ical", "txt" };
+	const char *file_ext[IO_EXPORT_NBTYPES] = { "ics", "txt" };
 
 	stream = NULL;
 	if ((home = getenv("HOME")) != NULL)
