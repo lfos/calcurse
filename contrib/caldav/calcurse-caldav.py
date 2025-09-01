@@ -4,6 +4,7 @@ import argparse
 import base64
 import configparser
 import fcntl
+import hashlib
 import os
 import pathlib
 import re
@@ -222,6 +223,94 @@ def get_auth_headers():
     return headers
 
 
+def parse_digest_challenge(auth_header):
+    """Parse WWW-Authenticate digest challenge header."""
+    challenge = {}
+    # Remove 'Digest ' prefix
+    auth_header = auth_header.strip()
+    if auth_header.lower().startswith('digest '):
+        auth_header = auth_header[7:]
+
+    # Parse key=value pairs
+    parts = re.findall(r'(\w+)=(?:"([^"]*)"|([^,\s]+))', auth_header)
+    for key, quoted_val, unquoted_val in parts:
+        challenge[key.lower()] = quoted_val or unquoted_val
+
+    return challenge
+
+
+def compute_digest_response(challenge, username, password, method, uri):
+    """Compute digest authentication response."""
+    realm = challenge.get('realm', '')
+    nonce = challenge.get('nonce', '')
+    algorithm = challenge.get('algorithm', 'MD5').upper()
+    qop = challenge.get('qop', '')
+    opaque = challenge.get('opaque', '')
+
+    if algorithm != 'MD5':
+        raise ValueError(f'Unsupported digest algorithm: {algorithm}')
+
+    # Compute HA1
+    ha1 = hashlib.md5(f'{username}:{realm}:{password}'.encode('utf-8')).hexdigest()
+
+    # Compute HA2
+    ha2 = hashlib.md5(f'{method}:{uri}'.encode('utf-8')).hexdigest()
+
+    # Compute response
+    if qop and 'auth' in qop:
+        nc = '00000001'  # Nonce count
+        cnonce = hashlib.md5(os.urandom(16)).hexdigest()[:16]
+        response_str = f'{ha1}:{nonce}:{nc}:{cnonce}:auth:{ha2}'
+        response = hashlib.md5(response_str.encode('utf-8')).hexdigest()
+
+        auth_header = (f'Digest username="{username}", realm="{realm}", '
+                      f'nonce="{nonce}", uri="{uri}", response="{response}", '
+                      f'qop=auth, nc={nc}, cnonce="{cnonce}"')
+        if opaque:
+            auth_header += f', opaque="{opaque}"'
+    else:
+        response_str = f'{ha1}:{nonce}:{ha2}'
+        response = hashlib.md5(response_str.encode('utf-8')).hexdigest()
+
+        auth_header = (f'Digest username="{username}", realm="{realm}", '
+                      f'nonce="{nonce}", uri="{uri}", response="{response}"')
+        if opaque:
+            auth_header += f', opaque="{opaque}"'
+
+    return auth_header
+
+
+class DigestAuth:
+    """Digest authentication helper for httplib2."""
+    def __init__(self, username, password):
+        self.username = username
+        self.password = password
+        self.challenge = None
+
+    def handle_401(self, response, content, uri, headers, method):
+        """Handle 401 response and return digest auth header."""
+        if 'www-authenticate' not in response:
+            return None
+        auth_header = response['www-authenticate']
+        if not auth_header.lower().startswith('digest '):
+            return None
+        self.challenge = parse_digest_challenge(auth_header)
+        digest_auth = compute_digest_response(
+            self.challenge, self.username, self.password, method, uri
+        )
+        return {'Authorization': digest_auth}
+
+    def get_auth_header(self, method, uri):
+        """Get digest auth header for a request if challenge is available."""
+        if not self.challenge:
+            return {}
+        digest_auth = compute_digest_response(
+            self.challenge, self.username, self.password, method, uri
+        )
+
+        return {'Authorization': digest_auth}
+
+
 def init_auth(client_id, client_secret, scope, redirect_uri, authcode):
     # Create OAuth2 session
     oauth2_client = OAuth2WebServerFlow(client_id=client_id,
@@ -283,7 +372,14 @@ def run_auth(authcode):
 
 def remote_query(conn, cmd, path, additional_headers, body):
     headers = custom_headers.copy()
-    headers.update(get_auth_headers())
+    # Store original request body for digest auth retry
+    original_request_body = body
+    if authmethod == 'digest':
+        # For digest auth, we need to handle 401 responses
+        digest_headers = digest_auth.get_auth_header(cmd, path)
+        headers.update(digest_headers)
+    else:
+        headers.update(get_auth_headers())
     if cmd == 'PUT':
         headers['Content-Type'] = 'text/calendar; charset=utf-8'
     else:
@@ -304,8 +400,8 @@ def remote_query(conn, cmd, path, additional_headers, body):
     if isinstance(body, str):
         body = body.encode('utf-8')
 
-    resp, body = conn.request(path, cmd, body=body, headers=headers)
-    body = body.decode('utf-8')
+    resp, body_bytes = conn.request(path, cmd, body=body, headers=headers)
+    response_body = body_bytes.decode('utf-8')
 
     if not resp:
         return (None, None)
@@ -313,16 +409,59 @@ def remote_query(conn, cmd, path, additional_headers, body):
     if debug:
         print("< Status: {} ({})".format(resp.status, resp.reason))
         print("< Headers: " + repr(resp))
-        for line in body.splitlines():
+        for line in response_body.splitlines():
             print("< " + line)
         print()
+
+    # Handle digest authentication 401 response
+    if resp.status == 401 and authmethod == 'digest':
+        digest_headers = digest_auth.handle_401(resp, response_body, path, headers, cmd)
+        if digest_headers:
+            # Create fresh headers for retry to avoid corruption
+            retry_headers = custom_headers.copy()
+            
+            # Re-set content type
+            if cmd == 'PUT':
+                retry_headers['Content-Type'] = 'text/calendar; charset=utf-8'
+            else:
+                retry_headers['Content-Type'] = 'application/xml; charset=utf-8'
+            retry_headers.update(additional_headers)
+            retry_headers.update(digest_headers)
+            
+            # Retry the request with digest authentication
+            if debug:
+                print("> Retrying with digest authentication")
+                print("> {} {}".format(cmd, path))
+                headers_sanitized = retry_headers.copy()
+                if not debug_raw:
+                    headers_sanitized.pop('Authorization', None)
+                print("> Headers: " + repr(headers_sanitized))
+                if original_request_body:
+                    for line in original_request_body.splitlines():
+                        print("> " + line)
+                print()
+            
+            # Prepare original request body for retry
+            retry_body = original_request_body
+            if isinstance(retry_body, str):
+                retry_body = retry_body.encode('utf-8')
+            
+            resp, body_bytes = conn.request(path, cmd, body=retry_body, headers=retry_headers)
+            response_body = body_bytes.decode('utf-8')
+            
+            if debug:
+                print("< Status: {} ({})".format(resp.status, resp.reason))
+                print("< Headers: " + repr(resp))
+                for line in response_body.splitlines():
+                    print("< " + line)
+                print()
 
     if resp.status - (resp.status % 100) != 200:
         die(("The server at {} replied with HTTP status code {} ({}) " +
              "while trying to access {}.").format(hostname, resp.status,
                                                   resp.reason, path))
 
-    return (resp, body)
+    return (resp, response_body)
 
 
 def get_etags(conn, hrefs=[]):
@@ -757,8 +896,13 @@ try:
     elif authmethod == 'basic':
         # Add credentials to httplib2
         conn.add_credentials(username, password)
+    elif authmethod == 'digest':
+        # Initialize digest authentication
+        if not username or not password:
+            die('Username and password are required for digest authentication')
+        digest_auth = DigestAuth(username, password)
     else:
-        die('Invalid option for AuthMethod in config file. Use "basic" or "oauth2"')
+        die('Invalid option for AuthMethod in config file. Use "basic", "digest", or "oauth2"')
 
     if init:
         # In initialization mode, start with an empty synchronization database.

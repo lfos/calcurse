@@ -94,6 +94,11 @@ will need to:
 * Install *oauth2client* for Python 3 using *pip* (e.g. `pip3 install --user
 oauth2client`) or your distribution's package manager
 
+Digest Authentication
+---------------------
+
+calcurse-caldav supports *Digest* authentication used per default by Baikal CalDav server. To enable Digest change "AuthMethod" from "*basic*" to "*digest*" in your config file.
+
 Synchronization With Google Calendar
 ------------------------------------
 
