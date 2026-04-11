@@ -537,6 +537,11 @@ def pull_objects(hrefs_missing, hrefs_modified, conn, syncdb, etagdict):
             die_atnode('Missing calendar data.', node)
         cdata = cdatanode.text
 
+        if cdata is None:
+            if verbose:
+                print("Ignoring empty object {}.".format(etag))
+            continue
+
         if href in hrefs_modified:
             if verbose:
                 print("Replacing object {}.".format(etag))
