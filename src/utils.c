@@ -47,6 +47,7 @@
 #include <fcntl.h>
 #include <sys/wait.h>
 #include <termios.h>
+#include <locale.h>
 
 #include "calcurse.h"
 #include "sha1.h"
@@ -495,20 +496,16 @@ int date_cmp_day(time_t d1, time_t d2)
 /* Generic function to format date. */
 void date_sec2date_fmt(time_t sec, const char *fmt, char *datef)
 {
-#if ENABLE_NLS
 	/* TODO: Find a better way to deal with localization and strftime(). */
 	char *locale_old = mem_strdup(setlocale(LC_ALL, NULL));
 	setlocale(LC_ALL, "C");
-#endif
 
 	struct tm lt;
 	localtime_r(&sec, &lt);
 	strftime(datef, BUFSIZ, fmt, &lt);
 
-#if ENABLE_NLS
 	setlocale(LC_ALL, locale_old);
 	mem_free(locale_old);
-#endif
 }
 
 /* Return a string containing the date, given a date in seconds. */
