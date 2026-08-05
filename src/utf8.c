@@ -284,9 +284,18 @@ static const char utf8_lentab[32] = {
 };
 
 /*
+ * Minimum code point that must be encoded with a given number of bytes.
+ * Used to detect overlong encodings, which are not valid UTF-8. Index 0
+ * and 1 are unused (invalid lead byte and single-byte encoding, which
+ * cannot be overlong).
+ */
+static const long utf8_minval[5] = { 0, 0, 0x80, 0x800, 0x10000 };
+
+/*
  * Decode a UTF-8 encoded character and return the corresponding Unicode
  * code point, or the replacement character (U+FFFD) if the character is
- * ill-formed.
+ * ill-formed (including overlong encodings, encoded surrogate halves, and
+ * code points beyond U+10FFFF).
  *
  * The string does not need to be well-formed: this function never reads
  * past the terminating null byte. If "end" is not NULL, it is set to point
@@ -297,6 +306,7 @@ long utf8_decode(const char *s, const char **end)
 {
 	unsigned char c = *s;
 	int n = utf8_lentab[c >> 3];
+	int len = n;
 	long v = n > 0 ? c & ((1 << (8 - n)) - 1) : 0xfffd;
 
 	while (n-- > 1) {
@@ -308,6 +318,11 @@ long utf8_decode(const char *s, const char **end)
 		}
 		v |= c & 0x3f;
 	}
+
+	if (v != 0xfffd && len > 1 &&
+	    (v < utf8_minval[len] || (v >= 0xd800 && v <= 0xdfff) ||
+	     v > 0x10ffff))
+		v = 0xfffd;
 
 	if (c != '\0')
 		++s;
