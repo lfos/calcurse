@@ -269,26 +269,52 @@ static const struct utf8_range utf8_widthtab[] = {
 	{0xe0100, 0xe01ef, 0}
 };
 
-/* Decode a UTF-8 encoded character. Return the Unicode code point. */
-int utf8_decode(const char *s)
-{
-	if (UTF8_ISCONT(*s))
-		return -1;
+/*
+ * Number of continuation bytes to expect for a given leading byte, indexed
+ * by the leading byte's five most significant bits. A value of 0 indicates
+ * either a continuation byte or an invalid leading byte.
+ */
+static const char utf8_lentab[32] = {
+	/* 0XXXXXXX */ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+	/* 10XXXXXX */ 0, 0, 0, 0, 0, 0, 0, 0,
+	/* 110XXXXX */ 2, 2, 2, 2,
+	/* 1110XXXX */ 3, 3,
+	/* 11110XXX */ 4,
+	/* 11111XXX */ 0,
+};
 
-	switch (UTF8_LENGTH(*s)) {
-	case 1:
-		return s[0];
-	case 2:
-		return (s[1] & 0x3f) | (s[0] & 0x1f) << 6;
-	case 3:
-		return ((s[2] & 0x3f) | (s[1] & 0x3f) << 6) |
-			(s[0] & 0x0f) << 12;
-	case 4:
-		return (((s[3] & 0x3f) | (s[2] & 0x3f) << 6) |
-			(s[1] & 0x3f) << 12) | (s[0] & 0x7) << 18;
-	default:
-		return -1;
+/*
+ * Decode a UTF-8 encoded character and return the corresponding Unicode
+ * code point, or the replacement character (U+FFFD) if the character is
+ * ill-formed.
+ *
+ * The string does not need to be well-formed: this function never reads
+ * past the terminating null byte. If "end" is not NULL, it is set to point
+ * to the first byte following the decoded character (or to the
+ * terminating null byte, if the string ends within the character).
+ */
+long utf8_decode(const char *s, const char **end)
+{
+	unsigned char c = *s;
+	int n = utf8_lentab[c >> 3];
+	long v = n > 0 ? c & ((1 << (8 - n)) - 1) : 0xfffd;
+
+	while (n-- > 1) {
+		v <<= 6;
+		c = *++s;
+		if ((c & 0xc0) != 0x80) {
+			v = 0xfffd;
+			break;
+		}
+		v |= c & 0x3f;
 	}
+
+	if (c != '\0')
+		++s;
+	if (end)
+		*end = s;
+
+	return v;
 }
 
 /*
@@ -331,11 +357,12 @@ char *utf8_encode(int u)
 /* Get the display width of a UTF-8 character. */
 int utf8_width(char *s)
 {
-	int val, low, high, cur;
+	long val;
+	int low, high, cur;
 
 	if (UTF8_ISCONT(*s))
 		return 0;
-	val = utf8_decode(s);
+	val = utf8_decode(s, NULL);
 	low = 0;
 	high = ARRAY_SIZE(utf8_widthtab);
 	do {

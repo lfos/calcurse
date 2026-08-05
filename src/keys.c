@@ -355,7 +355,7 @@ int keys_wgetch(WINDOW *win)
 	buf[0] = ch;
 	for (i = 1; i < UTF8_LENGTH(buf[0]); i++)
 		buf[i] = wgetch(win);
-	return utf8_decode(buf) + KEY_MAX;
+	return utf8_decode(buf, NULL) + KEY_MAX;
 }
 
 void keys_wait_for_any_key(WINDOW *win)
@@ -521,7 +521,7 @@ int keys_str2int(const char *key)
 			return i;
 
 	/* UTF-8 multibyte keys. */
-	return utf8_decode(key) + KEY_MAX;
+	return utf8_decode(key, NULL) + KEY_MAX;
 }
 
 char *keys_int2str(int key)

@@ -206,27 +206,25 @@ int status_ask_choice(const char *message, const char choice[],
 	/* Turn "[42w...Z]" into * "[4/2/w/.../Z]". */
 	char avail_choice[nb_choice * UTF8_MAXLEN + nb_choice + 1];
 	int ichoice[nb_choice];
-	int i, j, k, n, ch;
+	int i, j, n, ch, len;
+	const char *p, *next;
+	long v;
 
 	avail_choice[0] = '[';
-	for (n = 0, i = 1, j = 1; n < nb_choice; n++, i += k) {
-		for (k = 0; k < UTF8_LENGTH(choice[i]); k++) {
-			avail_choice[j] = choice[i + k];
-			j++;
-		}
-		avail_choice[j] = '/';
-		j++;
+	for (n = 0, i = 1, j = 1; n < nb_choice; n++, i += len) {
+		p = choice + i;
+		v = utf8_decode(p, &next);
+		len = next - p;
+		ichoice[n] = v + (len > 1 ? KEY_MAX : 0);
+
+		memcpy(avail_choice + j, p, len);
+		j += len;
+		avail_choice[j++] = '/';
 	}
 	avail_choice[j - 1] = ']';
 	avail_choice[j] = '\0';
 
 	status_mesg(message, avail_choice);
-
-	/* Convert the character choices to internal integer codes. */
-	for (n = 0, i = 1; n < nb_choice; n++, i += j) {
-		j = UTF8_LENGTH(choice[i]);
-		ichoice[n] = utf8_decode(choice + i) + (j > 1 ? KEY_MAX : 0);
-	}
 
 	for (;;) {
 		ch = keys_wgetch(win[KEY].p);
