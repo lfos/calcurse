@@ -34,6 +34,7 @@
  *
  */
 
+#include <locale.h>
 #include <stdlib.h>
 
 #include "calcurse.h"
@@ -696,8 +697,8 @@ cleanup:
  */
 int main(int argc, char **argv)
 {
-#if ENABLE_NLS
 	setlocale(LC_ALL, "");
+#if ENABLE_NLS
 	bindtextdomain(PACKAGE, LOCALEDIR);
 	textdomain(PACKAGE);
 #endif /* ENABLE_NLS */
