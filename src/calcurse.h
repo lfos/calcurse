@@ -819,6 +819,7 @@ struct date *ui_calendar_get_slctd_day(void);
 void ui_calendar_set_slctd_day(struct date);
 void ui_calendar_monthly_view_cache_set_invalid(void);
 void ui_calendar_update_panel(void);
+struct tm get_first_day(int wday_start);
 void ui_calendar_goto_today(void);
 void ui_calendar_change_day(int);
 void ui_calendar_move(enum move, int);
@@ -1310,6 +1311,7 @@ extern pthread_t notify_t_main, io_t_psave, ui_calendar_t_date;
 
 /* wins.c */
 extern struct window win[NBWINS];
+void handle_mouse_event(MEVENT *);
 extern struct scrollwin sw_cal;
 extern struct listbox lb_apt;
 extern struct listbox lb_todo;

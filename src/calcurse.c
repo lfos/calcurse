@@ -35,6 +35,9 @@
  */
 
 #include <stdlib.h>
+#include <string.h>
+#include <sys/time.h>
+#include <langinfo.h>
 
 #include "calcurse.h"
 
@@ -694,6 +697,289 @@ cleanup:
  * and one can choose between different color schemes and layouts.
  * All of the commands are documented within an online help system.
  */
+
+#ifdef NCURSES_MOUSE_VERSION
+static void month_picker(void)
+{
+	struct date d = *ui_calendar_get_slctd_day();
+	WINDOW *win_p = win[KEY].p;
+	int w = wins_sbar_width() - 2;
+	int nvis = 4;
+	int cur_idx = 1;
+	int start = d.mm - 1 - cur_idx;
+	if (start < 0) start = 0;
+	if (start > 12 - nvis) start = 12 - nvis;
+	int i, ch, selected = 0;
+	int y_inner = sw_cal.y + (conf.compact_panels ? 1 : 3);
+
+	werase(sw_cal.inner);
+	for (i = 0; i < nvis; i++)
+		mvwprintw(sw_cal.inner, i * 2 + 1,
+			  (w - 12) / 2, "  %s  ",
+			  nl_langinfo(MON_1 + start + i));
+	wins_scrollwin_display(&sw_cal, NOHILT);
+
+	while (1) {
+		ch = keys_wgetch(win_p);
+		if (ch == 27)
+			break;
+		if (ch == KEY_MOUSE) {
+			MEVENT ev;
+			if (getmouse(&ev) == OK) {
+				int my = ev.y;
+				if (my < y_inner || my >= y_inner + nvis * 2)
+					break;
+				if (ev.bstate & BUTTON1_PRESSED) {
+					int idx = (my - y_inner) / 2;
+					if (idx >= 0 && idx < nvis) {
+						selected = start + idx + 1;
+						break;
+					}
+				} else if (ev.bstate & (BUTTON4_PRESSED | BUTTON5_PRESSED)) {
+					int dir = (ev.bstate & BUTTON4_PRESSED) ? -1 : 1;
+					start += dir;
+					if (start < 0)
+						start = 0;
+					if (start > 12 - nvis)
+						start = 12 - nvis;
+					werase(sw_cal.inner);
+					for (i = 0; i < nvis; i++)
+						mvwprintw(sw_cal.inner, i * 2 + 1,
+							  (w - 12) / 2, "  %s  ",
+							  nl_langinfo(MON_1 + start + i));
+					wins_scrollwin_display(&sw_cal, NOHILT);
+				}
+			}
+			continue;
+		}
+	}
+
+	if (selected > 0) {
+		d.mm = selected;
+		ui_calendar_set_slctd_day(d);
+		day_do_storage(1);
+	}
+	wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
+}
+
+static void year_picker(void)
+{
+	struct date d = *ui_calendar_get_slctd_day();
+	WINDOW *win_p = win[KEY].p;
+	int w = wins_sbar_width() - 2;
+	int nvis = 6;
+	int cur_idx = 2;
+	int year_start = d.yyyy - cur_idx;
+	int i, ch, selected = 0;
+	int y_inner = sw_cal.y + (conf.compact_panels ? 1 : 3);
+	int x0 = sw_cal.x + 1;
+
+	werase(sw_cal.inner);
+	for (i = 0; i < nvis; i++)
+		mvwprintw(sw_cal.inner, i * 2 + 1,
+			  (w - 8) / 2, "  %d  ", year_start + i);
+	wins_scrollwin_display(&sw_cal, NOHILT);
+
+	while (1) {
+		ch = keys_wgetch(win_p);
+		if (ch == 27)
+			break;
+		if (ch == KEY_MOUSE) {
+			MEVENT ev;
+			if (getmouse(&ev) == OK) {
+				int my = ev.y, mx = ev.x;
+				if (my < y_inner || my >= y_inner + nvis * 2)
+					break;
+				if (ev.bstate & BUTTON1_PRESSED) {
+					int idx = (my - y_inner) / 2;
+					if (idx >= 0 && idx < nvis) {
+						selected = year_start + idx;
+						break;
+					}
+				} else if (ev.bstate & (BUTTON4_PRESSED | BUTTON5_PRESSED)) {
+					int dir = (ev.bstate & BUTTON4_PRESSED) ? -1 : 1;
+					year_start += dir;
+					werase(sw_cal.inner);
+					for (i = 0; i < nvis; i++)
+						mvwprintw(sw_cal.inner, i * 2 + 1,
+							  (w - 8) / 2, "  %d  ", year_start + i);
+					wins_scrollwin_display(&sw_cal, NOHILT);
+				}
+			}
+			continue;
+		}
+	}
+
+	if (selected > 0) {
+		d.yyyy = selected;
+		ui_calendar_set_slctd_day(d);
+		day_do_storage(1);
+	}
+	wins_update(FLAG_CAL | FLAG_APP | FLAG_STA);
+}
+
+/*
+ * Handle mouse events (click and scroll).
+ * Click: translates screen coordinates to calendar day selection.
+ * Scroll on calendar panel: changes month (up = prev, down = next).
+ */
+void handle_mouse_event(MEVENT *ev)
+{
+	static struct timeval last_scroll = { 0, 0 };
+	struct timeval now;
+	gettimeofday(&now, NULL);
+	long elapsed = (now.tv_sec - last_scroll.tv_sec) * 1000
+		+ (now.tv_usec - last_scroll.tv_usec) / 1000;
+
+	int mx = ev->x, my = ev->y;
+
+	/* Handle left-click on APP/TOD panels: select the clicked item. */
+	if (ev->bstate & BUTTON1_PRESSED) {
+		int off = conf.compact_panels ? 1 : 3;
+		if (mx >= win[APP].x && mx < win[APP].x + win[APP].w
+		    && my >= win[APP].y + off && my < win[APP].y + win[APP].h - 1) {
+			int line = my - win[APP].y - off + lb_apt.sw.line_off;
+			int i;
+			for (i = 0; i < (int)lb_apt.item_count; i++) {
+				if (line >= (int)lb_apt.ch[i] && line < (int)lb_apt.ch[i + 1]) {
+					wins_slctd_set(APP);
+					listbox_set_sel(&lb_apt, i);
+					if (ev->bstate & BUTTON3_PRESSED)
+						ui_day_item_edit();
+					wins_update(FLAG_ALL);
+					return;
+				}
+			}
+		}
+		if (mx >= win[TOD].x && mx < win[TOD].x + win[TOD].w
+		    && my >= win[TOD].y + off && my < win[TOD].y + win[TOD].h - 1) {
+			int line = my - win[TOD].y - off + lb_todo.sw.line_off;
+			int i;
+			for (i = 0; i < (int)lb_todo.item_count; i++) {
+				if (line >= (int)lb_todo.ch[i] && line < (int)lb_todo.ch[i + 1]) {
+					wins_slctd_set(TOD);
+					listbox_set_sel(&lb_todo, i);
+					if (ev->bstate & BUTTON3_PRESSED)
+						ui_day_item_edit();
+					wins_update(FLAG_ALL);
+					return;
+				}
+			}
+		}
+	}
+
+	/* Check if event is within the calendar panel. */
+	if (my < sw_cal.y || my >= sw_cal.y + sw_cal.h)
+		return;
+	if (mx < sw_cal.x || mx >= sw_cal.x + sw_cal.w)
+		return;
+
+	/* Handle scroll (debounce: min 80ms between scroll events). */
+	if (ev->bstate & BUTTON4_PRESSED) {
+		if (elapsed > 80) {
+			last_scroll = now;
+			ui_calendar_move(MONTH_PREV, 1);
+			wins_update(FLAG_ALL);
+		}
+		return;
+	}
+	if (ev->bstate & BUTTON5_PRESSED) {
+		if (elapsed > 80) {
+			last_scroll = now;
+			ui_calendar_move(MONTH_NEXT, 1);
+			wins_update(FLAG_ALL);
+		}
+		return;
+	}
+
+	/* Right-click anywhere: edit the item at cursor position. */
+	if (ev->bstate & BUTTON3_PRESSED) {
+		if (my >= win[APP].y && my < win[APP].y + win[APP].h)
+			wins_slctd_set(APP);
+		else if (my >= win[TOD].y && my < win[TOD].y + win[TOD].h)
+			wins_slctd_set(TOD);
+		key_edit_item();
+		return;
+	}
+	/* Handle regular click (select day or header picker). */
+	if (!(ev->bstate & BUTTON1_PRESSED))
+		return;
+
+	int inner_y, inner_x, inner_h, inner_w;
+	int pad_y, pad_x;
+	int ofs_x, weekw, dayw, monthw, w;
+	int wday_start_val = ui_calendar_get_wday_start();
+
+	inner_y = sw_cal.y + (conf.compact_panels ? 1 : 3);
+	inner_x = sw_cal.x + 1;
+	inner_h = sw_cal.h - (conf.compact_panels ? 2 : 4);
+	inner_w = sw_cal.w - 2;
+
+	pad_y = my - inner_y + sw_cal.line_off;
+	pad_x = mx - inner_x;
+
+	/* Check if click is on the month/year header. */
+	if (pad_y == 0) {
+		struct date d = *ui_calendar_get_slctd_day();
+		const char *mname = nl_langinfo(MON_1 + d.mm - 1);
+		int mlen = strlen(mname);
+		int hw = wins_sbar_width() - 2;
+		int hx = (hw - (mlen + 5)) / 2;
+		if (pad_x >= hx && pad_x < hx + mlen) {
+			month_picker();
+		} else if (pad_x >= hx + mlen + 1 && pad_x < hx + mlen + 5) {
+			year_picker();
+		}
+		return;
+	}
+
+	/* Must be in date area (after weekday headers). */
+	if (pad_y < 2)
+		return;
+
+	weekw = 3;
+	dayw = 4;
+	monthw = weekw + 7 * dayw;
+	w = wins_sbar_width() - 2;
+	ofs_x = (w - monthw) / 2 + ((w - monthw) % 2);
+
+	/* Check if within the calendar grid horizontally. */
+	if (pad_x < ofs_x + weekw || pad_x >= ofs_x + monthw)
+		return;
+
+	int col = (pad_x - ofs_x - weekw) / dayw;
+	int row = pad_y - 2;
+
+	if (col < 0 || col >= WEEKINDAYS || row < 0 || row >= 6)
+		return;
+
+	/* Calculate the date from week row and day column. */
+	struct date slctd = *ui_calendar_get_slctd_day();
+	struct tm t;
+	int numdays = days[slctd.mm - 1];
+	if (2 == slctd.mm && ISLEAP(slctd.yyyy))
+		++numdays;
+
+	t = get_first_day(wday_start_val);
+	t.tm_mday += row * WEEKINDAYS + col;
+	mktime(&t);
+
+	struct date click_day;
+	click_day.dd = t.tm_mday;
+	click_day.mm = t.tm_mon + 1;
+	click_day.yyyy = t.tm_year + 1900;
+
+	/* Ensure we're within the current month. */
+	if (click_day.mm != slctd.mm)
+		return;
+
+	ui_calendar_set_slctd_day(click_day);
+	wins_slctd_set(CAL);
+	day_do_storage(1);
+	wins_update(FLAG_ALL);
+}
+#endif /* NCURSES_MOUSE_VERSION */
+
 int main(int argc, char **argv)
 {
 #if ENABLE_NLS
@@ -724,6 +1010,10 @@ int main(int argc, char **argv)
 	cbreak();		/* control chars generate a signal */
 	noecho();		/* controls echoing of typed chars */
 	curs_set(0);		/* make cursor invisible */
+#ifdef NCURSES_MOUSE_VERSION
+	mousemask(BUTTON1_PRESSED | BUTTON4_PRESSED | BUTTON5_PRESSED, NULL);
+	mouseinterval(0);
+#endif /* NCURSES_MOUSE_VERSION */
 	ui_calendar_set_current_date();
 	notify_init_vars();
 	wins_get_config();

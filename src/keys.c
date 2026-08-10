@@ -396,6 +396,14 @@ enum vkey keys_get(WINDOW *win, int *count, int *reg)
 	switch (ch) {
 	case KEY_RESIZE:
 		return KEY_RESIZE;
+#ifdef KEY_MOUSE
+	case KEY_MOUSE: {
+		MEVENT mouse_event;
+		if (getmouse(&mouse_event) == OK)
+			handle_mouse_event(&mouse_event);
+		return KEY_UNDEF;
+	}
+#endif
 	default:
 		return keys_get_action(ch);
 	}
