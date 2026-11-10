@@ -130,6 +130,76 @@ static void die(const char *format, ...)
 	exit(1);
 }
 
+/* Read the remaining contents of a stream into a null-terminated buffer. */
+static char *read_all(FILE *fp)
+{
+	size_t len = 0, size = BUFSIZ, n;
+	char *buf = malloc(size);
+
+	if (!buf)
+		die("out of memory\n");
+	while ((n = fread(buf + len, 1, size - len - 1, fp)) > 0) {
+		len += n;
+		if (size - len - 1 == 0) {
+			size *= 2;
+			if (!(buf = realloc(buf, size)))
+				die("out of memory\n");
+		}
+	}
+	buf[len] = '\0';
+
+	return buf;
+}
+
+/* Return the number of the first line in which two strings differ. */
+static int first_diff_line(const char *s1, const char *s2)
+{
+	int line = 1;
+
+	for (; *s1 && *s1 == *s2; s1++, s2++) {
+		if (*s1 == '\n')
+			line++;
+	}
+
+	return line;
+}
+
+/* Print the status of a child process to stderr. */
+static void print_status(const char *what, int stat)
+{
+	if (WIFEXITED(stat))
+		fprintf(stderr, "%s: exit status %d\n", what,
+			WEXITSTATUS(stat));
+	else if (WIFSIGNALED(stat))
+		fprintf(stderr, "%s: killed by signal %d\n", what,
+			WTERMSIG(stat));
+}
+
+/* Print the outputs of a failed test to stderr. */
+static void print_failure(const char *name, const char *expected,
+			  const char *actual, int stat1, int stat2,
+			  int expect_failure)
+{
+	fprintf(stderr, "\n=== %s failed", name);
+	if (expect_failure) {
+		fprintf(stderr, " (expected a failure, but test passed)\n");
+		return;
+	}
+	fprintf(stderr, " ===\n");
+	print_status("expected", stat1);
+	print_status("actual", stat2);
+	if (strcmp(expected, actual) != 0)
+		fprintf(stderr, "outputs differ starting at line %d\n",
+			first_diff_line(expected, actual));
+	fprintf(stderr, "--- expected output:\n%s", expected);
+	if (*expected && expected[strlen(expected) - 1] != '\n')
+		fputc('\n', stderr);
+	fprintf(stderr, "--- actual output:\n%s", actual);
+	if (*actual && actual[strlen(actual) - 1] != '\n')
+		fputc('\n', stderr);
+	fprintf(stderr, "--- end of output\n");
+}
+
 /* Print usage message. */
 static void usage(void)
 {
@@ -143,7 +213,8 @@ static int run_test(const char *name, int expect_failure)
 	char *arg1[3], *arg2[3];
 	int pid1 = -1, pin1, pid2 = -1, pin2;
 	FILE *fpin1 = NULL, *fpin2 = NULL;
-	char buf1[BUFSIZ], buf2[BUFSIZ];
+	char *out1, *out2;
+	int stat1, stat2;
 	int ret = 1;
 
 	if (snprintf(filename, BUFSIZ, "./%s", name) >= BUFSIZ)
@@ -177,34 +248,36 @@ static int run_test(const char *name, int expect_failure)
 
 	fpin1 = fdopen(pin1, "r");
 	fpin2 = fdopen(pin2, "r");
+	if (!fpin1 || !fpin2)
+		die("failed to read output of %s: %s\n", filename,
+		    strerror(errno));
 
-	while (fgets(buf1, BUFSIZ, fpin1)) {
-		if (!fgets(buf2, BUFSIZ, fpin2) || strcmp(buf1, buf2) != 0) {
-			ret = 0;
-			break;
-		}
-	}
-
-	if (fgets(buf2, BUFSIZ, fpin2))
+	out1 = read_all(fpin1);
+	out2 = read_all(fpin2);
+	if (strcmp(out1, out2) != 0)
 		ret = 0;
 
-	if (fpin1)
-		fclose(fpin1);
-	if (fpin2)
-		fclose(fpin2);
+	fclose(fpin1);
+	fclose(fpin2);
 
-	if (child_wait(&pin1, NULL, pid1) != 0)
-		ret = 0;
-	if (child_wait(&pin2, NULL, pid2) != 0)
+	stat1 = child_wait(NULL, NULL, pid1);
+	stat2 = child_wait(NULL, NULL, pid2);
+	if (stat1 != 0 || stat2 != 0)
 		ret = 0;
 
 	if (expect_failure)
 		ret = 1 - ret;
 
-	if (ret == 1)
+	if (ret == 1) {
 		printf(" ok\n");
-	else
+	} else {
 		printf(" FAIL\n");
+		fflush(stdout);
+		print_failure(name, out1, out2, stat1, stat2, expect_failure);
+	}
+
+	free(out1);
+	free(out2);
 
 	return ret;
 }
