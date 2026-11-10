@@ -692,21 +692,20 @@ static int config_save_junk_cb(const char *data, void *status)
 /* Save the user configuration. */
 unsigned config_save(void)
 {
-	char *tmpprefix = NULL, *tmppath = NULL;
+	struct io_atomic_file af;
 	struct config_save_status status;
 	int i;
-	int ret = 0;
 
 	if (read_only)
 		return 1;
 
-	asprintf(&tmpprefix, "%s/%s", get_tempdir(), CONF_PATH_NAME);
-	if ((tmppath = new_tempfile(tmpprefix)) == NULL)
-		goto cleanup;
-
-	status.fp = fopen(tmppath, "w");
-	if (!status.fp)
-		goto cleanup;
+	/*
+	 * The existing configuration file is read while writing the new one,
+	 * which is only moved into place afterwards.
+	 */
+	if (!io_atomic_open(&af, path_conf))
+		return 0;
+	status.fp = af.fp;
 
 	memset(status.done, 0, sizeof(status.done));
 
@@ -719,15 +718,5 @@ unsigned config_save(void)
 			config_save_cb(confmap[i].key, NULL, &status);
 	}
 
-	file_close(status.fp, __FILE_POS__);
-
-	if (!io_file_cp(tmppath, path_conf))
-		goto cleanup;
-	unlink(tmppath);
-
-	ret = 1;
-cleanup:
-	mem_free(tmpprefix);
-	mem_free(tmppath);
-	return ret;
+	return io_atomic_commit(&af);
 }
