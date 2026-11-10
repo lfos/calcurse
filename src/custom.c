@@ -1125,6 +1125,11 @@ void custom_keys_config(void)
 					keys_get_label(selrow), 0);
 			for (;;) {
 				ch = keys_wgetch(grabwin);
+				/* Keys without a name cannot be bound. */
+				char *name = keys_int2str(ch);
+				if (!name)
+					continue;
+				mem_free(name);
 				enum vkey action = keys_get_action(ch);
 				/* Is the key already used by this action? */
 				if (action == selrow)
