@@ -681,7 +681,7 @@ ical_readline_init(FILE * fdi, char *buf, char *lstore, unsigned *ln)
 	if (fgets(lstore, BUFSIZ, fdi)) {
 		(*ln)++;
 		if ((eol = strchr(lstore, '\n')) != NULL) {
-			if (*(eol - 1) == '\r')
+			if (eol > lstore && *(eol - 1) == '\r')
 				*(eol - 1) = '\0';
 			else
 				*eol = '\0';
