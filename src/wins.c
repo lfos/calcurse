@@ -421,7 +421,7 @@ void wins_scrollwin_down(struct scrollwin *sw, int amount)
 	sw->line_off += amount;
 
 	if ((int)sw->line_off > (int)sw->line_num - inner_h)
-		sw->line_off = sw->line_num - inner_h;
+		sw->line_off = MAX((int)sw->line_num - inner_h, 0);
 }
 
 /* Keep 'line' in the viewport of a scrollwindow. */
