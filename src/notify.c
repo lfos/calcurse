@@ -536,7 +536,7 @@ int notify_same_item(time_t time)
 int notify_same_recur_item(struct recur_apoint *i)
 {
 	int same = 0;
-	time_t item_start;
+	time_t item_start = 0;
 
 	/* Tomorrow? */
 	recur_item_find_occurrence(i->start, i->dur, i->rpt, &i->exc,
