@@ -517,6 +517,13 @@ struct io_file {
 	char *name;
 };
 
+/* Temporary file used to atomically replace a file. */
+struct io_atomic_file {
+	FILE *fp;
+	char *tmppath;
+	char *target;
+};
+
 /* Virtual keys. */
 enum vkey {
 	KEY_GENERIC_CANCEL,
@@ -942,6 +949,8 @@ unsigned io_dump_pid(char *);
 unsigned io_get_pid(char *);
 int io_files_equal(const char *, const char *);
 int io_file_cp(const char *, const char *);
+int io_atomic_open(struct io_atomic_file *, const char *);
+int io_atomic_commit(struct io_atomic_file *);
 void io_unset_modified(void);
 void io_set_modified(void);
 int io_get_modified(void);

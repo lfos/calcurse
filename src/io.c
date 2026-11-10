@@ -34,6 +34,11 @@
  *
  */
 
+#ifndef _DEFAULT_SOURCE
+/* Needed for realpath() with glibc. */
+#define _DEFAULT_SOURCE
+#endif
+
 #include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
@@ -44,6 +49,7 @@
 #include <math.h>
 #include <unistd.h>
 #include <errno.h>
+#include <fcntl.h>
 
 #include "calcurse.h"
 #include "sha1.h"
@@ -277,14 +283,16 @@ void io_dump_apts(const char *fmt_apt, const char *fmt_rapt,
 unsigned io_save_apts(const char *aptsfile)
 {
 	llist_item_t *i;
+	struct io_atomic_file af;
 	FILE *fp;
 
 	if (aptsfile) {
 		if (read_only)
 			return 1;
 
-		if ((fp = fopen(aptsfile, "w")) == NULL)
+		if (!io_atomic_open(&af, aptsfile))
 			return 0;
+		fp = af.fp;
 	} else {
 		fp = stdout;
 	}
@@ -306,7 +314,7 @@ unsigned io_save_apts(const char *aptsfile)
 	}
 
 	if (aptsfile)
-		file_close(fp, __FILE_POS__);
+		return io_atomic_commit(&af);
 
 	return 1;
 }
@@ -326,14 +334,16 @@ void io_dump_todo(const char *fmt_todo)
 unsigned io_save_todo(const char *todofile)
 {
 	llist_item_t *i;
+	struct io_atomic_file af;
 	FILE *fp;
 
 	if (todofile) {
 		if (read_only)
 			return 1;
 
-		if ((fp = fopen(todofile, "w")) == NULL)
+		if (!io_atomic_open(&af, todofile))
 			return 0;
+		fp = af.fp;
 	} else {
 		fp = stdout;
 	}
@@ -344,7 +354,7 @@ unsigned io_save_todo(const char *todofile)
 	}
 
 	if (todofile)
-		file_close(fp, __FILE_POS__);
+		return io_atomic_commit(&af);
 
 	return 1;
 }
@@ -1628,6 +1638,104 @@ int io_file_cp(const char *src, const char *dst)
 	if (fclose(fp_dst) != 0)
 		ret = 0;
 	fclose(fp_src);
+
+	return ret;
+}
+
+/*
+ * Prepare to atomically replace a file. A temporary file is created in the
+ * same directory as the target, which must then be written to through af->fp
+ * and moved into place using io_atomic_commit(). Symbolic links are followed,
+ * i.e. the file a link points to is replaced, not the link itself.
+ */
+int io_atomic_open(struct io_atomic_file *af, const char *path)
+{
+	struct stat st;
+	mode_t mask, mode;
+	char *real;
+	int fd;
+
+	af->fp = NULL;
+	af->tmppath = NULL;
+
+	if ((real = realpath(path, NULL))) {
+		af->target = mem_strdup(real);
+		free(real);
+	} else if (errno == ENOENT) {
+		af->target = mem_strdup(path);
+	} else {
+		af->target = NULL;
+		return 0;
+	}
+
+	if (stat(af->target, &st) == 0) {
+		mode = st.st_mode & 07777;
+	} else {
+		mask = umask(0);
+		umask(mask);
+		mode = 0666 & ~mask;
+	}
+
+	asprintf(&af->tmppath, "%s.XXXXXX", af->target);
+	if ((fd = mkstemp(af->tmppath)) == -1)
+		goto error;
+	if (fchmod(fd, mode) != 0 || !(af->fp = fdopen(fd, "w"))) {
+		close(fd);
+		unlink(af->tmppath);
+		goto error;
+	}
+
+	return 1;
+error:
+	mem_free(af->tmppath);
+	mem_free(af->target);
+	af->tmppath = af->target = NULL;
+	return 0;
+}
+
+/* Make a rename in the directory containing the given file durable. */
+static void io_sync_dir(const char *path)
+{
+	char *dir = mem_strdup(path), *p;
+	int fd;
+
+	if ((p = strrchr(dir, '/')))
+		*(p == dir ? p + 1 : p) = '\0';
+	else
+		strcpy(dir, ".");
+
+	if ((fd = open(dir, O_RDONLY)) != -1) {
+		fsync(fd);
+		close(fd);
+	}
+	mem_free(dir);
+}
+
+/*
+ * Flush the temporary file created by io_atomic_open() to disk and move it
+ * into place. On error, the temporary file is removed and the target file is
+ * left untouched. Returns 1 on success, 0 on failure.
+ */
+int io_atomic_commit(struct io_atomic_file *af)
+{
+	int ret = 1;
+
+	if (fflush(af->fp) != 0 || ferror(af->fp) || fsync(fileno(af->fp)) != 0)
+		ret = 0;
+	if (fclose(af->fp) != 0)
+		ret = 0;
+
+	if (ret && rename(af->tmppath, af->target) == 0) {
+		io_sync_dir(af->target);
+	} else {
+		ret = 0;
+		unlink(af->tmppath);
+	}
+
+	mem_free(af->tmppath);
+	mem_free(af->target);
+	af->fp = NULL;
+	af->tmppath = af->target = NULL;
 
 	return ret;
 }
