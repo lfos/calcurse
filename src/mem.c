@@ -220,7 +220,8 @@ void *dbg_realloc(void *ptr, size_t nmemb, size_t size, const char *pos)
 	if ((buf = dbg_malloc(new_size, pos)) == NULL)
 		return NULL;
 
-	old_size = *((unsigned *)ptr - EXTRA_SPACE_START + BLK_SIZE);
+	old_size = (*((unsigned *)ptr - EXTRA_SPACE_START + BLK_SIZE) -
+		    (EXTRA_SPACE)) * sizeof(unsigned);
 	cpy_size = (old_size > new_size) ? new_size : old_size;
 	memmove(buf, ptr, cpy_size);
 
