@@ -362,18 +362,17 @@ unsigned io_save_todo(const char *todofile)
 /* Save user-defined keys */
 unsigned io_save_keys(void)
 {
-	FILE *fp;
+	struct io_atomic_file af;
 
 	if (read_only)
 		return 1;
 
-	if ((fp = fopen(path_keys, "w")) == NULL)
+	if (!io_atomic_open(&af, path_keys))
 		return 0;
 
-	keys_save_bindings(fp);
-	file_close(fp, __FILE_POS__);
+	keys_save_bindings(af.fp);
 
-	return 1;
+	return io_atomic_commit(&af);
 }
 
 static int io_compute_hash(const char *path, char *buf)
