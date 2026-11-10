@@ -752,7 +752,8 @@ static char *ical_get_tzid(char *p)
 	if (*p == '"')
 		return NULL;
 
-	q = strpbrk(p, ":;");
+	if (!(q = strpbrk(p, ":;")))
+		return NULL;
 	s = q - p + 1;
 	q = mem_malloc(s);
 	strncpy(q, p, s);
