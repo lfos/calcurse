@@ -262,10 +262,8 @@ void sha1_stream(FILE * fp, char *buffer)
 
 	sha1_init(&ctx);
 
-	while (!feof(fp)) {
-		bytes_read = fread(data, 1, BUFSIZ, fp);
+	while ((bytes_read = fread(data, 1, BUFSIZ, fp)) > 0)
 		sha1_update(&ctx, data, bytes_read);
-	}
 
 	sha1_final(&ctx, (uint8_t *) digest);
 
