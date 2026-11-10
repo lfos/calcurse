@@ -1567,6 +1567,13 @@ int io_files_equal(const char *file1, const char *file2)
 
 	fp1 = fopen(file1, "rb");
 	fp2 = fopen(file2, "rb");
+	if (!fp1 || !fp2) {
+		if (fp1)
+			fclose(fp1);
+		if (fp2)
+			fclose(fp2);
+		return 0;
+	}
 
 	while (!feof(fp1) && !feof(fp2)) {
 		if (fgetc(fp1) != fgetc(fp2))
