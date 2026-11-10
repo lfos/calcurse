@@ -139,17 +139,18 @@ void erase_note(char **note)
 /* Read a serialized note file name from a stream and deserialize it. */
 void note_read(char *buffer, FILE * fp)
 {
-	int i;
+	int i, c;
 
 	for (i = 0; i < MAX_NOTESIZ; i++) {
-		buffer[i] = getc(fp);
-		if (buffer[i] == ' ') {
+		c = getc(fp);
+		if (c == ' ' || c == EOF) {
 			buffer[i] = '\0';
 			return;
 		}
+		buffer[i] = c;
 	}
 
-	while (getc(fp) != ' ') ;
+	while ((c = getc(fp)) != ' ' && c != EOF) ;
 	buffer[MAX_NOTESIZ] = '\0';
 }
 
