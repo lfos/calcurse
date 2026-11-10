@@ -70,7 +70,7 @@ foreach_date_dump(const long date_end, struct rpt *rpt, llist_t * exc,
 	date = mktime(&lt);
 	item_time = item_start - date;
 
-	while (date <= date_end && date <= rpt->until) {
+	while (date <= date_end && (!rpt->until || date <= rpt->until)) {
 		if (recur_item_inday(item_start, item_dur, rpt, exc, date)) {
 			(*cb_dump) (stream, date + item_time, item_dur,
 				    item_mesg);
