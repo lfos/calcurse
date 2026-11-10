@@ -204,7 +204,7 @@ int status_ask_choice(const char *message, const char choice[],
 		      int nb_choice)
 {
 	/* Turn "[42w...Z]" into * "[4/2/w/.../Z]". */
-	char avail_choice[nb_choice * UTF8_MAXLEN + nb_choice + 1];
+	char avail_choice[nb_choice * UTF8_MAXLEN + nb_choice + 2];
 	int ichoice[nb_choice];
 	int i, j, n, ch, len;
 	const char *p, *next;
