@@ -298,7 +298,7 @@ static void ical_export_recur_events(FILE * stream, int export_uid)
 			fputs("EXDATE;VALUE=DATE:", stream);
 			LLIST_FOREACH(&rev->exc, j) {
 				struct excp *exc = LLIST_GET_DATA(j);
-				date_sec2date_fmt(exc->st, ICALDATETIMEFMT,
+				date_sec2date_fmt(exc->st, ICALDATEFMT,
 						  ical_date);
 				fprintf(stream, "%s", ical_date);
 				fputc(LLIST_NEXT(j) ? ',' : '\n', stream);
