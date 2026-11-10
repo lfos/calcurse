@@ -16,13 +16,13 @@ Import process report: 0018 lines read
 3 apps / 0 events / 0 todos / 0 skipped
 02/23/15:
  - 05:00 -> 06:00
-	CET
+	Europe/Berlin
  - 06:00 -> 07:00
 	UTC
  - 11:00 -> 12:00
 	Local time
 -- 
-Import: TZID=CET
+Import: TZID=Europe/Berlin
 EOD
 else
   ./run-test "$0"
