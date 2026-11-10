@@ -340,6 +340,7 @@ static void ical_export_recur_apoints(FILE * stream, int export_uid)
 	llist_item_t *i, *j;
 	char ical_datetime[BUFSIZ], *hash;
 	time_t tod;
+	struct rpt rpt;
 
 	LLIST_TS_LOCK(&recur_alist_p);
 	LLIST_TS_FOREACH(&recur_alist_p, i) {
@@ -351,8 +352,9 @@ static void ical_export_recur_apoints(FILE * stream, int export_uid)
 		 * RFC 5545 UNTIL/EXDATE is a DATE-TIME value type by default.
 		 */
 		tod = get_item_time(rapt->start);
-		if (rapt->rpt->until)
-			rapt->rpt->until += tod;
+		rpt = *rapt->rpt;
+		if (rpt.until)
+			rpt.until += tod;
 
 		date_sec2date_fmt(rapt->start, ICALDATETIMEFMT,
 				  ical_datetime);
@@ -370,7 +372,7 @@ static void ical_export_recur_apoints(FILE * stream, int export_uid)
 				(rapt->dur / MININSEC) % HOURINMIN,
 				rapt->dur % MININSEC);
 		}
-		ical_export_rrule(stream, rapt->rpt, APPOINTMENT, ical_datetime);
+		ical_export_rrule(stream, &rpt, APPOINTMENT, ical_datetime);
 		if (LLIST_FIRST(&rapt->exc)) {
 			fputs("EXDATE:", stream);
 			LLIST_FOREACH(&rapt->exc, j) {
