@@ -1132,7 +1132,7 @@ static int expand_monthly(time_t start, long dur, struct rpt *rpt, llist_t *exc,
 {
 	struct tm tm_start, tm_day;
 	llist_item_t *i;
-	int *w, mday, mon, valid;
+	int *w, mday, mon, valid, n;
 	time_t nstart;
 	struct rpt r = *rpt;
 
@@ -1151,6 +1151,8 @@ static int expand_monthly(time_t start, long dur, struct rpt *rpt, llist_t *exc,
 			if (mday < 0)
 				mday = opp_mday(tm_day.tm_year + 1900,
 						tm_day.tm_mon + 1, mday);
+			if (mday < 1 || mday > 31)
+				continue;
 			/*
 			 * Modify rrule start with a new monthday.
 			 * If it is invalid (29, 30 or 31) in the start month,
@@ -1167,16 +1169,19 @@ static int expand_monthly(time_t start, long dur, struct rpt *rpt, llist_t *exc,
 			/* Never valid? */
 			if (!valid && !(rpt->freq % 12))
 				return 0;
-			/* Note. The loop will terminate! */
-			while (!valid) {
+			/* At most 12 steps are needed to cover all months. */
+			for (n = 0; !valid && n < 12; n++) {
 				localtime_r(&start, &tm_start);
 				mon -= rpt->freq;
 				tm_start.tm_mon = mon;
 				tm_start.tm_mday = mday;
 				tm_start.tm_isdst = -1;
 				nstart = mktime(&tm_start);
-				valid = date_chk(nstart, (mon + 12) % 12, mday);
+				valid = date_chk(nstart, (mon % 12 + 12) % 12,
+						 mday);
 			}
+			if (!valid)
+				continue;
 			if (test_occurrence(nstart, dur, rpt, exc,
 					    start, day, occurrence))
 				return 1;
