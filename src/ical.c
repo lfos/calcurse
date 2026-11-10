@@ -1272,6 +1272,8 @@ ical_read_exdate(llist_t * exc, FILE * log, char *exstr, unsigned *noskipped,
 		p = strchr(p, '\0') + 1;
 		n--;
 	}
+	if (tzid)
+		mem_free(tzid);
 	return 1;
 
 cleanup:
