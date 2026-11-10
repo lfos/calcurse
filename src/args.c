@@ -771,7 +771,7 @@ int parse_args(int argc, char **argv)
 			EXIT_IF(end_to,
 			    _("filter criterion already in use: %s"), argv[optind - 2]);
 			/* Set default values in case of open-ended range. */
-			filter.start_from = filter.start_to = -1;
+			filter.end_from = filter.end_to = -1;
 			EXIT_IF(!parse_daterange(optarg, &filter.end_from, &filter.end_to),
 				_("invalid date range: %s"), optarg);
 			end_from = 1;
