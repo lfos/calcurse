@@ -858,7 +858,7 @@ static void get_weekday_ymd(int *year, int *month, int *day, int weekday)
 
 	localtime_r(&t, &tm);
 	delta = weekday - tm.tm_wday;
-	t = date_sec_change(t, 0, delta > 0 ? delta : 7);
+	t = date_sec_change(t, 0, delta > 0 ? delta : delta + 7);
 
 	localtime_r(&t, &tm);
 	*day = tm.tm_mday;
