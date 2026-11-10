@@ -119,6 +119,7 @@ static void
 getstr_init(struct getstr_status *st, char *str,
 	    struct getstr_charinfo *ci)
 {
+	const char *next;
 	int width;
 
 	st->s = str;
@@ -131,7 +132,8 @@ getstr_init(struct getstr_status *st, char *str,
 
 		st->len++;
 		width += utf8_width(str);
-		str += UTF8_LENGTH(*str);
+		utf8_decode(str, &next);
+		str = (char *)next;
 	}
 	st->ci[st->len].offset = str - st->s;
 	st->ci[st->len].dpyoff = width;
