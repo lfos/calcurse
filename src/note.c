@@ -60,15 +60,15 @@ char *generate_note(const char *str)
 {
 	char *sha1 = mem_malloc(SHA1_DIGESTLEN * 2 + 1);
 	char *notepath;
-	FILE *fp;
+	struct io_atomic_file af;
 
 	sha1_digest(str, sha1);
 	asprintf(&notepath, "%s%s", path_notes, sha1);
-	fp = fopen(notepath, "w");
-	EXIT_IF(fp == NULL, _("Warning: could not open %s, Aborting..."),
-		notepath);
-	fputs(str, fp);
-	file_close(fp, __FILE_POS__);
+	EXIT_IF(!io_atomic_open(&af, notepath),
+		_("Warning: could not open %s, Aborting..."), notepath);
+	fputs(str, af.fp);
+	EXIT_IF(!io_atomic_commit(&af),
+		_("Warning: could not write %s, Aborting..."), notepath);
 
 	mem_free(notepath);
 	return sha1;

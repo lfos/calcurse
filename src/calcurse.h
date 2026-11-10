@@ -951,6 +951,7 @@ int io_files_equal(const char *, const char *);
 int io_file_cp(const char *, const char *);
 int io_atomic_open(struct io_atomic_file *, const char *);
 int io_atomic_commit(struct io_atomic_file *);
+void io_atomic_abort(struct io_atomic_file *);
 void io_unset_modified(void);
 void io_set_modified(void);
 int io_get_modified(void);

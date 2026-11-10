@@ -1609,36 +1609,40 @@ cleanup:
 }
 
 /*
- * Copy an existing file to a new location.
+ * Copy an existing file to a new location. The destination file is replaced
+ * atomically.
  */
 int io_file_cp(const char *src, const char *dst)
 {
-	FILE *fp_src, *fp_dst;
+	FILE *fp_src;
+	struct io_atomic_file af;
 	char buffer[BUFSIZ];
 	size_t bytes_read;
 	int ret = 1;
 
 	if (!(fp_src = fopen(src, "rb")))
 		return 0;
-	if (!(fp_dst = fopen(dst, "wb"))) {
+	if (!io_atomic_open(&af, dst)) {
 		fclose(fp_src);
 		return 0;
 	}
 
 	while ((bytes_read = fread(buffer, 1, BUFSIZ, fp_src)) > 0) {
-		if (fwrite(buffer, 1, bytes_read, fp_dst) != bytes_read) {
+		if (fwrite(buffer, 1, bytes_read, af.fp) != bytes_read) {
 			ret = 0;
 			break;
 		}
 	}
 	if (ferror(fp_src))
 		ret = 0;
-
-	if (fclose(fp_dst) != 0)
-		ret = 0;
 	fclose(fp_src);
 
-	return ret;
+	if (!ret) {
+		io_atomic_abort(&af);
+		return 0;
+	}
+
+	return io_atomic_commit(&af);
 }
 
 /*
@@ -1737,6 +1741,20 @@ int io_atomic_commit(struct io_atomic_file *af)
 	af->tmppath = af->target = NULL;
 
 	return ret;
+}
+
+/*
+ * Discard the temporary file created by io_atomic_open(), leaving the target
+ * file untouched.
+ */
+void io_atomic_abort(struct io_atomic_file *af)
+{
+	fclose(af->fp);
+	unlink(af->tmppath);
+	mem_free(af->tmppath);
+	mem_free(af->target);
+	af->fp = NULL;
+	af->tmppath = af->target = NULL;
 }
 
 void io_unset_modified(void)
