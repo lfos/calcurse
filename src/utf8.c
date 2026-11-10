@@ -393,8 +393,10 @@ long utf8_decode(const char *s, const char **end)
 		v <<= 6;
 		c = *++s;
 		if ((c & 0xc0) != 0x80) {
-			v = 0xfffd;
-			break;
+			/* Do not consume the offending byte. */
+			if (end)
+				*end = s;
+			return 0xfffd;
 		}
 		v |= c & 0x3f;
 	}
