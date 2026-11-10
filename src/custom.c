@@ -316,7 +316,7 @@ static void color_selection_bar(void)
 {
 	static int bindings[] = {
 		KEY_GENERIC_QUIT, KEY_GENERIC_SELECT, KEY_GENERIC_CANCEL,
-		KEY_MOVE_UP, KEY_MOVE_DOWN, KEY_MOVE_LEFT, KEY_GENERIC_SELECT
+		KEY_MOVE_UP, KEY_MOVE_DOWN, KEY_MOVE_LEFT, KEY_MOVE_RIGHT
 	};
 	int bindings_size = ARRAY_SIZE(bindings);
 
