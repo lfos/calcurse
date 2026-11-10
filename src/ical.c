@@ -1615,7 +1615,10 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 				goto skip;
 				break;
 			}
-			return;
+			/* Message, note and exceptions have been consumed. */
+			vevent.mesg = vevent.note = NULL;
+			LLIST_INIT(&vevent.exc);
+			goto cleanup;
 		}
 		if (starts_with_ci(buf, "DTSTART")) {
 			/*
@@ -1725,9 +1728,15 @@ cleanup:
 		mem_free(vevent.imp);
 	if (vevent.mesg)
 		mem_free(vevent.mesg);
-	if (vevent.rpt)
+	if (vevent.note)
+		mem_free(vevent.note);
+	if (vevent.rpt) {
+		recur_free_int_list(&vevent.rpt->bymonth);
+		recur_free_int_list(&vevent.rpt->bywday);
+		recur_free_int_list(&vevent.rpt->bymonthday);
 		mem_free(vevent.rpt);
-	LLIST_FREE(&vevent.exc);
+	}
+	recur_free_exc_list(&vevent.exc);
 }
 
 static void
