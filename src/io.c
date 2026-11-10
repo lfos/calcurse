@@ -1593,29 +1593,31 @@ cleanup:
 int io_file_cp(const char *src, const char *dst)
 {
 	FILE *fp_src, *fp_dst;
-	char *buffer[BUFSIZ];
-	unsigned int bytes_read;
+	char buffer[BUFSIZ];
+	size_t bytes_read;
+	int ret = 1;
 
 	if (!(fp_src = fopen(src, "rb")))
 		return 0;
-	if (!(fp_dst = fopen(dst, "wb")))
+	if (!(fp_dst = fopen(dst, "wb"))) {
+		fclose(fp_src);
 		return 0;
-
-	while (!feof(fp_src)) {
-		bytes_read = fread(buffer, 1, BUFSIZ, fp_src);
-		if (bytes_read > 0) {
-			if (fwrite(buffer, 1, bytes_read, fp_dst) !=
-			    bytes_read)
-				return 0;
-		} else {
-			return 0;
-		}
 	}
 
-	fclose(fp_dst);
+	while ((bytes_read = fread(buffer, 1, BUFSIZ, fp_src)) > 0) {
+		if (fwrite(buffer, 1, bytes_read, fp_dst) != bytes_read) {
+			ret = 0;
+			break;
+		}
+	}
+	if (ferror(fp_src))
+		ret = 0;
+
+	if (fclose(fp_dst) != 0)
+		ret = 0;
 	fclose(fp_src);
 
-	return 1;
+	return ret;
 }
 
 void io_unset_modified(void)
