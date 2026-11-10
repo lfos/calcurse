@@ -952,6 +952,8 @@ static int ical_bymonthday(llist_t *ll, char *cl)
 	while (!(*cl == ' ' || *cl == '\0')) {
 		if (!(sscanf(cl, "%d%n", &mday, &n) == 1))
 			return 0;
+		if (mday == 0 || mday < -31 || mday > 31)
+			return 0;
 		i = mem_malloc(sizeof(int));
 		*i = mday;
 		LLIST_ADD(ll, i);

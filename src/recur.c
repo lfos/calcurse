@@ -1643,6 +1643,8 @@ void recur_bymonthday(llist_t *l, FILE *data_file)
 		ungetc(c, data_file);
 		if (fscanf(data_file, "d%d ", &d) != 1)
 			EXIT(_("syntax error in bymonthday"));
+		EXIT_IF(d == 0 || d < -31 || d > 31,
+			_("illegal bymonthday value"));
 		int *i = mem_malloc(sizeof(int));
 		*i = d;
 		LLIST_ADD(l, i);
