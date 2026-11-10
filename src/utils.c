@@ -1745,10 +1745,10 @@ static void print_datediff(long difference, const char *extformat)
 				/* Default is to zero-pad, and assume
 				 * the user wants the time unit modulo
 				 * the next biggest time unit. */
-				numfmt = "%02d";
+				numfmt = "%02ld";
 				usetotal = FALSE;
 				if (*p == '-') {
-					numfmt = "%d";
+					numfmt = "%ld";
 					p++;
 				}
 				if (*p == 'E') {
