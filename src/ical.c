@@ -727,7 +727,7 @@ ical_chk_header(FILE * fd, char *buf, char *lstore, unsigned *lineno,
 	if (!starts_with_ci(buf, "BEGIN:VCALENDAR"))
 		return 0;
 
-	while (!sscanf(buf, "VERSION:%d.%d", major, minor)) {
+	while (sscanf(buf, "VERSION:%d.%d", major, minor) != 2) {
 		if (!ical_readline(fd, buf, lstore, lineno))
 			return 0;
 	}
