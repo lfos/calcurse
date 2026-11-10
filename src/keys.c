@@ -294,7 +294,7 @@ void keys_dump_defaults(char *file)
 const char *keys_get_label(enum vkey key)
 {
 	EXIT_IF(key < 0
-		|| key > NBVKEYS,
+		|| key >= NBVKEYS,
 		_("FATAL ERROR: key value out of bounds"));
 
 	return keydef[key].label;
@@ -303,7 +303,7 @@ const char *keys_get_label(enum vkey key)
 const char *keys_get_binding(enum vkey key)
 {
 	EXIT_IF(key < 0
-		|| key > NBVKEYS,
+		|| key >= NBVKEYS,
 		_("FATAL ERROR: key value out of bounds"));
 
 	return keydef[key].binding;
@@ -318,7 +318,7 @@ enum vkey keys_get_action(int pressed)
 {
 	if (pressed < 0) {
 		return -1;
-	} else if (pressed > KEY_MAX) {
+	} else if (pressed >= KEY_MAX) {
 		llist_item_t *i = LLIST_FIND_FIRST(&actions_ext, &pressed,
 						   key_ext_hasch);
 		if (!i)
@@ -422,7 +422,7 @@ static void free_key_str(char *str)
 
 static void add_key_str(enum vkey action, int key)
 {
-	if (action > NBVKEYS)
+	if (action >= NBVKEYS)
 		return;
 
 	del_if_undefined(action);
@@ -434,7 +434,7 @@ static void del_key_str(enum vkey action, int key)
 	llist_item_t *i;
 	char *oldstr = keys_int2str(key), *j;
 
-	if (action > NBVKEYS)
+	if (action >= NBVKEYS)
 		return;
 
 	LLIST_FOREACH(&keys[action], i) {
@@ -462,7 +462,7 @@ cleanup:
  */
 int keys_assign_binding(int key, enum vkey action)
 {
-	if (key > KEY_MAX) {
+	if (key >= KEY_MAX) {
 		if (LLIST_FIND_FIRST(&actions_ext, &key, key_ext_hasch))
 			return 1;
 		struct key_ext *k = mem_malloc(sizeof(struct key_ext));
@@ -483,7 +483,7 @@ void keys_remove_binding(int key, enum vkey action)
 	if (key < 0)
 	       return;
 
-	if (key <= KEY_MAX) {
+	if (key < KEY_MAX) {
 		actions[key] = KEY_UNDEF;
 	} else {
 		llist_item_t *i = LLIST_FIND_FIRST(&actions_ext, &key,
@@ -767,7 +767,7 @@ void keys_popup_info(enum vkey key)
 	info[KEY_LOWER_PRIORITY] =
 	    _("Lower a task priority inside the todo panel.");
 
-	if (key > NBVKEYS)
+	if (key >= NBVKEYS)
 		return;
 
 #define WINROW 10
