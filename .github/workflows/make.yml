@@ -55,8 +55,13 @@ jobs:
       run: make
     - name: make check
       run: make check
+      env:
+        # Print the logs of failed tests.
+        VERBOSE: 1
     - name: make distcheck
       # TODO: Run `make distcheck` on all OS once the documentation build issue
       # on macOS has been fixed.
       run: make distcheck
+      env:
+        VERBOSE: 1
       if: matrix.os == 'ubuntu-latest'
