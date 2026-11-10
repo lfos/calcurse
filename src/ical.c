@@ -1129,7 +1129,8 @@ static struct rpt *ical_read_rrule(FILE *log, char *rrulestr,
 	/* INTERVAL rule part */
 	rpt->freq = 1;
 	if ((p = strstr(rrulestr, "INTERVAL="))) {
-		if (sscanf(p, "INTERVAL=%d", &rpt->freq) != 1) {
+		if (sscanf(p, "INTERVAL=%d", &rpt->freq) != 1 ||
+		    rpt->freq < 1) {
 			ical_log(log, ICAL_VEVENT, itemline, _("invalid interval."));
 			(*noskipped)++;
 			mem_free(rpt);
@@ -1170,7 +1171,7 @@ static struct rpt *ical_read_rrule(FILE *log, char *rrulestr,
 	 */
 	if ((p = strstr(rrulestr, "COUNT="))) {
 		p = strchr(p, '=') + 1;
-		if (!(sscanf(p, "%d", count) == 1 && *count)) {
+		if (!(sscanf(p, "%d", count) == 1 && *count > 0)) {
 			ical_log(log, ICAL_VEVENT, itemline,
 				 _("invalid count value."));
 			(*noskipped)++;
