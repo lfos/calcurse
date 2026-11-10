@@ -530,7 +530,7 @@ void wins_get_config(void)
 
 	win[win_master].x = master_is_left ? 0 : wins_sbar_width();
 	win[win_master].y = 0;
-	win[win_master].w = col - wins_sbar_width();
+	win[win_master].w = MAX(1, col - wins_sbar_width());
 	win[win_master].h = row - (win[STA].h + win[NOT].h);
 
 	win[win_slave[0]].x = win[win_slave[1]].x =

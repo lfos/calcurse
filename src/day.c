@@ -534,11 +534,11 @@ day_display_item(struct day_item *day, WINDOW *win, int incolor, int width,
 		 int y, int x)
 {
 	int ch_recur, ch_note;
-	char buf[width * UTF8_MAXLEN];
 
 	if (width <= 0)
 		return;
 
+	char buf[width * UTF8_MAXLEN];
 	char *mesg = day_item_get_display_mesg(day);
 
 	ch_recur = (day->type == RECUR_EVNT) ? '*' : ' ';
