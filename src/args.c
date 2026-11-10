@@ -903,8 +903,10 @@ int parse_args(int argc, char **argv)
 		io_check_file(path_conf);
 		io_load_data(&filter, FORCE);
 		if (purge || grep_filter) {
-			io_save_todo(path_todo);
-			io_save_apts(path_apts);
+			EXIT_IF(!io_save_todo(path_todo),
+				_("Could not save %s."), path_todo);
+			EXIT_IF(!io_save_apts(path_apts),
+				_("Could not save %s."), path_apts);
 		} else {
 			/*
 			 * Use default values for non-specified format strings.
@@ -965,8 +967,10 @@ int parse_args(int argc, char **argv)
 		}
 		ret = io_import_data(IO_IMPORT_ICAL, ifile, fmt_ev, fmt_rev,
 				     fmt_apt, fmt_rapt, fmt_todo);
-		io_save_apts(path_apts);
-		io_save_todo(path_todo);
+		EXIT_IF(!io_save_apts(path_apts),
+			_("Could not save %s."), path_apts);
+		EXIT_IF(!io_save_todo(path_todo),
+			_("Could not save %s."), path_todo);
 		if (!ret)
 			exit_calcurse(EXIT_FAILURE);
 	} else if (export) {
