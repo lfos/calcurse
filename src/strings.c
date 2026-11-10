@@ -35,6 +35,7 @@
  */
 
 #include <stdarg.h>
+#include <string.h>
 
 #include "calcurse.h"
 
@@ -119,11 +120,21 @@ int string_catftime(struct string *sb, const char *format, const struct tm *tm)
 {
 	int n = 0;
 
-	while (!n) {
+	if (!*format)
+		return 0;
+
+	/*
+	 * strftime() also returns 0 if the result is empty, so give up
+	 * eventually.
+	 */
+	while (!n &&
+	       (size_t)(sb->bufsize - sb->len) < 4 * (strlen(format) + BUFSIZ)) {
 		string_grow(sb, sb->bufsize * 2);
 		n = strftime(sb->buf + sb->len, sb->bufsize - sb->len, format,
 			     tm);
 	}
+	if (!n)
+		sb->buf[sb->len] = '\0';
 	sb->len += n;
 
 	return n;
