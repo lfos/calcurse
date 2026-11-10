@@ -6,7 +6,7 @@ then
   exit 1
 fi
 
-DEF_VER=4.8.2
+DEF_VER=4.9.0
 VERFILE="$1"
 
 if [ -d '.git' ]

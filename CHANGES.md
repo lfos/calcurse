@@ -1,6 +1,77 @@
 Release Notes
 =============
 
+Version 4.9.0 (2026-11-10)
+--------------------------
+
+- Compatibility notes:
+
+    * The default file extension for iCal exports is now "ics" instead of
+      "ical", as specified in RFC 5545 (implemented by Drew Marino).
+
+    * Data files, the configuration file, the key bindings file and note files
+      are now written to a temporary file which then replaces the original
+      file. As a consequence, calcurse needs write access to the directories
+      containing these files, not only to the files themselves.
+
+    * calcurse-caldav now sets the environment variable CALCURSE_CALDAV while
+      synchronizing. The example hooks in contrib/hooks/ and
+      contrib/caldav/hooks/ use it to detect that they were triggered by
+      calcurse-caldav, instead of checking for the lock file, which is no
+      longer removed since the locking changes in 4.8.2. If you installed
+      copies of the example hooks, please update them.
+
+- Bug fixes:
+
+    * Data files are now written atomically. Previously, a crash, OOM kill or
+      power loss while saving, e.g. during `calcurse -P`, could leave the
+      appointments or todo file empty.
+
+    * Fixed a daemon crash when reloading data with SIGUSR1. The daemon now
+      also reloads the data immediately instead of after up to a minute.
+
+    * Fixed several crashes and hangs on unusual or malformed input, including
+      infinite loops with certain BYMONTHDAY rules, divisions by zero for
+      recurrence frequencies (or iCal intervals) of zero, malformed TZID
+      parameters, truncated data files and blank commands at the command
+      prompt.
+
+    * Improved handling of ill-formed UTF-8 and fixed several buffer overflows
+      and out-of-bounds accesses, e.g. for item descriptions with zero-width
+      characters. Invalid code points are now rejected and the display width
+      table has been updated with missing emojis.
+
+    * Multiple iCal fixes: Exporting no longer changes the end date of
+      recurrent appointments. Exception dates of recurrent events are exported
+      as DATE values. Invalid INTERVAL, COUNT and BYMONTHDAY values are
+      rejected on import. Notes without trailing newline are exported
+      correctly.
+
+    * Copying and pasting recurrent items preserves extended recurrence rules
+      (BYDAY, BYMONTH and BYMONTHDAY) and handles DST changes correctly.
+
+    * Fixed weekday names such as "monday" resolving to the wrong date when
+      used as date specifiers.
+
+    * --filter-end-range no longer discards a previously specified
+      --filter-start-* option.
+
+    * The pcal export includes endless recurrent items with a frequency
+      greater than one.
+
+    * Hooks are executed directly instead of via the shell, which fixes hooks
+      in directories with spaces in their names.
+
+    * Errors when saving data files with -P, -G or -i, or when saving the
+      configuration file, are now reported.
+
+    * Many fixes for memory leaks, uninitialized variables and other minor
+      issues.
+
+- calcurse-caldav bug fixes:
+
+    * Only the first line of the PasswordCommand output is used as password.
+
 Version 4.8.2 (2025-08-07)
 --------------------------
 
