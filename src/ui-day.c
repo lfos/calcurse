@@ -240,6 +240,7 @@ static void update_duration(time_t *start, long *dur)
 			asprintf(&outstr, "%s %s", DATEFMT(conf.input_datefmt), "%H:%M");
 			mem_free(timestr);
 			timestr = date_sec2date_str(end, outstr);
+			mem_free(outstr);
 			asprintf(&outstr, msg_help_1, DATEFMT_DESC(conf.input_datefmt));
 			status_mesg(outstr, msg_help_2);
 			mem_free(outstr);
@@ -700,8 +701,12 @@ static int update_rept(time_t start, long dur, struct rpt **rpt, llist_t *exc,
 	}
 	asprintf(&types, "%s %s/%s/%s/%s?",
 		 msg_prefix, daily, weekly, monthly, yearly);
-	if (current[0])
-		asprintf(&types, "%s [%s]", types, current);
+	if (current[0]) {
+		char *tmp;
+		asprintf(&tmp, "%s [%s]", types, current);
+		mem_free(types);
+		types = tmp;
+	}
 	switch (status_ask_choice(types, dwmy, 4)) {
 	case 1:
 		nrpt.type = recur_char2def('D');
