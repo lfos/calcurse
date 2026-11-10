@@ -721,8 +721,9 @@ unsigned config_save(void)
 
 	file_close(status.fp, __FILE_POS__);
 
-	if (io_file_cp(tmppath, path_conf))
-		unlink(tmppath);
+	if (!io_file_cp(tmppath, path_conf))
+		goto cleanup;
+	unlink(tmppath);
 
 	ret = 1;
 cleanup:
