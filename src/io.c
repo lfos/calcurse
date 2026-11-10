@@ -1556,8 +1556,10 @@ unsigned io_get_pid(char *file)
 	if ((fp = fopen(file, "r")) == NULL)
 		return 0;
 
-	if (fscanf(fp, "%u", &pid) != 1)
+	if (fscanf(fp, "%u", &pid) != 1) {
+		fclose(fp);
 		return 0;
+	}
 
 	fclose(fp);
 
