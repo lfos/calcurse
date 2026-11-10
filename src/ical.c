@@ -234,7 +234,8 @@ static void ical_export_note(FILE *stream, char *name)
 		}
 	} else {
 		has_desc = 1;
-		note.buf[strlen(note.buf) - 1] = '\0';
+		if (*note.buf && note.buf[strlen(note.buf) - 1] == '\n')
+			note.buf[strlen(note.buf) - 1] = '\0';
 	}
 
 	if (has_desc)
@@ -251,6 +252,8 @@ static void ical_export_note(FILE *stream, char *name)
 		for (q = p;
 		     (q = strchr(q, '\n')) && starts_with(q + 1, INDENT);
 		     q++) ;
+		if (!q)
+			q = p + strlen(p);
 		/* Extract property line(s). */
 		r = ical_unindent(p, q);
 		ical_format_line(stream, PROPERTY[i], r);
