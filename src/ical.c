@@ -213,7 +213,9 @@ static void ical_export_note(FILE *stream, char *name)
 	int has_desc, has_prop, i;
 
 	asprintf(&note_file, "%s/%s", path_notes, name);
-	if (!(fp = fopen(note_file, "r")) || ungetc(getc(fp), fp) == EOF) {
+	fp = fopen(note_file, "r");
+	mem_free(note_file);
+	if (!fp || ungetc(getc(fp), fp) == EOF) {
 		if (fp)
 			fclose(fp);
 		return;
