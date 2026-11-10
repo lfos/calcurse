@@ -175,7 +175,7 @@ void ui_todo_draw(int n, WINDOW *win, int y, int hilt, void *cb_data)
 	struct todo *todo = LLIST_TS_GET_DATA(i);
 	char mark[] = { 0, 0, 0, 0 };
 	int width = lb_todo.sw.w - 2;
-	char buf[width * UTF8_MAXLEN];
+	char buf[MAX(width, 0) * UTF8_MAXLEN + 4];
 	char *mesg;
 	int j;
 
@@ -213,7 +213,8 @@ void ui_todo_draw(int n, WINDOW *win, int y, int hilt, void *cb_data)
 
 	if (utf8_strwidth(mesg) >= width) {
 		width -= 3;
-		for (j = 0; mesg[j] && width > 0; j++) {
+		for (j = 0; mesg[j] && width > 0 && j < (int)sizeof(buf) - 4;
+		     j++) {
 			if (!UTF8_ISCONT(mesg[j]))
 				width -= utf8_width(&mesg[j]);
 			buf[j] = mesg[j];
