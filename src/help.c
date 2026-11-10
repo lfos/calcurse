@@ -88,7 +88,7 @@ int display_help(const char *topic)
 	const char *locale_info[] = {
 		getenv("LANGUAGE"),
 		getenv("LC_ALL"),
-		getenv("LC_MESSAGE"),
+		getenv("LC_MESSAGES"),
 		getenv("LANG")
 	};
 	char *basedir;
