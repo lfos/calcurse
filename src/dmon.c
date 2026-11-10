@@ -176,6 +176,7 @@ void dmon_start(int parent_exit_status)
 	DMON_LOG(_("started at %s\n"), nowstr());
 	for (;;) {
 		int left;
+		unsigned unslept;
 
 		/*
 		 * Do not use notify_check_next_app() here: it updates the
@@ -204,7 +205,10 @@ void dmon_start(int parent_exit_status)
 				  "sleeping at %s for %d seconds\n",
 				  DMON_SLEEP_TIME), nowstr(),
 			 DMON_SLEEP_TIME);
-		psleep(DMON_SLEEP_TIME);
+		/* Stop sleeping early if a reload is requested. */
+		for (unslept = sleep(DMON_SLEEP_TIME); unslept && !want_reload;
+		     unslept = sleep(unslept))
+			;
 		DMON_LOG(_("awakened at %s\n"), nowstr());
 		/* Reap the user-defined notifications. */
 		while (waitpid(0, NULL, WNOHANG) > 0)
