@@ -427,7 +427,7 @@ static char *config_color_theme_name(void)
 		if ((color[i] == DEFAULTCOLOR)
 		    || (color[i] == DEFAULTCOLOR_EXT)) {
 			color_name[i] = default_color;
-		} else if (color[i] >= 0 && color[i] <= MAXCOLORS) {
+		} else if (color[i] >= 0 && color[i] < MAXCOLORS) {
 			color_name[i] = name[color[i]];
 		} else {
 			EXIT(_("unknown color"));
