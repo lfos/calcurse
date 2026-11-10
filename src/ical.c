@@ -1687,6 +1687,8 @@ ical_read_event(FILE * fdi, FILE * log, unsigned *noevents,
 				asprintf(&p, "%sComment: %s",
 					 vevent.comm, note);
 				mem_free(vevent.comm);
+				mem_free(note);
+				note = NULL;
 				vevent.comm = p;
 			} else
 				vevent.comm = note;
@@ -1851,6 +1853,8 @@ ical_read_todo(FILE * fdi, FILE * log, unsigned *notodos, unsigned *noskipped,
 				asprintf(&p, "%sComment: %s",
 					 vtodo.comm, note);
 				mem_free(vtodo.comm);
+				mem_free(note);
+				note = NULL;
 				vtodo.comm = p;
 			} else
 				vtodo.comm = note;
