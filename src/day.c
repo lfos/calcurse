@@ -855,7 +855,7 @@ int day_paste_item(struct day_item *p, time_t date)
 	 * Valid until date of recurrent items?
 	 * Careful: p->start is not yet set.
 	 */
-	time_t until;
+	time_t until = 0;
 
 	switch (p->type) {
 	case EVNT:
@@ -870,10 +870,9 @@ int day_paste_item(struct day_item *p, time_t date)
 			&until)
 		)
 			return 0;
-		if (check_sec(&until))
-			recur_event_paste_item(p->item.rev, date);
-		else
+		if (until && !check_sec(&until))
 			return 0;
+		recur_event_paste_item(p->item.rev, date);
 		break;
 	case APPT:
 		apoint_paste_item(p->item.apt, date);
@@ -887,10 +886,9 @@ int day_paste_item(struct day_item *p, time_t date)
 			&until)
 		)
 			return 0;
-		if (check_sec(&until))
-			recur_apoint_paste_item(p->item.rapt, date);
-		else
+		if (until && !check_sec(&until))
 			return 0;
+		recur_apoint_paste_item(p->item.rapt, date);
 		break;
 	default:
 		EXIT(_("unknown item type"));
