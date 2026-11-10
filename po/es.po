@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2025-08-07 16:05-0400\n"
+"POT-Creation-Date: 2026-11-10 09:46-0500\n"
 "PO-Revision-Date: 2013-07-23 08:43+0000\n"
 "Last-Translator: Victorhck <victorhck@opensuse.org>, 2018\n"
 "Language-Team: Spanish (http://app.transifex.com/lfleischer/calcurse/"
@@ -246,6 +246,10 @@ msgid "cannot specify a range and an end date"
 msgstr "no se puede especificar un rango y una fecha de finalización"
 
 msgid "end date cannot come before start date"
+msgstr ""
+
+#, c-format
+msgid "Could not save %s."
 msgstr ""
 
 msgid "Unable to find documentation."
@@ -517,10 +521,6 @@ msgid ""
 msgstr ""
 "Lo sentimos, su terminal no soporta colores\n"
 "(Pulse [INTRO] para continuar)"
-
-#, c-format
-msgid "Could not save %s."
-msgstr ""
 
 msgid "unknown item type"
 msgstr "tipo de elemento desconocido"
@@ -1439,6 +1439,10 @@ msgstr "   bloques sin liberar: %u\n"
 msgid "Warning: could not open %s, Aborting..."
 msgstr "Advertencia: no pudo abrirse %s. Abortando..."
 
+#, fuzzy, c-format
+msgid "Warning: could not write %s, Aborting..."
+msgstr "Advertencia: no pudo abrirse %s. Abortando..."
+
 msgid "(if set to YES, notify-bar will be displayed)"
 msgstr "(si selecciona SÍ, se mostrará la barra de notificaciones)"
 
@@ -1485,6 +1489,9 @@ msgstr ""
 msgid "unknown character"
 msgstr "carácter inválido"
 
+msgid "illegal recurrence frequency"
+msgstr ""
+
 #, c-format
 msgid "recurrence error: not on start day (%s)"
 msgstr ""
@@ -1511,6 +1518,9 @@ msgid "appointment not found"
 msgstr "cita no encontrada"
 
 msgid "syntax error in bymonthday"
+msgstr ""
+
+msgid "illegal bymonthday value"
 msgstr ""
 
 msgid "syntax error in bywday"

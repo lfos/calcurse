@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2025-08-07 16:05-0400\n"
+"POT-Creation-Date: 2026-11-10 09:46-0500\n"
 "PO-Revision-Date: 2013-07-23 08:43+0000\n"
 "Last-Translator: Gwendal Rogel <pythot@yahoo.fr>, 2018-2019\n"
 "Language-Team: French (http://app.transifex.com/lfleischer/calcurse/language/"
@@ -260,6 +260,10 @@ msgstr "ne peut pas spécifier une période ni une date de fin"
 
 msgid "end date cannot come before start date"
 msgstr "la date de fin ne peut être antérieure à la date de départ"
+
+#, c-format
+msgid "Could not save %s."
+msgstr "N'a pu sauvegarder %s."
 
 msgid "Unable to find documentation."
 msgstr "Impossible de trouver la documentation."
@@ -536,10 +540,6 @@ msgid ""
 msgstr ""
 "Désolé, les couleurs ne sont pas prises en charge par votre terminal\n"
 "(Appuyer sur [ENTRÉE] pour continuer)"
-
-#, c-format
-msgid "Could not save %s."
-msgstr "N'a pu sauvegarder %s."
 
 msgid "unknown item type"
 msgstr "type d'élément inconnu"
@@ -1456,6 +1456,10 @@ msgstr "   blocs non libérés : %u\n"
 msgid "Warning: could not open %s, Aborting..."
 msgstr "Attention : impossible d'ouvrir %s, abandon..."
 
+#, fuzzy, c-format
+msgid "Warning: could not write %s, Aborting..."
+msgstr "Attention : impossible d'ouvrir %s, abandon..."
+
 msgid "(if set to YES, notify-bar will be displayed)"
 msgstr "(si fixé à OUI, la barre de notification sera affichée)"
 
@@ -1508,6 +1512,9 @@ msgstr "Événement système"
 msgid "unknown character"
 msgstr "caractère inconnu"
 
+msgid "illegal recurrence frequency"
+msgstr ""
+
 #, c-format
 msgid "recurrence error: not on start day (%s)"
 msgstr ""
@@ -1534,6 +1541,9 @@ msgid "appointment not found"
 msgstr "rendez-vous introuvable"
 
 msgid "syntax error in bymonthday"
+msgstr ""
+
+msgid "illegal bymonthday value"
 msgstr ""
 
 msgid "syntax error in bywday"

@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2025-08-07 16:05-0400\n"
+"POT-Creation-Date: 2026-11-10 09:46-0500\n"
 "PO-Revision-Date: 2013-07-23 08:43+0000\n"
 "Last-Translator: Marco van Hulten <marco@hulten.org>, 2018\n"
 "Language-Team: Dutch (http://app.transifex.com/lfleischer/calcurse/language/"
@@ -235,6 +235,10 @@ msgid "cannot specify a range and an end date"
 msgstr ""
 
 msgid "end date cannot come before start date"
+msgstr ""
+
+#, c-format
+msgid "Could not save %s."
 msgstr ""
 
 msgid "Unable to find documentation."
@@ -499,10 +503,6 @@ msgid ""
 msgstr ""
 "Helaas wordt kleur niet door uw terminal ondersteund.\n"
 "(druk op [ENTER] om door te gaan)"
-
-#, c-format
-msgid "Could not save %s."
-msgstr ""
 
 msgid "unknown item type"
 msgstr "ongekend type item"
@@ -1375,6 +1375,10 @@ msgstr ""
 msgid "Warning: could not open %s, Aborting..."
 msgstr "Pas op: bestand %s niet te openen. Stoppen..."
 
+#, fuzzy, c-format
+msgid "Warning: could not write %s, Aborting..."
+msgstr "Pas op: bestand %s niet te openen. Stoppen..."
+
 msgid "(if set to YES, notify-bar will be displayed)"
 msgstr "(Bij JA, wordt de informatiebalk weergegeven)"
 
@@ -1420,6 +1424,9 @@ msgstr ""
 msgid "unknown character"
 msgstr "onbekend karakter"
 
+msgid "illegal recurrence frequency"
+msgstr ""
+
 #, c-format
 msgid "recurrence error: not on start day (%s)"
 msgstr ""
@@ -1446,6 +1453,9 @@ msgid "appointment not found"
 msgstr "afspraak niet gevonden"
 
 msgid "syntax error in bymonthday"
+msgstr ""
+
+msgid "illegal bymonthday value"
 msgstr ""
 
 msgid "syntax error in bywday"

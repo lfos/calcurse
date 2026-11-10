@@ -16,7 +16,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2025-08-07 16:05-0400\n"
+"POT-Creation-Date: 2026-11-10 09:46-0500\n"
 "PO-Revision-Date: 2013-07-23 08:43+0000\n"
 "Last-Translator: Vlad Savikin, 2021\n"
 "Language-Team: Russian (http://app.transifex.com/lfleischer/calcurse/"
@@ -278,6 +278,10 @@ msgstr "Невозможно задать диапазон и конечную �
 
 msgid "end date cannot come before start date"
 msgstr "Конечная дата не может быть до даты начала."
+
+#, c-format
+msgid "Could not save %s."
+msgstr "Невоможно сохранить %s"
 
 msgid "Unable to find documentation."
 msgstr "Невозможно найти документацию."
@@ -549,10 +553,6 @@ msgid ""
 msgstr ""
 "Цвета не поддерживаются вашим терминалом\n"
 "(Нажмите [ENTER], чтобы продолжить)"
-
-#, c-format
-msgid "Could not save %s."
-msgstr "Невоможно сохранить %s"
 
 msgid "unknown item type"
 msgstr "Неизвестный тип записи"
@@ -1461,6 +1461,10 @@ msgstr "    Не высбождённые блоки: %u\n"
 msgid "Warning: could not open %s, Aborting..."
 msgstr "Внимание: невозможно открыть %s, Завершение..."
 
+#, fuzzy, c-format
+msgid "Warning: could not write %s, Aborting..."
+msgstr "Внимание: невозможно открыть %s, Завершение..."
+
 msgid "(if set to YES, notify-bar will be displayed)"
 msgstr "(да/нет) Выводить окно уведомления"
 
@@ -1504,6 +1508,9 @@ msgstr "Системное событие."
 msgid "unknown character"
 msgstr "Неизвестный символ."
 
+msgid "illegal recurrence frequency"
+msgstr ""
+
 #, c-format
 msgid "recurrence error: not on start day (%s)"
 msgstr "Ошибка при повторении: не совпадение с днём начала (%s). "
@@ -1531,6 +1538,10 @@ msgstr "Мероприятий не найдено"
 
 msgid "syntax error in bymonthday"
 msgstr "Ошибка при записи дня месяца."
+
+#, fuzzy
+msgid "illegal bymonthday value"
+msgstr "Недопустимое значение для обозначения месяца."
 
 msgid "syntax error in bywday"
 msgstr "Ошибка при записи дня недели."

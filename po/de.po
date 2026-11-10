@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2025-08-07 16:05-0400\n"
+"POT-Creation-Date: 2026-11-10 09:46-0500\n"
 "PO-Revision-Date: 2013-07-23 08:43+0000\n"
 "Last-Translator: Tim Summerer <summerer.tim@gmail.com>, 2019\n"
 "Language-Team: German (http://app.transifex.com/lfleischer/calcurse/language/"
@@ -241,6 +241,10 @@ msgid "cannot specify a range and an end date"
 msgstr "Zeitraum und Enddatum können nicht kombiniert werden"
 
 msgid "end date cannot come before start date"
+msgstr ""
+
+#, c-format
+msgid "Could not save %s."
 msgstr ""
 
 msgid "Unable to find documentation."
@@ -507,10 +511,6 @@ msgid ""
 msgstr ""
 "Farben werden von diesem Terminal nicht unterstützt.\n"
 "([EINGABE]-Taste um fortzufahren)"
-
-#, c-format
-msgid "Could not save %s."
-msgstr ""
 
 msgid "unknown item type"
 msgstr "Unbekannte Position"
@@ -1408,6 +1408,10 @@ msgstr "   belegte Blöcke: %u\n"
 msgid "Warning: could not open %s, Aborting..."
 msgstr "WARNUNG: Kann %s nicht öffnen. Abbruch..."
 
+#, fuzzy, c-format
+msgid "Warning: could not write %s, Aborting..."
+msgstr "WARNUNG: Kann %s nicht öffnen. Abbruch..."
+
 msgid "(if set to YES, notify-bar will be displayed)"
 msgstr "(Ist JA gewählt, wird die Benachrichtigungszeile angezeigt)"
 
@@ -1452,6 +1456,9 @@ msgstr ""
 msgid "unknown character"
 msgstr "Unbekanntes Zeichen"
 
+msgid "illegal recurrence frequency"
+msgstr ""
+
 #, c-format
 msgid "recurrence error: not on start day (%s)"
 msgstr ""
@@ -1478,6 +1485,9 @@ msgid "appointment not found"
 msgstr "Termin nicht gefunden"
 
 msgid "syntax error in bymonthday"
+msgstr ""
+
+msgid "illegal bymonthday value"
 msgstr ""
 
 msgid "syntax error in bywday"

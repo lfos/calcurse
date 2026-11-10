@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calcurse\n"
 "Report-Msgid-Bugs-To: bugs@calcurse.org\n"
-"POT-Creation-Date: 2025-08-07 16:05-0400\n"
+"POT-Creation-Date: 2026-11-10 09:46-0500\n"
 "PO-Revision-Date: 2006-07-03 00:05+0100\n"
 "Last-Translator: Neil Williams <linux@codehelp.co.uk>\n"
 "Language-Team: English/GB <en_GB@li.org>\n"
@@ -230,6 +230,10 @@ msgid "cannot specify a range and an end date"
 msgstr ""
 
 msgid "end date cannot come before start date"
+msgstr ""
+
+#, c-format
+msgid "Could not save %s."
 msgstr ""
 
 msgid "Unable to find documentation."
@@ -488,10 +492,6 @@ msgid ""
 msgstr ""
 "Sorry, colours are not supported by your terminal\n"
 "(Press [ENTER] to continue)"
-
-#, c-format
-msgid "Could not save %s."
-msgstr ""
 
 msgid "unknown item type"
 msgstr ""
@@ -1361,6 +1361,10 @@ msgstr ""
 msgid "Warning: could not open %s, Aborting..."
 msgstr ""
 
+#, c-format
+msgid "Warning: could not write %s, Aborting..."
+msgstr ""
+
 msgid "(if set to YES, notify-bar will be displayed)"
 msgstr ""
 
@@ -1404,6 +1408,9 @@ msgstr ""
 msgid "unknown character"
 msgstr ""
 
+msgid "illegal recurrence frequency"
+msgstr ""
+
 #, c-format
 msgid "recurrence error: not on start day (%s)"
 msgstr ""
@@ -1430,6 +1437,9 @@ msgid "appointment not found"
 msgstr ""
 
 msgid "syntax error in bymonthday"
+msgstr ""
+
+msgid "illegal bymonthday value"
 msgstr ""
 
 msgid "syntax error in bywday"
