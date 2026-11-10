@@ -461,7 +461,7 @@ int utf8_width(char *s)
 		return 0;
 	val = utf8_decode(s, NULL);
 	low = 0;
-	high = ARRAY_SIZE(utf8_widthtab);
+	high = ARRAY_SIZE(utf8_widthtab) - 1;
 	do {
 		cur = (low + high) / 2;
 		if (val >= utf8_widthtab[cur].min) {
