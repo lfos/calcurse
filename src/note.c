@@ -97,17 +97,24 @@ void edit_note(char **note, const char *editor)
 	if ((fp = fopen(tmppath, "r"))) {
 		sha1_stream(fp, sha1);
 		fclose(fp);
+		if (*note)
+			mem_free(*note);
 		*note = sha1;
+		sha1 = NULL;
 
-		mem_free(notepath);
+		if (notepath)
+			mem_free(notepath);
 		asprintf(&notepath, "%s%s", path_notes, *note);
 		io_file_cp(tmppath, notepath);
-		mem_free(notepath);
 	}
 
 	unlink(tmppath);
 
 cleanup:
+	if (sha1)
+		mem_free(sha1);
+	if (notepath)
+		mem_free(notepath);
 	mem_free(tmpprefix);
 	mem_free(tmppath);
 }
