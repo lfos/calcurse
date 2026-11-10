@@ -72,7 +72,7 @@ void ui_todo_add(void)
 				ch = '0';
 			else if (ch == ESCAPE)
 				return;
-		} while (!isdigit(ch));
+		} while (ch < '0' || ch > '9');
 		struct todo *todo = todo_add(todo_input, ch - '0', 0, NULL);
 		ui_todo_load_items();
 		io_set_modified();
