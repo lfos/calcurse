@@ -1441,7 +1441,13 @@ void ui_day_item_paste(unsigned reg)
 		return;
 
 	day_item_fork(&day_cut[reg], &day);
-	day_paste_item(&day, ui_day_sel_date());
+	if (!day_paste_item(&day, ui_day_sel_date())) {
+		if (day.type == RECUR_APPT)
+			recur_apoint_free(day.item.rapt);
+		else if (day.type == RECUR_EVNT)
+			recur_event_free(day.item.rev);
+		return;
+	}
 	day_set_sel_data(&day);
 	io_set_modified();
 	ui_calendar_monthly_view_cache_set_invalid();
