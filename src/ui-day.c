@@ -236,7 +236,7 @@ static void update_duration(time_t *start, long *dur)
 			mem_free(timestr);
 			return;
 		}
-		if (*(timestr + strlen(timestr) - 1) == '?') {
+		if (*timestr && timestr[strlen(timestr) - 1] == '?') {
 			asprintf(&outstr, "%s %s", DATEFMT(conf.input_datefmt), "%H:%M");
 			mem_free(timestr);
 			timestr = date_sec2date_str(end, outstr);
@@ -633,7 +633,7 @@ static int edit_ilist(llist_t *ilist, int_list_t list_type, int rule_type)
 	while (1) {
 		ret = updatestring(win[STA].p, &istr, 0, 1);
 		if (ret == GETSTRING_VALID || ret == GETSTRING_RET) {
-			if (*(istr + strlen(istr) - 1) == '?')
+			if (*istr && istr[strlen(istr) - 1] == '?')
 				help_ilist(list_type, rule_type);
 			else if (str2int(ilist, istr, list_type)) {
 				updated = 1;
