@@ -119,17 +119,26 @@ unsigned io_fprintln(const char *fname, const char *fmt, ...)
 
 	va_start(ap, fmt);
 	ret = vasprintf(&buf, fmt, ap);
-	RETVAL_IF(ret < 0, 0, _("Failed to build message\n"));
 	va_end(ap);
+	if (ret < 0) {
+		fclose(fp);
+		ERROR_MSG(_("Failed to build message\n"));
+		return 0;
+	}
 
 	ret = fprintf(fp, "%s", buf);
-	RETVAL_IF(ret < 0, 0, _("Failed to print message \"%s\"\n"), buf);
+	if (ret < 0) {
+		fclose(fp);
+		ERROR_MSG(_("Failed to print message \"%s\"\n"), buf);
+		mem_free(buf);
+		return 0;
+	}
+	mem_free(buf);
 
 	ret = fclose(fp);
 	RETVAL_IF(ret != 0, 0, _("Failed to close \"%s\" - %s\n"),
 		  fname, strerror(errno));
 
-	mem_free(buf);
 	return 1;
 }
 
