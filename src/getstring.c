@@ -81,7 +81,7 @@ static void getstr_del_char(struct getstr_status *st)
 	int cw = st->ci[st->pos + 1].dpyoff - st->ci[st->pos].dpyoff;
 	int i;
 
-	memmove(str, str + cl, strlen(str) + 1);
+	memmove(str, str + cl, strlen(str + cl) + 1);
 
 	st->len--;
 	for (i = st->pos; i <= st->len; i++) {
