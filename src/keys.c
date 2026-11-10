@@ -789,10 +789,11 @@ void keys_save_bindings(FILE * fd)
 	EXIT_IF(fd == NULL, _("FATAL ERROR: null file pointer."));
 	dump_intro(fd);
 	for (i = 0; i < NBVKEYS; i++) {
-		if ((keys = keys_action_allkeys(i)))
+		if ((keys = keys_action_allkeys(i))) {
 			fprintf(fd, "%s  %s\n", keydef[i].label, keys);
+			mem_free(keys);
+		}
 	}
-	mem_free(keys);
 }
 
 int keys_check_undefined(void)
