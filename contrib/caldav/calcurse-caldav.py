@@ -744,6 +744,9 @@ try:
 except OSError:
     die('Another synchronization instance is already running.')
 
+# Let calcurse hooks and caldav hooks know that a synchronization is running.
+os.environ['CALCURSE_CALDAV'] = '1'
+
 try:
     # Connect to the server.
     if verbose:

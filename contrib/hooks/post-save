@@ -17,8 +17,8 @@ if [ ! -d "$data_dir" ]; then
 	config_dir="${XDG_CONFIG_HOME:-$HOME/.config}/calcurse"
 fi
 
-# Do not do anything when synchronizing with a CalDAV server.
-[ -f "$data_dir/caldav/lock" ] && exit
+# Do not do anything when invoked by calcurse-caldav.
+[ -n "$CALCURSE_CALDAV" ] && exit
 
 # If the directory is under version control, create a Git commit.
 commit_dir() {

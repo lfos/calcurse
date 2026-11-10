@@ -58,6 +58,13 @@ sure the scripts are executable.
 Some examples can be found in the `contrib/caldav/hooks/` directory of the
 calcurse source tree.
 
+While synchronizing, calcurse-caldav sets the environment variable
+`CALCURSE_CALDAV` to `1`. The variable is inherited by the calcurse instances
+run by calcurse-caldav, and thereby by any calcurse hooks they trigger. Hooks
+can use it to avoid starting another synchronization (see the examples in
+`contrib/hooks/`), instead of checking for the lock file: since the lock file
+is protected by `flock(2)`, it is not removed after synchronizing.
+
 How It Works
 ------------
 

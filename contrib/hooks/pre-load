@@ -11,8 +11,8 @@
 
 cd "$data_dir" || exit
 
-# Do not do anything when synchronizing with a CalDAV server.
-[ -f caldav/lock ] && exit
+# Do not do anything when invoked by calcurse-caldav.
+[ -n "$CALCURSE_CALDAV" ] && exit
 
 # Run the CalDAV synchronization script in the background.
 if [ -d caldav ] && command -v calcurse-caldav >/dev/null; then
