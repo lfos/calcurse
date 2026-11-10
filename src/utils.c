@@ -1546,7 +1546,7 @@ static void print_notefile(FILE * out, const char *filename, int nbtab)
 				printlinestarter = 0;
 			}
 			fputs(buffer, out);
-			if (buffer[strlen(buffer) - 1] == '\n')
+			if (*buffer && buffer[strlen(buffer) - 1] == '\n')
 				printlinestarter = 1;
 		}
 		fputs("\n", out);
