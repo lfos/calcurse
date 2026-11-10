@@ -1714,8 +1714,8 @@ static void print_date(time_t date, time_t day, const char *extformat)
 				strftime(buf, BUFSIZ, "%H:%M", &lt);
 			else
 				strftime(buf, BUFSIZ, "..:..", &lt);
-		} else {
-			strftime(buf, BUFSIZ, extformat, &lt);
+		} else if (!strftime(buf, BUFSIZ, extformat, &lt)) {
+			buf[0] = '\0';
 		}
 
 		printf("%s", buf);
