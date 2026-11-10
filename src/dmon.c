@@ -177,10 +177,14 @@ void dmon_start(int parent_exit_status)
 	for (;;) {
 		int left;
 
+		/*
+		 * Do not use notify_check_next_app() here: it updates the
+		 * notification bar, which does not exist in daemon mode. The
+		 * next appointment is looked up below.
+		 */
 		if (want_reload) {
 			want_reload = 0;
 			io_reload_data();
-			notify_check_next_app(1);
 		}
 
 		if (!notify_get_next_bkgd())

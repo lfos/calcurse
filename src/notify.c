@@ -403,7 +403,15 @@ unsigned notify_get_next_bkgd(void)
 		notify_app.got_app = 0;
 		return 1;
 	} else {
-		if (!notify_same_item(a.time))
+		/*
+		 * Compare description and flag as well since the item may
+		 * have been modified when reloading the data files. Keep the
+		 * entry otherwise, so that no reminder is sent twice.
+		 */
+		if (!notify_same_item(a.time) ||
+		    strcmp(notify_app.txt, a.txt) != 0 ||
+		    (notify_app.state & APOINT_NOTIFY) !=
+		    (a.state & APOINT_NOTIFY))
 			notify_update_app(a.time, a.state, a.txt);
 	}
 
