@@ -1747,6 +1747,8 @@ void recur_apoint_check_next(struct notify_app *app, time_t start, time_t day)
 		    && real_recur_start_time > start
 		    && real_recur_start_time < app->time) {
 			app->time = real_recur_start_time;
+			if (app->txt)
+				mem_free(app->txt);
 			app->txt = mem_strdup(rapt->mesg);
 			app->state = rapt->state;
 			app->got_app = 1;
@@ -1757,6 +1759,8 @@ void recur_apoint_check_next(struct notify_app *app, time_t start, time_t day)
 		    && real_recur_start_time > start
 		    && real_recur_start_time < app->time) {
 			app->time = real_recur_start_time;
+			if (app->txt)
+				mem_free(app->txt);
 			app->txt = mem_strdup(rapt->mesg);
 			app->state = rapt->state;
 			app->got_app = 1;

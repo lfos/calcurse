@@ -298,6 +298,8 @@ struct notify_app *apoint_check_next(struct notify_app *app, time_t start)
 
 		if (apt->start <= app->time) {
 			app->time = apt->start;
+			if (app->txt)
+				mem_free(app->txt);
 			app->txt = mem_strdup(apt->mesg);
 			app->state = apt->state;
 			app->got_app = 1;
