@@ -538,6 +538,8 @@ static inline void key_generic_cmd(void)
 	if (getstring(win[STA].p, cmd, BUFSIZ, 0, 1) != GETSTRING_VALID)
 		goto cleanup;
 	cmd_name = strtok(cmd, " ");
+	if (!cmd_name)
+		goto cleanup;
 	if (cmd_name[strlen(cmd_name) - 1] == '!') {
 		cmd_name[strlen(cmd_name) - 1] = '\0';
 		force = 1;
