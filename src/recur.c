@@ -187,13 +187,12 @@ struct recur_event *recur_event_dup(struct recur_event *in)
 	rev->mesg = mem_strdup(in->mesg);
 
 	rev->rpt = mem_malloc(sizeof(struct rpt));
-	/* Note. The linked lists are NOT copied and no memory allocated. */
 	rev->rpt->type = in->rpt->type;
 	rev->rpt->freq = in->rpt->freq;
 	rev->rpt->until = in->rpt->until;
-	LLIST_INIT(&rev->rpt->bymonth);
-	LLIST_INIT(&rev->rpt->bywday);
-	LLIST_INIT(&rev->rpt->bymonthday);
+	recur_int_list_dup(&rev->rpt->bymonth, &in->rpt->bymonth);
+	recur_int_list_dup(&rev->rpt->bywday, &in->rpt->bywday);
+	recur_int_list_dup(&rev->rpt->bymonthday, &in->rpt->bymonthday);
 	LLIST_INIT(&rev->rpt->exc);
 
 	recur_exc_dup(&rev->exc, &in->exc);
@@ -219,13 +218,12 @@ struct recur_apoint *recur_apoint_dup(struct recur_apoint *in)
 	rapt->mesg = mem_strdup(in->mesg);
 
 	rapt->rpt = mem_malloc(sizeof(struct rpt));
-	/* Note. The linked lists are NOT copied and no memory allocated. */
 	rapt->rpt->type = in->rpt->type;
 	rapt->rpt->freq = in->rpt->freq;
 	rapt->rpt->until = in->rpt->until;
-	LLIST_INIT(&rapt->rpt->bymonth);
-	LLIST_INIT(&rapt->rpt->bywday);
-	LLIST_INIT(&rapt->rpt->bymonthday);
+	recur_int_list_dup(&rapt->rpt->bymonth, &in->rpt->bymonth);
+	recur_int_list_dup(&rapt->rpt->bywday, &in->rpt->bywday);
+	recur_int_list_dup(&rapt->rpt->bymonthday, &in->rpt->bymonthday);
 	LLIST_INIT(&rapt->rpt->exc);
 
 	recur_exc_dup(&rapt->exc, &in->exc);
