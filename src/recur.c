@@ -1799,6 +1799,7 @@ void recur_event_paste_item(struct recur_event *rev, time_t date)
 void recur_apoint_paste_item(struct recur_apoint *rapt, time_t date)
 {
 	time_t ostart = rapt->start;
+	long diff;
 	int days;
 	llist_item_t *i;
 	struct tm t;
@@ -1806,8 +1807,9 @@ void recur_apoint_paste_item(struct recur_apoint *rapt, time_t date)
 	localtime_r((time_t *)&rapt->start, &t);
 	rapt->start = update_time_in_date(date, t.tm_hour, t.tm_min);
 
-	/* The number of days shifted. */
-	days = (rapt->start - ostart) / DAYINSEC;
+	/* The number of days shifted (rounded to allow for DST changes). */
+	diff = rapt->start - ostart;
+	days = (diff + (diff >= 0 ? DAYINSEC / 2 : -DAYINSEC / 2)) / DAYINSEC;
 
 	if (rapt->rpt->until != 0)
 		rapt->rpt->until = date_sec_change(rapt->rpt->until, 0, days);
