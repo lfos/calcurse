@@ -81,6 +81,9 @@ static void generic_hdlr(int sig)
 	case SIGTERM:
 		exit_calcurse(EXIT_SUCCESS);
 		break;
+	case SIGHUP:
+		exit_calcurse(EXIT_FAILURE);
+		break;
 	case SIGUSR1:
 		want_reload = 1;
 		ungetch(KEY_RESIZE);
@@ -110,6 +113,7 @@ void sigs_init()
 {
 	if (!sigs_set_hdlr(SIGWINCH, generic_hdlr)
 	    || !sigs_set_hdlr(SIGTERM, generic_hdlr)
+	    || !sigs_set_hdlr(SIGHUP, generic_hdlr)
 	    || !sigs_set_hdlr(SIGUSR1, generic_hdlr)
 	    || !sigs_set_hdlr(SIGINT, SIG_IGN))
 		exit_calcurse(EXIT_FAILURE);
