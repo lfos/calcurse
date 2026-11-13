@@ -13,27 +13,30 @@ calcurse is available on a number of Linux distributions:
 
 ## Building from Source
 
-Install the following build dependencies. If your distribution segments
-development files from core packages (i.e., \*-devel or \*-dev packages), you
-may need to install those as well:
+Building a release tarball requires a C compiler, `make` and the following
+libraries. If your distribution segments development files from core packages
+(i.e., \*-devel or \*-dev packages), you may need to install those as well:
 
-* gcc
-* autoconf-archive
-* automake
-* autopoint
-* asciidoc (only needed for building documentation, can be skipped with --disable-docs)
-* gettext with development files
-* ncurses with development files
+* ncurses
+* gettext (unless provided by the C library)
 
-If you are using a release tarball, the following commands can be used to build
-and install calcurse:
+The following commands can then be used to build and install calcurse:
 
     $ ./configure
     $ make
     $ make install
 
-Note that `make install` needs to be run as root. When working on a Git
-checkout, you need to run `./autogen.sh` before `./configure`.
+Note that `make install` needs to be run as root. Run `./configure --help` for
+a list of options, such as `--disable-docs` or `--disable-nls`.
+
+When working on a Git checkout, the following tools are needed in addition,
+and you need to run `./autogen.sh` before `./configure`:
+
+* autoconf
+* automake
+* autopoint (usually part of gettext)
+* asciidoc (only needed for building documentation, can be skipped with
+  `--disable-docs`)
 
 ## Source Overview
 
