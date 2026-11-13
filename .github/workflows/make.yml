@@ -26,7 +26,7 @@ jobs:
     - name: Install dependencies (Ubuntu)
       run: |
         sudo apt-get update
-        sudo apt-get install asciidoc autopoint gettext xmlto autoconf-archive
+        sudo apt-get install asciidoc autopoint gettext xmlto
       if: matrix.os == 'ubuntu-latest'
     - name: Install dependencies (macOS)
       run: |
@@ -36,7 +36,6 @@ jobs:
         brew install asciidoc
         brew install gettext
         brew install xmlto
-        brew install autoconf-archive
         brew link --force gettext
         sudo mkdir /etc/xml
         sudo ln -s /usr/local/etc/xml/catalog /etc/xml/catalog
@@ -65,3 +64,41 @@ jobs:
       env:
         VERBOSE: 1
       if: matrix.os == 'ubuntu-latest'
+
+  bsd:
+    strategy:
+      matrix:
+        os: ['freebsd', 'openbsd']
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Create release tarball
+      run: |
+        sudo apt-get update
+        sudo apt-get install asciidoc autopoint gettext xmlto
+        ./autogen.sh
+        ./configure
+        make dist
+    - name: Build and test release tarball (FreeBSD)
+      uses: vmactions/freebsd-vm@v1
+      with:
+        prepare: pkg install -y gettext-runtime
+        run: |
+          tar xzf calcurse-*.tar.gz
+          cd calcurse-*/
+          ./configure
+          make
+          VERBOSE=1 make check
+      if: matrix.os == 'freebsd'
+    - name: Build and test release tarball (OpenBSD)
+      uses: vmactions/openbsd-vm@v1
+      with:
+        prepare: pkg_add gettext-runtime
+        run: |
+          tar xzf calcurse-*.tar.gz
+          cd calcurse-*/
+          ./configure
+          make
+          VERBOSE=1 make check
+      if: matrix.os == 'openbsd'
