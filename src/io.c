@@ -34,9 +34,9 @@
  *
  */
 
-#ifndef _DEFAULT_SOURCE
-/* Needed for realpath() with glibc. */
-#define _DEFAULT_SOURCE
+#ifndef _XOPEN_SOURCE
+/* Needed for realpath(). */
+#define _XOPEN_SOURCE 700
 #endif
 
 #include <stdarg.h>
