@@ -1,163 +1,100 @@
-#-------------------------------------------------------------------------------
-#                                                                           Init
-#-------------------------------------------------------------------------------
-AC_PREREQ([2.71])
-AC_INIT([calcurse],[m4_esyscmd(build-aux/git-version-gen .version)],[bugs@calcurse.org])
-AM_INIT_AUTOMAKE
-#m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
+AC_PREREQ([2.69])
+AC_INIT([calcurse], [m4_esyscmd_s([build-aux/git-version-gen .version])],
+        [bugs@calcurse.org])
+AC_CONFIG_SRCDIR([src/calcurse.c])
+AC_CONFIG_AUX_DIR([build-aux])
+AC_CONFIG_MACRO_DIR([m4])
+AC_CONFIG_HEADERS([config.h])
+AM_INIT_AUTOMAKE([foreign])
+AM_SILENT_RULES([yes])
+
 AM_GNU_GETTEXT([external])
 AM_GNU_GETTEXT_VERSION([0.19.8])
-AC_CONFIG_SRCDIR([src/calcurse.c])
-AC_CONFIG_HEADERS([config.h])
-#-------------------------------------------------------------------------------
-#                                                         Checks for system type
-#-------------------------------------------------------------------------------
-AC_CANONICAL_HOST
-#-------------------------------------------------------------------------------
-#                                                            Checks for programs
-#-------------------------------------------------------------------------------
+AM_GNU_GETTEXT_REQUIRE_VERSION([0.19.8])
+
 AC_PROG_CC
 AC_C_BIGENDIAN
-#-------------------------------------------------------------------------------
-#                                                        Checks for header files
-#-------------------------------------------------------------------------------
-AC_CHECK_HEADERS([ctype.h getopt.h locale.h math.h signal.h stdio.h stdlib.h   \
-		  string.h sys/stat.h sys/types.h sys/wait.h time.h unistd.h   \
-		  fcntl.h paths.h errno.h limits.h regex.h])
-#-------------------------------------------------------------------------------
-#                                                         Checks for system libs
-#-------------------------------------------------------------------------------
-AX_WITH_CURSES
-if test "x$ax_cv_ncursesw" != xyes && test "x$ax_cv_ncurses" != xyes; then
-  AC_MSG_ERROR(Either ncurses or ncursesw library is required to build calcurse!)
-fi
 
-LIBS="$LIBS $CURSES_LIBS"
+# ncurses: only the library matters (ncursesw for UTF-8 output); calcurse does
+# not use the wide-character API, so any ncurses header will do.
+AC_ARG_VAR([CURSES_CFLAGS], [C preprocessor flags for ncurses])
+AC_ARG_VAR([CURSES_LIBS], [linker flags for ncurses, e.g. -lncursesw])
+AC_ARG_WITH([ncursesw],
+  [AS_HELP_STRING([--without-ncursesw], [do not prefer the ncursesw library])],
+  [], [with_ncursesw=yes])
+test -n "$CURSES_CFLAGS" && CPPFLAGS="$CURSES_CFLAGS $CPPFLAGS"
+AS_IF([test -n "$CURSES_LIBS"], [LIBS="$CURSES_LIBS $LIBS"], [
+  AS_IF([test "x$with_ncursesw" = xno], [curses_libs=ncurses],
+        [curses_libs="ncursesw ncurses"])
+  AC_SEARCH_LIBS([initscr], [$curses_libs], [],
+    [AC_MSG_ERROR([the ncurses library is required])])
+])
+have_curses_h=no
+AC_CHECK_HEADERS([ncurses.h ncurses/ncurses.h ncursesw/ncurses.h],
+  [have_curses_h=yes; break])
+AS_IF([test $have_curses_h = no], [AC_MSG_ERROR([no ncurses header found])])
 
-AC_CHECK_HEADERS([pthread.h], [
-    AC_CHECK_LIB(pthread, pthread_create, [
-	LIBS="$LIBS -pthread"
-	AC_DEFINE(HAVE_LIBPTHREAD, 1, 
-		  [Define to 1 if you have the 'pthread' library (-pthread).])
-    ], 
-    AC_MSG_ERROR(The pthread library is required in order to build calcurse!))
-], AC_MSG_ERROR(The pthread header is required in order to build calcurse!))
+AC_SEARCH_LIBS([pthread_create], [pthread], [],
+  [AC_MSG_ERROR([the pthread library is required])])
+AC_SEARCH_LIBS([exp], [m], [],
+  [AC_MSG_ERROR([the math library is required])])
 
-AC_CHECK_HEADERS([math.h], [
-    AC_CHECK_LIB(m, exp, [
-	LIBS="$LIBS -lm"
-	AC_DEFINE(HAVE_LIBMATH, 1, 
-		  [Define to 1 if you have the 'math' library (-lm).])
-    ], 
-    AC_MSG_ERROR(The math library is required in order to build calcurse!))
-], AC_MSG_ERROR(The math header is required in order to build calcurse!))
-#-------------------------------------------------------------------------------
-#                                           Check whether to build documentation
-#-------------------------------------------------------------------------------
-AC_ARG_ENABLE(docs,
-              AS_HELP_STRING([--disable-docs], [skip documentation]),
-              [enabledocs=$enableval], [enabledocs=yes])
-if test x"$enabledocs" != x"yes"; then
-  enabledocs=no
-fi
-AC_MSG_CHECKING([whether to include documentation])
-AC_MSG_RESULT($enabledocs)
-AM_CONDITIONAL(ENABLE_DOCS, test x"$enabledocs" = x"yes")
+AC_ARG_ENABLE([memory-debug],
+  [AS_HELP_STRING([--enable-memory-debug], [use memory debug functions])],
+  [], [enable_memory_debug=no])
+AS_IF([test "x$enable_memory_debug" = xyes],
+  [AC_DEFINE([CALCURSE_MEMORY_DEBUG], [1], [Define to enable memory debugging.])])
 
-AC_ARG_WITH(asciidoc,
-            AS_HELP_STRING([--with-asciidoc],
-                           [use AsciiDoc to regenerate documentation]),
-                           [use_asciidoc=$withval],
-                           [use_asciidoc="auto"])
-if test x"$enabledocs" = x"no" -o x"$use_asciidoc" = x"no"; then
-  AC_MSG_WARN([Will not rebuild documentation!])
-  have_asciidoc=no
-  have_a2x=no
-elif test x"$use_asciidoc" = x"yes"; then
+# Documentation. --with-asciidoc=yes requires AsciiDoc, =no never rebuilds and
+# =auto rebuilds if possible, falling back to the pre-built files in releases.
+AC_ARG_ENABLE([docs],
+  [AS_HELP_STRING([--disable-docs], [do not build or install documentation])],
+  [], [enable_docs=yes])
+AC_ARG_WITH([asciidoc],
+  [AS_HELP_STRING([--with-asciidoc@<:@=yes|no|auto@:>@],
+    [use AsciiDoc to rebuild documentation @<:@default=auto@:>@])],
+  [], [with_asciidoc=auto])
+AC_ARG_VAR([ASCIIDOC], [AsciiDoc command])
+AC_ARG_VAR([A2X], [a2x command])
+have_asciidoc=no
+have_a2x=no
+AS_IF([test "x$enable_docs" = xyes && test "x$with_asciidoc" != xno], [
   AC_PATH_PROG([ASCIIDOC], [asciidoc])
-  if test -z "$ASCIIDOC"; then
-    AC_MSG_ERROR([AsciiDoc not found and "--with-asciidoc" specified!])
-  fi
   AC_PATH_PROG([A2X], [a2x])
-  if test -z "$A2X"; then
-    AC_MSG_ERROR([a2x not found and "--with-asciidoc" specified!])
-  fi
-  have_asciidoc=yes
-elif test x"$use_asciidoc" = x"auto"; then
-  AC_PATH_PROG([ASCIIDOC], [asciidoc])
-  if test -z "$ASCIIDOC"; then
-    have_asciidoc=no
-    AC_MSG_WARN([AsciiDoc not found - cannot rebuild documentation!])
-    if test -f "doc/manual.html" && test -f "doc/submitting-patches.html"; then
-      AC_MSG_WARN([Using pre-built documentation.])
-    else
-      AC_MSG_ERROR(Asciidoc is required to build documentation.)
-    fi
-  else
-    have_asciidoc=yes
-  fi
-  AC_PATH_PROG([A2X], [a2x])
-  if test -z "$A2X"; then
-    have_a2x=no
-    AC_MSG_WARN([a2x not found - cannot rebuild man pages!])
-    if test -f "doc/calcurse.1"; then
-      AC_MSG_WARN([Using pre-built man pages.])
-    else
-      AC_MSG_ERROR(a2x is required to build man pages.)
-    fi
-  else
-    have_a2x=yes
-  fi
-fi
-AM_CONDITIONAL(HAVE_ASCIIDOC, test $have_asciidoc = yes)
-AM_CONDITIONAL(HAVE_A2X, test $have_a2x = yes)
-#-------------------------------------------------------------------------------
-#                                                            Compilation options
-#-------------------------------------------------------------------------------
-CFLAGS="$CFLAGS -Wall"
+  test -n "$ASCIIDOC" && have_asciidoc=yes
+  test -n "$A2X" && have_a2x=yes
+  AS_IF([test "x$with_asciidoc" = xyes], [
+    test $have_asciidoc = yes || AC_MSG_ERROR([asciidoc not found])
+    test $have_a2x = yes || AC_MSG_ERROR([a2x not found])
+  ], [
+    test $have_asciidoc = yes || test -f "$srcdir/doc/manual.html" ||
+      AC_MSG_ERROR([asciidoc is required to build the HTML documentation])
+    test $have_a2x = yes || test -f "$srcdir/doc/calcurse.1" ||
+      AC_MSG_ERROR([a2x is required to build the man page])
+  ])
+])
+AC_SUBST([DOC_TRANSLATIONS], ['m4_esyscmd_s([cd doc && echo */*.txt])'])
+AM_CONDITIONAL([ENABLE_DOCS], [test "x$enable_docs" = xyes])
+AM_CONDITIONAL([HAVE_ASCIIDOC], [test $have_asciidoc = yes])
+AM_CONDITIONAL([HAVE_A2X], [test $have_a2x = yes])
 
-AC_ARG_ENABLE(memory_debug,
-              AS_HELP_STRING([--enable-memory-debug], 
-                             [use memory debug functions]),
-                             memdebug=$enableval)
-if test "$memdebug" != "yes"; then
-   memdebug=no
-   AC_DEFINE(CALCURSE_MEMORY_DEBUG_DISABLED, 1, 
-             [Define to 1 if you do not want memory debug.])
-else
-   AC_DEFINE(CALCURSE_MEMORY_DEBUG, 1, 
-             [Define to 1 if you want memory debug.])
-fi
-AC_MSG_CHECKING([if memory debug should be used])
-AC_MSG_RESULT($memdebug)
-AM_CONDITIONAL(CALCURSE_MEMORY_DEBUG, test x$memdebug = xyes)
-#-------------------------------------------------------------------------------
-#                                                               Create Makefiles
-#-------------------------------------------------------------------------------
-AC_CONFIG_FILES([Makefile doc/Makefile src/Makefile test/Makefile \
-          scripts/Makefile po/Makefile.in po/Makefile \
-          contrib/caldav/Makefile contrib/vdir/Makefile])
+AC_CONFIG_FILES([Makefile doc/Makefile po/Makefile.in src/Makefile
+                 test/Makefile scripts/Makefile contrib/caldav/Makefile
+                 contrib/vdir/Makefile])
 AC_OUTPUT
-#-------------------------------------------------------------------------------
-#                                                                        Summary
-#-------------------------------------------------------------------------------
-echo
-echo "========================================================================"
-echo "$PACKAGE is configured as follows."
-echo "Please check that this configuration matches your expectations."
-echo "Also give a look at the config.h file to check for preprocessor symbols."
-echo
-echo "Host system type   : $host"
-echo
-echo "Options used to compile and link:"
-echo "  PREFIX           = $prefix"
-echo "  VERSION          = $PACKAGE_VERSION"
-echo "  CC               = $CC"
-echo "  CFLAGS           = $CFLAGS"
-echo "  CPPFLAGS         = $CPPFLAGS"
-echo "  DEFS             = $DEFS"
-echo "  LD               = $LD"
-echo "  LDFLAGS          = $LDFLAGS"
-echo "  LIBS             = $LIBS"
-echo "========================================================================"
-echo 
+
+cat <<EOF
+
+$PACKAGE_NAME $PACKAGE_VERSION
+
+  prefix:        $prefix
+  CC:            $CC
+  CFLAGS:        $CFLAGS
+  CPPFLAGS:      $CPPFLAGS
+  LDFLAGS:       $LDFLAGS
+  LIBS:          $LIBS $LIBINTL
+  NLS:           $USE_NLS
+  docs:          $enable_docs (asciidoc: $have_asciidoc, a2x: $have_a2x)
+  memory debug:  $enable_memory_debug
+
+EOF

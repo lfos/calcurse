@@ -1,5 +1,3 @@
-AUTOMAKE_OPTIONS= foreign
-
 ACLOCAL_AMFLAGS = -I m4
 
 SUBDIRS = po src test scripts contrib/caldav contrib/vdir
@@ -10,7 +8,8 @@ endif
 
 EXTRA_DIST = \
 	INSTALL \
-	ABOUT-NLS
+	ABOUT-NLS \
+	build-aux/git-version-gen
 
 BUILT_SOURCES = $(top_srcdir)/.version
 $(top_srcdir)/.version:

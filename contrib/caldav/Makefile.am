@@ -1,5 +1,3 @@
-AUTOMAKE_OPTIONS = foreign
-
 dist_bin_SCRIPTS = \
 	calcurse-caldav
 
@@ -11,4 +9,4 @@ CLEANFILES = \
 	calcurse-caldav
 
 calcurse-caldav: calcurse-caldav.py
-	cp "$(srcdir)/$<" "$@"
+	$(AM_V_GEN)cp $(srcdir)/calcurse-caldav.py $@

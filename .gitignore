@@ -5,14 +5,11 @@ Makefile.in
 Makefile.in.in
 aclocal.m4
 configure
-compile
-depcomp
-install-sh
-missing
-mkinstalldirs
 stamp-h1
 .version
 autom4te.cache/
+/build-aux/*
+!/build-aux/git-version-gen
 m4/
 
 /config.*
@@ -30,6 +27,7 @@ po/*.header
 po/*.sin
 po/*.sed
 po/Makevars.template
+po/fetch-po
 po/POTFILES
 po/Rules-quot
 po/stamp-po
@@ -40,7 +38,6 @@ src/*.o
 src/.deps/
 src/calcurse
 
-test-driver
 test/*.o
 test/*.log
 test/*.trs

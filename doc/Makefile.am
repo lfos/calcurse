@@ -1,20 +1,3 @@
-AUTOMAKE_OPTIONS = foreign
-
-if HAVE_ASCIIDOC
-ASCIIDOC_ARGS = \
-	-n \
-	-a toc \
-	-a icons
-endif
-
-if HAVE_A2X
-A2X_ARGS = \
-	-d manpage \
-	-f manpage
-endif
-
-doc_langs = fr de es nl ru pt_BR
-
 nobase_dist_doc_DATA = \
 	manual.html \
 	submitting-patches.html \
@@ -42,27 +25,26 @@ nobase_dist_doc_DATA = \
 	tab.txt \
 	view.txt \
 	vnote.txt \
-	$(foreach lang, $(doc_langs), $(wildcard $(lang)/*.txt))
+	$(DOC_TRANSLATIONS)
 
 dist_man_MANS = \
 	calcurse.1
 
 EXTRA_DIST = \
-	manual.txt \
 	submitting-patches.txt \
 	calcurse.1.txt
 
-CLEANFILES = \
-	manual.html \
-	submitting-patches.html \
-	calcurse.1
+# Pre-built files are only cleaned if they can be rebuilt.
+CLEANFILES =
 
-.txt.html:
 if HAVE_ASCIIDOC
-	$(AM_V_GEN) $(ASCIIDOC) $(ASCIIDOC_ARGS) $<
+CLEANFILES += manual.html submitting-patches.html
+.txt.html:
+	$(AM_V_GEN)$(ASCIIDOC) -n -a toc -a icons -o $@ $<
 endif
 
-%.1: %.1.txt
 if HAVE_A2X
-	$(AM_V_GEN) $(A2X) $(A2X_ARGS) $<
+CLEANFILES += calcurse.1
+calcurse.1: calcurse.1.txt
+	$(AM_V_GEN)$(A2X) -d manpage -f manpage -D . $(srcdir)/calcurse.1.txt
 endif

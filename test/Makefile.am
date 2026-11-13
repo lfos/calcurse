@@ -1,5 +1,3 @@
-AUTOMAKE_OPTIONS = foreign
-
 TESTS = \
 	true-001.sh \
 	run-test-001.sh \
@@ -85,11 +83,9 @@ TESTS_ENVIRONMENT = \
 	CALCURSE='$(top_builddir)/src/calcurse' \
 	DATA_DIR='$(top_srcdir)/test/data/'
 
-AM_CFLAGS = -std=c99 -pedantic -D_POSIX_C_SOURCE=200809L
+AM_CFLAGS = -std=c99 -pedantic -Wall -D_POSIX_C_SOURCE=200809L
 
 check_PROGRAMS = run-test
-check_SCRIPTS = test-init.sh
-noinst_SCRIPTS = $(check_SCRIPTS)
 
 run_test_SOURCES = run-test.c
 

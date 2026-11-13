@@ -1,5 +1,3 @@
-AUTOMAKE_OPTIONS = foreign
-
 dist_bin_SCRIPTS = \
 	calcurse-vdir
 
@@ -10,4 +8,4 @@ CLEANFILES = \
 	calcurse-vdir
 
 calcurse-vdir: calcurse-vdir.py
-	cp "$(srcdir)/$<" "$@"
+	$(AM_V_GEN)cp $(srcdir)/calcurse-vdir.py $@

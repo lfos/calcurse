@@ -1,9 +1,7 @@
-AUTOMAKE_OPTIONS = foreign
-
 bin_PROGRAMS = calcurse
 
-AM_CPPFLAGS = -DDOCDIR=\"@docdir@\"
-AM_CFLAGS = -std=c99 -pedantic -D_POSIX_C_SOURCE=200809L
+AM_CPPFLAGS = -DDOCDIR=\"$(docdir)\" -DLOCALEDIR=\"$(localedir)\"
+AM_CFLAGS = -std=c99 -pedantic -Wall -D_POSIX_C_SOURCE=200809L
 
 calcurse_SOURCES = \
 	calcurse.c \
@@ -47,9 +45,4 @@ calcurse_SOURCES = \
 	mem.c \
 	dmon.c
 
-LDADD = @LTLIBINTL@
-
-datadir = @datadir@
-localedir = $(datadir)/locale
-
-DEFS = -DLOCALEDIR=\"$(localedir)\" @DEFS@
+LDADD = $(LIBINTL)
