@@ -1097,7 +1097,7 @@ int parse_date_increment(const char *string, unsigned *days, time_t start)
 	incr += in;
 	if (start) {
 		/* wanted: start = start + incr * DAYINSEC */
-		long p;
+		time_t p;
 		if (overflow_mul(incr, DAYINSEC, &p))
 			return 0;
 		if (overflow_add(start, p, &start))
@@ -1258,13 +1258,11 @@ int parse_duration(const char *string, unsigned *duration, time_t start)
 	dur += in;
 	if (start) {
 		/* wanted: end = start + dur * MININSEC */
-		time_t end;
-		long p, s;
+		time_t end, p;
 		if (overflow_mul(dur, MININSEC, &p))
 			return 0;
-		if (overflow_add(start, p, &s))
+		if (overflow_add(start, p, &end))
 			return 0;
-		end = s;
 		if (!check_sec(&end) || end < start)
 			return 0;
 	}
@@ -2041,7 +2039,7 @@ int hash_matches(const char *pattern, const char *hash)
 /*
  * Overflow check for addition with positive second term.
  */
-long overflow_add(long x, long y, long *z)
+long overflow_add(time_t x, time_t y, time_t *z)
 {
 	if (!YEAR1902_2037)
 		goto exit;
@@ -2058,7 +2056,7 @@ long overflow_add(long x, long y, long *z)
 /*
  * Overflow check for multiplication with positive terms.
  */
-long overflow_mul(long x, long y, long *z)
+long overflow_mul(time_t x, time_t y, time_t *z)
 {
 	if (!YEAR1902_2037)
 		goto exit;
