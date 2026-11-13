@@ -744,7 +744,7 @@ void wins_erase_status_bar(void)
 }
 
 /* Update the status bar page number to display other commands. */
-void wins_other_status_page()
+void wins_other_status_page(void)
 {
 	/*
 	 * Determine the number of completely filled pages of key bindings.

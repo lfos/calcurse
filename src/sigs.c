@@ -109,7 +109,7 @@ unsigned sigs_set_hdlr(int sig, void (*handler) (int))
 }
 
 /* Signal handling init. */
-void sigs_init()
+void sigs_init(void)
 {
 	if (!sigs_set_hdlr(SIGWINCH, generic_hdlr)
 	    || !sigs_set_hdlr(SIGTERM, generic_hdlr)

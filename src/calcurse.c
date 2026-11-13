@@ -330,7 +330,7 @@ static inline void key_generic_import(void)
 	wins_update(FLAG_ALL);
 }
 
-static inline void key_generic_export()
+static inline void key_generic_export(void)
 {
 	const char *export_msg = _("Export to (i)cal or (p)cal format?");
 	const char *export_choices = _("[ip]");

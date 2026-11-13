@@ -72,7 +72,7 @@ int day_set_sel_data(struct day_item *d)
 /*
  * Return selection data if available.
  */
-int day_check_sel_data()
+int day_check_sel_data(void)
 {
 	return (sel_data.order || sel_data.item.apt) ? 1 : 0;
 }

@@ -478,7 +478,7 @@ static int resolve_save_conflict(void)
 #define TODO		(1 << 1)
 #define APTS_TODO	APTS | TODO
 #define NOKNOW		-1
-static int new_data()
+static int new_data(void)
 {
 	char sha1_new[SHA1_DIGESTLEN * 2 + 1];
 	int ret = NONEW;
