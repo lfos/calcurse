@@ -157,13 +157,13 @@ char *apoint_tostr(struct apoint *o)
 
 	t = o->start;
 	localtime_r(&t, &lt);
-	string_catf(&s, "%02u/%02u/%04u @ %02u:%02u", lt.tm_mon + 1,
-		lt.tm_mday, 1900 + lt.tm_year, lt.tm_hour, lt.tm_min);
+	string_catf(&s, "%02u/%02u/%04u @ %02u:%02u", 1900 + lt.tm_year
+		lt.tm_mon + 1, lt.tm_mday, lt.tm_hour, lt.tm_min);
 
 	t = o->start + o->dur;
 	localtime_r(&t, &lt);
-	string_catf(&s, " -> %02u/%02u/%04u @ %02u:%02u", lt.tm_mon + 1,
-		lt.tm_mday, 1900 + lt.tm_year, lt.tm_hour, lt.tm_min);
+	string_catf(&s, " -> %02u/%02u/%04u @ %02u:%02u", 1900 + lt.tm_year
+		lt.tm_mon + 1, lt.tm_mday, lt.tm_hour, lt.tm_min);
 
 	if (o->note)
 		string_catf(&s, ">%s ", o->note);
