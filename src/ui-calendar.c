@@ -288,7 +288,7 @@ static int ISO8601weeknum(const struct tm *t)
  * Return the tm structure for the first day of the first week
  * (containing a day) of the selected month.
  */
-static struct tm get_first_day(int wday_start)
+struct tm get_first_day(int wday_start)
 {
 	struct tm t;
 	struct date d;

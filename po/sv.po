@@ -1,0 +1,1879 @@
+# Swedish translation for calcurse.
+# Copyright (C) 2024 calcurse Development Team <misc@calcurse.org>
+# This file is distributed under the same license as the calcurse package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: calcurse 4.8.2\n"
+"Report-Msgid-Bugs-To: bugs@calcurse.org\n"
+"POT-Creation-Date: 2025-08-07 16:05-0400\n"
+"PO-Revision-Date: 2024-01-15 12:00+0100\n"
+"Last-Translator: Pedro Rivera <>\n"
+"Language-Team: Swedish <sv@li.org>\n"
+"Language: sv\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "null pointer"
+msgstr "nullpekare"
+
+msgid "illegal date in appointment"
+msgstr "ogiltigt datum i tid"
+
+msgid "error in appointment description"
+msgstr "fel i tidsbeskrivning"
+
+msgid "date error in appointment"
+msgstr "datumfel i tid"
+
+msgid "no such appointment"
+msgstr "ingen sådan tid"
+
+msgid ""
+"Usage:\n"
+"calcurse [-D <directory>] [-C <directory>] [-c <calendar file>]\n"
+"calcurse -Q [--from <date>] [--to <date>] [--days <number>]\n"
+"calcurse -a | -d <date> | -d <number> | -n | -r[<number>] | -s[<date>] | "
+"-t[<number>]\n"
+"calcurse -h | -v | --status | -G | -P | -g | -i <file> | -x[<format>] | --"
+"daemon"
+msgstr ""
+"Användning:\n"
+"calcurse [-D <katalog>] [-C <katalog>] [-c <kalenderfil>]\n"
+"calcurse -Q [--from <datum>] [--to <datum>] [--days <antal>]\n"
+"calcurse -a | -d <datum> | -d <antal> | -n | -r[<antal>] | -s[<datum>] | "
+"-t[<antal>]\n"
+"calcurse -h | -v | --status | -G | -P | -g | -i <fil> | -x[<format>] | --"
+"daemon"
+
+msgid "Try `calcurse -h` for more information."
+msgstr "Kör `calcurse -h` för mer information."
+
+#, c-format
+msgid "calcurse %s -- text-based organizer\n"
+msgstr "calcurse %s -- textbaserad organisatör\n"
+
+msgid "Copyright (c) 2004-2023 calcurse Development Team."
+msgstr "Copyright (c) 2004-2023 calcurse Development Team."
+
+msgid "This is free software; see the source for copying conditions."
+msgstr "Detta är fri programvara; se källkoden för kopieringsvillkor."
+
+msgid "Operations in command line mode:"
+msgstr "Operationer i kommandoradsläge:"
+
+msgid "  -Q, --query   Print items in a given query range"
+msgstr "  -Q, --query   Skriv ut objekt inom ett givet frågeintervall"
+
+msgid "  -G, --grep    Grep items from the data files"
+msgstr "  -G, --grep    Grep:a objekt från datafilerna"
+
+msgid "  -P, --purge   Read items and write them back"
+msgstr "  -P, --purge   Läs objekt och skriv tillbaka dem"
+
+msgid ""
+"Query short forms:\n"
+"-a, -d <date>|<number>, -n, -r[<number>], -s[<date>], -t<number>"
+msgstr ""
+"Korta frågeformer:\n"
+"-a, -d <datum>|<antal>, -n, -r[<antal>], -s[<datum>], -t<antal>"
+
+msgid "Note that filter, format and day-range options affect input or output:"
+msgstr "Notera att filter-, format- och dagintervallsalternativ påverkar indata eller utdata:"
+
+msgid "  --filter-*              Filter items loaded by -Q, -G, -P and -x"
+msgstr "  --filter-*              Filtrera objekt laddade av -Q, -G, -P och -x"
+
+msgid ""
+"  --format-*              Rewrite output from -Q, -G and --dump-imported"
+msgstr ""
+"  --format-*              Skriv om utdata från -Q, -G och --dump-imported"
+
+msgid "  --from <date>           Limit day range of -Q."
+msgstr "  --from <datum>           Begränsa dagintervall för -Q."
+
+msgid "  --to <date>             Limit day range of -Q."
+msgstr "  --to <datum>             Begränsa dagintervall för -Q."
+
+msgid "  --days <number>         Limit day range of -Q."
+msgstr "  --days <antal>           Begränsa dagintervall för -Q."
+
+msgid "  --limit, -l <number>    Limit number of query results"
+msgstr "  --limit, -l <antal>     Begränsa antal frågeresultat"
+
+msgid "  --search, -S <regexp>   Match regular expression in queries"
+msgstr "  --search, -S <regexp>   Matcha reguljärt uttryck i frågor"
+
+msgid "Consult the man page for details."
+msgstr "Se manualsidan för detaljer."
+
+msgid "Miscellaneous:"
+msgstr "Övrigt:"
+
+msgid "  -c, --calendar <file>   The calendar data file to use"
+msgstr "  -c, --calendar <fil>   Kalenderdatafilen som ska användas"
+
+msgid "  -C, --confdir <dir>     The configuration directory to use"
+msgstr "  -C, --confdir <katalog>     Konfigurationskatalogen som ska användas"
+
+msgid "  --daemon                Run notification daemon in the background"
+msgstr "  --daemon                Kör aviseringsdaemon i bakgrunden"
+
+msgid "  -D, --datadir <dir>     The data directory to use"
+msgstr "  -D, --datadir <katalog>     Datakatalogen som ska användas"
+
+msgid "  -g, --gc                Run the garbage collector"
+msgstr "  -g, --gc                Kör garbage collector"
+
+msgid "  -h, --help              Show this help text"
+msgstr "  -h, --help              Visa denna hjälptext"
+
+msgid "  -i, --import <file>     Import iCal data from file"
+msgstr "  -i, --import <fil>     Importera iCal-data från fil"
+
+msgid "  -q, --quiet             Suppress import/export result message"
+msgstr "  -q, --quiet             Dölj import-/exportresultatmeddelande"
+
+msgid "  --read-only             Do not save configuration or data files"
+msgstr "  --read-only             Spara inte konfigurations- eller datafiler"
+
+msgid "  --status                Display status of running instances"
+msgstr "  --status                Visa status för aktiva instanser"
+
+msgid "  -v, --version           Show version information"
+msgstr "  -v, --version           Visa versionsinformation"
+
+msgid ""
+"  -x, --export[<format>]  Export to stdout in ical (default) or pcal format"
+msgstr ""
+"  -x, --export[<format>]  Exportera till stdout i ical (standard) eller pcal-format"
+
+msgid ""
+"For more information, type '?' from within calcurse, or read the manpage."
+msgstr ""
+"För mer information, tryck '?' i calcurse, eller läs manualsidan."
+
+msgid "Submit feature requests and suggestions to <misc@calcurse.org>."
+msgstr "Skicka funktionsförfrågningar och förslag till <misc@calcurse.org>."
+
+msgid "Submit bug reports to <bugs@calcurse.org>."
+msgstr "Rapportera buggar till <bugs@calcurse.org>."
+
+#, c-format
+msgid ""
+"Error: both calcurse (pid: %d) and its daemon (pid: %d)\n"
+"seem to be running at the same time!\n"
+"Please check manually and restart calcurse.\n"
+msgstr ""
+"Fel: både calcurse (pid: %d) och dess daemon (pid: %d)\n"
+"verkar köra samtidigt!\n"
+"Kontrollera manuellt och starta om calcurse.\n"
+
+#, c-format
+msgid "calcurse is running (pid %d)\n"
+msgstr "calcurse körs (pid %d)\n"
+
+#, c-format
+msgid "calcurse is running in background (pid %d)\n"
+msgstr "calcurse körs i bakgrunden (pid %d)\n"
+
+msgid "calcurse is not running"
+msgstr "calcurse körs inte"
+
+msgid "completed tasks:\n"
+msgstr "slutförda uppgifter:\n"
+
+msgid "to do:\n"
+msgstr "att göra:\n"
+
+msgid "next appointment:\n"
+msgstr "nästa tid:\n"
+
+#, c-format
+msgid "invalid range: %s"
+msgstr "ogiltigt intervall: %s"
+
+#, c-format
+msgid "invalid date: %s"
+msgstr "ogiltigt datum: %s"
+
+#, c-format
+msgid "invalid priority: %s"
+msgstr "ogiltig prioritet: %s"
+
+#, c-format
+msgid "invalid export format: %s"
+msgstr "ogiltigt exportformat: %s"
+
+msgid "invalid filter mask"
+msgstr "ogiltig filtermask"
+
+msgid "cannot handle more than one regular expression"
+msgstr "kan inte hantera mer än ett reguljärt uttryck"
+
+#, c-format
+msgid "could not compile regular expression: %s"
+msgstr "kunde inte kompilera reguljärt uttryck: %s"
+
+#, c-format
+msgid "filter criterion already in use: %s"
+msgstr "filterkriterium redan i användning: %s"
+
+#, c-format
+msgid "invalid date range: %s"
+msgstr "ogiltigt datumintervall: %s"
+
+#, c-format
+msgid "calcurse is running (pid = %d)"
+msgstr "calcurse körs (pid = %d)"
+
+#, c-format
+msgid "invalid input date format: %s"
+msgstr "ogiltigt indatadatumformat: %s"
+
+#, c-format
+msgid "invalid output date format: %s"
+msgstr "ogiltigt utdataformat: %s"
+
+msgid "invalid argument combination"
+msgstr "ogiltig argumentkombination"
+
+msgid "cannot specify a range and an end date"
+msgstr "kan inte ange både intervall och slutdatum"
+
+msgid "end date cannot come before start date"
+msgstr "slutdatum kan inte vara före startdatum"
+
+msgid "Unable to find documentation."
+msgstr "Kan inte hitta dokumentation."
+
+msgid "Data was saved successfully"
+msgstr "Data sparades"
+
+msgid "Data was saved/reloaded successfully"
+msgstr "Data sparades/laddades om"
+
+msgid "Save cancelled"
+msgstr "Spara avbröts"
+
+msgid "Data was already saved"
+msgstr "Data var redan sparad"
+
+msgid "Cannot open data file"
+msgstr "Kan inte öppna datafil"
+
+msgid "Data was reloaded successfully"
+msgstr "Data laddades om"
+
+msgid "Date was merged/reloaded successfully"
+msgstr "Datum slogs ihop/laddades om"
+
+msgid "Reload cancelled"
+msgstr "Omladdning avbröts"
+
+msgid "Data was already loaded"
+msgstr "Data var redan laddad"
+
+msgid "Export to (i)cal or (p)cal format?"
+msgstr "Exportera till (i)cal eller (p)cal-format?"
+
+msgid "[ip]"
+msgstr "[ip]"
+
+msgid "There are unsaved changes. Should they be saved?"
+msgstr "Det finns osparade ändringar. Ska de sparas?"
+
+msgid "Do you really want to quit?"
+msgstr "Vill du verkligen avsluta?"
+
+msgid "Command: [ h(elp) | w(rite)(!) | q(uit)(!) | wq(!) | n(ext) | p(rev) ]"
+msgstr "Kommando: [ h(elp) | w(rite)(!) | q(uit)(!) | wq(!) | n(ext) | p(rev) ]"
+
+msgid "Read-only mode - use w!"
+msgstr "Skrivskyddat läge - använd w!"
+
+msgid "There are unsaved changes - use w or q!"
+msgstr "Det finns osparade ändringar - använd w eller q!"
+
+#, c-format
+msgid "Help topic does not exist: %s"
+msgstr "Hjälpämnet finns inte: %s"
+
+msgid "Select a repeating item in the appointments panel."
+msgstr "Välj ett återkommande objekt i tidspanelen."
+
+msgid "Not a repeating item."
+msgstr "Inte ett återkommande objekt."
+
+msgid "Last occurrence."
+msgstr "Sista tillfället."
+
+msgid "First occurrence."
+msgstr "Första tillfället."
+
+#, c-format
+msgid "No such command: %s"
+msgstr "Inget sådant kommando: %s"
+
+msgid "unknown color"
+msgstr "okänd färg"
+
+msgid "failed to open configuration file"
+msgstr "kunde inte öppna konfigurationsfil"
+
+#, c-format
+msgid "invalid configuration directive: \"%s\""
+msgstr "ogiltig konfigurationsdirektiv: \"%s\""
+
+msgid ""
+"Pre-3.0.0 configuration file format detected, please upgrade running "
+"`calcurse-upgrade`."
+msgstr ""
+"Konfigurationsfilformat före 3.0.0 upptäckt, uppgradera genom att köra "
+"`calcurse-upgrade`."
+
+#, c-format
+msgid "unknown user option: \"%s\" (ignored)"
+msgstr "okänt användaralternativ: \"%s\" (ignoreras)"
+
+#, c-format
+msgid "invalid option format: \"%s\" (ignored)"
+msgstr "ogiltigt alternativformat: \"%s\" (ignoreras)"
+
+#, c-format
+msgid "unknown user option: \"%s\" (disabled)"
+msgstr "okänt användaralternativ: \"%s\" (inaktiverat)"
+
+#, c-format
+msgid "invalid option format: \"%s\" (disabled)"
+msgstr "ogiltigt alternativformat: \"%s\" (inaktiverat)"
+
+msgid "layout configuration"
+msgstr "layoutkonfiguration"
+
+msgid "Foreground"
+msgstr "Förgrund"
+
+msgid "Background"
+msgstr "Bakgrund"
+
+msgid "(terminal's default)"
+msgstr "(terminalens standard)"
+
+msgid "color theme"
+msgstr "färgtema"
+
+msgid "(if set to YES, compact panels are used)"
+msgstr "(om satt till JA används kompakta paneler)"
+
+msgid "Calendar"
+msgstr "Kalender"
+
+msgid "Appointments"
+msgstr "Tider"
+
+msgid "TODO"
+msgstr "ATT GÖRA"
+
+msgid "(specifies the panel that is selected by default)"
+msgstr "(anger panelen som är vald som standard)"
+
+msgid "monthly"
+msgstr "månadsvis"
+
+msgid "weekly"
+msgstr "veckovis"
+
+msgid "(preferred calendar display)"
+msgstr "(föredragen kalendervisning)"
+
+msgid "show completed"
+msgstr "visa slutförda"
+
+msgid "hide completed"
+msgstr "dölj slutförda"
+
+msgid "(preferred todo display)"
+msgstr "(föredragen uppgiftsvisning)"
+
+msgid "(horizontal line above the day heading)"
+msgstr "(vågrät linje ovanför dagsrubriken)"
+
+msgid "(empty line between events and appointments)"
+msgstr "(tom rad mellan händelser och tider)"
+
+msgid "(each day ends with an empty line)"
+msgstr "(varje dag avslutas med en tom rad)"
+
+msgid "(insert an empty line after each appointment)"
+msgstr "(infoga en tom rad efter varje tid)"
+
+msgid "(text for a day without events and appointments)"
+msgstr "(text för en dag utan händelser och tider)"
+
+msgid "(display more than one day in the appointments panel)"
+msgstr "(visa mer än en dag i tidspanelen)"
+
+msgid "(if set to YES, automatic save is done when quitting)"
+msgstr "(om satt till JA sparas automatiskt vid avslut)"
+
+msgid "(run the garbage collector when quitting)"
+msgstr "(kör garbage collector vid avslut)"
+
+msgid "(if not null, automatically save data every 'periodic_save' minutes)"
+msgstr "(om inte null, spara data automatiskt var 'periodic_save' minut)"
+
+msgid "(if YES, system events are turned into appointments (or else deleted))"
+msgstr "(om JA omvandlas systemhändelser till tider (annars tas de bort))"
+
+msgid "(if set to YES, confirmation is required before quitting)"
+msgstr "(om satt till JA krävs bekräftelse före avslut)"
+
+msgid "(if set to YES, confirmation is required before deleting an event)"
+msgstr "(om satt till JA krävs bekräftelse före borttagning av händelse)"
+
+msgid "(specifies the first day of week in the calendar view)"
+msgstr "(anger första veckodagen i kalendervyn)"
+
+msgid "(Format of the date to be displayed in non-interactive mode)"
+msgstr "(Format på datum som visas i icke-interaktivt läge)"
+
+msgid "(Format to be used when entering a date: "
+msgstr "(Format som används vid inmatning av datum:"
+
+msgid "to the left"
+msgstr "till vänster"
+
+msgid "in the middle"
+msgstr "i mitten"
+
+msgid "to the right"
+msgstr "till höger"
+
+msgid "(position of the heading in the appointments panel)"
+msgstr "(position för rubriken i tidspanelen)"
+
+msgid "(Format of the date displayed in the appointments panel)"
+msgstr "(Format på datum som visas i tidspanelen)"
+
+msgid "(Format of the time displayed in the appointments panel)"
+msgstr "(Format på tid som visas i tidspanelen)"
+
+msgid "Enter a text string (an empty string for the default text)"
+msgstr "Ange en textsträng (en tom sträng för standardtext)"
+
+msgid "Enter the date format (see 'man 3 strftime' for possible formats) "
+msgstr "Ange datumformat (se 'man 3 strftime' för möjliga format) "
+
+msgid "Enter the time format (see 'man 3 strftime' for possible formats) "
+msgstr "Ange tidsformat (se 'man 3 strftime' för möjliga format) "
+
+msgid "Enter the date format: "
+msgstr "Ange datumformat: "
+
+msgid "Enter the delay, in minutes, between automatic saves (0 to disable) "
+msgstr "Ange fördröjning i minuter mellan automatiska sparanden (0 för att inaktivera) "
+
+msgid "general options"
+msgstr "allmänna alternativ"
+
+msgid "Undefined option!"
+msgstr "Odefinierat alternativ!"
+
+msgid "UNDEFINED"
+msgstr "ODEFINIERAT"
+
+msgid "keys configuration"
+msgstr "tangentkonfiguration"
+
+msgid "Press the key you want to assign to:"
+msgstr "Tryck på tangenten du vill tilldela till:"
+
+#, c-format
+msgid "The key '%s' is already used for %s. Choose another one."
+msgstr "Tangenten '%s' används redan för %s. Välj en annan."
+
+msgid "Some actions are left undefined!"
+msgstr "Vissa åtgärder är odefinierade!"
+
+msgid ""
+"Sorry, colors are not supported by your terminal\n"
+"(Press [ENTER] to continue)"
+msgstr ""
+"Tyvärr, färger stöds inte av din terminal\n"
+"(Tryck [ENTER] för att fortsätta)"
+
+#, c-format
+msgid "Could not save %s."
+msgstr "Kunde inte spara %s."
+
+msgid "unknown item type"
+msgstr "okänd objekttyp"
+
+msgid "Note:"
+msgstr "Anteckning:"
+
+msgid "Event:"
+msgstr "Händelse:"
+
+msgid "Appointment:"
+msgstr "Tid:"
+
+#, c-format
+msgid "Could not stop daemon properly: %s\n"
+msgstr "Kunde inte stoppa daemon korrekt: %s\n"
+
+#, c-format
+msgid "terminated at %s with signal %d\n"
+msgstr "avslutades %s med signal %d\n"
+
+#, c-format
+msgid "Could not remove daemon lock file: %s\n"
+msgstr "Kunde inte ta bort daemonlåsfil: %s\n"
+
+#, c-format
+msgid "Could not fork: %s\n"
+msgstr "Kunde inte forka: %s\n"
+
+#, c-format
+msgid "Could not detach from the controlling terminal: %s\n"
+msgstr "Kunde inte koppla loss från kontrollterminalen: %s\n"
+
+#, c-format
+msgid "Could not change working directory: %s\n"
+msgstr "Kunde inte byta arbetskatalog: %s\n"
+
+msgid "Cannot daemonize, aborting\n"
+msgstr "Kan inte göras till daemon, avbryter\n"
+
+msgid "Could not set lock file\n"
+msgstr "Kunde inte skapa låsfil\n"
+
+#, c-format
+msgid "Could not access \"%s\": %s\n"
+msgstr "Kunde inte komma åt \"%s\": %s\n"
+
+#, c-format
+msgid "started at %s\n"
+msgstr "startade %s\n"
+
+msgid "error loading next appointment\n"
+msgstr "fel vid laddning av nästa tid\n"
+
+#, c-format
+msgid "launching notification at %s for: \"%s\"\n"
+msgstr "startar avisering %s för: \"%s\"\n"
+
+msgid "error while sending notification\n"
+msgstr "fel vid sändning av avisering\n"
+
+#, c-format
+msgid "sleeping at %s for %d second\n"
+msgid_plural "sleeping at %s for %d seconds\n"
+msgstr[0] "sover %s i %d sekund\n"
+msgstr[1] "sover %s i %d sekunder\n"
+
+#, c-format
+msgid "awakened at %s\n"
+msgstr "väcktes %s\n"
+
+#, c-format
+msgid "Could not stop calcurse daemon: %s\n"
+msgstr "Kunde inte stoppa calcurse-daemon: %s\n"
+
+msgid "illegal date in event"
+msgstr "ogiltigt datum i händelse"
+
+msgid "date error in event\n"
+msgstr "datumfel i händelse\n"
+
+msgid "Internal error: line too long"
+msgstr "Internt fel: rad för lång"
+
+msgid "out of memory"
+msgstr "minnet slut"
+
+msgid "unknown ical type"
+msgstr "okänd ical-typ"
+
+msgid "(empty)"
+msgstr "(tom)"
+
+msgid "ical_store_event: out of memory"
+msgstr "ical_store_event: minnet slut"
+
+msgid "need DTSTART to determine event type."
+msgstr "behöver DTSTART för att fastställa händelsetyp."
+
+msgid "malformed recurrence line."
+msgstr "felaktig återkomstradering."
+
+msgid "frequency not set in rrule."
+msgstr "frekvens inte angiven i rrule."
+
+msgid "frequency absent in rrule."
+msgstr "frekvens saknas i rrule."
+
+msgid "rrule frequency not supported."
+msgstr "rrule-frekvens stöds inte."
+
+msgid "invalid interval."
+msgstr "ogiltigt intervall."
+
+msgid "either until or count."
+msgstr "antingen until eller count."
+
+msgid "missing until value."
+msgstr "saknat until-värde."
+
+msgid "invalid until format."
+msgstr "ogiltigt until-format."
+
+msgid "invalid count value."
+msgstr "ogiltigt count-värde."
+
+msgid "invalid bymonth list."
+msgstr "ogiltig bymonth-lista."
+
+msgid "invalid bymonthday list."
+msgstr "ogiltig bymonthday-lista."
+
+msgid "invalid byday list."
+msgstr "ogiltig byday-lista."
+
+msgid "invalid exception date value type."
+msgstr "ogiltig typ av undantagsdatumvärde."
+
+msgid "malformed exceptions line."
+msgstr "felaktig undantagsrad."
+
+msgid "invalid exception."
+msgstr "ogiltigt undantag."
+
+#, c-format
+msgid "malformed %s line."
+msgstr "felaktig %s-rad."
+
+#, c-format
+msgid "malformed %s."
+msgstr "felaktig %s."
+
+msgid "malformed summary line."
+msgstr "felaktig sammanfattningsrad."
+
+msgid "malformed summary."
+msgstr "felaktig sammanfattning."
+
+msgid "item start date not defined."
+msgstr "objektets startdatum inte definierat."
+
+msgid "malformed start time line."
+msgstr "felaktig starttidsrad."
+
+msgid "invalid or malformed event start time."
+msgstr "ogiltig eller felaktig händelsestarttid."
+
+msgid "invalid end time value type."
+msgstr "ogiltig typ av sluttidsvärde."
+
+msgid "malformed end time line."
+msgstr "felaktig sluttidsrad."
+
+msgid "malformed event end time."
+msgstr "felaktig händelsesluttid."
+
+msgid "end must be later than start."
+msgstr "slut måste vara efter start."
+
+msgid "either end or duration."
+msgstr "antingen slut eller varaktighet."
+
+msgid "malformed duration line."
+msgstr "felaktig varaktighetsrad."
+
+msgid "invalid duration."
+msgstr "ogiltig varaktighet."
+
+msgid "exception date, but no recurrence rule."
+msgstr "undantagsdatum men ingen återkommande regel."
+
+msgid "multi-day event changed to one-day event"
+msgstr "flerdagarshändelse ändrad till endagarshändelse"
+
+#, c-format
+msgid "Location: %s"
+msgstr "Plats: %s"
+
+#, c-format
+msgid "Comment: %s"
+msgstr "Kommentar: %s"
+
+#, c-format
+msgid "rrule does not match start day (%s)."
+msgstr "rrule matchar inte startdag (%s)."
+
+msgid "item could not be identified."
+msgstr "objektet kunde inte identifieras."
+
+msgid "only one description allowed."
+msgstr "endast en beskrivning tillåten."
+
+msgid "only one location allowed."
+msgstr "endast en plats tillåten."
+
+msgid "The ical file seems to be malformed. The end of item was not found."
+msgstr "ical-filen verkar vara felaktig. Slutet på objektet hittades inte."
+
+msgid "could not retrieve item summary."
+msgstr "kunde inte hämta objektsammanfattning."
+
+msgid "item priority is invalid (must be between 0 and 9)."
+msgstr "objektprioritet är ogiltig (måste vara mellan 0 och 9)."
+
+msgid "Warning: ical header malformed or wrong version number. Aborting..."
+msgstr "Varning: ical-huvud felaktigt eller fel versionsnummer. Avbryter..."
+
+msgid "Choose the file used to export calcurse data:"
+msgstr "Välj filen som ska användas för att exportera calcurse-data:"
+
+msgid "The file cannot be accessed, please enter another file name."
+msgstr "Filen kan inte nås, ange ett annat filnamn."
+
+msgid "Press [ENTER] to continue."
+msgstr "Tryck [ENTER] för att fortsätta."
+
+#, c-format
+msgid "Failed to open \"%s\", - %s\n"
+msgstr "Misslyckades med att öppna \"%s\", - %s\n"
+
+msgid "Failed to build message\n"
+msgstr "Misslyckades med att bygga meddelande\n"
+
+#, c-format
+msgid "Failed to print message \"%s\"\n"
+msgstr "Misslyckades med att skriva ut meddelande \"%s\"\n"
+
+#, c-format
+msgid "Failed to close \"%s\" - %s\n"
+msgstr "Misslyckades med att stänga \"%s\" - %s\n"
+
+#, c-format
+msgid "%s does not exist"
+msgstr "%s finns inte"
+
+msgid "Data files have changed and will be overwritten:"
+msgstr "Datafiler har ändrats och kommer att skrivas över:"
+
+msgid "(c)ontinue"
+msgstr "(c) fortsätt"
+
+msgid "(m)erge"
+msgstr "(m) slå ihop"
+
+msgid "c(a)ncel"
+msgstr "(a)vbryt"
+
+msgid "[cma]"
+msgstr "[cma]"
+
+msgid "failed to open appointment file"
+msgstr "kunde inte öppna tidsfil"
+
+msgid "syntax error in the item date"
+msgstr "syntaxfel i objektets datum"
+
+msgid "no event nor appointment found"
+msgstr "ingen händelse eller tid hittades"
+
+msgid "syntax error in item time or duration"
+msgstr "syntaxfel i objekttid eller varaktighet"
+
+msgid "syntax error in item identifier"
+msgstr "syntaxfel i objektidentifierare"
+
+msgid "wrong format in the appointment or event"
+msgstr "fel format i tiden eller händelsen"
+
+msgid "syntax error in item repetition"
+msgstr "syntaxfel i objektupprepning"
+
+msgid "syntax error in until date"
+msgstr "syntaxfel i until-datum"
+
+msgid "until date error"
+msgstr "until-datumfel"
+
+msgid "BYMONTHDAY illegal with WEEKLY"
+msgstr "BYMONTHDAY ogiltigt med WEEKLY"
+
+msgid "missing end of recurrence"
+msgstr "saknat slut på återkomst"
+
+msgid "syntax error in item state"
+msgstr "syntaxfel i objektstatus"
+
+msgid "failed to open todo file"
+msgstr "kunde inte öppna uppgiftsfil"
+
+msgid "Screen data have changed and will be lost:"
+msgstr "Skärmdata har ändrats och kommer att förloras:"
+
+msgid "failed to open key file"
+msgstr "kunde inte öppna tangentfil"
+
+msgid "Could not read key label"
+msgstr "Kunde inte läsa tangentetikett"
+
+#, c-format
+msgid "Key label not recognized: \"%s\""
+msgstr "Tangentetikett känns inte igen: \"%s\""
+
+#, c-format
+msgid "No keys assigned to \"%s\"."
+msgstr "Inga tangenter tilldelade till \"%s\"."
+
+#, c-format
+msgid "Keyname not recognized: \"%s\""
+msgstr "Tangentnamn känns inte igen: \"%s\""
+
+#, c-format
+msgid "\"%s\" assigned twice: \"%s\"."
+msgstr "\"%s\" tilldelad två gånger: \"%s\"."
+
+#, c-format
+msgid ""
+"Action \"%s\" absent, but default key \"%s\" assigned to another action."
+msgstr ""
+"Åtgärd \"%s\" saknas, men standardtangent \"%s\" tilldelad en annan åtgärd."
+
+msgid "Errors in the keys file."
+msgstr "Fel i tangentfilen."
+
+msgid "Remove offending line(s) from the keys file, aborting..."
+msgstr "Ta bort felaktiga rader från tangentfilen, avbryter..."
+
+msgid "Some actions do not have any associated key bindings!"
+msgstr "Vissa åtgärder har inga tilldelade tangentbindningar!"
+
+#, c-format
+msgid "FATAL ERROR: could not create %s: %s\n"
+msgstr "ALLVARLIGT FEL: kunde inte skapa %s: %s\n"
+
+msgid "The data were successfully exported"
+msgstr "Data exporterades"
+
+msgid "Press [ENTER] to continue"
+msgstr "Tryck [ENTER] för att fortsätta"
+
+msgid "unknown export type"
+msgstr "okänd exporttyp"
+
+msgid "wrong export mode"
+msgstr "fel exportläge"
+
+msgid "Enter the file name to import data from:"
+msgstr "Ange filnamnet att importera data från:"
+
+#, c-format
+msgid "Import process report: %04d lines read"
+msgstr "Importprocessrapport: %04d rader lästa"
+
+msgid "unknown import type"
+msgstr "okänd importtyp"
+
+msgid "FATAL ERROR: the input file cannot be accessed, Aborting..."
+msgstr "ALLVARLIGT FEL: indatafilen kan inte nås. Avbryter..."
+
+msgid "FATAL ERROR: wrong import mode"
+msgstr "ALLVARLIGT FEL: fel importläge"
+
+#, c-format
+msgid "%d app"
+msgid_plural "%d apps"
+msgstr[0] "%d tid"
+msgstr[1] "%d tider"
+
+#, c-format
+msgid "%d event"
+msgid_plural "%d events"
+msgstr[0] "%d händelse"
+msgstr[1] "%d händelser"
+
+#, c-format
+msgid "%d todo"
+msgid_plural "%d todos"
+msgstr[0] "%d uppgift"
+msgstr[1] "%d uppgifter"
+
+#, c-format
+msgid "%d skipped"
+msgstr "%d hoppades över"
+
+msgid "Some items could not be imported."
+msgstr "Vissa objekt kunde inte importeras."
+
+msgid "Warning: could not open temporary log file, Aborting..."
+msgstr "Varning: kunde inte öppna temporär loggfil. Avbryter..."
+
+msgid "Warning: could not create temporary log file, Aborting..."
+msgstr "Varning: kunde inte skapa temporär loggfil. Avbryter..."
+
+msgid "No log file to display!"
+msgstr "Ingen loggfil att visa!"
+
+#, c-format
+msgid "See %s for details."
+msgstr "Se %s för detaljer."
+
+msgid "Display log file?"
+msgstr "Visa loggfil?"
+
+#, c-format
+msgid "Warning: could not erase temporary log file %s, Aborting..."
+msgstr "Varning: kunde inte radera temporär loggfil %s. Avbryter..."
+
+msgid "Invalid delay"
+msgstr "Ogiltig fördröjning"
+
+msgid ""
+"Periodic save cancelled. Data files have changed. Save and merge "
+"interactively"
+msgstr ""
+"Periodiskt sparande avbröts. Datafiler har ändrats. Spara och slå ihop "
+"interaktivt"
+
+#, c-format
+msgid ""
+"\n"
+"WARNING: it seems that another calcurse instance is already running.\n"
+"If this is not the case, please remove the following lock file: \n"
+"\"%s\"\n"
+"and restart calcurse.\n"
+msgstr ""
+"\n"
+"VARNING: det verkar som att en annan calcurse-instans redan körs.\n"
+"Om så inte är fallet, ta bort följande låsfil: \n"
+"\"%s\"\n"
+"och starta om calcurse.\n"
+
+msgid "Cancel"
+msgstr "Avbryt"
+
+msgid "Select"
+msgstr "Välj"
+
+msgid "Credits"
+msgstr "Krediter"
+
+msgid "Help"
+msgstr "Hjälp"
+
+msgid "Quit"
+msgstr "Avsluta"
+
+msgid "Save"
+msgstr "Spara"
+
+msgid "Reload"
+msgstr "Ladda om"
+
+msgid "Copy"
+msgstr "Kopiera"
+
+msgid "Paste"
+msgstr "Klistra in"
+
+msgid "Chg Win"
+msgstr "Byt Fön"
+
+msgid "Prev Win"
+msgstr "Föreg Fön"
+
+msgid "Import"
+msgstr "Importera"
+
+msgid "Export"
+msgstr "Exportera"
+
+msgid "Go to"
+msgstr "Gå till"
+
+msgid "OtherCmd"
+msgstr "AndraKom"
+
+msgid "Config"
+msgstr "Konfig"
+
+msgid "Redraw"
+msgstr "Rita om"
+
+msgid "Add Appt"
+msgstr "Lägg tid"
+
+msgid "Add Todo"
+msgstr "Lägg uppg"
+
+msgid "-1 Day"
+msgstr "-1 Dag"
+
+msgid "+1 Day"
+msgstr "+1 Dag"
+
+msgid "-1 Week"
+msgstr "-1 Vecka"
+
+msgid "+1 Week"
+msgstr "+1 Vecka"
+
+msgid "-1 Month"
+msgstr "-1 Månad"
+
+msgid "+1 Month"
+msgstr "+1 Månad"
+
+msgid "-1 Year"
+msgstr "-1 År"
+
+msgid "+1 Year"
+msgstr "+1 År"
+
+msgid "Nxt View"
+msgstr "Nästa Vy"
+
+msgid "Prv View"
+msgstr "Förra Vy"
+
+msgid "Today"
+msgstr "Idag"
+
+msgid "Command"
+msgstr "Kommando"
+
+msgid "Right"
+msgstr "Höger"
+
+msgid "Left"
+msgstr "Vänster"
+
+msgid "Down"
+msgstr "Ner"
+
+msgid "Up"
+msgstr "Upp"
+
+msgid "beg Week"
+msgstr "Veck börj"
+
+msgid "end Week"
+msgstr "Veck slut"
+
+msgid "Add Item"
+msgstr "Lägg till"
+
+msgid "Del Item"
+msgstr "Ta bort"
+
+msgid "Edit Itm"
+msgstr "Redigera"
+
+msgid "View"
+msgstr "Visa"
+
+msgid "Pipe"
+msgstr "Pipe"
+
+msgid "Flag Itm"
+msgstr "Markera"
+
+msgid "Repeat"
+msgstr "Upprepa"
+
+msgid "EditNote"
+msgstr "RedAnt"
+
+msgid "ViewNote"
+msgstr "VisaAnt"
+
+msgid "Prio.+"
+msgstr "Prior.+"
+
+msgid "Prio.-"
+msgstr "Prior.-"
+
+msgid ""
+"#\n"
+"# Calcurse keys configuration file\n"
+"#\n"
+"# In this file the keybindings used by Calcurse are defined.\n"
+"# It is generated automatically by Calcurse and is maintained\n"
+"# via the key configuration menu of the interactive user\n"
+"# interface. It should not be edited directly.\n"
+msgstr ""
+"#\n"
+"# Calcurse tangentkonfigurationsfil\n"
+"#\n"
+"# I denna fil definieras tangentbindningarna som används av Calcurse.\n"
+"# Den genereras automatiskt av Calcurse och underhålls\n"
+"# via tangentkonfigurationsmenyn i det interaktiva\n"
+"# användargränssnittet. Den bör inte redigeras direkt.\n"
+
+msgid "FATAL ERROR: could not create default keys file."
+msgstr "ALLVARLIGT FEL: kunde inte skapa standardtangentfil."
+
+msgid "FATAL ERROR: key value out of bounds"
+msgstr "ALLVARLIGT FEL: tangentvärde utanför gränser"
+
+msgid "General"
+msgstr "Allmänt"
+
+msgid "Layout"
+msgstr "Layout"
+
+msgid "Sidebar"
+msgstr "Sidorad"
+
+msgid "Color"
+msgstr "Färg"
+
+msgid "Notify"
+msgstr "Avisering"
+
+msgid "Keys"
+msgstr "Tangenter"
+
+msgid "Unknown"
+msgstr "Okänd"
+
+msgid "Cancel the ongoing action."
+msgstr "Avbryt den pågående åtgärden."
+
+msgid "Select the highlighted item."
+msgstr "Välj det markerade objektet."
+
+msgid "Print general information about calcurse's authors, license, etc."
+msgstr "Skriv ut allmän information om calcurse's författare, licens, etc."
+
+msgid "Display hints whenever some help screens are available."
+msgstr "Visa tips när hjälpskärmar finns tillgängliga."
+
+msgid "Exit from the current menu, or quit calcurse."
+msgstr "Avsluta den aktuella menyn, eller avsluta calcurse."
+
+msgid "Save calcurse data."
+msgstr "Spara calcurse-data."
+
+msgid "Reload appointments and todo items."
+msgstr "Ladda om tider och uppgifter."
+
+msgid "Copy the item that is currently selected."
+msgstr "Kopiera det markerade objektet."
+
+msgid "Paste an item at the current position."
+msgstr "Klistra in ett objekt på aktuell position."
+
+msgid "Select next panel in calcurse main screen."
+msgstr "Välj nästa panel i calcurse huvudskärm."
+
+msgid "Select previous panel in calcurse main screen."
+msgstr "Välj föregående panel i calcurse huvudskärm."
+
+msgid "Import data from an external file."
+msgstr "Importera data från en extern fil."
+
+msgid "Export data to a new file format."
+msgstr "Exportera data till ett nytt filformat."
+
+msgid "Select the day to go to."
+msgstr "Välj dagen att gå till."
+
+msgid "Show next possible actions inside status bar."
+msgstr "Visa nästa möjliga åtgärder i statusraden."
+
+msgid "Enter the configuration menu."
+msgstr "Gå in i konfigurationsmenyn."
+
+msgid "Redraw calcurse's screen."
+msgstr "Rita om calcurse-skärmen."
+
+msgid "Add an appointment, whichever panel is currently selected."
+msgstr "Lägg till en tid, oavsett vilken panel som är vald."
+
+msgid "Add a todo item, whichever panel is currently selected."
+msgstr "Lägg till en uppgift, oavsett vilken panel som är vald."
+
+msgid ""
+"Move to previous day in calendar, whichever panel is currently selected."
+msgstr ""
+"Gå till föregående dag i kalendern, oavsett vilken panel som är vald."
+
+msgid "Move to next day in calendar, whichever panel is currently selected."
+msgstr ""
+"Gå till nästa dag i kalendern, oavsett vilken panel som är vald."
+
+msgid ""
+"Move to previous week in calendar, whichever panel is currently selected"
+msgstr ""
+"Gå till föregående vecka i kalendern, oavsett vilken panel som är vald"
+
+msgid "Move to next week in calendar, whichever panel is currently selected."
+msgstr ""
+"Gå till nästa vecka i kalendern, oavsett vilken panel som är vald."
+
+msgid ""
+"Move to previous month in calendar, whichever panel is currently selected"
+msgstr ""
+"Gå till föregående månad i kalendern, oavsett vilken panel som är vald"
+
+msgid "Move to next month in calendar, whichever panel is currently selected."
+msgstr ""
+"Gå till nästa månad i kalendern, oavsett vilken panel som är vald."
+
+msgid ""
+"Move to previous year in calendar, whichever panel is currently selected"
+msgstr ""
+"Gå till föregående år i kalendern, oavsett vilken panel som är vald"
+
+msgid "Move to next year in calendar, whichever panel is currently selected."
+msgstr ""
+"Gå till nästa år i kalendern, oavsett vilken panel som är vald."
+
+msgid "Scroll window down (e.g. when displaying text inside a popup window)."
+msgstr ""
+"Rulla fönster neråt (t.ex. vid visning av text i ett popup-fönster)."
+
+msgid "Scroll window up (e.g. when displaying text inside a popup window)."
+msgstr ""
+"Rulla fönster uppåt (t.ex. vid visning av text i ett popup-fönster)."
+
+msgid "Go to today, whichever panel is selected."
+msgstr "Gå till idag, oavsett vilken panel som är vald."
+
+msgid "Enter command mode."
+msgstr "Gå in i kommandoläge."
+
+msgid "Move to the right."
+msgstr "Flytta åt höger."
+
+msgid "Move to the left."
+msgstr "Flytta åt vänster."
+
+msgid "Move down."
+msgstr "Flytta ner."
+
+msgid "Move up."
+msgstr "Flytta upp."
+
+msgid ""
+"Select the first day of the current week when inside the calendar panel."
+msgstr ""
+"Välj första dagen i aktuell vecka när du är i kalenderpanelen."
+
+msgid "Select the last day of the current week when inside the calendar panel."
+msgstr ""
+"Välj sista dagen i aktuell vecka när du är i kalenderpanelen."
+
+msgid "Add an item to the currently selected panel."
+msgstr "Lägg till ett objekt i den valda panelen."
+
+msgid "Delete the currently selected item."
+msgstr "Ta bort det markerade objektet."
+
+msgid "Edit the currently seleted item."
+msgstr "Redigera det markerade objektet."
+
+msgid "Display the currently selected item inside a popup window."
+msgstr "Visa det markerade objektet i ett popup-fönster."
+
+msgid "Flag the currently selected item as important."
+msgstr "Markera det markerade objektet som viktigt."
+
+msgid "Repeat an item"
+msgstr "Upprepa ett objekt"
+
+msgid "Pipe the currently selected item to an external program."
+msgstr "Pipa det markerade objektet till ett externt program."
+
+msgid "Attach (or edit if one exists) a note to the currently selected item"
+msgstr "Bifoga (eller redigera om en finns) en anteckning till det markerade objektet"
+
+msgid "View the note attached to the currently selected item."
+msgstr "Visa anteckningen som är bifogad till det markerade objektet."
+
+msgid "Raise a task priority inside the todo panel."
+msgstr "Höj en uppgifts prioritet i uppgiftspanelen."
+
+msgid "Lower a task priority inside the todo panel."
+msgstr "Sänk en uppgifts prioritet i uppgiftspanelen."
+
+msgid "FATAL ERROR: null file pointer."
+msgstr "ALLVARLIGT FEL: null-filpekare."
+
+#, c-format
+msgid "Default key(s) assigned to %d action%s."
+msgstr "Standardtangent(er) tilldelade till %d %s."
+
+msgid "xmalloc: zero size"
+msgstr "xmalloc: noll storlek"
+
+msgid "xmalloc: out of memory"
+msgstr "xmalloc: minnet slut"
+
+msgid "xcalloc: zero size"
+msgstr "xcalloc: noll storlek"
+
+msgid "xcalloc: overflow"
+msgstr "xcalloc: spill"
+
+msgid "xcalloc: out of memory"
+msgstr "xcalloc: minnet slut"
+
+msgid "xrealloc: zero size"
+msgstr "xrealloc: noll storlek"
+
+msgid "xrealloc: overflow"
+msgstr "xrealloc: spill"
+
+msgid "xrealloc: out of memory"
+msgstr "xrealloc: minnet slut"
+
+msgid "could not allocate memory to store block info"
+msgstr "kunde inte allokera minne för blockinformation"
+
+msgid "Block not found"
+msgstr "Block hittades inte"
+
+#, c-format
+msgid "overflow at %s"
+msgstr "spill vid %s"
+
+#, c-format
+msgid "dbg_free: null pointer at %s"
+msgstr "dbg_free: nullpekare vid %s"
+
+#, c-format
+msgid "block seems already freed at %s"
+msgstr "block verkar redan frigjort vid %s"
+
+#, c-format
+msgid "corrupt block header at %s"
+msgstr "korrupt blockhuvud vid %s"
+
+#, c-format
+msgid "corrupt block end at %s, (end = %u, should be %d)"
+msgstr "korrupt blockslut vid %s, (slut = %u, bör vara %d)"
+
+msgid "---==== MEMORY BLOCK ====----------------\n"
+msgstr "---==== MINNESBLOCK ====----------------\n"
+
+#, c-format
+msgid "            id: %u\n"
+msgstr "            id: %u\n"
+
+#, c-format
+msgid "          size: %u\n"
+msgstr "          storlek: %u\n"
+
+#, c-format
+msgid "  allocated in: %s\n"
+msgstr "  allokerad i: %s\n"
+
+msgid "-----------------------------------------\n"
+msgstr "-----------------------------------------\n"
+
+msgid "+------------------------------+\n"
+msgstr "+------------------------------+\n"
+
+msgid "| calcurse memory usage report |\n"
+msgstr "| calcurse minnesanvändningsrapport |\n"
+
+#, c-format
+msgid "  number of calls: %u\n"
+msgstr "  antal anrop: %u\n"
+
+#, c-format
+msgid " allocated blocks: %u\n"
+msgstr " allokerade block: %u\n"
+
+#, c-format
+msgid "   unfreed blocks: %u\n"
+msgstr "   icke-frigjorda block: %u\n"
+
+#, c-format
+msgid "Warning: could not open %s, Aborting..."
+msgstr "Varning: kunde inte öppna %s, avbryter..."
+
+msgid "(if set to YES, notify-bar will be displayed)"
+msgstr "(om satt till JA visas aviseringsfältet)"
+
+msgid "(Format of the date to be displayed inside notify-bar)"
+msgstr "(Format på datum som visas i aviseringsfältet)"
+
+msgid "(Format of the time to be displayed inside notify-bar)"
+msgstr "(Format på tid som visas i aviseringsfältet)"
+
+msgid ""
+"(Warn user if an appointment is within next 'notify-bar_warning' seconds)"
+msgstr ""
+"(Varna användaren om en tid är inom 'notify-bar_warning' sekunder)"
+
+msgid "(Command used to notify user of an upcoming appointment)"
+msgstr "(Kommando som används för att avisera användaren om en kommande tid)"
+
+msgid "(Notify all appointments instead of flagged ones only)"
+msgstr "(Avisera alla tider istället för endast markerade)"
+
+msgid "(Run in background to get notifications after exiting)"
+msgstr "(Kör i bakgrunden för att få aviseringar efter avslut)"
+
+msgid "(Log activity when running in background)"
+msgstr "(Logga aktivitet vid körning i bakgrunden)"
+
+msgid "Enter the number of seconds (0 not to be warned before an appointment)"
+msgstr "Ange antal sekunder (0 för att inte varnas före en tid)"
+
+msgid "Enter the notification command "
+msgstr "Ange aviseringskommando "
+
+msgid "notification options"
+msgstr "aviseringsalternativ"
+
+msgid "incoherent repetition type"
+msgstr "inkoherent upprepningstyp"
+
+msgid "System event"
+msgstr "Systemhändelse"
+
+msgid "unknown character"
+msgstr "okänt tecken"
+
+#, c-format
+msgid "recurrence error: not on start day (%s)"
+msgstr "återkomstfel: inte på startdag (%s)"
+
+msgid "illegel date in event"
+msgstr "ogiltigt datum i händelse"
+
+msgid "date error in event"
+msgstr "datumfel i händelse"
+
+msgid "month day is zero"
+msgstr "månadsdag är noll"
+
+msgid "no daily frequency check"
+msgstr "ingen daglig frekvenskontroll"
+
+msgid "illegal BYDAY value"
+msgstr "ogiltigt BYDAY-värde"
+
+msgid "event not found"
+msgstr "händelse hittades inte"
+
+msgid "appointment not found"
+msgstr "tid hittades inte"
+
+msgid "syntax error in bymonthday"
+msgstr "syntaxfel i bymonthday"
+
+msgid "syntax error in bywday"
+msgstr "syntaxfel i bywday"
+
+msgid "syntax error in bymonth"
+msgstr "syntaxfel i bymonth"
+
+msgid "illegal bymonth value"
+msgstr "ogiltigt bymonth-värde"
+
+msgid "syntax error in item date"
+msgstr "syntaxfel i objektets datum"
+
+msgid "date error in item exception"
+msgstr "datumfel i objektundantag"
+
+#, c-format
+msgid "Error setting signal #%d : %s\n"
+msgstr "Fel vid inställning av signal #%d : %s\n"
+
+msgid "no note attached"
+msgstr "ingen anteckning bifogad"
+
+msgid "no such todo"
+msgstr "ingen sådan uppgift"
+
+msgid "ERROR setting first day of week"
+msgstr "FEL vid inställning av första veckodagen"
+
+msgid "The day you entered is not valid"
+msgstr "Dagen du angav är inte giltig"
+
+#, c-format
+msgid "Enter the day to go to [ENTER for today] : %s"
+msgstr "Ange dagen att gå till [ENTER för idag] : %s"
+
+#, c-format
+msgid "The move failed (%d/%d/%d)."
+msgstr "Flytten misslyckades (%d/%d/%d)."
+
+#, c-format
+msgid "Enter start date [%s] and/or time ([hh:mm] or [hhmm]):"
+msgstr "Ange startdatum [%s] och/eller tid ([hh:mm] eller [hhmm]):"
+
+msgid "Press [Enter] to continue"
+msgstr "Tryck [Enter] för att fortsätta"
+
+msgid "Invalid date or time."
+msgstr "Ogiltigt datum eller tid."
+
+msgid "Invalid time: start time must come before end time!"
+msgstr "Ogiltig tid: starttid måste vara före sluttid!"
+
+#, c-format
+msgid "Repetition must begin on start day (%s)."
+msgstr "Upprepning måste börja på startdag (%s)."
+
+msgid "Enter end date (and/or time) or duration ('?' for input formats):"
+msgstr "Ange slutdatum (och/eller tid) eller varaktighet ('?' för inmatningsformat):"
+
+#, c-format
+msgid "Date: %s, year or month may be omitted."
+msgstr "Datum: %s, år eller månad kan utelämnas."
+
+msgid "Time: hh:mm (hh: or :mm) or hhmm. Duration: +mm, +hh:mm, +??d??h??m."
+msgstr "Tid: hh:mm (hh: eller :mm) eller hhmm. Varaktighet: +mm, +hh:mm, +??d??h??m."
+
+msgid "Invalid time or duration."
+msgstr "Ogiltig tid eller varaktighet."
+
+msgid "Invalid date: end time must come after start time."
+msgstr "Ogiltigt datum: sluttid måste vara efter starttid."
+
+msgid "Enter the new item description:"
+msgstr "Ange den nya objektbeskrivningen:"
+
+msgid "Exception days:"
+msgstr "Undantagsdagar:"
+
+msgid "Invalid date format - try again:."
+msgstr "Ogiltigt datumformat - försök igen:."
+
+msgid "Limit repetition to listed days."
+msgstr "Begränsa upprepning till angivna dagar."
+
+msgid "Expand repetition to listed days."
+msgstr "Utöka upprepning till angivna dagar."
+
+msgid "Expand repetition to listed days, either all or 1st, 2nd, ... of month."
+msgstr "Utöka upprepning till angivna dagar, antingen alla eller 1:a, 2:a, ... i månaden."
+
+msgid "Note: limit to monthdays, if any."
+msgstr "Obs: begränsa till månadsdagar, om några."
+
+msgid "Expand repetition to listed days, either all or 1st, 2nd, ... of year."
+msgstr "Utöka upprepning till angivna dagar, antingen alla eller 1:a, 2:a, ... på året."
+
+msgid "Note: expand to listed months, if any; limit to monthdays, if any."
+msgstr "Obs: utöka till angivna månader, om några; begränsa till månadsdagar, om några."
+
+msgid "Limit repetition to listed months."
+msgstr "Begränsa upprepning till angivna månader."
+
+msgid "Expand repetition to listed months."
+msgstr "Utöka upprepning till angivna månader."
+
+msgid "Limit repetition to listed days of month."
+msgstr "Begränsa upprepning till angivna dagar i månaden."
+
+msgid "Expand repetition to listed days of month."
+msgstr "Utöka upprepning till angivna dagar i månaden."
+
+#, c-format
+msgid "Weekdays %s|..|%s, space-separated list, '?' for help:"
+msgstr "Veckodagar %s|..|%s, mellanslagsseparerad lista, '?' för hjälp:"
+
+#, c-format
+msgid ""
+"Weekdays [n]%s|..|[n]%s, space-separated list, n=1,-1,..,5,-5, '?' for help:"
+msgstr ""
+"Veckodagar [n]%s|..|[n]%s, mellanslagsseparerad lista, n=1,-1,..,5,-5, '?' för hjälp:"
+
+#, c-format
+msgid ""
+"Weekdays [n]%s|..|[n]%s, space-separated list, n=1,-1,..,53,-53, '?' for "
+"help:"
+msgstr ""
+"Veckodagar [n]%s|..|[n]%s, mellanslagsseparerad lista, n=1,-1,..,53,-53, '?' för "
+"hjälp:"
+
+msgid "Months 1|..|12, space-separated list, '?' for help:"
+msgstr "Månader 1|..|12, mellanslagsseparerad lista, '?' för hjälp:"
+
+msgid "Monthdays 1|..|31 or -1|..|-31, space-separated list, '?' for help:"
+msgstr "Månadsdagar 1|..|31 eller -1|..|-31, mellanslagsseparerad lista, '?' för hjälp:"
+
+msgid "Invalid format - try again."
+msgstr "Ogiltigt format - försök igen."
+
+msgid "Press any key to continue."
+msgstr "Tryck valfri tangent för att fortsätta."
+
+msgid "Base period:"
+msgstr "Basperiod:"
+
+msgid "day"
+msgstr "dag"
+
+msgid "week"
+msgstr "vecka"
+
+msgid "month"
+msgstr "månad"
+
+msgid "year"
+msgstr "år"
+
+msgid "[dwmy]"
+msgstr "[dvma]"
+
+msgid "Frequency:"
+msgstr "Frekvens:"
+
+msgid "Invalid frequency."
+msgstr "Ogiltig frekvens."
+
+msgid "Until date, increment or repeat count ('?' for input formats):"
+msgstr "T.o.m.-datum, ökning eller repetitionsantal ('?' för inmatningsformat):"
+
+#, c-format
+msgid "Date: %s (year, month may be omitted, endless: 0)."
+msgstr "Datum: %s (år, månad kan utelämnas, oändligt: 0)."
+
+msgid "Increment: +?? (days) or: +??w??d (weeks). Repeat count: #?? (number)."
+msgstr "Ökning: +?? (dagar) eller: +??v??d (veckor). Repetitionsantal: #?? (nummer)."
+
+#, c-format
+msgid "Invalid date: until date must come after start date (%s)."
+msgstr "Ogiltigt datum: t.o.m.-datum måste vara efter startdatum (%s)."
+
+msgid "Invalid date."
+msgstr "Ogiltigt datum."
+
+msgid "Repeat count is too big."
+msgstr "Repetitionsantal är för stort."
+
+#, c-format
+msgid "Repetition must begin on start day (%s); any change discarded."
+msgstr "Upprepning måste börja på startdag (%s); ändringar kasserade."
+
+msgid "Description"
+msgstr "Beskrivning"
+
+msgid "Repetition"
+msgstr "Upprepning"
+
+msgid "Edit: "
+msgstr "Redigera: "
+
+msgid "Start time"
+msgstr "Starttid"
+
+msgid "End time"
+msgstr "Sluttid"
+
+msgid "Move"
+msgstr "Flytta"
+
+msgid "Pipe item to external command:"
+msgstr "Pipa objekt till externt kommando:"
+
+msgid "Enter start time ([hh:mm] or [hhmm]), leave blank for an all-day event:"
+msgstr "Ange starttid ([hh:mm] eller [hhmm]), lämna tomt för heldagshändelse:"
+
+msgid ""
+"Enter end time as date (and/or time) or duration ('?' for input formats):"
+msgstr "Ange sluttid som datum (och/eller tid) eller varaktighet ('?' för inmatningsformat):"
+
+msgid "Enter description:"
+msgstr "Ange beskrivning:"
+
+#, c-format
+msgid "Date: %s (and/or time), year or month may be omitted."
+msgstr "Datum: %s (och/eller tid), år eller månad kan utelämnas."
+
+msgid "Invalid start time."
+msgstr "Ogiltig starttid."
+
+msgid ""
+"This item is recurrent and has a note attached to it. Delete (s)elected "
+"occurrence, (a)ll occurrences, or just its (n)ote?"
+msgstr ""
+"Detta objekt är återkommande och har en anteckning bifogad. Ta bort (s) markerat "
+"tillfälle, (a)lla tillfällen, eller bara dess (n)ot?"
+
+msgid "[san]"
+msgstr "[san]"
+
+msgid ""
+"This item has a note attached to it. Delete (s)elected occurrence or just "
+"its (n)ote?"
+msgstr ""
+"Detta objekt har en anteckning bifogad. Ta bort (s) markerat tillfälle eller bara dess (n)ot?"
+
+msgid "[sn]"
+msgstr "[sn]"
+
+msgid ""
+"This item is recurrent. Delete (s)elected occurrence or (a)ll occurrences?"
+msgstr ""
+"Detta objekt är återkommande. Ta bort (s) markerat tillfälle eller (a)lla tillfällen?"
+
+msgid "[sa]"
+msgstr "[sa]"
+
+msgid "Confirm deletion. Delete (s)elected occurrence? Press (s) to confirm."
+msgstr "Bekräfta borttagning. Ta bort (s) markerat tillfälle? Tryck (s) för att bekräfta."
+
+msgid "[s]"
+msgstr "[s]"
+
+msgid "Already repeated."
+msgstr "Redan upprepad."
+
+msgid "A (s)imple or (a)dvanced repetition?"
+msgstr "En (s) enkel eller (a)vancerad upprepning?"
+
+msgid "Enter the new TODO item:"
+msgstr "Ange den nya uppgiften:"
+
+msgid "Enter the TODO priority [0 (none), 1 (highest) - 9 (lowest)]:"
+msgstr "Ange prioritet [0 (ingen), 1 (högst) - 9 (lägst)]:"
+
+msgid "Do you really want to delete this task?"
+msgstr "Vill du verkligen ta bort denna uppgift?"
+
+msgid "This item has a note attached to it. Delete (t)odo or just its (n)ote?"
+msgstr "Detta objekt har en anteckning bifogad. Ta bort (t) uppgift eller bara dess (n)ot?"
+
+msgid "[tn]"
+msgstr "[tn]"
+
+msgid "Enter the new TODO description:"
+msgstr "Ange den nya uppgiftsbeskrivningen:"
+
+msgid "TODO:"
+msgstr "ATT GÖRA:"
+
+#, c-format
+msgid "Could not remove calcurse lock file: %s\n"
+msgstr "Kunde inte ta bort calcurse låsfil: %s\n"
+
+msgid "/!\\ INTERNAL ERROR /!\\"
+msgstr "/!\\ INTERNT FEL /!\\"
+
+msgid "Please report the following bug:"
+msgstr "Rapportera följande bugg:"
+
+msgid "[yn]"
+msgstr "[yn]"
+
+msgid "Press any key to continue..."
+msgstr "Tryck valfri tangent för att fortsätta..."
+
+msgid "failure in mktime"
+msgstr "misslyckades i mktime"
+
+msgid "error in mktime"
+msgstr "fel i mktime"
+
+msgid "yes"
+msgstr "ja"
+
+msgid "no"
+msgstr "nej"
+
+msgid "option not defined"
+msgstr "alternativ inte definierat"
+
+#, c-format
+msgid "temporary file \"%s\" could not be created"
+msgstr "temporär fil \"%s\" kunde inte skapas"
+
+#, c-format
+msgid "Error when closing file at %s"
+msgstr "Fel vid stängning av fil vid %s"
+
+msgid "No note file found\n"
+msgstr "Ingen anteckningsfil hittades\n"
+
+msgid "mm/dd/yyyy"
+msgstr "mm/dd/åååå"
+
+msgid "dd/mm/yyyy"
+msgstr "dd/mm/åååå"
+
+msgid "yyyy/mm/dd"
+msgstr "åååå/mm/dd"
+
+msgid "yyyy-mm-dd"
+msgstr "åååå-mm-dd"
+
+msgid "unknown panel"
+msgstr "okänd panel"
+
+msgid "Usage: calcurse-upgrade [-h|-v|--config <file>]"
+msgstr "Användning: calcurse-upgrade [-h|-v|--config <fil>]"
+
+msgid ""
+"\n"
+"Copyright (c) 2004-2023 calcurse Development Team.\n"
+"This is free software; see the source for copying conditions.\n"
+msgstr ""
+"\n"
+"Copyright (c) 2004-2023 calcurse Development Team.\n"
+"Detta är fri programvara; se källkoden för kopieringsvillkor.\n"
+
+msgid "unrecognized option:"
+msgstr "okänt alternativ:"
+
+msgid "Configuration file not found:"
+msgstr "Konfigurationsfil hittades inte:"
+
+msgid "Pre-3.0.0 configuration file format detected..."
+msgstr "Konfigurationsfilformat före 3.0.0 upptäckt..."
+
+msgid "Create temporary backup of the configuration file..."
+msgstr "Skapa temporär säkerhetskopia av konfigurationsfilen..."
+
+msgid "Old backup file found:"
+msgstr "Gammal säkerhetskopia hittades:"
+
+msgid ""
+"\n"
+"If a previous conversion did not complete, please try to restore your\n"
+"configuration from this backup and then remove the backup file."
+msgstr ""
+"\n"
+"Om en tidigare konvertering inte slutfördes, försök återställa din\n"
+"konfiguration från denna säkerhetskopia och ta sedan bort säkerhetskopian."
+
+msgid "done"
+msgstr "klart"
+
+msgid "Old temporary file found:"
+msgstr "Gammal temporär fil hittades:"
+
+msgid ""
+"\n"
+"If a previous conversion did not complete, please try to remove this file "
+"and\n"
+"start over with a backup of your old configuration file."
+msgstr ""
+"\n"
+"Om en tidigare konvertering inte slutfördes, försök ta bort denna fil\n"
+"och börja om med en säkerhetskopia av din gamla konfigurationsfil."
+
+msgid "Upgrade configuration directives..."
+msgstr "Uppgradera konfigurationsdirektiv..."
+
+msgid "Remove temporary backup..."
+msgstr "Ta bort temporär säkerhetskopia..."
